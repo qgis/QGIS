@@ -43,36 +43,6 @@
       </property>
       <item row="1" column="0">
        <layout class="QGridLayout" name="gridLayout_7">
-        <item row="0" column="0">
-         <widget class="QLabel" name="lblTransparency_4">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Point size</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_4">
-          <property name="text">
-           <string>Maximum screen space error</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1" colspan="2">
-         <widget class="QgsDoubleSpinBox" name="mMaxScreenErrorSpinBox">
-          <property name="maximum">
-           <double>100000.000000000000000</double>
-          </property>
-          <property name="value">
-           <double>1.000000000000000</double>
-          </property>
-         </widget>
-        </item>
         <item row="0" column="1" colspan="2">
          <widget class="QgsDoubleSpinBox" name="mPointSizeSpinBox">
           <property name="sizePolicy">
@@ -89,17 +59,13 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>Point budget</string>
+        <item row="1" column="1" colspan="2">
+         <widget class="QgsDoubleSpinBox" name="mMaxScreenErrorSpinBox">
+          <property name="maximum">
+           <double>100000.000000000000000</double>
           </property>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="label_7">
-          <property name="text">
-           <string>Point cloud size</string>
+          <property name="value">
+           <double>1.000000000000000</double>
           </property>
          </widget>
         </item>
@@ -120,6 +86,40 @@
           </property>
           <property name="maximum">
            <double>99999999.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>Maximum screen space error</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>Point cloud size</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="lblTransparency_4">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Point size</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Point budget</string>
           </property>
          </widget>
         </item>

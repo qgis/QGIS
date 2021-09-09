@@ -179,8 +179,8 @@ void QgsNewDatabaseTableNameWidget::refreshModel( const QModelIndex &index )
 
   for ( int i = 0; i < mBrowserModel->rowCount( index ); i++ )
   {
-    QModelIndex idx = mBrowserModel->index( i, 0, index );
-    QModelIndex proxyIdx = mBrowserProxyModel.mapFromSource( idx );
+    const QModelIndex idx = mBrowserModel->index( i, 0, index );
+    const QModelIndex proxyIdx = mBrowserProxyModel.mapFromSource( idx );
     QgsDataItem *child = mBrowserModel->dataItem( idx );
 
     // Check also expanded descendants so that the whole expanded path does not get collapsed if one item is collapsed.
@@ -315,7 +315,7 @@ void QgsNewDatabaseTableNameWidget::validate()
 QStringList QgsNewDatabaseTableNameWidget::tableNames()
 {
   QStringList tableNames;
-  QModelIndex index { mBrowserTreeView->currentIndex() };
+  const QModelIndex index { mBrowserTreeView->currentIndex() };
   if ( index.isValid() )
   {
     QgsDataItem *dataItem { mBrowserProxyModel.dataItem( index ) };
@@ -369,19 +369,19 @@ QString QgsNewDatabaseTableNameWidget::validationError() const
 void QgsNewDatabaseTableNameWidget::showEvent( QShowEvent *e )
 {
   QWidget::showEvent( e );
-  QString lastSelectedPath( QgsSettings().value( QStringLiteral( "newDatabaseTableNameWidgetLastSelectedItem" ),
-                            QString(), QgsSettings::Section::Gui ).toString() );
+  const QString lastSelectedPath( QgsSettings().value( QStringLiteral( "newDatabaseTableNameWidgetLastSelectedItem" ),
+                                  QString(), QgsSettings::Section::Gui ).toString() );
   if ( ! lastSelectedPath.isEmpty() )
   {
-    QModelIndexList items = mBrowserProxyModel.match(
-                              mBrowserProxyModel.index( 0, 0 ),
-                              QgsBrowserGuiModel::PathRole,
-                              QVariant::fromValue( lastSelectedPath ),
-                              1,
-                              Qt::MatchRecursive );
+    const QModelIndexList items = mBrowserProxyModel.match(
+                                    mBrowserProxyModel.index( 0, 0 ),
+                                    QgsBrowserGuiModel::PathRole,
+                                    QVariant::fromValue( lastSelectedPath ),
+                                    1,
+                                    Qt::MatchRecursive );
     if ( items.count( ) > 0 )
     {
-      QModelIndex expandIndex = items.at( 0 );
+      const QModelIndex expandIndex = items.at( 0 );
       if ( expandIndex.isValid() )
       {
         mBrowserTreeView->scrollTo( expandIndex, QgsBrowserTreeView::ScrollHint::PositionAtTop );

@@ -34,14 +34,14 @@ QgsFieldProxyModel *QgsFieldProxyModel::setFilters( QgsFieldProxyModel::Filters 
 
 bool QgsFieldProxyModel::isReadOnly( const QModelIndex &index ) const
 {
-  QVariant originVariant = sourceModel()->data( index, QgsFieldModel::FieldOriginRole );
+  const QVariant originVariant = sourceModel()->data( index, QgsFieldModel::FieldOriginRole );
   if ( originVariant.isNull() )
   {
     //expression
     return true;
   }
 
-  QgsFields::FieldOrigin origin = static_cast< QgsFields::FieldOrigin >( originVariant.toInt() );
+  const QgsFields::FieldOrigin origin = static_cast< QgsFields::FieldOrigin >( originVariant.toInt() );
   switch ( origin )
   {
     case QgsFields::OriginJoin:
@@ -80,7 +80,7 @@ bool QgsFieldProxyModel::isReadOnly( const QModelIndex &index ) const
 
 bool QgsFieldProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
-  QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
+  const QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
 
   if ( mFilters.testFlag( HideReadOnly ) && isReadOnly( index ) )
     return false;
@@ -88,14 +88,14 @@ bool QgsFieldProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
   if ( mFilters.testFlag( AllTypes ) )
     return true;
 
-  QVariant typeVar = sourceModel()->data( index, QgsFieldModel::FieldTypeRole );
+  const QVariant typeVar = sourceModel()->data( index, QgsFieldModel::FieldTypeRole );
 
   // if expression, consider valid
   if ( typeVar.isNull() )
     return true;
 
   bool ok;
-  QVariant::Type type = ( QVariant::Type )typeVar.toInt( &ok );
+  const QVariant::Type type = ( QVariant::Type )typeVar.toInt( &ok );
   if ( !ok )
     return true;
 
@@ -122,8 +122,8 @@ bool QgsFieldProxyModel::lessThan( const QModelIndex &left, const QModelIndex &r
 
   // order is field order, then expressions
   bool lok, rok;
-  int leftId = sourceModel()->data( left, QgsFieldModel::FieldIndexRole ).toInt( &lok );
-  int rightId = sourceModel()->data( right, QgsFieldModel::FieldIndexRole ).toInt( &rok );
+  const int leftId = sourceModel()->data( left, QgsFieldModel::FieldIndexRole ).toInt( &lok );
+  const int rightId = sourceModel()->data( right, QgsFieldModel::FieldIndexRole ).toInt( &rok );
 
   if ( !lok )
     return false;

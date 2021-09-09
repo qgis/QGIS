@@ -113,7 +113,7 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
 
 void QgsPolygon3DSymbolHandler::processPolygon( QgsPolygon *polyClone, QgsFeatureId fid, float height, float extrusionHeight, const Qgs3DRenderContext &context, PolygonData &out )
 {
-  uint oldVerticesCount = out.tessellator->dataVerticesCount();
+  const uint oldVerticesCount = out.tessellator->dataVerticesCount();
   if ( mSymbol->edgesEnabled() )
   {
     // add edges before the polygon gets the Z values modified because addLineString() does its own altitude handling
@@ -139,7 +139,7 @@ void QgsPolygon3DSymbolHandler::processPolygon( QgsPolygon *polyClone, QgsFeatur
   Qgs3DUtils::clampAltitudes( polyClone, mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), height, context.map() );
 
   Q_ASSERT( out.tessellator->dataVerticesCount() % 3 == 0 );
-  uint startingTriangleIndex = static_cast<uint>( out.tessellator->dataVerticesCount() / 3 );
+  const uint startingTriangleIndex = static_cast<uint>( out.tessellator->dataVerticesCount() / 3 );
   out.triangleIndexStartingIndices.append( startingTriangleIndex );
   out.triangleIndexFids.append( fid );
   out.tessellator->addPolygon( *polyClone, extrusionHeight );
@@ -173,8 +173,8 @@ void QgsPolygon3DSymbolHandler::processFeature( const QgsFeature &f, const Qgs3D
   }
 
   const QgsPropertyCollection &ddp = mSymbol->dataDefinedProperties();
-  bool hasDDHeight = ddp.isActive( QgsAbstract3DSymbol::PropertyHeight );
-  bool hasDDExtrusion = ddp.isActive( QgsAbstract3DSymbol::PropertyExtrusionHeight );
+  const bool hasDDHeight = ddp.isActive( QgsAbstract3DSymbol::PropertyHeight );
+  const bool hasDDExtrusion = ddp.isActive( QgsAbstract3DSymbol::PropertyExtrusionHeight );
 
   float height = mSymbol->height();
   float extrusionHeight = mSymbol->extrusionHeight();
@@ -255,8 +255,8 @@ void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs
   Qt3DRender::QMaterial *mat = material( mSymbol.get(), selected, context );
 
   // extract vertex buffer data from tessellator
-  QByteArray data( ( const char * )out.tessellator->data().constData(), out.tessellator->data().count() * sizeof( float ) );
-  int nVerts = data.count() / out.tessellator->stride();
+  const QByteArray data( ( const char * )out.tessellator->data().constData(), out.tessellator->data().count() * sizeof( float ) );
+  const int nVerts = data.count() / out.tessellator->stride();
 
   const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( mSymbol->material() );
 
@@ -297,7 +297,7 @@ static Qt3DRender::QCullFace::CullingMode _qt3DcullingMode( Qgs3DTypes::CullingM
 // front/back side culling
 static void applyCullingMode( Qgs3DTypes::CullingMode cullingMode, Qt3DRender::QMaterial *material )
 {
-  auto techniques = material->effect()->techniques();
+  const auto techniques = material->effect()->techniques();
   for ( auto tit = techniques.constBegin(); tit != techniques.constEnd(); ++tit )
   {
     auto renderPasses = ( *tit )->renderPasses();
@@ -316,7 +316,7 @@ Qt3DRender::QMaterial *QgsPolygon3DSymbolHandler::material( const QgsPolygon3DSy
   materialContext.setIsSelected( isSelected );
   materialContext.setSelectionColor( context.map().selectionColor() );
 
-  bool dataDefined = mSymbol->material()->dataDefinedProperties().hasActiveProperties();
+  const bool dataDefined = mSymbol->material()->dataDefinedProperties().hasActiveProperties();
   Qt3DRender::QMaterial *material = symbol->material()->toMaterial( dataDefined ?
                                     QgsMaterialSettingsRenderingTechnique::TrianglesDataDefined : QgsMaterialSettingsRenderingTechnique::Triangles,
                                     materialContext );

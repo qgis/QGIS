@@ -105,8 +105,8 @@ void QgsLayoutPagePropertiesWidget::pageSizeChanged( int )
     mLockAspectRatio->setLocked( false );
     mSizeUnitsComboBox->setEnabled( false );
     mPageOrientationComboBox->setEnabled( true );
-    QgsPageSize size = QgsApplication::pageSizeRegistry()->find( mPageSizeComboBox->currentData().toString() ).value( 0 );
-    QgsLayoutSize convertedSize = mConverter.convert( size.size, mSizeUnitsComboBox->unit() );
+    const QgsPageSize size = QgsApplication::pageSizeRegistry()->find( mPageSizeComboBox->currentData().toString() ).value( 0 );
+    const QgsLayoutSize convertedSize = mConverter.convert( size.size, mSizeUnitsComboBox->unit() );
     mSettingPresetSize = true;
     switch ( mPageOrientationComboBox->currentData().toInt() )
     {
@@ -131,8 +131,8 @@ void QgsLayoutPagePropertiesWidget::orientationChanged( int )
   if ( mPageSizeComboBox->currentData().toString().isEmpty() )
     return;
 
-  double width = mWidthSpin->value();
-  double height = mHeightSpin->value();
+  const double width = mWidthSpin->value();
+  const double height = mHeightSpin->value();
   switch ( mPageOrientationComboBox->currentData().toInt() )
   {
     case QgsLayoutItemPage::Landscape:
@@ -202,8 +202,8 @@ void QgsLayoutPagePropertiesWidget::refreshLayout()
 
 void QgsLayoutPagePropertiesWidget::showCurrentPageSize()
 {
-  QgsLayoutSize paperSize = mPage->pageSize();
-  QString pageSize = QgsApplication::pageSizeRegistry()->find( paperSize );
+  const QgsLayoutSize paperSize = mPage->pageSize();
+  const QString pageSize = QgsApplication::pageSizeRegistry()->find( paperSize );
   if ( !pageSize.isEmpty() )
   {
     whileBlocking( mPageSizeComboBox )->setCurrentIndex( mPageSizeComboBox->findData( pageSize ) );

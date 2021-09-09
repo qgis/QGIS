@@ -88,15 +88,15 @@ void QgsSnapGeometriesAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ),
                 10.0, QStringLiteral( "INPUT" ), false, 0.00000001 ) );
 
-  QStringList options = QStringList()
-                        << QObject::tr( "Prefer aligning nodes, insert extra vertices where required" )
-                        << QObject::tr( "Prefer closest point, insert extra vertices where required" )
-                        << QObject::tr( "Prefer aligning nodes, don't insert new vertices" )
-                        << QObject::tr( "Prefer closest point, don't insert new vertices" )
-                        << QObject::tr( "Move end points only, prefer aligning nodes" )
-                        << QObject::tr( "Move end points only, prefer closest point" )
-                        << QObject::tr( "Snap end points to end points only" )
-                        << QObject::tr( "Snap to anchor nodes (single layer only)" );
+  const QStringList options = QStringList()
+                              << QObject::tr( "Prefer aligning nodes, insert extra vertices where required" )
+                              << QObject::tr( "Prefer closest point, insert extra vertices where required" )
+                              << QObject::tr( "Prefer aligning nodes, don't insert new vertices" )
+                              << QObject::tr( "Prefer closest point, don't insert new vertices" )
+                              << QObject::tr( "Move end points only, prefer aligning nodes" )
+                              << QObject::tr( "Move end points only, prefer closest point" )
+                              << QObject::tr( "Snap end points to end points only" )
+                              << QObject::tr( "Snap to anchor nodes (single layer only)" );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "BEHAVIOR" ), QObject::tr( "Behavior" ), options, false, QVariantList() << 0 ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ),
                 QObject::tr( "Snapped geometry" ), QgsProcessing::TypeVectorAnyGeometry ) );
@@ -113,27 +113,27 @@ QVariantMap QgsSnapGeometriesAlgorithm::processAlgorithm( const QVariantMap &par
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  std::unique_ptr< QgsProcessingFeatureSource > referenceSource( parameterAsSource( parameters, QStringLiteral( "REFERENCE_LAYER" ), context ) );
+  const std::unique_ptr< QgsProcessingFeatureSource > referenceSource( parameterAsSource( parameters, QStringLiteral( "REFERENCE_LAYER" ), context ) );
   if ( !referenceSource )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "REFERENCE_LAYER" ) ) );
 
-  double tolerance = parameterAsDouble( parameters, QStringLiteral( "TOLERANCE" ), context );
-  QgsGeometrySnapper::SnapMode mode = static_cast<QgsGeometrySnapper::SnapMode>( parameterAsEnum( parameters, QStringLiteral( "BEHAVIOR" ), context ) );
+  const double tolerance = parameterAsDouble( parameters, QStringLiteral( "TOLERANCE" ), context );
+  const QgsGeometrySnapper::SnapMode mode = static_cast<QgsGeometrySnapper::SnapMode>( parameterAsEnum( parameters, QStringLiteral( "BEHAVIOR" ), context ) );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(), source->wkbType(), source->sourceCrs() ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-  double step = source->featureCount() > 0 ? 100.0 / source->featureCount() : 1;
   QgsFeatureIterator features = source->getFeatures();
 
   if ( parameters.value( QStringLiteral( "INPUT" ) ) != parameters.value( QStringLiteral( "REFERENCE_LAYER" ) ) )
   {
+    const double step = source->featureCount() > 0 ? 100.0 / source->featureCount() : 1;
     if ( mode == 7 )
       throw QgsProcessingException( QObject::tr( "This mode applies when the input and reference layer are the same." ) );
 
-    QgsGeometrySnapper snapper( referenceSource.get() );
+    const QgsGeometrySnapper snapper( referenceSource.get() );
     long long processed = 0;
     QgsFeature f;
     while ( features.nextFeature( f ) )
@@ -160,34 +160,62 @@ QVariantMap QgsSnapGeometriesAlgorithm::processAlgorithm( const QVariantMap &par
   else if ( mode == 7 )
   {
     // input layer == reference layer
-    int modified = QgsGeometrySnapperSingleSource::run( *source, *sink, tolerance, feedback );
+    const int modified = QgsGeometrySnapperSingleSource::run( *source, *sink, tolerance, feedback );
     feedback->pushInfo( QObject::tr( "Snapped %1 geometries." ).arg( modified ) );
   }
   else
   {
     // snapping internally
-    QgsInternalGeometrySnapper snapper( tolerance, mode );
+    const double step = source->featureCount() > 0 ? 100.0 / ( source->featureCount() * 2 ) : 1;
     long long processed = 0;
+
+    QgsInternalGeometrySnapper snapper( tolerance, mode );
     QgsFeature f;
+    QList<QgsFeatureId> editedFeatureIds;
+    QMap<QgsFeatureId, QgsFeature> editedFeatures;
     while ( features.nextFeature( f ) )
     {
       if ( feedback->isCanceled() )
         break;
 
+      QgsFeature editedFeature( f );
       if ( f.hasGeometry() )
       {
-        QgsFeature outFeature( f );
-        outFeature.setGeometry( snapper.snapFeature( f ) );
-        if ( !sink->addFeature( outFeature, QgsFeatureSink::FastInsert ) )
-          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+        editedFeature.setGeometry( snapper.snapFeature( f ) );
       }
-      else
-      {
-        if ( !sink->addFeature( f ) )
-          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
-      }
+      editedFeatureIds << editedFeature.id();
+      editedFeatures.insert( editedFeature.id(), editedFeature );
       processed += 1;
-      feedback->setProgress( processed * step );
+    }
+
+    // reversed order snapping round is required to insure geometries are snapped against all features
+    snapper = QgsInternalGeometrySnapper( tolerance, mode );
+    std::reverse( editedFeatureIds.begin(), editedFeatureIds.end() );
+    for ( const QgsFeatureId &fid : std::as_const( editedFeatureIds ) )
+    {
+      if ( feedback->isCanceled() )
+        break;
+
+      QgsFeature editedFeature( editedFeatures.value( fid ) );
+      if ( editedFeature.hasGeometry() )
+      {
+        editedFeature.setGeometry( snapper.snapFeature( editedFeature ) );
+        editedFeatures.insert( editedFeature.id(), editedFeature );
+      }
+    }
+    std::reverse( editedFeatureIds.begin(), editedFeatureIds.end() );
+    processed += 1;
+
+    if ( !feedback->isCanceled() )
+    {
+      for ( const QgsFeatureId &fid : std::as_const( editedFeatureIds ) )
+      {
+        QgsFeature outFeature( editedFeatures.value( fid ) );
+        if ( !sink->addFeature( outFeature ) )
+          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+
+        feedback->setProgress( processed * step );
+      }
     }
   }
 

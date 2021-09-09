@@ -1060,9 +1060,9 @@ QString QgsPostgresConn::postgisVersion() const
     result = PQexec( QStringLiteral( "SELECT postgis_geos_version(), postgis_proj_version()" ) );
     mGeosAvailable = result.PQntuples() == 1 && !result.PQgetisnull( 0, 0 );
     mProjAvailable = result.PQntuples() == 1 && !result.PQgetisnull( 0, 1 );
-    QgsDebugMsg( QStringLiteral( "geos:%1 proj:%2" )
-                 .arg( mGeosAvailable ? result.PQgetvalue( 0, 0 ) : "none" )
-                 .arg( mProjAvailable ? result.PQgetvalue( 0, 1 ) : "none" ) );
+    QgsDebugMsgLevel( QStringLiteral( "geos:%1 proj:%2" )
+                      .arg( mGeosAvailable ? result.PQgetvalue( 0, 0 ) : "none" )
+                      .arg( mProjAvailable ? result.PQgetvalue( 0, 1 ) : "none" ), 2 );
   }
   else
   {

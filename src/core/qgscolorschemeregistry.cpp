@@ -53,7 +53,7 @@ void QgsColorSchemeRegistry::addDefaultSchemes()
 
 void QgsColorSchemeRegistry::initStyleScheme()
 {
-  QString stylePalette = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/palettes/new_layer_colors.gpl" );
+  const QString stylePalette = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/palettes/new_layer_colors.gpl" );
   if ( QFileInfo::exists( stylePalette ) )
   {
     QgsUserColorScheme *scheme = new QgsUserColorScheme( stylePalette );
@@ -64,15 +64,15 @@ void QgsColorSchemeRegistry::initStyleScheme()
 
 void QgsColorSchemeRegistry::addUserSchemes()
 {
-  QString palettesDir = QgsApplication::qgisSettingsDirPath() + "palettes";
+  const QString palettesDir = QgsApplication::qgisSettingsDirPath() + "palettes";
 
-  QDir localDir;
+  const QDir localDir;
   if ( !localDir.mkpath( palettesDir ) )
   {
     return;
   }
 
-  QFileInfoList fileInfoList = QDir( palettesDir ).entryInfoList( QStringList( QStringLiteral( "*.gpl" ) ), QDir::Files );
+  const QFileInfoList fileInfoList = QDir( palettesDir ).entryInfoList( QStringList( QStringLiteral( "*.gpl" ) ), QDir::Files );
   QFileInfoList::const_iterator infoIt = fileInfoList.constBegin();
   for ( ; infoIt != fileInfoList.constEnd(); ++infoIt )
   {
@@ -155,7 +155,7 @@ QColor QgsColorSchemeRegistry::fetchRandomStyleColor() const
   else
   {
     static QMutex sMutex;
-    QMutexLocker locker( &sMutex );
+    const QMutexLocker locker( &sMutex );
     QColor res = mRandomStyleColors.at( mNextRandomStyleColorIndex ).first;
     mNextRandomStyleColorIndex += mNextRandomStyleColorDirection;
     if ( mNextRandomStyleColorIndex < 0 )

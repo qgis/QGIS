@@ -59,7 +59,8 @@ from qgis.core import (QgsRasterLayer,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber,
-                       QgsProcessingParameterColor)
+                       QgsProcessingParameterColor,
+                       QgsProcessingParameterPointCloudLayer)
 
 from qgis.PyQt.QtCore import QCoreApplication
 
@@ -105,6 +106,9 @@ def getParameterFromString(s, context=''):
             clazz = getattr(sys.modules[__name__], tokens[0])
             # convert to correct type
             if clazz == QgsProcessingParameterRasterLayer:
+                if len(params) > 3:
+                    params[3] = True if params[3].lower() == 'true' else False
+            if clazz == QgsProcessingParameterPointCloudLayer:
                 if len(params) > 3:
                     params[3] = True if params[3].lower() == 'true' else False
             elif clazz == QgsProcessingParameterBand:

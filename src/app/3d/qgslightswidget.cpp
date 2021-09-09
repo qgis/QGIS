@@ -229,7 +229,7 @@ void QgsLightsWidget::setAzimuthAltitude()
   double azimuthAngle;
   double altitudeAngle;
 
-  double horizontalVectorMagnitude = sqrt( mDirectionX * mDirectionX + mDirectionZ * mDirectionZ );
+  const double horizontalVectorMagnitude = sqrt( mDirectionX * mDirectionX + mDirectionZ * mDirectionZ );
 
   if ( horizontalVectorMagnitude == 0 )
     azimuthAngle = 0;
@@ -257,10 +257,10 @@ void QgsLightsWidget::setAzimuthAltitude()
 
 void QgsLightsWidget::onDirectionChange()
 {
-  double altitudeValue = spinBoxAltitude->value();
-  double azimuthValue = spinBoxAzimuth->value();
+  const double altitudeValue = spinBoxAltitude->value();
+  const double azimuthValue = spinBoxAzimuth->value();
 
-  double horizontalVectorMagnitude = cos( altitudeValue / 180 * M_PI );
+  const double horizontalVectorMagnitude = cos( altitudeValue / 180 * M_PI );
   mDirectionX = -horizontalVectorMagnitude * sin( azimuthValue / 180 * M_PI );
   mDirectionZ = horizontalVectorMagnitude * cos( azimuthValue / 180 * M_PI );
   mDirectionY = -sin( altitudeValue / 180 * M_PI );

@@ -19,6 +19,7 @@
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgslinesymbol.h"
+#include "qgsannotationitemnode.h"
 
 QgsAnnotationLineItem::QgsAnnotationLineItem( QgsCurve *curve )
   : QgsAnnotationItem()
@@ -73,10 +74,30 @@ void QgsAnnotationLineItem::render( QgsRenderContext &context, QgsFeedback * )
 bool QgsAnnotationLineItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   element.setAttribute( QStringLiteral( "wkt" ), mCurve->asWkt() );
-  element.setAttribute( QStringLiteral( "zIndex" ), zIndex() );
-
   element.appendChild( QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "lineSymbol" ), mSymbol.get(), document, context ) );
+  writeCommonProperties( element, document, context );
 
+  return true;
+}
+
+QList<QgsAnnotationItemNode> QgsAnnotationLineItem::nodes() const
+{
+  QList< QgsAnnotationItemNode > res;
+  for ( auto it = mCurve->vertices_begin(); it != mCurve->vertices_end(); ++it )
+  {
+    res.append( QgsAnnotationItemNode( QgsPointXY( ( *it ).x(), ( *it ).y() ), Qgis::AnnotationItemNodeType::VertexHandle ) );
+  }
+  return res;
+}
+
+QgsGeometry QgsAnnotationLineItem::rubberBandGeometry() const
+{
+  return QgsGeometry( mCurve->clone() );
+}
+
+bool QgsAnnotationLineItem::transform( const QTransform &transform )
+{
+  mCurve->transform( transform );
   return true;
 }
 
@@ -92,11 +113,11 @@ bool QgsAnnotationLineItem::readXml( const QDomElement &element, const QgsReadWr
   if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( geometry.constGet() ) )
     mCurve.reset( curve->clone() );
 
-  setZIndex( element.attribute( QStringLiteral( "zIndex" ) ).toInt() );
-
   const QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !symbolElem.isNull() )
     setSymbol( QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( symbolElem, context ) );
+
+  readCommonProperties( element, context );
 
   return true;
 }
@@ -110,7 +131,7 @@ QgsAnnotationLineItem *QgsAnnotationLineItem::clone()
 {
   std::unique_ptr< QgsAnnotationLineItem > item = std::make_unique< QgsAnnotationLineItem >( mCurve->clone() );
   item->setSymbol( mSymbol->clone() );
-  item->setZIndex( zIndex() );
+  item->copyCommonProperties( this );
   return item.release();
 }
 

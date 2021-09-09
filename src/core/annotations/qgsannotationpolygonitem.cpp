@@ -20,6 +20,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgssurface.h"
 #include "qgsfillsymbol.h"
+#include "qgsannotationitemnode.h"
 
 QgsAnnotationPolygonItem::QgsAnnotationPolygonItem( QgsCurvePolygon *polygon )
   : QgsAnnotationItem()
@@ -87,10 +88,47 @@ void QgsAnnotationPolygonItem::render( QgsRenderContext &context, QgsFeedback * 
 bool QgsAnnotationPolygonItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   element.setAttribute( QStringLiteral( "wkt" ), mPolygon->asWkt() );
-
-  element.setAttribute( QStringLiteral( "zIndex" ), zIndex() );
   element.appendChild( QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "lineSymbol" ), mSymbol.get(), document, context ) );
 
+  writeCommonProperties( element, document, context );
+  return true;
+}
+
+QList<QgsAnnotationItemNode> QgsAnnotationPolygonItem::nodes() const
+{
+  QList< QgsAnnotationItemNode > res;
+
+  auto processRing  = [&res]( const QgsCurve * ring )
+  {
+    // we don't want a duplicate node for the closed ring vertex
+    const int count = ring->isClosed() ? ring->numPoints() - 1 : ring->numPoints();
+    res.reserve( res.size() + count );
+    for ( int i = 0; i < count; ++i )
+    {
+      res << QgsAnnotationItemNode( QgsPointXY( ring->xAt( i ), ring->yAt( i ) ), Qgis::AnnotationItemNodeType::VertexHandle );
+    }
+  };
+
+  if ( const QgsCurve *ring = mPolygon->exteriorRing() )
+  {
+    processRing( ring );
+  }
+  for ( int i = 0; i < mPolygon->numInteriorRings(); ++i )
+  {
+    processRing( mPolygon->interiorRing( i ) );
+  }
+
+  return res;
+}
+
+QgsGeometry QgsAnnotationPolygonItem::rubberBandGeometry() const
+{
+  return QgsGeometry( mPolygon->clone() );
+}
+
+bool QgsAnnotationPolygonItem::transform( const QTransform &transform )
+{
+  mPolygon->transform( transform );
   return true;
 }
 
@@ -106,12 +144,11 @@ bool QgsAnnotationPolygonItem::readXml( const QDomElement &element, const QgsRea
   if ( const QgsCurvePolygon *polygon = qgsgeometry_cast< const QgsCurvePolygon * >( geometry.constGet() ) )
     mPolygon.reset( polygon->clone() );
 
-  setZIndex( element.attribute( QStringLiteral( "zIndex" ) ).toInt() );
-
   const QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !symbolElem.isNull() )
     setSymbol( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( symbolElem, context ) );
 
+  readCommonProperties( element, context );
   return true;
 }
 
@@ -119,7 +156,7 @@ QgsAnnotationPolygonItem *QgsAnnotationPolygonItem::clone()
 {
   std::unique_ptr< QgsAnnotationPolygonItem > item = std::make_unique< QgsAnnotationPolygonItem >( mPolygon->clone() );
   item->setSymbol( mSymbol->clone() );
-  item->setZIndex( zIndex() );
+  item->copyCommonProperties( this );;
   return item.release();
 }
 

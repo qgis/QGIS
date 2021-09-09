@@ -204,7 +204,7 @@ void QgsDatabaseTableModel::refresh()
   {
     if ( !newTables.contains( oldTable ) )
     {
-      int r = mTables.indexOf( oldTable );
+      const int r = mTables.indexOf( oldTable );
       beginRemoveRows( QModelIndex(), r + ( mAllowEmpty ? 1 : 0 ), r + ( mAllowEmpty ? 1 : 0 ) );
       mTables.removeAt( r );
       endRemoveRows();

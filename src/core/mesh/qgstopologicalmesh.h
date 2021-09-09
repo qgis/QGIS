@@ -100,6 +100,9 @@ class CORE_EXPORT QgsTopologicalMesh
         //! Returns the added vertices with this changes
         QVector<QgsMeshVertex> addedVertices() const;
 
+        //! Returns the indexes of vertices to remove
+        QList<int> verticesToRemoveIndexes() const;
+
         //! Returns the indexes of vertices that have changed coordinates
         QList<int> changedCoordinatesVerticesIndexes() const;
 
@@ -282,8 +285,8 @@ class CORE_EXPORT QgsTopologicalMesh
     //! Reverses the changes
     void reverseChanges( const Changes &changes );
 
-    //! Checks the topology of the face and sets it counter clock wise if necessary
-    static QgsMeshEditingError counterClockWiseFaces( QgsMeshFace &face, QgsMesh *mesh );
+    //! Checks the topology of the face and sets it counter clockwise if necessary
+    static QgsMeshEditingError counterClockwiseFaces( QgsMeshFace &face, QgsMesh *mesh );
 
     /**
      * Reindexes faces and vertices, after this operation, the topological

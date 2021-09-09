@@ -90,7 +90,7 @@ void QgsOapifItemsRequest::processReply()
                                     buffer.size(),
                                     false ) );
   QgsProviderRegistry *pReg = QgsProviderRegistry::instance();
-  QgsDataProvider::ProviderOptions providerOptions;
+  const QgsDataProvider::ProviderOptions providerOptions;
   auto vectorProvider = std::unique_ptr<QgsVectorDataProvider>(
                           qobject_cast< QgsVectorDataProvider * >( pReg->createProvider( "ogr", vsimemFilename, providerOptions ) ) );
   if ( !vectorProvider || !vectorProvider->isValid() )

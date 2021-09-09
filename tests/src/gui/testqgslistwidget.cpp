@@ -46,7 +46,7 @@ class TestQgsListWidget : public QObject
       // delete new features in db from postgres test
       QgsVectorLayer *vl_array_int = new QgsVectorLayer( QStringLiteral( "%1 sslmode=disable key=\"pk\" table=\"qgis_test\".\"array_tbl\" sql=" ).arg( dbConn ), QStringLiteral( "json" ), QStringLiteral( "postgres" ) );
       vl_array_int->startEditing( );
-      QgsFeatureIds delete_ids = QSet<QgsFeatureId>() << Q_INT64_C( 997 ) << Q_INT64_C( 998 ) << Q_INT64_C( 999 );
+      const QgsFeatureIds delete_ids = QSet<QgsFeatureId>() << Q_INT64_C( 997 ) << Q_INT64_C( 998 ) << Q_INT64_C( 999 );
       vl_array_int->deleteFeatures( delete_ids );
       vl_array_int->commitChanges( false );
       QgsVectorLayer *vl_array_str = new QgsVectorLayer( QStringLiteral( "%1 sslmode=disable key=\"pk\" table=\"qgis_test\".\"string_array\" sql=" ).arg( dbConn ), QStringLiteral( "json" ), QStringLiteral( "postgres" ) );
@@ -62,7 +62,7 @@ class TestQgsListWidget : public QObject
       QgsVectorLayer vl( QStringLiteral( "Point?field=fld:string[]" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
       QgsEditorWidgetWrapper *wrapper = factory.create( &vl, 0, nullptr, nullptr );
       QVERIFY( wrapper );
-      QSignalSpy spy( wrapper, SIGNAL( valueChanged( const QVariant & ) ) );
+      const QSignalSpy spy( wrapper, SIGNAL( valueChanged( const QVariant & ) ) );
 
       QgsListWidget *widget = qobject_cast< QgsListWidget * >( wrapper->widget() );
       QVERIFY( widget );
@@ -83,7 +83,7 @@ class TestQgsListWidget : public QObject
 
       QStringList expected = initial;
       expected[0] = QStringLiteral( "hello" );
-      QVariant eventValue = spy.at( 0 ).at( 0 ).value<QVariant>();
+      const QVariant eventValue = spy.at( 0 ).at( 0 ).value<QVariant>();
       QCOMPARE( int( eventValue.type() ), int( QVariant::StringList ) );
       QCOMPARE( eventValue.toStringList(), expected );
       QCOMPARE( wrapper->value().toStringList(), expected );

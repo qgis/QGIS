@@ -53,8 +53,14 @@ class CORE_EXPORT QgsLayerTreeUtils
     //! Convert QString to Qt::CheckState
     static Qt::CheckState checkStateFromXml( const QString &txt );
 
-    //! Returns TRUE if any of the layers is editable
-    static bool layersEditable( const QList<QgsLayerTreeLayer *> &layerNodes );
+    /**
+     * Returns TRUE if any of the specified layers is editable.
+     *
+     * The \a ignoreLayersWhichCannotBeToggled argument can be used to control whether layers which cannot have their
+     * edit states toggled by users should be ignored or not (since QGIS 3.22).
+     */
+    static bool layersEditable( const QList<QgsLayerTreeLayer *> &layerNodes, bool ignoreLayersWhichCannotBeToggled = false );
+
     //! Returns TRUE if any of the layers is modified
     static bool layersModified( const QList<QgsLayerTreeLayer *> &layerNodes );
 

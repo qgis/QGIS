@@ -81,7 +81,7 @@ void TestQgsTriangularMesh::test_triangulate()
   {
     QgsTriangularMesh mesh;
     populateMeshVertices( mesh );
-    QgsMeshFace point = { 0 };
+    const QgsMeshFace point = { 0 };
     mesh.triangulate( point, 0 );
     QCOMPARE( 0, mesh.mTriangularMesh.faces.size() );
   }
@@ -89,7 +89,7 @@ void TestQgsTriangularMesh::test_triangulate()
   {
     QgsTriangularMesh mesh;
     populateMeshVertices( mesh );
-    QgsMeshFace line = { 0, 1 };
+    const QgsMeshFace line = { 0, 1 };
     mesh.triangulate( line, 0 );
     QCOMPARE( 0, mesh.mTriangularMesh.faces.size() );
   }
@@ -97,29 +97,29 @@ void TestQgsTriangularMesh::test_triangulate()
   {
     QgsTriangularMesh mesh;
     populateMeshVertices( mesh );
-    QgsMeshFace triangle = { 0, 1, 2 };
+    const QgsMeshFace triangle = { 0, 1, 2 };
     mesh.triangulate( triangle, 0 );
     QCOMPARE( 1, mesh.mTriangularMesh.faces.size() );
-    QgsMeshFace firstTriangle = {1, 2, 0};
+    const QgsMeshFace firstTriangle = {1, 2, 0};
     QCOMPARE( firstTriangle, mesh.mTriangularMesh.faces[0] );
   }
 
   {
     QgsTriangularMesh mesh;
     populateMeshVertices( mesh );
-    QgsMeshFace quad = { 0, 1, 2, 3 };
+    const QgsMeshFace quad = { 0, 1, 2, 3 };
     mesh.triangulate( quad, 0 );
     QCOMPARE( 2, mesh.mTriangularMesh.faces.size() );
-    QgsMeshFace firstTriangle = {2, 3, 0};
+    const QgsMeshFace firstTriangle = {2, 3, 0};
     QCOMPARE( firstTriangle, mesh.mTriangularMesh.faces[0] );
-    QgsMeshFace secondTriangle = {1, 2, 0};
+    const QgsMeshFace secondTriangle = {1, 2, 0};
     QCOMPARE( secondTriangle, mesh.mTriangularMesh.faces[1] );
   }
 
   {
     QgsTriangularMesh mesh;
     populateMeshVertices( mesh );
-    QgsMeshFace poly = { 1, 2, 3, 4, 5, 6, 7 };
+    const QgsMeshFace poly = { 1, 2, 3, 4, 5, 6, 7 };
     mesh.triangulate( poly, 0 );
     QCOMPARE( 5, mesh.mTriangularMesh.faces.size() );
   }

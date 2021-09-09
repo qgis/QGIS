@@ -224,7 +224,7 @@ void QgsCollapsibleGroupBoxBasic::toggleCollapsed()
 {
   // verify if sender is this group box's collapse button
   QgsGroupBoxCollapseButton *collBtn = qobject_cast<QgsGroupBoxCollapseButton *>( QObject::sender() );
-  bool senderCollBtn = ( collBtn && collBtn == mCollapseButton );
+  const bool senderCollBtn = ( collBtn && collBtn == mCollapseButton );
 
   mAltDown = ( mAltDown || mCollapseButton->altDown() );
   mShiftDown = ( mShiftDown || mCollapseButton->shiftDown() );
@@ -257,7 +257,7 @@ void QgsCollapsibleGroupBoxBasic::toggleCollapsed()
     {
       QgsDebugMsg( "found sync parent: " + mSyncParent->objectName() );
 
-      bool thisCollapsed = mCollapsed; // get state of current box before its changed
+      const bool thisCollapsed = mCollapsed; // get state of current box before its changed
       const auto groupBoxes {mSyncParent->findChildren<QgsCollapsibleGroupBoxBasic *>()};
       for ( QgsCollapsibleGroupBoxBasic *grpbox : groupBoxes )
       {
@@ -310,20 +310,20 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
 {
   setUpdatesEnabled( false );
 
-  QgsSettings settings;
+  const QgsSettings settings;
 
   QStyleOptionGroupBox box;
   initStyleOption( &box );
-  QRect rectFrame = style()->subControlRect( QStyle::CC_GroupBox, &box,
-                    QStyle::SC_GroupBoxFrame, this );
-  QRect rectTitle = titleRect();
+  const QRect rectFrame = style()->subControlRect( QStyle::CC_GroupBox, &box,
+                          QStyle::SC_GroupBoxFrame, this );
+  const QRect rectTitle = titleRect();
 
   // margin/offset defaults
-  int marginLeft = 20;  // title margin for disclosure triangle
-  int marginRight = 5;  // a little bit of space on the right, to match space on the left
+  const int marginLeft = 20;  // title margin for disclosure triangle
+  const int marginRight = 5;  // a little bit of space on the right, to match space on the left
   int offsetLeft = 0;   // offset for oxygen theme
-  int offsetStyle = QApplication::style()->objectName().contains( QLatin1String( "macintosh" ) ) ? 8 : 0;
-  int topBuffer = 1 + offsetStyle; // space between top of title or triangle and widget above
+  const int offsetStyle = QApplication::style()->objectName().contains( QLatin1String( "macintosh" ) ) ? 8 : 0;
+  const int topBuffer = 1 + offsetStyle; // space between top of title or triangle and widget above
   int offsetTop = topBuffer;
   int offsetTopTri = topBuffer; // offset for triangle
 
@@ -343,10 +343,10 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
   {
     QStyleOptionGroupBox box;
     initStyleOption( &box );
-    QRect rectFrame = style()->subControlRect( QStyle::CC_GroupBox, &box,
-                      QStyle::SC_GroupBoxFrame, this );
-    QRect rectCheckBox = style()->subControlRect( QStyle::CC_GroupBox, &box,
-                         QStyle::SC_GroupBoxCheckBox, this );
+    const QRect rectFrame = style()->subControlRect( QStyle::CC_GroupBox, &box,
+                            QStyle::SC_GroupBoxFrame, this );
+    const QRect rectCheckBox = style()->subControlRect( QStyle::CC_GroupBox, &box,
+                               QStyle::SC_GroupBoxCheckBox, this );
     if ( rectFrame.left() <= 0 )
       offsetLeft = 6 + rectFrame.left();
     if ( rectFrame.top() <= 0 )
@@ -404,7 +404,7 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
 
 void QgsCollapsibleGroupBoxBasic::setCollapsed( bool collapse )
 {
-  bool changed = collapse != mCollapsed;
+  const bool changed = collapse != mCollapsed;
   mCollapsed = collapse;
 
   if ( !isVisible() )
@@ -604,13 +604,13 @@ void QgsCollapsibleGroupBox::loadState()
 
   if ( mSaveCheckedState )
   {
-    QVariant val = mSettings->value( key + "/checked" );
+    const QVariant val = mSettings->value( key + "/checked" );
     if ( ! val.isNull() )
       setChecked( val.toBool() );
   }
   if ( mSaveCollapsedState )
   {
-    QVariant val = mSettings->value( key + "/collapsed" );
+    const QVariant val = mSettings->value( key + "/collapsed" );
     if ( ! val.isNull() )
       setCollapsed( val.toBool() );
   }

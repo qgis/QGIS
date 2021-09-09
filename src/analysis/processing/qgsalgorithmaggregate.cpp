@@ -163,7 +163,7 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
     // upgrade group by value to a list, so that we get correct behavior with the QHash
     const QVariantList key = groupByValue.type() == QVariant::List ? groupByValue.toList() : ( QVariantList() << groupByValue );
 
-    auto groupIt = groups.find( key );
+    const auto groupIt = groups.find( key );
     if ( groupIt == groups.end() )
     {
       QString id = QStringLiteral( "memory:" );
@@ -216,7 +216,7 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
   current = 0;
   for ( const QVariantList &key : keys )
   {
-    Group &group = groups[ key ];
+    const Group &group = groups[ key ];
 
     QgsExpressionContext exprContext = createExpressionContext( parameters, context );
     exprContext.appendScope( QgsExpressionContextUtils::layerScope( group.layer ) );

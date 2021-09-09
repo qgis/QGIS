@@ -15,4 +15,5 @@
     <csw name="UNEP GRID-Geneva Metadata Catalog" url="https://datacore-gn.unepgrid.ch/geonetwork/srv/eng/csw"/>
     <csw name="Portugal: Sistema Nacional de Informação Geográfica (SNIG)" url="https://snig.dgterritorio.gov.pt/rndg/srv/eng/csw"/>
     <csw name="Spain: Centro Nacional de Información Geográfica (CNIG)" url="http://www.ign.es/csw-inspire/srv/spa/csw"/>
+    <csw name="Germany: GDI-DE Geodatenkatalog.de" url="https://gdk.gdi-de.org/gdi-de/srv/ger/csw"/>
 </qgsCSWConnections>

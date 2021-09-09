@@ -86,7 +86,6 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     uint subLayerCount() const override;
     QStringList subLayers() const override;
     QgsLayerMetadata layerMetadata() const override;
-    QStringList subLayersWithoutFeatureCount() const;
     QString storageType() const override;
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
     QString subsetString() const override;

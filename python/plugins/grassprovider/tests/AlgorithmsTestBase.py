@@ -292,6 +292,9 @@ class AlgorithmsTest(object):
         else:
             path = param['name']
 
+        if not path:
+            return None
+
         return self.uri_path_join(prefix, path)
 
     def uri_path_join(self, prefix, filepath):

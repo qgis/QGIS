@@ -28,7 +28,6 @@
 
 #include <QSpinBox>
 
-
 QgsAllLayersFeaturesLocatorFilter::QgsAllLayersFeaturesLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )
 {
@@ -121,7 +120,7 @@ void QgsAllLayersFeaturesLocatorFilter::fetchResults( const QString &string, con
 
       result.displayString = preparedLayer->expression.evaluate( &( preparedLayer->context ) ).toString();
 
-      result.userData = QVariantList() << f.id() << preparedLayer->layerId;
+      result.userData = ResultData( f.id(), preparedLayer->layerId, preparedLayer->layerIsSpatial ).toVariant();
       foundFeatureIds << f.id();
       result.icon = preparedLayer->layerIcon;
       result.score = static_cast< double >( string.length() ) / result.displayString.size();
@@ -155,7 +154,7 @@ void QgsAllLayersFeaturesLocatorFilter::fetchResults( const QString &string, con
 
       result.displayString = preparedLayer->expression.evaluate( &( preparedLayer->context ) ).toString();
 
-      result.userData = QVariantList() << f.id() << preparedLayer->layerId << preparedLayer->layerIsSpatial;
+      result.userData = ResultData( f.id(), preparedLayer->layerId, preparedLayer->layerIsSpatial ).toVariant();
       result.icon = preparedLayer->layerIcon;
       result.score = static_cast< double >( string.length() ) / result.displayString.size();
 
@@ -180,10 +179,10 @@ void QgsAllLayersFeaturesLocatorFilter::triggerResult( const QgsLocatorResult &r
 
 void QgsAllLayersFeaturesLocatorFilter::triggerResultFromAction( const QgsLocatorResult &result, const int actionId )
 {
-  QVariantList dataList = result.userData.toList();
-  QgsFeatureId fid = dataList.at( 0 ).toLongLong();
-  QString layerId = dataList.at( 1 ).toString();
-  bool layerIsSpatial = dataList.at( 2 ).toBool();
+  ResultData data = ResultData::fromVariant( result.userData );
+  QgsFeatureId fid = data.id();
+  QString layerId = data.layerId();
+  bool layerIsSpatial = data.layerIsSpatial();
   QgsVectorLayer *layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( layerId );
   if ( !layer )
     return;

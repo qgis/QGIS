@@ -50,7 +50,7 @@ QgsPoint QgsMapTool::toMapCoordinates( const QgsMapLayer *layer, const QgsPoint 
 
 QgsPointXY QgsMapTool::toLayerCoordinates( const QgsMapLayer *layer, QPoint point )
 {
-  QgsPointXY pt = toMapCoordinates( point );
+  const QgsPointXY pt = toMapCoordinates( point );
   return toLayerCoordinates( layer, pt );
 }
 
@@ -209,8 +209,8 @@ QgsMapCanvas *QgsMapTool::canvas() const
 
 double QgsMapTool::searchRadiusMM()
 {
-  QgsSettings settings;
-  double radius = settings.value( QStringLiteral( "Map/searchRadiusMM" ), Qgis::DEFAULT_SEARCH_RADIUS_MM ).toDouble();
+  const QgsSettings settings;
+  const double radius = settings.value( QStringLiteral( "Map/searchRadiusMM" ), Qgis::DEFAULT_SEARCH_RADIUS_MM ).toDouble();
 
   if ( radius > 0 )
   {
@@ -230,8 +230,8 @@ double QgsMapTool::searchRadiusMU( QgsMapCanvas *canvas )
   {
     return 0;
   }
-  QgsMapSettings mapSettings = canvas->mapSettings();
-  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  const QgsMapSettings mapSettings = canvas->mapSettings();
+  const QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
   return searchRadiusMU( context );
 }
 

@@ -153,7 +153,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mDiagramLineUnitComboBox->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                       << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
-  QgsWkbTypes::GeometryType layerType = layer->geometryType();
+  const QgsWkbTypes::GeometryType layerType = layer->geometryType();
   if ( layerType == QgsWkbTypes::UnknownGeometry || layerType == QgsWkbTypes::NullGeometry )
   {
     mDiagramTypeComboBox->setEnabled( false );
@@ -219,7 +219,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mAngleDirectionComboBox->addItem( tr( "Clockwise" ), QgsDiagramSettings::Clockwise );
   mAngleDirectionComboBox->addItem( tr( "Counter-clockwise" ), QgsDiagramSettings::Counterclockwise );
 
-  QgsSettings settings;
+  const QgsSettings settings;
 
   // reset horiz stretch of left side of options splitter (set to 1 for previewing in Qt Designer)
   QSizePolicy policy( mDiagramOptionsListFrame->sizePolicy() );
@@ -249,7 +249,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   for ( int idx = 0; idx < layerFields.count(); ++idx )
   {
     QTreeWidgetItem *newItem = new QTreeWidgetItem( mAttributesTreeWidget );
-    QString name = QStringLiteral( "\"%1\"" ).arg( layerFields.at( idx ).name() );
+    const QString name = QStringLiteral( "\"%1\"" ).arg( layerFields.at( idx ).name() );
     newItem->setText( 0, name );
     newItem->setData( 0, RoleAttributeExpression, name );
     newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
@@ -348,12 +348,12 @@ void QgsDiagramProperties::syncToLayer()
     mCheckBoxAttributeLegend->setChecked( dr->attributeLegend() );
 
     //assume single category or linearly interpolated diagram renderer for now
-    QList<QgsDiagramSettings> settingList = dr->diagramSettings();
+    const QList<QgsDiagramSettings> settingList = dr->diagramSettings();
     if ( !settingList.isEmpty() )
     {
       mDiagramFrame->setEnabled( settingList.at( 0 ).enabled );
       mDiagramFontButton->setCurrentFont( settingList.at( 0 ).font );
-      QSizeF size = settingList.at( 0 ).size;
+      const QSizeF size = settingList.at( 0 ).size;
       mBackgroundColorButton->setColor( settingList.at( 0 ).backgroundColor );
       mOpacityWidget->setOpacity( settingList.at( 0 ).opacity );
       mDiagramPenColorButton->setColor( settingList.at( 0 ).penColor );
@@ -429,9 +429,9 @@ void QgsDiagramProperties::syncToLayer()
         mScaleDependencyComboBox->setCurrentIndex( 1 );
       }
 
-      QList< QColor > categoryColors = settingList.at( 0 ).categoryColors;
-      QList< QString > categoryAttributes = settingList.at( 0 ).categoryAttributes;
-      QList< QString > categoryLabels = settingList.at( 0 ).categoryLabels;
+      const QList< QColor > categoryColors = settingList.at( 0 ).categoryColors;
+      const QList< QString > categoryAttributes = settingList.at( 0 ).categoryAttributes;
+      const QList< QString > categoryLabels = settingList.at( 0 ).categoryLabels;
       QList< QString >::const_iterator catIt = categoryAttributes.constBegin();
       QList< QColor >::const_iterator coIt = categoryColors.constBegin();
       QList< QString >::const_iterator labIt = categoryLabels.constBegin();
@@ -554,7 +554,7 @@ void QgsDiagramProperties::registerDataDefinedButton( QgsPropertyOverrideButton 
 void QgsDiagramProperties::updateProperty()
 {
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  QgsDiagramLayerSettings::Property key = static_cast<  QgsDiagramLayerSettings::Property >( button->propertyKey() );
+  const QgsDiagramLayerSettings::Property key = static_cast<  QgsDiagramLayerSettings::Property >( button->propertyKey() );
   mDataDefinedProperties.setProperty( key, button->toProperty() );
 }
 
@@ -673,7 +673,7 @@ void QgsDiagramProperties::addAttribute( QTreeWidgetItem *item )
   const int red = colorGenerator.bounded( 1, 256 );
   const int green = colorGenerator.bounded( 1, 256 );
   const int blue = colorGenerator.bounded( 1, 256 );
-  QColor randomColor( red, green, blue );
+  const QColor randomColor( red, green, blue );
   newItem->setData( ColumnColor, Qt::EditRole, randomColor );
   mDiagramAttributesTreeWidget->addTopLevelItem( newItem );
 }
@@ -710,7 +710,7 @@ void QgsDiagramProperties::mFindMaximumValueButton_clicked()
   float maxValue = 0.0;
 
   bool isExpression;
-  QString sizeFieldNameOrExp = mSizeFieldExpressionWidget->currentField( &isExpression );
+  const QString sizeFieldNameOrExp = mSizeFieldExpressionWidget->currentField( &isExpression );
   if ( isExpression )
   {
     QgsExpression exp( sizeFieldNameOrExp );
@@ -738,7 +738,7 @@ void QgsDiagramProperties::mFindMaximumValueButton_clicked()
   }
   else
   {
-    int attributeNumber = mLayer->fields().lookupField( sizeFieldNameOrExp );
+    const int attributeNumber = mLayer->fields().lookupField( sizeFieldNameOrExp );
     maxValue = mLayer->maximumValue( attributeNumber ).toFloat();
   }
 
@@ -751,9 +751,9 @@ void QgsDiagramProperties::mDiagramAttributesTreeWidget_itemDoubleClicked( QTree
   {
     case ColumnAttributeExpression:
     {
-      QString currentExpression = item->data( 0, RoleAttributeExpression ).toString();
+      const QString currentExpression = item->data( 0, RoleAttributeExpression ).toString();
 
-      QString newExpression = showExpressionBuilder( currentExpression );
+      const QString newExpression = showExpressionBuilder( currentExpression );
       if ( !newExpression.isEmpty() )
       {
         item->setData( 0, Qt::DisplayRole, newExpression );
@@ -790,8 +790,8 @@ void QgsDiagramProperties::mEngineSettingsButton_clicked()
 
 void QgsDiagramProperties::apply()
 {
-  int index = mDiagramTypeComboBox->currentIndex();
-  bool diagramsEnabled = ( index != 0 );
+  const int index = mDiagramTypeComboBox->currentIndex();
+  const bool diagramsEnabled = ( index != 0 );
 
   std::unique_ptr< QgsDiagram > diagram;
 
@@ -901,7 +901,7 @@ void QgsDiagramProperties::apply()
     dr->setUpperSize( QSizeF( mSizeSpinBox->value(), mSizeSpinBox->value() ) );
 
     bool isExpression;
-    QString sizeFieldNameOrExp = mSizeFieldExpressionWidget->currentField( &isExpression );
+    const QString sizeFieldNameOrExp = mSizeFieldExpressionWidget->currentField( &isExpression );
     dr->setClassificationAttributeIsExpression( isExpression );
     if ( isExpression )
     {
@@ -1008,7 +1008,7 @@ void QgsDiagramProperties::showAddAttributeExpressionDialog()
     expression = selections[0]->text( 0 );
   }
 
-  QString newExpression = showExpressionBuilder( expression );
+  const QString newExpression = showExpressionBuilder( expression );
 
   //Only add the expression if the user has entered some text.
   if ( !newExpression.isEmpty() )
@@ -1026,7 +1026,7 @@ void QgsDiagramProperties::showAddAttributeExpressionDialog()
     const int green = colorGenerator.bounded( 1, 256 );
     const int blue = colorGenerator.bounded( 1, 256 );
 
-    QColor randomColor( red, green, blue );
+    const QColor randomColor( red, green, blue );
     newItem->setData( ColumnColor, Qt::EditRole, randomColor );
     mDiagramAttributesTreeWidget->addTopLevelItem( newItem );
   }
@@ -1059,7 +1059,7 @@ void QgsDiagramProperties::updatePlacementWidgets()
     mDistanceDDBtn->setEnabled( false );
   }
 
-  bool linePlacementEnabled = mLayer->geometryType() == QgsWkbTypes::LineGeometry && ( curWdgt == pageLine && radAroundLine->isChecked() );
+  const bool linePlacementEnabled = mLayer->geometryType() == QgsWkbTypes::LineGeometry && ( curWdgt == pageLine && radAroundLine->isChecked() );
   chkLineAbove->setEnabled( linePlacementEnabled );
   chkLineBelow->setEnabled( linePlacementEnabled );
   chkLineOn->setEnabled( linePlacementEnabled );
@@ -1075,9 +1075,9 @@ void QgsDiagramProperties::showSizeLegendDialog()
 {
   // prepare size transformer
   bool isExpression;
-  QString sizeFieldNameOrExp = mSizeFieldExpressionWidget->currentField( &isExpression );
+  const QString sizeFieldNameOrExp = mSizeFieldExpressionWidget->currentField( &isExpression );
   QgsProperty ddSize = isExpression ? QgsProperty::fromExpression( sizeFieldNameOrExp ) : QgsProperty::fromField( sizeFieldNameOrExp );
-  bool scaleByArea = mScaleDependencyComboBox->currentData().toBool();
+  const bool scaleByArea = mScaleDependencyComboBox->currentData().toBool();
   ddSize.setTransformer( new QgsSizeScaleTransformer( scaleByArea ? QgsSizeScaleTransformer::Area : QgsSizeScaleTransformer::Linear,
                          0.0, mMaxValueSpinBox->value(), 0.0, mSizeSpinBox->value() ) );
 

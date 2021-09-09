@@ -88,9 +88,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-376</y>
+        <y>0</y>
         <width>548</width>
-        <height>1398</height>
+        <height>1336</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -467,6 +467,9 @@
             <property name="displayFormat">
              <string>M/d/yyyy h:mm AP</string>
             </property>
+            <property name="calendarPopup">
+             <bool>true</bool>
+            </property>
             <property name="timeSpec">
              <enum>Qt::UTC</enum>
             </property>
@@ -502,6 +505,9 @@
             </property>
             <property name="displayFormat">
              <string>M/d/yyyy h:mm AP</string>
+            </property>
+            <property name="calendarPopup">
+             <bool>true</bool>
             </property>
             <property name="timeSpec">
              <enum>Qt::UTC</enum>

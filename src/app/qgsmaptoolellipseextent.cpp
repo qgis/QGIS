@@ -32,7 +32,7 @@ QgsMapToolEllipseExtent::QgsMapToolEllipseExtent( QgsMapToolCapture *parentTool,
 
 void QgsMapToolEllipseExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint point = mapPoint( *e );
+  const QgsPoint point = mapPoint( *e );
 
   if ( !currentVectorLayer() )
   {
@@ -62,7 +62,7 @@ void QgsMapToolEllipseExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolEllipseExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint point = mapPoint( *e );
+  const QgsPoint point = mapPoint( *e );
 
   mSnapIndicator->setMatch( e->mapPointMatch() );
 
@@ -79,8 +79,8 @@ void QgsMapToolEllipseExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e )
         }
         else
         {
-          double dist = mPoints.at( 0 ).distance( point );
-          double angle = mPoints.at( 0 ).azimuth( point );
+          const double dist = mPoints.at( 0 ).distance( point );
+          const double angle = mPoints.at( 0 ).azimuth( point );
 
           mEllipse = QgsEllipse().fromExtent( mPoints.at( 0 ), mPoints.at( 0 ).project( dist, angle ) );
           mTempRubberBand->setGeometry( mEllipse.toPolygon( segments() ) );

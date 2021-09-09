@@ -125,7 +125,7 @@ void QgsRendererRasterPropertiesWidget::setMapCanvas( QgsMapCanvas *canvas )
 
 void QgsRendererRasterPropertiesWidget::rendererChanged()
 {
-  QString rendererName = cboRenderers->currentData().toString();
+  const QString rendererName = cboRenderers->currentData().toString();
   setRendererWidget( rendererName );
   emit widgetChanged();
 }
@@ -242,6 +242,7 @@ void QgsRendererRasterPropertiesWidget::mResetColorRenderingBtn_clicked()
   comboGrayscale->setCurrentIndex( ( int ) QgsHueSaturationFilter::GrayscaleOff );
   mColorizeCheck->setChecked( false );
   sliderColorizeStrength->setValue( 100 );
+  mInvertColorsCheck->setChecked( false );
 }
 
 void QgsRendererRasterPropertiesWidget::toggleSaturationControls( int grayscaleMode )
@@ -292,7 +293,7 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &render
     {
       QgsDebugMsgLevel( QStringLiteral( "renderer has widgetCreateFunction" ), 3 );
       // Current canvas extent (used to calc min/max) in layer CRS
-      QgsRectangle myExtent = mMapCanvas->mapSettings().outputExtentToLayerExtent( mRasterLayer, mMapCanvas->extent() );
+      const QgsRectangle myExtent = mMapCanvas->mapSettings().outputExtentToLayerExtent( mRasterLayer, mMapCanvas->extent() );
       if ( oldWidget )
       {
         if ( rendererName == QLatin1String( "singlebandgray" ) )
@@ -338,7 +339,7 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &render
   if ( mRendererWidget != oldWidget )
     delete oldWidget;
 
-  int widgetIndex = cboRenderers->findData( rendererName );
+  const int widgetIndex = cboRenderers->findData( rendererName );
   if ( widgetIndex != -1 )
   {
     whileBlocking( cboRenderers )->setCurrentIndex( widgetIndex );

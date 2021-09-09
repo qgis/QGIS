@@ -47,14 +47,14 @@ void QgsProjectTimeSettings::setTemporalRange( const QgsDateTimeRange &range )
 
 bool QgsProjectTimeSettings::readXml( const QDomElement &element, const QgsReadWriteContext & )
 {
-  QDomElement temporalElement = element.firstChildElement( QStringLiteral( "TemporalRange" ) );
+  const QDomElement temporalElement = element.firstChildElement( QStringLiteral( "TemporalRange" ) );
   if ( !temporalElement.isNull() )
   {
-    QDomNode begin = temporalElement.namedItem( QStringLiteral( "start" ) );
-    QDomNode end = temporalElement.namedItem( QStringLiteral( "end" ) );
+    const QDomNode begin = temporalElement.namedItem( QStringLiteral( "start" ) );
+    const QDomNode end = temporalElement.namedItem( QStringLiteral( "end" ) );
 
-    QDateTime beginDate = QDateTime::fromString( begin.toElement().text(), Qt::ISODate );
-    QDateTime endDate = QDateTime::fromString( end.toElement().text(), Qt::ISODate );
+    const QDateTime beginDate = QDateTime::fromString( begin.toElement().text(), Qt::ISODate );
+    const QDateTime endDate = QDateTime::fromString( end.toElement().text(), Qt::ISODate );
 
     setTemporalRange( QgsDateTimeRange( beginDate, endDate ) );
 
@@ -78,8 +78,8 @@ QDomElement QgsProjectTimeSettings::writeXml( QDomDocument &document, const QgsR
     QDomElement startElement = document.createElement( QStringLiteral( "start" ) );
     QDomElement endElement = document.createElement( QStringLiteral( "end" ) );
 
-    QDomText startText = document.createTextNode( mRange.begin().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
-    QDomText endText = document.createTextNode( mRange.end().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
+    const QDomText startText = document.createTextNode( mRange.begin().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
+    const QDomText endText = document.createTextNode( mRange.end().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
 
     startElement.appendChild( startText );
     endElement.appendChild( endText );

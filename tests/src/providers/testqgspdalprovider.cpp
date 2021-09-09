@@ -78,7 +78,7 @@ void TestQgsPdalProvider::initTestCase()
 void TestQgsPdalProvider::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -180,7 +180,7 @@ void TestQgsPdalProvider::querySublayers()
   QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::PointCloudLayer );
 
   // make sure result is valid to load layer from
-  QgsProviderSublayerDetails::LayerOptions options{ QgsCoordinateTransformContext() };
+  const QgsProviderSublayerDetails::LayerOptions options{ QgsCoordinateTransformContext() };
   std::unique_ptr< QgsPointCloudLayer > ml( qgis::down_cast< QgsPointCloudLayer * >( res.at( 0 ).toLayer( options ) ) );
   QVERIFY( ml->isValid() );
 }
@@ -222,11 +222,11 @@ void TestQgsPdalProvider::validLayer()
 
 void TestQgsPdalProvider::testEptGeneration()
 {
-  QTemporaryDir dir;
+  const QTemporaryDir dir;
   QVERIFY( dir.isValid() );
   QgsPdalEptGenerationTask task( mTestDataDir + QStringLiteral( "point_clouds/las/cloud.las" ), dir.path() );
   QVERIFY( task.run() );
-  QFileInfo fi( dir.path() + "/ept.json" );
+  const QFileInfo fi( dir.path() + "/ept.json" );
   QVERIFY( fi.exists() );
 }
 

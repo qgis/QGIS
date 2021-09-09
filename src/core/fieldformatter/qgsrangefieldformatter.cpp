@@ -48,10 +48,10 @@ QString QgsRangeFieldFormatter::representValue( QgsVectorLayer *layer, int field
        value.isValid( ) )
   {
     bool ok;
-    double val( value.toDouble( &ok ) );
+    const double val( value.toDouble( &ok ) );
     if ( ok )
     {
-      int precision( config[ QStringLiteral( "Precision" ) ].toInt( &ok ) );
+      const int precision( config[ QStringLiteral( "Precision" ) ].toInt( &ok ) );
       if ( ok )
       {
         // TODO: make the format configurable!
@@ -63,7 +63,7 @@ QString QgsRangeFieldFormatter::representValue( QgsVectorLayer *layer, int field
             value.isValid( ) )
   {
     bool ok;
-    double val( value.toInt( &ok ) );
+    const double val( value.toInt( &ok ) );
     if ( ok )
     {
       result =  QLocale().toString( val, 'f', 0 );
@@ -73,7 +73,7 @@ QString QgsRangeFieldFormatter::representValue( QgsVectorLayer *layer, int field
             value.isValid( ) )
   {
     bool ok;
-    double val( value.toLongLong( &ok ) );
+    const double val( value.toLongLong( &ok ) );
     if ( ok )
     {
       result =  QLocale().toString( val, 'f', 0 );

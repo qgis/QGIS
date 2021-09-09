@@ -72,7 +72,7 @@ QSize QgsColorRampButton::sizeHint() const
 void QgsColorRampButton::showColorRampDialog()
 {
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
-  bool panelMode = panel && panel->dockMode();
+  const bool panelMode = panel && panel->dockMode();
 
   std::unique_ptr< QgsColorRamp > currentRamp( colorRamp() );
   if ( !currentRamp )
@@ -206,7 +206,7 @@ QPixmap QgsColorRampButton::createMenuIcon( QgsColorRamp *colorramp )
 {
   //create an icon pixmap
   const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
-  QPixmap pixmap = QgsSymbolLayerUtils::colorRampPreviewPixmap( colorramp, QSize( iconSize, iconSize ) );
+  const QPixmap pixmap = QgsSymbolLayerUtils::colorRampPreviewPixmap( colorramp, QSize( iconSize, iconSize ) );
   return pixmap;
 }
 
@@ -276,7 +276,7 @@ void QgsColorRampButton::prepareMenu()
 
     if ( !mShowGradientOnly || ( ramp->type() == QgsGradientColorRamp::typeString() || ramp->type() == QgsCptCityColorRamp::typeString() ) )
     {
-      QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.get(), QSize( iconSize, iconSize ) );
+      const QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.get(), QSize( iconSize, iconSize ) );
       QAction *ra = new QAction( *it, this );
       ra->setIcon( icon );
       connect( ra, &QAction::triggered, this, &QgsColorRampButton::loadColorRamp );
@@ -296,7 +296,7 @@ void QgsColorRampButton::prepareMenu()
 
     if ( !mShowGradientOnly || ( ramp->type() == QgsGradientColorRamp::typeString() || ramp->type() == QgsCptCityColorRamp::typeString() ) )
     {
-      QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.get(), QSize( iconSize, iconSize ) );
+      const QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.get(), QSize( iconSize, iconSize ) );
       QAction *ra = new QAction( *it, this );
       ra->setIcon( icon );
       connect( ra, &QAction::triggered, this, &QgsColorRampButton::loadColorRamp );
@@ -326,7 +326,7 @@ void QgsColorRampButton::loadColorRamp()
   QAction *selectedItem = qobject_cast<QAction *>( sender() );
   if ( selectedItem )
   {
-    QString name = selectedItem->iconText();
+    const QString name = selectedItem->iconText();
     setColorRampName( name );
     setColorRampFromName( name );
   }
@@ -403,10 +403,10 @@ void QgsColorRampButton::saveColorRamp()
   // check if there is no symbol with same name
   if ( mStyle->symbolNames().contains( saveDlg.name() ) )
   {
-    int res = QMessageBox::warning( this, tr( "Save Color Ramp" ),
-                                    tr( "Color ramp with name '%1' already exists. Overwrite?" )
-                                    .arg( saveDlg.name() ),
-                                    QMessageBox::Yes | QMessageBox::No );
+    const int res = QMessageBox::warning( this, tr( "Save Color Ramp" ),
+                                          tr( "Color ramp with name '%1' already exists. Overwrite?" )
+                                          .arg( saveDlg.name() ),
+                                          QMessageBox::Yes | QMessageBox::No );
     if ( res != QMessageBox::Yes )
     {
       return;
@@ -414,7 +414,7 @@ void QgsColorRampButton::saveColorRamp()
     mStyle->removeColorRamp( saveDlg.name() );
   }
 
-  QStringList colorRampTags = saveDlg.tags().split( ',' );
+  const QStringList colorRampTags = saveDlg.tags().split( ',' );
 
   // add new symbol to style and re-populate the list
   QgsColorRamp *ramp = colorRamp();
@@ -484,7 +484,7 @@ void QgsColorRampButton::setColorRampFromName( const QString &name )
 {
   if ( !name.isEmpty() )
   {
-    std::unique_ptr< QgsColorRamp > ramp( mStyle->colorRamp( name ) );
+    const std::unique_ptr< QgsColorRamp > ramp( mStyle->colorRamp( name ) );
     if ( ramp )
     {
       setColorRamp( ramp.get() );
@@ -496,7 +496,7 @@ void QgsColorRampButton::setRandomColorRamp()
 {
   if ( !isRandomColorRamp() )
   {
-    std::unique_ptr< QgsRandomColorRamp > newRamp( new QgsRandomColorRamp() );
+    const std::unique_ptr< QgsRandomColorRamp > newRamp( new QgsRandomColorRamp() );
     setColorRamp( newRamp.get() );
   }
 }
@@ -518,8 +518,8 @@ void QgsColorRampButton::setButtonBackground( QgsColorRamp *colorramp )
       //calculate size of push button part of widget (ie, without the menu drop-down button part)
       QStyleOptionToolButton opt;
       initStyleOption( &opt );
-      QRect buttonSize = QApplication::style()->subControlRect( QStyle::CC_ToolButton, &opt, QStyle::SC_ToolButton,
-                         this );
+      const QRect buttonSize = QApplication::style()->subControlRect( QStyle::CC_ToolButton, &opt, QStyle::SC_ToolButton,
+                               this );
       //make sure height of icon looks good under different platforms
 #ifdef Q_OS_WIN
       mIconSize = QSize( buttonSize.width() - 10, height() - 6 );
@@ -552,7 +552,7 @@ void QgsColorRampButton::setButtonBackground( QgsColorRamp *colorramp )
     pm.fill( Qt::transparent );
 
     QPainter painter;
-    QPen pen  = ( palette().buttonText().color() );
+    const QPen pen  = ( palette().buttonText().color() );
 
     painter.begin( &pm );
     painter.setPen( pen );

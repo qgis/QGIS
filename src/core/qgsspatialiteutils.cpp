@@ -49,7 +49,7 @@ int spatialite_database_unique_ptr::open( const QString &path )
 #endif
 
   sqlite3 *database = nullptr;
-  int result = sqlite3_open( path.toUtf8(), &database );
+  const int result = sqlite3_open( path.toUtf8(), &database );
   std::unique_ptr< sqlite3, QgsSpatialiteCloser>::reset( database );
 
 #ifdef HAVE_SPATIALITE
@@ -73,7 +73,7 @@ int spatialite_database_unique_ptr::open_v2( const QString &path, int flags, con
 #endif
 
   sqlite3 *database = nullptr;
-  int result = sqlite3_open_v2( path.toUtf8(), &database, flags, zVfs );
+  const int result = sqlite3_open_v2( path.toUtf8(), &database, flags, zVfs );
   std::unique_ptr< sqlite3, QgsSpatialiteCloser>::reset( database );
 
 #ifdef HAVE_SPATIALITE
@@ -112,7 +112,7 @@ sqlite3_statement_unique_ptr spatialite_database_unique_ptr::prepare( const QStr
 
 void QgsSpatialiteCloser::operator()( sqlite3 *handle )
 {
-  int res = sqlite3_close_v2( handle );
+  const int res = sqlite3_close_v2( handle );
   if ( res != SQLITE_OK )
   {
     QgsDebugMsg( QStringLiteral( "sqlite3_close_v2() failed: %1" ).arg( res ) );

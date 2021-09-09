@@ -82,7 +82,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
   if ( !index.isValid() || index.row() >= rowCount() )
     return QVariant();
 
-  QgsMapLayer::StyleCategory category = mCategoryList.at( index.row() + ( mShowAllCategories ? 0 : 1 ) );
+  const QgsMapLayer::StyleCategory category = mCategoryList.at( index.row() + ( mShowAllCategories ? 0 : 1 ) );
 
   if ( role == Qt::UserRole )
   {
@@ -320,7 +320,7 @@ bool QgsMapLayerStyleCategoriesModel::setData( const QModelIndex &index, const Q
 
   if ( role == Qt::CheckStateRole )
   {
-    QgsMapLayer::StyleCategory category = data( index, Qt::UserRole ).value<QgsMapLayer::StyleCategory>();
+    const QgsMapLayer::StyleCategory category = data( index, Qt::UserRole ).value<QgsMapLayer::StyleCategory>();
     if ( value.value<Qt::CheckState>() == Qt::Checked )
     {
       mCategories |= category;

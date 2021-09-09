@@ -15,14 +15,6 @@ on:
     - 'CMakeLists.txt'
     - '.github/workflows/mingw64.yml'
   pull_request:
-    paths:
-    - 'src/**'
-    - 'external/**'
-    - 'python/**'
-    - 'tests/**'
-    - 'ms-windows/**'
-    - 'CMakeLists.txt'
-    - '.github/workflows/mingw64.yml'
   workflow_dispatch:
 
 jobs:

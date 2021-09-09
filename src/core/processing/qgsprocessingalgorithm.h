@@ -35,6 +35,7 @@ class QgsFeatureSink;
 class QgsProcessingModelAlgorithm;
 class QgsProcessingAlgorithmConfigurationWidget;
 class QgsMeshLayer;
+class QgsPointCloudLayer;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -797,7 +798,6 @@ class CORE_EXPORT QgsProcessingAlgorithm
      */
     QgsMeshLayer *parameterAsMeshLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 
-
     /**
      * Evaluates the parameter with matching \a name to a output layer destination.
      */
@@ -889,8 +889,6 @@ class CORE_EXPORT QgsProcessingAlgorithm
      */
     QgsCoordinateReferenceSystem parameterAsGeometryCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
 
-
-
     /**
      * Evaluates the parameter with matching \a name to a file/folder name.
      */
@@ -979,6 +977,16 @@ class CORE_EXPORT QgsProcessingAlgorithm
      */
     QDateTime parameterAsDateTime( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
 
+    /**
+     * Evaluates the parameter with matching \a name to a point cloud layer.
+     *
+     * Layers will either be taken from \a context's active project, or loaded from external
+     * sources and stored temporarily in the \a context. In either case, callers do not
+     * need to handle deletion of the returned layer.
+     *
+     * \since QGIS 3.22
+     */
+    QgsPointCloudLayer *parameterAsPointCloudLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 
     /**
      * Returns a user-friendly string to use as an error when a source parameter could

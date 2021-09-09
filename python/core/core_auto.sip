@@ -152,6 +152,7 @@
 %Include auto_generated/qgsrenderchecker.sip
 %Include auto_generated/qgsrendercontext.sip
 %Include auto_generated/qgsrenderedfeaturehandlerinterface.sip
+%Include auto_generated/qgsrendereditemdetails.sip
 %Include auto_generated/qgsrunprocess.sip
 %Include auto_generated/qgsruntimeprofiler.sip
 %Include auto_generated/qgsscalecalculator.sip
@@ -204,6 +205,7 @@
 %Include auto_generated/./3d/qgsabstract3drenderer.sip
 %Include auto_generated/annotations/qgsannotation.sip
 %Include auto_generated/annotations/qgsannotationitem.sip
+%Include auto_generated/annotations/qgsannotationitemnode.sip
 %Include auto_generated/annotations/qgsannotationitemregistry.sip
 %Include auto_generated/annotations/qgsannotationlayer.sip
 %Include auto_generated/annotations/qgsannotationlineitem.sip
@@ -212,6 +214,7 @@
 %Include auto_generated/annotations/qgsannotationpointtextitem.sip
 %Include auto_generated/annotations/qgsannotationpolygonitem.sip
 %Include auto_generated/annotations/qgshtmlannotation.sip
+%Include auto_generated/annotations/qgsrenderedannotationitemdetails.sip
 %Include auto_generated/annotations/qgssvgannotation.sip
 %Include auto_generated/annotations/qgstextannotation.sip
 %Include auto_generated/auth/qgsauthcertutils.sip
@@ -250,6 +253,7 @@
 %Include auto_generated/diagram/qgstextdiagram.sip
 %Include auto_generated/dxf/qgsdxfexport.sip
 %Include auto_generated/editform/qgseditformconfig.sip
+%Include auto_generated/editform/qgsattributeeditoraction.sip
 %Include auto_generated/editform/qgsattributeeditorelement.sip
 %Include auto_generated/editform/qgsattributeeditorcontainer.sip
 %Include auto_generated/editform/qgsattributeeditorfield.sip
@@ -418,6 +422,7 @@
 %Include auto_generated/maprenderer/qgsmaprendererparalleljob.sip
 %Include auto_generated/maprenderer/qgsmaprenderersequentialjob.sip
 %Include auto_generated/maprenderer/qgsmaprenderertask.sip
+%Include auto_generated/maprenderer/qgsrendereditemresults.sip
 %Include auto_generated/mesh/qgsmesh3daveraging.sip
 %Include auto_generated/mesh/qgsmesheditor.sip
 %Include auto_generated/mesh/qgsmeshdataprovider.sip

@@ -111,7 +111,7 @@ void TestQgsJsonUtils::testJsonArray()
 
 void TestQgsJsonUtils::testParseJson()
 {
-  QStringList tests {{
+  const QStringList tests {{
       "null",
       "false",
       "true",
@@ -195,7 +195,7 @@ void TestQgsJsonUtils::testExportAttributesJson()
   {
     QBENCHMARK
     {
-      json j( QgsJsonUtils::exportAttributesToJsonObject( feature, &vl ) );
+      const json j( QgsJsonUtils::exportAttributesToJsonObject( feature, &vl ) );
       QCOMPARE( QString::fromStdString( j.dump() ), QStringLiteral( R"raw({"flddbl":2.0,"fldint":1,"fldtxt":"a value"})raw" ) );
     }
   }
@@ -218,7 +218,7 @@ void TestQgsJsonUtils::testExportFeatureJson()
   feature.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POLYGON((1.12 1.34,5.45 1.12,5.34 5.33,1.56 5.2,1.12 1.34),(2 2, 3 2, 3 3, 2 3,2 2))" ) ) );
   feature.setAttributes( QgsAttributes() << QStringLiteral( "a value" ) << 1 << 2.0 );
 
-  QgsJsonExporter exporter { &vl };
+  const QgsJsonExporter exporter { &vl };
 
   const auto expectedJson { QStringLiteral( "{\"bbox\":[1.12,1.12,5.45,5.33],\"geometry\":{\"coordinates\":"
                             "[[[1.12,1.34],[5.45,1.12],[5.34,5.33],[1.56,5.2],[1.12,1.34]],"
@@ -231,7 +231,7 @@ void TestQgsJsonUtils::testExportFeatureJson()
   const auto json = exporter.exportFeature( feature );
   QCOMPARE( json, expectedJson );
 
-  QgsJsonExporter exporterPrecision { &vl, 1 };
+  const QgsJsonExporter exporterPrecision { &vl, 1 };
 
 
   const auto expectedJsonPrecision { QStringLiteral( "{\"bbox\":[1.1,1.1,5.5,5.3],\"geometry\":{\"coordinates\":"

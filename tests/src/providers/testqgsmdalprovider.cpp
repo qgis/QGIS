@@ -67,7 +67,7 @@ void TestQgsMdalProvider::initTestCase()
 void TestQgsMdalProvider::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -79,10 +79,10 @@ void TestQgsMdalProvider::cleanupTestCase()
 
 void TestQgsMdalProvider::filters()
 {
-  QString meshFilters = QgsProviderRegistry::instance()->fileMeshFilters();
+  const QString meshFilters = QgsProviderRegistry::instance()->fileMeshFilters();
   QVERIFY( meshFilters.contains( "*.2dm" ) );
 
-  QString datasetFilters = QgsProviderRegistry::instance()->fileMeshDatasetFilters();
+  const QString datasetFilters = QgsProviderRegistry::instance()->fileMeshDatasetFilters();
   QVERIFY( datasetFilters.contains( "*.dat" ) );
 }
 
@@ -97,18 +97,25 @@ void TestQgsMdalProvider::encodeDecodeUri()
   QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString() );
   QCOMPARE( mdalMetadata->encodeUri( parts ), QStringLiteral( "/home/data/test.nc" ) );
 
-  // uri with layer name
+  // uri with driver and layer name
   parts = mdalMetadata->decodeUri( QStringLiteral( "netcdf:\"/home/data/test.nc\":layer3" ) );
   QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QStringLiteral( "/home/data/test.nc" ) );
   QCOMPARE( parts.value( QStringLiteral( "driver" ) ).toString(), QStringLiteral( "netcdf" ) );
   QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QStringLiteral( "layer3" ) );
   QCOMPARE( mdalMetadata->encodeUri( parts ), QStringLiteral( "netcdf:\"/home/data/test.nc\":layer3" ) );
+
+  // uri with driver
+  parts = mdalMetadata->decodeUri( QStringLiteral( "Ugrid:\"/home/data/test.nc\"" ) );
+  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QStringLiteral( "/home/data/test.nc" ) );
+  QCOMPARE( parts.value( QStringLiteral( "driver" ) ).toString(), QStringLiteral( "Ugrid" ) );
+  QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString() );
+  QCOMPARE( mdalMetadata->encodeUri( parts ), QStringLiteral( "Ugrid:\"/home/data/test.nc\"" ) );
 }
 
 void TestQgsMdalProvider::load()
 {
   {
-    QString file = QStringLiteral( TEST_DATA_DIR ) + "/mesh/quad_flower.2dm";
+    const QString file = QStringLiteral( TEST_DATA_DIR ) + "/mesh/quad_flower.2dm";
     QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider(
                                   QStringLiteral( "mdal" ),
                                   file,
@@ -121,7 +128,7 @@ void TestQgsMdalProvider::load()
     delete provider;
   }
   {
-    QString file = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/goodluckwiththisfilename.2dm" );
+    const QString file = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/goodluckwiththisfilename.2dm" );
     QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider(
                                   QStringLiteral( "mdal" ),
                                   file,

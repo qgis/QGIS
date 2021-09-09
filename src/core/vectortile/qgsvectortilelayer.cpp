@@ -89,7 +89,7 @@ bool QgsVectorTileLayer::loadDataSource()
       return false;
     }
 
-    QString format = reader.metadataValue( QStringLiteral( "format" ) );
+    const QString format = reader.metadataValue( QStringLiteral( "format" ) );
     if ( format != QLatin1String( "pbf" ) )
     {
       QgsDebugMsg( QStringLiteral( "Cannot open MBTiles for vector tiles. Format = " ) + format );
@@ -98,8 +98,8 @@ bool QgsVectorTileLayer::loadDataSource()
 
     QgsDebugMsgLevel( QStringLiteral( "name: " ) + reader.metadataValue( QStringLiteral( "name" ) ), 2 );
     bool minZoomOk, maxZoomOk;
-    int minZoom = reader.metadataValue( QStringLiteral( "minzoom" ) ).toInt( &minZoomOk );
-    int maxZoom = reader.metadataValue( QStringLiteral( "maxzoom" ) ).toInt( &maxZoomOk );
+    const int minZoom = reader.metadataValue( QStringLiteral( "minzoom" ) ).toInt( &minZoomOk );
+    const int maxZoom = reader.metadataValue( QStringLiteral( "maxzoom" ) ).toInt( &maxZoomOk );
     if ( minZoomOk )
       mSourceMinZoom = minZoom;
     if ( maxZoomOk )
@@ -107,8 +107,8 @@ bool QgsVectorTileLayer::loadDataSource()
     QgsDebugMsgLevel( QStringLiteral( "zoom range: %1 - %2" ).arg( mSourceMinZoom ).arg( mSourceMaxZoom ), 2 );
 
     QgsRectangle r = reader.extent();
-    QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ),
-                               QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), transformContext() );
+    const QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ),
+                                     QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), transformContext() );
     r = ct.transformBoundingBox( r );
     setExtent( r );
   }
@@ -152,7 +152,7 @@ bool QgsVectorTileLayer::setupArcgisVectorTileServiceConnection( const QString &
 
   // Parse data
   QJsonParseError err;
-  QJsonDocument doc = QJsonDocument::fromJson( raw, &err );
+  const QJsonDocument doc = QJsonDocument::fromJson( raw, &err );
   if ( doc.isNull() )
   {
     return false;
@@ -227,7 +227,7 @@ bool QgsVectorTileLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
 
 bool QgsVectorTileLayer::readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
-  QDomElement elem = node.toElement();
+  const QDomElement elem = node.toElement();
 
   readCommonStyle( elem, context, categories );
 
@@ -280,10 +280,10 @@ bool QgsVectorTileLayer::readSymbology( const QDomNode &node, QString &errorMess
   if ( categories.testFlag( Symbology ) )
   {
     // get and set the blend mode if it exists
-    QDomNode blendModeNode = node.namedItem( QStringLiteral( "blendMode" ) );
+    const QDomNode blendModeNode = node.namedItem( QStringLiteral( "blendMode" ) );
     if ( !blendModeNode.isNull() )
     {
-      QDomElement e = blendModeNode.toElement();
+      const QDomElement e = blendModeNode.toElement();
       setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( e.text().toInt() ) ) );
     }
   }
@@ -291,10 +291,10 @@ bool QgsVectorTileLayer::readSymbology( const QDomNode &node, QString &errorMess
   // get and set the layer transparency
   if ( categories.testFlag( Rendering ) )
   {
-    QDomNode layerOpacityNode = node.namedItem( QStringLiteral( "layerOpacity" ) );
+    const QDomNode layerOpacityNode = node.namedItem( QStringLiteral( "layerOpacity" ) );
     if ( !layerOpacityNode.isNull() )
     {
-      QDomElement e = layerOpacityNode.toElement();
+      const QDomElement e = layerOpacityNode.toElement();
       setOpacity( e.text().toDouble() );
     }
   }
@@ -332,7 +332,7 @@ bool QgsVectorTileLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
   {
     // add the blend mode field
     QDomElement blendModeElem  = doc.createElement( QStringLiteral( "blendMode" ) );
-    QDomText blendModeText = doc.createTextNode( QString::number( QgsPainting::getBlendModeEnum( blendMode() ) ) );
+    const QDomText blendModeText = doc.createTextNode( QString::number( QgsPainting::getBlendModeEnum( blendMode() ) ) );
     blendModeElem.appendChild( blendModeText );
     node.appendChild( blendModeElem );
   }
@@ -341,7 +341,7 @@ bool QgsVectorTileLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
   if ( categories.testFlag( Rendering ) )
   {
     QDomElement layerOpacityElem  = doc.createElement( QStringLiteral( "layerOpacity" ) );
-    QDomText layerOpacityText = doc.createTextNode( QString::number( opacity() ) );
+    const QDomText layerOpacityText = doc.createTextNode( QString::number( opacity() ) );
     layerOpacityElem.appendChild( layerOpacityText );
     node.appendChild( layerOpacityElem );
   }
@@ -447,7 +447,7 @@ bool QgsVectorTileLayer::loadDefaultStyle( QString &error, QStringList &warnings
               case QgsBlockingNetworkRequest::NoError:
               {
                 const QgsNetworkReplyContent imageContent = networkRequest.reply();
-                QImage spriteImage( QImage::fromData( imageContent.content() ) );
+                const QImage spriteImage( QImage::fromData( imageContent.content() ) );
                 context.setSprites( spriteImage, spriteDefinition );
                 break;
               }
@@ -509,7 +509,7 @@ QString QgsVectorTileLayer::loadDefaultMetadata( bool &resultFlag )
     }
     metadata.setType( QStringLiteral( "dataset" ) );
     metadata.setTitle( mArcgisLayerConfiguration.value( QStringLiteral( "name" ) ).toString() );
-    QString copyright = mArcgisLayerConfiguration.value( QStringLiteral( "copyrightText" ) ).toString();
+    const QString copyright = mArcgisLayerConfiguration.value( QStringLiteral( "copyrightText" ) ).toString();
     if ( !copyright.isEmpty() )
       metadata.setRights( QStringList() << copyright );
     metadata.addLink( QgsAbstractMetadataBase::Link( tr( "Source" ), QStringLiteral( "WWW:LINK" ), mArcgisLayerConfiguration.value( QStringLiteral( "serviceUri" ) ).toString() ) );
@@ -532,15 +532,15 @@ QString QgsVectorTileLayer::encodedSource( const QString &source, const QgsReadW
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( source );
 
-  QString sourceType = dsUri.param( QStringLiteral( "type" ) );
+  const QString sourceType = dsUri.param( QStringLiteral( "type" ) );
   QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
   if ( sourceType == QLatin1String( "xyz" ) )
   {
-    QUrl sourceUrl( sourcePath );
+    const QUrl sourceUrl( sourcePath );
     if ( sourceUrl.isLocalFile() )
     {
       // relative path will become "file:./x.txt"
-      QString relSrcUrl = context.pathResolver().writePath( sourceUrl.toLocalFile() );
+      const QString relSrcUrl = context.pathResolver().writePath( sourceUrl.toLocalFile() );
       dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
       dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( relSrcUrl ).toString() );
       return dsUri.encodedUri();
@@ -564,14 +564,14 @@ QString QgsVectorTileLayer::decodedSource( const QString &source, const QString 
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( source );
 
-  QString sourceType = dsUri.param( QStringLiteral( "type" ) );
+  const QString sourceType = dsUri.param( QStringLiteral( "type" ) );
   QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
   if ( sourceType == QLatin1String( "xyz" ) )
   {
-    QUrl sourceUrl( sourcePath );
+    const QUrl sourceUrl( sourcePath );
     if ( sourceUrl.isLocalFile() )  // file-based URL? convert to relative path
     {
-      QString absSrcUrl = context.pathResolver().readPath( sourceUrl.toLocalFile() );
+      const QString absSrcUrl = context.pathResolver().readPath( sourceUrl.toLocalFile() );
       dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
       dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( absSrcUrl ).toString() );
       return dsUri.encodedUri();
@@ -590,25 +590,33 @@ QString QgsVectorTileLayer::decodedSource( const QString &source, const QString 
 
 QString QgsVectorTileLayer::htmlMetadata() const
 {
-  QgsLayerMetadataFormatter htmlFormatter( metadata() );
+  const QgsLayerMetadataFormatter htmlFormatter( metadata() );
 
   QString info = QStringLiteral( "<html><head></head>\n<body>\n" );
 
   info += QStringLiteral( "<h1>" ) + tr( "Information from provider" ) + QStringLiteral( "</h1>\n<hr>\n" ) %
-          QStringLiteral( "<table class=\"list-view\">\n" ) %
+          QStringLiteral( "<table class=\"list-view\">\n" );
 
-          // name
-          QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Name" ) % QStringLiteral( "</td><td>" ) % name() % QStringLiteral( "</td></tr>\n" );
+  // name
+  info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Name" ) % QStringLiteral( "</td><td>" ) % name() % QStringLiteral( "</td></tr>\n" );
 
-  info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "URI" ) % QStringLiteral( "</td><td>" ) % source() % QStringLiteral( "</td></tr>\n" );
-  info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Source type" ) % QStringLiteral( "</td><td>" ) % sourceType() % QStringLiteral( "</td></tr>\n" );
-
+  // local path
   const QString url = sourcePath();
-  info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Source path" ) % QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl( url ).toString(), sourcePath() ) ) + QStringLiteral( "</td></tr>\n" );
+  info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Path" ) % QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl( url ).toString(), sourcePath() ) ) + QStringLiteral( "</td></tr>\n" );
+
+  // data source
+  info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Source" ) % QStringLiteral( "</td><td>" ) % source() % QStringLiteral( "</td></tr>\n" );
+
+  info += QLatin1String( "</table>\n<br>" );
+
+  info += QStringLiteral( "<h1>" ) + tr( "Information from provider" ) + QStringLiteral( "</h1>\n<hr>\n" ) %
+          QStringLiteral( "<table class=\"list-view\">\n" );
+
+  info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Source type" ) % QStringLiteral( "</td><td>" ) % sourceType() % QStringLiteral( "</td></tr>\n" );
 
   info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Zoom levels" ) % QStringLiteral( "</td><td>" ) % QStringLiteral( "%1 - %2" ).arg( sourceMinZoom() ).arg( sourceMaxZoom() ) % QStringLiteral( "</td></tr>\n" );
 
-  info += QLatin1String( "</table>\n<br><br>" );
+  info += QLatin1String( "</table>\n<br>" );
 
   // CRS
   info += crsHtmlMetadata();
@@ -616,17 +624,17 @@ QString QgsVectorTileLayer::htmlMetadata() const
   // Identification section
   info += QStringLiteral( "<h1>" ) % tr( "Identification" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
           htmlFormatter.identificationSectionHtml() %
-          QStringLiteral( "<br><br>\n" ) %
+          QStringLiteral( "<br>\n" ) %
 
           // extent section
           QStringLiteral( "<h1>" ) % tr( "Extent" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
           htmlFormatter.extentSectionHtml( ) %
-          QStringLiteral( "<br><br>\n" ) %
+          QStringLiteral( "<br>\n" ) %
 
           // Start the Access section
           QStringLiteral( "<h1>" ) % tr( "Access" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
           htmlFormatter.accessSectionHtml( ) %
-          QStringLiteral( "<br><br>\n" ) %
+          QStringLiteral( "<br>\n" ) %
 
 
           // Start the contacts section
@@ -637,12 +645,12 @@ QString QgsVectorTileLayer::htmlMetadata() const
           // Start the links section
           QStringLiteral( "<h1>" ) % tr( "References" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
           htmlFormatter.linksSectionHtml( ) %
-          QStringLiteral( "<br><br>\n" ) %
+          QStringLiteral( "<br>\n" ) %
 
           // Start the history section
           QStringLiteral( "<h1>" ) % tr( "History" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
           htmlFormatter.historySectionHtml( ) %
-          QStringLiteral( "<br><br>\n" ) %
+          QStringLiteral( "<br>\n" ) %
 
           QStringLiteral( "\n</body>\n</html>\n" );
 
@@ -651,8 +659,8 @@ QString QgsVectorTileLayer::htmlMetadata() const
 
 QByteArray QgsVectorTileLayer::getRawTile( QgsTileXYZ tileID )
 {
-  QgsTileMatrix tileMatrix = QgsTileMatrix::fromWebMercator( tileID.zoomLevel() );
-  QgsTileRange tileRange( tileID.column(), tileID.column(), tileID.row(), tileID.row() );
+  const QgsTileMatrix tileMatrix = QgsTileMatrix::fromWebMercator( tileID.zoomLevel() );
+  const QgsTileRange tileRange( tileID.column(), tileID.column(), tileID.row(), tileID.row() );
 
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( mDataSource );

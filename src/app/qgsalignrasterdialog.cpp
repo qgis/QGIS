@@ -35,7 +35,7 @@
 
 static QgsMapLayer *_rasterLayer( const QString &filename )
 {
-  QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
+  const QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
   const auto constLayers = layers;
   for ( QgsMapLayer *layer : constLayers )
   {
@@ -50,7 +50,7 @@ static QString _rasterLayerName( const QString &filename )
   if ( QgsMapLayer *layer = _rasterLayer( filename ) )
     return layer->name();
 
-  QFileInfo fi( filename );
+  const QFileInfo fi( filename );
   return fi.baseName();
 }
 
@@ -136,12 +136,12 @@ void QgsAlignRasterDialog::populateLayersView()
 {
   mCboReferenceLayer->clear();
 
-  int refLayerIndex = mAlign->suggestedReferenceLayer();
+  const int refLayerIndex = mAlign->suggestedReferenceLayer();
 
   QStandardItemModel *model = new QStandardItemModel();
   int i = 0;
   const auto constRasters = mAlign->rasters();
-  for ( QgsAlignRaster::Item item : constRasters )
+  for ( const QgsAlignRaster::Item &item : constRasters )
   {
     QString layerName = _rasterLayerName( item.inputFilename );
 
@@ -174,8 +174,8 @@ void QgsAlignRasterDialog::updateAlignedRasterInfo()
     return;
   }
 
-  QSize size = mAlign->alignedRasterSize();
-  QString msg = QStringLiteral( "%1 x %2" ).arg( size.width() ).arg( size.height() );
+  const QSize size = mAlign->alignedRasterSize();
+  const QString msg = QStringLiteral( "%1 x %2" ).arg( size.width() ).arg( size.height() );
   mEditOutputSize->setText( msg );
 }
 
@@ -185,18 +185,18 @@ void QgsAlignRasterDialog::updateParametersFromReferenceLayer()
   QSizeF customCellSize;
   QPointF customGridOffset( -1, -1 );
 
-  int index = mCboReferenceLayer->currentIndex();
+  const int index = mCboReferenceLayer->currentIndex();
   if ( index < 0 )
     return;
 
-  QgsAlignRaster::RasterInfo refInfo( mAlign->rasters().at( index ).inputFilename );
+  const QgsAlignRaster::RasterInfo refInfo( mAlign->rasters().at( index ).inputFilename );
   if ( !refInfo.isValid() )
     return;
 
   // get custom values from the GUI (if any)
   if ( mChkCustomCRS->isChecked() )
   {
-    QgsCoordinateReferenceSystem refCRS( refInfo.crs() );
+    const QgsCoordinateReferenceSystem refCRS( refInfo.crs() );
     if ( refCRS != mCrsSelector->crs() )
       customCRSWkt = mCrsSelector->crs( ).toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL );
   }
@@ -212,12 +212,12 @@ void QgsAlignRasterDialog::updateParametersFromReferenceLayer()
   }
 
   // calculate the parameters which are not customized already
-  bool res = mAlign->setParametersFromRaster( refInfo, customCRSWkt, customCellSize, customGridOffset );
+  const bool res = mAlign->setParametersFromRaster( refInfo, customCRSWkt, customCellSize, customGridOffset );
 
   // refresh values that may have changed
   if ( res )
   {
-    QgsCoordinateReferenceSystem destCRS( mAlign->destinationCrs() );
+    const QgsCoordinateReferenceSystem destCRS( mAlign->destinationCrs() );
     mClipExtentGroupBox->setOutputCrs( destCRS );
     if ( !mChkCustomCRS->isChecked() )
     {
@@ -226,13 +226,13 @@ void QgsAlignRasterDialog::updateParametersFromReferenceLayer()
   }
   if ( !mChkCustomCellSize->isChecked() )
   {
-    QSizeF cellSize = mAlign->cellSize();
+    const QSizeF cellSize = mAlign->cellSize();
     mSpinCellSizeX->setValue( cellSize.width() );
     mSpinCellSizeY->setValue( cellSize.height() );
   }
   if ( !mChkCustomGridOffset->isChecked() )
   {
-    QPointF gridOffset = mAlign->gridOffset();
+    const QPointF gridOffset = mAlign->gridOffset();
     mSpinGridOffsetX->setValue( gridOffset.x() );
     mSpinGridOffsetY->setValue( gridOffset.y() );
   }
@@ -261,7 +261,7 @@ void QgsAlignRasterDialog::addLayer()
 
 void QgsAlignRasterDialog::removeLayer()
 {
-  QModelIndex current = mViewLayers->currentIndex();
+  const QModelIndex current = mViewLayers->currentIndex();
   if ( !current.isValid() )
     return;
 
@@ -274,12 +274,12 @@ void QgsAlignRasterDialog::removeLayer()
 
 void QgsAlignRasterDialog::editLayer()
 {
-  QModelIndex current = mViewLayers->currentIndex();
+  const QModelIndex current = mViewLayers->currentIndex();
   if ( !current.isValid() )
     return;
 
   QgsAlignRaster::List list = mAlign->rasters();
-  QgsAlignRaster::Item item = list.at( current.row() );
+  const QgsAlignRaster::Item item = list.at( current.row() );
 
   QgsAlignRasterLayerConfigDialog d;
   d.setItem( item.inputFilename, item.outputFilename, item.resampleMethod, item.rescaleValues );
@@ -297,15 +297,15 @@ void QgsAlignRasterDialog::editLayer()
 
 void QgsAlignRasterDialog::referenceLayerChanged()
 {
-  int index = mCboReferenceLayer->currentIndex();
+  const int index = mCboReferenceLayer->currentIndex();
   if ( index < 0 )
     return;
 
-  QgsAlignRaster::RasterInfo refInfo( mAlign->rasters().at( index ).inputFilename );
+  const QgsAlignRaster::RasterInfo refInfo( mAlign->rasters().at( index ).inputFilename );
   if ( !refInfo.isValid() )
     return;
 
-  QgsCoordinateReferenceSystem layerCRS( refInfo.crs() );
+  const QgsCoordinateReferenceSystem layerCRS( refInfo.crs() );
   mCrsSelector->setLayerCrs( layerCRS );
   mClipExtentGroupBox->setOriginalExtent( refInfo.extent(), layerCRS );
 
@@ -318,11 +318,11 @@ void QgsAlignRasterDialog::destinationCrsChanged()
   if ( mCrsSelector->crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ) == mAlign->destinationCrs() )
     return;
 
-  int index = mCboReferenceLayer->currentIndex();
+  const int index = mCboReferenceLayer->currentIndex();
   if ( index < 0 )
     return;
 
-  QgsAlignRaster::RasterInfo refInfo( mAlign->rasters().at( index ).inputFilename );
+  const QgsAlignRaster::RasterInfo refInfo( mAlign->rasters().at( index ).inputFilename );
   if ( !refInfo.isValid() )
     return;
 
@@ -361,7 +361,7 @@ void QgsAlignRasterDialog::runAlign()
 {
   setEnabled( false );
 
-  bool res = mAlign->run();
+  const bool res = mAlign->run();
 
   setEnabled( true );
 
@@ -469,8 +469,8 @@ void QgsAlignRasterLayerConfigDialog::setItem( const QString &inputFilename, con
 
 void QgsAlignRasterLayerConfigDialog::browseOutputFilename()
 {
-  QgsSettings settings;
-  QString dirName = editOutput->text().isEmpty() ? settings.value( QStringLiteral( "UI/lastRasterFileDir" ), QDir::homePath() ).toString() : editOutput->text();
+  const QgsSettings settings;
+  const QString dirName = editOutput->text().isEmpty() ? settings.value( QStringLiteral( "UI/lastRasterFileDir" ), QDir::homePath() ).toString() : editOutput->text();
 
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Select output file" ), dirName, tr( "GeoTIFF" ) + " (*.tif *.tiff *.TIF *.TIFF)" );
 

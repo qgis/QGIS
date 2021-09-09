@@ -120,9 +120,9 @@ bool QgsMeshMemoryDataProvider::addMeshVertices( const QString &def )
                           QStringLiteral( "Mesh Memory Provider" ) ) );
       return false;
     }
-    double x = coords.at( 0 ).toDouble();
-    double y = coords.at( 1 ).toDouble();
-    QgsMeshVertex vertex( x, y );
+    const double x = coords.at( 0 ).toDouble();
+    const double y = coords.at( 1 ).toDouble();
+    const QgsMeshVertex vertex( x, y );
     vertices.push_back( vertex );
   }
 
@@ -167,7 +167,7 @@ bool QgsMeshMemoryDataProvider::addMeshFacesOrEdges( const QString &def )
       QgsMeshFace face;
       for ( int j = 0; j < vertices.size(); ++j )
       {
-        int vertex_id = vertices[j].toInt();
+        const int vertex_id = vertices[j].toInt();
         if ( !checkVertexId( vertex_id ) ) return false;
         face.push_back( vertex_id );
       }
@@ -541,7 +541,7 @@ QgsMeshDataBlock QgsMeshMemoryDataProvider::datasetValues( QgsMeshDatasetIndex i
   if ( ( index.group() >= 0 ) && ( index.group() < datasetGroupCount() ) )
   {
     const QgsMeshMemoryDatasetGroup group = mDatasetGroups[index.group()];
-    bool isScalar = group.isScalar();
+    const bool isScalar = group.isScalar();
     if ( ( index.dataset() >= 0 ) && ( index.dataset() < group.memoryDatasets.size() ) )
     {
       return group.memoryDatasets[index.dataset()]->datasetValues( isScalar, valueIndex, count );

@@ -82,10 +82,10 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-  int method = parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context );
+  const int method = parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context );
   int number = parameterAsInt( parameters, QStringLiteral( "NUMBER" ), context );
 
-  long count = source->featureCount();
+  const long count = source->featureCount();
 
   if ( method == 0 )
   {
@@ -104,14 +104,14 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
 
   // initialize random engine
   std::random_device randomDevice;
-  std::mt19937 mersenneTwister( randomDevice() );
-  std::uniform_int_distribution<int> fidsDistribution( 0, count );
+  const std::mt19937 mersenneTwister( randomDevice() );
+  const std::uniform_int_distribution<int> fidsDistribution( 0, count );
 
   QVector< QgsFeatureId > fids( number );
   std::generate( fids.begin(), fids.end(), bind( fidsDistribution, mersenneTwister ) );
 
   QHash< QgsFeatureId, int > idsCount;
-  for ( QgsFeatureId id : fids )
+  for ( const QgsFeatureId id : fids )
   {
     if ( feedback->isCanceled() )
     {
@@ -121,7 +121,7 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
     idsCount[ id ] += 1;
   }
 
-  QgsFeatureIds ids = qgis::listToSet( idsCount.keys() );
+  const QgsFeatureIds ids = qgis::listToSet( idsCount.keys() );
   QgsFeatureIterator fit = source->getFeatures( QgsFeatureRequest().setFilterFids( ids ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
 
   QgsFeature f;

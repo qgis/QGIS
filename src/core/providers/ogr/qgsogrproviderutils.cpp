@@ -794,7 +794,6 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
   }
 
   //consider spatial reference system
-  OGRSpatialReferenceH reference = nullptr;
 
   QgsCoordinateReferenceSystem mySpatialRefSys;
   if ( srs.isValid() )
@@ -806,12 +805,7 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
     mySpatialRefSys.validate();
   }
 
-  QString myWkt = mySpatialRefSys.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL );
-
-  if ( !myWkt.isNull()  &&  myWkt.length() != 0 )
-  {
-    reference = OSRNewSpatialReference( myWkt.toLocal8Bit().data() );
-  }
+  OGRSpatialReferenceH reference = QgsOgrUtils::crsToOGRSpatialReference( mySpatialRefSys );
 
   // Map the qgis geometry type to the OGR geometry type
   OGRwkbGeometryType OGRvectortype = wkbUnknown;
@@ -1483,7 +1477,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
   GDALDatasetH hDS = OpenHelper( dsName, updateMode, options );
   if ( !hDS )
   {
-    errCause = QObject::tr( "Cannot open %1." ).arg( dsName );
+    errCause = QObject::tr( "Cannot open %1 (%2)." ).arg( dsName, QString::fromUtf8( CPLGetLastErrorMsg() ) );
     return nullptr;
   }
 
@@ -2319,26 +2313,37 @@ bool QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( const QString &d
          !( updateMode && dsName.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) );
 }
 
-QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int i, QgsOgrLayer *layer, const QString &driverName, Qgis::SublayerQueryFlags flags, bool isSubLayer, const QString &baseUri, bool hasSingleLayerOnly, QgsFeedback *feedback )
+QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int i, QgsOgrLayer *layer, GDALDatasetH hDS, const QString &driverName, Qgis::SublayerQueryFlags flags, const QString &baseUri, bool hasSingleLayerOnly, QgsFeedback *feedback )
 {
   const QString layerName = QString::fromUtf8( layer->name() );
 
-  if ( !isSubLayer && ( layerName == QLatin1String( "layer_styles" ) ||
-                        layerName == QLatin1String( "qgis_projects" ) ) )
-  {
-    // Ignore layer_styles (coming from QGIS styling support) and
-    // qgis_projects (coming from http://plugins.qgis.org/plugins/QgisGeopackage/)
-    return {};
-  }
-
-  QStringList skippedLayerNames;
+  QStringList privateLayerNames { QStringLiteral( "layer_styles" ),
+                                  QStringLiteral( "qgis_projects" )};
   if ( driverName == QLatin1String( "SQLite" ) )
   {
-    skippedLayerNames = QgsSqliteUtils::systemTables();
+    privateLayerNames.append( QgsSqliteUtils::systemTables() );
   }
+
+  Qgis::SublayerFlags layerFlags;
   if ( ( driverName == QLatin1String( "SQLite" ) && layerName.contains( QRegularExpression( QStringLiteral( "idx_.*_geom(etry)?($|_.*)" ), QRegularExpression::PatternOption::CaseInsensitiveOption ) ) )
-       || skippedLayerNames.contains( layerName ) )
+       || privateLayerNames.contains( layerName ) )
   {
+    layerFlags |= Qgis::SublayerFlag::SystemTable;
+  }
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
+  // mark private layers, using GDAL API
+  if ( hDS && GDALDatasetIsLayerPrivate( hDS, i ) )
+  {
+    layerFlags |= Qgis::SublayerFlag::SystemTable;
+  }
+#else
+  ( void )hDS;
+#endif
+
+  if ( !( flags & Qgis::SublayerQueryFlag::IncludeSystemTables ) && ( layerFlags & Qgis::SublayerFlag::SystemTable ) )
+  {
+    // layer is a system table, and we are not scanning for them
     return {};
   }
 
@@ -2346,7 +2351,7 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
   // TODO: add support for multiple
   QString geometryColumnName;
   OGRwkbGeometryType layerGeomType = wkbUnknown;
-  const bool slowGeomTypeRetrieval = driverName == QLatin1String( "OAPIF" ) || driverName == QLatin1String( "WFS3" ) || driverName == QLatin1String( "PGeo" );
+  const bool slowGeomTypeRetrieval = driverName == QLatin1String( "OAPIF" ) || driverName == QLatin1String( "WFS3" );
   if ( !slowGeomTypeRetrieval )
   {
     QgsOgrFeatureDefn &fdef = layer->GetLayerDefn();
@@ -2395,6 +2400,7 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
     details.setDescription( longDescription );
     details.setProviderKey( QStringLiteral( "ogr" ) );
     details.setDriverName( driverName );
+    details.setFlags( layerFlags );
 
     const QString uri = QgsOgrProviderMetadata().encodeUri( parts );
     details.setUri( uri );
@@ -2485,8 +2491,12 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
       details.setDescription( longDescription );
       details.setProviderKey( QStringLiteral( "ogr" ) );
       details.setDriverName( driverName );
+      details.setFlags( layerFlags );
 
-      if ( fCount.size() > 1 )
+      // if we had to iterate through the table to find geometry types, make sure to include these
+      // in the uri for the sublayers (otherwise we'll be forced to re-do this iteration whenever
+      // the uri from the sublayer is used to construct an actual vector layer)
+      if ( details.wkbType() != QgsWkbTypes::Unknown )
         parts.insert( QStringLiteral( "geometryType" ), ogrWkbGeometryTypeName( countIt.key() ) );
       else
         parts.remove( QStringLiteral( "geometryType" ) );
@@ -2523,6 +2533,7 @@ bool QgsOgrProviderUtils::saveConnection( const QString &path, const QString &og
     {
       QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
       QgsGeoPackageProviderConnection *providerConnection =  static_cast<QgsGeoPackageProviderConnection *>( providerMetadata->createConnection( connName ) );
+      providerConnection->setUri( path );
       providerMetadata->saveConnection( providerConnection, connName );
       return true;
     }

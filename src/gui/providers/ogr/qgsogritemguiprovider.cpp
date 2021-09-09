@@ -54,7 +54,7 @@ void QgsOgrItemGuiProvider::populateContextMenu(
         if ( !path.isEmpty() )
         {
           OGRSFDriverH hDriver = nullptr;
-          gdal::ogr_datasource_unique_ptr hDS( OGROpen( path.toUtf8().constData(), TRUE, &hDriver ) );
+          const gdal::ogr_datasource_unique_ptr hDS( OGROpen( path.toUtf8().constData(), TRUE, &hDriver ) );
           canDeleteLayers = hDS && OGR_DS_TestCapability( hDS.get(), ODsCDeleteLayer );
         }
 
@@ -79,7 +79,7 @@ void QgsOgrItemGuiProvider::populateContextMenu(
     {
       const bool isFolder = QFileInfo( collectionItem->path() ).isDir();
       // Messages are different for files and tables
-      QString message = QObject::tr( "Delete %1 “%2”…" ).arg( isFolder ? tr( "Folder" ) : tr( "File" ), collectionItem->name() );
+      const QString message = QObject::tr( "Delete %1 “%2”…" ).arg( isFolder ? tr( "Folder" ) : tr( "File" ), collectionItem->name() );
       QAction *actionDeleteCollection = new QAction( message, menu );
 
       QVariantMap data;
@@ -98,7 +98,7 @@ void QgsOgrItemGuiProvider::onDeleteLayer( QgsDataItemGuiContext context )
   QVariantMap data = s->data().toMap();
   const QString uri = data[QStringLiteral( "uri" )].toString();
   const QString name = data[QStringLiteral( "name" )].toString();
-  QPointer< QgsDataItem > parent = data[QStringLiteral( "parent" )].value<QPointer< QgsDataItem >>();
+  const QPointer< QgsDataItem > parent = data[QStringLiteral( "parent" )].value<QPointer< QgsDataItem >>();
 
   const QString title = QObject::tr( "Delete Layer" );
   // Check if the layer is in the registry
@@ -144,7 +144,7 @@ void QgsOgrItemGuiProvider::deleteCollection( QgsDataItemGuiContext context )
   QAction *s = qobject_cast<QAction *>( sender() );
   QVariantMap data = s->data().toMap();
   const QString path = data[QStringLiteral( "path" )].toString();
-  QPointer< QgsDataItem > parent = data[QStringLiteral( "parent" )].value<QPointer< QgsDataItem >>();
+  const QPointer< QgsDataItem > parent = data[QStringLiteral( "parent" )].value<QPointer< QgsDataItem >>();
 
   const bool isFolder = QFileInfo( path ).isDir();
   const QString type = isFolder ? tr( "folder" ) : tr( "file" );

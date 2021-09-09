@@ -1,0 +1,62 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/annotations/qgsmaptoolmodifyannotation.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsMapToolModifyAnnotation : QgsMapToolAdvancedDigitizing
+{
+%Docstring(signature="appended")
+A map tool for modifying annotations in a :py:class:`QgsAnnotationLayer`
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsmaptoolmodifyannotation.h"
+%End
+  public:
+
+    explicit QgsMapToolModifyAnnotation( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
+%Docstring
+Constructor for QgsMapToolModifyAnnotation
+%End
+
+    ~QgsMapToolModifyAnnotation();
+
+    virtual void deactivate();
+
+    virtual void cadCanvasMoveEvent( QgsMapMouseEvent *event );
+
+    virtual void cadCanvasPressEvent( QgsMapMouseEvent *event );
+
+    virtual void keyPressEvent( QKeyEvent *event );
+
+
+  signals:
+
+    void itemSelected( QgsAnnotationLayer *layer, const QString &itemId );
+%Docstring
+Emitted when the selected item is changed.
+%End
+
+    void selectionCleared();
+%Docstring
+Emitted when the selected item is cleared;
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/annotations/qgsmaptoolmodifyannotation.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

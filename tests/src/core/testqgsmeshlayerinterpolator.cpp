@@ -64,7 +64,7 @@ void TestQgsMeshLayerInterpolator::testExportRasterBand()
                             "Triangle and Quad Mdal",
                             "mdal" );
   QVERIFY( memoryLayer.isValid() );
-  QgsMeshDatasetIndex index( 0, 0 ); // bed elevation
+  const QgsMeshDatasetIndex index( 0, 0 ); // bed elevation
   memoryLayer.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 27700 ) );
 
   QgsRasterBlock *block = QgsMeshUtils::exportRasterBlock(

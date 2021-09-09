@@ -160,7 +160,7 @@ void QgsSymbolLayerWidget::createAuxiliaryField()
     return;
 
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  QgsSymbolLayer::Property key = static_cast<  QgsSymbolLayer::Property >( button->propertyKey() );
+  const QgsSymbolLayer::Property key = static_cast<  QgsSymbolLayer::Property >( button->propertyKey() );
   QgsPropertyDefinition def = QgsSymbolLayer::propertyDefinitions()[key];
 
   // create property in auxiliary storage if necessary
@@ -189,7 +189,7 @@ void QgsSymbolLayerWidget::createAuxiliaryField()
 void QgsSymbolLayerWidget::updateDataDefinedProperty()
 {
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  QgsSymbolLayer::Property key = static_cast<  QgsSymbolLayer::Property >( button->propertyKey() );
+  const QgsSymbolLayer::Property key = static_cast<  QgsSymbolLayer::Property >( button->propertyKey() );
   symbolLayer()->setDataDefinedProperty( key, button->toProperty() );
   emit changed();
 }
@@ -329,7 +329,7 @@ void QgsSimpleLineSymbolLayerWidget::updateAssistantSymbol()
     mAssistantPreviewSymbol->deleteSymbolLayer( i );
   }
   mAssistantPreviewSymbol->appendSymbolLayer( mLayer->clone() );
-  QgsProperty ddWidth = mLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertyStrokeWidth );
+  const QgsProperty ddWidth = mLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertyStrokeWidth );
   if ( ddWidth )
     mAssistantPreviewSymbol->setDataDefinedWidth( ddWidth );
 }
@@ -388,7 +388,7 @@ void QgsSimpleLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   whileBlocking( mTrimDistanceEndSpin )->setValue( mLayer->trimDistanceEnd() );
 
   //use a custom dash pattern?
-  bool useCustomDashPattern = mLayer->useCustomDashPattern();
+  const bool useCustomDashPattern = mLayer->useCustomDashPattern();
   mChangePatternButton->setEnabled( useCustomDashPattern );
   label_3->setEnabled( !useCustomDashPattern );
   cboPenStyle->setEnabled( !useCustomDashPattern );
@@ -397,8 +397,8 @@ void QgsSimpleLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mCustomCheckBox->blockSignals( false );
 
   //make sure height of custom dash button looks good under different platforms
-  QSize size = mChangePatternButton->minimumSizeHint();
-  int fontHeight = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.4 );
+  const QSize size = mChangePatternButton->minimumSizeHint();
+  const int fontHeight = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.4 );
   mChangePatternButton->setMinimumSize( QSize( size.width(), std::max( size.height(), fontHeight ) ) );
 
   //draw inside polygon?
@@ -490,7 +490,7 @@ void QgsSimpleLineSymbolLayerWidget::patternOffsetChanged()
 
 void QgsSimpleLineSymbolLayerWidget::mCustomCheckBox_stateChanged( int state )
 {
-  bool checked = ( state == Qt::Checked );
+  const bool checked = ( state == Qt::Checked );
   mChangePatternButton->setEnabled( checked );
   label_3->setEnabled( !checked );
   cboPenStyle->setEnabled( !checked );
@@ -561,7 +561,7 @@ void QgsSimpleLineSymbolLayerWidget::mDashPatternUnitWidget_changed()
 
 void QgsSimpleLineSymbolLayerWidget::mDrawInsideCheckBox_stateChanged( int state )
 {
-  bool checked = ( state == Qt::Checked );
+  const bool checked = ( state == Qt::Checked );
   mLayer->setDrawInsidePolygon( checked );
   emit changed();
 }
@@ -588,7 +588,7 @@ void QgsSimpleLineSymbolLayerWidget::updatePatternIcon()
   {
     return;
   }
-  QColor color = qApp->palette().color( QPalette::WindowText );
+  const QColor color = qApp->palette().color( QPalette::WindowText );
   layerCopy->setColor( color );
   // reset offset, we don't want to show that in the preview
   layerCopy->setOffset( 0 );
@@ -608,17 +608,17 @@ void QgsSimpleLineSymbolLayerWidget::updatePatternIcon()
   }
 
   //create an icon pixmap
-  std::unique_ptr< QgsLineSymbol > previewSymbol = std::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << layerCopy.release() );
+  const std::unique_ptr< QgsLineSymbol > previewSymbol = std::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << layerCopy.release() );
   const QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( previewSymbol.get(), currentIconSize );
   mChangePatternButton->setIconSize( currentIconSize );
   mChangePatternButton->setIcon( icon );
 
   // set tooltip
   // create very large preview image
-  int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 23 );
-  int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
+  const int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 23 );
+  const int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
 
-  QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( previewSymbol.get(), QSize( width, height ), height / 20 );
+  const QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( previewSymbol.get(), QSize( width, height ), height / 20 );
   QByteArray data;
   QBuffer buffer( &data );
   pm.save( &buffer, "PNG", 100 );
@@ -687,15 +687,15 @@ QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( QgsVectorLay
   lstNames->setGridSize( QSize( size * 1.2, size * 1.2 ) );
   lstNames->setIconSize( QSize( size, size ) );
 
-  double markerSize = size * 0.8;
+  const double markerSize = size * 0.8;
   const auto shapes = QgsSimpleMarkerSymbolLayerBase::availableShapes();
-  for ( QgsSimpleMarkerSymbolLayerBase::Shape shape : shapes )
+  for ( const QgsSimpleMarkerSymbolLayerBase::Shape shape : shapes )
   {
     QgsSimpleMarkerSymbolLayer *lyr = new QgsSimpleMarkerSymbolLayer( shape, markerSize );
     lyr->setSizeUnit( QgsUnitTypes::RenderPixels );
     lyr->setColor( QColor( 200, 200, 200 ) );
     lyr->setStrokeColor( QColor( 0, 0, 0 ) );
-    QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, QgsUnitTypes::RenderPixels, QSize( size, size ) );
+    const QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, QgsUnitTypes::RenderPixels, QSize( size, size ) );
     QListWidgetItem *item = new QListWidgetItem( icon, QString(), lstNames );
     item->setData( Qt::UserRole, static_cast< int >( shape ) );
     item->setToolTip( QgsSimpleMarkerSymbolLayerBase::encodeShape( shape ) );
@@ -727,7 +727,7 @@ void QgsSimpleMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mLayer = static_cast<QgsSimpleMarkerSymbolLayer *>( layer );
 
   // set values
-  QgsSimpleMarkerSymbolLayerBase::Shape shape = mLayer->shape();
+  const QgsSimpleMarkerSymbolLayerBase::Shape shape = mLayer->shape();
   for ( int i = 0; i < lstNames->count(); ++i )
   {
     if ( static_cast< QgsSimpleMarkerSymbolLayerBase::Shape >( lstNames->item( i )->data( Qt::UserRole ).toInt() ) == shape )
@@ -936,7 +936,7 @@ void QgsSimpleMarkerSymbolLayerWidget::updateAssistantSymbol()
     mAssistantPreviewSymbol->deleteSymbolLayer( i );
   }
   mAssistantPreviewSymbol->appendSymbolLayer( mLayer->clone() );
-  QgsProperty ddSize = mLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertySize );
+  const QgsProperty ddSize = mLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertySize );
   if ( ddSize )
     mAssistantPreviewSymbol->setDataDefinedSize( ddSize );
 }
@@ -1130,15 +1130,15 @@ QgsFilledMarkerSymbolLayerWidget::QgsFilledMarkerSymbolLayerWidget( QgsVectorLay
   lstNames->setGridSize( QSize( size * 1.2, size * 1.2 ) );
   lstNames->setIconSize( QSize( size, size ) );
 
-  double markerSize = size * 0.8;
+  const double markerSize = size * 0.8;
   const auto shapes = QgsSimpleMarkerSymbolLayerBase::availableShapes();
-  for ( QgsSimpleMarkerSymbolLayerBase::Shape shape : shapes )
+  for ( const QgsSimpleMarkerSymbolLayerBase::Shape shape : shapes )
   {
     QgsSimpleMarkerSymbolLayer *lyr = new QgsSimpleMarkerSymbolLayer( shape, markerSize );
     lyr->setSizeUnit( QgsUnitTypes::RenderPixels );
     lyr->setColor( QColor( 200, 200, 200 ) );
     lyr->setStrokeColor( QColor( 0, 0, 0 ) );
-    QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, QgsUnitTypes::RenderPixels, QSize( size, size ) );
+    const QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, QgsUnitTypes::RenderPixels, QSize( size, size ) );
     QListWidgetItem *item = new QListWidgetItem( icon, QString(), lstNames );
     item->setData( Qt::UserRole, static_cast< int >( shape ) );
     item->setToolTip( QgsSimpleMarkerSymbolLayerBase::encodeShape( shape ) );
@@ -1166,7 +1166,7 @@ void QgsFilledMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mLayer = static_cast<QgsFilledMarkerSymbolLayer *>( layer );
 
   // set values
-  QgsSimpleMarkerSymbolLayerBase::Shape shape = mLayer->shape();
+  const QgsSimpleMarkerSymbolLayerBase::Shape shape = mLayer->shape();
   for ( int i = 0; i < lstNames->count(); ++i )
   {
     if ( static_cast< QgsSimpleMarkerSymbolLayerBase::Shape >( lstNames->item( i )->data( Qt::UserRole ).toInt() ) == shape )
@@ -1277,7 +1277,7 @@ void QgsFilledMarkerSymbolLayerWidget::updateAssistantSymbol()
     mAssistantPreviewSymbol->deleteSymbolLayer( i );
   }
   mAssistantPreviewSymbol->appendSymbolLayer( mLayer->clone() );
-  QgsProperty ddSize = mLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertySize );
+  const QgsProperty ddSize = mLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertySize );
   if ( ddSize )
     mAssistantPreviewSymbol->setDataDefinedSize( ddSize );
 }
@@ -1879,7 +1879,7 @@ void QgsShapeburstFillSymbolLayerWidget::mOffsetUnitWidget_changed()
 
 void QgsShapeburstFillSymbolLayerWidget::mIgnoreRingsCheckBox_stateChanged( int state )
 {
-  bool checked = ( state == Qt::Checked );
+  const bool checked = ( state == Qt::Checked );
   mLayer->setIgnoreRings( checked );
   emit changed();
 }
@@ -2053,7 +2053,7 @@ void QgsMarkerLineSymbolLayerWidget::setOffset()
 
 void QgsMarkerLineSymbolLayerWidget::setPlacement()
 {
-  bool interval = radInterval->isChecked();
+  const bool interval = radInterval->isChecked();
   spinInterval->setEnabled( interval );
   mSpinOffsetAlongLine->setEnabled( radInterval->isChecked() || radVertexLast->isChecked() || radVertexFirst->isChecked() );
   mOffsetAlongLineUnitWidget->setEnabled( mSpinOffsetAlongLine->isEnabled() );
@@ -2320,7 +2320,7 @@ void QgsHashedLineSymbolLayerWidget::setOffset()
 
 void QgsHashedLineSymbolLayerWidget::setPlacement()
 {
-  bool interval = radInterval->isChecked();
+  const bool interval = radInterval->isChecked();
   spinInterval->setEnabled( interval );
   mSpinOffsetAlongLine->setEnabled( radInterval->isChecked() || radVertexLast->isChecked() || radVertexFirst->isChecked() );
   mOffsetAlongLineUnitWidget->setEnabled( mSpinOffsetAlongLine->isEnabled() );
@@ -2505,7 +2505,7 @@ void QgsSvgMarkerSymbolLayerWidget::setGuiForSvg( const QgsSvgMarkerSymbolLayer 
   if ( hasFillParam )
   {
     QColor fill = layer->fillColor();
-    double existingOpacity = hasFillOpacityParam ? fill.alphaF() : 1.0;
+    const double existingOpacity = hasFillOpacityParam ? fill.alphaF() : 1.0;
     if ( hasDefaultFillColor && !skipDefaultColors )
     {
       fill = defaultFill;
@@ -2516,7 +2516,7 @@ void QgsSvgMarkerSymbolLayerWidget::setGuiForSvg( const QgsSvgMarkerSymbolLayer 
   if ( hasStrokeParam )
   {
     QColor stroke = layer->strokeColor();
-    double existingOpacity = hasStrokeOpacityParam ? stroke.alphaF() : 1.0;
+    const double existingOpacity = hasStrokeOpacityParam ? stroke.alphaF() : 1.0;
     if ( hasDefaultStrokeColor && !skipDefaultColors )
     {
       stroke = defaultStroke;
@@ -2531,7 +2531,7 @@ void QgsSvgMarkerSymbolLayerWidget::setGuiForSvg( const QgsSvgMarkerSymbolLayer 
   mStrokeWidthSpinBox->setValue( hasDefaultStrokeWidth ? defaultStrokeWidth : layer->strokeWidth() );
   mStrokeWidthSpinBox->blockSignals( false );
 
-  bool preservedAspectRatio = layer->preservedAspectRatio();
+  const bool preservedAspectRatio = layer->preservedAspectRatio();
   spinHeight->blockSignals( true );
   if ( preservedAspectRatio )
   {
@@ -2553,7 +2553,7 @@ void QgsSvgMarkerSymbolLayerWidget::updateAssistantSymbol()
     mAssistantPreviewSymbol->deleteSymbolLayer( i );
   }
   mAssistantPreviewSymbol->appendSymbolLayer( mLayer->clone() );
-  QgsProperty ddSize = mLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertySize );
+  const QgsProperty ddSize = mLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertySize );
   if ( ddSize )
     mAssistantPreviewSymbol->setDataDefinedSize( ddSize );
 }
@@ -2660,7 +2660,7 @@ void QgsSvgMarkerSymbolLayerWidget::setSvgParameters( const QMap<QString, QgsPro
 
 void QgsSvgMarkerSymbolLayerWidget::setWidth()
 {
-  double defaultAspectRatio = mLayer->defaultAspectRatio();
+  const double defaultAspectRatio = mLayer->defaultAspectRatio();
   double fixedAspectRatio = 0.0;
   spinHeight->blockSignals( true );
   if ( defaultAspectRatio <= 0.0 )
@@ -2683,7 +2683,7 @@ void QgsSvgMarkerSymbolLayerWidget::setWidth()
 
 void QgsSvgMarkerSymbolLayerWidget::setHeight()
 {
-  double defaultAspectRatio = mLayer->defaultAspectRatio();
+  const double defaultAspectRatio = mLayer->defaultAspectRatio();
   double fixedAspectRatio = 0.0;
   spinWidth->blockSignals( true );
   if ( defaultAspectRatio <= 0.0 )
@@ -2707,7 +2707,7 @@ void QgsSvgMarkerSymbolLayerWidget::setHeight()
 void QgsSvgMarkerSymbolLayerWidget::lockAspectRatioChanged( const bool locked )
 {
   //spinHeight->setEnabled( !locked );
-  double defaultAspectRatio = mLayer->defaultAspectRatio();
+  const double defaultAspectRatio = mLayer->defaultAspectRatio();
   if ( defaultAspectRatio <= 0.0 )
   {
     whileBlocking( mLockAspectRatio )->setLocked( true );
@@ -2874,7 +2874,7 @@ void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mLayer = dynamic_cast<QgsSVGFillSymbolLayer *>( layer );
   if ( mLayer )
   {
-    double width = mLayer->patternWidth();
+    const double width = mLayer->patternWidth();
     mTextureWidthSpinBox->blockSignals( true );
     mTextureWidthSpinBox->setValue( width );
     mTextureWidthSpinBox->blockSignals( false );
@@ -2986,7 +2986,7 @@ void QgsSVGFillSymbolLayerWidget::updateParamGui( bool resetValues )
   if ( resetValues )
   {
     QColor fill = mChangeColorButton->color();
-    double newOpacity = hasFillOpacityParam ? fill.alphaF() : 1.0;
+    const double newOpacity = hasFillOpacityParam ? fill.alphaF() : 1.0;
     if ( hasDefaultFillColor )
     {
       fill = defaultFill;
@@ -2999,7 +2999,7 @@ void QgsSVGFillSymbolLayerWidget::updateParamGui( bool resetValues )
   if ( resetValues )
   {
     QColor stroke = mChangeStrokeColorButton->color();
-    double newOpacity = hasStrokeOpacityParam ? stroke.alphaF() : 1.0;
+    const double newOpacity = hasStrokeOpacityParam ? stroke.alphaF() : 1.0;
     if ( hasDefaultStrokeColor )
     {
       stroke = defaultStroke;
@@ -3578,7 +3578,7 @@ void QgsFontMarkerSymbolLayerWidget::setCharacterFromText( const QString &text )
   if ( text.contains( QRegularExpression( QStringLiteral( "^0x[0-9a-fA-F]{1,4}$" ) ) ) )
   {
     bool ok = false;
-    unsigned int value = text.toUInt( &ok, 0 );
+    const unsigned int value = text.toUInt( &ok, 0 );
     if ( ok )
     {
       character = QChar( value );
@@ -3660,7 +3660,7 @@ void QgsFontMarkerSymbolLayerWidget::mStrokeWidthUnitWidget_changed()
 void QgsFontMarkerSymbolLayerWidget::populateFontStyleComboBox()
 {
   mFontStyleComboBox->clear();
-  QStringList styles = mFontDB.styles( mRefFont.family() );
+  const QStringList styles = mFontDB.styles( mRefFont.family() );
   const auto constStyles = styles;
   for ( const QString &style : constStyles )
   {
@@ -3670,12 +3670,12 @@ void QgsFontMarkerSymbolLayerWidget::populateFontStyleComboBox()
   QString targetStyle = mFontDB.styleString( mRefFont );
   if ( !styles.contains( targetStyle ) )
   {
-    QFont f = QFont( mRefFont.family() );
+    const QFont f = QFont( mRefFont.family() );
     targetStyle = QFontInfo( f ).styleName();
     mRefFont.setStyleName( targetStyle );
   }
   int curIndx = 0;
-  int stylIndx = mFontStyleComboBox->findText( targetStyle );
+  const int stylIndx = mFontStyleComboBox->findText( targetStyle );
   if ( stylIndx > -1 )
   {
     curIndx = stylIndx;
@@ -3724,7 +3724,7 @@ void QgsFontMarkerSymbolLayerWidget::updateAssistantSymbol()
     mAssistantPreviewSymbol->deleteSymbolLayer( i );
   }
   mAssistantPreviewSymbol->appendSymbolLayer( mLayer->clone() );
-  QgsProperty ddSize = mLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertySize );
+  const QgsProperty ddSize = mLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertySize );
   if ( ddSize )
     mAssistantPreviewSymbol->setDataDefinedSize( ddSize );
 }
@@ -3841,7 +3841,7 @@ void QgsRasterMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   whileBlocking( mImageSourceLineEdit )->setSource( mLayer->path() );
 
   whileBlocking( mWidthSpinBox )->setValue( mLayer->size() );
-  bool preservedAspectRatio = mLayer->preservedAspectRatio();
+  const bool preservedAspectRatio = mLayer->preservedAspectRatio();
   mHeightSpinBox->blockSignals( true );
   if ( preservedAspectRatio )
   {
@@ -3907,7 +3907,7 @@ void QgsRasterMarkerSymbolLayerWidget::imageSourceChanged( const QString &text )
 void QgsRasterMarkerSymbolLayerWidget::updatePreviewImage()
 {
   bool fitsInCache = false;
-  QImage image = QgsApplication::imageCache()->pathAsImage( mLayer->path(), QSize( 150, 150 ), true, 1.0, fitsInCache );
+  const QImage image = QgsApplication::imageCache()->pathAsImage( mLayer->path(), QSize( 150, 150 ), true, 1.0, fitsInCache );
   if ( image.isNull() )
   {
     mLabelImagePreview->setPixmap( QPixmap() );
@@ -3916,7 +3916,7 @@ void QgsRasterMarkerSymbolLayerWidget::updatePreviewImage()
 
   QImage previewImage( 150, 150, QImage::Format_ARGB32 );
   previewImage.fill( Qt::transparent );
-  QRect imageRect( ( 150 - image.width() ) / 2.0, ( 150 - image.height() ) / 2.0, image.width(), image.height() );
+  const QRect imageRect( ( 150 - image.width() ) / 2.0, ( 150 - image.height() ) / 2.0, image.width(), image.height() );
   QPainter p;
   p.begin( &previewImage );
   //draw a checkerboard background
@@ -3925,8 +3925,8 @@ void QgsRasterMarkerSymbolLayerWidget::updatePreviewImage()
                          100, 100, 100, 150,
                          150, 150, 150, 150
                        };
-  QImage img( pixDataRGB, 2, 2, 8, QImage::Format_ARGB32 );
-  QPixmap pix = QPixmap::fromImage( img.scaled( 8, 8 ) );
+  const QImage img( pixDataRGB, 2, 2, 8, QImage::Format_ARGB32 );
+  const QPixmap pix = QPixmap::fromImage( img.scaled( 8, 8 ) );
   QBrush checkerBrush;
   checkerBrush.setTexture( pix );
   p.fillRect( imageRect, checkerBrush );
@@ -3943,7 +3943,7 @@ void QgsRasterMarkerSymbolLayerWidget::updatePreviewImage()
 
 void QgsRasterMarkerSymbolLayerWidget::setWidth()
 {
-  double defaultAspectRatio = mLayer->defaultAspectRatio();
+  const double defaultAspectRatio = mLayer->defaultAspectRatio();
   double fixedAspectRatio = 0.0;
   mHeightSpinBox->blockSignals( true );
   if ( defaultAspectRatio <= 0.0 )
@@ -3966,7 +3966,7 @@ void QgsRasterMarkerSymbolLayerWidget::setWidth()
 
 void QgsRasterMarkerSymbolLayerWidget::setHeight()
 {
-  double defaultAspectRatio = mLayer->defaultAspectRatio();
+  const double defaultAspectRatio = mLayer->defaultAspectRatio();
   double fixedAspectRatio = 0.0;
   mWidthSpinBox->blockSignals( true );
   if ( defaultAspectRatio <= 0.0 )
@@ -3989,7 +3989,7 @@ void QgsRasterMarkerSymbolLayerWidget::setHeight()
 
 void QgsRasterMarkerSymbolLayerWidget::setLockAspectRatio( const bool locked )
 {
-  double defaultAspectRatio = mLayer->defaultAspectRatio();
+  const double defaultAspectRatio = mLayer->defaultAspectRatio();
   if ( defaultAspectRatio <= 0.0 )
   {
     whileBlocking( mLockAspectRatio )->setLocked( true );
@@ -4242,7 +4242,7 @@ void QgsRasterFillSymbolLayerWidget::mWidthSpinBox_valueChanged( double d )
 void QgsRasterFillSymbolLayerWidget::updatePreviewImage()
 {
   bool fitsInCache = false;
-  QImage image = QgsApplication::imageCache()->pathAsImage( mLayer->imageFilePath(), QSize( 150, 150 ), true, 1.0, fitsInCache );
+  const QImage image = QgsApplication::imageCache()->pathAsImage( mLayer->imageFilePath(), QSize( 150, 150 ), true, 1.0, fitsInCache );
   if ( image.isNull() )
   {
     mLabelImagePreview->setPixmap( QPixmap() );
@@ -4251,7 +4251,7 @@ void QgsRasterFillSymbolLayerWidget::updatePreviewImage()
 
   QImage previewImage( 150, 150, QImage::Format_ARGB32 );
   previewImage.fill( Qt::transparent );
-  QRect imageRect( ( 150 - image.width() ) / 2.0, ( 150 - image.height() ) / 2.0, image.width(), image.height() );
+  const QRect imageRect( ( 150 - image.width() ) / 2.0, ( 150 - image.height() ) / 2.0, image.width(), image.height() );
   QPainter p;
   p.begin( &previewImage );
   //draw a checkerboard background
@@ -4260,8 +4260,8 @@ void QgsRasterFillSymbolLayerWidget::updatePreviewImage()
                          100, 100, 100, 150,
                          150, 150, 150, 150
                        };
-  QImage img( pixDataRGB, 2, 2, 8, QImage::Format_ARGB32 );
-  QPixmap pix = QPixmap::fromImage( img.scaled( 8, 8 ) );
+  const QImage img( pixDataRGB, 2, 2, 8, QImage::Format_ARGB32 );
+  const QPixmap pix = QPixmap::fromImage( img.scaled( 8, 8 ) );
   QBrush checkerBrush;
   checkerBrush.setTexture( pix );
   p.fillRect( imageRect, checkerBrush );

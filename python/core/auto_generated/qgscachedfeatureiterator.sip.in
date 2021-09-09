@@ -28,6 +28,8 @@ This constructor creates a feature iterator, that delivers all cached features. 
 :param featureRequest: The feature request to answer
 %End
 
+    ~QgsCachedFeatureIterator();
+
     virtual bool rewind();
 
 %Docstring
@@ -67,6 +69,8 @@ We have a local special iterator for FilterFids, no need to run the generic.
 :return: bool  ``True`` if the operation was OK
 %End
 
+  private:
+    QgsCachedFeatureIterator( const QgsCachedFeatureIterator &other );
 };
 
 class QgsCachedFeatureWriterIterator : QgsAbstractFeatureIterator

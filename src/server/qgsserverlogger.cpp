@@ -41,7 +41,7 @@ void QgsServerLogger::logMessage( const QString &message, const QString &tag, Qg
   }
   if ( mLogFile.isOpen() )
   {
-    QString formattedMessage = formatLogMessage( message, tag, level );
+    const QString formattedMessage = formatLogMessage( message, tag, level );
     mTextStream << formattedMessage;
     mTextStream.flush();
   }

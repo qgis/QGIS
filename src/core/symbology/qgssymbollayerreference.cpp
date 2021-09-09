@@ -26,7 +26,7 @@ QString symbolLayerReferenceListToString( const QgsSymbolLayerReferenceList &lst
     QStringList indexPathStr;
     const QVector<int> indexPath = ref.symbolLayerId().symbolLayerIndexPath();
     indexPathStr.reserve( indexPath.size() );
-    for ( int index : indexPath )
+    for ( const int index : indexPath )
     {
       indexPathStr.append( QString::number( index ) );
     }
@@ -40,21 +40,23 @@ QString symbolLayerReferenceListToString( const QgsSymbolLayerReferenceList &lst
 QgsSymbolLayerReferenceList stringToSymbolLayerReferenceList( const QString &str )
 {
   QgsSymbolLayerReferenceList lst;
+  if ( str.isEmpty() )
+    return lst;
 
   // when saving we used ; as a concatenator... but that was silly, cos maybe the symbol keys contain this string!
   // try to handle this gracefully via regex...
-  const QRegularExpression partsRx( QStringLiteral( "((?:.*?),(?:.*?),(?:(?:\\d+,)+)?(?:\\d+);)" ) );
+  const thread_local QRegularExpression partsRx( QStringLiteral( "((?:.*?),(?:.*?),(?:(?:\\d+,)+)?(?:\\d+);)" ) );
   QRegularExpressionMatchIterator partsIt = partsRx.globalMatch( str + ';' );
 
   while ( partsIt.hasNext() )
   {
-    QRegularExpressionMatch partMatch = partsIt.next();
+    const QRegularExpressionMatch partMatch = partsIt.next();
     const QString tuple = partMatch.captured( 1 );
 
     // We should have "layer_id,symbol_key,symbol_layer_index0,symbol_layer_index1,..."
     // EXCEPT that the symbol_key CAN have commas, so this whole logic is extremely broken.
     // Let's see if a messy regex can save the day!
-    const QRegularExpression rx( QStringLiteral( "(.*?),(.*?),((?:\\d+,)+)?(\\d+)" ) );
+    const thread_local QRegularExpression rx( QStringLiteral( "(.*?),(.*?),((?:\\d+,)+)?(\\d+)" ) );
 
     const QRegularExpressionMatch match = rx.match( tuple );
     if ( !match.hasMatch() )

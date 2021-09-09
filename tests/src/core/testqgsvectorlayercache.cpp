@@ -78,15 +78,15 @@ void TestVectorLayerCache::initTestCase()
   QStringList backupFiles;
   backupFiles << QStringLiteral( "points.shp" ) << QStringLiteral( "points.shx" ) << QStringLiteral( "points.dbf" ) << QStringLiteral( "points.prj" );
 
-  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QString myTestDataDir = myDataDir + '/';
+  const QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString myTestDataDir = myDataDir + '/';
 
   for ( const QString &f : backupFiles )
   {
-    QString origFileName = myTestDataDir + f;
-    QFileInfo origFileInfo( origFileName );
+    const QString origFileName = myTestDataDir + f;
+    const QFileInfo origFileInfo( origFileName );
 
-    QString tmpFileName = QDir::tempPath() + '/' + origFileInfo.baseName() + '_' + QString::number( qApp->applicationPid() ) + '.' + origFileInfo.completeSuffix();
+    const QString tmpFileName = QDir::tempPath() + '/' + origFileInfo.baseName() + '_' + QString::number( qApp->applicationPid() ) + '.' + origFileInfo.completeSuffix();
 
     qDebug() << "Copy " << origFileName << " " << tmpFileName;
 
@@ -97,8 +97,8 @@ void TestVectorLayerCache::initTestCase()
   //
   // load a vector layer
   //
-  QString myPointsFileName = mTmpFiles.value( myTestDataDir + "points.shp" );
-  QFileInfo myPointFileInfo( myPointsFileName );
+  const QString myPointsFileName = mTmpFiles.value( myTestDataDir + "points.shp" );
+  const QFileInfo myPointFileInfo( myPointsFileName );
   mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
                                      myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 }
@@ -125,7 +125,7 @@ void TestVectorLayerCache::cleanupTestCase()
 
   for ( it = mTmpFiles.constBegin(); it != mTmpFiles.constEnd(); ++it )
   {
-    QString tmpFileName = it.value();
+    const QString tmpFileName = it.value();
     qDebug() << "Remove " << tmpFileName;
     QFile::remove( tmpFileName );
   }
@@ -159,15 +159,15 @@ void TestVectorLayerCache::testCacheAttrActions()
 
   // Add an attribute, make sure it is returned also if a cached feature is requested
   mPointsLayer->startEditing();
-  QVariant::Type attrType = QVariant::Int;
+  const QVariant::Type attrType = QVariant::Int;
   mPointsLayer->addAttribute( QgsField( QStringLiteral( "newAttr" ), attrType, QStringLiteral( "Int" ), 5, 0 ) );
   mPointsLayer->commitChanges();
 
   QVERIFY( mVectorLayerCache->featureAtId( 15, f ) );
   QVERIFY( f.attribute( "newAttr" ).isValid() );
 
-  QgsFields allFields = mPointsLayer->fields();
-  int idx = allFields.indexFromName( QStringLiteral( "newAttr" ) );
+  const QgsFields allFields = mPointsLayer->fields();
+  const int idx = allFields.indexFromName( QStringLiteral( "newAttr" ) );
 
   mPointsLayer->startEditing();
   mPointsLayer->deleteAttribute( idx );
@@ -192,7 +192,7 @@ void TestVectorLayerCache::testFeatureActions()
   mPointsLayer->commitChanges();
   disconnect( mPointsLayer, SIGNAL( committedFeaturesAdded( QString, QgsFeatureList ) ), this, SLOT( onCommittedFeaturesAdded( QString, QgsFeatureList ) ) );
 
-  QgsFeatureId fid = mAddedFeatures.last().id();
+  const QgsFeatureId fid = mAddedFeatures.last().id();
 
   QVERIFY( mVectorLayerCache->featureAtId( fid, f ) );
 
@@ -208,12 +208,12 @@ void TestVectorLayerCache::testSubsetRequest()
 {
   QgsFeature f;
 
-  QgsFields fields = mPointsLayer->fields();
+  const QgsFields fields = mPointsLayer->fields();
   QStringList requiredFields;
   requiredFields << QStringLiteral( "Class" ) << QStringLiteral( "Cabin Crew" );
 
   mVectorLayerCache->featureAtId( 16, f );
-  QVariant a = f.attribute( 3 );
+  const QVariant a = f.attribute( 3 );
 
   QgsFeatureIterator itSubset = mVectorLayerCache->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( requiredFields, fields ) );
   while ( itSubset.nextFeature( f ) ) {}
@@ -288,9 +288,9 @@ void TestVectorLayerCache::testCanUseCacheForRequest()
   QgsFeature f;
   QgsFeatureIterator it = mPointsLayer->getFeatures();
   it.nextFeature( f );
-  QgsFeatureId id1 = f.id();
+  const QgsFeatureId id1 = f.id();
   it.nextFeature( f );
-  QgsFeatureId id2 = f.id();
+  const QgsFeatureId id2 = f.id();
 
   QgsVectorLayerCache cache( mPointsLayer, 10 );
   // initially nothing in cache, so can't use it to fulfill the request
@@ -355,9 +355,9 @@ void TestVectorLayerCache::testCacheGeom()
   QgsFeature f;
   QgsFeatureIterator it = mPointsLayer->getFeatures();
   it.nextFeature( f );
-  QgsFeatureId id1 = f.id();
+  const QgsFeatureId id1 = f.id();
   it.nextFeature( f );
-  QgsFeatureId id2 = f.id();
+  const QgsFeatureId id2 = f.id();
 
   QgsFeatureRequest req;
   req.setFlags( QgsFeatureRequest::NoGeometry ); // should be ignored by cache

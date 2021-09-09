@@ -18,7 +18,7 @@
 
 Qgs3DMapExportSettings::Qgs3DMapExportSettings()
 {
-  QgsSettings settings;
+  const QgsSettings settings;
   mSceneName = settings.value( QStringLiteral( "UI/last3DSceneExportName" ), QStringLiteral( "Scene" ) ).toString();
   mSceneFolderPath = settings.value( QStringLiteral( "UI/last3DSceneExportDir" ), QDir::homePath() ).toString();
   mTerrainResolution = settings.value( QStringLiteral( "UI/last3DSceneExportTerrainResolution" ), 128 ).toInt();

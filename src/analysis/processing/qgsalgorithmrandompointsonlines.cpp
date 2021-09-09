@@ -216,7 +216,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
   int emptyOrNullGeom = 0;
 
   long featureCount = 0;
-  long numberOfFeatures = lineSource->featureCount();
+  const long numberOfFeatures = lineSource->featureCount();
   long long desiredNumberOfPoints = 0;
   const double featureProgressStep = 100.0 / ( numberOfFeatures > 0 ? numberOfFeatures : 1 );
   double baseFeatureProgress = 0.0;
@@ -239,7 +239,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
       feedback->setProgress( baseFeatureProgress );
       continue;
     }
-    QgsGeometry lGeom( lFeat.geometry() );
+    const QgsGeometry lGeom( lFeat.geometry() );
     if ( lGeom.isEmpty() )
     {
       // Increment invalid features count
@@ -255,7 +255,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
       expressionContext.setFeature( lFeat );
     }
 
-    double lineLength = lGeom.length();
+    const double lineLength = lGeom.length();
     int pointsAddedForThisFeature = 0;
 
     int numberPointsForThisFeature = mNumPoints;
@@ -291,8 +291,8 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
           break;
         }
         // Generate a random point
-        double randPos = lineLength * uniformDist( mt );
-        QgsGeometry rpGeom = QgsGeometry( lGeom.interpolate( randPos ) );
+        const double randPos = lineLength * uniformDist( mt );
+        const QgsGeometry rpGeom = QgsGeometry( lGeom.interpolate( randPos ) );
         distCheckIterations++;
         pointProgress += pointProgressIncrement;
 
@@ -304,7 +304,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
             // Per feature first
             if ( ( minDistanceForThisFeature != 0 ) && ( pointsAddedForThisFeature > 0 ) )
             {
-              QList<QgsFeatureId> neighbors = localIndex.nearestNeighbor( rpGeom, 1, minDistanceForThisFeature );
+              const QList<QgsFeatureId> neighbors = localIndex.nearestNeighbor( rpGeom, 1, minDistanceForThisFeature );
               if ( !neighbors.empty() )
               {
                 feedback->setProgress( baseFeatureProgress + pointProgress );
@@ -314,7 +314,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
             // Then check globally
             if ( ( mMinDistanceGlobal != 0 ) && ( totNPoints > 0 ) )
             {
-              QList<QgsFeatureId> neighbors = index.nearestNeighbor( rpGeom, 1, mMinDistanceGlobal );
+              const QList<QgsFeatureId> neighbors = index.nearestNeighbor( rpGeom, 1, mMinDistanceGlobal );
               if ( !neighbors.empty() )
               {
                 feedback->setProgress( baseFeatureProgress + pointProgress );

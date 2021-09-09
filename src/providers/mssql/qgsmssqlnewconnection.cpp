@@ -59,14 +59,14 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
   {
     // populate the dialog with the information stored for the connection
     // populate the fields with the stored setting parameters
-    QgsSettings settings;
+    const QgsSettings settings;
 
-    QString key = "/MSSQL/connections/" + connName;
+    const QString key = "/MSSQL/connections/" + connName;
     txtService->setText( settings.value( key + "/service" ).toString() );
     txtHost->setText( settings.value( key + "/host" ).toString() );
     listDatabase->addItem( settings.value( key + "/database" ).toString() );
     groupBoxSchemasFilter->setChecked( settings.value( key + "/schemasFiltering" ).toBool() );
-    QVariant schemasVariant = settings.value( key + "/excludedSchemas" );
+    const QVariant schemasVariant = settings.value( key + "/excludedSchemas" );
     if ( schemasVariant.isValid() && schemasVariant.type() == QVariant::Map )
       mSchemaSettings = schemasVariant.toMap();
 
@@ -249,7 +249,7 @@ void QgsMssqlNewConnection::listDatabases()
   if ( listDatabase->currentItem() )
     currentDataBase = listDatabase->currentItem()->text();
   listDatabase->clear();
-  QString queryStr = QStringLiteral( "SELECT name FROM master..sysdatabases WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb')" );
+  const QString queryStr = QStringLiteral( "SELECT name FROM master..sysdatabases WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb')" );
 
   QSqlDatabase db = getDatabase( QStringLiteral( "master" ) );
 
@@ -268,7 +268,7 @@ void QgsMssqlNewConnection::listDatabases()
     {
       while ( query.next() )
       {
-        QString name = query.value( 0 ).toString();
+        const QString name = query.value( 0 ).toString();
         listDatabase->addItem( name );
       }
       listDatabase->setCurrentRow( 0 );
@@ -316,7 +316,7 @@ QSqlDatabase QgsMssqlNewConnection::getDatabase( const QString &name ) const
 void QgsMssqlNewConnection::updateOkButtonState()
 {
   QListWidgetItem *item = listDatabase->currentItem();
-  bool disabled = txtName->text().isEmpty() || ( txtService->text().isEmpty() && txtHost->text().isEmpty() ) || !item;
+  const bool disabled = txtName->text().isEmpty() || ( txtService->text().isEmpty() && txtHost->text().isEmpty() ) || !item;
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( disabled );
 }
 
@@ -381,9 +381,9 @@ bool QgsMssqlNewConnection::testExtentInGeometryColumns() const
   if ( !QgsMssqlConnection::openDatabase( db ) )
     return false;
 
-  QString queryStr = QStringLiteral( "SELECT qgis_xmin,qgis_xmax,qgis_ymin,qgis_ymax FROM geometry_columns" );
+  const QString queryStr = QStringLiteral( "SELECT qgis_xmin,qgis_xmax,qgis_ymin,qgis_ymax FROM geometry_columns" );
   QSqlQuery query = QSqlQuery( db );
-  bool test = query.exec( queryStr );
+  const bool test = query.exec( queryStr );
 
   db.close();
 
@@ -397,9 +397,9 @@ bool QgsMssqlNewConnection::testPrimaryKeyInGeometryColumns() const
   if ( !QgsMssqlConnection::openDatabase( db ) )
     return false;
 
-  QString queryStr = QStringLiteral( "SELECT qgis_pkey FROM geometry_columns" );
+  const QString queryStr = QStringLiteral( "SELECT qgis_pkey FROM geometry_columns" );
   QSqlQuery query = QSqlQuery( db );
-  bool test = query.exec( queryStr );
+  const bool test = query.exec( queryStr );
 
   db.close();
 

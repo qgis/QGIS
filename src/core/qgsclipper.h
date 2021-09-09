@@ -266,7 +266,7 @@ inline void QgsClipper::trimFeatureToBoundary(
         // store both ends of the new edge
         if ( !( i2 == 0 && shapeOpen ) )
         {
-          QgsPointXY p = intersect( inX[i1], inY[i1], inX[i2], inY[i2], b );
+          const QgsPointXY p = intersect( inX[i1], inY[i1], inX[i2], inY[i2], b );
           outX.push_back( p.x() );
           outY.push_back( p.y() );
         }
@@ -282,7 +282,7 @@ inline void QgsClipper::trimFeatureToBoundary(
       {
         if ( !( i2 == 0 && shapeOpen ) )
         {
-          QgsPointXY p = intersect( inX[i1], inY[i1], inX[i2], inY[i2], b );
+          const QgsPointXY p = intersect( inX[i1], inY[i1], inX[i2], inY[i2], b );
           outX.push_back( p.x() );
           outY.push_back( p.y() );
         }
@@ -409,7 +409,7 @@ inline QgsPointXY QgsClipper::intersect( const double x1, const double y1,
   if ( std::fabs( r_d ) > SMALL_NUM && std::fabs( r_n ) > SMALL_NUM )
   {
     // they cross
-    double r = r_n / r_d;
+    const double r = r_n / r_d;
     p.set( x1 + r * ( x2 - x1 ), y1 + r * ( y2 - y1 ) );
   }
   else

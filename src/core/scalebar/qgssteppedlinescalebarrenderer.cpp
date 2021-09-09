@@ -66,10 +66,10 @@ void QgsSteppedLineScaleBarRenderer::draw( QgsRenderContext &context, const QgsS
   std::unique_ptr< QgsLineSymbol > sym( settings.lineSymbol()->clone() );
   sym->startRender( context ) ;
 
-  double scaledLabelBarSpace = context.convertToPainterUnits( settings.labelBarSpace(), QgsUnitTypes::RenderMillimeters );
-  double scaledBoxContentSpace = context.convertToPainterUnits( settings.boxContentSpace(), QgsUnitTypes::RenderMillimeters );
-  QFontMetricsF fontMetrics = QgsTextRenderer::fontMetrics( context, settings.textFormat() );
-  double barTopPosition = scaledBoxContentSpace + ( settings.labelVerticalPlacement() == QgsScaleBarSettings::LabelAboveSegment ? fontMetrics.ascent() + scaledLabelBarSpace : 0 );
+  const double scaledLabelBarSpace = context.convertToPainterUnits( settings.labelBarSpace(), QgsUnitTypes::RenderMillimeters );
+  const double scaledBoxContentSpace = context.convertToPainterUnits( settings.boxContentSpace(), QgsUnitTypes::RenderMillimeters );
+  const QFontMetricsF fontMetrics = QgsTextRenderer::fontMetrics( context, settings.textFormat() );
+  const double barTopPosition = scaledBoxContentSpace + ( settings.labelVerticalPlacement() == QgsScaleBarSettings::LabelAboveSegment ? fontMetrics.ascent() + scaledLabelBarSpace : 0 );
   const double barBottomPosition = barTopPosition + context.convertToPainterUnits( settings.height(), QgsUnitTypes::RenderMillimeters );
 
   painter->save();
@@ -77,18 +77,18 @@ void QgsSteppedLineScaleBarRenderer::draw( QgsRenderContext &context, const QgsS
 
   painter->setPen( Qt::NoPen );
 
-  double xOffset = firstLabelXOffset( settings, context, scaleContext );
+  const double xOffset = firstLabelXOffset( settings, context, scaleContext );
 
-  QList<double> positions = segmentPositions( context, scaleContext, settings );
-  QList<double> widths = segmentWidths( scaleContext, settings );
+  const QList<double> positions = segmentPositions( context, scaleContext, settings );
+  const QList<double> widths = segmentWidths( scaleContext, settings );
 
   QPolygonF points;
 
   for ( int i = 0; i < positions.size() + 1; ++i )
   {
     // we render one extra place, corresponding to the final position + width (i.e. the "end" of the bar)
-    double x = i < positions.size() ? context.convertToPainterUnits( positions.at( i ), QgsUnitTypes::RenderMillimeters ) + xOffset
-               : context.convertToPainterUnits( positions.at( i - 1 ), QgsUnitTypes::RenderMillimeters ) + xOffset + context.convertToPainterUnits( widths.at( i - 1 ), QgsUnitTypes::RenderMillimeters );
+    const double x = i < positions.size() ? context.convertToPainterUnits( positions.at( i ), QgsUnitTypes::RenderMillimeters ) + xOffset
+                     : context.convertToPainterUnits( positions.at( i - 1 ), QgsUnitTypes::RenderMillimeters ) + xOffset + context.convertToPainterUnits( widths.at( i - 1 ), QgsUnitTypes::RenderMillimeters );
     if ( i % 2 == 0 )
     {
       points << QPointF( x, barBottomPosition ) << QPointF( x, barTopPosition );

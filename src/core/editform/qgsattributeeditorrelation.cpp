@@ -71,7 +71,7 @@ void QgsAttributeEditorRelation::loadConfiguration( const QDomElement &element, 
       // we cannot use it here since the new flags are in gui, while the current code is in core
       // TODO: remove this compatibility code in QGIS 4
       //       or make the enum private if we really want to keep the backward compatibility (but not worth it!)
-      QString buttonString = element.attribute( QStringLiteral( "buttons" ), qgsFlagValueToKeys( QgsAttributeEditorRelation::Button::AllButtons ) );
+      const QString buttonString = element.attribute( QStringLiteral( "buttons" ), qgsFlagValueToKeys( QgsAttributeEditorRelation::Button::AllButtons ) );
       config.insert( "buttons", qgsFlagValueToKeys( qgsFlagKeysToValue( buttonString, QgsAttributeEditorRelation::Button::AllButtons ) ) );
       Q_NOWARN_DEPRECATED_POP
     }
@@ -99,12 +99,12 @@ void QgsAttributeEditorRelation::loadConfiguration( const QDomElement &element, 
 
   if ( element.hasAttribute( "label" ) )
   {
-    QString label = element.attribute( QStringLiteral( "label" ) );
+    const QString label = element.attribute( QStringLiteral( "label" ) );
     setLabel( label );
   }
   if ( element.hasAttribute( "relationWidgetTypeId" ) )
   {
-    QString relationWidgetTypeId = element.attribute( QStringLiteral( "relationWidgetTypeId" ) );
+    const QString relationWidgetTypeId = element.attribute( QStringLiteral( "relationWidgetTypeId" ) );
     setRelationWidgetTypeId( relationWidgetTypeId );
   }
 }

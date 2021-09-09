@@ -104,7 +104,7 @@ void QgsDb2DataItemGuiProvider::editConnection( QgsDataItem *item )
 
 void QgsDb2DataItemGuiProvider::deleteConnection( QgsDataItem *item )
 {
-  QString key = "/DB2/connections/" + item->name();
+  const QString key = "/DB2/connections/" + item->name();
   QgsSettings settings;
   settings.remove( key + "/service" );
   settings.remove( key + "/driver" );
@@ -131,8 +131,8 @@ void QgsDb2DataItemGuiProvider::saveConnections()
 
 void QgsDb2DataItemGuiProvider::loadConnections( QgsDataItem *item )
 {
-  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
-                     tr( "XML files (*.xml *.XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
+                           tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;

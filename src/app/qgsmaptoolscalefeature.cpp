@@ -133,7 +133,7 @@ void QgsMapToolScaleFeature::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   if ( mScalingActive )
   {
     const double distance = mFeatureCenterMapCoords.distance( e->mapPoint() );
-    double scale = distance / mBaseDistance; // min 0 or no limit?
+    const double scale = distance / mBaseDistance; // min 0 or no limit?
 
     if ( mScalingWidget )
     {
@@ -200,10 +200,10 @@ void QgsMapToolScaleFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       return;
     }
 
-    QgsPointXY layerCoords = toLayerCoordinates( vlayer, e->mapPoint() );
-    double searchRadius = QgsTolerance::vertexSearchRadius( mCanvas->currentLayer(), mCanvas->mapSettings() );
-    QgsRectangle selectRect( layerCoords.x() - searchRadius, layerCoords.y() - searchRadius,
-                             layerCoords.x() + searchRadius, layerCoords.y() + searchRadius );
+    const QgsPointXY layerCoords = toLayerCoordinates( vlayer, e->mapPoint() );
+    const double searchRadius = QgsTolerance::vertexSearchRadius( mCanvas->currentLayer(), mCanvas->mapSettings() );
+    const QgsRectangle selectRect( layerCoords.x() - searchRadius, layerCoords.y() - searchRadius,
+                                   layerCoords.x() + searchRadius, layerCoords.y() + searchRadius );
 
     mAutoSetAnchorPoint = false;
     if ( !mAnchorPoint )
@@ -218,7 +218,7 @@ void QgsMapToolScaleFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setNoAttributes().setFilterRect( selectRect ) );
 
       //find the closest feature
-      QgsGeometry pointGeometry = QgsGeometry().fromPointXY( layerCoords );
+      const QgsGeometry pointGeometry = QgsGeometry().fromPointXY( layerCoords );
       if ( pointGeometry.isNull() )
       {
         return;
@@ -232,7 +232,7 @@ void QgsMapToolScaleFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       {
         if ( f.hasGeometry() )
         {
-          double currentDistance = pointGeometry.distance( f.geometry() );
+          const double currentDistance = pointGeometry.distance( f.geometry() );
           if ( currentDistance < minDistance )
           {
             minDistance = currentDistance;
@@ -323,7 +323,7 @@ void QgsMapToolScaleFeature::updateRubberband( double scale )
     if ( !vlayer )
       return;
 
-    QgsPointXY layerCoords = toLayerCoordinates( vlayer, mFeatureCenterMapCoords );
+    const QgsPointXY layerCoords = toLayerCoordinates( vlayer, mFeatureCenterMapCoords );
     QTransform t;
     t.translate( layerCoords.x(), layerCoords.y() );
     t.scale( mScaling, mScaling );
@@ -358,7 +358,7 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
 
   vlayer->beginEditCommand( tr( "Features Scaled" ) );
 
-  QgsPointXY layerCoords = toLayerCoordinates( vlayer, mFeatureCenterMapCoords );
+  const QgsPointXY layerCoords = toLayerCoordinates( vlayer, mFeatureCenterMapCoords );
   QTransform t;
   t.translate( layerCoords.x(), layerCoords.y() );
   t.scale( mScaling, mScaling );
@@ -374,7 +374,7 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
       continue;
 
     QgsGeometry geom = feat.geometry();
-    if ( !( geom.transform( t ) == QgsGeometry::Success ) )
+    if ( !( geom.transform( t ) == Qgis::GeometryOperationResult::Success ) )
       continue;
 
     const QgsFeatureId id = feat.id();

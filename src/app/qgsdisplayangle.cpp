@@ -36,9 +36,9 @@ void QgsDisplayAngle::setAngleInRadians( double value )
 {
   mValue = value;
 
-  QgsSettings settings;
-  QgsUnitTypes::AngleUnit unit = QgsUnitTypes::decodeAngleUnit( settings.value( QStringLiteral( "qgis/measure/angleunits" ), QgsUnitTypes::encodeUnit( QgsUnitTypes::AngleDegrees ) ).toString() );
-  int decimals = settings.value( QStringLiteral( "qgis/measure/decimalplaces" ), 3 ).toInt();
+  const QgsSettings settings;
+  const QgsUnitTypes::AngleUnit unit = QgsUnitTypes::decodeAngleUnit( settings.value( QStringLiteral( "qgis/measure/angleunits" ), QgsUnitTypes::encodeUnit( QgsUnitTypes::AngleDegrees ) ).toString() );
+  const int decimals = settings.value( QStringLiteral( "qgis/measure/decimalplaces" ), 3 ).toInt();
   mAngleLineEdit->setText( QgsUnitTypes::formatAngle( mValue * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleRadians, unit ), decimals, unit ) );
 }
 
@@ -48,7 +48,7 @@ void QgsDisplayAngle::setBearingInRadians( double value )
 
   const double degrees = value * 180.0 / M_PI;
 
-  QgsNumericFormatContext context;
+  const QgsNumericFormatContext context;
   const QString valueAsText = QgsProject::instance()->displaySettings()->bearingFormat()->formatDouble( degrees, context );
   mAngleLineEdit->setText( valueAsText );
 }

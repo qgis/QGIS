@@ -43,6 +43,7 @@
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmaplayerelevationproperties.h"
 #include "qgsvectorlayerrenderer.h"
+#include "qgsrendereditemresults.h"
 
 ///@cond PRIVATE
 
@@ -130,7 +131,10 @@ bool LayerRenderJob::imageCanBeComposed() const
 
 QgsMapRendererJob::QgsMapRendererJob( const QgsMapSettings &settings )
   : mSettings( settings )
+  , mRenderedItemResults( std::make_unique< QgsRenderedItemResults >( settings.extent() ) )
 {}
+
+QgsMapRendererJob::~QgsMapRendererJob() = default;
 
 void QgsMapRendererJob::start()
 {
@@ -141,6 +145,16 @@ void QgsMapRendererJob::start()
     mErrors.append( QgsMapRendererJob::Error( QString(), tr( "Invalid map settings" ) ) );
     emit finished();
   }
+}
+
+QStringList QgsMapRendererJob::layersRedrawnFromCache() const
+{
+  return mLayersRedrawnFromCache;
+}
+
+QgsRenderedItemResults *QgsMapRendererJob::takeRenderedItemResults()
+{
+  return mRenderedItemResults.release();
 }
 
 QgsMapRendererQImageJob::QgsMapRendererQImageJob( const QgsMapSettings &settings )
@@ -504,6 +518,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
       job.img->setDevicePixelRatio( static_cast<qreal>( mSettings.devicePixelRatio() ) );
       job.renderer = nullptr;
       job.context()->setPainter( nullptr );
+      mLayersRedrawnFromCache.append( ml->id() );
       continue;
     }
 
@@ -809,6 +824,8 @@ void QgsMapRendererJob::cleanupJobs( std::vector<LayerRenderJob> &jobs )
       const QStringList errors = job.renderer->errors();
       for ( const QString &message : errors )
         mErrors.append( Error( job.renderer->layerId(), message ) );
+
+      mRenderedItemResults->appendResults( job.renderer->takeRenderedItemDetails(), *job.context() );
 
       delete job.renderer;
       job.renderer = nullptr;

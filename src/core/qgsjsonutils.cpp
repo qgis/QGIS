@@ -113,7 +113,7 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
       try
       {
         QgsGeometry transformed = geom;
-        if ( mTransformGeometries && transformed.transform( mTransform ) == 0 )
+        if ( mTransformGeometries && transformed.transform( mTransform ) == Qgis::GeometryOperationResult::Success )
           geom = transformed;
       }
       catch ( QgsCsException &cse )

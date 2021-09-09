@@ -93,13 +93,13 @@ void TestNineCellFilters::_testAlg( const QString &name, bool useOpenCl )
 {
 #ifdef HAVE_OPENCL
   QgsOpenClUtils::setEnabled( useOpenCl );
-  QString tmpFile( tempFile( name + ( useOpenCl ? "_opencl" : "" ) ) );
+  const QString tmpFile( tempFile( name + ( useOpenCl ? "_opencl" : "" ) ) );
 #else
   QString tmpFile( tempFile( name ) );
 #endif
-  QString refFile( referenceFile( name ) );
+  const QString refFile( referenceFile( name ) );
   T ninecellFilter( SRC_FILE, tmpFile, "GTiff" );
-  int res = ninecellFilter.processRaster();
+  const int res = ninecellFilter.processRaster();
   QVERIFY( res == 0 );
 
   // Produced file
@@ -169,18 +169,18 @@ void TestNineCellFilters::testRuggedness()
 
 void TestNineCellFilters::_rasterCompare( QgsAlignRaster::RasterInfo &out,  QgsAlignRaster::RasterInfo &ref )
 {
-  QSize refSize( ref.rasterSize() );
-  QSizeF refCellSize( ref.cellSize( ) );
-  QgsAlignRaster::RasterInfo in( SRC_FILE );
-  QSize inSize( in.rasterSize() );
-  QSizeF inCellSize( in.cellSize( ) );
+  const QSize refSize( ref.rasterSize() );
+  const QSizeF refCellSize( ref.cellSize( ) );
+  const QgsAlignRaster::RasterInfo in( SRC_FILE );
+  const QSize inSize( in.rasterSize() );
+  const QSizeF inCellSize( in.cellSize( ) );
   QCOMPARE( out.rasterSize(), inSize );
   QCOMPARE( out.cellSize(), inCellSize );
   QCOMPARE( out.rasterSize(), refSize );
   QCOMPARE( out.cellSize(), refCellSize );
 
   // If the values differ less than tolerance they are considered equal
-  double tolerance = 0.0001;
+  const double tolerance = 0.0001;
 
   // Check three points
   std::map<int, int> controlPoints;
@@ -198,11 +198,11 @@ void TestNineCellFilters::_rasterCompare( QgsAlignRaster::RasterInfo &out,  QgsA
 
   for ( const auto &cp : controlPoints )
   {
-    int x = cp.first;
-    int y = cp.second;
-    double outVal = out.identify( x, y );
-    double refVal = ref.identify( x, y );
-    double diff( qAbs( outVal - refVal ) );
+    const int x = cp.first;
+    const int y = cp.second;
+    const double outVal = out.identify( x, y );
+    const double refVal = ref.identify( x, y );
+    const double diff( qAbs( outVal - refVal ) );
     //qDebug() << outVal << refVal;
     //qDebug() << "Identify " <<  x << "," << y << " diff " << diff << " check: < " << tolerance;
     QVERIFY( diff <= tolerance );

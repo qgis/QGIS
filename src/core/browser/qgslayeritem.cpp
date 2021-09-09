@@ -276,5 +276,11 @@ QgsMimeDataUtils::UriList QgsLayerItem::mimeUris() const
   u.uri = uri();
   u.supportedCrs = supportedCrs();
   u.supportedFormats = supportedFormats();
+
+  if ( capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile )
+  {
+    u.filePath = path();
+  }
+
   return { u };
 }

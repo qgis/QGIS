@@ -27,7 +27,7 @@ QgsAuthEsriTokenEdit::QgsAuthEsriTokenEdit( QWidget *parent )
 
 bool QgsAuthEsriTokenEdit::validateConfig()
 {
-  bool curvalid = !mTokenEdit->toPlainText().isEmpty();
+  const bool curvalid = !mTokenEdit->toPlainText().isEmpty();
   if ( mValid != curvalid )
   {
     mValid = curvalid;

@@ -104,9 +104,9 @@ bool QgsSingleSidedBufferAlgorithm::prepareAlgorithm( const QVariantMap &paramet
   if ( mDynamicDistance )
     mDistanceProperty = parameters.value( QStringLiteral( "DISTANCE" ) ).value< QgsProperty >();
 
-  mSide = static_cast< QgsGeometry::BufferSide>( parameterAsInt( parameters, QStringLiteral( "SIDE" ), context ) );
+  mSide = static_cast< Qgis::BufferSide>( parameterAsInt( parameters, QStringLiteral( "SIDE" ), context ) );
   mSegments = parameterAsInt( parameters, QStringLiteral( "SEGMENTS" ), context );
-  mJoinStyle = static_cast< QgsGeometry::JoinStyle>( 1 + parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );
+  mJoinStyle = static_cast< Qgis::JoinStyle>( 1 + parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );
   mMiterLimit = parameterAsDouble( parameters, QStringLiteral( "MITER_LIMIT" ), context );
 
   return true;
@@ -122,7 +122,7 @@ QgsFeatureList QgsSingleSidedBufferAlgorithm::processFeature( const QgsFeature &
     if ( mDynamicDistance )
       distance = mDistanceProperty.valueAsDouble( context.expressionContext(), distance );
 
-    QgsGeometry outputGeometry =  f.geometry().singleSidedBuffer( distance, mSegments, mSide, mJoinStyle, mMiterLimit );
+    const QgsGeometry outputGeometry =  f.geometry().singleSidedBuffer( distance, mSegments, mSide, mJoinStyle, mMiterLimit );
     if ( outputGeometry.isNull() )
       throw QgsProcessingException( QObject::tr( "Error calculating single sided buffer" ) );
 

@@ -110,6 +110,8 @@ class QgsSpatiaLiteFeatureIterator final: public QgsAbstractFeatureIteratorFromS
 
     QgsRectangle mFilterRect;
     QgsCoordinateTransform mTransform;
+    QgsGeometry mDistanceWithinGeom;
+    std::unique_ptr< QgsGeometryEngine > mDistanceWithinEngine;
 };
 
 #endif // QGSSPATIALITEFEATUREITERATOR_H

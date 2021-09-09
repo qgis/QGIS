@@ -182,8 +182,8 @@ void TestQgsReclassifyUtils::testReclassify()
   QFETCH( int, dataType );
   QFETCH( QVector< double >, expected );
 
-  QgsRectangle extent = QgsRectangle( 0, 0, nRows, nCols );
-  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:3857" ) );
+  const QgsRectangle extent = QgsRectangle( 0, 0, nRows, nCols );
+  const QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:3857" ) );
   double tform[] =
   {
     extent.xMinimum(), extent.width() / nCols, 0.0,

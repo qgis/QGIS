@@ -638,6 +638,7 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
     }
   }
 
+  QString aggregateError;
   QVariant result;
   if ( context )
   {
@@ -686,17 +687,26 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
     QgsExpressionContextScope *subScope = new QgsExpressionContextScope();
     subScope->setVariable( QStringLiteral( "parent" ), context->feature() );
     subContext.appendScope( subScope );
-    result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok, nullptr, context->feedback() );
+    result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok, nullptr, context->feedback(), &aggregateError );
 
-    context->setCachedValue( cacheKey, result );
+    if ( ok )
+    {
+      // important -- we should only store cached values when the expression is successfully calculated. Otherwise subsequent
+      // use of the expression context will happily grab the invalid QVariant cached value without realising that there was actually an error
+      // associated with it's calculation!
+      context->setCachedValue( cacheKey, result );
+    }
   }
   else
   {
-    result = vl->aggregate( aggregate, subExpression, parameters, nullptr, &ok );
+    result = vl->aggregate( aggregate, subExpression, parameters, nullptr, &ok, nullptr, nullptr, &aggregateError );
   }
   if ( !ok )
   {
-    parent->setEvalErrorString( QObject::tr( "Could not calculate aggregate for: %1" ).arg( subExpression ) );
+    if ( !aggregateError.isEmpty() )
+      parent->setEvalErrorString( QObject::tr( "Could not calculate aggregate for: %1 (%2)" ).arg( subExpression, aggregateError ) );
+    else
+      parent->setEvalErrorString( QObject::tr( "Could not calculate aggregate for: %1" ).arg( subExpression ) );
     return QVariant();
   }
 
@@ -808,11 +818,15 @@ static QVariant fcnAggregateRelation( const QVariantList &values, const QgsExpre
 
 
   QgsExpressionContext subContext( *context );
-  result = childLayer->aggregate( aggregate, subExpression, parameters, &subContext, &ok, nullptr, context->feedback() );
+  QString error;
+  result = childLayer->aggregate( aggregate, subExpression, parameters, &subContext, &ok, nullptr, context->feedback(), &error );
 
   if ( !ok )
   {
-    parent->setEvalErrorString( QObject::tr( "Could not calculate aggregate for: %1" ).arg( subExpression ) );
+    if ( !error.isEmpty() )
+      parent->setEvalErrorString( QObject::tr( "Could not calculate aggregate for: %1 (%2)" ).arg( subExpression, error ) );
+    else
+      parent->setEvalErrorString( QObject::tr( "Could not calculate aggregate for: %1" ).arg( subExpression ) );
     return QVariant();
   }
 
@@ -932,11 +946,15 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
   QgsExpressionContextScope *subScope = new QgsExpressionContextScope();
   subScope->setVariable( QStringLiteral( "parent" ), context->feature() );
   subContext.appendScope( subScope );
-  result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok, nullptr, context->feedback() );
+  QString error;
+  result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok, nullptr, context->feedback(), &error );
 
   if ( !ok )
   {
-    parent->setEvalErrorString( QObject::tr( "Could not calculate aggregate for: %1" ).arg( subExpression ) );
+    if ( !error.isEmpty() )
+      parent->setEvalErrorString( QObject::tr( "Could not calculate aggregate for: %1 (%2)" ).arg( subExpression, error ) );
+    else
+      parent->setEvalErrorString( QObject::tr( "Could not calculate aggregate for: %1" ).arg( subExpression ) );
     return QVariant();
   }
 
@@ -2408,6 +2426,40 @@ static QVariant fcnY( const QVariantList &, const QgsExpressionContext *context,
   }
 }
 
+static QVariant fcnZ( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * )
+{
+  FEAT_FROM_CONTEXT( context, f )
+  ENSURE_GEOM_TYPE( f, g, QgsWkbTypes::PointGeometry )
+
+  if ( g.isEmpty() )
+    return QVariant();
+
+  const QgsAbstractGeometry *abGeom = g.constGet();
+
+  if ( g.isEmpty() || !abGeom->is3D() )
+    return QVariant();
+
+  if ( g.type() == QgsWkbTypes::PointGeometry && !g.isMultipart() )
+  {
+    const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( g.constGet() );
+    if ( point )
+      return point->z();
+  }
+  else if ( g.type() == QgsWkbTypes::PointGeometry && g.isMultipart() )
+  {
+    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( g.constGet() ) )
+    {
+      if ( collection->numGeometries() > 0 )
+      {
+        if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( collection->geometryN( 0 ) ) )
+          return point->z();
+      }
+    }
+  }
+
+  return QVariant();
+}
+
 static QVariant fcnGeomIsValid( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -3585,6 +3637,21 @@ static QVariant fcnSinuosity( const QVariantList &values, const QgsExpressionCon
   return QVariant( curve->sinuosity() );
 }
 
+static QVariant fcnStraightDistance2d( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  const QgsCurve *curve = geom.constGet() ? qgsgeometry_cast< const QgsCurve * >( geom.constGet()->simplifiedTypeRef() ) : nullptr;
+  if ( !curve )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `straight_distance_2d` requires a line geometry or a multi line geometry with a single part." ) );
+    return QVariant();
+  }
+
+  return QVariant( curve->straightDistance2d() );
+}
+
+
+
 static QVariant fcnFlipCoordinates( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -3849,9 +3916,11 @@ static QVariant fcnOffsetCurve( const QVariantList &values, const QgsExpressionC
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   double dist = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
   int segments = QgsExpressionUtils::getNativeIntValue( values.at( 2 ), parent );
-  QgsGeometry::JoinStyle join = static_cast< QgsGeometry::JoinStyle >( QgsExpressionUtils::getIntValue( values.at( 3 ), parent ) );
-  if ( join < QgsGeometry::JoinStyleRound || join > QgsGeometry::JoinStyleBevel )
+  const int joinInt = QgsExpressionUtils::getIntValue( values.at( 3 ), parent );
+  if ( joinInt < 1 || joinInt > 3 )
     return QVariant();
+  const Qgis::JoinStyle join = static_cast< Qgis::JoinStyle >( joinInt );
+
   double miterLimit = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
 
   QgsGeometry geom = fGeom.offsetCurve( dist, segments, join, miterLimit );
@@ -3864,12 +3933,15 @@ static QVariant fcnSingleSidedBuffer( const QVariantList &values, const QgsExpre
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   double dist = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
   int segments = QgsExpressionUtils::getNativeIntValue( values.at( 2 ), parent );
-  QgsGeometry::JoinStyle join = static_cast< QgsGeometry::JoinStyle >( QgsExpressionUtils::getIntValue( values.at( 3 ), parent ) );
-  if ( join < QgsGeometry::JoinStyleRound || join > QgsGeometry::JoinStyleBevel )
+
+  const int joinInt = QgsExpressionUtils::getIntValue( values.at( 3 ), parent );
+  if ( joinInt < 1 || joinInt > 3 )
     return QVariant();
+  const Qgis::JoinStyle join = static_cast< Qgis::JoinStyle >( joinInt );
+
   double miterLimit = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
 
-  QgsGeometry geom = fGeom.singleSidedBuffer( dist, segments, QgsGeometry::SideLeft, join, miterLimit );
+  QgsGeometry geom = fGeom.singleSidedBuffer( dist, segments, Qgis::BufferSide::Left, join, miterLimit );
   QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
@@ -3933,6 +4005,46 @@ static QVariant fcnRotate( const QVariantList &values, const QgsExpressionContex
   fGeom.rotate( rotation, pt );
   return QVariant::fromValue( fGeom );
 }
+
+static QVariant fcnAffineTransform( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  if ( fGeom.isNull() )
+  {
+    return QVariant();
+  }
+
+  const double deltaX = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
+  const double deltaY = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
+
+  const double rotationZ = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
+
+  const double scaleX = QgsExpressionUtils::getDoubleValue( values.at( 4 ), parent );
+  const double scaleY = QgsExpressionUtils::getDoubleValue( values.at( 5 ), parent );
+
+  const double deltaZ = QgsExpressionUtils::getDoubleValue( values.at( 6 ), parent );
+  const double deltaM = QgsExpressionUtils::getDoubleValue( values.at( 7 ), parent );
+  const double scaleZ = QgsExpressionUtils::getDoubleValue( values.at( 8 ), parent );
+  const double scaleM = QgsExpressionUtils::getDoubleValue( values.at( 9 ), parent );
+
+  if ( deltaZ != 0.0 && !fGeom.constGet()->is3D() )
+  {
+    fGeom.get()->addZValue( 0 );
+  }
+  if ( deltaM != 0.0 && !fGeom.constGet()->isMeasure() )
+  {
+    fGeom.get()->addMValue( 0 );
+  }
+
+  QTransform transform;
+  transform.translate( deltaX, deltaY );
+  transform.rotate( rotationZ );
+  transform.scale( scaleX, scaleY );
+  fGeom.transform( transform, deltaZ, scaleZ, deltaM, scaleM );
+
+  return QVariant::fromValue( fGeom );
+}
+
 
 static QVariant fcnCentroid( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
@@ -4995,7 +5107,7 @@ static QVariant fcnTransformGeometry( const QVariantList &values, const QgsExpre
   QgsCoordinateTransform t( s, d, tContext );
   try
   {
-    if ( fGeom.transform( t ) == 0 )
+    if ( fGeom.transform( t ) == Qgis::GeometryOperationResult::Success )
       return QVariant::fromValue( fGeom );
   }
   catch ( QgsCsException &cse )
@@ -6756,6 +6868,10 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     yFunc->setIsStatic( false );
     functions << yFunc;
 
+    QgsStaticExpressionFunction *zFunc = new QgsStaticExpressionFunction( QStringLiteral( "$z" ), 0, fcnZ, QStringLiteral( "GeometryGroup" ), QString(), true );
+    zFunc->setIsStatic( false );
+    functions << zFunc;
+
     QMap< QString, QgsExpressionFunction::FcnEval > geometry_overlay_definitions
     {
       { QStringLiteral( "overlay_intersects" ), fcnGeomOverlayIntersects },
@@ -6896,6 +7012,17 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "rotation" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "center" ), true ),
                                             fcnRotate, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "affine_transform" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "deltaX" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "deltaY" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "rotationZ" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "scaleX" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "scaleY" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "deltaZ" ), true, 0 )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "deltaM" ), true, 0 )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "scaleZ" ), true, 1 )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "scaleM" ), true, 1 ),
+                                            fcnAffineTransform, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "buffer" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8 ),
@@ -6918,13 +7045,13 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "offset_curve" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8.0 )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "join" ), true, QgsGeometry::JoinStyleRound )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "join" ), true, static_cast< int >( Qgis::JoinStyle::Round ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "miter_limit" ), true, 2.0 ),
                                             fcnOffsetCurve, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "single_sided_buffer" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8.0 )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "join" ), true, QgsGeometry::JoinStyleRound )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "join" ), true, static_cast< int >( Qgis::JoinStyle::Round ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "miter_limit" ), true, 2.0 ),
                                             fcnSingleSidedBuffer, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "extend" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
@@ -7019,7 +7146,9 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "m_min" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
                                             fcnMMin, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "sinuosity" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
-                                            fcnSinuosity, QStringLiteral( "GeometryGroup" ) );
+                                            fcnSinuosity, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "straight_distance_2d" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+                                            fcnStraightDistance2d, QStringLiteral( "GeometryGroup" ) );
 
 
     QgsStaticExpressionFunction *orderPartsFunc = new QgsStaticExpressionFunction( QStringLiteral( "order_parts" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )

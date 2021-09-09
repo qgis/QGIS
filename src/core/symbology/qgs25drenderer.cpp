@@ -120,7 +120,7 @@ QDomElement Qgs25DRenderer::save( QDomDocument &doc, const QgsReadWriteContext &
 
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "25dRenderer" ) );
 
-  QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "symbol" ), mSymbol.get(), doc, context );
+  const QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "symbol" ), mSymbol.get(), doc, context );
 
   saveRendererData( doc, rendererElem, context );
 
@@ -133,7 +133,7 @@ QgsFeatureRenderer *Qgs25DRenderer::create( QDomElement &element, const QgsReadW
 {
   Qgs25DRenderer *renderer = new Qgs25DRenderer();
 
-  QDomNodeList symbols = element.elementsByTagName( QStringLiteral( "symbol" ) );
+  const QDomNodeList symbols = element.elementsByTagName( QStringLiteral( "symbol" ) );
   if ( symbols.size() )
   {
     renderer->mSymbol.reset( QgsSymbolLayerUtils::loadSymbol( symbols.at( 0 ).toElement(), context ) );

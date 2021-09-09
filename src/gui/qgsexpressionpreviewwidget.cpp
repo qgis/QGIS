@@ -87,8 +87,8 @@ void QgsExpressionPreviewWidget::refreshPreview()
       mExpression.setGeomCalculator( &mDa );
     }
 
-    QVariant value = mExpression.evaluate( &mExpressionContext );
-    QString preview = QgsExpression::formatPreviewString( value );
+    const QVariant value = mExpression.evaluate( &mExpressionContext );
+    const QString preview = QgsExpression::formatPreviewString( value );
     if ( !mExpression.hasEvalError() )
     {
       mPreviewLabel->setText( preview );
@@ -112,7 +112,7 @@ void QgsExpressionPreviewWidget::refreshPreview()
         }
       }
 
-      QString errorString = mExpression.parserErrorString().replace( QLatin1String( "\n" ), QLatin1String( "<br>" ) );
+      const QString errorString = mExpression.parserErrorString().replace( QLatin1String( "\n" ), QLatin1String( "<br>" ) );
       QString tooltip;
       if ( mExpression.hasParserError() )
         tooltip = QStringLiteral( "<b>%1:</b>"
@@ -131,7 +131,7 @@ void QgsExpressionPreviewWidget::refreshPreview()
     else
     {
       mPreviewLabel->setStyleSheet( QString() );
-      QString longerPreview = QgsExpression::formatPreviewString( value, true, 255 );
+      const QString longerPreview = QgsExpression::formatPreviewString( value, true, 255 );
       if ( longerPreview != preview )
         setExpressionToolTip( longerPreview );
       else

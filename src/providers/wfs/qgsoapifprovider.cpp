@@ -73,7 +73,7 @@ bool QgsOapifProvider::init()
   const bool forceRefresh = false;
 
   const QString url = QgsDataSourceUri( mShared->mURI.uri() ).param( QgsWFSConstants::URI_PARAM_URL );
-  int pos = url.indexOf( '?' );
+  const int pos = url.indexOf( '?' );
   if ( pos >= 0 )
   {
     mShared->mExtraQueryParameters = url.mid( pos + 1 );
@@ -289,7 +289,7 @@ bool QgsOapifProvider::setSubsetString( const QString &filter, bool updateFeatur
 
   if ( !filter.isEmpty() )
   {
-    QgsExpression filterExpression( filter );
+    const QgsExpression filterExpression( filter );
     if ( !filterExpression.isValid() )
     {
       QgsMessageLog::logMessage( filterExpression.parserErrorString(), tr( "OAPIF" ) );
@@ -365,7 +365,7 @@ QString QgsOapifSharedData::appendExtraQueryParameters( const QString &url ) con
 {
   if ( mExtraQueryParameters.isEmpty() || url.indexOf( mExtraQueryParameters ) > 0 )
     return url;
-  int nPos = url.indexOf( '?' );
+  const int nPos = url.indexOf( '?' );
   if ( nPos < 0 )
     return url + '?' + mExtraQueryParameters;
   return url + '&' + mExtraQueryParameters;
@@ -412,7 +412,7 @@ static QString getDateTimeValueAsString( const QVariant &v )
 
 static bool isDateTimeField( const QgsFields &fields, const QString &fieldName )
 {
-  int idx = fields.indexOf( fieldName );
+  const int idx = fields.indexOf( fieldName );
   if ( idx >= 0 )
   {
     const auto type = fields.at( idx ).type();
@@ -670,10 +670,10 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
   if ( !rect.isNull() )
   {
     // Clamp to avoid server errors.
-    double minx = std::max( -180.0, rect.xMinimum() );
-    double miny = std::max( -90.0, rect.yMinimum() );
-    double maxx = std::min( 180.0, rect.xMaximum() );
-    double maxy = std::min( 90.0, rect.yMaximum() );
+    const double minx = std::max( -180.0, rect.xMinimum() );
+    const double miny = std::max( -90.0, rect.yMinimum() );
+    const double maxx = std::min( 180.0, rect.xMaximum() );
+    const double maxy = std::min( 90.0, rect.yMaximum() );
     if ( minx > 180.0 || miny > 90.0 || maxx  < -180.0 || maxy < -90.0 )
     {
       // completely out of range. Servers could error out
@@ -749,7 +749,7 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
       const auto srcAttrs = f.attributes();
       for ( int j = 0; j < dstFields.size(); j++ )
       {
-        int srcIdx = srcFields.indexOf( dstFields[j].name() );
+        const int srcIdx = srcFields.indexOf( dstFields[j].name() );
         if ( srcIdx >= 0 )
         {
           const QVariant &v = srcAttrs.value( srcIdx );

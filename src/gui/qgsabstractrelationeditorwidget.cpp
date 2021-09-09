@@ -113,7 +113,7 @@ void QgsAbstractRelationEditorWidget::setFeature( const QgsFeature &feature, boo
 
 void QgsAbstractRelationEditorWidget::setNmRelationId( const QVariant &nmRelationId )
 {
-  QgsRelation nmrelation = QgsProject::instance()->relationManager()->relation( nmRelationId.toString() );
+  const QgsRelation nmrelation = QgsProject::instance()->relationManager()->relation( nmRelationId.toString() );
   beforeSetRelations( mRelation, nmrelation );
   mNmRelation = nmrelation;
   afterSetRelations();
@@ -199,7 +199,7 @@ void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
   // For generated relations insert the referenced layer field
   if ( mRelation.type() == QgsRelation::Generated )
   {
-    QgsPolymorphicRelation polyRel = mRelation.polymorphicRelation();
+    const QgsPolymorphicRelation polyRel = mRelation.polymorphicRelation();
     keyAttrs.insert( fields.indexFromName( polyRel.referencedLayerField() ), polyRel.layerRepresentation( mRelation.referencedLayer() ) );
   }
 
@@ -221,14 +221,14 @@ void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
     const auto constFieldPairs = mRelation.fieldPairs();
     for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
     {
-      int index = fields.indexOf( fieldPair.first );
+      const int index = fields.indexOf( fieldPair.first );
       linkAttributes.insert( index,  mFeature.attribute( fieldPair.second ) );
     }
 
     const auto constNmFieldPairs = mNmRelation.fieldPairs();
     for ( const QgsRelation::FieldPair &fieldPair : constNmFieldPairs )
     {
-      int index = fields.indexOf( fieldPair.first );
+      const int index = fields.indexOf( fieldPair.first );
       linkAttributes.insert( index, f.attribute( fieldPair.second ) );
     }
     QgsFeature linkFeature = QgsVectorLayerUtils::createFeature( mRelation.referencingLayer(), QgsGeometry(), linkAttributes, &context );
@@ -344,9 +344,9 @@ void QgsAbstractRelationEditorWidget::deleteFeatures( const QgsFeatureIds &fids 
     }
 
     // for extra safety to make sure we know that the delete can have impact on children and joins
-    int res = QMessageBox::question( this, tr( "Delete at least %1 feature(s) on other layer(s)" ).arg( childrenCount ),
-                                     tr( "Delete %1 feature(s) on layer \"%2\", %3 as well\nand all of its other descendants.\nDelete these features?" ).arg( fids.count() ).arg( layer->name() ).arg( childrenInfo ),
-                                     QMessageBox::Yes | QMessageBox::No );
+    const int res = QMessageBox::question( this, tr( "Delete at least %1 feature(s) on other layer(s)" ).arg( childrenCount ),
+                                           tr( "Delete %1 feature(s) on layer \"%2\", %3 as well\nand all of its other descendants.\nDelete these features?" ).arg( fids.count() ).arg( layer->name() ).arg( childrenInfo ),
+                                           QMessageBox::Yes | QMessageBox::No );
     if ( res != QMessageBox::Yes )
       deleteFeatures = false;
   }
@@ -423,7 +423,7 @@ void QgsAbstractRelationEditorWidget::onLinkFeatureDlgAccepted()
 
     if ( mRelation.type() == QgsRelation::Generated )
     {
-      QgsPolymorphicRelation polyRel = mRelation.polymorphicRelation();
+      const QgsPolymorphicRelation polyRel = mRelation.polymorphicRelation();
       Q_ASSERT( polyRel.isValid() );
 
       linkAttributes.insert( fields.indexFromName( polyRel.referencedLayerField() ),
@@ -433,7 +433,7 @@ void QgsAbstractRelationEditorWidget::onLinkFeatureDlgAccepted()
     const auto constFieldPairs = mRelation.fieldPairs();
     for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
     {
-      int index = fields.indexOf( fieldPair.first );
+      const int index = fields.indexOf( fieldPair.first );
       linkAttributes.insert( index,  mFeature.attribute( fieldPair.second ) );
     }
 
@@ -442,7 +442,7 @@ void QgsAbstractRelationEditorWidget::onLinkFeatureDlgAccepted()
       const auto constFieldPairs = mNmRelation.fieldPairs();
       for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
       {
-        int index = fields.indexOf( fieldPair.first );
+        const int index = fields.indexOf( fieldPair.first );
         linkAttributes.insert( index, relatedFeature.attribute( fieldPair.second ) );
       }
       const QgsFeature linkFeature = QgsVectorLayerUtils::createFeature( mRelation.referencingLayer(), QgsGeometry(), linkAttributes, &context );
@@ -463,18 +463,18 @@ void QgsAbstractRelationEditorWidget::onLinkFeatureDlgAccepted()
     const auto constFieldPairs = mRelation.fieldPairs();
     for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
     {
-      int idx = mRelation.referencingLayer()->fields().lookupField( fieldPair.referencingField() );
-      QVariant val = mFeature.attribute( fieldPair.referencedField() );
+      const int idx = mRelation.referencingLayer()->fields().lookupField( fieldPair.referencingField() );
+      const QVariant val = mFeature.attribute( fieldPair.referencedField() );
       keys.insert( idx, val );
     }
 
     const auto constSelectedFeatures = selectionDlg->selectedFeatures();
-    for ( QgsFeatureId fid : constSelectedFeatures )
+    for ( const QgsFeatureId fid : constSelectedFeatures )
     {
       QgsVectorLayer *referencingLayer = mRelation.referencingLayer();
       if ( mRelation.type() == QgsRelation::Generated )
       {
-        QgsPolymorphicRelation polyRel = mRelation.polymorphicRelation();
+        const QgsPolymorphicRelation polyRel = mRelation.polymorphicRelation();
 
         Q_ASSERT( polyRel.isValid() );
 
@@ -521,9 +521,9 @@ void QgsAbstractRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &fids 
       filters << '(' + mNmRelation.getRelatedFeaturesRequest( f ).filterExpression()->expression() + ')';
     }
 
-    QString filter = QStringLiteral( "(%1) AND (%2)" ).arg(
-                       mRelation.getRelatedFeaturesRequest( mFeature ).filterExpression()->expression(),
-                       filters.join( QLatin1String( " OR " ) ) );
+    const QString filter = QStringLiteral( "(%1) AND (%2)" ).arg(
+                             mRelation.getRelatedFeaturesRequest( mFeature ).filterExpression()->expression(),
+                             filters.join( QLatin1String( " OR " ) ) );
 
     QgsFeatureIterator linkedIterator = mRelation.referencingLayer()->getFeatures( QgsFeatureRequest()
                                         .setNoAttributes()
@@ -545,23 +545,23 @@ void QgsAbstractRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &fids 
     const auto constFieldPairs = mRelation.fieldPairs();
     for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
     {
-      int idx = mRelation.referencingLayer()->fields().lookupField( fieldPair.referencingField() );
+      const int idx = mRelation.referencingLayer()->fields().lookupField( fieldPair.referencingField() );
       if ( idx < 0 )
       {
         QgsDebugMsg( QStringLiteral( "referencing field %1 not found" ).arg( fieldPair.referencingField() ) );
         return;
       }
-      QgsField fld = mRelation.referencingLayer()->fields().at( idx );
+      const QgsField fld = mRelation.referencingLayer()->fields().at( idx );
       keyFields.insert( idx, fld );
     }
 
     const auto constFeatureids = fids;
-    for ( QgsFeatureId fid : constFeatureids )
+    for ( const QgsFeatureId fid : constFeatureids )
     {
       QgsVectorLayer *referencingLayer = mRelation.referencingLayer();
       if ( mRelation.type() == QgsRelation::Generated )
       {
-        QgsPolymorphicRelation polyRel = mRelation.polymorphicRelation();
+        const QgsPolymorphicRelation polyRel = mRelation.polymorphicRelation();
 
         Q_ASSERT( mRelation.polymorphicRelation().isValid() );
 

@@ -903,7 +903,7 @@ class CORE_EXPORT QgsWkbTypes
      */
     static int wkbDimensions( Type type ) SIP_HOLDGIL
     {
-      GeometryType gtype = geometryType( type );
+      const GeometryType gtype = geometryType( type );
       switch ( gtype )
       {
         case LineGeometry:
@@ -1153,7 +1153,7 @@ class CORE_EXPORT QgsWkbTypes
         return NoGeometry;
 
       //upgrade with z dimension
-      Type flat = flatType( type );
+      const Type flat = flatType( type );
       if ( hasM( type ) )
         return static_cast< QgsWkbTypes::Type >( flat + 3000 );
       else
@@ -1190,7 +1190,7 @@ class CORE_EXPORT QgsWkbTypes
         return MultiPolygonZM;
 
       //upgrade with m dimension
-      Type flat = flatType( type );
+      const Type flat = flatType( type );
       if ( hasZ( type ) )
         return static_cast< QgsWkbTypes::Type >( flat + 3000 );
       else
@@ -1240,7 +1240,7 @@ class CORE_EXPORT QgsWkbTypes
      */
     static Type to25D( Type type ) SIP_HOLDGIL
     {
-      QgsWkbTypes::Type flat = flatType( type );
+      const QgsWkbTypes::Type flat = flatType( type );
 
       if ( flat >= Point && flat <= MultiPolygon )
         return static_cast< QgsWkbTypes::Type >( static_cast<unsigned>( flat ) + 0x80000000U );

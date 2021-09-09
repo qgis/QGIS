@@ -104,6 +104,9 @@
 #include "qgsprovidersublayersdialog.h"
 #include "qgsmaplayerfactory.h"
 #include "qgsbrowserwidget.h"
+#include "annotations/qgsannotationitempropertieswidget.h"
+#include "qgsmaptoolmodifyannotation.h"
+#include "qgsannotationlayer.h"
 
 #include "qgsanalysis.h"
 #include "qgsgeometrycheckregistry.h"
@@ -429,6 +432,8 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 #include "qgssublayersdialog.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
+#include "qgsannotationitemguiregistry.h"
+#include "qgscreateannotationitemmaptool.h"
 
 #include "pointcloud/qgspointcloudelevationpropertieswidget.h"
 #include "pointcloud/qgspointcloudlayerstylewidget.h"
@@ -747,6 +752,89 @@ void QgisApp::showGeoreferencer()
   mGeoreferencer->setFocus();
 }
 #endif
+
+void QgisApp::annotationItemTypeAdded( int id )
+{
+  if ( QgsGui::annotationItemGuiRegistry()->itemMetadata( id )->flags() & Qgis::AnnotationItemGuiFlag::FlagNoCreationTools )
+    return;
+
+  QString name = QgsGui::annotationItemGuiRegistry()->itemMetadata( id )->visibleName();
+  QString groupId = QgsGui::annotationItemGuiRegistry()->itemMetadata( id )->groupId();
+  QToolButton *groupButton = nullptr;
+  if ( !groupId.isEmpty() )
+  {
+    // find existing group toolbutton and submenu, or create new ones if this is the first time the group has been encountered
+    const QgsAnnotationItemGuiGroup &group = QgsGui::annotationItemGuiRegistry()->itemGroup( groupId );
+    QIcon groupIcon = group.icon.isNull() ? QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicShape.svg" ) ) : group.icon;
+    QString groupText = tr( "Create %1" ).arg( group.name );
+    if ( mAnnotationItemGroupToolButtons.contains( groupId ) )
+    {
+      groupButton = mAnnotationItemGroupToolButtons.value( groupId );
+    }
+    else
+    {
+      QToolButton *groupToolButton = new QToolButton( mAnnotationsToolBar );
+      groupToolButton->setIcon( groupIcon );
+      groupToolButton->setCheckable( true );
+      groupToolButton->setPopupMode( QToolButton::InstantPopup );
+      groupToolButton->setAutoRaise( true );
+      groupToolButton->setToolButtonStyle( Qt::ToolButtonIconOnly );
+      groupToolButton->setToolTip( groupText );
+      mAnnotationsToolBar->addWidget( groupToolButton );
+      mAnnotationItemGroupToolButtons.insert( groupId, groupToolButton );
+      groupButton = groupToolButton;
+    }
+  }
+
+  // update UI for new item type
+  QAction *action = new QAction( tr( "Create %1" ).arg( name ), this );
+  action->setToolTip( tr( "Create %1" ).arg( name ) );
+  action->setCheckable( true );
+  action->setData( id );
+  action->setIcon( QgsGui::annotationItemGuiRegistry()->itemMetadata( id )->creationIcon() );
+
+  mMapToolGroup->addAction( action );
+
+  if ( groupButton )
+    groupButton->addAction( action );
+  else
+  {
+    mAnnotationsToolBar->addAction( action );
+  }
+
+  connect( action, &QAction::toggled, this, [this, action, id]( bool checked )
+  {
+    if ( !checked )
+      return;
+
+    QgsCreateAnnotationItemMapToolInterface *tool = QgsGui::annotationItemGuiRegistry()->itemMetadata( id )->createMapTool( mMapCanvas, mAdvancedDigitizingDockWidget );
+    tool->mapTool()->setAction( action );
+    mMapCanvas->setMapTool( tool->mapTool() );
+    if ( qobject_cast< QgsMapToolCapture * >( tool->mapTool() ) )
+    {
+      enableDigitizeTechniqueActions( checked, action );
+    }
+
+    connect( tool->mapTool(), &QgsMapTool::deactivated, tool->mapTool(), &QObject::deleteLater );
+    connect( tool->handler(), &QgsCreateAnnotationItemMapToolHandler::itemCreated, this, [ = ]
+    {
+      QgsAnnotationItem *item = tool->handler()->takeCreatedItem();
+      QgsAnnotationLayer *targetLayer = qobject_cast< QgsAnnotationLayer * >( activeLayer() );
+      if ( !targetLayer )
+        targetLayer = QgsProject::instance()->mainAnnotationLayer();
+
+      const QString itemId = targetLayer->addItem( item );
+      // automatically select item in layer styling panel
+      mMapStyleWidget->setAnnotationItem( targetLayer, itemId );
+      mMapStylingDock->setUserVisible( true );
+      mMapStyleWidget->focusDefaultWidget();
+
+      QgsProject::instance()->setDirty( true );
+
+      // TODO -- possibly automatically deactivate the tool now?
+    } );
+  } );
+}
 
 /*
  * This function contains forced validation of CRS used in QGIS.
@@ -1338,6 +1426,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   registerMapLayerPropertiesFactory( new QgsPointCloudLayer3DRendererWidgetFactory( this ) );
 #endif
   registerMapLayerPropertiesFactory( new QgsPointCloudElevationPropertiesWidgetFactory( this ) );
+  registerMapLayerPropertiesFactory( new QgsAnnotationItemPropertiesWidgetFactory( this ) );
 
   activateDeactivateLayerRelatedActions( nullptr ); // after members were created
 
@@ -1409,6 +1498,17 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   // now when all data item providers are registered, customize both browsers
   QgsCustomization::instance()->updateBrowserWidget( mBrowserWidget );
   QgsCustomization::instance()->updateBrowserWidget( mBrowserWidget2 );
+
+
+  // populate annotation toolbar with initial items...
+  const QList< int > itemMetadataIds = QgsGui::annotationItemGuiRegistry()->itemMetadataIds();
+  for ( int id : itemMetadataIds )
+  {
+    annotationItemTypeAdded( id );
+  }
+  //..and listen out for new item types
+  connect( QgsGui::annotationItemGuiRegistry(), &QgsAnnotationItemGuiRegistry::typeAdded, this, &QgisApp::annotationItemTypeAdded );
+
 
   // Create the plugin registry and load plugins
   // load any plugins that were running in the last session
@@ -1660,6 +1760,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   fileNewBlank(); // prepare empty project, also skips any default templates from loading
   updateCrsStatusBar();
   endProfile();
+
+  connect( qobject_cast< QgsMapToolModifyAnnotation * >( mMapTools->mapTool( QgsAppMapTools::AnnotationEdit ) ), &QgsMapToolModifyAnnotation::itemSelected,
+           mMapStyleWidget, &QgsLayerStylingWidget::setAnnotationItem );
+  connect( qobject_cast< QgsMapToolModifyAnnotation * >( mMapTools->mapTool( QgsAppMapTools::AnnotationEdit ) ), &QgsMapToolModifyAnnotation::selectionCleared,
+           mMapStyleWidget, [this] { mMapStyleWidget->setAnnotationItem( nullptr, QString() ); } );
 
   // request notification of FileOpen events (double clicking a file icon in Mac OS X Finder)
   // should come after fileNewBlank to ensure project is properly set up to receive any data source files
@@ -2876,6 +2981,9 @@ void QgisApp::createActions()
 
   connect( mActionDiagramProperties, &QAction::triggered, this, &QgisApp::diagramProperties );
 
+  connect( mActionCreateAnnotationLayer, &QAction::triggered, this, &QgisApp::createAnnotationLayer );
+  connect( mActionModifyAnnotation, &QAction::triggered, this, [ = ] {  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::AnnotationEdit ) ); } );
+
   // we can't set the shortcut these actions, because we need to restrict their context to the canvas and it's children..
   for ( QWidget *widget :
         {
@@ -3023,6 +3131,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionChangeLabelProperties );
   mMapToolGroup->addAction( mActionReverseLine );
   mMapToolGroup->addAction( mActionTrimExtendFeature );
+  mMapToolGroup->addAction( mActionModifyAnnotation );
 
   //
   // Preview Modes Group
@@ -4392,6 +4501,7 @@ void QgisApp::setupCanvasTools()
   mMapTools->mapTool( QgsAppMapTools::MoveLabel )->setAction( mActionMoveLabel );
   mMapTools->mapTool( QgsAppMapTools::RotateLabel )->setAction( mActionRotateLabel );
   mMapTools->mapTool( QgsAppMapTools::ChangeLabelProperties )->setAction( mActionChangeLabelProperties );
+  mMapTools->mapTool( QgsAppMapTools::AnnotationEdit )->setAction( mActionModifyAnnotation );
 
   //ensure that non edit tool is initialized or we will get crashes in some situations
   mNonEditMapTool = mMapTools->mapTool( QgsAppMapTools::Pan );
@@ -5516,7 +5626,7 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layers, const QString &
       qApp->processEvents();
     }
 
-    QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->querySublayers( uri );
+    QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->querySublayers( uri, Qgis::SublayerQueryFlag::IncludeSystemTables );
     // filter out non-vector sublayers
     sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), []( const QgsProviderSublayerDetails & sublayer )
     {
@@ -5901,7 +6011,7 @@ QgsPointCloudLayer *QgisApp::addPointCloudLayerPrivate( const QString &uri, cons
 bool QgisApp::askUserForZipItemLayers( const QString &path, const QList< QgsMapLayerType > &acceptableTypes )
 {
   // query sublayers
-  QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->querySublayers( path );
+  QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->querySublayers( path, Qgis::SublayerQueryFlag::IncludeSystemTables );
 
   // filter out non-matching sublayers
   sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), [acceptableTypes]( const QgsProviderSublayerDetails & sublayer )
@@ -6513,7 +6623,7 @@ void QgisApp::newMeshLayer()
 void QgisApp::newGpxLayer()
 {
   QgsSettings settings;
-  const QString dir = settings.value( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
+  const QString dir = settings.value( QStringLiteral( "gps/gpxdirectory" ), QDir::homePath(), QgsSettings::App ).toString();
   QString fileName =
     QFileDialog::getSaveFileName( this,
                                   tr( "New GPX File" ),
@@ -6523,7 +6633,7 @@ void QgisApp::newGpxLayer()
   {
     fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, { QStringLiteral( "gpx" )} );
     const QFileInfo fileInfo( fileName );
-    settings.setValue( QStringLiteral( "Plugin-GPS/gpxdirectory" ), fileInfo.absolutePath() );
+    settings.setValue( QStringLiteral( "gps/gpxdirectory" ), fileInfo.absolutePath(), QgsSettings::App );
 
     QFile outputFile( fileName );
     if ( !outputFile.open( QFile::WriteOnly | QIODevice::Truncate ) )
@@ -6562,7 +6672,47 @@ void QgisApp::newGpxLayer()
 void QgisApp::showRasterCalculator()
 {
   QgsRasterCalcDialog d( qobject_cast<QgsRasterLayer *>( activeLayer() ), this );
-  if ( d.exec() == QDialog::Accepted )
+  if ( d.exec() != QDialog::Accepted )
+  {
+    return;
+  }
+  if ( d.useVirtualProvider() )
+  {
+    QgsRasterDataProvider::VirtualRasterParameters virtualCalcParams;
+    virtualCalcParams.crs = d.outputCrs();
+    virtualCalcParams.extent = d.outputRectangle();
+    virtualCalcParams.width = d.numberOfColumns();
+    virtualCalcParams.height = d.numberOfRows();
+    virtualCalcParams.formula = d.formulaString();
+
+    QString errorString;
+    std::unique_ptr< QgsRasterCalcNode > calcNodeApp( QgsRasterCalcNode::parseRasterCalcString( d.formulaString(), errorString ) );
+    if ( !calcNodeApp )
+    {
+      return;
+    }
+    QStringList rLayerDictionaryRef = calcNodeApp->cleanRasterReferences();
+    QSet<QPair<QString, QString>> uniqueRasterUriTmp;
+
+    for ( const auto &r : QgsRasterCalculatorEntry::rasterEntries() )
+    {
+      if ( ( ! rLayerDictionaryRef.contains( r.ref ) ) ||
+           uniqueRasterUriTmp.contains( QPair( r.raster->source(), r.ref.mid( 0, r.ref.lastIndexOf( "@" ) ) ) ) ) continue;
+      uniqueRasterUriTmp.insert( QPair( r.raster->source(), r.ref.mid( 0, r.ref.lastIndexOf( "@" ) ) ) );
+
+      QgsRasterDataProvider::VirtualRasterInputLayers projectRLayer;
+      projectRLayer.name = r.ref.mid( 0, r.ref.lastIndexOf( "@" ) );
+      projectRLayer.provider = r.raster->dataProvider()->name();
+      projectRLayer.uri = r.raster->source();
+
+      virtualCalcParams.rInputLayers.append( projectRLayer );
+    }
+
+    addRasterLayer( QgsRasterDataProvider::encodeVirtualRasterProviderUri( virtualCalcParams ),
+                    d.virtualLayerName().isEmpty() ? d.formulaString() : d.virtualLayerName(),
+                    QStringLiteral( "virtualraster" ) );
+  }
+  else
   {
     //invoke analysis library
     QgsRasterCalculator rc( d.formulaString(),
@@ -6589,7 +6739,7 @@ void QgisApp::showRasterCalculator()
       case QgsRasterCalculator::Success:
         if ( d.addLayerToProject() )
         {
-          addRasterLayer( d.outputFile(), QFileInfo( d.outputFile() ).completeBaseName(), QString() );
+          addRasterLayer( d.outputFile(), QFileInfo( d.outputFile() ).completeBaseName(), QStringLiteral( "gdal" ) );
         }
         visibleMessageBar()->pushMessage( tr( "Raster calculator" ),
                                           tr( "Calculation complete." ),
@@ -7438,7 +7588,7 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
   }
 
   // query sublayers
-  QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->querySublayers( fileName );
+  QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->querySublayers( fileName, Qgis::SublayerQueryFlag::IncludeSystemTables );
 
   if ( !sublayers.empty() || !nonLayerItems.empty() )
   {
@@ -8567,6 +8717,16 @@ void QgisApp::diagramProperties()
     gui->apply();
 
   activateDeactivateLayerRelatedActions( vlayer );
+}
+
+void QgisApp::createAnnotationLayer()
+{
+  QgsAnnotationLayer::LayerOptions options( QgsProject::instance()->transformContext() );
+  QgsAnnotationLayer *layer = new QgsAnnotationLayer( tr( "Annotations" ), options );
+
+  // layer should be created at top of layer tree
+  QgsProject::instance()->addMapLayer( layer, false );
+  QgsProject::instance()->layerTreeRoot()->insertLayer( 0, layer );
 }
 
 void QgisApp::setCadDockVisible( bool visible )
@@ -10140,8 +10300,8 @@ void QgisApp::enableDigitizeWithCurve( bool enable )
     QgsSettings().setValue( QStringLiteral( "UI/digitizeTechnique" ), 0 );
   }
 
-  const QList< QgsMapToolCapture * > captureTools = mMapTools->captureTools();
-  for ( QgsMapToolCapture *tool : captureTools )
+  const QList< QgsMapToolCapture * > tools = captureTools();
+  for ( QgsMapToolCapture *tool : tools )
   {
     if ( tool->supportsTechnique( QgsMapToolCapture::CircularString ) )
       tool->setCircularDigitizingEnabled( enable );
@@ -10164,8 +10324,8 @@ void QgisApp::enableStreamDigitizing( bool enable )
     QgsSettings().setValue( QStringLiteral( "UI/digitizeTechnique" ), 1 );
   }
 
-  const QList< QgsMapToolCapture * > captureTools = mMapTools->captureTools();
-  for ( QgsMapToolCapture *tool : captureTools )
+  const QList< QgsMapToolCapture * > tools = captureTools();
+  for ( QgsMapToolCapture *tool : tools )
   {
     if ( tool->supportsTechnique( QgsMapToolCapture::Streaming ) )
       tool->setStreamDigitizingEnabled( enable );
@@ -10181,10 +10341,10 @@ void QgisApp::enableDigitizeTechniqueActions( bool enable, QAction *triggeredFro
 
   QgsSettings settings;
 
-  const QList< QgsMapToolCapture * > captureTools = mMapTools->captureTools();
+  const QList< QgsMapToolCapture * > tools = captureTools();
 
   QSet< QgsMapToolCapture::CaptureTechnique > supportedTechniques;
-  for ( QgsMapToolCapture *tool : captureTools )
+  for ( QgsMapToolCapture *tool : tools )
   {
     if ( triggeredFromToolAction == tool->action() || ( !triggeredFromToolAction && mMapCanvas->mapTool() == tool ) )
     {
@@ -10205,7 +10365,7 @@ void QgisApp::enableDigitizeTechniqueActions( bool enable, QAction *triggeredFro
   const bool streamIsChecked = settings.value( QStringLiteral( "UI/digitizeWithStream" ) ).toInt();
   mActionStreamDigitize->setChecked( streamIsChecked && mActionStreamDigitize->isEnabled() );
 
-  for ( QgsMapToolCapture *tool : captureTools )
+  for ( QgsMapToolCapture *tool : tools )
   {
     if ( tool->supportsTechnique( QgsMapToolCapture::CircularString ) )
       tool->setCircularDigitizingEnabled( mActionDigitizeWithCurve->isChecked() );
@@ -10960,19 +11120,38 @@ void QgisApp::toggleMapTips( bool enabled )
 
 void QgisApp::toggleEditing()
 {
-  QgsMapLayer *currentLayer =  activeLayer();
-  if ( currentLayer && currentLayer->supportsEditing() )
+  const QList<QgsMapLayer *> layerList = layerTreeView()->selectedLayers();
+  if ( !layerList.isEmpty() )
   {
-    toggleEditing( currentLayer, true );
+    // if there are selected layers, try to toggle those.
+    // mActionToggleEditing has already been triggered at this point so its checked status has changed
+    const bool shouldStartEditing = mActionToggleEditing->isChecked();
+    for ( const auto layer : layerList )
+    {
+      if ( layer->supportsEditing() &&
+           shouldStartEditing != layer->isEditable() )
+      {
+        toggleEditing( layer, true );
+      }
+    }
   }
   else
   {
-    // active although there's no layer active!?
-    mActionToggleEditing->setChecked( false );
-    mActionToggleEditing->setEnabled( false );
-    visibleMessageBar()->pushMessage( tr( "Start editing failed" ),
-                                      tr( "Layer cannot be edited" ),
-                                      Qgis::MessageLevel::Warning );
+    // if there are no selected layers, try to toggle the current layer
+    QgsMapLayer *currentLayer =  activeLayer();
+    if ( currentLayer && currentLayer->supportsEditing() )
+    {
+      toggleEditing( currentLayer, true );
+    }
+    else
+    {
+      // active although there's no layer active!?
+      mActionToggleEditing->setChecked( false );
+      mActionToggleEditing->setEnabled( false );
+      visibleMessageBar()->pushMessage( tr( "Start editing failed" ),
+                                        tr( "Layer cannot be edited" ),
+                                        Qgis::MessageLevel::Warning );
+    }
   }
 }
 
@@ -11390,6 +11569,18 @@ void QgisApp::enableMeshEditingTools( bool enable )
   }
 }
 
+QList<QgsMapToolCapture *> QgisApp::captureTools()
+{
+  QList< QgsMapToolCapture * > res = mMapTools->captureTools();
+  // also check current tool, in case it's a custom tool
+  if ( QgsMapToolCapture *currentTool = qobject_cast< QgsMapToolCapture * >( mMapCanvas->mapTool() ) )
+  {
+    if ( !res.contains( currentTool ) )
+      res.append( currentTool );
+  }
+  return res;
+}
+
 void QgisApp::saveEdits()
 {
   const auto constSelectedLayers = mLayerTreeView->selectedLayers();
@@ -11409,7 +11600,7 @@ void QgisApp::saveAllEdits( bool verifyAction )
       return;
   }
 
-  const auto layers = editableLayers( true );
+  const auto layers = editableLayers( true, true );
   for ( QgsMapLayer *layer : layers )
   {
     saveEdits( layer, true, false );
@@ -11437,7 +11628,7 @@ void QgisApp::rollbackAllEdits( bool verifyAction )
       return;
   }
 
-  const auto layers = editableLayers( true );
+  const auto layers = editableLayers( true, true );
   for ( QgsMapLayer *layer : layers )
   {
     cancelEdits( layer, true, false );
@@ -11465,7 +11656,7 @@ void QgisApp::cancelAllEdits( bool verifyAction )
       return;
   }
 
-  const auto layers = editableLayers();
+  const auto layers = editableLayers( false, true );
   for ( QgsMapLayer *layer : layers )
   {
     cancelEdits( layer, false, false );
@@ -11536,16 +11727,16 @@ void QgisApp::updateLayerModifiedActions()
   mActionRollbackEdits->setEnabled( QgsLayerTreeUtils::layersModified( selectedLayerNodes ) );
   mActionCancelEdits->setEnabled( QgsLayerTreeUtils::layersEditable( selectedLayerNodes ) );
 
-  bool hasEditLayers = !editableLayers().isEmpty();
+  bool hasEditLayers = !editableLayers( false, true ).isEmpty();
   mActionAllEdits->setEnabled( hasEditLayers );
   mActionCancelAllEdits->setEnabled( hasEditLayers );
 
-  bool hasModifiedLayers = !editableLayers( true ).isEmpty();
+  bool hasModifiedLayers = !editableLayers( true, true ).isEmpty();
   mActionSaveAllEdits->setEnabled( hasModifiedLayers );
   mActionRollbackAllEdits->setEnabled( hasModifiedLayers );
 }
 
-QList<QgsMapLayer *> QgisApp::editableLayers( bool modified ) const
+QList<QgsMapLayer *> QgisApp::editableLayers( bool modified, bool ignoreLayersWhichCannotBeToggled ) const
 {
   QList<QgsMapLayer *> editLayers;
   // use legend layers (instead of registry) so QList mirrors its order
@@ -11556,7 +11747,7 @@ QList<QgsMapLayer *> QgisApp::editableLayers( bool modified ) const
     if ( !layer )
       continue;
 
-    if ( layer->isEditable() && ( !modified || layer->isModified() ) )
+    if ( layer->isEditable() && ( !modified || layer->isModified() ) && ( !ignoreLayersWhichCannotBeToggled || !( layer->properties() & Qgis::MapLayerProperty::UsersCannotToggleEditing ) ) )
       editLayers << layer;
   }
   return editLayers;
@@ -13122,7 +13313,7 @@ void QgisApp::showLayoutManager()
 
 QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const QString &name, const QString &providerKey )
 {
-  return addLayerPrivate< QgsVectorLayer >( QgsMapLayerType::VectorLayer, vectorLayerPath, name, providerKey, true );
+  return addLayerPrivate< QgsVectorLayer >( QgsMapLayerType::VectorLayer, vectorLayerPath, name, !providerKey.isEmpty() ? providerKey : QLatin1String( "ogr" ), true );
 }
 
 template<typename T>
@@ -13163,7 +13354,7 @@ T *QgisApp::addLayerPrivate( QgsMapLayerType type, const QString &uri, const QSt
   {
     // query sublayers
     QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->providerMetadata( providerKey ) ?
-        QgsProviderRegistry::instance()->providerMetadata( providerKey )->querySublayers( updatedUri )
+        QgsProviderRegistry::instance()->providerMetadata( providerKey )->querySublayers( updatedUri, Qgis::SublayerQueryFlag::IncludeSystemTables )
         : QgsProviderRegistry::instance()->querySublayers( updatedUri );
 
     // filter out non-matching sublayers
@@ -13454,7 +13645,7 @@ void QgisApp::new3DMapCanvas()
     map->setSelectionColor( mMapCanvas->selectionColor() );
     map->setBackgroundColor( mMapCanvas->canvasColor() );
     map->setLayers( mMapCanvas->layers() );
-    map->setTerrainLayers( mMapCanvas->layers() );
+//    map->setTerrainLayers( mMapCanvas->layers() );
     map->setTemporalRange( mMapCanvas->temporalRange() );
 
     const QgsCameraController::NavigationMode defaultNavMode = settings.enumValue( QStringLiteral( "map3d/defaultNavigation" ), QgsCameraController::TerrainBasedNavigation, QgsSettings::App );
@@ -14435,9 +14626,9 @@ void QgisApp::layersWereAdded( const QList<QgsMapLayer *> &layers )
   const auto constLayers = layers;
   for ( QgsMapLayer *layer : constLayers )
   {
-    connect( layer, &QgsMeshLayer::layerModified, this, &QgisApp::updateLayerModifiedActions );
-    connect( layer, &QgsMeshLayer::editingStarted, this, &QgisApp::layerEditStateChanged );
-    connect( layer, &QgsMeshLayer::editingStopped, this, &QgisApp::layerEditStateChanged );
+    connect( layer, &QgsMapLayer::layerModified, this, &QgisApp::updateLayerModifiedActions );
+    connect( layer, &QgsMapLayer::editingStarted, this, &QgisApp::layerEditStateChanged );
+    connect( layer, &QgsMapLayer::editingStopped, this, &QgisApp::layerEditStateChanged );
 
     if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer ) )
     {
@@ -14855,7 +15046,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionSelectPolygon->setEnabled( false );
     mActionSelectFreehand->setEnabled( false );
     mActionSelectRadius->setEnabled( false );
-    mActionIdentify->setEnabled( !identifyModeIsActiveLayer );
+    mActionIdentify->setEnabled( true );
     mActionSelectByExpression->setEnabled( false );
     mActionSelectByForm->setEnabled( false );
     mActionLabeling->setEnabled( false );
@@ -15591,9 +15782,79 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       break;
 
     case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::AnnotationLayer:
       break;
 
+    case QgsMapLayerType::AnnotationLayer:
+    {
+      mActionLocalHistogramStretch->setEnabled( false );
+      mActionFullHistogramStretch->setEnabled( false );
+      mActionLocalCumulativeCutStretch->setEnabled( false );
+      mActionFullCumulativeCutStretch->setEnabled( false );
+      mActionIncreaseBrightness->setEnabled( false );
+      mActionDecreaseBrightness->setEnabled( false );
+      mActionIncreaseContrast->setEnabled( false );
+      mActionDecreaseContrast->setEnabled( false );
+      mActionIncreaseGamma->setEnabled( false );
+      mActionDecreaseGamma->setEnabled( false );
+      mActionLayerSubsetString->setEnabled( false );
+      mActionFeatureAction->setEnabled( false );
+      mActionSelectFeatures->setEnabled( false );
+      mActionSelectPolygon->setEnabled( false );
+      mActionSelectFreehand->setEnabled( false );
+      mActionSelectRadius->setEnabled( false );
+      mActionZoomActualSize->setEnabled( false );
+      mActionZoomToLayer->setEnabled( true );
+      mActionOpenTable->setEnabled( false );
+      mMenuFilterTable->setEnabled( false );
+      mActionOpenTableSelected->setEnabled( false );
+      mActionOpenTableVisible->setEnabled( false );
+      mActionOpenTableEdited->setEnabled( false );
+      mActionSelectAll->setEnabled( false );
+      mActionReselect->setEnabled( false );
+      mActionInvertSelection->setEnabled( false );
+      mActionSelectByExpression->setEnabled( false );
+      mActionSelectByForm->setEnabled( false );
+      mActionOpenFieldCalc->setEnabled( false );
+      mActionSaveLayerEdits->setEnabled( false );
+      mUndoDock->widget()->setEnabled( false );
+      mActionSaveLayerDefinition->setEnabled( false );
+      mActionLayerSaveAs->setEnabled( false );
+      mActionAddFeature->setEnabled( false );
+      mActionCircularStringCurvePoint->setEnabled( false );
+      mActionCircularStringRadius->setEnabled( false );
+      mActionDeleteSelected->setEnabled( false );
+      mActionAddRing->setEnabled( false );
+      mActionFillRing->setEnabled( false );
+      mActionAddPart->setEnabled( false );
+      mActionVertexTool->setEnabled( false );
+      mActionVertexToolActiveLayer->setEnabled( false );
+      mActionMoveFeature->setEnabled( false );
+      mActionMoveFeatureCopy->setEnabled( false );
+      mActionRotateFeature->setEnabled( false );
+      mActionScaleFeature->setEnabled( false );
+      mActionOffsetCurve->setEnabled( false );
+      mActionCopyFeatures->setEnabled( false );
+      mActionCutFeatures->setEnabled( false );
+      mActionPasteFeatures->setEnabled( false );
+      mActionRotatePointSymbols->setEnabled( false );
+      mActionOffsetPointSymbol->setEnabled( false );
+      mActionDeletePart->setEnabled( false );
+      mActionDeleteRing->setEnabled( false );
+      mActionSimplifyFeature->setEnabled( false );
+      mActionReshapeFeatures->setEnabled( false );
+      mActionSplitFeatures->setEnabled( false );
+      mActionSplitParts->setEnabled( false );
+      mActionLabeling->setEnabled( false );
+      mActionDiagramProperties->setEnabled( false );
+      mActionIdentify->setEnabled( true );
+      enableDigitizeTechniqueActions( true );
+      mActionToggleEditing->setEnabled( false );
+      mActionToggleEditing->setChecked( true ); // always editable
+      mActionUndo->setEnabled( false );
+      mActionRedo->setEnabled( false );
+      updateUndoActions();
+      break;
+    }
   }
 
   refreshFeatureActions();
@@ -15650,7 +15911,7 @@ void QgisApp::renameView()
 
 QgsRasterLayer *QgisApp::addRasterLayer( QString const &uri, QString const &baseName, QString const &providerKey )
 {
-  return addLayerPrivate< QgsRasterLayer >( QgsMapLayerType::RasterLayer, uri, baseName, providerKey, true );
+  return addLayerPrivate< QgsRasterLayer >( QgsMapLayerType::RasterLayer, uri, baseName, !providerKey.isEmpty() ? providerKey : QLatin1String( "gdal" ), true );
 }
 
 bool QgisApp::addRasterLayers( QStringList const &files, bool guiWarning )

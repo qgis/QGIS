@@ -24,12 +24,12 @@ QgsNetworkSpeedStrategy::QgsNetworkSpeedStrategy( int attributeId, double defaul
 
 QVariant QgsNetworkSpeedStrategy::cost( double distance, const QgsFeature &f ) const
 {
-  QgsAttributes attrs = f.attributes();
+  const QgsAttributes attrs = f.attributes();
 
   if ( mAttributeId < 0 || mAttributeId >= attrs.count() )
     return QVariant( distance / ( mDefaultValue * mToMetricFactor ) );
 
-  double val = distance / ( attrs.at( mAttributeId ).toDouble() * mToMetricFactor );
+  const double val = distance / ( attrs.at( mAttributeId ).toDouble() * mToMetricFactor );
   if ( val <= 0.0 )
     return QVariant( distance / ( mDefaultValue / mToMetricFactor ) );
 

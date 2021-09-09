@@ -59,7 +59,7 @@ void TestQgsApplication::initTestCase()
 
 void TestQgsApplication::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  const QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -72,14 +72,14 @@ void TestQgsApplication::cleanupTestCase()
 
 void TestQgsApplication::accountName()
 {
-  QString loginName = QgsApplication::userLoginName();
+  const QString loginName = QgsApplication::userLoginName();
   qDebug() << QStringLiteral( "Got login name: '%1'" ).arg( loginName );
   QVERIFY( !loginName.isEmpty() );
   //test cached return works correctly
   QCOMPARE( loginName, QgsApplication::userLoginName() );
 
   //can't test contents, as it can be validly empty (e.g., on Travis). Just testing that we don't crash
-  QString fullName = QgsApplication::userFullName();
+  const QString fullName = QgsApplication::userFullName();
   qDebug() << QStringLiteral( "Got full name: '%1'" ).arg( fullName );
   //test cached return works correctly
   QCOMPARE( fullName, QgsApplication::userFullName() );
@@ -119,21 +119,21 @@ void TestQgsApplication::themeIcon()
 bool TestQgsApplication::renderCheck( const QString &testName, QImage &image, int mismatchCount )
 {
   mReport += "<h2>" + testName + "</h2>\n";
-  QString myTmpDir = QDir::tempPath() + '/';
-  QString myFileName = myTmpDir + testName + ".png";
+  const QString myTmpDir = QDir::tempPath() + '/';
+  const QString myFileName = myTmpDir + testName + ".png";
   image.save( myFileName, "PNG" );
   QgsRenderChecker myChecker;
   myChecker.setControlPathPrefix( QStringLiteral( "application" ) );
   myChecker.setControlName( "expected_" + testName );
   myChecker.setRenderedImage( myFileName );
-  bool myResultFlag = myChecker.compareImages( testName, mismatchCount );
+  const bool myResultFlag = myChecker.compareImages( testName, mismatchCount );
   mReport += myChecker.report();
   return myResultFlag;
 }
 
 void TestQgsApplication::checkPaths()
 {
-  QString myPath = QgsApplication::authorsFilePath();
+  const QString myPath = QgsApplication::authorsFilePath();
   qDebug( "Checking authors file exists:" );
   qDebug( "%s", myPath.toLocal8Bit().constData() );
   QVERIFY( !myPath.isEmpty() );

@@ -106,6 +106,8 @@ set(QGIS_APP_SRCS
   qgsmaptoolsvgannotation.cpp
   qgsmaptooltextannotation.cpp
 
+  annotations/qgsannotationitempropertieswidget.cpp
+
   decorations/qgsdecorationitem.cpp
   decorations/qgsdecorationtitle.cpp
   decorations/qgsdecorationtitledialog.cpp
@@ -248,6 +250,8 @@ set(QGIS_APP_SRCS
   mesh/qgsmeshcalculatordialog.cpp
   mesh/qgsnewmeshlayerdialog.cpp
   mesh/qgsmaptooleditmeshframe.cpp
+  mesh/qgsmeshtransformcoordinatesdockwidget.cpp
+  mesh/qgsmeshselectbyexpressiondialog.cpp
 )
 
 if (WITH_SPATIALITE)

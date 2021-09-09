@@ -30,6 +30,7 @@
 #include <qgssettings.h>
 #include "qgslegendsettings.h"
 #include "qgsmarkersymbol.h"
+#include "qgsannotationlayer.h"
 #include <QSignalSpy>
 
 class TestQgsLayerTree : public QObject
@@ -62,6 +63,7 @@ class TestQgsLayerTree : public QObject
     void testSymbolText();
     void testNodeDepth();
     void testRasterSymbolNode();
+    void testLayersEditable();
 
   private:
 
@@ -118,7 +120,7 @@ void TestQgsLayerTree::testGroupNameChanged()
   QCOMPARE( secondGroup->name(), QString( "grp2+" ) );
 
   QCOMPARE( spy.count(), 1 );
-  QList<QVariant> arguments = spy.takeFirst();
+  const QList<QVariant> arguments = spy.takeFirst();
   QCOMPARE( arguments.at( 0 ).value<QgsLayerTreeNode *>(), secondGroup );
   QCOMPARE( arguments.at( 1 ).toString(), QString( "grp2+" ) );
 
@@ -332,8 +334,8 @@ void TestQgsLayerTree::testRestrictedSymbolSize()
   QgsLayerTreeModel *m = new QgsLayerTreeModel( root, nullptr );
   m->setLegendMapViewData( 10, 96, 10 );
 
-  QList<QgsLayerTreeModelLegendNode *> nodes = m->layerLegendNodes( n );
-  QSize minimumSize = static_cast< QgsSymbolLegendNode *>( nodes.at( 0 ) )->minimumIconSize();
+  const QList<QgsLayerTreeModelLegendNode *> nodes = m->layerLegendNodes( n );
+  const QSize minimumSize = static_cast< QgsSymbolLegendNode *>( nodes.at( 0 ) )->minimumIconSize();
   QCOMPARE( minimumSize.width(), 52 );
 
   //cleanup
@@ -367,7 +369,7 @@ void TestQgsLayerTree::testShowHideAllSymbolNodes()
   m->refreshLayerLegend( n );
 
   //test that all nodes are initially checked
-  QList<QgsLayerTreeModelLegendNode *> nodes = m->layerLegendNodes( n );
+  const QList<QgsLayerTreeModelLegendNode *> nodes = m->layerLegendNodes( n );
   QCOMPARE( nodes.length(), 3 );
   for ( QgsLayerTreeModelLegendNode *ln : nodes )
   {
@@ -419,7 +421,7 @@ void TestQgsLayerTree::testFindLegendNode()
   QVERIFY( !m->findLegendNode( QString( "id" ), QString( "rule" ) ) );
   QVERIFY( !m->findLegendNode( QString( "vl" ), QString( "rule" ) ) );
 
-  QgsLegendSymbolList symbolList = renderer->legendSymbolItems();
+  const QgsLegendSymbolList symbolList = renderer->legendSymbolItems();
   for ( const QgsLegendSymbolItem &symbol : symbolList )
   {
     QgsLayerTreeModelLegendNode *found = m->findLegendNode( vl->id(), symbol.ruleKey() );
@@ -488,8 +490,8 @@ void TestQgsLayerTree::testResolveReferences()
   QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QVERIFY( vl->isValid() );
 
-  QString n1id = vl->id();
-  QString n2id = QStringLiteral( "XYZ" );
+  const QString n1id = vl->id();
+  const QString n2id = QStringLiteral( "XYZ" );
 
   QgsMapLayer *nullLayer = nullptr; // QCOMPARE does not like nullptr directly
 
@@ -587,20 +589,20 @@ void TestQgsLayerTree::testRendererLegend( QgsFeatureRenderer *renderer )
 
 void TestQgsLayerTree::testEmbeddedGroup()
 {
-  QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QString layerPath = dataDir + QStringLiteral( "/points.shp" );
+  const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString layerPath = dataDir + QStringLiteral( "/points.shp" );
 
   // build a project with 3 layers, each having a simple renderer with SVG marker
   // - existing SVG file in project dir
   // - existing SVG file in QGIS dir
   // - non-exsiting SVG file
 
-  QTemporaryDir dir;
+  const QTemporaryDir dir;
   QVERIFY( dir.isValid() );
   // on mac the returned path was not canonical and the resolver failed to convert paths properly
-  QString dirPath = QFileInfo( dir.path() ).canonicalFilePath();
+  const QString dirPath = QFileInfo( dir.path() ).canonicalFilePath();
 
-  QString projectFilename = dirPath + QStringLiteral( "/project.qgs" );
+  const QString projectFilename = dirPath + QStringLiteral( "/project.qgs" );
 
   QgsVectorLayer *layer1 = new QgsVectorLayer( layerPath, QStringLiteral( "points 1" ), QStringLiteral( "ogr" ) );
   QgsVectorLayer *layer2 = new QgsVectorLayer( layerPath, QStringLiteral( "points 2" ), QStringLiteral( "ogr" ) );
@@ -631,7 +633,7 @@ void TestQgsLayerTree::testEmbeddedGroup()
   }
   projectMaster.layerTreeRoot()->addChildNode( embeddedGroup );
 
-  QString projectMasterFilename = dirPath + QStringLiteral( "/projectMaster.qgs" );
+  const QString projectMasterFilename = dirPath + QStringLiteral( "/projectMaster.qgs" );
   projectMaster.write( projectMasterFilename );
   projectMaster.clear();
 
@@ -657,7 +659,7 @@ void TestQgsLayerTree::testFindLayer()
   project.addMapLayer( vl );
 
   QgsLayerTree root;
-  QgsLayerTreeModel model( &root );
+  const QgsLayerTreeModel model( &root );
 
   QVERIFY( !root.findLayer( vl->id() ) );
   QVERIFY( !root.findLayer( nullptr ) );
@@ -695,7 +697,7 @@ void TestQgsLayerTree::testLayerDeleted()
 
 void TestQgsLayerTree::testFindGroups()
 {
-  QgsProject project;
+  const QgsProject project;
   QgsLayerTreeGroup *group1 = project.layerTreeRoot()->addGroup( QStringLiteral( "Group_One" ) );
   QVERIFY( group1 );
   QgsLayerTreeGroup *group2 = project.layerTreeRoot()->addGroup( QStringLiteral( "Group_Two" ) );
@@ -710,7 +712,7 @@ void TestQgsLayerTree::testFindGroups()
   group = project.layerTreeRoot()->findGroup( QStringLiteral( "Group_Three" ) );
   QVERIFY( group );
 
-  QList<QgsLayerTreeGroup *> groups = project.layerTreeRoot()->findGroups();
+  const QList<QgsLayerTreeGroup *> groups = project.layerTreeRoot()->findGroups();
 
   QVERIFY( groups.contains( group1 ) );
   QVERIFY( groups.contains( group2 ) );
@@ -719,7 +721,7 @@ void TestQgsLayerTree::testFindGroups()
 
 void TestQgsLayerTree::testFindNestedGroups()
 {
-  QgsProject project;
+  const QgsProject project;
   QgsLayerTreeGroup *group1 = project.layerTreeRoot()->addGroup( QStringLiteral( "Group_One" ) );
   QVERIFY( group1 );
   QgsLayerTreeGroup *group2 = group1->addGroup( QStringLiteral( "Group_Two" ) );
@@ -727,13 +729,13 @@ void TestQgsLayerTree::testFindNestedGroups()
   QgsLayerTreeGroup *group3 = group2->addGroup( QStringLiteral( "Group_Three" ) );
   QVERIFY( group3 );
 
-  QList<QgsLayerTreeGroup *> groups = project.layerTreeRoot()->findGroups();
+  const QList<QgsLayerTreeGroup *> groups = project.layerTreeRoot()->findGroups();
 
   QVERIFY( groups.contains( group1 ) );
   QVERIFY( groups.contains( group2 ) == 0 );
   QVERIFY( groups.contains( group3 ) == 0 );
 
-  QList<QgsLayerTreeGroup *> all = project.layerTreeRoot()->findGroups( true );
+  const QList<QgsLayerTreeGroup *> all = project.layerTreeRoot()->findGroups( true );
 
   QVERIFY( all.contains( group1 ) );
   QVERIFY( all.contains( group2 ) );
@@ -755,9 +757,9 @@ void TestQgsLayerTree::testUtilsCollectMapLayers()
   QgsLayerTreeLayer *nodeVl2 = nodeGrp->addLayer( vl2 );
   Q_UNUSED( nodeVl2 );
 
-  QSet<QgsMapLayer *> set1 = QgsLayerTreeUtils::collectMapLayersRecursive( QList<QgsLayerTreeNode *>() << &root );
-  QSet<QgsMapLayer *> set2 = QgsLayerTreeUtils::collectMapLayersRecursive( QList<QgsLayerTreeNode *>() << nodeVl1 );
-  QSet<QgsMapLayer *> set3 = QgsLayerTreeUtils::collectMapLayersRecursive( QList<QgsLayerTreeNode *>() << nodeGrp );
+  const QSet<QgsMapLayer *> set1 = QgsLayerTreeUtils::collectMapLayersRecursive( QList<QgsLayerTreeNode *>() << &root );
+  const QSet<QgsMapLayer *> set2 = QgsLayerTreeUtils::collectMapLayersRecursive( QList<QgsLayerTreeNode *>() << nodeVl1 );
+  const QSet<QgsMapLayer *> set3 = QgsLayerTreeUtils::collectMapLayersRecursive( QList<QgsLayerTreeNode *>() << nodeGrp );
 
   QCOMPARE( set1, QSet<QgsMapLayer *>() << vl1 << vl2 );
   QCOMPARE( set2, QSet<QgsMapLayer *>() << vl1 );
@@ -808,7 +810,7 @@ void TestQgsLayerTree::testSymbolText()
   QgsLayerTreeModel *m = new QgsLayerTreeModel( root, nullptr );
   m->refreshLayerLegend( n );
 
-  QList<QgsLayerTreeModelLegendNode *> nodes = m->layerLegendNodes( n );
+  const QList<QgsLayerTreeModelLegendNode *> nodes = m->layerLegendNodes( n );
   QCOMPARE( nodes.length(), 3 );
 
   QgsLegendSettings settings;
@@ -881,7 +883,7 @@ void TestQgsLayerTree::testRasterSymbolNode()
   std::unique_ptr< QgsRasterLayer > rl = std::make_unique< QgsRasterLayer >( QStringLiteral( TEST_DATA_DIR ) + "/tenbytenraster.asc", QStringLiteral( "rl" ), QStringLiteral( "gdal" ) );
   QVERIFY( rl->isValid() );
 
-  std::unique_ptr< QgsLayerTreeLayer > n = std::make_unique< QgsLayerTreeLayer >( rl.get() );
+  const std::unique_ptr< QgsLayerTreeLayer > n = std::make_unique< QgsLayerTreeLayer >( rl.get() );
 
   // not checkable
   QgsRasterSymbolLegendNode rasterNode( n.get(), QColor( 255, 0, 0 ), QStringLiteral( "my node" ), nullptr, false, QStringLiteral( "key" ) );
@@ -895,9 +897,43 @@ void TestQgsLayerTree::testRasterSymbolNode()
   QVERIFY( !rasterNode.setData( true, Qt::CheckStateRole ) );
 
   // checkable
-  QgsRasterSymbolLegendNode rasterNode2( n.get(), QColor( 255, 0, 0 ), QStringLiteral( "my node" ), nullptr, true, QStringLiteral( "key" ) );
+  const QgsRasterSymbolLegendNode rasterNode2( n.get(), QColor( 255, 0, 0 ), QStringLiteral( "my node" ), nullptr, true, QStringLiteral( "key" ) );
   QVERIFY( rasterNode2.isCheckable() );
   QCOMPARE( static_cast< int >( rasterNode2.flags() ), static_cast< int >( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable ) );
+}
+
+void TestQgsLayerTree::testLayersEditable()
+{
+  QgsProject project;
+
+  QgsVectorLayer *vl1 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *vl2 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  QgsAnnotationLayer *al = new QgsAnnotationLayer( QStringLiteral( "al" ), QgsAnnotationLayer::LayerOptions( project.transformContext() ) );
+
+  project.addMapLayer( vl1 );
+  project.addMapLayer( vl2 );
+  project.addMapLayer( al );
+
+  QgsLayerTree root;
+  QgsLayerTreeLayer *nodeVl1 = root.addLayer( vl1 );
+  QgsLayerTreeGroup *nodeGrp = root.addGroup( QStringLiteral( "grp" ) );
+  QgsLayerTreeLayer *nodeVl2 = nodeGrp->addLayer( vl2 );
+  QgsLayerTreeLayer *nodeAl = nodeGrp->addLayer( al );
+  QVERIFY( !QgsLayerTreeUtils::layersEditable( {} ) );
+  QVERIFY( !QgsLayerTreeUtils::layersEditable( {nodeVl1, nodeVl2} ) );
+  vl1->startEditing();
+  QVERIFY( QgsLayerTreeUtils::layersEditable( {nodeVl1} ) );
+  QVERIFY( QgsLayerTreeUtils::layersEditable( {nodeVl1, nodeVl2} ) );
+  QVERIFY( QgsLayerTreeUtils::layersEditable( {nodeVl2, nodeVl1 } ) );
+
+  QVERIFY( QgsLayerTreeUtils::layersEditable( {nodeAl} ) );
+  QVERIFY( QgsLayerTreeUtils::layersEditable( {nodeAl, nodeVl1} ) );
+  QVERIFY( QgsLayerTreeUtils::layersEditable( {nodeAl, nodeVl2} ) );
+
+  // ignore layers which can't be toggled (the annotation layer)
+  QVERIFY( !QgsLayerTreeUtils::layersEditable( {nodeAl}, true ) );
+  QVERIFY( QgsLayerTreeUtils::layersEditable( {nodeAl, nodeVl1}, true ) );
+  QVERIFY( !QgsLayerTreeUtils::layersEditable( {nodeAl, nodeVl2}, true ) );
 }
 
 QGSTEST_MAIN( TestQgsLayerTree )

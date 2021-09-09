@@ -55,7 +55,7 @@ bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, const QgsFeature 
   QgsFeatureAction *action = new QgsFeatureAction( tr( "add feature" ), feat, vlayer, QString(), -1, this );
   if ( QgsRubberBand *rb = takeRubberBand() )
     connect( action, &QgsFeatureAction::addFeatureFinished, rb, &QgsRubberBand::deleteLater );
-  bool res = action->addFeature( QgsAttributeMap(), showModal, scope );
+  const bool res = action->addFeature( QgsAttributeMap(), showModal, scope );
   if ( showModal )
     delete action;
   return res;
@@ -64,13 +64,13 @@ bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, const QgsFeature 
 void QgsMapToolAddFeature::digitized( const QgsFeature &f )
 {
   QgsVectorLayer *vlayer = currentVectorLayer();
-  bool res = addFeature( vlayer, f, false );
+  const bool res = addFeature( vlayer, f, false );
 
   if ( res )
   {
     //add points to other features to keep topology up-to-date
-    bool topologicalEditing = QgsProject::instance()->topologicalEditing();
-    QgsProject::AvoidIntersectionsMode avoidIntersectionsMode = QgsProject::instance()->avoidIntersectionsMode();
+    const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
+    const QgsProject::AvoidIntersectionsMode avoidIntersectionsMode = QgsProject::instance()->avoidIntersectionsMode();
     if ( topologicalEditing && avoidIntersectionsMode == QgsProject::AvoidIntersectionsMode::AvoidIntersectionsLayers &&
          ( mode() == CaptureLine || mode() == CapturePolygon ) )
     {
@@ -93,7 +93,7 @@ void QgsMapToolAddFeature::digitized( const QgsFeature &f )
     }
     if ( topologicalEditing )
     {
-      QList<QgsPointLocator::Match> sm = snappingMatches();
+      const QList<QgsPointLocator::Match> sm = snappingMatches();
       for ( int i = 0; i < sm.size() ; ++i )
       {
         if ( sm.at( i ).layer() )

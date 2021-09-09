@@ -37,8 +37,8 @@ QgsMeshDatasetIndex QgsMeshDataProviderTemporalCapabilities::datasetIndexClosest
 
   for ( int i = 1 ; i < datasetTimes.count(); ++i )
   {
-    qint64 time1 = datasetTimes.at( i - 1 );
-    qint64 time2 = datasetTimes.at( i );
+    const qint64 time1 = datasetTimes.at( i - 1 );
+    const qint64 time2 = datasetTimes.at( i );
     if ( time1 <= timeSinceGroupReference && timeSinceGroupReference <= time2 )
     {
       if ( abs( timeSinceGroupReference - time2 ) < abs( timeSinceGroupReference - time1 ) )
@@ -67,7 +67,7 @@ QgsMeshDatasetIndex QgsMeshDataProviderTemporalCapabilities::datasetIndexClosest
 
   for ( int i = 1; i < datasetTimes.count(); ++i )
   {
-    qint64 time = datasetTimes.at( i );
+    const qint64 time = datasetTimes.at( i );
     if ( timeSinceGroupReference < time )
       return QgsMeshDatasetIndex( group, i - 1 );
   }
@@ -92,7 +92,7 @@ void QgsMeshDataProviderTemporalCapabilities::addDatasetTimeInMilliseconds( int 
 
 void QgsMeshDataProviderTemporalCapabilities::addDatasetTime( int group, double time )
 {
-  qint64 unitTimeFactor = QgsUnitTypes::fromUnitToUnitFactor( mTemporalUnit, QgsUnitTypes::TemporalMilliseconds );
+  const qint64 unitTimeFactor = QgsUnitTypes::fromUnitToUnitFactor( mTemporalUnit, QgsUnitTypes::TemporalMilliseconds );
   addDatasetTimeInMilliseconds( group, time * unitTimeFactor );
 }
 

@@ -1,0 +1,71 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsrendereditemdetails.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+// this is needed for the "convert to subclass" code below to compile
+%ModuleHeaderCode
+#include "qgsrenderedannotationitemdetails.h"
+%End
+
+class QgsRenderedItemDetails
+{
+%Docstring(signature="appended")
+Base class for detailed information about a rendered item.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsrendereditemdetails.h"
+%End
+  public:
+
+%ConvertToSubClassCode
+    if ( dynamic_cast<QgsRenderedAnnotationItemDetails *>( sipCpp ) )
+      sipType = sipType_QgsRenderedAnnotationItemDetails;
+    else
+      sipType = 0;
+%End
+
+    QgsRenderedItemDetails( const QString &layerId );
+%Docstring
+Constructor for QgsRenderedItemDetails.
+%End
+
+    virtual ~QgsRenderedItemDetails();
+
+    QString layerId() const;
+%Docstring
+Returns the layer ID of the associated map layer.
+%End
+
+    QgsRectangle boundingBox() const;
+%Docstring
+Returns the bounding box of the item (in map units).
+
+.. seealso:: :py:func:`setBoundingBox`
+%End
+
+    void setBoundingBox( const QgsRectangle &bounds );
+%Docstring
+Sets the bounding box of the item (in map units).
+
+.. seealso:: :py:func:`boundingBox`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsrendereditemdetails.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

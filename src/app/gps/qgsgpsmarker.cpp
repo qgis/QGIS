@@ -43,7 +43,7 @@ void QgsGpsMarker::setGpsPosition( const QgsPointXY &point )
   //transform to map crs
   if ( mMapCanvas )
   {
-    QgsCoordinateTransform t( mWgs84CRS, mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+    const QgsCoordinateTransform t( mWgs84CRS, mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
     try
     {
       mCenter = t.transform( point );
@@ -59,7 +59,7 @@ void QgsGpsMarker::setGpsPosition( const QgsPointXY &point )
     mCenter = point;
   }
 
-  QPointF pt = toCanvasCoordinates( mCenter );
+  const QPointF pt = toCanvasCoordinates( mCenter );
   setPos( pt );
 }
 
@@ -72,22 +72,22 @@ void QgsGpsMarker::paint( QPainter *p )
 
   // this needs to be done when the canvas is repainted to make for smoother map rendering
   // if not done the map could be panned, but the cursor position won't be updated until the next valid GPS fix is received
-  QPointF pt = toCanvasCoordinates( mCenter );
+  const QPointF pt = toCanvasCoordinates( mCenter );
   setPos( pt );
 
-  double halfSize = mSize / 2.0;
+  const double halfSize = mSize / 2.0;
   mSvg.render( p, QRectF( 0 - halfSize, 0 - halfSize, mSize, mSize ) );
 }
 
 
 QRectF QgsGpsMarker::boundingRect() const
 {
-  double halfSize = mSize / 2.0;
+  const double halfSize = mSize / 2.0;
   return QRectF( -halfSize, -halfSize, 2.0 * halfSize, 2.0 * halfSize );
 }
 
 void QgsGpsMarker::updatePosition()
 {
-  QPointF pt = toCanvasCoordinates( mCenter );
+  const QPointF pt = toCanvasCoordinates( mCenter );
   setPos( pt );
 }

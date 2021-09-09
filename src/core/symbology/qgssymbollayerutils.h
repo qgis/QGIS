@@ -824,19 +824,19 @@ class CORE_EXPORT QgsSymbolLayerUtils
 #ifndef SIP_RUN
     static QgsProperty rotateWholeSymbol( double additionalRotation, const QgsProperty &property )
     {
-      QString exprString = property.asExpression();
+      const QString exprString = property.asExpression();
       return QgsProperty::fromExpression( QString::number( additionalRotation ) + " + (" + exprString + ')' );
     }
 
     static QgsProperty scaleWholeSymbol( double scaleFactor, const QgsProperty &property )
     {
-      QString exprString = property.asExpression();
+      const QString exprString = property.asExpression();
       return QgsProperty::fromExpression( QString::number( scaleFactor ) + "*(" + exprString + ')' );
     }
 
     static QgsProperty scaleWholeSymbol( double scaleFactorX, double scaleFactorY, const QgsProperty &property )
     {
-      QString exprString = property.asExpression();
+      const QString exprString = property.asExpression();
       return QgsProperty::fromExpression(
                ( !qgsDoubleNear( scaleFactorX, 0.0 ) ? "tostring(" + QString::number( scaleFactorX ) + "*(" + exprString + "))" : QStringLiteral( "'0'" ) ) +
                "|| ',' || " +

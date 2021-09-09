@@ -118,7 +118,7 @@ QgsFeatureList QgsProjectPointCartesianAlgorithm::processFeature( const QgsFeatu
     if ( mDynamicBearing )
       bearing = mBearingProperty.valueAsDouble( context.expressionContext(), bearing );
 
-    QgsGeometry g = f.geometry();
+    const QgsGeometry g = f.geometry();
     if ( QgsWkbTypes::isMultiType( g.wkbType() ) )
     {
       const QgsMultiPoint *mp = static_cast< const QgsMultiPoint * >( g.constGet() );
@@ -134,7 +134,7 @@ QgsFeatureList QgsProjectPointCartesianAlgorithm::processFeature( const QgsFeatu
     else
     {
       const QgsPoint *p = static_cast< const QgsPoint * >( g.constGet() );
-      QgsPoint result = p->project( distance, bearing );
+      const QgsPoint result = p->project( distance, bearing );
       f.setGeometry( QgsGeometry( result.clone() ) );
     }
   }

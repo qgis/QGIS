@@ -159,19 +159,36 @@ QFont QgsTextFormat::font() const
   return d->textFont;
 }
 
-QFont QgsTextFormat::scaledFont( const QgsRenderContext &context, double scaleFactor ) const
+QFont QgsTextFormat::scaledFont( const QgsRenderContext &context, double scaleFactor, bool *isZeroSize ) const
 {
+  if ( isZeroSize )
+    *isZeroSize = false;
+
   QFont font = d->textFont;
   if ( scaleFactor == 1 )
   {
     int fontPixelSize = QgsTextRenderer::sizeToPixel( d->fontSize, context, d->fontSizeUnits,
                         d->fontSizeMapUnitScale );
+    if ( fontPixelSize == 0 )
+    {
+      if ( isZeroSize )
+        *isZeroSize = true;
+      return QFont();
+    }
+
     font.setPixelSize( fontPixelSize );
   }
   else
   {
     double fontPixelSize = context.convertToPainterUnits( d->fontSize, d->fontSizeUnits, d->fontSizeMapUnitScale );
-    font.setPixelSize( std::round( scaleFactor * fontPixelSize + 0.5 ) );
+    if ( qgsDoubleNear( fontPixelSize, 0 ) )
+    {
+      if ( isZeroSize )
+        *isZeroSize = true;
+      return QFont();
+    }
+    const int roundedPixelSize = static_cast< int >( std::round( scaleFactor * fontPixelSize + 0.5 ) );
+    font.setPixelSize( roundedPixelSize );
   }
 
   font.setLetterSpacing( QFont::AbsoluteSpacing, context.convertToPainterUnits( d->textFont.letterSpacing(), d->fontSizeUnits, d->fontSizeMapUnitScale ) * scaleFactor );

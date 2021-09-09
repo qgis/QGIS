@@ -160,7 +160,7 @@ class SERVER_EXPORT QgsServerApiException: public QgsServerException
     QByteArray formatResponse( QString &responseFormat SIP_OUT ) const override
     {
       responseFormat = mMimeType;
-      json data
+      const json data
       {
         {
           { "code", mCode.toStdString() },

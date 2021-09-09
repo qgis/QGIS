@@ -66,6 +66,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmdetectdatasetchanges.cpp
   processing/qgsalgorithmdifference.cpp
   processing/qgsalgorithmdissolve.cpp
+  processing/qgsalgorithmdistancewithin.cpp
   processing/qgsalgorithmdrape.cpp
   processing/qgsalgorithmdropfields.cpp
   processing/qgsalgorithmdropgeometry.cpp

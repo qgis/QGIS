@@ -14,6 +14,7 @@ __date__ = '2018-03-18'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
 from qgis.core import (
+    Qgis,
     QgsField,
     QgsFields,
     QgsLayerDefinition,
@@ -73,6 +74,15 @@ class PyFeatureIterator(QgsAbstractFeatureIterator):
         else:
             self._select_rect_engine = None
             self._select_rect_geom = None
+
+        if self._request.spatialFilterType() == Qgis.SpatialFilterType.DistanceWithin and not self._request.referenceGeometry().isEmpty():
+            self._select_distance_within_geom = self._request.referenceGeometry()
+            self._select_distance_within_engine = QgsGeometry.createGeometryEngine(self._select_distance_within_geom.constGet())
+            self._select_distance_within_engine.prepareGeometry()
+        else:
+            self._select_distance_within_geom = None
+            self._select_distance_within_engine = None
+
         self._feature_id_list = None
         if self._filter_rect is not None and self._source._provider._spatialindex is not None:
             self._feature_id_list = self._source._provider._spatialindex.intersects(self._filter_rect)
@@ -122,6 +132,10 @@ class PyFeatureIterator(QgsAbstractFeatureIterator):
                         continue
                 f.setGeometry(_f.geometry())
                 self.geometryToDestinationCrs(f, self._transform)
+
+                if self._select_distance_within_engine and self._select_distance_within_engine.distance(f.geometry().constGet()) > self._request.distanceWithin():
+                    continue
+
                 f.setFields(_f.fields())
                 f.setAttributes(_f.attributes())
                 f.setValid(_f.isValid())

@@ -42,7 +42,7 @@ QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( QgsVectorLayer
     const QgsFields fields = lVectorLayer->fields();
     for ( const QgsField &f : fields )
     {
-      QString fieldName = f.name();
+      const QString fieldName = f.name();
       mXAttributeComboBox->addItem( lVectorLayer->fields().iconForField( i ), fieldName );
       mYAttributeComboBox->addItem( lVectorLayer->fields().iconForField( i ), fieldName );
       i++;
@@ -66,7 +66,7 @@ void QgsVectorFieldSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mYAttributeComboBox->setCurrentIndex( mYAttributeComboBox->findText( mLayer->yAttribute() ) );
   mScaleSpinBox->setValue( mLayer->scale() );
 
-  QgsVectorFieldSymbolLayer::VectorFieldType type = mLayer->vectorFieldType();
+  const QgsVectorFieldSymbolLayer::VectorFieldType type = mLayer->vectorFieldType();
   if ( type == QgsVectorFieldSymbolLayer::Cartesian )
   {
     mCartesianRadioButton->setChecked( true );
@@ -80,7 +80,7 @@ void QgsVectorFieldSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
     mHeightRadioButton->setChecked( true );
   }
 
-  QgsVectorFieldSymbolLayer::AngleOrientation orientation = mLayer->angleOrientation();
+  const QgsVectorFieldSymbolLayer::AngleOrientation orientation = mLayer->angleOrientation();
   if ( orientation == QgsVectorFieldSymbolLayer::ClockwiseFromNorth )
   {
     mClockwiseFromNorthRadioButton->setChecked( true );
@@ -90,7 +90,7 @@ void QgsVectorFieldSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
     mCounterclockwiseFromEastRadioButton->setChecked( true );
   }
 
-  QgsVectorFieldSymbolLayer::AngleUnits  angleUnits = mLayer->angleUnits();
+  const QgsVectorFieldSymbolLayer::AngleUnits  angleUnits = mLayer->angleUnits();
   if ( angleUnits == QgsVectorFieldSymbolLayer::Degrees )
   {
     mDegreesRadioButton->setChecked( true );

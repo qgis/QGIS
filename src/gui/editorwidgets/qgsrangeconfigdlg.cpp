@@ -161,6 +161,6 @@ void QgsRangeConfigDlg::setConfig( const QVariantMap &config )
 
 void QgsRangeConfigDlg::rangeWidgetChanged( int index )
 {
-  QString style = rangeWidget->itemData( index ).toString();
+  const QString style = rangeWidget->itemData( index ).toString();
   allowNullCheckBox->setEnabled( style == QLatin1String( "SpinBox" ) );
 }

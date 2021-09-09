@@ -43,6 +43,7 @@ class QgsOgrProviderMetadata final: public QgsProviderMetadata
     ProviderCapabilities providerCapabilities() const override;
     bool uriIsBlocklisted( const QString &uri ) const override;
     QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
+    QStringList sidecarFilesForUri( const QString &uri ) const override;
     Qgis::VectorExportResult createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,

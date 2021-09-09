@@ -39,7 +39,7 @@ QString QgsUserProfileManager::resolveProfilesFolder( const QString &basePath )
 
 QgsUserProfile *QgsUserProfileManager::getProfile( const QString &defaultProfile, bool createNew, bool initSettings )
 {
-  QString profileName = defaultProfile.isEmpty() ? defaultProfileName() : defaultProfile;
+  const QString profileName = defaultProfile.isEmpty() ? defaultProfileName() : defaultProfile;
 
   if ( createNew && !profileExists( defaultProfile ) )
   {
@@ -93,12 +93,12 @@ bool QgsUserProfileManager::rootLocationIsSet() const
 
 QString QgsUserProfileManager::defaultProfileName() const
 {
-  QString defaultName = QStringLiteral( "default" );
+  const QString defaultName = QStringLiteral( "default" );
   // If the profiles.ini doesn't have the default profile we grab it from
   // global settings as it might be set by the admin.
   // If the overrideProfile flag is set then no matter what the profiles.ini says we always take the
   // global profile.
-  QgsSettings globalSettings;
+  const QgsSettings globalSettings;
   if ( !mSettings->contains( QStringLiteral( "/core/defaultProfile" ) ) || globalSettings.value( QStringLiteral( "overrideLocalProfile" ), false, QgsSettings::Core ).toBool() )
   {
     return globalSettings.value( QStringLiteral( "defaultProfile" ), defaultName, QgsSettings::Core ).toString();
@@ -129,7 +129,7 @@ bool QgsUserProfileManager::profileExists( const QString &name ) const
 
 QgsUserProfile *QgsUserProfileManager::profileForName( const QString &name ) const
 {
-  QString profilePath = mRootProfilePath + QDir::separator() + name;
+  const QString profilePath = mRootProfilePath + QDir::separator() + name;
   return new QgsUserProfile( profilePath );
 }
 
@@ -139,7 +139,7 @@ QgsError QgsUserProfileManager::createUserProfile( const QString &name )
 
   // TODO Replace with safe folder name
 
-  QDir folder( mRootProfilePath + QDir::separator() + name );
+  const QDir folder( mRootProfilePath + QDir::separator() + name );
   if ( !folder.exists() )
   {
     QDir().mkpath( folder.absolutePath() );
@@ -151,7 +151,7 @@ QgsError QgsUserProfileManager::createUserProfile( const QString &name )
   if ( !qgisPrivateDbFile.exists() )
   {
     // if it doesn't exist we copy it from the global resources dir
-    QString qgisMasterDbFileName = QgsApplication::qgisMasterDatabaseFilePath();
+    const QString qgisMasterDbFileName = QgsApplication::qgisMasterDatabaseFilePath();
     QFile masterFile( qgisMasterDbFileName );
 
     //now copy the master file into the users .qgis dir
@@ -183,7 +183,7 @@ QgsError QgsUserProfileManager::deleteProfile( const QString &name )
   QDir folder( mRootProfilePath + QDir::separator() + name );
 
   // This might have to be changed to something better.
-  bool deleted = folder.removeRecursively();
+  const bool deleted = folder.removeRecursively();
   if ( !deleted )
   {
     error.append( ( tr( "Unable to fully delete user profile folder" ) ) );
@@ -208,7 +208,7 @@ QgsUserProfile *QgsUserProfileManager::userProfile()
 void QgsUserProfileManager::loadUserProfile( const QString &name )
 {
 #if QT_CONFIG(process)
-  QString path = QDir::toNativeSeparators( QCoreApplication::applicationFilePath() );
+  const QString path = QDir::toNativeSeparators( QCoreApplication::applicationFilePath() );
   QStringList arguments;
   arguments << QCoreApplication::arguments();
   // The first is the path to the application

@@ -20,7 +20,7 @@
 double QgsMapUnitScale::computeMapUnitsPerPixel( const QgsRenderContext &c ) const
 {
   double mup = c.mapToPixel().mapUnitsPerPixel();
-  double renderScale = c.rendererScale();
+  const double renderScale = c.rendererScale();
   if ( !qgsDoubleNear( minScale, 0 ) )
   {
     mup = std::min( mup / ( renderScale / minScale ), mup );

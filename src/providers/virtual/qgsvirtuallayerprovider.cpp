@@ -61,7 +61,7 @@ QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const &uri,
 {
   mError.clear();
 
-  QUrl url = QUrl::fromEncoded( uri.toUtf8() );
+  const QUrl url = QUrl::fromEncoded( uri.toUtf8() );
   if ( !url.isValid() )
   {
     mValid = false;
@@ -242,7 +242,7 @@ bool QgsVirtualLayerProvider::createIt()
   if ( !mDefinition.query().isEmpty() )
   {
 
-    QStringList tables = referencedTables( mDefinition.query() );
+    const QStringList tables = referencedTables( mDefinition.query() );
     const auto constTables = tables;
     for ( const QString &tname : constTables )
     {
@@ -299,7 +299,7 @@ bool QgsVirtualLayerProvider::createIt()
   resetSqlite();
   initVirtualLayerMetadata( mSqlite.get() );
 
-  bool noGeometry = mDefinition.geometryWkbType() == QgsWkbTypes::NoGeometry;
+  const bool noGeometry = mDefinition.geometryWkbType() == QgsWkbTypes::NoGeometry;
 
   // load source layers (and populate mLayers)
   if ( !loadSourceLayers() )
@@ -311,7 +311,7 @@ bool QgsVirtualLayerProvider::createIt()
   for ( int i = 0; i < mLayers.size(); i++ )
   {
     QgsVectorLayer *vlayer = mLayers.at( i ).layer;
-    QString vname = mLayers.at( i ).name;
+    const QString vname = mLayers.at( i ).name;
     if ( vlayer )
     {
       createVirtualTable( vlayer, vname );
@@ -323,12 +323,12 @@ bool QgsVirtualLayerProvider::createIt()
       provider.replace( QLatin1String( "'" ), QLatin1String( "''" ) );
       QString source = mLayers.at( i ).source;
       source.replace( QLatin1String( "'" ), QLatin1String( "''" ) );
-      QString encoding = mLayers.at( i ).encoding;
-      QString createStr = QStringLiteral( "DROP TABLE IF EXISTS \"%1\"; CREATE VIRTUAL TABLE \"%1\" USING QgsVLayer('%2','%4',%3)" )
-                          .arg( vname,
-                                provider,
-                                encoding,
-                                source ); // source must be the last argument here, since it can contains '%x' strings that would be replaced
+      const QString encoding = mLayers.at( i ).encoding;
+      const QString createStr = QStringLiteral( "DROP TABLE IF EXISTS \"%1\"; CREATE VIRTUAL TABLE \"%1\" USING QgsVLayer('%2','%4',%3)" )
+                                .arg( vname,
+                                      provider,
+                                      encoding,
+                                      source ); // source must be the last argument here, since it can contains '%x' strings that would be replaced
       Sqlite::Query::exec( mSqlite.get(), createStr );
     }
   }
@@ -429,9 +429,9 @@ bool QgsVirtualLayerProvider::createIt()
     mTableName = VIRTUAL_LAYER_QUERY_VIEW;
 
     // create a view
-    QString viewStr = QStringLiteral( "DROP VIEW IF EXISTS %1; CREATE VIEW %1 AS %2" )
-                      .arg( VIRTUAL_LAYER_QUERY_VIEW,
-                            mDefinition.query() );
+    const QString viewStr = QStringLiteral( "DROP VIEW IF EXISTS %1; CREATE VIEW %1 AS %2" )
+                            .arg( VIRTUAL_LAYER_QUERY_VIEW,
+                                  mDefinition.query() );
     Sqlite::Query::exec( mSqlite.get(), viewStr );
   }
   else
@@ -439,7 +439,7 @@ bool QgsVirtualLayerProvider::createIt()
     // no query => implies we must only have one virtual table
     mTableName = mLayers[0].name;
 
-    TableDef td = tableDefinitionFromVirtualTable( mSqlite.get(), mTableName );
+    const TableDef td = tableDefinitionFromVirtualTable( mSqlite.get(), mTableName );
     const auto constTd = td;
     for ( const ColumnDef &c : constTd )
     {
@@ -469,7 +469,7 @@ bool QgsVirtualLayerProvider::createIt()
 
 void QgsVirtualLayerProvider::createVirtualTable( QgsVectorLayer *vlayer, const QString &vname )
 {
-  QString createStr = QStringLiteral( "DROP TABLE IF EXISTS \"%1\"; CREATE VIRTUAL TABLE \"%1\" USING QgsVLayer(%2);" ).arg( vname, vlayer->id() );
+  const QString createStr = QStringLiteral( "DROP TABLE IF EXISTS \"%1\"; CREATE VIRTUAL TABLE \"%1\" USING QgsVLayer(%2);" ).arg( vname, vlayer->id() );
   Sqlite::Query::exec( mSqlite.get(), createStr );
 }
 
@@ -564,12 +564,12 @@ QgsRectangle QgsVirtualLayerProvider::extent() const
 
 void QgsVirtualLayerProvider::updateStatistics() const
 {
-  bool hasGeometry = mDefinition.geometryWkbType() != QgsWkbTypes::NoGeometry;
-  QString subset = mSubset.isEmpty() ? QString() : " WHERE " + mSubset;
-  QString sql = QStringLiteral( "SELECT Count(*)%1 FROM %2%3" )
-                .arg( hasGeometry ? QStringLiteral( ",Min(MbrMinX(%1)),Min(MbrMinY(%1)),Max(MbrMaxX(%1)),Max(MbrMaxY(%1))" ).arg( quotedColumn( mDefinition.geometryField() ) ) : QString(),
-                      mTableName,
-                      subset );
+  const bool hasGeometry = mDefinition.geometryWkbType() != QgsWkbTypes::NoGeometry;
+  const QString subset = mSubset.isEmpty() ? QString() : " WHERE " + mSubset;
+  const QString sql = QStringLiteral( "SELECT Count(*)%1 FROM %2%3" )
+                      .arg( hasGeometry ? QStringLiteral( ",Min(MbrMinX(%1)),Min(MbrMinY(%1)),Max(MbrMaxX(%1)),Max(MbrMaxY(%1))" ).arg( quotedColumn( mDefinition.geometryField() ) ) : QString(),
+                            mTableName,
+                            subset );
 
   try
   {

@@ -36,7 +36,7 @@ void QgsShortcutsManager::registerAllChildActions( QObject *object, bool recursi
 {
   if ( recursive )
   {
-    QList< QAction * > actions = object->findChildren< QAction * >();
+    const QList< QAction * > actions = object->findChildren< QAction * >();
     const auto constActions = actions;
     for ( QAction *a : constActions )
     {
@@ -60,7 +60,7 @@ void QgsShortcutsManager::registerAllChildShortcuts( QObject *object, bool recur
 {
   if ( recursive )
   {
-    QList< QShortcut * > shortcuts = object->findChildren< QShortcut * >();
+    const QList< QShortcut * > shortcuts = object->findChildren< QShortcut * >();
     const auto constShortcuts = shortcuts;
     for ( QShortcut *s : constShortcuts )
     {
@@ -98,8 +98,8 @@ bool QgsShortcutsManager::registerAction( QAction *action, const QString &defaul
   actionText.remove( '&' ); // remove the accelerator
 
   // load overridden value from settings
-  QgsSettings settings;
-  QString sequence = settings.value( mSettingsPath + actionText, defaultSequence ).toString();
+  const QgsSettings settings;
+  const QString sequence = settings.value( mSettingsPath + actionText, defaultSequence ).toString();
 
   action->setShortcut( sequence );
   if ( !action->toolTip().isEmpty() )
@@ -130,11 +130,11 @@ bool QgsShortcutsManager::registerShortcut( QShortcut *shortcut, const QString &
   mShortcuts.insert( shortcut, defaultSequence );
   connect( shortcut, &QObject::destroyed, this, &QgsShortcutsManager::shortcutDestroyed );
 
-  QString shortcutName = shortcut->objectName();
+  const QString shortcutName = shortcut->objectName();
 
   // load overridden value from settings
-  QgsSettings settings;
-  QString keySequence = settings.value( mSettingsPath + shortcutName, defaultSequence ).toString();
+  const QgsSettings settings;
+  const QString keySequence = settings.value( mSettingsPath + shortcutName, defaultSequence ).toString();
 
   shortcut->setKey( keySequence );
 
@@ -243,7 +243,7 @@ bool QgsShortcutsManager::setKeySequence( QShortcut *shortcut, const QString &se
 {
   shortcut->setKey( sequence );
 
-  QString shortcutText = shortcut->objectName();
+  const QString shortcutText = shortcut->objectName();
 
   // save to settings
   QgsSettings settings;

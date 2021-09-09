@@ -40,7 +40,7 @@ void QgsAbstract3DSymbol::initPropertyDefinitions()
   if ( !sPropertyDefinitions.isEmpty() )
     return;
 
-  QString origin = QStringLiteral( "symbol3d" );
+  const QString origin = QStringLiteral( "symbol3d" );
 
   sPropertyDefinitions = QgsPropertiesDefinition
   {

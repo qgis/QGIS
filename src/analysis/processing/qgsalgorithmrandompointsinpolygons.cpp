@@ -198,7 +198,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
   // Initialize random engine -- note that we only use this if the user has specified a fixed seed
   std::random_device rd;
   std::mt19937 mt( !mUseRandomSeed ? rd() : mRandSeed );
-  std::uniform_real_distribution<> uniformDist( 0, 1 );
+  const std::uniform_real_distribution<> uniformDist( 0, 1 );
   std::uniform_int_distribution<> uniformIntDist( 1, 999999999 );
 
   // Index for finding global close points (mMinDistance != 0)
@@ -212,7 +212,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
 
   long featureCount = 0;
   long long attempts = 0; // used for unique feature IDs in the indexes
-  long numberOfFeatures = polygonSource->featureCount();
+  const long numberOfFeatures = polygonSource->featureCount();
   long long desiredNumberOfPoints = 0;
   const double featureProgressStep = 100.0 / ( numberOfFeatures > 0 ? numberOfFeatures : 1 );
   double baseFeatureProgress = 0.0;
@@ -235,7 +235,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
       feedback->setProgress( baseFeatureProgress );
       continue;
     }
-    QgsGeometry polyGeom( polyFeat.geometry() );
+    const QgsGeometry polyGeom( polyFeat.geometry() );
     if ( polyGeom.isEmpty() )
     {
       // Increment invalid features count
@@ -273,7 +273,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
       for ( int i = 0; i < newPoints.length(); i++ )
       {
         // add the point
-        QgsPointXY pt = newPoints[i];
+        const QgsPointXY pt = newPoints[i];
         QgsFeature f = QgsFeature( totNPoints );
         QgsAttributes pAttrs = QgsAttributes();
         pAttrs.append( totNPoints );
@@ -282,7 +282,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
           pAttrs.append( polyFeat.attributes() );
         }
         f.setAttributes( pAttrs );
-        QgsGeometry newGeom = QgsGeometry::fromPointXY( pt );
+        const QgsGeometry newGeom = QgsGeometry::fromPointXY( pt );
         f.setGeometry( newGeom );
         if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
@@ -304,7 +304,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
         // Local first (if larger than global)
         if ( minDistanceForThisFeature != 0 && mMinDistanceGlobal < minDistanceForThisFeature && localIndexPoints > 0 )
         {
-          QList<QgsFeatureId> neighbors = localIndex.nearestNeighbor( newPoint, 1, minDistanceForThisFeature );
+          const QList<QgsFeatureId> neighbors = localIndex.nearestNeighbor( newPoint, 1, minDistanceForThisFeature );
           //if ( totNPoints > 0 && !neighbors.empty() )
           if ( !neighbors.empty() )
           {
@@ -314,7 +314,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
         // The global
         if ( mMinDistanceGlobal != 0.0 && indexPoints > 0 )
         {
-          QList<QgsFeatureId> neighbors = globalIndex.nearestNeighbor( newPoint, 1, mMinDistanceGlobal );
+          const QList<QgsFeatureId> neighbors = globalIndex.nearestNeighbor( newPoint, 1, mMinDistanceGlobal );
           //if ( totNPoints > 0 && !neighbors.empty() )
           if ( !neighbors.empty() )
           {
@@ -326,7 +326,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
         QgsAttributes pAttrs = QgsAttributes();
         pAttrs.append( attempts );
         f.setAttributes( pAttrs );
-        QgsGeometry newGeom = QgsGeometry::fromPointXY( newPoint );
+        const QgsGeometry newGeom = QgsGeometry::fromPointXY( newPoint );
 
         f.setGeometry( newGeom );
         //totNPoints++;
@@ -349,7 +349,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
       // create and output features for the generated points
       for ( int i = 0; i < newPoints.length(); i++ )
       {
-        QgsPointXY pt = newPoints[i];
+        const QgsPointXY pt = newPoints[i];
         QgsFeature f = QgsFeature( totNPoints );
         QgsAttributes pAttrs = QgsAttributes();
         pAttrs.append( totNPoints );
@@ -358,7 +358,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
           pAttrs.append( polyFeat.attributes() );
         }
         f.setAttributes( pAttrs );
-        QgsGeometry newGeom = QgsGeometry::fromPointXY( pt );
+        const QgsGeometry newGeom = QgsGeometry::fromPointXY( pt );
         f.setGeometry( newGeom );
         if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );

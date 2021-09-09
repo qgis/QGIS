@@ -41,7 +41,7 @@ QVector<QgsDataItem *> QgsFavoritesItem::createChildren()
 {
   QVector<QgsDataItem *> children;
 
-  QgsSettings settings;
+  const QgsSettings settings;
 
   const QStringList favDirs = settings.value( QStringLiteral( "browser/favourites" ), QVariant() ).toStringList();
 
@@ -101,7 +101,7 @@ void QgsFavoritesItem::removeDirectory( QgsDirectoryItem *item )
   }
   settings.setValue( QStringLiteral( "browser/favourites" ), favDirs );
 
-  int idx = findItem( mChildren, item );
+  const int idx = findItem( mChildren, item );
   if ( idx < 0 )
   {
     QgsDebugMsg( QStringLiteral( "favorites item %1 not found" ).arg( item->path() ) );
@@ -126,7 +126,7 @@ void QgsFavoritesItem::renameFavorite( const QString &path, const QString &name 
     const QString dir = parts.at( 0 );
     if ( dir == path )
     {
-      QStringList newParts { path, name };
+      const QStringList newParts { path, name };
       favDirs[i] = newParts.join( QLatin1String( "|||" ) );
       break;
     }

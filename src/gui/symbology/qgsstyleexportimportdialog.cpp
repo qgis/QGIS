@@ -86,7 +86,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
     mImportFileWidget->setDialogTitle( tr( "Load Styles" ) );
     mImportFileWidget->setFilter( tr( "XML files (*.xml *.XML)" ) );
 
-    QgsSettings settings;
+    const QgsSettings settings;
     mImportFileWidget->setDefaultRoot( settings.value( QStringLiteral( "StyleManager/lastImportDir" ), QDir::homePath(), QgsSettings::Gui ).toString() );
     connect( mImportFileWidget, &QgsFileWidget::fileChanged, this, &QgsStyleExportImportDialog::importFileChanged );
 
@@ -119,7 +119,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
     dialogStyle = mStyle;
   }
 
-  double iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 10;
+  const double iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 10;
   listItems->setIconSize( QSize( static_cast< int >( iconSize ), static_cast< int >( iconSize * 0.9 ) ) );  // ~100, 90 on low dpi
 
   mModel = new QgsStyleProxyModel( dialogStyle, this );
@@ -220,7 +220,7 @@ void QgsStyleExportImportDialog::moveStyles( QModelIndexList *selection, QgsStyl
   items.reserve( selection->size() );
   for ( int i = 0; i < selection->size(); ++i )
   {
-    QModelIndex index = selection->at( i );
+    const QModelIndex index = selection->at( i );
 
     QgsStyleManagerDialog::ItemDetails details;
     details.entityType = static_cast< QgsStyle::StyleEntity >( mModel->data( index, QgsStyleModel::TypeRole ).toInt() );
@@ -257,13 +257,13 @@ void QgsStyleExportImportDialog::clearSelection()
 
 void QgsStyleExportImportDialog::selectFavorites()
 {
-  QStringList symbolNames = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );
+  const QStringList symbolNames = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );
   selectSymbols( symbolNames );
 }
 
 void QgsStyleExportImportDialog::deselectFavorites()
 {
-  QStringList symbolNames = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );
+  const QStringList symbolNames = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );
   deselectSymbols( symbolNames );
 }
 
@@ -272,7 +272,7 @@ void QgsStyleExportImportDialog::selectSymbols( const QStringList &symbolNames )
   const auto constSymbolNames = symbolNames;
   for ( const QString &symbolName : constSymbolNames )
   {
-    QModelIndexList indexes = listItems->model()->match( listItems->model()->index( 0, QgsStyleModel::Name ), Qt::DisplayRole, symbolName, 1, Qt::MatchFixedString | Qt::MatchCaseSensitive );
+    const QModelIndexList indexes = listItems->model()->match( listItems->model()->index( 0, QgsStyleModel::Name ), Qt::DisplayRole, symbolName, 1, Qt::MatchFixedString | Qt::MatchCaseSensitive );
     const auto constIndexes = indexes;
     for ( const QModelIndex &index : constIndexes )
     {
@@ -286,11 +286,11 @@ void QgsStyleExportImportDialog::deselectSymbols( const QStringList &symbolNames
   const auto constSymbolNames = symbolNames;
   for ( const QString &symbolName : constSymbolNames )
   {
-    QModelIndexList indexes = listItems->model()->match( listItems->model()->index( 0, QgsStyleModel::Name ), Qt::DisplayRole, symbolName, 1, Qt::MatchFixedString | Qt::MatchCaseSensitive );
+    const QModelIndexList indexes = listItems->model()->match( listItems->model()->index( 0, QgsStyleModel::Name ), Qt::DisplayRole, symbolName, 1, Qt::MatchFixedString | Qt::MatchCaseSensitive );
     const auto constIndexes = indexes;
     for ( const QModelIndex &index : constIndexes )
     {
-      QItemSelection deselection( index, index );
+      const QItemSelection deselection( index, index );
       listItems->selectionModel()->select( deselection, QItemSelectionModel::Deselect );
     }
   }
@@ -298,13 +298,13 @@ void QgsStyleExportImportDialog::deselectSymbols( const QStringList &symbolNames
 
 void QgsStyleExportImportDialog::selectTag( const QString &tagName )
 {
-  QStringList symbolNames = mStyle->symbolsWithTag( QgsStyle::SymbolEntity, mStyle->tagId( tagName ) );
+  const QStringList symbolNames = mStyle->symbolsWithTag( QgsStyle::SymbolEntity, mStyle->tagId( tagName ) );
   selectSymbols( symbolNames );
 }
 
 void QgsStyleExportImportDialog::deselectTag( const QString &tagName )
 {
-  QStringList symbolNames = mStyle->symbolsWithTag( QgsStyle::SymbolEntity, mStyle->tagId( tagName ) );
+  const QStringList symbolNames = mStyle->symbolsWithTag( QgsStyle::SymbolEntity, mStyle->tagId( tagName ) );
   deselectSymbols( symbolNames );
 }
 
@@ -350,7 +350,7 @@ void QgsStyleExportImportDialog::selectByGroup()
 
 void QgsStyleExportImportDialog::importTypeChanged( int index )
 {
-  ImportSource source = static_cast< ImportSource >( importTypeCombo->itemData( index ).toInt() );
+  const ImportSource source = static_cast< ImportSource >( importTypeCombo->itemData( index ).toInt() );
 
   switch ( source )
   {
@@ -388,8 +388,8 @@ void QgsStyleExportImportDialog::importFileChanged( const QString &path )
     return;
 
   mFileName = path;
-  QFileInfo pathInfo( mFileName );
-  QString tag = pathInfo.fileName().remove( QStringLiteral( ".xml" ) );
+  const QFileInfo pathInfo( mFileName );
+  const QString tag = pathInfo.fileName().remove( QStringLiteral( ".xml" ) );
   mSymbolTags->setText( tag );
   if ( QFileInfo::exists( mFileName ) )
   {
@@ -446,7 +446,7 @@ void QgsStyleExportImportDialog::selectionChanged( const QItemSelection &selecte
 {
   Q_UNUSED( selected )
   Q_UNUSED( deselected )
-  bool nothingSelected = listItems->selectionModel()->selectedIndexes().empty();
+  const bool nothingSelected = listItems->selectionModel()->selectedIndexes().empty();
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( nothingSelected );
 }
 

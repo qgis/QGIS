@@ -17,6 +17,7 @@
 
 #include "qgsannotationpointtextitem.h"
 #include "qgstextrenderer.h"
+#include "qgsannotationitemnode.h"
 
 QgsAnnotationPointTextItem::QgsAnnotationPointTextItem( const QString &text, QgsPointXY point )
   : QgsAnnotationItem()
@@ -24,6 +25,12 @@ QgsAnnotationPointTextItem::QgsAnnotationPointTextItem( const QString &text, Qgs
   , mPoint( point )
 {
 
+}
+
+Qgis::AnnotationItemFlags QgsAnnotationPointTextItem::flags() const
+{
+  // in truth this should depend on whether the text format is scale dependent or not!
+  return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox;
 }
 
 QgsAnnotationPointTextItem::~QgsAnnotationPointTextItem() = default;
@@ -59,7 +66,6 @@ bool QgsAnnotationPointTextItem::writeXml( QDomElement &element, QDomDocument &d
   element.setAttribute( QStringLiteral( "x" ), qgsDoubleToString( mPoint.x() ) );
   element.setAttribute( QStringLiteral( "y" ), qgsDoubleToString( mPoint.y() ) );
   element.setAttribute( QStringLiteral( "text" ), mText );
-  element.setAttribute( QStringLiteral( "zIndex" ), zIndex() );
   element.setAttribute( QStringLiteral( "angle" ), qgsDoubleToString( mAngle ) );
   element.setAttribute( QStringLiteral( "alignment" ), QString::number( mAlignment ) );
 
@@ -67,6 +73,7 @@ bool QgsAnnotationPointTextItem::writeXml( QDomElement &element, QDomDocument &d
   textFormatElem.appendChild( mTextFormat.writeXml( document, context ) );
   element.appendChild( textFormatElem );
 
+  writeCommonProperties( element, document, context );
   return true;
 }
 
@@ -83,16 +90,16 @@ bool QgsAnnotationPointTextItem::readXml( const QDomElement &element, const QgsR
   mText = element.attribute( QStringLiteral( "text" ) );
   mAngle = element.attribute( QStringLiteral( "angle" ) ).toDouble();
   mAlignment = static_cast< Qt::Alignment >( element.attribute( QStringLiteral( "alignment" ) ).toInt() );
-  setZIndex( element.attribute( QStringLiteral( "zIndex" ) ).toInt() );
 
   const QDomElement textFormatElem = element.firstChildElement( QStringLiteral( "pointTextFormat" ) );
   if ( !textFormatElem.isNull() )
   {
-    QDomNodeList textFormatNodeList = textFormatElem.elementsByTagName( QStringLiteral( "text-style" ) );
-    QDomElement textFormatElem = textFormatNodeList.at( 0 ).toElement();
+    const QDomNodeList textFormatNodeList = textFormatElem.elementsByTagName( QStringLiteral( "text-style" ) );
+    const QDomElement textFormatElem = textFormatNodeList.at( 0 ).toElement();
     mTextFormat.readXml( textFormatElem, context );
   }
 
+  readCommonProperties( element, context );
   return true;
 }
 
@@ -102,13 +109,41 @@ QgsAnnotationPointTextItem *QgsAnnotationPointTextItem::clone()
   item->setFormat( mTextFormat );
   item->setAngle( mAngle );
   item->setAlignment( mAlignment );
-  item->setZIndex( zIndex() );
+  item->copyCommonProperties( this );
   return item.release();
 }
 
 QgsRectangle QgsAnnotationPointTextItem::boundingBox() const
 {
   return QgsRectangle( mPoint.x(), mPoint.y(), mPoint.x(), mPoint.y() );
+}
+
+QgsRectangle QgsAnnotationPointTextItem::boundingBox( QgsRenderContext &context ) const
+{
+  const double widthInPixels = QgsTextRenderer::textWidth( context, mTextFormat, mText.split( '\n' ) );
+  const double heightInPixels = QgsTextRenderer::textHeight( context, mTextFormat, mText.split( '\n' ) );
+
+  // text size has already been calculated using any symbology reference scale factor above -- we need
+  // to temporarily remove the reference scale here or we'll be undoing the scaling
+  QgsScopedRenderContextReferenceScaleOverride resetScaleFactor( context, -1.0 );
+  const double widthInMapUnits = context.convertToMapUnits( widthInPixels, QgsUnitTypes::RenderPixels );
+  const double heightInMapUnits = context.convertToMapUnits( heightInPixels, QgsUnitTypes::RenderPixels );
+
+  return QgsRectangle( mPoint.x(), mPoint.y(), mPoint.x() + widthInMapUnits, mPoint.y() + heightInMapUnits );
+}
+
+QList<QgsAnnotationItemNode> QgsAnnotationPointTextItem::nodes() const
+{
+  return { QgsAnnotationItemNode( mPoint, Qgis::AnnotationItemNodeType::VertexHandle )};
+}
+
+bool QgsAnnotationPointTextItem::transform( const QTransform &transform )
+{
+  double x = mPoint.x();
+  double y = mPoint.y();
+  transform.map( mPoint.x(), mPoint.y(), &x, &y );
+  mPoint.set( x, y );
+  return true;
 }
 
 QgsTextFormat QgsAnnotationPointTextItem::format() const

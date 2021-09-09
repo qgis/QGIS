@@ -131,7 +131,11 @@ Calculate the symmetric difference of this and ``geom``.
 .. versionadded:: 3.0
 %End
     virtual QgsAbstractGeometry *buffer( double distance, int segments, QString *errorMsg = 0 ) const = 0 /Factory/;
-    virtual QgsAbstractGeometry *buffer( double distance, int segments, int endCapStyle, int joinStyle, double miterLimit, QString *errorMsg = 0 ) const = 0 /Factory/;
+
+    virtual QgsAbstractGeometry *buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = 0 ) const = 0 /Factory/;
+%Docstring
+Buffers a geometry.
+%End
     virtual QgsAbstractGeometry *simplify( double tolerance, QString *errorMsg = 0 ) const = 0 /Factory/;
     virtual QgsAbstractGeometry *interpolate( double distance, QString *errorMsg = 0 ) const = 0 /Factory/;
     virtual QgsAbstractGeometry *envelope( QString *errorMsg = 0 ) const = 0 /Factory/;
@@ -290,7 +294,10 @@ Splits this geometry according to a given line.
 :return: 0 in case of success, 1 if geometry has not been split, error else
 %End
 
-    virtual QgsAbstractGeometry *offsetCurve( double distance, int segments, int joinStyle, double miterLimit, QString *errorMsg = 0 ) const = 0 /Factory/;
+    virtual QgsAbstractGeometry *offsetCurve( double distance, int segments, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = 0 ) const = 0 /Factory/;
+%Docstring
+Offsets a curve.
+%End
 
     void setLogErrors( bool enabled );
 %Docstring

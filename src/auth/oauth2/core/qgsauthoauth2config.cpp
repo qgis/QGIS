@@ -62,7 +62,7 @@ QgsAuthOAuth2Config::QgsAuthOAuth2Config( QObject *parent )
 
 void QgsAuthOAuth2Config::setId( const QString &value )
 {
-  QString preval( mId );
+  const QString preval( mId );
   mId = value;
   if ( preval != value )
     emit idChanged( mId );
@@ -70,7 +70,7 @@ void QgsAuthOAuth2Config::setId( const QString &value )
 
 void QgsAuthOAuth2Config::setVersion( int value )
 {
-  int preval( mVersion );
+  const int preval( mVersion );
   mVersion = value;
   if ( preval != value )
     emit versionChanged( mVersion );
@@ -78,7 +78,7 @@ void QgsAuthOAuth2Config::setVersion( int value )
 
 void QgsAuthOAuth2Config::setConfigType( QgsAuthOAuth2Config::ConfigType value )
 {
-  ConfigType preval( mConfigType );
+  const ConfigType preval( mConfigType );
   mConfigType = value;
   if ( preval != value )
     emit configTypeChanged( mConfigType );
@@ -86,7 +86,7 @@ void QgsAuthOAuth2Config::setConfigType( QgsAuthOAuth2Config::ConfigType value )
 
 void QgsAuthOAuth2Config::setGrantFlow( QgsAuthOAuth2Config::GrantFlow value )
 {
-  GrantFlow preval( mGrantFlow );
+  const GrantFlow preval( mGrantFlow );
   mGrantFlow = value;
   if ( preval != value )
     emit grantFlowChanged( mGrantFlow );
@@ -94,7 +94,7 @@ void QgsAuthOAuth2Config::setGrantFlow( QgsAuthOAuth2Config::GrantFlow value )
 
 void QgsAuthOAuth2Config::setName( const QString &value )
 {
-  QString preval( mName );
+  const QString preval( mName );
   mName = value;
   if ( preval != value )
     emit nameChanged( mName );
@@ -102,7 +102,7 @@ void QgsAuthOAuth2Config::setName( const QString &value )
 
 void QgsAuthOAuth2Config::setDescription( const QString &value )
 {
-  QString preval( mDescription );
+  const QString preval( mDescription );
   mDescription = value;
   if ( preval != value )
     emit descriptionChanged( mDescription );
@@ -110,7 +110,7 @@ void QgsAuthOAuth2Config::setDescription( const QString &value )
 
 void QgsAuthOAuth2Config::setRequestUrl( const QString &value )
 {
-  QString preval( mRequestUrl );
+  const QString preval( mRequestUrl );
   mRequestUrl = value;
   if ( preval != value )
     emit requestUrlChanged( mRequestUrl );
@@ -118,7 +118,7 @@ void QgsAuthOAuth2Config::setRequestUrl( const QString &value )
 
 void QgsAuthOAuth2Config::setTokenUrl( const QString &value )
 {
-  QString preval( mTokenUrl );
+  const QString preval( mTokenUrl );
   mTokenUrl = value;
   if ( preval != value )
     emit tokenUrlChanged( mTokenUrl );
@@ -126,7 +126,7 @@ void QgsAuthOAuth2Config::setTokenUrl( const QString &value )
 
 void QgsAuthOAuth2Config::setRefreshTokenUrl( const QString &value )
 {
-  QString preval( mRefreshTokenUrl );
+  const QString preval( mRefreshTokenUrl );
   mRefreshTokenUrl = value;
   if ( preval != value )
     emit refreshTokenUrlChanged( mRefreshTokenUrl );
@@ -134,7 +134,7 @@ void QgsAuthOAuth2Config::setRefreshTokenUrl( const QString &value )
 
 void QgsAuthOAuth2Config::setRedirectUrl( const QString &value )
 {
-  QString preval( mRedirectURL );
+  const QString preval( mRedirectURL );
   mRedirectURL = value;
   if ( preval != value )
     emit redirectUrlChanged( mRedirectURL );
@@ -142,7 +142,7 @@ void QgsAuthOAuth2Config::setRedirectUrl( const QString &value )
 
 void QgsAuthOAuth2Config::setRedirectPort( int value )
 {
-  int preval( mRedirectPort );
+  const int preval( mRedirectPort );
   mRedirectPort = value;
   if ( preval != value )
     emit redirectPortChanged( mRedirectPort );
@@ -150,7 +150,7 @@ void QgsAuthOAuth2Config::setRedirectPort( int value )
 
 void QgsAuthOAuth2Config::setClientId( const QString &value )
 {
-  QString preval( mClientId );
+  const QString preval( mClientId );
   mClientId = value;
   if ( preval != value )
     emit clientIdChanged( mClientId );
@@ -158,7 +158,7 @@ void QgsAuthOAuth2Config::setClientId( const QString &value )
 
 void QgsAuthOAuth2Config::setClientSecret( const QString &value )
 {
-  QString preval( mClientSecret );
+  const QString preval( mClientSecret );
   mClientSecret = value;
   if ( preval != value )
     emit clientSecretChanged( mClientSecret );
@@ -166,7 +166,7 @@ void QgsAuthOAuth2Config::setClientSecret( const QString &value )
 
 void QgsAuthOAuth2Config::setUsername( const QString &value )
 {
-  QString preval( mUsername );
+  const QString preval( mUsername );
   mUsername = value;
   if ( preval != value )
     emit usernameChanged( mUsername );
@@ -174,7 +174,7 @@ void QgsAuthOAuth2Config::setUsername( const QString &value )
 
 void QgsAuthOAuth2Config::setPassword( const QString &value )
 {
-  QString preval( mPassword );
+  const QString preval( mPassword );
   mPassword = value;
   if ( preval != value )
     emit passwordChanged( mPassword );
@@ -182,7 +182,7 @@ void QgsAuthOAuth2Config::setPassword( const QString &value )
 
 void QgsAuthOAuth2Config::setScope( const QString &value )
 {
-  QString preval( mScope );
+  const QString preval( mScope );
   mScope = value;
   if ( preval != value )
     emit scopeChanged( mScope );
@@ -190,7 +190,7 @@ void QgsAuthOAuth2Config::setScope( const QString &value )
 
 void QgsAuthOAuth2Config::setApiKey( const QString &value )
 {
-  QString preval( mApiKey );
+  const QString preval( mApiKey );
   mApiKey = value;
   if ( preval != value )
     emit apiKeyChanged( mApiKey );
@@ -198,7 +198,7 @@ void QgsAuthOAuth2Config::setApiKey( const QString &value )
 
 void QgsAuthOAuth2Config::setPersistToken( bool persist )
 {
-  bool preval( mPersistToken );
+  const bool preval( mPersistToken );
   mPersistToken = persist;
   if ( preval != persist )
     emit persistTokenChanged( mPersistToken );
@@ -206,7 +206,7 @@ void QgsAuthOAuth2Config::setPersistToken( bool persist )
 
 void QgsAuthOAuth2Config::setAccessMethod( QgsAuthOAuth2Config::AccessMethod value )
 {
-  AccessMethod preval( mAccessMethod );
+  const AccessMethod preval( mAccessMethod );
   mAccessMethod = value;
   if ( preval != value )
     emit accessMethodChanged( mAccessMethod );
@@ -214,7 +214,7 @@ void QgsAuthOAuth2Config::setAccessMethod( QgsAuthOAuth2Config::AccessMethod val
 
 void QgsAuthOAuth2Config::setCustomHeader( const QString &header )
 {
-  QString preval( mCustomHeader );
+  const QString preval( mCustomHeader );
   mCustomHeader = header;
   if ( preval != header )
     emit customHeaderChanged( mCustomHeader );
@@ -222,7 +222,7 @@ void QgsAuthOAuth2Config::setCustomHeader( const QString &header )
 
 void QgsAuthOAuth2Config::setRequestTimeout( int value )
 {
-  int preval( mRequestTimeout );
+  const int preval( mRequestTimeout );
   mRequestTimeout = value;
   if ( preval != value )
     emit requestTimeoutChanged( mRequestTimeout );
@@ -230,7 +230,7 @@ void QgsAuthOAuth2Config::setRequestTimeout( int value )
 
 void QgsAuthOAuth2Config::setQueryPairs( const QVariantMap &pairs )
 {
-  QVariantMap preval( mQueryPairs );
+  const QVariantMap preval( mQueryPairs );
   mQueryPairs = pairs;
   if ( preval != pairs )
     emit queryPairsChanged( mQueryPairs );
@@ -306,7 +306,7 @@ void QgsAuthOAuth2Config::validateConfig()
 // public
 void QgsAuthOAuth2Config::validateConfigId( bool needsId )
 {
-  bool oldvalid = mValid;
+  const bool oldvalid = mValid;
 
   if ( mGrantFlow == AuthCode || mGrantFlow == Implicit )
   {
@@ -339,7 +339,7 @@ bool QgsAuthOAuth2Config::loadConfigTxt(
   {
     case JSON:
     {
-      QVariant variant = QJsonWrapper::parseJson( configtxt, &res, &errStr );
+      const QVariant variant = QJsonWrapper::parseJson( configtxt, &res, &errStr );
       if ( !res )
       {
         QgsDebugMsg( QStringLiteral( "Error parsing JSON: %1" ).arg( QString( errStr ) ) );
@@ -349,7 +349,7 @@ bool QgsAuthOAuth2Config::loadConfigTxt(
       // safety check -- qvariant2qobject asserts if an non-matching property is found in the json
       for ( QVariantMap::const_iterator iter = variantMap.constBegin(); iter != variantMap.constEnd(); ++iter )
       {
-        QVariant property = this->property( iter.key().toLatin1() );
+        const QVariant property = this->property( iter.key().toLatin1() );
         if ( !property.isValid() ) // e.g. not a auth config json file
           return false;
       }
@@ -382,7 +382,7 @@ QByteArray QgsAuthOAuth2Config::saveConfigTxt(
   {
     case JSON:
     {
-      QVariantMap variant = QJsonWrapper::qobject2qvariant( this );
+      const QVariantMap variant = QJsonWrapper::qobject2qvariant( this );
       out = QJsonWrapper::toJson( variant, &res, &errStr, pretty );
       if ( !res )
       {
@@ -471,7 +471,7 @@ QVariantMap QgsAuthOAuth2Config::variantFromSerialized(
   {
     case JSON:
     {
-      QVariant var = QJsonWrapper::parseJson( serial, &res, &errStr );
+      const QVariant var = QJsonWrapper::parseJson( serial, &res, &errStr );
       if ( !res )
       {
         QgsDebugMsg( QStringLiteral( "Error parsing JSON to variant: %1" ).arg( QString( errStr ) ) );
@@ -514,7 +514,7 @@ bool QgsAuthOAuth2Config::writeOAuth2Config(
   bool pretty )
 {
   bool res = false;
-  QByteArray configtxt = config->saveConfigTxt( format, pretty, &res );
+  const QByteArray configtxt = config->saveConfigTxt( format, pretty, &res );
   if ( !res )
   {
     QgsDebugMsg( QStringLiteral( "FAILED to save config to text" ) );
@@ -522,11 +522,11 @@ bool QgsAuthOAuth2Config::writeOAuth2Config(
   }
 
   QFile config_file( filepath );
-  QString file_path( config_file.fileName() );
+  const QString file_path( config_file.fileName() );
 
   if ( config_file.open( QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text ) )
   {
-    qint64 bytesWritten = config_file.write( configtxt );
+    const qint64 bytesWritten = config_file.write( configtxt );
     config_file.close();
     if ( bytesWritten == -1 )
     {
@@ -557,7 +557,7 @@ QList<QgsAuthOAuth2Config *> QgsAuthOAuth2Config::loadOAuth2Configs(
   bool *ok )
 {
   QList<QgsAuthOAuth2Config *> configs = QList<QgsAuthOAuth2Config *>();
-  bool res = false;
+  const bool res = false;
   QStringList namefilters;
 
   switch ( format )
@@ -595,7 +595,7 @@ QList<QgsAuthOAuth2Config *> QgsAuthOAuth2Config::loadOAuth2Configs(
     QFile cfile( configdir.path() + '/' + configfile );
     if ( cfile.exists() )
     {
-      bool ret = cfile.open( QIODevice::ReadOnly | QIODevice::Text );
+      const bool ret = cfile.open( QIODevice::ReadOnly | QIODevice::Text );
       if ( ret )
       {
         configtxt = cfile.readAll();
@@ -635,7 +635,7 @@ QgsStringMap QgsAuthOAuth2Config::mapOAuth2Configs(
   bool *ok )
 {
   QgsStringMap configs = QgsStringMap();
-  bool res = false;
+  const bool res = false;
   QStringList namefilters;
 
   switch ( format )
@@ -674,7 +674,7 @@ QgsStringMap QgsAuthOAuth2Config::mapOAuth2Configs(
     QFile cfile( configdir.path() + '/' + configfile );
     if ( cfile.exists() )
     {
-      bool ret = cfile.open( QIODevice::ReadOnly | QIODevice::Text );
+      const bool ret = cfile.open( QIODevice::ReadOnly | QIODevice::Text );
       if ( ret )
       {
         configtxt = cfile.readAll();
@@ -736,13 +736,13 @@ QgsStringMap QgsAuthOAuth2Config::mappedOAuth2ConfigsCache( QObject *parent, con
   const QStringList configdirs = configLocations( extradir );
   for ( const auto &configdir : configdirs )
   {
-    QFileInfo configdirinfo( configdir );
+    const QFileInfo configdirinfo( configdir );
     if ( !configdirinfo.exists() || !configdirinfo.isDir() )
     {
       continue;
     }
-    QgsStringMap newconfigs = QgsAuthOAuth2Config::mapOAuth2Configs(
-                                configdirinfo.canonicalFilePath(), parent, QgsAuthOAuth2Config::JSON, &ok );
+    const QgsStringMap newconfigs = QgsAuthOAuth2Config::mapOAuth2Configs(
+                                      configdirinfo.canonicalFilePath(), parent, QgsAuthOAuth2Config::JSON, &ok );
     if ( ok )
     {
       QgsStringMap::const_iterator i = newconfigs.constBegin();
@@ -814,7 +814,7 @@ QString QgsAuthOAuth2Config::accessMethodString( QgsAuthOAuth2Config::AccessMeth
 // static
 QString QgsAuthOAuth2Config::tokenCacheDirectory( bool temporary )
 {
-  QDir setdir( QgsApplication::qgisSettingsDirPath() );
+  const QDir setdir( QgsApplication::qgisSettingsDirPath() );
   return  QStringLiteral( "%1/oauth2-cache" ).arg( temporary ? QDir::tempPath() : setdir.canonicalPath() );
 }
 

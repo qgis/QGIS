@@ -76,7 +76,7 @@ void TestQgsOgrProvider::initTestCase()
 void TestQgsOgrProvider::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -98,7 +98,7 @@ void TestQgsOgrProvider::setupProxy()
     settings.setValue( QStringLiteral( "proxy/proxyPassword" ), QStringLiteral( "password" ) );
     settings.setValue( QStringLiteral( "proxy/proxyExcludedUrls" ), QStringLiteral( "http://www.myhost.com|http://www.myotherhost.com" ) );
     QgsNetworkAccessManager::instance()->setupDefaultProxyAndCache();
-    QgsVectorLayer vl( mTestDataDir + '/' + QStringLiteral( "lines.shp" ), QStringLiteral( "proxy_test" ), QLatin1String( "ogr" ) );
+    const QgsVectorLayer vl( mTestDataDir + '/' + QStringLiteral( "lines.shp" ), QStringLiteral( "proxy_test" ), QLatin1String( "ogr" ) );
     QVERIFY( vl.isValid() );
     const char *proxyConfig = CPLGetConfigOption( "GDAL_HTTP_PROXY", nullptr );
     QCOMPARE( proxyConfig, "myproxyhostname.com:1234" );
@@ -114,7 +114,7 @@ void TestQgsOgrProvider::setupProxy()
     settings.setValue( QStringLiteral( "proxy/proxyUser" ), QStringLiteral( "username" ) );
     settings.remove( QStringLiteral( "proxy/proxyPassword" ) );
     QgsNetworkAccessManager::instance()->setupDefaultProxyAndCache();
-    QgsVectorLayer vl( mTestDataDir + '/' + QStringLiteral( "lines.shp" ), QStringLiteral( "proxy_test" ), QLatin1String( "ogr" ) );
+    const QgsVectorLayer vl( mTestDataDir + '/' + QStringLiteral( "lines.shp" ), QStringLiteral( "proxy_test" ), QLatin1String( "ogr" ) );
     QVERIFY( vl.isValid() );
     const char *proxyConfig = CPLGetConfigOption( "GDAL_HTTP_PROXY", nullptr );
     QCOMPARE( proxyConfig, "myproxyhostname.com" );
@@ -330,7 +330,7 @@ void TestQgsOgrProvider::testThread()
   QWaitCondition waitForVlCreation;
   QWaitCondition waitForProcessEvents;
 
-  QString filePath = mTestDataDir + '/' + QStringLiteral( "lines.shp" );
+  const QString filePath = mTestDataDir + '/' + QStringLiteral( "lines.shp" );
   QThread *thread = new ReadVectorLayer( filePath, mutex, waitForVlCreation, waitForProcessEvents );
 
   thread->start();
@@ -355,7 +355,7 @@ void TestQgsOgrProvider::testThread()
 
 void TestQgsOgrProvider::testCsvFeatureAddition()
 {
-  QString csvFilename = QDir::tempPath() + "/csvfeatureadditiontest.csv";
+  const QString csvFilename = QDir::tempPath() + "/csvfeatureadditiontest.csv";
   QFile csvFile( csvFilename );
   if ( csvFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {

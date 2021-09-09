@@ -165,6 +165,20 @@ class CORE_EXPORT QgsVectorTileWriter
     //! Returns calculated extent that combines extent of all input layers
     QgsRectangle fullExtent() const;
 
+    /**
+     * Encodes single MVT tile
+     *
+     * \param tileID Tile identifier
+     * \param feedback  optional, provide cancellation functionality
+     * \param resolution the resolution of coordinates of geometries within the tile. The default is 4096
+     * \param buffer size of the buffer zone around tile edges in integer tile coordinates. The default is 256 (~6%)
+     *
+     * Returns a QByteArray with the encoded data
+     *
+     * \since QGIS 3.22
+    */
+    QByteArray writeSingleTile( QgsTileXYZ tileID, QgsFeedback *feedback = nullptr, int buffer = 256, int resolution = 4096 ) const;
+
   private:
     bool writeTileFileXYZ( const QString &sourcePath, QgsTileXYZ tileID, const QgsTileMatrix &tileMatrix, const QByteArray &tileData );
     QString mbtilesJsonSchema();

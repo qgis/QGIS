@@ -100,7 +100,7 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
     feedback->pushWarning( QObject::tr( "No spatial index exists for input layer, performance will be severely degraded" ) );
 
   QString dest;
-  QgsWkbTypes::GeometryType sinkType = QgsWkbTypes::geometryType( featureSource->wkbType() );
+  const QgsWkbTypes::GeometryType sinkType = QgsWkbTypes::geometryType( featureSource->wkbType() );
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, featureSource->fields(), QgsWkbTypes::multiType( featureSource->wkbType() ), featureSource->sourceCrs() ) );
 
   if ( !sink )
@@ -168,7 +168,7 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
     if ( singleClipFeature )
       step = 100.0 / inputFeatures.length();
 
-    int current = 0;
+    const int current = 0;
     const auto constInputFeatures = inputFeatures;
     for ( const QgsFeature &inputFeature : constInputFeatures )
     {
@@ -193,12 +193,12 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
       QgsGeometry newGeometry;
       if ( !engine->contains( inputFeature.geometry().constGet() ) )
       {
-        QgsGeometry currentGeometry = inputFeature.geometry();
+        const QgsGeometry currentGeometry = inputFeature.geometry();
         newGeometry = combinedClipGeom.intersection( currentGeometry );
         if ( newGeometry.wkbType() == QgsWkbTypes::Unknown || QgsWkbTypes::flatType( newGeometry.wkbType() ) == QgsWkbTypes::GeometryCollection )
         {
-          QgsGeometry intCom = inputFeature.geometry().combine( newGeometry );
-          QgsGeometry intSym = inputFeature.geometry().symDifference( newGeometry );
+          const QgsGeometry intCom = inputFeature.geometry().combine( newGeometry );
+          const QgsGeometry intSym = inputFeature.geometry().symDifference( newGeometry );
           newGeometry = intCom.difference( intSym );
         }
       }

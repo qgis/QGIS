@@ -35,6 +35,7 @@
 #include "qgsreferencedgeometry.h"
 #include "qgsrasterfilewriter.h"
 #include "qgsvectortilelayer.h"
+#include "qgspointcloudlayer.h"
 #include <QRegularExpression>
 #include <QUuid>
 
@@ -76,6 +77,11 @@ QList<QgsPluginLayer *> QgsProcessingUtils::compatiblePluginLayers( QgsProject *
   return compatibleMapLayers< QgsPluginLayer >( project, sort );
 }
 
+QList<QgsPointCloudLayer *> QgsProcessingUtils::compatiblePointCloudLayers( QgsProject *project, bool sort )
+{
+  return compatibleMapLayers< QgsPointCloudLayer >( project, sort );
+}
+
 template<typename T> QList<T *> QgsProcessingUtils::compatibleMapLayers( QgsProject *project, bool sort )
 {
   if ( !project )
@@ -106,7 +112,6 @@ QList<QgsMapLayer *> QgsProcessingUtils::compatibleLayers( QgsProject *project, 
 
   QList<QgsMapLayer *> layers;
 
-  //~ const auto rasterLayers = compatibleRasterLayers( project, false );
   const auto rasterLayers = compatibleMapLayers< QgsRasterLayer >( project, false );
   for ( QgsRasterLayer *rl : rasterLayers )
     layers << rl;
@@ -115,12 +120,14 @@ QList<QgsMapLayer *> QgsProcessingUtils::compatibleLayers( QgsProject *project, 
   for ( QgsVectorLayer *vl : vectorLayers )
     layers << vl;
 
-  //~ const auto meshLayers = compatibleMeshLayers( project, false );
   const auto meshLayers = compatibleMapLayers< QgsMeshLayer >( project, false );
-  for ( QgsMeshLayer *vl : meshLayers )
-    layers << vl;
+  for ( QgsMeshLayer *ml : meshLayers )
+    layers << ml;
 
-  //~ const auto pluginLayers = compatiblePluginLayers( project, false );
+  const auto pointCloudLayers = compatibleMapLayers< QgsPointCloudLayer >( project, false );
+  for ( QgsPointCloudLayer *pcl : pointCloudLayers )
+    layers << pcl;
+
   const auto pluginLayers = compatibleMapLayers< QgsPluginLayer >( project, false );
   for ( QgsPluginLayer *pl : pluginLayers )
     layers << pl;
@@ -178,7 +185,7 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
       case QgsMapLayerType::AnnotationLayer:
         return true;
       case QgsMapLayerType::PointCloudLayer:
-        return true;
+        return !canUseLayer( qobject_cast< QgsPointCloudLayer * >( layer ) );
     }
     return true;
   } ), layers.end() );
@@ -198,6 +205,9 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
 
       case LayerHint::Mesh:
         return l->type() == QgsMapLayerType::MeshLayer;
+
+      case LayerHint::PointCloud:
+        return l->type() == QgsMapLayerType::PointCloudLayer;
     }
     return true;
   };
@@ -230,7 +240,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
 
   QString name;
   // for disk based sources, we use the filename to determine a layer name
-  if ( !useProvider || ( provider == QLatin1String( "ogr" ) || provider == QLatin1String( "gdal" ) || provider == QLatin1String( "mdal" ) ) )
+  if ( !useProvider || ( provider == QLatin1String( "ogr" ) || provider == QLatin1String( "gdal" ) || provider == QLatin1String( "mdal" ) || provider == QLatin1String( "pdal" ) || provider == QLatin1String( "ept" ) ) )
   {
     QStringList components = uri.split( '|' );
     if ( components.isEmpty() )
@@ -311,6 +321,25 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
     if ( meshLayer->isValid() )
     {
       return meshLayer.release();
+    }
+  }
+  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::PointCloud )
+  {
+    QgsPointCloudLayer::LayerOptions pointCloudOptions;
+    pointCloudOptions.skipCrsValidation = true;
+
+    std::unique_ptr< QgsPointCloudLayer > pointCloudLayer;
+    if ( useProvider )
+    {
+      pointCloudLayer = std::make_unique< QgsPointCloudLayer >( uri, name, provider, pointCloudOptions );
+    }
+    else
+    {
+      pointCloudLayer = std::make_unique< QgsPointCloudLayer >( uri, name, QStringLiteral( "pointcloud" ), pointCloudOptions );
+    }
+    if ( pointCloudLayer->isValid() )
+    {
+      return pointCloudLayer.release();
     }
   }
   return nullptr;
@@ -503,6 +532,11 @@ bool QgsProcessingUtils::canUseLayer( const QgsVectorTileLayer *layer )
 }
 
 bool QgsProcessingUtils::canUseLayer( const QgsRasterLayer *layer )
+{
+  return layer && layer->isValid();
+}
+
+bool QgsProcessingUtils::canUseLayer( const QgsPointCloudLayer *layer )
 {
   return layer && layer->isValid();
 }
@@ -1004,37 +1038,45 @@ QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const Q
     return QString();
   };
 
-  QString s = QObject::tr( "<html><body><h2>Algorithm description</h2>\n" );
-  s += QStringLiteral( "<p>" ) + getText( QStringLiteral( "ALG_DESC" ) ) + QStringLiteral( "</p>\n" );
+  QString s;
+  s += QStringLiteral( "<html><body><p>" ) + getText( QStringLiteral( "ALG_DESC" ) ) + QStringLiteral( "</p>\n" );
 
   QString inputs;
-
   const auto parameterDefinitions = algorithm->parameterDefinitions();
   for ( const QgsProcessingParameterDefinition *def : parameterDefinitions )
   {
-    inputs += QStringLiteral( "<h3>" ) + def->description() + QStringLiteral( "</h3>\n" );
-    inputs += QStringLiteral( "<p>" ) + getText( def->name() ) + QStringLiteral( "</p>\n" );
+    if ( def->flags() & QgsProcessingParameterDefinition::FlagHidden || def->isDestination() )
+      continue;
+
+    if ( !getText( def->name() ).isEmpty() )
+    {
+      inputs += QStringLiteral( "<h3>" ) + def->description() + QStringLiteral( "</h3>\n" );
+      inputs += QStringLiteral( "<p>" ) + getText( def->name() ) + QStringLiteral( "</p>\n" );
+    }
   }
   if ( !inputs.isEmpty() )
-    s += QObject::tr( "<h2>Input parameters</h2>\n" ) + inputs;
+    s += QStringLiteral( "<h2>" ) + QObject::tr( "Input parameters" ) + QStringLiteral( "</h2>\n" ) + inputs;
 
   QString outputs;
   const auto outputDefinitions = algorithm->outputDefinitions();
   for ( const QgsProcessingOutputDefinition *def : outputDefinitions )
   {
-    outputs += QStringLiteral( "<h3>" ) + def->description() + QStringLiteral( "</h3>\n" );
-    outputs += QStringLiteral( "<p>" ) + getText( def->name() ) + QStringLiteral( "</p>\n" );
+    if ( !getText( def->name() ).isEmpty() )
+    {
+      outputs += QStringLiteral( "<h3>" ) + def->description() + QStringLiteral( "</h3>\n" );
+      outputs += QStringLiteral( "<p>" ) + getText( def->name() ) + QStringLiteral( "</p>\n" );
+    }
   }
   if ( !outputs.isEmpty() )
-    s += QObject::tr( "<h2>Outputs</h2>\n" ) + outputs;
+    s += QStringLiteral( "<h2>" ) + QObject::tr( "Outputs" ) + QStringLiteral( "</h2>\n" ) + outputs;
 
   s += QLatin1String( "<br>" );
   if ( !map.value( QStringLiteral( "ALG_CREATOR" ) ).toString().isEmpty() )
-    s += QObject::tr( "<p align=\"right\">Algorithm author: %1</p>" ).arg( getText( QStringLiteral( "ALG_CREATOR" ) ) );
+    s += QStringLiteral( "<p align=\"right\">" ) + QObject::tr( "Algorithm author:" ) + QStringLiteral( " " ) + getText( QStringLiteral( "ALG_CREATOR" ) ) + QStringLiteral( "</p>" );
   if ( !map.value( QStringLiteral( "ALG_HELP_CREATOR" ) ).toString().isEmpty() )
-    s += QObject::tr( "<p align=\"right\">Help author: %1</p>" ).arg( getText( QStringLiteral( "ALG_HELP_CREATOR" ) ) );
+    s += QStringLiteral( "<p align=\"right\">" ) + QObject::tr( "Help author:" ) + QStringLiteral( " " ) + getText( QStringLiteral( "ALG_HELP_CREATOR" ) ) + QStringLiteral( "</p>" );
   if ( !map.value( QStringLiteral( "ALG_VERSION" ) ).toString().isEmpty() )
-    s += QObject::tr( "<p align=\"right\">Algorithm version: %1</p>" ).arg( getText( QStringLiteral( "ALG_VERSION" ) ) );
+    s += QStringLiteral( "<p align=\"right\">" ) + QObject::tr( "Algorithm version:" ) + QStringLiteral( " " ) + getText( QStringLiteral( "ALG_VERSION" ) ) + QStringLiteral( "</p>" );
 
   s += QLatin1String( "</body></html>" );
   return s;

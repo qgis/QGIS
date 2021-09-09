@@ -58,7 +58,7 @@ namespace MDAL
       // loads datasets
       virtual void load( const std::string &uri, Mesh *mesh );
       // save mesh
-      virtual void save( const std::string &uri, Mesh *mesh );
+      virtual void save( const std::string &fileName, const std::string &meshName, Mesh *mesh );
 
       // create new dataset group
       virtual void createDatasetGroup(
@@ -68,11 +68,18 @@ namespace MDAL
         bool hasScalarData,
         const std::string &datasetGroupFile );
 
-      // create new dataset from array
+      // create new 2D dataset from array
       virtual void createDataset( DatasetGroup *group,
                                   RelativeTimestamp time,
                                   const double *values,
                                   const int *active );
+
+      // create new 3D dataset from array
+      virtual void createDataset( DatasetGroup *group,
+                                  RelativeTimestamp time,
+                                  const double *values,
+                                  const int *verticalLevelCount,
+                                  const double *verticalExtrusion );
 
       // persist to the file
       // returns true on error, false on success

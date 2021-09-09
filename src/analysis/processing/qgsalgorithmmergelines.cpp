@@ -82,7 +82,7 @@ QgsFeatureList QgsMergeLinesAlgorithm::processFeature( const QgsFeature &feature
     return QgsFeatureList() << feature;
 
   QgsFeature out = feature;
-  QgsGeometry outputGeometry = feature.geometry().mergeLines();
+  const QgsGeometry outputGeometry = feature.geometry().mergeLines();
   if ( outputGeometry.isNull() )
     feedback->reportError( QObject::tr( "Error merging lines for feature %1" ).arg( feature.id() ) );
 

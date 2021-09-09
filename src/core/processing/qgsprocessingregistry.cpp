@@ -73,6 +73,7 @@ QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   addParameterType( new QgsProcessingParameterTypeDxfLayers() );
   addParameterType( new QgsProcessingParameterTypeMeshDatasetGroups() );
   addParameterType( new QgsProcessingParameterTypeMeshDatasetTime() );
+  addParameterType( new QgsProcessingParameterTypePointCloudLayer() );
 }
 
 QgsProcessingRegistry::~QgsProcessingRegistry()
@@ -121,7 +122,7 @@ bool QgsProcessingRegistry::removeProvider( QgsProcessingProvider *provider )
   if ( !provider )
     return false;
 
-  QString id = provider->id();
+  const QString id = provider->id();
 
   if ( !mProviders.contains( id ) )
     return false;
@@ -158,7 +159,7 @@ QList< const QgsProcessingAlgorithm * > QgsProcessingRegistry::algorithms() cons
 const QgsProcessingAlgorithm *QgsProcessingRegistry::algorithmById( const QString &constId ) const
 {
   // allow mapping of algorithm via registered algorithm aliases
-  QString id = mAlgorithmAliases.value( constId, constId );
+  const QString id = mAlgorithmAliases.value( constId, constId );
 
   QMap<QString, QgsProcessingProvider *>::const_iterator it = mProviders.constBegin();
   for ( ; it != mProviders.constEnd(); ++it )
@@ -174,7 +175,7 @@ const QgsProcessingAlgorithm *QgsProcessingRegistry::algorithmById( const QStrin
   // or existing models
   if ( id.startsWith( QLatin1String( "qgis:" ) ) )
   {
-    QString newId = QStringLiteral( "native:" ) + id.mid( 5 );
+    const QString newId = QStringLiteral( "native:" ) + id.mid( 5 );
     return algorithmById( newId );
   }
   return nullptr;

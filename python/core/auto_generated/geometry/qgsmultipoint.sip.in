@@ -74,7 +74,7 @@ Returns the point with the specified ``index``.
 
     virtual double segmentLength( QgsVertexId startVertex ) const;
 
-    virtual bool isValid( QString &error /Out/, int flags = 0 ) const /HoldGIL/;
+    virtual bool isValid( QString &error /Out/, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const /HoldGIL/;
 
 
 

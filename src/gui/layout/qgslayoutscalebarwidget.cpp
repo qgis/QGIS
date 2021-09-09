@@ -502,7 +502,7 @@ void QgsLayoutScaleBarWidget::mStyleComboBox_currentIndexChanged( const QString 
   disconnectUpdateSignal();
 
   bool defaultsApplied = false;
-  std::unique_ptr< QgsScaleBarRenderer > renderer( QgsApplication::scaleBarRendererRegistry()->renderer( rendererId ) );
+  const std::unique_ptr< QgsScaleBarRenderer > renderer( QgsApplication::scaleBarRendererRegistry()->renderer( rendererId ) );
   if ( renderer )
     defaultsApplied = mScalebar->applyDefaultRendererSettings( renderer.get() );
 
@@ -641,7 +641,7 @@ void QgsLayoutScaleBarWidget::mUnitsComboBox_currentIndexChanged( int index )
     return;
   }
 
-  QVariant unitData = mUnitsComboBox->itemData( index );
+  const QVariant unitData = mUnitsComboBox->itemData( index );
   if ( unitData.type() == QVariant::Invalid )
   {
     return;
@@ -652,6 +652,8 @@ void QgsLayoutScaleBarWidget::mUnitsComboBox_currentIndexChanged( int index )
   mScalebar->applyDefaultSize( static_cast<  QgsUnitTypes::DistanceUnit >( unitData.toInt() ) );
   mScalebar->update();
 
+  mNumberOfSegmentsSpinBox->setValue( mScalebar->numberOfSegments() );
+  mSegmentsLeftSpinBox->setValue( mScalebar->numberOfSegmentsLeft() );
   mUnitLabelLineEdit->setText( mScalebar->unitLabel() );
   mSegmentSizeSpinBox->setValue( mScalebar->unitsPerSegment() );
   mMapUnitsPerBarUnitSpinBox->setValue( mScalebar->mapUnitsPerScaleBarUnit() );
@@ -707,7 +709,7 @@ void QgsLayoutScaleBarWidget::disconnectUpdateSignal()
 
 void QgsLayoutScaleBarWidget::segmentSizeRadioChanged( QAbstractButton *radio )
 {
-  bool fixedSizeMode = radio == mFixedSizeRadio;
+  const bool fixedSizeMode = radio == mFixedSizeRadio;
   mMinWidthSpinBox->setEnabled( !fixedSizeMode );
   mMaxWidthSpinBox->setEnabled( !fixedSizeMode );
   mSegmentSizeSpinBox->setEnabled( fixedSizeMode );

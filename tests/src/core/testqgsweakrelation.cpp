@@ -66,7 +66,7 @@ void TestQgsWeakRelation::cleanup()
 
 void TestQgsWeakRelation::testResolved()
 {
-  QList<QgsRelation::FieldPair> fieldPairs {{ "fk_province", "pk" }};
+  const QList<QgsRelation::FieldPair> fieldPairs {{ "fk_province", "pk" }};
 
   QgsWeakRelation weakRel( QStringLiteral( "my_relation_id" ),
                            QStringLiteral( "my_relation_name" ),
@@ -108,21 +108,21 @@ void TestQgsWeakRelation::testResolved()
 
 void TestQgsWeakRelation::testReadWrite()
 {
-  QList<QgsRelation::FieldPair> fieldPairs {{ "fk_province", "pk" }};
+  const QList<QgsRelation::FieldPair> fieldPairs {{ "fk_province", "pk" }};
 
-  QgsWeakRelation weakRel( QStringLiteral( "my_relation_id" ),
-                           QStringLiteral( "my_relation_name" ),
-                           QgsRelation::RelationStrength::Association,
-                           QStringLiteral( "referencingLayerId" ),
-                           QStringLiteral( "referencingLayerName" ),
-                           QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=fk_province:int&field=fk_municipality:int" ),
-                           QStringLiteral( "memory" ),
-                           QStringLiteral( "referencedLayerId" ),
-                           QStringLiteral( "referencedLayerName" ),
-                           QStringLiteral( "Polygon?crs=epsg:4326&field=pk:int&field=province:int&field=municipality:string" ),
-                           QStringLiteral( "memory" ),
-                           fieldPairs
-                         );
+  const QgsWeakRelation weakRel( QStringLiteral( "my_relation_id" ),
+                                 QStringLiteral( "my_relation_name" ),
+                                 QgsRelation::RelationStrength::Association,
+                                 QStringLiteral( "referencingLayerId" ),
+                                 QStringLiteral( "referencingLayerName" ),
+                                 QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=fk_province:int&field=fk_municipality:int" ),
+                                 QStringLiteral( "memory" ),
+                                 QStringLiteral( "referencedLayerId" ),
+                                 QStringLiteral( "referencedLayerName" ),
+                                 QStringLiteral( "Polygon?crs=epsg:4326&field=pk:int&field=province:int&field=municipality:string" ),
+                                 QStringLiteral( "memory" ),
+                                 fieldPairs
+                               );
 
   QgsVectorLayer referencedLayer( QStringLiteral( "Polygon?crs=epsg:4326&field=pk:int&field=province:int&field=municipality:string" ), QStringLiteral( "referencedLayerName" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( &referencedLayer, false, false );
@@ -130,11 +130,11 @@ void TestQgsWeakRelation::testReadWrite()
   QgsVectorLayer referencingLayer( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=fk_province:int&field=fk_municipality:int" ), QStringLiteral( "referencingLayerName" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( &referencingLayer, false, false );
 
-  QgsRelation relation( weakRel.resolvedRelation( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name ) );
+  const QgsRelation relation( weakRel.resolvedRelation( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name ) );
   QVERIFY( relation.isValid() );
 
   QDomImplementation DomImplementation;
-  QDomDocumentType documentType =
+  const QDomDocumentType documentType =
     DomImplementation.createDocumentType(
       QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
@@ -142,7 +142,7 @@ void TestQgsWeakRelation::testReadWrite()
   // Check the XML is written for the referenced layer
   QDomElement node = doc.createElement( QStringLiteral( "relation" ) );
   QgsWeakRelation::writeXml( &referencedLayer, QgsWeakRelation::Referenced, relation, node, doc );
-  QgsWeakRelation weakRelReferenced( QgsWeakRelation::readXml( &referencedLayer, QgsWeakRelation::Referenced, node,  QgsProject::instance()->pathResolver() ) );
+  const QgsWeakRelation weakRelReferenced( QgsWeakRelation::readXml( &referencedLayer, QgsWeakRelation::Referenced, node,  QgsProject::instance()->pathResolver() ) );
   QCOMPARE( weakRelReferenced.fieldPairs(), fieldPairs );
   QCOMPARE( weakRelReferenced.strength(), QgsRelation::RelationStrength::Association );
   QCOMPARE( weakRelReferenced.referencedLayer().resolve( QgsProject::instance() ), &referencedLayer );
@@ -150,7 +150,7 @@ void TestQgsWeakRelation::testReadWrite()
   // Check the XML is written for the referencing layer
   node = doc.createElement( QStringLiteral( "relation" ) );
   QgsWeakRelation::writeXml( &referencingLayer, QgsWeakRelation::Referencing, relation, node, doc );
-  QgsWeakRelation weakRelReferencing( QgsWeakRelation::readXml( &referencingLayer, QgsWeakRelation::Referencing, node,  QgsProject::instance()->pathResolver() ) );
+  const QgsWeakRelation weakRelReferencing( QgsWeakRelation::readXml( &referencingLayer, QgsWeakRelation::Referencing, node,  QgsProject::instance()->pathResolver() ) );
   QCOMPARE( weakRelReferencing.fieldPairs(), fieldPairs );
   QCOMPARE( weakRelReferencing.strength(), QgsRelation::RelationStrength::Association );
   QCOMPARE( weakRelReferencing.referencingLayer().resolve( QgsProject::instance() ), &referencingLayer );
@@ -190,20 +190,20 @@ void TestQgsWeakRelation::testWriteStyleCategoryRelations()
 
   // Write to XML
   QDomImplementation DomImplementation;
-  QDomDocumentType documentType =
+  const QDomDocumentType documentType =
     DomImplementation.createDocumentType(
       QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
   QDomElement node = doc.createElement( QStringLiteral( "style_categories_relations" ) );
   QString errorMessage;
-  QgsReadWriteContext context = QgsReadWriteContext();
+  const QgsReadWriteContext context = QgsReadWriteContext();
 
   mLayer1.writeSymbology( node, doc, errorMessage, context, QgsMapLayer::Relations );
 
   // Check XML tags and attributes
-  QDomElement referencedLayersElement = node.firstChildElement( QStringLiteral( "referencedLayers" ) );
+  const QDomElement referencedLayersElement = node.firstChildElement( QStringLiteral( "referencedLayers" ) );
   Q_ASSERT( !referencedLayersElement.isNull() );
-  QDomNodeList relationsNodeList = referencedLayersElement.elementsByTagName( QStringLiteral( "relation" ) );
+  const QDomNodeList relationsNodeList = referencedLayersElement.elementsByTagName( QStringLiteral( "relation" ) );
   QCOMPARE( relationsNodeList.size(), 2 );
   QDomElement relationElement;
 

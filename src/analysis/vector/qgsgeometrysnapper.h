@@ -211,27 +211,22 @@ class QgsSnapIndex
         QgsPoint getSnapPoint( const QgsPoint &p ) const override;
         bool getIntersection( const QgsPoint &p1, const QgsPoint &p2, QgsPoint &inter ) const;
         bool getProjection( const QgsPoint &p, QgsPoint &pProj );
+        bool withinDistance( const QgsPoint &p, const double distance );
         const CoordIdx *idxFrom = nullptr;
         const CoordIdx *idxTo = nullptr;
     };
 
-    QgsSnapIndex( const QgsPoint &origin, double cellSize );
+    QgsSnapIndex();
     ~QgsSnapIndex();
 
     QgsSnapIndex( const QgsSnapIndex &rh ) = delete;
     QgsSnapIndex &operator=( const QgsSnapIndex &rh ) = delete;
 
     void addGeometry( const QgsAbstractGeometry *geom );
-    QgsPoint getClosestSnapToPoint( const QgsPoint &p, const QgsPoint &q );
-    SnapItem *getSnapItem( const QgsPoint &pos, double tol, PointSnapItem **pSnapPoint = nullptr, SegmentSnapItem **pSnapSegment = nullptr, bool endPointOnly = false ) const;
+    QgsPoint getClosestSnapToPoint( const QgsPoint &startPoint, const QgsPoint &midPoint );
+    SnapItem *getSnapItem( const QgsPoint &pos, const double tolerance, PointSnapItem **pSnapPoint = nullptr, SegmentSnapItem **pSnapSegment = nullptr, bool endPointOnly = false ) const;
 
   private:
-    typedef QList<SnapItem *> Cell;
-    typedef QPair<QgsPoint, QgsPoint> Segment;
-
-    QgsPoint mOrigin;
-    double mCellSize;
-
     QList<CoordIdx *> mCoordIdxs;
     QList<SnapItem *> mSnapItems;
 

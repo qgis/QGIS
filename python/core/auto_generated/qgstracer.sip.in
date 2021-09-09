@@ -87,12 +87,14 @@ Positive offset for right side, negative offset for left side.
 .. versionadded:: 3.0
 %End
 
+
     void offsetParameters( int &quadSegments /Out/, int &joinStyle /Out/, double &miterLimit /Out/ );
 %Docstring
 Gets extra parameters for offset curve algorithm (used when offset is non-zero)
 
 .. versionadded:: 3.0
 %End
+
 
     void setOffsetParameters( int quadSegments, int joinStyle, double miterLimit );
 %Docstring

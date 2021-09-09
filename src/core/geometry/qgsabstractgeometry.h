@@ -731,13 +731,13 @@ class CORE_EXPORT QgsAbstractGeometry
      *
      * \param error will be set to the validity error message
      * \param flags indicates optional flags which control the type of validity checking performed
-     * (corresponding to QgsGeometry::ValidityFlags).
+     * (corresponding to Qgis::GeometryValidityFlags).
      *
      * \returns TRUE if geometry is valid
      *
      * \since QGIS 3.8
      */
-    virtual bool isValid( QString &error SIP_OUT, int flags = 0 ) const = 0;
+    virtual bool isValid( QString &error SIP_OUT, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const = 0;
 
     /**
      * Transforms the vertices from the geometry in place, using the specified geometry \a transformer

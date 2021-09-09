@@ -413,7 +413,7 @@ Example
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
-    virtual bool isValid( QString &error /Out/, int flags = 0 ) const /HoldGIL/;
+    virtual bool isValid( QString &error /Out/, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const /HoldGIL/;
 
 
     virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex );

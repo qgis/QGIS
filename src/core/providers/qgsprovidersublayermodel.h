@@ -60,6 +60,7 @@ class CORE_EXPORT QgsProviderSublayerModel: public QAbstractItemModel
       LayerNumber, //!< Layer number
       IsNonLayerItem, //!< TRUE if item is a non-sublayer item (e.g. an embedded project)
       NonLayerItemType, //!< Item type (for non-sublayer items)
+      Flags, //!< Sublayer flags
     };
 
     //! Model columns
@@ -245,6 +246,20 @@ class CORE_EXPORT QgsProviderSublayerProxyModel: public QSortFilterProxyModel
      */
     void setFilterString( const QString &filter );
 
+    /**
+     * Returns TRUE if system and internal tables will be shown in the model.
+     *
+     * \see setIncludeSystemTables()
+     */
+    bool includeSystemTables() const;
+
+    /**
+     * Sets whether system and internal tables will be shown in the model.
+     *
+     * \see includeSystemTables()
+     */
+    void setIncludeSystemTables( bool include );
+
   protected:
     bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
     bool lessThan( const QModelIndex &source_left, const QModelIndex &source_right ) const override;
@@ -252,6 +267,7 @@ class CORE_EXPORT QgsProviderSublayerProxyModel: public QSortFilterProxyModel
   private:
 
     QString mFilterString;
+    bool mIncludeSystemTables = false;
 
 };
 

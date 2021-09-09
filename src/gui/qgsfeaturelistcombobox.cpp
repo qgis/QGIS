@@ -126,7 +126,7 @@ void QgsFeatureListComboBox::onCurrentIndexChanged( int i )
 {
   if ( !mLineEdit->hasStateStored() )
     mIsCurrentlyEdited = false;
-  QModelIndex modelIndex = mModel->index( i, 0, QModelIndex() );
+  const QModelIndex modelIndex = mModel->index( i, 0, QModelIndex() );
   mModel->setExtraIdentifierValues( mModel->data( modelIndex, QgsFeatureFilterModel::IdentifierValuesRole ).toList() );
   mLineEdit->setText( mModel->data( modelIndex, QgsFeatureFilterModel::ValueRole ).toString() );
   mLineEdit->setFont( mModel->data( modelIndex, Qt::FontRole ).value<QFont>() );
@@ -177,7 +177,7 @@ void QgsFeatureListComboBox::onDataChanged( const QModelIndex &topLeft, const QM
     const int currentIndex = mModel->extraIdentifierValueIndex();
     if ( currentIndex >= topLeft.row() && currentIndex <= bottomRight.row() )
     {
-      QModelIndex modelIndex = mModel->index( currentIndex, 0, QModelIndex() );
+      const QModelIndex modelIndex = mModel->index( currentIndex, 0, QModelIndex() );
       mLineEdit->setText( mModel->data( modelIndex, QgsFeatureFilterModel::ValueRole ).toString() );
     }
   }
@@ -185,7 +185,7 @@ void QgsFeatureListComboBox::onDataChanged( const QModelIndex &topLeft, const QM
 
 QString QgsFeatureListComboBox::identifierField() const
 {
-  QStringList list = mModel->identifierFields();
+  const QStringList list = mModel->identifierFields();
   if ( list.isEmpty() )
     return QString();
   else

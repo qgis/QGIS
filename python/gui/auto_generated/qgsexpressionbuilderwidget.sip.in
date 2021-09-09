@@ -42,21 +42,21 @@ Create a new expression builder widget with an optional parent.
 %End
     ~QgsExpressionBuilderWidget();
 
-    void init( const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), const Flags &flags = LoadAll );
+    void init( const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), QgsExpressionBuilderWidget::Flags flags = LoadAll );
 %Docstring
 Initialize without any layer
 
 .. versionadded:: 3.14
 %End
 
-    void initWithLayer( QgsVectorLayer *layer, const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), const Flags &flags = LoadAll );
+    void initWithLayer( QgsVectorLayer *layer, const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), QgsExpressionBuilderWidget::Flags flags = LoadAll );
 %Docstring
 Initialize with a layer
 
 .. versionadded:: 3.14
 %End
 
-    void initWithFields( const QgsFields &fields, const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), const Flags &flags = LoadAll );
+    void initWithFields( const QgsFields &fields, const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), QgsExpressionBuilderWidget::Flags flags = LoadAll );
 %Docstring
 Initialize with given fields without any layer
 
@@ -200,7 +200,7 @@ Loads the user expressions.
 .. versionadded:: 3.12
 %End
 
- void saveToUserExpressions( const QString &label, const QString expression, const QString &helpText ) /Deprecated/;
+ void saveToUserExpressions( const QString &label, const QString &expression, const QString &helpText ) /Deprecated/;
 %Docstring
 Stores the user ``expression`` with given ``label`` and ``helpText``.
 
@@ -288,6 +288,13 @@ Will be set to ``True`` if the current expression text reports a parser error
 with the context.
 
 .. versionadded:: 3.0
+%End
+
+    void setExpressionPreviewVisible( bool isVisible );
+%Docstring
+Sets whether the expression preview is visible.
+
+.. versionadded:: 3.22
 %End
 
   public slots:

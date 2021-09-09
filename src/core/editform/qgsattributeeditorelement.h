@@ -49,6 +49,9 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
       case QgsAttributeEditorElement::AeTypeRelation:
         sipType = sipType_QgsAttributeEditorRelation;
         break;
+      case QgsAttributeEditorElement::AeTypeAction:
+        sipType = sipType_QgsAttributeEditorAction;
+        break;
       default:
         sipType = nullptr;
         break;
@@ -63,7 +66,8 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
       AeTypeRelation,  //!< A relation
       AeTypeInvalid,   //!< Invalid
       AeTypeQmlElement, //!< A QML element
-      AeTypeHtmlElement //!< A HTML element
+      AeTypeHtmlElement, //!< A HTML element
+      AeTypeAction //!< A layer action element
     };
 
     /**

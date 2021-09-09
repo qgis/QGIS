@@ -184,7 +184,7 @@ QgsArcGisRestConnectionItem::QgsArcGisRestConnectionItem( QgsDataItem *parent, c
   mIconName = QStringLiteral( "mIconConnect.svg" );
   mCapabilities |= Qgis::BrowserItemCapability::Collapse;
 
-  QgsSettings settings;
+  const QgsSettings settings;
   const QString key = QStringLiteral( "qgis/connections-arcgisfeatureserver/" ) + mConnName;
   mPortalContentEndpoint = settings.value( key + "/content_endpoint" ).toString();
   mPortalCommunityEndpoint = settings.value( key + "/community_endpoint" ).toString();
@@ -586,7 +586,7 @@ QgsArcGisFeatureServiceLayerItem::QgsArcGisFeatureServiceLayerItem( QgsDataItem 
 QgsArcGisMapServiceLayerItem::QgsArcGisMapServiceLayerItem( QgsDataItem *parent, const QString &, const QString &url, const QString &id, const QString &title, const QString &authid, const QString &format, const QString &authcfg, const QgsStringMap &headers )
   : QgsLayerItem( parent, title, url, QString(), Qgis::BrowserLayerType::Raster, QStringLiteral( "arcgismapserver" ) )
 {
-  QString trimmedUrl = id.isEmpty() ? url : url.left( url.length() - 1 - id.length() ); // trim '/0' from end of url -- AMS provider requires this omitted
+  const QString trimmedUrl = id.isEmpty() ? url : url.left( url.length() - 1 - id.length() ); // trim '/0' from end of url -- AMS provider requires this omitted
   mUri = QStringLiteral( "crs='%1' format='%2' layer='%3' url='%4'" ).arg( authid, format, id, trimmedUrl );
   if ( !authcfg.isEmpty() )
     mUri += QStringLiteral( " authcfg='%1'" ).arg( authcfg );
@@ -647,8 +647,8 @@ QgsArcGisRestDataItemProvider::QgsArcGisRestDataItemProvider()
     settings.endGroup();
     for ( const QString &key : keys )
     {
-      QString oldKey = QStringLiteral( "qgis/connections-arcgismapserver/%1/%2" ).arg( legacyService, key );
-      QString newKey = QStringLiteral( "qgis/connections-arcgisfeatureserver/%1/%2" ).arg( newName, key );
+      const QString oldKey = QStringLiteral( "qgis/connections-arcgismapserver/%1/%2" ).arg( legacyService, key );
+      const QString newKey = QStringLiteral( "qgis/connections-arcgisfeatureserver/%1/%2" ).arg( newName, key );
       settings.setValue( newKey, settings.value( oldKey ) );
     }
 
@@ -677,7 +677,7 @@ QgsDataItem *QgsArcGisRestDataItemProvider::createDataItem( const QString &path,
   // path schema: afs:/connection name (used by OWS)
   if ( path.startsWith( QLatin1String( "afs:/" ) ) )
   {
-    QString connectionName = path.split( '/' ).last();
+    const QString connectionName = path.split( '/' ).last();
     if ( QgsOwsConnection::connectionList( QStringLiteral( "arcgisfeatureserver" ) ).contains( connectionName ) )
     {
       return new QgsArcGisRestConnectionItem( parentItem, QStringLiteral( "ArcGisFeatureServer" ), path, connectionName );

@@ -160,7 +160,7 @@ void QgsQueryBuilder::fillValues( int idx, int limit )
   QList<QVariant> values = qgis::setToList( mLayer->uniqueValues( idx, limit ) );
   std::sort( values.begin(), values.end() );
 
-  QString nullValue = QgsApplication::nullRepresentation();
+  const QString nullValue = QgsApplication::nullRepresentation();
 
   QgsDebugMsg( QStringLiteral( "nullValue: %1" ).arg( nullValue ) );
 
@@ -197,7 +197,7 @@ void QgsQueryBuilder::btnSampleValues_clicked()
 {
   lstValues->setCursor( Qt::WaitCursor );
 
-  QString prevSubsetString = mLayer->subsetString();
+  const QString prevSubsetString = mLayer->subsetString();
   if ( mUseUnfilteredLayer->isChecked() && !prevSubsetString.isEmpty() )
   {
     mIgnoreLayerSubsetStringChangedSignal = true;
@@ -220,7 +220,7 @@ void QgsQueryBuilder::btnGetAllValues_clicked()
 {
   lstValues->setCursor( Qt::WaitCursor );
 
-  QString prevSubsetString = mLayer->subsetString();
+  const QString prevSubsetString = mLayer->subsetString();
   if ( mUseUnfilteredLayer->isChecked() && !prevSubsetString.isEmpty() )
   {
     mIgnoreLayerSubsetStringChangedSignal = true;
@@ -387,7 +387,7 @@ void QgsQueryBuilder::lstFields_doubleClicked( const QModelIndex &index )
 
 void QgsQueryBuilder::lstValues_doubleClicked( const QModelIndex &index )
 {
-  QVariant value = index.data( Qt::UserRole + 1 );
+  const QVariant value = index.data( Qt::UserRole + 1 );
   if ( value.isNull() )
     mTxtSql->insertText( QStringLiteral( "NULL" ) );
   else if ( value.type() == QVariant::Date && mLayer->providerType() == QLatin1String( "ogr" ) && mLayer->storageType() == QLatin1String( "ESRI Shapefile" ) )
@@ -467,7 +467,7 @@ void QgsQueryBuilder::showHelp()
 void QgsQueryBuilder::saveQuery()
 {
   QgsSettings s;
-  QString lastQueryFileDir = s.value( QStringLiteral( "/UI/lastQueryFileDir" ), QDir::homePath() ).toString();
+  const QString lastQueryFileDir = s.value( QStringLiteral( "/UI/lastQueryFileDir" ), QDir::homePath() ).toString();
   //save as qqf (QGIS query file)
   QString saveFileName = QFileDialog::getSaveFileName( nullptr, tr( "Save Query to File" ), lastQueryFileDir, tr( "Query files (*.qqf *.QQF)" ) );
   if ( saveFileName.isNull() )
@@ -489,23 +489,23 @@ void QgsQueryBuilder::saveQuery()
 
   QDomDocument xmlDoc;
   QDomElement queryElem = xmlDoc.createElement( QStringLiteral( "Query" ) );
-  QDomText queryTextNode = xmlDoc.createTextNode( mTxtSql->text() );
+  const QDomText queryTextNode = xmlDoc.createTextNode( mTxtSql->text() );
   queryElem.appendChild( queryTextNode );
   xmlDoc.appendChild( queryElem );
 
   QTextStream fileStream( &saveFile );
   xmlDoc.save( fileStream, 2 );
 
-  QFileInfo fi( saveFile );
+  const QFileInfo fi( saveFile );
   s.setValue( QStringLiteral( "/UI/lastQueryFileDir" ), fi.absolutePath() );
 }
 
 void QgsQueryBuilder::loadQuery()
 {
-  QgsSettings s;
-  QString lastQueryFileDir = s.value( QStringLiteral( "/UI/lastQueryFileDir" ), QDir::homePath() ).toString();
+  const QgsSettings s;
+  const QString lastQueryFileDir = s.value( QStringLiteral( "/UI/lastQueryFileDir" ), QDir::homePath() ).toString();
 
-  QString queryFileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Query from File" ), lastQueryFileDir, tr( "Query files" ) + " (*.qqf);;" + tr( "All files" ) + " (*)" );
+  const QString queryFileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Query from File" ), lastQueryFileDir, tr( "Query files" ) + " (*.qqf);;" + tr( "All files" ) + " (*)" );
   if ( queryFileName.isNull() )
   {
     return;
@@ -524,17 +524,17 @@ void QgsQueryBuilder::loadQuery()
     return;
   }
 
-  QDomElement queryElem = queryDoc.firstChildElement( QStringLiteral( "Query" ) );
+  const QDomElement queryElem = queryDoc.firstChildElement( QStringLiteral( "Query" ) );
   if ( queryElem.isNull() )
   {
     QMessageBox::critical( nullptr, tr( "Load Query from File" ), tr( "File is not a valid query document." ) );
     return;
   }
 
-  QString query = queryElem.text();
+  const QString query = queryElem.text();
 
   //TODO: test if all the attributes are valid
-  QgsExpression search( query );
+  const QgsExpression search( query );
   if ( search.hasParserError() )
   {
     QMessageBox::critical( this, tr( "Query Result" ), search.parserErrorString() );

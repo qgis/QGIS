@@ -14,6 +14,18 @@
    <string>Layer Labeling Settings</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_8">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item row="1" column="0">
     <widget class="QFrame" name="mLabelingFrame">
      <property name="minimumSize">
@@ -5539,6 +5551,9 @@ font-style: italic;</string>
                               <string>…</string>
                              </property>
                             </widget>
+                           </item>
+                           <item>
+                            <widget class="QComboBox" name="mCoordRotationUnitComboBox"/>
                            </item>
                            <item>
                             <widget class="QCheckBox" name="chkPreserveRotation">

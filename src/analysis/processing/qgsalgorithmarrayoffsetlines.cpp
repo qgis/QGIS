@@ -114,7 +114,7 @@ bool QgsCreateArrayOffsetLinesAlgorithm::prepareAlgorithm( const QVariantMap &pa
     mOffsetStepProperty = parameters.value( QStringLiteral( "OFFSET" ) ).value< QgsProperty >();
 
   mSegments = parameterAsInt( parameters, QStringLiteral( "SEGMENTS" ), context );
-  mJoinStyle = static_cast< QgsGeometry::JoinStyle>( 1 + parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );
+  mJoinStyle = static_cast< Qgis::JoinStyle>( 1 + parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );
   mMiterLimit = parameterAsDouble( parameters, QStringLiteral( "MITER_LIMIT" ), context );
 
   return true;

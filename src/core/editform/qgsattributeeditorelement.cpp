@@ -18,6 +18,7 @@
 
 #include "qgsattributeeditorcontainer.h"
 #include "qgsattributeeditorfield.h"
+#include "qgsattributeeditoraction.h"
 #include "qgsattributeeditorhtmlelement.h"
 #include "qgsattributeeditorqmlelement.h"
 #include "qgsattributeeditorrelation.h"
@@ -47,7 +48,7 @@ QgsAttributeEditorElement *QgsAttributeEditorElement::create( const QDomElement 
 {
   QgsAttributeEditorElement *newElement = nullptr;
 
-  QString name = element.attribute( QStringLiteral( "name" ) );
+  const QString name = element.attribute( QStringLiteral( "name" ) );
 
   if ( element.tagName() == QLatin1String( "attributeEditorContainer" ) )
   {
@@ -56,7 +57,7 @@ QgsAttributeEditorElement *QgsAttributeEditorElement::create( const QDomElement 
   }
   else if ( element.tagName() == QLatin1String( "attributeEditorField" ) )
   {
-    int idx = fields.lookupField( name );
+    const int idx = fields.lookupField( name );
     newElement = new QgsAttributeEditorField( name, idx, parent );
   }
   else if ( element.tagName() == QLatin1String( "attributeEditorRelation" ) )
@@ -72,6 +73,10 @@ QgsAttributeEditorElement *QgsAttributeEditorElement::create( const QDomElement 
   else if ( element.tagName() == QLatin1String( "attributeEditorHtmlElement" ) )
   {
     newElement = new QgsAttributeEditorHtmlElement( element.attribute( QStringLiteral( "name" ) ), parent );
+  }
+  else if ( element.tagName() == QLatin1String( "attributeEditorAction" ) )
+  {
+    newElement = new QgsAttributeEditorAction( QUuid( element.attribute( QStringLiteral( "name" ) ) ), parent );
   }
 
   if ( newElement )

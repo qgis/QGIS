@@ -140,7 +140,7 @@ QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const 
     {
       outputXRes = extent.width() / width;
       providerXRes = provider->extent().width() / provider->xSize();
-      double pixelRatio = outputXRes / providerXRes;
+      const double pixelRatio = outputXRes / providerXRes;
       oversampling = ( pixelRatio > mMaxOversampling ) ? mMaxOversampling : pixelRatio;
       QgsDebugMsgLevel( QStringLiteral( "xRes = %1 providerXRes = %2 pixelRatio = %3 oversampling = %4" ).arg( outputXRes ).arg( providerXRes ).arg( pixelRatio ).arg( oversampling ), 4 );
     }
@@ -165,8 +165,8 @@ QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const 
   }
 
   //effective oversampling factors are different to global one because of rounding
-  double oversamplingX = ( static_cast< double >( width ) * oversampling ) / width;
-  double oversamplingY = ( static_cast< double >( height ) * oversampling ) / height;
+  const double oversamplingX = ( static_cast< double >( width ) * oversampling ) / width;
+  const double oversamplingY = ( static_cast< double >( height ) * oversampling ) / height;
 
   // we must also increase the extent to get correct result on borders of parts
   int tileBufferPixels = 0;
@@ -183,14 +183,14 @@ QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const 
   }
   const double sourceTileBufferSize = providerXRes * tileBufferPixels;
 
-  QgsRectangle bufferedExtent( extent.xMinimum() - sourceTileBufferSize,
-                               extent.yMinimum() - sourceTileBufferSize,
-                               extent.xMaximum() + sourceTileBufferSize,
-                               extent.yMaximum() + sourceTileBufferSize
-                             );
+  const QgsRectangle bufferedExtent( extent.xMinimum() - sourceTileBufferSize,
+                                     extent.yMinimum() - sourceTileBufferSize,
+                                     extent.xMaximum() + sourceTileBufferSize,
+                                     extent.yMaximum() + sourceTileBufferSize
+                                   );
 
-  int resWidth = static_cast< int >( std::round( width * oversamplingX ) ) + 2 * tileBufferPixels;
-  int resHeight = static_cast< int >( std::round( height * oversamplingY ) ) + 2 * tileBufferPixels;
+  const int resWidth = static_cast< int >( std::round( width * oversamplingX ) ) + 2 * tileBufferPixels;
+  const int resHeight = static_cast< int >( std::round( height * oversamplingY ) ) + 2 * tileBufferPixels;
 
   std::unique_ptr< QgsRasterBlock > inputBlock( mInput->block( bandNumber, bufferedExtent, resWidth, resHeight, feedback ) );
   if ( !inputBlock || inputBlock->isEmpty() )
@@ -205,10 +205,10 @@ QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const 
   }
 
   //resample image
-  QImage img = inputBlock->image();
+  const QImage img = inputBlock->image();
 
-  int resampleWidth = static_cast< int >( std::round( width * ( bufferedExtent.width() / extent.width() ) ) );
-  int resampleHeight = static_cast< int >( std::round( height * ( bufferedExtent.height() / extent.height() ) ) );
+  const int resampleWidth = static_cast< int >( std::round( width * ( bufferedExtent.width() / extent.width() ) ) );
+  const int resampleHeight = static_cast< int >( std::round( height * ( bufferedExtent.height() / extent.height() ) ) );
 
   QImage dstImg;
   if ( mZoomedInResampler && ( oversamplingX < 1.0 || qgsDoubleNear( oversampling, 1.0 ) ) )
@@ -253,8 +253,8 @@ QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const 
   }
 
   // extract desired part of dstImage
-  QImage cropped = tileBufferPixels > 0 ? dstImg.copy( ( resampleWidth - width ) / 2, ( resampleHeight - height ) / 2, width, height )
-                   : dstImg; // otherwise implicit copy, nice and cheap
+  const QImage cropped = tileBufferPixels > 0 ? dstImg.copy( ( resampleWidth - width ) / 2, ( resampleHeight - height ) / 2, width, height )
+                         : dstImg; // otherwise implicit copy, nice and cheap
   outputBlock->setImage( &cropped );
 
   return outputBlock.release(); // No resampling
@@ -290,7 +290,7 @@ void QgsRasterResampleFilter::readXml( const QDomElement &filterElem )
 
   mMaxOversampling = filterElem.attribute( QStringLiteral( "maxOversampling" ), QStringLiteral( "2.0" ) ).toDouble();
 
-  QString zoomedInResamplerType = filterElem.attribute( QStringLiteral( "zoomedInResampler" ) );
+  const QString zoomedInResamplerType = filterElem.attribute( QStringLiteral( "zoomedInResampler" ) );
   if ( zoomedInResamplerType == QLatin1String( "bilinear" ) )
   {
     mZoomedInResampler.reset( new QgsBilinearRasterResampler() );
@@ -300,7 +300,7 @@ void QgsRasterResampleFilter::readXml( const QDomElement &filterElem )
     mZoomedInResampler.reset( new QgsCubicRasterResampler() );
   }
 
-  QString zoomedOutResamplerType = filterElem.attribute( QStringLiteral( "zoomedOutResampler" ) );
+  const QString zoomedOutResamplerType = filterElem.attribute( QStringLiteral( "zoomedOutResampler" ) );
   if ( zoomedOutResamplerType == QLatin1String( "bilinear" ) )
   {
     mZoomedOutResampler.reset( new QgsBilinearRasterResampler() );

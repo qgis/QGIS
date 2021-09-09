@@ -141,7 +141,7 @@ QDomElement QgsEmbeddedSymbolRenderer::save( QDomDocument &doc, const QgsReadWri
 
   QgsSymbolMap symbols;
   symbols[QStringLiteral( "0" )] = mDefaultSymbol.get();
-  QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, QStringLiteral( "symbols" ), doc, context );
+  const QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, QStringLiteral( "symbols" ), doc, context );
   rendererElem.appendChild( symbolsElem );
 
   saveRendererData( doc, rendererElem, context );

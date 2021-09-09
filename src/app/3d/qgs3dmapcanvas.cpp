@@ -41,7 +41,7 @@
 Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   : QWidget( parent )
 {
-  QgsSettings setting;
+  const QgsSettings setting;
   mEngine = new QgsWindow3DEngine( this );
 
   connect( mEngine, &QgsAbstract3DEngine::imageCaptured, [ = ]( const QImage & image )
@@ -171,8 +171,8 @@ void Qgs3DMapCanvas::resetView( bool resetExtent )
       if ( map()->terrainGenerator() )
         map()->terrainGenerator()->setExtent( rect );
 
-      QgsRectangle te = mScene->sceneExtent();
-      QgsPointXY center = te.center();
+      const QgsRectangle te = mScene->sceneExtent();
+      const QgsPointXY center = te.center();
       map()->setOrigin( QgsVector3D( center.x(), center.y(), 0 ) );
     }
     if ( !map()->terrainGenerator() )
@@ -190,7 +190,7 @@ void Qgs3DMapCanvas::resetView( bool resetExtent )
         rect = extent;
       }
 
-      QgsPointXY center = rect.center();
+      const QgsPointXY center = rect.center();
       map()->setOrigin( QgsVector3D( center.x(), center.y(), 0 ) );
     }
   }
@@ -200,8 +200,8 @@ void Qgs3DMapCanvas::resetView( bool resetExtent )
 
 void Qgs3DMapCanvas::setViewFromTop( const QgsPointXY &center, float distance, float rotation )
 {
-  float worldX = center.x() - mMap->origin().x();
-  float worldY = center.y() - mMap->origin().y();
+  const float worldX = center.x() - mMap->origin().x();
+  const float worldY = center.y() - mMap->origin().y();
   mScene->cameraController()->setViewFromTop( worldX, -worldY, distance, rotation );
 }
 

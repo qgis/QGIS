@@ -35,6 +35,12 @@ Constructor for QgsAnnotationPolygonItem, with the specified ``polygon`` geometr
 
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
+    virtual QList< QgsAnnotationItemNode > nodes() const;
+
+    virtual QgsGeometry rubberBandGeometry() const;
+
+    virtual bool transform( const QTransform &transform );
+
 
     static QgsAnnotationPolygonItem *create() /Factory/;
 %Docstring

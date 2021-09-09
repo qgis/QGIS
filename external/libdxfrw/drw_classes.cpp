@@ -17,9 +17,6 @@
 #include "intern/dwgbuffer.h"
 #include "intern/drw_dbg.h"
 
-#include "qgslogger.h"
-
-
 void DRW_Class::parseCode( int code, dxfReader *reader )
 {
   switch ( code )
@@ -52,46 +49,36 @@ void DRW_Class::parseCode( int code, dxfReader *reader )
 
 bool DRW_Class::parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer *strBuf )
 {
-  QgsDebugMsg( "***************************** parsing Class *********************************************" );
+    DRW_DBG("\n***************************** parsing Class *********************************************\n");
 
   classNum = buf->getBitShort();
-
-  QgsDebugMsg( QString( "Class number: %1" ).arg( classNum ) );
-
+    DRW_DBG("Class number: "); DRW_DBG(classNum);
   proxyFlag = buf->getBitShort(); //in dwg specs says "version"
 
   appName = strBuf->getVariableText( version, false );
   className = strBuf->getVariableText( version, false );
   recName = strBuf->getVariableText( version, false );
 
-  QgsDebugMsg( QString( "app name:%1, class name:%2, dxf rec name:%3" )
-               .arg( appName.c_str() ).arg( className.c_str() ).arg( recName.c_str() )
-             );
-
+  DRW_DBG("\napp name: "); DRW_DBG(appName.c_str());
+  DRW_DBG("\nclass name: "); DRW_DBG(className.c_str());
+  DRW_DBG("\ndxf rec name: "); DRW_DBG(recName.c_str());
   wasaProxyFlag = buf->getBit(); //in dwg says wasazombie
   entityFlag = buf->getBitShort();
   entityFlag = entityFlag == 0x1F2 ? 1 : 0;
 
-  QgsDebugMsg( QString( "Proxy capabilities flag:%1, proxy flag (280): %2, entity flag:%3" )
-               .arg( proxyFlag ).arg( wasaProxyFlag ).arg( entityFlag )
-             );
+  DRW_DBG("\nProxy capabilities flag: "); DRW_DBG(proxyFlag);
+  DRW_DBG(", proxy flag (280): "); DRW_DBG(wasaProxyFlag);
+  DRW_DBG(", entity flag: "); DRW_DBGH(entityFlag);
 
   if ( version > DRW::AC1015 )  //2004+
   {
-    instanceCount = buf->getBitLong();
-    duint32 dwgVersion = buf->getBitLong();
-    int t = buf->getBitLong();
-    int unk0 = buf->getBitLong();
-    int unk1 = buf->getBitLong();
-
-    QgsDebugMsg( QString( "Instance Count:%1, DWG version: %2, maintenance version:%3, unk0:%4, unk1:%5" )
-                 .arg( instanceCount ).arg( dwgVersion ).arg( t ).arg( unk0 ).arg( unk1 )
-               );
-    Q_UNUSED( instanceCount );
-    Q_UNUSED( dwgVersion );
-    Q_UNUSED( t );
-    Q_UNUSED( unk0 );
-    Q_UNUSED( unk1 );
+      instanceCount = buf->getBitLong();
+      DRW_DBG("\nInstance Count: "); DRW_DBG(instanceCount);
+      duint32 dwgVersion = buf->getBitLong();
+      DRW_DBG("\nDWG version: "); DRW_DBG(dwgVersion);
+      DRW_DBG("\nmaintenance version: "); DRW_DBG(buf->getBitLong());
+      DRW_DBG("\nunknown 1: "); DRW_DBG(buf->getBitLong());
+      DRW_DBG("\nunknown 2: "); DRW_DBG(buf->getBitLong());
   }
 
   toDwgType();

@@ -599,19 +599,19 @@ QStringList subLayerDetailsToStringList( const QList< QgsProviderSublayerDetails
 QStringList QgsOgrProvider::subLayers() const
 {
   const bool withFeatureCount = ( mReadFlags & QgsDataProvider::SkipFeatureCount ) == 0;
-  return subLayerDetailsToStringList( _subLayers( withFeatureCount
-                                      ? ( Qgis::SublayerQueryFlag::CountFeatures | Qgis::SublayerQueryFlag::ResolveGeometryType )
-                                      : Qgis::SublayerQueryFlag::ResolveGeometryType ) );
+
+  Qgis::SublayerQueryFlags flags = withFeatureCount
+                                   ? ( Qgis::SublayerQueryFlag::CountFeatures | Qgis::SublayerQueryFlag::ResolveGeometryType )
+                                   : Qgis::SublayerQueryFlag::ResolveGeometryType;
+  if ( mIsSubLayer )
+    flags |= Qgis::SublayerQueryFlag::IncludeSystemTables;
+
+  return subLayerDetailsToStringList( _subLayers( flags ) );
 }
 
 QgsLayerMetadata QgsOgrProvider::layerMetadata() const
 {
   return mLayerMetadata;
-}
-
-QStringList QgsOgrProvider::subLayersWithoutFeatureCount() const
-{
-  return subLayerDetailsToStringList( _subLayers( Qgis::SublayerQueryFlag::ResolveGeometryType ) );
 }
 
 QList<QgsProviderSublayerDetails> QgsOgrProvider::_subLayers( Qgis::SublayerQueryFlags flags ) const
@@ -630,7 +630,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProvider::_subLayers( Qgis::SublayerQuer
   const size_t totalLayerCount = layerCount();
   if ( mOgrLayer && ( mIsSubLayer || totalLayerCount == 1 ) )
   {
-    mSubLayerList << QgsOgrProviderUtils::querySubLayerList( mLayerIndex, mOgrLayer, mGDALDriverName, flags, mIsSubLayer, dataSourceUri(), totalLayerCount == 1 );
+    mSubLayerList << QgsOgrProviderUtils::querySubLayerList( mLayerIndex, mOgrLayer, nullptr, mGDALDriverName, flags, dataSourceUri(), totalLayerCount == 1 );
   }
   else
   {
@@ -653,13 +653,14 @@ QList<QgsProviderSublayerDetails> QgsOgrProvider::_subLayers( Qgis::SublayerQuer
       if ( !layer )
         continue;
 
-      mSubLayerList << QgsOgrProviderUtils::querySubLayerList( i, layer.get(), mGDALDriverName, flags, mIsSubLayer, dataSourceUri(), totalLayerCount == 1 );
+      mSubLayerList << QgsOgrProviderUtils::querySubLayerList( i, layer.get(), nullptr, mGDALDriverName, flags, dataSourceUri(), totalLayerCount == 1 );
       if ( firstLayer == nullptr )
       {
         firstLayer = std::move( layer );
       }
     }
   }
+
   return mSubLayerList;
 }
 
@@ -1112,9 +1113,14 @@ void QgsOgrProvider::loadMetadata()
         }
       }
     }
-    else if ( ( mGDALDriverName == QLatin1String( "FileGDB" ) || mGDALDriverName == QLatin1String( "OpenFileGDB" ) ) )
+    else if ( mGDALDriverName == QLatin1String( "FileGDB" )
+              || mGDALDriverName == QLatin1String( "OpenFileGDB" )
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
+              || mGDALDriverName == QLatin1String( "PGeo" ) // supported on GDAL 3.4+ only
+#endif
+            )
     {
-      // read ESRI FileGeodatabase layer metadata
+      // read ESRI FileGeodatabase/Personal Geodatabase layer metadata
 
       // important -- this ONLY works if the layer name is NOT quoted!!
       QByteArray sql = "GetLayerMetadata " + mOgrOrigLayer->name();

@@ -54,15 +54,16 @@ bool QgsMapLayerProxyModel::layerMatchesFilters( const QgsMapLayer *layer, const
        ( filters.testFlag( MeshLayer ) && layer->type() == QgsMapLayerType::MeshLayer ) ||
        ( filters.testFlag( VectorTileLayer ) && layer->type() == QgsMapLayerType::VectorTileLayer ) ||
        ( filters.testFlag( PointCloudLayer ) && layer->type() == QgsMapLayerType::PointCloudLayer ) ||
+       ( filters.testFlag( AnnotationLayer ) && layer->type() == QgsMapLayerType::AnnotationLayer ) ||
        ( filters.testFlag( PluginLayer ) && layer->type() == QgsMapLayerType::PluginLayer ) )
     return true;
 
   // geometry type
-  bool detectGeometry = filters.testFlag( NoGeometry ) ||
-                        filters.testFlag( PointLayer ) ||
-                        filters.testFlag( LineLayer ) ||
-                        filters.testFlag( PolygonLayer ) ||
-                        filters.testFlag( HasGeometry );
+  const bool detectGeometry = filters.testFlag( NoGeometry ) ||
+                              filters.testFlag( PointLayer ) ||
+                              filters.testFlag( LineLayer ) ||
+                              filters.testFlag( PolygonLayer ) ||
+                              filters.testFlag( HasGeometry );
   if ( detectGeometry && layer->type() == QgsMapLayerType::VectorLayer )
   {
     if ( const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( layer ) )
@@ -171,7 +172,7 @@ bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex 
   if ( mFilters.testFlag( All ) && mExceptList.isEmpty() && mLayerAllowlist.isEmpty() && mExcludedProviders.isEmpty() && mFilterString.isEmpty() )
     return true;
 
-  QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
+  const QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
 
   if ( sourceModel()->data( index, QgsMapLayerModel::EmptyRole ).toBool()
        || sourceModel()->data( index, QgsMapLayerModel::AdditionalRole ).toBool() )
@@ -189,8 +190,8 @@ bool QgsMapLayerProxyModel::lessThan( const QModelIndex &left, const QModelIndex
     return false;
 
   // additional rows are always last
-  bool leftAdditional = sourceModel()->data( left, QgsMapLayerModel::AdditionalRole ).toBool();
-  bool rightAdditional = sourceModel()->data( right, QgsMapLayerModel::AdditionalRole ).toBool();
+  const bool leftAdditional = sourceModel()->data( left, QgsMapLayerModel::AdditionalRole ).toBool();
+  const bool rightAdditional = sourceModel()->data( right, QgsMapLayerModel::AdditionalRole ).toBool();
 
   if ( leftAdditional && !rightAdditional )
     return false;
@@ -198,7 +199,7 @@ bool QgsMapLayerProxyModel::lessThan( const QModelIndex &left, const QModelIndex
     return true;
 
   // default mode is alphabetical order
-  QString leftStr = sourceModel()->data( left ).toString();
-  QString rightStr = sourceModel()->data( right ).toString();
+  const QString leftStr = sourceModel()->data( left ).toString();
+  const QString rightStr = sourceModel()->data( right ).toString();
   return QString::localeAwareCompare( leftStr, rightStr ) < 0;
 }

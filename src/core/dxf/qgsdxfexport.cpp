@@ -1617,7 +1617,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
         if ( !qgsDoubleNear( offset, 0.0 ) )
         {
           QgsGeos geos( sourceGeom );
-          tempGeom.reset( geos.offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 ) );  //#spellok
+          tempGeom.reset( geos.offsetCurve( offset, 0, Qgis::JoinStyle::Miter, 2.0 ) );  //#spellok
           if ( tempGeom )
             sourceGeom = tempGeom.get();
           else
@@ -1637,7 +1637,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
         if ( !qgsDoubleNear( offset, 0.0 ) )
         {
           QgsGeos geos( sourceGeom );
-          tempGeom.reset( geos.offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 ) );  //#spellok
+          tempGeom.reset( geos.offsetCurve( offset, 0, Qgis::JoinStyle::Miter, 2.0 ) );  //#spellok
           if ( tempGeom )
             sourceGeom = tempGeom.get();
           else
@@ -1663,7 +1663,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
         if ( !qgsDoubleNear( offset, 0.0 ) )
         {
           QgsGeos geos( sourceGeom );
-          tempGeom.reset( geos.buffer( offset, 0,  GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 ) );  //#spellok
+          tempGeom.reset( geos.buffer( offset, 0, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Miter, 2.0 ) );  //#spellok
           if ( tempGeom )
             sourceGeom = tempGeom.get();
           else
@@ -1686,7 +1686,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
         if ( !qgsDoubleNear( offset, 0.0 ) )
         {
           QgsGeos geos( sourceGeom );
-          tempGeom.reset( geos.buffer( offset, 0,  GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 ) );  //#spellok
+          tempGeom.reset( geos.buffer( offset, 0, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Miter, 2.0 ) );  //#spellok
           if ( tempGeom )
             sourceGeom = tempGeom.get();
           else

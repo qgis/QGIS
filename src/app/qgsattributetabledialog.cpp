@@ -502,7 +502,7 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const 
   bool useGeometry = exp.needsGeometry();
 
   QgsFeatureRequest request( mMainView->masterModel()->request() );
-  useGeometry |= !request.filterRect().isNull();
+  useGeometry |= !( request.spatialFilterType() == Qgis::SpatialFilterType::NoFilter );
   request.setFlags( useGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry );
 
   int rownum = 1;

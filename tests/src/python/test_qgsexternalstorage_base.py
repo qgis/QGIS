@@ -293,7 +293,7 @@ class TestPyQgsExternalStorageBase():
 
     def testStoreMissingAuth(self):
         """
-        Test file storing with missing authentification
+        Test file storing with missing authentication
         """
 
         f = self.getNewFile(b"New content")

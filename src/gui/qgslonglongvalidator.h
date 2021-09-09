@@ -62,7 +62,7 @@ class GUI_EXPORT QgsLongLongValidator : public QValidator
 
 
       bool ok;
-      qlonglong entered = input.toLongLong( &ok );
+      const qlonglong entered = input.toLongLong( &ok );
       if ( !ok )
         return Invalid;
 

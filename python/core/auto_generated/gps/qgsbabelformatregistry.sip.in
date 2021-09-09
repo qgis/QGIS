@@ -40,11 +40,25 @@ devices previously configured and stored in QSettings.
 Returns a list of the names of all registered import formats.
 %End
 
-    QgsAbstractBabelFormat *importFormat( const QString &name );
+    QgsBabelSimpleImportFormat *importFormat( const QString &name );
 %Docstring
 Returns a registered import format by ``name``.
 
 .. seealso:: :py:func:`importFormatNames`
+
+.. seealso:: :py:func:`importFormatByDescription`
+%End
+
+    QgsBabelSimpleImportFormat *importFormatByDescription( const QString &description );
+%Docstring
+Returns a registered import format by ``description``.
+
+.. seealso:: :py:func:`importFormat`
+%End
+
+    QString importFileFilter() const;
+%Docstring
+Returns a file filter string representing all registered import formats.
 %End
 
     QStringList deviceNames() const;

@@ -92,15 +92,15 @@ QgsTransectAlgorithm *QgsTransectAlgorithm::createInstance() const
 
 QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  Side orientation = static_cast< QgsTransectAlgorithm::Side >( parameterAsInt( parameters, QStringLiteral( "SIDE" ), context ) );
-  double angle = fabs( parameterAsDouble( parameters, QStringLiteral( "ANGLE" ), context ) );
-  bool dynamicAngle = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "ANGLE" ) );
+  const Side orientation = static_cast< QgsTransectAlgorithm::Side >( parameterAsInt( parameters, QStringLiteral( "SIDE" ), context ) );
+  const double angle = fabs( parameterAsDouble( parameters, QStringLiteral( "ANGLE" ), context ) );
+  const bool dynamicAngle = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "ANGLE" ) );
   QgsProperty angleProperty;
   if ( dynamicAngle )
     angleProperty = parameters.value( QStringLiteral( "ANGLE" ) ).value< QgsProperty >();
 
   double length = parameterAsDouble( parameters, QStringLiteral( "LENGTH" ), context );
-  bool dynamicLength = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "LENGTH" ) );
+  const bool dynamicLength = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "LENGTH" ) );
   QgsProperty lengthProperty;
   if ( dynamicLength )
     lengthProperty = parameters.value( QStringLiteral( "LENGTH" ) ).value< QgsProperty >();
@@ -139,7 +139,7 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
 
   int current = -1;
   int number = 0;
-  double step =  source->featureCount() > 0 ? 100.0 / source->featureCount() : 1;
+  const double step =  source->featureCount() > 0 ? 100.0 / source->featureCount() : 1;
   QgsFeature feat;
 
 
@@ -177,15 +177,15 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
       QgsAbstractGeometry::vertex_iterator it = line->vertices_begin();
       while ( it != line->vertices_end() )
       {
-        QgsVertexId vertexId = it.vertexId();
-        int i = vertexId.vertex;
+        const QgsVertexId vertexId = it.vertexId();
+        const int i = vertexId.vertex;
         QgsFeature outFeat;
         QgsAttributes attrs = feat.attributes();
         attrs << current << number << i + 1 << evaluatedAngle <<
               ( ( orientation == QgsTransectAlgorithm::Both ) ? evaluatedLength * 2 : evaluatedLength ) <<
               orientation;
         outFeat.setAttributes( attrs );
-        double angleAtVertex = line->vertexAngle( vertexId );
+        const double angleAtVertex = line->vertexAngle( vertexId );
         outFeat.setGeometry( calcTransect( *it, angleAtVertex, evaluatedLength, orientation, evaluatedAngle ) );
         if ( !sink->addFeature( outFeat, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );

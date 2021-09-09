@@ -42,6 +42,8 @@ class CORE_EXPORT QgsAnnotationMarkerItem : public QgsAnnotationItem
     QString type() const override;
     void render( QgsRenderContext &context, QgsFeedback *feedback ) override;
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    Qgis::AnnotationItemFlags flags() const override;
+    QList< QgsAnnotationItemNode > nodes() const override;
 
     /**
      * Creates a new marker annotation item.
@@ -51,6 +53,8 @@ class CORE_EXPORT QgsAnnotationMarkerItem : public QgsAnnotationItem
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     QgsAnnotationMarkerItem *clone() override SIP_FACTORY;
     QgsRectangle boundingBox() const override;
+    QgsRectangle boundingBox( QgsRenderContext &context ) const override;
+    bool transform( const QTransform &transform ) override;
 
     /**
      * Returns the point geometry of the marker.

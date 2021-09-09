@@ -129,11 +129,11 @@ void QgsProcessingAggregatePanelWidget::setValue( const QVariant &value )
   for ( const QVariant &field : fields )
   {
     const QVariantMap map = field.toMap();
-    QgsField f( map.value( QStringLiteral( "name" ) ).toString(),
-                static_cast< QVariant::Type >( map.value( QStringLiteral( "type" ), QVariant::Invalid ).toInt() ),
-                QVariant::typeToName( static_cast< QVariant::Type >( map.value( QStringLiteral( "type" ), QVariant::Invalid ).toInt() ) ),
-                map.value( QStringLiteral( "length" ), 0 ).toInt(),
-                map.value( QStringLiteral( "precision" ), 0 ).toInt() );
+    const QgsField f( map.value( QStringLiteral( "name" ) ).toString(),
+                      static_cast< QVariant::Type >( map.value( QStringLiteral( "type" ), QVariant::Invalid ).toInt() ),
+                      QVariant::typeToName( static_cast< QVariant::Type >( map.value( QStringLiteral( "type" ), QVariant::Invalid ).toInt() ) ),
+                      map.value( QStringLiteral( "length" ), 0 ).toInt(),
+                      map.value( QStringLiteral( "precision" ), 0 ).toInt() );
 
     QgsAggregateMappingModel::Aggregate aggregate;
     aggregate.field = f;
@@ -172,7 +172,7 @@ void QgsProcessingAggregatePanelWidget::addField()
 {
   const int rowCount = mModel->rowCount();
   mModel->appendField( QgsField( QStringLiteral( "new_field" ) ) );
-  QModelIndex index = mModel->index( rowCount, 0 );
+  const QModelIndex index = mModel->index( rowCount, 0 );
   mFieldsView->selectionModel()->select(
     index,
     QItemSelectionModel::SelectionFlags(

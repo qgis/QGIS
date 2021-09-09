@@ -78,6 +78,104 @@ class ANALYSIS_EXPORT QgsConvertGpxFeatureTypeAlgorithm : public QgsProcessingAl
 
 };
 
+
+/**
+ * Convert GPS data to GPX algorithm
+ */
+class ANALYSIS_EXPORT QgsConvertGpsDataAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    QgsConvertGpsDataAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QIcon icon() const override;
+    QString svgIconPath() const override;
+    QString name() const override;
+    QString displayName() const override;
+    QStringList tags() const override;
+    QString group() const override;
+    QString groupId() const override;
+    QString shortHelpString() const override;
+    QgsConvertGpsDataAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    friend class TestQgsProcessingAlgs;
+
+};
+
+
+/**
+ * Download GPS data algorithm
+ */
+class ANALYSIS_EXPORT QgsDownloadGpsDataAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    QgsDownloadGpsDataAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QIcon icon() const override;
+    QString svgIconPath() const override;
+    QString name() const override;
+    QString displayName() const override;
+    QStringList tags() const override;
+    QString group() const override;
+    QString groupId() const override;
+    QString shortHelpString() const override;
+    QgsDownloadGpsDataAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    friend class TestQgsProcessingAlgs;
+
+};
+
+
+/**
+ * Upload GPS data algorithm
+ */
+class ANALYSIS_EXPORT QgsUploadGpsDataAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    QgsUploadGpsDataAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QIcon icon() const override;
+    QString svgIconPath() const override;
+    QString name() const override;
+    QString displayName() const override;
+    QStringList tags() const override;
+    QString group() const override;
+    QString groupId() const override;
+    QString shortHelpString() const override;
+    QgsUploadGpsDataAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    friend class TestQgsProcessingAlgs;
+
+};
+
+
+
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMGPSBABELTOOLS_H

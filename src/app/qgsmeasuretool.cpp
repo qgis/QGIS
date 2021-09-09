@@ -118,11 +118,11 @@ void QgsMeasureTool::restart()
 
 void QgsMeasureTool::updateSettings()
 {
-  QgsSettings settings;
+  const QgsSettings settings;
 
-  int myRed = settings.value( QStringLiteral( "qgis/default_measure_color_red" ), 222 ).toInt();
-  int myGreen = settings.value( QStringLiteral( "qgis/default_measure_color_green" ), 155 ).toInt();
-  int myBlue = settings.value( QStringLiteral( "qgis/default_measure_color_blue" ), 67 ).toInt();
+  const int myRed = settings.value( QStringLiteral( "qgis/default_measure_color_red" ), 222 ).toInt();
+  const int myGreen = settings.value( QStringLiteral( "qgis/default_measure_color_green" ), 155 ).toInt();
+  const int myBlue = settings.value( QStringLiteral( "qgis/default_measure_color_blue" ), 67 ).toInt();
   mRubberBand->setColor( QColor( myRed, myGreen, myBlue, 100 ) );
   mRubberBand->setWidth( 3 );
   mRubberBandPoints->setIcon( QgsRubberBand::ICON_CIRCLE );
@@ -132,19 +132,19 @@ void QgsMeasureTool::updateSettings()
   // Reproject the points to the new destination CoordinateReferenceSystem
   if ( mRubberBand->size() > 0 && mDestinationCrs != mCanvas->mapSettings().destinationCrs() && mCanvas->mapSettings().destinationCrs().isValid() )
   {
-    QVector<QgsPointXY> points = mPoints;
-    bool lastDone = mDone;
+    const QVector<QgsPointXY> points = mPoints;
+    const bool lastDone = mDone;
 
     mDialog->restart();
     mDone = lastDone;
-    QgsCoordinateTransform ct( mDestinationCrs, mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+    const QgsCoordinateTransform ct( mDestinationCrs, mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
 
     const auto constPoints = points;
     for ( const QgsPointXY &previousPoint : constPoints )
     {
       try
       {
-        QgsPointXY point = ct.transform( previousPoint );
+        const QgsPointXY point = ct.transform( previousPoint );
 
         mPoints.append( point );
         mRubberBand->addPoint( point, false );
@@ -186,7 +186,7 @@ void QgsMeasureTool::canvasPressEvent( QgsMapMouseEvent *e )
 
 void QgsMeasureTool::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-  QgsPointXY point = e->snapPoint();
+  const QgsPointXY point = e->snapPoint();
   mSnapIndicator->setMatch( e->mapPointMatch() );
 
   if ( ! mDone )
@@ -199,7 +199,7 @@ void QgsMeasureTool::canvasMoveEvent( QgsMapMouseEvent *e )
 
 void QgsMeasureTool::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsPointXY point = e->snapPoint();
+  const QgsPointXY point = e->snapPoint();
 
   if ( mDone ) // if we have stopped measuring any mouse click restart measuring
   {
@@ -279,7 +279,7 @@ void QgsMeasureTool::addPoint( const QgsPointXY &point )
     return;
   }
 
-  QgsPointXY pnt( point );
+  const QgsPointXY pnt( point );
   // Append point that we will be moving.
   mPoints.append( pnt );
 

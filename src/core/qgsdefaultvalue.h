@@ -63,6 +63,17 @@ class CORE_EXPORT QgsDefaultValue
     // TODO c++20 - replace with = default
     bool operator==( const QgsDefaultValue &other ) const;
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    const QString str = sipCpp->isValid() ? QStringLiteral( "<QgsDefaultValue: %1>" ).arg(
+                          sipCpp->expression().length() > 1000 ? sipCpp->expression().left( 1000 ) + QStringLiteral( "..." )
+                          : sipCpp->expression() )
+                        : QStringLiteral( "<QgsDefaultValue: invalid>" );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
     /**
      * The expression will be evaluated whenever a default value needs
      * to be calculated for a field.

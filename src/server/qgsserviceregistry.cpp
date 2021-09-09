@@ -54,10 +54,10 @@ namespace
       if ( *it1 != *it2 )
       {
         // Compare as numbers
-        int i1 = it1->toInt( &isint );
+        const int i1 = it1->toInt( &isint );
         if ( isint )
         {
-          int i2 = it2->toInt( &isint );
+          const int i2 = it2->toInt( &isint );
           if ( isint && i1 != i2 )
           {
             return i1 > i2;
@@ -92,11 +92,11 @@ QgsService *QgsServiceRegistry::getService( const QString &name, const QString &
   QString key;
 
   // Check that we have a service of that name
-  VersionTable::const_iterator v = mServiceVersions.constFind( name );
+  const VersionTable::const_iterator v = mServiceVersions.constFind( name );
   if ( v != mServiceVersions.constEnd() )
   {
     key = version.isEmpty() ? v->second : makeServiceKey( name, version );
-    ServiceTable::const_iterator it = mServices.constFind( key );
+    const ServiceTable::const_iterator it = mServices.constFind( key );
     if ( it != mServices.constEnd() )
     {
       service = it->get();
@@ -117,11 +117,11 @@ QgsService *QgsServiceRegistry::getService( const QString &name, const QString &
 
 void QgsServiceRegistry::registerService( QgsService *service )
 {
-  QString name    = service->name();
-  QString version = service->version();
+  const QString name    = service->name();
+  const QString version = service->version();
 
   // Test if service is already registered
-  QString key = makeServiceKey( name, version );
+  const QString key = makeServiceKey( name, version );
   if ( mServices.constFind( key ) != mServices.constEnd() )
   {
     QgsMessageLog::logMessage( QStringLiteral( "Error Service %1 %2 is already registered" ).arg( name, version ) );
@@ -136,7 +136,7 @@ void QgsServiceRegistry::registerService( QgsService *service )
   // is the default one.
   // this will ensure that native services are always
   // the defaults.
-  VersionTable::const_iterator v = mServiceVersions.constFind( name );
+  const VersionTable::const_iterator v = mServiceVersions.constFind( name );
   if ( v == mServiceVersions.constEnd() )
   {
     // Insert the service as the default one
@@ -164,7 +164,7 @@ int QgsServiceRegistry::unregisterApi( const QString &name, const QString &versi
 
   // Check that we have an API of that name
   int removed = 0;
-  VersionTable::const_iterator v = mApiVersions.constFind( name );
+  const VersionTable::const_iterator v = mApiVersions.constFind( name );
   if ( v != mApiVersions.constEnd() )
   {
     if ( version.isEmpty() )
@@ -190,7 +190,7 @@ int QgsServiceRegistry::unregisterApi( const QString &name, const QString &versi
     else
     {
       const QString key = makeServiceKey( name, version );
-      ApiTable::iterator found = mApis.find( key );
+      const ApiTable::iterator found = mApis.find( key );
       if ( found != mApis.end() )
       {
         QgsMessageLog::logMessage( QString( "Unregistering API %1 %2" ).arg( name, version ) );
@@ -201,7 +201,7 @@ int QgsServiceRegistry::unregisterApi( const QString &name, const QString &versi
         // but with different version
         //
         QString maxVer;
-        std::function < void ( const ApiTable::mapped_type & ) >
+        const std::function < void ( const ApiTable::mapped_type & ) >
         findGreaterVersion = [name, &maxVer]( const ApiTable::mapped_type & api )
         {
           if ( api->name() == name &&
@@ -245,11 +245,11 @@ QgsServerApi *QgsServiceRegistry::getApi( const QString &name, const QString &ve
   QString key;
 
   // Check that we have an API with that name
-  VersionTable::const_iterator v = mApiVersions.constFind( name );
+  const VersionTable::const_iterator v = mApiVersions.constFind( name );
   if ( v != mApiVersions.constEnd() )
   {
     key = version.isEmpty() ? v->second : makeServiceKey( name, version );
-    ApiTable::const_iterator it = mApis.constFind( key );
+    const ApiTable::const_iterator it = mApis.constFind( key );
     if ( it != mApis.constEnd() )
     {
       api = it->get();
@@ -272,7 +272,7 @@ int QgsServiceRegistry::unregisterService( const QString &name, const QString &v
 {
   // Check that we have a service of that name
   int removed = 0;
-  VersionTable::const_iterator v = mServiceVersions.constFind( name );
+  const VersionTable::const_iterator v = mServiceVersions.constFind( name );
   if ( v != mServiceVersions.constEnd() )
   {
     if ( version.isEmpty() )
@@ -297,8 +297,8 @@ int QgsServiceRegistry::unregisterService( const QString &name, const QString &v
     }
     else
     {
-      QString key = makeServiceKey( name, version );
-      ServiceTable::iterator found = mServices.find( key );
+      const QString key = makeServiceKey( name, version );
+      const ServiceTable::iterator found = mServices.find( key );
       if ( found != mServices.end() )
       {
         QgsMessageLog::logMessage( QString( "Unregistering service %1 %2" ).arg( name, version ) );
@@ -309,7 +309,7 @@ int QgsServiceRegistry::unregisterService( const QString &name, const QString &v
         // but with different version
         //
         QString maxVer;
-        std::function < void ( const ServiceTable::mapped_type & ) >
+        const std::function < void ( const ServiceTable::mapped_type & ) >
         findGreaterVersion = [name, &maxVer]( const ServiceTable::mapped_type & service )
         {
           if ( service->name() == name &&
@@ -323,7 +323,7 @@ int QgsServiceRegistry::unregisterService( const QString &name, const QString &v
         if ( !maxVer.isEmpty() )
         {
           // Set the new default service
-          QString key = makeServiceKey( name, maxVer );
+          const QString key = makeServiceKey( name, maxVer );
           mServiceVersions.insert( name, VersionTable::mapped_type( version, key ) );
         }
       }
@@ -368,7 +368,7 @@ bool QgsServiceRegistry::registerApi( QgsServerApi *api )
   // is the default one.
   // this will ensure that native services are always
   // the defaults.
-  VersionTable::const_iterator v = mApiVersions.constFind( name );
+  const VersionTable::const_iterator v = mApiVersions.constFind( name );
   if ( v == mApiVersions.constEnd() )
   {
     // Insert the service as the default one

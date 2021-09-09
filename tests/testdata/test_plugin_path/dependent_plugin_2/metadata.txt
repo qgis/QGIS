@@ -1,0 +1,7 @@
+[general]
+name=Dependent plugin 2
+description=Yet another dependent plugin
+version=1.0
+qgisMinimumVersion=3.0
+author=Germán Carrillo
+plugin_dependencies=Dependent plugin 1

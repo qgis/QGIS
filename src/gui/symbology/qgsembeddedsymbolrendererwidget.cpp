@@ -35,7 +35,7 @@ QgsEmbeddedSymbolRendererWidget::QgsEmbeddedSymbolRendererWidget( QgsVectorLayer
     return;
   }
 
-  QgsWkbTypes::GeometryType type = QgsWkbTypes::geometryType( layer->wkbType() );
+  const QgsWkbTypes::GeometryType type = QgsWkbTypes::geometryType( layer->wkbType() );
 
   // the renderer only applies to layers with providers supporting embedded symbols
   if ( !( layer->dataProvider()->capabilities() & QgsVectorDataProvider::FeatureSymbology ) )

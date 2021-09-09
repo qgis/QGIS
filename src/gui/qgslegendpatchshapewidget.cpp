@@ -81,10 +81,10 @@ void QgsLegendPatchShapeWidget::saveShape()
   // check if there is no shape with same name
   if ( style->legendPatchShapeNames().contains( saveDlg.name() ) )
   {
-    int res = QMessageBox::warning( this, tr( "Save Legend Patch Shape" ),
-                                    tr( "A legend patch shape with the name '%1' already exists. Overwrite?" )
-                                    .arg( saveDlg.name() ),
-                                    QMessageBox::Yes | QMessageBox::No );
+    const int res = QMessageBox::warning( this, tr( "Save Legend Patch Shape" ),
+                                          tr( "A legend patch shape with the name '%1' already exists. Overwrite?" )
+                                          .arg( saveDlg.name() ),
+                                          QMessageBox::Yes | QMessageBox::No );
     if ( res != QMessageBox::Yes )
     {
       return;
@@ -92,7 +92,7 @@ void QgsLegendPatchShapeWidget::saveShape()
     style->removeEntityByName( QgsStyle::LegendPatchShapeEntity, saveDlg.name() );
   }
 
-  QStringList symbolTags = saveDlg.tags().split( ',' );
+  const QStringList symbolTags = saveDlg.tags().split( ',' );
 
   const QgsLegendPatchShape newShape = shape();
   style->addLegendPatchShape( saveDlg.name(), newShape );

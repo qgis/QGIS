@@ -18,7 +18,8 @@ from qgis.PyQt.QtCore import (QSize,
                               QDir)
 from qgis.PyQt.QtGui import (QImage,
                              QPainter,
-                             QColor)
+                             QColor,
+                             QTransform)
 from qgis.core import (QgsMapSettings,
                        QgsCoordinateTransform,
                        QgsProject,
@@ -29,7 +30,10 @@ from qgis.core import (QgsMapSettings,
                        QgsReadWriteContext,
                        QgsRenderContext,
                        QgsAnnotationMarkerItem,
-                       QgsRectangle
+                       QgsRectangle,
+                       QgsAnnotationItemNode,
+                       Qgis,
+                       QgsPointXY
                        )
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -67,6 +71,21 @@ class TestQgsAnnotationMarkerItem(unittest.TestCase):
         item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '3', 'outline_color': 'black'}))
         self.assertEqual(item.symbol()[0].color(), QColor(100, 200, 200))
 
+    def test_nodes(self):
+        """
+        Test nodes for item
+        """
+        item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
+        self.assertEqual(item.nodes(), [QgsAnnotationItemNode(QgsPointXY(12, 13), Qgis.AnnotationItemNodeType.VertexHandle)])
+
+    def test_transform(self):
+        item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
+        self.assertEqual(item.geometry().asWkt(), 'POINT(12 13)')
+
+        transform = QTransform.fromTranslate(100, 200)
+        item.transform(transform)
+        self.assertEqual(item.geometry().asWkt(), 'POINT(112 213)')
+
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")
         elem = doc.createElement('test')
@@ -74,6 +93,8 @@ class TestQgsAnnotationMarkerItem(unittest.TestCase):
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
         item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '3', 'outline_color': 'black'}))
         item.setZIndex(11)
+        item.setUseSymbologyReferenceScale(True)
+        item.setSymbologyReferenceScale(5000)
 
         self.assertTrue(item.writeXml(elem, doc, QgsReadWriteContext()))
 
@@ -84,17 +105,23 @@ class TestQgsAnnotationMarkerItem(unittest.TestCase):
         self.assertEqual(s2.geometry().y(), 13.0)
         self.assertEqual(s2.symbol()[0].color(), QColor(100, 200, 200))
         self.assertEqual(s2.zIndex(), 11)
+        self.assertTrue(s2.useSymbologyReferenceScale())
+        self.assertEqual(s2.symbologyReferenceScale(), 5000)
 
     def testClone(self):
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
         item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '3', 'outline_color': 'black'}))
         item.setZIndex(11)
+        item.setUseSymbologyReferenceScale(True)
+        item.setSymbologyReferenceScale(5000)
 
         item2 = item.clone()
         self.assertEqual(item2.geometry().x(), 12.0)
         self.assertEqual(item2.geometry().y(), 13.0)
         self.assertEqual(item2.symbol()[0].color(), QColor(100, 200, 200))
         self.assertEqual(item2.zIndex(), 11)
+        self.assertTrue(item2.useSymbologyReferenceScale())
+        self.assertEqual(item2.symbologyReferenceScale(), 5000)
 
     def testRenderMarker(self):
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))

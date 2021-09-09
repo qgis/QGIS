@@ -59,7 +59,7 @@ QgsProviderRegistry *QgsProviderRegistry::instance( const QString &pluginPath )
   if ( !sInstance )
   {
     static QMutex sMutex;
-    QMutexLocker locker( &sMutex );
+    const QMutexLocker locker( &sMutex );
     if ( !sInstance )
     {
       sInstance = new QgsProviderRegistry( pluginPath );
@@ -82,7 +82,7 @@ QgsProviderMetadata *findMetadata_( const QgsProviderRegistry::Providers &metaDa
                                     const QString &providerKey )
 {
   // first do case-sensitive match
-  QgsProviderRegistry::Providers::const_iterator i =
+  const QgsProviderRegistry::Providers::const_iterator i =
     metaData.find( providerKey );
 
   if ( i != metaData.end() )
@@ -115,7 +115,7 @@ QgsProviderRegistry::QgsProviderRegistry( const QString &pluginPath )
   QString mLibraryDirectory = baseDir + "/lib";
 #endif
 
-  QgsScopedRuntimeProfile profile( QObject::tr( "Initialize data providers" ) );
+  const QgsScopedRuntimeProfile profile( QObject::tr( "Initialize data providers" ) );
   mLibraryDirectory.setPath( pluginPath );
   init();
 }
@@ -157,30 +157,30 @@ void QgsProviderRegistry::init()
   // add static providers
   Q_NOWARN_DEPRECATED_PUSH
   {
-    QgsScopedRuntimeProfile profile( QObject::tr( "Create memory layer provider" ) );
+    const QgsScopedRuntimeProfile profile( QObject::tr( "Create memory layer provider" ) );
     mProviders[ QgsMemoryProvider::providerKey() ] = new QgsProviderMetadata( QgsMemoryProvider::providerKey(), QgsMemoryProvider::providerDescription(), &QgsMemoryProvider::createProvider );
   }
   {
-    QgsScopedRuntimeProfile profile( QObject::tr( "Create mesh memory layer provider" ) );
+    const QgsScopedRuntimeProfile profile( QObject::tr( "Create mesh memory layer provider" ) );
     mProviders[ QgsMeshMemoryDataProvider::providerKey() ] = new QgsProviderMetadata( QgsMeshMemoryDataProvider::providerKey(), QgsMeshMemoryDataProvider::providerDescription(), &QgsMeshMemoryDataProvider::createProvider );
   }
   Q_NOWARN_DEPRECATED_POP
   {
-    QgsScopedRuntimeProfile profile( QObject::tr( "Create GDAL provider" ) );
+    const QgsScopedRuntimeProfile profile( QObject::tr( "Create GDAL provider" ) );
     mProviders[ QgsGdalProvider::providerKey() ] = new QgsGdalProviderMetadata();
   }
   {
-    QgsScopedRuntimeProfile profile( QObject::tr( "Create OGR provider" ) );
+    const QgsScopedRuntimeProfile profile( QObject::tr( "Create OGR provider" ) );
     mProviders[ QgsOgrProvider::providerKey() ] = new QgsOgrProviderMetadata();
   }
   {
-    QgsScopedRuntimeProfile profile( QObject::tr( "Create vector tile provider" ) );
+    const QgsScopedRuntimeProfile profile( QObject::tr( "Create vector tile provider" ) );
     QgsProviderMetadata *vt = new QgsVectorTileProviderMetadata();
     mProviders[ vt->key() ] = vt;
   }
 #ifdef HAVE_EPT
   {
-    QgsScopedRuntimeProfile profile( QObject::tr( "Create EPT point cloud provider" ) );
+    const QgsScopedRuntimeProfile profile( QObject::tr( "Create EPT point cloud provider" ) );
     QgsProviderMetadata *pc = new QgsEptProviderMetadata();
     mProviders[ pc->key() ] = pc;
   }
@@ -218,7 +218,7 @@ void QgsProviderRegistry::init()
   }
 
   // provider file regex pattern, only files matching the pattern are loaded if the variable is defined
-  QString filePattern = getenv( "QGIS_PROVIDER_FILE" );
+  const QString filePattern = getenv( "QGIS_PROVIDER_FILE" );
   QRegularExpression fileRegexp;
   if ( !filePattern.isEmpty() )
   {
@@ -245,7 +245,7 @@ void QgsProviderRegistry::init()
       continue;
     }
 
-    QgsScopedRuntimeProfile profile( QObject::tr( "Load %1" ).arg( fi.fileName() ) );
+    const QgsScopedRuntimeProfile profile( QObject::tr( "Load %1" ).arg( fi.fileName() ) );
     QLibrary myLib( fi.filePath() );
     if ( !myLib.load() )
     {
@@ -312,12 +312,12 @@ void QgsProviderRegistry::init()
   {
     const QString &key = it->first;
 
-    QgsScopedRuntimeProfile profile( QObject::tr( "Initialize %1" ).arg( key ) );
+    const QgsScopedRuntimeProfile profile( QObject::tr( "Initialize %1" ).arg( key ) );
 
     QgsProviderMetadata *meta = it->second;
 
     // now get vector file filters, if any
-    QString fileVectorFilters = meta->filters( QgsProviderMetadata::FilterType::FilterVector );
+    const QString fileVectorFilters = meta->filters( QgsProviderMetadata::FilterType::FilterVector );
     if ( !fileVectorFilters.isEmpty() )
     {
       mVectorFileFilters += fileVectorFilters;
@@ -325,7 +325,7 @@ void QgsProviderRegistry::init()
     }
 
     // now get raster file filters, if any
-    QString fileRasterFilters = meta->filters( QgsProviderMetadata::FilterType::FilterRaster );
+    const QString fileRasterFilters = meta->filters( QgsProviderMetadata::FilterType::FilterRaster );
     if ( !fileRasterFilters.isEmpty() )
     {
       QgsDebugMsgLevel( "raster filters: " + fileRasterFilters, 2 );
@@ -334,7 +334,7 @@ void QgsProviderRegistry::init()
     }
 
     // now get mesh file filters, if any
-    QString fileMeshFilters = meta->filters( QgsProviderMetadata::FilterType::FilterMesh );
+    const QString fileMeshFilters = meta->filters( QgsProviderMetadata::FilterType::FilterMesh );
     if ( !fileMeshFilters.isEmpty() )
     {
       mMeshFileFilters += fileMeshFilters;
@@ -342,7 +342,7 @@ void QgsProviderRegistry::init()
 
     }
 
-    QString fileMeshDatasetFilters = meta->filters( QgsProviderMetadata::FilterType::FilterMeshDataset );
+    const QString fileMeshDatasetFilters = meta->filters( QgsProviderMetadata::FilterType::FilterMeshDataset );
     if ( !fileMeshDatasetFilters.isEmpty() )
     {
       mMeshDatasetFileFilters += fileMeshDatasetFilters;
@@ -619,7 +619,7 @@ QString QgsProviderRegistry::getStyleById( const QString &providerKey, const QSt
 
 bool QgsProviderRegistry::deleteStyleById( const QString &providerKey, const QString &uri, QString styleId, QString &errCause )
 {
-  bool ret( false );
+  const bool ret( false );
 
   QgsProviderMetadata *meta = findMetadata_( mProviders, providerKey );
   if ( meta )
@@ -707,7 +707,7 @@ QFunctionPointer QgsProviderRegistry::function( QString const &providerKey,
     QString const &functionName )
 {
   Q_NOWARN_DEPRECATED_PUSH
-  QString lib = library( providerKey );
+  const QString lib = library( providerKey );
   Q_NOWARN_DEPRECATED_POP
   if ( lib.isEmpty() )
     return nullptr;
@@ -730,7 +730,7 @@ QFunctionPointer QgsProviderRegistry::function( QString const &providerKey,
 QLibrary *QgsProviderRegistry::createProviderLibrary( QString const &providerKey ) const
 {
   Q_NOWARN_DEPRECATED_PUSH
-  QString lib = library( providerKey );
+  const QString lib = library( providerKey );
   Q_NOWARN_DEPRECATED_POP
   if ( lib.isEmpty() )
     return nullptr;

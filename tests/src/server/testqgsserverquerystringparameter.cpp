@@ -89,7 +89,7 @@ void TestQgsServerQueryStringParameter::testArguments()
 {
   QgsServerQueryStringParameter p { QStringLiteral( "parameter1" ) };
   QgsServerRequest request;
-  QgsServerApiContext ctx { "/wfs3", &request, nullptr, nullptr, nullptr };
+  const QgsServerApiContext ctx { "/wfs3", &request, nullptr, nullptr, nullptr };
 
   // Test string (default)
   request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=123" ) );
@@ -141,13 +141,13 @@ void TestQgsServerQueryStringParameter::testCustomValidators()
 {
   QgsServerQueryStringParameter p { QStringLiteral( "parameter1" ), true, QgsServerQueryStringParameter::Type::Integer };
   QgsServerRequest request;
-  QgsServerApiContext ctx { "/wfs3", &request, nullptr, nullptr, nullptr };
+  const QgsServerApiContext ctx { "/wfs3", &request, nullptr, nullptr, nullptr };
 
   request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=123" ) );
   QCOMPARE( p.value( ctx ).toInt(), 123 );
 
   // Test a range validator that increments the value
-  QgsServerQueryStringParameter::customValidator validator = [ ]( const QgsServerApiContext &, QVariant & value ) -> bool
+  const QgsServerQueryStringParameter::customValidator validator = [ ]( const QgsServerApiContext &, QVariant & value ) -> bool
   {
     const auto v { value.toLongLong() };
     // Change the value by adding 1
@@ -166,14 +166,14 @@ void TestQgsServerQueryStringParameter::testCustomValidators()
 void TestQgsServerQueryStringParameter::testDefaultValues()
 {
   // Set a default AND required, verify it's ignored
-  QgsServerQueryStringParameter p { QStringLiteral( "parameter1" ), true, QgsServerQueryStringParameter::Type::Integer, QStringLiteral( "Paramerer 1" ), 10 };
+  const QgsServerQueryStringParameter p { QStringLiteral( "parameter1" ), true, QgsServerQueryStringParameter::Type::Integer, QStringLiteral( "Paramerer 1" ), 10 };
   QgsServerRequest request;
-  QgsServerApiContext ctx { "/wfs3", &request, nullptr, nullptr, nullptr };
+  const QgsServerApiContext ctx { "/wfs3", &request, nullptr, nullptr, nullptr };
 
   request.setUrl( QStringLiteral( "http://www.qgis.org/api/" ) );
   QVERIFY_EXCEPTION_THROWN( p.value( ctx ), QgsServerApiBadRequestException );
 
-  QgsServerQueryStringParameter p2 { QStringLiteral( "parameter1" ), false, QgsServerQueryStringParameter::Type::Integer, QStringLiteral( "Paramerer 1" ), 10 };
+  const QgsServerQueryStringParameter p2 { QStringLiteral( "parameter1" ), false, QgsServerQueryStringParameter::Type::Integer, QStringLiteral( "Paramerer 1" ), 10 };
   QCOMPARE( p2.value( ctx ).toInt(), 10 );
   request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=501" ) );
   QCOMPARE( p2.value( ctx ).toInt(), 501 );
@@ -190,7 +190,7 @@ void TestQgsServerQueryStringParameter::testParseInput()
   QgsRequestHandler requestHandler( request, response );
   requestHandler.parseInput();
 
-  QgsServerParameters params = request.serverParameters();
+  const QgsServerParameters params = request.serverParameters();
   QMap<QString, QString> paramsMap = params.toMap();
   QCOMPARE( paramsMap["SERVICE"], QStringLiteral( "WMS" ) );
   QCOMPARE( paramsMap["VERSION"], QStringLiteral( "1.3.0" ) );

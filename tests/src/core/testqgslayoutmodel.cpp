@@ -986,7 +986,7 @@ void TestQgsLayoutModel::groupSelection()
   layout.addLayoutItem( group2 );
 
   // selecting an item in a group should actually select the topmost parent group
-  QSignalSpy spy( &layout, &QgsLayout::selectedItemChanged );
+  const QSignalSpy spy( &layout, &QgsLayout::selectedItemChanged );
   layout.itemsModel()->setSelected( layout.itemsModel()->indexForItem( item3 ) );
   QVERIFY( !item3->isSelected() );
   QVERIFY( group2->isSelected() );

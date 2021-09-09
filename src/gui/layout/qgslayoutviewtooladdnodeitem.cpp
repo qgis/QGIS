@@ -168,11 +168,11 @@ void QgsLayoutViewToolAddNodeItem::moveTemporaryNode( QPointF scenePoint, Qt::Ke
 
   if ( mPolygon.size() > 1 && ( modifiers & Qt::ShiftModifier ) )
   {
-    QPointF start = mPolygon.at( mPolygon.size() - 2 );
+    const QPointF start = mPolygon.at( mPolygon.size() - 2 );
     QLineF newLine = QLineF( start, scenePoint );
 
     //movement is constrained to 45 degree angles
-    double angle = QgsLayoutUtils::snappedAngle( newLine.angle() );
+    const double angle = QgsLayoutUtils::snappedAngle( newLine.angle() );
     newLine.setAngle( angle );
     scenePoint = newLine.p2();
   }

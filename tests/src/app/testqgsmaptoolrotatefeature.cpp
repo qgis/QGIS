@@ -90,10 +90,10 @@ void TestQgsMapToolRotateFeature::initTestCase()
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerBase );
 
   mLayerBase->startEditing();
-  QString wkt1 = QStringLiteral( "Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))" );
+  const QString wkt1 = QStringLiteral( "Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))" );
   QgsFeature f1;
   f1.setGeometry( QgsGeometry::fromWkt( wkt1 ) );
-  QString wkt2 = QStringLiteral( "Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0, 1.1 0))" );
+  const QString wkt2 = QStringLiteral( "Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0, 1.1 0))" );
   QgsFeature f2;
   f2.setGeometry( QgsGeometry::fromWkt( wkt2 ) );
 

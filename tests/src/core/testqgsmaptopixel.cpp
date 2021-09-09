@@ -41,7 +41,7 @@ void TestQgsMapToPixel::rotation()
   QCOMPARE( d.x(), 5.0 ); // center doesn't move
   QCOMPARE( d.y(), 5.0 );
 
-  QgsPointXY b = m2p.toMapCoordinates( d.x(), d.y() ); // transform back
+  const QgsPointXY b = m2p.toMapCoordinates( d.x(), d.y() ); // transform back
   QCOMPARE( p, b );
 
   m2p.transform( &p ); // in place transform
@@ -109,7 +109,7 @@ void TestQgsMapToPixel::fromScale()
 
 void TestQgsMapToPixel::equality()
 {
-  QgsMapToPixel m2p( 1, 5, 6, 10, 100, 90 );
+  const QgsMapToPixel m2p( 1, 5, 6, 10, 100, 90 );
   QgsMapToPixel m2p2( 1, 5, 6, 10, 100, 90 );
   QVERIFY( m2p == m2p2 );
   QVERIFY( !( m2p != m2p2 ) );
@@ -139,7 +139,7 @@ void TestQgsMapToPixel::equality()
 
 void TestQgsMapToPixel::toMapCoordinates()
 {
-  QgsMapToPixel m2p( 1, 5, 5, 10, 10, 90 );
+  const QgsMapToPixel m2p( 1, 5, 5, 10, 10, 90 );
   QgsPointXY p = m2p.toMapCoordinates( 5, 5 );
   QCOMPARE( p, QgsPointXY( 5, 5 ) );
 

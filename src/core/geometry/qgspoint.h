@@ -519,7 +519,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     int nCoordinates() const override SIP_HOLDGIL;
     int vertexNumberFromVertexId( QgsVertexId id ) const override;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
-    bool isValid( QString &error SIP_OUT, int flags = 0 ) const override SIP_HOLDGIL;
+    bool isValid( QString &error SIP_OUT, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const override SIP_HOLDGIL;
 
     //low-level editing
     bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;

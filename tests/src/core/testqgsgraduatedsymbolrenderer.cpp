@@ -183,7 +183,7 @@ void TestQgsGraduatedSymbolRenderer::classifySymmetric()
         QgsClassificationMethod::makeBreaksSymmetric( breaks, symmetryPoint, astride );
         QCOMPARE( breaks.count() % 2, 0 );
         // because the minimum is not in the breaks
-        int newPosOfSymmetryPoint = breaks.count() / 2;
+        const int newPosOfSymmetryPoint = breaks.count() / 2;
         QCOMPARE( breaks[ newPosOfSymmetryPoint - 1 ], symmetryPoint );
 
         // with astride = true
@@ -231,7 +231,7 @@ void TestQgsGraduatedSymbolRenderer::testMatchingRangeForValue()
 
   QgsMarkerSymbol ms;
   ms.setColor( QColor( 255, 0, 0 ) );
-  QgsRendererRange r1( 1.1, 3.2, ms.clone(), QStringLiteral( "r1" ) );
+  const QgsRendererRange r1( 1.1, 3.2, ms.clone(), QStringLiteral( "r1" ) );
   renderer.addClass( r1 );
 
   QVERIFY( !renderer.rangeForValue( 1 ) );
@@ -246,7 +246,7 @@ void TestQgsGraduatedSymbolRenderer::testMatchingRangeForValue()
   QCOMPARE( renderer.legendKeyForValue( 2.1 ), QStringLiteral( "0" ) );
 
   ms.setColor( QColor( 255, 255, 0 ) );
-  QgsRendererRange r2( 3.2, 3.3, ms.clone(), QStringLiteral( "r2" ) );
+  const QgsRendererRange r2( 3.2, 3.3, ms.clone(), QStringLiteral( "r2" ) );
   renderer.addClass( r2 );
 
   QVERIFY( !renderer.rangeForValue( 1 ) );
@@ -266,7 +266,7 @@ void TestQgsGraduatedSymbolRenderer::testMatchingRangeForValue()
 
   // disabled range
   ms.setColor( QColor( 255, 0, 255 ) );
-  QgsRendererRange r3( 3.3, 3.6, ms.clone(), QStringLiteral( "r3" ), false );
+  const QgsRendererRange r3( 3.3, 3.6, ms.clone(), QStringLiteral( "r3" ), false );
   renderer.addClass( r3 );
   QVERIFY( !renderer.rangeForValue( 1 ) );
   QVERIFY( !renderer.rangeForValue( 12 ) );
@@ -288,7 +288,7 @@ void TestQgsGraduatedSymbolRenderer::testMatchingRangeForValue()
 
   // zero width range
   ms.setColor( QColor( 0, 255, 255 ) );
-  QgsRendererRange r4( 3.7, 3.7, ms.clone(), QStringLiteral( "r4" ) );
+  const QgsRendererRange r4( 3.7, 3.7, ms.clone(), QStringLiteral( "r4" ) );
   renderer.addClass( r4 );
   QVERIFY( !renderer.rangeForValue( 1 ) );
   QVERIFY( !renderer.rangeForValue( 12 ) );

@@ -28,6 +28,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
+#include "qgsgeometryengine.h"
 
 namespace
 {
@@ -97,6 +98,23 @@ QgsHanaFeatureIterator::QgsHanaFeatureIterator(
     return;
   }
 
+  // prepare spatial filter geometries for optimal speed
+  switch ( mRequest.spatialFilterType() )
+  {
+    case Qgis::SpatialFilterType::NoFilter:
+    case Qgis::SpatialFilterType::BoundingBox:
+      break;
+
+    case Qgis::SpatialFilterType::DistanceWithin:
+      if ( !mRequest.referenceGeometry().isEmpty() )
+      {
+        mDistanceWithinGeom = mRequest.referenceGeometry();
+        mDistanceWithinEngine.reset( QgsGeometry::createGeometryEngine( mDistanceWithinGeom.constGet() ) );
+        mDistanceWithinEngine->prepareGeometry();
+      }
+      break;
+  }
+
   try
   {
     mSqlQuery = buildSqlQuery( request );
@@ -151,92 +169,97 @@ bool QgsHanaFeatureIterator::fetchFeature( QgsFeature &feature )
   if ( mClosed || !mResultSet )
     return false;
 
-  if ( !mResultSet->next() )
-    return false;
-
-  feature.initAttributes( mSource->mFields.count() );
-  unsigned short paramIndex = 1;
-
-  // Read feature id
-  QgsFeatureId fid = FID_NULL;
-  bool subsetOfAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
-  QgsAttributeList fetchAttributes = mRequest.subsetOfAttributes();
-
-  if ( !mSource->mPrimaryKeyAttrs.isEmpty() )
+  while ( mResultSet->next() )
   {
-    switch ( mSource->mPrimaryKeyType )
+    feature.initAttributes( mSource->mFields.count() );
+    unsigned short paramIndex = 1;
+
+    // Read feature id
+    QgsFeatureId fid = FID_NULL;
+    bool subsetOfAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
+    QgsAttributeList fetchAttributes = mRequest.subsetOfAttributes();
+
+    if ( !mSource->mPrimaryKeyAttrs.isEmpty() )
     {
-      case QgsHanaPrimaryKeyType::PktInt:
+      switch ( mSource->mPrimaryKeyType )
       {
-        int idx = mSource->mPrimaryKeyAttrs.at( 0 );
-        QVariant v = mResultSet->getValue( paramIndex );
-        if ( !subsetOfAttributes || fetchAttributes.contains( idx ) )
-          feature.setAttribute( idx, v );
-        fid = QgsHanaPrimaryKeyUtils::intToFid( v.toInt() );
-        ++paramIndex;
-      }
-      break;
-      case QgsHanaPrimaryKeyType::PktInt64:
-      {
-        int idx = mSource->mPrimaryKeyAttrs.at( 0 );
-        QVariant v = mResultSet->getValue( paramIndex );
-        if ( !subsetOfAttributes || fetchAttributes.contains( idx ) )
-          feature.setAttribute( idx, v );
-        fid = mSource->mPrimaryKeyCntx->lookupFid( QVariantList( { v} ) );
-        ++paramIndex;
-      }
-      break;
-      case QgsHanaPrimaryKeyType::PktFidMap:
-      {
-        QVariantList pkValues;
-        pkValues.reserve( mSource->mPrimaryKeyAttrs.size() );
-        for ( int idx : std::as_const( mSource->mPrimaryKeyAttrs ) )
+        case QgsHanaPrimaryKeyType::PktInt:
         {
+          int idx = mSource->mPrimaryKeyAttrs.at( 0 );
           QVariant v = mResultSet->getValue( paramIndex );
-          pkValues << v;
           if ( !subsetOfAttributes || fetchAttributes.contains( idx ) )
             feature.setAttribute( idx, v );
-          paramIndex++;
+          fid = QgsHanaPrimaryKeyUtils::intToFid( v.toInt() );
+          ++paramIndex;
         }
-        fid = mSource->mPrimaryKeyCntx->lookupFid( pkValues );
-      }
-      break;
-      case QgsHanaPrimaryKeyType::PktUnknown:
         break;
+        case QgsHanaPrimaryKeyType::PktInt64:
+        {
+          int idx = mSource->mPrimaryKeyAttrs.at( 0 );
+          QVariant v = mResultSet->getValue( paramIndex );
+          if ( !subsetOfAttributes || fetchAttributes.contains( idx ) )
+            feature.setAttribute( idx, v );
+          fid = mSource->mPrimaryKeyCntx->lookupFid( QVariantList( { v} ) );
+          ++paramIndex;
+        }
+        break;
+        case QgsHanaPrimaryKeyType::PktFidMap:
+        {
+          QVariantList pkValues;
+          pkValues.reserve( mSource->mPrimaryKeyAttrs.size() );
+          for ( int idx : std::as_const( mSource->mPrimaryKeyAttrs ) )
+          {
+            QVariant v = mResultSet->getValue( paramIndex );
+            pkValues << v;
+            if ( !subsetOfAttributes || fetchAttributes.contains( idx ) )
+              feature.setAttribute( idx, v );
+            paramIndex++;
+          }
+          fid = mSource->mPrimaryKeyCntx->lookupFid( pkValues );
+        }
+        break;
+        case QgsHanaPrimaryKeyType::PktUnknown:
+          break;
+      }
     }
-  }
 
-  feature.setId( fid );
+    feature.setId( fid );
 
-  // Read attributes
-  if ( mHasAttributes )
-  {
-    for ( int idx : std::as_const( mAttributesToFetch ) )
+    // Read attributes
+    if ( mHasAttributes )
     {
-      feature.setAttribute( idx, mResultSet->getValue( paramIndex ) );
-      ++paramIndex;
+      for ( int idx : std::as_const( mAttributesToFetch ) )
+      {
+        feature.setAttribute( idx, mResultSet->getValue( paramIndex ) );
+        ++paramIndex;
+      }
     }
-  }
 
-  // Read geometry
-  if ( mHasGeometryColumn )
-  {
-    QgsGeometry geom = mResultSet->getGeometry( paramIndex );
-    if ( !geom.isNull() )
-      feature.setGeometry( geom );
+    // Read geometry
+    if ( mHasGeometryColumn )
+    {
+      QgsGeometry geom = mResultSet->getGeometry( paramIndex );
+      if ( !geom.isNull() )
+        feature.setGeometry( geom );
+      else
+        feature.clearGeometry();
+    }
     else
+    {
       feature.clearGeometry();
-  }
-  else
-  {
-    feature.clearGeometry();
-  }
+    }
 
-  feature.setValid( true );
-  feature.setFields( mSource->mFields ); // allow name-based attribute lookups
-  geometryToDestinationCrs( feature, mTransform );
+    geometryToDestinationCrs( feature, mTransform );
+    if ( mDistanceWithinEngine && mDistanceWithinEngine->distance( feature.geometry().constGet() ) > mRequest.distanceWithin() )
+    {
+      continue;
+    }
 
-  return true;
+    feature.setValid( true );
+    feature.setFields( mSource->mFields ); // allow name-based attribute lookups
+    return true;
+  }
+  return false;
 }
 
 bool QgsHanaFeatureIterator::nextFeatureFilterExpression( QgsFeature &feature )
@@ -281,8 +304,9 @@ bool QgsHanaFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::Orde
 
 QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request )
 {
-  const bool geometryRequested = ( request.flags() & QgsFeatureRequest::NoGeometry ) == 0;
-  bool limitAtProvider = ( request.limit() >= 0 );
+  const bool geometryRequested = ( request.flags() & QgsFeatureRequest::NoGeometry ) == 0
+                                 || request.spatialFilterType() == Qgis::SpatialFilterType::DistanceWithin;
+  bool limitAtProvider = ( request.limit() >= 0 ) && mRequest.spatialFilterType() != Qgis::SpatialFilterType::DistanceWithin;
 
   QgsRectangle filterRect = mFilterRect;
   if ( !mSource->mSrsExtent.isEmpty() )

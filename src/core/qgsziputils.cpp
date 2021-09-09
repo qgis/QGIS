@@ -67,7 +67,7 @@ bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QString
 
   if ( rc == ZIP_ER_OK && z )
   {
-    int count = zip_get_num_files( z );
+    const int count = zip_get_num_files( z );
     if ( count != -1 )
     {
       struct zip_stat stat;
@@ -75,14 +75,14 @@ bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QString
       for ( int i = 0; i < count; i++ )
       {
         zip_stat_index( z, i, 0, &stat );
-        size_t len = stat.size;
+        const size_t len = stat.size;
 
         struct zip_file *file = zip_fopen_index( z, i, 0 );
-        std::unique_ptr< char[] > buf( new char[len] );
+        const std::unique_ptr< char[] > buf( new char[len] );
         if ( zip_fread( file, buf.get(), len ) != -1 )
         {
-          QString fileName( stat.name );
-          QFileInfo newFile( QDir( dir ), fileName );
+          const QString fileName( stat.name );
+          const QFileInfo newFile( QDir( dir ), fileName );
 
           // Create path for a new file if it does not exist.
           if ( !newFile.absoluteDir().exists() )
@@ -145,7 +145,7 @@ bool QgsZipUtils::zip( const QString &zipFilename, const QStringList &files )
   {
     for ( const auto &file : files )
     {
-      QFileInfo fileInfo( file );
+      const QFileInfo fileInfo( file );
       if ( !fileInfo.exists() )
       {
         QgsMessageLog::logMessage( QObject::tr( "Error input file does not exist: '%1'" ).arg( file ) );

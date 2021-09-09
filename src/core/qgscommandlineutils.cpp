@@ -81,7 +81,7 @@ QString QgsCommandLineUtils::allVersions( )
   }
 
   // proj
-  PJ_INFO info = proj_info();
+  const PJ_INFO info = proj_info();
   const QString projVersionCompiled { QStringLiteral( "%1.%2.%3" ).arg( PROJ_VERSION_MAJOR ).arg( PROJ_VERSION_MINOR ).arg( PROJ_VERSION_PATCH ) };
   const QString projVersionRunning { info.version };
   if ( projVersionCompiled != projVersionRunning )

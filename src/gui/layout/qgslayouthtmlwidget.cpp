@@ -143,7 +143,7 @@ void QgsLayoutHtmlWidget::mUrlLineEdit_editingFinished()
 {
   if ( mHtml )
   {
-    QUrl newUrl( mUrlLineEdit->text() );
+    const QUrl newUrl( mUrlLineEdit->text() );
     if ( newUrl == mHtml->url() )
     {
       return;
@@ -159,11 +159,11 @@ void QgsLayoutHtmlWidget::mUrlLineEdit_editingFinished()
 void QgsLayoutHtmlWidget::mFileToolButton_clicked()
 {
   QgsSettings s;
-  QString lastDir = s.value( QStringLiteral( "/UI/lastHtmlDir" ), QDir::homePath() ).toString();
-  QString file = QFileDialog::getOpenFileName( this, tr( "Select HTML document" ), lastDir, QStringLiteral( "HTML (*.html *.htm);;All files (*.*)" ) );
+  const QString lastDir = s.value( QStringLiteral( "/UI/lastHtmlDir" ), QDir::homePath() ).toString();
+  const QString file = QFileDialog::getOpenFileName( this, tr( "Select HTML document" ), lastDir, QStringLiteral( "HTML (*.html *.htm);;All files (*.*)" ) );
   if ( !file.isEmpty() )
   {
-    QUrl url = QUrl::fromLocalFile( file );
+    const QUrl url = QUrl::fromLocalFile( file );
     mUrlLineEdit->setText( url.toString() );
     mUrlLineEdit_editingFinished();
     mHtml->update();
@@ -361,12 +361,12 @@ void QgsLayoutHtmlWidget::mInsertExpressionButton_clicked()
   // use the atlas coverage layer, if any
   QgsVectorLayer *layer = coverageLayer();
 
-  QgsExpressionContext context = mHtml->createExpressionContext();
+  const QgsExpressionContext context = mHtml->createExpressionContext();
   QgsExpressionBuilderDialog exprDlg( layer, selText, this, QStringLiteral( "generic" ), context );
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
-    QString expression = exprDlg.expressionText();
+    const QString expression = exprDlg.expressionText();
     if ( !expression.isEmpty() )
     {
       blockSignals( true );

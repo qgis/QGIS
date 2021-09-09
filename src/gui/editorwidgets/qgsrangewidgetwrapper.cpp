@@ -89,18 +89,18 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
   mQgsDial = qobject_cast<QgsDial *>( editor );
   mQgsSlider = qobject_cast<QgsSlider *>( editor );
 
-  bool allowNull = config( QStringLiteral( "AllowNull" ), true ).toBool();
+  const bool allowNull = config( QStringLiteral( "AllowNull" ), true ).toBool();
 
   QVariant min( config( QStringLiteral( "Min" ) ) );
   QVariant max( config( QStringLiteral( "Max" ) ) );
   QVariant step( config( QStringLiteral( "Step" ) ) );
-  QVariant precision( config( QStringLiteral( "Precision" ) ) );
+  const QVariant precision( config( QStringLiteral( "Precision" ) ) );
 
   if ( mDoubleSpinBox )
   {
-    double stepval = step.isValid() ? step.toDouble() : 1.0;
+    const double stepval = step.isValid() ? step.toDouble() : 1.0;
     double minval = min.isValid() ? min.toDouble() : std::numeric_limits<double>::lowest();
-    double maxval  = max.isValid() ? max.toDouble() : std::numeric_limits<double>::max();
+    const double maxval  = max.isValid() ? max.toDouble() : std::numeric_limits<double>::max();
 
     const QgsField field = layer()->fields().at( fieldIdx() );
     // we use the double spin box for long long fields in order to get sufficient range of min/max values
@@ -150,12 +150,12 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
     if ( qgsWidget )
       qgsWidget->setShowClearButton( allowNull );
     int minval =  min.isValid() ? min.toInt() : std::numeric_limits<int>::lowest();
-    int maxval = max.isValid() ? max.toInt() : std::numeric_limits<int>::max();
-    uint stepval = step.isValid() ? step.toUInt() : 1;
+    const int maxval = max.isValid() ? max.toInt() : std::numeric_limits<int>::max();
+    const uint stepval = step.isValid() ? step.toUInt() : 1;
     if ( allowNull )
     {
       // make sure there is room for a new value (i.e. signed integer does not overflow)
-      int minvalOverflow = uint( minval ) - stepval;
+      const int minvalOverflow = uint( minval ) - stepval;
       if ( minvalOverflow < minval )
       {
         minval = minvalOverflow;

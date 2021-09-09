@@ -39,7 +39,7 @@ void QgsVertexMarker::setIconSize( int iconSize )
 void QgsVertexMarker::setCenter( const QgsPointXY &point )
 {
   mCenter = point;
-  QPointF pt = toCanvasCoordinates( mCenter );
+  const QPointF pt = toCanvasCoordinates( mCenter );
   setPos( pt );
 }
 
@@ -65,7 +65,7 @@ void QgsVertexMarker::paint( QPainter *p )
   QPen pen( mColor );
   pen.setWidth( mPenWidth );
   p->setPen( pen );
-  QBrush brush( mFillColor );
+  const QBrush brush( mFillColor );
   p->setBrush( brush );
   p->drawPath( mPath );
 }
@@ -137,7 +137,7 @@ void QgsVertexMarker::updatePath()
 
 QRectF QgsVertexMarker::boundingRect() const
 {
-  qreal s = qreal( mIconSize + mPenWidth ) / 2.0;
+  const qreal s = qreal( mIconSize + mPenWidth ) / 2.0;
   return QRectF( -s, -s, 2.0 * s, 2.0 * s );
 }
 

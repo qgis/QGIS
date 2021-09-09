@@ -147,7 +147,7 @@ QgsEffectStackPropertiesWidget::QgsEffectStackPropertiesWidget( QgsEffectStack *
       break;
     }
   }
-  QModelIndex newIndex = mEffectsList->model()->index( initialRow, 0 );
+  const QModelIndex newIndex = mEffectsList->model()->index( initialRow, 0 );
   mEffectsList->setCurrentIndex( newIndex );
 
   setPanelTitle( tr( "Effects Properties" ) );
@@ -170,7 +170,7 @@ void QgsEffectStackPropertiesWidget::loadStack( QgsEffectStack *stack )
 
   EffectItem *parent = static_cast<EffectItem *>( mModel->invisibleRootItem() );
 
-  int count = stack->count();
+  const int count = stack->count();
   for ( int i = count - 1; i >= 0; i-- )
   {
     EffectItem *effectItem = new EffectItem( stack->effect( i ), this );
@@ -188,15 +188,15 @@ void QgsEffectStackPropertiesWidget::loadStack()
 
 void QgsEffectStackPropertiesWidget::updateUi()
 {
-  QModelIndex currentIdx = mEffectsList->currentIndex();
+  const QModelIndex currentIdx = mEffectsList->currentIndex();
   if ( !currentIdx.isValid() )
     return;
 
   EffectItem *item = static_cast<EffectItem *>( mModel->itemFromIndex( currentIdx ) );
 
   QStandardItem *root = mModel->invisibleRootItem();
-  int rowCount = root->rowCount();
-  int currentRow = item ? item->row() : 0;
+  const int rowCount = root->rowCount();
+  const int currentRow = item ? item->row() : 0;
 
   mUpButton->setEnabled( currentRow > 0 );
   mDownButton->setEnabled( currentRow < rowCount - 1 );
@@ -235,7 +235,7 @@ void QgsEffectStackPropertiesWidget::updatePreview()
 
 EffectItem *QgsEffectStackPropertiesWidget::currentEffectItem()
 {
-  QModelIndex idx = mEffectsList->currentIndex();
+  const QModelIndex idx = mEffectsList->currentIndex();
   if ( !idx.isValid() )
     return nullptr;
 
@@ -260,7 +260,7 @@ void QgsEffectStackPropertiesWidget::effectChanged()
 
 void QgsEffectStackPropertiesWidget::setWidget( QWidget *widget )
 {
-  int index = stackedWidget->addWidget( widget );
+  const int index = stackedWidget->addWidget( widget );
   stackedWidget->setCurrentIndex( index );
   if ( mPresentWidget )
   {
@@ -287,16 +287,16 @@ void QgsEffectStackPropertiesWidget::addEffect()
 void QgsEffectStackPropertiesWidget::removeEffect()
 {
   EffectItem *item = currentEffectItem();
-  int row = item->row();
+  const int row = item->row();
   QStandardItem *root = mModel->invisibleRootItem();
 
-  int layerIdx = root->rowCount() - row - 1;
+  const int layerIdx = root->rowCount() - row - 1;
   QgsPaintEffect *tmpEffect = mStack->takeEffect( layerIdx );
 
   mModel->invisibleRootItem()->removeRow( row );
 
-  int newSelection = std::min( row, root->rowCount() - 1 );
-  QModelIndex newIdx = root->child( newSelection )->index();
+  const int newSelection = std::min( row, root->rowCount() - 1 );
+  const QModelIndex newIdx = root->child( newSelection )->index();
   mEffectsList->setCurrentIndex( newIdx );
 
   updateUi();
@@ -321,11 +321,11 @@ void QgsEffectStackPropertiesWidget::moveEffectByOffset( int offset )
   if ( !item )
     return;
 
-  int row = item->row();
+  const int row = item->row();
 
   QStandardItem *root = mModel->invisibleRootItem();
 
-  int layerIdx = root->rowCount() - row - 1;
+  const int layerIdx = root->rowCount() - row - 1;
   // switch effects
   QgsPaintEffect *tmpEffect = mStack->takeEffect( layerIdx );
   mStack->insertEffect( layerIdx - offset, tmpEffect );
@@ -333,7 +333,7 @@ void QgsEffectStackPropertiesWidget::moveEffectByOffset( int offset )
   QList<QStandardItem *> toMove = root->takeRow( row );
   root->insertRows( row + offset, toMove );
 
-  QModelIndex newIdx = toMove[ 0 ]->index();
+  const QModelIndex newIdx = toMove[ 0 ]->index();
   mEffectsList->setCurrentIndex( newIdx );
 
   updatePreview();
@@ -346,7 +346,7 @@ void QgsEffectStackPropertiesWidget::changeEffect( QgsPaintEffect *newEffect )
   item->setEffect( newEffect );
 
   QStandardItem *root = mModel->invisibleRootItem();
-  int effectIdx = root->rowCount() - item->row() - 1;
+  const int effectIdx = root->rowCount() - item->row() - 1;
   mStack->changeEffect( effectIdx, newEffect );
 
   updatePreview();

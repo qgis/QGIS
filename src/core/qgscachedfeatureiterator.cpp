@@ -17,6 +17,7 @@
 #include "qgsvectorlayercache.h"
 #include "qgsexception.h"
 #include "qgsvectorlayer.h"
+#include "qgsgeometryengine.h"
 
 QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest &featureRequest )
   : QgsAbstractFeatureIterator( featureRequest )
@@ -36,6 +37,25 @@ QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache
     close();
     return;
   }
+
+  // prepare spatial filter geometries for optimal speed
+  switch ( mRequest.spatialFilterType() )
+  {
+    case Qgis::SpatialFilterType::NoFilter:
+    case Qgis::SpatialFilterType::BoundingBox:
+      break;
+
+    case Qgis::SpatialFilterType::DistanceWithin:
+      if ( !mRequest.referenceGeometry().isEmpty() )
+      {
+        mDistanceWithinGeom = mRequest.referenceGeometry();
+        mDistanceWithinEngine.reset( QgsGeometry::createGeometryEngine( mDistanceWithinGeom.constGet() ) );
+        mDistanceWithinEngine->prepareGeometry();
+        mDistanceWithin = mRequest.distanceWithin();
+      }
+      break;
+  }
+
   if ( !mFilterRect.isNull() )
   {
     // update request to be the unprojected filter rect
@@ -70,6 +90,8 @@ QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache
     close();
 }
 
+QgsCachedFeatureIterator::~QgsCachedFeatureIterator() = default;
+
 bool QgsCachedFeatureIterator::fetchFeature( QgsFeature &f )
 {
   f.setValid( false );
@@ -91,7 +113,16 @@ bool QgsCachedFeatureIterator::fetchFeature( QgsFeature &f )
     {
       f.setValid( true );
       geometryToDestinationCrs( f, mTransform );
-      return true;
+
+      bool result = true;
+      if ( mDistanceWithinEngine && mDistanceWithinEngine->distance( f.geometry().constGet() ) > mDistanceWithin )
+      {
+        f.setValid( false );
+        result = false;
+      }
+
+      if ( result )
+        return true;
     }
   }
   close();

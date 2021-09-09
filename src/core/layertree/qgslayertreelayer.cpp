@@ -106,15 +106,15 @@ QgsLayerTreeLayer *QgsLayerTreeLayer::readXml( QDomElement &element, const QgsRe
   if ( element.tagName() != QLatin1String( "layer-tree-layer" ) )
     return nullptr;
 
-  QString layerID = element.attribute( QStringLiteral( "id" ) );
-  QString layerName = element.attribute( QStringLiteral( "name" ) );
+  const QString layerID = element.attribute( QStringLiteral( "id" ) );
+  const QString layerName = element.attribute( QStringLiteral( "name" ) );
 
-  QString providerKey = element.attribute( QStringLiteral( "providerKey" ) );
-  QString source = context.pathResolver().readPath( element.attribute( QStringLiteral( "source" ) ) );
+  const QString providerKey = element.attribute( QStringLiteral( "providerKey" ) );
+  const QString source = context.pathResolver().readPath( element.attribute( QStringLiteral( "source" ) ) );
 
-  Qt::CheckState checked = QgsLayerTreeUtils::checkStateFromXml( element.attribute( QStringLiteral( "checked" ) ) );
-  bool isExpanded = ( element.attribute( QStringLiteral( "expanded" ), QStringLiteral( "1" ) ) == QLatin1String( "1" ) );
-  QString labelExpression = element.attribute( QStringLiteral( "legend_exp" ) );
+  const Qt::CheckState checked = QgsLayerTreeUtils::checkStateFromXml( element.attribute( QStringLiteral( "checked" ) ) );
+  const bool isExpanded = ( element.attribute( QStringLiteral( "expanded" ), QStringLiteral( "1" ) ) == QLatin1String( "1" ) );
+  const QString labelExpression = element.attribute( QStringLiteral( "legend_exp" ) );
 
   // needs to have the layer reference resolved later
   QgsLayerTreeLayer *nodeLayer = new QgsLayerTreeLayer( layerID, layerName, source, providerKey );

@@ -211,7 +211,8 @@ QStringList QgsProcessingBooleanWidgetWrapper::compatibleParameterTypes() const
          << QgsProcessingParameterVectorLayer::typeName()
          << QgsProcessingParameterMeshLayer::typeName()
          << QgsProcessingParameterExpression::typeName()
-         << QgsProcessingParameterProviderConnection::typeName();
+         << QgsProcessingParameterProviderConnection::typeName()
+         << QgsProcessingParameterPointCloudLayer::typeName();
 }
 
 QStringList QgsProcessingBooleanWidgetWrapper::compatibleOutputTypes() const
@@ -369,7 +370,8 @@ QStringList QgsProcessingCrsWidgetWrapper::compatibleParameterTypes() const
          << QgsProcessingParameterRasterLayer::typeName()
          << QgsProcessingParameterVectorLayer::typeName()
          << QgsProcessingParameterMeshLayer::typeName()
-         << QgsProcessingParameterFeatureSource::typeName();
+         << QgsProcessingParameterFeatureSource::typeName()
+         << QgsProcessingParameterPointCloudLayer::typeName();
 }
 
 QStringList QgsProcessingCrsWidgetWrapper::compatibleOutputTypes() const
@@ -1265,6 +1267,9 @@ QgsProcessingDurationParameterDefinitionWidget::QgsProcessingDurationParameterDe
   mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalHours ), QgsUnitTypes::TemporalHours );
   mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalDays ), QgsUnitTypes::TemporalDays );
   mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalWeeks ), QgsUnitTypes::TemporalWeeks );
+  mUnitsCombo->addItem( tr( "years (365.25 days)" ), QgsUnitTypes::TemporalYears );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalDecades ), QgsUnitTypes::TemporalDecades );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalCenturies ), QgsUnitTypes::TemporalCenturies );
   vlayout->addWidget( mUnitsCombo );
 
   if ( const QgsProcessingParameterDuration *durationParam = dynamic_cast<const QgsProcessingParameterDuration *>( definition ) )
@@ -1322,7 +1327,6 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingDurationWidgetWrapper:
 QWidget *QgsProcessingDurationWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterDuration *durationDef = static_cast< const QgsProcessingParameterDuration * >( parameterDefinition() );
-  mBaseUnit = durationDef->defaultUnit();
 
   QWidget *spin = QgsProcessingNumericWidgetWrapper::createWidget();
   switch ( type() )
@@ -1337,6 +1341,9 @@ QWidget *QgsProcessingDurationWidgetWrapper::createWidget()
       mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalHours ), QgsUnitTypes::TemporalHours );
       mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalDays ), QgsUnitTypes::TemporalDays );
       mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalWeeks ), QgsUnitTypes::TemporalWeeks );
+      mUnitsCombo->addItem( tr( "years (365.25 days)" ), QgsUnitTypes::TemporalYears );
+      mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalDecades ), QgsUnitTypes::TemporalDecades );
+      mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalCenturies ), QgsUnitTypes::TemporalCenturies );
 
       QHBoxLayout *layout = new QHBoxLayout();
       layout->addWidget( spin, 1 );
@@ -1346,7 +1353,7 @@ QWidget *QgsProcessingDurationWidgetWrapper::createWidget()
       layout->setContentsMargins( 0, 0, 0, 0 );
       w->setLayout( layout );
 
-      mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( mBaseUnit ) );
+      mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( durationDef->defaultUnit() ) );
       mUnitsCombo->show();
 
       return w;
@@ -1366,8 +1373,7 @@ QLabel *QgsProcessingDurationWidgetWrapper::createLabel()
 
   if ( type() == QgsProcessingGui::Modeler )
   {
-    const QgsProcessingParameterDuration *durationDef = static_cast< const QgsProcessingParameterDuration * >( parameterDefinition() );
-    label->setText( QStringLiteral( "%1 [%2]" ).arg( label->text(), QgsUnitTypes::toString( durationDef->defaultUnit() ) ) );
+    label->setText( QStringLiteral( "%1 [%2]" ).arg( label->text(), QgsUnitTypes::toString( mBaseUnit ) ) );
   }
 
   return label;
@@ -1384,6 +1390,20 @@ QVariant QgsProcessingDurationWidgetWrapper::widgetValue() const
   else
   {
     return val;
+  }
+}
+
+void QgsProcessingDurationWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  if ( mUnitsCombo )
+  {
+    QgsUnitTypes::TemporalUnit displayUnit = static_cast<QgsUnitTypes::TemporalUnit >( mUnitsCombo->currentData().toInt() );
+    const QVariant val = value.toDouble() * QgsUnitTypes::fromUnitToUnitFactor( mBaseUnit, displayUnit );
+    QgsProcessingNumericWidgetWrapper::setWidgetValue( val, context );
+  }
+  else
+  {
+    QgsProcessingNumericWidgetWrapper::setWidgetValue( value, context );
   }
 }
 
@@ -5747,7 +5767,8 @@ QStringList QgsProcessingExtentWidgetWrapper::compatibleParameterTypes() const
          << QgsProcessingParameterFeatureSource::typeName()
          << QgsProcessingParameterRasterLayer::typeName()
          << QgsProcessingParameterVectorLayer::typeName()
-         << QgsProcessingParameterMeshLayer::typeName();
+         << QgsProcessingParameterMeshLayer::typeName()
+         << QgsProcessingParameterPointCloudLayer::typeName();
 
 }
 
@@ -5802,6 +5823,7 @@ QgsProcessingMapLayerParameterDefinitionWidget::QgsProcessingMapLayerParameterDe
   mLayerTypeComboBox->addItem( tr( "Raster" ), QgsProcessing::TypeRaster );
   mLayerTypeComboBox->addItem( tr( "Mesh" ), QgsProcessing::TypeMesh );
   mLayerTypeComboBox->addItem( tr( "Plugin" ), QgsProcessing::TypePlugin );
+  mLayerTypeComboBox->addItem( tr( "Point Cloud" ), QgsProcessing::TypePointCloud );
 
   if ( const QgsProcessingParameterMapLayer *layerParam = dynamic_cast<const QgsProcessingParameterMapLayer *>( definition ) )
   {
@@ -5896,6 +5918,7 @@ QStringList QgsProcessingMapLayerWidgetWrapper::compatibleParameterTypes() const
          << QgsProcessingParameterMeshLayer::typeName()
          << QgsProcessingParameterVectorLayer::typeName()
          << QgsProcessingParameterMapLayer::typeName()
+         << QgsProcessingParameterPointCloudLayer::typeName()
          << QgsProcessingParameterString::typeName()
          << QgsProcessingParameterExpression::typeName();
 }
@@ -6792,6 +6815,17 @@ void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorith
       break;
     }
 
+    case QgsProcessing::TypePointCloud:
+    {
+      mModelSources = model->availableSourcesForChild( modelChildAlgorithmID, QStringList() << QgsProcessingParameterPointCloudLayer::typeName()
+                      << QgsProcessingParameterMultipleLayers::typeName()
+                      << QgsProcessingParameterFile::typeName(),
+                      QStringList() << QgsProcessingOutputFile::typeName()
+                      << QgsProcessingOutputMapLayer::typeName()
+                      << QgsProcessingOutputMultipleLayers::typeName() );
+      break;
+    }
+
     case QgsProcessing::TypeVector:
     {
       mModelSources = model->availableSourcesForChild( modelChildAlgorithmID, QStringList() << QgsProcessingParameterFeatureSource::typeName()
@@ -6934,6 +6968,7 @@ QgsProcessingMultipleLayerParameterDefinitionWidget::QgsProcessingMultipleLayerP
   mLayerTypeComboBox->addItem( tr( "File" ), QgsProcessing::TypeFile );
   mLayerTypeComboBox->addItem( tr( "Mesh" ), QgsProcessing::TypeMesh );
   mLayerTypeComboBox->addItem( tr( "Plugin" ), QgsProcessing::TypePlugin );
+  mLayerTypeComboBox->addItem( tr( "Point Cloud" ), QgsProcessing::TypePointCloud );
   if ( const QgsProcessingParameterMultipleLayers *layersParam = dynamic_cast<const QgsProcessingParameterMultipleLayers *>( definition ) )
     mLayerTypeComboBox->setCurrentIndex( mLayerTypeComboBox->findData( layersParam->layerType() ) );
 
@@ -7059,6 +7094,62 @@ QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingMultipleLayerWidget
 {
   return new QgsProcessingMultipleLayerParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
+
+
+//
+// QgsProcessingPointCloudLayerWidgetWrapper
+//
+
+QgsProcessingPointCloudLayerWidgetWrapper::QgsProcessingPointCloudLayerWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsProcessingMapLayerWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QStringList QgsProcessingPointCloudLayerWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterPointCloudLayer::typeName()
+         << QgsProcessingParameterMapLayer::typeName()
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterExpression::typeName();
+}
+
+QStringList QgsProcessingPointCloudLayerWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName()
+         // TODO  << QgsProcessingOutputPointCloudLayer::typeName()
+         << QgsProcessingOutputMapLayer::typeName()
+         << QgsProcessingOutputFile::typeName()
+         << QgsProcessingOutputFolder::typeName();
+}
+
+QString QgsProcessingPointCloudLayerWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "path to a point cloud layer" );
+}
+
+QString QgsProcessingPointCloudLayerWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterPointCloudLayer::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingPointCloudLayerWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingPointCloudLayerWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingPointCloudLayerWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  Q_UNUSED( context );
+  Q_UNUSED( widgetContext );
+  Q_UNUSED( definition );
+  Q_UNUSED( algorithm );
+
+  return nullptr;
+}
+
 
 
 //

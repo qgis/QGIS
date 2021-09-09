@@ -65,14 +65,14 @@ void QgsDateTimeStatisticalSummary::addValue( const QVariant &value )
   }
   else if ( value.type() == QVariant::Date )
   {
-    QDate date = value.toDate();
+    const QDate date = value.toDate();
     testDateTime( date.isValid() ? QDateTime( date, QTime( 0, 0, 0 ) )
                   : QDateTime(), value.isNull() );
   }
   else if ( value.type() == QVariant::Time )
   {
     mIsTimes = true;
-    QTime time = value.toTime();
+    const QTime time = value.toTime();
     testDateTime( time.isValid() ? QDateTime( QDate::fromJulianDay( 0 ), time )
                   : QDateTime(), value.isNull() );
   }

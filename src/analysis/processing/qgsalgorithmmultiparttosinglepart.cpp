@@ -84,7 +84,7 @@ QgsFeatureList QgsMultipartToSinglepartAlgorithm::processFeature( const QgsFeatu
   if ( !feature.hasGeometry() )
     return QgsFeatureList() << feature;
 
-  QgsGeometry inputGeometry = feature.geometry();
+  const QgsGeometry inputGeometry = feature.geometry();
   QgsFeatureList outputs;
   if ( inputGeometry.isMultipart() )
   {

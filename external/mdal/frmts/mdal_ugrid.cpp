@@ -18,12 +18,10 @@
 MDAL::DriverUgrid::DriverUgrid()
   : DriverCF(
       "Ugrid",
-      "UGRID Results",
+      "UGRID",
       "*.nc",
       Capability::ReadMesh | Capability::SaveMesh )
-{
-
-}
+{}
 
 MDAL::DriverUgrid *MDAL::DriverUgrid::create()
 {
@@ -673,9 +671,9 @@ void MDAL::DriverUgrid::parse2VariablesFromAttribute( const std::string &name, c
   }
 }
 
-void MDAL::DriverUgrid::save( const std::string &uri, MDAL::Mesh *mesh )
+void MDAL::DriverUgrid::save( const std::string &fileName, const std::string &, MDAL::Mesh *mesh )
 {
-  mFileName = uri;
+  mFileName = fileName;
 
   try
   {
@@ -691,7 +689,7 @@ void MDAL::DriverUgrid::save( const std::string &uri, MDAL::Mesh *mesh )
   }
   catch ( MDAL_Status error )
   {
-    MDAL::Log::error( error, name(), "could not save file " + uri );
+    MDAL::Log::error( error, name(), "could not save file " + fileName );
   }
   catch ( MDAL::Error err )
   {

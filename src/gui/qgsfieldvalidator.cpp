@@ -43,7 +43,7 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, co
     {
       if ( mField.length() > 0 )
       {
-        QString re = QStringLiteral( "-?\\d{0,%1}" ).arg( mField.length() );
+        const QString re = QStringLiteral( "-?\\d{0,%1}" ).arg( mField.length() );
         mValidator = new QRegularExpressionValidator( QRegularExpression( re ), parent );
       }
       else
@@ -71,7 +71,7 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, co
       }
       else if ( mField.length() > 0 && mField.precision() == 0 )
       {
-        QString re = QStringLiteral( "-?\\d{0,%1}" ).arg( mField.length() );
+        const QString re = QStringLiteral( "-?\\d{0,%1}" ).arg( mField.length() );
         mValidator = new QRegularExpressionValidator( QRegularExpression( re ), parent );
       }
       else if ( mField.precision() > 0 )
@@ -131,7 +131,7 @@ QValidator::State QgsFieldValidator::validate( QString &s, int &i ) const
   // delegate to the child validator if any
   if ( mValidator )
   {
-    QValidator::State result = mValidator->validate( s, i );
+    const QValidator::State result = mValidator->validate( s, i );
     return result;
   }
   else if ( mField.type() == QVariant::String )

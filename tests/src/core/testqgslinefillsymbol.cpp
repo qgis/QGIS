@@ -85,14 +85,14 @@ void TestQgsLineFillSymbol::initTestCase()
   QgsApplication::showSettings();
 
   //create some objects that will be used in all tests...
-  QString myDataDir( QStringLiteral( TEST_DATA_DIR ) ); //defined in CmakeLists.txt
+  const QString myDataDir( QStringLiteral( TEST_DATA_DIR ) ); //defined in CmakeLists.txt
   mTestDataDir = myDataDir + '/';
 
   //
   //create a poly layer that will be used in all tests...
   //
-  QString myPolysFileName = mTestDataDir + "polys.shp";
-  QFileInfo myPolyFileInfo( myPolysFileName );
+  const QString myPolysFileName = mTestDataDir + "polys.shp";
+  const QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
                                      myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
@@ -117,7 +117,7 @@ void TestQgsLineFillSymbol::initTestCase()
 }
 void TestQgsLineFillSymbol::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -208,7 +208,7 @@ bool TestQgsLineFillSymbol::imageCheck( const QString &testType )
   myChecker.setControlPathPrefix( QStringLiteral( "symbol_linefill" ) );
   myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( mMapSettings );
-  bool myResultFlag = myChecker.runTest( testType );
+  const bool myResultFlag = myChecker.runTest( testType );
   mReport += myChecker.report();
   return myResultFlag;
 }

@@ -56,7 +56,7 @@ void QgsMessageLogViewer::showContextMenuForTabBar( QPoint point )
 
   mTabBarContextMenu->clear();
 
-  int tabIndex = tabWidget->tabBar()->tabAt( point );
+  const int tabIndex = tabWidget->tabBar()->tabAt( point );
 
   QAction *actionCloseTab = new QAction( tr( "Close Tab" ), mTabBarContextMenu );
   connect( actionCloseTab, &QAction::triggered, this, [this, tabIndex]
@@ -138,9 +138,9 @@ void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag
   }
 
   QString levelString;
-  QgsSettings settings;
-  QPalette pal = qApp->palette();
-  QString defaultColorName = pal.color( QPalette::WindowText ).name();
+  const QgsSettings settings;
+  const QPalette pal = qApp->palette();
+  const QString defaultColorName = pal.color( QPalette::WindowText ).name();
   QString colorName;
   switch ( level )
   {
@@ -165,10 +165,10 @@ void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag
       colorName = settings.value( QStringLiteral( "colors/default" ), QString() ).toString();
       break;
   }
-  QColor color = QColor( !colorName.isEmpty() ? colorName : defaultColorName );
+  const QColor color = QColor( !colorName.isEmpty() ? colorName : defaultColorName );
 
-  QString prefix = QStringLiteral( "<font color=\"%1\">%2 &nbsp;&nbsp;&nbsp; %3 &nbsp;&nbsp;&nbsp;</font>" )
-                   .arg( color.name(), QDateTime::currentDateTime().toString( Qt::ISODate ), levelString );
+  const QString prefix = QStringLiteral( "<font color=\"%1\">%2 &nbsp;&nbsp;&nbsp; %3 &nbsp;&nbsp;&nbsp;</font>" )
+                         .arg( color.name(), QDateTime::currentDateTime().toString( Qt::ISODate ), levelString );
   QString cleanedMessage = message;
   if ( mMessageLoggedCount == MESSAGE_COUNT_LIMIT )
     cleanedMessage = tr( "Message log truncated" );
@@ -212,8 +212,8 @@ bool QgsMessageLogViewer::eventFilter( QObject *object, QEvent *event )
       if ( QPlainTextEdit *te = qobject_cast<QPlainTextEdit *>( object->parent() ) )
       {
         QMouseEvent *me = static_cast< QMouseEvent *>( event );
-        QString clickedAnchor = ( me->button() & Qt::LeftButton ) ? te->anchorAt( me->pos() ) :
-                                QString();
+        const QString clickedAnchor = ( me->button() & Qt::LeftButton ) ? te->anchorAt( me->pos() ) :
+                                      QString();
         if ( !clickedAnchor.isEmpty() && clickedAnchor == mClickedAnchor )
         {
           QDesktopServices::openUrl( mClickedAnchor );

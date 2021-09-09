@@ -55,6 +55,14 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
      */
     explicit QgsLayerTreeLayer( const QString &layerId, const QString &name = QString(), const QString &source = QString(), const QString &provider = QString() );
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsLayerTreeLayer: %1>" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
     /**
      * Returns the ID for the map layer associated with this node.
      *

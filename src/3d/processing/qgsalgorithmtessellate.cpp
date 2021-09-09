@@ -88,7 +88,7 @@ QgsFeatureList QgsTessellateAlgorithm::processFeature( const QgsFeature &feature
       f.clearGeometry();
     else
     {
-      QgsRectangle bounds = f.geometry().boundingBox();
+      const QgsRectangle bounds = f.geometry().boundingBox();
       QgsTessellator t( bounds, false );
 
       if ( f.geometry().isMultipart() )
@@ -96,13 +96,13 @@ QgsFeatureList QgsTessellateAlgorithm::processFeature( const QgsFeature &feature
         const QgsMultiSurface *ms = qgsgeometry_cast< const QgsMultiSurface * >( f.geometry().constGet() );
         for ( int i = 0; i < ms->numGeometries(); ++i )
         {
-          std::unique_ptr< QgsPolygon > p( qgsgeometry_cast< QgsPolygon * >( ms->geometryN( i )->segmentize() ) );
+          const std::unique_ptr< QgsPolygon > p( qgsgeometry_cast< QgsPolygon * >( ms->geometryN( i )->segmentize() ) );
           t.addPolygon( *p, 0 );
         }
       }
       else
       {
-        std::unique_ptr< QgsPolygon > p( qgsgeometry_cast< QgsPolygon * >( f.geometry().constGet()->segmentize() ) );
+        const std::unique_ptr< QgsPolygon > p( qgsgeometry_cast< QgsPolygon * >( f.geometry().constGet()->segmentize() ) );
         t.addPolygon( *p, 0 );
       }
       QgsGeometry g( t.asMultiPolygon() );

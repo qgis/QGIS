@@ -46,8 +46,8 @@ QgsRectangle QgsTileMatrix::tileExtent( QgsTileXYZ id ) const
 
 QgsPointXY QgsTileMatrix::tileCenter( QgsTileXYZ id ) const
 {
-  double x = mExtent.xMinimum() + mTileXSpan / 2 * id.column();
-  double y = mExtent.yMaximum() - mTileYSpan / 2 * id.row();
+  double x = mExtent.xMinimum() + mTileXSpan * id.column() + mTileXSpan / 2;
+  double y = mExtent.yMaximum() - mTileYSpan * id.row() - mTileYSpan / 2;
   return QgsPointXY( x, y );
 }
 

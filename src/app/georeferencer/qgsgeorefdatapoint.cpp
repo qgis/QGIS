@@ -162,12 +162,12 @@ bool QgsGeorefDataPoint::contains( QPoint p, bool isMapPlugin )
 {
   if ( isMapPlugin )
   {
-    QPointF pnt = mGCPSourceItem->mapFromScene( p );
+    const QPointF pnt = mGCPSourceItem->mapFromScene( p );
     return mGCPSourceItem->shape().contains( pnt );
   }
   else
   {
-    QPointF pnt = mGCPDestinationItem->mapFromScene( p );
+    const QPointF pnt = mGCPDestinationItem->mapFromScene( p );
     return mGCPDestinationItem->shape().contains( pnt );
   }
 }
@@ -176,12 +176,12 @@ void QgsGeorefDataPoint::moveTo( QPoint p, bool isMapPlugin )
 {
   if ( isMapPlugin )
   {
-    QgsPointXY pnt = mGCPSourceItem->toMapCoordinates( p );
+    const QgsPointXY pnt = mGCPSourceItem->toMapCoordinates( p );
     mPixelCoords = pnt;
   }
   else
   {
-    QgsPointXY pnt = mGCPDestinationItem->toMapCoordinates( p );
+    const QgsPointXY pnt = mGCPDestinationItem->toMapCoordinates( p );
     setCanvasCoords( pnt );
     mMapCoords = pnt;
     if ( mSrcCanvas && mSrcCanvas->mapSettings().destinationCrs().isValid() )

@@ -129,7 +129,7 @@ Q_GLOBAL_STATIC_WITH_ARGS( WkbEntries, sWkbEntries, (
 
 QgsWkbTypes::Type QgsWkbTypes::parseType( const QString &wktStr )
 {
-  QString typestr = wktStr.left( wktStr.indexOf( '(' ) ).simplified().remove( ' ' );
+  const QString typestr = wktStr.left( wktStr.indexOf( '(' ) ).simplified().remove( ' ' );
 
   QMap<QgsWkbTypes::Type, WkbEntry>::const_iterator it = sWkbEntries()->constBegin();
   for ( ; it != sWkbEntries()->constEnd(); ++it )
@@ -144,7 +144,7 @@ QgsWkbTypes::Type QgsWkbTypes::parseType( const QString &wktStr )
 
 QString QgsWkbTypes::displayString( Type type )
 {
-  QMap< Type, WkbEntry >::const_iterator it = sWkbEntries()->constFind( type );
+  const QMap< Type, WkbEntry >::const_iterator it = sWkbEntries()->constFind( type );
   if ( it == sWkbEntries()->constEnd() )
   {
     return QString();

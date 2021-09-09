@@ -95,11 +95,13 @@ class QgsPluginInstaller(QObject):
             msg.setText("%s <b>%s</b><br/><br/>%s" % (self.tr("Obsolete plugin:"), plugin["name"], self.tr("QGIS has detected an obsolete plugin that masks its more recent version shipped with this copy of QGIS. This is likely due to files associated with a previous installation of QGIS. Do you want to remove the old plugin right now and unmask the more recent version?")))
             msg.exec_()
             if not msg.result():
+                settings = QgsSettings()
+                plugin_is_active = settings.value("/PythonPlugins/" + key, False, type=bool)
+
                 # uninstall the update, update utils and reload if enabled
                 self.uninstallPlugin(key, quiet=True)
                 updateAvailablePlugins()
-                settings = QgsSettings()
-                if settings.value("/PythonPlugins/" + key, False, type=bool):
+                if plugin_is_active:
                     settings.setValue("/PythonPlugins/watchDog/" + key, True)
                     loadPlugin(key)
                     startPlugin(key)
@@ -452,6 +454,9 @@ class QgsPluginInstaller(QObject):
             QApplication.restoreOverrideCursor()
             iface.pluginManagerInterface().pushMessage(self.tr("Plugin uninstalled successfully"), Qgis.Info)
 
+            settings = QgsSettings()
+            settings.remove("/PythonPlugins/" + key)
+
     # ----------------------------------------- #
     def addRepository(self):
         """ add new repository connection """
@@ -650,10 +655,9 @@ class QgsPluginInstaller(QObject):
             plugins.getAllInstalled()
             plugins.rebuild()
 
-            if settings.contains('/PythonPlugins/' + pluginName):
-                if settings.value('/PythonPlugins/' + pluginName, False, bool):
-                    startPlugin(pluginName)
-                    reloadPlugin(pluginName)
+            if settings.contains('/PythonPlugins/' + pluginName):  # Plugin was available?
+                if settings.value('/PythonPlugins/' + pluginName, False, bool):  # Plugin was also active?
+                    reloadPlugin(pluginName)  # unloadPlugin + loadPlugin + startPlugin
                 else:
                     unloadPlugin(pluginName)
                     loadPlugin(pluginName)

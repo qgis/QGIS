@@ -23,8 +23,8 @@ void QgsGeometryDegeneratePolygonCheck::collectErrors( const QMap<QString, QgsFe
 {
   Q_UNUSED( messages )
 
-  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
-  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext );
+  const QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
+  const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
     const QgsAbstractGeometry *geom = layerFeature.geometry().constGet();
@@ -34,7 +34,7 @@ void QgsGeometryDegeneratePolygonCheck::collectErrors( const QMap<QString, QgsFe
       {
         if ( QgsGeometryCheckerUtils::polyLineSize( geom, iPart, iRing ) < 3 )
         {
-          QgsVertexId vidx( iPart, iRing );
+          const QgsVertexId vidx( iPart, iRing );
           errors.append( new QgsGeometryCheckError( this, layerFeature, geom->vertexAt( vidx ), vidx ) );
         }
       }
@@ -51,9 +51,9 @@ void QgsGeometryDegeneratePolygonCheck::fixError( const QMap<QString, QgsFeature
     error->setObsolete();
     return;
   }
-  QgsGeometry featureGeometry = feature.geometry();
+  const QgsGeometry featureGeometry = feature.geometry();
   const QgsAbstractGeometry *geom = featureGeometry.constGet();
-  QgsVertexId vidx = error->vidx();
+  const QgsVertexId vidx = error->vidx();
 
   // Check if ring still exists
   if ( !vidx.isValid( geom ) )
@@ -87,7 +87,7 @@ void QgsGeometryDegeneratePolygonCheck::fixError( const QMap<QString, QgsFeature
 
 QStringList QgsGeometryDegeneratePolygonCheck::resolutionMethods() const
 {
-  static QStringList methods = QStringList() << tr( "Delete feature" ) << tr( "No action" );
+  static const QStringList methods = QStringList() << tr( "Delete feature" ) << tr( "No action" );
   return methods;
 }
 

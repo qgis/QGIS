@@ -81,7 +81,7 @@ void TestQgsRasterFileWriter::initTestCase()
 void TestQgsRasterFileWriter::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -93,15 +93,15 @@ void TestQgsRasterFileWriter::cleanupTestCase()
 
 void TestQgsRasterFileWriter::writeTest()
 {
-  QDir dir( mTestDataDir + "/raster" );
+  const QDir dir( mTestDataDir + "/raster" );
 
   QStringList filters;
   filters << QStringLiteral( "*.tif" );
-  QStringList rasterNames = dir.entryList( filters, QDir::Files );
+  const QStringList rasterNames = dir.entryList( filters, QDir::Files );
   bool allOK = true;
   for ( const QString &rasterName : rasterNames )
   {
-    bool ok = writeTest( "raster/" + rasterName );
+    const bool ok = writeTest( "raster/" + rasterName );
     if ( !ok ) allOK = false;
   }
 
@@ -112,9 +112,9 @@ bool TestQgsRasterFileWriter::writeTest( const QString &rasterName )
 {
   mReport += "<h2>" + rasterName + "</h2>\n";
 
-  QString myFileName = mTestDataDir + '/' + rasterName;
+  const QString myFileName = mTestDataDir + '/' + rasterName;
   qDebug() << myFileName;
-  QFileInfo myRasterFileInfo( myFileName );
+  const QFileInfo myRasterFileInfo( myFileName );
 
   std::unique_ptr<QgsRasterLayer> mpRasterLayer( new QgsRasterLayer( myRasterFileInfo.filePath(),
       myRasterFileInfo.completeBaseName() ) );
@@ -128,7 +128,7 @@ bool TestQgsRasterFileWriter::writeTest( const QString &rasterName )
   // I don't see any method to get only a name without opening file
   QTemporaryFile tmpFile;
   tmpFile.open(); // fileName is not available until open
-  QString tmpName =  tmpFile.fileName();
+  const QString tmpName =  tmpFile.fileName();
   tmpFile.close();
   // do not remove when class is destroyd so that we can read the file and see difference
   tmpFile.setAutoRemove( false );
@@ -170,7 +170,7 @@ bool TestQgsRasterFileWriter::writeTest( const QString &rasterName )
   }
   qDebug() << "projector set";
 
-  auto res = fileWriter.writeRaster( pipe, provider->xSize(), provider->ySize(), provider->extent(), provider->crs(), provider->transformContext() );
+  const auto res = fileWriter.writeRaster( pipe, provider->xSize(), provider->ySize(), provider->extent(), provider->crs(), provider->transformContext() );
 
   delete pipe;
 
@@ -181,7 +181,7 @@ bool TestQgsRasterFileWriter::writeTest( const QString &rasterName )
   }
 
   QgsRasterChecker checker;
-  bool ok = checker.runTest( QStringLiteral( "gdal" ), tmpName, QStringLiteral( "gdal" ), myRasterFileInfo.filePath() );
+  const bool ok = checker.runTest( QStringLiteral( "gdal" ), tmpName, QStringLiteral( "gdal" ), myRasterFileInfo.filePath() );
   mReport += checker.report();
 
   // All OK, we can delete the file
@@ -196,9 +196,9 @@ void TestQgsRasterFileWriter::testCreateOneBandRaster()
   QTemporaryFile tmpFile;
   tmpFile.open();
   tmpFile.close();
-  QString filename = tmpFile.fileName();
+  const QString filename = tmpFile.fileName();
 
-  QgsRectangle extent( 106.7, -6.2, 106.9, -6.1 );
+  const QgsRectangle extent( 106.7, -6.2, 106.9, -6.1 );
   int width = 200, height = 100;
 
   QgsRasterFileWriter writer( filename );
@@ -228,9 +228,9 @@ void TestQgsRasterFileWriter::testCreateMultiBandRaster()
   QTemporaryFile tmpFile;
   tmpFile.open();
   tmpFile.close();
-  QString filename = tmpFile.fileName();
+  const QString filename = tmpFile.fileName();
 
-  QgsRectangle extent( 106.7, -6.2, 106.9, -6.1 );
+  const QgsRectangle extent( 106.7, -6.2, 106.9, -6.1 );
   int width = 200, height = 100, nBands = 1;
 
   QgsRasterFileWriter writer( filename );
@@ -283,11 +283,11 @@ void TestQgsRasterFileWriter::testCreateMultiBandRaster()
 void TestQgsRasterFileWriter::testVrtCreation()
 {
   //create a raster layer that will be used in all tests...
-  QString srcFileName = mTestDataDir + QStringLiteral( "ALLINGES_RGF93_CC46_1_1.tif" );
-  QFileInfo rasterFileInfo( srcFileName );
+  const QString srcFileName = mTestDataDir + QStringLiteral( "ALLINGES_RGF93_CC46_1_1.tif" );
+  const QFileInfo rasterFileInfo( srcFileName );
   std::unique_ptr< QgsRasterLayer > srcRasterLayer = std::make_unique< QgsRasterLayer >( rasterFileInfo.absoluteFilePath(), rasterFileInfo.completeBaseName() );
 
-  QTemporaryDir dir;
+  const QTemporaryDir dir;
   std::unique_ptr< QgsRasterFileWriter > rasterFileWriter = std::make_unique< QgsRasterFileWriter >( dir.path() + '/' + rasterFileInfo.completeBaseName() );
 
   //2. Definition of the pyramid levels
@@ -310,16 +310,16 @@ void TestQgsRasterFileWriter::testVrtCreation()
   QgsRasterPipe pipe;
   pipe.set( srcRasterLayer->dataProvider()->clone() );
   // Let's do it !
-  QgsRasterFileWriter::WriterError res = rasterFileWriter->writeRaster( &pipe, srcRasterLayer->width(), srcRasterLayer->height(), srcRasterLayer->extent(), crs,  srcRasterLayer->transformContext() );
+  const QgsRasterFileWriter::WriterError res = rasterFileWriter->writeRaster( &pipe, srcRasterLayer->width(), srcRasterLayer->height(), srcRasterLayer->extent(), crs,  srcRasterLayer->transformContext() );
   QCOMPARE( res, QgsRasterFileWriter::NoError );
 
   // Now let's compare the georef of the original raster with the georef of the generated vrt file
   std::unique_ptr< QgsRasterLayer > vrtRasterLayer = std::make_unique< QgsRasterLayer >( dir.path() + '/' + rasterFileInfo.completeBaseName() + '/' + rasterFileInfo.completeBaseName() + QStringLiteral( ".vrt" ), rasterFileInfo.completeBaseName() );
 
-  double xminVrt = vrtRasterLayer->extent().xMinimum();
-  double yminVrt = vrtRasterLayer->extent().yMaximum();
-  double xminOriginal = srcRasterLayer->extent().xMinimum();
-  double yminOriginal = srcRasterLayer->extent().yMaximum();
+  const double xminVrt = vrtRasterLayer->extent().xMinimum();
+  const double yminVrt = vrtRasterLayer->extent().yMaximum();
+  const double xminOriginal = srcRasterLayer->extent().xMinimum();
+  const double yminOriginal = srcRasterLayer->extent().yMaximum();
 
   // Let's check if the georef of the original raster with the georef of the generated vrt file
   QGSCOMPARENEAR( xminVrt, xminOriginal, srcRasterLayer->rasterUnitsPerPixelX() / 4 );

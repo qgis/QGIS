@@ -1649,7 +1649,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].layerNumber(), 0)
         self.assertEqual(res[0].name(), "multipatch")
         self.assertEqual(res[0].description(), '')
-        self.assertEqual(res[0].uri(), TEST_DATA_DIR + "/multipatch.shp")
+        self.assertEqual(res[0].uri(), TEST_DATA_DIR + "/multipatch.shp|geometrytype=Polygon")
         self.assertEqual(res[0].providerKey(), "ogr")
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(res[0].wkbType(), QgsWkbTypes.Polygon)
@@ -1856,6 +1856,42 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Polygon)
 
+        # a layer which reports unknown geometry type and requires a full table scan to resolve, but which only
+        # contains a single type of geometry
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, "mapinfo", "fill_styles.TAB"),
+                                      Qgis.SublayerQueryFlag.ResolveGeometryType)
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "fill_styles")
+        self.assertEqual(res[0].description(), "")
+        self.assertEqual(res[0].uri(), "{}/mapinfo/fill_styles.TAB|geometrytype=Polygon".format(TEST_DATA_DIR))
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertEqual(res[0].featureCount(), 49)
+        self.assertEqual(res[0].wkbType(), QgsWkbTypes.Polygon)
+        self.assertEqual(res[0].geometryColumnName(), '')
+        self.assertEqual(res[0].driverName(), 'MapInfo File')
+        vl = res[0].toLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Polygon)
+
+        # same, but don't resolve geometry types
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, "mapinfo", "fill_styles.TAB"))
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "fill_styles")
+        self.assertEqual(res[0].description(), "")
+        self.assertEqual(res[0].uri(), "{}/mapinfo/fill_styles.TAB".format(TEST_DATA_DIR))
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertEqual(res[0].featureCount(), Qgis.FeatureCountState.Uncounted)
+        self.assertEqual(res[0].wkbType(), QgsWkbTypes.Unknown)
+        self.assertEqual(res[0].geometryColumnName(), '')
+        self.assertEqual(res[0].driverName(), 'MapInfo File')
+        vl = res[0].toLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Polygon)
+
         # mixed types source, but with a URI which specifies a particular type. Only this type should be returned
         res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, "mixed_types.TAB|geometrytype=Point"),
                                       Qgis.SublayerQueryFlag.ResolveGeometryType)
@@ -2009,6 +2045,67 @@ class PyQgsOGRProvider(unittest.TestCase):
                                 'driverName': 'SQLite',
                                 'geomColName': ''}])
 
+        # sqlite
+        res = metadata.querySublayers(
+            os.path.join(TEST_DATA_DIR, "valuerelation_widget_wrapper_test.spatialite.sqlite"))
+        self.assertCountEqual([{'name': r.name(),
+                                'systemTable': bool(r.flags() & Qgis.SublayerFlag.SystemTable)} for r in res],
+                              [{'name': 'authors', 'systemTable': False},
+                               {'name': 'json', 'systemTable': False}])
+
+        # retrieve system tables
+        res = metadata.querySublayers(
+            os.path.join(TEST_DATA_DIR, "valuerelation_widget_wrapper_test.spatialite.sqlite"),
+            Qgis.SublayerQueryFlag.IncludeSystemTables)
+        self.assertCountEqual([{'name': r.name(),
+                                'systemTable': bool(r.flags() & Qgis.SublayerFlag.SystemTable)} for r in res],
+                              [{'name': 'ElementaryGeometries', 'systemTable': True},
+                               {'name': 'SpatialIndex', 'systemTable': True},
+                               {'name': 'authors', 'systemTable': False},
+                               {'name': 'geom_cols_ref_sys', 'systemTable': True},
+                               {'name': 'geometry_columns', 'systemTable': True},
+                               {'name': 'geometry_columns_auth', 'systemTable': True},
+                               {'name': 'geometry_columns_field_infos', 'systemTable': True},
+                               {'name': 'geometry_columns_statistics', 'systemTable': True},
+                               {'name': 'geometry_columns_time', 'systemTable': True},
+                               {'name': 'json', 'systemTable': False},
+                               {'name': 'spatial_ref_sys', 'systemTable': True},
+                               {'name': 'spatial_ref_sys_all', 'systemTable': True},
+                               {'name': 'spatial_ref_sys_aux', 'systemTable': True},
+                               {'name': 'spatialite_history', 'systemTable': True},
+                               {'name': 'sql_statements_log', 'systemTable': True},
+                               {'name': 'sqlite_sequence', 'systemTable': True},
+                               {'name': 'vector_layers', 'systemTable': True},
+                               {'name': 'vector_layers_auth', 'systemTable': True},
+                               {'name': 'vector_layers_field_infos', 'systemTable': True},
+                               {'name': 'vector_layers_statistics', 'systemTable': True},
+                               {'name': 'views_geometry_columns', 'systemTable': True},
+                               {'name': 'views_geometry_columns_auth', 'systemTable': True},
+                               {'name': 'views_geometry_columns_field_infos', 'systemTable': True},
+                               {'name': 'views_geometry_columns_statistics', 'systemTable': True},
+                               {'name': 'virts_geometry_columns', 'systemTable': True},
+                               {'name': 'virts_geometry_columns_auth', 'systemTable': True},
+                               {'name': 'virts_geometry_columns_field_infos', 'systemTable': True},
+                               {'name': 'virts_geometry_columns_statistics', 'systemTable': True}])
+
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 4, 0), "GDAL 3.4 required")
+    def test_provider_sublayer_details_hierarchy(self):
+        """
+        Test retrieving sublayer details from a datasource with a hierarchy of layers
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, 'featuredataset.gdb'))
+        self.assertEqual(len(res), 4)
+        self.assertEqual(res[0].name(), 'fd1_lyr1')
+        self.assertEqual(res[0].path(), ['fd1'])
+        self.assertEqual(res[1].name(), 'fd1_lyr2')
+        self.assertEqual(res[1].path(), ['fd1'])
+        self.assertEqual(res[2].name(), 'standalone')
+        self.assertEqual(res[2].path(), [])
+        self.assertEqual(res[3].name(), 'fd2_lyr')
+        self.assertEqual(res[3].path(), ['fd2'])
+
     def test_provider_sublayer_details_fast_scan(self):
         """
         Test retrieving sublayer details from data provider metadata, using fast scan
@@ -2121,11 +2218,34 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].uri(), os.path.join(TEST_DATA_DIR, "vector_vrt.vrt"))
         self.assertEqual(res[0].providerKey(), "ogr")
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
-        self.assertFalse(res[0].skippedContainerScan())
+        self.assertTrue(res[0].skippedContainerScan())
 
         # raster vrt
         res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, "/raster/hub13263.vrt"), Qgis.SublayerQueryFlag.FastScan)
         self.assertEqual(len(res), 0)
+
+    def test_provider_sidecar_files_for_uri(self):
+        """
+        Test retrieving sidecar files for uris
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+
+        self.assertEqual(metadata.sidecarFilesForUri(''), [])
+        self.assertEqual(metadata.sidecarFilesForUri('/home/me/not special.doc'), [])
+        self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.shp'),
+                         ['/home/me/special.shx', '/home/me/special.dbf', '/home/me/special.sbn',
+                          '/home/me/special.sbx', '/home/me/special.prj', '/home/me/special.idm',
+                          '/home/me/special.ind', '/home/me/special.qix', '/home/me/special.cpg',
+                          '/home/me/special.qpj', '/home/me/special.shp.xml'])
+        self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.tab'),
+                         ['/home/me/special.dat', '/home/me/special.id', '/home/me/special.map', '/home/me/special.ind',
+                          '/home/me/special.tda', '/home/me/special.tin', '/home/me/special.tma',
+                          '/home/me/special.lda', '/home/me/special.lin', '/home/me/special.lma'])
+        self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.mif'),
+                         ['/home/me/special.mid'])
+        self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.gml'),
+                         ['/home/me/special.gfs', '/home/me/special.xsd'])
+        self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.csv'), ['/home/me/special.csvt'])
 
 
 if __name__ == '__main__':

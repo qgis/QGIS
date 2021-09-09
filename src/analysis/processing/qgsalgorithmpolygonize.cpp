@@ -55,7 +55,7 @@ void QgsPolygonizeAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
                 QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorLine ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "KEEP_FIELDS" ),
-                QObject::tr( "Keep fields from the input layer" ), false, true ) );
+                QObject::tr( "Keep table structure of line layer" ), false, true ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ),
                 QObject::tr( "Polygons" ), QgsProcessing::TypeVectorPolygon ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "NUM_POLYGONS" ), QObject::tr( "Number of polygons" ) ) );
@@ -84,7 +84,7 @@ QVariantMap QgsPolygonizeAlgorithm::processAlgorithm( const QVariantMap &paramet
   int polygonCount = 0;
 
   feedback->pushInfo( QObject::tr( "Collecting lines…" ) );
-  int i = 0;
+  const int i = 0;
   double step = source->featureCount() > 0 ? 40.0 / source->featureCount() : 1;
   QgsFeature f;
   QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setNoAttributes() );
@@ -103,13 +103,13 @@ QVariantMap QgsPolygonizeAlgorithm::processAlgorithm( const QVariantMap &paramet
   feedback->setProgress( 40 );
 
   feedback->pushInfo( QObject::tr( "Noding lines…" ) );
-  QgsGeometry lines = QgsGeometry::unaryUnion( linesList );
+  const QgsGeometry lines = QgsGeometry::unaryUnion( linesList );
   if ( feedback->isCanceled() )
     return QVariantMap();
   feedback->setProgress( 45 );
 
   feedback->pushInfo( QObject::tr( "Polygonizing…" ) );
-  QgsGeometry polygons = QgsGeometry::polygonize( QVector< QgsGeometry >() << lines );
+  const QgsGeometry polygons = QgsGeometry::polygonize( QVector< QgsGeometry >() << lines );
   if ( polygons.isEmpty() )
     feedback->reportError( QObject::tr( "No polygons were created." ) );
 

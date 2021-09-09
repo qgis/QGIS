@@ -30,7 +30,7 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString &uri )
   // http://example.com/?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=x&SRSNAME=y&username=foo&password=
   if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_URL ) )
   {
-    static QSet<QString> sFilter
+    static const QSet<QString> sFilter
     {
       QStringLiteral( "service" ),
       QgsWFSConstants::URI_PARAM_VERSION,
@@ -55,12 +55,12 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString &uri )
       query.addQueryItem( item.first.toLower(), item.second );
     }
 
-    QString srsname = query.queryItemValue( QgsWFSConstants::URI_PARAM_SRSNAME );
-    QString bbox = query.queryItemValue( QgsWFSConstants::URI_PARAM_BBOX );
-    QString typeName = query.queryItemValue( QgsWFSConstants::URI_PARAM_TYPENAME );
-    QString version = query.queryItemValue( QgsWFSConstants::URI_PARAM_VERSION );
+    const QString srsname = query.queryItemValue( QgsWFSConstants::URI_PARAM_SRSNAME );
+    const QString bbox = query.queryItemValue( QgsWFSConstants::URI_PARAM_BBOX );
+    const QString typeName = query.queryItemValue( QgsWFSConstants::URI_PARAM_TYPENAME );
+    const QString version = query.queryItemValue( QgsWFSConstants::URI_PARAM_VERSION );
     QString filter = query.queryItemValue( QgsWFSConstants::URI_PARAM_FILTER );
-    QString outputFormat = query.queryItemValue( QgsWFSConstants::URI_PARAM_OUTPUTFORMAT );
+    const QString outputFormat = query.queryItemValue( QgsWFSConstants::URI_PARAM_OUTPUTFORMAT );
     mAuth.mAuthCfg = query.queryItemValue( QgsWFSConstants::URI_PARAM_AUTHCFG );
     // NOTE: A defined authcfg overrides any older username/password auth
     //       Only check for older auth if it is undefined

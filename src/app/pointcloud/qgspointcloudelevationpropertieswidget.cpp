@@ -66,7 +66,7 @@ void QgsPointCloudElevationPropertiesWidget::onChanged()
 
 void QgsPointCloudElevationPropertiesWidget::shiftPointCloudZAxis()
 {
-  QgsDoubleRange range = mLayer->elevationProperties()->calculateZRange( mLayer );
+  const QgsDoubleRange range = mLayer->elevationProperties()->calculateZRange( mLayer );
   if ( !range.isEmpty() )
   {
     mOffsetZSpinBox->setValue( -range.lower() + mOffsetZSpinBox->value() );

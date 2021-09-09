@@ -1451,6 +1451,47 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertEqual(created_layer.metadata().abstract(), 'my abstract')
         self.assertEqual(created_layer.metadata().licenses(), ['l1', 'l2'])
 
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 4, 0), "GDAL 3.4 required")
+    def testWriteWithCoordinateEpoch(self):
+        """
+        Write a dataset with a coordinate epoch to geopackage
+        """
+        layer = QgsVectorLayer(
+            ('Point?crs=epsg:4326&field=name:string(20)&'
+             'field=age:integer&field=size:double&index=yes'),
+            'test',
+            'memory')
+
+        self.assertTrue(layer.isValid())
+
+        crs = QgsCoordinateReferenceSystem('EPSG:4326')
+        crs.setCoordinateEpoch(2020.7)
+        layer.setCrs(crs)
+
+        ft = QgsFeature()
+        ft.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(10, 10)))
+        ft.setAttributes(['Johny', 20, 0.3])
+        myResult, myFeatures = layer.dataProvider().addFeatures([ft])
+        self.assertTrue(myResult)
+        self.assertTrue(myFeatures)
+
+        dest_file_name = os.path.join(str(QDir.tempPath()), 'writer_coordinate_epoch.gpkg')
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = 'GPKG'
+        options.layerName = 'test'
+
+        write_result, error_message, new_file, new_layer = QgsVectorFileWriter.writeAsVectorFormatV3(
+            layer,
+            dest_file_name,
+            QgsProject.instance().transformContext(),
+            options)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
+
+        # check that coordinate epoch was written to file
+        vl = QgsVectorLayer(dest_file_name)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.crs().coordinateEpoch(), 2020.7)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -61,25 +61,6 @@ raw geometry primitive, such as the point, line, polygon, curve or other geometr
 
   public:
 
-    enum OperationResult
-    {
-      Success,
-      NothingHappened,
-      InvalidBaseGeometry,
-      InvalidInputGeometryType,
-      SelectionIsEmpty,
-      SelectionIsGreaterThanOne,
-      GeometryEngineError,
-      LayerNotEditable,
-      AddPartSelectedGeometryNotFound,
-      AddPartNotMultiGeometry,
-      AddRingNotClosed,
-      AddRingNotValid,
-      AddRingCrossesExistingRings,
-      AddRingNotInExistingFeature,
-      SplitCannotSplitPoint,
-    };
-
     QgsGeometry() /HoldGIL/;
 %Docstring
 Constructor
@@ -325,14 +306,7 @@ by :py:func:`~QgsGeometry.equals` instead.
 .. versionadded:: 1.5
 %End
 
-    enum ValidityFlag
-    {
-      FlagAllowSelfTouchingHoles,
-    };
-    typedef QFlags<QgsGeometry::ValidityFlag> ValidityFlags;
-
-
-    bool isGeosValid( QgsGeometry::ValidityFlags flags = QgsGeometry::ValidityFlags() ) const;
+    bool isGeosValid( Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;
 %Docstring
 Checks validity of the geometry using GEOS.
 
@@ -801,7 +775,7 @@ Searches for the closest segment of geometry to the given point
          - leftOrRightOfSegment: Out: Returns if the point is located on the left or right side of the geometry ( < 0 means left, > 0 means right, 0 indicates that the test was unsuccessful, e.g. for a point exactly on the line)
 %End
 
-    OperationResult addRing( const QVector<QgsPointXY> &ring );
+    Qgis::GeometryOperationResult addRing( const QVector<QgsPointXY> &ring );
 %Docstring
 Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
 
@@ -810,7 +784,7 @@ Adds a new ring to this geometry. This makes only sense for polygon and multipol
 :return: OperationResult a result code: success or reason of failure
 %End
 
-    OperationResult addRing( QgsCurve *ring /Transfer/ );
+    Qgis::GeometryOperationResult addRing( QgsCurve *ring /Transfer/ );
 %Docstring
 Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
 
@@ -819,7 +793,7 @@ Adds a new ring to this geometry. This makes only sense for polygon and multipol
 :return: OperationResult a result code: success or reason of failure
 %End
 
-    OperationResult addPart( const QVector<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPointsXY/;
+    Qgis::GeometryOperationResult addPart( const QVector<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPointsXY/;
 %Docstring
 Adds a new part to a the geometry.
 
@@ -829,7 +803,7 @@ Adds a new part to a the geometry.
 :return: OperationResult a result code: success or reason of failure
 %End
 
-    OperationResult addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPoints/;
+    Qgis::GeometryOperationResult addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPoints/;
 %Docstring
 Adds a new part to a the geometry.
 
@@ -839,7 +813,7 @@ Adds a new part to a the geometry.
 :return: OperationResult a result code: success or reason of failure
 %End
 
-    OperationResult addPart( QgsAbstractGeometry *part /Transfer/, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
+    Qgis::GeometryOperationResult addPart( QgsAbstractGeometry *part /Transfer/, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
 %Docstring
 Adds a new part to this geometry.
 
@@ -849,7 +823,7 @@ Adds a new part to this geometry.
 :return: OperationResult a result code: success or reason of failure
 %End
 
-    OperationResult addPart( const QgsGeometry &newPart ) /PyName=addPartGeometry/;
+    Qgis::GeometryOperationResult addPart( const QgsGeometry &newPart ) /PyName=addPartGeometry/;
 %Docstring
 Adds a new island polygon to a multipolygon feature
 
@@ -869,14 +843,14 @@ area will be removed.
 .. versionadded:: 3.0
 %End
 
-    OperationResult translate( double dx, double dy, double dz = 0.0, double dm = 0.0 );
+    Qgis::GeometryOperationResult translate( double dx, double dy, double dz = 0.0, double dm = 0.0 );
 %Docstring
 Translates this geometry by dx, dy, dz and dm.
 
 :return: OperationResult a result code: success or reason of failure
 %End
 
-    OperationResult transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) throw( QgsCsException );
+    Qgis::GeometryOperationResult transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) throw( QgsCsException );
 %Docstring
 Transforms this geometry as described by the coordinate transform ``ct``.
 
@@ -892,7 +866,7 @@ and are expressed in its vertical units (generally meters).
 :return: OperationResult a result code: success or reason of failure
 %End
 
-    OperationResult transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
+    Qgis::GeometryOperationResult transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
 %Docstring
 Transforms the x and y components of the geometry using a QTransform object ``t``.
 
@@ -902,7 +876,7 @@ Similarly, m-values can be scaled via ``mScale`` and translated via ``mTranslate
 :return: OperationResult a result code: success or reason of failure
 %End
 
-    OperationResult rotate( double rotation, const QgsPointXY &center );
+    Qgis::GeometryOperationResult rotate( double rotation, const QgsPointXY &center );
 %Docstring
 Rotate this geometry around the Z axis
 
@@ -912,7 +886,7 @@ Rotate this geometry around the Z axis
 :return: OperationResult a result code: success or reason of failure
 %End
 
- OperationResult splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries /Out/, bool topological, QVector<QgsPointXY> &topologyTestPoints /Out/, bool splitFeature = true ) /Deprecated/;
+ Qgis::GeometryOperationResult splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries /Out/, bool topological, QVector<QgsPointXY> &topologyTestPoints /Out/, bool splitFeature = true ) /Deprecated/;
 %Docstring
 Splits this geometry according to a given line.
 
@@ -928,7 +902,7 @@ Splits this geometry according to a given line.
    - will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
-    OperationResult splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries /Out/, bool topological, QgsPointSequence &topologyTestPoints /Out/, bool splitFeature = true);
+    Qgis::GeometryOperationResult splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries /Out/, bool topological, QgsPointSequence &topologyTestPoints /Out/, bool splitFeature = true);
 %Docstring
 Splits this geometry according to a given line.
 
@@ -952,7 +926,7 @@ Example:
       > LineStringZ (2749549.12 1262908.38 125.14, 2749557.82 1262920.06 200)
 %End
 
-    OperationResult splitGeometry( const QgsCurve *curve,  QVector<QgsGeometry> &newGeometries /Out/, bool preserveCircular, bool topological, QgsPointSequence &topologyTestPoints /Out/, bool splitFeature = true );
+    Qgis::GeometryOperationResult splitGeometry( const QgsCurve *curve,  QVector<QgsGeometry> &newGeometries /Out/, bool preserveCircular, bool topological, QgsPointSequence &topologyTestPoints /Out/, bool splitFeature = true );
 %Docstring
 Splits this geometry according to a given curve.
 
@@ -968,7 +942,7 @@ Splits this geometry according to a given curve.
 .. versionadded:: 3.16
 %End
 
-    OperationResult reshapeGeometry( const QgsLineString &reshapeLineString );
+    Qgis::GeometryOperationResult reshapeGeometry( const QgsLineString &reshapeLineString );
 %Docstring
 Replaces a part of this geometry with another line
 
@@ -1213,26 +1187,6 @@ Returns ``True`` if the geometry crosses another ``geometry``.
 .. versionadded:: 1.5
 %End
 
-    enum BufferSide
-    {
-      SideLeft,
-      SideRight,
-    };
-
-    enum EndCapStyle
-    {
-      CapRound,
-      CapFlat,
-      CapSquare,
-    };
-
-    enum JoinStyle
-    {
-      JoinStyleRound,
-      JoinStyleMiter,
-      JoinStyleBevel,
-    };
-
     QgsGeometry buffer( double distance, int segments ) const;
 %Docstring
 Returns a buffer region around this geometry having the given width and with a specified number
@@ -1243,7 +1197,7 @@ of segments used to approximate curves
 .. seealso:: :py:func:`taperedBuffer`
 %End
 
-    QgsGeometry buffer( double distance, int segments, EndCapStyle endCapStyle, JoinStyle joinStyle, double miterLimit ) const;
+    QgsGeometry buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit ) const;
 %Docstring
 Returns a buffer region around the geometry, with additional style options.
 
@@ -1260,7 +1214,7 @@ Returns a buffer region around the geometry, with additional style options.
 .. versionadded:: 2.4
 %End
 
-    QgsGeometry offsetCurve( double distance, int segments, JoinStyle joinStyle, double miterLimit ) const;
+    QgsGeometry offsetCurve( double distance, int segments, Qgis::JoinStyle joinStyle, double miterLimit ) const;
 %Docstring
 Returns an offset line at a given distance and side from an input line.
 
@@ -1272,8 +1226,8 @@ Returns an offset line at a given distance and side from an input line.
 .. versionadded:: 2.4
 %End
 
-    QgsGeometry singleSidedBuffer( double distance, int segments, BufferSide side,
-                                   JoinStyle joinStyle = JoinStyleRound,
+    QgsGeometry singleSidedBuffer( double distance, int segments, Qgis::BufferSide side,
+                                   Qgis::JoinStyle joinStyle = Qgis::JoinStyle::Round,
                                    double miterLimit = 2.0 ) const;
 %Docstring
 Returns a single sided buffer for a (multi)line geometry. The buffer is only
@@ -2242,13 +2196,7 @@ The coordinates at which the error is located and should be visualized.
 
     };
 
-    enum ValidationMethod
-    {
-      ValidatorQgisInternal,
-      ValidatorGeos,
-    };
-
-    void validateGeometry( QVector<QgsGeometry::Error> &errors /Out/, ValidationMethod method = ValidatorQgisInternal, QgsGeometry::ValidityFlags flags = QgsGeometry::ValidityFlags() ) const;
+    void validateGeometry( QVector<QgsGeometry::Error> &errors /Out/, Qgis::GeometryValidationEngine method = Qgis::GeometryValidationEngine::QgisInternal, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;
 %Docstring
 Validates geometry and produces a list of geometry errors.
 The ``method`` argument dictates which validator to utilize.
@@ -2612,8 +2560,6 @@ Downgrades a point list from :py:class:`QgsPoint` to :py:class:`QgsPointXY`
     operator QVariant() const;
 
 }; // class QgsGeometry
-
-QFlags<QgsGeometry::ValidityFlag> operator|(QgsGeometry::ValidityFlag f1, QFlags<QgsGeometry::ValidityFlag> f2);
 
 
 

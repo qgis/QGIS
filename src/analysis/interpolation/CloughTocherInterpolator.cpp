@@ -38,13 +38,13 @@ double CloughTocherInterpolator::calcBernsteinPoly( int n, int i, int j, int k, 
     return 0;
   }
 
-  double result = MathUtils::faculty( n ) * std::pow( u, i ) * std::pow( v, j ) * std::pow( w, k ) / ( MathUtils::faculty( i ) * MathUtils::faculty( j ) * MathUtils::faculty( k ) );
+  const double result = MathUtils::faculty( n ) * std::pow( u, i ) * std::pow( v, j ) * std::pow( w, k ) / ( MathUtils::faculty( i ) * MathUtils::faculty( j ) * MathUtils::faculty( k ) );
   return result;
 }
 
 static void normalize( QgsPoint &point )
 {
-  double length = sqrt( pow( point.x(), 2 ) + pow( point.y(), 2 ) + pow( point.z(), 2 ) );
+  const double length = sqrt( pow( point.x(), 2 ) + pow( point.y(), 2 ) + pow( point.z(), 2 ) );
   if ( length > 0 )
   {
     point.setX( point.x() / length );
@@ -60,7 +60,7 @@ bool CloughTocherInterpolator::calcNormVec( double x, double y, QgsPoint &result
     init( x, y );
     QgsPoint barycoord( 0, 0, 0 );//barycentric coordinates of (x,y) with respect to the triangle
     QgsPoint endpointUXY( 0, 0, 0 );//endpoint of the derivative in u-direction (in xy-coordinates)
-    QgsPoint endpointV( 0, 0, 0 );//endpoint of the derivative in v-direction (in barycentric coordinates)
+    const QgsPoint endpointV( 0, 0, 0 );//endpoint of the derivative in v-direction (in barycentric coordinates)
     QgsPoint endpointVXY( 0, 0, 0 );//endpoint of the derivative in v-direction (in xy-coordinates)
 
     //find out, in which subtriangle the point (x,y) is
@@ -68,15 +68,15 @@ bool CloughTocherInterpolator::calcNormVec( double x, double y, QgsPoint &result
     MathUtils::calcBarycentricCoordinates( x, y, &point1, &point2, &cp10, &barycoord );
     if ( barycoord.x() >= -mEdgeTolerance && barycoord.x() <= ( 1 + mEdgeTolerance ) && barycoord.y() >= -mEdgeTolerance && barycoord.y() <= ( 1 + mEdgeTolerance ) )
     {
-      double zu = point1.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp1.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp2.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp3.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp4.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp7.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
-      double zv = cp1.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp2.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + point2.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp4.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp5.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp8.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
-      double zw = cp3.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp4.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp5.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp7.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp8.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp10.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
+      const double zu = point1.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp1.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp2.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp3.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp4.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp7.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
+      const double zv = cp1.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp2.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + point2.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp4.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp5.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp8.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
+      const double zw = cp3.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp4.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp5.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp7.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp8.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp10.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
       MathUtils::BarycentricToXY( barycoord.x() + 1, barycoord.y() - 1, barycoord.z(), &point1, &point2, &cp10, &endpointUXY );
       endpointUXY.setZ( 3 * ( zu - zv ) );
       MathUtils::BarycentricToXY( barycoord.x(), barycoord.y() + 1, barycoord.z() - 1, &point1, &point2, &cp10, &endpointVXY );
       endpointVXY.setZ( 3 * ( zv - zw ) );
-      Vector3D v1( endpointUXY.x() - x, endpointUXY.y() - y, endpointUXY.z() );
-      Vector3D v2( endpointVXY.x() - x, endpointVXY.y() - y, endpointVXY.z() );
+      const Vector3D v1( endpointUXY.x() - x, endpointUXY.y() - y, endpointUXY.z() );
+      const Vector3D v2( endpointVXY.x() - x, endpointVXY.y() - y, endpointVXY.z() );
       result.setX( v1.getY()*v2.getZ() - v1.getZ()*v2.getY() );
       result.setY( v1.getZ()*v2.getX() - v1.getX()*v2.getZ() );
       result.setZ( v1.getX()*v2.getY() - v1.getY()*v2.getX() );
@@ -87,15 +87,15 @@ bool CloughTocherInterpolator::calcNormVec( double x, double y, QgsPoint &result
     MathUtils::calcBarycentricCoordinates( x, y, &point2, &point3, &cp10, &barycoord );
     if ( barycoord.x() >= -mEdgeTolerance && barycoord.x() <= ( 1 + mEdgeTolerance ) && barycoord.y() >= -mEdgeTolerance && barycoord.y() <= ( 1 + mEdgeTolerance ) )
     {
-      double zu = point2.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp9.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp16.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp5.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp13.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp8.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
-      double zv = cp9.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp16.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + point3.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp13.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp15.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp12.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
-      double zw = cp5.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp13.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp15.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp8.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp12.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp10.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
+      const double zu = point2.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp9.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp16.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp5.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp13.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp8.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
+      const double zv = cp9.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp16.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + point3.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp13.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp15.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp12.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
+      const double zw = cp5.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp13.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp15.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp8.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp12.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp10.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
       MathUtils::BarycentricToXY( barycoord.x() + 1, barycoord.y() - 1, barycoord.z(), &point2, &point3, &cp10, &endpointUXY );
       endpointUXY.setZ( 3 * ( zu - zv ) );
       MathUtils::BarycentricToXY( barycoord.x(), barycoord.y() + 1, barycoord.z() - 1, &point2, &point3, &cp10, &endpointVXY );
       endpointVXY.setZ( 3 * ( zv - zw ) );
-      Vector3D v1( endpointUXY.x() - x, endpointUXY.y() - y, endpointUXY.z() );
-      Vector3D v2( endpointVXY.x() - x, endpointVXY.y() - y, endpointVXY.z() );
+      const Vector3D v1( endpointUXY.x() - x, endpointUXY.y() - y, endpointUXY.z() );
+      const Vector3D v2( endpointVXY.x() - x, endpointVXY.y() - y, endpointVXY.z() );
       result.setX( v1.getY()*v2.getZ() - v1.getZ()*v2.getY() );
       result.setY( v1.getZ()*v2.getX() - v1.getX()*v2.getZ() );
       result.setZ( v1.getX()*v2.getY() - v1.getY()*v2.getX() );
@@ -107,15 +107,15 @@ bool CloughTocherInterpolator::calcNormVec( double x, double y, QgsPoint &result
     MathUtils::calcBarycentricCoordinates( x, y, &point3, &point1, &cp10, &barycoord );
     if ( barycoord.x() >= -mEdgeTolerance && barycoord.x() <= ( 1 + mEdgeTolerance ) && barycoord.y() >= -mEdgeTolerance && barycoord.y() <= ( 1 + mEdgeTolerance ) )
     {
-      double zu = point3.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp14.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp6.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp15.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp11.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp12.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
-      double zv = cp14.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp6.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + point1.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp11.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp3.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp7.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
-      double zw = cp15.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp11.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp3.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp12.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp7.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp10.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
+      const double zu = point3.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp14.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp6.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp15.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp11.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp12.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
+      const double zv = cp14.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp6.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + point1.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp11.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp3.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp7.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
+      const double zw = cp15.z() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp11.z() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp3.z() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp12.z() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp7.z() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp10.z() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() );
       MathUtils::BarycentricToXY( barycoord.x() + 1, barycoord.y() - 1, barycoord.z(), &point3, &point1, &cp10, &endpointUXY );
       endpointUXY.setZ( 3 * ( zu - zv ) );
       MathUtils::BarycentricToXY( barycoord.x(), barycoord.y() + 1, barycoord.z() - 1, &point3, &point1, &cp10, &endpointVXY );
       endpointVXY.setZ( 3 * ( zv - zw ) );
-      Vector3D v1( endpointUXY.x() - x, endpointUXY.y() - y, endpointUXY.z() );
-      Vector3D v2( endpointVXY.x() - x, endpointVXY.y() - y, endpointVXY.z() );
+      const Vector3D v1( endpointUXY.x() - x, endpointUXY.y() - y, endpointUXY.z() );
+      const Vector3D v2( endpointVXY.x() - x, endpointVXY.y() - y, endpointVXY.z() );
       result.setX( v1.getY()*v2.getZ() - v1.getZ()*v2.getY() );
       result.setY( v1.getZ()*v2.getX() - v1.getX()*v2.getZ() );
       result.setZ( v1.getX()*v2.getY() - v1.getY()*v2.getX() );
@@ -168,7 +168,7 @@ bool CloughTocherInterpolator::calcPoint( double x, double y, QgsPoint &result )
   MathUtils::calcBarycentricCoordinates( x, y, &point1, &point2, &cp10, &barycoord );
   if ( barycoord.x() >= -mEdgeTolerance && barycoord.x() <= ( 1 + mEdgeTolerance ) && barycoord.y() >= -mEdgeTolerance && barycoord.y() <= ( 1 + mEdgeTolerance ) )
   {
-    double z = point1.z() * calcBernsteinPoly( 3, 3, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp1.z() * calcBernsteinPoly( 3, 2, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp2.z() * calcBernsteinPoly( 3, 1, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + point2.z() * calcBernsteinPoly( 3, 0, 3, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp3.z() * calcBernsteinPoly( 3, 2, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp4.z() * calcBernsteinPoly( 3, 1, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp5.z() * calcBernsteinPoly( 3, 0, 2, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp7.z() * calcBernsteinPoly( 3, 1, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp8.z() * calcBernsteinPoly( 3, 0, 1, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp10.z() * calcBernsteinPoly( 3, 0, 0, 3, barycoord.x(), barycoord.y(), barycoord.z() );
+    const double z = point1.z() * calcBernsteinPoly( 3, 3, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp1.z() * calcBernsteinPoly( 3, 2, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp2.z() * calcBernsteinPoly( 3, 1, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + point2.z() * calcBernsteinPoly( 3, 0, 3, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp3.z() * calcBernsteinPoly( 3, 2, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp4.z() * calcBernsteinPoly( 3, 1, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp5.z() * calcBernsteinPoly( 3, 0, 2, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp7.z() * calcBernsteinPoly( 3, 1, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp8.z() * calcBernsteinPoly( 3, 0, 1, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp10.z() * calcBernsteinPoly( 3, 0, 0, 3, barycoord.x(), barycoord.y(), barycoord.z() );
     result.setX( x );
     result.setY( y );
     result.setZ( z );
@@ -178,7 +178,7 @@ bool CloughTocherInterpolator::calcPoint( double x, double y, QgsPoint &result )
   MathUtils::calcBarycentricCoordinates( x, y, &point2, &point3, &cp10, &barycoord );
   if ( barycoord.x() >= -mEdgeTolerance && barycoord.x() <= ( 1 + mEdgeTolerance ) && barycoord.y() >= -mEdgeTolerance && barycoord.y() <= ( 1 + mEdgeTolerance ) )
   {
-    double z = cp10.z() * calcBernsteinPoly( 3, 0, 0, 3, barycoord.x(), barycoord.y(), barycoord.z() ) + cp8.z() * calcBernsteinPoly( 3, 1, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp5.z() * calcBernsteinPoly( 3, 2, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + point2.z() * calcBernsteinPoly( 3, 3, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp12.z() * calcBernsteinPoly( 3, 0, 1, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp13.z() * calcBernsteinPoly( 3, 1, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp9.z() * calcBernsteinPoly( 3, 2, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp15.z() * calcBernsteinPoly( 3, 0, 2, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp16.z() * calcBernsteinPoly( 3, 1, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + point3.z() * calcBernsteinPoly( 3, 0, 3, 0, barycoord.x(), barycoord.y(), barycoord.z() );
+    const double z = cp10.z() * calcBernsteinPoly( 3, 0, 0, 3, barycoord.x(), barycoord.y(), barycoord.z() ) + cp8.z() * calcBernsteinPoly( 3, 1, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp5.z() * calcBernsteinPoly( 3, 2, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + point2.z() * calcBernsteinPoly( 3, 3, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp12.z() * calcBernsteinPoly( 3, 0, 1, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp13.z() * calcBernsteinPoly( 3, 1, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp9.z() * calcBernsteinPoly( 3, 2, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp15.z() * calcBernsteinPoly( 3, 0, 2, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp16.z() * calcBernsteinPoly( 3, 1, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + point3.z() * calcBernsteinPoly( 3, 0, 3, 0, barycoord.x(), barycoord.y(), barycoord.z() );
     result.setX( x );
     result.setY( y );
     result.setZ( z );
@@ -188,7 +188,7 @@ bool CloughTocherInterpolator::calcPoint( double x, double y, QgsPoint &result )
   MathUtils::calcBarycentricCoordinates( x, y, &point3, &point1, &cp10, &barycoord );
   if ( barycoord.x() >= -mEdgeTolerance && barycoord.x() <= ( 1 + mEdgeTolerance ) && barycoord.y() >= -mEdgeTolerance && barycoord.y() <= ( 1 + mEdgeTolerance ) )
   {
-    double z = point1.z() * calcBernsteinPoly( 3, 0, 3, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp3.z() * calcBernsteinPoly( 3, 0, 2, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp7.z() * calcBernsteinPoly( 3, 0, 1, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp10.z() * calcBernsteinPoly( 3, 0, 0, 3, barycoord.x(), barycoord.y(), barycoord.z() ) + cp6.z() * calcBernsteinPoly( 3, 1, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp11.z() * calcBernsteinPoly( 3, 1, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp12.z() * calcBernsteinPoly( 3, 1, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp14.z() * calcBernsteinPoly( 3, 2, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp15.z() * calcBernsteinPoly( 3, 2, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + point3.z() * calcBernsteinPoly( 3, 3, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() );
+    const double z = point1.z() * calcBernsteinPoly( 3, 0, 3, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp3.z() * calcBernsteinPoly( 3, 0, 2, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp7.z() * calcBernsteinPoly( 3, 0, 1, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp10.z() * calcBernsteinPoly( 3, 0, 0, 3, barycoord.x(), barycoord.y(), barycoord.z() ) + cp6.z() * calcBernsteinPoly( 3, 1, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp11.z() * calcBernsteinPoly( 3, 1, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp12.z() * calcBernsteinPoly( 3, 1, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp14.z() * calcBernsteinPoly( 3, 2, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp15.z() * calcBernsteinPoly( 3, 2, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + point3.z() * calcBernsteinPoly( 3, 3, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() );
     result.setX( x );
     result.setY( y );
     result.setZ( z );
@@ -360,8 +360,8 @@ void CloughTocherInterpolator::init( double x, double y )//version, which has th
     cp4.setX( ( point1.x() + cp10.x() + point2.x() ) / 3 );
     cp4.setY( ( point1.y() + cp10.y() + point2.y() ) / 3 );
 
-    QgsPoint midpoint3( ( cp1.x() + cp2.x() ) / 2, ( cp1.y() + cp2.y() ) / 2, ( cp1.z() + cp2.z() ) / 2 );
-    Vector3D cp1cp2( cp2.x() - cp1.x(), cp2.y() - cp1.y(), cp2.z() - cp1.z() );
+    const QgsPoint midpoint3( ( cp1.x() + cp2.x() ) / 2, ( cp1.y() + cp2.y() ) / 2, ( cp1.z() + cp2.z() ) / 2 );
+    const Vector3D cp1cp2( cp2.x() - cp1.x(), cp2.y() - cp1.y(), cp2.z() - cp1.z() );
     Vector3D odir3( 0, 0, 0 );//direction orthogonal to the line from point1 to point2
     if ( ( point2.y() - point1.y() ) != 0 ) //avoid division through zero
     {
@@ -382,8 +382,8 @@ void CloughTocherInterpolator::init( double x, double y )//version, which has th
     cp13.setX( ( point2.x() + cp10.x() + point3.x() ) / 3 );
     cp13.setY( ( point2.y() + cp10.y() + point3.y() ) / 3 );
     //find the point in the middle of the bezier curve between point2 and point3
-    QgsPoint midpoint1( ( cp9.x() + cp16.x() ) / 2, ( cp9.y() + cp16.y() ) / 2, ( cp9.z() + cp16.z() ) / 2 );
-    Vector3D cp9cp16( cp16.x() - cp9.x(), cp16.y() - cp9.y(), cp16.z() - cp9.z() );
+    const QgsPoint midpoint1( ( cp9.x() + cp16.x() ) / 2, ( cp9.y() + cp16.y() ) / 2, ( cp9.z() + cp16.z() ) / 2 );
+    const Vector3D cp9cp16( cp16.x() - cp9.x(), cp16.y() - cp9.y(), cp16.z() - cp9.z() );
     Vector3D odir1( 0, 0, 0 );//direction orthogonal to the line from point2 to point3
     if ( ( point3.y() - point2.y() ) != 0 ) //avoid division through zero
     {
@@ -405,8 +405,8 @@ void CloughTocherInterpolator::init( double x, double y )//version, which has th
     cp11.setX( ( point3.x() + cp10.x() + point1.x() ) / 3 );
     cp11.setY( ( point3.y() + cp10.y() + point1.y() ) / 3 );
     //find the point in the middle of the bezier curve between point3 and point2
-    QgsPoint midpoint2( ( cp14.x() + cp6.x() ) / 2, ( cp14.y() + cp6.y() ) / 2, ( cp14.z() + cp6.z() ) / 2 );
-    Vector3D cp14cp6( cp6.x() - cp14.x(), cp6.y() - cp14.y(), cp6.z() - cp14.z() );
+    const QgsPoint midpoint2( ( cp14.x() + cp6.x() ) / 2, ( cp14.y() + cp6.y() ) / 2, ( cp14.z() + cp6.z() ) / 2 );
+    const Vector3D cp14cp6( cp6.x() - cp14.x(), cp6.y() - cp14.y(), cp6.z() - cp14.z() );
     Vector3D odir2( 0, 0, 0 );//direction orthogonal to the line from point 1 to point3
     if ( ( point3.y() - point1.y() ) != 0 ) //avoid division through zero
     {
@@ -428,8 +428,8 @@ void CloughTocherInterpolator::init( double x, double y )//version, which has th
     cp7.setX( cp10.x() + ( point1.x() - cp10.x() ) / 3 );
     cp7.setY( cp10.y() + ( point1.y() - cp10.y() ) / 3 );
     //cp7 has to be in the same plane as cp4, cp3 and cp11
-    Vector3D cp4cp3( cp3.x() - cp4.x(), cp3.y() - cp4.y(), cp3.z() - cp4.z() );
-    Vector3D cp4cp11( cp11.x() - cp4.x(), cp11.y() - cp4.y(), cp11.z() - cp4.z() );
+    const Vector3D cp4cp3( cp3.x() - cp4.x(), cp3.y() - cp4.y(), cp3.z() - cp4.z() );
+    const Vector3D cp4cp11( cp11.x() - cp4.x(), cp11.y() - cp4.y(), cp11.z() - cp4.z() );
     Vector3D cp4cp7( 0, 0, 0 );
     MathUtils::derVec( &cp4cp3, &cp4cp11, &cp4cp7, cp7.x() - cp4.x(), cp7.y() - cp4.y() );
     cp7.setZ( cp4.z() + cp4cp7.getZ() );
@@ -437,8 +437,8 @@ void CloughTocherInterpolator::init( double x, double y )//version, which has th
     cp8.setX( cp10.x() + ( point2.x() - cp10.x() ) / 3 );
     cp8.setY( cp10.y() + ( point2.y() - cp10.y() ) / 3 );
     //cp8 has to be in the same plane as cp4, cp5 and cp13
-    Vector3D cp4cp5( cp5.x() - cp4.x(), cp5.y() - cp4.y(), cp5.z() - cp4.z() );
-    Vector3D cp4cp13( cp13.x() - cp4.x(), cp13.y() - cp4.y(), cp13.z() - cp4.z() );
+    const Vector3D cp4cp5( cp5.x() - cp4.x(), cp5.y() - cp4.y(), cp5.z() - cp4.z() );
+    const Vector3D cp4cp13( cp13.x() - cp4.x(), cp13.y() - cp4.y(), cp13.z() - cp4.z() );
     Vector3D cp4cp8( 0, 0, 0 );
     MathUtils::derVec( &cp4cp5, &cp4cp13, &cp4cp8, cp8.x() - cp4.x(), cp8.y() - cp4.y() );
     cp8.setZ( cp4.z() + cp4cp8.getZ() );
@@ -446,15 +446,15 @@ void CloughTocherInterpolator::init( double x, double y )//version, which has th
     cp12.setX( cp10.x() + ( point3.x() - cp10.x() ) / 3 );
     cp12.setY( cp10.y() + ( point3.y() - cp10.y() ) / 3 );
     //cp12 has to be in the same plane as cp13, cp15 and cp11
-    Vector3D cp13cp11( cp11.x() - cp13.x(), cp11.y() - cp13.y(), cp11.z() - cp13.z() );
-    Vector3D cp13cp15( cp15.x() - cp13.x(), cp15.y() - cp13.y(), cp15.z() - cp13.z() );
+    const Vector3D cp13cp11( cp11.x() - cp13.x(), cp11.y() - cp13.y(), cp11.z() - cp13.z() );
+    const Vector3D cp13cp15( cp15.x() - cp13.x(), cp15.y() - cp13.y(), cp15.z() - cp13.z() );
     Vector3D cp13cp12( 0, 0, 0 );
     MathUtils::derVec( &cp13cp11, &cp13cp15, &cp13cp12, cp12.x() - cp13.x(), cp12.y() - cp13.y() );
     cp12.setZ( cp13.z() + cp13cp12.getZ() );
 
     //cp10 has to be in the same plane as cp7, cp8 and cp12
-    Vector3D cp7cp8( cp8.x() - cp7.x(), cp8.y() - cp7.y(), cp8.z() - cp7.z() );
-    Vector3D cp7cp12( cp12.x() - cp7.x(), cp12.y() - cp7.y(), cp12.z() - cp7.z() );
+    const Vector3D cp7cp8( cp8.x() - cp7.x(), cp8.y() - cp7.y(), cp8.z() - cp7.z() );
+    const Vector3D cp7cp12( cp12.x() - cp7.x(), cp12.y() - cp7.y(), cp12.z() - cp7.z() );
     Vector3D cp7cp10( 0, 0, 0 );
     MathUtils::derVec( &cp7cp8, &cp7cp12, &cp7cp10, cp10.x() - cp7.x(), cp10.y() - cp7.y() );
     cp10.setZ( cp7.z() + cp7cp10.getZ() );

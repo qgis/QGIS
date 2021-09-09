@@ -123,7 +123,7 @@ void QgsAuthSslErrorsDialog::showCertificateChainInfo()
 
   if ( !peerchain.isEmpty() )
   {
-    QSslCertificate cert = peerchain.takeFirst();
+    const QSslCertificate cert = peerchain.takeFirst();
     if ( !cert.isNull() )
     {
       QgsAuthCertInfoDialog *dlg = new QgsAuthCertInfoDialog( cert, false, this, peerchain );
@@ -172,7 +172,7 @@ void QgsAuthSslErrorsDialog::clearCertificateConfig()
 
 void QgsAuthSslErrorsDialog::buttonBox_clicked( QAbstractButton *button )
 {
-  QDialogButtonBox::StandardButton btnenum( buttonBox->standardButton( button ) );
+  const QDialogButtonBox::StandardButton btnenum( buttonBox->standardButton( button ) );
   switch ( btnenum )
   {
     case QDialogButtonBox::Ignore:

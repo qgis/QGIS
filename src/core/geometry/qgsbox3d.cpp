@@ -69,17 +69,17 @@ void QgsBox3d::setZMaximum( double z )
 void QgsBox3d::normalize()
 {
   mBounds2d.normalize();
-  double z1 = std::min( mZmin, mZmax );
-  double z2 = std::max( mZmin, mZmax );
+  const double z1 = std::min( mZmin, mZmax );
+  const double z2 = std::max( mZmin, mZmax );
   mZmin = z1;
   mZmax = z2;
 }
 
 QgsBox3d QgsBox3d::intersect( const QgsBox3d &other ) const
 {
-  QgsRectangle intersect2d = mBounds2d.intersect( other.mBounds2d );
-  double zMin = std::max( mZmin, other.mZmin );
-  double zMax = std::min( mZmax, other.mZmax );
+  const QgsRectangle intersect2d = mBounds2d.intersect( other.mBounds2d );
+  const double zMin = std::max( mZmin, other.mZmin );
+  const double zMax = std::min( mZmax, other.mZmax );
   return QgsBox3d( intersect2d.xMinimum(), intersect2d.yMinimum(), zMin,
                    intersect2d.xMaximum(), intersect2d.yMaximum(), zMax );
 }
@@ -94,8 +94,8 @@ bool QgsBox3d::intersects( const QgsBox3d &other ) const
   if ( !mBounds2d.intersects( other.mBounds2d ) )
     return false;
 
-  double z1 = ( mZmin > other.mZmin ? mZmin : other.mZmin );
-  double z2 = ( mZmax < other.mZmax ? mZmax : other.mZmax );
+  const double z1 = ( mZmin > other.mZmin ? mZmin : other.mZmin );
+  const double z2 = ( mZmax < other.mZmax ? mZmax : other.mZmax );
   return z1 <= z2;
 }
 
@@ -120,9 +120,9 @@ bool QgsBox3d::contains( const QgsPoint &p ) const
 
 double QgsBox3d::distanceTo( const  QVector3D &point ) const
 {
-  double dx = std::max( mBounds2d.xMinimum() - point.x(), std::max( 0., point.x() - mBounds2d.xMaximum() ) );
-  double dy = std::max( mBounds2d.yMinimum() - point.y(), std::max( 0., point.y() - mBounds2d.yMaximum() ) );
-  double dz = std::max( mZmin - point.z(), std::max( 0., point.z() - mZmax ) );
+  const double dx = std::max( mBounds2d.xMinimum() - point.x(), std::max( 0., point.x() - mBounds2d.xMaximum() ) );
+  const double dy = std::max( mBounds2d.yMinimum() - point.y(), std::max( 0., point.y() - mBounds2d.yMaximum() ) );
+  const double dz = std::max( mZmin - point.z(), std::max( 0., point.z() - mZmax ) );
   return sqrt( dx * dx + dy * dy + dz * dz );
 }
 

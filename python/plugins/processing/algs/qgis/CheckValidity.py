@@ -26,7 +26,8 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import (QgsApplication,
+from qgis.core import (Qgis,
+                       QgsApplication,
                        QgsSettings,
                        QgsGeometry,
                        QgsFeature,
@@ -156,7 +157,7 @@ class CheckValidity(QgisAlgorithm):
 
             valid = True
             if not geom.isNull() and not geom.isEmpty():
-                errors = list(geom.validateGeometry(method, flags))
+                errors = list(geom.validateGeometry(Qgis.GeometryValidationEngine(method), flags))
                 if errors:
                     valid = False
                     reasons = []

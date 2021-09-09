@@ -19,7 +19,8 @@ from qgis.PyQt.QtCore import (QSize,
                               Qt)
 from qgis.PyQt.QtGui import (QImage,
                              QPainter,
-                             QColor)
+                             QColor,
+                             QTransform)
 from qgis.core import (QgsMapSettings,
                        QgsCoordinateTransform,
                        QgsProject,
@@ -31,7 +32,9 @@ from qgis.core import (QgsMapSettings,
                        QgsRenderContext,
                        QgsAnnotationPointTextItem,
                        QgsRectangle,
-                       QgsTextFormat
+                       QgsTextFormat,
+                       QgsAnnotationItemNode,
+                       Qgis
                        )
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -79,6 +82,21 @@ class TestQgsAnnotationPointTextItem(unittest.TestCase):
         self.assertEqual(item.zIndex(), 11)
         self.assertEqual(item.format().size(), 37)
 
+    def test_nodes(self):
+        """
+        Test nodes for item
+        """
+        item = QgsAnnotationPointTextItem('my text', QgsPointXY(12, 13))
+        self.assertEqual(item.nodes(), [QgsAnnotationItemNode(QgsPointXY(12, 13), Qgis.AnnotationItemNodeType.VertexHandle)])
+
+    def test_transform(self):
+        item = QgsAnnotationPointTextItem('my text', QgsPointXY(12, 13))
+        self.assertEqual(item.point().asWkt(), 'POINT(12 13)')
+
+        transform = QTransform.fromTranslate(100, 200)
+        item.transform(transform)
+        self.assertEqual(item.point().asWkt(), 'POINT(112 213)')
+
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")
         elem = doc.createElement('test')
@@ -90,6 +108,8 @@ class TestQgsAnnotationPointTextItem(unittest.TestCase):
         format = QgsTextFormat()
         format.setSize(37)
         item.setFormat(format)
+        item.setUseSymbologyReferenceScale(True)
+        item.setSymbologyReferenceScale(5000)
 
         self.assertTrue(item.writeXml(elem, doc, QgsReadWriteContext()))
 
@@ -102,6 +122,8 @@ class TestQgsAnnotationPointTextItem(unittest.TestCase):
         self.assertEqual(s2.alignment(), Qt.AlignRight)
         self.assertEqual(s2.zIndex(), 11)
         self.assertEqual(s2.format().size(), 37)
+        self.assertTrue(s2.useSymbologyReferenceScale())
+        self.assertEqual(s2.symbologyReferenceScale(), 5000)
 
     def testClone(self):
         item = QgsAnnotationPointTextItem('my text', QgsPointXY(12, 13))
@@ -111,6 +133,8 @@ class TestQgsAnnotationPointTextItem(unittest.TestCase):
         format = QgsTextFormat()
         format.setSize(37)
         item.setFormat(format)
+        item.setUseSymbologyReferenceScale(True)
+        item.setSymbologyReferenceScale(5000)
 
         item2 = item.clone()
         self.assertEqual(item2.text(), 'my text')
@@ -120,6 +144,8 @@ class TestQgsAnnotationPointTextItem(unittest.TestCase):
         self.assertEqual(item2.alignment(), Qt.AlignRight)
         self.assertEqual(item2.zIndex(), 11)
         self.assertEqual(item2.format().size(), 37)
+        self.assertTrue(item2.useSymbologyReferenceScale())
+        self.assertEqual(item2.symbologyReferenceScale(), 5000)
 
     def testRenderMarker(self):
         item = QgsAnnotationPointTextItem('my text', QgsPointXY(12.3, 13.2))

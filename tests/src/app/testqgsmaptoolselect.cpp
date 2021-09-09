@@ -108,12 +108,12 @@ QgsFeatureList
 TestQgsMapToolSelect::testSelectVector( QgsVectorLayer *layer, double xGeoref, double yGeoref )
 {
   std::unique_ptr< QgsMapToolSelect > tool( new QgsMapToolSelect( canvas ) );
-  QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
+  const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
 
   // make given vector layer current
   canvas->setCurrentLayer( layer );
 
-  std::unique_ptr< QgsMapMouseEvent > event( new QgsMapMouseEvent(
+  const std::unique_ptr< QgsMapMouseEvent > event( new QgsMapMouseEvent(
         canvas,
         QEvent::MouseButtonRelease,
         QPoint( mapPoint.x(), mapPoint.y() )

@@ -33,7 +33,7 @@ QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent, const QString &authcfg, c
   , mDataProvider( dataprovider )
 
 {
-  bool disabled = QgsApplication::authManager()->isDisabled();
+  const bool disabled = QgsApplication::authManager()->isDisabled();
   bool idok = true;
 
   if ( !disabled && !authcfg.isEmpty() )
@@ -99,7 +99,7 @@ QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent, const QString &authcfg, c
 
 void QgsAuthConfigEdit::populateAuthMethods()
 {
-  QStringList authMethodKeys = QgsApplication::authManager()->authMethodsKeys( mDataProvider );
+  const QStringList authMethodKeys = QgsApplication::authManager()->authMethodsKeys( mDataProvider );
 
   // sort by auth method description attribute, then populate
   QMap<QString, const QgsAuthMethodMetadata *> descmap;
@@ -134,7 +134,7 @@ void QgsAuthConfigEdit::populateAuthMethods()
 
 void QgsAuthConfigEdit::loadConfig()
 {
-  bool emptyAuthCfg = mAuthCfg.isEmpty();
+  const bool emptyAuthCfg = mAuthCfg.isEmpty();
   authCfgEdit->setAllowEmptyId( emptyAuthCfg );
   if ( emptyAuthCfg )
   {
@@ -166,7 +166,7 @@ void QgsAuthConfigEdit::loadConfig()
   leResource->setText( mconfig.uri() );
   authCfgEdit->setAuthConfigId( mconfig.id() );
 
-  QString authMethodKey = QgsApplication::authManager()->configAuthMethodKey( mAuthCfg );
+  const QString authMethodKey = QgsApplication::authManager()->configAuthMethodKey( mAuthCfg );
 
   QgsDebugMsgLevel( QStringLiteral( "Loading authcfg: %1" ).arg( mAuthCfg ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "Loading auth method: %1" ).arg( authMethodKey ), 2 );
@@ -183,7 +183,7 @@ void QgsAuthConfigEdit::loadConfig()
     return;
   }
 
-  int indx = authMethodIndex( authMethodKey );
+  const int indx = authMethodIndex( authMethodKey );
   if ( indx == -1 )
   {
     QgsDebugMsg( QStringLiteral( "Loading FAILED for authcfg (%1): no edit widget loaded for auth method '%2'" )
@@ -222,7 +222,7 @@ void QgsAuthConfigEdit::saveConfig()
   if ( !QgsApplication::authManager()->setMasterPassword( true ) )
     return;
 
-  QString authMethodKey = cmbAuthMethods->currentData().toString();
+  const QString authMethodKey = cmbAuthMethods->currentData().toString();
 
   QgsAuthMethodEdit *editWidget = currentEditWidget();
   if ( !editWidget )
@@ -251,7 +251,7 @@ void QgsAuthConfigEdit::saveConfig()
     return;
   }
 
-  QString authCfgId( authCfgEdit->configId() );
+  const QString authCfgId( authCfgEdit->configId() );
   if ( !mAuthCfg.isEmpty() )
   {
     if ( authCfgId == mAuthCfg ) // update

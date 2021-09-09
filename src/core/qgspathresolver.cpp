@@ -113,12 +113,12 @@ QString QgsPathResolver::readPath( const QString &f ) const
     // where the source file had to exist and only the project directory was stripped
     // from the filename.
 
-    QFileInfo pfi( mBaseFileName );
-    QString home = pfi.absolutePath();
+    const QFileInfo pfi( mBaseFileName );
+    const QString home = pfi.absolutePath();
     if ( home.isEmpty() )
       return vsiPrefix + src;
 
-    QFileInfo fi( home + '/' + src );
+    const QFileInfo fi( home + '/' + src );
 
     if ( !fi.exists() )
     {
@@ -152,7 +152,7 @@ QString QgsPathResolver::readPath( const QString &f ) const
   QStringList srcElems = srcPath.split( '/', QString::SkipEmptyParts );
   QStringList projElems = projPath.split( '/', QString::SkipEmptyParts );
 #else
-  QStringList srcElems = srcPath.split( '/', Qt::SkipEmptyParts );
+  const QStringList srcElems = srcPath.split( '/', Qt::SkipEmptyParts );
   QStringList projElems = projPath.split( '/', Qt::SkipEmptyParts );
 #endif
 
@@ -230,7 +230,7 @@ QString QgsPathResolver::writePath( const QString &s ) const
     return src;
   }
 
-  QString localizedPath = QgsApplication::localizedDataPathRegistry()->localizedPath( src );
+  const QString localizedPath = QgsApplication::localizedDataPathRegistry()->localizedPath( src );
   if ( !localizedPath.isEmpty() )
     return QStringLiteral( "localized:" ) + localizedPath;
 
@@ -256,7 +256,7 @@ QString QgsPathResolver::writePath( const QString &s ) const
   }
 
   // Get projPath even if project has not been created yet
-  QFileInfo pfi( QFileInfo( mBaseFileName ).path() );
+  const QFileInfo pfi( QFileInfo( mBaseFileName ).path() );
   QString projPath = pfi.canonicalFilePath();
 
   // If project directory doesn't exit, fallback to absoluteFilePath : symbolic
@@ -270,7 +270,7 @@ QString QgsPathResolver::writePath( const QString &s ) const
   }
 
   // Check if it is a publicSource uri and clean it
-  QUrl url { src };
+  const QUrl url { src };
   QString srcPath { src };
   QString urlQuery;
 
@@ -280,12 +280,12 @@ QString QgsPathResolver::writePath( const QString &s ) const
     urlQuery = url.query();
   }
 
-  QFileInfo srcFileInfo( srcPath );
+  const QFileInfo srcFileInfo( srcPath );
   if ( srcFileInfo.exists() )
     srcPath = srcFileInfo.canonicalFilePath();
 
   // if this is a VSIFILE, remove the VSI prefix and append to final result
-  QString vsiPrefix = qgsVsiPrefix( src );
+  const QString vsiPrefix = qgsVsiPrefix( src );
   if ( ! vsiPrefix.isEmpty() )
   {
     srcPath.remove( 0, vsiPrefix.size() );

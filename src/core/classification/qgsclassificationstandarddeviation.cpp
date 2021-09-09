@@ -68,7 +68,7 @@ QList<double> QgsClassificationStandardDeviation::calculateBreaks( double &minim
 
   double mean = 0.0;
   mStdDev = 0.0;
-  int n = values.count();
+  const int n = values.count();
 
   for ( int i = 0; i < n; i++ )
   {
@@ -120,7 +120,7 @@ QString QgsClassificationStandardDeviation::labelForRange( const double lowerVal
 
 QString QgsClassificationStandardDeviation::valueToLabel( const double value ) const
 {
-  double normalized = ( value - mEffectiveSymmetryPoint ) / mStdDev;
+  const double normalized = ( value - mEffectiveSymmetryPoint ) / mStdDev;
   return QObject::tr( " %1 Std Dev" ).arg( QLocale().toString( normalized, 'f', 2 ) );
 }
 

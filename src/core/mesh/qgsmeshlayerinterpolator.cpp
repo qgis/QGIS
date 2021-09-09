@@ -126,7 +126,7 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
     if ( !isActive )
       continue;
 
-    QgsRectangle bbox = QgsMeshLayerUtils::triangleBoundingBox( p1, p2, p3 );
+    const QgsRectangle bbox = QgsMeshLayerUtils::triangleBoundingBox( p1, p2, p3 );
     if ( !extent.intersects( bbox ) )
       continue;
 
@@ -205,17 +205,17 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
   if ( !datasetIndex.isValid() )
     return nullptr;
 
-  int widthPixel = static_cast<int>( extent.width() / mapUnitsPerPixel );
-  int heightPixel = static_cast<int>( extent.height() / mapUnitsPerPixel );
+  const int widthPixel = static_cast<int>( extent.width() / mapUnitsPerPixel );
+  const int heightPixel = static_cast<int>( extent.height() / mapUnitsPerPixel );
 
   const QgsPointXY center = extent.center();
-  QgsMapToPixel mapToPixel( mapUnitsPerPixel,
-                            center.x(),
-                            center.y(),
-                            widthPixel,
-                            heightPixel,
-                            0 );
-  QgsCoordinateTransform transform( layer.crs(), destinationCrs, transformContext );
+  const QgsMapToPixel mapToPixel( mapUnitsPerPixel,
+                                  center.x(),
+                                  center.y(),
+                                  widthPixel,
+                                  heightPixel,
+                                  0 );
+  const QgsCoordinateTransform transform( layer.crs(), destinationCrs, transformContext );
 
   QgsRenderContext renderContext;
   renderContext.setCoordinateTransform( transform );
@@ -228,21 +228,21 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
   triangularMesh->update( nativeMesh.get(), transform );
 
   const QgsMeshDatasetGroupMetadata metadata = layer.dataProvider()->datasetGroupMetadata( datasetIndex );
-  QgsMeshDatasetGroupMetadata::DataType scalarDataType = QgsMeshLayerUtils::datasetValuesType( metadata.dataType() );
+  const QgsMeshDatasetGroupMetadata::DataType scalarDataType = QgsMeshLayerUtils::datasetValuesType( metadata.dataType() );
   const int count =  QgsMeshLayerUtils::datasetValuesCount( nativeMesh.get(), scalarDataType );
-  QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues(
-                            &layer,
-                            datasetIndex,
-                            0,
-                            count );
+  const QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues(
+                                  &layer,
+                                  datasetIndex,
+                                  0,
+                                  count );
   if ( !vals.isValid() )
     return nullptr;
 
-  QVector<double> datasetValues = QgsMeshLayerUtils::calculateMagnitudes( vals );
-  QgsMeshDataBlock activeFaceFlagValues = layer.dataProvider()->areFacesActive(
-      datasetIndex,
-      0,
-      nativeMesh->faces.count() );
+  const QVector<double> datasetValues = QgsMeshLayerUtils::calculateMagnitudes( vals );
+  const QgsMeshDataBlock activeFaceFlagValues = layer.dataProvider()->areFacesActive(
+        datasetIndex,
+        0,
+        nativeMesh->faces.count() );
 
   QgsMeshLayerInterpolator interpolator(
     *( triangularMesh.get() ),
@@ -267,23 +267,23 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
   QgsRasterBlockFeedback *feedback )
 {
 
-  int widthPixel = static_cast<int>( extent.width() / mapUnitsPerPixel );
-  int heightPixel = static_cast<int>( extent.height() / mapUnitsPerPixel );
+  const int widthPixel = static_cast<int>( extent.width() / mapUnitsPerPixel );
+  const int heightPixel = static_cast<int>( extent.height() / mapUnitsPerPixel );
 
   const QgsPointXY center = extent.center();
-  QgsMapToPixel mapToPixel( mapUnitsPerPixel,
-                            center.x(),
-                            center.y(),
-                            widthPixel,
-                            heightPixel,
-                            0 );
+  const QgsMapToPixel mapToPixel( mapUnitsPerPixel,
+                                  center.x(),
+                                  center.y(),
+                                  widthPixel,
+                                  heightPixel,
+                                  0 );
 
   QgsRenderContext renderContext;
   renderContext.setCoordinateTransform( transform );
   renderContext.setMapToPixel( mapToPixel );
   renderContext.setExtent( extent );
 
-  QVector<double> magnitudes = QgsMeshLayerUtils::calculateMagnitudes( datasetValues );
+  const QVector<double> magnitudes = QgsMeshLayerUtils::calculateMagnitudes( datasetValues );
 
   QgsMeshLayerInterpolator interpolator(
     triangularMesh,

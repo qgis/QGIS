@@ -34,13 +34,13 @@ Qgs3DAnimationExportDialog::Qgs3DAnimationExportDialog(): QDialog( nullptr )
   mFpsSpinBox->setClearValue( 30 );
   mWidthSpinBox->setClearValue( 800 );
   mHeightSpinBox->setClearValue( 600 );
-  QgsSettings settings;
+  const QgsSettings settings;
 
   const QString templateText = settings.value( QStringLiteral( "Export3DAnimation/fileNameTemplate" ),
                                QStringLiteral( "%1####.jpg" ).arg( QgsProject::instance()->baseName() )
                                , QgsSettings::App ).toString();
   mTemplateLineEdit->setText( templateText );
-  QRegExp rx( QStringLiteral( "\\w+#+\\.{1}\\w+" ) ); //e.g. anyprefix#####.png
+  const QRegExp rx( QStringLiteral( "\\w+#+\\.{1}\\w+" ) ); //e.g. anyprefix#####.png
   QValidator *validator = new QRegExpValidator( rx, this );
   mTemplateLineEdit->setValidator( validator );
 

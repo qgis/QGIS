@@ -17,6 +17,7 @@ set(TESTS
   testqgsapplocatorfilters.cpp
   testqgsdecorationscalebar.cpp
   testqgsfieldcalculator.cpp
+  testqgsmaptooleditannotation.cpp
   testqgsmaptoolidentifyaction.cpp
   testqgsmaptoollabel.cpp
   testqgsmaptoolselect.cpp
@@ -24,10 +25,10 @@ set(TESTS
   testqgsmaptoolrotatefeature.cpp
   testqgsmaptoolscalefeature.cpp
   testqgsmaptoolcircularstring.cpp
-  testqgsmaptoolcircle.cpp
   testqgsmaptooleditmesh.cpp
   testqgsmaptoolmovefeature.cpp
   testqgsmaptoolellipse.cpp
+  testqgsmaptoolcircle.cpp
   testqgsmaptoolrectangle.cpp
   testqgsmaptoolregularpolygon.cpp
   testqgsmaptoolsplitparts.cpp

@@ -100,7 +100,7 @@ void QgsQtLocationConnection::satellitesInViewUpdated(
   mLastGPSInformation.satellitesInView.clear();
   for ( int i = 0; i < satellites.size(); ++i )
   {
-    QGeoSatelliteInfo currentSatellite = satellites.at( i );
+    const QGeoSatelliteInfo currentSatellite = satellites.at( i );
     QgsSatelliteInfo satelliteInfo;
     satelliteInfo.azimuth = currentSatellite.attribute( QGeoSatelliteInfo::Azimuth );
     satelliteInfo.elevation = currentSatellite.attribute( QGeoSatelliteInfo::Elevation );

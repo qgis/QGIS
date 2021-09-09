@@ -86,9 +86,9 @@ void Qgs3DExportObject::setupMaterial( QgsAbstractMaterialSettings *material )
 void Qgs3DExportObject::objectBounds( float &minX, float &minY, float &minZ, float &maxX, float &maxY, float &maxZ )
 {
   if ( mType != TriangularFaces ) return;
-  for ( unsigned int vertice : mIndexes )
+  for ( const unsigned int vertice : mIndexes )
   {
-    int heightIndex = ( vertice - 1 ) * 3 + 1;
+    const int heightIndex = ( vertice - 1 ) * 3 + 1;
     minX = std::min( minX, mVertexPosition[heightIndex - 1] );
     maxX = std::max( maxX, mVertexPosition[heightIndex - 1] );
     minY = std::min( minY, mVertexPosition[heightIndex] );
@@ -121,7 +121,7 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
     {
       out << "vn " << mNormals[i] << " " << mNormals[i + 1] << " " << mNormals[i + 2] << "\n";
     }
-    int u_index = i / 3 * 2;
+    const int u_index = i / 3 * 2;
     if ( u_index + 1 < mTexturesUV.size() )
     {
       // TODO: flip texture in a more appropriate way (for repeated textures)
@@ -141,7 +141,7 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
 
   auto getVertexIndex = [&]( int i ) -> QString
   {
-    int negativeIndex = -1 - ( verticesCount - i );
+    const int negativeIndex = -1 - ( verticesCount - i );
     if ( hasNormals && !hasTextures )
       return QStringLiteral( "%1//%2" ).arg( negativeIndex ).arg( negativeIndex );
     if ( !hasNormals && hasTextures )
@@ -167,7 +167,7 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
   else if ( mType == LineStrip )
   {
     out << "l";
-    for ( int i : mIndexes ) out << " " << getVertexIndex( i );
+    for ( const int i : mIndexes ) out << " " << getVertexIndex( i );
     out << "\n";
   }
   else if ( mType == Points )
@@ -186,11 +186,11 @@ QString Qgs3DExportObject::saveMaterial( QTextStream &mtlOut, const QString &fol
   mtlOut << "newmtl " << materialName << "\n";
   if ( mTexturesUV.size() != 0 && !mTextureImage.isNull() )
   {
-    QString filePath = QDir( folderPath ).filePath( materialName + ".jpg" );
+    const QString filePath = QDir( folderPath ).filePath( materialName + ".jpg" );
     mTextureImage.save( filePath, "JPG" );
     mtlOut << "\tmap_Kd " << materialName << ".jpg" << "\n";
   }
-  for ( QString key : mMaterialParameters.keys() )
+  for ( const QString &key : mMaterialParameters.keys() )
   {
     mtlOut << "\t" << key << " " << mMaterialParameters[key] << "\n";
   }

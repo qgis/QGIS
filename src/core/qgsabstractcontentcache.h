@@ -285,7 +285,7 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
       // maybe it's an embedded base64 string
       if ( path.startsWith( QLatin1String( "base64:" ), Qt::CaseInsensitive ) )
       {
-        QByteArray base64 = path.mid( 7 ).toLocal8Bit(); // strip 'base64:' prefix
+        const QByteArray base64 = path.mid( 7 ).toLocal8Bit(); // strip 'base64:' prefix
         return QByteArray::fromBase64( base64, QByteArray::OmitTrailingEquals );
       }
 
@@ -295,7 +295,7 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
         return missingContent;
       }
 
-      QUrl url( path );
+      const QUrl url( path );
       if ( !url.isValid() )
       {
         return missingContent;
@@ -317,7 +317,7 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
         return missingContent;
       }
 
-      QMutexLocker locker( &mMutex );
+      const QMutexLocker locker( &mMutex );
 
       // already a request in progress for this url
       if ( mPendingRemoteUrls.contains( path ) )
@@ -375,7 +375,7 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
       QgsNetworkContentFetcherTask *task = new QgsNetworkContentFetcherTask( request );
       connect( task, &QgsNetworkContentFetcherTask::fetched, this, [this, task, path, missingContent]
       {
-        QMutexLocker locker( &mMutex );
+        const QMutexLocker locker( &mMutex );
 
         QNetworkReply *reply = task->reply();
         if ( !reply )
@@ -393,10 +393,10 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
 
         bool ok = true;
 
-        QVariant status = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
+        const QVariant status = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
         if ( !status.isNull() && status.toInt() >= 400 )
         {
-          QVariant phrase = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
+          const QVariant phrase = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
           QgsMessageLog::logMessage( tr( "%4 request error [status: %1 - reason phrase: %2] for %3" ).arg( status.toInt() ).arg( phrase.toString(), path, mTypeString ), mTypeString );
           mRemoteContentCache.insert( path, new QByteArray( missingContent ) );
           ok = false;
@@ -440,7 +440,7 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
 
     void onRemoteContentFetched( const QString &url, bool success ) override
     {
-      QMutexLocker locker( &mMutex );
+      const QMutexLocker locker( &mMutex );
       mPendingRemoteUrls.remove( url );
 
       T *nextEntry = mLeastRecentEntry;

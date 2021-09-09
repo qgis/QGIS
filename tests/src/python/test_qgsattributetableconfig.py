@@ -53,6 +53,21 @@ class TestQgsAttributeTableConfig(unittest.TestCase):
         config.setColumns([c])
         self.assertFalse(config.isEmpty())
 
+    def testSize(self):
+        """
+        Test QgsAttributeTableConfig.size and __len__
+        """
+        config = QgsAttributeTableConfig()
+        self.assertEqual(config.size(), 0)
+        self.assertEqual(len(config), 0)
+
+        c1 = QgsAttributeTableConfig.ColumnConfig()
+        c2 = QgsAttributeTableConfig.ColumnConfig()
+        config.setColumns([c1, c2])
+
+        self.assertEqual(config.size(), 2)
+        self.assertEqual(len(config), 2)
+
     def testSetColumns(self):
         """ test setting columns """
         config = QgsAttributeTableConfig()
@@ -90,6 +105,11 @@ class TestQgsAttributeTableConfig(unittest.TestCase):
         self.assertFalse(config.columnHidden(0))
         self.assertFalse(config.columnHidden(1))
 
+        with self.assertRaises(IndexError):
+            config.columnHidden(-1)
+        with self.assertRaises(IndexError):
+            config.columnHidden(2)
+
         config.setColumnHidden(1, True)
         self.assertFalse(config.columnHidden(0))
         self.assertTrue(config.columnHidden(1))
@@ -102,10 +122,57 @@ class TestQgsAttributeTableConfig(unittest.TestCase):
         self.assertTrue(config.columns()[0].hidden)
         self.assertTrue(config.columns()[1].hidden)
 
+        with self.assertRaises(IndexError):
+            config.setColumnHidden(-1, True)
+        with self.assertRaises(IndexError):
+            config.setColumnHidden(2, True)
+
         c2.hidden = True
         config.setColumns([c1, c2])
         self.assertFalse(config.columnHidden(0))
         self.assertTrue(config.columnHidden(1))
+
+    def testColumnWidth(self):
+        """ test setting column widths """
+
+        config = QgsAttributeTableConfig()
+        c1 = QgsAttributeTableConfig.ColumnConfig()
+        c1.name = 'test'
+        c1.width = -1
+        c2 = QgsAttributeTableConfig.ColumnConfig()
+        c2.name = 'test2'
+        c2.width = 27
+        config.setColumns([c1, c2])
+
+        self.assertEqual(config.columnWidth(0), -1)
+        self.assertEqual(config.columnWidth(1), 27)
+
+        with self.assertRaises(IndexError):
+            config.columnWidth(-1)
+        with self.assertRaises(IndexError):
+            config.columnWidth(2)
+
+        config.setColumnWidth(1, -1)
+        self.assertEqual(config.columnWidth(0), -1)
+        self.assertEqual(config.columnWidth(1), -1)
+        self.assertEqual(config.columns()[0].width, -1)
+        self.assertEqual(config.columns()[1].width, -1)
+
+        config.setColumnWidth(0, 34)
+        self.assertEqual(config.columnWidth(0), 34)
+        self.assertEqual(config.columnWidth(1), -1)
+        self.assertEqual(config.columns()[0].width, 34)
+        self.assertEqual(config.columns()[1].width, -1)
+
+        with self.assertRaises(IndexError):
+            config.setColumnWidth(-1, 11)
+        with self.assertRaises(IndexError):
+            config.setColumnWidth(2, 11)
+
+        c2.width = 12
+        config.setColumns([c1, c2])
+        self.assertEqual(config.columnWidth(0), -1)
+        self.assertEqual(config.columnWidth(1), 12)
 
     def testSameColumns(self):
         """ test hasSameColumns() check """

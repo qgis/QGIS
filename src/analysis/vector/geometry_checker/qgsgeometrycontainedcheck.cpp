@@ -22,18 +22,18 @@
 
 void QgsGeometryContainedCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
-  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
-  QgsGeometryCheckerUtils::LayerFeatures layerFeaturesA( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext );
+  const QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
+  const QgsGeometryCheckerUtils::LayerFeatures layerFeaturesA( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureA : layerFeaturesA )
   {
-    QgsRectangle bboxA = layerFeatureA.geometry().boundingBox();
+    const QgsRectangle bboxA = layerFeatureA.geometry().boundingBox();
     std::unique_ptr< QgsGeometryEngine > geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry().constGet(), mContext->tolerance );
     if ( !geomEngineA->isValid() )
     {
       messages.append( tr( "Contained check failed for (%1): the geometry is invalid" ).arg( layerFeatureA.id() ) );
       continue;
     }
-    QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( featurePools, featureIds.keys(), bboxA, compatibleGeometryTypes(), mContext );
+    const QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( featurePools, featureIds.keys(), bboxA, compatibleGeometryTypes(), mContext );
     for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureB : layerFeaturesB )
     {
       if ( layerFeatureA == layerFeatureB )
@@ -76,8 +76,8 @@ void QgsGeometryContainedCheck::fixError( const QMap<QString, QgsFeaturePool *> 
   }
 
   // Check if error still applies
-  QgsGeometryCheckerUtils::LayerFeature layerFeatureA( featurePoolA, featureA, mContext, true );
-  QgsGeometryCheckerUtils::LayerFeature layerFeatureB( featurePoolB, featureB, mContext, true );
+  const QgsGeometryCheckerUtils::LayerFeature layerFeatureA( featurePoolA, featureA, mContext, true );
+  const QgsGeometryCheckerUtils::LayerFeature layerFeatureB( featurePoolB, featureB, mContext, true );
 
   std::unique_ptr< QgsGeometryEngine > geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry().constGet(), mContext->tolerance );
   std::unique_ptr< QgsGeometryEngine > geomEngineB = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureB.geometry().constGet(), mContext->tolerance );
@@ -107,8 +107,8 @@ void QgsGeometryContainedCheck::fixError( const QMap<QString, QgsFeaturePool *> 
 
 QStringList QgsGeometryContainedCheck::resolutionMethods() const
 {
-  static QStringList methods = QStringList()
-                               << tr( "Delete feature" )
-                               << tr( "No action" );
+  static const QStringList methods = QStringList()
+                                     << tr( "Delete feature" )
+                                     << tr( "No action" );
   return methods;
 }

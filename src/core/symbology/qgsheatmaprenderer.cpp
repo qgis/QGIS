@@ -116,37 +116,37 @@ bool QgsHeatmapRenderer::renderFeature( const QgsFeature &feature, QgsRenderCont
     }
     else
     {
-      QgsAttributes attrs = feature.attributes();
+      const QgsAttributes attrs = feature.attributes();
       value = attrs.value( mWeightAttrNum );
     }
     bool ok = false;
-    double evalWeight = value.toDouble( &ok );
+    const double evalWeight = value.toDouble( &ok );
     if ( ok )
     {
       weight = evalWeight;
     }
   }
 
-  int width = context.painter()->device()->width() / mRenderQuality;
-  int height = context.painter()->device()->height() / mRenderQuality;
+  const int width = context.painter()->device()->width() / mRenderQuality;
+  const int height = context.painter()->device()->height() / mRenderQuality;
 
   //transform geometry if required
   QgsGeometry geom = feature.geometry();
-  QgsCoordinateTransform xform = context.coordinateTransform();
+  const QgsCoordinateTransform xform = context.coordinateTransform();
   if ( xform.isValid() )
   {
     geom.transform( xform );
   }
 
   //convert point to multipoint
-  QgsMultiPointXY multiPoint = convertToMultipoint( &geom );
+  const QgsMultiPointXY multiPoint = convertToMultipoint( &geom );
 
   //loop through all points in multipoint
   for ( QgsMultiPointXY::const_iterator pointIt = multiPoint.constBegin(); pointIt != multiPoint.constEnd(); ++pointIt )
   {
-    QgsPointXY pixel = context.mapToPixel().transform( *pointIt );
-    int pointX = pixel.x() / mRenderQuality;
-    int pointY = pixel.y() / mRenderQuality;
+    const QgsPointXY pixel = context.mapToPixel().transform( *pointIt );
+    const int pointX = pixel.x() / mRenderQuality;
+    const int pointY = pixel.y() / mRenderQuality;
     for ( int x = std::max( pointX - mRadiusPixels, 0 ); x < std::min( pointX + mRadiusPixels, width ); ++x )
     {
       if ( context.renderingStopped() )
@@ -154,19 +154,19 @@ bool QgsHeatmapRenderer::renderFeature( const QgsFeature &feature, QgsRenderCont
 
       for ( int y = std::max( pointY - mRadiusPixels, 0 ); y < std::min( pointY + mRadiusPixels, height ); ++y )
       {
-        int index = y * width + x;
+        const int index = y * width + x;
         if ( index >= mValues.count() )
         {
           continue;
         }
-        double distanceSquared = std::pow( pointX - x, 2.0 ) + std::pow( pointY - y, 2.0 );
+        const double distanceSquared = std::pow( pointX - x, 2.0 ) + std::pow( pointY - y, 2.0 );
         if ( distanceSquared > mRadiusSquared )
         {
           continue;
         }
 
-        double score = weight * quarticKernel( std::sqrt( distanceSquared ), mRadiusPixels );
-        double value = mValues.at( index ) + score;
+        const double score = weight * quarticKernel( std::sqrt( distanceSquared ), mRadiusPixels );
+        const double value = mValues.at( index ) + score;
         if ( value > mCalculatedMaxValue )
         {
           mCalculatedMaxValue = value;
@@ -235,7 +235,7 @@ void QgsHeatmapRenderer::renderImage( QgsRenderContext &context )
                 QImage::Format_ARGB32 );
   image.fill( Qt::transparent );
 
-  double scaleMax = mExplicitMax > 0 ? mExplicitMax : mCalculatedMaxValue;
+  const double scaleMax = mExplicitMax > 0 ? mExplicitMax : mCalculatedMaxValue;
 
   int idx = 0;
   double pixVal = 0;
@@ -261,8 +261,8 @@ void QgsHeatmapRenderer::renderImage( QgsRenderContext &context )
 
   if ( mRenderQuality > 1 )
   {
-    QImage resized = image.scaled( context.painter()->device()->width(),
-                                   context.painter()->device()->height() );
+    const QImage resized = image.scaled( context.painter()->device()->width(),
+                                         context.painter()->device()->height() );
     context.painter()->drawImage( 0, 0, resized );
   }
   else
@@ -298,7 +298,7 @@ void QgsHeatmapRenderer::modifyRequestExtent( QgsRectangle &extent, QgsRenderCon
 {
   //we need to expand out the request extent so that it includes points which are up to the heatmap radius outside of the
   //actual visible extent
-  double extension = context.convertToMapUnits( mRadius, mRadiusUnit, mRadiusMapUnitScale );
+  const double extension = context.convertToMapUnits( mRadius, mRadiusUnit, mRadiusMapUnitScale );
   extent.setXMinimum( extent.xMinimum() - extension );
   extent.setXMaximum( extent.xMaximum() + extension );
   extent.setYMinimum( extent.yMinimum() - extension );
@@ -338,7 +338,7 @@ QDomElement QgsHeatmapRenderer::save( QDomDocument &doc, const QgsReadWriteConte
 
   if ( mGradientRamp )
   {
-    QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( QStringLiteral( "[source]" ), mGradientRamp, doc );
+    const QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( QStringLiteral( "[source]" ), mGradientRamp, doc );
     rendererElem.appendChild( colorRampElem );
   }
 
@@ -368,7 +368,7 @@ QSet<QString> QgsHeatmapRenderer::usedAttributes( const QgsRenderContext & ) con
   // Since we do not have access to fields here, try both options.
   attributes << mWeightExpressionString;
 
-  QgsExpression testExpr( mWeightExpressionString );
+  const QgsExpression testExpr( mWeightExpressionString );
   if ( !testExpr.hasParserError() )
     attributes.unite( testExpr.referencedColumns() );
 

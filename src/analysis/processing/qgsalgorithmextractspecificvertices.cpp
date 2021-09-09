@@ -131,7 +131,7 @@ bool QgsExtractSpecificVerticesAlgorithm::prepareAlgorithm( const QVariantMap &p
   std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   mGeometryType = QgsWkbTypes::geometryType( source->wkbType() );
 
-  QString verticesString = parameterAsString( parameters, QStringLiteral( "VERTICES" ), context );
+  const QString verticesString = parameterAsString( parameters, QStringLiteral( "VERTICES" ), context );
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   const QStringList verticesList = verticesString.split( ',', QString::SkipEmptyParts );
 #else
@@ -140,7 +140,7 @@ bool QgsExtractSpecificVerticesAlgorithm::prepareAlgorithm( const QVariantMap &p
   for ( const QString &vertex : verticesList )
   {
     bool ok = false;
-    int i = vertex.toInt( &ok );
+    const int i = vertex.toInt( &ok );
     if ( ok )
     {
       mIndices << i;
@@ -159,7 +159,7 @@ QgsFeatureList QgsExtractSpecificVerticesAlgorithm::processFeature( const QgsFea
   QgsFeatureList outputFeatures;
 
   QgsFeature f = feature;
-  QgsGeometry inputGeom = f.geometry();
+  const QgsGeometry inputGeom = f.geometry();
   if ( inputGeom.isNull() )
   {
     QgsAttributes attrs = f.attributes();
@@ -180,8 +180,8 @@ QgsFeatureList QgsExtractSpecificVerticesAlgorithm::processFeature( const QgsFea
   else
   {
     int vertexIndex;
-    int totalVertices = inputGeom.constGet()->nCoordinates();
-    for ( int vertex : mIndices )
+    const int totalVertices = inputGeom.constGet()->nCoordinates();
+    for ( const int vertex : mIndices )
     {
       if ( vertex < 0 )
       {
@@ -198,8 +198,8 @@ QgsFeatureList QgsExtractSpecificVerticesAlgorithm::processFeature( const QgsFea
       QgsVertexId vertexId;
       inputGeom.vertexIdFromVertexNr( vertexIndex, vertexId );
 
-      double distance = inputGeom.distanceToVertex( vertexIndex );
-      double angle = inputGeom.angleAtVertex( vertexIndex ) * 180 / M_PI;
+      const double distance = inputGeom.distanceToVertex( vertexIndex );
+      const double angle = inputGeom.angleAtVertex( vertexIndex ) * 180 / M_PI;
 
       QgsFeature outFeature = QgsFeature();
       QgsAttributes attrs = f.attributes();
@@ -215,7 +215,7 @@ QgsFeatureList QgsExtractSpecificVerticesAlgorithm::processFeature( const QgsFea
             << angle;
 
       outFeature.setAttributes( attrs );
-      QgsPoint point = inputGeom.vertexAt( vertexIndex );
+      const QgsPoint point = inputGeom.vertexAt( vertexIndex );
       outFeature.setGeometry( QgsGeometry( point.clone() ) );
       outputFeatures << outFeature;
     }

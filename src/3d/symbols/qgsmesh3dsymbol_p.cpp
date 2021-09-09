@@ -64,11 +64,11 @@ QgsMesh3DSymbolEntity::QgsMesh3DSymbolEntity( const Qgs3DMapSettings &map,
 
 Qt3DRender::QMaterial *QgsMesh3DSymbolEntity::material( const QgsMesh3DSymbol &symbol ) const
 {
-  QgsMaterialContext context;
+  const QgsMaterialContext context;
   Qt3DRender::QMaterial *material = symbol.material()->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, context );
 
   // front/back side culling
-  auto techniques = material->effect()->techniques();
+  const auto techniques = material->effect()->techniques();
   for ( auto tit = techniques.constBegin(); tit != techniques.constEnd(); ++tit )
   {
     auto renderPasses = ( *tit )->renderPasses();
@@ -94,13 +94,13 @@ Qt3DRender::QGeometryRenderer *QgsMesh3DSymbolEntityNode::renderer( const Qgs3DM
     const QgsMesh3DSymbol &symbol,
     const QgsMeshLayer *layer )
 {
-  QgsPointXY origin( map.origin().x(), map.origin().y() );
+  const QgsPointXY origin( map.origin().x(), map.origin().y() );
   QList<QgsPolygon *> polygons;
   QList<QgsFeatureId> fids;
 
-  QgsExpressionContext ctx( _expressionContext3D() );
+  const QgsExpressionContext ctx( _expressionContext3D() );
   const QgsPropertyCollection &ddp = symbol.dataDefinedProperties();
-  bool hasDDHeight = ddp.isActive( QgsAbstract3DSymbol::PropertyHeight );
+  const bool hasDDHeight = ddp.isActive( QgsAbstract3DSymbol::PropertyHeight );
   float height = symbol.height();
   if ( hasDDHeight )
   {
@@ -138,7 +138,7 @@ Qt3DRender::QGeometryRenderer *QgsMesh3DSymbolEntityNode::renderer( const Qgs3DM
   const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( symbol.material() );
 
   mGeometry = new QgsTessellatedPolygonGeometry( true, false, symbol.addBackFaces(), texturedMaterialSettings ? texturedMaterialSettings->requiresTextureCoordinates() : false );
-  QList<float> extrusionHeightPerPolygon;
+  const QList<float> extrusionHeightPerPolygon;
   mGeometry->setPolygons( polygons, fids, origin, 0.0, extrusionHeightPerPolygon );
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;

@@ -159,8 +159,8 @@ void checkDock::parseErrorListByLayer( const QString &layerId )
 
   while ( it != mErrorList.end() )
   {
-    FeatureLayer fl1 = ( *it )->featurePairs().first();
-    FeatureLayer fl2 = ( *it )->featurePairs()[1];
+    const FeatureLayer fl1 = ( *it )->featurePairs().first();
+    const FeatureLayer fl2 = ( *it )->featurePairs()[1];
     if ( fl1.layer == layer || fl2.layer == layer )
     {
       it = mErrorList.erase( it );
@@ -179,8 +179,8 @@ void checkDock::parseErrorListByFeature( int featureId )
 
   while ( it != mErrorList.end() )
   {
-    FeatureLayer fl1 = ( *it )->featurePairs().first();
-    FeatureLayer fl2 = ( *it )->featurePairs()[1];
+    const FeatureLayer fl1 = ( *it )->featurePairs().first();
+    const FeatureLayer fl2 = ( *it )->featurePairs()[1];
     if ( fl1.feature.id() == featureId || fl2.feature.id() == featureId )
     {
       it = mErrorList.erase( it );
@@ -201,7 +201,7 @@ void checkDock::configure()
 
 void checkDock::errorListClicked( const QModelIndex &index )
 {
-  int row = index.row();
+  const int row = index.row();
   QgsRectangle r = mErrorList.at( row )->boundingBox();
   r.scale( 1.5 );
   QgsMapCanvas *canvas = qgsInterface->mapCanvas();
@@ -298,8 +298,8 @@ void checkDock::errorListClicked( const QModelIndex &index )
 
 void checkDock::fix()
 {
-  int row = mErrorTableView->currentIndex().row();
-  QString fixName = mFixBox->currentText();
+  const int row = mErrorTableView->currentIndex().row();
+  const QString fixName = mFixBox->currentText();
 
   if ( row == -1 )
     return;
@@ -331,9 +331,9 @@ void checkDock::runTests( ValidateType type )
     if ( mTest->testCanceled() )
       break;
 
-    QString testName = mTestTable->item( i, 0 )->text();
-    QString layer1Str = mTestTable->item( i, 3 )->text();
-    QString layer2Str = mTestTable->item( i, 4 )->text();
+    const QString testName = mTestTable->item( i, 0 )->text();
+    const QString layer1Str = mTestTable->item( i, 3 )->text();
+    const QString layer2Str = mTestTable->item( i, 4 )->text();
 
     // test if layer1 is in the registry
     if ( !( ( QgsVectorLayer * )QgsProject::instance()->mapLayers().contains( layer1Str ) ) )
@@ -365,7 +365,7 @@ void checkDock::runTests( ValidateType type )
       TopolError *te = *it;
       te->conflict();
 
-      QgsSettings settings;
+      const QgsSettings settings;
       if ( te->conflict().type() == QgsWkbTypes::PolygonGeometry )
       {
         rb = new QgsRubberBand( qgsInterface->mapCanvas(), QgsWkbTypes::PolygonGeometry );

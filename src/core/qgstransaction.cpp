@@ -36,8 +36,8 @@ QgsTransaction *QgsTransaction::create( const QSet<QgsVectorLayer *> &layers )
 
   QgsVectorLayer *firstLayer = *layers.constBegin();
 
-  QString connStr = connectionString( firstLayer->source() );
-  QString providerKey = firstLayer->providerType();
+  const QString connStr = connectionString( firstLayer->source() );
+  const QString providerKey = firstLayer->providerType();
   std::unique_ptr<QgsTransaction> transaction( QgsTransaction::create( connStr, providerKey ) );
   if ( transaction )
   {
@@ -74,10 +74,10 @@ QString QgsTransaction::removeLayerIdOrName( const QString &str )
 
   for ( int i = 0; i < 2; i++ )
   {
-    int pos = res.indexOf( i == 0 ? QLatin1String( "|layername=" ) :  QLatin1String( "|layerid=" ) );
+    const int pos = res.indexOf( i == 0 ? QLatin1String( "|layername=" ) :  QLatin1String( "|layerid=" ) );
     if ( pos >= 0 )
     {
-      int end = res.indexOf( '|', pos + 1 );
+      const int end = res.indexOf( '|', pos + 1 );
       if ( end >= 0 )
       {
         res = res.mid( 0, pos ) + res.mid( end );

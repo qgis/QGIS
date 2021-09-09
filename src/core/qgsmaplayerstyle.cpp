@@ -49,7 +49,7 @@ void QgsMapLayerStyle::readFromLayer( QgsMapLayer *layer )
 {
   QString errorMsg;
   QDomDocument doc;
-  QgsReadWriteContext context;
+  const QgsReadWriteContext context;
   layer->exportNamedStyle( doc, errorMsg, context );
   if ( !errorMsg.isEmpty() )
   {

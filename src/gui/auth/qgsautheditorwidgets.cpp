@@ -72,7 +72,7 @@ void QgsAuthMethodPlugins::setupTable()
 
 void QgsAuthMethodPlugins::populateTable()
 {
-  QStringList authMethodKeys = QgsApplication::authManager()->authMethodsKeys();
+  const QStringList authMethodKeys = QgsApplication::authManager()->authMethodsKeys();
 
   int i = 0;
   const auto constAuthMethodKeys = authMethodKeys;
@@ -269,7 +269,7 @@ void QgsAuthEditorWidgets::eraseAuthenticationDatabase()
 
 void QgsAuthEditorWidgets::authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level )
 {
-  int levelint = static_cast<int>( level );
+  const int levelint = static_cast<int>( level );
   messageBar()->pushMessage( authtag, message, ( Qgis::MessageLevel )levelint );
 }
 

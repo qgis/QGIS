@@ -60,7 +60,7 @@ float QgsOnlineTerrainGenerator::heightAt( double x, double y, const Qgs3DMapSet
 
 void QgsOnlineTerrainGenerator::writeXml( QDomElement &elem ) const
 {
-  QgsRectangle r = mExtent;
+  const QgsRectangle r = mExtent;
   QDomElement elemExtent = elem.ownerDocument().createElement( QStringLiteral( "extent" ) );
   elemExtent.setAttribute( QStringLiteral( "xmin" ), QString::number( r.xMinimum() ) );
   elemExtent.setAttribute( QStringLiteral( "xmax" ), QString::number( r.xMaximum() ) );
@@ -79,11 +79,11 @@ void QgsOnlineTerrainGenerator::readXml( const QDomElement &elem )
   mResolution = elem.attribute( QStringLiteral( "resolution" ) ).toInt();
   mSkirtHeight = elem.attribute( QStringLiteral( "skirt-height" ) ).toFloat();
 
-  QDomElement elemExtent = elem.firstChildElement( QStringLiteral( "extent" ) );
-  double xmin = elemExtent.attribute( QStringLiteral( "xmin" ) ).toDouble();
-  double xmax = elemExtent.attribute( QStringLiteral( "xmax" ) ).toDouble();
-  double ymin = elemExtent.attribute( QStringLiteral( "ymin" ) ).toDouble();
-  double ymax = elemExtent.attribute( QStringLiteral( "ymax" ) ).toDouble();
+  const QDomElement elemExtent = elem.firstChildElement( QStringLiteral( "extent" ) );
+  const double xmin = elemExtent.attribute( QStringLiteral( "xmin" ) ).toDouble();
+  const double xmax = elemExtent.attribute( QStringLiteral( "xmax" ) ).toDouble();
+  const double ymin = elemExtent.attribute( QStringLiteral( "ymin" ) ).toDouble();
+  const double ymax = elemExtent.attribute( QStringLiteral( "ymax" ) ).toDouble();
 
   setExtent( QgsRectangle( xmin, ymin, xmax, ymax ) );
 

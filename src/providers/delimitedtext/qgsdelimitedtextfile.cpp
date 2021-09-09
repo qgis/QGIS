@@ -42,7 +42,7 @@ QgsDelimitedTextFile::QgsDelimitedTextFile( const QString &url )
   if ( ! url.isNull() ) setFromUrl( url );
 
   // For tests
-  QString bufferSizeStr( getenv( "QGIS_DELIMITED_TEXT_FILE_BUFFER_SIZE" ) );
+  const QString bufferSizeStr( getenv( "QGIS_DELIMITED_TEXT_FILE_BUFFER_SIZE" ) );
   mMaxBufferSize = bufferSizeStr.isEmpty() ? 10 * 1024 * 1024 : bufferSizeStr.toInt();
 }
 
@@ -118,7 +118,7 @@ void QgsDelimitedTextFile::resetDefinition()
 // Extract the provider definition from the url
 bool QgsDelimitedTextFile::setFromUrl( const QString &url )
 {
-  QUrl qurl = QUrl::fromEncoded( url.toLatin1() );
+  const QUrl qurl = QUrl::fromEncoded( url.toLatin1() );
   return setFromUrl( qurl );
 }
 
@@ -408,7 +408,7 @@ void QgsDelimitedTextFile::setFieldNames( const QStringList &names )
   for ( QString name : constNames )
   {
     bool nameOk = true;
-    int fieldNo = mFieldNames.size() + 1;
+    const int fieldNo = mFieldNames.size() + 1;
     name = name.trimmed();
     if ( name.length() > mMaxNameLength ) name = name.mid( 0, mMaxNameLength );
 
@@ -421,7 +421,7 @@ void QgsDelimitedTextFile::setFieldNames( const QStringList &names )
     // valid if the number matches its column number..
     else if ( const QRegularExpressionMatch match = mDefaultFieldRegexp.match( name ); match.capturedStart() == 0 )
     {
-      int col = match.captured( 1 ).toInt();
+      const int col = match.captured( 1 ).toInt();
       nameOk = col == fieldNo;
     }
     // Otherwise it is valid if isn't the name of an existing field...
@@ -434,7 +434,7 @@ void QgsDelimitedTextFile::setFieldNames( const QStringList &names )
     if ( ! nameOk )
     {
       int suffix = 0;
-      QString basename = name + "_%1";
+      const QString basename = name + "_%1";
       while ( true )
       {
         suffix++;
@@ -567,7 +567,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextLine( QString &buffer, bo
 {
   if ( ! mFile )
   {
-    Status status = reset();
+    const Status status = reset();
     if ( status != RecordOk ) return status;
   }
   if ( mLineNumber == 0 )
@@ -622,7 +622,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextLine( QString &buffer, bo
         {
           // If we are just at the end of the buffer, read an extra character
           // from the stream
-          QString newChar = mCodec->toUnicode( mFile->read( 1 ) );
+          const QString newChar = mCodec->toUnicode( mFile->read( 1 ) );
           mBuffer += newChar;
           if ( newChar == '\n' )
           {
@@ -723,7 +723,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseRegexp( QString &buffer,
   }
 
   int pos = 0;
-  int size = buffer.size();
+  const int size = buffer.size();
   while ( true )
   {
     if ( pos >= size )
@@ -800,7 +800,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QString &buffer,
       break;
     }
 
-    QChar c = buffer[cp];
+    const QChar c = buffer[cp];
     cp++;
 
     // If escaped, then just append the character
@@ -821,10 +821,10 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QString &buffer,
 
     bool isQuote = false;
     bool isEscape = false;
-    bool isDelim = mDelimChars.contains( c );
+    const bool isDelim = mDelimChars.contains( c );
     if ( ! isDelim )
     {
-      bool isQuoteChar = mQuoteChar.contains( c );
+      const bool isQuoteChar = mQuoteChar.contains( c );
       isQuote = quoted ? c == quoteChar : isQuoteChar;
       isEscape = mEscapeChar.contains( c );
       if ( isQuoteChar && isEscape ) isEscape = isQuote;

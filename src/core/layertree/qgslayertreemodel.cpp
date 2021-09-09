@@ -199,54 +199,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         return QVariant();
 
       // icons possibly overriding default icon
-      QIcon icon;
-
-      switch ( layer->type() )
-      {
-        case QgsMapLayerType::RasterLayer:
-          icon = QgsIconUtils::iconRaster();
-          break;
-
-        case QgsMapLayerType::MeshLayer:
-          icon = QgsIconUtils::iconMesh();
-          break;
-
-        case QgsMapLayerType::VectorTileLayer:
-          icon = QgsIconUtils::iconVectorTile();
-          break;
-
-        case QgsMapLayerType::PointCloudLayer:
-          icon = QgsIconUtils::iconPointCloud();
-          break;
-
-        case QgsMapLayerType::VectorLayer:
-        {
-          QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-          switch ( vlayer->geometryType() )
-          {
-            case QgsWkbTypes::PointGeometry:
-              icon = QgsIconUtils::iconPoint();
-              break;
-            case QgsWkbTypes::LineGeometry:
-              icon = QgsIconUtils::iconLine();
-              break;
-            case QgsWkbTypes::PolygonGeometry:
-              icon = QgsIconUtils::iconPolygon();
-              break;
-            case QgsWkbTypes::UnknownGeometry:
-              icon = QgsIconUtils::iconGeometryCollection();
-              break;
-            case QgsWkbTypes::NullGeometry:
-              icon = QgsIconUtils::iconTable();
-              break;
-          }
-          break;
-        }
-
-        case QgsMapLayerType::PluginLayer:
-        case QgsMapLayerType::AnnotationLayer:
-          break;
-      }
+      QIcon icon = QgsIconUtils::iconForLayer( layer );
 
       // if there's just on legend entry that should be embedded in layer - do that!
       if ( testFlag( ShowLegend ) && legendEmbeddedInParent( nodeLayer ) )
@@ -254,7 +207,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         icon = legendIconEmbeddedInParent( nodeLayer );
       }
 
-      if ( layer->isEditable() && testFlag( UseTextFormatting ) )
+      if ( !icon.isNull() && layer->isEditable() && !( layer->properties() & Qgis::MapLayerProperty::UsersCannotToggleEditing ) && testFlag( UseTextFormatting ) )
       {
         const int iconSize = scaleIconSize( 16 );
         QPixmap pixmap( icon.pixmap( iconSize, iconSize ) );
@@ -941,9 +894,9 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer *nodeLayer )
   // using unique connection because there may be temporarily more nodes for a layer than just one
   // which would create multiple connections, however disconnect() would disconnect all multiple connections
   // even if we wanted to disconnect just one connection in each call.
-  connect( layer, &QgsMeshLayer::editingStarted, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
-  connect( layer, &QgsMeshLayer::editingStopped, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
-  connect( layer, &QgsMeshLayer::layerModified, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
+  connect( layer, &QgsMapLayer::editingStarted, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
+  connect( layer, &QgsMapLayer::editingStopped, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
+  connect( layer, &QgsMapLayer::layerModified, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
 
   emit dataChanged( node2index( nodeLayer ), node2index( nodeLayer ) );
 }

@@ -56,7 +56,7 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer *laye
   mButtonSelect->addAction( mActionSelectIntersect );
   mButtonSelect->setDefaultAction( mActionSelect );
 
-  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+  const QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
   mExpressionBuilder->initWithLayer( layer, context, QStringLiteral( "selection" ) );
   mExpressionBuilder->setExpressionText( startText );
 
@@ -155,11 +155,11 @@ void QgsExpressionSelectionDialog::mButtonZoomToFeatures_clicked()
   if ( mExpressionBuilder->expressionText().isEmpty() || !mMapCanvas )
     return;
 
-  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+  const QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
 
-  QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( mExpressionBuilder->expressionText() )
-                              .setExpressionContext( context )
-                              .setNoAttributes();
+  const QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( mExpressionBuilder->expressionText() )
+                                    .setExpressionContext( context )
+                                    .setNoAttributes();
 
   QgsFeatureIterator features = mLayer->getFeatures( request );
 
@@ -169,11 +169,11 @@ void QgsExpressionSelectionDialog::mButtonZoomToFeatures_clicked()
   int featureCount = 0;
   while ( features.nextFeature( feat ) )
   {
-    QgsGeometry geom = feat.geometry();
+    const QgsGeometry geom = feat.geometry();
     if ( geom.isNull() || geom.constGet()->isEmpty() )
       continue;
 
-    QgsRectangle r = mMapCanvas->mapSettings().layerExtentToOutputExtent( mLayer, geom.boundingBox() );
+    const QgsRectangle r = mMapCanvas->mapSettings().layerExtentToOutputExtent( mLayer, geom.boundingBox() );
     bbox.combineExtentWith( r );
     featureCount++;
   }

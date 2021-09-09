@@ -430,16 +430,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     }
   }
 
-  if ( srs.isValid() )
-  {
-    QString srsWkt = srs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL );
-    QgsDebugMsgLevel( "WKT to save as is " + srsWkt, 2 );
-    mOgrRef = OSRNewSpatialReference( srsWkt.toLocal8Bit().constData() );
-    if ( mOgrRef )
-    {
-      OSRSetAxisMappingStrategy( mOgrRef, OAMS_TRADITIONAL_GIS_ORDER );
-    }
-  }
+  mOgrRef = QgsOgrUtils::crsToOGRSpatialReference( srs );
 
   // datasource created, now create the output layer
   OGRwkbGeometryType wkbType = ogrTypeFromWkbType( geometryType );
@@ -2895,7 +2886,7 @@ QgsVectorFileWriter::~QgsVectorFileWriter()
 
   if ( mOgrRef )
   {
-    OSRDestroySpatialReference( mOgrRef );
+    OSRRelease( mOgrRef );
   }
 }
 

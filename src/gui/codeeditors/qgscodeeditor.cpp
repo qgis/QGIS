@@ -174,7 +174,7 @@ QFont QgsCodeEditor::lexerFont() const
 
   QFont font = QFontDatabase::systemFont( QFontDatabase::FixedFont );
 
-  QgsSettings settings;
+  const QgsSettings settings;
   if ( !mFontFamily.isEmpty() )
     font.setFamily( mFontFamily );
 
@@ -191,7 +191,7 @@ QFont QgsCodeEditor::lexerFont() const
     font.setPointSize( mFontSize );
   else
   {
-    int fontSize = settings.value( QStringLiteral( "qgis/stylesheet/fontPointSize" ), 10 ).toInt();
+    const int fontSize = settings.value( QStringLiteral( "qgis/stylesheet/fontPointSize" ), 10 ).toInt();
     font.setPointSize( fontSize );
   }
 #endif
@@ -215,7 +215,7 @@ void QgsCodeEditor::runPostLexerConfigurationTasks()
 
 void QgsCodeEditor::setSciWidget()
 {
-  QFont font = lexerFont();
+  const QFont font = lexerFont();
   setFont( font );
 
   setUtf8( true );
@@ -240,7 +240,7 @@ void QgsCodeEditor::setSciWidget()
   setIndentationGuidesBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginBackground ) );
   // whether margin will be shown
   setFoldingVisible( mFolding );
-  QColor foldColor = lexerColor( QgsCodeEditorColorScheme::ColorRole::Fold );
+  const QColor foldColor = lexerColor( QgsCodeEditorColorScheme::ColorRole::Fold );
   setFoldMarginColors( foldColor, foldColor );
   // indentation
   setAutoIndent( true );
@@ -344,7 +344,7 @@ QColor QgsCodeEditor::defaultColor( QgsCodeEditorColorScheme::ColorRole role, co
   if ( theme.isEmpty() && QgsApplication::instance()->themeName() == QLatin1String( "default" ) )
   {
     // if using default theme, take certain colors from the palette
-    QPalette pal = qApp->palette();
+    const QPalette pal = qApp->palette();
 
     switch ( role )
     {
@@ -361,7 +361,7 @@ QColor QgsCodeEditor::defaultColor( QgsCodeEditorColorScheme::ColorRole role, co
     // non default theme (e.g. Blend of Gray). Take colors from theme ini file...
     const QSettings ini( QgsApplication::instance()->uiThemes().value( QgsApplication::instance()->themeName() ) + "/qscintilla.ini", QSettings::IniFormat );
 
-    static QMap< QgsCodeEditorColorScheme::ColorRole, QString > sColorRoleToIniKey
+    static const QMap< QgsCodeEditorColorScheme::ColorRole, QString > sColorRoleToIniKey
     {
       {QgsCodeEditorColorScheme::ColorRole::Default, QStringLiteral( "python/defaultFontColor" ) },
       {QgsCodeEditorColorScheme::ColorRole::Keyword, QStringLiteral( "python/keywordFontColor" ) },
@@ -446,7 +446,7 @@ QFont QgsCodeEditor::getMonospaceFont()
 {
   QFont font = QFontDatabase::systemFont( QFontDatabase::FixedFont );
 
-  QgsSettings settings;
+  const QgsSettings settings;
   if ( !settings.value( QStringLiteral( "codeEditor/fontfamily" ), QString(), QgsSettings::Gui ).toString().isEmpty() )
     font.setFamily( settings.value( QStringLiteral( "codeEditor/fontfamily" ), QString(), QgsSettings::Gui ).toString() );
 
@@ -465,7 +465,7 @@ QFont QgsCodeEditor::getMonospaceFont()
     font.setPointSize( fontSize );
   else
   {
-    int fontSize = settings.value( QStringLiteral( "qgis/stylesheet/fontPointSize" ), 10 ).toInt();
+    const int fontSize = settings.value( QStringLiteral( "qgis/stylesheet/fontPointSize" ), 10 ).toInt();
     font.setPointSize( fontSize );
   }
 #endif
@@ -504,7 +504,7 @@ void QgsCodeEditor::addWarning( const int lineNumber, const QString &warning )
 
 void QgsCodeEditor::clearWarnings()
 {
-  for ( int line : mWarningLines )
+  for ( const int line : mWarningLines )
   {
     markerDelete( line );
     clearAnnotations( line );

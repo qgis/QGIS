@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsFileWidget : QWidget
 {
 %Docstring(signature="appended")
@@ -72,7 +74,7 @@ Sets the current file ``path``.
 .. seealso:: :py:func:`filePath`
 %End
 
-    void setReadOnly( bool readOnly );
+    virtual void setReadOnly( bool readOnly );
 %Docstring
 Sets whether the widget should be read only.
 %End
@@ -257,6 +259,40 @@ the appearance and behavior of the line edit portion of the widget.
     void fileChanged( const QString &path );
 %Docstring
 Emitted whenever the current file or directory ``path`` is changed.
+%End
+
+  protected:
+
+    virtual void updateLayout();
+%Docstring
+Update buttons visibility
+%End
+
+    virtual void setSelectedFileNames( QStringList fileNames );
+%Docstring
+Called whenever user select ``fileNames`` from dialog
+%End
+
+    static bool isMultiFiles( const QString &path );
+%Docstring
+Returns true if ``path`` is a multifiles
+%End
+
+    void setFilePaths( const QStringList &filePaths );
+%Docstring
+Update filePath according to ``filePaths`` list
+%End
+
+
+
+    QString toUrl( const QString &path ) const;
+%Docstring
+returns a HTML code with a link to the given file path
+%End
+
+    QString relativePath( const QString &filePath, bool removeRelative ) const;
+%Docstring
+Returns a filePath with relative path options applied (or not) !
 %End
 
 };

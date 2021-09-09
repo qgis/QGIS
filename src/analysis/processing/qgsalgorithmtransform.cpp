@@ -109,7 +109,7 @@ QgsFeatureList QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsPr
     QgsGeometry g = feature.geometry();
     try
     {
-      if ( g.transform( mTransform ) == 0 )
+      if ( g.transform( mTransform ) == Qgis::GeometryOperationResult::Success )
       {
         feature.setGeometry( g );
       }

@@ -44,7 +44,7 @@ void QgsGpsBearingItem::setGpsPosition( const QgsPointXY &point )
   //transform to map crs
   if ( mMapCanvas )
   {
-    QgsCoordinateTransform t( mWgs84CRS, mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+    const QgsCoordinateTransform t( mWgs84CRS, mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
     try
     {
       mCenter = t.transform( mCenterWGS84 );
@@ -77,7 +77,7 @@ void QgsGpsBearingItem::updateLine()
 {
   QPolygonF bearingLine;
 
-  QgsCoordinateTransform wgs84ToCanvas( mWgs84CRS, mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
+  const QgsCoordinateTransform wgs84ToCanvas( mWgs84CRS, mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
 
   try
   {

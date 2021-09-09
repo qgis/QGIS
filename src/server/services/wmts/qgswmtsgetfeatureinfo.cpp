@@ -37,8 +37,8 @@ namespace QgsWmts
     query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::J ), params.j() );
     query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::INFO_FORMAT ), params.infoFormatAsString() );
 
-    QgsServerParameters wmsParams( query );
-    QgsServerRequest wmsRequest( "?" + query.query( QUrl::FullyDecoded ) );
+    const QgsServerParameters wmsParams( query );
+    const QgsServerRequest wmsRequest( "?" + query.query( QUrl::FullyDecoded ) );
     QgsService *service = serverIface->serviceRegistry()->getService( wmsParams.service(), wmsParams.version() );
     service->executeRequest( wmsRequest, response, project );
   }

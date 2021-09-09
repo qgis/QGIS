@@ -203,7 +203,7 @@ void TestQgsPostgresProvider::testQuotedValueBigInt()
   QList<int> pkAttrs;
   QVariantList vlst;
 
-  std::shared_ptr< QgsPostgresSharedData > sdata( new QgsPostgresSharedData() );
+  const std::shared_ptr< QgsPostgresSharedData > sdata( new QgsPostgresSharedData() );
 
   QgsField f0, f1, f2, f3;
 
@@ -304,9 +304,9 @@ void TestQgsPostgresProvider::testWhereClauseFids()
 
   QgsFields fields;
   QList<int> pkAttrs;
-  QString clause;
+  const QString clause;
 
-  std::shared_ptr< QgsPostgresSharedData > sdata( new QgsPostgresSharedData() );
+  const std::shared_ptr< QgsPostgresSharedData > sdata( new QgsPostgresSharedData() );
 
   QgsField f0, f1, f2, f3;
 

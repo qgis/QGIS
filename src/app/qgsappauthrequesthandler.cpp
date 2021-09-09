@@ -33,11 +33,11 @@ void QgsAppAuthRequestHandler::handleAuthRequest( QNetworkReply *reply, QAuthent
 
   if ( username.isEmpty() && password.isEmpty() && reply->request().hasRawHeader( "Authorization" ) )
   {
-    QByteArray header( reply->request().rawHeader( "Authorization" ) );
+    const QByteArray header( reply->request().rawHeader( "Authorization" ) );
     if ( header.startsWith( "Basic " ) )
     {
-      QByteArray auth( QByteArray::fromBase64( header.mid( 6 ) ) );
-      int pos = auth.indexOf( ':' );
+      const QByteArray auth( QByteArray::fromBase64( header.mid( 6 ) ) );
+      const int pos = auth.indexOf( ':' );
       if ( pos >= 0 )
       {
         username = auth.left( pos );
@@ -48,10 +48,10 @@ void QgsAppAuthRequestHandler::handleAuthRequest( QNetworkReply *reply, QAuthent
 
   for ( ;; )
   {
-    bool ok = QgsCredentials::instance()->get(
-                QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
-                username, password,
-                QObject::tr( "Authentication required" ) );
+    const bool ok = QgsCredentials::instance()->get(
+                      QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
+                      username, password,
+                      QObject::tr( "Authentication required" ) );
     if ( !ok )
       return;
 

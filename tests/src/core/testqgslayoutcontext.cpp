@@ -61,7 +61,7 @@ void TestQgsLayoutContext::initTestCase()
 
 void TestQgsLayoutContext::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  const QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -91,7 +91,7 @@ void TestQgsLayoutContext::creation()
 void TestQgsLayoutContext::flags()
 {
   QgsLayoutRenderContext context( nullptr );
-  QSignalSpy spyFlagsChanged( &context, &QgsLayoutRenderContext::flagsChanged );
+  const QSignalSpy spyFlagsChanged( &context, &QgsLayoutRenderContext::flagsChanged );
 
   //test getting and setting flags
   context.setFlags( QgsLayoutRenderContext::Flags( QgsLayoutRenderContext::FlagAntialiasing | QgsLayoutRenderContext::FlagUseAdvancedEffects ) );
@@ -150,7 +150,7 @@ void TestQgsLayoutContext::layer()
   QgsLayout l( QgsProject::instance() );
   l.reportContext().setLayer( layer );
   //test that expression context created for layout contains report context layer scope
-  QgsExpressionContext expContext  = l.createExpressionContext();
+  const QgsExpressionContext expContext  = l.createExpressionContext();
   QCOMPARE( QgsExpressionUtils::getVectorLayer( expContext.variable( "layer" ), nullptr ), layer );
 
   delete layer;
@@ -160,7 +160,7 @@ void TestQgsLayoutContext::dpi()
 {
   QgsLayoutRenderContext context( nullptr );
 
-  QSignalSpy spyDpiChanged( &context, &QgsLayoutRenderContext::dpiChanged );
+  const QSignalSpy spyDpiChanged( &context, &QgsLayoutRenderContext::dpiChanged );
   context.setDpi( 600 );
   QCOMPARE( context.dpi(), 600.0 );
   QCOMPARE( context.measurementConverter().dpi(), 600.0 );
@@ -244,7 +244,7 @@ void TestQgsLayoutContext::geometry()
   QCOMPARE( context.currentGeometry( layer->crs() ).asWkt(), f.geometry().asWkt() );
 
   // clear cache
-  QgsFeature f2;
+  const QgsFeature f2;
   context.setFeature( f2 );
   QVERIFY( context.currentGeometry().isNull() );
   QVERIFY( context.currentGeometry( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) ).isNull() );
@@ -258,7 +258,7 @@ void TestQgsLayoutContext::scales()
   scales << 1 << 15 << 5 << 10;
 
   QgsLayoutRenderContext context( nullptr );
-  QSignalSpy spyScalesChanged( &context, &QgsLayoutRenderContext::predefinedScalesChanged );
+  const QSignalSpy spyScalesChanged( &context, &QgsLayoutRenderContext::predefinedScalesChanged );
   context.setPredefinedScales( scales );
 
   QCOMPARE( spyScalesChanged.count(), 1 );

@@ -93,8 +93,8 @@ void TestQgsOpenClUtils::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  QString float32FileName = QStringLiteral( TEST_DATA_DIR ) + '/' + "/raster/band1_float32_noct_epsg4326.tif";
-  QFileInfo float32RasterFileInfo( float32FileName );
+  const QString float32FileName = QStringLiteral( TEST_DATA_DIR ) + '/' + "/raster/band1_float32_noct_epsg4326.tif";
+  const QFileInfo float32RasterFileInfo( float32FileName );
   mFloat32RasterLayer = new QgsRasterLayer( float32RasterFileInfo.filePath(),
       float32RasterFileInfo.completeBaseName() );
 }
@@ -135,11 +135,11 @@ void TestQgsOpenClUtils::testMakeRunProgram()
 void TestQgsOpenClUtils::_testMakeRunProgram()
 {
 
-  cl_int err = 0;
+  const cl_int err = 0;
 
   QVERIFY( err == 0 );
 
-  cl::Context ctx = QgsOpenClUtils::context();
+  const cl::Context ctx = QgsOpenClUtils::context();
   cl::CommandQueue queue = QgsOpenClUtils::commandQueue();
 
   std::vector<float> a_vec = {1, 10, 100};
@@ -149,7 +149,7 @@ void TestQgsOpenClUtils::_testMakeRunProgram()
   cl::Buffer b_buf( queue, b_vec.begin(), b_vec.end(), true );
   cl::Buffer c_buf( queue, c_vec.begin(), c_vec.end(), false );
 
-  cl::Program program = QgsOpenClUtils::buildProgram( QString::fromStdString( source() ) );
+  const cl::Program program = QgsOpenClUtils::buildProgram( QString::fromStdString( source() ) );
 
   auto kernel =
     cl::KernelFunctor <
@@ -181,7 +181,7 @@ void TestQgsOpenClUtils::testProgramSource()
   tmpFile.open( );
   tmpFile.write( QByteArray::fromStdString( source( ) ) );
   tmpFile.flush();
-  QString baseName = tmpFile.fileName().replace( ".cl", "" ).replace( QDir::tempPath(), "" );
+  const QString baseName = tmpFile.fileName().replace( ".cl", "" ).replace( QDir::tempPath(), "" );
   QVERIFY( ! QgsOpenClUtils::sourceFromBaseName( baseName ).isEmpty() );
 }
 
@@ -200,7 +200,7 @@ void TestQgsOpenClUtils::testDevices()
 
 void TestQgsOpenClUtils::testActiveDeviceVersion()
 {
-  QString version = QgsOpenClUtils::activePlatformVersion();
+  const QString version = QgsOpenClUtils::activePlatformVersion();
   qDebug() << "OPENCL VERSION" << version;
   QVERIFY( version.length() == 3 );
 }

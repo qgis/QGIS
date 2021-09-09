@@ -114,7 +114,7 @@ QVariantMap QgsDbscanClusteringAlgorithm::processAlgorithm( const QVariantMap &p
 
   const std::size_t minSize = static_cast< std::size_t>( parameterAsInt( parameters, QStringLiteral( "MIN_SIZE" ), context ) );
   const double eps1 = parameterAsDouble( parameters, QStringLiteral( "EPS" ), context );
-  const double eps2 = parameterAsDouble( parameters, QStringLiteral( "EPS2" ), context ) * 24 * 60 * 60;
+  const double eps2 = parameterAsDouble( parameters, QStringLiteral( "EPS2" ), context );
   const bool borderPointsAreNoise = parameterAsBoolean( parameters, QStringLiteral( "DBSCAN*" ), context );
 
   QgsFields outputFields = source->fields();
@@ -188,7 +188,7 @@ QVariantMap QgsDbscanClusteringAlgorithm::processAlgorithm( const QVariantMap &p
 
     feedback->setProgress( 90 + i * writeStep );
     QgsAttributes attr = feat.attributes();
-    auto cluster = idToCluster.find( feat.id() );
+    const auto cluster = idToCluster.find( feat.id() );
     if ( cluster != idToCluster.end() )
     {
       attr << cluster->second  << clusterSize[ cluster->second ];
@@ -298,7 +298,7 @@ void QgsDbscanClusteringAlgorithm::stdbscan( const std::size_t minSize,
         break;
       }
 
-      QgsSpatialIndexKDBushData j = *within.begin();
+      const QgsSpatialIndexKDBushData j = *within.begin();
       within.erase( within.begin() );
 
       if ( visited.find( j.id ) != visited.end() )
@@ -311,7 +311,7 @@ void QgsDbscanClusteringAlgorithm::stdbscan( const std::size_t minSize,
       feedback->setProgress( ++i * step );
 
       // check from this point
-      QgsPointXY point2 = j.point();
+      const QgsPointXY point2 = j.point();
 
       std::unordered_set< QgsSpatialIndexKDBushData, KDBushDataHashById, KDBushDataEqualById > within2;
       index.within( point2, eps1, [&within2, point2Id = j.id, &idToDateTime, &eps2]( const QgsSpatialIndexKDBushData & data )

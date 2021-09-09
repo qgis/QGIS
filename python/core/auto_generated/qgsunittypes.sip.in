@@ -583,12 +583,11 @@ Returns the conversion factor between the specified angular units.
 Returns an angle formatted as a friendly string.
 
 :param angle: angle to format
-:param decimals: number of decimal places to show
+:param decimals: number of decimal places to show. A value of -1 indicates that an appropriate number of decimal places should automatically be selected.
 :param unit: unit of angle
 
 :return: formatted angle string
 %End
-
 
     static QgsUnitTypes::DistanceValue scaledDistance( double distance, QgsUnitTypes::DistanceUnit unit, int decimals, bool keepBaseUnit = false );
 %Docstring

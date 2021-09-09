@@ -244,6 +244,15 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
   mFontMultiLineAlignComboBox->addItem( tr( "Right" ), QgsPalLayerSettings::MultiRight );
   mFontMultiLineAlignComboBox->addItem( tr( "Justify" ), QgsPalLayerSettings::MultiJustify );
 
+  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( QgsUnitTypes::AngleDegrees ), QgsUnitTypes::AngleDegrees );
+  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( QgsUnitTypes::AngleRadians ), QgsUnitTypes::AngleRadians );
+  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( QgsUnitTypes::AngleGon ), QgsUnitTypes::AngleGon );
+  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( QgsUnitTypes::AngleMinutesOfArc ), QgsUnitTypes::AngleMinutesOfArc );
+  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( QgsUnitTypes::AngleSecondsOfArc ), QgsUnitTypes::AngleSecondsOfArc );
+  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( QgsUnitTypes::AngleTurn ), QgsUnitTypes::AngleTurn );
+  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( QgsUnitTypes::AngleMilliradiansSI ), QgsUnitTypes::AngleMilliradiansSI );
+  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( QgsUnitTypes::AngleMilNATO ), QgsUnitTypes::AngleMilNATO );
+
   // connections for groupboxes with separate activation checkboxes (that need to honor data defined setting)
   connect( mBufferDrawChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
   connect( mBufferDrawDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsLabelingGui::updateUi );
@@ -424,6 +433,10 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   }
 
   chkPreserveRotation->setChecked( mSettings.preserveRotation );
+
+  mCoordRotationUnitComboBox->setCurrentIndex( 0 );
+  if ( mCoordRotationUnitComboBox->findData( static_cast< unsigned int >( mSettings.rotationUnit() ) ) >= 0 )
+    mCoordRotationUnitComboBox->setCurrentIndex( mCoordRotationUnitComboBox->findData( static_cast< unsigned int >( mSettings.rotationUnit() ) ) );
 
   mScaleBasedVisibilityChkBx->setChecked( mSettings.scaleVisibility );
   mMinScaleWidget->setScale( mSettings.minimumScale );
@@ -607,6 +620,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.useMaxLineLengthForAutoWrap = mAutoWrapTypeComboBox->currentIndex() == 0;
   lyr.multilineAlign = static_cast< QgsPalLayerSettings::MultiLineAlign >( mFontMultiLineAlignComboBox->currentData().toInt() );
   lyr.preserveRotation = chkPreserveRotation->isChecked();
+  lyr.setRotationUnit( static_cast< QgsUnitTypes::AngleUnit >( mCoordRotationUnitComboBox->currentData().toInt() ) );
   lyr.geometryGenerator = mGeometryGenerator->text();
   lyr.geometryGeneratorType = mGeometryGeneratorType->currentData().value<QgsWkbTypes::GeometryType>();
   lyr.geometryGeneratorEnabled = mGeometryGeneratorGroupBox->isChecked();
@@ -744,19 +758,19 @@ void QgsLabelingGui::saveFormat()
       // check if there is no format with same name
       if ( style->textFormatNames().contains( saveDlg.name() ) )
       {
-        int res = QMessageBox::warning( this, tr( "Save Text Format" ),
-                                        tr( "Format with name '%1' already exists. Overwrite?" )
-                                        .arg( saveDlg.name() ),
-                                        QMessageBox::Yes | QMessageBox::No );
+        const int res = QMessageBox::warning( this, tr( "Save Text Format" ),
+                                              tr( "Format with name '%1' already exists. Overwrite?" )
+                                              .arg( saveDlg.name() ),
+                                              QMessageBox::Yes | QMessageBox::No );
         if ( res != QMessageBox::Yes )
         {
           return;
         }
         style->removeTextFormat( saveDlg.name() );
       }
-      QStringList symbolTags = saveDlg.tags().split( ',' );
+      const QStringList symbolTags = saveDlg.tags().split( ',' );
 
-      QgsTextFormat newFormat = format();
+      const QgsTextFormat newFormat = format();
       style->addTextFormat( saveDlg.name(), newFormat );
       style->saveTextFormat( saveDlg.name(), newFormat, saveDlg.isFavorite(), symbolTags );
       break;
@@ -767,19 +781,19 @@ void QgsLabelingGui::saveFormat()
       // check if there is no settings with same name
       if ( style->labelSettingsNames().contains( saveDlg.name() ) )
       {
-        int res = QMessageBox::warning( this, tr( "Save Label Settings" ),
-                                        tr( "Label settings with the name '%1' already exist. Overwrite?" )
-                                        .arg( saveDlg.name() ),
-                                        QMessageBox::Yes | QMessageBox::No );
+        const int res = QMessageBox::warning( this, tr( "Save Label Settings" ),
+                                              tr( "Label settings with the name '%1' already exist. Overwrite?" )
+                                              .arg( saveDlg.name() ),
+                                              QMessageBox::Yes | QMessageBox::No );
         if ( res != QMessageBox::Yes )
         {
           return;
         }
         style->removeLabelSettings( saveDlg.name() );
       }
-      QStringList symbolTags = saveDlg.tags().split( ',' );
+      const QStringList symbolTags = saveDlg.tags().split( ',' );
 
-      QgsPalLayerSettings newSettings = layerSettings();
+      const QgsPalLayerSettings newSettings = layerSettings();
       style->addLabelSettings( saveDlg.name(), newSettings );
       style->saveLabelSettings( saveDlg.name(), newSettings, saveDlg.isFavorite(), symbolTags );
       break;
@@ -857,7 +871,7 @@ void QgsLabelingGui::updateGeometryTypeBasedWidgets()
   }
   else
   {
-    int idx = mFontMultiLineAlignComboBox->findData( QgsPalLayerSettings::MultiFollowPlacement );
+    const int idx = mFontMultiLineAlignComboBox->findData( QgsPalLayerSettings::MultiFollowPlacement );
     if ( idx >= 0 )
       mFontMultiLineAlignComboBox->removeItem( idx );
   }
@@ -903,7 +917,7 @@ void QgsLabelingGui::validateGeometryGeneratorExpression()
     {
       const QVariant result = expression.evaluate( &context );
       const QgsGeometry geometry = result.value<QgsGeometry>();
-      QgsWkbTypes::GeometryType configuredGeometryType = mGeometryGeneratorType->currentData().value<QgsWkbTypes::GeometryType>();
+      const QgsWkbTypes::GeometryType configuredGeometryType = mGeometryGeneratorType->currentData().value<QgsWkbTypes::GeometryType>();
       if ( geometry.isNull() )
       {
         mGeometryGeneratorWarningLabel->setText( tr( "Result of the expression is not a geometry" ) );
@@ -947,7 +961,7 @@ void QgsLabelingGui::determineGeometryGeneratorType()
 
 void QgsLabelingGui::calloutTypeChanged()
 {
-  QString newCalloutType = mCalloutStyleComboBox->currentData().toString();
+  const QString newCalloutType = mCalloutStyleComboBox->currentData().toString();
   QgsCalloutWidget *pew = qobject_cast< QgsCalloutWidget * >( mCalloutStackedWidget->currentWidget() );
   if ( pew )
   {
@@ -963,7 +977,7 @@ void QgsLabelingGui::calloutTypeChanged()
 
   // change callout to a new one (with different type)
   // base new callout on existing callout's properties
-  std::unique_ptr< QgsCallout > newCallout( am->createCallout( pew && pew->callout() ? pew->callout()->properties( QgsReadWriteContext() ) : QVariantMap(), QgsReadWriteContext() ) );
+  const std::unique_ptr< QgsCallout > newCallout( am->createCallout( pew && pew->callout() ? pew->callout()->properties( QgsReadWriteContext() ) : QVariantMap(), QgsReadWriteContext() ) );
   if ( !newCallout )
     return;
 

@@ -85,9 +85,6 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     //! Gets metadata about the layer in nice formatted html
     QString htmlMetadata();
 
-    //! Slot to update layer display name as original is edited
-    void mLayerOrigNameLineEdit_textEdited( const QString &text );
-
     //! Called when apply button is pressed or dialog is accepted
     void apply();
 

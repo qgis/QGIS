@@ -64,7 +64,7 @@ void TestQgsLayoutHtml::initTestCase()
 
 void TestQgsLayoutHtml::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -100,7 +100,7 @@ void TestQgsLayoutHtml::sourceMode()
 
   QgsLayoutChecker checker( QStringLiteral( "composerhtml_manual" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_html" ) );
-  bool result = checker.testLayout( mReport, 0, 100 );
+  const bool result = checker.testLayout( mReport, 0, 100 );
   QVERIFY( result );
 }
 
@@ -123,7 +123,7 @@ void TestQgsLayoutHtml::userStylesheets()
 
   QgsLayoutChecker checker( QStringLiteral( "composerhtml_userstylesheet" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_html" ) );
-  bool result = checker.testLayout( mReport, 0, 100 );
+  const bool result = checker.testLayout( mReport, 0, 100 );
   QVERIFY( result );
 }
 
@@ -144,7 +144,7 @@ void TestQgsLayoutHtml::evalExpressions()
 
   QgsLayoutChecker checker( QStringLiteral( "composerhtml_expressions_enabled" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_html" ) );
-  bool result = checker.testLayout( mReport );
+  const bool result = checker.testLayout( mReport );
   QVERIFY( result );
 }
 
@@ -163,7 +163,7 @@ void TestQgsLayoutHtml::evalExpressionsOff()
 
   QgsLayoutChecker checker( QStringLiteral( "composerhtml_expressions_disabled" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_html" ) );
-  bool result = checker.testLayout( mReport );
+  const bool result = checker.testLayout( mReport );
   QVERIFY( result );
 }
 
@@ -179,7 +179,7 @@ void TestQgsLayoutHtml::table()
 
   QgsLayoutChecker checker( QStringLiteral( "composerhtml_table" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_html" ) );
-  bool result = checker.testLayout( mReport );
+  const bool result = checker.testLayout( mReport );
   QVERIFY( result );
 }
 
@@ -305,7 +305,7 @@ void TestQgsLayoutHtml::javascriptSetFeature()
 
   QgsLayoutChecker checker( QStringLiteral( "composerhtml_setfeature" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_html" ) );
-  bool result = checker.testLayout( mReport );
+  const bool result = checker.testLayout( mReport );
   QVERIFY( result );
 
   QgsProject::instance()->removeMapLayers( QList<QgsMapLayer *>() << childLayer << parentLayer );

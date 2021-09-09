@@ -55,7 +55,7 @@ void TestQgsLayout3DMap::initTestCase()
 
   mProject.reset( new QgsProject );
 
-  QString dataDir( TEST_DATA_DIR );
+  const QString dataDir( TEST_DATA_DIR );
   mLayerDtm = new QgsRasterLayer( dataDir + "/3d/dtm.tif", "rgb", "gdal" );
   QVERIFY( mLayerDtm->isValid() );
   mProject->addMapLayer( mLayerDtm );
@@ -72,7 +72,7 @@ void TestQgsLayout3DMap::cleanupTestCase()
 {
   mProject.reset();
 
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -95,12 +95,12 @@ void TestQgsLayout3DMap::cleanup()
 
 void TestQgsLayout3DMap::testBasic()
 {
-  QgsRectangle fullExtent = mLayerDtm->extent();
+  const QgsRectangle fullExtent = mLayerDtm->extent();
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
-  map->setTerrainLayers( QList<QgsMapLayer *>() << mLayerDtm );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerDtm );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs() );
@@ -122,13 +122,13 @@ void TestQgsLayout3DMap::testBasic()
 
   QgsLayoutChecker checker( QStringLiteral( "composer3d_basic" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_3d" ) );
-  bool result = checker.testLayout( mReport, 0, 100 );
+  const bool result = checker.testLayout( mReport, 0, 100 );
   QVERIFY( result );
 
   QVERIFY( !map->isTemporal() );
 
-  QDateTime begin( QDate( 2020, 01, 01 ), QTime( 10, 0, 0 ), Qt::UTC );
-  QDateTime end = begin.addSecs( 3600 );
+  const QDateTime begin( QDate( 2020, 01, 01 ), QTime( 10, 0, 0 ), Qt::UTC );
+  const QDateTime end = begin.addSecs( 3600 );
   map3dItem->setTemporalRange( QgsDateTimeRange( begin, end ) );
 
   map3dItem->refresh();

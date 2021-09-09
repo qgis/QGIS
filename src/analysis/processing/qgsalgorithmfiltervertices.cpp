@@ -41,8 +41,8 @@ QString QgsFilterVerticesAlgorithmBase::shortHelpString() const
   return QObject::tr( "Filters away vertices based on their %1, returning geometries with only "
                       "vertex points that have a %1 ≥ the specified minimum value and ≤ "
                       "the maximum value.\n\n"
-                      "If the minimum value is not specified than only the maximum value is tested, "
-                      "and similarly if the maximum value is not specified than only the minimum value is tested.\n\n"
+                      "If the minimum value is not specified then only the maximum value is tested, "
+                      "and similarly if the maximum value is not specified then only the minimum value is tested.\n\n"
                       "Depending on the input geometry attributes and the filters used, "
                       "the resultant geometries created by this algorithm may no longer be valid." ).arg( componentString() );
 }

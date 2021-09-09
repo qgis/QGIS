@@ -117,6 +117,17 @@ as a result of an ongoing canvas render) will not be returned, and instead ``Non
 .. versionadded:: 2.4
 %End
 
+    const QgsRenderedItemResults *renderedItemResults( bool allowOutdatedResults = true ) const;
+%Docstring
+Gets access to the rendered item results (may be ``None``), which includes the results of rendering
+annotation items in the canvas map.
+
+If the ``allowOutdatedResults`` flag is ``False`` then outdated rendered item results (e.g.
+as a result of an ongoing canvas render) will not be returned, and instead ``None`` will be returned.
+
+.. versionadded:: 3.22
+%End
+
     void setCachingEnabled( bool enabled );
 %Docstring
 Set whether to cache images of rendered layers

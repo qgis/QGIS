@@ -105,7 +105,7 @@ QgsRasterBlock *QgsRasterNuller::block( int bandNo, QgsRectangle  const &extent,
   {
     for ( int j = 0; j < width; j++ )
     {
-      double value = inputBlock->valueAndNoData( i, j, isNoData );
+      const double value = inputBlock->valueAndNoData( i, j, isNoData );
 
       if ( QgsRasterRange::contains( value, mNoData.value( bandNo - 1 ) ) )
       {

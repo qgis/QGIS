@@ -133,7 +133,7 @@ QgsServiceModule *QgsServiceNativeLoader::loadNativeModule( const QString &locat
 void QgsServiceNativeLoader::unloadModules()
 {
   ModuleTable::iterator it  = mModules.begin();
-  ModuleTable::iterator end = mModules.end();
+  const ModuleTable::iterator end = mModules.end();
 
   while ( it != end )
   {
@@ -147,7 +147,7 @@ void QgsServiceNativeLoader::unloadModules()
 QgsServiceNativeModuleEntry *QgsServiceNativeLoader::findModuleEntry( const QString &location )
 {
   QgsServiceNativeModuleEntry *entry = nullptr;
-  ModuleTable::iterator item = mModules.find( location );
+  const ModuleTable::iterator item = mModules.find( location );
   if ( item != mModules.end() )
   {
     entry = item->get();

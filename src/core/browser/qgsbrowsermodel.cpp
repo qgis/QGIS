@@ -279,7 +279,8 @@ Qt::ItemFlags QgsBrowserModel::flags( const QModelIndex &index ) const
     flags |= Qt::ItemIsDropEnabled;
   Q_NOWARN_DEPRECATED_POP
 
-  if ( ptr->capabilities2() & Qgis::BrowserItemCapability::Rename )
+  if ( ( ptr->capabilities2() & Qgis::BrowserItemCapability::Rename )
+       || ( ptr->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile ) )
     flags |= Qt::ItemIsEditable;
 
   return flags;
@@ -347,7 +348,8 @@ bool QgsBrowserModel::setData( const QModelIndex &index, const QVariant &value, 
     return false;
   }
 
-  if ( !( item->capabilities2() & Qgis::BrowserItemCapability::Rename ) )
+  if ( !( item->capabilities2() & Qgis::BrowserItemCapability::Rename )
+       && !( item->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile ) )
     return false;
 
   switch ( role )
@@ -663,8 +665,12 @@ QMimeData *QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
     {
       QgsDataItem *ptr = reinterpret_cast< QgsDataItem * >( index.internalPointer() );
       const QgsMimeDataUtils::UriList uris = ptr->mimeUris();
-      for ( const auto &uri : std::as_const( uris ) )
+      for ( QgsMimeDataUtils::Uri uri : std::as_const( uris ) )
       {
+        if ( ptr->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile )
+        {
+          uri.filePath = ptr->path();
+        }
         lst.append( uri );
       }
     }

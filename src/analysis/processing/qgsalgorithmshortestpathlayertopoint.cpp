@@ -61,7 +61,7 @@ QVariantMap QgsShortestPathLayerToPointAlgorithm::processAlgorithm( const QVaria
 {
   loadCommonParams( parameters, context, feedback );
 
-  QgsPointXY endPoint = parameterAsPoint( parameters, QStringLiteral( "END_POINT" ), context, mNetwork->sourceCrs() );
+  const QgsPointXY endPoint = parameterAsPoint( parameters, QStringLiteral( "END_POINT" ), context, mNetwork->sourceCrs() );
 
   std::unique_ptr< QgsFeatureSource > startPoints( parameterAsSource( parameters, QStringLiteral( "START_POINTS" ), context ) );
   if ( !startPoints )
@@ -88,7 +88,7 @@ QVariantMap QgsShortestPathLayerToPointAlgorithm::processAlgorithm( const QVaria
 
   feedback->pushInfo( QObject::tr( "Calculating shortest paths…" ) );
   std::unique_ptr< QgsGraph > graph( mBuilder->takeGraph() );
-  int idxEnd = graph->findVertex( snappedPoints[0] );
+  const int idxEnd = graph->findVertex( snappedPoints[0] );
   int idxStart;
   int currentIdx;
 
@@ -137,7 +137,7 @@ QVariantMap QgsShortestPathLayerToPointAlgorithm::processAlgorithm( const QVaria
       route.push_front( graph->vertex( currentIdx ).point() );
     }
 
-    QgsGeometry geom = QgsGeometry::fromPolylineXY( route );
+    const QgsGeometry geom = QgsGeometry::fromPolylineXY( route );
     QgsFeature feat;
     feat.setFields( fields );
     attributes = sourceAttributes.value( i );

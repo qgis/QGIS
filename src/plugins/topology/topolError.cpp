@@ -40,7 +40,7 @@ bool TopolError::fixMove( const FeatureLayer &fl1, const FeatureLayer &fl2 )
 
 
   // 0 means success
-  QgsGeometry g = f1.geometry();
+  const QgsGeometry g = f1.geometry();
   QgsGeometry difference = g.makeDifference( f2.geometry() );
   if ( !difference.isNull() )
   {
@@ -93,14 +93,14 @@ bool TopolError::fixSnap()
   if ( !ok )
     return false;
 
-  QgsGeometry ge = f1.geometry();
+  const QgsGeometry ge = f1.geometry();
 
   QgsPolylineXY line = ge.asPolyline();
   QgsPolylineXY conflictLine = mConflict.asPolyline();
   line.last() = conflictLine.last();
 
   QgsGeometry newG = QgsGeometry::fromPolylineXY( line );
-  bool ret = fl.layer->changeGeometry( f1.id(), newG );
+  const bool ret = fl.layer->changeGeometry( f1.id(), newG );
 
   return ret;
 }

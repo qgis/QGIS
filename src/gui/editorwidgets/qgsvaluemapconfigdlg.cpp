@@ -101,7 +101,7 @@ void QgsValueMapConfigDlg::setConfig( const QVariantMap &config )
   else
   {
     int row = 0;
-    QVariantMap values = config.value( QStringLiteral( "map" ) ).toMap();
+    const QVariantMap values = config.value( QStringLiteral( "map" ) ).toMap();
     for ( QVariantMap::ConstIterator mit = values.constBegin(); mit != values.constEnd(); mit++, row++ )
     {
       if ( mit.value().isNull() )
@@ -133,7 +133,7 @@ void QgsValueMapConfigDlg::removeSelectedButtonPushed()
   {
     if ( list[i]->column() == 0 )
     {
-      int row = list[i]->row();
+      const int row = list[i]->row();
       if ( !rowsToRemove.contains( row ) )
       {
         rowsToRemove.insert( row );
@@ -151,7 +151,7 @@ void QgsValueMapConfigDlg::removeSelectedButtonPushed()
 void QgsValueMapConfigDlg::updateMap( const QMap<QString, QVariant> &map, bool insertNull )
 {
   QList<QPair<QString, QVariant>> orderedMap;
-  auto end = map.constEnd();
+  const auto end = map.constEnd();
   for ( auto it = map.constBegin(); it != end; ++it )
   {
     orderedMap.append( qMakePair( it.key(), it.value() ) );
@@ -232,7 +232,7 @@ bool QgsValueMapConfigDlg::eventFilter( QObject *watched, QEvent *event )
 
 void QgsValueMapConfigDlg::setRow( int row, const QString &value, const QString &description )
 {
-  QgsSettings settings;
+  const QgsSettings settings;
   QTableWidgetItem *valueCell = nullptr;
   QTableWidgetItem *descriptionCell = new QTableWidgetItem( description );
   tableWidget->insertRow( row );
@@ -296,9 +296,9 @@ void QgsValueMapConfigDlg::loadFromLayerButtonPushed()
 
 void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
 {
-  QgsSettings settings;
+  const QgsSettings settings;
 
-  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Value Map from File" ), QDir::homePath() );
+  const QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Value Map from File" ), QDir::homePath() );
   if ( fileName.isNull() )
     return;
 
@@ -323,7 +323,7 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
 
   while ( !s.atEnd() )
   {
-    QString l = s.readLine().trimmed();
+    const QString l = s.readLine().trimmed();
 
     QString key;
     QString val;

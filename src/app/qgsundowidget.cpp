@@ -110,10 +110,10 @@ void QgsUndoWidget::indexChanged( int curIndx )
     canRedo = mUndoStack->canRedo();
     curCount = mUndoStack->count();
   }
-  int offset = std::abs( mPreviousIndex - curIndx );
+  const int offset = std::abs( mPreviousIndex - curIndx );
 
   // when individually redoing, differentiate between last redo and a new command added to stack
-  bool lastRedo = ( mPreviousIndex == ( mPreviousCount - 1 ) && mPreviousCount == curCount && !canRedo );
+  const bool lastRedo = ( mPreviousIndex == ( mPreviousCount - 1 ) && mPreviousCount == curCount && !canRedo );
 
   if ( offset != 0 )
   {

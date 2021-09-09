@@ -47,7 +47,7 @@ void QgsArcgisVectorTileConnectionDialog::setConnection( const QString &name, co
 {
   mEditName->setText( name );
 
-  QgsVectorTileProviderConnection::Data conn = QgsVectorTileProviderConnection::decodedUri( uri );
+  const QgsVectorTileProviderConnection::Data conn = QgsVectorTileProviderConnection::decodedUri( uri );
   mEditUrl->setText( conn.url );
 
   mCheckBoxZMin->setChecked( conn.zMin != -1 );
@@ -104,7 +104,7 @@ void QgsArcgisVectorTileConnectionDialog::accept()
 
 void QgsArcgisVectorTileConnectionDialog::updateOkButtonState()
 {
-  bool enabled = !mEditName->text().isEmpty() && !mEditUrl->text().isEmpty();
+  const bool enabled = !mEditName->text().isEmpty() && !mEditUrl->text().isEmpty();
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
 }
 

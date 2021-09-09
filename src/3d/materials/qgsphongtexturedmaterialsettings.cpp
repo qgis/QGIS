@@ -103,7 +103,7 @@ Qt3DRender::QMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterial
     case QgsMaterialSettingsRenderingTechnique::TrianglesDataDefined:
     {
       bool fitsInCache = false;
-      QImage textureSourceImage = QgsApplication::imageCache()->pathAsImage( mDiffuseTexturePath, QSize(), true, 1.0, fitsInCache );
+      const QImage textureSourceImage = QgsApplication::imageCache()->pathAsImage( mDiffuseTexturePath, QSize(), true, 1.0, fitsInCache );
       ( void )fitsInCache;
 
       if ( !textureSourceImage.isNull() )

@@ -47,7 +47,8 @@
 #include "qgslocatorwidget.h"
 #include "qgslocator.h"
 #include "qgsmessagebar.h"
-
+#include "qgsappmaptools.h"
+#include "qgsmaptoolmodifyannotation.h"
 
 QgisAppInterface::QgisAppInterface( QgisApp *_qgis )
   : qgis( _qgis )
@@ -136,7 +137,7 @@ QgsVectorLayer *QgisAppInterface::addVectorLayer( const QString &vectorLayerPath
   QString nonNullBaseBame = baseName;
   if ( nonNullBaseBame.isEmpty() )
   {
-    QFileInfo fi( vectorLayerPath );
+    const QFileInfo fi( vectorLayerPath );
     nonNullBaseBame = fi.completeBaseName();
   }
   return qgis->addVectorLayer( vectorLayerPath, nonNullBaseBame, providerKey );
@@ -147,7 +148,7 @@ QgsRasterLayer *QgisAppInterface::addRasterLayer( const QString &rasterLayerPath
   QString nonNullBaseName = baseName;
   if ( nonNullBaseName.isEmpty() )
   {
-    QFileInfo fi( rasterLayerPath );
+    const QFileInfo fi( rasterLayerPath );
     nonNullBaseName = fi.completeBaseName();
   }
   return qgis->addRasterLayer( rasterLayerPath, nonNullBaseName, QString() );
@@ -812,7 +813,7 @@ void QgisAppInterface::cacheloadForm( const QString &uifile )
   {
     QUiLoader loader;
 
-    QFileInfo fi( uifile );
+    const QFileInfo fi( uifile );
     loader.setWorkingDirectory( fi.dir() );
     QWidget *myWidget = loader.load( &file );
     file.close();
@@ -906,4 +907,9 @@ void QgisAppInterface::setGpsPanelConnection( QgsGpsConnection *connection )
 QList<QgsMapDecoration *> QgisAppInterface::activeDecorations()
 {
   return qgis->activeDecorations();
+}
+
+QgsMapToolModifyAnnotation *QgisAppInterface::modifyAnnotationTool()
+{
+  return qobject_cast< QgsMapToolModifyAnnotation * >( qgis->mMapTools->mapTool( QgsAppMapTools::AnnotationEdit ) );
 }

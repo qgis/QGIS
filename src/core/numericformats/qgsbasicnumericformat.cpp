@@ -58,7 +58,7 @@ int QgsBasicNumericFormat::sortKey()
 
 QString QgsBasicNumericFormat::formatDouble( double value, const QgsNumericFormatContext &context ) const
 {
-  QChar decimal = mDecimalSeparator.isNull() ? context.decimalSeparator() : mDecimalSeparator;
+  const QChar decimal = mDecimalSeparator.isNull() ? context.decimalSeparator() : mDecimalSeparator;
   std::basic_stringstream<wchar_t> os;
   os.imbue( std::locale( os.getloc(), new formatter( mThousandsSeparator.isNull() ? context.thousandsSeparator() : mThousandsSeparator,
                          mShowThousandsSeparator,
@@ -83,7 +83,7 @@ QString QgsBasicNumericFormat::formatDouble( double value, const QgsNumericForma
         {
           // digits before decimal point
           const int d = std::floor( std::log10( value < 0 ? -value : value ) ) + 1;
-          double order = std::pow( 10.0, mNumberDecimalPlaces - d );
+          const double order = std::pow( 10.0, mNumberDecimalPlaces - d );
           os << std::fixed << std::setprecision( std::max( mNumberDecimalPlaces - d, 0 ) ) << std::round( value * order ) / order;
         }
         break;
@@ -119,7 +119,7 @@ QString QgsBasicNumericFormat::formatDouble( double value, const QgsNumericForma
     if ( res.at( trimPoint ) == decimal )
       trimPoint--;
 
-    QString original = res;
+    const QString original = res;
     res.truncate( trimPoint + 1 );
     if ( mUseScientific )
       res += original.mid( ePoint );

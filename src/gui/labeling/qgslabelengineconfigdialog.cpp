@@ -39,7 +39,7 @@ QgsLabelEngineConfigWidget::QgsLabelEngineConfigWidget( QgsMapCanvas *canvas, QW
   mMessageBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
   verticalLayout->insertWidget( 0,  mMessageBar );
 
-  QgsLabelingEngineSettings engineSettings = QgsProject::instance()->labelingEngineSettings();
+  const QgsLabelingEngineSettings engineSettings = QgsProject::instance()->labelingEngineSettings();
 
   mTextRenderFormatComboBox->addItem( tr( "Always Render Labels as Paths (Recommended)" ), QgsRenderContext::TextFormatAlwaysOutlines );
   mTextRenderFormatComboBox->addItem( tr( "Always Render Labels as Text" ), QgsRenderContext::TextFormatAlwaysText );
@@ -130,7 +130,7 @@ void QgsLabelEngineConfigWidget::apply()
 
 void QgsLabelEngineConfigWidget::setDefaults()
 {
-  pal::Pal p;
+  const pal::Pal p;
   spinCandLine->setValue( 5 );
   spinCandPolygon->setValue( 10 );
   chkShowCandidates->setChecked( false );

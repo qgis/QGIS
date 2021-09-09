@@ -156,7 +156,7 @@ void TestQgsDxfExport::testPoints()
   d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayer ) );
 
   QgsMapSettings mapSettings;
-  QSize size( 640, 480 );
+  const QSize size( 640, 480 );
   mapSettings.setOutputSize( size );
   mapSettings.setExtent( mPointLayer->extent() );
   mapSettings.setLayers( QList<QgsMapLayer *>() << mPointLayer );
@@ -166,7 +166,7 @@ void TestQgsDxfExport::testPoints()
   d.setMapSettings( mapSettings );
   d.setSymbologyScale( 1000 );
 
-  QString file = getTempFileName( "point_dxf" );
+  const QString file = getTempFileName( "point_dxf" );
   QFile dxfFile( file );
   QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
@@ -186,7 +186,7 @@ void TestQgsDxfExport::testLines()
   d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mLineLayer ) );
 
   QgsMapSettings mapSettings;
-  QSize size( 640, 480 );
+  const QSize size( 640, 480 );
   mapSettings.setOutputSize( size );
   mapSettings.setExtent( mLineLayer->extent() );
   mapSettings.setLayers( QList<QgsMapLayer *>() << mLineLayer );
@@ -196,7 +196,7 @@ void TestQgsDxfExport::testLines()
   d.setMapSettings( mapSettings );
   d.setSymbologyScale( 1000 );
 
-  QString file = getTempFileName( "line_dxf" );
+  const QString file = getTempFileName( "line_dxf" );
   QFile dxfFile( file );
   QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
@@ -214,7 +214,7 @@ void TestQgsDxfExport::testPolygons()
   d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPolygonLayer ) );
 
   QgsMapSettings mapSettings;
-  QSize size( 640, 480 );
+  const QSize size( 640, 480 );
   mapSettings.setOutputSize( size );
   mapSettings.setExtent( mPolygonLayer->extent() );
   mapSettings.setLayers( QList<QgsMapLayer *>() << mPolygonLayer );
@@ -224,7 +224,7 @@ void TestQgsDxfExport::testPolygons()
   d.setMapSettings( mapSettings );
   d.setSymbologyScale( 1000 );
 
-  QString file = getTempFileName( "polygon_dxf" );
+  const QString file = getTempFileName( "polygon_dxf" );
   QFile dxfFile( file );
   QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
@@ -240,14 +240,14 @@ void TestQgsDxfExport::testMultiSurface()
 {
   QgsDxfExport d;
   std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( QStringLiteral( "MultiSurface" ), QString(), QStringLiteral( "memory" ) );
-  QgsGeometry g = QgsGeometry::fromWkt( "MultiSurface (Polygon ((0 0, 0 1, 1 1, 0 0)))" );
+  const QgsGeometry g = QgsGeometry::fromWkt( "MultiSurface (Polygon ((0 0, 0 1, 1 1, 0 0)))" );
   QgsFeature f;
   f.setGeometry( g );
   vl->dataProvider()->addFeatures( QgsFeatureList() << f );
   d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( vl.get() ) );
 
   QgsMapSettings mapSettings;
-  QSize size( 640, 480 );
+  const QSize size( 640, 480 );
   mapSettings.setOutputSize( size );
   mapSettings.setExtent( vl->extent() );
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl.get() );
@@ -257,7 +257,7 @@ void TestQgsDxfExport::testMultiSurface()
   d.setMapSettings( mapSettings );
   d.setSymbologyScale( 1000 );
 
-  QString file = getTempFileName( "multisurface_dxf" );
+  const QString file = getTempFileName( "multisurface_dxf" );
   QFile dxfFile( file );
   QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
@@ -296,7 +296,7 @@ void TestQgsDxfExport::testMtext()
   d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( layer ) );
 
   QgsMapSettings mapSettings;
-  QSize size( 640, 480 );
+  const QSize size( 640, 480 );
   mapSettings.setOutputSize( size );
   mapSettings.setExtent( layer->extent() );
   mapSettings.setLayers( QList<QgsMapLayer *>() << layer );
@@ -307,7 +307,7 @@ void TestQgsDxfExport::testMtext()
   d.setSymbologyScale( 1000 );
   d.setSymbologyExport( QgsDxfExport::FeatureSymbology );
 
-  QString file = getTempFileName( layerName );
+  const QString file = getTempFileName( layerName );
   QFile dxfFile( file );
   QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
@@ -349,7 +349,7 @@ void TestQgsDxfExport::testMtext_data()
   QTest::addColumn<QgsVectorLayer *>( "layer" );
   QTest::addColumn<QString>( "layerName" );
 
-  QString filename = QStringLiteral( TEST_DATA_DIR ) + "/points.shp";
+  const QString filename = QStringLiteral( TEST_DATA_DIR ) + "/points.shp";
 
   QgsVectorLayer *pointLayer = new QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   QVERIFY( pointLayer->isValid() );
@@ -385,7 +385,7 @@ void TestQgsDxfExport::testMTextEscapeSpaces()
   d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayerNoSymbols ) );
 
   QgsMapSettings mapSettings;
-  QSize size( 640, 480 );
+  const QSize size( 640, 480 );
   mapSettings.setOutputSize( size );
   mapSettings.setExtent( mPointLayerNoSymbols->extent() );
   mapSettings.setLayers( QList<QgsMapLayer *>() << mPointLayerNoSymbols );
@@ -396,7 +396,7 @@ void TestQgsDxfExport::testMTextEscapeSpaces()
   d.setSymbologyScale( 1000 );
   d.setSymbologyExport( QgsDxfExport::FeatureSymbology );
 
-  QString file = getTempFileName( "mtext_escape_spaces" );
+  const QString file = getTempFileName( "mtext_escape_spaces" );
   QFile dxfFile( file );
   QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
@@ -406,7 +406,7 @@ void TestQgsDxfExport::testMTextEscapeSpaces()
 
 void TestQgsDxfExport::testMTextEscapeLineBreaks()
 {
-  int field = mPointLayerNoSymbols->addExpressionField( QStringLiteral( "'A text with ' || char(13) || char(10) || 'line break'" ), QgsField( QStringLiteral( "linebreaktest" ), QVariant::String ) );
+  const int field = mPointLayerNoSymbols->addExpressionField( QStringLiteral( "'A text with ' || char(13) || char(10) || 'line break'" ), QgsField( QStringLiteral( "linebreaktest" ), QVariant::String ) );
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "linebreaktest" );
@@ -423,7 +423,7 @@ void TestQgsDxfExport::testMTextEscapeLineBreaks()
   d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayerNoSymbols ) );
 
   QgsMapSettings mapSettings;
-  QSize size( 640, 480 );
+  const QSize size( 640, 480 );
   mapSettings.setOutputSize( size );
   mapSettings.setExtent( mPointLayerNoSymbols->extent() );
   mapSettings.setLayers( QList<QgsMapLayer *>() << mPointLayerNoSymbols );
@@ -434,13 +434,13 @@ void TestQgsDxfExport::testMTextEscapeLineBreaks()
   d.setSymbologyScale( 1000 );
   d.setSymbologyExport( QgsDxfExport::FeatureSymbology );
 
-  QString file = getTempFileName( "mtext_escape_linebreaks" );
+  const QString file = getTempFileName( "mtext_escape_linebreaks" );
   QFile dxfFile( file );
   QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
 
   dxfFile.open( QIODevice::ReadOnly );
-  QString fileContent = QTextStream( &dxfFile ).readAll();
+  const QString fileContent = QTextStream( &dxfFile ).readAll();
   dxfFile.close();
   QVERIFY( fileContent.contains( "A\\~text\\~with\\~\\Pline\\~break" ) );
   mPointLayerNoSymbols->removeExpressionField( field );
@@ -463,7 +463,7 @@ void TestQgsDxfExport::testText()
   d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayer ) );
 
   QgsMapSettings mapSettings;
-  QSize size( 640, 480 );
+  const QSize size( 640, 480 );
   mapSettings.setOutputSize( size );
   mapSettings.setExtent( mPointLayer->extent() );
   mapSettings.setLayers( QList<QgsMapLayer *>() << mPointLayer );
@@ -475,7 +475,7 @@ void TestQgsDxfExport::testText()
   d.setSymbologyExport( QgsDxfExport::FeatureSymbology );
   d.setFlags( QgsDxfExport::FlagNoMText );
 
-  QString file = getTempFileName( "text_dxf" );
+  const QString file = getTempFileName( "text_dxf" );
   QFile dxfFile( file );
   QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
@@ -511,8 +511,8 @@ void TestQgsDxfExport::testText()
 void TestQgsDxfExport::testTextAngle()
 {
   std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:2056&field=ori:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  QgsGeometry g = QgsGeometry::fromWkt( "Point(2684679.392 1292182.527)" );
-  QgsGeometry g2 = QgsGeometry::fromWkt( "Point(2684692.322 1292192.534)" );
+  const QgsGeometry g = QgsGeometry::fromWkt( "Point(2684679.392 1292182.527)" );
+  const QgsGeometry g2 = QgsGeometry::fromWkt( "Point(2684692.322 1292192.534)" );
   QgsFeature f( vl->fields() );
   f.setGeometry( g );
   f.setAttribute( 0, 30 );
@@ -542,7 +542,7 @@ void TestQgsDxfExport::testTextAngle()
   d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( vl.get() ) );
 
   QgsMapSettings mapSettings;
-  QSize size( 640, 480 );
+  const QSize size( 640, 480 );
   mapSettings.setOutputSize( size );
   mapSettings.setExtent( QgsRectangle( 2684579, 1292082, 2684779, 1292282 ) );
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl.get() );
@@ -554,7 +554,7 @@ void TestQgsDxfExport::testTextAngle()
   d.setSymbologyExport( QgsDxfExport::FeatureSymbology );
   d.setFlags( QgsDxfExport::FlagNoMText );
 
-  QString file = getTempFileName( "text_dxf_angle" );
+  const QString file = getTempFileName( "text_dxf_angle" );
   QFile dxfFile( file );
   QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
@@ -620,7 +620,7 @@ void TestQgsDxfExport::testTextAlign()
   settings.setFormat( format );
 
   std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:2056&field=text:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  QgsGeometry g = QgsGeometry::fromWkt( "Point(2684679.392 1292182.527)" );
+  const QgsGeometry g = QgsGeometry::fromWkt( "Point(2684679.392 1292182.527)" );
   QgsFeature f( vl->fields() );
   f.setGeometry( g );
   f.setAttribute( 0, QStringLiteral( "--- MY TEXT ---" ) );
@@ -630,7 +630,7 @@ void TestQgsDxfExport::testTextAlign()
   vl->setLabelsEnabled( true );
 
   QgsMapSettings mapSettings;
-  QSize size( 640, 480 );
+  const QSize size( 640, 480 );
   mapSettings.setOutputSize( size );
   mapSettings.setExtent( QgsRectangle( 2684658.97702550329267979, 1292165.99626861698925495, 2684711.73293229937553406, 1292188.10791716771200299 ) );
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl.get() );
@@ -647,7 +647,7 @@ void TestQgsDxfExport::testTextAlign()
 
   static int testNumber = 0;
   ++testNumber;
-  QString file = getTempFileName( QStringLiteral( "text_dxf_%1_%2" ).arg( hali, vali ) );
+  const QString file = getTempFileName( QStringLiteral( "text_dxf_%1_%2" ).arg( hali, vali ) );
   QFile dxfFile( file );
   QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
@@ -763,7 +763,7 @@ void TestQgsDxfExport::testTextQuadrant()
   settings.setFormat( format );
 
   std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:2056&field=text:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
-  QgsGeometry g = QgsGeometry::fromWkt( "Point(2685025.687 1292145.297)" );
+  const QgsGeometry g = QgsGeometry::fromWkt( "Point(2685025.687 1292145.297)" );
   QgsFeature f( vl->fields() );
   f.setGeometry( g );
   f.setAttribute( 0, QStringLiteral( "182" ) );
@@ -773,7 +773,7 @@ void TestQgsDxfExport::testTextQuadrant()
   vl->setLabelsEnabled( true );
 
   QgsMapSettings mapSettings;
-  QSize size( 640, 480 );
+  const QSize size( 640, 480 );
   mapSettings.setOutputSize( size );
   mapSettings.setExtent( QgsRectangle( 2685025.687, 1292045.297, 2685125.687, 1292145.297 ) );
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl.get() );
@@ -790,7 +790,7 @@ void TestQgsDxfExport::testTextQuadrant()
 
   static int testNumber = 0;
   ++testNumber;
-  QString file = getTempFileName( QStringLiteral( "text_dxf_offset_quad_%1_%2" ).arg( offsetQuad ).arg( angle ) );
+  const QString file = getTempFileName( QStringLiteral( "text_dxf_offset_quad_%1_%2" ).arg( offsetQuad ).arg( angle ) );
   QFile dxfFile( file );
   QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
@@ -904,7 +904,7 @@ void TestQgsDxfExport::testGeometryGeneratorExport()
   d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayerGeometryGenerator ) );
 
   QgsMapSettings mapSettings;
-  QSize size( 640, 480 );
+  const QSize size( 640, 480 );
   mapSettings.setOutputSize( size );
   mapSettings.setExtent( mPointLayerGeometryGenerator->extent() );
   mapSettings.setLayers( QList<QgsMapLayer *>() << mPointLayerGeometryGenerator );
@@ -915,7 +915,7 @@ void TestQgsDxfExport::testGeometryGeneratorExport()
   d.setSymbologyScale( 6000000 );
   d.setSymbologyExport( QgsDxfExport::FeatureSymbology );
 
-  QString file = getTempFileName( "geometry_generator_dxf" );
+  const QString file = getTempFileName( "geometry_generator_dxf" );
   QFile dxfFile( file );
   QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
@@ -931,14 +931,14 @@ void TestQgsDxfExport::testCurveExport()
 
   QgsDxfExport d;
   std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( wktType, QString(), QStringLiteral( "memory" ) );
-  QgsGeometry g = QgsGeometry::fromWkt( wkt );
+  const QgsGeometry g = QgsGeometry::fromWkt( wkt );
   QgsFeature f;
   f.setGeometry( g );
   vl->dataProvider()->addFeatures( QgsFeatureList() << f );
   d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( vl.get() ) );
 
   QgsMapSettings mapSettings;
-  QSize size( 640, 480 );
+  const QSize size( 640, 480 );
   mapSettings.setOutputSize( size );
   mapSettings.setExtent( vl->extent() );
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl.get() );
@@ -948,7 +948,7 @@ void TestQgsDxfExport::testCurveExport()
   d.setMapSettings( mapSettings );
   d.setSymbologyScale( 1000 );
 
-  QString file = getTempFileName( wktType );
+  const QString file = getTempFileName( wktType );
   QFile dxfFile( file );
   QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
@@ -1069,7 +1069,7 @@ void TestQgsDxfExport::testDashedLine()
   symbol->changeSymbolLayer( 0, symbolLayer.release() );
 
   std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( QStringLiteral( "CompoundCurve?crs=epsg:2056" ), QString(), QStringLiteral( "memory" ) );
-  QgsGeometry g = QgsGeometry::fromWkt( "CompoundCurve ((2689563.84200000017881393 1283531.23699999996460974, 2689563.42499999981373549 1283537.55499999993480742, 2689563.19900000002235174 1283540.52399999997578561, 2689562.99800000013783574 1283543.42999999993480742, 2689562.66900000022724271 1283548.56000000005587935, 2689562.43399999989196658 1283555.287999999942258))" );
+  const QgsGeometry g = QgsGeometry::fromWkt( "CompoundCurve ((2689563.84200000017881393 1283531.23699999996460974, 2689563.42499999981373549 1283537.55499999993480742, 2689563.19900000002235174 1283540.52399999997578561, 2689562.99800000013783574 1283543.42999999993480742, 2689562.66900000022724271 1283548.56000000005587935, 2689562.43399999989196658 1283555.287999999942258))" );
   QgsFeature f;
   f.setGeometry( g );
   vl->dataProvider()->addFeatures( QgsFeatureList() << f );
@@ -1081,7 +1081,7 @@ void TestQgsDxfExport::testDashedLine()
   d.setSymbologyExport( QgsDxfExport::SymbologyExport::SymbolLayerSymbology );
 
   QgsMapSettings mapSettings;
-  QSize size( 640, 480 );
+  const QSize size( 640, 480 );
   mapSettings.setOutputSize( size );
   mapSettings.setExtent( vl->extent() );
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl.get() );
@@ -1091,7 +1091,7 @@ void TestQgsDxfExport::testDashedLine()
   d.setMapSettings( mapSettings );
   d.setSymbologyScale( 1000 );
 
-  QString file = getTempFileName( "dashed_line_dxf" );
+  const QString file = getTempFileName( "dashed_line_dxf" );
   QFile dxfFile( file );
   QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
@@ -1206,7 +1206,7 @@ void TestQgsDxfExport::testTransform()
   d.setSymbologyExport( QgsDxfExport::SymbologyExport::SymbolLayerSymbology );
 
   QgsMapSettings mapSettings;
-  QSize size( 640, 480 );
+  const QSize size( 640, 480 );
   mapSettings.setOutputSize( size );
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl.get() );
   mapSettings.setOutputDpi( 96 );
@@ -1215,7 +1215,7 @@ void TestQgsDxfExport::testTransform()
   d.setMapSettings( mapSettings );
   d.setSymbologyScale( 1000 );
 
-  QString file = getTempFileName( QStringLiteral( "line_transform" ) );
+  const QString file = getTempFileName( QStringLiteral( "line_transform" ) );
   QFile dxfFile( file );
   QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
@@ -1232,7 +1232,7 @@ void TestQgsDxfExport::testTransform()
 
   // export a subset via extent (this is in EPSG:3857 -- the destination crs
   d.setExtent( QgsRectangle( 960858.48, 6056426.49, 960918.31, 6056467.93 ) );
-  QString file2 = getTempFileName( QStringLiteral( "line_transform2" ) );
+  const QString file2 = getTempFileName( QStringLiteral( "line_transform2" ) );
   QFile dxfFile2( file2 );
   QCOMPARE( d.writeToFile( &dxfFile2, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile2.close();
@@ -1271,7 +1271,7 @@ bool TestQgsDxfExport::fileContainsText( const QString &path, const QString &tex
           bool ok = false;
           if ( searchLine.startsWith( QLatin1String( "REGEX " ) ) )
           {
-            QRegularExpression re( searchLine.mid( 6 ) );
+            const QRegularExpression re( searchLine.mid( 6 ) );
             if ( re.match( line ).hasMatch() )
               ok = true;
           }

@@ -70,7 +70,7 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   connect( leLayerGroup, &QLineEdit::textChanged, this, &QgsDwgImportDialog::leLayerGroup_textChanged );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDwgImportDialog::showHelp );
 
-  QgsSettings s;
+  const QgsSettings s;
   cbExpandInserts->setChecked( s.value( QStringLiteral( "/DwgImport/lastExpandInserts" ), true ).toBool() );
   cbMergeLayers->setChecked( s.value( QStringLiteral( "/DwgImport/lastMergeLayers" ), false ).toBool() );
   cbUseCurves->setChecked( s.value( QStringLiteral( "/DwgImport/lastUseCurves" ), true ).toBool() );
@@ -80,7 +80,7 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   pbImportDrawing->setHidden( true );
   lblMessage->setHidden( true );
 
-  int crsid = s.value( QStringLiteral( "/DwgImport/lastCrs" ), QString::number( QgsProject::instance()->crs().srsid() ) ).toInt();
+  const int crsid = s.value( QStringLiteral( "/DwgImport/lastCrs" ), QString::number( QgsProject::instance()->crs().srsid() ) ).toInt();
 
   mCrsSelector->setShowAccuracyWarnings( true );
   QgsCoordinateReferenceSystem crs;
@@ -115,14 +115,14 @@ void QgsDwgImportDialog::updateUI()
 
   if ( !mDatabaseFileWidget->filePath().isEmpty() )
   {
-    QFileInfo fi( mDatabaseFileWidget->filePath() );
+    const QFileInfo fi( mDatabaseFileWidget->filePath() );
     dbAvailable = fi.exists() ? fi.isWritable() : QFileInfo( fi.path() ).isWritable();
     dbReadable = fi.exists() && fi.isReadable();
   }
 
   if ( !leDrawing->text().isEmpty() )
   {
-    QFileInfo fi( leDrawing->text() );
+    const QFileInfo fi( leDrawing->text() );
     dwgReadable = fi.exists() && fi.isReadable();
   }
 
@@ -152,7 +152,7 @@ void QgsDwgImportDialog::pbLoadDatabase_clicked()
   if ( !QFileInfo::exists( mDatabaseFileWidget->filePath() ) )
     return;
 
-  QgsTemporaryCursorOverride waitCursor( Qt::BusyCursor );
+  const QgsTemporaryCursorOverride waitCursor( Qt::BusyCursor );
 
   bool lblVisible = false;
 
@@ -161,9 +161,9 @@ void QgsDwgImportDialog::pbLoadDatabase_clicked()
   std::unique_ptr<QgsVectorLayer> d( new QgsVectorLayer( QStringLiteral( "%1|layername=drawing" ).arg( mDatabaseFileWidget->filePath() ), QStringLiteral( "layers" ), QStringLiteral( "ogr" ), options ) );
   if ( d && d->isValid() )
   {
-    int idxPath = d->fields().lookupField( QStringLiteral( "path" ) );
-    int idxLastModified = d->fields().lookupField( QStringLiteral( "lastmodified" ) );
-    int idxCrs = d->fields().lookupField( QStringLiteral( "crs" ) );
+    const int idxPath = d->fields().lookupField( QStringLiteral( "path" ) );
+    const int idxLastModified = d->fields().lookupField( QStringLiteral( "lastmodified" ) );
+    const int idxCrs = d->fields().lookupField( QStringLiteral( "crs" ) );
 
     QgsFeature f;
     if ( d->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() << idxPath << idxLastModified << idxCrs ) ).nextFeature( f ) )
@@ -175,7 +175,7 @@ void QgsDwgImportDialog::pbLoadDatabase_clicked()
       mCrsSelector->setCrs( crs );
       mCrsSelector->setLayerCrs( crs );
 
-      QFileInfo fi( leDrawing->text() );
+      const QFileInfo fi( leDrawing->text() );
       if ( fi.exists() )
       {
         if ( fi.lastModified() > f.attribute( idxLastModified ).toDateTime() )
@@ -197,9 +197,9 @@ void QgsDwgImportDialog::pbLoadDatabase_clicked()
   std::unique_ptr<QgsVectorLayer> l( new QgsVectorLayer( QStringLiteral( "%1|layername=layers" ).arg( mDatabaseFileWidget->filePath() ), QStringLiteral( "layers" ), QStringLiteral( "ogr" ), options ) );
   if ( l && l->isValid() )
   {
-    int idxName = l->fields().lookupField( QStringLiteral( "name" ) );
-    int idxColor = l->fields().lookupField( QStringLiteral( "ocolor" ) );
-    int idxFlags = l->fields().lookupField( QStringLiteral( "flags" ) );
+    const int idxName = l->fields().lookupField( QStringLiteral( "name" ) );
+    const int idxColor = l->fields().lookupField( QStringLiteral( "ocolor" ) );
+    const int idxFlags = l->fields().lookupField( QStringLiteral( "flags" ) );
 
     QgsDebugMsg( QStringLiteral( "idxName:%1 idxColor:%2 idxFlags:%3" ).arg( idxName ).arg( idxColor ).arg( idxFlags ) );
 
@@ -210,7 +210,7 @@ void QgsDwgImportDialog::pbLoadDatabase_clicked()
 
     while ( fit.nextFeature( f ) )
     {
-      int row = mLayers->rowCount();
+      const int row = mLayers->rowCount();
       mLayers->setRowCount( row + 1 );
 
       QgsDebugMsg( QStringLiteral( "name:%1 color:%2 flags:%3" ).arg( f.attribute( idxName ).toString() ).arg( f.attribute( idxColor ).toInt() ).arg( f.attribute( idxFlags ).toString(), 0, 16 ) );
@@ -239,8 +239,8 @@ void QgsDwgImportDialog::pbLoadDatabase_clicked()
 
 void QgsDwgImportDialog::pbBrowseDrawing_clicked()
 {
-  QString dir( leDrawing->text().isEmpty() ? QDir::homePath() : QFileInfo( leDrawing->text() ).canonicalPath() );
-  QString filename = QFileDialog::getOpenFileName( nullptr, tr( "Select DWG/DXF file" ), dir, tr( "DXF/DWG files" ) + " (*.dwg *.DWG *.dxf *.DXF)" );
+  const QString dir( leDrawing->text().isEmpty() ? QDir::homePath() : QFileInfo( leDrawing->text() ).canonicalPath() );
+  const QString filename = QFileDialog::getOpenFileName( nullptr, tr( "Select DWG/DXF file" ), dir, tr( "DXF/DWG files" ) + " (*.dwg *.DWG *.dxf *.DXF)" );
   if ( filename.isEmpty() )
     return;
 
@@ -251,7 +251,7 @@ void QgsDwgImportDialog::pbBrowseDrawing_clicked()
 
 void QgsDwgImportDialog::pbImportDrawing_clicked()
 {
-  QgsTemporaryCursorOverride waitCursor( Qt::BusyCursor );
+  const QgsTemporaryCursorOverride waitCursor( Qt::BusyCursor );
 
   QgsDwgImporter importer( mDatabaseFileWidget->filePath(), mCrsSelector->crs() );
 
@@ -496,7 +496,7 @@ void QgsDwgImportDialog::pbDeselectAll_clicked()
 
 void QgsDwgImportDialog::buttonBox_accepted()
 {
-  QgsTemporaryCursorOverride waitCursor( Qt::BusyCursor );
+  const QgsTemporaryCursorOverride waitCursor( Qt::BusyCursor );
 
   QMap<QString, bool> layers;
   bool allLayers = true;

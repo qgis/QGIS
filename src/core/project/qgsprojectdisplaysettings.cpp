@@ -52,7 +52,7 @@ const QgsBearingNumericFormat *QgsProjectDisplaySettings::bearingFormat() const
 
 bool QgsProjectDisplaySettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  QDomElement bearingElement = element.firstChildElement( QStringLiteral( "BearingFormat" ) );
+  const QDomElement bearingElement = element.firstChildElement( QStringLiteral( "BearingFormat" ) );
   mBearingFormat.reset( static_cast< QgsBearingNumericFormat * >( QgsApplication::numericFormatRegistry()->createFromXml( bearingElement, context ) ) );
   emit bearingFormatChanged();
 

@@ -351,8 +351,8 @@ void QgsMapCanvasDockWidget::syncViewCenter( QgsMapCanvas *sourceCanvas )
   QgsMapCanvas *destCanvas = sourceCanvas == mMapCanvas ? mMainCanvas : mMapCanvas;
 
   // reproject extent
-  QgsCoordinateTransform ct( sourceCanvas->mapSettings().destinationCrs(),
-                             destCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+  const QgsCoordinateTransform ct( sourceCanvas->mapSettings().destinationCrs(),
+                                   destCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
   try
   {
     destCanvas->setCenter( ct.transform( sourceCanvas->center() ) );
@@ -387,7 +387,7 @@ void QgsMapCanvasDockWidget::mapExtentChanged()
 
   if ( sourceCanvas == mMapCanvas && mSyncScaleCheckBox->isChecked() )
   {
-    double newScaleFactor = mMainCanvas->scale() / mMapCanvas->scale();
+    const double newScaleFactor = mMainCanvas->scale() / mMapCanvas->scale();
     mScaleFactorWidget->setValue( newScaleFactor );
   }
 
@@ -407,7 +407,7 @@ void QgsMapCanvasDockWidget::menuAboutToShow()
   qDeleteAll( mMenuPresetActions );
   mMenuPresetActions.clear();
 
-  QString currentTheme = mMapCanvas->theme();
+  const QString currentTheme = mMapCanvas->theme();
 
   QAction *actionFollowMain = new QAction( tr( "(none)" ), mMenu );
   actionFollowMain->setCheckable( true );
@@ -460,8 +460,8 @@ void QgsMapCanvasDockWidget::syncMarker( const QgsPointXY &p )
     return;
 
   // reproject point
-  QgsCoordinateTransform ct( mMainCanvas->mapSettings().destinationCrs(),
-                             mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+  const QgsCoordinateTransform ct( mMainCanvas->mapSettings().destinationCrs(),
+                                   mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
   QgsPointXY t = p;
   try
   {
@@ -478,8 +478,8 @@ void QgsMapCanvasDockWidget::mapScaleChanged()
   if ( !mSyncScaleCheckBox->isChecked() )
     return;
 
-  double newScale = mMainCanvas->scale() / mScaleFactorWidget->value();
-  bool prev = mBlockExtentSync;
+  const double newScale = mMainCanvas->scale() / mScaleFactorWidget->value();
+  const bool prev = mBlockExtentSync;
   mBlockExtentSync = true;
   mMapCanvas->zoomScale( newScale );
   mBlockExtentSync = prev;
@@ -498,8 +498,8 @@ void QgsMapCanvasDockWidget::updateExtentRect()
        mMapCanvas->mapSettings().destinationCrs() )
   {
     // reproject extent
-    QgsCoordinateTransform ct( mMainCanvas->mapSettings().destinationCrs(),
-                               mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+    const QgsCoordinateTransform ct( mMainCanvas->mapSettings().destinationCrs(),
+                                     mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
     g = g.densifyByCount( 5 );
     try
     {
@@ -563,10 +563,10 @@ QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )
   gLayout->addWidget( label, 3, 0 );
   gLayout->addWidget( mRotationWidget, 3, 1 );
 
-  QgsSettings settings;
-  int minimumFactor = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MIN;
-  int maximumFactor = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MAX;
-  int defaultFactor = 100 * settings.value( QStringLiteral( "/qgis/magnifier_factor_default" ), 1.0 ).toDouble();
+  const QgsSettings settings;
+  const int minimumFactor = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MIN;
+  const int maximumFactor = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MAX;
+  const int defaultFactor = 100 * settings.value( QStringLiteral( "/qgis/magnifier_factor_default" ), 1.0 ).toDouble();
 
   mMagnifierWidget = new QgsDoubleSpinBox();
   mMagnifierWidget->setSuffix( QStringLiteral( "%" ) );

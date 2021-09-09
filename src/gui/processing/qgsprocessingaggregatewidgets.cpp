@@ -260,7 +260,7 @@ void QgsAggregateMappingModel::setSourceFields( const QgsFields &sourceFields )
   if ( mExpressionContextGenerator )
     mExpressionContextGenerator->setSourceFields( mSourceFields );
 
-  QStringList usedFields;
+  const QStringList usedFields;
   beginResetModel();
   mMapping.clear();
 
@@ -429,7 +429,7 @@ bool QgsAggregateMappingWidget::removeSelectedFields()
 
   std::list<int> rowsToRemove { selectedRows() };
   rowsToRemove.reverse();
-  for ( int row : rowsToRemove )
+  for ( const int row : rowsToRemove )
   {
     if ( ! model()->removeField( model()->index( row, 0, QModelIndex() ) ) )
     {
@@ -445,7 +445,7 @@ bool QgsAggregateMappingWidget::moveSelectedFieldsUp()
     return false;
 
   const std::list<int> rowsToMoveUp { selectedRows() };
-  for ( int row : rowsToMoveUp )
+  for ( const int row : rowsToMoveUp )
   {
     if ( ! model()->moveUp( model()->index( row, 0, QModelIndex() ) ) )
     {
@@ -462,7 +462,7 @@ bool QgsAggregateMappingWidget::moveSelectedFieldsDown()
 
   std::list<int> rowsToMoveDown { selectedRows() };
   rowsToMoveDown.reverse();
-  for ( int row : rowsToMoveDown )
+  for ( const int row : rowsToMoveDown )
   {
     if ( ! model()->moveDown( model()->index( row, 0, QModelIndex() ) ) )
     {

@@ -68,7 +68,7 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
   while ( this->alpha < 0 )
     this->alpha += 2 * M_PI;
 
-  double beta = this->alpha + M_PI_2;
+  const double beta = this->alpha + M_PI_2;
 
   double dx1, dx2, dy1, dy2;
 
@@ -290,7 +290,7 @@ bool LabelPosition::isInConflictMultiPart( const LabelPosition *lp ) const
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   try
   {
-    bool result = ( GEOSPreparedIntersects_r( geosctxt, preparedMultiPartGeom(), lp->mMultipartGeos ) == 1 );
+    const bool result = ( GEOSPreparedIntersects_r( geosctxt, preparedMultiPartGeom(), lp->mMultipartGeos ) == 1 );
     return result;
   }
   catch ( GEOSException &e )
@@ -551,8 +551,8 @@ bool LabelPosition::crossesBoundary( PointSet *polygon ) const
 int LabelPosition::polygonIntersectionCost( PointSet *polygon ) const
 {
   //effectively take the average polygon intersection cost for all label parts
-  double totalCost = polygonIntersectionCostForParts( polygon );
-  int n = partCount();
+  const double totalCost = polygonIntersectionCostForParts( polygon );
+  const int n = partCount();
   return std::ceil( totalCost / n );
 }
 

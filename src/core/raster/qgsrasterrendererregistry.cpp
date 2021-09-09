@@ -81,7 +81,7 @@ void QgsRasterRendererRegistry::insertWidgetFunction( const QString &rendererNam
 
 bool QgsRasterRendererRegistry::rendererData( const QString &rendererName, QgsRasterRendererRegistryEntry &data ) const
 {
-  QHash< QString, QgsRasterRendererRegistryEntry >::const_iterator it = mEntries.find( rendererName );
+  const QHash< QString, QgsRasterRendererRegistryEntry >::const_iterator it = mEntries.find( rendererName );
   if ( it == mEntries.constEnd() )
   {
     return false;
@@ -120,8 +120,8 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
   {
     case QgsRaster::PalettedColor:
     {
-      int grayBand = 1; //reasonable default
-      QgsPalettedRasterRenderer::ClassData classes = QgsPalettedRasterRenderer::colorTableToClassData( provider->colorTable( grayBand ) );
+      const int grayBand = 1; //reasonable default
+      const QgsPalettedRasterRenderer::ClassData classes = QgsPalettedRasterRenderer::colorTableToClassData( provider->colorTable( grayBand ) );
       renderer = new QgsPalettedRasterRenderer( provider,
           grayBand,
           classes );
@@ -130,7 +130,7 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
     case QgsRaster::MultiBandSingleBandGray:
     case QgsRaster::SingleBandGray:
     {
-      int grayBand = 1;
+      const int grayBand = 1;
       renderer = new QgsSingleBandGrayRenderer( provider, grayBand );
 
       QgsContrastEnhancement *ce = new QgsContrastEnhancement( ( Qgis::DataType )(
@@ -142,7 +142,7 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
     }
     case QgsRaster::SingleBandPseudoColor:
     {
-      int bandNo = 1;
+      const int bandNo = 1;
       double minValue = 0;
       double maxValue = 0;
       // TODO: avoid calculating statistics if not necessary (default style loaded)
@@ -153,7 +153,7 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
     }
     case QgsRaster::MultiBandColor:
     {
-      QgsSettings s;
+      const QgsSettings s;
 
       int redBand = s.value( QStringLiteral( "/Raster/defaultRedBand" ), 1 ).toInt();
       if ( redBand < 0 || redBand > provider->bandCount() )
@@ -184,15 +184,15 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
   }
 
   QgsRasterTransparency *tr = new QgsRasterTransparency(); //renderer takes ownership
-  int bandCount = renderer->usesBands().size();
+  const int bandCount = renderer->usesBands().size();
   if ( bandCount == 1 )
   {
-    QList<QgsRasterTransparency::TransparentSingleValuePixel> transparentSingleList;
+    const QList<QgsRasterTransparency::TransparentSingleValuePixel> transparentSingleList;
     tr->setTransparentSingleValuePixelList( transparentSingleList );
   }
   else if ( bandCount == 3 )
   {
-    QList<QgsRasterTransparency::TransparentThreeValuePixel> transparentThreeValueList;
+    const QList<QgsRasterTransparency::TransparentThreeValuePixel> transparentThreeValueList;
     tr->setTransparentThreeValuePixelList( transparentThreeValueList );
   }
   renderer->setRasterTransparency( tr );
@@ -209,19 +209,19 @@ bool QgsRasterRendererRegistry::minMaxValuesForBand( int band, QgsRasterDataProv
   minValue = 0;
   maxValue = 0;
 
-  QgsSettings s;
+  const QgsSettings s;
   if ( s.value( QStringLiteral( "/Raster/useStandardDeviation" ), false ).toBool() )
   {
-    QgsRasterBandStats stats = provider->bandStatistics( band, QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev );
+    const QgsRasterBandStats stats = provider->bandStatistics( band, QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev );
 
-    double stdDevFactor = s.value( QStringLiteral( "/Raster/defaultStandardDeviation" ), 2.0 ).toDouble();
-    double diff = stdDevFactor * stats.stdDev;
+    const double stdDevFactor = s.value( QStringLiteral( "/Raster/defaultStandardDeviation" ), 2.0 ).toDouble();
+    const double diff = stdDevFactor * stats.stdDev;
     minValue = stats.mean - diff;
     maxValue = stats.mean + diff;
   }
   else
   {
-    QgsRasterBandStats stats = provider->bandStatistics( band, QgsRasterBandStats::Min | QgsRasterBandStats::Max );
+    const QgsRasterBandStats stats = provider->bandStatistics( band, QgsRasterBandStats::Min | QgsRasterBandStats::Max );
     minValue = stats.minimumValue;
     maxValue = stats.maximumValue;
   }

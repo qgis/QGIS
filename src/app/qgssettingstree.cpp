@@ -65,6 +65,8 @@ QgsSettingsTree::QgsSettingsTree( QWidget *parent )
   header()->resizeSection( ColumnType, 100 );
   header()->resizeSection( ColumnValue, 250 );
 
+  setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+
   mRefreshTimer.setInterval( 2000 );
 
   mGroupIcon = QgsApplication::getThemeIcon( QStringLiteral( "mIconFolderOpen.svg" ) );
@@ -163,13 +165,13 @@ bool QgsSettingsTree::event( QEvent *event )
 
 void QgsSettingsTree::showEvent( QShowEvent * )
 {
-  QgsTemporaryCursorOverride waitCursor( Qt::BusyCursor );
+  const QgsTemporaryCursorOverride waitCursor( Qt::BusyCursor );
   refresh();
 }
 
 void QgsSettingsTree::updateSetting( QTreeWidgetItem *item )
 {
-  QString key = itemKey( item );
+  const QString key = itemKey( item );
   if ( key.isNull() )
     return;
 
@@ -184,7 +186,7 @@ void QgsSettingsTree::showContextMenu( QPoint pos )
   if ( !item )
     return;
 
-  Type itemType = item->data( ColumnSettings, TypeRole ).value< Type >();
+  const Type itemType = item->data( ColumnSettings, TypeRole ).value< Type >();
   const QString itemText = item->data( ColumnSettings, Qt::DisplayRole ).toString();
   const QString itemPath = item->data( ColumnSettings, PathRole ).toString();
   mContextMenu->clear();
@@ -241,7 +243,7 @@ void QgsSettingsTree::updateChildItems( QTreeWidgetItem *parent )
   for ( const QString &group : constChildGroups )
   {
     QTreeWidgetItem *child = nullptr;
-    int childIndex = findChild( parent, group, dividerIndex );
+    const int childIndex = findChild( parent, group, dividerIndex );
     if ( childIndex != -1 )
     {
       child = childAt( parent, childIndex );
@@ -266,7 +268,7 @@ void QgsSettingsTree::updateChildItems( QTreeWidgetItem *parent )
   for ( const QString &key : constChildKeys )
   {
     QTreeWidgetItem *child = nullptr;
-    int childIndex = findChild( parent, key, 0 );
+    const int childIndex = findChild( parent, key, 0 );
 
     if ( childIndex == -1 || childIndex >= dividerIndex )
     {
@@ -289,7 +291,7 @@ void QgsSettingsTree::updateChildItems( QTreeWidgetItem *parent )
       child = childAt( parent, childIndex );
     }
 
-    QVariant value = mSettings->value( key );
+    const QVariant value = mSettings->value( key );
     if ( value.type() == QVariant::Invalid )
     {
       child->setText( ColumnType, QStringLiteral( "Invalid" ) );
@@ -339,12 +341,12 @@ QTreeWidgetItem *QgsSettingsTree::createItem( const QString &text,
     }
   }
 
-  QString key = itemKey( item );
+  const QString key = itemKey( item );
   QgsDebugMsgLevel( key, 4 );
   if ( mSettingsMap.contains( key ) )
   {
     QgsDebugMsgLevel( QStringLiteral( "contains!!!!" ), 4 );
-    QStringList values = mSettingsMap[ key ];
+    const QStringList values = mSettingsMap[ key ];
     item->setText( ColumnDescription, values.at( 0 ) );
     item->setToolTip( ColumnDescription, values.at( 0 ) );
     item->setToolTip( ColumnSettings, values.at( 1 ) );

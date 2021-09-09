@@ -110,7 +110,7 @@ QVector<QgsDataItem *> QgsSLConnectionItem::createChildren()
   QVector<QgsDataItem *> children;
   QgsSpatiaLiteConnection connection( mName );
 
-  QgsSpatiaLiteConnection::Error err = connection.fetchTables( true );
+  const QgsSpatiaLiteConnection::Error err = connection.fetchTables( true );
   if ( err != QgsSpatiaLiteConnection::NoError )
   {
     QString msg;
@@ -132,14 +132,14 @@ QVector<QgsDataItem *> QgsSLConnectionItem::createChildren()
         msg = tr( "Unknown error" );
         break;
     }
-    QString msgDetails = connection.errorMessage();
+    const QString msgDetails = connection.errorMessage();
     if ( !msgDetails.isEmpty() )
       msg = QStringLiteral( "%1 (%2)" ).arg( msg, msgDetails );
     children.append( new QgsErrorItem( this, msg, mPath + "/error" ) );
     return children;
   }
 
-  QString connectionInfo = QStringLiteral( "dbname='%1'" ).arg( QString( connection.path() ).replace( '\'', QLatin1String( "\\'" ) ) );
+  const QString connectionInfo = QStringLiteral( "dbname='%1'" ).arg( QString( connection.path() ).replace( '\'', QLatin1String( "\\'" ) ) );
   QgsDataSourceUri uri( connectionInfo );
 
   const auto constTables = connection.tables();
@@ -246,8 +246,8 @@ bool SpatiaLiteUtils::createDb( const QString &dbPath, QString &errCause )
 {
   QgsDebugMsg( QStringLiteral( "creating a new db" ) );
 
-  QFileInfo fullPath = QFileInfo( dbPath );
-  QDir path = fullPath.dir();
+  const QFileInfo fullPath = QFileInfo( dbPath );
+  const QDir path = fullPath.dir();
   QgsDebugMsg( QStringLiteral( "making this dir: %1" ).arg( path.absolutePath() ) );
 
   // Must be sure there is destination directory ~/.qgis
@@ -272,7 +272,7 @@ bool SpatiaLiteUtils::createDb( const QString &dbPath, QString &errCause )
     sqlite3_free( errMsg );
     return false;
   }
-  bool init_res = ::initializeSpatialMetadata( database.get(), errCause );
+  const bool init_res = ::initializeSpatialMetadata( database.get(), errCause );
 
   return init_res;
 }

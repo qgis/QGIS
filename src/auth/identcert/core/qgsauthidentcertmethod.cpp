@@ -57,7 +57,7 @@ QgsAuthIdentCertMethod::QgsAuthIdentCertMethod()
 
 QgsAuthIdentCertMethod::~QgsAuthIdentCertMethod()
 {
-  QMutexLocker locker( &mMutex );
+  const QMutexLocker locker( &mMutex );
   qDeleteAll( sPkiConfigBundleCache );
   sPkiConfigBundleCache.clear();
 }
@@ -81,7 +81,7 @@ bool QgsAuthIdentCertMethod::updateNetworkRequest( QNetworkRequest &request, con
     const QString &dataprovider )
 {
   Q_UNUSED( dataprovider )
-  QMutexLocker locker( &mMutex );
+  const QMutexLocker locker( &mMutex );
 
   // TODO: is this too restrictive, to intercept only HTTPS connections?
   if ( request.url().scheme().toLower() != QLatin1String( "https" ) )
@@ -116,7 +116,7 @@ bool QgsAuthIdentCertMethod::updateDataSourceUriItems( QStringList &connectionIt
     const QString &dataprovider )
 {
   Q_UNUSED( dataprovider )
-  QMutexLocker locker( &mMutex );
+  const QMutexLocker locker( &mMutex );
 
   QgsDebugMsg( QStringLiteral( "Update URI items for authcfg: %1" ).arg( authcfg ) );
 
@@ -128,42 +128,42 @@ bool QgsAuthIdentCertMethod::updateDataSourceUriItems( QStringList &connectionIt
   }
   QgsDebugMsg( QStringLiteral( "Update URI items: PKI bundle valid" ) );
 
-  QString pkiTempFileBase = QStringLiteral( "tmppki_%1.pem" );
+  const QString pkiTempFileBase = QStringLiteral( "tmppki_%1.pem" );
 
   // save client cert to temp file
-  QString certFilePath = QgsAuthCertUtils::pemTextToTempFile(
-                           pkiTempFileBase.arg( QUuid::createUuid().toString() ),
-                           pkibundle->clientCert().toPem() );
+  const QString certFilePath = QgsAuthCertUtils::pemTextToTempFile(
+                                 pkiTempFileBase.arg( QUuid::createUuid().toString() ),
+                                 pkibundle->clientCert().toPem() );
   if ( certFilePath.isEmpty() )
   {
     return false;
   }
 
   // save client cert key to temp file
-  QString keyFilePath = QgsAuthCertUtils::pemTextToTempFile(
-                          pkiTempFileBase.arg( QUuid::createUuid().toString() ),
-                          pkibundle->clientCertKey().toPem() );
+  const QString keyFilePath = QgsAuthCertUtils::pemTextToTempFile(
+                                pkiTempFileBase.arg( QUuid::createUuid().toString() ),
+                                pkibundle->clientCertKey().toPem() );
   if ( keyFilePath.isEmpty() )
   {
     return false;
   }
 
   // save CAs to temp file
-  QString caFilePath = QgsAuthCertUtils::pemTextToTempFile(
-                         pkiTempFileBase.arg( QUuid::createUuid().toString() ),
-                         QgsApplication::authManager()->trustedCaCertsPemText() );
+  const QString caFilePath = QgsAuthCertUtils::pemTextToTempFile(
+                               pkiTempFileBase.arg( QUuid::createUuid().toString() ),
+                               QgsApplication::authManager()->trustedCaCertsPemText() );
   if ( caFilePath.isEmpty() )
   {
     return false;
   }
 
   // get common name of the client certificate
-  QString commonName = QgsAuthCertUtils::resolvedCertName( pkibundle->clientCert(), false );
+  const QString commonName = QgsAuthCertUtils::resolvedCertName( pkibundle->clientCert(), false );
 
   // add uri parameters
-  QString userparam = "user='" + commonName + "'";
+  const QString userparam = "user='" + commonName + "'";
   const thread_local QRegularExpression userRegExp( "^user='.*" );
-  int userindx = connectionItems.indexOf( userRegExp );
+  const int userindx = connectionItems.indexOf( userRegExp );
   if ( userindx != -1 )
   {
     connectionItems.replace( userindx, userparam );
@@ -173,9 +173,9 @@ bool QgsAuthIdentCertMethod::updateDataSourceUriItems( QStringList &connectionIt
     connectionItems.append( userparam );
   }
 
-  QString certparam = "sslcert='" + certFilePath + "'";
+  const QString certparam = "sslcert='" + certFilePath + "'";
   const thread_local QRegularExpression sslcertRegExp( "^sslcert='.*" );
-  int sslcertindx = connectionItems.indexOf( sslcertRegExp );
+  const int sslcertindx = connectionItems.indexOf( sslcertRegExp );
   if ( sslcertindx != -1 )
   {
     connectionItems.replace( sslcertindx, certparam );
@@ -185,9 +185,9 @@ bool QgsAuthIdentCertMethod::updateDataSourceUriItems( QStringList &connectionIt
     connectionItems.append( certparam );
   }
 
-  QString keyparam = "sslkey='" + keyFilePath + "'";
+  const QString keyparam = "sslkey='" + keyFilePath + "'";
   const thread_local QRegularExpression sslkeyRegExp( "^sslkey='.*" );
-  int sslkeyindx = connectionItems.indexOf( sslkeyRegExp );
+  const int sslkeyindx = connectionItems.indexOf( sslkeyRegExp );
   if ( sslkeyindx != -1 )
   {
     connectionItems.replace( sslkeyindx, keyparam );
@@ -197,9 +197,9 @@ bool QgsAuthIdentCertMethod::updateDataSourceUriItems( QStringList &connectionIt
     connectionItems.append( keyparam );
   }
 
-  QString caparam = "sslrootcert='" + caFilePath + "'";
+  const QString caparam = "sslrootcert='" + caFilePath + "'";
   const thread_local QRegularExpression sslcaRegExp( "^sslrootcert='.*" );
-  int sslcaindx = connectionItems.indexOf( sslcaRegExp );
+  const int sslcaindx = connectionItems.indexOf( sslcaRegExp );
   if ( sslcaindx != -1 )
   {
     connectionItems.replace( sslcaindx, caparam );
@@ -219,12 +219,12 @@ void QgsAuthIdentCertMethod::clearCachedConfig( const QString &authcfg )
 
 void QgsAuthIdentCertMethod::updateMethodConfig( QgsAuthMethodConfig &mconfig )
 {
-  QMutexLocker locker( &mMutex );
+  const QMutexLocker locker( &mMutex );
   if ( mconfig.hasConfig( QStringLiteral( "oldconfigstyle" ) ) )
   {
     QgsDebugMsg( QStringLiteral( "Updating old style auth method config" ) );
 
-    QStringList conflist = mconfig.config( QStringLiteral( "oldconfigstyle" ) ).split( QStringLiteral( "|||" ) );
+    const QStringList conflist = mconfig.config( QStringLiteral( "oldconfigstyle" ) ).split( QStringLiteral( "|||" ) );
     mconfig.setConfig( QStringLiteral( "certid" ), conflist.at( 0 ) );
     mconfig.removeConfig( QStringLiteral( "oldconfigstyle" ) );
   }
@@ -234,7 +234,7 @@ void QgsAuthIdentCertMethod::updateMethodConfig( QgsAuthMethodConfig &mconfig )
 
 QgsPkiConfigBundle *QgsAuthIdentCertMethod::getPkiConfigBundle( const QString &authcfg )
 {
-  QMutexLocker locker( &mMutex );
+  const QMutexLocker locker( &mMutex );
   QgsPkiConfigBundle *bundle = nullptr;
 
   // check if it is cached
@@ -258,11 +258,11 @@ QgsPkiConfigBundle *QgsAuthIdentCertMethod::getPkiConfigBundle( const QString &a
   }
 
   // get identity from database
-  QPair<QSslCertificate, QSslKey> cibundle( QgsApplication::authManager()->certIdentityBundle( mconfig.config( QStringLiteral( "certid" ) ) ) );
+  const QPair<QSslCertificate, QSslKey> cibundle( QgsApplication::authManager()->certIdentityBundle( mconfig.config( QStringLiteral( "certid" ) ) ) );
 
   // init client cert
   // Note: if this is not valid, no sense continuing
-  QSslCertificate clientcert( cibundle.first );
+  const QSslCertificate clientcert( cibundle.first );
   if ( !QgsAuthCertUtils::certIsViable( clientcert ) )
   {
     QgsDebugMsg( QStringLiteral( "PKI bundle for authcfg %1: insert FAILED, client cert is not viable" ).arg( authcfg ) );
@@ -270,7 +270,7 @@ QgsPkiConfigBundle *QgsAuthIdentCertMethod::getPkiConfigBundle( const QString &a
   }
 
   // init key
-  QSslKey clientkey( cibundle.second );
+  const QSslKey clientkey( cibundle.second );
   if ( clientkey.isNull() )
   {
     QgsDebugMsg( QStringLiteral( "PKI bundle for authcfg %1: insert FAILED, PEM cert key could not be created" ).arg( authcfg ) );
@@ -287,14 +287,14 @@ QgsPkiConfigBundle *QgsAuthIdentCertMethod::getPkiConfigBundle( const QString &a
 
 void QgsAuthIdentCertMethod::putPkiConfigBundle( const QString &authcfg, QgsPkiConfigBundle *pkibundle )
 {
-  QMutexLocker locker( &mMutex );
+  const QMutexLocker locker( &mMutex );
   QgsDebugMsg( QStringLiteral( "Putting PKI bundle for authcfg %1" ).arg( authcfg ) );
   sPkiConfigBundleCache.insert( authcfg, pkibundle );
 }
 
 void QgsAuthIdentCertMethod::removePkiConfigBundle( const QString &authcfg )
 {
-  QMutexLocker locker( &mMutex );
+  const QMutexLocker locker( &mMutex );
   if ( sPkiConfigBundleCache.contains( authcfg ) )
   {
     QgsPkiConfigBundle *pkibundle = sPkiConfigBundleCache.take( authcfg );

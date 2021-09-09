@@ -49,7 +49,7 @@ QList< QPair<QString, QString> > QgsGpsDetector::availablePorts()
 
   // try serial ports
 #if defined( HAVE_QT5SERIALPORT )
-  for ( auto p : QSerialPortInfo::availablePorts() )
+  for ( const QSerialPortInfo &p : QSerialPortInfo::availablePorts() )
   {
     devs << QPair<QString, QString>( p.portName(), tr( "%1: %2" ).arg( p.portName(), p.description() ) );
   }

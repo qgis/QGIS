@@ -83,7 +83,7 @@ void QgsRuntimeProfilerNode::addChild( std::unique_ptr<QgsRuntimeProfilerNode> c
 int QgsRuntimeProfilerNode::indexOf( QgsRuntimeProfilerNode *child ) const
 {
   Q_ASSERT( child->mParent == this );
-  auto it = std::find_if( mChildren.begin(), mChildren.end(), [&]( const std::unique_ptr<QgsRuntimeProfilerNode> &p )
+  const auto it = std::find_if( mChildren.begin(), mChildren.end(), [&]( const std::unique_ptr<QgsRuntimeProfilerNode> &p )
   {
     return p.get() == child;
   } );
@@ -515,7 +515,7 @@ void QgsRuntimeProfiler::setupConnections()
 
 QgsRuntimeProfilerNode *QgsRuntimeProfiler::pathToNode( const QString &group, const QString &path ) const
 {
-  QStringList parts = path.split( '/' );
+  const QStringList parts = path.split( '/' );
   QgsRuntimeProfilerNode *res = mRootNode.get();
   for ( const QString &part : parts )
   {
@@ -546,9 +546,9 @@ QModelIndex QgsRuntimeProfiler::node2index( QgsRuntimeProfilerNode *node ) const
   if ( !node || !node->parent() )
     return QModelIndex(); // this is the only root item -> invalid index
 
-  QModelIndex parentIndex = node2index( node->parent() );
+  const QModelIndex parentIndex = node2index( node->parent() );
 
-  int row = node->parent()->indexOf( node );
+  const int row = node->parent()->indexOf( node );
   Q_ASSERT( row >= 0 );
   return index( row, 0, parentIndex );
 }
@@ -561,7 +561,7 @@ QModelIndex QgsRuntimeProfiler::indexOfParentNode( QgsRuntimeProfilerNode *paren
   if ( !grandParentNode )
     return QModelIndex();  // root node -> invalid index
 
-  int row = grandParentNode->indexOf( parentNode );
+  const int row = grandParentNode->indexOf( parentNode );
   Q_ASSERT( row >= 0 );
 
   return createIndex( row, 0, parentNode );

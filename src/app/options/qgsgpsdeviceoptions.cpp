@@ -18,6 +18,7 @@
 #include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsbabelformatregistry.h"
+#include "qgssettingsregistrycore.h"
 
 #include <QMessageBox>
 
@@ -35,14 +36,16 @@ QgsGpsDeviceOptionsWidget::QgsGpsDeviceOptionsWidget( QWidget *parent )
   connect( mListDevices, &QListWidget::currentItemChanged, this, &QgsGpsDeviceOptionsWidget::selectedDeviceChanged );
 
   mDescriptionBrowser->setHtml( QStringLiteral( "<p>%1</p><ul>"
-                                "<li>%babel - %2</li>"
-                                "<li>%in - %3</li>"
-                                "<li>%out - %4</li>"
+                                "<li><code>%babel</code> - %2</li>"
+                                "<li><code>%in</code> - %3</li>"
+                                "<li><code>%out</code> - %4</li>"
+                                "<li><code>%type</code> - %5</li>"
                                 "</ul>" ).arg( tr( "In the download and upload commands there can be special words that will be replaced by "
                                     "QGIS when the commands are used. These words are:" ),
                                     tr( "the path to GPSBabel" ),
                                     tr( "the GPX filename when uploading or the port when downloading" ),
-                                    tr( "the port when uploading or the GPX filename when downloading" ) ) );
+                                    tr( "the port when uploading or the GPX filename when downloading" ),
+                                    tr( "GPSBabel feature type argument matching selected feature type (e.g. '-w' for waypoints, '-t' for tracks, and '-r' for routes)" ) ) );
 
   const QMap< QString, QgsBabelGpsDeviceFormat * > registeredDevices = QgsApplication::gpsBabelFormatRegistry()->devices();
   for ( auto it = registeredDevices.constBegin(); it != registeredDevices.constEnd(); ++it )
@@ -81,28 +84,34 @@ QgsGpsDeviceOptionsWidget::QgsGpsDeviceOptionsWidget( QWidget *parent )
   connect( leTrkDown, &QLineEdit::textEdited, this, &QgsGpsDeviceOptionsWidget::updateCurrentDevice );
   connect( leTrkUp, &QLineEdit::textEdited, this, &QgsGpsDeviceOptionsWidget::updateCurrentDevice );
   connect( leDeviceName, &QLineEdit::textEdited, this, &QgsGpsDeviceOptionsWidget::renameCurrentDevice );
+
+  mGpsBabelFileWidget->setStorageMode( QgsFileWidget::GetFile );
+  mGpsBabelFileWidget->setDialogTitle( tr( "Select GPSBabel Executable" ) );
+  mGpsBabelFileWidget->setFilePath( QgsSettingsRegistryCore::settingsGpsBabelPath.value() );
 }
 
 void QgsGpsDeviceOptionsWidget::apply()
 {
   QStringList deviceNames;
   QgsSettings settings;
-  QString devPath = QStringLiteral( "/Plugin-GPS/devices/%1" );
-  settings.remove( QStringLiteral( "/Plugin-GPS/devices" ) );
+  const QString devPath = QStringLiteral( "babelDevices/%1" );
+  settings.remove( QStringLiteral( "babelDevices" ), QgsSettings::Gps );
 
   for ( auto iter = mDevices.constBegin(); iter != mDevices.constEnd(); ++iter )
   {
     const QString name = iter.key();
     deviceNames << name;
     const QStringList commands = iter.value();
-    settings.setValue( devPath.arg( name ) + "/wptdownload", commands.value( 0 ) );
-    settings.setValue( devPath.arg( name ) + "/wptupload", commands.value( 1 ) );
-    settings.setValue( devPath.arg( name ) + "/rtedownload", commands.value( 2 ) );
-    settings.setValue( devPath.arg( name ) + "/rteupload", commands.value( 3 ) );
-    settings.setValue( devPath.arg( name ) + "/trkdownload", commands.value( 4 ) );
-    settings.setValue( devPath.arg( name ) + "/trkupload", commands.value( 5 ) );
+    settings.setValue( devPath.arg( name ) + "/wptdownload", commands.value( 0 ), QgsSettings::Gps );
+    settings.setValue( devPath.arg( name ) + "/wptupload", commands.value( 1 ), QgsSettings::Gps );
+    settings.setValue( devPath.arg( name ) + "/rtedownload", commands.value( 2 ), QgsSettings::Gps );
+    settings.setValue( devPath.arg( name ) + "/rteupload", commands.value( 3 ), QgsSettings::Gps );
+    settings.setValue( devPath.arg( name ) + "/trkdownload", commands.value( 4 ), QgsSettings::Gps );
+    settings.setValue( devPath.arg( name ) + "/trkupload", commands.value( 5 ), QgsSettings::Gps );
   }
-  settings.setValue( QStringLiteral( "/Plugin-GPS/devicelist" ), deviceNames );
+  settings.setValue( QStringLiteral( "babelDeviceList" ), deviceNames, QgsSettings::Gps );
+
+  QgsSettingsRegistryCore::settingsGpsBabelPath.setValue( mGpsBabelFileWidget->filePath() );
 
   QgsApplication::gpsBabelFormatRegistry()->reloadFromSettings();
 }
@@ -124,7 +133,7 @@ void QgsGpsDeviceOptionsWidget::removeCurrentDevice()
                              tr( "Are you sure that you want to delete this device?" ),
                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
   {
-    auto iter = mDevices.find( mListDevices->currentItem()->text() );
+    const auto iter = mDevices.find( mListDevices->currentItem()->text() );
     if ( iter != mDevices.end() )
     {
       mDevices.erase( iter );
@@ -174,7 +183,7 @@ void QgsGpsDeviceOptionsWidget::selectedDeviceChanged( QListWidgetItem *current 
 {
   if ( mListDevices->count() > 0 )
   {
-    QString devName = current->text();
+    const QString devName = current->text();
 
     mBlockStoringChanges = true;
     leDeviceName->setText( devName );

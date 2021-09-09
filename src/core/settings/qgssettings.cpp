@@ -88,7 +88,7 @@ QgsSettings::~QgsSettings()
 
 void QgsSettings::beginGroup( const QString &prefix, const QgsSettings::Section section )
 {
-  QString pKey = prefixedKey( prefix, section );
+  const QString pKey = prefixedKey( prefix, section );
   mUserSettings->beginGroup( pKey );
   if ( mGlobalSettings )
   {
@@ -115,7 +115,7 @@ QStringList QgsSettings::allKeys() const
   QStringList keys = mUserSettings->allKeys();
   if ( mGlobalSettings )
   {
-    for ( auto &s : mGlobalSettings->allKeys() )
+    for ( const auto &s : mGlobalSettings->allKeys() )
     {
       if ( ! keys.contains( s ) )
       {
@@ -132,7 +132,7 @@ QStringList QgsSettings::childKeys() const
   QStringList keys = mUserSettings->childKeys();
   if ( mGlobalSettings )
   {
-    for ( auto &s : mGlobalSettings->childKeys() )
+    for ( const auto &s : mGlobalSettings->childKeys() )
     {
       if ( ! keys.contains( s ) )
       {
@@ -148,7 +148,7 @@ QStringList QgsSettings::childGroups() const
   QStringList keys = mUserSettings->childGroups();
   if ( mGlobalSettings )
   {
-    for ( auto &s : mGlobalSettings->childGroups() )
+    for ( const auto &s : mGlobalSettings->childGroups() )
     {
       if ( ! keys.contains( s ) )
       {
@@ -175,7 +175,7 @@ QString QgsSettings::globalSettingsPath()
 
 QVariant QgsSettings::value( const QString &key, const QVariant &defaultValue, const QgsSettings::Section section ) const
 {
-  QString pKey = prefixedKey( key, section );
+  const QString pKey = prefixedKey( key, section );
   if ( !mUserSettings->value( pKey ).isNull() )
   {
     return mUserSettings->value( pKey );
@@ -189,7 +189,7 @@ QVariant QgsSettings::value( const QString &key, const QVariant &defaultValue, c
 
 bool QgsSettings::contains( const QString &key, const QgsSettings::Section section ) const
 {
-  QString pKey = prefixedKey( key, section );
+  const QString pKey = prefixedKey( key, section );
   return mUserSettings->contains( pKey ) ||
          ( mGlobalSettings && mGlobalSettings->contains( pKey ) );
 }
@@ -206,7 +206,7 @@ void QgsSettings::sync()
 
 void QgsSettings::remove( const QString &key, const QgsSettings::Section section )
 {
-  QString pKey = prefixedKey( key, section );
+  const QString pKey = prefixedKey( key, section );
   mUserSettings->remove( pKey );
 }
 
@@ -215,32 +215,35 @@ QString QgsSettings::prefixedKey( const QString &key, const Section section ) co
   QString prefix;
   switch ( section )
   {
-    case Section::Core :
+    case Section::Core:
       prefix = QStringLiteral( "core" );
       break;
-    case Section::Server :
+    case Section::Server:
       prefix = QStringLiteral( "server" );
       break;
-    case Section::Gui :
+    case Section::Gui:
       prefix = QStringLiteral( "gui" );
       break;
-    case Section::Plugins :
+    case Section::Plugins:
       prefix = QStringLiteral( "plugins" );
       break;
-    case Section::Misc :
+    case Section::Misc:
       prefix = QStringLiteral( "misc" );
       break;
-    case Section::Auth :
+    case Section::Auth:
       prefix = QStringLiteral( "auth" );
       break;
-    case Section::App :
+    case Section::App:
       prefix = QStringLiteral( "app" );
       break;
-    case Section::Providers :
+    case Section::Providers:
       prefix = QStringLiteral( "providers" );
       break;
-    case Section::Expressions :
+    case Section::Expressions:
       prefix = QStringLiteral( "expressions" );
+      break;
+    case Section::Gps:
+      prefix = QStringLiteral( "gps" );
       break;
     case Section::NoSection:
       return sanitizeKey( key );
@@ -296,7 +299,7 @@ void QgsSettings::setValue( const QString &key, const QVariant &value, const Qgs
   // The valid check is required because different invalid QVariant types
   // like QVariant(QVariant::String) and QVariant(QVariant::Int))
   // may be considered different and we don't want to store the value in that case.
-  QVariant currentValue = QgsSettings::value( prefixedKey( key, section ) );
+  const QVariant currentValue = QgsSettings::value( prefixedKey( key, section ) );
   if ( ( currentValue.isValid() || value.isValid() ) && ( currentValue != value ) )
   {
     mUserSettings->setValue( prefixedKey( key, section ), value );

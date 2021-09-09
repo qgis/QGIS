@@ -21,6 +21,7 @@
 #include <QNetworkReply>
 #include <QUrl>
 
+#include "qgis.h"
 #include "qgis_core.h"
 
 #ifndef QT_NO_SSL
@@ -56,8 +57,10 @@ class CORE_EXPORT QgsFileDownloader : public QObject
      * be triggered by a later call to startDownload(). This can be useful if connections need
      * to be made to the downloader and there's a chance the download will emit
      * signals before these connections have been made.
+     * \param httpMethod Method for the HTTP request : GET or POST, since QGIS 3.22
+     * \param data If the request is POST, some data can be added, since QGIS 3.22
      */
-    QgsFileDownloader( const QUrl &url, const QString &outputFileName, const QString &authcfg = QString(), bool delayStart = false );
+    QgsFileDownloader( const QUrl &url, const QString &outputFileName, const QString &authcfg = QString(), bool delayStart = false, Qgis::HttpMethod httpMethod = Qgis::HttpMethod::Get, const QByteArray &data = QByteArray() );
 
   signals:
     //! Emitted when the download has completed successfully
@@ -123,6 +126,8 @@ class CORE_EXPORT QgsFileDownloader : public QObject
     QNetworkReply *mReply = nullptr;
     QFile mFile;
     bool mDownloadCanceled;
+    Qgis::HttpMethod mHttpMethod = Qgis::HttpMethod::Get;
+    QByteArray mData;
     QStringList mErrors;
     QString mAuthCfg;
 };

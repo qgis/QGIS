@@ -64,7 +64,7 @@ bool QgsAuthMethodConfig::operator!=( const QgsAuthMethodConfig &other ) const
 
 bool QgsAuthMethodConfig::isValid( bool validateid ) const
 {
-  bool idvalid = validateid ? !mId.isEmpty() : true;
+  const bool idvalid = validateid ? !mId.isEmpty() : true;
 
   return (
            idvalid
@@ -99,7 +99,7 @@ void QgsAuthMethodConfig::loadConfigString( const QString &configstr )
   {
     if ( conf.contains( CONFIG_KEY_SEP ) )
     {
-      QStringList keyval( conf.split( CONFIG_KEY_SEP ) );
+      const QStringList keyval( conf.split( CONFIG_KEY_SEP ) );
       setConfig( keyval.at( 0 ), keyval.at( 1 ) );
     }
   }
@@ -145,7 +145,7 @@ bool QgsAuthMethodConfig::uriToResource( const QString &accessurl, QString *reso
   QString res = QString();
   if ( !accessurl.isEmpty() )
   {
-    QUrl url( accessurl );
+    const QUrl url( accessurl );
     if ( url.isValid() )
     {
       res = QStringLiteral( "%1://%2:%3%4" ).arg( url.scheme(), url.host() )
@@ -191,10 +191,10 @@ bool QgsAuthMethodConfig::readXml( const QDomElement &element )
   mUri = element.attribute( QStringLiteral( "uri" ) );
 
   clearConfigMap();
-  QDomNamedNodeMap configAttributes = element.firstChildElement().attributes();
+  const QDomNamedNodeMap configAttributes = element.firstChildElement().attributes();
   for ( int i = 0; i < configAttributes.length(); i++ )
   {
-    QDomAttr configAttribute = configAttributes.item( i ).toAttr();
+    const QDomAttr configAttribute = configAttributes.item( i ).toAttr();
     setConfig( configAttribute.name(), configAttribute.value() );
   }
 
@@ -231,8 +231,8 @@ const QgsPkiBundle QgsPkiBundle::fromPemPaths( const QString &certPath,
      )
   {
     // client cert
-    bool pem = certPath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive );
-    QSslCertificate clientcert( QgsAuthCertUtils::fileData( certPath ), pem ? QSsl::Pem : QSsl::Der );
+    const bool pem = certPath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive );
+    const QSslCertificate clientcert( QgsAuthCertUtils::fileData( certPath ), pem ? QSsl::Pem : QSsl::Der );
     pkibundle.setClientCert( clientcert );
 
     QSslKey clientkey;
@@ -260,16 +260,16 @@ const QgsPkiBundle QgsPkiBundle::fromPkcs12Paths( const QString &bundlepath,
     if ( !bundlepass.isNull() )
       passarray = QCA::SecureArray( bundlepass.toUtf8() );
     QCA::ConvertResult res;
-    QCA::KeyBundle bundle( QCA::KeyBundle::fromFile( bundlepath, passarray, &res, QStringLiteral( "qca-ossl" ) ) );
+    const QCA::KeyBundle bundle( QCA::KeyBundle::fromFile( bundlepath, passarray, &res, QStringLiteral( "qca-ossl" ) ) );
     if ( res == QCA::ConvertGood && !bundle.isNull() )
     {
       const QCA::CertificateChain cert_chain( bundle.certificateChain() );
-      QSslCertificate cert( cert_chain.primary().toPEM().toLatin1() );
+      const QSslCertificate cert( cert_chain.primary().toPEM().toLatin1() );
       if ( !cert.isNull() )
       {
         pkibundle.setClientCert( cert );
       }
-      QSslKey cert_key( bundle.privateKey().toPEM().toLatin1(), QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey, QByteArray() );
+      const QSslKey cert_key( bundle.privateKey().toPEM().toLatin1(), QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey, QByteArray() );
       if ( !cert_key.isNull() )
       {
         pkibundle.setClientKey( cert_key );
@@ -374,7 +374,7 @@ const QList<QSslError> QgsAuthConfigSslServer::sslIgnoredErrors() const
 {
   QList<QSslError> errors;
   const QList<QSslError::SslError> ignoredErrors = sslIgnoredErrorEnums();
-  for ( QSslError::SslError errenum : ignoredErrors )
+  for ( const QSslError::SslError errenum : ignoredErrors )
   {
     errors << QSslError( errenum );
   }
@@ -389,7 +389,7 @@ const QString QgsAuthConfigSslServer::configString() const
   configlist << QString::number( static_cast< int >( mSslProtocol ) );
 
   QStringList errs;
-  for ( auto err : mSslIgnoredErrors )
+  for ( const auto err : mSslIgnoredErrors )
   {
     errs << QString::number( static_cast< int >( err ) );
   }
@@ -406,7 +406,7 @@ void QgsAuthConfigSslServer::loadConfigString( const QString &config )
   {
     return;
   }
-  QStringList configlist( config.split( CONF_SEP ) );
+  const QStringList configlist( config.split( CONF_SEP ) );
 
   mVersion = configlist.at( 0 ).toInt();
   mQtVersion = configlist.at( 1 ).toInt();
@@ -422,7 +422,7 @@ void QgsAuthConfigSslServer::loadConfigString( const QString &config )
     mSslIgnoredErrors.append( static_cast< QSslError::SslError >( err.toInt() ) );
   }
 
-  QStringList peerverify( configlist.at( 4 ).split( QStringLiteral( "~~" ) ) );
+  const QStringList peerverify( configlist.at( 4 ).split( QStringLiteral( "~~" ) ) );
   mSslPeerVerifyMode = static_cast< QSslSocket::PeerVerifyMode >( peerverify.at( 0 ).toInt() );
   mSslPeerVerifyDepth = peerverify.at( 1 ).toInt();
 }

@@ -78,12 +78,12 @@ const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::requestedTemp
   return mRequestedRange;
 }
 
-QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod QgsRasterDataProviderTemporalCapabilities::intervalHandlingMethod() const
+Qgis::TemporalIntervalMatchMethod QgsRasterDataProviderTemporalCapabilities::intervalHandlingMethod() const
 {
   return mIntervalMatchMethod;
 }
 
-void QgsRasterDataProviderTemporalCapabilities::setIntervalHandlingMethod( IntervalHandlingMethod mode )
+void QgsRasterDataProviderTemporalCapabilities::setIntervalHandlingMethod( Qgis::TemporalIntervalMatchMethod mode )
 {
   if ( mIntervalMatchMethod == mode )
     return;

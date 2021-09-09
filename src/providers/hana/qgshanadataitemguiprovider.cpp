@@ -112,7 +112,7 @@ bool QgsHanaDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGui
     QString errorMsg;
     try
     {
-      QgsHanaProviderConnection providerConn( layerItem->uri(), {} );
+      const QgsHanaProviderConnection providerConn( layerItem->uri(), {} );
       providerConn.dropVectorTable( layerInfo.schemaName, layerInfo.tableName );
     }
     catch ( const QgsProviderConnectionException &ex )
@@ -225,7 +225,7 @@ void QgsHanaDataItemGuiProvider::createSchema( QgsDataItem *item, QgsDataItemGui
   QString errorMsg;
   try
   {
-    QgsHanaProviderConnection providerConn( item->name() );
+    const QgsHanaProviderConnection providerConn( item->name() );
     providerConn.createSchema( schemaName );
   }
   catch ( const QgsProviderConnectionException &ex )
@@ -257,7 +257,7 @@ void QgsHanaDataItemGuiProvider::deleteSchema( QgsHanaSchemaItem *schemaItem, Qg
   QString errorMsg;
   try
   {
-    QgsHanaProviderConnection providerConn( schemaItem->connectionName() );
+    const QgsHanaProviderConnection providerConn( schemaItem->connectionName() );
     const auto tables = providerConn.tables( schemaName );
     if ( tables.empty() )
     {
@@ -322,7 +322,7 @@ void QgsHanaDataItemGuiProvider::renameSchema( QgsHanaSchemaItem *schemaItem, Qg
   QString errorMsg;
   try
   {
-    QgsHanaProviderConnection providerConn( schemaItem->connectionName() );
+    const QgsHanaProviderConnection providerConn( schemaItem->connectionName() );
     providerConn.renameSchema( schemaName, newSchemaName );
   }
   catch ( const QgsProviderConnectionException &ex )
@@ -357,7 +357,7 @@ void QgsHanaDataItemGuiProvider::renameLayer( QgsHanaLayerItem *layerItem, QgsDa
   QString errorMsg;
   try
   {
-    QgsHanaProviderConnection providerConn( layerItem->uri(), {} );
+    const QgsHanaProviderConnection providerConn( layerItem->uri(), {} );
     providerConn.renameVectorTable( layerInfo.schemaName, layerInfo.tableName, newLayerName );
   }
   catch ( const QgsProviderConnectionException &ex )

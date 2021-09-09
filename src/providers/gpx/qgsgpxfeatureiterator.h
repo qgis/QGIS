@@ -84,6 +84,8 @@ class QgsGPXFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<Q
 
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;
+    QgsGeometry mDistanceWithinGeom;
+    std::unique_ptr< QgsGeometryEngine > mDistanceWithinEngine;
 };
 
 #endif // QGSGPXFEATUREITERATOR_H

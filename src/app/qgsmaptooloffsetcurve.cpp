@@ -103,8 +103,8 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
         mModifiedFeature = fet.id();
         createUserInputWidget();
 
-        bool hasZ = QgsWkbTypes::hasZ( mSourceLayer->wkbType() );
-        bool hasM = QgsWkbTypes::hasZ( mSourceLayer->wkbType() );
+        const bool hasZ = QgsWkbTypes::hasZ( mSourceLayer->wkbType() );
+        const bool hasM = QgsWkbTypes::hasZ( mSourceLayer->wkbType() );
         if ( hasZ || hasM )
         {
           emit messageEmitted( QStringLiteral( "layer %1 has %2%3%4 geometry. %2%3%4 values be set to 0 when using offset tool." )
@@ -126,8 +126,17 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
   else
   {
     // second click - apply changes
-    double offset = calculateOffset( e->snapPoint() );
+    const double offset = calculateOffset( e->snapPoint() );
     applyOffset( offset, e->modifiers() );
+  }
+}
+
+void QgsMapToolOffsetCurve::applyOffsetFromWidget( double offset, Qt::KeyboardModifiers modifiers )
+{
+  if ( mSourceLayer && !mOriginalGeometry.isNull() && !qgsDoubleNear( offset, 0 ) )
+  {
+    mGeometryModified = true;
+    applyOffset( offset, modifiers );
   }
 }
 
@@ -152,11 +161,11 @@ void QgsMapToolOffsetCurve::applyOffset( double offset, Qt::KeyboardModifiers mo
   {
     QgsGeometry geometry;
     int partIndex = 0;
-    QgsWkbTypes::Type geomType = mOriginalGeometry.wkbType();
+    const QgsWkbTypes::Type geomType = mOriginalGeometry.wkbType();
     if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::LineGeometry )
     {
       QgsMultiPolylineXY newMultiLine;
-      QgsMultiPolylineXY multiLine = mOriginalGeometry.asMultiPolyline();
+      const QgsMultiPolylineXY multiLine = mOriginalGeometry.asMultiPolyline();
       QgsMultiPolylineXY::const_iterator it = multiLine.constBegin();
       for ( ; it != multiLine.constEnd(); ++it )
       {
@@ -280,7 +289,7 @@ void QgsMapToolOffsetCurve::applyOffset( double offset, Qt::KeyboardModifiers mo
         {
           if ( ringIndex == mModifiedRing )
           {
-            QgsMultiPolygonXY ringParts = mModifiedGeometry.asMultiPolygon();
+            const QgsMultiPolygonXY ringParts = mModifiedGeometry.asMultiPolygon();
             QgsPolygonXY newRings;
             QgsMultiPolygonXY::const_iterator ringIt = ringParts.constBegin();
             for ( ; ringIt != ringParts.constEnd(); ++ringIt )
@@ -343,7 +352,7 @@ void QgsMapToolOffsetCurve::applyOffset( double offset, Qt::KeyboardModifiers mo
   }
   else
   {
-    QgsCoordinateTransform ct( mSourceLayer->crs(), destLayer->crs(), QgsProject::instance() );
+    const QgsCoordinateTransform ct( mSourceLayer->crs(), destLayer->crs(), QgsProject::instance() );
     try
     {
       QgsGeometry g = mModifiedGeometry;
@@ -354,7 +363,7 @@ void QgsMapToolOffsetCurve::applyOffset( double offset, Qt::KeyboardModifiers mo
 
       // auto convert source feature attributes to destination attributes, make geometry compatible
       // note that this may result in multiple features, e.g. if inserting multipart feature into single-part layer
-      QgsFeatureList features = QgsVectorLayerUtils::makeFeatureCompatible( f, destLayer );
+      const QgsFeatureList features = QgsVectorLayerUtils::makeFeatureCompatible( f, destLayer );
       for ( const QgsFeature &feature : features )
       {
         QgsAttributeMap attrs;
@@ -406,7 +415,7 @@ double QgsMapToolOffsetCurve::calculateOffset( const QgsPointXY &mapPoint )
   if ( mSourceLayer )
   {
     //get offset from current position rectangular to feature
-    QgsPointXY layerCoords = toLayerCoordinates( mSourceLayer, mapPoint );
+    const QgsPointXY layerCoords = toLayerCoordinates( mSourceLayer, mapPoint );
 
     QgsPointXY minDistPoint;
     int beforeVertex;
@@ -445,10 +454,10 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QgsMapMouseEvent *e )
 
   mGeometryModified = true;
 
-  QgsPointXY mapPoint = e->snapPoint();
+  const QgsPointXY mapPoint = e->snapPoint();
   mSnapIndicator->setMatch( e->mapPointMatch() );
 
-  double offset = calculateOffset( mapPoint );
+  const double offset = calculateOffset( mapPoint );
 
   if ( mUserInputWidget )
   {
@@ -477,14 +486,14 @@ void QgsMapToolOffsetCurve::prepareGeometry( const QgsPointLocator::Match &match
   mModifiedRing = -1;
 
   //assign feature part by vertex number (snap to vertex) or by before vertex number (snap to segment)
-  QgsGeometry geom = snappedFeature.geometry();
+  const QgsGeometry geom = snappedFeature.geometry();
   if ( geom.isNull() )
   {
     return;
   }
   mOriginalGeometry = geom;
 
-  QgsWkbTypes::Type geomType = geom.wkbType();
+  const QgsWkbTypes::Type geomType = geom.wkbType();
   if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::LineGeometry )
   {
     if ( !geom.isMultipart() )
@@ -493,12 +502,12 @@ void QgsMapToolOffsetCurve::prepareGeometry( const QgsPointLocator::Match &match
     }
     else
     {
-      int vertex = match.vertexIndex();
+      const int vertex = match.vertexIndex();
       QgsVertexId vertexId;
       geom.vertexIdFromVertexNr( vertex, vertexId );
       mModifiedPart = vertexId.part;
 
-      QgsMultiPolylineXY multiLine = geom.asMultiPolyline();
+      const QgsMultiPolylineXY multiLine = geom.asMultiPolyline();
       mManipulatedGeometry = QgsGeometry::fromPolylineXY( multiLine.at( mModifiedPart ) );
     }
   }
@@ -517,7 +526,7 @@ void QgsMapToolOffsetCurve::prepareGeometry( const QgsPointLocator::Match &match
         for ( int part = 0; part < mpolygon.count(); part++ ) // go through the polygons
         {
           const QgsPolygonXY &polygon = mpolygon[part];
-          QgsGeometry partGeo = QgsGeometry::fromPolygonXY( polygon );
+          const QgsGeometry partGeo = QgsGeometry::fromPolygonXY( polygon );
           const QgsPointXY layerCoords = match.point();
           if ( partGeo.contains( &layerCoords ) )
           {
@@ -529,14 +538,14 @@ void QgsMapToolOffsetCurve::prepareGeometry( const QgsPointLocator::Match &match
     }
     else if ( match.hasEdge() || match.hasVertex() )
     {
-      int vertex = match.vertexIndex();
+      const int vertex = match.vertexIndex();
       QgsVertexId vertexId;
       geom.vertexIdFromVertexNr( vertex, vertexId );
       QgsDebugMsgLevel( QString::number( vertexId.ring ), 2 );
 
       if ( !geom.isMultipart() )
       {
-        QgsPolygonXY poly = geom.asPolygon();
+        const QgsPolygonXY poly = geom.asPolygon();
         // if has rings
         if ( poly.count() > 0 )
         {
@@ -553,7 +562,7 @@ void QgsMapToolOffsetCurve::prepareGeometry( const QgsPointLocator::Match &match
       {
         mModifiedPart = vertexId.part;
         // get part, get ring
-        QgsMultiPolygonXY multiPoly = geom.asMultiPolygon();
+        const QgsMultiPolygonXY multiPoly = geom.asMultiPolygon();
         // if has rings
         if ( multiPoly.at( mModifiedPart ).count() > 0 )
         {
@@ -579,7 +588,7 @@ void QgsMapToolOffsetCurve::createUserInputWidget()
   mUserInputWidget->setFocus( Qt::TabFocusReason );
 
   connect( mUserInputWidget, &QgsOffsetUserWidget::offsetChanged, this, &QgsMapToolOffsetCurve::updateGeometryAndRubberBand );
-  connect( mUserInputWidget, &QgsOffsetUserWidget::offsetEditingFinished, this, &QgsMapToolOffsetCurve::applyOffset );
+  connect( mUserInputWidget, &QgsOffsetUserWidget::offsetEditingFinished, this, &QgsMapToolOffsetCurve::applyOffsetFromWidget );
   connect( mUserInputWidget, &QgsOffsetUserWidget::offsetEditingCanceled, this, &QgsMapToolOffsetCurve::cancel );
 
   connect( mUserInputWidget, &QgsOffsetUserWidget::offsetConfigChanged, this, [ = ] {updateGeometryAndRubberBand( mUserInputWidget->offset() );} );
@@ -590,7 +599,7 @@ void QgsMapToolOffsetCurve::deleteUserInputWidget()
   if ( mUserInputWidget )
   {
     disconnect( mUserInputWidget, &QgsOffsetUserWidget::offsetChanged, this, &QgsMapToolOffsetCurve::updateGeometryAndRubberBand );
-    disconnect( mUserInputWidget, &QgsOffsetUserWidget::offsetEditingFinished, this, &QgsMapToolOffsetCurve::applyOffset );
+    disconnect( mUserInputWidget, &QgsOffsetUserWidget::offsetEditingFinished, this, &QgsMapToolOffsetCurve::applyOffsetFromWidget );
     disconnect( mUserInputWidget, &QgsOffsetUserWidget::offsetEditingCanceled, this, &QgsMapToolOffsetCurve::cancel );
     mUserInputWidget->releaseKeyboard();
     mUserInputWidget->deleteLater();
@@ -619,10 +628,10 @@ void QgsMapToolOffsetCurve::updateGeometryAndRubberBand( double offset )
   }
 
   QgsGeometry offsetGeom;
-  QgsGeometry::JoinStyle joinStyle = QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle.value();
-  int quadSegments = QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg.value();
-  double miterLimit = QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit.value();
-  QgsGeometry::EndCapStyle capStyle = QgsSettingsRegistryCore::settingsDigitizingOffsetCapStyle.value();
+  const Qgis::JoinStyle joinStyle = QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle.value();
+  const int quadSegments = QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg.value();
+  const double miterLimit = QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit.value();
+  const Qgis::EndCapStyle capStyle = QgsSettingsRegistryCore::settingsDigitizingOffsetCapStyle.value();
 
 
   if ( QgsWkbTypes::geometryType( mOriginalGeometry.wkbType() ) == QgsWkbTypes::LineGeometry )
@@ -663,35 +672,35 @@ QgsOffsetUserWidget::QgsOffsetUserWidget( QWidget *parent )
   mOffsetSpinBox->setClearValue( 0.0 );
 
   // fill comboboxes
-  mJoinStyleComboBox->addItem( tr( "Round" ), QgsGeometry::JoinStyleRound );
-  mJoinStyleComboBox->addItem( tr( "Miter" ), QgsGeometry::JoinStyleMiter );
-  mJoinStyleComboBox->addItem( tr( "Bevel" ), QgsGeometry::JoinStyleBevel );
-  mCapStyleComboBox->addItem( tr( "Round" ), QgsGeometry::CapRound );
-  mCapStyleComboBox->addItem( tr( "Flat" ), QgsGeometry::CapFlat );
-  mCapStyleComboBox->addItem( tr( "Square" ), QgsGeometry::CapSquare );
+  mJoinStyleComboBox->addItem( tr( "Round" ), static_cast< int >( Qgis::JoinStyle::Round ) );
+  mJoinStyleComboBox->addItem( tr( "Miter" ), static_cast< int >( Qgis::JoinStyle::Miter ) );
+  mJoinStyleComboBox->addItem( tr( "Bevel" ), static_cast< int >( Qgis::JoinStyle::Bevel ) );
+  mCapStyleComboBox->addItem( tr( "Round" ), static_cast< int >( Qgis::EndCapStyle::Round ) );
+  mCapStyleComboBox->addItem( tr( "Flat" ), static_cast< int >( Qgis::EndCapStyle::Flat ) );
+  mCapStyleComboBox->addItem( tr( "Square" ), static_cast< int >( Qgis::EndCapStyle::Square ) );
 
-  QgsGeometry::JoinStyle joinStyle = QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle.value();
-  int quadSegments = QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg.value();
-  double miterLimit = QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit.value();
-  QgsGeometry::EndCapStyle capStyle = QgsSettingsRegistryCore::settingsDigitizingOffsetCapStyle.value();
+  const Qgis::JoinStyle joinStyle = QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle.value();
+  const int quadSegments = QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg.value();
+  const double miterLimit = QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit.value();
+  const Qgis::EndCapStyle capStyle = QgsSettingsRegistryCore::settingsDigitizingOffsetCapStyle.value();
 
-  mJoinStyleComboBox->setCurrentIndex( mJoinStyleComboBox->findData( joinStyle ) );
+  mJoinStyleComboBox->setCurrentIndex( mJoinStyleComboBox->findData( static_cast< int >( joinStyle ) ) );
   mQuadrantSpinBox->setValue( quadSegments );
   mQuadrantSpinBox->setClearValue( 8 );
   mMiterLimitSpinBox->setValue( miterLimit );
   mMiterLimitSpinBox->setClearValue( 5.0 );
-  mCapStyleComboBox->setCurrentIndex( mCapStyleComboBox->findData( capStyle ) );
+  mCapStyleComboBox->setCurrentIndex( mCapStyleComboBox->findData( static_cast< int >( capStyle ) ) );
 
   // connect signals
   mOffsetSpinBox->installEventFilter( this );
   connect( mOffsetSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsOffsetUserWidget::offsetChanged );
 
-  connect( mJoinStyleComboBox, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::currentIndexChanged ), this, [ = ] { QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle.setValue( static_cast< QgsGeometry::JoinStyle >( mJoinStyleComboBox->currentData().toInt() ) ); emit offsetConfigChanged(); } );
+  connect( mJoinStyleComboBox, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::currentIndexChanged ), this, [ = ] { QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle.setValue( static_cast< Qgis::JoinStyle >( mJoinStyleComboBox->currentData().toInt() ) ); emit offsetConfigChanged(); } );
   connect( mQuadrantSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, [ = ]( const int quadSegments ) { QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg.setValue( quadSegments ); emit offsetConfigChanged(); } );
   connect( mMiterLimitSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, [ = ]( double miterLimit ) { QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit.setValue( miterLimit ); emit offsetConfigChanged(); } );
-  connect( mCapStyleComboBox, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::currentIndexChanged ), this, [ = ] { QgsSettingsRegistryCore::settingsDigitizingOffsetCapStyle.setValue( static_cast< QgsGeometry::EndCapStyle >( mCapStyleComboBox->currentData().toInt() ) ); emit offsetConfigChanged(); } );
+  connect( mCapStyleComboBox, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::currentIndexChanged ), this, [ = ] { QgsSettingsRegistryCore::settingsDigitizingOffsetCapStyle.setValue( static_cast< Qgis::EndCapStyle >( mCapStyleComboBox->currentData().toInt() ) ); emit offsetConfigChanged(); } );
 
-  bool showAdvanced = QgsSettingsRegistryCore::settingsDigitizingOffsetShowAdvanced.value();
+  const bool showAdvanced = QgsSettingsRegistryCore::settingsDigitizingOffsetShowAdvanced.value();
   mShowAdvancedButton->setChecked( showAdvanced );
   mAdvancedConfigWidget->setVisible( showAdvanced );
   connect( mShowAdvancedButton, &QToolButton::clicked, mAdvancedConfigWidget, &QWidget::setVisible );

@@ -43,12 +43,12 @@ QString QgsAbstractBabelFormat::name() const
   return mName;
 }
 
-QStringList QgsAbstractBabelFormat::importCommand( const QString &, Qgis::GpsFeatureType, const QString &, const QString & ) const
+QStringList QgsAbstractBabelFormat::importCommand( const QString &, Qgis::GpsFeatureType, const QString &, const QString &, Qgis::BabelCommandFlags ) const
 {
   return QStringList();
 }
 
-QStringList QgsAbstractBabelFormat::exportCommand( const QString &, Qgis::GpsFeatureType, const QString &, const QString & ) const
+QStringList QgsAbstractBabelFormat::exportCommand( const QString &, Qgis::GpsFeatureType, const QString &, const QString &, Qgis::BabelCommandFlags ) const
 {
   return QStringList();
 }
@@ -63,9 +63,11 @@ Qgis::BabelFormatCapabilities QgsAbstractBabelFormat::capabilities() const
 // QgsSimpleBabelFormat
 //
 
-QgsBabelSimpleImportFormat::QgsBabelSimpleImportFormat( const QString &format,
-    Qgis::BabelFormatCapabilities capabilities )
-  : mFormat( format )
+QgsBabelSimpleImportFormat::QgsBabelSimpleImportFormat( const QString &format, const QString &description,
+    Qgis::BabelFormatCapabilities capabilities, const QStringList extensions )
+  : QgsAbstractBabelFormat( format )
+  , mDescription( description )
+  , mExtensions( extensions )
 {
   mCapabilities = capabilities;
   mCapabilities |= Qgis::BabelFormatCapability::Import;
@@ -75,14 +77,16 @@ QgsBabelSimpleImportFormat::QgsBabelSimpleImportFormat( const QString &format,
 QStringList QgsBabelSimpleImportFormat::importCommand( const QString &babel,
     Qgis::GpsFeatureType featureType,
     const QString &input,
-    const QString &output )const
+    const QString &output,
+    Qgis::BabelCommandFlags flags ) const
 {
-  return { QStringLiteral( "\"%1\"" ).arg( babel ),
+  return { ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? QStringLiteral( "\"%1\"" ).arg( babel ) : babel,
            featureTypeToArgument( featureType ),
            QStringLiteral( "-i" ),
-           mFormat,
+           name(),
            QStringLiteral( "-o" ),
            QStringLiteral( "gpx" ),
-           QStringLiteral( "\"%1\"" ).arg( input ),
-           QStringLiteral( "\"%1\"" ).arg( output ) };
+           ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? QStringLiteral( "\"%1\"" ).arg( input ) : input,
+           ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? QStringLiteral( "\"%1\"" ).arg( output ) : output
+         };
 }

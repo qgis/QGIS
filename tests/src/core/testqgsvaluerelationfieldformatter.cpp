@@ -149,7 +149,7 @@ void TestQgsValueRelationFieldFormatter::testDependencies()
 
 void TestQgsValueRelationFieldFormatter::testSortValueNull()
 {
-  QgsValueRelationFieldFormatter formatter;
+  const QgsValueRelationFieldFormatter formatter;
   QVariantMap config;
   config.insert( QStringLiteral( "Layer" ), mLayer2->id() );
   config.insert( QStringLiteral( "Key" ), QStringLiteral( "pk" ) );

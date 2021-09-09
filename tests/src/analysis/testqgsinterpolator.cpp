@@ -270,7 +270,7 @@ void TestQgsInterpolator::dualEdge()
 
 //  QVERIFY( tri.getSurroundingTriangles( 0 ).empty() );
 
-  QgsMesh mesh = tri.triangulationToMesh();
+  const QgsMesh mesh = tri.triangulationToMesh();
   QCOMPARE( mesh.faceCount(), 4 );
   QCOMPARE( mesh.vertexCount(), 5 );
 
@@ -292,13 +292,13 @@ void TestQgsInterpolator::TIN_IDW_Interpolator_with_Z()
       QStringLiteral( "point" ),
       QStringLiteral( "memory" ) );
 
-  QString wkt1 = "PointZ (0.0 0.0 1.0)";
-  QString wkt2 = "PointZ (2.0 0.0 2.0)";
-  QString wkt3 = "PointZ (0.0 2.0 3.0)";
-  QString wkt4 = "PointZ (2.0 2.0 4.0)";
+  const QString wkt1 = "PointZ (0.0 0.0 1.0)";
+  const QString wkt2 = "PointZ (2.0 0.0 2.0)";
+  const QString wkt3 = "PointZ (0.0 2.0 3.0)";
+  const QString wkt4 = "PointZ (2.0 2.0 4.0)";
 
 
-  QgsFields fields = mLayerPoint->fields();
+  const QgsFields fields = mLayerPoint->fields();
 
   QgsFeature f1;
   f1.setGeometry( QgsGeometry::fromWkt( wkt1 ) );
@@ -365,14 +365,14 @@ void TestQgsInterpolator::TIN_IDW_Interpolator_with_attribute()
 
   QVERIFY( mLayerPoint->fields().field( "ZValue" ).type() == QVariant::Double );
 
-  QString wkt1 = "Point (0 0)";
-  QString wkt2 = "Point (2 0)";
-  QString wkt3 = "Point (0 2)";
-  QString wkt4 = "Point (2 2)";
-  QString wkt5 = "Point (1 1)";
-  QString wkt6 = "Point (3 2)";
+  const QString wkt1 = "Point (0 0)";
+  const QString wkt2 = "Point (2 0)";
+  const QString wkt3 = "Point (0 2)";
+  const QString wkt4 = "Point (2 2)";
+  const QString wkt5 = "Point (1 1)";
+  const QString wkt6 = "Point (3 2)";
 
-  QgsFields fields = mLayerPoint->fields();
+  const QgsFields fields = mLayerPoint->fields();
 
   QgsFeature f1;
   f1.setGeometry( QgsGeometry::fromWkt( wkt1 ) );

@@ -193,7 +193,7 @@ void QgsLayoutManualTableWidget::setTableContents()
 
     int row = 0;
     const QList< double > rowHeights = mTable->rowHeights();
-    for ( double height : rowHeights )
+    for ( const double height : rowHeights )
     {
       mEditorDialog->setTableRowHeight( row, height );
       row++;
@@ -202,7 +202,7 @@ void QgsLayoutManualTableWidget::setTableContents()
     const QList< double > columnWidths = mTable->columnWidths();
     QVariantList headers;
     headers.reserve( columnWidths.size() );
-    for ( double width : columnWidths )
+    for ( const double width : columnWidths )
     {
       mEditorDialog->setTableColumnWidth( col, width );
       headers << ( col < mTable->headers().count() ? mTable->headers().value( col ).heading() : QVariant() );

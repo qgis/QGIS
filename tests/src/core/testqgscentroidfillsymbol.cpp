@@ -86,14 +86,14 @@ void TestQgsCentroidFillSymbol::initTestCase()
   QgsApplication::showSettings();
 
   //create some objects that will be used in all tests...
-  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = myDataDir + '/';
 
   //
   //create a poly layer that will be used in all tests...
   //
-  QString myPolysFileName = mTestDataDir + "polys.shp";
-  QFileInfo myPolyFileInfo( myPolysFileName );
+  const QString myPolysFileName = mTestDataDir + "polys.shp";
+  const QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
                                      myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
@@ -119,7 +119,7 @@ void TestQgsCentroidFillSymbol::initTestCase()
 }
 void TestQgsCentroidFillSymbol::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -183,7 +183,7 @@ void TestQgsCentroidFillSymbol::centroidFillClipOnCurrentPartOnlyBiggest()
 
 void TestQgsCentroidFillSymbol::centroidFillClipMultiplayerPoints()
 {
-  QgsSimpleFillSymbolLayer simpleFill( QColor( 255, 255, 255, 100 ) );
+  const QgsSimpleFillSymbolLayer simpleFill( QColor( 255, 255, 255, 100 ) );
 
   mCentroidFill = mCentroidFill->clone();
   mCentroidFill->setClipPoints( true );
@@ -205,7 +205,7 @@ void TestQgsCentroidFillSymbol::centroidFillClipMultiplayerPoints()
 
 void TestQgsCentroidFillSymbol::opacityWithDataDefinedColor()
 {
-  QgsSimpleFillSymbolLayer simpleFill( QColor( 255, 255, 255, 100 ) );
+  const QgsSimpleFillSymbolLayer simpleFill( QColor( 255, 255, 255, 100 ) );
 
   mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'red', 'green')" ) ) );
   mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'blue', 'magenta')" ) ) );
@@ -219,7 +219,7 @@ void TestQgsCentroidFillSymbol::opacityWithDataDefinedColor()
 
 void TestQgsCentroidFillSymbol::dataDefinedOpacity()
 {
-  QgsSimpleFillSymbolLayer simpleFill( QColor( 255, 255, 255, 100 ) );
+  const QgsSimpleFillSymbolLayer simpleFill( QColor( 255, 255, 255, 100 ) );
 
   mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'red', 'green')" ) ) );
   mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'blue', 'magenta')" ) ) );
@@ -247,7 +247,7 @@ bool TestQgsCentroidFillSymbol::imageCheck( const QString &testType )
   myChecker.setControlPathPrefix( QStringLiteral( "symbol_centroidfill" ) );
   myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( mMapSettings );
-  bool myResultFlag = myChecker.runTest( testType );
+  const bool myResultFlag = myChecker.runTest( testType );
   mReport += myChecker.report();
   return myResultFlag;
 }

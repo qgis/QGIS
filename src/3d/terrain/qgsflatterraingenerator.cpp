@@ -53,7 +53,7 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
   // create material
 
   const Qgs3DMapSettings &map = terrain()->map3D();
-  createTextureComponent( entity, map.isTerrainShadingEnabled(), map.terrainShadingMaterial(), !map.terrainLayers().empty() );
+  createTextureComponent( entity, map.isTerrainShadingEnabled(), map.terrainShadingMaterial(), !map.layers().empty() );
 
   // create transform
 
@@ -62,9 +62,9 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
   entity->addComponent( transform );
 
   // set up transform according to the extent covered by the quad geometry
-  QgsAABB bbox = mNode->bbox();
-  double side = bbox.xMax - bbox.xMin;
-  double half = side / 2;
+  const QgsAABB bbox = mNode->bbox();
+  const double side = bbox.xMax - bbox.xMin;
+  const double half = side / 2;
 
   transform->setScale( side );
   transform->setTranslation( QVector3D( bbox.xMin + half, 0, bbox.zMin + half ) );
@@ -110,7 +110,7 @@ void QgsFlatTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) c
 
 void QgsFlatTerrainGenerator::writeXml( QDomElement &elem ) const
 {
-  QgsRectangle r = mExtent;
+  const QgsRectangle r = mExtent;
   QDomElement elemExtent = elem.ownerDocument().createElement( QStringLiteral( "extent" ) );
   elemExtent.setAttribute( QStringLiteral( "xmin" ), QString::number( r.xMinimum() ) );
   elemExtent.setAttribute( QStringLiteral( "xmax" ), QString::number( r.xMaximum() ) );
@@ -123,11 +123,11 @@ void QgsFlatTerrainGenerator::writeXml( QDomElement &elem ) const
 
 void QgsFlatTerrainGenerator::readXml( const QDomElement &elem )
 {
-  QDomElement elemExtent = elem.firstChildElement( QStringLiteral( "extent" ) );
-  double xmin = elemExtent.attribute( QStringLiteral( "xmin" ) ).toDouble();
-  double xmax = elemExtent.attribute( QStringLiteral( "xmax" ) ).toDouble();
-  double ymin = elemExtent.attribute( QStringLiteral( "ymin" ) ).toDouble();
-  double ymax = elemExtent.attribute( QStringLiteral( "ymax" ) ).toDouble();
+  const QDomElement elemExtent = elem.firstChildElement( QStringLiteral( "extent" ) );
+  const double xmin = elemExtent.attribute( QStringLiteral( "xmin" ) ).toDouble();
+  const double xmax = elemExtent.attribute( QStringLiteral( "xmax" ) ).toDouble();
+  const double ymin = elemExtent.attribute( QStringLiteral( "ymin" ) ).toDouble();
+  const double ymax = elemExtent.attribute( QStringLiteral( "ymax" ) ).toDouble();
 
   setExtent( QgsRectangle( xmin, ymin, xmax, ymax ) );
 

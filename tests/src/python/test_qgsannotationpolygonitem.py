@@ -18,7 +18,8 @@ from qgis.PyQt.QtCore import (QSize,
                               QDir)
 from qgis.PyQt.QtGui import (QImage,
                              QPainter,
-                             QColor)
+                             QColor,
+                             QTransform)
 from qgis.core import (QgsMapSettings,
                        QgsCoordinateTransform,
                        QgsProject,
@@ -33,7 +34,10 @@ from qgis.core import (QgsMapSettings,
                        QgsLineString,
                        QgsPolygon,
                        QgsCurvePolygon,
-                       QgsCircularString
+                       QgsCircularString,
+                       QgsAnnotationItemNode,
+                       Qgis,
+                       QgsPointXY
                        )
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -69,6 +73,32 @@ class TestQgsAnnotationPolygonItem(unittest.TestCase):
         item.setSymbol(QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black'}))
         self.assertEqual(item.symbol()[0].color(), QColor(200, 100, 100))
 
+    def test_nodes(self):
+        """
+        Test nodes for item
+        """
+        item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
+        # nodes shouldn't form a closed ring
+        self.assertEqual(item.nodes(), [QgsAnnotationItemNode(QgsPointXY(12, 13), Qgis.AnnotationItemNodeType.VertexHandle),
+                                        QgsAnnotationItemNode(QgsPointXY(14, 13), Qgis.AnnotationItemNodeType.VertexHandle),
+                                        QgsAnnotationItemNode(QgsPointXY(14, 15), Qgis.AnnotationItemNodeType.VertexHandle)])
+
+    def test_rubberbandgeometry(self):
+        """
+        Test creating rubber band geometry
+        """
+        item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
+        band = item.rubberBandGeometry()
+        self.assertEqual(band.asWkt(), 'Polygon ((12 13, 14 13, 14 15, 12 13))')
+
+    def test_transform(self):
+        item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
+        self.assertEqual(item.geometry().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 12 13))')
+
+        transform = QTransform.fromTranslate(100, 200)
+        item.transform(transform)
+        self.assertEqual(item.geometry().asWkt(), 'Polygon ((112 213, 114 213, 114 215, 112 213))')
+
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")
         elem = doc.createElement('test')
@@ -76,6 +106,8 @@ class TestQgsAnnotationPolygonItem(unittest.TestCase):
         item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
         item.setSymbol(QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black'}))
         item.setZIndex(11)
+        item.setUseSymbologyReferenceScale(True)
+        item.setSymbologyReferenceScale(5000)
 
         self.assertTrue(item.writeXml(elem, doc, QgsReadWriteContext()))
 
@@ -85,16 +117,22 @@ class TestQgsAnnotationPolygonItem(unittest.TestCase):
         self.assertEqual(s2.geometry().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 12 13))')
         self.assertEqual(s2.symbol()[0].color(), QColor(200, 100, 100))
         self.assertEqual(s2.zIndex(), 11)
+        self.assertTrue(s2.useSymbologyReferenceScale())
+        self.assertEqual(s2.symbologyReferenceScale(), 5000)
 
     def testClone(self):
         item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
         item.setSymbol(QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black'}))
         item.setZIndex(11)
+        item.setUseSymbologyReferenceScale(True)
+        item.setSymbologyReferenceScale(5000)
 
         item2 = item.clone()
         self.assertEqual(item2.geometry().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 12 13))')
         self.assertEqual(item2.symbol()[0].color(), QColor(200, 100, 100))
         self.assertEqual(item2.zIndex(), 11)
+        self.assertTrue(item2.useSymbologyReferenceScale())
+        self.assertEqual(item2.symbologyReferenceScale(), 5000)
 
     def testRenderPolygon(self):
         item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))

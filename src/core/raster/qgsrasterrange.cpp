@@ -26,14 +26,14 @@ QgsRasterRange::QgsRasterRange( double min, double max, BoundsType bounds )
 
 bool QgsRasterRange::overlaps( const QgsRasterRange &other ) const
 {
-  bool thisIncludesLower = mType == IncludeMinAndMax || mType == IncludeMin;
-  bool thisIncludesUpper = mType == IncludeMinAndMax || mType == IncludeMax;
-  bool thisLowerInfinite = !std::isfinite( mMin );
-  bool thisUpperInfinite = !std::isfinite( mMax );
-  bool otherIncludesLower = other.mType == IncludeMinAndMax || other.mType == IncludeMin;
-  bool otherIncludesUpper = other.mType == IncludeMinAndMax || other.mType == IncludeMax;
-  bool otherLowerInfinite = !std::isfinite( other.mMin );
-  bool otherUpperInfinite = !std::isfinite( other.mMax );
+  const bool thisIncludesLower = mType == IncludeMinAndMax || mType == IncludeMin;
+  const bool thisIncludesUpper = mType == IncludeMinAndMax || mType == IncludeMax;
+  const bool thisLowerInfinite = !std::isfinite( mMin );
+  const bool thisUpperInfinite = !std::isfinite( mMax );
+  const bool otherIncludesLower = other.mType == IncludeMinAndMax || other.mType == IncludeMin;
+  const bool otherIncludesUpper = other.mType == IncludeMinAndMax || other.mType == IncludeMax;
+  const bool otherLowerInfinite = !std::isfinite( other.mMin );
+  const bool otherUpperInfinite = !std::isfinite( other.mMax );
 
   if ( ( ( thisIncludesLower && otherIncludesLower && ( mMin <= other.mMin || thisLowerInfinite ) ) ||
          ( ( !thisIncludesLower || !otherIncludesLower ) && ( mMin < other.mMin || thisLowerInfinite ) ) )

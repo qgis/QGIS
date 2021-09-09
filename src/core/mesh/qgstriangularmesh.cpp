@@ -160,14 +160,14 @@ bool QgsTriangularMesh::update( QgsMesh *nativeMesh, const QgsCoordinateTransfor
 
   bool needUpdateVerticesCoordinates = mTriangularMesh.vertices.size() != nativeMesh->vertices.size() ||
                                        ( ( mCoordinateTransform.isValid() || transform.isValid() ) &&
-                                         ( mCoordinateTransform.sourceCrs() != transform.sourceCrs() &&
-                                             mCoordinateTransform.destinationCrs() != transform.destinationCrs() &&
+                                         ( mCoordinateTransform.sourceCrs() != transform.sourceCrs() ||
+                                             mCoordinateTransform.destinationCrs() != transform.destinationCrs() ||
                                              mCoordinateTransform.isValid() != transform.isValid() ) ) ;
 
   bool needUpdateFrame =  mTriangularMesh.vertices.size() != nativeMesh->vertices.size() ||
                           mNativeMeshFaceCentroids.size() != nativeMesh->faces.size() ||
-                          mTriangularMesh.faces.size() >= nativeMesh->faces.size() ||
-                          mTriangularMesh.edges.size() == nativeMesh->edges.size();
+                          mTriangularMesh.faces.size() < nativeMesh->faces.size() ||
+                          mTriangularMesh.edges.size() != nativeMesh->edges.size();
 
 
   // FIND OUT IF UPDATE IS NEEDED
@@ -832,7 +832,7 @@ void QgsTriangularMesh::applyChanges( const QgsTriangularMesh::Changes &changes 
     mNativeMeshFaceCentroids[changes.mNativeFaceIndexesGeometryChanged.at( i )] = calculateCentroid( changes.mNativeFacesGeometryChanged.at( i ) );
 }
 
-void QgsTriangularMesh::reverseChanges( const QgsTriangularMesh::Changes &changes )
+void QgsTriangularMesh::reverseChanges( const QgsTriangularMesh::Changes &changes, const QgsMesh &nativeMesh )
 {
   //reverse added faces and added vertices
   if ( !changes.mNativeFacesToAdd.isEmpty() )
@@ -849,6 +849,13 @@ void QgsTriangularMesh::reverseChanges( const QgsTriangularMesh::Changes &change
 
   int initialVerticesCount = mTriangularMesh.vertices.count() - changes.mAddedVertices.count();
   mTriangularMesh.vertices.resize( initialVerticesCount );
+
+  // for each vertex to remove, check if the triangular vertex is empty,
+  // that means vertices had to be updated from the native mesh but faces was empty
+  // we need to update the vertices with the reverse native face
+  for ( const int i : std::as_const( changes.mVerticesIndexesToRemove ) )
+    if ( mTriangularMesh.vertex( i ).isEmpty() )
+      mTriangularMesh.vertices[i] = nativeToTriangularCoordinates( nativeMesh.vertex( i ) );
 
   // reverse removed faces
   QVector<QgsMeshFace> restoredTriangles;
@@ -906,6 +913,7 @@ QgsTriangularMesh::Changes::Changes( const QgsTopologicalMesh::Changes &topologi
                                      const QgsMesh &nativeMesh )
 {
   mAddedVertices = topologicalChanges.addedVertices();
+  mVerticesIndexesToRemove = topologicalChanges.verticesToRemoveIndexes();
   mNativeFacesToAdd = topologicalChanges.addedFaces();
   mNativeFacesToRemove = topologicalChanges.removedFaces();
   mNativeFaceIndexesToRemove = topologicalChanges.removedFaceIndexes();

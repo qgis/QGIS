@@ -131,7 +131,7 @@ bool QgsBrowserProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &s
   if ( ( mFilter.isEmpty() && !mFilterByLayerType && mHiddenDataItemsKeys.empty() && mShownDataItemsKeys.empty() ) || !mModel )
     return true;
 
-  QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
+  const QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
   if ( !filterAcceptsProviderKey( sourceIndex ) || !filterRootAcceptsProviderKey( sourceIndex ) )
     return false;
 
@@ -182,7 +182,7 @@ bool QgsBrowserProxyModel::filterAcceptsAncestor( const QModelIndex &sourceIndex
   if ( mFilterByLayerType )
     return false;
 
-  QModelIndex sourceParentIndex = mModel->parent( sourceIndex );
+  const QModelIndex sourceParentIndex = mModel->parent( sourceIndex );
   if ( !sourceParentIndex.isValid() )
     return false;
   if ( filterAcceptsItem( sourceParentIndex ) )
@@ -198,7 +198,7 @@ bool QgsBrowserProxyModel::filterAcceptsDescendant( const QModelIndex &sourceInd
 
   for ( int i = 0; i < mModel->rowCount( sourceIndex ); i++ )
   {
-    QModelIndex sourceChildIndex = mModel->index( i, 0, sourceIndex );
+    const QModelIndex sourceChildIndex = mModel->index( i, 0, sourceIndex );
     if ( filterAcceptsItem( sourceChildIndex ) )
       return true;
     if ( filterAcceptsDescendant( sourceChildIndex ) )
@@ -227,7 +227,7 @@ bool QgsBrowserProxyModel::filterAcceptsItem( const QModelIndex &sourceIndex ) c
   if ( !mFilter.isEmpty() )
   {
     //accept item if either displayed text or comment role matches string
-    QString comment = mModel->data( sourceIndex, QgsBrowserModel::CommentRole ).toString();
+    const QString comment = mModel->data( sourceIndex, QgsBrowserModel::CommentRole ).toString();
     return ( filterAcceptsString( mModel->data( sourceIndex, Qt::DisplayRole ).toString() )
              || ( !comment.isEmpty() && filterAcceptsString( comment ) ) );
   }
@@ -252,7 +252,7 @@ bool QgsBrowserProxyModel::filterRootAcceptsProviderKey( const QModelIndex &sour
   if ( !mModel )
     return true;
 
-  QModelIndex sourceParentIndex = mModel->parent( sourceIndex );
+  const QModelIndex sourceParentIndex = mModel->parent( sourceIndex );
   if ( !sourceParentIndex.isValid() )
   {
     return filterAcceptsProviderKey( sourceIndex );
@@ -276,7 +276,7 @@ void QgsBrowserProxyModel::setShownDataItemProviderKeyFilter( const QStringList 
 
 bool QgsBrowserProxyModel::hasChildren( const QModelIndex &parent ) const
 {
-  bool isFertile { QSortFilterProxyModel::hasChildren( parent ) };
+  const bool isFertile { QSortFilterProxyModel::hasChildren( parent ) };
   if ( isFertile && parent.isValid() )
   {
     QgsDataItem *item = dataItem( parent );

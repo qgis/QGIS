@@ -631,8 +631,8 @@ template<> bool QgsGeometryCheckFactoryT<QgsGeometrySliverPolygonCheck>::checkAp
 
 template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometrySliverPolygonCheck>::createInstance( QgsGeometryCheckContext *context, const Ui::QgsGeometryCheckerSetupTab &ui ) const
 {
-  double threshold = ui.doubleSpinBoxSliverThinness->value();
-  double maxArea = ui.checkBoxSliverArea->isChecked() ? ui.doubleSpinBoxSliverArea->value() : 0.;
+  const double threshold = ui.doubleSpinBoxSliverThinness->value();
+  const double maxArea = ui.checkBoxSliverArea->isChecked() ? ui.doubleSpinBoxSliverArea->value() : 0.;
   QgsSettings().setValue( sSettingsGroup + "sliverPolygonsAreaThresholdEnabled", ui.checkBoxSliverArea->isChecked() );
   QgsSettings().setValue( sSettingsGroup + "sliverPolygonsAreaThreshold", ui.doubleSpinBoxSliverArea->value() );
   QgsSettings().setValue( sSettingsGroup + "sliverPolygonsThinnessThreshold", ui.doubleSpinBoxSliverThinness->value() );

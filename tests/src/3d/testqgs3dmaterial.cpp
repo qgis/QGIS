@@ -75,7 +75,7 @@ void TestQgs3dMaterial::setColorProperty( const QgsProperty &property, QgsAbstra
 
 void TestQgs3dMaterial::colorDataDefinedPhong()
 {
-  QgsExpressionContext expressionContext;
+  const QgsExpressionContext expressionContext;
   QgsPhongMaterialSettings phongSettings;
   phongSettings.setDiffuse( Qt::black );
   phongSettings.setAmbient( Qt::black );
@@ -137,7 +137,7 @@ void TestQgs3dMaterial::colorDataDefinedPhong()
 
 void TestQgs3dMaterial::colorDataDefinedGooch()
 {
-  QgsExpressionContext expressionContext;
+  const QgsExpressionContext expressionContext;
 
   QgsGoochMaterialSettings goochSettings;
   goochSettings.setDiffuse( Qt::black );

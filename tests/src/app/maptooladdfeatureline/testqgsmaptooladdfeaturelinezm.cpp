@@ -36,7 +36,7 @@ bool operator==( const QgsGeometry &g1, const QgsGeometry &g2 )
   if ( g1.isNull() && g2.isNull() )
     return true;
   else
-    return g1.isGeosEqual( g2 );
+    return g1.equals( g2 );
 }
 
 namespace QTest

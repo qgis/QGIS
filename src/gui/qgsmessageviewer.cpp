@@ -66,7 +66,7 @@ void QgsMessageViewer::showMessage( bool blocking )
 {
   if ( blocking )
   {
-    QgsTemporaryCursorRestoreOverride override;
+    const QgsTemporaryCursorRestoreOverride override;
     exec();
   }
   else

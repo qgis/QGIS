@@ -40,7 +40,7 @@ QgsProcessingVectorTileWriteLayerDetailsWidget::QgsProcessingVectorTileWriteLaye
 
   mContext.setProject( project );
 
-  QgsVectorTileWriter::Layer layer = QgsProcessingParameterVectorTileWriterLayers::variantMapAsLayer( value.toMap(), mContext );
+  const QgsVectorTileWriter::Layer layer = QgsProcessingParameterVectorTileWriterLayers::variantMapAsLayer( value.toMap(), mContext );
   mLayer = layer.layer();
 
   if ( !mLayer )
@@ -103,7 +103,7 @@ QgsProcessingVectorTileWriterLayersPanelWidget::QgsProcessingVectorTileWriterLay
   const QVariantList valueList = value.toList();
   for ( const QVariant &v : valueList )
   {
-    QgsVectorTileWriter::Layer layer = QgsProcessingParameterVectorTileWriterLayers::variantMapAsLayer( v.toMap(), mContext );
+    const QgsVectorTileWriter::Layer layer = QgsProcessingParameterVectorTileWriterLayers::variantMapAsLayer( v.toMap(), mContext );
     if ( !layer.layer() )
       continue;  // skip any invalid layers
 
@@ -121,7 +121,7 @@ QgsProcessingVectorTileWriterLayersPanelWidget::QgsProcessingVectorTileWriterLay
     QVariantMap vm;
     vm["layer"] = layer->id();
 
-    QString title = layer->name();
+    const QString title = layer->name();
 
     addOption( vm, title, false );
   }
@@ -137,7 +137,7 @@ void QgsProcessingVectorTileWriterLayersPanelWidget::configureLayer()
   }
 
   QStandardItem *item = mModel->itemFromIndex( selection[0] );
-  QVariant value = item->data( Qt::UserRole );
+  const QVariant value = item->data( Qt::UserRole );
 
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
@@ -179,7 +179,7 @@ void QgsProcessingVectorTileWriterLayersPanelWidget::copyLayer()
   }
 
   QStandardItem *item = mModel->itemFromIndex( selection[0] );
-  QVariant value = item->data( Qt::UserRole );
+  const QVariant value = item->data( Qt::UserRole );
   mModel->insertRow( selection[0].row() + 1, item->clone() );
 }
 
@@ -187,7 +187,7 @@ void QgsProcessingVectorTileWriterLayersPanelWidget::setItemValue( QStandardItem
 {
   mContext.setProject( mProject );
 
-  QgsVectorTileWriter::Layer layer = QgsProcessingParameterVectorTileWriterLayers::variantMapAsLayer( value.toMap(), mContext );
+  const QgsVectorTileWriter::Layer layer = QgsProcessingParameterVectorTileWriterLayers::variantMapAsLayer( value.toMap(), mContext );
 
   item->setText( titleForLayer( layer ) );
   item->setData( value, Qt::UserRole );

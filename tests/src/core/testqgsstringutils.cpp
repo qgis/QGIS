@@ -42,6 +42,7 @@ class TestQgsStringUtils : public QObject
     void htmlToMarkdown();
     void wordWrap_data();
     void wordWrap();
+    void testIsUrl();
 
 };
 
@@ -256,6 +257,18 @@ void TestQgsStringUtils::wordWrap()
   QFETCH( QString, expected );
 
   QCOMPARE( QgsStringUtils::wordWrap( input, length, isMax, delimiter ), expected );
+}
+
+void TestQgsStringUtils::testIsUrl()
+{
+  QVERIFY( QgsStringUtils::isUrl( QStringLiteral( "http://example.com" ) ) );
+  QVERIFY( QgsStringUtils::isUrl( QStringLiteral( "https://example.com" ) ) );
+  QVERIFY( QgsStringUtils::isUrl( QStringLiteral( "ftp://example.com" ) ) );
+  QVERIFY( QgsStringUtils::isUrl( QStringLiteral( "file:///path/to/file" ) ) );
+  QVERIFY( QgsStringUtils::isUrl( QStringLiteral( "file://C:\\path\\to\\file" ) ) );
+  QVERIFY( !QgsStringUtils::isUrl( QStringLiteral( "" ) ) );
+  QVERIFY( !QgsStringUtils::isUrl( QStringLiteral( "some:random/string" ) ) );
+  QVERIFY( !QgsStringUtils::isUrl( QStringLiteral( "bla" ) ) );
 }
 
 

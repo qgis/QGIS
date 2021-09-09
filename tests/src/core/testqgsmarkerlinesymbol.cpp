@@ -85,8 +85,8 @@ void TestQgsMarkerLineSymbol::initTestCase()
   QList<QgsMapLayer *> mapLayers;
 
   //create a line layer that will be used in all tests...
-  QString myLinesFileName = mTestDataDir + "lines_cardinals.shp";
-  QFileInfo myLinesFileInfo( myLinesFileName );
+  const QString myLinesFileName = mTestDataDir + "lines_cardinals.shp";
+  const QFileInfo myLinesFileInfo( myLinesFileName );
   mLinesLayer = new QgsVectorLayer( myLinesFileInfo.filePath(),
                                     myLinesFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   mapLayers << mLinesLayer;
@@ -112,7 +112,7 @@ void TestQgsMarkerLineSymbol::cleanupTestCase()
   delete mMapSettings;
   QgsApplication::exitQgis();
 
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -129,7 +129,7 @@ void TestQgsMarkerLineSymbol::lineOffset()
   // Negative offset on marker line
   // See https://github.com/qgis/QGIS/issues/21836
 
-  QString qml = mTestDataDir + "marker_line_offset.qml";
+  const QString qml = mTestDataDir + "marker_line_offset.qml";
   bool success = false;
   mLinesLayer->loadNamedStyle( qml, success );
 
@@ -441,7 +441,7 @@ bool TestQgsMarkerLineSymbol::render( const QString &testType )
   checker.setControlPathPrefix( QStringLiteral( "symbol_markerline" ) );
   checker.setControlName( "expected_" + testType );
   checker.setMapSettings( *mMapSettings );
-  bool result = checker.runTest( testType );
+  const bool result = checker.runTest( testType );
   mReport += "\n\n\n" + checker.report();
   return result;
 }

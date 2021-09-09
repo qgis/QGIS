@@ -149,7 +149,8 @@ void QgsRubberBand::addPoint( const QgsPointXY &p, bool doUpdate /* = true */, i
   if ( ringIndex == mPoints.at( geometryIndex ).size() )
   {
     mPoints[geometryIndex].append( QgsPolylineXY() );
-    mPoints[geometryIndex][ringIndex].append( p );
+    if ( mGeometryType != QgsWkbTypes::PointGeometry )
+      mPoints[geometryIndex][ringIndex].append( p );
   }
 
   if ( mPoints.at( geometryIndex ).at( ringIndex ).size() == 2 &&
@@ -283,7 +284,7 @@ void QgsRubberBand::setToGeometry( const QgsGeometry &geom, const QgsCoordinateR
   addGeometry( geom, crs );
 }
 
-void QgsRubberBand::addGeometry( const QgsGeometry &geometry, QgsVectorLayer *layer, bool doUpdate )
+void QgsRubberBand::addGeometry( const QgsGeometry &geometry, QgsMapLayer *layer, bool doUpdate )
 {
   QgsGeometry geom = geometry;
   if ( layer )
@@ -334,7 +335,6 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
   {
     QgsPointXY pt = geom.asPoint();
     addPoint( pt, false, idx );
-    removeLastPoint( idx, false );
   }
   else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::PointGeometry && QgsWkbTypes::isMultiType( geomType ) )
   {
@@ -342,7 +342,6 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
     for ( const QgsPointXY &pt : mpt )
     {
       addPoint( pt, false, idx );
-      removeLastPoint( idx, false );
       idx++;
     }
   }
@@ -434,6 +433,14 @@ void QgsRubberBand::setToCanvasRectangle( QRect rect )
   addPoint( lr, false );
   addPoint( ur, false );
   addPoint( ul, true );
+}
+
+void QgsRubberBand::copyPointsFrom( const QgsRubberBand *other )
+{
+  reset( other->mGeometryType );
+  mPoints = other->mPoints;
+  updateRect();
+  update();
 }
 
 void QgsRubberBand::paint( QPainter *p )

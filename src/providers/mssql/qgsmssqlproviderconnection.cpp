@@ -169,16 +169,16 @@ void QgsMssqlProviderConnection::createVectorTable( const QString &schema,
   }
   QMap<int, int> map;
   QString errCause;
-  Qgis::VectorExportResult res = QgsMssqlProvider::createEmptyLayer(
-                                   newUri.uri(),
-                                   fields,
-                                   wkbType,
-                                   srs,
-                                   overwrite,
-                                   &map,
-                                   &errCause,
-                                   options
-                                 );
+  const Qgis::VectorExportResult res = QgsMssqlProvider::createEmptyLayer(
+                                         newUri.uri(),
+                                         fields,
+                                         wkbType,
+                                         srs,
+                                         overwrite,
+                                         &map,
+                                         &errCause,
+                                         options
+                                       );
   if ( res != Qgis::VectorExportResult::Success )
   {
     throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
@@ -262,7 +262,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
     QSqlQuery q = QSqlQuery( db );
     q.setForwardOnly( true );
 
-    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+    const std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
     if ( ! q.exec( sql ) )
     {
@@ -274,10 +274,10 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
 
     if ( q.isActive() )
     {
-      std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+      const std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
       const QSqlRecord rec { q.record() };
       const int numCols { rec.count() };
-      auto iterator = std::make_shared<QgssMssqlProviderResultIterator>( resolveTypes, numCols, q );
+      const auto iterator = std::make_shared<QgssMssqlProviderResultIterator>( resolveTypes, numCols, q );
       QgsAbstractDatabaseProviderConnection::QueryResult results( iterator );
       results.setQueryExecutionTime( std::chrono::duration_cast<std::chrono::milliseconds>( end - begin ).count() );
       for ( int idx = 0; idx < numCols; ++idx )
@@ -489,7 +489,7 @@ QStringList QgsMssqlProviderConnection::schemas( ) const
   checkCapability( Capability::Schemas );
   QStringList schemas;
 
-  QgsDataSourceUri connUri( uri() );
+  const QgsDataSourceUri connUri( uri() );
 
   const QgsDataSourceUri dsUri { uri() };
   const QString sql
@@ -516,7 +516,7 @@ QStringList QgsMssqlProviderConnection::schemas( ) const
   {
     if ( row.size() > 0 )
     {
-      QString schema = row.at( 0 ).toString();
+      const QString schema = row.at( 0 ).toString();
       if ( !excludedSchemaList.contains( schema ) )
         schemas.push_back( schema );
     }

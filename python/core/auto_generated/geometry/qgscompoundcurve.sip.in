@@ -65,7 +65,7 @@ Compound curve geometry type
 
     virtual bool isEmpty() const /HoldGIL/;
 
-    virtual bool isValid( QString &error /Out/, int flags = 0 ) const;
+    virtual bool isValid( QString &error /Out/, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;
 
     int indexOf( const QgsPoint &point ) const final;
 

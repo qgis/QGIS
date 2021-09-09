@@ -296,3 +296,26 @@ QString QgsVectorTileWriter::mbtilesJsonSchema()
   rootObj["vector_layers"] = arrayLayers;
   return QString::fromStdString( QgsJsonUtils::jsonFromVariant( rootObj ).dump() );
 }
+
+
+QByteArray QgsVectorTileWriter::writeSingleTile( QgsTileXYZ tileID, QgsFeedback *feedback, int buffer, int resolution ) const
+{
+  int zoomLevel = tileID.zoomLevel();
+
+  QgsVectorTileMVTEncoder encoder( tileID );
+  encoder.setTileBuffer( buffer );
+  encoder.setResolution( resolution );
+  encoder.setTransformContext( mTransformContext );
+
+  for ( const QgsVectorTileWriter::Layer &layer : std::as_const( mLayers ) )
+  {
+    if ( ( layer.minZoom() >= 0 && zoomLevel < layer.minZoom() ) ||
+         ( layer.maxZoom() >= 0 && zoomLevel > layer.maxZoom() ) )
+      continue;
+
+    encoder.addLayer( layer.layer(), feedback, layer.filterExpression(), layer.layerName() );
+  }
+
+  return encoder.encode();
+}
+

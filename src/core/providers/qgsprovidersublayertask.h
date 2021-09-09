@@ -53,7 +53,7 @@ class CORE_EXPORT QgsProviderSublayerTask : public QgsTask
      * Constructor for QgsProviderSublayerTask, which retrieves sublayer details for the
      * specified \a uri.
      */
-    QgsProviderSublayerTask( const QString &uri );
+    QgsProviderSublayerTask( const QString &uri, bool includeSystemTables = false );
 
     ~QgsProviderSublayerTask() override;
 
@@ -71,6 +71,8 @@ class CORE_EXPORT QgsProviderSublayerTask : public QgsTask
   private:
 
     QString mUri;
+
+    bool mIncludeSystemTables = false;
 
     std::unique_ptr< QgsFeedback > mFeedback;
 

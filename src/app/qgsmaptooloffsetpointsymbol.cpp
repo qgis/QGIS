@@ -87,7 +87,7 @@ void QgsMapToolOffsetPointSymbol::canvasPressEvent( QgsMapMouseEvent *e )
     // only left clicks "save" edits - right clicks discard them
     if ( e->button() == Qt::LeftButton && mActiveLayer )
     {
-      QMap<int, QVariant> attrs = calculateNewOffsetAttributes( mClickedPoint, e->mapPoint() );
+      const QMap<int, QVariant> attrs = calculateNewOffsetAttributes( mClickedPoint, e->mapPoint() );
       mActiveLayer->beginEditCommand( tr( "Offset symbol" ) );
       bool offsetSuccess = true;
 
@@ -138,7 +138,7 @@ bool QgsMapToolOffsetPointSymbol::checkSymbolCompatibility( QgsMarkerSymbol *mar
     if ( !layer->dataDefinedProperties().isActive( QgsSymbolLayer::PropertyOffset ) )
       continue;
 
-    QgsProperty p = layer->dataDefinedProperties().property( QgsSymbolLayer::PropertyOffset );
+    const QgsProperty p = layer->dataDefinedProperties().property( QgsSymbolLayer::PropertyOffset );
     if ( p.propertyType() != QgsProperty::FieldBasedProperty )
       continue;
 
@@ -211,7 +211,7 @@ QMap<int, QVariant> QgsMapToolOffsetPointSymbol::calculateNewOffsetAttributes( c
     if ( !layer->dataDefinedProperties().isActive( QgsSymbolLayer::PropertyOffset ) )
       continue;
 
-    QgsProperty ddOffset = layer->dataDefinedProperties().property( QgsSymbolLayer::PropertyOffset );
+    const QgsProperty ddOffset = layer->dataDefinedProperties().property( QgsSymbolLayer::PropertyOffset );
     if ( ddOffset.propertyType() != QgsProperty::FieldBasedProperty )
       continue;
 
@@ -219,8 +219,8 @@ QMap<int, QVariant> QgsMapToolOffsetPointSymbol::calculateNewOffsetAttributes( c
     if ( !ml )
       continue;
 
-    QPointF offset = calculateOffset( startPoint, endPoint, ml->offsetUnit() );
-    int fieldIdx = mActiveLayer->fields().indexFromName( ddOffset.field() );
+    const QPointF offset = calculateOffset( startPoint, endPoint, ml->offsetUnit() );
+    const int fieldIdx = mActiveLayer->fields().indexFromName( ddOffset.field() );
     if ( fieldIdx >= 0 )
       newAttrValues[ fieldIdx ] = QgsSymbolLayerUtils::encodePoint( offset );
   }
@@ -233,7 +233,7 @@ void QgsMapToolOffsetPointSymbol::updateOffsetPreviewItem( const QgsPointXY &sta
     return;
 
   QgsFeature f = mClickedFeature;
-  QMap<int, QVariant> attrs = calculateNewOffsetAttributes( startPoint, endPoint );
+  const QMap<int, QVariant> attrs = calculateNewOffsetAttributes( startPoint, endPoint );
   QMap<int, QVariant>::const_iterator it = attrs.constBegin();
   for ( ; it != attrs.constEnd(); ++it )
   {
@@ -246,8 +246,8 @@ void QgsMapToolOffsetPointSymbol::updateOffsetPreviewItem( const QgsPointXY &sta
 
 QPointF QgsMapToolOffsetPointSymbol::calculateOffset( const QgsPointXY &startPoint, const QgsPointXY &endPoint, QgsUnitTypes::RenderUnit unit ) const
 {
-  double dx = endPoint.x() - startPoint.x();
-  double dy = -( endPoint.y() - startPoint.y() );
+  const double dx = endPoint.x() - startPoint.x();
+  const double dy = -( endPoint.y() - startPoint.y() );
 
   double factor = 1.0;
 

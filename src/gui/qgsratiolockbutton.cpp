@@ -58,7 +58,7 @@ void QgsRatioLockButton::widthSpinBoxChanged( double value )
     return;
   }
 
-  double oldRatio = mPrevHeight / mPrevWidth;
+  const double oldRatio = mPrevHeight / mPrevWidth;
   mUpdatingRatio = true;
   mHeightSpinBox->setValue( oldRatio * value );
   mUpdatingRatio = false;
@@ -74,7 +74,7 @@ void QgsRatioLockButton::heightSpinBoxChanged( double value )
     return;
   }
 
-  double oldRatio = mPrevWidth / mPrevHeight;
+  const double oldRatio = mPrevWidth / mPrevHeight;
   mUpdatingRatio = true;
   mWidthSpinBox->setValue( oldRatio * value );
   mUpdatingRatio = false;
@@ -133,7 +133,7 @@ void QgsRatioLockButton::drawButton()
   painter.drawLine( currentIconSize.width() / 2, currentIconSize.height() / 2 + 13, currentIconSize.width() / 2, currentIconSize.height() - 2 );
   painter.drawLine( currentIconSize.width() / 2, currentIconSize.height() - 2, 1, currentIconSize.height() - 2 );
 
-  QImage image( mLocked ? QStringLiteral( ":/images/themes/default/lockedGray.svg" ) : QStringLiteral( ":/images/themes/default/unlockedGray.svg" ) );
+  const QImage image( mLocked ? QStringLiteral( ":/images/themes/default/lockedGray.svg" ) : QStringLiteral( ":/images/themes/default/unlockedGray.svg" ) );
   painter.drawImage( QRectF( currentIconSize.width() / 2 - 8, currentIconSize.height() / 2 - 8, 16, 16 ), image, QRectF( 0, 0, 16, 16 ) );
 
   painter.end();

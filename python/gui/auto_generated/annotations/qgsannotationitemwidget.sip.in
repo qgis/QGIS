@@ -1,0 +1,101 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/annotations/qgsannotationitemwidget.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsAnnotationItemBaseWidget: QgsPanelWidget
+{
+%Docstring(signature="appended")
+
+A base class for property widgets for annotation items.
+
+All annotation item widgets should inherit from this base class.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsannotationitemwidget.h"
+%End
+  public:
+
+    QgsAnnotationItemBaseWidget( QWidget *parent /TransferThis/ );
+%Docstring
+Constructor for QgsAnnotationItemBaseWidget.
+%End
+
+    virtual QgsAnnotationItem *createItem() = 0 /Factory/;
+%Docstring
+Creates a new item matching the settings defined in the widget.
+%End
+
+    virtual void updateItem( QgsAnnotationItem *item ) = 0;
+%Docstring
+Updates an existing item to match the settings defined in the widget.
+%End
+
+    bool setItem( QgsAnnotationItem *item );
+%Docstring
+Sets the current ``item`` to show in the widget. If ``True`` is returned, ``item``
+was an acceptable type for display in this widget and the widget has been
+updated to match ``item``'s properties.
+
+If ``False`` is returned, then the widget could not be successfully updated
+to show the properties of ``item``.
+%End
+
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+%Docstring
+Sets the ``context`` in which the widget is shown, e.g., the associated map canvas and expression contexts.
+
+.. seealso:: :py:func:`context`
+%End
+
+    QgsSymbolWidgetContext context() const;
+%Docstring
+Returns the context in which the widget is shown, e.g., the associated map canvas and expression contexts.
+
+.. seealso:: :py:func:`setContext`
+%End
+
+  public slots:
+
+    virtual void focusDefaultWidget();
+%Docstring
+Focuses the default widget for the page.
+%End
+
+  signals:
+
+    void itemChanged();
+%Docstring
+Emitted when the annotation item definition in the widget is changed by the user.
+%End
+
+  protected:
+
+    virtual bool setNewItem( QgsAnnotationItem *item );
+%Docstring
+Attempts to update the widget to show the properties
+for the specified ``item``.
+
+Subclasses can override this if they support changing items in place.
+
+Implementations must return ``True`` if the item was accepted and
+the widget was updated.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/annotations/qgsannotationitemwidget.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

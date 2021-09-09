@@ -56,7 +56,7 @@ void QgsMapToolPointSymbol::canvasPressEvent( QgsMapMouseEvent *e )
   }
 
   //find the closest feature to the pressed position
-  QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Vertex );
+  const QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Vertex );
   if ( !m.isValid() )
   {
     emit messageEmitted( tr( "No point feature was detected at the clicked position. Please click closer to the feature or enhance the search tolerance under Settings->Options->Digitizing->Search radius for vertex edits" ), Qgis::MessageLevel::Critical );

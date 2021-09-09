@@ -254,7 +254,7 @@ QgsGpsData::WaypointIterator QgsGpsData::addWaypoint( const QgsWaypoint &wpt )
   xMin = xMin < wpt.lon ? xMin : wpt.lon;
   yMax = yMax > wpt.lat ? yMax : wpt.lat;
   yMin = yMin < wpt.lat ? yMin : wpt.lat;
-  WaypointIterator iter = waypoints.insert( waypoints.end(), wpt );
+  const WaypointIterator iter = waypoints.insert( waypoints.end(), wpt );
   iter->id = nextWaypoint++;
   return iter;
 }
@@ -274,7 +274,7 @@ QgsGpsData::RouteIterator QgsGpsData::addRoute( const QgsRoute &rte )
   xMin = xMin < rte.xMin ? xMin : rte.xMin;
   yMax = yMax > rte.yMax ? yMax : rte.yMax;
   yMin = yMin < rte.yMin ? yMin : rte.yMin;
-  RouteIterator iter = routes.insert( routes.end(), rte );
+  const RouteIterator iter = routes.insert( routes.end(), rte );
   iter->id = nextRoute++;
   return iter;
 }
@@ -294,7 +294,7 @@ QgsGpsData::TrackIterator QgsGpsData::addTrack( const QgsTrack &trk )
   xMin = xMin < trk.xMin ? xMin : trk.xMin;
   yMax = yMax > trk.yMax ? yMax : trk.yMax;
   yMin = yMin < trk.yMin ? yMin : trk.yMin;
-  TrackIterator iter = tracks.insert( tracks.end(), trk );
+  const TrackIterator iter = tracks.insert( tracks.end(), trk );
   iter->id = nextTrack++;
   return iter;
 }
@@ -383,7 +383,7 @@ void QgsGpsData::writeXml( QTextStream &stream )
 QgsGpsData *QgsGpsData::getData( const QString &fileName )
 {
   // if the data isn't there already, try to load it
-  QMutexLocker lock( &sDataObjectsMutex );
+  const QMutexLocker lock( &sDataObjectsMutex );
 
   if ( sDataObjects.find( fileName ) == sDataObjects.end() )
   {
@@ -403,12 +403,12 @@ QgsGpsData *QgsGpsData::getData( const QString &fileName )
     XML_SetUserData( p, &handler );
     XML_SetElementHandler( p, QgsGPXHandler::start, QgsGPXHandler::end );
     XML_SetCharacterDataHandler( p, QgsGPXHandler::chars );
-    long int bufsize = 10 * 1024 * 1024;
+    const long int bufsize = 10 * 1024 * 1024;
     char *buffer = new char[bufsize];
     int atEnd = 0;
     while ( !file.atEnd() )
     {
-      long int readBytes = file.read( buffer, bufsize );
+      const long int readBytes = file.read( buffer, bufsize );
       if ( file.atEnd() )
         atEnd = 1;
       if ( !XML_Parse( p, buffer, readBytes, atEnd ) )
@@ -435,7 +435,7 @@ QgsGpsData *QgsGpsData::getData( const QString &fileName )
   }
 
   // return a pointer and increase the reference count for that file name
-  DataMap::iterator iter = sDataObjects.find( fileName );
+  const DataMap::iterator iter = sDataObjects.find( fileName );
   ++( iter.value().second );
   return ( QgsGpsData * )( iter.value().first );
 }
@@ -443,11 +443,11 @@ QgsGpsData *QgsGpsData::getData( const QString &fileName )
 
 void QgsGpsData::releaseData( const QString &fileName )
 {
-  QMutexLocker lock( &sDataObjectsMutex );
+  const QMutexLocker lock( &sDataObjectsMutex );
 
   /* decrease the reference count for the file name (if it is used), and erase
      it if the reference count becomes 0 */
-  DataMap::iterator iter = sDataObjects.find( fileName );
+  const DataMap::iterator iter = sDataObjects.find( fileName );
   if ( iter != sDataObjects.end() )
   {
     QgsDebugMsg( "unrefing " + fileName );

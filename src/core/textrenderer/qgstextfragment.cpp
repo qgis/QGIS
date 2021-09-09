@@ -48,14 +48,14 @@ double QgsTextFragment::horizontalAdvance( const QFont &font, bool fontHasBeenUp
 {
   if ( fontHasBeenUpdatedForFragment )
   {
-    QFontMetricsF fm( font );
+    const QFontMetricsF fm( font );
     return fm.horizontalAdvance( mText );
   }
   else
   {
     QFont updatedFont = font;
     mCharFormat.updateFontForFormat( updatedFont, scaleFactor );
-    QFontMetricsF fm( updatedFont );
+    const QFontMetricsF fm( updatedFont );
     return fm.horizontalAdvance( mText );
   }
 }

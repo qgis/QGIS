@@ -147,7 +147,11 @@ class CORE_EXPORT QgsGeometryEngine
      */
     virtual QgsAbstractGeometry *symDifference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
     virtual QgsAbstractGeometry *buffer( double distance, int segments, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
-    virtual QgsAbstractGeometry *buffer( double distance, int segments, int endCapStyle, int joinStyle, double miterLimit, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+
+    /**
+     * Buffers a geometry.
+     */
+    virtual QgsAbstractGeometry *buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
     virtual QgsAbstractGeometry *simplify( double tolerance, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
     virtual QgsAbstractGeometry *interpolate( double distance, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
     virtual QgsAbstractGeometry *envelope( QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
@@ -306,7 +310,10 @@ class CORE_EXPORT QgsGeometryEngine
       return MethodNotImplemented;
     }
 
-    virtual QgsAbstractGeometry *offsetCurve( double distance, int segments, int joinStyle, double miterLimit, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+    /**
+     * Offsets a curve.
+     */
+    virtual QgsAbstractGeometry *offsetCurve( double distance, int segments, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
 
     /**
      * Sets whether warnings and errors encountered during the geometry operations should be logged.

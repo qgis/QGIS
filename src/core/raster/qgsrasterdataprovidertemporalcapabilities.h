@@ -47,25 +47,12 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     QgsRasterDataProviderTemporalCapabilities( bool enabled = false );
 
     /**
-     * Method to use when resolving a temporal range to a data provider layer or band.
-     */
-    enum IntervalHandlingMethod
-    {
-      MatchUsingWholeRange, //!< Use an exact match to the whole temporal range
-      MatchExactUsingStartOfRange, //!< Match the start of the temporal range to a corresponding layer or band, and only use exact matching results
-      MatchExactUsingEndOfRange, //!< Match the end of the temporal range to a corresponding layer or band, and only use exact matching results
-      FindClosestMatchToStartOfRange, //!< Match the start of the temporal range to the least previous closest datetime.
-      FindClosestMatchToEndOfRange //!< Match the end of the temporal range to the least previous closest datetime.
-    };
-    // TODO -- add other methods
-
-    /**
      * Returns the desired method to use when resolving a temporal interval to matching
      * layers or bands in the data provider.
      *
      *\see setIntervalHandlingMethod()
     */
-    IntervalHandlingMethod intervalHandlingMethod() const;
+    Qgis::TemporalIntervalMatchMethod intervalHandlingMethod() const;
 
     /**
      * Sets the desired \a method to use when resolving a temporal interval to matching
@@ -73,7 +60,7 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
      *
      *\see intervalHandlingMethod()
     */
-    void setIntervalHandlingMethod( IntervalHandlingMethod method );
+    void setIntervalHandlingMethod( Qgis::TemporalIntervalMatchMethod method );
 
     /**
      * Sets the overall datetime \a range extent from which temporal data is available from the provider.
@@ -194,7 +181,7 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     QgsInterval mDefaultInterval;
 
     //! Interval handling method
-    IntervalHandlingMethod mIntervalMatchMethod = MatchUsingWholeRange;
+    Qgis::TemporalIntervalMatchMethod mIntervalMatchMethod = Qgis::TemporalIntervalMatchMethod::MatchUsingWholeRange;
 
     friend class QgsRasterLayerRenderer;
     friend class TestQgsRasterDataProviderTemporalCapabilities;

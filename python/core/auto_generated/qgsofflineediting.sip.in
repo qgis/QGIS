@@ -53,9 +53,12 @@ Convert current project for offline editing
 Returns ``True`` if current project is offline
 %End
 
-    void synchronize();
+
+    void synchronize( bool useTransaction = false );
 %Docstring
 Synchronize to remote layers
+
+:param useTransaction: enforce the remote layer modifications with the same source to be in a transaction group
 %End
 
   signals:

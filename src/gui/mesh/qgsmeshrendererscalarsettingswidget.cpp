@@ -87,7 +87,7 @@ QgsMeshRendererScalarSettings QgsMeshRendererScalarSettingsWidget::settings() co
   settings.setOpacity( mOpacityWidget->opacity() );
   settings.setDataResamplingMethod( dataIntepolationMethod() );
 
-  bool hasEdges = ( mMeshLayer->contains( QgsMesh::ElementType::Edge ) );
+  const bool hasEdges = ( mMeshLayer->contains( QgsMesh::ElementType::Edge ) );
   if ( hasEdges )
   {
 
@@ -120,11 +120,11 @@ void QgsMeshRendererScalarSettingsWidget::syncToLayer( )
   whileBlocking( mScalarColorRampShaderWidget )->setFromShader( shader );
   whileBlocking( mScalarColorRampShaderWidget )->setMinimumMaximum( min, max );
   whileBlocking( mOpacityWidget )->setOpacity( settings.opacity() );
-  int index = mScalarInterpolationTypeComboBox->findData( settings.dataResamplingMethod() );
+  const int index = mScalarInterpolationTypeComboBox->findData( settings.dataResamplingMethod() );
   whileBlocking( mScalarInterpolationTypeComboBox )->setCurrentIndex( index );
 
-  bool hasEdges = ( mMeshLayer->contains( QgsMesh::ElementType::Edge ) );
-  bool hasFaces = ( mMeshLayer->contains( QgsMesh::ElementType::Face ) );
+  const bool hasEdges = ( mMeshLayer->contains( QgsMesh::ElementType::Edge ) );
+  const bool hasFaces = ( mMeshLayer->contains( QgsMesh::ElementType::Face ) );
 
   mScalarResamplingWidget->setVisible( hasFaces );
 
@@ -132,7 +132,7 @@ void QgsMeshRendererScalarSettingsWidget::syncToLayer( )
 
   if ( hasEdges )
   {
-    QgsInterpolatedLineWidth edgeStrokeWidth = settings.edgeStrokeWidth();
+    const QgsInterpolatedLineWidth edgeStrokeWidth = settings.edgeStrokeWidth();
     whileBlocking( mScalarEdgeStrokeWidthVariablePushButton )->setVariableStrokeWidth( edgeStrokeWidth );
     whileBlocking( mScalarEdgeStrokeWidthSpinBox )->setValue( edgeStrokeWidth.fixedStrokeWidth() );
     whileBlocking( mScalarEdgeStrokeWidthVariableRadioButton )->setChecked( edgeStrokeWidth.isVariableWidth() );
@@ -141,8 +141,8 @@ void QgsMeshRendererScalarSettingsWidget::syncToLayer( )
       mOpacityContainerWidget->setVisible( false );
 
     const QgsMeshDatasetGroupMetadata metadata = mMeshLayer->datasetGroupMetadata( mActiveDatasetGroup );
-    double min = metadata.minimum();
-    double max = metadata.maximum();
+    const double min = metadata.minimum();
+    const double max = metadata.maximum();
     mScalarEdgeStrokeWidthVariablePushButton->setDefaultMinMaxValue( min, max );
   }
 
@@ -169,8 +169,8 @@ void QgsMeshRendererScalarSettingsWidget::minMaxChanged()
 void QgsMeshRendererScalarSettingsWidget::recalculateMinMaxButtonClicked()
 {
   const QgsMeshDatasetGroupMetadata metadata = mMeshLayer->datasetGroupMetadata( mActiveDatasetGroup );
-  double min = metadata.minimum();
-  double max = metadata.maximum();
+  const double min = metadata.minimum();
+  const double max = metadata.maximum();
   whileBlocking( mScalarMinSpinBox )->setValue( min );
   whileBlocking( mScalarMaxSpinBox )->setValue( max );
   mScalarColorRampShaderWidget->setMinimumMaximumAndClassify( min, max );
@@ -178,7 +178,7 @@ void QgsMeshRendererScalarSettingsWidget::recalculateMinMaxButtonClicked()
 
 void QgsMeshRendererScalarSettingsWidget::onEdgeStrokeWidthMethodChanged()
 {
-  bool variableWidth = mScalarEdgeStrokeWidthVariableRadioButton->isChecked();
+  const bool variableWidth = mScalarEdgeStrokeWidthVariableRadioButton->isChecked();
   mScalarEdgeStrokeWidthVariablePushButton->setVisible( variableWidth );
   mScalarEdgeStrokeWidthSpinBox->setVisible( !variableWidth );
 }
@@ -198,7 +198,7 @@ bool QgsMeshRendererScalarSettingsWidget::dataIsDefinedOnFaces() const
   if ( mActiveDatasetGroup < 0 )
     return false;
 
-  QgsMeshDatasetGroupMetadata meta = mMeshLayer->datasetGroupMetadata( mActiveDatasetGroup );
+  const QgsMeshDatasetGroupMetadata meta = mMeshLayer->datasetGroupMetadata( mActiveDatasetGroup );
   const bool onFaces = ( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnFaces );
   return onFaces;
 }
@@ -211,7 +211,7 @@ bool QgsMeshRendererScalarSettingsWidget::dataIsDefinedOnEdges() const
   if ( mActiveDatasetGroup < 0 )
     return false;
 
-  QgsMeshDatasetGroupMetadata meta = mMeshLayer->datasetGroupMetadata( mActiveDatasetGroup );
+  const QgsMeshDatasetGroupMetadata meta = mMeshLayer->datasetGroupMetadata( mActiveDatasetGroup );
   const bool onEdges = ( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnEdges );
   return onEdges;
 }

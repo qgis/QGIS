@@ -121,17 +121,17 @@ bool QgsProjectViewSettings::useProjectScales() const
 
 bool QgsProjectViewSettings::readXml( const QDomElement &element, const QgsReadWriteContext & )
 {
-  bool useProjectScale = element.attribute( QStringLiteral( "UseProjectScales" ), QStringLiteral( "0" ) ).toInt();
+  const bool useProjectScale = element.attribute( QStringLiteral( "UseProjectScales" ), QStringLiteral( "0" ) ).toInt();
 
   QDomNodeList scalesNodes = element.elementsByTagName( QStringLiteral( "Scales" ) );
   QVector< double > newScales;
   if ( !scalesNodes.isEmpty() )
   {
-    QDomElement scalesElement = scalesNodes.at( 0 ).toElement();
+    const QDomElement scalesElement = scalesNodes.at( 0 ).toElement();
     scalesNodes = scalesElement.elementsByTagName( QStringLiteral( "Scale" ) );
     for ( int i = 0; i < scalesNodes.count(); i++ )
     {
-      QDomElement scaleElement = scalesNodes.at( i ).toElement();
+      const QDomElement scaleElement = scalesNodes.at( i ).toElement();
       newScales.append( scaleElement.attribute( QStringLiteral( "Value" ) ).toDouble() );
     }
   }
@@ -142,13 +142,13 @@ bool QgsProjectViewSettings::readXml( const QDomElement &element, const QgsReadW
     emit mapScalesChanged();
   }
 
-  QDomElement defaultViewElement = element.firstChildElement( QStringLiteral( "DefaultViewExtent" ) );
+  const QDomElement defaultViewElement = element.firstChildElement( QStringLiteral( "DefaultViewExtent" ) );
   if ( !defaultViewElement.isNull() )
   {
-    double xMin = defaultViewElement.attribute( QStringLiteral( "xmin" ) ).toDouble();
-    double yMin = defaultViewElement.attribute( QStringLiteral( "ymin" ) ).toDouble();
-    double xMax = defaultViewElement.attribute( QStringLiteral( "xmax" ) ).toDouble();
-    double yMax = defaultViewElement.attribute( QStringLiteral( "ymax" ) ).toDouble();
+    const double xMin = defaultViewElement.attribute( QStringLiteral( "xmin" ) ).toDouble();
+    const double yMin = defaultViewElement.attribute( QStringLiteral( "ymin" ) ).toDouble();
+    const double xMax = defaultViewElement.attribute( QStringLiteral( "xmax" ) ).toDouble();
+    const double yMax = defaultViewElement.attribute( QStringLiteral( "ymax" ) ).toDouble();
     QgsCoordinateReferenceSystem crs;
     crs.readXml( defaultViewElement );
     mDefaultViewExtent = QgsReferencedRectangle( QgsRectangle( xMin, yMin, xMax, yMax ), crs );
@@ -158,13 +158,13 @@ bool QgsProjectViewSettings::readXml( const QDomElement &element, const QgsReadW
     mDefaultViewExtent = QgsReferencedRectangle();
   }
 
-  QDomElement presetViewElement = element.firstChildElement( QStringLiteral( "PresetFullExtent" ) );
+  const QDomElement presetViewElement = element.firstChildElement( QStringLiteral( "PresetFullExtent" ) );
   if ( !presetViewElement.isNull() )
   {
-    double xMin = presetViewElement.attribute( QStringLiteral( "xmin" ) ).toDouble();
-    double yMin = presetViewElement.attribute( QStringLiteral( "ymin" ) ).toDouble();
-    double xMax = presetViewElement.attribute( QStringLiteral( "xmax" ) ).toDouble();
-    double yMax = presetViewElement.attribute( QStringLiteral( "ymax" ) ).toDouble();
+    const double xMin = presetViewElement.attribute( QStringLiteral( "xmin" ) ).toDouble();
+    const double yMin = presetViewElement.attribute( QStringLiteral( "ymin" ) ).toDouble();
+    const double xMax = presetViewElement.attribute( QStringLiteral( "xmax" ) ).toDouble();
+    const double yMax = presetViewElement.attribute( QStringLiteral( "ymax" ) ).toDouble();
     QgsCoordinateReferenceSystem crs;
     crs.readXml( presetViewElement );
     setPresetFullExtent( QgsReferencedRectangle( QgsRectangle( xMin, yMin, xMax, yMax ), crs ) );
@@ -183,7 +183,7 @@ QDomElement QgsProjectViewSettings::writeXml( QDomDocument &doc, const QgsReadWr
   element.setAttribute( QStringLiteral( "UseProjectScales" ), mUseProjectScales ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
   QDomElement scales = doc.createElement( QStringLiteral( "Scales" ) );
-  for ( double scale : mMapScales )
+  for ( const double scale : mMapScales )
   {
     QDomElement scaleElement = doc.createElement( QStringLiteral( "Scale" ) );
     scaleElement.setAttribute( QStringLiteral( "Value" ), qgsDoubleToString( scale ) );

@@ -35,7 +35,7 @@ possible, regardless of how expensive this may be.
 %End
   public:
 
-    QgsProviderSublayerTask( const QString &uri );
+    QgsProviderSublayerTask( const QString &uri, bool includeSystemTables = false );
 %Docstring
 Constructor for QgsProviderSublayerTask, which retrieves sublayer details for the
 specified ``uri``.

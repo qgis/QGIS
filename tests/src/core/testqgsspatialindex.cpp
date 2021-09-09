@@ -29,7 +29,7 @@
 static QgsFeature _pointFeature( QgsFeatureId id, qreal x, qreal y )
 {
   QgsFeature f( id );
-  QgsGeometry g = QgsGeometry::fromPointXY( QgsPointXY( x, y ) );
+  const QgsGeometry g = QgsGeometry::fromPointXY( QgsPointXY( x, y ) );
   f.setGeometry( g );
   return f;
 }
@@ -81,7 +81,7 @@ class TestQgsSpatialIndex : public QObject
       QVERIFY( fids.count() == 1 );
       QVERIFY( fids[0] == 1 );
 
-      QList<QgsFeatureId> fids2 = index.intersects( QgsRectangle( -10, -10, 0, 10 ) );
+      const QList<QgsFeatureId> fids2 = index.intersects( QgsRectangle( -10, -10, 0, 10 ) );
       QVERIFY( fids2.count() == 2 );
       QVERIFY( fids2.contains( 2 ) );
       QVERIFY( fids2.contains( 3 ) );
@@ -94,11 +94,11 @@ class TestQgsSpatialIndex : public QObject
       index.addFeature( 2, QgsRectangle( 12, 13, 12, 13 ) );
       index.addFeature( 3, QgsRectangle( 14, 13, 14, 13 ) );
 
-      QList<QgsFeatureId> fids = index.intersects( QgsRectangle( 1, 2, 3, 4 ) );
+      const QList<QgsFeatureId> fids = index.intersects( QgsRectangle( 1, 2, 3, 4 ) );
       QVERIFY( fids.count() == 1 );
       QVERIFY( fids.at( 0 ) == 1 );
 
-      QList<QgsFeatureId> fids2 = index.intersects( QgsRectangle( 10, 12, 15, 14 ) );
+      const QList<QgsFeatureId> fids2 = index.intersects( QgsRectangle( 10, 12, 15, 14 ) );
       QVERIFY( fids2.count() == 2 );
       QVERIFY( fids2.contains( 2 ) );
       QVERIFY( fids2.contains( 3 ) );
@@ -106,8 +106,8 @@ class TestQgsSpatialIndex : public QObject
 
     void testInitFromEmptyIterator()
     {
-      QgsFeatureIterator it;
-      QgsSpatialIndex index( it );
+      const QgsFeatureIterator it;
+      const QgsSpatialIndex index( it );
       // we just test that we survive the above command without exception from libspatialindex raised
     }
 
@@ -136,7 +136,7 @@ class TestQgsSpatialIndex : public QObject
       QVERIFY( indexCopy.refs() == 2 );
 
       // do a modification
-      QgsFeature f2( _pointFeatures().at( 1 ) );
+      const QgsFeature f2( _pointFeatures().at( 1 ) );
       indexCopy.deleteFeature( f2 );
 
       // check that the index is not shared anymore
@@ -160,7 +160,7 @@ class TestQgsSpatialIndex : public QObject
         for ( int k = 0; k < 500; ++k )
         {
           QgsFeature f( i * 1000 + k );
-          QgsGeometry g = QgsGeometry::fromPointXY( QgsPointXY( i / 10, i % 10 ) );
+          const QgsGeometry g = QgsGeometry::fromPointXY( QgsPointXY( i / 10, i % 10 ) );
           f.setGeometry( g );
           index.addFeature( f );
         }
@@ -182,7 +182,7 @@ class TestQgsSpatialIndex : public QObject
         for ( int k = 0; k < 500; ++k )
         {
           QgsFeature f( i * 1000 + k );
-          QgsGeometry g = QgsGeometry::fromPointXY( QgsPointXY( i / 10, i % 10 ) );
+          const QgsGeometry g = QgsGeometry::fromPointXY( QgsPointXY( i / 10, i % 10 ) );
           f.setGeometry( g );
           flist << f;
         }
@@ -204,7 +204,7 @@ class TestQgsSpatialIndex : public QObject
 
       t.start();
       {
-        QgsFeatureIterator fi = vl->getFeatures();
+        const QgsFeatureIterator fi = vl->getFeatures();
         indexBulk = new QgsSpatialIndex( fi );
       }
       QgsDebugMsg( QStringLiteral( "bulk load: %1 ms" ).arg( t.elapsed() ) );
@@ -220,7 +220,7 @@ class TestQgsSpatialIndex : public QObject
       QgsDebugMsg( QStringLiteral( "insert:    %1 ms" ).arg( t.elapsed() ) );
 
       // test whether a query will give us the same results
-      QgsRectangle rect( 4.9, 4.9, 5.1, 5.1 );
+      const QgsRectangle rect( 4.9, 4.9, 5.1, 5.1 );
       QList<QgsFeatureId> resBulk = indexBulk->intersects( rect );
       QList<QgsFeatureId> resInsert = indexInsert->intersects( rect );
 
@@ -242,7 +242,7 @@ class TestQgsSpatialIndex : public QObject
       for ( int i = 0; i < 10; ++i )
       {
         QgsFeature f( i );
-        QgsGeometry g = QgsGeometry::fromPointXY( QgsPointXY( i, 1 ) );
+        const QgsGeometry g = QgsGeometry::fromPointXY( QgsPointXY( i, 1 ) );
         f.setGeometry( g );
         vl->dataProvider()->addFeature( f );
         addedIds.append( f.id() );
@@ -250,7 +250,7 @@ class TestQgsSpatialIndex : public QObject
       QCOMPARE( vl->featureCount(), 10L );
 
       QgsFeatureIds ids;
-      QgsSpatialIndex i( vl->getFeatures(), [ & ]( const QgsFeature & f )->bool
+      const QgsSpatialIndex i( vl->getFeatures(), [ & ]( const QgsFeature & f )->bool
       {
         ids.insert( f.id() );
         return true;
@@ -267,7 +267,7 @@ class TestQgsSpatialIndex : public QObject
 
       // try canceling
       ids.clear();
-      QgsSpatialIndex i2( vl->getFeatures(), [ & ]( const QgsFeature & f )->bool
+      const QgsSpatialIndex i2( vl->getFeatures(), [ & ]( const QgsFeature & f )->bool
       {
         ids.insert( f.id() );
         return false;
@@ -299,12 +299,12 @@ class TestQgsSpatialIndex : public QObject
       // iterator based population
 
       // not storing geometries
-      QgsSpatialIndex i1( vl->getFeatures() );
+      const QgsSpatialIndex i1( vl->getFeatures() );
       QVERIFY( i1.geometry( 1 ).isNull() );
       QVERIFY( i1.geometry( 50 ).isNull() );
 
       // storing geometries
-      QgsSpatialIndex i2( vl->getFeatures(), nullptr, QgsSpatialIndex::FlagStoreFeatureGeometries );
+      const QgsSpatialIndex i2( vl->getFeatures(), nullptr, QgsSpatialIndex::FlagStoreFeatureGeometries );
       QCOMPARE( i2.geometry( 1 ).asWkt( 1 ), QStringLiteral( "LineString (0 100, 0.5 99.5)" ) );
       QCOMPARE( i2.geometry( 50 ).asWkt( 1 ), QStringLiteral( "LineString (4 109, 4.5 108.5)" ) );
 
@@ -333,7 +333,7 @@ class TestQgsSpatialIndex : public QObject
 
 
       // not storing geometries
-      QgsSpatialIndex i5( *vl );
+      const QgsSpatialIndex i5( *vl );
       QVERIFY( i5.geometry( 1 ).isNull() );
       QVERIFY( i5.geometry( 50 ).isNull() );
 

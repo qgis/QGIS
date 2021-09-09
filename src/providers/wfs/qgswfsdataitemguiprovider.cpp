@@ -110,8 +110,8 @@ void QgsWfsDataItemGuiProvider::saveConnections()
 
 void QgsWfsDataItemGuiProvider::loadConnections( QgsDataItem *item )
 {
-  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
-                     tr( "XML files (*.xml *.XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
+                           tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;

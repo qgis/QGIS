@@ -68,7 +68,7 @@ void QgsListWidgetWrapper::updateValues( const QVariant &value, const QVariantLi
 
 QVariant QgsListWidgetWrapper::value() const
 {
-  QVariant::Type type = field().type();
+  const QVariant::Type type = field().type();
   if ( !mWidget ) return QVariant( type );
   const QVariantList list = mWidget->list();
   if ( list.size() == 0 && config( QStringLiteral( "EmptyIsNull" ) ).toBool() )

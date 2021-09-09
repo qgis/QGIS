@@ -79,7 +79,7 @@ void QgsHtmlWidgetWrapper::checkGeometryNeeds()
   NeedsGeometryEvaluator evaluator;
 
   const QgsAttributeEditorContext attributecontext = context();
-  QgsExpressionContext expressionContext = layer()->createExpressionContext();
+  const QgsExpressionContext expressionContext = layer()->createExpressionContext();
   evaluator.setExpressionContext( expressionContext );
 
   auto frame = webView.page()->mainFrame();
@@ -128,7 +128,7 @@ void QgsHtmlWidgetWrapper::setHtmlContext( )
 void QgsHtmlWidgetWrapper::fixHeight()
 {
   QWebPage *page = mWidget->page();
-  int docHeight { page->mainFrame()->contentsSize().height() };
+  const int docHeight { page->mainFrame()->contentsSize().height() };
   mWidget->setFixedHeight( docHeight );
 }
 #endif

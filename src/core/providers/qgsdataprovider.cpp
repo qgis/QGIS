@@ -75,13 +75,13 @@ bool QgsDataProvider::renderInPreview( const PreviewContext &context )
 
 QgsCoordinateTransformContext QgsDataProvider::transformContext() const
 {
-  QMutexLocker locker( &mOptionsMutex );
+  const QMutexLocker locker( &mOptionsMutex );
   return mOptions.transformContext;
 }
 
 void QgsDataProvider::setTransformContext( const QgsCoordinateTransformContext &value )
 {
-  QMutexLocker locker( &mOptionsMutex );
+  const QMutexLocker locker( &mOptionsMutex );
   mOptions.transformContext = value;
 }
 

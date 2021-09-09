@@ -766,18 +766,18 @@ double QgsGeometry::closestSegmentWithContext( const QgsPointXY &point,
   return sqrDist;
 }
 
-QgsGeometry::OperationResult QgsGeometry::addRing( const QVector<QgsPointXY> &ring )
+Qgis::GeometryOperationResult QgsGeometry::addRing( const QVector<QgsPointXY> &ring )
 {
   std::unique_ptr< QgsLineString > ringLine = std::make_unique< QgsLineString >( ring );
   return addRing( ringLine.release() );
 }
 
-QgsGeometry::OperationResult QgsGeometry::addRing( QgsCurve *ring )
+Qgis::GeometryOperationResult QgsGeometry::addRing( QgsCurve *ring )
 {
   std::unique_ptr< QgsCurve > r( ring );
   if ( !d->geometry )
   {
-    return InvalidInputGeometryType;
+    return Qgis::GeometryOperationResult::InvalidInputGeometryType;
   }
 
   detach();
@@ -785,14 +785,14 @@ QgsGeometry::OperationResult QgsGeometry::addRing( QgsCurve *ring )
   return QgsGeometryEditUtils::addRing( d->geometry.get(), std::move( r ) );
 }
 
-QgsGeometry::OperationResult QgsGeometry::addPart( const QVector<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType )
+Qgis::GeometryOperationResult QgsGeometry::addPart( const QVector<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType )
 {
   QgsPointSequence l;
   convertPointList( points, l );
   return addPart( l, geomType );
 }
 
-QgsGeometry::OperationResult QgsGeometry::addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType )
+Qgis::GeometryOperationResult QgsGeometry::addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType )
 {
   std::unique_ptr< QgsAbstractGeometry > partGeom;
   if ( points.size() == 1 )
@@ -808,7 +808,7 @@ QgsGeometry::OperationResult QgsGeometry::addPart( const QgsPointSequence &point
   return addPart( partGeom.release(), geomType );
 }
 
-QgsGeometry::OperationResult QgsGeometry::addPart( QgsAbstractGeometry *part, QgsWkbTypes::GeometryType geomType )
+Qgis::GeometryOperationResult QgsGeometry::addPart( QgsAbstractGeometry *part, QgsWkbTypes::GeometryType geomType )
 {
   std::unique_ptr< QgsAbstractGeometry > p( part );
   if ( !d->geometry )
@@ -826,7 +826,7 @@ QgsGeometry::OperationResult QgsGeometry::addPart( QgsAbstractGeometry *part, Qg
         break;
       default:
         reset( nullptr );
-        return QgsGeometry::OperationResult::AddPartNotMultiGeometry;
+        return Qgis::GeometryOperationResult::AddPartNotMultiGeometry;
     }
   }
   else
@@ -838,15 +838,15 @@ QgsGeometry::OperationResult QgsGeometry::addPart( QgsAbstractGeometry *part, Qg
   return QgsGeometryEditUtils::addPart( d->geometry.get(), std::move( p ) );
 }
 
-QgsGeometry::OperationResult QgsGeometry::addPart( const QgsGeometry &newPart )
+Qgis::GeometryOperationResult QgsGeometry::addPart( const QgsGeometry &newPart )
 {
   if ( !d->geometry )
   {
-    return QgsGeometry::InvalidBaseGeometry;
+    return Qgis::GeometryOperationResult::InvalidBaseGeometry;
   }
   if ( newPart.isNull() || !newPart.d->geometry )
   {
-    return QgsGeometry::AddPartNotMultiGeometry;
+    return Qgis::GeometryOperationResult::AddPartNotMultiGeometry;
   }
 
   return addPart( newPart.d->geometry->clone() );
@@ -888,24 +888,24 @@ QgsGeometry QgsGeometry::removeInteriorRings( double minimumRingArea ) const
   }
 }
 
-QgsGeometry::OperationResult QgsGeometry::translate( double dx, double dy, double dz, double dm )
+Qgis::GeometryOperationResult QgsGeometry::translate( double dx, double dy, double dz, double dm )
 {
   if ( !d->geometry )
   {
-    return QgsGeometry::InvalidBaseGeometry;
+    return Qgis::GeometryOperationResult::InvalidBaseGeometry;
   }
 
   detach();
 
   d->geometry->transform( QTransform::fromTranslate( dx, dy ), dz, 1.0, dm );
-  return QgsGeometry::Success;
+  return Qgis::GeometryOperationResult::Success;
 }
 
-QgsGeometry::OperationResult QgsGeometry::rotate( double rotation, const QgsPointXY &center )
+Qgis::GeometryOperationResult QgsGeometry::rotate( double rotation, const QgsPointXY &center )
 {
   if ( !d->geometry )
   {
-    return QgsGeometry::InvalidBaseGeometry;
+    return Qgis::GeometryOperationResult::InvalidBaseGeometry;
   }
 
   detach();
@@ -914,23 +914,23 @@ QgsGeometry::OperationResult QgsGeometry::rotate( double rotation, const QgsPoin
   t.rotate( -rotation );
   t.translate( -center.x(), -center.y() );
   d->geometry->transform( t );
-  return QgsGeometry::Success;
+  return Qgis::GeometryOperationResult::Success;
 }
 
-QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QVector<QgsPointXY> &topologyTestPoints, bool splitFeature )
+Qgis::GeometryOperationResult QgsGeometry::splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QVector<QgsPointXY> &topologyTestPoints, bool splitFeature )
 {
   QgsPointSequence split, topology;
   convertPointList( splitLine, split );
   convertPointList( topologyTestPoints, topology );
-  QgsGeometry::OperationResult result = splitGeometry( split, newGeometries, topological, topology, splitFeature );
+  Qgis::GeometryOperationResult result = splitGeometry( split, newGeometries, topological, topology, splitFeature );
   convertPointList( topology, topologyTestPoints );
   return result;
 }
-QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QgsPointSequence &topologyTestPoints, bool splitFeature, bool skipIntersectionTest )
+Qgis::GeometryOperationResult QgsGeometry::splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QgsPointSequence &topologyTestPoints, bool splitFeature, bool skipIntersectionTest )
 {
   if ( !d->geometry )
   {
-    return QgsGeometry::OperationResult::InvalidBaseGeometry;
+    return Qgis::GeometryOperationResult::InvalidBaseGeometry;
   }
 
   QVector<QgsGeometry > newGeoms;
@@ -961,35 +961,35 @@ QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QgsPointSequence 
   switch ( result )
   {
     case QgsGeometryEngine::Success:
-      return QgsGeometry::OperationResult::Success;
+      return Qgis::GeometryOperationResult::Success;
     case QgsGeometryEngine::MethodNotImplemented:
     case QgsGeometryEngine::EngineError:
     case QgsGeometryEngine::NodedGeometryError:
-      return QgsGeometry::OperationResult::GeometryEngineError;
+      return Qgis::GeometryOperationResult::GeometryEngineError;
     case QgsGeometryEngine::InvalidBaseGeometry:
-      return QgsGeometry::OperationResult::InvalidBaseGeometry;
+      return Qgis::GeometryOperationResult::InvalidBaseGeometry;
     case QgsGeometryEngine::InvalidInput:
-      return QgsGeometry::OperationResult::InvalidInputGeometryType;
+      return Qgis::GeometryOperationResult::InvalidInputGeometryType;
     case QgsGeometryEngine::SplitCannotSplitPoint:
-      return QgsGeometry::OperationResult::SplitCannotSplitPoint;
+      return Qgis::GeometryOperationResult::SplitCannotSplitPoint;
     case QgsGeometryEngine::NothingHappened:
-      return QgsGeometry::OperationResult::NothingHappened;
+      return Qgis::GeometryOperationResult::NothingHappened;
       //default: do not implement default to handle properly all cases
   }
 
   // this should never be reached
   Q_ASSERT( false );
-  return QgsGeometry::NothingHappened;
+  return Qgis::GeometryOperationResult::NothingHappened;
 }
 
-QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QgsCurve *curve, QVector<QgsGeometry> &newGeometries, bool preserveCircular, bool topological, QgsPointSequence &topologyTestPoints, bool splitFeature )
+Qgis::GeometryOperationResult QgsGeometry::splitGeometry( const QgsCurve *curve, QVector<QgsGeometry> &newGeometries, bool preserveCircular, bool topological, QgsPointSequence &topologyTestPoints, bool splitFeature )
 {
   std::unique_ptr<QgsLineString> segmentizedLine( curve->curveToLine() );
   QgsPointSequence points;
   segmentizedLine->points( points );
-  QgsGeometry::OperationResult result = splitGeometry( points, newGeometries, topological, topologyTestPoints, splitFeature );
+  Qgis::GeometryOperationResult result = splitGeometry( points, newGeometries, topological, topologyTestPoints, splitFeature );
 
-  if ( result == QgsGeometry::Success )
+  if ( result == Qgis::GeometryOperationResult::Success )
   {
     if ( preserveCircular )
     {
@@ -1002,11 +1002,11 @@ QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QgsCurve *curve, 
   return result;
 }
 
-QgsGeometry::OperationResult QgsGeometry::reshapeGeometry( const QgsLineString &reshapeLineString )
+Qgis::GeometryOperationResult QgsGeometry::reshapeGeometry( const QgsLineString &reshapeLineString )
 {
   if ( !d->geometry )
   {
-    return InvalidBaseGeometry;
+    return Qgis::GeometryOperationResult::InvalidBaseGeometry;
   }
 
   QgsGeos geos( d->geometry.get() );
@@ -1016,29 +1016,29 @@ QgsGeometry::OperationResult QgsGeometry::reshapeGeometry( const QgsLineString &
   if ( errorCode == QgsGeometryEngine::Success && geom )
   {
     reset( std::move( geom ) );
-    return Success;
+    return Qgis::GeometryOperationResult::Success;
   }
 
   switch ( errorCode )
   {
     case QgsGeometryEngine::Success:
-      return Success;
+      return Qgis::GeometryOperationResult::Success;
     case QgsGeometryEngine::MethodNotImplemented:
     case QgsGeometryEngine::EngineError:
     case QgsGeometryEngine::NodedGeometryError:
-      return GeometryEngineError;
+      return Qgis::GeometryOperationResult::GeometryEngineError;
     case QgsGeometryEngine::InvalidBaseGeometry:
-      return InvalidBaseGeometry;
+      return Qgis::GeometryOperationResult::InvalidBaseGeometry;
     case QgsGeometryEngine::InvalidInput:
-      return InvalidInputGeometryType;
+      return Qgis::GeometryOperationResult::InvalidInputGeometryType;
     case QgsGeometryEngine::SplitCannotSplitPoint: // should not happen
-      return GeometryEngineError;
+      return Qgis::GeometryOperationResult::GeometryEngineError;
     case QgsGeometryEngine::NothingHappened:
-      return NothingHappened;
+      return Qgis::GeometryOperationResult::NothingHappened;
   }
 
   // should not be reached
-  return GeometryEngineError;
+  return Qgis::GeometryOperationResult::GeometryEngineError;
 }
 
 int QgsGeometry::makeDifferenceInPlace( const QgsGeometry &other )
@@ -2035,7 +2035,7 @@ QgsGeometry QgsGeometry::buffer( double distance, int segments ) const
   return QgsGeometry( std::move( geom ) );
 }
 
-QgsGeometry QgsGeometry::buffer( double distance, int segments, EndCapStyle endCapStyle, JoinStyle joinStyle, double miterLimit ) const
+QgsGeometry QgsGeometry::buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit ) const
 {
   if ( !d->geometry )
   {
@@ -2054,7 +2054,7 @@ QgsGeometry QgsGeometry::buffer( double distance, int segments, EndCapStyle endC
   return QgsGeometry( geom );
 }
 
-QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, JoinStyle joinStyle, double miterLimit ) const
+QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, Qgis::JoinStyle joinStyle, double miterLimit ) const
 {
   if ( !d->geometry || type() != QgsWkbTypes::LineGeometry )
   {
@@ -2112,7 +2112,7 @@ QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, JoinStyle j
   }
 }
 
-QgsGeometry QgsGeometry::singleSidedBuffer( double distance, int segments, BufferSide side, JoinStyle joinStyle, double miterLimit ) const
+QgsGeometry QgsGeometry::singleSidedBuffer( double distance, int segments, Qgis::BufferSide side, Qgis::JoinStyle joinStyle, double miterLimit ) const
 {
   if ( !d->geometry || type() != QgsWkbTypes::LineGeometry )
   {
@@ -2883,7 +2883,7 @@ QgsGeometry QgsGeometry::forceRHR() const
 }
 
 
-void QgsGeometry::validateGeometry( QVector<QgsGeometry::Error> &errors, const ValidationMethod method, const QgsGeometry::ValidityFlags flags ) const
+void QgsGeometry::validateGeometry( QVector<QgsGeometry::Error> &errors, const Qgis::GeometryValidationEngine method, const Qgis::GeometryValidityFlags flags ) const
 {
   errors.clear();
   if ( !d->geometry )
@@ -2897,16 +2897,16 @@ void QgsGeometry::validateGeometry( QVector<QgsGeometry::Error> &errors, const V
 
   switch ( method )
   {
-    case ValidatorQgisInternal:
+    case Qgis::GeometryValidationEngine::QgisInternal:
       QgsGeometryValidator::validateGeometry( *this, errors, method );
       return;
 
-    case ValidatorGeos:
+    case Qgis::GeometryValidationEngine::Geos:
     {
       QgsGeos geos( d->geometry.get() );
       QString error;
       QgsGeometry errorLoc;
-      if ( !geos.isValid( &error, flags & FlagAllowSelfTouchingHoles, &errorLoc ) )
+      if ( !geos.isValid( &error, flags & Qgis::GeometryValidityFlag::AllowSelfTouchingHoles, &errorLoc ) )
       {
         if ( errorLoc.isNull() )
         {
@@ -2934,14 +2934,14 @@ void QgsGeometry::normalize()
   d->geometry->normalize();
 }
 
-bool QgsGeometry::isGeosValid( const QgsGeometry::ValidityFlags flags ) const
+bool QgsGeometry::isGeosValid( Qgis::GeometryValidityFlags flags ) const
 {
   if ( !d->geometry )
   {
     return false;
   }
 
-  return d->geometry->isValid( mLastError, static_cast< int >( flags ) );
+  return d->geometry->isValid( mLastError, flags );
 }
 
 bool QgsGeometry::isSimple() const
@@ -3045,28 +3045,28 @@ bool QgsGeometry::requiresConversionToStraightSegments() const
   return d->geometry->hasCurvedSegments();
 }
 
-QgsGeometry::OperationResult QgsGeometry::transform( const QgsCoordinateTransform &ct, const QgsCoordinateTransform::TransformDirection direction, const bool transformZ )
+Qgis::GeometryOperationResult QgsGeometry::transform( const QgsCoordinateTransform &ct, const QgsCoordinateTransform::TransformDirection direction, const bool transformZ )
 {
   if ( !d->geometry )
   {
-    return QgsGeometry::InvalidBaseGeometry;
+    return Qgis::GeometryOperationResult::InvalidBaseGeometry;
   }
 
   detach();
   d->geometry->transform( ct, direction, transformZ );
-  return QgsGeometry::Success;
+  return Qgis::GeometryOperationResult::Success;
 }
 
-QgsGeometry::OperationResult QgsGeometry::transform( const QTransform &ct, double zTranslate, double zScale, double mTranslate, double mScale )
+Qgis::GeometryOperationResult QgsGeometry::transform( const QTransform &ct, double zTranslate, double zScale, double mTranslate, double mScale )
 {
   if ( !d->geometry )
   {
-    return QgsGeometry::InvalidBaseGeometry;
+    return Qgis::GeometryOperationResult::InvalidBaseGeometry;
   }
 
   detach();
   d->geometry->transform( ct, zTranslate, zScale, mTranslate, mScale );
-  return QgsGeometry::Success;
+  return Qgis::GeometryOperationResult::Success;
 }
 
 void QgsGeometry::mapToPixel( const QgsMapToPixel &mtp )

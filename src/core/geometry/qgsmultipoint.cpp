@@ -198,7 +198,7 @@ double QgsMultiPoint::segmentLength( QgsVertexId ) const
   return 0.0;
 }
 
-bool QgsMultiPoint::isValid( QString &, int ) const
+bool QgsMultiPoint::isValid( QString &, Qgis::GeometryValidityFlags ) const
 {
   return true;
 }

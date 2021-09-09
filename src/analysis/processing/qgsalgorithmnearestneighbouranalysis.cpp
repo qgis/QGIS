@@ -86,20 +86,20 @@ QVariantMap QgsNearestNeighbourAnalysisAlgorithm::processAlgorithm( const QVaria
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT_HTML_FILE" ), context );
+  const QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT_HTML_FILE" ), context );
 
-  QgsSpatialIndex spatialIndex( *source, feedback, QgsSpatialIndex::FlagStoreFeatureGeometries );
+  const QgsSpatialIndex spatialIndex( *source, feedback, QgsSpatialIndex::FlagStoreFeatureGeometries );
   QgsDistanceArea da;
   da.setSourceCrs( source->sourceCrs(), context.transformContext() );
   da.setEllipsoid( context.ellipsoid() );
 
-  double step = source->featureCount() ? 100.0 / source->featureCount() : 1;
+  const double step = source->featureCount() ? 100.0 / source->featureCount() : 1;
   QgsFeatureIterator it = source->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QList< int >() ) );
 
-  QgsFeatureRequest request;
-  QgsFeature neighbour;
+  const QgsFeatureRequest request;
+  const QgsFeature neighbour;
   double sumDist = 0.0;
-  double area = source->sourceExtent().width() * source->sourceExtent().height();
+  const double area = source->sourceExtent().width() * source->sourceExtent().height();
 
   int i = 0;
   QgsFeature f;
@@ -110,19 +110,19 @@ QVariantMap QgsNearestNeighbourAnalysisAlgorithm::processAlgorithm( const QVaria
       break;
     }
 
-    QgsFeatureId neighbourId = spatialIndex.nearestNeighbor( f.geometry().asPoint(), 2 ).at( 1 );
+    const QgsFeatureId neighbourId = spatialIndex.nearestNeighbor( f.geometry().asPoint(), 2 ).at( 1 );
     sumDist += da.measureLine( spatialIndex.geometry( neighbourId ).asPoint(), f.geometry().asPoint() );
 
     i++;
     feedback->setProgress( i * step );
   }
 
-  long long count = source->featureCount() > 0 ? source->featureCount() : 1;
-  double observedDistance = sumDist / count;
-  double expectedDistance = 0.5 / std::sqrt( count / area );
-  double nnIndex = observedDistance / expectedDistance;
-  double se = 0.26136 / std::sqrt( std::pow( count, 2 ) / area );
-  double zScore = ( observedDistance - expectedDistance ) / se;
+  const long long count = source->featureCount() > 0 ? source->featureCount() : 1;
+  const double observedDistance = sumDist / count;
+  const double expectedDistance = 0.5 / std::sqrt( count / area );
+  const double nnIndex = observedDistance / expectedDistance;
+  const double se = 0.26136 / std::sqrt( std::pow( count, 2 ) / area );
+  const double zScore = ( observedDistance - expectedDistance ) / se;
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OBSERVED_MD" ), observedDistance );

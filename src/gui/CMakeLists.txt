@@ -94,6 +94,14 @@ set(QGIS_GUI_SRCS
   attributetable/qgsorganizetablecolumnsdialog.cpp
   attributetable/qgsfeaturefilterwidget.cpp
 
+  annotations/qgsannotationitemcommonpropertieswidget.cpp
+  annotations/qgsannotationitemguiregistry.cpp
+  annotations/qgsannotationitemwidget.cpp
+  annotations/qgsannotationitemwidget_impl.cpp
+  annotations/qgscreateannotationitemmaptool.cpp
+  annotations/qgscreateannotationitemmaptool_impl.cpp
+  annotations/qgsmaptoolmodifyannotation.cpp
+
   auth/qgsauthauthoritieseditor.cpp
   auth/qgsauthcertificateinfo.cpp
   auth/qgsauthcertificatemanager.cpp
@@ -145,6 +153,7 @@ set(QGIS_GUI_SRCS
   editorwidgets/qgscheckboxwidgetfactory.cpp
   editorwidgets/qgsclassificationwidgetwrapper.cpp
   editorwidgets/qgsclassificationwidgetwrapperfactory.cpp
+  editorwidgets/qgsactionwidgetwrapper.cpp
   editorwidgets/qgscolorwidgetwrapper.cpp
   editorwidgets/qgscolorwidgetfactory.cpp
   editorwidgets/qgsdatetimeedit.cpp
@@ -465,6 +474,7 @@ set(QGIS_GUI_SRCS
   qgsfieldvalueslineedit.cpp
   qgsfilecontentsourcelineedit.cpp
   qgsfilewidget.cpp
+  qgsexternalstoragefilewidget.cpp
   qgsfilterlineedit.cpp
   qgsfindfilesbypatternwidget.cpp
   qgsfloatingwidget.cpp
@@ -715,6 +725,7 @@ set(QGIS_GUI_HDRS
   qgsfilecontentsourcelineedit.h
   qgsfiledownloaderdialog.h
   qgsfilewidget.h
+  qgsexternalstoragefilewidget.h
   qgsfilterlineedit.h
   qgsfindfilesbypatternwidget.h
   qgsfloatingwidget.h
@@ -875,6 +886,12 @@ set(QGIS_GUI_HDRS
   qgsvscrollarea.h
   qgswindowmanagerinterface.h
 
+  annotations/qgsannotationitemcommonpropertieswidget.h
+  annotations/qgsannotationitemguiregistry.h
+  annotations/qgsannotationitemwidget.h
+  annotations/qgscreateannotationitemmaptool.h
+  annotations/qgsmaptoolmodifyannotation.h
+
   attributeformconfig/qgsattributeformcontaineredit.h
   attributeformconfig/qgsattributetypedialog.h
   attributeformconfig/qgsattributewidgetedit.h
@@ -940,6 +957,7 @@ set(QGIS_GUI_HDRS
   editorwidgets/core/qgseditorwidgetwrapper.h
   editorwidgets/core/qgssearchwidgetwrapper.h
   editorwidgets/core/qgswidgetwrapper.h
+  editorwidgets/qgsactionwidgetwrapper.h
   editorwidgets/qgsbinarywidgetfactory.h
   editorwidgets/qgsbinarywidgetwrapper.h
   editorwidgets/qgscheckboxconfigdlg.h
@@ -1405,8 +1423,15 @@ target_include_directories(qgis_gui SYSTEM PRIVATE
   ${QT_QTUITOOLS_INCLUDE_DIR}
 )
 
+if (WITH_QT6)
+  target_include_directories(qgis_gui SYSTEM PRIVATE
+    ${${QT_VERSION_BASE}Svg_INCLUDE_DIRS}
+  )
+endif()
+
 target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/annotations
   ${CMAKE_SOURCE_DIR}/src/gui/attributeformconfig
   ${CMAKE_SOURCE_DIR}/src/gui/symbology
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable
@@ -1506,6 +1531,13 @@ target_link_libraries(qgis_gui
   ${QSCINTILLA_LIBRARY}
   ${QT_VERSION_BASE}::QuickWidgets
 )
+
+if (WITH_QT6)
+  find_package(Qt6 COMPONENTS SvgWidgets REQUIRED)
+  target_link_libraries(qgis_gui
+    Qt6::SvgWidgets
+  )
+endif()
 
 if (FORCE_STATIC_LIBS)
   target_link_libraries(qgis_gui

@@ -39,36 +39,51 @@ class TestQgsBabelGpsFormat(unittest.TestCase):
         """
         Test QgsBabelSimpleImportFormat
         """
-        f = QgsBabelSimpleImportFormat('shapefile', Qgis.BabelFormatCapability.Waypoints)
+        f = QgsBabelSimpleImportFormat('shapefile', 'ESRI Shapefile', Qgis.BabelFormatCapability.Waypoints, ['shp', 'shx'])
+        self.assertEqual(f.name(), 'shapefile')
+        self.assertEqual(f.description(), 'ESRI Shapefile')
+        self.assertEqual(f.extensions(), ['shp', 'shx'])
         self.assertEqual(f.capabilities(), Qgis.BabelFormatCapabilities(
             Qgis.BabelFormatCapability.Waypoints | Qgis.BabelFormatCapability.Import))
-        f = QgsBabelSimpleImportFormat('shapefile', Qgis.BabelFormatCapabilities(
+        f = QgsBabelSimpleImportFormat('shapefile', 'ESRI Shapefile', Qgis.BabelFormatCapabilities(
             Qgis.BabelFormatCapability.Waypoints | Qgis.BabelFormatCapability.Tracks))
         self.assertEqual(f.capabilities(), Qgis.BabelFormatCapabilities(
             Qgis.BabelFormatCapability.Waypoints | Qgis.BabelFormatCapability.Tracks | Qgis.BabelFormatCapability.Import))
 
         self.assertEqual(
             f.importCommand('babel.exe', Qgis.GpsFeatureType.Waypoint, 'c:/test/test.shp', 'c:/test/test.gpx'),
-            ['"babel.exe"',
+            ['babel.exe',
              '-w',
              '-i',
              'shapefile',
              '-o',
              'gpx',
-             '"c:/test/test.shp"',
-             '"c:/test/test.gpx"'])
+             'c:/test/test.shp',
+             'c:/test/test.gpx'])
         self.assertEqual(
             f.importCommand('babel.exe', Qgis.GpsFeatureType.Track, 'c:/test/test.shp', 'c:/test/test.gpx'),
-            ['"babel.exe"',
+            ['babel.exe',
              '-t',
              '-i',
              'shapefile',
              '-o',
              'gpx',
-             '"c:/test/test.shp"',
-             '"c:/test/test.gpx"'])
+             'c:/test/test.shp',
+             'c:/test/test.gpx'])
         self.assertEqual(
             f.importCommand('babel.exe', Qgis.GpsFeatureType.Route, 'c:/test/test.shp', 'c:/test/test.gpx'),
+            ['babel.exe',
+             '-r',
+             '-i',
+             'shapefile',
+             '-o',
+             'gpx',
+             'c:/test/test.shp',
+             'c:/test/test.gpx'])
+
+        # with quoted paths
+        self.assertEqual(
+            f.importCommand('babel.exe', Qgis.GpsFeatureType.Route, 'c:/test/test.shp', 'c:/test/test.gpx', Qgis.BabelCommandFlag.QuoteFilePaths),
             ['"babel.exe"',
              '-r',
              '-i',
@@ -77,6 +92,7 @@ class TestQgsBabelGpsFormat(unittest.TestCase):
              'gpx',
              '"c:/test/test.shp"',
              '"c:/test/test.gpx"'])
+
         # export not supported
         self.assertEqual(
             f.exportCommand('babel.exe', Qgis.GpsFeatureType.Waypoint, 'c:/test/test.shp', 'c:/test/test.gpx'), [])
@@ -93,12 +109,12 @@ class TestQgsBabelGpsFormat(unittest.TestCase):
             "%babel -t -i garmin -o gpx %in %out",
             "%babel -t -i gpx -o garmin %in %out"
         )
-        # TODO -- I suspect that the waypoint/track/route capability should be automatically set/removed
-        # depending on whether the corresponding commands are empty!
-        # self.assertEqual(f.capabilities(), Qgis.BabelFormatCapabilities(
-        #    Qgis.BabelFormatCapability.Waypoints | Qgis.BabelFormatCapability.Import))
+        # waypoint/track/route capability should be automatically set/removed
+        # depending on whether the corresponding commands are empty
+        self.assertEqual(f.capabilities(), Qgis.BabelFormatCapabilities(
+            Qgis.BabelFormatCapability.Waypoints | Qgis.BabelFormatCapability.Import
+            | Qgis.BabelFormatCapability.Export | Qgis.BabelFormatCapability.Tracks | Qgis.BabelFormatCapability.Routes))
 
-        # TODO -- babel command should possibly be quoted (or NOT in QgsBabelSimpleImportFormat)
         self.assertEqual(
             f.importCommand('babel.exe', Qgis.GpsFeatureType.Waypoint, 'c:/test/test.shp', 'c:/test/test.gpx'),
             ['babel.exe',
@@ -107,8 +123,8 @@ class TestQgsBabelGpsFormat(unittest.TestCase):
              'garmin',
              '-o',
              'gpx',
-             '"c:/test/test.shp"',
-             '"c:/test/test.gpx"'])
+             'c:/test/test.shp',
+             'c:/test/test.gpx'])
         self.assertEqual(
             f.importCommand('babel.exe', Qgis.GpsFeatureType.Track, 'c:/test/test.shp', 'c:/test/test.gpx'),
             ['babel.exe',
@@ -117,8 +133,8 @@ class TestQgsBabelGpsFormat(unittest.TestCase):
              'garmin',
              '-o',
              'gpx',
-             '"c:/test/test.shp"',
-             '"c:/test/test.gpx"'])
+             'c:/test/test.shp',
+             'c:/test/test.gpx'])
         self.assertEqual(
             f.importCommand('babel.exe', Qgis.GpsFeatureType.Route, 'c:/test/test.shp', 'c:/test/test.gpx'),
             ['babel.exe',
@@ -127,8 +143,8 @@ class TestQgsBabelGpsFormat(unittest.TestCase):
              'garmin',
              '-o',
              'gpx',
-             '"c:/test/test.shp"',
-             '"c:/test/test.gpx"'])
+             'c:/test/test.shp',
+             'c:/test/test.gpx'])
 
         self.assertEqual(
             f.exportCommand('babel.exe', Qgis.GpsFeatureType.Waypoint, 'c:/test/test.shp', 'c:/test/test.gpx'),
@@ -138,8 +154,8 @@ class TestQgsBabelGpsFormat(unittest.TestCase):
              'gpx',
              '-o',
              'garmin',
-             '"c:/test/test.shp"',
-             '"c:/test/test.gpx"'])
+             'c:/test/test.shp',
+             'c:/test/test.gpx'])
         self.assertEqual(
             f.exportCommand('babel.exe', Qgis.GpsFeatureType.Track, 'c:/test/test.shp', 'c:/test/test.gpx'),
             ['babel.exe',
@@ -148,8 +164,8 @@ class TestQgsBabelGpsFormat(unittest.TestCase):
              'gpx',
              '-o',
              'garmin',
-             '"c:/test/test.shp"',
-             '"c:/test/test.gpx"'])
+             'c:/test/test.shp',
+             'c:/test/test.gpx'])
         self.assertEqual(
             f.exportCommand('babel.exe', Qgis.GpsFeatureType.Route, 'c:/test/test.shp', 'c:/test/test.gpx'),
             ['babel.exe',
@@ -158,8 +174,83 @@ class TestQgsBabelGpsFormat(unittest.TestCase):
              'gpx',
              '-o',
              'garmin',
+             'c:/test/test.shp',
+             'c:/test/test.gpx'])
+
+        # with quoted paths
+        self.assertEqual(
+            f.exportCommand('babel.exe', Qgis.GpsFeatureType.Route, 'c:/test/test.shp', 'c:/test/test.gpx', Qgis.BabelCommandFlag.QuoteFilePaths),
+            ['"babel.exe"',
+             '-r',
+             '-i',
+             'gpx',
+             '-o',
+             'garmin',
              '"c:/test/test.shp"',
              '"c:/test/test.gpx"'])
+
+        # waypoint/track/route capability should be automatically set/removed
+        # depending on whether the corresponding commands are empty
+        f = QgsBabelGpsDeviceFormat(
+            "%babel -w -i garmin -o gpx %in %out",
+            None,
+            None,
+            None,
+            None,
+            None
+        )
+        self.assertEqual(f.capabilities(), Qgis.BabelFormatCapabilities(
+            Qgis.BabelFormatCapability.Waypoints | Qgis.BabelFormatCapability.Import))
+        f = QgsBabelGpsDeviceFormat(
+            None,
+            "%babel -w -i gpx -o garmin %in %out",
+            None,
+            None,
+            None,
+            None
+        )
+        self.assertEqual(f.capabilities(), Qgis.BabelFormatCapabilities(
+            Qgis.BabelFormatCapability.Waypoints | Qgis.BabelFormatCapability.Export))
+        f = QgsBabelGpsDeviceFormat(
+            None,
+            None,
+            "%babel -r -i garmin -o gpx %in %out",
+            None,
+            None,
+            None
+        )
+        self.assertEqual(f.capabilities(), Qgis.BabelFormatCapabilities(
+            Qgis.BabelFormatCapability.Routes | Qgis.BabelFormatCapability.Import))
+        f = QgsBabelGpsDeviceFormat(
+            None,
+            None,
+            None,
+            "%babel -r -i gpx -o garmin %in %out",
+            None,
+            None
+        )
+        self.assertEqual(f.capabilities(), Qgis.BabelFormatCapabilities(
+            Qgis.BabelFormatCapability.Routes | Qgis.BabelFormatCapability.Export))
+        f = QgsBabelGpsDeviceFormat(
+            None,
+            None,
+            None,
+            None,
+            "%babel -t -i garmin -o gpx %in %out",
+            None
+        )
+        self.assertEqual(f.capabilities(), Qgis.BabelFormatCapabilities(
+            Qgis.BabelFormatCapability.Tracks | Qgis.BabelFormatCapability.Import))
+        f = QgsBabelGpsDeviceFormat(
+            None,
+            None,
+            None,
+            None,
+            None,
+            "%babel -t -i gpx -o garmin %in %out"
+        )
+        self.assertEqual(f.capabilities(), Qgis.BabelFormatCapabilities(
+            Qgis.BabelFormatCapability.Tracks | Qgis.BabelFormatCapability.Export))
 
     def test_registry(self):
         """
@@ -168,18 +259,30 @@ class TestQgsBabelGpsFormat(unittest.TestCase):
         self.assertIsNotNone(QgsApplication.gpsBabelFormatRegistry())
 
         registry = QgsBabelFormatRegistry()
-        self.assertIn('Garmin Mapsource', registry.importFormatNames())
-        self.assertIn('DNA', registry.importFormatNames())
+        self.assertIn('garmin_poi', registry.importFormatNames())
+        self.assertIn('dna', registry.importFormatNames())
 
         self.assertIsNone(registry.importFormat('aaaaaa'))
-        self.assertIsNotNone(registry.importFormat('CoPilot Flight Planner'))
-        self.assertEqual(registry.importFormat('CoPilot Flight Planner').capabilities(), Qgis.BabelFormatCapabilities(Qgis.BabelFormatCapability.Waypoints | Qgis.BabelFormatCapability.Import))
+        self.assertIsNotNone(registry.importFormat('dna'))
+        self.assertEqual(registry.importFormat('dna').name(), 'dna')
+        self.assertEqual(registry.importFormat('dna').description(), 'Navitrak DNA marker format')
+        self.assertEqual(registry.importFormat('dna').extensions(), ['dna'])
+
+        self.assertIsNone(registry.importFormatByDescription('aaaaaa'))
+        self.assertEqual(registry.importFormatByDescription('Navitrak DNA marker format').name(), 'dna')
+        self.assertEqual(registry.importFormatByDescription('navitrak dna marker format').name(), 'dna')
+        self.assertEqual(registry.importFormatByDescription('PocketFMS flightplan (.xml)').name(), 'pocketfms_fp')
+        # see explanation in QgsBabelFormatRegistry::importFileFilter()!
+        self.assertEqual(registry.importFormatByDescription('PocketFMS flightplan [.xml]').name(), 'pocketfms_fp')
+
+        self.assertIn(';;ESRI shapefile (*.shp);;', registry.importFileFilter())
+        self.assertIn(';;PocketFMS flightplan [.xml] (*.xml);;', registry.importFileFilter())
 
         # should have only one device by default
         self.assertEqual(registry.deviceNames(), ['Garmin serial'])
         self.assertIsNotNone(registry.deviceFormat('Garmin serial'))
         self.assertEqual(registry.deviceFormat('Garmin serial').importCommand('bb', Qgis.GpsFeatureType.Waypoint, 'in_file.shp', 'out_file.gpx'),
-                         ['bb', '-w', '-i', 'garmin', '-o', 'gpx', '"in_file.shp"', '"out_file.gpx"'])
+                         ['bb', '-w', '-i', 'garmin', '-o', 'gpx', 'in_file.shp', 'out_file.gpx'])
 
 
 if __name__ == '__main__':

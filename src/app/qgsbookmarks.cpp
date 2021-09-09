@@ -81,7 +81,7 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   lstBookmarks->setSortingEnabled( true );
   lstBookmarks->sortByColumn( 0, Qt::AscendingOrder );
 
-  QgsSettings settings;
+  const QgsSettings settings;
   lstBookmarks->header()->restoreState( settings.value( QStringLiteral( "Windows/Bookmarks/headerstateV2" ) ).toByteArray() );
 }
 
@@ -111,7 +111,7 @@ void QgsBookmarks::addClicked()
 
 void QgsBookmarks::deleteClicked()
 {
-  QItemSelection selection = lstBookmarks->selectionModel()->selection();
+  const QItemSelection selection = lstBookmarks->selectionModel()->selection();
   std::vector<int> rows;
   for ( const auto &selectedIdx : selection.indexes() )
   {
@@ -145,7 +145,7 @@ void QgsBookmarks::lstBookmarks_doubleClicked( const QModelIndex &index )
 
 void QgsBookmarks::zoomToBookmark()
 {
-  QModelIndex index = lstBookmarks->currentIndex();
+  const QModelIndex index = lstBookmarks->currentIndex();
   if ( !index.isValid() )
     return;
   zoomToBookmarkIndex( index );
@@ -153,7 +153,7 @@ void QgsBookmarks::zoomToBookmark()
 
 void QgsBookmarks::zoomToBookmarkIndex( const QModelIndex &index )
 {
-  QgsReferencedRectangle rect = index.data( QgsBookmarkManagerModel::RoleExtent ).value< QgsReferencedRectangle >();
+  const QgsReferencedRectangle rect = index.data( QgsBookmarkManagerModel::RoleExtent ).value< QgsReferencedRectangle >();
   try
   {
     if ( QgisApp::instance()->mapCanvas()->setReferencedExtent( rect ) )
@@ -173,11 +173,11 @@ void QgsBookmarks::zoomToBookmarkIndex( const QModelIndex &index )
 
 void QgsBookmarks::importFromXml()
 {
-  QgsSettings settings;
+  const QgsSettings settings;
 
-  QString lastUsedDir = settings.value( QStringLiteral( "Windows/Bookmarks/LastUsedDirectory" ), QDir::homePath() ).toString();
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Import Bookmarks" ), lastUsedDir,
-                     tr( "XML files (*.xml *.XML)" ) );
+  const QString lastUsedDir = settings.value( QStringLiteral( "Windows/Bookmarks/LastUsedDirectory" ), QDir::homePath() ).toString();
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Import Bookmarks" ), lastUsedDir,
+                           tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -196,15 +196,15 @@ void QgsBookmarks::importFromXml()
 QMap<QString, QModelIndex> QgsBookmarks::getIndexMap()
 {
   QMap<QString, QModelIndex> map;
-  int rowCount = mBookmarkModel->rowCount();
+  const int rowCount = mBookmarkModel->rowCount();
 
   for ( int i = 0; i < rowCount; ++i )
   {
-    QModelIndex idx = mBookmarkModel->index( i, QgsBookmarkManagerModel::ColumnName ); //Name col
+    const QModelIndex idx = mBookmarkModel->index( i, QgsBookmarkManagerModel::ColumnName ); //Name col
     if ( idx.isValid() )
     {
       QString name = idx.data( Qt::DisplayRole ).toString();
-      QString project = idx.sibling( idx.row(), QgsBookmarkManagerModel::ColumnGroup ).data().toString();
+      const QString project = idx.sibling( idx.row(), QgsBookmarkManagerModel::ColumnGroup ).data().toString();
       if ( !project.isEmpty() )
       {
         name = name + " (" + project + ")";
@@ -221,7 +221,7 @@ void QgsBookmarks::exportToXml()
 {
   QgsSettings settings;
 
-  QString lastUsedDir = settings.value( QStringLiteral( "Windows/Bookmarks/LastUsedDirectory" ), QDir::homePath() ).toString();
+  const QString lastUsedDir = settings.value( QStringLiteral( "Windows/Bookmarks/LastUsedDirectory" ), QDir::homePath() ).toString();
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Export Bookmarks" ), lastUsedDir,
                      tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )

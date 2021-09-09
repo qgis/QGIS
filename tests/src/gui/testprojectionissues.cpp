@@ -48,11 +48,11 @@ void TestProjectionIssues::initTestCase()
   QgsApplication::initQgis();
 
   //create maplayer from testdata and add to layer registry
-  QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + '/' +  "checker360by180.asc" );
+  const QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + '/' +  "checker360by180.asc" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                      rasterFileInfo.completeBaseName() );
   // Set to WGS84
-  QgsCoordinateReferenceSystem sourceCRS( QStringLiteral( "EPSG:4326" ) );
+  const QgsCoordinateReferenceSystem sourceCRS( QStringLiteral( "EPSG:4326" ) );
   mRasterLayer->setCrs( sourceCRS, false );
 
   QgsMultiBandColorRenderer *rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
@@ -74,7 +74,7 @@ void TestProjectionIssues::initTestCase()
   mMapCanvas->setLayers( canvasLayers );
 
   //reproject to SWEDREF 99 TM
-  QgsCoordinateReferenceSystem destCRS( QStringLiteral( "EPSG:3006" ) );
+  const QgsCoordinateReferenceSystem destCRS( QStringLiteral( "EPSG:3006" ) );
   mMapCanvas->setDestinationCrs( destCRS );
 
 }
@@ -98,7 +98,7 @@ void TestProjectionIssues::cleanup()
 
 void TestProjectionIssues::issue5895()
 {
-  QgsRectangle largeExtent( -610861, 5101721, 2523921, 6795055 );
+  const QgsRectangle largeExtent( -610861, 5101721, 2523921, 6795055 );
   mMapCanvas->setExtent( largeExtent );
   mMapCanvas->zoomByFactor( 2.0 ); // Zoom out. This should exceed the transform limits.
 }

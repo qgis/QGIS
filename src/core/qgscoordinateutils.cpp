@@ -32,13 +32,13 @@ int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, c
   if ( !project )
     project = QgsProject::instance();
   // Get the display precision from the project settings
-  bool automatic = project->readBoolEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/Automatic" ) );
+  const bool automatic = project->readBoolEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/Automatic" ) );
   int dp = 0;
 
   if ( automatic )
   {
-    QString format = project->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), QStringLiteral( "MU" ) );
-    bool formatGeographic = ( format == QLatin1String( "DM" ) || format == QLatin1String( "DMS" ) || format == QLatin1String( "D" ) );
+    const QString format = project->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), QStringLiteral( "MU" ) );
+    const bool formatGeographic = ( format == QLatin1String( "DM" ) || format == QLatin1String( "DMS" ) || format == QLatin1String( "D" ) );
 
     // we can only calculate an automatic precision if one of these is true:
     // - both map CRS and format are geographic
@@ -78,13 +78,13 @@ int QgsCoordinateUtils::calculateCoordinatePrecisionForCrs( const QgsCoordinateR
     prj = QgsProject::instance();
   }
 
-  bool automatic = prj->readBoolEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/Automatic" ) );
+  const bool automatic = prj->readBoolEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/Automatic" ) );
   if ( !automatic )
   {
     return prj->readNumEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ), 6 );
   }
 
-  QgsUnitTypes::DistanceUnit unit = crs.mapUnits();
+  const QgsUnitTypes::DistanceUnit unit = crs.mapUnits();
   if ( unit == QgsUnitTypes::DistanceDegrees )
   {
     return 8;
@@ -100,7 +100,7 @@ QString QgsCoordinateUtils::formatCoordinateForProject( QgsProject *project, con
   if ( !project )
     return QString();
 
-  QString format = project->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), QStringLiteral( "MU" ) );
+  const QString format = project->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), QStringLiteral( "MU" ) );
 
   QgsPointXY geo = point;
   if ( format == QLatin1String( "DM" ) || format == QLatin1String( "DMS" ) || format == QLatin1String( "D" ) )
@@ -109,7 +109,7 @@ QString QgsCoordinateUtils::formatCoordinateForProject( QgsProject *project, con
     if ( destCrs.isValid() && !destCrs.isGeographic() )
     {
       // need to transform to geographic coordinates
-      QgsCoordinateTransform ct( destCrs, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), project );
+      const QgsCoordinateTransform ct( destCrs, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), project );
       try
       {
         geo = ct.transform( point );
@@ -158,13 +158,13 @@ double QgsCoordinateUtils::dmsToDecimal( const QString &string, bool *ok, bool *
     ok = &okValue;
   }
 
-  QRegularExpression dms( "^\\s*(?:([-+nsew])\\s*)?(\\d{1,3})(?:[^0-9.]+([0-5]?\\d))?[^0-9.]+([0-5]?\\d(?:\\.\\d+)?)[^0-9.,]*?([-+nsew])?\\s*$", QRegularExpression::CaseInsensitiveOption );
-  QRegularExpressionMatch match = dms.match( string.trimmed() );
+  const QRegularExpression dms( "^\\s*(?:([-+nsew])\\s*)?(\\d{1,3})(?:[^0-9.]+([0-5]?\\d))?[^0-9.]+([0-5]?\\d(?:\\.\\d+)?)[^0-9.,]*?([-+nsew])?\\s*$", QRegularExpression::CaseInsensitiveOption );
+  const QRegularExpressionMatch match = dms.match( string.trimmed() );
   if ( match.hasMatch() )
   {
-    QString dms1 = match.captured( 2 );
-    QString dms2 = match.captured( 3 );
-    QString dms3 = match.captured( 4 );
+    const QString dms1 = match.captured( 2 );
+    const QString dms2 = match.captured( 3 );
+    const QString dms3 = match.captured( 4 );
 
     double v = dms3.toDouble( ok );
     if ( *ok == false )
@@ -180,8 +180,8 @@ double QgsCoordinateUtils::dmsToDecimal( const QString &string, bool *ok, bool *
     if ( *ok == false )
       return value;
 
-    QString sign1 = match.captured( 1 );
-    QString sign2 = match.captured( 5 );
+    const QString sign1 = match.captured( 1 );
+    const QString sign2 = match.captured( 5 );
 
     if ( sign1.isEmpty() )
     {

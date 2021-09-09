@@ -443,7 +443,7 @@ bool QgsCompoundCurve::isEmpty() const
   return true;
 }
 
-bool QgsCompoundCurve::isValid( QString &error, int flags ) const
+bool QgsCompoundCurve::isValid( QString &error, Qgis::GeometryValidityFlags flags ) const
 {
   if ( mCurves.isEmpty() )
     return true;

@@ -203,7 +203,7 @@ void Problem::init_sol_falp()
       //error
     }
 
-    int probFeatId = lp->getProblemFeatureId();
+    const int probFeatId = lp->getProblemFeatureId();
     mSol.activeLabelIds[probFeatId] = label;
 
     for ( int i = mFeatStartId[probFeatId]; i < mFeatStartId[probFeatId] + mFeatNbLp[probFeatId]; i++ )
@@ -295,7 +295,7 @@ inline Chain *Problem::chain( int seed )
   int retainedLabel;
   Chain *retainedChain = nullptr;
 
-  int max_degree = pal->mEjChainDeg;
+  const int max_degree = pal->mEjChainDeg;
 
   int seedNbLp;
 
@@ -447,7 +447,7 @@ inline Chain *Problem::chain( int seed )
               // hide all conflictual candidates
               while ( !conflicts.isEmpty() )
               {
-                int ftid = conflicts.takeFirst();
+                const int ftid = conflicts.takeFirst();
                 newChain->feat[j] = ftid;
                 newChain->label[j] = -1;
                 newChain->delta += mInactiveCost[ftid];

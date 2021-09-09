@@ -45,7 +45,7 @@ bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
 #ifdef __MINGW32__
   pythonlibName.prepend( "lib" );
 #endif
-  QString version = QStringLiteral( "%1.%2.%3" ).arg( Qgis::versionInt() / 10000 ).arg( Qgis::versionInt() / 100 % 100 ).arg( Qgis::versionInt() % 100 );
+  const QString version = QStringLiteral( "%1.%2.%3" ).arg( Qgis::versionInt() / 10000 ).arg( Qgis::versionInt() / 100 % 100 ).arg( Qgis::versionInt() % 100 );
   QgsMessageLog::logMessage( QStringLiteral( "load library %1 (%2)" ).arg( pythonlibName, version ), __FILE__, Qgis::MessageLevel::Info );
   QLibrary pythonlib( pythonlibName, version );
   // It's necessary to set these two load hints, otherwise Python library won't work correctly
@@ -92,7 +92,7 @@ bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
   const auto constPluginList( sPythonUtils->pluginList() );
   for ( const QString &pluginName : constPluginList )
   {
-    QString pluginService = sPythonUtils->getPluginMetadata( pluginName, QStringLiteral( "server" ) );
+    const QString pluginService = sPythonUtils->getPluginMetadata( pluginName, QStringLiteral( "server" ) );
     if ( pluginService == QLatin1String( "True" ) )
     {
       if ( sPythonUtils->loadPlugin( pluginName ) )

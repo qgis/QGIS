@@ -71,7 +71,7 @@ int main( int argc, char *argv[] )
     QgsMessageLog::logMessage( "DISPLAY not set, running in offscreen mode, all printing capabilities will not be available.", "Server", Qgis::MessageLevel::Info );
   }
   // since version 3.0 QgsServer now needs a qApp so initialize QgsApplication
-  QgsApplication app( argc, argv, withDisplay, QString(), QStringLiteral( "server" ) );
+  const QgsApplication app( argc, argv, withDisplay, QString(), QStringLiteral( "server" ) );
   QgsServer server;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   server.initPython();

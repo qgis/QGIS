@@ -40,7 +40,7 @@ void QgsGeoNodeNewConnection::testConnection()
   QApplication::setOverrideCursor( Qt::BusyCursor );
   QgsGeoNodeRequest geonodeRequest( url(), true );
 
-  QList<QgsGeoNodeRequest::ServiceLayerDetail> layers = geonodeRequest.fetchLayersBlocking();
+  const QList<QgsGeoNodeRequest::ServiceLayerDetail> layers = geonodeRequest.fetchLayersBlocking();
   QApplication::restoreOverrideCursor();
 
   if ( !layers.empty() )

@@ -109,7 +109,7 @@ void TestQgsDoubleValidator::validate()
   QString value;
   int expectedValue;
 
-  QVector<QLocale>listLocale( {QLocale::English, QLocale::French, QLocale::German, QLocale::Italian} );
+  const QVector<QLocale>listLocale( {QLocale::English, QLocale::French, QLocale::German, QLocale::Italian} );
   QLocale loc;
   for ( int i = 0; i < listLocale.count(); ++i )
   {
@@ -148,7 +148,7 @@ void TestQgsDoubleValidator::toDouble()
   QString value;
   double expectedValue;
 
-  QVector<QLocale>listLocale( {QLocale::English, QLocale::French, QLocale::German, QLocale::Italian} );
+  const QVector<QLocale>listLocale( {QLocale::English, QLocale::French, QLocale::German, QLocale::Italian} );
   QLocale loc;
   for ( int i = 0; i < listLocale.count(); ++i )
   {

@@ -73,9 +73,17 @@ class QgsDelimitedTextFeatureIterator final: public QgsAbstractFeatureIteratorFr
     bool rewind() override;
     bool close() override;
 
-    // Tests whether the geometry is required, given that testGeometry is true.
-    bool wantGeometry( const QgsPointXY &point ) const;
-    bool wantGeometry( const QgsGeometry &geom ) const;
+    /**
+     * Check to see if the point is within the selection rectangle or within
+     * the desired distance from the reference geometry.
+     */
+    bool testSpatialFilter( const QgsPointXY &point ) const;
+
+    /**
+     * Check to see if the geometry is within the selection rectangle or within
+     * the desired distance from the reference geometry.
+     */
+    bool testSpatialFilter( const QgsGeometry &geom ) const;
 
   protected:
     bool fetchFeature( QgsFeature &feature ) override;
@@ -98,6 +106,9 @@ class QgsDelimitedTextFeatureIterator final: public QgsAbstractFeatureIteratorFr
     bool mLoadGeometry = false;
     QgsRectangle mFilterRect;
     QgsCoordinateTransform mTransform;
+
+    QgsGeometry mDistanceWithinGeom;
+    std::unique_ptr< QgsGeometryEngine > mDistanceWithinEngine;
 };
 
 

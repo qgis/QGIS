@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsMeshTransformCoordinatesDockWidgetBase</class>
+ <widget class="QgsDockWidget" name="QgsMeshTransformCoordinatesDockWidgetBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>297</width>
+    <height>182</height>
+   </rect>
+  </property>
+  <property name="floating">
+   <bool>false</bool>
+  </property>
+  <property name="windowTitle">
+   <string notr="true">DockWidget</string>
+  </property>
+  <widget class="QWidget" name="dockWidgetContents">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="4" column="1">
+     <widget class="QgsExpressionLineEdit" name="mExpressionEditZ" native="true"/>
+    </item>
+    <item row="2" column="0">
+     <widget class="QCheckBox" name="mCheckBoxX">
+      <property name="text">
+       <string>X coordinate</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QCheckBox" name="mCheckBoxY">
+      <property name="text">
+       <string>Y coordinate</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0" colspan="2">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetDefaultConstraint</enum>
+      </property>
+      <item>
+       <widget class="QToolButton" name="mButtonPreview">
+        <property name="text">
+         <string>Preview transform</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="mButtonApply">
+        <property name="text">
+         <string>Apply transform</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="2" column="1">
+     <widget class="QgsExpressionLineEdit" name="mExpressionEditX" native="true"/>
+    </item>
+    <item row="3" column="1">
+     <widget class="QgsExpressionLineEdit" name="mExpressionEditY" native="true"/>
+    </item>
+    <item row="4" column="0">
+     <widget class="QCheckBox" name="mCheckBoxZ">
+      <property name="text">
+       <string>Z value</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" colspan="2">
+     <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,0,0">
+      <property name="spacing">
+       <number>6</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="mLabelInformation">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>0</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QToolButton" name="mButtonImport">
+        <property name="toolTip">
+         <string>Import coordinates of the selected vertex</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/mIconVertexCoordinates.svg</normaloff>:/images/themes/default/mIconVertexCoordinates.svg</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsDockWidget</class>
+   <extends>QDockWidget</extends>
+   <header>qgsdockwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsExpressionLineEdit</class>
+   <extends>QWidget</extends>
+   <header>qgsexpressionlineedit.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>mCheckBoxX</tabstop>
+  <tabstop>mCheckBoxY</tabstop>
+  <tabstop>mCheckBoxZ</tabstop>
+  <tabstop>mButtonPreview</tabstop>
+  <tabstop>mButtonApply</tabstop>
+  <tabstop>mButtonImport</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+ </resources>
+ <connections/>
+</ui>

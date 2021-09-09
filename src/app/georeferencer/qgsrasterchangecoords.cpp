@@ -25,7 +25,7 @@
 void QgsRasterChangeCoords::setRaster( const QString &fileRaster )
 {
   GDALAllRegister();
-  gdal::dataset_unique_ptr hDS( GDALOpen( fileRaster.toUtf8().constData(), GA_ReadOnly ) );
+  const gdal::dataset_unique_ptr hDS( GDALOpen( fileRaster.toUtf8().constData(), GA_ReadOnly ) );
   double adfGeoTransform[6];
   if ( GDALGetProjectionRef( hDS.get() ) && GDALGetGeoTransform( hDS.get(), adfGeoTransform ) == CE_None )
     //if ( false )
@@ -56,8 +56,8 @@ QVector<QgsPointXY> QgsRasterChangeCoords::getPixelCoords( const QVector<QgsPoin
 QgsRectangle QgsRasterChangeCoords::getBoundingBox( const QgsRectangle &rect, bool toPixel )
 {
   QgsRectangle rectReturn;
-  QgsPointXY p1( rect.xMinimum(), rect.yMinimum() );
-  QgsPointXY p2( rect.xMaximum(), rect.yMaximum() );
+  const QgsPointXY p1( rect.xMinimum(), rect.yMinimum() );
+  const QgsPointXY p2( rect.xMaximum(), rect.yMaximum() );
   QgsPointXY( QgsRasterChangeCoords::* func )( const QgsPointXY & );
 
   func = toPixel ? &QgsRasterChangeCoords::toColumnLine : &QgsRasterChangeCoords::toXY;
@@ -68,14 +68,14 @@ QgsRectangle QgsRasterChangeCoords::getBoundingBox( const QgsRectangle &rect, bo
 
 QgsPointXY QgsRasterChangeCoords::toColumnLine( const QgsPointXY &pntMap )
 {
-  double col = ( pntMap.x() - mUL_X ) / mResX;
-  double line = ( mUL_Y - pntMap.y() ) / mResY;
+  const double col = ( pntMap.x() - mUL_X ) / mResX;
+  const double line = ( mUL_Y - pntMap.y() ) / mResY;
   return QgsPointXY( col, line );
 }
 
 QgsPointXY QgsRasterChangeCoords::toXY( const QgsPointXY &pntPixel )
 {
-  double x = mUL_X + ( pntPixel.x() *  mResX );
-  double y = mUL_Y + ( pntPixel.y() * -mResY );
+  const double x = mUL_X + ( pntPixel.x() *  mResX );
+  const double y = mUL_Y + ( pntPixel.y() * -mResY );
   return QgsPointXY( x, y );
 }

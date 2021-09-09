@@ -103,7 +103,7 @@ void QgsLayoutAtlasToPdfAlgorithm::initAlgorithm( const QVariantMap & )
   simplify->setFlags( simplify->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( simplify.release() );
 
-  QStringList textExportOptions
+  const QStringList textExportOptions
   {
     QObject::tr( "Always Export Text as Paths (Recommended)" ),
     QObject::tr( "Always Export Text as Text Objects" )
@@ -143,6 +143,7 @@ QVariantMap QgsLayoutAtlasToPdfAlgorithm::processAlgorithm( const QVariantMap &p
 
     expression = parameterAsString( parameters, QStringLiteral( "FILTER_EXPRESSION" ), context );
     atlas->setFilterExpression( expression, error );
+    atlas->setFilterFeatures( !expression.isEmpty() && error.isEmpty() );
     if ( !expression.isEmpty() && !error.isEmpty() )
     {
       throw QgsProcessingException( QObject::tr( "Error setting atlas filter expression" ) );
@@ -167,7 +168,7 @@ QVariantMap QgsLayoutAtlasToPdfAlgorithm::processAlgorithm( const QVariantMap &p
     throw QgsProcessingException( QObject::tr( "Layout being export doesn't have an enabled atlas" ) );
   }
 
-  QgsLayoutExporter exporter( layout.get() );
+  const QgsLayoutExporter exporter( layout.get() );
   QgsLayoutExporter::PdfExportSettings settings;
 
   if ( parameters.value( QStringLiteral( "DPI" ) ).isValid() )

@@ -18,9 +18,9 @@
 
 int QgsMaskIdProvider::insertLabelLayer( const QString &layerId, const QString &ruleId, const QSet<QgsSymbolLayerReference> &maskedSymbolLayers )
 {
-  QString strId = layerId + ruleId;
+  const QString strId = layerId + ruleId;
   // look for an existing symbol layer set
-  int maskId = mLabelLayers.indexOf( maskedSymbolLayers );
+  const int maskId = mLabelLayers.indexOf( maskedSymbolLayers );
   if ( maskId != -1 )
   {
     // add the layer id / rule id to the existing mask id
@@ -38,7 +38,7 @@ int QgsMaskIdProvider::maskId( const QString &labelLayerId, const QString &label
   if ( labelLayerId.isEmpty() )
     return -1;
 
-  QString id = labelLayerId + labelRuleId;
+  const QString id = labelLayerId + labelRuleId;
   for ( int i = 0; i < mMaskIds.size(); i++ )
   {
     if ( mMaskIds[i].contains( id ) )

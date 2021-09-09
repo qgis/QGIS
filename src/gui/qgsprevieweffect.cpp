@@ -56,7 +56,7 @@ void QgsPreviewEffect::draw( QPainter *painter )
   {
     case QgsPreviewEffect::PreviewMono:
     {
-      QImage bwImage = image.convertToFormat( QImage::Format_Mono );
+      const QImage bwImage = image.convertToFormat( QImage::Format_Mono );
       painter->drawImage( offset, bwImage );
       break;
     }

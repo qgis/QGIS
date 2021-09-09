@@ -103,7 +103,7 @@ QVariantMap QgsRandomPointsExtentAlgorithm::processAlgorithm( const QVariantMap 
 
   //initialize random engine
   std::random_device random_device;
-  std::mt19937 mersenne_twister( random_device() );
+  const std::mt19937 mersenne_twister( random_device() );
 
   std::uniform_real_distribution<double> x_distribution( mExtent.xMinimum(), mExtent.xMaximum() );
   std::uniform_real_distribution<double> y_distribution( mExtent.yMinimum(), mExtent.yMaximum() );
@@ -116,8 +116,8 @@ QVariantMap QgsRandomPointsExtentAlgorithm::processAlgorithm( const QVariantMap 
       if ( feedback->isCanceled() )
         break;
 
-      double rx = x_distribution( random_device );
-      double ry = y_distribution( random_device );
+      const double rx = x_distribution( random_device );
+      const double ry = y_distribution( random_device );
 
       QgsFeature f = QgsFeature( i );
 
@@ -140,16 +140,16 @@ QVariantMap QgsRandomPointsExtentAlgorithm::processAlgorithm( const QVariantMap 
       if ( feedback->isCanceled() )
         break;
 
-      double rx = x_distribution( random_device );
-      double ry = y_distribution( random_device );
+      const double rx = x_distribution( random_device );
+      const double ry = y_distribution( random_device );
 
       //check if new random point is inside searching distance to existing points
-      QList<QgsFeatureId> neighbors = index.nearestNeighbor( QgsPointXY( rx, ry ), 1, mDistance );
+      const QList<QgsFeatureId> neighbors = index.nearestNeighbor( QgsPointXY( rx, ry ), 1, mDistance );
       if ( neighbors.empty() )
       {
         QgsFeature f = QgsFeature( i );
         f.setAttributes( QgsAttributes() << i );
-        QgsGeometry randomPointGeom = QgsGeometry( new QgsPoint( rx, ry ) );
+        const QgsGeometry randomPointGeom = QgsGeometry( new QgsPoint( rx, ry ) );
         f.setGeometry( randomPointGeom );
         if ( !index.addFeature( f ) ||
              !sink->addFeature( f, QgsFeatureSink::FastInsert ) )

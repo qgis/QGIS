@@ -52,7 +52,7 @@ void TestQgsLayoutObject::initTestCase()
 
 void TestQgsLayoutObject::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  const QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -114,7 +114,7 @@ void TestQgsLayoutObject::customProperties()
 
   object->setCustomProperty( QStringLiteral( "testprop1" ), "testval1" );
   object->setCustomProperty( QStringLiteral( "testprop2" ), "testval2" );
-  QStringList keys = object->customProperties();
+  const QStringList keys = object->customProperties();
   QCOMPARE( keys.length(), 2 );
   QVERIFY( keys.contains( "testprop1" ) );
   QVERIFY( keys.contains( "testprop2" ) );
@@ -151,7 +151,7 @@ void TestQgsLayoutObject::writeReadXml()
 
   QgsLayoutObject *object = new QgsLayoutObject( &l );
   QDomImplementation DomImplementation;
-  QDomDocumentType documentType =
+  const QDomDocumentType documentType =
     DomImplementation.createDocumentType(
       QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
@@ -167,7 +167,7 @@ void TestQgsLayoutObject::writeReadXml()
   QVERIFY( object->writeObjectPropertiesToElement( layoutObjectElem, doc, QgsReadWriteContext() ) );
 
   //check if object node was written
-  QDomNodeList evalNodeList = rootNode.elementsByTagName( QStringLiteral( "LayoutObject" ) );
+  const QDomNodeList evalNodeList = rootNode.elementsByTagName( QStringLiteral( "LayoutObject" ) );
   QCOMPARE( evalNodeList.count(), 1 );
 
   //test reading node
@@ -177,7 +177,7 @@ void TestQgsLayoutObject::writeReadXml()
   QCOMPARE( readObject->readObjectPropertiesFromElement( noNode, doc, QgsReadWriteContext() ), false );
 
   //test node with no layout object child
-  QDomElement badLayoutObjectElem = doc.createElement( QStringLiteral( "item" ) );
+  const QDomElement badLayoutObjectElem = doc.createElement( QStringLiteral( "item" ) );
   rootNode.appendChild( badLayoutObjectElem );
   QCOMPARE( readObject->readObjectPropertiesFromElement( badLayoutObjectElem, doc, QgsReadWriteContext() ), false );
 
@@ -198,7 +198,7 @@ void TestQgsLayoutObject::writeRetrieveDDProperty()
 
   //test writing object with dd settings
   QDomImplementation DomImplementation;
-  QDomDocumentType documentType =
+  const QDomDocumentType documentType =
     DomImplementation.createDocumentType(
       QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
@@ -206,7 +206,7 @@ void TestQgsLayoutObject::writeRetrieveDDProperty()
   QVERIFY( object->writeObjectPropertiesToElement( rootNode, doc, QgsReadWriteContext() ) );
 
   //check if object node was written
-  QDomNodeList evalNodeList = rootNode.elementsByTagName( QStringLiteral( "LayoutObject" ) );
+  const QDomNodeList evalNodeList = rootNode.elementsByTagName( QStringLiteral( "LayoutObject" ) );
   QCOMPARE( evalNodeList.count(), 1 );
 
   //test reading node containing dd settings
@@ -239,7 +239,7 @@ void TestQgsLayoutObject::writeRetrieveCustomProperties()
 
   //test writing object with custom properties
   QDomImplementation DomImplementation;
-  QDomDocumentType documentType =
+  const QDomDocumentType documentType =
     DomImplementation.createDocumentType(
       QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
@@ -247,7 +247,7 @@ void TestQgsLayoutObject::writeRetrieveCustomProperties()
   QVERIFY( object->writeObjectPropertiesToElement( rootNode, doc, QgsReadWriteContext() ) );
 
   //check if object node was written
-  QDomNodeList evalNodeList = rootNode.elementsByTagName( QStringLiteral( "LayoutObject" ) );
+  const QDomNodeList evalNodeList = rootNode.elementsByTagName( QStringLiteral( "LayoutObject" ) );
   QCOMPARE( evalNodeList.count(), 1 );
 
   //test reading node containing custom properties

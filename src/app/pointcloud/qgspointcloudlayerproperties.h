@@ -112,7 +112,6 @@ class QgsPointCloudLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
     void loadDefaultMetadata();
     void showHelp();
     void urlClicked( const QUrl &url );
-    void originalNameEdited( const QString &text );
     void crsChanged( const QgsCoordinateReferenceSystem &crs );
 
   protected slots:

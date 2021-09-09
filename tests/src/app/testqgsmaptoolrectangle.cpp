@@ -99,12 +99,12 @@ void TestQgsMapToolRectangle::testRectangleFromCenter()
   utils.mouseClick( 0, 0, Qt::LeftButton );
   utils.mouseMove( 2, 1 );
   utils.mouseClick( 2, 1, Qt::RightButton );
-  QgsFeatureId newFid = utils.newFeatureId();
+  const QgsFeatureId newFid = utils.newFeatureId();
 
   // QCOMPARE( mLayer->featureCount(), ( long )1 );
-  QgsFeature f = mLayer->getFeature( newFid );
+  const QgsFeature f = mLayer->getFeature( newFid );
 
-  QString wkt = "LineStringZ (-2 -1 333, -2 1 333, 2 1 333, 2 -1 333, -2 -1 333)";
+  const QString wkt = "LineStringZ (-2 -1 333, -2 1 333, 2 1 333, 2 -1 333, -2 -1 333)";
   QgsLineString line;
   line.fromWkt( wkt );
   QVERIFY( static_cast<QgsLineString *>( f.geometry().get() )->equals( line ) );
@@ -127,12 +127,12 @@ void TestQgsMapToolRectangle::testRectangleFromCenterWithDeletedVertex()
   utils.mouseClick( 0, 0, Qt::LeftButton );
   utils.mouseMove( 2, 1 );
   utils.mouseClick( 2, 1, Qt::RightButton );
-  QgsFeatureId newFid = utils.newFeatureId();
+  const QgsFeatureId newFid = utils.newFeatureId();
 
   // QCOMPARE( mLayer->featureCount(), ( long )1 );
-  QgsFeature f = mLayer->getFeature( newFid );
+  const QgsFeature f = mLayer->getFeature( newFid );
 
-  QString wkt = "LineStringZ (-2 -1 333, -2 1 333, 2 1 333, 2 -1 333, -2 -1 333)";
+  const QString wkt = "LineStringZ (-2 -1 333, -2 1 333, 2 1 333, 2 -1 333, -2 -1 333)";
   QgsLineString line;
   line.fromWkt( wkt );
   QVERIFY( static_cast<QgsLineString *>( f.geometry().get() )->equals( line ) );
@@ -153,12 +153,12 @@ void TestQgsMapToolRectangle::testRectangleFromExtent()
   utils.mouseClick( 0, 0, Qt::LeftButton );
   utils.mouseMove( 2, 1 );
   utils.mouseClick( 2, 1, Qt::RightButton );
-  QgsFeatureId newFid = utils.newFeatureId();
+  const QgsFeatureId newFid = utils.newFeatureId();
 
   // QCOMPARE( mLayer->featureCount(), ( long )1 );
-  QgsFeature f = mLayer->getFeature( newFid );
+  const QgsFeature f = mLayer->getFeature( newFid );
 
-  QString wkt = "LineStringZ (0 0 222, 0 1 222, 2 1 222, 2 0 222, 0 0 222)";
+  const QString wkt = "LineStringZ (0 0 222, 0 1 222, 2 1 222, 2 0 222, 0 0 222)";
   QgsLineString line;
   line.fromWkt( wkt );
   QVERIFY( static_cast<QgsLineString *>( f.geometry().get() )->equals( line ) );
@@ -180,12 +180,12 @@ void TestQgsMapToolRectangle::testRectangleFromExtentWithDeletedVertex()
   utils.mouseClick( 0, 0, Qt::LeftButton );
   utils.mouseMove( 2, 1 );
   utils.mouseClick( 2, 1, Qt::RightButton );
-  QgsFeatureId newFid = utils.newFeatureId();
+  const QgsFeatureId newFid = utils.newFeatureId();
 
   // QCOMPARE( mLayer->featureCount(), ( long )1 );
-  QgsFeature f = mLayer->getFeature( newFid );
+  const QgsFeature f = mLayer->getFeature( newFid );
 
-  QString wkt = "LineStringZ (0 0 222, 0 1 222, 2 1 222, 2 0 222, 0 0 222)";
+  const QString wkt = "LineStringZ (0 0 222, 0 1 222, 2 1 222, 2 0 222, 0 0 222)";
   QgsLineString line;
   line.fromWkt( wkt );
   QVERIFY( static_cast<QgsLineString *>( f.geometry().get() )->equals( line ) );
@@ -209,12 +209,12 @@ void TestQgsMapToolRectangle::testRectangleFrom3PointsDistance()
   utils.mouseClick( 2, 0, Qt::LeftButton );
   utils.mouseMove( 2, 1 );
   utils.mouseClick( 2, 1, Qt::RightButton );
-  QgsFeatureId newFid = utils.newFeatureId();
+  const QgsFeatureId newFid = utils.newFeatureId();
 
   // QCOMPARE( mLayer->featureCount(), ( long )1 );
-  QgsFeature f = mLayer->getFeature( newFid );
+  const QgsFeature f = mLayer->getFeature( newFid );
 
-  QString wkt = "LineStringZ (0 0 111, 2 0 111, 2 1 111, 0 1 111, 0 0 111)";
+  const QString wkt = "LineStringZ (0 0 111, 2 0 111, 2 1 111, 0 1 111, 0 0 111)";
   QgsLineString line;
   line.fromWkt( wkt );
   QVERIFY( static_cast<QgsLineString *>( f.geometry().get() )->equals( line ) );
@@ -238,12 +238,12 @@ void TestQgsMapToolRectangle::testRectangleFrom3PointsDistanceWithDeletedVertex(
   utils.mouseClick( 2, 0, Qt::LeftButton );
   utils.mouseMove( 2, 1 );
   utils.mouseClick( 2, 1, Qt::RightButton );
-  QgsFeatureId newFid = utils.newFeatureId();
+  const QgsFeatureId newFid = utils.newFeatureId();
 
   // QCOMPARE( mLayer->featureCount(), ( long )1 );
-  QgsFeature f = mLayer->getFeature( newFid );
+  const QgsFeature f = mLayer->getFeature( newFid );
 
-  QString wkt = "LineStringZ (0 0 111, 2 0 111, 2 1 111, 0 1 111, 0 0 111)";
+  const QString wkt = "LineStringZ (0 0 111, 2 0 111, 2 1 111, 0 1 111, 0 0 111)";
   QgsLineString line;
   line.fromWkt( wkt );
   QVERIFY( static_cast<QgsLineString *>( f.geometry().get() )->equals( line ) );
@@ -266,12 +266,12 @@ void TestQgsMapToolRectangle::testRectangleFrom3PointsProjected()
   utils.mouseClick( 2, 0, Qt::LeftButton );
   utils.mouseMove( 2, 1 );
   utils.mouseClick( 2, 1, Qt::RightButton );
-  QgsFeatureId newFid = utils.newFeatureId();
+  const QgsFeatureId newFid = utils.newFeatureId();
 
   // QCOMPARE( mLayer->featureCount(), ( long )1 );
-  QgsFeature f = mLayer->getFeature( newFid );
+  const QgsFeature f = mLayer->getFeature( newFid );
 
-  QString wkt = "LineStringZ (0 0 111, 2 0 111, 2 1 111, 0 1 111, 0 0 111)";
+  const QString wkt = "LineStringZ (0 0 111, 2 0 111, 2 1 111, 0 1 111, 0 0 111)";
   QgsLineString line;
   line.fromWkt( wkt );
   QVERIFY( static_cast<QgsLineString *>( f.geometry().get() )->equals( line ) );
@@ -295,12 +295,12 @@ void TestQgsMapToolRectangle::testRectangleFrom3PointsProjectedWithDeletedVertex
   utils.mouseClick( 2, 0, Qt::LeftButton );
   utils.mouseMove( 2, 1 );
   utils.mouseClick( 2, 1, Qt::RightButton );
-  QgsFeatureId newFid = utils.newFeatureId();
+  const QgsFeatureId newFid = utils.newFeatureId();
 
   // QCOMPARE( mLayer->featureCount(), ( long )1 );
-  QgsFeature f = mLayer->getFeature( newFid );
+  const QgsFeature f = mLayer->getFeature( newFid );
 
-  QString wkt = "LineStringZ (0 0 111, 2 0 111, 2 1 111, 0 1 111, 0 0 111)";
+  const QString wkt = "LineStringZ (0 0 111, 2 0 111, 2 1 111, 0 1 111, 0 0 111)";
   QgsLineString line;
   line.fromWkt( wkt );
   QVERIFY( static_cast<QgsLineString *>( f.geometry().get() )->equals( line ) );

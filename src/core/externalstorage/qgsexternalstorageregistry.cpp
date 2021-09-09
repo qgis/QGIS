@@ -17,10 +17,12 @@
 
 #include "qgsexternalstorage.h"
 #include "qgssimplecopyexternalstorage_p.h"
+#include "qgswebdavexternalstorage_p.h"
 
 QgsExternalStorageRegistry::QgsExternalStorageRegistry()
 {
   registerExternalStorage( new QgsSimpleCopyExternalStorage() );
+  registerExternalStorage( new QgsWebDAVExternalStorage() );
 }
 
 QgsExternalStorageRegistry::~QgsExternalStorageRegistry()

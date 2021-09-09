@@ -88,7 +88,7 @@ QgsDataSourceManagerDialog::~QgsDataSourceManagerDialog()
 
 void QgsDataSourceManagerDialog::openPage( const QString &pageName )
 {
-  int pageIdx = mPageNames.indexOf( pageName );
+  const int pageIdx = mPageNames.indexOf( pageName );
   if ( pageIdx != -1 )
   {
     QTimer::singleShot( 0, this, [ = ] { setCurrentPage( pageIdx ); } );
@@ -110,7 +110,7 @@ void QgsDataSourceManagerDialog::setCurrentPage( int index )
 
 void QgsDataSourceManagerDialog::setPreviousPage()
 {
-  int prevPage = mPreviousRow != -1 ? mPreviousRow : 0;
+  const int prevPage = mPreviousRow != -1 ? mPreviousRow : 0;
   setCurrentPage( prevPage );
 }
 
@@ -122,7 +122,7 @@ void QgsDataSourceManagerDialog::refresh()
 
 void QgsDataSourceManagerDialog::reset()
 {
-  int pageCount = ui->mOptionsStackedWidget->count();
+  const int pageCount = ui->mOptionsStackedWidget->count();
   for ( int i = 0; i < pageCount; ++i )
   {
     QWidget *widget = ui->mOptionsStackedWidget->widget( i );
@@ -181,7 +181,7 @@ void QgsDataSourceManagerDialog::makeConnections( QgsAbstractDataSourceWidget *d
   // Vector
   connect( dlg, &QgsAbstractDataSourceWidget::addVectorLayer, this, [ = ]( const QString & vectorLayerPath, const QString & baseName, const QString & specifiedProvider )
   {
-    QString key = specifiedProvider.isEmpty() ? providerKey : specifiedProvider;
+    const QString key = specifiedProvider.isEmpty() ? providerKey : specifiedProvider;
     this->vectorLayerAdded( vectorLayerPath, baseName, key );
   }
          );

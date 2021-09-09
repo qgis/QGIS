@@ -53,13 +53,15 @@ class CORE_EXPORT QgsAbstractBabelFormat
      * \param featureType type of GPS feature to import
      * \param input input data path
      * \param output output path
+     * \param flags optional flags to control how babel command is generated
      *
      * Returns an empty list if the format does not support imports (see capabilities()).
      */
     virtual QStringList importCommand( const QString &babel,
                                        Qgis::GpsFeatureType featureType,
                                        const QString &input,
-                                       const QString &output ) const;
+                                       const QString &output,
+                                       Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const;
 
     /**
      * Generates a command for exporting GPS data into a different format using babel.
@@ -68,13 +70,15 @@ class CORE_EXPORT QgsAbstractBabelFormat
      * \param featureType type of GPS feature to export
      * \param input input data path
      * \param output output path
+     * \param flags optional flags to control how babel command is generated
      *
      * Returns an empty list if the format does not support exports (see capabilities()).
      */
     virtual QStringList exportCommand( const QString &babel,
                                        Qgis::GpsFeatureType featureType,
                                        const QString &input,
-                                       const QString &output ) const;
+                                       const QString &output,
+                                       Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const;
 
   protected:
 
@@ -109,19 +113,37 @@ class CORE_EXPORT QgsBabelSimpleImportFormat : public QgsAbstractBabelFormat
     /**
      * Constructor for QgsBabelSimpleImportFormat.
      *
-     * The \a format argument specifies a babel identifier for the input format.
+     * The \a format argument specifies the babel identifier for the input format.
+
+     * The \a description argument specified a descriptive name for the format.
      *
      * The \a capabilities argument must reflect whether the format is capable of handling
      * waypoints, routes and/or tracks.
+     *
+     * The optional \a extensions argument can be used to populate a list of known file
+     * extensions for the format (e.g. "csv", "txt").
      */
-    QgsBabelSimpleImportFormat( const QString &format, Qgis::BabelFormatCapabilities capabilities );
+    QgsBabelSimpleImportFormat( const QString &format, const QString &description, Qgis::BabelFormatCapabilities capabilities,
+                                const QStringList extensions = QStringList() );
+
+    /**
+     * Returns the friendly description for the format.
+     */
+    QString description() const { return mDescription; }
+
+    /**
+     * Returns the list of known extensions for the format, e.g. "csv", "txt".
+     */
+    QStringList extensions() const { return mExtensions; }
 
     QStringList importCommand( const QString &babel,
                                Qgis::GpsFeatureType featureType,
                                const QString &input,
-                               const QString &output ) const override;
+                               const QString &output,
+                               Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const override;
   private:
-    QString mFormat;
+    QString mDescription;
+    QStringList mExtensions;
 };
 
 #endif

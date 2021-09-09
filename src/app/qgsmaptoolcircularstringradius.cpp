@@ -44,7 +44,7 @@ void QgsMapToolCircularStringRadius::deactivate()
 
 void QgsMapToolCircularStringRadius::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint point = mapPoint( *e );
+  const QgsPoint point = mapPoint( *e );
 
   if ( !currentVectorLayer() )
   {
@@ -68,7 +68,7 @@ void QgsMapToolCircularStringRadius::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
         mTemporaryEndPoint = point;
 
         //initial radius is distance( tempPoint - mPoints.last ) / 2.0
-        double minRadius = std::sqrt( QgsGeometryUtils::sqrDistance2D( mPoints.last(), mTemporaryEndPoint ) ) / 2.0;
+        const double minRadius = std::sqrt( QgsGeometryUtils::sqrDistance2D( mPoints.last(), mTemporaryEndPoint ) ) / 2.0;
         mRadius = minRadius + minRadius / 10.0;
 
         QgsPoint result;
@@ -116,7 +116,7 @@ void QgsMapToolCircularStringRadius::recalculateRubberBand()
   if ( mPoints.size() >= 3 )
   {
     QgsCircularString *cString = new QgsCircularString();
-    int rubberBandSize = mPoints.size() - ( mPoints.size() + 1 ) % 2;
+    const int rubberBandSize = mPoints.size() - ( mPoints.size() + 1 ) % 2;
     cString->setPoints( mPoints.mid( 0, rubberBandSize ) );
     delete mRubberBand;
     mRubberBand = createGeometryRubberBand( mLayerType );

@@ -117,7 +117,7 @@ QgsFeatureList QgsOrthogonalizeAlgorithm::processFeature( const QgsFeature &feat
     if ( mDynamicAngleTolerance )
       angleTolerance = mAngleToleranceProperty.valueAsDouble( context.expressionContext(), angleTolerance );
 
-    QgsGeometry outputGeometry = f.geometry().orthogonalize( 1.0e-8, mMaxIterations, angleTolerance );
+    const QgsGeometry outputGeometry = f.geometry().orthogonalize( 1.0e-8, mMaxIterations, angleTolerance );
     if ( outputGeometry.isNull() )
       throw QgsProcessingException( QObject::tr( "Error orthogonalizing geometry" ) );
 

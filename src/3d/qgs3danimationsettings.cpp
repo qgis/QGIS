@@ -50,9 +50,9 @@ Qgs3DAnimationSettings::Keyframe Qgs3DAnimationSettings::interpolate( float time
       const Keyframe &k1 = mKeyframes.at( i + 1 );
       if ( time >= k0.time && time <= k1.time )
       {
-        float ip = ( time - k0.time ) / ( k1.time - k0.time );
-        float eIp = mEasingCurve.valueForProgress( ip );
-        float eIip = 1.0f - eIp;
+        const float ip = ( time - k0.time ) / ( k1.time - k0.time );
+        const float eIp = mEasingCurve.valueForProgress( ip );
+        const float eIip = 1.0f - eIp;
 
         Keyframe kf;
         kf.time = time;
@@ -87,7 +87,7 @@ void Qgs3DAnimationSettings::readXml( const QDomElement &elem )
 
   mKeyframes.clear();
 
-  QDomElement elemKeyframes = elem.firstChildElement( QStringLiteral( "keyframes" ) );
+  const QDomElement elemKeyframes = elem.firstChildElement( QStringLiteral( "keyframes" ) );
   QDomElement elemKeyframe = elemKeyframes.firstChildElement( QStringLiteral( "keyframe" ) );
   while ( !elemKeyframe.isNull() )
   {

@@ -28,12 +28,12 @@ QVariantMap QgsHstoreUtils::parse( const QString &string )
   {
     while ( i < string.length() && string.at( i ).isSpace() )
       ++i;
-    QString current = string.mid( i );
-    QString sep = sSeps.at( bits.length() );
+    const QString current = string.mid( i );
+    const QString sep = sSeps.at( bits.length() );
     if ( current.startsWith( '"' ) )
     {
-      QRegularExpression re( QStringLiteral( "^\"((?:\\\\.|[^\"\\\\])*)\".*" ) );
-      QRegularExpressionMatch match = re.match( current );
+      const QRegularExpression re( QStringLiteral( "^\"((?:\\\\.|[^\"\\\\])*)\".*" ) );
+      const QRegularExpressionMatch match = re.match( current );
       bits << QString();
       if ( match.hasMatch() )
       {
@@ -61,7 +61,7 @@ QVariantMap QgsHstoreUtils::parse( const QString &string )
     }
     else
     {
-      int sepPos = current.indexOf( sep );
+      const int sepPos = current.indexOf( sep );
       if ( sepPos < 0 )
       {
         i += current.length();

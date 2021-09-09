@@ -35,21 +35,14 @@ The ``enabled`` argument specifies whether the temporal properties are initially
     virtual QList< QgsDateTimeRange > allTemporalRanges( QgsMapLayer *layer ) const;
 
 
-    enum TemporalMode
-    {
-      ModeFixedTemporalRange,
-      ModeTemporalRangeFromDataProvider,
-      ModeRedrawLayerOnly,
-    };
-
-    TemporalMode mode() const;
+    Qgis::RasterTemporalMode mode() const;
 %Docstring
 Returns the temporal properties mode.
 
 .. seealso:: :py:func:`setMode`
 %End
 
-    void setMode( TemporalMode mode );
+    void setMode( Qgis::RasterTemporalMode mode );
 %Docstring
 Sets the temporal properties ``mode``.
 
@@ -62,7 +55,7 @@ Sets the temporal properties ``mode``.
 Returns flags associated to the temporal property.
 %End
 
-    QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod intervalHandlingMethod() const;
+    Qgis::TemporalIntervalMatchMethod intervalHandlingMethod() const;
 %Docstring
 Returns the desired method to use when resolving a temporal interval to matching
 layers or bands in the data provider.
@@ -70,7 +63,7 @@ layers or bands in the data provider.
 .. seealso:: :py:func:`setIntervalHandlingMethod`
 %End
 
-    void setIntervalHandlingMethod( QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod method );
+    void setIntervalHandlingMethod( Qgis::TemporalIntervalMatchMethod method );
 %Docstring
 Sets the desired ``method`` to use when resolving a temporal interval to matching
 layers or bands in the data provider.

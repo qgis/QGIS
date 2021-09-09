@@ -150,7 +150,7 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
         if ( mIs3DLayer && QgsWkbTypes::hasZ( match.layer()->wkbType() ) )
         {
           /* Z Interpolation */
-          QgsLineString line( pLimit1, pLimit2 );
+          const QgsLineString line( pLimit1, pLimit2 );
 
           mIntersection = QgsGeometryUtils::closestPoint( line, QgsPoint( mIntersection ) );
         }
@@ -168,7 +168,7 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
 
           if ( !mSegmentIntersects )
           {
-            QgsPoint ptInter( mIntersection.x(), mIntersection.y() );
+            const QgsPoint ptInter( mIntersection.x(), mIntersection.y() );
             if ( pExtend2.distance( ptInter ) < pExtend1.distance( ptInter ) )
               index += 1;
           }

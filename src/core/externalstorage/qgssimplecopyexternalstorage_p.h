@@ -40,6 +40,8 @@ class CORE_EXPORT QgsSimpleCopyExternalStorage : public QgsExternalStorage
 
     QString type() const override;
 
+    QString displayName() const override;
+
     QgsExternalStorageStoredContent *doStore( const QString &filePath, const QString &url, const QString &authcfg = QString() ) const override;
 
     QgsExternalStorageFetchedContent *doFetch( const QString &url, const QString &authConfig = QString() ) const override;

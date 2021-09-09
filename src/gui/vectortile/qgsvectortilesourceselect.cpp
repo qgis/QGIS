@@ -90,7 +90,7 @@ void QgsVectorTileSourceSelect::newArcgisVectorTileServerConnection()
 void QgsVectorTileSourceSelect::btnEdit_clicked()
 {
   const QgsVectorTileProviderConnection::Data connection = QgsVectorTileProviderConnection::connection( cmbConnections->currentText() );
-  QString uri = QgsVectorTileProviderConnection::encodedUri( connection );
+  const QString uri = QgsVectorTileProviderConnection::encodedUri( connection );
 
   switch ( connection.serviceType )
   {
@@ -125,8 +125,8 @@ void QgsVectorTileSourceSelect::btnEdit_clicked()
 
 void QgsVectorTileSourceSelect::btnDelete_clicked()
 {
-  QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                .arg( cmbConnections->currentText() );
+  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
+                      .arg( cmbConnections->currentText() );
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No ) )
     return;
 
@@ -144,8 +144,8 @@ void QgsVectorTileSourceSelect::btnSave_clicked()
 
 void QgsVectorTileSourceSelect::btnLoad_clicked()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
-                     tr( "XML files (*.xml *.XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
+                           tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -158,7 +158,7 @@ void QgsVectorTileSourceSelect::btnLoad_clicked()
 
 void QgsVectorTileSourceSelect::addButtonClicked()
 {
-  QString uri = QgsVectorTileProviderConnection::encodedUri( QgsVectorTileProviderConnection::connection( cmbConnections->currentText() ) );
+  const QString uri = QgsVectorTileProviderConnection::encodedUri( QgsVectorTileProviderConnection::connection( cmbConnections->currentText() ) );
   emit addVectorTileLayer( uri, cmbConnections->currentText() );
 }
 
@@ -179,7 +179,7 @@ void QgsVectorTileSourceSelect::populateConnectionList()
 
 void QgsVectorTileSourceSelect::setConnectionListPosition()
 {
-  QString toSelect = QgsVectorTileProviderConnection::selectedConnection();
+  const QString toSelect = QgsVectorTileProviderConnection::selectedConnection();
 
   cmbConnections->setCurrentIndex( cmbConnections->findText( toSelect ) );
 

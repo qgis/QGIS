@@ -88,9 +88,9 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  QString fieldName = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
-  Operation op = static_cast< Operation >( parameterAsEnum( parameters, QStringLiteral( "OPERATOR" ), context ) );
-  QString value = parameterAsString( parameters, QStringLiteral( "VALUE" ), context );
+  const QString fieldName = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
+  const Operation op = static_cast< Operation >( parameterAsEnum( parameters, QStringLiteral( "OPERATOR" ), context ) );
+  const QString value = parameterAsString( parameters, QStringLiteral( "VALUE" ), context );
 
   QString matchingSinkId;
   std::unique_ptr< QgsFeatureSink > matchingSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, matchingSinkId, source->fields(),
@@ -102,11 +102,11 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
   std::unique_ptr< QgsFeatureSink > nonMatchingSink( parameterAsSink( parameters, QStringLiteral( "FAIL_OUTPUT" ), context, nonMatchingSinkId, source->fields(),
       source->wkbType(), source->sourceCrs() ) );
 
-  int idx = source->fields().lookupField( fieldName );
+  const int idx = source->fields().lookupField( fieldName );
   if ( idx < 0 )
     throw QgsProcessingException( QObject::tr( "Field '%1' was not found in INPUT source" ).arg( fieldName ) );
 
-  QVariant::Type fieldType = source->fields().at( idx ).type();
+  const QVariant::Type fieldType = source->fields().at( idx ).type();
 
   if ( fieldType != QVariant::String && ( op == BeginsWith || op == Contains || op == DoesNotContain ) )
   {
@@ -130,8 +130,8 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
     throw QgsProcessingException( QObject::tr( "Operator '%1' can be used only with string fields." ).arg( method ) );
   }
 
-  QString fieldRef = QgsExpression::quotedColumnRef( fieldName );
-  QString quotedVal = QgsExpression::quotedValue( value );
+  const QString fieldRef = QgsExpression::quotedColumnRef( fieldName );
+  const QString quotedVal = QgsExpression::quotedValue( value );
   QString expr;
   switch ( op )
   {
@@ -178,9 +178,9 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
 
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context, source.get() );
 
-  long count = source->featureCount();
+  const long count = source->featureCount();
 
-  double step = count > 0 ? 100.0 / count : 1;
+  const double step = count > 0 ? 100.0 / count : 1;
   int current = 0;
 
   if ( !nonMatchingSink )

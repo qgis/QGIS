@@ -71,7 +71,7 @@ void TestQgsSvgCache::cleanupTestCase()
 {
   QgsApplication::exitQgis();
 
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -86,7 +86,7 @@ void TestQgsSvgCache::fillCache()
 {
   QgsSvgCache cache;
   // flood cache to fill it
-  QString svgPath = TEST_DATA_DIR + QStringLiteral( "/sample_svg.svg" );
+  const QString svgPath = TEST_DATA_DIR + QStringLiteral( "/sample_svg.svg" );
   bool fitInCache = false;
 
   // we loop forever, continually increasing the size of the requested
@@ -98,7 +98,7 @@ void TestQgsSvgCache::fillCache()
   int uncached = 0;
   for ( double size = 1000; uncached < 10; size += 100 )
   {
-    QImage image = cache.svgAsImage( svgPath, size, QColor( 255, 0, 0 ), QColor( 0, 255, 0 ), 1, 1, fitInCache );
+    const QImage image = cache.svgAsImage( svgPath, size, QColor( 255, 0, 0 ), QColor( 0, 255, 0 ), 1, 1, fitInCache );
     QVERIFY( !image.isNull() );
     if ( !fitInCache )
       uncached++;
@@ -128,8 +128,8 @@ struct RenderPictureWrapper
   {}
   void operator()( int )
   {
-    QPicture pic = cache.svgAsPicture( svgPath, size, QColor( 255, 0, 0 ), QColor( 0, 255, 0 ), 1, 1, true );
-    QSize imageSize = pic.boundingRect().size();
+    const QPicture pic = cache.svgAsPicture( svgPath, size, QColor( 255, 0, 0 ), QColor( 0, 255, 0 ), 1, 1, true );
+    const QSize imageSize = pic.boundingRect().size();
     QImage image( imageSize, QImage::Format_ARGB32_Premultiplied );
     image.fill( 0 ); // transparent background
     QPainter p( &image );
@@ -148,7 +148,7 @@ void TestQgsSvgCache::threadSafePicture()
   // https://github.com/qgis/QGIS/issues/24988
 
   QgsSvgCache cache;
-  QString svgPath = TEST_DATA_DIR + QStringLiteral( "/sample_svg.svg" );
+  const QString svgPath = TEST_DATA_DIR + QStringLiteral( "/sample_svg.svg" );
 
   // smash picture rendering over multiple threads
   QVector< int > list;
@@ -169,7 +169,7 @@ struct RenderImageWrapper
   void operator()( int )
   {
     bool fitsInCache = false;
-    QImage cachedImage = cache.svgAsImage( svgPath, size, QColor( 255, 0, 0 ), QColor( 0, 255, 0 ), 1, 1, fitsInCache );
+    const QImage cachedImage = cache.svgAsImage( svgPath, size, QColor( 255, 0, 0 ), QColor( 0, 255, 0 ), 1, 1, fitsInCache );
     QImage image( cachedImage.size(), QImage::Format_ARGB32_Premultiplied );
     image.fill( 0 ); // transparent background
     QPainter p( &image );
@@ -183,7 +183,7 @@ void TestQgsSvgCache::threadSafeImage()
   // works without issues across threads
 
   QgsSvgCache cache;
-  QString svgPath = TEST_DATA_DIR + QStringLiteral( "/sample_svg.svg" );
+  const QString svgPath = TEST_DATA_DIR + QStringLiteral( "/sample_svg.svg" );
 
   // smash image rendering over multiple threads
   QVector< int > list;
@@ -199,9 +199,9 @@ void TestQgsSvgCache::changeImage()
   cache.mFileModifiedCheckTimeout = 0;
 
   //copy an image to the temp folder
-  QString tempImagePath = QDir::tempPath() + "/svg_cache.svg";
+  const QString tempImagePath = QDir::tempPath() + "/svg_cache.svg";
 
-  QString originalImage = TEST_DATA_DIR + QStringLiteral( "/test_symbol_svg.svg" );
+  const QString originalImage = TEST_DATA_DIR + QStringLiteral( "/test_symbol_svg.svg" );
   if ( QFileInfo::exists( tempImagePath ) )
     QFile::remove( tempImagePath );
   QFile::copy( originalImage, tempImagePath );
@@ -218,7 +218,7 @@ void TestQgsSvgCache::changeImage()
   {}
 
   //replace the image in the temp folder
-  QString newImage = TEST_DATA_DIR + QStringLiteral( "/test_symbol_svg2.svg" );
+  const QString newImage = TEST_DATA_DIR + QStringLiteral( "/test_symbol_svg2.svg" );
   QFile::remove( tempImagePath );
   QFile::copy( newImage, tempImagePath );
 
@@ -338,11 +338,11 @@ void TestQgsSvgCache::dynamicSvg()
   // test rendering SVGs with manual aspect ratio
   QgsSvgCache cache;
   const QString dynamicImage = TEST_DATA_DIR + QStringLiteral( "/svg/test_dynamic_svg.svg" );
-  QByteArray svg = cache.svgContent( dynamicImage, 200, QColor( 0, 0, 0 ), QColor( 0, 0, 0 ), 1.0,
+  const QByteArray svg = cache.svgContent( dynamicImage, 200, QColor( 0, 0, 0 ), QColor( 0, 0, 0 ), 1.0,
   1.0, 0, false, {{"text1", "green?"}, {"text2", "supergreen"}, {"align",  "middle" }} );
   const QString contolImage = TEST_DATA_DIR + QStringLiteral( "/svg/test_dynamic_svg_control.svg" );
-  QByteArray control_svg = cache.svgContent( contolImage, 200, QColor( 0, 0, 0 ), QColor( 0, 0, 0 ), 1.0,
-                           1.0, 0, false, {} );
+  const QByteArray control_svg = cache.svgContent( contolImage, 200, QColor( 0, 0, 0 ), QColor( 0, 0, 0 ), 1.0,
+                                 1.0, 0, false, {} );
   QCOMPARE( svg, control_svg );
 }
 
@@ -364,12 +364,12 @@ void TestQgsSvgCache::noViewBox()
   // we can correctly determine the svg's aspect ratio
   const QString originalImage = TEST_DATA_DIR + QStringLiteral( "/svg/no_viewbox.svg" );
   QgsSvgCache cache;
-  double size = 12;
+  const double size = 12;
   const QColor fill = QColor( 0, 0, 0 );
   const QColor stroke = QColor( 0, 0, 0 );
-  double strokeWidth = 1;
-  double widthScaleFactor = 1;
-  QSizeF viewBoxSize = cache.svgViewboxSize( originalImage, size, fill, stroke, strokeWidth, widthScaleFactor );
+  const double strokeWidth = 1;
+  const double widthScaleFactor = 1;
+  const QSizeF viewBoxSize = cache.svgViewboxSize( originalImage, size, fill, stroke, strokeWidth, widthScaleFactor );
   QGSCOMPARENEAR( viewBoxSize.width(), 1.329267, 0.0001 );
   QGSCOMPARENEAR( viewBoxSize.height(), 6.358467, 0.0001 );
 }
@@ -384,14 +384,14 @@ bool TestQgsSvgCache::imageCheck( const QString &testName, QImage &image, int mi
   painter.end();
 
   mReport += "<h2>" + testName + "</h2>\n";
-  QString tempDir = QDir::tempPath() + '/';
-  QString fileName = tempDir + testName + ".png";
+  const QString tempDir = QDir::tempPath() + '/';
+  const QString fileName = tempDir + testName + ".png";
   imageWithBackground.save( fileName, "PNG" );
   QgsRenderChecker checker;
   checker.setControlName( "expected_" + testName );
   checker.setRenderedImage( fileName );
   checker.setColorTolerance( 2 );
-  bool resultFlag = checker.compareImages( testName, mismatchCount );
+  const bool resultFlag = checker.compareImages( testName, mismatchCount );
   mReport += checker.report();
   return resultFlag;
 }

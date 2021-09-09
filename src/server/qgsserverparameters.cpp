@@ -241,7 +241,7 @@ QString QgsServerParameterDefinition::loadUrl( bool &ok ) const
   ok = true;
 
   // Get URL
-  QUrl url = toUrl( ok );
+  const QUrl url = toUrl( ok );
   if ( !ok )
   {
     return QString();
@@ -273,7 +273,7 @@ QString QgsServerParameterDefinition::loadUrl( bool &ok ) const
     return QString();
   }
 
-  QVariant status = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
+  const QVariant status = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
   if ( !status.isNull() && status.toInt() >= 400 )
   {
     ok = false;
@@ -283,7 +283,7 @@ QString QgsServerParameterDefinition::loadUrl( bool &ok ) const
         QObject::tr( "Request failed [error: %1 - url: %2]" ).arg( reply->errorString(), reply->url().toString() ),
         QStringLiteral( "Server" ) );
     }
-    QVariant phrase = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
+    const QVariant phrase = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
     QgsMessageLog::logMessage(
       QObject::tr( "Request error [status: %1 - reason phrase: %2] for %3" ).arg( status.toInt() ).arg( phrase.toString(), reply->url().toString() ),
       QStringLiteral( "Server" ) );
@@ -475,7 +475,7 @@ void QgsServerParameters::remove( const QString &key )
   }
   else
   {
-    QgsServerParameter::Name paramName = QgsServerParameter::name( key );
+    const QgsServerParameter::Name paramName = QgsServerParameter::name( key );
     if ( mParameters.contains( paramName ) )
     {
       mParameters.take( paramName );

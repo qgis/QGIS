@@ -39,7 +39,7 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
     // reply is not multipart, copy body and headers
     QMap<QByteArray, QByteArray> headers;
     const auto constRawHeaderList = mReply->rawHeaderList();
-    for ( QByteArray h : constRawHeaderList )
+    for ( const QByteArray &h : constRawHeaderList )
     {
       headers.insert( h, mReply->rawHeader( h ) );
     }
@@ -48,7 +48,7 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
   }
   else // multipart
   {
-    QString contentType = mReply->header( QNetworkRequest::ContentTypeHeader ).toString();
+    const QString contentType = mReply->header( QNetworkRequest::ContentTypeHeader ).toString();
     QgsDebugMsg( "contentType: " + contentType );
 
     const QRegularExpression re( ".*boundary=\"?([^\"]+)\"?\\s?", QRegularExpression::CaseInsensitiveOption );
@@ -64,7 +64,7 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
     boundary = "--" + boundary;
 
     // Lines should be terminated by CRLF ("\r\n") but any new line combination may appear
-    QByteArray data = mReply->readAll();
+    const QByteArray data = mReply->readAll();
     int from, to;
     from = data.indexOf( boundary.toLatin1(), 0 ) + boundary.length() + 1;
     //QVector<QByteArray> partHeaders;
@@ -115,15 +115,15 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
       }
       // parse headers
       RawHeaderMap headersMap;
-      QByteArray headers = part.left( pos );
+      const QByteArray headers = part.left( pos );
       QgsDebugMsg( "headers:\n" + headers );
 
-      QStringList headerRows = QString( headers ).split( QRegularExpression( "[\n\r]+" ) );
+      const QStringList headerRows = QString( headers ).split( QRegularExpression( "[\n\r]+" ) );
       const auto constHeaderRows = headerRows;
       for ( const QString &row : constHeaderRows )
       {
         QgsDebugMsg( "row = " + row );
-        QStringList kv = row.split( QStringLiteral( ": " ) );
+        const QStringList kv = row.split( QStringLiteral( ": " ) );
         headersMap.insert( kv.value( 0 ).toLatin1(), kv.value( 1 ).toLatin1() );
       }
       mHeaders.append( headersMap );
@@ -140,7 +140,7 @@ bool QgsNetworkReplyParser::isMultipart( QNetworkReply *reply )
 {
   if ( !reply ) return false;
 
-  QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
+  const QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
   QgsDebugMsg( "contentType: " + contentType );
 
   // Multipart content type examples:
