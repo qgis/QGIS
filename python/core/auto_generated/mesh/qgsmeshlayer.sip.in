@@ -660,12 +660,22 @@ The returned position is in map coordinates.
 .. versionadded:: 3.14
 %End
 
-    QList<int> selectVerticesByExpression( const QString &expression, const QgsExpressionContext &expressionContext = QgsExpressionContext() );
+    QList<int> selectVerticesByExpression( QgsExpression expression );
 %Docstring
 Returns a list of vertex indexes that meet the condition defined by ``expression`` with the context ``expressionContext``
 
 To express the relation with a vertex, the expression can be defined with function returning value
 linked to the current vertex, like " $vertex_z ", "$vertex_as_point"
+
+.. versionadded:: 3.22
+%End
+
+    QList<int> selectFacesByExpression( QgsExpression expression );
+%Docstring
+Returns a list of faces indexes that meet the condition defined by ``expression`` with the context ``expressionContext``
+
+To express the relation with a face, the expression can be defined with function returning value
+linked to the current face, like " $face_area "
 
 .. versionadded:: 3.22
 %End

@@ -656,6 +656,11 @@ bool QgsExpressionBuilderWidget::parserError() const
   return mExpressionPreviewWidget->parserError();
 }
 
+void QgsExpressionBuilderWidget::setExpressionPreviewVisible( bool isVisible )
+{
+  mExpressionPreviewWidget->setVisible( isVisible );
+}
+
 bool QgsExpressionBuilderWidget::evalError() const
 {
   return mExpressionPreviewWidget->evalError();
