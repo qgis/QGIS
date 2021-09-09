@@ -1786,9 +1786,20 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent *e )
     return;
   }
 
+  // Don't want to interfer with mouse events
   if ( ! mCanvasProperties->mouseButtonDown )
   {
-    // Don't want to interfer with mouse events
+    // this is backwards, but we can't change now without breaking api because
+    // forever QgsMapTools have had to explicitly mark events as ignored in order to
+    // indicate that they've consumed the event and that the default behaviour should not
+    // be applied..!
+    e->accept();
+    if ( mMapTool )
+    {
+      mMapTool->keyPressEvent( e );
+      if ( !e->isAccepted() ) // map tool consumed event
+        return;
+    }
 
     QgsRectangle currentExtent = mapSettings().visibleExtent();
     double dx = std::fabs( currentExtent.width() / 4 );
@@ -1819,8 +1830,6 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent *e )
         setCenter( center() - QgsVector( 0, dy ).rotateBy( rotation() * M_PI / 180.0 ) );
         refresh();
         break;
-
-
 
       case Qt::Key_Space:
         QgsDebugMsgLevel( QStringLiteral( "Pressing pan selector" ), 2 );
@@ -1858,19 +1867,16 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent *e )
 
       default:
         // Pass it on
-        if ( mMapTool )
+        if ( !mMapTool )
         {
-          mMapTool->keyPressEvent( e );
+          e->ignore();
+          QgsDebugMsgLevel( "Ignoring key: " + QString::number( e->key() ), 2 );
         }
-        else e->ignore();
-
-        QgsDebugMsgLevel( "Ignoring key: " + QString::number( e->key() ), 2 );
     }
   }
 
   emit keyPressed( e );
-
-} //keyPressEvent()
+}
 
 void QgsMapCanvas::keyReleaseEvent( QKeyEvent *e )
 {
