@@ -76,7 +76,7 @@ Qgis::AnnotationItemFlags QgsAnnotationMarkerItem::flags() const
 
 QList<QgsAnnotationItemNode> QgsAnnotationMarkerItem::nodes() const
 {
-  return { QgsAnnotationItemNode( mPoint, Qgis::AnnotationItemNodeType::VertexHandle )};
+  return { QgsAnnotationItemNode( QgsVertexId( 0, 0, 0 ), mPoint, Qgis::AnnotationItemNodeType::VertexHandle )};
 }
 
 QgsAnnotationMarkerItem *QgsAnnotationMarkerItem::create()

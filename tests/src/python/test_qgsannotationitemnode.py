@@ -16,7 +16,8 @@ import qgis  # NOQA
 from qgis.core import (
     QgsAnnotationItemNode,
     QgsPointXY,
-    Qgis
+    Qgis,
+    QgsVertexId
 )
 from qgis.testing import start_app, unittest
 
@@ -29,8 +30,9 @@ TEST_DATA_DIR = unitTestDataPath()
 class TestQgsAnnotationItemNode(unittest.TestCase):
 
     def test_basic(self):
-        node = QgsAnnotationItemNode(QgsPointXY(1, 2), Qgis.AnnotationItemNodeType.VertexHandle)
+        node = QgsAnnotationItemNode(QgsVertexId(0, 0, 1), QgsPointXY(1, 2), Qgis.AnnotationItemNodeType.VertexHandle)
         self.assertEqual(node.point(), QgsPointXY(1, 2))
+        self.assertEqual(node.id(), QgsVertexId(0, 0, 1))
 
         node.setPoint(QgsPointXY(3, 4))
         self.assertEqual(node.point(), QgsPointXY(3, 4))
@@ -38,15 +40,19 @@ class TestQgsAnnotationItemNode(unittest.TestCase):
         self.assertEqual(node.type(), Qgis.AnnotationItemNodeType.VertexHandle)
 
     def test_repr(self):
-        node = QgsAnnotationItemNode(QgsPointXY(1, 2), Qgis.AnnotationItemNodeType.VertexHandle)
-        self.assertEqual(str(node), '<QgsAnnotationItemNode: VertexHandle (1, 2)>')
+        node = QgsAnnotationItemNode(QgsVertexId(0, 0, 1), QgsPointXY(1, 2), Qgis.AnnotationItemNodeType.VertexHandle)
+        self.assertEqual(str(node), '<QgsAnnotationItemNode: 1 - VertexHandle (1, 2)>')
 
     def test_equality(self):
-        node = QgsAnnotationItemNode(QgsPointXY(1, 2), Qgis.AnnotationItemNodeType.VertexHandle)
-        node2 = QgsAnnotationItemNode(QgsPointXY(1, 2), Qgis.AnnotationItemNodeType.VertexHandle)
+        node = QgsAnnotationItemNode(QgsVertexId(0, 0, 1), QgsPointXY(1, 2), Qgis.AnnotationItemNodeType.VertexHandle)
+        node2 = QgsAnnotationItemNode(QgsVertexId(0, 0, 1), QgsPointXY(1, 2), Qgis.AnnotationItemNodeType.VertexHandle)
         self.assertEqual(node, node2)
 
         node2.setPoint(QgsPointXY(3, 4))
+        self.assertNotEqual(node, node2)
+
+        node = QgsAnnotationItemNode(QgsVertexId(0, 0, 1), QgsPointXY(1, 2), Qgis.AnnotationItemNodeType.VertexHandle)
+        node2 = QgsAnnotationItemNode(QgsVertexId(0, 0, 2), QgsPointXY(1, 2), Qgis.AnnotationItemNodeType.VertexHandle)
         self.assertNotEqual(node, node2)
 
 

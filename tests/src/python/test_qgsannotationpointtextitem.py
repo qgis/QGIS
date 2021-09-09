@@ -34,7 +34,8 @@ from qgis.core import (QgsMapSettings,
                        QgsRectangle,
                        QgsTextFormat,
                        QgsAnnotationItemNode,
-                       Qgis
+                       Qgis,
+                       QgsVertexId
                        )
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -87,7 +88,7 @@ class TestQgsAnnotationPointTextItem(unittest.TestCase):
         Test nodes for item
         """
         item = QgsAnnotationPointTextItem('my text', QgsPointXY(12, 13))
-        self.assertEqual(item.nodes(), [QgsAnnotationItemNode(QgsPointXY(12, 13), Qgis.AnnotationItemNodeType.VertexHandle)])
+        self.assertEqual(item.nodes(), [QgsAnnotationItemNode(QgsVertexId(0, 0, 0), QgsPointXY(12, 13), Qgis.AnnotationItemNodeType.VertexHandle)])
 
     def test_transform(self):
         item = QgsAnnotationPointTextItem('my text', QgsPointXY(12, 13))
