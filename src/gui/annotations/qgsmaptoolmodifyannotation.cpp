@@ -27,6 +27,8 @@
 #include "qgsannotationitemnode.h"
 #include "RTree.h"
 #include <QTransform>
+#include <QWindow>
+#include <QScreen>
 
 ///@cond PRIVATE
 class QgsAnnotationItemNodesSpatialIndex : public RTree<int, float, 2, float>
@@ -322,6 +324,26 @@ void QgsMapToolModifyAnnotation::keyPressEvent( QKeyEvent *event )
         clearHoveredItem();
         event->ignore(); // disable default shortcut handling
       }
+      else if ( event->key() == Qt::Key_Left
+                || event->key() == Qt::Key_Right
+                || event->key() == Qt::Key_Up
+                || event->key() == Qt::Key_Down )
+      {
+        QgsAnnotationLayer *layer = annotationLayerFromId( mSelectedItemLayerId );
+        QgsAnnotationItem *annotationItem = annotationItemFromId( mSelectedItemLayerId, mSelectedItemId );
+        if ( !layer || !annotationItem )
+          return;
+
+        const QSizeF deltaLayerCoordinates = deltaForKeyEvent( layer, mSelectedRubberBand->asGeometry().centroid().asPoint(), event );
+        const QTransform transform = QTransform::fromTranslate( deltaLayerCoordinates.width(), deltaLayerCoordinates.height() );
+
+        std::unique_ptr< QgsAnnotationItem > transformedItem( annotationItem->clone() );
+        transformedItem->transform( transform );
+        layer->replaceItem( mSelectedItemId, transformedItem.release() );
+        mRefreshSelectedItemAfterRedraw = true;
+
+        event->ignore(); // disable default shortcut handling (move map)
+      }
       break;
     }
 
@@ -449,6 +471,58 @@ void QgsMapToolModifyAnnotation::setHoveredItem( const QgsRenderedAnnotationItem
   }
 
   mHoveredItemNodeRubberBands.emplace_back( vertexNodeBand );
+}
+
+QSizeF QgsMapToolModifyAnnotation::deltaForKeyEvent( QgsAnnotationLayer *layer, const QgsPointXY &originalCanvasPoint, QKeyEvent *event )
+{
+  const double canvasDpi = canvas()->window()->windowHandle()->screen()->physicalDotsPerInch();
+
+  // increment used for cursor key item movement
+  double incrementPixels = 0.0;
+  if ( event->modifiers() & Qt::ShiftModifier )
+  {
+    //holding shift while pressing cursor keys results in a big step - 20 mm
+    incrementPixels = 20.0 / 25.4 * canvasDpi;
+  }
+  else if ( event->modifiers() & Qt::AltModifier )
+  {
+    //holding alt while pressing cursor keys results in a 1 pixel step
+    incrementPixels = 1;
+  }
+  else
+  {
+    // 5 mm
+    incrementPixels = 5.0 / 25.4 * canvasDpi;
+  }
+
+  double deltaXPixels = 0;
+  double deltaYPixels = 0;
+  switch ( event->key() )
+  {
+    case Qt::Key_Left:
+      deltaXPixels = -incrementPixels;
+      break;
+    case Qt::Key_Right:
+      deltaXPixels = incrementPixels;
+      break;
+    case Qt::Key_Up:
+      deltaYPixels = -incrementPixels;
+      break;
+    case Qt::Key_Down:
+      deltaYPixels = incrementPixels;
+      break;
+    default:
+      break;
+  }
+
+  const QgsPointXY beforeMoveMapPoint = canvas()->getCoordinateTransform()->toMapCoordinates( originalCanvasPoint.x(), originalCanvasPoint.y() );
+  const QgsPointXY beforeMoveLayerPoint = toLayerCoordinates( layer, beforeMoveMapPoint );
+
+  const QgsPointXY afterMoveCanvasPoint( originalCanvasPoint.x() + deltaXPixels, originalCanvasPoint.y() + deltaYPixels );
+  const QgsPointXY afterMoveMapPoint = canvas()->getCoordinateTransform()->toMapCoordinates( afterMoveCanvasPoint.x(), afterMoveCanvasPoint.y() );
+  const QgsPointXY afterMoveLayerPoint = toLayerCoordinates( layer, afterMoveMapPoint );
+
+  return QSizeF( afterMoveLayerPoint.x() - beforeMoveLayerPoint.x(), afterMoveLayerPoint.y() - beforeMoveLayerPoint.y() );
 }
 
 const QgsRenderedAnnotationItemDetails *QgsMapToolModifyAnnotation::findClosestItemToPoint( const QgsPointXY &mapPoint, const QList<const QgsRenderedAnnotationItemDetails *> &items, QgsRectangle &bounds )
