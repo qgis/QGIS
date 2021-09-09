@@ -22,13 +22,13 @@
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qobjectuniqueptr.h"
 #include "qgspointxy.h"
+#include "qgsannotationitemnode.h"
 
 class QgsRubberBand;
 class QgsRenderedAnnotationItemDetails;
 class QgsAnnotationItem;
 class QgsAnnotationLayer;
 class QgsAnnotationItemNodesSpatialIndex;
-class QgsAnnotationItemNode;
 
 /**
  * \ingroup gui
@@ -72,7 +72,8 @@ class GUI_EXPORT QgsMapToolModifyAnnotation : public QgsMapToolAdvancedDigitizin
     enum class Action
     {
       NoAction,
-      MoveItem
+      MoveItem,
+      MoveNode
     };
 
     void clearHoveredItem();
@@ -117,6 +118,8 @@ class GUI_EXPORT QgsMapToolModifyAnnotation : public QgsMapToolAdvancedDigitizin
     QgsPointXY mMoveStartPointLayerCrs;
 
     bool mRefreshSelectedItemAfterRedraw = false;
+
+    QgsAnnotationItemNode mTargetNode;
 
 };
 
