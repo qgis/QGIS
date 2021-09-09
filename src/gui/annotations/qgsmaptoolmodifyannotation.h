@@ -86,6 +86,12 @@ class GUI_EXPORT QgsMapToolModifyAnnotation : public QgsMapToolAdvancedDigitizin
 
     void setHoveredItem( const QgsRenderedAnnotationItemDetails *item, const QgsRectangle &itemMapBounds );
 
+    /**
+     * Returns the delta (in layer coordinates) by which to move items
+     * for the given key \a event.
+     */
+    QSizeF deltaForKeyEvent( QgsAnnotationLayer *layer, const QgsPointXY &originalCanvasPoint, QKeyEvent *event );
+
     Action mCurrentAction = Action::NoAction;
 
     QObjectUniquePtr<QgsRubberBand> mHoverRubberBand;
