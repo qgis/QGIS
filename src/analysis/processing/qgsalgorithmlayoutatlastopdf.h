@@ -53,6 +53,27 @@ class QgsLayoutAtlasToPdfAlgorithm : public QgsProcessingAlgorithm
 
 };
 
+class QgsLayoutAtlasToMultiplePdfAlgorithm : public QgsLayoutAtlasToPdfAlgorithm
+{
+
+  public:
+
+    QgsLayoutAtlasToMultiplePdfAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QString name() const override;
+    QString displayName() const override;
+    QString shortDescription() const override;
+    QString shortHelpString() const override;
+    QgsLayoutAtlasToPdfAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+
+};
+
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMLAYOUTATLASTOPDF_H
