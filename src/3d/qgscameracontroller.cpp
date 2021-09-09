@@ -276,6 +276,35 @@ void QgsCameraController::readXml( const QDomElement &elem )
   setLookingAtPoint( QgsVector3D( x, elev, y ), dist, pitch, yaw );
 }
 
+double QgsCameraController::cameraCenterElevation()
+{
+  if ( std::isnan( mCameraPose.centerPoint().x() ) || std::isnan( mCameraPose.centerPoint().y() ) || std::isnan( mCameraPose.centerPoint().z() ) )
+  {
+    // something went horribly wrong but we need to at least try to fix it somehow
+    qWarning() << "camera position got NaN!";
+    return 0;
+  }
+
+  double res = 0.0;
+
+  if ( mCamera && mTerrainEntity )
+  {
+    // figure out our distance from terrain and update the camera's view center
+    // so that camera tilting and rotation is around a point on terrain, not an point at fixed elevation
+    QVector3D intersectionPoint;
+    QgsRayCastingUtils::Ray3D ray = QgsRayCastingUtils::rayForCameraCenter( mCamera );
+    if ( mTerrainEntity->rayIntersection( ray, intersectionPoint ) )
+      res = intersectionPoint.y();
+    else
+      res = mTerrainEntity->terrainElevationOffset();
+  }
+
+  if ( mCamera && !mTerrainEntity )
+    res = 0.0;
+
+  return res;
+}
+
 void QgsCameraController::updateCameraFromPose()
 {
   if ( std::isnan( mCameraPose.centerPoint().x() ) || std::isnan( mCameraPose.centerPoint().y() ) || std::isnan( mCameraPose.centerPoint().z() ) )
@@ -356,6 +385,14 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     yaw -= 0.2f * dx;
     mCameraPose.setPitchAngle( pitch );
     mCameraPose.setHeadingAngle( yaw );
+
+    QVector3D viewVector = mCamera->viewVector().normalized();
+    double elevation = cameraCenterElevation();
+    double distanceToCenter = ( elevation - mCamera->position().y() ) / viewVector.y();
+    QVector3D newCenter = mCamera->position() + distanceToCenter * viewVector;
+    mCameraPose.setCenterPoint( newCenter );
+    mCameraPose.setDistanceFromCenterPoint( distanceToCenter );
+
     updateCameraFromPose();
   }
   else if ( hasLeftButton && hasCtrl && !hasShift )
