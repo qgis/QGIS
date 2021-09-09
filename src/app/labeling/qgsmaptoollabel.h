@@ -53,6 +53,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     */
     bool labelMoveable( QgsVectorLayer *vlayer, int &xCol, int &yCol ) const;
     bool labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &xCol, int &yCol ) const;
+    bool labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &xCol, int &yCol, int &pointCol ) const;
 
     /**
      * Returns true if diagram move can be applied to a layer
@@ -193,6 +194,19 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     bool currentLabelDataDefinedPosition( double &x, bool &xSuccess, double &y, bool &ySuccess, int &xCol, int &yCol ) const;
 
     /**
+     * Gets data defined position of current label
+     * \param x out: data defined x-coordinate
+     * \param xSuccess out: FALSE if attribute value is NULL
+     * \param y out: data defined y-coordinate
+     * \param ySuccess out: FALSE if attribute value is NULL
+     * \param xCol out: index of the x position column
+     * \param yCol out: index of the y position column
+     * \param pointCol out: index of the point position column
+     * \returns FALSE if layer does not have data defined label position enabled
+    */
+    bool currentLabelDataDefinedPosition( double &x, bool &xSuccess, double &y, bool &ySuccess, int &xCol, int &yCol, int &pointCol ) const;
+
+    /**
      * Returns data defined rotation of current label
      * \param rotation out: rotation value
      * \param rotationSuccess out: FALSE if rotation value is NULL
@@ -201,6 +215,15 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
      * \returns TRUE if data defined rotation is enabled on the layer
      */
     bool currentLabelDataDefinedRotation( double &rotation, bool &rotationSuccess, int &rCol, bool ignoreXY = false ) const;
+
+    /**
+     * Change the data defined position of current label
+     * \param rCol out: index of the rotation column
+     * \param x data defined x-coordinate
+     * \param y data defined y-coordinate
+     * \returns TRUE if data defined position could be changed
+     */
+    bool changeCurrentLabelDataDefinedPosition( const QVariant &x, const QVariant &y );
 
     /**
      * Returns data defined show/hide of a feature.

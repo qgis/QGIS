@@ -606,6 +606,88 @@ bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess
   return true;
 }
 
+bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess, double &y, bool &ySuccess, int &xCol, int &yCol, int &pointCol ) const
+{
+  QgsVectorLayer *vlayer = mCurrentLabel.layer;
+  QgsFeatureId featureId = mCurrentLabel.pos.featureId;
+
+  xSuccess = false;
+  ySuccess = false;
+
+  if ( !vlayer )
+  {
+    return false;
+  }
+
+  if ( mCurrentLabel.pos.isDiagram )
+  {
+    if ( !diagramMoveable( vlayer, xCol, yCol ) )
+    {
+      return false;
+    }
+  }
+  else if ( !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol, pointCol ) )
+  {
+    return false;
+  }
+
+  QgsFeature f;
+  if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( f ) )
+  {
+    return false;
+  }
+
+  if ( !mCurrentLabel.pos.isUnplaced )
+  {
+    QgsAttributes attributes = f.attributes();
+    switch ( mCurrentLabel.settings.placementCoordinateType() )
+    {
+      case QgsLabeling::CoordinateType::XY:
+      {
+        if ( !attributes.at( xCol ).isNull() )
+          x = attributes.at( xCol ).toDouble( &xSuccess );
+        if ( !attributes.at( yCol ).isNull() )
+          y = attributes.at( yCol ).toDouble( &ySuccess );
+      }
+      break;
+      case QgsLabeling::CoordinateType::Point:
+      {
+        if ( !attributes.at( pointCol ).isNull() )
+        {
+          QVariant pointAsVariant = attributes.at( pointCol );
+          if ( pointAsVariant.canConvert<QgsGeometry>() )
+          {
+            QgsGeometry geometryPoint = pointAsVariant.value<QgsGeometry>();
+            const QgsPoint *point  = qgsgeometry_cast<QgsPoint *>( geometryPoint.constGet() );
+
+            x = point->x();
+            y = point->y();
+
+            xSuccess = true;
+            ySuccess = true;
+          }
+          else if ( !pointAsVariant.toByteArray().isEmpty() )
+          {
+            QgsPoint point;
+            QgsConstWkbPtr wkbPtr( pointAsVariant.toByteArray() );
+            if ( point.fromWkb( wkbPtr ) )
+            {
+              x = point.x();
+              y = point.y();
+
+              xSuccess = true;
+              ySuccess = true;
+            }
+          }
+        }
+      }
+      break;
+    }
+  }
+
+  return true;
+}
+
 bool QgsMapToolLabel::layerIsRotatable( QgsVectorLayer *vlayer, int &rotationCol ) const
 {
   if ( !vlayer || !vlayer->isEditable() || !vlayer->labelsEnabled() )
@@ -666,6 +748,36 @@ bool QgsMapToolLabel::currentLabelDataDefinedRotation( double &rotation, bool &r
   }
 
   rotation = f.attribute( rCol ).toDouble( &rotationSuccess );
+  return true;
+}
+
+bool QgsMapToolLabel::changeCurrentLabelDataDefinedPosition( const QVariant &x, const QVariant &y )
+{
+  switch ( mCurrentLabel.settings.placementCoordinateType() )
+  {
+    case QgsLabeling::CoordinateType::XY:
+    {
+      QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, mCurrentLabel.settings, mCurrentLabel.layer );
+      QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, mCurrentLabel.settings, mCurrentLabel.layer );
+      int xCol = mCurrentLabel.layer->fields().lookupField( xColName );
+      int yCol = mCurrentLabel.layer->fields().lookupField( yColName );
+
+      if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, xCol, x )
+           || !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, yCol, y ) )
+        return false;
+    }
+    break;
+    case QgsLabeling::CoordinateType::Point:
+    {
+      QString pointColName = dataDefinedColumnName( QgsPalLayerSettings::PositionPoint, mCurrentLabel.settings, mCurrentLabel.layer );
+      int pointCol = mCurrentLabel.layer->fields().lookupField( pointColName );
+
+      if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, pointCol, QgsPoint( x.toDouble(), y.toDouble() ).asWkt() ) )
+        return false;
+    }
+    break;
+  }
+
   return true;
 }
 
@@ -753,6 +865,37 @@ bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSe
   xCol = vlayer->fields().lookupField( xColName );
   yCol = vlayer->fields().lookupField( yColName );
   return ( xCol != -1 && yCol != -1 );
+}
+
+bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &xCol, int &yCol, int &pointCol ) const
+{
+  xCol = -1;
+  yCol = -1;
+  pointCol = -1;
+
+  switch ( mCurrentLabel.settings.placementCoordinateType() )
+  {
+    case QgsLabeling::CoordinateType::XY:
+    {
+      QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, settings, vlayer );
+      QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, settings, vlayer );
+      xCol = vlayer->fields().lookupField( xColName );
+      yCol = vlayer->fields().lookupField( yColName );
+      if ( xCol <= 0 && yCol <= 0 )
+        return false;
+    }
+    break;
+    case QgsLabeling::CoordinateType::Point:
+    {
+      QString pointColName = dataDefinedColumnName( QgsPalLayerSettings::PositionPoint, settings, vlayer );
+      pointCol = vlayer->fields().lookupField( pointColName );
+      if ( pointCol <= 0 )
+        return false;
+    }
+    break;
+  }
+
+  return true;
 }
 
 bool QgsMapToolLabel::layerCanPin( QgsVectorLayer *vlayer, int &xCol, int &yCol ) const

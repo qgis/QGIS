@@ -535,8 +535,6 @@ void QgsRuleBasedLabeling::setSettings( QgsPalLayerSettings *settings, const QSt
     if ( rule && rule->settings() )
       rule->setSettings( settings );
   }
-
-  emit labelingChanged();
 }
 
 void QgsRuleBasedLabeling::toSld( QDomNode &parent, const QVariantMap &props ) const

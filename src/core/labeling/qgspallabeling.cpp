@@ -63,6 +63,7 @@
 #include "qgsvectorlayerdiagramprovider.h"
 #include "qgsvectorlayerlabelprovider.h"
 #include "qgsgeometry.h"
+#include "qgsreferencedgeometry.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgspainting.h"
 #include "qgsproject.h"
@@ -2408,16 +2409,27 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
           ddPosition = true;
 
           QVariant pointAsVariant = mDataDefinedProperties.value( QgsPalLayerSettings::PositionPoint, context.expressionContext() );
+          QgsPoint point;
           if ( pointAsVariant.canConvert<QgsGeometry>() )
+          {
+            point = QgsPoint( pointAsVariant.value<QgsGeometry>().asPoint() );
+          }
+          else if ( !pointAsVariant.toString().isEmpty() )
+          {
+            if ( !point.fromWkt( pointAsVariant.toString() ) )
+            {
+              QgsReferencedGeometry referencedGeometryPoint = QgsReferencedGeometry::fromEwkt( pointAsVariant.toString() );
+              if ( !referencedGeometryPoint.isNull() )
+                point = QgsPoint( referencedGeometryPoint.asPoint() );
+            }
+          }
+
+          if ( !point.isEmpty() )
           {
             hasDataDefinedPosition = true;
 
-            QgsGeometry geometryPoint = pointAsVariant.value<QgsGeometry>();
-            const QgsPoint *point  = qgsgeometry_cast<QgsPoint *>( geometryPoint.constGet() );
-//          QgsPoint point = geometryPoint.constGet()->vertexAt( vId );
-
-            xPos = point->x();
-            yPos = point->y();
+            xPos = point.x();
+            yPos = point.y();
           }
         }
       }
