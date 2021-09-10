@@ -483,6 +483,31 @@ QString QgsAnnotationLayer::htmlMetadata() const
   // CRS
   metadata += crsHtmlMetadata();
 
+  // items section
+  metadata += QStringLiteral( "<h1>" ) + tr( "Items" ) + QStringLiteral( "</h1>\n<hr>\n" );
+
+  metadata += QLatin1String( "<table width=\"100%\" class=\"tabular-view\">\n" );
+  metadata += QLatin1String( "<tr><th>" ) + tr( "Type" ) + QLatin1String( "</th><th>" ) + tr( "Count" ) + QLatin1String( "</th></tr>\n" );
+
+  QMap< QString, int > itemCounts;
+  for ( auto it = mItems.constBegin(); it != mItems.constEnd(); ++it )
+  {
+    itemCounts[ it.value()->type() ]++;
+  }
+
+  const QMap<QString, QString> itemTypes = QgsApplication::annotationItemRegistry()->itemTypes();
+  int i = 0;
+  for ( auto it = itemTypes.begin(); it != itemTypes.end(); ++it )
+  {
+    QString rowClass;
+    if ( i % 2 )
+      rowClass = QStringLiteral( "class=\"odd-row\"" );
+    metadata += QLatin1String( "<tr " ) + rowClass + QLatin1String( "><td>" ) + it.value() + QLatin1String( "</td><td>" ) + locale.toString( static_cast<qlonglong>( itemCounts.value( it.key() ) ) ) + QLatin1String( "</td></tr>\n" );
+    i++;
+  }
+
+  metadata += QLatin1String( "</table>\n<br><br>" );
+
   metadata += QLatin1String( "\n</body>\n</html>\n" );
   return metadata;
 }
