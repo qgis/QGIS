@@ -77,7 +77,7 @@ class CORE_EXPORT QgsCadUtils
 
     /**
      * \ingroup core
-     * Class defining all constraints for alignMapPoint() method
+     * \brief Class defining all constraints for alignMapPoint() method
      *
      * This class was a structure before QGIS 3.22.
      *
