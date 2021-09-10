@@ -251,6 +251,11 @@ void TestQgsQuadrilateral::setPoint() {
 }
 
 void TestQgsQuadrilateral::equals() {
+  QVERIFY( QgsQuadrilateral() == QgsQuadrilateral());
+
+  QVERIFY( QgsQuadrilateral(  ) !=
+           QgsQuadrilateral( QgsPoint( 0.01, 0.01 ), QgsPoint( 0.01, 5.01 ), QgsPoint( 5.01, 5.01 ), QgsPoint( 5.01, 0.01 ) ) );
+
   QVERIFY( QgsQuadrilateral( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ),QgsPoint( 5, 5 ), QgsPoint( 5, 0 ) ) !=
            QgsQuadrilateral( QgsPoint( 0.01, 0.01 ), QgsPoint( 0.01, 5.01 ), QgsPoint( 5.01, 5.01 ), QgsPoint( 5.01, 0.01 ) ) );
 
@@ -259,6 +264,12 @@ void TestQgsQuadrilateral::equals() {
 
   QVERIFY( QgsQuadrilateral( QgsPoint( 0, 0, 0 ), QgsPoint( 0, 5, -0.02 ), QgsPoint( 5, 5, 0 ), QgsPoint( 5, 0, -0.02 ) ).equals(
              QgsQuadrilateral( QgsPoint( 0.01, 0.01, 0.01 ), QgsPoint( 0.01, 5.01, 0 ), QgsPoint( 5.01, 5.01, -0.01 ), QgsPoint( 5.01, 0.01, 0.04 ) ), 1e-1 ) );
+
+  QgsQuadrilateral quadM1( QgsPoint( QgsWkbTypes::PointM, 0, 0, 0, 1 ), QgsPoint( QgsWkbTypes::PointM, 0, 5, 0, 1 ),
+                           QgsPoint( QgsWkbTypes::PointM, 5, 5, 0, 1 ), QgsPoint( QgsWkbTypes::PointM, 5, 0, 0, 1 ));
+  QgsQuadrilateral quadM2( QgsPoint( QgsWkbTypes::PointM, 0.01, 0.01, 0, 1.01 ), QgsPoint( QgsWkbTypes::PointM, 0.01, 5.01, 0, 1.01 ),
+                           QgsPoint( QgsWkbTypes::PointM, 5.01, 5.01, 0, 1.01 ), QgsPoint( QgsWkbTypes::PointM, 5.01, 0.01, 0, 1.01 ));
+  QVERIFY( quadM1.equals(quadM2, 1e-1 ) );
 }
 
 void TestQgsQuadrilateral::areaPerimeter() {
