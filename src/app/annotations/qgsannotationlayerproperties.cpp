@@ -158,7 +158,7 @@ void QgsAnnotationLayerProperties::syncToLayer()
 
   mCrsSelector->setCrs( mLayer->crs() );
 
-  // set up the scale based layer visibility stuff....
+  // scale based layer visibility
   mScaleRangeWidget->setScaleRange( mLayer->minimumScale(), mLayer->maximumScale() );
   mScaleVisibilityGroupBox->setChecked( mLayer->hasScaleBasedVisibility() );
   mScaleRangeWidget->setMapCanvas( mMapCanvas );
