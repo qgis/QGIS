@@ -22,6 +22,8 @@
 #include "qgsannotationitem.h"
 #include "qgsgui.h"
 #include "qgsannotationitemguiregistry.h"
+#include "qgspainteffect.h"
+
 #include <QStackedWidget>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -29,7 +31,7 @@
 QgsAnnotationItemPropertiesWidget::QgsAnnotationItemPropertiesWidget( QgsAnnotationLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
 {
-  mStack = new QStackedWidget();
+  setupUi( this );
 
   mPageNoItem = new QWidget();
   QSizePolicy sizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
@@ -46,15 +48,16 @@ QgsAnnotationItemPropertiesWidget::QgsAnnotationItemPropertiesWidget( QgsAnnotat
   mStack->addWidget( mPageNoItem );
   mStack->setCurrentWidget( mPageNoItem );
 
-  setDockMode( true );
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsAnnotationItemPropertiesWidget::onLayerPropertyChanged );
+  connect( mBlendModeComboBox, qOverload< int >( &QgsBlendModeComboBox::currentIndexChanged ), this, &QgsAnnotationItemPropertiesWidget::onLayerPropertyChanged );
+  connect( mEffectWidget, &QgsEffectStackCompactWidget::changed, this, &QgsAnnotationItemPropertiesWidget::onLayerPropertyChanged );
 
-  QHBoxLayout *l = new QHBoxLayout();
-  l->setContentsMargins( 0, 0, 0, 0 );
-  l->addWidget( mStack );
-  setLayout( l );
+  setDockMode( true );
 
   syncToLayer( layer );
 }
+
+QgsAnnotationItemPropertiesWidget::~QgsAnnotationItemPropertiesWidget() = default;
 
 void QgsAnnotationItemPropertiesWidget::syncToLayer( QgsMapLayer *layer )
 {
@@ -64,6 +67,17 @@ void QgsAnnotationItemPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   mLayer = qobject_cast< QgsAnnotationLayer * >( layer );
   if ( !mLayer )
     return;
+
+  // opacity and blend modes
+  mBlockLayerUpdates = true;
+  mBlendModeComboBox->setBlendMode( mLayer->blendMode() );
+  mOpacityWidget->setOpacity( mLayer->opacity() );
+  if ( mLayer->paintEffect() )
+  {
+    mPaintEffect.reset( mLayer->paintEffect()->clone() );
+    mEffectWidget->setPaintEffect( mPaintEffect.get() );
+  }
+  mBlockLayerUpdates = false;
 
   // check context
   setItemId( mMapLayerConfigWidgetContext.annotationId() );
@@ -95,6 +109,13 @@ void QgsAnnotationItemPropertiesWidget::apply()
   if ( !mLayer )
     return;
 
+  // set the blend mode and opacity for the layer
+  mLayer->setBlendMode( mBlendModeComboBox->blendMode() );
+  mLayer->setOpacity( mOpacityWidget->opacity() );
+
+  if ( mPaintEffect )
+    mLayer->setPaintEffect( mPaintEffect->clone() );
+
   mLayer->triggerRepaint();
 }
 
@@ -119,6 +140,14 @@ void QgsAnnotationItemPropertiesWidget::onChanged()
 
     mLayer->replaceItem( mMapLayerConfigWidgetContext.annotationId(), newItem.release() );
   }
+}
+
+void QgsAnnotationItemPropertiesWidget::onLayerPropertyChanged()
+{
+  if ( mBlockLayerUpdates )
+    return;
+
+  emit widgetChanged();
 }
 
 void QgsAnnotationItemPropertiesWidget::setItemId( const QString &itemId )
