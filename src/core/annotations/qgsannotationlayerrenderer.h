@@ -28,6 +28,7 @@
 #include <memory>
 
 class QgsAnnotationLayer;
+class QgsPaintEffect;
 
 /**
  * \ingroup core
@@ -53,6 +54,7 @@ class CORE_EXPORT QgsAnnotationLayerRenderer : public QgsMapLayerRenderer
     std::vector < std::pair< QString, std::unique_ptr< QgsAnnotationItem > > > mItems;
     std::unique_ptr< QgsFeedback > mFeedback;
     double mLayerOpacity = 1.0;
+    std::unique_ptr< QgsPaintEffect > mPaintEffect;
 
 };
 

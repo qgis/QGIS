@@ -22,11 +22,11 @@
 #include "qgsgui.h"
 #include "qgsnative.h"
 #include "qgsapplication.h"
-#include "qgsmetadatawidget.h"
 #include "qgsmaplayerloadstyledialog.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsdatumtransformdialog.h"
+#include "qgspainteffect.h"
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
@@ -83,6 +83,8 @@ QgsAnnotationLayerProperties::QgsAnnotationLayerProperties( QgsAnnotationLayer *
   restoreOptionsBaseUi( title );
 }
 
+QgsAnnotationLayerProperties::~QgsAnnotationLayerProperties() = default;
+
 void QgsAnnotationLayerProperties::addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory )
 {
   if ( !factory->supportsLayer( mLayer ) || !factory->supportLayerPropertiesDialog() )
@@ -114,6 +116,9 @@ void QgsAnnotationLayerProperties::apply()
   // set the blend mode and opacity for the layer
   mLayer->setBlendMode( mBlendModeComboBox->blendMode() );
   mLayer->setOpacity( mOpacityWidget->opacity() );
+
+  if ( mPaintEffect )
+    mLayer->setPaintEffect( mPaintEffect->clone() );
 
   for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
     w->apply();
@@ -161,6 +166,12 @@ void QgsAnnotationLayerProperties::syncToLayer()
   // opacity and blend modes
   mBlendModeComboBox->setBlendMode( mLayer->blendMode() );
   mOpacityWidget->setOpacity( mLayer->opacity() );
+
+  if ( mLayer->paintEffect() )
+  {
+    mPaintEffect.reset( mLayer->paintEffect()->clone() );
+    mEffectWidget->setPaintEffect( mPaintEffect.get() );
+  }
 
   for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
     w->syncToLayer( mLayer );

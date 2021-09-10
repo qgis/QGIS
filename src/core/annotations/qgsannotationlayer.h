@@ -25,6 +25,8 @@
 
 class QgsAnnotationItem;
 class QgsAbstractAnnotationItemEditOperation;
+class QgsPaintEffect;
+
 
 ///@cond PRIVATE
 class QgsAnnotationLayerSpatialIndex;
@@ -172,6 +174,23 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     const QgsDataProvider *dataProvider() const override SIP_SKIP;
     QString htmlMetadata() const override;
 
+    /**
+     * Returns the current paint effect for the layer.
+     * \see setPaintEffect()
+     * \since QGIS 3.22
+     */
+    QgsPaintEffect *paintEffect() const;
+
+    /**
+     * Sets the current paint \a effect for the layer.
+     *
+     * Ownership is transferred to the renderer.
+     *
+     * \see paintEffect()
+     * \since QGIS 3.22
+     */
+    void setPaintEffect( QgsPaintEffect *effect SIP_TRANSFER );
+
   private:
 
     QStringList queryIndex( const QgsRectangle &bounds, QgsFeedback *feedback = nullptr ) const;
@@ -183,6 +202,8 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     QSet< QString > mNonIndexedItems;
 
     QgsDataProvider *mDataProvider = nullptr;
+
+    std::unique_ptr< QgsPaintEffect > mPaintEffect;
 
     friend class QgsAnnotationLayerRenderer;
 

@@ -18,6 +18,7 @@
 #include "qgsannotationlayer.h"
 #include "qgsfeedback.h"
 #include "qgsrenderedannotationitemdetails.h"
+#include "qgspainteffect.h"
 #include <optional>
 
 QgsAnnotationLayerRenderer::QgsAnnotationLayerRenderer( QgsAnnotationLayer *layer, QgsRenderContext &context )
@@ -50,6 +51,11 @@ QgsAnnotationLayerRenderer::QgsAnnotationLayerRenderer( QgsAnnotationLayer *laye
                const std::pair< QString, std::unique_ptr< QgsAnnotationItem > > &a,
                const std::pair< QString, std::unique_ptr< QgsAnnotationItem > > &b )
   { return a.second->zIndex() < b.second->zIndex(); } );
+
+  if ( layer->paintEffect() && layer->paintEffect()->enabled() )
+  {
+    mPaintEffect.reset( layer->paintEffect()->clone() );
+  }
 }
 
 QgsAnnotationLayerRenderer::~QgsAnnotationLayerRenderer() = default;
@@ -62,6 +68,11 @@ QgsFeedback *QgsAnnotationLayerRenderer::feedback() const
 bool QgsAnnotationLayerRenderer::render()
 {
   QgsRenderContext &context = *renderContext();
+
+  if ( mPaintEffect )
+  {
+    mPaintEffect->begin( context );
+  }
 
   bool canceled = false;
   for ( const std::pair< QString, std::unique_ptr< QgsAnnotationItem > > &item : std::as_const( mItems ) )
@@ -87,6 +98,12 @@ bool QgsAnnotationLayerRenderer::render()
       appendRenderedItemDetails( details.release() );
     }
   }
+
+  if ( mPaintEffect )
+  {
+    mPaintEffect->end( context );
+  }
+
   return !canceled;
 }
 
