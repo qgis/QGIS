@@ -402,7 +402,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * \see paintEffect
      * \since QGIS 2.9
      */
-    void setPaintEffect( QgsPaintEffect *effect );
+    void setPaintEffect( QgsPaintEffect *effect SIP_TRANSFER );
 
     /**
      * Returns whether the renderer must render as a raster.
