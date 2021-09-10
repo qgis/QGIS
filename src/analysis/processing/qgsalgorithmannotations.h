@@ -28,12 +28,12 @@
 /**
  * Native transfer annotations from main annotation layer algorithm
  */
-class QgsTransferAnnotationsFromMainAnnotationLayerAlgorithm : public QgsProcessingAlgorithm
+class QgsTransferAnnotationsFromMainAlgorithm : public QgsProcessingAlgorithm
 {
 
   public:
 
-    QgsTransferAnnotationsFromMainAnnotationLayerAlgorithm() = default;
+    QgsTransferAnnotationsFromMainAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
     QString displayName() const override;
@@ -42,7 +42,7 @@ class QgsTransferAnnotationsFromMainAnnotationLayerAlgorithm : public QgsProcess
     QString groupId() const override;
     Flags flags() const override;
     QString shortHelpString() const override;
-    QgsTransferAnnotationsFromMainAnnotationLayerAlgorithm *createInstance() const override SIP_FACTORY;
+    QgsTransferAnnotationsFromMainAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
 

@@ -478,7 +478,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsTaperedBufferAlgorithm() );
   addAlgorithm( new QgsTinMeshCreationAlgorithm() );
   addAlgorithm( new QgsTransectAlgorithm() );
-  addAlgorithm( new QgsTransferAnnotationsFromMainAnnotationLayerAlgorithm() );
+  addAlgorithm( new QgsTransferAnnotationsFromMainAlgorithm() );
   addAlgorithm( new QgsTransformAlgorithm() );
   addAlgorithm( new QgsTranslateAlgorithm() );
   addAlgorithm( new QgsTruncateTableAlgorithm() );
