@@ -1544,8 +1544,15 @@ need to handle deletion of the returned layer.
 %Docstring
 Evaluates the parameter with matching ``definition`` to an annotation layer.
 
-Layers will either be taken from ``context``'s active project. Callers do not
+Layers will be taken from ``context``'s active project. Callers do not
 need to handle deletion of the returned layer.
+
+.. warning::
+
+   Working with annotation layers is generally not thread safe (unless the layers are from
+   a :py:class:`QgsProject` loaded directly in a background thread). Ensure your algorithm returns the
+   :py:class:`QgsProcessingAlgorithm`.FlagNoThreading flag or only accesses annotation layers from a :py:func:`~QgsProcessingParameters.prepareAlgorithm`
+   or :py:func:`~QgsProcessingParameters.postProcessAlgorithm` step.
 
 .. versionadded:: 3.22
 %End
@@ -1554,8 +1561,15 @@ need to handle deletion of the returned layer.
 %Docstring
 Evaluates the parameter with matching ``definition`` and ``value`` to an annotation layer.
 
-Layers will either be taken from ``context``'s active project. Callers do not
+Layers will be taken from ``context``'s active project. Callers do not
 need to handle deletion of the returned layer.
+
+.. warning::
+
+   Working with annotation layers is generally not thread safe (unless the layers are from
+   a :py:class:`QgsProject` loaded directly in a background thread). Ensure your algorithm returns the
+   :py:class:`QgsProcessingAlgorithm`.FlagNoThreading flag or only accesses annotation layers from a :py:func:`~QgsProcessingParameters.prepareAlgorithm`
+   or :py:func:`~QgsProcessingParameters.postProcessAlgorithm` step.
 
 .. versionadded:: 3.22
 %End
