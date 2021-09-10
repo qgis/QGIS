@@ -319,10 +319,9 @@ void QgsAdvancedDigitizingDockWidget::setCadEnabled( bool enabled )
 
 void QgsAdvancedDigitizingDockWidget::switchZM( )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
-  if ( vlayer )
-  {
 
+  if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() ) )
+  {
     const QgsWkbTypes::Type type = vlayer->wkbType();
     mRelativeZButton->setEnabled( QgsWkbTypes::hasZ( type ) );
     mZLabel->setEnabled( QgsWkbTypes::hasZ( type ) );
