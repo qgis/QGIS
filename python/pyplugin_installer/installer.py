@@ -649,6 +649,7 @@ class QgsPluginInstaller(QObject):
                     keepTrying = False
 
         if success:
+            QApplication.setOverrideCursor(Qt.WaitCursor)
             updateAvailablePlugins()
             self.processDependencies(pluginName)
             loadPlugin(pluginName)
@@ -665,6 +666,7 @@ class QgsPluginInstaller(QObject):
                 if startPlugin(pluginName):
                     settings.setValue('/PythonPlugins/' + pluginName, True)
 
+            QApplication.restoreOverrideCursor()
             self.exportPluginsToManager()
             msg = "<b>%s</b>" % self.tr("Plugin installed successfully")
         else:
