@@ -23,6 +23,7 @@
 #include "qgsalgorithmaffinetransform.h"
 #include "qgsalgorithmaggregate.h"
 #include "qgsalgorithmangletonearest.h"
+#include "qgsalgorithmannotations.h"
 #include "qgsalgorithmapplylayerstyle.h"
 #include "qgsalgorithmarraytranslatedfeatures.h"
 #include "qgsalgorithmaspect.h"
@@ -477,6 +478,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsTaperedBufferAlgorithm() );
   addAlgorithm( new QgsTinMeshCreationAlgorithm() );
   addAlgorithm( new QgsTransectAlgorithm() );
+  addAlgorithm( new QgsTransferAnnotationsFromMainAnnotationLayerAlgorithm() );
   addAlgorithm( new QgsTransformAlgorithm() );
   addAlgorithm( new QgsTranslateAlgorithm() );
   addAlgorithm( new QgsTruncateTableAlgorithm() );
