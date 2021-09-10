@@ -119,7 +119,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationLineItem::applyEdit( QgsAbs
       QgsPoint segmentPoint;
       QgsVertexId endOfSegmentVertex;
       mCurve->closestSegment( addOperation->point(), segmentPoint, endOfSegmentVertex );
-      if ( mCurve->insertVertex( endOfSegmentVertex, addOperation->point() ) )
+      if ( mCurve->insertVertex( endOfSegmentVertex, segmentPoint ) )
         return Qgis::AnnotationItemEditOperationResult::Success;
       break;
     }

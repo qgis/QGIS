@@ -149,7 +149,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPolygonItem::applyEdit( Qgs
       QgsPoint segmentPoint;
       QgsVertexId endOfSegmentVertex;
       mPolygon->closestSegment( addOperation->point(), segmentPoint, endOfSegmentVertex );
-      if ( mPolygon->insertVertex( endOfSegmentVertex, addOperation->point() ) )
+      if ( mPolygon->insertVertex( endOfSegmentVertex, segmentPoint ) )
         return Qgis::AnnotationItemEditOperationResult::Success;
       break;
     }

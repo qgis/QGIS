@@ -404,6 +404,61 @@ void QgsMapToolModifyAnnotation::cadCanvasPressEvent( QgsMapMouseEvent *event )
   }
 }
 
+void QgsMapToolModifyAnnotation::canvasDoubleClickEvent( QgsMapMouseEvent *event )
+{
+  switch ( mCurrentAction )
+  {
+    case Action::NoAction:
+    case Action::MoveItem:
+    {
+      if ( event->button() != Qt::LeftButton )
+        return;
+
+      mCurrentAction = Action::NoAction;
+      if ( mHoveredItemId == mSelectedItemId && mHoveredItemLayerId == mSelectedItemLayerId )
+      {
+        // double click on selected item => add node
+        if ( QgsAnnotationLayer *layer = annotationLayerFromId( mSelectedItemLayerId ) )
+        {
+          const QgsPointXY layerPoint = toLayerCoordinates( layer, event->mapPoint() );
+          QgsAnnotationItemEditOperationAddNode operation( mSelectedItemId, QgsPoint( layerPoint ) );
+          switch ( layer->applyEdit( &operation ) )
+          {
+            case Qgis::AnnotationItemEditOperationResult::Success:
+              QgsProject::instance()->setDirty( true );
+              mRefreshSelectedItemAfterRedraw = true;
+              break;
+
+            case Qgis::AnnotationItemEditOperationResult::Invalid:
+            case Qgis::AnnotationItemEditOperationResult::ItemCleared:
+              break;
+          }
+        }
+      }
+      else
+      {
+        // press is on a different item to selected item => select that item
+        mSelectedItemId = mHoveredItemId;
+        mSelectedItemLayerId = mHoveredItemLayerId;
+
+        if ( !mSelectedRubberBand )
+          createSelectedItemBand();
+
+        mSelectedRubberBand->copyPointsFrom( mHoverRubberBand );
+        mSelectedRubberBand->show();
+
+        setCursor( Qt::OpenHandCursor );
+
+        emit itemSelected( annotationLayerFromId( mSelectedItemLayerId ), mSelectedItemId );
+      }
+      break;
+    }
+
+    case Action::MoveNode:
+      break;
+  }
+}
+
 void QgsMapToolModifyAnnotation::keyPressEvent( QKeyEvent *event )
 {
   switch ( mCurrentAction )
