@@ -461,6 +461,32 @@ const QgsDataProvider *QgsAnnotationLayer::dataProvider() const
   return mDataProvider;
 }
 
+QString QgsAnnotationLayer::htmlMetadata() const
+{
+  QString metadata = QStringLiteral( "<html>\n<body>\n<h1>" ) + tr( "General" ) + QStringLiteral( "</h1>\n<hr>\n" ) + QStringLiteral( "<table class=\"list-view\">\n" );
+
+  metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Name" ) + QStringLiteral( "</td><td>" ) + name() + QStringLiteral( "</td></tr>\n" );
+
+  // Extent
+  metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Extent" ) + QStringLiteral( "</td><td>" ) + extent().toString() + QStringLiteral( "</td></tr>\n" );
+
+  // item count
+  QLocale locale = QLocale();
+  locale.setNumberOptions( locale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
+  const int itemCount = mItems.size();
+  metadata += QStringLiteral( "<tr><td class=\"highlight\">" )
+              + tr( "Item count" ) + QStringLiteral( "</td><td>" )
+              + locale.toString( static_cast<qlonglong>( itemCount ) )
+              + QStringLiteral( "</td></tr>\n" );
+  metadata += QLatin1String( "</table>\n<br><br>" );
+
+  // CRS
+  metadata += crsHtmlMetadata();
+
+  metadata += QLatin1String( "\n</body>\n</html>\n" );
+  return metadata;
+}
+
 
 //
 // QgsAnnotationLayerDataProvider
