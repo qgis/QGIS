@@ -223,7 +223,7 @@ void QgsInterpolatedLineSymbolLayerWidget::reloadMinMaxWidthFromLayer()
     return;
   }
 
-  if ( !mLayer )
+  if ( !mLayer || !vectorLayer() )
   {
     apply();
     return;
@@ -287,7 +287,7 @@ void QgsInterpolatedLineSymbolLayerWidget::reloadMinMaxColorFromLayer()
     return;
   }
 
-  if ( !mLayer )
+  if ( !mLayer || !vectorLayer() )
   {
     apply();
     return;
