@@ -2135,7 +2135,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
 
   // needed to get Z value
   if ( mapPointMatch && mapPointMatch->layer() && QgsWkbTypes::hasZ( mapPointMatch->layer()->wkbType() ) && ( mapPointMatch->hasEdge() || mapPointMatch->hasMiddleSegment() ) )
-    layerPoint = mapPointMatch->interpolatedPoint();
+    layerPoint = toLayerCoordinates( dragLayer, mapPointMatch->interpolatedPoint() );
 
   QgsVertexId vid;
   if ( !geom.vertexIdFromVertexNr( dragVertexId, vid ) )
