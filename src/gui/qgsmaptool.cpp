@@ -59,6 +59,11 @@ QgsPointXY QgsMapTool::toLayerCoordinates( const QgsMapLayer *layer, const QgsPo
   return mCanvas->mapSettings().mapToLayerCoordinates( layer, point );
 }
 
+QgsPoint QgsMapTool::toLayerCoordinates( const QgsMapLayer *layer, const QgsPoint &point )
+{
+  return mCanvas->mapSettings().mapToLayerCoordinates( layer, point );
+}
+
 QgsPointXY QgsMapTool::toMapCoordinates( const QgsMapLayer *layer, const QgsPointXY &point )
 {
   return mCanvas->mapSettings().layerToMapCoordinates( layer, point );

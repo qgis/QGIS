@@ -281,6 +281,15 @@ Constructor takes a map canvas as a parameter.
 Transforms a ``point`` from screen coordinates to map coordinates.
 %End
 
+    QgsPoint toLayerCoordinates( const QgsMapLayer *layer, const QgsPoint &point ) /PyName=toLayerCoordinatesV2/;
+%Docstring
+Transforms a ``point`` from map coordinates to ``layer`` coordinates.
+
+.. note::
+
+   This method is available in the Python bindings as toLayerCoordinatesV2.
+%End
+
     QgsPointXY toLayerCoordinates( const QgsMapLayer *layer, QPoint point );
 %Docstring
 Transforms a ``point`` from screen coordinates to ``layer`` coordinates.

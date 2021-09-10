@@ -271,6 +271,12 @@ class GUI_EXPORT QgsMapTool : public QObject
     //! Transforms a \a point from screen coordinates to map coordinates.
     QgsPointXY toMapCoordinates( QPoint point );
 
+    /**
+     * Transforms a \a point from map coordinates to \a layer coordinates.
+     * \note This method is available in the Python bindings as toLayerCoordinatesV2.
+     */
+    QgsPoint toLayerCoordinates( const QgsMapLayer *layer, const QgsPoint &point ) SIP_PYNAME( toLayerCoordinatesV2 );
+
     //! Transforms a \a point from screen coordinates to \a layer coordinates.
     QgsPointXY toLayerCoordinates( const QgsMapLayer *layer, QPoint point );
 
