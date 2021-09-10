@@ -379,26 +379,25 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
 
       executed.insert( childId );
 
-      bool canPrune = true;
       std::function< void( const QString &, const QString & )> pruneAlgorithmBranchRecursive;
       pruneAlgorithmBranchRecursive = [&]( const QString & id, const QString &branch = QString() )
       {
-        const QSet<QString> toPrune = dependentChildAlgorithms( id, branch );
+        const QSet<QString> toPrune = dependentChildAlgorithms( id, branch, 1 );
         for ( const QString &targetId : toPrune )
         {
           if (targetId.contains(QStringLiteral("native:conditionmerge"))) {
-            canPrune = false;
-          }
-          if (canPrune == false) {
-            break;
+            mPrunedMerge[targetId] += 1;
+
+            if (mPrunedMerge[targetId] < 2) {
+              continue;
+            }
           }
 
-          pruneAlgorithmBranchRecursive( targetId, branch );
-
-          if ( executed.contains( targetId ) ) {
+          if (executed.contains( targetId )) {
             continue;
           }
 
+          pruneAlgorithmBranchRecursive( targetId, branch );
           executed.insert( targetId );
         }
       };

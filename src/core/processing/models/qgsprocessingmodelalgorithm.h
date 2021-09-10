@@ -546,6 +546,8 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
 
     QStringList mParameterOrder;
 
+    QMap< QString, int > mPrunedMerge;
+
     void dependsOnChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;
     void dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends, const QString &branch, int depth = -1 ) const;
 
