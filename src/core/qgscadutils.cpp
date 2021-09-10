@@ -58,9 +58,9 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
 
   QgsPointXY previousPt, penultimatePt;
   if ( ctx.cadPoints().count() >= 2 )
-    previousPt = ctx.cadPoints().at( 1 );
+    previousPt = ctx.cadPoint( 1 );
   if ( ctx.cadPoints().count() >= 3 )
-    penultimatePt = ctx.cadPoints().at( 2 );
+    penultimatePt = ctx.cadPoint( 2 );
 
   // *****************************
   // ---- X constraint

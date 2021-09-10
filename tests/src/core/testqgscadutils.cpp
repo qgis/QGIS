@@ -53,7 +53,7 @@ class TestQgsCadUtils : public QObject
       QgsCadUtils::AlignMapPointContext context;
       context.snappingUtils = mSnappingUtils;
       context.mapUnitsPerPixel = mMapSettings.mapUnitsPerPixel();
-      context.cadPoints() << QgsPoint() << QgsPoint( 30, 20 ) << QgsPoint( 30, 30 );
+      context.setCadPoints( QList<QgsPoint>() << QgsPoint() << QgsPoint( 30, 20 ) << QgsPoint( 30, 30 ) );
       return context;
     }
 
@@ -231,7 +231,7 @@ void TestQgsCadUtils::testCommonAngle()
   // common angle rel
   context.angleConstraint = QgsCadUtils::AlignMapPointConstraint();
   context.commonAngleConstraint = QgsCadUtils::AlignMapPointConstraint( true, true, 90 );
-  context.cadPoints()[1] = QgsPoint( 40, 20 );
+  context.setCadPoint( QgsPoint( 40, 20 ), 1 );
   QgsCadUtils::AlignMapPointOutput res3 = QgsCadUtils::alignMapPoint( QgsPointXY( 50.1, 29.9 ), context );
   QVERIFY( res3.valid );
   QCOMPARE( res3.softLockCommonAngle, 90.0 );
