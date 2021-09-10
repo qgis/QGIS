@@ -155,7 +155,7 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
      *
      * \since QGIS 3.22
      */
-    bool applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
+    Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
 
     Qgis::MapLayerProperties properties() const override;
     QgsAnnotationLayer *clone() const override SIP_FACTORY;

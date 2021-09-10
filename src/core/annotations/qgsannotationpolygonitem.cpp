@@ -133,24 +133,28 @@ bool QgsAnnotationPolygonItem::transform( const QTransform &transform )
   return true;
 }
 
-bool QgsAnnotationPolygonItem::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
+Qgis::AnnotationItemEditOperationResult QgsAnnotationPolygonItem::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
 {
   switch ( operation->type() )
   {
     case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
       QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
-      return mPolygon->moveVertex( moveOperation->nodeId(), QgsPoint( moveOperation->after() ) );
+      if ( mPolygon->moveVertex( moveOperation->nodeId(), QgsPoint( moveOperation->after() ) ) )
+        return Qgis::AnnotationItemEditOperationResult::Success;
+      break;
     }
 
     case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
     {
       QgsAnnotationItemEditOperationDeleteNode *deleteOperation = qgis::down_cast< QgsAnnotationItemEditOperationDeleteNode * >( operation );
-      return mPolygon->deleteVertex( deleteOperation->nodeId() );
+      if ( mPolygon->deleteVertex( deleteOperation->nodeId() ) )
+        return mPolygon->isEmpty() ? Qgis::AnnotationItemEditOperationResult::ItemCleared : Qgis::AnnotationItemEditOperationResult::Success;
+      break;
     }
   }
 
-  return false;
+  return Qgis::AnnotationItemEditOperationResult::Invalid;
 }
 
 QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPolygonItem::transientEditResults( QgsAbstractAnnotationItemEditOperation *operation )

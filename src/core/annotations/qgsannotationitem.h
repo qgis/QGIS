@@ -153,11 +153,9 @@ class CORE_EXPORT QgsAnnotationItem
     /**
      * Applies an edit \a operation to the item.
      *
-     * Returns TRUE if the operation was successfully applied.
-     *
      * \since QGIS 3.22
      */
-    virtual bool applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
+    virtual Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
 
     /**
      * Retrieves the results of a transient (in progress) edit \a operation on the item.

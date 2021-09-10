@@ -232,9 +232,9 @@ QStringList QgsAnnotationLayer::itemsInBounds( const QgsRectangle &bounds, QgsRe
   return res;
 }
 
-bool QgsAnnotationLayer::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
+Qgis::AnnotationItemEditOperationResult QgsAnnotationLayer::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
 {
-  bool res = false;
+  Qgis::AnnotationItemEditOperationResult res = Qgis::AnnotationItemEditOperationResult::Invalid;
   if ( QgsAnnotationItem *targetItem = item( operation->itemId() ) )
   {
     // remove item from index if present
@@ -245,12 +245,24 @@ bool QgsAnnotationLayer::applyEdit( QgsAbstractAnnotationItemEditOperation *oper
     }
     res = targetItem->applyEdit( operation );
 
-    // and re-add to index if possible
-    if ( !( targetItem->flags() & Qgis::AnnotationItemFlag::ScaleDependentBoundingBox ) )
-      mSpatialIndex->insert( operation->itemId(), targetItem->boundingBox() );
+    switch ( res )
+    {
+      case Qgis::AnnotationItemEditOperationResult::Success:
+      case Qgis::AnnotationItemEditOperationResult::Invalid:
+        // re-add to index if possible
+        if ( !( targetItem->flags() & Qgis::AnnotationItemFlag::ScaleDependentBoundingBox ) )
+          mSpatialIndex->insert( operation->itemId(), targetItem->boundingBox() );
+        break;
+
+      case Qgis::AnnotationItemEditOperationResult::ItemCleared:
+        // item needs removing from layer
+        delete mItems.take( operation->itemId() );
+        mNonIndexedItems.remove( operation->itemId() );
+        break;
+    }
   }
 
-  if ( res )
+  if ( res != Qgis::AnnotationItemEditOperationResult::Invalid )
     triggerRepaint();
 
   return res;

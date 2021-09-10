@@ -492,6 +492,13 @@ The development version
       VertexHandle,
     };
 
+    enum class AnnotationItemEditOperationResult
+    {
+      Success,
+      Invalid,
+      ItemCleared,
+    };
+
     enum class VectorTemporalMode
       {
       FixedTemporalRange,

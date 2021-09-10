@@ -44,7 +44,7 @@ class CORE_EXPORT QgsAnnotationMarkerItem : public QgsAnnotationItem
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     Qgis::AnnotationItemFlags flags() const override;
     QList< QgsAnnotationItemNode > nodes() const override;
-    bool applyEdit( QgsAbstractAnnotationItemEditOperation *operation ) override;
+    Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation ) override;
     QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) override SIP_FACTORY;
 
     /**

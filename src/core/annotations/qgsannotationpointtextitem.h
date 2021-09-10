@@ -56,7 +56,7 @@ class CORE_EXPORT QgsAnnotationPointTextItem : public QgsAnnotationItem
     QgsRectangle boundingBox( QgsRenderContext &context ) const override;
     QList< QgsAnnotationItemNode > nodes() const override;
     bool transform( const QTransform &transform ) override;
-    bool applyEdit( QgsAbstractAnnotationItemEditOperation *operation ) override;
+    Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation ) override;
     QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) override SIP_FACTORY;
 
     /**

@@ -778,6 +778,19 @@ class CORE_EXPORT Qgis
     Q_ENUM( AnnotationItemNodeType )
 
     /**
+     * Results from an edit operation on an annotation item.
+     *
+     * \since QGIS 3.22
+     */
+    enum class AnnotationItemEditOperationResult : int
+    {
+      Success, //!< Item was modified successfully
+      Invalid, //!< Operation has invalid parameters for the item, no change occurred
+      ItemCleared, //!< The operation results in the item being cleared, and the item should be removed from the layer as a result
+    };
+    Q_ENUM( AnnotationItemEditOperationResult )
+
+    /**
      * Vector layer temporal feature modes
      *
      * \since QGIS 3.22

@@ -107,11 +107,11 @@ class TestQgsAnnotationPolygonItem(unittest.TestCase):
             QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
         self.assertEqual(item.geometry().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 12 13))')
 
-        self.assertTrue(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPoint(14, 13), QgsPoint(17, 18))))
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPoint(14, 13), QgsPoint(17, 18))), Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.geometry().asWkt(), 'Polygon ((12 13, 17 18, 14 15, 12 13))')
-        self.assertTrue(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 3), QgsPoint(12, 13), QgsPoint(19, 20))))
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 3), QgsPoint(12, 13), QgsPoint(19, 20))), Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.geometry().asWkt(), 'Polygon ((19 20, 17 18, 14 15, 19 20))')
-        self.assertFalse(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 4), QgsPoint(14, 15), QgsPoint(19, 20))))
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 4), QgsPoint(14, 15), QgsPoint(19, 20))), Qgis.AnnotationItemEditOperationResult.Invalid)
         self.assertEqual(item.geometry().asWkt(), 'Polygon ((19 20, 17 18, 14 15, 19 20))')
 
     def test_apply_delete_node_edit(self):
@@ -119,12 +119,15 @@ class TestQgsAnnotationPolygonItem(unittest.TestCase):
             QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(14.5, 15.5), QgsPoint(14.5, 16.5), QgsPoint(14.5, 17.5), QgsPoint(12, 13)])))
         self.assertEqual(item.geometry().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 14.5 15.5, 14.5 16.5, 14.5 17.5, 12 13))')
 
-        self.assertTrue(item.applyEdit(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 1), QgsPoint(14, 13))))
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 1), QgsPoint(14, 13))), Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.geometry().asWkt(), 'Polygon ((12 13, 14 15, 14.5 15.5, 14.5 16.5, 14.5 17.5, 12 13))')
-        self.assertTrue(item.applyEdit(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 2), QgsPoint(14.5, 15.5))))
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 2), QgsPoint(14.5, 15.5))), Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.geometry().asWkt(), 'Polygon ((12 13, 14 15, 14.5 16.5, 14.5 17.5, 12 13))')
-        self.assertFalse(item.applyEdit(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 7), QgsPoint(14, 15))))
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 7), QgsPoint(14, 15))), Qgis.AnnotationItemEditOperationResult.Invalid)
         self.assertEqual(item.geometry().asWkt(), 'Polygon ((12 13, 14 15, 14.5 16.5, 14.5 17.5, 12 13))')
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 0), QgsPoint(12, 13))), Qgis.AnnotationItemEditOperationResult.Success)
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 0), QgsPoint(12, 13))), Qgis.AnnotationItemEditOperationResult.ItemCleared)
+        self.assertEqual(item.geometry().asWkt(), 'Polygon EMPTY')
 
     def test_transient_move_operation(self):
         item = QgsAnnotationPolygonItem(
