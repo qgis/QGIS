@@ -540,7 +540,7 @@ void TestQgsMapToolEditAnnotation::testAddNode()
   QCOMPARE( spy.count(), 1 );
   QCOMPARE( spy.at( 0 ).at( 1 ).toString(), i1id );
 
-  // double click a segment
+  // double-click a segment
   utils.mouseMove( 5, 3 );
   utils.mouseDoubleClick( 5, 3, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   // second click isn't selecting an item, so no new signals should be emitted

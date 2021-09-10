@@ -29,6 +29,7 @@ class QgsRenderedAnnotationItemDetails;
 class QgsAnnotationItem;
 class QgsAnnotationLayer;
 class QgsAnnotationItemNodesSpatialIndex;
+class QgsSnapIndicator;
 
 #define SIP_NO_FILE
 
@@ -98,6 +99,8 @@ class GUI_EXPORT QgsMapToolModifyAnnotation : public QgsMapToolAdvancedDigitizin
     QSizeF deltaForKeyEvent( QgsAnnotationLayer *layer, const QgsPointXY &originalCanvasPoint, QKeyEvent *event );
 
     Action mCurrentAction = Action::NoAction;
+
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
     QObjectUniquePtr<QgsRubberBand> mHoverRubberBand;
     std::vector< QObjectUniquePtr<QgsRubberBand> > mHoveredItemNodeRubberBands;
