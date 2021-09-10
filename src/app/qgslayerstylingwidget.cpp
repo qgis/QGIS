@@ -672,11 +672,12 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
       }
 
       case QgsMapLayerType::PointCloudLayer:
+      case QgsMapLayerType::AnnotationLayer:
       {
         break;
       }
+
       case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::AnnotationLayer:
       {
         mStackedWidget->setCurrentIndex( mNotSupportedPage );
         break;
