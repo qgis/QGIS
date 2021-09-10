@@ -94,6 +94,19 @@ Set points to mCadPointList
 
 .. versionadded:: 3.22
 %End
+        void setCadPoint( const QgsPoint &point, int index );
+%Docstring
+Set ``point`` at ``index`` to mCadPointList
+
+.. versionadded:: 3.22
+%End
+        QgsPoint cadPoint( int index ) const;
+%Docstring
+Get ``point`` at ``index`` from mCadPointList
+
+.. versionadded:: 3.22
+%End
+
 %Property( name = cadPointList, get = _cadPointList, set = _setCadPointList )
         void _setCadPointList( const QList< QgsPointXY > &list );
         QList< QgsPointXY > _cadPointList() const;

@@ -76,6 +76,7 @@ class CORE_EXPORT QgsCadUtils
     };
 
     /**
+     * \ingroup core
      * Class defining all constraints for alignMapPoint() method
      *
      * This class was a structure before QGIS 3.22.
@@ -137,6 +138,19 @@ class CORE_EXPORT QgsCadUtils
          * \since QGIS 3.22
          */
         void setCadPoints( const QList< QgsPoint> &list ) { mCadPointList = list; };
+
+        /**
+         * Set \a point at \a index to mCadPointList
+         * \since QGIS 3.22
+         */
+        void setCadPoint( const QgsPoint &point, int index ) { mCadPointList[index] = point; };
+
+        /**
+         * Get \a point at \a index from mCadPointList
+         * \since QGIS 3.22
+         */
+        QgsPoint cadPoint( int index ) const { return mCadPointList[index]; };
+
 
 #ifdef SIP_RUN
         SIP_PROPERTY( name = cadPointList, get = _cadPointList, set = _setCadPointList )
