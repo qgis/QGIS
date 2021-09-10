@@ -219,7 +219,7 @@ void QgsMapToolModifyAnnotation::cadCanvasMoveEvent( QgsMapMouseEvent *event )
       {
         QgsAnnotationLayer *layer = annotationLayerFromId( mSelectedItemLayerId );
         const QgsPointXY endPointLayer = toLayerCoordinates( layer, event->mapPoint() );
-        QgsAnnotationItemEditOperationMoveNode operation( mSelectedItemId, mTargetNode.id(), mTargetNode.point(), endPointLayer );
+        QgsAnnotationItemEditOperationMoveNode operation( mSelectedItemId, mTargetNode.id(), QgsPoint( mTargetNode.point() ), QgsPoint( endPointLayer ) );
         std::unique_ptr< QgsAnnotationItemEditOperationTransientResults > operationResults( item->transientEditResults( &operation ) );
         if ( operationResults )
         {
@@ -373,10 +373,18 @@ void QgsMapToolModifyAnnotation::cadCanvasPressEvent( QgsMapMouseEvent *event )
         if ( QgsAnnotationLayer *layer = annotationLayerFromId( mSelectedItemLayerId ) )
         {
           const QgsPointXY endPointLayer = toLayerCoordinates( layer, event->mapPoint() );
-          QgsAnnotationItemEditOperationMoveNode operation( mSelectedItemId, mTargetNode.id(), mTargetNode.point(), endPointLayer );
-          if ( layer->applyEdit( &operation ) )
-            QgsProject::instance()->setDirty( true );
-          mRefreshSelectedItemAfterRedraw = true;
+          QgsAnnotationItemEditOperationMoveNode operation( mSelectedItemId, mTargetNode.id(), QgsPoint( mTargetNode.point() ), QgsPoint( endPointLayer ) );
+          switch ( layer->applyEdit( &operation ) )
+          {
+            case Qgis::AnnotationItemEditOperationResult::Success:
+              QgsProject::instance()->setDirty( true );
+              mRefreshSelectedItemAfterRedraw = true;
+              break;
+
+            case Qgis::AnnotationItemEditOperationResult::Invalid:
+            case Qgis::AnnotationItemEditOperationResult::ItemCleared:
+              break;
+          }
         }
 
         mTemporaryRubberBand.reset();
@@ -431,9 +439,42 @@ void QgsMapToolModifyAnnotation::keyPressEvent( QKeyEvent *event )
       break;
     }
 
-    case Action::MoveItem:
     case Action::MoveNode:
     {
+      if ( event->key() == Qt::Key_Delete || event->key() == Qt::Key_Backspace )
+      {
+        if ( QgsAnnotationLayer *layer = annotationLayerFromId( mSelectedItemLayerId ) )
+        {
+          QgsAnnotationItemEditOperationDeleteNode operation( mSelectedItemId, mTargetNode.id(), QgsPoint( mTargetNode.point() ) );
+          switch ( layer->applyEdit( &operation ) )
+          {
+            case Qgis::AnnotationItemEditOperationResult::Success:
+              QgsProject::instance()->setDirty( true );
+              mRefreshSelectedItemAfterRedraw = true;
+              break;
+            case Qgis::AnnotationItemEditOperationResult::Invalid:
+              break;
+            case Qgis::AnnotationItemEditOperationResult::ItemCleared:
+              QgsProject::instance()->setDirty( true );
+              break;
+          }
+        }
+
+        mTemporaryRubberBand.reset();
+        mHoveredItemNodeRubberBands.clear();
+        mHoveredItemNodes.clear();
+        mTemporaryRubberBand.reset();
+        mCurrentAction = Action::NoAction;
+        setCursor( Qt::ArrowCursor );
+        event->ignore(); // disable default shortcut handling (delete vector feature)
+        break;
+      }
+      FALLTHROUGH
+    }
+
+    case Action::MoveItem:
+    {
+      // warning -- fallthrough above!
       if ( event->key() == Qt::Key_Escape )
       {
         mCurrentAction = Action::NoAction;
