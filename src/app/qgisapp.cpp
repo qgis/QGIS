@@ -433,6 +433,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgssublayersdialog.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
 #include "qgsannotationitemguiregistry.h"
+#include "annotations/qgsannotationlayerproperties.h"
 #include "qgscreateannotationitemmaptool.h"
 
 #include "pointcloud/qgspointcloudelevationpropertieswidget.h"
@@ -16720,6 +16721,25 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
 
     case QgsMapLayerType::AnnotationLayer:
     {
+      QgsAnnotationLayerProperties annotationLayerPropertiesDialog( qobject_cast<QgsAnnotationLayer *>( mapLayer ), mMapCanvas, visibleMessageBar(), this );
+
+      if ( !page.isEmpty() )
+        annotationLayerPropertiesDialog.setCurrentPage( page );
+      else
+        annotationLayerPropertiesDialog.restoreLastPage();
+
+      for ( const QgsMapLayerConfigWidgetFactory *factory : std::as_const( providerFactories ) )
+      {
+        annotationLayerPropertiesDialog.addPropertiesPageFactory( factory );
+      }
+
+      mMapStyleWidget->blockUpdates( true );
+      if ( annotationLayerPropertiesDialog.exec() )
+      {
+        activateDeactivateLayerRelatedActions( mapLayer );
+        mMapStyleWidget->updateCurrentWidgetLayer();
+      }
+      mMapStyleWidget->blockUpdates( false ); // delete since dialog cannot be reused without updating code
       break;
     }
 
