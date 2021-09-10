@@ -14,9 +14,10 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
 from qgis.core import (
-    QgsAbstractAnnotationItemEditOperation,
     QgsAnnotationItemEditOperationMoveNode,
+    QgsAnnotationItemEditOperationDeleteNode,
     QgsVertexId,
+    QgsPoint,
     QgsPointXY
 )
 from qgis.testing import start_app, unittest
@@ -29,16 +30,18 @@ TEST_DATA_DIR = unitTestDataPath()
 
 class TestQgsAnnotationItemEditOperation(unittest.TestCase):
 
-    def test_basic(self):
-        base = QgsAbstractAnnotationItemEditOperation('my item')
-        self.assertEqual(base.itemId(), 'my item')
-
     def test_move_operation(self):
-        operation = QgsAnnotationItemEditOperationMoveNode('item id', QgsVertexId(1, 2, 3), QgsPointXY(4, 5), QgsPointXY(6, 7))
+        operation = QgsAnnotationItemEditOperationMoveNode('item id', QgsVertexId(1, 2, 3), QgsPoint(4, 5), QgsPoint(6, 7))
         self.assertEqual(operation.itemId(), 'item id')
         self.assertEqual(operation.nodeId(), QgsVertexId(1, 2, 3))
-        self.assertEqual(operation.before(), QgsPointXY(4, 5))
-        self.assertEqual(operation.after(), QgsPointXY(6, 7))
+        self.assertEqual(operation.before(), QgsPoint(4, 5))
+        self.assertEqual(operation.after(), QgsPoint(6, 7))
+
+    def test_delete_node_operation(self):
+        operation = QgsAnnotationItemEditOperationDeleteNode('item id', QgsVertexId(1, 2, 3), QgsPoint(6, 7))
+        self.assertEqual(operation.itemId(), 'item id')
+        self.assertEqual(operation.nodeId(), QgsVertexId(1, 2, 3))
+        self.assertEqual(operation.before(), QgsPoint(6, 7))
 
 
 if __name__ == '__main__':

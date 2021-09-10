@@ -34,11 +34,25 @@ class CORE_EXPORT QgsAbstractAnnotationItemEditOperation
   public:
 
     /**
+     * Operation type
+     */
+    enum class Type : int
+    {
+      MoveNode, //!< Move a node
+      DeleteNode, //!< Delete a node
+    };
+
+    /**
      * Constructor for QgsAbstractAnnotationItemEditOperation, for the specified item id.
      */
     QgsAbstractAnnotationItemEditOperation( const QString &itemId );
 
     virtual ~QgsAbstractAnnotationItemEditOperation();
+
+    /**
+     * Returns the operation type.
+     */
+    virtual Type type() const = 0;
 
     /**
      * Returns the associated item ID.
@@ -64,7 +78,9 @@ class CORE_EXPORT QgsAnnotationItemEditOperationMoveNode : public QgsAbstractAnn
      * Constructor for QgsAnnotationItemEditOperationMoveNode, where the node with the specified \a id moves
      * from \a before to \a after (in layer coordinates).
      */
-    QgsAnnotationItemEditOperationMoveNode( const QString &itemId, QgsVertexId nodeId, const QgsPointXY &before, const QgsPointXY &after );
+    QgsAnnotationItemEditOperationMoveNode( const QString &itemId, QgsVertexId nodeId, const QgsPoint &before, const QgsPoint &after );
+
+    Type type() const override;
 
     /**
      * Returns the associated node ID.
@@ -76,20 +92,55 @@ class CORE_EXPORT QgsAnnotationItemEditOperationMoveNode : public QgsAbstractAnn
      *
      * \see after()
      */
-    QgsPointXY before() const { return mBefore; }
+    QgsPoint before() const { return mBefore; }
 
     /**
      * Returns the node position after the move occurred (in layer coordinates).
      *
      * \see before()
      */
-    QgsPointXY after() const { return mAfter; }
+    QgsPoint after() const { return mAfter; }
 
   private:
 
     QgsVertexId mNodeId;
-    QgsPointXY mBefore;
-    QgsPointXY mAfter;
+    QgsPoint mBefore;
+    QgsPoint mAfter;
+
+};
+
+
+/**
+ * \ingroup core
+ * \brief Annotation item edit operation consisting of deleting a node
+ * \since QGIS 3.22
+ */
+class CORE_EXPORT QgsAnnotationItemEditOperationDeleteNode : public QgsAbstractAnnotationItemEditOperation
+{
+  public:
+
+    /**
+     * Constructor for QgsAnnotationItemEditOperationDeleteNode, where the node with the specified \a id and previous
+     * position \a before is deleted.
+     */
+    QgsAnnotationItemEditOperationDeleteNode( const QString &itemId, QgsVertexId nodeId, const QgsPoint &before );
+
+    Type type() const override;
+
+    /**
+     * Returns the deleted node ID.
+     */
+    QgsVertexId nodeId() const { return mNodeId; }
+
+    /**
+     * Returns the node position before the delete occurred (in layer coordinates).
+     */
+    QgsPoint before() const { return mBefore; }
+
+  private:
+
+    QgsVertexId mNodeId;
+    QgsPoint mBefore;
 
 };
 

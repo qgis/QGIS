@@ -31,7 +31,7 @@ QgsAbstractAnnotationItemEditOperation::~QgsAbstractAnnotationItemEditOperation(
 //
 // QgsAnnotationItemEditOperationMoveNode
 //
-QgsAnnotationItemEditOperationMoveNode::QgsAnnotationItemEditOperationMoveNode( const QString &itemId, QgsVertexId nodeId, const QgsPointXY &before, const QgsPointXY &after )
+QgsAnnotationItemEditOperationMoveNode::QgsAnnotationItemEditOperationMoveNode( const QString &itemId, QgsVertexId nodeId, const QgsPoint &before, const QgsPoint &after )
   : QgsAbstractAnnotationItemEditOperation( itemId )
   , mNodeId( nodeId )
   , mBefore( before )
@@ -40,4 +40,25 @@ QgsAnnotationItemEditOperationMoveNode::QgsAnnotationItemEditOperationMoveNode( 
 
 }
 
+QgsAbstractAnnotationItemEditOperation::Type QgsAnnotationItemEditOperationMoveNode::type() const
+{
+  return Type::MoveNode;
+}
 
+
+//
+// QgsAnnotationItemEditOperationDeleteNode
+//
+
+QgsAnnotationItemEditOperationDeleteNode::QgsAnnotationItemEditOperationDeleteNode( const QString &itemId, QgsVertexId nodeId, const QgsPoint &before )
+  : QgsAbstractAnnotationItemEditOperation( itemId )
+  , mNodeId( nodeId )
+  , mBefore( before )
+{
+
+}
+
+QgsAbstractAnnotationItemEditOperation::Type QgsAnnotationItemEditOperationDeleteNode::type() const
+{
+  return Type::DeleteNode;
+}

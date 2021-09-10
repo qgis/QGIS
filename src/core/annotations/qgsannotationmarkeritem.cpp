@@ -82,22 +82,36 @@ QList<QgsAnnotationItemNode> QgsAnnotationMarkerItem::nodes() const
 
 bool QgsAnnotationMarkerItem::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
 {
-  if ( QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation ) )
+  switch ( operation->type() )
   {
-    mPoint = QgsPoint( moveOperation->after() );
-    return true;
+    case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
+    {
+      QgsAnnotationItemEditOperationMoveNode *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      mPoint = QgsPoint( moveOperation->after() );
+      return true;
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
+    {
+      return false;
+    }
   }
-  else
-  {
-    return false;
-  }
+
+  return false;
 }
 
 QgsAnnotationItemEditOperationTransientResults *QgsAnnotationMarkerItem::transientEditResults( QgsAbstractAnnotationItemEditOperation *operation )
 {
-  if ( QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation ) )
+  switch ( operation->type() )
   {
-    return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromPointXY( moveOperation->after() ) );
+    case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
+    {
+      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( moveOperation->after().clone() ) );
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
+      break;
   }
   return nullptr;
 }

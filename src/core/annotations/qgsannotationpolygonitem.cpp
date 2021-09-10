@@ -135,25 +135,41 @@ bool QgsAnnotationPolygonItem::transform( const QTransform &transform )
 
 bool QgsAnnotationPolygonItem::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
 {
-  if ( QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation ) )
+  switch ( operation->type() )
   {
-    return mPolygon->moveVertex( moveOperation->nodeId(), QgsPoint( moveOperation->after() ) );
+    case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
+    {
+      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      return mPolygon->moveVertex( moveOperation->nodeId(), QgsPoint( moveOperation->after() ) );
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
+    {
+      QgsAnnotationItemEditOperationDeleteNode *deleteOperation = qgis::down_cast< QgsAnnotationItemEditOperationDeleteNode * >( operation );
+      return mPolygon->deleteVertex( deleteOperation->nodeId() );
+    }
   }
-  else
-  {
-    return false;
-  }
+
+  return false;
 }
 
 QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPolygonItem::transientEditResults( QgsAbstractAnnotationItemEditOperation *operation )
 {
-  if ( QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation ) )
+  switch ( operation->type() )
   {
-    std::unique_ptr< QgsCurvePolygon > modifiedPolygon( mPolygon->clone() );
-    if ( modifiedPolygon->moveVertex( moveOperation->nodeId(), QgsPoint( moveOperation->after() ) ) )
+    case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
-      return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( std::move( modifiedPolygon ) ) );
+      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      std::unique_ptr< QgsCurvePolygon > modifiedPolygon( mPolygon->clone() );
+      if ( modifiedPolygon->moveVertex( moveOperation->nodeId(), QgsPoint( moveOperation->after() ) ) )
+      {
+        return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( std::move( modifiedPolygon ) ) );
+      }
+      break;
     }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
+      break;
   }
   return nullptr;
 }
