@@ -26,6 +26,7 @@
 #include "qgsannotationitem.h"
 #include "qgsannotationitemnode.h"
 #include "qgsannotationitemeditoperation.h"
+#include "qgssnapindicator.h"
 #include "RTree.h"
 #include <QTransform>
 #include <QWindow>
@@ -104,6 +105,7 @@ class QgsAnnotationItemNodesSpatialIndex : public RTree<int, float, 2, float>
 
 QgsMapToolModifyAnnotation::QgsMapToolModifyAnnotation( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
+  , mSnapIndicator( new QgsSnapIndicator( canvas ) )
 {
 
   connect( QgsMapToolModifyAnnotation::canvas(), &QgsMapCanvas::mapCanvasRefreshed, this, &QgsMapToolModifyAnnotation::onCanvasRefreshed );
@@ -113,12 +115,17 @@ QgsMapToolModifyAnnotation::~QgsMapToolModifyAnnotation() = default;
 
 void QgsMapToolModifyAnnotation::deactivate()
 {
+  mSnapIndicator->setMatch( QgsPointLocator::Match() );
+
   clearHoveredItem();
   QgsMapToolAdvancedDigitizing::deactivate();
 }
 
 void QgsMapToolModifyAnnotation::cadCanvasMoveEvent( QgsMapMouseEvent *event )
 {
+  event->snapPoint();
+  mSnapIndicator->setMatch( event->mapPointMatch() );
+
   const QgsPointXY mapPoint = event->mapPoint();
 
   switch ( mCurrentAction )
@@ -417,7 +424,7 @@ void QgsMapToolModifyAnnotation::canvasDoubleClickEvent( QgsMapMouseEvent *event
       mCurrentAction = Action::NoAction;
       if ( mHoveredItemId == mSelectedItemId && mHoveredItemLayerId == mSelectedItemLayerId )
       {
-        // double click on selected item => add node
+        // double-click on selected item => add node
         if ( QgsAnnotationLayer *layer = annotationLayerFromId( mSelectedItemLayerId ) )
         {
           const QgsPointXY layerPoint = toLayerCoordinates( layer, event->mapPoint() );
