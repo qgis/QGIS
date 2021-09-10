@@ -98,7 +98,7 @@ class QgsRenderedItemResultsSpatialIndex : public RTree<const QgsRenderedItemDet
 ///@endcond
 
 QgsRenderedItemResults::QgsRenderedItemResults( const QgsRectangle &extent )
-  : mExtent( extent.buffered( std::max( extent.width(), extent.height() ) * 1000 ) )
+  : mExtent( extent.buffered( std::max( extent.width(), extent.height() ) * 1000 ) ) // RTree goes crazy if we insert geometries outside the bounds, so buffer them right out to be safe
   , mAnnotationItemsIndex( std::make_unique< QgsRenderedItemResultsSpatialIndex >( mExtent ) )
 {
 
