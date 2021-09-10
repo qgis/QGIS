@@ -170,6 +170,7 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     bool supportsEditing() const override;
     QgsDataProvider *dataProvider() override;
     const QgsDataProvider *dataProvider() const override SIP_SKIP;
+    QString htmlMetadata() const override;
 
   private:
 

@@ -153,6 +153,8 @@ Returns ``True`` if the operation was successfully applied.
 
     virtual QgsDataProvider *dataProvider();
 
+    virtual QString htmlMetadata() const;
+
 
 };
 
