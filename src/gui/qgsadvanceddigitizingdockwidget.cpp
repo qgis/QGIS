@@ -803,7 +803,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   context.mConstraint = _constraint( mMConstraint.get() );
   context.distanceConstraint = _constraint( mDistanceConstraint.get() );
   context.angleConstraint = _constraint( mAngleConstraint.get() );
-  context.cadPointList = mCadPointList;
+  context.setCadPoints( mCadPointList );
 
   context.commonAngleConstraint.locked = true;
   context.commonAngleConstraint.relative = context.angleConstraint.relative;

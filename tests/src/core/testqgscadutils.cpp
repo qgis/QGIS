@@ -53,7 +53,7 @@ class TestQgsCadUtils : public QObject
       QgsCadUtils::AlignMapPointContext context;
       context.snappingUtils = mSnappingUtils;
       context.mapUnitsPerPixel = mMapSettings.mapUnitsPerPixel();
-      context.cadPointList << QgsPoint() << QgsPoint( 30, 20 ) << QgsPoint( 30, 30 );
+      context.cadPoints() << QgsPoint() << QgsPoint( 30, 20 ) << QgsPoint( 30, 30 );
       return context;
     }
 
@@ -231,7 +231,7 @@ void TestQgsCadUtils::testCommonAngle()
   // common angle rel
   context.angleConstraint = QgsCadUtils::AlignMapPointConstraint();
   context.commonAngleConstraint = QgsCadUtils::AlignMapPointConstraint( true, true, 90 );
-  context.cadPointList[1] = QgsPoint( 40, 20 );
+  context.cadPoints()[1] = QgsPoint( 40, 20 );
   QgsCadUtils::AlignMapPointOutput res3 = QgsCadUtils::alignMapPoint( QgsPointXY( 50.1, 29.9 ), context );
   QVERIFY( res3.valid );
   QCOMPARE( res3.softLockCommonAngle, 90.0 );
@@ -293,7 +293,7 @@ void TestQgsCadUtils::testDistance()
 void TestQgsCadUtils::testEdge()
 {
   QgsCadUtils::AlignMapPointContext context( baseContext() );
-  context.cadPointList = QList<QgsPoint>() << QgsPoint() << QgsPoint( 40, 30 ) << QgsPoint( 40, 40 );
+  context.setCadPoints( QList<QgsPoint>() << QgsPoint() << QgsPoint( 40, 30 ) << QgsPoint( 40, 40 ) );
 
   const QgsPointXY edgePt( 20, 15 );  // in the middle of the triangle polygon's edge
 

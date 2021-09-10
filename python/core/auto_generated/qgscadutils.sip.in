@@ -32,25 +32,6 @@ The :py:class:`QgsCadUtils` class provides routines for CAD editing.
       double value;
     };
 
-    struct AlignMapPointContext
-    {
-      QgsSnappingUtils *snappingUtils;
-      double mapUnitsPerPixel;
-
-      QgsCadUtils::AlignMapPointConstraint xConstraint;
-      QgsCadUtils::AlignMapPointConstraint yConstraint;
-
-      QgsCadUtils::AlignMapPointConstraint zConstraint;
-
-      QgsCadUtils::AlignMapPointConstraint mConstraint;
-      QgsCadUtils::AlignMapPointConstraint distanceConstraint;
-      QgsCadUtils::AlignMapPointConstraint angleConstraint;
-      QgsCadUtils::AlignMapPointConstraint commonAngleConstraint;
-
-      QList<QgsPoint> cadPointList;
-
-    };
-
     struct AlignMapPointOutput
     {
       bool valid;
@@ -62,6 +43,61 @@ The :py:class:`QgsCadUtils` class provides routines for CAD editing.
       QgsPointLocator::Match edgeMatch;
 
       double softLockCommonAngle;
+    };
+
+    class AlignMapPointContext
+{
+%Docstring(signature="appended")
+Class defining all constraints for :py:func:`~QgsCadUtils.alignMapPoint` method
+
+This class was a structure before QGIS 3.22.
+
+mCadPointList is now a private QList< :py:class:`QgsPoint` >.
+Use getters/setters.
+
+.. seealso:: :py:func:`cadPoints`
+
+.. seealso:: :py:func:`setCadPoints`
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgscadutils.h"
+%End
+      public:
+        QgsSnappingUtils *snappingUtils;
+        double mapUnitsPerPixel;
+
+        QgsCadUtils::AlignMapPointConstraint xConstraint;
+        QgsCadUtils::AlignMapPointConstraint yConstraint;
+
+        QgsCadUtils::AlignMapPointConstraint zConstraint;
+
+        QgsCadUtils::AlignMapPointConstraint mConstraint;
+        QgsCadUtils::AlignMapPointConstraint distanceConstraint;
+        QgsCadUtils::AlignMapPointConstraint angleConstraint;
+        QgsCadUtils::AlignMapPointConstraint commonAngleConstraint;
+
+
+        QList< QgsPoint > cadPoints() const;
+%Docstring
+Returns a list of points from mCadPointList.
+
+.. versionadded:: 3.22
+%End
+        void setCadPoints( const QList< QgsPoint> &list );
+%Docstring
+Set points to mCadPointList
+
+:param list: points to mCadPointList
+
+.. versionadded:: 3.22
+%End
+%Property( name = cadPointList, get = _cadPointList, set = _setCadPointList )
+        void _setCadPointList( const QList< QgsPointXY > &list );
+        QList< QgsPointXY > _cadPointList() const;
+
     };
 
     static QgsCadUtils::AlignMapPointOutput alignMapPoint( const QgsPointXY &originalMapPoint, const QgsCadUtils::AlignMapPointContext &ctx );
