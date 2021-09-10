@@ -63,49 +63,35 @@ QgsProcessingAlgorithm::Flags QgsConditionalMergeAlgorithm::flags() const
 
 void QgsConditionalMergeAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "EXPRESSION" ), QObject::tr( "Routing expression" ),
-                QStringLiteral( "" ), QStringLiteral( "INPUT" ) ) );
-  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "LAYER_IF" ), QObject::tr( "Layer to transfer if condition" ), QList< int >(), QVariant(), true ) );
-  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "LAYER_ELSE" ), QObject::tr( "Layer to transfer else" ), QList< int >(), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "DEFAULT_INPUT" ), QObject::tr( "Input to transfer if exists" ), QList< int >(), QVariant() ) );
+  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "FALLBACK_INPUT" ), QObject::tr( "Input to transfer else" ), QList< int >(), QVariant() ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Layer" ) ) );
 }
 
-bool QgsConditionalMergeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+bool QgsConditionalMergeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mExpression = QgsExpression( parameterAsString( parameters, QStringLiteral( "EXPRESSION" ), context ) );
-  if ( mExpression.hasParserError() )
-  {
-    feedback->reportError( mExpression.parserErrorString() );
-    return false;
-  }
-
-  mExpressionContext = createExpressionContext( parameters, context );
-  mExpression.prepare( &mExpressionContext );
-
-  mLayerIf = parameterAsVectorLayer( parameters, QStringLiteral( "LAYER_IF" ), context );
-  mLayerElse = parameterAsVectorLayer( parameters, QStringLiteral( "LAYER_ELSE" ), context );
+  mDefaultInput = parameterAsVectorLayer( parameters, QStringLiteral( "DEFAULT_INPUT" ), context );
+  mFallbackInput = parameterAsVectorLayer( parameters, QStringLiteral( "FALLBACK_INPUT" ), context );
 
   return true;
 }
 
 
-QVariantMap QgsConditionalMergeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QVariantMap QgsConditionalMergeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   QgsVectorLayer *selectedLayer = nullptr;
-
-  const bool res = mExpression.evaluate( &mExpressionContext ).toBool();
-  if ( mLayerIf && res )
+  if ( mDefaultInput )
   {
-    selectedLayer = mLayerIf;
+    selectedLayer = mDefaultInput;
   }
-  else if ( mLayerElse )
+  else if ( mFallbackInput )
   {
-    selectedLayer = mLayerElse;
+    selectedLayer = mFallbackInput;
   }
   else
   {
-    throw QgsProcessingException( QStringLiteral( "No valid layer" ) );
+    throw QgsProcessingException( QStringLiteral( "No valid input" ) );
   }
 
   QString sinkId;
