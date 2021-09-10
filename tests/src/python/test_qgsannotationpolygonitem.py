@@ -128,7 +128,7 @@ class TestQgsAnnotationPolygonItem(unittest.TestCase):
         self.assertEqual(item.geometry().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 14.5 15.5, 14.5 16.5, 14.5 17.5, 12 13))')
 
         self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationAddNode('', QgsPoint(15, 16))), Qgis.AnnotationItemEditOperationResult.Success)
-        self.assertEqual(item.geometry().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 14.5 15.5, 15 16, 14.5 16.5, 14.5 17.5, 12 13))')
+        self.assertEqual(item.geometry().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 14.5 15.5, 14.5 16, 14.5 16.5, 14.5 17.5, 12 13))')
 
     def test_transient_move_operation(self):
         item = QgsAnnotationPolygonItem(

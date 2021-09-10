@@ -182,6 +182,16 @@ class TestQgsMapToolUtils
       mMapTool->canvasPressEvent( &e1 );
     }
 
+    void mouseDoubleClick( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers(), bool snap = false )
+    {
+      QgsMapMouseEvent e1( mMapTool->canvas(), QEvent::MouseButtonPress, mapToScreen( mapX, mapY ), button, button, stateKey );
+
+      if ( snap )
+        e1.snapPoint();
+
+      mMapTool->canvasDoubleClickEvent( &e1 );
+    }
+
     void mouseRelease( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers(), bool snap = false )
     {
       QgsMapMouseEvent e2( mMapTool->canvas(), QEvent::MouseButtonRelease, mapToScreen( mapX, mapY ), button, Qt::MouseButton(), stateKey );
