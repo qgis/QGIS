@@ -252,7 +252,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     /**
      * Determines if Z or M will be enabled.
-     * \since QGIS 3.20
+     * \since QGIS 3.22
      */
     void switchZM( );
 
@@ -275,13 +275,13 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     /**
      * Returns the \a CadConstraint on the Z coordinate
-     * \since QGIS 3.20
+     * \since QGIS 3.22
      */
     const CadConstraint *constraintZ() const { return mZConstraint.get(); }
 
     /**
      * Returns the \a CadConstraint on the M coordinate
-     * \since QGIS 3.20
+     * \since QGIS 3.22
      */
     const CadConstraint *constraintM() const { return mMConstraint.get(); }
     //! Returns TRUE if a constraint on a common angle is active
@@ -404,7 +404,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     * \param mode What type of interaction to emulate
     * \param value The value (as a QString, as it could be an expression)
     * \note unstable API (will likely change)
-    * \since QGIS 3.20
+    * \since QGIS 3.22
     */
     void setZ( const QString &value, WidgetSetMode mode );
 
@@ -414,7 +414,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     * \param mode What type of interaction to emulate
     * \param value The value (as a QString, as it could be an expression)
     * \note unstable API (will likely change)
-    * \since QGIS 3.20
+    * \since QGIS 3.22
     */
     void setM( const QString &value, WidgetSetMode mode );
 
@@ -503,7 +503,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     * Emitted whenever the Z \a value changes (either the mouse moved, or the user changed the input).
     * Could be used by widgets that must reflect the current advanced digitizing state.
     * \note unstable API (will likely change)
-    * \since QGIS 3.20
+    * \since QGIS 3.22
     */
     void valueZChanged( const QString &value );
 
@@ -511,7 +511,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     * Emitted whenever the M \a value changes (either the mouse moved, or the user changed the input).
     * Could be used by widgets that must reflect the current advanced digitizing state.
     * \note unstable API (will likely change)
-    * \since QGIS 3.20
+    * \since QGIS 3.22
     */
     void valueMChanged( const QString &value );
 
@@ -551,7 +551,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     * Emitted whenever the Z parameter is \a locked.
     * Could be used by widgets that must reflect the current advanced digitizing state.
     * \note unstable API (will likely change)
-    * \since QGIS 3.20
+    * \since QGIS 3.22
     */
     void lockZChanged( bool locked );
 
@@ -559,7 +559,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     * Emitted whenever the M parameter is \a locked.
     * Could be used by widgets that must reflect the current advanced digitizing state.
     * \note unstable API (will likely change)
-    * \since QGIS 3.20
+    * \since QGIS 3.22
     */
     void lockMChanged( bool locked );
 
@@ -605,7 +605,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     *
     * \param relative Whether the Z parameter is relative or not.
     * \note unstable API (will likely change)
-    * \since QGIS 3.20
+    * \since QGIS 3.22
     */
     void relativeZChanged( bool relative );
 
@@ -615,7 +615,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     *
     * \param relative Whether the M parameter is relative or not.
     * \note unstable API (will likely change)
-    * \since QGIS 3.20
+    * \since QGIS 3.22
     */
     void relativeMChanged( bool relative );
 
@@ -660,7 +660,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     *
     * \param enabled Whether the Z parameter is enabled or not.
     * \note unstable API (will likely change)
-    * \since QGIS 3.20
+    * \since QGIS 3.22
     */
     void enabledChangedZ( bool enabled );
 
@@ -671,7 +671,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     *
     * \param enabled Whether the M parameter is enabled or not.
     * \note unstable API (will likely change)
-    * \since QGIS 3.20
+    * \since QGIS 3.22
     */
     void enabledChangedM( bool enabled );
 
@@ -717,7 +717,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     * Emitted whenever the Z field should get the focus using the shortcuts (Z).
     * Could be used by widgets to capture the focus when a field is being edited.
     * \note unstable API (will likely change)
-    * \since QGIS 3.20
+    * \since QGIS 3.22
     */
     void focusOnZRequested();
 
@@ -725,7 +725,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     * Emitted whenever the M field should get the focus using the shortcuts (M).
     * Could be used by widgets to capture the focus when a field is being edited.
     * \note unstable API (will likely change)
-    * \since QGIS 3.20
+    * \since QGIS 3.22
     */
     void focusOnMRequested();
 

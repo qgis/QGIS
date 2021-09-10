@@ -62,9 +62,17 @@ class CORE_EXPORT QgsCadUtils
       QgsCadUtils::AlignMapPointConstraint xConstraint;
       //! Constraint for Y coordinate
       QgsCadUtils::AlignMapPointConstraint yConstraint;
-      //! Constraint for Z coordinate
+
+      /**
+       * Constraint for Z coordinate
+       * \since QGIS 3.22
+       */
       QgsCadUtils::AlignMapPointConstraint zConstraint;
-      //! Constraint for M coordinate
+
+      /**
+       * Constraint for M coordinate
+       * \since QGIS 3.22
+       */
       QgsCadUtils::AlignMapPointConstraint mConstraint;
       //! Constraint for distance
       QgsCadUtils::AlignMapPointConstraint distanceConstraint;
