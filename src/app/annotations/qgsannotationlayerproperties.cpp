@@ -106,6 +106,15 @@ void QgsAnnotationLayerProperties::apply()
 {
   mLayer->setName( mLayerOrigNameLineEdit->text() );
 
+  // set up the scale based layer visibility stuff....
+  mLayer->setScaleBasedVisibility( mScaleVisibilityGroupBox->isChecked() );
+  mLayer->setMaximumScale( mScaleRangeWidget->maximumScale() );
+  mLayer->setMinimumScale( mScaleRangeWidget->minimumScale() );
+
+  // set the blend mode and opacity for the layer
+  mLayer->setBlendMode( mBlendModeComboBox->blendMode() );
+  mLayer->setOpacity( mOpacityWidget->opacity() );
+
   for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
     w->apply();
 
@@ -143,6 +152,15 @@ void QgsAnnotationLayerProperties::syncToLayer()
   connect( mInformationTextBrowser, &QTextBrowser::anchorClicked, this, &QgsAnnotationLayerProperties::urlClicked );
 
   mCrsSelector->setCrs( mLayer->crs() );
+
+  // set up the scale based layer visibility stuff....
+  mScaleRangeWidget->setScaleRange( mLayer->minimumScale(), mLayer->maximumScale() );
+  mScaleVisibilityGroupBox->setChecked( mLayer->hasScaleBasedVisibility() );
+  mScaleRangeWidget->setMapCanvas( mMapCanvas );
+
+  // opacity and blend modes
+  mBlendModeComboBox->setBlendMode( mLayer->blendMode() );
+  mOpacityWidget->setOpacity( mLayer->opacity() );
 
   for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
     w->syncToLayer( mLayer );
