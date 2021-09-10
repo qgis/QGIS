@@ -510,12 +510,25 @@ Push a warning
 Remove any previously emitted warnings (if any)
 %End
 
-    void pointChanged( const QgsPoint &point );
+    void pointChangedV2( const QgsPoint &point );
 %Docstring
 Sometimes a constraint may change the current point out of a mouse event. This happens normally
 when a constraint is toggled.
 
 :param point: The last known digitizing point. Can be used to emulate a mouse event.
+
+.. versionadded:: 3.22
+%End
+
+ void pointChanged( const QgsPointXY &point ) /Deprecated/;
+%Docstring
+Sometimes a constraint may change the current point out of a mouse event. This happens normally
+when a constraint is toggled.
+
+:param point: The last known digitizing point. Can be used to emulate a mouse event.
+
+.. deprecated:: QGIS 3.22
+   - No longer used, will be removed in QGIS 4.0. Use the variant which emits :py:class:`QgsPoint` object instead of :py:class:`QgsPointXY`.
 %End
 
 

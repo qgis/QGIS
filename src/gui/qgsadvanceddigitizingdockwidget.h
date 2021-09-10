@@ -493,8 +493,18 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * when a constraint is toggled.
      *
      * \param point The last known digitizing point. Can be used to emulate a mouse event.
+     * \since QGIS 3.22
      */
-    void pointChanged( const QgsPoint &point );
+    void pointChangedV2( const QgsPoint &point );
+
+    /**
+     * Sometimes a constraint may change the current point out of a mouse event. This happens normally
+     * when a constraint is toggled.
+     *
+     * \param point The last known digitizing point. Can be used to emulate a mouse event.
+     * \deprecated since QGIS 3.22 - No longer used, will be removed in QGIS 4.0. Use the variant which emits QgsPoint object instead of QgsPointXY.
+     */
+    Q_DECL_DEPRECATED void pointChanged( const QgsPointXY &point ) SIP_DEPRECATED;
 
     //! Signals for external widgets that need to update according to current values
 

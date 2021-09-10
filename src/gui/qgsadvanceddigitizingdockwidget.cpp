@@ -591,7 +591,7 @@ void QgsAdvancedDigitizingDockWidget::updateConstraintValue( CadConstraint *cons
 
   constraint->setValue( value, convertExpression );
   // run a fake map mouse event to update the paint item
-  emit pointChanged( mCadPointList.value( 0 ) );
+  emit pointChangedV2( mCadPointList.value( 0 ) );
 }
 
 void QgsAdvancedDigitizingDockWidget::lockConstraint( bool activate /* default true */ )
@@ -659,7 +659,7 @@ void QgsAdvancedDigitizingDockWidget::lockConstraint( bool activate /* default t
     }
 
     // run a fake map mouse event to update the paint item
-    emit pointChanged( mCadPointList.value( 0 ) );
+    emit pointChangedV2( mCadPointList.value( 0 ) );
   }
 }
 
@@ -1162,7 +1162,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
       {
         mXConstraint->toggleLocked();
         emit lockXChanged( mXConstraint->isLocked() );
-        emit pointChanged( mCadPointList.value( 0 ) );
+        emit pointChangedV2( mCadPointList.value( 0 ) );
         e->accept();
       }
       else if ( type == QEvent::ShortcutOverride && e->modifiers() == Qt::ShiftModifier )
@@ -1171,7 +1171,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
         {
           mXConstraint->toggleRelative();
           emit relativeXChanged( mXConstraint->relative() );
-          emit pointChanged( mCadPointList.value( 0 ) );
+          emit pointChangedV2( mCadPointList.value( 0 ) );
           e->accept();
         }
       }
@@ -1192,7 +1192,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
       {
         mYConstraint->toggleLocked();
         emit lockYChanged( mYConstraint->isLocked() );
-        emit pointChanged( mCadPointList.value( 0 ) );
+        emit pointChangedV2( mCadPointList.value( 0 ) );
         e->accept();
       }
       else if ( type == QEvent::ShortcutOverride &&  e->modifiers() == Qt::ShiftModifier )
@@ -1201,7 +1201,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
         {
           mYConstraint->toggleRelative();
           emit relativeYChanged( mYConstraint->relative() );
-          emit pointChanged( mCadPointList.value( 0 ) );
+          emit pointChangedV2( mCadPointList.value( 0 ) );
           e->accept();
         }
       }
@@ -1222,7 +1222,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
       {
         mZConstraint->toggleLocked();
         emit lockZChanged( mZConstraint->isLocked() );
-        emit pointChanged( mCadPointList.value( 0 ) );
+        emit pointChangedV2( mCadPointList.value( 0 ) );
         e->accept();
       }
       else if ( type == QEvent::ShortcutOverride &&  e->modifiers() == Qt::ShiftModifier )
@@ -1231,7 +1231,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
         {
           mZConstraint->toggleRelative();
           emit relativeZChanged( mZConstraint->relative() );
-          emit pointChanged( mCadPointList.value( 0 ) );
+          emit pointChangedV2( mCadPointList.value( 0 ) );
           e->accept();
         }
       }
@@ -1252,7 +1252,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
       {
         mMConstraint->toggleLocked();
         emit lockMChanged( mMConstraint->isLocked() );
-        emit pointChanged( mCadPointList.value( 0 ) );
+        emit pointChangedV2( mCadPointList.value( 0 ) );
         e->accept();
       }
       else if ( type == QEvent::ShortcutOverride &&  e->modifiers() == Qt::ShiftModifier )
@@ -1261,7 +1261,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
         {
           mMConstraint->toggleRelative();
           emit relativeMChanged( mMConstraint->relative() );
-          emit pointChanged( mCadPointList.value( 0 ) );
+          emit pointChangedV2( mCadPointList.value( 0 ) );
           e->accept();
         }
       }
@@ -1284,7 +1284,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
         {
           mAngleConstraint->toggleLocked();
           emit lockAngleChanged( mAngleConstraint->isLocked() );
-          emit pointChanged( mCadPointList.value( 0 ) );
+          emit pointChangedV2( mCadPointList.value( 0 ) );
           e->accept();
         }
       }
@@ -1294,7 +1294,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
         {
           mAngleConstraint->toggleRelative();
           emit relativeAngleChanged( mAngleConstraint->relative() );
-          emit pointChanged( mCadPointList.value( 0 ) );
+          emit pointChangedV2( mCadPointList.value( 0 ) );
           e->accept();
         }
       }
@@ -1317,7 +1317,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
         {
           mDistanceConstraint->toggleLocked();
           emit lockDistanceChanged( mDistanceConstraint->isLocked() );
-          emit pointChanged( mCadPointList.value( 0 ) );
+          emit pointChangedV2( mCadPointList.value( 0 ) );
           e->accept();
         }
       }
@@ -1362,7 +1362,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
         e->accept();
 
         // run a fake map mouse event to update the paint item
-        emit pointChanged( mCadPointList.value( 0 ) );
+        emit pointChangedV2( mCadPointList.value( 0 ) );
       }
       break;
     }
