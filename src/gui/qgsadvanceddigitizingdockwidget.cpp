@@ -898,8 +898,8 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
 void QgsAdvancedDigitizingDockWidget::updateUnlockedConstraintValues( const QgsPoint &point )
 {
   bool previousPointExist, penulPointExist;
-  const QgsPoint previousPt = previousPoint( &previousPointExist );
-  const QgsPoint penultimatePt = penultimatePoint( &penulPointExist );
+  const QgsPoint previousPt = previousPointV2( &previousPointExist );
+  const QgsPoint penultimatePt = penultimatePointV2( &penulPointExist );
 
   // --- angle
   if ( !mAngleConstraint->isLocked() && previousPointExist )
@@ -1015,8 +1015,8 @@ bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent *e, CadCo
   }
 
   bool previousPointExist, penulPointExist, snappedSegmentExist;
-  const QgsPoint previousPt = previousPoint( &previousPointExist );
-  const QgsPoint penultimatePt = penultimatePoint( &penulPointExist );
+  const QgsPoint previousPt = previousPointV2( &previousPointExist );
+  const QgsPoint penultimatePt = penultimatePointV2( &penulPointExist );
   mSnappedSegment = snapSegmentToAllLayers( e->originalMapPoint(), &snappedSegmentExist );
 
   if ( !previousPointExist || !snappedSegmentExist )
@@ -1527,7 +1527,7 @@ void QgsAdvancedDigitizingDockWidget::CadConstraint::toggleRelative()
   setRelative( !mRelative );
 }
 
-QgsPoint QgsAdvancedDigitizingDockWidget::currentPoint( bool *exist ) const
+QgsPoint QgsAdvancedDigitizingDockWidget::currentPointV2( bool *exist ) const
 {
   if ( exist )
     *exist = pointsCount() > 0;
@@ -1537,7 +1537,7 @@ QgsPoint QgsAdvancedDigitizingDockWidget::currentPoint( bool *exist ) const
     return QgsPoint();
 }
 
-QgsPoint QgsAdvancedDigitizingDockWidget::previousPoint( bool *exist ) const
+QgsPoint QgsAdvancedDigitizingDockWidget::previousPointV2( bool *exist ) const
 {
   if ( exist )
     *exist = pointsCount() > 1;
@@ -1547,7 +1547,7 @@ QgsPoint QgsAdvancedDigitizingDockWidget::previousPoint( bool *exist ) const
     return QgsPoint();
 }
 
-QgsPoint QgsAdvancedDigitizingDockWidget::penultimatePoint( bool *exist ) const
+QgsPoint QgsAdvancedDigitizingDockWidget::penultimatePointV2( bool *exist ) const
 {
   if ( exist )
     *exist = pointsCount() > 2;
