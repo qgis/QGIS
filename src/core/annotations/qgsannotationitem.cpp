@@ -23,9 +23,9 @@ Qgis::AnnotationItemFlags QgsAnnotationItem::flags() const
   return Qgis::AnnotationItemFlags();
 }
 
-bool QgsAnnotationItem::applyEdit( QgsAbstractAnnotationItemEditOperation * )
+Qgis::AnnotationItemEditOperationResult QgsAnnotationItem::applyEdit( QgsAbstractAnnotationItemEditOperation * )
 {
-  return false;
+  return Qgis::AnnotationItemEditOperationResult::Invalid;
 }
 
 QgsAnnotationItemEditOperationTransientResults *QgsAnnotationItem::transientEditResults( QgsAbstractAnnotationItemEditOperation * )

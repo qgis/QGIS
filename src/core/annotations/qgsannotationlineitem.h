@@ -46,7 +46,7 @@ class CORE_EXPORT QgsAnnotationLineItem : public QgsAnnotationItem
     QList< QgsAnnotationItemNode > nodes() const override;
     QgsGeometry rubberBandGeometry() const override;
     bool transform( const QTransform &transform ) override;
-    bool applyEdit( QgsAbstractAnnotationItemEditOperation *operation ) override;
+    Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation ) override;
     QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) override SIP_FACTORY;
 
     /**

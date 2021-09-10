@@ -147,7 +147,7 @@ bool QgsAnnotationPointTextItem::transform( const QTransform &transform )
   return true;
 }
 
-bool QgsAnnotationPointTextItem::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
+Qgis::AnnotationItemEditOperationResult QgsAnnotationPointTextItem::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
 {
   switch ( operation->type() )
   {
@@ -155,16 +155,16 @@ bool QgsAnnotationPointTextItem::applyEdit( QgsAbstractAnnotationItemEditOperati
     {
       QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
       mPoint = moveOperation->after();
-      return true;
+      return Qgis::AnnotationItemEditOperationResult::Success;
     }
 
     case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
     {
-      return false;
+      return Qgis::AnnotationItemEditOperationResult::ItemCleared;
     }
   }
 
-  return false;
+  return Qgis::AnnotationItemEditOperationResult::Invalid;
 }
 
 QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPointTextItem::transientEditResults( QgsAbstractAnnotationItemEditOperation *operation )

@@ -672,6 +672,13 @@ Qgis.AnnotationItemNodeType.VertexHandle.__doc__ = "Node is a handle for manipul
 Qgis.AnnotationItemNodeType.__doc__ = 'Annotation item node types.\n\n.. versionadded:: 3.22\n\n' + '* ``VertexHandle``: ' + Qgis.AnnotationItemNodeType.VertexHandle.__doc__
 # --
 Qgis.AnnotationItemNodeType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.AnnotationItemEditOperationResult.Success.__doc__ = "Item was modified successfully"
+Qgis.AnnotationItemEditOperationResult.Invalid.__doc__ = "Operation has invalid parameters for the item, no change occurred"
+Qgis.AnnotationItemEditOperationResult.ItemCleared.__doc__ = "The operation results in the item being cleared, and the item should be removed from the layer as a result"
+Qgis.AnnotationItemEditOperationResult.__doc__ = 'Results from an edit operation on an annotation item.\n\n.. versionadded:: 3.22\n\n' + '* ``Success``: ' + Qgis.AnnotationItemEditOperationResult.Success.__doc__ + '\n' + '* ``Invalid``: ' + Qgis.AnnotationItemEditOperationResult.Invalid.__doc__ + '\n' + '* ``ItemCleared``: ' + Qgis.AnnotationItemEditOperationResult.ItemCleared.__doc__
+# --
+Qgis.AnnotationItemEditOperationResult.baseClass = Qgis
 QgsVectorLayerTemporalProperties.TemporalMode = Qgis.VectorTemporalMode
 # monkey patching scoped based enum
 QgsVectorLayerTemporalProperties.ModeFixedTemporalRange = Qgis.VectorTemporalMode.FixedTemporalRange

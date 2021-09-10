@@ -80,7 +80,7 @@ QList<QgsAnnotationItemNode> QgsAnnotationMarkerItem::nodes() const
   return { QgsAnnotationItemNode( QgsVertexId( 0, 0, 0 ), mPoint, Qgis::AnnotationItemNodeType::VertexHandle )};
 }
 
-bool QgsAnnotationMarkerItem::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
+Qgis::AnnotationItemEditOperationResult QgsAnnotationMarkerItem::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
 {
   switch ( operation->type() )
   {
@@ -88,16 +88,16 @@ bool QgsAnnotationMarkerItem::applyEdit( QgsAbstractAnnotationItemEditOperation 
     {
       QgsAnnotationItemEditOperationMoveNode *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
       mPoint = QgsPoint( moveOperation->after() );
-      return true;
+      return Qgis::AnnotationItemEditOperationResult::Success;
     }
 
     case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
     {
-      return false;
+      return Qgis::AnnotationItemEditOperationResult::ItemCleared;
     }
   }
 
-  return false;
+  return Qgis::AnnotationItemEditOperationResult::Invalid;
 }
 
 QgsAnnotationItemEditOperationTransientResults *QgsAnnotationMarkerItem::transientEditResults( QgsAbstractAnnotationItemEditOperation *operation )

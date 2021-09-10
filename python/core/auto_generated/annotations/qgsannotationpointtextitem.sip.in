@@ -55,7 +55,7 @@ Creates a new text at point annotation item.
 
     virtual bool transform( const QTransform &transform );
 
-    virtual bool applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
+    virtual Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
 
     virtual QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) /Factory/;
 

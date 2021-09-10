@@ -41,7 +41,7 @@ Constructor for QgsAnnotationLineItem, with the specified ``linestring``.
 
     virtual bool transform( const QTransform &transform );
 
-    virtual bool applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
+    virtual Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
 
     virtual QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) /Factory/;
 

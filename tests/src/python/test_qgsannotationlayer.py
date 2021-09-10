@@ -43,7 +43,8 @@ from qgis.core import (QgsMapSettings,
                        QgsGeometry,
                        QgsAnnotationItemEditOperationMoveNode,
                        QgsVertexId,
-                       QgsPointXY
+                       QgsPointXY,
+                       Qgis
                        )
 from qgis.testing import start_app, unittest
 
@@ -279,12 +280,12 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         self.assertCountEqual(layer.itemsInBounds(QgsRectangle(1, 1, 20, 20), rc), [polygon_item_id, linestring_item_id, marker_item_id])
 
         # can't apply a move to an item which doesn't exist in the layer
-        self.assertFalse(layer.applyEdit(QgsAnnotationItemEditOperationMoveNode('xxx', QgsVertexId(0, 0, 2), QgsPoint(14, 15), QgsPoint(19, 15))))
+        self.assertEqual(layer.applyEdit(QgsAnnotationItemEditOperationMoveNode('xxx', QgsVertexId(0, 0, 2), QgsPoint(14, 15), QgsPoint(19, 15))), Qgis.AnnotationItemEditOperationResult.Invalid)
 
         # apply move to polygon
-        self.assertTrue(layer.applyEdit(
+        self.assertEqual(layer.applyEdit(
             QgsAnnotationItemEditOperationMoveNode(polygon_item_id, QgsVertexId(0, 0, 2), QgsPoint(14, 15),
-                                                   QgsPoint(19, 15))))
+                                                   QgsPoint(19, 15))), Qgis.AnnotationItemEditOperationResult.Success)
 
         self.assertEqual(layer.item(polygon_item_id).geometry().asWkt(), 'Polygon ((12 13, 14 13, 19 15, 12 13))')
         # ensure that spatial index was updated

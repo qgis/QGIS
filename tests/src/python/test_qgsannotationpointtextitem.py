@@ -37,6 +37,7 @@ from qgis.core import (QgsMapSettings,
                        Qgis,
                        QgsVertexId,
                        QgsAnnotationItemEditOperationMoveNode,
+                       QgsAnnotationItemEditOperationDeleteNode,
                        QgsPoint
                        )
 from qgis.PyQt.QtXml import QDomDocument
@@ -104,7 +105,7 @@ class TestQgsAnnotationPointTextItem(unittest.TestCase):
         item = QgsAnnotationPointTextItem('my text', QgsPointXY(12, 13))
         self.assertEqual(item.point().asWkt(), 'POINT(12 13)')
 
-        self.assertTrue(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 0), QgsPoint(14, 13), QgsPoint(17, 18))))
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 0), QgsPoint(14, 13), QgsPoint(17, 18))), Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.point().asWkt(), 'POINT(17 18)')
 
     def test_transient_move_operation(self):
@@ -113,6 +114,12 @@ class TestQgsAnnotationPointTextItem(unittest.TestCase):
 
         res = item.transientEditResults(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 0), QgsPoint(12, 13), QgsPoint(17, 18)))
         self.assertEqual(res.representativeGeometry().asWkt(), 'Point (17 18)')
+
+    def test_apply_delete_node_edit(self):
+        item = QgsAnnotationPointTextItem('my text', QgsPointXY(12, 13))
+        self.assertEqual(item.point().asWkt(), 'POINT(12 13)')
+
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 0), QgsPoint(12, 13))), Qgis.AnnotationItemEditOperationResult.ItemCleared)
 
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")
