@@ -122,17 +122,6 @@ QList<QgsAnnotationItemNode> QgsAnnotationPolygonItem::nodes() const
   return res;
 }
 
-QgsGeometry QgsAnnotationPolygonItem::rubberBandGeometry() const
-{
-  return QgsGeometry( mPolygon->clone() );
-}
-
-bool QgsAnnotationPolygonItem::transform( const QTransform &transform )
-{
-  mPolygon->transform( transform );
-  return true;
-}
-
 Qgis::AnnotationItemEditOperationResult QgsAnnotationPolygonItem::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
 {
   switch ( operation->type() )
@@ -152,6 +141,14 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPolygonItem::applyEdit( Qgs
         return mPolygon->isEmpty() ? Qgis::AnnotationItemEditOperationResult::ItemCleared : Qgis::AnnotationItemEditOperationResult::Success;
       break;
     }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
+    {
+      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
+      const QTransform transform = QTransform::fromTranslate( moveOperation->translationX(), moveOperation->translationY() );
+      mPolygon->transform( transform );
+      return Qgis::AnnotationItemEditOperationResult::Success;
+    }
   }
 
   return Qgis::AnnotationItemEditOperationResult::Invalid;
@@ -170,6 +167,15 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPolygonItem::transi
         return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( std::move( modifiedPolygon ) ) );
       }
       break;
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
+    {
+      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
+      const QTransform transform = QTransform::fromTranslate( moveOperation->translationX(), moveOperation->translationY() );
+      std::unique_ptr< QgsCurvePolygon > modifiedPolygon( mPolygon->clone() );
+      modifiedPolygon->transform( transform );
+      return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( std::move( modifiedPolygon ) ) );
     }
 
     case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:

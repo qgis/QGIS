@@ -197,18 +197,28 @@ void QgsMapToolModifyAnnotation::cadCanvasMoveEvent( QgsMapMouseEvent *event )
 
     case Action::MoveItem:
     {
+#if 0
       const QgsVector delta = event->mapPoint() - mMoveStartPointCanvasCrs;
-      if ( mTemporaryRubberBand )
+#endif
+
+      if ( QgsAnnotationItem *item = annotationItemFromId( mSelectedItemLayerId, mSelectedItemId ) )
       {
-        mTemporaryRubberBand->setTranslationOffset( delta.x(), delta.y() );
-        mTemporaryRubberBand->updatePosition();
-        mTemporaryRubberBand->update();
-      }
-      for ( QgsRubberBand *band : mHoveredItemNodeRubberBands )
-      {
-        band->setTranslationOffset( delta.x(), delta.y() );
-        band->updatePosition();
-        band->update();
+        QgsAnnotationLayer *layer = annotationLayerFromId( mSelectedItemLayerId );
+        const QgsVector delta = toLayerCoordinates( layer, event->mapPoint() ) - mMoveStartPointLayerCrs;
+
+        QgsAnnotationItemEditOperationTranslateItem operation( mSelectedItemId, delta.x(), delta.y() );
+        std::unique_ptr< QgsAnnotationItemEditOperationTransientResults > operationResults( item->transientEditResults( &operation ) );
+        if ( operationResults )
+        {
+          mTemporaryRubberBand.reset( new QgsRubberBand( mCanvas, operationResults->representativeGeometry().type() ) );
+          const double scaleFactor = canvas()->fontMetrics().xHeight() * .2;
+          mTemporaryRubberBand->setWidth( scaleFactor );
+          mTemporaryRubberBand->setToGeometry( operationResults->representativeGeometry(), layer->crs() );
+        }
+        else
+        {
+          mTemporaryRubberBand.reset();
+        }
       }
       break;
     }
@@ -285,16 +295,6 @@ void QgsMapToolModifyAnnotation::cadCanvasPressEvent( QgsMapMouseEvent *event )
           if ( hoveredNode.point().isEmpty() )
           {
             mCurrentAction = Action::MoveItem;
-
-            QgsAnnotationItem *item = annotationItemFromId( mSelectedItemLayerId, mSelectedItemId );
-            QgsGeometry rubberBandGeom = item->rubberBandGeometry();
-            if ( rubberBandGeom.isNull() )
-              rubberBandGeom = mSelectedRubberBand->asGeometry();
-
-            mTemporaryRubberBand.reset( new QgsRubberBand( mCanvas, rubberBandGeom.type() ) );
-            const double scaleFactor = canvas()->fontMetrics().xHeight() * .2;
-            mTemporaryRubberBand->setWidth( scaleFactor );
-            mTemporaryRubberBand->setToGeometry( rubberBandGeom, layer->crs() );
           }
           else
           {
@@ -339,16 +339,21 @@ void QgsMapToolModifyAnnotation::cadCanvasPressEvent( QgsMapMouseEvent *event )
       else if ( event->button() == Qt::LeftButton )
       {
         // apply move
-        if ( QgsAnnotationItem *item = annotationItemFromId( mSelectedItemLayerId, mSelectedItemId ) )
+        if ( QgsAnnotationLayer *layer = annotationLayerFromId( mSelectedItemLayerId ) )
         {
-          QgsAnnotationLayer *layer = annotationLayerFromId( mSelectedItemLayerId );
           const QgsVector delta = toLayerCoordinates( layer, event->mapPoint() ) - mMoveStartPointLayerCrs;
-          const QTransform transform = QTransform::fromTranslate( delta.x(), delta.y() );
 
-          std::unique_ptr< QgsAnnotationItem > transformedItem( item->clone() );
-          transformedItem->transform( transform );
-          layer->replaceItem( mSelectedItemId, transformedItem.release() );
-          mRefreshSelectedItemAfterRedraw = true;
+          QgsAnnotationItemEditOperationTranslateItem operation( mSelectedItemId, delta.x(), delta.y() );
+          switch ( layer->applyEdit( &operation ) )
+          {
+            case Qgis::AnnotationItemEditOperationResult::Success:
+              QgsProject::instance()->setDirty( true );
+              mRefreshSelectedItemAfterRedraw = true;
+              break;
+            case Qgis::AnnotationItemEditOperationResult::Invalid:
+            case Qgis::AnnotationItemEditOperationResult::ItemCleared:
+              break;
+          }
         }
 
         mTemporaryRubberBand.reset();
@@ -422,18 +427,22 @@ void QgsMapToolModifyAnnotation::keyPressEvent( QKeyEvent *event )
                 || event->key() == Qt::Key_Down )
       {
         QgsAnnotationLayer *layer = annotationLayerFromId( mSelectedItemLayerId );
-        QgsAnnotationItem *annotationItem = annotationItemFromId( mSelectedItemLayerId, mSelectedItemId );
-        if ( !layer || !annotationItem )
+        if ( !layer )
           return;
 
         const QSizeF deltaLayerCoordinates = deltaForKeyEvent( layer, mSelectedRubberBand->asGeometry().centroid().asPoint(), event );
-        const QTransform transform = QTransform::fromTranslate( deltaLayerCoordinates.width(), deltaLayerCoordinates.height() );
 
-        std::unique_ptr< QgsAnnotationItem > transformedItem( annotationItem->clone() );
-        transformedItem->transform( transform );
-        layer->replaceItem( mSelectedItemId, transformedItem.release() );
-        mRefreshSelectedItemAfterRedraw = true;
-
+        QgsAnnotationItemEditOperationTranslateItem operation( mSelectedItemId, deltaLayerCoordinates.width(), deltaLayerCoordinates.height() );
+        switch ( layer->applyEdit( &operation ) )
+        {
+          case Qgis::AnnotationItemEditOperationResult::Success:
+            QgsProject::instance()->setDirty( true );
+            mRefreshSelectedItemAfterRedraw = true;
+            break;
+          case Qgis::AnnotationItemEditOperationResult::Invalid:
+          case Qgis::AnnotationItemEditOperationResult::ItemCleared:
+            break;
+        }
         event->ignore(); // disable default shortcut handling (move map)
       }
       break;

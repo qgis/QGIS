@@ -57,8 +57,6 @@ Creates a new marker annotation item.
 
     virtual QgsRectangle boundingBox( QgsRenderContext &context ) const;
 
-    virtual bool transform( const QTransform &transform );
-
 
     QgsPointXY geometry() const;
 %Docstring

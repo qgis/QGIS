@@ -43,8 +43,6 @@ class CORE_EXPORT QgsAnnotationPolygonItem : public QgsAnnotationItem
     void render( QgsRenderContext &context, QgsFeedback *feedback ) override;
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     QList< QgsAnnotationItemNode > nodes() const override;
-    QgsGeometry rubberBandGeometry() const override;
-    bool transform( const QTransform &transform ) override;
     Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation ) override;
     QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) override SIP_FACTORY;
 

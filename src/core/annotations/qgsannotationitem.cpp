@@ -60,8 +60,3 @@ bool QgsAnnotationItem::readCommonProperties( const QDomElement &element, const 
   setSymbologyReferenceScale( element.attribute( QStringLiteral( "referenceScale" ) ).toDouble() );
   return true;
 }
-
-QgsGeometry QgsAnnotationItem::rubberBandGeometry() const
-{
-  return QgsGeometry();
-}

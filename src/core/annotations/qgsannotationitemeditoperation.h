@@ -40,6 +40,7 @@ class CORE_EXPORT QgsAbstractAnnotationItemEditOperation
     {
       MoveNode, //!< Move a node
       DeleteNode, //!< Delete a node
+      TranslateItem, //!< Translate (move) an item
     };
 
     /**
@@ -141,6 +142,52 @@ class CORE_EXPORT QgsAnnotationItemEditOperationDeleteNode : public QgsAbstractA
 
     QgsVertexId mNodeId;
     QgsPoint mBefore;
+
+};
+
+
+/**
+ * \ingroup core
+ * \brief Annotation item edit operation consisting of translating (moving) an item
+ * \since QGIS 3.22
+ */
+class CORE_EXPORT QgsAnnotationItemEditOperationTranslateItem : public QgsAbstractAnnotationItemEditOperation
+{
+  public:
+
+    /**
+     * Constructor for QgsAnnotationItemEditOperationTranslateItem, where the node with the specified \a id and translation
+     * (in map units)
+     */
+    QgsAnnotationItemEditOperationTranslateItem( const QString &itemId, double translateX, double translateY );
+
+    Type type() const override;
+
+    /**
+     * Returns the deleted node ID.
+     */
+    QgsVertexId nodeId() const { return mNodeId; }
+
+    /**
+     * Returns the x-axis translation, in layer units.
+     *
+     * \since translationY()
+     */
+    double translationX() const { return mTranslateX; }
+
+    /**
+     * Returns the y-axis translation, in layer units.
+     *
+     * \since translationX()
+     */
+    double translationY() const { return mTranslateY; }
+
+  private:
+
+    QgsVertexId mNodeId;
+    double mTranslateX = 0;
+    double mTranslateY = 0;
+
 
 };
 

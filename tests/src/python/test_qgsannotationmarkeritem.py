@@ -36,7 +36,8 @@ from qgis.core import (QgsMapSettings,
                        QgsPointXY,
                        QgsVertexId,
                        QgsAnnotationItemEditOperationMoveNode,
-                       QgsAnnotationItemEditOperationDeleteNode
+                       QgsAnnotationItemEditOperationDeleteNode,
+                       QgsAnnotationItemEditOperationTranslateItem
                        )
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -85,8 +86,7 @@ class TestQgsAnnotationMarkerItem(unittest.TestCase):
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
         self.assertEqual(item.geometry().asWkt(), 'POINT(12 13)')
 
-        transform = QTransform.fromTranslate(100, 200)
-        item.transform(transform)
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationTranslateItem('', 100, 200)), Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.geometry().asWkt(), 'POINT(112 213)')
 
     def test_apply_move_node_edit(self):
@@ -108,6 +108,13 @@ class TestQgsAnnotationMarkerItem(unittest.TestCase):
 
         res = item.transientEditResults(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 0), QgsPoint(12, 13), QgsPoint(17, 18)))
         self.assertEqual(res.representativeGeometry().asWkt(), 'Point (17 18)')
+
+    def test_transient_translate_operation(self):
+        item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
+        self.assertEqual(item.geometry().asWkt(), 'POINT(12 13)')
+
+        res = item.transientEditResults(QgsAnnotationItemEditOperationTranslateItem('', 100, 200))
+        self.assertEqual(res.representativeGeometry().asWkt(), 'Point (112 213)')
 
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")

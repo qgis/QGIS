@@ -40,7 +40,8 @@ from qgis.core import (QgsMapSettings,
                        QgsPointXY,
                        QgsVertexId,
                        QgsAnnotationItemEditOperationMoveNode,
-                       QgsAnnotationItemEditOperationDeleteNode
+                       QgsAnnotationItemEditOperationDeleteNode,
+                       QgsAnnotationItemEditOperationTranslateItem
                        )
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -86,20 +87,11 @@ class TestQgsAnnotationPolygonItem(unittest.TestCase):
                                         QgsAnnotationItemNode(QgsVertexId(0, 0, 1), QgsPointXY(14, 13), Qgis.AnnotationItemNodeType.VertexHandle),
                                         QgsAnnotationItemNode(QgsVertexId(0, 0, 2), QgsPointXY(14, 15), Qgis.AnnotationItemNodeType.VertexHandle)])
 
-    def test_rubberbandgeometry(self):
-        """
-        Test creating rubber band geometry
-        """
-        item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
-        band = item.rubberBandGeometry()
-        self.assertEqual(band.asWkt(), 'Polygon ((12 13, 14 13, 14 15, 12 13))')
-
     def test_transform(self):
         item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
         self.assertEqual(item.geometry().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 12 13))')
 
-        transform = QTransform.fromTranslate(100, 200)
-        item.transform(transform)
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationTranslateItem('', 100, 200)), Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.geometry().asWkt(), 'Polygon ((112 213, 114 213, 114 215, 112 213))')
 
     def test_apply_move_node_edit(self):
@@ -136,6 +128,14 @@ class TestQgsAnnotationPolygonItem(unittest.TestCase):
 
         res = item.transientEditResults(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPoint(14, 13), QgsPoint(17, 18)))
         self.assertEqual(res.representativeGeometry().asWkt(), 'Polygon ((12 13, 17 18, 14 15, 12 13))')
+
+    def test_transient_translate_operation(self):
+        item = QgsAnnotationPolygonItem(
+            QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
+        self.assertEqual(item.geometry().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 12 13))')
+
+        res = item.transientEditResults(QgsAnnotationItemEditOperationTranslateItem('', 100, 200))
+        self.assertEqual(res.representativeGeometry().asWkt(), 'Polygon ((112 213, 114 213, 114 215, 112 213))')
 
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")

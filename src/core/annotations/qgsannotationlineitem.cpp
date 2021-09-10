@@ -92,17 +92,6 @@ QList<QgsAnnotationItemNode> QgsAnnotationLineItem::nodes() const
   return res;
 }
 
-QgsGeometry QgsAnnotationLineItem::rubberBandGeometry() const
-{
-  return QgsGeometry( mCurve->clone() );
-}
-
-bool QgsAnnotationLineItem::transform( const QTransform &transform )
-{
-  mCurve->transform( transform );
-  return true;
-}
-
 Qgis::AnnotationItemEditOperationResult QgsAnnotationLineItem::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
 {
   switch ( operation->type() )
@@ -122,6 +111,14 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationLineItem::applyEdit( QgsAbs
         return mCurve->isEmpty() ? Qgis::AnnotationItemEditOperationResult::ItemCleared : Qgis::AnnotationItemEditOperationResult::Success;
       break;
     }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
+    {
+      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
+      const QTransform transform = QTransform::fromTranslate( moveOperation->translationX(), moveOperation->translationY() );
+      mCurve->transform( transform );
+      return Qgis::AnnotationItemEditOperationResult::Success;
+    }
   }
 
   return Qgis::AnnotationItemEditOperationResult::Invalid;
@@ -140,6 +137,15 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationLineItem::transient
         return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( std::move( modifiedCurve ) ) );
       }
       break;
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
+    {
+      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
+      const QTransform transform = QTransform::fromTranslate( moveOperation->translationX(), moveOperation->translationY() );
+      std::unique_ptr< QgsCurve > modifiedCurve( mCurve->clone() );
+      modifiedCurve->transform( transform );
+      return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( std::move( modifiedCurve ) ) );
     }
 
     case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:

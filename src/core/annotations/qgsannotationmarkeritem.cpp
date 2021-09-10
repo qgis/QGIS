@@ -95,6 +95,14 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationMarkerItem::applyEdit( QgsA
     {
       return Qgis::AnnotationItemEditOperationResult::ItemCleared;
     }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
+    {
+      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
+      mPoint.setX( mPoint.x() + moveOperation->translationX() );
+      mPoint.setY( mPoint.y() + moveOperation->translationY() );
+      return Qgis::AnnotationItemEditOperationResult::Success;
+    }
   }
 
   return Qgis::AnnotationItemEditOperationResult::Invalid;
@@ -108,6 +116,12 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationMarkerItem::transie
     {
       QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
       return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( moveOperation->after().clone() ) );
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
+    {
+      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
+      return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( new QgsPoint( mPoint.x() + moveOperation->translationX(), mPoint.y() + moveOperation->translationY() ) ) );
     }
 
     case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
@@ -175,12 +189,6 @@ QgsRectangle QgsAnnotationMarkerItem::boundingBox( QgsRenderContext &context ) c
 
   const QgsRectangle boundsMapUnits = QgsRectangle( topLeft.x(), bottomLeft.y(), bottomRight.x(), topRight.y() );
   return context.coordinateTransform().transformBoundingBox( boundsMapUnits, QgsCoordinateTransform::ReverseTransform );
-}
-
-bool QgsAnnotationMarkerItem::transform( const QTransform &transform )
-{
-  mPoint.transform( transform );
-  return true;
 }
 
 const QgsMarkerSymbol *QgsAnnotationMarkerItem::symbol() const

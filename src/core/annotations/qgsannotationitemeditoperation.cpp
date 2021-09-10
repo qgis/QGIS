@@ -62,3 +62,20 @@ QgsAbstractAnnotationItemEditOperation::Type QgsAnnotationItemEditOperationDelet
 {
   return Type::DeleteNode;
 }
+
+//
+// QgsAnnotationItemEditOperationTranslateItem
+//
+
+QgsAnnotationItemEditOperationTranslateItem::QgsAnnotationItemEditOperationTranslateItem( const QString &itemId, double translateX, double translateY )
+  : QgsAbstractAnnotationItemEditOperation( itemId )
+  , mTranslateX( translateX )
+  , mTranslateY( translateY )
+{
+
+}
+
+QgsAbstractAnnotationItemEditOperation::Type QgsAnnotationItemEditOperationTranslateItem::type() const
+{
+  return Type::TranslateItem;
+}

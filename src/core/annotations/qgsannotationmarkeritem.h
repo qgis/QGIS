@@ -56,7 +56,6 @@ class CORE_EXPORT QgsAnnotationMarkerItem : public QgsAnnotationItem
     QgsAnnotationMarkerItem *clone() override SIP_FACTORY;
     QgsRectangle boundingBox() const override;
     QgsRectangle boundingBox( QgsRenderContext &context ) const override;
-    bool transform( const QTransform &transform ) override;
 
     /**
      * Returns the point geometry of the marker.

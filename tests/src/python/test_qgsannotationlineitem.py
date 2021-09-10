@@ -38,7 +38,8 @@ from qgis.core import (QgsMapSettings,
                        Qgis,
                        QgsVertexId,
                        QgsAnnotationItemEditOperationMoveNode,
-                       QgsAnnotationItemEditOperationDeleteNode
+                       QgsAnnotationItemEditOperationDeleteNode,
+                       QgsAnnotationItemEditOperationTranslateItem
                        )
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -87,8 +88,7 @@ class TestQgsAnnotationLineItem(unittest.TestCase):
         item = QgsAnnotationLineItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]))
         self.assertEqual(item.geometry().asWkt(), 'LineString (12 13, 14 13, 14 15)')
 
-        transform = QTransform.fromTranslate(100, 200)
-        item.transform(transform)
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationTranslateItem('', 100, 200)), Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.geometry().asWkt(), 'LineString (112 213, 114 213, 114 215)')
 
     def test_apply_move_node_edit(self):
@@ -122,13 +122,12 @@ class TestQgsAnnotationLineItem(unittest.TestCase):
         res = item.transientEditResults(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPoint(14, 13), QgsPoint(17, 18)))
         self.assertEqual(res.representativeGeometry().asWkt(), 'LineString (12 13, 17 18, 14 15)')
 
-    def test_rubberbandgeometry(self):
-        """
-        Test creating rubber band geometry
-        """
+    def test_transient_translate_operation(self):
         item = QgsAnnotationLineItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]))
-        band = item.rubberBandGeometry()
-        self.assertEqual(band.asWkt(), 'LineString (12 13, 14 13, 14 15)')
+        self.assertEqual(item.geometry().asWkt(), 'LineString (12 13, 14 13, 14 15)')
+
+        res = item.transientEditResults(QgsAnnotationItemEditOperationTranslateItem('', 100, 200))
+        self.assertEqual(res.representativeGeometry().asWkt(), 'LineString (112 213, 114 213, 114 215)')
 
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")
