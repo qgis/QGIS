@@ -128,7 +128,7 @@ See the class description about the syntax of destination URIs.
 
     void setExtent( const QgsRectangle &extent );
 %Docstring
-Sets extent of vector tile output. Currently always in EPSG:3857.
+Sets extent of vector tile output.
 If unset, it will use the full extent of all input layers combined
 %End
 
@@ -154,6 +154,11 @@ Sets that will be written to the output dataset. See class description for more 
     void setTransformContext( const QgsCoordinateTransformContext &transformContext );
 %Docstring
 Sets coordinate transform context for transforms between layers and tile matrix CRS
+%End
+
+    bool setRootTileMatrix( const QgsTileMatrix &tileMatrix );
+%Docstring
+Sets zoom level 0 tile matrix
 %End
 
     bool writeTiles( QgsFeedback *feedback = 0 );

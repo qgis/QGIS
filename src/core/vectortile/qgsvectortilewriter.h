@@ -17,8 +17,10 @@
 #define QGSVECTORTILEWRITER_H
 
 #include <QCoreApplication>
+#include "qgstiles.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgscoordinatereferencesystem.h"
 
 class QgsFeedback;
 class QgsTileMatrix;
@@ -128,7 +130,7 @@ class CORE_EXPORT QgsVectorTileWriter
     void setDestinationUri( const QString &uri ) { mDestinationUri = uri; }
 
     /**
-     * Sets extent of vector tile output. Currently always in EPSG:3857.
+     * Sets extent of vector tile output.
      * If unset, it will use the full extent of all input layers combined
      */
     void setExtent( const QgsRectangle &extent ) { mExtent = extent; }
@@ -146,6 +148,11 @@ class CORE_EXPORT QgsVectorTileWriter
 
     //! Sets coordinate transform context for transforms between layers and tile matrix CRS
     void setTransformContext( const QgsCoordinateTransformContext &transformContext ) { mTransformContext = transformContext; }
+
+    /**
+     * Sets zoom level 0 tile matrix
+     */
+    bool setRootTileMatrix( const QgsTileMatrix &tileMatrix );
 
     /**
      * Writes vector tiles according to the configuration.
@@ -184,6 +191,7 @@ class CORE_EXPORT QgsVectorTileWriter
     QString mbtilesJsonSchema();
 
   private:
+    QgsTileMatrix mRootTileMatrix;
     QgsRectangle mExtent;
     int mMinZoom = 0;
     int mMaxZoom = 4;
