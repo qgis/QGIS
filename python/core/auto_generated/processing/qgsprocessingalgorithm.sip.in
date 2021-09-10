@@ -989,6 +989,16 @@ need to handle deletion of the returned layer.
 .. versionadded:: 3.22
 %End
 
+    QgsAnnotationLayer *parameterAsAnnotationLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+%Docstring
+Evaluates the parameter with matching ``name`` to an annotation layer.
+
+Annotation layers will either be taken from ``context``'s active project. Callers do not
+need to handle deletion of the returned layer.
+
+.. versionadded:: 3.22
+%End
+
     static QString invalidSourceError( const QVariantMap &parameters, const QString &name );
 %Docstring
 Returns a user-friendly string to use as an error when a source parameter could

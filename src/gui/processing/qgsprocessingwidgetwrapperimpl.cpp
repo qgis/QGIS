@@ -62,6 +62,8 @@
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsdoublevalidator.h"
+#include "qgsmaplayercombobox.h"
+#include "qgsannotationlayer.h"
 #include <QToolButton>
 #include <QLabel>
 #include <QHBoxLayout>
@@ -212,7 +214,8 @@ QStringList QgsProcessingBooleanWidgetWrapper::compatibleParameterTypes() const
          << QgsProcessingParameterMeshLayer::typeName()
          << QgsProcessingParameterExpression::typeName()
          << QgsProcessingParameterProviderConnection::typeName()
-         << QgsProcessingParameterPointCloudLayer::typeName();
+         << QgsProcessingParameterPointCloudLayer::typeName()
+         << QgsProcessingParameterAnnotationLayer::typeName();
 }
 
 QStringList QgsProcessingBooleanWidgetWrapper::compatibleOutputTypes() const
@@ -371,7 +374,8 @@ QStringList QgsProcessingCrsWidgetWrapper::compatibleParameterTypes() const
          << QgsProcessingParameterVectorLayer::typeName()
          << QgsProcessingParameterMeshLayer::typeName()
          << QgsProcessingParameterFeatureSource::typeName()
-         << QgsProcessingParameterPointCloudLayer::typeName();
+         << QgsProcessingParameterPointCloudLayer::typeName()
+         << QgsProcessingParameterAnnotationLayer::typeName();
 }
 
 QStringList QgsProcessingCrsWidgetWrapper::compatibleOutputTypes() const
@@ -5768,8 +5772,8 @@ QStringList QgsProcessingExtentWidgetWrapper::compatibleParameterTypes() const
          << QgsProcessingParameterRasterLayer::typeName()
          << QgsProcessingParameterVectorLayer::typeName()
          << QgsProcessingParameterMeshLayer::typeName()
-         << QgsProcessingParameterPointCloudLayer::typeName();
-
+         << QgsProcessingParameterPointCloudLayer::typeName()
+         << QgsProcessingParameterAnnotationLayer::typeName();
 }
 
 QStringList QgsProcessingExtentWidgetWrapper::compatibleOutputTypes() const
@@ -5824,6 +5828,7 @@ QgsProcessingMapLayerParameterDefinitionWidget::QgsProcessingMapLayerParameterDe
   mLayerTypeComboBox->addItem( tr( "Mesh" ), QgsProcessing::TypeMesh );
   mLayerTypeComboBox->addItem( tr( "Plugin" ), QgsProcessing::TypePlugin );
   mLayerTypeComboBox->addItem( tr( "Point Cloud" ), QgsProcessing::TypePointCloud );
+  mLayerTypeComboBox->addItem( tr( "Annotation" ), QgsProcessing::TypeAnnotation );
 
   if ( const QgsProcessingParameterMapLayer *layerParam = dynamic_cast<const QgsProcessingParameterMapLayer *>( definition ) )
   {
@@ -5919,6 +5924,7 @@ QStringList QgsProcessingMapLayerWidgetWrapper::compatibleParameterTypes() const
          << QgsProcessingParameterVectorLayer::typeName()
          << QgsProcessingParameterMapLayer::typeName()
          << QgsProcessingParameterPointCloudLayer::typeName()
+         << QgsProcessingParameterAnnotationLayer::typeName()
          << QgsProcessingParameterString::typeName()
          << QgsProcessingParameterExpression::typeName();
 }
@@ -6826,6 +6832,15 @@ void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorith
       break;
     }
 
+    case QgsProcessing::TypeAnnotation:
+    {
+      mModelSources = model->availableSourcesForChild( modelChildAlgorithmID, QStringList() << QgsProcessingParameterAnnotationLayer::typeName()
+                      << QgsProcessingParameterMultipleLayers::typeName(),
+                      QStringList() << QgsProcessingOutputMapLayer::typeName()
+                      << QgsProcessingOutputMultipleLayers::typeName() );
+      break;
+    }
+
     case QgsProcessing::TypeVector:
     {
       mModelSources = model->availableSourcesForChild( modelChildAlgorithmID, QStringList() << QgsProcessingParameterFeatureSource::typeName()
@@ -6969,6 +6984,7 @@ QgsProcessingMultipleLayerParameterDefinitionWidget::QgsProcessingMultipleLayerP
   mLayerTypeComboBox->addItem( tr( "Mesh" ), QgsProcessing::TypeMesh );
   mLayerTypeComboBox->addItem( tr( "Plugin" ), QgsProcessing::TypePlugin );
   mLayerTypeComboBox->addItem( tr( "Point Cloud" ), QgsProcessing::TypePointCloud );
+  mLayerTypeComboBox->addItem( tr( "Annotation" ), QgsProcessing::TypeAnnotation );
   if ( const QgsProcessingParameterMultipleLayers *layersParam = dynamic_cast<const QgsProcessingParameterMultipleLayers *>( definition ) )
     mLayerTypeComboBox->setCurrentIndex( mLayerTypeComboBox->findData( layersParam->layerType() ) );
 
@@ -7148,6 +7164,146 @@ QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingPointCloudLayerWidg
   Q_UNUSED( algorithm );
 
   return nullptr;
+}
+
+
+//
+// QgsProcessingAnnotationLayerWidgetWrapper
+//
+
+QgsProcessingAnnotationLayerWidgetWrapper::QgsProcessingAnnotationLayerWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QStringList QgsProcessingAnnotationLayerWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterAnnotationLayer::typeName()
+         << QgsProcessingParameterMapLayer::typeName()
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterExpression::typeName();
+}
+
+QStringList QgsProcessingAnnotationLayerWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName()
+         << QgsProcessingOutputMapLayer::typeName();
+}
+
+QString QgsProcessingAnnotationLayerWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "name of an annotation layer, or \"main\" for the main annotation layer" );
+}
+
+QString QgsProcessingAnnotationLayerWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterAnnotationLayer::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingAnnotationLayerWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingAnnotationLayerWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingAnnotationLayerWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  Q_UNUSED( context );
+  Q_UNUSED( widgetContext );
+  Q_UNUSED( definition );
+  Q_UNUSED( algorithm );
+
+  return nullptr;
+}
+
+void QgsProcessingAnnotationLayerWidgetWrapper::setWidgetContext( const QgsProcessingParameterWidgetContext &context )
+{
+  QgsAbstractProcessingParameterWidgetWrapper::setWidgetContext( context );
+  if ( mComboBox )
+  {
+    if ( mWidgetContext.project() )
+      mComboBox->setAdditionalLayers( { mWidgetContext.project()->mainAnnotationLayer() } );
+  }
+}
+
+QWidget *QgsProcessingAnnotationLayerWidgetWrapper::createWidget()
+{
+  mComboBox = new QgsMapLayerComboBox( );
+  mComboBox->setFilters( QgsMapLayerProxyModel::AnnotationLayer );
+
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+      break;
+    case QgsProcessingGui::Modeler:
+      mComboBox->setEditable( true );
+      break;
+  }
+
+  mComboBox->setToolTip( parameterDefinition()->toolTip() );
+
+  if ( mWidgetContext.project() )
+    mComboBox->setAdditionalLayers( { mWidgetContext.project()->mainAnnotationLayer() } );
+
+  if ( parameterDefinition()->flags() & QgsProcessingParameterDefinition::FlagOptional )
+    mComboBox->setAllowEmptyLayer( true );
+
+  connect( mComboBox, &QgsMapLayerComboBox::layerChanged, this, [ = ]()
+  {
+    if ( mBlockSignals )
+      return;
+
+    emit widgetValueHasChanged( this );
+  } );
+
+  setWidgetContext( widgetContext() );
+  return mComboBox;
+}
+
+void QgsProcessingAnnotationLayerWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  if ( mComboBox )
+  {
+    if ( !value.isValid()  && parameterDefinition()->flags() & QgsProcessingParameterDefinition::FlagOptional )
+    {
+      mComboBox->setLayer( nullptr );
+      return;
+    }
+
+    QVariant val = value;
+    if ( val.canConvert<QgsProperty>() )
+    {
+      if ( val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
+      {
+        val = val.value< QgsProperty >().staticValue();
+      }
+      else
+      {
+        val = val.value< QgsProperty >().valueAsString( context.expressionContext(), parameterDefinition()->defaultValueForGui().toString() );
+      }
+    }
+
+    QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( val.value< QObject * >() );
+    if ( !layer && val.type() == QVariant::String )
+    {
+      layer = QgsProcessingUtils::mapLayerFromString( val.toString(), context, false, QgsProcessingUtils::LayerHint::Annotation );
+    }
+
+    if ( layer )
+    {
+      mComboBox->setLayer( layer );
+    }
+  }
+}
+
+QVariant QgsProcessingAnnotationLayerWidgetWrapper::widgetValue() const
+{
+  return mComboBox && mComboBox->currentLayer() ?
+         ( mWidgetContext.project() ? ( mComboBox->currentLayer() == mWidgetContext.project()->mainAnnotationLayer() ? QStringLiteral( "main" ) : mComboBox->currentLayer()->id() ) : mComboBox->currentLayer()->id() )
+         : QVariant();
 }
 
 

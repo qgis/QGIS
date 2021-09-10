@@ -36,6 +36,7 @@
 #include "qgsrasterfilewriter.h"
 #include "qgsvectortilelayer.h"
 #include "qgspointcloudlayer.h"
+#include "qgsannotationlayer.h"
 #include <QRegularExpression>
 #include <QUuid>
 
@@ -80,6 +81,24 @@ QList<QgsPluginLayer *> QgsProcessingUtils::compatiblePluginLayers( QgsProject *
 QList<QgsPointCloudLayer *> QgsProcessingUtils::compatiblePointCloudLayers( QgsProject *project, bool sort )
 {
   return compatibleMapLayers< QgsPointCloudLayer >( project, sort );
+}
+
+QList<QgsAnnotationLayer *> QgsProcessingUtils::compatibleAnnotationLayers( QgsProject *project, bool sort )
+{
+  // we have to defer sorting until we've added the main annotation layer too
+  QList<QgsAnnotationLayer *> res = compatibleMapLayers< QgsAnnotationLayer >( project, false );
+  if ( project )
+    res.append( project->mainAnnotationLayer() );
+
+  if ( sort )
+  {
+    std::sort( res.begin(), res.end(), []( const QgsAnnotationLayer * a, const QgsAnnotationLayer * b ) -> bool
+    {
+      return QString::localeAwareCompare( a->name(), b->name() ) < 0;
+    } );
+  }
+
+  return res;
 }
 
 template<typename T> QList<T *> QgsProcessingUtils::compatibleMapLayers( QgsProject *project, bool sort )
@@ -127,6 +146,11 @@ QList<QgsMapLayer *> QgsProcessingUtils::compatibleLayers( QgsProject *project, 
   const auto pointCloudLayers = compatibleMapLayers< QgsPointCloudLayer >( project, false );
   for ( QgsPointCloudLayer *pcl : pointCloudLayers )
     layers << pcl;
+
+  const auto annotationLayers = compatibleMapLayers< QgsAnnotationLayer >( project, false );
+  for ( QgsAnnotationLayer *al : annotationLayers )
+    layers << al;
+  layers << project->mainAnnotationLayer();
 
   const auto pluginLayers = compatibleMapLayers< QgsPluginLayer >( project, false );
   for ( QgsPluginLayer *pl : pluginLayers )
@@ -182,10 +206,10 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
         return !canUseLayer( qobject_cast< QgsMeshLayer * >( layer ) );
       case QgsMapLayerType::VectorTileLayer:
         return !canUseLayer( qobject_cast< QgsVectorTileLayer * >( layer ) );
-      case QgsMapLayerType::AnnotationLayer:
-        return true;
       case QgsMapLayerType::PointCloudLayer:
         return !canUseLayer( qobject_cast< QgsPointCloudLayer * >( layer ) );
+      case QgsMapLayerType::AnnotationLayer:
+        return !canUseLayer( qobject_cast< QgsAnnotationLayer * >( layer ) );
     }
     return true;
   } ), layers.end() );
@@ -208,6 +232,9 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
 
       case LayerHint::PointCloud:
         return l->type() == QgsMapLayerType::PointCloudLayer;
+
+      case LayerHint::Annotation:
+        return l->type() == QgsMapLayerType::AnnotationLayer;
     }
     return true;
   };
@@ -351,6 +378,9 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromString( const QString &string, QgsP
     return nullptr;
 
   // prefer project layers
+  if ( context.project() && typeHint == LayerHint::Annotation && string.compare( QLatin1String( "main" ), Qt::CaseInsensitive ) == 0 )
+    return context.project()->mainAnnotationLayer();
+
   QgsMapLayer *layer = nullptr;
   if ( auto *lProject = context.project() )
   {
@@ -537,6 +567,11 @@ bool QgsProcessingUtils::canUseLayer( const QgsRasterLayer *layer )
 }
 
 bool QgsProcessingUtils::canUseLayer( const QgsPointCloudLayer *layer )
+{
+  return layer && layer->isValid();
+}
+
+bool QgsProcessingUtils::canUseLayer( const QgsAnnotationLayer *layer )
 {
   return layer && layer->isValid();
 }

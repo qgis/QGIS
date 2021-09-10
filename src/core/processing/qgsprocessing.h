@@ -44,7 +44,7 @@ class CORE_EXPORT QgsProcessing
     //! Data source types enum
     enum SourceType
     {
-      TypeMapLayer = -2, //!< Any map layer type (raster, vector, mesh, point cloud or plugin layer)
+      TypeMapLayer = -2, //!< Any map layer type (raster, vector, mesh, point cloud, annotation or plugin layer)
       TypeVectorAnyGeometry = -1, //!< Any vector layer with geometry
       TypeVectorPoint = 0, //!< Vector point layers
       TypeVectorLine = 1, //!< Vector line layers
@@ -54,7 +54,8 @@ class CORE_EXPORT QgsProcessing
       TypeVector = 5, //!< Tables (i.e. vector layers with or without geometry). When used for a sink this indicates the sink has no geometry.
       TypeMesh = 6, //!< Mesh layers \since QGIS 3.6
       TypePlugin = 7, //!< Plugin layers \since QGIS 3.22
-      TypePointCloud = 8 //!< Point cloud layers \since QGIS 3.22
+      TypePointCloud = 8, //!< Point cloud layers \since QGIS 3.22
+      TypeAnnotation = 9 //!< Annotation layers \since QGIS 3.22
     };
 
     //! Available Python output types
@@ -94,6 +95,8 @@ class CORE_EXPORT QgsProcessing
           return QStringLiteral( "TypePlugin" );
         case QgsProcessing::TypePointCloud:
           return QStringLiteral( "TypePointCloud" );
+        case QgsProcessing::TypeAnnotation:
+          return QStringLiteral( "TypeAnnotation" );
       }
       return QString();
     }

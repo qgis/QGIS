@@ -56,6 +56,8 @@
 #include "qgsprocessingparametermeshdataset.h"
 #include "qgsdxfexport.h"
 #include "qgspointcloudlayer.h"
+#include "qgsannotationlayer.h"
+#include "qgsconfig.h"
 
 class DummyAlgorithm : public QgsProcessingAlgorithm
 {
@@ -662,9 +664,10 @@ class TestQgsProcessing: public QObject
     void parameterMeshDatasetGroups();
     void parameterMeshDatasetTime();
     void parameterDxfLayers();
-#ifdef WITH_EPT
+#ifdef HAVE_EPT
     void parameterPointCloudLayer();
 #endif
+    void parameterAnnotationLayer();
     void checkParamValues();
     void combineLayerExtent();
     void processingFeatureSource();
@@ -862,7 +865,7 @@ void TestQgsProcessing::compatibleLayers()
   QgsMeshLayer *m2 = new QgsMeshLayer( fm.filePath(), "mA", "mdal" );
   QVERIFY( m2->isValid() );
 
-#ifdef WITH_EPT
+#ifdef HAVE_EPT
   QFileInfo fpc( testDataDir + "/point_clouds/ept/sunshine-coast/ept.json" );
   QgsPointCloudLayer *pc1 = new QgsPointCloudLayer( fpc.filePath(), "PCX", "ept" );
   QgsPointCloudLayer *pc2 = new QgsPointCloudLayer( fpc.filePath(), "pcA", "ept" );
@@ -871,10 +874,12 @@ void TestQgsProcessing::compatibleLayers()
   DummyPluginLayer *pl1 = new DummyPluginLayer( "dummylayer", "PX" );
   DummyPluginLayer *pl2 = new DummyPluginLayer( "dummylayer", "pA" );
 
-#ifdef WITH_EPT
-  p.addMapLayers( QList<QgsMapLayer *>() << r1 << r2 << r3 << v1 << v2 << v3 << v4 << m1 << m2 << pl1 << pl2 << pc1 << pc2 );
+  QgsAnnotationLayer *al = new QgsAnnotationLayer( "secondary annotation layer", QgsAnnotationLayer::LayerOptions( p.transformContext() ) );
+
+#ifdef HAVE_EPT
+  p.addMapLayers( QList<QgsMapLayer *>() << r1 << r2 << r3 << v1 << v2 << v3 << v4 << m1 << m2 << pl1 << pl2 << pc1 << pc2 << al );
 #else
-  p.addMapLayers( QList<QgsMapLayer *>() << r1 << r2 << r3 << v1 << v2 << v3 << v4 << m1 << m2 << pl1 << pl2 );
+  p.addMapLayers( QList<QgsMapLayer *>() << r1 << r2 << r3 << v1 << v2 << v3 << v4 << m1 << m2 << pl1 << pl2 << al );
 #endif
 
   // compatibleRasterLayers
@@ -938,7 +943,7 @@ void TestQgsProcessing::compatibleLayers()
     lIds << pl->name();
   QCOMPARE( lIds, QStringList() << "PX" << "pA" );
 
-#ifdef WITH_EPT
+#ifdef HAVE_EPT
   // compatiblePointCloudLayers
   QVERIFY( QgsProcessingUtils::compatiblePointCloudLayers( nullptr ).isEmpty() );
 
@@ -954,6 +959,21 @@ void TestQgsProcessing::compatibleLayers()
     lIds << pcl->name();
   QCOMPARE( lIds, QStringList() << "PCX" << "pcA" );
 #endif
+
+  // compatibleAnnotationLayers
+  QVERIFY( QgsProcessingUtils::compatibleAnnotationLayers( nullptr ).isEmpty() );
+
+  // sorted
+  lIds.clear();
+  for ( QgsAnnotationLayer *pcl : QgsProcessingUtils::compatibleAnnotationLayers( &p ) )
+    lIds << pcl->name();
+  QCOMPARE( lIds, QStringList() << "Annotations" << "secondary annotation layer" );
+
+  // unsorted
+  lIds.clear();
+  for ( QgsAnnotationLayer *pcl : QgsProcessingUtils::compatibleAnnotationLayers( &p, false ) )
+    lIds << pcl->name();
+  QCOMPARE( lIds, QStringList() << "secondary annotation layer" << "Annotations" );
 
   // point only
   lIds.clear();
@@ -998,20 +1018,20 @@ void TestQgsProcessing::compatibleLayers()
   lIds.clear();
   for ( QgsMapLayer *l : QgsProcessingUtils::compatibleLayers( &p ) )
     lIds << l->name();
-#ifdef WITH_EPT
-  QCOMPARE( lIds, QStringList() << "ar2" << "mA" << "MX" << "pA" << "pcA" << "PCX" << "PX" << "R1" << "v1" << "v3" << "V4" << "vvvv4" <<  "zz" );
+#ifdef HAVE_EPT
+  QCOMPARE( lIds, QStringList() << "Annotations" << "ar2" << "mA" << "MX" << "pA" << "pcA" << "PCX" << "PX" << "R1" << "secondary annotation layer" << "v1" << "v3" << "V4" << "vvvv4" <<  "zz" );
 #else
-  QCOMPARE( lIds, QStringList() << "ar2" << "mA" << "MX" << "pA" << "PX" << "R1" << "v1" << "v3" << "V4" << "vvvv4" <<  "zz" );
+  QCOMPARE( lIds, QStringList() << "Annotations" << "ar2" << "mA" << "MX" << "pA" << "PX" << "R1" << "secondary annotation layer" << "v1" << "v3" << "V4" << "vvvv4" <<  "zz" );
 #endif
 
   // unsorted
   lIds.clear();
   for ( QgsMapLayer *l : QgsProcessingUtils::compatibleLayers( &p, false ) )
     lIds << l->name();
-#ifdef WITH_EPT
-  QCOMPARE( lIds, QStringList() << "R1" << "ar2" << "zz"  << "V4" << "v1" << "v3" << "vvvv4" << "MX" << "mA" << "PCX" << "pcA" << "PX" << "pA" );
+#ifdef HAVE_EPT
+  QCOMPARE( lIds, QStringList() << "R1" << "ar2" << "zz"  << "V4" << "v1" << "v3" << "vvvv4" << "MX" << "mA" << "PCX" << "pcA" << "secondary annotation layer" << "Annotations" << "PX" << "pA" );
 #else
-  QCOMPARE( lIds, QStringList() << "R1" << "ar2" << "zz"  << "V4" << "v1" << "v3" << "vvvv4" << "MX" << "mA" << "PX" << "pA" );
+  QCOMPARE( lIds, QStringList() << "R1" << "ar2" << "zz"  << "V4" << "v1" << "v3" << "vvvv4" << "MX" << "mA" << "secondary annotation layer" << "Annotations" << "PX" << "pA" );
 #endif
 }
 
@@ -3013,6 +3033,11 @@ void TestQgsProcessing::parameterMapLayer()
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMapLayer('non_optional', '', defaultValue='', types=[QgsProcessing.TypePointCloud])" ) );
   code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##non_optional=layer pointcloud" ) );
+  def->setDataTypes( QList< int >() << QgsProcessing::TypeAnnotation );
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMapLayer('non_optional', '', defaultValue='', types=[QgsProcessing.TypeAnnotation])" ) );
+  code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##non_optional=layer annotation" ) );
 
   // optional
   def.reset( new QgsProcessingParameterMapLayer( "optional", QString(), v1->id(), true ) );
@@ -9042,7 +9067,134 @@ void TestQgsProcessing::parameterDxfLayers()
   QCOMPARE( dxfList.at( 0 ).layerOutputAttributeIndex(), dxfLayer.layerOutputAttributeIndex() );
 }
 
-#ifdef WITH_EPT
+void TestQgsProcessing::parameterAnnotationLayer()
+{
+  // setup a context
+  QgsProject p;
+  p.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 28353 ) );
+  QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+  QString vector1 = testDataDir + "multipoint.shp";
+  QString raster = testDataDir + "landsat.tif";
+  QFileInfo fi1( raster );
+  QFileInfo fi2( vector1 );
+  QgsRasterLayer *r1 = new QgsRasterLayer( fi1.filePath(), "R1" );
+  QgsVectorLayer *v1 = new QgsVectorLayer( fi2.filePath(), "V4", "ogr" );
+
+  QgsAnnotationLayer *al = new QgsAnnotationLayer( QStringLiteral( "secondary annotation layer" ), QgsAnnotationLayer::LayerOptions( p.transformContext() ) );
+  Q_ASSERT( al );
+  p.addMapLayers( QList<QgsMapLayer *>() << v1 << r1 << al );
+  QgsProcessingContext context;
+  context.setProject( &p );
+
+  // not optional!
+  std::unique_ptr< QgsProcessingParameterAnnotationLayer > def( new QgsProcessingParameterAnnotationLayer( "non_optional", QString(), QString( "somelayer" ), false ) );
+  QVERIFY( !def->checkValueIsAcceptable( false ) );
+  QVERIFY( !def->checkValueIsAcceptable( true ) );
+  QVERIFY( !def->checkValueIsAcceptable( 5 ) );
+  QVERIFY( def->checkValueIsAcceptable( "layer12312312" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( !def->checkValueIsAcceptable( QgsProcessingFeatureSourceDefinition( "layer1231123" ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant::fromValue( al ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant::fromValue( p.mainAnnotationLayer() ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant::fromValue( v1 ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant::fromValue( r1 ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsProperty::fromValue( QStringLiteral( "layer12312312" ) ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QgsProperty::fromValue( QString() ) ) );
+
+  // should be OK
+  QVERIFY( def->checkValueIsAcceptable( "tertiary annotation layer" ) );
+  // ... unless we use context, when the check that the layer actually exists is performed
+  QVERIFY( !def->checkValueIsAcceptable( "tertiary annotation layer", &context ) );
+
+  // using existing map layer ID
+  QVariantMap params;
+  params.insert( "non_optional",  al->id() );
+  QCOMPARE( QgsProcessingParameters::parameterAsAnnotationLayer( def.get(), params, context )->id(), al->id() );
+
+  // using existing layer
+  params.insert( "non_optional",  QVariant::fromValue( al ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsAnnotationLayer( def.get(), params, context )->id(), al->id() );
+
+  // not annotation layer
+  params.insert( "non_optional",  r1->id() );
+  QVERIFY( !QgsProcessingParameters::parameterAsAnnotationLayer( def.get(), params, context ) );
+
+  // using existing non-annotation layer
+  params.insert( "non_optional",  QVariant::fromValue( r1 ) );
+  QVERIFY( !QgsProcessingParameters::parameterAsAnnotationLayer( def.get(), params, context ) );
+
+  // string representing a layer source
+  params.insert( "non_optional", QStringLiteral( "secondary annotation layer" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsAnnotationLayer( def.get(), params, context ), al );
+
+  // main annotation layer
+  params.insert( "non_optional", QStringLiteral( "main" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsAnnotationLayer( def.get(), params, context ), p.mainAnnotationLayer() );
+
+  // nonsense string
+  params.insert( "non_optional", QString( "i'm not a layer, and nothing you can do will make me one" ) );
+  QVERIFY( !QgsProcessingParameters::parameterAsAnnotationLayer( def.get(), params, context ) );
+
+  QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
+  QCOMPARE( def->valueAsPythonString( QStringLiteral( "main" ), context ), QStringLiteral( "'main'" ) );
+  QCOMPARE( def->valueAsPythonString( al->id(), context ), QStringLiteral( "'%1'" ).arg( al->id() ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( al ), context ), QStringLiteral( "'%1'" ).arg( al->id() ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
+
+  QString pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterAnnotationLayer('non_optional', '', defaultValue='somelayer')" ) );
+
+  QString code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##non_optional=annotation somelayer" ) );
+  std::unique_ptr< QgsProcessingParameterAnnotationLayer > fromCode( dynamic_cast< QgsProcessingParameterAnnotationLayer * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+
+  QVariantMap map = def->toVariantMap();
+  QgsProcessingParameterAnnotationLayer fromMap( "x" );
+  QVERIFY( fromMap.fromVariantMap( map ) );
+  QCOMPARE( fromMap.name(), def->name() );
+  QCOMPARE( fromMap.description(), def->description() );
+  QCOMPARE( fromMap.flags(), def->flags() );
+  QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  def.reset( dynamic_cast< QgsProcessingParameterAnnotationLayer *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
+  QVERIFY( dynamic_cast< QgsProcessingParameterAnnotationLayer *>( def.get() ) );
+
+  // optional
+  def.reset( new QgsProcessingParameterAnnotationLayer( "optional", QString(), al->id(), true ) );
+  params.insert( "optional",  QVariant() );
+  QCOMPARE( QgsProcessingParameters::parameterAsAnnotationLayer( def.get(), params,  context )->id(), al->id() );
+  QVERIFY( def->checkValueIsAcceptable( false ) );
+  QVERIFY( def->checkValueIsAcceptable( true ) );
+  QVERIFY( def->checkValueIsAcceptable( 5 ) );
+  QVERIFY( def->checkValueIsAcceptable( "layer12312312" ) );
+  QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.las" ) );
+  QVERIFY( def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsProcessingFeatureSourceDefinition( "layer1231123" ) ) );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QString( QStringLiteral( "QgsProcessingParameterAnnotationLayer('optional', '', optional=True, defaultValue='" ) + al->id() + "')" ) );
+
+  code = def->asScriptCode();
+  QCOMPARE( code, QString( QStringLiteral( "##optional=optional annotation " ) + al->id() ) );
+  fromCode.reset( dynamic_cast< QgsProcessingParameterAnnotationLayer * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+
+  //optional with direct layer default
+  def.reset( new QgsProcessingParameterAnnotationLayer( "optional", QString(), QVariant::fromValue( al ), true ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsAnnotationLayer( def.get(), params,  context )->id(), al->id() );
+}
+
+#ifdef HAVE_EPT
 void TestQgsProcessing::parameterPointCloudLayer()
 {
   // setup a context

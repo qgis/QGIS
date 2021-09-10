@@ -22,6 +22,7 @@
 #include "qgsrasterlayer.h"
 #include "qgspluginlayer.h"
 #include "qgspointcloudlayer.h"
+#include "qgsannotationlayer.h"
 #include "qgsproject.h"
 #include "processing/models/qgsprocessingmodelchildparametersource.h"
 #include <QStandardItemModel>
@@ -362,6 +363,9 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
 
 
     QString id = layer->id();
+    if ( layer == project->mainAnnotationLayer() )
+      id = QStringLiteral( "main" );
+
     for ( int i = 0; i < mModel->rowCount(); ++i )
     {
       // try to match project layers to current layers
@@ -417,6 +421,17 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
       break;
     }
 
+    case QgsProcessing::TypeAnnotation:
+    {
+      const QList<QgsAnnotationLayer *> options = QgsProcessingUtils::compatibleAnnotationLayers( project, false );
+      for ( const QgsAnnotationLayer *layer : options )
+      {
+        addLayer( layer );
+      }
+
+      break;
+    }
+
     case QgsProcessing::TypePointCloud:
     {
       const QList<QgsPointCloudLayer *> options = QgsProcessingUtils::compatiblePointCloudLayers( project, false );
@@ -464,6 +479,11 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
       }
       const QList<QgsPointCloudLayer *> pointClouds = QgsProcessingUtils::compatiblePointCloudLayers( project );
       for ( const QgsPointCloudLayer *layer : pointClouds )
+      {
+        addLayer( layer );
+      }
+      const QList<QgsAnnotationLayer *> annotations = QgsProcessingUtils::compatibleAnnotationLayers( project );
+      for ( const QgsAnnotationLayer *layer : annotations )
       {
         addLayer( layer );
       }

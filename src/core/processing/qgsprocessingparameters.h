@@ -43,6 +43,7 @@ class QgsProcessingProvider;
 class QgsPrintLayout;
 class QgsLayoutItem;
 class QgsPointCloudLayer;
+class QgsAnnotationLayer;
 
 /**
  * \class QgsProcessingFeatureSourceDefinition
@@ -433,6 +434,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterMeshDatasetTime;
     else if ( sipCpp->type() == QgsProcessingParameterPointCloudLayer::typeName() )
       sipType = sipType_QgsProcessingParameterPointCloudLayer;
+    else if ( sipCpp->type() == QgsProcessingParameterAnnotationLayer::typeName() )
+      sipType = sipType_QgsProcessingParameterAnnotationLayer;
     else
       sipType = nullptr;
     SIP_END
@@ -1593,6 +1596,25 @@ class CORE_EXPORT QgsProcessingParameters
      */
     static QgsPointCloudLayer *parameterAsPointCloudLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
 
+    /**
+     * Evaluates the parameter with matching \a definition to an annotation layer.
+     *
+     * Layers will either be taken from \a context's active project. Callers do not
+     * need to handle deletion of the returned layer.
+     *
+     * \since QGIS 3.22
+     */
+    static QgsAnnotationLayer *parameterAsAnnotationLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition and \a value to an annotation layer.
+     *
+     * Layers will either be taken from \a context's active project. Callers do not
+     * need to handle deletion of the returned layer.
+     *
+     * \since QGIS 3.22
+     */
+    static QgsAnnotationLayer *parameterAsAnnotationLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
 
     /**
      * Creates a new QgsProcessingParameterDefinition using the configuration from a
@@ -4208,6 +4230,37 @@ class CORE_EXPORT QgsProcessingParameterPointCloudLayer : public QgsProcessingPa
     static QgsProcessingParameterPointCloudLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
 };
 
+
+/**
+ * \class QgsProcessingParameterAnnotationLayer
+ * \ingroup core
+ * \brief An annotation layer parameter for processing algorithms.
+  * \since QGIS 3.22
+ */
+class CORE_EXPORT QgsProcessingParameterAnnotationLayer : public QgsProcessingParameterDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterAnnotationLayer.
+     */
+    QgsProcessingParameterAnnotationLayer( const QString &name, const QString &description = QString(),
+                                           const QVariant &defaultValue = QVariant(), bool optional = false );
+
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "annotation" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
+    QString type() const override { return typeName(); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterAnnotationLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+};
 
 // clazy:excludeall=qstring-allocations
 
