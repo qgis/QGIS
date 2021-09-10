@@ -138,15 +138,6 @@ QList<QgsAnnotationItemNode> QgsAnnotationPointTextItem::nodes() const
   return { QgsAnnotationItemNode( QgsVertexId( 0, 0, 0 ), mPoint, Qgis::AnnotationItemNodeType::VertexHandle )};
 }
 
-bool QgsAnnotationPointTextItem::transform( const QTransform &transform )
-{
-  double x = mPoint.x();
-  double y = mPoint.y();
-  transform.map( mPoint.x(), mPoint.y(), &x, &y );
-  mPoint.set( x, y );
-  return true;
-}
-
 Qgis::AnnotationItemEditOperationResult QgsAnnotationPointTextItem::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
 {
   switch ( operation->type() )
@@ -162,6 +153,14 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPointTextItem::applyEdit( Q
     {
       return Qgis::AnnotationItemEditOperationResult::ItemCleared;
     }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
+    {
+      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
+      mPoint.setX( mPoint.x() + moveOperation->translationX() );
+      mPoint.setY( mPoint.y() + moveOperation->translationY() );
+      return Qgis::AnnotationItemEditOperationResult::Success;
+    }
   }
 
   return Qgis::AnnotationItemEditOperationResult::Invalid;
@@ -175,6 +174,12 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPointTextItem::tran
     {
       QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
       return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( moveOperation->after().clone() ) );
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
+    {
+      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
+      return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( new QgsPoint( mPoint.x() + moveOperation->translationX(), mPoint.y() + moveOperation->translationY() ) ) );
     }
 
     case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:

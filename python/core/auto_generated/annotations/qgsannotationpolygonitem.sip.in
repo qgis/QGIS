@@ -37,10 +37,6 @@ Constructor for QgsAnnotationPolygonItem, with the specified ``polygon`` geometr
 
     virtual QList< QgsAnnotationItemNode > nodes() const;
 
-    virtual QgsGeometry rubberBandGeometry() const;
-
-    virtual bool transform( const QTransform &transform );
-
     virtual Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
 
     virtual QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) /Factory/;
