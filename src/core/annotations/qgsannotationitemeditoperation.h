@@ -40,6 +40,7 @@ class CORE_EXPORT QgsAbstractAnnotationItemEditOperation
     {
       MoveNode, //!< Move a node
       DeleteNode, //!< Delete a node
+      AddNode, //!< Add a node
       TranslateItem, //!< Translate (move) an item
     };
 
@@ -145,6 +146,33 @@ class CORE_EXPORT QgsAnnotationItemEditOperationDeleteNode : public QgsAbstractA
 
 };
 
+/**
+ * \ingroup core
+ * \brief Annotation item edit operation consisting of adding a node
+ * \since QGIS 3.22
+ */
+class CORE_EXPORT QgsAnnotationItemEditOperationAddNode : public QgsAbstractAnnotationItemEditOperation
+{
+  public:
+
+    /**
+     * Constructor for QgsAnnotationItemEditOperationAddNode at the specified \a point.
+     */
+    QgsAnnotationItemEditOperationAddNode( const QString &itemId, const QgsPoint &point );
+
+    Type type() const override;
+
+    /**
+     * Returns the node position (in layer coordinates).
+     */
+    QgsPoint point() const { return mPoint; }
+
+  private:
+
+    QgsPoint mPoint;
+
+};
+
 
 /**
  * \ingroup core
@@ -187,7 +215,6 @@ class CORE_EXPORT QgsAnnotationItemEditOperationTranslateItem : public QgsAbstra
     QgsVertexId mNodeId;
     double mTranslateX = 0;
     double mTranslateY = 0;
-
 
 };
 

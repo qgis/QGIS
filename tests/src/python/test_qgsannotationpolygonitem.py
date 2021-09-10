@@ -41,7 +41,8 @@ from qgis.core import (QgsMapSettings,
                        QgsVertexId,
                        QgsAnnotationItemEditOperationMoveNode,
                        QgsAnnotationItemEditOperationDeleteNode,
-                       QgsAnnotationItemEditOperationTranslateItem
+                       QgsAnnotationItemEditOperationTranslateItem,
+                       QgsAnnotationItemEditOperationAddNode
                        )
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -120,6 +121,14 @@ class TestQgsAnnotationPolygonItem(unittest.TestCase):
         self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 0), QgsPoint(12, 13))), Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 0), QgsPoint(12, 13))), Qgis.AnnotationItemEditOperationResult.ItemCleared)
         self.assertEqual(item.geometry().asWkt(), 'Polygon EMPTY')
+
+    def test_apply_add_node_edit(self):
+        item = QgsAnnotationPolygonItem(
+            QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(14.5, 15.5), QgsPoint(14.5, 16.5), QgsPoint(14.5, 17.5), QgsPoint(12, 13)])))
+        self.assertEqual(item.geometry().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 14.5 15.5, 14.5 16.5, 14.5 17.5, 12 13))')
+
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationAddNode('', QgsPoint(15, 16))), Qgis.AnnotationItemEditOperationResult.Success)
+        self.assertEqual(item.geometry().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 14.5 15.5, 15 16, 14.5 16.5, 14.5 17.5, 12 13))')
 
     def test_transient_move_operation(self):
         item = QgsAnnotationPolygonItem(

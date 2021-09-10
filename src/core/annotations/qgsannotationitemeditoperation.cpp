@@ -79,3 +79,20 @@ QgsAbstractAnnotationItemEditOperation::Type QgsAnnotationItemEditOperationTrans
 {
   return Type::TranslateItem;
 }
+
+
+//
+// QgsAnnotationItemEditOperationAddNode
+//
+
+QgsAnnotationItemEditOperationAddNode::QgsAnnotationItemEditOperationAddNode( const QString &itemId, const QgsPoint &point )
+  : QgsAbstractAnnotationItemEditOperation( itemId )
+  , mPoint( point )
+{
+
+}
+
+QgsAbstractAnnotationItemEditOperation::Type QgsAnnotationItemEditOperationAddNode::type() const
+{
+  return Type::AddNode;
+}

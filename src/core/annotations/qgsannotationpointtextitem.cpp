@@ -161,6 +161,9 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPointTextItem::applyEdit( Q
       mPoint.setY( mPoint.y() + moveOperation->translationY() );
       return Qgis::AnnotationItemEditOperationResult::Success;
     }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
+      break;
   }
 
   return Qgis::AnnotationItemEditOperationResult::Invalid;
@@ -183,6 +186,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPointTextItem::tran
     }
 
     case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
+    case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
       break;
   }
   return nullptr;

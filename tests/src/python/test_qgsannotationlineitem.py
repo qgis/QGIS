@@ -39,7 +39,8 @@ from qgis.core import (QgsMapSettings,
                        QgsVertexId,
                        QgsAnnotationItemEditOperationMoveNode,
                        QgsAnnotationItemEditOperationDeleteNode,
-                       QgsAnnotationItemEditOperationTranslateItem
+                       QgsAnnotationItemEditOperationTranslateItem,
+                       QgsAnnotationItemEditOperationAddNode
                        )
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -114,6 +115,13 @@ class TestQgsAnnotationLineItem(unittest.TestCase):
         self.assertEqual(item.geometry().asWkt(), 'LineString (14 15, 16 17)')
         self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 1), QgsPoint(16, 17))), Qgis.AnnotationItemEditOperationResult.ItemCleared)
         self.assertEqual(item.geometry().asWkt(), 'LineString EMPTY')
+
+    def test_apply_add_node_edit(self):
+        item = QgsAnnotationLineItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(16, 17)]))
+        self.assertEqual(item.geometry().asWkt(), 'LineString (12 13, 14 13, 14 15, 16 17)')
+
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationAddNode('', QgsPoint(15, 16))), Qgis.AnnotationItemEditOperationResult.Success)
+        self.assertEqual(item.geometry().asWkt(), 'LineString (12 13, 14 13, 14 15, 15 16, 16 17)')
 
     def test_transient_move_operation(self):
         item = QgsAnnotationLineItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]))

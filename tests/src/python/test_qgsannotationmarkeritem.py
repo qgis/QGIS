@@ -37,7 +37,8 @@ from qgis.core import (QgsMapSettings,
                        QgsVertexId,
                        QgsAnnotationItemEditOperationMoveNode,
                        QgsAnnotationItemEditOperationDeleteNode,
-                       QgsAnnotationItemEditOperationTranslateItem
+                       QgsAnnotationItemEditOperationTranslateItem,
+                       QgsAnnotationItemEditOperationAddNode
                        )
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -101,6 +102,10 @@ class TestQgsAnnotationMarkerItem(unittest.TestCase):
         self.assertEqual(item.geometry().asWkt(), 'POINT(12 13)')
 
         self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 0), QgsPoint(12, 13))), Qgis.AnnotationItemEditOperationResult.ItemCleared)
+
+    def test_apply_add_node_edit(self):
+        item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationAddNode('', QgsPoint(13, 14))), Qgis.AnnotationItemEditOperationResult.Invalid)
 
     def test_transient_move_operation(self):
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))

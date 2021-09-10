@@ -112,6 +112,18 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationLineItem::applyEdit( QgsAbs
       break;
     }
 
+    case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
+    {
+      QgsAnnotationItemEditOperationAddNode *addOperation = qgis::down_cast< QgsAnnotationItemEditOperationAddNode * >( operation );
+
+      QgsPoint segmentPoint;
+      QgsVertexId endOfSegmentVertex;
+      mCurve->closestSegment( addOperation->point(), segmentPoint, endOfSegmentVertex );
+      if ( mCurve->insertVertex( endOfSegmentVertex, addOperation->point() ) )
+        return Qgis::AnnotationItemEditOperationResult::Success;
+      break;
+    }
+
     case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
     {
       QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
@@ -149,6 +161,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationLineItem::transient
     }
 
     case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
+    case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
       break;
   }
   return nullptr;
