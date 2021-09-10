@@ -206,30 +206,41 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   : QgsMapToolAdvancedDigitizing( canvas, QgisApp::instance()->cadDockWidget() )
   , mSnapIndicator( new QgsSnapIndicator( canvas ) )
 {
-  mActionDigitizing = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshDigitizing.svg" ) ), tr( "Digitize mesh elements" ), this );
+  mActionDigitizing = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshDigitizing.svg" ) ), tr( "Digitize Mesh elements" ), this );
   mActionDigitizing->setCheckable( true );
-  mActionSelectByPolygon = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshSelectPolygon.svg" ) ), tr( "Select mesh element by polygon" ), this );
-  mActionSelectByPolygon = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshSelectPolygon.svg" ) ), tr( "Select mesh elements by polygon" ), this );
-  mActionSelectByPolygon->setCheckable( true );
-  mActionSelectByExpression = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshSelectExpression.svg" ) ), tr( "Select mesh elements by expression" ), this );
 
-  mActionTransformCoordinates = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshTransformByExpression.svg" ) ), tr( "Transform vertices coordinates" ), this );
+  mActionSelectByPolygon = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshSelectPolygon.svg" ) ), tr( "Select Mesh Elements by Polygon" ), this );
+  mActionSelectByPolygon->setCheckable( true );
+  mActionSelectByPolygon->setObjectName( QStringLiteral( "ActionMeshSelectByPolygon" ) );
+  mActionSelectByExpression = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshSelectExpression.svg" ) ), tr( "Select Mesh Elements by Expression" ), this );
+  mActionSelectByExpression->setObjectName( QStringLiteral( "ActionMeshSelectByExpression" ) );
+  mActionSelectByContainingSelectedPolygon = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshSelectByContainingGeometry.svg" ) ), tr( "Select Contained Elements by Selected Polygons" ), this );
+  mActionSelectByTouchingSelectedPolygon = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshSelectByTouchingGeometry.svg" ) ), tr( "Select Touched Elements by Selected Polygons" ), this );
+  mActionSelectByContainingSelectedPolygon->setEnabled( false );
+  mActionSelectByTouchingSelectedPolygon->setEnabled( false );
+
+  mSelectActions << mActionSelectByPolygon
+                 << mActionSelectByExpression
+                 << mActionSelectByContainingSelectedPolygon
+                 << mActionSelectByTouchingSelectedPolygon;
+
+  mActionTransformCoordinates = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshTransformByExpression.svg" ) ), tr( "Transform Vertices Coordinates" ), this );
   mActionTransformCoordinates->setCheckable( true );
 
-  mActionForceByVectorLayerGeometries = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshEditForceByVectorLines.svg" ) ), tr( "Force by selected geometries" ), this );
+  mActionForceByVectorLayerGeometries = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshEditForceByVectorLines.svg" ) ), tr( "Force by Selected Geometries" ), this );
   mActionForceByVectorLayerGeometries->setEnabled( areGeometriesSelectedInVectorLayer() );
 
   mWidgetActionForceByLine = new QgsMeshEditForceByLineAction( this );
   mWidgetActionForceByLine->setMapCanvas( canvas );
 
-  mActionReindexMesh = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshReindex.svg" ) ), tr( "Reindex faces and vertices" ), this );
+  mActionReindexMesh = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshReindex.svg" ) ), tr( "Reindex Faces and Vertices" ), this );
 
   mActionRemoveVerticesFillingHole = new QAction( this );
-  mActionDelaunayTriangulation = new QAction( tr( "Delaunay triangulation with selected vertices" ), this );
-  mActionFacesRefinement = new QAction( tr( "Refine current face" ), this );
+  mActionDelaunayTriangulation = new QAction( tr( "Delaunay Triangulation with Selected Vertices" ), this );
+  mActionFacesRefinement = new QAction( tr( "Refine Current Face" ), this );
   mActionRemoveVerticesWithoutFillingHole = new QAction( this );
-  mActionRemoveFaces = new QAction( tr( "Remove current face" ), this );
-  mActionSplitFaces = new QAction( tr( "Split current face" ), this );
+  mActionRemoveFaces = new QAction( tr( "Remove Current Face" ), this );
+  mActionSplitFaces = new QAction( tr( "Split Current Face" ), this );
 
   connect( mActionRemoveVerticesFillingHole, &QAction::triggered, this, [this] {removeSelectedVerticesFromMesh( true );} );
   connect( mActionRemoveVerticesWithoutFillingHole, &QAction::triggered, this, [this] {removeSelectedVerticesFromMesh( false );} );
@@ -242,13 +253,29 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
       activateWithState( Digitizing );
   } );
 
-  connect( mActionSelectByPolygon, &QAction::toggled, this, [this]( bool checked )
+  for ( int i = 0; i < mSelectActions.count(); ++i )
   {
-    if ( checked )
+    connect( mSelectActions.at( i ), &QAction::triggered, this, [i]
+    {
+      QgsSettings settings;
+      settings.setValue( QStringLiteral( "UI/Mesh/defaultSelection" ), i );
+    } );
+  }
+
+  connect( mActionSelectByPolygon, &QAction::triggered, this, [this]
+  {
+    if ( mActionSelectByPolygon->isChecked() )
+    {
       activateWithState( SelectingByPolygon );
+    }
     else
       mSelectionBand->reset( QgsWkbTypes::PolygonGeometry );
   } );
+
+
+  connect( mActionSelectByExpression, &QAction::triggered, this, &QgsMapToolEditMeshFrame::showSelectByExpressionDialog );
+  connect( mActionSelectByTouchingSelectedPolygon, &QAction::triggered, this, &QgsMapToolEditMeshFrame::selectByTouchingSelectedPolygons );
+  connect( mActionSelectByContainingSelectedPolygon, &QAction::triggered, this, &QgsMapToolEditMeshFrame::selectByContainingSelectedPolygons );
 
   connect( mActionDelaunayTriangulation, &QAction::triggered, this, [this]
   {
@@ -280,11 +307,12 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
 
   connect( mActionTransformCoordinates, &QAction::triggered, this, &QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget );
 
-  connect( mActionSelectByExpression, &QAction::triggered, this, &QgsMapToolEditMeshFrame::showSelectByExpressionDialog );
-
   connect( canvas, &QgsMapCanvas::selectionChanged, this, [this]
   {
-    mActionForceByVectorLayerGeometries->setEnabled( areGeometriesSelectedInVectorLayer() &&( mCurrentEditor != nullptr ) );
+    bool enable = areGeometriesSelectedInVectorLayer() && ( mCurrentEditor != nullptr );
+    mActionForceByVectorLayerGeometries->setEnabled( enable );
+    mActionSelectByContainingSelectedPolygon->setEnabled( enable );
+    mActionSelectByTouchingSelectedPolygon->setEnabled( enable );
   } );
 
   connect( mActionForceByVectorLayerGeometries, &QAction::triggered, this, &QgsMapToolEditMeshFrame::forceBySelectedLayerPolyline );
@@ -330,7 +358,10 @@ void QgsMapToolEditMeshFrame::setActionsEnable( bool enable )
   for ( QAction *action : std::as_const( actions ) )
     action->setEnabled( enable );
 
-  mActionForceByVectorLayerGeometries->setEnabled( enable && areGeometriesSelectedInVectorLayer() );
+  bool areGeometriesSelected = areGeometriesSelectedInVectorLayer();
+  mActionForceByVectorLayerGeometries->setEnabled( enable && areGeometriesSelected );
+  mActionSelectByContainingSelectedPolygon->setEnabled( enable && areGeometriesSelected );
+  mActionSelectByTouchingSelectedPolygon->setEnabled( enable && areGeometriesSelected );
 }
 
 
@@ -348,12 +379,18 @@ QAction *QgsMapToolEditMeshFrame::digitizeAction() const
 
 QList<QAction *> QgsMapToolEditMeshFrame::selectActions() const
 {
-  return  QList<QAction *>()
-          << mActionSelectByPolygon;
+  return  mSelectActions;
 }
 
 QAction *QgsMapToolEditMeshFrame::defaultSelectActions() const
 {
+  QgsSettings settings;
+  bool ok = false;
+  int defaultIndex = settings.value( QStringLiteral( "UI/Mesh/defaultSelection" ) ).toInt( &ok );
+
+  if ( ok && mSelectActions.at( defaultIndex )->isEnabled() )
+    return mSelectActions.at( defaultIndex );
+
   return mActionSelectByPolygon;
 }
 
@@ -926,7 +963,7 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     case Selecting:
     {
       QgsGeometry selectionGeom = mSelectionBand->asGeometry();
-      selectInGeometry( selectionGeom, e->modifiers() );
+      selectByGeometry( selectionGeom, e->modifiers() );
       mSelectionBand->reset( QgsWkbTypes::PolygonGeometry );
       mCurrentState = Digitizing;
     }
@@ -967,7 +1004,7 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       else if ( e->button() == Qt::RightButton )
       {
         QgsGeometry selectionGeom = mSelectionBand->asGeometry();
-        selectInGeometry( selectionGeom, e->modifiers() );
+        selectByGeometry( selectionGeom, e->modifiers() );
         mSelectionBand->reset( QgsWkbTypes::PolygonGeometry );
       }
       break;
@@ -1651,47 +1688,10 @@ void QgsMapToolEditMeshFrame::reindexMesh()
   mCurrentLayer->reindex( transform, true );
 }
 
-void QgsMapToolEditMeshFrame::selectInGeometry( const QgsGeometry &geometry, Qt::KeyboardModifiers modifiers )
+void QgsMapToolEditMeshFrame::selectByGeometry( const QgsGeometry &geometry, Qt::KeyboardModifiers modifiers )
 {
   if ( mCurrentLayer.isNull() || !mCurrentLayer->triangularMesh() || mCurrentEditor.isNull() )
     return;
-
-  QSet<int> selectedVertices;
-  const QList<int> nativeFaceIndexes = mCurrentLayer->triangularMesh()->nativeFaceIndexForRectangle( geometry.boundingBox() );
-
-  std::unique_ptr<QgsGeometryEngine> engine( QgsGeometry::createGeometryEngine( geometry.constGet() ) );
-  engine->prepareGeometry();
-
-  for ( const int faceIndex : nativeFaceIndexes )
-  {
-    const QgsMeshFace &face = nativeFace( faceIndex );
-    if ( !( modifiers & Qt::AltModifier ) )
-    {
-      std::unique_ptr<QgsPolygon> faceGeom( new QgsPolygon( new QgsLineString( nativeFaceGeometry( faceIndex ) ) ) );
-      if ( engine->intersects( faceGeom.get() ) )
-      {
-        QSet<int> faceToAdd = qgis::listToSet( face.toList() );
-        selectedVertices.unite( faceToAdd );
-      }
-    }
-    else
-    {
-      for ( const int vertexIndex : face )
-      {
-        const QgsMeshVertex &vertex = mapVertex( vertexIndex );
-        if ( engine->contains( &vertex ) )
-          selectedVertices.insert( vertexIndex );
-      }
-    }
-  }
-//free vertices
-  const QList<int> &freeVerticesIndexes = mCurrentEditor->freeVerticesIndexes();
-  for ( const int freeVertexIndex : freeVerticesIndexes )
-  {
-    const QgsMeshVertex &vertex = mapVertex( freeVertexIndex );
-    if ( engine->contains( &vertex ) )
-      selectedVertices.insert( freeVertexIndex );
-  }
 
   Qgis::SelectBehavior behavior;
   if ( modifiers & Qt::ShiftModifier )
@@ -1701,7 +1701,85 @@ void QgsMapToolEditMeshFrame::selectInGeometry( const QgsGeometry &geometry, Qt:
   else
     behavior = Qgis::SelectBehavior::SetSelection;
 
+  if ( modifiers & Qt::AltModifier )
+    selectContainedByGeometry( geometry, behavior );
+  else
+    selectTouchedByGeometry( geometry, behavior );
+}
+
+void QgsMapToolEditMeshFrame::selectTouchedByGeometry( const QgsGeometry &geometry, Qgis::SelectBehavior behavior )
+{
+  QSet<int> selectedVertices;
+  const QList<int> nativeFaceIndexes = mCurrentLayer->triangularMesh()->nativeFaceIndexForRectangle( geometry.boundingBox() );
+
+  std::unique_ptr<QgsGeometryEngine> engine( QgsGeometry::createGeometryEngine( geometry.constGet() ) );
+  engine->prepareGeometry();
+
+  for ( const int faceIndex : nativeFaceIndexes )
+  {
+    const QgsMeshFace &face = nativeFace( faceIndex );
+    std::unique_ptr<QgsPolygon> faceGeom( new QgsPolygon( new QgsLineString( nativeFaceGeometry( faceIndex ) ) ) );
+    if ( engine->intersects( faceGeom.get() ) )
+    {
+      QSet<int> faceToAdd = qgis::listToSet( face.toList() );
+      selectedVertices.unite( faceToAdd );
+    }
+  }
+
+  const QList<int> &freeVerticesIndexes = mCurrentEditor->freeVerticesIndexes();
+  for ( const int freeVertexIndex : freeVerticesIndexes )
+  {
+    const QgsMeshVertex &vertex = mapVertex( freeVertexIndex );
+    if ( engine->contains( &vertex ) )
+      selectedVertices.insert( freeVertexIndex );
+  }
+
   setSelectedVertices( selectedVertices.values(), behavior );
+}
+
+void QgsMapToolEditMeshFrame::selectContainedByGeometry( const QgsGeometry &geometry, Qgis::SelectBehavior behavior )
+{
+  QSet<int> selectedVertices;
+  const QList<int> nativeFaceIndexes = mCurrentLayer->triangularMesh()->nativeFaceIndexForRectangle( geometry.boundingBox() );
+
+  std::unique_ptr<QgsGeometryEngine> engine( QgsGeometry::createGeometryEngine( geometry.constGet() ) );
+  engine->prepareGeometry();
+  for ( const int faceIndex : nativeFaceIndexes )
+  {
+    const QgsMeshFace &face = nativeFace( faceIndex );
+    for ( const int vertexIndex : face )
+    {
+      const QgsMeshVertex &vertex = mapVertex( vertexIndex );
+      if ( engine->contains( &vertex ) )
+        selectedVertices.insert( vertexIndex );
+    }
+  }
+
+  const QList<int> &freeVerticesIndexes = mCurrentEditor->freeVerticesIndexes();
+  for ( const int freeVertexIndex : freeVerticesIndexes )
+  {
+    const QgsMeshVertex &vertex = mapVertex( freeVertexIndex );
+    if ( engine->contains( &vertex ) )
+      selectedVertices.insert( freeVertexIndex );
+  }
+
+  setSelectedVertices( selectedVertices.values(), behavior );
+}
+
+void QgsMapToolEditMeshFrame::selectByTouchingSelectedPolygons()
+{
+  onEditingStarted();
+  const QList<QgsGeometry> geometries = selectedGeometriesInVectorLayers();
+  for ( const QgsGeometry &geom : geometries )
+    selectTouchedByGeometry( geom, Qgis::SelectBehavior::AddToSelection );
+}
+
+void QgsMapToolEditMeshFrame::selectByContainingSelectedPolygons()
+{
+  onEditingStarted();
+  const QList<QgsGeometry> geometries = selectedGeometriesInVectorLayers();
+  for ( const QgsGeometry &geom : geometries )
+    selectContainedByGeometry( geom, Qgis::SelectBehavior::AddToSelection );
 }
 
 void QgsMapToolEditMeshFrame::applyZValueOnSelectedVertices()
@@ -2412,7 +2490,6 @@ int QgsMapToolEditMeshFrame::closeVertex( const QgsPointXY &mapPoint ) const
   return -1;
 }
 
-
 void QgsMapToolEditMeshFrame::selectByExpression( const QString &textExpression, Qgis::SelectBehavior behavior, QgsMesh::ElementType elementType )
 {
   if ( !mCurrentEditor || !mCurrentLayer )
@@ -2439,6 +2516,7 @@ void QgsMapToolEditMeshFrame::selectByExpression( const QString &textExpression,
       break;
   }
 }
+
 
 void QgsMapToolEditMeshFrame::onZoomToSelected()
 {

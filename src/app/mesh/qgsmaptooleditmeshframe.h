@@ -164,6 +164,8 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 
     void showSelectByExpressionDialog();
     void selectByExpression( const QString &textExpression, Qgis::SelectBehavior behavior, QgsMesh::ElementType elementType );
+    void selectByTouchingSelectedPolygons();
+    void selectByContainingSelectedPolygons();
     void onZoomToSelected();
     void forceBySelectedLayerPolyline();
     void reindexMesh();
@@ -226,7 +228,9 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     bool isFaceSelected( int faceIndex );
     void setSelectedVertices( const QList<int> newSelectedVertices,  Qgis::SelectBehavior behavior );
     void setSelectedFaces( const QList<int> newSelectedFaces,  Qgis::SelectBehavior behavior );
-    void selectInGeometry( const QgsGeometry &geometry,  Qt::KeyboardModifiers modifiers );
+    void selectByGeometry( const QgsGeometry &geometry,  Qt::KeyboardModifiers modifiers );
+    void selectTouchedByGeometry( const QgsGeometry &geometry, Qgis::SelectBehavior behavior );
+    void selectContainedByGeometry( const QgsGeometry &geometry, Qgis::SelectBehavior behavior );
     void applyZValueOnSelectedVertices();
     void prepareSelection();
     void updateSelectecVerticesMarker();
@@ -282,6 +286,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QList<QgsVertexMarker *> mFreeVertexMarker;
 
     //! members for selection of vertices/faces
+    QList<QAction *> mSelectActions;
     QMap<int, SelectedVertexData> mSelectedVertices;
     QgsRectangle mSelectedMapExtent;
     QSet<int> mSelectedFaces;
@@ -333,6 +338,9 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 
     QAction *mActionSelectByExpression = nullptr;
     QAction *mActionForceByVectorLayerGeometries = nullptr;
+    QAction *mActionSelectByContainingSelectedPolygon = nullptr;
+    QAction *mActionSelectByTouchingSelectedPolygon = nullptr;
+
     QgsMeshEditForceByLineAction *mWidgetActionForceByLine = nullptr;
     QAction *mActionReindexMesh = nullptr;
 
