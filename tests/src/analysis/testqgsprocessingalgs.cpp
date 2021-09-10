@@ -61,6 +61,8 @@
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgsalgorithmgpsbabeltools.h"
+#include "qgsannotationlayer.h"
+#include "qgsannotationmarkeritem.h"
 
 class TestQgsProcessingAlgs: public QObject
 {
@@ -189,6 +191,7 @@ class TestQgsProcessingAlgs: public QObject
     void convertGpsData();
     void downloadGpsData();
     void uploadGpsData();
+    void transferMainAnnotationLayer();
 
   private:
 
@@ -6913,6 +6916,31 @@ void TestQgsProcessingAlgs::uploadGpsData()
   QVERIFY( !ok );
   QVERIFY( feedback.errors.value( 0 ).startsWith( QStringLiteral( "Unknown port \u201Cnot a port\u201D. Valid ports are:" ) ) );
   feedback.errors.clear();
+}
+
+void TestQgsProcessingAlgs::transferMainAnnotationLayer()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:transferannotationsfrommain" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QgsProject p;
+  p.mainAnnotationLayer()->addItem( new QgsAnnotationMarkerItem( QgsPoint( 1, 2 ) ) );
+
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  context->setProject( &p );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  bool ok = false;
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "LAYER_NAME" ), QStringLiteral( "my annotations" ) );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( p.mainAnnotationLayer()->items().size(), 0 );
+  QgsAnnotationLayer *newLayer = qobject_cast< QgsAnnotationLayer * >( p.mapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  QCOMPARE( newLayer->name(), QStringLiteral( "my annotations" ) );
+  QCOMPARE( newLayer->items().size(), 1 );
 }
 
 void TestQgsProcessingAlgs::exportMeshTimeSeries()
