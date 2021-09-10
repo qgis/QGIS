@@ -2015,10 +2015,11 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateColorByZoom( const QVaria
     const QVariant bcVariant = stops.at( i ).toList().value( 1 );
     const QVariant tcVariant = stops.at( i + 1 ).toList().value( 1 );
 
-    if ( bcVariant.type() == QVariant::String && tcVariant.type() == QVariant::String )
+    const QColor bottomColor = parseColor( bcVariant.toString(), context );
+    const QColor topColor = parseColor( tcVariant.toString(), context );
+
+    if ( bottomColor.isValid() && topColor.isValid() )
     {
-      const QColor bottomColor = parseColor( bcVariant.toString(), context );
-      const QColor topColor = parseColor( tcVariant.toString(), context );
       int bcHue;
       int bcSat;
       int bcLight;
@@ -2038,24 +2039,24 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateColorByZoom( const QVaria
     }
     else
     {
-      QString bottomColor = parseColorExpression( bcVariant, context );
-      QString topColor = parseColorExpression( tcVariant, context );
+      QString bottomColorExpr = parseColorExpression( bcVariant, context );
+      QString topColorExpr = parseColorExpression( tcVariant, context );
 
       caseString += QStringLiteral( "WHEN @vector_tile_zoom >= %1 AND @vector_tile_zoom < %2 THEN color_hsla("
                                     "%3, %4, %5, %6) " ).arg( bz, tz,
-                                        interpolateExpression( bz.toDouble(), tz.toDouble(), colorComponent.arg( bottomColor ).arg( "hsl_hue" ), colorComponent.arg( topColor ).arg( "hsl_hue" ), base, context ),
-                                        interpolateExpression( bz.toDouble(), tz.toDouble(), colorComponent.arg( bottomColor ).arg( "hsl_saturation" ), colorComponent.arg( topColor ).arg( "hsl_saturation" ), base, context ),
-                                        interpolateExpression( bz.toDouble(), tz.toDouble(), colorComponent.arg( bottomColor ).arg( "lightness" ), colorComponent.arg( topColor ).arg( "lightness" ), base, context ),
-                                        interpolateExpression( bz.toDouble(), tz.toDouble(), colorComponent.arg( bottomColor ).arg( "alpha" ), colorComponent.arg( topColor ).arg( "alpha" ), base, context ) );
+                                        interpolateExpression( bz.toDouble(), tz.toDouble(), colorComponent.arg( bottomColorExpr ).arg( "hsl_hue" ), colorComponent.arg( topColorExpr ).arg( "hsl_hue" ), base, context ),
+                                        interpolateExpression( bz.toDouble(), tz.toDouble(), colorComponent.arg( bottomColorExpr ).arg( "hsl_saturation" ), colorComponent.arg( topColorExpr ).arg( "hsl_saturation" ), base, context ),
+                                        interpolateExpression( bz.toDouble(), tz.toDouble(), colorComponent.arg( bottomColorExpr ).arg( "lightness" ), colorComponent.arg( topColorExpr ).arg( "lightness" ), base, context ),
+                                        interpolateExpression( bz.toDouble(), tz.toDouble(), colorComponent.arg( bottomColorExpr ).arg( "alpha" ), colorComponent.arg( topColorExpr ).arg( "alpha" ), base, context ) );
     }
   }
 
   // top color
   const QString tz = stops.last().toList().value( 0 ).toString();
   const QVariant tcVariant = stops.last().toList().value( 1 );
-  if ( tcVariant.type() == QVariant::String )
+  const QColor topColor = parseColor( stops.last().toList().value( 1 ), context );
+  if ( topColor.isValid() )
   {
-    const QColor topColor = parseColor( stops.last().toList().value( 1 ), context );
     int tcHue;
     int tcSat;
     int tcLight;
@@ -2066,11 +2067,11 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateColorByZoom( const QVaria
   }
   else
   {
-    QString topColor = parseColorExpression( tcVariant, context );
+    QString topColorExpr = parseColorExpression( tcVariant, context );
 
     caseString += QStringLiteral( "WHEN @vector_tile_zoom >= %1 THEN color_hsla(%2, %3, %4, %5) "
                                   "ELSE color_hsla(%2, %3, %4, %5) END" ).arg( tz )
-                  .arg( colorComponent.arg( topColor ).arg( "hsl_hue" ) ).arg( colorComponent.arg( topColor ).arg( "hsl_saturation" ) ).arg( colorComponent.arg( topColor ).arg( "lightness" ) ).arg( colorComponent.arg( topColor ).arg( "alpha" ) );
+                  .arg( colorComponent.arg( topColorExpr ).arg( "hsl_hue" ) ).arg( colorComponent.arg( topColorExpr ).arg( "hsl_saturation" ) ).arg( colorComponent.arg( topColorExpr ).arg( "lightness" ) ).arg( colorComponent.arg( topColorExpr ).arg( "alpha" ) );
   }
 
   if ( !stops.empty() && defaultColor )
@@ -2517,9 +2518,11 @@ QString QgsMapBoxGlStyleConverter::interpolateExpression( double zoomMin, double
   // special case!
   if ( valueMin.canConvert( QMetaType::Double ) && valueMax.canConvert( QMetaType::Double ) )
   {
-    double min = valueMin.toDouble();
-    double max = valueMax.toDouble();
-    if ( qgsDoubleNear( min, max ) )
+    bool minDoubleOk = true;
+    double min = valueMin.toDouble( &minDoubleOk );
+    bool maxDoubleOk = true;
+    double max = valueMax.toDouble( &maxDoubleOk );
+    if ( minDoubleOk && maxDoubleOk && qgsDoubleNear( min, max ) )
     {
       return QString::number( min * multiplier );
     }
