@@ -823,7 +823,7 @@ void QgsRasterLayerProperties::sync()
   const QList<QgsMapLayerServerProperties::MetadataUrl> &metaUrls = mRasterLayer->serverProperties()->metadataUrls();
   for ( const QgsMapLayerServerProperties::MetadataUrl &metaUrl : metaUrls )
   {
-    int row = mMetadataUrlModel->rowCount();
+    const int row = mMetadataUrlModel->rowCount();
     mMetadataUrlModel->setItem( row, 0, new QStandardItem( metaUrl.url ) );
     mMetadataUrlModel->setItem( row, 1, new QStandardItem( metaUrl.type ) );
     mMetadataUrlModel->setItem( row, 2, new QStandardItem( metaUrl.format ) );
@@ -1535,7 +1535,7 @@ QLinearGradient QgsRasterLayerProperties::highlightGradient()
 
 void QgsRasterLayerProperties::addMetadataUrl()
 {
-  int row = mMetadataUrlModel->rowCount();
+  const int row = mMetadataUrlModel->rowCount();
   mMetadataUrlModel->setItem( row, 0, new QStandardItem( QLatin1String() ) );
   mMetadataUrlModel->setItem( row, 1, new QStandardItem( QLatin1String() ) );
   mMetadataUrlModel->setItem( row, 2, new QStandardItem( QLatin1String() ) );

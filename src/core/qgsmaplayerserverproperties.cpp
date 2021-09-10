@@ -130,7 +130,7 @@ const QList< QgsServerWmsDimensionProperties::WmsDimensionInfo > QgsServerWmsDim
 
 void QgsServerWmsDimensionProperties::readXml( const QDomNode &layer_node )
 {
-  QgsServerWmsDimensionProperties::reset();
+  reset();
 
   // Apply only for vector layers
   if ( layer()->type() != QgsMapLayerType::VectorLayer )
@@ -139,53 +139,54 @@ void QgsServerWmsDimensionProperties::readXml( const QDomNode &layer_node )
   const QgsFields fields = static_cast<const QgsVectorLayer *>( layer() )->fields();
   // QGIS Server WMS Dimensions
   const QDomNode wmsDimsNode = layer_node.namedItem( QStringLiteral( "wmsDimensions" ) );
-  if ( !wmsDimsNode.isNull() )
+  if ( wmsDimsNode.isNull() )
   {
-    const QDomElement wmsDimsElem = wmsDimsNode.toElement();
-    QDomNodeList wmsDimsList = wmsDimsElem.elementsByTagName( QStringLiteral( "dimension" ) );
-    for ( int i = 0; i < wmsDimsList.size(); ++i )
+    return;
+  }
+  const QDomElement wmsDimsElem = wmsDimsNode.toElement();
+  const QDomNodeList wmsDimsList = wmsDimsElem.elementsByTagName( QStringLiteral( "dimension" ) );
+  for ( int i = 0; i < wmsDimsList.size(); ++i )
+  {
+    const QDomElement dimElem = wmsDimsList.at( i ).toElement();
+    const QString dimName = dimElem.attribute( QStringLiteral( "name" ) );
+    const QString dimFieldName = dimElem.attribute( QStringLiteral( "fieldName" ) );
+    // check field name
+    const int dimFieldNameIndex = fields.indexOf( dimFieldName );
+    if ( dimFieldNameIndex == -1 )
     {
-      QDomElement dimElem = wmsDimsList.at( i ).toElement();
-      QString dimName = dimElem.attribute( QStringLiteral( "name" ) );
-      QString dimFieldName = dimElem.attribute( QStringLiteral( "fieldName" ) );
-      // check field name
-      int dimFieldNameIndex = fields.indexOf( dimFieldName );
-      if ( dimFieldNameIndex == -1 )
+      continue;
+    }
+    QVariant dimRefValue;
+    const int dimDefaultDisplayType = dimElem.attribute( QStringLiteral( "defaultDisplayType" ) ).toInt();
+    if ( dimDefaultDisplayType == QgsServerWmsDimensionProperties::WmsDimensionInfo::AllValues )
+    {
+      const QString dimRefValueStr = dimElem.attribute( QStringLiteral( "referenceValue" ) );
+      if ( !dimRefValueStr.isEmpty() )
       {
-        continue;
-      }
-      QVariant dimRefValue;
-      int dimDefaultDisplayType = dimElem.attribute( QStringLiteral( "defaultDisplayType" ) ).toInt();
-      if ( dimDefaultDisplayType == QgsServerWmsDimensionProperties::WmsDimensionInfo::AllValues )
-      {
-        QString dimRefValueStr = dimElem.attribute( QStringLiteral( "referenceValue" ) );
-        if ( !dimRefValueStr.isEmpty() )
+        const QgsField dimField = fields.at( dimFieldNameIndex );
+        dimRefValue = QVariant( dimRefValueStr );
+        if ( !dimField.convertCompatible( dimRefValue ) )
         {
-          QgsField dimField = fields.at( dimFieldNameIndex );
-          dimRefValue = QVariant( dimRefValueStr );
-          if ( !dimField.convertCompatible( dimRefValue ) )
-          {
-            continue;
-          }
+          continue;
         }
       }
-      QgsServerWmsDimensionProperties::WmsDimensionInfo dim( dimName, dimFieldName,
-          dimElem.attribute( QStringLiteral( "endFieldName" ) ),
-          dimElem.attribute( QStringLiteral( "units" ) ),
-          dimElem.attribute( QStringLiteral( "unitSymbol" ) ),
-          dimDefaultDisplayType, dimRefValue );
-      //XXX This add O(n^2) complexity !!!!
-      // addWmsDimension( dim );
-      // Better to trust the XML:
-      mWmsDimensions.append( dim );
     }
+    QgsServerWmsDimensionProperties::WmsDimensionInfo dim( dimName, dimFieldName,
+        dimElem.attribute( QStringLiteral( "endFieldName" ) ),
+        dimElem.attribute( QStringLiteral( "units" ) ),
+        dimElem.attribute( QStringLiteral( "unitSymbol" ) ),
+        dimDefaultDisplayType, dimRefValue );
+    //XXX This add O(n^2) complexity !!!!
+    // addWmsDimension( dim );
+    // Better to trust the XML:
+    mWmsDimensions.append( dim );
   }
 }
 
 void QgsServerWmsDimensionProperties::writeXml( QDomNode &layer_node, QDomDocument &document ) const
 {
   // save QGIS Server WMS Dimension definitions
-  if ( mWmsDimensions.size() > 0 )
+  if ( ! mWmsDimensions.isEmpty() )
   {
     QDomElement wmsDimsElem = document.createElement( QStringLiteral( "wmsDimensions" ) );
     for ( const QgsServerWmsDimensionProperties::WmsDimensionInfo &dim : mWmsDimensions )
