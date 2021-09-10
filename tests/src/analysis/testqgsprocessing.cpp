@@ -967,13 +967,13 @@ void TestQgsProcessing::compatibleLayers()
   lIds.clear();
   for ( QgsAnnotationLayer *pcl : QgsProcessingUtils::compatibleAnnotationLayers( &p ) )
     lIds << pcl->name();
-  QCOMPARE( lIds, QStringList() << "Annotations" << "secondary annotation layer" );
+  QCOMPARE( lIds, QStringList() << QObject::tr( "Annotations" ) << "secondary annotation layer" );
 
   // unsorted
   lIds.clear();
   for ( QgsAnnotationLayer *pcl : QgsProcessingUtils::compatibleAnnotationLayers( &p, false ) )
     lIds << pcl->name();
-  QCOMPARE( lIds, QStringList() << "secondary annotation layer" << "Annotations" );
+  QCOMPARE( lIds, QStringList() << "secondary annotation layer" << QObject::tr( "Annotations" ) );
 
   // point only
   lIds.clear();
@@ -1019,9 +1019,9 @@ void TestQgsProcessing::compatibleLayers()
   for ( QgsMapLayer *l : QgsProcessingUtils::compatibleLayers( &p ) )
     lIds << l->name();
 #ifdef HAVE_EPT
-  QCOMPARE( lIds, QStringList() << "Annotations" << "ar2" << "mA" << "MX" << "pA" << "pcA" << "PCX" << "PX" << "R1" << "secondary annotation layer" << "v1" << "v3" << "V4" << "vvvv4" <<  "zz" );
+  QCOMPARE( lIds, QStringList() << QObject::tr( "Annotations" ) << "ar2" << "mA" << "MX" << "pA" << "pcA" << "PCX" << "PX" << "R1" << "secondary annotation layer" << "v1" << "v3" << "V4" << "vvvv4" <<  "zz" );
 #else
-  QCOMPARE( lIds, QStringList() << "Annotations" << "ar2" << "mA" << "MX" << "pA" << "PX" << "R1" << "secondary annotation layer" << "v1" << "v3" << "V4" << "vvvv4" <<  "zz" );
+  QCOMPARE( lIds, QStringList() << QObject::tr( "Annotations" ) << "ar2" << "mA" << "MX" << "pA" << "PX" << "R1" << "secondary annotation layer" << "v1" << "v3" << "V4" << "vvvv4" <<  "zz" );
 #endif
 
   // unsorted
@@ -1029,9 +1029,9 @@ void TestQgsProcessing::compatibleLayers()
   for ( QgsMapLayer *l : QgsProcessingUtils::compatibleLayers( &p, false ) )
     lIds << l->name();
 #ifdef HAVE_EPT
-  QCOMPARE( lIds, QStringList() << "R1" << "ar2" << "zz"  << "V4" << "v1" << "v3" << "vvvv4" << "MX" << "mA" << "PCX" << "pcA" << "secondary annotation layer" << "Annotations" << "PX" << "pA" );
+  QCOMPARE( lIds, QStringList() << "R1" << "ar2" << "zz"  << "V4" << "v1" << "v3" << "vvvv4" << "MX" << "mA" << "PCX" << "pcA" << "secondary annotation layer" << QObject::tr( "Annotations" ) << "PX" << "pA" );
 #else
-  QCOMPARE( lIds, QStringList() << "R1" << "ar2" << "zz"  << "V4" << "v1" << "v3" << "vvvv4" << "MX" << "mA" << "secondary annotation layer" << "Annotations" << "PX" << "pA" );
+  QCOMPARE( lIds, QStringList() << "R1" << "ar2" << "zz"  << "V4" << "v1" << "v3" << "vvvv4" << "MX" << "mA" << "secondary annotation layer" << QObject::tr( "Annotations" ) << "PX" << "pA" );
 #endif
 }
 
