@@ -166,7 +166,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      *
      * \see dependsOnChildAlgorithms()
      */
-    QSet< QString > dependentChildAlgorithms( const QString &childId, const QString &conditionalBranch = QString() ) const;
+    QSet< QString > dependentChildAlgorithms( const QString &childId, const QString &conditionalBranch = QString(), const int depth = -1 ) const;
 
     /**
      * Returns a list of the child algorithm IDs on which the child
@@ -547,7 +547,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     QStringList mParameterOrder;
 
     void dependsOnChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;
-    void dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends, const QString &branch ) const;
+    void dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends, const QString &branch, int depth = -1 ) const;
 
     QVariantMap parametersForChildAlgorithm( const QgsProcessingModelChildAlgorithm &child, const QVariantMap &modelParameters, const QVariantMap &results, const QgsExpressionContext &expressionContext, QString &error ) const;
 

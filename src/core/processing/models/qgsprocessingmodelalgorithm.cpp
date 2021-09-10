@@ -1685,8 +1685,13 @@ QMap<QString, QgsProcessingModelParameter> QgsProcessingModelAlgorithm::paramete
   return mParameterComponents;
 }
 
-void QgsProcessingModelAlgorithm::dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends, const QString &branch ) const
+void QgsProcessingModelAlgorithm::dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends, const QString &branch, int depth ) const
 {
+  if (depth == 0) {
+    return;
+  }
+  depth -= 1;
+
   QMap< QString, QgsProcessingModelChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
   for ( ; childIt != mChildAlgorithms.constEnd(); ++childIt )
   {
@@ -1708,7 +1713,7 @@ void QgsProcessingModelAlgorithm::dependentChildAlgorithmsRecursive( const QStri
     if ( hasDependency )
     {
       depends.insert( childIt->childId() );
-      dependentChildAlgorithmsRecursive( childIt->childId(), depends, branch );
+      dependentChildAlgorithmsRecursive( childIt->childId(), depends, branch, depth );
       continue;
     }
 
@@ -1724,7 +1729,7 @@ void QgsProcessingModelAlgorithm::dependentChildAlgorithmsRecursive( const QStri
              && source.outputChildId() == childId )
         {
           depends.insert( childIt->childId() );
-          dependentChildAlgorithmsRecursive( childIt->childId(), depends, branch );
+          dependentChildAlgorithmsRecursive( childIt->childId(), depends, branch, depth );
           break;
         }
       }
@@ -1732,7 +1737,7 @@ void QgsProcessingModelAlgorithm::dependentChildAlgorithmsRecursive( const QStri
   }
 }
 
-QSet<QString> QgsProcessingModelAlgorithm::dependentChildAlgorithms( const QString &childId, const QString &conditionalBranch ) const
+QSet<QString> QgsProcessingModelAlgorithm::dependentChildAlgorithms( const QString &childId, const QString &conditionalBranch, const int depth) const
 {
   QSet< QString > algs;
 
@@ -1740,7 +1745,7 @@ QSet<QString> QgsProcessingModelAlgorithm::dependentChildAlgorithms( const QStri
   // unnecessarily recursion though it
   algs.insert( childId );
 
-  dependentChildAlgorithmsRecursive( childId, algs, conditionalBranch );
+  dependentChildAlgorithmsRecursive( childId, algs, conditionalBranch, depth );
 
   // remove temporary target alg
   algs.remove( childId );
