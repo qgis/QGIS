@@ -20,55 +20,55 @@
 
 ///@cond PRIVATE
 
-QString QgsTransferAnnotationsFromMainAnnotationLayerAlgorithm::name() const
+QString QgsTransferAnnotationsFromMainAlgorithm::name() const
 {
   return QStringLiteral( "transferannotationsfrommain" );
 }
 
-QString QgsTransferAnnotationsFromMainAnnotationLayerAlgorithm::displayName() const
+QString QgsTransferAnnotationsFromMainAlgorithm::displayName() const
 {
   return QObject::tr( "Transfer annotations from main layer" );
 }
 
-QStringList QgsTransferAnnotationsFromMainAnnotationLayerAlgorithm::tags() const
+QStringList QgsTransferAnnotationsFromMainAlgorithm::tags() const
 {
   return QObject::tr( "annotations,drawing,cosmetic,objects" ).split( ',' );
 }
 
-QString QgsTransferAnnotationsFromMainAnnotationLayerAlgorithm::group() const
+QString QgsTransferAnnotationsFromMainAlgorithm::group() const
 {
   return QObject::tr( "Cartography" );
 }
 
-QString QgsTransferAnnotationsFromMainAnnotationLayerAlgorithm::groupId() const
+QString QgsTransferAnnotationsFromMainAlgorithm::groupId() const
 {
   return QStringLiteral( "cartography" );
 }
 
-QgsProcessingAlgorithm::Flags QgsTransferAnnotationsFromMainAnnotationLayerAlgorithm::flags() const
+QgsProcessingAlgorithm::Flags QgsTransferAnnotationsFromMainAlgorithm::flags() const
 {
   return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagNoThreading | QgsProcessingAlgorithm::FlagRequiresProject;
 }
 
 
-QString QgsTransferAnnotationsFromMainAnnotationLayerAlgorithm::shortHelpString() const
+QString QgsTransferAnnotationsFromMainAlgorithm::shortHelpString() const
 {
   return QObject::tr( "Transfer all annotations from the main annotation layer in a project to a new annotation layer." );
 }
 
-QgsTransferAnnotationsFromMainAnnotationLayerAlgorithm *QgsTransferAnnotationsFromMainAnnotationLayerAlgorithm::createInstance() const
+QgsTransferAnnotationsFromMainAlgorithm *QgsTransferAnnotationsFromMainAlgorithm::createInstance() const
 {
-  return new QgsTransferAnnotationsFromMainAnnotationLayerAlgorithm();
+  return new QgsTransferAnnotationsFromMainAlgorithm();
 }
 
-void QgsTransferAnnotationsFromMainAnnotationLayerAlgorithm::initAlgorithm( const QVariantMap & )
+void QgsTransferAnnotationsFromMainAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterString( QStringLiteral( "LAYER_NAME" ), QObject::tr( "New layer name" ), QObject::tr( "Annotations" ) ) );
 
   addOutput( new QgsProcessingOutputMapLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "New annotation layer" ) ) );
 }
 
-QVariantMap QgsTransferAnnotationsFromMainAnnotationLayerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+QVariantMap QgsTransferAnnotationsFromMainAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   if ( !context.project() )
     throw QgsProcessingException( QObject::tr( "No project available." ) );
