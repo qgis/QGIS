@@ -108,7 +108,7 @@ void QgsAnnotationLayerProperties::apply()
 {
   mLayer->setName( mLayerOrigNameLineEdit->text() );
 
-  // set up the scale based layer visibility stuff....
+  // scale based layer visibility
   mLayer->setScaleBasedVisibility( mScaleVisibilityGroupBox->isChecked() );
   mLayer->setMaximumScale( mScaleRangeWidget->maximumScale() );
   mLayer->setMinimumScale( mScaleRangeWidget->minimumScale() );
