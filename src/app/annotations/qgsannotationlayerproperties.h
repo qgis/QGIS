@@ -38,6 +38,7 @@ class QgsAnnotationLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
     Q_OBJECT
   public:
     QgsAnnotationLayerProperties( QgsAnnotationLayer *layer, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
+    ~QgsAnnotationLayerProperties() override;
 
     void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
 
@@ -72,6 +73,8 @@ class QgsAnnotationLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
      * was loaded but dialog is canceled.
     */
     QgsMapLayerStyle mOldStyle;
+
+    std::unique_ptr< QgsPaintEffect > mPaintEffect;
 
     QList<QgsMapLayerConfigWidget *> mConfigWidgets;
 

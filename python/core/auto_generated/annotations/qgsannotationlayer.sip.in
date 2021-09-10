@@ -12,6 +12,7 @@
 
 
 
+
 class QgsAnnotationLayer : QgsMapLayer
 {
 %Docstring(signature="appended")
@@ -155,6 +156,26 @@ Returns ``True`` if the operation was successfully applied.
 
     virtual QString htmlMetadata() const;
 
+
+    QgsPaintEffect *paintEffect() const;
+%Docstring
+Returns the current paint effect for the layer.
+
+.. seealso:: :py:func:`setPaintEffect`
+
+.. versionadded:: 3.22
+%End
+
+    void setPaintEffect( QgsPaintEffect *effect /Transfer/ );
+%Docstring
+Sets the current paint ``effect`` for the layer.
+
+Ownership is transferred to the renderer.
+
+.. seealso:: :py:func:`paintEffect`
+
+.. versionadded:: 3.22
+%End
 
 };
 

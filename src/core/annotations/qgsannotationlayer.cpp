@@ -24,6 +24,9 @@
 #include "qgsmaplayerfactory.h"
 #include "qgsfeedback.h"
 #include "qgsannotationitemeditoperation.h"
+#include "qgspainteffect.h"
+#include "qgseffectstack.h"
+#include "qgspainteffectregistry.h"
 #include <QUuid>
 #include "RTree.h"
 
@@ -105,6 +108,9 @@ QgsAnnotationLayer::QgsAnnotationLayer( const QString &name, const LayerOptions 
   mShouldValidateCrs = false;
   mValid = true;
   mDataProvider = new QgsAnnotationLayerDataProvider( QgsDataProvider::ProviderOptions(), QgsDataProvider::ReadFlags() );
+
+  mPaintEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+  mPaintEffect->setEnabled( false );
 }
 
 QgsAnnotationLayer::~QgsAnnotationLayer()
@@ -289,6 +295,9 @@ QgsAnnotationLayer *QgsAnnotationLayer::clone() const
       layer->mSpatialIndex->insert( it.key(), ( *it )->boundingBox() );
   }
 
+  if ( mPaintEffect )
+    layer->setPaintEffect( mPaintEffect->clone() );
+
   return layer.release();
 }
 
@@ -409,6 +418,11 @@ bool QgsAnnotationLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
     const QDomText blendModeText = doc.createTextNode( QString::number( QgsPainting::getBlendModeEnum( blendMode() ) ) );
     blendModeElem.appendChild( blendModeText );
     node.appendChild( blendModeElem );
+
+    QDomElement paintEffectElem  = doc.createElement( QStringLiteral( "paintEffect" ) );
+    if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect.get() ) )
+      mPaintEffect->saveProperties( doc, paintEffectElem );
+    node.appendChild( paintEffectElem );
   }
 
   return true;
@@ -434,6 +448,17 @@ bool QgsAnnotationLayer::readSymbology( const QDomNode &node, QString &, QgsRead
     {
       const QDomElement e = blendModeNode.toElement();
       setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( e.text().toInt() ) ) );
+    }
+
+    //restore layer effect
+    const QDomNode paintEffectNode = node.namedItem( QStringLiteral( "paintEffect" ) );
+    if ( !paintEffectNode.isNull() )
+    {
+      const QDomElement effectElem = paintEffectNode.firstChildElement( QStringLiteral( "effect" ) );
+      if ( !effectElem.isNull() )
+      {
+        setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ) );
+      }
     }
   }
 
@@ -510,6 +535,16 @@ QString QgsAnnotationLayer::htmlMetadata() const
 
   metadata += QLatin1String( "\n</body>\n</html>\n" );
   return metadata;
+}
+
+QgsPaintEffect *QgsAnnotationLayer::paintEffect() const
+{
+  return mPaintEffect.get();
+}
+
+void QgsAnnotationLayer::setPaintEffect( QgsPaintEffect *effect )
+{
+  mPaintEffect.reset( effect );
 }
 
 
