@@ -57,9 +57,10 @@ void QgsAnnotationPointTextItem::render( QgsRenderContext &context, QgsFeedback 
 
   context.mapToPixel().transformInPlace( pt.rx(), pt.ry() );
 
+  const QString displayText = QgsExpression::replaceExpressionText( mText, &context.expressionContext(), &context.distanceArea() );
   QgsTextRenderer::drawText( pt, mAngle * M_PI / 180.0,
                              QgsTextRenderer::convertQtHAlignment( mAlignment ),
-                             mText.split( '\n' ), context, mTextFormat );
+                             displayText.split( '\n' ), context, mTextFormat );
 }
 
 bool QgsAnnotationPointTextItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
@@ -121,8 +122,10 @@ QgsRectangle QgsAnnotationPointTextItem::boundingBox() const
 
 QgsRectangle QgsAnnotationPointTextItem::boundingBox( QgsRenderContext &context ) const
 {
-  const double widthInPixels = QgsTextRenderer::textWidth( context, mTextFormat, mText.split( '\n' ) );
-  const double heightInPixels = QgsTextRenderer::textHeight( context, mTextFormat, mText.split( '\n' ) );
+  const QString displayText = QgsExpression::replaceExpressionText( mText, &context.expressionContext(), &context.distanceArea() );
+
+  const double widthInPixels = QgsTextRenderer::textWidth( context, mTextFormat, displayText.split( '\n' ) );
+  const double heightInPixels = QgsTextRenderer::textHeight( context, mTextFormat, displayText.split( '\n' ) );
 
   // text size has already been calculated using any symbology reference scale factor above -- we need
   // to temporarily remove the reference scale here or we'll be undoing the scaling
