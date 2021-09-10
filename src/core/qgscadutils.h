@@ -50,51 +50,6 @@ class CORE_EXPORT QgsCadUtils
       double value;
     };
 
-    //! Structure defining all constraints for alignMapPoint() method
-    struct AlignMapPointContext
-    {
-      //! Snapping utils that will be used to snap point to map. Must not be NULLPTR.
-      QgsSnappingUtils *snappingUtils = nullptr;
-      //! Map units/pixel ratio from map canvas. Needed for
-      double mapUnitsPerPixel;
-
-      //! Constraint for X coordinate
-      QgsCadUtils::AlignMapPointConstraint xConstraint;
-      //! Constraint for Y coordinate
-      QgsCadUtils::AlignMapPointConstraint yConstraint;
-
-      /**
-       * Constraint for Z coordinate
-       * \since QGIS 3.22
-       */
-      QgsCadUtils::AlignMapPointConstraint zConstraint;
-
-      /**
-       * Constraint for M coordinate
-       * \since QGIS 3.22
-       */
-      QgsCadUtils::AlignMapPointConstraint mConstraint;
-      //! Constraint for distance
-      QgsCadUtils::AlignMapPointConstraint distanceConstraint;
-      //! Constraint for angle
-      QgsCadUtils::AlignMapPointConstraint angleConstraint;
-      //! Constraint for soft lock to a common angle
-      QgsCadUtils::AlignMapPointConstraint commonAngleConstraint;
-
-      /**
-       * List of recent CAD points in map coordinates. These are used to turn relative constraints to absolute.
-       * First point is the most recent point. Currently using only "previous" point (index 1) and "penultimate"
-       * point (index 2) for alignment purposes.
-       */
-      QList<QgsPoint> cadPointList;
-
-      /**
-       * Dumps the context's properties, for debugging.
-       * \note Not available in Python bindings.
-       */
-      SIP_SKIP void dump() const;
-    };
-
     //! Structure returned from alignMapPoint() method
     struct AlignMapPointOutput
     {
@@ -118,6 +73,88 @@ class CORE_EXPORT QgsCadUtils
 
       //! Angle (in degrees) to which we have soft-locked ourselves (if not set it is -1)
       double softLockCommonAngle;
+    };
+
+    /**
+     * Class defining all constraints for alignMapPoint() method
+     *
+     * This class was a structure before QGIS 3.22.
+     *
+     * mCadPointList is now a private QList< QgsPoint >.
+     * Use getters/setters.
+     *
+     * \see cadPoints
+     * \see setCadPoints
+     *
+     * \since QGIS 3.22
+     */
+    class AlignMapPointContext
+    {
+      public:
+        //! Snapping utils that will be used to snap point to map. Must not be NULLPTR.
+        QgsSnappingUtils *snappingUtils = nullptr;
+        //! Map units/pixel ratio from map canvas. Needed for
+        double mapUnitsPerPixel;
+
+        //! Constraint for X coordinate
+        QgsCadUtils::AlignMapPointConstraint xConstraint;
+        //! Constraint for Y coordinate
+        QgsCadUtils::AlignMapPointConstraint yConstraint;
+
+        /**
+         * Constraint for Z coordinate
+         * \since QGIS 3.22
+         */
+        QgsCadUtils::AlignMapPointConstraint zConstraint;
+
+        /**
+         * Constraint for M coordinate
+         * \since QGIS 3.22
+         */
+        QgsCadUtils::AlignMapPointConstraint mConstraint;
+        //! Constraint for distance
+        QgsCadUtils::AlignMapPointConstraint distanceConstraint;
+        //! Constraint for angle
+        QgsCadUtils::AlignMapPointConstraint angleConstraint;
+        //! Constraint for soft lock to a common angle
+        QgsCadUtils::AlignMapPointConstraint commonAngleConstraint;
+
+        /**
+         * Dumps the context's properties, for debugging.
+         * \note Not available in Python bindings.
+         */
+        SIP_SKIP void dump() const;
+
+        /**
+         * Returns a list of points from mCadPointList.
+         * \since QGIS 3.22
+         */
+        QList< QgsPoint > cadPoints() const { return mCadPointList; } ;
+
+        /**
+         * Set points to mCadPointList
+         * \param list points to mCadPointList
+         * \since QGIS 3.22
+         */
+        void setCadPoints( const QList< QgsPoint> &list ) { mCadPointList = list; };
+
+#ifdef SIP_RUN
+        SIP_PROPERTY( name = cadPointList, get = _cadPointList, set = _setCadPointList )
+#endif
+        ///@cond PRIVATE
+        void _setCadPointList( const QList< QgsPointXY > &list ) { mCadPointList.clear(); for ( const auto &pointxy : list ) { mCadPointList.append( QgsPoint( pointxy ) );} }
+        QList< QgsPointXY > _cadPointList() const { QList< QgsPointXY> list; for ( const auto &point : mCadPointList ) { list.append( QgsPointXY( point.x(), point.y() ) ); }; return list; }
+        ///@endcond PRIVATE
+
+      private:
+
+        /**
+         * List of recent CAD points in map coordinates. These are used to turn relative constraints to absolute.
+         * First point is the most recent point. Currently using only "previous" point (index 1) and "penultimate"
+         * point (index 2) for alignment purposes.
+         */
+        QList<QgsPoint> mCadPointList;
+
     };
 
     /**
