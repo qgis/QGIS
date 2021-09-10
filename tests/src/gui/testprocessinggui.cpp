@@ -28,6 +28,7 @@
 #include <QSignalSpy>
 
 #include "qgstest.h"
+#include "qgsconfig.h"
 #include "qgsgui.h"
 #include "qgsprocessingguiregistry.h"
 #include "qgsprocessingregistry.h"
@@ -97,6 +98,7 @@
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgspluginlayer.h"
 #include "qgspointcloudlayer.h"
+#include "qgsannotationlayer.h"
 
 
 class TestParamType : public QgsProcessingParameterDefinition
@@ -291,6 +293,7 @@ class TestProcessingGui : public QObject
     void testDatabaseSchemaWrapper();
     void testDatabaseTableWrapper();
     void testPointCloudLayerWrapper();
+    void testAnnotationLayerWrapper();
     void testFieldMapWidget();
     void testFieldMapWrapper();
     void testAggregateWidget();
@@ -3512,10 +3515,13 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   DummyPluginLayer *plugin = new DummyPluginLayer( "dummylayer", "plugin" );
   QgsProject::instance()->addMapLayer( plugin );
 
-#ifdef WITH_EPT
+#ifdef HAVE_EPT
   QgsPointCloudLayer *pointCloud = new QgsPointCloudLayer( QStringLiteral( TEST_DATA_DIR ) + "/point_clouds/ept/sunshine-coast/ept.json", QStringLiteral( "pointcloud" ), QStringLiteral( "ept" ) );
   QgsProject::instance()->addMapLayer( pointCloud );
 #endif
+
+  QgsAnnotationLayer *annotationLayer = new QgsAnnotationLayer( QStringLiteral( "secondary annotations" ), QgsAnnotationLayer::LayerOptions( QgsProject::instance()->transformContext() ) );
+  QgsProject::instance()->addMapLayer( annotationLayer );
 
   dlg->setProject( QgsProject::instance() );
   // should be filtered to raster layers only
@@ -3577,7 +3583,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "plugin" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), plugin->id() );
 
-#ifdef WITH_EPT
+#ifdef HAVE_EPT
   // point cloud
   param = std::make_unique< QgsProcessingParameterMultipleLayers >( QString(), QString(), QgsProcessing::TypePointCloud );
   dlg = std::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource >() );
@@ -3586,6 +3592,16 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "pointcloud [EPSG:28356]" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), pointCloud->id() );
 #endif
+
+  // annotation
+  param = std::make_unique< QgsProcessingParameterMultipleLayers >( QString(), QString(), QgsProcessing::TypeAnnotation );
+  dlg = std::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource >() );
+  dlg->setProject( QgsProject::instance() );
+  QCOMPARE( dlg->mModel->rowCount(), 2 );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "secondary annotations" ) );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), annotationLayer->id() );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ) ).toString(), QStringLiteral( "Annotations" ) );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ), Qt::UserRole ).toString(), QStringLiteral( "main" ) );
 
   // vector points
   param = std::make_unique< QgsProcessingParameterMultipleLayers >( QString(), QString(), QgsProcessing::TypeVectorPoint );
@@ -3625,22 +3641,23 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   param = std::make_unique< QgsProcessingParameterMultipleLayers >( QString(), QString(), QgsProcessing::TypeMapLayer );
   dlg = std::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource >() );
   dlg->setProject( QgsProject::instance() );
-#ifdef WITH_EPT
-  QCOMPARE( dlg->mModel->rowCount(), 8 );
+#ifdef HAVE_EPT
+  QCOMPARE( dlg->mModel->rowCount(), 10 );
 #else
-  QCOMPARE( dlg->mModel->rowCount(), 7 );
+  QCOMPARE( dlg->mModel->rowCount(), 9 );
 #endif
 
   titles.clear();
   for ( int i = 0; i < dlg->mModel->rowCount(); ++i )
     titles << dlg->mModel->data( dlg->mModel->index( i, 0 ) ).toString();
-#ifdef WITH_EPT
+#ifdef HAVE_EPT
   QCOMPARE( titles, QSet<QString>() << QStringLiteral( "polygon [EPSG:4326]" ) << QStringLiteral( "point [EPSG:4326]" ) << QStringLiteral( "line [EPSG:4326]" )
             << QStringLiteral( "nogeom" ) << QStringLiteral( "raster [EPSG:4326]" ) << QStringLiteral( "mesh" ) << QStringLiteral( "plugin" )
-            << QStringLiteral( "pointcloud [EPSG:28356]" ) );
+            << QStringLiteral( "pointcloud [EPSG:28356]" ) << QStringLiteral( "secondary annotations" ) << QStringLiteral( "Annotations" ) );
 #else
   QCOMPARE( titles, QSet<QString>() << QStringLiteral( "polygon [EPSG:4326]" ) << QStringLiteral( "point [EPSG:4326]" ) << QStringLiteral( "line [EPSG:4326]" )
-            << QStringLiteral( "nogeom" ) << QStringLiteral( "raster [EPSG:4326]" ) << QStringLiteral( "mesh" ) << QStringLiteral( "plugin" ) );
+            << QStringLiteral( "nogeom" ) << QStringLiteral( "raster [EPSG:4326]" ) << QStringLiteral( "mesh" ) << QStringLiteral( "plugin" )
+            << QStringLiteral( "secondary annotations" ) << QStringLiteral( "Annotations" ) );
 #endif
 
   // files
@@ -10039,6 +10056,125 @@ void TestProcessingGui::testPointCloudLayerWrapper()
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "cloud" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+}
+
+void TestProcessingGui::testAnnotationLayerWrapper()
+{
+  // setup a project with a range of layer types
+  QgsProject::instance()->removeAllMapLayers();
+  QgsAnnotationLayer *layer1 = new QgsAnnotationLayer( QStringLiteral( "secondary annotations" ), QgsAnnotationLayer::LayerOptions( QgsProject::instance()->transformContext() ) );
+  QVERIFY( layer1->isValid() );
+  QgsProject::instance()->addMapLayer( layer1 );
+
+  auto testWrapper = [ = ]( QgsProcessingGui::WidgetType type )
+  {
+    // non optional
+    QgsProcessingParameterAnnotationLayer param( QStringLiteral( "annotation" ), QStringLiteral( "annotation" ), false );
+
+    QgsProcessingAnnotationLayerWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+
+    // with project
+    QgsProcessingParameterWidgetContext widgetContext;
+    widgetContext.setProject( QgsProject::instance() );
+    context.setProject( QgsProject::instance() );
+
+    QgsProcessingAnnotationLayerWidgetWrapper wrapper2( &param, type );
+    wrapper2.setWidgetContext( widgetContext );
+    QWidget *w = wrapper2.createWrappedWidget( context );
+
+    QSignalSpy spy2( &wrapper2, &QgsProcessingAnnotationLayerWidgetWrapper::widgetValueHasChanged );
+    wrapper2.setWidgetValue( QStringLiteral( "main" ), context );
+    QCOMPARE( spy2.count(), 1 );
+    QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "main" ) );
+    QCOMPARE( qgis::down_cast< QgsMapLayerComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "Annotations" ) );
+    wrapper2.setWidgetValue( QStringLiteral( "secondary annotations" ), context );
+    QCOMPARE( spy2.count(), 2 );
+    QCOMPARE( wrapper2.widgetValue().toString(), layer1->id() );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( qgis::down_cast< QgsMapLayerComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "secondary annotations" ) );
+        break;
+      case QgsProcessingGui::Modeler:
+        QCOMPARE( qgis::down_cast< QgsMapLayerComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "secondary annotations" ) );
+        break;
+    }
+
+    QCOMPARE( static_cast< QgsMapLayerComboBox * >( wrapper2.wrappedWidget() )->currentLayer()->name(), QStringLiteral( "secondary annotations" ) );
+
+    // check signal
+    static_cast< QgsMapLayerComboBox * >( wrapper2.wrappedWidget() )->setLayer( QgsProject::instance()->mainAnnotationLayer() );
+    QCOMPARE( spy2.count(), 3 );
+    QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "main" ) );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( qgis::down_cast< QgsMapLayerComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "Annotations" ) );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        QCOMPARE( qgis::down_cast< QgsMapLayerComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "Annotations" ) );
+        break;
+    }
+    QCOMPARE( qgis::down_cast< QgsMapLayerComboBox * >( wrapper2.wrappedWidget() )->currentLayer()->name(), QStringLiteral( "Annotations" ) );
+
+    delete w;
+
+    // optional
+    QgsProcessingParameterAnnotationLayer param2( QStringLiteral( "annotation" ), QStringLiteral( "annotation" ), QVariant(), true );
+    QgsProcessingAnnotationLayerWidgetWrapper wrapper3( &param2, type );
+    wrapper3.setWidgetContext( widgetContext );
+    w = wrapper3.createWrappedWidget( context );
+
+    QSignalSpy spy3( &wrapper3, &QgsProcessingAnnotationLayerWidgetWrapper::widgetValueHasChanged );
+    wrapper3.setWidgetValue( QStringLiteral( "main" ), context );
+    QCOMPARE( spy3.count(), 1 );
+    QCOMPARE( wrapper3.widgetValue().toString(), QStringLiteral( "main" ) );
+    QCOMPARE( qgis::down_cast< QgsMapLayerComboBox * >( wrapper3.wrappedWidget() )->currentText(), QStringLiteral( "Annotations" ) );
+    wrapper3.setWidgetValue( QStringLiteral( "secondary annotations" ), context );
+    QCOMPARE( spy3.count(), 2 );
+    QCOMPARE( wrapper3.widgetValue().toString(), layer1->id() );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( qgis::down_cast< QgsMapLayerComboBox * >( wrapper3.wrappedWidget() )->currentText(), QStringLiteral( "secondary annotations" ) );
+        break;
+      case QgsProcessingGui::Modeler:
+        QCOMPARE( qgis::down_cast< QgsMapLayerComboBox * >( wrapper3.wrappedWidget() )->currentText(), QStringLiteral( "secondary annotations" ) );
+        break;
+    }
+    wrapper3.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy3.count(), 3 );
+    QVERIFY( !wrapper3.widgetValue().isValid() );
+    delete w;
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "annotation" ) );
       QCOMPARE( l->toolTip(), param.toolTip() );
       delete l;
     }

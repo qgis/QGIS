@@ -323,6 +323,8 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterMeshDatasetTime;
     else if ( sipCpp->type() == QgsProcessingParameterPointCloudLayer::typeName() )
       sipType = sipType_QgsProcessingParameterPointCloudLayer;
+    else if ( sipCpp->type() == QgsProcessingParameterAnnotationLayer::typeName() )
+      sipType = sipType_QgsProcessingParameterAnnotationLayer;
     else
       sipType = nullptr;
 %End
@@ -1538,6 +1540,25 @@ need to handle deletion of the returned layer.
 .. versionadded:: 3.22
 %End
 
+    static QgsAnnotationLayer *parameterAsAnnotationLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` to an annotation layer.
+
+Layers will either be taken from ``context``'s active project. Callers do not
+need to handle deletion of the returned layer.
+
+.. versionadded:: 3.22
+%End
+
+    static QgsAnnotationLayer *parameterAsAnnotationLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to an annotation layer.
+
+Layers will either be taken from ``context``'s active project. Callers do not
+need to handle deletion of the returned layer.
+
+.. versionadded:: 3.22
+%End
 
     static QgsProcessingParameterDefinition *parameterFromVariantMap( const QVariantMap &map ) /Factory/;
 %Docstring
@@ -4508,6 +4529,43 @@ Creates a new parameter using the definition from a script code.
 %End
 };
 
+
+class QgsProcessingParameterAnnotationLayer : QgsProcessingParameterDefinition
+{
+%Docstring(signature="appended")
+An annotation layer parameter for processing algorithms.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterAnnotationLayer( const QString &name, const QString &description = QString(),
+                                           const QVariant &defaultValue = QVariant(), bool optional = false );
+%Docstring
+Constructor for QgsProcessingParameterAnnotationLayer.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
+    virtual QString type() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+
+    static QgsProcessingParameterAnnotationLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
+%End
+};
 
 
 

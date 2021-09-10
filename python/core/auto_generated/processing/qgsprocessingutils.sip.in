@@ -41,6 +41,8 @@ value.
 
 .. seealso:: :py:func:`compatiblePointCloudLayers`
 
+.. seealso:: :py:func:`compatibleAnnotationLayers`
+
 .. seealso:: :py:func:`compatibleLayers`
 %End
 
@@ -67,6 +69,8 @@ value.
 
 .. seealso:: :py:func:`compatiblePointCloudLayers`
 
+.. seealso:: :py:func:`compatibleAnnotationLayers`
+
 .. seealso:: :py:func:`compatibleLayers`
 %End
 
@@ -85,6 +89,8 @@ value.
 .. seealso:: :py:func:`compatiblePluginLayers`
 
 .. seealso:: :py:func:`compatiblePointCloudLayers`
+
+.. seealso:: :py:func:`compatibleAnnotationLayers`
 
 .. seealso:: :py:func:`compatibleLayers`
 
@@ -107,6 +113,8 @@ value.
 
 .. seealso:: :py:func:`compatiblePointCloudLayers`
 
+.. seealso:: :py:func:`compatibleAnnotationLayers`
+
 .. seealso:: :py:func:`compatibleLayers`
 
 .. versionadded:: 3.22
@@ -127,6 +135,31 @@ value.
 .. seealso:: :py:func:`compatibleMeshLayers`
 
 .. seealso:: :py:func:`compatiblePluginLayers`
+
+.. seealso:: :py:func:`compatibleAnnotationLayers`
+
+.. seealso:: :py:func:`compatibleLayers`
+
+.. versionadded:: 3.22
+%End
+
+    static QList<QgsAnnotationLayer *> compatibleAnnotationLayers( QgsProject *project, bool sort = true );
+%Docstring
+Returns a list of annotation layers from a ``project`` which are compatible with the processing
+framework.
+
+If the ``sort`` argument is ``True`` then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
+value.
+
+.. seealso:: :py:func:`compatibleRasterLayers`
+
+.. seealso:: :py:func:`compatibleVectorLayers`
+
+.. seealso:: :py:func:`compatibleMeshLayers`
+
+.. seealso:: :py:func:`compatiblePluginLayers`
+
+.. seealso:: :py:func:`compatiblePointCloudLayers`
 
 .. seealso:: :py:func:`compatibleLayers`
 
@@ -175,6 +208,7 @@ Decodes a provider key and layer ``uri`` from an encoded string, for use with
       Raster,
       Mesh,
       PointCloud,
+      Annotation,
     };
 
     static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true, QgsProcessingUtils::LayerHint typeHint = QgsProcessingUtils::LayerHint::UnknownType );

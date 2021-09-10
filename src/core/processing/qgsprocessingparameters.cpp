@@ -31,6 +31,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsmeshlayer.h"
 #include "qgspointcloudlayer.h"
+#include "qgsannotationlayer.h"
 #include "qgsapplication.h"
 #include "qgslayoutmanager.h"
 #include "qgsprintlayout.h"
@@ -2167,6 +2168,15 @@ QgsPointCloudLayer *QgsProcessingParameters::parameterAsPointCloudLayer( const Q
   return qobject_cast< QgsPointCloudLayer *>( parameterAsLayer( definition, value, context, QgsProcessingUtils::LayerHint::PointCloud ) );
 }
 
+QgsAnnotationLayer *QgsProcessingParameters::parameterAsAnnotationLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
+{
+  return qobject_cast< QgsAnnotationLayer *>( parameterAsLayer( definition, parameters, context, QgsProcessingUtils::LayerHint::Annotation ) );
+}
+
+QgsAnnotationLayer *QgsProcessingParameters::parameterAsAnnotationLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
+{
+  return qobject_cast< QgsAnnotationLayer *>( parameterAsLayer( definition, value, context, QgsProcessingUtils::LayerHint::Annotation ) );
+}
 
 QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantMap( const QVariantMap &map )
 {
@@ -2237,6 +2247,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantM
     def.reset( new QgsProcessingParameterCoordinateOperation( name ) );
   else if ( type == QgsProcessingParameterPointCloudLayer::typeName() )
     def.reset( new QgsProcessingParameterPointCloudLayer( name ) );
+  else if ( type == QgsProcessingParameterAnnotationLayer::typeName() )
+    def.reset( new QgsProcessingParameterAnnotationLayer( name ) );
   else
   {
     QgsProcessingParameterType *paramType = QgsApplication::instance()->processingRegistry()->parameterType( type );
@@ -2349,6 +2361,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromScriptCo
     return QgsProcessingParameterDatabaseTable::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QLatin1String( "pointcloud" ) )
     return QgsProcessingParameterPointCloudLayer::fromScriptCode( name, description, isOptional, definition );
+  else if ( type == QLatin1String( "annotation" ) )
+    return QgsProcessingParameterAnnotationLayer::fromScriptCode( name, description, isOptional, definition );
 
   return nullptr;
 }
@@ -2750,6 +2764,10 @@ QString QgsProcessingParameterMapLayer::asScriptCode() const
       case QgsProcessing::TypePointCloud:
         code += QLatin1String( "pointcloud " );
         break;
+
+      case QgsProcessing::TypeAnnotation:
+        code += QLatin1String( "annotation " );
+        break;
     }
   }
 
@@ -2808,6 +2826,12 @@ QgsProcessingParameterMapLayer *QgsProcessingParameterMapLayer::fromScriptCode( 
     else if ( def.startsWith( QLatin1String( "pointcloud" ), Qt::CaseInsensitive ) )
     {
       types << QgsProcessing::TypePointCloud;
+      def = def.mid( 11 );
+      continue;
+    }
+    else if ( def.startsWith( QLatin1String( "annotation" ), Qt::CaseInsensitive ) )
+    {
+      types << QgsProcessing::TypeAnnotation;
       def = def.mid( 11 );
       continue;
     }
@@ -3893,6 +3917,7 @@ QString QgsProcessingParameterMultipleLayers::createFileFilter() const
 
     case QgsProcessing::TypeMapLayer:
     case QgsProcessing::TypePlugin:
+    case QgsProcessing::TypeAnnotation:
       return createAllMapLayerFileFilter();
   }
   return QString();
@@ -5885,6 +5910,7 @@ bool QgsProcessingParameterFeatureSink::hasGeometry() const
     case QgsProcessing::TypeMesh:
     case QgsProcessing::TypePlugin:
     case QgsProcessing::TypePointCloud:
+    case QgsProcessing::TypeAnnotation:
       return false;
   }
   return true;
@@ -6582,6 +6608,7 @@ bool QgsProcessingParameterVectorDestination::hasGeometry() const
     case QgsProcessing::TypeMesh:
     case QgsProcessing::TypePlugin:
     case QgsProcessing::TypePointCloud:
+    case QgsProcessing::TypeAnnotation:
       return false;
   }
   return true;
@@ -8193,6 +8220,10 @@ void QgsProcessingParameterDatabaseTable::setAllowNewTableNames( bool allowNewTa
   mAllowNewTableNames = allowNewTableNames;
 }
 
+//
+// QgsProcessingParameterPointCloudLayer
+//
+
 QgsProcessingParameterPointCloudLayer::QgsProcessingParameterPointCloudLayer( const QString &name, const QString &description,
     const QVariant &defaultValue, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
@@ -8267,3 +8298,78 @@ QgsProcessingParameterPointCloudLayer *QgsProcessingParameterPointCloudLayer::fr
 {
   return new QgsProcessingParameterPointCloudLayer( name, description,  definition.isEmpty() ? QVariant() : definition, isOptional );
 }
+
+//
+// QgsProcessingParameterAnnotationLayer
+//
+
+QgsProcessingParameterAnnotationLayer::QgsProcessingParameterAnnotationLayer( const QString &name, const QString &description,
+    const QVariant &defaultValue, bool optional )
+  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+{
+}
+
+QgsProcessingParameterDefinition *QgsProcessingParameterAnnotationLayer::clone() const
+{
+  return new QgsProcessingParameterAnnotationLayer( *this );
+}
+
+bool QgsProcessingParameterAnnotationLayer::checkValueIsAcceptable( const QVariant &v, QgsProcessingContext *context ) const
+{
+  if ( !v.isValid() )
+    return mFlags & FlagOptional;
+
+  QVariant var = v;
+
+  if ( var.canConvert<QgsProperty>() )
+  {
+    const QgsProperty p = var.value< QgsProperty >();
+    if ( p.propertyType() == QgsProperty::StaticProperty )
+    {
+      var = p.staticValue();
+    }
+    else
+    {
+      return true;
+    }
+  }
+
+  if ( qobject_cast< QgsAnnotationLayer * >( qvariant_cast<QObject *>( var ) ) )
+    return true;
+
+  if ( var.type() != QVariant::String || var.toString().isEmpty() )
+    return mFlags & FlagOptional;
+
+  if ( !context )
+  {
+    // that's as far as we can get without a context
+    return true;
+  }
+
+  // try to load as layer
+  if ( QgsProcessingUtils::mapLayerFromString( var.toString(), *context, true, QgsProcessingUtils::LayerHint::Annotation ) )
+    return true;
+
+  return false;
+}
+
+QString QgsProcessingParameterAnnotationLayer::valueAsPythonString( const QVariant &val, QgsProcessingContext &context ) const
+{
+  if ( !val.isValid() )
+    return QStringLiteral( "None" );
+
+  if ( val.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( val.value< QgsProperty >().asExpression() );
+
+  QVariantMap p;
+  p.insert( name(), val );
+  QgsAnnotationLayer *layer = QgsProcessingParameters::parameterAsAnnotationLayer( this, p, context );
+  return layer ? QgsProcessingUtils::stringToPythonLiteral( layer == context.project()->mainAnnotationLayer() ? QStringLiteral( "main" ) : layer->id() )
+         : QgsProcessingUtils::stringToPythonLiteral( val.toString() );
+}
+
+QgsProcessingParameterAnnotationLayer *QgsProcessingParameterAnnotationLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+{
+  return new QgsProcessingParameterAnnotationLayer( name, description,  definition.isEmpty() ? QVariant() : definition, isOptional );
+}
+
