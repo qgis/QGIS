@@ -204,10 +204,6 @@ void QgsMapToolModifyAnnotation::cadCanvasMoveEvent( QgsMapMouseEvent *event )
 
     case Action::MoveItem:
     {
-#if 0
-      const QgsVector delta = event->mapPoint() - mMoveStartPointCanvasCrs;
-#endif
-
       if ( QgsAnnotationItem *item = annotationItemFromId( mSelectedItemLayerId, mSelectedItemId ) )
       {
         QgsAnnotationLayer *layer = annotationLayerFromId( mSelectedItemLayerId );
