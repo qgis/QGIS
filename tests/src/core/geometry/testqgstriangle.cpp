@@ -28,41 +28,41 @@ class TestQgsTriangle: public QObject
     Q_OBJECT
 
   private slots:
-    void testTriangleConstructor();
-    void testTriangleDegenerateConstructor();
-    void testTriangleConstructor3Points();
-    void testTriangleConstructorZM();
-    void testTriangleConstructorQgsPointXY();
-    void testTriangleConstructorQPointF();
-    void testTriangleRing();
-    void testTriangleZMRing();
-    void testTriangleInvalidExteriorRing();
-    void testTriangleInvalidNumberOfPoints();
-    void testTriangleNonClosedRing();
-    void testTriangleClone();
-    void testTriangleConversion();
-    void testTriangleToCurveType();
-    void testTriangleCast();
-    void testTriangleFromWkt();
-    void testTriangleWKB();
-    void testTriangleVertex();
-    void testTriangleMoveVertex();
-    void testTriangleDeleted();
-    void testTriangleTypes();
-    void testTriangleEquality();
-    void testTriangleAngles();
-    void testTriangleLengths();
-    void testTriangleOrthocenter();
-    void testTriangleAltitudes();
-    void testTriangleMedians();
-    void testTriangleMedial();
-    void testTriangleBisectors();
-    void testTriangleInscribedCircle();
-    void testTriangleCircumscribedCircle();
-    void testTriangleBoundary();
+    void constructor();
+    void degenerateConstructor();
+    void constructor3Points();
+    void constructorZM();
+    void constructorQgsPointXY();
+    void constructorQPointF();
+    void exteriorRing();
+    void exteriorRingZM();
+    void invalidExteriorRing();
+    void invalidNumberOfPoints();
+    void nonClosedRing();
+    void clone();
+    void conversion();
+    void toCurveType();
+    void cast();
+    void fromWkt();
+    void asWktfromWkt();
+    void vertexAt();
+    void moveVertex();
+    void deleteVertex();
+    void types();
+    void equality();
+    void angles();
+    void lengths();
+    void orthocenter();
+    void altitudes();
+    void medians();
+    void medial();
+    void bisectors();
+    void inscribedCircle();
+    void circumscribedCircle();
+    void boundary();
 };
 
-void TestQgsTriangle::testTriangleConstructor()
+void TestQgsTriangle::constructor()
 {
   QgsTriangle tr;
 
@@ -84,7 +84,7 @@ void TestQgsTriangle::testTriangleConstructor()
   QVERIFY( !tr.interiorRing( 0 ) );
 }
 
-void TestQgsTriangle::testTriangleDegenerateConstructor()
+void TestQgsTriangle::degenerateConstructor()
 {
   QgsTriangle tr( QgsPointXY( 0, 0 ), QgsPointXY( 0, 0 ), QgsPointXY( 10, 10 ) );
   QVERIFY( !tr.isEmpty() );
@@ -93,7 +93,7 @@ void TestQgsTriangle::testTriangleDegenerateConstructor()
   QVERIFY( !tr.isEmpty() );
 }
 
-void TestQgsTriangle::testTriangleConstructor3Points()
+void TestQgsTriangle::constructor3Points()
 {
   // double points
   QgsTriangle tr( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ), QgsPoint( 10, 10 ) );
@@ -155,7 +155,7 @@ void TestQgsTriangle::testTriangleConstructor3Points()
   QVERIFY( !tr.interiorRing( 0 ) );
 }
 
-void TestQgsTriangle::testTriangleConstructorZM()
+void TestQgsTriangle::constructorZM()
 {
   // Z
   QgsTriangle tr = QgsTriangle( QgsPoint( QgsWkbTypes::PointZ, 0, 5, 1 ), QgsPoint( QgsWkbTypes::PointZ, 0, 0, 2 ), QgsPoint( QgsWkbTypes::PointZ, 10, 10, 3 ) );
@@ -188,7 +188,7 @@ void TestQgsTriangle::testTriangleConstructorZM()
   QCOMPARE( tr.geometryType(), QString( "Triangle" ) );
 }
 
-void TestQgsTriangle::testTriangleConstructorQgsPointXY()
+void TestQgsTriangle::constructorQgsPointXY()
 {
   QgsTriangle tr = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 10 ), QgsPoint( 10, 10 ) );
 
@@ -196,7 +196,7 @@ void TestQgsTriangle::testTriangleConstructorQgsPointXY()
   QVERIFY( tr == t_qgspoint );
 }
 
-void TestQgsTriangle::testTriangleConstructorQPointF()
+void TestQgsTriangle::constructorQPointF()
 {
   QgsTriangle tr = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 10 ), QgsPoint( 10, 10 ) );
 
@@ -204,7 +204,7 @@ void TestQgsTriangle::testTriangleConstructorQPointF()
   QVERIFY( tr == t_pointf );
 }
 
-void TestQgsTriangle::testTriangleRing()
+void TestQgsTriangle::exteriorRing()
 {
   QgsTriangle tr;
 
@@ -273,7 +273,7 @@ void TestQgsTriangle::testTriangleRing()
   QCOMPARE( *( static_cast< const QgsLineString * >( tr.exteriorRing() ) ), *ext );
 }
 
-void TestQgsTriangle::testTriangleZMRing()
+void TestQgsTriangle::exteriorRingZM()
 {
   QgsTriangle tr;
 
@@ -337,7 +337,7 @@ void TestQgsTriangle::testTriangleZMRing()
   QVERIFY( std::isnan( tr.vertexAt( 2 ).m() ) );
 }
 
-void TestQgsTriangle::testTriangleInvalidExteriorRing()
+void TestQgsTriangle::invalidExteriorRing()
 {
   QgsTriangle tr;
 
@@ -376,7 +376,7 @@ void TestQgsTriangle::testTriangleInvalidExteriorRing()
 
 }
 
-void TestQgsTriangle::testTriangleInvalidNumberOfPoints()
+void TestQgsTriangle::invalidNumberOfPoints()
 {
   QgsTriangle tr;
 
@@ -395,7 +395,7 @@ void TestQgsTriangle::testTriangleInvalidNumberOfPoints()
   QVERIFY( tr.isEmpty() );
 }
 
-void TestQgsTriangle::testTriangleNonClosedRing()
+void TestQgsTriangle::nonClosedRing()
 {
   QgsTriangle tr;
 
@@ -412,7 +412,7 @@ void TestQgsTriangle::testTriangleNonClosedRing()
   QCOMPARE( tr.nCoordinates(), 4 );
 }
 
-void TestQgsTriangle::testTriangleClone()
+void TestQgsTriangle::clone()
 {
   QgsTriangle tr = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 10 ), QgsPoint( 10, 10 ) );
 
@@ -421,7 +421,7 @@ void TestQgsTriangle::testTriangleClone()
   delete trClone;
 }
 
-void TestQgsTriangle::testTriangleConversion()
+void TestQgsTriangle::conversion()
 {
   QgsTriangle tr;
 
@@ -445,7 +445,7 @@ void TestQgsTriangle::testTriangleConversion()
   QCOMPARE( *surface, polyExpected );
 }
 
-void TestQgsTriangle::testTriangleToCurveType()
+void TestQgsTriangle::toCurveType()
 {
   QgsTriangle tr( QgsPoint( 7, 4 ), QgsPoint( 13, 3 ), QgsPoint( 9, 6 ) );
   std::unique_ptr< QgsCurvePolygon > curveType( tr.toCurveType() );
@@ -459,7 +459,7 @@ void TestQgsTriangle::testTriangleToCurveType()
   QCOMPARE( curveType->numInteriorRings(), 0 );
 }
 
-void TestQgsTriangle::testTriangleCast()
+void TestQgsTriangle::cast()
 {
   QgsTriangle pCast;
   QVERIFY( QgsPolygon().cast( &pCast ) );
@@ -468,7 +468,7 @@ void TestQgsTriangle::testTriangleCast()
   QVERIFY( QgsPolygon().cast( &pCast2 ) );
 }
 
-void TestQgsTriangle::testTriangleFromWkt()
+void TestQgsTriangle::fromWkt()
 {
   QgsTriangle tr;
 
@@ -494,7 +494,7 @@ void TestQgsTriangle::testTriangleFromWkt()
   QCOMPARE( trFromWkt.wkbType(), QgsWkbTypes::Triangle );
 }
 
-void TestQgsTriangle::testTriangleWKB()
+void TestQgsTriangle::asWktfromWkt()
 {
   // WKB
   QgsTriangle tResult, tWKB;
@@ -606,7 +606,7 @@ void TestQgsTriangle::testTriangleWKB()
   QCOMPARE( elemToString( exportTriangleZ.asGml3( doc ) ), expectedGML3Z );
 }
 
-void TestQgsTriangle::testTriangleVertex()
+void TestQgsTriangle::vertexAt()
 {
   QgsTriangle tr( QgsPoint( 10, 10 ), QgsPoint( 16, 10 ), QgsPoint( 13, 15.1962 ) );
 
@@ -621,7 +621,7 @@ void TestQgsTriangle::testTriangleVertex()
   QVERIFY( tr.vertexAt( 4 ).isEmpty() );
 }
 
-void TestQgsTriangle::testTriangleMoveVertex()
+void TestQgsTriangle::moveVertex()
 {
   QgsTriangle tr( QgsPoint( 0, 0 ), QgsPoint( 100, 100 ), QgsPoint( 0, 200 ) );
 
@@ -685,7 +685,7 @@ void TestQgsTriangle::testTriangleMoveVertex()
   QVERIFY( tr.moveVertex( id, pt1 ) );
 }
 
-void TestQgsTriangle::testTriangleDeleted()
+void TestQgsTriangle::deleteVertex()
 {
   QgsTriangle tr( QgsPoint( 0, 0 ), QgsPoint( 100, 100 ), QgsPoint( 0, 200 ) );
 
@@ -708,7 +708,7 @@ void TestQgsTriangle::testTriangleDeleted()
   QCOMPARE( tr.asWkt(), QString( "Triangle ((0 0, 100 100, 0 200, 0 0))" ) );
 }
 
-void TestQgsTriangle::testTriangleTypes()
+void TestQgsTriangle::types()
 {
   // Empty triangle returns always false for the types, except isDegenerate
   QVERIFY( QgsTriangle().isDegenerate() );
@@ -742,7 +742,7 @@ void TestQgsTriangle::testTriangleTypes()
   QVERIFY( tr.isEquilateral() );
 }
 
-void TestQgsTriangle::testTriangleEquality()
+void TestQgsTriangle::equality()
 {
   QVERIFY( QgsTriangle() == QgsTriangle() ); // empty
   QVERIFY( QgsTriangle() != QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 10 ) ) ); // empty
@@ -752,7 +752,7 @@ void TestQgsTriangle::testTriangleEquality()
   QVERIFY( QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 0, 10 ) ) != QgsTriangle( QgsPoint( 0, 10 ), QgsPoint( 5, 5 ), QgsPoint( 0, 0 ) ) );
 }
 
-void TestQgsTriangle::testTriangleAngles()
+void TestQgsTriangle::angles()
 {
   QgsTriangle tr( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) );
 
@@ -769,7 +769,7 @@ void TestQgsTriangle::testTriangleAngles()
   QVERIFY( a_empty.isEmpty() );
 }
 
-void TestQgsTriangle::testTriangleLengths()
+void TestQgsTriangle::lengths()
 {
   QgsTriangle tr( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) );
 
@@ -786,7 +786,7 @@ void TestQgsTriangle::testTriangleLengths()
   QVERIFY( l_empty.isEmpty() );
 }
 
-void TestQgsTriangle::testTriangleOrthocenter()
+void TestQgsTriangle::orthocenter()
 {
   QgsTriangle tr( QgsPoint( 20, 2 ), QgsPoint( 16, 6 ), QgsPoint( 26, 2 ) );
   QVERIFY( QgsTriangle().orthocenter().isEmpty() );
@@ -799,7 +799,7 @@ void TestQgsTriangle::testTriangleOrthocenter()
   QGSCOMPARENEARPOINT( QgsPoint( 13, 11.7321 ), tr.orthocenter(), 0.0001 );
 }
 
-void TestQgsTriangle::testTriangleAltitudes()
+void TestQgsTriangle::altitudes()
 {
   QgsTriangle tr( QgsPoint( 20, 2 ), QgsPoint( 16, 6 ), QgsPoint( 26, 2 ) );
 
@@ -812,7 +812,7 @@ void TestQgsTriangle::testTriangleAltitudes()
   QGSCOMPARENEARPOINT( alt.at( 2 ).pointN( 1 ), QgsPoint( 23, -1 ), 0.0001 );
 }
 
-void TestQgsTriangle::testTriangleMedians()
+void TestQgsTriangle::medians()
 {
   QgsTriangle tr( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) );
 
@@ -856,7 +856,7 @@ void TestQgsTriangle::testTriangleMedians()
   QGSCOMPARENEARPOINT( med.at( 2 ).pointN( 1 ), alt.at( 2 ).pointN( 1 ), 0.0001 );
 }
 
-void TestQgsTriangle::testTriangleMedial()
+void TestQgsTriangle::medial()
 {
   QCOMPARE( QgsTriangle().medial(), QgsTriangle() );
 
@@ -871,7 +871,7 @@ void TestQgsTriangle::testTriangleMedial()
                          QgsGeometryUtils::midpoint( tr.vertexAt( 2 ), tr.vertexAt( 0 ) ) ) );
 }
 
-void TestQgsTriangle::testTriangleBisectors()
+void TestQgsTriangle::bisectors()
 {
   QgsTriangle tr( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) );
 
@@ -887,7 +887,7 @@ void TestQgsTriangle::testTriangleBisectors()
   QGSCOMPARENEARPOINT( bis.at( 2 ).pointN( 1 ), QgsPoint( 0, 2.9289 ), 0.0001 );
 }
 
-void TestQgsTriangle::testTriangleInscribedCircle()
+void TestQgsTriangle::inscribedCircle()
 {
   QCOMPARE( QgsTriangle().inscribedCircle(), QgsCircle() );
   QVERIFY( QgsTriangle().inscribedCenter().isEmpty() );
@@ -908,7 +908,7 @@ void TestQgsTriangle::testTriangleInscribedCircle()
   QGSCOMPARENEAR( 1.7321, tr.inscribedCircle().radius(), 0.0001 );
 }
 
-void TestQgsTriangle::testTriangleCircumscribedCircle()
+void TestQgsTriangle::circumscribedCircle()
 {
   QCOMPARE( QgsTriangle().circumscribedCircle(), QgsCircle() );
   QVERIFY( QgsTriangle().circumscribedCenter().isEmpty() );
@@ -929,7 +929,7 @@ void TestQgsTriangle::testTriangleCircumscribedCircle()
   QGSCOMPARENEAR( 3.4641, tr.circumscribedCircle().radius(), 0.0001 );
 }
 
-void TestQgsTriangle::testTriangleBoundary()
+void TestQgsTriangle::boundary()
 {
   QVERIFY( !QgsTriangle().boundary() );
 
