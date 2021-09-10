@@ -250,6 +250,7 @@ set(TESTS
  testqgsvectorlayerutils.cpp
  testqgsvectortilelayer.cpp
  testqgsvectortilewriter.cpp
+ testqgstiles.cpp
  testqgsziputils.cpp
  testziplayer.cpp
  testqgslayerdefinition.cpp
