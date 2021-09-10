@@ -1248,7 +1248,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
     }
     case Qt::Key_M:
     {
-      // modifier+y ONLY caught for ShortcutOverride events...
+      // modifier+m ONLY caught for ShortcutOverride events...
       if ( type == QEvent::ShortcutOverride && ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier ) )
       {
         mMConstraint->toggleLocked();
