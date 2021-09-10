@@ -325,21 +325,45 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * Helper for the CAD point list. The CAD point list is the list of points
      * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
      */
-    QgsPoint currentPoint( bool *exists  = nullptr ) const;
+    QgsPoint currentPointV2( bool *exists  = nullptr ) const;
+
+    /**
+     * The last point.
+     * Helper for the CAD point list. The CAD point list is the list of points
+     * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
+     * \deprecated since QGIS 3.22 - will be removed in QGIS 4.0. Use the variant which returns QgsPoint object instead of QgsPointXY.
+     */
+    Q_DECL_DEPRECATED QgsPointXY currentPoint( bool *exists  = nullptr ) const SIP_DEPRECATED { return currentPointV2( exists ); };
 
     /**
      * The previous point.
      * Helper for the CAD point list. The CAD point list is the list of points
      * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
      */
-    QgsPoint previousPoint( bool *exists = nullptr ) const;
+    QgsPoint previousPointV2( bool *exists = nullptr ) const;
+
+    /**
+     * The previous point.
+     * Helper for the CAD point list. The CAD point list is the list of points
+     * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
+     * \deprecated since QGIS 3.22 - will be removed in QGIS 4.0. Use the variant which returns QgsPoint object instead of QgsPointXY.
+     */
+    Q_DECL_DEPRECATED QgsPointXY previousPoint( bool *exists = nullptr ) const SIP_DEPRECATED { return previousPointV2( exists ); };
 
     /**
      * The penultimate point.
      * Helper for the CAD point list. The CAD point list is the list of points
      * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
      */
-    QgsPoint penultimatePoint( bool *exists = nullptr ) const;
+    QgsPoint penultimatePointV2( bool *exists = nullptr ) const;
+
+    /**
+     * The penultimate point.
+     * Helper for the CAD point list. The CAD point list is the list of points
+     * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
+     * \deprecated since QGIS 3.22 - will be removed in QGIS 4.0. Use the variant which returns QgsPoint object instead of QgsPointXY.
+     */
+    Q_DECL_DEPRECATED QgsPointXY penultimatePoint( bool *exists = nullptr ) const SIP_DEPRECATED { return penultimatePointV2( exists ); };
 
     /**
      * The number of points in the CAD point helper list
