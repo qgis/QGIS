@@ -36,7 +36,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="mLayerRenderingGroupBox">
+    <widget class="QgsCollapsibleGroupBox" name="mLayerRenderingGroupBox">
      <property name="title">
       <string>Layer Rendering</string>
      </property>
@@ -109,6 +109,12 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>QgsBlendModeComboBox</class>
    <extends>QComboBox</extends>
