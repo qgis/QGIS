@@ -2984,6 +2984,10 @@ void QgisApp::createActions()
 
   connect( mActionCreateAnnotationLayer, &QAction::triggered, this, &QgisApp::createAnnotationLayer );
   connect( mActionModifyAnnotation, &QAction::triggered, this, [ = ] {  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::AnnotationEdit ) ); } );
+  connect( mMainAnnotationLayerProperties, &QAction::triggered, this, [ = ]
+  {
+    showLayerProperties( QgsProject::instance()->mainAnnotationLayer() );
+  } );
 
   // we can't set the shortcut these actions, because we need to restrict their context to the canvas and it's children..
   for ( QWidget *widget :
@@ -3891,6 +3895,15 @@ void QgisApp::createToolBars()
     for ( QAction *mapToolAction : editMeshMapTool->mapToolActions() )
       mMapToolGroup->addAction( mapToolAction );
   }
+
+  QToolButton *annotationLayerToolButton = new QToolButton();
+  annotationLayerToolButton->setPopupMode( QToolButton::MenuButtonPopup );
+  QMenu *annotationLayerMenu = new QMenu();
+  annotationLayerMenu->addAction( mActionCreateAnnotationLayer );
+  annotationLayerMenu->addAction( mMainAnnotationLayerProperties );
+  annotationLayerToolButton->setMenu( annotationLayerMenu );
+  annotationLayerToolButton->setDefaultAction( mActionCreateAnnotationLayer );
+  mAnnotationsToolBar->insertWidget( mAnnotationsToolBar->actions().at( 0 ), annotationLayerToolButton );
 }
 
 void QgisApp::createStatusBar()
