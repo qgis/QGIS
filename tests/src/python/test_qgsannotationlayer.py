@@ -41,7 +41,6 @@ from qgis.core import (QgsMapSettings,
                        QgsMapRendererSequentialJob,
                        QgsMapRendererParallelJob,
                        QgsGeometry,
-                       QgsAbstractAnnotationItemEditOperation,
                        QgsAnnotationItemEditOperationMoveNode,
                        QgsVertexId,
                        QgsPointXY
@@ -279,16 +278,13 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         rc = QgsRenderContext()
         self.assertCountEqual(layer.itemsInBounds(QgsRectangle(1, 1, 20, 20), rc), [polygon_item_id, linestring_item_id, marker_item_id])
 
-        # can't apply the abstract operation to a layer
-        self.assertFalse(layer.applyEdit(QgsAbstractAnnotationItemEditOperation(polygon_item_id)))
-
         # can't apply a move to an item which doesn't exist in the layer
-        self.assertFalse(layer.applyEdit(QgsAnnotationItemEditOperationMoveNode('xxx', QgsVertexId(0, 0, 2), QgsPointXY(14, 15), QgsPointXY(19, 15))))
+        self.assertFalse(layer.applyEdit(QgsAnnotationItemEditOperationMoveNode('xxx', QgsVertexId(0, 0, 2), QgsPoint(14, 15), QgsPoint(19, 15))))
 
         # apply move to polygon
         self.assertTrue(layer.applyEdit(
-            QgsAnnotationItemEditOperationMoveNode(polygon_item_id, QgsVertexId(0, 0, 2), QgsPointXY(14, 15),
-                                                   QgsPointXY(19, 15))))
+            QgsAnnotationItemEditOperationMoveNode(polygon_item_id, QgsVertexId(0, 0, 2), QgsPoint(14, 15),
+                                                   QgsPoint(19, 15))))
 
         self.assertEqual(layer.item(polygon_item_id).geometry().asWkt(), 'Polygon ((12 13, 14 13, 19 15, 12 13))')
         # ensure that spatial index was updated

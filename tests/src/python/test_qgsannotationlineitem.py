@@ -37,7 +37,8 @@ from qgis.core import (QgsMapSettings,
                        QgsPointXY,
                        Qgis,
                        QgsVertexId,
-                       QgsAnnotationItemEditOperationMoveNode
+                       QgsAnnotationItemEditOperationMoveNode,
+                       QgsAnnotationItemEditOperationDeleteNode
                        )
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -94,18 +95,29 @@ class TestQgsAnnotationLineItem(unittest.TestCase):
         item = QgsAnnotationLineItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]))
         self.assertEqual(item.geometry().asWkt(), 'LineString (12 13, 14 13, 14 15)')
 
-        self.assertTrue(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPointXY(14, 13), QgsPointXY(17, 18))))
+        self.assertTrue(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPoint(14, 13), QgsPoint(17, 18))))
         self.assertEqual(item.geometry().asWkt(), 'LineString (12 13, 17 18, 14 15)')
-        self.assertTrue(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 2), QgsPointXY(14, 15), QgsPointXY(19, 20))))
+        self.assertTrue(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 2), QgsPoint(14, 15), QgsPoint(19, 20))))
         self.assertEqual(item.geometry().asWkt(), 'LineString (12 13, 17 18, 19 20)')
-        self.assertFalse(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 3), QgsPointXY(14, 15), QgsPointXY(19, 20))))
+        self.assertFalse(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 3), QgsPoint(14, 15), QgsPoint(19, 20))))
         self.assertEqual(item.geometry().asWkt(), 'LineString (12 13, 17 18, 19 20)')
+
+    def test_apply_delete_node_edit(self):
+        item = QgsAnnotationLineItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(16, 17)]))
+        self.assertEqual(item.geometry().asWkt(), 'LineString (12 13, 14 13, 14 15, 16 17)')
+
+        self.assertTrue(item.applyEdit(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 1), QgsPoint(14, 13))))
+        self.assertEqual(item.geometry().asWkt(), 'LineString (12 13, 14 15, 16 17)')
+        self.assertTrue(item.applyEdit(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 0), QgsPoint(12, 13))))
+        self.assertEqual(item.geometry().asWkt(), 'LineString (14 15, 16 17)')
+        self.assertFalse(item.applyEdit(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 3), QgsPoint(14, 15))))
+        self.assertEqual(item.geometry().asWkt(), 'LineString (14 15, 16 17)')
 
     def test_transient_move_operation(self):
         item = QgsAnnotationLineItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]))
         self.assertEqual(item.geometry().asWkt(), 'LineString (12 13, 14 13, 14 15)')
 
-        res = item.transientEditResults(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPointXY(14, 13), QgsPointXY(17, 18)))
+        res = item.transientEditResults(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPoint(14, 13), QgsPoint(17, 18)))
         self.assertEqual(res.representativeGeometry().asWkt(), 'LineString (12 13, 17 18, 14 15)')
 
     def test_rubberbandgeometry(self):

@@ -105,25 +105,41 @@ bool QgsAnnotationLineItem::transform( const QTransform &transform )
 
 bool QgsAnnotationLineItem::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
 {
-  if ( QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation ) )
+  switch ( operation->type() )
   {
-    return mCurve->moveVertex( moveOperation->nodeId(), QgsPoint( moveOperation->after() ) );
+    case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
+    {
+      QgsAnnotationItemEditOperationMoveNode *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      return mCurve->moveVertex( moveOperation->nodeId(), QgsPoint( moveOperation->after() ) );
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
+    {
+      QgsAnnotationItemEditOperationDeleteNode *deleteOperation = qgis::down_cast< QgsAnnotationItemEditOperationDeleteNode * >( operation );
+      return mCurve->deleteVertex( deleteOperation->nodeId() );
+    }
   }
-  else
-  {
-    return false;
-  }
+
+  return false;
 }
 
 QgsAnnotationItemEditOperationTransientResults *QgsAnnotationLineItem::transientEditResults( QgsAbstractAnnotationItemEditOperation *operation )
 {
-  if ( QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation ) )
+  switch ( operation->type() )
   {
-    std::unique_ptr< QgsCurve > modifiedCurve( mCurve->clone() );
-    if ( modifiedCurve->moveVertex( moveOperation->nodeId(), QgsPoint( moveOperation->after() ) ) )
+    case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
-      return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( std::move( modifiedCurve ) ) );
+      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      std::unique_ptr< QgsCurve > modifiedCurve( mCurve->clone() );
+      if ( modifiedCurve->moveVertex( moveOperation->nodeId(), QgsPoint( moveOperation->after() ) ) )
+      {
+        return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( std::move( modifiedCurve ) ) );
+      }
+      break;
     }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
+      break;
   }
   return nullptr;
 }
