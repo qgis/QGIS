@@ -217,6 +217,40 @@ class TestQgsAnnotationPointTextItem(unittest.TestCase):
 
         self.assertTrue(self.imageCheck('pointtext_item', 'pointtext_item', image))
 
+    def testRenderMarkerExpression(self):
+        item = QgsAnnotationPointTextItem('[% 1 + 1.5 %]', QgsPointXY(12.3, 13.2))
+
+        format = QgsTextFormat.fromQFont(getTestFont('Bold'))
+        format.setColor(QColor(255, 0, 0))
+        format.setOpacity(150 / 255)
+        format.setSize(20)
+        item.setFormat(format)
+
+        item.setAngle(30)
+        item.setAlignment(Qt.AlignRight)
+
+        settings = QgsMapSettings()
+        settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        settings.setExtent(QgsRectangle(10, 10, 16, 16))
+        settings.setOutputSize(QSize(300, 300))
+
+        settings.setFlag(QgsMapSettings.Antialiasing, False)
+
+        rc = QgsRenderContext.fromMapSettings(settings)
+        image = QImage(200, 200, QImage.Format_ARGB32)
+        image.setDotsPerMeterX(96 / 25.4 * 1000)
+        image.setDotsPerMeterY(96 / 25.4 * 1000)
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+        rc.setPainter(painter)
+
+        try:
+            item.render(rc, None)
+        finally:
+            painter.end()
+
+        self.assertTrue(self.imageCheck('pointtext_item_expression', 'pointtext_item_expression', image))
+
     def testRenderWithTransform(self):
         item = QgsAnnotationPointTextItem('my text', QgsPointXY(12.3, 13.2))
 
