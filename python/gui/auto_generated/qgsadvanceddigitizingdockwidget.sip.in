@@ -218,7 +218,7 @@ determines if CAD tools are enabled or if map tools behaves "nomally"
 %Docstring
 Determines if Z or M will be enabled.
 
-.. versionadded:: 3.20
+.. versionadded:: 3.22
 %End
 
     bool constructionMode() const;
@@ -252,14 +252,14 @@ Returns the ``CadConstraint`` on the Y coordinate
 %Docstring
 Returns the ``CadConstraint`` on the Z coordinate
 
-.. versionadded:: 3.20
+.. versionadded:: 3.22
 %End
 
     const CadConstraint *constraintM() const;
 %Docstring
 Returns the ``CadConstraint`` on the M coordinate
 
-.. versionadded:: 3.20
+.. versionadded:: 3.22
 %End
     bool commonAngleConstraint() const;
 %Docstring
@@ -407,7 +407,7 @@ Can be used to set constraints by external widgets.
 
    unstable API (will likely change)
 
-.. versionadded:: 3.20
+.. versionadded:: 3.22
 %End
 
     void setM( const QString &value, WidgetSetMode mode );
@@ -422,7 +422,7 @@ Can be used to set constraints by external widgets.
 
    unstable API (will likely change)
 
-.. versionadded:: 3.20
+.. versionadded:: 3.22
 %End
 
     void setAngle( const QString &value, WidgetSetMode mode );
@@ -538,7 +538,7 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
    unstable API (will likely change)
 
-.. versionadded:: 3.20
+.. versionadded:: 3.22
 %End
 
     void valueMChanged( const QString &value );
@@ -550,7 +550,7 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
    unstable API (will likely change)
 
-.. versionadded:: 3.20
+.. versionadded:: 3.22
 %End
 
     void valueAngleChanged( const QString &value );
@@ -610,7 +610,7 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
    unstable API (will likely change)
 
-.. versionadded:: 3.20
+.. versionadded:: 3.22
 %End
 
     void lockMChanged( bool locked );
@@ -622,7 +622,7 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
    unstable API (will likely change)
 
-.. versionadded:: 3.20
+.. versionadded:: 3.22
 %End
 
     void lockAngleChanged( bool locked );
@@ -688,7 +688,7 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
    unstable API (will likely change)
 
-.. versionadded:: 3.20
+.. versionadded:: 3.22
 %End
 
     void relativeMChanged( bool relative );
@@ -702,7 +702,7 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
    unstable API (will likely change)
 
-.. versionadded:: 3.20
+.. versionadded:: 3.22
 %End
 
     void relativeAngleChanged( bool relative );
@@ -762,7 +762,7 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
    unstable API (will likely change)
 
-.. versionadded:: 3.20
+.. versionadded:: 3.22
 %End
 
     void enabledChangedM( bool enabled );
@@ -777,7 +777,7 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
    unstable API (will likely change)
 
-.. versionadded:: 3.20
+.. versionadded:: 3.22
 %End
 
     void enabledChangedAngle( bool enabled );
@@ -843,7 +843,7 @@ Could be used by widgets to capture the focus when a field is being edited.
 
    unstable API (will likely change)
 
-.. versionadded:: 3.20
+.. versionadded:: 3.22
 %End
 
     void focusOnMRequested();
@@ -855,7 +855,7 @@ Could be used by widgets to capture the focus when a field is being edited.
 
    unstable API (will likely change)
 
-.. versionadded:: 3.20
+.. versionadded:: 3.22
 %End
 
     void focusOnAngleRequested();
