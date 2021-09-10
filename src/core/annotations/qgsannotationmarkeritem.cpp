@@ -103,6 +103,9 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationMarkerItem::applyEdit( QgsA
       mPoint.setY( mPoint.y() + moveOperation->translationY() );
       return Qgis::AnnotationItemEditOperationResult::Success;
     }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
+      break;
   }
 
   return Qgis::AnnotationItemEditOperationResult::Invalid;
@@ -125,6 +128,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationMarkerItem::transie
     }
 
     case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
+    case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
       break;
   }
   return nullptr;

@@ -26,6 +26,7 @@ Abstract base class for annotation item edit operations
     {
       MoveNode,
       DeleteNode,
+      AddNode,
       TranslateItem,
     };
 
@@ -125,6 +126,34 @@ Returns the deleted node ID.
     QgsPoint before() const;
 %Docstring
 Returns the node position before the delete occurred (in layer coordinates).
+%End
+
+};
+
+class QgsAnnotationItemEditOperationAddNode : QgsAbstractAnnotationItemEditOperation
+{
+%Docstring(signature="appended")
+Annotation item edit operation consisting of adding a node
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsannotationitemeditoperation.h"
+%End
+  public:
+
+    QgsAnnotationItemEditOperationAddNode( const QString &itemId, const QgsPoint &point );
+%Docstring
+Constructor for QgsAnnotationItemEditOperationAddNode at the specified ``point``.
+%End
+
+    virtual Type type() const;
+
+
+    QgsPoint point() const;
+%Docstring
+Returns the node position (in layer coordinates).
 %End
 
 };

@@ -142,6 +142,18 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPolygonItem::applyEdit( Qgs
       break;
     }
 
+    case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
+    {
+      QgsAnnotationItemEditOperationAddNode *addOperation = qgis::down_cast< QgsAnnotationItemEditOperationAddNode * >( operation );
+
+      QgsPoint segmentPoint;
+      QgsVertexId endOfSegmentVertex;
+      mPolygon->closestSegment( addOperation->point(), segmentPoint, endOfSegmentVertex );
+      if ( mPolygon->insertVertex( endOfSegmentVertex, addOperation->point() ) )
+        return Qgis::AnnotationItemEditOperationResult::Success;
+      break;
+    }
+
     case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
     {
       QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
@@ -179,6 +191,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPolygonItem::transi
     }
 
     case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
+    case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
       break;
   }
   return nullptr;

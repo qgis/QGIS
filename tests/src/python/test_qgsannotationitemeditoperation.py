@@ -16,6 +16,8 @@ import qgis  # NOQA
 from qgis.core import (
     QgsAnnotationItemEditOperationMoveNode,
     QgsAnnotationItemEditOperationDeleteNode,
+    QgsAnnotationItemEditOperationTranslateItem,
+    QgsAnnotationItemEditOperationAddNode,
     QgsVertexId,
     QgsPoint,
     QgsPointXY
@@ -42,6 +44,17 @@ class TestQgsAnnotationItemEditOperation(unittest.TestCase):
         self.assertEqual(operation.itemId(), 'item id')
         self.assertEqual(operation.nodeId(), QgsVertexId(1, 2, 3))
         self.assertEqual(operation.before(), QgsPoint(6, 7))
+
+    def test_add_node_operation(self):
+        operation = QgsAnnotationItemEditOperationAddNode('item id', QgsPoint(6, 7))
+        self.assertEqual(operation.itemId(), 'item id')
+        self.assertEqual(operation.point(), QgsPoint(6, 7))
+
+    def test_translate_operation(self):
+        operation = QgsAnnotationItemEditOperationTranslateItem('item id', 6, 7)
+        self.assertEqual(operation.itemId(), 'item id')
+        self.assertEqual(operation.translationX(), 6)
+        self.assertEqual(operation.translationY(), 7)
 
 
 if __name__ == '__main__':

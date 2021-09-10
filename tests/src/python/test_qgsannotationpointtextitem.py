@@ -38,6 +38,7 @@ from qgis.core import (QgsMapSettings,
                        QgsVertexId,
                        QgsAnnotationItemEditOperationMoveNode,
                        QgsAnnotationItemEditOperationDeleteNode,
+                       QgsAnnotationItemEditOperationAddNode,
                        QgsAnnotationItemEditOperationTranslateItem,
                        QgsPoint
                        )
@@ -127,6 +128,10 @@ class TestQgsAnnotationPointTextItem(unittest.TestCase):
         self.assertEqual(item.point().asWkt(), 'POINT(12 13)')
 
         self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 0), QgsPoint(12, 13))), Qgis.AnnotationItemEditOperationResult.ItemCleared)
+
+    def test_apply_add_node_edit(self):
+        item = QgsAnnotationPointTextItem('my text', QgsPointXY(12, 13))
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationAddNode('', QgsPoint(13, 14))), Qgis.AnnotationItemEditOperationResult.Invalid)
 
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")
