@@ -793,7 +793,7 @@
   </widget>
   <widget class="QToolBar" name="mAnnotationsToolBar">
    <property name="windowTitle">
-    <string>Annotations</string>
+    <string>Annotations Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
