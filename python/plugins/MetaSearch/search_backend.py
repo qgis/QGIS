@@ -172,10 +172,11 @@ class OARecSearch(SearchBase):
                 self.conn.description = c['description']
             except KeyError:
                 pass
+            self.request = self.conn.request
         else:
             self.conn = Records(self.url, timeout=self.timeout, auth=self.auth)
+            self.request = None
 
-        self.request = self.conn.request
         self.response = self.conn.response
 
     def query_records(self, bbox=[], keywords=None, limit=10, offset=1):
