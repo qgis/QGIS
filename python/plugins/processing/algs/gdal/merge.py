@@ -71,7 +71,7 @@ class merge(GdalAlgorithm):
 
         nodata_param = QgsProcessingParameterNumber(self.NODATA_INPUT,
                                                     self.tr('Input pixel value to treat as "nodata"'),
-                                                    type=QgsProcessingParameterNumber.Integer,
+                                                    type=QgsProcessingParameterNumber.Double,
                                                     defaultValue=None,
                                                     optional=True)
         nodata_param.setFlags(nodata_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
@@ -79,7 +79,7 @@ class merge(GdalAlgorithm):
 
         nodata_out_param = QgsProcessingParameterNumber(self.NODATA_OUTPUT,
                                                         self.tr('Assign specified "nodata" value to output'),
-                                                        type=QgsProcessingParameterNumber.Integer,
+                                                        type=QgsProcessingParameterNumber.Double,
                                                         defaultValue=None,
                                                         optional=True)
         nodata_out_param.setFlags(nodata_out_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
@@ -141,12 +141,12 @@ class merge(GdalAlgorithm):
             arguments.append('-separate')
 
         if self.NODATA_INPUT in parameters and parameters[self.NODATA_INPUT] is not None:
-            nodata_input = self.parameterAsInt(parameters, self.NODATA_INPUT, context)
+            nodata_input = self.parameterAsDouble(parameters, self.NODATA_INPUT, context)
             arguments.append('-n')
             arguments.append(str(nodata_input))
 
         if self.NODATA_OUTPUT in parameters and parameters[self.NODATA_OUTPUT] is not None:
-            nodata_output = self.parameterAsInt(parameters, self.NODATA_OUTPUT, context)
+            nodata_output = self.parameterAsDouble(parameters, self.NODATA_OUTPUT, context)
             arguments.append('-a_nodata')
             arguments.append(str(nodata_output))
 
