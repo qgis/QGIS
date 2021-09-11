@@ -222,7 +222,7 @@ void QgsAnnotationItemGuiRegistry::addDefaultItems()
 
   addAnnotationItemGuiMetadata( new QgsAnnotationItemGuiMetadata( QStringLiteral( "pointtext" ),
                                 QObject::tr( "Text at Point" ),
-                                QgsApplication::getThemeIcon( QStringLiteral( "/mActionLabel.svg" ) ),
+                                QgsApplication::getThemeIcon( QStringLiteral( "/mActionText.svg" ) ),
                                 [ = ]( QgsAnnotationItem * item )->QgsAnnotationItemBaseWidget *
   {
     QgsAnnotationPointTextItemWidget *widget = new QgsAnnotationPointTextItemWidget( nullptr );

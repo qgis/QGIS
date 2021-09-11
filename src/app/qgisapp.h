@@ -2688,6 +2688,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsScopedOptionsWidgetFactory m3DOptionsWidgetFactory;
 
     QMap< QString, QToolButton * > mAnnotationItemGroupToolButtons;
+    QAction *mAnnotationsItemInsertBefore = nullptr; // Used to insert annotation items at the appropriate location in the annotations toolbar
 
     class QgsCanvasRefreshBlocker
     {

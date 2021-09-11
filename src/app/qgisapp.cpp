@@ -781,7 +781,7 @@ void QgisApp::annotationItemTypeAdded( int id )
       groupToolButton->setAutoRaise( true );
       groupToolButton->setToolButtonStyle( Qt::ToolButtonIconOnly );
       groupToolButton->setToolTip( groupText );
-      mAnnotationsToolBar->addWidget( groupToolButton );
+      mAnnotationsToolBar->insertWidget( mAnnotationsItemInsertBefore, groupToolButton );
       mAnnotationItemGroupToolButtons.insert( groupId, groupToolButton );
       groupButton = groupToolButton;
     }
@@ -800,7 +800,7 @@ void QgisApp::annotationItemTypeAdded( int id )
     groupButton->addAction( action );
   else
   {
-    mAnnotationsToolBar->addAction( action );
+    mAnnotationsToolBar->insertAction( mAnnotationsItemInsertBefore, action );
   }
 
   connect( action, &QAction::toggled, this, [this, action, id]( bool checked )
@@ -3559,40 +3559,6 @@ void QgisApp::createToolBars()
   measureAction->setObjectName( QStringLiteral( "ActionMeasure" ) );
   connect( bt, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
-  // annotation tool button
-
-  bt = new QToolButton();
-  bt->setPopupMode( QToolButton::MenuButtonPopup );
-  bt->addAction( mActionTextAnnotation );
-  bt->addAction( mActionFormAnnotation );
-  bt->addAction( mActionHtmlAnnotation );
-  bt->addAction( mActionSvgAnnotation );
-  bt->addAction( mActionAnnotation );
-
-  QAction *defAnnotationAction = mActionTextAnnotation;
-  switch ( settings.value( QStringLiteral( "UI/annotationTool" ), 0 ).toInt() )
-  {
-    case 0:
-      defAnnotationAction = mActionTextAnnotation;
-      break;
-    case 1:
-      defAnnotationAction = mActionFormAnnotation;
-      break;
-    case 2:
-      defAnnotationAction = mActionHtmlAnnotation;
-      break;
-    case 3:
-      defAnnotationAction = mActionSvgAnnotation;
-      break;
-    case 4:
-      defAnnotationAction = mActionAnnotation;
-      break;
-  }
-  bt->setDefaultAction( defAnnotationAction );
-  QAction *annotationAction = mAttributesToolBar->addWidget( bt );
-  annotationAction->setObjectName( QStringLiteral( "ActionAnnotation" ) );
-  connect( bt, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
-
   // vector layer edits tool buttons
   QToolButton *tbAllEdits = qobject_cast<QToolButton *>( mDigitizeToolBar->widgetForAction( mActionAllEdits ) );
   tbAllEdits->setPopupMode( QToolButton::InstantPopup );
@@ -3913,6 +3879,41 @@ void QgisApp::createToolBars()
   annotationLayerToolButton->setMenu( annotationLayerMenu );
   annotationLayerToolButton->setDefaultAction( mActionCreateAnnotationLayer );
   mAnnotationsToolBar->insertWidget( mAnnotationsToolBar->actions().at( 0 ), annotationLayerToolButton );
+
+  // Registered annotation items will be inserted before this separator
+  mAnnotationsItemInsertBefore = mAnnotationsToolBar->addSeparator();
+
+  bt = new QToolButton();
+  bt->setPopupMode( QToolButton::MenuButtonPopup );
+  bt->addAction( mActionTextAnnotation );
+  bt->addAction( mActionFormAnnotation );
+  bt->addAction( mActionHtmlAnnotation );
+  bt->addAction( mActionSvgAnnotation );
+  bt->addAction( mActionAnnotation );
+
+  QAction *defAnnotationAction = mActionTextAnnotation;
+  switch ( settings.value( QStringLiteral( "UI/annotationTool" ), 0 ).toInt() )
+  {
+    case 0:
+      defAnnotationAction = mActionTextAnnotation;
+      break;
+    case 1:
+      defAnnotationAction = mActionFormAnnotation;
+      break;
+    case 2:
+      defAnnotationAction = mActionHtmlAnnotation;
+      break;
+    case 3:
+      defAnnotationAction = mActionSvgAnnotation;
+      break;
+    case 4:
+      defAnnotationAction = mActionAnnotation;
+      break;
+  }
+  bt->setDefaultAction( defAnnotationAction );
+  QAction *annotationAction = mAnnotationsToolBar->addWidget( bt );
+  annotationAction->setObjectName( QStringLiteral( "ActionAnnotation" ) );
+  connect( bt, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 }
 
 void QgisApp::createStatusBar()
