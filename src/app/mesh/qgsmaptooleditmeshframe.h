@@ -109,8 +109,6 @@ class QgsMeshEditForceByLineAction : public QWidgetAction
     QCheckBox *mCheckBoxNewVertex = nullptr;
     QgsUnitSelectionWidget *mUnitSelecionWidget = nullptr;
     QgsDoubleSpinBox *mToleranceSpinBox = nullptr;
-
-
 };
 
 class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
@@ -177,7 +175,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
       Digitizing, //!< Digitizing action can be start (add/remove vertices, selection, add/remove faces, move vertices)
       AddingNewFace, //!< Adding a face has been start and the user have to choose or digitize vertices
       Selecting, //!< Selection is in process
-      MovingVertex, //!< Moving vertex or vertices is processing
+      MovingSelection, //!< Moving vertex or vertices is processing
       SelectingByPolygon, //!< Selection elements by polygon is in progress
     };
 
@@ -234,9 +232,11 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void applyZValueOnSelectedVertices();
     void prepareSelection();
     void updateSelectecVerticesMarker();
+    void moveSelection( const QgsPointXY &destinationPoint );
     void clearSelection();
 
     void setMovingRubberBandValidity( bool valid );
+    bool isSelectionGrapped( QgsPointXY &grappedPoint );
 
     QList<QgsGeometry> selectedGeometriesInVectorLayers() const;
     bool areGeometriesSelectedInVectorLayer() const;
@@ -262,7 +262,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     int mCurrentVertexIndex = -1;
     QList<int> mNewFaceCandidate;
     bool mDoubleClicks = false;
-    QgsPointXY mLastClickPoint;
+    QgsPointXY mFirstClickPoint; //the first click point when double clicks, we need it when the point is constraint by the cad tool, second click could not be constraint
     double mOrdinaryZValue = 0;
     bool mIsSelectedZValue = false;
     double mSelectedZValue = 0;
