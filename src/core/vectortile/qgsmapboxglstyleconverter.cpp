@@ -2092,8 +2092,8 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateByZoom( const QVariantMap
   {
     scaleExpression = interpolateExpression( stops.value( 0 ).toList().value( 0 ).toDouble(),
                       stops.last().toList().value( 0 ).toDouble(),
-                      stops.value( 0 ).toList().value( 1 ).toDouble(),
-                      stops.last().toList().value( 1 ).toDouble(), base, context, multiplier );
+                      stops.value( 0 ).toList().value( 1 ),
+                      stops.last().toList().value( 1 ), base, context, multiplier );
   }
   else
   {
@@ -2119,8 +2119,8 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateOpacityByZoom( const QVar
     scaleExpression = QStringLiteral( "set_color_part(@symbol_color, 'alpha', %1)" )
                       .arg( interpolateExpression( stops.value( 0 ).toList().value( 0 ).toDouble(),
                             stops.last().toList().value( 0 ).toDouble(),
-                            stops.value( 0 ).toList().value( 1 ).toDouble() * maxOpacity,
-                            stops.last().toList().value( 1 ).toDouble() * maxOpacity, base, context ) );
+                            stops.value( 0 ).toList().value( 1 ),
+                            stops.last().toList().value( 1 ), base, context, maxOpacity ) );
   }
   else
   {
@@ -2143,8 +2143,8 @@ QString QgsMapBoxGlStyleConverter::parseOpacityStops( double base, const QVarian
                         stops.value( i + 1 ).toList().value( 0 ).toString(),
                         interpolateExpression( stops.value( i ).toList().value( 0 ).toDouble(),
                             stops.value( i + 1 ).toList().value( 0 ).toDouble(),
-                            stops.value( i ).toList().value( 1 ).toDouble() * maxOpacity,
-                            stops.value( i + 1 ).toList().value( 1 ).toDouble() * maxOpacity, base, context ) );
+                            stops.value( i ).toList().value( 1 ),
+                            stops.value( i + 1 ).toList().value( 1 ), base, context, maxOpacity ) );
   }
 
   caseString += QStringLiteral( " WHEN @vector_tile_zoom >= %1 "
@@ -2166,12 +2166,12 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolatePointByZoom( const QVaria
   {
     scaleExpression = QStringLiteral( "array(%1,%2)" ).arg( interpolateExpression( stops.value( 0 ).toList().value( 0 ).toDouble(),
                       stops.last().toList().value( 0 ).toDouble(),
-                      stops.value( 0 ).toList().value( 1 ).toList().value( 0 ).toDouble(),
-                      stops.last().toList().value( 1 ).toList().value( 0 ).toDouble(), base, context, multiplier ),
+                      stops.value( 0 ).toList().value( 1 ).toList().value( 0 ),
+                      stops.last().toList().value( 1 ).toList().value( 0 ), base, context, multiplier ),
                       interpolateExpression( stops.value( 0 ).toList().value( 0 ).toDouble(),
                           stops.last().toList().value( 0 ).toDouble(),
-                          stops.value( 0 ).toList().value( 1 ).toList().value( 1 ).toDouble(),
-                          stops.last().toList().value( 1 ).toList().value( 1 ).toDouble(), base, context, multiplier )
+                          stops.value( 0 ).toList().value( 1 ).toList().value( 1 ),
+                          stops.last().toList().value( 1 ).toList().value( 1 ), base, context, multiplier )
                                                           );
   }
   else
@@ -2225,8 +2225,8 @@ QString QgsMapBoxGlStyleConverter::parsePointStops( double base, const QVariantL
     caseString += QStringLiteral( "WHEN @vector_tile_zoom > %1 AND @vector_tile_zoom <= %2 "
                                   "THEN array(%3,%4)" ).arg( bz.toString(),
                                       tz.toString(),
-                                      interpolateExpression( bz.toDouble(), tz.toDouble(), bv.toList().value( 0 ).toDouble(), tv.toList().value( 0 ).toDouble(), base, context, multiplier ),
-                                      interpolateExpression( bz.toDouble(), tz.toDouble(), bv.toList().value( 1 ).toDouble(), tv.toList().value( 1 ).toDouble(), base, context, multiplier ) );
+                                      interpolateExpression( bz.toDouble(), tz.toDouble(), bv.toList().value( 0 ), tv.toList().value( 0 ), base, context, multiplier ),
+                                      interpolateExpression( bz.toDouble(), tz.toDouble(), bv.toList().value( 1 ), tv.toList().value( 1 ), base, context, multiplier ) );
   }
   caseString += QLatin1String( "END" );
   return caseString;
