@@ -2119,8 +2119,8 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateOpacityByZoom( const QVar
     scaleExpression = QStringLiteral( "set_color_part(@symbol_color, 'alpha', %1)" )
                       .arg( interpolateExpression( stops.value( 0 ).toList().value( 0 ).toDouble(),
                             stops.last().toList().value( 0 ).toDouble(),
-                            stops.value( 0 ).toList().value( 1 ),
-                            stops.last().toList().value( 1 ), base, context, maxOpacity ) );
+                            QString( "(%1) * %2" ).arg( parseValue( stops.value( 0 ).toList().value( 1 ), context ) ).arg( maxOpacity ),
+                            QString( "(%1) * %2" ).arg( parseValue( stops.last().toList().value( 1 ), context ) ).arg( maxOpacity ), base, context ) );
   }
   else
   {
@@ -2143,8 +2143,8 @@ QString QgsMapBoxGlStyleConverter::parseOpacityStops( double base, const QVarian
                         stops.value( i + 1 ).toList().value( 0 ).toString(),
                         interpolateExpression( stops.value( i ).toList().value( 0 ).toDouble(),
                             stops.value( i + 1 ).toList().value( 0 ).toDouble(),
-                            stops.value( i ).toList().value( 1 ),
-                            stops.value( i + 1 ).toList().value( 1 ), base, context, maxOpacity ) );
+                            QString( "(%1) * %2" ).arg( parseValue( stops.value( i ).toList().value( 1 ), context ) ).arg( maxOpacity ),
+                            QString( "(%1) * %2" ).arg( parseValue( stops.value( i + 1 ).toList().value( 1 ), context ) ).arg( maxOpacity ), base, context ) );
   }
 
   caseString += QStringLiteral( " WHEN @vector_tile_zoom >= %1 "
@@ -2537,6 +2537,11 @@ QString QgsMapBoxGlStyleConverter::interpolateExpression( double zoomMin, double
   if ( ( QMetaType::Type )valueMax.type() == QMetaType::QVariantList )
   {
     maxValueExpr = parseExpression( valueMax.toList(), context );
+  }
+
+  if ( minValueExpr == maxValueExpr )
+  {
+    return minValueExpr;
   }
 
   QString expression;
