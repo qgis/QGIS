@@ -331,7 +331,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * The last point.
      * Helper for the CAD point list. The CAD point list is the list of points
      * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
-     * \deprecated since QGIS 3.22 - will be removed in QGIS 4.0. Use the variant which returns QgsPoint object instead of QgsPointXY.
+     * \deprecated since QGIS 3.22. Use currentPointV2() instead.
      */
     Q_DECL_DEPRECATED QgsPointXY currentPoint( bool *exists  = nullptr ) const SIP_DEPRECATED { return currentPointV2( exists ); };
 
@@ -346,7 +346,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * The previous point.
      * Helper for the CAD point list. The CAD point list is the list of points
      * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
-     * \deprecated since QGIS 3.22 - will be removed in QGIS 4.0. Use the variant which returns QgsPoint object instead of QgsPointXY.
+     * \deprecated since QGIS 3.22. Use previousPointV2() instead.
      */
     Q_DECL_DEPRECATED QgsPointXY previousPoint( bool *exists = nullptr ) const SIP_DEPRECATED { return previousPointV2( exists ); };
 
@@ -361,7 +361,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * The penultimate point.
      * Helper for the CAD point list. The CAD point list is the list of points
      * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
-     * \deprecated since QGIS 3.22 - will be removed in QGIS 4.0. Use the variant which returns QgsPoint object instead of QgsPointXY.
+     * \deprecated since QGIS 3.22. Use penultimatePointV2() instead.
      */
     Q_DECL_DEPRECATED QgsPointXY penultimatePoint( bool *exists = nullptr ) const SIP_DEPRECATED { return penultimatePointV2( exists ); };
 
@@ -502,7 +502,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * when a constraint is toggled.
      *
      * \param point The last known digitizing point. Can be used to emulate a mouse event.
-     * \deprecated since QGIS 3.22 - No longer used, will be removed in QGIS 4.0. Use the variant which emits QgsPoint object instead of QgsPointXY.
+     * \deprecated since QGIS 3.22. No longer used, will be removed in QGIS 4.0. Use pointChangedV2 instead.
      */
     Q_DECL_DEPRECATED void pointChanged( const QgsPointXY &point ) SIP_DEPRECATED;
 

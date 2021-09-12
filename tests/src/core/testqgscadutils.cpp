@@ -231,7 +231,7 @@ void TestQgsCadUtils::testCommonAngle()
   // common angle rel
   context.angleConstraint = QgsCadUtils::AlignMapPointConstraint();
   context.commonAngleConstraint = QgsCadUtils::AlignMapPointConstraint( true, true, 90 );
-  context.setCadPoint( QgsPoint( 40, 20 ), 1 );
+  context.setCadPoint( 1, QgsPoint( 40, 20 ) );
   QgsCadUtils::AlignMapPointOutput res3 = QgsCadUtils::alignMapPoint( QgsPointXY( 50.1, 29.9 ), context );
   QVERIFY( res3.valid );
   QCOMPARE( res3.softLockCommonAngle, 90.0 );
