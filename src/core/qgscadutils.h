@@ -33,68 +33,74 @@ class CORE_EXPORT QgsCadUtils
 {
   public:
 
-    //! Structure with details of one constraint
-    struct AlignMapPointConstraint
+    /**
+     * \brief Structure with details of one constraint
+     * \ingroup core
+     * \since QGIS 3.0
+     */
+    class AlignMapPointConstraint
     {
-      AlignMapPointConstraint( bool locked = false, bool relative = false, double value = 0 )
-        : locked( locked )
-        , relative( relative )
-        , value( value )
-      {}
+      public:
 
-      //! Whether the constraint is active, i.e. should be considered
-      bool locked;
-      //! Whether the value is relative to previous value
-      bool relative;
-      //! Numeric value of the constraint (coordinate/distance in map units or angle in degrees)
-      double value;
+        /**
+         * Constructor for AlignMapPointConstraint.
+         */
+        AlignMapPointConstraint( bool locked = false, bool relative = false, double value = 0 )
+          : locked( locked )
+          , relative( relative )
+          , value( value )
+        {}
+
+        //! Whether the constraint is active, i.e. should be considered
+        bool locked;
+        //! Whether the value is relative to previous value
+        bool relative;
+        //! Numeric value of the constraint (coordinate/distance in map units or angle in degrees)
+        double value;
     };
 
-    //! Structure returned from alignMapPoint() method
-    struct AlignMapPointOutput
+    /**
+     * \brief Structure returned from alignMapPoint() method
+     * \ingroup core
+     * \since QGIS 3.0
+     */
+    class AlignMapPointOutput
     {
-      //! Whether the combination of constraints is actually valid
-      bool valid;
+      public:
 
-      //! map point aligned according to the constraints
-      QgsPointXY finalMapPoint;
+        //! Whether the combination of constraints is actually valid
+        bool valid;
 
-      /**
-       * Snapped point - only valid if actually used for something
-       * \since QGIS 3.14
-       */
-      QgsPointLocator::Match snapMatch;
+        //! map point aligned according to the constraints
+        QgsPointXY finalMapPoint;
 
-      /**
-       * Snapped segment - only valid if actually used for something
-       * \deprecated will be removed in QGIS 4.0 - use snapMatch instead
-       */
-      QgsPointLocator::Match edgeMatch;
+        /**
+         * Snapped point - only valid if actually used for something
+         * \since QGIS 3.14
+         */
+        QgsPointLocator::Match snapMatch;
 
-      //! Angle (in degrees) to which we have soft-locked ourselves (if not set it is -1)
-      double softLockCommonAngle;
+        /**
+         * Snapped segment - only valid if actually used for something
+         * \deprecated will be removed in QGIS 4.0 - use snapMatch instead
+         */
+        QgsPointLocator::Match edgeMatch;
+
+        //! Angle (in degrees) to which we have soft-locked ourselves (if not set it is -1)
+        double softLockCommonAngle;
     };
 
     /**
      * \ingroup core
-     * \brief Class defining all constraints for alignMapPoint() method
-     *
-     * This class was a structure before QGIS 3.22.
-     *
-     * mCadPointList is now a private QList< QgsPoint >.
-     * Use getters/setters.
-     *
-     * \see cadPoints
-     * \see setCadPoints
-     *
-     * \since QGIS 3.22
+     * \brief Defines constraints for the QgsCadUtils::alignMapPoint() method.
+     * \since QGIS 3.0
      */
     class AlignMapPointContext
     {
       public:
         //! Snapping utils that will be used to snap point to map. Must not be NULLPTR.
         QgsSnappingUtils *snappingUtils = nullptr;
-        //! Map units/pixel ratio from map canvas. Needed for
+        //! Map units/pixel ratio from map canvas.
         double mapUnitsPerPixel;
 
         //! Constraint for X coordinate
@@ -127,26 +133,36 @@ class CORE_EXPORT QgsCadUtils
         SIP_SKIP void dump() const;
 
         /**
-         * Returns a list of points from mCadPointList.
+         * Returns the list of recent CAD points in map coordinates.
+         *
+         * These are used to turn relative constraints to absolute. The first
+         * point is the most recent point.
+         *
+         * \see setCadPoints()
          * \since QGIS 3.22
          */
         QList< QgsPoint > cadPoints() const { return mCadPointList; } ;
 
         /**
-         * Set points to mCadPointList
-         * \param list points to mCadPointList
+         * Sets the list of recent CAD \a points (in map coordinates).
+         *
+         * \see cadPoints()
          * \since QGIS 3.22
          */
-        void setCadPoints( const QList< QgsPoint> &list ) { mCadPointList = list; };
+        void setCadPoints( const QList< QgsPoint> &points ) { mCadPointList = points; };
 
         /**
-         * Set \a point at \a index to mCadPointList
+         * Sets the recent CAD point at the specified \a index to \a point (in map coordinates).
+         *
+         * \see cadPoint()
          * \since QGIS 3.22
          */
-        void setCadPoint( const QgsPoint &point, int index ) { mCadPointList[index] = point; };
+        void setCadPoint( int index, const QgsPoint &point ) { mCadPointList[index] = point; };
 
         /**
-         * Get \a point at \a index from mCadPointList
+         * Returns the recent CAD point at the specified \a index (in map coordinates).
+         *
+         * \see setCadPoint()
          * \since QGIS 3.22
          */
         QgsPoint cadPoint( int index ) const { return mCadPointList[index]; };
