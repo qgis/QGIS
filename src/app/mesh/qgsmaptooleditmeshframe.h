@@ -307,6 +307,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     bool mCanMovingStart = false;
     QgsRubberBand *mMovingEdgesRubberband = nullptr; //own by map canvas
     QgsRubberBand *mMovingFacesRubberband = nullptr; //own by map canvas
+    QgsRubberBand *mMovingFreeVertexRubberband = nullptr; //own by map canvas
     bool mIsMovingAllowed = false;
 
     //! members for edge flip

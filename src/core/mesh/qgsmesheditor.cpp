@@ -528,9 +528,9 @@ void QgsMeshEditor::changeZValues( const QList<int> &verticesIndexes, const QLis
   mUndoStack->push( new QgsMeshLayerUndoCommandChangeZValue( this, verticesIndexes, newZValues ) );
 }
 
-bool QgsMeshEditor::canBeTransformed( const QList<int> &transformedFaces, const std::function<const QgsMeshVertex( int )> &transformFunction ) const
+bool QgsMeshEditor::canBeTransformed( const QList<int> &facesToCheck, const std::function<const QgsMeshVertex( int )> &transformFunction ) const
 {
-  for ( const int faceIndex : transformedFaces )
+  for ( const int faceIndex : facesToCheck )
   {
     const QgsMeshFace &face = mMesh->face( faceIndex );
     int faceSize = face.count();
@@ -560,7 +560,7 @@ bool QgsMeshEditor::canBeTransformed( const QList<int> &transformedFaces, const 
 
     const QgsGeometry &deformedFace = QgsGeometry::fromPolygonXY( {points} );
 
-    // now test if the deformed face contain something else (search canditate <ith the
+    // now test if the deformed face contain something else
     QList<int> otherFaceIndexes =
       mTriangularMesh->nativeFaceIndexForRectangle( QgsGeometry::fromPolygonXY( {pointsInTriangularMeshCoordinate} ).boundingBox() );
 
@@ -579,7 +579,7 @@ bool QgsMeshEditor::canBeTransformed( const QList<int> &transformedFaces, const 
       }
       if ( shareVertex )
       {
-        //only test the edge that not contain a shared vertex
+        //only test the edge that not contains a shared vertex
         for ( int i = 0; i < existingFaceSize; ++i )
         {
           int index1 = otherFace.at( i );
@@ -605,12 +605,36 @@ bool QgsMeshEditor::canBeTransformed( const QList<int> &transformedFaces, const 
       }
     }
 
-    //finish with free vertices...
     const QList<int> freeVerticesIndex = freeVerticesIndexes();
     for ( const int vertexIndex : freeVerticesIndex )
     {
       const QgsPointXY &mapPoint = transformFunction( vertexIndex ); //free vertices can be transformed
       if ( deformedFace.contains( &mapPoint ) )
+        return false;
+    }
+  }
+
+  // free vertices
+  const QList<int> freeVerticesIndex = freeVerticesIndexes();
+  for ( const int vertexIndex : freeVerticesIndex )
+  {
+    const QgsMeshVertex &newFreeVertexPosition = transformFunction( vertexIndex ); // transformed free vertex
+    const QgsMeshVertex pointInTriangularCoord = mTriangularMesh->nativeToTriangularCoordinates( newFreeVertexPosition );
+    const int originalIncludingFace = mTriangularMesh->nativeFaceIndexForPoint( pointInTriangularCoord );
+
+    if ( originalIncludingFace != -1 )
+    {
+      // That means two things: the free vertex is moved AND is included in a face before transform
+      // Before returning false, we need to check if the vertex is still in the face after transform
+      const QgsMeshFace &face = mMesh->face( originalIncludingFace );
+      int faceSize = face.count();
+      QVector<QgsPointXY> points( faceSize );
+      for ( int i = 0; i < faceSize; ++i )
+        points[i] = transformFunction( face.at( i ) );
+
+      const QgsGeometry &deformedFace = QgsGeometry::fromPolygonXY( {points} );
+      const QgsPointXY ptXY( newFreeVertexPosition );
+      if ( deformedFace.contains( &ptXY ) )
         return false;
     }
   }

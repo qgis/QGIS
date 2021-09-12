@@ -503,6 +503,15 @@ void QgsMapToolEditMeshFrame::initialize()
   if ( !mMovingFacesRubberband )
     mMovingFacesRubberband = createRubberBand( QgsWkbTypes::PolygonGeometry );
 
+  if ( !mMovingFreeVertexRubberband )
+  {
+    mMovingFreeVertexRubberband = createRubberBand( QgsWkbTypes::PointGeometry );
+    mMovingFreeVertexRubberband->setIcon( QgsRubberBand::ICON_X );
+    mMovingFreeVertexRubberband->setIconSize( QgsGuiUtils::scaleIconSize( 10 ) );
+    mMovingFreeVertexRubberband->setWidth( QgsGuiUtils::scaleIconSize( 3 ) );
+    mMovingFreeVertexRubberband->setVisible( true );
+  }
+
   if ( !mFlipEdgeMarker )
     mFlipEdgeMarker = new QgsVertexMarker( canvas() );
   mFlipEdgeMarker->setIconType( QgsVertexMarker::ICON_CIRCLE );
@@ -879,6 +888,7 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       clearCanvasHelpers();
       mMovingEdgesRubberband->reset();
       mMovingFacesRubberband->reset();
+      mMovingFreeVertexRubberband->reset();
       mCurrentState = Digitizing;
       break;
     case SelectingByPolygon:
@@ -911,6 +921,7 @@ void QgsMapToolEditMeshFrame::moveSelection( const QgsPointXY &destinationPoint 
   const QgsVector &translation = destinationPoint - mStartMovingPoint;
   mMovingEdgesRubberband->reset( QgsWkbTypes::LineGeometry );
   mMovingFacesRubberband->reset( QgsWkbTypes::PolygonGeometry );
+  mMovingFreeVertexRubberband->reset( QgsWkbTypes::PointGeometry );
   QgsGeometry movingFacesGeometry = mSelectedFacesRubberband->asGeometry();
   movingFacesGeometry.translate( translation.x(), translation.y() );
   mMovingFacesRubberband->setToGeometry( movingFacesGeometry );
@@ -937,7 +948,14 @@ void QgsMapToolEditMeshFrame::moveSelection( const QgsPointXY &destinationPoint 
       const QgsGeometry edge( new QgsLineString( {point1, point2} ) );
       mMovingEdgesRubberband->addGeometry( edge );
     }
+
+    if ( mCurrentEditor->isVertexFree( it.key() ) )
+      mMovingFreeVertexRubberband->addPoint( mapVertexXY( it.key() ) + translation, false );
   }
+
+  mMovingFreeVertexRubberband->setVisible( true );
+  mMovingFreeVertexRubberband->updatePosition();
+  mMovingFreeVertexRubberband->update();
 
   const QgsMeshVertex &mapPointInNativeCoordinate =
     mCurrentLayer->triangularMesh()->triangularToNativeCoordinates( QgsMeshVertex( destinationPoint.x(), destinationPoint.y() ) );
@@ -953,7 +971,7 @@ void QgsMapToolEditMeshFrame::moveSelection( const QgsPointXY &destinationPoint 
       return mCurrentLayer->nativeMesh()->vertex( vi );
   };
 
-  // we test only the faces that are deformed on the border, moving and not deformed faces are tested later
+// we test only the faces that are deformed on the border, moving and not deformed faces are tested later
   mIsMovingAllowed = mCurrentEditor->canBeTransformed( qgis::setToList( borderMovingFace ), transformFunction );
 
   if ( mIsMovingAllowed )
@@ -975,7 +993,9 @@ void QgsMapToolEditMeshFrame::moveSelection( const QgsPointXY &destinationPoint 
       const QList<int> &freeVerticesIndexes = mCurrentEditor->freeVerticesIndexes();
       for ( const int vertexIndex : freeVerticesIndexes )
       {
-        const QgsPointXY &pointInMap = mapVertexXY( vertexIndex );
+        const QgsMeshVertex transformedVertex = transformFunction( vertexIndex );
+        const QgsMeshVertex &mapTransformedVertex = mCurrentLayer->triangularMesh()->nativeToTriangularCoordinates( transformedVertex );
+        const QgsPointXY pointInMap( mapTransformedVertex );
         mIsMovingAllowed &= !movingFacesGeometry.contains( &pointInMap );
         if ( !mIsMovingAllowed )
           break;
@@ -1087,6 +1107,7 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
       mCurrentState = Digitizing;
       mMovingEdgesRubberband->reset( QgsWkbTypes::LineGeometry );
       mMovingFacesRubberband->reset( QgsWkbTypes::PolygonGeometry );
+      mMovingFreeVertexRubberband->reset( QgsWkbTypes::PointGeometry );
       break;
     case Selecting:
       break;
@@ -1490,7 +1511,8 @@ void QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget( bool checke
   mTransformDockWidget = new QgsMeshTransformCoordinatesDockWidget( QgisApp::instance() );
   mTransformDockWidget->setWindowTitle( tr( "Transform Mesh Vertices" ) );
   mTransformDockWidget->setObjectName( QStringLiteral( "TransformMeshVerticesDockWidget" ) );
-  mTransformDockWidget->setInput( mCurrentLayer, mSelectedVertices.keys() );
+  const QList<int> &inputVertices = mSelectedVertices.keys();
+  mTransformDockWidget->setInput( mCurrentLayer, inputVertices );
 
   if ( !QgisApp::instance()->restoreDockWidget( mTransformDockWidget ) )
     QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mTransformDockWidget );
@@ -1505,6 +1527,7 @@ void QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget( bool checke
   {
     mMovingFacesRubberband->reset( QgsWkbTypes::PolygonGeometry );
     mMovingEdgesRubberband->reset( QgsWkbTypes::LineGeometry );
+    mMovingFreeVertexRubberband->reset( QgsWkbTypes::PointGeometry );
     setMovingRubberBandValidity( mTransformDockWidget->isResultValid() );
 
     if ( !mCurrentLayer || !mCurrentEditor )
@@ -1541,7 +1564,6 @@ void QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget( bool checke
       faceGeometrie = QgsGeometry( geomEngine->combine( faces, &error ) );
     }
 
-    QSet<int> borderMovingFace;
     QgsGeometry edgesGeom = QgsGeometry::fromMultiPolylineXY( QgsMultiPolylineXY() );
     for ( QMap<int, SelectedVertexData>::const_iterator it = mSelectedVertices.constBegin(); it != mSelectedVertices.constEnd(); ++it )
     {
@@ -1552,9 +1574,6 @@ void QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget( bool checke
         const QgsPointXY point2 = mTransformDockWidget->transformedVertex( vertexData.meshFixedEdges.at( i ).second );
         QgsGeometry edge( new QgsLineString( {point1, point2} ) );
         edgesGeom.addPart( edge );
-        int associateFace = vertexData.meshFixedEdges.at( i ).first;
-        if ( associateFace != -1 )
-          borderMovingFace.insert( associateFace );
       }
 
       for ( int i = 0; i < vertexData.borderEdges.count(); ++i )
@@ -1583,6 +1602,17 @@ void QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget( bool checke
 
     mMovingFacesRubberband->setToGeometry( faceGeometrie );
     mMovingEdgesRubberband->setToGeometry( edgesGeom );
+    for ( const int vertexIndex : mSelectedVertices.keys() )
+      if ( mCurrentEditor->isVertexFree( vertexIndex ) )
+      {
+        QgsMeshVertex transformedVertex = mTransformDockWidget->transformedVertex( vertexIndex );
+        mMovingFreeVertexRubberband->addPoint( mCurrentLayer->triangularMesh()->nativeToTriangularCoordinates( transformedVertex ), false );
+      }
+
+    mMovingFreeVertexRubberband->setVisible( true );
+    mMovingFreeVertexRubberband->updatePosition();
+    mMovingFreeVertexRubberband->update();
+
     setMovingRubberBandValidity( mTransformDockWidget->isResultValid() );
   } );
 
@@ -1605,6 +1635,7 @@ void QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget( bool checke
       return;
     mMovingFacesRubberband->reset( QgsWkbTypes::PolygonGeometry );
     mMovingEdgesRubberband->reset( QgsWkbTypes::LineGeometry );
+    mMovingFreeVertexRubberband->reset( QgsWkbTypes::PointGeometry );
     setMovingRubberBandValidity( false );
   } );
 
@@ -1967,12 +1998,14 @@ void QgsMapToolEditMeshFrame::setMovingRubberBandValidity( bool valid )
     mMovingFacesRubberband->setFillColor( QColor( 0, 200, 0, 100 ) );
     mMovingFacesRubberband->setStrokeColor( QColor( 0, 200, 0 ) );
     mMovingEdgesRubberband->setColor( QColor( 0, 200, 0 ) );
+    mMovingFreeVertexRubberband->setColor( QColor( 0, 200, 0 ) );
   }
   else
   {
     mMovingFacesRubberband->setFillColor( QColor( 200, 0, 0, 100 ) );
     mMovingFacesRubberband->setStrokeColor( QColor( 200, 0, 0 ) );
     mMovingEdgesRubberband->setColor( QColor( 200, 0, 0 ) );
+    mMovingFreeVertexRubberband->setColor( QColor( 200, 0, 0 ) );
   }
 }
 

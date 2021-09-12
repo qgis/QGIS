@@ -161,8 +161,12 @@ class CORE_EXPORT QgsMeshEditor : public QObject
      *
      * The transform function takes a vertex index in parameter and return a QgsMeshVertex object with transformed coordinates.
      * This transformation is done in layer coordinates
+     *
+     * \note Even only the faces with indexes in \a transformdFaces are checked to avoid testing all the mesh,
+     * all the mesh are supposed to path through this transform function (but it is possible that transform function is not able to transform all vertices).
+     * Moving free vertices of the mesh are also checked.
      */
-    bool canBeTransformed( const QList<int> &transformedFaces, const std::function<const QgsMeshVertex( int )> &transformFunction ) const; SIP_SKIP
+    bool canBeTransformed( const QList<int> &facesToCheck, const std::function<const QgsMeshVertex( int )> &transformFunction ) const; SIP_SKIP
 
     /**
      * Changes the (X,Y) coordinates values of the vertices with indexes in \a vertices indexes with the values in \a newValues.
