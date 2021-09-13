@@ -1192,6 +1192,23 @@ void TestQgsOgcUtils::testSQLStatementToOgcFilter_data()
         "</fes:PropertyIsEqualTo>"
         "</fes:And>"
         "</fes:Filter>" );
+
+  QList<QgsOgcUtils::LayerProperties> layerPropertiesWithNameSpace;
+  QgsOgcUtils::LayerProperties props;
+  props.mName = QStringLiteral( "prefix:mylayer" );
+  props.mNamespacePrefix = QStringLiteral( "prefix" );
+  props.mNamespaceURI = QStringLiteral( "http://example.com/prefix" );
+  layerPropertiesWithNameSpace << props;
+
+  QTest::newRow( "namespace" ) << QStringLiteral( "SELECT * FROM mylayer WHERE NAME = 'New York'" ) <<
+                               QgsOgcUtils::GML_3_2_1 << QgsOgcUtils::FILTER_FES_2_0 << layerPropertiesWithNameSpace <<
+                               QString(
+                                 "<fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\" xmlns:prefix=\"http://example.com/prefix\">"
+                                 "<fes:PropertyIsEqualTo>"
+                                 "<fes:ValueReference>prefix:NAME</fes:ValueReference>"
+                                 "<fes:Literal>New York</fes:Literal>"
+                                 "</fes:PropertyIsEqualTo>"
+                                 "</fes:Filter>" );
 }
 
 QGSTEST_MAIN( TestQgsOgcUtils )
