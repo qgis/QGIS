@@ -24,6 +24,7 @@
 #include <memory>
 #include <QList>
 #include <vector>
+#include <unordered_map>
 
 class QgsRenderedItemDetails;
 class QgsRenderContext;
@@ -109,7 +110,7 @@ class CORE_EXPORT QgsRenderedItemResults
 
     QgsRectangle mExtent;
 
-    std::vector< std::unique_ptr< QgsRenderedItemDetails > > mDetails;
+    std::unordered_map< QString, std::vector< std::unique_ptr< QgsRenderedItemDetails > > > mDetails;
     std::unique_ptr< QgsRenderedItemResultsSpatialIndex > mAnnotationItemsIndex;
 
 };
