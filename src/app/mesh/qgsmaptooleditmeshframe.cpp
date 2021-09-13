@@ -39,6 +39,7 @@
 #include "qgsmeshtriangulation.h"
 #include "qgsmeshtransformcoordinatesdockwidget.h"
 #include "qgsmeshforcebypolylines.h"
+#include "qgsmaptoolselectionhandler.h"
 #include "qgsvectorlayer.h"
 #include "qgsunitselectionwidget.h"
 
@@ -214,15 +215,11 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   mActionSelectByPolygon->setObjectName( QStringLiteral( "ActionMeshSelectByPolygon" ) );
   mActionSelectByExpression = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshSelectExpression.svg" ) ), tr( "Select Mesh Elements by Expression" ), this );
   mActionSelectByExpression->setObjectName( QStringLiteral( "ActionMeshSelectByExpression" ) );
-  mActionSelectByContainingSelectedPolygon = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshSelectByContainingGeometry.svg" ) ), tr( "Select Contained Elements by Selected Polygons" ), this );
-  mActionSelectByTouchingSelectedPolygon = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshSelectByTouchingGeometry.svg" ) ), tr( "Select Touched Elements by Selected Polygons" ), this );
-  mActionSelectByContainingSelectedPolygon->setEnabled( false );
-  mActionSelectByTouchingSelectedPolygon->setEnabled( false );
+
+  mSelectionHandler = std::make_unique<QgsMapToolSelectionHandler>( canvas, QgsMapToolSelectionHandler::SelectPolygon );
 
   mSelectActions << mActionSelectByPolygon
-                 << mActionSelectByExpression
-                 << mActionSelectByContainingSelectedPolygon
-                 << mActionSelectByTouchingSelectedPolygon;
+                 << mActionSelectByExpression;
 
   mActionTransformCoordinates = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshTransformByExpression.svg" ) ), tr( "Transform Vertices Coordinates" ), this );
   mActionTransformCoordinates->setCheckable( true );
@@ -272,10 +269,13 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
       mSelectionBand->reset( QgsWkbTypes::PolygonGeometry );
   } );
 
+  connect( mSelectionHandler.get(), &QgsMapToolSelectionHandler::geometryChanged, this, [this]( Qt::KeyboardModifiers modifiers )
+  {
+    selectByGeometry( mSelectionHandler->selectedGeometry(), modifiers );
+  } );
+
 
   connect( mActionSelectByExpression, &QAction::triggered, this, &QgsMapToolEditMeshFrame::showSelectByExpressionDialog );
-  connect( mActionSelectByTouchingSelectedPolygon, &QAction::triggered, this, &QgsMapToolEditMeshFrame::selectByTouchingSelectedPolygons );
-  connect( mActionSelectByContainingSelectedPolygon, &QAction::triggered, this, &QgsMapToolEditMeshFrame::selectByContainingSelectedPolygons );
 
   connect( mActionDelaunayTriangulation, &QAction::triggered, this, [this]
   {
@@ -311,8 +311,6 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   {
     bool enable = areGeometriesSelectedInVectorLayer() && ( mCurrentEditor != nullptr );
     mActionForceByVectorLayerGeometries->setEnabled( enable );
-    mActionSelectByContainingSelectedPolygon->setEnabled( enable );
-    mActionSelectByTouchingSelectedPolygon->setEnabled( enable );
   } );
 
   connect( mActionForceByVectorLayerGeometries, &QAction::triggered, this, &QgsMapToolEditMeshFrame::forceBySelectedLayerPolyline );
@@ -360,8 +358,6 @@ void QgsMapToolEditMeshFrame::setActionsEnable( bool enable )
 
   bool areGeometriesSelected = areGeometriesSelectedInVectorLayer();
   mActionForceByVectorLayerGeometries->setEnabled( enable && areGeometriesSelected );
-  mActionSelectByContainingSelectedPolygon->setEnabled( enable && areGeometriesSelected );
-  mActionSelectByTouchingSelectedPolygon->setEnabled( enable && areGeometriesSelected );
 }
 
 
@@ -388,7 +384,7 @@ QAction *QgsMapToolEditMeshFrame::defaultSelectActions() const
   bool ok = false;
   int defaultIndex = settings.value( QStringLiteral( "UI/Mesh/defaultSelection" ) ).toInt( &ok );
 
-  if ( ok && mSelectActions.at( defaultIndex )->isEnabled() )
+  if ( ok )
     return mSelectActions.at( defaultIndex );
 
   return mActionSelectByPolygon;
@@ -679,20 +675,23 @@ void QgsMapToolEditMeshFrame::cadCanvasPressEvent( QgsMapMouseEvent *e )
   if ( e->button() == Qt::LeftButton )
     mLeftButtonPressed = true;
 
-  if ( e->button() == Qt::LeftButton )
+
+  switch ( mCurrentState )
   {
-    mStartSelectionPos = e->pos();
-    switch ( mCurrentState )
-    {
-      case Digitizing:
-      case AddingNewFace:
-      case Selecting:
-      case MovingSelection:
+    case Digitizing:
+      if ( e->button() == Qt::LeftButton )
+        mStartSelectionPos = e->pos();
+      break;
+    case AddingNewFace:
+    case Selecting:
+    case MovingSelection:
+      if ( e->button() == Qt::LeftButton )
         mSelectionBand->reset( QgsWkbTypes::PolygonGeometry );
-        break;
-      case SelectingByPolygon:
-        break;
-    }
+      break;
+    case SelectingByPolygon:
+      if ( mSelectionHandler )
+        mSelectionHandler->canvasPressEvent( e );
+      break;
   }
 
   QgsMapToolAdvancedDigitizing::cadCanvasPressEvent( e );
@@ -739,7 +738,8 @@ void QgsMapToolEditMeshFrame::cadCanvasMoveEvent( QgsMapMouseEvent *e )
     }
     break;
     case SelectingByPolygon:
-      mSelectionBand->movePoint( mapPoint );
+      if ( mSelectionHandler )
+        mSelectionHandler->canvasMoveEvent( e );
       break;
   }
 
@@ -892,17 +892,8 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       mCurrentState = Digitizing;
       break;
     case SelectingByPolygon:
-      if ( e->button() == Qt::LeftButton )
-      {
-        mSelectionBand->movePoint( mapPoint );
-        mSelectionBand->addPoint( mapPoint );
-      }
-      else if ( e->button() == Qt::RightButton )
-      {
-        QgsGeometry selectionGeom = mSelectionBand->asGeometry();
-        selectByGeometry( selectionGeom, e->modifiers() );
-        mSelectionBand->reset( QgsWkbTypes::PolygonGeometry );
-      }
+      if ( mSelectionHandler )
+        mSelectionHandler->canvasReleaseEvent( e );
       break;
   }
   mDoubleClicks = false;
@@ -1089,20 +1080,6 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
       }
     }
     break;
-    case SelectingByPolygon:
-      if ( e->key() == Qt::Key_Escape )
-      {
-        mSelectionBand->reset( QgsWkbTypes::PolygonGeometry );
-        backToDigitizing();
-        consumned = true;
-      }
-
-      if ( e->key() == Qt::Key_Backspace )
-      {
-        mSelectionBand->removePoint( -2, true );
-        consumned = true;
-      }
-      break;
     case MovingSelection:
       mCurrentState = Digitizing;
       mMovingEdgesRubberband->reset( QgsWkbTypes::LineGeometry );
@@ -1110,6 +1087,7 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
       mMovingFreeVertexRubberband->reset( QgsWkbTypes::PointGeometry );
       break;
     case Selecting:
+    case SelectingByPolygon:
       break;
   }
 
@@ -1132,9 +1110,12 @@ void QgsMapToolEditMeshFrame::keyReleaseEvent( QKeyEvent *e )
     case Digitizing:
       break;
     case AddingNewFace:
-    case SelectingByPolygon:
       if ( e->key() == Qt::Key_Backspace )
         consumned = true; //to avoid removing the value of the ZvalueWidget
+      break;
+    case SelectingByPolygon:
+      if ( mSelectionHandler )
+        mSelectionHandler->keyReleaseEvent( e );
       break;
     case Selecting:
     case MovingSelection:
@@ -1696,7 +1677,7 @@ void QgsMapToolEditMeshFrame::selectByGeometry( const QgsGeometry &geometry, Qt:
 
   Qgis::SelectBehavior behavior;
   if ( modifiers & Qt::ShiftModifier )
-    behavior = Qgis::SelectBehavior::RemoveFromSelection;
+    behavior = Qgis::SelectBehavior::AddToSelection;
   else if ( modifiers & Qt::ControlModifier )
     behavior = Qgis::SelectBehavior::RemoveFromSelection;
   else
@@ -1765,22 +1746,6 @@ void QgsMapToolEditMeshFrame::selectContainedByGeometry( const QgsGeometry &geom
   }
 
   setSelectedVertices( selectedVertices.values(), behavior );
-}
-
-void QgsMapToolEditMeshFrame::selectByTouchingSelectedPolygons()
-{
-  onEditingStarted();
-  const QList<QgsGeometry> geometries = selectedGeometriesInVectorLayers();
-  for ( const QgsGeometry &geom : geometries )
-    selectTouchedByGeometry( geom, Qgis::SelectBehavior::AddToSelection );
-}
-
-void QgsMapToolEditMeshFrame::selectByContainingSelectedPolygons()
-{
-  onEditingStarted();
-  const QList<QgsGeometry> geometries = selectedGeometriesInVectorLayers();
-  for ( const QgsGeometry &geom : geometries )
-    selectContainedByGeometry( geom, Qgis::SelectBehavior::AddToSelection );
 }
 
 void QgsMapToolEditMeshFrame::applyZValueOnSelectedVertices()

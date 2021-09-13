@@ -37,7 +37,7 @@ class QgsMeshTransformCoordinatesDockWidget;
 class QComboBox;
 class QCheckBox;
 class QgsUnitSelectionWidget;
-
+class QgsMapToolSelectionHandler;
 
 
 class QgsExpressionBuilderWidget;
@@ -162,8 +162,6 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 
     void showSelectByExpressionDialog();
     void selectByExpression( const QString &textExpression, Qgis::SelectBehavior behavior, QgsMesh::ElementType elementType );
-    void selectByTouchingSelectedPolygons();
-    void selectByContainingSelectedPolygons();
     void onZoomToSelected();
     void forceBySelectedLayerPolyline();
     void reindexMesh();
@@ -295,10 +293,6 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QgsVertexMarker *mSelectEdgeMarker = nullptr; //own by map canvas
     QgsRubberBand *mSelectionBand = nullptr; //own by map canvas
     QPoint mStartSelectionPos;
-    QColor mSelectionBandPartiallyFillColor = QColor( 0, 215, 120, 63 );
-    QColor mSelectionBandPartiallyStrokeColor = QColor( 0, 204, 102, 100 );
-    QColor mSelectionBandTotalFillColor = QColor( 0, 120, 215, 63 );
-    QColor mSelectionBandTotalStrokeColor = QColor( 0, 102, 204, 100 );
     QgsRubberBand *mSelectedFacesRubberband = nullptr; //own by map canvas
     QMap< int, QgsVertexMarker * > mSelectedVerticesMarker;
 
@@ -333,14 +327,14 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QAction *mActionFacesRefinement = nullptr;
 
     QAction *mActionDigitizing = nullptr;
+
     QAction *mActionSelectByPolygon = nullptr;
+    std::unique_ptr<QgsMapToolSelectionHandler> mSelectionHandler;
 
     QAction *mActionTransformCoordinates = nullptr;
 
     QAction *mActionSelectByExpression = nullptr;
     QAction *mActionForceByVectorLayerGeometries = nullptr;
-    QAction *mActionSelectByContainingSelectedPolygon = nullptr;
-    QAction *mActionSelectByTouchingSelectedPolygon = nullptr;
 
     QgsMeshEditForceByLineAction *mWidgetActionForceByLine = nullptr;
     QAction *mActionReindexMesh = nullptr;
