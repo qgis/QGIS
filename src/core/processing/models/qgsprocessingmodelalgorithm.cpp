@@ -385,15 +385,18 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
         const QSet<QString> toPrune = dependentChildAlgorithms( id, branch, 1 );
         for ( const QString &targetId : toPrune )
         {
-          if (targetId.contains(QStringLiteral("native:conditionmerge"))) {
-            mPrunedMerge[targetId] += 1;
+          if ( targetId.contains( QStringLiteral( "native:conditionmerge" ) ) )
+          {
+            mPrunedMergeProcessing[targetId] += 1;
 
-            if (mPrunedMerge[targetId] < 2) {
+            if ( mPrunedMergeProcessing[targetId] < 2 )
+            {
               continue;
             }
           }
 
-          if (executed.contains( targetId )) {
+          if ( executed.contains( targetId ) )
+          {
             continue;
           }
 
@@ -1686,7 +1689,8 @@ QMap<QString, QgsProcessingModelParameter> QgsProcessingModelAlgorithm::paramete
 
 void QgsProcessingModelAlgorithm::dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends, const QString &branch, int depth ) const
 {
-  if (depth == 0) {
+  if ( depth == 0 )
+  {
     return;
   }
   depth -= 1;
@@ -1736,7 +1740,7 @@ void QgsProcessingModelAlgorithm::dependentChildAlgorithmsRecursive( const QStri
   }
 }
 
-QSet<QString> QgsProcessingModelAlgorithm::dependentChildAlgorithms( const QString &childId, const QString &conditionalBranch, const int depth) const
+QSet<QString> QgsProcessingModelAlgorithm::dependentChildAlgorithms( const QString &childId, const QString &conditionalBranch, const int depth ) const
 {
   QSet< QString > algs;
 

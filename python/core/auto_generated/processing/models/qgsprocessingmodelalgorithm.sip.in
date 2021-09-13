@@ -177,7 +177,7 @@ then the child will not be activated and ``False`` will be returned.
 .. seealso:: :py:func:`deactivateChildAlgorithm`
 %End
 
-    QSet< QString > dependentChildAlgorithms( const QString &childId, const QString &conditionalBranch = QString() ) const;
+    QSet< QString > dependentChildAlgorithms( const QString &childId, const QString &conditionalBranch = QString(), const int depth = -1 ) const;
 %Docstring
 Returns a list of the child algorithm IDs depending on the child
 algorithm with the specified ``childId``.
