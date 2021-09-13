@@ -938,7 +938,10 @@ bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform )
 bool QgsMeshLayer::commitFrameEditing( const QgsCoordinateTransform &transform, bool continueEditing )
 {
   if ( !mMeshEditor->checkConsistency() )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Mesh layer \"%1\" not support mesh editing" ).arg( name() ), QString(), Qgis::MessageLevel::Critical );
     return false;
+  }
 
   stopFrameEditing( transform );
 
@@ -973,12 +976,15 @@ bool QgsMeshLayer::rollBackFrameEditing( const QgsCoordinateTransform &transform
   if ( !mDataProvider )
     return false;
 
+  mTriangularMeshes.clear();
   mDataProvider->reloadData();
   mDataProvider->populateMesh( mNativeMesh.get() );
   updateTriangularMesh( transform );
+  mRendererCache.reset( new QgsMeshLayerRendererCache() );
 
   if ( continueEditing )
   {
+    mMeshEditor->resetTriangularMesh( triangularMesh() );
     return mMeshEditor->initialize() == QgsMeshEditingError();
   }
   else
