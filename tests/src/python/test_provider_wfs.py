@@ -3307,6 +3307,119 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         values = [f['intfield'] for f in vl.getFeatures()]
         self.assertEqual(values, [1])
 
+    def testGetFeatureWithNamespaceAndFilter(self):
+        ''' test https://github.com/qgis/QGIS/issues/43957 '''
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_getfeature_with_namespace_and_filter'
+
+        with open(sanitize(endpoint, '?SERVICE=WFS?REQUEST=GetCapabilities?VERSION=2.0.0'), 'wb') as f:
+            f.write("""
+<wfs:WFS_Capabilities version="2.0.0" xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:ows="http://www.opengis.net/ows/1.1">
+  <wfs:FeatureTypeList>
+    <wfs:FeatureType xmlns:my="http://my">
+      <wfs:Name>my:typename</wfs:Name>
+      <wfs:Title>Title</wfs:Title>
+      <wfs:Abstract>Abstract</wfs:Abstract>
+      <wfs:SRS>EPSG:32631</wfs:SRS>
+      <WGS84BoundingBox>
+        <LowerCorner>0 40</LowerCorner>
+        <UpperCorner>15 50</UpperCorner>
+      </WGS84BoundingBox>
+    </wfs:FeatureType>
+  </wfs:FeatureTypeList>
+</wfs:WFS_Capabilities>""".encode('UTF-8'))
+
+        with open(sanitize(endpoint,
+                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&NAMESPACES=xmlns(my,http://my)&TYPENAME=my:typename&NAMESPACE=xmlns(my,http://my)'),
+                  'wb') as f:
+            f.write("""
+<xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
+  <xsd:import namespace="http://www.opengis.net/gml"/>
+  <xsd:complexType name="typenameType">
+    <xsd:complexContent>
+      <xsd:extension base="gml:AbstractFeatureType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" name="geometryProperty" nillable="true" type="gml:PointPropertyType"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="intfield" nillable="true" type="xsd:int"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="typename" substitutionGroup="gml:_Feature" type="my:typenameType"/>
+</xsd:schema>
+""".encode('UTF-8'))
+
+        # SQL query with type with namespace
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='2.0.0' sql=SELECT * FROM \"my:typename\" WHERE intfield = 1", 'test', 'WFS')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.fields()), 1)
+
+        with open(sanitize(endpoint,
+                           """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::32631&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0" xmlns:my="http://my">
+ <fes:PropertyIsEqualTo>
+  <fes:ValueReference>my:intfield</fes:ValueReference>
+  <fes:Literal>1</fes:Literal>
+ </fes:PropertyIsEqualTo>
+</fes:Filter>
+&NAMESPACES=xmlns(my,http://my)&NAMESPACE=xmlns(my,http://my)"""),
+                  'wb') as f:
+            f.write("""
+<wfs:FeatureCollection
+                       xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                       xmlns:gml="http://www.opengis.net/gml/3.2"
+                       xmlns:my="http://my">
+  <gml:featureMember>
+    <my:typename fid="typename.0">
+      <my:intfield>1</my:intfield>
+    </my:typename>
+  </gml:featureMember>
+</wfs:FeatureCollection>""".encode('UTF-8'))
+
+        values = [f['intfield'] for f in vl.getFeatures()]
+        self.assertEqual(values, [1])
+
+        # SQL query with type with namespace and bounding box
+        vl = QgsVectorLayer(
+            "url='http://" + endpoint + "' typename='my:typename' version='2.0.0' restrictToRequestBBOX=1 sql=SELECT * FROM \"my:typename\" WHERE intfield > 0", 'test',
+            'WFS')
+
+        extent = QgsRectangle(400000.0, 5400000.0, 450000.0, 5500000.0)
+        request = QgsFeatureRequest().setFilterRect(extent)
+
+        with open(sanitize(endpoint,
+                           """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::32631&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:my="http://my">
+ <fes:And>
+  <fes:BBOX>
+   <fes:ValueReference>my:geometryProperty</fes:ValueReference>
+   <gml:Envelope srsName="urn:ogc:def:crs:EPSG::32631">
+    <gml:lowerCorner>400000 5400000</gml:lowerCorner>
+    <gml:upperCorner>450000 5500000</gml:upperCorner>
+   </gml:Envelope>
+  </fes:BBOX>
+  <fes:PropertyIsGreaterThan xmlns:fes="http://www.opengis.net/fes/2.0">
+   <fes:ValueReference>my:intfield</fes:ValueReference>
+   <fes:Literal xmlns:fes="http://www.opengis.net/fes/2.0">0</fes:Literal>
+  </fes:PropertyIsGreaterThan>
+ </fes:And>
+</fes:Filter>
+&NAMESPACES=xmlns(my,http://my)&NAMESPACE=xmlns(my,http://my)"""),
+                  'wb') as f:
+            f.write("""
+<wfs:FeatureCollection
+                       xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                       xmlns:gml="http://www.opengis.net/gml/3.2"
+                       xmlns:my="http://my">
+  <gml:featureMember>
+    <my:typename fid="typename.0">
+      <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::32631" gml:id="typename.geom.0"><gml:pos>426858 5427937</gml:pos></gml:Point></my:geometryProperty>
+      <my:intfield>1</my:intfield>
+    </my:typename>
+  </gml:featureMember>
+</wfs:FeatureCollection>""".encode('UTF-8'))
+
+        values = [f['intfield'] for f in vl.getFeatures(request)]
+        self.assertEqual(values, [1])
+
     def testExtentSubsetString(self):
         # can't run the base provider test suite here - WFS/OAPIF extent handling is different
         # to other providers

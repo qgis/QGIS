@@ -489,6 +489,12 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
     if ( typeName == mShared->mURI.typeName() )
       layerProperties.mSRSName = mShared->srsName();
 
+    if ( typeName.contains( ':' ) )
+    {
+      layerProperties.mNamespaceURI = mShared->mCaps.getNamespaceForTypename( typeName );
+      layerProperties.mNamespacePrefix = QgsWFSUtils::nameSpacePrefix( typeName );
+    }
+
     mShared->mLayerPropertiesList << layerProperties;
   }
 
