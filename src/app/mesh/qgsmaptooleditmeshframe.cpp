@@ -787,12 +787,6 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         {
           addVertex( mFirstClickPoint, e->mapPointMatch(), e->modifiers() );
         }
-        else if ( isSelectionGrapped( mapPoint )  && //click on a vertex,  a edges or faces box
-                  !( e->modifiers() &Qt::ControlModifier ) ) // without controler modifier that used to remove from the selection
-        {
-          mCurrentState = MovingSelection;
-          mStartMovingPoint = mapPoint;
-        }
         else if ( mNewFaceMarker->isVisible() &&
                   mapPoint.distance( mNewFaceMarker->center() ) < tolerance
                   && mCurrentVertexIndex >= 0 )  //new face marker clicked --> start adding a new face
@@ -805,6 +799,12 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           addVertexToFaceCanditate( mCurrentVertexIndex );
           const QgsPointXY &currentPoint = mapVertexXY( mCurrentVertexIndex );
           cadDockWidget()->setPoints( QList<QgsPointXY>() << currentPoint << currentPoint );
+        }
+        else if ( isSelectionGrapped( mapPoint )  && //click on a vertex,  a edges or faces box
+                  !( e->modifiers() &Qt::ControlModifier ) ) // without controler modifier that used to remove from the selection
+        {
+          mCurrentState = MovingSelection;
+          mStartMovingPoint = mapPoint;
         }
         else if ( mFlipEdgeMarker->isVisible() &&
                   e->mapPoint().distance( mFlipEdgeMarker->center() ) < tolerance &&
