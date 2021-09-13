@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmconditionalmerge.h
+                         qgsalgorithmbranchmerge.h
                          ---------------------
     begin                : September 2021
     copyright            : (C) 2021 by Antoine Facchini
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSALGORITHMCONDITIONALMERGE_H
-#define QGSALGORITHMCONDITIONALMERGE_H
+#ifndef QGSALGORITHMBRANCHMERGE_H
+#define QGSALGORITHMBRANCHMERGE_H
 
 #define SIP_NO_FILE
 
@@ -35,10 +35,10 @@ class QTableWidget;
  *
  * \since QGIS 3.2
  */
-class QgsConditionalMergeAlgorithm : public QgsProcessingAlgorithm
+class QgsBranchMergeAlgorithm : public QgsProcessingAlgorithm
 {
   public:
-    QgsConditionalMergeAlgorithm() = default;
+    QgsBranchMergeAlgorithm() = default;
 
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -47,7 +47,7 @@ class QgsConditionalMergeAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
-    QgsConditionalMergeAlgorithm *createInstance() const override SIP_FACTORY;
+    QgsBranchMergeAlgorithm *createInstance() const override SIP_FACTORY;
 
 
   protected:
@@ -62,4 +62,4 @@ class QgsConditionalMergeAlgorithm : public QgsProcessingAlgorithm
 
 ///@endcond PRIVATE
 
-#endif // QGSALGORITHMCONDITIONALMERGE_H
+#endif // QGSALGORITHMBRANCHMERGE_H

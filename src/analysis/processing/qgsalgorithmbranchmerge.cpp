@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmconditionalmerge.cpp
+                         qgsalgorithmbranchmerge.cpp
                          ---------------------
     begin                : September 2021
     copyright            : (C) 2021 by Antoine Facchini
@@ -15,61 +15,63 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsalgorithmconditionalmerge.h"
+#include "qgsalgorithmbranchmerge.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
-QString QgsConditionalMergeAlgorithm::name() const
+
+
+QString QgsBranchMergeAlgorithm::name() const
 {
-  return QStringLiteral( "conditionmerge" );
+  return QStringLiteral( "branchmerger" );
 }
 
-QString QgsConditionalMergeAlgorithm::displayName() const
+QString QgsBranchMergeAlgorithm::displayName() const
 {
-  return QObject::tr( "Conditional merge" );
+  return QObject::tr( "Branch merger" );
 }
 
-QStringList QgsConditionalMergeAlgorithm::tags() const
+QStringList QgsBranchMergeAlgorithm::tags() const
 {
-  return QObject::tr( "if,logic,test,merge" ).split( ',' );
+  return QObject::tr( "branch,test,merge" ).split( ',' );
 }
 
-QString QgsConditionalMergeAlgorithm::group() const
+QString QgsBranchMergeAlgorithm::group() const
 {
   return QObject::tr( "Modeler tools" );
 }
 
-QString QgsConditionalMergeAlgorithm::groupId() const
+QString QgsBranchMergeAlgorithm::groupId() const
 {
   return QStringLiteral( "modelertools" );
 }
 
-QString QgsConditionalMergeAlgorithm::shortHelpString() const
+QString QgsBranchMergeAlgorithm::shortHelpString() const
 {
   return QObject::tr( "TODO" );
 }
 
-QgsConditionalMergeAlgorithm *QgsConditionalMergeAlgorithm::createInstance() const
+QgsBranchMergeAlgorithm *QgsBranchMergeAlgorithm::createInstance() const
 {
-  return new QgsConditionalMergeAlgorithm();
+  return new QgsBranchMergeAlgorithm();
 }
 
-QgsProcessingAlgorithm::Flags QgsConditionalMergeAlgorithm::flags() const
+QgsProcessingAlgorithm::Flags QgsBranchMergeAlgorithm::flags() const
 {
   return FlagHideFromToolbox;
 }
 
-void QgsConditionalMergeAlgorithm::initAlgorithm( const QVariantMap & )
+void QgsBranchMergeAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "DEFAULT_INPUT" ), QObject::tr( "Input to transfer if exists" ) ) );
-  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "FALLBACK_INPUT" ), QObject::tr( "Input to transfer else" ) ) );
+  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "DEFAULT_INPUT" ), QObject::tr( "Layer to transfer if exists" ) ) );
+  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "FALLBACK_INPUT" ), QObject::tr( "Layer to transfer else" ) ) );
 
   addOutput( new QgsProcessingOutputMapLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Layer" ) ) );
 }
 
-bool QgsConditionalMergeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+bool QgsBranchMergeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   mDefaultInput = parameterAsLayer( parameters, QStringLiteral( "DEFAULT_INPUT" ), context );
   mFallbackInput = parameterAsLayer( parameters, QStringLiteral( "FALLBACK_INPUT" ), context );
@@ -78,7 +80,7 @@ bool QgsConditionalMergeAlgorithm::prepareAlgorithm( const QVariantMap &paramete
 }
 
 
-QVariantMap QgsConditionalMergeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+QVariantMap QgsBranchMergeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   Q_UNUSED( parameters );
   Q_UNUSED( context );
