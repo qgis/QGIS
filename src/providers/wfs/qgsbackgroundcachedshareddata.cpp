@@ -770,7 +770,8 @@ void QgsBackgroundCachedSharedData::endOfDownload( bool success, long long featu
       QgsDebugMsg( QStringLiteral( "Capability extent is probably wrong. Starting a new request with one feature limit to get at least one feature" ) );
       mTryFetchingOneFeature = true;
       mComputedExtent = getExtentFromSingleFeatureRequest();
-      if ( !mComputedExtent.isNull() )
+      if ( !mComputedExtent.isNull() &&
+           !detectPotentialServerAxisOrderIssueFromSingleFeatureExtent() )
       {
         // Grow the extent by ~ 50 km (completely arbitrary number if you wonder!)
         // so that it is sufficiently zoomed out
@@ -778,8 +779,8 @@ void QgsBackgroundCachedSharedData::endOfDownload( bool success, long long featu
           mComputedExtent.grow( 50. * 1000. );
         else if ( mSourceCrs.mapUnits() == QgsUnitTypes::DistanceDegrees )
           mComputedExtent.grow( 50. / 110 );
-        QgsMessageLog::logMessage( QObject::tr( "Layer extent reported by the server is not correct. "
-                                                "You may need to zoom on layer and then zoom out to see all features" ), mComponentTranslated );
+        pushError( QObject::tr( "Layer extent reported by the server is not correct. "
+                                "You may need to zoom on layer and then zoom out to see all features" ) );
       }
       mMutex.unlock();
       if ( !mComputedExtent.isNull() )
