@@ -281,6 +281,7 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   {
     if ( mCurrentEditor && mSelectedVertices.count() >= 3 )
     {
+      QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
       QgsMeshEditingDelaunayTriangulation triangulation;
       triangulation.setInputVertices( mSelectedVertices.keys() );
       mCurrentEditor->advancedEdit( &triangulation );
@@ -292,6 +293,7 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
 
   connect( mActionFacesRefinement, &QAction::triggered, this, [this]
   {
+    QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
     QgsMeshEditRefineFaces refinement;
     if ( mCurrentEditor && mSelectedFaces.count() > 0 )
     {
@@ -1469,6 +1471,7 @@ void QgsMapToolEditMeshFrame::removeFacesFromMesh()
 
 void QgsMapToolEditMeshFrame::splitSelectedFaces()
 {
+  QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
   if ( mSplittableFaceCount > 0 )
     mCurrentEditor->splitFaces( mSelectedFaces.values() );
   else if ( mCurrentFaceIndex != -1 && mCurrentEditor->faceCanBeSplit( mCurrentFaceIndex ) )
@@ -2392,6 +2395,7 @@ void QgsMapToolEditMeshFrame::addVertex(
   const QgsPointLocator::Match &mapPointMatch,
   Qt::KeyboardModifiers modifiers )
 {
+  QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
   double zValue = mZValueWidget ? mZValueWidget->zValue() : std::numeric_limits<double>::quiet_NaN();
 
   if ( mapPointMatch.isValid() )
