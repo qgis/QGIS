@@ -63,16 +63,16 @@ QgsProcessingAlgorithm::Flags QgsConditionalMergeAlgorithm::flags() const
 
 void QgsConditionalMergeAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "DEFAULT_INPUT" ), QObject::tr( "Input to transfer if exists" ), QList< int >(), QVariant() ) );
-  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "FALLBACK_INPUT" ), QObject::tr( "Input to transfer else" ), QList< int >(), QVariant() ) );
+  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "DEFAULT_INPUT" ), QObject::tr( "Input to transfer if exists" ) ) );
+  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "FALLBACK_INPUT" ), QObject::tr( "Input to transfer else" ) ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Layer" ) ) );
+  addOutput( new QgsProcessingOutputMapLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Layer" ) ) );
 }
 
 bool QgsConditionalMergeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mDefaultInput = parameterAsVectorLayer( parameters, QStringLiteral( "DEFAULT_INPUT" ), context );
-  mFallbackInput = parameterAsVectorLayer( parameters, QStringLiteral( "FALLBACK_INPUT" ), context );
+  mDefaultInput = parameterAsLayer( parameters, QStringLiteral( "DEFAULT_INPUT" ), context );
+  mFallbackInput = parameterAsLayer( parameters, QStringLiteral( "FALLBACK_INPUT" ), context );
 
   return true;
 }
@@ -80,31 +80,25 @@ bool QgsConditionalMergeAlgorithm::prepareAlgorithm( const QVariantMap &paramete
 
 QVariantMap QgsConditionalMergeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QgsVectorLayer *selectedLayer = nullptr;
+  Q_UNUSED( parameters );
+  Q_UNUSED( context );
+
+  QString layerId;
   if ( mDefaultInput )
   {
-    selectedLayer = mDefaultInput;
+    layerId = mDefaultInput->id();
   }
   else if ( mFallbackInput )
   {
-    selectedLayer = mFallbackInput;
+    layerId = mFallbackInput->id();
   }
   else
   {
     throw QgsProcessingException( QStringLiteral( "No valid input" ) );
   }
 
-  QString sinkId;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, sinkId, selectedLayer->fields(),
-                                          selectedLayer->wkbType(), selectedLayer->sourceCrs() ) );
-  if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
-
-  QgsFeatureIterator featureIt = selectedLayer->getFeatures();
-  sink->addFeatures( featureIt, QgsFeatureSink::FastInsert );
-
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), sinkId );
+  outputs.insert( QStringLiteral( "OUTPUT" ), layerId );
   return outputs;
 }
 

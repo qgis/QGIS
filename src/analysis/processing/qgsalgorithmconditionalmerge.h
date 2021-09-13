@@ -56,8 +56,8 @@ class QgsConditionalMergeAlgorithm : public QgsProcessingAlgorithm
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-    QgsVectorLayer *mDefaultInput;
-    QgsVectorLayer *mFallbackInput;
+    QgsMapLayer *mDefaultInput;
+    QgsMapLayer *mFallbackInput;
 };
 
 ///@endcond PRIVATE
