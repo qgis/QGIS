@@ -309,12 +309,6 @@ void TestQgsMapToolEditMesh::editMesh()
 
   QCOMPARE( mEditMeshMapTool->mSelectedVertices.count(), 1 );
   QCOMPARE( mEditMeshMapTool->mSelectedFaces.count(), 0 );
-
-  tool.keyClick( Qt::Key_Escape );
-  tool.keyClick( Qt::Key_Escape );
-
-  QCOMPARE( mEditMeshMapTool->mSelectedVertices.count(), 0 );
-  QCOMPARE( mEditMeshMapTool->mSelectedFaces.count(), 0 );
 }
 
 QGSTEST_MAIN( TestQgsMapToolEditMesh )
