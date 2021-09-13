@@ -263,15 +263,39 @@ class CORE_EXPORT QgsPointLocator : public QObject
          * interpolation of the Z value.
          * \since 3.10
          */
-        QgsPoint interpolatedPoint() const
+        QgsPoint interpolatedPoint( const QgsCoordinateReferenceSystem &projectCrs, const QgsMapLayer *sourceLayer ) const
         {
           QgsPoint point;
+          QgsPoint snappedPoint( mPoint );
           const QgsGeometry geom = mLayer->getGeometry( mFid );
+          try
+          {
+            if ( mLayer )
+              snappedPoint.transform( QgsCoordinateTransform( projectCrs, mLayer->crs(), mLayer->transformContext() ) );
+          }
+          catch ( QgsCsException &cse )
+          {
+            Q_UNUSED( cse )
+            QgsDebugMsg( QStringLiteral( "transformation to layer coordinate failed" ) );
+            return QgsPoint();
+          }
+
           if ( !( geom.isNull() || geom.isEmpty() ) )
           {
             const QgsLineString line( geom.vertexAt( mVertexIndex ), geom.vertexAt( mVertexIndex + 1 ) );
-
-            point = QgsGeometryUtils::closestPoint( line, QgsPoint( mPoint ) );
+            point = QgsGeometryUtils::closestPoint( line, snappedPoint );
+          }
+          // (re)Transform layerPoint to vlayer crs
+          try
+          {
+            if ( sourceLayer )
+              point.transform( QgsCoordinateTransform( mLayer->crs(), sourceLayer->crs(), sourceLayer->transformContext() ) );
+          }
+          catch ( QgsCsException &cse )
+          {
+            Q_UNUSED( cse )
+            QgsDebugMsg( QStringLiteral( "transformation to layer coordinate failed" ) );
+            return QgsPoint();
           }
           return point;
         }
