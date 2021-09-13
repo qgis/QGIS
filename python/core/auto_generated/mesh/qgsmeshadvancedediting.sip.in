@@ -55,7 +55,7 @@ Removes all data provided to the editing or created by the editing
     virtual bool isFinished() const;
 %Docstring
 Returns whether the advanced edit is finished,
-if not, tis edit has to be applied again with :py:func:`QgsMeshEditor.advancedEdit()` until is finished returns ``True``
+if not, this edit has to be applied again with :py:func:`QgsMeshEditor.advancedEdit()` until is finished returns ``True``
 %End
 
   protected:

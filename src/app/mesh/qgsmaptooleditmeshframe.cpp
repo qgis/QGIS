@@ -801,7 +801,7 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           cadDockWidget()->setPoints( QList<QgsPointXY>() << currentPoint << currentPoint );
         }
         else if ( isSelectionGrapped( mapPoint )  && //click on a vertex,  a edges or faces box
-                  !( e->modifiers() &Qt::ControlModifier ) ) // without controler modifier that used to remove from the selection
+                  !( e->modifiers() &Qt::ControlModifier ) ) // without control modifier that is used to remove from the selection
         {
           mCurrentState = MovingSelection;
           mStartMovingPoint = mapPoint;
