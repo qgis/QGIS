@@ -805,6 +805,7 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         {
           mCurrentState = MovingSelection;
           mStartMovingPoint = mapPoint;
+          cadDockWidget()->setPoints( QList<QgsPointXY>() << mapPoint << mapPoint );
         }
         else if ( mFlipEdgeMarker->isVisible() &&
                   e->mapPoint().distance( mFlipEdgeMarker->center() ) < tolerance &&
