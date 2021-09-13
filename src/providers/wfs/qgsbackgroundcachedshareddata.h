@@ -180,7 +180,7 @@ class QgsBackgroundCachedSharedData
     virtual QString layerName() const = 0;
 
     //! Called when an error must be raised to the provider
-    virtual void pushError( const QString &errorMsg ) = 0;
+    virtual void pushError( const QString &errorMsg ) const = 0;
 
   protected:
 
@@ -207,6 +207,9 @@ class QgsBackgroundCachedSharedData
     //! Bounding box for the layer as returned by GetCapabilities
     QgsRectangle mCapabilityExtent;
 
+    //! Extent computed from downloaded features
+    QgsRectangle mComputedExtent;
+
     //! Flag is a /items request returns a numberMatched property
     bool mHasNumberMatched = false;
 
@@ -217,6 +220,9 @@ class QgsBackgroundCachedSharedData
 
     //! Should be called in the destructor of the implementation of this class !
     void cleanup();
+
+    //! Returns true if it is likely that the server doesn't properly honor axis order.
+    virtual bool detectPotentialServerAxisOrderIssueFromSingleFeatureExtent() const { return false; }
 
   private:
 
@@ -246,9 +252,6 @@ class QgsBackgroundCachedSharedData
      * notified in live by the downloader.
     */
     int mGenCounter = 0;
-
-    //! Extent computed from downloaded features
-    QgsRectangle mComputedExtent;
 
     //! Spatial index of requested cached regions
     QgsSpatialIndex mCachedRegions;
