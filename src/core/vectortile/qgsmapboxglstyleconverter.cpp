@@ -2003,7 +2003,7 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateColorByZoom( const QVaria
     return QgsProperty();
 
   QString caseString = QStringLiteral( "CASE " );
-  QString colorComponent( "color_part(%1,'%2')" );
+  const QString colorComponent( "color_part(%1,'%2')" );
 
   for ( int i = 0; i < stops.length() - 1; ++i )
   {
@@ -2039,8 +2039,8 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateColorByZoom( const QVaria
     }
     else
     {
-      QString bottomColorExpr = parseColorExpression( bcVariant, context );
-      QString topColorExpr = parseColorExpression( tcVariant, context );
+      const QString bottomColorExpr = parseColorExpression( bcVariant, context );
+      const QString topColorExpr = parseColorExpression( tcVariant, context );
 
       caseString += QStringLiteral( "WHEN @vector_tile_zoom >= %1 AND @vector_tile_zoom < %2 THEN color_hsla("
                                     "%3, %4, %5, %6) " ).arg( bz, tz,
@@ -2067,7 +2067,7 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateColorByZoom( const QVaria
   }
   else
   {
-    QString topColorExpr = parseColorExpression( tcVariant, context );
+    const QString topColorExpr = parseColorExpression( tcVariant, context );
 
     caseString += QStringLiteral( "WHEN @vector_tile_zoom >= %1 THEN color_hsla(%2, %3, %4, %5) "
                                   "ELSE color_hsla(%2, %3, %4, %5) END" ).arg( tz )
@@ -2519,9 +2519,9 @@ QString QgsMapBoxGlStyleConverter::interpolateExpression( double zoomMin, double
   if ( valueMin.canConvert( QMetaType::Double ) && valueMax.canConvert( QMetaType::Double ) )
   {
     bool minDoubleOk = true;
-    double min = valueMin.toDouble( &minDoubleOk );
+    const double min = valueMin.toDouble( &minDoubleOk );
     bool maxDoubleOk = true;
-    double max = valueMax.toDouble( &maxDoubleOk );
+    const double max = valueMax.toDouble( &maxDoubleOk );
     if ( minDoubleOk && maxDoubleOk && qgsDoubleNear( min, max ) )
     {
       return QString::number( min * multiplier );
