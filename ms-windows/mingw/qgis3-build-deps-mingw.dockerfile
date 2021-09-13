@@ -7,8 +7,6 @@ MAINTAINER Sandro Mani <manisandro@gmail.com>
 RUN \
 echo all > /etc/rpm/macros.image-language-conf && \
 rm -f /etc/yum.repos.d/*modular* && \
-dnf install -y --nogpgcheck 'dnf-command(config-manager)' && \
-dnf config-manager --add-repo https://copr.fedorainfracloud.org/coprs/smani/mingw-extras/repo/fedora-rawhide/smani-mingw-extras-fedora-rawhide.repo && \
 dnf install -y --nogpgcheck \
   mingw64-dlfcn \
   mingw64-exiv2 \
@@ -16,14 +14,11 @@ dnf install -y --nogpgcheck \
   mingw64-gcc-c++ \
   mingw64-gdal \
   mingw64-gdb \
-  mingw64-GdbCrashHandler \
   mingw64-GeographicLib \
   mingw64-geos \
   mingw64-gsl \
   mingw64-libgomp \
   mingw64-libzip \
-  mingw64-osgearth-qt5 \
-  mingw64-pacparser \
   mingw64-postgresql \
   mingw64-proj \
   mingw64-python3 \
@@ -92,9 +87,6 @@ dnf install -y --nogpgcheck \
   wget \
   xorg-x11-server-Xvfb \
   zip
-
-RUN wget https://pkg.sourcepole.ch/kadas/mingw64-librsvg2-2.40.11-1.fc28.noarch.rpm
-RUN dnf install -y mingw64-librsvg2-2.40.11-1.fc28.noarch.rpm
 
 WORKDIR /workspace
 VOLUME ["/workspace"]

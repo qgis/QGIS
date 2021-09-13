@@ -170,14 +170,15 @@ function linkDep {
     local name="$(basename $1)"
     test -e "$destdir/$name" && return 0
     test -e "$destdir/qgisplugins/$name" && return 0
-    [[ "$1" == *api-ms-win* ]] && return 0
+    [[ "$1" == *api-ms-win* ]] || [[ "$1" == *MSVCP*.dll ]] || [[ "$1" == *VCRUNTIME*.dll ]] && return 0
     echo "${indent}${1}"
     [ ! -e "$MINGWROOT/$1" ] && echo "Error: missing $MINGWROOT/$1" && return 1
     mkdir -p "$destdir" || return 1
     lnk "$MINGWROOT/$1" "$destdir/$name" || return 1
     echo "${2:-bin}/$name: $(rpm -qf "$MINGWROOT/$1")" >> $installprefix/origins.txt
     autoLinkDeps "$destdir/$name" "${indent}  " || return 1
-    ([ -e "$MINGWROOT/$1.debug" ] && lnk "$MINGWROOT/$1.debug" "$destdir/$name.debug") || ( ($DEBUG && echo "Warning: missing $name.debug") || :)
+    [ -e "/usr/lib/debug${MINGWROOT}/$1.debug" ] && lnk "/usr/lib/debug${MINGWROOT}/$1.debug" "$destdir/$name.debug" || :
+    [ -e "$MINGWROOT/$1.debug" ] && lnk "$MINGWROOT/$1.debug" "$destdir/$name.debug" || :
     return 0
 }
 
@@ -204,6 +205,10 @@ for file in $(find lib/python${pyver} -type f); do
 done
 IFS=$SAVEIFS
 )
+
+# Gdal plugins
+mkdir -p "$installprefix/lib/"
+cp -a "$MINGWROOT/lib/gdalplugins" "$installprefix/lib/gdalplugins"
 
 echo "Linking dependencies..."
 binaries=$(find "$installprefix" -name '*.exe' -or -name '*.dll' -or -name '*.pyd')
