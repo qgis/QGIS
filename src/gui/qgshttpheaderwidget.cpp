@@ -1,3 +1,23 @@
+/***************************************************************************
+                       qgshttpheaderswidget.cpp
+  This class implements simple UI for http header.
+
+                              -------------------
+          begin                : 2021-09-09
+          copyright            : (C) 2021 B. De Mezzo
+          email                : benoit dot de dot mezzo at oslandia dot com
+
+***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #include "qgshttpheaderwidget.h"
 #include "ui_qgshttpheaderwidget.h"
 
@@ -77,8 +97,6 @@ void QgsHttpHeaderWidget::setFromSettings( const QgsSettings &settings, const QS
   // load headers from settings
   QgsHttpHeaders headers;
   headers.setFromSettings( settings, key );
-  printf("In QgsHttpHeaderWidget::setFromSettings: headers[referer]:'%s'\n",
-         headers["referer"].toString().toStdString().c_str());
 
   // push headers to table
   tblwdgQueryPairs->clearContents();
@@ -104,7 +122,4 @@ void QgsHttpHeaderWidget::updateSettings( QgsSettings &settings, const QString &
 {
   QgsHttpHeaders h = httpHeaders();
   h.updateSettings( settings, key );
-  printf("In QgsHttpHeaderWidget::updateSettings: h[referer]:'%s', settings:'%s'\n",
-         h["referer"].toString().toStdString().c_str(),
-          settings.value( key + "referer" ).toString().toStdString().c_str());
 }
