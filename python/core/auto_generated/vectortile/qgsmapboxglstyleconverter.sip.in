@@ -347,7 +347,7 @@ Parses a numeric value which is interpolated by zoom range.
          - defaultNumber: storage for a reasonable "default" number representing the overall property.
 %End
 
-    static QgsProperty parseInterpolateOpacityByZoom( const QVariantMap &json, int maxOpacity, QgsMapBoxGlStyleConversionContext &context );
+    static QgsProperty parseInterpolateOpacityByZoom( const QVariantMap &json, int maxOpacity, QgsMapBoxGlStyleConversionContext *contextPtr = 0 );
 %Docstring
 Interpolates opacity with either :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or :py:func:`~QgsMapBoxGlStyleConverter.scale_exp` (depending on base value).
 For ``json`` with intermediate stops it uses :py:func:`~QgsMapBoxGlStyleConverter.parseOpacityStops` function.
