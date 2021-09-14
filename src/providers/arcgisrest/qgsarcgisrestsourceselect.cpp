@@ -366,7 +366,10 @@ void QgsArcGisRestSourceSelect::addButtonClicked()
       }
     }
   }
-  accept();
+
+  // Clear selection after layers have been added
+  mBrowserView->selectionModel()->clearSelection();
+
 }
 
 void QgsArcGisRestSourceSelect::updateCrsLabel()
