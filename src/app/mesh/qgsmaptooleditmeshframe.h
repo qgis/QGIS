@@ -37,7 +37,7 @@ class QgsMeshTransformCoordinatesDockWidget;
 class QComboBox;
 class QCheckBox;
 class QgsUnitSelectionWidget;
-
+class QgsMapToolSelectionHandler;
 
 
 class QgsExpressionBuilderWidget;
@@ -109,8 +109,6 @@ class QgsMeshEditForceByLineAction : public QWidgetAction
     QCheckBox *mCheckBoxNewVertex = nullptr;
     QgsUnitSelectionWidget *mUnitSelecionWidget = nullptr;
     QgsDoubleSpinBox *mToleranceSpinBox = nullptr;
-
-
 };
 
 class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
@@ -164,8 +162,6 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 
     void showSelectByExpressionDialog();
     void selectByExpression( const QString &textExpression, Qgis::SelectBehavior behavior, QgsMesh::ElementType elementType );
-    void selectByTouchingSelectedPolygons();
-    void selectByContainingSelectedPolygons();
     void onZoomToSelected();
     void forceBySelectedLayerPolyline();
     void reindexMesh();
@@ -177,7 +173,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
       Digitizing, //!< Digitizing action can be start (add/remove vertices, selection, add/remove faces, move vertices)
       AddingNewFace, //!< Adding a face has been start and the user have to choose or digitize vertices
       Selecting, //!< Selection is in process
-      MovingVertex, //!< Moving vertex or vertices is processing
+      MovingSelection, //!< Moving vertex or vertices is processing
       SelectingByPolygon, //!< Selection elements by polygon is in progress
     };
 
@@ -234,9 +230,11 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void applyZValueOnSelectedVertices();
     void prepareSelection();
     void updateSelectecVerticesMarker();
+    void moveSelection( const QgsPointXY &destinationPoint );
     void clearSelection();
 
     void setMovingRubberBandValidity( bool valid );
+    bool isSelectionGrapped( QgsPointXY &grappedPoint );
 
     QList<QgsGeometry> selectedGeometriesInVectorLayers() const;
     bool areGeometriesSelectedInVectorLayer() const;
@@ -262,7 +260,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     int mCurrentVertexIndex = -1;
     QList<int> mNewFaceCandidate;
     bool mDoubleClicks = false;
-    QgsPointXY mLastClickPoint;
+    QgsPointXY mFirstClickPoint; //the first click point when double clicks, we need it when the point is constraint by the cad tool, second click could not be constraint
     double mOrdinaryZValue = 0;
     bool mIsSelectedZValue = false;
     double mSelectedZValue = 0;
@@ -295,10 +293,6 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QgsVertexMarker *mSelectEdgeMarker = nullptr; //own by map canvas
     QgsRubberBand *mSelectionBand = nullptr; //own by map canvas
     QPoint mStartSelectionPos;
-    QColor mSelectionBandPartiallyFillColor = QColor( 0, 215, 120, 63 );
-    QColor mSelectionBandPartiallyStrokeColor = QColor( 0, 204, 102, 100 );
-    QColor mSelectionBandTotalFillColor = QColor( 0, 120, 215, 63 );
-    QColor mSelectionBandTotalStrokeColor = QColor( 0, 102, 204, 100 );
     QgsRubberBand *mSelectedFacesRubberband = nullptr; //own by map canvas
     QMap< int, QgsVertexMarker * > mSelectedVerticesMarker;
 
@@ -307,6 +301,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     bool mCanMovingStart = false;
     QgsRubberBand *mMovingEdgesRubberband = nullptr; //own by map canvas
     QgsRubberBand *mMovingFacesRubberband = nullptr; //own by map canvas
+    QgsRubberBand *mMovingFreeVertexRubberband = nullptr; //own by map canvas
     bool mIsMovingAllowed = false;
 
     //! members for edge flip
@@ -332,14 +327,14 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QAction *mActionFacesRefinement = nullptr;
 
     QAction *mActionDigitizing = nullptr;
+
     QAction *mActionSelectByPolygon = nullptr;
+    std::unique_ptr<QgsMapToolSelectionHandler> mSelectionHandler;
 
     QAction *mActionTransformCoordinates = nullptr;
 
     QAction *mActionSelectByExpression = nullptr;
     QAction *mActionForceByVectorLayerGeometries = nullptr;
-    QAction *mActionSelectByContainingSelectedPolygon = nullptr;
-    QAction *mActionSelectByTouchingSelectedPolygon = nullptr;
 
     QgsMeshEditForceByLineAction *mWidgetActionForceByLine = nullptr;
     QAction *mActionReindexMesh = nullptr;

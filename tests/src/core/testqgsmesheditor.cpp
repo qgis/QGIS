@@ -1799,7 +1799,7 @@ void TestQgsMeshEditor::transformByExpression()
 
   QVERIFY( transformVertex.calculate( layer.get() ) );
 
-  //add a other face that will intersects transformed ones
+  // add a other face that will intersects transformed ones
   layer->meshEditor()->addVertices(
   {
     {2000, 3500, 0},  // 8
@@ -1839,6 +1839,30 @@ void TestQgsMeshEditor::transformByExpression()
   QVERIFY( QgsPoint( 2550, -500, 880 ).compareTo( &mesh.vertices.at( 5 ) )  == 0 );
   QVERIFY( QgsPoint( 1550, -1500, 880 ).compareTo( &mesh.vertices.at( 6 ) )  == 0 );
   QVERIFY( QgsPoint( 3550, -1500, 880 ).compareTo( &mesh.vertices.at( 7 ) )  == 0 );
+
+  layer->undoStack()->undo();
+
+
+  // move only a free vertex in an existing face
+  layer->meshEditor()->addVertices( {QgsMeshVertex( 2500, 3500, 0 )}, 10 );
+  QVERIFY( layer->meshVertexCount() == 9 );
+
+  transformVertex.clear();
+  transformVertex.setInputVertices( {8} );
+  transformVertex.setExpressions( QStringLiteral( "$vertex_x - 1000" ),
+                                  QStringLiteral( "$vertex_y - 1000" ),
+                                  QStringLiteral( "" ) );
+
+  QVERIFY( !transformVertex.calculate( layer.get() ) );
+
+  transformVertex.clear();
+  transformVertex.setInputVertices( {8} );
+
+  transformVertex.setExpressions( QStringLiteral( "$vertex_x + 1000" ),
+                                  QStringLiteral( "$vertex_y + 1000" ),
+                                  QStringLiteral( "" ) );
+
+  QVERIFY( transformVertex.calculate( layer.get() ) );
 }
 
 void TestQgsMeshEditor::forceByLine()

@@ -58,7 +58,7 @@ class CORE_EXPORT QgsMeshAdvancedEditing : protected QgsTopologicalMesh::Changes
 
     /**
      *  Returns whether the advanced edit is finished,
-     *  if not, tis edit has to be applied again with QgsMeshEditor::advancedEdit() until is finished returns TRUE
+     *  if not, this edit has to be applied again with QgsMeshEditor::advancedEdit() until is finished returns TRUE
      */
     virtual bool isFinished() const;
 
