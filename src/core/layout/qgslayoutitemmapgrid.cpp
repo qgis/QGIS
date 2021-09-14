@@ -1944,6 +1944,13 @@ void QgsLayoutItemMapGrid::refreshDataDefinedProperties()
 {
   QgsExpressionContext context = createExpressionContext();
 
+  // if we are changing the grid interval or offset, then we also have to mark the transform as dirty
+  mTransformDirty = mTransformDirty
+                    || mDataDefinedProperties.isActive( QgsLayoutObject::MapGridIntervalX )
+                    || mDataDefinedProperties.isActive( QgsLayoutObject::MapGridIntervalY )
+                    || mDataDefinedProperties.isActive( QgsLayoutObject::MapGridOffsetX )
+                    || mDataDefinedProperties.isActive( QgsLayoutObject::MapGridOffsetY );
+
   mEvaluatedEnabled = mDataDefinedProperties.valueAsBool( QgsLayoutObject::MapGridEnabled, context, enabled() );
   switch ( mGridUnit )
   {
@@ -1971,6 +1978,7 @@ void QgsLayoutItemMapGrid::refreshDataDefinedProperties()
         const double interval = QgsLayoutUtils::calculatePrettySize( minUnitsPerSeg, maxUnitsPerSeg );
         mEvaluatedIntervalX = interval;
         mEvaluatedIntervalY = interval;
+        mTransformDirty = true;
       }
       break;
     }

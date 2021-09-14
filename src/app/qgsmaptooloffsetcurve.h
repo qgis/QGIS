@@ -69,6 +69,8 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     //! Places curve offset from the mouse position or from the value entered in the spin box
     void updateGeometryAndRubberBand( double offset );
 
+    void applyOffsetFromWidget( double offset, Qt::KeyboardModifiers modifiers );
+
     //! Apply the offset either from the spin box or from the mouse event
     void applyOffset( double offset, Qt::KeyboardModifiers modifiers );
 

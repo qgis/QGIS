@@ -2610,7 +2610,7 @@ void QgsLayoutItemMap::updateAtlasFeature()
     else
       scales = mLayout->renderContext().predefinedScales();
     Q_NOWARN_DEPRECATED_POP
-    if ( mAtlasScalingMode == Fixed || isPointLayer || scales.isEmpty() )
+    if ( mAtlasScalingMode == Fixed || scales.isEmpty() || ( isPointLayer && mAtlasScalingMode != Predefined ) )
     {
       // only translate, keep the original scale (i.e. width x height)
       double xMin = geomCenterX - originalExtent.width() / 2.0;
