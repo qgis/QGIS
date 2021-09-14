@@ -716,14 +716,21 @@ void QgsAdvancedDigitizingDockWidget::lockAdditionalConstraint( AdditionalConstr
 void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange )
 {
   CadCapacities newCapacities = CadCapacities();
+  const bool isGeographic = mMapCanvas->mapSettings().destinationCrs().isGeographic();
+  if ( !isGeographic )
+    newCapacities |= Distance;
+
   // first point is the mouse point (it doesn't count)
   if ( mCadPointList.count() > 1 )
   {
-    newCapacities |= AbsoluteAngle | RelativeCoordinates;
+    newCapacities |=  RelativeCoordinates;
+    if ( !isGeographic )
+      newCapacities |= AbsoluteAngle;
   }
   if ( mCadPointList.count() > 2 )
   {
-    newCapacities |= RelativeAngle;
+    if ( !isGeographic )
+      newCapacities |= RelativeAngle;
   }
   if ( !updateUIwithoutChange && newCapacities == mCapacities )
   {
@@ -735,12 +742,13 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
   // update the UI according to new capacities
   // still keep the old to compare
 
+  const bool distance =  mCadEnabled && newCapacities.testFlag( Distance );
   const bool relativeAngle = mCadEnabled && newCapacities.testFlag( RelativeAngle );
   const bool absoluteAngle = mCadEnabled && newCapacities.testFlag( AbsoluteAngle );
   const bool relativeCoordinates = mCadEnabled && newCapacities.testFlag( RelativeCoordinates );
 
-  mPerpendicularAction->setEnabled( absoluteAngle && snappingEnabled );
-  mParallelAction->setEnabled( absoluteAngle && snappingEnabled );
+  mPerpendicularAction->setEnabled( distance && absoluteAngle && snappingEnabled );
+  mParallelAction->setEnabled( distance && absoluteAngle && snappingEnabled );
 
   //update tooltips on buttons
   if ( !snappingEnabled )
@@ -782,10 +790,10 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
   }
 
   // distance is always relative
-  mLockDistanceButton->setEnabled( relativeCoordinates );
-  mDistanceLineEdit->setEnabled( relativeCoordinates );
-  emit enabledChangedDistance( relativeCoordinates );
-  if ( !relativeCoordinates )
+  mLockDistanceButton->setEnabled( distance && relativeCoordinates );
+  mDistanceLineEdit->setEnabled( distance && relativeCoordinates );
+  emit enabledChangedDistance( distance && relativeCoordinates );
+  if ( !( distance && relativeCoordinates ) )
   {
     mDistanceConstraint->setLockMode( CadConstraint::NoLock );
   }
@@ -822,7 +830,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   context.angleConstraint = _constraint( mAngleConstraint.get() );
   context.setCadPoints( mCadPointList );
 
-  context.commonAngleConstraint.locked = true;
+  context.commonAngleConstraint.locked = !mMapCanvas->mapSettings().destinationCrs().isGeographic();
   context.commonAngleConstraint.relative = context.angleConstraint.relative;
   context.commonAngleConstraint.value = mCommonAngleConstraint;
 
@@ -1330,7 +1338,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
       // modifier+d ONLY caught for ShortcutOverride events...
       if ( type == QEvent::ShortcutOverride && ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier ) )
       {
-        if ( mCapacities.testFlag( RelativeCoordinates ) )
+        if ( mCapacities.testFlag( RelativeCoordinates ) && mCapacities.testFlag( Distance ) )
         {
           mDistanceConstraint->toggleLocked();
           emit lockDistanceChanged( mDistanceConstraint->isLocked() );
@@ -1396,25 +1404,32 @@ void QgsAdvancedDigitizingDockWidget::enable()
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsAdvancedDigitizingDockWidget::enable, Qt::UniqueConnection );
   if ( mMapCanvas->mapSettings().destinationCrs().isGeographic() )
   {
-    mErrorLabel->setText( tr( "CAD tools can not be used on geographic coordinates. Change the coordinates system in the project properties." ) );
-    mErrorLabel->show();
-    mEnableAction->setEnabled( false );
-    setCadEnabled( false );
+    mAngleLineEdit->setEnabled( false );
+    mAngleLineEdit->setToolTip( tr( "Angle constraint cannot be used on geographic coordinates. Change the coordinates system in the project properties." ) );
+
+    mDistanceLineEdit->setEnabled( false );
+    mDistanceLineEdit->setToolTip( tr( "Distance constraint cannot be used on geographic coordinates. Change the coordinates system in the project properties." ) );
   }
   else
   {
-    mEnableAction->setEnabled( true );
-    mErrorLabel->hide();
-    mCadWidget->show();
+    mAngleLineEdit->setEnabled( true );
+    mAngleLineEdit->setToolTip( tr( "xxx" ) );
 
-    mCurrentMapToolSupportsCad = true;
-
-    if ( mSessionActive && !isVisible() )
-    {
-      show();
-    }
-    setCadEnabled( mSessionActive );
+    mDistanceLineEdit->setEnabled( true );
+    mDistanceLineEdit->setToolTip( tr( "xxx" ) );
   }
+
+  mEnableAction->setEnabled( true );
+  mErrorLabel->hide();
+  mCadWidget->show();
+
+  mCurrentMapToolSupportsCad = true;
+
+  if ( mSessionActive && !isVisible() )
+  {
+    show();
+  }
+  setCadEnabled( mSessionActive );
 }
 
 void QgsAdvancedDigitizingDockWidget::disable()
@@ -1530,7 +1545,7 @@ void QgsAdvancedDigitizingDockWidget::CadConstraint::setRelative( bool relative 
 void QgsAdvancedDigitizingDockWidget::CadConstraint::setValue( double value, bool updateWidget )
 {
   mValue = value;
-  if ( updateWidget )
+  if ( updateWidget && mLineEdit->isEnabled() )
     mLineEdit->setText( QLocale().toString( value, 'f', 6 ) );
 }
 

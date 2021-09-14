@@ -31,6 +31,7 @@ by implementing filters called from :py:class:`QgsMapToolAdvancedDigitizing`.
       AbsoluteAngle,
       RelativeAngle,
       RelativeCoordinates,
+      Distance,
     };
     typedef QFlags<QgsAdvancedDigitizingDockWidget::CadCapacity> CadCapacities;
 
