@@ -981,6 +981,7 @@ bool QgsMeshLayer::rollBackFrameEditing( const QgsCoordinateTransform &transform
   mDataProvider->populateMesh( mNativeMesh.get() );
   updateTriangularMesh( transform );
   mRendererCache.reset( new QgsMeshLayerRendererCache() );
+  trigger3DUpdate();
 
   if ( continueEditing )
   {
