@@ -18,6 +18,7 @@
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgssettings.h"
+#include "qgshttpheaders.h"
 
 ///@cond PRIVATE
 
@@ -135,7 +136,7 @@ QgsVectorTileProviderConnection::Data QgsVectorTileProviderConnection::connectio
   conn.authCfg = settings.value( QStringLiteral( "authcfg" ) ).toString();
   conn.username = settings.value( QStringLiteral( "username" ) ).toString();
   conn.password = settings.value( QStringLiteral( "password" ) ).toString();
-  conn.referer = settings.value( QStringLiteral( "referer" ) ).toString();
+  conn.referer = QgsHttpHeaders( settings )[ QStringLiteral( "referer" ) ].toString();
   conn.styleUrl = settings.value( QStringLiteral( "styleUrl" ) ).toString();
 
   if ( settings.contains( QStringLiteral( "serviceType" ) ) )
@@ -164,7 +165,7 @@ void QgsVectorTileProviderConnection::addConnection( const QString &name, QgsVec
   settings.setValue( QStringLiteral( "authcfg" ), conn.authCfg );
   settings.setValue( QStringLiteral( "username" ), conn.username );
   settings.setValue( QStringLiteral( "password" ), conn.password );
-  settings.setValue( QStringLiteral( "referer" ), conn.referer );
+  QgsHttpHeaders( ( QMap<QString, QVariant> ) { {QStringLiteral( "referer" ), conn.referer}} ).updateSettings( settings );
   settings.setValue( QStringLiteral( "styleUrl" ), conn.styleUrl );
 
   switch ( conn.serviceType )

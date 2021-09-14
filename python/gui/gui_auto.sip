@@ -97,6 +97,7 @@
 %Include auto_generated/qgshighlight.sip
 %Include auto_generated/qgshighlightablelineedit.sip
 %Include auto_generated/qgshistogramwidget.sip
+%Include auto_generated/qgshttpheaderwidget.sip
 %Include auto_generated/qgsidentifymenu.sip
 %Include auto_generated/qgskeyvaluewidget.sip
 %Include auto_generated/qgslegendfilterbutton.sip

@@ -32,7 +32,7 @@ Utility functions for working with ArcGIS REST services.
       ImageService,
     };
 
-    static QVariantMap retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QString > &requestHeaders = QMap< QString, QString >(), QgsFeedback *feedback = 0 );
+    static QVariantMap retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = 0 );
 %Docstring
 Retrieves JSON user info for the specified user name.
 
@@ -49,7 +49,7 @@ If ``user`` is blank then the user associated with the current logon details wil
          - errorText: error text of any encountered errors
 %End
 
-    static QVariantList retrieveUserGroups( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QString > &requestHeaders = QMap< QString, QString >(), QgsFeedback *feedback = 0 );
+    static QVariantList retrieveUserGroups( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = 0 );
 %Docstring
 Retrieves JSON definitions for all groups which the specified user name is a member of.
 
@@ -66,7 +66,7 @@ If ``user`` is blank then the user associated with the current logon details wil
          - errorText: error text of any encountered errors
 %End
 
-    static QVariantList retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QString > &requestHeaders = QMap< QString, QString >(), QgsFeedback *feedback = 0, int pageSize = 100 );
+    static QVariantList retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = 0, int pageSize = 100 );
 %Docstring
 Retrieves JSON definitions for all items which belong the the specified ``groupId``.
 
@@ -84,7 +84,7 @@ Retrieves JSON definitions for all items which belong the the specified ``groupI
 
     static QVariantList retrieveGroupItemsOfType( const QString &contentUrl, const QString &groupId, const QString &authcfg,
         const QList< int > &itemTypes,
-        QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QString > &requestHeaders = QMap< QString, QString >(), QgsFeedback *feedback = 0, int pageSize = 100 );
+        QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = 0, int pageSize = 100 );
 %Docstring
 Retrieves JSON definitions for all items which belong the the specified ``groupId``.
 

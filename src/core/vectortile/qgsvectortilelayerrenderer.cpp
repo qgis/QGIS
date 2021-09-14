@@ -46,7 +46,7 @@ QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *laye
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( layer->source() );
   mAuthCfg = dsUri.authConfigId();
-  mReferer = dsUri.param( QStringLiteral( "referer" ) );
+  mHeaders [QStringLiteral( "referer" ) ] = dsUri.param( QStringLiteral( "referer" ) );
 
   if ( QgsLabelingEngine *engine = context.labelingEngine() )
   {
@@ -113,13 +113,13 @@ bool QgsVectorTileLayerRenderer::render()
   {
     QElapsedTimer tFetch;
     tFetch.start();
-    rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( mSourceType, mSourcePath, mTileMatrix, viewCenter, mTileRange, mAuthCfg, mReferer );
+    rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( mSourceType, mSourcePath, mTileMatrix, viewCenter, mTileRange, mAuthCfg, mHeaders );
     QgsDebugMsgLevel( QStringLiteral( "Tile fetching time: %1" ).arg( tFetch.elapsed() / 1000. ), 2 );
     QgsDebugMsgLevel( QStringLiteral( "Fetched tiles: %1" ).arg( rawTiles.count() ), 2 );
   }
   else
   {
-    asyncLoader.reset( new QgsVectorTileLoader( mSourcePath, mTileMatrix, mTileRange, viewCenter, mAuthCfg, mReferer, mFeedback.get() ) );
+    asyncLoader.reset( new QgsVectorTileLoader( mSourcePath, mTileMatrix, mTileRange, viewCenter, mAuthCfg, mHeaders, mFeedback.get() ) );
     QObject::connect( asyncLoader.get(), &QgsVectorTileLoader::tileRequestFinished, asyncLoader.get(), [this]( const QgsVectorTileRawData & rawTile )
     {
       QgsDebugMsgLevel( QStringLiteral( "Got tile asynchronously: " ) + rawTile.id.toString(), 2 );
@@ -164,8 +164,8 @@ bool QgsVectorTileLayerRenderer::render()
       ctx.labelingEngine()->removeProvider( mLabelProvider );
       mLabelProvider = nullptr; // provider is deleted by the engine
     }
-
-    mRequiredLayers.unite( mLabelProvider->requiredLayers( ctx, mTileZoom ) );
+    else
+      mRequiredLayers.unite( mLabelProvider->requiredLayers( ctx, mTileZoom ) );
   }
 
   if ( !isAsync )
