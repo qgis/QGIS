@@ -5,7 +5,7 @@
                               -------------------
           begin                : 2021-09-09
           copyright            : (C) 2021 B. De Mezzo
-          email                : benoit.de.mezzo@oslandia.com
+          email                : benoit dot de dot mezzo at oslandia dot com
 
 ***************************************************************************/
 
@@ -42,41 +42,63 @@ class CORE_EXPORT QgsHttpHeaders
     static const QString KEY_PREFIX;
 
     /**
-     * @brief Copy constructor
-     * @param headers
+     * \brief constructor from map
+     * \param headers
      */
     QgsHttpHeaders( const QMap<QString, QVariant> &headers );
+
+    /**
+     * \brief default constructor
+     */
     QgsHttpHeaders();
+
+    /**
+     * \brief constructor from \a QgsSettings
+     * \param settings
+     * \param key
+     */
     QgsHttpHeaders( const QgsSettings &settings, const QString &key = QString() );
 
     virtual ~QgsHttpHeaders();
 
     /**
-     * @brief update the \a request by adding all the http headers
-     * @param request
-     * @return true if the update succeed
+     * \brief update the \a request by adding all the http headers
+     * \param request
+     * \return true if the update succeed
      */
     bool updateNetworkRequest( QNetworkRequest &request ) const;
 
     /**
-     * @brief update the \a settings by adding all the http headers in the path "key/KEY_PREFIX/"
-     * @param settings
-     * @param key sub group path
+     * \brief update the \a settings by adding all the http headers in the path "key/KEY_PREFIX/"
+     * \param settings
+     * \param key sub group path
      */
     void updateSettings( QgsSettings &settings, const QString &key = QString() ) const;
 
     /**
-     * @brief loads headers from the \a settings
-     * @param settings
-     * @param key sub group path
+     * \brief loads headers from the \a settings
+     * \param settings
+     * \param key sub group path
      */
     void setFromSettings( const QgsSettings &settings, const QString &key = QString() );
 
+    /**
+     * \param key http header key name
+     * \return http header value
+     */
     QVariant &operator[]( const QString &key );
 
+    /**
+     * \return the list of all http header key
+     */
     QList<QString> keys() const;
 
 #ifndef SIP_RUN
+
+    /**
+     * \param key http header key name
+     * \return http header value
+     */
     const QVariant operator[]( const QString &key ) const;
 #endif
 

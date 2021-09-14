@@ -5,7 +5,7 @@
                               -------------------
           begin                : 2021-09-09
           copyright            : (C) 2021 B. De Mezzo
-          email                : benoit.de.mezzo@oslandia.com
+          email                : benoit dot de dot mezzo at oslandia dot com
 
 ***************************************************************************/
 

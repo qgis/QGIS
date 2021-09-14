@@ -8,26 +8,53 @@
 
 
 
+
+
 class QgsHttpHeaderWidget : QWidget
 {
+%Docstring(signature="appended")
+Display referer http header field and collapsible table of key/value pairs
+
+.. versionadded:: 3.22
+%End
 
 %TypeHeaderCode
 #include "qgshttpheaderwidget.h"
 %End
   public:
+
     explicit QgsHttpHeaderWidget( QWidget *parent = 0 );
+%Docstring
+Default constructor
+
+:param parent: parent widget
+%End
     ~QgsHttpHeaderWidget();
 
     QgsHttpHeaders httpHeaders() const;
+%Docstring
+
+:return: build a new ``:py:class:`QgsHttpHeaders``` according to data in the UI
+%End
 
     void setFromSettings( const QgsSettings &settings, const QString &key );
 %Docstring
-mRefererLineEdit->setText( settings.value( key + "/referer" ).toString() ); */
+fill the inner header map from the settings defined at ``key``
+
+.. seealso:: :py:func:`QgsHttpHeaders.setFromSettings`
+
+:param settings:
+:param key:
 %End
 
     void updateSettings( QgsSettings &settings, const QString &key ) const;
 %Docstring
-settings.setValue( key + "/referer", mRefererLineEdit->:py:func:`~QgsHttpHeaderWidget.text` ); */
+update the ``settings`` with the http headers present in the inner map.
+
+.. seealso:: :py:func:`QgsHttpHeaders.updateSettings`
+
+:param settings:
+:param key:
 %End
 
 };
