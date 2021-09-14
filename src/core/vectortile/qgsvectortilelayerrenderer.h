@@ -26,6 +26,7 @@ class QgsVectorTileLabelProvider;
 
 #include "qgsvectortilerenderer.h"
 #include "qgsmapclippingregion.h"
+#include "qgshttpheaders.h"
 
 /**
  * \ingroup core
@@ -59,7 +60,7 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
     QString mSourcePath;
 
     QString mAuthCfg;
-    QString mReferer;
+    QgsHttpHeaders mHeaders;
 
     //! Minimum zoom level at which source has any valid tiles (negative = unconstrained)
     int mSourceMinZoom = -1;

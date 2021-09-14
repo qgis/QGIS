@@ -20,6 +20,7 @@
 #include "qgis_core.h"
 #include "qgsrectangle.h"
 #include "qgswkbtypes.h"
+#include "qgshttpheaders.h"
 
 #include <QString>
 #include <QVariantMap>
@@ -50,17 +51,17 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
     /**
      * Retrieves JSON service info for the specified base URL.
      */
-    static QVariantMap getServiceInfo( const QString &baseurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QMap< QString, QString > &requestHeaders = QMap< QString, QString >() );
+    static QVariantMap getServiceInfo( const QString &baseurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders() );
 
     /**
      * Retrieves JSON layer info for the specified layer URL.
      */
-    static QVariantMap getLayerInfo( const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QMap< QString, QString > &requestHeaders = QMap< QString, QString >() );
+    static QVariantMap getLayerInfo( const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders() );
 
     /**
      * Retrieves all object IDs for the specified layer URL.
      */
-    static QVariantMap getObjectIds( const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QMap< QString, QString > &requestHeaders = QMap< QString, QString >(),
+    static QVariantMap getObjectIds( const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
                                      const QgsRectangle &bbox = QgsRectangle() );
 
     /**
@@ -68,22 +69,22 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
      */
     static QVariantMap getObjects( const QString &layerurl, const QString &authcfg, const QList<quint32> &objectIds, const QString &crs,
                                    bool fetchGeometry, const QStringList &fetchAttributes, bool fetchM, bool fetchZ,
-                                   const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders = QgsStringMap(), QgsFeedback *feedback = nullptr );
+                                   const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = nullptr );
 
     /**
      * Gets a list of object IDs which fall within the specified extent.
      */
-    static QList<quint32> getObjectIdsByExtent( const QString &layerurl, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &authcfg, const QgsStringMap &requestHeaders = QgsStringMap(), QgsFeedback *feedback = nullptr );
+    static QList<quint32> getObjectIdsByExtent( const QString &layerurl, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &authcfg, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = nullptr );
 
     /**
      * Performs a blocking request to a URL and returns the retrieved data.
      */
-    static QByteArray queryService( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders = QgsStringMap(), QgsFeedback *feedback = nullptr, QString *contentType = nullptr );
+    static QByteArray queryService( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = nullptr, QString *contentType = nullptr );
 
     /**
      * Performs a blocking request to a URL and returns the retrieved JSON content.
      */
-    static QVariantMap queryServiceJSON( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders = QgsStringMap(), QgsFeedback *feedback = nullptr );
+    static QVariantMap queryServiceJSON( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = nullptr );
 
     /**
      * Calls the specified \a visitor function on all folder items found within the given service data.
@@ -132,7 +133,7 @@ class CORE_EXPORT QgsArcGisAsyncParallelQuery : public QObject
 {
     Q_OBJECT
   public:
-    QgsArcGisAsyncParallelQuery( const QString &authcfg, const QgsStringMap &requestHeaders, QObject *parent = nullptr );
+    QgsArcGisAsyncParallelQuery( const QString &authcfg, const QgsHttpHeaders &requestHeaders, QObject *parent = nullptr );
     void start( const QVector<QUrl> &urls, QVector<QByteArray> *results, bool allowCache = false );
 
   signals:
@@ -145,7 +146,7 @@ class CORE_EXPORT QgsArcGisAsyncParallelQuery : public QObject
     int mPendingRequests = 0;
     QStringList mErrors;
     QString mAuthCfg;
-    QgsStringMap mRequestHeaders;
+    QgsHttpHeaders mRequestHeaders;
 };
 
 ///@endcond

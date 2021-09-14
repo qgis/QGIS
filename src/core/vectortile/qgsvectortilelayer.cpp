@@ -691,9 +691,10 @@ QByteArray QgsVectorTileLayer::getRawTile( QgsTileXYZ tileID )
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( mDataSource );
   const QString authcfg = dsUri.authConfigId();
-  const QString referer = dsUri.param( QStringLiteral( "referer" ) );
+  QgsHttpHeaders headers;
+  headers [QStringLiteral( "referer" ) ] = dsUri.param( QStringLiteral( "referer" ) );
 
-  QList<QgsVectorTileRawData> rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( mSourceType, mSourcePath, tileMatrix, QPointF(), tileRange, authcfg, referer );
+  QList<QgsVectorTileRawData> rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( mSourceType, mSourcePath, tileMatrix, QPointF(), tileRange, authcfg, headers );
   if ( rawTiles.isEmpty() )
     return QByteArray();
   return rawTiles.first().data;
