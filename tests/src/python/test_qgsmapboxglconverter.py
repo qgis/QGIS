@@ -37,18 +37,17 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         self.assertIsNone(c.labeling())
 
     def testInterpolateExpression(self):
-        conversion_context = QgsMapBoxGlStyleConversionContext()
-        self.assertEqual(QgsMapBoxGlStyleConverter.interpolateExpression(5, 13, 27, 29, 1, conversion_context),
+        self.assertEqual(QgsMapBoxGlStyleConverter.interpolateExpression(5, 13, 27, 29, 1),
                          'scale_linear(@vector_tile_zoom,5,13,27,29)')
-        self.assertEqual(QgsMapBoxGlStyleConverter.interpolateExpression(5, 13, 27, 29, 1.5, conversion_context),
+        self.assertEqual(QgsMapBoxGlStyleConverter.interpolateExpression(5, 13, 27, 29, 1.5),
                          'scale_exp(@vector_tile_zoom,5,13,27,29,1.5)')
-        self.assertEqual(QgsMapBoxGlStyleConverter.interpolateExpression(5, 13, 27, 29, 1.5, conversion_context),
+        self.assertEqual(QgsMapBoxGlStyleConverter.interpolateExpression(5, 13, 27, 29, 1.5),
                          'scale_exp(@vector_tile_zoom,5,13,27,29,1.5)')
 
         # same values, return nice and simple expression!
-        self.assertEqual(QgsMapBoxGlStyleConverter.interpolateExpression(5, 13, 27, 27, 1.5, conversion_context),
+        self.assertEqual(QgsMapBoxGlStyleConverter.interpolateExpression(5, 13, 27, 27, 1.5),
                          '27')
-        self.assertEqual(QgsMapBoxGlStyleConverter.interpolateExpression(5, 13, 27, 27, 1.5, conversion_context, 2),
+        self.assertEqual(QgsMapBoxGlStyleConverter.interpolateExpression(5, 13, 27, 27, 1.5, 2),
                          '54')
 
     def testColorAsHslaComponents(self):
