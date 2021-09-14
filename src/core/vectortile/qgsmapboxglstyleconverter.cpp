@@ -2968,7 +2968,6 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64( const QVariant &value
 QString QgsMapBoxGlStyleConverter::parseValue( const QVariant &value, QgsMapBoxGlStyleConversionContext &context )
 {
   QColor c;
-  QString debug;
   switch ( value.type() )
   {
     case QVariant::List:

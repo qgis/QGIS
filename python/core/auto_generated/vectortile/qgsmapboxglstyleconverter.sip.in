@@ -463,7 +463,9 @@ Converts an expression representing a color to a string (can be color string or 
 
 :param colorExpression: the color expression
 :param context: the style conversion context
-                @return the QGIS expression string
+
+:return: the QGIS expression string
+         since QGIS 3.22
 %End
 
     static QColor parseColor( const QVariant &color, QgsMapBoxGlStyleConversionContext &context );

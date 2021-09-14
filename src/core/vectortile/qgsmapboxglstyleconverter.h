@@ -454,7 +454,8 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * Converts an expression representing a color to a string (can be color string or an expression where a color is expected)
      * \param colorExpression the color expression
      * \param context the style conversion context
-     * @return the QGIS expression string
+     * \returns the QGIS expression string
+     * since QGIS 3.22
      */
     static QString parseColorExpression( const QVariant &colorExpression, QgsMapBoxGlStyleConversionContext &context );
 
