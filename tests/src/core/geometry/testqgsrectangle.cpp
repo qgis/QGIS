@@ -372,6 +372,33 @@ void TestQgsRectangle::include()
   QCOMPARE( rect1.xMaximum(), 115.0 );
   QCOMPARE( rect1.yMaximum(), 242.0 );
 
+  rect1.setMinimal();
+
+  rect1.include( QgsPointXY( 15, 50 ) );
+  QCOMPARE( rect1.xMinimum(), 15.0 );
+  QCOMPARE( rect1.yMinimum(), 50.0 );
+  QCOMPARE( rect1.xMaximum(), 15.0 );
+  QCOMPARE( rect1.yMaximum(), 50.0 );
+
+  rect1.include( QgsPointXY( 5, 30 ) );
+  QCOMPARE( rect1.xMinimum(), 5.0 );
+  QCOMPARE( rect1.yMinimum(), 30.0 );
+  QCOMPARE( rect1.xMaximum(), 15.0 );
+  QCOMPARE( rect1.yMaximum(), 50.0 );
+
+  rect1.setMinimal();
+
+  rect1.include( QgsPointXY( 5, 30 ) );
+  QCOMPARE( rect1.xMinimum(), 5.0 );
+  QCOMPARE( rect1.yMinimum(), 30.0 );
+  QCOMPARE( rect1.xMaximum(), 5.0 );
+  QCOMPARE( rect1.yMaximum(), 30.0 );
+
+  rect1.include( QgsPointXY( 15, 50 ) );
+  QCOMPARE( rect1.xMinimum(), 5.0 );
+  QCOMPARE( rect1.yMinimum(), 30.0 );
+  QCOMPARE( rect1.xMaximum(), 15.0 );
+  QCOMPARE( rect1.yMaximum(), 50.0 );
 }
 
 void TestQgsRectangle::buffered()
