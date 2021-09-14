@@ -20,11 +20,17 @@
 
 #include "qgshttpheaderwidget.h"
 #include "ui_qgshttpheaderwidget.h"
+#include "qgsapplication.h"
+
 
 QgsHttpHeaderWidget::QgsHttpHeaderWidget( QWidget *parent ) :
   QWidget( parent )
 {
   setupUi( this );
+  btnAddQueryPair->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
+  btnRemoveQueryPair->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyRemove.svg" ) ) );
+  grpbxAdvanced->setCollapsed( true );
+
   setupConnections();
 }
 
