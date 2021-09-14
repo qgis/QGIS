@@ -73,6 +73,12 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     QgsMeshEditor( QgsMesh *nativeMesh, QgsTriangularMesh *triangularMesh, QObject *parent = nullptr ); SIP_SKIP
     ~QgsMeshEditor();
 
+    /**
+     * Creates and returns a scalar dataset group with value on vertex that is can be used to access the Z value of the edited mesh.
+     * The caller takes ownership.
+     */
+    QgsMeshDatasetGroup *createZValueDatasetGroup() SIP_TRANSFERBACK;
+
     //! Initialize the mesh editor and return errors if the internal native mesh have topologic errors
     QgsMeshEditingError initialize();
 
@@ -241,6 +247,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     QgsTopologicalMesh mTopologicalMesh;
     QgsTriangularMesh *mTriangularMesh = nullptr;
     int mMaximumVerticesPerFace = 0;
+    QgsMeshDatasetGroup *mZValueDatasetGroup = nullptr;
 
     QVector<QgsMeshFace> prepareFaces( const QVector<QgsMeshFace> &faces, QgsMeshEditingError &error );
 

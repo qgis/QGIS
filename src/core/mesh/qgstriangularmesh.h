@@ -361,7 +361,8 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
     QgsMeshSpatialIndex mSpatialEdgeIndex;
     QgsCoordinateTransform mCoordinateTransform; //coordinate transform used to convert native mesh vertices to map vertices
 
-    QgsRectangle mExtent;
+    mutable QgsRectangle mExtent;
+    mutable bool mIsExtentValid = false;
 
     // average size of the triangles
     double mAverageTriangleSize = 0;

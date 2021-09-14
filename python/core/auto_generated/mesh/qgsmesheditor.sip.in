@@ -62,6 +62,12 @@ Constructor with a specified layer ``meshLayer``
 %End
 
 
+    QgsMeshDatasetGroup *createZValueDatasetGroup() /TransferBack/;
+%Docstring
+Creates and returns a scalar dataset group with value on vertex that is can be used to access the Z value of the edited mesh.
+The caller takes ownership.
+%End
+
     QgsMeshEditingError initialize();
 %Docstring
 Initialize the mesh editor and return errors if the internal native mesh have topologic errors
