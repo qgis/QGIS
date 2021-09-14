@@ -475,6 +475,44 @@ double QgsGeos::distance( const QgsAbstractGeometry *geom, QString *errorMsg ) c
   return distance;
 }
 
+bool QgsGeos::distanceWithin( const QgsAbstractGeometry *geom, double maxdist, QString *errorMsg ) const
+{
+  if ( !mGeos )
+  {
+    return false;
+  }
+
+  geos::unique_ptr otherGeosGeom( asGeos( geom, mPrecision ) );
+  if ( !otherGeosGeom )
+  {
+    return false;
+  }
+
+  // TODO: optimize implementation of this function to early-exit if
+  // any part of othergeosGeom is found to be within the given
+  // distance
+
+  double distance;
+  try
+  {
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
+    if ( mGeosPrepared )
+    {
+      GEOSPreparedDistance_r( geosinit()->ctxt, mGeosPrepared.get(), otherGeosGeom.get(), &distance );
+    }
+    else
+    {
+      GEOSDistance_r( geosinit()->ctxt, mGeos.get(), otherGeosGeom.get(), &distance );
+    }
+#else
+    GEOSDistance_r( geosinit()->ctxt, mGeos.get(), otherGeosGeom.get(), &distance );
+#endif
+  }
+  CATCH_GEOS_WITH_ERRMSG( false )
+
+  return distance <= maxdist;
+}
+
 double QgsGeos::hausdorffDistance( const QgsAbstractGeometry *geom, QString *errorMsg ) const
 {
   double distance = -1.0;

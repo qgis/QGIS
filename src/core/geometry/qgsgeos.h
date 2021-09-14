@@ -180,6 +180,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     QgsPoint *pointOnSurface( QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *convexHull( QString *errorMsg = nullptr ) const override;
     double distance( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
+    bool distanceWithin( const QgsAbstractGeometry *geom, double maxdistance, QString *errorMsg = nullptr ) const override;
 
     /**
      * Returns the Hausdorff distance between this geometry and \a geom. This is basically a measure of how similar or dissimilar 2 geometries are.
