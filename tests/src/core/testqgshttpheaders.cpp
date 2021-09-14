@@ -83,8 +83,8 @@ void TestQgsHttpheaders::updateSettings()
   QCOMPARE( settings.value( keyBase + QgsHttpHeaders::KEY_PREFIX + "referer" ).toString(), "http://gg.com" );
   QVERIFY( ! settings.contains( keyBase +  "referer" ) );
 
-  // test backward compability
-  settings.setValue( keyBase + "referer", "paf" ) ; // legacy referer, should be overriden
+  // test backward compatibility
+  settings.setValue( keyBase + "referer", "paf" ) ; // legacy referer, should be overridden
   h.updateSettings( settings, keyBase );
   QVERIFY( settings.contains( keyBase + QgsHttpHeaders::KEY_PREFIX + "referer" ) );
   QCOMPARE( settings.value( keyBase + QgsHttpHeaders::KEY_PREFIX + "referer" ).toString(), "http://gg.com" );
