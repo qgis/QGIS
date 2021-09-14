@@ -480,6 +480,7 @@
 %Include auto_generated/network/qgsnetworkreply.sip
 %Include auto_generated/network/qgsnewsfeedmodel.sip
 %Include auto_generated/network/qgsnewsfeedparser.sip
+%Include auto_generated/network/qgshttpheaders.sip
 %Include auto_generated/numericformats/qgsbasicnumericformat.sip
 %Include auto_generated/numericformats/qgsbearingnumericformat.sip
 %Include auto_generated/numericformats/qgscurrencynumericformat.sip

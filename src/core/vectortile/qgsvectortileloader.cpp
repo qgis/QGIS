@@ -28,11 +28,11 @@
 
 #include "qgstiledownloadmanager.h"
 
-QgsVectorTileLoader::QgsVectorTileLoader( const QString &uri, const QgsTileMatrix &tileMatrix, const QgsTileRange &range, const QPointF &viewCenter, const QString &authid, const QString &referer, QgsFeedback *feedback )
+QgsVectorTileLoader::QgsVectorTileLoader( const QString &uri, const QgsTileMatrix &tileMatrix, const QgsTileRange &range, const QPointF &viewCenter, const QString &authid, const QgsHttpHeaders &headers, QgsFeedback *feedback )
   : mEventLoop( new QEventLoop )
   , mFeedback( feedback )
   , mAuthCfg( authid )
-  , mReferer( referer )
+  , mHeaders( headers )
 {
   if ( feedback )
   {
@@ -96,8 +96,7 @@ void QgsVectorTileLoader::loadFromNetworkAsync( const QgsTileXYZ &id, const QgsT
   request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
-  if ( !mReferer.isEmpty() )
-    request.setRawHeader( "Referer", mReferer.toUtf8() );
+  mHeaders.updateNetworkRequest( request );
 
   if ( !mAuthCfg.isEmpty() &&  !QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg ) )
   {
@@ -158,7 +157,7 @@ void QgsVectorTileLoader::canceled()
 
 //////
 
-QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const QString &sourceType, const QString &sourcePath, const QgsTileMatrix &tileMatrix, const QPointF &viewCenter, const QgsTileRange &range, const QString &authid, const QString &referer )
+QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const QString &sourceType, const QString &sourcePath, const QgsTileMatrix &tileMatrix, const QPointF &viewCenter, const QgsTileRange &range, const QString &authid, const QgsHttpHeaders &headers )
 {
   QList<QgsVectorTileRawData> rawTiles;
 
@@ -175,7 +174,7 @@ QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const
   QgsVectorTileUtils::sortTilesByDistanceFromCenter( tiles, viewCenter );
   for ( QgsTileXYZ id : std::as_const( tiles ) )
   {
-    QByteArray rawData = isUrl ? loadFromNetwork( id, tileMatrix, sourcePath, authid, referer ) : loadFromMBTiles( id, mbReader );
+    QByteArray rawData = isUrl ? loadFromNetwork( id, tileMatrix, sourcePath, authid, headers ) : loadFromMBTiles( id, mbReader );
     if ( !rawData.isEmpty() )
     {
       rawTiles.append( QgsVectorTileRawData( id, rawData ) );
@@ -184,14 +183,13 @@ QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const
   return rawTiles;
 }
 
-QByteArray QgsVectorTileLoader::loadFromNetwork( const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QString &requestUrl, const QString &authid, const QString &referer )
+QByteArray QgsVectorTileLoader::loadFromNetwork( const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QString &requestUrl, const QString &authid, const QgsHttpHeaders &headers )
 {
   QString url = QgsVectorTileUtils::formatXYZUrlTemplate( requestUrl, id, tileMatrix );
   QNetworkRequest nr;
   nr.setUrl( QUrl( url ) );
 
-  if ( !referer.isEmpty() )
-    nr.setRawHeader( "Referer", referer.toUtf8() );
+  headers.updateNetworkRequest( nr );
 
   QgsBlockingNetworkRequest req;
   req.setAuthCfg( authid );

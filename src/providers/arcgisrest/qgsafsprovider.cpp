@@ -47,7 +47,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
 
   const QString referer = mSharedData->mDataSource.param( QStringLiteral( "referer" ) );
   if ( !referer.isEmpty() )
-    mRequestHeaders[ QStringLiteral( "Referer" )] = referer;
+    mRequestHeaders[ QStringLiteral( "referer" )] = referer;
 
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )

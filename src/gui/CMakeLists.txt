@@ -495,6 +495,7 @@ set(QGIS_GUI_SRCS
   qgshighlightablelineedit.cpp
   qgshistogramwidget.cpp
   qgshelp.cpp
+  qgshttpheaderwidget.cpp
   qgsidentifymenu.cpp
   qgsimagedroptextedit.cpp
   qgsinstallgridshiftdialog.cpp
@@ -746,6 +747,7 @@ set(QGIS_GUI_HDRS
   qgshighlightablecombobox.h
   qgshighlightablelineedit.h
   qgshistogramwidget.h
+  qgshttpheaderwidget.h
   qgsidentifymenu.h
   qgsimagedroptextedit.h
   qgsinstallgridshiftdialog.h
@@ -1345,6 +1347,7 @@ set(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionselectiondialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsfeaturefilterwidget.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsgenericprojectionselectorbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgshttpheaderwidget.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessagelogviewer.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessageviewer.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsnewvectortabledialogbase.h

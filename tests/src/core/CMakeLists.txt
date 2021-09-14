@@ -69,6 +69,7 @@ set(TESTS
  testqgsgraduatedsymbolrenderer.cpp
  testqgshistogram.cpp
  testqgshstoreutils.cpp
+ testqgshttpheaders.cpp
  testqgsimagecache.cpp
  testqgsimageoperation.cpp
  testqgsinternalgeometryengine.cpp

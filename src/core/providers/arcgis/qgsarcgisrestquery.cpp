@@ -28,7 +28,7 @@
 #include <QImageReader>
 #include <QRegularExpression>
 
-QVariantMap QgsArcGisRestQueryUtils::getServiceInfo( const QString &baseurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders )
+QVariantMap QgsArcGisRestQueryUtils::getServiceInfo( const QString &baseurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders )
 {
   // http://sampleserver5.arcgisonline.com/arcgis/rest/services/Energy/Geology/FeatureServer?f=json
   QUrl queryUrl( baseurl );
@@ -38,7 +38,7 @@ QVariantMap QgsArcGisRestQueryUtils::getServiceInfo( const QString &baseurl, con
   return queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders );
 }
 
-QVariantMap QgsArcGisRestQueryUtils::getLayerInfo( const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders )
+QVariantMap QgsArcGisRestQueryUtils::getLayerInfo( const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders )
 {
   // http://sampleserver5.arcgisonline.com/arcgis/rest/services/Energy/Geology/FeatureServer/1?f=json
   QUrl queryUrl( layerurl );
@@ -48,7 +48,7 @@ QVariantMap QgsArcGisRestQueryUtils::getLayerInfo( const QString &layerurl, cons
   return queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders );
 }
 
-QVariantMap QgsArcGisRestQueryUtils::getObjectIds( const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders, const QgsRectangle &bbox )
+QVariantMap QgsArcGisRestQueryUtils::getObjectIds( const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, const QgsRectangle &bbox )
 {
   // http://sampleserver5.arcgisonline.com/arcgis/rest/services/Energy/Geology/FeatureServer/1/query?where=1%3D1&returnIdsOnly=true&f=json
   QUrl queryUrl( layerurl + "/query" );
@@ -72,7 +72,7 @@ QVariantMap QgsArcGisRestQueryUtils::getObjects( const QString &layerurl, const 
     bool fetchGeometry, const QStringList &fetchAttributes,
     bool fetchM, bool fetchZ,
     const QgsRectangle &filterRect,
-    QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders, QgsFeedback *feedback )
+    QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, QgsFeedback *feedback )
 {
   QStringList ids;
   for ( const int id : objectIds )
@@ -110,7 +110,7 @@ QVariantMap QgsArcGisRestQueryUtils::getObjects( const QString &layerurl, const 
   return queryServiceJSON( queryUrl,  authcfg, errorTitle, errorText, requestHeaders, feedback );
 }
 
-QList<quint32> QgsArcGisRestQueryUtils::getObjectIdsByExtent( const QString &layerurl, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &authcfg, const QgsStringMap &requestHeaders, QgsFeedback *feedback )
+QList<quint32> QgsArcGisRestQueryUtils::getObjectIdsByExtent( const QString &layerurl, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &authcfg, const QgsHttpHeaders &requestHeaders, QgsFeedback *feedback )
 {
   QUrl queryUrl( layerurl + "/query" );
   QUrlQuery query( queryUrl );
@@ -140,16 +140,13 @@ QList<quint32> QgsArcGisRestQueryUtils::getObjectIdsByExtent( const QString &lay
   return ids;
 }
 
-QByteArray QgsArcGisRestQueryUtils::queryService( const QUrl &u, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders, QgsFeedback *feedback, QString *contentType )
+QByteArray QgsArcGisRestQueryUtils::queryService( const QUrl &u, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, QgsFeedback *feedback, QString *contentType )
 {
   const QUrl url = parseUrl( u );
 
   QNetworkRequest request( url );
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisRestUtils" ) );
-  for ( auto it = requestHeaders.constBegin(); it != requestHeaders.constEnd(); ++it )
-  {
-    request.setRawHeader( it.key().toUtf8(), it.value().toUtf8() );
-  }
+  requestHeaders.updateNetworkRequest( request );
 
   QgsBlockingNetworkRequest networkRequest;
   networkRequest.setAuthCfg( authcfg );
@@ -173,7 +170,7 @@ QByteArray QgsArcGisRestQueryUtils::queryService( const QUrl &u, const QString &
   return content.content();
 }
 
-QVariantMap QgsArcGisRestQueryUtils::queryServiceJSON( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders, QgsFeedback *feedback )
+QVariantMap QgsArcGisRestQueryUtils::queryServiceJSON( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, QgsFeedback *feedback )
 {
   const QByteArray reply = queryService( url, authcfg, errorTitle, errorText, requestHeaders, feedback );
   if ( !errorTitle.isEmpty() )
@@ -498,7 +495,7 @@ void QgsArcGisAsyncQuery::handleReply()
 // QgsArcGisAsyncParallelQuery
 //
 
-QgsArcGisAsyncParallelQuery::QgsArcGisAsyncParallelQuery( const QString &authcfg, const QgsStringMap &requestHeaders, QObject *parent )
+QgsArcGisAsyncParallelQuery::QgsArcGisAsyncParallelQuery( const QString &authcfg, const QgsHttpHeaders &requestHeaders, QObject *parent )
   : QObject( parent )
   , mAuthCfg( authcfg )
   , mRequestHeaders( requestHeaders )
@@ -516,10 +513,7 @@ void QgsArcGisAsyncParallelQuery::start( const QVector<QUrl> &urls, QVector<QByt
     QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisAsyncParallelQuery" ) );
     QgsSetRequestInitiatorId( request, QString::number( i ) );
 
-    for ( auto it = mRequestHeaders.constBegin(); it != mRequestHeaders.constEnd(); ++it )
-    {
-      request.setRawHeader( it.key().toUtf8(), it.value().toUtf8() );
-    }
+    mRequestHeaders.updateNetworkRequest( request );
     if ( !mAuthCfg.isEmpty() && !QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg ) )
     {
       const QString error = tr( "network request update failed for authentication config" );
