@@ -430,11 +430,12 @@ std::unique_ptr<LabelPosition> FeaturePart::createCandidatePointOnSurface( Point
   return std::make_unique< LabelPosition >( 0, px, py, getLabelWidth(), getLabelHeight(), 0.0, 0.0, this, false, LabelPosition::QuadrantOver );
 }
 
-void createCandidateAtOrderedPositionOverPoint( double &labelX, double &labelY, LabelPosition::Quadrant &quadrant, double x, double y, double labelWidth, double labelHeight, QgsPalLayerSettings::PredefinedPointPosition position, double distanceToLabel, const QgsMargins &visualMargin, double symbolWidthOffset, double symbolHeightOffset )
+void createCandidateAtOrderedPositionOverPoint( double &labelX, double &labelY, LabelPosition::Quadrant &quadrant, double x, double y, double labelWidth, double labelHeight, QgsPalLayerSettings::PredefinedPointPosition position, double distanceToLabel, const QgsMargins &visualMargin, double symbolWidthOffset, double symbolHeightOffset, double angle )
 {
   double alpha = 0.0;
   double deltaX = 0;
   double deltaY = 0;
+
   switch ( position )
   {
     case QgsPalLayerSettings::TopLeft:
@@ -522,6 +523,12 @@ void createCandidateAtOrderedPositionOverPoint( double &labelX, double &labelY, 
       break;
   }
 
+  // Take care of the label angle when creating candidates. See pr comments #44944 for details
+  // https://github.com/qgis/QGIS/pull/44944#issuecomment-914670088
+  QMatrix transformMatrix;
+  transformMatrix.rotate( angle * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleRadians, QgsUnitTypes::AngleDegrees ) );
+  transformMatrix.map( deltaX, deltaY, &deltaX, &deltaY );
+
   //have bearing, distance - calculate reference point
   double referenceX = std::cos( alpha ) * distanceToLabel + x;
   double referenceY = std::sin( alpha ) * distanceToLabel + y;
@@ -552,7 +559,7 @@ std::size_t FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, 
 
     double labelX = 0;
     double labelY = 0;
-    createCandidateAtOrderedPositionOverPoint( labelX, labelY, quadrant, x, y, labelWidth, labelHeight, position, distanceToLabel, visualMargin, symbolWidthOffset, symbolHeightOffset );
+    createCandidateAtOrderedPositionOverPoint( labelX, labelY, quadrant, x, y, labelWidth, labelHeight, position, distanceToLabel, visualMargin, symbolWidthOffset, symbolHeightOffset, angle );
 
     if ( ! mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), labelX, labelY, labelWidth, labelHeight, angle ) )
     {
@@ -615,8 +622,8 @@ std::size_t FeaturePart::createCandidatesAroundPoint( double x, double y, std::v
   double angleToCandidate;
   for ( i = 0, angleToCandidate = M_PI_4; i < maxNumberCandidates; i++, angleToCandidate += candidateAngleIncrement )
   {
-    double labelX = x;
-    double labelY = y;
+    double deltaX = 0.0;
+    double deltaY = 0.0;
 
     if ( angleToCandidate > a360 )
       angleToCandidate -= a360;
@@ -625,61 +632,70 @@ std::size_t FeaturePart::createCandidatesAroundPoint( double x, double y, std::v
 
     if ( angleToCandidate < gamma1 || angleToCandidate > a360 - gamma1 )  // on the right
     {
-      labelX += distanceToLabel;
+      deltaX = distanceToLabel;
       double iota = ( angleToCandidate + gamma1 );
       if ( iota > a360 - gamma1 )
         iota -= a360;
 
       //ly += -yrm/2.0 + tan(alpha)*(distlabel + xrm/2);
-      labelY += -labelHeight + labelHeight * iota / ( 2 * gamma1 );
+      deltaY = -labelHeight + labelHeight * iota / ( 2 * gamma1 );
 
       quadrant = LabelPosition::QuadrantRight;
     }
     else if ( angleToCandidate < a90 - gamma2 )  // top-right
     {
-      labelX += distanceToLabel * std::cos( angleToCandidate );
-      labelY += distanceToLabel * std::sin( angleToCandidate );
+      deltaX = distanceToLabel * std::cos( angleToCandidate );
+      deltaY = distanceToLabel * std::sin( angleToCandidate );
       quadrant = LabelPosition::QuadrantAboveRight;
     }
     else if ( angleToCandidate < a90 + gamma2 ) // top
     {
       //lx += -xrm/2.0 - tan(alpha+a90)*(distlabel + yrm/2);
-      labelX += -labelWidth * ( angleToCandidate - a90 + gamma2 ) / ( 2 * gamma2 );
-      labelY += distanceToLabel;
+      deltaX = -labelWidth * ( angleToCandidate - a90 + gamma2 ) / ( 2 * gamma2 );
+      deltaY = distanceToLabel;
       quadrant = LabelPosition::QuadrantAbove;
     }
     else if ( angleToCandidate < a180 - gamma1 )  // top left
     {
-      labelX += distanceToLabel * std::cos( angleToCandidate ) - labelWidth;
-      labelY += distanceToLabel * std::sin( angleToCandidate );
+      deltaX = distanceToLabel * std::cos( angleToCandidate ) - labelWidth;
+      deltaY = distanceToLabel * std::sin( angleToCandidate );
       quadrant = LabelPosition::QuadrantAboveLeft;
     }
     else if ( angleToCandidate < a180 + gamma1 ) // left
     {
-      labelX += -distanceToLabel - labelWidth;
+      deltaX = -distanceToLabel - labelWidth;
       //ly += -yrm/2.0 - tan(alpha)*(distlabel + xrm/2);
-      labelY += - ( angleToCandidate - a180 + gamma1 ) * labelHeight / ( 2 * gamma1 );
+      deltaY = - ( angleToCandidate - a180 + gamma1 ) * labelHeight / ( 2 * gamma1 );
       quadrant = LabelPosition::QuadrantLeft;
     }
     else if ( angleToCandidate < a270 - gamma2 ) // down - left
     {
-      labelX += distanceToLabel * std::cos( angleToCandidate ) - labelWidth;
-      labelY += distanceToLabel * std::sin( angleToCandidate ) - labelHeight;
+      deltaX = distanceToLabel * std::cos( angleToCandidate ) - labelWidth;
+      deltaY = distanceToLabel * std::sin( angleToCandidate ) - labelHeight;
       quadrant = LabelPosition::QuadrantBelowLeft;
     }
     else if ( angleToCandidate < a270 + gamma2 ) // down
     {
-      labelY += -distanceToLabel - labelHeight;
+      deltaY = -distanceToLabel - labelHeight;
       //lx += -xrm/2.0 + tan(alpha+a90)*(distlabel + yrm/2);
-      labelX += -labelWidth + ( angleToCandidate - a270 + gamma2 ) * labelWidth / ( 2 * gamma2 );
+      deltaX = -labelWidth + ( angleToCandidate - a270 + gamma2 ) * labelWidth / ( 2 * gamma2 );
       quadrant = LabelPosition::QuadrantBelow;
     }
     else if ( angleToCandidate < a360 ) // down - right
     {
-      labelX += distanceToLabel * std::cos( angleToCandidate );
-      labelY += distanceToLabel * std::sin( angleToCandidate ) - labelHeight;
+      deltaX = distanceToLabel * std::cos( angleToCandidate );
+      deltaY = distanceToLabel * std::sin( angleToCandidate ) - labelHeight;
       quadrant = LabelPosition::QuadrantBelowRight;
     }
+
+    // Take care of the label angle when creating candidates. See pr comments #44944 for details
+    // https://github.com/qgis/QGIS/pull/44944#issuecomment-914670088
+    QMatrix transformMatrix;
+    transformMatrix.rotate( angle * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleRadians, QgsUnitTypes::AngleDegrees ) );
+    transformMatrix.map( deltaX, deltaY, &deltaX, &deltaY );
+
+    double labelX = x + deltaX;
+    double labelY = y + deltaY;
 
     double cost;
 
@@ -1826,7 +1842,7 @@ std::size_t FeaturePart::createCandidatesOutsidePolygon( std::vector<std::unique
     LabelPosition::Quadrant quadrant = LabelPosition::QuadrantAboveLeft;
 
     // Satisfy R2: Label should be placed entirely outside at some distance from the area feature.
-    createCandidateAtOrderedPositionOverPoint( labelX, labelY, quadrant, x, y, labelWidth, labelHeight, position, distanceToLabel * 0.5, visualMargin, 0, 0 );
+    createCandidateAtOrderedPositionOverPoint( labelX, labelY, quadrant, x, y, labelWidth, labelHeight, position, distanceToLabel * 0.5, visualMargin, 0, 0, labelAngle );
 
     std::unique_ptr< LabelPosition > candidate = std::make_unique< LabelPosition >( i, labelX, labelY, labelWidth, labelHeight, labelAngle, 0, this, false, quadrant );
     if ( candidate->intersects( preparedBuffer.get() ) )
