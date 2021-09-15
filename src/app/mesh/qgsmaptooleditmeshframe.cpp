@@ -1481,19 +1481,15 @@ void QgsMapToolEditMeshFrame::splitSelectedFaces()
 
 void QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget( bool checked )
 {
-  if ( !checked && mTransformDockWidget )
+  if ( mTransformDockWidget )
   {
-    mTransformDockWidget->close();
-    return;
-  }
-  else if ( mTransformDockWidget )
-  {
-    mTransformDockWidget->show();
+    mTransformDockWidget->setUserVisible( checked );
     return;
   }
 
   onEditingStarted();
   mTransformDockWidget = new QgsMeshTransformCoordinatesDockWidget( QgisApp::instance() );
+  mTransformDockWidget->setToggleVisibilityAction( mActionTransformCoordinates );
   mTransformDockWidget->setWindowTitle( tr( "Transform Mesh Vertices" ) );
   mTransformDockWidget->setObjectName( QStringLiteral( "TransformMeshVerticesDockWidget" ) );
   const QList<int> &inputVertices = mSelectedVertices.keys();
