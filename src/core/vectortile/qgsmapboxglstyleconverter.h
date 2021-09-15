@@ -538,6 +538,16 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
     static QString parseValue( const QVariant &value, QgsMapBoxGlStyleConversionContext &context );
     static QString parseKey( const QVariant &value );
 
+    /**
+     * \Checks if interpolation bottom/top values are numeric values
+     * \param bottomVariant bottom value
+     * \param topVariant top value
+     * \param bottom out: bottom value converted to double
+     * \param top out: top value converted to double
+     * \return true if both bottom and top value are numeric. False else (e.g. if one of the values is an expression)
+     */
+    static bool numericArgumentsOnly( const QVariant &bottomVariant, const QVariant &topVariant, double &bottom, double &top );
+
     QString mError;
     QStringList mWarnings;
 

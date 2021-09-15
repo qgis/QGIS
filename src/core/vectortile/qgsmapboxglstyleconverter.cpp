@@ -2121,11 +2121,16 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateOpacityByZoom( const QVar
   QString scaleExpression;
   if ( stops.length() <= 2 )
   {
+    const QVariant bv = stops.value( 0 ).toList().value( 1 );
+    const QVariant tv = stops.last().toList().value( 1 );
+    double bottom = 0.0;
+    double top = 0.0;
+    const bool numeric = numericArgumentsOnly( bv, tv, bottom, top );
     scaleExpression = QStringLiteral( "set_color_part(@symbol_color, 'alpha', %1)" )
                       .arg( interpolateExpression( stops.value( 0 ).toList().value( 0 ).toDouble(),
                             stops.last().toList().value( 0 ).toDouble(),
-                            QString( "(%1) * %2" ).arg( parseValue( stops.value( 0 ).toList().value( 1 ), context ) ).arg( maxOpacity ),
-                            QString( "(%1) * %2" ).arg( parseValue( stops.last().toList().value( 1 ), context ) ).arg( maxOpacity ), base, 1, &context ) );
+                            numeric ? QString::number( bottom * maxOpacity ) : QString( "(%1) * %2" ).arg( parseValue( bv, context ) ).arg( maxOpacity ),
+                            numeric ? QString::number( top * maxOpacity ) : QString( "(%1) * %2" ).arg( parseValue( tv, context ) ).arg( maxOpacity ), base, 1, &context ) );
   }
   else
   {
@@ -2142,14 +2147,21 @@ QString QgsMapBoxGlStyleConverter::parseOpacityStops( double base, const QVarian
 
   for ( int i = 0; i < stops.size() - 1; ++i )
   {
+    const QVariant bv = stops.value( i ).toList().value( 1 );
+    const QVariant tv = stops.value( i + 1 ).toList().value( 1 );
+    double bottom = 0.0;
+    double top = 0.0;
+    const bool numeric = numericArgumentsOnly( bv, tv, bottom, top );
+
     caseString += QStringLiteral( " WHEN @vector_tile_zoom >= %1 AND @vector_tile_zoom < %2 "
                                   "THEN set_color_part(@symbol_color, 'alpha', %3)" )
                   .arg( stops.value( i ).toList().value( 0 ).toString(),
                         stops.value( i + 1 ).toList().value( 0 ).toString(),
                         interpolateExpression( stops.value( i ).toList().value( 0 ).toDouble(),
                             stops.value( i + 1 ).toList().value( 0 ).toDouble(),
-                            QString( "(%1) * %2" ).arg( parseValue( stops.value( i ).toList().value( 1 ), context ) ).arg( maxOpacity ),
-                            QString( "(%1) * %2" ).arg( parseValue( stops.value( i + 1 ).toList().value( 1 ), context ) ).arg( maxOpacity ), base, 1, &context ) );
+                            numeric ? QString::number( bottom * maxOpacity ) : QString( "(%1) * %2" ).arg( parseValue( bv, context ) ).arg( maxOpacity ),
+                            numeric ? QString::number( top * maxOpacity ) : QString( "(%1) * %2" ).arg( parseValue( tv, context ) ).arg( maxOpacity ),
+                            base, 1, &context ) );
   }
 
   caseString += QStringLiteral( " WHEN @vector_tile_zoom >= %1 "
@@ -3034,6 +3046,18 @@ QgsVectorTileRenderer *QgsMapBoxGlStyleConverter::renderer() const
 QgsVectorTileLabeling *QgsMapBoxGlStyleConverter::labeling() const
 {
   return mLabeling ? mLabeling->clone() : nullptr;
+}
+
+bool QgsMapBoxGlStyleConverter::numericArgumentsOnly( const QVariant &bottomVariant, const QVariant &topVariant, double &bottom, double &top )
+{
+  if ( bottomVariant.canConvert( QMetaType::Double ) && topVariant.canConvert( QMetaType::Double ) )
+  {
+    bool bDoubleOk, tDoubleOk;
+    bottom = bottomVariant.toDouble( &bDoubleOk );
+    top = topVariant.toDouble( &tDoubleOk );
+    return ( bDoubleOk && tDoubleOk );
+  }
+  return false;
 }
 
 //
