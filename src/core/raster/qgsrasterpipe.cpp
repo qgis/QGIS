@@ -96,7 +96,11 @@ bool QgsRasterPipe::insert( int idx, QgsRasterInterface *interface )
     success = true;
     mInterfaces.insert( idx, interface );
     setRole( interface, idx );
-    QgsDebugMsgLevel( QStringLiteral( "inserted OK" ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "Pipe %1 inserted OK" ).arg( idx ), 4 );
+  }
+  else
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Error inserting pipe %1" ).arg( idx ), 4 );
   }
 
   // Connect or reconnect (after the test) interfaces
@@ -158,6 +162,19 @@ void QgsRasterPipe::unsetRole( QgsRasterInterface *interface )
   Role role = interfaceRole( interface );
   if ( role == UnknownRole ) return;
   mRoleMap.remove( role );
+
+  // Decrease all indexes greater than the removed one
+  const auto roleMapValues {mRoleMap.values()};
+  if ( roleIdx < *std::max_element( roleMapValues.begin(), roleMapValues.end() ) )
+  {
+    for ( auto it = mRoleMap.cbegin(); it != mRoleMap.cend(); ++it )
+    {
+      if ( it.value() > roleIdx )
+      {
+        mRoleMap[it.key()] = it.value() - 1;
+      }
+    }
+  }
 }
 
 bool QgsRasterPipe::set( QgsRasterInterface *interface )
@@ -283,11 +300,16 @@ bool QgsRasterPipe::remove( int idx )
     unsetRole( mInterfaces.at( idx ) );
     delete mInterfaces.at( idx );
     mInterfaces.remove( idx );
-    QgsDebugMsgLevel( QStringLiteral( "removed OK" ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "Pipe %1 removed OK" ).arg( idx ), 4 );
+  }
+  else
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Error removing pipe %1" ).arg( idx ), 4 );
   }
 
   // Connect or reconnect (after the test) interfaces
   connect( mInterfaces );
+
   return success;
 }
 
