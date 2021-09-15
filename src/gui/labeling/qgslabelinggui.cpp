@@ -253,8 +253,8 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
   mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( QgsUnitTypes::AngleMilliradiansSI ), QgsUnitTypes::AngleMilliradiansSI );
   mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( QgsUnitTypes::AngleMilNATO ), QgsUnitTypes::AngleMilNATO );
 
-  mCoordTypeComboBox->addItem( tr( "X/Y" ), static_cast< int >( QgsLabeling::CoordinateType::XY ) );
-  mCoordTypeComboBox->addItem( tr( "Point" ), static_cast< int >( QgsLabeling::CoordinateType::Point ) );
+  mCoordTypeComboBox->addItem( tr( "X/Y" ), static_cast< int >( Qgis::CoordinateType::XY ) );
+  mCoordTypeComboBox->addItem( tr( "Point" ), static_cast< int >( Qgis::CoordinateType::Point ) );
 
   // connections for groupboxes with separate activation checkboxes (that need to honor data defined setting)
   connect( mBufferDrawChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
@@ -632,7 +632,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.geometryGenerator = mGeometryGenerator->text();
   lyr.geometryGeneratorType = mGeometryGeneratorType->currentData().value<QgsWkbTypes::GeometryType>();
   lyr.geometryGeneratorEnabled = mGeometryGeneratorGroupBox->isChecked();
-  lyr.setPlacementCoordinateType( static_cast< QgsLabeling::CoordinateType >( mCoordTypeComboBox->currentData().toInt() ) );
+  lyr.setPlacementCoordinateType( static_cast< Qgis::CoordinateType >( mCoordTypeComboBox->currentData().toInt() ) );
 
   lyr.layerType = mLayer ? mLayer->geometryType() : mGeomType;
 

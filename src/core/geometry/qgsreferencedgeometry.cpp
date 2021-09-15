@@ -17,8 +17,6 @@
 
 #include "qgsreferencedgeometry.h"
 
-#include <QRegularExpression>
-
 QgsReferencedGeometryBase::QgsReferencedGeometryBase( const QgsCoordinateReferenceSystem &crs )
   : mCrs( crs )
 {}
@@ -66,34 +64,4 @@ QgsReferencedGeometry QgsReferencedGeometry::fromReferencedPointXY( const QgsRef
 QgsReferencedGeometry QgsReferencedGeometry::fromReferencedRect( const QgsReferencedRectangle &rectangle )
 {
   return QgsReferencedGeometry( QgsGeometry::fromRect( rectangle ), rectangle.crs() );
-}
-
-QgsReferencedGeometry QgsReferencedGeometry::fromEwkt( const QString &ewkt )
-{
-  Ewkt ewktinfo = parseEwkt( ewkt );
-
-  if ( ewktinfo.srid < 0 )
-    return QgsReferencedGeometry();
-
-  QgsGeometry geom = QgsGeometry::fromWkt( ewktinfo.wkt );
-  return QgsReferencedGeometry( geom, QgsCoordinateReferenceSystem::fromEpsgId( ewktinfo.srid ) );
-}
-
-QString QgsReferencedGeometry::asEwkt( int precision ) const
-{
-  return QStringLiteral( "SRID=%1;%2" ).arg( crs().postgisSrid() ).arg( asWkt( precision ) );
-}
-
-QgsReferencedGeometry::Ewkt QgsReferencedGeometry::parseEwkt( const QString &ewkt )
-{
-  thread_local const QRegularExpression regularExpressionSRID( "^SRID=(\\d+);" );
-
-  QRegularExpressionMatch regularExpressionMatch = regularExpressionSRID.match( ewkt );
-  if ( !regularExpressionMatch.hasMatch() )
-    return Ewkt();
-
-  Ewkt ewktStruct;
-  ewktStruct.wkt = ewkt.mid( regularExpressionMatch.captured( 0 ).size() );
-  ewktStruct.srid = regularExpressionMatch.captured( 1 ).toInt();
-  return ewktStruct;
 }

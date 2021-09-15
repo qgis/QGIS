@@ -1593,12 +1593,12 @@ void QgsTextFormatWidget::mCoordPointDDBtn_changed()
 
 void QgsTextFormatWidget::mCoordTypeComboBox_currentIndexChanged( int index )
 {
-  switch ( static_cast<QgsLabeling::CoordinateType>( index ) )
+  switch ( static_cast<Qgis::CoordinateType>( index ) )
   {
-    case QgsLabeling::CoordinateType::XY:
+    case Qgis::CoordinateType::XY:
       mCoordPositionStackWidget->setCurrentWidget( mCoordPositionXYStackWidgetPage );
       break;
-    case QgsLabeling::CoordinateType::Point:
+    case Qgis::CoordinateType::Point:
       mCoordPositionStackWidget->setCurrentWidget( mCoordPositionPointStackWidgetPage );
       break;
   }
@@ -2048,12 +2048,12 @@ void QgsTextFormatWidget::showBackgroundRadius( bool show )
 void QgsTextFormatWidget::updateDataDefinedAlignment()
 {
   // no data defined alignment without data defined position
-  switch ( static_cast<QgsLabeling::CoordinateType>( mCoordTypeComboBox->currentData().toInt() ) )
+  switch ( static_cast<Qgis::CoordinateType>( mCoordTypeComboBox->currentData().toInt() ) )
   {
-    case QgsLabeling::CoordinateType::XY:
+    case Qgis::CoordinateType::XY:
       mCoordAlignmentFrame->setEnabled( mCoordXDDBtn->isActive() && mCoordYDDBtn->isActive() );
       break;
-    case QgsLabeling::CoordinateType::Point:
+    case Qgis::CoordinateType::Point:
       mCoordAlignmentFrame->setEnabled( mCoordPointDDBtn->isActive() );
       break;
   }

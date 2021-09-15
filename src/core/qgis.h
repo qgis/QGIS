@@ -902,16 +902,16 @@ class CORE_EXPORT Qgis
     Q_ENUM( TemporalIntervalMatchMethod )
 
     /**
-     * Indicates the direction (forward or inverse) of a transform.
+     * Types of coordinate definitions
      *
      * \since QGIS 3.22
      */
-    enum class TransformDirection SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsCoordinateTransform, TransformDirection ) : int
-      {
-      Forward SIP_MONKEYPATCH_COMPAT_NAME( ForwardTransform ), //!< Forward transform (from source to destination)
-      Reverse SIP_MONKEYPATCH_COMPAT_NAME( ReverseTransform ) //!< Reverse/inverse transform (from destination to source)
+    enum class CoordinateType : int
+    {
+      XY, //!< Coordinate defined by X and Y values
+      Point //!< Coordinate defined by a point
     };
-    Q_ENUM( TransformDirection )
+    Q_ENUM( CoordinateType )
 
     /**
      * Flags which adjust the way maps are rendered.

@@ -554,10 +554,10 @@ The development version
       FindClosestMatchToEndOfRange
     };
 
-    enum class TransformDirection
-      {
-      Forward,
-      Reverse
+    enum class CoordinateType
+    {
+      XY,
+      Point
     };
 
     enum class MapSettingsFlag
