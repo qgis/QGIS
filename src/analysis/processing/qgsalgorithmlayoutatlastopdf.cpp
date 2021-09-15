@@ -26,45 +26,29 @@
 
 ///@cond PRIVATE
 
-QString QgsLayoutAtlasToPdfAlgorithm::name() const
-{
-  return QStringLiteral( "atlaslayouttopdf" );
-}
+// QgsLayoutAtlasToPdfAlgorithmBase
 
-QString QgsLayoutAtlasToPdfAlgorithm::displayName() const
-{
-  return QObject::tr( "Export atlas layout as PDF (single file)." );
-}
-
-QStringList QgsLayoutAtlasToPdfAlgorithm::tags() const
+QStringList QgsLayoutAtlasToPdfAlgorithmBase::tags() const
 {
   return QObject::tr( "layout,atlas,composer,composition,save" ).split( ',' );
 }
 
-QString QgsLayoutAtlasToPdfAlgorithm::group() const
+QString QgsLayoutAtlasToPdfAlgorithmBase::group() const
 {
   return QObject::tr( "Cartography" );
 }
 
-QString QgsLayoutAtlasToPdfAlgorithm::groupId() const
+QString QgsLayoutAtlasToPdfAlgorithmBase::groupId() const
 {
   return QStringLiteral( "cartography" );
 }
 
-QString QgsLayoutAtlasToPdfAlgorithm::shortDescription() const
+QgsProcessingAlgorithm::Flags QgsLayoutAtlasToPdfAlgorithmBase::flags() const
 {
-  return QObject::tr( "Exports an atlas layout as a single PDF file)." );
+  return QgsProcessingAlgorithm::flags() | FlagNoThreading;
 }
 
-QString QgsLayoutAtlasToPdfAlgorithm::shortHelpString() const
-{
-  return QObject::tr( "This algorithm outputs an atlas layout as a single PDF file.\n\n"
-                      "If a coverage layer is set, the selected layout's atlas settings exposed in this algorithm "
-                      "will be overwritten. In this case, an empty filter or sort by expression will turn those "
-                      "settings off." );
-}
-
-void QgsLayoutAtlasToPdfAlgorithm::initAlgorithm( const QVariantMap & )
+void QgsLayoutAtlasToPdfAlgorithmBase::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterLayout( QStringLiteral( "LAYOUT" ), QObject::tr( "Atlas layout" ) ) );
 
@@ -72,8 +56,6 @@ void QgsLayoutAtlasToPdfAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "FILTER_EXPRESSION" ), QObject::tr( "Filter expression" ), QString(), QStringLiteral( "COVERAGE_LAYER" ), true ) );
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "SORTBY_EXPRESSION" ), QObject::tr( "Sort expression" ), QString(), QStringLiteral( "COVERAGE_LAYER" ), true ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "SORTBY_REVERSE" ), QObject::tr( "Reverse sort order (used when a sort expression is provided)" ), false, true ) );
-
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "PDF file" ), QObject::tr( "PDF Format" ) + " (*.pdf *.PDF)" ) );
 
   std::unique_ptr< QgsProcessingParameterMultipleLayers > layersParam = std::make_unique< QgsProcessingParameterMultipleLayers>( QStringLiteral( "LAYERS" ), QObject::tr( "Map layers to assign to unlocked map item(s)" ), QgsProcessing::TypeMapLayer, QVariant(), true );
   layersParam->setFlags( layersParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
@@ -103,7 +85,7 @@ void QgsLayoutAtlasToPdfAlgorithm::initAlgorithm( const QVariantMap & )
   simplify->setFlags( simplify->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( simplify.release() );
 
-  QStringList textExportOptions
+  const QStringList textExportOptions
   {
     QObject::tr( "Always Export Text as Paths (Recommended)" ),
     QObject::tr( "Always Export Text as Text Objects" )
@@ -114,9 +96,35 @@ void QgsLayoutAtlasToPdfAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( textFormat.release() );
 }
 
-QgsProcessingAlgorithm::Flags QgsLayoutAtlasToPdfAlgorithm::flags() const
+// QgsLayoutAtlasToPdfAlgorithm
+
+QString QgsLayoutAtlasToPdfAlgorithm::name() const
 {
-  return QgsProcessingAlgorithm::flags() | FlagNoThreading;
+  return QStringLiteral( "atlaslayouttopdf" );
+}
+
+QString QgsLayoutAtlasToPdfAlgorithm::displayName() const
+{
+  return QObject::tr( "Export atlas layout as PDF (single file)" );
+}
+
+QString QgsLayoutAtlasToPdfAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Exports an atlas layout as a single PDF file." );
+}
+
+QString QgsLayoutAtlasToPdfAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm outputs an atlas layout as a single PDF file.\n\n"
+                      "If a coverage layer is set, the selected layout's atlas settings exposed in this algorithm "
+                      "will be overwritten. In this case, an empty filter or sort by expression will turn those "
+                      "settings off." );
+}
+
+void QgsLayoutAtlasToPdfAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  QgsLayoutAtlasToPdfAlgorithmBase::initAlgorithm();
+  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "PDF file" ), QObject::tr( "PDF Format" ) + " (*.pdf *.PDF)" ) );
 }
 
 QgsLayoutAtlasToPdfAlgorithm *QgsLayoutAtlasToPdfAlgorithm::createInstance() const
@@ -168,7 +176,7 @@ QVariantMap QgsLayoutAtlasToPdfAlgorithm::processAlgorithm( const QVariantMap &p
     throw QgsProcessingException( QObject::tr( "Layout being export doesn't have an enabled atlas" ) );
   }
 
-  QgsLayoutExporter exporter( layout.get() );
+  const QgsLayoutExporter exporter( layout.get() );
   QgsLayoutExporter::PdfExportSettings settings;
 
   if ( parameters.value( QStringLiteral( "DPI" ) ).isValid() )
@@ -276,57 +284,13 @@ QString QgsLayoutAtlasToMultiplePdfAlgorithm::shortHelpString() const
 
 void QgsLayoutAtlasToMultiplePdfAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterLayout( QStringLiteral( "LAYOUT" ), QObject::tr( "Atlas layout" ) ) );
-
-  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "COVERAGE_LAYER" ), QObject::tr( "Coverage layer" ), QList< int >(), QVariant(), true ) );
-  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "FILTER_EXPRESSION" ), QObject::tr( "Filter expression" ), QString(), QStringLiteral( "COVERAGE_LAYER" ), true ) );
-  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "SORTBY_EXPRESSION" ), QObject::tr( "Sort expression" ), QString(), QStringLiteral( "COVERAGE_LAYER" ), true ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "SORTBY_REVERSE" ), QObject::tr( "Reverse sort order (used when a sort expression is provided)" ), false, true ) );
-
+  QgsLayoutAtlasToPdfAlgorithmBase::initAlgorithm();
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "OUTPUT_FILENAME" ), QObject::tr( "Output filename" ), QString( "'output_'||@atlas_featurenumber" ), QString(), false ) );
   addParameter( new QgsProcessingParameterFile( QStringLiteral( "OUTPUT_FOLDER" ), QObject::tr( "Output folder" ), QgsProcessingParameterFile::Folder ) );
-
-  std::unique_ptr< QgsProcessingParameterMultipleLayers > layersParam = std::make_unique< QgsProcessingParameterMultipleLayers>( QStringLiteral( "LAYERS" ), QObject::tr( "Map layers to assign to unlocked map item(s)" ), QgsProcessing::TypeMapLayer, QVariant(), true );
-  layersParam->setFlags( layersParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
-  addParameter( layersParam.release() );
-
-  std::unique_ptr< QgsProcessingParameterNumber > dpiParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "DPI" ), QObject::tr( "DPI (leave blank for default layout DPI)" ), QgsProcessingParameterNumber::Double, QVariant(), true, 0 );
-  dpiParam->setFlags( dpiParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
-  addParameter( dpiParam.release() );
-
-  std::unique_ptr< QgsProcessingParameterBoolean > forceVectorParam = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "FORCE_VECTOR" ), QObject::tr( "Always export as vectors" ), false );
-  forceVectorParam->setFlags( forceVectorParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
-  addParameter( forceVectorParam.release() );
-
-  std::unique_ptr< QgsProcessingParameterBoolean > appendGeorefParam = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "GEOREFERENCE" ), QObject::tr( "Append georeference information" ), true );
-  appendGeorefParam->setFlags( appendGeorefParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
-  addParameter( appendGeorefParam.release() );
-
-  std::unique_ptr< QgsProcessingParameterBoolean > exportRDFParam = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "INCLUDE_METADATA" ), QObject::tr( "Export RDF metadata (title, author, etc.)" ), true );
-  exportRDFParam->setFlags( exportRDFParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
-  addParameter( exportRDFParam.release() );
-
-  std::unique_ptr< QgsProcessingParameterBoolean > disableTiled = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "DISABLE_TILED" ), QObject::tr( "Disable tiled raster layer exports" ), false );
-  disableTiled->setFlags( disableTiled->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
-  addParameter( disableTiled.release() );
-
-  std::unique_ptr< QgsProcessingParameterBoolean > simplify = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "SIMPLIFY" ), QObject::tr( "Simplify geometries to reduce output file size" ), true );
-  simplify->setFlags( simplify->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
-  addParameter( simplify.release() );
-
-  const QStringList textExportOptions
-  {
-    QObject::tr( "Always Export Text as Paths (Recommended)" ),
-    QObject::tr( "Always Export Text as Text Objects" )
-  };
-
-  std::unique_ptr< QgsProcessingParameterEnum > textFormat = std::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "TEXT_FORMAT" ), QObject::tr( "Text export" ), textExportOptions, false, 0 );
-  textFormat->setFlags( textFormat->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
-  addParameter( textFormat.release() );
 }
 
 
-QgsLayoutAtlasToPdfAlgorithm *QgsLayoutAtlasToMultiplePdfAlgorithm::createInstance() const
+QgsLayoutAtlasToMultiplePdfAlgorithm *QgsLayoutAtlasToMultiplePdfAlgorithm::createInstance() const
 {
   return new QgsLayoutAtlasToMultiplePdfAlgorithm();
 }
