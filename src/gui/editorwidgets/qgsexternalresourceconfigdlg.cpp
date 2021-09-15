@@ -182,7 +182,7 @@ QVariantMap QgsExternalResourceConfigDlg::config()
               mStorageButtonGroup->checkedId() : QgsFileWidget::GetFile );
 
   // Save Relative Paths option
-  if ( mRelativeGroupBox->isVisible() && mRelativeGroupBox->isChecked() )
+  if ( !mStorageType->currentIndex() && mRelativeGroupBox->isChecked() )
   {
     cfg.insert( QStringLiteral( "RelativeStorage" ), mRelativeButtonGroup->checkedId() );
   }
