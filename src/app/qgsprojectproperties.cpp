@@ -45,6 +45,7 @@
 #include "qgssymbolselectordialog.h"
 #include "qgsrelationmanagerdialog.h"
 #include "qgsrelationmanager.h"
+#include "qgsdoublevalidator.h"
 #include "qgscolorschemeregistry.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolordialog.h"
@@ -185,6 +186,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   connect( radAutomatic, &QAbstractButton::toggled, labelDP, &QWidget::setDisabled );
   connect( radManual, &QAbstractButton::toggled, spinBoxDP, &QWidget::setEnabled );
   connect( radManual, &QAbstractButton::toggled, labelDP, &QWidget::setEnabled );
+
+  leSemiMajor->setValidator( new QgsDoubleValidator( leSemiMajor ) );
+  leSemiMinor->setValidator( new QgsDoubleValidator( leSemiMinor ) );
 
   QgsSettings settings;
 
@@ -1137,8 +1141,17 @@ void QgsProjectProperties::apply()
     if ( leSemiMajor->isModified() || leSemiMinor->isModified() )
     {
       QgsDebugMsgLevel( QStringLiteral( "Using parameteric major/minor" ), 4 );
-      major = QLocale().toDouble( leSemiMajor->text() );
-      minor = QLocale().toDouble( leSemiMinor->text() );
+      bool ok;
+      double val {QgsDoubleValidator::toDouble( leSemiMajor->text(), &ok )};
+      if ( ok )
+      {
+        major = val;
+      }
+      val = QgsDoubleValidator::toDouble( leSemiMinor->text(), &ok );
+      if ( ok )
+      {
+        minor = val;
+      }
     }
     QgsProject::instance()->setEllipsoid( QStringLiteral( "PARAMETER:%1:%2" )
                                           .arg( major, 0, 'g', 17 )
@@ -2439,8 +2452,8 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
   if ( leSemiMajor->isModified() || leSemiMinor->isModified() )
   {
     QgsDebugMsgLevel( QStringLiteral( "Saving major/minor" ), 4 );
-    mEllipsoidList[ mEllipsoidIndex ].semiMajor = QLocale().toDouble( leSemiMajor->text() );
-    mEllipsoidList[ mEllipsoidIndex ].semiMinor = QLocale().toDouble( leSemiMinor->text() );
+    mEllipsoidList[ mEllipsoidIndex ].semiMajor = QgsDoubleValidator::toDouble( leSemiMajor->text() );
+    mEllipsoidList[ mEllipsoidIndex ].semiMinor = QgsDoubleValidator::toDouble( leSemiMinor->text() );
   }
 
   mEllipsoidIndex = newIndex;

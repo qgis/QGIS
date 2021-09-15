@@ -104,14 +104,14 @@ class GUI_EXPORT QgsDoubleValidator : public QRegularExpressionValidator
 
     /**
      * Converts \a input string to double value.
-     * It used locale interpretation first
+     * It uses locale interpretation first
      * and C locale interpretation as fallback
      */
     static double toDouble( const QString &input, bool *ok ) SIP_SKIP;
 
     /**
      * Converts \a input string to double value.
-     * It used locale interpretation first
+     * It uses locale interpretation first
      * and C locale interpretation as fallback
      */
     static double toDouble( const QString &input );
