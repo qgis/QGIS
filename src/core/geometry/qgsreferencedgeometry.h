@@ -183,6 +183,7 @@ class CORE_EXPORT QgsReferencedGeometry : public QgsGeometry, public QgsReferenc
      */
     static QgsReferencedGeometry fromReferencedRect( const QgsReferencedRectangle &rectangle );
 
+
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode

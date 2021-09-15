@@ -63,7 +63,6 @@
 #include "qgsvectorlayerdiagramprovider.h"
 #include "qgsvectorlayerlabelprovider.h"
 #include "qgsgeometry.h"
-#include "qgsreferencedgeometry.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgspainting.h"
 #include "qgsproject.h"
