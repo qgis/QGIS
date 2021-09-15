@@ -14,7 +14,6 @@ import qgis  # NOQA
 
 from qgis.core import (QgsRectangle,
                        QgsPointXY,
-                       QgsReferencedGeometry,
                        QgsReferencedRectangle,
                        QgsReferencedPointXY,
                        QgsCoordinateReferenceSystem)
@@ -98,18 +97,6 @@ class TestQgsReferencedGeometry(unittest.TestCase):
         self.assertNotEqual(point, point2)
         point2 = QgsReferencedPointXY(QgsPointXY(1.1, 2.0), QgsCoordinateReferenceSystem('epsg:3111'))
         self.assertNotEqual(point, point2)
-
-    def testEwktToWkt(self):
-
-        referencedGeometry = QgsReferencedGeometry.fromEwkt('SRID=2056;Point (-1824522.133701167 -3591183.4426016295)')
-        self.assertEqual(referencedGeometry.asEwkt(4), 'SRID=2056;Point (-1824522.1337 -3591183.4426)')
-
-        referencedGeometryPoint = QgsReferencedGeometry.fromEwkt('SRID=2056;Point (10 10)').asPoint()
-        self.assertTrue(referencedGeometryPoint)
-        self.assertEqual(referencedGeometryPoint.x(), 10)
-
-        referencedGeometryInvalid = QgsReferencedGeometry.fromEwkt('INVALID=2056;Point (-1824522.133701167 -3591183.4426016295)')
-        self.assertFalse(referencedGeometryInvalid)
 
 
 if __name__ == '__main__':
