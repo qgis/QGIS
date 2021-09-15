@@ -413,6 +413,11 @@ QWidgetAction *QgsMapToolEditMeshFrame::forceByLineWidgetActionSettings() const
   return mWidgetActionForceByLine;
 }
 
+QAction *QgsMapToolEditMeshFrame::reindexAction() const
+{
+  return mActionReindexMesh;
+}
+
 void QgsMapToolEditMeshFrame::initialize()
 {
   if ( !mFaceRubberBand )
@@ -1652,10 +1657,10 @@ void QgsMapToolEditMeshFrame::forceBySelectedLayerPolyline()
 
 void QgsMapToolEditMeshFrame::reindexMesh()
 {
+  onEditingStarted();
+
   if ( !mCurrentLayer || !mCurrentLayer->isEditable() )
     return;
-
-  onEditingStarted();
 
   if ( QMessageBox::question( canvas(), tr( "Reindex the Mesh" ),
                               tr( "Do you want to reindex the faces and vertices of the mesh layer %1?" ).arg( mCurrentLayer->name() ),

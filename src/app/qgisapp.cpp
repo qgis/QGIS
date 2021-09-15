@@ -3869,6 +3869,8 @@ void QgisApp::createToolBars()
     mDigitizeModeToolButton->setMenu( digitizeMenu );
     for ( QAction *mapToolAction : editMeshMapTool->mapToolActions() )
       mMapToolGroup->addAction( mapToolAction );
+
+    mMeshMenu->addAction( editMeshMapTool->reindexAction() );
   }
 
   QToolButton *annotationLayerToolButton = new QToolButton();

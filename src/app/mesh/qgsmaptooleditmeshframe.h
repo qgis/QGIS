@@ -128,6 +128,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QList<QAction *> forceByLinesActions() const;
     QAction *defaultForceAction() const;
     QWidgetAction *forceByLineWidgetActionSettings() const;
+    QAction *reindexAction() const;
 
     void setActionsEnable( bool enable );
 
