@@ -671,14 +671,14 @@ class CORE_EXPORT QgsPalLayerSettings
      * \see setPlacementCoordinateType()
      * \since QGIS 3.22
      */
-    QgsLabeling::CoordinateType placementCoordinateType() const;
+    Qgis::CoordinateType placementCoordinateType() const;
 
     /**
      * Set coordinates type for data defined placement.
      * \see placementCoordinateType()
      * \since QGIS 3.22
      */
-    void setPlacementCoordinateType( QgsLabeling::CoordinateType placementCoordinateType );
+    void setPlacementCoordinateType( Qgis::CoordinateType placementCoordinateType );
 
     //-- rendering
 
@@ -1163,7 +1163,7 @@ class CORE_EXPORT QgsPalLayerSettings
     //! Unit for rotation of labels.
     QgsUnitTypes::AngleUnit mRotationUnit = QgsUnitTypes::AngleDegrees;
 
-    QgsLabeling::CoordinateType mPlacementCoordinateType = QgsLabeling::CoordinateType::XY;
+    Qgis::CoordinateType mPlacementCoordinateType = Qgis::CoordinateType::XY;
 
     static void initPropertyDefinitions();
 };

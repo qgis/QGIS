@@ -642,7 +642,7 @@ bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess
     QgsAttributes attributes = f.attributes();
     switch ( mCurrentLabel.settings.placementCoordinateType() )
     {
-      case QgsLabeling::CoordinateType::XY:
+      case Qgis::CoordinateType::XY:
       {
         if ( !attributes.at( xCol ).isNull() )
           x = attributes.at( xCol ).toDouble( &xSuccess );
@@ -650,7 +650,7 @@ bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess
           y = attributes.at( yCol ).toDouble( &ySuccess );
       }
       break;
-      case QgsLabeling::CoordinateType::Point:
+      case Qgis::CoordinateType::Point:
       {
         if ( !attributes.at( pointCol ).isNull() )
         {
@@ -754,7 +754,7 @@ bool QgsMapToolLabel::changeCurrentLabelDataDefinedPosition( const QVariant &x, 
 {
   switch ( mCurrentLabel.settings.placementCoordinateType() )
   {
-    case QgsLabeling::CoordinateType::XY:
+    case Qgis::CoordinateType::XY:
     {
       QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, mCurrentLabel.settings, mCurrentLabel.layer );
       QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, mCurrentLabel.settings, mCurrentLabel.layer );
@@ -766,7 +766,7 @@ bool QgsMapToolLabel::changeCurrentLabelDataDefinedPosition( const QVariant &x, 
         return false;
     }
     break;
-    case QgsLabeling::CoordinateType::Point:
+    case Qgis::CoordinateType::Point:
     {
       QString pointColName = dataDefinedColumnName( QgsPalLayerSettings::PositionPoint, mCurrentLabel.settings, mCurrentLabel.layer );
       int pointCol = mCurrentLabel.layer->fields().lookupField( pointColName );
@@ -924,7 +924,7 @@ bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSe
 
   switch ( mCurrentLabel.settings.placementCoordinateType() )
   {
-    case QgsLabeling::CoordinateType::XY:
+    case Qgis::CoordinateType::XY:
     {
       QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, settings, vlayer );
       QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, settings, vlayer );
@@ -934,7 +934,7 @@ bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSe
         return false;
     }
     break;
-    case QgsLabeling::CoordinateType::Point:
+    case Qgis::CoordinateType::Point:
     {
       QString pointColName = dataDefinedColumnName( QgsPalLayerSettings::PositionPoint, settings, vlayer );
       pointCol = vlayer->fields().lookupField( pointColName );

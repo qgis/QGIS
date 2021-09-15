@@ -18,7 +18,6 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QObject>
 #include <QFlags>
 
 /**
@@ -31,8 +30,6 @@
  */
 class CORE_EXPORT QgsLabeling
 {
-    Q_GADGET
-
   public:
 
     /**
@@ -58,18 +55,6 @@ class CORE_EXPORT QgsLabeling
       AllowPlacementInsideOfPolygon = 1 << 1, //!< Labels can be placed inside a polygon feature
     };
     Q_DECLARE_FLAGS( PolygonPlacementFlags, PolygonPlacementFlag )
-
-    /**
-     * Types of coordinate definitions
-     *
-     * \since QGIS 3.22
-     */
-    enum class CoordinateType : int
-    {
-      XY, //!< Coordinate defined by X and Y values
-      Point //!< Coordinate defined by a point
-    };
-    Q_ENUM( CoordinateType )
 
 };
 

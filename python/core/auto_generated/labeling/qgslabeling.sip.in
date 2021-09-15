@@ -21,9 +21,6 @@ Contains constants and enums relating to labeling.
 #include "qgslabeling.h"
 %End
   public:
-    static const QMetaObject staticMetaObject;
-
-  public:
 
     enum LinePlacementFlag
     {
@@ -42,12 +39,6 @@ Contains constants and enums relating to labeling.
     };
     typedef QFlags<QgsLabeling::PolygonPlacementFlag> PolygonPlacementFlags;
 
-
-    enum class CoordinateType
-    {
-      XY,
-      Point
-    };
 
 };
 

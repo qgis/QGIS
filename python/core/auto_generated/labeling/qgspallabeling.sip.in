@@ -419,7 +419,7 @@ Set unit for rotation of labels.
 
     int priority;
 
-    QgsLabeling::CoordinateType placementCoordinateType() const;
+    Qgis::CoordinateType placementCoordinateType() const;
 %Docstring
 Coordinates type for data defined placement.
 
@@ -428,7 +428,7 @@ Coordinates type for data defined placement.
 .. versionadded:: 3.22
 %End
 
-    void setPlacementCoordinateType( QgsLabeling::CoordinateType placementCoordinateType );
+    void setPlacementCoordinateType( Qgis::CoordinateType placementCoordinateType );
 %Docstring
 Set coordinates type for data defined placement.
 

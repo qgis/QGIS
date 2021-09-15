@@ -188,7 +188,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
       {
         switch ( mCurrentLabel.settings.placementCoordinateType() )
         {
-          case QgsLabeling::CoordinateType::XY:
+          case Qgis::CoordinateType::XY:
           {
             mPalProperties.clear();
             mPalProperties << QgsPalLayerSettings::PositionX;
@@ -214,7 +214,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
             yCol = indexes[ QgsPalLayerSettings::PositionY ];
           }
           break;
-          case QgsLabeling::CoordinateType::Point:
+          case Qgis::CoordinateType::Point:
           {
             mPalProperties.clear();
             mPalProperties << QgsPalLayerSettings::PositionPoint;
@@ -251,7 +251,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
 
       bool usesAuxFields = vlayer->fields().fieldOrigin( xCol ) == QgsFields::OriginJoin
                            && vlayer->fields().fieldOrigin( yCol ) == QgsFields::OriginJoin;
-      if ( mCurrentLabel.settings.placementCoordinateType() == QgsLabeling::CoordinateType::Point
+      if ( mCurrentLabel.settings.placementCoordinateType() == Qgis::CoordinateType::Point
            && !mCurrentLabel.pos.isDiagram )
         usesAuxFields = vlayer->fields().fieldOrigin( pointCol ) == QgsFields::OriginJoin;
 
@@ -366,7 +366,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
 
         bool success = false;
         if ( !isCalloutMove
-             && vlayer->labeling()->settings().placementCoordinateType() != QgsLabeling::CoordinateType::XY )
+             && vlayer->labeling()->settings().placementCoordinateType() != Qgis::CoordinateType::XY )
         {
           success = changeCurrentLabelDataDefinedPosition( xPosNew, yPosNew );
         }

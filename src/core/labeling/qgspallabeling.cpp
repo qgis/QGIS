@@ -620,12 +620,12 @@ void QgsPalLayerSettings::setRotationUnit( QgsUnitTypes::AngleUnit angleUnit )
   mRotationUnit = angleUnit;
 }
 
-QgsLabeling::CoordinateType QgsPalLayerSettings::placementCoordinateType() const
+Qgis::CoordinateType QgsPalLayerSettings::placementCoordinateType() const
 {
   return mPlacementCoordinateType;
 }
 
-void QgsPalLayerSettings::setPlacementCoordinateType( QgsLabeling::CoordinateType placementCoordinateType )
+void QgsPalLayerSettings::setPlacementCoordinateType( Qgis::CoordinateType placementCoordinateType )
 {
   mPlacementCoordinateType = placementCoordinateType;
 }
@@ -853,7 +853,7 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   {
     repeatDistanceMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( QStringLiteral( "labeling/repeatDistanceMapUnitScale" ) ).toString() );
   }
-  mPlacementCoordinateType = layer->customEnumProperty( QStringLiteral( "labeling/placementCoordinateType" ), QgsLabeling::CoordinateType::XY );
+  mPlacementCoordinateType = layer->customEnumProperty( QStringLiteral( "labeling/placementCoordinateType" ), Qgis::CoordinateType::XY );
 
   // rendering
   double scalemn = layer->customProperty( QStringLiteral( "labeling/scaleMin" ), QVariant( 0 ) ).toDouble();
@@ -1104,7 +1104,7 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
 
   layerType = qgsEnumKeyToValue( placementElem.attribute( QStringLiteral( "layerType" ) ), QgsWkbTypes::UnknownGeometry );
 
-  mPlacementCoordinateType = qgsEnumKeyToValue( placementElem.attribute( QStringLiteral( "coordinateType" ), qgsEnumValueToKey( QgsLabeling::CoordinateType::XY ) ), QgsLabeling::CoordinateType::XY );
+  mPlacementCoordinateType = qgsEnumKeyToValue( placementElem.attribute( QStringLiteral( "coordinateType" ), qgsEnumValueToKey( Qgis::CoordinateType::XY ) ), Qgis::CoordinateType::XY );
 
   // rendering
   QDomElement renderingElem = elem.firstChildElement( QStringLiteral( "rendering" ) );
@@ -2384,7 +2384,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     bool ddPosition = false;
     switch ( mPlacementCoordinateType )
     {
-      case QgsLabeling::CoordinateType::XY:
+      case Qgis::CoordinateType::XY:
       {
         if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::PositionX )
              && mDataDefinedProperties.isActive( QgsPalLayerSettings::PositionY )
@@ -2401,7 +2401,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
         }
       }
       break;
-      case QgsLabeling::CoordinateType::Point:
+      case Qgis::CoordinateType::Point:
       {
         if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::PositionPoint )
              && !mDataDefinedProperties.value( QgsPalLayerSettings::PositionPoint, context.expressionContext() ).isNull() )
@@ -2416,12 +2416,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
           }
           else if ( !pointAsVariant.toString().isEmpty() )
           {
-            if ( !point.fromWkt( pointAsVariant.toString() ) )
-            {
-              QgsReferencedGeometry referencedGeometryPoint = QgsReferencedGeometry::fromEwkt( pointAsVariant.toString() );
-              if ( !referencedGeometryPoint.isNull() )
-                point = QgsPoint( referencedGeometryPoint.asPoint() );
-            }
+            point.fromWkt( pointAsVariant.toString() );
           }
 
           if ( !point.isEmpty() )
