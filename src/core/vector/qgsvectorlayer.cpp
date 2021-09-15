@@ -1194,8 +1194,7 @@ bool QgsVectorLayer::deleteSelectedFeatures( int *deletedCount, QgsVectorLayer::
   int count = mSelectedFeatureIds.size();
   // Make a copy since deleteFeature modifies mSelectedFeatureIds
   QgsFeatureIds selectedFeatures( mSelectedFeatureIds );
-  const auto constSelectedFeatures = selectedFeatures;
-  for ( QgsFeatureId fid : constSelectedFeatures )
+  for ( QgsFeatureId fid : std::as_const( selectedFeatures ) )
   {
     deleted += deleteFeature( fid, context );  // removes from selection
   }
@@ -3385,7 +3384,6 @@ bool QgsVectorLayer::deleteFeature( QgsFeatureId fid, QgsVectorLayer::DeleteCont
 
   if ( res )
   {
-    mSelectedFeatureIds.remove( fid ); // remove it from selection
     updateExtents();
   }
 
@@ -3822,6 +3820,13 @@ void QgsVectorLayer::endEditCommand()
   mEditCommandActive = false;
   if ( !mDeletedFids.isEmpty() )
   {
+    if ( selectedFeatureCount() > 0 )
+    {
+      for ( const auto deletedFid : std::as_const( mDeletedFids ) )
+      {
+        mSelectedFeatureIds.remove( deletedFid );
+      }
+    }
     emit featuresDeleted( mDeletedFids );
     mDeletedFids.clear();
   }
@@ -5277,9 +5282,14 @@ void QgsVectorLayer::onJoinedFieldsChanged()
 void QgsVectorLayer::onFeatureDeleted( QgsFeatureId fid )
 {
   if ( mEditCommandActive )
+  {
     mDeletedFids << fid;
+  }
   else
+  {
+    mSelectedFeatureIds.remove( fid );
     emit featuresDeleted( QgsFeatureIds() << fid );
+  }
 
   emit featureDeleted( fid );
 }
