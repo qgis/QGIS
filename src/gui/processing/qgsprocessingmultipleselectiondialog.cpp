@@ -71,6 +71,10 @@ QgsProcessingMultipleSelectionPanelWidget::QgsProcessingMultipleSelectionPanelWi
   populateList( availableOptions, selectedOptions );
 
   connect( mModel, &QStandardItemModel::itemChanged, this, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged );
+
+  // When user moves an item, a new item is created and an other one is removed, so we need to fire selectionChanged
+  // see https://github.com/qgis/QGIS/issues/44270
+  connect( mModel, &QStandardItemModel::rowsRemoved, this, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged );
 }
 
 void QgsProcessingMultipleSelectionPanelWidget::setValueFormatter( const std::function<QString( const QVariant & )> &formatter )
