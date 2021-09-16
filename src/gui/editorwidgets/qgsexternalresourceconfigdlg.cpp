@@ -178,11 +178,10 @@ QVariantMap QgsExternalResourceConfigDlg::config()
     cfg.insert( QStringLiteral( "DefaultRoot" ), mRootPath->text() );
 
   // Save Storage Mode
-  cfg.insert( QStringLiteral( "StorageMode" ), !mStorageType->currentIndex() ?
-              mStorageButtonGroup->checkedId() : QgsFileWidget::GetFile );
+  cfg.insert( QStringLiteral( "StorageMode" ), mStorageButtonGroup->checkedId() );
 
   // Save Relative Paths option
-  if ( !mStorageType->currentIndex() && mRelativeGroupBox->isChecked() )
+  if ( mRelativeGroupBox->isChecked() )
   {
     cfg.insert( QStringLiteral( "RelativeStorage" ), mRelativeButtonGroup->checkedId() );
   }
