@@ -60,6 +60,7 @@ class TestQgsOgrUtils: public QObject
     void parseStyleString();
     void convertStyleString();
     void ogrCrsConversion();
+    void ogrFieldToVariant();
 
   private:
 
@@ -317,7 +318,7 @@ void TestQgsOgrUtils::getOgrFeatureAttribute()
   val = QgsOgrUtils::getOgrFeatureAttribute( oFeat, fields, 4, QTextCodec::codecForName( "System" ), &ok );
   QVERIFY( ok );
   QVERIFY( val.isValid() );
-  QCOMPARE( val, QVariant( QDateTime( QDate( 2005, 3, 5 ), QTime( 6, 45, 0 ) ) ) );
+  QCOMPARE( val, QVariant( QDateTime( QDate( 2005, 3, 5 ), QTime( 6, 45, 0, 123 ) ) ) );
 
   val = QgsOgrUtils::getOgrFeatureAttribute( oFeat, fields, 5, QTextCodec::codecForName( "System" ), &ok );
   QVERIFY( ok );
@@ -358,7 +359,7 @@ void TestQgsOgrUtils::readOgrFeatureAttributes()
   QCOMPARE( f.attribute( "dbl_field" ), QVariant( 8.9 ) );
   QCOMPARE( f.attribute( "date_field" ), QVariant( QDate( 2005, 01, 05 ) ) );
   QCOMPARE( f.attribute( "time_field" ), QVariant( QTime( 8, 11, 01 ) ) );
-  QCOMPARE( f.attribute( "datetime_field" ), QVariant( QDateTime( QDate( 2005, 3, 5 ), QTime( 6, 45, 0 ) ) ) );
+  QCOMPARE( f.attribute( "datetime_field" ), QVariant( QDateTime( QDate( 2005, 3, 5 ), QTime( 6, 45, 0, 123 ) ) ) );
   QCOMPARE( f.attribute( "string_field" ), QVariant( "a string" ) );
 
   OGR_F_Destroy( oFeat );
@@ -397,7 +398,7 @@ void TestQgsOgrUtils::readOgrFeature()
   QCOMPARE( f.attribute( "dbl_field" ), QVariant( 8.9 ) );
   QCOMPARE( f.attribute( "date_field" ), QVariant( QDate( 2005, 01, 05 ) ) );
   QCOMPARE( f.attribute( "time_field" ), QVariant( QTime( 8, 11, 01 ) ) );
-  QCOMPARE( f.attribute( "datetime_field" ), QVariant( QDateTime( QDate( 2005, 3, 5 ), QTime( 6, 45, 0 ) ) ) );
+  QCOMPARE( f.attribute( "datetime_field" ), QVariant( QDateTime( QDate( 2005, 3, 5 ), QTime( 6, 45, 0, 123 ) ) ) );
   QCOMPARE( f.attribute( "string_field" ), QVariant( "a string" ) );
   QVERIFY( f.hasGeometry() );
   QCOMPARE( f.geometry().constGet()->wkbType(), QgsWkbTypes::LineString );
@@ -750,6 +751,34 @@ void TestQgsOgrUtils::ogrCrsConversion()
     OSRRelease( srs );
   }
 #endif
+}
+
+void TestQgsOgrUtils::ogrFieldToVariant()
+{
+  OGRDataSourceH hDS = OGROpen( mTestFile.toUtf8().constData(), false, nullptr );
+  QVERIFY( hDS );
+  OGRLayerH ogrLayer = OGR_DS_GetLayer( hDS, 0 );
+  QVERIFY( ogrLayer );
+  OGRFeatureH oFeat;
+  oFeat = OGR_L_GetNextFeature( ogrLayer );
+  QVERIFY( oFeat );
+  OGRField oFieldInt, oFieldDbl, oFieldDate, oFieldTime, oFieldDatetime, oFieldString;
+  oFieldInt = *OGR_F_GetRawFieldRef( oFeat, 0 );
+  oFieldDbl = *OGR_F_GetRawFieldRef( oFeat, 1 );
+  oFieldDate = *OGR_F_GetRawFieldRef( oFeat, 2 );
+  oFieldTime = *OGR_F_GetRawFieldRef( oFeat, 3 );
+  oFieldDatetime = *OGR_F_GetRawFieldRef( oFeat, 4 );
+  oFieldString = *OGR_F_GetRawFieldRef( oFeat, 5 );
+
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( &oFieldInt, OGRFieldType::OFTInteger ), QVariant( 5 ) );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( &oFieldDbl, OGRFieldType::OFTReal ), QVariant( 8.9 ) );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( &oFieldDate, OGRFieldType::OFTDate ), QVariant( QDate( 2005, 01, 05 ) ) );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( &oFieldTime, OGRFieldType::OFTTime ), QVariant( QTime( 8, 11, 01 ) ) );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( &oFieldDatetime, OGRFieldType::OFTDateTime ), QVariant( QDateTime( QDate( 2005, 3, 5 ), QTime( 6, 45, 0, 123 ) ) ) );
+  QCOMPARE( QgsOgrUtils::OGRFieldtoVariant( &oFieldString, OGRFieldType::OFTString ), QVariant( "a string" ) );
+
+  OGR_F_Destroy( oFeat );
+  OGR_DS_Destroy( hDS );
 }
 
 QGSTEST_MAIN( TestQgsOgrUtils )
