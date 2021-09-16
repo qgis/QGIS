@@ -2506,7 +2506,7 @@ QString QgsMapBoxGlStyleConverter::parseColorExpression( const QVariant &colorEx
 {
   if ( ( QMetaType::Type )colorExpression.type() == QMetaType::QVariantList )
   {
-    return parseExpression( colorExpression.toList(), context );
+    return parseExpression( colorExpression.toList(), context, true );
   }
   return parseValue( colorExpression, context );
 }
@@ -2610,7 +2610,7 @@ Qt::PenJoinStyle QgsMapBoxGlStyleConverter::parseJoinStyle( const QString &style
     return Qt::MiterJoin; // "miter" is default
 }
 
-QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expression, QgsMapBoxGlStyleConversionContext &context )
+QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expression, QgsMapBoxGlStyleConversionContext &context, bool colorExpected )
 {
   QString op = expression.value( 0 ).toString();
   if ( op == QLatin1String( "literal" ) )
@@ -2755,9 +2755,9 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
           caseString += QStringLiteral( "WHEN (%1) " ).arg( QgsExpression::createFieldEqualityExpression( attribute, expression.at( i ) ) );
         }
 
-        caseString += QStringLiteral( "THEN %1 " ).arg( parseValue( expression.at( i + 1 ), context ) );
+        caseString += QStringLiteral( "THEN %1 " ).arg( colorExpected ? parseValueCheckColor( expression.at( i + 1 ), context ) : parseValue( expression.at( i + 1 ), context ) );
       }
-      caseString += QStringLiteral( "ELSE %1 END" ).arg( parseValue( expression.last(), context ) );
+      caseString += QStringLiteral( "ELSE %1 END" ).arg( colorExpected ? parseValueCheckColor( expression.last(), context ) : parseValue( expression.last(), context ) );
       return caseString;
     }
   }
@@ -2999,22 +2999,31 @@ QString QgsMapBoxGlStyleConverter::parseValue( const QVariant &value, QgsMapBoxG
 
     case QVariant::Bool:
     case QVariant::String:
-      c = parseColor( value, context );
-      if ( !c.isValid() )
-      {
-        return QgsExpression::quotedValue( value );
-      }
-      return QString( "color_rgba(%1,%2,%3,%4)" ).arg( c.red() ).arg( c.green() ).arg( c.blue() ).arg( c.alpha() );
+      return QgsExpression::quotedValue( value );
 
     case QVariant::Int:
     case QVariant::Double:
       return value.toString();
+
+    case QVariant::Color:
+      c = value.value<QColor>();
+      return QString( "color_rgba(%1,%2,%3,%4)" ).arg( c.red() ).arg( c.green() ).arg( c.blue() ).arg( c.alpha() );
 
     default:
       context.pushWarning( QObject::tr( "%1: Skipping unsupported expression part" ).arg( context.layerId() ) );
       break;
   }
   return QString();
+}
+
+QString QgsMapBoxGlStyleConverter::parseValueCheckColor( const QVariant &value, QgsMapBoxGlStyleConversionContext &context )
+{
+  QColor c = parseColor( value, context );
+  if ( c.isValid() )
+  {
+    return parseValue( c, context );
+  }
+  return parseValue( value, context );
 }
 
 QString QgsMapBoxGlStyleConverter::parseKey( const QVariant &value )

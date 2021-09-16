@@ -511,7 +511,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \warning This is private API only, and may change in future QGIS versions
      */
-    static QString parseExpression( const QVariantList &expression, QgsMapBoxGlStyleConversionContext &context );
+    static QString parseExpression( const QVariantList &expression, QgsMapBoxGlStyleConversionContext &context, bool colorExpected = false );
 
     /**
      * Retrieves the sprite image with the specified \a name, taken from the specified \a context.
@@ -536,6 +536,11 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
 #endif
 
     static QString parseValue( const QVariant &value, QgsMapBoxGlStyleConversionContext &context );
+
+    /**
+     * Checks if value is a color before calling parseValue
+     */
+    static QString parseValueCheckColor( const QVariant &value, QgsMapBoxGlStyleConversionContext &context );
     static QString parseKey( const QVariant &value );
 
     /**

@@ -526,7 +526,7 @@ Converts a value to Qt.PenJoinStyle enum from JSON value.
    This is private API only, and may change in future QGIS versions
 %End
 
-    static QString parseExpression( const QVariantList &expression, QgsMapBoxGlStyleConversionContext &context );
+    static QString parseExpression( const QVariantList &expression, QgsMapBoxGlStyleConversionContext &context, bool colorExpected = false );
 %Docstring
 Converts a MapBox GL expression to a QGIS expression.
 
