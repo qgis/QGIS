@@ -161,7 +161,6 @@ void QgsRasterPipe::unsetRole( QgsRasterInterface *interface )
 {
   Role role = interfaceRole( interface );
   if ( role == UnknownRole ) return;
-  
   const int roleIdx{ mRoleMap[role] };
   mRoleMap.remove( role );
 
