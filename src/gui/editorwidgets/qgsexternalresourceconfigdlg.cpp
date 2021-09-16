@@ -77,13 +77,13 @@ QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer *vl, 
   connect( mRootPathExpression, &QLineEdit::textChanged, this, &QgsExternalResourceConfigDlg::enableRelativeDefault );
 
   // Add storage modes
-  mStorageModeCbx->addItem( tr( "File paths" ), QgsFileWidget::GetFile );
-  mStorageModeCbx->addItem( tr( "Directory paths" ), QgsFileWidget::GetDirectory );
+  mStorageModeCbx->addItem( tr( "File Paths" ), QgsFileWidget::GetFile );
+  mStorageModeCbx->addItem( tr( "Directory Paths" ), QgsFileWidget::GetDirectory );
 
   // Add storage path options
-  mStoragePathCbx->addItem( tr( "Absolute path" ), QgsFileWidget::Absolute );
-  mStoragePathCbx->addItem( tr( "Relative to project path" ), QgsFileWidget::RelativeProject );
-  mStoragePathCbx->addItem( tr( "Relative to default path" ), QgsFileWidget::RelativeDefaultPath );
+  mStoragePathCbx->addItem( tr( "Absolute Path" ), QgsFileWidget::Absolute );
+  mStoragePathCbx->addItem( tr( "Relative to Project Path" ), QgsFileWidget::RelativeProject );
+  mStoragePathCbx->addItem( tr( "Relative to Default Path" ), QgsFileWidget::RelativeDefaultPath );
   enableCbxItem( mStoragePathCbx, 2, false );
 
   connect( mStorageType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsExternalResourceConfigDlg::changeStorageType );
@@ -184,11 +184,19 @@ QVariantMap QgsExternalResourceConfigDlg::config()
   if ( !mRootPath->text().isEmpty() )
     cfg.insert( QStringLiteral( "DefaultRoot" ), mRootPath->text() );
 
-  // Save Storage Mode
-  cfg.insert( QStringLiteral( "StorageMode" ), mStorageModeCbx->currentData().toInt() );
-
-  // Save Relative Paths option
-  cfg.insert( QStringLiteral( "RelativeStorage" ), mStoragePathCbx->currentData().toInt() );
+  if ( !mStorageType->currentIndex() )
+  {
+    // Save Storage Mode
+    cfg.insert( QStringLiteral( "StorageMode" ), mStorageModeCbx->currentData().toInt() );
+    // Save Relative Paths option
+    cfg.insert( QStringLiteral( "RelativeStorage" ), mStoragePathCbx->currentData().toInt() );
+  }
+  else
+  {
+    // Only file mode and absolute paths are supported for external storage
+    cfg.insert( QStringLiteral( "StorageMode" ), static_cast<int>( QgsFileWidget::GetFile ) );
+    cfg.insert( QStringLiteral( "RelativeStorage" ), static_cast<int>( QgsFileWidget::Absolute ) );
+  }
 
   cfg.insert( QStringLiteral( "DocumentViewer" ), mDocumentViewerContentComboBox->currentData().toInt() );
   cfg.insert( QStringLiteral( "DocumentViewerHeight" ), mDocumentViewerHeight->value() );
