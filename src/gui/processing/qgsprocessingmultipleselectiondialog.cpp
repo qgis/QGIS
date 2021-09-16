@@ -73,7 +73,7 @@ QgsProcessingMultipleSelectionPanelWidget::QgsProcessingMultipleSelectionPanelWi
 
   connect( mModel, &QStandardItemModel::itemChanged, this, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged );
 
-  // When user moves an item, a new item is created and an other one is removed, so we need to fire selectionChanged
+  // When user moves an item, a new item is created and another one is removed, so we need to fire selectionChanged
   // see https://github.com/qgis/QGIS/issues/44270
   connect( mModel, &QStandardItemModel::rowsRemoved, this, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged );
 }
