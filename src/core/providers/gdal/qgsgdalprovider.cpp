@@ -1440,9 +1440,80 @@ double QgsGdalProvider::sample( const QgsPointXY &point, int band, bool *ok, con
   if ( !worldToPixel( point.x(), point.y(), col, row ) )
     return std::numeric_limits<double>::quiet_NaN();
 
-  float value = 0;
-  CPLErr err = GDALRasterIO( hBand, GF_Read, col, row, 1, 1,
-                             &value, 1, 1, GDT_Float32, 0, 0 );
+  double value{0};
+  CPLErr err {CE_Failure};
+
+  const GDALDataType dataType {GDALGetRasterDataType( hBand )};
+  switch ( dataType )
+  {
+    case GDT_Byte:
+    {
+      unsigned char tempVal{0};
+      err = GDALRasterIO( hBand, GF_Read, col, row, 1, 1,
+                          &tempVal, 1, 1, dataType, 0, 0 );
+      value = static_cast<double>( tempVal );
+      break;
+    }
+    case GDT_UInt16:
+    {
+      uint16_t tempVal{0};
+      err = GDALRasterIO( hBand, GF_Read, col, row, 1, 1,
+                          &tempVal, 1, 1, dataType, 0, 0 );
+      value = static_cast<double>( tempVal );
+      break;
+    }
+    case GDT_Int16:
+    {
+      int16_t tempVal{0};
+      err = GDALRasterIO( hBand, GF_Read, col, row, 1, 1,
+                          &tempVal, 1, 1, dataType, 0, 0 );
+      value = static_cast<double>( tempVal );
+      break;
+    }
+    case GDT_UInt32:
+    {
+      uint32_t tempVal{0};
+      err = GDALRasterIO( hBand, GF_Read, col, row, 1, 1,
+                          &tempVal, 1, 1, dataType, 0, 0 );
+      value = static_cast<double>( tempVal );
+      break;
+    }
+    case GDT_Int32:
+    {
+      int32_t tempVal{0};
+      err = GDALRasterIO( hBand, GF_Read, col, row, 1, 1,
+                          &tempVal, 1, 1, dataType, 0, 0 );
+      value = static_cast<double>( tempVal );
+      break;
+    }
+    case GDT_Float32:
+    {
+      float tempVal{0};
+      err = GDALRasterIO( hBand, GF_Read, col, row, 1, 1,
+                          &tempVal, 1, 1, dataType, 0, 0 );
+      value = static_cast<double>( tempVal );
+      break;
+    }
+    case GDT_Float64:
+    {
+      // No need to cast for double
+      err = GDALRasterIO( hBand, GF_Read, col, row, 1, 1,
+                          &value, 1, 1, dataType, 0, 0 );
+      break;
+    }
+    case GDT_CInt16:
+    case GDT_CInt32:
+    case GDT_CFloat32:
+    case GDT_CFloat64:
+      QgsDebugMsg( QStringLiteral( "Raster complex data type is not supported!" ) );
+      break;
+    case GDT_TypeCount:
+      QgsDebugMsg( QStringLiteral( "Raster data type GDT_TypeCount is not supported!" ) );
+      break;
+    case GDT_Unknown:
+      QgsDebugMsg( QStringLiteral( "Raster data type is unknown!" ) );
+      break;
+  }
   if ( err != CE_None )
     return std::numeric_limits<double>::quiet_NaN();
 
