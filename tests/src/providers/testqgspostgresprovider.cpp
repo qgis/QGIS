@@ -47,7 +47,7 @@ class TestQgsPostgresProvider: public QObject
 
 void TestQgsPostgresProvider::decodeHstore()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::Map, QVariant::String, QStringLiteral( "\"1\"=>\"2\", \"a\"=>\"b, \\\"c'\", \"backslash\"=>\"\\\\\"" ), QStringLiteral( "hstore" ) );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::Map, QVariant::String, QStringLiteral( "\"1\"=>\"2\", \"a\"=>\"b, \\\"c'\", \"backslash\"=>\"\\\\\"" ), QStringLiteral( "hstore" ), nullptr );
   QCOMPARE( decoded.type(), QVariant::Map );
 
   QVariantMap expected;
@@ -60,7 +60,7 @@ void TestQgsPostgresProvider::decodeHstore()
 
 void TestQgsPostgresProvider::decodeHstoreNoQuote()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::Map, QVariant::String, QStringLiteral( "1=>2, a=>b c" ), QStringLiteral( "hstore" ) );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::Map, QVariant::String, QStringLiteral( "1=>2, a=>b c" ), QStringLiteral( "hstore" ), nullptr );
   QCOMPARE( decoded.type(), QVariant::Map );
 
   QVariantMap expected;
@@ -72,7 +72,7 @@ void TestQgsPostgresProvider::decodeHstoreNoQuote()
 
 void TestQgsPostgresProvider::decodeArray2StringList()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::StringList, QVariant::String, QStringLiteral( "{\"1\",\"2\", \"a\\\\1\" , \"\\\\\",\"b, \\\"c'\"}" ), QStringLiteral( "hstore" ) );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::StringList, QVariant::String, QStringLiteral( "{\"1\",\"2\", \"a\\\\1\" , \"\\\\\",\"b, \\\"c'\"}" ), QStringLiteral( "hstore" ), nullptr );
   QCOMPARE( decoded.type(), QVariant::StringList );
 
   QStringList expected;
@@ -83,7 +83,7 @@ void TestQgsPostgresProvider::decodeArray2StringList()
 
 void TestQgsPostgresProvider::decodeArray2StringListNoQuote()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::StringList, QVariant::String, QStringLiteral( "{1,2, a ,b, c}" ), QStringLiteral( "hstore" ) );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::StringList, QVariant::String, QStringLiteral( "{1,2, a ,b, c}" ), QStringLiteral( "hstore" ), nullptr );
   QCOMPARE( decoded.type(), QVariant::StringList );
 
   QStringList expected;
@@ -94,7 +94,7 @@ void TestQgsPostgresProvider::decodeArray2StringListNoQuote()
 
 void TestQgsPostgresProvider::decodeArray2IntList()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::StringList, QVariant::String, QStringLiteral( "{1, 2, 3,-5,10}" ), QStringLiteral( "hstore" ) );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::StringList, QVariant::String, QStringLiteral( "{1, 2, 3,-5,10}" ), QStringLiteral( "hstore" ), nullptr );
   QCOMPARE( decoded.type(), QVariant::StringList );
 
   QVariantList expected;
@@ -105,7 +105,7 @@ void TestQgsPostgresProvider::decodeArray2IntList()
 
 void TestQgsPostgresProvider::decode2DimensionArray()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::StringList, QVariant::String, QStringLiteral( "{{foo,\"escape bracket \\}\"},{\"escape bracket and backslash \\\\\\}\",\"hello bar\"}}" ), QStringLiteral( "_text" ) );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::StringList, QVariant::String, QStringLiteral( "{{foo,\"escape bracket \\}\"},{\"escape bracket and backslash \\\\\\}\",\"hello bar\"}}" ), QStringLiteral( "_text" ), nullptr );
   QCOMPARE( decoded.type(), QVariant::StringList );
 
   QVariantList expected;
@@ -116,7 +116,7 @@ void TestQgsPostgresProvider::decode2DimensionArray()
 
 void TestQgsPostgresProvider::decode3DimensionArray()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::StringList, QVariant::String, QStringLiteral( "{{{0,1},{1,2}},{{3,4},{5,6}}}" ), QStringLiteral( "_integer" ) );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::StringList, QVariant::String, QStringLiteral( "{{{0,1},{1,2}},{{3,4},{5,6}}}" ), QStringLiteral( "_integer" ), nullptr );
   QCOMPARE( decoded.type(), QVariant::StringList );
 
   QVariantList expected;
@@ -127,7 +127,7 @@ void TestQgsPostgresProvider::decode3DimensionArray()
 
 void TestQgsPostgresProvider::decodeJsonList()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::Map, QVariant::String, QStringLiteral( "[1,2,3]" ), QStringLiteral( "json" ) );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::Map, QVariant::String, QStringLiteral( "[1,2,3]" ), QStringLiteral( "json" ), nullptr );
   QCOMPARE( decoded.type(), QVariant::List );
 
   QVariantList expected;
@@ -140,7 +140,7 @@ void TestQgsPostgresProvider::decodeJsonList()
 
 void TestQgsPostgresProvider::decodeJsonbList()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::Map, QVariant::String, QStringLiteral( "[1,2,3]" ), QStringLiteral( "jsonb" ) );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::Map, QVariant::String, QStringLiteral( "[1,2,3]" ), QStringLiteral( "jsonb" ), nullptr );
   QCOMPARE( decoded.type(), QVariant::List );
 
   QVariantList expected;
@@ -153,7 +153,7 @@ void TestQgsPostgresProvider::decodeJsonbList()
 
 void TestQgsPostgresProvider::decodeJsonMap()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::Map, QVariant::String, QStringLiteral( "{\"a\":1,\"b\":2}" ), QStringLiteral( "json" ) );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::Map, QVariant::String, QStringLiteral( "{\"a\":1,\"b\":2}" ), QStringLiteral( "json" ), nullptr );
   QCOMPARE( decoded.type(), QVariant::Map );
 
   QVariantMap expected;
@@ -165,7 +165,7 @@ void TestQgsPostgresProvider::decodeJsonMap()
 
 void TestQgsPostgresProvider::decodeJsonbMap()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::Map, QVariant::String, QStringLiteral( "{\"a\":1,\"b\":2}" ), QStringLiteral( "jsonb" ) );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::Map, QVariant::String, QStringLiteral( "{\"a\":1,\"b\":2}" ), QStringLiteral( "jsonb" ), nullptr );
   QCOMPARE( decoded.type(), QVariant::Map );
 
   QVariantMap expected;
@@ -180,19 +180,19 @@ void TestQgsPostgresProvider::testDecodeDateTimes()
 
   QVariant decoded;
 
-  decoded = QgsPostgresProvider::convertValue( QVariant::DateTime, QVariant::Invalid, QStringLiteral( "2020-06-08 18:30:35.496438+02" ), QStringLiteral( "timestamptz" ) );
+  decoded = QgsPostgresProvider::convertValue( QVariant::DateTime, QVariant::Invalid, QStringLiteral( "2020-06-08 18:30:35.496438+02" ), QStringLiteral( "timestamptz" ), nullptr );
   QCOMPARE( decoded.type(), QVariant::DateTime );
 
-  decoded = QgsPostgresProvider::convertValue( QVariant::Time, QVariant::Invalid, QStringLiteral( "18:29:27.569401+02" ), QStringLiteral( "timetz" ) );
+  decoded = QgsPostgresProvider::convertValue( QVariant::Time, QVariant::Invalid, QStringLiteral( "18:29:27.569401+02" ), QStringLiteral( "timetz" ), nullptr );
   QCOMPARE( decoded.type(), QVariant::Time );
 
-  decoded = QgsPostgresProvider::convertValue( QVariant::Date, QVariant::Invalid, QStringLiteral( "2020-06-08" ), QStringLiteral( "date" ) );
+  decoded = QgsPostgresProvider::convertValue( QVariant::Date, QVariant::Invalid, QStringLiteral( "2020-06-08" ), QStringLiteral( "date" ), nullptr );
   QCOMPARE( decoded.type(), QVariant::Date );
 
-  decoded = QgsPostgresProvider::convertValue( QVariant::DateTime, QVariant::Invalid, QStringLiteral( "2020-06-08 18:30:35.496438" ), QStringLiteral( "timestamp" ) );
+  decoded = QgsPostgresProvider::convertValue( QVariant::DateTime, QVariant::Invalid, QStringLiteral( "2020-06-08 18:30:35.496438" ), QStringLiteral( "timestamp" ), nullptr );
   QCOMPARE( decoded.type(), QVariant::DateTime );
 
-  decoded = QgsPostgresProvider::convertValue( QVariant::Time, QVariant::Invalid, QStringLiteral( "18:29:27.569401" ), QStringLiteral( "time" ) );
+  decoded = QgsPostgresProvider::convertValue( QVariant::Time, QVariant::Invalid, QStringLiteral( "18:29:27.569401" ), QStringLiteral( "time" ), nullptr );
   QCOMPARE( decoded.type(), QVariant::Time );
 
 }

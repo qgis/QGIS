@@ -351,7 +351,83 @@ QString QgsPostgresProvider::providerKey()
 void QgsPostgresProvider::setTransaction( QgsTransaction *transaction )
 {
   // static_cast since layers cannot be added to a transaction of a non-matching provider
-  mTransaction = static_cast<QgsPostgresTransaction *>( transaction );
+    mTransaction = static_cast<QgsPostgresTransaction *>( transaction );
+}
+
+struct Ewkt
+{
+    int srid = -1;
+    QString wkt;
+};
+
+QgsReferencedGeometry QgsPostgresProvider::fromEwkt(const QString &ewkt, QgsPostgresConn *conn)
+{
+  thread_local const QRegularExpression regularExpressionSRID( "^SRID=(\\d+);" );
+
+  QRegularExpressionMatch regularExpressionMatch = regularExpressionSRID.match( ewkt );
+  if ( !regularExpressionMatch.hasMatch() )
+    return QgsReferencedGeometry();
+
+  Ewkt ewktInfo;
+  ewktInfo.wkt = ewkt.mid( regularExpressionMatch.captured( 0 ).size() );
+  ewktInfo.srid = regularExpressionMatch.captured( 1 ).toInt();
+
+  if ( ewktInfo.srid < 0 )
+    return QgsReferencedGeometry();
+
+  QgsGeometry geom = QgsGeometry::fromWkt( ewktInfo.wkt );
+  return QgsReferencedGeometry( geom, sridToCoordSystem( ewktInfo.srid, conn ) );
+}
+
+QString QgsPostgresProvider::toEwkt(const QgsReferencedGeometry &geom)
+{
+    return QStringLiteral( "SRID=%1;%2" ).arg( QString::number( geom.crs().postgisSrid() ), geom.asWkt() );
+}
+
+QString QgsPostgresProvider::geomAttrToString(const QVariant &attr)
+{
+    if ( attr.type() == QVariant::String )
+        return attr.toString();
+    else
+        return toEwkt( attr.value<QgsReferencedGeometry>() );
+}
+
+QgsCoordinateReferenceSystem QgsPostgresProvider::sridToCoordSystem(int srid, QgsPostgresConn *conn)
+{
+    QgsCoordinateReferenceSystem crs;
+
+    static QMutex sMutex;
+
+      QMutexLocker locker( &sMutex );
+      static QMap<int, QgsCoordinateReferenceSystem> sCrsCache;
+      if ( sCrsCache.contains( srid ) )
+        crs = sCrsCache.value( srid );
+      else
+      {
+        if ( conn )
+        {
+          QgsPostgresResult result( conn->PQexec( QStringLiteral( "SELECT auth_name, auth_srid, srtext, proj4text FROM spatial_ref_sys WHERE srid=%1" ).arg( srid ) ) );
+          if ( result.PQresultStatus() == PGRES_TUPLES_OK )
+          {
+            const QString authName = result.PQgetvalue( 0, 0 );
+            const QString authSRID = result.PQgetvalue( 0, 1 );
+            const QString srText = result.PQgetvalue( 0, 2 );
+            bool ok = false;
+            if ( authName == QLatin1String( "EPSG" ) || authName == QLatin1String( "ESRI" ) )
+            {
+              ok = crs.createFromUserInput( authName + ':' + authSRID );
+            }
+            if ( !ok && !srText.isEmpty() )
+            {
+              ok = crs.createFromUserInput( srText );
+            }
+            if ( !ok )
+              crs = QgsCoordinateReferenceSystem::fromProj( result.PQgetvalue( 0, 3 ) );
+            sCrsCache.insert( srid, crs );
+          }
+        }
+      }
+    return crs;
 }
 
 void QgsPostgresProvider::disconnectDb()
@@ -1078,7 +1154,6 @@ bool QgsPostgresProvider::loadFields()
       }
       else if ( fieldTypeName == QLatin1String( "text" ) ||
                 fieldTypeName == QLatin1String( "citext" ) ||
-                fieldTypeName == QLatin1String( "geometry" ) ||
                 fieldTypeName == QLatin1String( "geography" ) ||
                 fieldTypeName == QLatin1String( "inet" ) ||
                 fieldTypeName == QLatin1String( "cidr" ) ||
@@ -1092,6 +1167,11 @@ bool QgsPostgresProvider::loadFields()
                 fieldTypeName.startsWith( QLatin1String( "date" ) ) )
       {
         fieldType = QVariant::String;
+        fieldSize = -1;
+      }
+      else if ( fieldTypeName == QLatin1String( "geometry" ) )
+      {
+        fieldType = QVariant::UserType;
         fieldSize = -1;
       }
       else if ( fieldTypeName == QLatin1String( "bpchar" ) )
@@ -2448,10 +2528,11 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         }
         else if ( fieldTypeName == QLatin1String( "geometry" ) )
         {
+          QString val = geomAttrToString( v );
           values += QStringLiteral( "%1%2(%3)" )
                     .arg( delim,
                           connectionRO()->majorVersion() < 2 ? "geomfromewkt" : "st_geomfromewkt",
-                          quotedValue( v.toString() ) );
+                          quotedValue( val ) );
         }
         else if ( fieldTypeName == QLatin1String( "geography" ) )
         {
@@ -3054,9 +3135,11 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
           }
           else if ( fld.typeName() == QLatin1String( "geometry" ) )
           {
+              QString val = geomAttrToString( siter.value() );
+
             sql += QStringLiteral( "%1(%2)" )
                    .arg( connectionRO()->majorVersion() < 2 ? "geomfromewkt" : "st_geomfromewkt",
-                         quotedValue( siter->toString() ) );
+                         quotedValue( val ) );
           }
           else if ( fld.typeName() == QLatin1String( "geography" ) )
           {
@@ -3418,9 +3501,10 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
 
           if ( fld.typeName() == QLatin1String( "geometry" ) )
           {
+              QString val = geomAttrToString( siter.value() ) ;
             sql += QStringLiteral( "%1(%2)" )
                    .arg( connectionRO()->majorVersion() < 2 ? "geomfromewkt" : "st_geomfromewkt",
-                         quotedValue( siter->toString() ) );
+                         quotedValue( val ) );
           }
           else if ( fld.typeName() == QLatin1String( "geography" ) )
           {
@@ -4693,40 +4777,8 @@ QgsCoordinateReferenceSystem QgsPostgresProvider::crs() const
   QgsCoordinateReferenceSystem srs;
   int srid = mRequestedSrid.isEmpty() ? mDetectedSrid.toInt() : mRequestedSrid.toInt();
 
-  {
-    static QMutex sMutex;
-    QMutexLocker locker( &sMutex );
-    static QMap<int, QgsCoordinateReferenceSystem> sCrsCache;
-    if ( sCrsCache.contains( srid ) )
-      srs = sCrsCache.value( srid );
-    else
-    {
-      QgsPostgresConn *conn = connectionRO();
-      if ( conn )
-      {
-        QgsPostgresResult result( conn->PQexec( QStringLiteral( "SELECT auth_name, auth_srid, srtext, proj4text FROM spatial_ref_sys WHERE srid=%1" ).arg( srid ) ) );
-        if ( result.PQresultStatus() == PGRES_TUPLES_OK )
-        {
-          const QString authName = result.PQgetvalue( 0, 0 );
-          const QString authSRID = result.PQgetvalue( 0, 1 );
-          const QString srText = result.PQgetvalue( 0, 2 );
-          bool ok = false;
-          if ( authName == QLatin1String( "EPSG" ) || authName == QLatin1String( "ESRI" ) )
-          {
-            ok = srs.createFromUserInput( authName + ':' + authSRID );
-          }
-          if ( !ok && !srText.isEmpty() )
-          {
-            ok = srs.createFromUserInput( srText );
-          }
-          if ( !ok )
-            srs = QgsCoordinateReferenceSystem::fromProj( result.PQgetvalue( 0, 3 ) );
-          sCrsCache.insert( srid, srs );
-        }
-      }
-    }
-  }
-  return srs;
+  return sridToCoordSystem( srid, connectionRO() );
+
 }
 
 QString QgsPostgresProvider::subsetString() const
@@ -4847,7 +4899,7 @@ QVariant QgsPostgresProvider::parseJson( const QString &txt )
   return QgsJsonUtils::parseJson( txt );
 }
 
-QVariant QgsPostgresProvider::parseOtherArray( const QString &txt, QVariant::Type subType, const QString &typeName )
+QVariant QgsPostgresProvider::parseOtherArray( const QString &txt, QVariant::Type subType, const QString &typeName, QgsPostgresConn *conn )
 {
   int i = 0;
   QVariantList result;
@@ -4859,7 +4911,7 @@ QVariant QgsPostgresProvider::parseOtherArray( const QString &txt, QVariant::Typ
       QgsMessageLog::logMessage( tr( "Error parsing array: %1" ).arg( txt ), tr( "PostGIS" ) );
       break;
     }
-    result.append( QgsPostgresProvider::convertValue( subType, QVariant::Invalid, value, typeName ) );
+    result.append( convertValue( subType, QVariant::Invalid, value, typeName, conn ) );
   }
   return result;
 }
@@ -4919,7 +4971,7 @@ QVariant QgsPostgresProvider::parseMultidimensionalArray( const QString &txt )
 
 }
 
-QVariant QgsPostgresProvider::parseArray( const QString &txt, QVariant::Type type, QVariant::Type subType, const QString &typeName )
+QVariant QgsPostgresProvider::parseArray( const QString &txt, QVariant::Type type, QVariant::Type subType, const QString &typeName, QgsPostgresConn *conn )
 {
   if ( !txt.startsWith( '{' ) || !txt.endsWith( '}' ) )
   {
@@ -4933,10 +4985,15 @@ QVariant QgsPostgresProvider::parseArray( const QString &txt, QVariant::Type typ
   else if ( type == QVariant::StringList )
     return parseStringArray( inner );
   else
-    return parseOtherArray( inner, subType, typeName );
+    return parseOtherArray( inner, subType, typeName, conn );
 }
 
-QVariant QgsPostgresProvider::convertValue( QVariant::Type type, QVariant::Type subType, const QString &value, const QString &typeName )
+QVariant QgsPostgresProvider::convertValue( QVariant::Type type, QVariant::Type subType, const QString &value, const QString &typeName ) const
+{
+    return convertValue( type, subType, value, typeName, connectionRO() );
+}
+
+QVariant QgsPostgresProvider::convertValue( QVariant::Type type, QVariant::Type subType, const QString &value, const QString &typeName, QgsPostgresConn *conn )
 {
   QVariant result;
   switch ( type )
@@ -4949,7 +5006,7 @@ QVariant QgsPostgresProvider::convertValue( QVariant::Type type, QVariant::Type 
       break;
     case QVariant::StringList:
     case QVariant::List:
-      result = parseArray( value, type, subType, typeName );
+      result = parseArray( value, type, subType, typeName, conn );
       break;
     case QVariant::Bool:
       if ( value == QChar( 't' ) )
@@ -4959,6 +5016,10 @@ QVariant QgsPostgresProvider::convertValue( QVariant::Type type, QVariant::Type 
       else
         result = QVariant( type );
       break;
+  case QVariant::UserType:
+      result = fromEwkt( value, conn );
+      break;
+
     default:
       result = value;
       if ( !result.convert( type ) || value.isNull() )
