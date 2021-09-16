@@ -471,13 +471,17 @@ void QgsVectorLayerProperties::addPropertiesPageFactory( const QgsMapLayerConfig
   }
 
   QgsMapLayerConfigWidget *page = factory->createWidget( mLayer, nullptr, false, this );
-  mLayerPropertiesPages << page;
 
-  const QString beforePage = factory->layerPropertiesPagePositionHint();
-  if ( beforePage.isEmpty() )
-    addPage( factory->title(), factory->title(), factory->icon(), page );
-  else
-    insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage );
+  if ( page )
+  {
+    mLayerPropertiesPages << page;
+
+    const QString beforePage = factory->layerPropertiesPagePositionHint();
+    if ( beforePage.isEmpty() )
+      addPage( factory->title(), factory->title(), factory->icon(), page );
+    else
+      insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage );
+  }
 }
 
 void QgsVectorLayerProperties::insertFieldOrExpression()
