@@ -385,7 +385,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
         const QSet<QString> toPrune = dependentChildAlgorithms( id, branch, 1 );
         for ( const QString &targetId : toPrune )
         {
-          if ( targetId.contains( QStringLiteral( "native:conditionmerge" ) ) )
+          if ( targetId.contains( QStringLiteral( "native:branchmerger" ) ) )
           {
             mPrunedMergeProcessing[targetId] += 1;
 
