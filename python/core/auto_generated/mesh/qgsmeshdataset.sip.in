@@ -739,6 +739,11 @@ Returns whether all the datasets contain ``count`` values
 Calculates the statistics (minimum and maximum)
 %End
 
+    void setStatisticObsolete();
+%Docstring
+Sets statistic obsolete, that means statistic will be recalculated when requested
+%End
+
     virtual QStringList datasetGroupNamesDependentOn() const;
 %Docstring
 Returns the dataset group variable name which this dataset group depends on

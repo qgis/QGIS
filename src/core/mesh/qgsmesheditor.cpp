@@ -52,6 +52,13 @@ QgsMeshEditor::QgsMeshEditor( QgsMesh *nativeMesh, QgsTriangularMesh *triangular
   connect( mUndoStack, &QUndoStack::indexChanged, this, &QgsMeshEditor::meshEdited );
 }
 
+QgsMeshDatasetGroup *QgsMeshEditor::createZValueDatasetGroup()
+{
+  std::unique_ptr<QgsMeshDatasetGroup> zValueDatasetGroup = std::make_unique<QgsMeshVerticesElevationDatasetGroup>( tr( "vertices Z value" ), mMesh );
+  mZValueDatasetGroup = zValueDatasetGroup.get();
+  return zValueDatasetGroup.release();
+}
+
 QgsMeshEditor::~QgsMeshEditor() = default;
 
 QgsMeshEditingError QgsMeshEditor::initialize()
@@ -184,12 +191,24 @@ void QgsMeshEditor::applyEdit( QgsMeshEditor::Edit &edit )
 {
   mTopologicalMesh.applyChanges( edit.topologicalChanges );
   mTriangularMesh->applyChanges( edit.triangularMeshChanges );
+
+  if ( mZValueDatasetGroup &&
+       ( !edit.topologicalChanges.newVerticesZValues().isEmpty() ||
+         !edit.topologicalChanges.verticesToRemoveIndexes().isEmpty() ||
+         !edit.topologicalChanges.addedVertices().isEmpty() ) )
+    mZValueDatasetGroup->setStatisticObsolete();
 }
 
 void QgsMeshEditor::reverseEdit( QgsMeshEditor::Edit &edit )
 {
   mTopologicalMesh.reverseChanges( edit.topologicalChanges );
   mTriangularMesh->reverseChanges( edit.triangularMeshChanges, *mMesh );
+
+  if ( mZValueDatasetGroup &&
+       ( !edit.topologicalChanges.newVerticesZValues().isEmpty() ||
+         !edit.topologicalChanges.verticesToRemoveIndexes().isEmpty() ||
+         !edit.topologicalChanges.addedVertices().isEmpty() ) )
+    mZValueDatasetGroup->setStatisticObsolete();
 }
 
 void QgsMeshEditor::applyAddVertex( QgsMeshEditor::Edit &edit, const QgsMeshVertex &vertex, double tolerance )
@@ -217,16 +236,25 @@ void QgsMeshEditor::applyAddVertex( QgsMeshEditor::Edit &edit, const QgsMeshVert
   }
 
   applyEditOnTriangularMesh( edit, topologicChanges );
+
+  if ( mZValueDatasetGroup )
+    mZValueDatasetGroup->setStatisticObsolete();
 }
 
 void QgsMeshEditor::applyRemoveVertexFillHole( QgsMeshEditor::Edit &edit, int vertexIndex )
 {
   applyEditOnTriangularMesh( edit, mTopologicalMesh.removeVertexFillHole( vertexIndex ) );
+
+  if ( mZValueDatasetGroup )
+    mZValueDatasetGroup->setStatisticObsolete();
 }
 
 void QgsMeshEditor::applyRemoveVerticesWithoutFillHole( QgsMeshEditor::Edit &edit, const QList<int> &verticesIndexes )
 {
   applyEditOnTriangularMesh( edit, mTopologicalMesh.removeVertices( verticesIndexes ) );
+
+  if ( mZValueDatasetGroup )
+    mZValueDatasetGroup->setStatisticObsolete();
 }
 
 void QgsMeshEditor::applyAddFaces( QgsMeshEditor::Edit &edit, const QgsTopologicalMesh::TopologicalFaces &faces )
@@ -242,6 +270,9 @@ void QgsMeshEditor::applyRemoveFaces( QgsMeshEditor::Edit &edit, const QList<int
 void QgsMeshEditor::applyChangeZValue( QgsMeshEditor::Edit &edit, const QList<int> &verticesIndexes, const QList<double> &newValues )
 {
   applyEditOnTriangularMesh( edit, mTopologicalMesh.changeZValue( verticesIndexes, newValues ) );
+
+  if ( mZValueDatasetGroup )
+    mZValueDatasetGroup->setStatisticObsolete();
 }
 
 void QgsMeshEditor::applyChangeXYValue( QgsMeshEditor::Edit &edit, const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues )
@@ -493,7 +524,9 @@ int QgsMeshEditor::addVertices( const QVector<QgsMeshVertex> &vertices, double t
     mUndoStack->push( new QgsMeshLayerUndoCommandAddVertices( this, verticesInLayerCoordinate, tolerance ) );
   }
 
-  return vertices.count() - ignoredVertex;
+  int effectivlyAddedVertex = vertices.count() - ignoredVertex;
+
+  return effectivlyAddedVertex;
 }
 
 int QgsMeshEditor::addPointsAsVertices( const QVector<QgsPoint> &point, double tolerance )
@@ -518,7 +551,10 @@ QgsMeshEditingError QgsMeshEditor::removeVertices( const QList<int> &verticesToR
       return error;
   }
 
-  mUndoStack->push( new QgsMeshLayerUndoCommandRemoveVertices( this, verticesIndexes, fillHoles ) );
+  if ( error.errorType == Qgis::MeshEditingErrorType::NoError )
+  {
+    mUndoStack->push( new QgsMeshLayerUndoCommandRemoveVertices( this, verticesIndexes, fillHoles ) );
+  }
 
   return error;
 }

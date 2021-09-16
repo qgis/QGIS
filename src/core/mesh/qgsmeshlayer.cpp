@@ -925,11 +925,12 @@ bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform )
   // All dataset group are removed and replace by a unique virtual dataset group that provide vertices elevation value.
   mExtraDatasetUri.clear();
   mDatasetGroupStore.reset( new QgsMeshDatasetGroupStore( this ) );
-  mDatasetGroupStore->addDatasetGroup( new QgsMeshVerticesElevationDatasetGroup( tr( "vertices Z value" ), mNativeMesh.get() ) );
+  mDatasetGroupStore->addDatasetGroup( mMeshEditor->createZValueDatasetGroup() );
   resetDatasetGroupTreeItem();
 
   connect( mMeshEditor, &QgsMeshEditor::meshEdited, this, &QgsMeshLayer::onMeshEdited );
 
+  emit dataChanged();
   emit editingStarted();
 
   return true;
@@ -938,7 +939,10 @@ bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform )
 bool QgsMeshLayer::commitFrameEditing( const QgsCoordinateTransform &transform, bool continueEditing )
 {
   if ( !mMeshEditor->checkConsistency() )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Mesh layer \"%1\" not support mesh editing" ).arg( name() ), QString(), Qgis::MessageLevel::Critical );
     return false;
+  }
 
   stopFrameEditing( transform );
 
@@ -973,12 +977,16 @@ bool QgsMeshLayer::rollBackFrameEditing( const QgsCoordinateTransform &transform
   if ( !mDataProvider )
     return false;
 
+  mTriangularMeshes.clear();
   mDataProvider->reloadData();
   mDataProvider->populateMesh( mNativeMesh.get() );
   updateTriangularMesh( transform );
+  mRendererCache.reset( new QgsMeshLayerRendererCache() );
+  trigger3DUpdate();
 
   if ( continueEditing )
   {
+    mMeshEditor->resetTriangularMesh( triangularMesh() );
     return mMeshEditor->initialize() == QgsMeshEditingError();
   }
   else
@@ -990,6 +998,7 @@ bool QgsMeshLayer::rollBackFrameEditing( const QgsCoordinateTransform &transform
     mDatasetGroupStore.reset( new QgsMeshDatasetGroupStore( this ) );
     mDatasetGroupStore->setPersistentProvider( mDataProvider, QStringList() );
     resetDatasetGroupTreeItem();
+    emit dataChanged();
     return true;
   }
 }
@@ -1538,8 +1547,9 @@ bool QgsMeshLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const
   elemStaticDataset.setAttribute( QStringLiteral( "vector" ), mStaticVectorDatasetIndex );
   layer_node.appendChild( elemStaticDataset );
 
-  // write dataset group store
-  layer_node.appendChild( mDatasetGroupStore->writeXml( document, context ) );
+  // write dataset group store if not in edting mode
+  if ( !isEditable() )
+    layer_node.appendChild( mDatasetGroupStore->writeXml( document, context ) );
 
   // renderer specific settings
   QString errorMsg;

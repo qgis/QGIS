@@ -291,7 +291,7 @@ QgsRectangle QgsTriangularMesh::nativeExtent()
   {
     try
     {
-      nativeExtent = mCoordinateTransform.transform( mExtent, QgsCoordinateTransform::ReverseTransform );
+      nativeExtent = mCoordinateTransform.transform( extent(), QgsCoordinateTransform::ReverseTransform );
     }
     catch ( QgsCsException &cse )
     {
@@ -300,13 +300,22 @@ QgsRectangle QgsTriangularMesh::nativeExtent()
     }
   }
   else
-    nativeExtent = mExtent;
+    nativeExtent = extent();
 
   return nativeExtent;
 }
 
 QgsRectangle QgsTriangularMesh::extent() const
 {
+  if ( !mIsExtentValid )
+  {
+    mExtent.setMinimal();
+    for ( int i = 0; i < mTriangularMesh.vertices.size(); ++i )
+      if ( !mTriangularMesh.vertices.at( i ).isEmpty() )
+        mExtent.include( mTriangularMesh.vertices.at( i ) );
+
+    mIsExtentValid = true;
+  }
   return mExtent;
 }
 
@@ -795,11 +804,14 @@ void QgsTriangularMesh::applyChanges( const QgsTriangularMesh::Changes &changes 
   }
 
   for ( int i = 0; i < changes.mNativeFaceIndexesToRemove.count(); ++i )
-    mNativeMeshFaceCentroids[changes.mNativeFaceIndexesToRemove.at( i )] = QgsPoint();
+    mNativeMeshFaceCentroids[changes.mNativeFaceIndexesToRemove.at( i )] = QgsMeshVertex();
 
   // remove vertices
-  // for now, let's try to not remove the vertices, because if the vertex is not referenced in faces,
-  // there is no access anymore to the vertex. If we do not remove it, not need to store (x,y,z) in the changes instance
+  for ( int i = 0; i < changes.mVerticesIndexesToRemove.count(); ++i )
+    mTriangularMesh.vertices[changes.mVerticesIndexesToRemove.at( i )] = QgsMeshVertex();
+
+  if ( !changes.mVerticesIndexesToRemove.isEmpty() )
+    mIsExtentValid = false;
 
   // change Z value
   for ( int i = 0; i < changes.mNewZValue.count(); ++i )
@@ -850,12 +862,15 @@ void QgsTriangularMesh::reverseChanges( const QgsTriangularMesh::Changes &change
   int initialVerticesCount = mTriangularMesh.vertices.count() - changes.mAddedVertices.count();
   mTriangularMesh.vertices.resize( initialVerticesCount );
 
-  // for each vertex to remove, check if the triangular vertex is empty,
-  // that means vertices had to be updated from the native mesh but faces was empty
-  // we need to update the vertices with the reverse native face
+  if ( !changes.mAddedVertices.isEmpty() )
+    mIsExtentValid = false;
+
+  // for each vertex to remove we need to update the vertices with the native vertex
   for ( const int i : std::as_const( changes.mVerticesIndexesToRemove ) )
-    if ( mTriangularMesh.vertex( i ).isEmpty() )
-      mTriangularMesh.vertices[i] = nativeToTriangularCoordinates( nativeMesh.vertex( i ) );
+    mTriangularMesh.vertices[i] = nativeToTriangularCoordinates( nativeMesh.vertex( i ) );
+
+  if ( !changes.mVerticesIndexesToRemove.isEmpty() )
+    mIsExtentValid = false;
 
   // reverse removed faces
   QVector<QgsMeshFace> restoredTriangles;
