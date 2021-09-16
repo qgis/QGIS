@@ -114,6 +114,143 @@ class TestQgsRasterLayer(unittest.TestCase):
         myMessage = 'Expected: %s\nGot: %s' % (myValues, myExpectedValues)
         self.assertEqual(myValues, myExpectedValues, myMessage)
 
+    def testSampleIdentify(self):
+        """Test that sample() and identify() return the same values, GH #44902"""
+
+        tempdir = QTemporaryDir()
+        temppath = os.path.join(tempdir.path(), 'test_sample.tif')
+
+        def _test(qgis_data_type):
+            rlayer = QgsRasterLayer(temppath, 'test_sample')
+            self.assertTrue(rlayer.isValid())
+            self.assertEqual(rlayer.dataProvider().dataType(1), qgis_data_type)
+
+            x = 252290.5
+            for y in [5022000.5, 5022001.5]:
+                pos = QgsPointXY(x, y)
+                value_sample = rlayer.dataProvider().sample(pos, 1)[0]
+                value_identify = rlayer.dataProvider().identify(pos, QgsRaster.IdentifyFormatValue).results()[1]
+                # Check values for UInt32
+                if qgis_data_type == Qgis.UInt32:
+                    if y == 5022000.5:
+                        self.assertEqual(value_sample, 4294967000.0)
+                    else:
+                        self.assertEqual(value_sample, 4294967293.0)
+                self.assertEqual(value_sample, value_identify)
+                # print(value_sample, value_identify)
+
+        # Test GDT_UInt32
+        driver = gdal.GetDriverByName('GTiff')
+        outRaster = driver.Create(temppath, 3, 3, 1, gdal.GDT_UInt32)
+        outRaster.SetGeoTransform((252290.0, 1.0, 0.0, 5022002.0, 0.0, -1.0))
+        outband = outRaster.GetRasterBand(1)
+        npdata = np.array([[4294967293, 1000, 5],
+                           [4294967000, 50, 4]], dtype=np.uint32)
+        outband.WriteArray(npdata)
+        outband.FlushCache()
+        outRaster.FlushCache()
+        del outRaster
+
+        _test(Qgis.UInt32)
+
+        # Test GDT_Int32
+        driver = gdal.GetDriverByName('GTiff')
+        outRaster = driver.Create(temppath, 3, 3, 1, gdal.GDT_Int32)
+        outRaster.SetGeoTransform((252290.0, 1.0, 0.0, 5022002.0, 0.0, -1.0))
+        outband = outRaster.GetRasterBand(1)
+        npdata = np.array([[1294967293, 1000, 5],
+                           [1294967000, 50, 4]], dtype=np.int32)
+        outband.WriteArray(npdata)
+        outband.FlushCache()
+        outRaster.FlushCache()
+        del outRaster
+
+        _test(Qgis.Int32)
+
+        # Test GDT_Float32
+        driver = gdal.GetDriverByName('GTiff')
+        outRaster = driver.Create(temppath, 3, 3, 1, gdal.GDT_Float32)
+        outRaster.SetGeoTransform((252290.0, 1.0, 0.0, 5022002.0, 0.0, -1.0))
+        outband = outRaster.GetRasterBand(1)
+        npdata = np.array([[1294967293, 1000, 5],
+                           [1294967000, 50, 4]], dtype=np.float32)
+        outband.WriteArray(npdata)
+        outband.FlushCache()
+        outRaster.FlushCache()
+        del outRaster
+
+        _test(Qgis.Float32)
+
+        # Test GDT_Float64
+        driver = gdal.GetDriverByName('GTiff')
+        outRaster = driver.Create(temppath, 3, 3, 1, gdal.GDT_Float64)
+        outRaster.SetGeoTransform((252290.0, 1.0, 0.0, 5022002.0, 0.0, -1.0))
+        outband = outRaster.GetRasterBand(1)
+        npdata = np.array([[1294967293, 1000, 5],
+                           [1294967000, 50, 4]], dtype=np.float64)
+        outband.WriteArray(npdata)
+        outband.FlushCache()
+        outRaster.FlushCache()
+        del outRaster
+
+        _test(Qgis.Float64)
+
+        # Test GDT_Uint16
+        driver = gdal.GetDriverByName('GTiff')
+        outRaster = driver.Create(temppath, 3, 3, 1, gdal.GDT_UInt16)
+        outRaster.SetGeoTransform((252290.0, 1.0, 0.0, 5022002.0, 0.0, -1.0))
+        outband = outRaster.GetRasterBand(1)
+        npdata = np.array([[1294967293, 1000, 5],
+                           [1294967000, 50, 4]], dtype=np.uint16)
+        outband.WriteArray(npdata)
+        outband.FlushCache()
+        outRaster.FlushCache()
+        del outRaster
+
+        _test(Qgis.UInt16)
+
+        # Test GDT_Int16
+        driver = gdal.GetDriverByName('GTiff')
+        outRaster = driver.Create(temppath, 3, 3, 1, gdal.GDT_Int16)
+        outRaster.SetGeoTransform((252290.0, 1.0, 0.0, 5022002.0, 0.0, -1.0))
+        outband = outRaster.GetRasterBand(1)
+        npdata = np.array([[31768, 1000, 5],
+                           [12345, 50, 4]], dtype=np.int16)
+        outband.WriteArray(npdata)
+        outband.FlushCache()
+        outRaster.FlushCache()
+        del outRaster
+
+        _test(Qgis.Int16)
+
+        # Test GDT_Int32
+        driver = gdal.GetDriverByName('GTiff')
+        outRaster = driver.Create(temppath, 3, 3, 1, gdal.GDT_Int32)
+        outRaster.SetGeoTransform((252290.0, 1.0, 0.0, 5022002.0, 0.0, -1.0))
+        outband = outRaster.GetRasterBand(1)
+        npdata = np.array([[31768, 1000, 5],
+                           [12345, 50, 4]], dtype=np.int32)
+        outband.WriteArray(npdata)
+        outband.FlushCache()
+        outRaster.FlushCache()
+        del outRaster
+
+        _test(Qgis.Int32)
+
+        # Test GDT_Byte
+        driver = gdal.GetDriverByName('GTiff')
+        outRaster = driver.Create(temppath, 3, 3, 1, gdal.GDT_Byte)
+        outRaster.SetGeoTransform((252290.0, 1.0, 0.0, 5022002.0, 0.0, -1.0))
+        outband = outRaster.GetRasterBand(1)
+        npdata = np.array([[123, 255, 5],
+                           [1, 50, 4]], dtype=np.byte)
+        outband.WriteArray(npdata)
+        outband.FlushCache()
+        outRaster.FlushCache()
+        del outRaster
+
+        _test(Qgis.Byte)
+
     def testTransparency(self):
         myPath = os.path.join(unitTestDataPath('raster'),
                               'band1_float32_noct_epsg4326.tif')
