@@ -67,7 +67,6 @@ QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer *vl, 
   mRootPathPropertyOverrideButton->registerVisibleWidget( mRootPath, false );
   mRootPathPropertyOverrideButton->registerEnabledWidget( mRootPathButton, false );
 
-
   initializeDataDefinedButton( mDocumentViewerContentPropertyOverrideButton, QgsEditorWidgetWrapper::DocumentViewerContent );
   mDocumentViewerContentPropertyOverrideButton->registerVisibleWidget( mDocumentViewerContentExpression );
   mDocumentViewerContentPropertyOverrideButton->registerExpressionWidget( mDocumentViewerContentExpression );
@@ -76,17 +75,17 @@ QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer *vl, 
   // Activate Relative Default Path option only if Default Path is set
   connect( mRootPath, &QLineEdit::textChanged, this, &QgsExternalResourceConfigDlg::enableRelativeDefault );
   connect( mRootPathExpression, &QLineEdit::textChanged, this, &QgsExternalResourceConfigDlg::enableRelativeDefault );
-  connect( mRelativeGroupBox, &QGroupBox::toggled, this, &QgsExternalResourceConfigDlg::enableRelativeDefault );
 
   // set ids for StorageTypeButtons
   mStorageButtonGroup->setId( mStoreFilesButton, QgsFileWidget::GetFile );
   mStorageButtonGroup->setId( mStoreDirsButton, QgsFileWidget::GetDirectory );
   mStoreFilesButton->setChecked( true );
 
-  // set ids for RelativeButtons
-  mRelativeButtonGroup->setId( mRelativeProject, QgsFileWidget::RelativeProject );
-  mRelativeButtonGroup->setId( mRelativeDefault, QgsFileWidget::RelativeDefaultPath );
-  mRelativeProject->setChecked( true );
+  // Add storage path options
+  mStoragePathCbx->addItem( tr( "Absolute path" ), QgsFileWidget::Absolute );
+  mStoragePathCbx->addItem( tr( "Relative to project path" ), QgsFileWidget::RelativeProject );
+  mStoragePathCbx->addItem( tr( "Relative to default path" ), QgsFileWidget::RelativeDefaultPath );
+  enableCbxItem( mStoragePathCbx, 2, false );
 
   connect( mStorageType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsExternalResourceConfigDlg::changeStorageType );
   connect( mFileWidgetGroupBox, &QGroupBox::toggled, this, &QgsEditorConfigWidget::changed );
@@ -96,7 +95,7 @@ QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer *vl, 
   connect( mFullUrl, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
   connect( mRootPath, &QLineEdit::textChanged, this, &QgsEditorConfigWidget::changed );
   connect( mStorageButtonGroup, qOverload<QAbstractButton *>( &QButtonGroup::buttonClicked ), this, &QgsEditorConfigWidget::changed );
-  connect( mRelativeGroupBox, &QGroupBox::toggled, this, &QgsEditorConfigWidget::changed );
+  connect( mStoragePathCbx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
   connect( mDocumentViewerGroupBox, &QGroupBox::toggled, this, &QgsEditorConfigWidget::changed );
   connect( mDocumentViewerContentComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),  this, [ = ]( int idx )
   { mDocumentViewerContentSettingsWidget->setEnabled( ( QgsExternalResourceWidget::DocumentViewerContent )idx != QgsExternalResourceWidget::NoContent ); } );
@@ -128,6 +127,21 @@ void QgsExternalResourceConfigDlg::chooseDefaultPath()
     mRootPath->setText( rootName );
 }
 
+void QgsExternalResourceConfigDlg::enableCbxItem( QComboBox *comboBox, int index, bool enabled )
+{
+  // https://stackoverflow.com/a/62261745
+  auto *model = qobject_cast<QStandardItemModel *>( comboBox->model() );
+  assert( model );
+  if ( !model )
+    return;
+
+  auto *item = model->item( index );
+  assert( item );
+  if ( !item )
+    return;
+  item->setEnabled( enabled );
+}
+
 void QgsExternalResourceConfigDlg::enableRelativeDefault()
 {
   bool relativePathActive = false;
@@ -142,14 +156,8 @@ void QgsExternalResourceConfigDlg::enableRelativeDefault()
     if ( !mRootPath->text().isEmpty() )
       relativePathActive = true;
   }
-
-  // Activate (or not) the RelativeDefault button if default path
-  if ( mRelativeGroupBox->isChecked() )
-    mRelativeDefault->setEnabled( relativePathActive );
-
-  // If no default path, RelativeProj button enabled by default
-  if ( !relativePathActive )
-    mRelativeProject->toggle();
+  // Activate (or not) the RelativeDefault item if default path
+  enableCbxItem( mStoragePathCbx, 2, relativePathActive );
 }
 
 QVariantMap QgsExternalResourceConfigDlg::config()
@@ -181,14 +189,7 @@ QVariantMap QgsExternalResourceConfigDlg::config()
   cfg.insert( QStringLiteral( "StorageMode" ), mStorageButtonGroup->checkedId() );
 
   // Save Relative Paths option
-  if ( mRelativeGroupBox->isChecked() )
-  {
-    cfg.insert( QStringLiteral( "RelativeStorage" ), mRelativeButtonGroup->checkedId() );
-  }
-  else
-  {
-    cfg.insert( QStringLiteral( "RelativeStorage" ), static_cast<int>( QgsFileWidget::Absolute ) );
-  }
+  cfg.insert( QStringLiteral( "RelativeStorage" ), mStoragePathCbx->currentData().toInt() );
 
   cfg.insert( QStringLiteral( "DocumentViewer" ), mDocumentViewerContentComboBox->currentData().toInt() );
   cfg.insert( QStringLiteral( "DocumentViewerHeight" ), mDocumentViewerHeight->value() );
@@ -239,15 +240,11 @@ void QgsExternalResourceConfigDlg::setConfig( const QVariantMap &config )
   if ( config.contains( QStringLiteral( "RelativeStorage" ) ) )
   {
     const int relative = config.value( QStringLiteral( "RelativeStorage" ) ).toInt();
-    if ( ( QgsFileWidget::RelativeStorage )relative == QgsFileWidget::Absolute )
-    {
-      mRelativeGroupBox->setChecked( false );
-    }
-    else
-    {
-      mRelativeGroupBox->setChecked( true );
-      mRelativeButtonGroup->button( relative )->setChecked( true );
-    }
+
+    if ( ( QgsFileWidget::RelativeStorage )relative == QgsFileWidget::RelativeDefaultPath )
+      enableCbxItem( mStoragePathCbx, 2, true );
+
+    mStoragePathCbx->setCurrentIndex( relative );
   }
 
   // set storage mode
@@ -299,7 +296,8 @@ void QgsExternalResourceConfigDlg::changeStorageType( int storageTypeIndex )
   mStorageModeGroupBox->setVisible( !storageTypeIndex );
 
   // Absolute path are mandatory when using external storage
-  mRelativeGroupBox->setVisible( !storageTypeIndex );
+  mStoragePathCbx->setVisible( !storageTypeIndex );
+  mStoragePathLbl->setVisible( !storageTypeIndex );
 
   emit changed();
 }
