@@ -29,11 +29,11 @@ class QTableWidget;
 ///@cond PRIVATE
 
 /**
- * Feature filter algorithm for modeler.
- * Accepts a list of expressions and names and creates outputs where
- * matching features are sent to.
+ * Branch merge algorithm for modeler.
+ * Takes 2 map layers as input and returns the first one if it is valid
+ * else the second one. If the 2 layers aren't valid, raises an error.
  *
- * \since QGIS 3.2
+ * \since QGIS 3.24
  */
 class QgsBranchMergeAlgorithm : public QgsProcessingAlgorithm
 {

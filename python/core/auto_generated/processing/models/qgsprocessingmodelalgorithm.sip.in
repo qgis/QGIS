@@ -186,6 +186,9 @@ Optionally, a specific conditional branch which is created by the child algorith
 can be specified in order to restrict the returned list to algorithms which depend
 on this specific branch.
 
+Another optional parameter is the maximum depth of the branch path.
+By default, the branches are explored to the end.
+
 .. seealso:: :py:func:`dependsOnChildAlgorithms`
 %End
 

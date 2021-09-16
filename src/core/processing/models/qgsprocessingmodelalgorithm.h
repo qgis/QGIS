@@ -164,6 +164,9 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * can be specified in order to restrict the returned list to algorithms which depend
      * on this specific branch.
      *
+     * Another optional parameter is the maximum depth of the branch path.
+     * By default, the branches are explored to the end.
+     *
      * \see dependsOnChildAlgorithms()
      */
     QSet< QString > dependentChildAlgorithms( const QString &childId, const QString &conditionalBranch = QString(), const int depth = -1 ) const;
