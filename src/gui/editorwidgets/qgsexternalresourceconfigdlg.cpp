@@ -76,10 +76,9 @@ QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer *vl, 
   connect( mRootPath, &QLineEdit::textChanged, this, &QgsExternalResourceConfigDlg::enableRelativeDefault );
   connect( mRootPathExpression, &QLineEdit::textChanged, this, &QgsExternalResourceConfigDlg::enableRelativeDefault );
 
-  // set ids for StorageTypeButtons
-  mStorageButtonGroup->setId( mStoreFilesButton, QgsFileWidget::GetFile );
-  mStorageButtonGroup->setId( mStoreDirsButton, QgsFileWidget::GetDirectory );
-  mStoreFilesButton->setChecked( true );
+  // Add storage modes
+  mStorageModeCbx->addItem( tr( "File paths" ), QgsFileWidget::GetFile );
+  mStorageModeCbx->addItem( tr( "Directory paths" ), QgsFileWidget::GetDirectory );
 
   // Add storage path options
   mStoragePathCbx->addItem( tr( "Absolute path" ), QgsFileWidget::Absolute );
@@ -94,7 +93,7 @@ QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer *vl, 
   connect( mUseLink, &QGroupBox::toggled, this, &QgsEditorConfigWidget::changed );
   connect( mFullUrl, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
   connect( mRootPath, &QLineEdit::textChanged, this, &QgsEditorConfigWidget::changed );
-  connect( mStorageButtonGroup, qOverload<QAbstractButton *>( &QButtonGroup::buttonClicked ), this, &QgsEditorConfigWidget::changed );
+  connect( mStorageModeCbx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
   connect( mStoragePathCbx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
   connect( mDocumentViewerGroupBox, &QGroupBox::toggled, this, &QgsEditorConfigWidget::changed );
   connect( mDocumentViewerContentComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),  this, [ = ]( int idx )
@@ -186,7 +185,7 @@ QVariantMap QgsExternalResourceConfigDlg::config()
     cfg.insert( QStringLiteral( "DefaultRoot" ), mRootPath->text() );
 
   // Save Storage Mode
-  cfg.insert( QStringLiteral( "StorageMode" ), mStorageButtonGroup->checkedId() );
+  cfg.insert( QStringLiteral( "StorageMode" ), mStorageModeCbx->currentData().toInt() );
 
   // Save Relative Paths option
   cfg.insert( QStringLiteral( "RelativeStorage" ), mStoragePathCbx->currentData().toInt() );
@@ -251,7 +250,7 @@ void QgsExternalResourceConfigDlg::setConfig( const QVariantMap &config )
   if ( config.contains( QStringLiteral( "StorageMode" ) ) )
   {
     const int mode = config.value( QStringLiteral( "StorageMode" ) ).toInt();
-    mStorageButtonGroup->button( mode )->setChecked( true );
+    mStorageModeCbx->setCurrentIndex( mode );
   }
 
   // Document viewer
@@ -293,7 +292,8 @@ void QgsExternalResourceConfigDlg::changeStorageType( int storageTypeIndex )
   mExternalStorageGroupBox->setVisible( storageTypeIndex > 0 );
 
   // for now, we store only files in external storage
-  mStorageModeGroupBox->setVisible( !storageTypeIndex );
+  mStorageModeCbx->setVisible( !storageTypeIndex );
+  mStorageModeLbl->setVisible( !storageTypeIndex );
 
   // Absolute path are mandatory when using external storage
   mStoragePathCbx->setVisible( !storageTypeIndex );
