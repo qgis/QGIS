@@ -525,9 +525,9 @@ void createCandidateAtOrderedPositionOverPoint( double &labelX, double &labelY, 
 
   // Take care of the label angle when creating candidates. See pr comments #44944 for details
   // https://github.com/qgis/QGIS/pull/44944#issuecomment-914670088
-  QMatrix transformMatrix;
-  transformMatrix.rotate( angle * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleRadians, QgsUnitTypes::AngleDegrees ) );
-  transformMatrix.map( deltaX, deltaY, &deltaX, &deltaY );
+  QTransform transformRotation;
+  transformRotation.rotate( angle * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleRadians, QgsUnitTypes::AngleDegrees ) );
+  transformRotation.map( deltaX, deltaY, &deltaX, &deltaY );
 
   //have bearing, distance - calculate reference point
   double referenceX = std::cos( alpha ) * distanceToLabel + x;
@@ -690,9 +690,9 @@ std::size_t FeaturePart::createCandidatesAroundPoint( double x, double y, std::v
 
     // Take care of the label angle when creating candidates. See pr comments #44944 for details
     // https://github.com/qgis/QGIS/pull/44944#issuecomment-914670088
-    QMatrix transformMatrix;
-    transformMatrix.rotate( angle * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleRadians, QgsUnitTypes::AngleDegrees ) );
-    transformMatrix.map( deltaX, deltaY, &deltaX, &deltaY );
+    QTransform transformRotation;
+    transformRotation.rotate( angle * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleRadians, QgsUnitTypes::AngleDegrees ) );
+    transformRotation.map( deltaX, deltaY, &deltaX, &deltaY );
 
     double labelX = x + deltaX;
     double labelY = y + deltaY;
