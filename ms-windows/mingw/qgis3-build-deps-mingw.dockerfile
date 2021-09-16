@@ -10,6 +10,7 @@ rm -f /etc/yum.repos.d/*modular* && \
 dnf install -y --nogpgcheck \
   mingw64-dlfcn \
   mingw64-exiv2 \
+  mingw64-fcgi \
   ccache \
   mingw64-gcc-c++ \
   mingw64-gdal \
