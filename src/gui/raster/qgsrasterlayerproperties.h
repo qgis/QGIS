@@ -45,6 +45,7 @@ class QgsProviderSourceWidget;
 class QgsMapLayerConfigWidgetFactory;
 class QgsMapLayerConfigWidget;
 class QgsPropertyOverrideButton;
+class QgsRasterTransparencyWidget;
 
 
 /**
@@ -130,28 +131,8 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void onCancel();
     //! \brief this slot asks the rasterlayer to construct pyramids
     void buttonBuildPyramids_clicked();
-    //! \brief slot executed when user presses "Add Values From Display" button on the transparency page
-    void pbnAddValuesFromDisplay_clicked();
-    //! \brief slot executed when user presses "Add Values Manually" button on the transparency page
-    void pbnAddValuesManually_clicked();
     //! \brief slot executed when user changes the layer's CRS
     void mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
-    //! \brief slot executed when user wishes to reset noNoDataValue and transparencyTable to default value
-    void pbnDefaultValues_clicked();
-    //! \brief slot executed when user wishes to export transparency values
-    void pbnExportTransparentPixelValues_clicked();
-    //! \brief slow executed when user wishes to import transparency values
-    void pbnImportTransparentPixelValues_clicked();
-    //! \brief slot executed when user presses "Remove Selected Row" button on the transparency page
-    void pbnRemoveSelectedRow_clicked();
-
-    /**
-     * \brief slot executed when the single band radio button is pressed.
-     * \brief slot executed when the reset null value to file default icon is selected
-     */
-    //void on_btnResetNull_clicked();
-
-    void pixelSelected( const QgsPointXY &, const Qt::MouseButton & );
 
     /**
      * updates gamma spinbox on slider changes
@@ -247,6 +228,8 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     QgsRasterRendererWidget *mRendererWidget = nullptr;
     QgsMetadataWidget *mMetadataWidget = nullptr;
 
+    QgsRasterTransparencyWidget *mRasterTransparencyWidget = nullptr;
+
     /**
      * Widget with temporal inputs, to be used by temporal based raster layers.
      */
@@ -258,11 +241,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
      * Updates the information tab by reloading metadata
      */
     void updateInformationContent();
-
-    void setupTransparencyTable( int nBands );
-
-    //! \brief Clear the current transparency table and populate the table with the correct types for current drawing mode and data type
-    void populateTransparencyTable( QgsRasterRenderer *renderer );
 
     void setTransparencyCell( int row, int column, double value );
     void setTransparencyCellValue( int row, int column, double value );
@@ -283,7 +261,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     qreal mGradientWidth;
 
     QgsMapCanvas *mMapCanvas = nullptr;
-    std::unique_ptr<QgsMapToolEmitPoint> mPixelSelectorTool;
 
     QgsRasterHistogramWidget *mHistogramWidget = nullptr;
 

@@ -37,6 +37,13 @@ Sets the ``context`` in which the dialog is shown, e.g., the associated map canv
     virtual QgsExpressionContext createExpressionContext() const;
 
 
+    QgsMapToolEmitPoint *pixelSelectorTool() const;
+%Docstring
+Returns the (possibly None) map pixel selector tool.
+
+.. versionadded:: 3.22
+%End
+
   public slots:
 
 
