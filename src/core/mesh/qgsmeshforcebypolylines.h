@@ -103,7 +103,7 @@ class CORE_EXPORT QgsMeshEditForceByLine : public QgsMeshAdvancedEditing
                            QgsPoint &intersectionPoint,
                            bool outAllowed );
 
-    bool searchIntersectionEdgeFromSnappedVertex_v2(
+    bool searchIntersectionEdgeFromSnappedVertex(
       int &intersectionFaceIndex,
       int &previousSnappedVertex,
       int &currentSnappedVertexIndex,
