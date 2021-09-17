@@ -903,7 +903,6 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
     point.setM( mMLineEdit->text().toFloat() );
   }
 
-
   // update the point list
   updateCurrentPoint( point );
 
