@@ -139,7 +139,8 @@ class TestPyQgsArcGisPortalUtils(unittest.TestCase):
   ]
 }""".encode('UTF-8'))
 
-        res = QgsArcGisPortalUtils.retrieveUserInfo('http://' + endpoint, 'some_user', '')
+        headers = {'referer': 'http://google.com'}
+        res = QgsArcGisPortalUtils.retrieveUserInfo('http://' + endpoint, 'some_user', '', headers)
         # no errors
         self.assertFalse(res[1])
         self.assertFalse(res[2])

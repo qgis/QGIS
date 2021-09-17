@@ -23,44 +23,36 @@
 #include "qgsapplication.h"
 
 
-QgsHttpHeaderWidget::QgsHttpHeaderWidget( QWidget *parent ) :
-  QWidget( parent )
+QgsHttpHeaderWidget::QgsHttpHeaderWidget( QWidget *parent )
+  : QWidget( parent )
 {
   setupUi( this );
   btnAddQueryPair->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
   btnRemoveQueryPair->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyRemove.svg" ) ) );
   grpbxAdvanced->setCollapsed( true );
 
-  setupConnections();
-}
-
-QgsHttpHeaderWidget::~QgsHttpHeaderWidget()
-{
-  // nope
-}
-
-void QgsHttpHeaderWidget::setupConnections()
-{
   // Action and interaction connections
   connect( btnAddQueryPair, &QToolButton::clicked, this, &QgsHttpHeaderWidget::addQueryPair );
   connect( btnRemoveQueryPair, &QToolButton::clicked, this, &QgsHttpHeaderWidget::removeQueryPair );
 }
+
+QgsHttpHeaderWidget::~QgsHttpHeaderWidget() = default;
 
 void QgsHttpHeaderWidget::addQueryPairRow( const QString &key, const QString &val )
 {
   const int rowCnt = tblwdgQueryPairs->rowCount();
   tblwdgQueryPairs->insertRow( rowCnt );
 
-  const Qt::ItemFlags itmFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable
-                                 | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
+  const Qt::ItemFlags itemFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable
+                                  | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
 
-  QTableWidgetItem *keyItm = new QTableWidgetItem( key );
-  keyItm->setFlags( itmFlags );
-  tblwdgQueryPairs->setItem( rowCnt, 0, keyItm );
+  QTableWidgetItem *keyItem = new QTableWidgetItem( key );
+  keyItem->setFlags( itemFlags );
+  tblwdgQueryPairs->setItem( rowCnt, 0, keyItem );
 
-  QTableWidgetItem *valItm = new QTableWidgetItem( val );
-  keyItm->setFlags( itmFlags );
-  tblwdgQueryPairs->setItem( rowCnt, 1, valItm );
+  QTableWidgetItem *valueItem = new QTableWidgetItem( val );
+  keyItem->setFlags( itemFlags );
+  tblwdgQueryPairs->setItem( rowCnt, 1, valueItem );
 }
 
 QgsHttpHeaders QgsHttpHeaderWidget::httpHeaders() const
@@ -120,10 +112,8 @@ void QgsHttpHeaderWidget::setFromSettings( const QgsSettings &settings, const QS
       mRefererLineEdit->setText( headers[ *ite ].toString() );
     }
   }
-  /* mRefererLineEdit->setText( settings.value( key + "/referer" ).toString() ); */
 }
 
-/* settings.setValue( key + "/referer", mRefererLineEdit->text() ); */
 void QgsHttpHeaderWidget::updateSettings( QgsSettings &settings, const QString &key ) const
 {
   QgsHttpHeaders h = httpHeaders();
