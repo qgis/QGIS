@@ -1054,7 +1054,7 @@ namespace QgsWfs
             query.removeAllQueryItems( param.first );
         }
 
-        query.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "DescribeFeatureType" ) );
+        query.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "GetFeature" ) );
         query.addQueryItem( QStringLiteral( "TYPENAME" ), typeNames.join( ',' ) );
         if ( mWfsParameters.versionAsNumber() >= QgsProjectVersion( 1, 1, 0 ) )
         {
@@ -1156,7 +1156,7 @@ namespace QgsWfs
             query.removeAllQueryItems( param.first );
         }
 
-        query.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "DescribeFeatureType" ) );
+        query.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "GetFeature" ) );
         query.addQueryItem( QStringLiteral( "TYPENAME" ), typeNames.join( ',' ) );
         if ( mWfsParameters.versionAsNumber() >= QgsProjectVersion( 1, 1, 0 ) )
         {
