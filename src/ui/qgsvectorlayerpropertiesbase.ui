@@ -2300,99 +2300,52 @@
                 </widget>
                </item>
                <item>
-                <widget class="QgsCollapsibleGroupBox" name="mMetaMetaUrlGrpBx">
+                <widget class="QGroupBox" name="groupBox">
                  <property name="title">
-                  <string>MetadataUrl</string>
+                  <string>Metadata URL</string>
                  </property>
-                 <property name="syncGroup" stdset="0">
-                  <string notr="true">vectormeta</string>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_9">
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="mLayerMetadataUrlLabel">
-                    <property name="text">
-                     <string>Url</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QLineEdit" name="mLayerMetadataUrlLineEdit">
-                    <property name="toolTip">
-                     <string>The URL of the metadata document.</string>
-                    </property>
-                    <property name="placeholderText">
-                     <string>The URL of the metadata document.</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <layout class="QHBoxLayout" name="horizontalLayout_8">
+                 <layout class="QVBoxLayout" name="verticalLayout_34">
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_10">
                     <item>
-                     <widget class="QLabel" name="mLayerMetadataUrlTypeLabel">
-                      <property name="text">
-                       <string>Type</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QComboBox" name="mLayerMetadataUrlTypeComboBox">
-                      <item>
-                       <property name="text">
-                        <string notr="true"/>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string notr="true" extracomment="FGDC-STD-001-1988">FGDC</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string notr="true" extracomment="ISO 19115">TC211</string>
-                       </property>
-                      </item>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="mLayerMetadataUrlFormatLabel">
-                      <property name="text">
-                       <string>Format</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QComboBox" name="mLayerMetadataUrlFormatComboBox">
-                      <item>
-                       <property name="text">
-                        <string notr="true"/>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string notr="true">text/plain</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string notr="true">text/xml</string>
-                       </property>
-                      </item>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_5">
+                     <spacer name="horizontalSpacer_6">
                       <property name="orientation">
                        <enum>Qt::Horizontal</enum>
                       </property>
                       <property name="sizeHint" stdset="0">
                        <size>
-                        <width>40</width>
-                        <height>20</height>
+                        <width>566</width>
+                        <height>21</height>
                        </size>
                       </property>
                      </spacer>
                     </item>
+                    <item>
+                     <widget class="QPushButton" name="buttonAddMetadataUrl">
+                      <property name="text">
+                       <string notr="true"/>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="../../images/images.qrc">
+                        <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="buttonRemoveMetadataUrl">
+                      <property name="text">
+                       <string notr="true"/>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="../../images/images.qrc">
+                        <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                      </property>
+                     </widget>
+                    </item>
                    </layout>
+                  </item>
+                  <item>
+                   <widget class="QTableView" name="tableViewMetadataUrl"/>
                   </item>
                  </layout>
                 </widget>
@@ -2734,9 +2687,8 @@
   <tabstop>mLayerDataUrlFormatComboBox</tabstop>
   <tabstop>mLayerAttributionLineEdit</tabstop>
   <tabstop>mLayerAttributionUrlLineEdit</tabstop>
-  <tabstop>mLayerMetadataUrlLineEdit</tabstop>
-  <tabstop>mLayerMetadataUrlTypeComboBox</tabstop>
-  <tabstop>mLayerMetadataUrlFormatComboBox</tabstop>
+  <tabstop>buttonAddMetadataUrl</tabstop>
+  <tabstop>buttonRemoveMetadataUrl</tabstop>
   <tabstop>mLayerLegendUrlLineEdit</tabstop>
   <tabstop>mLayerLegendUrlFormatComboBox</tabstop>
   <tabstop>mWmsDimensionsTreeWidget</tabstop>

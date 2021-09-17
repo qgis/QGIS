@@ -30,6 +30,7 @@
 #include "qgsmaptoolemitpoint.h"
 #include "qgsmaptopixel.h"
 #include "qgsmetadatawidget.h"
+#include "qgsmetadataurlitemdelegate.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsmultibandcolorrendererwidget.h"
 #include "qgsnative.h"
@@ -121,6 +122,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsRasterLayerProperties::mCrsSelector_crsChanged );
   connect( mRenderTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRasterLayerProperties::mRenderTypeComboBox_currentIndexChanged );
   connect( mResetColorRenderingBtn, &QToolButton::clicked, this, &QgsRasterLayerProperties::mResetColorRenderingBtn_clicked );
+  connect( buttonRemoveMetadataUrl, &QPushButton::clicked, this, &QgsRasterLayerProperties::removeSelectedMetadataUrl );
+  connect( buttonAddMetadataUrl, &QPushButton::clicked, this, &QgsRasterLayerProperties::addMetadataUrl );
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
@@ -196,6 +199,21 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   mScaleRangeWidget->setMapCanvas( mMapCanvas );
   chkUseScaleDependentRendering->setChecked( lyr->hasScaleBasedVisibility() );
   mScaleRangeWidget->setScaleRange( lyr->minimumScale(), lyr->maximumScale() );
+
+  // Setup the layer metadata URL
+  tableViewMetadataUrl->setSelectionMode( QAbstractItemView::SingleSelection );
+  tableViewMetadataUrl->setSelectionBehavior( QAbstractItemView::SelectRows );
+  tableViewMetadataUrl->horizontalHeader()->setStretchLastSection( true );
+  tableViewMetadataUrl->horizontalHeader()->setSectionResizeMode( QHeaderView::Stretch );
+
+  mMetadataUrlModel = new QStandardItemModel( tableViewMetadataUrl );
+  mMetadataUrlModel->clear();
+  mMetadataUrlModel->setColumnCount( 3 );
+  QStringList metadataUrlHeaders;
+  metadataUrlHeaders << tr( "URL" ) << tr( "Type" ) << tr( "Format" );
+  mMetadataUrlModel->setHorizontalHeaderLabels( metadataUrlHeaders );
+  tableViewMetadataUrl->setModel( mMetadataUrlModel );
+  tableViewMetadataUrl->setItemDelegate( new MetadataUrlItemDelegate( this ) );
 
   // build GUI components
   QIcon myPyramidPixmap( QgsApplication::getThemeIcon( "/mIconPyramid.svg" ) );
@@ -797,21 +815,21 @@ void QgsRasterLayerProperties::sync()
     )
   );
 
-  //layer attribution and metadataUrl
+  //layer attribution
   mLayerAttributionLineEdit->setText( mRasterLayer->attribution() );
   mLayerAttributionUrlLineEdit->setText( mRasterLayer->attributionUrl() );
-  mLayerMetadataUrlLineEdit->setText( mRasterLayer->metadataUrl() );
-  mLayerMetadataUrlTypeComboBox->setCurrentIndex(
-    mLayerMetadataUrlTypeComboBox->findText(
-      mRasterLayer->metadataUrlType()
-    )
-  );
-  mLayerMetadataUrlFormatComboBox->setCurrentIndex(
-    mLayerMetadataUrlFormatComboBox->findText(
-      mRasterLayer->metadataUrlFormat()
-    )
-  );
 
+  // layer metadata url
+  const QList<QgsMapLayerServerProperties::MetadataUrl> &metaUrls = mRasterLayer->serverProperties()->metadataUrls();
+  for ( const QgsMapLayerServerProperties::MetadataUrl &metaUrl : metaUrls )
+  {
+    const int row = mMetadataUrlModel->rowCount();
+    mMetadataUrlModel->setItem( row, 0, new QStandardItem( metaUrl.url ) );
+    mMetadataUrlModel->setItem( row, 1, new QStandardItem( metaUrl.type ) );
+    mMetadataUrlModel->setItem( row, 2, new QStandardItem( metaUrl.format ) );
+  }
+
+  // layer legend url
   mLayerLegendUrlLineEdit->setText( mRasterLayer->legendUrl() );
   mLayerLegendUrlFormatComboBox->setCurrentIndex( mLayerLegendUrlFormatComboBox->findText( mRasterLayer->legendUrlFormat() ) );
 
@@ -1021,7 +1039,7 @@ void QgsRasterLayerProperties::apply()
     mMetadataFilled = false;
   mRasterLayer->setDataUrlFormat( mLayerDataUrlFormatComboBox->currentText() );
 
-  //layer attribution and metadataUrl
+  //layer attribution
   if ( mRasterLayer->attribution() != mLayerAttributionLineEdit->text() )
     mMetadataFilled = false;
   mRasterLayer->setAttribution( mLayerAttributionLineEdit->text() );
@@ -1030,17 +1048,18 @@ void QgsRasterLayerProperties::apply()
     mMetadataFilled = false;
   mRasterLayer->setAttributionUrl( mLayerAttributionUrlLineEdit->text() );
 
-  if ( mRasterLayer->metadataUrl() != mLayerMetadataUrlLineEdit->text() )
+  // Metadata URL
+  QList<QgsMapLayerServerProperties::MetadataUrl> metaUrls;
+  for ( int row = 0; row < mMetadataUrlModel->rowCount() ; row++ )
+  {
+    QgsMapLayerServerProperties::MetadataUrl metaUrl;
+    metaUrl.url = mMetadataUrlModel->item( row, 0 )->text();
+    metaUrl.type = mMetadataUrlModel->item( row, 1 )->text();
+    metaUrl.format = mMetadataUrlModel->item( row, 2 )->text();
+    metaUrls.append( metaUrl );
     mMetadataFilled = false;
-  mRasterLayer->setMetadataUrl( mLayerMetadataUrlLineEdit->text() );
-
-  if ( mRasterLayer->metadataUrlType() != mLayerMetadataUrlTypeComboBox->currentText() )
-    mMetadataFilled = false;
-  mRasterLayer->setMetadataUrlType( mLayerMetadataUrlTypeComboBox->currentText() );
-
-  if ( mRasterLayer->metadataUrlFormat() != mLayerMetadataUrlFormatComboBox->currentText() )
-    mMetadataFilled = false;
-  mRasterLayer->setMetadataUrlFormat( mLayerMetadataUrlFormatComboBox->currentText() );
+  }
+  mRasterLayer->serverProperties()->setMetadataUrls( metaUrls );
 
   if ( mRasterLayer->legendUrl() != mLayerLegendUrlLineEdit->text() )
     mMetadataFilled = false;
@@ -1514,6 +1533,21 @@ QLinearGradient QgsRasterLayerProperties::highlightGradient()
   return myGradient;
 }
 
+void QgsRasterLayerProperties::addMetadataUrl()
+{
+  const int row = mMetadataUrlModel->rowCount();
+  mMetadataUrlModel->setItem( row, 0, new QStandardItem( QLatin1String() ) );
+  mMetadataUrlModel->setItem( row, 1, new QStandardItem( QLatin1String() ) );
+  mMetadataUrlModel->setItem( row, 2, new QStandardItem( QLatin1String() ) );
+}
+
+void QgsRasterLayerProperties::removeSelectedMetadataUrl()
+{
+  const QModelIndexList selectedRows = tableViewMetadataUrl->selectionModel()->selectedRows();
+  if ( selectedRows.empty() )
+    return;
+  mMetadataUrlModel->removeRow( selectedRows[0].row() );
+}
 
 
 //

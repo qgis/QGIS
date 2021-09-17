@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsRasterLayer.
 
+From build dir, run:
+ctest -R PyQgsRasterLayer -V
+
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -31,6 +34,7 @@ from qgis.PyQt.QtGui import (
 from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (Qgis,
+                       QgsMapLayerServerProperties,
                        QgsRaster,
                        QgsRasterLayer,
                        QgsReadWriteContext,
@@ -403,6 +407,14 @@ class TestQgsRasterLayer(unittest.TestCase):
         layer.setRenderer(r)
         assert self.rendererChanged
         assert layer.renderer() == r
+
+    def test_server_properties(self):
+        """ Test server properties. """
+        raster_path = os.path.join(
+            unitTestDataPath('raster'),
+            'band1_float32_noct_epsg4326.tif')
+        layer = QgsRasterLayer(raster_path, 'test_raster')
+        self.assertIsInstance(layer.serverProperties(), QgsMapLayerServerProperties)
 
     def testQgsRasterMinMaxOrigin(self):
 

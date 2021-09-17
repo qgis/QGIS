@@ -1,0 +1,2 @@
+# The following has been generated automatically from src/core/qgsmaplayerserverproperties.h
+QgsServerWmsDimensionProperties.PredefinedWmsDimensionName.baseClass = QgsServerWmsDimensionProperties

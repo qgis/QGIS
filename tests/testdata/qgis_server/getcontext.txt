@@ -107,6 +107,12 @@ Content-Type: text/xml; charset=utf-8
      <Title>default</Title>
     </Style>
    </StyleList>
+   <MetadataURL format="text/plain">
+    <OnlineResource xlink:type="simple" xlink:href="https://my.other.url" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+   </MetadataURL>
+   <MetadataURL format="text/xml">
+    <OnlineResource xlink:type="simple" xlink:href="https://some.data.com" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+   </MetadataURL>
   </Layer>
  </ResourceList>
 </OWSContext>

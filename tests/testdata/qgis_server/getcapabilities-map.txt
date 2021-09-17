@@ -142,6 +142,14 @@ Content-Type: text/xml; charset=utf-8
       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
      </LegendURL>
     </Style>
+    <MetadataURL type="FGDC:1998">
+     <Format>text/plain</Format>
+     <OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://my.other.url"/>
+    </MetadataURL>
+    <MetadataURL type="ISO19115:2003">
+     <Format>text/xml</Format>
+     <OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://some.data.com"/>
+    </MetadataURL>
    </Layer>
    <Layer queryable="1">
     <Name>landsat</Name>

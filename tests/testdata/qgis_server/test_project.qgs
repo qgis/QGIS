@@ -1026,6 +1026,10 @@
         <map-layer-style name="default"/>
       </map-layer-style-manager>
       <auxiliaryLayer/>
+      <metadataUrls>
+        <metadataUrl format="text/plain" type="FGDC">https://my.other.url</metadataUrl>
+        <metadataUrl format="text/xml" type="TC211">https://some.data.com</metadataUrl>
+      </metadataUrls>
       <flags>
         <Identifiable>1</Identifiable>
         <Removable>1</Removable>
