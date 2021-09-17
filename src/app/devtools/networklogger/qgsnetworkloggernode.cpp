@@ -169,7 +169,7 @@ QList<QAction *> QgsNetworkLoggerValueNode::actions( QObject *parent )
 {
   QList< QAction * > res;
 
-  QAction *copyAction = new QAction( QObject::tr( "Copy key: value" ), parent );
+  QAction *copyAction = new QAction( QObject::tr( "Copy" ), parent );
   QObject::connect( copyAction, &QAction::triggered, copyAction, [ = ]
   {
     QApplication::clipboard()->setText( QStringLiteral( "%1: %2" ).arg( mKey, mValue ) );
