@@ -120,7 +120,7 @@ void QgsExternalResourceConfigDlg::chooseDefaultPath()
     dir = QgsSettings().value( QStringLiteral( "/UI/lastExternalResourceWidgetDefaultPath" ), QDir::toNativeSeparators( QDir::cleanPath( path ) ) ).toString();
   }
 
-  const QString rootName = QFileDialog::getExistingDirectory( this, tr( "Select a directory" ), dir, QFileDialog::ShowDirsOnly );
+  const QString rootName = QFileDialog::getExistingDirectory( this, tr( "Select a Directory" ), dir, QFileDialog::ShowDirsOnly );
 
   if ( !rootName.isNull() )
     mRootPath->setText( rootName );
@@ -129,7 +129,7 @@ void QgsExternalResourceConfigDlg::chooseDefaultPath()
 void QgsExternalResourceConfigDlg::enableCbxItem( QComboBox *comboBox, int index, bool enabled )
 {
   // https://stackoverflow.com/a/62261745
-  auto *model = qobject_cast<QStandardItemModel *>( comboBox->model() );
+  const auto *model = qobject_cast<QStandardItemModel *>( comboBox->model() );
   assert( model );
   if ( !model )
     return;
@@ -247,10 +247,6 @@ void QgsExternalResourceConfigDlg::setConfig( const QVariantMap &config )
   if ( config.contains( QStringLiteral( "RelativeStorage" ) ) )
   {
     const int relative = config.value( QStringLiteral( "RelativeStorage" ) ).toInt();
-
-    if ( ( QgsFileWidget::RelativeStorage )relative == QgsFileWidget::RelativeDefaultPath )
-      enableCbxItem( mStoragePathCbx, 2, true );
-
     mStoragePathCbx->setCurrentIndex( relative );
   }
 
