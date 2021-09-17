@@ -53,12 +53,12 @@ QString QgsRoundnessAlgorithm::outputName() const
 
 QString QgsRoundnessAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "TODO" );
+  return QObject::tr( "Adds in the attribute table the roundness of each feature. The input vector layer must contain polygons." );
 }
 
 QString QgsRoundnessAlgorithm::shortDescription() const
 {
-  return QObject::tr( "TODO" );
+  return QObject::tr( "Calculate the roundness of each feature in a polygon vector layer." );
 }
 
 QgsRoundnessAlgorithm *QgsRoundnessAlgorithm::createInstance() const
