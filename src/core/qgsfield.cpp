@@ -19,6 +19,7 @@
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
+#include "qgsreferencedgeometry.h"
 
 #include <QDataStream>
 #include <QIcon>
@@ -256,6 +257,15 @@ QString QgsField::displayString( const QVariant &v ) const
   if ( v.isNull() )
   {
     return QgsApplication::nullRepresentation();
+  }
+
+  if ( v.userType() == QMetaType::type( "QgsReferencedGeometry" ) )
+  {
+      QgsReferencedGeometry geom = qvariant_cast<QgsReferencedGeometry>( v );
+      if( geom.isEmpty() )
+          return QgsApplication::nullRepresentation();
+      else
+          return QStringLiteral( "%1 [%2]" ).arg( geom.asWkt(), geom.crs().userFriendlyIdentifier() );
   }
 
   // Special treatment for numeric types if group separator is set or decimalPoint is not a dot
