@@ -869,6 +869,13 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   }
 
   /*
+   * Ensure that Z and M are passed
+   * It will be dropped as needed later.
+   */
+  point.setZ( QgsMapToolEdit( mMapCanvas ).defaultZValue() );
+  point.setM( QgsMapToolEdit( mMapCanvas ).defaultMValue() );
+
+  /*
    * Constraints are applied in 2D, they are always called when using the tool
    * but they do not take into account if when you snap on a vertex it has
    * a Z value.
@@ -883,12 +890,6 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
     e->snapPoint();
     point = mSnapMatch.interpolatedPoint();
   }
-  /*
-   * Ensure that Z and M are passed
-   * It will be dropped as needed later.
-   */
-  point.addZValue( QgsMapToolEdit( mMapCanvas ).defaultZValue() );
-  point.addMValue( QgsMapToolEdit( mMapCanvas ).defaultMValue() );
 
   /*
    * And if M or Z lock button is activated get the value of the input.
@@ -901,6 +902,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   {
     point.setM( mMLineEdit->text().toFloat() );
   }
+
 
   // update the point list
   updateCurrentPoint( point );
