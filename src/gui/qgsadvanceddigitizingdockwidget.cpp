@@ -331,7 +331,6 @@ void QgsAdvancedDigitizingDockWidget::switchZM( )
     else
       mZLineEdit->clear();
     mLockZButton->setEnabled( QgsWkbTypes::hasZ( type ) );
-    mRepeatingLockZButton->setEnabled( QgsWkbTypes::hasZ( type ) );
 
     mRelativeMButton->setEnabled( QgsWkbTypes::hasM( type ) );
     mMLabel->setEnabled( QgsWkbTypes::hasM( type ) );
@@ -341,7 +340,6 @@ void QgsAdvancedDigitizingDockWidget::switchZM( )
     else
       mMLineEdit->clear();
     mLockMButton->setEnabled( QgsWkbTypes::hasM( type ) );
-    mRepeatingLockMButton->setEnabled( QgsWkbTypes::hasM( type ) );
   }
 
 }
