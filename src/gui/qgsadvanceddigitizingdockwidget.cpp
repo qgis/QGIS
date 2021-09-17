@@ -1537,6 +1537,19 @@ QgsPoint QgsAdvancedDigitizingDockWidget::currentPointV2( bool *exist ) const
     return QgsPoint();
 }
 
+QgsPoint QgsAdvancedDigitizingDockWidget::currentPointLayerCoordinates( QgsMapLayer *layer ) const
+{
+  if ( pointsCount() > 0 && layer )
+  {
+    QgsPoint res = mCadPointList.value( 0 );
+    const QgsPointXY layerCoordinates = mMapCanvas->mapSettings().mapToLayerCoordinates( layer, res );
+    res.setX( layerCoordinates.x() );
+    res.setY( layerCoordinates.y() );
+    return res;
+  }
+  return QgsPoint();
+}
+
 QgsPoint QgsAdvancedDigitizingDockWidget::previousPointV2( bool *exist ) const
 {
   if ( exist )
