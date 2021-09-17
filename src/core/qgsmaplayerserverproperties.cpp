@@ -30,7 +30,7 @@ bool QgsServerMetadataUrlProperties::MetadataUrl::operator==( const QgsServerMet
          format == other.format;
 }
 
-void QgsServerMetadataUrlProperties::clone( QgsServerMetadataUrlProperties *properties ) const
+void QgsServerMetadataUrlProperties::copyTo( QgsServerMetadataUrlProperties *properties ) const
 {
   properties->setMetadataUrls( metadataUrls() );
 }
@@ -72,7 +72,7 @@ void QgsServerMetadataUrlProperties::writeXml( QDomNode &layer_node, QDomDocumen
 
 // QgsServerWmsDimensionProperties
 
-void QgsServerWmsDimensionProperties::clone( QgsServerWmsDimensionProperties *properties ) const
+void QgsServerWmsDimensionProperties::copyTo( QgsServerWmsDimensionProperties *properties ) const
 {
   properties->setWmsDimensions( wmsDimensions() );
 }
@@ -213,10 +213,10 @@ QgsMapLayerServerProperties::QgsMapLayerServerProperties( QgsMapLayer *layer )
 {
 }
 
-void QgsMapLayerServerProperties::clone( QgsMapLayerServerProperties *properties ) const
+void QgsMapLayerServerProperties::copyTo( QgsMapLayerServerProperties *properties ) const
 {
-  QgsServerMetadataUrlProperties::clone( properties );
-  QgsServerWmsDimensionProperties::clone( properties );
+  QgsServerMetadataUrlProperties::copyTo( properties );
+  QgsServerWmsDimensionProperties::copyTo( properties );
 }
 
 void QgsMapLayerServerProperties::reset()

@@ -116,7 +116,7 @@ class CORE_EXPORT QgsServerMetadataUrlProperties
      *
      * \param properties The properties to copy to
      */
-    void clone( QgsServerMetadataUrlProperties *properties ) const SIP_SKIP;
+    void copyTo( QgsServerMetadataUrlProperties *properties ) const SIP_SKIP;
 
     //! Reset properties to default
     void reset() SIP_SKIP;
@@ -251,7 +251,7 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
      *
      * \param properties The properties to copy to
      */
-    void clone( QgsServerWmsDimensionProperties *properties ) const SIP_SKIP;
+    void copyTo( QgsServerWmsDimensionProperties *properties ) const SIP_SKIP;
 
     /**
      * Reset properties to default
@@ -287,7 +287,7 @@ class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProper
      *
      * \param properties The properties to copy to
      */
-    void clone( QgsMapLayerServerProperties *properties ) const;
+    void copyTo( QgsMapLayerServerProperties *properties ) const;
 
     /**
      * Saves server properties to xml under the layer node

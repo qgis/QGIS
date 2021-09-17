@@ -215,7 +215,7 @@ Constructor - Creates a Map Layer QGIS Server Properties
 :param layer: The map layer
 %End
 
-    void clone( QgsMapLayerServerProperties *properties ) const;
+    void copyTo( QgsMapLayerServerProperties *properties ) const;
 %Docstring
 Copy properties to another instance
 

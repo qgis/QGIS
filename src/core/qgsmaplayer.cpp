@@ -134,7 +134,7 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
   layer->setCustomProperties( mCustomProperties );
   layer->setOpacity( mLayerOpacity );
   layer->setMetadata( mMetadata );
-  layer->serverProperties()->clone( mServerProperties.get() );
+  layer->serverProperties()->copyTo( mServerProperties.get() );
 }
 
 QgsMapLayerType QgsMapLayer::type() const
