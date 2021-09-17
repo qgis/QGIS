@@ -858,8 +858,8 @@ cd ..
 mkdir build
 cd build
 
-QGIS_DEPS_VERSION=0.3.0;\
-QT_VERSION=5.14.1;\
+QGIS_DEPS_VERSION=0.9.0;\
+QT_VERSION=5.15.2;\
 PATH=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage/bin:$PATH;\
 cmake \
   -DCMAKE_INSTALL_PREFIX=~/Applications \
