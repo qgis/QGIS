@@ -299,7 +299,7 @@ void QgsMapToolSelectionHandler::selectPolygonPressEvent( QgsMapMouseEvent *e )
       }
       catch ( QgsCsException &exception )
       {
-        QgsDebugMsg( QStringLiteral( "Could not transform geometry to layer CRS" ) );
+        QgsDebugMsg( QStringLiteral( "Could not transform geometry to map CRS" ) );
       }
 
       setSelectedGeometry( geom, e->modifiers() );
