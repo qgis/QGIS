@@ -324,8 +324,17 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * The last point.
      * Helper for the CAD point list. The CAD point list is the list of points
      * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
+     *
+     * \since QGIS 3.22
      */
     QgsPoint currentPointV2( bool *exists  = nullptr ) const;
+
+    /**
+     * Returns the last CAD point, in a map \a layer's coordinates.
+     *
+     * \since QGIS 3.22
+     */
+    QgsPoint currentPointLayerCoordinates( QgsMapLayer *layer ) const;
 
     /**
      * The last point.

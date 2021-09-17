@@ -488,7 +488,7 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
   QgsVectorLayer *sourceLayer = match.layer();
   if ( mCadDockWidget && mCadDockWidget->cadEnabled() )
   {
-    layerPoint = mCadDockWidget->currentPointV2();
+    layerPoint = mCadDockWidget->currentPointLayerCoordinates( vlayer );
     return 0;
   }
   else
