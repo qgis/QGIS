@@ -169,7 +169,6 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
       if ( !labelAtPosition( e, labelPos ) )
       {
         mCurrentLabel = LabelDetails();
-
         return;
       }
 
@@ -241,7 +240,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
 
         mStartPointMapCoords = e->mapPoint();
         QgsPointXY referencePoint;
-        if ( !currentLabelRotationPoint( referencePoint, !currentLabelPreserveRotation(), false ) )
+        if ( !currentLabelRotationPoint( referencePoint, !currentLabelPreserveRotation() ) )
         {
           referencePoint.setX( mCurrentLabel.pos.labelRect.xMinimum() );
           referencePoint.setY( mCurrentLabel.pos.labelRect.yMinimum() );

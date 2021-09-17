@@ -104,19 +104,9 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
     if ( !mCurrentLabel.valid )
       return;
 
-    // only rotate non-pinned OverPoint placements until other placements are supported in pal::Feature
-
-    if ( !mCurrentLabel.pos.isPinned
-         && mCurrentLabel.settings.placement != QgsPalLayerSettings::OverPoint )
-    {
+    // Get label rotation point
+    if ( !currentLabelRotationPoint( mRotationPoint, false ) )
       return;
-    }
-
-    // rotate unpinned labels (i.e. no hali/vali settings) as if hali/vali was Center/Half
-    if ( !currentLabelRotationPoint( mRotationPoint, false, !mCurrentLabel.pos.isPinned ) )
-    {
-      return;
-    }
 
     {
       mCurrentMouseAzimuth = convertAzimuth( mRotationPoint.azimuth( toMapCoordinates( e->pos() ) ) );
@@ -293,17 +283,6 @@ void QgsMapToolRotateLabel::keyReleaseEvent( QKeyEvent *e )
       }
     }
   }
-}
-
-bool QgsMapToolRotateLabel::canModifyLabel( const QgsMapToolLabel::LabelDetails &label )
-{
-  // only rotate non-pinned OverPoint placements until other placements are supported in pal::Feature
-
-  if ( !label.pos.isPinned
-       && label.settings.placement != QgsPalLayerSettings::OverPoint )
-    return false;
-
-  return true;
 }
 
 int QgsMapToolRotateLabel::roundTo15Degrees( double n )

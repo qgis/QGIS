@@ -2331,8 +2331,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   offsetY = context.convertToMapUnits( -yOff, offUnit, labelOffsetMapUnitScale );
 
   // layer defined rotation?
-  // only rotate non-pinned OverPoint placements until other placements are supported in pal::Feature
-  if ( placement == QgsPalLayerSettings::OverPoint && !qgsDoubleNear( angleOffset, 0.0 ) )
+  if ( !qgsDoubleNear( angleOffset, 0.0 ) )
   {
     layerDefinedRotation = true;
     angle = ( 360 - angleOffset ) * M_PI / 180; // convert to radians counterclockwise
@@ -2474,16 +2473,6 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
 
             xPos += xdiff;
             yPos += ydiff;
-          }
-          else
-          {
-            anchorPosition = QgsPointXY( xPos, yPos );
-
-            // only rotate non-pinned OverPoint placements until other placements are supported in pal::Feature
-            if ( dataDefinedRotation && placement != QgsPalLayerSettings::OverPoint )
-            {
-              angle = 0.0;
-            }
           }
         }
       }
