@@ -38,7 +38,7 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string>HTTP headers</string>
+      <string>HTTP Headers</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>

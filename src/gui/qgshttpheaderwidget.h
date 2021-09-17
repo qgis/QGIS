@@ -31,7 +31,7 @@
  * \class QgsHttpHeaderWidget
  * \brief Display referer http header field and collapsible table of key/value pairs
  *
- * \since QGIS 3.22
+ * \since QGIS 3.24
  */
 class GUI_EXPORT QgsHttpHeaderWidget : public QWidget, private Ui::QgsHttpHeaderWidget
 {
@@ -68,11 +68,6 @@ class GUI_EXPORT QgsHttpHeaderWidget : public QWidget, private Ui::QgsHttpHeader
     void updateSettings( QgsSettings &settings, const QString &key ) const;
 
   private slots:
-
-    /**
-     * create qt signal/slot connections
-     */
-    void setupConnections();
 
     /**
      * add a new key/value http header pair in the table
