@@ -526,7 +526,7 @@ void createCandidateAtOrderedPositionOverPoint( double &labelX, double &labelY, 
   // Take care of the label angle when creating candidates. See pr comments #44944 for details
   // https://github.com/qgis/QGIS/pull/44944#issuecomment-914670088
   QTransform transformRotation;
-  transformRotation.rotate( angle * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleRadians, QgsUnitTypes::AngleDegrees ) );
+  transformRotation.rotate( angle * 180 / M_PI );
   transformRotation.map( deltaX, deltaY, &deltaX, &deltaY );
 
   //have bearing, distance - calculate reference point
@@ -691,7 +691,7 @@ std::size_t FeaturePart::createCandidatesAroundPoint( double x, double y, std::v
     // Take care of the label angle when creating candidates. See pr comments #44944 for details
     // https://github.com/qgis/QGIS/pull/44944#issuecomment-914670088
     QTransform transformRotation;
-    transformRotation.rotate( angle * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleRadians, QgsUnitTypes::AngleDegrees ) );
+    transformRotation.rotate( angle * 180 / M_PI );
     transformRotation.map( deltaX, deltaY, &deltaX, &deltaY );
 
     double labelX = x + deltaX;
