@@ -86,6 +86,8 @@ class CORE_EXPORT QgsSymbolLayer
           sipType = sipType_QgsMarkerLineSymbolLayer;
         else if ( sipCpp->layerType() == "SimpleLine" )
           sipType = sipType_QgsSimpleLineSymbolLayer;
+        else if ( sipCpp->layerType() == "HashLine" )
+          sipType = sipType_QgsHashedLineSymbolLayer;
         else if ( sipCpp->layerType() == "ArrowLine" )
           sipType = sipType_QgsArrowSymbolLayer;
         else
