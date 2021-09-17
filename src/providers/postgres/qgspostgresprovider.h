@@ -219,8 +219,8 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
      * \param value the value to convert
      * \returns a QVariant of the given type or a null QVariant
      */
-    QVariant convertValue(QVariant::Type type, QVariant::Type subType, const QString &value, const QString &typeName) const;
-    static QVariant convertValue(QVariant::Type type, QVariant::Type subType, const QString &value, const QString &typeName, QgsPostgresConn *conn );
+    QVariant convertValue( QVariant::Type type, QVariant::Type subType, const QString &value, const QString &typeName ) const;
+    static QVariant convertValue( QVariant::Type type, QVariant::Type subType, const QString &value, const QString &typeName, QgsPostgresConn *conn );
 
     QList<QgsRelation> discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const override;
     QgsAttrPalIndexNameHash palAttributeIndexNames() const override;
@@ -279,7 +279,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     static QVariant parseOtherArray( const QString &txt, QVariant::Type subType, const QString &typeName, QgsPostgresConn *conn );
     static QVariant parseStringArray( const QString &txt );
     static QVariant parseMultidimensionalArray( const QString &txt );
-    static QVariant parseArray(const QString &txt, QVariant::Type type, QVariant::Type subType, const QString &typeName, QgsPostgresConn *conn);
+    static QVariant parseArray( const QString &txt, QVariant::Type type, QVariant::Type subType, const QString &typeName, QgsPostgresConn *conn );
 
 
     /**
@@ -503,10 +503,11 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
 
     std::unique_ptr< QgsPostgresListener > mListener;
 
-    static QgsReferencedGeometry fromEwkt(const QString &ewkt , QgsPostgresConn *conn);
-    static QString toEwkt( const QgsReferencedGeometry &geom );
-    static QString geomAttrToString( const QVariant& attr );
-    static QgsCoordinateReferenceSystem sridToCoordSystem(int srsId , QgsPostgresConn *conn);
+    static QgsReferencedGeometry fromEwkt( const QString &ewkt, QgsPostgresConn *conn );
+    static QString toEwkt( const QgsReferencedGeometry &geom, QgsPostgresConn *conn );
+    static QString geomAttrToString( const QVariant &attr, QgsPostgresConn *conn );
+    static int crsToSrid( const QgsCoordinateReferenceSystem &crs,  QgsPostgresConn *conn );
+    static QgsCoordinateReferenceSystem sridToCoordSystem( int srsId, QgsPostgresConn *conn );
 
 };
 
