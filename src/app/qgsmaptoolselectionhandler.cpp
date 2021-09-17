@@ -270,7 +270,7 @@ void QgsMapToolSelectionHandler::selectPolygonPressEvent( QgsMapMouseEvent *e )
           {
             rect = transform.transformBoundingBox( rect, QgsCoordinateTransform::ReverseTransform );
           }
-          catch ( QgsCsException &exception )
+          catch ( QgsCsException & )
           {
             QgsDebugMsg( QStringLiteral( "Could not transform geometry to layer CRS" ) );
           }
@@ -297,7 +297,7 @@ void QgsMapToolSelectionHandler::selectPolygonPressEvent( QgsMapMouseEvent *e )
       {
         geom.transform( transform );
       }
-      catch ( QgsCsException &exception )
+      catch ( QgsCsException & )
       {
         QgsDebugMsg( QStringLiteral( "Could not transform geometry to map CRS" ) );
       }
