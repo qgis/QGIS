@@ -164,8 +164,8 @@ bool QgsVectorTileLayerRenderer::render()
       ctx.labelingEngine()->removeProvider( mLabelProvider );
       mLabelProvider = nullptr; // provider is deleted by the engine
     }
-    else
-      mRequiredLayers.unite( mLabelProvider->requiredLayers( ctx, mTileZoom ) );
+
+    mRequiredLayers.unite( mLabelProvider->requiredLayers( ctx, mTileZoom ) );
   }
 
   if ( !isAsync )

@@ -14,7 +14,7 @@ class QgsHttpHeaders
 %Docstring(signature="appended")
 This class implements simple http header management.
 
-.. versionadded:: 3.22
+.. versionadded:: 3.24
 %End
 
 %TypeHeaderCode
@@ -22,11 +22,10 @@ This class implements simple http header management.
 %End
   public:
 
-    static const QString KEY_PREFIX;
 
     QgsHttpHeaders( const QMap<QString, QVariant> &headers );
 %Docstring
-constructor from map
+Constructor from map
 
 :param headers:
 %End
@@ -38,7 +37,7 @@ default constructor
 
     QgsHttpHeaders( const QgsSettings &settings, const QString &key = QString() );
 %Docstring
-constructor from ``:py:class:`QgsSettings```
+Constructor from :py:class:`QgsSettings` ``settings`` object
 
 :param settings:
 :param key:
@@ -48,16 +47,14 @@ constructor from ``:py:class:`QgsSettings```
 
     bool updateNetworkRequest( QNetworkRequest &request ) const;
 %Docstring
-update the ``request`` by adding all the http headers
+Updates a ``request`` by adding all the HTTP headers
 
-:param request:
-
-:return: true if the update succeed
+:return: ``True`` if the update succeed
 %End
 
     void updateSettings( QgsSettings &settings, const QString &key = QString() ) const;
 %Docstring
-update the ``settings`` by adding all the http headers in the path "key/KEY_PREFIX/"
+Updates the ``settings`` by adding all the http headers in the path "key/KEY_PREFIX/"
 
 :param settings:
 :param key: sub group path
@@ -65,7 +62,7 @@ update the ``settings`` by adding all the http headers in the path "key/KEY_PREF
 
     void setFromSettings( const QgsSettings &settings, const QString &key = QString() );
 %Docstring
-loads headers from the ``settings``
+Loads headers from the ``settings``
 
 :param settings:
 :param key: sub group path
@@ -73,10 +70,11 @@ loads headers from the ``settings``
 
     QVariant &operator[]( const QString &key );
 
+
     QList<QString> keys() const;
 %Docstring
 
-:return: the list of all http header key
+:return: the list of all http header keys
 %End
 
 

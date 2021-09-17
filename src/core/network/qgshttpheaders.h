@@ -30,19 +30,22 @@
 /**
  * \ingroup core
  * \brief This class implements simple http header management.
- * \since QGIS 3.22
+ * \since QGIS 3.24
  */
 class CORE_EXPORT QgsHttpHeaders
 {
   public:
 
-    /**
-     * used in settings
-     */
-    static const QString KEY_PREFIX;
+#ifndef SIP_RUN
 
     /**
-     * \brief constructor from map
+     * Used in settings
+     */
+    static const QString KEY_PREFIX;
+#endif
+
+    /**
+     * \brief Constructor from map
      * \param headers
      */
     QgsHttpHeaders( const QMap<QString, QVariant> &headers );
@@ -53,7 +56,7 @@ class CORE_EXPORT QgsHttpHeaders
     QgsHttpHeaders();
 
     /**
-     * \brief constructor from \a QgsSettings
+     * \brief Constructor from QgsSettings \a settings object
      * \param settings
      * \param key
      */
@@ -62,21 +65,20 @@ class CORE_EXPORT QgsHttpHeaders
     virtual ~QgsHttpHeaders();
 
     /**
-     * \brief update the \a request by adding all the http headers
-     * \param request
-     * \return true if the update succeed
+     * \brief Updates a \a request by adding all the HTTP headers
+     * \return TRUE if the update succeed
      */
     bool updateNetworkRequest( QNetworkRequest &request ) const;
 
     /**
-     * \brief update the \a settings by adding all the http headers in the path "key/KEY_PREFIX/"
+     * \brief Updates the \a settings by adding all the http headers in the path "key/KEY_PREFIX/"
      * \param settings
      * \param key sub group path
      */
     void updateSettings( QgsSettings &settings, const QString &key = QString() ) const;
 
     /**
-     * \brief loads headers from the \a settings
+     * \brief Loads headers from the \a settings
      * \param settings
      * \param key sub group path
      */
@@ -88,8 +90,10 @@ class CORE_EXPORT QgsHttpHeaders
      */
     QVariant &operator[]( const QString &key );
 
+    QgsHttpHeaders &operator = ( const QMap<QString, QVariant> &headers ) SIP_SKIP;
+
     /**
-     * \return the list of all http header key
+     * \return the list of all http header keys
      */
     QList<QString> keys() const;
 

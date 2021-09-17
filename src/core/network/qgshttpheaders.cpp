@@ -26,14 +26,11 @@
 
 const QString QgsHttpHeaders::KEY_PREFIX = "http-header/";
 
-QgsHttpHeaders::QgsHttpHeaders()
-{
-  // nope
-}
+QgsHttpHeaders::QgsHttpHeaders() = default;
 
-QgsHttpHeaders::QgsHttpHeaders( const QMap<QString, QVariant> &hdrs )
+QgsHttpHeaders::QgsHttpHeaders( const QMap<QString, QVariant> &headers )
+  : mHeaders( headers )
 {
-  mHeaders = hdrs;
   mHeaders.detach(); // clone like
 }
 
@@ -42,10 +39,7 @@ QgsHttpHeaders::QgsHttpHeaders( const QgsSettings &settings, const QString &key 
   setFromSettings( settings, key );
 }
 
-QgsHttpHeaders::~QgsHttpHeaders()
-{
-  // nope
-}
+QgsHttpHeaders::~QgsHttpHeaders() = default;
 
 bool QgsHttpHeaders::updateNetworkRequest( QNetworkRequest &request ) const
 {
@@ -103,6 +97,12 @@ QVariant &QgsHttpHeaders::operator[]( const QString &key )
 const QVariant QgsHttpHeaders::operator[]( const QString &key ) const
 {
   return mHeaders[key];
+}
+
+QgsHttpHeaders &QgsHttpHeaders::operator = ( const QMap<QString, QVariant> &headers )
+{
+  mHeaders = headers;
+  return *this;
 }
 
 QList<QString> QgsHttpHeaders::keys() const
