@@ -237,12 +237,43 @@ class CORE_EXPORT QgsGeometry
      */
     static QgsGeometry fromPolyline( const QgsPolyline &polyline );
 
-    //! Creates a new geometry from a QgsMultiPolylineXY object
+    /**
+     * Creates a new geometry from a QgsMultiPolylineXY object.
+     */
     static QgsGeometry fromMultiPolylineXY( const QgsMultiPolylineXY &multiline );
-    //! Creates a new geometry from a QgsPolygon
+
+#ifndef SIP_RUN
+
+    /**
+     * Creates a new geometry from a QgsPolygonXY.
+     */
+#else
+
+    /**
+     * Creates a new polygon geometry from a list of lists of QgsPointXY.
+     *
+     * The first list of QgsPointXY objects specifies the exterior ring of the polygon, and the remaining
+     * lists specify any interior rings.
+     *
+     * ### Example
+     *
+     * \code{.py}
+     *   # Create a polygon geometry with a single exterior ring (a triangle)
+     *   polygon = QgsGeometry.fromPolygonXY([[QgsPointXY(1, 2), QgsPointXY(5, 2), QgsPointXY(5, 10), QgsPointXY(1, 2)]]))
+     *
+     *   # Create a donut shaped polygon geometry with an interior ring
+     *   polygon = QgsGeometry.fromPolygonXY([[QgsPointXY(1, 2), QgsPointXY(5, 2), QgsPointXY(5, 10), QgsPointXY(1, 10), QgsPointXY(1, 2)],
+     *                                        [QgsPointXY(3, 4), QgsPointXY(4, 4), QgsPointXY(4, 6), QgsPointXY(3, 6), QgsPointXY(3, 4)]])
+     * \endcode
+     */
+#endif
     static QgsGeometry fromPolygonXY( const QgsPolygonXY &polygon );
-    //! Creates a new geometry from a QgsMultiPolygon
+
+    /**
+     * Creates a new geometry from a QgsMultiPolygonXY.
+     */
     static QgsGeometry fromMultiPolygonXY( const QgsMultiPolygonXY &multipoly );
+
     //! Creates a new geometry from a QgsRectangle
     static QgsGeometry fromRect( const QgsRectangle &rect ) SIP_HOLDGIL;
     //! Creates a new multipart geometry from a list of QgsGeometry objects
