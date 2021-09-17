@@ -72,6 +72,30 @@ Set the expression to generate this geometry.
 Gets the expression to generate this geometry.
 %End
 
+    QgsUnitTypes::RenderUnit units() const;
+%Docstring
+Returns the unit for the geometry expression.
+
+By default this is :py:class:`QgsUnitTypes`.MapUnits, which means that the :py:func:`~QgsGeometryGeneratorSymbolLayer.geometryExpression`
+will return geometries in the associated layer's CRS.
+
+.. seealso:: :py:func:`setUnits`
+
+.. versionadded:: 3.22
+%End
+
+    void setUnits( QgsUnitTypes::RenderUnit units );
+%Docstring
+Sets the ``units`` for the geometry expression.
+
+By default this is :py:class:`QgsUnitTypes`.MapUnits, which means that the :py:func:`~QgsGeometryGeneratorSymbolLayer.geometryExpression`
+will return geometries in the associated layer's CRS.
+
+.. seealso:: :py:func:`units`
+
+.. versionadded:: 3.22
+%End
+
     virtual QgsSymbol *subSymbol();
 
     virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
@@ -103,6 +127,7 @@ context which is available to the evaluated expression.
 %End
 
     virtual void setColor( const QColor &color );
+
 
 
   private:

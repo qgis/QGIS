@@ -42,6 +42,8 @@ QgsSymbolLayer *QgsGeometryGeneratorSymbolLayer::create( const QVariantMap &prop
   {
     symbolLayer->setSubSymbol( QgsFillSymbol::createSimple( properties ) );
   }
+  symbolLayer->setUnits( QgsUnitTypes::decodeRenderUnit( properties.value( QStringLiteral( "units" ), QStringLiteral( "mapunits" ) ).toString() ) );
+
   symbolLayer->restoreOldDataDefinedProperties( properties );
 
   return symbolLayer;
@@ -133,6 +135,7 @@ QgsSymbolLayer *QgsGeometryGeneratorSymbolLayer::clone() const
     clone->mMarkerSymbol.reset( mMarkerSymbol->clone() );
 
   clone->setSymbolType( mSymbolType );
+  clone->setUnits( mUnits );
 
   copyDataDefinedProperties( clone );
   copyPaintEffect( clone );
@@ -156,6 +159,8 @@ QVariantMap QgsGeometryGeneratorSymbolLayer::properties() const
       props.insert( QStringLiteral( "SymbolType" ), QStringLiteral( "Fill" ) );
       break;
   }
+  props.insert( QStringLiteral( "units" ), QgsUnitTypes::encodeUnit( mUnits ) );
+
   return props;
 }
 
@@ -222,11 +227,55 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context )
 
   if ( context.feature() )
   {
-    const QgsExpressionContext &expressionContext = context.renderContext().expressionContext();
+    QgsExpressionContext &expressionContext = context.renderContext().expressionContext();
 
     QgsFeature f = expressionContext.feature();
-    const QgsGeometry geom = mExpression->evaluate( &expressionContext ).value<QgsGeometry>();
-    f.setGeometry( geom );
+
+    switch ( mUnits )
+    {
+      case QgsUnitTypes::RenderMapUnits:
+      case QgsUnitTypes::RenderUnknownUnit: // unsupported, not exposed as an option
+      case QgsUnitTypes::RenderMetersInMapUnits: // unsupported, not exposed as an option
+      case QgsUnitTypes::RenderPercentage: // unsupported, not exposed as an option
+      {
+        QgsGeometry geom = mExpression->evaluate( &expressionContext ).value<QgsGeometry>();
+        f.setGeometry( geom );
+        break;
+      }
+
+      case QgsUnitTypes::RenderMillimeters:
+      case QgsUnitTypes::RenderPixels:
+      case QgsUnitTypes::RenderPoints:
+      case QgsUnitTypes::RenderInches:
+      {
+        QgsExpressionContextScope *generatorScope = new QgsExpressionContextScope();
+        expressionContext.appendScope( generatorScope );
+
+        QgsGeometry transformed = f.geometry();
+        transformed.transform( context.renderContext().coordinateTransform() );
+        QTransform mapToPixel = context.renderContext().mapToPixel().transform();
+
+        // scale transform to target units
+        const double scale = 1 / context.renderContext().convertToPainterUnits( 1, mUnits );
+        mapToPixel.scale( scale, scale );
+
+        if ( mExpression->referencedVariables().contains( QStringLiteral( "map_geometry" ) ) )
+        {
+          transformed.transform( mapToPixel );
+          generatorScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_geometry" ), transformed ) );
+        }
+
+        QgsGeometry geom = mExpression->evaluate( &expressionContext ).value<QgsGeometry>();
+
+        geom.transform( mapToPixel.inverted() );
+        geom.transform( context.renderContext().coordinateTransform(), QgsCoordinateTransform::ReverseTransform );
+
+        f.setGeometry( geom );
+
+        delete expressionContext.popScope();
+        break;
+      }
+    }
 
     QgsExpressionContextScope *subSymbolExpressionContextScope = mSymbol->symbolRenderContext()->expressionContextScope();
 

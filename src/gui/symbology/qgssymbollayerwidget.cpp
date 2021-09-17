@@ -4288,15 +4288,35 @@ QgsGeometryGeneratorSymbolLayerWidget::QgsGeometryGeneratorSymbolLayerWidget( Qg
   cbxGeometryType->addItem( QgsIconUtils::iconPolygon(), tr( "Polygon / MultiPolygon" ), static_cast< int >( Qgis::SymbolType::Fill ) );
   cbxGeometryType->addItem( QgsIconUtils::iconLine(), tr( "LineString / MultiLineString" ), static_cast< int >( Qgis::SymbolType::Line ) );
   cbxGeometryType->addItem( QgsIconUtils::iconPoint(), tr( "Point / MultiPoint" ), static_cast< int >( Qgis::SymbolType::Marker ) );
+
+  mUnitWidget->setUnits( {QgsUnitTypes::RenderMillimeters,
+                          QgsUnitTypes::RenderPoints,
+                          QgsUnitTypes::RenderPixels,
+                          QgsUnitTypes::RenderInches,
+                          QgsUnitTypes::RenderMapUnits
+                         } );
+  mUnitWidget->setShowMapScaleButton( false );
+
   connect( modificationExpressionSelector, &QgsExpressionLineEdit::expressionChanged, this, &QgsGeometryGeneratorSymbolLayerWidget::updateExpression );
   connect( cbxGeometryType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsGeometryGeneratorSymbolLayerWidget::updateSymbolType );
+  connect( mUnitWidget, &QgsUnitSelectionWidget::changed, this, [ = ]
+  {
+    if ( !mBlockSignals )
+    {
+      mLayer->setUnits( mUnitWidget->unit() );
+      emit symbolChanged();
+    }
+  } );
 }
 
 void QgsGeometryGeneratorSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *l )
 {
+  mBlockSignals++;
   mLayer = static_cast<QgsGeometryGeneratorSymbolLayer *>( l );
   modificationExpressionSelector->setExpression( mLayer->geometryExpression() );
   cbxGeometryType->setCurrentIndex( cbxGeometryType->findData( static_cast< int >( mLayer->symbolType() ) ) );
+  mUnitWidget->setUnit( mLayer->units() );
+  mBlockSignals--;
 }
 
 QgsSymbolLayer *QgsGeometryGeneratorSymbolLayerWidget::symbolLayer()

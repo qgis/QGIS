@@ -76,6 +76,28 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
      */
     QString geometryExpression() const { return mExpression->expression(); }
 
+    /**
+     * Returns the unit for the geometry expression.
+     *
+     * By default this is QgsUnitTypes::MapUnits, which means that the geometryExpression()
+     * will return geometries in the associated layer's CRS.
+     *
+     * \see setUnits()
+     * \since QGIS 3.22
+     */
+    QgsUnitTypes::RenderUnit units() const { return mUnits; }
+
+    /**
+     * Sets the \a units for the geometry expression.
+     *
+     * By default this is QgsUnitTypes::MapUnits, which means that the geometryExpression()
+     * will return geometries in the associated layer's CRS.
+     *
+     * \see units()
+     * \since QGIS 3.22
+     */
+    void setUnits( QgsUnitTypes::RenderUnit units ) { mUnits = units;}
+
     QgsSymbol *subSymbol() override { return mSymbol; }
 
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
@@ -104,6 +126,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
 
     void setColor( const QColor &color ) override;
 
+
   private:
     QgsGeometryGeneratorSymbolLayer( const QString &expression );
 
@@ -121,6 +144,8 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
      * The type of the sub symbol.
      */
     Qgis::SymbolType mSymbolType;
+
+    QgsUnitTypes::RenderUnit mUnits = QgsUnitTypes::RenderMapUnits;
 
     bool mRenderingFeature = false;
     bool mHasRenderedFeature = false;

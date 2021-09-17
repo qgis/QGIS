@@ -1138,6 +1138,7 @@ class GUI_EXPORT QgsGeometryGeneratorSymbolLayerWidget : public QgsSymbolLayerWi
 
   private:
     QgsGeometryGeneratorSymbolLayer *mLayer = nullptr;
+    int mBlockSignals = 0;
 
   private slots:
     void updateExpression( const QString &string );
