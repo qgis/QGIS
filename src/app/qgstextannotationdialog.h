@@ -40,6 +40,7 @@ class APP_EXPORT QgsTextAnnotationDialog: public QDialog, private Ui::QgsTextAnn
     //! Text document (a clone of the annotation items document)
     std::unique_ptr< QTextDocument > mTextDocument;
     QgsAnnotationWidget *mEmbeddedWidget = nullptr;
+    QString mExpressionDialogTitle;
 
     void blockAllSignals( bool block );
 
@@ -51,6 +52,7 @@ class APP_EXPORT QgsTextAnnotationDialog: public QDialog, private Ui::QgsTextAnn
     void deleteItem();
     void mButtonBox_clicked( QAbstractButton *button );
     void backgroundColorChanged( const QColor &color );
+    void editExpression();
     void showHelp();
 };
 

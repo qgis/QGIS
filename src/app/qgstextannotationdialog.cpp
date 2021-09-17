@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgstextannotationdialog.h"
+#include "qgsexpressionbuilderdialog.h"
 #include "qgsannotationwidget.h"
 #include "qgstextannotation.h"
 #include "qgsmapcanvasannotationitem.h"
@@ -24,6 +25,7 @@
 #include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgsfillsymbol.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QColorDialog>
 #include <QGraphicsScene>
@@ -32,6 +34,7 @@ QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsMapCanvasAnnotationItem *it
   : QDialog( parent, f )
   , mItem( item )
   , mTextDocument( nullptr )
+  , mExpressionDialogTitle( tr( "Annotation Expression Dialog" ) )
 {
   setupUi( this );
   connect( mFontColorButton, &QgsColorButton::colorChanged, this, &QgsTextAnnotationDialog::mFontColorButton_colorChanged );
@@ -64,6 +67,7 @@ QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsMapCanvasAnnotationItem *it
   QObject::connect( mBoldPushButton, &QPushButton::toggled, this, &QgsTextAnnotationDialog::changeCurrentFormat );
   QObject::connect( mItalicsPushButton, &QPushButton::toggled, this, &QgsTextAnnotationDialog::changeCurrentFormat );
   QObject::connect( mTextEdit, &QTextEdit::cursorPositionChanged, this, &QgsTextAnnotationDialog::setCurrentFontPropertiesToGui );
+  QObject::connect( mExpressionToolButton, &QAbstractButton::clicked, this, &QgsTextAnnotationDialog::editExpression );
 
   QPushButton *deleteButton = new QPushButton( tr( "Delete" ) );
   QObject::connect( deleteButton, &QPushButton::clicked, this, &QgsTextAnnotationDialog::deleteItem );
@@ -172,6 +176,23 @@ void QgsTextAnnotationDialog::deleteItem()
   if ( mItem && mItem->annotation() )
     QgsProject::instance()->annotationManager()->removeAnnotation( mItem->annotation() );
   mItem = nullptr;
+}
+
+void QgsTextAnnotationDialog::editExpression()
+{
+  const QString textAsExpression = QStringLiteral( "'%1'" ).arg( mTextEdit->toPlainText().replace( '\'', QLatin1String( "\\'" ) ) );
+  const QgsExpressionContext context = QgsProject::instance()->createExpressionContext();
+
+  QgsExpressionBuilderDialog dlg( NULL, textAsExpression, this, QStringLiteral( "generic" ), context );
+
+  dlg.setAllowEvalErrors( true );
+  dlg.setWindowTitle( mExpressionDialogTitle );
+
+  if ( dlg.exec() )
+  {
+    const QString evaluatedExpression = QgsExpression( dlg.expressionText() ).evaluate( &context ).toString();
+    mTextEdit->setText( evaluatedExpression );
+  }
 }
 
 void QgsTextAnnotationDialog::showHelp()
