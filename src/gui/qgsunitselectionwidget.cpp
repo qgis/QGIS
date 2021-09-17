@@ -252,11 +252,11 @@ void QgsUnitSelectionWidget::toggleUnitRangeButton()
 {
   if ( unit() != QgsUnitTypes::RenderUnknownUnit )
   {
-    mMapScaleButton->setVisible( unit() == QgsUnitTypes::RenderMapUnits );
+    mMapScaleButton->setVisible( mShowMapScaleButton && unit() == QgsUnitTypes::RenderMapUnits );
   }
   else
   {
-    mMapScaleButton->setVisible( mMapUnitIdx != -1 && mUnitCombo->currentIndex() == mMapUnitIdx );
+    mMapScaleButton->setVisible( mShowMapScaleButton && mMapUnitIdx != -1 && mUnitCombo->currentIndex() == mMapUnitIdx );
   }
 }
 
@@ -264,6 +264,18 @@ void QgsUnitSelectionWidget::widgetChanged( const QgsMapUnitScale &scale )
 {
   mMapUnitScale = scale;
   emit changed();
+}
+
+bool QgsUnitSelectionWidget::showMapScaleButton() const
+{
+  return mShowMapScaleButton;
+}
+
+void QgsUnitSelectionWidget::setShowMapScaleButton( bool show )
+{
+  mShowMapScaleButton = show;
+  if ( !show )
+    mMapScaleButton->hide();
 }
 
 
