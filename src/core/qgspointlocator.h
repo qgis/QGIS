@@ -261,42 +261,50 @@ class CORE_EXPORT QgsPointLocator : public QObject
         /**
          * Convenient method to return a point on an edge with linear
          * interpolation of the Z value.
+         * The parameter \a destinationCrs depends of where the instance of this Match is created (geom.cache: layer CRS, map canvas snapper: dest CRS)
          * \since 3.10
          */
-        QgsPoint interpolatedPoint( const QgsCoordinateReferenceSystem &projectCrs, const QgsMapLayer *sourceLayer ) const
+        QgsPoint interpolatedPoint( const QgsCoordinateReferenceSystem &destinationCrs ) const
         {
           QgsPoint point;
-          QgsPoint snappedPoint( mPoint );
-          const QgsGeometry geom = mLayer->getGeometry( mFid );
-          try
+
+          if ( mLayer )
           {
-            if ( mLayer )
-              snappedPoint.transform( QgsCoordinateTransform( projectCrs, mLayer->crs(), mLayer->transformContext() ) );
-          }
-          catch ( QgsCsException &cse )
-          {
-            Q_UNUSED( cse )
-            QgsDebugMsg( QStringLiteral( "transformation to layer coordinate failed" ) );
-            return QgsPoint();
+            QgsPointXY snappedPoint( mPoint );
+            const QgsGeometry geom = mLayer->getGeometry( mFid );
+            QgsCoordinateTransform transform( destinationCrs, mLayer->crs(), mLayer->transformContext() );
+            if ( transform.isValid() )
+            {
+              try
+              {
+                snappedPoint = transform.transform( snappedPoint );
+              }
+              catch ( QgsCsException & )
+              {
+                QgsDebugMsg( QStringLiteral( "transformation to layer coordinate failed" ) );
+              }
+            }
+
+            if ( !( geom.isNull() || geom.isEmpty() ) )
+            {
+              const QgsLineString line( geom.vertexAt( mVertexIndex ), geom.vertexAt( mVertexIndex + 1 ) );
+              point = QgsGeometryUtils::closestPoint( line, QgsPoint( snappedPoint ) );
+            }
+
+
+            if ( transform.isValid() )
+            {
+              try
+              {
+                point.transform( transform, QgsCoordinateTransform::ReverseTransform );
+              }
+              catch ( QgsCsException & )
+              {
+                QgsDebugMsg( QStringLiteral( "transformation to destination coordinate failed" ) );
+              }
+            }
           }
 
-          if ( !( geom.isNull() || geom.isEmpty() ) )
-          {
-            const QgsLineString line( geom.vertexAt( mVertexIndex ), geom.vertexAt( mVertexIndex + 1 ) );
-            point = QgsGeometryUtils::closestPoint( line, snappedPoint );
-          }
-          // (re)Transform layerPoint to vlayer crs
-          try
-          {
-            if ( sourceLayer )
-              point.transform( QgsCoordinateTransform( mLayer->crs(), sourceLayer->crs(), sourceLayer->transformContext() ) );
-          }
-          catch ( QgsCsException &cse )
-          {
-            Q_UNUSED( cse )
-            QgsDebugMsg( QStringLiteral( "transformation to layer coordinate failed" ) );
-            return QgsPoint();
-          }
           return point;
         }
 
