@@ -882,6 +882,7 @@ void QgsCustomization::updateMainWindow( QMenu *toolBarMenu, QMenu *panelMenu )
       {
         mw->removeDockWidget( dw );
         dw->setParent( NULL );
+        // remove also from menu, because dock removed here, switched on later from menu don't work correctly
         panelMenu->removeAction( dw->toggleViewAction() );
       }
     }
