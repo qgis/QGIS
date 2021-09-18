@@ -211,10 +211,8 @@ void TestQgsVertexTool::initTestCase()
   QVERIFY( mLayerCompoundCurve->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerMultiLine << mLayerPolygon << mLayerMultiPolygon << mLayerPoint << mLayerLineZ << mLayerCompoundCurve );
 
-  QgsPolylineXY line1;
-  line1 << QgsPointXY( 2, 1 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 1, 3 );
   QgsFeature lineF1;
-  lineF1.setGeometry( QgsGeometry::fromPolylineXY( line1 ) );
+  lineF1.setGeometry( QgsGeometry::fromWkt( "LineString (2 1, 1 1, 1 3)" ) );
 
   QgsFeature multiLineF1;
   multiLineF1.setGeometry( QgsGeometry::fromWkt( "MultiLineString ((3 1, 3 2),(3 3, 3 4))" ) );
@@ -225,40 +223,23 @@ void TestQgsVertexTool::initTestCase()
   QgsFeature lineF13857;
   lineF13857.setGeometry( line3857 );
 
-  QgsPolygonXY polygon1;
-  QgsPolylineXY polygon1exterior;
-  polygon1exterior << QgsPointXY( 4, 1 ) << QgsPointXY( 7, 1 ) << QgsPointXY( 7, 4 ) << QgsPointXY( 4, 4 ) << QgsPointXY( 4, 1 );
-  polygon1 << polygon1exterior;
   QgsFeature polygonF1;
-  polygonF1.setGeometry( QgsGeometry::fromPolygonXY( polygon1 ) );
+  polygonF1.setGeometry( QgsGeometry::fromWkt( "Polygon ((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
 
   QgsFeature multiPolygonF1;
   multiPolygonF1.setGeometry( QgsGeometry::fromWkt( "MultiPolygon (((1 5, 2 5, 2 6.5, 2 8, 1 8, 1 6.5, 1 5),(1.25 5.5, 1.25 6, 1.75 6, 1.75 5.5, 1.25 5.5),(1.25 7, 1.75 7, 1.75 7.5, 1.25 7.5, 1.25 7)),((3 5, 3 6.5, 3 8, 4 8, 4 6.5, 4 5, 3 5),(3.25 5.5, 3.75 5.5, 3.75 6, 3.25 6, 3.25 5.5),(3.25 7, 3.75 7, 3.75 7.5, 3.25 7.5, 3.25 7)))" ) );
 
   QgsFeature pointF1;
-  pointF1.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 2, 3 ) ) );
+  pointF1.setGeometry( QgsGeometry::fromWkt( "Point (2 3)" ) );
 
   QgsFeature linez1, linez2;
-  QVector<QgsPoint> linez1pts, linez2pts;
-  linez1pts << QgsPoint( 5, 5, 1 ) << QgsPoint( 6, 6, 1 ) << QgsPoint( 7, 5, 1 );
-  linez2pts << QgsPoint( 5, 7, 5 ) << QgsPoint( 7, 7, 10 );
-  const QgsLineString linez1geom( linez1pts );
-  const QgsLineString linez2geom( linez2pts );
-  linez1.setGeometry( std::unique_ptr< QgsAbstractGeometry >( linez1geom.clone() ) );
-  linez2.setGeometry( std::unique_ptr< QgsAbstractGeometry >( linez2geom.clone() ) );
+  linez1.setGeometry( QgsGeometry::fromWkt( "LineStringZ (5 5 1, 6 6 1, 7 5 1)" ) );
+  linez2.setGeometry( QgsGeometry::fromWkt( "LineStringZ (5 7 5, 7 7 10)" ) );
 
   QgsFeature curveF1;
-  QgsCircularString l21;
-  l21.setPoints( QgsPointSequence() << QgsPoint( 14, 14 ) << QgsPoint( 10, 10 ) << QgsPoint( 17, 10 ) );
-  QgsCompoundCurve curve1geom;
-  curve1geom.addCurve( l21.clone() );
-  curveF1.setGeometry( QgsGeometry::fromWkt( curve1geom.asWkt() ) );
-  QgsCompoundCurve curve2geom;
-  curve2geom.addVertex( QgsPoint( 16, 11 ) );
-  curve2geom.addVertex( QgsPoint( 17, 11 ) );
-  curve2geom.addVertex( QgsPoint( 17, 13 ) );
+  curveF1.setGeometry( QgsGeometry::fromWkt( "CompoundCurve (CircularString (14 14, 10 10, 17 10))" ) );
   QgsFeature curveF2;
-  curveF2.setGeometry( QgsGeometry::fromWkt( curve2geom.asWkt() ) );
+  curveF2.setGeometry( QgsGeometry::fromWkt( "CompoundCurve ((16 11, 17 11, 17 13))" ) );
 
   mLayerLine->startEditing();
   mLayerLine->addFeature( lineF1 );
