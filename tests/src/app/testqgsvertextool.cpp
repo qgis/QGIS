@@ -65,6 +65,7 @@ class TestQgsVertexTool : public QObject
     void testSelectVerticesByPolygon();
     void testTopologicalEditingMoveVertexZ();
     void testTopologicalEditingMoveVertexOnSegmentZ();
+    void testTopologicalEditingMoveVertexOnIntersectionZ();
     void testMoveVertex();
     void testMoveEdge();
     void testAddVertex();
@@ -159,6 +160,7 @@ class TestQgsVertexTool : public QObject
     QgsVectorLayer *mLayerLineReprojected = nullptr;
     QgsFeatureId mFidLineZF1 = 0;
     QgsFeatureId mFidLineZF2 = 0;
+    QgsFeatureId mFidLineZF3 = 0;
     QgsFeatureId mFidLineF1 = 0;
     QgsFeatureId mFidMultiLineF1 = 0;
     QgsFeatureId mFidLineF13857 = 0;
@@ -232,9 +234,10 @@ void TestQgsVertexTool::initTestCase()
   QgsFeature pointF1;
   pointF1.setGeometry( QgsGeometry::fromWkt( "Point (2 3)" ) );
 
-  QgsFeature linez1, linez2;
+  QgsFeature linez1, linez2, linez3;
   linez1.setGeometry( QgsGeometry::fromWkt( "LineStringZ (5 5 1, 6 6 1, 7 5 1)" ) );
   linez2.setGeometry( QgsGeometry::fromWkt( "LineStringZ (5 7 5, 7 7 10)" ) );
+  linez3.setGeometry( QgsGeometry::fromWkt( "LineStringZ (5 5.5 5, 7 5.5 10)" ) );
 
   QgsFeature curveF1;
   curveF1.setGeometry( QgsGeometry::fromWkt( "CompoundCurve (CircularString (14 14, 10 10, 17 10))" ) );
@@ -274,9 +277,11 @@ void TestQgsVertexTool::initTestCase()
   mLayerLineZ->startEditing();
   mLayerLineZ->addFeature( linez1 );
   mLayerLineZ->addFeature( linez2 );
+  mLayerLineZ->addFeature( linez3 );
   mFidLineZF1 = linez1.id();
   mFidLineZF2 = linez2.id();
-  QCOMPARE( mLayerLineZ->featureCount(), ( long ) 2 );
+  mFidLineZF3 = linez3.id();
+  QCOMPARE( mLayerLineZ->featureCount(), ( long ) 3 );
 
   mLayerCompoundCurve->startEditing();
   mLayerCompoundCurve->addFeature( curveF1 );
@@ -292,7 +297,7 @@ void TestQgsVertexTool::initTestCase()
   QCOMPARE( mLayerMultiPolygon->undoStack()->index(), 1 );
   QCOMPARE( mLayerPoint->undoStack()->index(), 1 );
   // except for layerLineZ
-  QCOMPARE( mLayerLineZ->undoStack()->index(), 2 );
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 3 );
   QCOMPARE( mLayerCompoundCurve->undoStack()->index(), 2 );
 
   mCanvas->setFrameStyle( QFrame::NoFrame );
@@ -375,6 +380,38 @@ void TestQgsVertexTool::testTopologicalEditingMoveVertexOnSegmentZ()
   QCOMPARE( mLayerLineZ->getFeature( mFidLineZF2 ).geometry().asWkt(), QString( "LineStringZ (5 7 5, 6 7 7.5, 7 7 10)" ) );
 
   QgsProject::instance()->setTopologicalEditing( topologicalEditing );
+  // Two undo steps, one for the vertex move, one for the topological point
+  mLayerLineZ->undoStack()->undo();
+  mLayerLineZ->undoStack()->undo();
+  cfg.setEnabled( false );
+  mCanvas->snappingUtils()->setConfig( cfg );
+}
+
+void TestQgsVertexTool::testTopologicalEditingMoveVertexOnIntersectionZ()
+{
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
+
+  const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
+  QgsProject::instance()->setTopologicalEditing( true );
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  cfg.setMode( QgsSnappingConfig::AllLayers );
+  cfg.setTolerance( 10 );
+  cfg.setTypeFlag( static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::VertexFlag | QgsSnappingConfig::SegmentFlag ) );
+  cfg.setIntersectionSnapping( true );
+  cfg.setEnabled( true );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  mouseClick( 5, 5.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  mouseClick( 5.5, 5.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  // The undo stack gets two entries, one for the vertex move and one for the topological point
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 5 );
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt(), QString( "LineStringZ (5 5 1, 5.5 5.5 333, 6 6 1, 7 5 1)" ) );
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF3 ).geometry().asWkt(), QString( "LineStringZ (5.5 5.5 5, 7 5.5 10)" ) );
+
+  QgsProject::instance()->setTopologicalEditing( topologicalEditing );
+  // Two undo steps, one for the vertex move, one for the topological point
+  mLayerLineZ->undoStack()->undo();
   mLayerLineZ->undoStack()->undo();
   cfg.setEnabled( false );
   mCanvas->snappingUtils()->setConfig( cfg );
