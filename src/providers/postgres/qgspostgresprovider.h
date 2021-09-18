@@ -507,7 +507,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     static QString toEwkt( const QgsReferencedGeometry &geom, QgsPostgresConn *conn );
     static QString geomAttrToString( const QVariant &attr, QgsPostgresConn *conn );
     static int crsToSrid( const QgsCoordinateReferenceSystem &crs,  QgsPostgresConn *conn );
-    static QgsCoordinateReferenceSystem sridToCoordSystem( int srsId, QgsPostgresConn *conn );
+    static QgsCoordinateReferenceSystem sridToCrs( int srsId, QgsPostgresConn *conn );
 
 };
 

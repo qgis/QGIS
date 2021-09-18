@@ -376,7 +376,7 @@ QgsReferencedGeometry QgsPostgresProvider::fromEwkt( const QString &ewkt, QgsPos
     return QgsReferencedGeometry();
 
   QgsGeometry geom = QgsGeometry::fromWkt( ewktInfo.wkt );
-  return QgsReferencedGeometry( geom, sridToCoordSystem( ewktInfo.srid, conn ) );
+  return QgsReferencedGeometry( geom, sridToCrs( ewktInfo.srid, conn ) );
 }
 
 QString QgsPostgresProvider::toEwkt( const QgsReferencedGeometry &geom, QgsPostgresConn *conn )
@@ -425,7 +425,7 @@ int QgsPostgresProvider::crsToSrid( const QgsCoordinateReferenceSystem &crs, Qgs
   return -1;
 }
 
-QgsCoordinateReferenceSystem QgsPostgresProvider::sridToCoordSystem( int srid, QgsPostgresConn *conn )
+QgsCoordinateReferenceSystem QgsPostgresProvider::sridToCrs( int srid, QgsPostgresConn *conn )
 {
   QgsCoordinateReferenceSystem crs;
 
@@ -4807,7 +4807,7 @@ QgsCoordinateReferenceSystem QgsPostgresProvider::crs() const
   QgsCoordinateReferenceSystem srs;
   int srid = mRequestedSrid.isEmpty() ? mDetectedSrid.toInt() : mRequestedSrid.toInt();
 
-  return sridToCoordSystem( srid, connectionRO() );
+  return sridToCrs( srid, connectionRO() );
 
 }
 
