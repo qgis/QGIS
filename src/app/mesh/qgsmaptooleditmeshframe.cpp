@@ -42,6 +42,7 @@
 #include "qgsmaptoolselectionhandler.h"
 #include "qgsvectorlayer.h"
 #include "qgsunitselectionwidget.h"
+#include "qgssettingsregistrycore.h"
 
 
 //
@@ -83,6 +84,8 @@ QgsZValueWidget::QgsZValueWidget( const QString &label, QWidget *parent ): QWidg
 
 double QgsZValueWidget::zValue() const
 {
+  mZValueSpinBox->interpretText();
+  double v = mZValueSpinBox->value();
   return mZValueSpinBox->value();
 }
 
@@ -535,6 +538,7 @@ void QgsMapToolEditMeshFrame::initialize()
 
   connect( mCanvas, &QgsMapCanvas::currentLayerChanged, this, &QgsMapToolEditMeshFrame::setCurrentLayer );
 
+  mUserZValue = QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.value();
   createZValueWidget();
   updateFreeVertices();
 
@@ -682,7 +686,6 @@ void QgsMapToolEditMeshFrame::cadCanvasPressEvent( QgsMapMouseEvent *e )
   if ( e->button() == Qt::LeftButton )
     mLeftButtonPressed = true;
 
-
   switch ( mCurrentState )
   {
     case Digitizing:
@@ -766,18 +769,6 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   if ( !mDoubleClicks )
   {
     mFirstClickPoint = mapPoint;
-
-    mIsSelectedZValue = !mSelectedVertices.isEmpty() ||
-                        ( mIsSelectedZValue && ( e->modifiers() &Qt::ControlModifier ) );
-
-    if ( mIsSelectedZValue && mZValueWidget )
-    {
-      if ( !mSelectedVertices.isEmpty() )
-        mSelectedZValue = mZValueWidget->zValue();
-    }
-    else if ( !mSelectedZValue && mZValueWidget )
-      if ( mSelectedVertices.isEmpty() )
-        mZValueWidget->setDefaultValue( mOrdinaryZValue );
   }
 
   if ( e->button() == Qt::LeftButton )
@@ -790,7 +781,7 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       {
         if ( mDoubleClicks )  //double clicks --> add a vertex
         {
-          addVertex( mFirstClickPoint, e->mapPointMatch(), e->modifiers() );
+          addVertex( mFirstClickPoint, e->mapPointMatch() );
         }
         else if ( mNewFaceMarker->isVisible() &&
                   mapPoint.distance( mNewFaceMarker->center() ) < tolerance
@@ -841,7 +832,7 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       {
         if ( mDoubleClicks )
         {
-          addVertex( mFirstClickPoint, e->mapPointMatch(), e->modifiers() );
+          addVertex( mFirstClickPoint, e->mapPointMatch() );
           highlightCloseVertex( mFirstClickPoint );
         }
 
@@ -905,12 +896,6 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       break;
   }
   mDoubleClicks = false;
-
-  if ( !( e->modifiers() & Qt::ControlModifier ) &&
-       mSelectedVertices.isEmpty() &&
-       mCurrentVertexIndex == -1 &&
-       mZValueWidget )
-    mZValueWidget->setDefaultValue( mOrdinaryZValue );
 
   QgsMapToolAdvancedDigitizing::cadCanvasReleaseEvent( e );
 }
@@ -1227,8 +1212,7 @@ void QgsMapToolEditMeshFrame::setCurrentLayer( QgsMapLayer *layer )
 
   if ( mCurrentEditor )
   {
-    if ( !mZValueWidget )
-      createZValueWidget();
+    activate();
     updateFreeVertices();
   }
   else
@@ -1367,6 +1351,11 @@ bool QgsMapToolEditMeshFrame::isFaceSelected( int faceIndex )
 
 void QgsMapToolEditMeshFrame::setSelectedVertices( const QList<int> newSelectedVertices, Qgis::SelectBehavior behavior )
 {
+
+  if ( mSelectedVertices.isEmpty() )
+  {
+    mUserZValue = mZValueWidget->zValue();
+  }
 
   bool removeVertices = false;
 
@@ -1763,9 +1752,9 @@ void QgsMapToolEditMeshFrame::applyZValueOnSelectedVertices()
 
   QList<double> zValues;
   zValues.reserve( mSelectedVertices.count() );
-  mOrdinaryZValue = mZValueWidget->zValue();
+  mUserZValue = mZValueWidget->zValue();
   for ( int i = 0; i < mSelectedVertices.count(); ++i )
-    zValues.append( mOrdinaryZValue );
+    zValues.append( mUserZValue );
 
   mCurrentEditor->changeZValues( mSelectedVertices.keys(), zValues );
 }
@@ -1779,7 +1768,11 @@ void QgsMapToolEditMeshFrame::prepareSelection()
       vertexZValue += mapVertex( i ).z();
     vertexZValue /= mSelectedVertices.count();
 
-    mZValueWidget->setDefaultValue( vertexZValue );
+    mZValueWidget->setZValue( vertexZValue );
+  }
+  else
+  {
+    mZValueWidget->setZValue( mUserZValue );
   }
 
   mConcernedFaceBySelection.clear();
@@ -2344,7 +2337,8 @@ void QgsMapToolEditMeshFrame::createZValueWidget()
   deleteZValueWidget();
 
   mZValueWidget = new QgsZValueWidget( tr( "Vertex Z value:" ) );
-  mZValueWidget->setDefaultValue( mOrdinaryZValue );
+  mZValueWidget->setDefaultValue( QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.value() );
+  mZValueWidget->setZValue( mUserZValue );
   QgisApp::instance()->addUserInputWidget( mZValueWidget );
 }
 
@@ -2394,8 +2388,7 @@ void QgsMapToolEditMeshFrame::clearEdgeHelpers()
 
 void QgsMapToolEditMeshFrame::addVertex(
   const QgsPointXY &mapPoint,
-  const QgsPointLocator::Match &mapPointMatch,
-  Qt::KeyboardModifiers modifiers )
+  const QgsPointLocator::Match &mapPointMatch )
 {
   QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
   double zValue = mZValueWidget ? mZValueWidget->zValue() : std::numeric_limits<double>::quiet_NaN();
@@ -2405,8 +2398,6 @@ void QgsMapToolEditMeshFrame::addVertex(
     QgsPoint layerPoint = mapPointMatch.interpolatedPoint();
     zValue = layerPoint.z();
   }
-  else if ( mIsSelectedZValue )
-    zValue = mSelectedZValue;
   else if ( mCurrentFaceIndex != -1 ) //we are on a face -->interpolate the z value
   {
     const QgsTriangularMesh &triangularMesh = *mCurrentLayer->triangularMesh();
@@ -2417,9 +2408,8 @@ void QgsMapToolEditMeshFrame::addVertex(
     const QgsMeshVertex &v3 = triangularMesh.vertices().at( triangleFace.at( 2 ) );
     zValue = QgsMeshLayerUtils::interpolateFromVerticesData( v1, v2, v3, v1.z(), v2.z(), v3.z(), mapPoint );
   }
-
-  if ( modifiers & Qt::ControlModifier )
-    mOrdinaryZValue = mSelectedZValue;
+  else
+    zValue = mZValueWidget->zValue();
 
   QVector<QgsMeshVertex> points( 1, QgsMeshVertex( mapPoint.x(), mapPoint.y(), zValue ) );
   if ( mCurrentEditor )

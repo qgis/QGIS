@@ -203,7 +203,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 
     void clearAll();
 
-    void addVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match &mapPointMatch, Qt::KeyboardModifiers modifiers );
+    void addVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match &mapPointMatch );
     void updateFreeVertices();
 
     //! Checks if we are closed to a vertex, if yes return the index of the vertex;
@@ -262,9 +262,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QList<int> mNewFaceCandidate;
     bool mDoubleClicks = false;
     QgsPointXY mFirstClickPoint; //the first click point when double clicks, we need it when the point is constraint by the cad tool, second click could not be constraint
-    double mOrdinaryZValue = 0;
-    bool mIsSelectedZValue = false;
-    double mSelectedZValue = 0;
+    double mUserZValue = 0;
 
     //! Rubber band used to highlight a face that is on mouse over and not dragging anything, own by map canvas
     QgsRubberBand *mFaceRubberBand = nullptr;
