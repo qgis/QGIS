@@ -18,6 +18,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
+#include "qgsexpressioncontextutils.h"
 
 QgsGeometryGeneratorSymbolLayer::~QgsGeometryGeneratorSymbolLayer() = default;
 
@@ -248,8 +249,9 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context )
       case QgsUnitTypes::RenderPoints:
       case QgsUnitTypes::RenderInches:
       {
+        // add a new scope for the transformed geometry
         QgsExpressionContextScope *generatorScope = new QgsExpressionContextScope();
-        expressionContext.appendScope( generatorScope );
+        QgsExpressionContextScopePopper popper( expressionContext, generatorScope );
 
         QgsGeometry transformed = f.geometry();
         transformed.transform( context.renderContext().coordinateTransform() );
@@ -259,20 +261,17 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context )
         const double scale = 1 / context.renderContext().convertToPainterUnits( 1, mUnits );
         mapToPixel.scale( scale, scale );
 
-        if ( mExpression->referencedVariables().contains( QStringLiteral( "map_geometry" ) ) )
-        {
-          transformed.transform( mapToPixel );
-          generatorScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_geometry" ), transformed ) );
-        }
+        transformed.transform( mapToPixel );
+        f.setGeometry( transformed );
+        generatorScope->setFeature( f );
 
         QgsGeometry geom = mExpression->evaluate( &expressionContext ).value<QgsGeometry>();
 
+        // transform geometry back from screen units to layer crs
         geom.transform( mapToPixel.inverted() );
         geom.transform( context.renderContext().coordinateTransform(), QgsCoordinateTransform::ReverseTransform );
 
         f.setGeometry( geom );
-
-        delete expressionContext.popScope();
         break;
       }
     }
