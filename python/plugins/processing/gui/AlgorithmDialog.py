@@ -156,7 +156,6 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             if self.algorithm().provider().warningMessage():
                 self.feedback.reportError(self.algorithm().provider().warningMessage())
 
-            self.setProgressText(QCoreApplication.translate('AlgorithmDialog', 'Processing algorithm…'))
             self.feedback.pushInfo(
                 QCoreApplication.translate('AlgorithmDialog', 'Algorithm started at: {}').format(
                     datetime.datetime.now().replace(microsecond=0).isoformat()
