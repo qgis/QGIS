@@ -17,6 +17,7 @@
 
 #include "qgscolorramplegendnodewidget.h"
 #include "qgscolorramplegendnode.h"
+#include "qgshelp.h"
 #include "qgsnumericformatselectorwidget.h"
 #include "qgsnumericformat.h"
 #include <QDialogButtonBox>
