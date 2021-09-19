@@ -188,6 +188,8 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     const QgsPointXY mapVertexXY( int index ) const;
     const QgsMeshFace nativeFace( int index ) const;
 
+    double currentZValue();
+
     void highLight( const QgsPointXY &mapPoint );
     void highlightCurrentHoveredFace( const QgsPointXY &mapPoint );
     void highlightCloseVertex( const QgsPointXY &mapPoint );
@@ -262,6 +264,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QList<int> mNewFaceCandidate;
     bool mDoubleClicks = false;
     QgsPointXY mFirstClickPoint; //the first click point when double clicks, we need it when the point is constraint by the cad tool, second click could not be constraint
+    double mFirstClickZValue;
     double mUserZValue = 0;
 
     //! Rubber band used to highlight a face that is on mouse over and not dragging anything, own by map canvas
