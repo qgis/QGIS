@@ -1575,10 +1575,10 @@ QgsPoint QgsAdvancedDigitizingDockWidget::pointXYToPoint( const QgsPointXY &poin
 
 double QgsAdvancedDigitizingDockWidget::getLineZ( ) const
 {
-  return mZLineEdit->isEnabled() ? mZLineEdit->text().toFloat() : std::numeric_limits<double>::quiet_NaN();
+  return mZLineEdit->isEnabled() ? QLocale().toFloat( mZLineEdit->text() ) : std::numeric_limits<double>::quiet_NaN();
 }
 
 double QgsAdvancedDigitizingDockWidget::getLineM( ) const
 {
-  return mMLineEdit->isEnabled() ? mMLineEdit->text().toFloat() : std::numeric_limits<double>::quiet_NaN();
+  return mMLineEdit->isEnabled() ? QLocale().toFloat( mMLineEdit->text() ) : std::numeric_limits<double>::quiet_NaN();
 }
