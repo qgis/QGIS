@@ -372,8 +372,6 @@ QgsReferencedGeometry QgsPostgresProvider::fromEwkt( const QString &ewkt, QgsPos
   ewktInfo.wkt = ewkt.mid( regularExpressionMatch.captured( 0 ).size() );
   ewktInfo.srid = regularExpressionMatch.captured( 1 ).toInt();
 
-  if ( ewktInfo.srid < 0 )
-    return QgsReferencedGeometry();
 
   QgsGeometry geom = QgsGeometry::fromWkt( ewktInfo.wkt );
   return QgsReferencedGeometry( geom, sridToCrs( ewktInfo.srid, conn ) );
