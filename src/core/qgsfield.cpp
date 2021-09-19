@@ -262,7 +262,7 @@ QString QgsField::displayString( const QVariant &v ) const
   if ( v.userType() == QMetaType::type( "QgsReferencedGeometry" ) )
   {
       QgsReferencedGeometry geom = qvariant_cast<QgsReferencedGeometry>( v );
-      if( geom.isEmpty() )
+      if( geom.isNull() )
           return QgsApplication::nullRepresentation();
       else
           return QStringLiteral( "%1 [%2]" ).arg( geom.asWkt(), geom.crs().userFriendlyIdentifier() );
