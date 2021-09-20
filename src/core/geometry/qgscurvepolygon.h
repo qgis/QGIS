@@ -65,10 +65,15 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     double perimeter() const override SIP_HOLDGIL;
     QgsPolygon *surfaceToPolygon() const override SIP_FACTORY;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
-    double roundness() const SIP_FACTORY;
     QgsCurvePolygon *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
     bool boundingBoxIntersects( const QgsRectangle &rectangle ) const override SIP_HOLDGIL;
+
+    /**
+     * Returns the roundness of the curve polygon.
+     * The returned value is between 0 and 1.
+     */
+    double roundness() const SIP_FACTORY;
 
     //curve polygon interface
 
