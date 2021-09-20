@@ -238,6 +238,12 @@ class CORE_EXPORT QgsMeshEditor : public QObject
      */
     bool edgeIsClose( QgsPointXY point, double tolerance, int &faceIndex, int &edgePosition );
 
+    //! Returns the effective count of faces, that is non void faces in the mesh
+    int effectiveFacesCount() const;
+
+    //! Returns the effective count of vertices, that is non void vertices in the mesh
+    int effectiveVerticesCount() const;
+
   signals:
     //! Emitted when the mesh is edited
     void meshEdited();
@@ -248,6 +254,8 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     QgsTriangularMesh *mTriangularMesh = nullptr;
     int mMaximumVerticesPerFace = 0;
     QgsMeshDatasetGroup *mZValueDatasetGroup = nullptr;
+    int mEffectiveVerticesCount = 0;
+    int mEffectiveFacesCount = 0;
 
     QVector<QgsMeshFace> prepareFaces( const QVector<QgsMeshFace> &faces, QgsMeshEditingError &error );
 
@@ -275,6 +283,8 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     void applyAdvancedEdit( Edit &edit, QgsMeshAdvancedEditing *editing );
 
     void applyEditOnTriangularMesh( Edit &edit, const QgsTopologicalMesh::Changes &topologicChanges );
+
+    void updateElementsCount( const QgsTopologicalMesh::Changes &changes, bool apply = true );
 
     friend class TestQgsMeshEditor;
     friend class QgsMeshLayerUndoCommandMeshEdit;

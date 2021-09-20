@@ -85,7 +85,7 @@ void TestQgsMapToolEditMesh::editMesh()
   QCOMPARE( meshLayerQuadFlower->meshEditor()->freeVerticesIndexes().count(), 0 );
 
   tool.mouseDoubleClick( 1500, 2800, Qt::LeftButton ); //add a vertex on the face 0
-  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 9 );
+  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 8 );
   QCOMPARE( meshLayerQuadFlower->meshVertexCount(), 9 );
   QCOMPARE( meshLayerQuadFlower->meshEditor()->freeVerticesIndexes().count(), 0 );
 
@@ -103,19 +103,19 @@ void TestQgsMapToolEditMesh::editMesh()
 
   // redo
   tool.mouseDoubleClick( 1500, 2800, Qt::LeftButton );
-  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 9 );
+  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 8 );
   QCOMPARE( meshLayerQuadFlower->meshVertexCount(), 9 );
   QCOMPARE( meshLayerQuadFlower->meshEditor()->freeVerticesIndexes().count(), 0 );
 
   // attempt to add a vertex on place of existing one
   tool.mouseDoubleClick( 2500, 2500, Qt::LeftButton );
-  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 9 );
+  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 8 );
   QCOMPARE( meshLayerQuadFlower->meshVertexCount(), 9 );
   QCOMPARE( meshLayerQuadFlower->meshEditor()->freeVerticesIndexes().count(), 0 );
 
   // add a free vertex
   tool.mouseDoubleClick( 2500, 3500, Qt::LeftButton );  // 9
-  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 9 );
+  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 8 );
   QCOMPARE( meshLayerQuadFlower->meshVertexCount(), 10 );
   QCOMPARE( meshLayerQuadFlower->meshEditor()->freeVerticesIndexes().count(), 1 );
 
@@ -130,7 +130,7 @@ void TestQgsMapToolEditMesh::editMesh()
   tool.mouseClick( 2495, 2500, Qt::LeftButton ); // click near the vertex
   tool.mouseClick( 5000, 5000, Qt::RightButton ); // valid the face
 
-  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 10 );
+  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 9 );
 
   // Remove vertex 7 and 9
   tool.mouseMove( 1500, 3250 );

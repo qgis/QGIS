@@ -813,12 +813,16 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     /**
     * Returns the vertices count of the mesh frame
     *
+    * \note during mesh editing, some vertices can be void and are not included in this returned value
+    *
     *  \since QGIS 3.22
     */
     int meshVertexCount() const;
 
     /**
     * Returns the faces count of the mesh frame
+    *
+    * \note during mesh editing, some faces can be void and are not included in this returned value
     *
     * \since QGIS 3.22
     */
