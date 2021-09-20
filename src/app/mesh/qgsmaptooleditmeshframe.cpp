@@ -85,7 +85,6 @@ QgsZValueWidget::QgsZValueWidget( const QString &label, QWidget *parent ): QWidg
 double QgsZValueWidget::zValue() const
 {
   mZValueSpinBox->interpretText();
-  double v = mZValueSpinBox->value();
   return mZValueSpinBox->value();
 }
 
