@@ -212,7 +212,11 @@ void QgsGeos::geometryChanged()
 
 void QgsGeos::prepareGeometry()
 {
-  mGeosPrepared.reset();
+  if ( mGeosPrepared )
+  {
+    // Already prepared
+    return;
+  }
   if ( mGeos )
   {
     mGeosPrepared.reset( GEOSPrepare_r( geosinit()->ctxt, mGeos.get() ) );
@@ -221,6 +225,11 @@ void QgsGeos::prepareGeometry()
 
 void QgsGeos::cacheGeos() const
 {
+  if ( mGeos )
+  {
+    // Already cached
+    return;
+  }
   if ( !mGeometry )
   {
     return;
