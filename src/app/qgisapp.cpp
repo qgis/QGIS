@@ -15680,6 +15680,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       bool isEditable = mlayer->isEditable();
       mActionToggleEditing->setEnabled( canSupportEditing );
       mActionToggleEditing->setChecked( canSupportEditing && isEditable );
+      mActionSaveLayerEdits->setEnabled( canSupportEditing && isEditable && mlayer->isModified() );
       enableMeshEditingTools( isEditable );
       mActionUndo->setEnabled( canSupportEditing && isEditable );
       mActionRedo->setEnabled( canSupportEditing && isEditable );
