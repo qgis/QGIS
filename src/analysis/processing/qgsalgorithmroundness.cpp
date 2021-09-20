@@ -32,7 +32,7 @@ QString QgsRoundnessAlgorithm::displayName() const
 
 QStringList QgsRoundnessAlgorithm::tags() const
 {
-  return QObject::tr( "roundess" ).split( ',' );
+  return QObject::tr( "roundness,circle" ).split( ',' );
 }
 
 QString QgsRoundnessAlgorithm::group() const
