@@ -4359,7 +4359,7 @@ static QVariant fcnProject( const QVariantList &values, const QgsExpressionConte
 {
   QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
 
-  if ( QgsWkbTypes::flatType( geom.constGet()->simplifiedTypeRef( )->wkbType() ) != QgsWkbTypes::Type::Point )
+  if ( ! geom.constGet() || QgsWkbTypes::flatType( geom.constGet()->simplifiedTypeRef( )->wkbType() ) != QgsWkbTypes::Type::Point )
   {
     parent->setEvalErrorString( QStringLiteral( "'project' requires a point geometry" ) );
     return QVariant();
