@@ -4359,7 +4359,7 @@ static QVariant fcnProject( const QVariantList &values, const QgsExpressionConte
 {
   QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
 
-  if ( QgsWkbTypes::flatType( geom.wkbType() ) != QgsWkbTypes::Point )
+  if ( QgsWkbTypes::flatType( geom.constGet()->simplifiedTypeRef( )->wkbType() ) != QgsWkbTypes::Type::Point )
   {
     parent->setEvalErrorString( QStringLiteral( "'project' requires a point geometry" ) );
     return QVariant();
@@ -4369,7 +4369,7 @@ static QVariant fcnProject( const QVariantList &values, const QgsExpressionConte
   double azimuth = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
   double inclination = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
 
-  const QgsPoint *p = static_cast<const QgsPoint *>( geom.constGet() );
+  const QgsPoint *p = static_cast<const QgsPoint *>( geom.constGet()->simplifiedTypeRef( ) );
   QgsPoint newPoint = p->project( distance,  180.0 * azimuth / M_PI, 180.0 * inclination / M_PI );
 
   return QVariant::fromValue( QgsGeometry( new QgsPoint( newPoint ) ) );
