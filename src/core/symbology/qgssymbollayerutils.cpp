@@ -3171,19 +3171,6 @@ QVariantMap QgsSymbolLayerUtils::parseProperties( const QDomElement &element )
 void QgsSymbolLayerUtils::saveProperties( QVariantMap props, QDomDocument &doc, QDomElement &element )
 {
   element.appendChild( QgsXmlUtils::writeVariant( props, doc ) );
-
-  // -----
-  // let's do this to try to keep some backward compatibility
-  // to open a project saved on 3.18+ in QGIS <= 3.16
-  // TODO QGIS 4: remove
-  for ( QVariantMap::iterator it = props.begin(); it != props.end(); ++it )
-  {
-    QDomElement propEl = doc.createElement( QStringLiteral( "prop" ) );
-    propEl.setAttribute( QStringLiteral( "k" ), it.key() );
-    propEl.setAttribute( QStringLiteral( "v" ), it.value().toString() );
-    element.appendChild( propEl );
-  }
-  // -----
 }
 
 QgsSymbolMap QgsSymbolLayerUtils::loadSymbols( QDomElement &element, const QgsReadWriteContext &context )
