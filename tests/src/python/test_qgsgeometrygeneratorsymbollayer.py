@@ -38,7 +38,9 @@ from qgis.core import (
     QgsGeometryGeneratorSymbolLayer,
     QgsSymbol,
     QgsMultiRenderChecker,
-    QgsMapSettings
+    QgsMapSettings,
+    Qgis,
+    QgsUnitTypes
 )
 
 from qgis.testing import start_app, unittest
@@ -87,6 +89,49 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         report_file_path = "%s/qgistest.html" % QDir.tempPath()
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
+
+    def test_basic(self):
+        """
+        Test getters/setters
+        """
+        sym_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'centroid($geometry)'})
+        self.assertEqual(sym_layer.geometryExpression(), 'centroid($geometry)')
+        sym_layer.setGeometryExpression('project($geometry, 4, 5)')
+        self.assertEqual(sym_layer.geometryExpression(), 'project($geometry, 4, 5)')
+
+        sym_layer.setSymbolType(Qgis.SymbolType.Marker)
+        self.assertEqual(sym_layer.symbolType(), Qgis.SymbolType.Marker)
+
+        sym_layer.setUnits(QgsUnitTypes.RenderMillimeters)
+        self.assertEqual(sym_layer.units(), QgsUnitTypes.RenderMillimeters)
+
+    def test_clone(self):
+        """
+        Test cloning layer
+        """
+        sym_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'centroid($geometry)'})
+        sym_layer.setSymbolType(Qgis.SymbolType.Marker)
+        sym_layer.setUnits(QgsUnitTypes.RenderMillimeters)
+        sym_layer.subSymbol().symbolLayer(0).setStrokeColor(QColor(0, 255, 255))
+
+        layer2 = sym_layer.clone()
+        self.assertEqual(layer2.symbolType(), Qgis.SymbolType.Marker)
+        self.assertEqual(layer2.units(), QgsUnitTypes.RenderMillimeters)
+        self.assertEqual(layer2.geometryExpression(), 'centroid($geometry)')
+        self.assertEqual(layer2.subSymbol()[0].strokeColor(), QColor(0, 255, 255))
+
+    def test_properties_create(self):
+        """
+        Test round trip through properties and create
+        """
+        sym_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'centroid($geometry)'})
+        sym_layer.setSymbolType(Qgis.SymbolType.Marker)
+        sym_layer.setUnits(QgsUnitTypes.RenderMillimeters)
+
+        layer2 = QgsGeometryGeneratorSymbolLayer.create(sym_layer.properties())
+        self.assertEqual(layer2.symbolType(), Qgis.SymbolType.Marker)
+        self.assertEqual(layer2.units(), QgsUnitTypes.RenderMillimeters)
+        self.assertEqual(layer2.geometryExpression(), 'centroid($geometry)')
 
     def test_marker(self):
         sym = self.polys_layer.renderer().symbol()
@@ -161,6 +206,25 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         renderchecker.setMapSettings(self.mapsettings)
         renderchecker.setControlName('expected_geometrygenerator_buffer_points')
         res = renderchecker.runTest('geometrygenerator_buffer_points')
+        self.report += renderchecker.report()
+        self.assertTrue(res)
+
+    def test_units_millimeters(self):
+        sym = self.points_layer.renderer().symbol()
+
+        buffer_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'buffer($geometry, "staff")', 'outline_color': 'black'})
+        buffer_layer.setSymbolType(QgsSymbol.Fill)
+        buffer_layer.setUnits(QgsUnitTypes.RenderMillimeters)
+        self.assertIsNotNone(buffer_layer.subSymbol())
+        sym.appendSymbolLayer(buffer_layer)
+
+        rendered_layers = [self.points_layer]
+        self.mapsettings.setLayers(rendered_layers)
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setControlName('expected_geometrygenerator_millimeters')
+        res = renderchecker.runTest('geometrygenerator_millimeters')
         self.report += renderchecker.report()
         self.assertTrue(res)
 
