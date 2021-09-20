@@ -100,19 +100,15 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
     // implementation of virtual functions from QgsMapLayer
 
     QgsVectorTileLayer *clone() const override SIP_FACTORY;
-
+    QgsDataProvider *dataProvider() override;
+    const QgsDataProvider *dataProvider() const override SIP_SKIP;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
-
     bool readXml( const QDomNode &layerNode, QgsReadWriteContext &context ) override;
-
     bool writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
-
     bool readSymbology( const QDomNode &node, QString &errorMessage,
                         QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) override;
-
     bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
                          StyleCategories categories = AllStyleCategories ) const override;
-
     void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
     QString loadDefaultStyle( bool &resultFlag SIP_OUT ) override;
 
@@ -199,8 +195,35 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
 
     QVariantMap mArcgisLayerConfiguration;
 
+    std::unique_ptr< QgsDataProvider > mDataProvider;
+
     bool setupArcgisVectorTileServiceConnection( const QString &uri, const QgsDataSourceUri &dataSourceUri );
 };
+
+#ifndef SIP_RUN
+///@cond PRIVATE
+
+/**
+ * A minimal data provider for vector tile layers.
+ *
+ * \since QGIS 3.22
+ */
+class QgsVectorTileDataProvider : public QgsDataProvider
+{
+    Q_OBJECT
+
+  public:
+    QgsVectorTileDataProvider( const QgsDataProvider::ProviderOptions &providerOptions,
+                               QgsDataProvider::ReadFlags flags );
+    QgsCoordinateReferenceSystem crs() const override;
+    QString name() const override;
+    QString description() const override;
+    QgsRectangle extent() const override;
+    bool isValid() const override;
+
+};
+///@endcond
+#endif
 
 
 #endif // QGSVECTORTILELAYER_H

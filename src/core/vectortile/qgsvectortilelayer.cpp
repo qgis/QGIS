@@ -197,6 +197,16 @@ QgsVectorTileLayer *QgsVectorTileLayer::clone() const
   return layer;
 }
 
+QgsDataProvider *QgsVectorTileLayer::dataProvider()
+{
+  return mDataProvider.get();
+}
+
+const QgsDataProvider *QgsVectorTileLayer::dataProvider() const
+{
+  return mDataProvider.get();
+}
+
 QgsMapLayerRenderer *QgsVectorTileLayer::createMapRenderer( QgsRenderContext &rendererContext )
 {
   return new QgsVectorTileLayerRenderer( this, rendererContext );
@@ -694,3 +704,41 @@ QgsVectorTileLabeling *QgsVectorTileLayer::labeling() const
 {
   return mLabeling.get();
 }
+
+
+
+//
+// QgsAnnotationLayerDataProvider
+//
+///@cond PRIVATE
+QgsVectorTileDataProvider::QgsVectorTileDataProvider(
+  const ProviderOptions &options,
+  QgsDataProvider::ReadFlags flags )
+  : QgsDataProvider( QString(), options, flags )
+{}
+
+QgsCoordinateReferenceSystem QgsVectorTileDataProvider::crs() const
+{
+  return QgsCoordinateReferenceSystem();
+}
+
+QString QgsVectorTileDataProvider::name() const
+{
+  return QStringLiteral( "vectortile" );
+}
+
+QString QgsVectorTileDataProvider::description() const
+{
+  return QString();
+}
+
+QgsRectangle QgsVectorTileDataProvider::extent() const
+{
+  return QgsRectangle();
+}
+
+bool QgsVectorTileDataProvider::isValid() const
+{
+  return true;
+}
+///@endcond
