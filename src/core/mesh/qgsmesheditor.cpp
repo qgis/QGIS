@@ -65,8 +65,8 @@ QgsMeshEditingError QgsMeshEditor::initialize()
 {
   QgsMeshEditingError error;
   mTopologicalMesh = QgsTopologicalMesh::createTopologicalMesh( mMesh, mMaximumVerticesPerFace, error );
-  mEffectiveFacesCount = mMesh->faceCount();
-  mEffectiveVerticesCount = mMesh->vertexCount();
+  mValidFacesCount = mMesh->faceCount();
+  mValidVerticesCount = mMesh->vertexCount();
   return error;
 }
 
@@ -337,14 +337,14 @@ void QgsMeshEditor::updateElementsCount( const QgsTopologicalMesh::Changes &chan
 {
   if ( apply )
   {
-    mEffectiveFacesCount += changes.addedFaces().count() - changes.removedFaces().count();
-    mEffectiveVerticesCount += changes.addedVertices().count() - changes.verticesToRemoveIndexes().count();
+    mValidFacesCount += changes.addedFaces().count() - changes.removedFaces().count();
+    mValidVerticesCount += changes.addedVertices().count() - changes.verticesToRemoveIndexes().count();
   }
   else
   {
     //reverse
-    mEffectiveFacesCount -= changes.addedFaces().count() - changes.removedFaces().count();
-    mEffectiveVerticesCount -= changes.addedVertices().count() - changes.verticesToRemoveIndexes().count();
+    mValidFacesCount -= changes.addedFaces().count() - changes.removedFaces().count();
+    mValidVerticesCount -= changes.addedVertices().count() - changes.verticesToRemoveIndexes().count();
   }
 }
 
@@ -419,14 +419,14 @@ bool QgsMeshEditor::edgeIsClose( QgsPointXY point, double tolerance, int &faceIn
 
 }
 
-int QgsMeshEditor::effectiveFacesCount() const
+int QgsMeshEditor::validFacesCount() const
 {
-  return mEffectiveFacesCount;
+  return mValidFacesCount;
 }
 
-int QgsMeshEditor::effectiveVerticesCount() const
+int QgsMeshEditor::validVerticesCount() const
 {
-  return mEffectiveVerticesCount;
+  return mValidVerticesCount;
 }
 
 QgsMeshEditingError QgsMeshEditor::removeFaces( const QList<int> &facesToRemove )
@@ -895,8 +895,8 @@ bool QgsMeshEditor::reindex( bool renumbering )
   mTopologicalMesh.reindex();
   mUndoStack->clear();
   QgsMeshEditingError error = initialize();
-  mEffectiveFacesCount = mMesh->faceCount();
-  mEffectiveVerticesCount = mMesh->vertexCount();
+  mValidFacesCount = mMesh->faceCount();
+  mValidVerticesCount = mMesh->vertexCount();
 
   if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
     return false;

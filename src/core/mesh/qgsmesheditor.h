@@ -238,11 +238,11 @@ class CORE_EXPORT QgsMeshEditor : public QObject
      */
     bool edgeIsClose( QgsPointXY point, double tolerance, int &faceIndex, int &edgePosition );
 
-    //! Returns the effective count of faces, that is non void faces in the mesh
-    int effectiveFacesCount() const;
+    //! Returns the count of valid faces, that is non void faces in the mesh
+    int validFacesCount() const;
 
-    //! Returns the effective count of vertices, that is non void vertices in the mesh
-    int effectiveVerticesCount() const;
+    //! Returns the count of valid vertices, that is non void vertices in the mesh
+    int validVerticesCount() const;
 
   signals:
     //! Emitted when the mesh is edited
@@ -254,8 +254,8 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     QgsTriangularMesh *mTriangularMesh = nullptr;
     int mMaximumVerticesPerFace = 0;
     QgsMeshDatasetGroup *mZValueDatasetGroup = nullptr;
-    int mEffectiveVerticesCount = 0;
-    int mEffectiveFacesCount = 0;
+    int mValidVerticesCount = 0;
+    int mValidFacesCount = 0;
 
     QVector<QgsMeshFace> prepareFaces( const QVector<QgsMeshFace> &faces, QgsMeshEditingError &error );
 
