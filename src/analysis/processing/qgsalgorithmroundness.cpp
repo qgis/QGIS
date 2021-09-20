@@ -27,7 +27,7 @@ QString QgsRoundnessAlgorithm::name() const
 
 QString QgsRoundnessAlgorithm::displayName() const
 {
-  return QObject::tr( "Roundess" );
+  return QObject::tr( "Roundness" );
 }
 
 QStringList QgsRoundnessAlgorithm::tags() const
