@@ -336,15 +336,7 @@ void QgsAdvancedDigitizingDockWidget::switchZM( )
     enableZ = mlayer->isEditable();
 
   setEnabledZ( enableZ );
-
-  mRelativeMButton->setEnabled( enableM );
-  mMLabel->setEnabled( enableM );
-  mMLineEdit->setEnabled( enableM );
-  if ( mMLineEdit->isEnabled() )
-    mMLineEdit->setText( QLocale().toString( QgsMapToolEdit( mMapCanvas ).defaultMValue(), 'f', 6 ) );
-  else
-    mMLineEdit->clear();
-  mLockMButton->setEnabled( enableM );
+  setEnabledM( enableM );
 }
 
 void QgsAdvancedDigitizingDockWidget::setEnabledZ( bool enable )

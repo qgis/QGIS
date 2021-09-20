@@ -271,14 +271,10 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
       mSelectionBand->reset( QgsWkbTypes::PolygonGeometry );
   } );
 
-  connect( mSelectionHandler.get(), &QgsMapToolSelectionHandler::geometryChanged, this, [this]( Qt::KeyboardModifiers modifiers )
-  {
-    selectByGeometry( mSelectionHandler->selectedGeometry(), modifiers );
-  } );
-
-
   connect( mActionSelectByExpression, &QAction::triggered, this, &QgsMapToolEditMeshFrame::showSelectByExpressionDialog );
-
+  connect( mActionTransformCoordinates, &QAction::triggered, this, &QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget );
+  connect( mActionForceByVectorLayerGeometries, &QAction::triggered, this, &QgsMapToolEditMeshFrame::forceBySelectedLayerPolyline );
+  connect( mActionReindexMesh, &QAction::triggered, this, &QgsMapToolEditMeshFrame::reindexMesh );
   connect( mActionDelaunayTriangulation, &QAction::triggered, this, [this]
   {
     if ( mCurrentEditor && mSelectedVertices.count() >= 3 )
@@ -292,7 +288,6 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
         QgisApp::instance()->messageBar()->pushInfo( tr( "Delaunay triangulation" ), triangulation.message() );
     }
   } );
-
   connect( mActionFacesRefinement, &QAction::triggered, this, [this]
   {
     QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
@@ -309,17 +304,16 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
     }
   } );
 
-  connect( mActionTransformCoordinates, &QAction::triggered, this, &QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget );
+  connect( mSelectionHandler.get(), &QgsMapToolSelectionHandler::geometryChanged, this, [this]( Qt::KeyboardModifiers modifiers )
+  {
+    selectByGeometry( mSelectionHandler->selectedGeometry(), modifiers );
+  } );
 
   connect( canvas, &QgsMapCanvas::selectionChanged, this, [this]
   {
     bool enable = areGeometriesSelectedInVectorLayer() && ( mCurrentEditor != nullptr );
     mActionForceByVectorLayerGeometries->setEnabled( enable );
   } );
-
-  connect( mActionForceByVectorLayerGeometries, &QAction::triggered, this, &QgsMapToolEditMeshFrame::forceBySelectedLayerPolyline );
-
-  connect( mActionReindexMesh, &QAction::triggered, this, &QgsMapToolEditMeshFrame::reindexMesh );
 
   connect( cadDockWidget(), &QgsAdvancedDigitizingDockWidget::cadEnabledChanged, this, [this]( bool enable )
   {
@@ -793,7 +787,7 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         if ( mDoubleClicks )  //double clicks --> add a vertex
         {
           addVertex( mFirstClickPoint, e->mapPointMatch() );
-          cadDockWidget()->setPoints( QList<QgsPointXY>() << mFirstClickPoint << mFirstClickPoint );
+          mCadDockWidget->setPoints( QList<QgsPointXY>() << mFirstClickPoint << mFirstClickPoint );
         }
         else if ( mNewFaceMarker->isVisible() &&
                   mapPoint.distance( mNewFaceMarker->center() ) < tolerance
@@ -2224,7 +2218,7 @@ void QgsMapToolEditMeshFrame::highlightCloseVertex( const QgsPointXY &mapPoint )
   }
 
   if ( mCadDockWidget->cadEnabled() && !mCadDockWidget->constraintZ()->isLocked() && mCurrentVertexIndex != -1 )
-    mCadDockWidget->setZ( QString::number( mapVertex( mCurrentVertexIndex ).z(), 'f', 2 ), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited );
+    mCadDockWidget->setZ( QString::number( mapVertex( mCurrentVertexIndex ).z(), 'f' ), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited );
 }
 
 void QgsMapToolEditMeshFrame::highlightCloseEdge( const QgsPointXY &mapPoint )
