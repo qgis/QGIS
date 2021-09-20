@@ -31,6 +31,8 @@
 #include "qgsmapmouseevent.h"
 #include "testqgsmaptoolutils.h"
 
+#include <QSignalSpy>
+
 
 /**
  * \ingroup UnitTests
@@ -47,6 +49,7 @@ class TestQgsMapToolAddFeaturePoint : public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
 
     void testPoint();
+    void testMultiPoint(); //!< Test crash from regression GH #45153
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -137,6 +140,34 @@ void TestQgsMapToolAddFeaturePoint::testPoint()
   QCOMPARE( mLayerPoint->getFeature( newFid ).geometry().asWkt(), wkt );
 
   mLayerPoint->undoStack()->undo();
+}
+
+void TestQgsMapToolAddFeaturePoint::testMultiPoint()
+{
+
+  QgsAdvancedDigitizingDockWidget dw{mCanvas};
+
+  QgsVectorLayer layerMultiPoint { QStringLiteral( "MultiPoint?crs=EPSG:27700" ), QStringLiteral( "layer multi point" ), QStringLiteral( "memory" ) };
+  layerMultiPoint.startEditing();
+  mCanvas->setCurrentLayer( &layerMultiPoint );
+
+  QgsMapToolDigitizeFeature tool{mCanvas, &dw};
+  QgsFeature feature;
+
+  connect( &tool, &QgsMapToolDigitizeFeature::digitizingCompleted, this, [ & ]( const QgsFeature & f )
+  {
+    feature = f;
+  } );
+
+  QSignalSpy spy( &tool, SIGNAL( digitizingCompleted( const QgsFeature & ) ) );
+  QMouseEvent mouseEvt{QMouseEvent::Type::MouseButtonRelease, QPointF{128, 128}, Qt::MouseButton::LeftButton, Qt::NoButton, Qt::NoModifier};
+  QgsMapMouseEvent evt( mCanvas, &mouseEvt );
+
+  tool.cadCanvasReleaseEvent( &evt );
+
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( feature.geometry().asWkt( 1 ).toUpper(), QString( "MULTIPOINT ((2 6))" ) );
+
 }
 
 QGSTEST_MAIN( TestQgsMapToolAddFeaturePoint )
