@@ -264,7 +264,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
          * The parameter \a destinationCrs depends of where the instance of this Match is created (geom.cache: layer CRS, map canvas snapper: dest CRS)
          * \since 3.10
          */
-        QgsPoint interpolatedPoint( const QgsCoordinateReferenceSystem &destinationCrs ) const
+        QgsPoint interpolatedPoint( const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem() ) const
         {
           QgsPoint point;
 
