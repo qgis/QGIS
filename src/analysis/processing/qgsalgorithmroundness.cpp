@@ -47,7 +47,7 @@ QString QgsRoundnessAlgorithm::groupId() const
 
 QString QgsRoundnessAlgorithm::outputName() const
 {
-  return QObject::tr( "Roundess" );
+  return QObject::tr( "Roundness" );
 }
 
 QString QgsRoundnessAlgorithm::shortHelpString() const
