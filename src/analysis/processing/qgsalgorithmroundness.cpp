@@ -17,7 +17,6 @@
 
 #include "qgsalgorithmroundness.h"
 #include "qgscurvepolygon.h"
-#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
@@ -58,7 +57,7 @@ QString QgsRoundnessAlgorithm::shortHelpString() const
 
 QString QgsRoundnessAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Calculate the roundness of each feature in a polygon vector layer." );
+  return QObject::tr( "Calculates the roundness of each feature in a polygon vector layer." );
 }
 
 QgsRoundnessAlgorithm *QgsRoundnessAlgorithm::createInstance() const
