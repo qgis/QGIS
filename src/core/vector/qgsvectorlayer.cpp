@@ -3821,10 +3821,7 @@ void QgsVectorLayer::endEditCommand()
   {
     if ( selectedFeatureCount() > 0 )
     {
-      for ( const auto deletedFid : std::as_const( mDeletedFids ) )
-      {
-        mSelectedFeatureIds.remove( deletedFid );
-      }
+      mSelectedFeatureIds.subtract( mDeletedFids );
     }
     emit featuresDeleted( mDeletedFids );
     mDeletedFids.clear();
