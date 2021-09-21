@@ -124,8 +124,11 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
      *
      * \param context The rendering context which will be used to render and to
      *                construct a geometry.
+     *
+     * Since QGIS 3.22, the optional \a points and \a rings arguments can specify the original
+     * points and rings in which are being rendered by the parent symbol.
      */
-    virtual void render( QgsSymbolRenderContext &context );
+    void render( QgsSymbolRenderContext &context, const QPolygonF *points = nullptr, const QVector<QPolygonF> *rings = nullptr );
 
     void setColor( const QColor &color ) override;
 

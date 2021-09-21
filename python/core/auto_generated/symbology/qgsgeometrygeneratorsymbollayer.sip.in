@@ -120,7 +120,7 @@ This is a hybrid layer, it constructs its own geometry so it does not
 care about the geometry of its parents.
 %End
 
-    virtual void render( QgsSymbolRenderContext &context );
+    void render( QgsSymbolRenderContext &context, const QPolygonF *points = 0, const QVector<QPolygonF> *rings = 0 );
 %Docstring
 Will render this symbol layer using the context.
 In comparison to other symbols there is no geometry passed in, since
@@ -130,6 +130,9 @@ context which is available to the evaluated expression.
 
 :param context: The rendering context which will be used to render and to
                 construct a geometry.
+
+Since QGIS 3.22, the optional ``points`` and ``rings`` arguments can specify the original
+points and rings in which are being rendered by the parent symbol.
 %End
 
     virtual void setColor( const QColor &color );
