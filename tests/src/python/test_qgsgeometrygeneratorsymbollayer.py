@@ -25,8 +25,8 @@ import qgis  # NOQA
 
 import os
 
-from qgis.PyQt.QtCore import QSize, QDir
-from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtCore import QSize, QDir, QPointF
+from qgis.PyQt.QtGui import QColor, QImage, QPainter, QPolygonF
 from qgis.core import (
     QgsVectorLayer,
     QgsSingleSymbolRenderer,
@@ -40,7 +40,9 @@ from qgis.core import (
     QgsMultiRenderChecker,
     QgsMapSettings,
     Qgis,
-    QgsUnitTypes
+    QgsUnitTypes,
+    QgsRenderContext,
+    QgsRenderChecker
 )
 
 from qgis.testing import start_app, unittest
@@ -263,6 +265,47 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         res = renderchecker.runTest('geometrygenerator_opacity')
         self.report += renderchecker.report()
         self.assertTrue(res)
+
+    def test_no_feature(self):
+        """
+        Test rendering as a pure symbol, no feature associated
+        """
+        buffer_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'buffer($geometry, 5)'})
+        buffer_layer.setSymbolType(QgsSymbol.Fill)
+        buffer_layer.setUnits(QgsUnitTypes.RenderMillimeters)
+        self.assertIsNotNone(buffer_layer.subSymbol())
+
+        symbol = QgsLineSymbol()
+        symbol.changeSymbolLayer(0, buffer_layer)
+
+        image = QImage(400, 400, QImage.Format_RGB32)
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+
+        context = QgsRenderContext.fromQPainter(painter)
+
+        symbol.startRender(context)
+
+        symbol.renderPolyline(QPolygonF([QPointF(50, 200), QPointF(100, 170), QPointF(350, 270)]), None, context)
+
+        symbol.stopRender(context)
+        painter.end()
+
+        self.assertTrue(self.imageCheck('geometrygenerator_nofeature', 'geometrygenerator_nofeature', image))
+
+    def imageCheck(self, name, reference_image, image):
+        self.report += "<h2>Render {}</h2>\n".format(name)
+        temp_dir = QDir.tempPath() + '/'
+        file_name = temp_dir + name + ".png"
+        image.save(file_name, "PNG")
+        checker = QgsRenderChecker()
+        checker.setControlName("expected_" + reference_image)
+        checker.setRenderedImage(file_name)
+        checker.setColorTolerance(2)
+        result = checker.compareImages(name, 0)
+        self.report += checker.report()
+        print((self.report))
+        return result
 
 
 if __name__ == '__main__':
