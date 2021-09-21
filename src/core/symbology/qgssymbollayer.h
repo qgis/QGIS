@@ -196,6 +196,10 @@ class CORE_EXPORT QgsSymbolLayer
       PropertyDashPatternOffset, //!< Dash pattern offset,
       PropertyTrimStart, //!< Trim distance from start of line (since QGIS 3.20)
       PropertyTrimEnd, //!< Trim distance from end of line (since QGIS 3.20)
+      PropertyLineStartWidthValue, //!< Start line width for interpolated line renderer (since QGIS 3.22)
+      PropertyLineEndWidthValue, //!< End line width for interpolated line renderer (since QGIS 3.22)
+      PropertyLineStartColorValue, //!< Start line color for interpolated line renderer (since QGIS 3.22)
+      PropertyLineEndColorValue, //!< End line color for interpolated line renderer (since QGIS 3.22)
     };
 
     /**

@@ -304,43 +304,90 @@ class CORE_EXPORT QgsInterpolatedLineSymbolLayer : public QgsLineSymbolLayer
     void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
     void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
     bool isCompatibleWithSymbol( QgsSymbol *symbol ) const override;
-    QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     bool canCauseArtifactsBetweenAdjacentTiles() const override;
 
-    //! Sets the expressions (as string) that define the extremety values af the line feature for width
-    void setExpressionsStringForWidth( const QString &start, const QString &end );
+    /**
+     * Sets the expressions (as string) that define the extremety values af the line feature for width.
+     *
+     * \deprecated use setDataDefinedProperty( QgsSymbolLayer::PropertyLineStartWidthValue ) and setDataDefinedProperty( QgsSymbolLayer::PropertyLineEndWidthValue ) instead
+     */
+    Q_DECL_DEPRECATED void setExpressionsStringForWidth( const QString &start, const QString &end ) SIP_DEPRECATED;
 
-    //! Returns the epression related to the start extremity value for width
-    QString startValueExpressionForWidth() const;
+    /**
+     * Returns the epression related to the start extremity value for width.
+     *
+     * \deprecated use dataDefinedProperty( QgsSymbolLayer::PropertyLineStartWidthValue ) instead.
+     */
+    Q_DECL_DEPRECATED QString startValueExpressionForWidth() const SIP_DEPRECATED;
 
-    //! Returns the expression related to the end extremity value for width
-    QString endValueExpressionForWidth() const;
+    /**
+     * Returns the expression related to the end extremity value for width.
+     *
+     * \deprecated use dataDefinedProperty( QgsSymbolLayer::PropertyLineEndWidthValue ) instead.
+     */
+    Q_DECL_DEPRECATED QString endValueExpressionForWidth() const SIP_DEPRECATED;
 
-    //! Sets the width unit
+    /**
+     * Sets the width unit.
+     *
+     * \see widthUnit()
+     */
     void setWidthUnit( QgsUnitTypes::RenderUnit strokeWidthUnit );
 
-    //! Returns the width unit
+    /**
+     * Returns the width unit.
+     *
+     * \see setWidthUnit()
+     */
     QgsUnitTypes::RenderUnit widthUnit() const;
 
-    //! Sets the interpolated width used to render the width of lines, \a see QgsInterpolatedLineWidth
+    /**
+     * Sets the interpolated width used to render the width of lines, \a see QgsInterpolatedLineWidth.
+     *
+     * \see interpolatedWidth()
+     */
     void setInterpolatedWidth( const QgsInterpolatedLineWidth &interpolatedLineWidth );
 
-    //! Returns the interpolated width used to render the width of lines, see \a QgsInterpolatedLineWidth
+    /**
+     * Returns the interpolated width used to render the width of lines, see \a QgsInterpolatedLineWidth.
+     *
+     * \see setInterpolatedWidth()
+     */
     QgsInterpolatedLineWidth interpolatedWidth() const;
 
-    //! Sets the expressions (as string) that define the extremety values af the line feature for color
-    void setExpressionsStringForColor( const QString &start, const QString &end );
+    /**
+     * Sets the expressions (as string) that define the extremety values af the line feature for color.
+     *
+     * \deprecated use setDataDefinedProperty( QgsSymbolLayer::PropertyLineStartColorValue ) and setDataDefinedProperty( QgsSymbolLayer::PropertyLineEndColorValue ) instead
+     */
+    Q_DECL_DEPRECATED void setExpressionsStringForColor( const QString &start, const QString &end ) SIP_DEPRECATED;
 
-    //! Returns the epression related to the start extremity value for width for color
-    QString startValueExpressionForColor() const;
+    /**
+     * Returns the epression related to the start extremity value for width for color
+     *
+     * \deprecated use dataDefinedProperty( QgsSymbolLayer::PropertyLineStartColorValue ) instead.
+     */
+    Q_DECL_DEPRECATED QString startValueExpressionForColor() const SIP_DEPRECATED;
 
-    //! Returns the expression related to the end extremity value for width for color
-    QString endValueExpressionForColor() const;
+    /**
+     * Returns the expression related to the end extremity value for width for color
+     *
+     * \deprecated use dataDefinedProperty( QgsSymbolLayer::PropertyLineEndColorValue ) instead.
+     */
+    Q_DECL_DEPRECATED QString endValueExpressionForColor() const SIP_DEPRECATED;
 
-    //! Sets the interpolated color used to render the colors of lines, \a see QgsInterpolatedLineColor
+    /**
+     * Sets the interpolated color used to render the colors of lines, \a see QgsInterpolatedLineColor.
+     *
+     * \see interpolatedColor()
+     */
     void setInterpolatedColor( const QgsInterpolatedLineColor &interpolatedLineColor );
 
-    //! Returns the interpolated color used to render the colors of lines, see \a QgsInterpolatedLineColor
+    /**
+     * Returns the interpolated color used to render the colors of lines, see \a QgsInterpolatedLineColor.
+     *
+     * \see setInterpolatedColor()
+     */
     QgsInterpolatedLineColor interpolatedColor() const;
 
   private:
@@ -349,21 +396,6 @@ class CORE_EXPORT QgsInterpolatedLineSymbolLayer : public QgsLineSymbolLayer
 #endif
 
     QgsInterpolatedLineRenderer mLineRender;
-
-    QString mStartWidthExpressionString;
-    QString mEndWidthExpressionString;
-    QString mStartColorExpressionString;
-    QString mEndColorExpressionString;
-
-    int mStartWidthAttributeIndex = -1;
-    int mEndWidthAttributeIndex = -1;
-    int mStartColorAttributeIndex = -1;
-    int mEndColorAttributeIndex = -1;
-
-    std::unique_ptr<QgsExpression> mStartWidthExpression;
-    std::unique_ptr<QgsExpression> mEndWithExpression;
-    std::unique_ptr<QgsExpression> mStartColorExpression;
-    std::unique_ptr<QgsExpression> mEndColorExpression;
 
     QVector< QPolygonF > mLineParts;
     bool mRenderingFeature = false;

@@ -152,6 +152,10 @@ class QgsSymbolLayer
       PropertyDashPatternOffset,
       PropertyTrimStart,
       PropertyTrimEnd,
+      PropertyLineStartWidthValue,
+      PropertyLineEndWidthValue,
+      PropertyLineStartColorValue,
+      PropertyLineEndColorValue,
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();
