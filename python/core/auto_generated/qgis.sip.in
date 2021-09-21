@@ -153,6 +153,13 @@ The development version
     typedef QFlags<Qgis::SymbolPreviewFlag> SymbolPreviewFlags;
 
 
+    enum class SymbolLayerFlag
+    {
+      DisableFeatureClipping,
+    };
+    typedef QFlags<Qgis::SymbolLayerFlag> SymbolLayerFlags;
+
+
     enum class BrowserItemType
       {
       Collection,
@@ -608,6 +615,8 @@ QFlags<Qgis::SymbolRenderHint> operator|(Qgis::SymbolRenderHint f1, QFlags<Qgis:
 QFlags<Qgis::SymbolFlag> operator|(Qgis::SymbolFlag f1, QFlags<Qgis::SymbolFlag> f2);
 
 QFlags<Qgis::SymbolPreviewFlag> operator|(Qgis::SymbolPreviewFlag f1, QFlags<Qgis::SymbolPreviewFlag> f2);
+
+QFlags<Qgis::SymbolLayerFlag> operator|(Qgis::SymbolLayerFlag f1, QFlags<Qgis::SymbolLayerFlag> f2);
 
 QFlags<Qgis::BrowserItemCapability> operator|(Qgis::BrowserItemCapability f1, QFlags<Qgis::BrowserItemCapability> f2);
 

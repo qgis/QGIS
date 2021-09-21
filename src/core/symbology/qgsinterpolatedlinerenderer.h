@@ -283,6 +283,7 @@ class CORE_EXPORT QgsInterpolatedLineSymbolLayer : public QgsLineSymbolLayer
     //! Creates the symbol layer
     static QgsSymbolLayer *create( const QVariantMap &properties ) SIP_FACTORY;
 
+    Qgis::SymbolLayerFlags flags() const override;
     QString layerType() const override;
     void startRender( QgsSymbolRenderContext &context ) override;
     void stopRender( QgsSymbolRenderContext &context ) override;

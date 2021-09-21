@@ -931,6 +931,15 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
   }
 
   bool clippingEnabled = clipFeaturesToExtent();
+  // do any symbol layers prevent feature clipping?
+  for ( QgsSymbolLayer *layer : std::as_const( mLayers ) )
+  {
+    if ( layer->flags() & Qgis::SymbolLayerFlag::DisableFeatureClipping )
+    {
+      clippingEnabled = false;
+      break;
+    }
+  }
   if ( clippingEnabled && context.testFlag( QgsRenderContext::RenderMapTile ) )
   {
     // If the "avoid artifacts between adjacent tiles" flag is set (RenderMapTile), then we'll force disable

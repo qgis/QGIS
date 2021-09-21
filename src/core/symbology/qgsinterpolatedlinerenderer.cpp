@@ -903,6 +903,11 @@ QgsSymbolLayer *QgsInterpolatedLineSymbolLayer::create( const QVariantMap &prope
   return symbolLayer.release();
 }
 
+Qgis::SymbolLayerFlags QgsInterpolatedLineSymbolLayer::flags() const
+{
+  return Qgis::SymbolLayerFlag::DisableFeatureClipping;
+}
+
 QVariantMap QgsInterpolatedLineSymbolLayer::properties() const
 {
   QVariantMap props;

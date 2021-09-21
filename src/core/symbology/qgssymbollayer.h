@@ -213,6 +213,13 @@ class CORE_EXPORT QgsSymbolLayer
     QgsSymbolLayer &operator=( const QgsSymbolLayer &other ) = delete;
 
     /**
+     * Returns flags which control the symbol layer's behavior.
+     *
+     * \since QGIS 3.22
+     */
+    virtual Qgis::SymbolLayerFlags flags() const;
+
+    /**
      * Returns TRUE if symbol layer is enabled and will be drawn.
      * \see setEnabled()
      * \since QGIS 3.0
