@@ -691,8 +691,11 @@ class CORE_EXPORT QgsSymbol
      * geometry passed to the layer will be empty.
      * This is required for layers that generate their own geometry from other
      * information in the rendering context.
+     *
+     * Since QGIS 3.22, the optional \a points and \a rings arguments can specify the original
+     * points and rings in which are being rendered by the parent symbol.
      */
-    void renderUsingLayer( QgsSymbolLayer *layer, QgsSymbolRenderContext &context );
+    void renderUsingLayer( QgsSymbolLayer *layer, QgsSymbolRenderContext &context, const QPolygonF *points = nullptr, const QVector<QPolygonF> *rings = nullptr );
 
     /**
      * Render editing vertex marker at specified point

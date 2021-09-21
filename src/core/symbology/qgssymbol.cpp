@@ -778,7 +778,7 @@ QgsSymbolLayerList QgsSymbol::cloneLayers() const
   return lst;
 }
 
-void QgsSymbol::renderUsingLayer( QgsSymbolLayer *layer, QgsSymbolRenderContext &context )
+void QgsSymbol::renderUsingLayer( QgsSymbolLayer *layer, QgsSymbolRenderContext &context, const QPolygonF *points, const QVector<QPolygonF> *rings )
 {
   Q_ASSERT( layer->type() == Qgis::SymbolType::Hybrid );
 
@@ -791,11 +791,11 @@ void QgsSymbol::renderUsingLayer( QgsSymbolLayer *layer, QgsSymbolRenderContext 
   if ( effect && effect->enabled() )
   {
     QgsEffectPainter p( context.renderContext(), effect );
-    generatorLayer->render( context );
+    generatorLayer->render( context, points, rings );
   }
   else
   {
-    generatorLayer->render( context );
+    generatorLayer->render( context, points, rings );
   }
 }
 
@@ -950,6 +950,8 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       clippingEnabled = false;
     }
   }
+  if ( context.extent().isEmpty() )
+    clippingEnabled = false;
 
   mSymbolRenderContext->setGeometryPartCount( geom.constGet()->partCount() );
   mSymbolRenderContext->setGeometryPartNum( 1 );

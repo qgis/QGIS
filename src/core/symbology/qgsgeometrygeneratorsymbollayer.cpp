@@ -18,6 +18,8 @@
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
+#include "qgspolygon.h"
+
 #include "qgsexpressioncontextutils.h"
 
 QgsGeometryGeneratorSymbolLayer::~QgsGeometryGeneratorSymbolLayer() = default;
@@ -254,17 +256,68 @@ bool QgsGeometryGeneratorSymbolLayer::isCompatibleWithSymbol( QgsSymbol *symbol 
   Q_UNUSED( symbol )
   return true;
 }
-void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context )
+void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, const QPolygonF *points, const QVector<QPolygonF> *rings )
 {
   if ( mRenderingFeature && mHasRenderedFeature )
     return;
 
-  if ( context.feature() )
+  QgsExpressionContext &expressionContext = context.renderContext().expressionContext();
+  QgsFeature f = expressionContext.feature();
+
+  if ( !context.feature() && points )
   {
-    QgsExpressionContext &expressionContext = context.renderContext().expressionContext();
+    // oh dear, we don't have a feature to work from... but that's ok, we are probably being rendered as a plain old symbol!
+    // in this case we need to build up a feature which represents the points being rendered
+    QgsGeometry drawGeometry;
 
-    QgsFeature f = expressionContext.feature();
+    // step 1 - convert points and rings to geometry
+    if ( points->size() == 1 )
+    {
+      drawGeometry = QgsGeometry::fromPointXY( points->at( 0 ) );
+    }
+    else if ( rings )
+    {
+      // polygon
+      std::unique_ptr < QgsLineString > exterior( QgsLineString::fromQPolygonF( *points ) );
+      std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >();
+      polygon->setExteriorRing( exterior.release() );
+      for ( const QPolygonF &ring : *rings )
+      {
+        polygon->addInteriorRing( QgsLineString::fromQPolygonF( ring ) );
+      }
+      drawGeometry = QgsGeometry( std::move( polygon ) );
+    }
+    else
+    {
+      // line
+      std::unique_ptr < QgsLineString > ring( QgsLineString::fromQPolygonF( *points ) );
+      drawGeometry = QgsGeometry( std::move( ring ) );
+    }
 
+    // step 2 - scale the draw geometry from PAINTER units to target units (e.g. millimeters)
+    const double scale = 1 / context.renderContext().convertToPainterUnits( 1, mUnits );
+    const QTransform painterToTargetUnits = QTransform::fromScale( scale, scale );
+    drawGeometry.transform( painterToTargetUnits );
+
+    // step 3 - set the feature to use the new scaled geometry, and inject it into the expression context
+    f.setGeometry( drawGeometry );
+    QgsExpressionContextScope *generatorScope = new QgsExpressionContextScope();
+    QgsExpressionContextScopePopper popper( expressionContext, generatorScope );
+    generatorScope->setFeature( f );
+
+    // step 4 - evaluate the new generated geometry.
+    QgsGeometry geom = mExpression->evaluate( &expressionContext ).value<QgsGeometry>();
+
+    // step 5 - transform geometry back from target units to MAP units. We transform to map units here
+    // as we'll ultimately be calling renderFeature, which excepts the feature has a geometry in map units.
+    // Here we also scale the transform by the target unit to painter units factor to reverse that conversion
+    QTransform mapToPixel = context.renderContext().mapToPixel().transform();
+    mapToPixel.scale( scale, scale );
+    geom.transform( mapToPixel.inverted() );
+    f.setGeometry( geom );
+  }
+  else if ( context.feature() )
+  {
     switch ( mUnits )
     {
       case QgsUnitTypes::RenderMapUnits:
@@ -308,16 +361,16 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context )
         break;
       }
     }
-
-    QgsExpressionContextScope *subSymbolExpressionContextScope = mSymbol->symbolRenderContext()->expressionContextScope();
-
-    subSymbolExpressionContextScope->setFeature( f );
-
-    mSymbol->renderFeature( f, context.renderContext(), -1, context.selected() );
-
-    if ( mRenderingFeature )
-      mHasRenderedFeature = true;
   }
+
+  QgsExpressionContextScope *subSymbolExpressionContextScope = mSymbol->symbolRenderContext()->expressionContextScope();
+
+  subSymbolExpressionContextScope->setFeature( f );
+
+  mSymbol->renderFeature( f, context.renderContext(), -1, context.selected() );
+
+  if ( mRenderingFeature )
+    mHasRenderedFeature = true;
 }
 
 void QgsGeometryGeneratorSymbolLayer::setColor( const QColor &color )
