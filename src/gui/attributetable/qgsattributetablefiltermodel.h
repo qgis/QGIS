@@ -238,8 +238,10 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * Set the attribute table configuration to control which fields are shown,
      * in which order they are shown as well as if and where an action column
      * is shown.
+     * \param config attribute table config
+     * \param force default FALSE, if TRUE the attribute table configuration will be reset even if it is not changed.
      */
-    void setAttributeTableConfig( const QgsAttributeTableConfig &config );
+    void setAttributeTableConfig( const QgsAttributeTableConfig &config, bool force SIP_PYARGREMOVE = false );
 
     /**
      * Set the \a expression and the \a context to be stored in case of the features
