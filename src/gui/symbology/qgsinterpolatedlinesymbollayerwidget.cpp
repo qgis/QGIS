@@ -28,10 +28,10 @@ QgsInterpolatedLineSymbolLayerWidget::QgsInterpolatedLineSymbolLayerWidget( QgsV
 {
   setupUi( this );
 
-  mWidthMethodComboBox->addItem( tr( "Fixed width" ), false );
-  mWidthMethodComboBox->addItem( tr( "Varying width" ), true );
-  mColorMethodComboBox->addItem( tr( "Single color" ), QgsInterpolatedLineColor::SingleColor );
-  mColorMethodComboBox->addItem( tr( "Varying color" ), QgsInterpolatedLineColor::ColorRamp );
+  mWidthMethodComboBox->addItem( tr( "Fixed Width" ), false );
+  mWidthMethodComboBox->addItem( tr( "Varying Width" ), true );
+  mColorMethodComboBox->addItem( tr( "Single Color" ), QgsInterpolatedLineColor::SingleColor );
+  mColorMethodComboBox->addItem( tr( "Varying Color" ), QgsInterpolatedLineColor::ColorRamp );
 
   mWidthStartFieldExpression->setFilters( QgsFieldProxyModel::Numeric );
   mWidthEndFieldExpression->setFilters( QgsFieldProxyModel::Numeric );
