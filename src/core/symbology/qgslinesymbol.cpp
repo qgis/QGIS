@@ -223,7 +223,7 @@ void QgsLineSymbol::renderPolyline( const QPolygonF &points, const QgsFeature *f
         renderPolylineUsingLayer( lineLayer, points, symbolContext );
       }
       else
-        renderUsingLayer( symbolLayer, symbolContext, &points );
+        renderUsingLayer( symbolLayer, symbolContext, QgsWkbTypes::LineGeometry, &points );
     }
     return;
   }
@@ -244,7 +244,7 @@ void QgsLineSymbol::renderPolyline( const QPolygonF &points, const QgsFeature *f
     }
     else
     {
-      renderUsingLayer( symbolLayer, symbolContext, &points );
+      renderUsingLayer( symbolLayer, symbolContext, QgsWkbTypes::LineGeometry, &points );
     }
   }
 

@@ -53,7 +53,7 @@ void QgsFillSymbol::renderPolygon( const QPolygonF &points, const QVector<QPolyg
       if ( symbolLayer->type() == Qgis::SymbolType::Fill || symbolLayer->type() == Qgis::SymbolType::Line )
         renderPolygonUsingLayer( symbolLayer, points, rings, symbolContext );
       else
-        renderUsingLayer( symbolLayer, symbolContext, &points, rings );
+        renderUsingLayer( symbolLayer, symbolContext, QgsWkbTypes::PolygonGeometry, &points, rings );
     }
     return;
   }
@@ -70,7 +70,7 @@ void QgsFillSymbol::renderPolygon( const QPolygonF &points, const QVector<QPolyg
     if ( symbolLayer->type() == Qgis::SymbolType::Fill || symbolLayer->type() == Qgis::SymbolType::Line )
       renderPolygonUsingLayer( symbolLayer, points, rings, symbolContext );
     else
-      renderUsingLayer( symbolLayer, symbolContext, &points, rings );
+      renderUsingLayer( symbolLayer, symbolContext, QgsWkbTypes::PolygonGeometry, &points, rings );
   }
 }
 

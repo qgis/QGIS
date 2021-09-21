@@ -433,7 +433,7 @@ void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRender
       {
         QPolygonF points;
         points.append( point );
-        renderUsingLayer( symbolLayer, symbolContext, &points );
+        renderUsingLayer( symbolLayer, symbolContext, QgsWkbTypes::PointGeometry, &points );
       }
     }
     return;
@@ -457,7 +457,7 @@ void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRender
     {
       QPolygonF points;
       points.append( point );
-      renderUsingLayer( symbolLayer, symbolContext, &points );
+      renderUsingLayer( symbolLayer, symbolContext, QgsWkbTypes::PointGeometry, &points );
     }
   }
 }
