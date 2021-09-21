@@ -41,7 +41,7 @@ QgsInterpolatedLineColor QgsInterpolatedLineRenderer::interpolatedColor() const
   return mStrokeColoring;
 }
 
-void QgsInterpolatedLineRenderer::setWidthUnit( const QgsUnitTypes::RenderUnit &strokeWidthUnit )
+void QgsInterpolatedLineRenderer::setWidthUnit( QgsUnitTypes::RenderUnit strokeWidthUnit )
 {
   mStrokeWidthUnit = strokeWidthUnit;
 }
@@ -51,7 +51,7 @@ QgsUnitTypes::RenderUnit QgsInterpolatedLineRenderer::widthUnit() const
   return mStrokeWidthUnit;
 }
 
-void QgsInterpolatedLineRenderer::renderInDeviceCoordinate( double valueColor1, double valueColor2, double valueWidth1, double valueWidth2, const QPointF &p1, const QPointF &p2, QgsRenderContext &context ) const
+void QgsInterpolatedLineRenderer::renderInDeviceCoordinates( double valueColor1, double valueColor2, double valueWidth1, double valueWidth2, QPointF p1, QPointF p2, QgsRenderContext &context ) const
 {
   QPainter *painter = context.painter();
   QgsScopedQPainterState painterState( painter );
@@ -237,7 +237,7 @@ void QgsInterpolatedLineRenderer::render( double value1, double value2, const Qg
   QPointF p1 = mapToPixel.transform( point1 ).toQPointF();
   QPointF p2 = mapToPixel.transform( point2 ).toQPointF();
 
-  renderInDeviceCoordinate( value1, value2, value1, value2, p1, p2, context );
+  renderInDeviceCoordinates( value1, value2, value1, value2, p1, p2, context );
 }
 
 void QgsInterpolatedLineRenderer::render( double valueColor1, double valueColor2, double valueWidth1, double valueWidth2, const QgsPointXY &pt1, const QgsPointXY &pt2, QgsRenderContext &context ) const
@@ -257,7 +257,7 @@ void QgsInterpolatedLineRenderer::render( double valueColor1, double valueColor2
   QPointF p1 = mapToPixel.transform( point1 ).toQPointF();
   QPointF p2 = mapToPixel.transform( point2 ).toQPointF();
 
-  renderInDeviceCoordinate( valueColor1, valueColor2, valueWidth1, valueWidth2, p1, p2, context );
+  renderInDeviceCoordinates( valueColor1, valueColor2, valueWidth1, valueWidth2, p1, p2, context );
 }
 
 void QgsInterpolatedLineRenderer::setSelected( bool selected )
@@ -265,7 +265,7 @@ void QgsInterpolatedLineRenderer::setSelected( bool selected )
   mSelected = selected;
 }
 
-void QgsInterpolatedLineRenderer::adjustLine( const double &value, const double &value1, const double &value2, double &width, double &adjusting ) const
+void QgsInterpolatedLineRenderer::adjustLine( const double value, const double value1, const double value2, double &width, double &adjusting ) const
 {
   if ( value > mStrokeWidth.maximumValue() )
   {
@@ -355,10 +355,8 @@ double QgsInterpolatedLineWidth::strokeWidth( double value ) const
     return fixedStrokeWidth();
 }
 
-QDomElement QgsInterpolatedLineWidth::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
+QDomElement QgsInterpolatedLineWidth::writeXml( QDomDocument &doc, const QgsReadWriteContext & ) const
 {
-  Q_UNUSED( context );
-
   QDomElement elem = doc.createElement( QStringLiteral( "mesh-stroke-width" ) );
 
   elem.setAttribute( QStringLiteral( "width-varying" ), mIsWidthVariable ? 1 : 0 );
@@ -373,10 +371,8 @@ QDomElement QgsInterpolatedLineWidth::writeXml( QDomDocument &doc, const QgsRead
   return elem;
 }
 
-void QgsInterpolatedLineWidth::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
+void QgsInterpolatedLineWidth::readXml( const QDomElement &elem, const QgsReadWriteContext & )
 {
-  Q_UNUSED( context );
-
   mIsWidthVariable = elem.attribute( QStringLiteral( "width-varying" ) ).toInt();
   mFixedWidth = elem.attribute( QStringLiteral( "fixed-width" ) ).toDouble();
   mMinimumValue = elem.attribute( QStringLiteral( "minimum-value" ) ).toDouble();
@@ -429,7 +425,7 @@ void QgsInterpolatedLineWidth::setFixedStrokeWidth( double fixedWidth )
 
 void QgsInterpolatedLineWidth::updateLinearFormula() const
 {
-  if ( mMaximumWidth - mMinimumWidth != 0 )
+  if ( !qgsDoubleNear( mMaximumWidth, mMinimumWidth ) )
     mLinearCoef = ( mMaximumWidth - mMinimumWidth ) / ( mMaximumValue - mMinimumValue ) ;
   else
     mLinearCoef = 0;
@@ -504,10 +500,8 @@ QColor QgsInterpolatedLineColor::singleColor() const
   return mSingleColor;
 }
 
-QDomElement QgsInterpolatedLineColor::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
+QDomElement QgsInterpolatedLineColor::writeXml( QDomDocument &doc, const QgsReadWriteContext & ) const
 {
-  Q_UNUSED( context );
-
   QDomElement elem = doc.createElement( QStringLiteral( "mesh-stroke-color" ) );
 
   elem.setAttribute( QStringLiteral( "single-color" ), QgsSymbolLayerUtils::encodeColor( mSingleColor ) );
@@ -517,10 +511,8 @@ QDomElement QgsInterpolatedLineColor::writeXml( QDomDocument &doc, const QgsRead
   return elem;
 }
 
-void QgsInterpolatedLineColor::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
+void QgsInterpolatedLineColor::readXml( const QDomElement &elem, const QgsReadWriteContext & )
 {
-  Q_UNUSED( context );
-
   QDomElement shaderElem = elem.firstChildElement( QStringLiteral( "colorrampshader" ) );
   mColorRampShader.readXml( shaderElem );
 
@@ -555,7 +547,7 @@ void QgsInterpolatedLineColor::graduatedColors( double value1, double value2, QL
 
 }
 
-void QgsInterpolatedLineColor::setColoringMethod( const QgsInterpolatedLineColor::ColoringMethod &coloringMethod )
+void QgsInterpolatedLineColor::setColoringMethod( QgsInterpolatedLineColor::ColoringMethod coloringMethod )
 {
   mColoringMethod = coloringMethod;
 }
@@ -592,7 +584,7 @@ int QgsInterpolatedLineColor::itemColorIndexInf( double value ) const
 
     int newInd = ( indInf + indSup ) / 2;
 
-    if ( itemList.at( newInd ).value == std::numeric_limits<double>::quiet_NaN() )
+    if ( std::isnan( itemList.at( newInd ).value ) )
       return -1;
 
     if ( itemList.at( newInd ).value <= value )
@@ -602,7 +594,7 @@ int QgsInterpolatedLineColor::itemColorIndexInf( double value ) const
   }
 }
 
-void QgsInterpolatedLineColor::graduatedColorsExact( double value1, double value2, QList<double> &breakValues, QList<QColor> &breakColors, QList<QLinearGradient> &gradients ) const
+void QgsInterpolatedLineColor::graduatedColorsExact( double value1, double value2, QList<double> &breakValues, QList<QColor> &breakColors, const QList<QLinearGradient> &gradients ) const
 {
   Q_ASSERT( mColorRampShader.colorRampType() == QgsColorRampShader::Exact );
   Q_ASSERT( breakValues.isEmpty() );
@@ -952,7 +944,7 @@ void QgsInterpolatedLineSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &co
   double max = std::max( mLineRender.interpolatedLineWidth().maximumValue(), mLineRender.interpolatedColor().colorRampShader().maximumValue() );
 
   double totalLength = geometry.length();
-  if ( totalLength == 0 )
+  if ( qgsDoubleNear( totalLength, 0 ) )
     return;
 
   double variation = ( max - min ) / totalLength;
@@ -968,14 +960,14 @@ void QgsInterpolatedLineSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &co
     QPointF vectDist = p2 - p1;
     lengthFromStart += sqrt( pow( vectDist.x(), 2 ) + pow( vectDist.y(), 2 ) );
     double v2 = min + variation * lengthFromStart;
-    mLineRender.renderInDeviceCoordinate( v1, v2, v1, v2, p1, p2, context.renderContext() );
+    mLineRender.renderInDeviceCoordinates( v1, v2, v1, v2, p1, p2, context.renderContext() );
   }
 
   renderPolyline( points, context );
 }
 
 
-void QgsInterpolatedLineSymbolLayer::setExpressionsStringForWidth( QString start, QString end )
+void QgsInterpolatedLineSymbolLayer::setExpressionsStringForWidth( const QString &start, const QString &end )
 {
   mStartWidthExpressionString = start;
   mEndWidthExpressionString = end;
@@ -991,7 +983,7 @@ QString QgsInterpolatedLineSymbolLayer::endValueExpressionForWidth() const
   return mEndWidthExpressionString;
 }
 
-void QgsInterpolatedLineSymbolLayer::setWidthUnit( const QgsUnitTypes::RenderUnit &strokeWidthUnit )
+void QgsInterpolatedLineSymbolLayer::setWidthUnit( QgsUnitTypes::RenderUnit strokeWidthUnit )
 {
   mLineRender.mStrokeWidthUnit = strokeWidthUnit;
 }
@@ -1005,7 +997,7 @@ void QgsInterpolatedLineSymbolLayer::setInterpolatedWidth( const QgsInterpolated
 
 QgsInterpolatedLineWidth QgsInterpolatedLineSymbolLayer::interpolatedWidth() const { return mLineRender.interpolatedLineWidth();}
 
-void QgsInterpolatedLineSymbolLayer::setExpressionsStringForColor( QString start, QString end )
+void QgsInterpolatedLineSymbolLayer::setExpressionsStringForColor( const QString &start, const QString &end )
 {
   mStartColorExpressionString = start;
   mEndColorExpressionString = end;

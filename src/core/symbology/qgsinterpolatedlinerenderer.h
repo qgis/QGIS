@@ -70,7 +70,7 @@ class CORE_EXPORT QgsInterpolatedLineColor
      *  Sets the coloring method used
      *  \since QGIS 3.20
      */
-    void setColoringMethod( const QgsInterpolatedLineColor::ColoringMethod &coloringMethod );
+    void setColoringMethod( ColoringMethod coloringMethod );
 
     //! Returns the coloring method used
     QgsInterpolatedLineColor::ColoringMethod coloringMethod() const;
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsInterpolatedLineColor
     //! Returns the index of the color ramp shader with value inferior to value
     int itemColorIndexInf( double value ) const;
 
-    void graduatedColorsExact( double value1, double value2, QList<double> &breakValues, QList<QColor> &breakColors, QList<QLinearGradient> &gradients ) const;
+    void graduatedColorsExact( double value1, double value2, QList<double> &breakValues, QList<QColor> &breakColors, const QList<QLinearGradient> &gradients ) const;
     void graduatedColorsInterpolated( double value1, double value2, QList<double> &breakValues, QList<QColor> &breakColors, QList<QLinearGradient> &gradients ) const;
     void graduatedColorsDiscrete( double value1, double value2, QList<double> &breakValues, QList<QColor> &breakColors, QList<QLinearGradient> &gradients ) const;
 };
@@ -211,7 +211,7 @@ class CORE_EXPORT QgsInterpolatedLineRenderer
     QgsInterpolatedLineWidth interpolatedLineWidth() const;
 
     //! Sets the unit of the stroke width
-    void setWidthUnit( const QgsUnitTypes::RenderUnit &strokeWidthUnit );
+    void setWidthUnit( QgsUnitTypes::RenderUnit strokeWidthUnit );
 
     /**
     *   Returns the unit of the stroke width
@@ -254,7 +254,7 @@ class CORE_EXPORT QgsInterpolatedLineRenderer
     QgsInterpolatedLineWidth mStrokeWidth;
     QgsInterpolatedLineColor mStrokeColoring;
     QgsUnitTypes::RenderUnit mStrokeWidthUnit = QgsUnitTypes::RenderMillimeters;
-    void adjustLine( const double &value, const double &value1, const double &value2, double &width, double &adjusting ) const;
+    void adjustLine( double value, double value1, double value2, double &width, double &adjusting ) const;
     bool mSelected = false;
 
     /**
@@ -299,7 +299,7 @@ class CORE_EXPORT QgsInterpolatedLineSymbolLayer : public QgsLineSymbolLayer
     bool canCauseArtifactsBetweenAdjacentTiles() const override;
 
     //! Sets the expressions (as string) that define the extremety values af the line feature for width
-    void setExpressionsStringForWidth( QString start, QString end );
+    void setExpressionsStringForWidth( const QString &start, const QString &end );
 
     //! Returns the epression related to the start extremity value for width
     QString startValueExpressionForWidth() const;
@@ -308,7 +308,7 @@ class CORE_EXPORT QgsInterpolatedLineSymbolLayer : public QgsLineSymbolLayer
     QString endValueExpressionForWidth() const;
 
     //! Sets the width unit
-    void setWidthUnit( const QgsUnitTypes::RenderUnit &strokeWidthUnit );
+    void setWidthUnit( QgsUnitTypes::RenderUnit strokeWidthUnit );
 
     //! Returns the width unit
     QgsUnitTypes::RenderUnit widthUnit() const;
@@ -320,7 +320,7 @@ class CORE_EXPORT QgsInterpolatedLineSymbolLayer : public QgsLineSymbolLayer
     QgsInterpolatedLineWidth interpolatedWidth() const;
 
     //! Sets the expressions (as string) that define the extremety values af the line feature for color
-    void setExpressionsStringForColor( QString start, QString end );
+    void setExpressionsStringForColor( const QString &start, const QString &end );
 
     //! Returns the epression related to the start extremity value for width for color
     QString startValueExpressionForColor() const;
