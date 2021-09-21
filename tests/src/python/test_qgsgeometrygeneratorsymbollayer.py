@@ -42,7 +42,9 @@ from qgis.core import (
     Qgis,
     QgsUnitTypes,
     QgsRenderContext,
-    QgsRenderChecker
+    QgsRenderChecker,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform
 )
 
 from qgis.testing import start_app, unittest
@@ -283,6 +285,34 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         painter = QPainter(image)
 
         context = QgsRenderContext.fromQPainter(painter)
+
+        symbol.startRender(context)
+
+        symbol.renderPolyline(QPolygonF([QPointF(50, 200), QPointF(100, 170), QPointF(350, 270)]), None, context)
+
+        symbol.stopRender(context)
+        painter.end()
+
+        self.assertTrue(self.imageCheck('geometrygenerator_nofeature', 'geometrygenerator_nofeature', image))
+
+    def test_no_feature_coordinate_transform(self):
+        """
+        Test rendering as a pure symbol, no feature associated, with coordinate transform
+        """
+        buffer_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'buffer($geometry, 5)'})
+        buffer_layer.setSymbolType(QgsSymbol.Fill)
+        buffer_layer.setUnits(QgsUnitTypes.RenderMillimeters)
+        self.assertIsNotNone(buffer_layer.subSymbol())
+
+        symbol = QgsLineSymbol()
+        symbol.changeSymbolLayer(0, buffer_layer)
+
+        image = QImage(400, 400, QImage.Format_RGB32)
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+
+        context = QgsRenderContext.fromQPainter(painter)
+        context.setCoordinateTransform(QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:4326'), QgsCoordinateReferenceSystem('EPSG:3857'), QgsProject.instance().transformContext()))
 
         symbol.startRender(context)
 

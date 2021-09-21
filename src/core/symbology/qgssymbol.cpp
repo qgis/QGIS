@@ -778,7 +778,7 @@ QgsSymbolLayerList QgsSymbol::cloneLayers() const
   return lst;
 }
 
-void QgsSymbol::renderUsingLayer( QgsSymbolLayer *layer, QgsSymbolRenderContext &context, const QPolygonF *points, const QVector<QPolygonF> *rings )
+void QgsSymbol::renderUsingLayer( QgsSymbolLayer *layer, QgsSymbolRenderContext &context, QgsWkbTypes::GeometryType geometryType, const QPolygonF *points, const QVector<QPolygonF> *rings )
 {
   Q_ASSERT( layer->type() == Qgis::SymbolType::Hybrid );
 
@@ -791,11 +791,11 @@ void QgsSymbol::renderUsingLayer( QgsSymbolLayer *layer, QgsSymbolRenderContext 
   if ( effect && effect->enabled() )
   {
     QgsEffectPainter p( context.renderContext(), effect );
-    generatorLayer->render( context, points, rings );
+    generatorLayer->render( context, geometryType, points, rings );
   }
   else
   {
-    generatorLayer->render( context, points, rings );
+    generatorLayer->render( context, geometryType, points, rings );
   }
 }
 

@@ -256,7 +256,7 @@ bool QgsGeometryGeneratorSymbolLayer::isCompatibleWithSymbol( QgsSymbol *symbol 
   Q_UNUSED( symbol )
   return true;
 }
-void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, const QPolygonF *points, const QVector<QPolygonF> *rings )
+void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, QgsWkbTypes::GeometryType geometryType, const QPolygonF *points, const QVector<QPolygonF> *rings )
 {
   if ( mRenderingFeature && mHasRenderedFeature )
     return;
@@ -271,27 +271,40 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, c
     QgsGeometry drawGeometry;
 
     // step 1 - convert points and rings to geometry
-    if ( points->size() == 1 )
+    switch ( geometryType )
     {
-      drawGeometry = QgsGeometry::fromPointXY( points->at( 0 ) );
-    }
-    else if ( rings )
-    {
-      // polygon
-      std::unique_ptr < QgsLineString > exterior( QgsLineString::fromQPolygonF( *points ) );
-      std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >();
-      polygon->setExteriorRing( exterior.release() );
-      for ( const QPolygonF &ring : *rings )
+      case QgsWkbTypes::PointGeometry:
       {
-        polygon->addInteriorRing( QgsLineString::fromQPolygonF( ring ) );
+        Q_ASSERT( points->size() == 1 );
+        drawGeometry = QgsGeometry::fromPointXY( points->at( 0 ) );
+        break;
       }
-      drawGeometry = QgsGeometry( std::move( polygon ) );
-    }
-    else
-    {
-      // line
-      std::unique_ptr < QgsLineString > ring( QgsLineString::fromQPolygonF( *points ) );
-      drawGeometry = QgsGeometry( std::move( ring ) );
+      case QgsWkbTypes::LineGeometry:
+      {
+        Q_ASSERT( !rings );
+        std::unique_ptr < QgsLineString > ring( QgsLineString::fromQPolygonF( *points ) );
+        drawGeometry = QgsGeometry( std::move( ring ) );
+        break;
+      }
+      case QgsWkbTypes::PolygonGeometry:
+      {
+        std::unique_ptr < QgsLineString > exterior( QgsLineString::fromQPolygonF( *points ) );
+        std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >();
+        polygon->setExteriorRing( exterior.release() );
+        if ( rings )
+        {
+          for ( const QPolygonF &ring : *rings )
+          {
+            polygon->addInteriorRing( QgsLineString::fromQPolygonF( ring ) );
+          }
+        }
+        drawGeometry = QgsGeometry( std::move( polygon ) );
+        break;
+      }
+
+      case QgsWkbTypes::UnknownGeometry:
+      case QgsWkbTypes::NullGeometry:
+        return; // unreachable
     }
 
     // step 2 - scale the draw geometry from PAINTER units to target units (e.g. millimeters)
@@ -311,9 +324,19 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, c
     // step 5 - transform geometry back from target units to MAP units. We transform to map units here
     // as we'll ultimately be calling renderFeature, which excepts the feature has a geometry in map units.
     // Here we also scale the transform by the target unit to painter units factor to reverse that conversion
+    geom.transform( painterToTargetUnits.inverted( ) );
     QTransform mapToPixel = context.renderContext().mapToPixel().transform();
-    mapToPixel.scale( scale, scale );
     geom.transform( mapToPixel.inverted() );
+    // also need to apply the coordinate transform from the render context
+    try
+    {
+      geom.transform( context.renderContext().coordinateTransform(), QgsCoordinateTransform::ReverseTransform );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugMsg( QStringLiteral( "Could no transform generated geometry to layer CRS" ) );
+    }
+
     f.setGeometry( geom );
   }
   else if ( context.feature() )

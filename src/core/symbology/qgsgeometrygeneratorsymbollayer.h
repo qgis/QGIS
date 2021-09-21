@@ -123,13 +123,13 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
      * context which is available to the evaluated expression.
      *
      * \param context The rendering context which will be used to render and to construct a geometry.
+     * \param geometryType type of original geometry being rendered by the parent symbol (since QGIS 3.22)
      * \param points optional list of original points which are being rendered by the parent symbol (since QGIS 3.22)
      * \param rings optional list of original rings which are being rendered by the parent symbol (since QGIS 3.22)
      */
-    void render( QgsSymbolRenderContext &context, const QPolygonF *points = nullptr, const QVector<QPolygonF> *rings = nullptr );
+    void render( QgsSymbolRenderContext &context, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::GeometryType::UnknownGeometry, const QPolygonF *points = nullptr, const QVector<QPolygonF> *rings = nullptr );
 
     void setColor( const QColor &color ) override;
-
 
   private:
     QgsGeometryGeneratorSymbolLayer( const QString &expression );
