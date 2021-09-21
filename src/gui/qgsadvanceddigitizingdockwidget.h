@@ -256,6 +256,18 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      */
     void switchZM( );
 
+    /**
+     * Sets whether Z is enabled
+     * \since QGIS 3.22
+     */
+    void setEnabledZ( bool enable );
+
+    /**
+     * Sets whether M is enabled
+     * \since QGIS 3.22
+     */
+    void setEnabledM( bool enable );
+
     //! construction mode is used to draw intermediate points. These points won't be given any further (i.e. to the map tools)
     bool constructionMode() const { return mConstructionMode; }
 

@@ -42,6 +42,7 @@
 #include "qgsmaptoolselectionhandler.h"
 #include "qgsvectorlayer.h"
 #include "qgsunitselectionwidget.h"
+#include "qgssettingsregistrycore.h"
 
 
 //
@@ -83,6 +84,7 @@ QgsZValueWidget::QgsZValueWidget( const QString &label, QWidget *parent ): QWidg
 
 double QgsZValueWidget::zValue() const
 {
+  mZValueSpinBox->interpretText();
   return mZValueSpinBox->value();
 }
 
@@ -269,14 +271,10 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
       mSelectionBand->reset( QgsWkbTypes::PolygonGeometry );
   } );
 
-  connect( mSelectionHandler.get(), &QgsMapToolSelectionHandler::geometryChanged, this, [this]( Qt::KeyboardModifiers modifiers )
-  {
-    selectByGeometry( mSelectionHandler->selectedGeometry(), modifiers );
-  } );
-
-
   connect( mActionSelectByExpression, &QAction::triggered, this, &QgsMapToolEditMeshFrame::showSelectByExpressionDialog );
-
+  connect( mActionTransformCoordinates, &QAction::triggered, this, &QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget );
+  connect( mActionForceByVectorLayerGeometries, &QAction::triggered, this, &QgsMapToolEditMeshFrame::forceBySelectedLayerPolyline );
+  connect( mActionReindexMesh, &QAction::triggered, this, &QgsMapToolEditMeshFrame::reindexMesh );
   connect( mActionDelaunayTriangulation, &QAction::triggered, this, [this]
   {
     if ( mCurrentEditor && mSelectedVertices.count() >= 3 )
@@ -290,7 +288,6 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
         QgisApp::instance()->messageBar()->pushInfo( tr( "Delaunay triangulation" ), triangulation.message() );
     }
   } );
-
   connect( mActionFacesRefinement, &QAction::triggered, this, [this]
   {
     QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
@@ -307,7 +304,10 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
     }
   } );
 
-  connect( mActionTransformCoordinates, &QAction::triggered, this, &QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget );
+  connect( mSelectionHandler.get(), &QgsMapToolSelectionHandler::geometryChanged, this, [this]( Qt::KeyboardModifiers modifiers )
+  {
+    selectByGeometry( mSelectionHandler->selectedGeometry(), modifiers );
+  } );
 
   connect( canvas, &QgsMapCanvas::selectionChanged, this, [this]
   {
@@ -315,9 +315,13 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
     mActionForceByVectorLayerGeometries->setEnabled( enable );
   } );
 
-  connect( mActionForceByVectorLayerGeometries, &QAction::triggered, this, &QgsMapToolEditMeshFrame::forceBySelectedLayerPolyline );
-
-  connect( mActionReindexMesh, &QAction::triggered, this, &QgsMapToolEditMeshFrame::reindexMesh );
+  connect( cadDockWidget(), &QgsAdvancedDigitizingDockWidget::cadEnabledChanged, this, [this]( bool enable )
+  {
+    if ( enable && mSelectedVertices.isEmpty() )
+      deleteZValueWidget();
+    else if ( !mZValueWidget )
+      createZValueWidget();
+  } );
 
   setAutoSnapEnabled( true );
 }
@@ -535,6 +539,7 @@ void QgsMapToolEditMeshFrame::initialize()
 
   connect( mCanvas, &QgsMapCanvas::currentLayerChanged, this, &QgsMapToolEditMeshFrame::setCurrentLayer );
 
+  mUserZValue = defaultZValue();
   createZValueWidget();
   updateFreeVertices();
 
@@ -543,13 +548,13 @@ void QgsMapToolEditMeshFrame::initialize()
 
 void QgsMapToolEditMeshFrame::deactivate()
 {
+  QgsMapToolAdvancedDigitizing::deactivate();
   clearSelection();
   clearCanvasHelpers();
   deleteZValueWidget();
   qDeleteAll( mFreeVertexMarker );
   mFreeVertexMarker.clear();
 
-  QgsMapToolAdvancedDigitizing::deactivate();
 }
 
 void QgsMapToolEditMeshFrame::clearAll()
@@ -593,7 +598,8 @@ void QgsMapToolEditMeshFrame::clearAll()
 void QgsMapToolEditMeshFrame::activate()
 {
   QgsMapToolAdvancedDigitizing::activate();
-  createZValueWidget();
+  if ( !cadDockWidget()->cadEnabled() )
+    createZValueWidget();
 }
 
 bool QgsMapToolEditMeshFrame::populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEvent *event )
@@ -679,9 +685,10 @@ void QgsMapToolEditMeshFrame::cadCanvasPressEvent( QgsMapMouseEvent *e )
   if ( !mCurrentEditor )
     return;
 
-  if ( e->button() == Qt::LeftButton )
+  if ( e->button() == Qt::LeftButton &&
+       ( !mCadDockWidget->cadEnabled() ||
+         mCadDockWidget->additionalConstraint() == QgsAdvancedDigitizingDockWidget::AdditionalConstraint::NoConstraint ) )
     mLeftButtonPressed = true;
-
 
   switch ( mCurrentState )
   {
@@ -766,18 +773,7 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   if ( !mDoubleClicks )
   {
     mFirstClickPoint = mapPoint;
-
-    mIsSelectedZValue = !mSelectedVertices.isEmpty() ||
-                        ( mIsSelectedZValue && ( e->modifiers() &Qt::ControlModifier ) );
-
-    if ( mIsSelectedZValue && mZValueWidget )
-    {
-      if ( !mSelectedVertices.isEmpty() )
-        mSelectedZValue = mZValueWidget->zValue();
-    }
-    else if ( !mSelectedZValue && mZValueWidget )
-      if ( mSelectedVertices.isEmpty() )
-        mZValueWidget->setDefaultValue( mOrdinaryZValue );
+    mFirstClickZValue = currentZValue();
   }
 
   if ( e->button() == Qt::LeftButton )
@@ -790,7 +786,8 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       {
         if ( mDoubleClicks )  //double clicks --> add a vertex
         {
-          addVertex( mFirstClickPoint, e->mapPointMatch(), e->modifiers() );
+          addVertex( mFirstClickPoint, e->mapPointMatch() );
+          mCadDockWidget->setPoints( QList<QgsPointXY>() << mFirstClickPoint << mFirstClickPoint );
         }
         else if ( mNewFaceMarker->isVisible() &&
                   mapPoint.distance( mNewFaceMarker->center() ) < tolerance
@@ -805,10 +802,11 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           const QgsPointXY &currentPoint = mapVertexXY( mCurrentVertexIndex );
           cadDockWidget()->setPoints( QList<QgsPointXY>() << currentPoint << currentPoint );
         }
-        else if ( isSelectionGrapped( mapPoint )  && //click on a vertex,  a edges or faces box
+        else if ( isSelectionGrapped( mapPoint )  && //click on a selected vertex, an edge or face box
                   !( e->modifiers() &Qt::ControlModifier ) ) // without control modifier that is used to remove from the selection
         {
           mCurrentState = MovingSelection;
+          mCadDockWidget->setEnabledZ( false );
           mStartMovingPoint = mapPoint;
           cadDockWidget()->setPoints( QList<QgsPointXY>() << mapPoint << mapPoint );
         }
@@ -841,7 +839,7 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       {
         if ( mDoubleClicks )
         {
-          addVertex( mFirstClickPoint, e->mapPointMatch(), e->modifiers() );
+          addVertex( mFirstClickPoint, e->mapPointMatch() );
           highlightCloseVertex( mFirstClickPoint );
         }
 
@@ -885,11 +883,29 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         const QgsVector &translationInLayerCoordinate = mapPointInNativeCoordinate - startingPointInNativeCoordinate;
 
         const QgsMesh &mesh = *mCurrentLayer->nativeMesh();
-        for ( int i = 0; i < verticesIndexes.count(); ++i )
-          newPosition.append( QgsPointXY( mesh.vertex( verticesIndexes.at( i ) ) ) + translationInLayerCoordinate );
-
         mKeepSelectionOnEdit = true;
-        mCurrentEditor->changeXYValues( mSelectedVertices.keys(), newPosition );
+        if ( verticesIndexes.count() != 1 )
+        {
+          for ( int i = 0; i < verticesIndexes.count(); ++i )
+            newPosition.append( QgsPointXY( mesh.vertex( verticesIndexes.at( i ) ) ) + translationInLayerCoordinate );
+          mCurrentEditor->changeXYValues( verticesIndexes, newPosition );
+        }
+        else
+        {
+          //only one vertex, change also the Z value if snap on a 3D vector layer
+          if ( e->mapPointMatch().isValid() &&
+               QgsWkbTypes::hasZ( e->mapPointMatch().layer()->wkbType() ) )
+          {
+            const QgsMeshVertex &mapPointInNativeCoordinate =
+              mCurrentLayer->triangularMesh()->triangularToNativeCoordinates( QgsMeshVertex( mapPoint.x(), mapPoint.y(), e->mapPointMatch().interpolatedPoint().z() ) );
+            mCurrentEditor->changeCoordinates( verticesIndexes,
+                                               QList<QgsPoint>()
+                                               << mapPointInNativeCoordinate ) ;
+          }
+          else
+            mCurrentEditor->changeXYValues( verticesIndexes, QList<QgsPointXY>()
+                                            << QgsPointXY( mesh.vertex( verticesIndexes.at( 0 ) ) ) + translationInLayerCoordinate );
+        }
       }
       updateSelectecVerticesMarker();
       prepareSelection();
@@ -897,6 +913,7 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       mMovingEdgesRubberband->reset();
       mMovingFacesRubberband->reset();
       mMovingFreeVertexRubberband->reset();
+      mCadDockWidget->setEnabledZ( mCadDockWidget->cadEnabled() );
       mCurrentState = Digitizing;
       break;
     case SelectingByPolygon:
@@ -905,12 +922,6 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       break;
   }
   mDoubleClicks = false;
-
-  if ( !( e->modifiers() & Qt::ControlModifier ) &&
-       mSelectedVertices.isEmpty() &&
-       mCurrentVertexIndex == -1 &&
-       mZValueWidget )
-    mZValueWidget->setDefaultValue( mOrdinaryZValue );
 
   QgsMapToolAdvancedDigitizing::cadCanvasReleaseEvent( e );
 }
@@ -1015,15 +1026,19 @@ void QgsMapToolEditMeshFrame::select( const QgsPointXY &mapPoint, Qt::KeyboardMo
   else
     behavior = Qgis::SelectBehavior::SetSelection;
 
+  QgsPointXY currentPoint = mapPoint;
+
   if ( mSelectFaceMarker->isVisible() &&
        mapPoint.distance( mSelectFaceMarker->center() ) < tolerance
        && mCurrentFaceIndex >= 0 )
   {
     setSelectedVertices( nativeFace( mCurrentFaceIndex ).toList(), behavior );
+    currentPoint = mCurrentLayer->triangularMesh()->faceCentroids().at( mCurrentFaceIndex );
   }
   else if ( mCurrentVertexIndex != -1 )
   {
     setSelectedVertices( QList<int>() << mCurrentVertexIndex, behavior );
+    currentPoint = mCurrentLayer->triangularMesh()->vertices().at( mCurrentVertexIndex );
   }
   else if ( mSelectEdgeMarker->isVisible() &&
             mapPoint.distance( mSelectEdgeMarker->center() ) < tolerance &&
@@ -1031,9 +1046,13 @@ void QgsMapToolEditMeshFrame::select( const QgsPointXY &mapPoint, Qt::KeyboardMo
   {
     QVector<int> edgeVert = edgeVertices( mCurrentEdge );
     setSelectedVertices( edgeVert.toList(), behavior );
+    const QgsMeshVertex v1 = mCurrentLayer->triangularMesh()->vertices().at( edgeVert.at( 0 ) );
+    const QgsMeshVertex v2 = mCurrentLayer->triangularMesh()->vertices().at( edgeVert.at( 1 ) );
+    currentPoint = QgsPointXY( ( v1.x() + v2.x() ) / 2, ( v1.y() + v2.y() ) / 2 );
   }
   else
     setSelectedVertices( QList<int>(),  behavior );
+  mCadDockWidget->setPoints( QList < QgsPointXY>() << currentPoint << currentPoint );
 }
 
 void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
@@ -1093,6 +1112,7 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
       mMovingEdgesRubberband->reset( QgsWkbTypes::LineGeometry );
       mMovingFacesRubberband->reset( QgsWkbTypes::PolygonGeometry );
       mMovingFreeVertexRubberband->reset( QgsWkbTypes::PointGeometry );
+      mCadDockWidget->setEnabledZ( mCadDockWidget->cadEnabled() );
       break;
     case Selecting:
     case SelectingByPolygon:
@@ -1130,7 +1150,7 @@ void QgsMapToolEditMeshFrame::keyReleaseEvent( QKeyEvent *e )
       break;
   }
 
-  if ( !consumned )
+  if ( !consumned && mZValueWidget )
     QgsApplication::sendEvent( mZValueWidget->keyboardEntryWidget(), e );
 
   QgsMapToolAdvancedDigitizing::keyReleaseEvent( e );
@@ -1173,6 +1193,18 @@ const QgsMeshFace QgsMapToolEditMeshFrame::nativeFace( int index ) const
   return mCurrentLayer->nativeMesh()->face( index );
 }
 
+double QgsMapToolEditMeshFrame::currentZValue()
+{
+  if ( mDoubleClicks )
+    return mFirstClickZValue;
+  else if ( mZValueWidget )
+    return mZValueWidget->zValue();
+  else  if ( mCadDockWidget->cadEnabled() )
+    return mCadDockWidget->currentPointV2().z();
+
+  return defaultZValue();
+}
+
 void QgsMapToolEditMeshFrame::highLight( const QgsPointXY &mapPoint )
 {
   highlightCurrentHoveredFace( mapPoint );
@@ -1191,6 +1223,9 @@ void QgsMapToolEditMeshFrame::setCurrentLayer( QgsMapLayer *layer )
 
   if ( mCurrentLayer == meshLayer && mCurrentEditor != nullptr )
     return;
+
+  if ( mCurrentEditor )
+    deactivate();
 
   if ( mIsInitialized )
     clearSelection(); //TODO later: implement a mechanism to retrieve selection if the layer is again selected
@@ -1227,12 +1262,9 @@ void QgsMapToolEditMeshFrame::setCurrentLayer( QgsMapLayer *layer )
 
   if ( mCurrentEditor )
   {
-    if ( !mZValueWidget )
-      createZValueWidget();
+    activate();
     updateFreeVertices();
   }
-  else
-    deactivate();
 
   emit selectionChange( mCurrentLayer, mSelectedVertices.keys() );
 }
@@ -1367,6 +1399,10 @@ bool QgsMapToolEditMeshFrame::isFaceSelected( int faceIndex )
 
 void QgsMapToolEditMeshFrame::setSelectedVertices( const QList<int> newSelectedVertices, Qgis::SelectBehavior behavior )
 {
+  if ( mSelectedVertices.isEmpty() )
+  {
+    mUserZValue = currentZValue();
+  }
 
   bool removeVertices = false;
 
@@ -1644,7 +1680,7 @@ void QgsMapToolEditMeshFrame::forceBySelectedLayerPolyline()
 
   forceByPolylinesEdit.setTolerance( tolerance );
   forceByPolylinesEdit.setAddVertexOnIntersection( mWidgetActionForceByLine->newVertexOnIntersectingEdge() );
-  forceByPolylinesEdit.setDefaultZValue( mZValueWidget->zValue() );
+  forceByPolylinesEdit.setDefaultZValue( currentZValue() );
   forceByPolylinesEdit.setInterpolateZValueOnMesh(
     mWidgetActionForceByLine->interpolationMode() == QgsMeshEditForceByLineAction::Mesh );
 
@@ -1763,9 +1799,9 @@ void QgsMapToolEditMeshFrame::applyZValueOnSelectedVertices()
 
   QList<double> zValues;
   zValues.reserve( mSelectedVertices.count() );
-  mOrdinaryZValue = mZValueWidget->zValue();
+  mUserZValue = currentZValue();
   for ( int i = 0; i < mSelectedVertices.count(); ++i )
-    zValues.append( mOrdinaryZValue );
+    zValues.append( mUserZValue );
 
   mCurrentEditor->changeZValues( mSelectedVertices.keys(), zValues );
 }
@@ -1779,7 +1815,17 @@ void QgsMapToolEditMeshFrame::prepareSelection()
       vertexZValue += mapVertex( i ).z();
     vertexZValue /= mSelectedVertices.count();
 
-    mZValueWidget->setDefaultValue( vertexZValue );
+    if ( !mZValueWidget )
+      createZValueWidget();
+
+    mZValueWidget->setZValue( vertexZValue );
+  }
+  else
+  {
+    if ( cadDockWidget()->cadEnabled() && mZValueWidget )
+      deleteZValueWidget();
+    else if ( mZValueWidget )
+      mZValueWidget->setZValue( mUserZValue );
   }
 
   mConcernedFaceBySelection.clear();
@@ -2170,6 +2216,9 @@ void QgsMapToolEditMeshFrame::highlightCloseVertex( const QgsPointXY &mapPoint )
       }
     }
   }
+
+  if ( mCadDockWidget->cadEnabled() && !mCadDockWidget->constraintZ()->isLocked() && mCurrentVertexIndex != -1 )
+    mCadDockWidget->setZ( QString::number( mapVertex( mCurrentVertexIndex ).z(), 'f' ), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited );
 }
 
 void QgsMapToolEditMeshFrame::highlightCloseEdge( const QgsPointXY &mapPoint )
@@ -2344,7 +2393,8 @@ void QgsMapToolEditMeshFrame::createZValueWidget()
   deleteZValueWidget();
 
   mZValueWidget = new QgsZValueWidget( tr( "Vertex Z value:" ) );
-  mZValueWidget->setDefaultValue( mOrdinaryZValue );
+  mZValueWidget->setDefaultValue( defaultZValue() );
+  mZValueWidget->setZValue( mUserZValue );
   QgisApp::instance()->addUserInputWidget( mZValueWidget );
 }
 
@@ -2394,19 +2444,19 @@ void QgsMapToolEditMeshFrame::clearEdgeHelpers()
 
 void QgsMapToolEditMeshFrame::addVertex(
   const QgsPointXY &mapPoint,
-  const QgsPointLocator::Match &mapPointMatch,
-  Qt::KeyboardModifiers modifiers )
+  const QgsPointLocator::Match &mapPointMatch )
 {
   QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
-  double zValue = mZValueWidget ? mZValueWidget->zValue() : std::numeric_limits<double>::quiet_NaN();
 
-  if ( mapPointMatch.isValid() )
+  double zValue;
+
+  if ( mCadDockWidget->cadEnabled() && mCurrentFaceIndex == -1 )
+    zValue = currentZValue();
+  else if ( mapPointMatch.isValid() )
   {
     QgsPoint layerPoint = mapPointMatch.interpolatedPoint();
     zValue = layerPoint.z();
   }
-  else if ( mIsSelectedZValue )
-    zValue = mSelectedZValue;
   else if ( mCurrentFaceIndex != -1 ) //we are on a face -->interpolate the z value
   {
     const QgsTriangularMesh &triangularMesh = *mCurrentLayer->triangularMesh();
@@ -2417,9 +2467,8 @@ void QgsMapToolEditMeshFrame::addVertex(
     const QgsMeshVertex &v3 = triangularMesh.vertices().at( triangleFace.at( 2 ) );
     zValue = QgsMeshLayerUtils::interpolateFromVerticesData( v1, v2, v3, v1.z(), v2.z(), v3.z(), mapPoint );
   }
-
-  if ( modifiers & Qt::ControlModifier )
-    mOrdinaryZValue = mSelectedZValue;
+  else
+    zValue = currentZValue();
 
   QVector<QgsMeshVertex> points( 1, QgsMeshVertex( mapPoint.x(), mapPoint.y(), zValue ) );
   if ( mCurrentEditor )

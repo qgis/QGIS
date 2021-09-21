@@ -153,7 +153,15 @@ Changes the Z values of the vertices with indexes in ``vertices`` indexes with t
     void changeXYValues( const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues );
 %Docstring
 Changes the (X,Y) coordinates values of the vertices with indexes in ``vertices`` indexes with the values in ``newValues``.
+The caller has the responsibility to check if changing the vertices coordinates does not lead to topological errors.
+New values are in layer CRS.
+%End
+
+    void changeCoordinates( const QList<int> &verticesIndexes, const QList<QgsPoint> &newCoordinates );
+%Docstring
+Changes the (X,Y,Z) coordinates values of the vertices with indexes in ``vertices`` indexes with the values in ``newValues``.
 The caller has the responsibility to check if changing the vertices coordinates does not lead to topological errors
+New coordinates are in layer CRS.
 %End
 
     void advancedEdit( QgsMeshAdvancedEditing *editing );
