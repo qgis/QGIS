@@ -733,11 +733,6 @@ void QgsMeshEditor::changeXYValues( const QList<int> &verticesIndexes, const QLi
   mUndoStack->push( new QgsMeshLayerUndoCommandChangeXYValue( this, verticesIndexes, newValues ) );
 }
 
-void QgsMeshEditor::changeCoordinates( const QList<int> &verticesIndexes, const QList<QgsPoint> &newCoordinates )
-{
-  mUndoStack->push( new QgsMeshLayerUndoCommandChangeCoordinates( this, verticesIndexes, newCoordinates ) );
-}
-
 void QgsMeshEditor::advancedEdit( QgsMeshAdvancedEditing *editing )
 {
   mUndoStack->push( new QgsMeshLayerUndoCommandAdvancedEditing( this, editing ) );
@@ -994,45 +989,6 @@ void QgsMeshLayerUndoCommandChangeXYValue::redo()
       mMeshEditor->applyEdit( edit );
   }
 }
-
-
-QgsMeshLayerUndoCommandChangeCoordinates::QgsMeshLayerUndoCommandChangeCoordinates( QgsMeshEditor *meshEditor, const QList<int> &verticesIndexes, const QList<QgsPoint> &newCoordinates )
-  : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
-  , mVerticesIndexes( verticesIndexes )
-  , mNewCoordinates( newCoordinates )
-{}
-
-void QgsMeshLayerUndoCommandChangeCoordinates::redo()
-{
-  if ( !mVerticesIndexes.isEmpty() )
-  {
-    QgsMeshEditor::Edit editXY;
-    QList<QgsPointXY> newXY;
-    newXY.reserve( mNewCoordinates.count() );
-    QgsMeshEditor::Edit editZ;
-    QList<double> newZ;
-    newZ.reserve( mNewCoordinates.count() );
-
-    for ( const QgsPoint &pt : std::as_const( mNewCoordinates ) )
-    {
-      newXY.append( pt );
-      newZ.append( pt.z() );
-    }
-
-    mMeshEditor->applyChangeXYValue( editXY, mVerticesIndexes, newXY );
-    mEdits.append( editXY );
-    mMeshEditor->applyChangeZValue( editZ, mVerticesIndexes, newZ );
-    mEdits.append( editZ );
-    mVerticesIndexes.clear();
-    mNewCoordinates.clear();
-  }
-  else
-  {
-    for ( QgsMeshEditor::Edit &edit : mEdits )
-      mMeshEditor->applyEdit( edit );
-  }
-}
-
 
 
 QgsMeshLayerUndoCommandFlipEdge::QgsMeshLayerUndoCommandFlipEdge( QgsMeshEditor *meshEditor, int vertexIndex1, int vertexIndex2 )

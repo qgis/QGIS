@@ -38,7 +38,6 @@
 #include "qgsproject.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmessagelog.h"
-#include "qgsmeshlayer.h"
 
 #include <QActionGroup>
 
@@ -320,47 +319,29 @@ void QgsAdvancedDigitizingDockWidget::setCadEnabled( bool enabled )
 
 void QgsAdvancedDigitizingDockWidget::switchZM( )
 {
-  bool enableZ = false;
-  bool enableM = false;
 
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
-  if ( vlayer )
+  if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() ) )
   {
     const QgsWkbTypes::Type type = vlayer->wkbType();
-    enableZ = QgsWkbTypes::hasZ( type );
-    enableM = QgsWkbTypes::hasM( type );
+    mRelativeZButton->setEnabled( QgsWkbTypes::hasZ( type ) );
+    mZLabel->setEnabled( QgsWkbTypes::hasZ( type ) );
+    mZLineEdit->setEnabled( QgsWkbTypes::hasZ( type ) );
+    if ( mZLineEdit->isEnabled() )
+      mZLineEdit->setText( QLocale().toString( QgsMapToolEdit( mMapCanvas ).defaultZValue(), 'f', 6 ) );
+    else
+      mZLineEdit->clear();
+    mLockZButton->setEnabled( QgsWkbTypes::hasZ( type ) );
+
+    mRelativeMButton->setEnabled( QgsWkbTypes::hasM( type ) );
+    mMLabel->setEnabled( QgsWkbTypes::hasM( type ) );
+    mMLineEdit->setEnabled( QgsWkbTypes::hasM( type ) );
+    if ( mMLineEdit->isEnabled() )
+      mMLineEdit->setText( QLocale().toString( QgsMapToolEdit( mMapCanvas ).defaultMValue(), 'f', 6 ) );
+    else
+      mMLineEdit->clear();
+    mLockMButton->setEnabled( QgsWkbTypes::hasM( type ) );
   }
 
-  QgsMeshLayer *mlayer = qobject_cast<QgsMeshLayer *>( mMapCanvas->currentLayer() );
-  if ( mlayer )
-    enableZ = mlayer->isEditable();
-
-  setEnabledZ( enableZ );
-  setEnabledM( enableM );
-}
-
-void QgsAdvancedDigitizingDockWidget::setEnabledZ( bool enable )
-{
-  mRelativeZButton->setEnabled( enable );
-  mZLabel->setEnabled( enable );
-  mZLineEdit->setEnabled( enable );
-  if ( mZLineEdit->isEnabled() )
-    mZLineEdit->setText( QLocale().toString( QgsMapToolEdit( mMapCanvas ).defaultZValue(), 'f', 6 ) );
-  else
-    mZLineEdit->clear();
-  mLockZButton->setEnabled( enable );
-}
-
-void QgsAdvancedDigitizingDockWidget::setEnabledM( bool enable )
-{
-  mRelativeMButton->setEnabled( enable );
-  mMLabel->setEnabled( enable );
-  mMLineEdit->setEnabled( enable );
-  if ( mMLineEdit->isEnabled() )
-    mMLineEdit->setText( QLocale().toString( QgsMapToolEdit( mMapCanvas ).defaultMValue(), 'f', 6 ) );
-  else
-    mMLineEdit->clear();
-  mLockMButton->setEnabled( enable );
 }
 
 void QgsAdvancedDigitizingDockWidget::activateCad( bool enabled )

@@ -221,20 +221,6 @@ Determines if Z or M will be enabled.
 .. versionadded:: 3.22
 %End
 
-    void setEnabledZ( bool enable );
-%Docstring
-Sets whether Z is enabled
-
-.. versionadded:: 3.22
-%End
-
-    void setEnabledM( bool enable );
-%Docstring
-Sets whether M is enabled
-
-.. versionadded:: 3.22
-%End
-
     bool constructionMode() const;
 %Docstring
 construction mode is used to draw intermediate points. These points won't be given any further (i.e. to the map tools)

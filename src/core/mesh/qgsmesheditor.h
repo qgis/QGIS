@@ -176,17 +176,9 @@ class CORE_EXPORT QgsMeshEditor : public QObject
 
     /**
      * Changes the (X,Y) coordinates values of the vertices with indexes in \a vertices indexes with the values in \a newValues.
-     * The caller has the responsibility to check if changing the vertices coordinates does not lead to topological errors.
-     * New values are in layer CRS.
+     * The caller has the responsibility to check if changing the vertices coordinates does not lead to topological errors
      */
     void changeXYValues( const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues );
-
-    /**
-     * Changes the (X,Y,Z) coordinates values of the vertices with indexes in \a vertices indexes with the values in \a newValues.
-     * The caller has the responsibility to check if changing the vertices coordinates does not lead to topological errors
-     * New coordinates are in layer CRS.
-     */
-    void changeCoordinates( const QList<int> &verticesIndexes, const QList<QgsPoint> &newCoordinates );
 
     /**
      * Applies an advance editing on the edited mesh, see QgsMeshAdvancedEditing
@@ -303,7 +295,6 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     friend class QgsMeshLayerUndoCommandSetZValue;
     friend class QgsMeshLayerUndoCommandChangeZValue;
     friend class QgsMeshLayerUndoCommandChangeXYValue;
-    friend class QgsMeshLayerUndoCommandChangeCoordinates;
     friend class QgsMeshLayerUndoCommandFlipEdge;
     friend class QgsMeshLayerUndoCommandMerge;
     friend class QgsMeshLayerUndoCommandSplitFaces;
@@ -456,29 +447,6 @@ class QgsMeshLayerUndoCommandChangeXYValue : public QgsMeshLayerUndoCommandMeshE
   private:
     QList<int> mVerticesIndexes;
     QList<QgsPointXY> mNewValues;
-};
-
-/**
- * \ingroup core
- *
- * \brief  Class for undo/redo command for changing coordinate (X,Y,Z) values of vertices
- *
- * \since QGIS 3.22
- */
-class QgsMeshLayerUndoCommandChangeCoordinates : public QgsMeshLayerUndoCommandMeshEdit
-{
-  public:
-
-    /**
-     * Constructor with the associated \a meshEditor and indexes \a verticesIndexes of the vertices that will have
-     * the coordinate (X,Y,Z) values changed with \a newCoordinates
-     */
-    QgsMeshLayerUndoCommandChangeCoordinates( QgsMeshEditor *meshEditor, const QList<int> &verticesIndexes, const QList<QgsPoint> &newCoordinates );
-    void redo() override;
-
-  private:
-    QList<int> mVerticesIndexes;
-    QList<QgsPoint> mNewCoordinates;
 };
 
 /**
