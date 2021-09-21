@@ -60,7 +60,7 @@ Sets the single color to define the coloring
 Returns the color corresponding to the magnitude
 %End
 
-    void setColoringMethod( const QgsInterpolatedLineColor::ColoringMethod &coloringMethod );
+    void setColoringMethod( ColoringMethod coloringMethod );
 %Docstring
 Sets the coloring method used
 
@@ -232,7 +232,7 @@ Returns the stroke width used to render
 .. versionadded:: 3.20
 %End
 
-    void setWidthUnit( const QgsUnitTypes::RenderUnit &strokeWidthUnit );
+    void setWidthUnit( QgsUnitTypes::RenderUnit strokeWidthUnit );
 %Docstring
 Sets the unit of the stroke width
 %End
@@ -331,7 +331,7 @@ Creates the symbol layer
     virtual bool canCauseArtifactsBetweenAdjacentTiles() const;
 
 
-    void setExpressionsStringForWidth( QString start, QString end );
+    void setExpressionsStringForWidth( const QString &start, const QString &end );
 %Docstring
 Sets the expressions (as string) that define the extremety values af the line feature for width
 %End
@@ -346,7 +346,7 @@ Returns the epression related to the start extremity value for width
 Returns the expression related to the end extremity value for width
 %End
 
-    void setWidthUnit( const QgsUnitTypes::RenderUnit &strokeWidthUnit );
+    void setWidthUnit( QgsUnitTypes::RenderUnit strokeWidthUnit );
 %Docstring
 Sets the width unit
 %End
@@ -366,7 +366,7 @@ Sets the interpolated width used to render the width of lines, ``see`` :py:class
 Returns the interpolated width used to render the width of lines, see ``:py:class:`QgsInterpolatedLineWidth```
 %End
 
-    void setExpressionsStringForColor( QString start, QString end );
+    void setExpressionsStringForColor( const QString &start, const QString &end );
 %Docstring
 Sets the expressions (as string) that define the extremety values af the line feature for color
 %End
