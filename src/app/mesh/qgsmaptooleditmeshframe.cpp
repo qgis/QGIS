@@ -317,6 +317,9 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
 
   connect( cadDockWidget(), &QgsAdvancedDigitizingDockWidget::cadEnabledChanged, this, [this]( bool enable )
   {
+    if ( !isActive() || !mCurrentEditor )
+      return;
+
     if ( enable && mSelectedVertices.isEmpty() )
       deleteZValueWidget();
     else if ( !mZValueWidget )
