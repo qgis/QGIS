@@ -172,9 +172,14 @@ void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorLayerJoinInfo &joinInfo 
       }
       else
       {
-        QgsAttributes attrs2 = attrs;
-        attrs2.remove( joinFieldIndex );  // skip the join field to avoid double field names (fields often have the same name)
-        joinInfo.cachedAttributes.insert( key, attrs2 );
+        QgsAttributes attributesCache;
+        for ( int i = 0; i < attrs.size(); i++ )
+        {
+          if ( i != joinFieldIndex
+               && !mLayer->fields().names().contains( cacheLayer->fields().names().at( i ) ) )
+            attributesCache.append( attrs.at( i ) );
+        }
+        joinInfo.cachedAttributes.insert( key, attributesCache );
       }
     }
     joinInfo.cacheDirty = false;
