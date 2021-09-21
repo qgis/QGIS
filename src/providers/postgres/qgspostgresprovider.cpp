@@ -3021,7 +3021,12 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
           sql += delim + QStringLiteral( "%1=" ).arg( quotedIdentifier( fld.name() ) );
           delim = ',';
 
-          if ( fld.typeName() == QLatin1String( "geometry" ) )
+          QString defVal = defaultValueClause( siter.key() );
+          if ( qgsVariantEqual( *siter, defVal ) )
+          {
+            sql += defVal.isNull() ? "NULL" : defVal;
+          }
+          else if ( fld.typeName() == QLatin1String( "geometry" ) )
           {
             sql += QStringLiteral( "%1(%2)" )
                    .arg( connectionRO()->majorVersion() < 2 ? "geomfromewkt" : "st_geomfromewkt",
