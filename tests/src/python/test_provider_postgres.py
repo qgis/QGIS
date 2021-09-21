@@ -2726,6 +2726,57 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             test_for_pk_combinations(["view", "mat_view"], ["id_half_null_uuid", col_name], 7)
             test_for_pk_combinations(["view", "mat_view"], ["id_all_null_uuid", col_name], 7)
 
+    def testChangeAttributeWithDefaultValue(self):
+        """Test that we can change an attribute value with its default value"""
+
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.dbconn, {})
+
+        # Cleanup
+        try:
+            conn.dropVectorTable('qgis_test', 'test_change_att_w_default_value')
+        except QgsProviderConnectionException:
+            pass
+
+        conn.executeSql('''
+        CREATE TABLE "qgis_test"."test_change_att_w_default_value" (
+            id serial primary key,
+            thetext1 character varying(8) DEFAULT NULL::character varying,
+            thetext2 character varying(8) DEFAULT NULL,
+            thetext3 character varying(8) DEFAULT 'blabla',
+            thenumber integer DEFAULT 2+2
+        );''')
+
+        conn.executeSql('''
+        INSERT INTO "qgis_test"."test_change_att_w_default_value" (thetext1,thetext2,thetext3,thenumber) VALUES ('test1','test2','test3',6);''')
+
+        layer = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'id\'table="qgis_test"."test_change_att_w_default_value" sql=', 'test', 'postgres')
+        self.assertTrue(layer.isValid())
+        self.assertEqual(layer.featureCount(), 1)
+        feat = next(layer.getFeatures())
+        self.assertTrue(feat["thetext1"], "test1")
+        self.assertTrue(feat["thetext2"], "test2")
+        self.assertTrue(feat["thetext3"], "test3")
+        self.assertTrue(feat["thenumber"], 6)
+
+        self.assertEqual(layer.dataProvider().defaultValueClause(1), "NULL::character varying")
+        self.assertEqual(layer.dataProvider().defaultValueClause(2), "NULL::character varying")
+        self.assertEqual(layer.dataProvider().defaultValueClause(3), "'blabla'::character varying")
+        self.assertEqual(layer.dataProvider().defaultValueClause(4), "(2 + 2)")
+
+        layer.startEditing()
+        self.assertTrue(layer.changeAttributeValues(1, {1: "NULL::character varying", 2: "NULL::character varying",
+                                                        3: "'blabla'::character varying", 4: "(2 + 2)"}))
+        self.assertTrue(layer.commitChanges())
+
+        feat = next(layer.getFeatures())
+
+        # print( "hein |{}| expected=|{}| bool={}".format( feat["thetext"], expected, (feat["thetext"] expected) ) )
+        self.assertEqual(feat["thetext1"], NULL)
+        self.assertEqual(feat["thetext2"], NULL)
+        self.assertEqual(feat["thetext3"], "blabla")
+        self.assertEqual(feat["thenumber"], 4)
+
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
 
