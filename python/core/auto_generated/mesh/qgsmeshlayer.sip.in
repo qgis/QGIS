@@ -808,12 +808,20 @@ Returns whether the mesh contains at mesh elements of given type
 %Docstring
 Returns the vertices count of the mesh frame
 
+.. note::
+
+   during mesh editing, some vertices can be void and are not included in this returned value
+
 .. versionadded:: 3.22
 %End
 
     int meshFaceCount() const;
 %Docstring
 Returns the faces count of the mesh frame
+
+.. note::
+
+   during mesh editing, some faces can be void and are not included in this returned value
 
 .. versionadded:: 3.22
 %End

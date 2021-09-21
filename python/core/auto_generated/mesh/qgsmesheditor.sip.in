@@ -212,6 +212,16 @@ Returns ``True`` if an edge of face is closest than the tolerance from the ``poi
 Returns also the face index and the edge position in ``faceIndex`` and ``edgePosition``
 %End
 
+    int validFacesCount() const;
+%Docstring
+Returns the count of valid faces, that is non void faces in the mesh
+%End
+
+    int validVerticesCount() const;
+%Docstring
+Returns the count of valid vertices, that is non void vertices in the mesh
+%End
+
   signals:
     void meshEdited();
 %Docstring
