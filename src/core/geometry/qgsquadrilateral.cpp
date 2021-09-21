@@ -166,10 +166,10 @@ QgsQuadrilateral QgsQuadrilateral::rectangleFromExtent( const QgsPoint &p1, cons
     yMax = p1.y();
   }
 
-  quad.setPoints( QgsPoint( xMin, yMin, z, m ),
-                  QgsPoint( xMin, yMax, z, m ),
-                  QgsPoint( xMax, yMax, z, m ),
-                  QgsPoint( xMax, yMin, z, m ) );
+  quad.setPoints( QgsPoint( p1.wkbType(), xMin, yMin, z, m ),
+                  QgsPoint( p1.wkbType(), xMin, yMax, z, m ),
+                  QgsPoint( p1.wkbType(), xMax, yMax, z, m ),
+                  QgsPoint( p1.wkbType(), xMax, yMin, z, m ) );
 
   return quad;
 }
@@ -194,9 +194,9 @@ QgsQuadrilateral QgsQuadrilateral::squareFromDiagonal( const QgsPoint &p1, const
   point4 = midPoint.project( distance, azimuth );
 
   // add z and m, could be NaN
-  point2 = QgsPoint( point2.x(), point2.y(), z, m );
-  point3 = QgsPoint( point3.x(), point3.y(), z, m );
-  point4 = QgsPoint( point4.x(), point4.y(), z, m );
+  point2 = QgsPoint( p1.wkbType(), point2.x(), point2.y(), z, m );
+  point3 = QgsPoint( p1.wkbType(), point3.x(), point3.y(), z, m );
+  point4 = QgsPoint( p1.wkbType(), point4.x(), point4.y(), z, m );
 
   quad.setPoints( p1, point2, point3, point4 );
 
@@ -210,10 +210,10 @@ QgsQuadrilateral QgsQuadrilateral::rectangleFromCenterPoint( const QgsPoint &cen
   const double xOffset = std::fabs( point.x() - center.x() );
   const double yOffset = std::fabs( point.y() - center.y() );
 
-  return QgsQuadrilateral( QgsPoint( center.x() - xOffset, center.y() - yOffset, center.z(), center.m() ),
-                           QgsPoint( center.x() - xOffset, center.y() + yOffset, center.z(), center.m() ),
-                           QgsPoint( center.x() + xOffset, center.y() + yOffset, center.z(), center.m() ),
-                           QgsPoint( center.x() + xOffset, center.y() - yOffset, center.z(), center.m() ) );
+  return QgsQuadrilateral( QgsPoint( center.wkbType(), center.x() - xOffset, center.y() - yOffset, center.z(), center.m() ),
+                           QgsPoint( center.wkbType(), center.x() - xOffset, center.y() + yOffset, center.z(), center.m() ),
+                           QgsPoint( center.wkbType(), center.x() + xOffset, center.y() + yOffset, center.z(), center.m() ),
+                           QgsPoint( center.wkbType(), center.x() + xOffset, center.y() - yOffset, center.z(), center.m() ) );
 }
 
 QgsQuadrilateral QgsQuadrilateral::fromRectangle( const QgsRectangle &rectangle )
