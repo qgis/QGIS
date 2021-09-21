@@ -30,6 +30,7 @@ from qgis.core import (QgsExpressionContext,
                        QgsProject,
                        QgsSettings,
                        QgsVectorFileWriter,
+                       QgsProcessing,
                        QgsProcessingUtils,
                        QgsProcessingParameterDefinition,
                        QgsProcessingOutputRasterLayer,
@@ -40,15 +41,23 @@ from qgis.core import (QgsExpressionContext,
                        QgsProcessingOutputString,
                        QgsProcessingOutputBoolean,
                        QgsProcessingOutputFolder,
+                       QgsProcessingOutputFile,
                        QgsProcessingOutputMultipleLayers)
 
 
 def getOutputFromString(s):
     try:
-        if "|" in s and s.startswith("Output"):
+        if "|" in s and (s.startswith("QgsProcessingOutput") or s.startswith("Output")):
             tokens = s.split("|")
             params = [t if str(t) != "None" else None for t in tokens[1:]]
             clazz = getattr(sys.modules[__name__], tokens[0])
+            if clazz == QgsProcessingOutputVectorLayer:
+                if len(params) > 2:
+                    try:
+                        params[2] = int(params[2])
+                    except ValueError:
+                        params[2] = getattr(QgsProcessing, params[2].split(".")[1])
+
             return clazz(*params)
         else:
             tokens = s.split("=")
