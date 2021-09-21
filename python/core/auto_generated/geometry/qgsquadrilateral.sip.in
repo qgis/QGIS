@@ -70,6 +70,7 @@ will also be of type Z, even if they are of type Point. In addition,
 the z used will be the one of the first point with a Z.
 This ensures consistency in point types and the ability to export to a
 Polygon or LineString.
+M is taken from point ``p1``.
 
 :param p1: first point
 :param p2: second point
@@ -83,7 +84,8 @@ Polygon or LineString.
 %Docstring
 Construct a QgsQuadrilateral as a rectangle from an extent, defined by
 two opposite corner points.
-Z is taken from point ``p1``.
+Z and M are taken from point ``p1``.
+QgsQuadrilateral will have the same dimension as ``p1`` dimension.
 
 :param p1: first point
 :param p2: second point
@@ -93,7 +95,8 @@ Z is taken from point ``p1``.
     static QgsQuadrilateral squareFromDiagonal( const QgsPoint &p1, const QgsPoint &p2 ) /HoldGIL/;
 %Docstring
 Construct a QgsQuadrilateral as a square from a diagonal.
-Z is taken from point ``p1``.
+Z and M are taken from point ``p1``.
+QgsQuadrilateral will have the same dimension as ``p1`` dimension.
 
 :param p1: first point
 :param p2: second point
@@ -103,7 +106,8 @@ Z is taken from point ``p1``.
 %Docstring
 Construct a QgsQuadrilateral as a rectangle from center point ``center``
 and another point ``point``.
-Z is taken from ``center`` point.
+Z and M are taken from point ``p1``.
+QgsQuadrilateral will have the same dimension as ``center`` dimension.
 
 :param center: center point
 :param point: corner point
