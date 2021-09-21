@@ -52,6 +52,12 @@ that is created by this generator.
 
     virtual bool usesMapUnits() const;
 
+    virtual QColor color() const;
+
+    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+
+    virtual QgsMapUnitScale mapUnitScale() const;
+
 
     virtual QgsSymbolLayer *clone() const /Factory/;
 

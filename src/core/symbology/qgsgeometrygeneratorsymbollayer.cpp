@@ -124,6 +124,39 @@ bool QgsGeometryGeneratorSymbolLayer::usesMapUnits() const
   return false;
 }
 
+QColor QgsGeometryGeneratorSymbolLayer::color() const
+{
+  if ( mFillSymbol )
+    return mFillSymbol->color();
+  else if ( mLineSymbol )
+    return mLineSymbol->color();
+  else if ( mMarkerSymbol )
+    return mMarkerSymbol->color();
+  return QColor();
+}
+
+QgsUnitTypes::RenderUnit QgsGeometryGeneratorSymbolLayer::outputUnit() const
+{
+  if ( mFillSymbol )
+    return mFillSymbol->outputUnit();
+  else if ( mLineSymbol )
+    return mLineSymbol->outputUnit();
+  else if ( mMarkerSymbol )
+    return mMarkerSymbol->outputUnit();
+  return QgsUnitTypes::RenderUnknownUnit;
+}
+
+QgsMapUnitScale QgsGeometryGeneratorSymbolLayer::mapUnitScale() const
+{
+  if ( mFillSymbol )
+    return mFillSymbol->mapUnitScale();
+  else if ( mLineSymbol )
+    return mLineSymbol->mapUnitScale();
+  else if ( mMarkerSymbol )
+    return mMarkerSymbol->mapUnitScale();
+  return QgsMapUnitScale();
+}
+
 QgsSymbolLayer *QgsGeometryGeneratorSymbolLayer::clone() const
 {
   QgsGeometryGeneratorSymbolLayer *clone = new QgsGeometryGeneratorSymbolLayer( mExpression->expression() );

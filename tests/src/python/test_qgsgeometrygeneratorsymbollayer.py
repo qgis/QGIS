@@ -133,6 +133,17 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         self.assertEqual(layer2.units(), QgsUnitTypes.RenderMillimeters)
         self.assertEqual(layer2.geometryExpression(), 'centroid($geometry)')
 
+    def test_color(self):
+        """
+        Test that subsymbol color is returned for symbol layer
+        """
+        sym_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'buffer($geometry, 2)'})
+        sym_layer.setSymbolType(Qgis.SymbolType.Fill)
+        sym_layer.setUnits(QgsUnitTypes.RenderMillimeters)
+        sym_layer.subSymbol().symbolLayer(0).setColor(QColor(0, 255, 255))
+
+        self.assertEqual(sym_layer.color(), QColor(0, 255, 255))
+
     def test_marker(self):
         sym = self.polys_layer.renderer().symbol()
         sym_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'centroid($geometry)'})
