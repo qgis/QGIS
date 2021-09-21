@@ -72,6 +72,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     /**
      * Returns the roundness of the curve polygon.
      * The returned value is between 0 and 1.
+     * \since QGIS 3.24
      */
     double roundness() const SIP_FACTORY;
 
