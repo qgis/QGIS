@@ -1197,7 +1197,17 @@ QgsSymbolLayer *QgsSymbolLayerUtils::loadSymbolLayer( QDomElement &element, cons
     const QDomElement ddProps = element.firstChildElement( QStringLiteral( "data_defined_properties" ) );
     if ( !ddProps.isNull() )
     {
+      const QgsPropertyCollection prevProperties = layer->dataDefinedProperties();
       layer->dataDefinedProperties().readXml( ddProps, QgsSymbolLayer::propertyDefinitions() );
+
+      // some symbol layers will be created with data defined properties by default -- we want to retain
+      // these if they weren't restored from the xml
+      const QSet< int > oldKeys = prevProperties.propertyKeys();
+      for ( int key : oldKeys )
+      {
+        if ( !layer->dataDefinedProperties().propertyKeys().contains( key ) )
+          layer->setDataDefinedProperty( static_cast< QgsSymbolLayer::Property >( key ), prevProperties.property( key ) );
+      }
     }
 
     return layer;
