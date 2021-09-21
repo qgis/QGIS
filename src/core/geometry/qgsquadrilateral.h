@@ -70,7 +70,7 @@ class CORE_EXPORT QgsQuadrilateral
     enum ConstructionOption
     {
       Distance, //!< Second distance is equal to the distance between 2nd and 3rd point
-      Projected, //!< Second distance is equal to the distance of the perpendicualr projection of the 3rd point on the segment or its extension.
+      Projected, //!< Second distance is equal to the distance of the perpendicular projection of the 3rd point on the segment or its extension.
     };
 
     /**
