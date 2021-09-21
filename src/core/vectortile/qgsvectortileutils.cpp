@@ -64,7 +64,6 @@ double QgsVectorTileUtils::scaleToZoom( double mapScale )
 {
   double s0 = 559082264.0287178;   // scale denominator at zoom level 0 of GoogleCRS84Quad
   double tileZoom2 = log( s0 / mapScale ) / log( 2 );
-  tileZoom2 -= 1;   // TODO: it seems that map scale is double (is that because of high-dpi screen?)
   return tileZoom2;
 }
 
