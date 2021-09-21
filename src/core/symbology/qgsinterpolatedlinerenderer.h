@@ -231,6 +231,9 @@ class CORE_EXPORT QgsInterpolatedLineRenderer
     /**
      * Renders a line in the \a context between \a point1 and \a point2
      * with color and width that vary depending on \a value1 and \a value2
+     *
+     * This method assumes that \a point1 and \a point2 are in map units. See renderInDeviceCoordinates() for an equivalent
+     * method which renders lines in painter coordinates.
      */
     void render( double value1, double value2, const QgsPointXY &point1, const QgsPointXY &point2, QgsRenderContext &context ) const;
 
@@ -238,9 +241,20 @@ class CORE_EXPORT QgsInterpolatedLineRenderer
      * Renders a line in the \a context between \a point1 and \a point2
      * with color that varies depending on \a valueColor1 and \a valueColor2 and and width that varies between \a valueWidth1 and \a valueWidth2
      *
+     * This method assumes that \a point1 and \a point2 are in map units. See renderInDeviceCoordinates() for an equivalent
+     * method which renders lines in painter coordinates.
+     *
      * \since QGIS 3.20
      */
     void render( double valueColor1, double valueColor2, double valueWidth1, double valueWidth2, const QgsPointXY &point1, const QgsPointXY &point2, QgsRenderContext &context ) const;
+
+    /**
+     * Renders a line in the \a context between \a point1 and \a point2 in device (painter) coordinates
+     * with color that varies depending on \a valueColor1 and \a valueColor2 and and width that varies between \a valueWidth1 and \a valueWidth2.
+     *
+     * \since QGIS 3.22
+     */
+    void renderInDeviceCoordinates( double valueColor1, double valueColor2, double valueWidth1, double valueWidth2, QPointF point1, QPointF point2, QgsRenderContext &context ) const;
 
     /**
      * Sets if the rendering must be done as the element is selected
@@ -257,11 +271,6 @@ class CORE_EXPORT QgsInterpolatedLineRenderer
     void adjustLine( double value, double value1, double value2, double &width, double &adjusting ) const;
     bool mSelected = false;
 
-    /**
-     * Renders a line in the \a context between \a point1 and \a point2 in device coordinates
-     * with color and width that vary depending on \a value1 and \a value2
-     */
-    void renderInDeviceCoordinate( double valueColor1, double valueColor2, double valueWidth1, double valueWidth2, const QPointF &p1, const QPointF &p2, QgsRenderContext &context ) const;
 
     friend class QgsInterpolatedLineSymbolLayer;
 };
@@ -340,6 +349,7 @@ class CORE_EXPORT QgsInterpolatedLineSymbolLayer : public QgsLineSymbolLayer
 #endif
 
     QgsInterpolatedLineRenderer mLineRender;
+
     QString mStartWidthExpressionString;
     QString mEndWidthExpressionString;
     QString mStartColorExpressionString;
@@ -354,7 +364,11 @@ class CORE_EXPORT QgsInterpolatedLineSymbolLayer : public QgsLineSymbolLayer
     std::unique_ptr<QgsExpression> mEndWithExpression;
     std::unique_ptr<QgsExpression> mStartColorExpression;
     std::unique_ptr<QgsExpression> mEndColorExpression;
-    QgsFeature mFeature;
+
+    QVector< QPolygonF > mLineParts;
+    bool mRenderingFeature = false;
+
+    void render( const QVector< QPolygonF > &parts, QgsRenderContext &context );
 
     QVariant colorRampShaderProperties() const;
     static QgsColorRampShader createColorRampShaderFromProperties( const QVariant &properties );
