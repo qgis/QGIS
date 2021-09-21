@@ -223,6 +223,18 @@ class CORE_EXPORT Qgis
     Q_DECLARE_FLAGS( SymbolPreviewFlags, SymbolPreviewFlag )
 
     /**
+     * \brief Flags controlling behavior of symbol layers
+     *
+     * \since QGIS 3.22
+     */
+    enum class SymbolLayerFlag : int
+    {
+      DisableFeatureClipping = 1 << 0, //!< If present, indicates that features should never be clipped to the map extent during rendering
+    };
+    Q_ENUM( SymbolLayerFlag )
+    Q_DECLARE_FLAGS( SymbolLayerFlags, SymbolLayerFlag )
+
+    /**
      * Browser item types.
      *
      * \since QGIS 3.20
@@ -975,6 +987,7 @@ class CORE_EXPORT Qgis
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolRenderHints )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolPreviewFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolLayerFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BrowserItemCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SublayerQueryFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SublayerFlags )

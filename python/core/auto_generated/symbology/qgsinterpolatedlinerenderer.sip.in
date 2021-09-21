@@ -303,6 +303,8 @@ Constructor
 Creates the symbol layer
 %End
 
+    virtual Qgis::SymbolLayerFlags flags() const;
+
     virtual QString layerType() const;
 
     virtual void startRender( QgsSymbolRenderContext &context );

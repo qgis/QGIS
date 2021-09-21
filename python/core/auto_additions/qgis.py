@@ -150,6 +150,11 @@ QgsSymbol.FlagIncludeCrosshairsForMarkerSymbols.__doc__ = "Include a crosshairs 
 Qgis.SymbolPreviewFlag.__doc__ = 'Flags for controlling how symbol preview images are generated.\n\n.. versionadded:: 3.20\n\n' + '* ``FlagIncludeCrosshairsForMarkerSymbols``: ' + Qgis.SymbolPreviewFlag.FlagIncludeCrosshairsForMarkerSymbols.__doc__
 # --
 Qgis.SymbolPreviewFlag.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SymbolLayerFlag.DisableFeatureClipping.__doc__ = "If present, indicates that features should never be clipped to the map extent during rendering"
+Qgis.SymbolLayerFlag.__doc__ = 'Flags controlling behavior of symbol layers\n\n.. versionadded:: 3.22\n\n' + '* ``DisableFeatureClipping``: ' + Qgis.SymbolLayerFlag.DisableFeatureClipping.__doc__
+# --
+Qgis.SymbolLayerFlag.baseClass = Qgis
 QgsDataItem.Type = Qgis.BrowserItemType
 # monkey patching scoped based enum
 QgsDataItem.Collection = Qgis.BrowserItemType.Collection

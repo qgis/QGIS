@@ -220,6 +220,11 @@ QgsSymbolLayer::QgsSymbolLayer( Qgis::SymbolType type, bool locked )
 {
 }
 
+Qgis::SymbolLayerFlags QgsSymbolLayer::flags() const
+{
+  return Qgis::SymbolLayerFlags();
+}
+
 void QgsSymbolLayer::prepareExpressions( const QgsSymbolRenderContext &context )
 {
   mDataDefinedProperties.prepare( context.renderContext().expressionContext() );
