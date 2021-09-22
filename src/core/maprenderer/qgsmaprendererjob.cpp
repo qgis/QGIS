@@ -526,7 +526,10 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
     layerTime.start();
     job.renderer = ml->createMapRenderer( *( job.context() ) );
     if ( job.renderer )
+    {
       job.renderer->setLayerRenderingTimeHint( job.estimatedRenderingTime );
+      job.context()->setFeedback( job.renderer->feedback() );
+    }
 
     // If we are drawing with an alternative blending mode then we need to render to a separate image
     // before compositing this on the map. This effectively flattens the layer and prevents
@@ -744,6 +747,10 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     // the first pass job, would be to be able to call QgsMapLayerRenderer::render() with a QgsRenderContext.
     QgsVectorLayerRenderer *mapRenderer = static_cast<QgsVectorLayerRenderer *>( vl1->createMapRenderer( *job2.context() ) );
     job2.renderer = mapRenderer;
+    if ( job2.renderer )
+    {
+      job2.context()->setFeedback( job2.renderer->feedback() );
+    }
 
     // Modify the render context so that symbol layers get disabled as needed.
     // The map renderer stores a reference to the context, so we can modify it even after the map renderer creation (what we need here)
