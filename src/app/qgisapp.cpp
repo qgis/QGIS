@@ -8773,6 +8773,7 @@ void QgisApp::createAnnotationLayer()
 {
   QgsAnnotationLayer::LayerOptions options( QgsProject::instance()->transformContext() );
   QgsAnnotationLayer *layer = new QgsAnnotationLayer( tr( "Annotations" ), options );
+  layer->setCrs( QgsProject::instance()->crs() );
 
   // layer should be created at top of layer tree
   QgsProject::instance()->addMapLayer( layer, false );
