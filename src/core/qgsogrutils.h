@@ -27,6 +27,8 @@
 #include "cpl_conv.h"
 #include "cpl_string.h"
 
+class QgsCoordinateReferenceSystem;
+
 class QTextCodec;
 
 namespace gdal

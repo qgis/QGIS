@@ -22,6 +22,7 @@
 #include "gdal.h"
 #include "qgis_analysis.h"
 #include "qgsogrutils.h"
+#include "qgsconfig.h"
 
 class QgsFeedback;
 

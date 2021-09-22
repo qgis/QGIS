@@ -19,6 +19,7 @@
 
 #include "gpsdata.h"
 #include "qgsgpxprovider.h"
+#include "qgscoordinatetransform.h"
 
 class QgsGPXProvider;
 

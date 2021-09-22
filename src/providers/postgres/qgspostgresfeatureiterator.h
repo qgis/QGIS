@@ -20,6 +20,7 @@
 #include <QQueue>
 
 #include "qgspostgresprovider.h"
+#include "qgscoordinatetransform.h"
 
 class QgsPostgresProvider;
 class QgsPostgresResult;

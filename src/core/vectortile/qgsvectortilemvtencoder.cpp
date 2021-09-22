@@ -165,7 +165,7 @@ void QgsVectorTileMVTEncoder::addLayer( QgsVectorLayer *layer, QgsFeedback *feed
   QgsRectangle layerTileExtent = mTileExtent;
   try
   {
-    layerTileExtent = ct.transformBoundingBox( layerTileExtent, QgsCoordinateTransform::ReverseTransform );
+    layerTileExtent = ct.transformBoundingBox( layerTileExtent, Qgis::TransformDirection::Reverse );
     if ( !layerTileExtent.intersects( layer->extent() ) )
     {
       return;  // tile is completely outside of the layer'e extent

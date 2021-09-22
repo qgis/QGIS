@@ -918,7 +918,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \returns OperationResult a result code: success or reason of failure
      */
-    Qgis::GeometryOperationResult transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) SIP_THROW( QgsCsException );
+    Qgis::GeometryOperationResult transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward, bool transformZ = false ) SIP_THROW( QgsCsException );
 
     /**
      * Transforms the x and y components of the geometry using a QTransform object \a t.

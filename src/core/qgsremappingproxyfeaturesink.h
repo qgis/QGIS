@@ -22,6 +22,7 @@
 #include "qgis.h"
 #include "qgsfeaturesink.h"
 #include "qgsproperty.h"
+#include "qgscoordinatetransform.h"
 
 /**
  * \class QgsRemappingSinkDefinition

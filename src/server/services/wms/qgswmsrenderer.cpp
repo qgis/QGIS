@@ -229,7 +229,7 @@ namespace QgsWms
 
       QgsCoordinateTransform tr = mapSettings.layerTransform( vl );
       context.setCoordinateTransform( tr );
-      context.setExtent( tr.transformBoundingBox( mapSettings.extent(), QgsCoordinateTransform::ReverseTransform ) );
+      context.setExtent( tr.transformBoundingBox( mapSettings.extent(), Qgis::TransformDirection::Reverse ) );
 
       SymbolSet &usedSymbols = hitTest[vl];
       runHitTestLayer( vl, usedSymbols, context );

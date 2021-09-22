@@ -542,7 +542,7 @@ void QgsRasterLayerSaveAsDialog::setResolution( double xRes, double yRes, const 
 
     QgsPointXY center = outputRectangle().center();
     QgsCoordinateTransform ct( srcCrs, outputCrs(), QgsProject::instance() );
-    QgsPointXY srsCenter = ct.transform( center, QgsCoordinateTransform::ReverseTransform );
+    QgsPointXY srsCenter = ct.transform( center, Qgis::TransformDirection::Reverse );
 
     QgsRectangle srcExtent( srsCenter.x() - xRes / 2, srsCenter.y() - yRes / 2, srsCenter.x() + xRes / 2, srsCenter.y() + yRes / 2 );
 

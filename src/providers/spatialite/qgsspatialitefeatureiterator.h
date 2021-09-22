@@ -17,6 +17,7 @@
 
 #include "qgsfeatureiterator.h"
 #include "qgsfields.h"
+#include "qgscoordinatetransform.h"
 
 extern "C"
 {

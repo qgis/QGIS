@@ -21,6 +21,7 @@
 #include "qgsapplication.h"
 #include "qgsmessagelog.h"
 #include "qgsauthmanager.h"
+#include "qgscoordinatetransform.h"
 
 #include <QUrl>
 #include <QUrlQuery>

@@ -871,7 +871,7 @@ void TestQgsCompoundCurve::compoundCurve()
   ls21.setPoints( QgsPointSequence() << QgsPoint( 6474985, -3526584 )
                   << QgsPoint( 6504985, -3526584 ) );
   c21.addCurve( ls21.clone() );
-  c21.transform( tr, QgsCoordinateTransform::ForwardTransform );
+  c21.transform( tr, Qgis::TransformDirection::Forward );
   QGSCOMPARENEAR( c21.xAt( 0 ), 175.771, 0.001 );
   QGSCOMPARENEAR( c21.yAt( 0 ), -39.724, 0.001 );
   QGSCOMPARENEAR( c21.xAt( 1 ), 176.959, 0.001 );
@@ -891,7 +891,7 @@ void TestQgsCompoundCurve::compoundCurve()
   ls21.setPoints( QgsPointSequence() << QgsPoint( 6474985, -3526584, 3, 4 )
                   << QgsPoint( 6504985, -3526584, 5, 6 ) );
   c22.addCurve( ls21.clone() );
-  c22.transform( tr, QgsCoordinateTransform::ForwardTransform );
+  c22.transform( tr, Qgis::TransformDirection::Forward );
   QgsPoint pt;
   QgsVertexId::VertexType v;
   c22.pointAt( 0, pt, v );
@@ -911,7 +911,7 @@ void TestQgsCompoundCurve::compoundCurve()
   QCOMPARE( pt.m(), 6.0 );
 
   //reverse transform
-  c22.transform( tr, QgsCoordinateTransform::ReverseTransform );
+  c22.transform( tr, Qgis::TransformDirection::Reverse );
   c22.pointAt( 0, pt, v );
   QGSCOMPARENEAR( pt.x(), 6374985, 100 );
   QGSCOMPARENEAR( pt.y(), -3626584, 100 );
@@ -930,7 +930,7 @@ void TestQgsCompoundCurve::compoundCurve()
 
 #if PROJ_VERSION_MAJOR<6 // note - z value transform doesn't currently work with proj 6+, because we don't yet support compound CRS definitions
   //z value transform
-  c22.transform( tr, QgsCoordinateTransform::ForwardTransform, true );
+  c22.transform( tr, Qgis::TransformDirection::Forward, true );
   c22.pointAt( 0, pt, v );
   QGSCOMPARENEAR( pt.z(), -19.249066, 0.001 );
   c22.pointAt( 1, pt, v );
@@ -938,7 +938,7 @@ void TestQgsCompoundCurve::compoundCurve()
   c22.pointAt( 2, pt, v );
   QGSCOMPARENEAR( pt.z(), -19.370485, 0.001 );
 
-  c22.transform( tr, QgsCoordinateTransform::ReverseTransform, true );
+  c22.transform( tr, Qgis::TransformDirection::Reverse, true );
   c22.pointAt( 0, pt, v );
   QGSCOMPARENEAR( pt.z(), 1, 0.001 );
   c22.pointAt( 1, pt, v );

@@ -761,3 +761,14 @@ QgsRasterDataProviderTemporalCapabilities.FindClosestMatchToEndOfRange.__doc__ =
 Qgis.TemporalIntervalMatchMethod.__doc__ = 'Method to use when resolving a temporal range to a data provider layer or band.\n\n.. versionadded:: 3.22\n\n' + '* ``MatchUsingWholeRange``: ' + Qgis.TemporalIntervalMatchMethod.MatchUsingWholeRange.__doc__ + '\n' + '* ``MatchExactUsingStartOfRange``: ' + Qgis.TemporalIntervalMatchMethod.MatchExactUsingStartOfRange.__doc__ + '\n' + '* ``MatchExactUsingEndOfRange``: ' + Qgis.TemporalIntervalMatchMethod.MatchExactUsingEndOfRange.__doc__ + '\n' + '* ``FindClosestMatchToStartOfRange``: ' + Qgis.TemporalIntervalMatchMethod.FindClosestMatchToStartOfRange.__doc__ + '\n' + '* ``FindClosestMatchToEndOfRange``: ' + Qgis.TemporalIntervalMatchMethod.FindClosestMatchToEndOfRange.__doc__
 # --
 Qgis.TemporalIntervalMatchMethod.baseClass = Qgis
+QgsCoordinateTransform.TransformDirection = Qgis.TransformDirection
+# monkey patching scoped based enum
+QgsCoordinateTransform.ForwardTransform = Qgis.TransformDirection.Forward
+QgsCoordinateTransform.ForwardTransform.is_monkey_patched = True
+QgsCoordinateTransform.ForwardTransform.__doc__ = "Forward transform (from source to destination)"
+QgsCoordinateTransform.ReverseTransform = Qgis.TransformDirection.Reverse
+QgsCoordinateTransform.ReverseTransform.is_monkey_patched = True
+QgsCoordinateTransform.ReverseTransform.__doc__ = "Reverse/inverse transform (from destination to source)"
+Qgis.TransformDirection.__doc__ = 'Indicates the direction (forward or inverse) of a transform.\n\n.. versionadded:: 3.22\n\n' + '* ``ForwardTransform``: ' + Qgis.TransformDirection.Forward.__doc__ + '\n' + '* ``ReverseTransform``: ' + Qgis.TransformDirection.Reverse.__doc__
+# --
+Qgis.TransformDirection.baseClass = Qgis

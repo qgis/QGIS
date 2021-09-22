@@ -533,7 +533,7 @@ QgsRectangle QgsMapSettings::outputExtentToLayerExtent( const QgsMapLayer *layer
       QgsDebugMsgLevel( QStringLiteral( "sourceCrs = %1" ).arg( ct.sourceCrs().authid() ), 3 );
       QgsDebugMsgLevel( QStringLiteral( "destCRS = %1" ).arg( ct.destinationCrs().authid() ), 3 );
       QgsDebugMsgLevel( QStringLiteral( "extent = %1" ).arg( extent.toString() ), 3 );
-      extent = ct.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+      extent = ct.transformBoundingBox( extent, Qgis::TransformDirection::Reverse );
     }
   }
   catch ( QgsCsException &cse )
@@ -553,7 +553,7 @@ QgsPointXY QgsMapSettings::layerToMapCoordinates( const QgsMapLayer *layer, QgsP
   {
     const QgsCoordinateTransform ct = layerTransform( layer );
     if ( ct.isValid() )
-      point = ct.transform( point, QgsCoordinateTransform::ForwardTransform );
+      point = ct.transform( point, Qgis::TransformDirection::Forward );
   }
   catch ( QgsCsException &cse )
   {
@@ -574,7 +574,7 @@ QgsPoint QgsMapSettings::layerToMapCoordinates( const QgsMapLayer *layer, const 
   {
     const QgsCoordinateTransform ct = layerTransform( layer );
     if ( ct.isValid() )
-      ct.transformInPlace( x, y, z, QgsCoordinateTransform::ForwardTransform );
+      ct.transformInPlace( x, y, z, Qgis::TransformDirection::Forward );
   }
   catch ( QgsCsException &cse )
   {
@@ -591,7 +591,7 @@ QgsRectangle QgsMapSettings::layerToMapCoordinates( const QgsMapLayer *layer, Qg
   {
     const QgsCoordinateTransform ct = layerTransform( layer );
     if ( ct.isValid() )
-      rect = ct.transform( rect, QgsCoordinateTransform::ForwardTransform );
+      rect = ct.transform( rect, Qgis::TransformDirection::Forward );
   }
   catch ( QgsCsException &cse )
   {
@@ -608,7 +608,7 @@ QgsPointXY QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer *layer, QgsP
   {
     const QgsCoordinateTransform ct = layerTransform( layer );
     if ( ct.isValid() )
-      point = ct.transform( point, QgsCoordinateTransform::ReverseTransform );
+      point = ct.transform( point, Qgis::TransformDirection::Reverse );
   }
   catch ( QgsCsException &cse )
   {
@@ -629,7 +629,7 @@ QgsPoint QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer *layer, const 
   {
     const QgsCoordinateTransform ct = layerTransform( layer );
     if ( ct.isValid() )
-      ct.transformInPlace( x, y, z, QgsCoordinateTransform::ReverseTransform );
+      ct.transformInPlace( x, y, z, Qgis::TransformDirection::Reverse );
   }
   catch ( QgsCsException &cse )
   {
@@ -646,7 +646,7 @@ QgsRectangle QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer *layer, Qg
   {
     const QgsCoordinateTransform ct = layerTransform( layer );
     if ( ct.isValid() )
-      rect = ct.transform( rect, QgsCoordinateTransform::ReverseTransform );
+      rect = ct.transform( rect, Qgis::TransformDirection::Reverse );
   }
   catch ( QgsCsException &cse )
   {

@@ -21,6 +21,7 @@
 #include "qgsmessagelog.h"
 #include "qgsogcutils.h"
 #include "qgssettings.h"
+#include "qgscoordinatetransform.h"
 
 #include <cpl_minixml.h>
 
@@ -548,9 +549,9 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
           QgsCoordinateTransform ct( crsWGS84, crs, mOptions.transformContext );
 
           QgsPointXY ptMin( featureType.bbox.xMinimum(), featureType.bbox.yMinimum() );
-          QgsPointXY ptMinBack( ct.transform( ct.transform( ptMin, QgsCoordinateTransform::ForwardTransform ), QgsCoordinateTransform::ReverseTransform ) );
+          QgsPointXY ptMinBack( ct.transform( ct.transform( ptMin, Qgis::TransformDirection::Forward ), Qgis::TransformDirection::Reverse ) );
           QgsPointXY ptMax( featureType.bbox.xMaximum(), featureType.bbox.yMaximum() );
-          QgsPointXY ptMaxBack( ct.transform( ct.transform( ptMax, QgsCoordinateTransform::ForwardTransform ), QgsCoordinateTransform::ReverseTransform ) );
+          QgsPointXY ptMaxBack( ct.transform( ct.transform( ptMax, Qgis::TransformDirection::Forward ), Qgis::TransformDirection::Reverse ) );
 
           QgsDebugMsg( featureType.bbox.toString() );
           QgsDebugMsg( ptMinBack.toString() );

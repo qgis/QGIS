@@ -1025,7 +1025,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
     {
       try
       {
-        rect = mTransform.transformBoundingBox( rect, QgsCoordinateTransform::ReverseTransform );
+        rect = mTransform.transformBoundingBox( rect, Qgis::TransformDirection::Reverse );
       }
       catch ( const QgsException &e )
       {

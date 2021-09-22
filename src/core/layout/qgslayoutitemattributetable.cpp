@@ -434,8 +434,8 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     QgsCoordinateTransform coordTransform( layer->crs(), mMap->crs(), mLayout->project() );
     try
     {
-      selectionRect = coordTransform.transformBoundingBox( selectionRect, QgsCoordinateTransform::ReverseTransform );
-      visibleRegion.transform( coordTransform, QgsCoordinateTransform::ReverseTransform );
+      selectionRect = coordTransform.transformBoundingBox( selectionRect, Qgis::TransformDirection::Reverse );
+      visibleRegion.transform( coordTransform, Qgis::TransformDirection::Reverse );
     }
     catch ( QgsCsException &cse )
     {

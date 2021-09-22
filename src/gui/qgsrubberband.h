@@ -18,6 +18,7 @@
 #include "qgsmapcanvasitem.h"
 #include "qgis_sip.h"
 #include "qgsgeometry.h"
+#include "qgscoordinatetransform.h"
 
 #include <QBrush>
 #include <QVector>

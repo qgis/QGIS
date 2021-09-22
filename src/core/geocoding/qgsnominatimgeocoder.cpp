@@ -18,6 +18,7 @@
 #include "qgsgeocodercontext.h"
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgscoordinatetransform.h"
 #include <QDateTime>
 #include <QUrl>
 #include <QUrlQuery>

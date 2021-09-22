@@ -8,6 +8,7 @@
 
 
 
+
 class QgsLegendPatchShape
 {
 %Docstring(signature="appended")

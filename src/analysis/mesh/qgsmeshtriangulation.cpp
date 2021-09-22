@@ -115,7 +115,7 @@ void QgsMeshTriangulation::addVerticesFromFeature( const QgsFeature &feature, in
   QgsGeometry geom = feature.geometry();
   try
   {
-    geom.transform( transform, QgsCoordinateTransform::ForwardTransform, true );
+    geom.transform( transform, Qgis::TransformDirection::Forward, true );
   }
   catch ( QgsCsException &cse )
   {
@@ -155,7 +155,7 @@ void QgsMeshTriangulation::addBreakLinesFromFeature( const QgsFeature &feature, 
   QgsGeometry geom = feature.geometry();
   try
   {
-    geom.transform( transform, QgsCoordinateTransform::ForwardTransform, true );
+    geom.transform( transform, Qgis::TransformDirection::Forward, true );
   }
   catch ( QgsCsException &cse )
   {

@@ -21,6 +21,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
+#include "qgscoordinatetransform.h"
 
 ///@cond PRIVATE
 

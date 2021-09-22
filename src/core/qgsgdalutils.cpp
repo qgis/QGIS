@@ -17,6 +17,7 @@
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgssettings.h"
+#include "qgscoordinatereferencesystem.h"
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include "gdal.h"
