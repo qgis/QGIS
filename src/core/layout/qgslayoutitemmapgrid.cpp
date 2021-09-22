@@ -2605,7 +2605,7 @@ int QgsLayoutItemMapGrid::crsGridParams( QgsRectangle &crsRect, QgsCoordinateTra
       if ( lowerLeft.x() > upperRight.x() )
       {
         //we've crossed the line
-        crsRect = tr.transformBoundingBox( mapBoundingRect, QgsCoordinateTransform::ForwardTransform, true );
+        crsRect = tr.transformBoundingBox( mapBoundingRect, Qgis::TransformDirection::Forward, true );
       }
       else
       {

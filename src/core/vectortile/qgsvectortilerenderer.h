@@ -23,6 +23,8 @@
 #include "qgstiles.h"
 
 class QgsRenderContext;
+class QgsReadWriteContext;
+class QgsProject;
 
 //! Features of a vector tile, grouped by sub-layer names (key of the map)
 typedef QMap<QString, QVector<QgsFeature> > QgsVectorTileFeatures SIP_SKIP;

@@ -1136,7 +1136,7 @@ bool QgsWcsProvider::calculateExtent() const
     // Convert to the user's CRS as required
     try
     {
-      mCoverageExtent = mCoordinateTransform.transformBoundingBox( mCoverageSummary.wgs84BoundingBox, QgsCoordinateTransform::ForwardTransform );
+      mCoverageExtent = mCoordinateTransform.transformBoundingBox( mCoverageSummary.wgs84BoundingBox, Qgis::TransformDirection::Forward );
     }
     catch ( QgsCsException &cse )
     {

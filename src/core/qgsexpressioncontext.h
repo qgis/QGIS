@@ -25,6 +25,8 @@
 #include "qgsexpressionfunction.h"
 #include "qgsfeature.h"
 
+class QgsReadWriteContext;
+
 /**
  * \ingroup core
  * \class QgsScopedExpressionFunction

@@ -330,7 +330,7 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
     // also need to apply the coordinate transform from the render context
     try
     {
-      geom.transform( context.renderContext().coordinateTransform(), QgsCoordinateTransform::ReverseTransform );
+      geom.transform( context.renderContext().coordinateTransform(), Qgis::TransformDirection::Reverse );
     }
     catch ( QgsCsException & )
     {
@@ -378,7 +378,7 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
 
         // transform geometry back from screen units to layer crs
         geom.transform( mapToPixel.inverted() );
-        geom.transform( context.renderContext().coordinateTransform(), QgsCoordinateTransform::ReverseTransform );
+        geom.transform( context.renderContext().coordinateTransform(), Qgis::TransformDirection::Reverse );
 
         f.setGeometry( geom );
         break;

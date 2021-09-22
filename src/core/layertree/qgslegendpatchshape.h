@@ -22,6 +22,8 @@ email                : nyall dot dawson at gmail dot com
 #include "qgis.h"
 #include "qgsgeometry.h"
 
+class QgsReadWriteContext;
+
 /**
  * \ingroup core
  * \brief Represents a patch shape for use in map legends.

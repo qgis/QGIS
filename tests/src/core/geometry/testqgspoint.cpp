@@ -358,21 +358,21 @@ void TestQgsPoint::point()
   QgsCoordinateReferenceSystem destSrs( QStringLiteral( "EPSG:4202" ) ); // want a transform with ellipsoid change
   QgsCoordinateTransform tr( sourceSrs, destSrs, QgsProject::instance() );
   QgsPoint p16( QgsWkbTypes::PointZM, 6374985, -3626584, 1, 2 );
-  p16.transform( tr, QgsCoordinateTransform::ForwardTransform );
+  p16.transform( tr, Qgis::TransformDirection::Forward );
   QGSCOMPARENEAR( p16.x(), 175.771, 0.001 );
   QGSCOMPARENEAR( p16.y(), -39.724, 0.001 );
   QGSCOMPARENEAR( p16.z(), 1.0, 0.001 );
   QCOMPARE( p16.m(), 2.0 );
-  p16.transform( tr, QgsCoordinateTransform::ReverseTransform );
+  p16.transform( tr, Qgis::TransformDirection::Reverse );
   QGSCOMPARENEAR( p16.x(), 6374985, 1 );
   QGSCOMPARENEAR( p16.y(), -3626584, 1 );
   QGSCOMPARENEAR( p16.z(), 1.0, 0.001 );
   QCOMPARE( p16.m(), 2.0 );
 #if PROJ_VERSION_MAJOR<6 // note - z value transform doesn't currently work with proj 6+, because we don't yet support compound CRS definitions
   //test with z transform
-  p16.transform( tr, QgsCoordinateTransform::ForwardTransform, true );
+  p16.transform( tr, Qgis::TransformDirection::Forward, true );
   QGSCOMPARENEAR( p16.z(), -19.249, 0.001 );
-  p16.transform( tr, QgsCoordinateTransform::ReverseTransform, true );
+  p16.transform( tr, Qgis::TransformDirection::Reverse, true );
   QGSCOMPARENEAR( p16.z(), 1.0, 0.001 );
 #endif
   //QTransform transform

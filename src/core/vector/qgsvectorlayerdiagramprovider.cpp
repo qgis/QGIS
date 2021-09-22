@@ -73,7 +73,7 @@ QList<QgsLabelFeature *> QgsVectorLayerDiagramProvider::labelFeatures( QgsRender
 
   QgsRectangle layerExtent = context.extent();
   if ( mSettings.coordinateTransform().isValid() )
-    layerExtent = mSettings.coordinateTransform().transformBoundingBox( context.extent(), QgsCoordinateTransform::ReverseTransform );
+    layerExtent = mSettings.coordinateTransform().transformBoundingBox( context.extent(), Qgis::TransformDirection::Reverse );
 
   QgsFeatureRequest request;
   request.setFilterRect( layerExtent );

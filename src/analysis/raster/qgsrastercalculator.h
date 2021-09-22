@@ -20,6 +20,7 @@
 
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransformcontext.h"
 #include <QString>
 #include <QVector>
 #include "gdal.h"

@@ -379,7 +379,7 @@ void QgsPoint::clear()
  * See details in QEP #17
  ****************************************************************************/
 
-void QgsPoint::transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
+void QgsPoint::transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d, bool transformZ )
 {
   clearCache();
   if ( transformZ )

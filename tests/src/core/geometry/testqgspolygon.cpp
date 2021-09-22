@@ -970,7 +970,7 @@ void TestQgsPolygon::polygon()
                  << QgsPoint( 6374985, -3626584 ) );
   pTransform.setExteriorRing( l21.clone() );
   pTransform.addInteriorRing( l21.clone() );
-  pTransform.transform( tr, QgsCoordinateTransform::ForwardTransform );
+  pTransform.transform( tr, Qgis::TransformDirection::Forward );
   const QgsLineString *extR = static_cast< const QgsLineString * >( pTransform.exteriorRing() );
   QGSCOMPARENEAR( extR->pointN( 0 ).x(), 175.771, 0.001 );
   QGSCOMPARENEAR( extR->pointN( 0 ).y(), -39.724, 0.001 );
@@ -1007,7 +1007,7 @@ void TestQgsPolygon::polygon()
   pTransform.clear();
   pTransform.setExteriorRing( l22.clone() );
   pTransform.addInteriorRing( l22.clone() );
-  pTransform.transform( tr, QgsCoordinateTransform::ForwardTransform );
+  pTransform.transform( tr, Qgis::TransformDirection::Forward );
   extR = static_cast< const QgsLineString * >( pTransform.exteriorRing() );
   QGSCOMPARENEAR( extR->pointN( 0 ).x(), 175.771, 0.001 );
   QGSCOMPARENEAR( extR->pointN( 0 ).y(), -39.724, 0.001 );
@@ -1052,7 +1052,7 @@ void TestQgsPolygon::polygon()
   QGSCOMPARENEAR( pTransform.interiorRing( 0 )->boundingBox().yMaximum(), -38.7999, 0.001 );
 
   //reverse transform
-  pTransform.transform( tr, QgsCoordinateTransform::ReverseTransform );
+  pTransform.transform( tr, Qgis::TransformDirection::Reverse );
   extR = static_cast< const QgsLineString * >( pTransform.exteriorRing() );
   QGSCOMPARENEAR( extR->pointN( 0 ).x(), 6374984, 100 );
   QGSCOMPARENEAR( extR->pointN( 0 ).y(), -3626584, 100 );
@@ -1098,7 +1098,7 @@ void TestQgsPolygon::polygon()
 
 #if PROJ_VERSION_MAJOR<6 // note - z value transform doesn't currently work with proj 6+, because we don't yet support compound CRS definitions
   //z value transform
-  pTransform.transform( tr, QgsCoordinateTransform::ForwardTransform, true );
+  pTransform.transform( tr, Qgis::TransformDirection::Forward, true );
   extR = static_cast< const QgsLineString * >( pTransform.exteriorRing() );
   QGSCOMPARENEAR( extR->pointN( 0 ).z(), -19.249066, 0.001 );
   QGSCOMPARENEAR( extR->pointN( 1 ).z(), -19.148357, 0.001 );
@@ -1109,7 +1109,7 @@ void TestQgsPolygon::polygon()
   QGSCOMPARENEAR( intR->pointN( 1 ).z(), -19.148357, 0.001 );
   QGSCOMPARENEAR( intR->pointN( 2 ).z(), -19.092128, 0.001 );
   QGSCOMPARENEAR( intR->pointN( 3 ).z(), -19.249066, 0.001 );
-  pTransform.transform( tr, QgsCoordinateTransform::ReverseTransform, true );
+  pTransform.transform( tr, Qgis::TransformDirection::Reverse, true );
   extR = static_cast< const QgsLineString * >( pTransform.exteriorRing() );
   QGSCOMPARENEAR( extR->pointN( 0 ).z(), 1, 0.001 );
   QGSCOMPARENEAR( extR->pointN( 1 ).z(), 3, 0.001 );

@@ -870,7 +870,7 @@ void QgsCurvePolygon::draw( QPainter &p ) const
   }
 }
 
-void QgsCurvePolygon::transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
+void QgsCurvePolygon::transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d, bool transformZ )
 {
   if ( mExteriorRing )
   {

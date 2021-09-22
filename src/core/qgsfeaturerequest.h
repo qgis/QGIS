@@ -27,7 +27,8 @@
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
 #include "qgssimplifymethod.h"
-
+#include "qgscoordinatetransformcontext.h"
+#include "qgscoordinatereferencesystem.h"
 
 
 /**

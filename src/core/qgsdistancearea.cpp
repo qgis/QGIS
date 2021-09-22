@@ -613,9 +613,9 @@ QgsGeometry QgsDistanceArea::splitGeometryAtAntimeridian( const QgsGeometry &geo
 
           QgsPointXY antiMeridianPoint;
           if ( prevLon < -120 )
-            antiMeridianPoint = mCoordTransform.transform( QgsPointXY( -180, lat180 ), QgsCoordinateTransform::ReverseTransform );
+            antiMeridianPoint = mCoordTransform.transform( QgsPointXY( -180, lat180 ), Qgis::TransformDirection::Reverse );
           else
-            antiMeridianPoint = mCoordTransform.transform( QgsPointXY( 180, lat180 ), QgsCoordinateTransform::ReverseTransform );
+            antiMeridianPoint = mCoordTransform.transform( QgsPointXY( 180, lat180 ), Qgis::TransformDirection::Reverse );
 
           QgsPoint newPoint( antiMeridianPoint );
           if ( line->is3D() )
@@ -633,9 +633,9 @@ QgsGeometry QgsDistanceArea::splitGeometryAtAntimeridian( const QgsGeometry &geo
           newPoints.reserve( line->numPoints() - i + 1 );
 
           if ( lon < -120 )
-            antiMeridianPoint = mCoordTransform.transform( QgsPointXY( -180, lat180 ), QgsCoordinateTransform::ReverseTransform );
+            antiMeridianPoint = mCoordTransform.transform( QgsPointXY( -180, lat180 ), Qgis::TransformDirection::Reverse );
           else
-            antiMeridianPoint = mCoordTransform.transform( QgsPointXY( 180, lat180 ), QgsCoordinateTransform::ReverseTransform );
+            antiMeridianPoint = mCoordTransform.transform( QgsPointXY( 180, lat180 ), Qgis::TransformDirection::Reverse );
 
           if ( std::isfinite( antiMeridianPoint.x() ) && std::isfinite( antiMeridianPoint.y() ) )
           {
@@ -732,9 +732,9 @@ QVector< QVector<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &
       {
         QgsPointXY p;
         if ( prevLon < -120 )
-          p = mCoordTransform.transform( QgsPointXY( -180, lat180 ), QgsCoordinateTransform::ReverseTransform );
+          p = mCoordTransform.transform( QgsPointXY( -180, lat180 ), Qgis::TransformDirection::Reverse );
         else
-          p = mCoordTransform.transform( QgsPointXY( 180, lat180 ), QgsCoordinateTransform::ReverseTransform );
+          p = mCoordTransform.transform( QgsPointXY( 180, lat180 ), Qgis::TransformDirection::Reverse );
 
         if ( std::isfinite( p.x() ) && std::isfinite( p.y() ) )
           currentPart << p;
@@ -750,9 +750,9 @@ QVector< QVector<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &
       {
         QgsPointXY p;
         if ( lon < -120 )
-          p = mCoordTransform.transform( QgsPointXY( -180, lat180 ), QgsCoordinateTransform::ReverseTransform );
+          p = mCoordTransform.transform( QgsPointXY( -180, lat180 ), Qgis::TransformDirection::Reverse );
         else
-          p = mCoordTransform.transform( QgsPointXY( 180, lat180 ), QgsCoordinateTransform::ReverseTransform );
+          p = mCoordTransform.transform( QgsPointXY( 180, lat180 ), Qgis::TransformDirection::Reverse );
 
         if ( std::isfinite( p.x() ) && std::isfinite( p.y() ) )
           currentPart << p;
@@ -769,7 +769,7 @@ QVector< QVector<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &
 
     try
     {
-      currentPart << mCoordTransform.transform( QgsPointXY( lon, lat ), QgsCoordinateTransform::ReverseTransform );
+      currentPart << mCoordTransform.transform( QgsPointXY( lon, lat ), Qgis::TransformDirection::Reverse );
     }
     catch ( QgsCsException & )
     {
