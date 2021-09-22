@@ -373,9 +373,6 @@ void QgsMapToolEditMeshFrame::setActionsEnable( bool enable )
 
   for ( QAction *action : std::as_const( actions ) )
     action->setEnabled( enable );
-
-//  bool areGeometriesSelected = areGeometriesSelectedInVectorLayer();
-//  mActionForceByLines->setEnabled( enable && areGeometriesSelected );
 }
 
 
