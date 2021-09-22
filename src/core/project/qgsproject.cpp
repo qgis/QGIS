@@ -751,6 +751,12 @@ void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEll
     mCrs = crs;
     writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), crs.isValid() ? 1 : 0 );
     mProjectScope.reset();
+
+    // if annotation layer doesn't have a crs (i.e. in a newly created project), it should
+    // initially inherit the project CRS
+    if ( !mMainAnnotationLayer->crs().isValid() )
+      mMainAnnotationLayer->setCrs( crs );
+
     setDirty( true );
     emit crsChanged();
   }
