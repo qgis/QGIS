@@ -193,6 +193,9 @@ class TestQgsProcessingAlgs: public QObject
     void uploadGpsData();
     void transferMainAnnotationLayer();
 
+    void deleteholes_data();
+    void deleteholes();
+
   private:
 
     bool imageCheck( const QString &testName, const QString &renderedImage );
@@ -7084,6 +7087,36 @@ bool TestQgsProcessingAlgs::imageCheck( const QString &testName, const QString &
   checker.setSizeTolerance( 3, 3 );
   const bool equal = checker.compareImages( testName, 500 );
   return equal;
+}
+
+void TestQgsProcessingAlgs::deleteholes_data()
+{
+  QTest::addColumn<QgsGeometry>( "sourceGeometry" );
+  QTest::addColumn<QgsGeometry>( "expectedGeometry" );
+
+  // Test cases from https://github.com/qgis/QGIS/issues/44424
+  QTest::newRow( "MultiPolygon with part merged after hole deleted" )
+      << QgsGeometry::fromWkt( "MultiPolygon (((0 0, 0 5, 5 5, 5 0, 0 0),(1 1, 4 1, 4 4, 1 4, 1 1),(2 2, 2 3, 3 3, 3 2, 2 2)),((6 2, 6 3, 7 3, 7 2, 6 2)))" )
+      << QgsGeometry::fromWkt( "MultiPolygon (((6 2, 6 3, 7 3, 7 2, 6 2)), ((0 0, 0 5, 5 5, 5 0, 0 0)) )" );
+
+  QTest::newRow( "MultiPolygon returned as a valid polygon" )
+      << QgsGeometry::fromWkt( "MultiPolygon (((0 0, 0 5, 5 5, 5 0, 0 0),(1 1, 4 1, 4 4, 1 4, 1 1)),((2 2, 2 3, 3 3, 3 2, 2 2)),((6 2, 6 3, 7 3, 7 2, 6 2)))" )
+      << QgsGeometry::fromWkt( "MultiPolygon (((6 2, 6 3, 7 3, 7 2, 6 2)), ((0 0, 0 5, 5 5, 5 0, 0 0)) )" );
+}
+
+void TestQgsProcessingAlgs::deleteholes()
+{
+  QFETCH( QgsGeometry, sourceGeometry );
+  QFETCH( QgsGeometry, expectedGeometry );
+
+  const std::unique_ptr< QgsProcessingFeatureBasedAlgorithm > alg( featureBasedAlg( "native:deleteholes" ) );
+
+  QgsFeature feature;
+  feature.setGeometry( sourceGeometry );
+
+  const QgsFeature result = runForFeature( alg, feature, QStringLiteral( "MultiPolygon" ) );
+
+  QVERIFY2( result.geometry().equals( expectedGeometry ), QStringLiteral( "Result: %1, Expected: %2" ).arg( result.geometry().asWkt(), expectedGeometry.asWkt() ).toUtf8().constData() );
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgs )
