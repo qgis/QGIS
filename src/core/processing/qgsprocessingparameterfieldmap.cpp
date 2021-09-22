@@ -72,7 +72,7 @@ QString QgsProcessingParameterFieldMapping::asPythonString( QgsProcessing::Pytho
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterFieldMapping('%1', '%2'" ).arg( name(), description() );
+      QString code = QStringLiteral( "QgsProcessingParameterFieldMapping('%1', %2" ).arg( name(), descriptionAsPythonString() );
       if ( !mParentLayerParameterName.isEmpty() )
         code += QStringLiteral( ", parentLayerParameterName=%1" ).arg( QgsProcessingUtils::stringToPythonLiteral( mParentLayerParameterName ) );
 
