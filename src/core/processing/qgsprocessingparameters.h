@@ -607,6 +607,14 @@ class CORE_EXPORT QgsProcessingParameterDefinition
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const;
 
     /**
+     * Returns the description of the parameter with quotes around.
+     * If there are quotes in the description, they are escaped if necessary.
+     * The around quote could be single or double.
+     * \see description()
+     */
+    QString descriptionAsPythonString() const;
+
+    /**
      * Returns a string version of the parameter input \a value, which is suitable for use as an input
      * parameter value when running an algorithm directly from a Python command.
      */

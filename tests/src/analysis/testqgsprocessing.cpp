@@ -2541,6 +2541,19 @@ void TestQgsProcessing::parameterGeneral()
   QCOMPARE( fromMap.guiDefaultValueOverride(), param.guiDefaultValueOverride() );
   QCOMPARE( fromMap.metadata(), param.metadata() );
   QCOMPARE( fromMap.help(), QStringLiteral( "my help" ) );
+
+  // escaping quotes
+  param = QgsProcessingParameterBoolean( "param_name", "Param's name" );
+  QString pythonCode = param.asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterBoolean('param_name', \"Param's name\", defaultValue=None)" ) );
+
+  param = QgsProcessingParameterBoolean( "param_name", "Param\"s name" );
+  pythonCode = param.asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterBoolean('param_name', 'Param\"s name', defaultValue=None)" ) );
+
+  param = QgsProcessingParameterBoolean( "param_name", "Param's \" name" );
+  pythonCode = param.asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterBoolean('param_name', 'Param\\'s \" name', defaultValue=None)" ) );
 }
 
 void TestQgsProcessing::parameterBoolean()
