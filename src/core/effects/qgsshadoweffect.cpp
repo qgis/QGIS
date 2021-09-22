@@ -49,12 +49,13 @@ void QgsShadowEffect::draw( QgsRenderContext &context )
   const int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
   if ( blurLevel <= 16 )
   {
-    QgsImageOperation::stackBlur( colorisedIm, blurLevel );
+    QgsImageOperation::stackBlur( colorisedIm, blurLevel, context.feedback() );
   }
   else
   {
-    QImage *imb = QgsImageOperation::gaussianBlur( colorisedIm, blurLevel );
-    colorisedIm = QImage( *imb );
+    QImage *imb = QgsImageOperation::gaussianBlur( colorisedIm, blurLevel, context.feedback() );
+    if ( !imb->isNull() )
+      colorisedIm = QImage( *imb );
     delete imb;
   }
 

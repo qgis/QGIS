@@ -47,15 +47,16 @@ void QgsBlurEffect::drawStackBlur( QgsRenderContext &context )
 {
   const int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
   QImage im = sourceAsImage( context )->copy();
-  QgsImageOperation::stackBlur( im, blurLevel );
+  QgsImageOperation::stackBlur( im, blurLevel, context.feedback() );
   drawBlurredImage( context, im );
 }
 
 void QgsBlurEffect::drawGaussianBlur( QgsRenderContext &context )
 {
   const int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
-  QImage *im = QgsImageOperation::gaussianBlur( *sourceAsImage( context ), blurLevel );
-  drawBlurredImage( context, *im );
+  QImage *im = QgsImageOperation::gaussianBlur( *sourceAsImage( context ), blurLevel, context.feedback() );
+  if ( !im->isNull() )
+    drawBlurredImage( context, *im );
   delete im;
 }
 

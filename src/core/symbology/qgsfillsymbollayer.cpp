@@ -1357,7 +1357,7 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, const
   //apply blur if desired
   if ( blurRadius > 0 )
   {
-    QgsImageOperation::stackBlur( *fillImage, blurRadius, false );
+    QgsImageOperation::stackBlur( *fillImage, blurRadius, false, context.renderContext().feedback() );
   }
 
   //apply alpha channel to distance transform image, so that areas outside the polygon are transparent
