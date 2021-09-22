@@ -496,6 +496,7 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      * Returns the description for the parameter. This is the user-visible string
      * used to identify this parameter.
      * \see setDescription()
+     * \see descriptionAsPythonString()
      */
     QString description() const { return mDescription; }
 
@@ -611,6 +612,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      * If there are quotes in the description, they are escaped if necessary.
      * The around quote could be single or double.
      * \see description()
+     *
+     * \since QGIS 3.24
      */
     QString descriptionAsPythonString() const;
 
