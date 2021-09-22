@@ -19,6 +19,7 @@
 #include "qgis.h"
 #include "qgscolorramp.h"
 #include "qgslogger.h"
+#include "qgsfeedback.h"
 #include <QtConcurrentMap>
 #include <QColor>
 #include <QPainter>
@@ -555,7 +556,7 @@ void QgsImageOperation::ShadeFromArrayOperation::operator()( QRgb &rgb, const in
 
 //stack blur
 
-void QgsImageOperation::stackBlur( QImage &image, const int radius, const bool alphaOnly )
+void QgsImageOperation::stackBlur( QImage &image, const int radius, const bool alphaOnly, QgsFeedback *feedback )
 {
   // culled from Qt's qpixmapfilter.cpp, see: http://www.qtcentre.org/archive/index.php/t-26534.html
   int tab[] = { 14, 10, 8, 6, 5, 5, 4, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2 };
@@ -579,16 +580,16 @@ void QgsImageOperation::stackBlur( QImage &image, const int radius, const bool a
   if ( alphaOnly )
     i1 = i2 = ( QSysInfo::ByteOrder == QSysInfo::BigEndian ? 0 : 3 );
 
-  StackBlurLineOperation topToBottomBlur( alpha, QgsImageOperation::ByColumn, true, i1, i2 );
+  StackBlurLineOperation topToBottomBlur( alpha, QgsImageOperation::ByColumn, true, i1, i2, feedback );
   runLineOperation( *pImage, topToBottomBlur );
 
-  StackBlurLineOperation leftToRightBlur( alpha, QgsImageOperation::ByRow, true, i1, i2 );
+  StackBlurLineOperation leftToRightBlur( alpha, QgsImageOperation::ByRow, true, i1, i2, feedback );
   runLineOperation( *pImage, leftToRightBlur );
 
-  StackBlurLineOperation bottomToTopBlur( alpha, QgsImageOperation::ByColumn, false, i1, i2 );
+  StackBlurLineOperation bottomToTopBlur( alpha, QgsImageOperation::ByColumn, false, i1, i2, feedback );
   runLineOperation( *pImage, bottomToTopBlur );
 
-  StackBlurLineOperation rightToLeftBlur( alpha, QgsImageOperation::ByRow, false, i1, i2 );
+  StackBlurLineOperation rightToLeftBlur( alpha, QgsImageOperation::ByRow, false, i1, i2, feedback );
   runLineOperation( *pImage, rightToLeftBlur );
 
   if ( pImage->format() != originalFormat )
@@ -600,7 +601,7 @@ void QgsImageOperation::stackBlur( QImage &image, const int radius, const bool a
 
 //gaussian blur
 
-QImage *QgsImageOperation::gaussianBlur( QImage &image, const int radius )
+QImage *QgsImageOperation::gaussianBlur( QImage &image, const int radius, QgsFeedback *feedback )
 {
   int width = image.width();
   int height = image.height();
@@ -624,12 +625,12 @@ QImage *QgsImageOperation::gaussianBlur( QImage &image, const int radius )
 
   //blur along rows
   QImage xBlurImage = QImage( width, height, QImage::Format_ARGB32_Premultiplied );
-  GaussianBlurOperation rowBlur( radius, QgsImageOperation::ByRow, &xBlurImage, kernel );
+  GaussianBlurOperation rowBlur( radius, QgsImageOperation::ByRow, &xBlurImage, kernel.get(), feedback );
   runRectOperation( *pImage, rowBlur );
 
   //blur along columns
-  QImage *yBlurImage = new QImage( width, height, QImage::Format_ARGB32_Premultiplied );
-  GaussianBlurOperation colBlur( radius, QgsImageOperation::ByColumn, yBlurImage, kernel );
+  std::unique_ptr< QImage > yBlurImage = std::make_unique< QImage >( width, height, QImage::Format_ARGB32_Premultiplied );
+  GaussianBlurOperation colBlur( radius, QgsImageOperation::ByColumn, yBlurImage.get(), kernel.get(), feedback );
   runRectOperation( xBlurImage, colBlur );
 
   delete[] kernel;
