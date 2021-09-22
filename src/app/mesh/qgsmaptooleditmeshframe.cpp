@@ -684,10 +684,8 @@ QgsMapTool::Flags QgsMapToolEditMeshFrame::flags() const
   {
     case Digitizing:
       if ( !mSelectedVertices.isEmpty() )
-      {
         return QgsMapTool::Flags() | QgsMapTool::ShowContextMenu;
-        break;
-      }
+      FALLTHROUGH
     case AddingNewFace:
     case Selecting:
     case MovingSelection:
