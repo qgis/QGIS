@@ -330,7 +330,7 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
     // also need to apply the coordinate transform from the render context
     try
     {
-      geom.transform( context.renderContext().coordinateTransform(), QgsCoordinateTransform::ReverseTransform );
+      geom.transform( context.renderContext().coordinateTransform(), Qgis::TransformDirection::Reverse );
     }
     catch ( QgsCsException & )
     {
