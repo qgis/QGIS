@@ -947,7 +947,7 @@ class CORE_EXPORT QgsFeatureRequest
     /**
      * Prepared geometry engine for mReferenceGeometry.
      */
-    std::unique_ptr< QgsGeometryEngine > mReferenceGeometryEngine;
+    std::shared_ptr< QgsGeometryEngine > mReferenceGeometryEngine;
 
     /**
      * Maximum distance from reference geometry.
