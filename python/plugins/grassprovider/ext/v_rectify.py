@@ -48,4 +48,4 @@ def processCommand(alg, parameters, context, feedback):
         alg.removeParameter('inline_points')
         parameters['points'] = tempPoints
 
-    alg.processCommand(parameters, context, feedback, True)
+    alg.processCommand(parameters, context, feedback)
