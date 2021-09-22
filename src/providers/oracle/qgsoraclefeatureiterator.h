@@ -23,6 +23,7 @@
 #include <QSqlQuery>
 
 #include "qgsoracleprovider.h"
+#include "qgscoordinatetransform.h"
 
 class QgsOracleConn;
 class QgsOracleProvider;
