@@ -1914,6 +1914,8 @@ QgisApp::~QgisApp()
   mSnappingUtils = nullptr;
   delete mUserInputDockWidget;
   mUserInputDockWidget = nullptr;
+  delete mMapStylingDock;
+  mMapStylingDock = nullptr;
 
   QgsGui::instance()->nativePlatformInterface()->cleanup();
 
@@ -3372,7 +3374,7 @@ void QgisApp::createToolBars()
 
   mDigitizeModeToolButton = new QToolButton();
   mDigitizeModeToolButton->setPopupMode( QToolButton::MenuButtonPopup );
-  QMenu *digitizeMenu = new QMenu();
+  QMenu *digitizeMenu = new QMenu( mDigitizeModeToolButton );
   digitizeMenu->addAction( mActionDigitizeWithCurve );
   digitizeMenu->addAction( mActionStreamDigitize );
   digitizeMenu->addSeparator();
@@ -3854,7 +3856,7 @@ void QgisApp::createToolBars()
 
     QToolButton *meshForceByLinesToolButton = new QToolButton();
     meshForceByLinesToolButton->setPopupMode( QToolButton::MenuButtonPopup );
-    QMenu *meshForceByLineMenu = new QMenu();
+    QMenu *meshForceByLineMenu = new QMenu( meshForceByLinesToolButton );
 
     //meshForceByLineMenu->addActions( editMeshMapTool->forceByLinesActions() );
     meshForceByLinesToolButton->setDefaultAction( editMeshMapTool->defaultForceAction() );
@@ -3875,7 +3877,7 @@ void QgisApp::createToolBars()
 
   QToolButton *annotationLayerToolButton = new QToolButton();
   annotationLayerToolButton->setPopupMode( QToolButton::MenuButtonPopup );
-  QMenu *annotationLayerMenu = new QMenu();
+  QMenu *annotationLayerMenu = new QMenu( annotationLayerToolButton );
   annotationLayerMenu->addAction( mActionCreateAnnotationLayer );
   annotationLayerMenu->addAction( mMainAnnotationLayerProperties );
   annotationLayerToolButton->setMenu( annotationLayerMenu );
