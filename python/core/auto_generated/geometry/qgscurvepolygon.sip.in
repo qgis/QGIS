@@ -79,6 +79,8 @@ Curve polygon geometry type
 %Docstring
 Returns the roundness of the curve polygon.
 The returned value is between 0 and 1.
+
+.. versionadded:: 3.24
 %End
 
 
