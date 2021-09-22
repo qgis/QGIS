@@ -160,7 +160,7 @@ class QgsGrassRegionEdit : public QgsMapTool
 
     static void drawRegion( QgsMapCanvas *canvas, QgsRubberBand *rubberBand, const QgsRectangle &rect, const QgsCoordinateTransform &coordinateTransform = QgsCoordinateTransform(), bool isPolygon = false );
     void calcSrcRegion();
-    static void transform( QgsMapCanvas *canvas, QVector<QgsPointXY> &points, const QgsCoordinateTransform &coordinateTransform, QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform );
+    static void transform( QgsMapCanvas *canvas, QVector<QgsPointXY> &points, const QgsCoordinateTransform &coordinateTransform, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward );
 
   signals:
     void captureStarted();
