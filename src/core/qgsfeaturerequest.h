@@ -408,6 +408,16 @@ class CORE_EXPORT QgsFeatureRequest
     QgsGeometry referenceGeometry() const { return mReferenceGeometry; }
 
     /**
+     * Returns the reference geometry engine used for spatial filtering of features.
+     *
+     * This is to avoid re-creating the engine.
+     *
+     * \see referenceGeometry()
+     * \since QGIS 3.22
+     */
+    std::shared_ptr< QgsGeometryEngine > referenceGeometryEngine() const SIP_SKIP { return mReferenceGeometryEngine; }
+
+    /**
      * Returns the maximum distance from the referenceGeometry() of fetched
      * features, if spatialFilterType() is Qgis::SpatialFilterType::DistanceWithin.
      *
