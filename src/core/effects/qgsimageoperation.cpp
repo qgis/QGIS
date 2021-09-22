@@ -568,14 +568,20 @@ void QgsImageOperation::stackBlur( QImage &image, const int radius, const bool a
   //ensure correct source format.
   QImage::Format originalFormat = image.format();
   QImage *pImage = &image;
+  std::unique_ptr< QImage> convertedImage;
   if ( !alphaOnly && originalFormat != QImage::Format_ARGB32_Premultiplied )
   {
-    pImage = new QImage( image.convertToFormat( QImage::Format_ARGB32_Premultiplied ) );
+    convertedImage = std::make_unique< QImage >( image.convertToFormat( QImage::Format_ARGB32_Premultiplied ) );
+    pImage = convertedImage.get();
   }
   else if ( alphaOnly && originalFormat != QImage::Format_ARGB32 )
   {
-    pImage = new QImage( image.convertToFormat( QImage::Format_ARGB32 ) );
+    convertedImage = std::make_unique< QImage >( image.convertToFormat( QImage::Format_ARGB32 ) );
+    pImage = convertedImage.get();
   }
+
+  if ( feedback && feedback->isCanceled() )
+    return;
 
   if ( alphaOnly )
     i1 = i2 = ( QSysInfo::ByteOrder == QSysInfo::BigEndian ? 0 : 3 );
@@ -583,19 +589,30 @@ void QgsImageOperation::stackBlur( QImage &image, const int radius, const bool a
   StackBlurLineOperation topToBottomBlur( alpha, QgsImageOperation::ByColumn, true, i1, i2, feedback );
   runLineOperation( *pImage, topToBottomBlur );
 
+  if ( feedback && feedback->isCanceled() )
+    return;
+
   StackBlurLineOperation leftToRightBlur( alpha, QgsImageOperation::ByRow, true, i1, i2, feedback );
   runLineOperation( *pImage, leftToRightBlur );
+
+  if ( feedback && feedback->isCanceled() )
+    return;
 
   StackBlurLineOperation bottomToTopBlur( alpha, QgsImageOperation::ByColumn, false, i1, i2, feedback );
   runLineOperation( *pImage, bottomToTopBlur );
 
+  if ( feedback && feedback->isCanceled() )
+    return;
+
   StackBlurLineOperation rightToLeftBlur( alpha, QgsImageOperation::ByRow, false, i1, i2, feedback );
   runLineOperation( *pImage, rightToLeftBlur );
+
+  if ( feedback && feedback->isCanceled() )
+    return;
 
   if ( pImage->format() != originalFormat )
   {
     image = pImage->convertToFormat( originalFormat );
-    delete pImage;
   }
 }
 
@@ -613,37 +630,46 @@ QImage *QgsImageOperation::gaussianBlur( QImage &image, const int radius, QgsFee
     return copy;
   }
 
-  double *kernel = createGaussianKernel( radius );
+  std::unique_ptr<double[]>kernel( createGaussianKernel( radius ) );
+  if ( feedback && feedback->isCanceled() )
+    return new QImage();
 
   //ensure correct source format.
   QImage::Format originalFormat = image.format();
   QImage *pImage = &image;
+  std::unique_ptr< QImage> convertedImage;
   if ( originalFormat != QImage::Format_ARGB32_Premultiplied )
   {
-    pImage = new QImage( image.convertToFormat( QImage::Format_ARGB32_Premultiplied ) );
+    convertedImage = std::make_unique< QImage >( image.convertToFormat( QImage::Format_ARGB32_Premultiplied ) );
+    pImage = convertedImage.get();
   }
+  if ( feedback && feedback->isCanceled() )
+    return new QImage();
 
   //blur along rows
   QImage xBlurImage = QImage( width, height, QImage::Format_ARGB32_Premultiplied );
   GaussianBlurOperation rowBlur( radius, QgsImageOperation::ByRow, &xBlurImage, kernel.get(), feedback );
   runRectOperation( *pImage, rowBlur );
 
+  if ( feedback && feedback->isCanceled() )
+    return new QImage();
+
   //blur along columns
   std::unique_ptr< QImage > yBlurImage = std::make_unique< QImage >( width, height, QImage::Format_ARGB32_Premultiplied );
   GaussianBlurOperation colBlur( radius, QgsImageOperation::ByColumn, yBlurImage.get(), kernel.get(), feedback );
   runRectOperation( xBlurImage, colBlur );
 
-  delete[] kernel;
+  if ( feedback && feedback->isCanceled() )
+    return new QImage();
+
+  kernel.reset();
 
   if ( originalFormat != QImage::Format_ARGB32_Premultiplied )
   {
-    QImage *convertedImage = new QImage( yBlurImage->convertToFormat( originalFormat ) );
-    delete yBlurImage;
-    delete pImage;
-    return convertedImage;
+    return new QImage( yBlurImage->convertToFormat( originalFormat ) );
   }
 
-  return yBlurImage;
+  return yBlurImage.release();
 }
 
 void QgsImageOperation::GaussianBlurOperation::operator()( QgsImageOperation::ImageBlock &block )
@@ -662,6 +688,9 @@ void QgsImageOperation::GaussianBlurOperation::operator()( QgsImageOperation::Im
     //blur along rows
     for ( unsigned int y = block.beginLine; y < block.endLine; ++y, outputLineRef += mDestImageBpl )
     {
+      if ( mFeedback && mFeedback->isCanceled() )
+        break;
+
       sourceRef = sourceFirstLine;
       destRef = reinterpret_cast< QRgb * >( outputLineRef );
       for ( int x = 0; x < width; ++x, ++destRef, sourceRef += 4 )
@@ -675,6 +704,9 @@ void QgsImageOperation::GaussianBlurOperation::operator()( QgsImageOperation::Im
     unsigned char *sourceRef = block.image->scanLine( block.beginLine );
     for ( unsigned int y = block.beginLine; y < block.endLine; ++y, outputLineRef += mDestImageBpl, sourceRef += sourceBpl )
     {
+      if ( mFeedback && mFeedback->isCanceled() )
+        break;
+
       destRef = reinterpret_cast< QRgb * >( outputLineRef );
       for ( int x = 0; x < width; ++x, ++destRef )
       {

@@ -27,6 +27,7 @@
 #include <cmath>
 
 class QgsColorRamp;
+class QgsFeedback;
 
 /**
  * \ingroup core
@@ -442,6 +443,9 @@ class CORE_EXPORT QgsImageOperation
           p += increment;
           for ( int j = 1; j < lineLength; ++j, p += increment )
           {
+            if ( mFeedback && mFeedback->isCanceled() )
+              break;
+
             for ( int i = mi1; i <= mi2; ++i )
             {
               p[i] = ( rgba[i] += ( ( p[i] << 4 ) - rgba[i] ) * mAlpha / 16 ) >> 4;
