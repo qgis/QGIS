@@ -94,11 +94,21 @@ Constructor
     void addLineFromGeometry( const QgsGeometry &geom );
 %Docstring
 Adds a input forcing line geometry in rendering coordinates
+
+.. note::
+
+   if the geometry is not 3D, the default Z value will be used for the Z value of the geometry's vertices.
+   This default Z value has to be set before adding the geometry (:py:func:`setDefaultZValue`
 %End
 
     void addLinesFromGeometries( const QList<QgsGeometry> geometries );
 %Docstring
 Adds a list of input forcing lines geometry in rendering coordinates
+
+.. note::
+
+   if the geometry is not 3D, the default Z value will be used for the Z value of the geometry's vertices.
+   This default Z value has to be set before adding the geometry (:py:func:`setDefaultZValue`
 %End
 
 };
