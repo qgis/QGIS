@@ -23,6 +23,7 @@
 #include <QColor>
 
 #include "qgis_core.h"
+#include "qgsfeedback.h"
 #include <cmath>
 
 class QgsColorRamp;
@@ -156,20 +157,22 @@ class CORE_EXPORT QgsImageOperation
      * \param image QImage to blur
      * \param radius blur radius in pixels, maximum value of 16
      * \param alphaOnly set to TRUE to blur only the alpha component of the image
+     * \param feedback optional feedback object for responsive cancelation (since QGIS 3.22)
      * \note for fastest operation, ensure the source image is ARGB32_Premultiplied if
      * alphaOnly is set to FALSE, or ARGB32 if alphaOnly is TRUE
      */
-    static void stackBlur( QImage &image, int radius, bool alphaOnly = false );
+    static void stackBlur( QImage &image, int radius, bool alphaOnly = false, QgsFeedback *feedback = nullptr );
 
     /**
      * Performs a gaussian blur on an image. Gaussian blur is slower but results in a high
      * quality blur.
      * \param image QImage to blur
      * \param radius blur radius in pixels
+     * \param feedback optional feedback object for responsive cancelation (since QGIS 3.22)
      * \returns blurred image
      * \note for fastest operation, ensure the source image is ARGB32_Premultiplied
      */
-    static QImage *gaussianBlur( QImage &image, int radius ) SIP_FACTORY;
+    static QImage *gaussianBlur( QImage &image, int radius, QgsFeedback *feedback = nullptr ) SIP_FACTORY;
 
     /**
      * Flips an image horizontally or vertically
@@ -407,12 +410,13 @@ class CORE_EXPORT QgsImageOperation
     class StackBlurLineOperation
     {
       public:
-        StackBlurLineOperation( int alpha, LineOperationDirection direction, bool forwardDirection, int i1, int i2 )
+        StackBlurLineOperation( int alpha, LineOperationDirection direction, bool forwardDirection, int i1, int i2, QgsFeedback *feedback )
           : mAlpha( alpha )
           , mDirection( direction )
           , mForwardDirection( forwardDirection )
           , mi1( i1 )
           , mi2( i2 )
+          , mFeedback( feedback )
         { }
 
         typedef void result_type;
@@ -451,6 +455,7 @@ class CORE_EXPORT QgsImageOperation
         bool mForwardDirection;
         int mi1;
         int mi2;
+        QgsFeedback *mFeedback = nullptr;
     };
 
     static double *createGaussianKernel( int radius );
@@ -458,12 +463,13 @@ class CORE_EXPORT QgsImageOperation
     class GaussianBlurOperation
     {
       public:
-        GaussianBlurOperation( int radius, LineOperationDirection direction, QImage *destImage, double *kernel )
+        GaussianBlurOperation( int radius, LineOperationDirection direction, QImage *destImage, double *kernel, QgsFeedback *feedback )
           : mRadius( radius )
           , mDirection( direction )
           , mDestImage( destImage )
           , mDestImageBpl( destImage->bytesPerLine() )
           , mKernel( kernel )
+          , mFeedback( feedback )
         {}
 
         typedef void result_type;
@@ -476,6 +482,7 @@ class CORE_EXPORT QgsImageOperation
         QImage *mDestImage = nullptr;
         int mDestImageBpl;
         double *mKernel = nullptr;
+        QgsFeedback *mFeedback = nullptr;
 
         inline QRgb gaussianBlurVertical( int posy, unsigned char *sourceFirstLine, int sourceBpl, int height );
         inline QRgb gaussianBlurHorizontal( int posx, unsigned char *sourceFirstLine, int width );

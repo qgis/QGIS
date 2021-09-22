@@ -118,7 +118,7 @@ using a color ramp.
                    for the distance transform operation
 %End
 
-    static void stackBlur( QImage &image, int radius, bool alphaOnly = false );
+    static void stackBlur( QImage &image, int radius, bool alphaOnly = false, QgsFeedback *feedback = 0 );
 %Docstring
 Performs a stack blur on an image. Stack blur represents a good balance between
 speed and blur quality.
@@ -126,6 +126,7 @@ speed and blur quality.
 :param image: QImage to blur
 :param radius: blur radius in pixels, maximum value of 16
 :param alphaOnly: set to ``True`` to blur only the alpha component of the image
+:param feedback: optional feedback object for responsive cancelation (since QGIS 3.22)
 
 .. note::
 
@@ -133,13 +134,14 @@ speed and blur quality.
    alphaOnly is set to ``False``, or ARGB32 if alphaOnly is ``True``
 %End
 
-    static QImage *gaussianBlur( QImage &image, int radius ) /Factory/;
+    static QImage *gaussianBlur( QImage &image, int radius, QgsFeedback *feedback = 0 ) /Factory/;
 %Docstring
 Performs a gaussian blur on an image. Gaussian blur is slower but results in a high
 quality blur.
 
 :param image: QImage to blur
 :param radius: blur radius in pixels
+:param feedback: optional feedback object for responsive cancelation (since QGIS 3.22)
 
 :return: blurred image
 
