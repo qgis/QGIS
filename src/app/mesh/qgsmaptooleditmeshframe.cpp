@@ -2219,7 +2219,7 @@ void QgsMapToolEditMeshFrame::forceByLineBySelectedFeature( QgsMapMouseEvent *e 
 
         try
         {
-          rect = transform.transformBoundingBox( rect, QgsCoordinateTransform::ReverseTransform );
+          rect = transform.transformBoundingBox( rect, Qgis::TransformDirection::Reverse );
         }
         catch ( QgsCsException &exception )
         {
