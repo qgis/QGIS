@@ -111,7 +111,7 @@ QgsFeatureList QgsRemoveHolesAlgorithm::processFeature( const QgsFeature &featur
     if ( mDynamicMinArea )
       minArea = mMinAreaProperty.valueAsDouble( context.expressionContext(), minArea );
 
-    f.setGeometry( geometry.removeInteriorRings( minArea > 0 ? minArea : -1 ) );
+    f.setGeometry( geometry.removeInteriorRings( minArea > 0 ? minArea : -1 ).buffer( 0, 0 ) );
   }
   return QgsFeatureList() << f;
 }
