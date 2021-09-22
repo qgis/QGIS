@@ -344,9 +344,35 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Returns TRUE if the rendering operation has been stopped and any ongoing
      * rendering should be canceled immediately.
      *
+     * \note Since QGIS 3.22 the feedback() member exists as an alternative means of cancelation support.
+     *
      * \see setRenderingStopped()
+     * \see feedback()
      */
     bool renderingStopped() const {return mRenderingStopped;}
+
+    /**
+     * Attach a \a feedback object that can be queried regularly during rendering to check
+     * if rendering should be canceled.
+     *
+     * Ownership of \a feedback is NOT transferred, and the caller must take care that it exists
+     * for the lifetime of the render context.
+     *
+     * \see feedback()
+     *
+     * \since QGIS 3.22
+     */
+    void setFeedback( QgsFeedback *feedback );
+
+    /**
+     * Returns the feedback object that can be queried regularly during rendering to check
+     * if rendering should be canceled, if set. Maybe be NULLPTR.
+     *
+     * \see setFeedback()
+     *
+     * \since QGIS 3.22
+     */
+    QgsFeedback *feedback() const;
 
     /**
      * Returns TRUE if rendering operations should use vector operations instead
@@ -482,7 +508,11 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Sets whether the rendering operation has been \a stopped and any ongoing
      * rendering should be canceled immediately.
      *
+     * \note Since QGIS 3.22 the feedback() member exists as an alternative means of cancelation support.
+     *
      * \see renderingStopped()
+     * \see feedback()
+     * \see setFeedback()
      */
     void setRenderingStopped( bool stopped ) {mRenderingStopped = stopped;}
 
@@ -974,6 +1004,9 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 
     //! True if the rendering has been canceled
     bool mRenderingStopped = false;
+
+    //! Optional feedback object, as an alternative for mRenderingStopped for cancelation support
+    QgsFeedback *mFeedback = nullptr;
 
     //! Factor to scale line widths and point marker sizes
     double mScaleFactor = 1.0;

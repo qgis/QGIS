@@ -50,6 +50,7 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mOriginalMapExtent( rh.mOriginalMapExtent )
   , mMapToPixel( rh.mMapToPixel )
   , mRenderingStopped( rh.mRenderingStopped )
+  , mFeedback( rh.mFeedback )
   , mScaleFactor( rh.mScaleFactor )
   , mDpiTarget( rh.mDpiTarget )
   , mRendererScale( rh.mRendererScale )
@@ -89,6 +90,7 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mOriginalMapExtent = rh.mOriginalMapExtent;
   mMapToPixel = rh.mMapToPixel;
   mRenderingStopped = rh.mRenderingStopped;
+  mFeedback = rh.mFeedback;
   mScaleFactor = rh.mScaleFactor;
   mDpiTarget = rh.mDpiTarget;
   mRendererScale = rh.mRendererScale;
@@ -175,6 +177,16 @@ void QgsRenderContext::setTransformContext( const QgsCoordinateTransformContext 
 #ifdef QGISDEBUG
   mHasTransformContext = true;
 #endif
+}
+
+void QgsRenderContext::setFeedback( QgsFeedback *feedback )
+{
+  mFeedback = feedback;
+}
+
+QgsFeedback *QgsRenderContext::feedback() const
+{
+  return mFeedback;
 }
 
 void QgsRenderContext::setFlags( QgsRenderContext::Flags flags )
