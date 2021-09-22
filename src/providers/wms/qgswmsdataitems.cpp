@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgswmsdataitems.h"
 
 #include "qgslogger.h"
@@ -25,6 +26,7 @@
 #include "qgsgeonodeconnection.h"
 #include "qgsgeonoderequest.h"
 #include "qgssettings.h"
+
 
 // ---------------------------------------------------------------------------
 QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem *parent, QString name, QString path, QString uri )
@@ -271,7 +273,7 @@ QgsWMSItemBase::QgsWMSItemBase( const QgsWmsCapabilitiesProperty &capabilitiesPr
 {
 }
 
-QString QgsWMSItemBase::createUri()
+QString QgsWMSItemBase::createUri( bool withStyle )
 {
   if ( mLayerProperty.name.isEmpty() )
     return QString(); // layer collection
@@ -279,7 +281,7 @@ QString QgsWMSItemBase::createUri()
   // Number of styles must match number of layers
   mDataSourceUri.setParam( QStringLiteral( "layers" ), mLayerProperty.name );
   QString style = !mLayerProperty.style.isEmpty() ? mLayerProperty.style.at( 0 ).name : QString();
-  mDataSourceUri.setParam( QStringLiteral( "styles" ), style );
+  mDataSourceUri.setParam( QStringLiteral( "styles" ), withStyle ? style : QString() );
 
   // Check for layer dimensions
   for ( const QgsWmsDimensionProperty &dimension : std::as_const( mLayerProperty.dimensions ) )
@@ -346,7 +348,8 @@ QgsWMSLayerCollectionItem::QgsWMSLayerCollectionItem( QgsDataItem *parent, QStri
   , QgsWMSItemBase( capabilitiesProperty, dataSourceUri, layerProperty )
 {
   mIconName = QStringLiteral( "mIconWms.svg" );
-  mUri = createUri();
+  // For collection items we want the default style (empty) so let's strip it
+  mUri = createUri( /* withStyle */ false );
 
   // Populate everything, it costs nothing, all info about layers is collected
   for ( const QgsWmsLayerProperty &layerProperty : std::as_const( mLayerProperty.layer ) )
