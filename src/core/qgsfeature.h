@@ -224,6 +224,9 @@ class CORE_EXPORT QgsFeature
      * Sets the feature \a id for this feature.
      * \param id feature id
      * \see id()
+     * \warning Feature IDs will be automatically changed whenever a feature is added to vector layer or data provider.
+     *  This method is not designed to allow a specific feature ID to be assigned to a feature which will be added to a
+     *  layer or data provider, and the results will be unpredictable
      */
     void setId( QgsFeatureId id );
 
