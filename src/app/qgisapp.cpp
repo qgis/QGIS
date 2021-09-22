@@ -8771,8 +8771,17 @@ void QgisApp::diagramProperties()
 
 void QgisApp::createAnnotationLayer()
 {
+  // pick a unique name for the layer
+  QString name = tr( "Annotations" );
+  int id = 1;
+  while ( !QgsProject::instance()->mapLayersByName( name ).isEmpty() )
+  {
+    name = tr( "Annotations (%1)" ).arg( id );
+    id++;
+  }
+
   QgsAnnotationLayer::LayerOptions options( QgsProject::instance()->transformContext() );
-  QgsAnnotationLayer *layer = new QgsAnnotationLayer( tr( "Annotations" ), options );
+  QgsAnnotationLayer *layer = new QgsAnnotationLayer( name, options );
   layer->setCrs( QgsProject::instance()->crs() );
 
   // layer should be created at top of layer tree
