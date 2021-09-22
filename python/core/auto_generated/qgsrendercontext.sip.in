@@ -294,7 +294,36 @@ Returns the targeted DPI for rendering.
 Returns ``True`` if the rendering operation has been stopped and any ongoing
 rendering should be canceled immediately.
 
+.. note::
+
+   Since QGIS 3.22 the :py:func:`~QgsRenderContext.feedback` member exists as an alternative means of cancelation support.
+
 .. seealso:: :py:func:`setRenderingStopped`
+
+.. seealso:: :py:func:`feedback`
+%End
+
+    void setFeedback( QgsFeedback *feedback );
+%Docstring
+Attach a ``feedback`` object that can be queried regularly during rendering to check
+if rendering should be canceled.
+
+Ownership of ``feedback`` is NOT transferred, and the caller must take care that it exists
+for the lifetime of the render context.
+
+.. seealso:: :py:func:`feedback`
+
+.. versionadded:: 3.22
+%End
+
+    QgsFeedback *feedback() const;
+%Docstring
+Returns the feedback object that can be queried regularly during rendering to check
+if rendering should be canceled, if set. Maybe be ``None``.
+
+.. seealso:: :py:func:`setFeedback`
+
+.. versionadded:: 3.22
 %End
 
     bool forceVectorOutput() const;
@@ -436,7 +465,15 @@ Sets whether edit markers should be drawn during the render operation.
 Sets whether the rendering operation has been ``stopped`` and any ongoing
 rendering should be canceled immediately.
 
+.. note::
+
+   Since QGIS 3.22 the :py:func:`~QgsRenderContext.feedback` member exists as an alternative means of cancelation support.
+
 .. seealso:: :py:func:`renderingStopped`
+
+.. seealso:: :py:func:`feedback`
+
+.. seealso:: :py:func:`setFeedback`
 %End
 
     void setDistanceArea( const QgsDistanceArea &distanceArea );
