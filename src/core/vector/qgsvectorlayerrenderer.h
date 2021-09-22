@@ -50,24 +50,6 @@ class QgsVectorLayerDiagramProvider;
 
 /**
  * \ingroup core
- * \brief Interruption checker used by QgsVectorLayerRenderer::render()
- * \note not available in Python bindings
- */
-class QgsVectorLayerRendererInterruptionChecker: public QgsFeedback
-{
-    Q_OBJECT
-
-  public:
-    //! Constructor
-    explicit QgsVectorLayerRendererInterruptionChecker( const QgsRenderContext &context );
-
-  private:
-    const QgsRenderContext &mContext;
-    QTimer *mTimer = nullptr;
-};
-
-/**
- * \ingroup core
  * \brief Implementation of threaded rendering for vector layers.
  *
  * \note not available in Python bindings
@@ -117,9 +99,10 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
 
     bool renderInternal( QgsFeatureRenderer *renderer );
-  protected:
 
-    std::unique_ptr< QgsVectorLayerRendererInterruptionChecker > mInterruptionChecker;
+  private:
+
+    std::unique_ptr<QgsFeedback> mFeedback = nullptr;
 
     //! The rendered layer
     QgsVectorLayer *mLayer = nullptr;

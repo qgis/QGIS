@@ -47,13 +47,13 @@
 
 QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
+  , mFeedback( std::make_unique< QgsFeedback >() )
   , mLayer( layer )
   , mFields( layer->fields() )
+  , mSource( std::make_unique< QgsVectorLayerFeatureSource >( layer ) )
   , mLabeling( false )
   , mDiagrams( false )
 {
-  mSource = std::make_unique< QgsVectorLayerFeatureSource >( layer );
-
   std::unique_ptr< QgsFeatureRenderer > mainRenderer( layer->renderer() ? layer->renderer()->clone() : nullptr );
 
   if ( !mainRenderer )
@@ -160,14 +160,10 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
 
   mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( context, layer );
 
-  for ( const std::unique_ptr< QgsFeatureRenderer > &renderer : mRenderers )
+  if ( std::any_of( mRenderers.begin(), mRenderers.end(), []( const auto & renderer ) { return renderer->forceRasterRender(); } ) )
   {
-    if ( renderer->forceRasterRender() )
-    {
-      //raster rendering is forced for this layer
-      mForceRasterRender = true;
-      break;
-    }
+    //raster rendering is forced for this layer
+    mForceRasterRender = true;
   }
 
   if ( context.testFlag( QgsRenderContext::UseAdvancedEffects ) &&
@@ -191,7 +187,7 @@ void QgsVectorLayerRenderer::setLayerRenderingTimeHint( int time )
 
 QgsFeedback *QgsVectorLayerRenderer::feedback() const
 {
-  return mInterruptionChecker.get();
+  return mFeedback.get();
 }
 
 bool QgsVectorLayerRenderer::forceRasterRender() const
@@ -250,8 +246,6 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer )
 
   QgsScopedQPainterState painterState( context.painter() );
 
-  // MUST be created in the thread doing the rendering
-  mInterruptionChecker = std::make_unique< QgsVectorLayerRendererInterruptionChecker >( context );
   bool usingEffect = false;
   if ( renderer->paintEffect() && renderer->paintEffect()->enabled() )
   {
@@ -394,17 +388,17 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer )
     context.setVectorSimplifyMethod( vectorMethod );
   }
 
-  featureRequest.setFeedback( mInterruptionChecker.get() );
+  featureRequest.setFeedback( mFeedback.get() );
   // also set the interruption checker for the expression context, in case the renderer uses some complex expression
   // which could benefit from early exit paths...
-  context.expressionContext().setFeedback( mInterruptionChecker.get() );
+  context.expressionContext().setFeedback( mFeedback.get() );
 
   QgsFeatureIterator fit = mSource->getFeatures( featureRequest );
   // Attach an interruption checker so that iterators that have potentially
   // slow fetchFeature() implementations, such as in the WFS provider, can
   // check it, instead of relying on just the mContext.renderingStopped() check
   // in drawRenderer()
-  fit.setInterruptionChecker( mInterruptionChecker.get() );
+  fit.setInterruptionChecker( mFeedback.get() );
 
   if ( ( renderer->capabilities() & QgsFeatureRenderer::SymbolLevels ) && renderer->usingSymbolLevels() )
     drawRendererLevels( renderer, fit );
@@ -422,7 +416,6 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer )
   }
 
   context.expressionContext().setFeedback( nullptr );
-  mInterruptionChecker.reset();
   return true;
 }
 
@@ -783,23 +776,3 @@ void QgsVectorLayerRenderer::prepareDiagrams( QgsVectorLayer *layer, QSet<QStrin
   }
 }
 
-/*  -----------------------------------------  */
-/*  QgsVectorLayerRendererInterruptionChecker  */
-/*  -----------------------------------------  */
-
-QgsVectorLayerRendererInterruptionChecker::QgsVectorLayerRendererInterruptionChecker
-( const QgsRenderContext &context )
-  : mContext( context )
-  , mTimer( new QTimer( this ) )
-{
-  connect( mTimer, &QTimer::timeout, this, [ = ]
-  {
-    if ( mContext.renderingStopped() )
-    {
-      mTimer->stop();
-      cancel();
-    }
-  } );
-  mTimer->start( 50 );
-
-}
