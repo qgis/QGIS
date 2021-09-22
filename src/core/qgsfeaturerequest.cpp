@@ -70,11 +70,7 @@ QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
   mSpatialFilter = rh.mSpatialFilter;
   mFilterRect = rh.mFilterRect;
   mReferenceGeometry = rh.mReferenceGeometry;
-  if ( !mReferenceGeometry.isEmpty() )
-  {
-    mReferenceGeometryEngine.reset( QgsGeometry::createGeometryEngine( mReferenceGeometry.constGet() ) );
-    mReferenceGeometryEngine->prepareGeometry();
-  }
+  mReferenceGeometryEngine = rh.mReferenceGeometryEngine;
   mDistanceWithin = rh.mDistanceWithin;
   mFilterFid = rh.mFilterFid;
   mFilterFids = rh.mFilterFids;
