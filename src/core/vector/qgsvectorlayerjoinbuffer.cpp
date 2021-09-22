@@ -175,9 +175,22 @@ void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorLayerJoinInfo &joinInfo 
         QgsAttributes attributesCache;
         for ( int i = 0; i < attrs.size(); i++ )
         {
-          if ( i != joinFieldIndex
-               && !mLayer->fields().names().contains( cacheLayer->fields().names().at( i ) ) )
-            attributesCache.append( attrs.at( i ) );
+          if ( i == joinFieldIndex )
+            continue;
+
+          if ( !joinInfo.prefix().isNull() ) // Default prefix 'layerName_' used
+          {
+            // Joined field name
+            const QString joinFieldName = joinInfo.prefix() + cacheLayer->fields().names().at( i );
+
+            // Check for name collisions
+            int fieldIndex = mLayer->fields().indexFromName( joinFieldName );
+            if ( fieldIndex >= 0
+                 && mLayer->fields().fieldOrigin( fieldIndex ) != QgsFields::OriginJoin )
+              continue;
+          }
+
+          attributesCache.append( attrs.at( i ) );
         }
         joinInfo.cachedAttributes.insert( key, attributesCache );
       }
