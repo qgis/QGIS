@@ -11,6 +11,7 @@ __date__ = '05/12/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import tempfile
+import os
 
 import qgis  # NOQA
 from qgis.PyQt.QtCore import (
@@ -40,6 +41,7 @@ from qgis.core import (
     QgsVectorFileWriter
 )
 from qgis.testing import start_app, unittest
+from qgis.utils import spatialite_connect
 
 from utilities import writeShape
 
@@ -625,6 +627,39 @@ class TestQgsFallbackFieldFormatter(unittest.TestCase):
 
         # No precision here
         _test(gpkg_layer, True)
+
+    def test_representValueWithDefault(self):
+        """
+        Check representValue behaves correctly when used on a layer which define default values
+        """
+
+        dbname = os.path.join(tempfile.mkdtemp(), 'test.sqlite')
+        con = spatialite_connect(dbname, isolation_level=None)
+        cur = con.cursor()
+        cur.execute("BEGIN")
+        sql = """
+        CREATE TABLE test_table_default_values (
+            id integer primary key autoincrement,
+            anumber INTEGER DEFAULT 123
+        )
+        """
+        cur.execute(sql)
+        cur.execute("COMMIT")
+        con.close()
+
+        vl = QgsVectorLayer(dbname + '|layername=test_table_default_values', 'test_table_default_values', 'ogr')
+        self.assertTrue(vl.isValid())
+
+        fieldFormatter = QgsFallbackFieldFormatter()
+
+        QLocale.setDefault(QLocale('en'))
+
+        self.assertEqual(fieldFormatter.representValue(vl, 1, {}, None, QVariant(QVariant.Int)),
+                         'NULL')
+        self.assertEqual(fieldFormatter.representValue(vl, 1, {}, None, 4),
+                         '4')
+        self.assertEqual(fieldFormatter.representValue(vl, 1, {}, None, "123"),
+                         '123')
 
 
 class TestQgsDateTimeFieldFormatter(unittest.TestCase):
