@@ -452,7 +452,7 @@ void TestQgsCoordinateTransform::transformEpoch()
 
   double x = srcX;
   double y = srcY;
-  ct.transformInPlace( x, y, z, static_cast<  QgsCoordinateTransform::TransformDirection >( direction ) );
+  ct.transformInPlace( x, y, z, static_cast< Qgis::TransformDirection >( direction ) );
   QGSCOMPARENEAR( x, outX, precision );
   QGSCOMPARENEAR( y, outY, precision );
 
@@ -460,7 +460,7 @@ void TestQgsCoordinateTransform::transformEpoch()
   QgsCoordinateTransform ct2( sourceCrs, destCrs, QgsProject::instance() );
   x = srcX;
   y = srcY;
-  ct2.transformInPlace( x, y, z, static_cast<  QgsCoordinateTransform::TransformDirection >( direction ) );
+  ct2.transformInPlace( x, y, z, static_cast< Qgis::TransformDirection >( direction ) );
   QGSCOMPARENEAR( x, outX, precision );
   QGSCOMPARENEAR( y, outY, precision );
 }
