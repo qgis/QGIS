@@ -2443,6 +2443,21 @@ QString QgsProcessingParameterDefinition::valueAsPythonComment( const QVariant &
   return QString();
 }
 
+QString QgsProcessingParameterDefinition::descriptionAsPythonString( ) const
+{
+  // if it possible to not use escaping for readability
+  if ( description().contains( "'" ) && !description().contains( "\"" ) )
+  {
+    return QStringLiteral( "\"%1\"" ).arg( description() );
+  }
+  else
+  {
+    // do the escape even if there is no apostrophe
+    const QString escapeDescription = description().replace( "\'", "\\\'" );
+    return QStringLiteral( "'%1'" ).arg( escapeDescription );
+  }
+}
+
 QString QgsProcessingParameterDefinition::asScriptCode() const
 {
   QString code = QStringLiteral( "##%1=" ).arg( mName );
