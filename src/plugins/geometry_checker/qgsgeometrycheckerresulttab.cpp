@@ -333,8 +333,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
 
   if ( current )
   {
-    QTableWidgetItem *item = ui.tableWidgetErrors->currentItem();
-    if ( item )
+    if ( QTableWidgetItem *item = ui.tableWidgetErrors->currentItem() )
     {
       items.append( item );
     }
