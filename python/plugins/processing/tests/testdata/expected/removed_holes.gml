@@ -34,7 +34,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:removed_holes fid="remove_holes.3">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>2,6 2,3 10,3 10,6 2,6</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>2,6 10,6 10,3 2,3 2,6</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
     </ogr:removed_holes>
   </gml:featureMember>
 </ogr:FeatureCollection>
