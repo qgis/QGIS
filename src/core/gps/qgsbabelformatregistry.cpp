@@ -294,6 +294,9 @@ void QgsBabelFormatRegistry::reloadFromSettings()
     const QString trkDownload = settings.value( QStringLiteral( "%1/trkdownload" ).arg( baseKey ), QVariant(), section ).toString();
     const QString trkUpload = settings.value( QStringLiteral( "%1/trkupload" ).arg( baseKey ), QVariant(), section ).toString();
 
+    // don't leak memory if there's already a device with this name...
+    delete mDevices.value( device );
+
     mDevices[device] = new QgsBabelGpsDeviceFormat( wptDownload,
         wptUpload,
         rteDownload,

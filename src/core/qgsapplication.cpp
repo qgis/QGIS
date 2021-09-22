@@ -2652,6 +2652,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mSourceCache;
   delete mCalloutRegistry;
   delete mSymbolLayerRegistry;
+  delete mExternalStorageRegistry;
   delete mTaskManager;
   delete mNetworkContentFetcherRegistry;
   delete mClassificationMethodRegistry;
