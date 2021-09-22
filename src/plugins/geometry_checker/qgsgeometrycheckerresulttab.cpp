@@ -247,7 +247,7 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
 {
   QList< QPair<QString, QString> > attributes;
   attributes.append( qMakePair( QStringLiteral( "Layer" ), QStringLiteral( "String;30;" ) ) );
-  attributes.append( qMakePair( QStringLiteral( "FeatureID" ), QStringLiteral( "String;10;" ) ) );
+  attributes.append( qMakePair( QStringLiteral( "FeatureID" ), QStringLiteral( "String;20;" ) ) );
   attributes.append( qMakePair( QStringLiteral( "ErrorDesc" ), QStringLiteral( "String;80;" ) ) );
 
   QFileInfo fi( file );
