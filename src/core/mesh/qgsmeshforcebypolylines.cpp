@@ -328,7 +328,7 @@ void QgsMeshEditForceByLine::interpolateZValueOnMesh( QgsPoint &point ) const
   }
 }
 
-void QgsMeshEditForceByLine::interPolateZValue( QgsMeshVertex &point, const QgsPoint &otherPoint1, const QgsPoint &otherPoint2 )
+void QgsMeshEditForceByLine::interpolateZValue( QgsMeshVertex &point, const QgsPoint &otherPoint1, const QgsPoint &otherPoint2 )
 {
   double distPoint = point.distance( otherPoint1 );
   double totalDistance = otherPoint1.distance( otherPoint2 );
@@ -439,11 +439,11 @@ bool QgsMeshEditForceByLine::buildForcedElements()
             currentAddedVertex = startingVertexIndex + mVerticesToAdd.count();
             mNewVerticesIndexesOnLine.append( mVerticesToAdd.count() );
             if ( mInterpolateZValueOnMesh )
-              interPolateZValue( intersectionPoint,
+              interpolateZValue( intersectionPoint,
                                  triangularMesh->vertices().at( iv1 ),
                                  triangularMesh->vertices().at( iv2 ) );
             else
-              interPolateZValue( intersectionPoint, mPoint1, mPoint2 );
+              interpolateZValue( intersectionPoint, mPoint1, mPoint2 );
             mVerticesToAdd.append( triangularMesh->triangularToNativeCoordinates( intersectionPoint ) );
           }
 
@@ -460,11 +460,11 @@ bool QgsMeshEditForceByLine::buildForcedElements()
             {
               currentAddedVertex = startingVertexIndex + mVerticesToAdd.count();
               if ( mInterpolateZValueOnMesh )
-                interPolateZValue( intersectionPoint,
+                interpolateZValue( intersectionPoint,
                                    triangularMesh->vertices().at( iv1 ),
                                    triangularMesh->vertices().at( iv2 ) );
               else
-                interPolateZValue( intersectionPoint, mPoint1, mPoint2 );
+                interpolateZValue( intersectionPoint, mPoint1, mPoint2 );
               mVerticesToAdd.append( triangularMesh->triangularToNativeCoordinates( intersectionPoint ) );
             }
             else
@@ -544,11 +544,11 @@ bool QgsMeshEditForceByLine::buildForcedElements()
               currentAddedVertex = startingVertexIndex + mVerticesToAdd.count();
               mNewVerticesIndexesOnLine.append( mVerticesToAdd.count() );
               if ( mInterpolateZValueOnMesh )
-                interPolateZValue( intersection,
+                interpolateZValue( intersection,
                                    triangularMesh->vertices().at( iv1 ),
                                    triangularMesh->vertices().at( iv2 ) );
               else
-                interPolateZValue( intersection, mPoint1, mPoint2 );
+                interpolateZValue( intersection, mPoint1, mPoint2 );
               mVerticesToAdd.append( triangularMesh->triangularToNativeCoordinates( intersection ) );
             }
           }
@@ -597,11 +597,11 @@ bool QgsMeshEditForceByLine::buildForcedElements()
             {
               currentAddedVertex = startingVertexIndex + mVerticesToAdd.count();
               if ( mInterpolateZValueOnMesh )
-                interPolateZValue( intersection,
+                interpolateZValue( intersection,
                                    triangularMesh->vertices().at( iv1 ),
                                    triangularMesh->vertices().at( iv2 ) );
               else
-                interPolateZValue( intersection, mPoint1, mPoint2 );
+                interpolateZValue( intersection, mPoint1, mPoint2 );
               mVerticesToAdd.append( triangularMesh->triangularToNativeCoordinates( intersection ) );
             }
             else
@@ -713,11 +713,11 @@ bool QgsMeshEditForceByLine::buildForcedElements()
           currentEdge = {mHoleOnLeft.last(), mHoleOnRight.last()};
 
           if ( mInterpolateZValueOnMesh )
-            interPolateZValue( closestIntersectionPoint,
+            interpolateZValue( closestIntersectionPoint,
                                triangularMesh->vertices().at( mHoleOnLeft.last() ),
                                triangularMesh->vertices().at( mHoleOnRight.last() ) );
           else
-            interPolateZValue( closestIntersectionPoint, mPoint1, mPoint2 );
+            interpolateZValue( closestIntersectionPoint, mPoint1, mPoint2 );
 
           mVerticesToAdd.append( triangularMesh->triangularToNativeCoordinates( closestIntersectionPoint ) );
 

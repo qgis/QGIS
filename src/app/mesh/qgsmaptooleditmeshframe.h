@@ -164,7 +164,6 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void showSelectByExpressionDialog();
     void selectByExpression( const QString &textExpression, Qgis::SelectBehavior behavior, QgsMesh::ElementType elementType );
     void onZoomToSelected();
-    void forceBySelectedLayerPolyline();
     void reindexMesh();
 
   private:
@@ -176,6 +175,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
       Selecting, //!< Selection is in process
       MovingSelection, //!< Moving vertex or vertices is processing
       SelectingByPolygon, //!< Selection elements by polygon is in progress
+      ForceByLines, //!< Force by a lines drawn or selected by users
     };
 
     typedef QPair<int, int> Edge; //first face index, second the vertex index corresponding to the end extremity (ccw)
@@ -190,10 +190,12 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 
     double currentZValue();
 
+    void searchFace( const QgsPointXY &mapPoint );
+    void searchEdge( const QgsPointXY &mapPoint );
     void highLight( const QgsPointXY &mapPoint );
     void highlightCurrentHoveredFace( const QgsPointXY &mapPoint );
-    void highlightCloseVertex( const QgsPointXY &mapPoint );
     void highlightCloseEdge( const QgsPointXY &mapPoint );
+    void highlightCloseVertex( const QgsPointXY &mapPoint );
     bool edgeCanBeInteractive( int vertexIndex1, int vertexIndex2 ) const;
     bool faceCanBeInteractive( int faceIndex ) const;
 
@@ -239,8 +241,10 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void setMovingRubberBandValidity( bool valid );
     bool isSelectionGrapped( QgsPointXY &grappedPoint );
 
-    QList<QgsGeometry> selectedGeometriesInVectorLayers() const;
-    bool areGeometriesSelectedInVectorLayer() const;
+    void forceByLineReleaseEvent( QgsMapMouseEvent *e );
+    void forceByLineBySelectedFeature( QgsMapMouseEvent *e );
+    void forceByLine( const QgsGeometry &lineGeometry );
+
 
     // members
     struct SelectedVertexData
@@ -306,6 +310,9 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QgsRubberBand *mMovingFreeVertexRubberband = nullptr; //own by map canvas
     bool mIsMovingAllowed = false;
 
+    QgsRubberBand *mForceByLineRubberBand = nullptr; //own by map canvas
+    QList<double> mForcingLineZValue;
+
     //! members for edge flip
     QgsVertexMarker *mFlipEdgeMarker = nullptr; //own by map canvas
 
@@ -336,7 +343,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QAction *mActionTransformCoordinates = nullptr;
 
     QAction *mActionSelectByExpression = nullptr;
-    QAction *mActionForceByVectorLayerGeometries = nullptr;
+    QAction *mActionForceByLines = nullptr;
 
     QgsMeshEditForceByLineAction *mWidgetActionForceByLine = nullptr;
     QAction *mActionReindexMesh = nullptr;
