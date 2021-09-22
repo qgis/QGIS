@@ -160,7 +160,7 @@ void QgsSymbolsListWidget::createAuxiliaryField()
     return;
 
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  QgsSymbolLayer::Property key = static_cast<  QgsSymbolLayer::Property >( button->propertyKey() );
+  const QgsSymbolLayer::Property key = static_cast<  QgsSymbolLayer::Property >( button->propertyKey() );
   const QgsPropertyDefinition def = QgsSymbolLayer::propertyDefinitions()[key];
 
   // create property in auxiliary storage if necessary
@@ -217,7 +217,7 @@ void QgsSymbolsListWidget::createSymbolAuxiliaryField()
     return;
 
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  QgsSymbol::Property key = static_cast<  QgsSymbol::Property >( button->propertyKey() );
+  const QgsSymbol::Property key = static_cast<  QgsSymbol::Property >( button->propertyKey() );
   const QgsPropertyDefinition def = QgsSymbol::propertyDefinitions()[key];
 
   // create property in auxiliary storage if necessary
@@ -276,10 +276,10 @@ void QgsSymbolsListWidget::saveSymbol()
   // check if there is no symbol with same name
   if ( mStyle->symbolNames().contains( saveDlg.name() ) )
   {
-    int res = QMessageBox::warning( this, tr( "Save Symbol" ),
-                                    tr( "Symbol with name '%1' already exists. Overwrite?" )
-                                    .arg( saveDlg.name() ),
-                                    QMessageBox::Yes | QMessageBox::No );
+    const int res = QMessageBox::warning( this, tr( "Save Symbol" ),
+                                          tr( "Symbol with name '%1' already exists. Overwrite?" )
+                                          .arg( saveDlg.name() ),
+                                          QMessageBox::Yes | QMessageBox::No );
     if ( res != QMessageBox::Yes )
     {
       return;
@@ -287,7 +287,7 @@ void QgsSymbolsListWidget::saveSymbol()
     mStyle->removeSymbol( saveDlg.name() );
   }
 
-  QStringList symbolTags = saveDlg.tags().split( ',' );
+  const QStringList symbolTags = saveDlg.tags().split( ',' );
 
   // add new symbol to style and re-populate the list
   QgsSymbol *newSymbol = mSymbol->clone();
@@ -303,7 +303,7 @@ void QgsSymbolsListWidget::updateSymbolDataDefinedProperty()
     return;
 
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  QgsSymbol::Property key = static_cast<  QgsSymbol::Property >( button->propertyKey() );
+  const QgsSymbol::Property key = static_cast<  QgsSymbol::Property >( button->propertyKey() );
   mSymbol->setDataDefinedProperty( key, button->toProperty() );
   emit changed();
 }
@@ -344,11 +344,11 @@ void QgsSymbolsListWidget::setMarkerAngle( double angle )
 void QgsSymbolsListWidget::updateDataDefinedMarkerAngle()
 {
   QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( mSymbol );
-  QgsProperty dd( mRotationDDBtn->toProperty() );
+  const QgsProperty dd( mRotationDDBtn->toProperty() );
 
   spinAngle->setEnabled( !mRotationDDBtn->isActive() );
 
-  QgsProperty symbolDD( markerSymbol->dataDefinedAngle() );
+  const QgsProperty symbolDD( markerSymbol->dataDefinedAngle() );
 
   if ( // shall we remove datadefined expressions for layers ?
     ( !symbolDD && !dd )
@@ -372,11 +372,11 @@ void QgsSymbolsListWidget::setMarkerSize( double size )
 void QgsSymbolsListWidget::updateDataDefinedMarkerSize()
 {
   QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( mSymbol );
-  QgsProperty dd( mSizeDDBtn->toProperty() );
+  const QgsProperty dd( mSizeDDBtn->toProperty() );
 
   spinSize->setEnabled( !mSizeDDBtn->isActive() );
 
-  QgsProperty symbolDD( markerSymbol->dataDefinedSize() );
+  const QgsProperty symbolDD( markerSymbol->dataDefinedSize() );
 
   if ( // shall we remove datadefined expressions for layers ?
     ( !symbolDD && !dd )
@@ -401,11 +401,11 @@ void QgsSymbolsListWidget::setLineWidth( double width )
 void QgsSymbolsListWidget::updateDataDefinedLineWidth()
 {
   QgsLineSymbol *lineSymbol = static_cast<QgsLineSymbol *>( mSymbol );
-  QgsProperty dd( mWidthDDBtn->toProperty() );
+  const QgsProperty dd( mWidthDDBtn->toProperty() );
 
   spinWidth->setEnabled( !mWidthDDBtn->isActive() );
 
-  QgsProperty symbolDD( lineSymbol->dataDefinedWidth() );
+  const QgsProperty symbolDD( lineSymbol->dataDefinedWidth() );
 
   if ( // shall we remove datadefined expressions for layers ?
     ( !symbolDD && !dd )
@@ -497,10 +497,10 @@ void QgsSymbolsListWidget::updateSymbolInfo()
 
     if ( mLayer )
     {
-      QgsProperty ddSize( markerSymbol->dataDefinedSize() );
+      const QgsProperty ddSize( markerSymbol->dataDefinedSize() );
       mSizeDDBtn->init( QgsSymbolLayer::PropertySize, ddSize, QgsSymbolLayer::propertyDefinitions(), mLayer, true );
       spinSize->setEnabled( !mSizeDDBtn->isActive() );
-      QgsProperty ddAngle( markerSymbol->dataDefinedAngle() );
+      const QgsProperty ddAngle( markerSymbol->dataDefinedAngle() );
       mRotationDDBtn->init( QgsSymbolLayer::PropertyAngle, ddAngle, QgsSymbolLayer::propertyDefinitions(), mLayer, true );
       spinAngle->setEnabled( !mRotationDDBtn->isActive() );
     }
@@ -517,7 +517,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
 
     if ( mLayer )
     {
-      QgsProperty dd( lineSymbol->dataDefinedWidth() );
+      const QgsProperty dd( lineSymbol->dataDefinedWidth() );
       mWidthDDBtn->init( QgsSymbolLayer::PropertyStrokeWidth, dd, QgsSymbolLayer::propertyDefinitions(), mLayer, true );
       spinWidth->setEnabled( !mWidthDDBtn->isActive() );
     }

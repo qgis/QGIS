@@ -82,7 +82,7 @@ void TestQgsLayoutMapGrid::initTestCase()
 
 void TestQgsLayoutMapGrid::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -104,7 +104,7 @@ void TestQgsLayoutMapGrid::cleanup()
 
 void TestQgsLayoutMapGrid::grid()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -142,7 +142,7 @@ void TestQgsLayoutMapGrid::grid()
   QgsLayoutChecker checker( QStringLiteral( "composermap_grid" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
 
-  bool testResult = checker.testLayout( mReport, 0, 0 );
+  const bool testResult = checker.testLayout( mReport, 0, 0 );
   map->grid()->setEnabled( false );
   map->grid()->setAnnotationEnabled( false );
   QVERIFY( testResult );
@@ -150,7 +150,7 @@ void TestQgsLayoutMapGrid::grid()
 
 void TestQgsLayoutMapGrid::reprojected()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -169,7 +169,7 @@ void TestQgsLayoutMapGrid::reprojected()
   l.addLayoutItem( map );
 
   map->setExtent( QgsRectangle( -243577.565, 2939084.773, 1215622.435, 3668684.773 ) );
-  QgsCoordinateReferenceSystem geographic = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+  const QgsCoordinateReferenceSystem geographic = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
   map->grid()->setCrs( geographic );
   map->grid()->setEnabled( true );
   map->grid()->setIntervalX( 1 );
@@ -183,7 +183,7 @@ void TestQgsLayoutMapGrid::reprojected()
   QgsLayoutChecker checker( QStringLiteral( "composermap_gridreprojected" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
 
-  bool testResult = checker.testLayout( mReport, 0, 0 );
+  const bool testResult = checker.testLayout( mReport, 0, 0 );
   map->grid()->setEnabled( false );
   map->grid()->setCrs( crs );
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
@@ -193,7 +193,7 @@ void TestQgsLayoutMapGrid::reprojected()
 
 void TestQgsLayoutMapGrid::crossGrid()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -222,7 +222,7 @@ void TestQgsLayoutMapGrid::crossGrid()
   QgsLayoutChecker checker( QStringLiteral( "composermap_crossgrid" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
 
-  bool testResult = checker.testLayout( mReport, 0, 0 );
+  const bool testResult = checker.testLayout( mReport, 0, 0 );
   map->grid()->setStyle( QgsLayoutItemMapGrid::Solid );
   map->grid()->setEnabled( false );
   map->grid()->setAnnotationEnabled( false );
@@ -231,7 +231,7 @@ void TestQgsLayoutMapGrid::crossGrid()
 
 void TestQgsLayoutMapGrid::markerGrid()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -259,7 +259,7 @@ void TestQgsLayoutMapGrid::markerGrid()
   QgsLayoutChecker checker( QStringLiteral( "composermap_markergrid" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
 
-  bool testResult = checker.testLayout( mReport, 0, 0 );
+  const bool testResult = checker.testLayout( mReport, 0, 0 );
   map->grid()->setStyle( QgsLayoutItemMapGrid::Solid );
   map->grid()->setEnabled( false );
   map->grid()->setAnnotationEnabled( false );
@@ -268,7 +268,7 @@ void TestQgsLayoutMapGrid::markerGrid()
 
 void TestQgsLayoutMapGrid::frameOnly()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -299,7 +299,7 @@ void TestQgsLayoutMapGrid::frameOnly()
   QgsLayoutChecker checker( QStringLiteral( "composermap_gridframeonly" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
 
-  bool testResult = checker.testLayout( mReport, 0, 0 );
+  const bool testResult = checker.testLayout( mReport, 0, 0 );
   map->grid()->setStyle( QgsLayoutItemMapGrid::Solid );
   map->grid()->setEnabled( false );
   map->grid()->setAnnotationEnabled( false );
@@ -309,7 +309,7 @@ void TestQgsLayoutMapGrid::frameOnly()
 
 void TestQgsLayoutMapGrid::zebraStyle()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -344,13 +344,13 @@ void TestQgsLayoutMapGrid::zebraStyle()
   QgsLayoutChecker checker( QStringLiteral( "composermap_zebrastyle" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
 
-  bool testResult = checker.testLayout( mReport, 0, 0 );
+  const bool testResult = checker.testLayout( mReport, 0, 0 );
   QVERIFY( testResult );
 }
 
 void TestQgsLayoutMapGrid::zebraStyleSides()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -389,21 +389,21 @@ void TestQgsLayoutMapGrid::zebraStyleSides()
 
   QgsLayoutChecker checker( QStringLiteral( "composermap_zebrastyle_left" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
-  bool testResult = checker.testLayout( mReport, 0, 0 );
+  const bool testResult = checker.testLayout( mReport, 0, 0 );
   QVERIFY( testResult );
 
   map->grid()->setFrameSideFlag( QgsLayoutItemMapGrid::FrameTop, true );
   map->updateBoundingRect();
   QgsLayoutChecker checker2( QStringLiteral( "composermap_zebrastyle_lefttop" ), &l );
   checker2.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
-  bool testResult2 = checker2.testLayout( mReport, 0, 0 );
+  const bool testResult2 = checker2.testLayout( mReport, 0, 0 );
   QVERIFY( testResult2 );
 
   map->grid()->setFrameSideFlag( QgsLayoutItemMapGrid::FrameRight, true );
   map->updateBoundingRect();
   QgsLayoutChecker checker3( QStringLiteral( "composermap_zebrastyle_lefttopright" ), &l );
   checker3.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
-  bool testResult3 = checker3.testLayout( mReport, 0, 0 );
+  const bool testResult3 = checker3.testLayout( mReport, 0, 0 );
   QVERIFY( testResult3 );
 
   map->grid()->setFrameSideFlag( QgsLayoutItemMapGrid::FrameBottom, true );
@@ -413,7 +413,7 @@ void TestQgsLayoutMapGrid::zebraStyleSides()
 
 void TestQgsLayoutMapGrid::zebraStyleMargin()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -449,13 +449,13 @@ void TestQgsLayoutMapGrid::zebraStyleMargin()
   QgsLayoutChecker checker( QStringLiteral( "composermap_marginzebrastyle" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
 
-  bool testResult = checker.testLayout( mReport, 0, 0 );
+  const bool testResult = checker.testLayout( mReport, 0, 0 );
   QVERIFY( testResult );
 }
 
 void TestQgsLayoutMapGrid::zebraStyleNautical()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -491,13 +491,13 @@ void TestQgsLayoutMapGrid::zebraStyleNautical()
   QgsLayoutChecker checker( QStringLiteral( "composermap_zebranauticalstyle" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
 
-  bool testResult = checker.testLayout( mReport, 0, 0 );
+  const bool testResult = checker.testLayout( mReport, 0, 0 );
   QVERIFY( testResult );
 }
 
 void TestQgsLayoutMapGrid::frameDivisions()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -562,7 +562,7 @@ void TestQgsLayoutMapGrid::frameDivisions()
 
 void TestQgsLayoutMapGrid::annotationFilter()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -623,7 +623,7 @@ void TestQgsLayoutMapGrid::annotationFilter()
 
 void TestQgsLayoutMapGrid::interiorTicks()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -653,7 +653,7 @@ void TestQgsLayoutMapGrid::interiorTicks()
 
   QgsLayoutChecker checker( QStringLiteral( "composermap_interiorticks" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
-  bool testResult = checker.testLayout( mReport, 0, 0 );
+  const bool testResult = checker.testLayout( mReport, 0, 0 );
   QVERIFY( testResult );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
@@ -661,7 +661,7 @@ void TestQgsLayoutMapGrid::interiorTicks()
 
 void TestQgsLayoutMapGrid::interiorTicksMargin()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -692,7 +692,7 @@ void TestQgsLayoutMapGrid::interiorTicksMargin()
 
   QgsLayoutChecker checker( QStringLiteral( "composermap_margininteriorticks" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
-  bool testResult = checker.testLayout( mReport, 0, 0 );
+  const bool testResult = checker.testLayout( mReport, 0, 0 );
   QVERIFY( testResult );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
@@ -700,7 +700,7 @@ void TestQgsLayoutMapGrid::interiorTicksMargin()
 
 void TestQgsLayoutMapGrid::interiorTicksAnnotated()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -735,7 +735,7 @@ void TestQgsLayoutMapGrid::interiorTicksAnnotated()
 
   QgsLayoutChecker checker( QStringLiteral( "composermap_interiorticks_annotated" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
-  bool testResult = checker.testLayout( mReport, 0, 0 );
+  const bool testResult = checker.testLayout( mReport, 0, 0 );
   QVERIFY( testResult );
 
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Left );
@@ -746,7 +746,7 @@ void TestQgsLayoutMapGrid::interiorTicksAnnotated()
 
   QgsLayoutChecker checker2( QStringLiteral( "composermap_interiorticks_annotated2" ), &l );
   checker2.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
-  bool testResult2 = checker2.testLayout( mReport, 0, 0 );
+  const bool testResult2 = checker2.testLayout( mReport, 0, 0 );
   QVERIFY( testResult2 );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
@@ -755,7 +755,7 @@ void TestQgsLayoutMapGrid::interiorTicksAnnotated()
 
 void TestQgsLayoutMapGrid::exteriorTicks()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -785,7 +785,7 @@ void TestQgsLayoutMapGrid::exteriorTicks()
 
   QgsLayoutChecker checker( QStringLiteral( "composermap_exteriorticks" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
-  bool testResult = checker.testLayout( mReport, 0, 0 );
+  const bool testResult = checker.testLayout( mReport, 0, 0 );
   QVERIFY( testResult );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
@@ -793,7 +793,7 @@ void TestQgsLayoutMapGrid::exteriorTicks()
 
 void TestQgsLayoutMapGrid::exteriorTicksMargin()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -824,7 +824,7 @@ void TestQgsLayoutMapGrid::exteriorTicksMargin()
 
   QgsLayoutChecker checker( QStringLiteral( "composermap_marginexteriorticks" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
-  bool testResult = checker.testLayout( mReport, 0, 0 );
+  const bool testResult = checker.testLayout( mReport, 0, 0 );
   QVERIFY( testResult );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
@@ -832,7 +832,7 @@ void TestQgsLayoutMapGrid::exteriorTicksMargin()
 
 void TestQgsLayoutMapGrid::exteriorTicksAnnotated()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -867,7 +867,7 @@ void TestQgsLayoutMapGrid::exteriorTicksAnnotated()
 
   QgsLayoutChecker checker( QStringLiteral( "composermap_exteriorticks_annotated" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
-  bool testResult = checker.testLayout( mReport, 0, 0 );
+  const bool testResult = checker.testLayout( mReport, 0, 0 );
   QVERIFY( testResult );
 
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Left );
@@ -878,7 +878,7 @@ void TestQgsLayoutMapGrid::exteriorTicksAnnotated()
 
   QgsLayoutChecker checker2( QStringLiteral( "composermap_exteriorticks_annotated2" ), &l );
   checker2.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
-  bool testResult2 = checker2.testLayout( mReport, 0, 0 );
+  const bool testResult2 = checker2.testLayout( mReport, 0, 0 );
   QVERIFY( testResult2 );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
@@ -887,7 +887,7 @@ void TestQgsLayoutMapGrid::exteriorTicksAnnotated()
 
 void TestQgsLayoutMapGrid::interiorExteriorTicks()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -917,7 +917,7 @@ void TestQgsLayoutMapGrid::interiorExteriorTicks()
 
   QgsLayoutChecker checker( QStringLiteral( "composermap_interiorexteriorticks" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
-  bool testResult = checker.testLayout( mReport, 0, 0 );
+  const bool testResult = checker.testLayout( mReport, 0, 0 );
   QVERIFY( testResult );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
@@ -925,7 +925,7 @@ void TestQgsLayoutMapGrid::interiorExteriorTicks()
 
 void TestQgsLayoutMapGrid::interiorExteriorTicksMargin()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -956,7 +956,7 @@ void TestQgsLayoutMapGrid::interiorExteriorTicksMargin()
 
   QgsLayoutChecker checker( QStringLiteral( "composermap_margininteriorexteriorticks" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
-  bool testResult = checker.testLayout( mReport, 0, 0 );
+  const bool testResult = checker.testLayout( mReport, 0, 0 );
   QVERIFY( testResult );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
@@ -964,7 +964,7 @@ void TestQgsLayoutMapGrid::interiorExteriorTicksMargin()
 
 void TestQgsLayoutMapGrid::interiorExteriorTicksAnnotated()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -999,7 +999,7 @@ void TestQgsLayoutMapGrid::interiorExteriorTicksAnnotated()
 
   QgsLayoutChecker checker( QStringLiteral( "composermap_interiorexteriorticks_annotated" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
-  bool testResult = checker.testLayout( mReport, 0, 0 );
+  const bool testResult = checker.testLayout( mReport, 0, 0 );
   QVERIFY( testResult );
 
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Left );
@@ -1010,7 +1010,7 @@ void TestQgsLayoutMapGrid::interiorExteriorTicksAnnotated()
 
   QgsLayoutChecker checker2( QStringLiteral( "composermap_interiorexteriorticks_annotated2" ), &l );
   checker2.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
-  bool testResult2 = checker2.testLayout( mReport, 0, 0 );
+  const bool testResult2 = checker2.testLayout( mReport, 0, 0 );
   QVERIFY( testResult2 );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
@@ -1019,7 +1019,7 @@ void TestQgsLayoutMapGrid::interiorExteriorTicksAnnotated()
 
 void TestQgsLayoutMapGrid::lineBorder()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -1049,7 +1049,7 @@ void TestQgsLayoutMapGrid::lineBorder()
 
   QgsLayoutChecker checker( QStringLiteral( "composermap_lineborder" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
-  bool testResult = checker.testLayout( mReport, 0, 0 );
+  const bool testResult = checker.testLayout( mReport, 0, 0 );
   QVERIFY( testResult );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
@@ -1057,7 +1057,7 @@ void TestQgsLayoutMapGrid::lineBorder()
 
 void TestQgsLayoutMapGrid::lineBorderMargin()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -1088,7 +1088,7 @@ void TestQgsLayoutMapGrid::lineBorderMargin()
 
   QgsLayoutChecker checker( QStringLiteral( "composermap_marginlineborder" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
-  bool testResult = checker.testLayout( mReport, 0, 0 );
+  const bool testResult = checker.testLayout( mReport, 0, 0 );
   QVERIFY( testResult );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
@@ -1096,7 +1096,7 @@ void TestQgsLayoutMapGrid::lineBorderMargin()
 
 void TestQgsLayoutMapGrid::lineBorderNautical()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -1127,7 +1127,7 @@ void TestQgsLayoutMapGrid::lineBorderNautical()
 
   QgsLayoutChecker checker( QStringLiteral( "composermap_linebordernautical" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
-  bool testResult = checker.testLayout( mReport, 0, 0 );
+  const bool testResult = checker.testLayout( mReport, 0, 0 );
   QVERIFY( testResult );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
@@ -1135,7 +1135,7 @@ void TestQgsLayoutMapGrid::lineBorderNautical()
 
 void TestQgsLayoutMapGrid::lineBorderAnnotated()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -1170,7 +1170,7 @@ void TestQgsLayoutMapGrid::lineBorderAnnotated()
 
   QgsLayoutChecker checker( QStringLiteral( "composermap_lineborder_annotated" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
-  bool testResult = checker.testLayout( mReport, 0, 0 );
+  const bool testResult = checker.testLayout( mReport, 0, 0 );
   QVERIFY( testResult );
 
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Left );
@@ -1181,7 +1181,7 @@ void TestQgsLayoutMapGrid::lineBorderAnnotated()
 
   QgsLayoutChecker checker2( QStringLiteral( "composermap_lineborder_annotated2" ), &l );
   checker2.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
-  bool testResult2 = checker2.testLayout( mReport, 0, 0 );
+  const bool testResult2 = checker2.testLayout( mReport, 0, 0 );
   QVERIFY( testResult2 );
 
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
@@ -1190,7 +1190,7 @@ void TestQgsLayoutMapGrid::lineBorderAnnotated()
 
 void TestQgsLayoutMapGrid::annotationFormats()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -1209,8 +1209,8 @@ void TestQgsLayoutMapGrid::annotationFormats()
   l.addLayoutItem( map );
 
   //create grids in geographic and projected coordinates
-  QgsCoordinateReferenceSystem projectedCrs( QStringLiteral( "EPSG:3994" ) );
-  QgsCoordinateReferenceSystem geographicCrs( QStringLiteral( "EPSG:4326" ) );
+  const QgsCoordinateReferenceSystem projectedCrs( QStringLiteral( "EPSG:3994" ) );
+  const QgsCoordinateReferenceSystem geographicCrs( QStringLiteral( "EPSG:4326" ) );
 
   QgsLayoutItemMapGrid gridGeographic( QStringLiteral( "geographic grid" ), map );
   gridGeographic.setCrs( geographicCrs );
@@ -1254,7 +1254,7 @@ void TestQgsLayoutMapGrid::annotationFormats()
 
 void TestQgsLayoutMapGrid::descendingAnnotations()
 {
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
   QgsProject::instance()->setCrs( crs );
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -1290,7 +1290,7 @@ void TestQgsLayoutMapGrid::descendingAnnotations()
 
   QgsLayoutChecker checker( QStringLiteral( "composermap_verticaldescending_inside" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
-  bool testResult = checker.testLayout( mReport, 0, 0 );
+  const bool testResult = checker.testLayout( mReport, 0, 0 );
   QVERIFY( testResult );
 
   map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Left );
@@ -1301,7 +1301,7 @@ void TestQgsLayoutMapGrid::descendingAnnotations()
 
   QgsLayoutChecker checker2( QStringLiteral( "composermap_verticaldescending_outside" ), &l );
   checker2.setControlPathPrefix( QStringLiteral( "composer_mapgrid" ) );
-  bool testResult2 = checker2.testLayout( mReport, 0, 0 );
+  const bool testResult2 = checker2.testLayout( mReport, 0, 0 );
   QVERIFY( testResult2 );
 
   map->grid()->setAnnotationEnabled( false );

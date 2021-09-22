@@ -22,7 +22,7 @@
 
 QgsNumericFormatContext::QgsNumericFormatContext()
 {
-  QLocale l;
+  const QLocale l;
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   mThousandsSep = l.groupSeparator();
   mDecimalSep = l.decimalPoint();
@@ -58,7 +58,7 @@ double QgsNumericFormat::suggestSampleValue() const
 void QgsNumericFormat::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   const QVariantMap config = configuration( context );
-  QDomElement configElement = QgsXmlUtils::writeVariant( config, document );
+  const QDomElement configElement = QgsXmlUtils::writeVariant( config, document );
   element.appendChild( configElement );
   element.setAttribute( QStringLiteral( "id" ), id() );
 }

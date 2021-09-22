@@ -67,7 +67,7 @@ QgsTerrainEntity::QgsTerrainEntity( const Qgs3DMapSettings &map, Qt3DCore::QNode
   connect( &map, &Qgs3DMapSettings::showTerrainBoundingBoxesChanged, this, &QgsTerrainEntity::onShowBoundingBoxesChanged );
   connect( &map, &Qgs3DMapSettings::showTerrainTilesInfoChanged, this, &QgsTerrainEntity::invalidateMapImages );
   connect( &map, &Qgs3DMapSettings::showLabelsChanged, this, &QgsTerrainEntity::invalidateMapImages );
-  connect( &map, &Qgs3DMapSettings::terrainLayersChanged, this, &QgsTerrainEntity::onLayersChanged );
+  connect( &map, &Qgs3DMapSettings::layersChanged, this, &QgsTerrainEntity::onLayersChanged );
   connect( &map, &Qgs3DMapSettings::backgroundColorChanged, this, &QgsTerrainEntity::invalidateMapImages );
   connect( &map, &Qgs3DMapSettings::terrainMapThemeChanged, this, &QgsTerrainEntity::invalidateMapImages );
   connect( &map, &Qgs3DMapSettings::terrainElevationOffsetChanged, this, &QgsTerrainEntity::onTerrainElevationOffsetChanged );
@@ -180,7 +180,7 @@ void QgsTerrainEntity::connectToLayersRepaintRequest()
     disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsTerrainEntity::invalidateMapImages );
   }
 
-  mLayers = mMap.terrainLayers();
+  mLayers = mMap.layers();
 
   for ( QgsMapLayer *layer : std::as_const( mLayers ) )
   {

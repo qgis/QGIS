@@ -19,13 +19,15 @@
 #ifndef QGSVECTORLAYERPROPERTIES
 #define QGSVECTORLAYERPROPERTIES
 
+#include <QStandardItemModel>
+
 #include "qgsoptionsdialogbase.h"
 #include "ui_qgsvectorlayerpropertiesbase.h"
 #include "qgsguiutils.h"
 #include "qgshelp.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsmaplayerserverproperties.h"
 #include "qgsvectorlayerjoininfo.h"
-#include "qgsvectorlayerserverproperties.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreefilterproxymodel.h"
@@ -85,9 +87,6 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     //! Gets metadata about the layer in nice formatted html
     QString htmlMetadata();
 
-    //! Slot to update layer display name as original is edited
-    void mLayerOrigNameLineEdit_textEdited( const QString &text );
-
     //! Called when apply button is pressed or dialog is accepted
     void apply();
 
@@ -114,6 +113,9 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void mJoinTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
     void mButtonRemoveJoin_clicked();
 
+    // Server properties
+    void addMetadataUrl();
+    void removeSelectedMetadataUrl();
     void mButtonAddWmsDimension_clicked();
     void mButtonEditWmsDimension_clicked();
     void mWmsDimensionsTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
@@ -221,7 +223,8 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void addJoinToTreeWidget( const QgsVectorLayerJoinInfo &join, int insertIndex = -1 );
 
     //! Adds a QGIS Server WMS dimension to mWmsDimensionTreeWidget
-    void addWmsDimensionInfoToTreeWidget( const QgsVectorLayerServerProperties::WmsDimensionInfo &wmsDim, int insertIndex = -1 );
+    void addWmsDimensionInfoToTreeWidget( const QgsMapLayerServerProperties::WmsDimensionInfo &wmsDim, int insertIndex = -1 );
+    QStandardItemModel *mMetadataUrlModel = nullptr;
 
     void updateAuxiliaryStoragePage();
     void deleteAuxiliaryField( int index );
@@ -254,6 +257,5 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     friend class QgsAppScreenShots;
 };
-
 
 #endif

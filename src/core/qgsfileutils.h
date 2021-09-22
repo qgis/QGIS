@@ -137,6 +137,49 @@ class CORE_EXPORT QgsFileUtils
      */
     static bool pathIsSlowDevice( const QString &path );
 
+    /**
+     * Returns a list of the sidecar files which exist for the dataset a the specified \a path.
+     *
+     * In this context a sidecar file is defined as a file which shares the same base filename
+     * as a dataset, but which differs in file extension. It defines the list of additional
+     * files which must be renamed or deleted alongside the main file associated with the
+     * dataset in order to completely rename/delete the dataset.
+     *
+     * For instance, if \a path specified a .shp file then the corresponding .dbf, .idx
+     * and .prj files would be returned (amongst others).
+     *
+     * \note QGIS metadata files (.qmd) and map layer styling files (.qml) are NOT included
+     * in the returned list.
+     *
+     * \since QGIS 3.22
+     */
+    static QSet< QString > sidecarFilesForPath( const QString &path );
+
+    /**
+     * Renames the dataset at \a oldPath to \a newPath, renaming both the file at \a oldPath and
+     * all associated sidecar files which exist for it.
+     *
+     * For instance, if \a oldPath specified a .shp file then the corresponding .dbf, .idx
+     * and .prj files would be renamed (amongst others).
+     *
+     * The destination directory must already exist.
+     *
+     * The optional \a flags argument can be used to control whether QMD metadata files and
+     * QML styling files should also be renamed accordingly. By default these will be renamed,
+     * but manually specifying a different set of flags allows callers to avoid this when
+     * desired.
+     *
+     * \param oldPath original path to dataset
+     * \param newPath new path for dataset
+     * \param error will be set to a descriptive error message if the rename operation fails
+     * \param flags optional flags to control file operation behavior
+     *
+     * \returns TRUE if the dataset was successfully renamed, or FALSE if an error occurred
+     *
+     * \since QGIS 3.22
+     */
+    static bool renameDataset( const QString &oldPath, const QString &newPath, QString &error SIP_OUT, Qgis::FileOperationFlags flags = Qgis::FileOperationFlag::IncludeMetadataFile | Qgis::FileOperationFlag::IncludeStyleFile );
+
 };
 
 #endif // QGSFILEUTILS_H

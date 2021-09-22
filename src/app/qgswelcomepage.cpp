@@ -49,7 +49,7 @@
 QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   : QWidget( parent )
 {
-  QgsSettings settings;
+  const QgsSettings settings;
 
   QVBoxLayout *mainLayout = new QVBoxLayout;
   mainLayout->setContentsMargins( 0, 0, 0, 0 );
@@ -62,7 +62,7 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   QVBoxLayout *leftLayout = new QVBoxLayout;
   leftLayout->setContentsMargins( 0, 0, 0, 0 );
 
-  int titleSize = static_cast<int>( QApplication::fontMetrics().height() * 1.4 );
+  const int titleSize = static_cast<int>( QApplication::fontMetrics().height() * 1.4 );
   mRecentProjectsTitle = new QLabel( QStringLiteral( "<div style='font-size:%1px;font-weight:bold'>%2</div>" ).arg( QString::number( titleSize ), tr( "Recent Projects" ) ) );
   mRecentProjectsTitle->setContentsMargins( titleSize / 2, titleSize / 6, 0, 0 );
   leftLayout->addWidget( mRecentProjectsTitle, 0 );
@@ -238,17 +238,17 @@ void QgsWelcomePage::versionInfoReceived()
 
 void QgsWelcomePage::showContextMenuForProjects( QPoint point )
 {
-  QModelIndex index = mRecentProjectsListView->indexAt( point );
+  const QModelIndex index = mRecentProjectsListView->indexAt( point );
   if ( !index.isValid() )
     return;
 
-  bool pin = mRecentProjectsModel->data( index, QgsProjectListItemDelegate::PinRole ).toBool();
+  const bool pin = mRecentProjectsModel->data( index, QgsProjectListItemDelegate::PinRole ).toBool();
   QString path = mRecentProjectsModel->data( index, QgsProjectListItemDelegate::PathRole ).toString();
   if ( path.isEmpty() )
     return;
 
   QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( path );
-  bool enabled = mRecentProjectsModel->flags( index ) & Qt::ItemIsEnabled;
+  const bool enabled = mRecentProjectsModel->flags( index ) & Qt::ItemIsEnabled;
 
   QMenu *menu = new QMenu( this );
 
@@ -285,7 +285,7 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
       QAction *openFolderAction = new QAction( tr( "Open Directory…" ), menu );
       connect( openFolderAction, &QAction::triggered, this, [path]
       {
-        QgsFocusKeeper focusKeeper;
+        const QgsFocusKeeper focusKeeper;
         QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( path );
       } );
       menu->addAction( openFolderAction );
@@ -303,8 +303,8 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
     bool showClosestPath = storage ? false : true;
     if ( storage && ( storage->type() == QLatin1String( "geopackage" ) ) )
     {
-      QRegularExpression reGpkg( "^(geopackage:)([^\?]+)\?(.+)$", QRegularExpression::CaseInsensitiveOption );
-      QRegularExpressionMatch matchGpkg = reGpkg.match( path );
+      const QRegularExpression reGpkg( "^(geopackage:)([^\?]+)\?(.+)$", QRegularExpression::CaseInsensitiveOption );
+      const QRegularExpressionMatch matchGpkg = reGpkg.match( path );
       if ( matchGpkg.hasMatch() )
       {
         path = matchGpkg.captured( 2 );
@@ -339,11 +339,11 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
 
 void QgsWelcomePage::showContextMenuForTemplates( QPoint point )
 {
-  QModelIndex index = mTemplateProjectsListView->indexAt( point );
+  const QModelIndex index = mTemplateProjectsListView->indexAt( point );
   if ( !index.isValid() )
     return;
 
-  QFileInfo fileInfo( index.data( QgsProjectListItemDelegate::NativePathRole ).toString() );
+  const QFileInfo fileInfo( index.data( QgsProjectListItemDelegate::NativePathRole ).toString() );
 
   QMenu *menu = new QMenu();
 
@@ -373,7 +373,7 @@ void QgsWelcomePage::showContextMenuForTemplates( QPoint point )
 
 void QgsWelcomePage::showContextMenuForNews( QPoint point )
 {
-  QModelIndex index = mNewsFeedListView->indexAt( point );
+  const QModelIndex index = mNewsFeedListView->indexAt( point );
   if ( !index.isValid() )
     return;
 
@@ -426,7 +426,7 @@ void QgsWelcomePage::updateNewsFeedVisibility()
     mSplitter2->restoreState( QgsSettings().value( QStringLiteral( "Windows/WelcomePage/SplitState2" ), QVariant(), QgsSettings::App ).toByteArray() );
     if ( mSplitter2->sizes().first() == 0 )
     {
-      int splitSize = mSplitter2->height() / 2;
+      const int splitSize = mSplitter2->height() / 2;
       mSplitter2->setSizes( QList< int > { splitSize, splitSize} );
     }
   }
@@ -439,7 +439,7 @@ bool QgsWelcomePage::eventFilter( QObject *obj, QEvent *event )
     QMouseEvent *mouseEvent = dynamic_cast< QMouseEvent *>( event );
     if ( mouseEvent->button() == Qt::LeftButton )
     {
-      QModelIndex index = mNewsFeedListView->indexAt( mouseEvent->pos() );
+      const QModelIndex index = mNewsFeedListView->indexAt( mouseEvent->pos() );
       if ( index.isValid() )
       {
         const QPoint itemClickPoint = mouseEvent->pos() - mNewsFeedListView->visualRect( index ).topLeft();

@@ -60,7 +60,7 @@ void TestQgsLayoutGeoPdfExport::initTestCase()
 
 void TestQgsLayoutGeoPdfExport::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -213,7 +213,7 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   // finalize and test collation
   QgsAbstractGeoPdfExporter::ExportDetails details;
   details.pageSizeMm = QSizeF( 297, 210 );
-  bool expected = true;
+  const bool expected = true;
   QCOMPARE( geoPdfExporter.finalize( QList<QgsAbstractGeoPdfExporter::ComponentLayerDetail>(), outputFile, details ), expected );
   QVERIFY( geoPdfExporter.errorMessage().isEmpty() );
 
@@ -382,7 +382,7 @@ void TestQgsLayoutGeoPdfExport::skipLayers()
   map->setBackgroundEnabled( true );
   l.addLayoutItem( map );
 
-  QgsLayoutGeoPdfExporter geoPdfExporter( &l );
+  const QgsLayoutGeoPdfExporter geoPdfExporter( &l );
 
   // trigger render
   QgsLayoutExporter exporter( &l );
@@ -394,11 +394,11 @@ void TestQgsLayoutGeoPdfExport::skipLayers()
   exporter.exportToPdf( outputFile, settings );
 
   // check that features were collected
-  QgsFeatureList lineFeatures = geoPdfExporter.mCollatedFeatures.value( QString() ).value( linesLayer->id() );
+  const QgsFeatureList lineFeatures = geoPdfExporter.mCollatedFeatures.value( QString() ).value( linesLayer->id() );
   QCOMPARE( lineFeatures.count(), 0 ); // should be nothing, layer is set to skip
-  QgsFeatureList  pointFeatures = geoPdfExporter.mCollatedFeatures.value( QString() ).value( pointsLayer->id() );
+  const QgsFeatureList  pointFeatures = geoPdfExporter.mCollatedFeatures.value( QString() ).value( pointsLayer->id() );
   QCOMPARE( pointFeatures.count(), 15 ); // should be features, layer was set to export
-  QgsFeatureList polyFeatures = geoPdfExporter.mCollatedFeatures.value( QString() ).value( polygonLayer->id() );
+  const QgsFeatureList polyFeatures = geoPdfExporter.mCollatedFeatures.value( QString() ).value( polygonLayer->id() );
   QCOMPARE( polyFeatures.count(), 10 ); // should be features, layer did not have any setting set
 }
 
@@ -432,13 +432,13 @@ void TestQgsLayoutGeoPdfExport::layerOrder()
   map->setBackgroundEnabled( true );
   l.addLayoutItem( map );
 
-  QgsLayoutGeoPdfExporter geoPdfExporter( &l );
+  const QgsLayoutGeoPdfExporter geoPdfExporter( &l );
   // by default we should follow project layer order
   QCOMPARE( geoPdfExporter.layerOrder(), QStringList() << polygonLayer->id() << pointsLayer->id() << linesLayer->id() );
 
   // but if a custom order is specified, respected that
   l.setCustomProperty( QStringLiteral( "pdfLayerOrder" ), QStringLiteral( "%1~~~%2" ).arg( linesLayer->id(), polygonLayer->id() ) );
-  QgsLayoutGeoPdfExporter geoPdfExporter2( &l );
+  const QgsLayoutGeoPdfExporter geoPdfExporter2( &l );
   QCOMPARE( geoPdfExporter2.layerOrder(), QStringList() << linesLayer->id() << polygonLayer->id() << pointsLayer->id() );
 }
 

@@ -22,6 +22,9 @@
 #include "qgsmeshlayer.h"
 #include "qgsmesheditor.h"
 #include "qgsmeshadvancedediting.h"
+#include "qgstransformeffect.h"
+#include "qgsmeshforcebypolylines.h"
+#include "qgslinestring.h"
 
 
 class TestQgsMeshEditor : public QObject
@@ -55,6 +58,10 @@ class TestQgsMeshEditor : public QObject
     void meshEditorFromMeshLayer_quadFlower();
 
     void refineMesh();
+
+    void transformByExpression();
+
+    void forceByLine();
 
     void particularCases();
 };
@@ -106,7 +113,7 @@ void TestQgsMeshEditor::startStopEditing()
   QgsMeshDatasetGroupMetadata meta = meshLayerQuadTriangle->datasetGroupMetadata( datasetGroupIndex );
   QCOMPARE( meta.name(), QStringLiteral( "Bed Elevation" ) );
 
-  QgsCoordinateTransform transform;
+  const QgsCoordinateTransform transform;
 
   QVERIFY( meshLayerQuadTriangle->startFrameEditing( transform ) );
   QVERIFY( !meshLayerQuadTriangle->startFrameEditing( transform ) ); //mesh editing is already started
@@ -123,14 +130,14 @@ void TestQgsMeshEditor::startStopEditing()
   QCOMPARE( meta.maximum(), 50.0 );
   QCOMPARE( meshLayerQuadTriangle->meshVertexCount(), 5 );
   QCOMPARE( meshLayerQuadTriangle->meshFaceCount(), 2 );
-  QgsMesh mesh = *meshLayerQuadTriangle->nativeMesh();
+  const QgsMesh mesh = *meshLayerQuadTriangle->nativeMesh();
   for ( int i = 0; i < mesh.vertexCount(); ++i )
     QCOMPARE( mesh.vertex( i ).z(), meshLayerQuadTriangle->datasetValue( QgsMeshDatasetIndex( 0, 0 ), i ).scalar() );
 
   QgsMeshEditor *editor = meshLayerQuadTriangle->meshEditor();
   QCOMPARE( editor->addVertices( {QgsMeshVertex( 1500, 2500, 0 )}, 10 ), 1 );
   QCOMPARE( meshLayerQuadTriangle->meshVertexCount(), 6 );
-  QCOMPARE( meshLayerQuadTriangle->meshFaceCount(), 6 );
+  QCOMPARE( meshLayerQuadTriangle->meshFaceCount(), 5 );
 
   // roll back editing and continue editing
   QVERIFY( meshLayerQuadTriangle->isModified() );
@@ -154,7 +161,7 @@ void TestQgsMeshEditor::startStopEditing()
 
   QCOMPARE( editor->addVertices( {QgsMeshVertex( 1500, 2500, 0 )}, 10 ), 1 );
   QCOMPARE( meshLayerQuadTriangle->meshVertexCount(), 6 );
-  QCOMPARE( meshLayerQuadTriangle->meshFaceCount(), 6 );
+  QCOMPARE( meshLayerQuadTriangle->meshFaceCount(), 5 );
 
   // roll back editing and stop editing
   QVERIFY( meshLayerQuadTriangle->isModified() );
@@ -180,7 +187,7 @@ void TestQgsMeshEditor::startStopEditing()
 
 static bool checkNeighbors( const QgsTopologicalMesh &mesh, int faceIndex, const QList<int> &expectedNeighbors )
 {
-  QVector<int> neighbors = mesh.neighborsOfFace( faceIndex );
+  const QVector<int> neighbors = mesh.neighborsOfFace( faceIndex );
   bool ret = true;
   ret &= neighbors.count() == mesh.mesh()->face( faceIndex ).count();
   for ( const int exn : expectedNeighbors )
@@ -191,7 +198,7 @@ static bool checkNeighbors( const QgsTopologicalMesh &mesh, int faceIndex, const
 
 static bool checkFacesAround( const QgsTopologicalMesh &mesh, int vertexIndex, QList<int> expectedFace )
 {
-  QList<int> facesAround = mesh.facesAroundVertex( vertexIndex );
+  const QList<int> facesAround = mesh.facesAroundVertex( vertexIndex );
   bool ret = true;
   ret &= expectedFace.count() == facesAround.count();
   for ( const int exf : expectedFace )
@@ -205,7 +212,7 @@ void TestQgsMeshEditor::createTopologicMesh()
   // Test of the creation of the topologic mesh from the native mesh, then test access to the elements from other elements
 
   QgsMeshEditingError error;
-  QgsTopologicalMesh topologicMesh = QgsTopologicalMesh::createTopologicalMesh( &nativeMesh, 4, error );
+  const QgsTopologicalMesh topologicMesh = QgsTopologicalMesh::createTopologicalMesh( &nativeMesh, 4, error );
   QVERIFY( error.errorType == Qgis::MeshEditingErrorType::NoError );
 
   // Check if face are counter clock wise
@@ -528,7 +535,7 @@ void TestQgsMeshEditor::editTopologicMesh()
 
   topologicalMesh.applyChanges( topologicalChanges.last() );
 
-  topologicalChanges.append( topologicalMesh.addVertexInface( 4, {2.2, 0.5, 0} ) ); // vertex 12
+  topologicalChanges.append( topologicalMesh.addVertexInFace( 4, {2.2, 0.5, 0} ) ); // vertex 12
 
   QVERIFY( checkFacesAround( topologicalMesh, 12, {11, 12, 13, 14} ) );
 
@@ -563,6 +570,18 @@ void TestQgsMeshEditor::editTopologicMesh()
   QVERIFY( checkFacesAround( topologicalMesh, 3, {16, 26, 22, 10} ) );
   QVERIFY( topologicalMesh.checkConsistency() == QgsMeshEditingError() );
 
+  topologicalChanges.append( topologicalMesh.insertVertexInFacesEdge( 17, 0, QgsMeshVertex( 0.44, 0.94, 0.0 ) ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 13, {28, 29, 30, 31, 32} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 0, {8, 30, 31} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 1, {7, 8, 28, 30} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 2, {18, 27, 26, 29, 32} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 3, {10, 22, 26, 32, 31} ) );
+  QVERIFY( topologicalMesh.checkConsistency() == QgsMeshEditingError() );
+
+  topologicalChanges.append( topologicalMesh.insertVertexInFacesEdge( 8, 2, QgsMeshVertex( -0.5, 0.25, 0.0 ) ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 14, {33, 34} ) );
+  QVERIFY( topologicalMesh.checkConsistency() == QgsMeshEditingError() );
+
   // reverse all!!!
   for ( int i = 0; i < topologicalChanges.count(); ++i )
     topologicalMesh.reverseChanges( topologicalChanges.at( topologicalChanges.count() - i - 1 ) );
@@ -592,8 +611,8 @@ void TestQgsMeshEditor::editTopologicMesh()
 
   topologicalMesh.reindex();
 
-  QCOMPARE( topologicalMesh.mesh()->faceCount(), 12 );
-  QCOMPARE( topologicalMesh.mesh()->vertexCount(), 12 );
+  QCOMPARE( topologicalMesh.mesh()->faceCount(), 16 );
+  QCOMPARE( topologicalMesh.mesh()->vertexCount(), 14 );
 }
 
 void TestQgsMeshEditor::badTopologicMesh()
@@ -686,9 +705,9 @@ void TestQgsMeshEditor::badTopologicMesh()
 
 void TestQgsMeshEditor::meshEditorSimpleEdition()
 {
-  QUndoStack undoStack;
+  const QUndoStack undoStack;
 
-  QgsCoordinateTransform transform;
+  const QgsCoordinateTransform transform;
   QVERIFY( meshLayerQuadTriangle->startFrameEditing( transform ) );
 
   QgsMesh mesh;
@@ -698,11 +717,11 @@ void TestQgsMeshEditor::meshEditorSimpleEdition()
   QgsMeshEditor meshEditor( &mesh, &triangularMesh );
   QCOMPARE( meshEditor.initialize(), QgsMeshEditingError() );
 
-  QVector<QgsMeshVertex> vertices( {QgsPoint( 0.0, 0.0, 0.0 ), // 0
-                                    QgsPoint( 0.0, 1.0, 0.0 ), // 1
-                                    QgsPoint( 0.9, 0.9, 0.0 ), // 2
-                                    QgsPoint( 1.0, 0.0, 0.0 ), // 3
-                                    QgsPoint( )} );            // 4
+  const QVector<QgsMeshVertex> vertices( {QgsPoint( 0.0, 0.0, 0.0 ), // 0
+                                          QgsPoint( 0.0, 1.0, 0.0 ), // 1
+                                          QgsPoint( 0.9, 0.9, 0.0 ), // 2
+                                          QgsPoint( 1.0, 0.0, 0.0 ), // 3
+                                          QgsPoint( )} );            // 4
 
   meshEditor.addVertices( vertices, 0.01 );
 
@@ -759,23 +778,23 @@ void TestQgsMeshEditor::meshEditorSimpleEdition()
 
 void TestQgsMeshEditor::faceIntersection()
 {
-  QgsCoordinateTransform transform;
+  const QgsCoordinateTransform transform;
   QVERIFY( meshLayerQuadFlower->startFrameEditing( transform ) );
 
   QgsMeshEditor *editor = meshLayerQuadFlower->meshEditor();
   QVERIFY( editor );
 
   // add some free vertices
-  QVector<QgsMeshVertex> vertices( {QgsPoint( 2500.0, 3500.0, 0.0 ), // 8
-                                    QgsPoint( 1500.0, 4000.0, 0.0 ), // 9
-                                    QgsPoint( 2750.0, 3000.0, 0.0 ), // 10
-                                    QgsPoint( 1750.0, 3750.0, 0.0 ), // 11
-                                    QgsPoint( 500.0, 1500.0, 0.0 ), // 12
-                                    QgsPoint( 0.0, 0.0, 0.0 ), // 13
-                                    QgsPoint( 0.0, 5000.0, 0.0 ), // 14
-                                    QgsPoint( 5000.0, 5000.0, 0.0 ), // 15
-                                    QgsPoint( 5000.0, 0.0, 0.0 ), // 16
-                                   } );
+  const QVector<QgsMeshVertex> vertices( {QgsPoint( 2500.0, 3500.0, 0.0 ), // 8
+                                          QgsPoint( 1500.0, 4000.0, 0.0 ), // 9
+                                          QgsPoint( 2750.0, 3000.0, 0.0 ), // 10
+                                          QgsPoint( 1750.0, 3750.0, 0.0 ), // 11
+                                          QgsPoint( 500.0, 1500.0, 0.0 ), // 12
+                                          QgsPoint( 0.0, 0.0, 0.0 ), // 13
+                                          QgsPoint( 0.0, 5000.0, 0.0 ), // 14
+                                          QgsPoint( 5000.0, 5000.0, 0.0 ), // 15
+                                          QgsPoint( 5000.0, 0.0, 0.0 ), // 16
+                                         } );
   editor->addVertices( vertices, 10 );
 
   QCOMPARE( editor->freeVerticesIndexes().count(), 9 );
@@ -831,7 +850,7 @@ void TestQgsMeshEditor::particularCases()
     mesh.faces.append( {5, 10, 9} );
     mesh.faces.append( {5, 6, 10} );
 
-    QgsCoordinateTransform transform;
+    const QgsCoordinateTransform transform;
     triangularMesh.update( &mesh, transform );
     QVERIFY( meshEditor.initialize() == QgsMeshEditingError() );
     QVERIFY( meshEditor.checkConsistency() );
@@ -871,7 +890,7 @@ void TestQgsMeshEditor::particularCases()
     mesh.faces.append( {1, 5, 3} );
     mesh.faces.append( {1, 4, 5} );
 
-    QgsCoordinateTransform transform;
+    const QgsCoordinateTransform transform;
     triangularMesh.update( &mesh, transform );
     QVERIFY( meshEditor.initialize() == QgsMeshEditingError() );
     QVERIFY( meshEditor.checkConsistency() );
@@ -897,7 +916,7 @@ void TestQgsMeshEditor::particularCases()
     mesh.faces.append( {5, 4, 3} );
 
 
-    QgsCoordinateTransform transform;
+    const QgsCoordinateTransform transform;
     triangularMesh.update( &mesh, transform );
     QVERIFY( meshEditor.initialize() == QgsMeshEditingError() );
     QVERIFY( meshEditor.checkConsistency() );
@@ -905,9 +924,9 @@ void TestQgsMeshEditor::particularCases()
     QVERIFY( meshEditor.isFaceGeometricallyCompatible( {1, 3, 2} ) );
 
     QgsMeshEditingError error;
-    QVector<QgsMeshFace> facesToAdd( {{0, 1, 2}, {0, 2, 6}, {1, 3, 2}, {2, 3, 4}} );
+    const QVector<QgsMeshFace> facesToAdd( {{0, 1, 2}, {0, 2, 6}, {1, 3, 2}, {2, 3, 4}} );
 
-    QgsTopologicalMesh::TopologicalFaces topologicFaces = meshEditor.mTopologicalMesh.createNewTopologicalFaces( facesToAdd, true, error );
+    const QgsTopologicalMesh::TopologicalFaces topologicFaces = meshEditor.mTopologicalMesh.createNewTopologicalFaces( facesToAdd, true, error );
     QVERIFY( error == QgsMeshEditingError() );
     error = meshEditor.mTopologicalMesh.canFacesBeAdded( topologicFaces );
     QVERIFY( error == QgsMeshEditingError( Qgis::MeshEditingErrorType::ManifoldFace, 2 ) );
@@ -931,15 +950,15 @@ void TestQgsMeshEditor::particularCases()
     mesh.faces.append( {5, 3, 2} );
     mesh.faces.append( {5, 4, 3} );
 
-    QgsCoordinateTransform transform;
+    const QgsCoordinateTransform transform;
     triangularMesh.update( &mesh, transform );
     QVERIFY( meshEditor.initialize() == QgsMeshEditingError() );
     QVERIFY( meshEditor.checkConsistency() );
 
     QgsMeshEditingError error;
-    QVector<QgsMeshFace> facesToAdd( {{1, 6, 0}, {1, 2, 6}, {2, 3, 6}, {3, 4, 6 }, {1, 3, 2} } );
+    const QVector<QgsMeshFace> facesToAdd( {{1, 6, 0}, {1, 2, 6}, {2, 3, 6}, {3, 4, 6 }, {1, 3, 2} } );
 
-    QgsTopologicalMesh::TopologicalFaces topologicFaces = meshEditor.mTopologicalMesh.createNewTopologicalFaces( facesToAdd, true, error );
+    const QgsTopologicalMesh::TopologicalFaces topologicFaces = meshEditor.mTopologicalMesh.createNewTopologicalFaces( facesToAdd, true, error );
     QVERIFY( error == QgsMeshEditingError() );
     error = meshEditor.mTopologicalMesh.canFacesBeAdded( topologicFaces );
     QVERIFY( error == QgsMeshEditingError( Qgis::MeshEditingErrorType::ManifoldFace, 4 ) );
@@ -953,7 +972,7 @@ void TestQgsMeshEditor::particularCases()
     QgsTriangularMesh triangularMesh;
     QgsMeshEditor meshEditor( &mesh, &triangularMesh );
 
-    int sideSize = 40;
+    const int sideSize = 40;
 
     for ( int i = 0; i < sideSize; ++i )
       for ( int j = 0; j < sideSize; ++j )
@@ -1009,8 +1028,15 @@ void TestQgsMeshEditor::particularCases()
 
     QVERIFY( meshEditor.removeVertices( verticesToRemove, false ) == QgsMeshEditingError() );
     QVERIFY( meshEditor.checkConsistency() );
+
+    // just create a valid different transform to update the vertices of the triangular mesh
+    transform = QgsCoordinateTransform( QgsCoordinateReferenceSystem( "EPSG:32620" ),
+                                        QgsCoordinateReferenceSystem( "EPSG:32620" ),
+                                        QgsCoordinateTransformContext() );
+    triangularMesh.update( &mesh, transform );
     meshEditor.mUndoStack->undo();
     QVERIFY( meshEditor.checkConsistency() );
+    meshEditor.mUndoStack->redo();
   }
 }
 
@@ -1019,7 +1045,7 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadTriangle()
   QCOMPARE( meshLayerQuadTriangle->meshVertexCount(), 5 );
   QCOMPARE( meshLayerQuadTriangle->meshFaceCount(), 2 );
 
-  QgsCoordinateTransform transform;
+  const QgsCoordinateTransform transform;
   QVERIFY( meshLayerQuadTriangle->startFrameEditing( transform ) );
 
   QgsMeshEditor *editor = meshLayerQuadTriangle->meshEditor();
@@ -1054,6 +1080,20 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadTriangle()
   QCOMPARE( meshLayerQuadTriangle->meshEditor()->freeVerticesIndexes().count(), 2 );
   QVERIFY( meshLayerQuadTriangle->meshEditor()->freeVerticesIndexes().contains( 5 ) );
   QVERIFY( meshLayerQuadTriangle->meshEditor()->freeVerticesIndexes().contains( 6 ) );
+
+  // Add vertices under the tolerance from the edge inside the face
+  editor->addVertices( {{2500, 2002, 0}}, 10 );
+  QCOMPARE( meshLayerQuadTriangle->meshVertexCount(), 8 );
+  QCOMPARE( meshLayerQuadTriangle->meshFaceCount(), 3 );
+  QCOMPARE( meshLayerQuadTriangle->meshEditor()->freeVerticesIndexes().count(), 2 );
+  meshLayerQuadTriangle->undoStack()->undo();
+
+  // Add vertices under the tolerance from the edge outside the face
+  editor->addVertices( {{2500, 1998, 0}}, 10 );
+  QCOMPARE( meshLayerQuadTriangle->meshVertexCount(), 8 );
+  QCOMPARE( meshLayerQuadTriangle->meshFaceCount(), 3 );
+  QCOMPARE( meshLayerQuadTriangle->meshEditor()->freeVerticesIndexes().count(), 2 );
+  meshLayerQuadTriangle->undoStack()->undo();
 
   // try to add a face that shares only one vertex
   QgsMeshEditingError error = editor->addFaces( {{2, 5, 6}} );
@@ -1136,8 +1176,8 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadTriangle()
 
   editor->removeFaces( {2, 3} );
 
-  QCOMPARE( meshLayerQuadTriangle->meshFaceCount(), 4 ); //removed faces are still present but empty
-  QVERIFY( meshLayerQuadTriangle->nativeMesh()->face( 2 ).isEmpty() );
+  QCOMPARE( meshLayerQuadTriangle->meshFaceCount(), 2 );
+  QVERIFY( meshLayerQuadTriangle->nativeMesh()->face( 2 ).isEmpty() ); //removed faces are still present but empty
   QVERIFY( meshLayerQuadTriangle->nativeMesh()->face( 3 ).isEmpty() );
 
   QCOMPARE( meshLayerQuadTriangle->meshEditor()->freeVerticesIndexes().count(), 2 );
@@ -1172,7 +1212,7 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadTriangle()
   }, 10 );
 
   QCOMPARE( meshLayerQuadTriangle->meshVertexCount(), 9 );
-  QCOMPARE( meshLayerQuadTriangle->meshFaceCount(), 8 ); // vertex on a quad face : 4 faces created, 1 removed, removed are still present but void
+  QCOMPARE( meshLayerQuadTriangle->meshFaceCount(), 7 ); // vertex on a quad face : 4 faces created, 1 removed, removed are still present but void and not counted
   QVERIFY( meshLayerQuadTriangle->nativeMesh()->face( 0 ).isEmpty() );
   QVERIFY( QgsMesh::compareFaces( meshLayerQuadTriangle->nativeMesh()->face( 4 ), {0, 1, 7} ) );
   QVERIFY( QgsMesh::compareFaces( meshLayerQuadTriangle->nativeMesh()->face( 5 ), {1, 3, 7} ) );
@@ -1249,7 +1289,7 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadTriangle()
   centroid = meshLayerQuadTriangle->snapOnElement( QgsMesh::Face, QgsPoint( 2050, 2800, 0 ), 10 );
   QVERIFY( centroid.compare( QgsPointXY( 2166.6666666, 2422.22222222 ), 1e-6 ) ); //same face
 
-  QVERIFY( !editor->canBeMerged( 2, 3 ) ); //leads to 5 vertices per face, limited to 4
+  QVERIFY( editor->canBeMerged( 2, 3 ) );
 
   //split
   QVERIFY( editor->faceCanBeSplit( 8 ) );
@@ -1273,7 +1313,7 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadTriangle()
   QVERIFY( centroid.compare( QgsPointXY( 1833.33333333, 2600 ), 1e-6 ) );
 
   QCOMPARE( meshLayerQuadTriangle->meshVertexCount(), 9 );
-  QCOMPARE( meshLayerQuadTriangle->meshFaceCount(), 8 );
+  QCOMPARE( meshLayerQuadTriangle->meshFaceCount(), 7 );
 
   QCOMPARE( meshLayerQuadTriangle->meshEditor()->freeVerticesIndexes().count(), 1 );
   QVERIFY( meshLayerQuadTriangle->meshEditor()->freeVerticesIndexes().contains( 8 ) );
@@ -1289,7 +1329,7 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadTriangle()
   centroid = meshLayerQuadTriangle->snapOnElement( QgsMesh::Face, QgsPoint( 1950, 2700, 0 ), 10 );
   QVERIFY( centroid.isEmpty() );
 
-  QCOMPARE( meshLayerQuadTriangle->meshVertexCount(), 9 ); //empty vertex still presents
+  QCOMPARE( meshLayerQuadTriangle->meshVertexCount(), 8 ); //empty vertex still presents but not counted
 
   snappedPoint = meshLayerQuadTriangle->snapOnElement( QgsMesh::Vertex, QgsPoint( 1498, 3505, 0 ), 10 );
   QVERIFY( snappedPoint.isEmpty() );
@@ -1338,7 +1378,7 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadFlower()
   QCOMPARE( meshLayerQuadFlower->meshVertexCount(), 8 );
   QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 5 );
 
-  QgsCoordinateTransform transform;
+  const QgsCoordinateTransform transform;
   QVERIFY( meshLayerQuadFlower->startFrameEditing( transform ) );
 
   QgsMeshEditor *editor = meshLayerQuadFlower->meshEditor();
@@ -1348,23 +1388,23 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadFlower()
   meshLayerQuadFlower->startFrameEditing( transform );
   editor = meshLayerQuadFlower->meshEditor();
   QCOMPARE( editor->addPointsAsVertices( {QgsPoint( 1500, 2800, -10 )}, 10 ), 1 ); // 8
-  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 9 );
+  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 8 );
   QCOMPARE( editor->addPointsAsVertices( {QgsPoint( 1800, 2700, -10 )}, 10 ), 1 ); // 9
-  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 12 );
+  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 10 );
   QCOMPARE( editor->addPointsAsVertices( {QgsPoint( 1400, 2300, -10 ), QgsPoint( 1500, 2200, -10 )}, 10 ), 2 ); // 10 & 11
 
   QCOMPARE( meshLayerQuadFlower->meshEditor()->freeVerticesIndexes().count(), 0 );
-  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 18 );
+  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 14 );
   QVERIFY( editor->checkConsistency() );
 
   // attempt to add a vertex under tolerance next existing one
   QCOMPARE( editor->addPointsAsVertices( {QgsPoint( 1499, 2801, -10 )}, 10 ), 0 );
 
-  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 18 );
+  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 14 );
 
   QCOMPARE( editor->addPointsAsVertices( {QgsPoint( 700, 1750, 0 )}, 10 ), 1 ); // 12
 
-  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 18 );
+  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 14 );
   QCOMPARE( meshLayerQuadFlower->meshVertexCount(), 13 );
   QCOMPARE( meshLayerQuadFlower->meshEditor()->freeVerticesIndexes().count(), 1 );
   QVERIFY( meshLayerQuadFlower->meshEditor()->freeVerticesIndexes().contains( 12 ) );
@@ -1377,7 +1417,7 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadFlower()
 
   QCOMPARE( editor->addPointsAsVertices( {QgsPoint( 1400, 2200, -10 )}, 10 ), 1 ); // 13
 
-  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 22 );
+  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 17 );
   QVERIFY( editor->checkConsistency() );
 
   QCOMPARE( meshLayerQuadFlower->datasetValue( QgsMeshDatasetIndex( 0, 0 ), QgsPointXY( 1420, 2220 ), 10 ).x(), -10 );
@@ -1465,8 +1505,8 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadFlower()
 
   QVERIFY( editor->removeVertices( {7}, true ) == QgsMeshEditingError() );
 
-  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 57 );
-  QCOMPARE( meshLayerQuadFlower->meshVertexCount(), 16 );
+  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 5 );
+  QCOMPARE( meshLayerQuadFlower->meshVertexCount(), 7 );
   QVERIFY( editor->checkConsistency() );
 
   meshLayerQuadFlower->commitFrameEditing( transform, true );
@@ -1487,9 +1527,7 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadFlower()
   QVERIFY( editor->removeVertices( {4}, true ) == QgsMeshEditingError() );
   QVERIFY( editor->checkConsistency() );
 
-  meshLayerQuadFlower->commitFrameEditing( transform, false );
-
-  QVERIFY( meshLayerQuadFlower->meshEditor() == nullptr );
+  meshLayerQuadFlower->commitFrameEditing( transform, true );
 
   QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 4 );
   QCOMPARE( meshLayerQuadFlower->meshVertexCount(), 10 );
@@ -1509,6 +1547,11 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadFlower()
   QCOMPARE( streamAltered.readAll(), streamExpected.readAll() );
 
   alteredFile.close();
+
+  QVERIFY( meshLayerQuadFlower->reindex( transform, true ) );
+  meshLayerQuadFlower->commitFrameEditing( transform, false );
+  QVERIFY( meshLayerQuadFlower->meshEditor() == nullptr );
+
   alteredFile.open( QIODevice::WriteOnly );
   streamAltered << streamOriginal.readAll();
 }
@@ -1565,7 +1608,7 @@ void TestQgsMeshEditor::refineMesh()
     mesh.faces.append( {10, 11, 12, 8} ); // 6
     mesh.faces.append( {8, 12, 7,} ); // 7
 
-    QgsCoordinateTransform transform;
+    const QgsCoordinateTransform transform;
     triangularMesh.update( &mesh, transform );
     QVERIFY( meshEditor.initialize() == QgsMeshEditingError() );
     QVERIFY( meshEditor.checkConsistency() );
@@ -1600,7 +1643,7 @@ void TestQgsMeshEditor::refineMesh()
     QgsTriangularMesh triangularMesh;
     QgsMeshEditor meshEditor( &mesh, &triangularMesh );
 
-    int sideSize = 20;
+    const int sideSize = 20;
 
     for ( int i = 0; i < sideSize; ++i )
       for ( int j = 0; j < sideSize; ++j )
@@ -1631,7 +1674,7 @@ void TestQgsMeshEditor::refineMesh()
         }
       }
 
-    QgsCoordinateTransform transform;
+    const QgsCoordinateTransform transform;
     triangularMesh.update( &mesh, transform );
     QVERIFY( meshEditor.initialize() == QgsMeshEditingError() );
 
@@ -1669,6 +1712,354 @@ void TestQgsMeshEditor::refineMesh()
         checkRefinedFace( mesh, facesRefinement, i, 2, -1, 3, 4 );
     }
   }
+}
+
+void TestQgsMeshEditor::transformByExpression()
+{
+  std::unique_ptr<QgsMeshLayer> layer = std::make_unique<QgsMeshLayer>( mDataDir + "/quad_flower_to_edit.2dm", "mesh", "mdal" );
+
+  const QgsCoordinateTransform transform;
+  layer->startFrameEditing( transform );
+
+  QgsMeshTransformVerticesByExpression transformVertex;
+
+  transformVertex.setExpressions( QStringLiteral( "$vertex_x + 50" ), QStringLiteral( "$vertex_y - 50" ), QStringLiteral( "$vertex_z + 100" ) );
+
+  // no input set
+  QVERIFY( !transformVertex.calculate( layer.get() ) );
+
+  transformVertex.setInputVertices( {0, 1, 3, 4} );
+
+  QVERIFY( transformVertex.calculate( layer.get() ) );
+
+  QCOMPARE( transformVertex.mChangeCoordinateVerticesIndexes, QList<int>( {0, 1, 3, 4} ) );
+  QVERIFY( transformVertex.mOldXYValues.at( 0 ).compare( QgsPointXY( 1000, 2000 ), 0.1 ) );
+  QVERIFY( transformVertex.mOldXYValues.at( 1 ).compare( QgsPointXY( 2000, 2000 ), 0.1 ) );
+  QVERIFY( transformVertex.mOldXYValues.at( 2 ).compare( QgsPointXY( 2000, 3000 ), 0.1 ) );
+  QVERIFY( transformVertex.mOldXYValues.at( 3 ).compare( QgsPointXY( 1000, 3000 ), 0.1 ) );
+  QVERIFY( transformVertex.mNewXYValues.at( 0 ).compare( QgsPointXY( 1050, 1950 ), 0.1 ) );
+  QVERIFY( transformVertex.mNewXYValues.at( 1 ).compare( QgsPointXY( 2050, 1950 ), 0.1 ) );
+  QVERIFY( transformVertex.mNewXYValues.at( 2 ).compare( QgsPointXY( 2050, 2950 ), 0.1 ) );
+  QVERIFY( transformVertex.mNewXYValues.at( 3 ).compare( QgsPointXY( 1050, 2950 ), 0.1 ) );
+  QCOMPARE( transformVertex.mNewZValues.at( 0 ), 300 );
+  QCOMPARE( transformVertex.mNewZValues.at( 1 ), 300 );
+  QCOMPARE( transformVertex.mNewZValues.at( 2 ), 300 );
+  QCOMPARE( transformVertex.mNewZValues.at( 3 ), 300 );
+
+  layer->meshEditor()->advancedEdit( &transformVertex );
+
+  QgsMesh &mesh = *layer->nativeMesh();
+
+  QVERIFY( QgsPoint( 1050, 1950, 300 ).compareTo( &mesh.vertices.at( 0 ) ) == 0 );
+  QVERIFY( QgsPoint( 2050, 1950, 300 ).compareTo( &mesh.vertices.at( 1 ) )  == 0 );
+  QVERIFY( QgsPoint( 2500, 2500, 800 ).compareTo( &mesh.vertices.at( 2 ) )  == 0 );
+  QVERIFY( QgsPoint( 2050, 2950, 300 ).compareTo( &mesh.vertices.at( 3 ) )  == 0 );
+  QVERIFY( QgsPoint( 1050, 2950, 300 ).compareTo( &mesh.vertices.at( 4 ) )  == 0 );
+  QVERIFY( QgsPoint( 500, 2500, 800 ).compareTo( &mesh.vertices.at( 5 ) )  == 0 );
+  QVERIFY( QgsPoint( 1500, 1500, 800 ).compareTo( &mesh.vertices.at( 6 ) )  == 0 );
+  QVERIFY( QgsPoint( 1500, 3500, 800 ).compareTo( &mesh.vertices.at( 7 ) )  == 0 );
+
+  layer->undoStack()->undo();
+  mesh = *layer->nativeMesh();
+
+  QVERIFY( QgsPoint( 1000, 2000, 200 ).compareTo( &mesh.vertices.at( 0 ) ) == 0 );
+  QVERIFY( QgsPoint( 2000, 2000, 200 ).compareTo( &mesh.vertices.at( 1 ) )  == 0 );
+  QVERIFY( QgsPoint( 2500, 2500, 800 ).compareTo( &mesh.vertices.at( 2 ) )  == 0 );
+  QVERIFY( QgsPoint( 2000, 3000, 200 ).compareTo( &mesh.vertices.at( 3 ) )  == 0 );
+  QVERIFY( QgsPoint( 1000, 3000, 200 ).compareTo( &mesh.vertices.at( 4 ) )  == 0 );
+  QVERIFY( QgsPoint( 500, 2500, 800 ).compareTo( &mesh.vertices.at( 5 ) )  == 0 );
+  QVERIFY( QgsPoint( 1500, 1500, 800 ).compareTo( &mesh.vertices.at( 6 ) )  == 0 );
+  QVERIFY( QgsPoint( 1500, 3500, 800 ).compareTo( &mesh.vertices.at( 7 ) )  == 0 );
+
+  layer->undoStack()->redo();
+  mesh = *layer->nativeMesh();
+
+  QVERIFY( QgsPoint( 1050, 1950, 300 ).compareTo( &mesh.vertices.at( 0 ) ) == 0 );
+  QVERIFY( QgsPoint( 2050, 1950, 300 ).compareTo( &mesh.vertices.at( 1 ) )  == 0 );
+  QVERIFY( QgsPoint( 2500, 2500, 800 ).compareTo( &mesh.vertices.at( 2 ) )  == 0 );
+  QVERIFY( QgsPoint( 2050, 2950, 300 ).compareTo( &mesh.vertices.at( 3 ) )  == 0 );
+  QVERIFY( QgsPoint( 1050, 2950, 300 ).compareTo( &mesh.vertices.at( 4 ) )  == 0 );
+  QVERIFY( QgsPoint( 500, 2500, 800 ).compareTo( &mesh.vertices.at( 5 ) )  == 0 );
+  QVERIFY( QgsPoint( 1500, 1500, 800 ).compareTo( &mesh.vertices.at( 6 ) )  == 0 );
+  QVERIFY( QgsPoint( 1500, 3500, 800 ).compareTo( &mesh.vertices.at( 7 ) )  == 0 );
+
+  layer->undoStack()->undo();
+
+  // leads to an invalid mesh
+  transformVertex.clear();
+  transformVertex.setInputVertices( {1, 3} );
+  transformVertex.setExpressions( QStringLiteral( "$vertex_x -1500" ), QStringLiteral( "$vertex_y - 1500" ), QString() );
+
+  QVERIFY( !transformVertex.calculate( layer.get() ) );
+
+  // transforme with intersecting existing faces
+  transformVertex.clear();
+  transformVertex.setInputVertices( {2, 3, 7} );
+  transformVertex.setExpressions( QStringLiteral( "$vertex_x+700" ), QStringLiteral( "$vertex_y + 700" ), QString() );
+
+  QVERIFY( transformVertex.calculate( layer.get() ) );
+
+  // add a other face that will intersects transformed ones
+  layer->meshEditor()->addVertices(
+  {
+    {2000, 3500, 0},  // 8
+    {2500, 3500, 10}, // 9
+    {2500, 4000, 20}} // 10
+  , 1 );
+
+  QVERIFY( !transformVertex.calculate( layer.get() ) );
+
+  layer->meshEditor()->addFace( {8, 9, 10} );
+
+  QVERIFY( !transformVertex.calculate( layer.get() ) );
+
+  // undo adding vertices and face
+  layer->undoStack()->undo();
+  layer->undoStack()->undo();
+
+  QVERIFY( transformVertex.calculate( layer.get() ) );
+
+  // composed expression
+  transformVertex.clear();
+  transformVertex.setInputVertices( {0, 1, 2, 3, 4, 5, 6, 7} );
+  transformVertex.setExpressions( QStringLiteral( "$vertex_y + 50" ),
+                                  QStringLiteral( "-$vertex_x" ),
+                                  QStringLiteral( "if( $vertex_x <= 1500 , $vertex_z + 80 , $vertex_z - 150)" ) );
+
+  QVERIFY( transformVertex.calculate( layer.get() ) );
+  layer->meshEditor()->advancedEdit( &transformVertex );
+
+  mesh = *layer->nativeMesh();
+
+  QVERIFY( QgsPoint( 2050, -1000, 280 ).compareTo( &mesh.vertices.at( 0 ) ) == 0 );
+  QVERIFY( QgsPoint( 2050, -2000, 50 ).compareTo( &mesh.vertices.at( 1 ) )  == 0 );
+  QVERIFY( QgsPoint( 2550, -2500, 650 ).compareTo( &mesh.vertices.at( 2 ) )  == 0 );
+  QVERIFY( QgsPoint( 3050, -2000, 50 ).compareTo( &mesh.vertices.at( 3 ) )  == 0 );
+  QVERIFY( QgsPoint( 3050, -1000, 280 ).compareTo( &mesh.vertices.at( 4 ) )  == 0 );
+  QVERIFY( QgsPoint( 2550, -500, 880 ).compareTo( &mesh.vertices.at( 5 ) )  == 0 );
+  QVERIFY( QgsPoint( 1550, -1500, 880 ).compareTo( &mesh.vertices.at( 6 ) )  == 0 );
+  QVERIFY( QgsPoint( 3550, -1500, 880 ).compareTo( &mesh.vertices.at( 7 ) )  == 0 );
+
+  layer->undoStack()->undo();
+
+
+  // move only a free vertex in an existing face
+  layer->meshEditor()->addVertices( {QgsMeshVertex( 2500, 3500, 0 )}, 10 );
+  QVERIFY( layer->meshVertexCount() == 9 );
+
+  transformVertex.clear();
+  transformVertex.setInputVertices( {8} );
+  transformVertex.setExpressions( QStringLiteral( "$vertex_x - 1000" ),
+                                  QStringLiteral( "$vertex_y - 1000" ),
+                                  QStringLiteral( "" ) );
+
+  QVERIFY( !transformVertex.calculate( layer.get() ) );
+
+  transformVertex.clear();
+  transformVertex.setInputVertices( {8} );
+
+  transformVertex.setExpressions( QStringLiteral( "$vertex_x + 1000" ),
+                                  QStringLiteral( "$vertex_y + 1000" ),
+                                  QStringLiteral( "" ) );
+
+  QVERIFY( transformVertex.calculate( layer.get() ) );
+}
+
+void TestQgsMeshEditor::forceByLine()
+{
+  QString uri( mDataDir + "/refined_quad_flower.2dm" );
+  std::unique_ptr<QgsMeshLayer> meshLayer = std::make_unique<QgsMeshLayer>( uri, "mesh layer", "mdal" );
+
+  QVERIFY( meshLayer->isValid() );
+  QgsCoordinateTransform transform;
+  QVERIFY( meshLayer->startFrameEditing( transform ) );
+
+  QVERIFY( meshLayer->meshEditor() );
+
+
+  int initialFaceCount = meshLayer->nativeMesh()->faceCount();
+  int initialVertexCount = meshLayer->nativeMesh()->vertexCount();
+
+  QgsMeshEditForceByLine forceByLine;
+
+  // begin exterior, end exterior, snap on vertex for all the line without splitting faces
+  forceByLine.setInputLine( QgsPoint( 750, 2999, 0 ), QgsPoint( 2250, 2999, 0 ), 2, false );
+  meshLayer->meshEditor()->advancedEdit( &forceByLine );
+
+  QCOMPARE( meshLayer->nativeMesh()->faceCount(), initialFaceCount );
+  QCOMPARE( meshLayer->nativeMesh()->vertexCount(), initialVertexCount );
+
+  meshLayer->undoStack()->undo();
+
+  // begin interior, end exterior,  snap on vertex for all the line without splitting faces
+  forceByLine.setInputLine( QgsPoint( 1001, 2999, 0 ), QgsPoint( 2250, 3000, 0 ), 2, false );
+  meshLayer->meshEditor()->advancedEdit( &forceByLine );
+
+  QCOMPARE( meshLayer->nativeMesh()->faceCount(), initialFaceCount );
+  QCOMPARE( meshLayer->nativeMesh()->vertexCount(), initialVertexCount );
+
+  meshLayer->undoStack()->undo();
+
+  // begin exterior, end exterior, snap on vertex for all the line, splitting one quad
+  forceByLine.setInputLine( QgsPoint( 750, 2251, 0 ), QgsPoint( 2250, 2249, 0 ), 2, false );
+  meshLayer->meshEditor()->advancedEdit( &forceByLine );
+
+  QVERIFY( meshLayer->meshEditor()->checkConsistency() );
+  QCOMPARE( meshLayer->nativeMesh()->faceCount(), initialFaceCount + 2 );
+  QCOMPARE( meshLayer->nativeMesh()->vertexCount(), initialVertexCount );
+
+  meshLayer->undoStack()->undo();
+
+  //begin exterior, end exterior, snap on vertex when entering the mesh and cut edge
+  forceByLine.setInputLine( QgsPoint( 500, 3001, 0 ), QgsPoint( 2000, 1499, 0 ), 2, false );
+  meshLayer->meshEditor()->advancedEdit( &forceByLine );
+
+  QVERIFY( meshLayer->meshEditor()->checkConsistency() );
+  QCOMPARE( meshLayer->nativeMesh()->faceCount(), initialFaceCount + 4 );
+  QCOMPARE( meshLayer->nativeMesh()->vertexCount(), initialVertexCount );
+
+  meshLayer->undoStack()->undo();
+
+  // begin exterior, end exterior, snap on vertex when entering the mesh and cut edge AND insert vertex when intersection with edge
+  forceByLine.setInputLine( QgsPoint( 500, 3001, 0 ), QgsPoint( 2000, 1499, 0 ), 2, true );
+  meshLayer->meshEditor()->advancedEdit( &forceByLine );
+
+  QVERIFY( meshLayer->meshEditor()->checkConsistency() );
+  QCOMPARE( meshLayer->nativeMesh()->faceCount(), initialFaceCount + 8 );
+  QCOMPARE( meshLayer->nativeMesh()->vertexCount(), initialVertexCount + 2 );
+
+  meshLayer->undoStack()->undo();
+
+  // begin exterior, end exterior, cut edge when entering the mesh
+  forceByLine.setInputLine( QgsPoint( 1000, 1751, 0 ), QgsPoint( 2250, 2999, 0 ), 2, false );
+  meshLayer->meshEditor()->advancedEdit( &forceByLine );
+
+  QVERIFY( meshLayer->meshEditor()->checkConsistency() );
+  QCOMPARE( meshLayer->nativeMesh()->faceCount(), initialFaceCount + 8 );
+  QCOMPARE( meshLayer->nativeMesh()->vertexCount(), initialVertexCount + 2 );
+
+  meshLayer->undoStack()->undo();
+
+  // begin interior snapping vertex, end exterior
+  forceByLine.setInputLine( QgsPoint( 999, 2251, 0 ), QgsPoint( 2250, 3000, 0 ), 2, false );
+  meshLayer->meshEditor()->advancedEdit( &forceByLine );
+
+  QVERIFY( meshLayer->meshEditor()->checkConsistency() );
+  QCOMPARE( meshLayer->nativeMesh()->vertexCount(), initialVertexCount + 1 );
+  QCOMPARE( meshLayer->nativeMesh()->faceCount(), initialFaceCount + 13 );
+
+  meshLayer->undoStack()->undo();
+
+  // begin interior No snapping vertex and snap vertex just after
+  forceByLine.setInputLine( QgsPoint( 1010, 2251, 0 ), QgsPoint( 2500, 2249, 0 ), 2, false );
+  meshLayer->meshEditor()->advancedEdit( &forceByLine );
+
+  QVERIFY( meshLayer->meshEditor()->checkConsistency() );
+  QCOMPARE( meshLayer->nativeMesh()->vertexCount(), initialVertexCount + 1 );
+  QCOMPARE( meshLayer->nativeMesh()->faceCount(), initialFaceCount + 4 );
+
+  meshLayer->undoStack()->undo();
+
+  // begin interior No snapping vertex and cut edge just after
+  forceByLine.setInputLine( QgsPoint( 1250, 2250, 0 ), QgsPoint( 2250, 3250, 0 ), 2, false );
+  meshLayer->meshEditor()->advancedEdit( &forceByLine );
+
+  QVERIFY( meshLayer->meshEditor()->checkConsistency() );
+  QCOMPARE( meshLayer->nativeMesh()->vertexCount(), initialVertexCount + 1 );
+  QCOMPARE( meshLayer->nativeMesh()->faceCount(), initialFaceCount + 10 );
+
+  meshLayer->undoStack()->undo();
+
+  // begin interior No snapping vertex and cut edge just after with insertion of point
+  forceByLine.setInputLine( QgsPoint( 1250, 2250, 0 ), QgsPoint( 2250, 3250, 0 ), 2, true );
+  meshLayer->meshEditor()->advancedEdit( &forceByLine );
+
+  QVERIFY( meshLayer->meshEditor()->checkConsistency() );
+  QCOMPARE( meshLayer->nativeMesh()->vertexCount(), initialVertexCount + 2 );
+  QCOMPARE( meshLayer->nativeMesh()->faceCount(), initialFaceCount + 12 );
+
+  meshLayer->undoStack()->undo();
+
+  // begin interior No snapping vertex and finish interior without snapping vertex just after a snapped vertex
+  forceByLine.setInputLine( QgsPoint( 1250, 2250, 0 ), QgsPoint( 1950, 2950, 0 ), 2, false );
+  meshLayer->meshEditor()->advancedEdit( &forceByLine );
+
+  QVERIFY( meshLayer->meshEditor()->checkConsistency() );
+  QCOMPARE( meshLayer->nativeMesh()->vertexCount(), initialVertexCount + 2 );
+  QCOMPARE( meshLayer->nativeMesh()->faceCount(), initialFaceCount + 12 );
+
+  meshLayer->undoStack()->undo();
+
+  // begin interior No snapping vertex and finish interior without snapping vertex just after cutting an edge, without intersection on edges
+  forceByLine.setInputLine( QgsPoint( 1250, 2250, 0 ), QgsPoint( 1850, 3050, 0 ), 2, false );
+  meshLayer->meshEditor()->advancedEdit( &forceByLine );
+
+  QVERIFY( meshLayer->meshEditor()->checkConsistency() );
+  QCOMPARE( meshLayer->nativeMesh()->vertexCount(), initialVertexCount + 2 );
+  QCOMPARE( meshLayer->nativeMesh()->faceCount(), initialFaceCount + 18 );
+
+  meshLayer->undoStack()->undo();
+
+  // begin interior No snapping vertex and finish interior without snapping vertex just after cutting an edge, without intersection on edges
+  forceByLine.setInputLine( QgsPoint( 1250, 2250, 0 ), QgsPoint( 1850, 3050, 0 ), 2, true );
+  meshLayer->meshEditor()->advancedEdit( &forceByLine );
+
+  QVERIFY( meshLayer->meshEditor()->checkConsistency() );
+  QCOMPARE( meshLayer->nativeMesh()->vertexCount(), initialVertexCount + 8 );
+  QCOMPARE( meshLayer->nativeMesh()->faceCount(), initialFaceCount + 30 );
+
+  meshLayer->undoStack()->undo();
+
+  // a short line in only one face
+  forceByLine.setInputLine( QgsPoint( 1200, 2350, 0 ), QgsPoint( 1350, 2150, 0 ), 2, true );
+  meshLayer->meshEditor()->advancedEdit( &forceByLine );
+
+  QVERIFY( meshLayer->meshEditor()->checkConsistency() );
+  QCOMPARE( meshLayer->nativeMesh()->vertexCount(), initialVertexCount + 2 );
+  QCOMPARE( meshLayer->nativeMesh()->faceCount(), initialFaceCount + 7 );
+
+  meshLayer->undoStack()->undo();
+
+  forceByLine.setInputLine( QgsPoint( 3170, 2210, 0 ), QgsPoint( 4775, 2680, 0 ), 10, true );
+  meshLayer->meshEditor()->advancedEdit( &forceByLine );
+
+  QVERIFY( meshLayer->meshEditor()->checkConsistency() );
+  QCOMPARE( meshLayer->nativeMesh()->vertexCount(), initialVertexCount + 3 );
+  QCOMPARE( meshLayer->nativeMesh()->faceCount(), initialFaceCount + 12 );
+
+  meshLayer->undoStack()->undo();
+
+  QgsMeshEditForceByPolylines forceByPolyline1;
+  forceByPolyline1.setTolerance( 5 );
+
+  std::unique_ptr<QgsLineString> lineString = std::make_unique<QgsLineString>();
+  lineString->addVertex( {1250, 2250, 5} );
+  lineString->addVertex( {1850, 2850, 20} );
+  lineString->addVertex( {1850, 0, 150} );
+  forceByPolyline1.addLineFromGeometry( QgsGeometry( lineString.release() ) );
+
+  meshLayer->meshEditor()->advancedEdit( &forceByPolyline1 );
+
+  QVERIFY( meshLayer->meshEditor()->checkConsistency() );
+  QCOMPARE( meshLayer->nativeMesh()->vertexCount(), initialVertexCount + 3 );
+  QCOMPARE( meshLayer->nativeMesh()->faceCount(), initialFaceCount + 21 );
+
+  meshLayer->undoStack()->undo();
+
+  QgsMeshEditForceByPolylines forceByPolyline2;
+  lineString = std::make_unique<QgsLineString>();
+  lineString->addVertex( {1250, 2250, 5} );
+  lineString->addVertex( {1850, 2850, 20} );
+  lineString->addVertex( {1850, 0, 150} );
+  forceByPolyline2.addLineFromGeometry( QgsGeometry( lineString.release() ) );
+  forceByPolyline2.clear();
+  forceByPolyline2.setAddVertexOnIntersection( true );
+
+  meshLayer->meshEditor()->advancedEdit( &forceByPolyline2 );
+  QVERIFY( meshLayer->meshEditor()->checkConsistency() );
+  QCOMPARE( meshLayer->nativeMesh()->vertexCount(), initialVertexCount + 8 );
+  QCOMPARE( meshLayer->nativeMesh()->faceCount(), initialFaceCount + 31 );
+
 }
 
 QGSTEST_MAIN( TestQgsMeshEditor )

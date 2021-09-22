@@ -107,7 +107,7 @@ void QgsRubberBand3D::addPoint( const QgsPoint &pt )
 
 void QgsRubberBand3D::removeLastPoint()
 {
-  int lastVertexIndex = mLineString.numPoints() - 1;
+  const int lastVertexIndex = mLineString.numPoints() - 1;
   mLineString.deleteVertex( QgsVertexId( 0, 0, lastVertexIndex ) );
   updateGeometry();
 }

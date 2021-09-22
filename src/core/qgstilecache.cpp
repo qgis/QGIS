@@ -27,7 +27,7 @@ QMutex QgsTileCache::sTileCacheMutex;
 
 void QgsTileCache::insertTile( const QUrl &url, const QImage &image )
 {
-  QMutexLocker locker( &sTileCacheMutex );
+  const QMutexLocker locker( &sTileCacheMutex );
   sTileCache.insert( url, new QImage( image ) );
 }
 
@@ -36,9 +36,9 @@ bool QgsTileCache::tile( const QUrl &url, QImage &image )
   QNetworkRequest req( url );
   //Preprocessing might alter the url, so we need to make sure we store/retrieve the url after preprocessing
   QgsNetworkAccessManager::instance()->preprocessRequest( &req );
-  QUrl adjUrl = req.url();
+  const QUrl adjUrl = req.url();
 
-  QMutexLocker locker( &sTileCacheMutex );
+  const QMutexLocker locker( &sTileCacheMutex );
   bool success = false;
   if ( QImage *i = sTileCache.object( adjUrl ) )
   {
@@ -49,7 +49,7 @@ bool QgsTileCache::tile( const QUrl &url, QImage &image )
   {
     if ( QIODevice *data = QgsNetworkAccessManager::instance()->cache()->data( adjUrl ) )
     {
-      QByteArray imageData = data->readAll();
+      const QByteArray imageData = data->readAll();
       delete data;
 
       image = QImage::fromData( imageData );
@@ -68,12 +68,12 @@ bool QgsTileCache::tile( const QUrl &url, QImage &image )
 
 int QgsTileCache::totalCost()
 {
-  QMutexLocker locker( &sTileCacheMutex );
+  const QMutexLocker locker( &sTileCacheMutex );
   return sTileCache.totalCost();
 }
 
 int QgsTileCache::maxCost()
 {
-  QMutexLocker locker( &sTileCacheMutex );
+  const QMutexLocker locker( &sTileCacheMutex );
   return sTileCache.maxCost();
 }

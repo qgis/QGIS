@@ -38,7 +38,7 @@ namespace QgsWms
     // Build default url
     if ( href.isEmpty() )
     {
-      static QSet<QString> sFilter
+      static const QSet<QString> sFilter
       {
         QStringLiteral( "REQUEST" ),
         QStringLiteral( "VERSION" ),
@@ -52,7 +52,8 @@ namespace QgsWms
       href = request.originalUrl();
       QUrlQuery q( href );
 
-      for ( auto param : q.queryItems() )
+      const QList<QPair<QString, QString> > queryItems = q.queryItems();
+      for ( const QPair<QString, QString> &param : queryItems )
       {
         if ( sFilter.contains( param.first.toUpper() ) )
           q.removeAllQueryItems( param.first );
@@ -85,11 +86,11 @@ namespace QgsWms
     else
     {
       // lookup for png with mode
-      QRegularExpression modeExpr = QRegularExpression( QStringLiteral( "image/png\\s*;\\s*mode=([^;]+)" ),
-                                    QRegularExpression::CaseInsensitiveOption );
+      const QRegularExpression modeExpr = QRegularExpression( QStringLiteral( "image/png\\s*;\\s*mode=([^;]+)" ),
+                                          QRegularExpression::CaseInsensitiveOption );
 
-      QRegularExpressionMatch match = modeExpr.match( format );
-      QString mode = match.captured( 1 );
+      const QRegularExpressionMatch match = modeExpr.match( format );
+      const QString mode = match.captured( 1 );
       if ( mode.compare( QLatin1String( "16bit" ), Qt::CaseInsensitive ) == 0 )
         return PNG16;
       if ( mode.compare( QLatin1String( "8bit" ), Qt::CaseInsensitive ) == 0 )
@@ -105,7 +106,7 @@ namespace QgsWms
   void writeImage( QgsServerResponse &response, QImage &img, const QString &formatStr,
                    int imageQuality )
   {
-    ImageOutputFormat outputFormat = parseImageFormat( formatStr );
+    const ImageOutputFormat outputFormat = parseImageFormat( formatStr );
     QImage  result;
     QString saveFormat;
     QString contentType;
@@ -123,7 +124,7 @@ namespace QgsWms
         // Rendering is made with the format QImage::Format_ARGB32_Premultiplied
         // So we need to convert it in QImage::Format_ARGB32 in order to properly build
         // the color table.
-        QImage img256 = img.convertToFormat( QImage::Format_ARGB32 );
+        const QImage img256 = img.convertToFormat( QImage::Format_ARGB32 );
         medianCut( colorTable, 256, img256 );
         result = img256.convertToFormat( QImage::Format_Indexed8, colorTable,
                                          Qt::ColorOnly | Qt::ThresholdDither |

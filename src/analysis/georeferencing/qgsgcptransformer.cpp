@@ -345,7 +345,7 @@ bool QgsGDALGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY>
   assert( sourceCoordinates.size() == destinationCoordinates.size() );
   if ( sourceCoordinates.size() != destinationCoordinates.size() )
     return false;
-  int n = sourceCoordinates.size();
+  const int n = sourceCoordinates.size();
 
   GDAL_GCP *GCPList = new GDAL_GCP[n];
   for ( int i = 0; i < n; i++ )
@@ -481,7 +481,7 @@ bool QgsProjectiveGeorefTransform::updateParametersFromGcps( const QVector<QgsPo
   adjoint[7] = -H[0] * H[7] + H[1] * H[6];
   adjoint[8] = H[0] * H[4] - H[1] * H[3];
 
-  double det = H[0] * adjoint[0] + H[3] * adjoint[1] + H[6] * adjoint[2];
+  const double det = H[0] * adjoint[0] + H[3] * adjoint[1] + H[6] * adjoint[2];
 
   if ( std::fabs( det ) < 1024.0 * std::numeric_limits<double>::epsilon() )
   {
@@ -490,7 +490,7 @@ bool QgsProjectiveGeorefTransform::updateParametersFromGcps( const QVector<QgsPo
   else
   {
     mParameters.hasInverse = true;
-    double oo_det = 1.0 / det;
+    const double oo_det = 1.0 / det;
     for ( int i = 0; i < 9; i++ )
     {
       mParameters.Hinv[i] = adjoint[i] * oo_det;
@@ -548,15 +548,15 @@ int QgsProjectiveGeorefTransform::projectiveTransform( void *pTransformerArg, in
 
   for ( int i = 0; i < nPointCount; ++i )
   {
-    double Z = x[i] * H[6] + y[i] * H[7] + H[8];
+    const double Z = x[i] * H[6] + y[i] * H[7] + H[8];
     // Projects to infinity?
     if ( std::fabs( Z ) < 1024.0 * std::numeric_limits<double>::epsilon() )
     {
       panSuccess[i] = false;
       continue;
     }
-    double X = ( x[i] * H[0] + y[i] * H[1] + H[2] ) / Z;
-    double Y = ( x[i] * H[3] + y[i] * H[4] + H[5] ) / Z;
+    const double X = ( x[i] * H[0] + y[i] * H[1] + H[2] ) / Z;
+    const double Y = ( x[i] * H[3] + y[i] * H[4] + H[5] ) / Z;
 
     x[i] = X;
     y[i] = Y;

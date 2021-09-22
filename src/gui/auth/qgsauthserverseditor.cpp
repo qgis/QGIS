@@ -65,7 +65,7 @@ QgsAuthServersEditor::QgsAuthServersEditor( QWidget *parent )
     connect( btnViewRefresh, &QAbstractButton::clicked, this, &QgsAuthServersEditor::refreshSslConfigsView );
 
     btnGroupByOrg->setChecked( false );
-    QVariant sortbyval = QgsApplication::authManager()->authSetting( QStringLiteral( "serverssortby" ), QVariant( false ) );
+    const QVariant sortbyval = QgsApplication::authManager()->authSetting( QStringLiteral( "serverssortby" ), QVariant( false ) );
     if ( !sortbyval.isNull() )
       btnGroupByOrg->setChecked( sortbyval.toBool() );
 
@@ -154,7 +154,7 @@ void QgsAuthServersEditor::appendSslConfigsToGroup( const QList<QgsAuthConfigSsl
   }
 
   // TODO: find all organizational name, sort and make subsections
-  QMap< QString, QList<QgsAuthConfigSslServer> > orgconfigs(
+  const QMap< QString, QList<QgsAuthConfigSslServer> > orgconfigs(
     QgsAuthCertUtils::sslConfigsGroupedByOrg( configs ) );
 
   QMap< QString, QList<QgsAuthConfigSslServer> >::const_iterator it = orgconfigs.constBegin();
@@ -192,14 +192,14 @@ void QgsAuthServersEditor::appendSslConfigsToItem( const QList<QgsAuthConfigSslS
     parent = treeServerConfigs->currentItem();
   }
 
-  QBrush redb( QgsAuthGuiUtils::redColor() );
+  const QBrush redb( QgsAuthGuiUtils::redColor() );
 
   // Columns: Common Name, Host, Expiry Date
   const auto constConfigs = configs;
   for ( const QgsAuthConfigSslServer &config : constConfigs )
   {
-    QSslCertificate cert( config.sslCertificate() );
-    QString id( QgsAuthCertUtils::shaHexForCert( cert ) );
+    const QSslCertificate cert( config.sslCertificate() );
+    const QString id( QgsAuthCertUtils::shaHexForCert( cert ) );
 
     QStringList coltxts;
     coltxts << QgsAuthCertUtils::resolvedCertName( cert );
@@ -294,8 +294,8 @@ void QgsAuthServersEditor::btnRemoveServer_clicked()
     return;
   }
 
-  QString digest( item->data( 0, Qt::UserRole ).toString() );
-  QString hostport( item->text( 1 ) );
+  const QString digest( item->data( 0, Qt::UserRole ).toString() );
+  const QString hostport( item->text( 1 ) );
 
   if ( digest.isEmpty() )
   {
@@ -350,8 +350,8 @@ void QgsAuthServersEditor::btnEditServer_clicked()
     return;
   }
 
-  QString digest( item->data( 0, Qt::UserRole ).toString() );
-  QString hostport( item->text( 1 ) );
+  const QString digest( item->data( 0, Qt::UserRole ).toString() );
+  const QString hostport( item->text( 1 ) );
 
   if ( digest.isEmpty() )
   {
@@ -372,8 +372,8 @@ void QgsAuthServersEditor::btnEditServer_clicked()
     return;
   }
 
-  QgsAuthConfigSslServer config( QgsApplication::authManager()->sslCertCustomConfig( digest, hostport ) );
-  QSslCertificate cert( config.sslCertificate() );
+  const QgsAuthConfigSslServer config( QgsApplication::authManager()->sslCertCustomConfig( digest, hostport ) );
+  const QSslCertificate cert( config.sslCertificate() );
 
   QgsAuthSslConfigDialog *dlg = new QgsAuthSslConfigDialog( this, cert, hostport );
   dlg->sslCustomConfigWidget()->setConfigCheckable( false );
@@ -399,7 +399,7 @@ void QgsAuthServersEditor::btnGroupByOrg_toggled( bool checked )
 
 void QgsAuthServersEditor::authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level )
 {
-  int levelint = static_cast<int>( level );
+  const int levelint = static_cast<int>( level );
   messageBar()->pushMessage( authtag, message, ( Qgis::MessageLevel )levelint, 7 );
 }
 
@@ -419,6 +419,6 @@ QgsMessageBar *QgsAuthServersEditor::messageBar()
 
 int QgsAuthServersEditor::messageTimeout()
 {
-  QgsSettings settings;
+  const QgsSettings settings;
   return settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
 }

@@ -63,20 +63,20 @@ void QgsMeshDatasetGroupTreeWidget::addDataset()
     return;
 
   QgsSettings settings;
-  QString openFileDir = settings.value( QStringLiteral( "lastMeshDatasetDir" ), QDir::homePath(), QgsSettings::App ).toString();
-  QString openFileString = QFileDialog::getOpenFileName( nullptr,
-                           tr( "Load mesh datasets" ),
-                           openFileDir,
-                           QgsProviderRegistry::instance()->fileMeshDatasetFilters() );
+  const QString openFileDir = settings.value( QStringLiteral( "lastMeshDatasetDir" ), QDir::homePath(), QgsSettings::App ).toString();
+  const QString openFileString = QFileDialog::getOpenFileName( nullptr,
+                                 tr( "Load mesh datasets" ),
+                                 openFileDir,
+                                 QgsProviderRegistry::instance()->fileMeshDatasetFilters() );
 
   if ( openFileString.isEmpty() )
   {
     return; // canceled by the user
   }
 
-  QFileInfo openFileInfo( openFileString );
+  const QFileInfo openFileInfo( openFileString );
   settings.setValue( QStringLiteral( "lastMeshDatasetDir" ), openFileInfo.absolutePath(), QgsSettings::App );
-  QFile datasetFile( openFileString );
+  const QFile datasetFile( openFileString );
 
   if ( mMeshLayer->addDatasets( openFileString, QgsProject::instance()->timeSettings()->temporalRange().begin() ) )
   {

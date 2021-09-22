@@ -71,19 +71,19 @@ void QgsExpressionFieldBuffer::readXml( const QDomNode &layerNode )
 
   if ( !expressionFieldsElem.isNull() )
   {
-    QDomNodeList fields = expressionFieldsElem.elementsByTagName( QStringLiteral( "field" ) );
+    const QDomNodeList fields = expressionFieldsElem.elementsByTagName( QStringLiteral( "field" ) );
 
     for ( int i = 0; i < fields.size(); ++i )
     {
-      QDomElement field = fields.at( i ).toElement();
-      QString exp = field.attribute( QStringLiteral( "expression" ) );
-      QString name = field.attribute( QStringLiteral( "name" ) );
-      QString comment = field.attribute( QStringLiteral( "comment" ) );
-      int precision = field.attribute( QStringLiteral( "precision" ) ).toInt();
-      int length = field.attribute( QStringLiteral( "length" ) ).toInt();
-      QVariant::Type type = static_cast< QVariant::Type >( field.attribute( QStringLiteral( "type" ) ).toInt() );
-      QVariant::Type subType = static_cast< QVariant::Type >( field.attribute( QStringLiteral( "subType" ), QStringLiteral( "0" ) ).toInt() );
-      QString typeName = field.attribute( QStringLiteral( "typeName" ) );
+      const QDomElement field = fields.at( i ).toElement();
+      const QString exp = field.attribute( QStringLiteral( "expression" ) );
+      const QString name = field.attribute( QStringLiteral( "name" ) );
+      const QString comment = field.attribute( QStringLiteral( "comment" ) );
+      const int precision = field.attribute( QStringLiteral( "precision" ) ).toInt();
+      const int length = field.attribute( QStringLiteral( "length" ) ).toInt();
+      const QVariant::Type type = static_cast< QVariant::Type >( field.attribute( QStringLiteral( "type" ) ).toInt() );
+      const QVariant::Type subType = static_cast< QVariant::Type >( field.attribute( QStringLiteral( "subType" ), QStringLiteral( "0" ) ).toInt() );
+      const QString typeName = field.attribute( QStringLiteral( "typeName" ) );
 
       mExpressions.append( ExpressionField( exp, QgsField( name, type, typeName, length, precision, comment, subType ) ) );
     }

@@ -64,7 +64,7 @@ void QgsVectorTileDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
 void QgsVectorTileDataItemGuiProvider::editConnection( QgsDataItem *item )
 {
   const QgsVectorTileProviderConnection::Data connection = QgsVectorTileProviderConnection::connection( item->name() );
-  QString uri = QgsVectorTileProviderConnection::encodedUri( connection );
+  const QString uri = QgsVectorTileProviderConnection::encodedUri( connection );
 
   switch ( connection.serviceType )
   {
@@ -77,7 +77,7 @@ void QgsVectorTileDataItemGuiProvider::editConnection( QgsDataItem *item )
         return;
 
       QgsVectorTileProviderConnection::deleteConnection( item->name() );
-      QgsVectorTileProviderConnection::Data conn = QgsVectorTileProviderConnection::decodedUri( dlg.connectionUri() );
+      const QgsVectorTileProviderConnection::Data conn = QgsVectorTileProviderConnection::decodedUri( dlg.connectionUri() );
       QgsVectorTileProviderConnection::addConnection( dlg.connectionName(), conn );
       break;
     }
@@ -91,7 +91,7 @@ void QgsVectorTileDataItemGuiProvider::editConnection( QgsDataItem *item )
         return;
 
       QgsVectorTileProviderConnection::deleteConnection( item->name() );
-      QgsVectorTileProviderConnection::Data conn = QgsVectorTileProviderConnection::decodedUri( dlg.connectionUri() );
+      const QgsVectorTileProviderConnection::Data conn = QgsVectorTileProviderConnection::decodedUri( dlg.connectionUri() );
       QgsVectorTileProviderConnection::addConnection( dlg.connectionName(), conn );
       break;
     }
@@ -117,7 +117,7 @@ void QgsVectorTileDataItemGuiProvider::newConnection( QgsDataItem *item )
   if ( !dlg.exec() )
     return;
 
-  QgsVectorTileProviderConnection::Data conn = QgsVectorTileProviderConnection::decodedUri( dlg.connectionUri() );
+  const QgsVectorTileProviderConnection::Data conn = QgsVectorTileProviderConnection::decodedUri( dlg.connectionUri() );
   QgsVectorTileProviderConnection::addConnection( dlg.connectionName(), conn );
 
   item->refreshConnections();
@@ -129,7 +129,7 @@ void QgsVectorTileDataItemGuiProvider::newArcGISConnection( QgsDataItem *item )
   if ( !dlg.exec() )
     return;
 
-  QgsVectorTileProviderConnection::Data conn = QgsVectorTileProviderConnection::decodedUri( dlg.connectionUri() );
+  const QgsVectorTileProviderConnection::Data conn = QgsVectorTileProviderConnection::decodedUri( dlg.connectionUri() );
   QgsVectorTileProviderConnection::addConnection( dlg.connectionName(), conn );
 
   item->refreshConnections();
@@ -143,8 +143,8 @@ void QgsVectorTileDataItemGuiProvider::saveXyzTilesServers()
 
 void QgsVectorTileDataItemGuiProvider::loadXyzTilesServers( QgsDataItem *item )
 {
-  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
-                     tr( "XML files (*.xml *.XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
+                           tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;

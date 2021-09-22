@@ -157,20 +157,20 @@ class TestQgsPostgresConn: public QObject
       QVector<QgsPostgresLayerProperty> layers;
       QMap<QString, QgsPostgresLayerProperty> layersMap;
 
-      bool success = conn->supportedLayers(
-                       layers,
-                       false, // searchGeometryColumnsOnly
-                       false, // searchPublicOnly
-                       false, // allowGeometrylessTables
-                       "qgis_test" // schema
-                     );
+      const bool success = conn->supportedLayers(
+                             layers,
+                             false, // searchGeometryColumnsOnly
+                             false, // searchPublicOnly
+                             false, // allowGeometrylessTables
+                             "qgis_test" // schema
+                           );
       QVERIFY( success );
 
       // Test no duplicates are reported by supportedLayers
-      for ( auto &l : layers )
+      for ( const auto &l : layers )
       {
-        QString key = QString( "%1.%2.%3" ).arg( l.schemaName, l.tableName, l.geometryColName );
-        auto i = layersMap.find( key );
+        const QString key = QString( "%1.%2.%3" ).arg( l.schemaName, l.tableName, l.geometryColName );
+        const auto i = layersMap.find( key );
         if ( i != layersMap.end() )
         {
           QFAIL(
@@ -183,8 +183,8 @@ class TestQgsPostgresConn: public QObject
       }
 
       // Test qgis_test.TopoLayer1.topogeom
-      QString key = QString( "qgis_test.TopoLayer1.topogeom" );
-      auto lit = layersMap.find( key );
+      const QString key = QString( "qgis_test.TopoLayer1.topogeom" );
+      const auto lit = layersMap.find( key );
       QVERIFY2(
         lit != layersMap.end(),
         "Layer qgis_test.TopoLayer1.topogeom not returned by supportedLayers"

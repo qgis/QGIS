@@ -51,7 +51,7 @@ QSizeF QgsTextDiagram::diagramSize( const QgsFeature &feature, const QgsRenderCo
   }
 
   bool ok = false;
-  double val = attrVal.toDouble( &ok );
+  const double val = attrVal.toDouble( &ok );
   if ( !ok )
   {
     return QSizeF(); //zero size if attribute is missing
@@ -62,7 +62,7 @@ QSizeF QgsTextDiagram::diagramSize( const QgsFeature &feature, const QgsRenderCo
 
 double QgsTextDiagram::legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const
 {
-  QSizeF size = sizeForValue( value, s, is );
+  const QSizeF size = sizeForValue( value, s, is );
   return std::max( size.width(), size.height() );
 }
 
@@ -88,15 +88,15 @@ void QgsTextDiagram::renderDiagram( const QgsFeature &feature, QgsRenderContext 
   }
 
   //convert from mm / map units to painter units
-  QSizeF spu = sizePainterUnits( s.size, s, c );
-  double w = spu.width();
-  double h = spu.height();
+  const QSizeF spu = sizePainterUnits( s.size, s, c );
+  const double w = spu.width();
+  const double h = spu.height();
 
-  double baseX = position.x();
-  double baseY = position.y() - h;
+  const double baseX = position.x();
+  const double baseY = position.y() - h;
 
   QVector<QPointF> textPositions; //midpoints for text placement
-  int nCategories = s.categoryAttributes.size();
+  const int nCategories = s.categoryAttributes.size();
   for ( int i = 0; i < nCategories; ++i )
   {
     if ( mOrientation == Horizontal )
@@ -122,9 +122,9 @@ void QgsTextDiagram::renderDiagram( const QgsFeature &feature, QgsRenderContext 
 
     //draw separator lines
     QList<QPointF> intersect; //intersections between shape and separation lines
-    QPointF center( baseX + w / 2.0, baseY + h / 2.0 );
-    double r1 = w / 2.0;
-    double r2 = h / 2.0;
+    const QPointF center( baseX + w / 2.0, baseY + h / 2.0 );
+    const double r1 = w / 2.0;
+    const double r2 = h / 2.0;
 
     for ( int i = 1; i < nCategories; ++i )
     {
@@ -163,15 +163,15 @@ void QgsTextDiagram::renderDiagram( const QgsFeature &feature, QgsRenderContext 
     triangle << QPointF( baseX, baseY + h ) << QPointF( baseX + w, baseY + h ) << QPointF( baseX + w / 2.0, baseY );
     p->drawPolygon( triangle );
 
-    QLineF triangleEdgeLeft( baseX + w / 2.0, baseY, baseX, baseY + h );
-    QLineF triangleEdgeRight( baseX + w, baseY + h, baseX + w / 2.0, baseY );
+    const QLineF triangleEdgeLeft( baseX + w / 2.0, baseY, baseX, baseY + h );
+    const QLineF triangleEdgeRight( baseX + w, baseY + h, baseX + w / 2.0, baseY );
     QPointF intersectionPoint1, intersectionPoint2;
 
     for ( int i = 1; i < nCategories; ++i )
     {
       if ( mOrientation == Horizontal )
       {
-        QLineF verticalLine( baseX + w / nCategories * i, baseY + h, baseX + w / nCategories * i, baseY );
+        const QLineF verticalLine( baseX + w / nCategories * i, baseY + h, baseX + w / nCategories * i, baseY );
         if ( baseX + w / nCategories * i < baseX + w / 2.0 )
         {
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
@@ -192,7 +192,7 @@ void QgsTextDiagram::renderDiagram( const QgsFeature &feature, QgsRenderContext 
       }
       else //vertical
       {
-        QLineF horizontalLine( baseX, baseY + h / nCategories * i, baseX + w, baseY + h / nCategories * i );
+        const QLineF horizontalLine( baseX, baseY + h / nCategories * i, baseX + w, baseY + h / nCategories * i );
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
         horizontalLine.intersect( triangleEdgeLeft, &intersectionPoint1 );
         horizontalLine.intersect( triangleEdgeRight, &intersectionPoint2 );
@@ -206,8 +206,8 @@ void QgsTextDiagram::renderDiagram( const QgsFeature &feature, QgsRenderContext 
   }
 
   //draw text
-  QFont sFont = scaledFont( s, c );
-  QFontMetricsF fontMetrics( sFont );
+  const QFont sFont = scaledFont( s, c );
+  const QFontMetricsF fontMetrics( sFont );
   p->setFont( sFont );
 
   QgsExpressionContext expressionContext = c.expressionContext();
@@ -218,15 +218,15 @@ void QgsTextDiagram::renderDiagram( const QgsFeature &feature, QgsRenderContext 
   for ( int i = 0; i < textPositions.size(); ++i )
   {
     QgsExpression *expression = getExpression( s.categoryAttributes.at( i ), expressionContext );
-    QString val = expression->evaluate( &expressionContext ).toString();
+    const QString val = expression->evaluate( &expressionContext ).toString();
 
     //find out dimensions
-    double textWidth = fontMetrics.horizontalAdvance( val );
-    double textHeight = fontMetrics.height();
+    const double textWidth = fontMetrics.horizontalAdvance( val );
+    const double textHeight = fontMetrics.height();
 
     mPen.setColor( s.categoryColors.at( i ) );
     p->setPen( mPen );
-    QPointF position = textPositions.at( i );
+    const QPointF position = textPositions.at( i );
 
     // Calculate vertical placement
     double xOffset = 0;
@@ -249,21 +249,21 @@ void QgsTextDiagram::lineEllipseIntersection( QPointF lineStart, QPointF lineEnd
 {
   result.clear();
 
-  double rrx = r1 * r1;
-  double rry = r2 * r2;
-  double x21 = lineEnd.x() - lineStart.x();
-  double y21 = lineEnd.y() - lineStart.y();
-  double x10 = lineStart.x() - ellipseMid.x();
-  double y10 = lineStart.y() - ellipseMid.y();
-  double a = x21 * x21 / rrx + y21 * y21 / rry;
-  double b = x21 * x10 / rrx + y21 * y10 / rry;
-  double c = x10 * x10 / rrx + y10 * y10 / rry;
-  double d = b * b - a * ( c - 1 );
+  const double rrx = r1 * r1;
+  const double rry = r2 * r2;
+  const double x21 = lineEnd.x() - lineStart.x();
+  const double y21 = lineEnd.y() - lineStart.y();
+  const double x10 = lineStart.x() - ellipseMid.x();
+  const double y10 = lineStart.y() - ellipseMid.y();
+  const double a = x21 * x21 / rrx + y21 * y21 / rry;
+  const double b = x21 * x10 / rrx + y21 * y10 / rry;
+  const double c = x10 * x10 / rrx + y10 * y10 / rry;
+  const double d = b * b - a * ( c - 1 );
   if ( d > 0 )
   {
-    double e = std::sqrt( d );
-    double u1 = ( -b - e ) / a;
-    double u2 = ( -b + e ) / a;
+    const double e = std::sqrt( d );
+    const double u1 = ( -b - e ) / a;
+    const double u2 = ( -b + e ) / a;
     //work with a tolerance of 0.00001 because of limited numerical precision
     if ( -0.00001 <= u1 && u1 < 1.00001 )
     {

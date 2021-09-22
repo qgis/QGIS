@@ -36,7 +36,7 @@ QgsProjectStorageGuiProvider *QgsProjectStorageGuiRegistry::projectStorageFromUr
   for ( auto it = mBackends.constBegin(); it != mBackends.constEnd(); ++it )
   {
     QgsProjectStorageGuiProvider *storage = it.value();
-    QString scheme = storage->type() + ':';
+    const QString scheme = storage->type() + ':';
     if ( uri.startsWith( scheme ) )
       return storage;
   }

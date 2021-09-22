@@ -101,7 +101,7 @@ static QByteArray createDatasetVertexData(
   {
     const QgsMeshVertex &vert = mesh.vertices().at( i );
     double vertMag = verticalMagnitude.at( i );
-    double scalarMag = scalarMagnitude.at( i );
+    const double scalarMag = scalarMagnitude.at( i );
     if ( data.isVerticalMagnitudeRelative )
       vertMag += vert.z();
 
@@ -162,7 +162,7 @@ static QByteArray createDatasetIndexData( const QgsTriangularMesh &mesh, QgsMesh
   {
     for ( int i = 0; i < mesh.triangles().count(); ++i )
     {
-      int nativeIndex = mesh.trianglesToNativeFaces()[i];
+      const int nativeIndex = mesh.trianglesToNativeFaces()[i];
       if ( mActiveFaceFlagValues.active( nativeIndex ) )
         activeFaceCount++;
     }
@@ -176,7 +176,7 @@ static QByteArray createDatasetIndexData( const QgsTriangularMesh &mesh, QgsMesh
 
   for ( int i = 0; i < trianglesCount; ++i )
   {
-    int nativeFaceIndex = mesh.trianglesToNativeFaces()[i];
+    const int nativeFaceIndex = mesh.trianglesToNativeFaces()[i];
     const bool isActive = mActiveFaceFlagValues.active().isEmpty() || mActiveFaceFlagValues.active( nativeFaceIndex );
     if ( !isActive )
       continue;
@@ -250,7 +250,7 @@ void QgsMeshDataset3dGeometry::prepareData()
   if ( !layer )
     return;
 
-  QgsMeshDatasetIndex scalarDatasetIndex = layer->activeScalarDatasetAtTime( mTimeRange );
+  const QgsMeshDatasetIndex scalarDatasetIndex = layer->activeScalarDatasetAtTime( mTimeRange );
 
   if ( !scalarDatasetIndex.isValid() )
     return;
@@ -277,12 +277,12 @@ void QgsMeshDataset3dGeometry::prepareData()
 
   VertexData data;
   data.verticalGroupMetadata = layer->datasetGroupMetadata( mVerticalGroupDatasetIndex );
-  bool verticalDataOnVertices =  data.verticalGroupMetadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
+  const bool verticalDataOnVertices =  data.verticalGroupMetadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
   int datacount = verticalDataOnVertices ? nativeMesh.vertices.count() : nativeMesh.faces.count();
   data.verticalData = QgsMeshLayerUtils::datasetValues( layer, verticalMagDatasetIndex, 0, datacount );
 
   data.scalarGroupMetadata = layer->datasetGroupMetadata( layer->activeScalarDatasetAtTime( mTimeRange ) );
-  bool scalarDataOnVertices =  data.scalarGroupMetadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
+  const bool scalarDataOnVertices =  data.scalarGroupMetadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
   datacount = scalarDataOnVertices ? nativeMesh.vertices.count() : nativeMesh.faces.count();
   data.scalarData = QgsMeshLayerUtils::datasetValues( layer, scalarDatasetIndex, 0, datacount );
 
@@ -412,7 +412,7 @@ QgsMesh3DGeometryBuilder::QgsMesh3DGeometryBuilder( const QgsTriangularMesh &mes
 
 void QgsMesh3DGeometryBuilder::start()
 {
-  QMutexLocker locker( &mMutex );
+  const QMutexLocker locker( &mMutex );
 
   mWatcherVertex = new QFutureWatcher<QByteArray>( this );
   connect( mWatcherVertex, &QFutureWatcher<int>::finished, this, &QgsMesh3DGeometryBuilder::vertexFinished );
@@ -427,7 +427,7 @@ void QgsMesh3DGeometryBuilder::start()
 
 void QgsMesh3DGeometryBuilder::vertexFinished()
 {
-  QMutexLocker locker( &mMutex );
+  const QMutexLocker locker( &mMutex );
   mVertexFinished = true;
   if ( mVertexFinished && mIndexFinished )
   {
@@ -437,7 +437,7 @@ void QgsMesh3DGeometryBuilder::vertexFinished()
 
 void QgsMesh3DGeometryBuilder::indexFinished()
 {
-  QMutexLocker locker( &mMutex );
+  const QMutexLocker locker( &mMutex );
   mIndexFinished = true;
   if ( mVertexFinished && mIndexFinished )
   {
@@ -459,7 +459,7 @@ QgsMeshDataset3DGeometryBuilder::QgsMeshDataset3DGeometryBuilder
 
 void QgsMeshDataset3DGeometryBuilder::start()
 {
-  QMutexLocker locker( &mMutex );
+  const QMutexLocker locker( &mMutex );
 
   mWatcherVertex = new QFutureWatcher<QByteArray>( this );
   connect( mWatcherVertex, &QFutureWatcher<int>::finished, this, &QgsMeshDataset3DGeometryBuilder::vertexFinished );

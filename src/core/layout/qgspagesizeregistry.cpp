@@ -91,12 +91,12 @@ QList<QgsPageSize> QgsPageSizeRegistry::find( const QString &name ) const
 QString QgsPageSizeRegistry::find( const QgsLayoutSize &size ) const
 {
   //try to match to existing page size
-  QgsLayoutMeasurementConverter converter;
+  const QgsLayoutMeasurementConverter converter;
   const auto constMPageSizes = mPageSizes;
   for ( const QgsPageSize &pageSize : constMPageSizes )
   {
     // convert passed size to same units
-    QgsLayoutSize xSize = converter.convert( size, pageSize.size.units() );
+    const QgsLayoutSize xSize = converter.convert( size, pageSize.size.units() );
 
     //consider width and height values may be exchanged
     if ( ( qgsDoubleNear( xSize.width(), pageSize.size.width(), 0.01 ) && qgsDoubleNear( xSize.height(), pageSize.size.height(), 0.01 ) )
@@ -110,7 +110,7 @@ QString QgsPageSizeRegistry::find( const QgsLayoutSize &size ) const
 
 bool QgsPageSizeRegistry::decodePageSize( const QString &pageSizeName, QgsPageSize &pageSize )
 {
-  QList< QgsPageSize > matches = find( pageSizeName.trimmed() );
+  const QList< QgsPageSize > matches = find( pageSizeName.trimmed() );
   if ( matches.length() > 0 )
   {
     pageSize = matches.at( 0 );

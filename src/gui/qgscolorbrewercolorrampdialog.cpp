@@ -41,16 +41,16 @@ QgsColorBrewerColorRampWidget::QgsColorBrewerColorRampWidget( const QgsColorBrew
 
   setupUi( this );
 
-  QSize iconSize( 50, 16 );
+  const QSize iconSize( 50, 16 );
   cboSchemeName->setIconSize( iconSize );
 
-  QStringList schemes = QgsColorBrewerColorRamp::listSchemeNames();
+  const QStringList schemes = QgsColorBrewerColorRamp::listSchemeNames();
   const auto constSchemes = schemes;
   for ( const QString &schemeName : constSchemes )
   {
     // create a preview icon using five color variant
     QgsColorBrewerColorRamp *r = new QgsColorBrewerColorRamp( schemeName, 5 );
-    QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( r, iconSize );
+    const QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( r, iconSize );
     delete r;
     cboSchemeName->addItem( icon, schemeName );
   }
@@ -69,13 +69,13 @@ void QgsColorBrewerColorRampWidget::setRamp( const QgsColorBrewerColorRamp &ramp
 
 void QgsColorBrewerColorRampWidget::populateVariants()
 {
-  QString oldVariant = cboColors->currentText();
+  const QString oldVariant = cboColors->currentText();
 
   cboColors->clear();
-  QString schemeName = cboSchemeName->currentText();
-  QList<int> variants = QgsColorBrewerColorRamp::listSchemeVariants( schemeName );
+  const QString schemeName = cboSchemeName->currentText();
+  const QList<int> variants = QgsColorBrewerColorRamp::listSchemeVariants( schemeName );
   const auto constVariants = variants;
-  for ( int variant : constVariants )
+  for ( const int variant : constVariants )
   {
     cboColors->addItem( QString::number( variant ) );
   }
@@ -92,7 +92,7 @@ void QgsColorBrewerColorRampWidget::populateVariants()
 
 void QgsColorBrewerColorRampWidget::updatePreview()
 {
-  QSize size( 300, 40 );
+  const QSize size( 300, 40 );
   lblPreview->setPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( &mRamp, size ) );
 }
 
@@ -116,7 +116,7 @@ void QgsColorBrewerColorRampWidget::setSchemeName()
 
 void QgsColorBrewerColorRampWidget::setColors()
 {
-  int num = cboColors->currentText().toInt();
+  const int num = cboColors->currentText().toInt();
   mRamp.setColors( num );
   updatePreview();
   emit changed();

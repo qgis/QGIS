@@ -115,7 +115,7 @@ QgsTextFormat::TextOrientation QgsTextRendererUtils::decodeTextOrientation( cons
   if ( ok )
     *ok = true;
 
-  QString cleaned = name.toLower().trimmed();
+  const QString cleaned = name.toLower().trimmed();
 
   if ( cleaned == QLatin1String( "horizontal" ) )
     return QgsTextFormat::HorizontalOrientation;
@@ -145,10 +145,10 @@ QgsUnitTypes::RenderUnit QgsTextRendererUtils::convertFromOldLabelUnit( int val 
 
 QColor QgsTextRendererUtils::readColor( QgsVectorLayer *layer, const QString &property, const QColor &defaultColor, bool withAlpha )
 {
-  int r = layer->customProperty( property + 'R', QVariant( defaultColor.red() ) ).toInt();
-  int g = layer->customProperty( property + 'G', QVariant( defaultColor.green() ) ).toInt();
-  int b = layer->customProperty( property + 'B', QVariant( defaultColor.blue() ) ).toInt();
-  int a = withAlpha ? layer->customProperty( property + 'A', QVariant( defaultColor.alpha() ) ).toInt() : 255;
+  const int r = layer->customProperty( property + 'R', QVariant( defaultColor.red() ) ).toInt();
+  const int g = layer->customProperty( property + 'G', QVariant( defaultColor.green() ) ).toInt();
+  const int b = layer->customProperty( property + 'B', QVariant( defaultColor.blue() ) ).toInt();
+  const int a = withAlpha ? layer->customProperty( property + 'A', QVariant( defaultColor.alpha() ) ).toInt() : 255;
   return QColor( r, g, b, a );
 }
 
@@ -241,8 +241,8 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
     }
 
     // Determine the angle of the path segment under consideration
-    double dx = endLabelX - startLabelX;
-    double dy = endLabelY - startLabelY;
+    const double dx = endLabelX - startLabelX;
+    const double dy = endLabelY - startLabelY;
     const double lineAngle = std::atan2( -dy, dx ) * 180 / M_PI;
 
     if ( lineAngle > 90 || lineAngle < -90 )
@@ -259,14 +259,14 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
     output->flippedCharacterPlacementToGetUprightLabels = true;
   }
 
-  double dx = x[index] - x[index - 1];
-  double dy = y[index] - y[index - 1];
+  const double dx = x[index] - x[index - 1];
+  const double dy = y[index] - y[index - 1];
 
   double angle = std::atan2( -dy, dx );
 
   for ( int i = 0; i < characterCount; i++ )
   {
-    double lastCharacterAngle = angle;
+    const double lastCharacterAngle = angle;
 
     // grab the next character according to the orientation
     const double characterWidth = !output->flippedCharacterPlacementToGetUprightLabels ? metrics.characterWidth( i ) : metrics.characterWidth( characterCount - i - 1 );
@@ -367,8 +367,8 @@ bool QgsTextRendererUtils::nextCharPosition( double charWidth, double segmentLen
   double segmentEndX = x[index];
   double segmentEndY = y[index];
 
-  double segmentDx = segmentEndX - segmentStartX;
-  double segmentDy = segmentEndY - segmentStartY;
+  const double segmentDx = segmentEndX - segmentStartX;
+  const double segmentDy = segmentEndY - segmentStartY;
 
   characterStartX = segmentStartX + segmentDx * currentDistanceAlongSegment / segmentLength;
   characterStartY = segmentStartY + segmentDy * currentDistanceAlongSegment / segmentLength;
@@ -428,14 +428,14 @@ void QgsTextRendererUtils::findLineCircleIntersection( double cx, double cy, dou
     radius *= multiplier;
   }
 
-  double dx = x2 - x1;
-  double dy = y2 - y1;
+  const double dx = x2 - x1;
+  const double dy = y2 - y1;
 
-  double A = dx * dx + dy * dy;
-  double B = 2 * ( dx * ( x1 - cx ) + dy * ( y1 - cy ) );
-  double C = ( x1 - cx ) * ( x1 - cx ) + ( y1 - cy ) * ( y1 - cy ) - radius * radius;
+  const double A = dx * dx + dy * dy;
+  const double B = 2 * ( dx * ( x1 - cx ) + dy * ( y1 - cy ) );
+  const double C = ( x1 - cx ) * ( x1 - cx ) + ( y1 - cy ) * ( y1 - cy ) - radius * radius;
 
-  double det = B * B - 4 * A * C;
+  const double det = B * B - 4 * A * C;
   if ( A <= 0.000000000001 || det < 0 )
     // Should never happen, No real solutions.
     return;
@@ -443,7 +443,7 @@ void QgsTextRendererUtils::findLineCircleIntersection( double cx, double cy, dou
   if ( qgsDoubleNear( det, 0.0 ) )
   {
     // Could potentially happen.... One solution.
-    double t = -B / ( 2 * A );
+    const double t = -B / ( 2 * A );
     xRes = x1 + t * dx;
     yRes = y1 + t * dy;
   }
@@ -452,7 +452,7 @@ void QgsTextRendererUtils::findLineCircleIntersection( double cx, double cy, dou
     // Two solutions.
     // Always use the 1st one
     // We only really have one solution here, as we know the line segment will start in the circle and end outside
-    double t = ( -B + std::sqrt( det ) ) / ( 2 * A );
+    const double t = ( -B + std::sqrt( det ) ) / ( 2 * A );
     xRes = x1 + t * dx;
     yRes = y1 + t * dy;
   }

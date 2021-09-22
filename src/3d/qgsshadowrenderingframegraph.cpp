@@ -245,9 +245,9 @@ QgsPreviewQuad *QgsShadowRenderingFrameGraph::addTexturePreviewOverlay( Qt3DRend
 
 QVector3D WorldPosFromDepth( QMatrix4x4 projMatrixInv, QMatrix4x4 viewMatrixInv, float texCoordX, float texCoordY, float depth )
 {
-  float z = depth * 2.0 - 1.0;
+  const float z = depth * 2.0 - 1.0;
 
-  QVector4D clipSpacePosition( texCoordX * 2.0 - 1.0, texCoordY * 2.0 - 1.0, z, 1.0 );
+  const QVector4D clipSpacePosition( texCoordX * 2.0 - 1.0, texCoordY * 2.0 - 1.0, z, 1.0 );
   QVector4D viewSpacePosition = projMatrixInv * clipSpacePosition;
 
   // Perspective division
@@ -261,11 +261,11 @@ QVector3D WorldPosFromDepth( QMatrix4x4 projMatrixInv, QMatrix4x4 viewMatrixInv,
 // computes the portion of the Y=y plane the camera is looking at
 void calculateViewExtent( Qt3DRender::QCamera *camera, float shadowRenderingDistance, float y, float &minX, float &maxX, float &minY, float &maxY, float &minZ, float &maxZ )
 {
-  QVector3D cameraPos = camera->position();
-  QMatrix4x4 projectionMatrix = camera->projectionMatrix();
-  QMatrix4x4 viewMatrix = camera->viewMatrix();
-  QMatrix4x4 projectionMatrixInv = projectionMatrix.inverted();
-  QMatrix4x4 viewMatrixInv = viewMatrix.inverted();
+  const QVector3D cameraPos = camera->position();
+  const QMatrix4x4 projectionMatrix = camera->projectionMatrix();
+  const QMatrix4x4 viewMatrix = camera->viewMatrix();
+  const QMatrix4x4 projectionMatrixInv = projectionMatrix.inverted();
+  const QMatrix4x4 viewMatrixInv = viewMatrix.inverted();
   float depth = 1.0f;
   QVector4D viewCenter =  viewMatrix * QVector4D( camera->viewCenter(), 1.0f );
   viewCenter /= viewCenter.w();
@@ -301,8 +301,8 @@ void calculateViewExtent( Qt3DRender::QCamera *camera, float shadowRenderingDist
     // and the horizontal plane Y=y
     // if the intersection is on the back side of the viewing panel we get a point that is
     // shadowRenderingDistance units in front of the camera
-    QVector3D pt = cameraPos;
-    QVector3D vect = ( viewFrustumPoints[i] - pt ).normalized();
+    const QVector3D pt = cameraPos;
+    const QVector3D vect = ( viewFrustumPoints[i] - pt ).normalized();
     float t = ( y - pt.y() ) / vect.y();
     if ( t < 0 )
       t = shadowRenderingDistance;
@@ -322,14 +322,14 @@ void QgsShadowRenderingFrameGraph::setupDirectionalLight( const QgsDirectionalLi
 {
   float minX, maxX, minY, maxY, minZ, maxZ;
   QVector3D lookingAt = mMainCamera->viewCenter();
-  float d = 2 * ( mMainCamera->position() - mMainCamera->viewCenter() ).length();
+  const float d = 2 * ( mMainCamera->position() - mMainCamera->viewCenter() ).length();
 
-  QVector3D vertical = QVector3D( 0.0f, d, 0.0f );
-  QVector3D lightDirection = QVector3D( light.direction().x(), light.direction().y(), light.direction().z() ).normalized();
+  const QVector3D vertical = QVector3D( 0.0f, d, 0.0f );
+  const QVector3D lightDirection = QVector3D( light.direction().x(), light.direction().y(), light.direction().z() ).normalized();
   calculateViewExtent( mMainCamera, maximumShadowRenderingDistance, lookingAt.y(), minX, maxX, minY, maxY, minZ, maxZ );
 
   lookingAt = QVector3D( 0.5 * ( minX + maxX ), mMainCamera->viewCenter().y(), 0.5 * ( minZ + maxZ ) );
-  QVector3D lightPosition = lookingAt + vertical;
+  const QVector3D lightPosition = lookingAt + vertical;
   mLightCamera->setPosition( lightPosition );
   mLightCamera->setViewCenter( lookingAt );
   mLightCamera->setUpVector( QVector3D( 0.0f, 1.0f, 0.0f ) );

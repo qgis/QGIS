@@ -84,12 +84,12 @@ void TestQgsRasterDataProviderTemporalCapabilities::checkActiveStatus()
 
 void TestQgsRasterDataProviderTemporalCapabilities::checkTemporalRange()
 {
-  QgsDateTimeRange fixedDateTimeRange = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) ),
-                                        QDateTime( QDate( 2020, 12, 31 ), QTime( 0, 0, 0 ) ) );
-  QgsDateTimeRange dateTimeRange = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) ),
-                                   QDateTime( QDate( 2020, 3, 1 ), QTime( 0, 0, 0 ) ) );
-  QgsDateTimeRange outOfLimitsRange = QgsDateTimeRange( QDateTime( QDate( 2019, 1, 1 ), QTime( 0, 0, 0 ) ),
-                                      QDateTime( QDate( 2021, 3, 1 ), QTime( 0, 0, 0 ) ) );
+  const QgsDateTimeRange fixedDateTimeRange = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) ),
+      QDateTime( QDate( 2020, 12, 31 ), QTime( 0, 0, 0 ) ) );
+  const QgsDateTimeRange dateTimeRange = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) ),
+                                         QDateTime( QDate( 2020, 3, 1 ), QTime( 0, 0, 0 ) ) );
+  const QgsDateTimeRange outOfLimitsRange = QgsDateTimeRange( QDateTime( QDate( 2019, 1, 1 ), QTime( 0, 0, 0 ) ),
+      QDateTime( QDate( 2021, 3, 1 ), QTime( 0, 0, 0 ) ) );
 
   temporalCapabilities->setAvailableTemporalRange( fixedDateTimeRange );
   temporalCapabilities->setRequestedTemporalRange( dateTimeRange );

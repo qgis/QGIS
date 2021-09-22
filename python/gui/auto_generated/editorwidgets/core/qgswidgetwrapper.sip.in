@@ -51,7 +51,8 @@ changed status of the widget will be saved.
     enum Property
     {
       RootPath,
-      DocumentViewerContent
+      DocumentViewerContent,
+      StorageUrl
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();

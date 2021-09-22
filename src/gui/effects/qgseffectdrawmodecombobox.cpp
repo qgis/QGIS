@@ -29,8 +29,8 @@ QgsEffectDrawModeComboBox::QgsEffectDrawModeComboBox( QWidget *parent )
 
   for ( int i = 0; i < modes.count(); i++ )
   {
-    QgsPaintEffect::DrawMode mode = modes.at( i ).first;
-    QString name = modes.at( i ).second;
+    const QgsPaintEffect::DrawMode mode = modes.at( i ).first;
+    const QString name = modes.at( i ).second;
     addItem( name, QVariant( ( int ) mode ) );
   }
 }
@@ -42,6 +42,6 @@ QgsPaintEffect::DrawMode QgsEffectDrawModeComboBox::drawMode() const
 
 void QgsEffectDrawModeComboBox::setDrawMode( QgsPaintEffect::DrawMode drawMode )
 {
-  int idx = findData( QVariant( ( int ) drawMode ) );
+  const int idx = findData( QVariant( ( int ) drawMode ) );
   setCurrentIndex( idx == -1 ? 0 : idx );
 }

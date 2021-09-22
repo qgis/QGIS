@@ -86,12 +86,12 @@ QVariantMap QgsPixelCentroidsFromPolygonsAlgorithm::processAlgorithm( const QVar
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-  double step = source->featureCount() ? 100.0 / source->featureCount() : 1;
+  const double step = source->featureCount() ? 100.0 / source->featureCount() : 1;
   QgsFeatureIterator it = source->getFeatures( QgsFeatureRequest().setDestinationCrs( rasterLayer->crs(), context.transformContext() ).setSubsetOfAttributes( QList< int >() ) );
 
-  double xPixel = rasterLayer->rasterUnitsPerPixelX();
-  double yPixel = rasterLayer->rasterUnitsPerPixelY();
-  QgsRectangle extent = rasterLayer->extent();
+  const double xPixel = rasterLayer->rasterUnitsPerPixelX();
+  const double yPixel = rasterLayer->rasterUnitsPerPixelY();
+  const QgsRectangle extent = rasterLayer->extent();
 
   QgsFeature feature;
   feature.setFields( fields );
@@ -113,11 +113,11 @@ QVariantMap QgsPixelCentroidsFromPolygonsAlgorithm::processAlgorithm( const QVar
       continue;
     }
 
-    QgsRectangle bbox = f.geometry().boundingBox();
-    double xMin = bbox.xMinimum();
-    double xMax = bbox.xMaximum();
-    double yMin = bbox.yMinimum();
-    double yMax = bbox.yMaximum();
+    const QgsRectangle bbox = f.geometry().boundingBox();
+    const double xMin = bbox.xMinimum();
+    const double xMax = bbox.xMaximum();
+    const double yMin = bbox.yMinimum();
+    const double yMax = bbox.yMaximum();
 
     double x, y;
     int startRow, startColumn;
@@ -138,8 +138,8 @@ QVariantMap QgsPixelCentroidsFromPolygonsAlgorithm::processAlgorithm( const QVar
         }
 
         QgsRasterAnalysisUtils::pixelToMap( row, col, extent, xPixel, yPixel, x, y );
-        QgsPoint point( x, y );
-        QgsGeometry geom( point.clone() );
+        const QgsPoint point( x, y );
+        const QgsGeometry geom( point.clone() );
         if ( engine->contains( geom.constGet() ) )
         {
           feature.setGeometry( geom );

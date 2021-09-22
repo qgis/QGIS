@@ -72,7 +72,7 @@ QVariantMap QgsTableCell::properties( const QgsReadWriteContext &context ) const
   if ( mTextFormat.isValid() )
   {
     QDomDocument textDoc;
-    QDomElement textElem = mTextFormat.writeXml( textDoc, context );
+    const QDomElement textElem = mTextFormat.writeXml( textDoc, context );
     textDoc.appendChild( textElem );
     res.insert( QStringLiteral( "text_format" ), textDoc.toString() );
   }

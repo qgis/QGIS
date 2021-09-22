@@ -194,7 +194,7 @@ QgsUnitTypes::RenderUnit QgsUnitSelectionWidget::unit() const
   if ( mUnitCombo->count() == 0 )
     return QgsUnitTypes::RenderUnknownUnit;
 
-  QVariant currentData = mUnitCombo->currentData();
+  const QVariant currentData = mUnitCombo->currentData();
   if ( currentData.isValid() )
   {
     return static_cast< QgsUnitTypes::RenderUnit >( currentData.toInt() );
@@ -212,7 +212,7 @@ void QgsUnitSelectionWidget::setUnit( int unitIndex )
 
 void QgsUnitSelectionWidget::setUnit( QgsUnitTypes::RenderUnit unit )
 {
-  int idx = mUnitCombo->findData( QVariant( static_cast< int >( unit ) ) );
+  const int idx = mUnitCombo->findData( QVariant( static_cast< int >( unit ) ) );
   mUnitCombo->setCurrentIndex( idx == -1 ? 0 : idx );
 }
 
@@ -252,11 +252,11 @@ void QgsUnitSelectionWidget::toggleUnitRangeButton()
 {
   if ( unit() != QgsUnitTypes::RenderUnknownUnit )
   {
-    mMapScaleButton->setVisible( unit() == QgsUnitTypes::RenderMapUnits );
+    mMapScaleButton->setVisible( mShowMapScaleButton && unit() == QgsUnitTypes::RenderMapUnits );
   }
   else
   {
-    mMapScaleButton->setVisible( mMapUnitIdx != -1 && mUnitCombo->currentIndex() == mMapUnitIdx );
+    mMapScaleButton->setVisible( mShowMapScaleButton && mMapUnitIdx != -1 && mUnitCombo->currentIndex() == mMapUnitIdx );
   }
 }
 
@@ -264,6 +264,18 @@ void QgsUnitSelectionWidget::widgetChanged( const QgsMapUnitScale &scale )
 {
   mMapUnitScale = scale;
   emit changed();
+}
+
+bool QgsUnitSelectionWidget::showMapScaleButton() const
+{
+  return mShowMapScaleButton;
+}
+
+void QgsUnitSelectionWidget::setShowMapScaleButton( bool show )
+{
+  mShowMapScaleButton = show;
+  if ( !show )
+    mMapScaleButton->hide();
 }
 
 

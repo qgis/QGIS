@@ -54,9 +54,9 @@ QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString &connNa
   {
     // populate the dialog with the information stored for the connection
     // populate the fields with the stored setting parameters
-    QgsSettings settings;
+    const QgsSettings settings;
 
-    QString key = "/DB2/connections/" + connName;
+    const QString key = "/DB2/connections/" + connName;
     txtService->setText( settings.value( key + "/service" ).toString() );
     txtHost->setText( settings.value( key + "/host" ).toString() );
     txtPort->setText( settings.value( key + "/port" ).toString() );
@@ -75,7 +75,7 @@ QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString &connNa
       mAuthSettings->setStorePasswordChecked( true );
     }
 
-    QString authcfg = settings.value( key + "/authcfg" ).toString();
+    const QString authcfg = settings.value( key + "/authcfg" ).toString();
     QgsDebugMsg( QStringLiteral( "authcfg: %1" ).arg( authcfg ) );
     mAuthSettings->setConfigId( authcfg );
 
@@ -90,7 +90,7 @@ void QgsDb2NewConnection::accept()
   QgsSettings settings;
   QString baseKey = QStringLiteral( "/DB2/connections/" );
   settings.setValue( baseKey + "selected", txtName->text() );
-  bool hasAuthConfigID = !mAuthSettings->configId().isEmpty();
+  const bool hasAuthConfigID = !mAuthSettings->configId().isEmpty();
   QgsDebugMsg( QStringLiteral( "hasAuthConfigID: %1" ).arg( hasAuthConfigID ) );
   if ( !hasAuthConfigID && mAuthSettings->storePasswordIsChecked( ) &&
        QMessageBox::question( this,
@@ -165,16 +165,16 @@ bool QgsDb2NewConnection::testConnection()
   {
     authcfg = mAuthSettings->configId( );
   }
-  bool rc = QgsDb2ConnectionItem::ConnInfoFromParameters(
-              txtService->text().trimmed(),
-              txtDriver->text().trimmed(),
-              txtHost->text().trimmed(),
-              txtPort->text().trimmed(),
-              txtDatabase->text().trimmed(),
-              mAuthSettings->username().trimmed(),
-              mAuthSettings->password().trimmed(),
-              authcfg,
-              connInfo, errMsg );
+  const bool rc = QgsDb2ConnectionItem::ConnInfoFromParameters(
+                    txtService->text().trimmed(),
+                    txtDriver->text().trimmed(),
+                    txtHost->text().trimmed(),
+                    txtPort->text().trimmed(),
+                    txtDatabase->text().trimmed(),
+                    mAuthSettings->username().trimmed(),
+                    mAuthSettings->password().trimmed(),
+                    authcfg,
+                    connInfo, errMsg );
 
   if ( !rc )
   {
@@ -212,8 +212,8 @@ void QgsDb2NewConnection::showHelp()
 
 void QgsDb2NewConnection::updateOkButtonState()
 {
-  bool enabled = !txtName->text().isEmpty() && (
-                   ( !txtService->text().isEmpty() && !txtDatabase->text().isEmpty() ) ||
-                   ( !txtDriver->text().isEmpty() && !txtHost->text().isEmpty() && !txtPort->text().isEmpty() && !txtDatabase->text().isEmpty() ) );
+  const bool enabled = !txtName->text().isEmpty() && (
+                         ( !txtService->text().isEmpty() && !txtDatabase->text().isEmpty() ) ||
+                         ( !txtDriver->text().isEmpty() && !txtHost->text().isEmpty() && !txtPort->text().isEmpty() && !txtDatabase->text().isEmpty() ) );
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
 }

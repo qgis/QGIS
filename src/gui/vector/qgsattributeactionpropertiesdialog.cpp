@@ -128,7 +128,7 @@ QgsExpressionContext QgsAttributeActionPropertiesDialog::createExpressionContext
   {
     if ( cb->isChecked() )
     {
-      QgsActionScope actionScope = QgsApplication::actionScopeRegistry()->actionScope( cb->property( "ActionScopeName" ).toString() );
+      const QgsActionScope actionScope = QgsApplication::actionScopeRegistry()->actionScope( cb->property( "ActionScopeName" ).toString() );
       context.appendScope( new QgsExpressionContextScope( actionScope.expressionContextScope() ) );
     }
   }
@@ -141,8 +141,8 @@ QgsExpressionContext QgsAttributeActionPropertiesDialog::createExpressionContext
 void QgsAttributeActionPropertiesDialog::browse()
 {
   // Popup a file browser and place the results into the action widget
-  QString action = QFileDialog::getOpenFileName(
-                     this, tr( "Select an action", "File dialog window title" ), QDir::homePath() );
+  const QString action = QFileDialog::getOpenFileName(
+                           this, tr( "Select an action", "File dialog window title" ), QDir::homePath() );
 
   if ( !action.isNull() )
     mActionText->insertText( action );
@@ -161,14 +161,14 @@ void QgsAttributeActionPropertiesDialog::insertExpressionOrField()
 
 void QgsAttributeActionPropertiesDialog::chooseIcon()
 {
-  QList<QByteArray> list = QImageWriter::supportedImageFormats();
+  const QList<QByteArray> list = QImageWriter::supportedImageFormats();
   QStringList formatList;
   const auto constList = list;
   for ( const QByteArray &format : constList )
     formatList << QStringLiteral( "*.%1" ).arg( QString( format ) );
 
-  QString filter = tr( "Images( %1 ); All( *.* )" ).arg( formatList.join( QLatin1Char( ' ' ) ) );
-  QString icon = QFileDialog::getOpenFileName( this, tr( "Choose Icon…" ), mActionIcon->text(), filter );
+  const QString filter = tr( "Images( %1 ); All( *.* )" ).arg( formatList.join( QLatin1Char( ' ' ) ) );
+  const QString icon = QFileDialog::getOpenFileName( this, tr( "Choose Icon…" ), mActionIcon->text(), filter );
 
   if ( !icon.isNull() )
   {
@@ -191,7 +191,7 @@ void QgsAttributeActionPropertiesDialog::updateButtons()
 
 void QgsAttributeActionPropertiesDialog::init( const QSet<QString> &actionScopes )
 {
-  QSet<QgsActionScope> availableActionScopes = QgsApplication::actionScopeRegistry()->actionScopes();
+  const QSet<QgsActionScope> availableActionScopes = QgsApplication::actionScopeRegistry()->actionScopes();
 
   const auto constAvailableActionScopes = availableActionScopes;
   for ( const QgsActionScope &scope : constAvailableActionScopes )
@@ -199,7 +199,7 @@ void QgsAttributeActionPropertiesDialog::init( const QSet<QString> &actionScopes
     QCheckBox *actionScopeCheckBox = new QCheckBox( scope.title() );
     if ( actionScopes.contains( scope.id() ) )
       actionScopeCheckBox->setChecked( true );
-    QStringList variables = scope.expressionContextScope().variableNames();
+    const QStringList variables = scope.expressionContextScope().variableNames();
 
     QString tooltip = scope.description();
     if ( !variables.empty() )

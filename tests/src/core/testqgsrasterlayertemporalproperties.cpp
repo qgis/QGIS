@@ -72,8 +72,8 @@ void TestQgsRasterLayerTemporalProperties::cleanupTestCase()
 void TestQgsRasterLayerTemporalProperties::checkSettingTemporalRange()
 {
   QgsRasterLayerTemporalProperties temporalProperties;
-  QgsDateTimeRange dateTimeRange = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) ),
-                                   QDateTime( QDate( 2020, 12, 31 ), QTime( 0, 0, 0 ) ) );
+  const QgsDateTimeRange dateTimeRange = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) ),
+                                         QDateTime( QDate( 2020, 12, 31 ), QTime( 0, 0, 0 ) ) );
 
   temporalProperties.setFixedTemporalRange( dateTimeRange );
 
@@ -85,7 +85,7 @@ void TestQgsRasterLayerTemporalProperties::testReadWrite()
   QgsRasterLayerTemporalProperties temporalProperties;
 
   QDomImplementation DomImplementation;
-  QDomDocumentType documentType =
+  const QDomDocumentType documentType =
     DomImplementation.createDocumentType(
       QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
@@ -98,16 +98,16 @@ void TestQgsRasterLayerTemporalProperties::testReadWrite()
   QVERIFY( !temporalProperties.isActive() );
 
   temporalProperties.setIsActive( true );
-  temporalProperties.setMode( QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider );
-  temporalProperties.setIntervalHandlingMethod( QgsRasterDataProviderTemporalCapabilities::MatchExactUsingEndOfRange );
+  temporalProperties.setMode( Qgis::RasterTemporalMode::TemporalRangeFromDataProvider );
+  temporalProperties.setIntervalHandlingMethod( Qgis::TemporalIntervalMatchMethod::MatchExactUsingEndOfRange );
 
   temporalProperties.writeXml( node, doc, QgsReadWriteContext() );
 
   QgsRasterLayerTemporalProperties temporalProperties2;
   temporalProperties2.readXml( node, QgsReadWriteContext() );
   QVERIFY( temporalProperties2.isActive() );
-  QCOMPARE( temporalProperties2.mode(), QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider );
-  QCOMPARE( temporalProperties2.intervalHandlingMethod(), QgsRasterDataProviderTemporalCapabilities::MatchExactUsingEndOfRange );
+  QCOMPARE( temporalProperties2.mode(), Qgis::RasterTemporalMode::TemporalRangeFromDataProvider );
+  QCOMPARE( temporalProperties2.intervalHandlingMethod(), Qgis::TemporalIntervalMatchMethod::MatchExactUsingEndOfRange );
 
   temporalProperties.setIsActive( false );
   QDomElement node2 = doc.createElement( QStringLiteral( "temp" ) );
@@ -115,10 +115,10 @@ void TestQgsRasterLayerTemporalProperties::testReadWrite()
   QgsRasterLayerTemporalProperties temporalProperties3;
   temporalProperties3.readXml( node2, QgsReadWriteContext() );
   QVERIFY( !temporalProperties3.isActive() );
-  QCOMPARE( temporalProperties3.mode(), QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider );
-  QCOMPARE( temporalProperties3.intervalHandlingMethod(), QgsRasterDataProviderTemporalCapabilities::MatchExactUsingEndOfRange );
+  QCOMPARE( temporalProperties3.mode(), Qgis::RasterTemporalMode::TemporalRangeFromDataProvider );
+  QCOMPARE( temporalProperties3.intervalHandlingMethod(), Qgis::TemporalIntervalMatchMethod::MatchExactUsingEndOfRange );
 
-  temporalProperties.setMode( QgsRasterLayerTemporalProperties::ModeFixedTemporalRange );
+  temporalProperties.setMode( Qgis::RasterTemporalMode::FixedTemporalRange );
   temporalProperties.setFixedTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) ),
       QDateTime( QDate( 2020, 12, 31 ), QTime( 0, 0, 0 ) ) ) );
   QDomElement node3 = doc.createElement( QStringLiteral( "temp" ) );
@@ -126,7 +126,7 @@ void TestQgsRasterLayerTemporalProperties::testReadWrite()
   QgsRasterLayerTemporalProperties temporalProperties4;
   temporalProperties4.readXml( node3, QgsReadWriteContext() );
   QVERIFY( !temporalProperties4.isActive() );
-  QCOMPARE( temporalProperties4.mode(), QgsRasterLayerTemporalProperties::ModeFixedTemporalRange );
+  QCOMPARE( temporalProperties4.mode(), Qgis::RasterTemporalMode::FixedTemporalRange );
   QCOMPARE( temporalProperties4.fixedTemporalRange(), QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) ),
             QDateTime( QDate( 2020, 12, 31 ), QTime( 0, 0, 0 ) ) ) );
 
@@ -142,7 +142,7 @@ void TestQgsRasterLayerTemporalProperties::testVisibleInTimeRange()
 
   // when in data provider time handling mode, we also should always render regardless of time range
   props.setIsActive( true );
-  props.setMode( QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider );
+  props.setMode( Qgis::RasterTemporalMode::TemporalRangeFromDataProvider );
   QVERIFY( props.isVisibleInTemporalRange( QgsDateTimeRange() ) );
   QVERIFY( props.isVisibleInTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) ),
            QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) ) ) ) );
@@ -154,7 +154,7 @@ void TestQgsRasterLayerTemporalProperties::testVisibleInTimeRange()
            QDateTime( QDate( 2019, 1, 2 ), QTime( 0, 0, 0 ) ) ) ) );
 
   // switch to fixed time mode
-  props.setMode( QgsRasterLayerTemporalProperties::ModeFixedTemporalRange );
+  props.setMode( Qgis::RasterTemporalMode::FixedTemporalRange );
   // should be visible in infinite time ranges
   QVERIFY( props.isVisibleInTemporalRange( QgsDateTimeRange() ) );
   // should not be visible -- outside of fixed time range

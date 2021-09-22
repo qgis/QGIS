@@ -35,3 +35,20 @@ QList<QgsMapLayer *> QgsProjectUtils::layersMatchingPath( const QgsProject *proj
   }
   return layersList;
 }
+
+bool QgsProjectUtils::updateLayerPath( QgsProject *project, const QString &oldPath, const QString &newPath )
+{
+  if ( !project )
+    return false;
+
+  bool res = false;
+  const QMap<QString, QgsMapLayer *> mapLayers( project->mapLayers() );
+  for ( QgsMapLayer *layer : mapLayers )
+  {
+    if ( QgsMapLayerUtils::layerSourceMatchesPath( layer, oldPath ) )
+    {
+      res = QgsMapLayerUtils::updateLayerSourcePath( layer, newPath ) || res;
+    }
+  }
+  return res;
+}

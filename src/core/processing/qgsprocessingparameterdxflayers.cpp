@@ -75,7 +75,7 @@ bool QgsProcessingParameterDxfLayers::checkValueIsAcceptable( const QVariant &in
       }
       else if ( variantLayer.type() == QVariant::Map )
       {
-        QVariantMap layerMap = variantLayer.toMap();
+        const QVariantMap layerMap = variantLayer.toMap();
 
         if ( !layerMap.contains( QStringLiteral( "layer" ) ) && !layerMap.contains( QStringLiteral( "attributeIndex" ) ) )
           return false;
@@ -133,7 +133,7 @@ QString QgsProcessingParameterDxfLayers::valueAsPythonString( const QVariant &va
     if ( layer.layerOutputAttributeIndex() >= -1 )
       layerDefParts << QStringLiteral( "'attributeIndex': " ) + QgsProcessingUtils::variantToPythonLiteral( layer.layerOutputAttributeIndex() );
 
-    QString layerDef = QStringLiteral( "{%1}" ).arg( layerDefParts.join( ',' ) );
+    const QString layerDef = QStringLiteral( "{%1}" ).arg( layerDefParts.join( ',' ) );
     parts << layerDef;
   }
   return parts.join( ',' ).prepend( '[' ).append( ']' );
@@ -173,7 +173,7 @@ QList<QgsDxfExport::DxfLayer> QgsProcessingParameterDxfLayers::parameterAsLayers
     {
       if ( layerItem.type() == QVariant::Map )
       {
-        QVariantMap layerVariantMap = layerItem.toMap();
+        const QVariantMap layerVariantMap = layerItem.toMap();
         layers << variantMapAsLayer( layerVariantMap, context );
       }
       else if ( layerItem.type() == QVariant::String )
@@ -198,7 +198,7 @@ QList<QgsDxfExport::DxfLayer> QgsProcessingParameterDxfLayers::parameterAsLayers
 
 QgsDxfExport::DxfLayer QgsProcessingParameterDxfLayers::variantMapAsLayer( const QVariantMap &layerVariantMap, QgsProcessingContext &context )
 {
-  QVariant layerVariant = layerVariantMap[ QStringLiteral( "layer" ) ];
+  const QVariant layerVariant = layerVariantMap[ QStringLiteral( "layer" ) ];
 
   QgsVectorLayer *inputLayer = nullptr;
   if ( ( inputLayer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( layerVariant ) ) ) )

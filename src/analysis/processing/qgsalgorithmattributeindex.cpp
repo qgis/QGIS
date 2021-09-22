@@ -79,18 +79,18 @@ QVariantMap QgsAttributeIndexAlgorithm::processAlgorithm( const QVariantMap &par
   if ( !layer )
     throw QgsProcessingException( QObject::tr( "Could not load source layer for %1." ).arg( QLatin1String( "INPUT" ) ) );
 
-  QString field = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
+  const QString field = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
 
   QgsVectorDataProvider *provider = layer->dataProvider();
 
-  int fieldIndex = layer->fields().lookupField( field );
+  const int fieldIndex = layer->fields().lookupField( field );
   if ( fieldIndex < 0 || layer->fields().fieldOrigin( fieldIndex ) != QgsFields::OriginProvider )
   {
     feedback->pushInfo( QObject::tr( "Can not create attribute index on %1" ).arg( field ) );
   }
   else
   {
-    int providerIndex = layer->fields().fieldOriginIndex( fieldIndex );
+    const int providerIndex = layer->fields().fieldOriginIndex( fieldIndex );
     if ( provider->capabilities() & QgsVectorDataProvider::CreateAttributeIndex )
     {
       if ( !provider->createAttributeIndex( providerIndex ) )

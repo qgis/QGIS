@@ -274,7 +274,7 @@ int main( int argc, char *argv[] )
     while ( optind < argc )
     {
 #ifdef QGISDEBUG
-      int idx = optind;
+      const int idx = optind;
       QgsDebugMsg( QStringLiteral( "%1: %2" ).arg( idx ).arg( argv[idx] ) );
 #endif
       sFileList.append( QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[optind++] ) ).absoluteFilePath() ) );
@@ -429,7 +429,7 @@ int main( int argc, char *argv[] )
   }
 #endif
 
-  QSettings mySettings;
+  const QSettings mySettings;
 
   // For non static builds on mac and win (static builds are not supported)
   // we need to be sure we can find the qt image
@@ -477,7 +477,7 @@ int main( int argc, char *argv[] )
     // check for a .qgs or .qgz
     for ( int i = 0; i < argc; i++ )
     {
-      QString arg = QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() );
+      const QString arg = QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() );
       if ( arg.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) || arg.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) )
       {
         myProjectFileName = arg;
@@ -529,7 +529,7 @@ int main( int argc, char *argv[] )
   for ( QStringList::Iterator myIterator = sFileList.begin(); myIterator != sFileList.end(); ++myIterator )
   {
     QgsDebugMsg( QStringLiteral( "Trying to load file : %1" ).arg( ( *myIterator ) ) );
-    QString myLayerName = *myIterator;
+    const QString myLayerName = *myIterator;
     // don't load anything with a .qgs or .qgz extension - these are project files
     if ( !myLayerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) &&
          !myLayerName.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) )
@@ -589,7 +589,7 @@ int main( int argc, char *argv[] )
     else
     {
       // set extent from parsed values
-      QgsRectangle rect( coords[0], coords[1], coords[2], coords[3] );
+      const QgsRectangle rect( coords[0], coords[1], coords[2], coords[3] );
       qbench->setExtent( rect );
     }
   }

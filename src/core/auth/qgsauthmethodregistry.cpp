@@ -49,7 +49,7 @@ QgsAuthMethodRegistry *QgsAuthMethodRegistry::instance( const QString &pluginPat
   if ( !sInstance )
   {
     static QMutex sMutex;
-    QMutexLocker locker( &sMutex );
+    const QMutexLocker locker( &sMutex );
     if ( !sInstance )
     {
       sInstance = new QgsAuthMethodRegistry( pluginPath );
@@ -69,7 +69,7 @@ QgsAuthMethodRegistry *QgsAuthMethodRegistry::instance( const QString &pluginPat
 static QgsAuthMethodMetadata *findMetadata_( QgsAuthMethodRegistry::AuthMethods const &metaData,
     QString const &authMethodKey )
 {
-  QgsAuthMethodRegistry::AuthMethods::const_iterator i =
+  const QgsAuthMethodRegistry::AuthMethods::const_iterator i =
     metaData.find( authMethodKey );
 
   if ( i != metaData.end() )
@@ -114,7 +114,7 @@ void QgsAuthMethodRegistry::init()
   typedef QgsAuthMethodMetadata *factory_function( );
 
 #if defined(Q_OS_WIN) || defined(__CYGWIN__)
-  mLibraryDirectory.setNameFilters( QStringList( "authmethod_*.dll" ) );
+  mLibraryDirectory.setNameFilters( QStringList( "*authmethod_*.dll" ) );
 #else
   mLibraryDirectory.setNameFilters( QStringList( QStringLiteral( "*authmethod_*.so" ) ) );
 #endif
@@ -133,7 +133,7 @@ void QgsAuthMethodRegistry::init()
   }
 
   // auth method file regex pattern, only files matching the pattern are loaded if the variable is defined
-  QString filePattern = getenv( "QGIS_AUTHMETHOD_FILE" );
+  const QString filePattern = getenv( "QGIS_AUTHMETHOD_FILE" );
   QRegularExpression fileRegexp;
   if ( !filePattern.isEmpty() )
   {
@@ -143,7 +143,7 @@ void QgsAuthMethodRegistry::init()
   QListIterator<QFileInfo> it( mLibraryDirectory.entryInfoList() );
   while ( it.hasNext() )
   {
-    QFileInfo fi( it.next() );
+    const QFileInfo fi( it.next() );
 
     if ( !filePattern.isEmpty() )
     {
@@ -205,7 +205,7 @@ void QgsAuthMethodRegistry::clean()
   while ( it != mAuthMethods.end() )
   {
     QgsDebugMsgLevel( QStringLiteral( "cleanup: %1" ).arg( it->first ), 5 );
-    QString lib = it->second->library();
+    const QString lib = it->second->library();
     QLibrary myLib( lib );
     if ( myLib.isLoaded() )
     {

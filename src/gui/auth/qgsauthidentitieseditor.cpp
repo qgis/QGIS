@@ -66,7 +66,7 @@ QgsAuthIdentitiesEditor::QgsAuthIdentitiesEditor( QWidget *parent )
     connect( btnViewRefresh, &QAbstractButton::clicked, this, &QgsAuthIdentitiesEditor::refreshIdentitiesView );
 
     btnGroupByOrg->setChecked( false );
-    QVariant sortbyval = QgsApplication::authManager()->authSetting( QStringLiteral( "identitiessortby" ), QVariant( false ) );
+    const QVariant sortbyval = QgsApplication::authManager()->authSetting( QStringLiteral( "identitiessortby" ), QVariant( false ) );
     if ( !sortbyval.isNull() )
       btnGroupByOrg->setChecked( sortbyval.toBool() );
 
@@ -153,7 +153,7 @@ void QgsAuthIdentitiesEditor::appendIdentitiesToGroup( const QList<QSslCertifica
   }
 
   // TODO: find all organizational name, sort and make subsections
-  QMap< QString, QList<QSslCertificate> > orgcerts(
+  const QMap< QString, QList<QSslCertificate> > orgcerts(
     QgsAuthCertUtils::certsGroupedByOrg( certs ) );
 
   QMap< QString, QList<QSslCertificate> >::const_iterator it = orgcerts.constBegin();
@@ -191,13 +191,13 @@ void QgsAuthIdentitiesEditor::appendIdentitiesToItem( const QList<QSslCertificat
     parent = treeIdentities->currentItem();
   }
 
-  QBrush redb( QgsAuthGuiUtils::redColor() );
+  const QBrush redb( QgsAuthGuiUtils::redColor() );
 
   // Columns: Common Name, Serial #, Expiry Date
   const auto constCerts = certs;
   for ( const QSslCertificate &cert : constCerts )
   {
-    QString id( QgsAuthCertUtils::shaHexForCert( cert ) );
+    const QString id( QgsAuthCertUtils::shaHexForCert( cert ) );
 
     QStringList coltxts;
     coltxts << QgsAuthCertUtils::resolvedCertName( cert );
@@ -224,7 +224,7 @@ void QgsAuthIdentitiesEditor::showCertInfo( QTreeWidgetItem *item )
   if ( !item )
     return;
 
-  QString digest( item->data( 0, Qt::UserRole ).toString() );
+  const QString digest( item->data( 0, Qt::UserRole ).toString() );
 
   if ( !QgsApplication::authManager()->existsCertIdentity( digest ) )
   {
@@ -232,7 +232,7 @@ void QgsAuthIdentitiesEditor::showCertInfo( QTreeWidgetItem *item )
     return;
   }
 
-  QSslCertificate cert( QgsApplication::authManager()->certIdentity( digest ) );
+  const QSslCertificate cert( QgsApplication::authManager()->certIdentity( digest ) );
 
   QgsAuthCertInfoDialog *dlg = new QgsAuthCertInfoDialog( cert, false, this );
   dlg->setWindowModality( Qt::WindowModal );
@@ -324,7 +324,7 @@ void QgsAuthIdentitiesEditor::btnRemoveIdentity_clicked()
     return;
   }
 
-  QString digest( item->data( 0, Qt::UserRole ).toString() );
+  const QString digest( item->data( 0, Qt::UserRole ).toString() );
 
   if ( digest.isEmpty() )
   {
@@ -383,7 +383,7 @@ void QgsAuthIdentitiesEditor::btnGroupByOrg_toggled( bool checked )
 
 void QgsAuthIdentitiesEditor::authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level )
 {
-  int levelint = static_cast<int>( level );
+  const int levelint = static_cast<int>( level );
   messageBar()->pushMessage( authtag, message, ( Qgis::MessageLevel )levelint, 7 );
 }
 
@@ -403,6 +403,6 @@ QgsMessageBar *QgsAuthIdentitiesEditor::messageBar()
 
 int QgsAuthIdentitiesEditor::messageTimeout()
 {
-  QgsSettings settings;
+  const QgsSettings settings;
   return settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
 }

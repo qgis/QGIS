@@ -97,7 +97,7 @@ void TestQgisAppClipboard::copyPaste()
   for ( const QString &fileName : filesCounts.keys() )
   {
     // add vector layer
-    QString filePath = mTestDataDir + fileName;
+    const QString filePath = mTestDataDir + fileName;
     qDebug() << "add vector layer: " << filePath;
     QgsVectorLayer *inputLayer = mQgisApp->addVectorLayer( filePath, fileName, QStringLiteral( "ogr" ) );
     QVERIFY( inputLayer->isValid() );
@@ -106,7 +106,7 @@ void TestQgisAppClipboard::copyPaste()
     inputLayer->selectAll();
     mQgisApp->copySelectionToClipboard( inputLayer );
 
-    QgsFeatureList features = mQgisApp->clipboard()->copyOf();
+    const QgsFeatureList features = mQgisApp->clipboard()->copyOf();
     qDebug() << features.size() << " features copied to clipboard";
 
     QVERIFY( features.size() == filesCounts.value( fileName ) );
@@ -121,6 +121,7 @@ void TestQgisAppClipboard::copyPaste()
 
 void TestQgisAppClipboard::copyToText()
 {
+
   //set clipboard to some QgsFeatures
   QgsFields fields;
   fields.append( QgsField( QStringLiteral( "int_field" ), QVariant::Int ) );
@@ -159,16 +160,16 @@ void TestQgisAppClipboard::copyToText()
   // GeoJSON
   settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::GeoJSON );
   mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
-  QString expected =  "{\"features\":[{\"geometry\":{\"coordinates\":[5.0,6.0],\"type\":\"Point\"},\"id\":5,"
-                      "\"properties\":{\"int_field\":9,\"string_field\":\"val\"},\"type\":\"Feature\"},"
-                      "{\"geometry\":{\"coordinates\":[7.0,8.0],\"type\":\"Point\"},\"id\":6,"
-                      "\"properties\":{\"int_field\":19,\"string_field\":\"val2\"},\"type\":\"Feature\"}],"
-                      "\"type\":\"FeatureCollection\"}";
+  const QString expected =  "{\"features\":[{\"geometry\":{\"coordinates\":[5.0,6.0],\"type\":\"Point\"},\"id\":5,"
+                            "\"properties\":{\"int_field\":9,\"string_field\":\"val\"},\"type\":\"Feature\"},"
+                            "{\"geometry\":{\"coordinates\":[7.0,8.0],\"type\":\"Point\"},\"id\":6,"
+                            "\"properties\":{\"int_field\":19,\"string_field\":\"val2\"},\"type\":\"Feature\"}],"
+                            "\"type\":\"FeatureCollection\"}";
   QCOMPARE( result, expected );
 
   // test CRS is transformed correctly for GeoJSON
 
-  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:3111" ) );
+  const QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:3111" ) );
   feats = QgsFeatureStore();
   feats.setCrs( crs );
   feat.setGeometry( QgsGeometry( new QgsPoint( 2502577, 2403869 ) ) );
@@ -180,13 +181,13 @@ void TestQgisAppClipboard::copyToText()
 
   // just test coordinates as integers - that's enough to verify that reprojection has occurred
   // and helps avoid rounding issues
-  QRegularExpression regex( "\\[([-\\d.]+),([-\\d.]+)\\]" );
-  QRegularExpressionMatch  match = regex.match( result );
-  QStringList list = match.capturedTexts();
+  const QRegularExpression regex( "\\[([-\\d.]+),([-\\d.]+)\\]" );
+  const QRegularExpressionMatch  match = regex.match( result );
+  const QStringList list = match.capturedTexts();
   QCOMPARE( list.count(), 3 );
 
-  int x = std::round( list.at( 1 ).toDouble() );
-  int y = std::round( list.at( 2 ).toDouble() );
+  const int x = std::round( list.at( 1 ).toDouble() );
+  const int y = std::round( list.at( 2 ).toDouble() );
 
   QCOMPARE( x, 145 );
   QCOMPARE( y, -38 );
@@ -221,13 +222,28 @@ void TestQgisAppClipboard::copyToText()
   settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesWithWKT );
   mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
   QCOMPARE( result, QString( "wkt_geom\tint_field\tstring_field\nPoint (5 6)\t1\tSingle line text\nPoint (7 8)\t2\t\"Unix Multiline \nText\"\nPoint (9 10)\t3\t\"Windows Multiline \r\nText\"" ) );
+
 }
 
 void TestQgisAppClipboard::pasteWkt()
 {
+
+  // test issue GH #44989
+  QgsFeatureList features = mQgisApp->clipboard()->stringToFeatureList( QStringLiteral( "wkt_geom\tint_field\tstring_field\nPoint (5 6)\t1\tSingle line text\nPoint (7 8)\t2\t\"Unix Multiline \nText\"\nPoint (9 10)\t3\t\"Windows Multiline \r\nText\"" ), QgsFields() );
+  QCOMPARE( features.length(), 3 );
+  QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
+  QVERIFY( features.at( 1 ).hasGeometry() && !features.at( 1 ).geometry().isNull() );
+  QVERIFY( features.at( 2 ).hasGeometry() && !features.at( 2 ).geometry().isNull() );
+  QCOMPARE( features.at( 0 ).fields().count(), 2 );
+  QCOMPARE( features.at( 0 ).attributeCount(), 2 );
+  QCOMPARE( features.at( 1 ).fields().count(), 2 );
+  QCOMPARE( features.at( 1 ).attributeCount(), 2 );
+  QCOMPARE( features.at( 2 ).fields().count(), 2 );
+  QCOMPARE( features.at( 2 ).attributeCount(), 2 );
+
   mQgisApp->clipboard()->setText( QStringLiteral( "POINT (125 10)\nPOINT (111 30)" ) );
 
-  QgsFeatureList features = mQgisApp->clipboard()->copyOf();
+  features = mQgisApp->clipboard()->copyOf();
   QCOMPARE( features.length(), 2 );
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
   QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), QgsWkbTypes::Point );
@@ -248,7 +264,8 @@ void TestQgisAppClipboard::pasteWkt()
   features = mQgisApp->clipboard()->copyOf();
   QCOMPARE( features.length(), 2 );
 
-  QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
+  QVERIFY( features.at( 0 ).hasGeometry() );
+  QVERIFY( !features.at( 0 ).geometry().isNull() );
   QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), QgsWkbTypes::Point );
   featureGeom = features.at( 0 ).geometry();
   point = dynamic_cast< const QgsPoint * >( featureGeom.constGet() );
@@ -262,7 +279,7 @@ void TestQgisAppClipboard::pasteWkt()
   QCOMPARE( point->y(), 10.0 );
 
   //clipboard should support features without geometry
-  mQgisApp->clipboard()->setText( QStringLiteral( "\tMNL\t11\t282\tkm\t\t\t\n\tMNL\t11\t347.80000000000001\tkm\t\t\t" ) );
+  mQgisApp->clipboard()->setText( QStringLiteral( "MNL\t11\t282\tkm\t\t\t\nMNL\t11\t347.80000000000001\tkm\t\t\t" ) );
   features = mQgisApp->clipboard()->copyOf();
   QCOMPARE( features.length(), 2 );
   QVERIFY( !features.at( 0 ).hasGeometry() );
@@ -374,11 +391,12 @@ void TestQgisAppClipboard::pasteGeoJson()
   fields.append( QgsField( QStringLiteral( "name" ), QVariant::String ) );
   mQgisApp->clipboard()->setText( QStringLiteral( "{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\"}}" ) );
 
-  QgsFeatureList features = mQgisApp->clipboard()->copyOf( fields );
+  const QgsFeatureList features = mQgisApp->clipboard()->copyOf( fields );
+
   QCOMPARE( features.length(), 1 );
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
   QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), QgsWkbTypes::Point );
-  QgsGeometry featureGeom = features.at( 0 ).geometry();
+  const QgsGeometry featureGeom = features.at( 0 ).geometry();
   const QgsPoint *point = dynamic_cast< const QgsPoint * >( featureGeom.constGet() );
   QCOMPARE( point->x(), 125.0 );
   QCOMPARE( point->y(), 10.0 );
@@ -434,7 +452,7 @@ void TestQgisAppClipboard::clipboardLogic()
   feats.addFeature( feat );
   feats.addFeature( feat2 );
   feats.setFields( fields );
-  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:4326" ) );
+  const QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:4326" ) );
   feats.setCrs( crs );
   mQgisApp->clipboard()->replaceWithCopyOf( feats );
 

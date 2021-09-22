@@ -47,7 +47,7 @@ QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget( QgsPro
   setFocusPolicy( Qt::StrongFocus );
 
   // icon size is a bit bigger than text, but minimum size of 24 so that we get pixel-aligned rendering on low-dpi screens
-  int iconSize = QgsGuiUtils::scaleIconSize( 24 );
+  const int iconSize = QgsGuiUtils::scaleIconSize( 24 );
 
   QHBoxLayout *hLayout = new QHBoxLayout();
 
@@ -315,7 +315,7 @@ void QgsProcessingModelerParameterWidget::sourceMenuAboutToShow()
 
 void QgsProcessingModelerParameterWidget::sourceMenuActionTriggered( QAction *action )
 {
-  QgsProcessingModelChildParameterSource::Source sourceType = static_cast< QgsProcessingModelChildParameterSource::Source  >( action->data().toInt() );
+  const QgsProcessingModelChildParameterSource::Source sourceType = static_cast< QgsProcessingModelChildParameterSource::Source  >( action->data().toInt() );
   setSourceType( sourceType );
 }
 

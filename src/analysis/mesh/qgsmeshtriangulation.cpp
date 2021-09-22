@@ -430,7 +430,10 @@ QgsTopologicalMesh::Changes QgsMeshEditingDelaunayTriangulation::apply( QgsMeshE
 
   Q_ASSERT( meshEditor->topologicalMesh().checkConsistency() == QgsMeshEditingError() );
 
-  mMessage = QObject::tr( "%1 vertices have not been included in the triangulation" ).arg( removedVerticesFromTriangulation.count() );
+  if ( !removedVerticesFromTriangulation.isEmpty() )
+    mMessage = QObject::tr( "%1 vertices have not been included in the triangulation" ).arg( removedVerticesFromTriangulation.count() );
+
+  mIsFinished = true;
 
   if ( triangulationReady && !giveUp )
     return meshEditor->topologicalMesh().addFaces( topologicFaces );

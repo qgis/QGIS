@@ -58,6 +58,8 @@
 %token<op> FUNCTION
 %token<op> FUNCTION_2_ARGS
 
+%token IF
+
 %type <node> root
 %type <node> raster_exp
 
@@ -81,6 +83,12 @@ root: raster_exp{}
 raster_exp:
   FUNCTION '(' raster_exp ')'   { $$ = new QgsRasterCalcNode($1, $3, 0); joinTmpNodes($$, $3, 0);}
   | FUNCTION_2_ARGS '(' raster_exp ',' raster_exp ')' { $$ = new QgsRasterCalcNode($1, $3, $5); joinTmpNodes($$, $3, $5);}
+  | IF '(' raster_exp ',' raster_exp ',' raster_exp ')' { QVector <QgsRasterCalcNode *> tmpVect;
+                                                            tmpVect<< $3<< $5<< $7;
+                                                            $$ = new QgsRasterCalcNode("if", tmpVect);
+                                                            joinTmpNodes($$, $3, $5);
+                                                            gTmpNodes.removeAll($7);
+                                                          }
   | raster_exp AND raster_exp   { $$ = new QgsRasterCalcNode( QgsRasterCalcNode::opAND, $1, $3 ); joinTmpNodes($$,$1,$3); }
   | raster_exp OR raster_exp   { $$ = new QgsRasterCalcNode( QgsRasterCalcNode::opOR, $1, $3 ); joinTmpNodes($$,$1,$3); }
   | raster_exp '=' raster_exp   { $$ = new QgsRasterCalcNode( QgsRasterCalcNode::opEQ, $1, $3 ); joinTmpNodes($$,$1,$3); }

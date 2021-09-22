@@ -35,6 +35,14 @@ Constructor for QgsAnnotationMarkerItem, at the specified ``point``.
 
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
+    virtual Qgis::AnnotationItemFlags flags() const;
+
+    virtual QList< QgsAnnotationItemNode > nodes() const;
+
+    virtual Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
+
+    virtual QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) /Factory/;
+
 
     static QgsAnnotationMarkerItem *create() /Factory/;
 %Docstring
@@ -46,6 +54,8 @@ Creates a new marker annotation item.
     virtual QgsAnnotationMarkerItem *clone() /Factory/;
 
     virtual QgsRectangle boundingBox() const;
+
+    virtual QgsRectangle boundingBox( QgsRenderContext &context ) const;
 
 
     QgsPointXY geometry() const;

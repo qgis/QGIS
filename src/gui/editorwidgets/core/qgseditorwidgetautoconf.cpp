@@ -67,7 +67,7 @@ class FromDbTablePlugin: public QgsEditorWidgetAutoConfPlugin
   public:
     QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer *vl, const QString &fieldName, int &score ) const override
     {
-      QgsField field = vl->fields().field( fieldName );
+      const QgsField field = vl->fields().field( fieldName );
       if ( !field.editorWidgetSetup().isNull() )
       {
         score = 20;
@@ -91,7 +91,7 @@ QgsEditorWidgetSetup QgsEditorWidgetAutoConf::editorWidgetSetup( const QgsVector
 {
   QgsEditorWidgetSetup result( QStringLiteral( "TextEdit" ), QVariantMap() );
 
-  int fieldIndex = vl->fields().indexFromName( fieldName );
+  const int fieldIndex = vl->fields().indexFromName( fieldName );
   if ( fieldIndex >= 0 )
   {
 
@@ -101,7 +101,7 @@ QgsEditorWidgetSetup QgsEditorWidgetAutoConf::editorWidgetSetup( const QgsVector
       // uses a default value clause - otherwise the widget will obliterate the default value clause
       // (e.g., by trying to convert it to a number/date/etc). Instead we have to use a text edit
       // widget so that the clause remains intact
-      int providerOrigin = vl->fields().fieldOriginIndex( fieldIndex );
+      const int providerOrigin = vl->fields().fieldOriginIndex( fieldIndex );
       if ( !vl->dataProvider()->defaultValueClause( providerOrigin ).isEmpty() )
         return result;
     }

@@ -467,6 +467,14 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * \since QGIS 2.8
      */
     QPolygonF visiblePolygon() const;
+
+    /**
+     * Returns the visible area as a polygon (may be rotated) with extent buffer included
+     * \see extentBuffer()
+     * \since QGIS 3.22
+     */
+    QPolygonF visiblePolygonWithBuffer() const;
+
     //! Returns the distance in geographical coordinates that equals to one pixel in the map
     double mapUnitsPerPixel() const;
 

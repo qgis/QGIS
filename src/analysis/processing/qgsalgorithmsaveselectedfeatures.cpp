@@ -85,9 +85,9 @@ QVariantMap QgsSaveSelectedFeatures::processAlgorithm( const QVariantMap &parame
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
 
-  int count = mSelection.count();
+  const int count = mSelection.count();
   int current = 0;
-  double step = count > 0 ? 100.0 / count : 1;
+  const double step = count > 0 ? 100.0 / count : 1;
 
   QgsFeatureIterator it = selectLayer->getFeatures( QgsFeatureRequest().setFilterFids( mSelection ) );
   QgsFeature feat;

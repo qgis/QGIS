@@ -31,7 +31,7 @@ QgsGeometryOverlapCheck::QgsGeometryOverlapCheck( const QgsGeometryCheckContext 
 
 void QgsGeometryOverlapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
-  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
+  const QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
   const QgsGeometryCheckerUtils::LayerFeatures layerFeaturesA( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext, true );
   QList<QString> layerIds = featureIds.keys();
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureA : layerFeaturesA )
@@ -43,7 +43,7 @@ void QgsGeometryOverlapCheck::collectErrors( const QMap<QString, QgsFeaturePool 
     layerIds.removeOne( layerFeatureA.layer()->id() );
 
     const QgsGeometry geomA = layerFeatureA.geometry();
-    QgsRectangle bboxA = geomA.boundingBox();
+    const QgsRectangle bboxA = geomA.boundingBox();
     std::unique_ptr< QgsGeometryEngine > geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( geomA.constGet(), mContext->tolerance );
     geomEngineA->prepareGeometry();
     if ( !geomEngineA->isValid() )
@@ -76,7 +76,7 @@ void QgsGeometryOverlapCheck::collectErrors( const QMap<QString, QgsFeaturePool 
           for ( int iPart = 0, nParts = interGeom->partCount(); iPart < nParts; ++iPart )
           {
             QgsAbstractGeometry *interPart = QgsGeometryCheckerUtils::getGeomPart( interGeom.get(), iPart );
-            double area = interPart->area();
+            const double area = interPart->area();
             if ( area > mContext->reducedTolerance && ( area < mOverlapThresholdMapUnits || mOverlapThresholdMapUnits == 0.0 ) )
             {
               errors.append( new QgsGeometryOverlapCheckError( this, layerFeatureA, QgsGeometry( interPart->clone() ), interPart->centroid(), area, layerFeatureB ) );
@@ -109,8 +109,8 @@ void QgsGeometryOverlapCheck::fixError( const QMap<QString, QgsFeaturePool *> &f
   }
 
   // Check if error still applies
-  QgsGeometryCheckerUtils::LayerFeature layerFeatureA( featurePoolA, featureA, mContext, true );
-  QgsGeometryCheckerUtils::LayerFeature layerFeatureB( featurePoolB, featureB, mContext, true );
+  const QgsGeometryCheckerUtils::LayerFeature layerFeatureA( featurePoolA, featureA, mContext, true );
+  const QgsGeometryCheckerUtils::LayerFeature layerFeatureB( featurePoolB, featureB, mContext, true );
   const QgsGeometry geometryA = layerFeatureA.geometry();
   std::unique_ptr< QgsGeometryEngine > geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( geometryA.constGet(), mContext->tolerance );
   geomEngineA->prepareGeometry();
@@ -173,8 +173,8 @@ void QgsGeometryOverlapCheck::fixError( const QMap<QString, QgsFeaturePool *> &f
     {
       QgsGeometryCheckerUtils::filter1DTypes( diff2.get() );
     }
-    double shared1 = diff1 ? QgsGeometryCheckerUtils::sharedEdgeLength( diff1.get(), interPart, mContext->reducedTolerance ) : 0;
-    double shared2 = diff2 ? QgsGeometryCheckerUtils::sharedEdgeLength( diff2.get(), interPart, mContext->reducedTolerance ) : 0;
+    const double shared1 = diff1 ? QgsGeometryCheckerUtils::sharedEdgeLength( diff1.get(), interPart, mContext->reducedTolerance ) : 0;
+    const double shared2 = diff2 ? QgsGeometryCheckerUtils::sharedEdgeLength( diff2.get(), interPart, mContext->reducedTolerance ) : 0;
     if ( !diff1 || !diff2 || shared1 == 0. || shared2 == 0. )
     {
       error->setFixFailed( tr( "Could not find shared edges between intersection and overlapping features" ) );
@@ -183,7 +183,7 @@ void QgsGeometryOverlapCheck::fixError( const QMap<QString, QgsFeaturePool *> &f
     {
       if ( shared1 < shared2 )
       {
-        QgsCoordinateTransform ct( featurePoolA->crs(), mContext->mapCrs, mContext->transformContext );
+        const QgsCoordinateTransform ct( featurePoolA->crs(), mContext->mapCrs, mContext->transformContext );
         diff1->transform( ct, QgsCoordinateTransform::ReverseTransform );
         featureA.setGeometry( QgsGeometry( std::move( diff1 ) ) );
 
@@ -192,7 +192,7 @@ void QgsGeometryOverlapCheck::fixError( const QMap<QString, QgsFeaturePool *> &f
       }
       else
       {
-        QgsCoordinateTransform ct( featurePoolB->crs(), mContext->mapCrs, mContext->transformContext );
+        const QgsCoordinateTransform ct( featurePoolB->crs(), mContext->mapCrs, mContext->transformContext );
         diff2->transform( ct, QgsCoordinateTransform::ReverseTransform );
         featureB.setGeometry( QgsGeometry( std::move( diff2 ) ) );
 
@@ -211,9 +211,9 @@ void QgsGeometryOverlapCheck::fixError( const QMap<QString, QgsFeaturePool *> &f
 
 QStringList QgsGeometryOverlapCheck::resolutionMethods() const
 {
-  static QStringList methods = QStringList()
-                               << tr( "Remove overlapping area from neighboring polygon with shortest shared edge" )
-                               << tr( "No action" );
+  static const QStringList methods = QStringList()
+                                     << tr( "Remove overlapping area from neighboring polygon with shortest shared edge" )
+                                     << tr( "No action" );
   return methods;
 }
 

@@ -49,7 +49,7 @@ static QgsPoint getFirstPointOnParallels( const QgsPoint p1_line1, const QgsPoin
 
 void QgsMapToolCircle3Tangents::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint point = mapPoint( *e );
+  const QgsPoint point = mapPoint( *e );
 
   if ( !currentVectorLayer() )
   {
@@ -61,7 +61,7 @@ void QgsMapToolCircle3Tangents::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   }
 
   EdgesOnlyFilter filter;
-  QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToMap( point, &filter );
+  const QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToMap( point, &filter );
 
   QgsPointXY p1, p2;
 
@@ -99,12 +99,12 @@ void QgsMapToolCircle3Tangents::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolCircle3Tangents::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint point = mapPoint( *e );
+  const QgsPoint point = mapPoint( *e );
 
   mSnapIndicator->setMatch( e->mapPointMatch() );
 
   EdgesOnlyFilter filter;
-  QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToMap( point, &filter );
+  const QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToMap( point, &filter );
 
   if ( !mTempRubberBand )
   {

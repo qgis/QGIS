@@ -349,9 +349,25 @@ class CORE_EXPORT QgsExpression
 
     /**
      * Checks whether an expression consists only of a single field reference
+     *
+     * \see expressionToLayerFieldIndex()
      * \since QGIS 2.9
      */
     bool isField() const;
+
+    /**
+     * Attempts to resolve an expression to a field index from the given \a layer.
+     *
+     * Given a string which may either directly match a field name from a layer, OR may
+     * be an expression which consists only of a single field reference for that layer, this
+     * method will return the corresponding field index.
+     *
+     * \returns field index if found, or -1 if \a expression does not represent a field from the layer.
+     *
+     * \see isField()
+     * \since QGIS 3.22
+     */
+    static int expressionToLayerFieldIndex( const QString &expression, const QgsVectorLayer *layer );
 
     /**
      * Tests whether a string is a valid expression.

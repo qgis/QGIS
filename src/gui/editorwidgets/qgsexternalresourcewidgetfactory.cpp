@@ -19,14 +19,15 @@
 #include "qgsexternalresourcewidgetwrapper.h"
 #include "qgsexternalresourceconfigdlg.h"
 
-QgsExternalResourceWidgetFactory::QgsExternalResourceWidgetFactory( const QString &name )
+QgsExternalResourceWidgetFactory::QgsExternalResourceWidgetFactory( const QString &name, QgsMessageBar *messageBar )
   : QgsEditorWidgetFactory( name )
+  , mMessageBar( messageBar )
 {
 }
 
 QgsEditorWidgetWrapper *QgsExternalResourceWidgetFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const
 {
-  return new QgsExternalResourceWidgetWrapper( vl, fieldIdx, editor, parent );
+  return new QgsExternalResourceWidgetWrapper( vl, fieldIdx, editor, mMessageBar, parent );
 }
 
 QgsEditorConfigWidget *QgsExternalResourceWidgetFactory::configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const

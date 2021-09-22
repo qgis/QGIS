@@ -38,6 +38,8 @@ class QgsProcessingFeedback;
 class QgsProcessingFeatureSource;
 class QgsProcessingAlgorithm;
 class QgsVectorTileLayer;
+class QgsPointCloudLayer;
+class QgsAnnotationLayer;
 
 #include <QString>
 #include <QVariant>
@@ -61,6 +63,8 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatibleVectorLayers()
      * \see compatibleMeshLayers()
      * \see compatiblePluginLayers()
+     * \see compatiblePointCloudLayers()
+     * \see compatibleAnnotationLayers()
      * \see compatibleLayers()
      */
     static QList< QgsRasterLayer * > compatibleRasterLayers( QgsProject *project, bool sort = true );
@@ -79,6 +83,8 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatibleRasterLayers()
      * \see compatibleMeshLayers()
      * \see compatiblePluginLayers()
+     * \see compatiblePointCloudLayers()
+     * \see compatibleAnnotationLayers()
      * \see compatibleLayers()
      */
     static QList< QgsVectorLayer * > compatibleVectorLayers( QgsProject *project,
@@ -95,6 +101,8 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatibleRasterLayers()
      * \see compatibleVectorLayers()
      * \see compatiblePluginLayers()
+     * \see compatiblePointCloudLayers()
+     * \see compatibleAnnotationLayers()
      * \see compatibleLayers()
      *
      * \since QGIS 3.6
@@ -111,11 +119,49 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatibleRasterLayers()
      * \see compatibleVectorLayers()
      * \see compatibleMeshLayers()
+     * \see compatiblePointCloudLayers()
+     * \see compatibleAnnotationLayers()
      * \see compatibleLayers()
      *
      * \since QGIS 3.22
      */
     static QList<QgsPluginLayer *> compatiblePluginLayers( QgsProject *project, bool sort = true );
+
+    /**
+     * Returns a list of point cloud layers from a \a project which are compatible with the processing
+     * framework.
+     *
+     * If the \a sort argument is TRUE then the layers will be sorted by their QgsMapLayer::name()
+     * value.
+     *
+     * \see compatibleRasterLayers()
+     * \see compatibleVectorLayers()
+     * \see compatibleMeshLayers()
+     * \see compatiblePluginLayers()
+     * \see compatibleAnnotationLayers()
+     * \see compatibleLayers()
+     *
+     * \since QGIS 3.22
+     */
+    static QList<QgsPointCloudLayer *> compatiblePointCloudLayers( QgsProject *project, bool sort = true );
+
+    /**
+     * Returns a list of annotation layers from a \a project which are compatible with the processing
+     * framework.
+     *
+     * If the \a sort argument is TRUE then the layers will be sorted by their QgsMapLayer::name()
+     * value.
+     *
+     * \see compatibleRasterLayers()
+     * \see compatibleVectorLayers()
+     * \see compatibleMeshLayers()
+     * \see compatiblePluginLayers()
+     * \see compatiblePointCloudLayers()
+     * \see compatibleLayers()
+     *
+     * \since QGIS 3.22
+     */
+    static QList<QgsAnnotationLayer *> compatibleAnnotationLayers( QgsProject *project, bool sort = true );
 
     /**
      * Returns a list of map layers from a \a project which are compatible with the processing
@@ -159,6 +205,8 @@ class CORE_EXPORT QgsProcessingUtils
       Vector, //!< Vector layer type
       Raster, //!< Raster layer type
       Mesh, //!< Mesh layer type, since QGIS 3.6
+      PointCloud, //!< Point cloud layer type, since QGIS 3.22
+      Annotation, //!< Annotation layer type, since QGIS 3.22
     };
 
     /**
@@ -437,6 +485,8 @@ class CORE_EXPORT QgsProcessingUtils
     static bool canUseLayer( const QgsMeshLayer *layer );
     static bool canUseLayer( const QgsPluginLayer *layer );
     static bool canUseLayer( const QgsVectorTileLayer *layer );
+    static bool canUseLayer( const QgsPointCloudLayer *layer );
+    static bool canUseLayer( const QgsAnnotationLayer *layer );
     static bool canUseLayer( const QgsVectorLayer *layer,
                              const QList< int > &sourceTypes = QList< int >() );
 

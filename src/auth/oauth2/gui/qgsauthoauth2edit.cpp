@@ -100,7 +100,7 @@ QWidget *QgsAuthOAuth2Edit::parentWidget() const
   }
 
   const QMetaObject *metaObject = window()->metaObject();
-  QString parentclass = metaObject->className();
+  const QString parentclass = metaObject->className();
   //QgsDebugMsg( QStringLiteral( "parent class: %1" ).arg( parentclass ) );
   if ( parentclass != QLatin1String( "QgsAuthConfigEdit" ) )
   {
@@ -202,13 +202,13 @@ void QgsAuthOAuth2Edit::setupConnections()
 void QgsAuthOAuth2Edit::configValidityChanged()
 {
   validateConfig();
-  bool parentname = mParentName && !mParentName->text().isEmpty();
+  const bool parentname = mParentName && !mParentName->text().isEmpty();
   btnExport->setEnabled( mValid && parentname );
 }
 
 bool QgsAuthOAuth2Edit::validateConfig()
 {
-  bool curvalid = ( onCustomTab() ? mOAuthConfigCustom->isValid() : !mDefinedId.isEmpty() );
+  const bool curvalid = ( onCustomTab() ? mOAuthConfigCustom->isValid() : !mDefinedId.isEmpty() );
   if ( mValid != curvalid )
   {
     mValid = curvalid;
@@ -232,7 +232,7 @@ QgsStringMap QgsAuthOAuth2Edit::configMap() const
 
     mOAuthConfigCustom->setQueryPairs( queryPairs() );
 
-    QByteArray configtxt = mOAuthConfigCustom->saveConfigTxt( QgsAuthOAuth2Config::JSON, false, &ok );
+    const QByteArray configtxt = mOAuthConfigCustom->saveConfigTxt( QgsAuthOAuth2Config::JSON, false, &ok );
 
     if ( !ok )
     {
@@ -278,7 +278,7 @@ void QgsAuthOAuth2Edit::loadConfig( const QgsStringMap &configmap )
   if ( configmap.contains( QStringLiteral( "oauth2config" ) ) )
   {
     tabConfigs->setCurrentIndex( customTab() );
-    QByteArray configtxt = configmap.value( QStringLiteral( "oauth2config" ) ).toUtf8();
+    const QByteArray configtxt = configmap.value( QStringLiteral( "oauth2config" ) ).toUtf8();
     if ( !configtxt.isEmpty() )
     {
       //###################### DO NOT LEAVE ME UNCOMMENTED #####################
@@ -309,7 +309,7 @@ void QgsAuthOAuth2Edit::loadConfig( const QgsStringMap &configmap )
   else if ( configmap.contains( QStringLiteral( "definedid" ) ) )
   {
     tabConfigs->setCurrentIndex( definedTab() );
-    QString definedid = configmap.value( QStringLiteral( "definedid" ) );
+    const QString definedid = configmap.value( QStringLiteral( "definedid" ) );
     setCurrentDefinedConfig( definedid );
     if ( !definedid.isEmpty() )
     {
@@ -324,10 +324,10 @@ void QgsAuthOAuth2Edit::loadConfig( const QgsStringMap &configmap )
         selectCurrentDefinedConfig();
       }
 
-      QByteArray querypairstxt = configmap.value( QStringLiteral( "querypairs" ) ).toUtf8();
+      const QByteArray querypairstxt = configmap.value( QStringLiteral( "querypairs" ) ).toUtf8();
       if ( !querypairstxt.isNull() && !querypairstxt.isEmpty() )
       {
-        QVariantMap querypairsmap =
+        const QVariantMap querypairsmap =
           QgsAuthOAuth2Config::variantFromSerialized( querypairstxt, QgsAuthOAuth2Config::JSON, &ok );
         if ( ok )
         {
@@ -430,16 +430,16 @@ void QgsAuthOAuth2Edit::updateTokenCacheFile( bool curpersist ) const
     return;
   }
 
-  QString authcfg = parentConfigId();
+  const QString authcfg = parentConfigId();
   if ( authcfg.isEmpty() )
   {
     QgsDebugMsg( QStringLiteral( "Auth config ID empty in ID widget of parent" ) );
     return;
   }
 
-  QString localcachefile = QgsAuthOAuth2Config::tokenCachePath( authcfg, false );
+  const QString localcachefile = QgsAuthOAuth2Config::tokenCachePath( authcfg, false );
 
-  QString tempcachefile = QgsAuthOAuth2Config::tokenCachePath( authcfg, true );
+  const QString tempcachefile = QgsAuthOAuth2Config::tokenCachePath( authcfg, true );
 
   //QgsDebugMsg( QStringLiteral( "localcachefile: %1" ).arg( localcachefile ) );
   //QgsDebugMsg( QStringLiteral( "tempcachefile: %1" ).arg( tempcachefile ) );
@@ -505,8 +505,8 @@ void QgsAuthOAuth2Edit::populateGrantFlows()
 
 void QgsAuthOAuth2Edit::definedCustomDirChanged( const QString &path )
 {
-  QFileInfo pinfo( path );
-  bool ok = pinfo.exists() || pinfo.isDir();
+  const QFileInfo pinfo( path );
+  const bool ok = pinfo.exists() || pinfo.isDir();
 
   leDefinedDirPath->setStyleSheet( ok ? QString() : QgsAuthGuiUtils::redTextStyleSheet() );
   updatePredefinedLocationsTooltip();
@@ -520,8 +520,8 @@ void QgsAuthOAuth2Edit::definedCustomDirChanged( const QString &path )
 
 void QgsAuthOAuth2Edit::softwareStatementJwtPathChanged( const QString &path )
 {
-  QFileInfo pinfo( path );
-  bool ok = pinfo.exists() || pinfo.isFile();
+  const QFileInfo pinfo( path );
+  const bool ok = pinfo.exists() || pinfo.isFile();
 
   leSoftwareStatementJwtPath->setStyleSheet( ok ? QString() : QgsAuthGuiUtils::redTextStyleSheet() );
 
@@ -545,7 +545,7 @@ void QgsAuthOAuth2Edit::currentDefinedItemChanged( QListWidgetItem *cur, QListWi
 
   QgsDebugMsg( QStringLiteral( "Entered" ) );
 
-  QString id = cur->data( Qt::UserRole ).toString();
+  const QString id = cur->data( Qt::UserRole ).toString();
   if ( !id.isEmpty() )
   {
     setCurrentDefinedConfig( id );
@@ -581,8 +581,8 @@ void QgsAuthOAuth2Edit::selectCurrentDefinedConfig()
 
 void QgsAuthOAuth2Edit::getDefinedCustomDir()
 {
-  QString extradir = QFileDialog::getExistingDirectory( this, tr( "Select extra directory to parse" ),
-                     QDir::homePath(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks );
+  const QString extradir = QFileDialog::getExistingDirectory( this, tr( "Select extra directory to parse" ),
+                           QDir::homePath(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks );
   this->raise();
   this->activateWindow();
 
@@ -595,8 +595,8 @@ void QgsAuthOAuth2Edit::getDefinedCustomDir()
 
 void QgsAuthOAuth2Edit::getSoftStatementDir()
 {
-  QString softStatementFile = QFileDialog::getOpenFileName( this, tr( "Select software statement file" ),
-                              QDir::homePath(), tr( "JSON Web Token (*.jwt)" ) );
+  const QString softStatementFile = QFileDialog::getOpenFileName( this, tr( "Select software statement file" ),
+                                    QDir::homePath(), tr( "JSON Web Token (*.jwt)" ) );
   this->raise();
   this->activateWindow();
 
@@ -617,7 +617,7 @@ void QgsAuthOAuth2Edit::initConfigObjs()
 
 bool QgsAuthOAuth2Edit::hasTokenCacheFile()
 {
-  QString authcfg = parentConfigId();
+  const QString authcfg = parentConfigId();
   if ( authcfg.isEmpty() )
   {
     QgsDebugMsg( QStringLiteral( "Auth config ID empty in ID widget of parent" ) );
@@ -631,7 +631,7 @@ bool QgsAuthOAuth2Edit::hasTokenCacheFile()
 //slot
 void QgsAuthOAuth2Edit::removeTokenCacheFile()
 {
-  QString authcfg = parentConfigId();
+  const QString authcfg = parentConfigId();
   if ( authcfg.isEmpty() )
   {
     QgsDebugMsg( QStringLiteral( "Auth config ID empty in ID widget of parent" ) );
@@ -654,7 +654,7 @@ void QgsAuthOAuth2Edit::removeTokenCacheFile()
 
 void QgsAuthOAuth2Edit::updateDefinedConfigsCache()
 {
-  QString extradir = leDefinedDirPath->text();
+  const QString extradir = leDefinedDirPath->text();
   mDefinedConfigsCache.clear();
   mDefinedConfigsCache = QgsAuthOAuth2Config::mappedOAuth2ConfigsCache( this, extradir );
 }
@@ -676,13 +676,13 @@ void QgsAuthOAuth2Edit::loadDefinedConfigs()
       continue;
     }
 
-    QString grantflow = QgsAuthOAuth2Config::grantFlowString( config->grantFlow() );
+    const QString grantflow = QgsAuthOAuth2Config::grantFlowString( config->grantFlow() );
 
-    QString name = QStringLiteral( "%1 (%2): %3" )
-                   .arg( config->name(), grantflow, config->description() );
+    const QString name = QStringLiteral( "%1 (%2): %3" )
+                         .arg( config->name(), grantflow, config->description() );
 
-    QString tip = tr( "ID: %1\nGrant flow: %2\nDescription: %3" )
-                  .arg( i.key(), grantflow, config->description() );
+    const QString tip = tr( "ID: %1\nGrant flow: %2\nDescription: %3" )
+                        .arg( i.key(), grantflow, config->description() );
 
     QListWidgetItem *itm = new QListWidgetItem( lstwdgDefinedConfigs );
     itm->setText( name );
@@ -731,13 +731,13 @@ void QgsAuthOAuth2Edit::updateGrantFlow( int indx )
     whileBlocking( cmbbxGrantFlow )->setCurrentIndex( indx );
   }
 
-  QgsAuthOAuth2Config::GrantFlow flow =
+  const QgsAuthOAuth2Config::GrantFlow flow =
     static_cast<QgsAuthOAuth2Config::GrantFlow>( cmbbxGrantFlow->itemData( indx ).toInt() );
   mOAuthConfigCustom->setGrantFlow( flow );
 
   // bool authcode = ( flow == QgsAuthOAuth2Config::AuthCode );
-  bool implicit = ( flow == QgsAuthOAuth2Config::Implicit );
-  bool resowner = ( flow == QgsAuthOAuth2Config::ResourceOwner );
+  const bool implicit = ( flow == QgsAuthOAuth2Config::Implicit );
+  const bool resowner = ( flow == QgsAuthOAuth2Config::ResourceOwner );
 
   lblRequestUrl->setVisible( !resowner );
   leRequestUrl->setVisible( !resowner );
@@ -775,9 +775,9 @@ void QgsAuthOAuth2Edit::exportOAuthConfig()
   }
 
   QSettings settings;
-  QString recentdir = settings.value( QStringLiteral( "UI/lastAuthSaveFileDir" ), QDir::homePath() ).toString();
-  QString configpath = QFileDialog::getSaveFileName(
-                         this, tr( "Save OAuth2 Config File" ), recentdir, QStringLiteral( "OAuth2 config files (*.json)" ) );
+  const QString recentdir = settings.value( QStringLiteral( "UI/lastAuthSaveFileDir" ), QDir::homePath() ).toString();
+  const QString configpath = QFileDialog::getSaveFileName(
+                               this, tr( "Save OAuth2 Config File" ), recentdir, QStringLiteral( "OAuth2 config files (*.json)" ) );
   this->raise();
   this->activateWindow();
 
@@ -815,12 +815,12 @@ void QgsAuthOAuth2Edit::importOAuthConfig()
     return;
   }
 
-  QString configfile =
+  const QString configfile =
     QgsAuthGuiUtils::getOpenFileName( this, tr( "Select OAuth2 Config File" ), QStringLiteral( "OAuth2 config files (*.json)" ) );
   this->raise();
   this->activateWindow();
 
-  QFileInfo importinfo( configfile );
+  const QFileInfo importinfo( configfile );
   if ( configfile.isEmpty() || !importinfo.exists() )
   {
     return;
@@ -828,7 +828,7 @@ void QgsAuthOAuth2Edit::importOAuthConfig()
 
   QByteArray configtxt;
   QFile cfile( configfile );
-  bool ret = cfile.open( QIODevice::ReadOnly | QIODevice::Text );
+  const bool ret = cfile.open( QIODevice::ReadOnly | QIODevice::Text );
   if ( ret )
   {
     configtxt = cfile.readAll();
@@ -889,11 +889,11 @@ void QgsAuthOAuth2Edit::updateConfigAccessMethod( int indx )
 
 void QgsAuthOAuth2Edit::addQueryPairRow( const QString &key, const QString &val )
 {
-  int rowCnt = tblwdgQueryPairs->rowCount();
+  const int rowCnt = tblwdgQueryPairs->rowCount();
   tblwdgQueryPairs->insertRow( rowCnt );
 
-  Qt::ItemFlags itmFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable
-                           | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
+  const Qt::ItemFlags itmFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable
+                                 | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
 
   QTableWidgetItem *keyItm = new QTableWidgetItem( key );
   keyItm->setFlags( itmFlags );
@@ -923,7 +923,7 @@ void QgsAuthOAuth2Edit::populateQueryPairs( const QVariantMap &querypairs, bool 
 
 void QgsAuthOAuth2Edit::queryTableSelectionChanged()
 {
-  bool hassel = tblwdgQueryPairs->selectedItems().count() > 0;
+  const bool hassel = tblwdgQueryPairs->selectedItems().count() > 0;
   btnRemoveQueryPair->setEnabled( hassel );
 }
 
@@ -994,7 +994,7 @@ void QgsAuthOAuth2Edit::parseSoftwareStatement( const QString &path )
     QgsDebugMsg( QStringLiteral( "Error parsing JSON: base64 decode returned less than 2 parts" ) );
     return;
   }
-  QByteArray payload = payloadParts[1];
+  const QByteArray payload = payloadParts[1];
   QByteArray decoded = QByteArray::fromBase64( payload/*, QByteArray::Base64UrlEncoding*/ );
   QByteArray errStr;
   bool res = false;
@@ -1009,7 +1009,7 @@ void QgsAuthOAuth2Edit::parseSoftwareStatement( const QString &path )
     const QStringList grantTypes( jsonData[QStringLiteral( "grant_types" ) ].toStringList() );
     if ( !grantTypes.isEmpty( ) )
     {
-      QString grantType = grantTypes[0];
+      const QString grantType = grantTypes[0];
       if ( grantType == QLatin1String( "authorization_code" ) )
       {
         updateGrantFlow( static_cast<int>( QgsAuthOAuth2Config::AuthCode ) );
@@ -1023,7 +1023,7 @@ void QgsAuthOAuth2Edit::parseSoftwareStatement( const QString &path )
     const QStringList  redirectUris( jsonData[QStringLiteral( "redirect_uris" ) ].toStringList() );
     if ( !redirectUris.isEmpty( ) )
     {
-      QString redirectUri = redirectUris[0];
+      const QString redirectUri = redirectUris[0];
       leRedirectUrl->setText( redirectUri );
     }
   }
@@ -1046,10 +1046,10 @@ void QgsAuthOAuth2Edit::configReplyFinished()
   QNetworkReply *configReply = qobject_cast<QNetworkReply *>( sender() );
   if ( configReply->error() == QNetworkReply::NoError )
   {
-    QByteArray replyData = configReply->readAll();
+    const QByteArray replyData = configReply->readAll();
     QByteArray errStr;
     bool res = false;
-    QVariantMap config = QJsonWrapper::parseJson( replyData, &res, &errStr ).toMap();
+    const QVariantMap config = QJsonWrapper::parseJson( replyData, &res, &errStr ).toMap();
 
     if ( !res )
     {
@@ -1070,7 +1070,7 @@ void QgsAuthOAuth2Edit::configReplyFinished()
     }
     else
     {
-      QString errorMsg = tr( "Downloading configuration failed with error: %1" ).arg( configReply->errorString() );
+      const QString errorMsg = tr( "Downloading configuration failed with error: %1" ).arg( configReply->errorString() );
       QgsMessageLog::logMessage( errorMsg, QStringLiteral( "OAuth2" ), Qgis::MessageLevel::Critical );
     }
   }
@@ -1086,10 +1086,10 @@ void QgsAuthOAuth2Edit::registerReplyFinished()
   QNetworkReply *registerReply = qobject_cast<QNetworkReply *>( sender() );
   if ( registerReply->error() == QNetworkReply::NoError )
   {
-    QByteArray replyData = registerReply->readAll();
+    const QByteArray replyData = registerReply->readAll();
     QByteArray errStr;
     bool res = false;
-    QVariantMap clientInfo = QJsonWrapper::parseJson( replyData, &res, &errStr ).toMap();
+    const QVariantMap clientInfo = QJsonWrapper::parseJson( replyData, &res, &errStr ).toMap();
 
     // According to RFC 7591 sec. 3.2.1.  Client Information Response the only
     // required field is client_id
@@ -1107,7 +1107,7 @@ void QgsAuthOAuth2Edit::registerReplyFinished()
   }
   else
   {
-    QString errorMsg = QStringLiteral( "Client registration failed with error: %1" ).arg( registerReply->errorString() );
+    const QString errorMsg = QStringLiteral( "Client registration failed with error: %1" ).arg( registerReply->errorString() );
     QgsMessageLog::logMessage( errorMsg, QStringLiteral( "OAuth2" ), Qgis::MessageLevel::Critical );
   }
   mDownloading = false;
@@ -1118,7 +1118,7 @@ void QgsAuthOAuth2Edit::networkError( QNetworkReply::NetworkError error )
 {
   QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
   qWarning() << "QgsAuthOAuth2Edit::onNetworkError: " << error << ": " << reply->errorString();
-  QString errorMsg = QStringLiteral( "Network error: %1" ).arg( reply->errorString() );
+  const QString errorMsg = QStringLiteral( "Network error: %1" ).arg( reply->errorString() );
   QgsMessageLog::logMessage( errorMsg, QStringLiteral( "OAuth2" ), Qgis::MessageLevel::Critical );
   qDebug() << "QgsAuthOAuth2Edit::onNetworkError: " << reply->readAll();
 }
@@ -1126,7 +1126,7 @@ void QgsAuthOAuth2Edit::networkError( QNetworkReply::NetworkError error )
 
 void QgsAuthOAuth2Edit::registerSoftStatement( const QString &registrationUrl )
 {
-  QUrl regUrl( registrationUrl );
+  const QUrl regUrl( registrationUrl );
   if ( !regUrl.isValid() )
   {
     qWarning() << "Registration url is not valid";
@@ -1134,7 +1134,7 @@ void QgsAuthOAuth2Edit::registerSoftStatement( const QString &registrationUrl )
   }
   QByteArray errStr;
   bool res = false;
-  QByteArray json = QJsonWrapper::toJson( QVariant( mSoftwareStatement ), &res, &errStr );
+  const QByteArray json = QJsonWrapper::toJson( QVariant( mSoftwareStatement ), &res, &errStr );
   QNetworkRequest registerRequest( regUrl );
   QgsSetRequestInitiatorClass( registerRequest, QStringLiteral( "QgsAuthOAuth2Edit" ) );
   registerRequest.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1String( "application/json" ) );
@@ -1161,8 +1161,8 @@ void QgsAuthOAuth2Edit::getSoftwareStatementConfig()
   }
   else
   {
-    QString config = leSoftwareStatementConfigUrl->text();
-    QUrl configUrl( config );
+    const QString config = leSoftwareStatementConfigUrl->text();
+    const QUrl configUrl( config );
     QNetworkRequest configRequest( configUrl );
     QgsSetRequestInitiatorClass( configRequest, QStringLiteral( "QgsAuthOAuth2Edit" ) );
     QNetworkReply *configReply = QgsNetworkAccessManager::instance()->get( configRequest );
@@ -1193,11 +1193,11 @@ void QgsAuthOAuth2Edit::updatePredefinedLocationsTooltip()
   if ( !locationListHtml.isEmpty() )
     locationListHtml += QLatin1String( "</ul>" );
 
-  QString tip = QStringLiteral( "<p>" ) + tr( "Defined configurations are JSON-formatted files, with a single configuration per file. "
-                "This allows configurations to be swapped out via filesystem tools without affecting user "
-                "configurations. It is recommended to use the Configure tab’s export function, then edit the "
-                "resulting file. See QGIS documentation for further details." ) + QStringLiteral( "</p><p>" ) +
-                tr( "Configurations files can be placed in the directories:" ) + QStringLiteral( "</p>" ) + locationListHtml;
+  const QString tip = QStringLiteral( "<p>" ) + tr( "Defined configurations are JSON-formatted files, with a single configuration per file. "
+                      "This allows configurations to be swapped out via filesystem tools without affecting user "
+                      "configurations. It is recommended to use the Configure tab’s export function, then edit the "
+                      "resulting file. See QGIS documentation for further details." ) + QStringLiteral( "</p><p>" ) +
+                      tr( "Configurations files can be placed in the directories:" ) + QStringLiteral( "</p>" ) + locationListHtml;
   pteDefinedDesc->setHtml( tip );
 
   lstwdgDefinedConfigs->setToolTip( tr( "Configuration files can be placed in the directories:\n\n%1" ).arg( locationList ) );

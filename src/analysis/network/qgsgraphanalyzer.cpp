@@ -60,16 +60,16 @@ void QgsGraphAnalyzer::dijkstra( const QgsGraph *source, int startPointIdx, int 
   while ( !not_begin.empty() )
   {
     it = not_begin.begin();
-    double curCost = it.key();
-    int curVertex = it.value();
+    const double curCost = it.key();
+    const int curVertex = it.value();
     not_begin.erase( it );
 
     // edge index list
     const QgsGraphEdgeIds &outgoingEdges = source->vertex( curVertex ).outgoingEdges();
-    for ( int edgeId : outgoingEdges )
+    for ( const int edgeId : outgoingEdges )
     {
       const QgsGraphEdge &arc = source->edge( edgeId );
-      double cost = arc.cost( criterionNum ).toDouble() + curCost;
+      const double cost = arc.cost( criterionNum ).toDouble() + curCost;
 
       if ( cost < ( *result )[ arc.toVertex()] )
       {

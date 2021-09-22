@@ -95,15 +95,15 @@ void QgsNetworkAnalysisAlgorithmBase::loadCommonParams( const QVariantMap &param
   if ( !mNetwork )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  int strategy = parameterAsInt( parameters, QStringLiteral( "STRATEGY" ), context );
-  QString directionFieldName = parameterAsString( parameters, QStringLiteral( "DIRECTION_FIELD" ), context );
-  QString forwardValue = parameterAsString( parameters, QStringLiteral( "VALUE_FORWARD" ), context );
-  QString backwardValue = parameterAsString( parameters, QStringLiteral( "VALUE_BACKWARD" ), context );
-  QString bothValue = parameterAsString( parameters, QStringLiteral( "VALUE_BOTH" ), context );
-  QgsVectorLayerDirector::Direction defaultDirection = static_cast< QgsVectorLayerDirector::Direction>( parameterAsInt( parameters, QStringLiteral( "DEFAULT_DIRECTION" ), context ) );
-  QString speedFieldName = parameterAsString( parameters, QStringLiteral( "SPEED_FIELD" ), context );
-  double defaultSpeed = parameterAsDouble( parameters, QStringLiteral( "DEFAULT_SPEED" ), context );
-  double tolerance = parameterAsDouble( parameters, QStringLiteral( "TOLERANCE" ), context );
+  const int strategy = parameterAsInt( parameters, QStringLiteral( "STRATEGY" ), context );
+  const QString directionFieldName = parameterAsString( parameters, QStringLiteral( "DIRECTION_FIELD" ), context );
+  const QString forwardValue = parameterAsString( parameters, QStringLiteral( "VALUE_FORWARD" ), context );
+  const QString backwardValue = parameterAsString( parameters, QStringLiteral( "VALUE_BACKWARD" ), context );
+  const QString bothValue = parameterAsString( parameters, QStringLiteral( "VALUE_BOTH" ), context );
+  const QgsVectorLayerDirector::Direction defaultDirection = static_cast< QgsVectorLayerDirector::Direction>( parameterAsInt( parameters, QStringLiteral( "DEFAULT_DIRECTION" ), context ) );
+  const QString speedFieldName = parameterAsString( parameters, QStringLiteral( "SPEED_FIELD" ), context );
+  const double defaultSpeed = parameterAsDouble( parameters, QStringLiteral( "DEFAULT_SPEED" ), context );
+  const double tolerance = parameterAsDouble( parameters, QStringLiteral( "TOLERANCE" ), context );
 
   int directionField = -1;
   if ( !directionFieldName.isEmpty() )
@@ -119,7 +119,7 @@ void QgsNetworkAnalysisAlgorithmBase::loadCommonParams( const QVariantMap &param
 
   mDirector = new QgsVectorLayerDirector( mNetwork.get(), directionField, forwardValue, backwardValue, bothValue, defaultDirection );
 
-  QgsUnitTypes::DistanceUnit distanceUnits = context.project()->crs().mapUnits();
+  const QgsUnitTypes::DistanceUnit distanceUnits = context.project()->crs().mapUnits();
   mMultiplier = QgsUnitTypes::fromUnitToUnitFactor( distanceUnits, QgsUnitTypes::DistanceMeters );
 
   if ( strategy )
@@ -142,7 +142,7 @@ void QgsNetworkAnalysisAlgorithmBase::loadPoints( QgsFeatureSource *source, QVec
   QgsFeature feat;
   int i = 0;
   int pointId = 1;
-  double step = source->featureCount() > 0 ? 100.0 / source->featureCount() : 0;
+  const double step = source->featureCount() > 0 ? 100.0 / source->featureCount() : 0;
   QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setDestinationCrs( mNetwork->sourceCrs(), context.transformContext() ) );
 
   while ( features.nextFeature( feat ) )
@@ -157,7 +157,7 @@ void QgsNetworkAnalysisAlgorithmBase::loadPoints( QgsFeatureSource *source, QVec
     if ( !feat.hasGeometry() )
       continue;
 
-    QgsGeometry geom = feat.geometry();
+    const QgsGeometry geom = feat.geometry();
     QgsAbstractGeometry::vertex_iterator it = geom.vertices_begin();
     while ( it != geom.vertices_end() )
     {

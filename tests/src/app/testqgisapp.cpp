@@ -91,7 +91,7 @@ void TestQgisApp::cleanup()
 
 void TestQgisApp::addVectorLayerShp()
 {
-  QString filePath = mTestDataDir + QStringLiteral( "points.shp" );
+  const QString filePath = mTestDataDir + QStringLiteral( "points.shp" );
   QgsVectorLayer *layer = mQgisApp->addVectorLayer( filePath, "test", QStringLiteral( "ogr" ) );
   QVERIFY( layer->isValid() );
 
@@ -104,7 +104,7 @@ void TestQgisApp::addVectorLayerShp()
 
 void TestQgisApp::addVectorLayerGeopackageSingleLayer()
 {
-  QString filePath = QLatin1String( "/vsimem/test.gpkg" );
+  const QString filePath = QLatin1String( "/vsimem/test.gpkg" );
   QgsVectorLayer *layer = mQgisApp->addVectorLayer( filePath, "test", QStringLiteral( "ogr" ) );
   QVERIFY( layer->isValid() );
 
@@ -117,7 +117,7 @@ void TestQgisApp::addVectorLayerGeopackageSingleLayer()
 
 void TestQgisApp::addVectorLayerGeopackageSingleLayerAlreadyLayername()
 {
-  QString filePath = QLatin1String( "/vsimem/test.gpkg|layername=my_layer" );
+  const QString filePath = QLatin1String( "/vsimem/test.gpkg|layername=my_layer" );
   QgsVectorLayer *layer = mQgisApp->addVectorLayer( filePath, "test", QStringLiteral( "ogr" ) );
   QVERIFY( layer->isValid() );
 

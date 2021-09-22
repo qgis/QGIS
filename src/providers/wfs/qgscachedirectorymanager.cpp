@@ -33,8 +33,8 @@ std::map<QString, std::unique_ptr<QgsCacheDirectoryManager>> QgsCacheDirectoryMa
 
 QgsCacheDirectoryManager &QgsCacheDirectoryManager::singleton( const QString &providerName )
 {
-  static QMutex sMapMutex;
-  auto iter = sMap.find( providerName );
+  static const QMutex sMapMutex;
+  const auto iter = sMap.find( providerName );
   if ( iter != sMap.end() )
     return *( iter->second.get() );
   sMap[providerName] = std::unique_ptr<QgsCacheDirectoryManager>( new QgsCacheDirectoryManager( providerName ) );
@@ -50,14 +50,14 @@ QgsCacheDirectoryManager::QgsCacheDirectoryManager( const QString &providerName 
 
 QString QgsCacheDirectoryManager::getBaseCacheDirectory( bool createIfNotExisting )
 {
-  QgsSettings settings;
+  const QgsSettings settings;
   QString cacheDirectory = settings.value( QStringLiteral( "cache/directory" ) ).toString();
   if ( cacheDirectory.isEmpty() )
     cacheDirectory = QgsApplication::qgisSettingsDirPath() + "cache";
-  QString subDir = mProviderName + QStringLiteral( "provider" );
+  const QString subDir = mProviderName + QStringLiteral( "provider" );
   if ( createIfNotExisting )
   {
-    QMutexLocker locker( &mMutex );
+    const QMutexLocker locker( &mMutex );
     if ( !QDir( cacheDirectory ).exists( subDir ) )
     {
       QgsDebugMsg( QStringLiteral( "Creating main cache dir %1/%2" ).arg( cacheDirectory ). arg( subDir ) );
@@ -69,11 +69,11 @@ QString QgsCacheDirectoryManager::getBaseCacheDirectory( bool createIfNotExistin
 
 QString QgsCacheDirectoryManager::getCacheDirectory( bool createIfNotExisting )
 {
-  QString baseDirectory( getBaseCacheDirectory( createIfNotExisting ) );
-  QString processPath( QStringLiteral( "pid_%1" ).arg( QCoreApplication::applicationPid() ) );
+  const QString baseDirectory( getBaseCacheDirectory( createIfNotExisting ) );
+  const QString processPath( QStringLiteral( "pid_%1" ).arg( QCoreApplication::applicationPid() ) );
   if ( createIfNotExisting )
   {
-    QMutexLocker locker( &mMutex );
+    const QMutexLocker locker( &mMutex );
     if ( !QDir( baseDirectory ).exists( processPath ) )
     {
       QgsDebugMsg( QStringLiteral( "Creating our cache dir %1/%2" ).arg( baseDirectory, processPath ) );
@@ -96,7 +96,7 @@ QString QgsCacheDirectoryManager::acquireCacheDirectory()
 
 void QgsCacheDirectoryManager::releaseCacheDirectory()
 {
-  QMutexLocker locker( &mMutex );
+  const QMutexLocker locker( &mMutex );
   mCounter --;
   if ( mCounter == 0 )
   {
@@ -109,15 +109,15 @@ void QgsCacheDirectoryManager::releaseCacheDirectory()
     }
 
     // Destroys our cache directory, and the main cache directory if it is empty
-    QString tmpDirname( getCacheDirectory( false ) );
+    const QString tmpDirname( getCacheDirectory( false ) );
     if ( QDir( tmpDirname ).exists() )
     {
       QgsDebugMsg( QStringLiteral( "Removing our cache dir %1" ).arg( tmpDirname ) );
       removeDir( tmpDirname );
 
-      QString baseDirname( getBaseCacheDirectory( false ) );
-      QDir baseDir( baseDirname );
-      QFileInfoList fileList( baseDir.entryInfoList( QDir::NoDotAndDotDot | QDir::AllDirs | QDir::Files ) );
+      const QString baseDirname( getBaseCacheDirectory( false ) );
+      const QDir baseDir( baseDirname );
+      const QFileInfoList fileList( baseDir.entryInfoList( QDir::NoDotAndDotDot | QDir::AllDirs | QDir::Files ) );
       if ( fileList.size() == 0 )
       {
         QgsDebugMsg( QStringLiteral( "Removing main cache dir %1" ).arg( baseDirname ) );
@@ -133,8 +133,8 @@ void QgsCacheDirectoryManager::releaseCacheDirectory()
 
 bool QgsCacheDirectoryManager::removeDir( const QString &dirName )
 {
-  QDir dir( dirName );
-  QFileInfoList fileList( dir.entryInfoList( QDir::NoDotAndDotDot | QDir::AllDirs | QDir::Files ) );
+  const QDir dir( dirName );
+  const QFileInfoList fileList( dir.entryInfoList( QDir::NoDotAndDotDot | QDir::AllDirs | QDir::Files ) );
   const auto constFileList = fileList;
   for ( const QFileInfo &info : constFileList )
   {
@@ -197,18 +197,18 @@ void QgsCacheDirectoryManager::init()
 
   // Remove temporary directories of qgis instances that haven't demonstrated
   // a sign of life since 2 * KEEP_ALIVE_DELAY
-  QDir dir( getBaseCacheDirectory( false ) );
+  const QDir dir( getBaseCacheDirectory( false ) );
   if ( dir.exists() )
   {
     const qint64 currentTimestamp = QDateTime::currentMSecsSinceEpoch();
-    QFileInfoList fileList( dir.entryInfoList( QDir::NoDotAndDotDot | QDir::AllDirs | QDir::Files ) );
+    const QFileInfoList fileList( dir.entryInfoList( QDir::NoDotAndDotDot | QDir::AllDirs | QDir::Files ) );
     const auto constFileList = fileList;
     for ( const QFileInfo &info : constFileList )
     {
       if ( info.isDir() && info.fileName().startsWith( QLatin1String( "pid_" ) ) )
       {
-        QString pidStr( info.fileName().mid( 4 ) );
-        qint64 pid = pidStr.toLongLong();
+        const QString pidStr( info.fileName().mid( 4 ) );
+        const qint64 pid = pidStr.toLongLong();
         bool canDelete = false;
         if ( pid == QCoreApplication::applicationPid() )
         {

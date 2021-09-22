@@ -19,7 +19,7 @@
 
 #include "qgslogger.h"
 #include "qgsmssqlprovider.h"
-#include "qgsmssqlconnection.h"
+#include "qgsmssqldatabase.h"
 
 QgsMssqlGeomColumnTypeThread::QgsMssqlGeomColumnTypeThread( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool useEstimatedMetadata )
   : mService( service )
@@ -71,14 +71,14 @@ void QgsMssqlGeomColumnTypeThread::run()
                                   layerProperty.sql.isEmpty() ? QString() : QStringLiteral( " AND %1" ).arg( layerProperty.sql ) );
 
       // issue the sql query
-      QSqlDatabase db = QgsMssqlConnection::getDatabase( mService, mHost, mDatabase, mUsername, mPassword );
-      if ( !QgsMssqlConnection::openDatabase( db ) )
+      std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( mService, mHost, mDatabase, mUsername, mPassword );
+      if ( !db->isValid() )
       {
-        QgsDebugMsg( db.lastError().text() );
+        QgsDebugMsg( db->errorText() );
         continue;
       }
 
-      QSqlQuery q = QSqlQuery( db );
+      QSqlQuery q = QSqlQuery( db->db() );
       q.setForwardOnly( true );
       if ( !q.exec( query ) )
       {
@@ -95,8 +95,8 @@ void QgsMssqlGeomColumnTypeThread::run()
 
         while ( q.next() )
         {
-          QString type = q.value( 0 ).toString().toUpper();
-          QString srid = q.value( 1 ).toString();
+          const QString type = q.value( 0 ).toString().toUpper();
+          const QString srid = q.value( 1 ).toString();
 
           if ( type.isEmpty() )
             continue;

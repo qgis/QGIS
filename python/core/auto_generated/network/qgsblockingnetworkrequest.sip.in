@@ -69,7 +69,7 @@ can be retrieved by calling :py:func:`~QgsBlockingNetworkRequest.errorMessage`.
 .. seealso:: :py:func:`post`
 %End
 
-    ErrorCode post( QNetworkRequest &request, const QByteArray &data, bool forceRefresh = false, QgsFeedback *feedback = 0 );
+    ErrorCode post( QNetworkRequest &request, QIODevice *data, bool forceRefresh = false, QgsFeedback *feedback = 0 );
 %Docstring
 Performs a "post" operation on the specified ``request``, using the given ``data``.
 
@@ -89,6 +89,15 @@ If an error was encountered then a specific ErrorCode will be returned, and a de
 can be retrieved by calling :py:func:`~QgsBlockingNetworkRequest.errorMessage`.
 
 .. seealso:: :py:func:`get`
+
+.. versionadded:: 3.22
+%End
+
+    ErrorCode post( QNetworkRequest &request, const QByteArray &data, bool forceRefresh = false, QgsFeedback *feedback = 0 );
+%Docstring
+This is an overloaded function.
+
+Performs a "post" operation on the specified ``request``, using the given ``data``.
 %End
 
     ErrorCode head( QNetworkRequest &request, bool forceRefresh = false, QgsFeedback *feedback = 0 );
@@ -113,7 +122,7 @@ can be retrieved by calling :py:func:`~QgsBlockingNetworkRequest.errorMessage`.
 .. versionadded:: 3.18
 %End
 
-    ErrorCode put( QNetworkRequest &request, const QByteArray &data, QgsFeedback *feedback = 0 );
+    ErrorCode put( QNetworkRequest &request, QIODevice *data, QgsFeedback *feedback = 0 );
 %Docstring
 Performs a "put" operation on the specified ``request``, using the given ``data``.
 
@@ -128,6 +137,15 @@ by calling :py:func:`~QgsBlockingNetworkRequest.reply`.
 
 If an error was encountered then a specific ErrorCode will be returned, and a detailed error message
 can be retrieved by calling :py:func:`~QgsBlockingNetworkRequest.errorMessage`.
+
+.. versionadded:: 3.22
+%End
+
+    ErrorCode put( QNetworkRequest &request, const QByteArray &data, QgsFeedback *feedback = 0 );
+%Docstring
+This is an overloaded function.
+
+Performs a "put" operation on the specified ``request``, using the given ``data``.
 
 .. versionadded:: 3.18
 %End
@@ -189,9 +207,24 @@ Aborts the network request immediately.
 Emitted when when data arrives during a request.
 %End
 
-    void downloadFinished();
+ void downloadFinished() /Deprecated/;
 %Docstring
 Emitted once a request has finished downloading.
+
+.. deprecated::
+   Use the :py:func:`~QgsBlockingNetworkRequest.finished` signal instead.
+%End
+
+    void uploadProgress( qint64, qint64 );
+%Docstring
+Emitted when when data are sent during a request.
+
+.. versionadded:: 3.22
+%End
+
+    void finished();
+%Docstring
+Emitted once a request has finished.
 %End
 
 };

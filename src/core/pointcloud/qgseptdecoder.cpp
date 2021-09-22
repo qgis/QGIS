@@ -43,7 +43,7 @@ bool _storeToStream( char *s, size_t position, QgsPointCloudAttribute::DataType 
   {
     case QgsPointCloudAttribute::Char:
     {
-      char val = char( value );
+      const char val = char( value );
       s[position] = val;
       break;
     }
@@ -97,7 +97,7 @@ bool __serialize( char *data, size_t outputPosition, QgsPointCloudAttribute::Dat
   {
     case QgsPointCloudAttribute::Char:
     {
-      char val = *( input + inputPosition );
+      const char val = *( input + inputPosition );
       return _storeToStream<char>( data, outputPosition, outputType, val );
     }
     case QgsPointCloudAttribute::Short:
@@ -202,11 +202,11 @@ QgsPointCloudBlock *QgsEptDecoder::decompressBinary( const QString &filename, co
     return nullptr;
 
   QFile f( filename );
-  bool r = f.open( QIODevice::ReadOnly );
+  const bool r = f.open( QIODevice::ReadOnly );
   if ( !r )
     return nullptr;
 
-  QByteArray dataUncompressed = f.read( f.size() );
+  const QByteArray dataUncompressed = f.read( f.size() );
   return _decompressBinary( dataUncompressed, attributes, requestedAttributes, scale, offset );
 }
 
@@ -235,7 +235,7 @@ QByteArray decompressZtdStream( const QByteArray &dataCompressed )
   m_inBuf.pos = 0;
 
   ZSTD_outBuffer outBuf { reinterpret_cast<void *>( dataUncompressed.data() ), MAXSIZE, 0 };
-  size_t ret = ZSTD_decompressStream( strm, &outBuf, &m_inBuf );
+  const size_t ret = ZSTD_decompressStream( strm, &outBuf, &m_inBuf );
   Q_ASSERT( !ZSTD_isError( ret ) );
   Q_ASSERT( outBuf.pos );
   Q_ASSERT( outBuf.pos < outBuf.size );
@@ -251,18 +251,18 @@ QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QString &filename,
     return nullptr;
 
   QFile f( filename );
-  bool r = f.open( QIODevice::ReadOnly );
+  const bool r = f.open( QIODevice::ReadOnly );
   if ( !r )
     return nullptr;
 
-  QByteArray dataCompressed = f.readAll();
-  QByteArray dataUncompressed = decompressZtdStream( dataCompressed );
+  const QByteArray dataCompressed = f.readAll();
+  const QByteArray dataUncompressed = decompressZtdStream( dataCompressed );
   return _decompressBinary( dataUncompressed, attributes, requestedAttributes, scale, offset );
 }
 
 QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QByteArray &data, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset )
 {
-  QByteArray dataUncompressed = decompressZtdStream( data );
+  const QByteArray dataUncompressed = decompressZtdStream( data );
   return _decompressBinary( dataUncompressed, attributes, requestedAttributes, scale, offset );
 }
 
@@ -279,14 +279,14 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
     return nullptr;
 
 #ifdef QGISDEBUG
-  auto start = common::tick();
+  const auto start = common::tick();
 #endif
 
   laszip::io::reader::basic_file<FileType> f( file );
 
   const size_t count = f.get_header().point_count;
-  QgsVector3D scale( f.get_header().scale.x, f.get_header().scale.y, f.get_header().scale.z );
-  QgsVector3D offset( f.get_header().offset.x, f.get_header().offset.y, f.get_header().offset.z );
+  const QgsVector3D scale( f.get_header().scale.x, f.get_header().scale.y, f.get_header().scale.z );
+  const QgsVector3D offset( f.get_header().offset.x, f.get_header().offset.y, f.get_header().offset.z );
 
   QByteArray bufArray( f.get_header().point_record_length, 0 );
   char *buf = bufArray.data();
@@ -407,8 +407,8 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
   for ( size_t i = 0 ; i < count ; i ++ )
   {
     f.readPoint( buf ); // read the point out
-    laszip::formats::las::point10 p = laszip::formats::packers<laszip::formats::las::point10>::unpack( buf );
-    laszip::formats::las::rgb rgb = laszip::formats::packers<laszip::formats::las::rgb>::unpack( buf + sizeof( laszip::formats::las::point10 ) + sizeof( laszip::formats::las::gpstime ) );
+    const laszip::formats::las::point10 p = laszip::formats::packers<laszip::formats::las::point10>::unpack( buf );
+    const laszip::formats::las::rgb rgb = laszip::formats::packers<laszip::formats::las::rgb>::unpack( buf + sizeof( laszip::formats::las::point10 ) + sizeof( laszip::formats::las::gpstime ) );
 
     for ( const RequestedAttributeDetails &requestedAttribute : requestedAttributeDetails )
     {
@@ -470,7 +470,7 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
   }
 
 #ifdef QGISDEBUG
-  float t = common::since( start );
+  const float t = common::since( start );
   QgsDebugMsgLevel( QStringLiteral( "LAZ-PERF Read through the points in %1 seconds." ).arg( t ), 2 );
 #endif
   QgsPointCloudBlock *block = new QgsPointCloudBlock(

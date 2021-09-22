@@ -33,7 +33,7 @@ void QgsSpatiaLiteTableModel::addTableEntry( const QString &type, const QString 
 {
   //is there already a root item ?
   QStandardItem *dbItem = nullptr;
-  QList < QStandardItem * >dbItems = findItems( mSqliteDb, Qt::MatchExactly, 0 );
+  const QList < QStandardItem * >dbItems = findItems( mSqliteDb, Qt::MatchExactly, 0 );
 
   //there is already an item
   if ( !dbItems.isEmpty() )
@@ -48,8 +48,8 @@ void QgsSpatiaLiteTableModel::addTableEntry( const QString &type, const QString 
   }
 
   //path to icon for specified type
-  QgsWkbTypes::Type wkbType = qgisTypeFromDbType( type );
-  QIcon iconFile = iconForType( wkbType );
+  const QgsWkbTypes::Type wkbType = qgisTypeFromDbType( type );
+  const QIcon iconFile = iconForType( wkbType );
 
   QList < QStandardItem * >childItemList;
   QStandardItem *typeItem = new QStandardItem( QIcon( iconFile ), type );
@@ -79,15 +79,15 @@ void QgsSpatiaLiteTableModel::setSql( const QModelIndex &index, const QString &s
   }
 
   //find out table name
-  QModelIndex tableSibling = index.sibling( index.row(), 0 );
-  QModelIndex geomSibling = index.sibling( index.row(), 2 );
+  const QModelIndex tableSibling = index.sibling( index.row(), 0 );
+  const QModelIndex geomSibling = index.sibling( index.row(), 2 );
 
   if ( !tableSibling.isValid() || !geomSibling.isValid() )
   {
     return;
   }
 
-  QModelIndex sqlIndex = index.sibling( index.row(), 3 );
+  const QModelIndex sqlIndex = index.sibling( index.row(), 3 );
   if ( sqlIndex.isValid() )
   {
     itemFromIndex( sqlIndex )->setText( sql );
@@ -96,19 +96,19 @@ void QgsSpatiaLiteTableModel::setSql( const QModelIndex &index, const QString &s
 
 void QgsSpatiaLiteTableModel::setGeometryTypesForTable( const QString &table, const QString &attribute, const QString &type )
 {
-  bool typeIsEmpty = type.isEmpty();  //true means the table has no valid geometry entry and the item for this table should be removed
-  QStringList typeList = type.split( ',' );
+  const bool typeIsEmpty = type.isEmpty();  //true means the table has no valid geometry entry and the item for this table should be removed
+  const QStringList typeList = type.split( ',' );
 
   //find schema item and table item
   QStandardItem *dbItem = nullptr;
-  QList < QStandardItem * >dbItems = findItems( mSqliteDb, Qt::MatchExactly, 0 );
+  const QList < QStandardItem * >dbItems = findItems( mSqliteDb, Qt::MatchExactly, 0 );
 
   if ( dbItems.empty() )
   {
     return;
   }
   dbItem = dbItems.at( 0 );
-  int numChildren = dbItem->rowCount();
+  const int numChildren = dbItem->rowCount();
 
   QModelIndex currentChildIndex;
   QModelIndex currentTableIndex;
@@ -125,7 +125,7 @@ void QgsSpatiaLiteTableModel::setGeometryTypesForTable( const QString &table, co
     currentTableIndex = currentChildIndex.sibling( i, 1 );
     currentTypeIndex = currentChildIndex.sibling( i, 2 );
     currentGeomColumnIndex = currentChildIndex.sibling( i, 3 );
-    QString geomColText = itemFromIndex( currentGeomColumnIndex )->text();
+    const QString geomColText = itemFromIndex( currentGeomColumnIndex )->text();
 
     if ( !currentTypeIndex.isValid() || !currentTableIndex.isValid() || !currentGeomColumnIndex.isValid() )
     {
@@ -141,8 +141,8 @@ void QgsSpatiaLiteTableModel::setGeometryTypesForTable( const QString &table, co
         return;
       }
 
-      QgsWkbTypes::Type wkbType = qgisTypeFromDbType( typeList.at( 0 ) );
-      QIcon myIcon = iconForType( wkbType );
+      const QgsWkbTypes::Type wkbType = qgisTypeFromDbType( typeList.at( 0 ) );
+      const QIcon myIcon = iconForType( wkbType );
       itemFromIndex( currentTypeIndex )->setText( typeList.at( 0 ) ); //todo: add other rows
       itemFromIndex( currentTypeIndex )->setIcon( myIcon );
       if ( !geomColText.contains( QLatin1String( " AS " ) ) )

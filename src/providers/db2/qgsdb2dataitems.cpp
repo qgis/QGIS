@@ -101,19 +101,19 @@ bool QgsDb2ConnectionItem::ConnInfoFromSettings( const QString connName,
     QString &connInfo, QString &errorMsg )
 {
   QgsDebugMsg( QStringLiteral( "Get settings for connection '%1'" ).arg( connInfo ) );
-  QgsSettings settings;
-  QString key = "/DB2/connections/" + connName;
+  const QgsSettings settings;
+  const QString key = "/DB2/connections/" + connName;
 
-  bool rc = QgsDb2ConnectionItem::ConnInfoFromParameters(
-              settings.value( key + "/service" ).toString(),
-              settings.value( key + "/driver" ).toString(),
-              settings.value( key + "/host" ).toString(),
-              settings.value( key + "/port" ).toString(),
-              settings.value( key + "/database" ).toString(),
-              settings.value( key + "/username" ).toString(),
-              settings.value( key + "/password" ).toString(),
-              settings.value( key + "/authcfg" ).toString(),
-              connInfo, errorMsg );
+  const bool rc = QgsDb2ConnectionItem::ConnInfoFromParameters(
+                    settings.value( key + "/service" ).toString(),
+                    settings.value( key + "/driver" ).toString(),
+                    settings.value( key + "/host" ).toString(),
+                    settings.value( key + "/port" ).toString(),
+                    settings.value( key + "/database" ).toString(),
+                    settings.value( key + "/username" ).toString(),
+                    settings.value( key + "/password" ).toString(),
+                    settings.value( key + "/authcfg" ).toString(),
+                    connInfo, errorMsg );
 
   if ( !rc )
   {
@@ -130,14 +130,14 @@ void QgsDb2ConnectionItem::refresh()
   QgsDebugMsg( "db2 mPath = " + mPath );
 
   // read up the schemas and layers from database
-  QVector<QgsDataItem *> items = createChildren();
+  const QVector<QgsDataItem *> items = createChildren();
 
   // Add new items
   const auto constItems = items;
   for ( QgsDataItem *item : constItems )
   {
     // Is it present in children?
-    int index = findItem( mChildren, item );
+    const int index = findItem( mChildren, item );
     if ( index >= 0 )
     {
       ( ( QgsDb2SchemaItem * )mChildren.at( index ) )->addLayers( item );
@@ -154,7 +154,7 @@ QVector<QgsDataItem *> QgsDb2ConnectionItem::createChildren()
 
   QString connInfo;
   QString errorMsg;
-  bool success = QgsDb2ConnectionItem::ConnInfoFromSettings( mName, connInfo, errorMsg );
+  const bool success = QgsDb2ConnectionItem::ConnInfoFromSettings( mName, connInfo, errorMsg );
   if ( !success )
   {
     QgsDebugMsg( "settings error: " + errorMsg );
@@ -165,7 +165,7 @@ QVector<QgsDataItem *> QgsDb2ConnectionItem::createChildren()
   mConnInfo = connInfo;
   QgsDebugMsg( "mConnInfo: '" + mConnInfo + "'" );
 
-  QSqlDatabase db = QgsDb2Provider::getDatabase( connInfo, errorMsg );
+  const QSqlDatabase db = QgsDb2Provider::getDatabase( connInfo, errorMsg );
   if ( errorMsg.isEmpty() )
   {
     //children.append( new QgsFavoritesItem(this, "connection successful", mPath + "/success"));
@@ -179,7 +179,7 @@ QVector<QgsDataItem *> QgsDb2ConnectionItem::createChildren()
   }
 
   QgsDb2GeometryColumns db2GC = QgsDb2GeometryColumns( db );
-  QString sqlcode = db2GC.open();
+  const QString sqlcode = db2GC.open();
 
   /* Enabling the DB2 Spatial Extender creates the DB2GSE schema and tables,
      so the Extender is either not enabled or set up if SQLCODE -204 is returned. */
@@ -253,7 +253,7 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData *data, const QString &toS
   QStringList importResults;
   bool hasError = false;
 
-  QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
+  const QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
   const auto constLst = lst;
   for ( const QgsMimeDataUtils::Uri &u : constLst )
   {
@@ -427,7 +427,7 @@ void QgsDb2SchemaItem::addLayers( QgsDataItem *newLayers )
 
 QgsDb2LayerItem *QgsDb2SchemaItem::addLayer( QgsDb2LayerProperty layerProperty, bool refresh )
 {
-  QgsWkbTypes::Type wkbType = QgsDb2TableModel::wkbTypeFromDb2( layerProperty.type );
+  const QgsWkbTypes::Type wkbType = QgsDb2TableModel::wkbTypeFromDb2( layerProperty.type );
   QString tip = tr( "DB2 *** %1 as %2 in %3" ).arg( layerProperty.geometryColName,
                 QgsWkbTypes::displayString( wkbType ),
                 layerProperty.srid );

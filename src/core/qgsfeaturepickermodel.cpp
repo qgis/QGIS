@@ -42,7 +42,7 @@ QVariant QgsFeaturePickerModel::entryIdentifier( const QgsFeatureExpressionValue
 
 QgsFeatureExpressionValuesGatherer::Entry QgsFeaturePickerModel::createEntry( const QVariant &identifier ) const
 {
-  QgsFeatureId fid = identifier.value<QgsFeatureId>();
+  const QgsFeatureId fid = identifier.value<QgsFeatureId>();
   return QgsFeatureExpressionValuesGatherer::Entry( fid, QStringLiteral( "(%1)" ).arg( fid ), sourceLayer() );
 }
 

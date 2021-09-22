@@ -181,7 +181,7 @@ void QgsProcessingFieldMapPanelWidget::addField()
 {
   const int rowCount = mModel->rowCount();
   mModel->appendField( QgsField( QStringLiteral( "new_field" ) ) );
-  QModelIndex index = mModel->index( rowCount, 0 );
+  const QModelIndex index = mModel->index( rowCount, 0 );
   mFieldsView->selectionModel()->select(
     index,
     QItemSelectionModel::SelectionFlags(

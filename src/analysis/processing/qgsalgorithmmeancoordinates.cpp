@@ -77,8 +77,8 @@ QVariantMap QgsMeanCoordinatesAlgorithm::processAlgorithm( const QVariantMap &pa
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  QString weightFieldName = parameterAsString( parameters, QStringLiteral( "WEIGHT" ), context );
-  QString uniqueFieldName = parameterAsString( parameters, QStringLiteral( "UID" ), context );
+  const QString weightFieldName = parameterAsString( parameters, QStringLiteral( "WEIGHT" ), context );
+  const QString uniqueFieldName = parameterAsString( parameters, QStringLiteral( "UID" ), context );
 
   QgsAttributeList attributes;
   int weightIndex = -1;
@@ -102,7 +102,7 @@ QVariantMap QgsMeanCoordinatesAlgorithm::processAlgorithm( const QVariantMap &pa
   fields.append( QgsField( QStringLiteral( "MEAN_Y" ), QVariant::Double, QString(), 24, 15 ) );
   if ( uniqueFieldIndex >= 0 )
   {
-    QgsField uniqueField = source->fields().at( uniqueFieldIndex );
+    const QgsField uniqueField = source->fields().at( uniqueFieldIndex );
     fields.append( uniqueField );
   }
 
@@ -156,7 +156,7 @@ QVariantMap QgsMeanCoordinatesAlgorithm::processAlgorithm( const QVariantMap &pa
       throw QgsProcessingException( QObject::tr( "Negative weight value found. Please fix your data and try again." ) );
     }
 
-    QList< double > values = means.value( featureClass );
+    const QList< double > values = means.value( featureClass );
     double cx = 0;
     double cy = 0;
     double totalWeight = 0;
@@ -197,10 +197,10 @@ QVariantMap QgsMeanCoordinatesAlgorithm::processAlgorithm( const QVariantMap &pa
       continue;
 
     QgsFeature outFeat;
-    double cx = it.value().at( 0 ) / it.value().at( 2 );
-    double cy = it.value().at( 1 ) / it.value().at( 2 );
+    const double cx = it.value().at( 0 ) / it.value().at( 2 );
+    const double cy = it.value().at( 1 ) / it.value().at( 2 );
 
-    QgsPointXY meanPoint( cx, cy );
+    const QgsPointXY meanPoint( cx, cy );
     outFeat.setGeometry( QgsGeometry::fromPointXY( meanPoint ) );
 
     QgsAttributes attributes;

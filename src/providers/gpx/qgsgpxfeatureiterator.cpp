@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsexception.h"
+#include "qgsgeometryengine.h"
 
 #include <limits>
 #include <cstring>
@@ -42,6 +43,23 @@ QgsGPXFeatureIterator::QgsGPXFeatureIterator( QgsGPXFeatureSource *source, bool 
     // can't reproject mFilterRect
     close();
     return;
+  }
+
+  // prepare spatial filter geometries for optimal speed
+  switch ( mRequest.spatialFilterType() )
+  {
+    case Qgis::SpatialFilterType::NoFilter:
+    case Qgis::SpatialFilterType::BoundingBox:
+      break;
+
+    case Qgis::SpatialFilterType::DistanceWithin:
+      if ( !mRequest.referenceGeometry().isEmpty() )
+      {
+        mDistanceWithinGeom = mRequest.referenceGeometry();
+        mDistanceWithinEngine.reset( QgsGeometry::createGeometryEngine( mDistanceWithinGeom.constGet() ) );
+        mDistanceWithinEngine->prepareGeometry();
+      }
+      break;
   }
 
   rewind();
@@ -98,6 +116,13 @@ bool QgsGPXFeatureIterator::fetchFeature( QgsFeature &feature )
     close();
     if ( res )
       geometryToDestinationCrs( feature, mTransform );
+
+    if ( res && mDistanceWithinEngine && mDistanceWithinEngine->distance( feature.geometry().constGet() ) > mRequest.distanceWithin() )
+    {
+      res = false;
+      feature.setValid( false );
+    }
+
     return res;
   }
 
@@ -111,6 +136,16 @@ bool QgsGPXFeatureIterator::fetchFeature( QgsFeature &feature )
       {
         ++mWptIter;
         geometryToDestinationCrs( feature, mTransform );
+
+        bool res = true;
+        if ( res && mDistanceWithinEngine && mDistanceWithinEngine->distance( feature.geometry().constGet() ) > mRequest.distanceWithin() )
+        {
+          res = false;
+        }
+
+        if ( !res )
+          continue;
+
         return true;
       }
     }
@@ -125,6 +160,16 @@ bool QgsGPXFeatureIterator::fetchFeature( QgsFeature &feature )
       {
         ++mRteIter;
         geometryToDestinationCrs( feature, mTransform );
+
+        bool res = true;
+        if ( res && mDistanceWithinEngine && mDistanceWithinEngine->distance( feature.geometry().constGet() ) > mRequest.distanceWithin() )
+        {
+          res = false;
+        }
+
+        if ( !res )
+          continue;
+
         return true;
       }
     }
@@ -139,6 +184,16 @@ bool QgsGPXFeatureIterator::fetchFeature( QgsFeature &feature )
       {
         ++mTrkIter;
         geometryToDestinationCrs( feature, mTransform );
+
+        bool res = true;
+        if ( res && mDistanceWithinEngine && mDistanceWithinEngine->distance( feature.geometry().constGet() ) > mRequest.distanceWithin() )
+        {
+          res = false;
+        }
+
+        if ( !res )
+          continue;
+
         return true;
       }
     }
@@ -155,7 +210,7 @@ bool QgsGPXFeatureIterator::readFid( QgsFeature &feature )
     return false;
 
   mFetchedFid = true;
-  QgsFeatureId fid = mRequest.filterFid();
+  const QgsFeatureId fid = mRequest.filterFid();
 
   if ( mSource->mFeatureType == QgsGPXProvider::WaypointType )
   {
@@ -412,7 +467,7 @@ void QgsGPXFeatureIterator::readAttributes( QgsFeature &feature, const QgsTrack 
 
 QgsGeometry *QgsGPXFeatureIterator::readWaypointGeometry( const QgsWaypoint &wpt )
 {
-  int size = 1 + sizeof( int ) + 2 * sizeof( double );
+  const int size = 1 + sizeof( int ) + 2 * sizeof( double );
   unsigned char *geo = new unsigned char[size];
 
   QgsWkbPtr wkbPtr( geo, size );
@@ -427,7 +482,7 @@ QgsGeometry *QgsGPXFeatureIterator::readWaypointGeometry( const QgsWaypoint &wpt
 QgsGeometry *QgsGPXFeatureIterator::readRouteGeometry( const QgsRoute &rte )
 {
   // some wkb voodoo
-  int size = 1 + 2 * sizeof( int ) + 2 * sizeof( double ) * rte.points.size();
+  const int size = 1 + 2 * sizeof( int ) + 2 * sizeof( double ) * rte.points.size();
   unsigned char *geo = new unsigned char[size];
 
   QgsWkbPtr wkbPtr( geo, size );
@@ -464,7 +519,7 @@ QgsGeometry *QgsGPXFeatureIterator::readTrackGeometry( const QgsTrack &trk )
   //QgsDebugMsg( "GPX feature track total points: " + QString::number( totalPoints ) );
 
   // some wkb voodoo
-  int size = 1 + 2 * sizeof( int ) + 2 * sizeof( double ) * totalPoints;
+  const int size = 1 + 2 * sizeof( int ) + 2 * sizeof( double ) * totalPoints;
   unsigned char *geo = new unsigned char[size];
   if ( !geo )
   {
@@ -477,7 +532,7 @@ QgsGeometry *QgsGPXFeatureIterator::readTrackGeometry( const QgsTrack &trk )
 
   for ( int k = 0; k < trk.segments.size(); k++ )
   {
-    int nPoints = trk.segments[k].points.size();
+    const int nPoints = trk.segments[k].points.size();
     for ( int i = 0; i < nPoints; ++i )
     {
       wkbPtr << trk.segments[k].points[i].lon << trk.segments[k].points[i].lat;

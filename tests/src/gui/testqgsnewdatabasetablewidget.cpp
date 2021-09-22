@@ -73,7 +73,7 @@ void TestQgsNewDatabaseTableNameWidget::initTestCase()
   QString errCause;
   QMap<int, int> m;
   mGpkgPath = mDir.filePath( QStringLiteral( "test.gpkg" ) );
-  QMap<QString, QVariant> options { { QStringLiteral( "layerName" ), QString( "test_layer" ) } };
+  const QMap<QString, QVariant> options { { QStringLiteral( "layerName" ), QString( "test_layer" ) } };
   QVERIFY( md->createEmptyLayer( mGpkgPath,
                                  QgsFields(),
                                  QgsWkbTypes::Type::Point,
@@ -236,8 +236,8 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsGeopackage()
 
   QSignalSpy validationSpy( w.get(), SIGNAL( validationChanged( bool ) ) );
   QSignalSpy schemaSpy( w.get(), SIGNAL( schemaNameChanged( QString ) ) );
-  QSignalSpy tableSpy( w.get(), SIGNAL( tableNameChanged( QString ) ) );
-  QSignalSpy providerSpy( w.get(), SIGNAL( providerKeyChanged( QString ) ) );
+  const QSignalSpy tableSpy( w.get(), SIGNAL( tableNameChanged( QString ) ) );
+  const QSignalSpy providerSpy( w.get(), SIGNAL( providerKeyChanged( QString ) ) );
   QSignalSpy uriSpy( w.get(), SIGNAL( uriChanged( QString ) ) );
 
   /*
@@ -252,7 +252,7 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsGeopackage()
   index = w->mBrowserModel->findPath( QStringLiteral( "gpkg:/%1" ).arg( mGpkgPath ) );
   QVERIFY( index.isValid() );
   w->mBrowserTreeView->scrollTo( w->mBrowserProxyModel.mapFromSource( index ) );
-  auto rect = w->mBrowserTreeView->visualRect( w->mBrowserProxyModel.mapFromSource( index ) );
+  const auto rect = w->mBrowserTreeView->visualRect( w->mBrowserProxyModel.mapFromSource( index ) );
   QVERIFY( rect.isValid() );
   QTest::mouseClick( w->mBrowserTreeView->viewport(), Qt::LeftButton, Qt::KeyboardModifiers(), rect.center() );
 

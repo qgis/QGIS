@@ -91,7 +91,7 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
     svgDlg.svgSelector()->setSvgPath( mSvgPathLineEdit->text().trimmed() );
     if ( svgDlg.exec() == QDialog::Accepted )
     {
-      QString svgPath = svgDlg.svgSelector()->currentSvgPath();
+      const QString svgPath = svgDlg.svgSelector()->currentSvgPath();
       if ( !svgPath.isEmpty() )
       {
         updateSvgPath( svgPath );
@@ -165,8 +165,8 @@ void QgsDecorationNorthArrowDialog::updateSvgPath( const QString &svgPath )
   }
   mDeco.mSvgPath = svgPath;
 
-  QString resolvedPath = QgsSymbolLayerUtils::svgSymbolNameToPath( svgPath, QgsProject::instance()->pathResolver() );
-  bool validSvg = QFileInfo::exists( resolvedPath );
+  const QString resolvedPath = QgsSymbolLayerUtils::svgSymbolNameToPath( svgPath, QgsProject::instance()->pathResolver() );
+  const bool validSvg = QFileInfo::exists( resolvedPath );
 
   // draw red text for path field if invalid (path can't be resolved)
   mSvgPathLineEdit->setStyleSheet( QString( !validSvg ? "QLineEdit{ color: rgb(225, 0, 0); }" : "" ) );
@@ -177,8 +177,8 @@ void QgsDecorationNorthArrowDialog::updateSvgPath( const QString &svgPath )
 
 void QgsDecorationNorthArrowDialog::drawNorthArrow()
 {
-  int rotation = spinAngle->value();
-  double maxLength = 64;
+  const int rotation = spinAngle->value();
+  const double maxLength = 64;
   QSvgRenderer svg;
 
   const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( mDeco.svgPath(), maxLength, pbnChangeColor->color(), pbnChangeOutlineColor->color(), 1.0, 1.0 );
@@ -187,7 +187,7 @@ void QgsDecorationNorthArrowDialog::drawNorthArrow()
   if ( svg.isValid() )
   {
     QSize size( maxLength, maxLength );
-    QRectF viewBox = svg.viewBoxF();
+    const QRectF viewBox = svg.viewBoxF();
     if ( viewBox.height() > viewBox.width() )
     {
       size.setWidth( maxLength * viewBox.width() / viewBox.height() );
@@ -205,8 +205,8 @@ void QgsDecorationNorthArrowDialog::drawNorthArrow()
 
     myQPainter.setRenderHint( QPainter::SmoothPixmapTransform );
 
-    double centerXDouble = size.width() / 2.0;
-    double centerYDouble = size.height() / 2.0;
+    const double centerXDouble = size.width() / 2.0;
+    const double centerYDouble = size.height() / 2.0;
     //save the current canvas rotation
     myQPainter.save();
     myQPainter.translate( ( maxLength - size.width() ) / 2, ( maxLength - size.height() ) / 2 );
@@ -215,15 +215,15 @@ void QgsDecorationNorthArrowDialog::drawNorthArrow()
     myQPainter.rotate( rotation );
     //work out how to shift the image so that it appears in the center of the canvas
     //(x cos a + y sin a - x, -x sin a + y cos a - y)
-    double myRadiansDouble = ( M_PI / 180 ) * rotation;
-    int xShift = static_cast<int>( (
-                                     ( centerXDouble * std::cos( myRadiansDouble ) ) +
-                                     ( centerYDouble * std::sin( myRadiansDouble ) )
-                                   ) - centerXDouble );
-    int yShift = static_cast<int>( (
-                                     ( -centerXDouble * std::sin( myRadiansDouble ) ) +
-                                     ( centerYDouble * std::cos( myRadiansDouble ) )
-                                   ) - centerYDouble );
+    const double myRadiansDouble = ( M_PI / 180 ) * rotation;
+    const int xShift = static_cast<int>( (
+                                           ( centerXDouble * std::cos( myRadiansDouble ) ) +
+                                           ( centerYDouble * std::sin( myRadiansDouble ) )
+                                         ) - centerXDouble );
+    const int yShift = static_cast<int>( (
+                                           ( -centerXDouble * std::sin( myRadiansDouble ) ) +
+                                           ( centerYDouble * std::cos( myRadiansDouble ) )
+                                         ) - centerYDouble );
 
     //draw the pixmap in the proper position
     myQPainter.translate( xShift, yShift );
@@ -241,7 +241,7 @@ void QgsDecorationNorthArrowDialog::drawNorthArrow()
     myPainterPixmap.fill( Qt::transparent );
     QPainter myQPainter;
     myQPainter.begin( &myPainterPixmap );
-    QFont myQFont( QStringLiteral( "time" ), 12, QFont::Bold );
+    const QFont myQFont( QStringLiteral( "time" ), 12, QFont::Bold );
     myQPainter.setFont( myQFont );
     myQPainter.setPen( Qt::red );
     myQPainter.drawText( 10, 20, tr( "Pixmap not found" ) );

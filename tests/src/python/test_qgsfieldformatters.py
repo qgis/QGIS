@@ -10,32 +10,50 @@ __author__ = 'Matthias Kuhn'
 __date__ = '05/12/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-
 import tempfile
 
 import qgis  # NOQA
-
-from qgis.core import (QgsFeature, QgsProject, QgsRelation, QgsVectorLayer,
-                       QgsValueMapFieldFormatter, QgsValueRelationFieldFormatter,
-                       QgsRelationReferenceFieldFormatter, QgsRangeFieldFormatter,
-                       QgsCheckBoxFieldFormatter, QgsFallbackFieldFormatter,
-                       QgsSettings, QgsGeometry, QgsPointXY, QgsVectorFileWriter)
-
-from qgis.PyQt.QtCore import QCoreApplication, QLocale, QVariant
+from qgis.PyQt.QtCore import (
+    QCoreApplication,
+    QLocale,
+    QVariant,
+    QDate,
+    QTime,
+    QDateTime,
+    Qt
+)
+from qgis.core import (
+    QgsFeature,
+    QgsProject,
+    QgsRelation,
+    QgsVectorLayer,
+    QgsValueMapFieldFormatter,
+    QgsValueRelationFieldFormatter,
+    QgsRelationReferenceFieldFormatter,
+    QgsRangeFieldFormatter,
+    QgsCheckBoxFieldFormatter,
+    QgsFallbackFieldFormatter,
+    QgsDateTimeFieldFormatter,
+    QgsSettings,
+    QgsGeometry,
+    QgsPointXY,
+    QgsVectorFileWriter
+)
 from qgis.testing import start_app, unittest
+
 from utilities import writeShape
 
 start_app()
 
 
 class TestQgsValueMapFieldFormatter(unittest.TestCase):
-
     VALUEMAP_NULL_TEXT = "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}"
 
     def test_representValue(self):
         QgsSettings().setValue("qgis/nullValue", "NULL")
-        layer = QgsVectorLayer("none?field=number1:integer&field=number2:double&field=text1:string&field=number3:integer&field=number4:double&field=text2:string",
-                               "layer", "memory")
+        layer = QgsVectorLayer(
+            "none?field=number1:integer&field=number2:double&field=text1:string&field=number3:integer&field=number4:double&field=text2:string",
+            "layer", "memory")
         self.assertTrue(layer.isValid())
         QgsProject.instance().addMapLayer(layer)
         f = QgsFeature()
@@ -84,7 +102,6 @@ class TestQgsValueMapFieldFormatter(unittest.TestCase):
 class TestQgsValueRelationFieldFormatter(unittest.TestCase):
 
     def test_representValue(self):
-
         first_layer = QgsVectorLayer("none?field=foreign_key:integer",
                                      "first_layer", "memory")
         self.assertTrue(first_layer.isValid())
@@ -128,7 +145,6 @@ class TestQgsValueRelationFieldFormatter(unittest.TestCase):
         QgsProject.instance().removeMapLayer(second_layer.id())
 
     def test_valueToStringList(self):
-
         def _test(a, b):
             self.assertEqual(QgsValueRelationFieldFormatter.valueToStringList(a), b)
 
@@ -140,11 +156,12 @@ class TestQgsValueRelationFieldFormatter(unittest.TestCase):
         _test('{1,2,3}', ["1", "2", "3"])
         _test('{"1","2","3"}', ["1", "2", "3"])
         _test('["1","2","3"]', ["1", "2", "3"])
-        _test(r'["a string,comma","a string\"quote", "another string[]"]', ['a string,comma', 'a string"quote', 'another string[]'])
+        _test(r'["a string,comma","a string\"quote", "another string[]"]',
+              ['a string,comma', 'a string"quote', 'another string[]'])
 
     def test_expressionRequiresFormScope(self):
-
-        res = list(QgsValueRelationFieldFormatter.expressionFormAttributes("current_value('ONE') AND current_value('TWO')"))
+        res = list(
+            QgsValueRelationFieldFormatter.expressionFormAttributes("current_value('ONE') AND current_value('TWO')"))
         res = sorted(res)
         self.assertEqual(res, ['ONE', 'TWO'])
 
@@ -171,17 +188,19 @@ class TestQgsValueRelationFieldFormatter(unittest.TestCase):
         self.assertTrue(QgsValueRelationFieldFormatter.expressionIsUsable("current_geometry", f))
         self.assertFalse(QgsValueRelationFieldFormatter.expressionIsUsable("current_value ( 'TWO' )", f))
         self.assertTrue(QgsValueRelationFieldFormatter.expressionIsUsable("current_value ( 'pkid' )", f))
-        self.assertTrue(QgsValueRelationFieldFormatter.expressionIsUsable("@current_geometry current_value ( 'pkid' )", f))
+        self.assertTrue(
+            QgsValueRelationFieldFormatter.expressionIsUsable("@current_geometry current_value ( 'pkid' )", f))
 
         QgsProject.instance().removeMapLayer(layer.id())
 
     def test_expressionRequiresParentFormScope(self):
-
-        res = list(QgsValueRelationFieldFormatter.expressionFormAttributes("current_value('ONE') AND current_parent_value('TWO')"))
+        res = list(QgsValueRelationFieldFormatter.expressionFormAttributes(
+            "current_value('ONE') AND current_parent_value('TWO')"))
         res = sorted(res)
         self.assertEqual(res, ['ONE'])
 
-        res = list(QgsValueRelationFieldFormatter.expressionParentFormAttributes("current_value('ONE') AND current_parent_value('TWO')"))
+        res = list(QgsValueRelationFieldFormatter.expressionParentFormAttributes(
+            "current_value('ONE') AND current_parent_value('TWO')"))
         res = sorted(res)
         self.assertEqual(res, ['TWO'])
 
@@ -190,14 +209,14 @@ class TestQgsValueRelationFieldFormatter(unittest.TestCase):
 
         self.assertFalse(QgsValueRelationFieldFormatter.expressionRequiresParentFormScope(""))
         self.assertTrue(QgsValueRelationFieldFormatter.expressionRequiresParentFormScope("current_parent_value('TWO')"))
-        self.assertTrue(QgsValueRelationFieldFormatter.expressionRequiresParentFormScope("current_parent_value ( 'TWO' )"))
+        self.assertTrue(
+            QgsValueRelationFieldFormatter.expressionRequiresParentFormScope("current_parent_value ( 'TWO' )"))
         self.assertTrue(QgsValueRelationFieldFormatter.expressionRequiresParentFormScope("@current_parent_geometry"))
 
 
 class TestQgsRelationReferenceFieldFormatter(unittest.TestCase):
 
     def test_representValue(self):
-
         first_layer = QgsVectorLayer("none?field=foreign_key:integer",
                                      "first_layer", "memory")
         self.assertTrue(first_layer.isValid())
@@ -302,7 +321,6 @@ class TestQgsRangeFieldFormatter(unittest.TestCase):
         QLocale.setDefault(QLocale(QLocale.English))
 
     def test_representValue(self):
-
         layer = QgsVectorLayer("point?field=int:integer&field=double:double&field=long:long",
                                "layer", "memory")
         self.assertTrue(layer.isValid())
@@ -313,11 +331,13 @@ class TestQgsRangeFieldFormatter(unittest.TestCase):
         # Precision is ignored for integers and longlongs
         self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, '123'), '123')
         self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, '123000'), '123,000')
-        self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, '9999999'), '9,999,999')  # no scientific notation for integers!
+        self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, '9999999'),
+                         '9,999,999')  # no scientific notation for integers!
         self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, None), 'NULL')
         self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '123'), '123')
         self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '123000'), '123,000')
-        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '9999999'), '9,999,999')  # no scientific notation for long longs!
+        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '9999999'),
+                         '9,999,999')  # no scientific notation for long longs!
         self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, None), 'NULL')
 
         self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 1}, None, None), 'NULL')
@@ -346,7 +366,8 @@ class TestQgsRangeFieldFormatter(unittest.TestCase):
                          '9.999.999')  # scientific notation for integers!
         self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '123'), '123')
         self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '123000'), '123.000')
-        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '9999999'), '9.999.999')  # scientific notation for long longs!
+        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '9999999'),
+                         '9.999.999')  # scientific notation for long longs!
         self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, None), 'NULL')
 
         self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, None), 'NULL')
@@ -375,7 +396,8 @@ class TestQgsRangeFieldFormatter(unittest.TestCase):
                          '9999999')  # scientific notation for integers!
         self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '123'), '123')
         self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '123000'), '123000')
-        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '9999999'), '9999999')  # scientific notation for long longs!
+        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '9999999'),
+                         '9999999')  # scientific notation for long longs!
         self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '123000'), '123000.00')
 
         QgsProject.instance().removeAllMapLayers()
@@ -560,10 +582,14 @@ class TestQgsFallbackFieldFormatter(unittest.TestCase):
             self.assertEqual(fieldFormatter.representValue(layer, 3 + offset, {}, None, None), 'NULL')
 
             # Check NULLs (this is what happens in real life inside QGIS)
-            self.assertEqual(fieldFormatter.representValue(layer, 0 + offset, {}, None, QVariant(QVariant.String)), 'NULL')
-            self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, QVariant(QVariant.String)), 'NULL')
-            self.assertEqual(fieldFormatter.representValue(layer, 2 + offset, {}, None, QVariant(QVariant.String)), 'NULL')
-            self.assertEqual(fieldFormatter.representValue(layer, 3 + offset, {}, None, QVariant(QVariant.String)), 'NULL')
+            self.assertEqual(fieldFormatter.representValue(layer, 0 + offset, {}, None, QVariant(QVariant.String)),
+                             'NULL')
+            self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, QVariant(QVariant.String)),
+                             'NULL')
+            self.assertEqual(fieldFormatter.representValue(layer, 2 + offset, {}, None, QVariant(QVariant.String)),
+                             'NULL')
+            self.assertEqual(fieldFormatter.representValue(layer, 3 + offset, {}, None, QVariant(QVariant.String)),
+                             'NULL')
 
         memory_layer = QgsVectorLayer("point?field=int:integer&field=double:double&field=long:long&field=string:string",
                                       "layer", "memory")
@@ -599,6 +625,50 @@ class TestQgsFallbackFieldFormatter(unittest.TestCase):
 
         # No precision here
         _test(gpkg_layer, True)
+
+
+class TestQgsDateTimeFieldFormatter(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        QCoreApplication.setOrganizationName("QGIS_Test")
+        QCoreApplication.setOrganizationDomain("QGIS_TestQgsDateTimeFieldFormatter.com")
+        QCoreApplication.setApplicationName("QGIS_TestQgsDateTimeFieldFormatter")
+        QgsSettings().clear()
+        QLocale.setDefault(QLocale(QLocale.English))
+        start_app()
+
+    @classmethod
+    def tearDownClass(cls):
+        """Reset locale"""
+        QLocale.setDefault(QLocale(QLocale.English))
+
+    def test_representValue(self):
+        layer = QgsVectorLayer("point?field=int:integer&field=datetime:datetime&field=long:long",
+                               "layer", "memory")
+        self.assertTrue(layer.isValid())
+        QgsProject.instance().addMapLayers([layer])
+
+        field_formatter = QgsDateTimeFieldFormatter()
+
+        # default configuration should show timezone information
+        config = {}
+        self.assertEqual(field_formatter.representValue(layer, 1, config, None,
+                                                        QDateTime(QDate(2020, 3, 4), QTime(12, 13, 14), Qt.UTC)),
+                         '2020-03-04 12:13:14 (UTC)')
+        self.assertEqual(field_formatter.representValue(layer, 1, config, None,
+                                                        QDateTime(QDate(2020, 3, 4), QTime(12, 13, 14), Qt.OffsetFromUTC, 3600)),
+                         '2020-03-04 12:13:14 (UTC+01:00)')
+
+        # if specific display format is set then use that
+        config = {"display_format": "dd/MM/yyyy HH:mm:ss"}
+        self.assertEqual(field_formatter.representValue(layer, 1, config, None,
+                                                        QDateTime(QDate(2020, 3, 4), QTime(12, 13, 14), Qt.UTC)),
+                         '04/03/2020 12:13:14')
+        self.assertEqual(field_formatter.representValue(layer, 1, config, None,
+                                                        QDateTime(QDate(2020, 3, 4), QTime(12, 13, 14), Qt.OffsetFromUTC, 3600)),
+                         '04/03/2020 12:13:14')
 
 
 if __name__ == '__main__':

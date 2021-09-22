@@ -33,8 +33,8 @@ QgsTemplateProjectsModel::QgsTemplateProjectsModel( QObject *parent )
   : QStandardItemModel( parent )
 {
   const QStringList paths = QStandardPaths::standardLocations( QStandardPaths::AppDataLocation );
-  QString templateDirName = QgsSettings().value( QStringLiteral( "qgis/projectTemplateDir" ),
-                            QString( QgsApplication::qgisSettingsDirPath() + QStringLiteral( "project_templates" ) ) ).toString();
+  const QString templateDirName = QgsSettings().value( QStringLiteral( "qgis/projectTemplateDir" ),
+                                  QString( QgsApplication::qgisSettingsDirPath() + QStringLiteral( "project_templates" ) ) ).toString();
 
   for ( const QString &templatePath : paths )
   {
@@ -54,22 +54,22 @@ QgsTemplateProjectsModel::QgsTemplateProjectsModel( QObject *parent )
   connect( QgsProject::instance(), &QgsProject::crsChanged, this, [emptyProjectItem]() { emptyProjectItem->setData( QgsProject::instance()->crs().userFriendlyIdentifier(), QgsProjectListItemDelegate::CrsRole ); } );
   emptyProjectItem->setData( QgsProject::instance()->crs().userFriendlyIdentifier(), QgsProjectListItemDelegate::CrsRole );
   emptyProjectItem->setFlags( Qt::ItemFlag::ItemIsSelectable | Qt::ItemFlag::ItemIsEnabled ) ;
-  QSize previewSize( 250, 177 );
+  const QSize previewSize( 250, 177 );
   QImage image( previewSize, QImage::Format_ARGB32 );
-  QgsSettings settings;
-  int myRed = settings.value( QStringLiteral( "qgis/default_canvas_color_red" ), 255 ).toInt();
-  int myGreen = settings.value( QStringLiteral( "qgis/default_canvas_color_green" ), 255 ).toInt();
-  int myBlue = settings.value( QStringLiteral( "qgis/default_canvas_color_blue" ), 255 ).toInt();
+  const QgsSettings settings;
+  const int myRed = settings.value( QStringLiteral( "qgis/default_canvas_color_red" ), 255 ).toInt();
+  const int myGreen = settings.value( QStringLiteral( "qgis/default_canvas_color_green" ), 255 ).toInt();
+  const int myBlue = settings.value( QStringLiteral( "qgis/default_canvas_color_blue" ), 255 ).toInt();
   image.fill( QColor( myRed, myGreen, myBlue ) );
   QPainter painter( &image );
   painter.setOpacity( 0.5 );
-  QRect rect( 20, 20, 210, 137 );
+  const QRect rect( 20, 20, 210, 137 );
   QPen pen;
   pen.setStyle( Qt::DashLine );
   pen.setColor( Qt::gray );
   painter.setPen( pen );
   painter.drawRect( rect );
-  QgsProjectPreviewImage previewImage( image );
+  const QgsProjectPreviewImage previewImage( image );
   emptyProjectItem->setData( previewImage.pixmap(), Qt::DecorationRole );
 
   appendRow( emptyProjectItem );
@@ -86,7 +86,7 @@ void QgsTemplateProjectsModel::addTemplateDirectory( const QString &path )
 
 void QgsTemplateProjectsModel::scanDirectory( const QString &path )
 {
-  QDir dir = QDir( path );
+  const QDir dir = QDir( path );
   const QFileInfoList files = dir.entryInfoList( QStringList() << QStringLiteral( "*.qgs" ) << QStringLiteral( "*.qgz" ) );
 
   // Remove any template from this directory
@@ -110,9 +110,9 @@ void QgsTemplateProjectsModel::scanDirectory( const QString &path )
 
     QgsZipUtils::unzip( file.filePath(), mTemporaryDir.filePath( fileId ), files );
 
-    QString filename( mTemporaryDir.filePath( fileId ) + QDir::separator() + QStringLiteral( "preview.png" ) );
+    const QString filename( mTemporaryDir.filePath( fileId ) + QDir::separator() + QStringLiteral( "preview.png" ) );
 
-    QgsProjectPreviewImage thumbnail( filename );
+    const QgsProjectPreviewImage thumbnail( filename );
 
     if ( !thumbnail.isNull() )
     {

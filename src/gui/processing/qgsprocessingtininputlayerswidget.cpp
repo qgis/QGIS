@@ -59,7 +59,7 @@ void QgsProcessingTinInputLayersWidget::setValue( const QVariant &value )
   if ( !value.isValid() || value.type() != QVariant::List )
     return;
 
-  QVariantList list = value.toList();
+  const QVariantList list = value.toList();
 
   for ( const QVariant &layerValue : list )
   {
@@ -189,7 +189,7 @@ QVariant QgsProcessingTinInputLayersWidget::QgsProcessingTinInputLayersModel::da
           }
           break;
         case 2:
-          int attributeindex = mInputLayers.at( index.row() ).attributeIndex;
+          const int attributeindex = mInputLayers.at( index.row() ).attributeIndex;
           if ( attributeindex < 0 )
             return tr( "Z coordinate" );
           else
@@ -206,7 +206,7 @@ QVariant QgsProcessingTinInputLayersWidget::QgsProcessingTinInputLayersModel::da
     case Qt::ForegroundRole:
       if ( index.column() == 2 )
       {
-        int attributeindex = mInputLayers.at( index.row() ).attributeIndex;
+        const int attributeindex = mInputLayers.at( index.row() ).attributeIndex;
         if ( attributeindex < 0 )
           return QColor( Qt::darkGray );
       }
@@ -214,7 +214,7 @@ QVariant QgsProcessingTinInputLayersWidget::QgsProcessingTinInputLayersModel::da
     case Qt::FontRole:
       if ( index.column() == 2 )
       {
-        int attributeindex = mInputLayers.at( index.row() ).attributeIndex;
+        const int attributeindex = mInputLayers.at( index.row() ).attributeIndex;
         if ( attributeindex < 0 )
         {
           QFont font;
@@ -324,9 +324,9 @@ void QgsProcessingTinInputLayersWidget::Delegate::setEditorData( QWidget *editor
 {
   QComboBox *comboType = qobject_cast<QComboBox *>( editor );
   Q_ASSERT( comboType );
-  QgsProcessingParameterTinInputLayers::Type type =
+  const QgsProcessingParameterTinInputLayers::Type type =
     static_cast<QgsProcessingParameterTinInputLayers::Type>( index.data( QgsProcessingTinInputLayersModel::Type ).toInt() );
-  int comboIndex = comboType->findData( type );
+  const int comboIndex = comboType->findData( type );
   if ( comboIndex >= 0 )
     comboType->setCurrentIndex( comboIndex );
   else

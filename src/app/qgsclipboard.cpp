@@ -77,7 +77,7 @@ void QgsClipboard::replaceWithCopyOf( QgsFeatureStore &featureStore )
 
 void QgsClipboard::generateClipboardText( QString &textContent, QString &htmlContent ) const
 {
-  CopyFormat format = QgsSettings().enumValue( QStringLiteral( "qgis/copyFeatureFormat" ),  AttributesWithWKT );
+  const CopyFormat format = QgsSettings().enumValue( QStringLiteral( "qgis/copyFeatureFormat" ),  AttributesWithWKT );
 
   textContent.clear();
   htmlContent.clear();
@@ -111,14 +111,14 @@ void QgsClipboard::generateClipboardText( QString &textContent, QString &htmlCon
       // then the field contents
       for ( QgsFeatureList::const_iterator it = mFeatureClipboard.constBegin(); it != mFeatureClipboard.constEnd(); ++it )
       {
-        QgsAttributes attributes = it->attributes();
+        const QgsAttributes attributes = it->attributes();
 
         // TODO: Set up Paste Transformations to specify the order in which fields are added.
         if ( format == AttributesWithWKT )
         {
           if ( it->hasGeometry() )
           {
-            QString wkt = it->geometry().asWkt();
+            const QString wkt = it->geometry().asWkt();
             textFields += wkt;
             htmlFields += QStringLiteral( "<td>%1</td>" ).arg( wkt );
           }
@@ -206,48 +206,95 @@ QgsFeatureList QgsClipboard::stringToFeatureList( const QString &string, const Q
     return features;
 
   // otherwise try to read in as WKT
-  QStringList values = string.split( '\n' );
-  if ( values.isEmpty() || string.isEmpty() )
+  if ( string.isEmpty() || string.split( '\n' ).count() == 0 )
     return features;
 
-  QgsFields sourceFields = retrieveFields();
+  // Poor man's csv parser
+  bool isInsideQuotes {false};
+  QgsAttributes attrs;
+  QgsGeometry geom;
+  QString attrVal;
+  bool isFirstLine {string.startsWith( QStringLiteral( "wkt_geom" ) )};
+  // it seems there is no other way to check for header
+  const bool hasHeader{string.startsWith( QStringLiteral( "wkt_geom" ) )};
+  QgsGeometry geometry;
+  bool setFields {fields.isEmpty()};
+  QgsFields fieldsFromClipboard;
 
-  const auto constValues = values;
-  for ( const QString &row : constValues )
+  auto parseFunc = [ & ]( const QChar & c )
   {
-    // Assume that it's just WKT for now. because GeoJSON is managed by
-    // previous QgsOgrUtils::stringToFeatureList call
-    // Get the first value of a \t separated list. WKT clipboard pasted
-    // feature has first element the WKT geom.
-    // This split is to fix the following issue: https://github.com/qgis/QGIS/issues/24769
-    // Value separators are set in generateClipboardText
-    QStringList fieldValues = row.split( '\t' );
-    if ( fieldValues.isEmpty() )
-      continue;
 
-    QgsFeature feature;
-    feature.setFields( sourceFields );
-    feature.initAttributes( fieldValues.size() - 1 );
-
-    //skip header line
-    if ( fieldValues.at( 0 ) == QLatin1String( "wkt_geom" ) )
+    // parse geom only if it wasn't successfully set before
+    if ( geometry.isNull() )
     {
-      continue;
+      geometry = QgsGeometry::fromWkt( attrVal );
     }
 
-    for ( int i = 1; i < fieldValues.size(); ++i )
+    if ( isFirstLine ) // ... name
     {
-      feature.setAttribute( i - 1, fieldValues.at( i ) );
+      if ( attrVal != QStringLiteral( "wkt_geom" ) ) // ignore this one
+      {
+        fieldsFromClipboard.append( QgsField{attrVal, QVariant::String } );
+      }
+    }
+    else // ... or value
+    {
+      attrs.append( attrVal );
     }
 
-    QgsGeometry geometry = QgsGeometry::fromWkt( fieldValues[0] );
-    if ( !geometry.isNull() )
+    // end of record, create a new feature if it's not the header
+    if ( c == QChar( '\n' ) )
     {
-      feature.setGeometry( geometry );
+      if ( isFirstLine )
+      {
+        isFirstLine = false;
+      }
+      else
+      {
+        QgsFeature feature{setFields ? fieldsFromClipboard : fields};
+        feature.setGeometry( geometry );
+        if ( hasHeader || !geometry.isNull() )
+        {
+          attrs.pop_front();
+        }
+        feature.setAttributes( attrs );
+        features.append( feature );
+        geometry = QgsGeometry();
+        attrs.clear();
+      }
     }
+    attrVal.clear();
+  };
 
-    features.append( feature );
+  for ( auto c = string.constBegin(); c < string.constEnd(); ++c )
+  {
+    if ( *c == QChar( '\n' ) || *c == QChar( '\t' ) )
+    {
+      if ( isInsideQuotes )
+      {
+        attrVal.append( *c );
+      }
+      else
+      {
+        parseFunc( *c );
+      }
+    }
+    else if ( *c == QChar( '\"' ) )
+    {
+      isInsideQuotes = !isInsideQuotes;
+    }
+    else
+    {
+      attrVal.append( *c );
+    }
   }
+
+  // handle missing newline
+  if ( !string.endsWith( QChar( '\n' ) ) )
+  {
+    parseFunc( QChar( '\n' ) );
+  }
+
   return features;
 }
 
@@ -256,7 +303,7 @@ QgsFields QgsClipboard::retrieveFields() const
   QClipboard *cb = QApplication::clipboard();
 
 #ifdef Q_OS_LINUX
-  QString string = cb->text( QClipboard::Selection );
+  const QString string = cb->text( QClipboard::Selection );
 #else
   QString string = cb->text( QClipboard::Clipboard );
 #endif
@@ -270,10 +317,10 @@ QgsFields QgsClipboard::retrieveFields() const
     }
 
     //wkt?
-    QString firstLine = string.section( '\n', 0, 0 );
+    const QString firstLine = string.section( '\n', 0, 0 );
     if ( !firstLine.isEmpty() )
     {
-      QStringList fieldNames = firstLine.split( '\t' );
+      const QStringList fieldNames = firstLine.split( '\t' );
       //wkt / text always has wkt_geom as first attribute (however values can be NULL)
       if ( fieldNames.at( 0 ) != QLatin1String( "wkt_geom" ) )
       {
@@ -282,7 +329,7 @@ QgsFields QgsClipboard::retrieveFields() const
 
       for ( int i = 0; i < fieldNames.size(); ++i )
       {
-        QString fieldName = fieldNames.at( i );
+        const QString fieldName = fieldNames.at( i );
         if ( fieldName == QLatin1String( "wkt_geom" ) )
         {
           continue;
@@ -343,7 +390,7 @@ bool QgsClipboard::isEmpty() const
 {
   QClipboard *cb = QApplication::clipboard();
 #ifdef Q_OS_LINUX
-  QString text = cb->text( QClipboard::Selection );
+  const QString text = cb->text( QClipboard::Selection );
 #else
   QString text = cb->text( QClipboard::Clipboard );
 #endif
@@ -355,7 +402,7 @@ QgsFeatureList QgsClipboard::transformedCopyOf( const QgsCoordinateReferenceSyst
   QgsFeatureList featureList = copyOf( fields );
 
   QgisApp::instance()->askUserForDatumTransform( crs(), destCRS );
-  QgsCoordinateTransform ct = QgsCoordinateTransform( crs(), destCRS, QgsProject::instance() );
+  const QgsCoordinateTransform ct = QgsCoordinateTransform( crs(), destCRS, QgsProject::instance() );
 
   QgsDebugMsg( QStringLiteral( "transforming clipboard." ) );
   for ( QgsFeatureList::iterator iter = featureList.begin(); iter != featureList.end(); ++iter )

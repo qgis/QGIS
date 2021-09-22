@@ -111,14 +111,14 @@ QList<QgsLayerTreeModelLegendNode *> QgsRasterRenderer::createLegendNodes( QgsLa
 {
   QList<QgsLayerTreeModelLegendNode *> nodes;
 
-  QList< QPair< QString, QColor > > rasterItemList = legendSymbologyItems();
+  const QList< QPair< QString, QColor > > rasterItemList = legendSymbologyItems();
   if ( rasterItemList.isEmpty() )
     return nodes;
 
   // Paletted raster may have many colors, for example UInt16 may have 65536 colors
   // and it is very slow, so we limit max count
   int count = 0;
-  int max_count = 1000;
+  const int max_count = 1000;
 
   for ( auto itemIt = rasterItemList.constBegin(); itemIt != rasterItemList.constEnd(); ++itemIt, ++count )
   {
@@ -126,7 +126,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsRasterRenderer::createLegendNodes( QgsLa
 
     if ( count == max_count )
     {
-      QString label = tr( "following %1 items\nnot displayed" ).arg( rasterItemList.size() - max_count );
+      const QString label = tr( "following %1 items\nnot displayed" ).arg( rasterItemList.size() - max_count );
       nodes << new QgsSimpleLegendNode( nodeLayer, label );
       break;
     }
@@ -178,7 +178,7 @@ void QgsRasterRenderer::readXml( const QDomElement &rendererElem )
   const QString colorEncoded = rendererElem.attribute( QStringLiteral( "nodataColor" ) );
   mNodataColor = !colorEncoded.isEmpty() ? QgsSymbolLayerUtils::decodeColor( colorEncoded ) : QColor();
 
-  QDomElement rasterTransparencyElem = rendererElem.firstChildElement( QStringLiteral( "rasterTransparency" ) );
+  const QDomElement rasterTransparencyElem = rendererElem.firstChildElement( QStringLiteral( "rasterTransparency" ) );
   if ( !rasterTransparencyElem.isNull() )
   {
     delete mRasterTransparency;
@@ -186,7 +186,7 @@ void QgsRasterRenderer::readXml( const QDomElement &rendererElem )
     mRasterTransparency->readXml( rasterTransparencyElem );
   }
 
-  QDomElement minMaxOriginElem = rendererElem.firstChildElement( QStringLiteral( "minMaxOrigin" ) );
+  const QDomElement minMaxOriginElem = rendererElem.firstChildElement( QStringLiteral( "minMaxOrigin" ) );
   if ( !minMaxOriginElem.isNull() )
   {
     mMinMaxOrigin.readXml( minMaxOriginElem );

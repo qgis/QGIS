@@ -13,6 +13,7 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 import qgis  # NOQA
 
 from qgis.core import (
+    Qgis,
     QgsMapLayerType,
     QgsWkbTypes,
     QgsProviderSublayerDetails,
@@ -61,6 +62,7 @@ class TestQgsProviderSublayerModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(0, 0), QgsProviderSublayerModel.Role.Uri), 'uri 1')
         self.assertEqual(model.data(model.index(0, 0), QgsProviderSublayerModel.Role.Name), 'layer 1')
         self.assertEqual(model.data(model.index(0, 0), QgsProviderSublayerModel.Role.Description), 'description 1')
+        self.assertEqual(model.data(model.index(0, 0), QgsProviderSublayerModel.Role.Flags), 0)
 
         self.assertEqual(model.indexToSublayer(model.index(0, 0, QModelIndex())), layer1)
         self.assertFalse(model.indexToSublayer(model.index(1, 0, QModelIndex())).name())
@@ -74,6 +76,7 @@ class TestQgsProviderSublayerModel(unittest.TestCase):
         layer2.setUri('uri 2')
         layer2.setFeatureCount(-1)
         layer2.setWkbType(QgsWkbTypes.LineString)
+        layer2.setFlags(Qgis.SublayerFlags(Qgis.SublayerFlag.SystemTable))
 
         model.setSublayerDetails([layer1, layer2])
         self.assertEqual(model.rowCount(QModelIndex()), 2)
@@ -84,6 +87,7 @@ class TestQgsProviderSublayerModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(0, 0), QgsProviderSublayerModel.Role.Uri), 'uri 1')
         self.assertEqual(model.data(model.index(0, 0), QgsProviderSublayerModel.Role.Name), 'layer 1')
         self.assertEqual(model.data(model.index(0, 0), QgsProviderSublayerModel.Role.Description), 'description 1')
+        self.assertEqual(model.data(model.index(0, 0), QgsProviderSublayerModel.Role.Flags), 0)
 
         self.assertEqual(model.data(model.index(1, 0), Qt.DisplayRole), 'layer 2')
         self.assertEqual(model.data(model.index(1, 1), Qt.DisplayRole), 'description 2 - LineString (Uncounted)')
@@ -92,6 +96,7 @@ class TestQgsProviderSublayerModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(1, 0), QgsProviderSublayerModel.Role.Uri), 'uri 2')
         self.assertEqual(model.data(model.index(1, 0), QgsProviderSublayerModel.Role.Name), 'layer 2')
         self.assertEqual(model.data(model.index(1, 0), QgsProviderSublayerModel.Role.Description), 'description 2')
+        self.assertEqual(model.data(model.index(1, 0), QgsProviderSublayerModel.Role.Flags), 1)
 
         self.assertEqual(model.indexToSublayer(model.index(0, 0, QModelIndex())), layer1)
         self.assertEqual(model.indexToSublayer(model.index(1, 0, QModelIndex())), layer2)
@@ -224,6 +229,7 @@ class TestQgsProviderSublayerModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(0, 0), QgsProviderSublayerModel.Role.Name), 'layer 1')
         self.assertEqual(model.data(model.index(0, 0), QgsProviderSublayerModel.Role.Description), 'description 1')
         self.assertEqual(model.data(model.index(0, 0), QgsProviderSublayerModel.Role.IsNonLayerItem), False)
+        self.assertEqual(model.data(model.index(0, 0), QgsProviderSublayerModel.Role.Flags), 0)
 
         self.assertEqual(model.indexToSublayer(model.index(0, 0, QModelIndex())), layer1)
         self.assertFalse(model.indexToSublayer(model.index(1, 0, QModelIndex())).name())
@@ -253,6 +259,7 @@ class TestQgsProviderSublayerModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(1, 0), QgsProviderSublayerModel.Role.Description), 'item desc 1')
         self.assertEqual(model.data(model.index(1, 0), QgsProviderSublayerModel.Role.IsNonLayerItem), True)
         self.assertEqual(model.data(model.index(1, 0), QgsProviderSublayerModel.Role.NonLayerItemType), 'item type 1')
+        self.assertEqual(model.data(model.index(1, 0), QgsProviderSublayerModel.Role.Flags), None)
 
         self.assertEqual(model.indexToSublayer(model.index(0, 0, QModelIndex())), layer1)
         self.assertFalse(model.indexToSublayer(model.index(1, 0, QModelIndex())).name())
@@ -380,11 +387,36 @@ class TestQgsProviderSublayerModel(unittest.TestCase):
         self.assertEqual(proxy.rowCount(QModelIndex()), 1)
         self.assertEqual(proxy.data(proxy.index(0, 0), Qt.DisplayRole), 'item name 1')
 
+        # should also allow filtering by vector layer wkb type strings
+        proxy.setFilterString('LineSTRING')
+        self.assertEqual(proxy.rowCount(QModelIndex()), 1)
+        self.assertEqual(proxy.data(proxy.index(0, 0), Qt.DisplayRole), 'another layer 2')
+
         proxy.setFilterString('')
         self.assertEqual(proxy.rowCount(QModelIndex()), 3)
         self.assertEqual(proxy.data(proxy.index(0, 0), Qt.DisplayRole), 'item name 1')
         self.assertEqual(proxy.data(proxy.index(1, 0), Qt.DisplayRole), 'another layer 2')
         self.assertEqual(proxy.data(proxy.index(2, 0), Qt.DisplayRole), 'layer 1')
+
+        # add a system table
+        layer3 = QgsProviderSublayerDetails()
+        layer3.setType(QgsMapLayerType.VectorLayer)
+        layer3.setName('system table')
+        layer3.setFlags(Qgis.SublayerFlags(Qgis.SublayerFlag.SystemTable))
+
+        model.setSublayerDetails([layer1, layer2, layer3])
+        # system tables should be hidden by default
+        self.assertEqual(proxy.rowCount(QModelIndex()), 3)
+        self.assertEqual(proxy.data(proxy.index(0, 0), Qt.DisplayRole), 'item name 1')
+        self.assertEqual(proxy.data(proxy.index(1, 0), Qt.DisplayRole), 'another layer 2')
+        self.assertEqual(proxy.data(proxy.index(2, 0), Qt.DisplayRole), 'layer 1')
+
+        proxy.setIncludeSystemTables(True)
+        self.assertEqual(proxy.rowCount(QModelIndex()), 4)
+        self.assertEqual(proxy.data(proxy.index(0, 0), Qt.DisplayRole), 'item name 1')
+        self.assertEqual(proxy.data(proxy.index(1, 0), Qt.DisplayRole), 'another layer 2')
+        self.assertEqual(proxy.data(proxy.index(2, 0), Qt.DisplayRole), 'layer 1')
+        self.assertEqual(proxy.data(proxy.index(3, 0), Qt.DisplayRole), 'system table')
 
 
 if __name__ == '__main__':

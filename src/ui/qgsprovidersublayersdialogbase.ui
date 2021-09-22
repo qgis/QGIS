@@ -29,20 +29,7 @@
    <property name="spacing">
     <number>6</number>
    </property>
-   <item row="0" column="0">
-    <widget class="QLabel" name="mLblFilePath">
-     <property name="toolTip">
-      <string>Current file source</string>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-     <property name="textInteractionFlags">
-      <set>Qt::TextSelectableByMouse</set>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
+   <item row="7" column="0">
     <widget class="QDialogButtonBox" name="mButtonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -69,13 +56,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="mCbxAddToGroup">
-       <property name="text">
-        <string>Add layers to a group</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -89,6 +69,26 @@
       </spacer>
      </item>
     </layout>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="mLblFilePath">
+     <property name="toolTip">
+      <string>Current file source</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+     <property name="textInteractionFlags">
+      <set>Qt::TextSelectableByMouse</set>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QCheckBox" name="mCheckShowSystem">
+     <property name="text">
+      <string>Show system and internal tables</string>
+     </property>
+    </widget>
    </item>
    <item row="2" column="0">
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -120,6 +120,13 @@
      </item>
     </layout>
    </item>
+   <item row="5" column="0">
+    <widget class="QCheckBox" name="mCbxAddToGroup">
+     <property name="text">
+      <string>Add layers to a group</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
@@ -136,6 +143,7 @@
   <tabstop>mBtnSelectAll</tabstop>
   <tabstop>mBtnDeselectAll</tabstop>
   <tabstop>mCbxAddToGroup</tabstop>
+  <tabstop>mCheckShowSystem</tabstop>
  </tabstops>
  <resources/>
  <connections/>

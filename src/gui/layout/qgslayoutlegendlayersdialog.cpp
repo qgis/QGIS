@@ -33,7 +33,7 @@ QgsLayoutLegendLayersDialog::QgsLayoutLegendLayersDialog( QWidget *parent )
 
   mModel = new QgsMapLayerProxyModel( listMapLayers );
   listMapLayers->setModel( mModel );
-  QModelIndex firstLayer = mModel->index( 0, 0 );
+  const QModelIndex firstLayer = mModel->index( 0, 0 );
   listMapLayers->selectionModel()->select( firstLayer, QItemSelectionModel::Select );
 
   connect( listMapLayers, &QListView::doubleClicked, this, &QgsLayoutLegendLayersDialog::accept );

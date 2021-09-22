@@ -105,7 +105,7 @@ KEYWORDS[27]="QSharedPointer"
 HINTS[27]="Use std::shared_ptr instead"
 
 KEYWORDS[28]="QOverload"
-HINTS[28]="Use qgis::overload instead"
+HINTS[28]="Use qOverload instead"
 
 KEYWORDS[29]="qFloor"
 HINTS[29]="Use std::floor instead"

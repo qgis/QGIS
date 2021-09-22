@@ -39,6 +39,7 @@
 #include "qgsmaplayerconfigwidgetfactory.h"
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgsmetadatawidget.h"
+#include "qgsmetadataurlitemdelegate.h"
 #include "qgsnative.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
@@ -56,6 +57,7 @@
 #include "qgsrendererpropertiesdialog.h"
 #include "qgsstyle.h"
 #include "qgsauxiliarystorage.h"
+#include "qgsmaplayerserverproperties.h"
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsnewauxiliaryfielddialog.h"
 #include "qgslabelinggui.h"
@@ -107,7 +109,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   , mOriginalSubsetSQL( lyr->subsetString() )
 {
   setupUi( this );
-  connect( mLayerOrigNameLineEdit, &QLineEdit::textEdited, this, &QgsVectorLayerProperties::mLayerOrigNameLineEdit_textEdited );
   connect( pbnQueryBuilder, &QPushButton::clicked, this, &QgsVectorLayerProperties::pbnQueryBuilder_clicked );
   connect( pbnIndex, &QPushButton::clicked, this, &QgsVectorLayerProperties::pbnIndex_clicked );
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsVectorLayerProperties::mCrsSelector_crsChanged );
@@ -121,6 +122,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   connect( mWmsDimensionsTreeWidget, &QTreeWidget::itemDoubleClicked, this, &QgsVectorLayerProperties::mWmsDimensionsTreeWidget_itemDoubleClicked );
   connect( mButtonRemoveWmsDimension, &QPushButton::clicked, this, &QgsVectorLayerProperties::mButtonRemoveWmsDimension_clicked );
   connect( mSimplifyDrawingGroupBox, &QGroupBox::toggled, this, &QgsVectorLayerProperties::mSimplifyDrawingGroupBox_toggled );
+  connect( buttonRemoveMetadataUrl, &QPushButton::clicked, this, &QgsVectorLayerProperties::removeSelectedMetadataUrl );
+  connect( buttonAddMetadataUrl, &QPushButton::clicked, this, &QgsVectorLayerProperties::addMetadataUrl );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorLayerProperties::showHelp );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
@@ -337,20 +340,35 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
       mLayer->dataUrlFormat()
     )
   );
-  //layer attribution and metadataUrl
+  //layer attribution
   mLayerAttributionLineEdit->setText( mLayer->attribution() );
   mLayerAttributionUrlLineEdit->setText( mLayer->attributionUrl() );
-  mLayerMetadataUrlLineEdit->setText( mLayer->metadataUrl() );
-  mLayerMetadataUrlTypeComboBox->setCurrentIndex(
-    mLayerMetadataUrlTypeComboBox->findText(
-      mLayer->metadataUrlType()
-    )
-  );
-  mLayerMetadataUrlFormatComboBox->setCurrentIndex(
-    mLayerMetadataUrlFormatComboBox->findText(
-      mLayer->metadataUrlFormat()
-    )
-  );
+
+  // Setup the layer metadata URL
+  tableViewMetadataUrl->setSelectionMode( QAbstractItemView::SingleSelection );
+  tableViewMetadataUrl->setSelectionBehavior( QAbstractItemView::SelectRows );
+  tableViewMetadataUrl->horizontalHeader()->setStretchLastSection( true );
+  tableViewMetadataUrl->horizontalHeader()->setSectionResizeMode( QHeaderView::Stretch );
+
+  mMetadataUrlModel = new QStandardItemModel( tableViewMetadataUrl );
+  mMetadataUrlModel->clear();
+  mMetadataUrlModel->setColumnCount( 3 );
+  QStringList metadataUrlHeaders;
+  metadataUrlHeaders << tr( "URL" ) << tr( "Type" ) << tr( "Format" );
+  mMetadataUrlModel->setHorizontalHeaderLabels( metadataUrlHeaders );
+  tableViewMetadataUrl->setModel( mMetadataUrlModel );
+  tableViewMetadataUrl->setItemDelegate( new MetadataUrlItemDelegate( this ) );
+
+  const QList<QgsMapLayerServerProperties::MetadataUrl> &metaUrls = mLayer->serverProperties()->metadataUrls();
+  for ( const QgsMapLayerServerProperties::MetadataUrl &metaUrl : metaUrls )
+  {
+    const int row = mMetadataUrlModel->rowCount();
+    mMetadataUrlModel->setItem( row, 0, new QStandardItem( metaUrl.url ) );
+    mMetadataUrlModel->setItem( row, 1, new QStandardItem( metaUrl.type ) );
+    mMetadataUrlModel->setItem( row, 2, new QStandardItem( metaUrl.format ) );
+  }
+
+  // layer legend url
   mLayerLegendUrlLineEdit->setText( mLayer->legendUrl() );
   mLayerLegendUrlFormatComboBox->setCurrentIndex(
     mLayerLegendUrlFormatComboBox->findText(
@@ -359,8 +377,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   );
 
   //insert existing dimension info
-  const QList<QgsVectorLayerServerProperties::WmsDimensionInfo> &wmsDims = mLayer->serverProperties()->wmsDimensions();
-  for ( const QgsVectorLayerServerProperties::WmsDimensionInfo &dim : wmsDims )
+  QgsMapLayerServerProperties *serverProperties = static_cast<QgsMapLayerServerProperties *>( mLayer->serverProperties() );
+  const QList<QgsMapLayerServerProperties::WmsDimensionInfo> &wmsDims = serverProperties->wmsDimensions();
+  for ( const QgsMapLayerServerProperties::WmsDimensionInfo &dim : wmsDims )
   {
     addWmsDimensionInfoToTreeWidget( dim );
   }
@@ -472,13 +491,17 @@ void QgsVectorLayerProperties::addPropertiesPageFactory( const QgsMapLayerConfig
   }
 
   QgsMapLayerConfigWidget *page = factory->createWidget( mLayer, nullptr, false, this );
-  mLayerPropertiesPages << page;
 
-  const QString beforePage = factory->layerPropertiesPagePositionHint();
-  if ( beforePage.isEmpty() )
-    addPage( factory->title(), factory->title(), factory->icon(), page );
-  else
-    insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage );
+  if ( page )
+  {
+    mLayerPropertiesPages << page;
+
+    const QString beforePage = factory->layerPropertiesPagePositionHint();
+    if ( beforePage.isEmpty() )
+      addPage( factory->title(), factory->title(), factory->icon(), page );
+    else
+      insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage );
+  }
 }
 
 void QgsVectorLayerProperties::insertFieldOrExpression()
@@ -490,6 +513,22 @@ void QgsVectorLayerProperties::insertFieldOrExpression()
   expression += QLatin1String( " %]" );
 
   mMapTipWidget->insertText( expression );
+}
+
+void QgsVectorLayerProperties::addMetadataUrl()
+{
+  const int row = mMetadataUrlModel->rowCount();
+  mMetadataUrlModel->setItem( row, 0, new QStandardItem( QLatin1String() ) );
+  mMetadataUrlModel->setItem( row, 1, new QStandardItem( QLatin1String() ) );
+  mMetadataUrlModel->setItem( row, 2, new QStandardItem( QLatin1String() ) );
+}
+
+void QgsVectorLayerProperties::removeSelectedMetadataUrl()
+{
+  const QModelIndexList selectedRows = tableViewMetadataUrl->selectionModel()->selectedRows();
+  if ( selectedRows.empty() )
+    return;
+  mMetadataUrlModel->removeRow( selectedRows[0].row() );
 }
 
 // in raster props, this method is called sync()
@@ -518,7 +557,6 @@ void QgsVectorLayerProperties::syncToLayer()
 
   // populate the general information
   mLayerOrigNameLineEdit->setText( mLayer->name() );
-  txtDisplayName->setText( mLayer->name() );
 
   //see if we are dealing with a pg layer here
   mSubsetGroupBox->setEnabled( true );
@@ -768,7 +806,7 @@ void QgsVectorLayerProperties::apply()
     mMetadataFilled = false;
   mLayer->setDataUrlFormat( mLayerDataUrlFormatComboBox->currentText() );
 
-  //layer attribution and metadataUrl
+  //layer attribution
   if ( mLayer->attribution() != mLayerAttributionLineEdit->text() )
     mMetadataFilled = false;
   mLayer->setAttribution( mLayerAttributionLineEdit->text() );
@@ -777,17 +815,18 @@ void QgsVectorLayerProperties::apply()
     mMetadataFilled = false;
   mLayer->setAttributionUrl( mLayerAttributionUrlLineEdit->text() );
 
-  if ( mLayer->metadataUrl() != mLayerMetadataUrlLineEdit->text() )
+  // Metadata URL
+  QList<QgsMapLayerServerProperties::MetadataUrl> metaUrls;
+  for ( int row = 0; row < mMetadataUrlModel->rowCount() ; row++ )
+  {
+    QgsMapLayerServerProperties::MetadataUrl metaUrl;
+    metaUrl.url = mMetadataUrlModel->item( row, 0 )->text();
+    metaUrl.type = mMetadataUrlModel->item( row, 1 )->text();
+    metaUrl.format = mMetadataUrlModel->item( row, 2 )->text();
+    metaUrls.append( metaUrl );
     mMetadataFilled = false;
-  mLayer->setMetadataUrl( mLayerMetadataUrlLineEdit->text() );
-
-  if ( mLayer->metadataUrlType() != mLayerMetadataUrlTypeComboBox->currentText() )
-    mMetadataFilled = false;
-  mLayer->setMetadataUrlType( mLayerMetadataUrlTypeComboBox->currentText() );
-
-  if ( mLayer->metadataUrlFormat() != mLayerMetadataUrlFormatComboBox->currentText() )
-    mMetadataFilled = false;
-  mLayer->setMetadataUrlFormat( mLayerMetadataUrlFormatComboBox->currentText() );
+  }
+  mLayer->serverProperties()->setMetadataUrls( metaUrls );
 
   // LegendURL
   if ( mLayer->legendUrl() != mLayerLegendUrlLineEdit->text() )
@@ -936,11 +975,6 @@ void QgsVectorLayerProperties::pbnIndex_clicked()
 QString QgsVectorLayerProperties::htmlMetadata()
 {
   return mLayer->htmlMetadata();
-}
-
-void QgsVectorLayerProperties::mLayerOrigNameLineEdit_textEdited( const QString &text )
-{
-  txtDisplayName->setText( mLayer->formatLayerName( text ) );
 }
 
 void QgsVectorLayerProperties::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
@@ -1661,8 +1695,9 @@ void QgsVectorLayerProperties::mButtonAddWmsDimension_clicked()
 
   // get wms dimensions name
   QStringList alreadyDefinedDimensions;
-  const QList<QgsVectorLayerServerProperties::WmsDimensionInfo> &dims = mLayer->serverProperties()->wmsDimensions();
-  for ( const QgsVectorLayerServerProperties::WmsDimensionInfo &dim : dims )
+  QgsMapLayerServerProperties *serverProperties = static_cast<QgsMapLayerServerProperties *>( mLayer->serverProperties() );
+  const QList<QgsMapLayerServerProperties::WmsDimensionInfo> &dims = serverProperties->wmsDimensions();
+  for ( const QgsMapLayerServerProperties::WmsDimensionInfo &dim : dims )
   {
     alreadyDefinedDimensions << dim.name;
   }
@@ -1670,9 +1705,9 @@ void QgsVectorLayerProperties::mButtonAddWmsDimension_clicked()
   QgsWmsDimensionDialog d( mLayer, alreadyDefinedDimensions );
   if ( d.exec() == QDialog::Accepted )
   {
-    QgsVectorLayerServerProperties::WmsDimensionInfo info = d.info();
+    QgsMapLayerServerProperties::WmsDimensionInfo info = d.info();
     // save dimension
-    mLayer->serverProperties()->addWmsDimension( info );
+    serverProperties->addWmsDimension( info );
     addWmsDimensionInfoToTreeWidget( info );
   }
 }
@@ -1691,7 +1726,8 @@ void QgsVectorLayerProperties::mWmsDimensionsTreeWidget_itemDoubleClicked( QTree
   }
 
   QString wmsDimName = item->data( 0, Qt::UserRole ).toString();
-  const QList<QgsVectorLayerServerProperties::WmsDimensionInfo> &dims = mLayer->serverProperties()->wmsDimensions();
+  QgsMapLayerServerProperties *serverProperties = static_cast<QgsMapLayerServerProperties *>( mLayer->serverProperties() );
+  const QList<QgsMapLayerServerProperties::WmsDimensionInfo> &dims = serverProperties->wmsDimensions();
   QStringList alreadyDefinedDimensions;
   int j = -1;
   for ( int i = 0; i < dims.size(); ++i )
@@ -1717,20 +1753,21 @@ void QgsVectorLayerProperties::mWmsDimensionsTreeWidget_itemDoubleClicked( QTree
 
   if ( d.exec() == QDialog::Accepted )
   {
-    QgsVectorLayerServerProperties::WmsDimensionInfo info = d.info();
+    QgsMapLayerServerProperties::WmsDimensionInfo info = d.info();
 
     // remove old
-    mLayer->serverProperties()->removeWmsDimension( wmsDimName );
+    QgsMapLayerServerProperties *serverProperties = static_cast<QgsMapLayerServerProperties *>( mLayer->serverProperties() );
+    serverProperties->removeWmsDimension( wmsDimName );
     int idx = mWmsDimensionsTreeWidget->indexOfTopLevelItem( item );
     mWmsDimensionsTreeWidget->takeTopLevelItem( idx );
 
     // save new
-    mLayer->serverProperties()->addWmsDimension( info );
+    serverProperties->addWmsDimension( info );
     addWmsDimensionInfoToTreeWidget( info, idx );
   }
 }
 
-void QgsVectorLayerProperties::addWmsDimensionInfoToTreeWidget( const QgsVectorLayerServerProperties::WmsDimensionInfo &wmsDim, const int insertIndex )
+void QgsVectorLayerProperties::addWmsDimensionInfoToTreeWidget( const QgsMapLayerServerProperties::WmsDimensionInfo &wmsDim, const int insertIndex )
 {
   QTreeWidgetItem *wmsDimensionItem = new QTreeWidgetItem();
   wmsDimensionItem->setFlags( Qt::ItemIsEnabled );
@@ -1771,7 +1808,7 @@ void QgsVectorLayerProperties::addWmsDimensionInfoToTreeWidget( const QgsVectorL
 
   QTreeWidgetItem *childWmsDimensionDefaultValue = new QTreeWidgetItem();
   childWmsDimensionDefaultValue->setText( 0, tr( "Default display" ) );
-  childWmsDimensionDefaultValue->setText( 1, QgsVectorLayerServerProperties::wmsDimensionDefaultDisplayLabels()[wmsDim.defaultDisplayType] );
+  childWmsDimensionDefaultValue->setText( 1, QgsMapLayerServerProperties::wmsDimensionDefaultDisplayLabels()[wmsDim.defaultDisplayType] );
   childWmsDimensionDefaultValue->setFlags( Qt::ItemIsEnabled );
   wmsDimensionItem->addChild( childWmsDimensionDefaultValue );
 
@@ -1798,7 +1835,8 @@ void QgsVectorLayerProperties::mButtonRemoveWmsDimension_clicked()
     return;
   }
 
-  mLayer->serverProperties()->removeWmsDimension( currentWmsDimensionItem->data( 0, Qt::UserRole ).toString() );
+  QgsMapLayerServerProperties *serverProperties = static_cast<QgsMapLayerServerProperties *>( mLayer->serverProperties() );
+  serverProperties->removeWmsDimension( currentWmsDimensionItem->data( 0, Qt::UserRole ).toString() );
   mWmsDimensionsTreeWidget->takeTopLevelItem( mWmsDimensionsTreeWidget->indexOfTopLevelItem( currentWmsDimensionItem ) );
 }
 

@@ -11,6 +11,8 @@
 
 
 
+
+
 class QgsAnnotationLayer : QgsMapLayer
 {
 %Docstring(signature="appended")
@@ -70,6 +72,15 @@ Ownership of ``item`` is transferred to the layer.
 Returns the unique ID assigned to the item.
 %End
 
+    void replaceItem( const QString &id, QgsAnnotationItem *item /Transfer/ );
+%Docstring
+Replaces the existing item with matching ``id`` with a new ``item``.
+
+Ownership of ``item`` is transferred to the layer.
+
+.. versionadded:: 3.22
+%End
+
     bool removeItem( const QString &id );
 %Docstring
 Removes (and deletes) the item with matching ``id``.
@@ -93,6 +104,34 @@ This map contains references to items owned by the layer, and ownership of these
 with the layer.
 %End
 
+    QgsAnnotationItem *item( const QString &id );
+%Docstring
+Returns the item with the specified ``id``, or ``None`` if no matching item was found.
+
+.. versionadded:: 3.22
+%End
+
+    QStringList itemsInBounds( const QgsRectangle &bounds, QgsRenderContext &context, QgsFeedback *feedback = 0 ) const;
+%Docstring
+Returns a list of the IDs of all annotation items within the specified ``bounds`` (in layer CRS), when
+rendered using the given render ``context``.
+
+The optional ``feedback`` argument can be used to cancel the search early.
+
+.. versionadded:: 3.22
+%End
+
+    Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
+%Docstring
+Applies an edit ``operation`` to the layer.
+
+Returns ``True`` if the operation was successfully applied.
+
+.. versionadded:: 3.22
+%End
+
+    virtual Qgis::MapLayerProperties properties() const;
+
     virtual QgsAnnotationLayer *clone() const /Factory/;
 
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
@@ -109,8 +148,37 @@ with the layer.
 
     virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
 
+    virtual bool isEditable() const;
+
+    virtual bool supportsEditing() const;
+
+    virtual QgsDataProvider *dataProvider();
+
+    virtual QString htmlMetadata() const;
+
+
+    QgsPaintEffect *paintEffect() const;
+%Docstring
+Returns the current paint effect for the layer.
+
+.. seealso:: :py:func:`setPaintEffect`
+
+.. versionadded:: 3.22
+%End
+
+    void setPaintEffect( QgsPaintEffect *effect /Transfer/ );
+%Docstring
+Sets the current paint ``effect`` for the layer.
+
+Ownership is transferred to the renderer.
+
+.. seealso:: :py:func:`paintEffect`
+
+.. versionadded:: 3.22
+%End
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

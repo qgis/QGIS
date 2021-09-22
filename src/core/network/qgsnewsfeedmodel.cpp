@@ -123,7 +123,7 @@ void QgsNewsFeedModel::onEntryAdded( const QgsNewsFeedParser::Entry &entry )
 void QgsNewsFeedModel::onEntryRemoved( const QgsNewsFeedParser::Entry &entry )
 {
   // find index of entry
-  auto findIter = std::find_if( mEntries.begin(), mEntries.end(), [entry]( const QgsNewsFeedParser::Entry & candidate )
+  const auto findIter = std::find_if( mEntries.begin(), mEntries.end(), [entry]( const QgsNewsFeedParser::Entry & candidate )
   {
     return candidate.key == entry.key;
   } );
@@ -139,7 +139,7 @@ void QgsNewsFeedModel::onEntryRemoved( const QgsNewsFeedParser::Entry &entry )
 void QgsNewsFeedModel::onImageFetched( const int key, const QPixmap &pixmap )
 {
   // find index of entry
-  auto findIter = std::find_if( mEntries.begin(), mEntries.end(), [key]( const QgsNewsFeedParser::Entry & candidate )
+  const auto findIter = std::find_if( mEntries.begin(), mEntries.end(), [key]( const QgsNewsFeedParser::Entry & candidate )
   {
     return candidate.key == key;
   } );

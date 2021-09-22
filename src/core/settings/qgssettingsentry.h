@@ -1001,7 +1001,7 @@ class CORE_EXPORT QgsSettingsEntryEnumFlag : public QgsSettingsEntryBase
       }
       else
       {
-        QByteArray flagKeys = mMetaEnum.valueToKeys( static_cast< int >( value ) );
+        const QByteArray flagKeys = mMetaEnum.valueToKeys( static_cast< int >( value ) );
         if ( flagKeys.isEmpty() )
         {
           QgsDebugMsg( QStringLiteral( "Invalid flag value '%1'." ).arg( static_cast< int >( value ) ) );

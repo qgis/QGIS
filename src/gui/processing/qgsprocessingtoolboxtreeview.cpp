@@ -55,7 +55,7 @@ void QgsProcessingToolboxTreeView::setFilterString( const QString &filter )
     if ( !selectedAlgorithm() )
     {
       // if previously selected item was hidden, auto select the first visible algorithm
-      QModelIndex firstVisibleIndex = findFirstVisibleAlgorithm( QModelIndex() );
+      const QModelIndex firstVisibleIndex = findFirstVisibleAlgorithm( QModelIndex() );
       if ( firstVisibleIndex.isValid() )
         selectionModel()->setCurrentIndex( firstVisibleIndex, QItemSelectionModel::ClearAndSelect );
     }
@@ -68,7 +68,7 @@ void QgsProcessingToolboxTreeView::setFilterString( const QString &filter )
 
 const QgsProcessingAlgorithm *QgsProcessingToolboxTreeView::algorithmForIndex( const QModelIndex &index )
 {
-  QModelIndex sourceIndex = mModel->mapToSource( index );
+  const QModelIndex sourceIndex = mModel->mapToSource( index );
   if ( mToolboxModel->isAlgorithm( sourceIndex ) )
     return mToolboxModel->algorithmForIndex( sourceIndex );
   else
@@ -79,7 +79,7 @@ const QgsProcessingAlgorithm *QgsProcessingToolboxTreeView::selectedAlgorithm()
 {
   if ( selectionModel()->hasSelection() )
   {
-    QModelIndex index = selectionModel()->selectedIndexes().at( 0 );
+    const QModelIndex index = selectionModel()->selectedIndexes().at( 0 );
     return algorithmForIndex( index );
   }
   else
@@ -108,7 +108,7 @@ QModelIndex QgsProcessingToolboxTreeView::findFirstVisibleAlgorithm( const QMode
   for ( int r = 0; r < mModel->rowCount( parent ); ++r )
   {
     QModelIndex proxyIndex = mModel->index( r, 0, parent );
-    QModelIndex sourceIndex = mModel->mapToSource( proxyIndex );
+    const QModelIndex sourceIndex = mModel->mapToSource( proxyIndex );
     if ( mToolboxModel->isAlgorithm( sourceIndex ) )
       return proxyIndex;
 

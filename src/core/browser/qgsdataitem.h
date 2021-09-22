@@ -269,7 +269,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      * Items that return valid URI will be returned in mime data when dragging a selection from browser model.
      * \since QGIS 3.18
      */
-    virtual QgsMimeDataUtils::UriList mimeUris() const { return QgsMimeDataUtils::UriList(); }
+    virtual QgsMimeDataUtils::UriList mimeUris() const;
 
     /**
      * Writes the selected crs into data source. The original data source will be modified when calling this

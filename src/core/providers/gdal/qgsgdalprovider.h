@@ -385,6 +385,7 @@ class QgsGdalProviderMetadata final: public QgsProviderMetadata
     QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
     ProviderCapabilities providerCapabilities() const override;
     QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
+    QStringList sidecarFilesForUri( const QString &uri ) const override;
 };
 
 ///@endcond

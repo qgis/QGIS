@@ -68,7 +68,7 @@ void QgsDecorationCopyright::projectRead()
 
   QDomDocument doc;
   QDomElement elem;
-  QString textXml = QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Font" ) );
+  const QString textXml = QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Font" ) );
   if ( !textXml.isEmpty() )
   {
     doc.setContent( textXml );
@@ -79,7 +79,7 @@ void QgsDecorationCopyright::projectRead()
   }
 
   // Migration for pre QGIS 3.2 settings
-  QColor oldColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Color" ) ) );
+  const QColor oldColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Color" ) ) );
   if ( oldColor.isValid() )
   {
     mTextFormat.setColor( oldColor );
@@ -97,7 +97,7 @@ void QgsDecorationCopyright::saveToProject()
   QDomDocument textDoc;
   QgsReadWriteContext rwContext;
   rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
-  QDomElement textElem = mTextFormat.writeXml( textDoc, rwContext );
+  const QDomElement textElem = mTextFormat.writeXml( textDoc, rwContext );
   textDoc.appendChild( textElem );
   QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Font" ), textDoc.toString() );
 }
@@ -116,20 +116,20 @@ void QgsDecorationCopyright::render( const QgsMapSettings &mapSettings, QgsRende
   if ( !enabled() )
     return;
 
-  QgsScopedQPainterState painterState( context.painter() );
+  const QgsScopedQPainterState painterState( context.painter() );
   context.setPainterFlagsUsingContext();
 
-  QString displayString = QgsExpression::replaceExpressionText( mLabelText, &context.expressionContext() );
-  QStringList displayStringList = displayString.split( '\n' );
+  const QString displayString = QgsExpression::replaceExpressionText( mLabelText, &context.expressionContext() );
+  const QStringList displayStringList = displayString.split( '\n' );
 
-  QFontMetricsF textMetrics = QgsTextRenderer::fontMetrics( context, mTextFormat );
-  double textDescent = textMetrics.descent();
-  double textWidth = QgsTextRenderer::textWidth( context, mTextFormat, displayStringList );
-  double textHeight = QgsTextRenderer::textHeight( context, mTextFormat, displayStringList, QgsTextRenderer::Point );
+  const QFontMetricsF textMetrics = QgsTextRenderer::fontMetrics( context, mTextFormat );
+  const double textDescent = textMetrics.descent();
+  const double textWidth = QgsTextRenderer::textWidth( context, mTextFormat, displayStringList );
+  const double textHeight = QgsTextRenderer::textHeight( context, mTextFormat, displayStringList, QgsTextRenderer::Point );
 
   QPaintDevice *device = context.painter()->device();
-  int deviceHeight = device->height() / device->devicePixelRatioF();
-  int deviceWidth = device->width() / device->devicePixelRatioF();
+  const int deviceHeight = device->height() / device->devicePixelRatioF();
+  const int deviceWidth = device->width() / device->devicePixelRatioF();
 
   float xOffset( 0 ), yOffset( 0 );
 
@@ -138,8 +138,8 @@ void QgsDecorationCopyright::render( const QgsMapSettings &mapSettings, QgsRende
   {
     case QgsUnitTypes::RenderMillimeters:
     {
-      int pixelsInchX = context.painter()->device()->logicalDpiX();
-      int pixelsInchY = context.painter()->device()->logicalDpiY();
+      const int pixelsInchX = context.painter()->device()->logicalDpiX();
+      const int pixelsInchY = context.painter()->device()->logicalDpiY();
       xOffset = pixelsInchX * INCHES_TO_MM * mMarginHorizontal;
       yOffset = pixelsInchY * INCHES_TO_MM * mMarginVertical;
       break;

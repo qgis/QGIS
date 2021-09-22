@@ -72,7 +72,7 @@ namespace QgsWfs
   {
     QStringList theList;
 
-    QString val = mValue.toString();
+    const QString val = mValue.toString();
     if ( val.isEmpty() )
       return theList;
 
@@ -204,7 +204,8 @@ namespace QgsWfs
   void QgsWfsParameters::dump() const
   {
     log( "WFS Request parameters:" );
-    for ( auto parameter : mWfsParameters.toStdMap() )
+    const auto map = mWfsParameters.toStdMap();
+    for ( const auto &parameter : map )
     {
       const QString value = parameter.second.toString();
 
@@ -226,7 +227,7 @@ namespace QgsWfs
 
   QgsWfsParameters::Format QgsWfsParameters::outputFormat() const
   {
-    QString fStr = outputFormatAsString();
+    const QString fStr = outputFormatAsString();
 
     if ( fStr.isEmpty() )
     {
@@ -270,7 +271,7 @@ namespace QgsWfs
 
   QgsWfsParameters::ResultType QgsWfsParameters::resultType() const
   {
-    QString rtStr = resultTypeAsString();
+    const QString rtStr = resultTypeAsString();
     if ( rtStr.isEmpty() )
       return ResultType::RESULTS;
 
@@ -352,7 +353,7 @@ namespace QgsWfs
 
   QgsProjectVersion QgsWfsParameters::versionAsNumber() const
   {
-    QString vStr = version();
+    const QString vStr = version();
     QgsProjectVersion version;
 
     if ( vStr.isEmpty() )

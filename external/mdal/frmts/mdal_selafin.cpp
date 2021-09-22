@@ -728,7 +728,7 @@ bool MDAL::DriverSelafin::saveDatasetGroupOnFile( MDAL::DatasetGroup *datasetGro
   if ( ! MDAL::fileExists( fileName ) )
   {
     //create a new mesh file
-    save( fileName, datasetGroup->mesh() );
+    save( fileName, "", datasetGroup->mesh() );
 
     if ( ! MDAL::fileExists( fileName ) )
       throw MDAL::Error( MDAL_Status::Err_FailToWriteToDisk, "Unable to create new file" );
@@ -983,9 +983,9 @@ static void writeVertices( std::ofstream &file, MDAL::Mesh *mesh )
   writeValueArrayRecord( file, yValues );
 }
 
-void MDAL::DriverSelafin::save( const std::string &uri, MDAL::Mesh *mesh )
+void MDAL::DriverSelafin::save( const std::string &fileName, const std::string &, MDAL::Mesh *mesh )
 {
-  std::ofstream file( uri.c_str(), std::ofstream::binary );
+  std::ofstream file( fileName.c_str(), std::ofstream::binary );
 
   std::string header( "Selafin file created by MDAL library" );
   std::string remainingStr( " ", 72 - header.size() );

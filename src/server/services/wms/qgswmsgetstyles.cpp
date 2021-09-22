@@ -45,7 +45,7 @@ namespace QgsWms
   void writeGetStyles( QgsServerInterface *serverIface, const QgsProject *project,
                        const QgsWmsRequest &request, QgsServerResponse &response )
   {
-    QDomDocument doc = getStyles( serverIface, project, request );
+    const QDomDocument doc = getStyles( serverIface, project, request );
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
     response.write( doc.toByteArray() );
   }
@@ -70,7 +70,7 @@ namespace QgsWms
       // init document
       QDomDocument myDocument = QDomDocument();
 
-      QDomNode header = myDocument.createProcessingInstruction( QStringLiteral( "xml" ), QStringLiteral( "version=\"1.0\" encoding=\"UTF-8\"" ) );
+      const QDomNode header = myDocument.createProcessingInstruction( QStringLiteral( "xml" ), QStringLiteral( "version=\"1.0\" encoding=\"UTF-8\"" ) );
       myDocument.appendChild( header );
 
       // Create the root element
@@ -101,7 +101,7 @@ namespace QgsWms
         if ( ! vlayer->isSpatial() )
           continue;
 
-        QString currentStyle = vlayer->styleManager()->currentStyle();
+        const QString currentStyle = vlayer->styleManager()->currentStyle();
 
         QVariantMap props;
         if ( vlayer->hasScaleBasedVisibility() )

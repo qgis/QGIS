@@ -36,8 +36,8 @@ Qt3DRender::QTextureImageDataPtr QgsColorRampTextureGenerator::operator()()
   dataPtr->setPixelType( QOpenGLTexture::Float32 );
 
   QByteArray data;
-  QList<QgsColorRampShader::ColorRampItem> colorItemList = mColorRampShader.colorRampItemList();
-  int size = colorItemList.count() ;
+  const QList<QgsColorRampShader::ColorRampItem> colorItemList = mColorRampShader.colorRampItemList();
+  const int size = colorItemList.count() ;
 
   dataPtr->setWidth( size );
   dataPtr->setHeight( 1 );
@@ -50,7 +50,7 @@ Qt3DRender::QTextureImageDataPtr QgsColorRampTextureGenerator::operator()()
   {
     float mag = float( colorItemList.at( i ).value * mVerticalScale );
 
-    QColor color = colorItemList.at( i ).color;
+    const QColor color = colorItemList.at( i ).color;
     if ( color.alphaF() == 0.0f )
       continue;
     float rf = float( color.redF() );

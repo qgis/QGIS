@@ -31,11 +31,11 @@ bool QgsLayerTreeUtils::readOldLegend( QgsLayerTreeGroup *root, const QDomElemen
   if ( legendElem.isNull() )
     return false;
 
-  QDomNodeList legendChildren = legendElem.childNodes();
+  const QDomNodeList legendChildren = legendElem.childNodes();
 
   for ( int i = 0; i < legendChildren.size(); ++i )
   {
-    QDomElement currentChildElem = legendChildren.at( i ).toElement();
+    const QDomElement currentChildElem = legendChildren.at( i ).toElement();
     if ( currentChildElem.tagName() == QLatin1String( "legendlayer" ) )
     {
       _readOldLegendLayer( currentChildElem, root );
@@ -53,16 +53,16 @@ bool QgsLayerTreeUtils::readOldLegend( QgsLayerTreeGroup *root, const QDomElemen
 
 static bool _readOldLegendLayerOrderGroup( const QDomElement &groupElem, QMap<int, QString> &layerIndexes )
 {
-  QDomNodeList legendChildren = groupElem.childNodes();
+  const QDomNodeList legendChildren = groupElem.childNodes();
 
   for ( int i = 0; i < legendChildren.size(); ++i )
   {
-    QDomElement currentChildElem = legendChildren.at( i ).toElement();
+    const QDomElement currentChildElem = legendChildren.at( i ).toElement();
     if ( currentChildElem.tagName() == QLatin1String( "legendlayer" ) )
     {
-      QDomElement layerFileElem = currentChildElem.firstChildElement( QStringLiteral( "filegroup" ) ).firstChildElement( QStringLiteral( "legendlayerfile" ) );
+      const QDomElement layerFileElem = currentChildElem.firstChildElement( QStringLiteral( "filegroup" ) ).firstChildElement( QStringLiteral( "legendlayerfile" ) );
 
-      int layerIndex = currentChildElem.attribute( QStringLiteral( "drawingOrder" ) ).toInt();
+      const int layerIndex = currentChildElem.attribute( QStringLiteral( "drawingOrder" ) ).toInt();
       if ( layerIndex == -1 )
         return false; // order undefined
       layerIndexes.insert( layerIndex, layerFileElem.attribute( QStringLiteral( "layerid" ) ) );
@@ -89,7 +89,7 @@ bool QgsLayerTreeUtils::readOldLegendLayerOrder( const QDomElement &legendElem, 
   QMap<int, QString> layerIndexes;
 
   // try to read the order. may be undefined (order = -1) for some or all items
-  bool res = _readOldLegendLayerOrderGroup( legendElem, layerIndexes );
+  const bool res = _readOldLegendLayerOrderGroup( legendElem, layerIndexes );
 
   if ( !res && hasCustomOrder )
     return false; // invalid state
@@ -119,7 +119,7 @@ static QDomElement _writeOldLegendLayer( QDomDocument &doc, QgsLayerTreeLayer *n
   layerElem.setAttribute( QStringLiteral( "showFeatureCount" ), nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ) ).toInt() );
 
   QDomElement fileGroupElem = doc.createElement( QStringLiteral( "filegroup" ) );
-  fileGroupElem.setAttribute( QStringLiteral( "open" ), nodeLayer->isExpanded() ? "true" : "false" );
+  fileGroupElem.setAttribute( QStringLiteral( "open" ), nodeLayer->isExpanded() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   fileGroupElem.setAttribute( QStringLiteral( "hidden" ), QStringLiteral( "false" ) );
 
   QDomElement layerFileElem = doc.createElement( QStringLiteral( "legendlayerfile" ) );
@@ -138,7 +138,7 @@ static void _writeOldLegendGroupChildren( QDomDocument &doc, QDomElement &groupE
 static QDomElement _writeOldLegendGroup( QDomDocument &doc, QgsLayerTreeGroup *nodeGroup, bool hasCustomOrder, const QList<QgsMapLayer *> &order )
 {
   QDomElement groupElem = doc.createElement( QStringLiteral( "legendgroup" ) );
-  groupElem.setAttribute( QStringLiteral( "open" ), nodeGroup->isExpanded() ? "true" : "false" );
+  groupElem.setAttribute( QStringLiteral( "open" ), nodeGroup->isExpanded() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   groupElem.setAttribute( QStringLiteral( "name" ), nodeGroup->name() );
   groupElem.setAttribute( QStringLiteral( "checked" ), QgsLayerTreeUtils::checkStateToXml( nodeGroup->itemVisibilityChecked() ? Qt::Checked : Qt::Unchecked ) );
 
@@ -190,9 +190,9 @@ QString QgsLayerTreeUtils::checkStateToXml( Qt::CheckState state )
     case Qt::PartiallyChecked:
       return QStringLiteral( "Qt::PartiallyChecked" );
     case Qt::Checked:
-    default:
       return QStringLiteral( "Qt::Checked" );
   }
+  return QString();
 }
 
 Qt::CheckState QgsLayerTreeUtils::checkStateFromXml( const QString &txt )
@@ -209,7 +209,7 @@ Qt::CheckState QgsLayerTreeUtils::checkStateFromXml( const QString &txt )
 
 static void _readOldLegendGroup( const QDomElement &groupElem, QgsLayerTreeGroup *parent )
 {
-  QDomNodeList groupChildren = groupElem.childNodes();
+  const QDomNodeList groupChildren = groupElem.childNodes();
 
   QgsLayerTreeGroup *groupNode = new QgsLayerTreeGroup( groupElem.attribute( QStringLiteral( "name" ) ) );
 
@@ -224,7 +224,7 @@ static void _readOldLegendGroup( const QDomElement &groupElem, QgsLayerTreeGroup
 
   for ( int i = 0; i < groupChildren.size(); ++i )
   {
-    QDomElement currentChildElem = groupChildren.at( i ).toElement();
+    const QDomElement currentChildElem = groupChildren.at( i ).toElement();
     if ( currentChildElem.tagName() == QLatin1String( "legendlayer" ) )
     {
       _readOldLegendLayer( currentChildElem, groupNode );
@@ -240,8 +240,8 @@ static void _readOldLegendGroup( const QDomElement &groupElem, QgsLayerTreeGroup
 
 static void _readOldLegendLayer( const QDomElement &layerElem, QgsLayerTreeGroup *parent )
 {
-  QDomElement layerFileElem = layerElem.firstChildElement( QStringLiteral( "filegroup" ) ).firstChildElement( QStringLiteral( "legendlayerfile" ) );
-  QString layerId = layerFileElem.attribute( QStringLiteral( "layerid" ) );
+  const QDomElement layerFileElem = layerElem.firstChildElement( QStringLiteral( "filegroup" ) ).firstChildElement( QStringLiteral( "legendlayerfile" ) );
+  const QString layerId = layerFileElem.attribute( QStringLiteral( "layerid" ) );
   QgsLayerTreeLayer *layerNode = new QgsLayerTreeLayer( layerId, layerElem.attribute( QStringLiteral( "name" ) ) );
 
   layerNode->setItemVisibilityChecked( QgsLayerTreeUtils::checkStateFromXml( layerElem.attribute( QStringLiteral( "checked" ) ) ) != Qt::Unchecked );
@@ -261,7 +261,7 @@ static void _readOldLegendLayer( const QDomElement &layerElem, QgsLayerTreeGroup
   parent->addChildNode( layerNode );
 }
 
-bool QgsLayerTreeUtils::layersEditable( const QList<QgsLayerTreeLayer *> &layerNodes )
+bool QgsLayerTreeUtils::layersEditable( const QList<QgsLayerTreeLayer *> &layerNodes, bool ignoreLayersWhichCannotBeToggled )
 {
   const auto constLayerNodes = layerNodes;
   for ( QgsLayerTreeLayer *layerNode : constLayerNodes )
@@ -270,7 +270,7 @@ bool QgsLayerTreeUtils::layersEditable( const QList<QgsLayerTreeLayer *> &layerN
     if ( !layer )
       continue;
 
-    if ( layer->isEditable() )
+    if ( layer->isEditable() && ( !ignoreLayersWhichCannotBeToggled || !( layer->properties() & Qgis::MapLayerProperty::UsersCannotToggleEditing ) ) )
       return true;
   }
   return false;
@@ -313,16 +313,18 @@ void QgsLayerTreeUtils::removeInvalidLayers( QgsLayerTreeGroup *group )
 
 void QgsLayerTreeUtils::storeOriginalLayersProperties( QgsLayerTreeGroup *group,  const QDomDocument *doc )
 {
-
   const QDomElement projectLayersElement { doc->documentElement().firstChildElement( QStringLiteral( "projectlayers" ) ) };
 
   std::function<void ( QgsLayerTreeNode * )> _store = [ & ]( QgsLayerTreeNode * node )
   {
     if ( QgsLayerTree::isLayer( node ) )
     {
-      QgsMapLayer *l( QgsLayerTree::toLayer( node )->layer() );
-      if ( l )
+      if ( QgsMapLayer *l = QgsLayerTree::toLayer( node )->layer() )
       {
+        // no need to store for annotation layers, they can never break!
+        if ( l->type() == QgsMapLayerType::AnnotationLayer )
+          return;
+
         QDomElement layerElement { projectLayersElement.firstChildElement( QStringLiteral( "maplayer" ) ) };
         while ( ! layerElement.isNull() )
         {
@@ -349,7 +351,8 @@ void QgsLayerTreeUtils::storeOriginalLayersProperties( QgsLayerTreeGroup *group,
     }
   };
 
-  for ( QgsLayerTreeNode *node : group->children() )
+  const QList<QgsLayerTreeNode *> children = group->children();
+  for ( QgsLayerTreeNode *node : children )
   {
     _store( node );
   }
@@ -410,7 +413,7 @@ void QgsLayerTreeUtils::updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup *grou
     if ( !node->customProperty( QStringLiteral( "embedded_project" ) ).toString().isEmpty() )
     {
       // may change from absolute path to relative path
-      QString newPath = project->writePath( node->customProperty( QStringLiteral( "embedded_project" ) ).toString() );
+      const QString newPath = project->writePath( node->customProperty( QStringLiteral( "embedded_project" ) ).toString() );
       node->setCustomProperty( QStringLiteral( "embedded_project" ), newPath );
     }
 
@@ -441,7 +444,7 @@ bool QgsLayerTreeUtils::hasLegendFilterExpression( const QgsLayerTreeGroup &grou
   for ( QgsLayerTreeLayer *l : constFindLayers )
   {
     bool exprEnabled;
-    QString expr = legendFilterByExpression( *l, &exprEnabled );
+    const QString expr = legendFilterByExpression( *l, &exprEnabled );
     if ( exprEnabled && !expr.isEmpty() )
     {
       return true;

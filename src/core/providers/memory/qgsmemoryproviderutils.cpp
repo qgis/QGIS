@@ -80,7 +80,7 @@ QgsVectorLayer *QgsMemoryProviderUtils::createMemoryLayer( const QString &name, 
           field.type() == QVariant::List || field.type() == QVariant::StringList ? QStringLiteral( "[]" ) : QString() );
   }
 
-  QString uri = geomType + '?' + parts.join( '&' );
+  const QString uri = geomType + '?' + parts.join( '&' );
   QgsVectorLayer::LayerOptions options{ QgsCoordinateTransformContext() };
   options.skipCrsValidation = true;
   return new QgsVectorLayer( uri, name, QStringLiteral( "memory" ), options );

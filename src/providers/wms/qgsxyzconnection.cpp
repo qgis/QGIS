@@ -55,7 +55,7 @@ QStringList QgsXyzConnectionUtils::connectionList()
   for ( const auto &s : global )
   {
     settings.beginGroup( "qgis/connections-xyz/" + s );
-    bool isHidden = settings.value( QStringLiteral( "hidden" ), false ).toBool();
+    const bool isHidden = settings.value( QStringLiteral( "hidden" ), false ).toBool();
     settings.endGroup();
     if ( isHidden )
     {
@@ -68,7 +68,7 @@ QStringList QgsXyzConnectionUtils::connectionList()
 
 QString QgsXyzConnectionUtils::selectedConnection()
 {
-  QgsSettings settings;
+  const QgsSettings settings;
   return settings.value( QStringLiteral( "qgis/connections-xyz/selected" ) ).toString();
 }
 
@@ -103,7 +103,7 @@ void QgsXyzConnectionUtils::deleteConnection( const QString &name )
   settings.remove( "qgis/connections-xyz/" + name );
 
   settings.beginGroup( QStringLiteral( "qgis/connections-xyz" ) );
-  QStringList global = settings.globalChildGroups();
+  const QStringList global = settings.globalChildGroups();
 
   if ( global.contains( name ) )
   {
@@ -120,7 +120,7 @@ void QgsXyzConnectionUtils::addConnection( const QgsXyzConnection &conn )
   bool addHiddenProperty = false;
 
   settings.beginGroup( QStringLiteral( "qgis/connections-xyz" ) );
-  QStringList global = settings.globalChildGroups();
+  const QStringList global = settings.globalChildGroups();
   if ( global.contains( conn.name ) )
   {
     addHiddenProperty = true;

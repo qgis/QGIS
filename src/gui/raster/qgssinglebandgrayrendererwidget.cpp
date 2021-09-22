@@ -89,7 +89,7 @@ QgsRasterRenderer *QgsSingleBandGrayRendererWidget::renderer()
   {
     return nullptr;
   }
-  int band = mGrayBandComboBox->currentBand();
+  const int band = mGrayBandComboBox->currentBand();
 
   QgsContrastEnhancement *e = new QgsContrastEnhancement( ( Qgis::DataType )(
         provider->dataType( band ) ) );

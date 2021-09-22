@@ -38,6 +38,8 @@ class QTextStream;
 
 class QgsMssqlFeatureIterator;
 class QgsMssqlSharedData;
+class QgsMssqlTransaction;
+class QgsMssqlDatabase;
 
 #include "qgsdatasourceuri.h"
 #include "qgsgeometry.h"
@@ -159,6 +161,11 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
 
     QgsCoordinateReferenceSystem crs() const override;
 
+    void setTransaction( QgsTransaction *transaction ) override;
+    QgsTransaction *transaction() const override;
+
+    std::shared_ptr<QgsMssqlDatabase> connection() const;
+
   protected:
     //! Loads fields from input file to member attributeFields
     QVariant::Type DecodeSqlType( const QString &sqlTypeName );
@@ -209,15 +216,6 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
 
     mutable QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
 
-    // The database object
-    mutable QSqlDatabase mDatabase;
-
-    // The current sql query
-    QSqlQuery mQuery;
-
-    // The current sql statement
-    QString mStatement;
-
     // current layer name
     QString mSchemaName;
     QString mTableName;
@@ -238,6 +236,11 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
     QString mSqlWhereClause;
 
     bool mDisableInvalidGeometryHandling = false;
+
+    // this makes sure that we keep the DB connection open while the provider is alive
+    std::shared_ptr<QgsMssqlDatabase> mConn;
+
+    QgsMssqlTransaction *mTransaction = nullptr;
 
     // Sets the error messages
     void setLastError( const QString &error );
@@ -309,6 +312,7 @@ class QgsMssqlProviderMetadata final: public QgsProviderMetadata
       const QMap<QString, QVariant> *options ) override;
     QgsMssqlProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     virtual QList< QgsDataItemProvider * > dataItemProviders() const override;
+    QgsTransaction *createTransaction( const QString &connString ) override;
 
     // Connections API
     QMap<QString, QgsAbstractProviderConnection *> connections( bool cached = true ) override;

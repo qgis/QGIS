@@ -41,15 +41,15 @@ static std::pair<float, float> rotateCoords( float x, float y, float origin_x, f
   // p0 = x0 + i * y0
   // rot = cos(r) + i * sin(r)
   // p0 * rot = x0 * cos(r) - y0 * sin(r) + i * [ x0 * sin(r) + y0 * cos(r) ]
-  float x1 = origin_x + x0 * qCos( r ) - y0 * qSin( r );
-  float y1 = origin_y + x0 * qSin( r ) + y0 * qCos( r );
+  const float x1 = origin_x + x0 * qCos( r ) - y0 * qSin( r );
+  const float y1 = origin_y + x0 * qSin( r ) + y0 * qCos( r );
   return std::make_pair( x1, y1 );
 }
 
 static void make_quad( float x0, float y0, float z0, float x1, float y1, float z1, float height, QVector<float> &data, bool addNormals, bool addTextureCoords, float textureRotation )
 {
-  float dx = x1 - x0;
-  float dy = -( y1 - y0 );
+  const float dx = x1 - x0;
+  const float dy = -( y1 - y0 );
 
   // perpendicular vector in plane to [x,y] is [-y,x]
   QVector3D vn( -dy, 0, dx );
@@ -115,7 +115,7 @@ static void make_quad( float x0, float y0, float z0, float x1, float y1, float z
 
   for ( int i = 0; i < textureCoordinates.size(); i += 2 )
   {
-    std::pair<float, float> rotated = rotateCoords( textureCoordinates[i], textureCoordinates[i + 1], 0, 0, textureRotation );
+    const std::pair<float, float> rotated = rotateCoords( textureCoordinates[i], textureCoordinates[i + 1], 0, 0, textureRotation );
     textureCoordinates[i] = rotated.first;
     textureCoordinates[i + 1] = rotated.second;
   }
@@ -205,7 +205,7 @@ void QgsTessellator::init()
 static bool _isRingCounterClockWise( const QgsCurve &ring )
 {
   double a = 0;
-  int count = ring.numPoints();
+  const int count = ring.numPoints();
   QgsVertexId::VertexType vt;
   QgsPoint pt, ptPrev;
   ring.pointAt( 0, ptPrev, vt );
@@ -224,7 +224,7 @@ static void _makeWalls( const QgsLineString &ring, bool ccw, float extrusionHeig
   // we need to find out orientation of the ring so that the triangles we generate
   // face the right direction
   // (for exterior we want clockwise order, for holes we want counter-clockwise order)
-  bool is_counter_clockwise = _isRingCounterClockWise( ring );
+  const bool is_counter_clockwise = _isRingCounterClockWise( ring );
 
   QgsPoint pt;
   QgsPoint ptPrev = ring.pointN( is_counter_clockwise == ccw ? 0 : ring.numPoints() - 1 );
@@ -233,8 +233,8 @@ static void _makeWalls( const QgsLineString &ring, bool ccw, float extrusionHeig
     pt = ring.pointN( is_counter_clockwise == ccw ? i : ring.numPoints() - i - 1 );
     float x0 = ptPrev.x() - originX, y0 = ptPrev.y() - originY;
     float x1 = pt.x() - originX, y1 = pt.y() - originY;
-    float z0 = std::isnan( ptPrev.z() ) ? 0 : ptPrev.z();
-    float z1 = std::isnan( pt.z() ) ? 0 : pt.z();
+    const float z0 = std::isnan( ptPrev.z() ) ? 0 : ptPrev.z();
+    const float z1 = std::isnan( pt.z() ) ? 0 : pt.z();
 
     // make a quad
     make_quad( x0, y0, z0, x1, y1, z1, extrusionHeight, data, addNormals, addTextureCoords, textureRotation );
@@ -327,8 +327,8 @@ struct float_pair_hash
 {
   std::size_t operator()( const std::pair<float, float> pair ) const
   {
-    std::size_t h1 = std::hash<float>()( pair.first );
-    std::size_t h2 = std::hash<float>()( pair.second );
+    const std::size_t h1 = std::hash<float>()( pair.first );
+    const std::size_t h2 = std::hash<float>()( pair.second );
 
     return h1 ^ h2;
   }
@@ -350,7 +350,7 @@ static void _ringToPoly2tri( const QgsLineString *ring, std::vector<p2t::Point *
     const float x = *srcXData++;
     const float y = *srcYData++;
 
-    auto res = foundPoints.insert( std::make_pair( x, y ) );
+    const auto res = foundPoints.insert( std::make_pair( x, y ) );
     if ( !res.second )
     {
       // already used this point, don't add a second time
@@ -376,7 +376,7 @@ inline double _round_coord( double x )
 
 static QgsCurve *_transform_ring_to_new_base( const QgsLineString &curve, const QgsPoint &pt0, const QMatrix4x4 *toNewBase, const float scale )
 {
-  int count = curve.numPoints();
+  const int count = curve.numPoints();
   QVector<double> x;
   QVector<double> y;
   QVector<double> z;
@@ -512,9 +512,9 @@ double _minimum_distance_between_coordinates( const QgsPolygon &polygon )
     double y0 = *srcYData++;
     for ( int i = 1; i < numPoints; ++i )
     {
-      double x1 = *srcXData++;
-      double y1 = *srcYData++;
-      double d = ( x0 - x1 ) * ( x0 - x1 ) + ( y0 - y1 ) * ( y0 - y1 );
+      const double x1 = *srcXData++;
+      const double y1 = *srcYData++;
+      const double d = ( x0 - x1 ) * ( x0 - x1 ) + ( y0 - y1 ) * ( y0 - y1 );
       if ( d < min_d )
         min_d = d;
       x0 = x1;
@@ -578,11 +578,11 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
   if ( !mNoZ && !qgsDoubleNear( pNormal.length(), 1, 0.001 ) )
     return;  // this should not happen - pNormal should be normalized to unit length
 
-  QVector3D upVector( 0, 0, 1 );
-  float pNormalUpVectorDotProduct = QVector3D::dotProduct( upVector, pNormal );
-  float radsBetwwenUpNormal = qAcos( pNormalUpVectorDotProduct );
+  const QVector3D upVector( 0, 0, 1 );
+  const float pNormalUpVectorDotProduct = QVector3D::dotProduct( upVector, pNormal );
+  const float radsBetwwenUpNormal = qAcos( pNormalUpVectorDotProduct );
 
-  float detectionDelta = qDegreesToRadians( 10.0f );
+  const float detectionDelta = qDegreesToRadians( 10.0f );
   int facade = 0;
   if ( radsBetwwenUpNormal > M_PI_2 - detectionDelta && radsBetwwenUpNormal < M_PI_2 + detectionDelta ) facade = 1;
   else if ( radsBetwwenUpNormal > - M_PI_2 - detectionDelta && radsBetwwenUpNormal < -M_PI_2 + detectionDelta ) facade = 1;
@@ -604,7 +604,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     const double *zData = !mNoZ ? exterior->zData() : nullptr;
     for ( int i = 0; i < 3; i++ )
     {
-      float z = !zData ? 0 : *zData;
+      const float z = !zData ? 0 : *zData;
       if ( z < zMin )
         zMin = z;
       if ( z > zMax )
@@ -667,7 +667,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
       // the triangulation likes to crash on numerical errors - when the distances are ~ 1e-5
       // Assuming that the coordinates should be in a projected CRS, we should be able
       // to simplify geometries that may cause problems and avoid possible crashes
-      QgsGeometry polygonSimplified = QgsGeometry( polygonNew->clone() ).simplify( 0.001 );
+      const QgsGeometry polygonSimplified = QgsGeometry( polygonNew->clone() ).simplify( 0.001 );
       if ( polygonSimplified.isNull() )
       {
         QgsMessageLog::logMessage( QObject::tr( "geometry simplification failed - skipping" ), QObject::tr( "3D" ) );
@@ -746,7 +746,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
             mData << pNormal.x() << pNormal.z() << - pNormal.y();
           if ( mAddTextureCoords )
           {
-            std::pair<float, float> pr = rotateCoords( p->x, p->y, 0.0f, 0.0f, mTextureRotation );
+            const std::pair<float, float> pr = rotateCoords( p->x, p->y, 0.0f, 0.0f, mTextureRotation );
             mData << pr.first << pr.second;
           }
         }
@@ -768,7 +768,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
               mData << -pNormal.x() << -pNormal.z() << pNormal.y();
             if ( mAddTextureCoords )
             {
-              std::pair<float, float> pr = rotateCoords( p->x, p->y, 0.0f, 0.0f, mTextureRotation );
+              const std::pair<float, float> pr = rotateCoords( p->x, p->y, 0.0f, 0.0f, mTextureRotation );
               mData << pr.first << pr.second;
             }
           }
@@ -801,18 +801,6 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     mZMax = zMax;
 }
 
-QgsPoint getPointFromData( QVector< float >::const_iterator &it )
-{
-  // tessellator geometry is x, z, -y
-  double x = *it;
-  ++it;
-  double z = *it;
-  ++it;
-  double y = -( *it );
-  ++it;
-  return QgsPoint( x, y, z );
-}
-
 int QgsTessellator::dataVerticesCount() const
 {
   return mData.size() / ( stride() / sizeof( float ) );
@@ -821,13 +809,14 @@ int QgsTessellator::dataVerticesCount() const
 std::unique_ptr<QgsMultiPolygon> QgsTessellator::asMultiPolygon() const
 {
   std::unique_ptr< QgsMultiPolygon > mp = std::make_unique< QgsMultiPolygon >();
-  const QVector<float> data = mData;
-  mp->reserve( mData.size() );
-  for ( auto it = data.constBegin(); it != data.constEnd(); )
+  const auto nVals = mData.size();
+  mp->reserve( nVals / 9 );
+  for ( auto i = decltype( nVals ) {0}; i + 8 < nVals; i += 9 )
   {
-    QgsPoint p1 = getPointFromData( it );
-    QgsPoint p2 = getPointFromData( it );
-    QgsPoint p3 = getPointFromData( it );
+    // tessellator geometry is x, z, -y
+    const QgsPoint p1( mData[i + 0], -mData[i + 2], mData[i + 1] );
+    const QgsPoint p2( mData[i + 3], -mData[i + 5], mData[i + 4] );
+    const QgsPoint p3( mData[i + 6], -mData[i + 8], mData[i + 7] );
     mp->addGeometry( new QgsTriangle( p1, p2, p3 ) );
   }
   return mp;

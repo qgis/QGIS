@@ -30,8 +30,8 @@ bool QgsSurface::isValid( QString &error, Qgis::GeometryValidityFlags flags ) co
     return error.isEmpty();
   }
 
-  QgsGeos geos( this );
-  bool res = geos.isValid( &error, flags & Qgis::GeometryValidityFlag::AllowSelfTouchingHoles, nullptr );
+  const QgsGeos geos( this );
+  const bool res = geos.isValid( &error, flags & Qgis::GeometryValidityFlag::AllowSelfTouchingHoles, nullptr );
   if ( flags == 0 )
   {
     mValidityFailureReason = !res ? error : QString();

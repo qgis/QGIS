@@ -149,8 +149,9 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     //! Specific capabilities of the tool
     enum Capability
     {
-      NoCapabilities = 0,       //!< No specific capabilities
-      SupportsCurves = 1,       //!< Supports curved geometries input
+      NoCapabilities = 1 << 0, //!< No specific capabilities
+      SupportsCurves = 1 << 1, //!< Supports curved geometries input
+      ValidateGeometries = 1 << 2, //!< Tool supports geometry validation (since QGIS 3.22)
     };
 
     Q_DECLARE_FLAGS( Capabilities, Capability )
@@ -256,7 +257,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      *  \param[in,out] layerPoint the point in layer coordinates
      *  \returns
      *   0 in case of success
-     *   1 if the current layer is NULLPTR or not a vector layer
+     *   1 if the current layer is NULLPTR
      *   2 if the transformation failed
      */
     int nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint );
@@ -314,7 +315,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     /**
      * Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
-     * \returns 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed
+     * \returns 0 in case of success, 2 if coordinate transformation failed
      */
     int addVertex( const QgsPointXY &point );
 
@@ -389,6 +390,16 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * Close an open polygon
      */
     void closePolygon();
+
+    /**
+     * Returns the map layer associated with the geometry being captured.
+     *
+     * The base class implementation always returns the current map canvas layer, but
+     * subclasses can override this if they need to be associated with a specific layer.
+     *
+     * \since QGIS 3.22
+     */
+    virtual QgsMapLayer *layer() const;
 
   protected slots:
 
@@ -474,6 +485,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     bool mStartNewCurve = false;
 
     bool mIgnoreSubsequentAutoRepeatUndo = false;
+
+    friend class TestQgsMapToolCapture;
 
 };
 

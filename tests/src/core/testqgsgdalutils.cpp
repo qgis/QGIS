@@ -43,6 +43,7 @@ class TestQgsGdalUtils: public QObject
     void testResampleImageToImage();
     void testPathIsCheapToOpen();
     void testVrtMatchesLayerType();
+    void testMultilayerExtensions();
 
   private:
 
@@ -93,7 +94,7 @@ void TestQgsGdalUtils::supportsRasterCreate()
 
 void TestQgsGdalUtils::testCreateSingleBandMemoryDataset()
 {
-  gdal::dataset_unique_ptr ds1 = QgsGdalUtils::createSingleBandMemoryDataset( GDT_Float32, QgsRectangle( 1, 1, 21, 11 ), 40, 20, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  const gdal::dataset_unique_ptr ds1 = QgsGdalUtils::createSingleBandMemoryDataset( GDT_Float32, QgsRectangle( 1, 1, 21, 11 ), 40, 20, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
   QVERIFY( ds1 );
 
   QCOMPARE( GDALGetRasterCount( ds1.get() ), 1 );
@@ -111,7 +112,7 @@ void TestQgsGdalUtils::testCreateSingleBandMemoryDataset()
 
 void TestQgsGdalUtils::testCreateMultiBandMemoryDataset()
 {
-  gdal::dataset_unique_ptr ds1 = QgsGdalUtils::createMultiBandMemoryDataset( GDT_Float32, 4, QgsRectangle( 1, 1, 21, 11 ), 40, 20, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  const gdal::dataset_unique_ptr ds1 = QgsGdalUtils::createMultiBandMemoryDataset( GDT_Float32, 4, QgsRectangle( 1, 1, 21, 11 ), 40, 20, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
   QVERIFY( ds1 );
 
   QCOMPARE( GDALGetRasterCount( ds1.get() ), 4 );
@@ -132,7 +133,7 @@ void TestQgsGdalUtils::testCreateMultiBandMemoryDataset()
 
 void TestQgsGdalUtils::testCreateSingleBandTiffDataset()
 {
-  QString filename = QDir::tempPath() + "/qgis_test_single_band_raster.tif";
+  const QString filename = QDir::tempPath() + "/qgis_test_single_band_raster.tif";
   QFile::remove( filename );
   QVERIFY( !QFile::exists( filename ) );
 
@@ -168,12 +169,12 @@ void TestQgsGdalUtils::testCreateSingleBandTiffDataset()
 
 void TestQgsGdalUtils::testResampleSingleBandRaster()
 {
-  QString inputFilename = QString( TEST_DATA_DIR ) + "/float1-16.tif";
-  gdal::dataset_unique_ptr srcDS( GDALOpen( inputFilename.toUtf8().constData(), GA_ReadOnly ) );
+  const QString inputFilename = QString( TEST_DATA_DIR ) + "/float1-16.tif";
+  const gdal::dataset_unique_ptr srcDS( GDALOpen( inputFilename.toUtf8().constData(), GA_ReadOnly ) );
   QVERIFY( srcDS );
 
-  QString outputFilename = QDir::tempPath() + "/qgis_test_float1-16_resampled.tif";
-  QgsRectangle outputExtent( 106.25, -6.75, 106.55, -6.45 );
+  const QString outputFilename = QDir::tempPath() + "/qgis_test_float1-16_resampled.tif";
+  const QgsRectangle outputExtent( 106.25, -6.75, 106.55, -6.45 );
   gdal::dataset_unique_ptr dstDS = QgsGdalUtils::createSingleBandTiffDataset( outputFilename, GDT_Float32, outputExtent, 2, 2, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
   QVERIFY( dstDS );
 
@@ -193,7 +194,7 @@ void TestQgsGdalUtils::testResampleSingleBandRaster()
 
 void TestQgsGdalUtils::testImageToDataset()
 {
-  QString inputFilename = QString( TEST_DATA_DIR ) + "/rgb256x256.png";
+  const QString inputFilename = QString( TEST_DATA_DIR ) + "/rgb256x256.png";
   QImage src = QImage( inputFilename );
   src = src.convertToFormat( QImage::Format_ARGB32 );
   QVERIFY( !src.isNull() );
@@ -236,7 +237,7 @@ void TestQgsGdalUtils::testImageToDataset()
 
 void TestQgsGdalUtils::testResampleImageToImage()
 {
-  QString inputFilename = QString( TEST_DATA_DIR ) + "/rgb256x256.png";
+  const QString inputFilename = QString( TEST_DATA_DIR ) + "/rgb256x256.png";
   QImage src = QImage( inputFilename );
   src = src.convertToFormat( QImage::Format_ARGB32 );
   QVERIFY( !src.isNull() );
@@ -294,14 +295,32 @@ void TestQgsGdalUtils::testVrtMatchesLayerType()
   QVERIFY( QgsGdalUtils::vrtMatchesLayerType( QStringLiteral( TEST_DATA_DIR ) + "/vector_vrt.vrt", QgsMapLayerType::VectorLayer ) );
 }
 
+void TestQgsGdalUtils::testMultilayerExtensions()
+{
+  const QStringList extensions = QgsGdalUtils::multiLayerFileExtensions();
+  QVERIFY( extensions.contains( QStringLiteral( "gpkg" ) ) );
+  QVERIFY( extensions.contains( QStringLiteral( "sqlite" ) ) );
+  QVERIFY( extensions.contains( QStringLiteral( "db" ) ) );
+  QVERIFY( extensions.contains( QStringLiteral( "kml" ) ) );
+  QVERIFY( extensions.contains( QStringLiteral( "ods" ) ) );
+  QVERIFY( extensions.contains( QStringLiteral( "osm" ) ) );
+  QVERIFY( extensions.contains( QStringLiteral( "mdb" ) ) );
+  QVERIFY( extensions.contains( QStringLiteral( "xls" ) ) );
+  QVERIFY( extensions.contains( QStringLiteral( "xlsx" ) ) );
+  QVERIFY( extensions.contains( QStringLiteral( "gpx" ) ) );
+  QVERIFY( extensions.contains( QStringLiteral( "pdf" ) ) );
+  QVERIFY( extensions.contains( QStringLiteral( "nc" ) ) );
+  QVERIFY( extensions.contains( QStringLiteral( "gdb" ) ) );
+}
+
 double TestQgsGdalUtils::identify( GDALDatasetH dataset, int band, int px, int py )
 {
   GDALRasterBandH hBand = GDALGetRasterBand( dataset, band );
 
   float *pafScanline = ( float * ) CPLMalloc( sizeof( float ) );
-  CPLErr err = GDALRasterIO( hBand, GF_Read, px, py, 1, 1,
-                             pafScanline, 1, 1, GDT_Float32, 0, 0 );
-  double value = err == CE_None ? pafScanline[0] : std::numeric_limits<double>::quiet_NaN();
+  const CPLErr err = GDALRasterIO( hBand, GF_Read, px, py, 1, 1,
+                                   pafScanline, 1, 1, GDT_Float32, 0, 0 );
+  const double value = err == CE_None ? pafScanline[0] : std::numeric_limits<double>::quiet_NaN();
   CPLFree( pafScanline );
 
   return value;

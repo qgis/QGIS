@@ -23,7 +23,7 @@ QgsWfsConnection::QgsWfsConnection( const QString &connName )
 {
   const QString &key = QgsWFSConstants::CONNECTIONS_WFS + connectionName();
 
-  QgsSettings settings;
+  const QgsSettings settings;
 
   const QString &version = settings.value( key + "/" + QgsWFSConstants::SETTINGS_VERSION ).toString();
   if ( !version.isEmpty() )

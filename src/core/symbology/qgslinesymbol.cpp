@@ -38,7 +38,7 @@ QgsLineSymbol::QgsLineSymbol( const QgsSymbolLayerList &layers )
 
 void QgsLineSymbol::setWidth( double w )
 {
-  double origWidth = width();
+  const double origWidth = width();
 
   const auto constMLayers = mLayers;
   for ( QgsSymbolLayer *layer : constMLayers )
@@ -88,7 +88,7 @@ double QgsLineSymbol::width() const
     const QgsLineSymbolLayer *lineLayer = dynamic_cast<QgsLineSymbolLayer *>( symbolLayer );
     if ( lineLayer )
     {
-      double width = lineLayer->width();
+      const double width = lineLayer->width();
       if ( width > maxWidth )
         maxWidth = width;
     }
@@ -175,8 +175,8 @@ QgsProperty QgsLineSymbol::dataDefinedWidth() const
       continue;
     const QgsLineSymbolLayer *lineLayer = static_cast<const QgsLineSymbolLayer *>( layer );
 
-    QgsProperty layerWidthDD = lineLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertyStrokeWidth );
-    QgsProperty layerOffsetDD = lineLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertyOffset );
+    const QgsProperty layerWidthDD = lineLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertyStrokeWidth );
+    const QgsProperty layerOffsetDD = lineLayer->dataDefinedProperties().property( QgsSymbolLayer::PropertyOffset );
 
     if ( qgsDoubleNear( lineLayer->width(), symbolWidth ) )
     {
@@ -188,12 +188,12 @@ QgsProperty QgsLineSymbol::dataDefinedWidth() const
       if ( qgsDoubleNear( symbolWidth, 0.0 ) )
         return QgsProperty();
 
-      QgsProperty scaledDD( QgsSymbolLayerUtils::scaleWholeSymbol( lineLayer->width() / symbolWidth, symbolDD ) );
+      const QgsProperty scaledDD( QgsSymbolLayerUtils::scaleWholeSymbol( lineLayer->width() / symbolWidth, symbolDD ) );
       if ( !layerWidthDD || layerWidthDD != scaledDD )
         return QgsProperty();
     }
 
-    QgsProperty scaledOffsetDD( QgsSymbolLayerUtils::scaleWholeSymbol( lineLayer->offset() / symbolWidth, symbolDD ) );
+    const QgsProperty scaledOffsetDD( QgsSymbolLayerUtils::scaleWholeSymbol( lineLayer->offset() / symbolWidth, symbolDD ) );
     if ( layerOffsetDD && layerOffsetDD != scaledOffsetDD )
       return QgsProperty();
   }
@@ -223,7 +223,7 @@ void QgsLineSymbol::renderPolyline( const QPolygonF &points, const QgsFeature *f
         renderPolylineUsingLayer( lineLayer, points, symbolContext );
       }
       else
-        renderUsingLayer( symbolLayer, symbolContext );
+        renderUsingLayer( symbolLayer, symbolContext, QgsWkbTypes::LineGeometry, &points );
     }
     return;
   }
@@ -244,7 +244,7 @@ void QgsLineSymbol::renderPolyline( const QPolygonF &points, const QgsFeature *f
     }
     else
     {
-      renderUsingLayer( symbolLayer, symbolContext );
+      renderUsingLayer( symbolLayer, symbolContext, QgsWkbTypes::LineGeometry, &points );
     }
   }
 

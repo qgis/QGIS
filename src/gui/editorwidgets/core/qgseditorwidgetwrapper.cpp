@@ -180,8 +180,8 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsVectorLayer *layer, int 
   bool hardConstraintsOk( true );
   bool softConstraintsOk( true );
 
-  QgsField field = layer->fields().at( index );
-  QString expression = field.constraints().constraintExpression();
+  const QgsField field = layer->fields().at( index );
+  const QString expression = field.constraints().constraintExpression();
 
   if ( ft.isValid() )
   {
@@ -245,17 +245,17 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsVectorLayer *layer, int 
 
   if ( toEmit )
   {
-    QString errStr = errors.isEmpty() ? tr( "Constraint checks passed" ) : mConstraintFailureReason;
+    const QString errStr = errors.isEmpty() ? tr( "Constraint checks passed" ) : mConstraintFailureReason;
 
-    QString description = descriptions.join( QLatin1String( ", " ) );
+    const QString description = descriptions.join( QLatin1String( ", " ) );
     QString expressionDesc;
     if ( expressions.size() > 1 )
       expressionDesc = "( " + expressions.join( QLatin1String( " ) AND ( " ) ) + " )";
     else if ( !expressions.isEmpty() )
       expressionDesc = expressions.at( 0 );
 
-    ConstraintResult result = !hardConstraintsOk ? ConstraintResultFailHard
-                              : ( !softConstraintsOk ? ConstraintResultFailSoft : ConstraintResultPass );
+    const ConstraintResult result = !hardConstraintsOk ? ConstraintResultFailHard
+                                    : ( !softConstraintsOk ? ConstraintResultFailSoft : ConstraintResultPass );
     //set the constraint result
     mConstraintResult = result;
     updateConstraintWidgetStatus();
@@ -288,5 +288,6 @@ bool QgsEditorWidgetWrapper::isInTable( const QWidget *parent )
 
 void QgsEditorWidgetWrapper::setHint( const QString &hintText )
 {
-  widget()->setToolTip( hintText );
+  if ( QWidget *w = widget() )
+    w->setToolTip( hintText );
 }

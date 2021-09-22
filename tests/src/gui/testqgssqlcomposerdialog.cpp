@@ -161,7 +161,7 @@ void TestQgsSQLComposerDialog::testReciprocalEditorsUpdate()
   if ( !runTest() )
     return;
   QgsSQLComposerDialog d;
-  QString oriSql( QStringLiteral( "SELECT a_column FROM my_table JOIN join_table ON cond WHERE where_expr ORDER BY column DESC" ) );
+  const QString oriSql( QStringLiteral( "SELECT a_column FROM my_table JOIN join_table ON cond WHERE where_expr ORDER BY column DESC" ) );
   d.setSql( oriSql );
   QCOMPARE( d.sql(), oriSql );
 

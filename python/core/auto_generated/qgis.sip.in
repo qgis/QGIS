@@ -153,6 +153,13 @@ The development version
     typedef QFlags<Qgis::SymbolPreviewFlag> SymbolPreviewFlags;
 
 
+    enum class SymbolLayerFlag
+    {
+      DisableFeatureClipping,
+    };
+    typedef QFlags<Qgis::SymbolLayerFlag> SymbolLayerFlags;
+
+
     enum class BrowserItemType
       {
       Collection,
@@ -209,6 +216,12 @@ The development version
       Default,
       NeverMonitor,
       AlwaysMonitor,
+    };
+
+    enum class HttpMethod
+    {
+      Get,
+      Post
     };
 
     enum class VectorExportResult
@@ -278,8 +291,16 @@ The development version
       FastScan,
       ResolveGeometryType,
       CountFeatures,
+      IncludeSystemTables,
     };
     typedef QFlags<Qgis::SublayerQueryFlag> SublayerQueryFlags;
+
+
+    enum class SublayerFlag
+    {
+      SystemTable,
+    };
+    typedef QFlags<Qgis::SublayerFlag> SublayerFlags;
 
 
     enum class RasterPipeInterfaceRole
@@ -437,6 +458,93 @@ The development version
       Bevel,
     };
 
+    enum class SpatialFilterType
+    {
+      NoFilter,
+      BoundingBox,
+      DistanceWithin,
+    };
+
+    enum class FileOperationFlag
+    {
+      IncludeMetadataFile,
+      IncludeStyleFile,
+    };
+    typedef QFlags<Qgis::FileOperationFlag> FileOperationFlags;
+
+
+    enum class MapLayerProperty
+    {
+      UsersCannotToggleEditing,
+    };
+    typedef QFlags<Qgis::MapLayerProperty> MapLayerProperties;
+
+
+    enum class AnnotationItemFlag
+    {
+      ScaleDependentBoundingBox,
+    };
+    typedef QFlags<Qgis::AnnotationItemFlag> AnnotationItemFlags;
+
+
+    enum class AnnotationItemGuiFlag
+    {
+      FlagNoCreationTools,
+    };
+    typedef QFlags<Qgis::AnnotationItemGuiFlag> AnnotationItemGuiFlags;
+
+
+    enum class AnnotationItemNodeType
+    {
+      VertexHandle,
+    };
+
+    enum class AnnotationItemEditOperationResult
+    {
+      Success,
+      Invalid,
+      ItemCleared,
+    };
+
+    enum class VectorTemporalMode
+      {
+      FixedTemporalRange,
+      FeatureDateTimeInstantFromField,
+      FeatureDateTimeStartAndEndFromFields,
+      FeatureDateTimeStartAndDurationFromFields,
+      FeatureDateTimeStartAndEndFromExpressions,
+      RedrawLayerOnly,
+    };
+
+    enum class VectorTemporalLimitMode
+    {
+      IncludeBeginExcludeEnd,
+      IncludeBeginIncludeEnd,
+    };
+
+    enum class VectorDataProviderTemporalMode
+      {
+      HasFixedTemporalRange,
+      StoresFeatureDateTimeInstantInField,
+      StoresFeatureDateTimeStartAndEndInSeparateFields,
+    };
+
+    enum class RasterTemporalMode
+      {
+      FixedTemporalRange,
+      TemporalRangeFromDataProvider,
+      RedrawLayerOnly,
+    };
+
+    enum class TemporalIntervalMatchMethod
+      {
+      MatchUsingWholeRange,
+      MatchExactUsingStartOfRange,
+      MatchExactUsingEndOfRange,
+      FindClosestMatchToStartOfRange,
+      FindClosestMatchToEndOfRange
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -508,9 +616,13 @@ QFlags<Qgis::SymbolFlag> operator|(Qgis::SymbolFlag f1, QFlags<Qgis::SymbolFlag>
 
 QFlags<Qgis::SymbolPreviewFlag> operator|(Qgis::SymbolPreviewFlag f1, QFlags<Qgis::SymbolPreviewFlag> f2);
 
+QFlags<Qgis::SymbolLayerFlag> operator|(Qgis::SymbolLayerFlag f1, QFlags<Qgis::SymbolLayerFlag> f2);
+
 QFlags<Qgis::BrowserItemCapability> operator|(Qgis::BrowserItemCapability f1, QFlags<Qgis::BrowserItemCapability> f2);
 
 QFlags<Qgis::SublayerQueryFlag> operator|(Qgis::SublayerQueryFlag f1, QFlags<Qgis::SublayerQueryFlag> f2);
+
+QFlags<Qgis::SublayerFlag> operator|(Qgis::SublayerFlag f1, QFlags<Qgis::SublayerFlag> f2);
 
 QFlags<Qgis::SqlLayerDefinitionCapability> operator|(Qgis::SqlLayerDefinitionCapability f1, QFlags<Qgis::SqlLayerDefinitionCapability> f2);
 
@@ -519,6 +631,12 @@ QFlags<Qgis::BabelFormatCapability> operator|(Qgis::BabelFormatCapability f1, QF
 QFlags<Qgis::BabelCommandFlag> operator|(Qgis::BabelCommandFlag f1, QFlags<Qgis::BabelCommandFlag> f2);
 
 QFlags<Qgis::GeometryValidityFlag> operator|(Qgis::GeometryValidityFlag f1, QFlags<Qgis::GeometryValidityFlag> f2);
+
+QFlags<Qgis::FileOperationFlag> operator|(Qgis::FileOperationFlag f1, QFlags<Qgis::FileOperationFlag> f2);
+
+QFlags<Qgis::AnnotationItemFlag> operator|(Qgis::AnnotationItemFlag f1, QFlags<Qgis::AnnotationItemFlag> f2);
+
+QFlags<Qgis::AnnotationItemGuiFlag> operator|(Qgis::AnnotationItemGuiFlag f1, QFlags<Qgis::AnnotationItemGuiFlag> f2);
 
 
 

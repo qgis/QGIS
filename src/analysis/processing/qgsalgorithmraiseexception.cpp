@@ -83,7 +83,7 @@ QVariantMap QgsRaiseExceptionAlgorithm::processAlgorithm( const QVariantMap &par
   const QString expression = parameterAsExpression( parameters, QStringLiteral( "CONDITION" ), context );
   if ( !expression.isEmpty() )
   {
-    QgsExpressionContext expContext = createExpressionContext( parameters, context );
+    const QgsExpressionContext expContext = createExpressionContext( parameters, context );
     QgsExpression exp( expression );
     if ( exp.hasParserError() )
     {
@@ -162,7 +162,7 @@ QVariantMap QgsRaiseWarningAlgorithm::processAlgorithm( const QVariantMap &param
   const QString expression = parameterAsExpression( parameters, QStringLiteral( "CONDITION" ), context );
   if ( !expression.isEmpty() )
   {
-    QgsExpressionContext expContext = createExpressionContext( parameters, context );
+    const QgsExpressionContext expContext = createExpressionContext( parameters, context );
     QgsExpression exp( expression );
     if ( exp.hasParserError() )
     {

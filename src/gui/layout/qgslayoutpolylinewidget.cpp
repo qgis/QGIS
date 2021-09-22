@@ -319,7 +319,7 @@ void QgsLayoutPolylineWidget::mStartMarkerLineEdit_textChanged( const QString &t
     return;
 
   mPolyline->beginCommand( tr( "Change Start Marker File" ) );
-  QFileInfo fi( text );
+  const QFileInfo fi( text );
   if ( fi.exists() && fi.isFile() )
   {
     mPolyline->setStartSvgMarkerPath( text );
@@ -337,7 +337,7 @@ void QgsLayoutPolylineWidget::mEndMarkerLineEdit_textChanged( const QString &tex
     return;
 
   mPolyline->beginCommand( tr( "Change End Marker File" ) );
-  QFileInfo fi( text );
+  const QFileInfo fi( text );
   if ( fi.exists() && fi.isFile() )
   {
     mPolyline->setEndSvgMarkerPath( text );
@@ -356,7 +356,7 @@ void QgsLayoutPolylineWidget::mStartMarkerToolButton_clicked()
 
   if ( !mStartMarkerLineEdit->text().isEmpty() )
   {
-    QFileInfo fi( mStartMarkerLineEdit->text() );
+    const QFileInfo fi( mStartMarkerLineEdit->text() );
     openDir = fi.dir().absolutePath();
   }
 
@@ -365,10 +365,10 @@ void QgsLayoutPolylineWidget::mStartMarkerToolButton_clicked()
     openDir = s.value( QStringLiteral( "/UI/lastComposerMarkerDir" ), QDir::homePath() ).toString();
   }
 
-  QString svgFileName = QFileDialog::getOpenFileName( this, tr( "Start marker svg file" ), openDir );
+  const QString svgFileName = QFileDialog::getOpenFileName( this, tr( "Start marker svg file" ), openDir );
   if ( !svgFileName.isNull() )
   {
-    QFileInfo fileInfo( svgFileName );
+    const QFileInfo fileInfo( svgFileName );
     s.setValue( QStringLiteral( "/UI/lastComposerMarkerDir" ), fileInfo.absolutePath() );
     mPolyline->beginCommand( tr( "Change Start Marker File" ) );
     mStartMarkerLineEdit->setText( svgFileName );
@@ -383,7 +383,7 @@ void QgsLayoutPolylineWidget::mEndMarkerToolButton_clicked()
 
   if ( !mEndMarkerLineEdit->text().isEmpty() )
   {
-    QFileInfo fi( mEndMarkerLineEdit->text() );
+    const QFileInfo fi( mEndMarkerLineEdit->text() );
     openDir = fi.dir().absolutePath();
   }
 
@@ -392,10 +392,10 @@ void QgsLayoutPolylineWidget::mEndMarkerToolButton_clicked()
     openDir = s.value( QStringLiteral( "/UI/lastComposerMarkerDir" ), QDir::homePath() ).toString();
   }
 
-  QString svgFileName = QFileDialog::getOpenFileName( this, tr( "End marker svg file" ), openDir );
+  const QString svgFileName = QFileDialog::getOpenFileName( this, tr( "End marker svg file" ), openDir );
   if ( !svgFileName.isNull() )
   {
-    QFileInfo fileInfo( svgFileName );
+    const QFileInfo fileInfo( svgFileName );
     s.setValue( QStringLiteral( "/UI/lastComposerMarkerDir" ), fileInfo.absolutePath() );
     mPolyline->beginCommand( tr( "Change End Marker File" ) );
     mEndMarkerLineEdit->setText( svgFileName );

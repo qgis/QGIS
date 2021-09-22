@@ -27,12 +27,12 @@ void QgsAppSslErrorHandler::handleSslErrors( QNetworkReply *reply, const QList<Q
 
   QgsDebugMsg( QStringLiteral( "SSL errors occurred accessing URL:\n%1" ).arg( reply->request().url().toString() ) );
 
-  QString hostport( QStringLiteral( "%1:%2" )
-                    .arg( reply->url().host() )
-                    .arg( reply->url().port() != -1 ? reply->url().port() : 443 )
-                    .trimmed() );
-  QString digest( QgsAuthCertUtils::shaHexForCert( reply->sslConfiguration().peerCertificate() ) );
-  QString dgsthostport( QStringLiteral( "%1:%2" ).arg( digest, hostport ) );
+  const QString hostport( QStringLiteral( "%1:%2" )
+                          .arg( reply->url().host() )
+                          .arg( reply->url().port() != -1 ? reply->url().port() : 443 )
+                          .trimmed() );
+  const QString digest( QgsAuthCertUtils::shaHexForCert( reply->sslConfiguration().peerCertificate() ) );
+  const QString dgsthostport( QStringLiteral( "%1:%2" ).arg( digest, hostport ) );
 
   const QHash<QString, QSet<QSslError::SslError> > &errscache( QgsApplication::authManager()->ignoredSslErrorCache() );
 
@@ -48,7 +48,7 @@ void QgsAppSslErrorHandler::handleSslErrors( QNetworkReply *reply, const QList<Q
         if ( error.error() == QSslError::NoError )
           continue;
 
-        bool errmatch = errenums.contains( error.error() );
+        const bool errmatch = errenums.contains( error.error() );
         ignore = ignore && errmatch;
       }
     }

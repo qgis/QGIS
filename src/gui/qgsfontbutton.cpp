@@ -52,9 +52,9 @@ QgsFontButton::QgsFontButton( QWidget *parent, const QString &dialogTitle )
   setPopupMode( QToolButton::MenuButtonPopup );
 
   //make sure height of button looks good under different platforms
-  QSize size = QToolButton::minimumSizeHint();
-  int fontHeight = Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.4;
-  int minWidth = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 20;
+  const QSize size = QToolButton::minimumSizeHint();
+  const int fontHeight = Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.4;
+  const int minWidth = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 20;
   mSizeHint = QSize( std::max( minWidth, size.width() ), std::max( size.height(), fontHeight ) );
 }
 
@@ -113,7 +113,7 @@ void QgsFontButton::showSettingsDialog()
     case ModeQFont:
     {
       bool ok;
-      QFont newFont = QgsGuiUtils::getFont( ok, mFont, mDialogTitle );
+      const QFont newFont = QgsGuiUtils::getFont( ok, mFont, mDialogTitle );
       if ( ok )
       {
         QgsFontUtils::addRecentFontFamily( newFont.family() );
@@ -290,7 +290,7 @@ void QgsFontButton::mouseMoveEvent( QMouseEvent *e )
 bool QgsFontButton::colorFromMimeData( const QMimeData *mimeData, QColor &resultColor, bool &hasAlpha )
 {
   hasAlpha = false;
-  QColor mimeColor = QgsSymbolLayerUtils::colorFromMimeData( mimeData, hasAlpha );
+  const QColor mimeColor = QgsSymbolLayerUtils::colorFromMimeData( mimeData, hasAlpha );
 
   if ( mimeColor.isValid() )
   {
@@ -388,7 +388,7 @@ void QgsFontButton::wheelEvent( QWheelEvent *event )
       break;
   }
 
-  double increment = ( event->modifiers() & Qt::ControlModifier ) ? 0.1 : 1;
+  const double increment = ( event->modifiers() & Qt::ControlModifier ) ? 0.1 : 1;
   if ( event->angleDelta().y() > 0 )
   {
     size += increment;
@@ -454,7 +454,7 @@ QPixmap QgsFontButton::createDragIcon( QSize size, const QgsTextFormat *tempForm
   QPainter p;
   p.begin( &pixmap );
   p.setRenderHint( QPainter::Antialiasing );
-  QRect rect( 0, 0, size.width(), size.height() );
+  const QRect rect( 0, 0, size.width(), size.height() );
 
   if ( mMode == ModeQFont || tempFormat->color().lightnessF() < 0.7 )
   {
@@ -692,7 +692,7 @@ void QgsFontButton::prepareMenu()
     alphaAction->setDismissOnColorSelection( false );
     connect( alphaAction, &QgsColorWidgetAction::colorChanged, this, [ = ]( const QColor & color )
     {
-      double opacity = color.alphaF();
+      const double opacity = color.alphaF();
       mFormat.setOpacity( opacity );
       updatePreview();
       if ( mNullFormatAction )
@@ -851,8 +851,8 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
       //calculate size of push button part of widget (ie, without the menu dropdown button part)
       QStyleOptionToolButton opt;
       initStyleOption( &opt );
-      QRect buttonSize = QApplication::style()->subControlRect( QStyle::CC_ToolButton, &opt, QStyle::SC_ToolButton,
-                         this );
+      const QRect buttonSize = QApplication::style()->subControlRect( QStyle::CC_ToolButton, &opt, QStyle::SC_ToolButton,
+                               this );
       //make sure height of icon looks good under different platforms
 #ifdef Q_OS_WIN
       mIconSize = QSize( buttonSize.width() - 10, height() - 6 );
@@ -885,7 +885,7 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
   QPainter p;
   p.begin( &pixmap );
   p.setRenderHint( QPainter::Antialiasing );
-  QRect rect( 0, 0, currentIconSize.width(), currentIconSize.height() );
+  const QRect rect( 0, 0, currentIconSize.width(), currentIconSize.height() );
 
   switch ( mMode )
   {

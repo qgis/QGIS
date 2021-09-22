@@ -20,6 +20,7 @@
 #include "qgsfeature.h"
 #include "qgspointlocator.h"
 #include "qgsexpressioncontext.h"
+#include "qgsmeshdataprovider.h"
 #include <QString>
 #include <QVariantMap>
 
@@ -320,6 +321,12 @@ class CORE_EXPORT QgsExpressionContextUtils
      * Registers all known core functions provided by QgsExpressionContextScope objects.
      */
     static void registerContextFunctions();
+
+    /**
+     * Creates a new scope which contains functions relating to mesh layer element \a elementType
+     * \since QGIS 3.22
+     */
+    static QgsExpressionContextScope *meshExpressionScope( QgsMesh::ElementType elementType ) SIP_FACTORY;
 
   private:
 

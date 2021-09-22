@@ -95,7 +95,7 @@ void QgsSearchQueryBuilder::populateFields()
   const QgsFields &fields = mLayer->fields();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    QString fieldName = fields.at( idx ).name();
+    const QString fieldName = fields.at( idx ).name();
     mFieldMap[fieldName] = idx;
     QStandardItem *myItem = new QStandardItem( fieldName );
     myItem->setEditable( false );
@@ -130,10 +130,10 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
   mModelValues->clear();
 
   // determine the field type
-  QString fieldName = mModelFields->data( lstFields->currentIndex() ).toString();
-  int fieldIndex = mFieldMap[fieldName];
-  QgsField field = mLayer->fields().at( fieldIndex );//provider->fields().at( fieldIndex );
-  bool numeric = ( field.type() == QVariant::Int || field.type() == QVariant::Double );
+  const QString fieldName = mModelFields->data( lstFields->currentIndex() ).toString();
+  const int fieldIndex = mFieldMap[fieldName];
+  const QgsField field = mLayer->fields().at( fieldIndex );//provider->fields().at( fieldIndex );
+  const bool numeric = ( field.type() == QVariant::Int || field.type() == QVariant::Double );
 
   QgsFeature feat;
   QString value;
@@ -191,7 +191,7 @@ void QgsSearchQueryBuilder::btnGetAllValues_clicked()
 
 void QgsSearchQueryBuilder::btnTest_clicked()
 {
-  long count = countRecords( mTxtSql->text() );
+  const long count = countRecords( mTxtSql->text() );
 
   // error?
   if ( count == -1 )
@@ -213,7 +213,7 @@ long QgsSearchQueryBuilder::countRecords( const QString &searchString )
   if ( !mLayer )
     return -1;
 
-  bool fetchGeom = search.needsGeometry();
+  const bool fetchGeom = search.needsGeometry();
 
   int count = 0;
   QgsFeature feat;
@@ -233,7 +233,7 @@ long QgsSearchQueryBuilder::countRecords( const QString &searchString )
   while ( fit.nextFeature( feat ) )
   {
     context.setFeature( feat );
-    QVariant value = search.evaluate( &context );
+    const QVariant value = search.evaluate( &context );
     if ( value.toInt() != 0 )
     {
       count++;
@@ -266,7 +266,7 @@ void QgsSearchQueryBuilder::btnOk_clicked()
   }
 
   // test the query to see if it will result in a valid layer
-  long numRecs = countRecords( mTxtSql->text() );
+  const long numRecs = countRecords( mTxtSql->text() );
   if ( numRecs == -1 )
   {
     // error shown in countRecords
@@ -380,7 +380,7 @@ void QgsSearchQueryBuilder::btnILike_clicked()
 void QgsSearchQueryBuilder::saveQuery()
 {
   QgsSettings s;
-  QString lastQueryFileDir = s.value( QStringLiteral( "/UI/lastQueryFileDir" ), QDir::homePath() ).toString();
+  const QString lastQueryFileDir = s.value( QStringLiteral( "/UI/lastQueryFileDir" ), QDir::homePath() ).toString();
   //save as qqt (QGIS query file)
   QString saveFileName = QFileDialog::getSaveFileName( nullptr, tr( "Save Query to File" ), lastQueryFileDir, tr( "Query files (*.qqf *.QQF)" ) );
   if ( saveFileName.isNull() )
@@ -402,23 +402,23 @@ void QgsSearchQueryBuilder::saveQuery()
 
   QDomDocument xmlDoc;
   QDomElement queryElem = xmlDoc.createElement( QStringLiteral( "Query" ) );
-  QDomText queryTextNode = xmlDoc.createTextNode( mTxtSql->text() );
+  const QDomText queryTextNode = xmlDoc.createTextNode( mTxtSql->text() );
   queryElem.appendChild( queryTextNode );
   xmlDoc.appendChild( queryElem );
 
   QTextStream fileStream( &saveFile );
   xmlDoc.save( fileStream, 2 );
 
-  QFileInfo fi( saveFile );
+  const QFileInfo fi( saveFile );
   s.setValue( QStringLiteral( "/UI/lastQueryFileDir" ), fi.absolutePath() );
 }
 
 void QgsSearchQueryBuilder::loadQuery()
 {
-  QgsSettings s;
-  QString lastQueryFileDir = s.value( QStringLiteral( "/UI/lastQueryFileDir" ), QDir::homePath() ).toString();
+  const QgsSettings s;
+  const QString lastQueryFileDir = s.value( QStringLiteral( "/UI/lastQueryFileDir" ), QDir::homePath() ).toString();
 
-  QString queryFileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Query from File" ), lastQueryFileDir, tr( "Query files" ) + " (*.qqf *.QQF);;" + tr( "All files" ) + " (*)" );
+  const QString queryFileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Query from File" ), lastQueryFileDir, tr( "Query files" ) + " (*.qqf *.QQF);;" + tr( "All files" ) + " (*)" );
   if ( queryFileName.isNull() )
   {
     return;
@@ -437,24 +437,24 @@ void QgsSearchQueryBuilder::loadQuery()
     return;
   }
 
-  QDomElement queryElem = queryDoc.firstChildElement( QStringLiteral( "Query" ) );
+  const QDomElement queryElem = queryDoc.firstChildElement( QStringLiteral( "Query" ) );
   if ( queryElem.isNull() )
   {
     QMessageBox::critical( nullptr, tr( "Load Query from File" ), tr( "File is not a valid query document." ) );
     return;
   }
 
-  QString query = queryElem.text();
+  const QString query = queryElem.text();
 
   //todo: test if all the attributes are valid
-  QgsExpression search( query );
+  const QgsExpression search( query );
   if ( search.hasParserError() )
   {
     QMessageBox::critical( this, tr( "Query Result" ), search.parserErrorString() );
     return;
   }
 
-  QString newQueryText = query;
+  const QString newQueryText = query;
 
 #if 0
   // TODO: implement with visitor pattern in QgsExpression

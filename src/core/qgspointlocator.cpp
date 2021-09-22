@@ -109,16 +109,16 @@ class QgsPointLocator_VisitorNearestVertex : public IVisitor
 
     void visitData( const IData &d ) override
     {
-      QgsFeatureId id = d.getIdentifier();
+      const QgsFeatureId id = d.getIdentifier();
       QgsGeometry *geom = mLocator->mGeoms.value( id );
       int vertexIndex, beforeVertex, afterVertex;
       double sqrDist;
 
-      QgsPointXY pt = geom->closestVertex( mSrcPoint, vertexIndex, beforeVertex, afterVertex, sqrDist );
+      const QgsPointXY pt = geom->closestVertex( mSrcPoint, vertexIndex, beforeVertex, afterVertex, sqrDist );
       if ( sqrDist < 0 )
         return;  // probably empty geometry
 
-      QgsPointLocator::Match m( QgsPointLocator::Vertex, mLocator->mLayer, id, std::sqrt( sqrDist ), pt, vertexIndex );
+      const QgsPointLocator::Match m( QgsPointLocator::Vertex, mLocator->mLayer, id, std::sqrt( sqrDist ), pt, vertexIndex );
       // in range queries the filter may reject some matches
       if ( mFilter && !mFilter->acceptMatch( m ) )
         return;
@@ -164,12 +164,12 @@ class QgsPointLocator_VisitorNearestCentroid : public IVisitor
 
     void visitData( const IData &d ) override
     {
-      QgsFeatureId id = d.getIdentifier();
+      const QgsFeatureId id = d.getIdentifier();
       QgsGeometry *geom = mLocator->mGeoms.value( id );
 
-      QgsPointXY pt = geom->centroid().asPoint();
+      const QgsPointXY pt = geom->centroid().asPoint();
 
-      QgsPointLocator::Match m( QgsPointLocator::Centroid, mLocator->mLayer, id, std::sqrt( mSrcPoint.sqrDist( pt ) ), pt, -1 );
+      const QgsPointLocator::Match m( QgsPointLocator::Centroid, mLocator->mLayer, id, std::sqrt( mSrcPoint.sqrDist( pt ) ), pt, -1 );
       // in range queries the filter may reject some matches
       if ( mFilter && !mFilter->acceptMatch( m ) )
         return;
@@ -216,11 +216,11 @@ class QgsPointLocator_VisitorNearestMiddleOfSegment: public IVisitor
 
     void visitData( const IData &d ) override
     {
-      QgsFeatureId id = d.getIdentifier();
+      const QgsFeatureId id = d.getIdentifier();
       QgsGeometry *geom = mLocator->mGeoms.value( id );
       QgsPointXY pt;
       int afterVertex;
-      double sqrDist = geom->closestSegmentWithContext( mSrcPoint, pt, afterVertex, nullptr, POINT_LOC_EPSILON );
+      const double sqrDist = geom->closestSegmentWithContext( mSrcPoint, pt, afterVertex, nullptr, POINT_LOC_EPSILON );
       if ( sqrDist < 0 )
         return;
 
@@ -229,7 +229,7 @@ class QgsPointLocator_VisitorNearestMiddleOfSegment: public IVisitor
       edgePoints[1] = geom->vertexAt( afterVertex );
       pt = QgsPointXY( ( edgePoints[0].x() + edgePoints[1].x() ) / 2.0, ( edgePoints[0].y() + edgePoints[1].y() ) / 2.0 );
 
-      QgsPointLocator::Match m( QgsPointLocator::MiddleOfSegment, mLocator->mLayer, id, std::sqrt( mSrcPoint.sqrDist( pt ) ), pt, afterVertex - 1 );
+      const QgsPointLocator::Match m( QgsPointLocator::MiddleOfSegment, mLocator->mLayer, id, std::sqrt( mSrcPoint.sqrDist( pt ) ), pt, afterVertex - 1 );
       // in range queries the filter may reject some matches
       if ( mFilter && !mFilter->acceptMatch( m ) )
         return;
@@ -274,7 +274,7 @@ class QgsPointLocator_VisitorNearestLineEndpoint : public IVisitor
 
     void visitData( const IData &d ) override
     {
-      QgsFeatureId id = d.getIdentifier();
+      const QgsFeatureId id = d.getIdentifier();
       const QgsGeometry *geom = mLocator->mGeoms.value( id );
 
       QgsPointXY bestPoint;
@@ -334,7 +334,7 @@ class QgsPointLocator_VisitorNearestLineEndpoint : public IVisitor
         }
       }
 
-      QgsPointLocator::Match m( QgsPointLocator::LineEndpoint, mLocator->mLayer, id, std::sqrt( mSrcPoint.sqrDist( bestPoint ) ), bestPoint, bestVertexNumber );
+      const QgsPointLocator::Match m( QgsPointLocator::LineEndpoint, mLocator->mLayer, id, std::sqrt( mSrcPoint.sqrDist( bestPoint ) ), bestPoint, bestVertexNumber );
       // in range queries the filter may reject some matches
       if ( mFilter && !mFilter->acceptMatch( m ) )
         return;
@@ -374,18 +374,18 @@ class QgsPointLocator_VisitorNearestEdge : public IVisitor
 
     void visitData( const IData &d ) override
     {
-      QgsFeatureId id = d.getIdentifier();
+      const QgsFeatureId id = d.getIdentifier();
       QgsGeometry *geom = mLocator->mGeoms.value( id );
       QgsPointXY pt;
       int afterVertex;
-      double sqrDist = geom->closestSegmentWithContext( mSrcPoint, pt, afterVertex, nullptr, POINT_LOC_EPSILON );
+      const double sqrDist = geom->closestSegmentWithContext( mSrcPoint, pt, afterVertex, nullptr, POINT_LOC_EPSILON );
       if ( sqrDist < 0 )
         return;
 
       QgsPointXY edgePoints[2];
       edgePoints[0] = geom->vertexAt( afterVertex - 1 );
       edgePoints[1] = geom->vertexAt( afterVertex );
-      QgsPointLocator::Match m( QgsPointLocator::Edge, mLocator->mLayer, id, std::sqrt( sqrDist ), pt, afterVertex - 1, edgePoints );
+      const QgsPointLocator::Match m( QgsPointLocator::Edge, mLocator->mLayer, id, std::sqrt( sqrDist ), pt, afterVertex - 1, edgePoints );
       // in range queries the filter may reject some matches
       if ( mFilter && !mFilter->acceptMatch( m ) )
         return;
@@ -424,7 +424,7 @@ class QgsPointLocator_VisitorArea : public IVisitor
 
     void visitData( const IData &d ) override
     {
-      QgsFeatureId id = d.getIdentifier();
+      const QgsFeatureId id = d.getIdentifier();
       QgsGeometry *g = mLocator->mGeoms.value( id );
       if ( g->intersects( mGeomPt ) )
         mList << QgsPointLocator::Match( QgsPointLocator::Area, mLocator->mLayer, id, 0, mGeomPt.asPoint() );
@@ -495,7 +495,7 @@ struct _CohenSutherland
         double x, y;
 
         // At least one endpoint is outside the clip rectangle; pick it.
-        OutCode outcodeOut = outcode0 ? outcode0 : outcode1;
+        const OutCode outcodeOut = outcode0 ? outcode0 : outcode1;
 
         // Now find the intersection point;
         // use formulas y = y0 + slope * (x - x0), x = x0 + (1 / slope) * (y - y0)
@@ -583,7 +583,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
     it++;
     while ( it != ( *part )->vertices_end() )
     {
-      QgsPointXY thisPoint( *it );
+      const QgsPointXY thisPoint( *it );
       if ( cs.isSegmentInRect( prevPoint.x(), prevPoint.y(), thisPoint.x(), thisPoint.y() ) )
       {
         QgsPointXY edgePoints[2];
@@ -620,7 +620,7 @@ class QgsPointLocator_VisitorEdgesInRect : public IVisitor
 
     void visitData( const IData &d ) override
     {
-      QgsFeatureId id = d.getIdentifier();
+      const QgsFeatureId id = d.getIdentifier();
       QgsGeometry *geom = mLocator->mGeoms.value( id );
 
       const auto segmentsInRect {_geometrySegmentsInRect( geom, mSrcRect, mLocator->mLayer, id )};
@@ -665,14 +665,14 @@ class QgsPointLocator_VisitorVerticesInRect : public IVisitor
 
     void visitData( const IData &d ) override
     {
-      QgsFeatureId id = d.getIdentifier();
+      const QgsFeatureId id = d.getIdentifier();
       const QgsGeometry *geom = mLocator->mGeoms.value( id );
 
       for ( QgsAbstractGeometry::vertex_iterator it = geom->vertices_begin(); it != geom->vertices_end(); ++it )
       {
         if ( mSrcRect.contains( *it ) )
         {
-          QgsPointLocator::Match m( QgsPointLocator::Vertex, mLocator->mLayer, id, 0, *it, geom->vertexNrFromVertexId( it.vertexId() ) );
+          const QgsPointLocator::Match m( QgsPointLocator::Vertex, mLocator->mLayer, id, 0, *it, geom->vertexNrFromVertexId( it.vertexId() ) );
 
           // in range queries the filter may reject some matches
           if ( mFilter && !mFilter->acceptMatch( m ) )
@@ -712,12 +712,12 @@ class QgsPointLocator_VisitorCentroidsInRect : public IVisitor
 
     void visitData( const IData &d ) override
     {
-      QgsFeatureId id = d.getIdentifier();
+      const QgsFeatureId id = d.getIdentifier();
       const QgsGeometry *geom = mLocator->mGeoms.value( id );
       const QgsPointXY centroid = geom->centroid().asPoint();
       if ( mSrcRect.contains( centroid ) )
       {
-        QgsPointLocator::Match m( QgsPointLocator::Centroid, mLocator->mLayer, id, 0, centroid, -1 );
+        const QgsPointLocator::Match m( QgsPointLocator::Centroid, mLocator->mLayer, id, 0, centroid, -1 );
 
         // in range queries the filter may reject some matches
         if ( !( mFilter && !mFilter->acceptMatch( m ) ) )
@@ -754,7 +754,7 @@ class QgsPointLocator_VisitorMiddlesInRect : public IVisitor
 
     void visitData( const IData &d ) override
     {
-      QgsFeatureId id = d.getIdentifier();
+      const QgsFeatureId id = d.getIdentifier();
       const QgsGeometry *geom = mLocator->mGeoms.value( id );
 
       for ( QgsAbstractGeometry::const_part_iterator itPart = geom->const_parts_begin() ; itPart != geom->const_parts_end() ; ++itPart )
@@ -764,10 +764,10 @@ class QgsPointLocator_VisitorMiddlesInRect : public IVisitor
         it++;
         for ( ; it != geom->vertices_end(); ++it, ++itPrevious )
         {
-          QgsPointXY pt( ( ( *itPrevious ).x() + ( *it ).x() ) / 2.0, ( ( *itPrevious ).y() + ( *it ).y() ) / 2.0 );
+          const QgsPointXY pt( ( ( *itPrevious ).x() + ( *it ).x() ) / 2.0, ( ( *itPrevious ).y() + ( *it ).y() ) / 2.0 );
           if ( mSrcRect.contains( pt ) )
           {
-            QgsPointLocator::Match m( QgsPointLocator::MiddleOfSegment, mLocator->mLayer, id, 0, pt, geom->vertexNrFromVertexId( it.vertexId() ) );
+            const QgsPointLocator::Match m( QgsPointLocator::MiddleOfSegment, mLocator->mLayer, id, 0, pt, geom->vertexNrFromVertexId( it.vertexId() ) );
 
             // in range queries the filter may reject some matches
             if ( mFilter && !mFilter->acceptMatch( m ) )
@@ -920,11 +920,11 @@ void QgsPointLocator::onInitTaskFinished()
   mSource.reset();
 
   // treat added and deleted feature while indexing
-  for ( QgsFeatureId fid : mAddedFeatures )
+  for ( const QgsFeatureId fid : mAddedFeatures )
     onFeatureAdded( fid );
   mAddedFeatures.clear();
 
-  for ( QgsFeatureId fid : mDeletedFeatures )
+  for ( const QgsFeatureId fid : mDeletedFeatures )
     onFeatureDeleted( fid );
   mDeletedFeatures.clear();
 
@@ -1106,11 +1106,11 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
   }
 
   // R-Tree parameters
-  double fillFactor = 0.7;
-  unsigned long indexCapacity = 10;
-  unsigned long leafCapacity = 10;
-  unsigned long dimension = 2;
-  RTree::RTreeVariant variant = RTree::RV_RSTAR;
+  const double fillFactor = 0.7;
+  const unsigned long indexCapacity = 10;
+  const unsigned long leafCapacity = 10;
+  const unsigned long dimension = 2;
+  const RTree::RTreeVariant variant = RTree::RV_RSTAR;
   SpatialIndex::id_type indexId;
 
   if ( dataList.isEmpty() )
@@ -1215,7 +1215,7 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
     const QgsRectangle bbox = f.geometry().boundingBox();
     if ( bbox.isFinite() )
     {
-      SpatialIndex::Region r( rect2region( bbox ) );
+      const SpatialIndex::Region r( rect2region( bbox ) );
       mRTree->insertData( 0, nullptr, r, f.id() );
 
       if ( mGeoms.contains( f.id() ) )
@@ -1278,7 +1278,7 @@ QgsPointLocator::Match QgsPointLocator::nearestVertex( const QgsPointXY &point, 
 
   Match m;
   QgsPointLocator_VisitorNearestVertex visitor( this, m, point, filter );
-  QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
+  const QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
   mRTree->intersectsWithQuery( rect2region( rect ), visitor );
   if ( m.isValid() && m.distance() > tolerance )
     return Match(); // make sure that only match strictly within the tolerance is returned
@@ -1293,7 +1293,7 @@ QgsPointLocator::Match QgsPointLocator::nearestCentroid( const QgsPointXY &point
   Match m;
   QgsPointLocator_VisitorNearestCentroid visitor( this, m, point, filter );
 
-  QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
+  const QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
   mRTree->intersectsWithQuery( rect2region( rect ), visitor );
   if ( m.isValid() && m.distance() > tolerance )
     return Match(); // make sure that only match strictly within the tolerance is returned
@@ -1308,7 +1308,7 @@ QgsPointLocator::Match QgsPointLocator::nearestMiddleOfSegment( const QgsPointXY
   Match m;
   QgsPointLocator_VisitorNearestMiddleOfSegment visitor( this, m, point, filter );
 
-  QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
+  const QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
   mRTree->intersectsWithQuery( rect2region( rect ), visitor );
   if ( m.isValid() && m.distance() > tolerance )
     return Match(); // make sure that only match strictly within the tolerance is returned
@@ -1323,7 +1323,7 @@ QgsPointLocator::Match QgsPointLocator::nearestLineEndpoints( const QgsPointXY &
   Match m;
   QgsPointLocator_VisitorNearestLineEndpoint visitor( this, m, point, filter );
 
-  QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
+  const QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
   mRTree->intersectsWithQuery( rect2region( rect ), visitor );
   if ( m.isValid() && m.distance() > tolerance )
     return Match(); // make sure that only match strictly within the tolerance is returned
@@ -1335,13 +1335,13 @@ QgsPointLocator::Match QgsPointLocator::nearestEdge( const QgsPointXY &point, do
   if ( !prepare( relaxed ) )
     return Match();
 
-  QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
+  const QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
   if ( geomType == QgsWkbTypes::PointGeometry )
     return Match();
 
   Match m;
   QgsPointLocator_VisitorNearestEdge visitor( this, m, point, filter );
-  QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
+  const QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
   mRTree->intersectsWithQuery( rect2region( rect ), visitor );
   if ( m.isValid() && m.distance() > tolerance )
     return Match(); // make sure that only match strictly within the tolerance is returned
@@ -1353,7 +1353,7 @@ QgsPointLocator::Match QgsPointLocator::nearestArea( const QgsPointXY &point, do
   if ( !prepare( relaxed ) )
     return Match();
 
-  MatchList mlist = pointInPolygon( point );
+  const MatchList mlist = pointInPolygon( point );
   if ( !mlist.isEmpty() && mlist.at( 0 ).isValid() )
   {
     return mlist.at( 0 );
@@ -1365,12 +1365,12 @@ QgsPointLocator::Match QgsPointLocator::nearestArea( const QgsPointXY &point, do
   }
 
   // discard point and line layers to keep only polygons
-  QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
+  const QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
   if ( geomType == QgsWkbTypes::PointGeometry || geomType == QgsWkbTypes::LineGeometry )
     return Match();
 
   // use edges for adding tolerance
-  Match m = nearestEdge( point, tolerance, filter );
+  const Match m = nearestEdge( point, tolerance, filter );
   if ( m.isValid() )
     return Match( Area, m.layer(), m.featureId(), m.distance(), m.point() );
   else
@@ -1383,7 +1383,7 @@ QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsRectangle &rec
   if ( !prepare( relaxed ) )
     return MatchList();
 
-  QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
+  const QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
   if ( geomType == QgsWkbTypes::PointGeometry )
     return MatchList();
 
@@ -1396,7 +1396,7 @@ QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsRectangle &rec
 
 QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter, bool relaxed )
 {
-  QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
+  const QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
   return edgesInRect( rect, filter, relaxed );
 }
 
@@ -1414,7 +1414,7 @@ QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsRectangle &
 
 QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter, bool relaxed )
 {
-  QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
+  const QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
   return verticesInRect( rect, filter, relaxed );
 }
 
@@ -1423,7 +1423,7 @@ QgsPointLocator::MatchList QgsPointLocator::pointInPolygon( const QgsPointXY &po
   if ( !prepare( relaxed ) )
     return MatchList();
 
-  QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
+  const QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
   if ( geomType == QgsWkbTypes::PointGeometry || geomType == QgsWkbTypes::LineGeometry )
     return MatchList();
 

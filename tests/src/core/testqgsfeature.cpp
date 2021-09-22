@@ -60,11 +60,11 @@ class TestQgsFeature: public QObject
 void TestQgsFeature::initTestCase()
 {
   //add fields
-  QgsField field( QStringLiteral( "field1" ) );
+  const QgsField field( QStringLiteral( "field1" ) );
   mFields.append( field );
-  QgsField field2( QStringLiteral( "field2" ) );
+  const QgsField field2( QStringLiteral( "field2" ) );
   mFields.append( field2 );
-  QgsField field3( QStringLiteral( "field3" ) );
+  const QgsField field3( QStringLiteral( "field3" ) );
   mFields.append( field3 );
 
   //test attributes
@@ -108,7 +108,7 @@ void TestQgsFeature::attributesTest()
   QVERIFY( attr1 != attr4 );
 
   //null value
-  QVariant nullDouble( QVariant::Double );
+  const QVariant nullDouble( QVariant::Double );
   QgsAttributes attr5;
   attr5 << QVariant( 5 ) << nullDouble << QVariant( "val" );
   QVERIFY( attr1 != attr5 );
@@ -119,7 +119,7 @@ void TestQgsFeature::attributesTest()
   QVERIFY( attr5 != attr6 );
 
   //constructed with size
-  QgsAttributes attr7( 5 );
+  const QgsAttributes attr7( 5 );
   QCOMPARE( attr7.size(), 5 );
 
   // datetime vs string -- default qt qvariant equality test considers these equal? ?? ?!
@@ -133,14 +133,14 @@ void TestQgsFeature::attributesTest()
 
 void TestQgsFeature::constructorTest()
 {
-  QgsFeature f;
+  const QgsFeature f;
   QVERIFY( f.approximateMemoryUsage() > 0 );
   QVERIFY( FID_IS_NULL( f.id() ) );
-  QgsFeature f2 { QgsFields() };
+  const QgsFeature f2 { QgsFields() };
   QVERIFY( FID_IS_NULL( f2.id() ) );
-  QgsFeature f3 { 1234 };
+  const QgsFeature f3 { 1234 };
   QVERIFY( ! FID_IS_NULL( f3.id() ) );
-  QgsFeature f4 { QgsFields(), 1234 };
+  const QgsFeature f4 { QgsFields(), 1234 };
   QVERIFY( ! FID_IS_NULL( f4.id() ) );
 }
 
@@ -148,7 +148,7 @@ void TestQgsFeature::attributesToMap()
 {
   QgsAttributes attr1;
   attr1 << QVariant( 5 ) << QVariant() << QVariant( "val" );
-  QgsAttributeMap map1 = attr1.toMap();
+  const QgsAttributeMap map1 = attr1.toMap();
 
   QCOMPARE( map1.count(), 2 );
   QCOMPARE( map1.value( 0 ), QVariant( 5 ) );
@@ -156,13 +156,13 @@ void TestQgsFeature::attributesToMap()
 
   QgsAttributes attr2;
   attr2 << QVariant() << QVariant( 5 ) << QVariant();
-  QgsAttributeMap map2 = attr2.toMap();
+  const QgsAttributeMap map2 = attr2.toMap();
 
   QCOMPARE( map2.count(), 1 );
   QCOMPARE( map2.value( 1 ), QVariant( 5 ) );
 
-  QgsAttributes attr3;
-  QgsAttributeMap map3 = attr3.toMap();
+  const QgsAttributes attr3;
+  const QgsAttributeMap map3 = attr3.toMap();
   QVERIFY( map3.isEmpty() );
 }
 
@@ -170,12 +170,12 @@ void TestQgsFeature::create()
 {
   //test constructors
 
-  QgsFeature featureFromId( 1000LL );
+  const QgsFeature featureFromId( 1000LL );
   QCOMPARE( featureFromId.id(), 1000LL );
   QCOMPARE( featureFromId.isValid(), false );
   QVERIFY( featureFromId.attributes().isEmpty() );
 
-  QgsFeature featureFromFieldsId( mFields, 1001LL );
+  const QgsFeature featureFromFieldsId( mFields, 1001LL );
   QCOMPARE( featureFromFieldsId.id(), 1001LL );
   QCOMPARE( featureFromFieldsId.fields(), mFields );
   QCOMPARE( featureFromFieldsId.isValid(), false );
@@ -347,7 +347,7 @@ void TestQgsFeature::geometry()
   //setGeometry using reference
   copy = feature;
   QCOMPARE( copy.geometry().asWkb(), mGeometry.asWkb() );
-  QgsGeometry geomByRef( mGeometry2 );
+  const QgsGeometry geomByRef( mGeometry2 );
   copy.setGeometry( geomByRef );
   QCOMPARE( copy.geometry().asWkb(), geomByRef.asWkb() );
   QCOMPARE( feature.geometry().asWkb(), mGeometry.asWkb() );
@@ -370,13 +370,13 @@ void TestQgsFeature::geometry()
 
 void TestQgsFeature::asVariant()
 {
-  QgsFeature original( mFields, 1001LL );
+  const QgsFeature original( mFields, 1001LL );
 
   //convert to and from a QVariant
-  QVariant var = QVariant::fromValue( original );
+  const QVariant var = QVariant::fromValue( original );
   QVERIFY( var.isValid() );
 
-  QgsFeature fromVar = qvariant_cast<QgsFeature>( var );
+  const QgsFeature fromVar = qvariant_cast<QgsFeature>( var );
   //QCOMPARE( fromVar, original );
   QCOMPARE( fromVar.id(), original.id() );
   QCOMPARE( fromVar.fields(), original.fields() );

@@ -78,8 +78,8 @@ bool QgsAuthGuiUtils::isDisabled( QgsMessageBar *msgbar )
 
 void QgsAuthGuiUtils::exportSelectedAuthenticationConfigs( QStringList authenticationConfigIds, QgsMessageBar *msgbar )
 {
-  QString password = QInputDialog::getText( msgbar, QObject::tr( "Export Authentication Configurations" ),
-                     QObject::tr( "Enter a password encrypt the configuration file:" ), QLineEdit::Password );
+  const QString password = QInputDialog::getText( msgbar, QObject::tr( "Export Authentication Configurations" ),
+                           QObject::tr( "Enter a password encrypt the configuration file:" ), QLineEdit::Password );
   if ( password.isEmpty() )
   {
     if ( QMessageBox::warning( msgbar,
@@ -92,12 +92,12 @@ void QgsAuthGuiUtils::exportSelectedAuthenticationConfigs( QStringList authentic
     }
   }
 
-  QString filename = QFileDialog::getSaveFileName( msgbar, QObject::tr( "Export Authentication Configurations" ), QDir::homePath(),
-                     QObject::tr( "XML files (*.xml *.XML)" ) );
+  const QString filename = QFileDialog::getSaveFileName( msgbar, QObject::tr( "Export Authentication Configurations" ), QDir::homePath(),
+                           QObject::tr( "XML files (*.xml *.XML)" ) );
   if ( filename.isEmpty() )
     return;
 
-  bool ok = QgsApplication::authManager()->exportAuthenticationConfigsToXml( filename, authenticationConfigIds, password );
+  const bool ok = QgsApplication::authManager()->exportAuthenticationConfigsToXml( filename, authenticationConfigIds, password );
   if ( !ok )
   {
     msgbar->pushMessage( QgsApplication::authManager()->authManTag(),
@@ -109,8 +109,8 @@ void QgsAuthGuiUtils::exportSelectedAuthenticationConfigs( QStringList authentic
 void QgsAuthGuiUtils::importAuthenticationConfigs( QgsMessageBar *msgbar )
 {
 
-  QString filename = QFileDialog::getOpenFileName( msgbar, QObject::tr( "Export Authentication Configurations" ), QDir::homePath(),
-                     QObject::tr( "XML files (*.xml *.XML)" ) );
+  const QString filename = QFileDialog::getOpenFileName( msgbar, QObject::tr( "Export Authentication Configurations" ), QDir::homePath(),
+                           QObject::tr( "XML files (*.xml *.XML)" ) );
   if ( filename.isEmpty() )
     return;
 
@@ -129,7 +129,7 @@ void QgsAuthGuiUtils::importAuthenticationConfigs( QgsMessageBar *msgbar )
   }
   file.close();
 
-  QDomElement root = document.documentElement();
+  const QDomElement root = document.documentElement();
   if ( root.tagName() != QLatin1String( "qgis_authentication" ) )
   {
     return;
@@ -142,7 +142,7 @@ void QgsAuthGuiUtils::importAuthenticationConfigs( QgsMessageBar *msgbar )
                                       QObject::tr( "Enter the password to decrypt the configurations file:" ), QLineEdit::Password );
   }
 
-  bool ok = QgsApplication::authManager()->importAuthenticationConfigsFromXml( filename, password );
+  const bool ok = QgsApplication::authManager()->importAuthenticationConfigsFromXml( filename, password );
   if ( !ok )
   {
     msgbar->pushMessage( QgsApplication::authManager()->authManTag(),
@@ -237,7 +237,7 @@ void QgsAuthGuiUtils::clearCachedAuthenticationConfigs( QgsMessageBar *msgbar )
     return;
 
   QgsApplication::authManager()->clearAllCachedConfigs();
-  QString msg = QObject::tr( "Cached authentication configurations for session cleared" );
+  const QString msg = QObject::tr( "Cached authentication configurations for session cleared" );
   msgbar->pushMessage( QgsApplication::authManager()->authManTag(), msg, Qgis::MessageLevel::Info );
 }
 
@@ -273,14 +273,14 @@ void QgsAuthGuiUtils::eraseAuthenticationDatabase( QgsMessageBar *msgbar, QWidge
   if ( QgsAuthGuiUtils::isDisabled( msgbar ) )
     return;
 
-  QMessageBox::StandardButton btn = QMessageBox::warning(
-                                      parent,
-                                      QObject::tr( "Erase Database" ),
-                                      QObject::tr( "Are you sure you want to ERASE the entire authentication database?\n\n"
-                                          "Operation can NOT be undone!\n\n"
-                                          "(Current database will be backed up and new one created.)" ),
-                                      QMessageBox::Ok | QMessageBox::Cancel,
-                                      QMessageBox::Cancel );
+  const QMessageBox::StandardButton btn = QMessageBox::warning(
+      parent,
+      QObject::tr( "Erase Database" ),
+      QObject::tr( "Are you sure you want to ERASE the entire authentication database?\n\n"
+                   "Operation can NOT be undone!\n\n"
+                   "(Current database will be backed up and new one created.)" ),
+      QMessageBox::Ok | QMessageBox::Cancel,
+      QMessageBox::Cancel );
 
   QgsApplication::authManager()->setScheduledAuthDatabaseErase( false );
 
@@ -327,7 +327,7 @@ void QgsAuthGuiUtils::fileFound( bool found, QWidget *widget )
 QString QgsAuthGuiUtils::getOpenFileName( QWidget *parent, const QString &title, const QString &extfilter )
 {
   QgsSettings settings;
-  QString recentdir = settings.value( QStringLiteral( "UI/lastAuthOpenFileDir" ), QDir::homePath() ).toString();
+  const QString recentdir = settings.value( QStringLiteral( "UI/lastAuthOpenFileDir" ), QDir::homePath() ).toString();
   QString f = QFileDialog::getOpenFileName( parent, title, recentdir, extfilter );
   if ( !f.isEmpty() )
   {
@@ -392,10 +392,10 @@ void QgsAuthGuiUtils::passwordHelperSync( QgsMessageBar *msgbar )
 void QgsAuthGuiUtils::passwordHelperEnable( bool enabled, QgsMessageBar *msgbar )
 {
   QgsApplication::authManager()->setPasswordHelperEnabled( enabled );
-  QString msg = enabled ? QObject::tr( "Your %1 will be <b>used from now</b> on to store and retrieve the master password." )
-                .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME ) :
-                QObject::tr( "Your %1 will <b>not be used anymore</b> to store and retrieve the master password." )
-                .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME );
+  const QString msg = enabled ? QObject::tr( "Your %1 will be <b>used from now</b> on to store and retrieve the master password." )
+                      .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME ) :
+                      QObject::tr( "Your %1 will <b>not be used anymore</b> to store and retrieve the master password." )
+                      .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME );
   msgbar->pushMessage( QObject::tr( "Password helper write" ), msg, Qgis::MessageLevel::Info );
 }
 

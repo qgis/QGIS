@@ -110,7 +110,7 @@ int main( int argc, char *argv[] )
 
   // Build a local QCoreApplication from arguments. This way, arguments are correctly parsed from their native locale
   // It will use QString::fromLocal8Bit( argv ) under Unix and GetCommandLine() under Windows.
-  QStringList args = QCoreApplication::arguments();
+  const QStringList args = QCoreApplication::arguments();
 
   QgsProcessingExec exec;
   int res = 0;

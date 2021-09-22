@@ -104,7 +104,7 @@ QgsFeatureList QgsConvertToCurvesAlgorithm::processFeature( const QgsFeature &fe
   QgsFeature f = feature;
   if ( f.hasGeometry() )
   {
-    QgsGeometry geometry = f.geometry();
+    const QgsGeometry geometry = f.geometry();
     double tolerance = mTolerance;
     if ( mDynamicTolerance )
       tolerance = mToleranceProperty.valueAsDouble( context.expressionContext(), tolerance );

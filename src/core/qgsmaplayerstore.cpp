@@ -149,7 +149,7 @@ void QgsMapLayerStore::removeMapLayers( const QList<QgsMapLayer *> &layers )
   const auto constLayerList = layerList;
   for ( QgsMapLayer *lyr : constLayerList )
   {
-    QString myId( lyr->id() );
+    const QString myId( lyr->id() );
     emit layerWillBeRemoved( myId );
     emit layerWillBeRemoved( lyr );
     mMapLayers.remove( myId );
@@ -211,7 +211,7 @@ void QgsMapLayerStore::transferLayersFromStore( QgsMapLayerStore *other )
 
   Q_ASSERT_X( other->thread() == thread(), "QgsMapLayerStore::transferLayersFromStore", "Cannot transfer layers from store with different thread affinity" );
 
-  QMap<QString, QgsMapLayer *> otherLayers = other->mapLayers();
+  const QMap<QString, QgsMapLayer *> otherLayers = other->mapLayers();
   QMap<QString, QgsMapLayer *>::const_iterator it = otherLayers.constBegin();
   for ( ; it != otherLayers.constEnd(); ++it )
   {
@@ -223,7 +223,7 @@ void QgsMapLayerStore::transferLayersFromStore( QgsMapLayerStore *other )
 
 void QgsMapLayerStore::onMapLayerDeleted( QObject *obj )
 {
-  QString id = mMapLayers.key( static_cast<QgsMapLayer *>( obj ) );
+  const QString id = mMapLayers.key( static_cast<QgsMapLayer *>( obj ) );
 
   if ( !id.isNull() )
   {

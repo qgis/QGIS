@@ -16,8 +16,11 @@
  ***************************************************************************/
 
 #include "qgsalgorithmfiledownloader.h"
+#include "qgsprocessingparameters.h"
+#include "qgis.h"
 #include "qgsfiledownloader.h"
 #include "qgsfileutils.h"
+
 #include <QEventLoop>
 #include <QFileInfo>
 #include <QTimer>
@@ -63,6 +66,26 @@ QgsFileDownloaderAlgorithm *QgsFileDownloaderAlgorithm::createInstance() const
 void QgsFileDownloaderAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterString( QStringLiteral( "URL" ), tr( "URL" ), QVariant(), false, false ) );
+
+  std::unique_ptr< QgsProcessingParameterEnum > methodParam = std::make_unique < QgsProcessingParameterEnum > (
+        QStringLiteral( "METHOD" ),
+        QObject::tr( "Method" ),
+        QStringList()
+        << QObject::tr( "GET" )
+        << QObject::tr( "POST" ),
+        false,
+        QStringLiteral( "GET" )
+      );
+  methodParam->setHelp( QObject::tr( "The HTTP method to use for the request" ) );
+  methodParam->setFlags( methodParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( methodParam.release() );
+
+  std::unique_ptr< QgsProcessingParameterString > dataParam = std::make_unique < QgsProcessingParameterString >(
+        QStringLiteral( "DATA" ), tr( "Data" ), QVariant(), false, true );
+  dataParam->setHelp( QObject::tr( "The data to add in the body if the request is a POST" ) );
+  dataParam->setFlags( dataParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( dataParam.release() );
+
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ),
                 tr( "File destination" ), QObject::tr( "All files (*.*)" ), QVariant(), true ) );
 }
@@ -73,18 +96,29 @@ QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &par
   QString url = parameterAsString( parameters, QStringLiteral( "URL" ), context );
   if ( url.isEmpty() )
     throw QgsProcessingException( tr( "No URL specified" ) );
+
+  QString data = parameterAsString( parameters, QStringLiteral( "DATA" ), context );
   QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
 
   QEventLoop loop;
   QTimer timer;
   QUrl downloadedUrl;
   QStringList errors;
-  QgsFileDownloader *downloader = new QgsFileDownloader( QUrl( url ), outputFile, QString(), true );
+
+  Qgis::HttpMethod httpMethod = static_cast< Qgis::HttpMethod>( parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context ) );
+
+  if ( httpMethod == Qgis::HttpMethod::Get && ! data.isEmpty() )
+  {
+    feedback->pushWarning( tr( "DATA parameter is not used when it's a GET request." ) );
+    data = QString();
+  }
+
+  QgsFileDownloader *downloader = new QgsFileDownloader( QUrl( url ), outputFile, QString(), true, httpMethod, data.toUtf8() );
   connect( mFeedback, &QgsFeedback::canceled, downloader, &QgsFileDownloader::cancelDownload );
   connect( downloader, &QgsFileDownloader::downloadError, this, [&errors, &loop]( const QStringList & e ) { errors = e; loop.exit(); } );
   connect( downloader, &QgsFileDownloader::downloadProgress, this, &QgsFileDownloaderAlgorithm::receiveProgressFromDownloader );
   connect( downloader, &QgsFileDownloader::downloadCompleted, this, [&downloadedUrl]( const QUrl url ) { downloadedUrl = url; } );
-  connect( downloader, &QgsFileDownloader::downloadExited, &loop, &QEventLoop::quit );
+  connect( downloader, &QgsFileDownloader::downloadExited, this, [&loop]() { loop.exit(); } );
   connect( &timer, &QTimer::timeout, this, &QgsFileDownloaderAlgorithm::sendProgressFeedback );
   downloader->startDownload();
   timer.start( 1000 );
@@ -95,7 +129,7 @@ QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &par
   if ( errors.size() > 0 )
     throw QgsProcessingException( errors.join( '\n' ) );
 
-  bool exists = QFileInfo::exists( outputFile );
+  const bool exists = QFileInfo::exists( outputFile );
   if ( !feedback->isCanceled() && !exists )
     throw QgsProcessingException( tr( "Output file doesn't exist." ) );
 
@@ -127,9 +161,9 @@ void QgsFileDownloaderAlgorithm::sendProgressFeedback()
   {
     mLastReport = mReceived;
     if ( mTotal.isEmpty() )
-      mFeedback->pushInfo( tr( "%1 downloaded." ).arg( mReceived ) );
+      mFeedback->pushInfo( tr( "%1 downloaded" ).arg( mReceived ) );
     else
-      mFeedback->pushInfo( tr( "%1 of %2 downloaded." ).arg( mReceived, mTotal ) );
+      mFeedback->pushInfo( tr( "%1 of %2 downloaded" ).arg( mReceived, mTotal ) );
   }
 }
 

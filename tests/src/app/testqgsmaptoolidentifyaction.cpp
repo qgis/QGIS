@@ -137,8 +137,8 @@ void TestQgsMapToolIdentifyAction::cleanup()
 void TestQgsMapToolIdentifyAction::doAction()
 {
   bool ok = false;
-  int clickxOk = 2484588;
-  int clickyOk = 2425722;
+  const int clickxOk = 2484588;
+  const int clickyOk = 2425722;
 
   // test QActionMenu
   QList<QAction *> actions = mIdentifyAction->identifyMenu()->actions();
@@ -148,13 +148,13 @@ void TestQgsMapToolIdentifyAction::doAction()
   {
     if ( actions[i]->text().compare( "MyAction" ) == 0 )
     {
-      QgsActionMenu::ActionData data = actions[i]->data().value<QgsActionMenu::ActionData>();
-      QgsAction act = data.actionData.value<QgsAction>();
+      const QgsActionMenu::ActionData data = actions[i]->data().value<QgsActionMenu::ActionData>();
+      const QgsAction act = data.actionData.value<QgsAction>();
 
-      int clickx = act.expressionContextScope().variable( "click_x" ).toString().toInt( &ok, 10 );
+      const int clickx = act.expressionContextScope().variable( "click_x" ).toString().toInt( &ok, 10 );
       QCOMPARE( clickx, clickxOk );
 
-      int clicky = act.expressionContextScope().variable( "click_y" ).toString().toInt( &ok, 10 );
+      const int clicky = act.expressionContextScope().variable( "click_y" ).toString().toInt( &ok, 10 );
       QCOMPARE( clicky, clickyOk );
 
       testDone = true;
@@ -165,10 +165,10 @@ void TestQgsMapToolIdentifyAction::doAction()
 
   // test QgsIdentifyResultsDialog expression context scope
   QgsIdentifyResultsDialog *dlg = mIdentifyAction->resultsDialog();
-  int clickx = dlg->expressionContextScope().variable( "click_x" ).toString().toInt( &ok, 10 );
+  const int clickx = dlg->expressionContextScope().variable( "click_x" ).toString().toInt( &ok, 10 );
   QCOMPARE( clickx, clickxOk );
 
-  int clicky = dlg->expressionContextScope().variable( "click_y" ).toString().toInt( &ok, 10 );
+  const int clicky = dlg->expressionContextScope().variable( "click_y" ).toString().toInt( &ok, 10 );
   QCOMPARE( clicky, clickyOk );
 
   // close
@@ -183,8 +183,8 @@ void TestQgsMapToolIdentifyAction::clickxy()
 
   // add feature
   QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
-  QgsPointXY wordPoint( 2484588, 2425722 );
-  QgsGeometry geom = QgsGeometry::fromPointXY( wordPoint ) ;
+  const QgsPointXY wordPoint( 2484588, 2425722 );
+  const QgsGeometry geom = QgsGeometry::fromPointXY( wordPoint ) ;
   f1.setGeometry( geom );
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
@@ -192,7 +192,7 @@ void TestQgsMapToolIdentifyAction::clickxy()
   QList<QgsMapLayer *> layers;
   layers.append( tempLayer.get() );
 
-  QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3111" ) );
+  const QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3111" ) );
   canvas->setDestinationCrs( srs );
   canvas->setLayers( layers );
   canvas->setCurrentLayer( tempLayer.get() );
@@ -209,8 +209,8 @@ void TestQgsMapToolIdentifyAction::clickxy()
   mIdentifyAction = new QgsMapToolIdentifyAction( canvas );
 
   // simulate a click on the canvas
-  QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( 2484588, 2425722 );
-  QPoint point = QPoint( mapPoint.x(), mapPoint.y() );
+  const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( 2484588, 2425722 );
+  const QPoint point = QPoint( mapPoint.x(), mapPoint.y() );
   QMouseEvent releases( QEvent::MouseButtonRelease, point,
                         Qt::RightButton, Qt::LeftButton, Qt::NoModifier );
   QgsMapMouseEvent mapReleases( nullptr, &releases );
@@ -233,12 +233,12 @@ void TestQgsMapToolIdentifyAction::closestPoint()
   f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
   QgsPolylineXY line3111;
   line3111 << QgsPointXY( 2484588, 2425722 ) << QgsPointXY( 2482767, 2398853 );
-  QgsGeometry line3111G = QgsGeometry::fromWkt( QStringLiteral( "LineStringZM( 2484588 2425722 11 31, 2484588 2398853 15 37)" ) ) ;
+  const QgsGeometry line3111G = QgsGeometry::fromWkt( QStringLiteral( "LineStringZM( 2484588 2425722 11 31, 2484588 2398853 15 37)" ) ) ;
   f1.setGeometry( line3111G );
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
   // set project CRS and ellipsoid
-  QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3111" ) );
+  const QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3111" ) );
   canvas->setDestinationCrs( srs );
   canvas->setExtent( f1.geometry().boundingBox() );
   QgsProject::instance()->setCrs( srs );
@@ -291,19 +291,19 @@ void TestQgsMapToolIdentifyAction::lengthCalculation()
   f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
   QgsPolylineXY line3111;
   line3111 << QgsPointXY( 2484588, 2425722 ) << QgsPointXY( 2482767, 2398853 );
-  QgsGeometry line3111G = QgsGeometry::fromPolylineXY( line3111 ) ;
+  const QgsGeometry line3111G = QgsGeometry::fromPolylineXY( line3111 ) ;
   f1.setGeometry( line3111G );
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
   // set project CRS and ellipsoid
-  QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3111" ) );
+  const QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3111" ) );
   canvas->setDestinationCrs( srs );
   canvas->setExtent( f1.geometry().boundingBox() );
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceMeters );
 
-  QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( 2484588, 2425722 );
+  const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( 2484588, 2425722 );
 
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
   QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
@@ -414,19 +414,19 @@ void TestQgsMapToolIdentifyAction::perimeterCalculation()
   polygonRing3111 << QgsPointXY( 2484588, 2425722 ) << QgsPointXY( 2482767, 2398853 ) << QgsPointXY( 2520109, 2397715 ) << QgsPointXY( 2520792, 2425494 ) << QgsPointXY( 2484588, 2425722 );
   QgsPolygonXY polygon3111;
   polygon3111 << polygonRing3111;
-  QgsGeometry polygon3111G = QgsGeometry::fromPolygonXY( polygon3111 ) ;
+  const QgsGeometry polygon3111G = QgsGeometry::fromPolygonXY( polygon3111 ) ;
   f1.setGeometry( polygon3111G );
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
   // set project CRS and ellipsoid
-  QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3111" ) );
+  const QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3111" ) );
   canvas->setDestinationCrs( srs );
   canvas->setExtent( f1.geometry().boundingBox() );
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceMeters );
 
-  QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( 2484588, 2425722 );
+  const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( 2484588, 2425722 );
 
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
   QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
@@ -489,19 +489,19 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
   polygonRing3111 << QgsPointXY( 2484588, 2425722 ) << QgsPointXY( 2482767, 2398853 ) << QgsPointXY( 2520109, 2397715 ) << QgsPointXY( 2520792, 2425494 ) << QgsPointXY( 2484588, 2425722 );
   QgsPolygonXY polygon3111;
   polygon3111 << polygonRing3111;
-  QgsGeometry polygon3111G = QgsGeometry::fromPolygonXY( polygon3111 ) ;
+  const QgsGeometry polygon3111G = QgsGeometry::fromPolygonXY( polygon3111 ) ;
   f1.setGeometry( polygon3111G );
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
   // set project CRS and ellipsoid
-  QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3111" ) );
+  const QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3111" ) );
   canvas->setDestinationCrs( srs );
   canvas->setExtent( f1.geometry().boundingBox() );
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
   QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMeters );
 
-  QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( 2484588, 2425722 );
+  const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( 2484588, 2425722 );
 
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
   QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
@@ -553,7 +553,7 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
 QString TestQgsMapToolIdentifyAction::testIdentifyRaster( QgsRasterLayer *layer, double xGeoref, double yGeoref )
 {
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
-  QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
+  const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
 
   QgsIdentifyContext identifyContext;
   if ( canvas->mapSettings().isTemporal() )
@@ -569,7 +569,7 @@ QString TestQgsMapToolIdentifyAction::testIdentifyRaster( QgsRasterLayer *layer,
 QList<QgsMapToolIdentify::IdentifyResult> TestQgsMapToolIdentifyAction::testIdentifyMesh( QgsMeshLayer *layer, double xGeoref, double yGeoref )
 {
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
-  QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
+  const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
   //check that closest point attributes are present
   QgsIdentifyContext identifyContext;
   if ( canvas->mapSettings().isTemporal() )
@@ -583,7 +583,7 @@ QList<QgsMapToolIdentify::IdentifyResult>
 TestQgsMapToolIdentifyAction::testIdentifyVector( QgsVectorLayer *layer, double xGeoref, double yGeoref )
 {
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
-  QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
+  const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
   QgsIdentifyContext identifyContext;
   if ( canvas->mapSettings().isTemporal() )
     identifyContext.setTemporalRange( canvas->temporalRange() );
@@ -596,7 +596,7 @@ QList<QgsMapToolIdentify::IdentifyResult>
 TestQgsMapToolIdentifyAction::testIdentifyVectorTile( QgsVectorTileLayer *layer, double xGeoref, double yGeoref )
 {
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
-  QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
+  const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
   QgsIdentifyContext identifyContext;
   if ( canvas->mapSettings().isTemporal() )
     identifyContext.setTemporalRange( canvas->temporalRange() );
@@ -607,15 +607,15 @@ TestQgsMapToolIdentifyAction::testIdentifyVectorTile( QgsVectorTileLayer *layer,
 void TestQgsMapToolIdentifyAction::identifyRasterTemporal()
 {
   //create a temporary layer
-  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/test.asc";
+  const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/test.asc";
   std::unique_ptr< QgsRasterLayer> tempLayer = std::make_unique< QgsRasterLayer >( raster );
   QVERIFY( tempLayer->isValid() );
 
   // activate temporal properties
   tempLayer->temporalProperties()->setIsActive( true );
 
-  QgsDateTimeRange range = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime(), Qt::UTC ),
-                           QDateTime( QDate( 2020, 3, 31 ), QTime(), Qt::UTC ) );
+  const QgsDateTimeRange range = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime(), Qt::UTC ),
+                                 QDateTime( QDate( 2020, 3, 31 ), QTime(), Qt::UTC ) );
   qobject_cast< QgsRasterLayerTemporalProperties * >( tempLayer->temporalProperties() )->setFixedTemporalRange( range );
 
   canvas->setExtent( QgsRectangle( 0, 0, 7, 1 ) );
@@ -634,7 +634,7 @@ void TestQgsMapToolIdentifyAction::identifyRasterTemporal()
 void TestQgsMapToolIdentifyAction::identifyRasterFloat32()
 {
   //create a temporary layer
-  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/test.asc";
+  const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/test.asc";
 
   // By default the QgsRasterLayer forces AAIGRID_DATATYPE=Float64
   CPLSetConfigOption( "AAIGRID_DATATYPE", "Float32" );
@@ -669,7 +669,7 @@ void TestQgsMapToolIdentifyAction::identifyRasterFloat32()
 void TestQgsMapToolIdentifyAction::identifyRasterFloat64()
 {
   //create a temporary layer
-  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/test.asc";
+  const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/test.asc";
   std::unique_ptr< QgsRasterLayer> tempLayer( new QgsRasterLayer( raster ) );
   QVERIFY( tempLayer->isValid() );
 
@@ -796,14 +796,14 @@ void TestQgsMapToolIdentifyAction::identifyMesh()
 void TestQgsMapToolIdentifyAction::identifyVectorTile()
 {
   //create a temporary layer
-  QString vtPath = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/vector_tile/{z}-{x}-{y}.pbf" );
+  const QString vtPath = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/vector_tile/{z}-{x}-{y}.pbf" );
   QgsDataSourceUri dsUri;
   dsUri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
   dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( vtPath ).toString() );
   QgsVectorTileLayer *tempLayer = new QgsVectorTileLayer( dsUri.encodedUri(), QStringLiteral( "testlayer" ) );
   QVERIFY( tempLayer->isValid() );
 
-  QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3857" ) );
+  const QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3857" ) );
   canvas->setDestinationCrs( srs );
   canvas->setExtent( tempLayer->extent() );
   canvas->resize( 512, 512 );

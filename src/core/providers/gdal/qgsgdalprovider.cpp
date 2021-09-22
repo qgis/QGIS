@@ -1440,9 +1440,80 @@ double QgsGdalProvider::sample( const QgsPointXY &point, int band, bool *ok, con
   if ( !worldToPixel( point.x(), point.y(), col, row ) )
     return std::numeric_limits<double>::quiet_NaN();
 
-  float value = 0;
-  CPLErr err = GDALRasterIO( hBand, GF_Read, col, row, 1, 1,
-                             &value, 1, 1, GDT_Float32, 0, 0 );
+  double value{0};
+  CPLErr err {CE_Failure};
+
+  const GDALDataType dataType {GDALGetRasterDataType( hBand )};
+  switch ( dataType )
+  {
+    case GDT_Byte:
+    {
+      unsigned char tempVal{0};
+      err = GDALRasterIO( hBand, GF_Read, col, row, 1, 1,
+                          &tempVal, 1, 1, dataType, 0, 0 );
+      value = static_cast<double>( tempVal );
+      break;
+    }
+    case GDT_UInt16:
+    {
+      uint16_t tempVal{0};
+      err = GDALRasterIO( hBand, GF_Read, col, row, 1, 1,
+                          &tempVal, 1, 1, dataType, 0, 0 );
+      value = static_cast<double>( tempVal );
+      break;
+    }
+    case GDT_Int16:
+    {
+      int16_t tempVal{0};
+      err = GDALRasterIO( hBand, GF_Read, col, row, 1, 1,
+                          &tempVal, 1, 1, dataType, 0, 0 );
+      value = static_cast<double>( tempVal );
+      break;
+    }
+    case GDT_UInt32:
+    {
+      uint32_t tempVal{0};
+      err = GDALRasterIO( hBand, GF_Read, col, row, 1, 1,
+                          &tempVal, 1, 1, dataType, 0, 0 );
+      value = static_cast<double>( tempVal );
+      break;
+    }
+    case GDT_Int32:
+    {
+      int32_t tempVal{0};
+      err = GDALRasterIO( hBand, GF_Read, col, row, 1, 1,
+                          &tempVal, 1, 1, dataType, 0, 0 );
+      value = static_cast<double>( tempVal );
+      break;
+    }
+    case GDT_Float32:
+    {
+      float tempVal{0};
+      err = GDALRasterIO( hBand, GF_Read, col, row, 1, 1,
+                          &tempVal, 1, 1, dataType, 0, 0 );
+      value = static_cast<double>( tempVal );
+      break;
+    }
+    case GDT_Float64:
+    {
+      // No need to cast for double
+      err = GDALRasterIO( hBand, GF_Read, col, row, 1, 1,
+                          &value, 1, 1, dataType, 0, 0 );
+      break;
+    }
+    case GDT_CInt16:
+    case GDT_CInt32:
+    case GDT_CFloat32:
+    case GDT_CFloat64:
+      QgsDebugMsg( QStringLiteral( "Raster complex data type is not supported!" ) );
+      break;
+    case GDT_TypeCount:
+      QgsDebugMsg( QStringLiteral( "Raster data type GDT_TypeCount is not supported!" ) );
+      break;
+    case GDT_Unknown:
+      QgsDebugMsg( QStringLiteral( "Raster data type is unknown!" ) );
+      break;
+  }
   if ( err != CE_None )
     return std::numeric_limits<double>::quiet_NaN();
 
@@ -3611,7 +3682,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
     details.setProviderKey( QStringLiteral( "gdal" ) );
     details.setUri( uri );
     details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( path ) );
-    if ( QgsGdalUtils::SUPPORTED_DB_LAYERS_EXTENSIONS.contains( suffix ) )
+    if ( QgsGdalUtils::multiLayerFileExtensions().contains( suffix ) )
     {
       // uri may contain sublayers, but query flags prevent us from examining them
       details.setSkippedContainerScan( true );
@@ -3702,9 +3773,111 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
   }
 }
 
+QStringList QgsGdalProviderMetadata::sidecarFilesForUri( const QString &uri ) const
+{
+  const QVariantMap uriParts = decodeUri( uri );
+  const QString path = uriParts.value( QStringLiteral( "path" ) ).toString();
+
+  if ( path.isEmpty() )
+    return {};
+
+  const QFileInfo fileInfo( path );
+  const QString suffix = fileInfo.suffix();
+
+  static QMap< QString, QStringList > sExtensions
+  {
+    {
+      QStringLiteral( "jpg" ), {
+        QStringLiteral( "jpw" ),
+        QStringLiteral( "jgw" ),
+        QStringLiteral( "jpgw" ),
+        QStringLiteral( "jpegw" ),
+      }
+    },
+    {
+      QStringLiteral( "img" ), {
+        QStringLiteral( "ige" ),
+      }
+    },
+    {
+      QStringLiteral( "sid" ), {
+        QStringLiteral( "j2w" ),
+      }
+    },
+    {
+      QStringLiteral( "tif" ), {
+        QStringLiteral( "tifw" ),
+        QStringLiteral( "tfw" ),
+      }
+    },
+    {
+      QStringLiteral( "bil" ), {
+        QStringLiteral( "bilw" ),
+        QStringLiteral( "blw" ),
+      }
+    },
+    {
+      QStringLiteral( "raster" ), {
+        QStringLiteral( "rasterw" ),
+      }
+    },
+    {
+      QStringLiteral( "bt" ), {
+        QStringLiteral( "btw" ),
+      }
+    },
+    {
+      QStringLiteral( "rst" ), {
+        QStringLiteral( "rdc" ),
+        QStringLiteral( "smp" ),
+        QStringLiteral( "ref" ),
+        QStringLiteral( "vct" ),
+        QStringLiteral( "vdc" ),
+        QStringLiteral( "avl" ),
+      }
+    },
+    {
+      QStringLiteral( "sdat" ), {
+        QStringLiteral( "sgrd" ),
+        QStringLiteral( "mgrd" ),
+        QStringLiteral( "prj" ),
+      }
+    }
+  };
+
+
+  QStringList res;
+  // format specific sidecars
+  for ( auto it = sExtensions.constBegin(); it != sExtensions.constEnd(); ++it )
+  {
+    if ( suffix.compare( it.key(), Qt::CaseInsensitive ) == 0 )
+    {
+      for ( const QString &ext : it.value() )
+      {
+        res.append( fileInfo.dir().filePath( fileInfo.completeBaseName() + '.' + ext ) );
+      }
+    }
+  }
+
+  // sidecars which could be present for any file
+  for ( const QString &ext :
+        {
+          QStringLiteral( "aux.xml" ),
+          QStringLiteral( "vat.dbf" ),
+          QStringLiteral( "ovr" ),
+          QStringLiteral( "wld" ),
+        } )
+  {
+    res.append( fileInfo.dir().filePath( fileInfo.completeBaseName() + '.' + ext ) );
+    res.append( path + '.' + ext );
+  }
+  return res;
+}
+
 QgsGdalProviderMetadata::QgsGdalProviderMetadata():
   QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
 {
 }
 
 ///@endcond
+

@@ -45,7 +45,7 @@ QgsRasterMatrix &QgsRasterMatrix::operator=( const QgsRasterMatrix &m )
     delete[] mData;
     mColumns = m.nColumns();
     mRows = m.nRows();
-    int nEntries = mColumns * mRows;
+    const int nEntries = mColumns * mRows;
     mData = new double[nEntries];
     memcpy( mData, m.mData, sizeof( double ) * nEntries );
     mNodataValue = m.nodataValue();
@@ -208,7 +208,7 @@ bool QgsRasterMatrix::oneArgumentOperation( OneArgOperator op )
     return false;
   }
 
-  int nEntries = mColumns * mRows;
+  const int nEntries = mColumns * mRows;
   double value;
   for ( int i = 0; i < nEntries; ++i )
   {
@@ -349,7 +349,7 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
   if ( !isNumber() && !other.isNumber() )
   {
     double *matrix = other.mData;
-    int nEntries = mColumns * mRows;
+    const int nEntries = mColumns * mRows;
     double value1, value2;
 
     for ( int i = 0; i < nEntries; ++i )
@@ -372,8 +372,8 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
   if ( isNumber() )
   {
     double *matrix = other.mData;
-    int nEntries = other.nColumns() * other.nRows();
-    double value = mData[0];
+    const int nEntries = other.nColumns() * other.nRows();
+    const double value = mData[0];
     delete[] mData;
     mData = new double[nEntries];
     mColumns = other.nColumns();
@@ -403,8 +403,8 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
   }
   else //this matrix is a real matrix and the other a number
   {
-    double value = other.number();
-    int nEntries = mColumns * mRows;
+    const double value = other.number();
+    const int nEntries = mColumns * mRows;
 
     if ( other.number() == other.mNodataValue )
     {

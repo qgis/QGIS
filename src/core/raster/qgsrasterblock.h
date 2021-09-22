@@ -271,8 +271,8 @@ class CORE_EXPORT QgsRasterBlock
     */
     QRgb color( qgssize index ) const SIP_HOLDGIL
     {
-      int row = static_cast< int >( std::floor( static_cast< double >( index ) / mWidth ) );
-      int column = index % mWidth;
+      const int row = static_cast< int >( std::floor( static_cast< double >( index ) / mWidth ) );
+      const int column = index % mWidth;
       return color( row, column );
     }
 
@@ -317,7 +317,7 @@ class CORE_EXPORT QgsRasterBlock
       }
       if ( mHasNoDataValue )
       {
-        double value = readValue( mData, mDataType, index );
+        const double value = readValue( mData, mDataType, index );
         return isNoDataValue( value );
       }
       // use no data bitmap
@@ -327,11 +327,11 @@ class CORE_EXPORT QgsRasterBlock
         return false;
       }
       // TODO: optimize
-      int row = static_cast< int >( index ) / mWidth;
-      int column = index % mWidth;
-      qgssize byte = static_cast< qgssize >( row ) * mNoDataBitmapWidth + column / 8;
-      int bit = column % 8;
-      int mask = 0x80 >> bit;
+      const int row = static_cast< int >( index ) / mWidth;
+      const int column = index % mWidth;
+      const qgssize byte = static_cast< qgssize >( row ) * mNoDataBitmapWidth + column / 8;
+      const int bit = column % 8;
+      const int mask = 0x80 >> bit;
       //int x = mNoDataBitmap[byte] & mask;
       //QgsDebugMsg ( QString("byte = %1 bit = %2 mask = %3 nodata = %4 is nodata = %5").arg(byte).arg(bit).arg(mask, 0, 2 ).arg( x, 0, 2 ).arg( (bool)(x) ) );
       return mNoDataBitmap[byte] & mask;
@@ -455,11 +455,11 @@ class CORE_EXPORT QgsRasterBlock
           }
         }
         // TODO: optimize
-        int row = static_cast< int >( index ) / mWidth;
-        int column = index % mWidth;
-        qgssize byte = static_cast< qgssize >( row ) * mNoDataBitmapWidth + column / 8;
-        int bit = column % 8;
-        int nodata = 0x80 >> bit;
+        const int row = static_cast< int >( index ) / mWidth;
+        const int column = index % mWidth;
+        const qgssize byte = static_cast< qgssize >( row ) * mNoDataBitmapWidth + column / 8;
+        const int bit = column % 8;
+        const int nodata = 0x80 >> bit;
         //QgsDebugMsg ( QString("set byte = %1 bit = %2 no data by %3").arg(byte).arg(bit).arg(nodata, 0,2 ) );
         mNoDataBitmap[byte] = mNoDataBitmap[byte] | nodata;
         return true;
@@ -514,11 +514,11 @@ class CORE_EXPORT QgsRasterBlock
       }
 
       // TODO: optimize
-      int row = static_cast< int >( index ) / mWidth;
-      int column = index % mWidth;
-      qgssize byte = static_cast< qgssize >( row ) * mNoDataBitmapWidth + column / 8;
-      int bit = column % 8;
-      int nodata = 0x80 >> bit;
+      const int row = static_cast< int >( index ) / mWidth;
+      const int column = index % mWidth;
+      const qgssize byte = static_cast< qgssize >( row ) * mNoDataBitmapWidth + column / 8;
+      const int bit = column % 8;
+      const int nodata = 0x80 >> bit;
       mNoDataBitmap[byte] = mNoDataBitmap[byte] & ~nodata;
     }
 

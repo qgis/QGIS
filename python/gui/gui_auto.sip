@@ -80,6 +80,7 @@
 %Include auto_generated/qgsfilecontentsourcelineedit.sip
 %Include auto_generated/qgsfiledownloaderdialog.sip
 %Include auto_generated/qgsfilewidget.sip
+%Include auto_generated/qgsexternalstoragefilewidget.sip
 %Include auto_generated/qgsfilterlineedit.sip
 %Include auto_generated/qgsfindfilesbypatternwidget.sip
 %Include auto_generated/qgsfloatingwidget.sip
@@ -223,6 +224,10 @@
 %Include auto_generated/qgsvertexmarker.sip
 %Include auto_generated/qgsvscrollarea.sip
 %Include auto_generated/qgswindowmanagerinterface.sip
+%Include auto_generated/annotations/qgsannotationitemcommonpropertieswidget.sip
+%Include auto_generated/annotations/qgsannotationitemguiregistry.sip
+%Include auto_generated/annotations/qgsannotationitemwidget.sip
+%Include auto_generated/annotations/qgscreateannotationitemmaptool.sip
 %Include auto_generated/attributetable/qgsattributetabledelegate.sip
 %Include auto_generated/attributetable/qgsattributetablefiltermodel.sip
 %Include auto_generated/attributetable/qgsattributetablemodel.sip
@@ -289,6 +294,7 @@
 %Include auto_generated/editorwidgets/core/qgseditorwidgetwrapper.sip
 %Include auto_generated/editorwidgets/core/qgssearchwidgetwrapper.sip
 %Include auto_generated/editorwidgets/core/qgswidgetwrapper.sip
+%Include auto_generated/editorwidgets/qgsactionwidgetwrapper.sip
 %Include auto_generated/editorwidgets/qgscheckboxsearchwidgetwrapper.sip
 %Include auto_generated/editorwidgets/qgsdatetimeedit.sip
 %Include auto_generated/editorwidgets/qgsdatetimesearchwidgetwrapper.sip

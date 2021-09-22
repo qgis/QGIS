@@ -53,7 +53,7 @@ void TestQgsServerWmsRequest::cst()
 
   // ...whereas the wms parameters class interprets values to be valid in the
   // WMS context
-  QgsWms::QgsWmsRequest wmsRequest( request );
+  const QgsWms::QgsWmsRequest wmsRequest( request );
   QCOMPARE( wmsRequest.wmsParameters().version(), "1.1.1" );
 }
 
@@ -71,9 +71,9 @@ void TestQgsServerWmsRequest::update()
   QCOMPARE( wmsRequest.wmsParameters().value( "PARAM_3" ), "3" );
 
   // init request by loading a query
-  QUrl url( "http://qgisserver?PARAM_0=0&PARAM_1=1" );
+  const QUrl url( "http://qgisserver?PARAM_0=0&PARAM_1=1" );
 
-  QgsServerRequest request2( url );
+  const QgsServerRequest request2( url );
 
   QCOMPARE( request2.serverParameters().value( "PARAM_0" ), "0" );
 

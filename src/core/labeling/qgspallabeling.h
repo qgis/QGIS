@@ -15,9 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-//Note: although this file is in the core library, it is not part of the stable API
-//and might change at any time!
-
 #ifndef QGSPALLABELING_H
 #define QGSPALLABELING_H
 
@@ -637,6 +634,20 @@ class CORE_EXPORT QgsPalLayerSettings
     bool preserveRotation = true;
 
     /**
+     * Unit for rotation of labels.
+     * \see setRotationUnit()
+     * \since QGIS 3.22
+     */
+    QgsUnitTypes::AngleUnit rotationUnit() const;
+
+    /**
+      * Set unit for rotation of labels.
+      * \see rotationUnit()
+      * \since QGIS 3.22
+      */
+    void setRotationUnit( QgsUnitTypes::AngleUnit angleUnit );
+
+    /**
      * Maximum angle between inside curved label characters (valid range 20.0 to 60.0).
      * \see maxCurvedCharAngleOut
      */
@@ -1133,6 +1144,9 @@ class CORE_EXPORT QgsPalLayerSettings
     QString mLegendString = QObject::tr( "Aa" );
 
     Qgis::UnplacedLabelVisibility mUnplacedVisibility = Qgis::UnplacedLabelVisibility::FollowEngineSetting;
+
+    //! Unit for rotation of labels.
+    QgsUnitTypes::AngleUnit mRotationUnit = QgsUnitTypes::AngleDegrees;
 
     static void initPropertyDefinitions();
 };

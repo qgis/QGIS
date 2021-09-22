@@ -23,6 +23,8 @@
 
 #include <QSqlDatabase>
 
+class QgsMssqlDatabase;
+
 /**
  * \class QgsMssqlNewConnection
  * \brief Dialog to allow the user to configure and save connection
@@ -99,7 +101,7 @@ class QgsMssqlNewConnection : public QDialog, private Ui::QgsMssqlNewConnectionB
     QVariantMap mSchemaSettings; //store the schema settings edited during this QDialog life time
     SchemaModel mSchemaModel;
 
-    QSqlDatabase getDatabase( const QString &name = QString() ) const;
+    std::shared_ptr<QgsMssqlDatabase> getDatabase( const QString &name = QString() ) const;
 
     bool testExtentInGeometryColumns() const;
 

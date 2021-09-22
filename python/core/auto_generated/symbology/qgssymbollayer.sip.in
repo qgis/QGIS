@@ -48,6 +48,8 @@ class QgsSymbolLayer
           sipType = sipType_QgsMarkerLineSymbolLayer;
         else if ( sipCpp->layerType() == "SimpleLine" )
           sipType = sipType_QgsSimpleLineSymbolLayer;
+        else if ( sipCpp->layerType() == "HashLine" )
+          sipType = sipType_QgsHashedLineSymbolLayer;
         else if ( sipCpp->layerType() == "ArrowLine" )
           sipType = sipType_QgsArrowSymbolLayer;
         else if ( sipCpp->layerType() == "InterpolatedLine" )
@@ -150,6 +152,10 @@ class QgsSymbolLayer
       PropertyDashPatternOffset,
       PropertyTrimStart,
       PropertyTrimEnd,
+      PropertyLineStartWidthValue,
+      PropertyLineEndWidthValue,
+      PropertyLineStartColorValue,
+      PropertyLineEndColorValue,
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();
@@ -162,6 +168,13 @@ Returns the symbol layer property definitions.
     virtual ~QgsSymbolLayer();
 
 
+
+    virtual Qgis::SymbolLayerFlags flags() const;
+%Docstring
+Returns flags which control the symbol layer's behavior.
+
+.. versionadded:: 3.22
+%End
 
     bool enabled() const;
 %Docstring

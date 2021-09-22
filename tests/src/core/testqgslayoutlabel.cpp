@@ -68,7 +68,7 @@ void TestQgsLayoutLabel::initTestCase()
   QgsApplication::initQgis();
 
   //create maplayers from testdata and add to layer registry
-  QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + '/' +  "france_parts.shp" );
+  const QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + '/' +  "france_parts.shp" );
   mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                      vectorFileInfo.completeBaseName(),
                                      QStringLiteral( "ogr" ) );
@@ -77,7 +77,7 @@ void TestQgsLayoutLabel::initTestCase()
 
 void TestQgsLayoutLabel::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -115,34 +115,34 @@ void TestQgsLayoutLabel::evaluation()
 
   {
     // $CURRENT_DATE evaluation
-    QString expected = "__" + QDate::currentDate().toString() + "__";
+    const QString expected = "__" + QDate::currentDate().toString() + "__";
     label->setText( QStringLiteral( "__$CURRENT_DATE__" ) );
-    QString evaluated = label->currentText();
+    const QString evaluated = label->currentText();
     QCOMPARE( evaluated, expected );
   }
   {
     // $CURRENT_DATE() evaluation
-    QDateTime now = QDateTime::currentDateTime();
-    QString expected = "__" + now.toString( QStringLiteral( "dd" ) ) + "(ok)__";
+    const QDateTime now = QDateTime::currentDateTime();
+    const QString expected = "__" + now.toString( QStringLiteral( "dd" ) ) + "(ok)__";
     label->setText( QStringLiteral( "__$CURRENT_DATE(dd)(ok)__" ) );
-    QString evaluated = label->currentText();
+    const QString evaluated = label->currentText();
     QCOMPARE( evaluated, expected );
   }
   {
     // $CURRENT_DATE() evaluation (inside an expression)
-    QDate now = QDate::currentDate();
-    int dd = now.day();
+    const QDate now = QDate::currentDate();
+    const int dd = now.day();
 
-    QString expected = "__" + QString::number( dd + 1 ) + "(ok)__";
+    const QString expected = "__" + QString::number( dd + 1 ) + "(ok)__";
     label->setText( QStringLiteral( "__[%$CURRENT_DATE(dd) + 1%](ok)__" ) );
-    QString evaluated = label->currentText();
+    const QString evaluated = label->currentText();
     QCOMPARE( evaluated, expected );
   }
   {
     // expression evaluation (without feature)
-    QString expected = QStringLiteral( "__[NAME_1]42__" );
+    const QString expected = QStringLiteral( "__[NAME_1]42__" );
     label->setText( QStringLiteral( "__[%try(\"NAME_1\", '[NAME_1]')%][%21*2%]__" ) );
-    QString evaluated = label->currentText();
+    const QString evaluated = label->currentText();
     QCOMPARE( evaluated, expected );
   }
 }
@@ -163,16 +163,16 @@ void TestQgsLayoutLabel::featureEvaluationUsingAtlas()
   {
     // evaluation with a feature
     label->setText( QStringLiteral( "[%\"NAME_1\"||'_ok'%]" ) );
-    QString evaluated = label->currentText();
-    QString expected = QStringLiteral( "Basse-Normandie_ok" );
+    const QString evaluated = label->currentText();
+    const QString expected = QStringLiteral( "Basse-Normandie_ok" );
     QCOMPARE( evaluated, expected );
   }
   l.atlas()->seekTo( 1 );
   {
     // evaluation with a feature
     label->setText( QStringLiteral( "[%\"NAME_1\"||'_ok'%]" ) );
-    QString evaluated = label->currentText();
-    QString expected = QStringLiteral( "Bretagne_ok" );
+    const QString evaluated = label->currentText();
+    const QString expected = QStringLiteral( "Bretagne_ok" );
     QCOMPARE( evaluated, expected );
   }
 }
@@ -196,8 +196,8 @@ void TestQgsLayoutLabel::featureEvaluationUsingContext()
   {
     // evaluation with a feature
     label->setText( QStringLiteral( "[%\"NAME_1\"||'_ok'%]" ) );
-    QString evaluated = label->currentText();
-    QString expected = QStringLiteral( "Basse-Normandie_ok" );
+    const QString evaluated = label->currentText();
+    const QString expected = QStringLiteral( "Basse-Normandie_ok" );
     QCOMPARE( evaluated, expected );
   }
   it.nextFeature( f );
@@ -205,8 +205,8 @@ void TestQgsLayoutLabel::featureEvaluationUsingContext()
   {
     // evaluation with a feature
     label->setText( QStringLiteral( "[%\"NAME_1\"||'_ok'%]" ) );
-    QString evaluated = label->currentText();
-    QString expected = QStringLiteral( "Bretagne_ok" );
+    const QString evaluated = label->currentText();
+    const QString expected = QStringLiteral( "Bretagne_ok" );
     QCOMPARE( evaluated, expected );
   }
 }
@@ -226,8 +226,8 @@ void TestQgsLayoutLabel::pageEvaluation()
 
   {
     label->setText( QStringLiteral( "[%@layout_page||'/'||@layout_numpages%]" ) );
-    QString evaluated = label->currentText();
-    QString expected = QStringLiteral( "1/2" );
+    const QString evaluated = label->currentText();
+    const QString expected = QStringLiteral( "1/2" );
     QCOMPARE( evaluated, expected );
 
     // move to the second page and re-evaluate
@@ -247,8 +247,8 @@ void TestQgsLayoutLabel::pageSizeEvaluation()
   l.addLayoutItem( label );
 
   {
-    QString evaluated = label->currentText();
-    QString expected = QStringLiteral( "0" );
+    const QString evaluated = label->currentText();
+    const QString expected = QStringLiteral( "0" );
     QCOMPARE( evaluated, expected );
   }
 
@@ -258,8 +258,8 @@ void TestQgsLayoutLabel::pageSizeEvaluation()
   l.pageCollection()->addPage( page2 );
 
   {
-    QString evaluated = label->currentText();
-    QString expected = QStringLiteral( "0,220" );
+    const QString evaluated = label->currentText();
+    const QString expected = QStringLiteral( "0,220" );
     QCOMPARE( evaluated, expected );
   }
 }

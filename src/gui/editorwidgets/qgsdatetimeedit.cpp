@@ -48,7 +48,7 @@ QgsDateTimeEdit::QgsDateTimeEdit( const QVariant & var, QMetaType::Type parserTy
 #endif
   , mNullRepresentation( QgsApplication::nullRepresentation() )
 {
-  QIcon clearIcon = QgsApplication::getThemeIcon( "/mIconClearText.svg" );
+  const QIcon clearIcon = QgsApplication::getThemeIcon( "/mIconClearText.svg" );
   mClearAction = new QAction( clearIcon, tr( "clear" ), this );
   mClearAction->setCheckable( false );
   lineEdit()->addAction( mClearAction, QLineEdit::TrailingPosition );
@@ -218,7 +218,7 @@ void QgsDateTimeEdit::showEvent( QShowEvent *event )
 void QgsDateTimeEdit::changed( const QVariant &dateTime )
 {
   mIsEmpty = false;
-  bool isNull = dateTime.isNull();
+  const bool isNull = dateTime.isNull();
   if ( isNull != mIsNull )
   {
     mIsNull = isNull;

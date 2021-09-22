@@ -9,7 +9,9 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/providers/wms
   ${CMAKE_SOURCE_DIR}/src/providers/postgres
   ${CMAKE_SOURCE_DIR}/src/providers/mdal
+  ${CMAKE_SOURCE_DIR}/src/providers/mssql
   ${CMAKE_SOURCE_DIR}/src/providers/ogr
+  ${CMAKE_SOURCE_DIR}/src/providers/virtualraster
   ${CMAKE_SOURCE_DIR}/src/test
 )
 include_directories(SYSTEM
@@ -38,8 +40,18 @@ add_qgis_test(testqgspostgresexpressioncompiler.cpp MODULE provider LINKEDLIBRAR
 add_qgis_test(testqgspostgresprovider.cpp MODULE provider LINKEDLIBRARIES provider_postgres_a qgis_core)
 add_qgis_test(testqgspostgresconn.cpp MODULE provider LINKEDLIBRARIES provider_postgres_a qgis_core LABELS "POSTGRES")
 
+set(ENABLE_MSSQLTEST_CPP FALSE CACHE BOOL "Enable MSSQL provider C++ tests")
+if (ENABLE_MSSQLTEST_CPP)
+  add_qgis_test(testqgsmssqlprovider.cpp MODULE provider LINKEDLIBRARIES provider_mssql_a qgis_core LABELS "MSSQL")
+  # also depend on dynamic lib, so that building this test will also build the dynamic lib
+  add_dependencies(test_provider_mssqlprovider provider_mssql)
+endif()
+
 if (NOT FORCE_STATIC_PROVIDERS)
   add_qgis_test(testqgsmdalprovider.cpp MODULE provider LINKEDLIBRARIES qgis_core)
+  if (WITH_ANALYSIS)
+    add_qgis_test(testqgsvirtualrasterprovider.cpp MODULE provider LINKEDLIBRARIES qgis_core qgis_analysis)
+  endif()
 endif()
 
 if (WITH_EPT)

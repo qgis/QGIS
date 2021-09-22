@@ -122,8 +122,8 @@ static bool compareElements( QDomElement &element1, QDomElement &element2 )
 
   if ( element1.hasAttributes() )
   {
-    QDomNamedNodeMap attrs1 = element1.attributes();
-    QDomNamedNodeMap attrs2 = element2.attributes();
+    const QDomNamedNodeMap attrs1 = element1.attributes();
+    const QDomNamedNodeMap attrs2 = element2.attributes();
 
     if ( attrs1.size() != attrs2.size() )
     {
@@ -133,8 +133,8 @@ static bool compareElements( QDomElement &element1, QDomElement &element2 )
 
     for ( int i = 0 ; i < attrs1.size() ; ++i )
     {
-      QDomNode node1 = attrs1.item( i );
-      QDomAttr attr1 = node1.toAttr();
+      const QDomNode node1 = attrs1.item( i );
+      const QDomAttr attr1 = node1.toAttr();
 
       if ( !element2.hasAttribute( attr1.name() ) )
       {
@@ -158,8 +158,8 @@ static bool compareElements( QDomElement &element1, QDomElement &element2 )
 
   if ( element1.hasChildNodes() )
   {
-    QDomNodeList nodes1 = element1.childNodes();
-    QDomNodeList nodes2 = element2.childNodes();
+    const QDomNodeList nodes1 = element1.childNodes();
+    const QDomNodeList nodes2 = element2.childNodes();
 
     if ( nodes1.size() != nodes2.size() )
     {
@@ -169,8 +169,8 @@ static bool compareElements( QDomElement &element1, QDomElement &element2 )
 
     for ( int i = 0 ; i < nodes1.size() ; ++i )
     {
-      QDomNode node1 = nodes1.at( i );
-      QDomNode node2 = nodes2.at( i );
+      const QDomNode node1 = nodes1.at( i );
+      const QDomNode node2 = nodes2.at( i );
       if ( node1.isElement() && node2.isElement() )
       {
         QDomElement elt1 = node1.toElement();
@@ -181,8 +181,8 @@ static bool compareElements( QDomElement &element1, QDomElement &element2 )
       }
       else if ( node1.isText() && node2.isText() )
       {
-        QDomText txt1 = node1.toText();
-        QDomText txt2 = node2.toText();
+        const QDomText txt1 = node1.toText();
+        const QDomText txt2 = node2.toText();
 
         if ( txt1.data() != txt2.data() )
         {
@@ -215,8 +215,8 @@ static QDomElement comparableElement( const QString &xmlText )
 void TestQgsOgcUtils::testGeometryToGML()
 {
   QDomDocument doc;
-  QgsGeometry geomPoint( QgsGeometry::fromPointXY( QgsPointXY( 111, 222 ) ) );
-  QgsGeometry geomLine( QgsGeometry::fromWkt( QStringLiteral( "LINESTRING(111 222, 222 222)" ) ) );
+  const QgsGeometry geomPoint( QgsGeometry::fromPointXY( QgsPointXY( 111, 222 ) ) );
+  const QgsGeometry geomLine( QgsGeometry::fromWkt( QStringLiteral( "LINESTRING(111 222, 222 222)" ) ) );
 
   // Elements to compare
   QDomElement xmlElem;
@@ -308,7 +308,7 @@ void TestQgsOgcUtils::testExpressionFromOgcFilterWFS20()
 
   QDomDocument doc;
   QVERIFY( doc.setContent( xmlText, true ) );
-  QDomElement rootElem = doc.documentElement();
+  const QDomElement rootElem = doc.documentElement();
 
   QgsVectorLayer layer( "Point?crs=epsg:4326&field=LITERAL:string(20)", "temp", "memory" );
 
@@ -493,7 +493,7 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter()
 
   QDomDocument doc;
   QVERIFY( doc.setContent( xmlText, true ) );
-  QDomElement rootElem = doc.documentElement();
+  const QDomElement rootElem = doc.documentElement();
 
   QgsVectorLayer layer( "Point?crs=epsg:4326&field=LITERAL:string(20)", "temp", "memory" );
 
@@ -536,11 +536,11 @@ void TestQgsOgcUtils::testExpressionFromOgcFilterWithLongLong()
   QDomDocument doc;
 
   QVERIFY( doc.setContent( xmlText, true ) );
-  QDomElement rootElem = doc.documentElement();
+  const QDomElement rootElem = doc.documentElement();
 
   QgsVectorLayer layer( "Point?crs=epsg:4326", "temp", "memory" );
 
-  QgsField longlongField( QStringLiteral( "id" ), QVariant::LongLong );
+  const QgsField longlongField( QStringLiteral( "id" ), QVariant::LongLong );
 
   QList<QgsField> fields;
   fields.append( longlongField );
@@ -565,12 +565,12 @@ void TestQgsOgcUtils::testExpressionToOgcFilter()
   QFETCH( QString, exprText );
   QFETCH( QString, xmlText );
 
-  QgsExpression exp( exprText );
+  const QgsExpression exp( exprText );
   QVERIFY( !exp.hasParserError() );
 
   QString errorMsg;
   QDomDocument doc;
-  QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter( exp, doc, &errorMsg );
+  const QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter( exp, doc, &errorMsg );
 
   if ( !errorMsg.isEmpty() )
     qDebug( "ERROR: %s", errorMsg.toLatin1().data() );
@@ -728,13 +728,13 @@ void TestQgsOgcUtils::testExpressionToOgcFilterWFS11()
   QFETCH( QString, srsName );
   QFETCH( QString, xmlText );
 
-  QgsExpression exp( exprText );
+  const QgsExpression exp( exprText );
   QVERIFY( !exp.hasParserError() );
 
   QString errorMsg;
   QDomDocument doc;
-  QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter( exp, doc,
-                           QgsOgcUtils::GML_3_1_0, QgsOgcUtils::FILTER_OGC_1_1, QStringLiteral( "my_geometry_name" ), srsName, true, false, &errorMsg );
+  const QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter( exp, doc,
+                                 QgsOgcUtils::GML_3_1_0, QgsOgcUtils::FILTER_OGC_1_1, QStringLiteral( "my_geometry_name" ), srsName, true, false, &errorMsg );
 
   if ( !errorMsg.isEmpty() )
     qDebug( "ERROR: %s", errorMsg.toLatin1().data() );
@@ -780,13 +780,13 @@ void TestQgsOgcUtils::testExpressionToOgcFilterWFS20()
   QFETCH( QString, srsName );
   QFETCH( QString, xmlText );
 
-  QgsExpression exp( exprText );
+  const QgsExpression exp( exprText );
   QVERIFY( !exp.hasParserError() );
 
   QString errorMsg;
   QDomDocument doc;
-  QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter( exp, doc,
-                           QgsOgcUtils::GML_3_2_1, QgsOgcUtils::FILTER_FES_2_0, QStringLiteral( "my_geometry_name" ), srsName, true, false, &errorMsg );
+  const QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter( exp, doc,
+                                 QgsOgcUtils::GML_3_2_1, QgsOgcUtils::FILTER_FES_2_0, QStringLiteral( "my_geometry_name" ), srsName, true, false, &errorMsg );
 
   if ( !errorMsg.isEmpty() )
     qDebug( "ERROR: %s", errorMsg.toLatin1().data() );
@@ -861,7 +861,7 @@ void TestQgsOgcUtils::testSQLStatementToOgcFilter()
   QFETCH( QList<QgsOgcUtils::LayerProperties>, layerProperties );
   QFETCH( QString, xmlText );
 
-  QgsSQLStatement statement( statementText );
+  const QgsSQLStatement statement( statementText );
   if ( !statement.hasParserError() )
   {
     qDebug( "%s", statement.parserErrorString().toLatin1().data() );
@@ -872,18 +872,18 @@ void TestQgsOgcUtils::testSQLStatementToOgcFilter()
   QDomDocument doc;
   //QgsOgcUtils::GMLVersion gmlVersion = QgsOgcUtils::GML_3_2_1;
   //QgsOgcUtils::FilterVersion filterVersion = QgsOgcUtils::FILTER_FES_2_0;
-  bool honourAxisOrientation = true;
-  bool invertAxisOrientation = false;
+  const bool honourAxisOrientation = true;
+  const bool invertAxisOrientation = false;
   //QList<QgsOgcUtils::LayerProperties> layerProperties;
-  QDomElement filterElem = QgsOgcUtils::SQLStatementToOgcFilter( statement,
-                           doc,
-                           gmlVersion,
-                           filterVersion,
-                           layerProperties,
-                           honourAxisOrientation,
-                           invertAxisOrientation,
-                           QMap<QString, QString>(),
-                           &errorMsg );
+  const QDomElement filterElem = QgsOgcUtils::SQLStatementToOgcFilter( statement,
+                                 doc,
+                                 gmlVersion,
+                                 filterVersion,
+                                 layerProperties,
+                                 honourAxisOrientation,
+                                 invertAxisOrientation,
+                                 QMap<QString, QString>(),
+                                 &errorMsg );
 
   if ( !errorMsg.isEmpty() )
     qDebug( "ERROR: %s", errorMsg.toLatin1().data() );
@@ -908,7 +908,7 @@ void TestQgsOgcUtils::testSQLStatementToOgcFilter()
 
 void TestQgsOgcUtils::testSQLStatementToOgcFilter_data()
 {
-  QList<QgsOgcUtils::LayerProperties> layerProperties;
+  const QList<QgsOgcUtils::LayerProperties> layerProperties;
 
   QTest::addColumn<QString>( "statementText" );
   QTest::addColumn<QgsOgcUtils::GMLVersion>( "gmlVersion" );
@@ -1194,6 +1194,23 @@ void TestQgsOgcUtils::testSQLStatementToOgcFilter_data()
         "</fes:PropertyIsEqualTo>"
         "</fes:And>"
         "</fes:Filter>" );
+
+  QList<QgsOgcUtils::LayerProperties> layerPropertiesWithNameSpace;
+  QgsOgcUtils::LayerProperties props;
+  props.mName = QStringLiteral( "prefix:mylayer" );
+  props.mNamespacePrefix = QStringLiteral( "prefix" );
+  props.mNamespaceURI = QStringLiteral( "http://example.com/prefix" );
+  layerPropertiesWithNameSpace << props;
+
+  QTest::newRow( "namespace" ) << QStringLiteral( "SELECT * FROM mylayer WHERE NAME = 'New York'" ) <<
+                               QgsOgcUtils::GML_3_2_1 << QgsOgcUtils::FILTER_FES_2_0 << layerPropertiesWithNameSpace <<
+                               QString(
+                                 "<fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\" xmlns:prefix=\"http://example.com/prefix\">"
+                                 "<fes:PropertyIsEqualTo>"
+                                 "<fes:ValueReference>prefix:NAME</fes:ValueReference>"
+                                 "<fes:Literal>New York</fes:Literal>"
+                                 "</fes:PropertyIsEqualTo>"
+                                 "</fes:Filter>" );
 }
 
 QGSTEST_MAIN( TestQgsOgcUtils )

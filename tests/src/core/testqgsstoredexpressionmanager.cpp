@@ -42,13 +42,13 @@ void TestQgsStoredExpressionManager::init()
   //fill up some for the FilterExpression
   for ( int i = 0; i < 10; i++ )
   {
-    QgsStoredExpression storedExpression( QStringLiteral( "filter%1" ).arg( i ), QStringLiteral( "\"age\"=%1" ).arg( i ), QgsStoredExpression::Category::FilterExpression );
+    const QgsStoredExpression storedExpression( QStringLiteral( "filter%1" ).arg( i ), QStringLiteral( "\"age\"=%1" ).arg( i ), QgsStoredExpression::Category::FilterExpression );
     newStoredExpressions.append( storedExpression );
   }
   //fill up some for the DefaultValues
   for ( int i = 10; i < 20; i++ )
   {
-    QgsStoredExpression storedExpression( QStringLiteral( "default%1" ).arg( i ), QStringLiteral( "'ID_'+%1" ).arg( i ), QgsStoredExpression::Category::DefaultValueExpression );
+    const QgsStoredExpression storedExpression( QStringLiteral( "default%1" ).arg( i ), QStringLiteral( "'ID_'+%1" ).arg( i ), QgsStoredExpression::Category::DefaultValueExpression );
     newStoredExpressions.append( storedExpression );
   }
   mManager->addStoredExpressions( newStoredExpressions );
@@ -62,23 +62,23 @@ void TestQgsStoredExpressionManager::cleanup()
 void TestQgsStoredExpressionManager::storeSingleExpression()
 {
   //add single stored filter expression
-  QString name = QStringLiteral( "test20" );
-  QString expression = QStringLiteral( "\"age\"=20" );
-  QString id = mManager->addStoredExpression( name, expression );
+  const QString name = QStringLiteral( "test20" );
+  const QString expression = QStringLiteral( "\"age\"=20" );
+  const QString id = mManager->addStoredExpression( name, expression );
 
   //get stored expression by id
-  QgsStoredExpression storedExpression = mManager->storedExpression( id );
+  const QgsStoredExpression storedExpression = mManager->storedExpression( id );
   QCOMPARE( storedExpression.id, id );
   QCOMPARE( storedExpression.name, name );
   QCOMPARE( storedExpression.expression, expression );
   QCOMPARE( storedExpression.tag, QgsStoredExpression::Category::FilterExpression );
 
   //get all expressions
-  QList <QgsStoredExpression> allStoredExpressions = mManager->storedExpressions();
+  const QList <QgsStoredExpression> allStoredExpressions = mManager->storedExpressions();
   QCOMPARE( allStoredExpressions.count(), 21 );
 
   //get all expressions for Category::FilterExpression
-  QList <QgsStoredExpression> allStoredFilterExpressions = mManager->storedExpressions( QgsStoredExpression::Category::FilterExpression );
+  const QList <QgsStoredExpression> allStoredFilterExpressions = mManager->storedExpressions( QgsStoredExpression::Category::FilterExpression );
   QCOMPARE( allStoredFilterExpressions.count(), 11 );
 
   QCOMPARE( allStoredFilterExpressions.at( 10 ).id, id );
@@ -94,13 +94,13 @@ void TestQgsStoredExpressionManager::storeListOfExpressions()
   //fill up
   for ( int i = 20; i < 30; i++ )
   {
-    QgsStoredExpression storedExpression( QStringLiteral( "test%1" ).arg( i ), QStringLiteral( "\"age\"=%1" ).arg( i ) );
+    const QgsStoredExpression storedExpression( QStringLiteral( "test%1" ).arg( i ), QStringLiteral( "\"age\"=%1" ).arg( i ) );
     newStoredExpressions.append( storedExpression );
   }
   mManager->addStoredExpressions( newStoredExpressions );
 
   //get all expressions
-  QList <QgsStoredExpression> allStoredExpressions = mManager->storedExpressions();
+  const QList <QgsStoredExpression> allStoredExpressions = mManager->storedExpressions();
   QCOMPARE( allStoredExpressions.count(), 30 );
   QCOMPARE( allStoredExpressions.at( 0 ).name, QStringLiteral( "filter0" ) );
   QCOMPARE( allStoredExpressions.at( 0 ).expression, QStringLiteral( "\"age\"=0" ) );
@@ -112,7 +112,7 @@ void TestQgsStoredExpressionManager::storeListOfExpressions()
 
 void TestQgsStoredExpressionManager::editExpressionsByExpression()
 {
-  QgsStoredExpression storedExpression = mManager->findStoredExpressionByExpression( QStringLiteral( "\"age\"=4" ) );
+  const QgsStoredExpression storedExpression = mManager->findStoredExpressionByExpression( QStringLiteral( "\"age\"=4" ) );
   QCOMPARE( storedExpression.name, QStringLiteral( "filter4" ) );
 
   mManager->updateStoredExpression( storedExpression.id, QStringLiteral( "Much older" ), QStringLiteral( "\"age\">99" ), QgsStoredExpression::Category::FilterExpression );
@@ -121,7 +121,7 @@ void TestQgsStoredExpressionManager::editExpressionsByExpression()
   QCOMPARE( mManager->storedExpression( storedExpression.id ).expression, QStringLiteral( "\"age\">99" ) );
   QCOMPARE( mManager->storedExpression( storedExpression.id ).tag, QgsStoredExpression::Category::FilterExpression );
 
-  QgsStoredExpression newStoredExpression = mManager->findStoredExpressionByExpression( QStringLiteral( "\"age\">99" ) );
+  const QgsStoredExpression newStoredExpression = mManager->findStoredExpressionByExpression( QStringLiteral( "\"age\">99" ) );
   QCOMPARE( newStoredExpression.name, QStringLiteral( "Much older" ) );
 }
 

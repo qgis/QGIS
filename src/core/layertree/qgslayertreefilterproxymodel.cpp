@@ -69,7 +69,7 @@ QModelIndex QgsLayerTreeFilterProxyModel::parent( const QModelIndex &child ) con
 
 QModelIndex QgsLayerTreeFilterProxyModel::sibling( int row, int column, const QModelIndex &idx ) const
 {
-  QModelIndex parent = idx.parent();
+  const QModelIndex parent = idx.parent();
   return index( row, column, parent );
 }
 
@@ -144,7 +144,7 @@ void QgsLayerTreeFilterProxyModel::setLayerCheckedPrivate( QgsMapLayer *layer, b
     return;
 
   QgsLayerTreeNode *node = mLayerTreeModel->rootGroup()->findLayer( layer );
-  QModelIndex index = mapFromSource( mLayerTreeModel->node2index( node ) );
+  const QModelIndex index = mapFromSource( mLayerTreeModel->node2index( node ) );
 
   setLayerChecked( layer, checked );
 
@@ -212,7 +212,7 @@ QVariant QgsLayerTreeFilterProxyModel::data( const QModelIndex &idx, int role ) 
         int n;
         for ( n = 0; !hasChecked || !hasUnchecked; n++ )
         {
-          QVariant v = data( index( n, 0, idx ), role );
+          const QVariant v = data( index( n, 0, idx ), role );
           if ( !v.isValid() )
             break;
 
@@ -264,7 +264,7 @@ bool QgsLayerTreeFilterProxyModel::setData( const QModelIndex &index, const QVar
       int i = 0;
       for ( i = 0; ; i++ )
       {
-        QModelIndex child = QgsLayerTreeFilterProxyModel::index( i, 0, index );
+        const QModelIndex child = QgsLayerTreeFilterProxyModel::index( i, 0, index );
         if ( !child.isValid() )
           break;
 

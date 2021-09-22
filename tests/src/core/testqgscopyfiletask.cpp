@@ -59,10 +59,10 @@ void TestQgsCopyFileTask::testCopy()
   testFile.write( QByteArray( "Some Content" ) );
   testFile.close();
 
-  QString source = testFile.fileName();
+  const QString source = testFile.fileName();
 
-  QTemporaryDir dir;
-  QString destination = dir.filePath( "dest.txt" );
+  const QTemporaryDir dir;
+  const QString destination = dir.filePath( "dest.txt" );
 
   QgsCopyFileTask *task = new QgsCopyFileTask( source, destination );
   manager.addTask( task );
@@ -80,8 +80,8 @@ void TestQgsCopyFileTask::testCopySourceDoesNotExist()
 {
   QgsTaskManager manager;
 
-  QTemporaryDir dir;
-  QString destination = dir.filePath( "dest.txt" );
+  const QTemporaryDir dir;
+  const QString destination = dir.filePath( "dest.txt" );
 
   QgsCopyFileTask *task = new QgsCopyFileTask( QStringLiteral( "/not/existing/file.txt" ), destination );
   manager.addTask( task );
@@ -89,7 +89,7 @@ void TestQgsCopyFileTask::testCopySourceDoesNotExist()
 
   QCOMPARE( task->status(), QgsTask::Terminated );
 
-  QFile destFile( destination );
+  const QFile destFile( destination );
   QVERIFY( !destFile.exists() );
 }
 
@@ -102,8 +102,8 @@ void TestQgsCopyFileTask::testCopyDestinationDoesNotExist()
   testFile.write( QByteArray( "Some Content" ) );
   testFile.close();
 
-  QString source = testFile.fileName();
-  QString destination = QStringLiteral( "/not/existing/destination/" );
+  const QString source = testFile.fileName();
+  const QString destination = QStringLiteral( "/not/existing/destination/" );
 
   QgsCopyFileTask *task = new QgsCopyFileTask( source, destination );
   manager.addTask( task );
@@ -111,7 +111,7 @@ void TestQgsCopyFileTask::testCopyDestinationDoesNotExist()
 
   QCOMPARE( task->status(), QgsTask::Terminated );
 
-  QFile destFile( destination );
+  const QFile destFile( destination );
   QVERIFY( !destFile.exists() );
 }
 
@@ -124,14 +124,14 @@ void TestQgsCopyFileTask::testCopyFileAlreadyExist()
   testFile.write( QByteArray( "Some Content" ) );
   testFile.close();
 
-  QString source = testFile.fileName();
+  const QString source = testFile.fileName();
 
   QTemporaryFile destFile;
   QVERIFY( destFile.open() );
   destFile.write( QByteArray( "Already exists" ) );
   destFile.close();
 
-  QString destination = destFile.fileName();
+  const QString destination = destFile.fileName();
 
   QgsCopyFileTask *task = new QgsCopyFileTask( source, destination );
   manager.addTask( task );

@@ -170,9 +170,9 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
   connect( mActionDecreaseIndent, &QAction::triggered, this, &QgsRichTextEditor::decreaseIndentation );
 
   // font size
-  QFontDatabase db;
+  const QFontDatabase db;
   const QList< int > sizes = db.standardSizes();
-  for ( int size : sizes )
+  for ( const int size : sizes )
     mFontSizeCombo->addItem( QString::number( size ), size );
 
   mFontSizeCombo->setCurrentIndex( mFontSizeCombo->findData( QApplication::font().pointSize() ) );
@@ -313,7 +313,7 @@ void QgsRichTextEditor::textRemoveAllFormat()
   mActionItalic->setChecked( false );
   mActionStrikeOut->setChecked( false );
   mFontSizeCombo->setCurrentIndex( mFontSizeCombo->findData( 9 ) );
-  QString text = mTextEdit->toPlainText();
+  const QString text = mTextEdit->toPlainText();
   mTextEdit->setPlainText( text );
 }
 
@@ -352,7 +352,7 @@ void QgsRichTextEditor::textStrikeout()
 
 void QgsRichTextEditor::textSize( const QString &p )
 {
-  qreal pointSize = p.toDouble();
+  const qreal pointSize = p.toDouble();
   if ( p.toFloat() > 0 )
   {
     QTextCharFormat format;
@@ -367,12 +367,12 @@ void QgsRichTextEditor::textLink( bool checked )
   QTextCharFormat format;
   if ( checked )
   {
-    QString url = mTextEdit->currentCharFormat().anchorHref();
+    const QString url = mTextEdit->currentCharFormat().anchorHref();
     bool ok;
-    QString newUrl = QInputDialog::getText( this, tr( "Create a Link" ),
-                                            tr( "Link URL:" ), QLineEdit::Normal,
-                                            url,
-                                            &ok );
+    const QString newUrl = QInputDialog::getText( this, tr( "Create a Link" ),
+                           tr( "Link URL:" ), QLineEdit::Normal,
+                           url,
+                           &ok );
     if ( ok )
     {
       format.setAnchor( true );
@@ -412,7 +412,7 @@ void QgsRichTextEditor::textStyle( int )
   cursor.setCharFormat( format );
   mTextEdit->setCurrentCharFormat( format );
 
-  ParagraphItems style = static_cast< ParagraphItems >( mParagraphStyleCombo->currentData().toInt() );
+  const ParagraphItems style = static_cast< ParagraphItems >( mParagraphStyleCombo->currentData().toInt() );
 
   switch ( style )
   {
@@ -467,7 +467,7 @@ void QgsRichTextEditor::textFgColor()
 void QgsRichTextEditor::textBgColor()
 {
   QTextCharFormat format;
-  QColor col = mBackColorButton->color();
+  const QColor col = mBackColorButton->color();
   if ( col.isValid() )
   {
     format.setBackground( col );
@@ -544,7 +544,7 @@ void QgsRichTextEditor::slotCursorPositionChanged()
   mLastBlockList = l;
   if ( l )
   {
-    QTextListFormat listFormat = l->format();
+    const QTextListFormat listFormat = l->format();
     if ( listFormat.style() == QTextListFormat::ListDisc )
     {
       mActionBulletList->setChecked( true );
@@ -604,7 +604,7 @@ void QgsRichTextEditor::fontChanged( const QFont &f )
   }
   if ( mTextEdit->textCursor().currentList() )
   {
-    QTextListFormat listFormat = mTextEdit->textCursor().currentList()->format();
+    const QTextListFormat listFormat = mTextEdit->textCursor().currentList()->format();
     if ( listFormat.style() == QTextListFormat::ListDisc )
     {
       mActionBulletList->setChecked( true );
@@ -672,7 +672,7 @@ void QgsRichTextEditor::indent( int delta )
   QTextCursor cursor = mTextEdit->textCursor();
   cursor.beginEditBlock();
   QTextBlockFormat format = cursor.blockFormat();
-  int indent = format.indent();
+  const int indent = format.indent();
   if ( indent + delta >= 0 )
   {
     format.setIndent( indent + delta );
@@ -700,16 +700,16 @@ void QgsRichTextEditor::setText( const QString &text )
 
 void QgsRichTextEditor::insertImage()
 {
-  QSettings s;
-  QString attdir = s.value( QStringLiteral( "general/filedialog-path" ) ).toString();
-  QString file = QFileDialog::getOpenFileName( this,
-                 tr( "Select an image" ),
-                 attdir,
-                 tr( "JPEG (*.jpg);; GIF (*.gif);; PNG (*.png);; BMP (*.bmp);; All (*)" ) );
+  const QSettings s;
+  const QString attdir = s.value( QStringLiteral( "general/filedialog-path" ) ).toString();
+  const QString file = QFileDialog::getOpenFileName( this,
+                       tr( "Select an image" ),
+                       attdir,
+                       tr( "JPEG (*.jpg);; GIF (*.gif);; PNG (*.png);; BMP (*.bmp);; All (*)" ) );
   if ( file.isEmpty() )
     return;
 
-  QImage image = QImageReader( file ).read();
+  const QImage image = QImageReader( file ).read();
 
   mTextEdit->dropImage( image, QFileInfo( file ).suffix().toUpper().toLocal8Bit().data() );
 }

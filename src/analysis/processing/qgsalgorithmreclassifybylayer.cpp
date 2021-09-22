@@ -97,7 +97,7 @@ bool QgsReclassifyAlgorithmBase::prepareAlgorithm( const QVariantMap &parameters
   mNoDataValue = parameterAsDouble( parameters, QStringLiteral( "NO_DATA" ), context );
   mUseNoDataForMissingValues = parameterAsBoolean( parameters, QStringLiteral( "NODATA_FOR_MISSING" ), context );
 
-  int boundsType = parameterAsEnum( parameters, QStringLiteral( "RANGE_BOUNDARIES" ), context );
+  const int boundsType = parameterAsEnum( parameters, QStringLiteral( "RANGE_BOUNDARIES" ), context );
   switch ( boundsType )
   {
     case 0:
@@ -122,13 +122,13 @@ bool QgsReclassifyAlgorithmBase::prepareAlgorithm( const QVariantMap &parameters
 
 QVariantMap QgsReclassifyAlgorithmBase::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QVector< QgsReclassifyUtils::RasterClass > classes = createClasses( mBoundsType, parameters, context, feedback );
+  const QVector< QgsReclassifyUtils::RasterClass > classes = createClasses( mBoundsType, parameters, context, feedback );
 
   QgsReclassifyUtils::reportClasses( classes, feedback );
   QgsReclassifyUtils::checkForOverlaps( classes, feedback );
 
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  QFileInfo fi( outputFile );
+  const QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
 
   std::unique_ptr< QgsRasterFileWriter > writer = std::make_unique< QgsRasterFileWriter >( outputFile );
@@ -198,15 +198,15 @@ bool QgsReclassifyByLayerAlgorithm::_prepareAlgorithm( const QVariantMap &parame
   if ( !tableSource )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT_TABLE" ) ) );
 
-  QString fieldMin = parameterAsString( parameters, QStringLiteral( "MIN_FIELD" ), context );
+  const QString fieldMin = parameterAsString( parameters, QStringLiteral( "MIN_FIELD" ), context );
   mMinFieldIdx = tableSource->fields().lookupField( fieldMin );
   if ( mMinFieldIdx < 0 )
     throw QgsProcessingException( QObject::tr( "Invalid field specified for MIN_FIELD: %1" ).arg( fieldMin ) );
-  QString fieldMax = parameterAsString( parameters, QStringLiteral( "MAX_FIELD" ), context );
+  const QString fieldMax = parameterAsString( parameters, QStringLiteral( "MAX_FIELD" ), context );
   mMaxFieldIdx = tableSource->fields().lookupField( fieldMax );
   if ( mMaxFieldIdx < 0 )
     throw QgsProcessingException( QObject::tr( "Invalid field specified for MAX_FIELD: %1" ).arg( fieldMax ) );
-  QString fieldValue = parameterAsString( parameters, QStringLiteral( "VALUE_FIELD" ), context );
+  const QString fieldValue = parameterAsString( parameters, QStringLiteral( "VALUE_FIELD" ), context );
   mValueFieldIdx = tableSource->fields().lookupField( fieldValue );
   if ( mValueFieldIdx < 0 )
     throw QgsProcessingException( QObject::tr( "Invalid field specified for VALUE_FIELD: %1" ).arg( fieldValue ) );

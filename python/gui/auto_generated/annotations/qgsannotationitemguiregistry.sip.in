@@ -1,0 +1,252 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/annotations/qgsannotationitemguiregistry.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsAnnotationItemAbstractGuiMetadata
+{
+%Docstring(signature="appended")
+Stores GUI metadata about one annotation item class.
+
+This is a companion to :py:class:`QgsAnnotationItemAbstractMetadata`, storing only
+the components related to the GUI behavior of an annotation item.
+
+.. note::
+
+   In C++ you can use :py:class:`QgsAnnotationItemGuiMetadata` convenience class.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsannotationitemguiregistry.h"
+%End
+  public:
+
+    QgsAnnotationItemAbstractGuiMetadata( const QString &type, const QString &visibleName, const QString &groupId = QString(), Qgis::AnnotationItemGuiFlags flags = Qgis::AnnotationItemGuiFlags() );
+%Docstring
+Constructor for QgsAnnotationItemAbstractGuiMetadata with the specified class ``type``.
+
+``visibleName`` should be set to a translated, user visible name identifying the corresponding annotation item.
+
+An optional ``groupId`` can be set, which allows grouping of related annotation item classes. See :py:class:`QgsAnnotationItemGuiMetadata` for details.
+%End
+
+    virtual ~QgsAnnotationItemAbstractGuiMetadata();
+
+    QString type() const;
+%Docstring
+Returns the unique item type code for the annotation item class.
+%End
+
+    Qgis::AnnotationItemGuiFlags flags() const;
+%Docstring
+Returns item flags.
+%End
+
+    QString groupId() const;
+%Docstring
+Returns the item group ID, if set.
+%End
+
+    QString visibleName() const;
+%Docstring
+Returns a translated, user visible name identifying the corresponding annotation item.
+%End
+
+    virtual QIcon creationIcon() const;
+%Docstring
+Returns an icon representing creation of the annotation item type.
+%End
+
+
+    virtual QgsAnnotationItemBaseWidget *createItemWidget( QgsAnnotationItem *item ) /TransferBack/;
+%Docstring
+Creates a configuration widget for an ``item`` of this type. Can return ``None`` if no configuration GUI is required.
+%End
+
+    virtual QgsCreateAnnotationItemMapToolInterface *createMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget ) /TransferBack/;
+%Docstring
+Creates a map tool for a creating a new item of this type.
+
+May return ``None`` if no map tool is available for creating the item.
+%End
+
+    virtual QgsAnnotationItem *createItem() /TransferBack/;
+%Docstring
+Creates an instance of the corresponding item type.
+%End
+
+    virtual void newItemAddedToLayer( QgsAnnotationItem *item, QgsAnnotationLayer *layer );
+%Docstring
+Called when a newly created item of the associated type has been added to a ``layer``.
+
+This is only called for additions which result from GUI operations - i.e. it is not
+called for items added programmatically.
+%End
+
+};
+
+
+
+
+
+class QgsAnnotationItemGuiGroup
+{
+%Docstring(signature="appended")
+Stores GUI metadata about a group of annotation item classes.
+
+:py:class:`QgsAnnotationItemGuiGroup` stores settings about groups of related annotation item classes
+which should be presented to users grouped together.
+
+For instance, the various basic shape creation tools would use :py:class:`QgsAnnotationItemGuiGroup`
+to display grouped within toolbars.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsannotationitemguiregistry.h"
+%End
+  public:
+
+    QgsAnnotationItemGuiGroup( const QString &id = QString(), const QString &name = QString(), const QIcon &icon = QIcon() );
+%Docstring
+Constructor for QgsAnnotationItemGuiGroup.
+%End
+
+    QString id;
+
+    QString name;
+
+    QIcon icon;
+
+};
+
+
+class QgsAnnotationItemGuiRegistry : QObject
+{
+%Docstring(signature="appended")
+Registry of available annotation item GUI behavior.
+
+:py:class:`QgsAnnotationItemGuiRegistry` is not usually directly created, but rather accessed through
+:py:func:`QgsGui.annotationItemGuiRegistry()`.
+
+This acts as a companion to :py:class:`QgsAnnotationItemRegistry`, handling only
+the components related to the GUI behavior of annotation items.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsannotationitemguiregistry.h"
+%End
+  public:
+
+    QgsAnnotationItemGuiRegistry( QObject *parent = 0 );
+%Docstring
+Creates a new empty item GUI registry.
+
+QgsAnnotationItemGuiRegistry is not usually directly created, but rather accessed through
+:py:func:`QgsGui.annotationItemGuiRegistry()`.
+%End
+
+    ~QgsAnnotationItemGuiRegistry();
+
+
+    QgsAnnotationItemAbstractGuiMetadata *itemMetadata( int metadataId ) const;
+%Docstring
+Returns the metadata for the specified item ``metadataId``. Returns ``None`` if
+a corresponding ``metadataId`` was not found in the registry.
+%End
+
+    int metadataIdForItemType( const QString &type ) const;
+%Docstring
+Returns the GUI item metadata ID which corresponds to the specified annotation item ``type``.
+
+In the case that multiple GUI metadata classes exist for a single annotation item ``type`` then
+only the first encountered GUI metadata ID will be returned.
+
+Returns -1 if no matching metadata is found in the GUI registry.
+%End
+
+    bool addAnnotationItemGuiMetadata( QgsAnnotationItemAbstractGuiMetadata *metadata /Transfer/ );
+%Docstring
+Registers the gui metadata for a new annotation item type. Takes ownership of the metadata instance.
+%End
+
+    bool addItemGroup( const QgsAnnotationItemGuiGroup &group );
+%Docstring
+Registers a new item group with the registry. This must be done before calling
+:py:func:`~QgsAnnotationItemGuiRegistry.addAnnotationItemGuiMetadata` for any item types associated with the group.
+
+Returns ``True`` if group was added, or ``False`` if group could not be added (e.g. due to
+duplicate id value).
+
+.. seealso:: :py:func:`itemGroup`
+%End
+
+    const QgsAnnotationItemGuiGroup &itemGroup( const QString &id );
+%Docstring
+Returns a reference to the item group with matching ``id``.
+
+.. seealso:: :py:func:`addItemGroup`
+%End
+
+
+    QgsAnnotationItem *createItem( int metadataId ) const /TransferBack/;
+%Docstring
+Creates a new instance of an annotation item given the item metadata ``metadataId``.
+%End
+
+    void newItemAddedToLayer( int metadataId, QgsAnnotationItem *item, QgsAnnotationLayer *layer );
+%Docstring
+Called when a newly created item of the associated metadata ``metadataId`` has been added to a ``layer``.
+
+This is only called for additions which result from GUI operations - i.e. it is not
+called for items added programmatically.
+%End
+
+
+    QgsAnnotationItemBaseWidget *createItemWidget( QgsAnnotationItem *item ) const /TransferBack/;
+%Docstring
+Creates a new instance of an annotation item configuration widget for the specified ``item``.
+%End
+
+    QList< int > itemMetadataIds() const;
+%Docstring
+Returns a list of available item metadata ids handled by the registry.
+%End
+
+    void addDefaultItems();
+%Docstring
+Populates the registry with default items.
+%End
+
+  signals:
+
+    void typeAdded( int metadataId );
+%Docstring
+Emitted whenever a new item type is added to the registry, with the specified
+``metadataId``.
+%End
+
+  private:
+    QgsAnnotationItemGuiRegistry( const QgsAnnotationItemGuiRegistry &rh );
+};
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/annotations/qgsannotationitemguiregistry.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

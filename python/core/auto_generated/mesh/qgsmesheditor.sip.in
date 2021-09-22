@@ -62,6 +62,12 @@ Constructor with a specified layer ``meshLayer``
 %End
 
 
+    QgsMeshDatasetGroup *createZValueDatasetGroup() /TransferBack/;
+%Docstring
+Creates and returns a scalar dataset group with value on vertex that is can be used to access the Z value of the edited mesh.
+The caller takes ownership.
+%End
+
     QgsMeshEditingError initialize();
 %Docstring
 Initialize the mesh editor and return errors if the internal native mesh have topologic errors
@@ -147,7 +153,15 @@ Changes the Z values of the vertices with indexes in ``vertices`` indexes with t
     void changeXYValues( const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues );
 %Docstring
 Changes the (X,Y) coordinates values of the vertices with indexes in ``vertices`` indexes with the values in ``newValues``.
+The caller has the responsibility to check if changing the vertices coordinates does not lead to topological errors.
+New values are in layer CRS.
+%End
+
+    void changeCoordinates( const QList<int> &verticesIndexes, const QList<QgsPoint> &newCoordinates );
+%Docstring
+Changes the (X,Y,Z) coordinates values of the vertices with indexes in ``vertices`` indexes with the values in ``newValues``.
 The caller has the responsibility to check if changing the vertices coordinates does not lead to topological errors
+New coordinates are in layer CRS.
 %End
 
     void advancedEdit( QgsMeshAdvancedEditing *editing );
@@ -170,8 +184,17 @@ Returns the extent of the edited mesh
 Returns whether the mesh has been modified
 %End
 
+    bool reindex( bool renumbering );
+%Docstring
+Reindexes the mesh, that is remove unusued index of face and vertices, this operation void the undo/redo stack.
 
-    QList<int> freeVerticesIndexes();
+If ``renumbering`` is true, a renumbering is operated to optimize the vertices indexes.
+
+Returns ``False`` if the operation fail.
+%End
+
+
+    QList<int> freeVerticesIndexes() const;
 %Docstring
 Returns all the free vertices indexes
 %End
@@ -189,6 +212,22 @@ Returns whether the vertex with index ``vertexIndex`` is a free vertex
     bool checkConsistency() const;
 %Docstring
 Return ``True`` if the edited mesh is consistent
+%End
+
+    bool edgeIsClose( QgsPointXY point, double tolerance, int &faceIndex, int &edgePosition );
+%Docstring
+Returns ``True`` if an edge of face is closest than the tolerance from the ``point`` in triangular mesh coordinate
+Returns also the face index and the edge position in ``faceIndex`` and ``edgePosition``
+%End
+
+    int validFacesCount() const;
+%Docstring
+Returns the count of valid faces, that is non void faces in the mesh
+%End
+
+    int validVerticesCount() const;
+%Docstring
+Returns the count of valid vertices, that is non void vertices in the mesh
 %End
 
   signals:

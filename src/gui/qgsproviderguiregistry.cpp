@@ -50,7 +50,7 @@ static
 QgsProviderGuiMetadata *findMetadata_( QgsProviderGuiRegistry::GuiProviders const &metaData,
                                        QString const &providerKey )
 {
-  QgsProviderGuiRegistry::GuiProviders::const_iterator i = metaData.find( providerKey );
+  const QgsProviderGuiRegistry::GuiProviders::const_iterator i = metaData.find( providerKey );
   if ( i != metaData.end() )
   {
     return i->second;
@@ -127,7 +127,7 @@ void QgsProviderGuiRegistry::loadDynamicProviders( const QString &pluginPath )
   }
 
   // provider file regex pattern, only files matching the pattern are loaded if the variable is defined
-  QString filePattern = getenv( "QGIS_PROVIDER_FILE" );
+  const QString filePattern = getenv( "QGIS_PROVIDER_FILE" );
   QRegularExpression fileRegexp;
   if ( !filePattern.isEmpty() )
   {

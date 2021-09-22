@@ -54,7 +54,7 @@ void QgsVersionInfo::versionReplyFinished()
     QString versionMessage = reply->readAll();
 
     // strip the header
-    QString contentFlag = QStringLiteral( "#QGIS Version" );
+    const QString contentFlag = QStringLiteral( "#QGIS Version" );
     int pos = versionMessage.indexOf( contentFlag );
 
     if ( pos > -1 )

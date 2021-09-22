@@ -144,7 +144,7 @@ ProjectorData::ProjectorData( const QgsRectangle &extent, int width, int height,
   // TODO: Think it over better
   // Note: we are checking on matrix each even point, that means that the real error
   // in that moment is approximately half size
-  double myDestRes = mDestXRes < mDestYRes ? mDestXRes : mDestYRes;
+  const double myDestRes = mDestXRes < mDestYRes ? mDestXRes : mDestYRes;
   mSqrTolerance = myDestRes * myDestRes;
 
   if ( precision == QgsRasterProjector::Approximate )
@@ -180,12 +180,12 @@ ProjectorData::ProjectorData( const QgsRectangle &extent, int width, int height,
 
   while ( true )
   {
-    bool myColsOK = checkCols( inverseCt );
+    const bool myColsOK = checkCols( inverseCt );
     if ( !myColsOK )
     {
       insertRows( inverseCt );
     }
-    bool myRowsOK = checkRows( inverseCt );
+    const bool myRowsOK = checkRows( inverseCt );
     if ( !myRowsOK )
     {
       insertCols( inverseCt );
@@ -314,7 +314,7 @@ QString ProjectorData::cpToString()
     {
       if ( j > 0 )
         myString += QLatin1String( "  " );
-      QgsPointXY myPoint = mCPMatrix[i][j];
+      const QgsPointXY myPoint = mCPMatrix[i][j];
       if ( mCPLegalMatrix[i][j] )
       {
         myString += myPoint.toString();
@@ -341,16 +341,16 @@ void ProjectorData::calcSrcRowsCols()
   if ( mApproximate )
   {
     // For now, we take cell sizes projected to source but not to source axes
-    double myDestColsPerMatrixCell = static_cast< double >( mDestCols ) / mCPCols;
-    double myDestRowsPerMatrixCell = static_cast< double >( mDestRows ) / mCPRows;
+    const double myDestColsPerMatrixCell = static_cast< double >( mDestCols ) / mCPCols;
+    const double myDestRowsPerMatrixCell = static_cast< double >( mDestRows ) / mCPRows;
     QgsDebugMsgLevel( QStringLiteral( "myDestColsPerMatrixCell = %1 myDestRowsPerMatrixCell = %2" ).arg( myDestColsPerMatrixCell ).arg( myDestRowsPerMatrixCell ), 4 );
     for ( int i = 0; i < mCPRows - 1; i++ )
     {
       for ( int j = 0; j < mCPCols - 1; j++ )
       {
-        QgsPointXY myPointA = mCPMatrix[i][j];
-        QgsPointXY myPointB = mCPMatrix[i][j + 1];
-        QgsPointXY myPointC = mCPMatrix[i + 1][j];
+        const QgsPointXY myPointA = mCPMatrix[i][j];
+        const QgsPointXY myPointB = mCPMatrix[i][j + 1];
+        const QgsPointXY myPointC = mCPMatrix[i + 1][j];
         if ( mCPLegalMatrix[i][j] && mCPLegalMatrix[i][j + 1] && mCPLegalMatrix[i + 1][j] )
         {
           double mySize = std::sqrt( myPointA.sqrDist( myPointB ) ) / myDestColsPerMatrixCell;
@@ -372,8 +372,8 @@ void ProjectorData::calcSrcRowsCols()
     int srcXSize, srcYSize;
     if ( QgsRasterProjector::extentSize( mInverseCt, mDestExtent, mDestCols, mDestRows, srcExtent, srcXSize, srcYSize ) )
     {
-      double srcXRes = srcExtent.width() / srcXSize;
-      double srcYRes = srcExtent.height() / srcYSize;
+      const double srcXRes = srcExtent.width() / srcXSize;
+      const double srcYRes = srcExtent.height() / srcYSize;
       myMinSize = std::min( srcXRes, srcYRes );
     }
     else
@@ -389,8 +389,8 @@ void ProjectorData::calcSrcRowsCols()
 
   QgsDebugMsgLevel( QStringLiteral( "mMaxSrcXRes = %1 mMaxSrcYRes = %2" ).arg( mMaxSrcXRes ).arg( mMaxSrcYRes ), 4 );
   // mMaxSrcXRes, mMaxSrcYRes may be 0 - no limit (WMS)
-  double myMinXSize = mMaxSrcXRes > myMinSize ? mMaxSrcXRes : myMinSize;
-  double myMinYSize = mMaxSrcYRes > myMinSize ? mMaxSrcYRes : myMinSize;
+  const double myMinXSize = mMaxSrcXRes > myMinSize ? mMaxSrcXRes : myMinSize;
+  const double myMinYSize = mMaxSrcYRes > myMinSize ? mMaxSrcYRes : myMinSize;
   QgsDebugMsgLevel( QStringLiteral( "myMinXSize = %1 myMinYSize = %2" ).arg( myMinXSize ).arg( myMinYSize ), 4 );
   QgsDebugMsgLevel( QStringLiteral( "mSrcExtent.width = %1 mSrcExtent.height = %2" ).arg( mSrcExtent.width() ).arg( mSrcExtent.height() ), 4 );
 
@@ -422,21 +422,21 @@ void ProjectorData::calcHelper( int matrixRow, QgsPointXY *points )
   // TODO?: should we also precalc dest cell center coordinates for x and y?
   for ( int myDestCol = 0; myDestCol < mDestCols; myDestCol++ )
   {
-    double myDestX = mDestExtent.xMinimum() + ( myDestCol + 0.5 ) * mDestXRes;
+    const double myDestX = mDestExtent.xMinimum() + ( myDestCol + 0.5 ) * mDestXRes;
 
-    int myMatrixCol = matrixCol( myDestCol );
+    const int myMatrixCol = matrixCol( myDestCol );
 
     double myDestXMin, myDestYMin, myDestXMax, myDestYMax;
 
     destPointOnCPMatrix( matrixRow, myMatrixCol, &myDestXMin, &myDestYMin );
     destPointOnCPMatrix( matrixRow, myMatrixCol + 1, &myDestXMax, &myDestYMax );
 
-    double xfrac = ( myDestX - myDestXMin ) / ( myDestXMax - myDestXMin );
+    const double xfrac = ( myDestX - myDestXMin ) / ( myDestXMax - myDestXMin );
 
-    QgsPointXY &mySrcPoint0 = mCPMatrix[matrixRow][myMatrixCol];
-    QgsPointXY &mySrcPoint1 = mCPMatrix[matrixRow][myMatrixCol + 1];
-    double s = mySrcPoint0.x() + ( mySrcPoint1.x() - mySrcPoint0.x() ) * xfrac;
-    double t = mySrcPoint0.y() + ( mySrcPoint1.y() - mySrcPoint0.y() ) * xfrac;
+    const QgsPointXY &mySrcPoint0 = mCPMatrix[matrixRow][myMatrixCol];
+    const QgsPointXY &mySrcPoint1 = mCPMatrix[matrixRow][myMatrixCol + 1];
+    const double s = mySrcPoint0.x() + ( mySrcPoint1.x() - mySrcPoint0.x() ) * xfrac;
+    const double t = mySrcPoint0.y() + ( mySrcPoint1.y() - mySrcPoint0.y() ) * xfrac;
 
     points[myDestCol].setX( s );
     points[myDestCol].setY( t );
@@ -524,8 +524,8 @@ bool ProjectorData::preciseSrcRowCol( int destRow, int destCol, int *srcRow, int
 
 bool ProjectorData::approximateSrcRowCol( int destRow, int destCol, int *srcRow, int *srcCol )
 {
-  int myMatrixRow = matrixRow( destRow );
-  int myMatrixCol = matrixCol( destCol );
+  const int myMatrixRow = matrixRow( destRow );
+  const int myMatrixCol = matrixCol( destCol );
 
   if ( myMatrixRow > mHelperTopRow )
   {
@@ -533,7 +533,7 @@ bool ProjectorData::approximateSrcRowCol( int destRow, int destCol, int *srcRow,
     nextHelper();
   }
 
-  double myDestY = mDestExtent.yMaximum() - ( destRow + 0.5 ) * mDestYRes;
+  const double myDestY = mDestExtent.yMaximum() - ( destRow + 0.5 ) * mDestYRes;
 
   // See the schema in javax.media.jai.WarpGrid doc (but up side down)
   // TODO: use some kind of cache of values which can be reused
@@ -542,21 +542,21 @@ bool ProjectorData::approximateSrcRowCol( int destRow, int destCol, int *srcRow,
   destPointOnCPMatrix( myMatrixRow + 1, myMatrixCol, &myDestXMin, &myDestYMin );
   destPointOnCPMatrix( myMatrixRow, myMatrixCol + 1, &myDestXMax, &myDestYMax );
 
-  double yfrac = ( myDestY - myDestYMin ) / ( myDestYMax - myDestYMin );
+  const double yfrac = ( myDestY - myDestYMin ) / ( myDestYMax - myDestYMin );
 
-  QgsPointXY &myTop = pHelperTop[destCol];
-  QgsPointXY &myBot = pHelperBottom[destCol];
+  const QgsPointXY &myTop = pHelperTop[destCol];
+  const QgsPointXY &myBot = pHelperBottom[destCol];
 
   // Warning: this is very SLOW compared to the following code!:
   //double mySrcX = myBot.x() + (myTop.x() - myBot.x()) * yfrac;
   //double mySrcY = myBot.y() + (myTop.y() - myBot.y()) * yfrac;
 
-  double tx = myTop.x();
-  double ty = myTop.y();
-  double bx = myBot.x();
-  double by = myBot.y();
-  double mySrcX = bx + ( tx - bx ) * yfrac;
-  double mySrcY = by + ( ty - by ) * yfrac;
+  const double tx = myTop.x();
+  const double ty = myTop.y();
+  const double bx = myBot.x();
+  const double by = myBot.y();
+  const double mySrcX = bx + ( tx - bx ) * yfrac;
+  const double mySrcY = by + ( ty - by ) * yfrac;
 
   if ( !mExtent.contains( mySrcX, mySrcY ) )
   {
@@ -625,7 +625,7 @@ void ProjectorData::calcCP( int row, int col, const QgsCoordinateTransform &ct )
 {
   double myDestX, myDestY;
   destPointOnCPMatrix( row, col, &myDestX, &myDestY );
-  QgsPointXY myDestPoint( myDestX, myDestY );
+  const QgsPointXY myDestPoint( myDestX, myDestY );
   try
   {
     if ( ct.isValid() )
@@ -681,13 +681,13 @@ bool ProjectorData::checkCols( const QgsCoordinateTransform &ct )
     {
       double myDestX, myDestY;
       destPointOnCPMatrix( r, c, &myDestX, &myDestY );
-      QgsPointXY myDestPoint( myDestX, myDestY );
+      const QgsPointXY myDestPoint( myDestX, myDestY );
 
-      QgsPointXY mySrcPoint1 = mCPMatrix[r - 1][c];
-      QgsPointXY mySrcPoint2 = mCPMatrix[r][c];
-      QgsPointXY mySrcPoint3 = mCPMatrix[r + 1][c];
+      const QgsPointXY mySrcPoint1 = mCPMatrix[r - 1][c];
+      const QgsPointXY mySrcPoint2 = mCPMatrix[r][c];
+      const QgsPointXY mySrcPoint3 = mCPMatrix[r + 1][c];
 
-      QgsPointXY mySrcApprox( ( mySrcPoint1.x() + mySrcPoint3.x() ) / 2, ( mySrcPoint1.y() + mySrcPoint3.y() ) / 2 );
+      const QgsPointXY mySrcApprox( ( mySrcPoint1.x() + mySrcPoint3.x() ) / 2, ( mySrcPoint1.y() + mySrcPoint3.y() ) / 2 );
       if ( !mCPLegalMatrix[r - 1][c] || !mCPLegalMatrix[r][c] || !mCPLegalMatrix[r + 1][c] )
       {
         // There was an error earlier in transform, just abort
@@ -695,8 +695,8 @@ bool ProjectorData::checkCols( const QgsCoordinateTransform &ct )
       }
       try
       {
-        QgsPointXY myDestApprox = ct.transform( mySrcApprox, QgsCoordinateTransform::ReverseTransform );
-        double mySqrDist = myDestApprox.sqrDist( myDestPoint );
+        const QgsPointXY myDestApprox = ct.transform( mySrcApprox, QgsCoordinateTransform::ReverseTransform );
+        const double mySqrDist = myDestApprox.sqrDist( myDestPoint );
         if ( mySqrDist > mSqrTolerance )
         {
           return false;
@@ -727,12 +727,12 @@ bool ProjectorData::checkRows( const QgsCoordinateTransform &ct )
       double myDestX, myDestY;
       destPointOnCPMatrix( r, c, &myDestX, &myDestY );
 
-      QgsPointXY myDestPoint( myDestX, myDestY );
-      QgsPointXY mySrcPoint1 = mCPMatrix[r][c - 1];
-      QgsPointXY mySrcPoint2 = mCPMatrix[r][c];
-      QgsPointXY mySrcPoint3 = mCPMatrix[r][c + 1];
+      const QgsPointXY myDestPoint( myDestX, myDestY );
+      const QgsPointXY mySrcPoint1 = mCPMatrix[r][c - 1];
+      const QgsPointXY mySrcPoint2 = mCPMatrix[r][c];
+      const QgsPointXY mySrcPoint3 = mCPMatrix[r][c + 1];
 
-      QgsPointXY mySrcApprox( ( mySrcPoint1.x() + mySrcPoint3.x() ) / 2, ( mySrcPoint1.y() + mySrcPoint3.y() ) / 2 );
+      const QgsPointXY mySrcApprox( ( mySrcPoint1.x() + mySrcPoint3.x() ) / 2, ( mySrcPoint1.y() + mySrcPoint3.y() ) / 2 );
       if ( !mCPLegalMatrix[r][c - 1] || !mCPLegalMatrix[r][c] || !mCPLegalMatrix[r][c + 1] )
       {
         // There was an error earlier in transform, just abort
@@ -740,8 +740,8 @@ bool ProjectorData::checkRows( const QgsCoordinateTransform &ct )
       }
       try
       {
-        QgsPointXY myDestApprox = ct.transform( mySrcApprox, QgsCoordinateTransform::ReverseTransform );
-        double mySqrDist = myDestApprox.sqrDist( myDestPoint );
+        const QgsPointXY myDestApprox = ct.transform( mySrcApprox, QgsCoordinateTransform::ReverseTransform );
+        const double mySqrDist = myDestApprox.sqrDist( myDestPoint );
         if ( mySqrDist > mSqrTolerance )
         {
           return false;
@@ -819,7 +819,7 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
     return new QgsRasterBlock();
   }
 
-  qgssize pixelSize = static_cast<qgssize>( QgsRasterBlock::typeSize( mInput->dataType( bandNo ) ) );
+  const qgssize pixelSize = static_cast<qgssize>( QgsRasterBlock::typeSize( mInput->dataType( bandNo ) ) );
 
   std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock( inputBlock->dataType(), width, height ) );
   if ( inputBlock->hasNoDataValue() )
@@ -845,7 +845,7 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
 
   // To copy no data values stored in bitmaps we have to use isNoData()/setIsNoData(),
   // we cannot fill output block with no data because we use memcpy for data, not setValue().
-  bool doNoData = !QgsRasterBlock::typeIsNumeric( inputBlock->dataType() ) && inputBlock->hasNoData() && !inputBlock->hasNoDataValue();
+  const bool doNoData = !QgsRasterBlock::typeIsNumeric( inputBlock->dataType() ) && inputBlock->hasNoData() && !inputBlock->hasNoDataValue();
 
   outputBlock->setIsNoData();
 
@@ -856,10 +856,10 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
       break;
     for ( int j = 0; j < width; ++j )
     {
-      bool inside = pd.srcRowCol( i, j, &srcRow, &srcCol );
+      const bool inside = pd.srcRowCol( i, j, &srcRow, &srcCol );
       if ( !inside ) continue; // we have everything set to no data
 
-      qgssize srcIndex = static_cast< qgssize >( srcRow * pd.srcCols() + srcCol );
+      const qgssize srcIndex = static_cast< qgssize >( srcRow * pd.srcCols() + srcCol );
 
       // isNoData() may be slow so we check doNoData first
       if ( doNoData && inputBlock->isNoData( srcRow, srcCol ) )
@@ -868,7 +868,7 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
         continue;
       }
 
-      qgssize destIndex = static_cast< qgssize >( i * width + j );
+      const qgssize destIndex = static_cast< qgssize >( i * width + j );
       char *srcBits = inputBlock->bits( srcIndex );
       char *destBits = outputBlock->bits( destIndex );
       if ( !srcBits )
@@ -918,23 +918,23 @@ bool QgsRasterProjector::extentSize( const QgsCoordinateTransform &ct,
 
   // We reproject pixel rectangle from 9 points matrix of source extent, of course, it gives
   // bigger xRes,yRes than reprojected edges (envelope)
-  double srcXStep = srcExtent.width() / 3;
-  double srcYStep = srcExtent.height() / 3;
-  double srcXRes = srcExtent.width() / srcXSize;
-  double srcYRes = srcExtent.height() / srcYSize;
+  const double srcXStep = srcExtent.width() / 3;
+  const double srcYStep = srcExtent.height() / 3;
+  const double srcXRes = srcExtent.width() / srcXSize;
+  const double srcYRes = srcExtent.height() / srcYSize;
   double destXRes = std::numeric_limits<double>::max();
   double destYRes = std::numeric_limits<double>::max();
 
   for ( int i = 0; i < 3; i++ )
   {
-    double x = srcExtent.xMinimum() + i * srcXStep;
+    const double x = srcExtent.xMinimum() + i * srcXStep;
     for ( int j = 0; j < 3; j++ )
     {
-      double y = srcExtent.yMinimum() + j * srcYStep;
-      QgsRectangle srcRectangle( x - srcXRes / 2, y - srcYRes / 2, x + srcXRes / 2, y + srcYRes / 2 );
+      const double y = srcExtent.yMinimum() + j * srcYStep;
+      const QgsRectangle srcRectangle( x - srcXRes / 2, y - srcYRes / 2, x + srcXRes / 2, y + srcYRes / 2 );
       try
       {
-        QgsRectangle destRectangle = ct.transformBoundingBox( srcRectangle );
+        const QgsRectangle destRectangle = ct.transformBoundingBox( srcRectangle );
         if ( destRectangle.width() > 0 )
         {
           destXRes = std::min( destXRes, destRectangle.width() );

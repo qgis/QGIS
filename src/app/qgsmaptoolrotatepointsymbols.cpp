@@ -127,7 +127,7 @@ void QgsMapToolRotatePointSymbols::canvasPressEvent( QgsMapMouseEvent *e )
 void QgsMapToolRotatePointSymbols::canvasPressOnFeature( QgsMapMouseEvent *e, const QgsFeature &feature, const QgsPointXY &snappedPoint )
 {
   //find out initial arrow direction
-  QVariant attrVal = feature.attribute( qgis::setToList( mCurrentRotationAttributes ).at( 0 ) );
+  const QVariant attrVal = feature.attribute( qgis::setToList( mCurrentRotationAttributes ).at( 0 ) );
 
   mCurrentRotationFeature = attrVal.toDouble();
   createPixmapItem( mMarkerSymbol.get() );
@@ -143,7 +143,7 @@ void QgsMapToolRotatePointSymbols::canvasPressOnFeature( QgsMapMouseEvent *e, co
 bool QgsMapToolRotatePointSymbols::checkSymbolCompatibility( QgsMarkerSymbol *markerSymbol, QgsRenderContext & )
 {
   bool ok = false;
-  QgsProperty ddAngle( markerSymbol->dataDefinedAngle() );
+  const QgsProperty ddAngle( markerSymbol->dataDefinedAngle() );
   if ( ddAngle && ddAngle.isActive() && ddAngle.propertyType() == QgsProperty::FieldBasedProperty )
   {
     mCurrentRotationAttributes << mActiveLayer->fields().indexFromName( ddAngle.field() );
@@ -168,8 +168,8 @@ void QgsMapToolRotatePointSymbols::canvasMoveEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  double azimut = calculateAzimut( e->pos() );
-  double azimutDiff = azimut - mCurrentMouseAzimut;
+  const double azimut = calculateAzimut( e->pos() );
+  const double azimutDiff = azimut - mCurrentMouseAzimut;
 
   //assign new feature rotation, making sure to respect the 0 - 360 degree range
   mCurrentRotationFeature += azimutDiff;
@@ -222,8 +222,8 @@ void QgsMapToolRotatePointSymbols::keyPressEvent( QKeyEvent *e )
 
 double QgsMapToolRotatePointSymbols::calculateAzimut( QPoint mousePos )
 {
-  int dx = mousePos.x() - mSnappedPoint.x();
-  int dy = mousePos.y() - mSnappedPoint.y();
+  const int dx = mousePos.x() - mSnappedPoint.x();
+  const int dy = mousePos.y() - mSnappedPoint.y();
   return 180 - std::atan2( ( double ) dx, ( double ) dy ) * 180.0 / M_PI;
 }
 
@@ -239,7 +239,7 @@ void QgsMapToolRotatePointSymbols::createPixmapItem( QgsMarkerSymbol *markerSymb
 
   if ( markerSymbol )
   {
-    std::unique_ptr< QgsSymbol > clone( markerSymbol->clone() );
+    const std::unique_ptr< QgsSymbol > clone( markerSymbol->clone() );
     QgsMarkerSymbol *markerClone = static_cast<QgsMarkerSymbol *>( clone.get() );
     markerClone->setDataDefinedAngle( QgsProperty() );
     pointImage = markerClone->bigSymbolPreviewImage( nullptr, Qgis::SymbolPreviewFlags() );
@@ -260,7 +260,7 @@ void QgsMapToolRotatePointSymbols::setPixmapItemRotation( double rotation )
 
 int QgsMapToolRotatePointSymbols::roundTo15Degrees( double n )
 {
-  int m = ( int )( n / 15.0 + 0.5 );
+  const int m = ( int )( n / 15.0 + 0.5 );
   return ( m * 15 );
 }
 

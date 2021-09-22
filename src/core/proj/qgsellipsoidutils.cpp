@@ -175,7 +175,7 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
   static std::once_flag initialized;
   std::call_once( initialized, [ = ]
   {
-    QgsScopedRuntimeProfile profile( QObject::tr( "Initialize ellipsoids" ) );
+    const QgsScopedRuntimeProfile profile( QObject::tr( "Initialize ellipsoids" ) );
     ( void )definitions();
   } );
 
@@ -183,10 +183,10 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
 
   // check cache
   {
-    QgsReadWriteLocker locker( *sEllipsoidCacheLock(), QgsReadWriteLocker::Read );
+    const QgsReadWriteLocker locker( *sEllipsoidCacheLock(), QgsReadWriteLocker::Read );
     if ( !sDisableCache )
     {
-      QHash< QString, EllipsoidParameters >::const_iterator cacheIt = sEllipsoidCache()->constFind( ellipsoid );
+      const QHash< QString, EllipsoidParameters >::const_iterator cacheIt = sEllipsoidCache()->constFind( ellipsoid );
       if ( cacheIt != sEllipsoidCache()->constEnd() )
       {
         // found a match in the cache
@@ -206,8 +206,8 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
   {
     QStringList paramList = ellipsoid.split( ':' );
     bool semiMajorOk, semiMinorOk;
-    double semiMajor = paramList[1].toDouble( & semiMajorOk );
-    double semiMinor = paramList[2].toDouble( & semiMinorOk );
+    const double semiMajor = paramList[1].toDouble( & semiMajorOk );
+    const double semiMinor = paramList[2].toDouble( & semiMinorOk );
     if ( semiMajorOk && semiMinorOk )
     {
       params.semiMajor = semiMajor;
@@ -220,7 +220,7 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
       params.valid = false;
     }
 
-    QgsReadWriteLocker locker( *sEllipsoidCacheLock(), QgsReadWriteLocker::Write );
+    const QgsReadWriteLocker locker( *sEllipsoidCacheLock(), QgsReadWriteLocker::Write );
     if ( !sDisableCache )
     {
       sEllipsoidCache()->insert( ellipsoid, params );
@@ -229,7 +229,7 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
   }
   params.valid = false;
 
-  QgsReadWriteLocker l( *sEllipsoidCacheLock(), QgsReadWriteLocker::Write );
+  const QgsReadWriteLocker l( *sEllipsoidCacheLock(), QgsReadWriteLocker::Write );
   if ( !sDisableCache )
   {
     sEllipsoidCache()->insert( ellipsoid, params );
@@ -262,7 +262,7 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
         PROJ_STRING_LIST codesIt = codes;
         while ( char *code = *codesIt )
         {
-          QgsProjUtils::proj_pj_unique_ptr ellipsoid( proj_create_from_database( context, authority, code, PJ_CATEGORY_ELLIPSOID, 0, nullptr ) );
+          const QgsProjUtils::proj_pj_unique_ptr ellipsoid( proj_create_from_database( context, authority, code, PJ_CATEGORY_ELLIPSOID, 0, nullptr ) );
           if ( ellipsoid.get() )
           {
             EllipsoidDefinition def;
@@ -345,8 +345,8 @@ QList<QgsCelestialBody> QgsEllipsoidUtils::celestialBodies()
 
 void QgsEllipsoidUtils::invalidateCache( bool disableCache )
 {
-  QgsReadWriteLocker locker1( *sEllipsoidCacheLock(), QgsReadWriteLocker::Write );
-  QgsReadWriteLocker locker2( *sDefinitionCacheLock(), QgsReadWriteLocker::Write );
+  const QgsReadWriteLocker locker1( *sEllipsoidCacheLock(), QgsReadWriteLocker::Write );
+  const QgsReadWriteLocker locker2( *sDefinitionCacheLock(), QgsReadWriteLocker::Write );
 
   if ( !sDisableCache )
   {

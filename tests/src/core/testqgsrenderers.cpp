@@ -91,10 +91,10 @@ void TestQgsRenderers::initTestCase()
   //
   //create a point layer that will be used in all tests...
   //
-  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = myDataDir + '/';
-  QString myPointsFileName = mTestDataDir + "points.shp";
-  QFileInfo myPointFileInfo( myPointsFileName );
+  const QString myPointsFileName = mTestDataDir + "points.shp";
+  const QFileInfo myPointFileInfo( myPointsFileName );
   mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
                                       myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
@@ -104,8 +104,8 @@ void TestQgsRenderers::initTestCase()
   //
   //create a poly layer that will be used in all tests...
   //
-  QString myPolysFileName = mTestDataDir + "polys.shp";
-  QFileInfo myPolyFileInfo( myPolysFileName );
+  const QString myPolysFileName = mTestDataDir + "polys.shp";
+  const QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
                                      myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
@@ -116,8 +116,8 @@ void TestQgsRenderers::initTestCase()
   //
   // Create a line layer that will be used in all tests...
   //
-  QString myLinesFileName = mTestDataDir + "lines.shp";
-  QFileInfo myLineFileInfo( myLinesFileName );
+  const QString myLinesFileName = mTestDataDir + "lines.shp";
+  const QFileInfo myLineFileInfo( myLinesFileName );
   mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(),
                                      myLineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
@@ -136,7 +136,7 @@ void TestQgsRenderers::cleanupTestCase()
 {
   QgsApplication::exitQgis();
 
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -213,7 +213,7 @@ void TestQgsRenderers::emptyGeometry()
 bool TestQgsRenderers::checkEmptyRender( const QString &testName, QgsVectorLayer *layer )
 {
   QgsMapSettings ms;
-  QgsRectangle extent( -180, -90, 180, 90 );
+  const QgsRectangle extent( -180, -90, 180, 90 );
   ms.setExtent( extent );
   ms.setFlag( QgsMapSettings::ForceVectorOutput );
   ms.setOutputDpi( 96 );
@@ -223,7 +223,7 @@ bool TestQgsRenderers::checkEmptyRender( const QString &testName, QgsVectorLayer
   myChecker.setMapSettings( ms );
   myChecker.setControlPathPrefix( "map_renderer" );
   myChecker.setColorTolerance( 15 );
-  bool myResultFlag = myChecker.runTest( testName, 200 );
+  const bool myResultFlag = myChecker.runTest( testName, 200 );
   mReport += myChecker.report();
   return myResultFlag;
 }
@@ -243,7 +243,7 @@ bool TestQgsRenderers::setQml( const QString &type )
   }
   QString myFileName = mTestDataDir + "points_" + type + "_symbol.qml";
   bool myStyleFlag = false;
-  QString error = mpPointsLayer->loadNamedStyle( myFileName, myStyleFlag );
+  const QString error = mpPointsLayer->loadNamedStyle( myFileName, myStyleFlag );
   if ( !myStyleFlag )
   {
     qDebug( "%s", error.toLocal8Bit().constData() );
@@ -276,7 +276,7 @@ bool TestQgsRenderers::imageCheck( const QString &testType )
   // mpPointsLayer->extent() was giving wrong extent in QGIS 2.0 (xmin shifted,
   // the same wrong value is reported by ogrinfo). Since QGIS 2.1, the provider
   // gives correct extent. Forced to fixed extend however to avoid problems in future.
-  QgsRectangle extent( -118.8888888888887720, 22.8002070393376783, -83.3333333333331581, 46.8719806763287536 );
+  const QgsRectangle extent( -118.8888888888887720, 22.8002070393376783, -83.3333333333331581, 46.8719806763287536 );
   mMapSettings->setExtent( extent );
   mMapSettings->setFlag( QgsMapSettings::ForceVectorOutput );
   mMapSettings->setOutputDpi( 96 );
@@ -284,7 +284,7 @@ bool TestQgsRenderers::imageCheck( const QString &testType )
   myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( *mMapSettings );
   myChecker.setColorTolerance( 15 );
-  bool myResultFlag = myChecker.runTest( testType, 200 );
+  const bool myResultFlag = myChecker.runTest( testType, 200 );
   mReport += myChecker.report();
   return myResultFlag;
 }

@@ -98,10 +98,10 @@ QString QgsCoordinateFormatter::formatXAsDegreesMinutesSeconds( double val, int 
     wrappedX = wrappedX + 360.0;
   }
 
-  int precisionMultiplier = std::pow( 10.0, precision );
+  const int precisionMultiplier = std::pow( 10.0, precision );
 
   int degreesX = int( std::fabs( wrappedX ) );
-  double floatMinutesX = ( std::fabs( wrappedX ) - degreesX ) * 60.0;
+  const double floatMinutesX = ( std::fabs( wrappedX ) - degreesX ) * 60.0;
   int intMinutesX = int( floatMinutesX );
   double secondsX = ( floatMinutesX - intMinutesX ) * 60.0;
 
@@ -151,7 +151,7 @@ QString QgsCoordinateFormatter::formatXAsDegreesMinutesSeconds( double val, int 
   if ( flags.testFlag( FlagDegreesPadMinutesSeconds ) )
   {
     minutesX = QString( "%L1" ).arg( intMinutesX, 2, 10, QChar( '0' ) );
-    int digits = 2 + ( precision == 0 ? 0 : 1 + precision ); //1 for decimal place if required
+    const int digits = 2 + ( precision == 0 ? 0 : 1 + precision ); //1 for decimal place if required
     strSecondsX = QString( "%L1" ).arg( secondsX, digits, 'f', precision, QChar( '0' ) );
   }
   else
@@ -180,10 +180,10 @@ QString QgsCoordinateFormatter::formatYAsDegreesMinutesSeconds( double val, int 
     wrappedY = wrappedY + 180.0;
   }
 
-  int precisionMultiplier = std::pow( 10.0, precision );
+  const int precisionMultiplier = std::pow( 10.0, precision );
 
   int degreesY = int( std::fabs( wrappedY ) );
-  double floatMinutesY = ( std::fabs( wrappedY ) - degreesY ) * 60.0;
+  const double floatMinutesY = ( std::fabs( wrappedY ) - degreesY ) * 60.0;
   int intMinutesY = int( floatMinutesY );
   double secondsY = ( floatMinutesY - intMinutesY ) * 60.0;
 
@@ -227,7 +227,7 @@ QString QgsCoordinateFormatter::formatYAsDegreesMinutesSeconds( double val, int 
   if ( flags.testFlag( FlagDegreesPadMinutesSeconds ) )
   {
     strMinutesY = QString( "%L1" ).arg( intMinutesY, 2, 10, QChar( '0' ) );
-    int digits = 2 + ( precision == 0 ? 0 : 1 + precision ); //1 for decimal place if required
+    const int digits = 2 + ( precision == 0 ? 0 : 1 + precision ); //1 for decimal place if required
     strSecondsY = QString( "%L1" ).arg( secondsY, digits, 'f', precision, QChar( '0' ) );
   }
   else
@@ -259,7 +259,7 @@ QString QgsCoordinateFormatter::formatXAsDegreesMinutes( double val, int precisi
   int degreesX = int( std::fabs( wrappedX ) );
   double floatMinutesX = ( std::fabs( wrappedX ) - degreesX ) * 60.0;
 
-  int precisionMultiplier = std::pow( 10.0, precision );
+  const int precisionMultiplier = std::pow( 10.0, precision );
 
   //make sure rounding to specified precision doesn't create minutes >= 60
   if ( std::round( floatMinutesX * precisionMultiplier ) >= 60 * precisionMultiplier )
@@ -296,9 +296,9 @@ QString QgsCoordinateFormatter::formatXAsDegreesMinutes( double val, int precisi
   }
 
   //pad minutes with leading digits if required
-  int digits = 2 + ( precision == 0 ? 0 : 1 + precision ); //1 for decimal place if required
-  QString strMinutesX = flags.testFlag( FlagDegreesPadMinutesSeconds ) ? QString( "%1" ).arg( floatMinutesX, digits, 'f', precision, QChar( '0' ) )
-                        : QLocale().toString( floatMinutesX, 'f', precision );
+  const int digits = 2 + ( precision == 0 ? 0 : 1 + precision ); //1 for decimal place if required
+  const QString strMinutesX = flags.testFlag( FlagDegreesPadMinutesSeconds ) ? QString( "%1" ).arg( floatMinutesX, digits, 'f', precision, QChar( '0' ) )
+                              : QLocale().toString( floatMinutesX, 'f', precision );
 
   return sign + QLocale().toString( degreesX ) + QChar( 176 ) +
          strMinutesX + QChar( 0x2032 ) +
@@ -322,7 +322,7 @@ QString QgsCoordinateFormatter::formatYAsDegreesMinutes( double val, int precisi
   int degreesY = int( std::fabs( wrappedY ) );
   double floatMinutesY = ( std::fabs( wrappedY ) - degreesY ) * 60.0;
 
-  int precisionMultiplier = std::pow( 10.0, precision );
+  const int precisionMultiplier = std::pow( 10.0, precision );
 
   //make sure rounding to specified precision doesn't create minutes >= 60
   if ( std::round( floatMinutesY * precisionMultiplier ) >= 60 * precisionMultiplier )
@@ -354,9 +354,9 @@ QString QgsCoordinateFormatter::formatYAsDegreesMinutes( double val, int precisi
 
 
   //pad minutes with leading digits if required
-  int digits = 2 + ( precision == 0 ? 0 : 1 + precision ); //1 for decimal place if required
-  QString strMinutesY = flags.testFlag( FlagDegreesPadMinutesSeconds ) ? QString( "%1" ).arg( floatMinutesY, digits, 'f', precision, QChar( '0' ) )
-                        : QLocale().toString( floatMinutesY, 'f', precision );
+  const int digits = 2 + ( precision == 0 ? 0 : 1 + precision ); //1 for decimal place if required
+  const QString strMinutesY = flags.testFlag( FlagDegreesPadMinutesSeconds ) ? QString( "%1" ).arg( floatMinutesY, digits, 'f', precision, QChar( '0' ) )
+                              : QLocale().toString( floatMinutesY, 'f', precision );
 
   return sign + QLocale().toString( degreesY ) + QChar( 176 ) +
          strMinutesY + QChar( 0x2032 ) +
@@ -377,9 +377,9 @@ QString QgsCoordinateFormatter::formatXAsDegrees( double val, int precision, For
     wrappedX = wrappedX + 360.0;
   }
 
-  double absX = std::fabs( wrappedX );
+  const double absX = std::fabs( wrappedX );
 
-  int precisionMultiplier = std::pow( 10.0, precision );
+  const int precisionMultiplier = std::pow( 10.0, precision );
 
   QString hemisphere;
   QString sign;
@@ -426,9 +426,9 @@ QString QgsCoordinateFormatter::formatYAsDegrees( double val, int precision, For
     wrappedY = wrappedY + 180.0;
   }
 
-  double absY = std::fabs( wrappedY );
+  const double absY = std::fabs( wrappedY );
 
-  int precisionMultiplier = std::pow( 10.0, precision );
+  const int precisionMultiplier = std::pow( 10.0, precision );
 
   QString hemisphere;
   QString sign;

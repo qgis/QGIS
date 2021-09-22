@@ -51,7 +51,7 @@ void TestQgsPalLabeling::initTestCase()
 void TestQgsPalLabeling::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -205,15 +205,15 @@ bool TestQgsPalLabeling::imageCheck( const QString &testName, QImage &image, int
   painter.end();
 
   mReport += "<h2>" + testName + "</h2>\n";
-  QString tempDir = QDir::tempPath() + '/';
-  QString fileName = tempDir + testName + ".png";
+  const QString tempDir = QDir::tempPath() + '/';
+  const QString fileName = tempDir + testName + ".png";
   imageWithBackground.save( fileName, "PNG" );
   QgsRenderChecker checker;
   checker.setControlPathPrefix( QStringLiteral( "pallabeling" ) );
   checker.setControlName( "expected_" + testName );
   checker.setRenderedImage( fileName );
   checker.setColorTolerance( 2 );
-  bool resultFlag = checker.compareImages( testName, mismatchCount );
+  const bool resultFlag = checker.compareImages( testName, mismatchCount );
   mReport += checker.report();
   return resultFlag;
 }
@@ -262,7 +262,7 @@ void TestQgsPalLabeling::testGeometryGenerator()
   vl2->setLabelsEnabled( true );
 
   // make a fake render context
-  QSize size( 640, 480 );
+  const QSize size( 640, 480 );
   QgsMapSettings mapSettings;
   QgsCoordinateReferenceSystem tgtCrs;
   tgtCrs.createFromString( QStringLiteral( "EPSG:4326" ) );

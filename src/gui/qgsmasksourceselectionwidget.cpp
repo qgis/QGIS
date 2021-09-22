@@ -104,7 +104,7 @@ void QgsMaskSourceSelectionWidget::update()
           indexPath.append( idx );
 
           std::unique_ptr< QTreeWidgetItem > slItem = std::make_unique< QTreeWidgetItem >( rootItem );
-          QIcon slIcon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( sl, QgsUnitTypes::RenderMillimeters, QSize( iconSize, iconSize ) );
+          const QIcon slIcon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( sl, QgsUnitTypes::RenderMillimeters, QSize( iconSize, iconSize ) );
           slItem->setIcon( 0, slIcon );
           if ( sl->layerType() == "MaskMarker" )
           {
@@ -116,7 +116,7 @@ void QgsMaskSourceSelectionWidget::update()
           if ( ( sl->layerType() == "MaskMarker" ) ||
                ( subSymbol && visitSymbol( slItem.get(), identifier, subSymbol, indexPath ) ) )
           {
-            QgsSymbolLayerReference ref( mLayer->id(), QgsSymbolLayerId( mCurrentIdentifier + identifier, indexPath ) );
+            const QgsSymbolLayerReference ref( mLayer->id(), QgsSymbolLayerId( mCurrentIdentifier + identifier, indexPath ) );
             mItems[ref] = slItem.get();
             rootItem->addChild( slItem.release() );
             ret = true;
@@ -136,7 +136,7 @@ void QgsMaskSourceSelectionWidget::update()
           return true;
 
         std::unique_ptr< QTreeWidgetItem > symbolItem = std::make_unique< QTreeWidgetItem >( mLayerItem, QStringList() << ( mCurrentDescription + leaf.description ) );
-        QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, QSize( iconSize, iconSize ) );
+        const QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, QSize( iconSize, iconSize ) );
         symbolItem->setIcon( 0, icon );
 
         if ( visitSymbol( symbolItem.get(), leaf.identifier, symbol, {} ) )
@@ -176,9 +176,9 @@ void QgsMaskSourceSelectionWidget::update()
           auto labelSettingsEntity = static_cast<const QgsStyleLabelSettingsEntity *>( leaf.entity );
           if ( labelSettingsEntity->settings().format().mask().enabled() )
           {
-            QString maskTitle = currentRule.isEmpty()
-                                ? QObject::tr( "Label mask" )
-                                : QObject::tr( "Label mask for '%1' rule" ).arg( currentDescription );
+            const QString maskTitle = currentRule.isEmpty()
+                                      ? QObject::tr( "Label mask" )
+                                      : QObject::tr( "Label mask for '%1' rule" ).arg( currentDescription );
             QTreeWidgetItem *slItem = new QTreeWidgetItem( mLayerItem, QStringList() << maskTitle );
             slItem->setFlags( slItem->flags() | Qt::ItemIsUserCheckable );
             slItem->setCheckState( 0, Qt::Unchecked );
@@ -258,8 +258,8 @@ void QgsMaskSourceSelectionWidget::setSelection( const QList<QgsMaskSourceSelect
 
   for ( const MaskSource &src : sel )
   {
-    QString layerId = ( src.isLabeling ? "__labels__" : "" ) + src.layerId;
-    auto it = mItems.find( QgsSymbolLayerReference( layerId, src.symbolLayerId ) );
+    const QString layerId = ( src.isLabeling ? "__labels__" : "" ) + src.layerId;
+    const auto it = mItems.find( QgsSymbolLayerReference( layerId, src.symbolLayerId ) );
     if ( it != mItems.end() )
     {
       it.value()->setCheckState( 0, Qt::Checked );

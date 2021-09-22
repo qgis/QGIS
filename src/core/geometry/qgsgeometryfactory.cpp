@@ -71,7 +71,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkb( QgsConstWk
 
 std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkt( const QString &text )
 {
-  QString trimmed = text.trimmed();
+  const QString trimmed = text.trimmed();
   std::unique_ptr< QgsAbstractGeometry> geom;
   if ( trimmed.startsWith( QLatin1String( "Point" ), Qt::CaseInsensitive ) )
   {
@@ -227,7 +227,7 @@ std::unique_ptr<QgsLineString> QgsGeometryFactory::linestringFromPolyline( const
 
 std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkbType( QgsWkbTypes::Type t )
 {
-  QgsWkbTypes::Type type = QgsWkbTypes::flatType( t );
+  const QgsWkbTypes::Type type = QgsWkbTypes::flatType( t );
   switch ( type )
   {
     case QgsWkbTypes::Point:
@@ -263,7 +263,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkbType( QgsWkb
 
 std::unique_ptr<QgsGeometryCollection> QgsGeometryFactory::createCollectionOfType( QgsWkbTypes::Type t )
 {
-  QgsWkbTypes::Type type = QgsWkbTypes::flatType( QgsWkbTypes::multiType( t ) );
+  const QgsWkbTypes::Type type = QgsWkbTypes::flatType( QgsWkbTypes::multiType( t ) );
   std::unique_ptr< QgsGeometryCollection > collect;
   switch ( type )
   {

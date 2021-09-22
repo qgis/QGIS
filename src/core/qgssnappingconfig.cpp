@@ -189,7 +189,7 @@ bool QgsSnappingConfig::operator==( const QgsSnappingConfig &other ) const
 void QgsSnappingConfig::reset()
 {
   // get defaults values. They are both used for standard and advanced configuration (per layer)
-  bool enabled = QgsSettingsRegistryCore::settingsDigitizingDefaultSnapEnabled.value();
+  const bool enabled = QgsSettingsRegistryCore::settingsDigitizingDefaultSnapEnabled.value();
   SnappingMode mode = QgsSettings().enumValue( QStringLiteral( "/qgis/digitizing/default_snap_mode" ),  AllLayers );
   if ( mode == 0 )
   {
@@ -197,9 +197,9 @@ void QgsSnappingConfig::reset()
     // could be removed in 3.4+
     mode = AllLayers;
   }
-  QgsSnappingConfig::SnappingTypeFlag type = QgsSettingsRegistryCore::settingsDigitizingDefaultSnapType.value();
-  double tolerance = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance.value();
-  QgsTolerance::UnitType units = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit.value();
+  const QgsSnappingConfig::SnappingTypeFlag type = QgsSettingsRegistryCore::settingsDigitizingDefaultSnapType.value();
+  const double tolerance = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance.value();
+  const QgsTolerance::UnitType units = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit.value();
 
   // assign main (standard) config
   mEnabled = enabled;
@@ -446,7 +446,7 @@ bool QgsSnappingConfig::operator!=( const QgsSnappingConfig &other ) const
 
 void QgsSnappingConfig::readProject( const QDomDocument &doc )
 {
-  QDomElement snapSettingsElem = doc.firstChildElement( QStringLiteral( "qgis" ) ).firstChildElement( QStringLiteral( "snapping-settings" ) );
+  const QDomElement snapSettingsElem = doc.firstChildElement( QStringLiteral( "qgis" ) ).firstChildElement( QStringLiteral( "snapping-settings" ) );
   if ( snapSettingsElem.isNull() )
   {
     readLegacySettings();
@@ -461,15 +461,15 @@ void QgsSnappingConfig::readProject( const QDomDocument &doc )
 
   if ( snapSettingsElem.hasAttribute( QStringLiteral( "type" ) ) )
   {
-    int type = snapSettingsElem.attribute( QStringLiteral( "type" ) ).toInt();
-    QDomElement versionElem = doc.firstChildElement( QStringLiteral( "qgis" ) );
+    const int type = snapSettingsElem.attribute( QStringLiteral( "type" ) ).toInt();
+    const QDomElement versionElem = doc.firstChildElement( QStringLiteral( "qgis" ) );
     QString version;
     bool before3_14 = false;
     if ( versionElem.hasAttribute( QStringLiteral( "version" ) ) )
     {
       version = versionElem.attribute( QStringLiteral( "version" ) );
-      QRegularExpression re( QStringLiteral( "([\\d]+)\\.([\\d]+)" ) );
-      QRegularExpressionMatch match = re.match( version );
+      const QRegularExpression re( QStringLiteral( "([\\d]+)\\.([\\d]+)" ) );
+      const QRegularExpressionMatch match = re.match( version );
       if ( match.hasMatch() )
       {
         if ( ( match.captured( 1 ).toInt() <= 3 ) && ( match.captured( 2 ).toInt() <= 12 ) )
@@ -524,28 +524,28 @@ void QgsSnappingConfig::readProject( const QDomDocument &doc )
     mSelfSnapping = snapSettingsElem.attribute( QStringLiteral( "self-snapping" ) ) == QLatin1String( "1" );
 
   // do not clear the settings as they must be automatically synchronized with current layers
-  QDomNodeList nodes = snapSettingsElem.elementsByTagName( QStringLiteral( "individual-layer-settings" ) );
+  const QDomNodeList nodes = snapSettingsElem.elementsByTagName( QStringLiteral( "individual-layer-settings" ) );
   if ( nodes.count() )
   {
-    QDomNode node = nodes.item( 0 );
-    QDomNodeList settingNodes = node.childNodes();
-    int layerCount = settingNodes.count();
+    const QDomNode node = nodes.item( 0 );
+    const QDomNodeList settingNodes = node.childNodes();
+    const int layerCount = settingNodes.count();
     for ( int i = 0; i < layerCount; ++i )
     {
-      QDomElement settingElement = settingNodes.at( i ).toElement();
+      const QDomElement settingElement = settingNodes.at( i ).toElement();
       if ( settingElement.tagName() != QLatin1String( "layer-setting" ) )
       {
         QgsLogger::warning( QApplication::translate( "QgsProjectSnappingSettings", "Cannot read individual settings. Unexpected tag '%1'" ).arg( settingElement.tagName() ) );
         continue;
       }
 
-      QString layerId = settingElement.attribute( QStringLiteral( "id" ) );
-      bool enabled = settingElement.attribute( QStringLiteral( "enabled" ) ) == QLatin1String( "1" );
-      QgsSnappingConfig::SnappingTypeFlag type = static_cast<QgsSnappingConfig::SnappingTypeFlag>( settingElement.attribute( QStringLiteral( "type" ) ).toInt() );
-      double tolerance = settingElement.attribute( QStringLiteral( "tolerance" ) ).toDouble();
-      QgsTolerance::UnitType units = static_cast< QgsTolerance::UnitType >( settingElement.attribute( QStringLiteral( "units" ) ).toInt() );
-      double minScale = settingElement.attribute( QStringLiteral( "minScale" ) ).toDouble();
-      double maxScale = settingElement.attribute( QStringLiteral( "maxScale" ) ).toDouble();
+      const QString layerId = settingElement.attribute( QStringLiteral( "id" ) );
+      const bool enabled = settingElement.attribute( QStringLiteral( "enabled" ) ) == QLatin1String( "1" );
+      const QgsSnappingConfig::SnappingTypeFlag type = static_cast<QgsSnappingConfig::SnappingTypeFlag>( settingElement.attribute( QStringLiteral( "type" ) ).toInt() );
+      const double tolerance = settingElement.attribute( QStringLiteral( "tolerance" ) ).toDouble();
+      const QgsTolerance::UnitType units = static_cast< QgsTolerance::UnitType >( settingElement.attribute( QStringLiteral( "units" ) ).toInt() );
+      const double minScale = settingElement.attribute( QStringLiteral( "minScale" ) ).toDouble();
+      const double maxScale = settingElement.attribute( QStringLiteral( "maxScale" ) ).toDouble();
 
       QgsMapLayer *ml = mProject->mapLayer( layerId );
       if ( !ml || ml->type() != QgsMapLayerType::VectorLayer )
@@ -553,7 +553,7 @@ void QgsSnappingConfig::readProject( const QDomDocument &doc )
 
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
 
-      IndividualLayerSettings setting = IndividualLayerSettings( enabled, type, tolerance, units, minScale, maxScale );
+      const IndividualLayerSettings setting = IndividualLayerSettings( enabled, type, tolerance, units, minScale, maxScale );
       mIndividualLayerSettings.insert( vl, setting );
     }
   }
@@ -597,10 +597,10 @@ void QgsSnappingConfig::writeProject( QDomDocument &doc )
 bool QgsSnappingConfig::addLayers( const QList<QgsMapLayer *> &layers )
 {
   bool changed = false;
-  bool enabled = QgsSettingsRegistryCore::settingsDigitizingDefaultSnapEnabled.value( QString(), true, true );
-  QgsSnappingConfig::SnappingTypeFlag type = QgsSettingsRegistryCore::settingsDigitizingDefaultSnapType.value();
-  double tolerance = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance.value();
-  QgsTolerance::UnitType units = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit.value();
+  const bool enabled = QgsSettingsRegistryCore::settingsDigitizingDefaultSnapEnabled.value( QString(), true, true );
+  const QgsSnappingConfig::SnappingTypeFlag type = QgsSettingsRegistryCore::settingsDigitizingDefaultSnapType.value();
+  const double tolerance = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance.value();
+  const QgsTolerance::UnitType units = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit.value();
 
   const auto constLayers = layers;
   for ( QgsMapLayer *ml : constLayers )
@@ -636,7 +636,7 @@ void QgsSnappingConfig::readLegacySettings()
   //
   mMode = ActiveLayer;
 
-  QString snapMode = mProject->readEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/SnappingMode" ) );
+  const QString snapMode = mProject->readEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/SnappingMode" ) );
 
   mTolerance = mProject->readDoubleEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapTolerance" ), 0 );
   mUnits = static_cast< QgsTolerance::UnitType >( mProject->readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapToleranceUnit" ), QgsTolerance::ProjectUnits ) );
@@ -644,11 +644,11 @@ void QgsSnappingConfig::readLegacySettings()
   mIntersectionSnapping = mProject->readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/IntersectionSnapping" ), 0 );
 
   //read snapping settings from project
-  QStringList layerIdList = mProject->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnappingList" ), QStringList() );
-  QStringList enabledList = mProject->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnappingEnabledList" ), QStringList() );
-  QStringList toleranceList = mProject->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnappingToleranceList" ), QStringList() );
-  QStringList toleranceUnitList = mProject->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnappingToleranceUnitList" ), QStringList() );
-  QStringList snapToList = mProject->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnapToList" ), QStringList() );
+  const QStringList layerIdList = mProject->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnappingList" ), QStringList() );
+  const QStringList enabledList = mProject->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnappingEnabledList" ), QStringList() );
+  const QStringList toleranceList = mProject->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnappingToleranceList" ), QStringList() );
+  const QStringList toleranceUnitList = mProject->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnappingToleranceUnitList" ), QStringList() );
+  const QStringList snapToList = mProject->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnapToList" ), QStringList() );
 
   // lists must have the same size, otherwise something is wrong
   if ( layerIdList.size() != enabledList.size() ||
@@ -677,16 +677,16 @@ void QgsSnappingConfig::readLegacySettings()
     if ( !vlayer || !vlayer->isSpatial() )
       continue;
 
-    QgsSnappingConfig::SnappingTypeFlag t( *snapIt == QLatin1String( "to_vertex" ) ? VertexFlag :
-                                           ( *snapIt == QLatin1String( "to_segment" ) ? SegmentFlag :
-                                               static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::VertexFlag | QgsSnappingConfig::SegmentFlag )
-                                           )
-                                         );
+    const QgsSnappingConfig::SnappingTypeFlag t( *snapIt == QLatin1String( "to_vertex" ) ? VertexFlag :
+        ( *snapIt == QLatin1String( "to_segment" ) ? SegmentFlag :
+          static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::VertexFlag | QgsSnappingConfig::SegmentFlag )
+        )
+                                               );
 
     mIndividualLayerSettings.insert( vlayer, IndividualLayerSettings( *enabledIt == QLatin1String( "enabled" ), t, tolIt->toDouble(), static_cast<QgsTolerance::UnitType>( tolUnitIt->toInt() ), 0.0, 0.0 ) );
   }
 
-  QString snapType = mProject->readEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapType" ), QStringLiteral( "off" ) );
+  const QString snapType = mProject->readEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapType" ), QStringLiteral( "off" ) );
   mEnabled = true;
   if ( snapType == QLatin1String( "to segment" ) )
     mType = SegmentFlag;

@@ -52,6 +52,12 @@ Returns a message that can be provided by the advanced editing when applying is 
 Removes all data provided to the editing or created by the editing
 %End
 
+    virtual bool isFinished() const;
+%Docstring
+Returns whether the advanced edit is finished,
+if not, this edit has to be applied again with :py:func:`QgsMeshEditor.advancedEdit()` until is finished returns ``True``
+%End
+
   protected:
 
 };
@@ -82,6 +88,69 @@ Constructor
 
 };
 
+
+class QgsMeshTransformVerticesByExpression : QgsMeshAdvancedEditing
+{
+%Docstring(signature="appended")
+
+Class that can transform vertices of a mesh by expression
+
+Each coordinates are associated with an expression that can be defined with function
+returning the current coordinates (see :py:func:`~QgsMeshEditRefineFaces.setExpressions`):
+
+- $vertex_x
+- $vertex_y
+- $vertex_z
+
+Example:
+Transposing a mesh and translate following axe X with a distance of 50 and increase the level of the mesh
+with an height of 80 when previous X coordinate is under 100 and de crease the level of 150 when X is under 100:
+
+expressionX: "$vertex_y + 50"
+expressionY: "$vertex_x"
+expressionZ: "if( $vertex_x <= 100 , $vertex_z + 80 , $vertex_z - 150)"
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsmeshadvancedediting.h"
+%End
+  public:
+
+    QgsMeshTransformVerticesByExpression();
+%Docstring
+Constructor
+%End
+
+    void setExpressions( const QString &expressionX, const QString &expressionY, const QString &expressionZ );
+%Docstring
+Sets the expressions for the coordinates transformation.
+
+.. note::
+
+   Expressions are optional for each coordinate, the coordinate will not be transformed if the string is void.
+%End
+
+    bool calculate( QgsMeshLayer *layer );
+%Docstring
+Calculates the transformed vertices of the mesh ``layer``, returns ``False`` if this leads to topological or geometrical errors.
+The mesh layer must be in edit mode.
+
+.. note::
+
+   this method not apply new vertices to the mesh layer but only store the calculated transformation
+   that can be apply later with :py:func:`QgsMeshEditor.advancedEdit()`
+%End
+
+    QgsMeshVertex transformedVertex( QgsMeshLayer *layer, int vertexIndex ) const;
+%Docstring
+Returns the transformed vertex from its index ``vertexIndex`` for the mesh ``layer``
+
+If ``layer`` is not the same than the one used to make the calculation, this will create an undefined behavior
+%End
+
+};
 
 /************************************************************************
  * This file has been generated automatically from                      *

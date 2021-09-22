@@ -72,9 +72,9 @@ void TestQgsConnectionPool::layersFromSameDatasetGPX()
 {
   // Tests whether features are correctly retrevied from different layers which are
   // loaded from the same dataset. See issue #14560
-  int nWaypoints = 100000;
-  int nRoutes = 100000;
-  int nRoutePts = 10;
+  const int nWaypoints = 100000;
+  const int nRoutes = 100000;
+  const int nRoutePts = 10;
   QTemporaryFile testFile( QStringLiteral( "testXXXXXX.gpx" ) );
   testFile.setAutoRemove( false );
   testFile.open();
@@ -116,7 +116,7 @@ void TestQgsConnectionPool::layersFromSameDatasetGPX()
 
   for ( int i = 0, n = layer1Features.count(); i < n; ++i )
   {
-    QgsGeometry featureGeom = layer1Features[i].geometry();
+    const QgsGeometry featureGeom = layer1Features[i].geometry();
     const QgsPoint *geom = dynamic_cast<const QgsPoint *>( featureGeom.constGet() );
     QVERIFY( geom );
     QVERIFY( qFuzzyCompare( geom->x(), i ) );
@@ -124,14 +124,14 @@ void TestQgsConnectionPool::layersFromSameDatasetGPX()
   }
   for ( int i = 0, n = layer2Features.count(); i < n; ++i )
   {
-    QgsGeometry featureGeom = layer2Features[i].geometry();
+    const QgsGeometry featureGeom = layer2Features[i].geometry();
     const QgsLineString *geom = dynamic_cast<const QgsLineString *>( featureGeom.constGet() );
     QVERIFY( geom );
-    int nVtx = geom->vertexCount();
+    const int nVtx = geom->vertexCount();
     QVERIFY( nVtx == nRoutePts );
     for ( int j = 0; j < nVtx; ++j )
     {
-      QgsPoint p = geom->vertexAt( QgsVertexId( 0, 0, j ) );
+      const QgsPoint p = geom->vertexAt( QgsVertexId( 0, 0, j ) );
       QVERIFY( qFuzzyCompare( p.x(), j ) );
       QVERIFY( qFuzzyCompare( p.y(), i ) );
     }

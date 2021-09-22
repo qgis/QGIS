@@ -238,9 +238,9 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static QgsPoint projectPointOnSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 ) SIP_HOLDGIL
     {
-      double nx = s2.y() - s1.y();
-      double ny = -( s2.x() - s1.x() );
-      double t = ( p.x() * ny - p.y() * nx - s1.x() * ny + s1.y() * nx ) / ( ( s2.x() - s1.x() ) * ny - ( s2.y() - s1.y() ) * nx );
+      const double nx = s2.y() - s1.y();
+      const double ny = -( s2.x() - s1.x() );
+      const double t = ( p.x() * ny - p.y() * nx - s1.x() * ny + s1.y() * nx ) / ( ( s2.x() - s1.x() ) * ny - ( s2.y() - s1.y() ) * nx );
       return t < 0. ? s1 : t > 1. ? s2 : QgsPoint( s1.x() + ( s2.x() - s1.x() ) * t, s1.y() + ( s2.y() - s1.y() ) * t );
     }
 

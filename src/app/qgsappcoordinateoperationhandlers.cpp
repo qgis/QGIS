@@ -146,7 +146,7 @@ void QgsAppMissingGridHandler::onMissingPreferredGrid( const QgsCoordinateRefere
   {
     if ( !grid.isAvailable )
     {
-      QString m = tr( "This transformation requires the grid file “%1”, which is not available for use on the system." ).arg( grid.shortName );
+      const QString m = tr( "This transformation requires the grid file “%1”, which is not available for use on the system." ).arg( grid.shortName );
       gridName = grid.shortName;
       if ( !grid.url.isEmpty() )
       {
@@ -239,7 +239,7 @@ void QgsAppMissingGridHandler::onMissingGridUsedByContextHandler( const QgsCoord
     if ( !grid.isAvailable )
     {
       gridName = grid.shortName;
-      QString m = tr( "This transformation requires the grid file “%1”, which is not available for use on the system." ).arg( grid.shortName );
+      const QString m = tr( "This transformation requires the grid file “%1”, which is not available for use on the system." ).arg( grid.shortName );
       if ( !grid.url.isEmpty() )
       {
         if ( !grid.packageName.isEmpty() )

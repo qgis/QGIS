@@ -92,7 +92,7 @@ void QgsNmeaConnection::processStringBuffer()
     {
       if ( dollarIndex != -1 )
       {
-        QString substring = mStringBuffer.mid( dollarIndex, endSentenceIndex );
+        const QString substring = mStringBuffer.mid( dollarIndex, endSentenceIndex );
         QByteArray ba = substring.toLocal8Bit();
         if ( substring.startsWith( QLatin1String( "$GPGGA" ) ) || substring.startsWith( QLatin1String( "$GNGGA" ) ) )
         {
@@ -200,9 +200,9 @@ void QgsNmeaConnection::processGstSentence( const char *data, int len )
   if ( nmea_parse_GPGST( data, len, &result ) )
   {
     //update mLastGPSInformation
-    double sig_lat = result.sig_lat;
-    double sig_lon = result.sig_lon;
-    double sig_alt = result.sig_alt;
+    const double sig_lat = result.sig_lat;
+    const double sig_lon = result.sig_lon;
+    const double sig_alt = result.sig_alt;
 
     // Horizontal RMS
     mLastGPSInformation.hacc = sqrt( ( pow( sig_lat, 2 ) + pow( sig_lon, 2 ) ) / 2.0 );
@@ -267,8 +267,8 @@ void QgsNmeaConnection::processRmcSentence( const char *data, int len )
     mLastGPSInformation.status = result.status;  // A,V
 
     //date and time
-    QDate date( result.utc.year + 1900, result.utc.mon + 1, result.utc.day );
-    QTime time( result.utc.hour, result.utc.min, result.utc.sec, result.utc.msec ); // added msec part
+    const QDate date( result.utc.year + 1900, result.utc.mon + 1, result.utc.day );
+    const QTime time( result.utc.hour, result.utc.min, result.utc.sec, result.utc.msec ); // added msec part
     if ( date.isValid() && time.isValid() )
     {
       mLastGPSInformation.utcDateTime.setTimeSpec( Qt::UTC );
@@ -298,7 +298,7 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
 
     for ( int i = 0; i < NMEA_SATINPACK; ++i )
     {
-      nmeaSATELLITE currentSatellite = result.sat_data[i];
+      const nmeaSATELLITE currentSatellite = result.sat_data[i];
       QgsSatelliteInfo satelliteInfo;
       satelliteInfo.azimuth = currentSatellite.azimuth;
       satelliteInfo.elevation = currentSatellite.elv;

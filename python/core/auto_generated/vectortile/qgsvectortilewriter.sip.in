@@ -128,7 +128,7 @@ See the class description about the syntax of destination URIs.
 
     void setExtent( const QgsRectangle &extent );
 %Docstring
-Sets extent of vector tile output. Currently always in EPSG:3857.
+Sets extent of vector tile output.
 If unset, it will use the full extent of all input layers combined
 %End
 
@@ -156,6 +156,11 @@ Sets that will be written to the output dataset. See class description for more 
 Sets coordinate transform context for transforms between layers and tile matrix CRS
 %End
 
+    bool setRootTileMatrix( const QgsTileMatrix &tileMatrix );
+%Docstring
+Sets zoom level 0 tile matrix
+%End
+
     bool writeTiles( QgsFeedback *feedback = 0 );
 %Docstring
 Writes vector tiles according to the configuration.
@@ -174,6 +179,20 @@ an empty string if writing was successful.
     QgsRectangle fullExtent() const;
 %Docstring
 Returns calculated extent that combines extent of all input layers
+%End
+
+    QByteArray writeSingleTile( QgsTileXYZ tileID, QgsFeedback *feedback = 0, int buffer = 256, int resolution = 4096 ) const;
+%Docstring
+Encodes single MVT tile
+
+:param tileID: Tile identifier
+:param feedback: optional, provide cancellation functionality
+:param resolution: the resolution of coordinates of geometries within the tile. The default is 4096
+:param buffer: size of the buffer zone around tile edges in integer tile coordinates. The default is 256 (~6%)
+
+Returns a QByteArray with the encoded data
+
+.. versionadded:: 3.22
 %End
 
 };

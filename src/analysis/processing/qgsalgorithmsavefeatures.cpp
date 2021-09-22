@@ -93,8 +93,8 @@ QVariantMap QgsSaveFeaturesAlgorithm::processAlgorithm( const QVariantMap &param
   QStringList datasourceOptions = parameterAsString( parameters, QStringLiteral( "DATASOURCE_OPTIONS" ), context ).trimmed().split( ';', QString::SkipEmptyParts );
   QStringList layerOptions = parameterAsString( parameters, QStringLiteral( "LAYER_OPTIONS" ), context ).trimmed().split( ';', QString::SkipEmptyParts );
 #else
-  QStringList datasourceOptions = parameterAsString( parameters, QStringLiteral( "DATASOURCE_OPTIONS" ), context ).trimmed().split( ';', Qt::SkipEmptyParts );
-  QStringList layerOptions = parameterAsString( parameters, QStringLiteral( "LAYER_OPTIONS" ), context ).trimmed().split( ';', Qt::SkipEmptyParts );
+  const QStringList datasourceOptions = parameterAsString( parameters, QStringLiteral( "DATASOURCE_OPTIONS" ), context ).trimmed().split( ';', Qt::SkipEmptyParts );
+  const QStringList layerOptions = parameterAsString( parameters, QStringLiteral( "LAYER_OPTIONS" ), context ).trimmed().split( ';', Qt::SkipEmptyParts );
 #endif
 
   QString dest;
@@ -103,7 +103,7 @@ QVariantMap QgsSaveFeaturesAlgorithm::processAlgorithm( const QVariantMap &param
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-  double step = source->featureCount() > 0 ? 100.0 / source->featureCount() : 1;
+  const double step = source->featureCount() > 0 ? 100.0 / source->featureCount() : 1;
   long long i = 0;
 
   QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest(), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
@@ -124,11 +124,11 @@ QVariantMap QgsSaveFeaturesAlgorithm::processAlgorithm( const QVariantMap &param
 
   QString filePath = dest;
   layerName.clear(); // value of final layer name will be extracted from the destination string
-  int separatorIndex = dest.indexOf( '|' );
+  const int separatorIndex = dest.indexOf( '|' );
   if ( separatorIndex > -1 )
   {
-    QRegularExpression layerNameRx( QStringLiteral( "\\|layername=([^\\|]*)" ) );
-    QRegularExpressionMatch match = layerNameRx.match( dest );
+    const QRegularExpression layerNameRx( QStringLiteral( "\\|layername=([^\\|]*)" ) );
+    const QRegularExpressionMatch match = layerNameRx.match( dest );
     if ( match.hasMatch() )
     {
       layerName = match.captured( 1 );

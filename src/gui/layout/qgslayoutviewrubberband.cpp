@@ -44,8 +44,8 @@ QRectF QgsLayoutViewRubberBand::updateRect( QPointF start, QPointF position, boo
   double width = 0;
   double height = 0;
 
-  double dx = position.x() - start.x();
-  double dy = position.y() - start.y();
+  const double dx = position.x() - start.x();
+  const double dy = position.y() - start.y();
 
   if ( constrainSquare )
   {
@@ -161,10 +161,10 @@ void QgsLayoutViewRectangularRubberBand::update( QPointF position, Qt::KeyboardM
     return;
   }
 
-  bool constrainSquare = modifiers & Qt::ShiftModifier;
-  bool fromCenter = modifiers & Qt::AltModifier;
+  const bool constrainSquare = modifiers & Qt::ShiftModifier;
+  const bool fromCenter = modifiers & Qt::AltModifier;
 
-  QRectF newRect = updateRect( mRubberBandStartPos, position, constrainSquare, fromCenter );
+  const QRectF newRect = updateRect( mRubberBandStartPos, position, constrainSquare, fromCenter );
   mRubberBandItem->setRect( 0, 0, newRect.width(), newRect.height() );
   QTransform t;
   t.translate( newRect.x(), newRect.y() );
@@ -175,8 +175,8 @@ void QgsLayoutViewRectangularRubberBand::update( QPointF position, Qt::KeyboardM
 
 QRectF QgsLayoutViewRectangularRubberBand::finish( QPointF position, Qt::KeyboardModifiers modifiers )
 {
-  bool constrainSquare = modifiers & Qt::ShiftModifier;
-  bool fromCenter = modifiers & Qt::AltModifier;
+  const bool constrainSquare = modifiers & Qt::ShiftModifier;
+  const bool fromCenter = modifiers & Qt::AltModifier;
 
   if ( mRubberBandItem )
   {
@@ -228,10 +228,10 @@ void QgsLayoutViewEllipticalRubberBand::update( QPointF position, Qt::KeyboardMo
     return;
   }
 
-  bool constrainSquare = modifiers & Qt::ShiftModifier;
-  bool fromCenter = modifiers & Qt::AltModifier;
+  const bool constrainSquare = modifiers & Qt::ShiftModifier;
+  const bool fromCenter = modifiers & Qt::AltModifier;
 
-  QRectF newRect = updateRect( mRubberBandStartPos, position, constrainSquare, fromCenter );
+  const QRectF newRect = updateRect( mRubberBandStartPos, position, constrainSquare, fromCenter );
   mRubberBandItem->setRect( 0, 0, newRect.width(), newRect.height() );
   QTransform t;
   t.translate( newRect.x(), newRect.y() );
@@ -242,8 +242,8 @@ void QgsLayoutViewEllipticalRubberBand::update( QPointF position, Qt::KeyboardMo
 
 QRectF QgsLayoutViewEllipticalRubberBand::finish( QPointF position, Qt::KeyboardModifiers modifiers )
 {
-  bool constrainSquare = modifiers & Qt::ShiftModifier;
-  bool fromCenter = modifiers & Qt::AltModifier;
+  const bool constrainSquare = modifiers & Qt::ShiftModifier;
+  const bool fromCenter = modifiers & Qt::AltModifier;
 
   if ( mRubberBandItem )
   {
@@ -299,15 +299,15 @@ void QgsLayoutViewTriangleRubberBand::update( QPointF position, Qt::KeyboardModi
     return;
   }
 
-  bool constrainSquare = modifiers & Qt::ShiftModifier;
-  bool fromCenter = modifiers & Qt::AltModifier;
+  const bool constrainSquare = modifiers & Qt::ShiftModifier;
+  const bool fromCenter = modifiers & Qt::AltModifier;
 
-  QRectF newRect = updateRect( mRubberBandStartPos, position, constrainSquare, fromCenter );
+  const QRectF newRect = updateRect( mRubberBandStartPos, position, constrainSquare, fromCenter );
 
-  QPolygonF shapePolygon = QPolygonF() << QPointF( 0, newRect.height() )
-                           << QPointF( newRect.width(), newRect.height() )
-                           << QPointF( newRect.width() / 2.0, 0 )
-                           << QPointF( 0, newRect.height() );
+  const QPolygonF shapePolygon = QPolygonF() << QPointF( 0, newRect.height() )
+                                 << QPointF( newRect.width(), newRect.height() )
+                                 << QPointF( newRect.width() / 2.0, 0 )
+                                 << QPointF( 0, newRect.height() );
 
   mRubberBandItem->setPolygon( shapePolygon );
   QTransform t;
@@ -319,8 +319,8 @@ void QgsLayoutViewTriangleRubberBand::update( QPointF position, Qt::KeyboardModi
 
 QRectF QgsLayoutViewTriangleRubberBand::finish( QPointF position, Qt::KeyboardModifiers modifiers )
 {
-  bool constrainSquare = modifiers & Qt::ShiftModifier;
-  bool fromCenter = modifiers & Qt::AltModifier;
+  const bool constrainSquare = modifiers & Qt::ShiftModifier;
+  const bool fromCenter = modifiers & Qt::AltModifier;
 
   if ( mRubberBandItem )
   {

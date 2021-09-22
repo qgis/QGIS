@@ -163,13 +163,25 @@ void MDAL::DriverManager::loadDatasets( Mesh *mesh, const std::string &datasetFi
   MDAL::Log::error( MDAL_Status::Err_UnknownFormat, "No driver was able to load requested file: " + datasetFile );
 }
 
-void MDAL::DriverManager::save( MDAL::Mesh *mesh, const std::string &uri, const std::string &driverName ) const
+void  MDAL::DriverManager::save( Mesh *mesh, const std::string &uri ) const
 {
-  auto selectedDriver = driver( driverName );
+  std::string driverName;
+  std::string meshName;
+  std::string fileName;
+
+  MDAL::parseDriverAndMeshFromUri( uri, driverName, fileName, meshName );
+
+  std::shared_ptr<MDAL::Driver> selectedDriver = driver( driverName );
+
+  if ( !selectedDriver )
+  {
+    MDAL::Log::error( MDAL_Status::Err_MissingDriver, "Could not find driver with name: " + driverName );
+    return;
+  }
 
   std::unique_ptr<Driver> drv( selectedDriver->create() );
 
-  drv->save( uri, mesh );
+  drv->save( fileName, meshName, mesh );
 }
 
 size_t MDAL::DriverManager::driversCount() const

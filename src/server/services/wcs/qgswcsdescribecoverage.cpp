@@ -71,7 +71,7 @@ namespace QgsWcs
 
     QDomDocument doc;
 
-    QgsServerRequest::Parameters parameters = request.parameters();
+    const QgsServerRequest::Parameters parameters = request.parameters();
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
@@ -93,14 +93,14 @@ namespace QgsWcs
     //defining coverage name
     QString coveNames;
     //read COVERAGE
-    QMap<QString, QString>::const_iterator cove_name_it = parameters.constFind( QStringLiteral( "COVERAGE" ) );
+    const QMap<QString, QString>::const_iterator cove_name_it = parameters.constFind( QStringLiteral( "COVERAGE" ) );
     if ( cove_name_it != parameters.constEnd() )
     {
       coveNames = cove_name_it.value();
     }
     if ( coveNames.isEmpty() )
     {
-      QMap<QString, QString>::const_iterator cove_name_it = parameters.constFind( QStringLiteral( "IDENTIFIER" ) );
+      const QMap<QString, QString>::const_iterator cove_name_it = parameters.constFind( QStringLiteral( "IDENTIFIER" ) );
       if ( cove_name_it != parameters.constEnd() )
       {
         coveNames = cove_name_it.value();
@@ -117,7 +117,7 @@ namespace QgsWcs
       }
     }
 
-    QStringList wcsLayersId = QgsServerProjectUtils::wcsLayerIds( *project );
+    const QStringList wcsLayersId = QgsServerProjectUtils::wcsLayerIds( *project );
     for ( int i = 0; i < wcsLayersId.size(); ++i )
     {
       QgsMapLayer *layer = project->mapLayer( wcsLayersId.at( i ) );

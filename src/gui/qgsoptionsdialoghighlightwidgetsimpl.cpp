@@ -224,7 +224,7 @@ bool QgsOptionsDialogHighlightTree::searchText( const QString &text )
       return true;
   }
 
-  QModelIndexList hits = mTreeView->model()->match( mTreeView->model()->index( 0, 0 ), Qt::DisplayRole, text, 1, Qt::MatchContains | Qt::MatchRecursive );
+  const QModelIndexList hits = mTreeView->model()->match( mTreeView->model()->index( 0, 0 ), Qt::DisplayRole, text, 1, Qt::MatchContains | Qt::MatchRecursive );
   return !hits.isEmpty();
 }
 
@@ -246,7 +246,7 @@ bool QgsOptionsDialogHighlightTree::highlightText( const QString &text )
     };
     setChildrenVisible( treeWidget->invisibleRootItem(), false );
 
-    QList<QTreeWidgetItem *> items = treeWidget->findItems( text, Qt::MatchContains | Qt::MatchRecursive, 0 );
+    const QList<QTreeWidgetItem *> items = treeWidget->findItems( text, Qt::MatchContains | Qt::MatchRecursive, 0 );
     success = !items.empty();
     mTreeInitialExpand.clear();
     for ( QTreeWidgetItem *item : items )
@@ -319,7 +319,7 @@ bool QgsOptionsDialogHighlightTable::searchText( const QString &text )
       return true;
   }
 
-  QModelIndexList hits = mTableView->model()->match( mTableView->model()->index( 0, 0 ), Qt::DisplayRole, text, 1, Qt::MatchContains | Qt::MatchRecursive );
+  const QModelIndexList hits = mTableView->model()->match( mTableView->model()->index( 0, 0 ), Qt::DisplayRole, text, 1, Qt::MatchContains | Qt::MatchRecursive );
   return !hits.isEmpty();
 }
 

@@ -106,7 +106,7 @@ void QgsLabelingWidget::adaptToLayer()
   }
   else if ( mLayer->labelsEnabled() && mLayer->labeling()->type() == QLatin1String( "simple" ) )
   {
-    QgsPalLayerSettings lyr = mLayer->labeling()->settings();
+    const QgsPalLayerSettings lyr = mLayer->labeling()->settings();
 
     mLabelModeComboBox->setCurrentIndex( mLabelModeComboBox->findData( lyr.drawLabels ? ModeSingle : ModeBlocking ) );
   }

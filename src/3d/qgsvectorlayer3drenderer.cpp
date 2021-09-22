@@ -95,8 +95,8 @@ void QgsVectorLayer3DRenderer::readXml( const QDomElement &elem, const QgsReadWr
 {
   readXmlBaseProperties( elem, context );
 
-  QDomElement elemSymbol = elem.firstChildElement( QStringLiteral( "symbol" ) );
-  QString symbolType = elemSymbol.attribute( QStringLiteral( "type" ) );
+  const QDomElement elemSymbol = elem.firstChildElement( QStringLiteral( "symbol" ) );
+  const QString symbolType = elemSymbol.attribute( QStringLiteral( "type" ) );
   mSymbol.reset( QgsApplication::symbol3DRegistry()->createSymbol( symbolType ) );
   if ( mSymbol )
     mSymbol->readXml( elemSymbol, context );

@@ -36,7 +36,7 @@ QgsRendererMeshPropertiesWidget::QgsRendererMeshPropertiesWidget( QgsMeshLayer *
   connect( mMeshLayer,
            &QgsMeshLayer::dataChanged,
            this,
-           &QgsRendererMeshPropertiesWidget::syncToLayer );
+           &QgsRendererMeshPropertiesWidget::syncToLayerPrivate );
 
   mMeshRendererActiveDatasetWidget->setLayer( mMeshLayer );
   mMeshRendererScalarSettingsWidget->setLayer( mMeshLayer );
@@ -45,7 +45,7 @@ QgsRendererMeshPropertiesWidget::QgsRendererMeshPropertiesWidget( QgsMeshLayer *
   mEdgeMeshSettingsWidget->setLayer( mMeshLayer, QgsMeshRendererMeshSettingsWidget::MeshType::Edge );
   mMeshRendererVectorSettingsWidget->setLayer( mMeshLayer );
   m3dAveragingSettingsWidget->setLayer( mMeshLayer );
-  syncToLayer();
+  syncToLayer( mMeshLayer );
 
   //blend mode
   mBlendModeComboBox->setBlendMode( mMeshLayer->blendMode() );
@@ -79,17 +79,17 @@ void QgsRendererMeshPropertiesWidget::apply()
     return;
 
   // 1D EDGE MESH
-  bool edgeMeshRenderingIsEnabled = mEdgeMeshGroup->isChecked();
+  const bool edgeMeshRenderingIsEnabled = mEdgeMeshGroup->isChecked();
   QgsMeshRendererMeshSettings edgeMeshSettings = mEdgeMeshSettingsWidget->settings();
   edgeMeshSettings.setEnabled( edgeMeshRenderingIsEnabled );
 
   // 2D NATIVE MESH
-  bool nativeMeshRenderingIsEnabled = mNativeMeshGroup->isChecked();
+  const bool nativeMeshRenderingIsEnabled = mNativeMeshGroup->isChecked();
   QgsMeshRendererMeshSettings nativeMeshSettings = mNativeMeshSettingsWidget->settings();
   nativeMeshSettings.setEnabled( nativeMeshRenderingIsEnabled );
 
   // 2D TRIANGULAR MESH
-  bool triangularMeshRenderingIsEnabled = mTriangularMeshGroup->isChecked();
+  const bool triangularMeshRenderingIsEnabled = mTriangularMeshGroup->isChecked();
   QgsMeshRendererMeshSettings triangularMeshSettings = mTriangularMeshSettingsWidget->settings();
   triangularMeshSettings.setEnabled( triangularMeshRenderingIsEnabled );
 
@@ -116,15 +116,15 @@ void QgsRendererMeshPropertiesWidget::apply()
   if ( activeVectorDatasetGroupIndex > -1 )
     settings.setVectorSettings( activeVectorDatasetGroupIndex, mMeshRendererVectorSettingsWidget->settings() );
 
-  QgsMeshDatasetIndex staticScalarDatasetIndex( activeScalarDatasetGroupIndex, mMeshLayer->staticScalarDatasetIndex().dataset() );
-  QgsMeshDatasetIndex staticVectorDatasetIndex( activeVectorDatasetGroupIndex, mMeshLayer->staticVectorDatasetIndex().dataset() );
+  const QgsMeshDatasetIndex staticScalarDatasetIndex( activeScalarDatasetGroupIndex, mMeshLayer->staticScalarDatasetIndex().dataset() );
+  const QgsMeshDatasetIndex staticVectorDatasetIndex( activeVectorDatasetGroupIndex, mMeshLayer->staticVectorDatasetIndex().dataset() );
   mMeshLayer->setStaticScalarDatasetIndex( staticScalarDatasetIndex );
   mMeshLayer->setStaticVectorDatasetIndex( staticVectorDatasetIndex );
 
   //set the blend mode for the layer
   mMeshLayer->setBlendMode( mBlendModeComboBox->blendMode() );
   //set the averaging method for the layer
-  std::unique_ptr<QgsMesh3dAveragingMethod> averagingMethod( m3dAveragingSettingsWidget->averagingMethod() );
+  const std::unique_ptr<QgsMesh3dAveragingMethod> averagingMethod( m3dAveragingSettingsWidget->averagingMethod() );
   settings.setAveragingMethod( averagingMethod.get() );
   mMeshLayer->setRendererSettings( settings );
   mMeshLayer->triggerRepaint();
@@ -133,7 +133,25 @@ void QgsRendererMeshPropertiesWidget::apply()
   windowsSettings.setValue( QStringLiteral( "/Windows/RendererMeshProperties/tab" ), mStyleOptionsTab->currentIndex() );
 }
 
-void QgsRendererMeshPropertiesWidget::syncToLayer()
+void QgsRendererMeshPropertiesWidget::syncToLayer( QgsMapLayer *mapLayer )
+{
+  QgsMeshLayer *ml = qobject_cast<QgsMeshLayer *>( mapLayer );
+  if ( ml )
+  {
+    mLayer = ml;
+    mMeshRendererActiveDatasetWidget->setLayer( ml );
+    mNativeMeshSettingsWidget->setLayer( ml, QgsMeshRendererMeshSettingsWidget::Native );
+    mTriangularMeshSettingsWidget->setLayer( ml, QgsMeshRendererMeshSettingsWidget::Triangular );
+    mEdgeMeshSettingsWidget->setLayer( ml, QgsMeshRendererMeshSettingsWidget::Edge );
+    m3dAveragingSettingsWidget->setLayer( ml );
+  }
+  else
+    return;
+
+  syncToLayerPrivate();
+}
+
+void QgsRendererMeshPropertiesWidget::syncToLayerPrivate()
 {
   mMeshRendererActiveDatasetWidget->syncToLayer();
   mNativeMeshSettingsWidget->syncToLayer();
@@ -148,10 +166,10 @@ void QgsRendererMeshPropertiesWidget::syncToLayer()
   onActiveScalarGroupChanged( mMeshLayer->rendererSettings().activeScalarDatasetGroup() );
   onActiveVectorGroupChanged( mMeshLayer->rendererSettings().activeVectorDatasetGroup() );
 
-  bool hasFaces = ( mMeshLayer->contains( QgsMesh::ElementType::Face ) );
+  const bool hasFaces = ( mMeshLayer->contains( QgsMesh::ElementType::Face ) );
   mFaceMeshGroupBox->setVisible( hasFaces );
 
-  bool hasEdges = ( mMeshLayer->contains( QgsMesh::ElementType::Edge ) );
+  const bool hasEdges = ( mMeshLayer->contains( QgsMesh::ElementType::Edge ) );
   mEdgeMeshGroupBox->setVisible( hasEdges );
 
   QgsSettings settings;

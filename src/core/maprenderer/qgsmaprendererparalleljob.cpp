@@ -57,7 +57,7 @@ void QgsMapRendererParallelJob::startPrivate()
     mLabelingEngineV2->setMapSettings( mSettings );
   }
 
-  bool canUseLabelCache = prepareLabelCache();
+  const bool canUseLabelCache = prepareLabelCache();
   mLayerJobs = prepareJobs( nullptr, mLabelingEngineV2.get() );
   mLabelJob = prepareLabelingJob( nullptr, mLabelingEngineV2.get(), canUseLabelCache );
   mSecondPassLayerJobs = prepareSecondPassJobs( mLayerJobs, mLabelJob );

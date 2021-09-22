@@ -90,7 +90,7 @@ void TestQgsMapToolAddFeaturePointM::initTestCase()
 
   mLayerPointM->startEditing();
   QgsFeature pointFM;
-  QString pointWktM = "PointM(7 7 4)";
+  const QString pointWktM = "PointM(7 7 4)";
   pointFM.setGeometry( QgsGeometry::fromWkt( pointWktM ) );
 
   mLayerPointM->addFeature( pointFM );

@@ -1173,6 +1173,16 @@ class TestQgsUnitTypes(unittest.TestCase):
         self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleMilNATO), '1.00 mil')
         self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleUnknownUnit), '1.00')
 
+        self.assertEqual(QgsUnitTypes.formatAngle(45, -1, QgsUnitTypes.AngleDegrees), '45°')
+        self.assertEqual(QgsUnitTypes.formatAngle(1, -1, QgsUnitTypes.AngleRadians), '1.00 rad')
+        self.assertEqual(QgsUnitTypes.formatAngle(1, -1, QgsUnitTypes.AngleGon), '1 gon')
+        self.assertEqual(QgsUnitTypes.formatAngle(1.11111111, -1, QgsUnitTypes.AngleMinutesOfArc), '1′')
+        self.assertEqual(QgsUnitTypes.formatAngle(1.99999999, -1, QgsUnitTypes.AngleSecondsOfArc), '2″')
+        self.assertEqual(QgsUnitTypes.formatAngle(1, -1, QgsUnitTypes.AngleTurn), '1.000 tr')
+        self.assertEqual(QgsUnitTypes.formatAngle(1, -1, QgsUnitTypes.AngleMilliradiansSI), '1 millirad')
+        self.assertEqual(QgsUnitTypes.formatAngle(1, -1, QgsUnitTypes.AngleMilNATO), '1 mil')
+        self.assertEqual(QgsUnitTypes.formatAngle(1, -1, QgsUnitTypes.AngleUnknownUnit), '1.00')
+
     def testEncodeDecodeLayoutUnits(self):
         """Test encoding and decoding layout units"""
         units = [QgsUnitTypes.LayoutMillimeters,

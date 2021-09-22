@@ -29,7 +29,7 @@ static bool qt_is_ascii( const char *&ptr, const char *end ) noexcept
 #if Q_BYTE_ORDER == Q_BIG_ENDIAN
       uint idx = qCountLeadingZeroBits( data );
 #else
-      uint idx = qCountTrailingZeroBits( data );
+      const uint idx = qCountTrailingZeroBits( data );
 #endif
       ptr += idx / 8;
       return false;

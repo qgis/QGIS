@@ -102,7 +102,7 @@ QString QgsDecorationNorthArrow::svgPath()
   if ( !mSvgPath.isEmpty() )
   {
     QString resolvedPath = QgsSymbolLayerUtils::svgSymbolNameToPath( mSvgPath, QgsProject::instance()->pathResolver() );
-    bool validSvg = QFileInfo::exists( resolvedPath );
+    const bool validSvg = QFileInfo::exists( resolvedPath );
     if ( validSvg )
     {
       return resolvedPath;
@@ -117,7 +117,7 @@ void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRend
   if ( !enabled() )
     return;
 
-  double maxLength = mSize * mapSettings.outputDpi() / 25.4;
+  const double maxLength = mSize * mapSettings.outputDpi() / 25.4;
   QSvgRenderer svg;
 
   const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( svgPath(), maxLength, mColor, mOutlineColor, 1.0, 1.0 );
@@ -126,7 +126,7 @@ void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRend
   if ( svg.isValid() )
   {
     QSize size( maxLength, maxLength );
-    QRectF viewBox = svg.viewBoxF();
+    const QRectF viewBox = svg.viewBoxF();
     if ( viewBox.height() > viewBox.width() )
     {
       size.setWidth( maxLength * viewBox.width() / viewBox.height() );
@@ -136,11 +136,11 @@ void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRend
       size.setHeight( maxLength * viewBox.height() / viewBox.width() );
     }
 
-    double centerXDouble = size.width() / 2.0;
-    double centerYDouble = size.height() / 2.0;
+    const double centerXDouble = size.width() / 2.0;
+    const double centerYDouble = size.height() / 2.0;
 
     //save the current canvas rotation
-    QgsScopedQPainterState painterState( context.painter() );
+    const QgsScopedQPainterState painterState( context.painter() );
     //
     //work out how to shift the image so that it rotates
     //           properly about its center
@@ -161,19 +161,19 @@ void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRend
       mRotationInt += mapSettings.rotation();
     }
 
-    double radiansDouble = mRotationInt * M_PI / 180.0;
-    int xShift = static_cast<int>( (
-                                     ( centerXDouble * std::cos( radiansDouble ) ) +
-                                     ( centerYDouble * std::sin( radiansDouble ) )
-                                   ) - centerXDouble );
-    int yShift = static_cast<int>( (
-                                     ( -centerXDouble * std::sin( radiansDouble ) ) +
-                                     ( centerYDouble * std::cos( radiansDouble ) )
-                                   ) - centerYDouble );
+    const double radiansDouble = mRotationInt * M_PI / 180.0;
+    const int xShift = static_cast<int>( (
+                                           ( centerXDouble * std::cos( radiansDouble ) ) +
+                                           ( centerYDouble * std::sin( radiansDouble ) )
+                                         ) - centerXDouble );
+    const int yShift = static_cast<int>( (
+                                           ( -centerXDouble * std::sin( radiansDouble ) ) +
+                                           ( centerYDouble * std::cos( radiansDouble ) )
+                                         ) - centerYDouble );
     // need width/height of paint device
     QPaintDevice *device = context.painter()->device();
-    int deviceHeight = device->height() / device->devicePixelRatioF();
-    int deviceWidth = device->width() / device->devicePixelRatioF();
+    const int deviceHeight = device->height() / device->devicePixelRatioF();
+    const int deviceWidth = device->width() / device->devicePixelRatioF();
 
     // Set  margin according to selected units
     int xOffset = 0;
@@ -182,8 +182,8 @@ void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRend
     {
       case QgsUnitTypes::RenderMillimeters:
       {
-        int pixelsInchX = context.painter()->device()->logicalDpiX();
-        int pixelsInchY = context.painter()->device()->logicalDpiY();
+        const int pixelsInchX = context.painter()->device()->logicalDpiX();
+        const int pixelsInchY = context.painter()->device()->logicalDpiY();
         xOffset = pixelsInchX * INCHES_TO_MM * mMarginHorizontal;
         yOffset = pixelsInchY * INCHES_TO_MM * mMarginVertical;
         break;

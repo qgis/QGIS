@@ -46,7 +46,7 @@ QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget *parent,
   QString enc = encoding;
   if ( encoding.isEmpty() )
   {
-    QgsSettings settings;
+    const QgsSettings settings;
     enc = settings.value( QStringLiteral( "UI/encoding" ), "System" ).toString();
   }
 
@@ -139,7 +139,7 @@ QgsEncodingSelectionDialog::QgsEncodingSelectionDialog( QWidget *parent, const Q
   QString enc = encoding;
   if ( encoding.isEmpty() )
   {
-    QgsSettings settings;
+    const QgsSettings settings;
     enc = settings.value( QStringLiteral( "UI/encoding" ), "System" ).toString();
   }
 

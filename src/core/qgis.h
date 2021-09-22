@@ -223,6 +223,18 @@ class CORE_EXPORT Qgis
     Q_DECLARE_FLAGS( SymbolPreviewFlags, SymbolPreviewFlag )
 
     /**
+     * \brief Flags controlling behavior of symbol layers
+     *
+     * \since QGIS 3.22
+     */
+    enum class SymbolLayerFlag : int
+    {
+      DisableFeatureClipping = 1 << 0, //!< If present, indicates that features should never be clipped to the map extent during rendering
+    };
+    Q_ENUM( SymbolLayerFlag )
+    Q_DECLARE_FLAGS( SymbolLayerFlags, SymbolLayerFlag )
+
+    /**
      * Browser item types.
      *
      * \since QGIS 3.20
@@ -308,6 +320,17 @@ class CORE_EXPORT Qgis
       AlwaysMonitor, //!< Always monitor the directory, regardless of the default logic
     };
     Q_ENUM( BrowserDirectoryMonitoring )
+
+    /**
+     * Different methods of HTTP requests
+     * \since 3.22
+     */
+    enum class HttpMethod : int
+    {
+      Get = 0, //!< GET method
+      Post = 1 //!< POST method
+    };
+    Q_ENUM( HttpMethod )
 
     /**
      * Vector layer export result codes.
@@ -413,9 +436,22 @@ class CORE_EXPORT Qgis
       FastScan = 1 << 0, //!< Indicates that the provider must scan for sublayers using the fastest possible approach -- e.g. by first checking that a uri has an extension which is known to be readable by the provider
       ResolveGeometryType = 1 << 1, //!< Attempt to resolve the geometry type for vector sublayers
       CountFeatures = 1 << 2, //!< Count features in vector sublayers
+      IncludeSystemTables = 1 << 3, //!< Include system or internal tables (these are not included by default)
     };
     Q_DECLARE_FLAGS( SublayerQueryFlags, SublayerQueryFlag )
     Q_ENUM( SublayerQueryFlag )
+
+    /**
+     * Flags which reflect the properties of sublayers in a dataset.
+     *
+     * \since QGIS 3.22
+     */
+    enum class SublayerFlag : int
+    {
+      SystemTable = 1 << 0, //!< Sublayer is a system or internal table, which should be hidden by default
+    };
+    Q_DECLARE_FLAGS( SublayerFlags, SublayerFlag )
+    Q_ENUM( SublayerFlag )
 
     /**
      * Raster pipe interface roles.
@@ -681,6 +717,161 @@ class CORE_EXPORT Qgis
     Q_ENUM( JoinStyle )
 
     /**
+     * Feature request spatial filter types.
+     *
+     * \since QGIS 3.22
+     */
+    enum class SpatialFilterType : int
+    {
+      NoFilter, //!< No spatial filtering of features
+      BoundingBox, //!< Filter using a bounding box
+      DistanceWithin, //!< Filter by distance to reference geometry
+    };
+    Q_ENUM( SpatialFilterType )
+
+    /**
+     * File operation flags.
+     *
+     * \since QGIS 3.22
+     */
+    enum class FileOperationFlag : int
+    {
+      IncludeMetadataFile = 1 << 0, //!< Indicates that any associated .qmd metadata file should be included with the operation
+      IncludeStyleFile = 1 << 1, //!< Indicates that any associated .qml styling file should be included with the operation
+    };
+    Q_DECLARE_FLAGS( FileOperationFlags, FileOperationFlag )
+    Q_ENUM( FileOperationFlag )
+
+    /**
+     * Generic map layer properties.
+     *
+     * \since QGIS 3.22
+     */
+    enum class MapLayerProperty : int
+    {
+      UsersCannotToggleEditing = 1 << 0, //!< Indicates that users are not allowed to toggle editing for this layer. Note that this does not imply that the layer is non-editable (see isEditable(), supportsEditing() ), rather that the editable status of the layer cannot be changed by users manually. Since QGIS 3.22.
+    };
+    Q_DECLARE_FLAGS( MapLayerProperties, MapLayerProperty )
+    Q_ENUM( MapLayerProperty )
+
+    /**
+     * Flags for annotation items.
+     *
+     * \since QGIS 3.22
+     */
+    enum class AnnotationItemFlag : int
+    {
+      ScaleDependentBoundingBox = 1 << 0, //!< Item's bounding box will vary depending on map scale
+    };
+    Q_DECLARE_FLAGS( AnnotationItemFlags, AnnotationItemFlag )
+    Q_ENUM( AnnotationItemFlag )
+
+    /**
+     * Flags for controlling how an annotation item behaves in the GUI.
+     *
+     * \since QGIS 3.22
+     */
+    enum class AnnotationItemGuiFlag : int
+    {
+      FlagNoCreationTools = 1 << 0,  //!< Do not show item creation tools for the item type
+    };
+    Q_DECLARE_FLAGS( AnnotationItemGuiFlags, AnnotationItemGuiFlag )
+    Q_ENUM( AnnotationItemGuiFlag )
+
+    /**
+     * Annotation item node types.
+     *
+     * \since QGIS 3.22
+     */
+    enum class AnnotationItemNodeType : int
+    {
+      VertexHandle, //!< Node is a handle for manipulating vertices
+    };
+    Q_ENUM( AnnotationItemNodeType )
+
+    /**
+     * Results from an edit operation on an annotation item.
+     *
+     * \since QGIS 3.22
+     */
+    enum class AnnotationItemEditOperationResult : int
+    {
+      Success, //!< Item was modified successfully
+      Invalid, //!< Operation has invalid parameters for the item, no change occurred
+      ItemCleared, //!< The operation results in the item being cleared, and the item should be removed from the layer as a result
+    };
+    Q_ENUM( AnnotationItemEditOperationResult )
+
+    /**
+     * Vector layer temporal feature modes
+     *
+     * \since QGIS 3.22
+     */
+    enum class VectorTemporalMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVectorLayerTemporalProperties, TemporalMode ) : int
+      {
+      FixedTemporalRange SIP_MONKEYPATCH_COMPAT_NAME( ModeFixedTemporalRange ) = 0, //!< Mode when temporal properties have fixed start and end datetimes.
+      FeatureDateTimeInstantFromField SIP_MONKEYPATCH_COMPAT_NAME( ModeFeatureDateTimeInstantFromField ), //!< Mode when features have a datetime instant taken from a single field
+      FeatureDateTimeStartAndEndFromFields SIP_MONKEYPATCH_COMPAT_NAME( ModeFeatureDateTimeStartAndEndFromFields ), //!< Mode when features have separate fields for start and end times
+      FeatureDateTimeStartAndDurationFromFields SIP_MONKEYPATCH_COMPAT_NAME( ModeFeatureDateTimeStartAndDurationFromFields ), //!< Mode when features have a field for start time and a field for event duration
+      FeatureDateTimeStartAndEndFromExpressions SIP_MONKEYPATCH_COMPAT_NAME( ModeFeatureDateTimeStartAndEndFromExpressions ), //!< Mode when features use expressions for start and end times
+      RedrawLayerOnly SIP_MONKEYPATCH_COMPAT_NAME( ModeRedrawLayerOnly ), //!< Redraw the layer when temporal range changes, but don't apply any filtering. Useful when symbology or rule based renderer expressions depend on the time range.
+    };
+    Q_ENUM( VectorTemporalMode )
+
+    /**
+     * Mode for the handling of the limits of the filtering timeframe for vector features
+     *
+     * \since QGIS 3.22
+     */
+    enum class VectorTemporalLimitMode : int
+    {
+      IncludeBeginExcludeEnd = 0, //!< Default mode: include the Begin limit, but exclude the End limit
+      IncludeBeginIncludeEnd, //!< Mode to include both limits of the filtering timeframe
+    };
+    Q_ENUM( VectorTemporalLimitMode )
+
+    /**
+     * Vector data provider temporal handling modes.
+     *
+     * \since QGIS 3.22
+     */
+    enum class VectorDataProviderTemporalMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVectorDataProviderTemporalCapabilities, TemporalMode ) : int
+      {
+      HasFixedTemporalRange SIP_MONKEYPATCH_COMPAT_NAME( ProviderHasFixedTemporalRange ) = 0, //!< Entire dataset from provider has a fixed start and end datetime.
+      StoresFeatureDateTimeInstantInField SIP_MONKEYPATCH_COMPAT_NAME( ProviderStoresFeatureDateTimeInstantInField ), //!< Dataset has feature datetime instants stored in a single field
+      StoresFeatureDateTimeStartAndEndInSeparateFields SIP_MONKEYPATCH_COMPAT_NAME( ProviderStoresFeatureDateTimeStartAndEndInSeparateFields ), //!< Dataset stores feature start and end datetimes in separate fields
+    };
+    Q_ENUM( VectorDataProviderTemporalMode )
+
+    /**
+     * Raster layer temporal modes
+     *
+     * \since QGIS 3.22
+     */
+    enum class RasterTemporalMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterLayerTemporalProperties, TemporalMode ) : int
+      {
+      FixedTemporalRange SIP_MONKEYPATCH_COMPAT_NAME( ModeFixedTemporalRange ) = 0, //!< Mode when temporal properties have fixed start and end datetimes.
+      TemporalRangeFromDataProvider SIP_MONKEYPATCH_COMPAT_NAME( ModeTemporalRangeFromDataProvider ) = 1, //!< Mode when raster layer delegates temporal range handling to the dataprovider.
+      RedrawLayerOnly SIP_MONKEYPATCH_COMPAT_NAME( ModeRedrawLayerOnly ) = 2, //!< Redraw the layer when temporal range changes, but don't apply any filtering. Useful when raster symbology expressions depend on the time range. (since QGIS 3.22)
+    };
+    Q_ENUM( RasterTemporalMode )
+
+    /**
+     * Method to use when resolving a temporal range to a data provider layer or band.
+     *
+     * \since QGIS 3.22
+     */
+    enum class TemporalIntervalMatchMethod SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterDataProviderTemporalCapabilities, IntervalHandlingMethod ) : int
+      {
+      MatchUsingWholeRange, //!< Use an exact match to the whole temporal range
+      MatchExactUsingStartOfRange, //!< Match the start of the temporal range to a corresponding layer or band, and only use exact matching results
+      MatchExactUsingEndOfRange, //!< Match the end of the temporal range to a corresponding layer or band, and only use exact matching results
+      FindClosestMatchToStartOfRange, //!< Match the start of the temporal range to the least previous closest datetime.
+      FindClosestMatchToEndOfRange //!< Match the end of the temporal range to the least previous closest datetime.
+    };
+    Q_ENUM( TemporalIntervalMatchMethod )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */
@@ -796,12 +987,17 @@ class CORE_EXPORT Qgis
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolRenderHints )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolPreviewFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolLayerFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BrowserItemCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SublayerQueryFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SublayerFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SqlLayerDefinitionCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelFormatCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelCommandFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::GeometryValidityFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::FileOperationFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AnnotationItemFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AnnotationItemGuiFlags )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.
@@ -964,8 +1160,8 @@ inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
   // has to be considered (maybe TODO)
   // Is there a better way?
   int aexp, bexp;
-  double ar = std::frexp( a, &aexp );
-  double br = std::frexp( b, &bexp );
+  const double ar = std::frexp( a, &aexp );
+  const double br = std::frexp( b, &bexp );
 
   return aexp == bexp &&
          std::round( ar * std::pow( 10.0, significantDigits ) ) == std::round( br * std::pow( 10.0, significantDigits ) );
@@ -978,8 +1174,8 @@ inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
  */
 inline double qgsRound( double number, int places )
 {
-  double m = ( number < 0.0 ) ? -1.0 : 1.0;
-  double scaleFactor = std::pow( 10.0, places );
+  const double m = ( number < 0.0 ) ? -1.0 : 1.0;
+  const double scaleFactor = std::pow( 10.0, places );
   return ( std::round( number * m * scaleFactor ) / scaleFactor ) * m;
 }
 
@@ -1042,6 +1238,20 @@ namespace qgis
 #endif
   }
 }
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+namespace std
+{
+  template<> struct hash<QString>
+  {
+    std::size_t operator()( const QString &s ) const noexcept
+    {
+      return ( size_t ) qHash( s );
+    }
+  };
+}
+#endif
+
 ///@endcond
 #endif
 
@@ -1052,7 +1262,7 @@ namespace qgis
  */
 template<class T> const QMap<T, QString> qgsEnumMap() SIP_SKIP
 {
-  QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+  const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
   Q_ASSERT( metaEnum.isValid() );
   QMap<T, QString> enumMap;
   for ( int idx = 0; idx < metaEnum.keyCount(); ++idx )
@@ -1069,7 +1279,7 @@ template<class T> const QMap<T, QString> qgsEnumMap() SIP_SKIP
  */
 template<class T> QString qgsEnumValueToKey( const T &value ) SIP_SKIP
 {
-  QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+  const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
   Q_ASSERT( metaEnum.isValid() );
   return QString::fromUtf8( metaEnum.valueToKey( static_cast<int>( value ) ) );
 }
@@ -1082,7 +1292,7 @@ template<class T> QString qgsEnumValueToKey( const T &value ) SIP_SKIP
  */
 template<class T> T qgsEnumKeyToValue( const QString &key, const T &defaultValue, bool tryValueAsKey = true ) SIP_SKIP
 {
-  QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+  const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
   Q_ASSERT( metaEnum.isValid() );
   bool ok = false;
   T v = static_cast<T>( metaEnum.keyToValue( key.toUtf8().data(), &ok ) );
@@ -1096,7 +1306,7 @@ template<class T> T qgsEnumKeyToValue( const QString &key, const T &defaultValue
     if ( tryValueAsKey )
     {
       bool canConvert = false;
-      int intValue = key.toInt( &canConvert );
+      const int intValue = key.toInt( &canConvert );
       if ( canConvert && metaEnum.valueToKey( intValue ) )
       {
         return static_cast<T>( intValue );
@@ -1112,7 +1322,7 @@ template<class T> T qgsEnumKeyToValue( const QString &key, const T &defaultValue
  */
 template<class T> QString qgsFlagValueToKeys( const T &value ) SIP_SKIP
 {
-  QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+  const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
   Q_ASSERT( metaEnum.isValid() );
   return QString::fromUtf8( metaEnum.valueToKeys( static_cast<int>( value ) ) );
 }
@@ -1124,7 +1334,7 @@ template<class T> QString qgsFlagValueToKeys( const T &value ) SIP_SKIP
  */
 template<class T> T qgsFlagKeysToValue( const QString &keys, const T &defaultValue ) SIP_SKIP
 {
-  QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+  const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
   Q_ASSERT( metaEnum.isValid() );
   bool ok = false;
   T v = static_cast<T>( metaEnum.keysToValue( keys.toUtf8().constData(), &ok ) );

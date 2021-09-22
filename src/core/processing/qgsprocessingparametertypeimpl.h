@@ -2102,4 +2102,113 @@ class CORE_EXPORT QgsProcessingParameterTypeDatabaseTable: public QgsProcessingP
     }
 
 };
+
+
+/**
+ * \brief A point cloud layer parameter for processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('pointcloud')
+ * \since QGIS 3.22
+ */
+class CORE_EXPORT QgsProcessingParameterTypePointCloudLayer : public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterPointCloudLayer( name );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A point cloud layer parameter." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Point Cloud Layer" );
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterPointCloudLayer" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterPointCloudLayer" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "pointcloud" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: layer ID" )
+             << QObject::tr( "str: layer name" )
+             << QObject::tr( "str: layer source" )
+             << QStringLiteral( "QgsPointCloudLayer" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Path to a point cloud layer" );
+    }
+};
+
+
+/**
+ * \brief An annotation layer parameter for processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('annotation')
+ * \since QGIS 3.22
+ */
+class CORE_EXPORT QgsProcessingParameterTypeAnnotationLayer : public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterAnnotationLayer( name );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "An annotation layer parameter." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Annotation Layer" );
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterAnnotationLayer" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterAnnotationLayer" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "annotation" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: layer ID" )
+             << QObject::tr( "str: layer name" )
+             << QObject::tr( "\"main\": main annotation layer for a project" )
+             << QStringLiteral( "QgsAnnotationLayer" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Layer ID for an annotation layer, or \"main\" for the main annotation layer in a project." );
+    }
+};
+
 #endif // QGSPROCESSINGPARAMETERTYPEIMPL_H

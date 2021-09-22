@@ -44,7 +44,7 @@ void QgsTileDownloadManagerWorker::startIdleTimer()
 
 void QgsTileDownloadManagerWorker::queueUpdated()
 {
-  QMutexLocker locker( &mManager->mMutex );
+  const QMutexLocker locker( &mManager->mMutex );
 
   if ( mManager->mShuttingDown )
   {
@@ -93,7 +93,7 @@ void QgsTileDownloadManagerWorker::quitThread()
 
 void QgsTileDownloadManagerWorker::idleTimerTimeout()
 {
-  QMutexLocker locker( &mManager->mMutex );
+  const QMutexLocker locker( &mManager->mMutex );
   Q_ASSERT( mManager->mQueue.isEmpty() );
   quitThread();
 }
@@ -104,7 +104,7 @@ void QgsTileDownloadManagerWorker::idleTimerTimeout()
 
 void QgsTileDownloadManagerReplyWorkerObject::replyFinished()
 {
-  QMutexLocker locker( &mManager->mMutex );
+  const QMutexLocker locker( &mManager->mMutex );
 
   QgsDebugMsgLevel( QStringLiteral( "Tile download manager: internal reply finished: " ) + mRequest.url().toString(), 2 );
 
@@ -158,7 +158,7 @@ QgsTileDownloadManager::~QgsTileDownloadManager()
 
 QgsTileDownloadManagerReply *QgsTileDownloadManager::get( const QNetworkRequest &request )
 {
-  QMutexLocker locker( &mMutex );
+  const QMutexLocker locker( &mMutex );
 
   if ( !mWorker )
   {
@@ -203,7 +203,7 @@ QgsTileDownloadManagerReply *QgsTileDownloadManager::get( const QNetworkRequest 
 
 bool QgsTileDownloadManager::hasPendingRequests() const
 {
-  QMutexLocker locker( &mMutex );
+  const QMutexLocker locker( &mMutex );
 
   return !mQueue.isEmpty();
 }
@@ -216,7 +216,7 @@ bool QgsTileDownloadManager::waitForPendingRequests( int msec )
   while ( msec == -1 || t.elapsed() < msec )
   {
     {
-      QMutexLocker locker( &mMutex );
+      const QMutexLocker locker( &mMutex );
       if ( mQueue.isEmpty() )
         return true;
     }
@@ -229,7 +229,7 @@ bool QgsTileDownloadManager::waitForPendingRequests( int msec )
 void QgsTileDownloadManager::shutdown()
 {
   {
-    QMutexLocker locker( &mMutex );
+    const QMutexLocker locker( &mMutex );
     if ( !mWorkerThread )
       return;  // nothing to stop
 
@@ -242,7 +242,7 @@ void QgsTileDownloadManager::shutdown()
   while ( 1 )
   {
     {
-      QMutexLocker locker( &mMutex );
+      const QMutexLocker locker( &mMutex );
       if ( !mWorkerThread )
         return;  // the thread has stopped
     }
@@ -258,7 +258,7 @@ bool QgsTileDownloadManager::hasWorkerThreadRunning() const
 
 void QgsTileDownloadManager::resetStatistics()
 {
-  QMutexLocker locker( &mMutex );
+  const QMutexLocker locker( &mMutex );
   mStats = QgsTileDownloadManager::Stats();
 }
 
@@ -326,7 +326,7 @@ QgsTileDownloadManagerReply::QgsTileDownloadManagerReply( QgsTileDownloadManager
 
 QgsTileDownloadManagerReply::~QgsTileDownloadManagerReply()
 {
-  QMutexLocker locker( &mManager->mMutex );
+  const QMutexLocker locker( &mManager->mMutex );
 
   if ( !mHasFinished )
   {

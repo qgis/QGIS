@@ -153,8 +153,8 @@ void QgsAuthImportCertDialog::validateCertificates()
   QList<QSslCertificate> certs;
   QList<QSslCertificate> nixcerts;
   int validcerts = 0;
-  bool allowinvalid = chkAllowInvalid->isChecked();
-  bool filterCAs = ( mFilter == CaFilter );
+  const bool allowinvalid = chkAllowInvalid->isChecked();
+  const bool filterCAs = ( mFilter == CaFilter );
   int cas = 0;
 
   if ( radioImportFile->isChecked() && !leImportFile->text().isEmpty() )
@@ -166,7 +166,7 @@ void QgsAuthImportCertDialog::validateCertificates()
     certs = QgsAuthCertUtils::certsFromString( teCertText->toPlainText().trimmed() );
   }
 
-  int certssize = certs.size();
+  const int certssize = certs.size();
 
   const auto constCerts = certs;
   for ( const QSslCertificate &cert : constCerts )
@@ -243,7 +243,7 @@ void QgsAuthImportCertDialog::chkAllowInvalid_toggled( bool checked )
 QString QgsAuthImportCertDialog::getOpenFileName( const QString &title, const QString &extfilter )
 {
   QgsSettings settings;
-  QString recentdir = settings.value( QStringLiteral( "UI/lastAuthImportCertOpenFileDir" ), QDir::homePath() ).toString();
+  const QString recentdir = settings.value( QStringLiteral( "UI/lastAuthImportCertOpenFileDir" ), QDir::homePath() ).toString();
   QString f = QFileDialog::getOpenFileName( this, title, recentdir, extfilter );
 
   // return dialog focus on Mac

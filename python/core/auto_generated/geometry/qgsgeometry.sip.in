@@ -193,16 +193,35 @@ a LineStringZ type.
 
     static QgsGeometry fromMultiPolylineXY( const QgsMultiPolylineXY &multiline );
 %Docstring
-Creates a new geometry from a :py:class:`QgsMultiPolylineXY` object
+Creates a new geometry from a :py:class:`QgsMultiPolylineXY` object.
 %End
+
+
     static QgsGeometry fromPolygonXY( const QgsPolygonXY &polygon );
 %Docstring
-Creates a new geometry from a :py:class:`QgsPolygon`
+Creates a new polygon geometry from a list of lists of :py:class:`QgsPointXY`.
+
+The first list of :py:class:`QgsPointXY` objects specifies the exterior ring of the polygon, and the remaining
+lists specify any interior rings.
+
+Example
+-------
+
+.. code-block:: python
+
+       # Create a polygon geometry with a single exterior ring (a triangle)
+       polygon = QgsGeometry.fromPolygonXY([[QgsPointXY(1, 2), QgsPointXY(5, 2), QgsPointXY(5, 10), QgsPointXY(1, 2)]]))
+
+       # Create a donut shaped polygon geometry with an interior ring
+       polygon = QgsGeometry.fromPolygonXY([[QgsPointXY(1, 2), QgsPointXY(5, 2), QgsPointXY(5, 10), QgsPointXY(1, 10), QgsPointXY(1, 2)],
+                                            [QgsPointXY(3, 4), QgsPointXY(4, 4), QgsPointXY(4, 6), QgsPointXY(3, 6), QgsPointXY(3, 4)]])
 %End
+
     static QgsGeometry fromMultiPolygonXY( const QgsMultiPolygonXY &multipoly );
 %Docstring
-Creates a new geometry from a :py:class:`QgsMultiPolygon`
+Creates a new geometry from a :py:class:`QgsMultiPolygonXY`.
 %End
+
     static QgsGeometry fromRect( const QgsRectangle &rect ) /HoldGIL/;
 %Docstring
 Creates a new geometry from a :py:class:`QgsRectangle`

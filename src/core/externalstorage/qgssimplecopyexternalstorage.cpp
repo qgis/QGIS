@@ -100,6 +100,11 @@ QString QgsSimpleCopyExternalStorage::type() const
   return QStringLiteral( "SimpleCopy" );
 };
 
+QString QgsSimpleCopyExternalStorage::displayName() const
+{
+  return QObject::tr( "Simple copy" );
+};
+
 QgsExternalStorageStoredContent *QgsSimpleCopyExternalStorage::doStore( const QString &filePath, const QString &url, const QString &authcfg ) const
 {
   return new QgsSimpleCopyExternalStorageStoredContent( filePath, url, authcfg );

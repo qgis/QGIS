@@ -92,13 +92,13 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   // fixed parameters
-  bool dissolve = parameterAsBoolean( parameters, QStringLiteral( "DISSOLVE" ), context );
-  int segments = parameterAsInt( parameters, QStringLiteral( "SEGMENTS" ), context );
-  Qgis::EndCapStyle endCapStyle = static_cast< Qgis::EndCapStyle >( 1 + parameterAsInt( parameters, QStringLiteral( "END_CAP_STYLE" ), context ) );
-  Qgis::JoinStyle joinStyle = static_cast< Qgis::JoinStyle>( 1 + parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );
-  double miterLimit = parameterAsDouble( parameters, QStringLiteral( "MITER_LIMIT" ), context );
-  double bufferDistance = parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context );
-  bool dynamicBuffer = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DISTANCE" ) );
+  const bool dissolve = parameterAsBoolean( parameters, QStringLiteral( "DISSOLVE" ), context );
+  const int segments = parameterAsInt( parameters, QStringLiteral( "SEGMENTS" ), context );
+  const Qgis::EndCapStyle endCapStyle = static_cast< Qgis::EndCapStyle >( 1 + parameterAsInt( parameters, QStringLiteral( "END_CAP_STYLE" ), context ) );
+  const Qgis::JoinStyle joinStyle = static_cast< Qgis::JoinStyle>( 1 + parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );
+  const double miterLimit = parameterAsDouble( parameters, QStringLiteral( "MITER_LIMIT" ), context );
+  const double bufferDistance = parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context );
+  const bool dynamicBuffer = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DISTANCE" ) );
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context, source.get() );
   QgsProperty bufferProperty;
   if ( dynamicBuffer )
@@ -106,13 +106,13 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
     bufferProperty = parameters.value( QStringLiteral( "DISTANCE" ) ).value< QgsProperty >();
   }
 
-  long count = source->featureCount();
+  const long count = source->featureCount();
 
   QgsFeature f;
   // buffer doesn't care about invalid features, and buffering can be used to repair geometries
   QgsFeatureIterator it = source->getFeatures( QgsFeatureRequest(), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
 
-  double step = count > 0 ? 100.0 / count : 1;
+  const double step = count > 0 ? 100.0 / count : 1;
   int current = 0;
 
   QVector< QgsGeometry > bufferedGeometriesForDissolve;

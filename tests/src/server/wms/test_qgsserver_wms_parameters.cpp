@@ -56,7 +56,7 @@ void TestQgsServerWmsParameters::external_layers()
   query.addQueryItem( "external_layer_2:opacities", "100" );
   query.addQueryItem( "OPACITIES", "255,200,125" );
 
-  QgsWms::QgsWmsParameters parameters( query );
+  const QgsWms::QgsWmsParameters parameters( query );
 
   QList<QgsWms::QgsWmsParametersLayer> layers_params = parameters.layersParameters();
   QCOMPARE( layers_params.size(), 3 );
@@ -89,7 +89,7 @@ void TestQgsServerWmsParameters::percent_encoding()
   params.load( query );
   QCOMPARE( params.value( "MYPARAM" ), QString( "my+value" ) );
 
-  QgsWms::QgsWmsParameters wmsParams( params );
+  const QgsWms::QgsWmsParameters wmsParams( params );
   QCOMPARE( wmsParams.value( "MYPARAM" ), QString( "my+value" ) );
 }
 

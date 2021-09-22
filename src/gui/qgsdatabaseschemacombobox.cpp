@@ -99,10 +99,10 @@ void QgsDatabaseSchemaComboBox::setSchema( const QString &schema )
     return;
   }
 
-  QModelIndexList idx = mSortModel->match( mSortModel->index( 0, 0 ), Qt::DisplayRole, schema, 1, Qt::MatchFixedString | Qt::MatchCaseSensitive );
+  const QModelIndexList idx = mSortModel->match( mSortModel->index( 0, 0 ), Qt::DisplayRole, schema, 1, Qt::MatchFixedString | Qt::MatchCaseSensitive );
   if ( !idx.empty() )
   {
-    QModelIndex proxyIdx = idx.at( 0 );
+    const QModelIndex proxyIdx = idx.at( 0 );
     if ( proxyIdx.isValid() )
     {
       mComboBox->setCurrentIndex( proxyIdx.row() );
@@ -194,8 +194,8 @@ bool QgsDatabaseSchemaComboBoxSortModel::lessThan( const QModelIndex &left, cons
     return false;
 
   // default mode is alphabetical order
-  QString leftStr = sourceModel()->data( left ).toString();
-  QString rightStr = sourceModel()->data( right ).toString();
+  const QString leftStr = sourceModel()->data( left ).toString();
+  const QString rightStr = sourceModel()->data( right ).toString();
   return QString::localeAwareCompare( leftStr, rightStr ) < 0;
 }
 

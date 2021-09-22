@@ -94,8 +94,8 @@ void QgsAbstractGeometry::setZMTypeFromSubGeometry( const QgsAbstractGeometry *s
     return;
   }
 
-  bool hasZ = subgeom->is3D();
-  bool hasM = subgeom->isMeasure();
+  const bool hasZ = subgeom->is3D();
+  const bool hasM = subgeom->isMeasure();
 
   if ( hasZ && hasM )
   {
@@ -205,7 +205,7 @@ QgsPoint QgsAbstractGeometry::centroid() const
   // http://en.wikipedia.org/wiki/Centroid#Centroid_of_polygon
   // Pick the first ring of first part for the moment
 
-  int n = vertexCount( 0, 0 );
+  const int n = vertexCount( 0, 0 );
   if ( n == 1 )
   {
     return vertexAt( QgsVertexId( 0, 0, 0 ) );
@@ -214,7 +214,7 @@ QgsPoint QgsAbstractGeometry::centroid() const
   double A = 0.;
   double Cx = 0.;
   double Cy = 0.;
-  QgsPoint v0 = vertexAt( QgsVertexId( 0, 0, 0 ) );
+  const QgsPoint v0 = vertexAt( QgsVertexId( 0, 0, 0 ) );
   int i = 0, j = 1;
   if ( vertexAt( QgsVertexId( 0, 0, 0 ) ) != vertexAt( QgsVertexId( 0, 0, n - 1 ) ) )
   {
@@ -229,7 +229,7 @@ QgsPoint QgsAbstractGeometry::centroid() const
     vi.ry() -= v0.y();
     vj.rx() -= v0.x();
     vj.ry() -= v0.y();
-    double d = vi.x() * vj.y() - vj.x() * vi.y();
+    const double d = vi.x() * vj.y() - vj.x() * vi.y();
     A += d;
     Cx += ( vi.x() + vj.x() ) * d;
     Cy += ( vi.y() + vj.y() ) * d;
@@ -240,7 +240,7 @@ QgsPoint QgsAbstractGeometry::centroid() const
     Cx = Cy = 0.;
     for ( int i = 0; i < n - 1; ++i )
     {
-      QgsPoint vi = vertexAt( QgsVertexId( 0, 0, i ) );
+      const QgsPoint vi = vertexAt( QgsVertexId( 0, 0, i ) );
       Cx += vi.x();
       Cy += vi.y();
     }
@@ -260,8 +260,8 @@ bool QgsAbstractGeometry::convertTo( QgsWkbTypes::Type type )
   if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::flatType( mWkbType ) )
     return false;
 
-  bool needZ = QgsWkbTypes::hasZ( type );
-  bool needM = QgsWkbTypes::hasM( type );
+  const bool needZ = QgsWkbTypes::hasZ( type );
+  const bool needM = QgsWkbTypes::hasM( type );
   if ( !needZ )
   {
     dropZValue();

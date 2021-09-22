@@ -115,7 +115,7 @@ bool QgsRasterFrequencyByComparisonOperatorBase::prepareAlgorithm( const QVarian
 QVariantMap QgsRasterFrequencyByComparisonOperatorBase::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  QFileInfo fi( outputFile );
+  const QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
 
   std::unique_ptr< QgsRasterFileWriter > writer = std::make_unique< QgsRasterFileWriter >( outputFile );
@@ -128,13 +128,13 @@ QVariantMap QgsRasterFrequencyByComparisonOperatorBase::processAlgorithm( const 
     throw QgsProcessingException( QObject::tr( "Could not create raster output %1: %2" ).arg( outputFile, provider->error().message( QgsErrorMessage::Text ) ) );
 
   provider->setNoDataValue( 1, mNoDataValue );
-  qgssize layerSize = static_cast< qgssize >( mLayerWidth ) * static_cast< qgssize >( mLayerHeight );
+  const qgssize layerSize = static_cast< qgssize >( mLayerWidth ) * static_cast< qgssize >( mLayerHeight );
 
-  int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-  int nbBlocksWidth = static_cast< int>( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
-  int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
-  int nbBlocks = nbBlocksWidth * nbBlocksHeight;
+  const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
+  const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
+  const int nbBlocksWidth = static_cast< int>( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
+  const int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
+  const int nbBlocks = nbBlocksWidth * nbBlocksHeight;
   provider->setEditable( true );
 
   QgsRasterIterator iter( mInputValueRasterInterface.get() );
@@ -155,7 +155,7 @@ QVariantMap QgsRasterFrequencyByComparisonOperatorBase::processAlgorithm( const 
     {
       if ( feedback->isCanceled() )
         break; //in case some slow data sources are loaded
-      for ( int band : i.bands )
+      for ( const int band : i.bands )
       {
         if ( feedback->isCanceled() )
           break; //in case some slow data sources are loaded
@@ -174,7 +174,7 @@ QVariantMap QgsRasterFrequencyByComparisonOperatorBase::processAlgorithm( const 
       for ( int col = 0; col < iterCols; col++ )
       {
         bool valueRasterCellIsNoData = false;
-        double value = inputBlock->valueAndNoData( row, col, valueRasterCellIsNoData );
+        const double value = inputBlock->valueAndNoData( row, col, valueRasterCellIsNoData );
 
         if ( valueRasterCellIsNoData && !mIgnoreNoData )
         {
@@ -186,7 +186,7 @@ QVariantMap QgsRasterFrequencyByComparisonOperatorBase::processAlgorithm( const 
         else
         {
           bool noDataInStack = false;
-          std::vector<double> cellValues = QgsRasterAnalysisUtils::getCellValuesFromBlockStack( inputBlocks, row, col, noDataInStack );
+          const std::vector<double> cellValues = QgsRasterAnalysisUtils::getCellValuesFromBlockStack( inputBlocks, row, col, noDataInStack );
 
           if ( noDataInStack && !mIgnoreNoData )
           {
@@ -195,7 +195,7 @@ QVariantMap QgsRasterFrequencyByComparisonOperatorBase::processAlgorithm( const 
           }
           else
           {
-            int frequency = applyComparisonOperator( value, cellValues );
+            const int frequency = applyComparisonOperator( value, cellValues );
             outputBlock->setValue( row, col, frequency );
             occurrenceCount += frequency;
           }
@@ -206,8 +206,8 @@ QVariantMap QgsRasterFrequencyByComparisonOperatorBase::processAlgorithm( const 
   }
   provider->setEditable( false );
 
-  unsigned long long foundLocationsCount = layerSize - noDataLocationsCount;
-  double meanEqualCountPerValidLocation = static_cast<double>( occurrenceCount ) / static_cast<double>( foundLocationsCount * mInputs.size() );
+  const unsigned long long foundLocationsCount = layerSize - noDataLocationsCount;
+  const double meanEqualCountPerValidLocation = static_cast<double>( occurrenceCount ) / static_cast<double>( foundLocationsCount * mInputs.size() );
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OCCURRENCE_COUNT" ), occurrenceCount );

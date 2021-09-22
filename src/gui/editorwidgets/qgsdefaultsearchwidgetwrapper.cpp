@@ -54,12 +54,12 @@ void QgsDefaultSearchWidgetWrapper::setCaseString( int caseSensitiveCheckState )
 
 void QgsDefaultSearchWidgetWrapper::setExpression( const QString &expression )
 {
-  QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
-  bool numeric = ( fldType == QVariant::Int || fldType == QVariant::Double || fldType == QVariant::LongLong );
+  const QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
+  const bool numeric = ( fldType == QVariant::Int || fldType == QVariant::Double || fldType == QVariant::LongLong );
 
   QString exp = expression;
-  QString nullValue = QgsApplication::nullRepresentation();
-  QString fieldName = layer()->fields().at( mFieldIdx ).name();
+  const QString nullValue = QgsApplication::nullRepresentation();
+  const QString fieldName = layer()->fields().at( mFieldIdx ).name();
   QString str;
   if ( exp == nullValue )
   {
@@ -92,7 +92,7 @@ QgsSearchWidgetWrapper::FilterFlags QgsDefaultSearchWidgetWrapper::supportedFlag
 {
   FilterFlags flags = EqualTo | NotEqualTo | IsNull | IsNotNull;
 
-  QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
+  const QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
   switch ( fldType )
   {
     case QVariant::Int:
@@ -118,7 +118,7 @@ QgsSearchWidgetWrapper::FilterFlags QgsDefaultSearchWidgetWrapper::supportedFlag
 
 QgsSearchWidgetWrapper::FilterFlags QgsDefaultSearchWidgetWrapper::defaultFlags() const
 {
-  QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
+  const QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
   switch ( fldType )
   {
     case QVariant::Int:
@@ -148,8 +148,8 @@ QString QgsDefaultSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper:
   //clear any unsupported flags
   flags &= supportedFlags();
 
-  QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
-  QString fieldName = createFieldIdentifier();
+  const QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
+  const QString fieldName = createFieldIdentifier();
 
   if ( flags & IsNull )
     return fieldName + " IS NULL";
@@ -256,7 +256,7 @@ void QgsDefaultSearchWidgetWrapper::initWidget( QWidget *widget )
   mContainer = widget;
   mContainer->setLayout( new QHBoxLayout() );
   mContainer->layout()->setContentsMargins( 0, 0, 0, 0 );
-  QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
+  const QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
 
   if ( fldType == QVariant::String )
   {

@@ -20,6 +20,7 @@
 QgsExpressionStoreDialog::QgsExpressionStoreDialog( const QString &label, const QString &expression, const QString &helpText, const QStringList &existingLabels, QWidget *parent )
   : QDialog( parent )
   , mExistingLabels( existingLabels )
+  , mOriginalLabel( label )
 {
   setupUi( this );
   mExpression->setText( expression );
@@ -33,7 +34,8 @@ QgsExpressionStoreDialog::QgsExpressionStoreDialog( const QString &label, const 
   connect( mLabel, &QLineEdit::textChanged, this, [ = ]( const QString & text )
   {
     QString errorMessage;
-    if ( mExistingLabels.contains( text ) )
+    if ( mOriginalLabel.simplified() != text.simplified() &&
+         mExistingLabels.contains( text.simplified() ) )
     {
       errorMessage = tr( "A stored expression with this name already exists" );
     }
@@ -56,7 +58,7 @@ QgsExpressionStoreDialog::QgsExpressionStoreDialog( const QString &label, const 
   // No slashes in labels!
   QString labelFixed { label };
   labelFixed.remove( '/' ).remove( '\\' );
-  mLabel->setText( labelFixed );
+  mLabel->setText( labelFixed.simplified() );
 }
 
 QString QgsExpressionStoreDialog::helpText() const

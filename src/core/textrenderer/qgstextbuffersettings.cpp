@@ -186,11 +186,11 @@ void QgsTextBufferSettings::updateDataDefinedProperties( QgsRenderContext &conte
   QVariant exprVal = properties.value( QgsPalLayerSettings::BufferUnit, context.expressionContext() );
   if ( !exprVal.isNull() )
   {
-    QString units = exprVal.toString();
+    const QString units = exprVal.toString();
     if ( !units.isEmpty() )
     {
       bool ok;
-      QgsUnitTypes::RenderUnit res = QgsUnitTypes::decodeRenderUnit( units, &ok );
+      const QgsUnitTypes::RenderUnit res = QgsUnitTypes::decodeRenderUnit( units, &ok );
       if ( ok )
         d->sizeUnit = res;
     }
@@ -215,7 +215,7 @@ void QgsTextBufferSettings::updateDataDefinedProperties( QgsRenderContext &conte
   if ( properties.isActive( QgsPalLayerSettings::BufferBlendMode ) )
   {
     exprVal = properties.value( QgsPalLayerSettings::BufferBlendMode, context.expressionContext() );
-    QString blendstr = exprVal.toString().trimmed();
+    const QString blendstr = exprVal.toString().trimmed();
     if ( !blendstr.isEmpty() )
       d->blendMode = QgsSymbolLayerUtils::decodeBlendMode( blendstr );
   }
@@ -223,7 +223,7 @@ void QgsTextBufferSettings::updateDataDefinedProperties( QgsRenderContext &conte
   if ( properties.isActive( QgsPalLayerSettings::BufferJoinStyle ) )
   {
     exprVal = properties.value( QgsPalLayerSettings::BufferJoinStyle, context.expressionContext() );
-    QString joinstr = exprVal.toString().trimmed();
+    const QString joinstr = exprVal.toString().trimmed();
     if ( !joinstr.isEmpty() )
     {
       d->joinStyle = QgsSymbolLayerUtils::decodePenJoinStyle( joinstr );
@@ -239,10 +239,10 @@ QSet<QString> QgsTextBufferSettings::referencedFields( const QgsRenderContext & 
 void QgsTextBufferSettings::readFromLayer( QgsVectorLayer *layer )
 {
   // text buffer
-  double bufSize = layer->customProperty( QStringLiteral( "labeling/bufferSize" ), QVariant( 0.0 ) ).toDouble();
+  const double bufSize = layer->customProperty( QStringLiteral( "labeling/bufferSize" ), QVariant( 0.0 ) ).toDouble();
 
   // fix for buffer being keyed off of just its size in the past (<2.0)
-  QVariant drawBuffer = layer->customProperty( QStringLiteral( "labeling/bufferDraw" ), QVariant() );
+  const QVariant drawBuffer = layer->customProperty( QStringLiteral( "labeling/bufferDraw" ), QVariant() );
   if ( drawBuffer.isValid() )
   {
     d->enabled = drawBuffer.toBool();
@@ -261,7 +261,7 @@ void QgsTextBufferSettings::readFromLayer( QgsVectorLayer *layer )
 
   if ( layer->customProperty( QStringLiteral( "labeling/bufferSizeUnits" ) ).toString().isEmpty() )
   {
-    bool bufferSizeInMapUnits = layer->customProperty( QStringLiteral( "labeling/bufferSizeInMapUnits" ) ).toBool();
+    const bool bufferSizeInMapUnits = layer->customProperty( QStringLiteral( "labeling/bufferSizeInMapUnits" ) ).toBool();
     d->sizeUnit = bufferSizeInMapUnits ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters;
   }
   else
@@ -272,9 +272,9 @@ void QgsTextBufferSettings::readFromLayer( QgsVectorLayer *layer )
   if ( layer->customProperty( QStringLiteral( "labeling/bufferSizeMapUnitScale" ) ).toString().isEmpty() )
   {
     //fallback to older property
-    double oldMin = layer->customProperty( QStringLiteral( "labeling/bufferSizeMapUnitMinScale" ), 0.0 ).toDouble();
+    const double oldMin = layer->customProperty( QStringLiteral( "labeling/bufferSizeMapUnitMinScale" ), 0.0 ).toDouble();
     d->sizeMapUnitScale.minScale = oldMin != 0 ? 1.0 / oldMin : 0;
-    double oldMax = layer->customProperty( QStringLiteral( "labeling/bufferSizeMapUnitMaxScale" ), 0.0 ).toDouble();
+    const double oldMax = layer->customProperty( QStringLiteral( "labeling/bufferSizeMapUnitMaxScale" ), 0.0 ).toDouble();
     d->sizeMapUnitScale.maxScale = oldMax != 0 ? 1.0 / oldMax : 0;
   }
   else
@@ -300,7 +300,7 @@ void QgsTextBufferSettings::readFromLayer( QgsVectorLayer *layer )
   {
     QDomDocument doc( QStringLiteral( "effect" ) );
     doc.setContent( layer->customProperty( QStringLiteral( "labeling/bufferEffect" ) ).toString() );
-    QDomElement effectElem = doc.firstChildElement( QStringLiteral( "effect" ) ).firstChildElement( QStringLiteral( "effect" ) );
+    const QDomElement effectElem = doc.firstChildElement( QStringLiteral( "effect" ) ).firstChildElement( QStringLiteral( "effect" ) );
     setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ) );
   }
   else
@@ -309,11 +309,11 @@ void QgsTextBufferSettings::readFromLayer( QgsVectorLayer *layer )
 
 void QgsTextBufferSettings::readXml( const QDomElement &elem )
 {
-  QDomElement textBufferElem = elem.firstChildElement( QStringLiteral( "text-buffer" ) );
-  double bufSize = textBufferElem.attribute( QStringLiteral( "bufferSize" ), QStringLiteral( "0" ) ).toDouble();
+  const QDomElement textBufferElem = elem.firstChildElement( QStringLiteral( "text-buffer" ) );
+  const double bufSize = textBufferElem.attribute( QStringLiteral( "bufferSize" ), QStringLiteral( "0" ) ).toDouble();
 
   // fix for buffer being keyed off of just its size in the past (<2.0)
-  QVariant drawBuffer = textBufferElem.attribute( QStringLiteral( "bufferDraw" ) );
+  const QVariant drawBuffer = textBufferElem.attribute( QStringLiteral( "bufferDraw" ) );
   if ( drawBuffer.isValid() )
   {
     d->enabled = drawBuffer.toBool();
@@ -332,7 +332,7 @@ void QgsTextBufferSettings::readXml( const QDomElement &elem )
 
   if ( !textBufferElem.hasAttribute( QStringLiteral( "bufferSizeUnits" ) ) )
   {
-    bool bufferSizeInMapUnits = textBufferElem.attribute( QStringLiteral( "bufferSizeInMapUnits" ) ).toInt();
+    const bool bufferSizeInMapUnits = textBufferElem.attribute( QStringLiteral( "bufferSizeInMapUnits" ) ).toInt();
     d->sizeUnit = bufferSizeInMapUnits ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters;
   }
   else
@@ -343,9 +343,9 @@ void QgsTextBufferSettings::readXml( const QDomElement &elem )
   if ( !textBufferElem.hasAttribute( QStringLiteral( "bufferSizeMapUnitScale" ) ) )
   {
     //fallback to older property
-    double oldMin = textBufferElem.attribute( QStringLiteral( "bufferSizeMapUnitMinScale" ), QStringLiteral( "0" ) ).toDouble();
+    const double oldMin = textBufferElem.attribute( QStringLiteral( "bufferSizeMapUnitMinScale" ), QStringLiteral( "0" ) ).toDouble();
     d->sizeMapUnitScale.minScale = oldMin != 0 ? 1.0 / oldMin : 0;
-    double oldMax = textBufferElem.attribute( QStringLiteral( "bufferSizeMapUnitMaxScale" ), QStringLiteral( "0" ) ).toDouble();
+    const double oldMax = textBufferElem.attribute( QStringLiteral( "bufferSizeMapUnitMaxScale" ), QStringLiteral( "0" ) ).toDouble();
     d->sizeMapUnitScale.maxScale = oldMax != 0 ? 1.0 / oldMax : 0;
   }
   else
@@ -367,7 +367,7 @@ void QgsTextBufferSettings::readXml( const QDomElement &elem )
                    static_cast< QgsPainting::BlendMode >( textBufferElem.attribute( QStringLiteral( "bufferBlendMode" ), QString::number( QgsPainting::BlendNormal ) ).toUInt() ) );
   d->joinStyle = static_cast< Qt::PenJoinStyle >( textBufferElem.attribute( QStringLiteral( "bufferJoinStyle" ), QString::number( Qt::RoundJoin ) ).toUInt() );
   d->fillBufferInterior = !textBufferElem.attribute( QStringLiteral( "bufferNoFill" ), QStringLiteral( "0" ) ).toInt();
-  QDomElement effectElem = textBufferElem.firstChildElement( QStringLiteral( "effect" ) );
+  const QDomElement effectElem = textBufferElem.firstChildElement( QStringLiteral( "effect" ) );
   if ( !effectElem.isNull() )
     setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ) );
   else

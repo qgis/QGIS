@@ -123,6 +123,20 @@ Sets the layer's ``description``.
 .. seealso:: :py:func:`description`
 %End
 
+    Qgis::SublayerFlags flags() const;
+%Docstring
+Returns the layer's flags, which indicate properties of the layer.
+
+.. seealso:: :py:func:`setFlags`
+%End
+
+    void setFlags( Qgis::SublayerFlags newFlags );
+%Docstring
+Sets the layer's ``flags``, which indicate properties of the layer.
+
+.. seealso:: :py:func:`flags`
+%End
+
     QString driverName() const;
 %Docstring
 Returns the layer's driver name.

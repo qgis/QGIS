@@ -84,11 +84,11 @@ class MemoryStorage : public QgsProjectStorage
 
     bool readProject( const QString &uri, QIODevice *ioDevice, QgsReadWriteContext &context ) override
     {
-      QgsReadWriteContextCategoryPopper popper( context.enterCategory( "memory storage" ) );
+      const QgsReadWriteContextCategoryPopper popper( context.enterCategory( "memory storage" ) );
 
       QStringList lst = uri.split( ":" );
       Q_ASSERT( lst.count() == 2 );
-      QString projectName = lst[1];
+      const QString projectName = lst[1];
 
       if ( !mProjects.contains( projectName ) )
       {
@@ -96,7 +96,7 @@ class MemoryStorage : public QgsProjectStorage
         return false;
       }
 
-      QByteArray content = mProjects[projectName];
+      const QByteArray content = mProjects[projectName];
       ioDevice->write( content );
       ioDevice->seek( 0 );
       return true;
@@ -107,7 +107,7 @@ class MemoryStorage : public QgsProjectStorage
       Q_UNUSED( context );
       QStringList lst = uri.split( ":" );
       Q_ASSERT( lst.count() == 2 );
-      QString projectName = lst[1];
+      const QString projectName = lst[1];
 
       mProjects[projectName] = ioDevice->readAll();
 
@@ -122,7 +122,7 @@ class MemoryStorage : public QgsProjectStorage
     {
       QStringList lst = uri.split( ":" );
       Q_ASSERT( lst.count() == 2 );
-      QString projectName = lst[1];
+      const QString projectName = lst[1];
 
       if ( !mProjects.contains( projectName ) )
         return false;
@@ -136,7 +136,7 @@ class MemoryStorage : public QgsProjectStorage
     {
       QStringList lst = uri.split( ":" );
       Q_ASSERT( lst.count() == 2 );
-      QString projectName = lst[1];
+      const QString projectName = lst[1];
       if ( !mProjects.contains( projectName ) )
         return false;
 
@@ -152,8 +152,8 @@ class MemoryStorage : public QgsProjectStorage
 
 void TestQgsProjectStorage::testMemoryStorage()
 {
-  QString dataDir( TEST_DATA_DIR ); // defined in CmakeLists.txt
-  QString layerPath = dataDir + "/points.shp";
+  const QString dataDir( TEST_DATA_DIR ); // defined in CmakeLists.txt
+  const QString layerPath = dataDir + "/points.shp";
   QgsVectorLayer *layer1 = new QgsVectorLayer( layerPath, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer1->isValid() );
 
@@ -171,7 +171,7 @@ void TestQgsProjectStorage::testMemoryStorage()
   prj1.setFileName( "memory:project1" );
 
   // let's use the aux storage as well - so that the project will include aux database as well
-  int fldCnt0 = layer1->fields().count();
+  const int fldCnt0 = layer1->fields().count();
   QgsAuxiliaryLayer *layerAux = prj1.auxiliaryStorage()->createAuxiliaryLayer( layer1->fields().at( 0 ), layer1 );
   layer1->setAuxiliaryLayer( layerAux );
   layerAux->addAttribute( QgsField( "fld_aux", QVariant::Int ) );
@@ -179,7 +179,7 @@ void TestQgsProjectStorage::testMemoryStorage()
   QCOMPARE( fldCnt0, 6 );
   QCOMPARE( layer1->fields().count(), 7 );
 
-  bool writeOk = prj1.write();
+  const bool writeOk = prj1.write();
 
   QVERIFY( writeOk );
   QCOMPARE( memStorage->listProjects( QString() ).count(), 1 );
@@ -192,7 +192,7 @@ void TestQgsProjectStorage::testMemoryStorage()
 
   QgsProject prj2;
   prj2.setFileName( "memory:project1" );
-  bool readOk = prj2.read();
+  const bool readOk = prj2.read();
 
   QVERIFY( readOk );
   QCOMPARE( prj2.mapLayers().count(), 1 );
@@ -214,28 +214,28 @@ void TestQgsProjectStorage::testMemoryStorage()
 
   QgsProject prj3;
   prj3.setFileName( "memory:nooooooooo!" );
-  bool readInvalidOk = prj3.read();
+  const bool readInvalidOk = prj3.read();
   QVERIFY( !readInvalidOk );
 
   // test metadata access
 
   QgsProjectStorage::Metadata meta1;
-  bool readMetaOk = memStorage->readProjectStorageMetadata( "memory:project1", meta1 );
+  const bool readMetaOk = memStorage->readProjectStorageMetadata( "memory:project1", meta1 );
   QVERIFY( readMetaOk );
   QCOMPARE( meta1.name, QString( "project1" ) );
   QVERIFY( meta1.lastModified.secsTo( QDateTime::currentDateTime() ) < 1 );
 
   QgsProjectStorage::Metadata metaX;
-  bool readMetaInvalidOk = memStorage->readProjectStorageMetadata( "memory:projectXYZ", metaX );
+  const bool readMetaInvalidOk = memStorage->readProjectStorageMetadata( "memory:projectXYZ", metaX );
   QVERIFY( !readMetaInvalidOk );
 
   // test removal
 
-  bool removeInvalidOk = memStorage->removeProject( "memory:projectXYZ" );
+  const bool removeInvalidOk = memStorage->removeProject( "memory:projectXYZ" );
   QVERIFY( !removeInvalidOk );
   QCOMPARE( memStorage->listProjects( QString() ).count(), 1 );
 
-  bool removeOk = memStorage->removeProject( "memory:project1" );
+  const bool removeOk = memStorage->removeProject( "memory:project1" );
   QVERIFY( removeOk );
   QCOMPARE( memStorage->listProjects( QString() ).count(), 0 );
 

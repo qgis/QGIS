@@ -27,6 +27,7 @@
 #include <QWaitCondition>
 #include <QNetworkCacheMetaData>
 #include <QAuthenticator>
+#include <QBuffer>
 
 QgsBlockingNetworkRequest::QgsBlockingNetworkRequest()
 {
@@ -61,6 +62,14 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::get( QNetworkReq
 
 QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::post( QNetworkRequest &request, const QByteArray &data, bool forceRefresh, QgsFeedback *feedback )
 {
+  QByteArray ldata( data );
+  QBuffer buffer( &ldata );
+  buffer.open( QIODevice::ReadOnly );
+  return post( request, &buffer, forceRefresh, feedback );
+}
+
+QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::post( QNetworkRequest &request, QIODevice *data, bool forceRefresh, QgsFeedback *feedback )
+{
   mPayloadData = data;
   return doRequest( Post, request, forceRefresh, feedback );
 }
@@ -71,6 +80,14 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::head( QNetworkRe
 }
 
 QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::put( QNetworkRequest &request, const QByteArray &data, QgsFeedback *feedback )
+{
+  QByteArray ldata( data );
+  QBuffer buffer( &ldata );
+  buffer.open( QIODevice::ReadOnly );
+  return put( request, &buffer, feedback );
+}
+
+QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::put( QNetworkRequest &request, QIODevice *data, QgsFeedback *feedback )
 {
   mPayloadData = data;
   return doRequest( Put, request, true, feedback );
@@ -146,7 +163,7 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
   if ( mFeedback )
     connect( mFeedback, &QgsFeedback::canceled, this, &QgsBlockingNetworkRequest::abort );
 
-  std::function<void()> downloaderFunction = [ this, request, &waitConditionMutex, &authRequestBufferNotEmpty, &threadFinished, &success, requestMadeFromMainThread ]()
+  const std::function<void()> downloaderFunction = [ this, request, &waitConditionMutex, &authRequestBufferNotEmpty, &threadFinished, &success, requestMadeFromMainThread ]()
   {
     // this function will always be run in worker threads -- either the blocking call is being made in a worker thread,
     // or the blocking call has been made from the main thread and we've fired up a new thread for this function
@@ -177,6 +194,7 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
       // * or the owner thread of mReply is currently not doing anything because it's blocked in future.waitForFinished() (if it is the main thread)
       connect( mReply, &QNetworkReply::finished, this, &QgsBlockingNetworkRequest::replyFinished, Qt::DirectConnection );
       connect( mReply, &QNetworkReply::downloadProgress, this, &QgsBlockingNetworkRequest::replyProgress, Qt::DirectConnection );
+      connect( mReply, &QNetworkReply::uploadProgress, this, &QgsBlockingNetworkRequest::replyProgress, Qt::DirectConnection );
 
       auto resumeMainThread = [&waitConditionMutex, &authRequestBufferNotEmpty ]()
       {
@@ -203,7 +221,7 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
       // when QThreadPool::globalInstance()->waitForDone()
       // is called at process termination
       connect( qApp, &QCoreApplication::aboutToQuit, &loop, &QEventLoop::quit, Qt::DirectConnection );
-      connect( this, &QgsBlockingNetworkRequest::downloadFinished, &loop, &QEventLoop::quit, Qt::DirectConnection );
+      connect( this, &QgsBlockingNetworkRequest::finished, &loop, &QEventLoop::quit, Qt::DirectConnection );
       loop.exec();
     }
 
@@ -279,7 +297,7 @@ void QgsBlockingNetworkRequest::replyProgress( qint64 bytesReceived, qint64 byte
   {
     if ( mReply->error() == QNetworkReply::NoError )
     {
-      QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
+      const QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
       if ( !redirect.isNull() )
       {
         // We don't want to emit downloadProgress() for a redirect
@@ -288,7 +306,10 @@ void QgsBlockingNetworkRequest::replyProgress( qint64 bytesReceived, qint64 byte
     }
   }
 
-  emit downloadProgress( bytesReceived, bytesTotal );
+  if ( mMethod == Put || mMethod == Post )
+    emit uploadProgress( bytesReceived, bytesTotal );
+  else
+    emit downloadProgress( bytesReceived, bytesTotal );
 }
 
 void QgsBlockingNetworkRequest::replyFinished()
@@ -299,7 +320,7 @@ void QgsBlockingNetworkRequest::replyFinished()
     if ( mReply->error() == QNetworkReply::NoError && ( !mFeedback || !mFeedback->isCanceled() ) )
     {
       QgsDebugMsgLevel( QStringLiteral( "reply OK" ), 2 );
-      QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
+      const QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
       if ( !redirect.isNull() )
       {
         QgsDebugMsgLevel( QStringLiteral( "Request redirected." ), 2 );
@@ -322,7 +343,10 @@ void QgsBlockingNetworkRequest::replyFinished()
             mErrorMessage = errorMessageFailedAuth();
             mErrorCode = NetworkError;
             QgsMessageLog::logMessage( mErrorMessage, tr( "Network" ) );
+            emit finished();
+            Q_NOWARN_DEPRECATED_PUSH
             emit downloadFinished();
+            Q_NOWARN_DEPRECATED_POP
             return;
           }
 
@@ -345,12 +369,16 @@ void QgsBlockingNetworkRequest::replyFinished()
             mErrorMessage = errorMessageFailedAuth();
             mErrorCode = NetworkError;
             QgsMessageLog::logMessage( mErrorMessage, tr( "Network" ) );
+            emit finished();
+            Q_NOWARN_DEPRECATED_PUSH
             emit downloadFinished();
+            Q_NOWARN_DEPRECATED_POP
             return;
           }
 
           connect( mReply, &QNetworkReply::finished, this, &QgsBlockingNetworkRequest::replyFinished, Qt::DirectConnection );
           connect( mReply, &QNetworkReply::downloadProgress, this, &QgsBlockingNetworkRequest::replyProgress, Qt::DirectConnection );
+          connect( mReply, &QNetworkReply::uploadProgress, this, &QgsBlockingNetworkRequest::replyProgress, Qt::DirectConnection );
           return;
         }
       }
@@ -385,7 +413,7 @@ void QgsBlockingNetworkRequest::replyFinished()
         }
 
 #ifdef QGISDEBUG
-        bool fromCache = mReply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool();
+        const bool fromCache = mReply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool();
         QgsDebugMsgLevel( QStringLiteral( "Reply was cached: %1" ).arg( fromCache ), 2 );
 #endif
 
@@ -421,7 +449,10 @@ void QgsBlockingNetworkRequest::replyFinished()
     mReply = nullptr;
   }
 
+  emit finished();
+  Q_NOWARN_DEPRECATED_PUSH
   emit downloadFinished();
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QString QgsBlockingNetworkRequest::errorMessageFailedAuth()

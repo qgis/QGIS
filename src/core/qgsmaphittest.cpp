@@ -109,7 +109,7 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
     styleOverride.setOverrideStyle( mSettings.layerStyleOverrides().value( vl->id() ) );
 
   std::unique_ptr< QgsFeatureRenderer > r( vl->renderer()->clone() );
-  bool moreSymbolsPerFeature = r->capabilities() & QgsFeatureRenderer::MoreSymbolsPerFeature;
+  const bool moreSymbolsPerFeature = r->capabilities() & QgsFeatureRenderer::MoreSymbolsPerFeature;
   r->startRender( context, vl->fields() );
 
   QgsGeometry transformedPolygon = mPolygon;
@@ -117,7 +117,7 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
   {
     if ( mSettings.destinationCrs() != vl->crs() )
     {
-      QgsCoordinateTransform ct( mSettings.destinationCrs(), vl->crs(), mSettings.transformContext() );
+      const QgsCoordinateTransform ct( mSettings.destinationCrs(), vl->crs(), mSettings.transformContext() );
       transformedPolygon.transform( ct );
     }
   }
@@ -144,7 +144,7 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
   SymbolSet lUsedSymbols;
   SymbolSet lUsedSymbolsRuleKey;
   bool allExpressionFalse = false;
-  bool hasExpression = mLayerFilterExpression.contains( vl->id() );
+  const bool hasExpression = mLayerFilterExpression.contains( vl->id() );
   std::unique_ptr<QgsExpression> expr;
   if ( hasExpression )
   {

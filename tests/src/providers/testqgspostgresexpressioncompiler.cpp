@@ -45,15 +45,15 @@ class TestQgsPostgresExpressionCompiler: public QObject
 
 void TestQgsPostgresExpressionCompiler::testGeometryFromWkt()
 {
-  QgsPostgresProvider p( QStringLiteral( "" ), QgsDataProvider::ProviderOptions() );
+  const QgsPostgresProvider p( QStringLiteral( "" ), QgsDataProvider::ProviderOptions() );
   QgsPostgresFeatureSource featureSource( &p );
   QgsTestPostgresExpressionCompiler compiler( &featureSource, QStringLiteral( "4326" ), QStringLiteral( "geom" ) );
   QgsExpression exp( QStringLiteral( "intersects($geometry,geom_from_wkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0))'))" ) );
-  QgsExpressionContext expContext;
+  const QgsExpressionContext expContext;
   exp.prepare( &expContext );
-  QgsSqlExpressionCompiler::Result r = compiler.compile( &exp );
+  const QgsSqlExpressionCompiler::Result r = compiler.compile( &exp );
   QCOMPARE( r, QgsSqlExpressionCompiler::Complete );
-  QString sql = compiler.result();
+  const QString sql = compiler.result();
   QCOMPARE( sql, QStringLiteral( "ST_Intersects(\"geom\",ST_GeomFromText('Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))',4326))" ) );
 }
 

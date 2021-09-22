@@ -27,6 +27,7 @@
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
+#include "qgsmeshlayer.h"
 
 #include <QThread>
 #include <QLocale>
@@ -37,13 +38,19 @@
 #define FEAT_FROM_CONTEXT(c, f) if ( !(c) || !( c )->hasFeature() ) return QVariant(); \
   QgsFeature f = ( c )->feature();
 
-///////////////////////////////////////////////
-// three-value logic
+/**
+ * \ingroup core
+ * \class QgsExpressionUtils
+ * \brief A set of expression-related functions
+ * \since QGIS 3.22
+ */
 
-/// @cond PRIVATE
-class QgsExpressionUtils
+class CORE_EXPORT QgsExpressionUtils
 {
   public:
+/// @cond PRIVATE
+///////////////////////////////////////////////
+// three-value logic
     enum TVL
     {
       False,
@@ -87,13 +94,13 @@ class QgsExpressionUtils
       if ( value.canConvert<QgsGeometry>() )
       {
         //geom is false if empty
-        QgsGeometry geom = value.value<QgsGeometry>();
+        const QgsGeometry geom = value.value<QgsGeometry>();
         return geom.isNull() ? False : True;
       }
       else if ( value.canConvert<QgsFeature>() )
       {
         //feat is false if non-valid
-        QgsFeature feat = value.value<QgsFeature>();
+        const QgsFeature feat = value.value<QgsFeature>();
         return feat.isValid() ? True : False;
       }
 
@@ -101,7 +108,7 @@ class QgsExpressionUtils
         return value.toInt() != 0 ? True : False;
 
       bool ok;
-      double x = value.toDouble( &ok );
+      const double x = value.toDouble( &ok );
       if ( !ok )
       {
         parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to boolean" ).arg( value.toString() ) );
@@ -147,7 +154,7 @@ class QgsExpressionUtils
       if ( v.type() == QVariant::String )
       {
         bool ok;
-        double val = v.toString().toDouble( &ok );
+        const double val = v.toString().toDouble( &ok );
         ok = ok && std::isfinite( val ) && !std::isnan( val );
         return ok;
       }
@@ -211,7 +218,7 @@ class QgsExpressionUtils
     static double getDoubleValue( const QVariant &value, QgsExpression *parent )
     {
       bool ok;
-      double x = value.toDouble( &ok );
+      const double x = value.toDouble( &ok );
       if ( !ok || std::isnan( x ) || !std::isfinite( x ) )
       {
         parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to double" ).arg( value.toString() ) );
@@ -223,7 +230,7 @@ class QgsExpressionUtils
     static qlonglong getIntValue( const QVariant &value, QgsExpression *parent )
     {
       bool ok;
-      qlonglong x = value.toLongLong( &ok );
+      const qlonglong x = value.toLongLong( &ok );
       if ( ok )
       {
         return x;
@@ -238,7 +245,7 @@ class QgsExpressionUtils
     static int getNativeIntValue( const QVariant &value, QgsExpression *parent )
     {
       bool ok;
-      qlonglong x = value.toLongLong( &ok );
+      const qlonglong x = value.toLongLong( &ok );
       if ( ok && x >= std::numeric_limits<int>::min() && x <= std::numeric_limits<int>::max() )
       {
         return static_cast<int>( x );
@@ -259,7 +266,7 @@ class QgsExpressionUtils
       }
       else
       {
-        QTime t = value.toTime();
+        const QTime t = value.toTime();
         if ( t.isValid() )
         {
           return QDateTime( QDate( 1, 1, 1 ), t );
@@ -405,6 +412,11 @@ class QgsExpressionUtils
       return qobject_cast<QgsRasterLayer *>( getMapLayer( value, e ) );
     }
 
+    static QgsMeshLayer *getMeshLayer( const QVariant &value, QgsExpression *e )
+    {
+      return qobject_cast<QgsMeshLayer *>( getMapLayer( value, e ) );
+    }
+
     static QVariantList getListValue( const QVariant &value, QgsExpression *parent )
     {
       if ( value.type() == QVariant::List || value.type() == QVariant::StringList )
@@ -485,8 +497,20 @@ class QgsExpressionUtils
         return value.toString();
       }
     }
+/// @endcond
+
+    /**
+     * Returns a value type and user type for a given expression.
+     * \param expression An expression string.
+     * \param layer A vector layer from which the expression will be executed against.
+     * \param request A feature request object.
+     * \param context An expression context object.
+     * \param foundFeatures An optional boolean parameter that will be set when features are found.
+     * \since QGIS 3.22
+     */
+    static std::tuple<QVariant::Type, int> determineResultType( const QString &expression, const QgsVectorLayer *layer, QgsFeatureRequest request = QgsFeatureRequest(), QgsExpressionContext context = QgsExpressionContext(), bool *foundFeatures = nullptr );
+
 };
 
-/// @endcond
 
 #endif // QGSEXPRESSIONUTILS_H

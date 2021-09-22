@@ -177,7 +177,7 @@ void QgsBlurWidget::mBlurTypeCombo_currentIndexChanged( int index )
   if ( !mEffect )
     return;
 
-  QgsBlurEffect::BlurMethod method = ( QgsBlurEffect::BlurMethod ) mBlurTypeCombo->itemData( index ).toInt();
+  const QgsBlurEffect::BlurMethod method = ( QgsBlurEffect::BlurMethod ) mBlurTypeCombo->itemData( index ).toInt();
   mEffect->setBlurMethod( method );
 
   //also update max radius
@@ -887,7 +887,7 @@ void QgsColorEffectWidget::initGui()
   mColorizeCheck->setChecked( mEffect->colorizeOn() );
   mSliderColorizeStrength->setValue( mEffect->colorizeStrength() );
   mColorizeColorButton->setColor( mEffect->colorizeColor() );
-  int grayscaleIdx = mGrayscaleCombo->findData( QVariant( ( int ) mEffect->grayscaleMode() ) );
+  const int grayscaleIdx = mGrayscaleCombo->findData( QVariant( ( int ) mEffect->grayscaleMode() ) );
   mGrayscaleCombo->setCurrentIndex( grayscaleIdx == -1 ? 0 : grayscaleIdx );
   mOpacityWidget->setOpacity( mEffect->opacity() );
   mBlendCmbBx->setBlendMode( mEffect->blendMode() );

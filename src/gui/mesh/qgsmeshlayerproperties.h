@@ -68,8 +68,6 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
 
     //!Applies the settings made in the dialog without closing the box
     void apply();
-    //! \brief Slot to update layer display name as original is edited.
-    void updateLayerName( const QString &text );
     //! Synchronizes GUI state with associated mesh layer and trigger repaint
     void syncAndRepaint();
     //! Changes layer coordinate reference system

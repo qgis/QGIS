@@ -52,7 +52,7 @@ void QgsClassificationWidgetWrapper::initWidget( QWidget *editor )
       for ( int i = 0; i < categories.size(); i++ )
       {
         QString label = categories[i].label();
-        QString value = categories[i].value().toString();
+        const QString value = categories[i].value().toString();
         if ( label.isEmpty() )
           label = value;
 

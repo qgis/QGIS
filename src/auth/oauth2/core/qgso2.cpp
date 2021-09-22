@@ -70,7 +70,7 @@ void QgsO2::initOAuthConfig()
   }
 
   // common properties to all grant flows
-  QString localpolicy = QStringLiteral( "http://127.0.0.1:% 1/%1" ).arg( mOAuth2Config->redirectUrl() ).replace( QLatin1String( "% 1" ), QLatin1String( "%1" ) );
+  const QString localpolicy = QStringLiteral( "http://127.0.0.1:% 1/%1" ).arg( mOAuth2Config->redirectUrl() ).replace( QLatin1String( "% 1" ), QLatin1String( "%1" ) );
   QgsDebugMsgLevel( QStringLiteral( "localpolicy(w/port): %1" ).arg( localpolicy.arg( mOAuth2Config->redirectPort() ) ), 2 );
   setLocalhostPolicy( localpolicy );
   setLocalPort( mOAuth2Config->redirectPort() );
@@ -138,7 +138,7 @@ void QgsO2::setVerificationResponseContent()
 
 bool QgsO2::isLocalHost( const QUrl redirectUrl ) const
 {
-  QString hostName = redirectUrl.host();
+  const QString hostName = redirectUrl.host();
   if ( hostName == QLatin1String( "localhost" ) || hostName == QLatin1String( "127.0.0.1" ) || hostName == QLatin1String( "[::1]" ) )
   {
     return true;
@@ -237,9 +237,9 @@ void QgsO2::link()
     }
 
 
-    QByteArray payload = O0BaseAuth::createQueryParameters( parameters );
+    const QByteArray payload = O0BaseAuth::createQueryParameters( parameters );
 
-    QUrl url( tokenUrl_ );
+    const QUrl url( tokenUrl_ );
     QNetworkRequest tokenRequest( url );
     QgsSetRequestInitiatorClass( tokenRequest, QStringLiteral( "QgsO2" ) );
     tokenRequest.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1String( "application/x-www-form-urlencoded" ) );
@@ -315,7 +315,7 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
     parameters.insert( O2_OAUTH2_CLIENT_SECRET, clientSecret_ );
     parameters.insert( O2_OAUTH2_REDIRECT_URI, redirectUri_ );
     parameters.insert( O2_OAUTH2_GRANT_TYPE, O2_AUTHORIZATION_CODE );
-    QByteArray data = buildRequestBody( parameters );
+    const QByteArray data = buildRequestBody( parameters );
     QNetworkReply *tokenReply = getManager()->post( tokenRequest, data );
     timedReplies_.add( tokenReply );
     connect( tokenReply, &QNetworkReply::finished, this, &QgsO2::onTokenReplyFinished, Qt::QueuedConnection );
@@ -335,7 +335,7 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
       if ( response.contains( O2_OAUTH2_EXPIRES_IN ) )
       {
         bool ok = false;
-        int expiresIn = response.value( O2_OAUTH2_EXPIRES_IN ).toInt( &ok );
+        const int expiresIn = response.value( O2_OAUTH2_EXPIRES_IN ).toInt( &ok );
         if ( ok )
         {
           qDebug() << "O2::onVerificationReceived: Token expires in" << expiresIn << "seconds";
@@ -367,7 +367,7 @@ QNetworkAccessManager *QgsO2::getManager()
 static QVariantMap parseTokenResponse( const QByteArray &data )
 {
   QJsonParseError err;
-  QJsonDocument doc = QJsonDocument::fromJson( data, &err );
+  const QJsonDocument doc = QJsonDocument::fromJson( data, &err );
   if ( err.error != QJsonParseError::NoError )
   {
     qWarning() << "parseTokenResponse: Failed to parse token response due to err:" << err.errorString();
@@ -409,14 +409,14 @@ void QgsO2::refreshSynchronous()
   parameters.insert( O2_OAUTH2_REFRESH_TOKEN, refreshToken() );
   parameters.insert( O2_OAUTH2_GRANT_TYPE, O2_OAUTH2_REFRESH_TOKEN );
 
-  QByteArray data = buildRequestBody( parameters );
+  const QByteArray data = buildRequestBody( parameters );
 
   QgsBlockingNetworkRequest blockingRequest;
-  QgsBlockingNetworkRequest::ErrorCode errCode = blockingRequest.post( refreshRequest, data, true );
+  const QgsBlockingNetworkRequest::ErrorCode errCode = blockingRequest.post( refreshRequest, data, true );
   if ( errCode == QgsBlockingNetworkRequest::NoError )
   {
-    QByteArray reply = blockingRequest.reply().content();
-    QVariantMap tokens = parseTokenResponse( reply );
+    const QByteArray reply = blockingRequest.reply().content();
+    const QVariantMap tokens = parseTokenResponse( reply );
     if ( tokens.contains( QStringLiteral( "error" ) ) )
     {
       qDebug() << " Error refreshing token" << tokens.value( QStringLiteral( "error" ) ).toMap().value( QStringLiteral( "message" ) ).toString().toLocal8Bit().constData();

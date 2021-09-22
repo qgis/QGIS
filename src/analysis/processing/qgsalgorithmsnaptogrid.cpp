@@ -144,7 +144,7 @@ QgsFeatureList QgsSnapToGridAlgorithm::processFeature( const QgsFeature &feature
     if ( mDynamicIntervalM )
       intervalM = mIntervalMProperty.valueAsDouble( context.expressionContext(), intervalM );
 
-    QgsGeometry outputGeometry = f.geometry().snappedToGrid( intervalX, intervalY, intervalZ, intervalM );
+    const QgsGeometry outputGeometry = f.geometry().snappedToGrid( intervalX, intervalY, intervalZ, intervalM );
     if ( outputGeometry.isNull() )
     {
       feedback->reportError( QObject::tr( "Error snapping geometry %1" ).arg( feature.id() ) );

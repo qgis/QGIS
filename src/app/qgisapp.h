@@ -149,6 +149,8 @@ class QgsDevToolsPanelWidget;
 class QgsDevToolWidgetFactory;
 class QgsNetworkLogger;
 class QgsNetworkLoggerWidgetFactory;
+class QgsMapToolCapture;
+
 #include <QMainWindow>
 #include <QToolBar>
 #include <QAbstractSocket>
@@ -706,7 +708,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \param modified whether to return only layers that have been modified
      * \returns list of layers in legend order, or empty list
     */
-    QList<QgsMapLayer *> editableLayers( bool modified = false ) const;
+    QList<QgsMapLayer *> editableLayers( bool modified = false, bool ignoreLayersWhichCannotBeToggled = false ) const;
 
     //! emit initializationCompleted signal
     void completeInitialization();
@@ -1130,7 +1132,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * parameter is used in the Map Legend so it should be formed in a meaningful
      * way.
      */
-    QgsRasterLayer *addRasterLayer( QString const &uri, QString const &baseName, QString const &providerKey );
+    QgsRasterLayer *addRasterLayer( QString const &uri, QString const &baseName, QString const &providerKey = QLatin1String( "gdal" ) );
 
     /**
      * Add a vector layer directly without prompting user for location
@@ -1140,7 +1142,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * parameter is used in the Map Legend so it should be formed in a meaningful
      * way.
      */
-    QgsVectorLayer *addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey );
+    QgsVectorLayer *addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey = QLatin1String( "ogr" ) );
 
     /**
      * Adds a mesh layer directly without prompting user for location
@@ -1819,6 +1821,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! diagrams properties
     void diagramProperties();
 
+    //! Creates a new annotation layer
+    void createAnnotationLayer();
+
     //! Sets the CAD dock widget visible
     void setCadDockVisible( bool visible );
 
@@ -1984,6 +1989,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 #ifdef HAVE_GEOREFERENCER
     void showGeoreferencer();
 #endif
+
+    void annotationItemTypeAdded( int id );
 
   signals:
 
@@ -2374,6 +2381,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void enableMeshEditingTools( bool enable );
 
+    /**
+     * Returns a list of all capture map tools.
+     */
+    QList< QgsMapToolCapture * > captureTools();
 
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
 
@@ -2675,6 +2686,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsScopedOptionsWidgetFactory mCodeEditorWidgetFactory;
     QgsScopedOptionsWidgetFactory mBabelGpsDevicesWidgetFactory;
     QgsScopedOptionsWidgetFactory m3DOptionsWidgetFactory;
+
+    QMap< QString, QToolButton * > mAnnotationItemGroupToolButtons;
+    QAction *mAnnotationsItemInsertBefore = nullptr; // Used to insert annotation items at the appropriate location in the annotations toolbar
 
     class QgsCanvasRefreshBlocker
     {

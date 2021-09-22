@@ -28,6 +28,7 @@
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutitemguiregistry.h"
 #include "qgslayoutviewrubberband.h"
+#include "qgsannotationitemguiregistry.h"
 #ifdef Q_OS_MACX
 #include "qgsmacnative.h"
 #elif defined (Q_OS_WIN)
@@ -124,6 +125,11 @@ QgsLayoutItemGuiRegistry *QgsGui::layoutItemGuiRegistry()
   return instance()->mLayoutItemGuiRegistry;
 }
 
+QgsAnnotationItemGuiRegistry *QgsGui::annotationItemGuiRegistry()
+{
+  return instance()->mAnnotationItemGuiRegistry;
+}
+
 QgsProcessingGuiRegistry *QgsGui::processingGuiRegistry()
 {
   return instance()->mProcessingGuiRegistry;
@@ -196,6 +202,7 @@ QgsGui::~QgsGui()
   delete mDataItemGuiProviderRegistry;
   delete mProcessingRecentAlgorithmLog;
   delete mLayoutItemGuiRegistry;
+  delete mAnnotationItemGuiRegistry;
   delete mLayerTreeEmbeddedWidgetRegistry;
   delete mEditorWidgetRegistry;
   delete mMapLayerActionRegistry;
@@ -220,8 +227,8 @@ QColor QgsGui::sampleColor( QPoint point )
   {
     return QColor();
   }
-  QPixmap snappedPixmap = screen->grabWindow( QApplication::desktop()->winId(), point.x(), point.y(), 1, 1 );
-  QImage snappedImage = snappedPixmap.toImage();
+  const QPixmap snappedPixmap = screen->grabWindow( QApplication::desktop()->winId(), point.x(), point.y(), 1, 1 );
+  const QImage snappedImage = snappedPixmap.toImage();
   return snappedImage.pixel( 0, 0 );
 }
 
@@ -281,6 +288,10 @@ QgsGui::QgsGui()
   mLayerTreeEmbeddedWidgetRegistry = new QgsLayerTreeEmbeddedWidgetRegistry();
   mMapLayerActionRegistry = new QgsMapLayerActionRegistry();
   mLayoutItemGuiRegistry = new QgsLayoutItemGuiRegistry();
+
+  mAnnotationItemGuiRegistry = new QgsAnnotationItemGuiRegistry();
+  mAnnotationItemGuiRegistry->addDefaultItems();
+
   mWidgetStateHelper = new QgsWidgetStateHelper();
   mProcessingRecentAlgorithmLog = new QgsProcessingRecentAlgorithmLog();
   mProcessingGuiRegistry = new QgsProcessingGuiRegistry();
@@ -288,7 +299,7 @@ QgsGui::QgsGui()
 
 bool QgsGui::pythonMacroAllowed( void ( *lambda )(), QgsMessageBar *messageBar )
 {
-  Qgis::PythonMacroMode macroMode = QgsSettings().enumValue( QStringLiteral( "qgis/enableMacros" ), Qgis::PythonMacroMode::Ask );
+  const Qgis::PythonMacroMode macroMode = QgsSettings().enumValue( QStringLiteral( "qgis/enableMacros" ), Qgis::PythonMacroMode::Ask );
 
   switch ( macroMode )
   {

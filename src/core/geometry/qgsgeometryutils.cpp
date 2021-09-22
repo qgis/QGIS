@@ -105,14 +105,14 @@ QgsPoint QgsGeometryUtils::closestPoint( const QgsAbstractGeometry &geometry, co
   geometry.closestSegment( point, closestPoint, vertexAfter, nullptr, DEFAULT_SEGMENT_EPSILON );
   if ( vertexAfter.isValid() )
   {
-    QgsPoint pointAfter = geometry.vertexAt( vertexAfter );
+    const QgsPoint pointAfter = geometry.vertexAt( vertexAfter );
     if ( vertexAfter.vertex > 0 )
     {
       QgsVertexId vertexBefore = vertexAfter;
       vertexBefore.vertex--;
-      QgsPoint pointBefore = geometry.vertexAt( vertexBefore );
-      double length = pointBefore.distance( pointAfter );
-      double distance = pointBefore.distance( closestPoint );
+      const QgsPoint pointBefore = geometry.vertexAt( vertexBefore );
+      const double length = pointBefore.distance( pointAfter );
+      const double distance = pointBefore.distance( closestPoint );
 
       if ( qgsDoubleNear( distance, 0.0 ) )
         closestPoint = pointBefore;
@@ -210,7 +210,7 @@ double QgsGeometryUtils::sqrDistToLine( double ptX, double ptY, double x1, doubl
 
   if ( !qgsDoubleNear( dx, 0.0 ) || !qgsDoubleNear( dy, 0.0 ) )
   {
-    double t = ( ( ptX - x1 ) * dx + ( ptY - y1 ) * dy ) / ( dx * dx + dy * dy );
+    const double t = ( ( ptX - x1 ) * dx + ( ptY - y1 ) * dy ) / ( dx * dx + dy * dy );
     if ( t > 1 )
     {
       minDistX = x2;
@@ -226,7 +226,7 @@ double QgsGeometryUtils::sqrDistToLine( double ptX, double ptY, double x1, doubl
   dx = ptX - minDistX;
   dy = ptY - minDistY;
 
-  double dist = dx * dx + dy * dy;
+  const double dist = dx * dx + dy * dy;
 
   //prevent rounding errors if the point is directly on the segment
   if ( qgsDoubleNear( dist, 0.0, epsilon ) )
@@ -241,14 +241,14 @@ double QgsGeometryUtils::sqrDistToLine( double ptX, double ptY, double x1, doubl
 
 bool QgsGeometryUtils::lineIntersection( const QgsPoint &p1, QgsVector v1, const QgsPoint &p2, QgsVector v2, QgsPoint &intersection )
 {
-  double d = v1.y() * v2.x() - v1.x() * v2.y();
+  const double d = v1.y() * v2.x() - v1.x() * v2.y();
 
   if ( qgsDoubleNear( d, 0 ) )
     return false;
 
-  double dx = p2.x() - p1.x();
-  double dy = p2.y() - p1.y();
-  double k = ( dy * v2.x() - dx * v2.y() ) / d;
+  const double dx = p2.x() - p1.x();
+  const double dy = p2.y() - p1.y();
+  const double k = ( dy * v2.x() - dx * v2.y() ) / d;
 
   intersection = QgsPoint( p1.x() + v1.x() * k, p1.y() + v1.y() * k );
 
@@ -264,8 +264,8 @@ bool QgsGeometryUtils::segmentIntersection( const QgsPoint &p1, const QgsPoint &
 
   QgsVector v( p2.x() - p1.x(), p2.y() - p1.y() );
   QgsVector w( q2.x() - q1.x(), q2.y() - q1.y() );
-  double vl = v.length();
-  double wl = w.length();
+  const double vl = v.length();
+  const double wl = w.length();
 
   if ( qgsDoubleNear( vl, 0.0, tolerance ) || qgsDoubleNear( wl, 0.0, tolerance ) )
   {
@@ -309,11 +309,11 @@ bool QgsGeometryUtils::segmentIntersection( const QgsPoint &p1, const QgsPoint &
     }
   }
 
-  double lambdav = QgsVector( intersectionPoint.x() - p1.x(), intersectionPoint.y() - p1.y() ) *  v;
+  const double lambdav = QgsVector( intersectionPoint.x() - p1.x(), intersectionPoint.y() - p1.y() ) *  v;
   if ( lambdav < 0. + tolerance || lambdav > vl - tolerance )
     return false;
 
-  double lambdaw = QgsVector( intersectionPoint.x() - q1.x(), intersectionPoint.y() - q1.y() ) * w;
+  const double lambdaw = QgsVector( intersectionPoint.x() - q1.x(), intersectionPoint.y() - q1.y() ) * w;
   return !( lambdaw < 0. + tolerance || lambdaw >= wl - tolerance );
 
 }
@@ -545,23 +545,23 @@ QVector<QgsGeometryUtils::SelfIntersection> QgsGeometryUtils::selfIntersections(
 {
   QVector<SelfIntersection> intersections;
 
-  int n = geom->vertexCount( part, ring );
-  bool isClosed = geom->vertexAt( QgsVertexId( part, ring, 0 ) ) == geom->vertexAt( QgsVertexId( part, ring, n - 1 ) );
+  const int n = geom->vertexCount( part, ring );
+  const bool isClosed = geom->vertexAt( QgsVertexId( part, ring, 0 ) ) == geom->vertexAt( QgsVertexId( part, ring, n - 1 ) );
 
   // Check every pair of segments for intersections
   for ( int i = 0, j = 1; j < n; i = j++ )
   {
-    QgsPoint pi = geom->vertexAt( QgsVertexId( part, ring, i ) );
-    QgsPoint pj = geom->vertexAt( QgsVertexId( part, ring, j ) );
+    const QgsPoint pi = geom->vertexAt( QgsVertexId( part, ring, i ) );
+    const QgsPoint pj = geom->vertexAt( QgsVertexId( part, ring, j ) );
     if ( QgsGeometryUtils::sqrDistance2D( pi, pj ) < tolerance * tolerance ) continue;
 
     // Don't test neighboring edges
-    int start = j + 1;
-    int end = i == 0 && isClosed ? n - 1 : n;
+    const int start = j + 1;
+    const int end = i == 0 && isClosed ? n - 1 : n;
     for ( int k = start, l = start + 1; l < end; k = l++ )
     {
-      QgsPoint pk = geom->vertexAt( QgsVertexId( part, ring, k ) );
-      QgsPoint pl = geom->vertexAt( QgsVertexId( part, ring, l ) );
+      const QgsPoint pk = geom->vertexAt( QgsVertexId( part, ring, k ) );
+      const QgsPoint pl = geom->vertexAt( QgsVertexId( part, ring, l ) );
 
       QgsPoint inter;
       bool intersection = false;
@@ -588,11 +588,11 @@ int QgsGeometryUtils::leftOfLine( const QgsPoint &point, const QgsPoint &p1, con
 
 int QgsGeometryUtils::leftOfLine( const double x, const double y, const double x1, const double y1, const double x2, const double y2 )
 {
-  double f1 = x - x1;
-  double f2 = y2 - y1;
-  double f3 = y - y1;
-  double f4 = x2 - x1;
-  double test = ( f1 * f2 - f3 * f4 );
+  const double f1 = x - x1;
+  const double f2 = y2 - y1;
+  const double f3 = y - y1;
+  const double f4 = x2 - x1;
+  const double test = ( f1 * f2 - f3 * f4 );
   // return -1, 0, or 1
   return qgsDoubleNear( test, 0.0 ) ? 0 : ( test < 0 ? -1 : 1 );
 }
@@ -675,7 +675,7 @@ QgsPoint QgsGeometryUtils::interpolatePointOnArc( const QgsPoint &pt1, const Qgs
 
 double QgsGeometryUtils::ccwAngle( double dy, double dx )
 {
-  double angle = std::atan2( dy, dx ) * 180 / M_PI;
+  const double angle = std::atan2( dy, dx ) * 180 / M_PI;
   if ( angle < 0 )
   {
     return 360 + angle;
@@ -765,7 +765,7 @@ bool QgsGeometryUtils::circleAngleBetween( double angle, double angle1, double a
 
 bool QgsGeometryUtils::angleOnCircle( double angle, double angle1, double angle2, double angle3 )
 {
-  bool clockwise = circleClockwise( angle1, angle2, angle3 );
+  const bool clockwise = circleClockwise( angle1, angle2, angle3 );
   return circleAngleBetween( angle, angle1, angle3, clockwise );
 }
 
@@ -783,9 +783,9 @@ double QgsGeometryUtils::circleLength( double x1, double y1, double x2, double y
 
 double QgsGeometryUtils::sweepAngle( double centerX, double centerY, double x1, double y1, double x2, double y2, double x3, double y3 )
 {
-  double p1Angle = QgsGeometryUtils::ccwAngle( y1 - centerY, x1 - centerX );
-  double p2Angle = QgsGeometryUtils::ccwAngle( y2 - centerY, x2 - centerX );
-  double p3Angle = QgsGeometryUtils::ccwAngle( y3 - centerY, x3 - centerX );
+  const double p1Angle = QgsGeometryUtils::ccwAngle( y1 - centerY, x1 - centerX );
+  const double p2Angle = QgsGeometryUtils::ccwAngle( y2 - centerY, x2 - centerX );
+  const double p3Angle = QgsGeometryUtils::ccwAngle( y3 - centerY, x3 - centerX );
 
   if ( p3Angle >= p1Angle )
   {
@@ -813,17 +813,17 @@ double QgsGeometryUtils::sweepAngle( double centerX, double centerY, double x1, 
 
 bool QgsGeometryUtils::segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, QgsPoint &result, double radius, const QgsPoint &mousePos )
 {
-  QgsPoint midPoint( ( p1.x() + p2.x() ) / 2.0, ( p1.y() + p2.y() ) / 2.0 );
-  double midDist = std::sqrt( sqrDistance2D( p1, midPoint ) );
+  const QgsPoint midPoint( ( p1.x() + p2.x() ) / 2.0, ( p1.y() + p2.y() ) / 2.0 );
+  const double midDist = std::sqrt( sqrDistance2D( p1, midPoint ) );
   if ( radius < midDist )
   {
     return false;
   }
-  double centerMidDist = std::sqrt( radius * radius - midDist * midDist );
-  double dist = radius - centerMidDist;
+  const double centerMidDist = std::sqrt( radius * radius - midDist * midDist );
+  const double dist = radius - centerMidDist;
 
-  double midDx = midPoint.x() - p1.x();
-  double midDy = midPoint.y() - p1.y();
+  const double midDx = midPoint.x() - p1.x();
+  const double midDy = midPoint.y() - p1.y();
 
   //get the four possible midpoints
   QVector<QgsPoint> possibleMidPoints;
@@ -837,7 +837,7 @@ bool QgsGeometryUtils::segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, 
   int minDistIndex = -1;
   for ( int i = 0; i < possibleMidPoints.size(); ++i )
   {
-    double currentDist = sqrDistance2D( mousePos, possibleMidPoints.at( i ) );
+    const double currentDist = sqrDistance2D( mousePos, possibleMidPoints.at( i ) );
     if ( currentDist < minDist )
     {
       minDistIndex = i;
@@ -874,9 +874,9 @@ double QgsGeometryUtils::circleTangentDirection( const QgsPoint &tangentPoint, c
   double mX, mY, radius;
   circleCenterRadius( cp1, cp2, cp3, radius, mX, mY );
 
-  double p1Angle = QgsGeometryUtils::ccwAngle( cp1.y() - mY, cp1.x() - mX );
-  double p2Angle = QgsGeometryUtils::ccwAngle( cp2.y() - mY, cp2.x() - mX );
-  double p3Angle = QgsGeometryUtils::ccwAngle( cp3.y() - mY, cp3.x() - mX );
+  const double p1Angle = QgsGeometryUtils::ccwAngle( cp1.y() - mY, cp1.x() - mX );
+  const double p2Angle = QgsGeometryUtils::ccwAngle( cp2.y() - mY, cp2.x() - mX );
+  const double p3Angle = QgsGeometryUtils::ccwAngle( cp3.y() - mY, cp3.x() - mX );
   double angle = 0;
   if ( circleClockwise( p1Angle, p2Angle, p3Angle ) )
   {
@@ -904,23 +904,23 @@ bool QgsGeometryUtils::pointContinuesArc( const QgsPoint &a1, const QgsPoint &a2
     return false;
 
   // distance of candidate point to center of arc a1-a2-a3
-  double bDistance = std::sqrt( ( b.x() - centerX ) * ( b.x() - centerX ) +
-                                ( b.y() - centerY ) * ( b.y() - centerY ) );
+  const double bDistance = std::sqrt( ( b.x() - centerX ) * ( b.x() - centerX ) +
+                                      ( b.y() - centerY ) * ( b.y() - centerY ) );
 
   double diff = std::fabs( radius - bDistance );
 
   auto arcAngle = []( const QgsPoint & a, const QgsPoint & b, const QgsPoint & c )->double
   {
-    double abX = b.x() - a.x();
-    double abY = b.y() - a.y();
+    const double abX = b.x() - a.x();
+    const double abY = b.y() - a.y();
 
-    double cbX = b.x() - c.x();
-    double cbY = b.y() - c.y();
+    const double cbX = b.x() - c.x();
+    const double cbY = b.y() - c.y();
 
-    double dot = ( abX * cbX + abY * cbY ); /* dot product */
-    double cross = ( abX * cbY - abY * cbX ); /* cross product */
+    const double dot = ( abX * cbX + abY * cbY ); /* dot product */
+    const double cross = ( abX * cbY - abY * cbX ); /* cross product */
 
-    double alpha = std::atan2( cross, dot );
+    const double alpha = std::atan2( cross, dot );
 
     return alpha;
   };
@@ -928,8 +928,8 @@ bool QgsGeometryUtils::pointContinuesArc( const QgsPoint &a1, const QgsPoint &a2
   // Is the point b on the circle?
   if ( diff < distanceTolerance )
   {
-    double angle1 = arcAngle( a1, a2, a3 );
-    double angle2 = arcAngle( a2, a3, b );
+    const double angle1 = arcAngle( a1, a2, a3 );
+    const double angle2 = arcAngle( a2, a3, b );
 
     // Is the sweep angle similar to the previous one?
     // We only consider a segment replaceable by an arc if the points within
@@ -940,8 +940,8 @@ bool QgsGeometryUtils::pointContinuesArc( const QgsPoint &a1, const QgsPoint &a2
       return false;
     }
 
-    int a2Side = leftOfLine( a2.x(), a2.y(), a1.x(), a1.y(), a3.x(), a3.y() );
-    int bSide  = leftOfLine( b.x(), b.y(), a1.x(), a1.y(), a3.x(), a3.y() );
+    const int a2Side = leftOfLine( a2.x(), a2.y(), a1.x(), a1.y(), a3.x(), a3.y() );
+    const int bSide  = leftOfLine( b.x(), b.y(), a1.x(), a1.y(), a3.x(), a3.y() );
 
     // Is the point b on the same side of a1/a3 as the mid-point a2 is?
     // If not, it's in the unbounded part of the circle, so it continues the arc, return true.
@@ -954,7 +954,7 @@ bool QgsGeometryUtils::pointContinuesArc( const QgsPoint &a1, const QgsPoint &a2
 void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, QgsPointSequence &points, double tolerance, QgsAbstractGeometry::SegmentationToleranceType toleranceType, bool hasZ, bool hasM )
 {
   bool reversed = false;
-  int segSide = segmentSide( p1, p3, p2 );
+  const int segSide = segmentSide( p1, p3, p2 );
 
   QgsPoint circlePoint1;
   const QgsPoint circlePoint2 = p2;
@@ -992,12 +992,12 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
   {
     // Ensure tolerance is not higher than twice the radius
     tolerance = std::min( tolerance, radius * 2 );
-    double halfAngle = std::acos( -tolerance / radius + 1 );
+    const double halfAngle = std::acos( -tolerance / radius + 1 );
     increment = 2 * halfAngle;
   }
 
   //angles of pt1, pt2, pt3
-  double a1 = std::atan2( circlePoint1.y() - centerY, circlePoint1.x() - centerX );
+  const double a1 = std::atan2( circlePoint1.y() - centerY, circlePoint1.x() - centerX );
   double a2 = std::atan2( circlePoint2.y() - centerY, circlePoint2.x() - centerX );
   double a3 = std::atan2( circlePoint3.y() - centerY, circlePoint3.x() - centerX );
 
@@ -1010,7 +1010,7 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
     if ( angle <= 0 ) angle += M_PI * 2;
 
     /* Number of segments in output */
-    int segs = ceil( angle / increment );
+    const int segs = ceil( angle / increment );
     /* Tweak increment to be regular for all the arc */
     increment = angle / segs;
   }
@@ -1042,8 +1042,8 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
     // NOTE that this effectively allows in output some segments which
     //      are more distant than requested. This is at most 1% off
     //      from requested MaxAngle and less for MaxError.
-    double tolError = increment / 100;
-    double stopAngle = a3 - tolError;
+    const double tolError = increment / 100;
+    const double stopAngle = a3 - tolError;
     for ( double angle = a1 + increment; angle < stopAngle; angle += increment )
     {
       x = centerX + radius * std::cos( angle );
@@ -1074,7 +1074,7 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
 
 int QgsGeometryUtils::segmentSide( const QgsPoint &pt1, const QgsPoint &pt3, const QgsPoint &pt2 )
 {
-  double side = ( ( pt2.x() - pt1.x() ) * ( pt3.y() - pt1.y() ) - ( pt3.x() - pt1.x() ) * ( pt2.y() - pt1.y() ) );
+  const double side = ( ( pt2.x() - pt1.x() ) * ( pt3.y() - pt1.y() ) - ( pt3.x() - pt1.x() ) * ( pt2.y() - pt1.y() ) );
   if ( side == 0.0 )
   {
     return 0;
@@ -1115,7 +1115,7 @@ double QgsGeometryUtils::interpolateArcValue( double angle, double a1, double a2
 
 QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateList, bool is3D, bool isMeasure )
 {
-  int dim = 2 + is3D + isMeasure;
+  const int dim = 2 + is3D + isMeasure;
   QgsPointSequence points;
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
@@ -1127,14 +1127,14 @@ QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateLi
   //first scan through for extra unexpected dimensions
   bool foundZ = false;
   bool foundM = false;
-  QRegularExpression rx( QStringLiteral( "\\s" ) );
-  QRegularExpression rxIsNumber( QStringLiteral( "^[+-]?(\\d\\.?\\d*[Ee][+\\-]?\\d+|(\\d+\\.\\d*|\\d*\\.\\d+)|\\d+)$" ) );
+  const QRegularExpression rx( QStringLiteral( "\\s" ) );
+  const QRegularExpression rxIsNumber( QStringLiteral( "^[+-]?(\\d\\.?\\d*[Ee][+\\-]?\\d+|(\\d+\\.\\d*|\\d*\\.\\d+)|\\d+)$" ) );
   for ( const QString &pointCoordinates : coordList )
   {
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     QStringList coordinates = pointCoordinates.split( rx, QString::SkipEmptyParts );
 #else
-    QStringList coordinates = pointCoordinates.split( rx, Qt::SkipEmptyParts );
+    const QStringList coordinates = pointCoordinates.split( rx, Qt::SkipEmptyParts );
 #endif
 
     // exit with an empty set if one list contains invalid value.
@@ -1167,8 +1167,8 @@ QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateLi
       continue;
 
     int idx = 0;
-    double x = coordinates[idx++].toDouble();
-    double y = coordinates[idx++].toDouble();
+    const double x = coordinates[idx++].toDouble();
+    const double y = coordinates[idx++].toDouble();
 
     double z = 0;
     if ( ( is3D || foundZ ) && coordinates.length() > idx )
@@ -1241,9 +1241,9 @@ QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequence &points, QDom
   QDomElement elemCoordinates = doc.createElementNS( ns, QStringLiteral( "coordinates" ) );
 
   // coordinate separator
-  QString cs = QStringLiteral( "," );
+  const QString cs = QStringLiteral( "," );
   // tuple separator
-  QString ts = QStringLiteral( " " );
+  const QString ts = QStringLiteral( " " );
 
   elemCoordinates.setAttribute( QStringLiteral( "cs" ), cs );
   elemCoordinates.setAttribute( QStringLiteral( "ts" ), ts );
@@ -1340,7 +1340,7 @@ QPair<QgsWkbTypes::Type, QString> QgsGeometryUtils::wktReadBlock( const QString 
   {
     QRegularExpression wktRegEx( QStringLiteral( "^\\s*(\\w+)\\s+(\\w+)\\s*$" ) );
     wktRegEx.setPatternOptions( QRegularExpression::DotMatchesEverythingOption );
-    QRegularExpressionMatch match = wktRegEx.match( wkt );
+    const QRegularExpressionMatch match = wktRegEx.match( wkt );
     if ( match.hasMatch() )
     {
       wktParsed = match.captured( 1 );
@@ -1359,10 +1359,10 @@ QPair<QgsWkbTypes::Type, QString> QgsGeometryUtils::wktReadBlock( const QString 
 
     QRegularExpression cooRegEx( QStringLiteral( "^[^\\(]*\\((.*)\\)[^\\)]*$" ) );
     cooRegEx.setPatternOptions( QRegularExpression::DotMatchesEverythingOption );
-    QRegularExpressionMatch match = cooRegEx.match( wktParsed );
+    const QRegularExpressionMatch match = cooRegEx.match( wktParsed );
     contents = match.hasMatch() ? match.captured( 1 ) : QString();
   }
-  QgsWkbTypes::Type wkbType = QgsWkbTypes::parseType( wktParsed );
+  const QgsWkbTypes::Type wkbType = QgsWkbTypes::parseType( wktParsed );
   return qMakePair( wkbType, contents );
 }
 
@@ -1484,8 +1484,8 @@ QgsPoint QgsGeometryUtils::midpoint( const QgsPoint &pt1, const QgsPoint &pt2 )
   QgsWkbTypes::Type pType( QgsWkbTypes::Point );
 
 
-  double x = ( pt1.x() + pt2.x() ) / 2.0;
-  double y = ( pt1.y() + pt2.y() ) / 2.0;
+  const double x = ( pt1.x() + pt2.x() ) / 2.0;
+  const double y = ( pt1.y() + pt2.y() ) / 2.0;
   double z = std::numeric_limits<double>::quiet_NaN();
   double m = std::numeric_limits<double>::quiet_NaN();
 
@@ -1532,8 +1532,8 @@ QgsPointXY QgsGeometryUtils::interpolatePointOnLineByValue( const double x1, con
 
 double QgsGeometryUtils::gradient( const QgsPoint &pt1, const QgsPoint &pt2 )
 {
-  double delta_x = pt2.x() - pt1.x();
-  double delta_y = pt2.y() - pt1.y();
+  const double delta_x = pt2.x() - pt1.x();
+  const double delta_y = pt2.y() - pt1.y();
   if ( qgsDoubleNear( delta_x, 0.0 ) )
   {
     return INFINITY;
@@ -1588,12 +1588,12 @@ QgsLineString QgsGeometryUtils::perpendicularSegment( const QgsPoint &p, const Q
   }
   else
   {
-    double y = ( -c - a * p.x() ) / b;
-    double m = gradient( s1, s2 );
-    double d2 = 1 + m * m;
-    double H = p.y() - y;
-    double dx = m * H / d2;
-    double dy = m * dx;
+    const double y = ( -c - a * p.x() ) / b;
+    const double m = gradient( s1, s2 );
+    const double d2 = 1 + m * m;
+    const double H = p.y() - y;
+    const double dx = m * H / d2;
+    const double dy = m * dx;
     p2 = QgsPoint( p.x() + dx, y + dy );
   }
 
@@ -1605,15 +1605,15 @@ QgsLineString QgsGeometryUtils::perpendicularSegment( const QgsPoint &p, const Q
 
 double QgsGeometryUtils::lineAngle( double x1, double y1, double x2, double y2 )
 {
-  double at = std::atan2( y2 - y1, x2 - x1 );
-  double a = -at + M_PI_2;
+  const double at = std::atan2( y2 - y1, x2 - x1 );
+  const double a = -at + M_PI_2;
   return normalizedAngle( a );
 }
 
 double QgsGeometryUtils::angleBetweenThreePoints( double x1, double y1, double x2, double y2, double x3, double y3 )
 {
-  double angle1 = std::atan2( y1 - y2, x1 - x2 );
-  double angle2 = std::atan2( y3 - y2, x3 - x2 );
+  const double angle1 = std::atan2( y1 - y2, x1 - x2 );
+  const double angle2 = std::atan2( y3 - y2, x3 - x2 );
   return normalizedAngle( angle1 - angle2 );
 }
 
@@ -1627,8 +1627,8 @@ double QgsGeometryUtils::linePerpendicularAngle( double x1, double y1, double x2
 double QgsGeometryUtils::averageAngle( double x1, double y1, double x2, double y2, double x3, double y3 )
 {
   // calc average angle between the previous and next point
-  double a1 = lineAngle( x1, y1, x2, y2 );
-  double a2 = lineAngle( x2, y2, x3, y3 );
+  const double a1 = lineAngle( x1, y1, x2, y2 );
+  const double a2 = lineAngle( x2, y2, x3, y3 );
   return averageAngle( a1, a2 );
 }
 
@@ -1645,7 +1645,7 @@ double QgsGeometryUtils::averageAngle( double a1, double a2 )
   {
     clockwiseDiff = a2 + ( 2 * M_PI - a1 );
   }
-  double counterClockwiseDiff = 2 * M_PI - clockwiseDiff;
+  const double counterClockwiseDiff = 2 * M_PI - clockwiseDiff;
 
   double resultAngle = 0;
   if ( clockwiseDiff <= counterClockwiseDiff )
@@ -1662,12 +1662,12 @@ double QgsGeometryUtils::averageAngle( double a1, double a2 )
 double QgsGeometryUtils::skewLinesDistance( const QgsVector3D &P1, const QgsVector3D &P12,
     const QgsVector3D &P2, const QgsVector3D &P22 )
 {
-  QgsVector3D u1 = P12 - P1;
-  QgsVector3D u2 = P22 - P2;
+  const QgsVector3D u1 = P12 - P1;
+  const QgsVector3D u2 = P22 - P2;
   QgsVector3D u3 = QgsVector3D::crossProduct( u1, u2 );
   if ( u3.length() == 0 ) return 1;
   u3.normalize();
-  QgsVector3D dir = P1 - P2;
+  const QgsVector3D dir = P1 - P2;
   return std::fabs( ( QgsVector3D::dotProduct( dir, u3 ) ) ); // u3 is already normalized
 }
 
@@ -1675,12 +1675,12 @@ bool QgsGeometryUtils::skewLinesProjection( const QgsVector3D &P1, const QgsVect
     const QgsVector3D &P2, const QgsVector3D &P22,
     QgsVector3D &X1, double epsilon )
 {
-  QgsVector3D d = P2 - P1;
+  const QgsVector3D d = P2 - P1;
   QgsVector3D u1 = P12 - P1;
   u1.normalize();
   QgsVector3D u2 = P22 - P2;
   u2.normalize();
-  QgsVector3D u3 = QgsVector3D::crossProduct( u1, u2 );
+  const QgsVector3D u3 = QgsVector3D::crossProduct( u1, u2 );
 
   if ( std::fabs( u3.x() ) <= epsilon &&
        std::fabs( u3.y() ) <= epsilon &&
@@ -1707,7 +1707,7 @@ bool QgsGeometryUtils::skewLinesProjection( const QgsVector3D &P1, const QgsVect
     return false;
   }
 
-  double r1 = ( c2 - b2 * c1 / b1 ) / ( a2 - b2 * a1 / b1 );
+  const double r1 = ( c2 - b2 * c1 / b1 ) / ( a2 - b2 * a1 / b1 );
   X1 = P1 + u1 * r1;
 
   return true;
@@ -1738,15 +1738,15 @@ bool QgsGeometryUtils::linesIntersection3D( const QgsVector3D &La1, const QgsVec
 
   // first check if lines have an exact intersection point
   // do it by checking if the shortest distance is exactly 0
-  float distance = skewLinesDistance( La1, La2, Lb1, Lb2 );
+  const float distance = skewLinesDistance( La1, La2, Lb1, Lb2 );
   if ( qgsDoubleNear( distance, 0.0 ) )
   {
     // 3d lines have exact intersection point.
-    QgsVector3D C = La2;
-    QgsVector3D D = Lb2;
-    QgsVector3D e = La1 - La2;
-    QgsVector3D f = Lb1 - Lb2;
-    QgsVector3D g = D - C;
+    const QgsVector3D C = La2;
+    const QgsVector3D D = Lb2;
+    const QgsVector3D e = La1 - La2;
+    const QgsVector3D f = Lb1 - Lb2;
+    const QgsVector3D g = D - C;
     if ( qgsDoubleNear( ( QgsVector3D::crossProduct( f, g ) ).length(), 0.0 ) || qgsDoubleNear( ( QgsVector3D::crossProduct( f, e ) ).length(), 0.0 ) )
     {
       // Lines have no intersection, are they parallel?
@@ -1769,8 +1769,8 @@ bool QgsGeometryUtils::linesIntersection3D( const QgsVector3D &La1, const QgsVec
 
   // try to calculate the approximate intersection point
   QgsVector3D X1, X2;
-  bool firstIsDone = skewLinesProjection( La1, La2, Lb1, Lb2, X1 );
-  bool secondIsDone = skewLinesProjection( Lb1, Lb2, La1, La2, X2 );
+  const bool firstIsDone = skewLinesProjection( La1, La2, Lb1, Lb2, X1 );
+  const bool secondIsDone = skewLinesProjection( Lb1, Lb2, La1, La2, X2 );
 
   if ( !firstIsDone || !secondIsDone )
   {

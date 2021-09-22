@@ -80,7 +80,7 @@ void QgsGCPListModel::updateModel()
   //  // Setup table header
   QStringList itemLabels;
   QString unitType;
-  QgsSettings s;
+  const QgsSettings s;
   bool mapUnitsPossible = false;
   QVector<QgsPointXY> mapCoords, pixelCoords;
 
@@ -147,7 +147,7 @@ void QgsGCPListModel::updateModel()
     if ( mGeorefTransform && bTransformUpdated && mGeorefTransform->parametersInitialized() )
     {
       QgsPointXY dst;
-      QgsPointXY pixel = mGeorefTransform->hasCrs() ? mGeorefTransform->toColumnLine( p->pixelCoords() ) : p->pixelCoords();
+      const QgsPointXY pixel = mGeorefTransform->hasCrs() ? mGeorefTransform->toColumnLine( p->pixelCoords() ) : p->pixelCoords();
       if ( unitType == tr( "pixels" ) )
       {
         // Transform from world to raster coordinate:

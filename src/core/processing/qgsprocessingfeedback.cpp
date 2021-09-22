@@ -122,7 +122,7 @@ void QgsProcessingFeedback::pushVersionInfo( const QgsProcessingProvider *provid
   pushDebugInfo( tr( "GDAL version: %1" ).arg( GDALVersionInfo( "RELEASE_NAME" ) ) );
   pushDebugInfo( tr( "GEOS version: %1" ).arg( GEOSversion() ) );
 
-  PJ_INFO info = proj_info();
+  const PJ_INFO info = proj_info();
   pushDebugInfo( tr( "PROJ version: %1" ).arg( info.release ) );
 
 #ifdef HAVE_PDAL
@@ -211,8 +211,8 @@ QString QgsProcessingMultiStepFeedback::textLog() const
 
 void QgsProcessingMultiStepFeedback::updateOverallProgress( double progress )
 {
-  double baseProgress = 100.0 * static_cast< double >( mCurrentStep ) / mChildSteps;
-  double currentAlgorithmProgress = progress / mChildSteps;
+  const double baseProgress = 100.0 * static_cast< double >( mCurrentStep ) / mChildSteps;
+  const double currentAlgorithmProgress = progress / mChildSteps;
   mFeedback->setProgress( baseProgress + currentAlgorithmProgress );
 }
 

@@ -45,7 +45,7 @@ QgsMapToolDigitizeFeature::QgsMapToolDigitizeFeature( QgsMapCanvas *canvas, QgsA
 
 QgsMapToolCapture::Capabilities QgsMapToolDigitizeFeature::capabilities() const
 {
-  return QgsMapToolCapture::SupportsCurves;
+  return QgsMapToolCapture::SupportsCurves | QgsMapToolCapture::ValidateGeometries;
 }
 
 bool QgsMapToolDigitizeFeature::supportsTechnique( QgsMapToolCapture::CaptureTechnique technique ) const
@@ -74,7 +74,7 @@ void QgsMapToolDigitizeFeature::activate()
 
   if ( vlayer && vlayer->geometryType() == QgsWkbTypes::NullGeometry )
   {
-    QgsFeature f;
+    const QgsFeature f;
     digitized( f );
     return;
   }
@@ -124,7 +124,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  QgsWkbTypes::Type layerWKBType = vlayer->wkbType();
+  const QgsWkbTypes::Type layerWKBType = vlayer->wkbType();
 
   QgsVectorDataProvider *provider = vlayer->dataProvider();
 
@@ -155,28 +155,23 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
     QgsPoint savePoint; //point in layer coordinates
     bool isMatchPointZ = false;
+    bool isMatchPointM = false;
     try
     {
       QgsPoint fetchPoint;
       int res;
       res = fetchLayerPoint( e->mapPointMatch(), fetchPoint );
-      if ( QgsWkbTypes::hasZ( fetchPoint.wkbType() ) )
-        isMatchPointZ = true;
+      isMatchPointZ = QgsWkbTypes::hasZ( fetchPoint.wkbType() );
+      isMatchPointM = QgsWkbTypes::hasM( fetchPoint.wkbType() );
 
       if ( res == 0 )
       {
-        if ( isMatchPointZ )
-          savePoint = fetchPoint;
-        else
-          savePoint = QgsPoint( fetchPoint.x(), fetchPoint.y() );
+        savePoint = QgsPoint( layerWKBType, fetchPoint.x(), fetchPoint.y(), fetchPoint.z(), fetchPoint.m() );
       }
       else
       {
-        QgsPointXY layerPoint = toLayerCoordinates( vlayer, e->mapPoint() );
-        if ( isMatchPointZ )
-          savePoint = QgsPoint( QgsWkbTypes::PointZ, layerPoint.x(), layerPoint.y(), fetchPoint.z() );
-        else
-          savePoint = QgsPoint( layerPoint.x(), layerPoint.y() );
+        const QgsPointXY layerPoint = toLayerCoordinates( vlayer, e->mapPoint() );
+        savePoint = QgsPoint( layerWKBType, layerPoint.x(), layerPoint.y(), fetchPoint.z(), fetchPoint.m() );
       }
     }
     catch ( QgsCsException &cse )
@@ -194,33 +189,24 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       QgsFeature f( vlayer->fields() );
 
       QgsGeometry g;
-      if ( layerWKBType == QgsWkbTypes::Point )
-      {
-        g = QgsGeometry( std::make_unique<QgsPoint>( savePoint ) );
-      }
-      else if ( !QgsWkbTypes::isMultiType( layerWKBType ) && QgsWkbTypes::hasZ( layerWKBType ) )
-      {
-        g = QgsGeometry( std::make_unique<QgsPoint>( savePoint.x(), savePoint.y(), isMatchPointZ ? savePoint.z() : defaultZValue() ) );
-      }
-      else if ( QgsWkbTypes::isMultiType( layerWKBType ) && !QgsWkbTypes::hasZ( layerWKBType ) )
-      {
-        g = QgsGeometry::fromMultiPointXY( QgsMultiPointXY() << savePoint );
-      }
-      else if ( QgsWkbTypes::isMultiType( layerWKBType ) && QgsWkbTypes::hasZ( layerWKBType ) )
-      {
-        QgsMultiPoint *mp = new QgsMultiPoint();
-        mp->addGeometry( new QgsPoint( QgsWkbTypes::PointZ, savePoint.x(), savePoint.y(), isMatchPointZ ? savePoint.z() : defaultZValue() ) );
-        g.set( mp );
-      }
-      else
+      const QgsPoint result( layerWKBType, savePoint.x(), savePoint.y(), isMatchPointZ ? savePoint.z() : defaultZValue(), isMatchPointM ? savePoint.m() : defaultMValue() );
+      if ( mCheckGeometryType == false )
       {
         // if layer supports more types (mCheckGeometryType is false)
         g = QgsGeometry( std::make_unique<QgsPoint>( savePoint ) );
       }
-
-      if ( QgsWkbTypes::hasM( layerWKBType ) )
+      else
       {
-        g.get()->addMValue( defaultMValue() );
+        if ( !QgsWkbTypes::isMultiType( layerWKBType ) )
+        {
+          g = QgsGeometry( std::make_unique<QgsPoint>( result ) );
+        }
+        else
+        {
+          QgsMultiPoint *mp = new QgsMultiPoint();
+          mp->addGeometry( new QgsPoint( result ) );
+          g.set( mp );
+        }
       }
 
       f.setGeometry( g );
@@ -258,13 +244,8 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     //add point to list and to rubber band
     if ( e->button() == Qt::LeftButton )
     {
-      int error = addVertex( e->mapPoint(), e->mapPointMatch() );
-      if ( error == 1 )
-      {
-        //current layer is not a vector layer
-        return;
-      }
-      else if ( error == 2 )
+      const int error = addVertex( e->mapPoint(), e->mapPointMatch() );
+      if ( error == 2 )
       {
         //problem with coordinate transformation
         emit messageEmitted( tr( "Cannot transform the point to the layers coordinate system" ), Qgis::MessageLevel::Warning );
@@ -302,8 +283,8 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       //does compoundcurve contain circular strings?
       //does provider support circular strings?
-      bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
-      bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
+      const bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
+      const bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
 
       QList<QgsPointLocator::Match> snappingMatchesList;
       QgsCurve *curveToAdd = nullptr;
@@ -319,7 +300,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       if ( mode() == CaptureLine )
       {
-        QgsGeometry g( curveToAdd );
+        const QgsGeometry g( curveToAdd );
         f->setGeometry( g );
       }
       else
@@ -334,7 +315,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           poly = new QgsPolygon();
         }
         poly->setExteriorRing( curveToAdd );
-        QgsGeometry g( poly );
+        const QgsGeometry g( poly );
         f->setGeometry( g );
 
         QList<QgsVectorLayer *>  avoidIntersectionsLayers;
@@ -352,7 +333,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         if ( avoidIntersectionsLayers.size() > 0 )
         {
           QgsGeometry featGeom = f->geometry();
-          int avoidIntersectionsReturn = featGeom.avoidIntersections( avoidIntersectionsLayers );
+          const int avoidIntersectionsReturn = featGeom.avoidIntersections( avoidIntersectionsLayers );
           f->setGeometry( featGeom );
           if ( avoidIntersectionsReturn == 3 )
           {

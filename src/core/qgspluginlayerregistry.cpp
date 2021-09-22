@@ -89,7 +89,7 @@ bool QgsPluginLayerRegistry::removePluginLayerType( const QString &typeName )
     return false;
 
   // remove all remaining layers of this type - to avoid invalid behavior
-  QList<QgsMapLayer *> layers = QgsProject::instance()->mapLayers().values();
+  const QList<QgsMapLayer *> layers = QgsProject::instance()->mapLayers().values();
   const auto constLayers = layers;
   for ( QgsMapLayer *layer : constLayers )
   {

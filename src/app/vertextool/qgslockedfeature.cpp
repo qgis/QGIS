@@ -292,7 +292,7 @@ void QgsLockedFeature::invertVertexSelection( int vertexNr )
 
   QgsVertexEntry *entry = mVertexMap.at( vertexNr );
 
-  bool selected = !entry->isSelected();
+  const bool selected = !entry->isSelected();
 
   entry->setSelected( selected );
   emit selectionChanged();
@@ -301,7 +301,7 @@ void QgsLockedFeature::invertVertexSelection( int vertexNr )
 void QgsLockedFeature::invertVertexSelection( const QVector<int> &vertexIndices )
 {
   const auto constVertexIndices = vertexIndices;
-  for ( int index : constVertexIndices )
+  for ( const int index : constVertexIndices )
   {
     if ( index < 0 || index >= mVertexMap.size() )
       continue;

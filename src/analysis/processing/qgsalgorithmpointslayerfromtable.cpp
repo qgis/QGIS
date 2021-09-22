@@ -83,9 +83,9 @@ QVariantMap QgsPointsLayerFromTableAlgorithm::processAlgorithm( const QVariantMa
   if ( !featureSource )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  QgsFields fields = featureSource->fields();
-  int xFieldIndex = fields.lookupField( parameterAsString( parameters, QStringLiteral( "XFIELD" ), context ) );
-  int yFieldIndex = fields.lookupField( parameterAsString( parameters, QStringLiteral( "YFIELD" ), context ) );
+  const QgsFields fields = featureSource->fields();
+  const int xFieldIndex = fields.lookupField( parameterAsString( parameters, QStringLiteral( "XFIELD" ), context ) );
+  const int yFieldIndex = fields.lookupField( parameterAsString( parameters, QStringLiteral( "YFIELD" ), context ) );
 
   QString fieldName = parameterAsString( parameters, QStringLiteral( "ZFIELD" ), context );
   int zFieldIndex = -1;
@@ -103,14 +103,14 @@ QVariantMap QgsPointsLayerFromTableAlgorithm::processAlgorithm( const QVariantMa
   if ( mFieldIndex >= 0 )
     outputWkbType = QgsWkbTypes::addM( outputWkbType );
 
-  QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, QStringLiteral( "TARGET_CRS" ), context );
+  const QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, QStringLiteral( "TARGET_CRS" ), context );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, outputWkbType, crs, QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-  double step = featureSource->featureCount() > 0 ? 100.0 / featureSource->featureCount() : 1;
+  const double step = featureSource->featureCount() > 0 ? 100.0 / featureSource->featureCount() : 1;
 
   QgsFeatureRequest req;
   req.setFlags( QgsFeatureRequest::NoGeometry );
@@ -125,12 +125,12 @@ QVariantMap QgsPointsLayerFromTableAlgorithm::processAlgorithm( const QVariantMa
       break;
     }
 
-    QgsAttributes attrs = f.attributes();
+    const QgsAttributes attrs = f.attributes();
 
     bool xOk = false;
     bool yOk = false;
-    double x = attrs.at( xFieldIndex ).toDouble( &xOk );
-    double y = attrs.at( yFieldIndex ).toDouble( &yOk );
+    const double x = attrs.at( xFieldIndex ).toDouble( &xOk );
+    const double y = attrs.at( yFieldIndex ).toDouble( &yOk );
 
     if ( ! attrs.at( xFieldIndex ).isNull() && ! attrs.at( yFieldIndex ).isNull() && xOk && yOk )
     {

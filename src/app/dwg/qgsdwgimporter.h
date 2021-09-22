@@ -211,7 +211,7 @@ class QgsDwgImporter : public DRW_Interface
     int mSplineSegs;
     int mBlockHandle;
     int mCrs;
-    OGRSpatialReferenceH mCrsH;
+    OGRSpatialReferenceH mCrsH = nullptr;
     bool mUseCurves;
 
     QHash<QString, QString> mLayerColor;

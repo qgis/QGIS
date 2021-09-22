@@ -47,23 +47,23 @@ static int findEmpty( QVector<int> &positions )
 // https://en.wikipedia.org/wiki/15_puzzle
 static void shuffle( QVector<int> &positions, int count )
 {
-  int size = sqrt( positions.count() );
+  const int size = sqrt( positions.count() );
   int idxEmpty = findEmpty( positions );
   int cEmpty = idxEmpty % size, rEmpty = idxEmpty / size;
-  int moveX[] = { 0, 0, 1, -1 };
-  int moveY[] = { 1, -1, 0, 0 };
+  const int moveX[] = { 0, 0, 1, -1 };
+  const int moveY[] = { 1, -1, 0, 0 };
   int cOther, rOther;
   for ( int i = 0; i < count; ++i )
   {
     do
     {
-      int move = qrand() % 4;
+      const int move = qrand() % 4;
       cOther = cEmpty + moveX[move];
       rOther = rEmpty + moveY[move];
     }
     while ( cOther < 0 || cOther >= size || rOther < 0 || rOther >= size );
 
-    int idxOther = rOther * size + cOther;
+    const int idxOther = rOther * size + cOther;
     std::swap( positions[idxEmpty], positions[idxOther] );
     idxEmpty = idxOther;
     cEmpty = idxEmpty % size;
@@ -83,14 +83,14 @@ void QgsPuzzleWidget::mousePressEvent( QMouseEvent *event )
   if ( mTileWidth == 0 || mTileHeight == 0 )
     return;  // not initialized
 
-  int idxEmpty = findEmpty( mPositions );
-  int rEmpty = idxEmpty / mSize;
-  int cEmpty = idxEmpty % mSize;
-  int cMouse = event->pos().x() / mTileWidth;
-  int rMouse = event->pos().y() / mTileHeight;
-  int idxMouse = rMouse * mSize + cMouse;
-  int dx = cMouse - cEmpty;
-  int dy = rMouse - rEmpty;
+  const int idxEmpty = findEmpty( mPositions );
+  const int rEmpty = idxEmpty / mSize;
+  const int cEmpty = idxEmpty % mSize;
+  const int cMouse = event->pos().x() / mTileWidth;
+  const int rMouse = event->pos().y() / mTileHeight;
+  const int idxMouse = rMouse * mSize + cMouse;
+  const int dx = cMouse - cEmpty;
+  const int dy = rMouse - rEmpty;
 
   if ( ( dx == 0 && std::abs( dy ) == 1 ) || ( dy == 0 && std::abs( dx ) == 1 ) )
   {
@@ -128,14 +128,14 @@ bool QgsPuzzleWidget::letsGetThePartyStarted()
   f.open();
   f.close();
 
-  QString filename( f.fileName() );
+  const QString filename( f.fileName() );
   mCanvas->saveAsImage( filename );
 
   QPixmap pixmap;
   pixmap.load( filename );
 
-  int tileWidth = pixmap.width() / mSize;
-  int tileHeight = pixmap.height() / mSize;
+  const int tileWidth = pixmap.width() / mSize;
+  const int tileHeight = pixmap.height() / mSize;
   mTileWidth = tileWidth;
   mTileHeight = tileHeight;
 
@@ -148,7 +148,7 @@ bool QgsPuzzleWidget::letsGetThePartyStarted()
       mItems.append( item );
 
       QGraphicsSimpleTextItem *textItem = new QGraphicsSimpleTextItem( QString::number( row * mSize + col + 1 ), item );
-      QRectF textRect = textItem->boundingRect();
+      const QRectF textRect = textItem->boundingRect();
       textItem->setPos( ( tileWidth - textRect.width() ) / 2, ( tileHeight - textRect.height() ) / 2 );
       textItem->setVisible( false );
       mTextItems.append( textItem );
@@ -183,7 +183,7 @@ void QgsPuzzleWidget::updateTilePositions()
 {
   for ( int i = 0; i < mSize * mSize; ++i )
   {
-    int itemIndex = mPositions[i];
+    const int itemIndex = mPositions[i];
     if ( itemIndex == -1 )
       continue;  // empty tile
 

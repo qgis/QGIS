@@ -194,7 +194,7 @@ void TestQgsLayoutItem::initTestCase()
 
 void TestQgsLayoutItem::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  const QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -230,8 +230,8 @@ void TestQgsLayoutItem::uuid()
   QgsLayout l( &p );
 
   //basic test of uuid
-  TestItem item( &l );
-  TestItem item2( &l );
+  const TestItem item( &l );
+  const TestItem item2( &l );
   QVERIFY( item.uuid() != item2.uuid() );
 }
 
@@ -263,7 +263,7 @@ void TestQgsLayoutItem::registry()
     props.clear();
   };
 
-  QSignalSpy spyTypeAdded( &registry, &QgsLayoutItemRegistry::typeAdded );
+  const QSignalSpy spyTypeAdded( &registry, &QgsLayoutItemRegistry::typeAdded );
 
   QgsLayoutItemMetadata *metadata = new QgsLayoutItemMetadata( 2, QStringLiteral( "my type" ), QStringLiteral( "my types" ), create, resolve );
   QVERIFY( registry.addLayoutItemType( metadata ) );
@@ -360,7 +360,7 @@ void TestQgsLayoutItem::debugRect()
   l.render( &painter );
   painter.end();
 
-  bool result = renderCheck( QStringLiteral( "layoutitem_debugrect" ), image, 0 );
+  const bool result = renderCheck( QStringLiteral( "layoutitem_debugrect" ), image, 0 );
   QVERIFY( result );
 }
 
@@ -379,21 +379,21 @@ void TestQgsLayoutItem::draw()
   QPainter painter( &image );
   l.render( &painter );
   painter.end();
-  bool result = renderCheck( QStringLiteral( "layoutitem_draw" ), image, 0 );
+  const bool result = renderCheck( QStringLiteral( "layoutitem_draw" ), image, 0 );
   QVERIFY( result );
 }
 
 bool TestQgsLayoutItem::renderCheck( QString testName, QImage &image, int mismatchCount )
 {
   mReport += "<h2>" + testName + "</h2>\n";
-  QString myTmpDir = QDir::tempPath() + QDir::separator();
-  QString myFileName = myTmpDir + testName + ".png";
+  const QString myTmpDir = QDir::tempPath() + QDir::separator();
+  const QString myFileName = myTmpDir + testName + ".png";
   image.save( myFileName, "PNG" );
   QgsRenderChecker myChecker;
   myChecker.setControlPathPrefix( QStringLiteral( "layouts" ) );
   myChecker.setControlName( "expected_" + testName );
   myChecker.setRenderedImage( myFileName );
-  bool myResultFlag = myChecker.compareImages( testName, mismatchCount );
+  const bool myResultFlag = myChecker.compareImages( testName, mismatchCount );
   mReport += myChecker.report();
   return myResultFlag;
 }
@@ -736,7 +736,7 @@ void TestQgsLayoutItem::resize()
   //resize test item (no restrictions), same units as layout
   l.setUnits( QgsUnitTypes::LayoutMillimeters );
   std::unique_ptr< TestItem > item( new TestItem( &l ) );
-  QSignalSpy spySizeChanged( item.get(), &QgsLayoutItem::sizePositionChanged );
+  const QSignalSpy spySizeChanged( item.get(), &QgsLayoutItem::sizePositionChanged );
 
   item->setRect( 0, 0, 55, 45 );
   item->attemptMove( QgsLayoutPoint( 27, 29 ) );
@@ -1264,7 +1264,7 @@ void TestQgsLayoutItem::setSceneRect()
   //resize test item (no restrictions), same units as layout
   l.setUnits( QgsUnitTypes::LayoutMillimeters );
   std::unique_ptr< TestItem > item( new TestItem( &l ) );
-  QSignalSpy spySizeChanged( item.get(), &QgsLayoutItem::sizePositionChanged );
+  const QSignalSpy spySizeChanged( item.get(), &QgsLayoutItem::sizePositionChanged );
 
   item->attemptSetSceneRect( QRectF( 27.0, 29.0, 100, 200 ) );
   QCOMPARE( spySizeChanged.count(), 1 );
@@ -1407,7 +1407,7 @@ void TestQgsLayoutItem::page()
 
 void TestQgsLayoutItem::itemVariablesFunction()
 {
-  QgsRectangle extent( 2000, 2800, 2500, 2900 );
+  const QgsRectangle extent( 2000, 2800, 2500, 2900 );
   QgsLayout l( QgsProject::instance() );
 
   QgsExpression e( QStringLiteral( "map_get( item_variables( 'Map_id' ), 'map_scale' )" ) );
@@ -1457,7 +1457,7 @@ void TestQgsLayoutItem::variables()
 
   QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
   std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::layoutItemScope( map ) );
-  int before = scope->variableCount();
+  const int before = scope->variableCount();
 
   QgsExpressionContextUtils::setLayoutItemVariable( map, QStringLiteral( "var" ), 5 );
   scope.reset( QgsExpressionContextUtils::layoutItemScope( map ) );
@@ -1475,7 +1475,7 @@ void TestQgsLayoutItem::variables()
 
 void TestQgsLayoutItem::mapCreditsFunction()
 {
-  QgsRectangle extent( 2000, 2800, 2500, 2900 );
+  const QgsRectangle extent( 2000, 2800, 2500, 2900 );
   QgsLayout l( QgsProject::instance() );
 
   QgsExpression e( QStringLiteral( "array_to_string( map_credits( 'Map_id' ) )" ) );
@@ -1508,7 +1508,7 @@ void TestQgsLayoutItem::mapCreditsFunction()
   std::unique_ptr< QgsVectorLayer > layer3 = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "C" ), QStringLiteral( "memory" ) );
   metadata.setRights( QStringList() << QStringLiteral( "CC BY SA" ) );
   layer3->setMetadata( metadata );
-  std::unique_ptr< QgsVectorLayer > layer4 = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "C" ), QStringLiteral( "memory" ) );
+  const std::unique_ptr< QgsVectorLayer > layer4 = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "C" ), QStringLiteral( "memory" ) );
 
   map->setLayers( QList<QgsMapLayer *>() << layer.get() << layer2.get() << layer3.get()  << layer4.get() );
   e.prepare( &c );
@@ -1545,7 +1545,7 @@ void TestQgsLayoutItem::rotation()
 
   TestItem *item = new TestItem( &l );
 
-  QSignalSpy spyRotationChanged( item, &QgsLayoutItem::rotationChanged );
+  const QSignalSpy spyRotationChanged( item, &QgsLayoutItem::rotationChanged );
 
   l.setUnits( QgsUnitTypes::LayoutMillimeters );
   item->setPos( 6.0, 10.0 );
@@ -1596,7 +1596,7 @@ void TestQgsLayoutItem::rotation()
   item->attemptMove( QgsLayoutPoint( 10.0, 8.0 ) );
   QCOMPARE( item->scenePos().x(), 10.0 );
   QCOMPARE( item->scenePos().y(), 8.0 );
-  QRectF p = item->sceneBoundingRect();
+  const QRectF p = item->sceneBoundingRect();
   qDebug() << p.left();
   QCOMPARE( item->sceneBoundingRect().left(), 4.0 );
   QCOMPARE( item->sceneBoundingRect().right(), 10.0 );
@@ -1689,7 +1689,7 @@ void TestQgsLayoutItem::rotation()
   l.render( &painter );
   painter.end();
 
-  bool result = renderCheck( QStringLiteral( "layoutitem_rotation" ), image, 0 );
+  const bool result = renderCheck( QStringLiteral( "layoutitem_rotation" ), image, 0 );
   delete item;
   QVERIFY( result );
 }
@@ -1701,7 +1701,7 @@ void TestQgsLayoutItem::rotation()
 void TestQgsLayoutItem::writeXml()
 {
   QDomImplementation DomImplementation;
-  QDomDocumentType documentType =
+  const QDomDocumentType documentType =
     DomImplementation.createDocumentType(
       QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
@@ -1713,13 +1713,13 @@ void TestQgsLayoutItem::writeXml()
   QVERIFY( item->writeXml( rootNode, doc, QgsReadWriteContext() ) );
 
   //make sure type was written
-  QDomElement element = rootNode.firstChildElement();
+  const QDomElement element = rootNode.firstChildElement();
 
   QCOMPARE( element.nodeName(), QString( "LayoutItem" ) );
   QCOMPARE( element.attribute( "type", "" ).toInt(), item->type() );
 
   //check that element has an object node
-  QDomNodeList objectNodeList = element.elementsByTagName( QStringLiteral( "LayoutObject" ) );
+  const QDomNodeList objectNodeList = element.elementsByTagName( QStringLiteral( "LayoutObject" ) );
   QCOMPARE( objectNodeList.count(), 1 );
 
   delete item;
@@ -1728,7 +1728,7 @@ void TestQgsLayoutItem::writeXml()
 void TestQgsLayoutItem::readXml()
 {
   QDomImplementation DomImplementation;
-  QDomDocumentType documentType =
+  const QDomDocumentType documentType =
     DomImplementation.createDocumentType(
       QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
@@ -1738,8 +1738,8 @@ void TestQgsLayoutItem::readXml()
   TestItem *item = new TestItem( &l );
 
   //try reading bad elements
-  QDomElement badElement = doc.createElement( QStringLiteral( "bad" ) );
-  QDomElement noNode;
+  const QDomElement badElement = doc.createElement( QStringLiteral( "bad" ) );
+  const QDomElement noNode;
   QVERIFY( !item->readXml( badElement, doc, QgsReadWriteContext() ) );
   QVERIFY( !item->readXml( noNode, doc, QgsReadWriteContext() ) );
 
@@ -1780,7 +1780,7 @@ void TestQgsLayoutItem::writeReadXmlProperties()
 
   QCOMPARE( copy->uuid(), original->uuid() );
   QCOMPARE( copy->id(), original->id() );
-  QgsProperty dd = copy->dataDefinedProperties().property( QgsLayoutObject::TestProperty );
+  const QgsProperty dd = copy->dataDefinedProperties().property( QgsLayoutObject::TestProperty );
   QVERIFY( dd );
   QVERIFY( dd.isActive() );
   QCOMPARE( dd.propertyType(), QgsProperty::ExpressionBasedProperty );
@@ -1813,7 +1813,7 @@ void TestQgsLayoutItem::undoRedo()
   QgsLayout l( &proj );
 
   QgsLayoutItemShape *item = new QgsLayoutItemShape( &l );
-  QString uuid = item->uuid();
+  const QString uuid = item->uuid();
   QPointer< QgsLayoutItemShape > pItem( item ); // for testing deletion
   item->setFrameStrokeColor( QColor( 255, 100, 200 ) );
   l.addLayoutItem( item );
@@ -2136,7 +2136,7 @@ std::unique_ptr<QgsLayoutItem> TestQgsLayoutItem::createCopyViaXml( QgsLayout *l
 {
   //save original item to xml
   QDomImplementation DomImplementation;
-  QDomDocumentType documentType =
+  const QDomDocumentType documentType =
     DomImplementation.createDocumentType(
       QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );

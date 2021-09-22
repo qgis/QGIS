@@ -94,7 +94,7 @@ QgsConvertGpxFeatureTypeAlgorithm *QgsConvertGpxFeatureTypeAlgorithm::createInst
 
 QVariantMap QgsConvertGpxFeatureTypeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QStringList convertStrings;
+  const QStringList convertStrings;
 
   const QString inputPath = parameterAsString( parameters, QStringLiteral( "INPUT" ), context );
   const QString outputPath = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
@@ -168,7 +168,7 @@ QVariantMap QgsConvertGpxFeatureTypeAlgorithm::processAlgorithm( const QVariantM
   {
     const QString layerId = layer->id();
     outputs.insert( QStringLiteral( "OUTPUT_LAYER" ), layerId );
-    QgsProcessingContext::LayerDetails details( layer->name(), context.project(), QStringLiteral( "OUTPUT_LAYER" ), QgsProcessingUtils::LayerHint::Vector );
+    const QgsProcessingContext::LayerDetails details( layer->name(), context.project(), QStringLiteral( "OUTPUT_LAYER" ), QgsProcessingUtils::LayerHint::Vector );
     context.addLayerToLoadOnCompletion( layerId, details );
     context.temporaryLayerStore()->addMapLayer( layer.release() );
   }
@@ -310,7 +310,7 @@ QgsConvertGpsDataAlgorithm *QgsConvertGpsDataAlgorithm::createInstance() const
 
 QVariantMap QgsConvertGpsDataAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QStringList convertStrings;
+  const QStringList convertStrings;
 
   const QString inputPath = parameterAsString( parameters, QStringLiteral( "INPUT" ), context );
   const QString outputPath = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
@@ -423,7 +423,7 @@ QVariantMap QgsConvertGpsDataAlgorithm::processAlgorithm( const QVariantMap &par
   {
     const QString layerId = layer->id();
     outputs.insert( QStringLiteral( "OUTPUT_LAYER" ), layerId );
-    QgsProcessingContext::LayerDetails details( layer->name(), context.project(), QStringLiteral( "OUTPUT_LAYER" ), QgsProcessingUtils::LayerHint::Vector );
+    const QgsProcessingContext::LayerDetails details( layer->name(), context.project(), QStringLiteral( "OUTPUT_LAYER" ), QgsProcessingUtils::LayerHint::Vector );
     context.addLayerToLoadOnCompletion( layerId, details );
     context.temporaryLayerStore()->addMapLayer( layer.release() );
   }
@@ -658,7 +658,7 @@ QVariantMap QgsDownloadGpsDataAlgorithm::processAlgorithm( const QVariantMap &pa
   {
     const QString layerId = layer->id();
     outputs.insert( QStringLiteral( "OUTPUT_LAYER" ), layerId );
-    QgsProcessingContext::LayerDetails details( layer->name(), context.project(), QStringLiteral( "OUTPUT_LAYER" ), QgsProcessingUtils::LayerHint::Vector );
+    const QgsProcessingContext::LayerDetails details( layer->name(), context.project(), QStringLiteral( "OUTPUT_LAYER" ), QgsProcessingUtils::LayerHint::Vector );
     context.addLayerToLoadOnCompletion( layerId, details );
     context.temporaryLayerStore()->addMapLayer( layer.release() );
   }

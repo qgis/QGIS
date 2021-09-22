@@ -89,7 +89,7 @@ void QgsDecorationScaleBar::projectRead()
 
   QDomDocument doc;
   QDomElement elem;
-  QString textFormatXml = QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/TextFormat" ) );
+  const QString textFormatXml = QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/TextFormat" ) );
   if ( !textFormatXml.isEmpty() )
   {
     doc.setContent( textFormatXml );
@@ -100,7 +100,7 @@ void QgsDecorationScaleBar::projectRead()
   }
   else
   {
-    QString fontXml = QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Font" ) );
+    const QString fontXml = QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Font" ) );
     if ( !fontXml.isEmpty() )
     {
       doc.setContent( fontXml );
@@ -133,7 +133,7 @@ void QgsDecorationScaleBar::saveToProject()
   QDomDocument fontDoc;
   QgsReadWriteContext context;
   context.setPathResolver( QgsProject::instance()->pathResolver() );
-  QDomElement textElem = mTextFormat.writeXml( fontDoc, context );
+  const QDomElement textElem = mTextFormat.writeXml( fontDoc, context );
   fontDoc.appendChild( textElem );
 
   QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/TextFormat" ), fontDoc.toString() );
@@ -225,7 +225,7 @@ double QgsDecorationScaleBar::mapWidth( const QgsMapSettings &settings ) const
     da.setSourceCrs( settings.destinationCrs(), QgsProject::instance()->transformContext() );
     da.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
-    QgsUnitTypes::DistanceUnit units = da.lengthUnits();
+    const QgsUnitTypes::DistanceUnit units = da.lengthUnits();
 
     // we measure the horizontal distance across the vertical center of the map
     const double yPosition = 0.5 * ( mapExtent.yMinimum() + mapExtent.yMaximum() );
@@ -246,7 +246,7 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
   QPaintDevice *device = context.painter()->device();
   const int deviceHeight = device->height() / device->devicePixelRatioF();
   const int deviceWidth = device->width() / device->devicePixelRatioF();
-  QgsSettings settings;
+  const QgsSettings settings;
   bool ok = false;
   QgsUnitTypes::DistanceUnit preferredUnits = QgsUnitTypes::decodeDistanceUnit( settings.value( QStringLiteral( "qgis/measure/displayunits" ) ).toString(), &ok );
   if ( !ok )
@@ -387,8 +387,8 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
   {
     case QgsUnitTypes::RenderMillimeters:
     {
-      int pixelsInchX = context.painter()->device()->logicalDpiX();
-      int pixelsInchY = context.painter()->device()->logicalDpiY();
+      const int pixelsInchX = context.painter()->device()->logicalDpiX();
+      const int pixelsInchY = context.painter()->device()->logicalDpiY();
       originX = pixelsInchX * INCHES_TO_MM * mMarginHorizontal;
       originY = pixelsInchY * INCHES_TO_MM * mMarginVertical;
       break;
@@ -439,7 +439,7 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
       QgsDebugMsg( QStringLiteral( "Unsupported placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );
   }
 
-  QgsScopedQPainterState painterState( context.painter() );
+  const QgsScopedQPainterState painterState( context.painter() );
   context.painter()->translate( originX, originY );
   mStyle->draw( context, mSettings, scaleContext );
 }

@@ -66,7 +66,7 @@ void QgsMeshDataset3dEntity::applyMaterial()
   if ( mSymbol->renderingStyle() == QgsMesh3DSymbol::ColorRamp2DRendering && layer() )
   {
     const QgsMeshRendererSettings rendererSettings = layer()->rendererSettings();
-    int datasetGroupIndex = rendererSettings.activeScalarDatasetGroup();
+    const int datasetGroupIndex = rendererSettings.activeScalarDatasetGroup();
     if ( datasetGroupIndex >= 0 )
       mSymbol->setColorRampShader( rendererSettings.scalarSettings( datasetGroupIndex ).colorRampShader() );
   }

@@ -132,7 +132,7 @@ void TestQgsQueryResultWidget::testWidget()
 
 void TestQgsQueryResultWidget::testWidgetInvalid()
 {
-  QgsQueryResultWidget w( nullptr, nullptr );
+  const QgsQueryResultWidget w( nullptr, nullptr );
   Q_UNUSED( w )
 }
 

@@ -122,19 +122,19 @@ QgsDataSourceSelectWidget::~QgsDataSourceSelectWidget() = default;
 void QgsDataSourceSelectWidget::showEvent( QShowEvent *e )
 {
   QgsPanelWidget::showEvent( e );
-  QString lastSelectedPath( QgsSettings().value( QStringLiteral( "datasourceSelectLastSelectedItem" ),
-                            QString(), QgsSettings::Section::Gui ).toString() );
+  const QString lastSelectedPath( QgsSettings().value( QStringLiteral( "datasourceSelectLastSelectedItem" ),
+                                  QString(), QgsSettings::Section::Gui ).toString() );
   if ( ! lastSelectedPath.isEmpty() )
   {
-    QModelIndexList items = mBrowserProxyModel.match(
-                              mBrowserProxyModel.index( 0, 0 ),
-                              QgsBrowserGuiModel::PathRole,
-                              QVariant::fromValue( lastSelectedPath ),
-                              1,
-                              Qt::MatchRecursive );
+    const QModelIndexList items = mBrowserProxyModel.match(
+                                    mBrowserProxyModel.index( 0, 0 ),
+                                    QgsBrowserGuiModel::PathRole,
+                                    QVariant::fromValue( lastSelectedPath ),
+                                    1,
+                                    Qt::MatchRecursive );
     if ( items.count( ) > 0 )
     {
-      QModelIndex expandIndex = items.at( 0 );
+      const QModelIndex expandIndex = items.at( 0 );
       if ( expandIndex.isValid() )
       {
         mBrowserTreeView->scrollTo( expandIndex, QgsBrowserTreeView::ScrollHint::PositionAtTop );
@@ -171,8 +171,8 @@ void QgsDataSourceSelectWidget::setDescription( const QString &description )
       mDescriptionLabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
       connect( mDescriptionLabel, &QLabel::linkActivated, this, [ = ]( const QString & link )
       {
-        QUrl url( link );
-        QFileInfo file( url.toLocalFile() );
+        const QUrl url( link );
+        const QFileInfo file( url.toLocalFile() );
         if ( file.exists() && !file.isDir() )
           QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
         else
@@ -195,7 +195,7 @@ void QgsDataSourceSelectWidget::setDescription( const QString &description )
 
 void QgsDataSourceSelectWidget::setFilter()
 {
-  QString filter = mLeFilter->text();
+  const QString filter = mLeFilter->text();
   mBrowserProxyModel.setFilterString( filter );
 }
 
@@ -220,8 +220,8 @@ void QgsDataSourceSelectWidget::refreshModel( const QModelIndex &index )
 
   for ( int i = 0; i < mBrowserModel->rowCount( index ); i++ )
   {
-    QModelIndex idx = mBrowserModel->index( i, 0, index );
-    QModelIndex proxyIdx = mBrowserProxyModel.mapFromSource( idx );
+    const QModelIndex idx = mBrowserModel->index( i, 0, index );
+    const QModelIndex proxyIdx = mBrowserProxyModel.mapFromSource( idx );
     QgsDataItem *child = mBrowserModel->dataItem( idx );
 
     // Check also expanded descendants so that the whole expanded path does not get collapsed if one item is collapsed.

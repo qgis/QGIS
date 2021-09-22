@@ -100,7 +100,7 @@ bool QgsImageWarper::createDestinationDataset( const QString &outputName, GDALDa
     oTargetSRS.importFromWkt( crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toUtf8().data() );
 
     char *wkt = nullptr;
-    OGRErr err = oTargetSRS.exportToWkt( &wkt );
+    const OGRErr err = oTargetSRS.exportToWkt( &wkt );
     if ( err != CE_None || GDALSetProjection( hDstDS.get(), wkt ) != CE_None )
     {
       CPLFree( wkt );
@@ -121,7 +121,7 @@ bool QgsImageWarper::createDestinationDataset( const QString &outputName, GDALDa
     }
 
     int success;
-    double noData = GDALGetRasterNoDataValue( hSrcBand, &success );
+    const double noData = GDALGetRasterNoDataValue( hSrcBand, &success );
     if ( success )
     {
       GDALSetRasterNoDataValue( hDstBand, noData );
@@ -190,10 +190,10 @@ int QgsImageWarper::warpFile( const QString &input,
       return false;
     }
     // Find suggested output image extent (in georeferenced units)
-    double minX = adfGeoTransform[0];
-    double maxX = adfGeoTransform[0] + adfGeoTransform[1] * destPixels;
-    double maxY = adfGeoTransform[3];
-    double minY = adfGeoTransform[3] + adfGeoTransform[5] * destLines;
+    const double minX = adfGeoTransform[0];
+    const double maxX = adfGeoTransform[0] + adfGeoTransform[1] * destPixels;
+    const double maxY = adfGeoTransform[3];
+    const double minY = adfGeoTransform[3] + adfGeoTransform[5] * destLines;
 
     // Update line and pixel count to match extent at user-specified resolution
     destPixels = ( int )( ( ( maxX - minX ) / destResX ) + 0.5 );
@@ -291,8 +291,8 @@ int QgsImageWarper::GeoToPixelTransform( void *pTransformerArg, int bDstToSrc, i
     {
       if ( !panSuccess[i] )
         continue;
-      double xP = x[i];
-      double yP = y[i];
+      const double xP = x[i];
+      const double yP = y[i];
       x[i] = chain->adfInvGeotransform[0] + xP * chain->adfInvGeotransform[1] + yP * chain->adfInvGeotransform[2];
       y[i] = chain->adfInvGeotransform[3] + xP * chain->adfInvGeotransform[4] + yP * chain->adfInvGeotransform[5];
     }
@@ -302,8 +302,8 @@ int QgsImageWarper::GeoToPixelTransform( void *pTransformerArg, int bDstToSrc, i
     // Transform from pixel/line to georeferenced coordinates
     for ( int i = 0; i < nPointCount; ++i )
     {
-      double P = x[i];
-      double L = y[i];
+      const double P = x[i];
+      const double L = y[i];
       x[i] = chain->adfGeotransform[0] + P * chain->adfGeotransform[1] + L * chain->adfGeotransform[2];
       y[i] = chain->adfGeotransform[3] + P * chain->adfGeotransform[4] + L * chain->adfGeotransform[5];
     }

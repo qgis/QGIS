@@ -145,6 +145,12 @@ class CORE_EXPORT QgsMimeDataUtils
        */
       QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown;
 
+      /**
+       * Path to file, if uri is associated with a file.
+       * \since QGIS 3.22
+       */
+      QString filePath;
+
 #ifdef SIP_RUN
       SIP_PYOBJECT __repr__();
       % MethodCode

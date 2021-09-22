@@ -50,7 +50,7 @@ bool QgsObjectCustomProperties::contains( const QString &key ) const
 
 void QgsObjectCustomProperties::readXml( const QDomNode &parentNode, const QString &keyStartsWith )
 {
-  QDomNode propsNode = parentNode.namedItem( QStringLiteral( "customproperties" ) );
+  const QDomNode propsNode = parentNode.namedItem( QStringLiteral( "customproperties" ) );
   if ( propsNode.isNull() ) // no properties stored...
     return;
 
@@ -92,21 +92,21 @@ void QgsObjectCustomProperties::readXml( const QDomNode &parentNode, const QStri
   else
   {
     // backward compatibility code for QGIS < 3.20
-    QDomNodeList nodes = propsNode.childNodes();
+    const QDomNodeList nodes = propsNode.childNodes();
 
     for ( int i = 0; i < nodes.size(); i++ )
     {
-      QDomNode propNode = nodes.at( i );
+      const QDomNode propNode = nodes.at( i );
       if ( propNode.isNull() || propNode.nodeName() != QLatin1String( "property" ) )
         continue;
-      QDomElement propElement = propNode.toElement();
+      const QDomElement propElement = propNode.toElement();
 
-      QString key = propElement.attribute( QStringLiteral( "key" ) );
+      const QString key = propElement.attribute( QStringLiteral( "key" ) );
       if ( key.isEmpty() || key.startsWith( keyStartsWith ) )
       {
         if ( propElement.hasAttribute( QStringLiteral( "value" ) ) )
         {
-          QString value = propElement.attribute( QStringLiteral( "value" ) );
+          const QString value = propElement.attribute( QStringLiteral( "value" ) );
           mMap[key] = QVariant( value );
         }
         else
@@ -130,7 +130,7 @@ void QgsObjectCustomProperties::readXml( const QDomNode &parentNode, const QStri
 void QgsObjectCustomProperties::writeXml( QDomNode &parentNode, QDomDocument &doc ) const
 {
   //remove already existing <customproperties> tags
-  QDomNodeList propertyList = parentNode.toElement().elementsByTagName( QStringLiteral( "customproperties" ) );
+  const QDomNodeList propertyList = parentNode.toElement().elementsByTagName( QStringLiteral( "customproperties" ) );
   for ( int i = 0; i < propertyList.size(); ++i )
   {
     parentNode.removeChild( propertyList.at( i ) );

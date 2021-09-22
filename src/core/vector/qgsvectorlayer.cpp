@@ -39,6 +39,7 @@
 #include "qgsfeaturerequest.h"
 #include "qgsfields.h"
 #include "qgsmaplayerfactory.h"
+#include "qgsmaplayerutils.h"
 #include "qgsgeometry.h"
 #include "qgslayermetadataformatter.h"
 #include "qgslogger.h"
@@ -156,7 +157,6 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
                                 const QgsVectorLayer::LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::VectorLayer, baseName, vectorLayerPath )
   , mTemporalProperties( new QgsVectorLayerTemporalProperties( this ) )
-  , mServerProperties( new QgsVectorLayerServerProperties( this ) )
   , mAuxiliaryLayer( nullptr )
   , mAuxiliaryLayerKey( QString() )
   , mReadExtentFromXml( options.readExtentFromXml )
@@ -1193,8 +1193,7 @@ bool QgsVectorLayer::deleteSelectedFeatures( int *deletedCount, QgsVectorLayer::
   int count = mSelectedFeatureIds.size();
   // Make a copy since deleteFeature modifies mSelectedFeatureIds
   QgsFeatureIds selectedFeatures( mSelectedFeatureIds );
-  const auto constSelectedFeatures = selectedFeatures;
-  for ( QgsFeatureId fid : constSelectedFeatures )
+  for ( QgsFeatureId fid : std::as_const( selectedFeatures ) )
   {
     deleted += deleteFeature( fid, context );  // removes from selection
   }
@@ -1967,7 +1966,7 @@ bool QgsVectorLayer::writeXml( QDomNode &layer_node,
   }
   layer_node.appendChild( asElem );
 
-  // save QGIS Server WMS Dimension definitions
+  // save QGIS Server properties (WMS Dimension, metadata URLS...)
   mServerProperties->writeXml( layer_node, document );
 
   // renderer specific settings
@@ -3384,7 +3383,6 @@ bool QgsVectorLayer::deleteFeature( QgsFeatureId fid, QgsVectorLayer::DeleteCont
 
   if ( res )
   {
-    mSelectedFeatureIds.remove( fid ); // remove it from selection
     updateExtents();
   }
 
@@ -3821,6 +3819,10 @@ void QgsVectorLayer::endEditCommand()
   mEditCommandActive = false;
   if ( !mDeletedFids.isEmpty() )
   {
+    if ( selectedFeatureCount() > 0 )
+    {
+      mSelectedFeatureIds.subtract( mDeletedFids );
+    }
     emit featuresDeleted( mDeletedFids );
     mDeletedFids.clear();
   }
@@ -4440,18 +4442,22 @@ void QgsVectorLayer::minimumOrMaximumValue( int index, QVariant *minimum, QVaria
 
 QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate, const QString &fieldOrExpression,
                                     const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context,
-                                    bool *ok, QgsFeatureIds *fids, QgsFeedback *feedback ) const
+                                    bool *ok, QgsFeatureIds *fids, QgsFeedback *feedback, QString *error ) const
 {
   if ( ok )
     *ok = false;
+  if ( error )
+    error->clear();
 
   if ( !mDataProvider )
   {
+    if ( error )
+      *error = tr( "Layer is invalid" );
     return QVariant();
   }
 
   // test if we are calculating based on a field
-  int attrIndex = mFields.lookupField( fieldOrExpression );
+  const int attrIndex = QgsExpression::expressionToLayerFieldIndex( fieldOrExpression, this );
   if ( attrIndex >= 0 )
   {
     // aggregate is based on a field - if it's a provider field, we could possibly hand over the calculation
@@ -4476,7 +4482,14 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   if ( fids )
     c.setFidsFilter( *fids );
   c.setParameters( parameters );
-  return c.calculate( aggregate, fieldOrExpression, context, ok, feedback );
+  bool aggregateOk = false;
+  const QVariant result = c.calculate( aggregate, fieldOrExpression, context, &aggregateOk, feedback );
+  if ( ok )
+    *ok = aggregateOk;
+  if ( !aggregateOk && error )
+    *error = c.lastError();
+
+  return result;
 }
 
 void QgsVectorLayer::setFeatureBlendMode( QPainter::CompositionMode featureBlendMode )
@@ -5107,43 +5120,25 @@ void QgsVectorLayer::setDiagramLayerSettings( const QgsDiagramLayerSettings &s )
 QString QgsVectorLayer::htmlMetadata() const
 {
   QgsLayerMetadataFormatter htmlFormatter( metadata() );
-  QString myMetadata = QStringLiteral( "<html>\n<body>\n" );
+  QString myMetadata = QStringLiteral( "<html><head></head>\n<body>\n" );
+
+  myMetadata += generalHtmlMetadata();
 
   // Begin Provider section
   myMetadata += QStringLiteral( "<h1>" ) + tr( "Information from provider" ) + QStringLiteral( "</h1>\n<hr>\n" );
   myMetadata += QLatin1String( "<table class=\"list-view\">\n" );
 
-  // name
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Name" ) + QStringLiteral( "</td><td>" ) + name() + QStringLiteral( "</td></tr>\n" );
-
-  // local path
-  QVariantMap uriComponents = QgsProviderRegistry::instance()->decodeUri( mProviderKey, publicSource() );
-  QString path;
-  bool isLocalPath = false;
-  if ( uriComponents.contains( QStringLiteral( "path" ) ) )
-  {
-    path = uriComponents[QStringLiteral( "path" )].toString();
-    if ( QFile::exists( path ) )
-    {
-      isLocalPath = true;
-      myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Path" ) + QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( path ).toString(), QDir::toNativeSeparators( path ) ) ) + QStringLiteral( "</td></tr>\n" );
-    }
-  }
-  if ( uriComponents.contains( QStringLiteral( "url" ) ) )
-  {
-    const QString url = uriComponents[QStringLiteral( "url" )].toString();
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "URL" ) + QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl( url ).toString(), url ) ) + QStringLiteral( "</td></tr>\n" );
-  }
-
-  // data source
-  if ( publicSource() != path || !isLocalPath )
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Source" ) + QStringLiteral( "</td><td>%1" ).arg( publicSource() != path ? publicSource() : path ) + QStringLiteral( "</td></tr>\n" );
-
   // storage type
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Storage" ) + QStringLiteral( "</td><td>" ) + storageType() + QStringLiteral( "</td></tr>\n" );
+  if ( !storageType().isEmpty() )
+  {
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Storage" ) + QStringLiteral( "</td><td>" ) + storageType() + QStringLiteral( "</td></tr>\n" );
+  }
 
   // comment
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Comment" ) + QStringLiteral( "</td><td>" ) + dataComment() + QStringLiteral( "</td></tr>\n" );
+  if ( !dataComment().isEmpty() )
+  {
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Comment" ) + QStringLiteral( "</td><td>" ) + dataComment() + QStringLiteral( "</td></tr>\n" );
+  }
 
   // encoding
   const QgsVectorDataProvider *provider = dataProvider();
@@ -5283,9 +5278,14 @@ void QgsVectorLayer::onJoinedFieldsChanged()
 void QgsVectorLayer::onFeatureDeleted( QgsFeatureId fid )
 {
   if ( mEditCommandActive )
+  {
     mDeletedFids << fid;
+  }
   else
+  {
+    mSelectedFeatureIds.remove( fid );
     emit featuresDeleted( QgsFeatureIds() << fid );
+  }
 
   emit featureDeleted( fid );
 }

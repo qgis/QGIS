@@ -67,6 +67,11 @@ class QgsAppFileItemGuiProvider : public QObject, public QgsDataItemGuiProvider
     void populateContextMenu( QgsDataItem *item, QMenu *menu,
                               const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
     int precedenceWhenPopulatingMenus() const override;
+    bool rename( QgsDataItem *item, const QString &name, QgsDataItemGuiContext context ) override;
+
+  private:
+
+    bool rename( const QString &oldPath, const QString &newName, QgsDataItemGuiContext context, const QList< QPointer< QgsDataItem > > &parentItems );
 };
 
 

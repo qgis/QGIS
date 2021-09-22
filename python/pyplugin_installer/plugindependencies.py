@@ -15,7 +15,7 @@ __copyright__ = 'Copyright 2018, GISCE-TI S.L.'
 from configparser import NoOptionError, NoSectionError
 from .version_compare import compareVersions
 from . import installer as plugin_installer
-from qgis.utils import updateAvailablePlugins, metadataParser
+from qgis.utils import updateAvailablePlugins, metadataParser, get_plugin_deps
 
 
 def __plugin_name_map(plugin_data_values):
@@ -23,25 +23,6 @@ def __plugin_name_map(plugin_data_values):
         plugin['name']: plugin['id']
         for plugin in plugin_data_values
     }
-
-
-def __get_plugin_deps(plugin_id):
-    result = {}
-    updateAvailablePlugins()
-    try:
-        parser = metadataParser()[plugin_id]
-        plugin_deps = parser.get('general', 'plugin_dependencies')
-    except (NoOptionError, NoSectionError, KeyError):
-        return result
-
-    for dep in plugin_deps.split(','):
-        if dep.find('==') > 0:
-            name, version_required = dep.split('==')
-        else:
-            name = dep
-            version_required = None
-        result[name] = version_required
-    return result
 
 
 def find_dependencies(plugin_id, plugin_data=None, plugin_deps=None, installed_plugins=None):
@@ -64,7 +45,8 @@ def find_dependencies(plugin_id, plugin_data=None, plugin_deps=None, installed_p
     not_found = {}
 
     if plugin_deps is None:
-        plugin_deps = __get_plugin_deps(plugin_id)
+        updateAvailablePlugins()
+        plugin_deps = get_plugin_deps(plugin_id)
 
     if installed_plugins is None:
         updateAvailablePlugins()

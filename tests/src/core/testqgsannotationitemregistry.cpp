@@ -110,8 +110,8 @@ void TestQgsAnnotationItemRegistry::metadata()
   QCOMPARE( metadata.visibleName(), QString( "display name" ) );
 
   //test creating item from metadata
-  QVariantMap map;
-  std::unique_ptr< QgsAnnotationItem > item( metadata.createItem() );
+  const QVariantMap map;
+  const std::unique_ptr< QgsAnnotationItem > item( metadata.createItem() );
   QVERIFY( item );
   TestItem *dummyItem = dynamic_cast<TestItem *>( item.get() );
   QVERIFY( dummyItem );
@@ -138,9 +138,9 @@ void TestQgsAnnotationItemRegistry::instanceHasItems()
 void TestQgsAnnotationItemRegistry::addItem()
 {
   QgsAnnotationItemRegistry *registry = QgsApplication::annotationItemRegistry();
-  int previousCount = registry->itemTypes().size();
+  const int previousCount = registry->itemTypes().size();
 
-  QSignalSpy spyTypeAdded( registry, &QgsAnnotationItemRegistry::typeAdded );
+  const QSignalSpy spyTypeAdded( registry, &QgsAnnotationItemRegistry::typeAdded );
 
   registry->addItemType( new QgsAnnotationItemMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "display name" ),
                          QStringLiteral( "display names" ),
@@ -165,7 +165,7 @@ void TestQgsAnnotationItemRegistry::addItem()
 void TestQgsAnnotationItemRegistry::fetchTypes()
 {
   QgsAnnotationItemRegistry *registry = QgsApplication::annotationItemRegistry();
-  QStringList types = registry->itemTypes().keys();
+  const QStringList types = registry->itemTypes().keys();
 
   QVERIFY( types.contains( "Dummy" ) );
 

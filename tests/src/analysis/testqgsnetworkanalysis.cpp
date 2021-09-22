@@ -136,7 +136,7 @@ std::unique_ptr<QgsVectorLayer> TestQgsNetworkAnalysis::buildNetwork()
   std::unique_ptr< QgsVectorLayer > l = std::make_unique< QgsVectorLayer >( QStringLiteral( "LineString?crs=epsg:4326&field=cost:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
 
   QgsFeature ff( 0 );
-  QgsGeometry refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 0, 10 0, 10 10)" ) );
+  const QgsGeometry refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 0, 10 0, 10 10)" ) );
   ff.setGeometry( refGeom );
   ff.setAttributes( QgsAttributes() << 1 );
   QgsFeatureList flist;
@@ -204,7 +204,7 @@ void TestQgsNetworkAnalysis::testBuildTolerance()
 
   QgsFeature ff( 0 );
   // 0.1 distance gap
-  QgsGeometry refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(10.1 10, 20 10 )" ) );
+  const QgsGeometry refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(10.1 10, 20 10 )" ) );
   ff.setGeometry( refGeom );
   QgsFeatureList flist;
   flist << ff;
@@ -248,7 +248,7 @@ void TestQgsNetworkAnalysis::testBuildTolerance()
   QCOMPARE( graph->edge( 4 ).toVertex(), 4 );
 
   // with tolerance
-  double tolerance = 0.11;
+  const double tolerance = 0.11;
 
   builder = std::make_unique< QgsGraphBuilder > ( network->sourceCrs(), true, tolerance );
   director->makeGraph( builder.get(), QVector<QgsPointXY>(), snapped );
@@ -468,14 +468,14 @@ void TestQgsNetworkAnalysis::testRouteFail()
 {
   std::unique_ptr< QgsVectorLayer > network = std::make_unique< QgsVectorLayer >( QStringLiteral( "LineString?crs=epsg:28355&field=cost:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
 
-  QStringList lines = QStringList() << QStringLiteral( "LineString (302081.71116495534079149 5753475.15082756895571947, 302140.54234686412382871 5753417.70564490929245949, 302143.24717211339157075 5753412.57312887348234653, 302143.17789465241366997 5753406.77192200440913439, 302140.35127420048229396 5753401.70546196680516005, 302078.46200818457873538 5753338.31098813004791737, 302038.17299743194598705 5753309.50200006738305092)" )
-                      << QStringLiteral( "LineString (302081.70763194985920563 5753475.1403581602498889, 301978.24500802176771685 5753368.03299263771623373)" )
-                      << QStringLiteral( "LineString (302181.69117977644782513 5753576.27856593858450651, 302081.71834095334634185 5753475.14562766999006271)" );
+  const QStringList lines = QStringList() << QStringLiteral( "LineString (302081.71116495534079149 5753475.15082756895571947, 302140.54234686412382871 5753417.70564490929245949, 302143.24717211339157075 5753412.57312887348234653, 302143.17789465241366997 5753406.77192200440913439, 302140.35127420048229396 5753401.70546196680516005, 302078.46200818457873538 5753338.31098813004791737, 302038.17299743194598705 5753309.50200006738305092)" )
+                            << QStringLiteral( "LineString (302081.70763194985920563 5753475.1403581602498889, 301978.24500802176771685 5753368.03299263771623373)" )
+                            << QStringLiteral( "LineString (302181.69117977644782513 5753576.27856593858450651, 302081.71834095334634185 5753475.14562766999006271)" );
   QgsFeatureList flist;
   for ( const QString &line : lines )
   {
     QgsFeature ff( 0 );
-    QgsGeometry refGeom = QgsGeometry::fromWkt( line );
+    const QgsGeometry refGeom = QgsGeometry::fromWkt( line );
     ff.setGeometry( refGeom );
     ff.setAttributes( QgsAttributes() << 1 );
     flist << ff;
@@ -489,22 +489,22 @@ void TestQgsNetworkAnalysis::testRouteFail()
   director->addStrategy( strategy.release() );
   std::unique_ptr< QgsGraphBuilder > builder = std::make_unique< QgsGraphBuilder > ( network->sourceCrs(), true, 1 );
 
-  QgsPointXY start( 302131.1053754404, 5753392.757948928 );
-  QgsPointXY end( 302148.1636281528, 5753541.408436851 );
+  const QgsPointXY start( 302131.1053754404, 5753392.757948928 );
+  const QgsPointXY end( 302148.1636281528, 5753541.408436851 );
 
   QVector<QgsPointXY > snapped;
   director->makeGraph( builder.get(), QVector<QgsPointXY>() << start << end, snapped );
   std::unique_ptr< QgsGraph > graph( builder->takeGraph() );
 
-  QgsPointXY snappedStart = snapped.at( 0 );
+  const QgsPointXY snappedStart = snapped.at( 0 );
   QGSCOMPARENEAR( snappedStart.x(), 302131.3, 0.1 );
   QGSCOMPARENEAR( snappedStart.y(), 5753392.5, 0.1 );
-  int startVertexIdx = graph->findVertex( snappedStart );
+  const int startVertexIdx = graph->findVertex( snappedStart );
   QVERIFY( startVertexIdx != -1 );
-  QgsPointXY snappedEnd = snapped.at( 1 );
+  const QgsPointXY snappedEnd = snapped.at( 1 );
   QGSCOMPARENEAR( snappedEnd.x(), 302147.68, 0.1 );
   QGSCOMPARENEAR( snappedEnd.y(), 5753541.88, 0.1 );
-  int endVertexIdx = graph->findVertex( snappedEnd );
+  const int endVertexIdx = graph->findVertex( snappedEnd );
   QVERIFY( endVertexIdx != -1 );
 
   // both directions
@@ -522,16 +522,16 @@ void TestQgsNetworkAnalysis::testRouteFail2()
 {
   std::unique_ptr< QgsVectorLayer > network = std::make_unique< QgsVectorLayer >( QStringLiteral( "LineString?crs=epsg:4326&field=cost:double" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
 
-  QStringList lines = QStringList() << QStringLiteral( "LineString (11.25044997999680874 48.42605439713970128, 11.25044693759680925 48.42603339773970106, 11.25044760759680962 48.42591690773969759, 11.25052289759680946 48.42589190773969676)" )
-                      << QStringLiteral( "LineString (11.25052289759680946 48.42589190773969676, 11.25050350759680917 48.42586202773969717, 11.25047190759680937 48.42581754773969749, 11.2504146475968092 48.42573849773970096, 11.25038716759680923 48.42569834773969717, 11.2502920175968093 48.42557470773969897, 11.25019984759680902 48.42560406773969817, 11.25020393759680992 48.42571203773970012, 11.2502482875968095 48.42577478773969801, 11.25021922759680848 48.42578442773969982)" )
-                      << QStringLiteral( "LineString (11.2504146475968092 48.42573849773970096, 11.25048389759681022 48.42572031773969599, 11.25051325759680942 48.42570672773970131)" )
-                      << QStringLiteral( "LineString (11.25038716759680923 48.42569834773969717, 11.25055288759680927 48.42564748773969541, 11.25052296759680992 48.42560921773969795)" );
+  const QStringList lines = QStringList() << QStringLiteral( "LineString (11.25044997999680874 48.42605439713970128, 11.25044693759680925 48.42603339773970106, 11.25044760759680962 48.42591690773969759, 11.25052289759680946 48.42589190773969676)" )
+                            << QStringLiteral( "LineString (11.25052289759680946 48.42589190773969676, 11.25050350759680917 48.42586202773969717, 11.25047190759680937 48.42581754773969749, 11.2504146475968092 48.42573849773970096, 11.25038716759680923 48.42569834773969717, 11.2502920175968093 48.42557470773969897, 11.25019984759680902 48.42560406773969817, 11.25020393759680992 48.42571203773970012, 11.2502482875968095 48.42577478773969801, 11.25021922759680848 48.42578442773969982)" )
+                            << QStringLiteral( "LineString (11.2504146475968092 48.42573849773970096, 11.25048389759681022 48.42572031773969599, 11.25051325759680942 48.42570672773970131)" )
+                            << QStringLiteral( "LineString (11.25038716759680923 48.42569834773969717, 11.25055288759680927 48.42564748773969541, 11.25052296759680992 48.42560921773969795)" );
   QgsFeatureList flist;
   int i = 0;
   for ( const QString &line : lines )
   {
     QgsFeature ff( 0 );
-    QgsGeometry refGeom = QgsGeometry::fromWkt( line );
+    const QgsGeometry refGeom = QgsGeometry::fromWkt( line );
     ff.setGeometry( refGeom );
     ff.setAttributes( QgsAttributes() << 1 + 0.001 * i );
     i++;
@@ -546,22 +546,22 @@ void TestQgsNetworkAnalysis::testRouteFail2()
   director->addStrategy( strategy.release() );
   std::unique_ptr< QgsGraphBuilder > builder = std::make_unique< QgsGraphBuilder > ( network->sourceCrs(), true, 0 );
 
-  QgsPointXY start( 11.250443581846053, 48.42605665308498 );
-  QgsPointXY end( 11.250525546822013, 48.42561343506683 );
+  const QgsPointXY start( 11.250443581846053, 48.42605665308498 );
+  const QgsPointXY end( 11.250525546822013, 48.42561343506683 );
 
   QVector<QgsPointXY > snapped;
   director->makeGraph( builder.get(), QVector<QgsPointXY>() << start << end, snapped );
   std::unique_ptr< QgsGraph > graph( builder->takeGraph() );
 
-  QgsPointXY snappedStart = snapped.at( 0 );
+  const QgsPointXY snappedStart = snapped.at( 0 );
   QGSCOMPARENEAR( snappedStart.x(), 11.250450, 0.000001 );
   QGSCOMPARENEAR( snappedStart.y(), 48.426054, 0.000001 );
-  int startVertexIdx = graph->findVertex( snappedStart );
+  const int startVertexIdx = graph->findVertex( snappedStart );
   QVERIFY( startVertexIdx != -1 );
-  QgsPointXY snappedEnd = snapped.at( 1 );
+  const QgsPointXY snappedEnd = snapped.at( 1 );
   QGSCOMPARENEAR( snappedEnd.x(), 11.250526, 0.000001 );
   QGSCOMPARENEAR( snappedEnd.y(), 48.425613, 0.000001 );
-  int endVertexIdx = graph->findVertex( snappedEnd );
+  const int endVertexIdx = graph->findVertex( snappedEnd );
   QVERIFY( endVertexIdx != -1 );
 
   // both directions

@@ -31,8 +31,8 @@ namespace QgsWms
 
   void writeGetSchemaExtension( QgsServerResponse &response )
   {
-    QDir resourcesDir = QFileInfo( QgsApplication::serverResourcesPath() ).absoluteDir();
-    QFileInfo xsdFileInfo( resourcesDir, QStringLiteral( "schemaExtension.xsd" ) );
+    const QDir resourcesDir = QFileInfo( QgsApplication::serverResourcesPath() ).absoluteDir();
+    const QFileInfo xsdFileInfo( resourcesDir, QStringLiteral( "schemaExtension.xsd" ) );
     QString schema_str = QStringLiteral( "<?xml version='1.0'?>" );
 
     if ( !xsdFileInfo.exists() )

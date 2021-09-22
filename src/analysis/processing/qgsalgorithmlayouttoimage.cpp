@@ -91,8 +91,8 @@ void QgsLayoutToImageAlgorithm::initAlgorithm( const QVariantMap & )
     if ( format == "svg" )
       continue;
 
-    QString longName = format.toUpper() + QObject::tr( " format" );
-    QString glob = QStringLiteral( "*." ) + format;
+    const QString longName = format.toUpper() + QObject::tr( " format" );
+    const QString glob = QStringLiteral( "*." ) + format;
 
     if ( format == "png" && !imageFilters.empty() )
       imageFilters.insert( 0, QStringLiteral( "%1 (%2 %3)" ).arg( longName, glob.toLower(), glob.toUpper() ) );

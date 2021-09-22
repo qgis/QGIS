@@ -1043,6 +1043,23 @@
           45.40171
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Julien Cabieces",
+        "Committer": "Yes",
+        "First Commit Message": "Fixes #19836 Keep layer order when using different way for passing layer (layer id or layer pointer for instance)",
+        "First Commit Date": "25-09-2018",
+        "GIT Nickname": "troopa81"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.3782654,
+          43.7005580
+        ]
+      }
     }
   ]
 }

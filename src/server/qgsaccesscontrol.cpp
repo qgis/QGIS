@@ -42,7 +42,7 @@ QString QgsAccessControl::resolveFilterFeatures( const QgsVectorLayer *layer ) c
 
   for ( acIterator = mPluginsAccessControls->constBegin(); acIterator != mPluginsAccessControls->constEnd(); ++acIterator )
   {
-    QString expression = acIterator.value()->layerFilterExpression( layer );
+    const QString expression = acIterator.value()->layerFilterExpression( layer );
     if ( !expression.isEmpty() )
     {
       expressions.append( expression );
@@ -92,7 +92,7 @@ QString QgsAccessControl::extraSubsetString( const QgsVectorLayer *layer ) const
   QgsAccessControlFilterMap::const_iterator acIterator;
   for ( acIterator = mPluginsAccessControls->constBegin(); acIterator != mPluginsAccessControls->constEnd(); ++acIterator )
   {
-    QString sql = acIterator.value()->layerFilterSubsetString( layer );
+    const QString sql = acIterator.value()->layerFilterSubsetString( layer );
     if ( !sql.isEmpty() )
     {
       sqls.append( sql );
@@ -189,7 +189,7 @@ bool QgsAccessControl::fillCacheKey( QStringList &cacheKey ) const
   QgsAccessControlFilterMap::const_iterator acIterator;
   for ( acIterator = mPluginsAccessControls->constBegin(); acIterator != mPluginsAccessControls->constEnd(); ++acIterator )
   {
-    QString newKey = acIterator.value()->cacheKey();
+    const QString newKey = acIterator.value()->cacheKey();
     if ( ! newKey.isEmpty() )
     {
       cacheKey.clear();

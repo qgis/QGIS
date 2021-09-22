@@ -154,7 +154,7 @@ void QgsRequestHandler::setupParameters()
   const QgsServerRequest::Parameters parameters = mRequest.parameters();
 
   //feature info format?
-  QString infoFormat = parameters.value( QStringLiteral( "INFO_FORMAT" ) );
+  const QString infoFormat = parameters.value( QStringLiteral( "INFO_FORMAT" ) );
   if ( !infoFormat.isEmpty() )
   {
     mFormat = infoFormat;
@@ -216,7 +216,7 @@ void QgsRequestHandler::parseInput()
         // Process input string as a simple query text
 
         typedef QPair<QString, QString> pair_t;
-        QUrlQuery query( inputString );
+        const QUrlQuery query( inputString );
         const QList<pair_t> items = query.queryItems();
         for ( const pair_t &pair : items )
         {
@@ -230,12 +230,12 @@ void QgsRequestHandler::parseInput()
 
         setupParameters();
 
-        QDomElement docElem = doc.documentElement();
+        const QDomElement docElem = doc.documentElement();
         // the document element tag name is the request
         mRequest.setParameter( QStringLiteral( "REQUEST" ), docElem.tagName() );
         // loop through the attributes which are the parameters
         // excepting the attributes started by xmlns or xsi
-        QDomNamedNodeMap map = docElem.attributes();
+        const QDomNamedNodeMap map = docElem.attributes();
         for ( int i = 0 ; i < map.length() ; ++i )
         {
           if ( map.item( i ).isNull() )

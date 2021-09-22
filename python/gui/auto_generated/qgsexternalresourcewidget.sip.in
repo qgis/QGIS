@@ -16,6 +16,8 @@
 // doesn't add this include to the file where the code from
 // ConvertToSubClassCode goes.
 #include <qgsexternalresourcewidget.h>
+
+#include <qgsexternalstoragefilewidget.h>
 %End
 
 
@@ -59,9 +61,9 @@ documentPath returns the path of the current document in the widget
 %End
     void setDocumentPath( const QVariant &documentPath );
 
-    QgsFileWidget *fileWidget();
+    QgsExternalStorageFileWidget *fileWidget();
 %Docstring
-access the file widget to allow its configuration
+Returns file widget to allow its configuration
 %End
 
     bool fileWidgetVisible() const;
@@ -133,6 +135,55 @@ is set to :py:class:`QgsFileWidget`.RelativeDefaultPath.
 %Docstring
 Configures the base path which should be used if the relativeStorage property
 is set to :py:class:`QgsFileWidget`.RelativeDefaultPath.
+%End
+
+    void setStorageType( const QString &storageType );
+%Docstring
+Set ``storageType`` storage type unique identifier as defined in :py:class:`QgsExternalStorageRegistry` or
+null QString if there is no storage defined, only file selection.
+
+.. seealso:: :py:func:`storageType`
+
+.. versionadded:: 3.22
+%End
+
+    QString storageType() const;
+%Docstring
+Returns storage type unique identifier as defined in :py:class:`QgsExternalStorageRegistry`.
+Returns null QString if there is no storage defined, only file selection.
+
+.. seealso:: :py:func:`setStorageType`
+
+.. versionadded:: 3.22
+%End
+
+    void setStorageAuthConfigId( const QString &authCfg );
+%Docstring
+Sets the authentication configuration ID to be used for the current external storage (if
+defined)
+
+.. versionadded:: 3.22
+%End
+
+    QString storageAuthConfigId() const;
+%Docstring
+Returns the authentication configuration ID used for the current external storage (if defined)
+
+.. versionadded:: 3.22
+%End
+
+    void setMessageBar( QgsMessageBar *messageBar );
+%Docstring
+Set ``messageBar`` to report messages
+
+.. versionadded:: 3.22
+%End
+
+    QgsMessageBar *messageBar() const;
+%Docstring
+Returns message bar used to report messages
+
+.. versionadded:: 3.22
 %End
 
   signals:

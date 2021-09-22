@@ -913,7 +913,7 @@ void TestQgsMapRendererJob::temporalRender()
   // set temporal properties for layer
   QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast< QgsRasterLayerTemporalProperties * >( rasterLayer->temporalProperties() );
   temporalProperties->setIsActive( true );
-  temporalProperties->setMode( QgsRasterLayerTemporalProperties::ModeFixedTemporalRange );
+  temporalProperties->setMode( Qgis::RasterTemporalMode::FixedTemporalRange );
   temporalProperties->setFixedTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) ),
       QDateTime( QDate( 2020, 1, 5 ), QTime( 0, 0, 0 ) ) ) );
 

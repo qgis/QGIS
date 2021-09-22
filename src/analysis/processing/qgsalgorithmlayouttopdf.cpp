@@ -91,7 +91,7 @@ void QgsLayoutToPdfAlgorithm::initAlgorithm( const QVariantMap & )
   simplify->setFlags( simplify->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( simplify.release() );
 
-  QStringList textExportOptions
+  const QStringList textExportOptions
   {
     QObject::tr( "Always Export Text as Paths (Recommended)" ),
     QObject::tr( "Always Export Text as Text Objects" )

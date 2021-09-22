@@ -38,7 +38,7 @@ const QgsMeshDataProviderTemporalCapabilities *QgsMeshDataProvider::temporalCapa
 
 void QgsMeshDataProvider::setTemporalUnit( QgsUnitTypes::TemporalUnit unit )
 {
-  QgsUnitTypes::TemporalUnit oldUnit = mTemporalCapabilities->temporalUnit();
+  const QgsUnitTypes::TemporalUnit oldUnit = mTemporalCapabilities->temporalUnit();
   mTemporalCapabilities->setTemporalUnit( unit );
   if ( oldUnit != unit )
     reloadData();
@@ -51,9 +51,9 @@ QgsMeshDatasetIndex QgsMeshDatasetSourceInterface::datasetIndexAtTime(
   int groupIndex, quint64 time,
   QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod method ) const
 {
-  QDateTime requestDateTime = referenceTime.addMSecs( time );
+  const QDateTime requestDateTime = referenceTime.addMSecs( time );
   quint64 providerTime;
-  QDateTime providerReferenceTime = mTemporalCapabilities->referenceTime();
+  const QDateTime providerReferenceTime = mTemporalCapabilities->referenceTime();
   if ( mTemporalCapabilities->referenceTime().isValid() )
     providerTime = referenceTime.msecsTo( requestDateTime );
   else

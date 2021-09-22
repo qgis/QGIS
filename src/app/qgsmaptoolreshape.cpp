@@ -49,13 +49,8 @@ void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   //add point to list and to rubber band
   if ( e->button() == Qt::LeftButton )
   {
-    int error = addVertex( e->mapPoint(), e->mapPointMatch() );
-    if ( error == 1 )
-    {
-      //current layer is not a vector layer
-      return;
-    }
-    else if ( error == 2 )
+    const int error = addVertex( e->mapPoint(), e->mapPointMatch() );
+    if ( error == 2 )
     {
       //problem with coordinate transformation
       emit messageEmitted( tr( "Cannot transform the point to the layers coordinate system" ), Qgis::MessageLevel::Warning );
@@ -126,7 +121,7 @@ bool QgsMapToolReshape::isBindingLine( QgsVectorLayer *vlayer, const QgsRectangl
 
 void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
 {
-  QgsPointXY firstPoint = pointsZM().at( 0 );
+  const QgsPointXY firstPoint = pointsZM().at( 0 );
   QgsRectangle bbox( firstPoint.x(), firstPoint.y(), firstPoint.x(), firstPoint.y() );
   for ( int i = 1; i < size(); ++i )
   {
@@ -145,7 +140,7 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
     segmented->points( pts );
   }
 
-  QgsLineString reshapeLineString( pts );
+  const QgsLineString reshapeLineString( pts );
 
   //query all the features that intersect bounding box of capture line
   QgsFeatureRequest req = QgsFeatureRequest().setFilterRect( bbox ).setNoAttributes();
@@ -158,7 +153,7 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
   QgsFeature f;
   Qgis::GeometryOperationResult reshapeReturn = Qgis::GeometryOperationResult::Success;
   bool reshapeDone = false;
-  bool isBinding = isBindingLine( vlayer, bbox );
+  const bool isBinding = isBindingLine( vlayer, bbox );
 
   vlayer->beginEditCommand( tr( "Reshape" ) );
   while ( fit.nextFeature( f ) )
@@ -232,7 +227,7 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
     // Add topological points
     if ( QgsProject::instance()->topologicalEditing() )
     {
-      QList<QgsPointLocator::Match> sm = snappingMatches();
+      const QList<QgsPointLocator::Match> sm = snappingMatches();
       Q_ASSERT( pts.size() == sm.size() );
       for ( int i = 0; i < sm.size() ; ++i )
       {

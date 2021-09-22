@@ -80,7 +80,7 @@ class TestQgsMapToolLabel : public QObject
       std::unique_ptr< QgsMapCanvas > canvas = std::make_unique< QgsMapCanvas >();
       canvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
       canvas->setLayers( QList<QgsMapLayer *>() << vl1.get() << vl2.get() );
-      std::unique_ptr< QgsAdvancedDigitizingDockWidget > advancedDigitizingDockWidget = std::make_unique< QgsAdvancedDigitizingDockWidget >( canvas.get() );
+      const std::unique_ptr< QgsAdvancedDigitizingDockWidget > advancedDigitizingDockWidget = std::make_unique< QgsAdvancedDigitizingDockWidget >( canvas.get() );
 
       QgsMapSettings mapSettings;
       mapSettings.setOutputSize( QSize( 500, 500 ) );
@@ -244,7 +244,7 @@ class TestQgsMapToolLabel : public QObject
       std::unique_ptr< QgsMapCanvas > canvas = std::make_unique< QgsMapCanvas >();
       canvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
       canvas->setLayers( QList<QgsMapLayer *>() << vl1 );
-      std::unique_ptr< QgsAdvancedDigitizingDockWidget > advancedDigitizingDockWidget = std::make_unique< QgsAdvancedDigitizingDockWidget >( canvas.get() );
+      const std::unique_ptr< QgsAdvancedDigitizingDockWidget > advancedDigitizingDockWidget = std::make_unique< QgsAdvancedDigitizingDockWidget >( canvas.get() );
 
       QgsMapSettings mapSettings;
       mapSettings.setOutputSize( QSize( 500, 500 ) );
@@ -385,7 +385,7 @@ class TestQgsMapToolLabel : public QObject
       std::unique_ptr< QgsMapCanvas > canvas = std::make_unique< QgsMapCanvas >();
       canvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
       canvas->setLayers( QList<QgsMapLayer *>() << vl1 );
-      std::unique_ptr< QgsAdvancedDigitizingDockWidget > advancedDigitizingDockWidget = std::make_unique< QgsAdvancedDigitizingDockWidget >( canvas.get() );
+      const std::unique_ptr< QgsAdvancedDigitizingDockWidget > advancedDigitizingDockWidget = std::make_unique< QgsAdvancedDigitizingDockWidget >( canvas.get() );
 
       std::unique_ptr< QgsMapToolLabel > tool( new QgsMapToolLabel( canvas.get(), advancedDigitizingDockWidget.get() ) );
 

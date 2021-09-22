@@ -165,7 +165,7 @@ void TestQgsAppLocatorFilters::testLayouts()
 
 void TestQgsAppLocatorFilters::testSearchActiveLayer()
 {
-  QString layerDef = QStringLiteral( "Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_integer:integer&field=my_double:double&key=pk" );
+  const QString layerDef = QStringLiteral( "Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_integer:integer&field=my_double:double&key=pk" );
   QgsVectorLayer *vl = new QgsVectorLayer( layerDef, QStringLiteral( "Layer" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( vl );
 
@@ -181,7 +181,7 @@ void TestQgsAppLocatorFilters::testSearchActiveLayer()
   mQgisApp->setActiveLayer( vl );
 
   QgsActiveLayerFeaturesLocatorFilter filter;
-  QgsLocatorContext context;
+  const QgsLocatorContext context;
 
   QList< QgsLocatorResult > results = gatherResults( &filter, QStringLiteral( "12345.6789" ), context );
   QCOMPARE( results.count(), 1 );
@@ -250,12 +250,12 @@ void TestQgsAppLocatorFilters::testActiveLayerFieldRestriction()
 
 void TestQgsAppLocatorFilters::testActiveLayerCompletion()
 {
-  QString layerDef = QStringLiteral( "Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_integer:integer&field=my_double:double&key=pk" );
+  const QString layerDef = QStringLiteral( "Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_integer:integer&field=my_double:double&key=pk" );
   QgsVectorLayer *vl = new QgsVectorLayer( layerDef, QStringLiteral( "Layer" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( vl );
   mQgisApp->setActiveLayer( vl );
 
-  QgsFeedback f;
+  const QgsFeedback f;
   QgsActiveLayerFeaturesLocatorFilter filter;
   QgsLocatorContext context;
   context.usingPrefix = true;
@@ -268,7 +268,7 @@ void TestQgsAppLocatorFilters::testActiveLayerCompletion()
 
 void TestQgsAppLocatorFilters::testSearchAllLayers()
 {
-  QString layerDef = QStringLiteral( "Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_number:integer&key=pk" );
+  const QString layerDef = QStringLiteral( "Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_number:integer&key=pk" );
   QgsVectorLayer *l1 = new QgsVectorLayer( layerDef, QStringLiteral( "Layer 1" ), QStringLiteral( "memory" ) );
   QgsVectorLayer *l2 = new QgsVectorLayer( layerDef, QStringLiteral( "Layer 2" ), QStringLiteral( "memory" ) );
 
@@ -288,7 +288,7 @@ void TestQgsAppLocatorFilters::testSearchAllLayers()
   l2->dataProvider()->addFeatures( QgsFeatureList() << f3 );
 
   QgsAllLayersFeaturesLocatorFilter filter;
-  QgsLocatorContext context;
+  const QgsLocatorContext context;
 
   QList< QgsLocatorResult > results = gatherResults( &filter, QStringLiteral( "100" ), context );
 
@@ -308,7 +308,7 @@ void TestQgsAppLocatorFilters::testSearchAllLayers()
 
 void TestQgsAppLocatorFilters::testSearchAllLayersPrioritizeExactMatch()
 {
-  QString layerDef = QStringLiteral( "Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_number:integer&key=pk" );
+  const QString layerDef = QStringLiteral( "Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_number:integer&key=pk" );
   QgsVectorLayer *l1 = new QgsVectorLayer( layerDef, QStringLiteral( "Layer 1" ), QStringLiteral( "memory" ) );
 
   QgsProject::instance()->addMapLayers( QList< QgsMapLayer *>() << l1 );
@@ -341,7 +341,7 @@ void TestQgsAppLocatorFilters::testSearchAllLayersPrioritizeExactMatch()
 
 QList<QgsLocatorResult> TestQgsAppLocatorFilters::gatherResults( QgsLocatorFilter *filter, const QString &string, const QgsLocatorContext &context )
 {
-  QSignalSpy spy( filter, &QgsLocatorFilter::resultFetched );
+  const QSignalSpy spy( filter, &QgsLocatorFilter::resultFetched );
   QgsFeedback f;
   filter->prepare( string, context );
   filter->fetchResults( string, context, &f );
@@ -349,8 +349,8 @@ QList<QgsLocatorResult> TestQgsAppLocatorFilters::gatherResults( QgsLocatorFilte
   QList< QgsLocatorResult > results;
   for ( int i = 0; i < spy.count(); ++ i )
   {
-    QVariant v = spy.at( i ).at( 0 );
-    QgsLocatorResult result = v.value<QgsLocatorResult>();
+    const QVariant v = spy.at( i ).at( 0 );
+    const QgsLocatorResult result = v.value<QgsLocatorResult>();
     results.append( result );
   }
   return results;

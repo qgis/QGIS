@@ -66,7 +66,7 @@ void TestQgsLayoutValidityChecks::initTestCase()
   QgsApplication::initQgis();
   QgsApplication::showSettings();
 
-  QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = dataDir + '/';
 }
 

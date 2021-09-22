@@ -86,7 +86,7 @@ QgsHanaNewConnection::QgsHanaNewConnection(
   }
   else
   {
-    QgsHanaSettings settings( connName, true );
+    const QgsHanaSettings settings( connName, true );
     updateControlsFromSettings( settings );
   }
   txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]*" ), txtName ) );
@@ -127,9 +127,9 @@ void QgsHanaNewConnection::accept()
     }
   }
 
-  QString connName = txtName->text();
+  const QString connName = txtName->text();
   QgsHanaSettings::setSelectedConnection( connName );
-  bool hasAuthConfigID = !mAuthSettings->configId().isEmpty();
+  const bool hasAuthConfigID = !mAuthSettings->configId().isEmpty();
 
   if ( !hasAuthConfigID && mAuthSettings->storePasswordIsChecked() &&
        QMessageBox::question( this,
@@ -215,7 +215,7 @@ void QgsHanaNewConnection::rbtnSystemDatabase_clicked()
 
 void QgsHanaNewConnection::chkEnableSSL_clicked()
 {
-  bool enabled = chkEnableSSL->isChecked();
+  const bool enabled = chkEnableSSL->isChecked();
   lblCryptoProvider->setEnabled( enabled );
   cbxCryptoProvider->setEnabled( enabled );
   chkValidateCertificate->setEnabled( enabled );
@@ -281,7 +281,7 @@ void QgsHanaNewConnection::updateControlsFromSettings( const QgsHanaSettings &se
   chkAllowGeometrylessTables->setChecked( settings.allowGeometrylessTables() );
 
   chkEnableSSL->setChecked( settings.enableSsl() );
-  int idx = cbxCryptoProvider->findData( settings.sslCryptoProvider() );
+  const int idx = cbxCryptoProvider->findData( settings.sslCryptoProvider() );
   if ( idx >= 0 )
     cbxCryptoProvider->setCurrentIndex( idx );
 
@@ -323,7 +323,7 @@ void QgsHanaNewConnection::testConnection()
     warningMsg = tr( "Identifier has not been specified." );
   else
   {
-    QString driver = txtDriver->text();
+    const QString driver = txtDriver->text();
     if ( driver.isEmpty() )
       warningMsg = tr( "Driver name/path has not been specified." );
     else
@@ -352,13 +352,13 @@ void QgsHanaNewConnection::testConnection()
     return;
   }
 
-  QgsTemporaryCursorOverride cursorOverride( Qt::WaitCursor );
+  const QgsTemporaryCursorOverride cursorOverride( Qt::WaitCursor );
 
   QgsHanaSettings settings( txtName->text() );
   readSettingsFromControls( settings );
 
   QString errorMsg;
-  unique_ptr<QgsHanaConnection> conn( QgsHanaConnection::createConnection( settings.toDataSourceUri(), nullptr, &errorMsg ) );
+  const unique_ptr<QgsHanaConnection> conn( QgsHanaConnection::createConnection( settings.toDataSourceUri(), nullptr, &errorMsg ) );
 
   if ( conn )
     bar->pushMessage( tr( "Connection to the server was successful." ), Qgis::MessageLevel::Info );

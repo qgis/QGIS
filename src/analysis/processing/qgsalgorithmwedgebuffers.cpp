@@ -168,7 +168,7 @@ QgsFeatureList QgsWedgeBuffersAlgorithm::processFeature( const QgsFeature &featu
     if ( mDynamicInnerRadius )
       innerRadius = mInnerRadiusProperty.valueAsDouble( context.expressionContext(), innerRadius );
 
-    QgsGeometry g = f.geometry();
+    const QgsGeometry g = f.geometry();
     if ( QgsWkbTypes::isMultiType( g.wkbType() ) )
     {
       const QgsMultiPoint *mp = static_cast< const QgsMultiPoint * >( g.constGet() );

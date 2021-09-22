@@ -45,7 +45,7 @@ bool QgsMapClippingRegion::appliesToLayer( const QgsMapLayer *layer ) const
   if ( mRestrictToLayersList.empty() )
     return false;
 
-  auto it = std::find_if( mRestrictToLayersList.begin(), mRestrictToLayersList.end(), [layer]( const QgsWeakMapLayerPointer & item ) -> bool
+  const auto it = std::find_if( mRestrictToLayersList.begin(), mRestrictToLayersList.end(), [layer]( const QgsWeakMapLayerPointer & item ) -> bool
   {
     return item == layer;
   } );

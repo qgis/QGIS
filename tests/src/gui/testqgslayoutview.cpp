@@ -72,7 +72,7 @@ void TestQgsLayoutView::basic()
   QgsLayout *layout = new QgsLayout( &p );
   QgsLayoutView *view = new QgsLayoutView();
 
-  QSignalSpy spyLayoutChanged( view, &QgsLayoutView::layoutSet );
+  const QSignalSpy spyLayoutChanged( view, &QgsLayoutView::layoutSet );
   view->setCurrentLayout( layout );
   QCOMPARE( view->currentLayout(), layout );
   QCOMPARE( spyLayoutChanged.count(), 1 );
@@ -95,11 +95,11 @@ void TestQgsLayoutView::tool()
   QVERIFY( !tool->isClickAndDrag( QPoint( 0, 10 ), QPoint( 1, 10 ) ) );
   QVERIFY( !tool->isClickAndDrag( QPoint( 0, 10 ), QPoint( 0, 10 ) ) );
 
-  QSignalSpy spySetTool( view, &QgsLayoutView::toolSet );
-  QSignalSpy spyToolActivated( tool, &QgsLayoutViewTool::activated );
-  QSignalSpy spyToolActivated2( tool2, &QgsLayoutViewTool::activated );
-  QSignalSpy spyToolDeactivated( tool, &QgsLayoutViewTool::deactivated );
-  QSignalSpy spyToolDeactivated2( tool2, &QgsLayoutViewTool::deactivated );
+  const QSignalSpy spySetTool( view, &QgsLayoutView::toolSet );
+  const QSignalSpy spyToolActivated( tool, &QgsLayoutViewTool::activated );
+  const QSignalSpy spyToolActivated2( tool2, &QgsLayoutViewTool::activated );
+  const QSignalSpy spyToolDeactivated( tool, &QgsLayoutViewTool::deactivated );
+  const QSignalSpy spyToolDeactivated2( tool2, &QgsLayoutViewTool::deactivated );
   view->setTool( tool );
   QCOMPARE( view->tool(), tool );
   QCOMPARE( spySetTool.count(), 1 );
@@ -206,7 +206,7 @@ void TestQgsLayoutView::events()
   LoggingTool *tool = new LoggingTool( view );
   view->setTool( tool );
 
-  QPointF point( 80, 60 );
+  const QPointF point( 80, 60 );
   QMouseEvent press( QEvent::MouseButtonPress, point,
                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   QMouseEvent move( QEvent::MouseMove, point,
@@ -267,10 +267,10 @@ void TestQgsLayoutView::guiRegistry()
   QCOMPARE( registry.metadataIdForItemType( 0 ), -1 );
   QVERIFY( !registry.createItemWidget( nullptr ) );
   QVERIFY( !registry.createItemWidget( nullptr ) );
-  std::unique_ptr< TestItem > testItem = std::make_unique< TestItem >( nullptr );
+  const std::unique_ptr< TestItem > testItem = std::make_unique< TestItem >( nullptr );
   QVERIFY( !registry.createItemWidget( testItem.get() ) ); // not in registry
 
-  QSignalSpy spyTypeAdded( &registry, &QgsLayoutItemGuiRegistry::typeAdded );
+  const QSignalSpy spyTypeAdded( &registry, &QgsLayoutItemGuiRegistry::typeAdded );
 
   // add a dummy item to registry
   auto createWidget = []( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *

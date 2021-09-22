@@ -93,10 +93,10 @@ void TestQgsVectorLayer::initTestCase()
   //
   //create a non spatial layer that will be used in all tests...
   //
-  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = myDataDir + '/';
-  QString myDbfFileName = mTestDataDir + "nonspatial.dbf";
-  QFileInfo myDbfFileInfo( myDbfFileName );
+  const QString myDbfFileName = mTestDataDir + "nonspatial.dbf";
+  const QFileInfo myDbfFileInfo( myDbfFileName );
   mpNonSpatialLayer = new QgsVectorLayer( myDbfFileInfo.filePath(),
                                           myDbfFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
@@ -105,8 +105,8 @@ void TestQgsVectorLayer::initTestCase()
   //
   //create a point layer that will be used in all tests...
   //
-  QString myPointsFileName = mTestDataDir + "points.shp";
-  QFileInfo myPointFileInfo( myPointsFileName );
+  const QString myPointsFileName = mTestDataDir + "points.shp";
+  const QFileInfo myPointFileInfo( myPointsFileName );
   mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
                                       myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
@@ -116,8 +116,8 @@ void TestQgsVectorLayer::initTestCase()
   //
   //create a poly layer that will be used in all tests...
   //
-  QString myPolysFileName = mTestDataDir + "polys.shp";
-  QFileInfo myPolyFileInfo( myPolysFileName );
+  const QString myPolysFileName = mTestDataDir + "polys.shp";
+  const QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
                                      myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
@@ -128,8 +128,8 @@ void TestQgsVectorLayer::initTestCase()
   //
   // Create a line layer that will be used in all tests...
   //
-  QString myLinesFileName = mTestDataDir + "lines.shp";
-  QFileInfo myLineFileInfo( myLinesFileName );
+  const QString myLinesFileName = mTestDataDir + "lines.shp";
+  const QFileInfo myLineFileInfo( myLinesFileName );
   mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(),
                                      myLineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
@@ -141,7 +141,7 @@ void TestQgsVectorLayer::initTestCase()
 
 void TestQgsVectorLayer::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -247,7 +247,7 @@ void TestQgsVectorLayer::getValues()
 
 void TestQgsVectorLayer::setRenderer()
 {
-  QSignalSpy spy( mpPointsLayer, &QgsVectorLayer::rendererChanged );
+  const QSignalSpy spy( mpPointsLayer, &QgsVectorLayer::rendererChanged );
 
   QgsSingleSymbolRenderer *symbolRenderer = new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
 
@@ -258,7 +258,7 @@ void TestQgsVectorLayer::setRenderer()
 
 void TestQgsVectorLayer::setFeatureBlendMode()
 {
-  QSignalSpy spy( mpPointsLayer, &QgsVectorLayer::featureBlendModeChanged );
+  const QSignalSpy spy( mpPointsLayer, &QgsVectorLayer::featureBlendModeChanged );
 
   mpPointsLayer->setFeatureBlendMode( QPainter::CompositionMode_Screen );
   QCOMPARE( spy.count(), 1 );
@@ -275,7 +275,7 @@ void TestQgsVectorLayer::setFeatureBlendMode()
 
 void TestQgsVectorLayer::setLayerTransparency()
 {
-  QSignalSpy spy( mpPointsLayer, &QgsMapLayer::opacityChanged );
+  const QSignalSpy spy( mpPointsLayer, &QgsMapLayer::opacityChanged );
 
   mpPointsLayer->setOpacity( 0.5 );
   QCOMPARE( spy.count(), 1 );
@@ -292,7 +292,7 @@ void TestQgsVectorLayer::setLayerTransparency()
 void TestQgsVectorLayer::uniqueValues()
 {
   //test with invalid field
-  QSet<QVariant> values = mpPointsLayer->uniqueValues( 1000 );
+  const QSet<QVariant> values = mpPointsLayer->uniqueValues( 1000 );
   QCOMPARE( values.count(), 0 );
 }
 
@@ -340,7 +340,7 @@ void TestQgsVectorLayer::testAddTopologicalPoints()
 
   layerLine->startEditing();
   layerLine->addFeature( lineF1 );
-  QgsFeatureId fidLineF1 = lineF1.id();
+  const QgsFeatureId fidLineF1 = lineF1.id();
   QCOMPARE( layerLine->featureCount(), ( long )1 );
 
   QCOMPARE( layerLine->undoStack()->index(), 1 );
@@ -442,7 +442,7 @@ void TestQgsVectorLayer::testCopyPasteFieldConfiguration()
   // export given categories, import all
   QString errorMsg;
   QDomDocument doc( QStringLiteral( "qgis" ) );
-  QgsReadWriteContext context;
+  const QgsReadWriteContext context;
   layer1.exportNamedStyle( doc, errorMsg, context, categories );
   QVERIFY( errorMsg.isEmpty() );
 

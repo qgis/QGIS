@@ -121,6 +121,25 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     QStringList additionalItems() const;
 
     /**
+     * Sets a list of additional \a layers to include in the combobox.
+     *
+     * This method allows adding additional layers, which are not part of a project's
+     * layers, into the combobox.
+     *
+     * \see additionalLayers()
+     * \since QGIS 3.22
+     */
+    void setAdditionalLayers( const QList<QgsMapLayer *> &layers );
+
+    /**
+     * Returns the list of additional layers added to the combobox.
+     *
+     * \see setAdditionalLayers()
+     * \since QGIS 3.22
+     */
+    QList< QgsMapLayer * > additionalLayers() const;
+
+    /**
      * Returns the current layer selected in the combo box.
      * \see layer
      */

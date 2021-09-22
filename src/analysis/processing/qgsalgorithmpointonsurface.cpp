@@ -96,7 +96,7 @@ QgsFeatureList QgsPointOnSurfaceAlgorithm::processFeature( const QgsFeature &f, 
   QgsFeature feature = f;
   if ( feature.hasGeometry() && !feature.geometry().isEmpty() )
   {
-    QgsGeometry geom = feature.geometry();
+    const QgsGeometry geom = feature.geometry();
 
     bool allParts = mAllParts;
     if ( mDynamicAllParts )
@@ -110,8 +110,8 @@ QgsFeatureList QgsPointOnSurfaceAlgorithm::processFeature( const QgsFeature &f, 
       list.reserve( partCount );
       for ( int i = 0; i < partCount; ++i )
       {
-        QgsGeometry partGeometry( geomCollection->geometryN( i )->clone() );
-        QgsGeometry outputGeometry = partGeometry.pointOnSurface();
+        const QgsGeometry partGeometry( geomCollection->geometryN( i )->clone() );
+        const QgsGeometry outputGeometry = partGeometry.pointOnSurface();
         if ( outputGeometry.isNull() )
         {
           feedback->reportError( QObject::tr( "Error calculating point on surface for feature %1 part %2: %3" ).arg( feature.id() ).arg( i ).arg( outputGeometry.lastError() ) );
@@ -122,7 +122,7 @@ QgsFeatureList QgsPointOnSurfaceAlgorithm::processFeature( const QgsFeature &f, 
     }
     else
     {
-      QgsGeometry outputGeometry = feature.geometry().pointOnSurface();
+      const QgsGeometry outputGeometry = feature.geometry().pointOnSurface();
       if ( outputGeometry.isNull() )
       {
         feedback->reportError( QObject::tr( "Error calculating point on surface for feature %1: %2" ).arg( feature.id() ).arg( outputGeometry.lastError() ) );

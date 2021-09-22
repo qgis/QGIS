@@ -130,7 +130,7 @@ QVector<QgsPointCloudAttribute> QgsPointCloudAttributeCollection::attributes() c
 
 const QgsPointCloudAttribute *QgsPointCloudAttributeCollection::find( const QString &attributeName, int &offset ) const
 {
-  auto it = mCachedAttributes.constFind( attributeName );
+  const auto it = mCachedAttributes.constFind( attributeName );
   if ( it != mCachedAttributes.constEnd() )
   {
     offset = it->offset;
@@ -143,7 +143,7 @@ const QgsPointCloudAttribute *QgsPointCloudAttributeCollection::find( const QStr
 
 int QgsPointCloudAttributeCollection::indexOf( const QString &name ) const
 {
-  auto it = mCachedAttributes.constFind( name );
+  const auto it = mCachedAttributes.constFind( name );
   if ( it != mCachedAttributes.constEnd() )
   {
     return it->index;
@@ -217,7 +217,7 @@ QVariantMap QgsPointCloudAttribute::getAttributeMap( const char *data, std::size
   const QVector<QgsPointCloudAttribute> attributes = attributeCollection.attributes();
   for ( const QgsPointCloudAttribute &attr : attributes )
   {
-    QString attributeName = attr.name();
+    const QString attributeName = attr.name();
     int attributeOffset;
     attributeCollection.find( attributeName, attributeOffset );
     switch ( attr.type() )

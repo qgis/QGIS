@@ -508,7 +508,7 @@ void QgsLayoutAttributeTableWidget::atlasToggled()
 {
   // display/hide atlas options in source combobox depending on atlas status
   // if there's no atlas but there IS a coverageLayer, it's a report export and we should enable the controls
-  bool atlasEnabled = ( layoutAtlas() && layoutAtlas()->enabled() ) || ( !layoutAtlas() && coverageLayer() );
+  const bool atlasEnabled = ( layoutAtlas() && layoutAtlas()->enabled() ) || ( !layoutAtlas() && coverageLayer() );
 
 
   toggleAtlasSpecificControls( atlasEnabled );
@@ -628,7 +628,7 @@ void QgsLayoutAttributeTableWidget::mShowOnlyVisibleFeaturesCheckBox_stateChange
   }
 
   mTable->beginCommand( tr( "Toggle Visible Features Only" ) );
-  bool showOnlyVisibleFeatures = ( state == Qt::Checked );
+  const bool showOnlyVisibleFeatures = ( state == Qt::Checked );
   mTable->setDisplayOnlyVisibleFeatures( showOnlyVisibleFeatures );
   mTable->update();
   mTable->endCommand();
@@ -683,7 +683,7 @@ void QgsLayoutAttributeTableWidget::mIntersectAtlasCheckBox_stateChanged( int st
   }
 
   mTable->beginCommand( tr( "Toggle Table Atlas Filter" ) );
-  bool filterToAtlas = ( state == Qt::Checked );
+  const bool filterToAtlas = ( state == Qt::Checked );
   mTable->setFilterToAtlasFeature( filterToAtlas );
   mTable->update();
   mTable->endCommand();
@@ -733,12 +733,12 @@ void QgsLayoutAttributeTableWidget::mFeatureFilterButton_clicked()
     return;
   }
 
-  QgsExpressionContext context = mTable->createExpressionContext();
+  const QgsExpressionContext context = mTable->createExpressionContext();
   QgsExpressionBuilderDialog exprDlg( mTable->sourceLayer(), mFeatureFilterEdit->text(), this, QStringLiteral( "generic" ), context );
   exprDlg.setWindowTitle( tr( "Expression Based Filter" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
-    QString expression = exprDlg.expressionText();
+    const QString expression = exprDlg.expressionText();
     if ( !expression.isEmpty() )
     {
       mFeatureFilterEdit->setText( expression );

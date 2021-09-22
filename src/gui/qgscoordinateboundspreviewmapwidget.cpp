@@ -23,7 +23,7 @@ QgsCoordinateBoundsPreviewMapWidget::QgsCoordinateBoundsPreviewMapWidget( QWidge
 
   mCanvasPreviewBand = new QgsRubberBand( this, QgsWkbTypes::PolygonGeometry );
   mCanvasPreviewBand->setWidth( 4 );
-  QColor rectColor = QColor( 185, 84, 210, 60 );
+  const QColor rectColor = QColor( 185, 84, 210, 60 );
   mCanvasPreviewBand->setColor( rectColor );
 
   mCanvasCenterMarker = new QgsVertexMarker( this );
@@ -31,10 +31,10 @@ QgsCoordinateBoundsPreviewMapWidget::QgsCoordinateBoundsPreviewMapWidget( QWidge
   mCanvasCenterMarker->setColor( QColor( 185, 84, 210 ) );
   mCanvasCenterMarker->setPenWidth( 3 );
 
-  QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:4326" ) );
+  const QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:4326" ) );
   setDestinationCrs( srs );
 
-  QString layerPath = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.gpkg|layername=countries" );
+  const QString layerPath = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.gpkg|layername=countries" );
   mLayers << new QgsVectorLayer( layerPath );
   setLayers( mLayers );
   setMapTool( new QgsMapToolPan( this ) );
@@ -56,8 +56,8 @@ void QgsCoordinateBoundsPreviewMapWidget::setPreviewRect( const QgsRectangle &re
     QgsGeometry geom;
     if ( rect.xMinimum() > rect.xMaximum() )
     {
-      QgsRectangle rect1 = QgsRectangle( -180, rect.yMinimum(), rect.xMaximum(), rect.yMaximum() );
-      QgsRectangle rect2 = QgsRectangle( rect.xMinimum(), rect.yMinimum(), 180, rect.yMaximum() );
+      const QgsRectangle rect1 = QgsRectangle( -180, rect.yMinimum(), rect.xMaximum(), rect.yMaximum() );
+      const QgsRectangle rect2 = QgsRectangle( rect.xMinimum(), rect.yMinimum(), 180, rect.yMaximum() );
       geom = QgsGeometry::fromRect( rect1 );
       geom.addPart( QgsGeometry::fromRect( rect2 ) );
     }

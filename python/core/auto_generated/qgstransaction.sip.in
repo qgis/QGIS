@@ -110,7 +110,7 @@ returns the last created savepoint if it's not dirty
 .. versionadded:: 3.0
 %End
 
-    QString createSavepoint( const QString &savePointId, QString &error /Out/ );
+    virtual QString createSavepoint( const QString &savePointId, QString &error /Out/ );
 %Docstring
 creates a save point
 returns empty string on error
@@ -118,7 +118,7 @@ returns empty string on error
 .. versionadded:: 3.0
 %End
 
-    bool rollbackToSavepoint( const QString &name, QString &error /Out/ );
+    virtual bool rollbackToSavepoint( const QString &name, QString &error /Out/ );
 %Docstring
 rollback to save point, the save point is maintained and is "undertied"
 

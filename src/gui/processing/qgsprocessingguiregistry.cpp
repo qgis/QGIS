@@ -79,6 +79,8 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingDxfLayersWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingMeshDatasetGroupsWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingMeshDatasetTimeWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingPointCloudLayerWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingAnnotationLayerWidgetWrapper() );
 }
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()

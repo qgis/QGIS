@@ -42,6 +42,10 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
     QString outputFormat() const;
     QgsCoordinateReferenceSystem outputCrs() const;
     bool addLayerToProject() const;
+    //! True if Virtual is checked
+    bool useVirtualProvider() const;
+    //! Return the name written in the qlineedit
+    QString virtualLayerName() const;
 
     //! Bounding box for output raster
     QgsRectangle outputRectangle() const;
@@ -64,6 +68,8 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
     void mExpressionTextEdit_textChanged();
     //! Enables OK button if calculator expression is valid and output file path exists
     void setAcceptButtonState();
+    //! Disables some options that are not required if using Virtual Provider
+    void setOutputToVirtual();
     void showHelp();
 
     //calculator buttons
@@ -94,6 +100,7 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
     void mAbsButton_clicked();
     void mMinButton_clicked();
     void mMaxButton_clicked();
+    void mConditionalStatButton_clicked();
 
   private:
     //! Sets the extent and size of the output

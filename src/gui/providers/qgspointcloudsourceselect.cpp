@@ -50,10 +50,10 @@ QgsPointCloudSourceSelect::QgsPointCloudSourceSelect( QWidget *parent, Qt::Windo
   } );
 
 
-  QStringList protocolTypes = QStringLiteral( "HTTP/HTTPS/FTP,vsicurl" ).split( ';' );
+  const QStringList protocolTypes = QStringLiteral( "HTTP/HTTPS/FTP,vsicurl" ).split( ';' );
   for ( int i = 0; i < protocolTypes.count(); i++ )
   {
-    QString protocolType = protocolTypes.at( i );
+    const QString protocolType = protocolTypes.at( i );
     if ( ( !protocolType.isEmpty() ) && ( !protocolType.isNull() ) )
       cmbProtocolTypes->addItem( protocolType.split( ',' ).at( 0 ) );
   }

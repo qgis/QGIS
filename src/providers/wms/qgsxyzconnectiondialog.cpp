@@ -71,7 +71,7 @@ QgsXyzConnection QgsXyzConnectionDialog::connection() const
 
 void QgsXyzConnectionDialog::updateOkButtonState()
 {
-  bool enabled = !mEditName->text().isEmpty() && !mSourceWidget->url().isEmpty();
+  const bool enabled = !mEditName->text().isEmpty() && !mSourceWidget->url().isEmpty();
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
 }
 

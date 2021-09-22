@@ -25,7 +25,7 @@
 double QgsBearingUtils::bearingTrueNorth( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext  &transformContext, const QgsPointXY &point )
 {
   // step 1 - transform point into WGS84 geographic crs
-  QgsCoordinateTransform transform( crs, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), transformContext );
+  const QgsCoordinateTransform transform( crs, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), transformContext );
 
   if ( !transform.isValid() )
   {
@@ -36,14 +36,14 @@ double QgsBearingUtils::bearingTrueNorth( const QgsCoordinateReferenceSystem &cr
   if ( transform.isShortCircuited() )
     return 0.0;
 
-  QgsPointXY p1 = transform.transform( point );
+  const QgsPointXY p1 = transform.transform( point );
 
   // shift point a tiny bit north
   QgsPointXY p2 = p1;
   p2.setY( p2.y() + 0.000001 );
 
   //transform back
-  QgsPointXY p3 = transform.transform( p2, QgsCoordinateTransform::ReverseTransform );
+  const QgsPointXY p3 = transform.transform( p2, QgsCoordinateTransform::ReverseTransform );
 
   // find bearing from point to p3
   return point.azimuth( p3 );

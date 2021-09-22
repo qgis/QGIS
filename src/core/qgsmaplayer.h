@@ -36,6 +36,7 @@
 #include "qgsrendercontext.h"
 #include "qgsmaplayerdependency.h"
 #include "qgslayermetadata.h"
+#include "qgsmaplayerserverproperties.h"
 #include "qgsmaplayerstyle.h"
 #include "qgsreadwritecontext.h"
 #include "qgsdataprovider.h"
@@ -210,6 +211,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \note Flags are options specified by the user used for the UI but are not preventing any API call.
      * For instance, even if the Removable flag is not set, the layer can still be removed with the API
      * but the action will not be listed in the legend menu.
+     *
+     * \see properties()
+     *
      * \since QGIS 3.4
      */
     QgsMapLayer::LayerFlags flags() const;
@@ -219,9 +223,23 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \note Flags are options specified by the user used for the UI but are not preventing any API call.
      * For instance, even if the Removable flag is not set, the layer can still be removed with the API
      * but the action will not be listed in the legend menu.
+     *
+     * \see properties()
+     *
      * \since QGIS 3.4
      */
     void setFlags( QgsMapLayer::LayerFlags flags );
+
+    /**
+     * Returns the map layer properties of this layer.
+     *
+     * \note properties() differ from flags() in that flags() are user settable, and reflect options that
+     * users can enable for map layers. In contrast properties() are reflections of inherent capabilities
+     * for the layer, which cannot be directly changed by users.
+     *
+     * \since QGIS 3.22
+     */
+    virtual Qgis::MapLayerProperties properties() const;
 
     /**
      * Returns the extension of a Property.
@@ -398,58 +416,80 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /* Layer metadataUrl information */
 
     /**
+     * Returns QGIS Server Properties for the map layer
+     * \since QGIS 3.22
+     */
+    QgsMapLayerServerProperties *serverProperties() { return mServerProperties.get(); };
+
+    /**
+     * Returns QGIS Server Properties const for the map layer
+     * \since QGIS 3.22
+     */
+    const QgsMapLayerServerProperties *serverProperties() const { return mServerProperties.get(); } SIP_SKIP;
+
+    /**
      * Sets the metadata URL of the layer
      *  used by QGIS Server in GetCapabilities request.
      *  MetadataUrl is a a link to the detailed, standardized metadata about the data.
-     * \returns the layer metadata URL
-     * \see metadataUrl()
+     *  Since QGIS 3.22, it edits the first metadata URL link.
+     * \see serverProperties()
+     * \deprecated since QGIS 3.22
      */
-    void setMetadataUrl( const QString &metaUrl ) { mMetadataUrl = metaUrl; }
+    Q_DECL_DEPRECATED void setMetadataUrl( const QString &metaUrl ) SIP_DEPRECATED;
 
     /**
      * Returns the metadata URL of the layer
      *  used by QGIS Server in GetCapabilities request.
      *  MetadataUrl is a a link to the detailed, standardized metadata about the data.
+     * Since QGIS 3.22, it returns the first metadata URL link.
      * \returns the layer metadata URL
-     * \see setMetadataUrl()
+     * \see serverProperties()
+     * \deprecated since QGIS 3.22
      */
-    QString metadataUrl() const { return mMetadataUrl; }
+    Q_DECL_DEPRECATED QString metadataUrl() const SIP_DEPRECATED;
 
     /**
      * Set the metadata type of the layer
      *  used by QGIS Server in GetCapabilities request
      *  MetadataUrlType indicates the standard to which the metadata complies.
+     *  Since QGIS 3.22, it edits the first metadata URL type.
      * \returns the layer metadata type
-     * \see metadataUrlType()
+     * \see serverProperties()
+     * \deprecated since QGIS 3.22
      */
-    void setMetadataUrlType( const QString &metaUrlType ) { mMetadataUrlType = metaUrlType; }
+    Q_DECL_DEPRECATED void setMetadataUrlType( const QString &metaUrlType ) SIP_DEPRECATED;
 
     /**
      * Returns the metadata type of the layer
      *  used by QGIS Server in GetCapabilities request.
      *  MetadataUrlType indicates the standard to which the metadata complies.
+     * Since QGIS 3.22, it returns the first metadata URL type.
      * \returns the layer metadata type
-     * \see setMetadataUrlType()
+     * \see serverProperties()
+     * \deprecated since QGIS 3.22
      */
-    QString metadataUrlType() const { return mMetadataUrlType; }
+    Q_DECL_DEPRECATED QString metadataUrlType() const SIP_DEPRECATED;
 
     /**
      * Sets the metadata format of the layer
      *  used by QGIS Server in GetCapabilities request.
      *  MetadataUrlType indicates how the metadata is structured.
-     * \returns the layer metadata format
-     * \see metadataUrlFormat()
+     *  Since QGIS 3.22, it edits the first metadata URL format.
+     * \see serverProperties()
+     * \deprecated since QGIS 3.22
      */
-    void setMetadataUrlFormat( const QString &metaUrlFormat ) { mMetadataUrlFormat = metaUrlFormat; }
+    Q_DECL_DEPRECATED void setMetadataUrlFormat( const QString &metaUrlFormat ) SIP_DEPRECATED;
 
     /**
      * Returns the metadata format of the layer
      *  used by QGIS Server in GetCapabilities request.
      *  MetadataUrlType indicates how the metadata is structured.
+     * Since QGIS 3.22, it returns the first metadata URL format.
      * \returns the layer metadata format
-     * \see setMetadataUrlFormat()
+     * \see serverProperties()
+     * \deprecated since QGIS 3.22
      */
-    QString metadataUrlFormat() const { return mMetadataUrlFormat; }
+    Q_DECL_DEPRECATED QString metadataUrlFormat() const SIP_DEPRECATED;
 
     /**
      * Set the blending mode used for rendering a layer.
@@ -691,7 +731,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     template <class T>
     T customEnumProperty( const QString &key, const T &defaultValue )
     {
-      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( metaEnum.isValid() );
       if ( !metaEnum.isValid() )
       {
@@ -743,7 +783,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     template <class T>
     void setCustomEnumProperty( const QString &key, const T &value )
     {
-      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( metaEnum.isValid() );
       if ( metaEnum.isValid() )
       {
@@ -769,7 +809,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     template <class T>
     T customFlagProperty( const QString &key, const T &defaultValue )
     {
-      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( metaEnum.isValid() );
       if ( !metaEnum.isValid() )
       {
@@ -789,15 +829,15 @@ class CORE_EXPORT QgsMapLayer : public QObject
       if ( !ok )
       {
         // if failed, try to read as int
-        int intValue = customProperty( key, static_cast<int>( defaultValue ) ).toInt( &ok );
+        const int intValue = customProperty( key, static_cast<int>( defaultValue ) ).toInt( &ok );
         if ( metaEnum.isValid() )
         {
           if ( ok )
           {
             // check that the int value does correspond to a flag
             // see https://stackoverflow.com/a/68495949/1548052
-            QByteArray keys = metaEnum.valueToKeys( intValue );
-            int intValueCheck = metaEnum.keysToValue( keys );
+            const QByteArray keys = metaEnum.valueToKeys( intValue );
+            const int intValueCheck = metaEnum.keysToValue( keys );
             if ( intValue != intValueCheck )
             {
               v = defaultValue;
@@ -833,7 +873,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     template <class T>
     void setCustomFlagProperty( const QString &key, const T &value )
     {
-      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( metaEnum.isValid() );
       if ( metaEnum.isValid() )
       {
@@ -1901,11 +1941,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString mAttribution;
     QString mAttributionUrl;
 
-    //! MetadataUrl of the layer
-    QString mMetadataUrl;
-    QString mMetadataUrlType;
-    QString mMetadataUrlFormat;
-
     //! WMS legend
     QString mLegendUrl;
     QString mLegendUrlFormat;
@@ -1968,6 +2003,19 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString crsHtmlMetadata() const;
 #endif
 
+#ifndef SIP_RUN
+
+    /**
+     * Returns an HTML fragment containing general  metadata information, for use
+     * in the htmlMetadata() method.
+     *
+     * \note Not available in Python bindings.
+     *
+     * \since QGIS 3.22
+     */
+    QString generalHtmlMetadata() const;
+#endif
+
   private:
 
     virtual QString baseURI( PropertyType type ) const;
@@ -2014,6 +2062,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
     double mMaxScale = 100000000;
     //! A flag that tells us whether to use the above vars to restrict layer visibility
     bool mScaleBasedVisibility = false;
+
+    /**
+     * Stores information about server properties
+     */
+    std::unique_ptr< QgsMapLayerServerProperties > mServerProperties;
 
     //! Collection of undoable operations for this layer.
     QUndoStack *mUndoStack = nullptr;

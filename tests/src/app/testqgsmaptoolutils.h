@@ -54,14 +54,14 @@ class TestQgsMapToolAdvancedDigitizingUtils
     QgsFeatureId newFeatureId( QSet<QgsFeatureId> oldFids = QSet<QgsFeatureId>() )
     {
       QSet<QgsFeatureId> newFids = existingFeatureIds();
-      QSet<QgsFeatureId> diffFids = newFids.subtract( oldFids );
+      const QSet<QgsFeatureId> diffFids = newFids.subtract( oldFids );
       Q_ASSERT( diffFids.count() == 1 );
       return *diffFids.constBegin();
     }
 
     QPoint mapToScreen( double mapX, double mapY )
     {
-      QgsPointXY pt = mMapTool->canvas()->mapSettings().mapToPixel().transform( mapX, mapY );
+      const QgsPointXY pt = mMapTool->canvas()->mapSettings().mapToPixel().transform( mapX, mapY );
       return QPoint( std::round( pt.x() ), std::round( pt.y() ) );
     }
 
@@ -155,14 +155,14 @@ class TestQgsMapToolUtils
     QgsFeatureId newFeatureId( QSet<QgsFeatureId> oldFids = QSet<QgsFeatureId>() )
     {
       QSet<QgsFeatureId> newFids = existingFeatureIds();
-      QSet<QgsFeatureId> diffFids = newFids.subtract( oldFids );
+      const QSet<QgsFeatureId> diffFids = newFids.subtract( oldFids );
       Q_ASSERT( diffFids.count() == 1 );
       return *diffFids.constBegin();
     }
 
     QPoint mapToScreen( double mapX, double mapY )
     {
-      QgsPointXY pt = mMapTool->canvas()->mapSettings().mapToPixel().transform( mapX, mapY );
+      const QgsPointXY pt = mMapTool->canvas()->mapSettings().mapToPixel().transform( mapX, mapY );
       return QPoint( std::round( pt.x() ), std::round( pt.y() ) );
     }
 
@@ -180,6 +180,16 @@ class TestQgsMapToolUtils
         e1.snapPoint();
 
       mMapTool->canvasPressEvent( &e1 );
+    }
+
+    void mouseDoubleClick( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers(), bool snap = false )
+    {
+      QgsMapMouseEvent e1( mMapTool->canvas(), QEvent::MouseButtonPress, mapToScreen( mapX, mapY ), button, button, stateKey );
+
+      if ( snap )
+        e1.snapPoint();
+
+      mMapTool->canvasDoubleClickEvent( &e1 );
     }
 
     void mouseRelease( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers(), bool snap = false )

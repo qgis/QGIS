@@ -52,14 +52,14 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
   connect( mOffsetXSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::gridOffsetXChanged );
   connect( mOffsetYSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::gridOffsetYChanged );
 
-  double leftMargin = mLayout->customProperty( QStringLiteral( "resizeToContentsLeftMargin" ) ).toDouble();
-  double topMargin = mLayout->customProperty( QStringLiteral( "resizeToContentsTopMargin" ) ).toDouble();
-  double bottomMargin = mLayout->customProperty( QStringLiteral( "resizeToContentsBottomMargin" ) ).toDouble();
-  double rightMargin = mLayout->customProperty( QStringLiteral( "resizeToContentsRightMargin" ) ).toDouble();
-  QgsUnitTypes::LayoutUnit marginUnit = static_cast< QgsUnitTypes::LayoutUnit >(
-                                          mLayout->customProperty( QStringLiteral( "imageCropMarginUnit" ), QgsUnitTypes::LayoutMillimeters ).toInt() );
+  const double leftMargin = mLayout->customProperty( QStringLiteral( "resizeToContentsLeftMargin" ) ).toDouble();
+  const double topMargin = mLayout->customProperty( QStringLiteral( "resizeToContentsTopMargin" ) ).toDouble();
+  const double bottomMargin = mLayout->customProperty( QStringLiteral( "resizeToContentsBottomMargin" ) ).toDouble();
+  const double rightMargin = mLayout->customProperty( QStringLiteral( "resizeToContentsRightMargin" ) ).toDouble();
+  const QgsUnitTypes::LayoutUnit marginUnit = static_cast< QgsUnitTypes::LayoutUnit >(
+        mLayout->customProperty( QStringLiteral( "imageCropMarginUnit" ), QgsUnitTypes::LayoutMillimeters ).toInt() );
 
-  bool exportWorldFile = mLayout->customProperty( QStringLiteral( "exportWorldFile" ), false ).toBool();
+  const bool exportWorldFile = mLayout->customProperty( QStringLiteral( "exportWorldFile" ), false ).toBool();
   mGenerateWorldFileCheckBox->setChecked( exportWorldFile );
   connect( mGenerateWorldFileCheckBox, &QCheckBox::toggled, this, &QgsLayoutPropertiesWidget::worldFileToggled );
 
@@ -118,10 +118,10 @@ void QgsLayoutPropertiesWidget::updateGui()
   whileBlocking( mReferenceMapComboBox )->setItem( mLayout->referenceMap() );
   whileBlocking( mResolutionSpinBox )->setValue( mLayout->renderContext().dpi() );
 
-  bool rasterize = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
+  const bool rasterize = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
   whileBlocking( mRasterizeCheckBox )->setChecked( rasterize );
 
-  bool forceVectors = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
+  const bool forceVectors = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
   whileBlocking( mForceVectorCheckBox )->setChecked( forceVectors );
 
   if ( rasterize )

@@ -32,6 +32,8 @@
 #include "qgsmaplayerlegend.h"
 #include "qgsxmlutils.h"
 #include "qgsmaplayerfactory.h"
+#include "qgsmaplayerutils.h"
+
 #include <QUrl>
 
 QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
@@ -43,7 +45,7 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
 {
   if ( !uri.isEmpty() && !providerLib.isEmpty() )
   {
-    QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
+    const QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
     QgsDataProvider::ReadFlags providerFlags = QgsDataProvider::ReadFlags();
     if ( options.loadDefaultStyle )
     {
@@ -102,12 +104,12 @@ const QgsPointCloudDataProvider *QgsPointCloudLayer::dataProvider() const
 bool QgsPointCloudLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext &context )
 {
   // create provider
-  QDomNode pkeyNode = layerNode.namedItem( QStringLiteral( "provider" ) );
+  const QDomNode pkeyNode = layerNode.namedItem( QStringLiteral( "provider" ) );
   mProviderKey = pkeyNode.toElement().text();
 
   if ( !( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) )
   {
-    QgsDataProvider::ProviderOptions providerOptions { context.transformContext() };
+    const QgsDataProvider::ProviderOptions providerOptions { context.transformContext() };
     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
     // read extent
     if ( mReadFlags & QgsMapLayer::FlagReadExtentFromXml )
@@ -153,7 +155,7 @@ bool QgsPointCloudLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
   if ( mDataProvider )
   {
     QDomElement provider  = doc.createElement( QStringLiteral( "provider" ) );
-    QDomText providerText = doc.createTextNode( providerType() );
+    const QDomText providerText = doc.createTextNode( providerType() );
     provider.appendChild( providerText );
     layerNode.appendChild( provider );
   }
@@ -166,7 +168,7 @@ bool QgsPointCloudLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
 
 bool QgsPointCloudLayer::readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
-  QDomElement elem = node.toElement();
+  const QDomElement elem = node.toElement();
 
   readCommonStyle( elem, context, categories );
 
@@ -207,10 +209,10 @@ bool QgsPointCloudLayer::readStyle( const QDomNode &node, QString &, QgsReadWrit
   if ( categories.testFlag( Symbology ) )
   {
     // get and set the blend mode if it exists
-    QDomNode blendModeNode = node.namedItem( QStringLiteral( "blendMode" ) );
+    const QDomNode blendModeNode = node.namedItem( QStringLiteral( "blendMode" ) );
     if ( !blendModeNode.isNull() )
     {
-      QDomElement e = blendModeNode.toElement();
+      const QDomElement e = blendModeNode.toElement();
       setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( e.text().toInt() ) ) );
     }
   }
@@ -218,10 +220,10 @@ bool QgsPointCloudLayer::readStyle( const QDomNode &node, QString &, QgsReadWrit
   // get and set the layer transparency and scale visibility if they exists
   if ( categories.testFlag( Rendering ) )
   {
-    QDomNode layerOpacityNode = node.namedItem( QStringLiteral( "layerOpacity" ) );
+    const QDomNode layerOpacityNode = node.namedItem( QStringLiteral( "layerOpacity" ) );
     if ( !layerOpacityNode.isNull() )
     {
-      QDomElement e = layerOpacityNode.toElement();
+      const QDomElement e = layerOpacityNode.toElement();
       setOpacity( e.text().toDouble() );
     }
 
@@ -263,7 +265,7 @@ bool QgsPointCloudLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString 
   {
     if ( mRenderer )
     {
-      QDomElement rendererElement = mRenderer->save( doc, context );
+      const QDomElement rendererElement = mRenderer->save( doc, context );
       node.appendChild( rendererElement );
     }
   }
@@ -278,7 +280,7 @@ bool QgsPointCloudLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString 
   {
     // add the blend mode field
     QDomElement blendModeElem  = doc.createElement( QStringLiteral( "blendMode" ) );
-    QDomText blendModeText = doc.createTextNode( QString::number( QgsPainting::getBlendModeEnum( blendMode() ) ) );
+    const QDomText blendModeText = doc.createTextNode( QString::number( QgsPainting::getBlendModeEnum( blendMode() ) ) );
     blendModeElem.appendChild( blendModeText );
     node.appendChild( blendModeElem );
   }
@@ -287,7 +289,7 @@ bool QgsPointCloudLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString 
   if ( categories.testFlag( Rendering ) )
   {
     QDomElement layerOpacityElem = doc.createElement( QStringLiteral( "layerOpacity" ) );
-    QDomText layerOpacityText = doc.createTextNode( QString::number( opacity() ) );
+    const QDomText layerOpacityText = doc.createTextNode( QString::number( opacity() ) );
     layerOpacityElem.appendChild( layerOpacityText );
     node.appendChild( layerOpacityElem );
 
@@ -447,31 +449,14 @@ QString QgsPointCloudLayer::loadDefaultStyle( bool &resultFlag )
 
 QString QgsPointCloudLayer::htmlMetadata() const
 {
-  QgsLayerMetadataFormatter htmlFormatter( metadata() );
+  const QgsLayerMetadataFormatter htmlFormatter( metadata() );
   QString myMetadata = QStringLiteral( "<html>\n<body>\n" );
+
+  myMetadata += generalHtmlMetadata();
 
   // Begin Provider section
   myMetadata += QStringLiteral( "<h1>" ) + tr( "Information from provider" ) + QStringLiteral( "</h1>\n<hr>\n" );
   myMetadata += QLatin1String( "<table class=\"list-view\">\n" );
-
-  // name
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Name" ) + QStringLiteral( "</td><td>" ) + name() + QStringLiteral( "</td></tr>\n" );
-
-  // local path
-  QVariantMap uriComponents = QgsProviderRegistry::instance()->decodeUri( mProviderKey, publicSource() );
-  QString path;
-  if ( uriComponents.contains( QStringLiteral( "path" ) ) )
-  {
-    path = uriComponents[QStringLiteral( "path" )].toString();
-    if ( QFile::exists( path ) )
-      myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Path" ) + QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( path ).toString(), QDir::toNativeSeparators( path ) ) ) + QStringLiteral( "</td></tr>\n" );
-    else
-      myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "URL" ) + QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl( path ).toString(), path ) ) + QStringLiteral( "</td></tr>\n" );
-  }
-
-  // data source
-  if ( publicSource() != path )
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Source" ) + QStringLiteral( "</td><td>%1" ).arg( publicSource() ) + QStringLiteral( "</td></tr>\n" );
 
   // Extent
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Extent" ) + QStringLiteral( "</td><td>" ) + extent().toString() + QStringLiteral( "</td></tr>\n" );

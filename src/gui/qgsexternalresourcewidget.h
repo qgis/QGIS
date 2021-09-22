@@ -19,9 +19,13 @@
 
 class QWebView;
 class QgsPixmapLabel;
+class QgsMessageBar;
+class QgsExternalStorageFileWidget;
+class QgsExternalStorageFetchedContent;
 
 #include <QWidget>
 #include <QVariant>
+#include <QPointer>
 
 #include "qgsfilewidget.h"
 #include "qgis_gui.h"
@@ -34,6 +38,8 @@ class QgsPixmapLabel;
 // doesn't add this include to the file where the code from
 // ConvertToSubClassCode goes.
 #include <qgsexternalresourcewidget.h>
+
+#include <qgsexternalstoragefilewidget.h>
 % End
 #endif
 
@@ -85,8 +91,10 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     QVariant documentPath( QVariant::Type type = QVariant::String ) const;
     void setDocumentPath( const QVariant &documentPath );
 
-    //! access the file widget to allow its configuration
-    QgsFileWidget *fileWidget();
+    /**
+     * Returns file widget to allow its configuration
+     */
+    QgsExternalStorageFileWidget *fileWidget();
 
     //! returns if the file widget is visible in the widget
     bool fileWidgetVisible() const;
@@ -143,15 +151,67 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
      */
     void setDefaultRoot( const QString &defaultRoot );
 
+    /**
+     * Set \a storageType storage type unique identifier as defined in QgsExternalStorageRegistry or
+     * null QString if there is no storage defined, only file selection.
+     * \see storageType
+     * \since QGIS 3.22
+     */
+    void setStorageType( const QString &storageType );
+
+    /**
+     * Returns storage type unique identifier as defined in QgsExternalStorageRegistry.
+     * Returns null QString if there is no storage defined, only file selection.
+     * \see setStorageType
+     * \since QGIS 3.22
+     */
+    QString storageType() const;
+
+    /**
+     * Sets the authentication configuration ID to be used for the current external storage (if
+     * defined)
+     * \since QGIS 3.22
+     */
+    void setStorageAuthConfigId( const QString &authCfg );
+
+    /**
+     * Returns the authentication configuration ID used for the current external storage (if defined)
+     * \since QGIS 3.22
+     */
+    QString storageAuthConfigId() const;
+
+    /**
+     * Set \a messageBar to report messages
+     * \since 3.22
+     */
+    void setMessageBar( QgsMessageBar *messageBar );
+
+    /**
+     * Returns message bar used to report messages
+     * \since 3.22
+     */
+    QgsMessageBar *messageBar() const;
+
   signals:
     //! emitteed as soon as the current document changes
     void valueChanged( const QString & );
 
   private slots:
     void loadDocument( const QString &path );
+    void onFetchFinished();
 
   private:
     void updateDocumentViewer();
+
+    /**
+     * update document content with \a filePath
+     */
+    void updateDocumentContent( const QString &filePath );
+
+    /**
+     * Clear content from widget
+     */
+    void clearContent();
 
     QString resolvePath( const QString &path );
 
@@ -164,13 +224,18 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     QString mDefaultRoot; // configured default root path for QgsFileWidget::RelativeStorage::RelativeDefaultPath
 
     //! UI objects
-    QgsFileWidget *mFileWidget = nullptr;
+    QgsExternalStorageFileWidget *mFileWidget = nullptr;
     QgsPixmapLabel *mPixmapLabel = nullptr;
 #ifdef WITH_QTWEBKIT
     //! This webview is used as a container to display the picture
     QWebView *mWebView = nullptr;
 #endif
+    QLabel *mLoadingLabel = nullptr;
+    QLabel *mErrorLabel = nullptr;
+    QMovie *mLoadingMovie = nullptr;
+    QPointer<QgsExternalStorageFetchedContent> mContent;
 
+    friend class TestQgsExternalResourceWidgetWrapper;
 };
 
 #endif // QGSEXTERNALRESOURCEWIDGET_H

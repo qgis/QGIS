@@ -40,16 +40,9 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Dataset in selected group(s)</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QgsCollapsibleGroupBox" name="mActiveDatasetMetadataGroup">
      <property name="title">
-      <string>Dataset group Metadata</string>
+      <string>Selected Dataset Group(s) Metadata</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>

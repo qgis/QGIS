@@ -27,7 +27,11 @@ from qgis.core import (QgsMapSettings,
                        QgsLineString,
                        QgsPoint,
                        QgsPointXY,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsAnnotationLayer,
+                       QgsAnnotationLineItem,
+                       QgsAnnotationMarkerItem
+                       )
 from qgis.gui import (QgsMapCanvas)
 
 from qgis.PyQt.QtCore import (Qt,
@@ -60,7 +64,7 @@ class TestQgsMapCanvas(unittest.TestCase):
     def testDeferredUpdate(self):
         """ test that map canvas doesn't auto refresh on deferred layer update """
         canvas = QgsMapCanvas()
-        canvas.setDestinationCrs(QgsCoordinateReferenceSystem(4326))
+        canvas.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         canvas.setFrameStyle(0)
         canvas.resize(600, 400)
         self.assertEqual(canvas.width(), 600)
@@ -102,7 +106,7 @@ class TestQgsMapCanvas(unittest.TestCase):
     def testRefreshOnTimer(self):
         """ test that map canvas refreshes with auto refreshing layers """
         canvas = QgsMapCanvas()
-        canvas.setDestinationCrs(QgsCoordinateReferenceSystem(4326))
+        canvas.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         canvas.setFrameStyle(0)
         canvas.resize(600, 400)
         self.assertEqual(canvas.width(), 600)
@@ -164,7 +168,7 @@ class TestQgsMapCanvas(unittest.TestCase):
     def testCancelAndDestroy(self):
         """ test that nothing goes wrong if we destroy a canvas while a job is canceling """
         canvas = QgsMapCanvas()
-        canvas.setDestinationCrs(QgsCoordinateReferenceSystem(4326))
+        canvas.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         canvas.setFrameStyle(0)
         canvas.resize(600, 400)
 
@@ -191,7 +195,7 @@ class TestQgsMapCanvas(unittest.TestCase):
 
     def testMapTheme(self):
         canvas = QgsMapCanvas()
-        canvas.setDestinationCrs(QgsCoordinateReferenceSystem(4326))
+        canvas.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         canvas.setFrameStyle(0)
         canvas.resize(600, 400)
         self.assertEqual(canvas.width(), 600)
@@ -356,7 +360,7 @@ class TestQgsMapCanvas(unittest.TestCase):
     def testMainAnnotationLayerRendered(self):
         """ test that main annotation layer is rendered above all other layers """
         canvas = QgsMapCanvas()
-        canvas.setDestinationCrs(QgsCoordinateReferenceSystem(4326))
+        canvas.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         canvas.setFrameStyle(0)
         canvas.resize(600, 400)
         self.assertEqual(canvas.width(), 600)
@@ -389,7 +393,7 @@ class TestQgsMapCanvas(unittest.TestCase):
         self.assertFalse(self.canvasImageCheck('main_annotation_layer', 'main_annotation_layer', canvas))
 
         annotation_layer = QgsProject.instance().mainAnnotationLayer()
-        annotation_layer.setCrs(QgsCoordinateReferenceSystem(4326))
+        annotation_layer.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         annotation_geom = QgsGeometry.fromRect(QgsRectangle(12, 30, 18, 33))
         annotation = QgsAnnotationPolygonItem(annotation_geom.constGet().clone())
         sym3 = QgsFillSymbol.createSimple({'color': '#ff0000', 'outline_style': 'no'})
@@ -564,6 +568,144 @@ class TestQgsMapCanvas(unittest.TestCase):
         self.assertEqual(c2.center().x(), 8.0)
         self.assertEqual(c2.center().y(), 46.25)
         self.assertAlmostEqual(c2.magnificationFactor(), 4 / dpr, 0)
+
+    def test_rendered_items(self):
+        canvas = QgsMapCanvas()
+        canvas.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        canvas.setFrameStyle(0)
+        canvas.resize(600, 400)
+        canvas.setCachingEnabled(True)
+        self.assertEqual(canvas.width(), 600)
+        self.assertEqual(canvas.height(), 400)
+
+        layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+        self.assertTrue(layer.isValid())
+        layer2 = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+        self.assertTrue(layer2.isValid())
+
+        item = QgsAnnotationPolygonItem(
+            QgsPolygon(QgsLineString([QgsPoint(11.5, 13), QgsPoint(12, 13), QgsPoint(12, 13.5), QgsPoint(11.5, 13)])))
+        item.setSymbol(
+            QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black', 'outline_width': '2'}))
+        item.setZIndex(1)
+        i1_id = layer.addItem(item)
+
+        item = QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]))
+        item.setZIndex(2)
+        i2_id = layer.addItem(item)
+
+        item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
+        item.setZIndex(3)
+        i3_id = layer2.addItem(item)
+
+        layer.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        layer2.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+
+        canvas.setLayers([layer, layer2])
+        canvas.setExtent(QgsRectangle(10, 10, 18, 18))
+        canvas.show()
+
+        # need to wait until first redraw can occur (note that we first need to wait till drawing starts!)
+        while not canvas.isDrawing():
+            app.processEvents()
+        canvas.waitWhileRendering()
+
+        results = canvas.renderedItemResults()
+        self.assertCountEqual([i.itemId() for i in results.renderedItems()], [i1_id, i2_id, i3_id])
+
+        # turn off a layer -- the other layer will be rendered direct from the cached version
+        canvas.setLayers([layer2])
+        while not canvas.isDrawing():
+            app.processEvents()
+        canvas.waitWhileRendering()
+
+        results = canvas.renderedItemResults()
+        # only layer2 items should be present in results -- but these MUST be present while layer2 is visible in the canvas,
+        # even though the most recent canvas redraw used a cached version of layer2 and didn't actually have to redraw the layer
+        self.assertEqual([i.itemId() for i in results.renderedItems()], [i3_id])
+
+        # turn layer 1 back on
+        canvas.setLayers([layer, layer2])
+        while not canvas.isDrawing():
+            app.processEvents()
+        canvas.waitWhileRendering()
+
+        results = canvas.renderedItemResults()
+        # both layer1 and layer2 items should be present in results -- even though NEITHER of these layers were re-rendered,
+        # and instead we used precached renders of both layers
+        self.assertCountEqual([i.itemId() for i in results.renderedItems()], [i1_id, i2_id, i3_id])
+
+    def test_rendered_item_results_remove_outdated(self):
+        """
+        Test that outdated results are removed from rendered item result caches
+        """
+        canvas = QgsMapCanvas()
+        canvas.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        canvas.setFrameStyle(0)
+        canvas.resize(600, 400)
+        canvas.setCachingEnabled(True)
+        self.assertEqual(canvas.width(), 600)
+        self.assertEqual(canvas.height(), 400)
+
+        layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+        self.assertTrue(layer.isValid())
+        layer2 = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+        self.assertTrue(layer2.isValid())
+
+        item = QgsAnnotationPolygonItem(
+            QgsPolygon(QgsLineString([QgsPoint(11.5, 13), QgsPoint(12, 13), QgsPoint(12, 13.5), QgsPoint(11.5, 13)])))
+        item.setSymbol(
+            QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black', 'outline_width': '2'}))
+        item.setZIndex(1)
+        i1_id = layer.addItem(item)
+
+        item = QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]))
+        item.setZIndex(2)
+        i2_id = layer.addItem(item)
+
+        item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
+        item.setZIndex(3)
+        i3_id = layer2.addItem(item)
+
+        layer.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        layer2.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+
+        canvas.setLayers([layer, layer2])
+        canvas.setExtent(QgsRectangle(10, 10, 18, 18))
+        canvas.show()
+
+        # need to wait until first redraw can occur (note that we first need to wait till drawing starts!)
+        while not canvas.isDrawing():
+            app.processEvents()
+        canvas.waitWhileRendering()
+
+        results = canvas.renderedItemResults()
+        self.assertCountEqual([i.itemId() for i in results.renderedItems()], [i1_id, i2_id, i3_id])
+
+        # now try modifying an annotation in the layer -- it will redraw, and we don't want to reuse any previously
+        # cached rendered item results for this layer!
+
+        item = QgsAnnotationPolygonItem(
+            QgsPolygon(QgsLineString([QgsPoint(11.5, 13), QgsPoint(12.5, 13), QgsPoint(12.5, 13.5), QgsPoint(11.5, 13)])))
+        item.setZIndex(1)
+        layer.replaceItem(i1_id, item)
+        while not canvas.isDrawing():
+            app.processEvents()
+        canvas.waitWhileRendering()
+
+        item = QgsAnnotationMarkerItem(QgsPoint(17, 18))
+        item.setZIndex(3)
+        layer2.replaceItem(i3_id, item)
+        while not canvas.isDrawing():
+            app.processEvents()
+        canvas.waitWhileRendering()
+
+        results = canvas.renderedItemResults()
+        items_in_bounds = results.renderedAnnotationItemsInBounds(QgsRectangle(10, 10, 15, 15))
+        self.assertCountEqual([i.itemId() for i in items_in_bounds], [i1_id, i2_id])
+
+        items_in_bounds = results.renderedAnnotationItemsInBounds(QgsRectangle(15, 15, 20, 20))
+        self.assertCountEqual([i.itemId() for i in items_in_bounds], [i3_id])
 
 
 if __name__ == '__main__':

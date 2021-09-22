@@ -32,7 +32,7 @@ void QgsDial::paintEvent( QPaintEvent *event )
 {
   QDial::paintEvent( event );
   QPainter painter( this );
-  QRect rect = geometry();
+  const QRect rect = geometry();
   painter.setPen( QPen( palette().color( QPalette::WindowText ) ) );
   painter.drawText( QRectF( 0, rect.height() * 0.65, rect.width(), rect.height() ),
                     Qt::AlignHCenter, variantValue().toString(), nullptr );
@@ -90,7 +90,7 @@ void QgsDial::update()
     if ( minimum() != 0 )
       QDial::setMinimum( 0 );
 
-    int max = std::ceil( ( mMax.toDouble() - mMin.toDouble() ) / mStep.toDouble() );
+    const int max = std::ceil( ( mMax.toDouble() - mMin.toDouble() ) / mStep.toDouble() );
     if ( maximum() != max )
       QDial::setMaximum( max );
 

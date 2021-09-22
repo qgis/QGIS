@@ -36,8 +36,8 @@
 //
 
 QgsProviderSublayerItem::QgsProviderSublayerItem( QgsDataItem *parent, const QString &name,
-    const QgsProviderSublayerDetails &details )
-  : QgsLayerItem( parent, name, details.uri(), details.uri(), layerTypeFromSublayer( details ), details.providerKey() )
+    const QgsProviderSublayerDetails &details, const QString &filePath )
+  : QgsLayerItem( parent, name, filePath.isEmpty() ? details.uri() : filePath, details.uri(), layerTypeFromSublayer( details ), details.providerKey() )
   , mDetails( details )
 {
   mToolTip = details.uri();
@@ -129,6 +129,11 @@ QgsFileDataCollectionItem::QgsFileDataCollectionItem( QgsDataItem *parent, const
     setCapabilities( Qgis::BrowserItemCapability::Fertile );
   else
     setCapabilities( Qgis::BrowserItemCapability::Fast | Qgis::BrowserItemCapability::Fertile );
+
+  if ( !qgsVsiPrefix( path ).isEmpty() )
+  {
+    mIconName = QStringLiteral( "/mIconZip.svg" );
+  }
 }
 
 QVector<QgsDataItem *> QgsFileDataCollectionItem::createChildren()
@@ -153,7 +158,7 @@ QVector<QgsDataItem *> QgsFileDataCollectionItem::createChildren()
   children.reserve( sublayers.size() );
   for ( const QgsProviderSublayerDetails &sublayer : std::as_const( sublayers ) )
   {
-    QgsProviderSublayerItem *item = new QgsProviderSublayerItem( this, sublayer.name(), sublayer );
+    QgsProviderSublayerItem *item = new QgsProviderSublayerItem( this, sublayer.name(), sublayer, QString() );
     children.append( item );
   }
 
@@ -170,6 +175,7 @@ QgsMimeDataUtils::UriList QgsFileDataCollectionItem::mimeUris() const
   QgsMimeDataUtils::Uri collectionUri;
   collectionUri.uri = path();
   collectionUri.layerType = QStringLiteral( "collection" );
+  collectionUri.filePath = path();
   return { collectionUri };
 }
 
@@ -340,9 +346,8 @@ QgsDataItem *QgsFileBasedDataItemProvider::createDataItem( const QString &path, 
             || ( !( queryFlags & Qgis::SublayerQueryFlag::FastScan ) && !QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers, QgsProviderUtils::SublayerCompletenessFlag::IgnoreUnknownFeatureCount ) ) )
      )
   {
-    QgsProviderSublayerItem *item = new QgsProviderSublayerItem( parentItem, name, sublayers.at( 0 ) );
-    if ( item->path() == path )
-      item->setCapabilities( item->capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile );
+    QgsProviderSublayerItem *item = new QgsProviderSublayerItem( parentItem, name, sublayers.at( 0 ), path );
+    item->setCapabilities( item->capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile );
     return item;
   }
   else if ( !sublayers.empty() )

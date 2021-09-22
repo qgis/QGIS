@@ -70,7 +70,7 @@ QString QgsAddTabOrGroup::name()
 
 QTreeWidgetItem *QgsAddTabOrGroup::tab()
 {
-  TabPair tab = mTabs.at( mTabList->currentData().toInt() );
+  const TabPair tab = mTabs.at( mTabList->currentData().toInt() );
   return tab.second;
 }
 

@@ -56,8 +56,8 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
   QgsPointCloudIndex *pc = mFactory->mPointCloudIndex;
   mContext.setAttributes( pc->attributes() );
 
-  QgsChunkNodeId nodeId = node->tileId();
-  IndexedPointCloudNode pcNode( nodeId.d, nodeId.x, nodeId.y, nodeId.z );
+  const QgsChunkNodeId nodeId = node->tileId();
+  const IndexedPointCloudNode pcNode( nodeId.d, nodeId.x, nodeId.y, nodeId.z );
 
   Q_ASSERT( pc->hasNode( pcNode ) );
 
@@ -79,9 +79,9 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
   //
   // this will be run in a background thread
   //
-  QFuture<void> future = QtConcurrent::run( [pc, pcNode, this]
+  const QFuture<void> future = QtConcurrent::run( [pc, pcNode, this]
   {
-    QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "PC chunk load" ) );
+    const QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "PC chunk load" ) );
 
     if ( mContext.isCanceled() )
     {
@@ -116,8 +116,8 @@ void QgsPointCloudLayerChunkLoader::cancel()
 Qt3DCore::QEntity *QgsPointCloudLayerChunkLoader::createEntity( Qt3DCore::QEntity *parent )
 {
   QgsPointCloudIndex *pc = mFactory->mPointCloudIndex;
-  QgsChunkNodeId nodeId = mNode->tileId();
-  IndexedPointCloudNode pcNode( nodeId.d, nodeId.x, nodeId.y, nodeId.z );
+  const QgsChunkNodeId nodeId = mNode->tileId();
+  const IndexedPointCloudNode pcNode( nodeId.d, nodeId.x, nodeId.y, nodeId.z );
   Q_ASSERT( pc->hasNode( pcNode ) );
 
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );
@@ -142,7 +142,7 @@ QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory( cons
 
 QgsChunkLoader *QgsPointCloudLayerChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
 {
-  QgsChunkNodeId id = node->tileId();
+  const QgsChunkNodeId id = node->tileId();
 
   Q_ASSERT( mPointCloudIndex->hasNode( IndexedPointCloudNode( id.d, id.x, id.y, id.z ) ) );
   QgsPointCloud3DSymbol *symbol = static_cast< QgsPointCloud3DSymbol * >( mSymbol->clone() );
@@ -151,8 +151,8 @@ QgsChunkLoader *QgsPointCloudLayerChunkLoaderFactory::createChunkLoader( QgsChun
 
 int QgsPointCloudLayerChunkLoaderFactory::primitivesCount( QgsChunkNode *node ) const
 {
-  QgsChunkNodeId id = node->tileId();
-  IndexedPointCloudNode n( id.d, id.x, id.y, id.z );
+  const QgsChunkNodeId id = node->tileId();
+  const IndexedPointCloudNode n( id.d, id.x, id.y, id.z );
   Q_ASSERT( mPointCloudIndex->hasNode( n ) );
   return mPointCloudIndex->nodePointCount( n );
 }
@@ -161,23 +161,23 @@ QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset
 
 QgsChunkNode *QgsPointCloudLayerChunkLoaderFactory::createRootNode() const
 {
-  QgsAABB bbox = nodeBoundsToAABB( mPointCloudIndex->nodeBounds( IndexedPointCloudNode( 0, 0, 0, 0 ) ), mPointCloudIndex->offset(), mPointCloudIndex->scale(), mMap, mCoordinateTransform, mZValueOffset );
-  float error = mPointCloudIndex->nodeError( IndexedPointCloudNode( 0, 0, 0, 0 ) );
+  const QgsAABB bbox = nodeBoundsToAABB( mPointCloudIndex->nodeBounds( IndexedPointCloudNode( 0, 0, 0, 0 ) ), mPointCloudIndex->offset(), mPointCloudIndex->scale(), mMap, mCoordinateTransform, mZValueOffset );
+  const float error = mPointCloudIndex->nodeError( IndexedPointCloudNode( 0, 0, 0, 0 ) );
   return new QgsChunkNode( QgsChunkNodeId( 0, 0, 0, 0 ), bbox, error );
 }
 
 QVector<QgsChunkNode *> QgsPointCloudLayerChunkLoaderFactory::createChildren( QgsChunkNode *node ) const
 {
   QVector<QgsChunkNode *> children;
-  QgsChunkNodeId nodeId = node->tileId();
-  QgsAABB bbox = node->bbox();
-  float childError = node->error() / 2;
+  const QgsChunkNodeId nodeId = node->tileId();
+  const QgsAABB bbox = node->bbox();
+  const float childError = node->error() / 2;
   float xc = bbox.xCenter(), yc = bbox.yCenter(), zc = bbox.zCenter();
 
   for ( int i = 0; i < 8; ++i )
   {
     int dx = i & 1, dy = !!( i & 2 ), dz = !!( i & 4 );
-    QgsChunkNodeId childId( nodeId.d + 1, nodeId.x * 2 + dx, nodeId.y * 2 + dy, nodeId.z * 2 + dz );
+    const QgsChunkNodeId childId( nodeId.d + 1, nodeId.x * 2 + dx, nodeId.y * 2 + dy, nodeId.z * 2 + dz );
 
     if ( !mPointCloudIndex->hasNode( IndexedPointCloudNode( childId.d, childId.x, childId.y, childId.z ) ) )
       continue;
@@ -185,13 +185,13 @@ QVector<QgsChunkNode *> QgsPointCloudLayerChunkLoaderFactory::createChildren( Qg
     // the Y and Z coordinates below are intentionally flipped, because
     // in chunk node IDs the X,Y axes define horizontal plane,
     // while in our 3D scene the X,Z axes define the horizontal plane
-    float chXMin = dx ? xc : bbox.xMin;
-    float chXMax = dx ? bbox.xMax : xc;
+    const float chXMin = dx ? xc : bbox.xMin;
+    const float chXMax = dx ? bbox.xMax : xc;
     // Z axis: values are increasing to the south
-    float chZMin = !dy ? zc : bbox.zMin;
-    float chZMax = !dy ? bbox.zMax : zc;
-    float chYMin = dz ? yc : bbox.yMin;
-    float chYMax = dz ? bbox.yMax : yc;
+    const float chZMin = !dy ? zc : bbox.zMin;
+    const float chZMax = !dy ? bbox.zMax : zc;
+    const float chYMin = dz ? yc : bbox.yMin;
+    const float chYMax = dz ? bbox.yMax : yc;
     children << new QgsChunkNode( childId, QgsAABB( chXMin, chYMin, chZMin, chXMax, chYMax, chZMax ), childError, node );
   }
   return children;
@@ -213,8 +213,8 @@ QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset
   {
     QgsDebugMsg( QStringLiteral( "Error transforming node bounds coordinate" ) );
   }
-  QgsVector3D worldExtentMin3D = Qgs3DUtils::mapToWorldCoordinates( extentMin3D, map.origin() );
-  QgsVector3D worldExtentMax3D = Qgs3DUtils::mapToWorldCoordinates( extentMax3D, map.origin() );
+  const QgsVector3D worldExtentMin3D = Qgs3DUtils::mapToWorldCoordinates( extentMin3D, map.origin() );
+  const QgsVector3D worldExtentMax3D = Qgs3DUtils::mapToWorldCoordinates( extentMax3D, map.origin() );
   QgsAABB rootBbox( worldExtentMin3D.x(), worldExtentMin3D.y(), worldExtentMin3D.z(),
                     worldExtentMax3D.x(), worldExtentMax3D.y(), worldExtentMax3D.z() );
   return rootBbox;

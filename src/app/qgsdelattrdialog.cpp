@@ -30,7 +30,7 @@ QgsDelAttrDialog::QgsDelAttrDialog( const QgsVectorLayer *vl )
 
   if ( vl )
   {
-    bool canDeleteAttributes = vl->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteAttributes;
+    const bool canDeleteAttributes = vl->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteAttributes;
     listBox2->clear();
     const QgsFields &layerAttributes = vl->fields();
     for ( int idx = 0; idx < layerAttributes.count(); ++idx )
@@ -65,7 +65,7 @@ QgsDelAttrDialog::QgsDelAttrDialog( const QgsVectorLayer *vl )
 QList<int> QgsDelAttrDialog::selectedAttributes()
 {
   QList<int> selectionList;
-  QList<QListWidgetItem *> selection = listBox2->selectedItems();
+  const QList<QListWidgetItem *> selection = listBox2->selectedItems();
   QList<QListWidgetItem *>::const_iterator itemIter = selection.constBegin();
   for ( ; itemIter != selection.constEnd(); ++itemIter )
   {

@@ -34,7 +34,7 @@ QgsMesh3dAveragingMethod *QgsMesh3dAveragingMethod::createFromXml( const QDomEle
 {
   std::unique_ptr<QgsMesh3dAveragingMethod> ret;
 
-  QgsMesh3dAveragingMethod::Method method = static_cast<QgsMesh3dAveragingMethod::Method>(
+  const QgsMesh3dAveragingMethod::Method method = static_cast<QgsMesh3dAveragingMethod::Method>(
         elem.attribute( QStringLiteral( "method" ) ).toInt() );
   switch ( method )
   {
@@ -63,8 +63,8 @@ QgsMeshDataBlock QgsMesh3dAveragingMethod::calculate( const QgsMesh3dDataBlock &
   if ( !hasValidInputs() )
     return QgsMeshDataBlock();
 
-  bool isVector = block3d.isVector();
-  int count = block3d.count();
+  const bool isVector = block3d.isVector();
+  const int count = block3d.count();
   QgsMeshDataBlock result( isVector ? QgsMeshDataBlock::Vector2DDouble : QgsMeshDataBlock::ScalarDouble, count );
   QVector<double> valuesFaces( isVector ? 2 * count : count, std::numeric_limits<double>::quiet_NaN() );
   const QVector<int> verticalLevelsCount = block3d.verticalLevelsCount();
@@ -79,11 +79,11 @@ QgsMeshDataBlock QgsMesh3dAveragingMethod::calculate( const QgsMesh3dDataBlock &
       return QgsMeshDataBlock();
     }
 
-    int volumesBelowFaceCount = verticalLevelsCount[faceIndex];
+    const int volumesBelowFaceCount = verticalLevelsCount[faceIndex];
     if ( volumesBelowFaceCount <= 0 )
       continue;
 
-    int startVerticalLevelIndex = startVolumeIndex + faceIndex;
+    const int startVerticalLevelIndex = startVolumeIndex + faceIndex;
     Q_ASSERT( verticalLevels.size() >= startVerticalLevelIndex + volumesBelowFaceCount + 1 );
     QVector<double> verticalLevelsForFace = verticalLevels.mid( startVerticalLevelIndex, volumesBelowFaceCount + 1 );
     double faceLevelTop = verticalLevelsForFace[0];
@@ -257,7 +257,7 @@ QDomElement QgsMeshMultiLevelsAveragingMethod::writeXml( QDomDocument &doc ) con
 
 void QgsMeshMultiLevelsAveragingMethod::readXml( const QDomElement &elem )
 {
-  QDomElement settings = elem.firstChildElement( QStringLiteral( "multi-vertical-layers-settings" ) );
+  const QDomElement settings = elem.firstChildElement( QStringLiteral( "multi-vertical-layers-settings" ) );
   if ( !settings.isNull() )
   {
     mStartVerticalLevel = settings.attribute( QStringLiteral( "start-layer-index" ) ).toInt();
@@ -312,7 +312,7 @@ void QgsMeshMultiLevelsAveragingMethod::volumeRangeForFace(
 
   if ( countedFromTop() )
   {
-    int startIndex = mStartVerticalLevel - 1;
+    const int startIndex = mStartVerticalLevel - 1;
     if ( startIndex >= 0 && startIndex < verticalLevels.size() )
     {
       startVerticalLevel = verticalLevels[ startIndex ];
@@ -329,8 +329,8 @@ void QgsMeshMultiLevelsAveragingMethod::volumeRangeForFace(
   }
   else
   {
-    int volumesBelowFaceCount = verticalLevels.size() - 1;
-    int startIndex = volumesBelowFaceCount - mEndVerticalLevel;
+    const int volumesBelowFaceCount = verticalLevels.size() - 1;
+    const int startIndex = volumesBelowFaceCount - mEndVerticalLevel;
     if ( startIndex >= 0 && startIndex < verticalLevels.size() )
     {
       startVerticalLevel = verticalLevels[ startIndex ];
@@ -340,7 +340,7 @@ void QgsMeshMultiLevelsAveragingMethod::volumeRangeForFace(
       startVerticalLevel = verticalLevels[ 0 ];
     }
 
-    int endIndex = volumesBelowFaceCount - mStartVerticalLevel + 1;
+    const int endIndex = volumesBelowFaceCount - mStartVerticalLevel + 1;
     if ( endIndex >= 0 && endIndex < verticalLevels.size() )
     {
       endVerticalLevel = verticalLevels[ endIndex ];
@@ -376,7 +376,7 @@ QDomElement QgsMeshSigmaAveragingMethod::writeXml( QDomDocument &doc ) const
 
 void QgsMeshSigmaAveragingMethod::readXml( const QDomElement &elem )
 {
-  QDomElement settings = elem.firstChildElement( QStringLiteral( "sigma-settings" ) );
+  const QDomElement settings = elem.firstChildElement( QStringLiteral( "sigma-settings" ) );
   if ( !settings.isNull() )
   {
     mStartFraction = settings.attribute( QStringLiteral( "start-fraction" ) ).toDouble();
@@ -479,7 +479,7 @@ QDomElement QgsMeshRelativeHeightAveragingMethod::writeXml( QDomDocument &doc ) 
 
 void QgsMeshRelativeHeightAveragingMethod::readXml( const QDomElement &elem )
 {
-  QDomElement settings = elem.firstChildElement( QStringLiteral( "relative-height-settings" ) );
+  const QDomElement settings = elem.firstChildElement( QStringLiteral( "relative-height-settings" ) );
   if ( !settings.isNull() )
   {
     mStartHeight = settings.attribute( QStringLiteral( "start-height" ) ).toDouble();
@@ -575,7 +575,7 @@ QDomElement QgsMeshElevationAveragingMethod::writeXml( QDomDocument &doc ) const
 
 void QgsMeshElevationAveragingMethod::readXml( const QDomElement &elem )
 {
-  QDomElement settings = elem.firstChildElement( QStringLiteral( "elevation-settings" ) );
+  const QDomElement settings = elem.firstChildElement( QStringLiteral( "elevation-settings" ) );
   if ( !settings.isNull() )
   {
     mStartElevation = settings.attribute( QStringLiteral( "start-elevation" ) ).toDouble();

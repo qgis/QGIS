@@ -29,13 +29,13 @@ void QgsSnapToGridCanvasItem::paint( QPainter *painter )
   if ( !mEnabled || !mAvailableByZoomFactor )
     return;
 
-  QgsScopedQPainterState painterState( painter );
-  QgsRectangle mapRect = mMapCanvas->extent();
+  const QgsScopedQPainterState painterState( painter );
+  const QgsRectangle mapRect = mMapCanvas->extent();
 
   painter->setRenderHints( QPainter::Antialiasing );
   painter->setCompositionMode( QPainter::CompositionMode_Difference );
 
-  double scaleFactor = painter->fontMetrics().xHeight() * .2;
+  const double scaleFactor = painter->fontMetrics().xHeight() * .2;
 
   mGridPen.setWidth( scaleFactor );
   mCurrentPointPen.setWidth( scaleFactor * 3 );

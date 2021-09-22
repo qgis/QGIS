@@ -25,8 +25,8 @@ import qgis  # NOQA
 
 import os
 
-from qgis.PyQt.QtCore import QSize, QDir
-from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtCore import QSize, QDir, QPointF
+from qgis.PyQt.QtGui import QColor, QImage, QPainter, QPolygonF
 from qgis.core import (
     QgsVectorLayer,
     QgsSingleSymbolRenderer,
@@ -38,7 +38,13 @@ from qgis.core import (
     QgsGeometryGeneratorSymbolLayer,
     QgsSymbol,
     QgsMultiRenderChecker,
-    QgsMapSettings
+    QgsMapSettings,
+    Qgis,
+    QgsUnitTypes,
+    QgsRenderContext,
+    QgsRenderChecker,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform
 )
 
 from qgis.testing import start_app, unittest
@@ -87,6 +93,60 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         report_file_path = "%s/qgistest.html" % QDir.tempPath()
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
+
+    def test_basic(self):
+        """
+        Test getters/setters
+        """
+        sym_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'centroid($geometry)'})
+        self.assertEqual(sym_layer.geometryExpression(), 'centroid($geometry)')
+        sym_layer.setGeometryExpression('project($geometry, 4, 5)')
+        self.assertEqual(sym_layer.geometryExpression(), 'project($geometry, 4, 5)')
+
+        sym_layer.setSymbolType(Qgis.SymbolType.Marker)
+        self.assertEqual(sym_layer.symbolType(), Qgis.SymbolType.Marker)
+
+        sym_layer.setUnits(QgsUnitTypes.RenderMillimeters)
+        self.assertEqual(sym_layer.units(), QgsUnitTypes.RenderMillimeters)
+
+    def test_clone(self):
+        """
+        Test cloning layer
+        """
+        sym_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'centroid($geometry)'})
+        sym_layer.setSymbolType(Qgis.SymbolType.Marker)
+        sym_layer.setUnits(QgsUnitTypes.RenderMillimeters)
+        sym_layer.subSymbol().symbolLayer(0).setStrokeColor(QColor(0, 255, 255))
+
+        layer2 = sym_layer.clone()
+        self.assertEqual(layer2.symbolType(), Qgis.SymbolType.Marker)
+        self.assertEqual(layer2.units(), QgsUnitTypes.RenderMillimeters)
+        self.assertEqual(layer2.geometryExpression(), 'centroid($geometry)')
+        self.assertEqual(layer2.subSymbol()[0].strokeColor(), QColor(0, 255, 255))
+
+    def test_properties_create(self):
+        """
+        Test round trip through properties and create
+        """
+        sym_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'centroid($geometry)'})
+        sym_layer.setSymbolType(Qgis.SymbolType.Marker)
+        sym_layer.setUnits(QgsUnitTypes.RenderMillimeters)
+
+        layer2 = QgsGeometryGeneratorSymbolLayer.create(sym_layer.properties())
+        self.assertEqual(layer2.symbolType(), Qgis.SymbolType.Marker)
+        self.assertEqual(layer2.units(), QgsUnitTypes.RenderMillimeters)
+        self.assertEqual(layer2.geometryExpression(), 'centroid($geometry)')
+
+    def test_color(self):
+        """
+        Test that subsymbol color is returned for symbol layer
+        """
+        sym_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'buffer($geometry, 2)'})
+        sym_layer.setSymbolType(Qgis.SymbolType.Fill)
+        sym_layer.setUnits(QgsUnitTypes.RenderMillimeters)
+        sym_layer.subSymbol().symbolLayer(0).setColor(QColor(0, 255, 255))
+
+        self.assertEqual(sym_layer.color(), QColor(0, 255, 255))
 
     def test_marker(self):
         sym = self.polys_layer.renderer().symbol()
@@ -164,6 +224,25 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         self.report += renderchecker.report()
         self.assertTrue(res)
 
+    def test_units_millimeters(self):
+        sym = self.points_layer.renderer().symbol()
+
+        buffer_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'buffer($geometry, "staff")', 'outline_color': 'black'})
+        buffer_layer.setSymbolType(QgsSymbol.Fill)
+        buffer_layer.setUnits(QgsUnitTypes.RenderMillimeters)
+        self.assertIsNotNone(buffer_layer.subSymbol())
+        sym.appendSymbolLayer(buffer_layer)
+
+        rendered_layers = [self.points_layer]
+        self.mapsettings.setLayers(rendered_layers)
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setControlName('expected_geometrygenerator_millimeters')
+        res = renderchecker.runTest('geometrygenerator_millimeters')
+        self.report += renderchecker.report()
+        self.assertTrue(res)
+
     def test_multi_poly_opacity(self):
         # test that multi-type features are only rendered once
 
@@ -188,6 +267,75 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         res = renderchecker.runTest('geometrygenerator_opacity')
         self.report += renderchecker.report()
         self.assertTrue(res)
+
+    def test_no_feature(self):
+        """
+        Test rendering as a pure symbol, no feature associated
+        """
+        buffer_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'buffer($geometry, 5)'})
+        buffer_layer.setSymbolType(QgsSymbol.Fill)
+        buffer_layer.setUnits(QgsUnitTypes.RenderMillimeters)
+        self.assertIsNotNone(buffer_layer.subSymbol())
+
+        symbol = QgsLineSymbol()
+        symbol.changeSymbolLayer(0, buffer_layer)
+
+        image = QImage(400, 400, QImage.Format_RGB32)
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+
+        context = QgsRenderContext.fromQPainter(painter)
+
+        symbol.startRender(context)
+
+        symbol.renderPolyline(QPolygonF([QPointF(50, 200), QPointF(100, 170), QPointF(350, 270)]), None, context)
+
+        symbol.stopRender(context)
+        painter.end()
+
+        self.assertTrue(self.imageCheck('geometrygenerator_nofeature', 'geometrygenerator_nofeature', image))
+
+    def test_no_feature_coordinate_transform(self):
+        """
+        Test rendering as a pure symbol, no feature associated, with coordinate transform
+        """
+        buffer_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'buffer($geometry, 5)'})
+        buffer_layer.setSymbolType(QgsSymbol.Fill)
+        buffer_layer.setUnits(QgsUnitTypes.RenderMillimeters)
+        self.assertIsNotNone(buffer_layer.subSymbol())
+
+        symbol = QgsLineSymbol()
+        symbol.changeSymbolLayer(0, buffer_layer)
+
+        image = QImage(400, 400, QImage.Format_RGB32)
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+
+        context = QgsRenderContext.fromQPainter(painter)
+        context.setCoordinateTransform(QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:4326'), QgsCoordinateReferenceSystem('EPSG:3857'), QgsProject.instance().transformContext()))
+
+        symbol.startRender(context)
+
+        symbol.renderPolyline(QPolygonF([QPointF(50, 200), QPointF(100, 170), QPointF(350, 270)]), None, context)
+
+        symbol.stopRender(context)
+        painter.end()
+
+        self.assertTrue(self.imageCheck('geometrygenerator_nofeature', 'geometrygenerator_nofeature', image))
+
+    def imageCheck(self, name, reference_image, image):
+        self.report += "<h2>Render {}</h2>\n".format(name)
+        temp_dir = QDir.tempPath() + '/'
+        file_name = temp_dir + name + ".png"
+        image.save(file_name, "PNG")
+        checker = QgsRenderChecker()
+        checker.setControlName("expected_" + reference_image)
+        checker.setRenderedImage(file_name)
+        checker.setColorTolerance(2)
+        result = checker.compareImages(name, 0)
+        self.report += checker.report()
+        print((self.report))
+        return result
 
 
 if __name__ == '__main__':

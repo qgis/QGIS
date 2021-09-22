@@ -146,7 +146,7 @@ QgsFeatureList QgsSmoothAlgorithm::processFeature( const QgsFeature &feature, Qg
     if ( mDynamicMaxAngle )
       maxAngle = mMaxAngleProperty.valueAsDouble( context.expressionContext(), maxAngle );
 
-    QgsGeometry outputGeometry = f.geometry().smooth( iterations, offset, -1, maxAngle );
+    const QgsGeometry outputGeometry = f.geometry().smooth( iterations, offset, -1, maxAngle );
     if ( outputGeometry.isNull() )
     {
       feedback->reportError( QObject::tr( "Error smoothing geometry %1" ).arg( feature.id() ) );

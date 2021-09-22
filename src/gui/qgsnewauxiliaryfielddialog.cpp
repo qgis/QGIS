@@ -56,7 +56,7 @@ void QgsNewAuxiliaryFieldDialog::accept()
     def.setName( "custom" );
   }
 
-  QString fieldName = QgsAuxiliaryLayer::nameFromProperty( def, true );
+  const QString fieldName = QgsAuxiliaryLayer::nameFromProperty( def, true );
   const int idx = mLayer->fields().lookupField( fieldName );
   if ( idx >= 0 )
   {

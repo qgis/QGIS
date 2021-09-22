@@ -53,9 +53,20 @@ Constructor for an annotation item.
 
     virtual ~QgsAnnotationItem();
 
+    virtual Qgis::AnnotationItemFlags flags() const;
+%Docstring
+Returns item flags.
+
+.. versionadded:: 3.22
+%End
+
     virtual QgsAnnotationItem *clone() = 0 /Factory/;
 %Docstring
 Returns a clone of the item. Ownership is transferred to the caller.
+
+Implementations should include a call to :py:func:`~QgsAnnotationItem.copyCommonProperties` to copy the base class properties.
+
+.. seealso:: :py:func:`copyCommonProperties`
 %End
 
     virtual QString type() const = 0;
@@ -64,6 +75,11 @@ Returns a unique (untranslated) string identifying the type of item.
 %End
 
     virtual QgsRectangle boundingBox() const = 0;
+%Docstring
+Returns the bounding box of the item's geographic location, in the parent layer's coordinate reference system.
+%End
+
+    virtual QgsRectangle boundingBox( QgsRenderContext &context ) const;
 %Docstring
 Returns the bounding box of the item's geographic location, in the parent layer's coordinate reference system.
 %End
@@ -79,11 +95,37 @@ render operations.
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const = 0;
 %Docstring
 Writes the item's state into an XML ``element``.
+
+Implementations should include a call to :py:func:`~QgsAnnotationItem.writeCommonProperties` to store the base class properties.
+
+.. seealso:: :py:func:`readXml`
+
+.. seealso:: :py:func:`writeCommonProperties`
 %End
 
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) = 0;
 %Docstring
 Reads the item's state from the given DOM ``element``.
+
+Implementations should include a call to :py:func:`~QgsAnnotationItem.readCommonProperties` to read the base class properties.
+
+.. seealso:: :py:func:`writeXml`
+
+.. seealso:: :py:func:`readCommonProperties`
+%End
+
+    virtual Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
+%Docstring
+Applies an edit ``operation`` to the item.
+
+.. versionadded:: 3.22
+%End
+
+    virtual QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) /Factory/;
+%Docstring
+Retrieves the results of a transient (in progress) edit ``operation`` on the item.
+
+.. versionadded:: 3.22
 %End
 
     int zIndex() const;
@@ -100,6 +142,94 @@ Sets the item's z ``index``, which controls the order in which annotation items
 are rendered in the layer.
 
 .. seealso:: :py:func:`zIndex`
+%End
+
+    virtual QList< QgsAnnotationItemNode > nodes() const;
+%Docstring
+Returns the nodes for the item, used for editing the item.
+
+.. versionadded:: 3.22
+%End
+
+    bool useSymbologyReferenceScale() const;
+%Docstring
+Returns ``True`` if the annotation item uses a symbology reference scale.
+
+.. seealso:: :py:func:`setUseSymbologyReferenceScale`
+
+.. seealso:: :py:func:`symbologyReferenceScale`
+%End
+
+    void setUseSymbologyReferenceScale( bool enabled );
+%Docstring
+Sets whether the annotation item uses a symbology reference scale.
+
+.. seealso:: :py:func:`useSymbologyReferenceScale`
+
+.. seealso:: :py:func:`setSymbologyReferenceScale`
+%End
+
+    double symbologyReferenceScale() const;
+%Docstring
+Returns the annotation's symbology reference scale.
+
+The reference scale will only be used if :py:func:`~QgsAnnotationItem.useSymbologyReferenceScale` returns ``True``.
+
+This represents the desired scale denominator for the rendered map, eg 1000.0 for a 1:1000 map render.
+
+The symbology reference scale is an optional property which specifies the reference
+scale at which symbology in paper units (such a millimeters or points) is fixed
+to. For instance, if the scale is 1000 then a 2mm thick line will be rendered at
+exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm thick at 1:500.
+
+.. seealso:: :py:func:`setSymbologyReferenceScale`
+
+.. seealso:: :py:func:`useSymbologyReferenceScale`
+%End
+
+    void setSymbologyReferenceScale( double scale );
+%Docstring
+Sets the annotation's symbology reference ``scale``.
+
+The reference scale will only be used if :py:func:`~QgsAnnotationItem.useSymbologyReferenceScale` returns ``True``.
+
+This represents the desired scale denominator for the rendered map, eg 1000.0 for a 1:1000 map render.
+
+The symbology reference scale is an optional property which specifies the reference
+scale at which symbology in paper units (such a millimeters or points) is fixed
+to. For instance, if the scale is 1000 then a 2mm thick line will be rendered at
+exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm thick at 1:500.
+
+.. seealso:: :py:func:`symbologyReferenceScale`
+
+.. seealso:: :py:func:`setUseSymbologyReferenceScale`
+%End
+
+  protected:
+
+    void copyCommonProperties( const QgsAnnotationItem *other );
+%Docstring
+Copies common properties from the base class from an ``other`` item.
+
+.. versionadded:: 3.22
+%End
+
+    bool writeCommonProperties( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+%Docstring
+Writes common properties from the base class into an XML ``element``.
+
+.. seealso:: :py:func:`writeXml`
+
+.. versionadded:: 3.22
+%End
+
+    bool readCommonProperties( const QDomElement &element, const QgsReadWriteContext &context );
+%Docstring
+Reads common properties from the base class from the given DOM ``element``.
+
+.. seealso:: :py:func:`readXml`
+
+.. versionadded:: 3.22
 %End
 
   private:

@@ -38,7 +38,7 @@ namespace QgsGuiUtils
 
     QgsSettings settings;
     QString lastUsedFilter = settings.value( "/UI/" + filterName, "" ).toString();
-    QString lastUsedDir = settings.value( "/UI/" + filterName + "Dir", QDir::homePath() ).toString();
+    const QString lastUsedDir = settings.value( "/UI/" + filterName + "Dir", QDir::homePath() ).toString();
 
     QgsDebugMsg( "Opening file dialog with filters: " + filters );
     if ( !cancelAll )
@@ -76,9 +76,9 @@ namespace QgsGuiUtils
       // Fix by Tim - getting the dirPath from the dialog
       // directly truncates the last node in the dir path.
       // This is a workaround for that
-      QString firstFileName = selectedFiles.first();
-      QFileInfo fi( firstFileName );
-      QString path = fi.path();
+      const QString firstFileName = selectedFiles.first();
+      const QFileInfo fi( firstFileName );
+      const QString path = fi.path();
 
       QgsDebugMsg( "Writing last used dir: " + path );
 
@@ -111,11 +111,11 @@ namespace QgsGuiUtils
 #endif
 
     QgsSettings settings;  // where we keep last used filter in persistent state
-    QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
+    const QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
 
     // Prefer "png" format unless the user previously chose a different format
-    QString pngExtension = QStringLiteral( "png" );
-    QString pngFilter = createFileFilter_( pngExtension );
+    const QString pngExtension = QStringLiteral( "png" );
+    const QString pngFilter = createFileFilter_( pngExtension );
     QString selectedFilter = settings.value( QStringLiteral( "UI/lastSaveAsImageFilter" ), pngFilter ).toString();
 
     QString initialPath;
@@ -189,8 +189,8 @@ namespace QgsGuiUtils
 
   QString createFileFilter_( QString const &format )
   {
-    QString longName = format.toUpper() + " format";
-    QString glob = "*." + format;
+    const QString longName = format.toUpper() + " format";
+    const QString glob = "*." + format;
     return createFileFilter_( longName, glob );
   }
 
@@ -213,14 +213,14 @@ namespace QgsGuiUtils
   void saveGeometry( QWidget *widget, const QString &keyName )
   {
     QgsSettings settings;
-    QString key = createWidgetKey( widget, keyName );
+    const QString key = createWidgetKey( widget, keyName );
     settings.setValue( key, widget->saveGeometry() );
   }
 
   bool restoreGeometry( QWidget *widget, const QString &keyName )
   {
-    QgsSettings settings;
-    QString key = createWidgetKey( widget, keyName );
+    const QgsSettings settings;
+    const QString key = createWidgetKey( widget, keyName );
     return widget->restoreGeometry( settings.value( key ).toByteArray() );
   }
 
@@ -250,8 +250,8 @@ namespace QgsGuiUtils
 
   QSize iconSize( bool dockableToolbar )
   {
-    QgsSettings s;
-    int w = s.value( QStringLiteral( "/qgis/iconSize" ), 32 ).toInt();
+    const QgsSettings s;
+    const int w = s.value( QStringLiteral( "/qgis/iconSize" ), 32 ).toInt();
     QSize size( w, w );
 
     if ( dockableToolbar )

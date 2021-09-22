@@ -1,0 +1,119 @@
+/***************************************************************************
+                             qgscreateannotationitemmaptool_impl.h
+                             ------------------------
+    Date                 : September 2021
+    Copyright            : (C) 2021 Nyall Dawson
+    Email                : nyall dot dawson at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+#ifndef QGSCREATEANNOTATIONITEMMAPTOOLIMPL_H
+#define QGSCREATEANNOTATIONITEMMAPTOOLIMPL_H
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgscreateannotationitemmaptool.h"
+#include "qgsmaptoolcapture.h"
+
+#define SIP_NO_FILE
+
+///@cond PRIVATE
+
+class QgsCreatePointTextItemMapTool: public QgsMapToolAdvancedDigitizing, public QgsCreateAnnotationItemMapToolInterface
+{
+    Q_OBJECT
+
+  public:
+
+    QgsCreatePointTextItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
+    ~QgsCreatePointTextItemMapTool() override;
+
+    void cadCanvasPressEvent( QgsMapMouseEvent *event ) override;
+    QgsCreateAnnotationItemMapToolHandler *handler() override;
+    QgsMapTool *mapTool() override;
+
+  private:
+
+    QgsCreateAnnotationItemMapToolHandler *mHandler = nullptr;
+
+};
+
+class QgsCreateMarkerItemMapTool: public QgsMapToolCapture, public QgsCreateAnnotationItemMapToolInterface
+{
+    Q_OBJECT
+
+  public:
+
+    QgsCreateMarkerItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
+    ~QgsCreateMarkerItemMapTool() override;
+
+    void cadCanvasReleaseEvent( QgsMapMouseEvent *event ) override;
+    QgsCreateAnnotationItemMapToolHandler *handler() override;
+    QgsMapTool *mapTool() override;
+    QgsMapLayer *layer() const override;
+
+  private:
+
+    QgsCreateAnnotationItemMapToolHandler *mHandler = nullptr;
+
+};
+
+class QgsMapToolCaptureAnnotationItem : public QgsMapToolCapture
+{
+    Q_OBJECT
+  public:
+    QgsMapToolCaptureAnnotationItem( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode );
+
+    QgsMapToolCapture::Capabilities capabilities() const override;
+    bool supportsTechnique( CaptureTechnique technique ) const override;
+
+};
+
+class QgsCreateLineItemMapTool: public QgsMapToolCaptureAnnotationItem, public QgsCreateAnnotationItemMapToolInterface
+{
+    Q_OBJECT
+
+  public:
+
+    QgsCreateLineItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
+    ~QgsCreateLineItemMapTool() override;
+
+    void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    QgsCreateAnnotationItemMapToolHandler *handler() override;
+    QgsMapTool *mapTool() override;
+    QgsMapLayer *layer() const override;
+
+  private:
+
+    QgsCreateAnnotationItemMapToolHandler *mHandler = nullptr;
+
+};
+
+class QgsCreatePolygonItemMapTool: public QgsMapToolCaptureAnnotationItem, public QgsCreateAnnotationItemMapToolInterface
+{
+    Q_OBJECT
+
+  public:
+
+    QgsCreatePolygonItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
+    ~QgsCreatePolygonItemMapTool() override;
+
+    void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    QgsCreateAnnotationItemMapToolHandler *handler() override;
+    QgsMapTool *mapTool() override;
+    QgsMapLayer *layer() const override;
+
+  private:
+
+    QgsCreateAnnotationItemMapToolHandler *mHandler = nullptr;
+
+};
+
+///@endcond PRIVATE
+
+#endif // QGSCREATEANNOTATIONITEMMAPTOOLIMPL_H

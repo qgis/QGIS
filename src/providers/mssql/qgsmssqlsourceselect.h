@@ -31,7 +31,6 @@
 #include <QItemDelegate>
 
 class QPushButton;
-class QStringList;
 class QgsMssqlGeomColumnTypeThread;
 class QgisApp;
 

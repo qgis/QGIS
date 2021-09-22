@@ -616,13 +616,6 @@ which is used by the layer, so any changes are immediately applied.
 %End
 
 
-    QgsVectorLayerServerProperties *serverProperties() const;
-%Docstring
-Returns QGIS Server Properties of the vector layer
-
-.. versionadded:: 3.10
-%End
-
     int selectedFeatureCount() const;
 %Docstring
 Returns the number of features that are selected in this layer.
@@ -2461,7 +2454,8 @@ and maximum values are required.
                         QgsExpressionContext *context = 0,
                         bool *ok = 0,
                         QgsFeatureIds *fids = 0,
-                        QgsFeedback *feedback = 0 ) const;
+                        QgsFeedback *feedback = 0) const;
+
 %Docstring
 Calculates an aggregated value from the layer's features.
 Currently any filtering expression provided will override filters in the FeatureRequest.

@@ -214,6 +214,27 @@ Clear any cached previous clicks and helper lines
 determines if CAD tools are enabled or if map tools behaves "nomally"
 %End
 
+    void switchZM( );
+%Docstring
+Determines if Z or M will be enabled.
+
+.. versionadded:: 3.22
+%End
+
+    void setEnabledZ( bool enable );
+%Docstring
+Sets whether Z is enabled
+
+.. versionadded:: 3.22
+%End
+
+    void setEnabledM( bool enable );
+%Docstring
+Sets whether M is enabled
+
+.. versionadded:: 3.22
+%End
+
     bool constructionMode() const;
 %Docstring
 construction mode is used to draw intermediate points. These points won't be given any further (i.e. to the map tools)
@@ -239,6 +260,20 @@ Returns the ``CadConstraint`` on the X coordinate
     const CadConstraint *constraintY() const;
 %Docstring
 Returns the ``CadConstraint`` on the Y coordinate
+%End
+
+    const CadConstraint *constraintZ() const;
+%Docstring
+Returns the ``CadConstraint`` on the Z coordinate
+
+.. versionadded:: 3.22
+%End
+
+    const CadConstraint *constraintM() const;
+%Docstring
+Returns the ``CadConstraint`` on the M coordinate
+
+.. versionadded:: 3.22
 %End
     bool commonAngleConstraint() const;
 %Docstring
@@ -283,27 +318,63 @@ automatically populated when user clicks with left mouse button on map canvas.
 .. versionadded:: 3.0
 %End
 
-    QgsPointXY currentPoint( bool *exists  = 0 ) const;
+    QgsPoint currentPointV2( bool *exists  = 0 ) const;
 %Docstring
 The last point.
 Helper for the CAD point list. The CAD point list is the list of points
 currently digitized. It contains both  "normal" points and intermediate points (construction mode).
+
+.. versionadded:: 3.22
 %End
 
-    QgsPointXY previousPoint( bool *exists = 0 ) const;
+    QgsPoint currentPointLayerCoordinates( QgsMapLayer *layer ) const;
+%Docstring
+Returns the last CAD point, in a map ``layer``'s coordinates.
+
+.. versionadded:: 3.22
+%End
+
+ QgsPointXY currentPoint( bool *exists  = 0 ) const /Deprecated/;
+%Docstring
+The last point.
+Helper for the CAD point list. The CAD point list is the list of points
+currently digitized. It contains both  "normal" points and intermediate points (construction mode).
+
+.. deprecated:: QGIS 3.22.
+   Use :py:func:`~QgsAdvancedDigitizingDockWidget.currentPointV2` instead.
+%End
+    QgsPoint previousPointV2( bool *exists = 0 ) const;
 %Docstring
 The previous point.
 Helper for the CAD point list. The CAD point list is the list of points
 currently digitized. It contains both  "normal" points and intermediate points (construction mode).
 %End
 
-    QgsPointXY penultimatePoint( bool *exists = 0 ) const;
+ QgsPointXY previousPoint( bool *exists = 0 ) const /Deprecated/;
+%Docstring
+The previous point.
+Helper for the CAD point list. The CAD point list is the list of points
+currently digitized. It contains both  "normal" points and intermediate points (construction mode).
+
+.. deprecated:: QGIS 3.22.
+   Use :py:func:`~QgsAdvancedDigitizingDockWidget.previousPointV2` instead.
+%End
+    QgsPoint penultimatePointV2( bool *exists = 0 ) const;
 %Docstring
 The penultimate point.
 Helper for the CAD point list. The CAD point list is the list of points
 currently digitized. It contains both  "normal" points and intermediate points (construction mode).
 %End
 
+ QgsPointXY penultimatePoint( bool *exists = 0 ) const /Deprecated/;
+%Docstring
+The penultimate point.
+Helper for the CAD point list. The CAD point list is the list of points
+currently digitized. It contains both  "normal" points and intermediate points (construction mode).
+
+.. deprecated:: QGIS 3.22.
+   Use :py:func:`~QgsAdvancedDigitizingDockWidget.penultimatePointV2` instead.
+%End
     int pointsCount() const;
 %Docstring
 The number of points in the CAD point helper list
@@ -374,6 +445,36 @@ Can be used to set constraints by external widgets.
 .. versionadded:: 3.8
 %End
 
+    void setZ( const QString &value, WidgetSetMode mode );
+%Docstring
+Set the Z value on the widget.
+Can be used to set constraints by external widgets.
+
+:param mode: What type of interaction to emulate
+:param value: The value (as a QString, as it could be an expression)
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.22
+%End
+
+    void setM( const QString &value, WidgetSetMode mode );
+%Docstring
+Set the M value on the widget.
+Can be used to set constraints by external widgets.
+
+:param mode: What type of interaction to emulate
+:param value: The value (as a QString, as it could be an expression)
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.22
+%End
+
     void setAngle( const QString &value, WidgetSetMode mode );
 %Docstring
 Set the angle value on the widget.
@@ -404,7 +505,19 @@ Can be used to set constraints by external widgets.
 .. versionadded:: 3.8
 %End
 
+    double getLineZ( ) const;
+%Docstring
+Convenient method to get the Z value from the line edit wiget
 
+.. versionadded:: 3.22
+%End
+
+    double getLineM( ) const;
+%Docstring
+Convenient method to get the M value from the line edit wiget
+
+.. versionadded:: 3.22
+%End
 
   signals:
 
@@ -420,12 +533,25 @@ Push a warning
 Remove any previously emitted warnings (if any)
 %End
 
-    void pointChanged( const QgsPointXY &point );
+    void pointChangedV2( const QgsPoint &point );
 %Docstring
 Sometimes a constraint may change the current point out of a mouse event. This happens normally
 when a constraint is toggled.
 
 :param point: The last known digitizing point. Can be used to emulate a mouse event.
+
+.. versionadded:: 3.22
+%End
+
+ void pointChanged( const QgsPointXY &point ) /Deprecated/;
+%Docstring
+Sometimes a constraint may change the current point out of a mouse event. This happens normally
+when a constraint is toggled.
+
+:param point: The last known digitizing point. Can be used to emulate a mouse event.
+
+.. deprecated:: QGIS 3.22.
+   No longer used, will be removed in QGIS 4.0. Use pointChangedV2 instead.
 %End
 
 
@@ -464,6 +590,30 @@ Could be used by widgets that must reflect the current advanced digitizing state
    unstable API (will likely change)
 
 .. versionadded:: 3.8
+%End
+
+    void valueZChanged( const QString &value );
+%Docstring
+Emitted whenever the Z ``value`` changes (either the mouse moved, or the user changed the input).
+Could be used by widgets that must reflect the current advanced digitizing state.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.22
+%End
+
+    void valueMChanged( const QString &value );
+%Docstring
+Emitted whenever the M ``value`` changes (either the mouse moved, or the user changed the input).
+Could be used by widgets that must reflect the current advanced digitizing state.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.22
 %End
 
     void valueAngleChanged( const QString &value );
@@ -512,6 +662,30 @@ Could be used by widgets that must reflect the current advanced digitizing state
    unstable API (will likely change)
 
 .. versionadded:: 3.8
+%End
+
+    void lockZChanged( bool locked );
+%Docstring
+Emitted whenever the Z parameter is ``locked``.
+Could be used by widgets that must reflect the current advanced digitizing state.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.22
+%End
+
+    void lockMChanged( bool locked );
+%Docstring
+Emitted whenever the M parameter is ``locked``.
+Could be used by widgets that must reflect the current advanced digitizing state.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.22
 %End
 
     void lockAngleChanged( bool locked );
@@ -566,6 +740,34 @@ Could be used by widgets that must reflect the current advanced digitizing state
 .. versionadded:: 3.8
 %End
 
+    void relativeZChanged( bool relative );
+%Docstring
+Emitted whenever the Z parameter is toggled between absolute and relative.
+Could be used by widgets that must reflect the current advanced digitizing state.
+
+:param relative: Whether the Z parameter is relative or not.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.22
+%End
+
+    void relativeMChanged( bool relative );
+%Docstring
+Emitted whenever the M parameter is toggled between absolute and relative.
+Could be used by widgets that must reflect the current advanced digitizing state.
+
+:param relative: Whether the M parameter is relative or not.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.22
+%End
+
     void relativeAngleChanged( bool relative );
 %Docstring
 Emitted whenever the angleX parameter is toggled between absolute and relative.
@@ -609,6 +811,36 @@ Could be used by widgets that must reflect the current advanced digitizing state
    unstable API (will likely change)
 
 .. versionadded:: 3.8
+%End
+
+    void enabledChangedZ( bool enabled );
+%Docstring
+Emitted whenever the Z field is enabled or disabled. Depending on the context, some parameters
+do not make sense (e.g. you need a previous point to define a distance).
+Could be used by widgets that must reflect the current advanced digitizing state.
+
+:param enabled: Whether the Z parameter is enabled or not.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.22
+%End
+
+    void enabledChangedM( bool enabled );
+%Docstring
+Emitted whenever the M field is enabled or disabled. Depending on the context, some parameters
+do not make sense (e.g. you need a previous point to define a distance).
+Could be used by widgets that must reflect the current advanced digitizing state.
+
+:param enabled: Whether the M parameter is enabled or not.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.22
 %End
 
     void enabledChangedAngle( bool enabled );
@@ -663,6 +895,30 @@ Could be used by widgets to capture the focus when a field is being edited.
    unstable API (will likely change)
 
 .. versionadded:: 3.8
+%End
+
+    void focusOnZRequested();
+%Docstring
+Emitted whenever the Z field should get the focus using the shortcuts (Z).
+Could be used by widgets to capture the focus when a field is being edited.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.22
+%End
+
+    void focusOnMRequested();
+%Docstring
+Emitted whenever the M field should get the focus using the shortcuts (M).
+Could be used by widgets to capture the focus when a field is being edited.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.22
 %End
 
     void focusOnAngleRequested();

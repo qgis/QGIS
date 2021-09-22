@@ -47,6 +47,15 @@ Create a new default value with the given ``expression`` and ``applyOnUpdate`` f
 
     bool operator==( const QgsDefaultValue &other ) const;
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    const QString str = sipCpp->isValid() ? QStringLiteral( "<QgsDefaultValue: %1>" ).arg(
+                          sipCpp->expression().length() > 1000 ? sipCpp->expression().left( 1000 ) + QStringLiteral( "..." )
+                          : sipCpp->expression() )
+                        : QStringLiteral( "<QgsDefaultValue: invalid>" );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
     QString expression() const;
 %Docstring
 The expression will be evaluated whenever a default value needs

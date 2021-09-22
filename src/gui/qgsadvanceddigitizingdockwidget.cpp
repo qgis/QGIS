@@ -27,6 +27,7 @@
 #include "qgsexpression.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaptooledit.h"
 #include "qgsmaptoolcapture.h"
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgsmessagebaritem.h"
@@ -37,6 +38,7 @@
 #include "qgsproject.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmessagelog.h"
+#include "qgsmeshlayer.h"
 
 #include <QActionGroup>
 
@@ -55,6 +57,8 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   mDistanceConstraint.reset( new CadConstraint( mDistanceLineEdit, mLockDistanceButton, nullptr, mRepeatingLockDistanceButton ) );
   mXConstraint.reset( new CadConstraint( mXLineEdit, mLockXButton, mRelativeXButton, mRepeatingLockXButton ) );
   mYConstraint.reset( new CadConstraint( mYLineEdit, mLockYButton, mRelativeYButton, mRepeatingLockYButton ) );
+  mZConstraint.reset( new CadConstraint( mZLineEdit, mLockZButton, mRelativeZButton, mRepeatingLockZButton ) );
+  mMConstraint.reset( new CadConstraint( mMLineEdit, mLockMButton, mRelativeMButton, mRepeatingLockMButton ) );
   mAdditionalConstraint = AdditionalConstraint::NoConstraint;
 
   mMapCanvas->installEventFilter( this );
@@ -62,6 +66,8 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   mDistanceLineEdit->installEventFilter( this );
   mXLineEdit->installEventFilter( this );
   mYLineEdit->installEventFilter( this );
+  mZLineEdit->installEventFilter( this );
+  mMLineEdit->installEventFilter( this );
 
   // Connect the UI to the event filter to update constraints
   connect( mEnableAction, &QAction::triggered, this, &QgsAdvancedDigitizingDockWidget::activateCad );
@@ -72,21 +78,31 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   connect( mLockDistanceButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::lockConstraint );
   connect( mLockXButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::lockConstraint );
   connect( mLockYButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::lockConstraint );
+  connect( mLockZButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::lockConstraint );
+  connect( mLockMButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::lockConstraint );
   connect( mRelativeAngleButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::setConstraintRelative );
   connect( mRelativeXButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::setConstraintRelative );
   connect( mRelativeYButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::setConstraintRelative );
+  connect( mRelativeZButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::setConstraintRelative );
+  connect( mRelativeMButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::setConstraintRelative );
   connect( mRepeatingLockDistanceButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::setConstraintRepeatingLock );
   connect( mRepeatingLockAngleButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::setConstraintRepeatingLock );
   connect( mRepeatingLockXButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::setConstraintRepeatingLock );
   connect( mRepeatingLockYButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::setConstraintRepeatingLock );
+  connect( mRepeatingLockZButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::setConstraintRepeatingLock );
+  connect( mRepeatingLockMButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::setConstraintRepeatingLock );
   connect( mAngleLineEdit, &QLineEdit::returnPressed, this, [ = ]() { lockConstraint(); } );
   connect( mDistanceLineEdit, &QLineEdit::returnPressed, this, [ = ]() { lockConstraint(); } );
   connect( mXLineEdit, &QLineEdit::returnPressed, this, [ = ]() { lockConstraint(); } );
   connect( mYLineEdit, &QLineEdit::returnPressed, this, [ = ]() { lockConstraint(); } );
+  connect( mZLineEdit, &QLineEdit::returnPressed, this, [ = ]() { lockConstraint(); } );
+  connect( mMLineEdit, &QLineEdit::returnPressed, this, [ = ]() { lockConstraint(); } );
   connect( mAngleLineEdit, &QLineEdit::textEdited, this, &QgsAdvancedDigitizingDockWidget::constraintTextEdited );
   connect( mDistanceLineEdit, &QLineEdit::textEdited, this, &QgsAdvancedDigitizingDockWidget::constraintTextEdited );
   connect( mXLineEdit, &QLineEdit::textEdited, this, &QgsAdvancedDigitizingDockWidget::constraintTextEdited );
   connect( mYLineEdit, &QLineEdit::textEdited, this, &QgsAdvancedDigitizingDockWidget::constraintTextEdited );
+  connect( mZLineEdit, &QLineEdit::textEdited, this, &QgsAdvancedDigitizingDockWidget::constraintTextEdited );
+  connect( mMLineEdit, &QLineEdit::textEdited, this, &QgsAdvancedDigitizingDockWidget::constraintTextEdited );
   //also watch for focus out events on these widgets
   QgsFocusWatcher *angleWatcher = new QgsFocusWatcher( mAngleLineEdit );
   connect( angleWatcher, &QgsFocusWatcher::focusOut, this, &QgsAdvancedDigitizingDockWidget::constraintFocusOut );
@@ -96,6 +112,10 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   connect( xWatcher, &QgsFocusWatcher::focusOut, this, &QgsAdvancedDigitizingDockWidget::constraintFocusOut );
   QgsFocusWatcher *yWatcher = new QgsFocusWatcher( mYLineEdit );
   connect( yWatcher, &QgsFocusWatcher::focusOut, this, &QgsAdvancedDigitizingDockWidget::constraintFocusOut );
+  QgsFocusWatcher *zWatcher = new QgsFocusWatcher( mZLineEdit );
+  connect( zWatcher, &QgsFocusWatcher::focusOut, this, &QgsAdvancedDigitizingDockWidget::constraintFocusOut );
+  QgsFocusWatcher *mWatcher = new QgsFocusWatcher( mMLineEdit );
+  connect( mWatcher, &QgsFocusWatcher::focusOut, this, &QgsAdvancedDigitizingDockWidget::constraintFocusOut );
 
   // config menu
   QMenu *menu = new QMenu( this );
@@ -104,7 +124,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   mCommonAngleActions = QMap<QAction *, double>();
   QList< QPair< double, QString > > commonAngles;
   QString menuText;
-  QList<double> anglesDouble( { 0.0, 5.0, 10.0, 15.0, 18.0, 22.5, 30.0, 45.0, 90.0} );
+  const QList<double> anglesDouble( { 0.0, 5.0, 10.0, 15.0, 18.0, 22.5, 30.0, 45.0, 90.0} );
   for ( QList<double>::const_iterator it = anglesDouble.constBegin(); it != anglesDouble.constEnd(); ++it )
   {
     if ( *it == 0 )
@@ -151,9 +171,21 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   mLockYButton->setToolTip( "<b>" + tr( "Lock y coordinate" ) + "</b><br>(" + tr( "press Ctrl + y for quick access" ) + ")" );
   mRepeatingLockYButton->setToolTip( "<b>" + tr( "Continuously lock y coordinate" ) + "</b>" );
 
+  mRelativeZButton->setToolTip( "<b>" + tr( "Toggles relative z to previous node" ) + "</b><br>(" + tr( "press Shift + z for quick access" ) + ")" );
+  mZLineEdit->setToolTip( "<b>" + tr( "Z coordinate" ) + "</b><br>(" + tr( "press z for quick access" ) + ")" );
+  mLockZButton->setToolTip( "<b>" + tr( "Lock z coordinate" ) + "</b><br>(" + tr( "press Ctrl + z for quick access" ) + ")" );
+  mRepeatingLockZButton->setToolTip( "<b>" + tr( "Continuously lock z coordinate" ) + "</b>" );
+
+  mRelativeMButton->setToolTip( "<b>" + tr( "Toggles relative m to previous node" ) + "</b><br>(" + tr( "press Shift + m for quick access" ) + ")" );
+  mMLineEdit->setToolTip( "<b>" + tr( "M coordinate" ) + "</b><br>(" + tr( "press m for quick access" ) + ")" );
+  mLockMButton->setToolTip( "<b>" + tr( "Lock m coordinate" ) + "</b><br>(" + tr( "press Ctrl + m for quick access" ) + ")" );
+  mRepeatingLockMButton->setToolTip( "<b>" + tr( "Continuously lock m coordinate" ) + "</b>" );
+
   // Create the slots/signals
   connect( mXLineEdit, &QLineEdit::textChanged, this, &QgsAdvancedDigitizingDockWidget::valueXChanged );
   connect( mYLineEdit, &QLineEdit::textChanged, this, &QgsAdvancedDigitizingDockWidget::valueYChanged );
+  connect( mZLineEdit, &QLineEdit::textChanged, this, &QgsAdvancedDigitizingDockWidget::valueZChanged );
+  connect( mMLineEdit, &QLineEdit::textChanged, this, &QgsAdvancedDigitizingDockWidget::valueMChanged );
   connect( mDistanceLineEdit, &QLineEdit::textChanged, this, &QgsAdvancedDigitizingDockWidget::valueDistanceChanged );
   connect( mAngleLineEdit, &QLineEdit::textChanged, this, &QgsAdvancedDigitizingDockWidget::valueAngleChanged );
 
@@ -202,6 +234,40 @@ void QgsAdvancedDigitizingDockWidget::setY( const QString &value, WidgetSetMode 
     mYLineEdit->textEdited( value );
   }
 }
+void QgsAdvancedDigitizingDockWidget::setZ( const QString &value, WidgetSetMode mode )
+{
+  mZLineEdit->setText( value );
+  if ( mode == WidgetSetMode::ReturnPressed )
+  {
+    mZLineEdit->returnPressed();
+  }
+  else if ( mode == WidgetSetMode::FocusOut )
+  {
+    QEvent *e = new QEvent( QEvent::FocusOut );
+    QCoreApplication::postEvent( mZLineEdit, e );
+  }
+  else if ( mode == WidgetSetMode::TextEdited )
+  {
+    mZLineEdit->textEdited( value );
+  }
+}
+void QgsAdvancedDigitizingDockWidget::setM( const QString &value, WidgetSetMode mode )
+{
+  mMLineEdit->setText( value );
+  if ( mode == WidgetSetMode::ReturnPressed )
+  {
+    mMLineEdit->returnPressed();
+  }
+  else if ( mode == WidgetSetMode::FocusOut )
+  {
+    QEvent *e = new QEvent( QEvent::FocusOut );
+    QCoreApplication::postEvent( mMLineEdit, e );
+  }
+  else if ( mode == WidgetSetMode::TextEdited )
+  {
+    mMLineEdit->textEdited( value );
+  }
+}
 void QgsAdvancedDigitizingDockWidget::setAngle( const QString &value, WidgetSetMode mode )
 {
   mAngleLineEdit->setText( value );
@@ -210,11 +276,6 @@ void QgsAdvancedDigitizingDockWidget::setAngle( const QString &value, WidgetSetM
     mAngleLineEdit->returnPressed();
   }
   else if ( mode == WidgetSetMode::FocusOut )
-  {
-    QEvent *e = new QEvent( QEvent::FocusOut );
-    QCoreApplication::postEvent( mAngleLineEdit, e );
-  }
-  else if ( mode == WidgetSetMode::TextEdited )
   {
     mAngleLineEdit->textEdited( value );
   }
@@ -252,7 +313,54 @@ void QgsAdvancedDigitizingDockWidget::setCadEnabled( bool enabled )
   clear();
   setConstructionMode( false );
 
+  switchZM();
   emit cadEnabledChanged( enabled );
+}
+
+
+void QgsAdvancedDigitizingDockWidget::switchZM( )
+{
+  bool enableZ = false;
+  bool enableM = false;
+
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
+  if ( vlayer )
+  {
+    const QgsWkbTypes::Type type = vlayer->wkbType();
+    enableZ = QgsWkbTypes::hasZ( type );
+    enableM = QgsWkbTypes::hasM( type );
+  }
+
+  QgsMeshLayer *mlayer = qobject_cast<QgsMeshLayer *>( mMapCanvas->currentLayer() );
+  if ( mlayer )
+    enableZ = mlayer->isEditable();
+
+  setEnabledZ( enableZ );
+  setEnabledM( enableM );
+}
+
+void QgsAdvancedDigitizingDockWidget::setEnabledZ( bool enable )
+{
+  mRelativeZButton->setEnabled( enable );
+  mZLabel->setEnabled( enable );
+  mZLineEdit->setEnabled( enable );
+  if ( mZLineEdit->isEnabled() )
+    mZLineEdit->setText( QLocale().toString( QgsMapToolEdit( mMapCanvas ).defaultZValue(), 'f', 6 ) );
+  else
+    mZLineEdit->clear();
+  mLockZButton->setEnabled( enable );
+}
+
+void QgsAdvancedDigitizingDockWidget::setEnabledM( bool enable )
+{
+  mRelativeMButton->setEnabled( enable );
+  mMLabel->setEnabled( enable );
+  mMLineEdit->setEnabled( enable );
+  if ( mMLineEdit->isEnabled() )
+    mMLineEdit->setText( QLocale().toString( QgsMapToolEdit( mMapCanvas ).defaultMValue(), 'f', 6 ) );
+  else
+    mMLineEdit->clear();
+  mLockMButton->setEnabled( enable );
 }
 
 void QgsAdvancedDigitizingDockWidget::activateCad( bool enabled )
@@ -302,6 +410,16 @@ void QgsAdvancedDigitizingDockWidget::setConstraintRelative( bool activate )
     mYConstraint->setRelative( activate );
     emit relativeYChanged( activate );
   }
+  else if ( sender() == mRelativeZButton )
+  {
+    mZConstraint->setRelative( activate );
+    emit relativeZChanged( activate );
+  }
+  else if ( sender() == mRelativeMButton )
+  {
+    mMConstraint->setRelative( activate );
+    emit relativeMChanged( activate );
+  }
 }
 
 void QgsAdvancedDigitizingDockWidget::setConstraintRepeatingLock( bool activate )
@@ -322,6 +440,14 @@ void QgsAdvancedDigitizingDockWidget::setConstraintRepeatingLock( bool activate 
   {
     mYConstraint->setRepeatingLock( activate );
   }
+  else if ( sender() == mRepeatingLockZButton )
+  {
+    mZConstraint->setRepeatingLock( activate );
+  }
+  else if ( sender() == mRepeatingLockMButton )
+  {
+    mMConstraint->setRepeatingLock( activate );
+  }
 }
 
 void QgsAdvancedDigitizingDockWidget::setConstructionMode( bool enabled )
@@ -333,7 +459,7 @@ void QgsAdvancedDigitizingDockWidget::setConstructionMode( bool enabled )
 void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction *action )
 {
   // common angles
-  QMap<QAction *, double>::const_iterator ica = mCommonAngleActions.constFind( action );
+  const QMap<QAction *, double>::const_iterator ica = mCommonAngleActions.constFind( action );
   if ( ica != mCommonAngleActions.constEnd() )
   {
     ica.key()->setChecked( true );
@@ -370,6 +496,16 @@ void QgsAdvancedDigitizingDockWidget::releaseLocks( bool releaseRepeatingLocks )
     mYConstraint->setLockMode( CadConstraint::NoLock );
     emit lockYChanged( false );
   }
+  if ( releaseRepeatingLocks || !mZConstraint->isRepeatingLock() )
+  {
+    mZConstraint->setLockMode( CadConstraint::NoLock );
+    emit lockZChanged( false );
+  }
+  if ( releaseRepeatingLocks || !mMConstraint->isRepeatingLock() )
+  {
+    mMConstraint->setLockMode( CadConstraint::NoLock );
+    emit lockMChanged( false );
+  }
 
   if ( !mCadPointList.empty() )
   {
@@ -380,6 +516,14 @@ void QgsAdvancedDigitizingDockWidget::releaseLocks( bool releaseRepeatingLocks )
     if ( !mYConstraint->isLocked() && !mYConstraint->relative() )
     {
       mYConstraint->setValue( mCadPointList.constLast().y(), true );
+    }
+    if ( !mZConstraint->isLocked() && !mZConstraint->relative() )
+    {
+      mZConstraint->setValue( mCadPointList.constLast().z(), true );
+    }
+    if ( !mMConstraint->isLocked() && !mMConstraint->relative() )
+    {
+      mMConstraint->setValue( mCadPointList.constLast().m(), true );
     }
   }
 
@@ -415,6 +559,14 @@ QgsAdvancedDigitizingDockWidget::CadConstraint *QgsAdvancedDigitizingDockWidget:
   {
     constraint = mYConstraint.get();
   }
+  else if ( obj == mZLineEdit  || obj == mLockZButton )
+  {
+    constraint = mZConstraint.get();
+  }
+  else if ( obj == mMLineEdit  || obj == mLockMButton )
+  {
+    constraint = mMConstraint.get();
+  }
   return constraint;
 }
 
@@ -430,7 +582,7 @@ double QgsAdvancedDigitizingDockWidget::parseUserInput( const QString &inputValu
   {
     // try to evaluate expression
     QgsExpression expr( inputValue );
-    QVariant result = expr.evaluate();
+    const QVariant result = expr.evaluate();
     if ( expr.hasEvalError() )
       ok = false;
     else
@@ -450,13 +602,13 @@ void QgsAdvancedDigitizingDockWidget::updateConstraintValue( CadConstraint *cons
     return;
 
   bool ok;
-  double value = parseUserInput( textValue, ok );
+  const double value = parseUserInput( textValue, ok );
   if ( !ok )
     return;
 
   constraint->setValue( value, convertExpression );
   // run a fake map mouse event to update the paint item
-  emit pointChanged( mCadPointList.value( 0 ) );
+  emit pointChangedV2( mCadPointList.value( 0 ) );
 }
 
 void QgsAdvancedDigitizingDockWidget::lockConstraint( bool activate /* default true */ )
@@ -469,11 +621,11 @@ void QgsAdvancedDigitizingDockWidget::lockConstraint( bool activate /* default t
 
   if ( activate )
   {
-    QString textValue = constraint->lineEdit()->text();
+    const QString textValue = constraint->lineEdit()->text();
     if ( !textValue.isEmpty() )
     {
       bool ok;
-      double value = parseUserInput( textValue, ok );
+      const double value = parseUserInput( textValue, ok );
       if ( ok )
       {
         constraint->setValue( value );
@@ -498,6 +650,14 @@ void QgsAdvancedDigitizingDockWidget::lockConstraint( bool activate /* default t
   {
     emit lockYChanged( activate );
   }
+  else if ( constraint == mZConstraint.get() )
+  {
+    emit lockZChanged( activate );
+  }
+  else if ( constraint == mMConstraint.get() )
+  {
+    emit lockMChanged( activate );
+  }
   else if ( constraint == mDistanceConstraint.get() )
   {
     emit lockDistanceChanged( activate );
@@ -516,7 +676,7 @@ void QgsAdvancedDigitizingDockWidget::lockConstraint( bool activate /* default t
     }
 
     // run a fake map mouse event to update the paint item
-    emit pointChanged( mCadPointList.value( 0 ) );
+    emit pointChangedV2( mCadPointList.value( 0 ) );
   }
 }
 
@@ -570,14 +730,14 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
     return;
   }
 
-  bool snappingEnabled = QgsProject::instance()->snappingConfig().enabled();
+  const bool snappingEnabled = QgsProject::instance()->snappingConfig().enabled();
 
   // update the UI according to new capacities
   // still keep the old to compare
 
-  bool relativeAngle = mCadEnabled && newCapacities.testFlag( RelativeAngle );
-  bool absoluteAngle = mCadEnabled && newCapacities.testFlag( AbsoluteAngle );
-  bool relativeCoordinates = mCadEnabled && newCapacities.testFlag( RelativeCoordinates );
+  const bool relativeAngle = mCadEnabled && newCapacities.testFlag( RelativeAngle );
+  const bool absoluteAngle = mCadEnabled && newCapacities.testFlag( AbsoluteAngle );
+  const bool relativeCoordinates = mCadEnabled && newCapacities.testFlag( RelativeCoordinates );
 
   mPerpendicularAction->setEnabled( absoluteAngle && snappingEnabled );
   mParallelAction->setEnabled( absoluteAngle && snappingEnabled );
@@ -632,6 +792,8 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
 
   mRelativeXButton->setEnabled( relativeCoordinates );
   mRelativeYButton->setEnabled( relativeCoordinates );
+  mRelativeZButton->setEnabled( relativeCoordinates );
+  mRelativeMButton->setEnabled( relativeCoordinates );
 
   // update capacities
   mCapacities = newCapacities;
@@ -654,18 +816,20 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   context.mapUnitsPerPixel = mMapCanvas->mapUnitsPerPixel();
   context.xConstraint = _constraint( mXConstraint.get() );
   context.yConstraint = _constraint( mYConstraint.get() );
+  context.zConstraint = _constraint( mZConstraint.get() );
+  context.mConstraint = _constraint( mMConstraint.get() );
   context.distanceConstraint = _constraint( mDistanceConstraint.get() );
   context.angleConstraint = _constraint( mAngleConstraint.get() );
-  context.cadPointList = mCadPointList;
+  context.setCadPoints( mCadPointList );
 
   context.commonAngleConstraint.locked = true;
   context.commonAngleConstraint.relative = context.angleConstraint.relative;
   context.commonAngleConstraint.value = mCommonAngleConstraint;
 
-  QgsCadUtils::AlignMapPointOutput output = QgsCadUtils::alignMapPoint( e->originalMapPoint(), context );
+  const QgsCadUtils::AlignMapPointOutput output = QgsCadUtils::alignMapPoint( e->originalMapPoint(), context );
 
-  bool res = output.valid;
-  QgsPointXY point = output.finalMapPoint;
+  const bool res = output.valid;
+  QgsPoint point = pointXYToPoint( output.finalMapPoint );
   mSnappedSegment.clear();
   if ( output.snapMatch.hasEdge() )
   {
@@ -709,7 +873,27 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   if ( ( ( mSnapMatch.hasVertex() || mSnapMatch.hasLineEndpoint() ) && ( point == mSnapMatch.point() ) ) || ( mSnapMatch.hasEdge() && QgsProject::instance()->topologicalEditing() ) )
   {
     e->snapPoint();
+    point = mSnapMatch.interpolatedPoint();
   }
+  /*
+   * Ensure that Z and M are passed
+   * It will be dropped as needed later.
+   */
+  point.addZValue( QgsMapToolEdit( mMapCanvas ).defaultZValue() );
+  point.addMValue( QgsMapToolEdit( mMapCanvas ).defaultMValue() );
+
+  /*
+   * And if M or Z lock button is activated get the value of the input.
+   */
+  if ( mLockZButton->isChecked() )
+  {
+    point.setZ( mZLineEdit->text().toFloat() );
+  }
+  if ( mLockMButton->isChecked() )
+  {
+    point.setM( mMLineEdit->text().toFloat() );
+  }
+
   // update the point list
   updateCurrentPoint( point );
 
@@ -728,11 +912,11 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
 }
 
 
-void QgsAdvancedDigitizingDockWidget::updateUnlockedConstraintValues( const QgsPointXY &point )
+void QgsAdvancedDigitizingDockWidget::updateUnlockedConstraintValues( const QgsPoint &point )
 {
   bool previousPointExist, penulPointExist;
-  QgsPointXY previousPt = previousPoint( &previousPointExist );
-  QgsPointXY penultimatePt = penultimatePoint( &penulPointExist );
+  const QgsPoint previousPt = previousPointV2( &previousPointExist );
+  const QgsPoint penultimatePt = penultimatePointV2( &penulPointExist );
 
   // --- angle
   if ( !mAngleConstraint->isLocked() && previousPointExist )
@@ -754,7 +938,7 @@ void QgsAdvancedDigitizingDockWidget::updateUnlockedConstraintValues( const QgsP
   // --- distance
   if ( !mDistanceConstraint->isLocked() && previousPointExist )
   {
-    mDistanceConstraint->setValue( std::sqrt( previousPt.sqrDist( point ) ) );
+    mDistanceConstraint->setValue( std::sqrt( previousPt.distanceSquared( point ) ) );
   }
   // --- X
   if ( !mXConstraint->isLocked() )
@@ -780,6 +964,30 @@ void QgsAdvancedDigitizingDockWidget::updateUnlockedConstraintValues( const QgsP
       mYConstraint->setValue( point.y() );
     }
   }
+  // --- Z
+  if ( !mZConstraint->isLocked() )
+  {
+    if ( previousPointExist && mZConstraint->relative() )
+    {
+      mZConstraint->setValue( point.z() - previousPt.z() );
+    }
+    else
+    {
+      mZConstraint->setValue( point.z() );
+    }
+  }
+  // --- M
+  if ( !mMConstraint->isLocked() )
+  {
+    if ( previousPointExist && mMConstraint->relative() )
+    {
+      mMConstraint->setValue( point.m() - previousPt.m() );
+    }
+    else
+    {
+      mMConstraint->setValue( point.m() );
+    }
+  }
 }
 
 
@@ -791,7 +999,7 @@ QList<QgsPointXY> QgsAdvancedDigitizingDockWidget::snapSegmentToAllLayers( const
 
   QgsSnappingUtils *snappingUtils = mMapCanvas->snappingUtils();
 
-  QgsSnappingConfig canvasConfig = snappingUtils->config();
+  const QgsSnappingConfig canvasConfig = snappingUtils->config();
   QgsSnappingConfig localConfig = snappingUtils->config();
 
   localConfig.setMode( QgsSnappingConfig::AllLayers );
@@ -824,8 +1032,8 @@ bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent *e, CadCo
   }
 
   bool previousPointExist, penulPointExist, snappedSegmentExist;
-  QgsPointXY previousPt = previousPoint( &previousPointExist );
-  QgsPointXY penultimatePt = penultimatePoint( &penulPointExist );
+  const QgsPoint previousPt = previousPointV2( &previousPointExist );
+  const QgsPoint penultimatePt = penultimatePointV2( &penulPointExist );
   mSnappedSegment = snapSegmentToAllLayers( e->originalMapPoint(), &snappedSegmentExist );
 
   if ( !previousPointExist || !snappedSegmentExist )
@@ -961,7 +1169,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
   // ShortcutOverride events, we have to take care that we don't trigger the handling for BOTH
   // these event types for a single key press. I.e. pressing "A" may first call trigger a
   // ShortcutOverride event (sometimes, not always!) followed immediately by a KeyPress event.
-  QEvent::Type type = e->type();
+  const QEvent::Type type = e->type();
   switch ( e->key() )
   {
     case Qt::Key_X:
@@ -971,7 +1179,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
       {
         mXConstraint->toggleLocked();
         emit lockXChanged( mXConstraint->isLocked() );
-        emit pointChanged( mCadPointList.value( 0 ) );
+        emit pointChangedV2( mCadPointList.value( 0 ) );
         e->accept();
       }
       else if ( type == QEvent::ShortcutOverride && e->modifiers() == Qt::ShiftModifier )
@@ -980,7 +1188,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
         {
           mXConstraint->toggleRelative();
           emit relativeXChanged( mXConstraint->relative() );
-          emit pointChanged( mCadPointList.value( 0 ) );
+          emit pointChangedV2( mCadPointList.value( 0 ) );
           e->accept();
         }
       }
@@ -1001,7 +1209,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
       {
         mYConstraint->toggleLocked();
         emit lockYChanged( mYConstraint->isLocked() );
-        emit pointChanged( mCadPointList.value( 0 ) );
+        emit pointChangedV2( mCadPointList.value( 0 ) );
         e->accept();
       }
       else if ( type == QEvent::ShortcutOverride &&  e->modifiers() == Qt::ShiftModifier )
@@ -1010,7 +1218,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
         {
           mYConstraint->toggleRelative();
           emit relativeYChanged( mYConstraint->relative() );
-          emit pointChanged( mCadPointList.value( 0 ) );
+          emit pointChangedV2( mCadPointList.value( 0 ) );
           e->accept();
         }
       }
@@ -1024,6 +1232,66 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
       }
       break;
     }
+    case Qt::Key_Z:
+    {
+      // modifier+z ONLY caught for ShortcutOverride events...
+      if ( type == QEvent::ShortcutOverride && e->modifiers() == Qt::AltModifier )
+      {
+        mZConstraint->toggleLocked();
+        emit lockZChanged( mZConstraint->isLocked() );
+        emit pointChangedV2( mCadPointList.value( 0 ) );
+        e->accept();
+      }
+      else if ( type == QEvent::ShortcutOverride &&  e->modifiers() == Qt::ShiftModifier )
+      {
+        if ( mCapacities.testFlag( RelativeCoordinates ) )
+        {
+          mZConstraint->toggleRelative();
+          emit relativeZChanged( mZConstraint->relative() );
+          emit pointChangedV2( mCadPointList.value( 0 ) );
+          e->accept();
+        }
+      }
+      // .. but "z" alone ONLY caught for KeyPress events (see comment at start of function)
+      else if ( type == QEvent::KeyPress )
+      {
+        mZLineEdit->setFocus();
+        mZLineEdit->selectAll();
+        emit focusOnZRequested();
+        e->accept();
+      }
+      break;
+    }
+    case Qt::Key_M:
+    {
+      // modifier+m ONLY caught for ShortcutOverride events...
+      if ( type == QEvent::ShortcutOverride && ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier ) )
+      {
+        mMConstraint->toggleLocked();
+        emit lockMChanged( mMConstraint->isLocked() );
+        emit pointChangedV2( mCadPointList.value( 0 ) );
+        e->accept();
+      }
+      else if ( type == QEvent::ShortcutOverride &&  e->modifiers() == Qt::ShiftModifier )
+      {
+        if ( mCapacities.testFlag( RelativeCoordinates ) )
+        {
+          mMConstraint->toggleRelative();
+          emit relativeMChanged( mMConstraint->relative() );
+          emit pointChangedV2( mCadPointList.value( 0 ) );
+          e->accept();
+        }
+      }
+      // .. but "m" alone ONLY caught for KeyPress events (see comment at start of function)
+      else if ( type == QEvent::KeyPress )
+      {
+        mMLineEdit->setFocus();
+        mMLineEdit->selectAll();
+        emit focusOnMRequested();
+        e->accept();
+      }
+      break;
+    }
     case Qt::Key_A:
     {
       // modifier+a ONLY caught for ShortcutOverride events...
@@ -1033,7 +1301,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
         {
           mAngleConstraint->toggleLocked();
           emit lockAngleChanged( mAngleConstraint->isLocked() );
-          emit pointChanged( mCadPointList.value( 0 ) );
+          emit pointChangedV2( mCadPointList.value( 0 ) );
           e->accept();
         }
       }
@@ -1043,7 +1311,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
         {
           mAngleConstraint->toggleRelative();
           emit relativeAngleChanged( mAngleConstraint->relative() );
-          emit pointChanged( mCadPointList.value( 0 ) );
+          emit pointChangedV2( mCadPointList.value( 0 ) );
           e->accept();
         }
       }
@@ -1066,7 +1334,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
         {
           mDistanceConstraint->toggleLocked();
           emit lockDistanceChanged( mDistanceConstraint->isLocked() );
-          emit pointChanged( mCadPointList.value( 0 ) );
+          emit pointChangedV2( mCadPointList.value( 0 ) );
           e->accept();
         }
       }
@@ -1093,8 +1361,8 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
     {
       if ( type == QEvent::KeyPress )
       {
-        bool parallel = mParallelAction->isChecked();
-        bool perpendicular = mPerpendicularAction->isChecked();
+        const bool parallel = mParallelAction->isChecked();
+        const bool perpendicular = mPerpendicularAction->isChecked();
 
         if ( !parallel && !perpendicular )
         {
@@ -1111,7 +1379,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
         e->accept();
 
         // run a fake map mouse event to update the paint item
-        emit pointChanged( mCadPointList.value( 0 ) );
+        emit pointChangedV2( mCadPointList.value( 0 ) );
       }
       break;
     }
@@ -1170,13 +1438,14 @@ void QgsAdvancedDigitizingDockWidget::updateCadPaintItem()
 
 void QgsAdvancedDigitizingDockWidget::addPoint( const QgsPointXY &point )
 {
+  QgsPoint pt = pointXYToPoint( point );
   if ( !pointsCount() )
   {
-    mCadPointList << point;
+    mCadPointList << pt;
   }
   else
   {
-    mCadPointList.insert( 0, point );
+    mCadPointList.insert( 0, pt );
   }
 
   updateCapacity();
@@ -1188,7 +1457,7 @@ void QgsAdvancedDigitizingDockWidget::removePreviousPoint()
   if ( !pointsCount() )
     return;
 
-  int i = pointsCount() > 1 ? 1 : 0;
+  const int i = pointsCount() > 1 ? 1 : 0;
   mCadPointList.removeAt( i );
   updateCapacity();
   updateCadPaintItem();
@@ -1203,7 +1472,7 @@ void QgsAdvancedDigitizingDockWidget::clearPoints()
   updateCadPaintItem();
 }
 
-void QgsAdvancedDigitizingDockWidget::updateCurrentPoint( const QgsPointXY &point )
+void QgsAdvancedDigitizingDockWidget::updateCurrentPoint( const QgsPoint &point )
 {
   if ( !pointsCount() )
   {
@@ -1275,32 +1544,60 @@ void QgsAdvancedDigitizingDockWidget::CadConstraint::toggleRelative()
   setRelative( !mRelative );
 }
 
-QgsPointXY QgsAdvancedDigitizingDockWidget::currentPoint( bool *exist ) const
+QgsPoint QgsAdvancedDigitizingDockWidget::currentPointV2( bool *exist ) const
 {
   if ( exist )
     *exist = pointsCount() > 0;
   if ( pointsCount() > 0 )
     return mCadPointList.value( 0 );
   else
-    return QgsPointXY();
+    return QgsPoint();
 }
 
-QgsPointXY QgsAdvancedDigitizingDockWidget::previousPoint( bool *exist ) const
+QgsPoint QgsAdvancedDigitizingDockWidget::currentPointLayerCoordinates( QgsMapLayer *layer ) const
+{
+  if ( pointsCount() > 0 && layer )
+  {
+    QgsPoint res = mCadPointList.value( 0 );
+    const QgsPointXY layerCoordinates = mMapCanvas->mapSettings().mapToLayerCoordinates( layer, res );
+    res.setX( layerCoordinates.x() );
+    res.setY( layerCoordinates.y() );
+    return res;
+  }
+  return QgsPoint();
+}
+
+QgsPoint QgsAdvancedDigitizingDockWidget::previousPointV2( bool *exist ) const
 {
   if ( exist )
     *exist = pointsCount() > 1;
   if ( pointsCount() > 1 )
     return mCadPointList.value( 1 );
   else
-    return QgsPointXY();
+    return QgsPoint();
 }
 
-QgsPointXY QgsAdvancedDigitizingDockWidget::penultimatePoint( bool *exist ) const
+QgsPoint QgsAdvancedDigitizingDockWidget::penultimatePointV2( bool *exist ) const
 {
   if ( exist )
     *exist = pointsCount() > 2;
   if ( pointsCount() > 2 )
     return mCadPointList.value( 2 );
   else
-    return QgsPointXY();
+    return QgsPoint();
+}
+
+QgsPoint QgsAdvancedDigitizingDockWidget::pointXYToPoint( const QgsPointXY &point ) const
+{
+  return QgsPoint( point.x(), point.y(), getLineZ(), getLineM() );
+}
+
+double QgsAdvancedDigitizingDockWidget::getLineZ( ) const
+{
+  return mZLineEdit->isEnabled() ? mZLineEdit->text().toFloat() : std::numeric_limits<double>::quiet_NaN();
+}
+
+double QgsAdvancedDigitizingDockWidget::getLineM( ) const
+{
+  return mMLineEdit->isEnabled() ? mMLineEdit->text().toFloat() : std::numeric_limits<double>::quiet_NaN();
 }

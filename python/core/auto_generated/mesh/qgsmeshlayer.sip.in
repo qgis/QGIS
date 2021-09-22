@@ -660,6 +660,26 @@ The returned position is in map coordinates.
 .. versionadded:: 3.14
 %End
 
+    QList<int> selectVerticesByExpression( QgsExpression expression );
+%Docstring
+Returns a list of vertex indexes that meet the condition defined by ``expression`` with the context ``expressionContext``
+
+To express the relation with a vertex, the expression can be defined with function returning value
+linked to the current vertex, like " $vertex_z ", "$vertex_as_point"
+
+.. versionadded:: 3.22
+%End
+
+    QList<int> selectFacesByExpression( QgsExpression expression );
+%Docstring
+Returns a list of faces indexes that meet the condition defined by ``expression`` with the context ``expressionContext``
+
+To express the relation with a face, the expression can be defined with function returning value
+linked to the current face, like " $face_area "
+
+.. versionadded:: 3.22
+%End
+
     QgsMeshDatasetGroupTreeItem *datasetGroupTreeRootItem() const;
 %Docstring
 Returns the root items of the dataset group tree item
@@ -751,6 +771,17 @@ clean the undostack
 .. versionadded:: 3.22
 %End
 
+    bool reindex( const QgsCoordinateTransform &transform, bool renumber );
+%Docstring
+Re-indexes the faces and vertices, and renumber the indexes if ``renumber`` is ``True``.
+rebuilds the triangular mesh and its spatial index with ``transform``,
+clean the undostack
+
+Returns ``False`` if the operation fails
+
+.. versionadded:: 3.22
+%End
+
     QgsMeshEditor *meshEditor();
 %Docstring
 Returns a pointer to the mesh editor own by the mesh layer
@@ -777,12 +808,20 @@ Returns whether the mesh contains at mesh elements of given type
 %Docstring
 Returns the vertices count of the mesh frame
 
+.. note::
+
+   during mesh editing, some vertices can be void and are not included in this returned value
+
 .. versionadded:: 3.22
 %End
 
     int meshFaceCount() const;
 %Docstring
 Returns the faces count of the mesh frame
+
+.. note::
+
+   during mesh editing, some faces can be void and are not included in this returned value
 
 .. versionadded:: 3.22
 %End

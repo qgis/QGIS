@@ -57,7 +57,7 @@ QgsExpression TestQgsSQLiteExpressionCompiler::makeExpression( const int length 
   {
     expString.append( QStringLiteral( "(\"Z\" >= %1) AND (\"Bottom\" <= %2)" ).arg( i ).arg( i + 1 ) );
   }
-  QgsExpression exp( expString.join( QLatin1String( ") OR (" ) ).prepend( '(' ).append( ')' ) );
+  const QgsExpression exp( expString.join( QLatin1String( ") OR (" ) ).prepend( '(' ).append( ')' ) );
   return exp;
 }
 
@@ -84,10 +84,10 @@ void TestQgsSQLiteExpressionCompiler::cleanupTestCase()
 
 void TestQgsSQLiteExpressionCompiler::testMakeExpression()
 {
-  QgsExpression exp( makeExpression( 1 ) );
+  const QgsExpression exp( makeExpression( 1 ) );
   QVERIFY( exp.isValid() );
   QCOMPARE( QString( exp ), QString( "((\"Z\" >= 0) AND (\"Bottom\" <= 1))" ) );
-  QgsExpression exp2( makeExpression( 2 ) );
+  const QgsExpression exp2( makeExpression( 2 ) );
   QVERIFY( exp2.isValid() );
   QCOMPARE( QString( exp2 ), QString( "((\"Z\" >= 0) AND (\"Bottom\" <= 1)) OR ((\"Z\" >= 1) AND (\"Bottom\" <= 2))" ) );
 }
@@ -104,11 +104,11 @@ void TestQgsSQLiteExpressionCompiler::testCompiler()
   QCOMPARE( compiler.result().count( '(' ),  compiler.result().count( ')' ) );
   QCOMPARE( compiler.result(), QStringLiteral( "((((\"Z\" >= 0) AND (\"Bottom\" <= 1)) OR ((\"Z\" >= 1) AND (\"Bottom\" <= 2))) OR ((\"Z\" >= 2) AND (\"Bottom\" <= 3)))" ) );
 
-  QgsExpression ilike( QStringLiteral( "'a' ilike 'A'" ) );
+  const QgsExpression ilike( QStringLiteral( "'a' ilike 'A'" ) );
   QCOMPARE( compiler.compile( &ilike ), QgsSqlExpressionCompiler::Result::Complete );
   QCOMPARE( compiler.result(), QStringLiteral( "lower('a') LIKE lower('A') ESCAPE '\\'" ) );
 
-  QgsExpression nilike( QStringLiteral( "'a' not ilike 'A'" ) );
+  const QgsExpression nilike( QStringLiteral( "'a' not ilike 'A'" ) );
   QCOMPARE( compiler.compile( &nilike ), QgsSqlExpressionCompiler::Result::Complete );
   QCOMPARE( compiler.result(), QStringLiteral( "lower('a') NOT LIKE lower('A') ESCAPE '\\'" ) );
 }

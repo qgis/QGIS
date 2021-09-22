@@ -14,45 +14,42 @@
    <string>New Mesh Layer</string>
   </property>
   <layout class="QGridLayout" name="gridLayout1">
-   <item row="0" column="0">
+   <item row="4" column="1">
+    <widget class="QgsProjectionSelectionWidget" name="mProjectionSelectionWidget" native="true"/>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLineEdit" name="mLayerNameLineEdit">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0" colspan="2">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
       <string>Layer name</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QLineEdit" name="mLayerNameLineEdit">
-     <property name="text">
-      <string>New mesh layer</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>File name</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QgsFileWidget" name="mFileWidget" native="true"/>
-   </item>
-   <item row="2" column="0">
+   <item row="3" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
       <string>File format</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
-    <widget class="QComboBox" name="mFormatComboBox"/>
-   </item>
-   <item row="3" column="1">
-    <widget class="QgsProjectionSelectionWidget" name="mProjectionSelectionWidget" native="true"/>
-   </item>
-   <item row="4" column="0" colspan="2">
-    <widget class="QGroupBox" name="groupBox">
+   <item row="5" column="0" colspan="2">
+    <widget class="QGroupBox" name="mInitializeMeshGroupBox">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
        <horstretch>0</horstretch>
@@ -61,6 +58,12 @@
      </property>
      <property name="title">
       <string>Initialize Mesh Using</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <property name="leftMargin">
@@ -75,51 +78,47 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <item row="2" column="0">
+      <item row="1" column="1">
+       <widget class="QgsFileWidget" name="mMeshFromFileWidget" native="true"/>
+      </item>
+      <item row="0" column="1">
+       <widget class="QgsMapLayerComboBox" name="mMeshProjectComboBox"/>
+      </item>
+      <item row="2" column="0" colspan="2">
+       <widget class="QTextBrowser" name="mInformationTextBrowser"/>
+      </item>
+      <item row="1" column="0">
        <widget class="QRadioButton" name="mMeshFileRadioButton">
         <property name="text">
          <string>Mesh from file</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
+      <item row="0" column="0">
        <widget class="QRadioButton" name="mMeshProjectRadioButton">
         <property name="text">
          <string>Mesh from the current project</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QRadioButton" name="mEmptyMeshRadioButton">
-        <property name="text">
-         <string>Empty mesh</string>
         </property>
         <property name="checked">
          <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QgsFileWidget" name="mMeshFromFileWidget" native="true"/>
-      </item>
-      <item row="1" column="1">
-       <widget class="QgsMapLayerComboBox" name="mMeshProjectComboBox"/>
-      </item>
-      <item row="3" column="0" colspan="2">
-       <widget class="QTextBrowser" name="mInformationTextBrowser"/>
-      </item>
      </layout>
     </widget>
    </item>
-   <item row="5" column="0" colspan="2">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+   <item row="3" column="1">
+    <widget class="QComboBox" name="mFormatComboBox"/>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>File name</string>
      </property>
     </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QgsFileWidget" name="mFileWidget" native="true"/>
    </item>
   </layout>
  </widget>
@@ -145,7 +144,6 @@
  <tabstops>
   <tabstop>mLayerNameLineEdit</tabstop>
   <tabstop>mFormatComboBox</tabstop>
-  <tabstop>mEmptyMeshRadioButton</tabstop>
   <tabstop>mMeshProjectRadioButton</tabstop>
   <tabstop>mMeshProjectComboBox</tabstop>
   <tabstop>mMeshFileRadioButton</tabstop>

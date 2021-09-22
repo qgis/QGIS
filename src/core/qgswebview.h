@@ -39,7 +39,7 @@ class CORE_EXPORT QgsWebView : public QWebView
     explicit QgsWebView( QWidget *parent = nullptr )
       : QWebView( parent )
     {
-      QDesktopWidget desktop;
+      const QDesktopWidget desktop;
       // Apply zoom factor for HiDPI screens
       if ( desktop.logicalDpiX() > 96 )
       {

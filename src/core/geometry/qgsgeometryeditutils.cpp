@@ -73,7 +73,7 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry
     if ( ringGeom->within( *polyIter ) )
     {
       //check if disjoint with other interior rings
-      int nInnerRings = ( *polyIter )->numInteriorRings();
+      const int nInnerRings = ( *polyIter )->numInteriorRings();
       for ( int i = 0; i < nInnerRings; ++i )
       {
         if ( !ringGeom->disjoint( ( *polyIter )->interiorRing( i ) ) )
@@ -149,7 +149,7 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
       std::unique_ptr<QgsGeometryCollection> parts( static_cast<QgsGeometryCollection *>( part.release() ) );
 
       int i;
-      int n = geomCollection->numGeometries();
+      const int n = geomCollection->numGeometries();
       for ( i = 0; i < parts->numGeometries() && geomCollection->addGeometry( parts->geometryN( i )->clone() ); i++ )
         ;
 
@@ -235,7 +235,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( c
   {
     return nullptr;
   }
-  QgsWkbTypes::Type geomTypeBeforeModification = geom.wkbType();
+  const QgsWkbTypes::Type geomTypeBeforeModification = geom.wkbType();
 
 
   //check if g has polygon type
@@ -253,7 +253,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( c
   for ( QgsVectorLayer *currentLayer : avoidIntersectionsLayers )
   {
     QgsFeatureIds ignoreIds;
-    QHash<QgsVectorLayer *, QSet<qint64> >::const_iterator ignoreIt = ignoreFeatures.constFind( currentLayer );
+    const QHash<QgsVectorLayer *, QSet<qint64> >::const_iterator ignoreIt = ignoreFeatures.constFind( currentLayer );
     if ( ignoreIt != ignoreFeatures.constEnd() )
       ignoreIds = ignoreIt.value();
 
@@ -281,7 +281,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( c
     return nullptr;
   }
 
-  std::unique_ptr< QgsAbstractGeometry > combinedGeometries( geomEngine->combine( nearGeometries ) );
+  const std::unique_ptr< QgsAbstractGeometry > combinedGeometries( geomEngine->combine( nearGeometries ) );
   if ( !combinedGeometries )
   {
     return nullptr;

@@ -1,0 +1,12 @@
+r.path
+Traces paths from starting points following input directions.
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Name of input direction
+QgsProcessingParameterEnum|format|Format of the input direction map|auto;degree;45degree;bitmask|false|0|false
+QgsProcessingParameterRasterLayer|values|Name of input raster values to be used for output|None|True
+QgsProcessingParameterRasterDestination|raster_path|Name for output raster path map
+QgsProcessingParameterVectorDestination|vector_path|Name for output vector path map
+QgsProcessingParameterFeatureSource|start_points|Vector layer containing starting point(s)|0|None|False
+QgsProcessingParameterBoolean|-c|Copy input cell values on output|False
+QgsProcessingParameterBoolean|-a|Accumulate input values along the path|False
+QgsProcessingParameterBoolean|-n|Count cell numbers along the path|False

@@ -85,7 +85,7 @@ void QgsActionMenu::triggerAction()
   if ( !action->data().isValid() || !action->data().canConvert<ActionData>() )
     return;
 
-  ActionData data = action->data().value<ActionData>();
+  const ActionData data = action->data().value<ActionData>();
 
   if ( data.actionType == Invalid )
     return;
@@ -104,7 +104,7 @@ void QgsActionMenu::triggerAction()
     QgsExpressionContextScope *actionScope = new QgsExpressionContextScope();
     actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "action_scope" ), mActionScope, true ) );
     context << actionScope;
-    QgsAction act = data.actionData.value<QgsAction>();
+    const QgsAction act = data.actionData.value<QgsAction>();
     act.run( context );
   }
 }
@@ -145,7 +145,7 @@ void QgsActionMenu::reloadActions()
     addAction( qAction );
   }
 
-  QList<QgsMapLayerAction *> mapLayerActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::SingleFeature );
+  const QList<QgsMapLayerAction *> mapLayerActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::SingleFeature );
 
   if ( !mapLayerActions.isEmpty() )
   {

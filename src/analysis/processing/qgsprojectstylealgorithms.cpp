@@ -116,11 +116,11 @@ void QgsStyleFromProjectAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output style database" ),
                 QObject::tr( "Style files (*.xml)" ) ) );
 
-  QStringList options = QStringList()
-                        << QObject::tr( "Symbols" )
-                        << QObject::tr( "Color ramps" )
-                        << QObject::tr( "Text formats" )
-                        << QObject::tr( "Label settings" );
+  const QStringList options = QStringList()
+                              << QObject::tr( "Symbols" )
+                              << QObject::tr( "Color ramps" )
+                              << QObject::tr( "Text formats" )
+                              << QObject::tr( "Label settings" );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "OBJECTS" ), QObject::tr( "Objects to extract" ), options, true, QVariantList() << 0 << 1 << 2 << 3 ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "SYMBOLS" ), QObject::tr( "Symbol count" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "COLORRAMPS" ), QObject::tr( "Color ramp count" ) ) );

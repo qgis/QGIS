@@ -154,7 +154,7 @@ QString QgsVectorDataProvider::defaultValueClause( int fieldIndex ) const
 
 QgsFieldConstraints::Constraints QgsVectorDataProvider::fieldConstraints( int fieldIndex ) const
 {
-  QgsFields f = fields();
+  const QgsFields f = fields();
   if ( fieldIndex < 0 || fieldIndex >= f.count() )
     return QgsFieldConstraints::Constraints();
 
@@ -243,7 +243,7 @@ QString QgsVectorDataProvider::capabilitiesString() const
 {
   QStringList abilitiesList;
 
-  int abilities = capabilities();
+  const int abilities = capabilities();
 
   if ( abilities & QgsVectorDataProvider::AddFeatures )
   {
@@ -339,7 +339,7 @@ QMap<QString, int> QgsVectorDataProvider::fieldNameMap() const
 {
   QMap<QString, int> resultMap;
 
-  QgsFields fieldsCopy = fields();
+  const QgsFields fieldsCopy = fields();
   for ( int i = 0; i < fieldsCopy.count(); ++i )
   {
     resultMap.insert( fieldsCopy.at( i ).name(), i );
@@ -466,7 +466,7 @@ QStringList QgsVectorDataProvider::uniqueStringsMatching( int index, const QStri
   QgsFeatureRequest request;
   request.setSubsetOfAttributes( keys );
   request.setFlags( QgsFeatureRequest::NoGeometry );
-  QString fieldName = fields().at( index ).name();
+  const QString fieldName = fields().at( index ).name();
   request.setFilterExpression( QStringLiteral( "\"%1\" ILIKE '%%2%'" ).arg( fieldName, substring ) );
   QgsFeatureIterator fi = getFeatures( request );
 
@@ -474,7 +474,7 @@ QStringList QgsVectorDataProvider::uniqueStringsMatching( int index, const QStri
 
   while ( fi.nextFeature( f ) )
   {
-    QString value = f.attribute( index ).toString();
+    const QString value = f.attribute( index ).toString();
     if ( !set.contains( value ) )
     {
       results.append( value );
@@ -513,7 +513,7 @@ void QgsVectorDataProvider::fillMinMaxCache() const
   if ( !mCacheMinMaxDirty )
     return;
 
-  QgsFields flds = fields();
+  const QgsFields flds = fields();
   for ( int i = 0; i < flds.count(); ++i )
   {
     if ( flds.at( i ).type() == QVariant::Int )
@@ -546,8 +546,8 @@ void QgsVectorDataProvider::fillMinMaxCache() const
 
   while ( fi.nextFeature( f ) )
   {
-    QgsAttributes attrs = f.attributes();
-    for ( int attributeIndex : keys )
+    const QgsAttributes attrs = f.attributes();
+    for ( const int attributeIndex : keys )
     {
       const QVariant &varValue = attrs.at( attributeIndex );
 
@@ -558,7 +558,7 @@ void QgsVectorDataProvider::fillMinMaxCache() const
       {
         case QVariant::Int:
         {
-          int value = varValue.toInt();
+          const int value = varValue.toInt();
           if ( value < mCacheMinValues[ attributeIndex ].toInt() )
             mCacheMinValues[ attributeIndex ] = value;
           if ( value > mCacheMaxValues[ attributeIndex ].toInt() )
@@ -567,7 +567,7 @@ void QgsVectorDataProvider::fillMinMaxCache() const
         }
         case QVariant::LongLong:
         {
-          qlonglong value = varValue.toLongLong();
+          const qlonglong value = varValue.toLongLong();
           if ( value < mCacheMinValues[ attributeIndex ].toLongLong() )
             mCacheMinValues[ attributeIndex ] = value;
           if ( value > mCacheMaxValues[ attributeIndex ].toLongLong() )
@@ -576,7 +576,7 @@ void QgsVectorDataProvider::fillMinMaxCache() const
         }
         case QVariant::Double:
         {
-          double value = varValue.toDouble();
+          const double value = varValue.toDouble();
           if ( value < mCacheMinValues[ attributeIndex ].toDouble() )
             mCacheMinValues[attributeIndex ] = value;
           if ( value > mCacheMaxValues[ attributeIndex ].toDouble() )
@@ -585,7 +585,7 @@ void QgsVectorDataProvider::fillMinMaxCache() const
         }
         case QVariant::DateTime:
         {
-          QDateTime value = varValue.toDateTime();
+          const QDateTime value = varValue.toDateTime();
           if ( value < mCacheMinValues[ attributeIndex ].toDateTime() || !mCacheMinValues[ attributeIndex ].isValid() )
             mCacheMinValues[attributeIndex ] = value;
           if ( value > mCacheMaxValues[ attributeIndex ].toDateTime() || !mCacheMaxValues[ attributeIndex ].isValid() )
@@ -594,7 +594,7 @@ void QgsVectorDataProvider::fillMinMaxCache() const
         }
         case QVariant::Date:
         {
-          QDate value = varValue.toDate();
+          const QDate value = varValue.toDate();
           if ( value < mCacheMinValues[ attributeIndex ].toDate() || !mCacheMinValues[ attributeIndex ].isValid() )
             mCacheMinValues[attributeIndex ] = value;
           if ( value > mCacheMaxValues[ attributeIndex ].toDate() || !mCacheMaxValues[ attributeIndex ].isValid() )
@@ -603,7 +603,7 @@ void QgsVectorDataProvider::fillMinMaxCache() const
         }
         case QVariant::Time:
         {
-          QTime value = varValue.toTime();
+          const QTime value = varValue.toTime();
           if ( value < mCacheMinValues[ attributeIndex ].toTime() || !mCacheMinValues[ attributeIndex ].isValid() )
             mCacheMinValues[attributeIndex ] = value;
           if ( value > mCacheMaxValues[ attributeIndex ].toTime() || !mCacheMaxValues[ attributeIndex ].isValid() )
@@ -612,7 +612,7 @@ void QgsVectorDataProvider::fillMinMaxCache() const
         }
         default:
         {
-          QString value = varValue.toString();
+          const QString value = varValue.toString();
           if ( mCacheMinValues[ attributeIndex ].isNull() || value < mCacheMinValues[attributeIndex ].toString() )
           {
             mCacheMinValues[attributeIndex] = value;
@@ -776,7 +776,7 @@ QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geo
     return QgsGeometry();
   }
 
-  QgsWkbTypes::Type providerGeomType = wkbType();
+  const QgsWkbTypes::Type providerGeomType = wkbType();
 
   //geom is already in the provider geometry type
   if ( geometry->wkbType() == providerGeomType )

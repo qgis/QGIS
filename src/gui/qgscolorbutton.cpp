@@ -98,7 +98,7 @@ void QgsColorButton::showColorDialog()
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
   {
-    QColor currentColor = color();
+    const QColor currentColor = color();
     QgsCompoundColorWidget *colorWidget = new QgsCompoundColorWidget( panel, currentColor, QgsCompoundColorWidget::LayoutVertical );
     colorWidget->setPanelTitle( mColorDialogTitle );
     colorWidget->setAllowOpacity( mAllowOpacity );
@@ -114,10 +114,10 @@ void QgsColorButton::showColorDialog()
   }
 
   QColor newColor;
-  QgsSettings settings;
+  const QgsSettings settings;
 
   // first check if we need to use the limited native dialogs
-  bool useNative = settings.value( QStringLiteral( "qgis/native_color_dialogs" ), false ).toBool();
+  const bool useNative = settings.value( QStringLiteral( "qgis/native_color_dialogs" ), false ).toBool();
   if ( useNative )
   {
     // why would anyone want this? who knows.... maybe the limited nature of native dialogs helps ease the transition for MapInfo users?
@@ -171,20 +171,20 @@ bool QgsColorButton::event( QEvent *e )
   if ( e->type() == QEvent::ToolTip )
   {
     QColor c = linkedProjectColor();
-    bool isProjectColor = c.isValid();
+    const bool isProjectColor = c.isValid();
     if ( !isProjectColor )
       c = mColor;
 
-    QString name = c.name();
-    int hue = c.hue();
-    int value = c.value();
-    int saturation = c.saturation();
+    const QString name = c.name();
+    const int hue = c.hue();
+    const int value = c.value();
+    const int saturation = c.saturation();
 
     // create very large preview swatch
-    int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 23 );
-    int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
+    const int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 23 );
+    const int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
 
-    int margin = static_cast< int >( height * 0.1 );
+    const int margin = static_cast< int >( height * 0.1 );
     QImage icon = QImage( width + 2 * margin, height + 2 * margin, QImage::Format_ARGB32 );
     icon.fill( Qt::transparent );
 
@@ -192,7 +192,7 @@ bool QgsColorButton::event( QEvent *e )
     p.begin( &icon );
 
     //start with checkboard pattern
-    QBrush checkBrush = QBrush( transparentBackground() );
+    const QBrush checkBrush = QBrush( transparentBackground() );
     p.setPen( Qt::NoPen );
     p.setBrush( checkBrush );
     p.drawRect( margin, margin, width, height );
@@ -209,13 +209,13 @@ bool QgsColorButton::event( QEvent *e )
     QBuffer buffer( &data );
     icon.save( &buffer, "PNG", 100 );
 
-    QString info = ( isProjectColor ? QStringLiteral( "<p>%1: %2</p>" ).arg( tr( "Linked color" ), mLinkedColorName ) : QString() )
-                   + QStringLiteral( "<b>HEX</b> %1<br>"
-                                     "<b>RGB</b> %2<br>"
-                                     "<b>HSV</b> %3,%4,%5<p>"
-                                     "<img src='data:image/png;base64, %0'>" ).arg( QString( data.toBase64() ), name,
-                                         QgsSymbolLayerUtils::encodeColor( c ) )
-                   .arg( hue ).arg( saturation ).arg( value );
+    const QString info = ( isProjectColor ? QStringLiteral( "<p>%1: %2</p>" ).arg( tr( "Linked color" ), mLinkedColorName ) : QString() )
+                         + QStringLiteral( "<b>HEX</b> %1<br>"
+                                           "<b>RGB</b> %2<br>"
+                                           "<b>HSV</b> %3,%4,%5<p>"
+                                           "<img src='data:image/png;base64, %0'>" ).arg( QString( data.toBase64() ), name,
+                                               QgsSymbolLayerUtils::encodeColor( c ) )
+                         .arg( hue ).arg( saturation ).arg( value );
     setToolTip( info );
   }
   return QToolButton::event( e );
@@ -451,7 +451,7 @@ QPixmap QgsColorButton::createMenuIcon( const QColor &color, const bool showChec
   //start with checkboard pattern
   if ( showChecks )
   {
-    QBrush checkBrush = QBrush( transparentBackground() );
+    const QBrush checkBrush = QBrush( transparentBackground() );
     p.setPen( Qt::NoPen );
     p.setBrush( checkBrush );
     p.drawRect( 0, 0, iconSize - 1, iconSize - 1 );
@@ -638,7 +638,7 @@ void QgsColorButton::resizeEvent( QResizeEvent *event )
 
 void QgsColorButton::setColor( const QColor &color )
 {
-  QColor oldColor = mColor;
+  const QColor oldColor = mColor;
   mColor = color;
 
   // handle when initially set color is same as default (Qt::black); consider it a color change
@@ -688,8 +688,8 @@ void QgsColorButton::setButtonBackground( const QColor &color )
       //calculate size of push button part of widget (ie, without the menu drop-down button part)
       QStyleOptionToolButton opt;
       initStyleOption( &opt );
-      QRect buttonSize = QApplication::style()->subControlRect( QStyle::CC_ToolButton, &opt, QStyle::SC_ToolButton,
-                         this );
+      const QRect buttonSize = QApplication::style()->subControlRect( QStyle::CC_ToolButton, &opt, QStyle::SC_ToolButton,
+                               this );
       //make sure height of icon looks good under different platforms
 #ifdef Q_OS_WIN
       mIconSize = QSize( buttonSize.width() - 10, height() - 6 );
@@ -720,7 +720,7 @@ void QgsColorButton::setButtonBackground( const QColor &color )
 
   if ( backgroundColor.isValid() )
   {
-    QRect rect( 0, 0, currentIconSize.width(), currentIconSize.height() );
+    const QRect rect( 0, 0, currentIconSize.width(), currentIconSize.height() );
     QPainter p;
     p.begin( &pixmap );
     p.setRenderHint( QPainter::Antialiasing );
@@ -728,7 +728,7 @@ void QgsColorButton::setButtonBackground( const QColor &color )
     if ( mAllowOpacity && backgroundColor.alpha() < 255 )
     {
       //start with checkboard pattern
-      QBrush checkBrush = QBrush( transparentBackground() );
+      const QBrush checkBrush = QBrush( transparentBackground() );
       p.setBrush( checkBrush );
       p.drawRoundedRect( rect, 3, 3 );
     }

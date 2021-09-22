@@ -131,9 +131,9 @@ void QgsFeatureListView::mousePressEvent( QMouseEvent *event )
 {
   if ( mModel )
   {
-    QPoint pos = event->pos();
+    const QPoint pos = event->pos();
 
-    QModelIndex index = indexAt( pos );
+    const QModelIndex index = indexAt( pos );
 
     if ( QgsFeatureListViewDelegate::EditElement == mItemDelegate->positionToElement( event->pos() ) )
     {
@@ -159,12 +159,12 @@ void QgsFeatureListView::editSelectionChanged( const QItemSelection &deselected,
 {
   if ( isVisible() && updatesEnabled() )
   {
-    QItemSelection localDeselected = mModel->mapSelectionFromMaster( deselected );
-    QItemSelection localSelected = mModel->mapSelectionFromMaster( selected );
+    const QItemSelection localDeselected = mModel->mapSelectionFromMaster( deselected );
+    const QItemSelection localSelected = mModel->mapSelectionFromMaster( selected );
     viewport()->update( visualRegionForSelection( localDeselected ) | visualRegionForSelection( localSelected ) );
   }
 
-  QItemSelection currentSelection = mCurrentEditSelectionModel->selection();
+  const QItemSelection currentSelection = mCurrentEditSelectionModel->selection();
   if ( currentSelection.size() == 1 )
   {
     QModelIndexList indexList = currentSelection.indexes();
@@ -197,9 +197,9 @@ void QgsFeatureListView::setEditSelection( const QgsFeatureIds &fids )
   QModelIndex firstModelIdx;
 
   const auto constFids = fids;
-  for ( QgsFeatureId fid : constFids )
+  for ( const QgsFeatureId fid : constFids )
   {
-    QModelIndex modelIdx = mModel->fidToIdx( fid );
+    const QModelIndex modelIdx = mModel->fidToIdx( fid );
 
     if ( ! firstModelIdx.isValid() )
       firstModelIdx = modelIdx;
@@ -250,9 +250,9 @@ void QgsFeatureListView::mouseMoveEvent( QMouseEvent *event )
 {
   if ( mModel )
   {
-    QPoint pos = event->pos();
+    const QPoint pos = event->pos();
 
-    QModelIndex index = indexAt( pos );
+    const QModelIndex index = indexAt( pos );
 
     if ( mEditSelectionDrag )
     {
@@ -307,7 +307,7 @@ void QgsFeatureListView::editOtherFeature( QgsFeatureListView::PositionInList po
   int currentRow = 0;
   if ( 0 != mCurrentEditSelectionModel->selectedIndexes().count() )
   {
-    QModelIndex localIndex = mModel->mapFromMaster( mCurrentEditSelectionModel->selectedIndexes().first() );
+    const QModelIndex localIndex = mModel->mapFromMaster( mCurrentEditSelectionModel->selectedIndexes().first() );
     currentRow = localIndex.row();
   }
 
@@ -343,11 +343,11 @@ void QgsFeatureListView::editOtherFeature( QgsFeatureListView::PositionInList po
 
 void QgsFeatureListView::contextMenuEvent( QContextMenuEvent *event )
 {
-  QModelIndex index = indexAt( event->pos() );
+  const QModelIndex index = indexAt( event->pos() );
 
   if ( index.isValid() )
   {
-    QgsFeature feature = mModel->data( index, QgsFeatureListModel::FeatureRole ).value<QgsFeature>();
+    const QgsFeature feature = mModel->data( index, QgsFeatureListModel::FeatureRole ).value<QgsFeature>();
 
     QgsActionMenu *menu = new QgsActionMenu( mModel->layerCache()->layer(), feature, QStringLiteral( "Feature" ), this );
 
@@ -364,7 +364,7 @@ void QgsFeatureListView::contextMenuEvent( QContextMenuEvent *event )
 void QgsFeatureListView::selectRow( const QModelIndex &index, bool anchor )
 {
   QItemSelectionModel::SelectionFlags command = selectionCommand( index );
-  int row = index.row();
+  const int row = index.row();
 
   if ( anchor )
     mRowAnchor = row;
@@ -381,8 +381,8 @@ void QgsFeatureListView::selectRow( const QModelIndex &index, bool anchor )
       command |= QItemSelectionModel::Current;
   }
 
-  QModelIndex tl = model()->index( std::min( mRowAnchor, row ), 0 );
-  QModelIndex br = model()->index( std::max( mRowAnchor, row ), model()->columnCount() - 1 );
+  const QModelIndex tl = model()->index( std::min( mRowAnchor, row ), 0 );
+  const QModelIndex br = model()->index( std::max( mRowAnchor, row ), model()->columnCount() - 1 );
 
   mFeatureSelectionModel->selectFeatures( QItemSelection( tl, br ), command );
 }

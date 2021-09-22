@@ -144,8 +144,8 @@ void TestQgsFieldExpressionWidget::asExpression()
   std::unique_ptr< QgsFieldExpressionWidget > widget( new QgsFieldExpressionWidget() );
   widget->setLayer( layer );
 
-  QSignalSpy spy( widget.get(), static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ) );
-  QSignalSpy spy2( widget.get(), static_cast < void ( QgsFieldExpressionWidget::* )( const QString &, bool ) >( &QgsFieldExpressionWidget::fieldChanged ) );
+  const QSignalSpy spy( widget.get(), static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ) );
+  const QSignalSpy spy2( widget.get(), static_cast < void ( QgsFieldExpressionWidget::* )( const QString &, bool ) >( &QgsFieldExpressionWidget::fieldChanged ) );
 
   // check with field set
   widget->setField( QStringLiteral( "fld" ) );

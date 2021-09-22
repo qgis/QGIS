@@ -380,7 +380,7 @@ bool QgsMapToolPinLabels::pinUnpinCurrentLabel( bool pin )
 //     QgsPointXY labelpoint = labelpos.cornerPoints.at( 0 );
 
     QgsPointXY referencePoint;
-    if ( !currentLabelRotationPoint( referencePoint, !preserveRot, false ) )
+    if ( !currentLabelRotationPoint( referencePoint, !preserveRot ) )
     {
       referencePoint.setX( labelpos.labelRect.xMinimum() );
       referencePoint.setY( labelpos.labelRect.yMinimum() );

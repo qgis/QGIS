@@ -108,9 +108,9 @@ void QgsGeoNodeSourceSelect::modifyConnectionsEntryList()
 
 void QgsGeoNodeSourceSelect::deleteConnectionsEntryList()
 {
-  QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                .arg( cmbConnections->currentText() );
-  QMessageBox::StandardButton result = QMessageBox::question( this, tr( "Delete GeoNode Connection" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
+  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
+                      .arg( cmbConnections->currentText() );
+  const QMessageBox::StandardButton result = QMessageBox::question( this, tr( "Delete GeoNode Connection" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
   if ( result == QMessageBox::Ok )
   {
     QgsGeoNodeConnectionUtils::deleteConnection( cmbConnections->currentText() );
@@ -156,9 +156,9 @@ void QgsGeoNodeSourceSelect::showHelp()
 
 void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
 {
-  QgsGeoNodeConnection connection = currentConnection();
+  const QgsGeoNodeConnection connection = currentConnection();
 
-  QString url = connection.uri().param( QStringLiteral( "url" ) );
+  const QString url = connection.uri().param( QStringLiteral( "url" ) );
   QgsGeoNodeRequest *geonodeRequest = new QgsGeoNodeRequest( url, true );
   connect( this, &QgsGeoNodeSourceSelect::abortRequests, geonodeRequest, &QgsGeoNodeRequest::abort );
   connect( geonodeRequest, &QgsGeoNodeRequest::requestFinished, geonodeRequest, [geonodeRequest]
@@ -186,12 +186,12 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
     {
       for ( const QgsGeoNodeRequest::ServiceLayerDetail &layer : layers )
       {
-        QUuid uuid = layer.uuid;
+        const QUuid uuid = layer.uuid;
 
-        QString wmsURL = layer.wmsURL;
-        QString wfsURL = layer.wfsURL;
-        QString wcsURL = layer.wcsURL;
-        QString xyzURL = layer.xyzURL;
+        const QString wmsURL = layer.wmsURL;
+        const QString wfsURL = layer.wfsURL;
+        const QString wcsURL = layer.wcsURL;
+        const QString xyzURL = layer.xyzURL;
 
         if ( !wmsURL.isEmpty() )
         {
@@ -208,7 +208,7 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
           QStandardItem *serviceTypeItem = new QStandardItem( tr( "Layer" ) );
           QStandardItem *webServiceTypeItem = new QStandardItem( tr( "WMS" ) );
 
-          QString typeName = layer.typeName;
+          const QString typeName = layer.typeName;
 
           titleItem->setData( uuid,  Qt::UserRole + 1 );
           titleItem->setData( wmsURL,  Qt::UserRole + 2 );
@@ -235,7 +235,7 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
           QStandardItem *serviceTypeItem = new QStandardItem( tr( "Layer" ) );
           QStandardItem *webServiceTypeItem = new QStandardItem( tr( "WFS" ) );
 
-          QString typeName = layer.typeName;
+          const QString typeName = layer.typeName;
 
           titleItem->setData( uuid,  Qt::UserRole + 1 );
           titleItem->setData( wfsURL,  Qt::UserRole + 2 );
@@ -263,7 +263,7 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
           QStandardItem *serviceTypeItem = new QStandardItem( tr( "Layer" ) );
           QStandardItem *webServiceTypeItem = new QStandardItem( tr( "WCS" ) );
 
-          QString typeName = layer.typeName;
+          const QString typeName = layer.typeName;
 
           titleItem->setData( uuid,  Qt::UserRole + 1 );
           titleItem->setData( wcsURL,  Qt::UserRole + 2 );
@@ -292,7 +292,7 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
           QStandardItem *serviceTypeItem = new QStandardItem( tr( "Layer" ) );
           QStandardItem *webServiceTypeItem = new QStandardItem( tr( "XYZ" ) );
 
-          QString typeName = layer.typeName;
+          const QString typeName = layer.typeName;
 
           titleItem->setData( uuid,  Qt::UserRole + 1 );
           titleItem->setData( xyzURL,  Qt::UserRole + 2 );
@@ -337,8 +337,8 @@ void QgsGeoNodeSourceSelect::saveGeonodeConnection()
 
 void QgsGeoNodeSourceSelect::loadGeonodeConnection()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
-                     tr( "XML files (*.xml *.XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
+                           tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -352,14 +352,14 @@ void QgsGeoNodeSourceSelect::loadGeonodeConnection()
 
 void QgsGeoNodeSourceSelect::filterChanged( const QString &text )
 {
-  QRegularExpression regExp( text, QRegularExpression::CaseInsensitiveOption );
+  const QRegularExpression regExp( text, QRegularExpression::CaseInsensitiveOption );
   mModelProxy->setFilterRegularExpression( regExp );
   mModelProxy->sort( mModelProxy->sortColumn(), mModelProxy->sortOrder() );
 }
 
 void QgsGeoNodeSourceSelect::treeViewSelectionChanged()
 {
-  QModelIndex currentIndex = treeView->selectionModel()->currentIndex();
+  const QModelIndex currentIndex = treeView->selectionModel()->currentIndex();
   if ( !currentIndex.isValid() )
   {
     return;
@@ -368,13 +368,13 @@ void QgsGeoNodeSourceSelect::treeViewSelectionChanged()
   QModelIndexList modelIndexList = treeView->selectionModel()->selectedRows();
   for ( int i = 0; i < modelIndexList.size(); i++ )
   {
-    QModelIndex idx = mModelProxy->mapToSource( modelIndexList[i] );
+    const QModelIndex idx = mModelProxy->mapToSource( modelIndexList[i] );
     if ( !idx.isValid() )
     {
       continue;
     }
-    int row = idx.row();
-    QString typeItem = mModel->item( row, MODEL_IDX_TYPE )->text();
+    const int row = idx.row();
+    const QString typeItem = mModel->item( row, MODEL_IDX_TYPE )->text();
     if ( typeItem == tr( "Layer" ) )
     {
       // Enable if there is a layer selected
@@ -389,33 +389,33 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
 {
   QApplication::setOverrideCursor( Qt::BusyCursor );
   // Get selected entry in treeview
-  QModelIndex currentIndex = treeView->selectionModel()->currentIndex();
+  const QModelIndex currentIndex = treeView->selectionModel()->currentIndex();
   if ( !currentIndex.isValid() )
   {
     return;
   }
 
-  QgsGeoNodeConnection connection = currentConnection();
+  const QgsGeoNodeConnection connection = currentConnection();
 
   QModelIndexList modelIndexList = treeView->selectionModel()->selectedRows();
   for ( int i = 0; i < modelIndexList.size(); i++ )
   {
-    QModelIndex idx = mModelProxy->mapToSource( modelIndexList[i] );
+    const QModelIndex idx = mModelProxy->mapToSource( modelIndexList[i] );
     if ( !idx.isValid() )
     {
       continue;
     }
-    int row = idx.row();
+    const int row = idx.row();
 
-    QString typeItem = mModel->item( row, MODEL_IDX_TYPE )->text();
+    const QString typeItem = mModel->item( row, MODEL_IDX_TYPE )->text();
     if ( typeItem == tr( "Map" ) )
     {
       continue;
     }
-    QString serviceURL = mModel->item( row, MODEL_IDX_TITLE )->data( Qt::UserRole + 2 ).toString();
-    QString titleName = mModel->item( row, MODEL_IDX_TITLE )->text();
+    const QString serviceURL = mModel->item( row, MODEL_IDX_TITLE )->data( Qt::UserRole + 2 ).toString();
+    const QString titleName = mModel->item( row, MODEL_IDX_TITLE )->text();
     QString layerName = mModel->item( row, MODEL_IDX_NAME )->text();
-    QString webServiceType = mModel->item( row, MODEL_IDX_WEB_SERVICE )->text();
+    const QString webServiceType = mModel->item( row, MODEL_IDX_WEB_SERVICE )->text();
 
     if ( cbxUseTitleLayerName->isChecked() && !titleName.isEmpty() )
     {
@@ -428,10 +428,10 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
       uri.setParam( QStringLiteral( "url" ), serviceURL );
 
       // Set static first, to see that it works. Need to think about the UI also.
-      QString format( QStringLiteral( "image/png" ) );
-      QString crs( QStringLiteral( "EPSG:4326" ) );
-      QString styles;
-      QString contextualWMSLegend( QStringLiteral( "0" ) );
+      const QString format( QStringLiteral( "image/png" ) );
+      const QString crs( QStringLiteral( "EPSG:4326" ) );
+      const QString styles;
+      const QString contextualWMSLegend( QStringLiteral( "0" ) );
 
       connection.addWmsConnectionSettings( uri );
 
@@ -447,7 +447,7 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
     else if ( webServiceType == QLatin1String( "WCS" ) )
     {
       QgsDataSourceUri uri;
-      QString typeName = mModel->item( row, 0 )->data( Qt::UserRole + 3 ).toString();
+      const QString typeName = mModel->item( row, 0 )->data( Qt::UserRole + 3 ).toString();
       uri.setParam( QStringLiteral( "url" ), serviceURL );
 
       connection.addWcsConnectionSettings( uri );
@@ -459,8 +459,8 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
     else if ( webServiceType == QLatin1String( "WFS" ) )
     {
       // Set static first, to see that it works. Need to think about the UI also.
-      QString typeName = mModel->item( row, 0 )->data( Qt::UserRole + 3 ).toString();
-      QString crs( QStringLiteral( "EPSG:4326" ) );
+      const QString typeName = mModel->item( row, 0 )->data( Qt::UserRole + 3 ).toString();
+      const QString crs( QStringLiteral( "EPSG:4326" ) );
 
       // typeName, titleName, sql,
       // Build url for WFS
@@ -472,7 +472,7 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
       if ( serviceURL.contains( QStringLiteral( "qgis-server" ) ) )
       {
         // I need to do this since the typename used in qgis-server is without the workspace.
-        QString qgisServerTypeName = QString( typeName ).split( ':' ).last();
+        const QString qgisServerTypeName = QString( typeName ).split( ':' ).last();
         uri.setParam( QStringLiteral( "typename" ), qgisServerTypeName );
       }
       else
@@ -506,7 +506,7 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
 
 void QgsGeoNodeSourceSelect::updateButtonStateForAvailableConnections()
 {
-  bool connectionsAvailable = cmbConnections->count() > 0;
+  const bool connectionsAvailable = cmbConnections->count() > 0;
   btnConnect->setEnabled( connectionsAvailable );
   btnEdit->setEnabled( connectionsAvailable );
   btnDelete->setEnabled( connectionsAvailable );

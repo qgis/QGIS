@@ -630,6 +630,22 @@ tests:
         name: expected/snap_geometries.gml
         type: vector
 
+  - algorithm: native:snapgeometries
+    name: Snap lines to lines (against itself; ordering check)
+    params:
+      BEHAVIOR: '0'
+      INPUT:
+        name: lines_t_shape.gml
+        type: vector
+      REFERENCE_LAYER:
+        name: lines_t_shape.gml
+        type: vector
+      TOLERANCE: 0.3
+    results:
+      OUTPUT:
+        name: expected/lines_t_shape_snapped.gml
+        type: vector
+
   - algorithm: native:poleofinaccessibility
     name: Pole of inaccessibility (polygons)
     params:

@@ -138,7 +138,7 @@ Qt::ItemFlags QgsVectorTileBasicRendererListModel::flags( const QModelIndex &ind
   if ( !index.isValid() )
     return Qt::ItemIsDropEnabled;
 
-  Qt::ItemFlag checkable = ( index.column() == 0 ? Qt::ItemIsUserCheckable : Qt::NoItemFlags );
+  const Qt::ItemFlag checkable = ( index.column() == 0 ? Qt::ItemIsUserCheckable : Qt::NoItemFlags );
 
   return Qt::ItemIsEnabled | Qt::ItemIsSelectable |
          Qt::ItemIsEditable | checkable |
@@ -241,7 +241,7 @@ QMimeData *QgsVectorTileBasicRendererListModel::mimeData( const QModelIndexList 
     if ( !index.isValid() || index.column() != 0 )
       continue;
 
-    QgsVectorTileBasicRendererStyle style = mRenderer->style( index.row() );
+    const QgsVectorTileBasicRendererStyle style = mRenderer->style( index.row() );
 
     QDomDocument doc;
     QDomElement rootElem = doc.createElement( QStringLiteral( "vector_tile_basic_renderer_style_mime" ) );
@@ -287,7 +287,7 @@ bool QgsVectorTileBasicRendererListModel::dropMimeData( const QMimeData *data,
     QDomDocument doc;
     if ( !doc.setContent( text ) )
       continue;
-    QDomElement rootElem = doc.documentElement();
+    const QDomElement rootElem = doc.documentElement();
     if ( rootElem.tagName() != QLatin1String( "vector_tile_basic_renderer_style_mime" ) )
       continue;
 
@@ -383,7 +383,7 @@ void QgsVectorTileBasicRendererWidget::addStyle( QgsWkbTypes::GeometryType geomT
   QgsVectorTileBasicRendererStyle style( QString(), QString(), geomType );
   style.setSymbol( QgsSymbol::defaultSymbol( geomType ) );
 
-  int rows = mModel->rowCount();
+  const int rows = mModel->rowCount();
   mModel->insertStyle( rows, style );
   viewStyles->selectionModel()->setCurrentIndex( mProxyModel->mapFromSource( mModel->index( rows, 0 ) ), QItemSelectionModel::ClearAndSelect );
 }
@@ -450,7 +450,7 @@ void QgsVectorTileBasicRendererWidget::editStyleAtIndex( const QModelIndex &prox
 
 void QgsVectorTileBasicRendererWidget::updateSymbolsFromWidget()
 {
-  int index = mProxyModel->mapToSource( viewStyles->selectionModel()->currentIndex() ).row();
+  const int index = mProxyModel->mapToSource( viewStyles->selectionModel()->currentIndex() ).row();
   if ( index < 0 )
     return;
 

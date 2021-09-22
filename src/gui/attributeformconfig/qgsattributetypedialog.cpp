@@ -138,7 +138,7 @@ const QVariantMap QgsAttributeTypeDialog::editorWidgetConfig()
   QStandardItem *item = currentItem();
   if ( item )
   {
-    QString widgetType = item->data( Qt::UserRole ).toString();
+    const QString widgetType = item->data( Qt::UserRole ).toString();
     QgsEditorConfigWidget *cfgWdg = mEditorConfigWidgets.value( widgetType );
     if ( cfgWdg )
     {
@@ -394,7 +394,7 @@ void QgsAttributeTypeDialog::defaultExpressionChanged()
 {
   mWarnDefaultValueHasFieldsWidget->hide();
 
-  QString expression = mExpressionWidget->expression();
+  const QString expression = mExpressionWidget->expression();
   if ( expression.isEmpty() )
   {
     mDefaultPreviewLabel->setText( QString() );
@@ -421,7 +421,7 @@ void QgsAttributeTypeDialog::defaultExpressionChanged()
     return;
   }
 
-  QVariant val = exp.evaluate( &context );
+  const QVariant val = exp.evaluate( &context );
   if ( exp.hasEvalError() )
   {
     mDefaultPreviewLabel->setText( "<i>" + exp.evalErrorString() + "</i>" );
@@ -430,12 +430,12 @@ void QgsAttributeTypeDialog::defaultExpressionChanged()
 
   // if the expression uses fields and it's not on update,
   // there is no warranty that the field will be available
-  bool expressionHasFields = exp.referencedAttributeIndexes( mLayer->fields() ).count() > 0;
+  const bool expressionHasFields = exp.referencedAttributeIndexes( mLayer->fields() ).count() > 0;
   mWarnDefaultValueHasFieldsWidget->setVisible( expressionHasFields && !mApplyDefaultValueOnUpdateCheckBox->isChecked() );
 
   QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( editorWidgetType() );
 
-  QString previewText = fieldFormatter->representValue( mLayer, mFieldIdx, editorWidgetConfig(), QVariant(), val );
+  const QString previewText = fieldFormatter->representValue( mLayer, mFieldIdx, editorWidgetConfig(), QVariant(), val );
 
   mDefaultPreviewLabel->setText( "<i>" + previewText + "</i>" );
 }

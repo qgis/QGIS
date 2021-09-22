@@ -86,15 +86,15 @@ void TestQgsVectorTileLayer::initTestCase()
 
   // let's have some standard style config for the layer
   QColor polygonFillColor = Qt::blue;
-  QColor polygonStrokeColor = polygonFillColor;
+  const QColor polygonStrokeColor = polygonFillColor;
   polygonFillColor.setAlpha( 100 );
-  double polygonStrokeWidth = DEFAULT_LINE_WIDTH * 2;
-  QColor lineStrokeColor = Qt::blue;
-  double lineStrokeWidth = DEFAULT_LINE_WIDTH * 2;
+  const double polygonStrokeWidth = DEFAULT_LINE_WIDTH * 2;
+  const QColor lineStrokeColor = Qt::blue;
+  const double lineStrokeWidth = DEFAULT_LINE_WIDTH * 2;
   QColor pointFillColor = Qt::red;
-  QColor pointStrokeColor = pointFillColor;
+  const QColor pointStrokeColor = pointFillColor;
   pointFillColor.setAlpha( 100 );
-  double pointSize = DEFAULT_POINT_SIZE;
+  const double pointSize = DEFAULT_POINT_SIZE;
 
   QgsVectorTileBasicRenderer *rend = new QgsVectorTileBasicRenderer;
   rend->setStyles( QgsVectorTileBasicRenderer::simpleStyle(
@@ -108,7 +108,7 @@ void TestQgsVectorTileLayer::initTestCase()
 
 void TestQgsVectorTileLayer::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -123,10 +123,10 @@ void TestQgsVectorTileLayer::cleanupTestCase()
 void TestQgsVectorTileLayer::test_basic()
 {
   // tile fetch test
-  QByteArray tile0rawData = mLayer->getRawTile( QgsTileXYZ( 0, 0, 0 ) );
+  const QByteArray tile0rawData = mLayer->getRawTile( QgsTileXYZ( 0, 0, 0 ) );
   QCOMPARE( tile0rawData.length(), 64822 );
 
-  QByteArray invalidTileRawData = mLayer->getRawTile( QgsTileXYZ( 0, 0, 99 ) );
+  const QByteArray invalidTileRawData = mLayer->getRawTile( QgsTileXYZ( 0, 0, 99 ) );
   QCOMPARE( invalidTileRawData.length(), 0 );
 }
 
@@ -142,7 +142,7 @@ bool TestQgsVectorTileLayer::imageCheck( const QString &testType, QgsVectorTileL
   myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( *mMapSettings );
   myChecker.setColorTolerance( 15 );
-  bool myResultFlag = myChecker.runTest( testType, 0 );
+  const bool myResultFlag = myChecker.runTest( testType, 0 );
   mReport += myChecker.report();
   return myResultFlag;
 }
@@ -203,7 +203,7 @@ void TestQgsVectorTileLayer::test_labeling()
                      Qt::transparent, Qt::transparent, 0 ) );
   mLayer->setRenderer( rend );  // takes ownership
 
-  bool res = imageCheck( "render_test_labeling", mLayer, mLayer->extent() );
+  const bool res = imageCheck( "render_test_labeling", mLayer, mLayer->extent() );
 
   mLayer->setRenderer( oldRenderer );
 
@@ -214,18 +214,18 @@ void TestQgsVectorTileLayer::test_relativePaths()
 {
   QgsReadWriteContext contextRel;
   contextRel.setPathResolver( QgsPathResolver( "/home/qgis/project.qgs" ) );
-  QgsReadWriteContext contextAbs;
+  const QgsReadWriteContext contextAbs;
 
-  QString srcXyzLocal = "type=xyz&url=file:///home/qgis/%7Bz%7D/%7Bx%7D/%7By%7D.pbf";
-  QString srcXyzRemote = "type=xyz&url=http://www.example.com/%7Bz%7D/%7Bx%7D/%7By%7D.pbf";
-  QString srcMbtiles = "type=mbtiles&url=/home/qgis/test/map.mbtiles";
+  const QString srcXyzLocal = "type=xyz&url=file:///home/qgis/%7Bz%7D/%7Bx%7D/%7By%7D.pbf";
+  const QString srcXyzRemote = "type=xyz&url=http://www.example.com/%7Bz%7D/%7Bx%7D/%7By%7D.pbf";
+  const QString srcMbtiles = "type=mbtiles&url=/home/qgis/test/map.mbtiles";
 
-  QgsVectorTileLayer layer;
+  const QgsVectorTileLayer layer;
 
   // encode source: converting absolute paths to relative
-  QString srcXyzLocalRel = layer.encodedSource( srcXyzLocal, contextRel );
+  const QString srcXyzLocalRel = layer.encodedSource( srcXyzLocal, contextRel );
   QCOMPARE( srcXyzLocalRel, QStringLiteral( "type=xyz&url=file:./%7Bz%7D/%7Bx%7D/%7By%7D.pbf" ) );
-  QString srcMbtilesRel = layer.encodedSource( srcMbtiles, contextRel );
+  const QString srcMbtilesRel = layer.encodedSource( srcMbtiles, contextRel );
   QCOMPARE( srcMbtilesRel, QStringLiteral( "type=mbtiles&url=./test/map.mbtiles" ) );
   QCOMPARE( layer.encodedSource( srcXyzRemote, contextRel ), srcXyzRemote );
 
@@ -256,8 +256,8 @@ void TestQgsVectorTileLayer::test_polygonWithLineStyle()
 
   mMapSettings->setLayers( QList<QgsMapLayer *>() << layer.get() );
 
-  QColor lineStrokeColor = Qt::blue;
-  double lineStrokeWidth = DEFAULT_LINE_WIDTH * 2;
+  const QColor lineStrokeColor = Qt::blue;
+  const double lineStrokeWidth = DEFAULT_LINE_WIDTH * 2;
 
   QgsVectorTileBasicRenderer *rend = new QgsVectorTileBasicRenderer;
 

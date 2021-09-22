@@ -171,7 +171,7 @@ class CORE_EXPORT QgsVector
      */
     double angle() const SIP_HOLDGIL
     {
-      double angle = std::atan2( mY, mX );
+      const double angle = std::atan2( mY, mX );
       return angle < 0.0 ? angle + 2.0 * M_PI : angle;
     }
 

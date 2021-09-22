@@ -1418,7 +1418,7 @@ bool QgsPostgresRasterProvider::initFieldsAndTemporal( )
           mTemporalFieldIndex = temporalFieldIndex;
           temporalCapabilities()->setHasTemporalCapabilities( true );
           temporalCapabilities()->setAvailableTemporalRange( { minTime, maxTime } );
-          temporalCapabilities()->setIntervalHandlingMethod( QgsRasterDataProviderTemporalCapabilities::FindClosestMatchToStartOfRange );
+          temporalCapabilities()->setIntervalHandlingMethod( Qgis::TemporalIntervalMatchMethod::FindClosestMatchToStartOfRange );
           QgsDebugMsgLevel( QStringLiteral( "Raster temporal range for field %1: %2 - %3" ).arg( QString::number( mTemporalFieldIndex ), minTime.toString(), maxTime.toString() ), 3 );
 
           if ( mUri.hasParam( QStringLiteral( "temporalDefaultTime" ) ) )

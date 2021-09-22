@@ -61,8 +61,8 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer *layer, QgsStyle *sty
   mHeightWidget->setLayer( layer );
 
   QgsExpressionContextScope *scope = QgsExpressionContextUtils::layerScope( mLayer );
-  QVariant height = scope->variable( QStringLiteral( "qgis_25d_height" ) );
-  QVariant angle = scope->variable( QStringLiteral( "qgis_25d_angle" ) );
+  const QVariant height = scope->variable( QStringLiteral( "qgis_25d_height" ) );
+  const QVariant angle = scope->variable( QStringLiteral( "qgis_25d_angle" ) );
   delete scope;
 
   mHeightWidget->setField( height.isNull() ? QStringLiteral( "10" ) : height.toString() );

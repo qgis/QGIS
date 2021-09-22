@@ -61,7 +61,7 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
       emit tableChanged();
   } );
 
-  int minDockWidth( fontMetrics().boundingRect( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" ) ).width() );
+  const int minDockWidth( fontMetrics().boundingRect( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" ) ).width() );
 
   mPropertiesDock = new QgsDockWidget( tr( "Cell Contents" ), this );
   mPropertiesDock->setObjectName( QStringLiteral( "FormattingDock" ) );
@@ -134,7 +134,7 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   } );
 
   // restore the toolbar and dock widgets positions using Qt settings API
-  QgsSettings settings;
+  const QgsSettings settings;
 
   const QByteArray state = settings.value( QStringLiteral( "LayoutDesigner/tableEditorState" ), QByteArray(), QgsSettings::App ).toByteArray();
   if ( !state.isEmpty() && !restoreState( state ) )
@@ -169,7 +169,7 @@ bool QgsTableEditorDialog::setTableContentsFromClipboard()
       const QStringList cells = line.split( '\t' );
       for ( const QString &text : cells )
       {
-        QgsTableCell cell( text );
+        const QgsTableCell cell( text );
         row << cell;
       }
       contents << row;
