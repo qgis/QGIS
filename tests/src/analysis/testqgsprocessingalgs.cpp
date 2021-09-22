@@ -1475,7 +1475,7 @@ void TestQgsProcessingAlgs::roundness()
 
   const QgsFeature result = runForFeature( alg, feature, QStringLiteral( "Polygon" ) );
 
-  double roundnessResult = result.attribute( QStringLiteral( "roundness" ) ).toDouble();
+  const double roundnessResult = result.attribute( QStringLiteral( "roundness" ) ).toDouble();
   QCOMPARE( std::round( roundnessResult * 1000 ) / 1000, expectedAttribute );
 }
 
