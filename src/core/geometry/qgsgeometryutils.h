@@ -169,8 +169,8 @@ class CORE_EXPORT QgsGeometryUtils
      *
      * \since QGIS 3.2
      */
-    static int circleCircleIntersections( QgsPointXY center1, double radius1,
-                                          QgsPointXY center2, double radius2,
+    static int circleCircleIntersections( const QgsPointXY &center1, double radius1,
+                                          const QgsPointXY &center2, double radius2,
                                           QgsPointXY &intersection1 SIP_OUT, QgsPointXY &intersection2 SIP_OUT ) SIP_HOLDGIL;
 
     /**

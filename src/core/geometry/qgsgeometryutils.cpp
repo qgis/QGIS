@@ -372,7 +372,7 @@ bool QgsGeometryUtils::lineCircleIntersection( const QgsPointXY &center, const d
 
 // based on public domain work by 3/26/2005 Tim Voght
 // see http://paulbourke.net/geometry/circlesphere/tvoght.c
-int QgsGeometryUtils::circleCircleIntersections( QgsPointXY center1, const double r1, QgsPointXY center2, const double r2, QgsPointXY &intersection1, QgsPointXY &intersection2 )
+int QgsGeometryUtils::circleCircleIntersections( const QgsPointXY &center1, const double r1, const QgsPointXY &center2, const double r2, QgsPointXY &intersection1, QgsPointXY &intersection2 )
 {
   // determine the straight-line distance between the centers
   const double d = center1.distance( center2 );
