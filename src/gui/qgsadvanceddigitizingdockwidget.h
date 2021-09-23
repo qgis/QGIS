@@ -195,6 +195,22 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
          */
         void toggleRelative();
 
+        /**
+         * Returns the numeric precision (decimal places) to show in the associated widget.
+         *
+         * \see setPrecision()
+         * \since QGIS 3.22
+         */
+        int precision() const { return mPrecision; }
+
+        /**
+         * Sets the numeric precision (decimal places) to show in the associated widget.
+         *
+         * \see precision()
+         * \since QGIS 3.22
+         */
+        void setPrecision( int precision );
+
       private:
         QLineEdit *mLineEdit = nullptr;
         QToolButton *mLockerButton = nullptr;
@@ -204,6 +220,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
         bool mRepeatingLock;
         bool mRelative;
         double mValue;
+        int mPrecision = 6;
     };
 
     /**

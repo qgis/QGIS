@@ -1409,6 +1409,9 @@ void QgsAdvancedDigitizingDockWidget::enable()
 
     mDistanceLineEdit->setEnabled( false );
     mDistanceLineEdit->setToolTip( tr( "Distance constraint cannot be used on geographic coordinates. Change the coordinates system in the project properties." ) );
+
+    mXConstraint->setPrecision( 8 );
+    mYConstraint->setPrecision( 8 );
   }
   else
   {
@@ -1417,6 +1420,9 @@ void QgsAdvancedDigitizingDockWidget::enable()
 
     mDistanceLineEdit->setEnabled( true );
     mDistanceLineEdit->setToolTip( "<b>" + tr( "Distance" ) + "</b><br>(" + tr( "press d for quick access" ) + ")" );
+
+    mXConstraint->setPrecision( 6 );
+    mYConstraint->setPrecision( 6 );
   }
 
   mEnableAction->setEnabled( true );
@@ -1546,7 +1552,7 @@ void QgsAdvancedDigitizingDockWidget::CadConstraint::setValue( double value, boo
 {
   mValue = value;
   if ( updateWidget && mLineEdit->isEnabled() )
-    mLineEdit->setText( QLocale().toString( value, 'f', 6 ) );
+    mLineEdit->setText( QLocale().toString( value, 'f', mPrecision ) );
 }
 
 void QgsAdvancedDigitizingDockWidget::CadConstraint::toggleLocked()
@@ -1557,6 +1563,13 @@ void QgsAdvancedDigitizingDockWidget::CadConstraint::toggleLocked()
 void QgsAdvancedDigitizingDockWidget::CadConstraint::toggleRelative()
 {
   setRelative( !mRelative );
+}
+
+void QgsAdvancedDigitizingDockWidget::CadConstraint::setPrecision( int precision )
+{
+  mPrecision = precision;
+  if ( mLineEdit->isEnabled() )
+    mLineEdit->setText( QLocale().toString( mValue, 'f', mPrecision ) );
 }
 
 QgsPoint QgsAdvancedDigitizingDockWidget::currentPointV2( bool *exist ) const

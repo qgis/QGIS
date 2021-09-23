@@ -159,6 +159,24 @@ Toggle lock mode
 Toggle relative mode
 %End
 
+        int precision() const;
+%Docstring
+Returns the numeric precision (decimal places) to show in the associated widget.
+
+.. seealso:: :py:func:`setPrecision`
+
+.. versionadded:: 3.22
+%End
+
+        void setPrecision( int precision );
+%Docstring
+Sets the numeric precision (decimal places) to show in the associated widget.
+
+.. seealso:: :py:func:`precision`
+
+.. versionadded:: 3.22
+%End
+
     };
 
     explicit QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent = 0 );
