@@ -1412,11 +1412,11 @@ void QgsAdvancedDigitizingDockWidget::enable()
   }
   else
   {
-    mAngleLineEdit->setEnabled( true );
-    mAngleLineEdit->setToolTip( tr( "xxx" ) );
+    mAngleLineEdit->setToolTip( "<b>" + tr( "Angle" ) + "</b><br>(" + tr( "press a for quick access" ) + ")" );
+    mAngleLineEdit->setToolTip( QString() );
 
     mDistanceLineEdit->setEnabled( true );
-    mDistanceLineEdit->setToolTip( tr( "xxx" ) );
+    mDistanceLineEdit->setToolTip( "<b>" + tr( "Distance" ) + "</b><br>(" + tr( "press d for quick access" ) + ")" );
   }
 
   mEnableAction->setEnabled( true );
