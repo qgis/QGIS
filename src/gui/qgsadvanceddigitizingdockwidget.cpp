@@ -1410,6 +1410,9 @@ void QgsAdvancedDigitizingDockWidget::enable()
     mDistanceLineEdit->setEnabled( false );
     mDistanceLineEdit->setToolTip( tr( "Distance constraint cannot be used on geographic coordinates. Change the coordinates system in the project properties." ) );
 
+    mLabelX->setText( tr( "Long" ) );
+    mLabelY->setText( tr( "Lat" ) );
+
     mXConstraint->setPrecision( 8 );
     mYConstraint->setPrecision( 8 );
   }
@@ -1420,6 +1423,9 @@ void QgsAdvancedDigitizingDockWidget::enable()
 
     mDistanceLineEdit->setEnabled( true );
     mDistanceLineEdit->setToolTip( "<b>" + tr( "Distance" ) + "</b><br>(" + tr( "press d for quick access" ) + ")" );
+
+    mLabelX->setText( tr( "x" ) );
+    mLabelY->setText( tr( "y" ) );
 
     mXConstraint->setPrecision( 6 );
     mYConstraint->setPrecision( 6 );
