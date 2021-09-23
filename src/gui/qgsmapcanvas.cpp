@@ -254,12 +254,29 @@ QgsMapCanvas::~QgsMapCanvas()
   }
   mLastNonZoomMapTool = nullptr;
 
+  cancelJobs();
+
+  // delete canvas items prior to deleting the canvas
+  // because they might try to update canvas when it's
+  // already being destructed, ends with segfault
+  qDeleteAll( mScene->items() );
+
+  mScene->deleteLater();  // crashes in python tests on windows
+
+  delete mCache;
+}
+
+
+void QgsMapCanvas::cancelJobs()
+{
+
   // rendering job may still end up writing into canvas map item
   // so kill it before deleting canvas items
   if ( mJob )
   {
     whileBlocking( mJob )->cancel();
     delete mJob;
+    mJob = nullptr;
   }
 
   QList< QgsMapRendererQImageJob * >::const_iterator previewJob = mPreviewJobs.constBegin();
@@ -271,16 +288,8 @@ QgsMapCanvas::~QgsMapCanvas()
       delete *previewJob;
     }
   }
-
-  // delete canvas items prior to deleting the canvas
-  // because they might try to update canvas when it's
-  // already being destructed, ends with segfault
-  qDeleteAll( mScene->items() );
-
-  mScene->deleteLater();  // crashes in python tests on windows
-
-  delete mCache;
 }
+
 
 void QgsMapCanvas::setMagnificationFactor( double factor, const QgsPointXY *center )
 {
