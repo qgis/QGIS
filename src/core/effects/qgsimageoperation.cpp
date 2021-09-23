@@ -73,7 +73,7 @@ template <typename RectOperation>
 void QgsImageOperation::runRectOperation( QImage &image, RectOperation &operation )
 {
   //possibly could be tweaked for rect operations
-  if ( image.height() * image.width() < 100000 )
+  if ( static_cast< qgssize >( image.height() ) * image.width() < 100000 )
   {
     //small image, don't multithread
     //this threshold was determined via testing various images
@@ -101,14 +101,14 @@ void QgsImageOperation::runRectOperationOnWholeImage( QImage &image, RectOperati
 //linear operations
 
 template <typename LineOperation>
-void QgsImageOperation::runLineOperation( QImage &image, LineOperation &operation )
+void QgsImageOperation::runLineOperation( QImage &image, LineOperation &operation, QgsFeedback *feedback )
 {
   //possibly could be tweaked for rect operations
-  if ( image.height() * image.width() < 100000 )
+  if ( static_cast< qgssize >( image.height() ) * image.width() < 100000 )
   {
     //small image, don't multithread
     //this threshold was determined via testing various images
-    runLineOperationOnWholeImage( image, operation );
+    runLineOperationOnWholeImage( image, operation, feedback );
   }
   else
   {
@@ -119,7 +119,7 @@ void QgsImageOperation::runLineOperation( QImage &image, LineOperation &operatio
 }
 
 template <class LineOperation>
-void QgsImageOperation::runLineOperationOnWholeImage( QImage &image, LineOperation &operation )
+void QgsImageOperation::runLineOperationOnWholeImage( QImage &image, LineOperation &operation, QgsFeedback *feedback )
 {
   int height = image.height();
   int width = image.width();
@@ -130,6 +130,9 @@ void QgsImageOperation::runLineOperationOnWholeImage( QImage &image, LineOperati
   {
     for ( int y = 0; y < height; ++y )
     {
+      if ( feedback && feedback->isCanceled() )
+        break;
+
       QRgb *ref = reinterpret_cast< QRgb * >( image.scanLine( y ) );
       operation( ref, width, bpl );
     }
@@ -140,6 +143,9 @@ void QgsImageOperation::runLineOperationOnWholeImage( QImage &image, LineOperati
     unsigned char *ref = image.scanLine( 0 );
     for ( int x = 0; x < width; ++x, ref += 4 )
     {
+      if ( feedback && feedback->isCanceled() )
+        break;
+
       operation( reinterpret_cast< QRgb * >( ref ), height, bpl );
     }
   }
@@ -600,25 +606,25 @@ void QgsImageOperation::stackBlur( QImage &image, const int radius, const bool a
     i1 = i2 = ( QSysInfo::ByteOrder == QSysInfo::BigEndian ? 0 : 3 );
 
   StackBlurLineOperation topToBottomBlur( alpha, QgsImageOperation::ByColumn, true, i1, i2, feedback );
-  runLineOperation( *pImage, topToBottomBlur );
+  runLineOperation( *pImage, topToBottomBlur, feedback );
 
   if ( feedback && feedback->isCanceled() )
     return;
 
   StackBlurLineOperation leftToRightBlur( alpha, QgsImageOperation::ByRow, true, i1, i2, feedback );
-  runLineOperation( *pImage, leftToRightBlur );
+  runLineOperation( *pImage, leftToRightBlur, feedback );
 
   if ( feedback && feedback->isCanceled() )
     return;
 
   StackBlurLineOperation bottomToTopBlur( alpha, QgsImageOperation::ByColumn, false, i1, i2, feedback );
-  runLineOperation( *pImage, bottomToTopBlur );
+  runLineOperation( *pImage, bottomToTopBlur, feedback );
 
   if ( feedback && feedback->isCanceled() )
     return;
 
   StackBlurLineOperation rightToLeftBlur( alpha, QgsImageOperation::ByRow, false, i1, i2, feedback );
-  runLineOperation( *pImage, rightToLeftBlur );
+  runLineOperation( *pImage, rightToLeftBlur, feedback );
 
   if ( feedback && feedback->isCanceled() )
     return;
@@ -687,6 +693,9 @@ QImage *QgsImageOperation::gaussianBlur( QImage &image, const int radius, QgsFee
 
 void QgsImageOperation::GaussianBlurOperation::operator()( QgsImageOperation::ImageBlock &block )
 {
+  if ( mFeedback && mFeedback->isCanceled() )
+    return;
+
   int width = block.image->width();
   int height = block.image->height();
   int sourceBpl = block.image->bytesPerLine();
