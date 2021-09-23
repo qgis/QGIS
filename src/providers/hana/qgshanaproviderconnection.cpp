@@ -439,7 +439,7 @@ QgsFields QgsHanaProviderConnection::fields( const QString &schema, const QStrin
   }
   catch ( const QgsHanaException &ex )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Could not retrieve fields: %1, %2" ).arg( uri(), ex.what() ) );
+    throw QgsProviderConnectionException( QObject::tr( "Could not retrieve fields: %1" ).arg( ex.what() ) );
   }
 }
 
@@ -473,19 +473,6 @@ QList<QgsVectorDataProvider::NativeType> QgsHanaProviderConnection::nativeTypes(
   if ( types.isEmpty() )
     throw QgsProviderConnectionException( QObject::tr( "Error retrieving native types for connection %1" ).arg( uri() ) );
   return types;
-}
-
-QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsHanaProviderConnection::sqlOptions( const QString &layerSource )
-{
-  SqlVectorLayerOptions options;
-  const QgsDataSourceUri uri( layerSource );
-  options.primaryKeyColumns = uri.keyColumn().split( ',' );
-  options.disableSelectAtId = uri.selectAtIdDisabled();
-  options.geometryColumn = uri.geometryColumn();
-  options.filter = uri.sql();
-  const QString trimmedTable { uri.table().trimmed() };
-  options.sql = trimmedTable.startsWith( '(' ) ? trimmedTable.mid( 1 ).chopped( 1 ) : QStringLiteral( "SELECT * FROM %1" ).arg( uri.quotedTablename() );
-  return options;
 }
 
 QVariantList QgsHanaEmptyProviderResultIterator::nextRowPrivate()
