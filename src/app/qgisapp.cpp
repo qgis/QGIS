@@ -13387,6 +13387,7 @@ void QgisApp::closeProject()
   // clear out any stuff from project
   mMapCanvas->setLayers( QList<QgsMapLayer *>() );
   mMapCanvas->clearCache();
+  mMapCanvas->cancelJobs();
   mOverviewCanvas->setLayers( QList<QgsMapLayer *>() );
 
   // Avoid unnecessary layer changed handling for each layer removed - instead,

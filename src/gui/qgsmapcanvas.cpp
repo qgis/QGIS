@@ -242,23 +242,7 @@ QgsMapCanvas::~QgsMapCanvas()
   }
   mLastNonZoomMapTool = nullptr;
 
-  // rendering job may still end up writing into canvas map item
-  // so kill it before deleting canvas items
-  if ( mJob )
-  {
-    whileBlocking( mJob )->cancel();
-    delete mJob;
-  }
-
-  QList< QgsMapRendererQImageJob * >::const_iterator previewJob = mPreviewJobs.constBegin();
-  for ( ; previewJob != mPreviewJobs.constEnd(); ++previewJob )
-  {
-    if ( *previewJob )
-    {
-      whileBlocking( *previewJob )->cancel();
-      delete *previewJob;
-    }
-  }
+  cancelJobs();
 
   // delete canvas items prior to deleting the canvas
   // because they might try to update canvas when it's
@@ -270,6 +254,31 @@ QgsMapCanvas::~QgsMapCanvas()
   delete mCache;
   delete mLabelingResults;
 }
+
+
+void QgsMapCanvas::cancelJobs()
+{
+
+  // rendering job may still end up writing into canvas map item
+  // so kill it before deleting canvas items
+  if ( mJob )
+  {
+    whileBlocking( mJob )->cancel();
+    delete mJob;
+    mJob = nullptr;
+  }
+
+  QList< QgsMapRendererQImageJob * >::const_iterator previewJob = mPreviewJobs.constBegin();
+  for ( ; previewJob != mPreviewJobs.constEnd(); ++previewJob )
+  {
+    if ( *previewJob )
+    {
+      whileBlocking( *previewJob )->cancel();
+      delete *previewJob;
+    }
+  }
+}
+
 
 void QgsMapCanvas::setMagnificationFactor( double factor, const QgsPointXY *center )
 {
