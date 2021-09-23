@@ -826,6 +826,8 @@ void QgsHanaConnection::readTableFields( const QString &schemaName, const QStrin
       field.name = rsColumns->getString( 4/*COLUMN_NAME*/ );
       field.type = rsColumns->getShort( 5/*DATA_TYPE*/ );
       field.typeName =  rsColumns->getString( 6/*TYPE_NAME*/ );
+      if ( field.type == SQLDataTypes::Unknown )
+        throw QgsHanaException( QString( "Type of the column '%1' is unknown" ).arg( field.name ) );
       field.size = rsColumns->getInt( 7/*COLUMN_SIZE*/ );
       field.precision = static_cast<int>( rsColumns->getShort( 9/*DECIMAL_DIGITS*/ ) );
       field.isSigned = field.type == SQLDataTypes::SmallInt || field.type == SQLDataTypes::Integer ||

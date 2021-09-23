@@ -175,6 +175,8 @@ public:
     static constexpr int TypeTime = 92;
     /// Year, month, day, hour, minute, and second fields.
     static constexpr int TypeTimestamp = 93;
+    /// Unknown data type.
+    static constexpr int Unknown = 0;
     /// Variable length binary data.
     static constexpr int VarBinary = -3;
     /// Variable-length character string.
