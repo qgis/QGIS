@@ -127,11 +127,6 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     QSet<QString> mAttrNames;
 
-    //! used with old labeling engine (QgsPalLabeling): whether labeling is enabled
-    bool mLabeling;
-    //! used with new labeling engine (QgsPalLabeling): whether diagrams are enabled
-    bool mDiagrams;
-
     /**
      * used with new labeling engine (QgsLabelingEngine): provider for labels.
      * may be NULLPTR. no need to delete: if exists it is owned by labeling engine
