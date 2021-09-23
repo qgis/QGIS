@@ -823,7 +823,7 @@ void QgsCustomization::updateMainWindow( QMenu *toolBarMenu, QMenu *panelMenu )
       if ( !visible )
       {
         mw->removeToolBar( tb );
-        tb->setParent( NULL );
+        tb->setParent( nullptr );
         // remove also from menu, because toolbars removed here, switched on later from menu don't work correctly
         toolBarMenu->removeAction( tb->toggleViewAction() );
       }
@@ -881,7 +881,7 @@ void QgsCustomization::updateMainWindow( QMenu *toolBarMenu, QMenu *panelMenu )
       if ( !visible )
       {
         mw->removeDockWidget( dw );
-        dw->setParent( NULL );
+        dw->setParent( nullptr );
         // remove also from menu, because dock removed here, switched on later from menu don't work correctly
         panelMenu->removeAction( dw->toggleViewAction() );
       }
