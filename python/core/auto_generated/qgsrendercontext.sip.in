@@ -296,7 +296,7 @@ rendering should be canceled immediately.
 
 .. note::
 
-   Since QGIS 3.22 the :py:func:`~QgsRenderContext.feedback` member exists as an alternative means of cancelation support.
+   Since QGIS 3.22 the :py:func:`~QgsRenderContext.feedback` member exists as an alternative means of cancellation support.
 
 .. seealso:: :py:func:`setRenderingStopped`
 
@@ -467,7 +467,7 @@ rendering should be canceled immediately.
 
 .. note::
 
-   Since QGIS 3.22 the :py:func:`~QgsRenderContext.feedback` member exists as an alternative means of cancelation support.
+   Since QGIS 3.22 the :py:func:`~QgsRenderContext.feedback` member exists as an alternative means of cancellation support.
 
 .. seealso:: :py:func:`renderingStopped`
 

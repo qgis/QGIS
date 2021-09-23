@@ -344,7 +344,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Returns TRUE if the rendering operation has been stopped and any ongoing
      * rendering should be canceled immediately.
      *
-     * \note Since QGIS 3.22 the feedback() member exists as an alternative means of cancelation support.
+     * \note Since QGIS 3.22 the feedback() member exists as an alternative means of cancellation support.
      *
      * \see setRenderingStopped()
      * \see feedback()
@@ -508,7 +508,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Sets whether the rendering operation has been \a stopped and any ongoing
      * rendering should be canceled immediately.
      *
-     * \note Since QGIS 3.22 the feedback() member exists as an alternative means of cancelation support.
+     * \note Since QGIS 3.22 the feedback() member exists as an alternative means of cancellation support.
      *
      * \see renderingStopped()
      * \see feedback()
@@ -1005,7 +1005,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     //! True if the rendering has been canceled
     bool mRenderingStopped = false;
 
-    //! Optional feedback object, as an alternative for mRenderingStopped for cancelation support
+    //! Optional feedback object, as an alternative for mRenderingStopped for cancellation support
     QgsFeedback *mFeedback = nullptr;
 
     //! Factor to scale line widths and point marker sizes
