@@ -73,7 +73,7 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
   const int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
   if ( blurLevel <= 16 )
   {
-    QgsImageOperation::stackBlur( im, blurLevel, context.feedback() );
+    QgsImageOperation::stackBlur( im, blurLevel, false, context.feedback() );
   }
   else
   {

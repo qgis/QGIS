@@ -47,7 +47,7 @@ void QgsBlurEffect::drawStackBlur( QgsRenderContext &context )
 {
   const int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
   QImage im = sourceAsImage( context )->copy();
-  QgsImageOperation::stackBlur( im, blurLevel, context.feedback() );
+  QgsImageOperation::stackBlur( im, blurLevel, false, context.feedback() );
   drawBlurredImage( context, im );
 }
 
