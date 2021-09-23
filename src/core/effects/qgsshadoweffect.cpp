@@ -31,7 +31,13 @@ void QgsShadowEffect::draw( QgsRenderContext &context )
   if ( !source() || !enabled() || !context.painter() )
     return;
 
+  if ( context.feedback() && context.feedback()->isCanceled() )
+    return;
+
   QImage colorisedIm = sourceAsImage( context )->copy();
+
+  if ( context.feedback() && context.feedback()->isCanceled() )
+    return;
 
   QPainter *painter = context.painter();
   const QgsScopedQPainterState painterState( painter );
@@ -49,7 +55,7 @@ void QgsShadowEffect::draw( QgsRenderContext &context )
   const int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
   if ( blurLevel <= 16 )
   {
-    QgsImageOperation::stackBlur( colorisedIm, blurLevel, context.feedback() );
+    QgsImageOperation::stackBlur( colorisedIm, blurLevel, false, context.feedback() );
   }
   else
   {
