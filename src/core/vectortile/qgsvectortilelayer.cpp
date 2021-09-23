@@ -708,7 +708,7 @@ QgsVectorTileLabeling *QgsVectorTileLayer::labeling() const
 
 
 //
-// QgsAnnotationLayerDataProvider
+// QgsVectorTileDataProvider
 //
 ///@cond PRIVATE
 QgsVectorTileDataProvider::QgsVectorTileDataProvider(
@@ -719,7 +719,7 @@ QgsVectorTileDataProvider::QgsVectorTileDataProvider(
 
 QgsCoordinateReferenceSystem QgsVectorTileDataProvider::crs() const
 {
-  return QgsCoordinateReferenceSystem();
+  return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) );
 }
 
 QString QgsVectorTileDataProvider::name() const
