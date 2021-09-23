@@ -73,7 +73,7 @@ class CORE_EXPORT QgsImageOperation
      * Convert a QImage to a grayscale image. Alpha channel is preserved.
      * \param image QImage to convert
      * \param mode mode to use during grayscale conversion
-     * \param feedback optional feedback object for responsive cancelation (since QGIS 3.22)
+     * \param feedback optional feedback object for responsive cancellation (since QGIS 3.22)
      */
     static void convertToGrayscale( QImage &image, GrayscaleMode mode = GrayscaleLuminosity, QgsFeedback *feedback = nullptr );
 
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsImageOperation
      * \param contrast contrast value. Must be a positive or zero value. A value of 1.0 indicates no change
      * to the contrast, a value of 0 represents an image with 0 contrast, and a value > 1.0 will increase the
      * contrast of the image.
-     * \param feedback optional feedback object for responsive cancelation (since QGIS 3.22)
+     * \param feedback optional feedback object for responsive cancellation (since QGIS 3.22)
      */
     static void adjustBrightnessContrast( QImage &image, int brightness, double contrast, QgsFeedback *feedback = nullptr );
 
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsImageOperation
      * \param colorizeColor color to use for colorizing image. Set to an invalid QColor to disable
      * colorization.
      * \param colorizeStrength double between 0 and 1, where 0 = no colorization and 1.0 = full colorization
-     * \param feedback optional feedback object for responsive cancelation (since QGIS 3.22)
+     * \param feedback optional feedback object for responsive cancellation (since QGIS 3.22)
      */
     static void adjustHueSaturation( QImage &image, double saturation, const QColor &colorizeColor = QColor(),
                                      double colorizeStrength = 1.0, QgsFeedback *feedback = nullptr );
@@ -106,7 +106,7 @@ class CORE_EXPORT QgsImageOperation
      * Multiplies opacity of image pixel values by a factor.
      * \param image QImage to alter
      * \param factor factor to multiple pixel's opacity by
-     * \param feedback optional feedback object for responsive cancelation (since QGIS 3.22)
+     * \param feedback optional feedback object for responsive cancellation (since QGIS 3.22)
      */
     static void multiplyOpacity( QImage &image, double factor, QgsFeedback *feedback = nullptr );
 
@@ -153,7 +153,7 @@ class CORE_EXPORT QgsImageOperation
      * \param image QImage to alter
      * \param properties DistanceTransformProperties object with parameters
      * for the distance transform operation
-     * \param feedback optional feedback object for responsive cancelation (since QGIS 3.22)
+     * \param feedback optional feedback object for responsive cancellation (since QGIS 3.22)
      */
     static void distanceTransform( QImage &image, const QgsImageOperation::DistanceTransformProperties &properties, QgsFeedback *feedback = nullptr );
 
@@ -163,7 +163,7 @@ class CORE_EXPORT QgsImageOperation
      * \param image QImage to blur
      * \param radius blur radius in pixels, maximum value of 16
      * \param alphaOnly set to TRUE to blur only the alpha component of the image
-     * \param feedback optional feedback object for responsive cancelation (since QGIS 3.22)
+     * \param feedback optional feedback object for responsive cancellation (since QGIS 3.22)
      * \note for fastest operation, ensure the source image is ARGB32_Premultiplied if
      * alphaOnly is set to FALSE, or ARGB32 if alphaOnly is TRUE
      */
@@ -174,7 +174,7 @@ class CORE_EXPORT QgsImageOperation
      * quality blur.
      * \param image QImage to blur
      * \param radius blur radius in pixels
-     * \param feedback optional feedback object for responsive cancelation (since QGIS 3.22)
+     * \param feedback optional feedback object for responsive cancellation (since QGIS 3.22)
      * \returns blurred image
      * \note for fastest operation, ensure the source image is ARGB32_Premultiplied
      */

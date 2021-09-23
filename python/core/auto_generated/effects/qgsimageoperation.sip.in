@@ -52,7 +52,7 @@ Convert a QImage to a grayscale image. Alpha channel is preserved.
 
 :param image: QImage to convert
 :param mode: mode to use during grayscale conversion
-:param feedback: optional feedback object for responsive cancelation (since QGIS 3.22)
+:param feedback: optional feedback object for responsive cancellation (since QGIS 3.22)
 %End
 
     static void adjustBrightnessContrast( QImage &image, int brightness, double contrast, QgsFeedback *feedback = 0 );
@@ -66,7 +66,7 @@ Alter the brightness or contrast of a QImage.
 :param contrast: contrast value. Must be a positive or zero value. A value of 1.0 indicates no change
                  to the contrast, a value of 0 represents an image with 0 contrast, and a value > 1.0 will increase the
                  contrast of the image.
-:param feedback: optional feedback object for responsive cancelation (since QGIS 3.22)
+:param feedback: optional feedback object for responsive cancellation (since QGIS 3.22)
 %End
 
     static void adjustHueSaturation( QImage &image, double saturation, const QColor &colorizeColor = QColor(),
@@ -79,7 +79,7 @@ Alter the hue or saturation of a QImage.
 :param colorizeColor: color to use for colorizing image. Set to an invalid QColor to disable
                       colorization.
 :param colorizeStrength: double between 0 and 1, where 0 = no colorization and 1.0 = full colorization
-:param feedback: optional feedback object for responsive cancelation (since QGIS 3.22)
+:param feedback: optional feedback object for responsive cancellation (since QGIS 3.22)
 %End
 
     static void multiplyOpacity( QImage &image, double factor, QgsFeedback *feedback = 0 );
@@ -88,7 +88,7 @@ Multiplies opacity of image pixel values by a factor.
 
 :param image: QImage to alter
 :param factor: factor to multiple pixel's opacity by
-:param feedback: optional feedback object for responsive cancelation (since QGIS 3.22)
+:param feedback: optional feedback object for responsive cancellation (since QGIS 3.22)
 %End
 
     static void overlayColor( QImage &image, const QColor &color );
@@ -120,7 +120,7 @@ using a color ramp.
 :param image: QImage to alter
 :param properties: DistanceTransformProperties object with parameters
                    for the distance transform operation
-:param feedback: optional feedback object for responsive cancelation (since QGIS 3.22)
+:param feedback: optional feedback object for responsive cancellation (since QGIS 3.22)
 %End
 
     static void stackBlur( QImage &image, int radius, bool alphaOnly = false, QgsFeedback *feedback = 0 );
@@ -131,7 +131,7 @@ speed and blur quality.
 :param image: QImage to blur
 :param radius: blur radius in pixels, maximum value of 16
 :param alphaOnly: set to ``True`` to blur only the alpha component of the image
-:param feedback: optional feedback object for responsive cancelation (since QGIS 3.22)
+:param feedback: optional feedback object for responsive cancellation (since QGIS 3.22)
 
 .. note::
 
@@ -146,7 +146,7 @@ quality blur.
 
 :param image: QImage to blur
 :param radius: blur radius in pixels
-:param feedback: optional feedback object for responsive cancelation (since QGIS 3.22)
+:param feedback: optional feedback object for responsive cancellation (since QGIS 3.22)
 
 :return: blurred image
 
