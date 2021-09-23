@@ -347,7 +347,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
     if ( ui.checkBoxHighlight->isChecked() && !geom.isNull() )
     {
       QgsRubberBand *featureRubberBand = new QgsRubberBand( mIface->mapCanvas() );
-      featureRubberBand->addGeometry( geom, nullptr );
+      featureRubberBand->setToGeometry( geom, nullptr );
       featureRubberBand->setWidth( 5 );
       featureRubberBand->setColor( Qt::yellow );
       mCurrentRubberBands.append( featureRubberBand );
