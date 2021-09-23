@@ -168,57 +168,68 @@ tests:
             fid: skip
 
   - algorithm: grass7:v.net.alloc
-    name: v.net.alloc to centers
+    name: v.net.alloc (to centers)
     params:
       -g: false
       GRASS_MIN_AREA_PARAMETER: 0.0001
       GRASS_OUTPUT_TYPE_PARAMETER: 0
       GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
-      GRASS_VECTOR_EXPORT_NOCAT : false
       GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_EXPORT_NOCAT: false
       GRASS_VECTOR_LCO: ''
-      arc_column: 'cost'
-      arc_backward_column: 'costback'
-      center_cats: '1-100000'
-      method : 1
+      arc_backward_column: costback
+      arc_column: cost
+      arc_type:
+      - 0
+      - 1
+      center_cats: 1-100000
       input:
         name: network.shp
         type: vector
+      method: 1
       points:
         name: network_points.shp
         type: vector
       threshold: 50.0
-      where: ''
     results:
       output:
-        name: expected/v_net_alloc_to_centers.shp
+        name: expected/v_net_alloc_to_centers.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: grass7:v.net.alloc
-    name: v.net.alloc from centers (default)
+    name: v.net.alloc (from centers)
     params:
       -g: false
       GRASS_MIN_AREA_PARAMETER: 0.0001
       GRASS_OUTPUT_TYPE_PARAMETER: 0
       GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
-      GRASS_VECTOR_EXPORT_NOCAT : false
       GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_EXPORT_NOCAT: false
       GRASS_VECTOR_LCO: ''
-      arc_column: 'cost'
-      arc_backward_column: 'costback'
-      center_cats: '1-100000'
+      arc_backward_column: costback
+      arc_column: cost
+      arc_type:
+      - 0
+      - 1
+      center_cats: 1-100000
       input:
         name: network.shp
         type: vector
+      method: 0
       points:
         name: network_points.shp
         type: vector
       threshold: 50.0
-      where: ''
     results:
       output:
-        name: expected/v_net_alloc_from_centers.shp
+        name: expected/v_net_alloc_from_centers.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: grass7:v.net.allpairs
     name: v.net.allpairs
