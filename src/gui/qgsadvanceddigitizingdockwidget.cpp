@@ -349,6 +349,7 @@ void QgsAdvancedDigitizingDockWidget::setEnabledZ( bool enable )
   else
     mZLineEdit->clear();
   mLockZButton->setEnabled( enable );
+  emit enabledChangedZ( enable );
 }
 
 void QgsAdvancedDigitizingDockWidget::setEnabledM( bool enable )
@@ -361,6 +362,7 @@ void QgsAdvancedDigitizingDockWidget::setEnabledM( bool enable )
   else
     mMLineEdit->clear();
   mLockMButton->setEnabled( enable );
+  emit enabledChangedM( enable );
 }
 
 void QgsAdvancedDigitizingDockWidget::activateCad( bool enabled )
