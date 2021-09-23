@@ -2510,7 +2510,6 @@ void QgsVertexTool::deleteVertex()
       std::sort( vertexIds.begin(), vertexIds.end(), std::greater<int>() );
       for ( int vertexId : vertexIds )
       {
-        QgsMessageLog::logMessage( "DELETE : fid:" + QString::number( fid ) + " ; vertexId:" + QString::number( vertexId ), "DEBUG" );
         if ( res != Qgis::VectorEditResult::EmptyGeometry )
           res = layer->deleteVertex( fid, vertexId );
         if ( res != Qgis::VectorEditResult::EmptyGeometry && res != Qgis::VectorEditResult::Success )
