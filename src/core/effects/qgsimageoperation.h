@@ -264,8 +264,8 @@ class CORE_EXPORT QgsImageOperation
     };
 
     //for linear operations
-    template <typename LineOperation> static void runLineOperation( QImage &image, LineOperation &operation );
-    template <class LineOperation> static void runLineOperationOnWholeImage( QImage &image, LineOperation &operation );
+    template <typename LineOperation> static void runLineOperation( QImage &image, LineOperation &operation, QgsFeedback *feedback = nullptr );
+    template <class LineOperation> static void runLineOperationOnWholeImage( QImage &image, LineOperation &operation, QgsFeedback *feedback = nullptr );
     template <class LineOperation>
     struct ProcessBlockUsingLineOperation
     {
@@ -437,6 +437,9 @@ class CORE_EXPORT QgsImageOperation
 
         void operator()( QRgb *startRef, int lineLength, int bytesPerLine )
         {
+          if ( mFeedback && mFeedback->isCanceled() )
+            return;
+
           unsigned char *p = reinterpret_cast< unsigned char * >( startRef );
           int rgba[4];
           int increment = ( mDirection == QgsImageOperation::ByRow ) ? 4 : bytesPerLine;
