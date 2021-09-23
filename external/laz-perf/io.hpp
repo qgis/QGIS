@@ -599,7 +599,7 @@ namespace laszip {
 							//
 							laszipFound = true;
 
-							std::unique_ptr<char> buffer(
+							std::unique_ptr<char[]> buffer(
                                 new char[vlr_header.record_length]);
 
 							f_.read(buffer.get(), vlr_header.record_length);
@@ -977,7 +977,7 @@ namespace laszip {
 					//
 					laz_vlr vlr = laz_vlr::from_schema(schema_, chunk_size_);
 
-                    std::unique_ptr<char> vlrbuf(new char[vlr.size()]);
+                    std::unique_ptr<char[]> vlrbuf(new char[vlr.size()]);
                     vlr.extract(vlrbuf.get());
                     f_.write(vlrbuf.get(), vlr.size());
 
