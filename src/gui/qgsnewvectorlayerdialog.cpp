@@ -27,6 +27,7 @@
 #include "qgssettings.h"
 #include "qgsogrprovider.h"
 #include "qgsgui.h"
+#include "qgsfileutils.h"
 
 #include <QPushButton>
 #include <QComboBox>
@@ -282,14 +283,12 @@ void QgsNewVectorLayerDialog::updateExtension()
     if ( geometrytype != QgsWkbTypes::NoGeometry )
     {
       fileName = fileName.replace( fileName.lastIndexOf( QLatin1String( ".dbf" ), -1, Qt::CaseInsensitive ), 4, QLatin1String( ".shp" ) );
-      if ( !fileName.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) )
-        fileName += QLatin1String( ".shp" );
+      fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, { QStringLiteral( "shp" ) } );
     }
     else
     {
       fileName = fileName.replace( fileName.lastIndexOf( QLatin1String( ".shp" ), -1, Qt::CaseInsensitive ), 4, QLatin1String( ".dbf" ) );
-      if ( !fileName.endsWith( QLatin1String( ".dbf" ), Qt::CaseInsensitive ) )
-        fileName += QLatin1String( ".dbf" );
+      fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, { QStringLiteral( "dbf" ) } );
     }
   }
   setFilename( fileName );
