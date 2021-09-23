@@ -1372,7 +1372,7 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, const
                    context.renderContext(), useWholeShape, outputPixelMaxDist );
   if ( context.opacity() < 1 )
   {
-    QgsImageOperation::multiplyOpacity( *fillImage, context.opacity() );
+    QgsImageOperation::multiplyOpacity( *fillImage, context.opacity(), context.renderContext().feedback() );
   }
 
   //clean up some variables

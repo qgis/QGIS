@@ -66,7 +66,7 @@ void QgsShadowEffect::draw( QgsRenderContext &context )
                          -offsetDist * std::sin( angleRad + M_PI_2 ) );
 
   //transparency, scale
-  QgsImageOperation::multiplyOpacity( colorisedIm, mOpacity );
+  QgsImageOperation::multiplyOpacity( colorisedIm, mOpacity, context.feedback() );
 
   if ( !exteriorShadow() )
   {

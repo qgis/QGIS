@@ -63,7 +63,7 @@ void QgsBlurEffect::drawGaussianBlur( QgsRenderContext &context )
 void QgsBlurEffect::drawBlurredImage( QgsRenderContext &context, QImage &image )
 {
   //opacity
-  QgsImageOperation::multiplyOpacity( image, mOpacity );
+  QgsImageOperation::multiplyOpacity( image, mOpacity, context.feedback() );
 
   QPainter *painter = context.painter();
   const QgsScopedQPainterState painterState( painter );
