@@ -160,8 +160,8 @@ the closest point to the initial ``intersection`` point is returned.
 :return: ``True`` if an intersection has been found
 %End
 
-    static int circleCircleIntersections( QgsPointXY center1, double radius1,
-                                          QgsPointXY center2, double radius2,
+    static int circleCircleIntersections( const QgsPointXY &center1, double radius1,
+                                          const QgsPointXY &center2, double radius2,
                                           QgsPointXY &intersection1 /Out/, QgsPointXY &intersection2 /Out/ ) /HoldGIL/;
 %Docstring
 Calculates the intersections points between the circle with center ``center1`` and
