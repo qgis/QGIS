@@ -197,7 +197,7 @@ QgsGeometry QgsGeometry::fromPolygonXY( const QgsPolygonXY &polygon )
   std::unique_ptr< QgsPolygon > geom = QgsGeometryFactory::fromPolygonXY( polygon );
   if ( geom )
   {
-    return QgsGeometry( std::move( geom.release() ) );
+    return QgsGeometry( geom.release() );
   }
   return QgsGeometry();
 }

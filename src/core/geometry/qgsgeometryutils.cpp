@@ -957,7 +957,7 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
   const int segSide = segmentSide( p1, p3, p2 );
 
   QgsPoint circlePoint1;
-  const QgsPoint circlePoint2 = p2;
+  const QgsPoint &circlePoint2 = p2;
   QgsPoint circlePoint3;
 
   if ( segSide == -1 )

@@ -315,9 +315,9 @@ QVector<QgsCircle> QgsCircle::from3TangentsMulti( const QgsPoint &pt1_tg1, const
   return circles;
 }
 
-QgsCircle QgsCircle::from3Tangents( const QgsPoint &pt1_tg1, const QgsPoint &pt2_tg1, const QgsPoint &pt1_tg2, const QgsPoint &pt2_tg2, const QgsPoint &pt1_tg3, const QgsPoint &pt2_tg3, double epsilon, QgsPoint pos )
+QgsCircle QgsCircle::from3Tangents( const QgsPoint &pt1_tg1, const QgsPoint &pt2_tg1, const QgsPoint &pt1_tg2, const QgsPoint &pt2_tg2, const QgsPoint &pt1_tg3, const QgsPoint &pt2_tg3, double epsilon, const QgsPoint &pos )
 {
-  const QVector<QgsCircle> circles = from3TangentsMulti( pt1_tg1, pt2_tg1, pt1_tg2, pt2_tg2, pt1_tg3, pt2_tg3, epsilon, std::move( pos ) );
+  const QVector<QgsCircle> circles = from3TangentsMulti( pt1_tg1, pt2_tg1, pt1_tg2, pt2_tg2, pt1_tg3, pt2_tg3, epsilon, pos );
   if ( circles.length() != 1 )
     return QgsCircle();
   return circles.at( 0 );
