@@ -178,7 +178,7 @@ QHash<QgsMapLayer *, int> QgsMapRendererJob::perLayerRenderingTime() const
   QHash<QgsMapLayer *, int> result;
   for ( auto it = mPerLayerRenderingTime.constBegin(); it != mPerLayerRenderingTime.constEnd(); ++it )
   {
-    if ( auto && lKey = it.key() )
+    if ( auto &&lKey = it.key() )
       result.insert( lKey, it.value() );
   }
   return result;
