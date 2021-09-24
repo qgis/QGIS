@@ -789,6 +789,20 @@ void TestQgsProcessingModelAlgorithm::modelerAlgorithm()
   QVERIFY( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c9b" ) ).contains( QgsProcessingModelChildDependency( QStringLiteral( "c8" ) ) ) );
   QVERIFY( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c9b" ) ).contains( QgsProcessingModelChildDependency( QStringLiteral( "c9" ) ) ) );
 
+  QCOMPARE( alg3.dependentChildAlgorithms( "c7", QString(), 0 ).count(), 0 );
+  QCOMPARE( alg3.dependentChildAlgorithms( "c7", QString(), 1 ).count(), 1 );
+  QVERIFY( alg3.dependentChildAlgorithms( "c7", QString(), 1 ).contains( "c8" ) );
+  QCOMPARE( alg3.dependentChildAlgorithms( "c7", QString(), 2 ).count(), 2 );
+  QVERIFY( alg3.dependentChildAlgorithms( "c7", QString(), 2 ).contains( "c8" ) );
+  QVERIFY( alg3.dependentChildAlgorithms( "c7", QString(), 2 ).contains( "c9" ) );
+  QCOMPARE( alg3.dependentChildAlgorithms( "c7", QString(), 10 ).count(), 3 );
+  QVERIFY( alg3.dependentChildAlgorithms( "c7", QString(), 3 ).contains( "c8" ) );
+  QVERIFY( alg3.dependentChildAlgorithms( "c7", QString(), 3 ).contains( "c9" ) );
+  QVERIFY( alg3.dependentChildAlgorithms( "c7", QString(), 3 ).contains( "c9b" ) );
+  QCOMPARE( alg3.dependentChildAlgorithms( "c9", QString(), 1 ).count(), 1 );
+  QVERIFY( alg3.dependentChildAlgorithms( "c9", QString(), 1 ).contains( "c9b" ) );
+  QCOMPARE( alg3.dependentChildAlgorithms( "c9b", QString(), 10 ).count(), 0 );
+
   alg3.removeChildAlgorithm( "c9b" );
 
 
