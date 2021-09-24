@@ -323,17 +323,34 @@ void QgsAdvancedDigitizingDockWidget::switchZM( )
   bool enableZ = false;
   bool enableM = false;
 
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
-  if ( vlayer )
+  if ( QgsMapLayer *layer = targetLayer() )
   {
-    const QgsWkbTypes::Type type = vlayer->wkbType();
-    enableZ = QgsWkbTypes::hasZ( type );
-    enableM = QgsWkbTypes::hasM( type );
-  }
+    switch ( layer->type() )
+    {
+      case QgsMapLayerType::VectorLayer:
+      {
+        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+        const QgsWkbTypes::Type type = vlayer->wkbType();
+        enableZ = QgsWkbTypes::hasZ( type );
+        enableM = QgsWkbTypes::hasM( type );
+        break;
+      }
 
-  QgsMeshLayer *mlayer = qobject_cast<QgsMeshLayer *>( mMapCanvas->currentLayer() );
-  if ( mlayer )
-    enableZ = mlayer->isEditable();
+      case QgsMapLayerType::MeshLayer:
+      {
+        QgsMeshLayer *mlayer = qobject_cast<QgsMeshLayer *>( layer );
+        enableZ = mlayer->isEditable();
+        break;
+      }
+
+      case QgsMapLayerType::RasterLayer:
+      case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::VectorTileLayer:
+      case QgsMapLayerType::AnnotationLayer:
+      case QgsMapLayerType::PointCloudLayer:
+        break;
+    }
+  }
 
   setEnabledZ( enableZ );
   setEnabledM( enableM );
@@ -469,6 +486,18 @@ void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction *action )
     QgsSettings().setValue( QStringLiteral( "/Cad/CommonAngle" ), ica.value() );
     mSettingsAction->setChecked( mCommonAngleConstraint != 0 );
     return;
+  }
+}
+
+QgsMapLayer *QgsAdvancedDigitizingDockWidget::targetLayer()
+{
+  if ( QgsMapToolAdvancedDigitizing *advancedTool = qobject_cast< QgsMapToolAdvancedDigitizing * >( mMapCanvas->mapTool() ) )
+  {
+    return advancedTool->layer();
+  }
+  else
+  {
+    return mMapCanvas->currentLayer();
   }
 }
 
