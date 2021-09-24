@@ -19,8 +19,10 @@
 #define QGSMAPDECORATION_H
 
 #include "qgis_core.h"
-#include "qgsmapsettings.h"
-#include "qgsrendercontext.h"
+#include <QString>
+
+class QgsMapSettings;
+class QgsRenderContext;
 
 /**
  * \ingroup core

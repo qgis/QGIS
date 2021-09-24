@@ -19,12 +19,12 @@
 #include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgstextblock.h"
-#include "qgsrendercontext.h"
 #include "qgstextformat.h"
 
 #include <QPicture>
 
 class QgsTextDocument;
+class QgsRenderContext;
 
 /**
  * \class QgsTextRenderer

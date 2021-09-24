@@ -25,6 +25,7 @@
 #include "qgslayertree.h"
 #include "qgssettings.h"
 #include "qgsprojectviewsettings.h"
+#include "qgscoordinatetransform.h"
 
 namespace QgsWmts
 {

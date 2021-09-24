@@ -172,7 +172,7 @@ void TestQgsSymbol::testCanvasClip()
   QgsMapSettings ms;
   QgsRectangle extent( -110.0, 25.0, -90, 40.0 );
   ms.setExtent( extent );
-  ms.setFlag( QgsMapSettings::ForceVectorOutput );
+  ms.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
 
   //line
   mReport += QLatin1String( "<h2>Line canvas clip</h2>\n" );

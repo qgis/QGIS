@@ -51,7 +51,7 @@ void QgsMapRendererParallelJob::startPrivate()
 
   mLabelingEngineV2.reset();
 
-  if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) )
+  if ( mSettings.testFlag( Qgis::MapSettingsFlag::DrawLabeling ) )
   {
     mLabelingEngineV2.reset( new QgsDefaultLabelingEngine() );
     mLabelingEngineV2->setMapSettings( mSettings );
@@ -240,7 +240,7 @@ void QgsMapRendererParallelJob::renderLayersFinished()
 
   QgsDebugMsgLevel( QStringLiteral( "PARALLEL layers finished" ), 2 );
 
-  if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) && !mLabelJob.context.renderingStopped() )
+  if ( mSettings.testFlag( Qgis::MapSettingsFlag::DrawLabeling ) && !mLabelJob.context.renderingStopped() )
   {
     mStatus = RenderingLabels;
 

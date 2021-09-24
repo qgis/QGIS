@@ -460,8 +460,8 @@ QgsRenderContext *QgsLayerTreeModelLegendNode::createTemporaryRenderContext() co
   context->setScaleFactor( dpi / 25.4 );
   context->setRendererScale( scale );
   context->setMapToPixel( QgsMapToPixel( mupp ) );
-  context->setFlag( QgsRenderContext::Antialiasing, true );
-  context->setFlag( QgsRenderContext::RenderSymbolPreview, true );
+  context->setFlag( Qgis::RenderContextFlag::Antialiasing, true );
+  context->setFlag( Qgis::RenderContextFlag::RenderSymbolPreview, true );
   return context.release();
 }
 
@@ -623,7 +623,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
     Q_NOWARN_DEPRECATED_PUSH
     tempRenderContext->setScaleFactor( settings.dpi() / 25.4 );
     tempRenderContext->setRendererScale( settings.mapScale() );
-    tempRenderContext->setFlag( QgsRenderContext::Antialiasing, true );
+    tempRenderContext->setFlag( Qgis::RenderContextFlag::Antialiasing, true );
     tempRenderContext->setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * tempRenderContext->scaleFactor() ) ) );
     Q_NOWARN_DEPRECATED_POP
     tempRenderContext->setForceVectorOutput( true );
@@ -702,7 +702,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
     p->scale( 1.0 / dotsPerMM, 1.0 / dotsPerMM );
     Q_NOWARN_DEPRECATED_PUSH
     // QGIS 4.0 -- ctx->context will be mandatory
-    const bool useAdvancedEffects = ctx->context ? ctx->context->flags() & QgsRenderContext::UseAdvancedEffects : settings.useAdvancedEffects();
+    const bool useAdvancedEffects = ctx->context ? ctx->context->flags() & Qgis::RenderContextFlag::UseAdvancedEffects : settings.useAdvancedEffects();
     Q_NOWARN_DEPRECATED_POP
     if ( opacity != 255 && useAdvancedEffects )
     {
@@ -767,8 +767,8 @@ QJsonObject QgsSymbolLegendNode::exportSymbolToJson( const QgsLegendSettings &se
   ctx.setRendererScale( settings.mapScale() );
   ctx.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * ctx.scaleFactor() ) ) );
   ctx.setForceVectorOutput( true );
-  ctx.setFlag( QgsRenderContext::Antialiasing, context.flags() & QgsRenderContext::Antialiasing );
-  ctx.setFlag( QgsRenderContext::LosslessImageRendering, context.flags() & QgsRenderContext::LosslessImageRendering );
+  ctx.setFlag( Qgis::RenderContextFlag::Antialiasing, context.flags() & Qgis::RenderContextFlag::Antialiasing );
+  ctx.setFlag( Qgis::RenderContextFlag::LosslessImageRendering, context.flags() & Qgis::RenderContextFlag::LosslessImageRendering );
 
   Q_NOWARN_DEPRECATED_POP
 
@@ -1399,11 +1399,11 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsDataDefinedSizeLegendNode::draw( con
     Q_NOWARN_DEPRECATED_PUSH
     tempRenderContext->setScaleFactor( settings.dpi() / 25.4 );
     tempRenderContext->setRendererScale( settings.mapScale() );
-    tempRenderContext->setFlag( QgsRenderContext::Antialiasing, true );
+    tempRenderContext->setFlag( Qgis::RenderContextFlag::Antialiasing, true );
     tempRenderContext->setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * tempRenderContext->scaleFactor() ) ) );
     tempRenderContext->setForceVectorOutput( true );
     tempRenderContext->setPainter( ctx ? ctx->painter : nullptr );
-    tempRenderContext->setFlag( QgsRenderContext::Antialiasing, true );
+    tempRenderContext->setFlag( Qgis::RenderContextFlag::Antialiasing, true );
     Q_NOWARN_DEPRECATED_POP
 
     // setup a minimal expression context

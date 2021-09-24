@@ -27,13 +27,13 @@
 #include <QUndoStack>
 #include <QVariant>
 #include <QIcon>
+#include <QSet>
 
 #include "qgis_sip.h"
 #include "qgserror.h"
 #include "qgsobjectcustomproperties.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsrendercontext.h"
 #include "qgsmaplayerdependency.h"
 #include "qgslayermetadata.h"
 #include "qgsmaplayerserverproperties.h"
@@ -56,6 +56,7 @@ class QgsMapLayerElevationProperties;
 class QDomDocument;
 class QKeyEvent;
 class QPainter;
+class QgsRenderContext;
 
 /*
  * Constants used to describe copy-paste MIME types

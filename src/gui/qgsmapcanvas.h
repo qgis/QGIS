@@ -29,6 +29,7 @@
 #include "qgstemporalrangeobject.h"
 #include "qgsmapcanvasinteractionblocker.h"
 #include "qgsproject.h"
+#include "qgsdistancearea.h"
 
 #include <QDomDocument>
 #include <QGraphicsView>
@@ -159,7 +160,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * Resets the \a flags for the canvas' map settings.
      * \since QGIS 3.0
      */
-    void setMapSettingsFlags( QgsMapSettings::Flags flags );
+    void setMapSettingsFlags( Qgis::MapSettingsFlags flags );
 
     /**
      * Gets access to the labeling results (may be NULLPTR).
@@ -600,7 +601,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     void enableAntiAliasing( bool flag );
 
     //! TRUE if antialiasing is enabled
-    bool antiAliasingEnabled() const { return mSettings.testFlag( QgsMapSettings::Antialiasing ); }
+    bool antiAliasingEnabled() const;
 
     //! sets map tile rendering flag
     void enableMapTileRendering( bool flag );

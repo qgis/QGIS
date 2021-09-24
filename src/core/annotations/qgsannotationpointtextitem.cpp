@@ -19,6 +19,7 @@
 #include "qgstextrenderer.h"
 #include "qgsannotationitemnode.h"
 #include "qgsannotationitemeditoperation.h"
+#include "qgsrendercontext.h"
 
 QgsAnnotationPointTextItem::QgsAnnotationPointTextItem( const QString &text, QgsPointXY point )
   : QgsAnnotationItem()

@@ -26,6 +26,7 @@
 #include "qgslayertree.h"
 #include "qgsvectorlayer.h"
 #include "nlohmann/json.hpp"
+#include "qgscoordinatetransform.h"
 
 #include <mutex>
 #include <QCryptographicHash>

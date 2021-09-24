@@ -301,7 +301,7 @@ class CORE_EXPORT QgsLayoutExporter
        *
        * \since QGIS 3.4.3
        */
-      QgsRenderContext::TextRenderFormat textRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
+      Qgis::TextRenderFormat textRenderFormat = Qgis::TextRenderFormat::AlwaysOutlines;
 
       /**
        * Indicates whether vector geometries should be simplified to avoid redundant extraneous detail,
@@ -546,7 +546,7 @@ class CORE_EXPORT QgsLayoutExporter
        *
        * \since QGIS 3.4.3
        */
-      QgsRenderContext::TextRenderFormat textRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
+      Qgis::TextRenderFormat textRenderFormat = Qgis::TextRenderFormat::AlwaysOutlines;
 
       /**
        * Indicates whether vector geometries should be simplified to avoid redundant extraneous detail,

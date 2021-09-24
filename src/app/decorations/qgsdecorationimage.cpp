@@ -25,6 +25,7 @@
 #include "qgsproject.h"
 #include "qgssymbollayerutils.h"
 #include "qgssvgcache.h"
+#include "qgsmapsettings.h"
 
 #include <QPainter>
 #include <QMenu>

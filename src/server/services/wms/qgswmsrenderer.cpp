@@ -141,7 +141,7 @@ namespace QgsWms
     // configure painter
     QPainter painter( image.get() );
     QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
-    context.setFlag( QgsRenderContext::Antialiasing, true );
+    context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
     QgsScopedRenderContextScaleToMm scaleContext( context );
     // QGIS 4.0 -- take from real render context instead
     Q_NOWARN_DEPRECATED_PUSH
@@ -274,7 +274,7 @@ namespace QgsWms
 
     // configure layers
     QgsMapSettings mapSettings;
-    mapSettings.setFlag( QgsMapSettings::RenderBlocking );
+    mapSettings.setFlag( Qgis::MapSettingsFlag::RenderBlocking );
     QList<QgsMapLayer *> layers = mContext.layersToRender();
     configureLayers( layers, &mapSettings );
 
@@ -423,7 +423,7 @@ namespace QgsWms
 
     // configure layers
     QgsMapSettings mapSettings;
-    mapSettings.setFlag( QgsMapSettings::RenderBlocking );
+    mapSettings.setFlag( Qgis::MapSettingsFlag::RenderBlocking );
     QList<QgsMapLayer *> layers = mContext.layersToRender();
     configureLayers( layers, &mapSettings );
 
@@ -903,7 +903,7 @@ namespace QgsWms
     QList<QgsMapLayer *> layers = mContext.layersToRender();
 
     QgsMapSettings mapSettings;
-    mapSettings.setFlag( QgsMapSettings::RenderBlocking );
+    mapSettings.setFlag( Qgis::MapSettingsFlag::RenderBlocking );
     configureLayers( layers, &mapSettings );
 
     // create the output image and the painter
@@ -1108,7 +1108,7 @@ namespace QgsWms
 
     // configure map settings (background, DPI, ...)
     QgsMapSettings mapSettings;
-    mapSettings.setFlag( QgsMapSettings::RenderBlocking );
+    mapSettings.setFlag( Qgis::MapSettingsFlag::RenderBlocking );
     configureMapSettings( outputImage.get(), mapSettings, mandatoryCrsParam );
 
     // compute scale denominator
@@ -1271,9 +1271,9 @@ namespace QgsWms
     mapSettings.setLabelingEngineSettings( mProject->labelingEngineSettings() );
 
     // enable rendering optimization
-    mapSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
+    mapSettings.setFlag( Qgis::MapSettingsFlag::UseRenderingOptimization );
 
-    mapSettings.setFlag( QgsMapSettings::RenderMapTile, mContext.renderMapTiles() );
+    mapSettings.setFlag( Qgis::MapSettingsFlag::RenderMapTile, mContext.renderMapTiles() );
 
     // set selection color
     mapSettings.setSelectionColor( mProject->selectionColor() );
@@ -3339,7 +3339,7 @@ namespace QgsWms
     const QList< QgsAnnotation * > annotations = annotationManager->annotations();
 
     QgsRenderContext renderContext = QgsRenderContext::fromQPainter( painter );
-    renderContext.setFlag( QgsRenderContext::RenderBlocking );
+    renderContext.setFlag( Qgis::RenderContextFlag::RenderBlocking );
     for ( QgsAnnotation *annotation : annotations )
     {
       if ( !annotation || !annotation->isVisible() )
@@ -3519,7 +3519,7 @@ namespace QgsWms
     if ( !mWmsParameters.bbox().isEmpty() )
     {
       QgsMapSettings mapSettings;
-      mapSettings.setFlag( QgsMapSettings::RenderBlocking );
+      mapSettings.setFlag( Qgis::MapSettingsFlag::RenderBlocking );
       std::unique_ptr<QImage> tmp( createImage( mContext.mapSize( false ) ) );
       configureMapSettings( tmp.get(), mapSettings );
       // QGIS 4.0 - require correct use of QgsRenderContext instead of these

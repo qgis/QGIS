@@ -472,7 +472,7 @@ void QgsRubberBand::paint( QPainter *p )
   if ( QgsLineSymbol *lineSymbol = dynamic_cast< QgsLineSymbol * >( mSymbol.get() ) )
   {
     QgsRenderContext context( QgsRenderContext::fromQPainter( p ) );
-    context.setFlag( QgsRenderContext::Antialiasing, true );
+    context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
 
     lineSymbol->startRender( context );
     for ( const QVector<QPolygonF> &shape : std::as_const( shapes ) )
@@ -487,7 +487,7 @@ void QgsRubberBand::paint( QPainter *p )
   else if ( QgsFillSymbol *fillSymbol = dynamic_cast< QgsFillSymbol * >( mSymbol.get() ) )
   {
     QgsRenderContext context( QgsRenderContext::fromQPainter( p ) );
-    context.setFlag( QgsRenderContext::Antialiasing, true );
+    context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
 
     fillSymbol->startRender( context );
     for ( const QVector<QPolygonF> &shape : std::as_const( shapes ) )
