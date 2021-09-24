@@ -32,6 +32,46 @@
 ///@cond PRIVATE
 
 //
+// QgsMapToolCaptureAnnotationItem
+//
+
+QgsMapToolCaptureAnnotationItem::QgsMapToolCaptureAnnotationItem( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )
+  : QgsMapToolCapture( canvas, cadDockWidget, mode )
+{
+
+}
+
+QgsCreateAnnotationItemMapToolHandler *QgsMapToolCaptureAnnotationItem::handler()
+{
+  return mHandler;
+}
+
+QgsMapTool *QgsMapToolCaptureAnnotationItem::mapTool()
+{
+  return this;
+}
+
+QgsMapLayer *QgsMapToolCaptureAnnotationItem::layer() const
+{
+  return mHandler->targetLayer();
+}
+
+
+QgsMapToolCapture::Capabilities QgsMapToolCaptureAnnotationItem::capabilities() const
+{
+  // no geometry validation!
+  return SupportsCurves;
+}
+
+bool QgsMapToolCaptureAnnotationItem::supportsTechnique( CaptureTechnique ) const
+{
+  return true;
+}
+
+
+
+
+//
 // QgsCreatePointTextItemMapTool
 //
 
@@ -77,13 +117,10 @@ QgsMapTool *QgsCreatePointTextItemMapTool::mapTool()
 //
 
 QgsCreateMarkerItemMapTool::QgsCreateMarkerItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
-  : QgsMapToolCapture( canvas, cadDockWidget, CapturePoint )
-  , mHandler( new QgsCreateAnnotationItemMapToolHandler( canvas, cadDockWidget ) )
+  : QgsMapToolCaptureAnnotationItem( canvas, cadDockWidget, CapturePoint )
 {
-
+  mHandler = new QgsCreateAnnotationItemMapToolHandler( canvas, cadDockWidget, this );
 }
-
-QgsCreateMarkerItemMapTool::~QgsCreateMarkerItemMapTool() = default;
 
 void QgsCreateMarkerItemMapTool::cadCanvasReleaseEvent( QgsMapMouseEvent *event )
 {
@@ -108,52 +145,14 @@ void QgsCreateMarkerItemMapTool::cadCanvasReleaseEvent( QgsMapMouseEvent *event 
   cadDockWidget()->clearPoints();
 }
 
-QgsCreateAnnotationItemMapToolHandler *QgsCreateMarkerItemMapTool::handler()
-{
-  return mHandler;
-}
-
-QgsMapTool *QgsCreateMarkerItemMapTool::mapTool()
-{
-  return this;
-}
-
-QgsMapLayer *QgsCreateMarkerItemMapTool::layer() const
-{
-  return mHandler->targetLayer();
-}
-
-//
-// QgsMapToolCaptureAnnotationItem
-//
-
-QgsMapToolCaptureAnnotationItem::QgsMapToolCaptureAnnotationItem( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )
-  : QgsMapToolCapture( canvas, cadDockWidget, mode )
-{
-
-}
-
-QgsMapToolCapture::Capabilities QgsMapToolCaptureAnnotationItem::capabilities() const
-{
-  // no geometry validation!
-  return SupportsCurves;
-}
-
-bool QgsMapToolCaptureAnnotationItem::supportsTechnique( CaptureTechnique ) const
-{
-  return true;
-}
-
-
 //
 // QgsCreateLineMapTool
 //
 
 QgsCreateLineItemMapTool::QgsCreateLineItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QgsMapToolCaptureAnnotationItem( canvas, cadDockWidget, CaptureLine )
-  , mHandler( new QgsCreateAnnotationItemMapToolHandler( canvas, cadDockWidget ) )
 {
-
+  mHandler = new QgsCreateAnnotationItemMapToolHandler( canvas, cadDockWidget, this );
 }
 
 void QgsCreateLineItemMapTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
@@ -202,34 +201,14 @@ void QgsCreateLineItemMapTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   }
 }
 
-QgsCreateLineItemMapTool::~QgsCreateLineItemMapTool() = default;
-
-QgsCreateAnnotationItemMapToolHandler *QgsCreateLineItemMapTool::handler()
-{
-  return mHandler;
-}
-
-QgsMapTool *QgsCreateLineItemMapTool::mapTool()
-{
-  return this;
-}
-
-QgsMapLayer *QgsCreateLineItemMapTool::layer() const
-{
-  return mHandler->targetLayer();
-}
-
-
-
 //
 // QgsCreatePolygonItemMapTool
 //
 
 QgsCreatePolygonItemMapTool::QgsCreatePolygonItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QgsMapToolCaptureAnnotationItem( canvas, cadDockWidget, CapturePolygon )
-  , mHandler( new QgsCreateAnnotationItemMapToolHandler( canvas, cadDockWidget ) )
 {
-
+  mHandler = new QgsCreateAnnotationItemMapToolHandler( canvas, cadDockWidget, this );
 }
 
 void QgsCreatePolygonItemMapTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
@@ -281,21 +260,5 @@ void QgsCreatePolygonItemMapTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   }
 }
 
-QgsCreatePolygonItemMapTool::~QgsCreatePolygonItemMapTool() = default;
-
-QgsCreateAnnotationItemMapToolHandler *QgsCreatePolygonItemMapTool::handler()
-{
-  return mHandler;
-}
-
-QgsMapTool *QgsCreatePolygonItemMapTool::mapTool()
-{
-  return this;
-}
-
-QgsMapLayer *QgsCreatePolygonItemMapTool::layer() const
-{
-  return mHandler->targetLayer();
-}
-
 ///@endcond PRIVATE
+
