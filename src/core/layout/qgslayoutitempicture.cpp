@@ -384,6 +384,21 @@ void QgsLayoutItemPicture::loadRemotePicture( const QString &url )
   if ( reply )
   {
     QImageReader imageReader( reply );
+
+    if ( imageReader.format() == "pdf" )
+    {
+      // special handling for this format -- we need to pass the desired target size onto the image reader
+      // so that it can correctly render the (vector) pdf content at the desired dpi. Otherwise it returns
+      // a very low resolution image (the driver assumes points == pixels!)
+      // For other image formats, we read the original image size only and defer resampling to later in this
+      // function. That gives us more control over the resampling method used.
+
+      // driver assumes points == pixels, so driver image size is reported assuming 72 dpi.
+      const QSize sizeAt72Dpi = imageReader.size();
+      const QSize sizeAtTargetDpi = sizeAt72Dpi * mLayout->renderContext().dpi() / 72;
+      imageReader.setScaledSize( sizeAtTargetDpi );
+    }
+
     mImage = imageReader.read();
     mMode = FormatRaster;
   }
@@ -434,6 +449,21 @@ void QgsLayoutItemPicture::loadLocalPicture( const QString &path )
     {
       //try to open raster with QImageReader
       QImageReader imageReader( pic.fileName() );
+
+      if ( imageReader.format() == "pdf" )
+      {
+        // special handling for this format -- we need to pass the desired target size onto the image reader
+        // so that it can correctly render the (vector) pdf content at the desired dpi. Otherwise it returns
+        // a very low resolution image (the driver assumes points == pixels!)
+        // For other image formats, we read the original image size only and defer resampling to later in this
+        // function. That gives us more control over the resampling method used.
+
+        // driver assumes points == pixels, so driver image size is reported assuming 72 dpi.
+        const QSize sizeAt72Dpi = imageReader.size();
+        const QSize sizeAtTargetDpi = sizeAt72Dpi * mLayout->renderContext().dpi() / 72;
+        imageReader.setScaledSize( sizeAtTargetDpi );
+      }
+
       if ( imageReader.read( &mImage ) )
       {
         mMode = FormatRaster;
