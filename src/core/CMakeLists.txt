@@ -446,6 +446,7 @@ set(QGIS_CORE_SRCS
   qgsreadwritelocker.cpp
   qgsrelation.cpp
   qgspolymorphicrelation.cpp
+  qgsrecentstylehandler.cpp
   qgsrelationcontext.cpp
   qgsweakrelation.cpp
   qgsrelationmanager.cpp
@@ -1082,6 +1083,7 @@ set(QGIS_CORE_HDRS
   qgsrange.h
   qgsreadwritecontext.h
   qgsreadwritelocker.h
+  qgsrecentstylehandler.h
   qgsrelation.h
   qgspolymorphicrelation.h
   qgsrelationcontext.h

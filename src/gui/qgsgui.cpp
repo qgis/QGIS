@@ -63,7 +63,6 @@
 #include "qgsprovidersourcewidgetproviderregistry.h"
 #include "qgsrelationwidgetregistry.h"
 #include "qgssettingsregistrygui.h"
-#include "qgsrecentstylehandler.h"
 
 QgsGui *QgsGui::instance()
 {
@@ -89,11 +88,6 @@ QgsEditorWidgetRegistry *QgsGui::editorWidgetRegistry()
 QgsRelationWidgetRegistry *QgsGui::relationWidgetRegistry()
 {
   return instance()->mRelationEditorRegistry;
-}
-
-QgsRecentStyleHandler *QgsGui::recentStyleHandler()
-{
-  return instance()->mRecentStyleHandler;
 }
 
 QgsSourceSelectProviderRegistry *QgsGui::sourceSelectProviderRegistry()
@@ -223,7 +217,6 @@ QgsGui::~QgsGui()
   delete mSubsetStringEditorProviderRegistry;
   delete mProviderSourceWidgetProviderRegistry;
   delete mRelationEditorRegistry;
-  delete mRecentStyleHandler;
   delete mSettingsRegistryGui;
 }
 
@@ -273,8 +266,6 @@ QgsGui::QgsGui()
   mSettingsRegistryGui = new QgsSettingsRegistryGui();
 
   mCodeEditorColorSchemeRegistry = new QgsCodeEditorColorSchemeRegistry();
-
-  mRecentStyleHandler = new QgsRecentStyleHandler();
 
   // provider gui registry initialize QgsProviderRegistry too
   mProviderGuiRegistry = new QgsProviderGuiRegistry( QgsApplication::pluginPath() );

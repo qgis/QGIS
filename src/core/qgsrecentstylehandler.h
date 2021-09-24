@@ -17,7 +17,7 @@
 #define QGSRECENTSTYLEHANDLER_H
 
 #include "qgis_sip.h"
-#include "qgis_gui.h"
+#include "qgis_core.h"
 #include "qgis.h"
 #include "qgssymbol.h"
 #include <unordered_map>
@@ -26,16 +26,16 @@
 class QgsSymbol;
 
 /**
- * \ingroup gui
+ * \ingroup core
  * \class QgsRecentStyleHandler
  * \brief Handles and tracks style items recently used in the QGIS GUI.
  *
  * QgsRecentStyleHandler is not usually directly created, but rather accessed through
- * QgsGui::recentStyleHandler().
+ * QgsApplication::recentStyleHandler().
  *
  * \since QGIS 3.22
  */
-class GUI_EXPORT QgsRecentStyleHandler
+class CORE_EXPORT QgsRecentStyleHandler
 {
   public:
 
@@ -43,7 +43,7 @@ class GUI_EXPORT QgsRecentStyleHandler
      * Creates a new recent style handler.
      *
     * QgsRecentStyleHandler is not usually directly created, but rather accessed through
-    * QgsGui::recentStyleHandler().
+    * QgsApplication::recentStyleHandler().
     */
     QgsRecentStyleHandler();
 
@@ -66,10 +66,10 @@ class GUI_EXPORT QgsRecentStyleHandler
      *   my_fill_symbol = QgsFillSymbol.createSimple( { 'color': '#ff0000' } )
      *
      *   # push this symbol to the recent style handler, using a custom identifier "fill_symbol_for_new_rectangles"
-     *   QgsGui.recentStyleHandler().pushRecentSymbol( 'fill_symbol_for_new_rectangles', my_fill_symbol )
+     *   QgsApplication.recentStyleHandler().pushRecentSymbol( 'fill_symbol_for_new_rectangles', my_fill_symbol )
      *
      *   # ... later in the same QGIS session, retrieve a copy of this symbol so that we can use it for a newly created rectangle
-     *   new_symbol = QgsGui.recentStyleHandler().recentSymbol( 'fill_symbol_for_new_rectangles' )
+     *   new_symbol = QgsApplication.recentStyleHandler().recentSymbol( 'fill_symbol_for_new_rectangles' )
      * \endcode
      *
      * \see recentSymbol()
