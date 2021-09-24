@@ -67,7 +67,12 @@ QVariantMap QgsVectorTileProviderMetadata::decodeUri( const QString &uri ) const
 
   QVariantMap uriComponents;
   uriComponents.insert( QStringLiteral( "type" ), dsUri.param( QStringLiteral( "type" ) ) );
-  if ( uriComponents[ QStringLiteral( "type" ) ] == QStringLiteral( "mbtiles" ) )
+  if ( dsUri.hasParam( QStringLiteral( "serviceType" ) ) )
+    uriComponents.insert( QStringLiteral( "serviceType" ), dsUri.param( QStringLiteral( "serviceType" ) ) );
+
+  if ( uriComponents[ QStringLiteral( "type" ) ] == QStringLiteral( "mbtiles" ) ||
+       ( uriComponents[ QStringLiteral( "type" ) ] == QStringLiteral( "xyz" ) &&
+         !dsUri.param( QStringLiteral( "url" ) ).startsWith( QStringLiteral( "http" ) ) ) )
   {
     uriComponents.insert( QStringLiteral( "path" ), dsUri.param( QStringLiteral( "url" ) ) );
   }
@@ -75,6 +80,21 @@ QVariantMap QgsVectorTileProviderMetadata::decodeUri( const QString &uri ) const
   {
     uriComponents.insert( QStringLiteral( "url" ), dsUri.param( QStringLiteral( "url" ) ) );
   }
+
+  if ( dsUri.hasParam( QStringLiteral( "zmin" ) ) )
+    uriComponents.insert( QStringLiteral( "zmin" ), dsUri.param( QStringLiteral( "zmin" ) ) );
+  if ( dsUri.hasParam( QStringLiteral( "zmax" ) ) )
+    uriComponents.insert( QStringLiteral( "zmax" ), dsUri.param( QStringLiteral( "zmax" ) ) );
+
+  if ( dsUri.hasParam( QStringLiteral( "referer" ) ) )
+    uriComponents.insert( QStringLiteral( "referer" ), dsUri.param( QStringLiteral( "referer" ) ) );
+  if ( dsUri.hasParam( QStringLiteral( "styleUrl" ) ) )
+    uriComponents.insert( QStringLiteral( "styleUrl" ), dsUri.param( QStringLiteral( "styleUrl" ) ) );
+
+  const QString authcfg = dsUri.authConfigId();
+  if ( !authcfg.isEmpty() )
+    uriComponents.insert( QStringLiteral( "authcfg" ), authcfg );
+
   return uriComponents;
 }
 
@@ -82,7 +102,23 @@ QString QgsVectorTileProviderMetadata::encodeUri( const QVariantMap &parts ) con
 {
   QgsDataSourceUri dsUri;
   dsUri.setParam( QStringLiteral( "type" ), parts.value( QStringLiteral( "type" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "serviceType" ) ) )
+    dsUri.setParam( QStringLiteral( "serviceType" ), parts[ QStringLiteral( "serviceType" ) ].toString() );
   dsUri.setParam( QStringLiteral( "url" ), parts.value( parts.contains( QStringLiteral( "path" ) ) ? QStringLiteral( "path" ) : QStringLiteral( "url" ) ).toString() );
+
+  if ( parts.contains( QStringLiteral( "zmin" ) ) )
+    dsUri.setParam( QStringLiteral( "zmin" ), parts[ QStringLiteral( "zmin" ) ].toString() );
+  if ( parts.contains( QStringLiteral( "zmax" ) ) )
+    dsUri.setParam( QStringLiteral( "zmax" ), parts[ QStringLiteral( "zmax" ) ].toString() );
+
+  if ( parts.contains( QStringLiteral( "referer" ) ) )
+    dsUri.setParam( QStringLiteral( "referer" ), parts[ QStringLiteral( "referer" ) ].toString() );
+  if ( parts.contains( QStringLiteral( "styleUrl" ) ) )
+    dsUri.setParam( QStringLiteral( "styleUrl" ), parts[ QStringLiteral( "styleUrl" ) ].toString() );
+
+  if ( parts.contains( QStringLiteral( "authcfg" ) ) )
+    dsUri.setAuthConfigId( parts[ QStringLiteral( "authcfg" ) ].toString() );
+
   return dsUri.encodedUri();
 }
 
