@@ -410,6 +410,55 @@ class TestQgsRenderContext(unittest.TestCase):
         size = r.convertToPainterUnits(2, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(size, 2.0, places=5)
 
+    def testConvertToPainterUnitsNoMapToPixel(self):
+        """
+        Test converting map unit based sizes to painter units when render context has NO map to pixel set
+        """
+        r = QgsRenderContext()
+        r.setScaleFactor(300 / 25.4) # 300 dpi, to match above test
+
+        # start with no min/max scale
+        c = QgsMapUnitScale()
+
+        # since we have no map scale to work with, this makes the gross assumption that map units == points. It's magic, but
+        # what else can we do?
+        size = r.convertToPainterUnits(10, QgsUnitTypes.RenderMapUnits, c)
+        self.assertAlmostEqual(size, 41.66666, places=3)
+        size = r.convertToPainterUnits(10, QgsUnitTypes.RenderMetersInMapUnits, c)
+        self.assertAlmostEqual(size, 41.66666, places=3)
+
+        # sizes should be clamped to reasonable range -- we don't want to treat 2000m map unit sizes as 10 million pixels!
+        size = r.convertToPainterUnits(2000, QgsUnitTypes.RenderMapUnits, c)
+        self.assertEqual(size, 100.0)
+        size = r.convertToPainterUnits(2000, QgsUnitTypes.RenderMetersInMapUnits, c)
+        self.assertEqual(size, 100.0)
+        size = r.convertToPainterUnits(0.0002, QgsUnitTypes.RenderMapUnits, c)
+        self.assertEqual(size, 10.0)
+        size = r.convertToPainterUnits(0.0002, QgsUnitTypes.RenderMetersInMapUnits, c)
+        self.assertEqual(size, 10.0)
+
+        # normal units, should not be affected
+        size = r.convertToPainterUnits(2, QgsUnitTypes.RenderMillimeters, c)
+        self.assertAlmostEqual(size, 23.622047, places=5)
+        size = r.convertToPainterUnits(2, QgsUnitTypes.RenderPoints, c)
+        self.assertAlmostEqual(size, 8.33333333125, places=5)
+        size = r.convertToPainterUnits(2, QgsUnitTypes.RenderInches, c)
+        self.assertAlmostEqual(size, 600.0, places=5)
+        size = r.convertToPainterUnits(2, QgsUnitTypes.RenderPixels, c)
+        self.assertAlmostEqual(size, 2.0, places=5)
+
+        # minimum size greater than the calculated size, so size should be limited to minSizeMM
+        c.minSizeMM = 5
+        c.minSizeMMEnabled = True
+        size = r.convertToPainterUnits(2, QgsUnitTypes.RenderMapUnits, c)
+        self.assertAlmostEqual(size, 59.0551181, places=5)
+
+        # maximum size less than the calculated size, so size should be limited to maxSizeMM
+        c.maxSizeMM = 6
+        c.maxSizeMMEnabled = True
+        size = r.convertToPainterUnits(26, QgsUnitTypes.RenderMapUnits, c)
+        self.assertAlmostEqual(size, 70.866, places=2)
+
     def testConvertToMapUnits(self):
         ms = QgsMapSettings()
         ms.setExtent(QgsRectangle(0, 0, 100, 100))

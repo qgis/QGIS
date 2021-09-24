@@ -339,6 +339,7 @@ const QgsFeatureFilterProvider *QgsRenderContext::featureFilterProvider() const
 double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale ) const
 {
   double conversionFactor = 1.0;
+  bool isMapUnitHack = false;
   switch ( unit )
   {
     case QgsUnitTypes::RenderMillimeters:
@@ -355,21 +356,32 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
 
     case QgsUnitTypes::RenderMetersInMapUnits:
     {
-      size = convertMetersToMapUnits( size );
+      if ( mMapToPixel.isValid() )
+        size = convertMetersToMapUnits( size );
       unit = QgsUnitTypes::RenderMapUnits;
       // Fall through to RenderMapUnits with size in meters converted to size in MapUnits
       FALLTHROUGH
     }
     case QgsUnitTypes::RenderMapUnits:
     {
-      const double mup = scale.computeMapUnitsPerPixel( *this );
-      if ( mup > 0 )
+      if ( mMapToPixel.isValid() )
       {
-        conversionFactor = 1.0 / mup;
+        const double mup = scale.computeMapUnitsPerPixel( *this );
+        if ( mup > 0 )
+        {
+          conversionFactor = 1.0 / mup;
+        }
+        else
+        {
+          conversionFactor = 1.0;
+        }
       }
       else
       {
-        conversionFactor = 1.0;
+        // invalid map to pixel. A size in map units can't be calculated, so treat the size as points
+        // and clamp it to a reasonable range. It's the best we can do in this situation!
+        isMapUnitHack = true;
+        conversionFactor = mScaleFactor / POINTS_TO_MM;
       }
       break;
     }
@@ -395,8 +407,16 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
       convertedSize = std::min( convertedSize, scale.maxSizeMM * mScaleFactor );
   }
 
-  const double symbologyReferenceScaleFactor = mSymbologyReferenceScale > 0 ? mSymbologyReferenceScale / mRendererScale : 1;
-  convertedSize *= symbologyReferenceScaleFactor;
+  if ( isMapUnitHack )
+  {
+    // since we are arbitrarily treating map units as mm, we need to clamp to an (arbitrary!) reasonable range.
+    convertedSize = std::clamp( convertedSize, 10.0, 100.0 );
+  }
+  else
+  {
+    const double symbologyReferenceScaleFactor = mSymbologyReferenceScale > 0 ? mSymbologyReferenceScale / mRendererScale : 1;
+    convertedSize *= symbologyReferenceScaleFactor;
+  }
 
   return convertedSize;
 }
