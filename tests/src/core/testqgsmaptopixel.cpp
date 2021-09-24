@@ -25,12 +25,47 @@ class TestQgsMapToPixel: public QObject
 {
     Q_OBJECT
   private slots:
+    void isValid();
     void rotation();
     void getters();
     void fromScale();
     void equality();
     void toMapCoordinates();
 };
+
+void TestQgsMapToPixel::isValid()
+{
+  // test QgsMapToPixel::isValid()
+
+  // constructors with parameters should result in valid QgsMapToPixel
+  QgsMapToPixel m2p( 1, 5, 5, 10, 10, 90 );
+  QVERIFY( m2p.isValid() );
+  m2p = QgsMapToPixel( 90 );
+  QVERIFY( m2p.isValid() );
+  m2p = QgsMapToPixel::fromScale( 90, QgsUnitTypes::DistanceMeters );
+  QVERIFY( m2p.isValid() );
+
+  // default constructor should result in invalid m2p
+  m2p = QgsMapToPixel();
+  QVERIFY( !m2p.isValid() );
+
+  // but setting parameters on an invalid m2p should turn it valid
+  m2p.setMapUnitsPerPixel( 90 );
+  QVERIFY( m2p.isValid() );
+
+  m2p = QgsMapToPixel();
+  m2p.setMapRotation( 90, 1, 2 );
+  QVERIFY( m2p.isValid() );
+
+  m2p = QgsMapToPixel();
+  m2p.setParameters( 90, 1, 2, 50, 70, 0 );
+  QVERIFY( m2p.isValid() );
+
+  m2p = QgsMapToPixel();
+  bool ok = false;
+  m2p.setParameters( 90, 1, 2, 50, 70, 0, &ok );
+  QVERIFY( m2p.isValid() );
+}
 
 void TestQgsMapToPixel::rotation()
 {

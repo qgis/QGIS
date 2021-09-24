@@ -31,7 +31,8 @@ QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel,
                               int width,
                               int height,
                               double rotation )
-  : mMapUnitsPerPixel( mapUnitsPerPixel )
+  : mValid( true )
+  , mMapUnitsPerPixel( mapUnitsPerPixel )
   , mWidth( width )
   , mHeight( height )
   , mRotation( rotation )
@@ -45,7 +46,8 @@ QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel,
 }
 
 QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel )
-  : mMapUnitsPerPixel( mapUnitsPerPixel )
+  : mValid( true )
+  , mMapUnitsPerPixel( mapUnitsPerPixel )
   , mWidth( 0 )
   , mHeight( 0 )
   , mXCenter( 0 )
@@ -80,6 +82,8 @@ bool QgsMapToPixel::updateMatrix()
 
 void QgsMapToPixel::setMapUnitsPerPixel( double mapUnitsPerPixel )
 {
+  mValid = true;
+
   const double oldUnits = mMapUnitsPerPixel;
   mMapUnitsPerPixel = mapUnitsPerPixel;
   if ( !updateMatrix() )
@@ -90,6 +94,8 @@ void QgsMapToPixel::setMapUnitsPerPixel( double mapUnitsPerPixel )
 
 void QgsMapToPixel::setMapRotation( double degrees, double cx, double cy )
 {
+  mValid = true;
+
   const double oldRotation = mRotation;
   const double oldXCenter = mXCenter;
   const double oldYCenter = mYCenter;
@@ -121,6 +127,8 @@ void QgsMapToPixel::setParameters( double mapUnitsPerPixel,
                                    double rotation,
                                    bool *ok )
 {
+  mValid = true;
+
   const double oldMUPP = mMapUnitsPerPixel;
   const double oldXCenter = mXCenter;
   const double oldYCenter = mYCenter;
@@ -164,6 +172,7 @@ void QgsMapToPixel::setParameters( double mapUnitsPerPixel,
                                    int height,
                                    double rotation )
 {
+  mValid = true;
   bool ok;
   setParameters( mapUnitsPerPixel, xc, yc, width, height, rotation, &ok );
 }
