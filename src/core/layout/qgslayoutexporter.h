@@ -24,6 +24,7 @@
 #include <QPointer>
 #include <QSize>
 #include <QRectF>
+#include <QVector>
 #include <functional>
 
 #ifndef QT_NO_PRINTER
