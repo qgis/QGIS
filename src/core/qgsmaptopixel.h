@@ -42,7 +42,7 @@ class CORE_EXPORT QgsMapToPixel
     /**
      * Constructor for an invalid QgsMapToPixel.
      *
-     * A manual call to setParameters() is required to initialise the object.
+     * A manual call to setParameters() is required to initialize the object.
      */
     QgsMapToPixel();
 
