@@ -22,6 +22,7 @@
 #include "qgis.h"
 #include <QtGlobal>
 #include <QColor>
+#include <QVector>
 
 class QgsLayout;
 class QgsFeatureFilterProvider;
