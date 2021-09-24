@@ -319,7 +319,7 @@ class PGVectorTable(PGTable, VectorTable):
         | LineStringZM | LineString  | 4       |
         """
         geometryType = self.geomType
-        if self.geomDim == 3 and not self.geomType[-1] == "M":
+        if self.geomDim == 3 and self.geomType[-1] != "M":
             geometryType += "Z"
         elif self.geomDim == 4:
             geometryType += "ZM"
