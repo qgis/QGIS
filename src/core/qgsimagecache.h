@@ -138,7 +138,7 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
      * be TRUE from GUI based applications (like the main QGIS application) or crashes will result. Only for
      * use in external scripts or QGIS server.
      *
-     * Since QGIS 3.22 the \a targetDpi argument can be used to specify an explict DPI to render the image
+     * Since QGIS 3.22 the \a targetDpi argument can be used to specify an explicit DPI to render the image
      * at. This is used for some image formats (e.g. PDF) to ensure that content is rendered at the desired
      * DPI. This argument is only used when an invalid \a size argument is specified. If a valid \a size is
      * specified then the image will always be rendered at this size, regardless of the \a targetDpi.
