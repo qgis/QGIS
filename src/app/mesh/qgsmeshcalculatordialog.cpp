@@ -28,6 +28,7 @@
 #include "qgswkbtypes.h"
 #include "qgsfeatureiterator.h"
 #include "qgsmeshdatasetgrouptreeview.h"
+#include "qgshelp.h"
 
 #include "cpl_string.h"
 #include "gdal.h"
@@ -103,10 +104,14 @@ QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer, QWidg
   useFullLayerExtent();
   repopulateTimeCombos();
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [ = ]
+  {
+    QgsHelp::openHelp( QStringLiteral( "working_with_mesh/mesh_properties.html#mesh-calculator" ) );
+  } );
 
   const QgsSettings settings;
   mOutputDatasetFileWidget->setStorageMode( QgsFileWidget::SaveFile );
-  mOutputDatasetFileWidget->setDialogTitle( tr( "Enter mesh dataset file" ) );
+  mOutputDatasetFileWidget->setDialogTitle( tr( "Enter Mesh Dataset File" ) );
   mOutputDatasetFileWidget->setDefaultRoot( settings.value( QStringLiteral( "/MeshCalculator/lastOutputDir" ), QDir::homePath() ).toString() );
   onOutputFormatChange();
   connect( mOutputDatasetFileWidget, &QgsFileWidget::fileChanged, this, &QgsMeshCalculatorDialog::updateInfoMessage );
