@@ -415,7 +415,7 @@ class TestQgsRenderContext(unittest.TestCase):
         Test converting map unit based sizes to painter units when render context has NO map to pixel set
         """
         r = QgsRenderContext()
-        r.setScaleFactor(300 / 25.4) # 300 dpi, to match above test
+        r.setScaleFactor(300 / 25.4)  # 300 dpi, to match above test
 
         # start with no min/max scale
         c = QgsMapUnitScale()
