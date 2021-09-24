@@ -45,7 +45,14 @@ void QgsBlurEffect::draw( QgsRenderContext &context )
 
 void QgsBlurEffect::drawStackBlur( QgsRenderContext &context )
 {
-  const int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
+  int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
+  if ( context.flags() & QgsRenderContext::Flag::RenderSymbolPreview )
+  {
+    // avoid excessively large blur or offset in symbol preview icons -- it's too slow to calculate, and unnecessary
+    // for just a preview icon
+    blurLevel = std::min( blurLevel, 30 );
+  }
+
   QImage im = sourceAsImage( context )->copy();
   QgsImageOperation::stackBlur( im, blurLevel, false, context.feedback() );
   drawBlurredImage( context, im );
@@ -53,7 +60,14 @@ void QgsBlurEffect::drawStackBlur( QgsRenderContext &context )
 
 void QgsBlurEffect::drawGaussianBlur( QgsRenderContext &context )
 {
-  const int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
+  int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
+  if ( context.flags() & QgsRenderContext::Flag::RenderSymbolPreview )
+  {
+    // avoid excessively large blur or offset in symbol preview icons -- it's too slow to calculate, and unnecessary
+    // for just a preview icon
+    blurLevel = std::min( blurLevel, 30 );
+  }
+
   QImage *im = QgsImageOperation::gaussianBlur( *sourceAsImage( context ), blurLevel, context.feedback() );
   if ( !im->isNull() )
     drawBlurredImage( context, *im );
@@ -139,7 +153,15 @@ QgsBlurEffect *QgsBlurEffect::clone() const
 
 QRectF QgsBlurEffect::boundingRect( const QRectF &rect, const QgsRenderContext &context ) const
 {
-  const int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
+  int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
+
+  if ( context.flags() & QgsRenderContext::Flag::RenderSymbolPreview )
+  {
+    // avoid excessively large blur or offset in symbol preview icons -- it's too slow to calculate, and unnecessary
+    // for just a preview icon
+    blurLevel = std::min( blurLevel, 30 );
+  }
+
   //plus possible extension due to blur, with a couple of extra pixels thrown in for safety
   const double spread = blurLevel * 2.0 + 10;
   return rect.adjusted( -spread, -spread, spread, spread );
