@@ -184,6 +184,7 @@
 %Include auto_generated/qgsrasterpyramidsoptionswidget.sip
 %Include auto_generated/qgsratiolockbutton.sip
 %Include auto_generated/qgsrelationeditorwidget.sip
+%Include auto_generated/qgsrecentstylehandler.sip
 %Include auto_generated/qgsabstractrelationeditorwidget.sip
 %Include auto_generated/qgsrelationwidgetregistry.sip
 %Include auto_generated/qgsrichtexteditor.sip
