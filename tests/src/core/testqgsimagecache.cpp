@@ -55,6 +55,7 @@ class TestQgsImageCache : public QObject
     void opacity(); // check non-opaque image rendering
     void base64();
     void empty();
+    void dpi();
 
 };
 
@@ -144,12 +145,12 @@ void TestQgsImageCache::broken()
   QgsImageCache cache;
   bool inCache = false;
   bool missingImage = false;
-  const QImage img = cache.pathAsImage( QStringLiteral( "bbbbbbb" ), QSize( 200, 200 ), true, 1.0, inCache, false, &missingImage );
+  const QImage img = cache.pathAsImage( QStringLiteral( "bbbbbbb" ), QSize( 200, 200 ), true, 1.0, inCache, false, 96,  &missingImage );
   QVERIFY( missingImage );
-  cache.pathAsImage( QStringLiteral( "bbbbbbb" ), QSize( 200, 200 ), true, 1.0, inCache, false, &missingImage );
+  cache.pathAsImage( QStringLiteral( "bbbbbbb" ), QSize( 200, 200 ), true, 1.0, inCache, false, 96, &missingImage );
   QVERIFY( missingImage );
   const QString originalImage = TEST_DATA_DIR + QStringLiteral( "/sample_image.png" );
-  cache.pathAsImage( originalImage, QSize( 200, 200 ), true, 1.0, inCache, false, &missingImage );
+  cache.pathAsImage( originalImage, QSize( 200, 200 ), true, 1.0, inCache, false, 96, &missingImage );
   QVERIFY( !missingImage );
 }
 
@@ -301,6 +302,20 @@ void TestQgsImageCache::empty()
   QVERIFY( img.isNull() );
 
   QVERIFY( !cache.originalSize( QStringLiteral( " " ) ).isValid() );
+}
+
+void TestQgsImageCache::dpi()
+{
+  QgsImageCacheEntry entry1( QStringLiteral( "my path" ), QSize(), true, 1, 96 );
+  QgsImageCacheEntry entry2( QStringLiteral( "my path" ), QSize(), true, 1, 300 );
+  QVERIFY( !entry1.isEqual( &entry2 ) );
+  entry2.targetDpi = 96;
+  QVERIFY( entry1.isEqual( &entry2 ) );
+  entry2.targetDpi = 300;
+  // target dpi is ignored if a valid size is set
+  entry1.size = QSize( 100, 100 );
+  entry2.size = QSize( 100, 100 );
+  QVERIFY( entry1.isEqual( &entry2 ) );
 }
 
 bool TestQgsImageCache::imageCheck( const QString &testName, QImage &image, int mismatchCount )
