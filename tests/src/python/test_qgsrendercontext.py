@@ -240,21 +240,18 @@ class TestQgsRenderContext(unittest.TestCase):
         da_wsg84.setSourceCrs(crs_wsg84, QgsProject.instance().transformContext())
         if (da_wsg84.sourceCrs().isGeographic()):
             da_wsg84.setEllipsoid(da_wsg84.sourceCrs().ellipsoidAcronym())
-        length_meter_mapunits = da_wsg84.measureLineProjected(point_berlin_wsg84, 1.0, (math.pi / 2))
         meters_test_mapunits = meters_test * length_wsg84_mapunits
-        meters_test_pixel = meters_test * length_wsg84_mapunits
         ms = QgsMapSettings()
         ms.setDestinationCrs(crs_wsg84)
         ms.setExtent(rt_extent)
+        ms.setOutputSize(QSize(50, 50))
         r = QgsRenderContext.fromMapSettings(ms)
         r.setExtent(rt_extent)
         self.assertEqual(r.extent().center().toString(7), point_berlin_wsg84.toString(7))
         c = QgsMapUnitScale()
         r.setDistanceArea(da_wsg84)
         result_test_painterunits = r.convertToPainterUnits(meters_test, QgsUnitTypes.RenderMetersInMapUnits, c)
-        self.assertEqual(
-            QgsDistanceArea.formatDistance(result_test_painterunits, 7, QgsUnitTypes.DistanceUnknownUnit, True),
-            QgsDistanceArea.formatDistance(meters_test_mapunits, 7, QgsUnitTypes.DistanceUnknownUnit, True))
+        self.assertAlmostEqual(result_test_painterunits, 60.0203759, 1)
         result_test_mapunits = r.convertToMapUnits(meters_test, QgsUnitTypes.RenderMetersInMapUnits, c)
         self.assertEqual(QgsDistanceArea.formatDistance(result_test_mapunits, 7, QgsUnitTypes.DistanceDegrees, True),
                          QgsDistanceArea.formatDistance(meters_test_mapunits, 7, QgsUnitTypes.DistanceDegrees, True))
@@ -265,7 +262,7 @@ class TestQgsRenderContext(unittest.TestCase):
         # attempting to convert to meters in map units when no extent is available should fallback to a very
         # approximate degrees -> meters conversion
         r.setExtent(QgsRectangle())
-        self.assertAlmostEqual(r.convertToPainterUnits(5555, QgsUnitTypes.RenderMetersInMapUnits), 0.0499, 3)
+        self.assertAlmostEqual(r.convertToPainterUnits(5555, QgsUnitTypes.RenderMetersInMapUnits), 84692, -10)
 
     def testConvertSingleUnit(self):
         ms = QgsMapSettings()
