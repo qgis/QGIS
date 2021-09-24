@@ -45,8 +45,10 @@ class CORE_EXPORT QgsImageCacheEntry : public QgsAbstractContentCacheEntry
      *
      * If \a keepAspectRatio is TRUE then the original raster aspect ratio will always be preserved
      * when resizing.
+     *
+     * The \a targetDpi argument is ignored if \a size is a valid size.
      */
-    QgsImageCacheEntry( const QString &path, QSize size, bool keepAspectRatio, double opacity ) ;
+    QgsImageCacheEntry( const QString &path, QSize size, bool keepAspectRatio, double opacity, double targetDpi ) ;
 
     //! Rendered image size
     QSize size;
@@ -66,6 +68,13 @@ class CORE_EXPORT QgsImageCacheEntry : public QgsAbstractContentCacheEntry
      * \since QGIS 3.14
      */
     bool isMissingImage = false;
+
+    /**
+     * Target DPI
+     *
+     * \since QGIS 3.22
+     */
+    double targetDpi = 96;
 
     int dataSize() const override;
     void dump() const override;
@@ -128,11 +137,16 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
      * in the same thread to ensure provided the image. WARNING: the \a blocking parameter must NEVER
      * be TRUE from GUI based applications (like the main QGIS application) or crashes will result. Only for
      * use in external scripts or QGIS server.
+     *
+     * Since QGIS 3.22 the \a targetDpi argument can be used to specify an explict DPI to render the image
+     * at. This is used for some image formats (e.g. PDF) to ensure that content is rendered at the desired
+     * DPI. This argument is only used when an invalid \a size argument is specified. If a valid \a size is
+     * specified then the image will always be rendered at this size, regardless of the \a targetDpi.
      */
 #ifndef SIP_RUN
-    QImage pathAsImage( const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache SIP_OUT, bool blocking = false, bool *isMissing = nullptr );
+    QImage pathAsImage( const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache SIP_OUT, bool blocking = false, double targetDpi = 96, bool *isMissing = nullptr );
 #else
-    QImage pathAsImage( const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache SIP_OUT, bool blocking = false );
+    QImage pathAsImage( const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache SIP_OUT, bool blocking = false, double targetDpi = 96 );
 #endif
 
     /**
@@ -161,7 +175,7 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
 
   private:
 
-    QImage renderImage( const QString &path, QSize size, const bool keepAspectRatio, const double opacity, bool &isBroken, bool blocking = false ) const;
+    QImage renderImage( const QString &path, QSize size, const bool keepAspectRatio, const double opacity, double targetDpi, bool &isBroken, bool blocking = false ) const;
 
     //! SVG content to be rendered if SVG file was not found.
     QByteArray mMissingSvg;

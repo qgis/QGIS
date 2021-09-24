@@ -35,7 +35,7 @@ reuse without incurring the cost of resampling on every render.
 Constructor for QgsImageCache, with the specified ``parent`` object.
 %End
 
-    QImage pathAsImage( const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache /Out/, bool blocking = false );
+    QImage pathAsImage( const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache /Out/, bool blocking = false, double targetDpi = 96 );
 %Docstring
 Returns the specified ``path`` rendered as an image. If possible, a pre-existing cached
 version of the image will be used. If not, the image is fetched and resampled to the desired
@@ -59,6 +59,11 @@ The ``blocking`` boolean forces to wait for loading before returning image. The 
 in the same thread to ensure provided the image. WARNING: the ``blocking`` parameter must NEVER
 be ``True`` from GUI based applications (like the main QGIS application) or crashes will result. Only for
 use in external scripts or QGIS server.
+
+Since QGIS 3.22 the ``targetDpi`` argument can be used to specify an explict DPI to render the image
+at. This is used for some image formats (e.g. PDF) to ensure that content is rendered at the desired
+DPI. This argument is only used when an invalid ``size`` argument is specified. If a valid ``size`` is
+specified then the image will always be rendered at this size, regardless of the ``targetDpi``.
 %End
 
     QSize originalSize( const QString &path, bool blocking = false ) const;

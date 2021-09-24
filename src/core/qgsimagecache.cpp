@@ -42,11 +42,12 @@
 
 ///@cond PRIVATE
 
-QgsImageCacheEntry::QgsImageCacheEntry( const QString &path, QSize size, const bool keepAspectRatio, const double opacity )
+QgsImageCacheEntry::QgsImageCacheEntry( const QString &path, QSize size, const bool keepAspectRatio, const double opacity, double dpi )
   : QgsAbstractContentCacheEntry( path )
   , size( size )
   , keepAspectRatio( keepAspectRatio )
   , opacity( opacity )
+  , targetDpi( dpi )
 {
 }
 
@@ -54,7 +55,7 @@ bool QgsImageCacheEntry::isEqual( const QgsAbstractContentCacheEntry *other ) co
 {
   const QgsImageCacheEntry *otherImage = dynamic_cast< const QgsImageCacheEntry * >( other );
   // cheapest checks first!
-  if ( !otherImage || otherImage->keepAspectRatio != keepAspectRatio || otherImage->size != size || otherImage->path != path || otherImage->opacity != opacity )
+  if ( !otherImage || otherImage->keepAspectRatio != keepAspectRatio || otherImage->size != size || ( !size.isValid() && otherImage->targetDpi != targetDpi ) || otherImage->opacity != opacity || otherImage->path != path )
     return false;
 
   return true;
@@ -101,7 +102,7 @@ QgsImageCache::QgsImageCache( QObject *parent )
   connect( this, &QgsAbstractContentCacheBase::remoteContentFetched, this, &QgsImageCache::remoteImageFetched );
 }
 
-QImage QgsImageCache::pathAsImage( const QString &f, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache, bool blocking, bool *isMissing )
+QImage QgsImageCache::pathAsImage( const QString &f, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache, bool blocking, double targetDpi, bool *isMissing )
 {
   const QString file = f.trimmed();
   if ( isMissing )
@@ -114,7 +115,7 @@ QImage QgsImageCache::pathAsImage( const QString &f, const QSize size, const boo
 
   fitsInCache = true;
 
-  QgsImageCacheEntry *currentEntry = findExistingEntry( new QgsImageCacheEntry( file, size, keepAspectRatio, opacity ) );
+  QgsImageCacheEntry *currentEntry = findExistingEntry( new QgsImageCacheEntry( file, size, keepAspectRatio, opacity, targetDpi ) );
 
   QImage result;
 
@@ -125,7 +126,7 @@ QImage QgsImageCache::pathAsImage( const QString &f, const QSize size, const boo
   {
     long cachedDataSize = 0;
     bool isBroken = false;
-    result = renderImage( file, size, keepAspectRatio, opacity, isBroken, blocking );
+    result = renderImage( file, size, keepAspectRatio, opacity, targetDpi, isBroken, blocking );
     cachedDataSize += result.width() * result.height() * 32;
     if ( cachedDataSize > mMaxCacheSize / 2 )
     {
@@ -190,7 +191,7 @@ QSize QgsImageCache::originalSize( const QString &path, bool blocking ) const
   return QSize();
 }
 
-QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool keepAspectRatio, const double opacity, bool &isBroken, bool blocking ) const
+QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool keepAspectRatio, const double opacity, double targetDpi, bool &isBroken, bool blocking ) const
 {
   QImage im;
   isBroken = false;
