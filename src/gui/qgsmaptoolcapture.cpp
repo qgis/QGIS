@@ -873,11 +873,6 @@ void QgsMapToolCapture::closePolygon()
   updateExtraSnapLayer();
 }
 
-QgsMapLayer *QgsMapToolCapture::layer() const
-{
-  return canvas()->currentLayer();
-}
-
 void QgsMapToolCapture::validateGeometry()
 {
   if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries.value() == 0

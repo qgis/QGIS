@@ -70,6 +70,15 @@ Unregisters this maptool from the cad dock widget
 
     QgsAdvancedDigitizingDockWidget *cadDockWidget() const;
 
+    virtual QgsMapLayer *layer() const;
+%Docstring
+Returns the layer associated with the map tool.
+
+By default this returns the map canvas' :py:func:`QgsMapCanvas.currentLayer()`.
+
+.. versionadded:: 3.22
+%End
+
     bool isAdvancedDigitizingAllowed() const;
 %Docstring
 Returns whether functionality of advanced digitizing dock widget is currently allowed.
