@@ -1485,8 +1485,6 @@ static QVariant fcnRegexpReplace( const QVariantList &values, const QgsExpressio
   QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
   QString regexp = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
   QString after = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
-  if ( after.isNull() )
-    after = QString( "" );
 
   QRegularExpression re( regexp, QRegularExpression::UseUnicodePropertiesOption );
   if ( !re.isValid() )
