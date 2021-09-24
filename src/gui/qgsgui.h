@@ -45,7 +45,6 @@ class QgsMessageBar;
 class QgsSubsetStringEditorProviderRegistry;
 class QgsProviderSourceWidgetProviderRegistry;
 class QgsRelationWidgetRegistry;
-class QgsRecentStyleHandler;
 
 /**
  * \ingroup gui
@@ -192,12 +191,6 @@ class GUI_EXPORT QgsGui : public QObject
     static QgsRelationWidgetRegistry *relationWidgetRegistry() SIP_KEEPREFERENCE;
 
     /**
-     * Returns the handler for recently used style items.
-     * \since QGIS 3.22
-     */
-    static QgsRecentStyleHandler *recentStyleHandler() SIP_KEEPREFERENCE;
-
-    /**
      * Register the widget to allow its position to be automatically saved and restored when open and closed.
      * Use this to avoid needing to call saveGeometry() and restoreGeometry() on your widget.
      */
@@ -304,7 +297,6 @@ class GUI_EXPORT QgsGui : public QObject
     QgsProviderSourceWidgetProviderRegistry *mProviderSourceWidgetProviderRegistry = nullptr;
     QgsRelationWidgetRegistry *mRelationEditorRegistry = nullptr;
     std::unique_ptr< QgsWindowManagerInterface > mWindowManager;
-    QgsRecentStyleHandler *mRecentStyleHandler = nullptr;
 
 #ifdef SIP_RUN
     QgsGui( const QgsGui &other );

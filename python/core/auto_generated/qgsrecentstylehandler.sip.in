@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsrecentstylehandler.h                                      *
+ * src/core/qgsrecentstylehandler.h                                     *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -15,7 +15,7 @@ class QgsRecentStyleHandler
 Handles and tracks style items recently used in the QGIS GUI.
 
 :py:class:`QgsRecentStyleHandler` is not usually directly created, but rather accessed through
-:py:func:`QgsGui.recentStyleHandler()`.
+:py:func:`QgsApplication.recentStyleHandler()`.
 
 .. versionadded:: 3.22
 %End
@@ -30,7 +30,7 @@ Handles and tracks style items recently used in the QGIS GUI.
 Creates a new recent style handler.
 
 QgsRecentStyleHandler is not usually directly created, but rather accessed through
-:py:func:`QgsGui.recentStyleHandler()`.
+:py:func:`QgsApplication.recentStyleHandler()`.
 %End
 
 
@@ -51,10 +51,10 @@ Example
        my_fill_symbol = QgsFillSymbol.createSimple( { 'color': '#ff0000' } )
 
        # push this symbol to the recent style handler, using a custom identifier "fill_symbol_for_new_rectangles"
-       QgsGui.recentStyleHandler().pushRecentSymbol( 'fill_symbol_for_new_rectangles', my_fill_symbol )
+       QgsApplication.recentStyleHandler().pushRecentSymbol( 'fill_symbol_for_new_rectangles', my_fill_symbol )
 
        # ... later in the same QGIS session, retrieve a copy of this symbol so that we can use it for a newly created rectangle
-       new_symbol = QgsGui.recentStyleHandler().recentSymbol( 'fill_symbol_for_new_rectangles' )
+       new_symbol = QgsApplication.recentStyleHandler().recentSymbol( 'fill_symbol_for_new_rectangles' )
 
 .. seealso:: :py:func:`recentSymbol`
 %End
@@ -77,7 +77,7 @@ Caller takes ownership of the returned object.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsrecentstylehandler.h                                      *
+ * src/core/qgsrecentstylehandler.h                                     *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

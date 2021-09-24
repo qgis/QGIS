@@ -145,6 +145,7 @@
 %Include auto_generated/qgsrange.sip
 %Include auto_generated/qgsreadwritecontext.sip
 %Include auto_generated/qgsreadwritelocker.sip
+%Include auto_generated/qgsrecentstylehandler.sip
 %Include auto_generated/qgsrelation.sip
 %Include auto_generated/qgspolymorphicrelation.sip
 %Include auto_generated/qgsrelationcontext.sip

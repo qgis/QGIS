@@ -25,7 +25,7 @@
 #include "qgsannotationpointtextitem.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgstextformatwidget.h"
-#include "qgsgui.h"
+#include "qgsapplication.h"
 #include "qgsrecentstylehandler.h"
 
 ///@cond PRIVATE
@@ -42,7 +42,7 @@ QgsAnnotationPolygonItemWidget::QgsAnnotationPolygonItemWidget( QWidget *parent 
     if ( !mBlockChangedSignal )
     {
       emit itemChanged();
-      QgsGui::recentStyleHandler()->pushRecentSymbol( QStringLiteral( "polygon_annotation_item" ), qgis::down_cast< QgsFillSymbol * >( mSelector->symbol()->clone() ) );
+      QgsApplication::recentStyleHandler()->pushRecentSymbol( QStringLiteral( "polygon_annotation_item" ), qgis::down_cast< QgsFillSymbol * >( mSelector->symbol()->clone() ) );
     }
   } );
   connect( mSelector, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
@@ -134,7 +134,7 @@ QgsAnnotationLineItemWidget::QgsAnnotationLineItemWidget( QWidget *parent )
     if ( !mBlockChangedSignal )
     {
       emit itemChanged();
-      QgsGui::recentStyleHandler()->pushRecentSymbol( QStringLiteral( "line_annotation_item" ), qgis::down_cast< QgsLineSymbol * >( mSelector->symbol()->clone() ) );
+      QgsApplication::recentStyleHandler()->pushRecentSymbol( QStringLiteral( "line_annotation_item" ), qgis::down_cast< QgsLineSymbol * >( mSelector->symbol()->clone() ) );
     }
   } );
   connect( mSelector, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
@@ -226,7 +226,7 @@ QgsAnnotationMarkerItemWidget::QgsAnnotationMarkerItemWidget( QWidget *parent )
     if ( !mBlockChangedSignal )
     {
       emit itemChanged();
-      QgsGui::recentStyleHandler()->pushRecentSymbol( QStringLiteral( "marker_annotation_item" ), qgis::down_cast< QgsMarkerSymbol * >( mSelector->symbol()->clone() ) );
+      QgsApplication::recentStyleHandler()->pushRecentSymbol( QStringLiteral( "marker_annotation_item" ), qgis::down_cast< QgsMarkerSymbol * >( mSelector->symbol()->clone() ) );
     }
   } );
   connect( mSelector, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
