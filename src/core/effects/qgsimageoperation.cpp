@@ -717,6 +717,9 @@ void QgsImageOperation::GaussianBlurOperation::operator()( QgsImageOperation::Im
       destRef = reinterpret_cast< QRgb * >( outputLineRef );
       for ( int x = 0; x < width; ++x, ++destRef, sourceRef += 4 )
       {
+        if ( mFeedback && mFeedback->isCanceled() )
+          break;
+
         *destRef = gaussianBlurVertical( y, sourceRef, sourceBpl, height );
       }
     }
@@ -732,6 +735,9 @@ void QgsImageOperation::GaussianBlurOperation::operator()( QgsImageOperation::Im
       destRef = reinterpret_cast< QRgb * >( outputLineRef );
       for ( int x = 0; x < width; ++x, ++destRef )
       {
+        if ( mFeedback && mFeedback->isCanceled() )
+          break;
+
         *destRef = gaussianBlurHorizontal( x, sourceRef, width );
       }
     }

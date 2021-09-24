@@ -60,6 +60,14 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
     ramp = tempRamp.get();
   }
 
+  double spread = context.convertToPainterUnits( mSpread, mSpreadUnit, mSpreadMapUnitScale );
+  if ( context.flags() & QgsRenderContext::Flag::RenderSymbolPreview )
+  {
+    // avoid excessive spread in symbol preview icons -- it's too slow to calculate, and unnecessary
+    // for just a preview icon
+    spread = std::min( spread, 50.0 );
+  }
+
   QgsImageOperation::DistanceTransformProperties dtProps;
   dtProps.spread = context.convertToPainterUnits( mSpread, mSpreadUnit, mSpreadMapUnitScale );
   dtProps.useMaxDistance = false;
@@ -70,7 +78,14 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
   if ( context.feedback() && context.feedback()->isCanceled() )
     return;
 
-  const int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
+  int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
+  if ( context.flags() & QgsRenderContext::Flag::RenderSymbolPreview )
+  {
+    // avoid excessive blur in symbol preview icons -- it's too slow to calculate, and unnecessary
+    // for just a preview icon
+    blurLevel = std::min( blurLevel, 30 );
+  }
+
   if ( blurLevel <= 16 )
   {
     QgsImageOperation::stackBlur( im, blurLevel, false, context.feedback() );
@@ -233,8 +248,17 @@ QgsGlowEffect &QgsGlowEffect::operator=( const QgsGlowEffect &rhs )
 QRectF QgsGlowEffect::boundingRect( const QRectF &rect, const QgsRenderContext &context ) const
 {
   //blur radius and spread size
-  const int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
+  int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
   double spread = context.convertToPainterUnits( mSpread, mSpreadUnit, mSpreadMapUnitScale );
+
+  if ( context.flags() & QgsRenderContext::Flag::RenderSymbolPreview )
+  {
+    // avoid excessively large blur or spread in symbol preview icons -- it's too slow to calculate, and unnecessary
+    // for just a preview icon
+    blurLevel = std::min( blurLevel, 30 );
+    spread = std::min( spread, 50.0 );
+  }
+
   //plus possible extension due to blur, with a couple of extra pixels thrown in for safety
   spread += blurLevel * 2 + 10;
   return rect.adjusted( -spread, -spread, spread, spread );
