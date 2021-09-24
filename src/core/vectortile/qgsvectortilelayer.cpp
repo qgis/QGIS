@@ -49,6 +49,14 @@ QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseN
   setRenderer( renderer );
 }
 
+void QgsVectorTileLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &, const QgsDataProvider::ProviderOptions &, QgsDataProvider::ReadFlags )
+{
+  mDataSource = dataSource;
+  mLayerName = baseName;
+
+  setValid( loadDataSource() );
+}
+
 bool QgsVectorTileLayer::loadDataSource()
 {
   QgsDataSourceUri dsUri;
@@ -119,6 +127,12 @@ bool QgsVectorTileLayer::loadDataSource()
   }
 
   setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+
+  const QgsDataProvider::ProviderOptions providerOptions;
+  const QgsDataProvider::ReadFlags flags;
+  mDataProvider.reset( new QgsVectorTileDataProvider( providerOptions, flags ) );
+  mProviderKey = mDataProvider->name();
+
   return true;
 }
 
@@ -228,6 +242,15 @@ bool QgsVectorTileLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
 {
   QDomElement mapLayerNode = layerNode.toElement();
   mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::VectorTileLayer ) );
+
+  // add provider node
+  if ( mDataProvider )
+  {
+    QDomElement provider  = doc.createElement( QStringLiteral( "provider" ) );
+    const QDomText providerText = doc.createTextNode( providerType() );
+    provider.appendChild( providerText );
+    mapLayerNode.appendChild( provider );
+  }
 
   writeStyleManager( layerNode, doc );
 
