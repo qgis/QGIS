@@ -142,6 +142,11 @@ void QgsMapToolAdvancedDigitizing::deactivate()
   mSnapToGridCanvasItem = nullptr;
 }
 
+QgsMapLayer *QgsMapToolAdvancedDigitizing::layer() const
+{
+  return canvas()->currentLayer();
+}
+
 void QgsMapToolAdvancedDigitizing::cadPointChanged( const QgsPointXY &point )
 {
   Q_UNUSED( point )
