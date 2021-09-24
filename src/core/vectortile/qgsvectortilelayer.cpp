@@ -53,6 +53,7 @@ void QgsVectorTileLayer::setDataSourcePrivate( const QString &dataSource, const 
 {
   mDataSource = dataSource;
   mLayerName = baseName;
+  mDataProvider.reset();
 
   setValid( loadDataSource() );
 }
@@ -128,7 +129,7 @@ bool QgsVectorTileLayer::loadDataSource()
 
   setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
 
-  const QgsDataProvider::ProviderOptions providerOptions;
+  const QgsDataProvider::ProviderOptions providerOptions { transformContext() };
   const QgsDataProvider::ReadFlags flags;
   mDataProvider.reset( new QgsVectorTileDataProvider( providerOptions, flags ) );
   mProviderKey = mDataProvider->name();
