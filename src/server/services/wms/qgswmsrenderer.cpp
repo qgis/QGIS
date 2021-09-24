@@ -68,6 +68,7 @@
 #include "qgsattributeeditorcontainer.h"
 #include "qgsattributeeditorelement.h"
 #include "qgsattributeeditorfield.h"
+#include "qgsdimensionfilter.h"
 
 #include <QImage>
 #include <QPainter>
@@ -360,15 +361,15 @@ namespace QgsWms
       }
       else
       {
-        QgsAttributeList pkIndexes = cLayer->primaryKeyAttributes();
+        const QgsAttributeList pkIndexes = cLayer->primaryKeyAttributes();
         if ( pkIndexes.size() < 1 )
         {
           throw QgsException( QStringLiteral( "An error occurred during the Atlas print" ) );
         }
         QStringList pkAttributeNames;
-        for ( int i = 0; i < pkIndexes.size(); ++i )
+        for ( int pkIndex : pkIndexes )
         {
-          pkAttributeNames.append( cLayer->fields()[pkIndexes.at( i )].name() );
+          pkAttributeNames.append( cLayer->fields().at( pkIndex ).name() );
         }
 
         int nAtlasFeatures = atlasPk.size() / pkIndexes.size();
@@ -437,13 +438,27 @@ namespace QgsWms
     // configure layout
     configurePrintLayout( layout.get(), mapSettings, atlas );
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-    QgsFeatureFilterProviderGroup filters;
-    mContext.accessControl()->resolveFilterFeatures( mapSettings.layers() );
-    filters.addProvider( mContext.accessControl() );
     QgsLayoutRenderContext &layoutRendererContext = layout->renderContext();
-    layoutRendererContext.setFeatureFilterProvider( &filters );
+    QgsFeatureFilterProviderGroup filters;
+    const QList<QgsMapLayer *> lyrs = mapSettings.layers();
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    mContext.accessControl()->resolveFilterFeatures( lyrs );
+    filters.addProvider( mContext.accessControl() );
 #endif
+
+    QMap<const QgsVectorLayer *, QStringList> fltrs;
+    for ( QgsMapLayer *l : lyrs )
+    {
+      if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l ) )
+      {
+        fltrs.insert( vl, dimensionFilter( vl ) );
+      }
+    }
+
+    QgsDimensionFilter dimFilter( fltrs );
+    filters.addProvider( &dimFilter );
+    layoutRendererContext.setFeatureFilterProvider( &filters );
 
     // Get the temporary output file
     const QgsWmsParameters::Format format = mWmsParameters.format();
