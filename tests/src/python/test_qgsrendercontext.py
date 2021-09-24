@@ -67,6 +67,9 @@ class TestQgsRenderContext(unittest.TestCase):
         c.setSymbologyReferenceScale(1000)
         self.assertEqual(c.symbologyReferenceScale(), 1000)
 
+        # should have an invalid mapToPixel by default
+        self.assertFalse(c.mapToPixel().isValid())
+
     def testCopyConstructor(self):
         """
         Test the copy constructor
@@ -113,6 +116,9 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertEqual(c.testFlag(QgsRenderContext.LosslessImageRendering), False)
         self.assertAlmostEqual(c.scaleFactor(), 88 / 25.4, 3)
 
+        # should have an invalid mapToPixel by default
+        self.assertFalse(c.mapToPixel().isValid())
+
         im = QImage(1000, 600, QImage.Format_RGB32)
         dots_per_m = 300 / 25.4 * 1000  # 300 dpi to dots per m
         im.setDotsPerMeterX(dots_per_m)
@@ -152,6 +158,9 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertTrue(rc.testFlag(QgsRenderContext.Render3DMap))
         self.assertEqual(ms.zRange(), QgsDoubleRange(1, 10))
         self.assertEqual(rc.symbologyReferenceScale(), -1)
+
+        # should have an valid mapToPixel
+        self.assertTrue(rc.mapToPixel().isValid())
 
         ms.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysOutlines)
         ms.setZRange(QgsDoubleRange())
