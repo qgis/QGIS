@@ -379,6 +379,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     void updateDefaultValueDependencies();
 
+    void updateVirtualFieldsDependencies();
+
     struct WidgetInfo
     {
       QWidget *widget = nullptr;
@@ -411,6 +413,9 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     //! update the default values in the fields after a referenced field changed
     bool updateDefaultValues( const int originIdx );
+
+    //! update the virtual fields values in the fields after a referenced field changed
+    void updateVirtualFields( const int originIdx );
 
     void clearMultiEditMessages();
     void pushSelectedFeaturesMessage();
@@ -517,6 +522,12 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * Attribute indexes will be added multiple times if more than one widget depends on them.
      */
     QMap<int, QgsWidgetWrapper *> mDefaultValueDependencies;
+
+    /**
+     * Dependency map for values from virtual fields. Attribute index -> widget wrapper.
+     * Attribute indexes will be added multiple times if more than one widget depends on them.
+     */
+    QMap<int, QgsWidgetWrapper *> mVirtualFieldsDependencies;
 
     //! List of updated fields to avoid recursion on the setting of defaultValues
     QList<int> mAlreadyUpdatedFields;
