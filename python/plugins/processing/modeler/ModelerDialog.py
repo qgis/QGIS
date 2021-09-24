@@ -266,7 +266,7 @@ class ModelerDialog(QgsModelDesignerDialog):
         while self.model().parameterDefinition(name):
             name = safeName.lower() + str(i)
             i += 1
-        parameter.setName(safeName)
+        parameter.setName(name)
 
     def addInput(self, paramType, pos=None):
         if paramType not in [param.id() for param in QgsApplication.instance().processingRegistry().parameterTypes()]:
