@@ -199,7 +199,29 @@ QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool k
   // direct read if path is a file -- maybe more efficient than going the bytearray route? (untested!)
   if ( !path.startsWith( QLatin1String( "base64:" ) ) && QFile::exists( path ) )
   {
-    im = QImage( path );
+    QImageReader reader( path );
+
+    if ( reader.format() == "pdf" )
+    {
+      if ( !size.isEmpty() )
+      {
+        // special handling for this format -- we need to pass the desired target size onto the image reader
+        // so that it can correctly render the (vector) pdf content at the desired dpi. Otherwise it returns
+        // a very low resolution image (the driver assumes points == pixels!)
+        // For other image formats, we read the original image size only and defer resampling to later in this
+        // function. That gives us more control over the resampling method used.
+        reader.setScaledSize( size );
+      }
+      else
+      {
+        // driver assumes points == pixels, so driver image size is reported assuming 72 dpi.
+        const QSize sizeAt72Dpi = reader.size();
+        const QSize sizeAtTargetDpi = sizeAt72Dpi * targetDpi / 72;
+        reader.setScaledSize( sizeAtTargetDpi );
+      }
+    }
+
+    im = reader.read();
   }
   else
   {
@@ -256,6 +278,27 @@ QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool k
       buffer.open( QIODevice::ReadOnly );
 
       QImageReader reader( &buffer );
+
+      if ( reader.format() == "pdf" )
+      {
+        if ( !size.isEmpty() )
+        {
+          // special handling for this format -- we need to pass the desired target size onto the image reader
+          // so that it can correctly render the (vector) pdf content at the desired dpi. Otherwise it returns
+          // a very low resolution image (the driver assumes points == pixels!)
+          // For other image formats, we read the original image size only and defer resampling to later in this
+          // function. That gives us more control over the resampling method used.
+          reader.setScaledSize( size );
+        }
+        else
+        {
+          // driver assumes points == pixels, so driver image size is reported assuming 72 dpi.
+          const QSize sizeAt72Dpi = reader.size();
+          const QSize sizeAtTargetDpi = sizeAt72Dpi * targetDpi / 72;
+          reader.setScaledSize( sizeAtTargetDpi );
+        }
+      }
+
       im = reader.read();
     }
   }
