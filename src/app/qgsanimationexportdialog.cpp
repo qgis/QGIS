@@ -234,9 +234,9 @@ void QgsAnimationExportDialog::applyMapSettings( QgsMapSettings &mapSettings )
 {
   const QgsSettings settings;
 
-  mapSettings.setFlag( QgsMapSettings::Antialiasing, settings.value( QStringLiteral( "qgis/enable_anti_aliasing" ), true ).toBool() );
-  mapSettings.setFlag( QgsMapSettings::DrawEditingInfo, false );
-  mapSettings.setFlag( QgsMapSettings::DrawSelection, false );
+  mapSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, settings.value( QStringLiteral( "qgis/enable_anti_aliasing" ), true ).toBool() );
+  mapSettings.setFlag( Qgis::MapSettingsFlag::DrawEditingInfo, false );
+  mapSettings.setFlag( Qgis::MapSettingsFlag::DrawSelection, false );
   mapSettings.setSelectionColor( mMapCanvas->mapSettings().selectionColor() );
   mapSettings.setDestinationCrs( mMapCanvas->mapSettings().destinationCrs() );
   mapSettings.setExtent( extent() );

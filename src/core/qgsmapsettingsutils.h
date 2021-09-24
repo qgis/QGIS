@@ -19,9 +19,9 @@
 #define QGSMAPSETTINGSUTILS_H
 
 #include "qgis_core.h"
-#include "qgsmapsettings.h"
-
 #include <QString>
+
+class QgsMapSettings;
 
 /**
  * \ingroup core

@@ -21,6 +21,7 @@
 #include "qgsproject.h"
 #include "qgsexception.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
 
 namespace QgsWmts
 {

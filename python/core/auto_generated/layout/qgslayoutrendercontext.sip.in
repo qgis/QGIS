@@ -87,7 +87,7 @@ Check whether a particular rendering ``flag`` is enabled for the layout.
 .. seealso:: :py:func:`flags`
 %End
 
-    QgsRenderContext::Flags renderContextFlags() const;
+    Qgis::RenderContextFlags renderContextFlags() const;
 %Docstring
 Returns the combination of render context flags matched to the layout context's settings.
 %End
@@ -213,7 +213,7 @@ If ``layer`` is -1, all item layers should be rendered.
    Items should now handle this themselves, via :py:func:`QgsLayoutItem.exportLayerBehavior()` and returning :py:func:`QgsLayoutItem.nextExportPart()`.
 %End
 
-    QgsRenderContext::TextRenderFormat textRenderFormat() const;
+    Qgis::TextRenderFormat textRenderFormat() const;
 %Docstring
 Returns the text render format, which dictates how text is rendered (e.g. as paths or real text objects).
 
@@ -222,7 +222,7 @@ Returns the text render format, which dictates how text is rendered (e.g. as pat
 .. versionadded:: 3.4.3
 %End
 
-    void setTextRenderFormat( QgsRenderContext::TextRenderFormat format );
+    void setTextRenderFormat( Qgis::TextRenderFormat format );
 %Docstring
 Sets the text render ``format``, which dictates how text is rendered (e.g. as paths or real text objects).
 

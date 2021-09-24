@@ -23,6 +23,7 @@
 #include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsapplication.h"
+#include "qgsdistancearea.h"
 
 ///@cond PRIVATE
 

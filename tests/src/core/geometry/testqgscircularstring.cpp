@@ -22,7 +22,7 @@
 #include "qgsmultipoint.h"
 #include "qgspoint.h"
 #include "qgsproject.h"
-
+#include "qgscoordinatetransform.h"
 #include "testgeometryutils.h"
 #include "testtransformer.h"
 

@@ -160,9 +160,9 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
 
   {
     QgsScopedRuntimeProfile profile( "Map settings initialization" );
-    mSettings.setFlag( QgsMapSettings::DrawEditingInfo );
-    mSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
-    mSettings.setFlag( QgsMapSettings::RenderPartialOutput );
+    mSettings.setFlag( Qgis::MapSettingsFlag::DrawEditingInfo );
+    mSettings.setFlag( Qgis::MapSettingsFlag::UseRenderingOptimization );
+    mSettings.setFlag( Qgis::MapSettingsFlag::RenderPartialOutput );
     mSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
     connect( QgsProject::instance(), &QgsProject::ellipsoidChanged,
              this, [ = ]
@@ -314,12 +314,17 @@ double QgsMapCanvas::magnificationFactor() const
 
 void QgsMapCanvas::enableAntiAliasing( bool flag )
 {
-  mSettings.setFlag( QgsMapSettings::Antialiasing, flag );
-} // anti aliasing
+  mSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, flag );
+}
+
+bool QgsMapCanvas::antiAliasingEnabled() const
+{
+  return mSettings.testFlag( Qgis::MapSettingsFlag::Antialiasing );
+}
 
 void QgsMapCanvas::enableMapTileRendering( bool flag )
 {
-  mSettings.setFlag( QgsMapSettings::RenderMapTile, flag );
+  mSettings.setFlag( Qgis::MapSettingsFlag::RenderMapTile, flag );
 }
 
 QgsMapLayer *QgsMapCanvas::layer( int index )
@@ -468,7 +473,7 @@ const QgsTemporalController *QgsMapCanvas::temporalController() const
   return mController;
 }
 
-void QgsMapCanvas::setMapSettingsFlags( QgsMapSettings::Flags flags )
+void QgsMapCanvas::setMapSettingsFlags( Qgis::MapSettingsFlags flags )
 {
   mSettings.setFlags( flags );
   clearCache();
@@ -2756,7 +2761,7 @@ void QgsMapCanvas::readProject( const QDomDocument &doc )
     }
     setExtent( tmpSettings.extent() );
     setRotation( tmpSettings.rotation() );
-    enableMapTileRendering( tmpSettings.testFlag( QgsMapSettings::RenderMapTile ) );
+    enableMapTileRendering( tmpSettings.testFlag( Qgis::MapSettingsFlag::RenderMapTile ) );
 
     clearExtentHistory(); // clear the extent history on project load
 
@@ -3040,8 +3045,8 @@ void QgsMapCanvas::startPreviewJob( int number )
   jobExtent.setYMinimum( jobExtent.yMinimum() + dy );
 
   jobSettings.setExtent( jobExtent );
-  jobSettings.setFlag( QgsMapSettings::DrawLabeling, false );
-  jobSettings.setFlag( QgsMapSettings::RenderPreviewJob, true );
+  jobSettings.setFlag( Qgis::MapSettingsFlag::DrawLabeling, false );
+  jobSettings.setFlag( Qgis::MapSettingsFlag::RenderPreviewJob, true );
 
   // truncate preview layers to fast layers
   const QList<QgsMapLayer *> layers = jobSettings.layers();

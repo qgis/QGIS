@@ -26,6 +26,7 @@
 #include "qgsrenderer.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsrendercontext.h"
 
 #include <queue>
 #include <vector>

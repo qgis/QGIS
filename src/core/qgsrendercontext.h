@@ -64,97 +64,28 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     QgsRenderContext &operator=( const QgsRenderContext &rh );
 
     /**
-     * Enumeration of flags that affect rendering operations.
-     * \since QGIS 2.14
-     */
-    enum Flag
-    {
-      DrawEditingInfo          = 0x01,  //!< Enable drawing of vertex markers for layers in editing mode
-      ForceVectorOutput        = 0x02,  //!< Vector graphics should not be cached and drawn as raster images
-      UseAdvancedEffects       = 0x04,  //!< Enable layer opacity and blending effects
-      UseRenderingOptimization = 0x08,  //!< Enable vector simplification and other rendering optimizations
-      DrawSelection            = 0x10,  //!< Whether vector selections should be shown in the rendered map
-      DrawSymbolBounds         = 0x20,  //!< Draw bounds of symbols (for debugging/testing)
-      RenderMapTile            = 0x40,  //!< Draw map such that there are no problems between adjacent tiles
-      Antialiasing             = 0x80,  //!< Use antialiasing while drawing
-      RenderPartialOutput      = 0x100, //!< Whether to make extra effort to update map image with partially rendered layers (better for interactive map canvas). Added in QGIS 3.0
-      RenderPreviewJob         = 0x200, //!< Render is a 'canvas preview' render, and shortcuts should be taken to ensure fast rendering
-      RenderBlocking           = 0x400, //!< Render and load remote sources in the same thread to ensure rendering remote sources (svg and images). WARNING: this flag must NEVER be used from GUI based applications (like the main QGIS application) or crashes will result. Only for use in external scripts or QGIS server.
-      RenderSymbolPreview      = 0x800, //!< The render is for a symbol preview only and map based properties may not be available, so care should be taken to handle map unit based sizes in an appropriate way.
-      LosslessImageRendering   = 0x1000, //!< Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF). This flag only works with builds based on Qt 5.13 or later.
-      ApplyScalingWorkaroundForTextRendering = 0x2000, //!< Whether a scaling workaround designed to stablise the rendering of small font sizes (or for painters scaled out by a large amount) when rendering text. Generally this is recommended, but it may incur some performance cost.
-      Render3DMap              = 0x4000, //!< Render is for a 3D map
-      ApplyClipAfterReprojection = 0x8000, //!< Feature geometry clipping to mapExtent() must be performed after the geometries are transformed using coordinateTransform(). Usually feature geometry clipping occurs using the extent() in the layer's CRS prior to geometry transformation, but in some cases when extent() could not be accurately calculated it is necessary to clip geometries to mapExtent() AFTER transforming them using coordinateTransform().
-    };
-    Q_DECLARE_FLAGS( Flags, Flag )
-
-    /**
-     * Options for rendering text.
-     * \since QGIS 3.4.3
-     */
-    enum TextRenderFormat
-    {
-      // refs for below dox: https://github.com/qgis/QGIS/pull/1286#issuecomment-39806854
-      // https://github.com/qgis/QGIS/pull/8573#issuecomment-445585826
-
-      /**
-       * Always render text using path objects (AKA outlines/curves).
-       *
-       * This setting guarantees the best quality rendering, even when using a raster paint surface
-       * (where sub-pixel path based text rendering is superior to sub-pixel text-based rendering).
-       * The downside is that text is converted to paths only, so users cannot open created vector
-       * outputs for post-processing in other applications and retain text editability.
-       *
-       * This setting also guarantees complete compatibility with the full range of formatting options available
-       * through QgsTextRenderer and QgsTextFormat, some of which may not be possible to reproduce when using
-       * a vector-based paint surface and TextFormatAlwaysText mode.
-       *
-       * A final benefit to this setting is that vector exports created using text as outlines do
-       * not require all users to have the original fonts installed in order to display the
-       * text in its original style.
-       */
-      TextFormatAlwaysOutlines,
-
-      /**
-       * Always render text as text objects.
-       *
-       * While this mode preserves text objects as text for post-processing in external vector editing applications,
-       * it can result in rendering artifacts or poor quality rendering, depending on the text format settings.
-       *
-       * Even with raster based paint devices, TextFormatAlwaysText can result in inferior rendering quality
-       * to TextFormatAlwaysOutlines.
-       *
-       * When rendering using TextFormatAlwaysText to a vector based device (e.g. PDF or SVG), care must be
-       * taken to ensure that the required fonts are available to users when opening the created files,
-       * or default fallback fonts will be used to display the output instead. (Although PDF exports MAY
-       * automatically embed some fonts when possible, depending on the user's platform).
-       */
-      TextFormatAlwaysText,
-    };
-
-    /**
      * Set combination of flags that will be used for rendering.
      * \since QGIS 2.14
      */
-    void setFlags( QgsRenderContext::Flags flags );
+    void setFlags( Qgis::RenderContextFlags flags );
 
     /**
      * Enable or disable a particular flag (other flags are not affected)
      * \since QGIS 2.14
      */
-    void setFlag( Flag flag, bool on = true );
+    void setFlag( Qgis::RenderContextFlag flag, bool on = true );
 
     /**
      * Returns combination of flags used for rendering.
      * \since QGIS 2.14
      */
-    Flags flags() const;
+    Qgis::RenderContextFlags flags() const;
 
     /**
      * Check whether a particular flag is enabled.
      * \since QGIS 2.14
      */
-    bool testFlag( Flag flag ) const;
+    bool testFlag( Qgis::RenderContextFlag flag ) const;
 
     /**
      * create initialized QgsRenderContext instance from given QgsMapSettings
@@ -773,7 +704,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \see setTextRenderFormat()
      * \since QGIS 3.4.3
      */
-    TextRenderFormat textRenderFormat() const
+    Qgis::TextRenderFormat textRenderFormat() const
     {
       return mTextRenderFormat;
     }
@@ -784,7 +715,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \see textRenderFormat()
      * \since QGIS 3.4.3
      */
-    void setTextRenderFormat( TextRenderFormat format )
+    void setTextRenderFormat( Qgis::TextRenderFormat format )
     {
       mTextRenderFormat = format;
     }
@@ -955,7 +886,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 
   private:
 
-    Flags mFlags;
+    Qgis::RenderContextFlags mFlags;
 
     //! Painter for rendering operations
     QPainter *mPainter = nullptr;
@@ -1045,7 +976,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 
     QgsPathResolver mPathResolver;
 
-    TextRenderFormat mTextRenderFormat = TextFormatAlwaysOutlines;
+    Qgis::TextRenderFormat mTextRenderFormat = Qgis::TextRenderFormat::AlwaysOutlines;
     QList< QgsRenderedFeatureHandlerInterface * > mRenderedFeatureHandlers;
     bool mHasRenderedFeatureHandlers = false;
     QVariantMap mCustomRenderingFlags;
@@ -1063,8 +994,6 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     bool mHasTransformContext = false;
 #endif
 };
-
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsRenderContext::Flags )
 
 #ifndef SIP_RUN
 

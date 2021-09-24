@@ -551,6 +551,55 @@ The development version
       Reverse
     };
 
+    enum class MapSettingsFlag
+      {
+      Antialiasing,
+      DrawEditingInfo,
+      ForceVectorOutput,
+      UseAdvancedEffects,
+      DrawLabeling,
+      UseRenderingOptimization,
+      DrawSelection,
+      DrawSymbolBounds,
+      RenderMapTile,
+      RenderPartialOutput,
+      RenderPreviewJob,
+      RenderBlocking,
+      LosslessImageRendering,
+      Render3DMap,
+    };
+    typedef QFlags<Qgis::MapSettingsFlag> MapSettingsFlags;
+
+
+    enum class RenderContextFlag
+      {
+      DrawEditingInfo,
+      ForceVectorOutput,
+      UseAdvancedEffects,
+      UseRenderingOptimization,
+      DrawSelection,
+      DrawSymbolBounds,
+      RenderMapTile,
+      Antialiasing,
+      RenderPartialOutput,
+      RenderPreviewJob,
+      RenderBlocking,
+      RenderSymbolPreview,
+      LosslessImageRendering,
+      ApplyScalingWorkaroundForTextRendering,
+      Render3DMap,
+      ApplyClipAfterReprojection,
+    };
+    typedef QFlags<Qgis::RenderContextFlag> RenderContextFlags;
+
+
+
+    enum class TextRenderFormat
+      {
+      AlwaysOutlines,
+      AlwaysText,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -643,6 +692,11 @@ QFlags<Qgis::FileOperationFlag> operator|(Qgis::FileOperationFlag f1, QFlags<Qgi
 QFlags<Qgis::AnnotationItemFlag> operator|(Qgis::AnnotationItemFlag f1, QFlags<Qgis::AnnotationItemFlag> f2);
 
 QFlags<Qgis::AnnotationItemGuiFlag> operator|(Qgis::AnnotationItemGuiFlag f1, QFlags<Qgis::AnnotationItemGuiFlag> f2);
+
+QFlags<Qgis::MapSettingsFlag> operator|(Qgis::MapSettingsFlag f1, QFlags<Qgis::MapSettingsFlag> f2);
+
+QFlags<Qgis::RenderContextFlag> operator|(Qgis::RenderContextFlag f1, QFlags<Qgis::RenderContextFlag> f2);
+
 
 
 

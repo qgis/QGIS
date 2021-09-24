@@ -29,7 +29,7 @@
 #define INCH_TO_MM 25.4
 
 QgsRenderContext::QgsRenderContext()
-  : mFlags( DrawEditingInfo | UseAdvancedEffects | DrawSelection | UseRenderingOptimization )
+  : mFlags( Qgis::RenderContextFlag::DrawEditingInfo | Qgis::RenderContextFlag::UseAdvancedEffects | Qgis::RenderContextFlag::DrawSelection | Qgis::RenderContextFlag::UseRenderingOptimization )
 {
   mVectorSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   // For RenderMetersInMapUnits support, when rendering in Degrees, the Ellipsoid must be set
@@ -138,11 +138,11 @@ QgsRenderContext QgsRenderContext::fromQPainter( QPainter *painter )
   }
 
   if ( painter && painter->renderHints() & QPainter::Antialiasing )
-    context.setFlag( QgsRenderContext::Antialiasing, true );
+    context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
   if ( painter && painter->renderHints() & QPainter::LosslessImageRendering )
-    context.setFlag( QgsRenderContext::LosslessImageRendering, true );
+    context.setFlag( Qgis::RenderContextFlag::LosslessImageRendering, true );
 #endif
 
   return context;
@@ -156,9 +156,9 @@ void QgsRenderContext::setPainterFlagsUsingContext( QPainter *painter ) const
   if ( !painter )
     return;
 
-  painter->setRenderHint( QPainter::Antialiasing, mFlags & QgsRenderContext::Antialiasing );
+  painter->setRenderHint( QPainter::Antialiasing, mFlags & Qgis::RenderContextFlag::Antialiasing );
 #if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
-  painter->setRenderHint( QPainter::LosslessImageRendering, mFlags & QgsRenderContext::LosslessImageRendering );
+  painter->setRenderHint( QPainter::LosslessImageRendering, mFlags & Qgis::RenderContextFlag::LosslessImageRendering );
 #endif
 }
 
@@ -189,25 +189,25 @@ QgsFeedback *QgsRenderContext::feedback() const
   return mFeedback;
 }
 
-void QgsRenderContext::setFlags( QgsRenderContext::Flags flags )
+void QgsRenderContext::setFlags( Qgis::RenderContextFlags flags )
 {
   mFlags = flags;
 }
 
-void QgsRenderContext::setFlag( QgsRenderContext::Flag flag, bool on )
+void QgsRenderContext::setFlag( Qgis::RenderContextFlag flag, bool on )
 {
   if ( on )
     mFlags |= flag;
   else
-    mFlags &= ~flag;
+    mFlags &= ~( static_cast< int >( flag ) );
 }
 
-QgsRenderContext::Flags QgsRenderContext::flags() const
+Qgis::RenderContextFlags QgsRenderContext::flags() const
 {
   return mFlags;
 }
 
-bool QgsRenderContext::testFlag( QgsRenderContext::Flag flag ) const
+bool QgsRenderContext::testFlag( Qgis::RenderContextFlag flag ) const
 {
   return mFlags.testFlag( flag );
 }
@@ -220,21 +220,21 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setMapToPixel( mapSettings.mapToPixel() );
   ctx.setExtent( extent );
   ctx.setMapExtent( mapSettings.visibleExtent() );
-  ctx.setFlag( DrawEditingInfo, mapSettings.testFlag( QgsMapSettings::DrawEditingInfo ) );
-  ctx.setFlag( ForceVectorOutput, mapSettings.testFlag( QgsMapSettings::ForceVectorOutput ) );
-  ctx.setFlag( UseAdvancedEffects, mapSettings.testFlag( QgsMapSettings::UseAdvancedEffects ) );
-  ctx.setFlag( UseRenderingOptimization, mapSettings.testFlag( QgsMapSettings::UseRenderingOptimization ) );
+  ctx.setFlag( Qgis::RenderContextFlag::DrawEditingInfo, mapSettings.testFlag( Qgis::MapSettingsFlag::DrawEditingInfo ) );
+  ctx.setFlag( Qgis::RenderContextFlag::ForceVectorOutput, mapSettings.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) );
+  ctx.setFlag( Qgis::RenderContextFlag::UseAdvancedEffects, mapSettings.testFlag( Qgis::MapSettingsFlag::UseAdvancedEffects ) );
+  ctx.setFlag( Qgis::RenderContextFlag::UseRenderingOptimization, mapSettings.testFlag( Qgis::MapSettingsFlag::UseRenderingOptimization ) );
   ctx.setCoordinateTransform( QgsCoordinateTransform() );
   ctx.setSelectionColor( mapSettings.selectionColor() );
-  ctx.setFlag( DrawSelection, mapSettings.testFlag( QgsMapSettings::DrawSelection ) );
-  ctx.setFlag( DrawSymbolBounds, mapSettings.testFlag( QgsMapSettings::DrawSymbolBounds ) );
-  ctx.setFlag( RenderMapTile, mapSettings.testFlag( QgsMapSettings::RenderMapTile ) );
-  ctx.setFlag( Antialiasing, mapSettings.testFlag( QgsMapSettings::Antialiasing ) );
-  ctx.setFlag( RenderPartialOutput, mapSettings.testFlag( QgsMapSettings::RenderPartialOutput ) );
-  ctx.setFlag( RenderPreviewJob, mapSettings.testFlag( QgsMapSettings::RenderPreviewJob ) );
-  ctx.setFlag( RenderBlocking, mapSettings.testFlag( QgsMapSettings::RenderBlocking ) );
-  ctx.setFlag( LosslessImageRendering, mapSettings.testFlag( QgsMapSettings::LosslessImageRendering ) );
-  ctx.setFlag( Render3DMap, mapSettings.testFlag( QgsMapSettings::Render3DMap ) );
+  ctx.setFlag( Qgis::RenderContextFlag::DrawSelection, mapSettings.testFlag( Qgis::MapSettingsFlag::DrawSelection ) );
+  ctx.setFlag( Qgis::RenderContextFlag::DrawSymbolBounds, mapSettings.testFlag( Qgis::MapSettingsFlag::DrawSymbolBounds ) );
+  ctx.setFlag( Qgis::RenderContextFlag::RenderMapTile, mapSettings.testFlag( Qgis::MapSettingsFlag::RenderMapTile ) );
+  ctx.setFlag( Qgis::RenderContextFlag::Antialiasing, mapSettings.testFlag( Qgis::MapSettingsFlag::Antialiasing ) );
+  ctx.setFlag( Qgis::RenderContextFlag::RenderPartialOutput, mapSettings.testFlag( Qgis::MapSettingsFlag::RenderPartialOutput ) );
+  ctx.setFlag( Qgis::RenderContextFlag::RenderPreviewJob, mapSettings.testFlag( Qgis::MapSettingsFlag::RenderPreviewJob ) );
+  ctx.setFlag( Qgis::RenderContextFlag::RenderBlocking, mapSettings.testFlag( Qgis::MapSettingsFlag::RenderBlocking ) );
+  ctx.setFlag( Qgis::RenderContextFlag::LosslessImageRendering, mapSettings.testFlag( Qgis::MapSettingsFlag::LosslessImageRendering ) );
+  ctx.setFlag( Qgis::RenderContextFlag::Render3DMap, mapSettings.testFlag( Qgis::MapSettingsFlag::Render3DMap ) );
   ctx.setScaleFactor( mapSettings.outputDpi() / 25.4 ); // = pixels per mm
   ctx.setDpiTarget( mapSettings.dpiTarget() >= 0.0 ? mapSettings.dpiTarget() : -1.0 );
   ctx.setRendererScale( mapSettings.scale() );
@@ -266,27 +266,27 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
 
 bool QgsRenderContext::forceVectorOutput() const
 {
-  return mFlags.testFlag( ForceVectorOutput );
+  return mFlags.testFlag( Qgis::RenderContextFlag::ForceVectorOutput );
 }
 
 bool QgsRenderContext::useAdvancedEffects() const
 {
-  return mFlags.testFlag( UseAdvancedEffects );
+  return mFlags.testFlag( Qgis::RenderContextFlag::UseAdvancedEffects );
 }
 
 void QgsRenderContext::setUseAdvancedEffects( bool enabled )
 {
-  setFlag( UseAdvancedEffects, enabled );
+  setFlag( Qgis::RenderContextFlag::UseAdvancedEffects, enabled );
 }
 
 bool QgsRenderContext::drawEditingInformation() const
 {
-  return mFlags.testFlag( DrawEditingInfo );
+  return mFlags.testFlag( Qgis::RenderContextFlag::DrawEditingInfo );
 }
 
 bool QgsRenderContext::showSelection() const
 {
-  return mFlags.testFlag( DrawSelection );
+  return mFlags.testFlag( Qgis::RenderContextFlag::DrawSelection );
 }
 
 void QgsRenderContext::setCoordinateTransform( const QgsCoordinateTransform &t )
@@ -296,27 +296,27 @@ void QgsRenderContext::setCoordinateTransform( const QgsCoordinateTransform &t )
 
 void QgsRenderContext::setDrawEditingInformation( bool b )
 {
-  setFlag( DrawEditingInfo, b );
+  setFlag( Qgis::RenderContextFlag::DrawEditingInfo, b );
 }
 
 void QgsRenderContext::setForceVectorOutput( bool force )
 {
-  setFlag( ForceVectorOutput, force );
+  setFlag( Qgis::RenderContextFlag::ForceVectorOutput, force );
 }
 
 void QgsRenderContext::setShowSelection( const bool showSelection )
 {
-  setFlag( DrawSelection, showSelection );
+  setFlag( Qgis::RenderContextFlag::DrawSelection, showSelection );
 }
 
 bool QgsRenderContext::useRenderingOptimization() const
 {
-  return mFlags.testFlag( UseRenderingOptimization );
+  return mFlags.testFlag( Qgis::RenderContextFlag::UseRenderingOptimization );
 }
 
 void QgsRenderContext::setUseRenderingOptimization( bool enabled )
 {
-  setFlag( UseRenderingOptimization, enabled );
+  setFlag( Qgis::RenderContextFlag::UseRenderingOptimization, enabled );
 }
 
 void QgsRenderContext::setFeatureFilterProvider( const QgsFeatureFilterProvider *ffp )

@@ -23,6 +23,7 @@
 #include "qgsvectorlayer.h"
 #include "qgssnappingconfig.h"
 #include "qgssettingsregistrycore.h"
+#include "qgsrendercontext.h"
 
 #include <QAction>
 

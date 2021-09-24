@@ -32,6 +32,7 @@
 #include "qgsgui.h"
 #include "qgsvectorlayerjoininfo.h"
 #include "qgsvectorlayerjoinbuffer.h"
+#include "qgsrendercontext.h"
 
 QgsVectorLayer *QgsAttributeTableDelegate::layer( const QAbstractItemModel *model )
 {

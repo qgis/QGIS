@@ -21,12 +21,12 @@
 #include "qgis.h"
 #include "qgscolorrampshader.h"
 #include "qgsreadwritecontext.h"
-#include "qgsrendercontext.h"
 #include "qgsrenderer.h"
 #include "qgsunittypes.h"
 #include "qgssymbollayer.h"
 
 class QgsLayerTreeLayer;
+class QgsRenderContext;
 
 /**
  * \ingroup core

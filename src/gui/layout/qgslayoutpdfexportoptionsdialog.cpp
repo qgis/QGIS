@@ -36,8 +36,8 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
 
   mGeoPdfStructureTreeMenu = new QMenu( this );
 
-  mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Paths (Recommended)" ), QgsRenderContext::TextFormatAlwaysOutlines );
-  mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Text Objects" ), QgsRenderContext::TextFormatAlwaysText );
+  mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Paths (Recommended)" ), static_cast< int >( Qgis::TextRenderFormat::AlwaysOutlines ) );
+  mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Text Objects" ), static_cast< int >( Qgis::TextRenderFormat::AlwaysText ) );
 
   mGeopdfAvailable = allowGeoPdfExport && QgsAbstractGeoPdfExporter::geoPDFCreationAvailable();
   mGeoPDFGroupBox->setEnabled( mGeopdfAvailable );
@@ -116,14 +116,14 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
   QgsGui::enableAutoGeometryRestore( this );
 }
 
-void QgsLayoutPdfExportOptionsDialog::setTextRenderFormat( QgsRenderContext::TextRenderFormat format )
+void QgsLayoutPdfExportOptionsDialog::setTextRenderFormat( Qgis::TextRenderFormat format )
 {
-  mTextRenderFormatComboBox->setCurrentIndex( mTextRenderFormatComboBox->findData( format ) );
+  mTextRenderFormatComboBox->setCurrentIndex( mTextRenderFormatComboBox->findData( static_cast< int >( format ) ) );
 }
 
-QgsRenderContext::TextRenderFormat QgsLayoutPdfExportOptionsDialog::textRenderFormat() const
+Qgis::TextRenderFormat QgsLayoutPdfExportOptionsDialog::textRenderFormat() const
 {
-  return static_cast< QgsRenderContext::TextRenderFormat >( mTextRenderFormatComboBox->currentData().toInt() );
+  return static_cast< Qgis::TextRenderFormat >( mTextRenderFormatComboBox->currentData().toInt() );
 }
 
 void QgsLayoutPdfExportOptionsDialog::setForceVector( bool force )

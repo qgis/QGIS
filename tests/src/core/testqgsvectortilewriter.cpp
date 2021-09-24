@@ -26,6 +26,7 @@
 #include "qgsvectortilemvtdecoder.h"
 #include "qgsvectortilelayer.h"
 #include "qgsvectortilewriter.h"
+#include "qgscoordinatetransform.h"
 
 #include <QTemporaryDir>
 

@@ -371,9 +371,9 @@ void TestQgsSimpleMarkerSymbol::bounds()
   mSimpleMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty::fromExpression( QStringLiteral( "min(\"importance\" * 2, 6)" ) ) );
   mSimpleMarkerLayer->setStrokeWidth( 0.5 );
 
-  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, true );
+  mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, true );
   const bool result = imageCheck( QStringLiteral( "simplemarker_bounds" ) );
-  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, false );
+  mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, false );
   mSimpleMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty() );
   QVERIFY( result );
 }
@@ -387,9 +387,9 @@ void TestQgsSimpleMarkerSymbol::boundsWithOffset()
   mSimpleMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyOffset, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, '5,10', '10, 5')" ) ) );
   mSimpleMarkerLayer->setStrokeWidth( 0.5 );
 
-  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, true );
+  mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, true );
   const bool result = imageCheck( QStringLiteral( "simplemarker_boundsoffset" ) );
-  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, false );
+  mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, false );
   mSimpleMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyOffset, QgsProperty() );
   QVERIFY( result );
 }
@@ -403,9 +403,9 @@ void TestQgsSimpleMarkerSymbol::boundsWithRotation()
   mSimpleMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyAngle, QgsProperty::fromExpression( QStringLiteral( "importance * 20" ) ) );
   mSimpleMarkerLayer->setStrokeWidth( 0.5 );
 
-  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, true );
+  mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, true );
   const bool result = imageCheck( QStringLiteral( "simplemarker_boundsrotation" ) );
-  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, false );
+  mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, false );
   mSimpleMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyAngle, QgsProperty() );
   QVERIFY( result );
 }
@@ -420,9 +420,9 @@ void TestQgsSimpleMarkerSymbol::boundsWithRotationAndOffset()
   mSimpleMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyAngle, QgsProperty::fromExpression( QStringLiteral( "heading" ) ) );
   mSimpleMarkerLayer->setStrokeWidth( 0.5 );
 
-  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, true );
+  mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, true );
   const bool result = imageCheck( QStringLiteral( "simplemarker_boundsrotationoffset" ) );
-  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, false );
+  mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, false );
   mSimpleMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyOffset, QgsProperty() );
   mSimpleMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyAngle, QgsProperty() );
   QVERIFY( result );

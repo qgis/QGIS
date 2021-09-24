@@ -27,6 +27,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgslinestring.h"
 #include "qgscurvepolygon.h"
+#include "qgsrendercontext.h"
 #include "qgspointlocatorinittask.h"
 #include <spatialindex/SpatialIndex.h>
 

@@ -178,7 +178,7 @@ QHash<QgsMapLayer *, int> QgsMapRendererJob::perLayerRenderingTime() const
   QHash<QgsMapLayer *, int> result;
   for ( auto it = mPerLayerRenderingTime.constBegin(); it != mPerLayerRenderingTime.constEnd(); ++it )
   {
-    if ( auto &&lKey = it.key() )
+    if ( auto && lKey = it.key() )
       result.insert( lKey, it.value() );
   }
   return result;
@@ -389,9 +389,9 @@ QPainter *QgsMapRendererJob::allocateImageAndPainter( QString layerId, QImage *&
   if ( image )
   {
     painter = new QPainter( image );
-    painter->setRenderHint( QPainter::Antialiasing, mSettings.testFlag( QgsMapSettings::Antialiasing ) );
+    painter->setRenderHint( QPainter::Antialiasing, mSettings.testFlag( Qgis::MapSettingsFlag::Antialiasing ) );
 #if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
-    painter->setRenderHint( QPainter::LosslessImageRendering, mSettings.testFlag( QgsMapSettings::LosslessImageRendering ) );
+    painter->setRenderHint( QPainter::LosslessImageRendering, mSettings.testFlag( Qgis::MapSettingsFlag::LosslessImageRendering ) );
 #endif
   }
   return painter;
@@ -494,7 +494,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
     job.context()->setCoordinateTransform( ct );
     job.context()->setExtent( r1 );
     if ( !haveExtentInLayerCrs )
-      job.context()->setFlag( QgsRenderContext::ApplyClipAfterReprojection, true );
+      job.context()->setFlag( Qgis::RenderContextFlag::ApplyClipAfterReprojection, true );
 
     if ( mFeatureFilterProvider )
       job.context()->setFeatureFilterProvider( mFeatureFilterProvider );

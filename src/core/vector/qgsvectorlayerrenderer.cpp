@@ -164,7 +164,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
     mForceRasterRender = true;
   }
 
-  if ( context.testFlag( QgsRenderContext::UseAdvancedEffects ) &&
+  if ( context.testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) &&
        ( ( layer->blendMode() != QPainter::CompositionMode_SourceOver )
          || ( layer->featureBlendMode() != QPainter::CompositionMode_SourceOver )
          || ( !qgsDoubleNear( layer->opacity(), 1.0 ) ) ) )

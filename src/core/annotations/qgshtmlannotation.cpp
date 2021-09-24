@@ -26,6 +26,7 @@
 #include "qgswebpage.h"
 #include "qgswebframe.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsrendercontext.h"
 
 #include <QDomElement>
 #include <QDir>

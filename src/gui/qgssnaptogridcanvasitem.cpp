@@ -15,6 +15,7 @@
 
 #include "qgssnaptogridcanvasitem.h"
 #include "qgsmapcanvas.h"
+#include "qgsrendercontext.h"
 
 QgsSnapToGridCanvasItem::QgsSnapToGridCanvasItem( QgsMapCanvas *mapCanvas )
   : QgsMapCanvasItem( mapCanvas )

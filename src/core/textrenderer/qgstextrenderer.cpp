@@ -294,7 +294,7 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
 
   const double penSize = context.convertToPainterUnits( buffer.size(), buffer.sizeUnit(), buffer.sizeMapUnitScale() );
 
-  const double scaleFactor = ( context.flags() & QgsRenderContext::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
+  const double scaleFactor = ( context.flags() & Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
 
   std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;
   if ( mode == Label )
@@ -451,7 +451,7 @@ void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer
   QPainterPath path;
   path.setFillRule( Qt::WindingFill );
 
-  const double scaleFactor = ( context.flags() & QgsRenderContext::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
+  const double scaleFactor = ( context.flags() & Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
 
   // TODO: vertical text mode was ignored when masking feature was added.
   // Hopefully Oslandia come back and fix this? Hint hint...
@@ -542,7 +542,7 @@ double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTex
 double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &document )
 {
   //calculate max width of text lines
-  const double scaleFactor = ( context.flags() & QgsRenderContext::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
+  const double scaleFactor = ( context.flags() & Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
 
   bool isNullSize = false;
   const QFont baseFont = format.scaledFont( context, scaleFactor, &isNullSize );
@@ -613,7 +613,7 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
 
 double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, QChar character, bool includeEffects )
 {
-  const double scaleFactor = ( context.flags() & QgsRenderContext::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
+  const double scaleFactor = ( context.flags() & Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
   bool isNullSize = false;
   const QFont baseFont = format.scaledFont( context, scaleFactor, &isNullSize );
   if ( isNullSize )
@@ -654,7 +654,7 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
   document.applyCapitalization( format.capitalization() );
 
   //calculate max height of text lines
-  const double scaleFactor = ( context.flags() & QgsRenderContext::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
+  const double scaleFactor = ( context.flags() & Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
 
   bool isNullSize = false;
   const QFont baseFont = format.scaledFont( context, scaleFactor, &isNullSize );
@@ -780,7 +780,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
     component.rotationOffset = background.rotation();
   }
 
-  const double scaleFactor = ( context.flags() & QgsRenderContext::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1;
+  const double scaleFactor = ( context.flags() & Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1;
 
   if ( mode != Label )
   {
@@ -1297,7 +1297,7 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
   std::unique_ptr< QFontMetricsF > tmpMetrics;
   if ( !fontMetrics )
   {
-    fontScale = ( context.flags() & QgsRenderContext::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
+    fontScale = ( context.flags() & Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
 
     std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;
     if ( mode == Label )
@@ -1660,7 +1660,7 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
 
       switch ( context.textRenderFormat() )
       {
-        case QgsRenderContext::TextFormatAlwaysOutlines:
+        case Qgis::TextRenderFormat::AlwaysOutlines:
         {
           // draw outlined text
           _fixQPictureDPI( context.painter() );
@@ -1668,7 +1668,7 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
           break;
         }
 
-        case QgsRenderContext::TextFormatAlwaysText:
+        case Qgis::TextRenderFormat::AlwaysText:
         {
           double xOffset = 0;
           for ( const QgsTextFragment &fragment : block )
@@ -1921,7 +1921,7 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
 
         switch ( context.textRenderFormat() )
         {
-          case QgsRenderContext::TextFormatAlwaysOutlines:
+          case Qgis::TextRenderFormat::AlwaysOutlines:
           {
             // draw outlined text
             _fixQPictureDPI( context.painter() );
@@ -1930,7 +1930,7 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
             break;
           }
 
-          case QgsRenderContext::TextFormatAlwaysText:
+          case Qgis::TextRenderFormat::AlwaysText:
           {
             context.painter()->setFont( fragmentFont );
             context.painter()->setPen( textColor );

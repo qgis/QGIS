@@ -27,6 +27,7 @@
 #include "qgsmeshrenderersettings.h"
 #include "qgsmeshtimesettings.h"
 #include "qgsmeshsimplificationsettings.h"
+#include "qgscoordinatetransform.h"
 
 class QgsMapLayerRenderer;
 struct QgsMeshLayerRendererCache;

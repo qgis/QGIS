@@ -570,7 +570,7 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext &context, double
   }
 
   double anchorPointCorrectionX = context.renderContext().convertToPainterUnits( width, widthUnit, widthMapUnitScale ) / 2.0;
-  if ( widthUnit == QgsUnitTypes::RenderMetersInMapUnits && context.renderContext().flags() & QgsRenderContext::RenderSymbolPreview )
+  if ( widthUnit == QgsUnitTypes::RenderMetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
   {
     // rendering for symbol previews -- an size in meters in map units can't be calculated, so treat the size as millimeters
     // and clamp it to a reasonable range. It's the best we can do in this situation!
@@ -578,7 +578,7 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext &context, double
   }
 
   double anchorPointCorrectionY = context.renderContext().convertToPainterUnits( height, heightUnit, heightMapUnitScale ) / 2.0;
-  if ( heightUnit == QgsUnitTypes::RenderMetersInMapUnits && context.renderContext().flags() & QgsRenderContext::RenderSymbolPreview )
+  if ( heightUnit == QgsUnitTypes::RenderMetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
   {
     // rendering for symbol previews -- an size in meters in map units can't be calculated, so treat the size as millimeters
     // and clamp it to a reasonable range. It's the best we can do in this situation!

@@ -20,7 +20,7 @@
 #include "qgsvectortilelayer.h"
 #include "qgsvectortilerenderer.h"
 #include "qgsvectortileutils.h"
-
+#include "qgsrendercontext.h"
 
 
 void QgsVectorTileBasicLabelingStyle::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const

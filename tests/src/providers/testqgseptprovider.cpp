@@ -32,6 +32,7 @@
 #include "qgspointcloudindex.h"
 #include "qgspointcloudlayerelevationproperties.h"
 #include "qgsprovidersublayerdetails.h"
+#include "qgsgeometry.h"
 
 /**
  * \ingroup UnitTests

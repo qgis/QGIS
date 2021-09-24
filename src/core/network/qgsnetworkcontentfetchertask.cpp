@@ -18,6 +18,7 @@
 
 #include "qgsnetworkcontentfetchertask.h"
 #include "qgsnetworkcontentfetcher.h"
+#include <QEventLoop>
 
 QgsNetworkContentFetcherTask::QgsNetworkContentFetcherTask( const QUrl &url, const QString &authcfg, QgsTask::Flags flags )
   : QgsNetworkContentFetcherTask( QNetworkRequest( url ), authcfg, flags )

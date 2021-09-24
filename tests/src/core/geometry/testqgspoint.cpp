@@ -20,7 +20,7 @@
 #include "qgspoint.h"
 #include "qgsproject.h"
 #include "testtransformer.h"
-
+#include "qgscoordinatetransform.h"
 #include "testgeometryutils.h"
 
 class TestQgsPoint: public QObject

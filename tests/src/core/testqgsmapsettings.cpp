@@ -30,6 +30,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsrenderedfeaturehandlerinterface.h"
+#include "qgsrendercontext.h"
 
 class TestHandler : public QgsRenderedFeatureHandlerInterface
 {
@@ -109,10 +110,10 @@ void TestQgsMapSettings::testGettersSetters()
   // basic getter/setter tests
   QgsMapSettings ms;
 
-  ms.setTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
-  QCOMPARE( ms.textRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
-  ms.setTextRenderFormat( QgsRenderContext::TextFormatAlwaysOutlines );
-  QCOMPARE( ms.textRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
+  ms.setTextRenderFormat( Qgis::TextRenderFormat::AlwaysText );
+  QCOMPARE( ms.textRenderFormat(), Qgis::TextRenderFormat::AlwaysText );
+  ms.setTextRenderFormat( Qgis::TextRenderFormat::AlwaysOutlines );
+  QCOMPARE( ms.textRenderFormat(), Qgis::TextRenderFormat::AlwaysOutlines );
 
   // must default to no simplification
   QCOMPARE( ms.simplifyMethod().simplifyHints(), QgsVectorSimplifyMethod::NoSimplification );
@@ -138,16 +139,16 @@ void TestQgsMapSettings::testLabelingEngineSettings()
   QCOMPARE( ms.labelingEngineSettings().maximumPolygonCandidatesPerCmSquared(), 8.0 );
 
   // ensure that setting labeling engine settings also sets text format
-  les.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
+  les.setDefaultTextRenderFormat( Qgis::TextRenderFormat::AlwaysText );
   ms.setLabelingEngineSettings( les );
-  QCOMPARE( ms.textRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
-  les.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysOutlines );
+  QCOMPARE( ms.textRenderFormat(), Qgis::TextRenderFormat::AlwaysText );
+  les.setDefaultTextRenderFormat( Qgis::TextRenderFormat::AlwaysOutlines );
   ms.setLabelingEngineSettings( les );
-  QCOMPARE( ms.textRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
+  QCOMPARE( ms.textRenderFormat(), Qgis::TextRenderFormat::AlwaysOutlines );
   // but we should be able to override this manually
-  ms.setTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
-  QCOMPARE( ms.textRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
-  QCOMPARE( ms.labelingEngineSettings().defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
+  ms.setTextRenderFormat( Qgis::TextRenderFormat::AlwaysText );
+  QCOMPARE( ms.textRenderFormat(), Qgis::TextRenderFormat::AlwaysText );
+  QCOMPARE( ms.labelingEngineSettings().defaultTextRenderFormat(), Qgis::TextRenderFormat::AlwaysText );
 }
 
 void TestQgsMapSettings::visibleExtent()

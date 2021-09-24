@@ -31,60 +31,28 @@ to be rendered etc.
 
     QgsRenderContext( const QgsRenderContext &rh );
 
-    enum Flag
-    {
-      DrawEditingInfo,
-      ForceVectorOutput,
-      UseAdvancedEffects,
-      UseRenderingOptimization,
-      DrawSelection,
-      DrawSymbolBounds,
-      RenderMapTile,
-      Antialiasing,
-      RenderPartialOutput,
-      RenderPreviewJob,
-      RenderBlocking,
-      RenderSymbolPreview,
-      LosslessImageRendering,
-      ApplyScalingWorkaroundForTextRendering,
-      Render3DMap,
-      ApplyClipAfterReprojection,
-    };
-    typedef QFlags<QgsRenderContext::Flag> Flags;
-
-
-    enum TextRenderFormat
-    {
-      // refs for below dox: https://github.com/qgis/QGIS/pull/1286#issuecomment-39806854
-      // https://github.com/qgis/QGIS/pull/8573#issuecomment-445585826
-
-      TextFormatAlwaysOutlines,
-
-      TextFormatAlwaysText,
-    };
-
-    void setFlags( QgsRenderContext::Flags flags );
+    void setFlags( Qgis::RenderContextFlags flags );
 %Docstring
 Set combination of flags that will be used for rendering.
 
 .. versionadded:: 2.14
 %End
 
-    void setFlag( Flag flag, bool on = true );
+    void setFlag( Qgis::RenderContextFlag flag, bool on = true );
 %Docstring
 Enable or disable a particular flag (other flags are not affected)
 
 .. versionadded:: 2.14
 %End
 
-    Flags flags() const;
+    Qgis::RenderContextFlags flags() const;
 %Docstring
 Returns combination of flags used for rendering.
 
 .. versionadded:: 2.14
 %End
 
-    bool testFlag( Flag flag ) const;
+    bool testFlag( Qgis::RenderContextFlag flag ) const;
 %Docstring
 Check whether a particular flag is enabled.
 
@@ -758,7 +726,7 @@ When the :py:func:`~QgsRenderContext.sourceCrs` is geographic, the center of the
 .. versionadded:: 3.0
 %End
 
-    TextRenderFormat textRenderFormat() const;
+    Qgis::TextRenderFormat textRenderFormat() const;
 %Docstring
 Returns the text render format, which dictates how text is rendered (e.g. as paths or real text objects).
 
@@ -767,7 +735,7 @@ Returns the text render format, which dictates how text is rendered (e.g. as pat
 .. versionadded:: 3.4.3
 %End
 
-    void setTextRenderFormat( TextRenderFormat format );
+    void setTextRenderFormat( Qgis::TextRenderFormat format );
 %Docstring
 Sets the text render ``format``, which dictates how text is rendered (e.g. as paths or real text objects).
 
@@ -980,9 +948,6 @@ Sets the ``range`` of z-values which should be rendered.
 %End
 
 };
-
-QFlags<QgsRenderContext::Flag> operator|(QgsRenderContext::Flag f1, QFlags<QgsRenderContext::Flag> f2);
-
 
 
 /************************************************************************

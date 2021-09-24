@@ -18,6 +18,7 @@
 #include "qgsalgorithmpointstopaths.h"
 #include "qgsvectorlayer.h"
 #include "qgsmultipoint.h"
+#include "qgsdistancearea.h"
 
 #include <QCollator>
 #include <QTextStream>
