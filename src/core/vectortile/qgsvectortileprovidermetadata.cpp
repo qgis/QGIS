@@ -55,4 +55,35 @@ void QgsVectorTileProviderMetadata::saveConnection( const QgsAbstractProviderCon
   saveConnectionProtected( connection, name );
 }
 
+QgsProviderMetadata::ProviderCapabilities QgsVectorTileProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris;
+}
+
+QVariantMap QgsVectorTileProviderMetadata::decodeUri( const QString &uri ) const
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( uri );
+
+  QVariantMap uriComponents;
+  uriComponents.insert( QStringLiteral( "type" ), dsUri.param( QStringLiteral( "type" ) ) );
+  if ( uriComponents[ QStringLiteral( "type" ) ] == QStringLiteral( "mbtiles" ) )
+  {
+    uriComponents.insert( QStringLiteral( "path" ), dsUri.param( QStringLiteral( "url" ) ) );
+  }
+  else
+  {
+    uriComponents.insert( QStringLiteral( "url" ), dsUri.param( QStringLiteral( "url" ) ) );
+  }
+  return uriComponents;
+}
+
+QString QgsVectorTileProviderMetadata::encodeUri( const QVariantMap &parts ) const
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setParam( QStringLiteral( "type" ), parts.value( QStringLiteral( "type" ) ).toString() );
+  dsUri.setParam( QStringLiteral( "url" ), parts.value( parts.contains( QStringLiteral( "path" ) ) ? QStringLiteral( "path" ) : QStringLiteral( "url" ) ).toString() );
+  return dsUri.encodedUri();
+}
+
 ///@endcond
