@@ -200,6 +200,7 @@ QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool k
   if ( !path.startsWith( QLatin1String( "base64:" ) ) && QFile::exists( path ) )
   {
     QImageReader reader( path );
+    reader.setAutoTransform( true );
 
     if ( reader.format() == "pdf" )
     {
@@ -278,6 +279,7 @@ QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool k
       buffer.open( QIODevice::ReadOnly );
 
       QImageReader reader( &buffer );
+      reader.setAutoTransform( true );
 
       if ( reader.format() == "pdf" )
       {

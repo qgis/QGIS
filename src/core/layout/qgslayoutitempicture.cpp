@@ -384,6 +384,7 @@ void QgsLayoutItemPicture::loadRemotePicture( const QString &url )
   if ( reply )
   {
     QImageReader imageReader( reply );
+    imageReader.setAutoTransform( true );
 
     if ( imageReader.format() == "pdf" )
     {
@@ -449,6 +450,7 @@ void QgsLayoutItemPicture::loadLocalPicture( const QString &path )
     {
       //try to open raster with QImageReader
       QImageReader imageReader( pic.fileName() );
+      imageReader.setAutoTransform( true );
 
       if ( imageReader.format() == "pdf" )
       {
