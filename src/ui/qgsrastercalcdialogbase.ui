@@ -321,7 +321,7 @@
           <item row="0" column="4">
            <widget class="QPushButton" name="mConditionalStatButton">
             <property name="text">
-             <string notr="true">if</string>
+             <string notr="true">IF</string>
             </property>
            </widget>
           </item>
