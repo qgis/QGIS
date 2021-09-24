@@ -26,6 +26,8 @@
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsgui.h"
+#include "qgsrecentstylehandler.h"
 
 ///@cond PRIVATE
 
@@ -90,7 +92,12 @@ void QgsCreateMarkerItemMapTool::cadCanvasReleaseEvent( QgsMapMouseEvent *event 
 
   const QgsPointXY layerPoint = toLayerCoordinates( mHandler->targetLayer(), event->mapPoint() );
   std::unique_ptr< QgsAnnotationMarkerItem > createdItem = std::make_unique< QgsAnnotationMarkerItem >( QgsPoint( layerPoint ) );
-  createdItem->setSymbol( qgis::down_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
+
+  std::unique_ptr< QgsMarkerSymbol > markerSymbol = QgsGui::recentStyleHandler()->recentSymbol< QgsMarkerSymbol >( QStringLiteral( "marker_annotation_item" ) );
+  if ( !markerSymbol )
+    markerSymbol.reset( qgis::down_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
+  createdItem->setSymbol( markerSymbol.release() );
+
   // set reference scale to match canvas scale, but don't enable it by default for marker items
   createdItem->setSymbologyReferenceScale( canvas()->scale() );
 
@@ -180,7 +187,12 @@ void QgsCreateLineItemMapTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     if ( qgsgeometry_cast< QgsCurve * >( geometry.get() ) )
     {
       std::unique_ptr< QgsAnnotationLineItem > createdItem = std::make_unique< QgsAnnotationLineItem >( qgsgeometry_cast< QgsCurve * >( geometry.release() ) );
-      createdItem->setSymbol( qgis::down_cast< QgsLineSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::LineGeometry ) ) );
+
+      std::unique_ptr< QgsLineSymbol > lineSymbol = QgsGui::recentStyleHandler()->recentSymbol< QgsLineSymbol >( QStringLiteral( "line_annotation_item" ) );
+      if ( !lineSymbol )
+        lineSymbol.reset( qgis::down_cast< QgsLineSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::LineGeometry ) ) );
+      createdItem->setSymbol( lineSymbol.release() );
+
       // set reference scale to match canvas scale, but don't enable it by default for marker items
       createdItem->setSymbologyReferenceScale( canvas()->scale() );
 
@@ -254,7 +266,12 @@ void QgsCreatePolygonItemMapTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       std::unique_ptr< QgsCurvePolygon > newPolygon = std::make_unique< QgsCurvePolygon >();
       newPolygon->setExteriorRing( qgsgeometry_cast< QgsCurve * >( geometry.release() ) );
       std::unique_ptr< QgsAnnotationPolygonItem > createdItem = std::make_unique< QgsAnnotationPolygonItem >( newPolygon.release() );
-      createdItem->setSymbol( qgis::down_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry ) ) );
+
+      std::unique_ptr< QgsFillSymbol > fillSymbol = QgsGui::recentStyleHandler()->recentSymbol< QgsFillSymbol >( QStringLiteral( "polygon_annotation_item" ) );
+      if ( !fillSymbol )
+        fillSymbol.reset( qgis::down_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry ) ) );
+      createdItem->setSymbol( fillSymbol.release() );
+
       // set reference scale to match canvas scale, but don't enable it by default for marker items
       createdItem->setSymbologyReferenceScale( canvas()->scale() );
 
