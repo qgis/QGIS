@@ -463,7 +463,7 @@ void QgsLayoutItemPicture::loadPictureUsingCache( const QString &path )
     {
       bool fitsInCache = false;
       bool isMissing = false;
-      mImage = QgsApplication::imageCache()->pathAsImage( path, QSize(), true, 1, fitsInCache, true, &isMissing );
+      mImage = QgsApplication::imageCache()->pathAsImage( path, QSize(), true, 1, fitsInCache, true, mLayout->renderContext().dpi(), &isMissing );
       if ( mImage.isNull() || isMissing )
         mMode = FormatUnknown;
       break;
