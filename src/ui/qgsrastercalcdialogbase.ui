@@ -50,21 +50,21 @@
         </item>
         <item row="5" column="0" colspan="4">
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="3" column="3">
+          <item row="2" column="3">
            <widget class="QLabel" name="mRowsLabel">
             <property name="text">
              <string>Rows</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="4">
+          <item row="2" column="4">
            <widget class="QgsSpinBox" name="mNRowsSpinBox">
             <property name="maximum">
              <number>999999999</number>
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
+          <item row="1" column="1">
            <widget class="QgsDoubleSpinBox" name="mYMinSpinBox">
             <property name="decimals">
              <number>5</number>
@@ -77,49 +77,49 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="1" column="0">
            <widget class="QLabel" name="mYMinLabel">
             <property name="text">
              <string>Y min</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
+          <item row="0" column="0">
            <widget class="QLabel" name="mXMinLabel">
             <property name="text">
              <string>X min</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="3">
+          <item row="0" column="3">
            <widget class="QLabel" name="mXMaxLabel">
             <property name="text">
              <string>X max</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
+          <item row="2" column="0">
            <widget class="QLabel" name="mColumnsLabel">
             <property name="text">
              <string>Columns</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
+          <item row="2" column="1">
            <widget class="QgsSpinBox" name="mNColumnsSpinBox">
             <property name="maximum">
              <number>999999999</number>
             </property>
            </widget>
           </item>
-          <item row="2" column="3">
+          <item row="1" column="3">
            <widget class="QLabel" name="mYMaxLabel">
             <property name="text">
              <string>Y max</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="4">
+          <item row="1" column="4">
            <widget class="QgsDoubleSpinBox" name="mYMaxSpinBox">
             <property name="decimals">
              <number>5</number>
@@ -132,7 +132,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="0" column="1">
            <widget class="QgsDoubleSpinBox" name="mXMinSpinBox">
             <property name="decimals">
              <number>5</number>
@@ -145,7 +145,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="4">
+          <item row="0" column="4">
            <widget class="QgsDoubleSpinBox" name="mXMaxSpinBox">
             <property name="decimals">
              <number>5</number>
@@ -158,7 +158,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
+          <item row="0" column="2">
            <spacer name="horizontalSpacer_2">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -246,7 +246,7 @@
         <item row="4" column="0">
          <widget class="QPushButton" name="mCurrentLayerExtentButton">
           <property name="text">
-           <string>Selected Layer Extent</string>
+           <string>Use Selected Layer Extent</string>
           </property>
          </widget>
         </item>
@@ -290,62 +290,6 @@
           <property name="bottomMargin">
            <number>0</number>
           </property>
-          <item row="2" column="11">
-           <widget class="QPushButton" name="mOrButton">
-            <property name="text">
-             <string notr="true">OR</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="10">
-           <widget class="QPushButton" name="mLnButton">
-            <property name="text">
-             <string notr="true">ln</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="6">
-           <widget class="QPushButton" name="mLesserEqualButton">
-            <property name="text">
-             <string notr="true">&lt;=</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="10">
-           <widget class="QPushButton" name="mAndButton">
-            <property name="text">
-             <string notr="true">AND</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="10">
-           <widget class="QPushButton" name="mLogButton">
-            <property name="text">
-             <string notr="true">log10</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QPushButton" name="mLessButton">
-            <property name="text">
-             <string notr="true">&lt;</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="8">
-           <widget class="QPushButton" name="mGreaterEqualButton">
-            <property name="text">
-             <string notr="true">&gt;=</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="8">
-           <widget class="QPushButton" name="mTanButton">
-            <property name="text">
-             <string notr="true">tan</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="0">
            <widget class="QPushButton" name="mPlusPushButton">
             <property name="text">
@@ -360,21 +304,42 @@
             </property>
            </widget>
           </item>
+          <item row="0" column="2">
+           <widget class="QPushButton" name="mOpenBracketPushButton">
+            <property name="text">
+             <string notr="true">(</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QPushButton" name="mMinButton">
+            <property name="text">
+             <string notr="true">min</string>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="4">
+           <widget class="QPushButton" name="mConditionalStatButton">
+            <property name="text">
+             <string notr="true">if</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="5">
            <widget class="QPushButton" name="mCosButton">
             <property name="text">
              <string notr="true">cos</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
-           <widget class="QPushButton" name="mGreaterButton">
+          <item row="0" column="6">
+           <widget class="QPushButton" name="mACosButton">
             <property name="text">
-             <string notr="true">&gt;</string>
+             <string notr="true">acos</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="14">
+          <item row="0" column="7">
            <spacer name="horizontalSpacer_3">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -387,59 +352,10 @@
             </property>
            </spacer>
           </item>
-          <item row="1" column="8">
-           <widget class="QPushButton" name="mATanButton">
-            <property name="text">
-             <string notr="true">atan</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="4">
-           <widget class="QPushButton" name="mACosButton">
-            <property name="text">
-             <string notr="true">acos</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="6">
-           <widget class="QPushButton" name="mASinButton">
-            <property name="text">
-             <string notr="true">asin</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="4">
-           <widget class="QPushButton" name="mNotEqualButton">
-            <property name="text">
-             <string notr="true">!=</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="11">
-           <widget class="QPushButton" name="mCloseBracketPushButton">
-            <property name="text">
-             <string notr="true">)</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
-           <widget class="QPushButton" name="mEqualButton">
-            <property name="text">
-             <string notr="true">=</string>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="0">
            <widget class="QPushButton" name="mMinusPushButton">
             <property name="text">
              <string notr="true">-</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="11">
-           <widget class="QPushButton" name="mOpenBracketPushButton">
-            <property name="text">
-             <string notr="true">(</string>
             </property>
            </widget>
           </item>
@@ -451,51 +367,135 @@
            </widget>
           </item>
           <item row="1" column="2">
-           <widget class="QPushButton" name="mExpButton">
+           <widget class="QPushButton" name="mCloseBracketPushButton">
             <property name="text">
-             <string notr="true">^</string>
+             <string notr="true">)</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="6">
-           <widget class="QPushButton" name="mSinButton">
-            <property name="text">
-             <string notr="true">sin</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QPushButton" name="mSqrtButton">
-            <property name="text">
-             <string notr="true">sqrt</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QPushButton" name="mAbsButton">
-            <property name="text">
-             <string notr="true">abs</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QPushButton" name="mMinButton">
-            <property name="text">
-             <string notr="true">min</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="2">
+          <item row="1" column="3">
            <widget class="QPushButton" name="mMaxButton">
             <property name="text">
              <string notr="true">max</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="4">
-           <widget class="QPushButton" name="mConditionalStatButton">
+          <item row="1" column="4">
+           <widget class="QPushButton" name="mAndButton">
             <property name="text">
-             <string notr="true">if</string>
+             <string notr="true">AND</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="5">
+           <widget class="QPushButton" name="mSinButton">
+            <property name="text">
+             <string notr="true">sin</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="6">
+           <widget class="QPushButton" name="mASinButton">
+            <property name="text">
+             <string notr="true">asin</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QPushButton" name="mLessButton">
+            <property name="text">
+             <string notr="true">&lt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QPushButton" name="mGreaterButton">
+            <property name="text">
+             <string notr="true">&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QPushButton" name="mEqualButton">
+            <property name="text">
+             <string notr="true">=</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="3">
+           <widget class="QPushButton" name="mAbsButton">
+            <property name="text">
+             <string notr="true">abs</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="4">
+           <widget class="QPushButton" name="mOrButton">
+            <property name="text">
+             <string notr="true">OR</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="5">
+           <widget class="QPushButton" name="mTanButton">
+            <property name="text">
+             <string notr="true">tan</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="6">
+           <widget class="QPushButton" name="mATanButton">
+            <property name="text">
+             <string notr="true">atan</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QPushButton" name="mLesserEqualButton">
+            <property name="text">
+             <string notr="true">&lt;=</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QPushButton" name="mGreaterEqualButton">
+            <property name="text">
+             <string notr="true">&gt;=</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2">
+           <widget class="QPushButton" name="mNotEqualButton">
+            <property name="text">
+             <string notr="true">!=</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="3">
+           <widget class="QPushButton" name="mExpButton">
+            <property name="text">
+             <string notr="true">^</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="4">
+           <widget class="QPushButton" name="mSqrtButton">
+            <property name="text">
+             <string notr="true">sqrt</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="5">
+           <widget class="QPushButton" name="mLogButton">
+            <property name="text">
+             <string notr="true">log10</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="6">
+           <widget class="QPushButton" name="mLnButton">
+            <property name="text">
+             <string notr="true">ln</string>
             </property>
            </widget>
           </item>
@@ -581,6 +581,8 @@
  </customwidgets>
  <tabstops>
   <tabstop>mRasterBandsListWidget</tabstop>
+  <tabstop>mUseVirtualProviderCheckBox</tabstop>
+  <tabstop>mVirtualLayerName</tabstop>
   <tabstop>mOutputFormatComboBox</tabstop>
   <tabstop>mCurrentLayerExtentButton</tabstop>
   <tabstop>mXMinSpinBox</tabstop>
@@ -593,32 +595,34 @@
   <tabstop>mAddResultToProjectCheckBox</tabstop>
   <tabstop>mPlusPushButton</tabstop>
   <tabstop>mMultiplyPushButton</tabstop>
-  <tabstop>mSqrtButton</tabstop>
-  <tabstop>mCosButton</tabstop>
-  <tabstop>mSinButton</tabstop>
-  <tabstop>mTanButton</tabstop>
-  <tabstop>mLogButton</tabstop>
   <tabstop>mOpenBracketPushButton</tabstop>
+  <tabstop>mMinButton</tabstop>
+  <tabstop>mConditionalStatButton</tabstop>
+  <tabstop>mCosButton</tabstop>
+  <tabstop>mACosButton</tabstop>
   <tabstop>mMinusPushButton</tabstop>
   <tabstop>mDividePushButton</tabstop>
-  <tabstop>mExpButton</tabstop>
-  <tabstop>mACosButton</tabstop>
-  <tabstop>mASinButton</tabstop>
-  <tabstop>mATanButton</tabstop>
-  <tabstop>mLnButton</tabstop>
   <tabstop>mCloseBracketPushButton</tabstop>
+  <tabstop>mMaxButton</tabstop>
+  <tabstop>mAndButton</tabstop>
+  <tabstop>mSinButton</tabstop>
+  <tabstop>mASinButton</tabstop>
   <tabstop>mLessButton</tabstop>
   <tabstop>mGreaterButton</tabstop>
   <tabstop>mEqualButton</tabstop>
-  <tabstop>mNotEqualButton</tabstop>
+  <tabstop>mAbsButton</tabstop>
+  <tabstop>mOrButton</tabstop>
+  <tabstop>mTanButton</tabstop>
+  <tabstop>mATanButton</tabstop>
   <tabstop>mLesserEqualButton</tabstop>
   <tabstop>mGreaterEqualButton</tabstop>
-  <tabstop>mAndButton</tabstop>
-  <tabstop>mOrButton</tabstop>
-  <tabstop>mAbsButton</tabstop>
-  <tabstop>mMinButton</tabstop>
-  <tabstop>mMaxButton</tabstop>
+  <tabstop>mNotEqualButton</tabstop>
+  <tabstop>mExpButton</tabstop>
+  <tabstop>mSqrtButton</tabstop>
+  <tabstop>mLogButton</tabstop>
+  <tabstop>mLnButton</tabstop>
   <tabstop>mExpressionTextEdit</tabstop>
+  <tabstop>mButtonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>
