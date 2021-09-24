@@ -704,9 +704,16 @@ QString QgsProcessingUtils::stringToPythonLiteral( const QString &string )
   s.replace( '\n', QLatin1String( "\\n" ) );
   s.replace( '\r', QLatin1String( "\\r" ) );
   s.replace( '\t', QLatin1String( "\\t" ) );
-  s.replace( '"', QLatin1String( "\\\"" ) );
-  s.replace( '\'', QLatin1String( "\\\'" ) );
-  s = s.prepend( '\'' ).append( '\'' );
+
+  if ( s.contains( '\'' ) && !s.contains( '\"' ) )
+  {
+    s = s.prepend( '"' ).append( '"' );
+  }
+  else
+  {
+    s.replace( '\'', QLatin1String( "\\\'" ) );
+    s = s.prepend( '\'' ).append( '\'' );
+  }
   return s;
 }
 
