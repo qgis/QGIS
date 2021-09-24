@@ -1854,6 +1854,9 @@ QgisApp::~QgisApp()
 
   mNetworkLoggerWidgetFactory.reset();
 
+  delete mAdvancedDigitizingDockWidget;
+  mAdvancedDigitizingDockWidget = nullptr;
+
   delete mInternalClipboard;
   delete mQgisInterface;
   delete mStyleSheetBuilder;
