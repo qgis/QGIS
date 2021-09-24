@@ -2443,21 +2443,6 @@ QString QgsProcessingParameterDefinition::valueAsPythonComment( const QVariant &
   return QString();
 }
 
-QString QgsProcessingParameterDefinition::descriptionAsPythonString( ) const
-{
-  // if it possible to not use escaping for readability
-  if ( description().contains( "'" ) && !description().contains( "\"" ) )
-  {
-    return QStringLiteral( "\"%1\"" ).arg( description() );
-  }
-  else
-  {
-    // do the escape even if there is no apostrophe
-    const QString escapeDescription = description().replace( "\'", "\\\'" );
-    return QStringLiteral( "'%1'" ).arg( escapeDescription );
-  }
-}
-
 QString QgsProcessingParameterDefinition::asScriptCode() const
 {
   QString code = QStringLiteral( "##%1=" ).arg( mName );
@@ -2477,7 +2462,8 @@ QString QgsProcessingParameterDefinition::asPythonString( const QgsProcessing::P
     {
       case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
       {
-        QString code = t->className() + QStringLiteral( "('%1', %2" ).arg( name(), descriptionAsPythonString() );
+        QString code = t->className() + QStringLiteral( "('%1', %2" )
+                       .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
         if ( mFlags & FlagOptional )
           code += QLatin1String( ", optional=True" );
 
@@ -2862,7 +2848,8 @@ QString QgsProcessingParameterMapLayer::asPythonString( const QgsProcessing::Pyt
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterMapLayer('%1', %2" ).arg( name(), descriptionAsPythonString() );
+      QString code = QStringLiteral( "QgsProcessingParameterMapLayer('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
 
@@ -3315,7 +3302,8 @@ QString QgsProcessingParameterGeometry::asPythonString( const QgsProcessing::Pyt
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterGeometry('%1', %2" ).arg( name(), descriptionAsPythonString() );
+      QString code = QStringLiteral( "QgsProcessingParameterGeometry('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
 
@@ -3466,7 +3454,8 @@ QString QgsProcessingParameterFile::asPythonString( const QgsProcessing::PythonO
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
 
-      QString code = QStringLiteral( "QgsProcessingParameterFile('%1', %2" ).arg( name(), descriptionAsPythonString() );
+      QString code = QStringLiteral( "QgsProcessingParameterFile('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
       code += QStringLiteral( ", behavior=%1" ).arg( mBehavior == File ? QStringLiteral( "QgsProcessingParameterFile.File" ) : QStringLiteral( "QgsProcessingParameterFile.Folder" ) );
@@ -3632,7 +3621,8 @@ QString QgsProcessingParameterMatrix::asPythonString( const QgsProcessing::Pytho
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterMatrix('%1', %2" ).arg( name(), descriptionAsPythonString() );
+      QString code = QStringLiteral( "QgsProcessingParameterMatrix('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
       code += QStringLiteral( ", numberRows=" ).arg( mNumberRows );
@@ -3891,7 +3881,8 @@ QString QgsProcessingParameterMultipleLayers::asPythonString( const QgsProcessin
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterMultipleLayers('%1', %2" ).arg( name(), descriptionAsPythonString() );
+      QString code = QStringLiteral( "QgsProcessingParameterMultipleLayers('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
 
@@ -4070,7 +4061,8 @@ QString QgsProcessingParameterNumber::asPythonString( const QgsProcessing::Pytho
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterNumber('%1', %2" ).arg( name(), descriptionAsPythonString() );
+      QString code = QStringLiteral( "QgsProcessingParameterNumber('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
 
@@ -4221,7 +4213,8 @@ QString QgsProcessingParameterRange::asPythonString( const QgsProcessing::Python
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterRange('%1', %2" ).arg( name(), descriptionAsPythonString() );
+      QString code = QStringLiteral( "QgsProcessingParameterRange('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
 
@@ -4601,7 +4594,8 @@ QString QgsProcessingParameterEnum::asPythonString( const QgsProcessing::PythonO
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterEnum('%1', %2" ).arg( name(), descriptionAsPythonString() );
+      QString code = QStringLiteral( "QgsProcessingParameterEnum('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
 
@@ -4747,7 +4741,8 @@ QString QgsProcessingParameterString::asPythonString( const QgsProcessing::Pytho
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterString('%1', %2" ).arg( name(), descriptionAsPythonString() );
+      QString code = QStringLiteral( "QgsProcessingParameterString('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
       code += QStringLiteral( ", multiLine=%1" ).arg( mMultiLine ? QStringLiteral( "True" ) : QStringLiteral( "False" ) );
@@ -4900,7 +4895,8 @@ QString QgsProcessingParameterExpression::asPythonString( const QgsProcessing::P
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterExpression('%1', %2" ).arg( name(), descriptionAsPythonString() );
+      QString code = QStringLiteral( "QgsProcessingParameterExpression('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
 
@@ -5015,7 +5011,8 @@ QString QgsProcessingParameterVectorLayer::asPythonString( const QgsProcessing::
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterVectorLayer('%1', %2" ).arg( name(), descriptionAsPythonString() );
+      QString code = QStringLiteral( "QgsProcessingParameterVectorLayer('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
 
@@ -5281,7 +5278,8 @@ QString QgsProcessingParameterField::asPythonString( const QgsProcessing::Python
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterField('%1', %2" ).arg( name(), descriptionAsPythonString() );
+      QString code = QStringLiteral( "QgsProcessingParameterField('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
 
@@ -5628,7 +5626,8 @@ QString QgsProcessingParameterFeatureSource::asPythonString( const QgsProcessing
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterFeatureSource('%1', %2" ).arg( name(), descriptionAsPythonString() );
+      QString code = QStringLiteral( "QgsProcessingParameterFeatureSource('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
 
@@ -5851,7 +5850,8 @@ QString QgsProcessingParameterFeatureSink::asPythonString( const QgsProcessing::
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterFeatureSink('%1', %2" ).arg( name(), descriptionAsPythonString() );
+      QString code = QStringLiteral( "QgsProcessingParameterFeatureSink('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
 
@@ -6224,7 +6224,8 @@ QString QgsProcessingParameterFileDestination::asPythonString( const QgsProcessi
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterFileDestination('%1', %2" ).arg( name(), descriptionAsPythonString() );
+      QString code = QStringLiteral( "QgsProcessingParameterFileDestination('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
 
@@ -6359,7 +6360,8 @@ QString QgsProcessingDestinationParameter::asPythonString( const QgsProcessing::
       // base class method is probably not much use
       if ( QgsProcessingParameterType *t = QgsApplication::processingRegistry()->parameterType( type() ) )
       {
-        QString code = t->className() + QStringLiteral( "('%1', %2" ).arg( name(), descriptionAsPythonString() );
+        QString code = t->className() + QStringLiteral( "('%1', %2" )
+                       .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
         if ( mFlags & FlagOptional )
           code += QLatin1String( ", optional=True" );
 
@@ -6552,7 +6554,8 @@ QString QgsProcessingParameterVectorDestination::asPythonString( const QgsProces
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterVectorDestination('%1', %2" ).arg( name(), descriptionAsPythonString() );
+      QString code = QStringLiteral( "QgsProcessingParameterVectorDestination('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
 
@@ -6785,7 +6788,8 @@ QString QgsProcessingParameterBand::asPythonString( const QgsProcessing::PythonO
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterBand('%1', %2" ).arg( name(), descriptionAsPythonString() );
+      QString code = QStringLiteral( "QgsProcessingParameterBand('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
 
@@ -6889,7 +6893,8 @@ QString QgsProcessingParameterDistance::asPythonString( const QgsProcessing::Pyt
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterDistance('%1', %2" ).arg( name(), descriptionAsPythonString() );
+      QString code = QStringLiteral( "QgsProcessingParameterDistance('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
 
@@ -6959,7 +6964,8 @@ QString QgsProcessingParameterDuration::asPythonString( const QgsProcessing::Pyt
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterDuration('%1', %2" ).arg( name(), descriptionAsPythonString() );
+      QString code = QStringLiteral( "QgsProcessingParameterDuration('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
 
@@ -7016,7 +7022,8 @@ QString QgsProcessingParameterScale::asPythonString( const QgsProcessing::Python
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterScale('%1', %2" ).arg( name(), descriptionAsPythonString() );
+      QString code = QStringLiteral( "QgsProcessingParameterScale('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
       QgsProcessingContext c;
@@ -7076,7 +7083,8 @@ QString QgsProcessingParameterLayout::asPythonString( const QgsProcessing::Pytho
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterLayout('%1', %2" ).arg( name(), descriptionAsPythonString() );
+      QString code = QStringLiteral( "QgsProcessingParameterLayout('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
       QgsProcessingContext c;
@@ -7154,7 +7162,8 @@ QString QgsProcessingParameterLayoutItem::asPythonString( QgsProcessing::PythonO
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterLayoutItem('%1', %2" ).arg( name(), descriptionAsPythonString() );
+      QString code = QStringLiteral( "QgsProcessingParameterLayoutItem('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
 
@@ -7297,7 +7306,8 @@ QString QgsProcessingParameterColor::asPythonString( const QgsProcessing::Python
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterColor('%1', %2" ).arg( name(), descriptionAsPythonString() );
+      QString code = QStringLiteral( "QgsProcessingParameterColor('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
 
@@ -7444,7 +7454,8 @@ QString QgsProcessingParameterCoordinateOperation::asPythonString( QgsProcessing
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
       QgsProcessingContext c;
-      QString code = QStringLiteral( "QgsProcessingParameterCoordinateOperation('%1', %2" ).arg( name(), descriptionAsPythonString() );
+      QString code = QStringLiteral( "QgsProcessingParameterCoordinateOperation('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
       if ( !mSourceParameterName.isEmpty() )
@@ -7567,7 +7578,8 @@ QString QgsProcessingParameterMapTheme::asPythonString( const QgsProcessing::Pyt
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterMapTheme('%1', %2" ).arg( name(), descriptionAsPythonString() );
+      QString code = QStringLiteral( "QgsProcessingParameterMapTheme('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
 
@@ -7750,7 +7762,8 @@ QString QgsProcessingParameterDateTime::asPythonString( const QgsProcessing::Pyt
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterDateTime('%1', %2" ).arg( name(), descriptionAsPythonString() );
+      QString code = QStringLiteral( "QgsProcessingParameterDateTime('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
 
@@ -7884,7 +7897,8 @@ QString QgsProcessingParameterProviderConnection::asPythonString( const QgsProce
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterProviderConnection('%1', %2, '%3'" ).arg( name(), descriptionAsPythonString(), mProviderId );
+      QString code = QStringLiteral( "QgsProcessingParameterProviderConnection('%1', %2, '%3'" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ), mProviderId );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
 
@@ -8001,7 +8015,8 @@ QString QgsProcessingParameterDatabaseSchema::asPythonString( const QgsProcessin
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterDatabaseSchema('%1', %2" ).arg( name(), descriptionAsPythonString() );
+      QString code = QStringLiteral( "QgsProcessingParameterDatabaseSchema('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
 
@@ -8135,7 +8150,8 @@ QString QgsProcessingParameterDatabaseTable::asPythonString( const QgsProcessing
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterDatabaseTable('%1', %2" ).arg( name(), descriptionAsPythonString() );
+      QString code = QStringLiteral( "QgsProcessingParameterDatabaseTable('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
 

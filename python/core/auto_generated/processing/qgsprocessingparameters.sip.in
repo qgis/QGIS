@@ -387,8 +387,6 @@ Returns the description for the parameter. This is the user-visible string
 used to identify this parameter.
 
 .. seealso:: :py:func:`setDescription`
-
-.. seealso:: :py:func:`descriptionAsPythonString`
 %End
 
     void setDescription( const QString &description );
@@ -509,17 +507,6 @@ parameter. Returns ``True`` if the value can be accepted.
 The optional ``context`` parameter can be specified to allow a more stringent
 check to be performed, capable of checking for the presence of required
 layers and other factors within the context.
-%End
-
-    QString descriptionAsPythonString() const;
-%Docstring
-Returns the description of the parameter with quotes around.
-If there are quotes in the description, they are escaped if necessary.
-The around quote could be single or double.
-
-.. seealso:: :py:func:`description`
-
-.. versionadded:: 3.24
 %End
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;

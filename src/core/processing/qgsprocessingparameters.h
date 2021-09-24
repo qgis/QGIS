@@ -496,7 +496,6 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      * Returns the description for the parameter. This is the user-visible string
      * used to identify this parameter.
      * \see setDescription()
-     * \see descriptionAsPythonString()
      */
     QString description() const { return mDescription; }
 
@@ -606,16 +605,6 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      * layers and other factors within the context.
      */
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const;
-
-    /**
-     * Returns the description of the parameter with quotes around.
-     * If there are quotes in the description, they are escaped if necessary.
-     * The around quote could be single or double.
-     * \see description()
-     *
-     * \since QGIS 3.24
-     */
-    QString descriptionAsPythonString() const;
 
     /**
      * Returns a string version of the parameter input \a value, which is suitable for use as an input

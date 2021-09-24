@@ -62,7 +62,7 @@ QString QgsProcessingParameterMeshDatasetGroups::asPythonString( QgsProcessing::
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
       QString code = QStringLiteral( "QgsProcessingParameterMeshDatasetGroups('%1', %2" )
-                     .arg( name(), descriptionAsPythonString() );
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( !mMeshLayerParameterName.isEmpty() )
         code += QStringLiteral( ", meshLayerParameterName=%1" ).arg( QgsProcessingUtils::stringToPythonLiteral( mMeshLayerParameterName ) );
 

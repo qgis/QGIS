@@ -91,7 +91,8 @@ QString QgsProcessingParameterTinInputLayers::asPythonString( QgsProcessing::Pyt
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterTinInputLayers('%1', %2)" ).arg( name(), descriptionAsPythonString() );
+      QString code = QStringLiteral( "QgsProcessingParameterTinInputLayers('%1', %2)" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       return code;
     }
   }
