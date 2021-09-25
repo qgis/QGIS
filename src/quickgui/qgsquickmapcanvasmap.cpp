@@ -123,9 +123,9 @@ void QgsQuickMapCanvasMap::refreshMap()
   mapSettings.setExpressionContext( expressionContext );
 
   // enables on-the-fly simplification of geometries to spend less time rendering
-  mapSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
+  mapSettings.setFlag( Qgis::MapSettingsFlag::UseRenderingOptimization );
   // with incremental rendering - enables updates of partially rendered layers (good for WMTS, XYZ layers)
-  mapSettings.setFlag( QgsMapSettings::RenderPartialOutput, mIncrementalRendering );
+  mapSettings.setFlag( Qgis::MapSettingsFlag::RenderPartialOutput, mIncrementalRendering );
 
   // create the renderer job
   Q_ASSERT( !mJob );

@@ -17,7 +17,7 @@
 
 #include "qgsaabb.h"
 #include "qgs3dmapsettings.h"
-
+#include "qgscoordinatetransform.h"
 
 QgsAABB QgsTerrainGenerator::rootChunkBbox( const Qgs3DMapSettings &map ) const
 {
