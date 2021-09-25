@@ -139,6 +139,7 @@ The development version
     typedef QFlags<Qgis::SymbolRenderHint> SymbolRenderHints;
 
 
+
     enum class SymbolFlag
     {
       RendererShouldUseSymbolLevels,
