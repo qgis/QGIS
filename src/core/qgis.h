@@ -196,7 +196,8 @@ class CORE_EXPORT Qgis
       DynamicRotation = 2, //!< Rotation of symbol may be changed during rendering and symbol should not be cached
     };
     Q_ENUM( SymbolRenderHint )
-    Q_DECLARE_FLAGS( SymbolRenderHints, SymbolRenderHint )
+    Q_DECLARE_FLAGS( SymbolRenderHints, SymbolRenderHint ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsSymbol, RenderHints )
+
 
     /**
      * \brief Flags controlling behavior of symbols
@@ -220,7 +221,7 @@ class CORE_EXPORT Qgis
       FlagIncludeCrosshairsForMarkerSymbols = 1 << 0, //!< Include a crosshairs reference image in the background of marker symbol previews
     };
     Q_ENUM( SymbolPreviewFlag )
-    Q_DECLARE_FLAGS( SymbolPreviewFlags, SymbolPreviewFlag )
+    Q_DECLARE_FLAGS( SymbolPreviewFlags, SymbolPreviewFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsSymbol, SymbolPreviewFlags )
 
     /**
      * \brief Flags controlling behavior of symbol layers
@@ -283,7 +284,7 @@ class CORE_EXPORT Qgis
       ItemRepresentsFile = 1 << 6, //!< Item's path() directly represents a file on disk (since QGIS 3.22)
     };
     Q_ENUM( BrowserItemCapability )
-    Q_DECLARE_FLAGS( BrowserItemCapabilities, BrowserItemCapability )
+    Q_DECLARE_FLAGS( BrowserItemCapabilities, BrowserItemCapability ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsDataItem, Capabilities )
 
     /**
      * Browser item layer types
@@ -664,7 +665,7 @@ class CORE_EXPORT Qgis
       {
       AllowSelfTouchingHoles SIP_MONKEYPATCH_COMPAT_NAME( FlagAllowSelfTouchingHoles ) = 1 << 0, //!< Indicates that self-touching holes are permitted. OGC validity states that self-touching holes are NOT permitted, whilst other vendor validity checks (e.g. ESRI) permit self-touching holes.
     };
-    Q_DECLARE_FLAGS( GeometryValidityFlags, GeometryValidityFlag )
+    Q_DECLARE_FLAGS( GeometryValidityFlags, GeometryValidityFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsGeometry, ValidityFlags )
     Q_ENUM( GeometryValidityFlag )
 
     /**
@@ -905,7 +906,7 @@ class CORE_EXPORT Qgis
       LosslessImageRendering   = 0x1000, //!< Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF). This flag only works with builds based on Qt 5.13 or later.
       Render3DMap              = 0x2000, //!< Render is for a 3D map
     };
-    Q_DECLARE_FLAGS( MapSettingsFlags, MapSettingsFlag )
+    Q_DECLARE_FLAGS( MapSettingsFlags, MapSettingsFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsMapSettings, Flags )
     Q_ENUM( MapSettingsFlag )
 
     /**
@@ -932,7 +933,7 @@ class CORE_EXPORT Qgis
       Render3DMap              = 0x4000, //!< Render is for a 3D map
       ApplyClipAfterReprojection = 0x8000, //!< Feature geometry clipping to mapExtent() must be performed after the geometries are transformed using coordinateTransform(). Usually feature geometry clipping occurs using the extent() in the layer's CRS prior to geometry transformation, but in some cases when extent() could not be accurately calculated it is necessary to clip geometries to mapExtent() AFTER transforming them using coordinateTransform().
     };
-    Q_DECLARE_FLAGS( RenderContextFlags, RenderContextFlag )
+    Q_DECLARE_FLAGS( RenderContextFlags, RenderContextFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsRenderContext, Flags )
     Q_ENUM( RenderContextFlag )
 
     // refs for below dox: https://github.com/qgis/QGIS/pull/1286#issuecomment-39806854
