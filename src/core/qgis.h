@@ -196,6 +196,7 @@ class CORE_EXPORT Qgis
       DynamicRotation = 2, //!< Rotation of symbol may be changed during rendering and symbol should not be cached
     };
     Q_ENUM( SymbolRenderHint )
+    //! Symbol render hints
     Q_DECLARE_FLAGS( SymbolRenderHints, SymbolRenderHint ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsSymbol, RenderHints )
 
 
@@ -209,6 +210,7 @@ class CORE_EXPORT Qgis
       RendererShouldUseSymbolLevels = 1 << 0, //!< If present, indicates that a QgsFeatureRenderer using the symbol should use symbol levels for best results
     };
     Q_ENUM( SymbolFlag )
+    //! Symbol flags
     Q_DECLARE_FLAGS( SymbolFlags, SymbolFlag )
 
     /**
@@ -221,6 +223,7 @@ class CORE_EXPORT Qgis
       FlagIncludeCrosshairsForMarkerSymbols = 1 << 0, //!< Include a crosshairs reference image in the background of marker symbol previews
     };
     Q_ENUM( SymbolPreviewFlag )
+    //! Symbol preview flags
     Q_DECLARE_FLAGS( SymbolPreviewFlags, SymbolPreviewFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsSymbol, SymbolPreviewFlags )
 
     /**
@@ -233,6 +236,7 @@ class CORE_EXPORT Qgis
       DisableFeatureClipping = 1 << 0, //!< If present, indicates that features should never be clipped to the map extent during rendering
     };
     Q_ENUM( SymbolLayerFlag )
+    //! Symbol layer flags
     Q_DECLARE_FLAGS( SymbolLayerFlags, SymbolLayerFlag )
 
     /**
@@ -284,6 +288,7 @@ class CORE_EXPORT Qgis
       ItemRepresentsFile = 1 << 6, //!< Item's path() directly represents a file on disk (since QGIS 3.22)
     };
     Q_ENUM( BrowserItemCapability )
+    //! Browser item capabilities
     Q_DECLARE_FLAGS( BrowserItemCapabilities, BrowserItemCapability ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsDataItem, Capabilities )
 
     /**
@@ -367,6 +372,7 @@ class CORE_EXPORT Qgis
       UnstableFeatureIds = 1 << 4   //!< SQL layer definition supports disabling select at id
     };
     Q_ENUM( SqlLayerDefinitionCapability )
+    //! SQL layer definition capabilities
     Q_DECLARE_FLAGS( SqlLayerDefinitionCapabilities, SqlLayerDefinitionCapability )
 
     /**
@@ -439,6 +445,7 @@ class CORE_EXPORT Qgis
       CountFeatures = 1 << 2, //!< Count features in vector sublayers
       IncludeSystemTables = 1 << 3, //!< Include system or internal tables (these are not included by default)
     };
+    //! Sublayer query flags
     Q_DECLARE_FLAGS( SublayerQueryFlags, SublayerQueryFlag )
     Q_ENUM( SublayerQueryFlag )
 
@@ -451,6 +458,7 @@ class CORE_EXPORT Qgis
     {
       SystemTable = 1 << 0, //!< Sublayer is a system or internal table, which should be hidden by default
     };
+    //! Sublayer flags
     Q_DECLARE_FLAGS( SublayerFlags, SublayerFlag )
     Q_ENUM( SublayerFlag )
 
@@ -597,6 +605,7 @@ class CORE_EXPORT Qgis
       Routes = 1 << 3, //!< Format supports routes
       Tracks = 1 << 4, //!< Format supports tracks
     };
+    //! Babel GPS format capabilities
     Q_DECLARE_FLAGS( BabelFormatCapabilities, BabelFormatCapability )
     Q_ENUM( BabelFormatCapability )
 
@@ -610,6 +619,7 @@ class CORE_EXPORT Qgis
     {
       QuoteFilePaths = 1 << 0, //!< File paths should be enclosed in quotations and escaped
     };
+    //! Babel command flags
     Q_DECLARE_FLAGS( BabelCommandFlags, BabelCommandFlag )
     Q_ENUM( BabelCommandFlag )
 
@@ -665,6 +675,7 @@ class CORE_EXPORT Qgis
       {
       AllowSelfTouchingHoles SIP_MONKEYPATCH_COMPAT_NAME( FlagAllowSelfTouchingHoles ) = 1 << 0, //!< Indicates that self-touching holes are permitted. OGC validity states that self-touching holes are NOT permitted, whilst other vendor validity checks (e.g. ESRI) permit self-touching holes.
     };
+    //! Geometry validity flags
     Q_DECLARE_FLAGS( GeometryValidityFlags, GeometryValidityFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsGeometry, ValidityFlags )
     Q_ENUM( GeometryValidityFlag )
 
@@ -740,6 +751,7 @@ class CORE_EXPORT Qgis
       IncludeMetadataFile = 1 << 0, //!< Indicates that any associated .qmd metadata file should be included with the operation
       IncludeStyleFile = 1 << 1, //!< Indicates that any associated .qml styling file should be included with the operation
     };
+    //! File operation flags
     Q_DECLARE_FLAGS( FileOperationFlags, FileOperationFlag )
     Q_ENUM( FileOperationFlag )
 
@@ -752,6 +764,7 @@ class CORE_EXPORT Qgis
     {
       UsersCannotToggleEditing = 1 << 0, //!< Indicates that users are not allowed to toggle editing for this layer. Note that this does not imply that the layer is non-editable (see isEditable(), supportsEditing() ), rather that the editable status of the layer cannot be changed by users manually. Since QGIS 3.22.
     };
+    //! Map layer properties
     Q_DECLARE_FLAGS( MapLayerProperties, MapLayerProperty )
     Q_ENUM( MapLayerProperty )
 
@@ -764,6 +777,7 @@ class CORE_EXPORT Qgis
     {
       ScaleDependentBoundingBox = 1 << 0, //!< Item's bounding box will vary depending on map scale
     };
+    //! Annotation item flags
     Q_DECLARE_FLAGS( AnnotationItemFlags, AnnotationItemFlag )
     Q_ENUM( AnnotationItemFlag )
 
@@ -776,6 +790,7 @@ class CORE_EXPORT Qgis
     {
       FlagNoCreationTools = 1 << 0,  //!< Do not show item creation tools for the item type
     };
+    //! Annotation item GUI flags
     Q_DECLARE_FLAGS( AnnotationItemGuiFlags, AnnotationItemGuiFlag )
     Q_ENUM( AnnotationItemGuiFlag )
 
@@ -906,6 +921,7 @@ class CORE_EXPORT Qgis
       LosslessImageRendering   = 0x1000, //!< Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF). This flag only works with builds based on Qt 5.13 or later.
       Render3DMap              = 0x2000, //!< Render is for a 3D map
     };
+    //! Map settings flags
     Q_DECLARE_FLAGS( MapSettingsFlags, MapSettingsFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsMapSettings, Flags )
     Q_ENUM( MapSettingsFlag )
 
@@ -933,6 +949,7 @@ class CORE_EXPORT Qgis
       Render3DMap              = 0x4000, //!< Render is for a 3D map
       ApplyClipAfterReprojection = 0x8000, //!< Feature geometry clipping to mapExtent() must be performed after the geometries are transformed using coordinateTransform(). Usually feature geometry clipping occurs using the extent() in the layer's CRS prior to geometry transformation, but in some cases when extent() could not be accurately calculated it is necessary to clip geometries to mapExtent() AFTER transforming them using coordinateTransform().
     };
+    //! Render context flags
     Q_DECLARE_FLAGS( RenderContextFlags, RenderContextFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsRenderContext, Flags )
     Q_ENUM( RenderContextFlag )
 
