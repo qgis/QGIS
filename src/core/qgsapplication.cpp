@@ -300,6 +300,7 @@ void QgsApplication::init( QString profileFolder )
 #endif
     qRegisterMetaType<QPainter::CompositionMode>( "QPainter::CompositionMode" );
     qRegisterMetaType<QgsDateTimeRange>( "QgsDateTimeRange" );
+    qRegisterMetaType<QList<QgsMapLayer *>>( "QList<QgsMapLayer*>" );
   } );
 
   ( void ) resolvePkgPath();
