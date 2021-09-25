@@ -37,6 +37,7 @@
 #include "qgsray3d.h"
 #include "qgs3dutils.h"
 #include "qgsoffscreen3dengine.h"
+#include "qgscoordinatetransform.h"
 
 Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   : QWidget( parent )
