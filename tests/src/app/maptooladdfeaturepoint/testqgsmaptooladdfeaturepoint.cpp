@@ -148,32 +148,32 @@ void TestQgsMapToolAddFeaturePoint::testMultiPoint()
   QgsVectorLayer layerMultiPoint { QStringLiteral( "MultiPoint?crs=EPSG:27700" ), QStringLiteral( "layer multi point" ), QStringLiteral( "memory" ) };
   layerMultiPoint.startEditing();
   mCanvas->setCurrentLayer( &layerMultiPoint );
-                                                                                                                                        
+
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
-                                
+
   QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
-                                                                                  
-  utils.mouseClick( 4, 0, Qt::LeftButton, Qt::KeyboardModifiers(), true );                                                              
-  QgsFeatureId fid1 = utils.newFeatureId( oldFids );  
-                    
-  QCOMPARE( layerMultiPoint.featureCount(), ( long )1 ); 
-                                                                                                                                              
-  QString wkt = "MultiPoint ((4 0))";               
-  QCOMPARE( layerMultiPoint.getFeature( fid1 ).geometry().asWkt(), wkt );                                                    
-                                                  
-                                                  
-  oldFids = utils.existingFeatureIds();                                                                    
-  utils.mouseClick( 6, 6, Qt::LeftButton, Qt::KeyboardModifiers(), true );                                     
-                                                                    
-  QCOMPARE( layerMultiPoint.featureCount(), ( long )2 );      
-                                                                               
+
+  utils.mouseClick( 4, 0, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  QgsFeatureId fid1 = utils.newFeatureId( oldFids );
+
+  QCOMPARE( layerMultiPoint.featureCount(), ( long )1 );
+
+  QString wkt = "MultiPoint ((4 0))";
+  QCOMPARE( layerMultiPoint.getFeature( fid1 ).geometry().asWkt(), wkt );
+
+
+  oldFids = utils.existingFeatureIds();
+  utils.mouseClick( 6, 6, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  QCOMPARE( layerMultiPoint.featureCount(), ( long )2 );
+
   QgsFeatureId fid2 = utils.newFeatureId( oldFids );
-                                                                                   
-  QString wkt2 = "MultiPoint ((6 6))";            
-  QCOMPARE( layerMultiPoint.getFeature( fid2 ).geometry().asWkt(), wkt2 );   
-                                                                                                                                                                                                       
-  layerMultiPoint.undoStack()->undo(); // first point 
-  layerMultiPoint.undoStack()->undo(); // second point 
+
+  QString wkt2 = "MultiPoint ((6 6))";
+  QCOMPARE( layerMultiPoint.getFeature( fid2 ).geometry().asWkt(), wkt2 );
+
+  layerMultiPoint.undoStack()->undo(); // first point
+  layerMultiPoint.undoStack()->undo(); // second point
 
 }
 
