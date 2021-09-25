@@ -27,6 +27,7 @@
 #include "qgsterraingenerator.h"
 
 #include <Qt3DRender/QGeometryRenderer>
+#include <Qt3DCore/QTransform>
 #include <QMutexLocker>
 
 ///@cond PRIVATE

@@ -34,6 +34,7 @@
 #include "qgsskyboxsettings.h"
 #include "qgsshadowsettings.h"
 #include "qgscameracontroller.h"
+#include "qgstemporalrangeobject.h"
 
 class QgsMapLayer;
 class QgsRasterLayer;

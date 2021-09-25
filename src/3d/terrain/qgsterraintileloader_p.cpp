@@ -22,6 +22,7 @@
 #include "qgsterraintextureimage_p.h"
 #include "qgsterraintexturegenerator_p.h"
 #include "qgsterraintileentity_p.h"
+#include "qgscoordinatetransform.h"
 
 #include <Qt3DRender/QTexture>
 
