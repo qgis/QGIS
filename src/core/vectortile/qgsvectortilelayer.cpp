@@ -628,20 +628,7 @@ QString QgsVectorTileLayer::htmlMetadata() const
 
   QString info = QStringLiteral( "<html><head></head>\n<body>\n" );
 
-  info += QStringLiteral( "<h1>" ) + tr( "Information from provider" ) + QStringLiteral( "</h1>\n<hr>\n" ) %
-          QStringLiteral( "<table class=\"list-view\">\n" );
-
-  // name
-  info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Name" ) % QStringLiteral( "</td><td>" ) % name() % QStringLiteral( "</td></tr>\n" );
-
-  // local path
-  const QString url = sourcePath();
-  info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Path" ) % QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl( url ).toString(), sourcePath() ) ) + QStringLiteral( "</td></tr>\n" );
-
-  // data source
-  info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Source" ) % QStringLiteral( "</td><td>" ) % source() % QStringLiteral( "</td></tr>\n" );
-
-  info += QLatin1String( "</table>\n<br>" );
+  info += generalHtmlMetadata();
 
   info += QStringLiteral( "<h1>" ) + tr( "Information from provider" ) + QStringLiteral( "</h1>\n<hr>\n" ) %
           QStringLiteral( "<table class=\"list-view\">\n" );
