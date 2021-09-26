@@ -26,7 +26,8 @@ from qgis.core import (QgsRenderContext,
                        QgsDateTimeRange,
                        QgsMapClippingRegion,
                        QgsGeometry,
-                       QgsDoubleRange)
+                       QgsDoubleRange,
+                       Qgis)
 from qgis.PyQt.QtCore import QSize, QDateTime
 from qgis.PyQt.QtGui import QPainter, QImage
 from qgis.testing import start_app, unittest
@@ -120,7 +121,7 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertFalse(c.mapToPixel().isValid())
 
         im = QImage(1000, 600, QImage.Format_RGB32)
-        dots_per_m = 300 / 25.4 * 1000  # 300 dpi to dots per m
+        dots_per_m = int(300 / 25.4 * 1000)  # 300 dpi to dots per m
         im.setDotsPerMeterX(dots_per_m)
         im.setDotsPerMeterY(dots_per_m)
         p = QPainter(im)
@@ -458,6 +459,36 @@ class TestQgsRenderContext(unittest.TestCase):
         c.maxSizeMMEnabled = True
         size = r.convertToPainterUnits(26, QgsUnitTypes.RenderMapUnits, c)
         self.assertAlmostEqual(size, 70.866, places=2)
+
+    def testConvertToPainterUnitsSpecialCases(self):
+        """
+        Tests special cases for convertToPainterUnits
+        """
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 100, 100))
+        ms.setOutputSize(QSize(100, 50))
+        ms.setOutputDpi(300)
+        r = QgsRenderContext.fromMapSettings(ms)
+        c = QgsMapUnitScale()
+        size = r.convertToPainterUnits(10, QgsUnitTypes.RenderMillimeters, c)
+        self.assertAlmostEqual(size, 118.11023622047244, places=5)
+
+        r.setFlag(Qgis.RenderContextFlag.RenderSymbolPreview, False)
+        size = r.convertToPainterUnits(10, QgsUnitTypes.RenderMillimeters, c, Qgis.RenderSubcomponentProperty.BlurSize)
+        self.assertAlmostEqual(size, 118.11023622047244, places=5)
+        size = r.convertToPainterUnits(10, QgsUnitTypes.RenderMillimeters, c, Qgis.RenderSubcomponentProperty.ShadowOffset)
+        self.assertAlmostEqual(size, 118.11023622047244, places=5)
+        size = r.convertToPainterUnits(10, QgsUnitTypes.RenderMillimeters, c, Qgis.RenderSubcomponentProperty.GlowSpread)
+        self.assertAlmostEqual(size, 118.11023622047244, places=5)
+
+        # subcomponents which should be size limited in symbol previews
+        r.setFlag(Qgis.RenderContextFlag.RenderSymbolPreview, True)
+        size = r.convertToPainterUnits(10, QgsUnitTypes.RenderMillimeters, c, Qgis.RenderSubcomponentProperty.BlurSize)
+        self.assertAlmostEqual(size, 30.0, places=5)
+        size = r.convertToPainterUnits(10, QgsUnitTypes.RenderMillimeters, c, Qgis.RenderSubcomponentProperty.ShadowOffset)
+        self.assertAlmostEqual(size, 100.0, places=5)
+        size = r.convertToPainterUnits(10, QgsUnitTypes.RenderMillimeters, c, Qgis.RenderSubcomponentProperty.GlowSpread)
+        self.assertAlmostEqual(size, 50.0, places=5)
 
     def testConvertToMapUnits(self):
         ms = QgsMapSettings()
