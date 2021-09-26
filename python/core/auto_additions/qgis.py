@@ -889,3 +889,11 @@ QgsRenderContext.TextFormatAlwaysText.__doc__ = "Always render text as text obje
 Qgis.TextRenderFormat.__doc__ = 'Options for rendering text.\n\n.. versionadded:: 3.22\n\n' + '* ``TextFormatAlwaysOutlines``: ' + Qgis.TextRenderFormat.AlwaysOutlines.__doc__ + '\n' + '* ``TextFormatAlwaysText``: ' + Qgis.TextRenderFormat.AlwaysText.__doc__
 # --
 Qgis.TextRenderFormat.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.RenderSubcomponentProperty.Generic.__doc__ = "Generic subcomponent property"
+Qgis.RenderSubcomponentProperty.ShadowOffset.__doc__ = "Shadow offset"
+Qgis.RenderSubcomponentProperty.BlurSize.__doc__ = "Blur size"
+Qgis.RenderSubcomponentProperty.GlowSpread.__doc__ = "Glow spread size"
+Qgis.RenderSubcomponentProperty.__doc__ = 'Rendering subcomponent properties.\n\n.. versionadded:: 3.22\n\n' + '* ``Generic``: ' + Qgis.RenderSubcomponentProperty.Generic.__doc__ + '\n' + '* ``ShadowOffset``: ' + Qgis.RenderSubcomponentProperty.ShadowOffset.__doc__ + '\n' + '* ``BlurSize``: ' + Qgis.RenderSubcomponentProperty.BlurSize.__doc__ + '\n' + '* ``GlowSpread``: ' + Qgis.RenderSubcomponentProperty.GlowSpread.__doc__
+# --
+Qgis.RenderSubcomponentProperty.baseClass = Qgis

@@ -336,7 +336,7 @@ const QgsFeatureFilterProvider *QgsRenderContext::featureFilterProvider() const
   return mFeatureFilterProvider.get();
 }
 
-double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale ) const
+double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale, Qgis::RenderSubcomponentProperty property ) const
 {
   double conversionFactor = 1.0;
   bool isMapUnitHack = false;
@@ -416,6 +416,29 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
   {
     const double symbologyReferenceScaleFactor = mSymbologyReferenceScale > 0 ? mSymbologyReferenceScale / mRendererScale : 1;
     convertedSize *= symbologyReferenceScaleFactor;
+  }
+
+  if ( mFlags & Qgis::RenderContextFlag::RenderSymbolPreview )
+  {
+    // apply property based constraints in order to optimise symbol preview rendering
+    switch ( property )
+    {
+      case Qgis::RenderSubcomponentProperty::Generic:
+        break;
+
+      case Qgis::RenderSubcomponentProperty::ShadowOffset:
+        // excessively large shadow offset in symbol preview icons is too slow to calculate
+        convertedSize = std::min( convertedSize, 100.0 );
+        break;
+      case Qgis::RenderSubcomponentProperty::BlurSize:
+        // excessively large blur in symbol preview icons is too slow to calculate
+        convertedSize = std::min<double>( convertedSize, 30 );
+        break;
+      case Qgis::RenderSubcomponentProperty::GlowSpread:
+        // excessively large glow spread in symbol preview icons is too slow to calculate
+        convertedSize = std::min<double>( convertedSize, 50 );
+        break;
+    }
   }
 
   return convertedSize;
