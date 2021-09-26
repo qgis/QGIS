@@ -688,10 +688,14 @@ Gets segmentation tolerance type (maximum angle or maximum difference between cu
 %End
 
 
-    double convertToPainterUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale() ) const;
+    double convertToPainterUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::RenderSubcomponentProperty property = Qgis::RenderSubcomponentProperty::Generic ) const;
 %Docstring
 Converts a size from the specified units to painter units (pixels). The conversion respects the limits
 specified by the optional scale parameter.
+
+Since QGIS 3.22 the optional ``property`` argument can be used to specify the associated property. This
+is used in some contexts to refine the converted size. For example, a Qgis.RenderSubcomponentProperty.BlurSize
+property will be limited to a suitably fast range when the render context has the Qgis.RenderContextFlag.RenderSymbolPreview set.
 
 .. seealso:: :py:func:`convertToMapUnits`
 

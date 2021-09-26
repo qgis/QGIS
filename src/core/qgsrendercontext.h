@@ -670,10 +670,15 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     /**
      * Converts a size from the specified units to painter units (pixels). The conversion respects the limits
      * specified by the optional scale parameter.
+     *
+     * Since QGIS 3.22 the optional \a property argument can be used to specify the associated property. This
+     * is used in some contexts to refine the converted size. For example, a Qgis::RenderSubcomponentProperty::BlurSize
+     * property will be limited to a suitably fast range when the render context has the Qgis::RenderContextFlag::RenderSymbolPreview set.
+     *
      * \see convertToMapUnits()
      * \since QGIS 3.0
      */
-    double convertToPainterUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale() ) const;
+    double convertToPainterUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::RenderSubcomponentProperty property = Qgis::RenderSubcomponentProperty::Generic ) const;
 
     /**
      * Converts a size from the specified units to map units. The conversion respects the limits

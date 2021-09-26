@@ -968,6 +968,20 @@ class CORE_EXPORT Qgis
     Q_ENUM( TextRenderFormat )
 
     /**
+     * Rendering subcomponent properties.
+     *
+     * \since QGIS 3.22
+     */
+    enum class RenderSubcomponentProperty : int
+    {
+      Generic, //!< Generic subcomponent property
+      ShadowOffset, //!< Shadow offset
+      BlurSize, //!< Blur size
+      GlowSpread, //!< Glow spread size
+    };
+    Q_ENUM( RenderSubcomponentProperty )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

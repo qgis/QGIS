@@ -52,14 +52,7 @@ void QgsShadowEffect::draw( QgsRenderContext &context )
 
   QgsImageOperation::overlayColor( colorisedIm, mColor );
 
-  int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
-  if ( context.flags() & QgsRenderContext::Flag::RenderSymbolPreview )
-  {
-    // avoid excessively large blur in symbol preview icons -- it's too slow to calculate, and unnecessary
-    // for just a preview icon
-    blurLevel = std::min( blurLevel, 30 );
-  }
-
+  const int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale, Qgis::RenderSubcomponentProperty::BlurSize ) );
   if ( blurLevel <= 16 )
   {
     QgsImageOperation::stackBlur( colorisedIm, blurLevel, false, context.feedback() );
@@ -181,17 +174,10 @@ void QgsShadowEffect::readProperties( const QVariantMap &props )
 QRectF QgsShadowEffect::boundingRect( const QRectF &rect, const QgsRenderContext &context ) const
 {
   //blur radius and offset distance
-  int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
+  const int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale, Qgis::RenderSubcomponentProperty::BlurSize ) );
 
-  double spread = context.convertToPainterUnits( mOffsetDist, mOffsetUnit, mOffsetMapUnitScale );
-
-  if ( context.flags() & QgsRenderContext::Flag::RenderSymbolPreview )
-  {
-    // avoid excessively large blur or offset in symbol preview icons -- it's too slow to calculate, and unnecessary
-    // for just a preview icon
-    blurLevel = std::min( blurLevel, 30 );
-    spread = std::min( spread, 100.0 );
-  }
+  // spread is initially the shadow offset size
+  double spread = context.convertToPainterUnits( mOffsetDist, mOffsetUnit, mOffsetMapUnitScale, Qgis::RenderSubcomponentProperty::ShadowOffset );
 
   //plus possible extension due to blur, with a couple of extra pixels thrown in for safety
   spread += blurLevel * 2 + 10;
