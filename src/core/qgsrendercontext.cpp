@@ -427,7 +427,7 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
         break;
 
       case Qgis::RenderSubcomponentProperty::ShadowOffset:
-        // excessively large shadow offset in symbol preview icons is too slow to calculate
+        // excessively large shadow offset in symbol preview icons is undesirable -- it pushes the shadow outside of view
         convertedSize = std::min( convertedSize, 100.0 );
         break;
       case Qgis::RenderSubcomponentProperty::BlurSize:
