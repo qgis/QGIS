@@ -43,21 +43,21 @@
           <item row="3" column="0">
            <widget class="QLabel" name="mOutputFormatLabel_2">
             <property name="text">
-             <string>Group Name</string>
+             <string>Group name</string>
             </property>
            </widget>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="mOutputFormatLabel">
             <property name="text">
-             <string>Output Format</string>
+             <string>Output format</string>
             </property>
            </widget>
           </item>
           <item row="0" column="1">
            <widget class="QRadioButton" name="mOutputOnFileRadioButton">
             <property name="text">
-             <string>On File</string>
+             <string>On file</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -70,7 +70,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="mOutputDatasetLabel">
             <property name="text">
-             <string>Output Dataset</string>
+             <string>Output dataset</string>
             </property>
            </widget>
           </item>
@@ -90,7 +90,7 @@
           <item row="1" column="0">
            <widget class="QLabel" name="label_4">
             <property name="text">
-             <string>Output File</string>
+             <string>Output file</string>
             </property>
            </widget>
           </item>
@@ -102,7 +102,7 @@
            <item>
             <widget class="QCheckBox" name="useExtentCb">
              <property name="text">
-              <string>Current Extent</string>
+              <string>Current extent</string>
              </property>
              <property name="checked">
               <bool>true</bool>
@@ -115,7 +115,7 @@
            <item>
             <widget class="QCheckBox" name="useMaskCb">
              <property name="text">
-              <string>Mask Layer</string>
+              <string>Mask layer</string>
              </property>
              <attribute name="buttonGroup">
               <string notr="true">buttonGroup</string>
@@ -146,7 +146,7 @@
               </size>
              </property>
              <property name="text">
-              <string>Mask Layer       </string>
+              <string>Mask layer</string>
              </property>
             </widget>
            </item>
@@ -270,12 +270,12 @@
           <item>
            <widget class="QPushButton" name="mAllTimesButton">
             <property name="text">
-             <string>All Selected Dataset Times </string>
+             <string>Use all Selected Dataset Times</string>
             </property>
            </widget>
           </item>
           <item>
-           <spacer name="horizontalSpacer_4">
+           <spacer name="horizontalSpacer_2">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -403,6 +403,19 @@
              <string>sum (aggr)</string>
             </property>
            </widget>
+          </item>
+          <item row="0" column="6">
+           <spacer name="horizontalSpacer_1">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
           <item row="1" column="0">
            <widget class="QPushButton" name="mMinusPushButton">
