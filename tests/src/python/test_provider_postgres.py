@@ -2074,7 +2074,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertFalse(layer.commitChanges())
         layer.changeAttributeValue(1, 1, old_value)
         self.assertTrue(layer.commitChanges())
-        
+
     def testDeterminePkey(self):
         """Test primary key auto-determination"""
 
