@@ -76,12 +76,6 @@ bool QgsVectorLayerJoinBuffer::addJoin( const QgsVectorLayerJoinInfo &joinInfo )
     return false;
   }
 
-  //cache joined layer to virtual memory if specified by user
-  if ( joinInfo.isUsingMemoryCache() )
-  {
-    cacheJoinLayer( mVectorJoins.last() );
-  }
-
   // Wait for notifications about changed fields in joined layer to propagate them.
   // During project load the joined layers possibly do not exist yet so the connection will not be created,
   // but then QgsProject makes sure to call createJoinCaches() which will do the connection.
@@ -91,9 +85,16 @@ bool QgsVectorLayerJoinBuffer::addJoin( const QgsVectorLayerJoinInfo &joinInfo )
     connectJoinedLayer( vl );
   }
 
+  mLayer->updateFields();
+
+  //cache joined layer to virtual memory if specified by user
+  if ( joinInfo.isUsingMemoryCache() )
+  {
+    cacheJoinLayer( mVectorJoins.last() );
+  }
+
   locker.unlock();
 
-  emit joinedFieldsChanged();
   return true;
 }
 
@@ -178,17 +179,18 @@ void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorLayerJoinInfo &joinInfo 
           if ( i == joinFieldIndex )
             continue;
 
-          if ( !joinInfo.prefix().isNull() ) // Default prefix 'layerName_' used
-          {
-            // Joined field name
-            const QString joinFieldName = joinInfo.prefix() + cacheLayer->fields().names().at( i );
+          QString joinInfoPrefix = joinInfo.prefix();
+          if ( joinInfoPrefix.isNull() ) // Default prefix 'layerName_' used
+            joinInfoPrefix = QString( "%1_" ).arg( cacheLayer->name() );
 
-            // Check for name collisions
-            int fieldIndex = mLayer->fields().indexFromName( joinFieldName );
-            if ( fieldIndex >= 0
-                 && mLayer->fields().fieldOrigin( fieldIndex ) != QgsFields::OriginJoin )
-              continue;
-          }
+          // Joined field name
+          const QString joinFieldName = joinInfoPrefix + cacheLayer->fields().names().at( i );
+
+          // Check for name collisions
+          int fieldIndex = mLayer->fields().indexFromName( joinFieldName );
+          if ( fieldIndex >= 0
+               && mLayer->fields().fieldOrigin( fieldIndex ) != QgsFields::OriginJoin )
+            continue;
 
           attributesCache.append( attrs.at( i ) );
         }
