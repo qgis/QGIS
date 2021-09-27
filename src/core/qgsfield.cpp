@@ -267,7 +267,7 @@ QString QgsField::displayString( const QVariant &v ) const
     else
     {
       QString formattedText = QStringLiteral( "%1 [%2]" ).arg( geom.asWkt(), geom.crs().userFriendlyIdentifier() );
-      if ( formattedText.length() >= 1000 )
+      if ( formattedText.length() >= 1050 )
       {
         formattedText = formattedText.left( 999 ) + QChar( 0x2026 );
       }
