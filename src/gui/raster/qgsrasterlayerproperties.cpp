@@ -732,57 +732,10 @@ void QgsRasterLayerProperties::sync()
     mInvertColorsCheck->setChecked( hueSaturationFilter->invertColors() );
   }
 
-  /*
-   * Transparent Pixel Tab
-   */
-
-  //set the transparency slider
-  QgsRasterRenderer *renderer = mRasterLayer->renderer();
-  if ( renderer )
-  {
-    mRasterTransparencyWidget->mOpacityWidget->setOpacity( renderer->opacity() );
-    mRasterTransparencyWidget->cboxTransparencyBand->setBand( renderer->alphaBand() );
-  }
-
-  //add current NoDataValue to NoDataValue line edit
-  // TODO: should be per band
-  // TODO: no data ranges
-  if ( provider->sourceHasNoDataValue( 1 ) )
-  {
-    double v = QgsRasterBlock::printValue( provider->sourceNoDataValue( 1 ) ).toDouble();
-    mRasterTransparencyWidget->lblSrcNoDataValue->setText( QLocale().toString( v, 'g' ) );
-  }
-  else
-  {
-    mRasterTransparencyWidget->lblSrcNoDataValue->setText( tr( "not defined" ) );
-  }
-
-  mRasterTransparencyWidget->mSrcNoDataValueCheckBox->setChecked( provider->useSourceNoDataValue( 1 ) );
-
-  bool enableSrcNoData = provider->sourceHasNoDataValue( 1 ) && !std::isnan( provider->sourceNoDataValue( 1 ) );
-
-  mRasterTransparencyWidget->mSrcNoDataValueCheckBox->setEnabled( enableSrcNoData );
-  mRasterTransparencyWidget->lblSrcNoDataValue->setEnabled( enableSrcNoData );
-
-  QgsRasterRangeList noDataRangeList = provider->userNoDataValues( 1 );
-  QgsDebugMsgLevel( QStringLiteral( "noDataRangeList.size = %1" ).arg( noDataRangeList.size() ), 3 );
-  if ( !noDataRangeList.isEmpty() )
-  {
-    mRasterTransparencyWidget->leNoDataValue->insert( QgsRasterBlock::printValue( noDataRangeList.value( 0 ).min() ) );
-  }
-  else
-  {
-    mRasterTransparencyWidget->leNoDataValue->insert( QString() );
-  }
 
   mRefreshLayerCheckBox->setChecked( mRasterLayer->hasAutoRefreshEnabled() );
   mRefreshLayerIntervalSpinBox->setEnabled( mRasterLayer->hasAutoRefreshEnabled() );
   mRefreshLayerIntervalSpinBox->setValue( mRasterLayer->autoRefreshInterval() / 1000.0 );
-
-  QgsDebugMsgLevel( QStringLiteral( "populate colormap tab" ), 3 );
-  /*
-   * Transparent Pixel Tab
-   */
 
   QgsDebugMsgLevel( QStringLiteral( "populate general tab" ), 3 );
   /*
@@ -969,6 +922,9 @@ void QgsRasterLayerProperties::apply()
     }
 
     rasterRenderer->setRasterTransparency( rasterTransparency );
+
+    // Sync the layer styling widget
+    mRasterLayer->emitStyleChanged();
 
     //set global transparency
     rasterRenderer->setOpacity( mRasterTransparencyWidget->mOpacityWidget->opacity() );
