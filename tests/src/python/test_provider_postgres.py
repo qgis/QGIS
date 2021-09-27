@@ -3199,6 +3199,18 @@ class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCas
         self.assertTrue(feat.isValid())
         self.assertEqual(feat["name"], "test")
 
+    def testPreparedFailure(self):
+        """Test error from issue GH #45100"""
+
+        layer = self.getEditableLayerWithCheckConstraint()
+        self.assertTrue(layer.startEditing())
+        old_value = layer.getFeature(1).attribute('i_will_fail_on_no_name')
+        layer.changeAttributeValue(1, 1, 'no name')
+        layer.changeGeometry(1, QgsGeometry.fromWkt('point(7 45)'))
+        self.assertFalse(layer.commitChanges())
+        layer.changeAttributeValue(1, 1, old_value)
+        self.assertTrue(layer.commitChanges())
+
 
 if __name__ == '__main__':
     unittest.main()
