@@ -385,7 +385,8 @@ bool QgsVectorTileLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
 
 void QgsVectorTileLayer::setTransformContext( const QgsCoordinateTransformContext &transformContext )
 {
-  Q_UNUSED( transformContext )
+  if ( mDataProvider )
+    mDataProvider->setTransformContext( transformContext );
   invalidateWgs84Extent();
 }
 

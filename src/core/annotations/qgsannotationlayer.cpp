@@ -325,6 +325,9 @@ QgsRectangle QgsAnnotationLayer::extent() const
 
 void QgsAnnotationLayer::setTransformContext( const QgsCoordinateTransformContext &context )
 {
+  if ( mDataProvider )
+    mDataProvider->setTransformContext( context );
+
   mTransformContext = context;
   invalidateWgs84Extent();
 }
