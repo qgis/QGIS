@@ -45,6 +45,8 @@ QgsAuthSettingsWidget::QgsAuthSettingsWidget( QWidget *parent,
   connect( btnConvertToEncrypted, &QPushButton::clicked, this, &QgsAuthSettingsWidget::convertToEncrypted );
   connect( txtUserName, &QLineEdit::textChanged, this, &QgsAuthSettingsWidget::userNameTextChanged );
   connect( txtPassword, &QLineEdit::textChanged, this, &QgsAuthSettingsWidget::passwordTextChanged );
+  connect( mAuthConfigSelect, &QgsAuthConfigSelect::selectedConfigIdChanged, this, &QgsAuthSettingsWidget::configIdChanged );
+
   // Hide store password and username by default
   showStoreCheckboxes( false );
   updateSelectedTab();
@@ -63,7 +65,7 @@ void QgsAuthSettingsWidget::setBasicText( const QString &basicText )
   lblBasic->setVisible( ! basicText.isEmpty() );
 }
 
-const QString QgsAuthSettingsWidget::username() const
+QString QgsAuthSettingsWidget::username() const
 {
   return txtUserName->text();
 }
@@ -74,7 +76,7 @@ void QgsAuthSettingsWidget::setUsername( const QString &username )
   updateSelectedTab();
 }
 
-const QString QgsAuthSettingsWidget::password() const
+QString QgsAuthSettingsWidget::password() const
 {
   return txtPassword->text();
 }
@@ -97,12 +99,12 @@ void QgsAuthSettingsWidget::setDataprovider( const QString &dataprovider )
   mAuthConfigSelect->setDataProviderKey( dataprovider );
 }
 
-const QString QgsAuthSettingsWidget::dataprovider() const
+QString QgsAuthSettingsWidget::dataprovider() const
 {
   return mDataprovider;
 }
 
-const QString QgsAuthSettingsWidget::formattedWarning( WarningType warning )
+QString QgsAuthSettingsWidget::formattedWarning( WarningType warning )
 {
   const QString out = tr( "Warning: credentials stored as plain text in %1." );
   switch ( warning )
@@ -115,7 +117,7 @@ const QString QgsAuthSettingsWidget::formattedWarning( WarningType warning )
   return QString(); // no build warnings
 }
 
-const QString QgsAuthSettingsWidget::configId() const
+QString QgsAuthSettingsWidget::configId() const
 {
   return mAuthConfigSelect->configId();
 }
@@ -189,12 +191,14 @@ void QgsAuthSettingsWidget::userNameTextChanged( const QString &text )
 {
   Q_UNUSED( text )
   updateConvertBtnState();
+  emit usernameChanged();
 }
 
 void QgsAuthSettingsWidget::passwordTextChanged( const QString &text )
 {
   Q_UNUSED( text )
   updateConvertBtnState();
+  emit passwordChanged();
 }
 
 void QgsAuthSettingsWidget::updateConvertBtnState()

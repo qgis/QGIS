@@ -64,7 +64,7 @@ setBasicText set the text of the warning label
 :param basicText: the text of the basic tab label
 %End
 
-    const QString username( ) const;
+    QString username() const;
 %Docstring
 username
 
@@ -78,7 +78,7 @@ setUsername set the username
 :param username: the user name
 %End
 
-    const QString password( ) const;
+    QString password() const;
 %Docstring
 password
 
@@ -92,7 +92,7 @@ setPassword set the password
 :param password: the password
 %End
 
-    const QString configId( ) const;
+    QString configId() const;
 %Docstring
 configId
 
@@ -112,14 +112,14 @@ setDataprovider set the data provider key for filtering compatible authenticatio
 :param dataprovider: data provider key
 %End
 
-    const QString dataprovider( ) const;
+    QString dataprovider() const;
 %Docstring
 dataprovider
 
 :return: the data provider key used to filter compatible authentication configurations
 %End
 
-    static const QString formattedWarning( WarningType warning );
+    static QString formattedWarning( WarningType warning );
 %Docstring
 warning text message based upon where credentials are stored
 
@@ -128,7 +128,7 @@ warning text message based upon where credentials are stored
 :return: pre-formatted warning text
 %End
 
-    bool btnConvertToEncryptedIsEnabled( ) const;
+    bool btnConvertToEncryptedIsEnabled() const;
 %Docstring
 convertButtonEnabled, mainly useful for unit tests
 
@@ -163,21 +163,21 @@ setStorePasswordCheched check the "Store" checkbox for the password
 .. seealso:: :py:func:`showStoreCheckboxes`
 %End
 
-    bool storePasswordIsChecked( ) const;
+    bool storePasswordIsChecked() const;
 %Docstring
 storePassword
 
 :return: ``True`` if "Store" checkbox for the password is checked
 %End
 
-    bool storeUsernameIsChecked( ) const;
+    bool storeUsernameIsChecked() const;
 %Docstring
 storeUsername
 
 :return: ``True`` if "Store" checkbox for the username is checked
 %End
 
-    bool configurationTabIsSelected( );
+    bool configurationTabIsSelected();
 %Docstring
 configurationTabIsSelected
 
@@ -186,7 +186,7 @@ configurationTabIsSelected
 
   public slots:
 
-    bool convertToEncrypted( );
+    bool convertToEncrypted();
 %Docstring
 convertToEncrypted is called when the convert to encrypted button is
 clicked and it creates a Basic authentication configuration from
@@ -195,8 +195,28 @@ username and password specified in the Basic tab
 :return: return ``True`` on success
 %End
 
+  signals:
 
+    void usernameChanged();
+%Docstring
+Emitted when the plain text username defined in the dialog is changed.
 
+.. versionadded:: 3.22
+%End
+
+    void passwordChanged();
+%Docstring
+Emitted when the plain text password defined in the dialog is changed.
+
+.. versionadded:: 3.22
+%End
+
+    void configIdChanged();
+%Docstring
+Emitted when the auth configuration ID selected in the dialog is changed.
+
+.. versionadded:: 3.22
+%End
 
 };
 
