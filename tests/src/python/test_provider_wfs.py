@@ -848,6 +848,14 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
             f.write("""
 <WFS_Capabilities version="1.0.0" xmlns="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc">
   <OperationsMetadata>
+    <Operation name="GetFeature">
+      <DCP>
+        <HTTP>
+          <Get type="simple" href="http://dummy?"/>
+          <Post type="simple" href="http://dummy?"/>
+        </HTTP>
+      </DCP>
+    </Operation>
     <Operation name="Transaction">
       <DCP>
         <HTTP>

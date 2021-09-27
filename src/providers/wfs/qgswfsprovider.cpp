@@ -1811,9 +1811,9 @@ bool QgsWFSProvider::getCapabilities()
 
     const QgsWfsCapabilities::Capabilities caps = getCapabilities.capabilities();
     mShared->mCaps = caps;
-    mShared->mURI.setGetEndpoints( caps.operationGetEndpoints );
-    mShared->mURI.setPostEndpoints( caps.operationPostEndpoints );
   }
+  mShared->mURI.setGetEndpoints( mShared->mCaps.operationGetEndpoints );
+  mShared->mURI.setPostEndpoints( mShared->mCaps.operationPostEndpoints );
 
   mShared->mWFSVersion = mShared->mCaps.version;
   if ( mShared->mURI.maxNumFeatures() > 0 && mShared->mCaps.maxFeatures > 0 && !( mShared->mCaps.supportsPaging && mShared->mURI.pagingEnabled() ) )
