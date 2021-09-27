@@ -61,6 +61,10 @@ namespace QgsWfs
       const QgsCoordinateReferenceSystem &outputCrs;
 
       bool forceGeomToMulti;
+
+      const QString &srsName;
+
+      bool hasAxisInverted;
     };
 
     QString createFeatureGeoJSON( const QgsFeature &feature, const createFeatureParams &params, const QgsAttributeList &pkAttributes );
@@ -424,6 +428,13 @@ namespace QgsWfs
       }
       else
       {
+
+        // For WFS 1.1 we honor requested CRS and axis order
+        const QString srsName {request.serverParameters().value( QStringLiteral( "SRSNAME" ) )};
+        const bool invertAxis { mWfsParameters.versionAsNumber() >= QgsProjectVersion( 1, 1, 0 ) &&
+                                outputCrs.hasAxisInverted() &&
+                                ! srsName.startsWith( QLatin1String( "EPSG:" ) ) };
+
         const createFeatureParams cfp = { layerPrecision,
                                           layerCrs,
                                           attrIndexes,
@@ -431,7 +442,9 @@ namespace QgsWfs
                                           withGeom,
                                           geometryName,
                                           outputCrs,
-                                          forceGeomToMulti
+                                          forceGeomToMulti,
+                                          srsName,
+                                          invertAxis
                                         };
         while ( fit.nextFeature( feature ) && ( aRequest.maxFeatures == -1 || sentFeatures < aRequest.maxFeatures ) )
         {
@@ -1156,7 +1169,8 @@ namespace QgsWfs
         else
           query.addQueryItem( QStringLiteral( "VERSION" ), QStringLiteral( "1.0.0" ) );
 
-        for ( auto param : query.queryItems() )
+        const auto queryItems {query.queryItems()};
+        for ( auto param : std::as_const( queryItems ) )
         {
           if ( sParamFilter.contains( param.first.toUpper() ) )
             query.removeAllQueryItems( param.first );
@@ -1203,12 +1217,24 @@ namespace QgsWfs
         QDomElement bbElem = doc.createElement( QStringLiteral( "gml:boundedBy" ) );
         if ( format == QgsWfsParameters::Format::GML3 )
         {
-          QDomElement envElem = QgsOgcUtils::rectangleToGMLEnvelope( rect, doc, prec );
+          // For WFS 1.1 we honor requested CRS and axis order
+          const QString srsName {request.serverParameters().value( QStringLiteral( "SRSNAME" ) )};
+          const bool invertAxis { mWfsParameters.versionAsNumber() >= QgsProjectVersion( 1, 1, 0 ) &&
+                                  crs.hasAxisInverted() &&
+                                  ! srsName.startsWith( QLatin1String( "EPSG:" ) ) };
+          QDomElement envElem = QgsOgcUtils::rectangleToGMLEnvelope( rect, doc, srsName, invertAxis, prec );
           if ( !envElem.isNull() )
           {
             if ( crs.isValid() )
             {
-              envElem.setAttribute( QStringLiteral( "srsName" ), crs.authid() );
+              if ( mWfsParameters.versionAsNumber() >= QgsProjectVersion( 1, 1, 0 ) )
+              {
+                envElem.setAttribute( QStringLiteral( "srsName" ), srsName );
+              }
+              else
+              {
+                envElem.setAttribute( QStringLiteral( "srsName" ), crs.authid() );
+              }
             }
             bbElem.appendChild( envElem );
             doc.appendChild( bbElem );
@@ -1473,19 +1499,19 @@ namespace QgsWfs
         const QgsAbstractGeometry *abstractGeom = cloneGeom.constGet();
         if ( abstractGeom )
         {
-          gmlElem = abstractGeom->asGml3( doc, prec, "http://www.opengis.net/gml" );
+          gmlElem = abstractGeom->asGml3( doc, prec, "http://www.opengis.net/gml", params.hasAxisInverted ? QgsAbstractGeometry::AxisOrder::YX : QgsAbstractGeometry::AxisOrder::XY );
         }
 
         if ( !gmlElem.isNull() )
         {
           QgsRectangle box = geom.boundingBox();
           QDomElement bbElem = doc.createElement( QStringLiteral( "gml:boundedBy" ) );
-          QDomElement boxElem = QgsOgcUtils::rectangleToGMLEnvelope( &box, doc, prec );
+          QDomElement boxElem = QgsOgcUtils::rectangleToGMLEnvelope( &box, doc, params.srsName, params.hasAxisInverted, prec );
 
           if ( crs.isValid() )
           {
-            boxElem.setAttribute( QStringLiteral( "srsName" ), crs.authid() );
-            gmlElem.setAttribute( QStringLiteral( "srsName" ), crs.authid() );
+            boxElem.setAttribute( QStringLiteral( "srsName" ), params.srsName );
+            gmlElem.setAttribute( QStringLiteral( "srsName" ), params.srsName );
           }
 
           bbElem.appendChild( boxElem );
