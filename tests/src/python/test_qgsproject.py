@@ -1381,31 +1381,32 @@ class TestQgsProject(unittest.TestCase):
 
     def testMapScales(self):
         p = QgsProject()
-        self.assertFalse(p.viewSettings().mapScales())
-        self.assertFalse(p.viewSettings().useProjectScales())
+        vs = p.viewSettings()
+        self.assertFalse(vs.mapScales())
+        self.assertFalse(vs.useProjectScales())
 
         spy = QSignalSpy(p.mapScalesChanged)
-        p.viewSettings().setMapScales([])
+        vs.setMapScales([])
         self.assertEqual(len(spy), 0)
-        p.viewSettings().setUseProjectScales(False)
+        vs.setUseProjectScales(False)
         self.assertEqual(len(spy), 0)
 
-        p.viewSettings().setMapScales([5000, 6000, 3000, 4000])
+        vs.setMapScales([5000, 6000, 3000, 4000])
         # scales must be sorted
-        self.assertEqual(p.viewSettings().mapScales(), [6000.0, 5000.0, 4000.0, 3000.0])
+        self.assertEqual(vs.mapScales(), [6000.0, 5000.0, 4000.0, 3000.0])
         self.assertEqual(len(spy), 1)
-        p.viewSettings().setMapScales([5000, 6000, 3000, 4000])
+        vs.setMapScales([5000, 6000, 3000, 4000])
         self.assertEqual(len(spy), 1)
-        self.assertEqual(p.viewSettings().mapScales(), [6000.0, 5000.0, 4000.0, 3000.0])
-        p.viewSettings().setMapScales([5000, 6000, 3000, 4000, 1000])
+        self.assertEqual(vs.mapScales(), [6000.0, 5000.0, 4000.0, 3000.0])
+        vs.setMapScales([5000, 6000, 3000, 4000, 1000])
         self.assertEqual(len(spy), 2)
-        self.assertEqual(p.viewSettings().mapScales(), [6000.0, 5000.0, 4000.0, 3000.0, 1000.0])
+        self.assertEqual(vs.mapScales(), [6000.0, 5000.0, 4000.0, 3000.0, 1000.0])
 
-        p.viewSettings().setUseProjectScales(True)
+        vs.setUseProjectScales(True)
         self.assertEqual(len(spy), 3)
-        p.viewSettings().setUseProjectScales(True)
+        vs.setUseProjectScales(True)
         self.assertEqual(len(spy), 3)
-        p.viewSettings().setUseProjectScales(False)
+        vs.setUseProjectScales(False)
         self.assertEqual(len(spy), 4)
 
     def testSetInstance(self):
