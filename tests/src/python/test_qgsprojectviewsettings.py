@@ -95,7 +95,7 @@ class TestQgsProjectViewSettings(unittest.TestCase):
         p.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
 
         canvas = QgsMapCanvas()
-        canvas.setDestinationCrs(QgsCoordinateReferenceSystem(4326))
+        canvas.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         canvas.setFrameStyle(0)
         canvas.resize(600, 400)
         self.assertEqual(canvas.width(), 600)

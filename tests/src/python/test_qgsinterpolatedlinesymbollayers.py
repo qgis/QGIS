@@ -30,7 +30,9 @@ from qgis.core import (QgsRenderChecker,
                        QgsLineSymbol,
                        QgsGeometry,
                        QgsFeature,
-                       QgsRenderContext)
+                       QgsRenderContext,
+                       QgsSymbolLayer,
+                       QgsProperty)
 
 
 class TestQgsLineSymbolLayers(unittest.TestCase):
@@ -60,8 +62,10 @@ class TestQgsLineSymbolLayers(unittest.TestCase):
 
     def renderImage(self, interpolated_width, interpolated_color, image_name):
         layer = QgsInterpolatedLineSymbolLayer()
-        layer.setExpressionsStringForWidth('5', '1')
-        layer.setExpressionsStringForColor('2', '6')
+        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLineStartWidthValue, QgsProperty.fromExpression('5'))
+        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLineEndWidthValue, QgsProperty.fromExpression('1'))
+        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLineStartColorValue, QgsProperty.fromExpression('2'))
+        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLineEndColorValue, QgsProperty.fromExpression('6'))
         layer.setInterpolatedWidth(interpolated_width)
         layer.setInterpolatedColor(interpolated_color)
 
@@ -121,8 +125,10 @@ class TestQgsLineSymbolLayers(unittest.TestCase):
         interpolated_color.setColoringMethod(QgsInterpolatedLineColor.SingleColor)
 
         layer = QgsInterpolatedLineSymbolLayer()
-        layer.setExpressionsStringForWidth('5', '1')
-        layer.setExpressionsStringForColor('2', '6')
+        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLineStartWidthValue, QgsProperty.fromExpression('5'))
+        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLineEndWidthValue, QgsProperty.fromExpression('1'))
+        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLineStartColorValue, QgsProperty.fromExpression('2'))
+        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLineEndColorValue, QgsProperty.fromExpression('6'))
         layer.setInterpolatedWidth(interpolated_width)
         layer.setInterpolatedColor(interpolated_color)
 

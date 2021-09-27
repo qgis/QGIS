@@ -248,7 +248,7 @@ class TestQgsAnnotation(unittest.TestCase):
 
         painter = QPainter()
         ms = QgsMapSettings()
-        ms.setDestinationCrs(QgsCoordinateReferenceSystem(4326))
+        ms.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         extent = QgsRectangle(0, 5, 40, 30)
 
         ms.setExtent(extent)

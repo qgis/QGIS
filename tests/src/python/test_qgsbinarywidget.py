@@ -58,10 +58,10 @@ class TestQgsBinaryWidget(unittest.TestCase):
         bin_2 = b'yyy'
         bin_val2 = QByteArray(bin_2)
 
-        widget.setValue(bin_val2)
+        widget.setValues(bin_val2, [])
         self.assertEqual(widget.value(), bin_val2)
 
-        widget.setValue(NULL)
+        widget.setValues(NULL, [])
         self.assertEqual(widget.value(), QByteArray())
 
 
