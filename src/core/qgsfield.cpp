@@ -261,11 +261,18 @@ QString QgsField::displayString( const QVariant &v ) const
 
   if ( v.userType() == QMetaType::type( "QgsReferencedGeometry" ) )
   {
-      QgsReferencedGeometry geom = qvariant_cast<QgsReferencedGeometry>( v );
-      if( geom.isNull() )
-          return QgsApplication::nullRepresentation();
-      else
-          return QStringLiteral( "%1 [%2]" ).arg( geom.asWkt(), geom.crs().userFriendlyIdentifier() );
+    QgsReferencedGeometry geom = qvariant_cast<QgsReferencedGeometry>( v );
+    if ( geom.isNull() )
+      return QgsApplication::nullRepresentation();
+    else
+    {
+      QString formattedText = QStringLiteral( "%1 [%2]" ).arg( geom.asWkt(), geom.crs().userFriendlyIdentifier() );
+      if ( formattedText.length() >= 1000 )
+      {
+        formattedText = formattedText.left( 999 ) + QChar( 0x2026 );
+      }
+      return formattedText;
+    }
   }
 
   // Special treatment for numeric types if group separator is set or decimalPoint is not a dot
