@@ -1183,7 +1183,7 @@ bool QgsExpression::attemptReduceToInClause( const QStringList &expressions, QSt
       }
     }
   }
-  result = QStringLiteral( "%1 IN (%2)" ).arg( inField, values.join( ',' ) );
+  result = QStringLiteral( "%1 IN (%2)" ).arg( quotedColumnRef( inField ), values.join( ',' ) );
   return true;
 }
 
