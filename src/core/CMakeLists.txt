@@ -2103,11 +2103,10 @@ target_link_libraries(qgis_core
   ${Protobuf_LITE_LIBRARY}
   ${ZLIB_LIBRARIES}
   ${EXIV2_LIBRARY}
-
-  if (NOT IOS)
-    target_link_libraries(qgis_core ${QT_VERSION_BASE}::PrintSupport)
-  endif()
 )
+if (NOT IOS)
+  target_link_libraries(qgis_core ${QT_VERSION_BASE}::PrintSupport)
+endif()
 
 if (WITH_SPATIALITE)
   target_link_libraries(qgis_core ${SPATIALITE_LIBRARY})
