@@ -61,12 +61,8 @@ class QgsServerAPIUtilsTest(QgsServerTestBase):
         bbox = QgsServerApiUtils.parseBbox(
             '8.203495,44.901482,100,8.203497,44.901484,120')
         self.assertEqual(bbox.xMinimum(), 8.203495)
-        self.assertEqual(bbox.xMinimum(), 8.203495)
-        self.assertEqual(bbox.yMinimum(), 44.901482)
         self.assertEqual(bbox.yMinimum(), 44.901482)
         self.assertEqual(bbox.xMaximum(), 8.203497)
-        self.assertEqual(bbox.xMaximum(), 8.203497)
-        self.assertEqual(bbox.yMaximum(), 44.901484)
         self.assertEqual(bbox.yMaximum(), 44.901484)
 
         bbox = QgsServerApiUtils.parseBbox('something_wrong_here')
