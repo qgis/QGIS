@@ -368,7 +368,7 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
 
         self.rx2 = QgsRuleBasedRenderer.Rule(sym2, 0, 0, '"id" = 200')
         self.rx3 = QgsRuleBasedRenderer.Rule(sym3, 1000, 100000000, 'ELSE')  # <<< - match this!
-        self.rx4 = QgsRuleBasedRenderer.Rule(sym4, 0.1, 999, 'ELSE')
+        self.rx4 = QgsRuleBasedRenderer.Rule(sym4, 1, 999, 'ELSE')
 
         rootrule = QgsRuleBasedRenderer.Rule(None)
         rootrule.appendChild(self.rx2)

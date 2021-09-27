@@ -3573,7 +3573,6 @@ class TestQgsVectorLayerTransformContext(unittest.TestCase):
         """Prepare tc"""
         super(TestQgsVectorLayerTransformContext, self).setUp()
         self.ctx = QgsCoordinateTransformContext()
-        self.ctx.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857), 1234, 1235)
         self.ctx.addCoordinateOperation(QgsCoordinateReferenceSystem.fromEpsgId(4326),
                                         QgsCoordinateReferenceSystem.fromEpsgId(3857), 'test')
 

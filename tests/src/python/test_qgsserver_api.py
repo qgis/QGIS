@@ -53,17 +53,21 @@ class QgsServerAPIUtilsTest(QgsServerTestBase):
     def test_parse_bbox(self):
         bbox = QgsServerApiUtils.parseBbox(
             '8.203495,44.901482,8.203497,44.901484')
-        self.assertEquals(bbox.xMinimum(), 8.203495)
-        self.assertEquals(bbox.yMinimum(), 44.901482)
-        self.assertEquals(bbox.xMaximum(), 8.203497)
-        self.assertEquals(bbox.yMaximum(), 44.901484)
+        self.assertEqual(bbox.xMinimum(), 8.203495)
+        self.assertEqual(bbox.yMinimum(), 44.901482)
+        self.assertEqual(bbox.xMaximum(), 8.203497)
+        self.assertEqual(bbox.yMaximum(), 44.901484)
 
         bbox = QgsServerApiUtils.parseBbox(
             '8.203495,44.901482,100,8.203497,44.901484,120')
-        self.assertEquals(bbox.xMinimum(), 8.203495)
-        self.assertEquals(bbox.yMinimum(), 44.901482)
-        self.assertEquals(bbox.xMaximum(), 8.203497)
-        self.assertEquals(bbox.yMaximum(), 44.901484)
+        self.assertEqual(bbox.xMinimum(), 8.203495)
+        self.assertEqual(bbox.xMinimum(), 8.203495)
+        self.assertEqual(bbox.yMinimum(), 44.901482)
+        self.assertEqual(bbox.yMinimum(), 44.901482)
+        self.assertEqual(bbox.xMaximum(), 8.203497)
+        self.assertEqual(bbox.xMaximum(), 8.203497)
+        self.assertEqual(bbox.yMaximum(), 44.901484)
+        self.assertEqual(bbox.yMaximum(), 44.901484)
 
         bbox = QgsServerApiUtils.parseBbox('something_wrong_here')
         self.assertTrue(bbox.isEmpty())
@@ -90,12 +94,12 @@ class QgsServerAPIUtilsTest(QgsServerTestBase):
 
         crs = QgsServerApiUtils.parseCrs(
             'http://www.opengis.net/def/crs/EPSG/9.6.2/4326')
-        self.assertEquals(crs.postgisSrid(), 4326)
+        self.assertEqual(crs.postgisSrid(), 4326)
 
         crs = QgsServerApiUtils.parseCrs(
             'http://www.opengis.net/def/crs/EPSG/9.6.2/3857')
         self.assertTrue(crs.isValid())
-        self.assertEquals(crs.postgisSrid(), 3857)
+        self.assertEqual(crs.postgisSrid(), 3857)
 
         crs = QgsServerApiUtils.parseCrs(
             'http://www.opengis.net/something_wrong_here')

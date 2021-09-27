@@ -240,8 +240,8 @@ class TestQgsLegendPatchShape(unittest.TestCase):
 
     def renderPatch(self, patch):
         image = QImage(200, 200, QImage.Format_RGB32)
-        image.setDotsPerMeterX(96 / 25.4 * 1000)
-        image.setDotsPerMeterY(96 / 25.4 * 1000)
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
 
         painter = QPainter()
         painter.begin(image)

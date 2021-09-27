@@ -39,10 +39,10 @@ class TestQgsMapCanvasAnnotationItem(unittest.TestCase):
         a.setFrameSizeMm(QSizeF(300 / 3.7795275, 200 / 3.7795275))
         a.setFrameOffsetFromReferencePointMm(QPointF(40 / 3.7795275, 50 / 3.7795275))
         a.setMapPosition(QgsPointXY(12, 34))
-        a.setMapPositionCrs(QgsCoordinateReferenceSystem(4326))
+        a.setMapPositionCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
 
         canvas = QgsMapCanvas()
-        canvas.setDestinationCrs(QgsCoordinateReferenceSystem(4326))
+        canvas.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         canvas.setFrameStyle(0)
         canvas.resize(600, 400)
         canvas.show()
@@ -84,7 +84,7 @@ class TestQgsMapCanvasAnnotationItem(unittest.TestCase):
         a.setFillSymbol(QgsFillSymbol.createSimple({'color': 'blue', 'width_border': '0'}))
 
         canvas = QgsMapCanvas()
-        canvas.setDestinationCrs(QgsCoordinateReferenceSystem(4326))
+        canvas.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         canvas.setFrameStyle(0)
         canvas.resize(600, 400)
         canvas.show()
@@ -138,10 +138,10 @@ class TestQgsMapCanvasAnnotationItem(unittest.TestCase):
         a.setFrameOffsetFromReferencePointMm(QPointF(40 / 3.7795275, 50 / 3.7795275))
         a.setHasFixedMapPosition(True)
         a.setMapPosition(QgsPointXY(12, 34))
-        a.setMapPositionCrs(QgsCoordinateReferenceSystem(4326))
+        a.setMapPositionCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
 
         canvas = QgsMapCanvas()
-        canvas.setDestinationCrs(QgsCoordinateReferenceSystem(4326))
+        canvas.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         canvas.setFrameStyle(0)
         canvas.resize(600, 400)
 

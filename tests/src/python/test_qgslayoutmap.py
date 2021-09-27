@@ -808,7 +808,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         self.assertTrue(result, message)
 
         annotation_layer = p.mainAnnotationLayer()
-        annotation_layer.setCrs(QgsCoordinateReferenceSystem(4326))
+        annotation_layer.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         annotation_geom = QgsGeometry.fromRect(QgsRectangle(12, 30, 18, 33))
         annotation = QgsAnnotationPolygonItem(annotation_geom.constGet().clone())
         sym3 = QgsFillSymbol.createSimple({'color': '#ff0000', 'outline_style': 'no'})
