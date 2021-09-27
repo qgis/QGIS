@@ -87,7 +87,6 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
      * Checks if labels in a layer can be rotated
      * \param rotationCol out: attribute column for data defined label rotation
     */
-    bool layerIsRotatable( QgsVectorLayer *layer, int &rotationCol ) const;
     bool labelIsRotatable( QgsVectorLayer *layer, const QgsPalLayerSettings &settings, int &rotationCol ) const;
 
   protected:
