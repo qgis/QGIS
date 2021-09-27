@@ -74,7 +74,9 @@ QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *fr
   mHeaderFontToolButton->setMode( QgsFontButton::ModeTextRenderer );
 
   mContentFontToolButton->registerExpressionContextGenerator( this );
+  mContentFontToolButton->setLayer( mTable->sourceLayer() );
   mHeaderFontToolButton->registerExpressionContextGenerator( this );
+  mHeaderFontToolButton->setLayer( mTable->sourceLayer() );
 
   blockAllSignals( true );
 
