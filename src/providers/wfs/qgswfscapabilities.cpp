@@ -374,8 +374,6 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
             }
           }
         }
-
-        break;
       }
     }
   }
