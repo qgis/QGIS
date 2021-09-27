@@ -86,7 +86,7 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
      * \brief username
      * \return basic authentication username
      */
-    const QString username( ) const;
+    QString username() const;
 
     /**
      * \brief setUsername set the username
@@ -98,7 +98,7 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
      * \brief password
      * \return basic authentication password
      */
-    const QString password( ) const;
+    QString password() const;
 
     /**
      * \brief setPassword set the password
@@ -110,7 +110,7 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
      * \brief configId
      * \return authentication configuration id
      */
-    const QString configId( ) const;
+    QString configId() const;
 
     /**
      * \brief setConfigId set the authentication configuration id
@@ -128,20 +128,20 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
      * \brief dataprovider
      * \return the data provider key used to filter compatible authentication configurations
      */
-    const QString dataprovider( ) const;
+    QString dataprovider() const;
 
     /**
      * \brief warning text message based upon where credentials are stored
      * \param warning enum of warning type
      * \return pre-formatted warning text
      */
-    static const QString formattedWarning( WarningType warning );
+    static QString formattedWarning( WarningType warning );
 
     /**
      * \brief convertButtonEnabled, mainly useful for unit tests
      * \return TRUE if the convert button is enabled
      */
-    bool btnConvertToEncryptedIsEnabled( ) const;
+    bool btnConvertToEncryptedIsEnabled() const;
 
     /**
      * \brief showStoreCheckboxes show the "Store" checkboxes for basic auth.
@@ -170,19 +170,19 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
      * \brief storePassword
      * \return TRUE if "Store" checkbox for the password is checked
      */
-    bool storePasswordIsChecked( ) const;
+    bool storePasswordIsChecked() const;
 
     /**
      * \brief storeUsername
      * \return TRUE if "Store" checkbox for the username is checked
      */
-    bool storeUsernameIsChecked( ) const;
+    bool storeUsernameIsChecked() const;
 
     /**
      * \brief configurationTabIsSelected
      * \return TRUE if the configuration tab is the currently selected tab
      */
-    bool configurationTabIsSelected( );
+    bool configurationTabIsSelected();
 
   public slots:
 
@@ -192,29 +192,51 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
      *        username and password specified in the Basic tab
      * \return return TRUE on success
      */
-    bool convertToEncrypted( );
+    bool convertToEncrypted();
+
+  signals:
+
+    /**
+     * Emitted when the plain text username defined in the dialog is changed.
+     *
+     * \since QGIS 3.22
+     */
+    void usernameChanged();
+
+    /**
+     * Emitted when the plain text password defined in the dialog is changed.
+     *
+     * \since QGIS 3.22
+     */
+    void passwordChanged();
+
+    /**
+     * Emitted when the auth configuration ID selected in the dialog is changed.
+     *
+     * \since QGIS 3.22
+     */
+    void configIdChanged();
+
+  private slots:
 
     /**
      * Called when user name \a text is changed.
-     * \note Not available in Python bindings
      */
-    void userNameTextChanged( const QString &text ) SIP_SKIP;
+    void userNameTextChanged( const QString &text );
 
     /**
      * Called when password \a text is changed.
-     * \note Not available in Python bindings
      */
-    void passwordTextChanged( const QString &text ) SIP_SKIP;
-
+    void passwordTextChanged( const QString &text );
 
   private:
 
     // Mainly for tests
     QString mDataprovider;
 
-    void updateConvertBtnState( );
+    void updateConvertBtnState();
 
-    void updateSelectedTab( );
+    void updateSelectedTab();
 
 };
 
