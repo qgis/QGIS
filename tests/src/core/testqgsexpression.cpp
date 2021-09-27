@@ -2248,8 +2248,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "get_feature_by_id" ) << "get_feature_by_id('test', 1)" << true << 1;
 
       // multi-param
-      QTest::newRow( "get_feature multi1" ) << "get_feature('test',map('col1','11','col2','test2'))" << true << 2;
-      QTest::newRow( "get_feature multi2" ) << "get_feature('test',map('col1','3','col2','test3'))" << true << 3;
+      QTest::newRow( "get_feature multi1" ) << "get_feature('test',map('col1',11,'col2','test2'))" << true << 2;
+      QTest::newRow( "get_feature multi2" ) << "get_feature('test',map('col1',3,'col2','test3'))" << true << 3;
 
       // multi-param no match
       QTest::newRow( "get_feature no match-multi1" ) << "get_feature('test',map('col1','col2'),'no match!')" << false << -1;
