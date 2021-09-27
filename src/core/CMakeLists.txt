@@ -2087,7 +2087,6 @@ target_link_libraries(qgis_core
   ${QT_VERSION_BASE}::Xml
   ${QT_VERSION_BASE}::Widgets
   ${QT_VERSION_BASE}::Svg
-  ${QT_VERSION_BASE}::PrintSupport
   ${QT_VERSION_BASE}::Network
   ${QT_VERSION_BASE}::Sql
   ${QT_VERSION_BASE}::Concurrent
