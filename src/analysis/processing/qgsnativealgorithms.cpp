@@ -342,10 +342,10 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsGeometryByExpressionAlgorithm() );
 #if QT_CONFIG(process)
   addAlgorithm( new QgsConvertGpxFeatureTypeAlgorithm() );
-#endif
   addAlgorithm( new QgsConvertGpsDataAlgorithm() );
   addAlgorithm( new QgsDownloadGpsDataAlgorithm() );
   addAlgorithm( new QgsUploadGpsDataAlgorithm() );
+#endif
   addAlgorithm( new QgsGridAlgorithm() );
   addAlgorithm( new QgsHillshadeAlgorithm() );
   addAlgorithm( new QgsImportPhotosAlgorithm() );
