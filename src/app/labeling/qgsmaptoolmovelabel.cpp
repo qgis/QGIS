@@ -111,7 +111,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
       {
         QgsCalloutIndexes indexes;
 
-        if ( createAuxiliaryFields( calloutPosition, indexes, false ) )
+        if ( createAuxiliaryFields( calloutPosition, indexes ) )
           return;
 
         if ( !canModifyCallout( calloutPosition, mCurrentCalloutMoveOrigin, xCol, yCol ) )
@@ -188,7 +188,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
       {
         QgsPalIndexes indexes;
 
-        if ( createAuxiliaryFields( indexes, false ) )
+        if ( createAuxiliaryFields( indexes ) )
           return;
 
         if ( !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol ) )
@@ -211,7 +211,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
       {
         QgsDiagramIndexes indexes;
 
-        if ( createAuxiliaryFields( indexes, false ) )
+        if ( createAuxiliaryFields( indexes ) )
           return;
 
         if ( !diagramMoveable( vlayer, xCol, yCol ) )
