@@ -927,11 +927,11 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
    */
   if ( mLockZButton->isChecked() )
   {
-    point.setZ( mZLineEdit->text().toFloat() );
+    point.setZ( QLocale().toDouble( mZLineEdit->text() ) );
   }
   if ( mLockMButton->isChecked() )
   {
-    point.setM( mMLineEdit->text().toFloat() );
+    point.setM( QLocale().toDouble( mMLineEdit->text() ) );
   }
 
   // update the point list
@@ -1660,10 +1660,10 @@ QgsPoint QgsAdvancedDigitizingDockWidget::pointXYToPoint( const QgsPointXY &poin
 
 double QgsAdvancedDigitizingDockWidget::getLineZ( ) const
 {
-  return mZLineEdit->isEnabled() ? mZLineEdit->text().toFloat() : std::numeric_limits<double>::quiet_NaN();
+  return mZLineEdit->isEnabled() ? QLocale().toDouble( mZLineEdit->text() ) : std::numeric_limits<double>::quiet_NaN();
 }
 
 double QgsAdvancedDigitizingDockWidget::getLineM( ) const
 {
-  return mMLineEdit->isEnabled() ? mMLineEdit->text().toFloat() : std::numeric_limits<double>::quiet_NaN();
+  return mMLineEdit->isEnabled() ? QLocale().toDouble( mMLineEdit->text() ) : std::numeric_limits<double>::quiet_NaN();
 }
