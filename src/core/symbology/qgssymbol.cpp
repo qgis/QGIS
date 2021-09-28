@@ -109,9 +109,17 @@ QPolygonF QgsSymbol::_getLineString3d( QgsRenderContext &context, const QgsCurve
   else
   {
     // clone...
-    QgsPointSequence seq;
-    curve.points( seq );
-    pts.setPoints( seq );
+    const QgsLineString *tmpLine = reinterpret_cast<const QgsLineString *>( &curve );
+    if ( dynamic_cast<const QgsLineString *>( &curve ) )
+    {
+      pts.setPoints( curve.numPoints(), tmpLine->xData(), tmpLine->yData(), tmpLine->zData(), tmpLine->mData() );
+    }
+    else
+    {
+      QgsPointSequence seq;
+      curve.points( seq );
+      pts.setPoints( seq );
+    }
   }
 
   //transform the QPolygonF to screen coordinates

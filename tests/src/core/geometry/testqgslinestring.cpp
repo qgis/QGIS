@@ -107,6 +107,7 @@ class TestQgsLineString: public QObject
     void curveSubstring();
     void interpolatePoint();
     void visitPoints();
+    void setPointsFromData();
 };
 
 void TestQgsLineString::constructorEmpty()
@@ -2961,6 +2962,88 @@ void TestQgsLineString::boundingBoxIntersects()
   QVERIFY( !ls.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
   QCOMPARE( ls.boundingBox(), QgsRectangle( 11, -10, 13, 12 ) );
   QVERIFY( ls.boundingBoxIntersects( QgsRectangle( 12, 3, 16, 9 ) ) );
+}
+
+
+void TestQgsLineString::setPointsFromData()
+{
+  //setPoints
+  QgsLineString l8;
+  double x [] = {1, 2, 3};
+  double y [] = {2, 3, 4};
+  l8.setPoints( 3, x, y );
+  QVERIFY( !l8.isEmpty() );
+  QCOMPARE( l8.numPoints(), 3 );
+  QCOMPARE( l8.vertexCount(), 3 );
+  QCOMPARE( l8.nCoordinates(), 3 );
+  QCOMPARE( l8.ringCount(), 1 );
+  QCOMPARE( l8.partCount(), 1 );
+  QVERIFY( !l8.is3D() );
+  QVERIFY( !l8.isMeasure() );
+  QCOMPARE( l8.wkbType(), QgsWkbTypes::LineString );
+  QVERIFY( !l8.hasCurvedSegments() );
+  QgsPointSequence pts;
+  l8.points( pts );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 2, 3 ) << QgsPoint( 3, 4 ) );
+  QCOMPARE( *l8.xData(), 1.0 );
+  QCOMPARE( *( l8.xData() + 1 ), 2.0 );
+  QCOMPARE( *( l8.xData() + 2 ), 3.0 );
+  QCOMPARE( *l8.yData(), 2.0 );
+  QCOMPARE( *( l8.yData() + 1 ), 3.0 );
+  QCOMPARE( *( l8.yData() + 2 ), 4.0 );
+
+  //setPoints with empty list, should clear linestring
+  double x2 [] = {};
+  double y2 [] = {};
+  l8.setPoints( 0, x2, y2 );
+  QVERIFY( l8.isEmpty() );
+  QCOMPARE( l8.numPoints(), 0 );
+  QCOMPARE( l8.vertexCount(), 0 );
+  QCOMPARE( l8.nCoordinates(), 0 );
+  QCOMPARE( l8.ringCount(), 0 );
+  QCOMPARE( l8.partCount(), 0 );
+  QCOMPARE( l8.wkbType(), QgsWkbTypes::LineString );
+  l8.points( pts );
+  QVERIFY( pts.isEmpty() );
+
+  //setPoints with z
+  double x3 [] = {1, 2};
+  double y3 [] = {2, 3};
+  double z3 [] = {3, 4};
+  l8.setPoints( 2, x3, y3, z3 );
+  QCOMPARE( l8.numPoints(), 2 );
+  QVERIFY( l8.is3D() );
+  QVERIFY( !l8.isMeasure() );
+  QCOMPARE( l8.wkbType(), QgsWkbTypes::LineStringZ );
+  l8.points( pts );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) << QgsPoint( QgsWkbTypes::PointZ, 2, 3, 4 ) );
+
+  //setPoints with m
+  double x4 [] = {1, 2};
+  double y4 [] = {2, 3};
+  double m4 [] = {3, 4};
+  l8.setPoints( 2, x4, y4, nullptr, m4 );
+  QCOMPARE( l8.numPoints(), 2 );
+  QVERIFY( !l8.is3D() );
+  QVERIFY( l8.isMeasure() );
+  QCOMPARE( l8.wkbType(), QgsWkbTypes::LineStringM );
+  l8.points( pts );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 3 ) << QgsPoint( QgsWkbTypes::PointM, 2, 3, 0, 4 ) );
+
+  //setPoints with zm
+  double x5 [] = {1, 2};
+  double y5 [] = {2, 3};
+  double z5 [] = {4, 4};
+  double m5 [] = {5, 5};
+  l8.setPoints( 2, x5, y5, z5, m5 );
+  l8.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 4, 5 ) << QgsPoint( QgsWkbTypes::PointZM, 2, 3, 4, 5 ) );
+  QCOMPARE( l8.numPoints(), 2 );
+  QVERIFY( l8.is3D() );
+  QVERIFY( l8.isMeasure() );
+  QCOMPARE( l8.wkbType(), QgsWkbTypes::LineStringZM );
+  l8.points( pts );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 4, 5 ) << QgsPoint( QgsWkbTypes::PointZM, 2, 3, 4, 5 ) );
+
 }
 
 QGSTEST_MAIN( TestQgsLineString )
