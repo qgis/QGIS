@@ -230,7 +230,7 @@ void QgsGeometryValidator::validatePolygon( int partIndex, const QgsCurvePolygon
   // check if holes are inside polygon
   for ( int i = 0; !mStop && i < polygon->numInteriorRings(); ++i )
   {
-    if ( !ringInRing( static_cast< const QgsCurve * >( polygon->interiorRing( i ) ), static_cast< const QgsCurve * >( polygon->exteriorRing() ) ) )
+    if ( !ringInRing( polygon->interiorRing( i ), polygon->exteriorRing() ) )
     {
       const QString msg = QObject::tr( "ring %1 of polygon %2 not in exterior ring" ).arg( i + 1 ).arg( partIndex );
       QgsDebugMsg( msg );
@@ -344,14 +344,14 @@ void QgsGeometryValidator::run()
               if ( !poly2->exteriorRing() || poly2->exteriorRing()->isEmpty() )
                 continue;
 
-              if ( ringInRing( qgsgeometry_cast< const QgsCurve * >( poly->exteriorRing() ),
-                               qgsgeometry_cast< const QgsCurve * >( poly2->exteriorRing() ) ) )
+              if ( ringInRing( poly->exteriorRing(),
+                               poly2->exteriorRing() ) )
               {
                 emit errorFound( QgsGeometry::Error( QObject::tr( "Polygon %1 lies inside polygon %2" ).arg( i ).arg( j ) ) );
                 mErrorCount++;
               }
-              else if ( ringInRing( static_cast< const QgsCurve * >( poly2->exteriorRing() ),
-                                    static_cast< const QgsCurve * >( poly->exteriorRing() ) ) )
+              else if ( ringInRing( poly2->exteriorRing(),
+                                    poly->exteriorRing() ) )
               {
                 emit errorFound( QgsGeometry::Error( QObject::tr( "Polygon %1 lies inside polygon %2" ).arg( j ).arg( i ) ) );
                 mErrorCount++;
