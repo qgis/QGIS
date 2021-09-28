@@ -721,10 +721,21 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 #endif
 
     /**
-     * Resets the line string to match the specified list of points. The line string will
-     * inherit the dimensionality of the first point in the list.
-     * \param points new points for line string. If empty, line string will be cleared.
-     */
+    * Resets the line string to match the specified point data. The line string will
+    * inherit the dimensionality of the first point in the list.
+    * \param size point count.
+    * \param x array of x data
+    * \param y array of y data
+    * \param z array of z data, can be null
+    * \param m array of m data, can be null
+    */
+    void setPoints( qint64 size, const double *x, const double *y, const double *z = nullptr, const double *m = nullptr );
+
+    /**
+    * Resets the line string to match the specified list of points. The line string will
+    * inherit the dimensionality of the first point in the list.
+    * \param points new points for line string. If empty, line string will be cleared.
+    */
     void setPoints( const QgsPointSequence &points );
 
     /**

@@ -23,7 +23,7 @@
 
 #include <QVector3D>
 
-class QgsPoint;
+#include "qgspoint.h"
 
 /**
  * \ingroup core
@@ -220,7 +220,7 @@ class CORE_EXPORT QgsBox3d
      *
      * \since QGIS 3.22
      */
-    void scale( double scaleFactor, const QgsPoint *c = nullptr );
+    void scale( double scaleFactor, const QgsPoint &c = QgsPoint() );
 
     /**
      * Scale the rectangle around a center coordinates.

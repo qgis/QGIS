@@ -182,7 +182,7 @@ void TestQgs3DUtils::testQgsBox3DScale()
   {
     QgsBox3d box( -1, -1, -1, 1, 1, 1 );
     QgsPoint ref( -1.0, -1.0, -1.0 );
-    box.scale( 3.0, &ref );
+    box.scale( 3.0, ref );
     QCOMPARE( box.width(), 6.0 );
     QCOMPARE( box.height(), 6.0 );
     QCOMPARE( box.depth(), 6.0 );
@@ -193,7 +193,7 @@ void TestQgs3DUtils::testQgsBox3DScale()
   {
     QgsBox3d box( -1, -1, -1, 1, 1, 1 );
     QgsPoint ref( -2.0, 2.0, 0.0 );
-    box.scale( 3.0, &ref );
+    box.scale( 3.0, ref );
     QCOMPARE( box.width(), 6.0 );
     QCOMPARE( box.height(), 6.0 );
     QCOMPARE( box.depth(), 6.0 );
