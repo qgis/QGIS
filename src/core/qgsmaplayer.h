@@ -2111,6 +2111,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString mLegendPlaceholderImage;
 
     friend class QgsVectorLayer;
+    friend class TestQgsMapLayer;
 };
 
 Q_DECLARE_METATYPE( QgsMapLayer * )
