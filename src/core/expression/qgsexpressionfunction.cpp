@@ -1482,6 +1482,10 @@ static QVariant fcnReplace( const QVariantList &values, const QgsExpressionConte
 
 static QVariant fcnRegexpReplace( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
+  if ( ! values.at( 2 ).isValid() )
+  {
+    return QVariant();
+  }
   QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
   QString regexp = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
   QString after = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
