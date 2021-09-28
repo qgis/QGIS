@@ -167,6 +167,7 @@ class TestQgsProcessingAlgs: public QObject
 
     void filterByLayerType();
     void conditionalBranch();
+    void branchMerge();
 
     void saveLog();
     void setProjectVariable();
@@ -5718,6 +5719,58 @@ void TestQgsProcessingAlgs::conditionalBranch()
   QVERIFY( ok );
   QCOMPARE( results.value( QStringLiteral( "name1" ) ).toInt(), 1 );
   QCOMPARE( results.value( QStringLiteral( "name2" ) ).toInt(), 0 );
+}
+
+void TestQgsProcessingAlgs::branchMerge()
+{
+  QgsProject p;
+
+  // vector layer
+  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QVERIFY( vl->isValid() );
+  p.addMapLayer( vl );
+
+  // raster layer
+  QgsRasterLayer *rl = new QgsRasterLayer( QStringLiteral( TEST_DATA_DIR ) + "/tenbytenraster.asc", QStringLiteral( "rl" ) );
+  QVERIFY( rl->isValid() );
+  p.addMapLayer( rl );
+
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:branchmerger" ) ) );
+  QVERIFY( alg != nullptr );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  context->setProject( &p );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+
+  // with 2 inputs
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "DEFAULT_INPUT" ), QStringLiteral( "vl" ) );
+  parameters.insert( QStringLiteral( "FALLBACK_INPUT" ), QStringLiteral( "rl" ) );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QVERIFY( results.value( QStringLiteral( "OUTPUT" ) ).toString().contains( QStringLiteral( "vl" ) ) );
+
+  // with 1 input
+  parameters.clear();
+  parameters.insert( QStringLiteral( "DEFAULT_INPUT" ), QStringLiteral( "rl" ) );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QVERIFY( results.value( QStringLiteral( "OUTPUT" ) ).toString().contains( QStringLiteral( "rl" ) ) );
+
+  parameters.clear();
+  parameters.insert( QStringLiteral( "FALLBACK_INPUT" ), QStringLiteral( "vl" ) );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QVERIFY( results.value( QStringLiteral( "OUTPUT" ) ).toString().contains( QStringLiteral( "vl" ) ) );
+
+  // with no input
+  parameters.clear();
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
+  QVERIFY( results.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
 }
 
 void TestQgsProcessingAlgs::saveLog()
