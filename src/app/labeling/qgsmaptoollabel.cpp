@@ -884,9 +884,9 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexe
     {
       index = vlayer->fields().lookupField( prop.field() );
     }
-    else if ( prop.propertyType() != QgsProperty::ExpressionBasedProperty || overwriteExpression )
+    else
     {
-      index = QgsAuxiliaryLayer::createProperty( p, vlayer );
+      index = QgsAuxiliaryLayer::createProperty( p, vlayer, overwriteExpression );
       changed = true;
     }
 
@@ -935,9 +935,9 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIn
     {
       index = vlayer->fields().lookupField( prop.field() );
     }
-    else if ( prop.propertyType() != QgsProperty::ExpressionBasedProperty || overwriteExpression )
+    else
     {
-      index = QgsAuxiliaryLayer::createProperty( p, vlayer );
+      index = QgsAuxiliaryLayer::createProperty( p, vlayer, overwriteExpression );
       changed = true;
     }
 
@@ -985,12 +985,11 @@ bool QgsMapToolLabel::createAuxiliaryFields( QgsCalloutPosition &details, QgsCal
     {
       index = vlayer->fields().lookupField( prop.field() );
     }
-    else if ( prop.propertyType() != QgsProperty::ExpressionBasedProperty || overwriteExpression )
+    else
     {
-      index = QgsAuxiliaryLayer::createProperty( p, vlayer );
+      index = QgsAuxiliaryLayer::createProperty( p, vlayer, overwriteExpression );
       changed = true;
     }
-
     calloutIndexes[p] = index;
   }
   if ( changed )
