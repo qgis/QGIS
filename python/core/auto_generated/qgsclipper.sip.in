@@ -73,7 +73,7 @@ an open shape (linestring).
 %Docstring
 Trims the given polygon to a rectangular box, by modifying the given polygon in place.
 
-:param polygon: polygon as 2D coordinates
+:param pts: polygon as 2D coordinates
 :param clipRect: clipping rectangle
 %End
 
