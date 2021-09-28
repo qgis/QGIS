@@ -492,7 +492,7 @@ Fill in histogram defaults if not specified
       maximum = PyFloat_AsDouble( a4 );
     }
 
-#if defined(SIP_PROTECTED_IS_PUBLIC) or SIP_VERSION >= 0x050000
+#if defined(SIP_PROTECTED_IS_PUBLIC) || SIP_VERSION >= 0x050000
     sipCpp->initHistogram( *a0, a1, a2, minimum, maximum, *a5, a6, a7 );
 #else
     sipCpp->sipProtect_initHistogram( *a0, a1, a2, minimum, maximum, *a5, a6, a7 );
