@@ -71,7 +71,20 @@ Currently supported decoders:
 #include "qgsvectortilelayer.h"
 %End
   public:
-    explicit QgsVectorTileLayer( const QString &path = QString(), const QString &baseName = QString() );
+
+
+    struct LayerOptions
+    {
+
+      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext( ) );
+%Docstring
+Constructor for LayerOptions with optional ``transformContext``.
+%End
+
+      QgsCoordinateTransformContext transformContext;
+    };
+
+    explicit QgsVectorTileLayer( const QString &path = QString(), const QString &baseName = QString(), const QgsVectorTileLayer::LayerOptions &options = QgsVectorTileLayer::LayerOptions() );
 %Docstring
 Constructs a new vector tile layer
 %End

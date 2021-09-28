@@ -95,7 +95,10 @@ QgsMapLayer *QgsMapLayerFactory::createLayer( const QString &uri, const QString 
     }
 
     case QgsMapLayerType::VectorTileLayer:
-      return new QgsVectorTileLayer( uri, name );
+    {
+      const QgsVectorTileLayer::LayerOptions vectorTileOptions( options.transformContext );
+      return new QgsVectorTileLayer( uri, name, vectorTileOptions );
+    }
 
     case QgsMapLayerType::AnnotationLayer:
     {
