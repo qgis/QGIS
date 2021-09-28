@@ -29,6 +29,7 @@
 #include "qgsvectorlayerref.h"
 #include "qgsmaplayerlistutils.h"
 #include "qgsmaplayerproxymodel.h"
+#include "qgsxmlutils.h"
 
 /**
  * \ingroup UnitTests
@@ -66,6 +67,8 @@ class TestQgsMapLayer : public QObject
     void notify();
 
     void customEnumFlagProperties();
+
+    void readCustomProperties();
 
   private:
     QgsVectorLayer *mpLayer = nullptr;
@@ -442,6 +445,39 @@ void TestQgsMapLayer::customEnumFlagProperties()
   QCOMPARE( v5ss, QStringLiteral( "PointLayer|PolygonLayer" ) );
 }
 
+void TestQgsMapLayer::readCustomProperties()
+{
+  std::unique_ptr<QgsVectorLayer> ml = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point" ), QStringLiteral( "name" ), QStringLiteral( "memory" ) );
+
+  // assign to inexisting property
+  ml->setCustomProperty( QStringLiteral( "my_property_one" ), 42 );
+  ml->setCustomProperty( QStringLiteral( "my_property_two" ), QStringLiteral( "test2" ) );
+  ml->setCustomProperty( QStringLiteral( "my_property_three" ), QStringLiteral( "test3" ) );
+
+  QMap<QString, QVariant> map;
+  map[ "my_property_one" ] = 51;
+  map[ "my_property_two" ] = QStringLiteral( "test2 different" );
+  map[ "my_property_three" ] = QStringLiteral( "test3" );
+
+  QDomDocument doc( QStringLiteral( "qgis" ) );
+  QDomElement rootNode = doc.createElement( QStringLiteral( "qgis" ) );
+  QDomElement propsElement = doc.createElement( QStringLiteral( "customproperties" ) );
+  propsElement.appendChild( QgsXmlUtils::writeVariant( map, doc ) );
+  rootNode.appendChild( propsElement );
+
+  const QSignalSpy spy( ml.get(), &QgsMapLayer::customPropertyChanged );
+  ml->readCustomProperties( rootNode, "group" );
+
+  const QgsObjectCustomProperties &props = ml->customProperties();
+  QCOMPARE( props.value( QStringLiteral( "my_property_one" ) ), 51 );
+  QCOMPARE( props.value( QStringLiteral( "my_property_two" ) ), QStringLiteral( "test2 different" ) );
+  QCOMPARE( props.value( QStringLiteral( "my_property_three" ) ), QStringLiteral( "test3" ) );
+
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spy.at( 0 ).at( 0 ), "my_property_one" );
+  QCOMPARE( spy.at( 1 ).at( 0 ), "my_property_two" );
+
+}
 
 QGSTEST_MAIN( TestQgsMapLayer )
 #include "testqgsmaplayer.moc"
