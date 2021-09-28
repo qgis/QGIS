@@ -100,7 +100,7 @@
          <widget class="QWidget" name="horizontalWidget" native="true">
           <layout class="QHBoxLayout" name="horizontalLayout_5">
            <item>
-            <widget class="QCheckBox" name="useExtentCb">
+            <widget class="QRadioButton" name="useExtentCb">
              <property name="text">
               <string>Current extent</string>
              </property>
@@ -113,7 +113,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QCheckBox" name="useMaskCb">
+            <widget class="QRadioButton" name="useMaskCb">
              <property name="text">
               <string>Mask layer</string>
              </property>
