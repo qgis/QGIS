@@ -36,8 +36,9 @@
 #include <QUrl>
 #include <QUrlQuery>
 
-QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseName )
+QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseName, const LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::VectorTileLayer, baseName )
+  , mTransformContext( options.transformContext )
 {
   mDataSource = uri;
 
@@ -129,7 +130,7 @@ bool QgsVectorTileLayer::loadDataSource()
 
   setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
 
-  const QgsDataProvider::ProviderOptions providerOptions { transformContext() };
+  const QgsDataProvider::ProviderOptions providerOptions { mTransformContext };
   const QgsDataProvider::ReadFlags flags;
   mDataProvider.reset( new QgsVectorTileDataProvider( providerOptions, flags ) );
   mProviderKey = mDataProvider->name();
@@ -207,7 +208,8 @@ QgsVectorTileLayer::~QgsVectorTileLayer() = default;
 
 QgsVectorTileLayer *QgsVectorTileLayer::clone() const
 {
-  QgsVectorTileLayer *layer = new QgsVectorTileLayer( source(), name() );
+  const QgsVectorTileLayer::LayerOptions options( mTransformContext );
+  QgsVectorTileLayer *layer = new QgsVectorTileLayer( source(), name(), options );
   layer->setRenderer( renderer() ? renderer()->clone() : nullptr );
   return layer;
 }
@@ -385,7 +387,10 @@ bool QgsVectorTileLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
 
 void QgsVectorTileLayer::setTransformContext( const QgsCoordinateTransformContext &transformContext )
 {
-  Q_UNUSED( transformContext )
+  if ( mDataProvider )
+    mDataProvider->setTransformContext( transformContext );
+
+  mTransformContext = transformContext;
   invalidateWgs84Extent();
 }
 

@@ -85,8 +85,29 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
     Q_OBJECT
 
   public:
+
+
+    /**
+     * Setting options for loading vector tile layers.
+     *
+     * \since QGIS 3.22
+     */
+    struct LayerOptions
+    {
+
+      /**
+       * Constructor for LayerOptions with optional \a transformContext.
+       */
+      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext( ) )
+        : transformContext( transformContext )
+      {}
+
+      //! Coordinate transform context
+      QgsCoordinateTransformContext transformContext;
+    };
+
     //! Constructs a new vector tile layer
-    explicit QgsVectorTileLayer( const QString &path = QString(), const QString &baseName = QString() );
+    explicit QgsVectorTileLayer( const QString &path = QString(), const QString &baseName = QString(), const QgsVectorTileLayer::LayerOptions &options = QgsVectorTileLayer::LayerOptions() );
     ~QgsVectorTileLayer() override;
 
 #ifdef SIP_RUN
@@ -194,6 +215,8 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
     bool mTileBorderRendering = false;
 
     QVariantMap mArcgisLayerConfiguration;
+
+    QgsCoordinateTransformContext mTransformContext;
 
     std::unique_ptr< QgsDataProvider > mDataProvider;
 

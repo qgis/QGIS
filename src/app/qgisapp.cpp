@@ -2159,7 +2159,8 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
     {
       QgsTemporaryCursorOverride busyCursor( Qt::WaitCursor );
 
-      QgsVectorTileLayer *layer = new QgsVectorTileLayer( uri, u.name );
+      const QgsVectorTileLayer::LayerOptions options( QgsProject::instance()->transformContext() );
+      QgsVectorTileLayer *layer = new QgsVectorTileLayer( uri, u.name, options );
       bool ok = false;
       layer->loadDefaultMetadata( ok );
 
@@ -6004,7 +6005,8 @@ QgsVectorTileLayer *QgisApp::addVectorTileLayerPrivate( const QString &url, cons
   QgsDebugMsgLevel( "completeBaseName: " + base, 2 );
 
   // create the layer
-  std::unique_ptr<QgsVectorTileLayer> layer( new QgsVectorTileLayer( url, base ) );
+  const QgsVectorTileLayer::LayerOptions options( QgsProject::instance()->transformContext() );
+  std::unique_ptr<QgsVectorTileLayer> layer( new QgsVectorTileLayer( url, base, options ) );
 
   if ( !layer || !layer->isValid() )
   {
@@ -7609,7 +7611,8 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
         QUrlQuery uq;
         uq.addQueryItem( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
         uq.addQueryItem( QStringLiteral( "url" ), fileName );
-        std::unique_ptr<QgsVectorTileLayer> vtLayer( new QgsVectorTileLayer( uq.toString(), fileInfo.completeBaseName() ) );
+        const QgsVectorTileLayer::LayerOptions options( QgsProject::instance()->transformContext() );
+        std::unique_ptr<QgsVectorTileLayer> vtLayer( new QgsVectorTileLayer( uq.toString(), fileInfo.completeBaseName(), options ) );
         if ( vtLayer->isValid() )
         {
           QgsProject::instance()->addMapLayer( vtLayer.release() );
