@@ -63,7 +63,7 @@ class QgsGeometryCheckerResultTab : public QWidget
     void exportErrors();
     void highlightError( QgsGeometryCheckError *error );
     void highlightErrors( bool current = false );
-    void onSelectionChanged();
+    void onSelectionChanged( const QItemSelection &, const QItemSelection & );
     void openAttributeTable();
     void fixErrorsWithDefault() { fixErrors( false ); }
     void fixErrorsWithPrompt() { fixErrors( true ); }
