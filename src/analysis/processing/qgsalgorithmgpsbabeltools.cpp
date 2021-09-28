@@ -15,6 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
+
+#if QT_CONFIG(process)
+
+
 #include "qgsalgorithmgpsbabeltools.h"
 #include "qgsvectorlayer.h"
 #include "qgsrunprocess.h"
@@ -873,3 +877,4 @@ QVariantMap QgsUploadGpsDataAlgorithm::processAlgorithm( const QVariantMap &para
 }
 
 ///@endcond
+#endif // process
