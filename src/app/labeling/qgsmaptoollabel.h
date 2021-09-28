@@ -219,12 +219,12 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     */
     bool isPinned();
 
-    bool createAuxiliaryFields( QgsPalIndexes &palIndexes, bool overwriteExpression = true );
-    bool createAuxiliaryFields( LabelDetails &details, QgsPalIndexes &palIndexes, bool overwriteExpression = true ) const;
-    bool createAuxiliaryFields( QgsDiagramIndexes &diagIndexes, bool overwriteExpression = true );
-    bool createAuxiliaryFields( LabelDetails &details, QgsDiagramIndexes &diagIndexes, bool overwriteExpression = true );
-    bool createAuxiliaryFields( QgsCalloutIndexes &calloutIndexes, bool overwriteExpression = true );
-    bool createAuxiliaryFields( QgsCalloutPosition &details, QgsCalloutIndexes &calloutIndexes, bool overwriteExpression = true );
+    bool createAuxiliaryFields( QgsPalIndexes &palIndexes );
+    bool createAuxiliaryFields( LabelDetails &details, QgsPalIndexes &palIndexes ) const;
+    bool createAuxiliaryFields( QgsDiagramIndexes &diagIndexes );
+    bool createAuxiliaryFields( LabelDetails &details, QgsDiagramIndexes &diagIndexes );
+    bool createAuxiliaryFields( QgsCalloutIndexes &calloutIndexes );
+    bool createAuxiliaryFields( QgsCalloutPosition &details, QgsCalloutIndexes &calloutIndexes );
 
     void updateHoveredLabel( QgsMapMouseEvent *e );
     void clearHoveredLabel();

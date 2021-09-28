@@ -331,7 +331,7 @@ bool QgsMapToolShowHideLabels::showHide( const QgsLabelPosition &pos, bool show 
     if ( !diagramCanShowHide( vlayer, showCol ) )
     {
       QgsDiagramIndexes indexes;
-      createAuxiliaryFields( details, indexes, false );
+      createAuxiliaryFields( details, indexes );
 
       showCol = indexes[ QgsDiagramLayerSettings::Show ];
     }
@@ -341,7 +341,7 @@ bool QgsMapToolShowHideLabels::showHide( const QgsLabelPosition &pos, bool show 
     if ( !labelCanShowHide( vlayer, showCol ) )
     {
       QgsPalIndexes indexes;
-      createAuxiliaryFields( details, indexes, false );
+      createAuxiliaryFields( details, indexes );
 
       showCol = indexes[ QgsPalLayerSettings::Show ];
     }

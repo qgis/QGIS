@@ -848,12 +848,12 @@ QgsMapToolLabel::LabelDetails::LabelDetails( const QgsLabelPosition &p )
   }
 }
 
-bool QgsMapToolLabel::createAuxiliaryFields( QgsPalIndexes &indexes, bool overwriteExpression )
+bool QgsMapToolLabel::createAuxiliaryFields( QgsPalIndexes &indexes )
 {
-  return createAuxiliaryFields( mCurrentLabel, indexes, overwriteExpression );
+  return createAuxiliaryFields( mCurrentLabel, indexes );
 }
 
-bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexes &indexes, bool overwriteExpression ) const
+bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexes &indexes ) const
 {
   bool newAuxiliaryLayer = false;
   QgsVectorLayer *vlayer = details.layer;
@@ -886,7 +886,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexe
     }
     else
     {
-      index = QgsAuxiliaryLayer::createProperty( p, vlayer, overwriteExpression );
+      index = QgsAuxiliaryLayer::createProperty( p, vlayer, false );
       changed = true;
     }
 
@@ -900,12 +900,12 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexe
   return newAuxiliaryLayer;
 }
 
-bool QgsMapToolLabel::createAuxiliaryFields( QgsDiagramIndexes &indexes, bool overwriteExpression )
+bool QgsMapToolLabel::createAuxiliaryFields( QgsDiagramIndexes &indexes )
 {
-  return createAuxiliaryFields( mCurrentLabel, indexes, overwriteExpression );
+  return createAuxiliaryFields( mCurrentLabel, indexes );
 }
 
-bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIndexes &indexes, bool overwriteExpression )
+bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIndexes &indexes )
 {
   bool newAuxiliaryLayer = false;
   QgsVectorLayer *vlayer = details.layer;
@@ -937,7 +937,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIn
     }
     else
     {
-      index = QgsAuxiliaryLayer::createProperty( p, vlayer, overwriteExpression );
+      index = QgsAuxiliaryLayer::createProperty( p, vlayer, false );
       changed = true;
     }
 
@@ -949,12 +949,12 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIn
   return newAuxiliaryLayer;
 }
 
-bool QgsMapToolLabel::createAuxiliaryFields( QgsCalloutIndexes &calloutIndexes, bool overwriteExpression )
+bool QgsMapToolLabel::createAuxiliaryFields( QgsCalloutIndexes &calloutIndexes )
 {
-  return createAuxiliaryFields( mCurrentCallout, calloutIndexes, overwriteExpression );
+  return createAuxiliaryFields( mCurrentCallout, calloutIndexes );
 }
 
-bool QgsMapToolLabel::createAuxiliaryFields( QgsCalloutPosition &details, QgsCalloutIndexes &calloutIndexes, bool overwriteExpression )
+bool QgsMapToolLabel::createAuxiliaryFields( QgsCalloutPosition &details, QgsCalloutIndexes &calloutIndexes )
 {
   bool newAuxiliaryLayer = false;
   QgsVectorLayer *vlayer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( details.layerID );
@@ -987,7 +987,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( QgsCalloutPosition &details, QgsCal
     }
     else
     {
-      index = QgsAuxiliaryLayer::createProperty( p, vlayer, overwriteExpression );
+      index = QgsAuxiliaryLayer::createProperty( p, vlayer, false );
       changed = true;
     }
     calloutIndexes[p] = index;
