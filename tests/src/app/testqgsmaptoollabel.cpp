@@ -378,7 +378,7 @@ class TestQgsMapToolLabel : public QObject
 
     void dataDefinedColumnName()
     {
-      QgsVectorLayer *vl1 = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=label_x_1:string&field=label_y_1:string&field=label_x_2:string&field=label_y_2:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+      QgsVectorLayer *vl1 = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=label_x_1:string&field=label_y_1:string&field=label_x_2:string&field=label_y_2:string&field=override_x_field:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
       QVERIFY( vl1->isValid() );
       QgsProject::instance()->addMapLayer( vl1 );
 
@@ -444,6 +444,24 @@ class TestQgsMapToolLabel : public QObject
 
       QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::AlwaysShow, pls1, vl1 ), QString() );
       QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionX, pls1, vl1 ), QStringLiteral( "label_x_2" ) );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionY, pls1, vl1 ), QStringLiteral( "label_y_2" ) );
+
+      // another smart situation -- an expression which uses coalesce to store per-feature overrides in a field, otherwise falling back to some complex expression
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromExpression( QStringLiteral( "coalesce(\"override_x_field\", $x + 10)" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromExpression( QStringLiteral( "COALESCE(case when @var_1 = '1' then \"label_y_1\" else \"label_y_2\" end, $y-20)" ) ) );
+      vl1->setLabeling( new QgsVectorLayerSimpleLabeling( pls1 ) );
+      vl1->setLabelsEnabled( true );
+
+      QgsExpressionContextUtils::setProjectVariable( QgsProject::instance(), QStringLiteral( "var_1" ), QStringLiteral( "1" ) );
+
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::AlwaysShow, pls1, vl1 ), QString() );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionX, pls1, vl1 ), QStringLiteral( "override_x_field" ) );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionY, pls1, vl1 ), QStringLiteral( "label_y_1" ) );
+
+      QgsExpressionContextUtils::setProjectVariable( QgsProject::instance(), QStringLiteral( "var_1" ), QStringLiteral( "2" ) );
+
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::AlwaysShow, pls1, vl1 ), QString() );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionX, pls1, vl1 ), QStringLiteral( "override_x_field" ) );
       QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionY, pls1, vl1 ), QStringLiteral( "label_y_2" ) );
     }
 
