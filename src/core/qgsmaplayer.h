@@ -1670,6 +1670,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! To avoid firing multiple time repaintRequested signal on circular layer circular dependencies
     bool mRepaintRequestedFired = false;
+
+    friend class TestQgsMapLayer;
 };
 
 Q_DECLARE_METATYPE( QgsMapLayer * )
