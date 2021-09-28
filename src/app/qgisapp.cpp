@@ -1854,9 +1854,6 @@ QgisApp::~QgisApp()
 
   mNetworkLoggerWidgetFactory.reset();
 
-  delete mAdvancedDigitizingDockWidget;
-  mAdvancedDigitizingDockWidget = nullptr;
-
   delete mInternalClipboard;
   delete mQgisInterface;
   delete mStyleSheetBuilder;
@@ -1864,6 +1861,10 @@ QgisApp::~QgisApp()
   if ( QgsMapTool *tool = mMapCanvas->mapTool() )
     mMapCanvas->unsetMapTool( tool );
   mMapTools.reset();
+
+  // must come after deleting map tools
+  delete mAdvancedDigitizingDockWidget;
+  mAdvancedDigitizingDockWidget = nullptr;
 
   delete mpMaptip;
 
