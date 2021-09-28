@@ -221,7 +221,7 @@ bool QgsAuxiliaryLayer::save()
   return rc;
 }
 
-int QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::Property property, QgsVectorLayer *layer )
+int QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::Property property, QgsVectorLayer *layer, bool overwriteExisting )
 {
   int index = -1;
 
@@ -235,15 +235,27 @@ int QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::Property property, Q
 
     if ( layer->auxiliaryLayer()->indexOfPropertyDefinition( def ) >= 0 )
     {
-      const QgsProperty prop = QgsProperty::fromField( fieldName );
-
       const QStringList subProviderIds = layer->labeling()->subProviders();
       for ( const QString &providerId : subProviderIds )
       {
         QgsPalLayerSettings *settings = new QgsPalLayerSettings( layer->labeling()->settings( providerId ) );
 
         QgsPropertyCollection c = settings->dataDefinedProperties();
-        c.setProperty( property, prop );
+
+        // is there an existing property?
+        const QgsProperty existingProperty = c.property( property );
+        if ( existingProperty.propertyType() == QgsProperty::InvalidProperty || overwriteExisting )
+        {
+          const QgsProperty prop = QgsProperty::fromField( fieldName );
+          c.setProperty( property, prop );
+        }
+        else
+        {
+          // build a new smart expression as coalesce("new aux field", 'the' || 'old' || 'expression')
+          const QgsProperty prop = QgsProperty::fromExpression( QStringLiteral( "coalesce(%1,%2)" ).arg( QgsExpression::quotedColumnRef( fieldName ),
+                                   existingProperty.asExpression() ) );
+          c.setProperty( property, prop );
+        }
         settings->setDataDefinedProperties( c );
 
         layer->labeling()->setSettings( settings, providerId );
@@ -256,7 +268,7 @@ int QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::Property property, Q
   return index;
 }
 
-int QgsAuxiliaryLayer::createProperty( QgsDiagramLayerSettings::Property property, QgsVectorLayer *layer )
+int QgsAuxiliaryLayer::createProperty( QgsDiagramLayerSettings::Property property, QgsVectorLayer *layer, bool overwriteExisting )
 {
   int index = -1;
 
@@ -267,12 +279,24 @@ int QgsAuxiliaryLayer::createProperty( QgsDiagramLayerSettings::Property propert
     if ( layer->auxiliaryLayer()->addAuxiliaryField( def ) )
     {
       const QString fieldName = nameFromProperty( def, true );
-      const QgsProperty prop = QgsProperty::fromField( fieldName );
 
       QgsDiagramLayerSettings settings( *layer->diagramLayerSettings() );
 
       QgsPropertyCollection c = settings.dataDefinedProperties();
-      c.setProperty( property, prop );
+      // is there an existing property?
+      const QgsProperty existingProperty = c.property( property );
+      if ( existingProperty.propertyType() == QgsProperty::InvalidProperty || overwriteExisting )
+      {
+        const QgsProperty prop = QgsProperty::fromField( fieldName );
+        c.setProperty( property, prop );
+      }
+      else
+      {
+        // build a new smart expression as coalesce("new aux field", 'the' || 'old' || 'expression')
+        const QgsProperty prop = QgsProperty::fromExpression( QStringLiteral( "coalesce(%1,%2)" ).arg( QgsExpression::quotedColumnRef( fieldName ),
+                                 existingProperty.asExpression() ) );
+        c.setProperty( property, prop );
+      }
       settings.setDataDefinedProperties( c );
 
       layer->setDiagramLayerSettings( settings );
@@ -283,7 +307,7 @@ int QgsAuxiliaryLayer::createProperty( QgsDiagramLayerSettings::Property propert
   return index;
 }
 
-int QgsAuxiliaryLayer::createProperty( QgsCallout::Property property, QgsVectorLayer *layer )
+int QgsAuxiliaryLayer::createProperty( QgsCallout::Property property, QgsVectorLayer *layer, bool overwriteExisting )
 {
   int index = -1;
 
@@ -297,8 +321,6 @@ int QgsAuxiliaryLayer::createProperty( QgsCallout::Property property, QgsVectorL
 
     if ( layer->auxiliaryLayer()->indexOfPropertyDefinition( def ) >= 0 )
     {
-      const QgsProperty prop = QgsProperty::fromField( fieldName );
-
       const QStringList subProviderIds = layer->labeling()->subProviders();
       for ( const QString &providerId : subProviderIds )
       {
@@ -306,7 +328,20 @@ int QgsAuxiliaryLayer::createProperty( QgsCallout::Property property, QgsVectorL
         if ( settings->callout() )
         {
           QgsPropertyCollection c = settings->callout()->dataDefinedProperties();
-          c.setProperty( property, prop );
+          // is there an existing property?
+          const QgsProperty existingProperty = c.property( property );
+          if ( existingProperty.propertyType() == QgsProperty::InvalidProperty || overwriteExisting )
+          {
+            const QgsProperty prop = QgsProperty::fromField( fieldName );
+            c.setProperty( property, prop );
+          }
+          else
+          {
+            // build a new smart expression as coalesce("new aux field", 'the' || 'old' || 'expression')
+            const QgsProperty prop = QgsProperty::fromExpression( QStringLiteral( "coalesce(%1,%2)" ).arg( QgsExpression::quotedColumnRef( fieldName ),
+                                     existingProperty.asExpression() ) );
+            c.setProperty( property, prop );
+          }
           settings->callout()->setDataDefinedProperties( c );
         }
         layer->labeling()->setSettings( settings, providerId );

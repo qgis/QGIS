@@ -211,10 +211,11 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
      *
      * \param property The property to create
      * \param vlayer The vector layer
+     * \param overwriteExisting since QGIS 3.22, controls whether an existing property should be completely overwritten or upgraded to a coalesce("new aux field", 'existing' || 'property' || 'expression') type property
      *
      * \returns The index of the auxiliary field or -1
      */
-    static int createProperty( QgsPalLayerSettings::Property property, QgsVectorLayer *vlayer );
+    static int createProperty( QgsPalLayerSettings::Property property, QgsVectorLayer *vlayer, bool overwriteExisting = true );
 
     /**
      * Creates if necessary a new auxiliary field for a diagram's property and
@@ -222,10 +223,11 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
      *
      * \param property The property to create
      * \param vlayer The vector layer
+     * \param overwriteExisting since QGIS 3.22, controls whether an existing property should be completely overwritten or upgraded to a coalesce("new aux field", 'existing' || 'property' || 'expression') type property
      *
      * \returns The index of the auxiliary field or -1
      */
-    static int createProperty( QgsDiagramLayerSettings::Property property, QgsVectorLayer *vlayer );
+    static int createProperty( QgsDiagramLayerSettings::Property property, QgsVectorLayer *vlayer, bool overwriteExisting = true );
 
     /**
      * Creates if necessary a new auxiliary field for a callout's property and
@@ -233,11 +235,12 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
      *
      * \param property The property to create
      * \param vlayer The vector layer
+     * \param overwriteExisting since QGIS 3.22, controls whether an existing property should be completely overwritten or upgraded to a coalesce("new aux field", 'existing' || 'property' || 'expression') type property
      *
      * \returns The index of the auxiliary field or -1
      * \since QGIS 3.20
      */
-    static int createProperty( QgsCallout::Property property, QgsVectorLayer *vlayer );
+    static int createProperty( QgsCallout::Property property, QgsVectorLayer *vlayer, bool overwriteExisting = true );
 
     /**
      * Creates a new auxiliary field from a property definition.
