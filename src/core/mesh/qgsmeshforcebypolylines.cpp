@@ -619,8 +619,6 @@ bool QgsMeshEditForceByLine::buildForcedElements()
               mIsFinished = true;
               return false;
             }
-
-            leftFace = currentFaceIndex;
           }
           else
             currentEdge = {mHoleOnLeft.last(), mHoleOnRight.last()};

@@ -357,7 +357,7 @@ void QgsTopologicalMesh::applyChanges( const QgsTopologicalMesh::Changes &change
     mVertexToFace.resize( newSize );
   }
 
-  if ( !changes.mFacesToAdd.empty() > 0 )
+  if ( !changes.mFacesToAdd.empty() )
   {
     int newSize = mMesh->faceCount() + changes.mFacesToAdd.count();
     mMesh->faces.resize( newSize );
@@ -470,7 +470,7 @@ void QgsTopologicalMesh::reverseChanges( const QgsTopologicalMesh::Changes &chan
       referenceAsFreeVertex( vertexIndex );
   }
 
-  if ( !changes.mFacesToAdd.empty() > 0 )
+  if ( !changes.mFacesToAdd.empty() )
   {
     int newSize = mMesh->faceCount() - changes.mFacesToAdd.count();
     mMesh->faces.resize( newSize );
