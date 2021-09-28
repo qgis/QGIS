@@ -65,6 +65,7 @@ QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer, QWidg
 
   connect( useMaskCb, &QRadioButton::toggled, this, &QgsMeshCalculatorDialog::toggleExtendMask );
   maskBox->setVisible( false );
+  useMaskCb->setEnabled( cboLayerMask->count() );
 
   mXMaxSpinBox->setShowClearButton( false );
   mXMinSpinBox->setShowClearButton( false );
