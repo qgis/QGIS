@@ -806,6 +806,9 @@ void QgsLayoutAttributeTableWidget::changeLayer( QgsMapLayer *layer )
   mTable->update();
   mTable->endCommand();
 
+  mContentFontToolButton->setLayer( vl );
+  mHeaderFontToolButton->setLayer( vl );
+
   if ( vl->geometryType() == QgsWkbTypes::NullGeometry )
   {
     //layer has no geometry, so uncheck & disable controls which require geometry
