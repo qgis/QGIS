@@ -44,7 +44,6 @@ if len(sys.argv) == 1:
 s = QSettings(sys.argv[1], QSettings.IniFormat)
 
 ba = bytes(s.value("/UI/geometry"))
-print
 
 with open("src/app/ui_defaults.h", "w") as f:
 
