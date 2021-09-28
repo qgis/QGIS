@@ -3463,6 +3463,8 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
         result = conn->PQexecPrepared( QStringLiteral( "updatefeature" ), params );
         if ( result.PQresultStatus() != PGRES_COMMAND_OK && result.PQresultStatus() != PGRES_TUPLES_OK )
         {
+          conn->rollback();
+          conn->PQexecNR( QStringLiteral( "DEALLOCATE updatefeature" ) );
           throw PGException( result );
         }
 
@@ -3496,7 +3498,6 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
   {
     pushError( tr( "PostGIS error while changing attributes: %1" ).arg( e.errorMessage() ) );
     conn->rollback();
-    conn->PQexecNR( QStringLiteral( "DEALLOCATE updatefeature" ) );
     returnvalue = false;
   }
 
