@@ -294,8 +294,6 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
     QString title { p->metadata().title() };
     if ( title.isEmpty() )
       title = QgsServerProjectUtils::owsServiceTitle( *p );
-    if ( title.isEmpty() )
-      title = p->baseName();
     info["title"] = title.toStdString();
     // Description
     QString description { p->metadata().abstract() };
