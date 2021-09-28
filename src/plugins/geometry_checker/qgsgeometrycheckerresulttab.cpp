@@ -418,7 +418,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
   mIface->mapCanvas()->refresh();
 }
 
-void QgsGeometryCheckerResultTab::onSelectionChanged()
+void QgsGeometryCheckerResultTab::onSelectionChanged( const QItemSelection &, const QItemSelection & )
 {
   highlightErrors();
   ui.pushButtonOpenAttributeTable->setEnabled( ui.tableWidgetErrors->selectionModel()->hasSelection() );
