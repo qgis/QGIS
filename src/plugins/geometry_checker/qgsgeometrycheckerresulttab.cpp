@@ -249,6 +249,7 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
   attributes.append( qMakePair( QStringLiteral( "Layer" ), QStringLiteral( "String;30;" ) ) );
   attributes.append( qMakePair( QStringLiteral( "FeatureID" ), QStringLiteral( "String;20;" ) ) );
   attributes.append( qMakePair( QStringLiteral( "ErrorDesc" ), QStringLiteral( "String;80;" ) ) );
+  attributes.append( qMakePair( QStringLiteral( "Value" ), QStringLiteral( "Real" ) ) );
 
   QFileInfo fi( file );
   QString ext = fi.suffix();
@@ -272,6 +273,7 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
   int fieldLayer = layer->fields().lookupField( QStringLiteral( "Layer" ) );
   int fieldFeatureId = layer->fields().lookupField( QStringLiteral( "FeatureID" ) );
   int fieldErrDesc = layer->fields().lookupField( QStringLiteral( "ErrorDesc" ) );
+  int fieldValue = layer->fields().lookupField( QStringLiteral( "Value" ) );
   for ( int row = 0, nRows = ui.tableWidgetErrors->rowCount(); row < nRows; ++row )
   {
     QgsGeometryCheckError *error = ui.tableWidgetErrors->item( row, 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError *>();
@@ -287,6 +289,7 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
     f.setAttribute( fieldLayer, layerName );
     f.setAttribute( fieldFeatureId, error->featureId() );
     f.setAttribute( fieldErrDesc, error->description() );
+    f.setAttribute( fieldValue, error->value() );
     QgsGeometry geom( new QgsPoint( error->location() ) );
     f.setGeometry( geom );
     layer->dataProvider()->addFeatures( QgsFeatureList() << f );
