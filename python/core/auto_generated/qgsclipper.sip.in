@@ -69,7 +69,7 @@ an open shape (linestring).
 
 %End
 
-    static void trimPolygon( QPolygonF &polygon, const QgsRectangle &clipRect );
+    static void trimPolygon( QPolygonF &pts, const QgsRectangle &clipRect );
 %Docstring
 Trims the given polygon to a rectangular box, by modifying the given polygon in place.
 
