@@ -83,7 +83,7 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface *iface, 
   connect( ui.pushButtonFixWithDefault, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::fixErrorsWithDefault );
   connect( ui.pushButtonFixWithPrompt, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::fixErrorsWithPrompt );
   connect( ui.pushButtonErrorResolutionSettings, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::setDefaultResolutionMethods );
-  connect( ui.checkBoxHighlight, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::highlightErrors );
+  connect( ui.checkBoxHighlight, &QAbstractButton::clicked, this, [ = ] { QgsGeometryCheckerResultTab::highlightErrors(); } );
   connect( QgsProject::instance(), static_cast<void ( QgsProject::* )( const QStringList & )>( &QgsProject::layersWillBeRemoved ), this, &QgsGeometryCheckerResultTab::checkRemovedLayer );
   connect( ui.pushButtonExport, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::exportErrors );
 
@@ -418,19 +418,10 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
   mIface->mapCanvas()->refresh();
 }
 
-void QgsGeometryCheckerResultTab::onSelectionChanged( const QItemSelection &newSel, const QItemSelection &/*oldSel*/ )
+void QgsGeometryCheckerResultTab::onSelectionChanged()
 {
-  QModelIndex idx = ui.tableWidgetErrors->currentIndex();
-  if ( idx.isValid() && !ui.tableWidgetErrors->isRowHidden( idx.row() ) && newSel.contains( idx ) )
-  {
-    highlightErrors();
-  }
-  else
-  {
-    qDeleteAll( mCurrentRubberBands );
-    mCurrentRubberBands.clear();
-  }
-  ui.pushButtonOpenAttributeTable->setEnabled( !newSel.isEmpty() );
+  highlightErrors();
+  ui.pushButtonOpenAttributeTable->setEnabled( ui.tableWidgetErrors->selectionModel()->hasSelection() );
 }
 
 void QgsGeometryCheckerResultTab::openAttributeTable()
