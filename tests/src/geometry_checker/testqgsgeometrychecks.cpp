@@ -223,14 +223,14 @@ void TestQgsGeometryChecks::testAreaCheck()
   QCOMPARE( checkErrors.size(), 8 );
   QVERIFY( searchCheckErrors( checkErrors, layers["point_layer.shp"] ).isEmpty() );
   QVERIFY( searchCheckErrors( checkErrors, layers["line_layer.shp"] ).isEmpty() );
-  QVERIFY( searchCheckErrors( checkErrors, layers["polygon_layer.shp"], 1, QgsPointXY( 1.0068, 0.3635 ), QgsVertexId( 1 ), 0.0105 ).size() == 1 );
-  QVERIFY( ( errs1 = searchCheckErrors( checkErrors, layers["polygon_layer.shp"], 2, QgsPointXY( 0.9739, 1.0983 ), QgsVertexId( 0 ), 0.0141 ) ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, layers["polygon_layer.shp"], 1, QgsPointXY( 1.0076, 0.4028 ), QgsVertexId( 1 ), 0.0105 ).size() == 1 );
+  QVERIFY( ( errs1 = searchCheckErrors( checkErrors, layers["polygon_layer.shp"], 2, QgsPointXY( 0.9748, 1.1009 ), QgsVertexId( 0 ), 0.0141 ) ).size() == 1 );
   QVERIFY( searchCheckErrors( checkErrors, layers["polygon_layer.shp"], 6, QgsPointXY( 0.9968, 1.7584 ), QgsVertexId( 0 ), 0 ).size() == 1 );
-  QVERIFY( searchCheckErrors( checkErrors, layers["polygon_layer.shp"], 11, QgsPointXY( -0.2941, 1.4614 ), QgsVertexId( 0 ), 0.0031 ).size() == 1 );
-  QVERIFY( searchCheckErrors( checkErrors, layers["polygon_layer.shp"], 12, QgsPointXY( 0.2229, 0.2306 ), QgsVertexId( 0 ), -0.0079 ).size() == 1 ); // This is a polygon with a self-intersection hence the incorrect negative area
-  QVERIFY( ( errs2 = searchCheckErrors( checkErrors, layers["polygon_layer.shp"], 13, QgsPointXY( 0.5026, 3.0267 ), QgsVertexId( 0 ), 0.0013 ) ).size() == 1 );
-  QVERIFY( ( errs3 = searchCheckErrors( checkErrors, layers["polygon_layer.shp"], 20, QgsPointXY( 0.4230, 3.4688 ), QgsVertexId( 0 ), 0.0013 ) ).size() == 1 );
-  QVERIFY( ( errs4 = searchCheckErrors( checkErrors, layers["polygon_layer.shp"], 24, QgsPointXY( 1.4186, 3.0905 ), QgsVertexId( 0 ), 0.0013 ) ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, layers["polygon_layer.shp"], 11, QgsPointXY( -0.3009, 1.5188 ), QgsVertexId( 0 ), 0.0031 ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, layers["polygon_layer.shp"], 12, QgsPointXY( 0.2421, 0.2665 ), QgsVertexId( 0 ), -0.0079 ).size() == 1 ); // This is a polygon with a self-intersection hence the incorrect negative area
+  QVERIFY( ( errs2 = searchCheckErrors( checkErrors, layers["polygon_layer.shp"], 13, QgsPointXY( 0.5081, 3.0184 ), QgsVertexId( 0 ), 0.0013 ) ).size() == 1 );
+  QVERIFY( ( errs3 = searchCheckErrors( checkErrors, layers["polygon_layer.shp"], 20, QgsPointXY( 0.4285, 3.4605 ), QgsVertexId( 0 ), 0.0013 ) ).size() == 1 );
+  QVERIFY( ( errs4 = searchCheckErrors( checkErrors, layers["polygon_layer.shp"], 24, QgsPointXY( 1.4241, 3.0821 ), QgsVertexId( 0 ), 0.0013 ) ).size() == 1 );
 
   // Test fixes
   QgsFeature f;
@@ -535,15 +535,15 @@ void TestQgsGeometryChecks::testGapCheck()
   QList<QgsGeometryCheckError *> errs1;
 
   QCOMPARE( checkErrors.size(), 5 );
-  QCOMPARE( searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.2924, -0.8798 ), QgsVertexId(), 0.0027 ).size(), 1 );
-  QCOMPARE( searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.4238, -0.7479 ), QgsVertexId(), 0.0071 ).size(), 1 );
-  QCOMPARE( searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.0094, -0.4448 ), QgsVertexId(), 0.0033 ).size(), 1 );
-  errs1 = searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.2939, -0.4694 ), QgsVertexId(), 0.0053 );
+  QCOMPARE( searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.2622, -0.9418 ), QgsVertexId(), 0.0027 ).size(), 1 );
+  QCOMPARE( searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.3349, -0.6230 ), QgsVertexId(), 0.0071 ).size(), 1 );
+  QCOMPARE( searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.0229, -0.3461 ), QgsVertexId(), 0.0033 ).size(), 1 );
+  errs1 = searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.2254, -0.4641 ), QgsVertexId(), 0.0053 );
   QCOMPARE( errs1.size(), 1 );
-  QCOMPARE( searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.6284, -0.3641 ), QgsVertexId(), 0.0018 ).size(), 1 );
+  QCOMPARE( searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.6146, -0.4211 ), QgsVertexId(), 0.0018 ).size(), 1 );
 
   //  TestQgsGeometryChecks::testGapCheck()
-  QgsGeometryCheckError *error = searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.2924, -0.8798 ), QgsVertexId(), 0.0027 ).first();
+  QgsGeometryCheckError *error = searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.2622, -0.9418 ), QgsVertexId(), 0.0027 ).first();
 
   QCOMPARE( error->contextBoundingBox().snappedToGrid( 0.0001 ), QgsRectangle( -0.0259, -1.0198, 0.6178, -0.4481 ) );
   QCOMPARE( error->affectedAreaBBox().snappedToGrid( 0.0001 ), QgsRectangle( 0.246, -0.9998, 0.3939, -0.77 ) );
@@ -596,7 +596,7 @@ void TestQgsGeometryChecks::testAllowedGaps()
   QCOMPARE( checkErrors.size(), 5 );
 
   //  TestQgsGeometryChecks::testGapCheck()
-  QgsGeometryCheckError *error = searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.2924, -0.8798 ), QgsVertexId(), 0.0027 ).first();
+  QgsGeometryCheckError *error = searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.2622, -0.9418 ), QgsVertexId(), 0.0027 ).first();
 
   QgsGeometryCheck::Changes changes;
   check.fixError( testContext.second, error, 2, QMap<QString, int>(), changes );
