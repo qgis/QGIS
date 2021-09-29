@@ -388,16 +388,17 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
           const QgsProcessingModelChildAlgorithm &target = mChildAlgorithms[ targetId ];
           if ( target.algorithmId() == QStringLiteral( "native:branchmerger" ) )
           {
-            // track the number of pruned inputs of each child merge processing
+            // tracks the number of pruned inputs of each child merge processing
             mPrunedMergeProcessing[targetId] += 1;
 
             // if it is only the 1st branch to be pruned from this child
-            // stop the pruning
-            if ( mPrunedMergeProcessing[targetId] < 2 )
+            // and it is not directly pruned after a conditional branch output
+            // stops the pruning
+            if ( mPrunedMergeProcessing[targetId] < 2 && id != childId )
             {
               continue;
             }
-            // else prune it like any other child algorithm
+            // else the child is pruned like any other
           }
 
           if ( executed.contains( targetId ) )
