@@ -1699,6 +1699,10 @@ void TestQgsProcessing::modelBranchMerger()
   cond2.insert( QStringLiteral( "name" ), QStringLiteral( "enableBranchB" ) );
   cond2.insert( QStringLiteral( "expression" ), QStringLiteral( "@enableBranchB" ) );
   conditions << cond2;
+  QVariantMap cond3;
+  cond3.insert( QStringLiteral( "name" ), QStringLiteral( "enableMerger" ) );
+  cond3.insert( QStringLiteral( "expression" ), QStringLiteral( "@enableMerger" ) );
+  conditions << cond3;
   config.insert( QStringLiteral( "conditions" ), conditions );
   algC.setConfiguration( config );
   model.addChildAlgorithm( algC );
@@ -1749,6 +1753,9 @@ void TestQgsProcessing::modelBranchMerger()
   algM.setAlgorithmId( "native:branchmerger" );
   algM.addParameterSources( QStringLiteral( "DEFAULT_INPUT" ), QList< QgsProcessingModelChildParameterSource >() << QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "algBranchA1" ), QStringLiteral( "OUTPUT" ) ) );
   algM.addParameterSources( QStringLiteral( "FALLBACK_INPUT" ), QList< QgsProcessingModelChildParameterSource >() << QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "algBranchB1" ), QStringLiteral( "OUTPUT" ) ) );
+
+  algM.setDependencies( QList< QgsProcessingModelChildDependency >() << QgsProcessingModelChildDependency( QStringLiteral( "branch" ), QStringLiteral( "enableMerger" ) ) );
+
   model.addChildAlgorithm( algM );
 
   // MERGED BRANCH
@@ -1772,6 +1779,8 @@ void TestQgsProcessing::modelBranchMerger()
   params.insert( QStringLiteral( "algBranchA1:BRANCH_A_OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
   params.insert( QStringLiteral( "algBranchB1:BRANCH_B_OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
   params.insert( QStringLiteral( "algBranchMerged:MERGED_OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "enableMerger" ), 1 );
 
   // case 1
   context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "enableBranchA" ), 1 );
@@ -1805,8 +1814,18 @@ void TestQgsProcessing::modelBranchMerger()
   context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "enableBranchB" ), 0 );
 
   results = model.run( params, context, &feedback );
-  QVERIFY( !results.contains( QStringLiteral( "algBranchA1:BRANCH_B_OUTPUT" ) ) );
+  QVERIFY( !results.contains( QStringLiteral( "algBranchA1:BRANCH_A_OUTPUT" ) ) );
   QVERIFY( !results.contains( QStringLiteral( "algBranchB1:BRANCH_B_OUTPUT" ) ) );
+  QVERIFY( !results.contains( QStringLiteral( "algBranchMerged:MERGED_OUTPUT" ) ) );
+
+  // case 5
+  context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "enableMerger" ), 0 );
+  context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "enableBranchA" ), 1 );
+  context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "enableBranchB" ), 1 );
+
+  results = model.run( params, context, &feedback );
+  QVERIFY( !results.value( QStringLiteral( "algBranchA1:BRANCH_A_OUTPUT" ) ).toString().isEmpty() );
+  QVERIFY( !results.value( QStringLiteral( "algBranchB1:BRANCH_B_OUTPUT" ) ).toString().isEmpty() );
   QVERIFY( !results.contains( QStringLiteral( "algBranchMerged:MERGED_OUTPUT" ) ) );
 }
 
