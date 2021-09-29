@@ -344,13 +344,12 @@ QString QgsField::displayString( const QVariant &v ) const
   }
   else if ( d->type == QVariant::StringList || d->type == QVariant::List )
   {
-    // we return an empty string if the list is empty, not a null string
-    QString result( "" );
+    QString result;
     const QVariantList list = v.toList();
     for ( const QVariant &var : list )
     {
       if ( !result.isEmpty() )
-        result.append( ", " );
+        result.append( QStringLiteral( ", " ) );
       result.append( var.toString() );
     }
     return result;
