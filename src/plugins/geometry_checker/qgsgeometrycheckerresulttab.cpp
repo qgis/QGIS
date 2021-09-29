@@ -222,13 +222,18 @@ void QgsGeometryCheckerResultTab::updateError( QgsGeometryCheckError *error, boo
 
 void QgsGeometryCheckerResultTab::exportErrors()
 {
-  QString initialdir = QgsSettings().value( "/geometry_checker/previous_values/exportDirectory", "" ).toString();
+  QString initialdir = QgsSettings().value( "/geometry_checker/previous_values/exportDirectory", QDir::homePath() ).toString();
   QDir dir = QDir( initialdir );
   if ( !dir.exists() )
     dir = QFileInfo( mChecker->featurePools().first()->layer()->dataProvider()->dataSourceUri() ).dir();
+
   if ( dir.exists() )
   {
     initialdir = dir.absolutePath();
+  }
+  else
+  {
+    initialdir = QDir::homePath();
   }
 
   QString selectedFilter;
