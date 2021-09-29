@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>756</width>
-    <height>687</height>
+    <height>779</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,165 +38,6 @@
         <string>Result Layer</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,0,0,0">
-        <item row="3" column="1" colspan="3">
-         <widget class="QComboBox" name="mOutputFormatComboBox"/>
-        </item>
-        <item row="6" column="1" colspan="3">
-         <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
-          <property name="focusPolicy">
-           <enum>Qt::StrongFocus</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="0" colspan="4">
-         <layout class="QGridLayout" name="gridLayout_3">
-          <item row="2" column="3">
-           <widget class="QLabel" name="mRowsLabel">
-            <property name="text">
-             <string>Rows</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="4">
-           <widget class="QgsSpinBox" name="mNRowsSpinBox">
-            <property name="maximum">
-             <number>999999999</number>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QgsDoubleSpinBox" name="mYMinSpinBox">
-            <property name="decimals">
-             <number>5</number>
-            </property>
-            <property name="minimum">
-             <double>-999999999.000000000000000</double>
-            </property>
-            <property name="maximum">
-             <double>999999999.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="mYMinLabel">
-            <property name="text">
-             <string>Y min</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="mXMinLabel">
-            <property name="text">
-             <string>X min</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="3">
-           <widget class="QLabel" name="mXMaxLabel">
-            <property name="text">
-             <string>X max</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="mColumnsLabel">
-            <property name="text">
-             <string>Columns</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QgsSpinBox" name="mNColumnsSpinBox">
-            <property name="maximum">
-             <number>999999999</number>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="3">
-           <widget class="QLabel" name="mYMaxLabel">
-            <property name="text">
-             <string>Y max</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="4">
-           <widget class="QgsDoubleSpinBox" name="mYMaxSpinBox">
-            <property name="decimals">
-             <number>5</number>
-            </property>
-            <property name="minimum">
-             <double>-999999999.000000000000000</double>
-            </property>
-            <property name="maximum">
-             <double>999999999.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QgsDoubleSpinBox" name="mXMinSpinBox">
-            <property name="decimals">
-             <number>5</number>
-            </property>
-            <property name="minimum">
-             <double>-999999999.000000000000000</double>
-            </property>
-            <property name="maximum">
-             <double>999999999.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="4">
-           <widget class="QgsDoubleSpinBox" name="mXMaxSpinBox">
-            <property name="decimals">
-             <number>5</number>
-            </property>
-            <property name="minimum">
-             <double>-999999999.000000000000000</double>
-            </property>
-            <property name="maximum">
-             <double>999999999.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <spacer name="horizontalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>10</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-        <item row="7" column="0" colspan="4">
-         <widget class="QCheckBox" name="mAddResultToProjectCheckBox">
-          <property name="text">
-           <string>Add result to project</string>
-          </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="0">
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>Output CRS</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="mOutputLayerLabel">
-          <property name="text">
-           <string>Output layer</string>
-          </property>
-         </widget>
-        </item>
         <item row="3" column="0">
          <widget class="QLabel" name="mOutputFormatLabel">
           <property name="text">
@@ -204,7 +45,136 @@
           </property>
          </widget>
         </item>
-        <item row="8" column="0">
+        <item row="4" column="0" colspan="4">
+         <widget class="QGroupBox" name="groupBox_2">
+          <property name="title">
+           <string>Spatial Extent</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_5">
+           <item row="2" column="1">
+            <widget class="QgsDoubleSpinBox" name="mXMinSpinBox">
+             <property name="decimals">
+              <number>5</number>
+             </property>
+             <property name="minimum">
+              <double>-999999999.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>999999999.000000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="3">
+            <widget class="QLabel" name="mXMaxLabel">
+             <property name="text">
+              <string>X max</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="mYMinLabel">
+             <property name="text">
+              <string>Y min</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="mXMinLabel">
+             <property name="text">
+              <string>X min</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="2">
+            <spacer name="horizontalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>10</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="2" column="4">
+            <widget class="QgsDoubleSpinBox" name="mXMaxSpinBox">
+             <property name="decimals">
+              <number>5</number>
+             </property>
+             <property name="minimum">
+              <double>-999999999.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>999999999.000000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QgsDoubleSpinBox" name="mYMinSpinBox">
+             <property name="decimals">
+              <number>5</number>
+             </property>
+             <property name="minimum">
+              <double>-999999999.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>999999999.000000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="3">
+            <widget class="QLabel" name="mYMaxLabel">
+             <property name="text">
+              <string>Y max</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="4">
+            <widget class="QgsDoubleSpinBox" name="mYMaxSpinBox">
+             <property name="decimals">
+              <number>5</number>
+             </property>
+             <property name="minimum">
+              <double>-999999999.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>999999999.000000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0" rowspan="2" colspan="5">
+            <layout class="QGridLayout" name="gridLayout_3">
+             <item row="0" column="1" rowspan="2" colspan="4">
+              <spacer name="horizontalSpacer_4">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="0" column="0" rowspan="2">
+              <widget class="QPushButton" name="mCurrentLayerExtentButton">
+               <property name="text">
+                <string>Use Selected Layer Extent</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="3" column="1" colspan="3">
+         <widget class="QComboBox" name="mOutputFormatComboBox"/>
+        </item>
+        <item row="9" column="0">
          <spacer name="verticalSpacer">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -216,6 +186,20 @@
            </size>
           </property>
          </spacer>
+        </item>
+        <item row="7" column="1" colspan="3">
+         <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="mOutputLayerLabel">
+          <property name="text">
+           <string>Output layer</string>
+          </property>
+         </widget>
         </item>
         <item row="0" column="0" colspan="4">
          <widget class="QCheckBox" name="mUseVirtualProviderCheckBox">
@@ -230,22 +214,32 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="0">
-         <widget class="QPushButton" name="mCurrentLayerExtentButton">
-          <property name="text">
-           <string>Use Selected Layer Extent</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1" colspan="3">
-         <widget class="QgsFileWidget" name="mOutputLayer" native="true"/>
-        </item>
         <item row="1" column="0">
          <widget class="QLabel" name="mVirtualLayerLabel">
           <property name="text">
            <string>Layer name</string>
           </property>
          </widget>
+        </item>
+        <item row="7" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Output CRS</string>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="0" colspan="4">
+         <widget class="QCheckBox" name="mAddResultToProjectCheckBox">
+          <property name="text">
+           <string>Add result to project</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1" colspan="3">
+         <widget class="QgsFileWidget" name="mOutputLayer" native="true"/>
         </item>
         <item row="1" column="1" colspan="3">
          <widget class="QLineEdit" name="mVirtualLayerName">
@@ -255,6 +249,56 @@
           <property name="placeholderText">
            <string>Autogenerated from expression</string>
           </property>
+         </widget>
+        </item>
+        <item row="6" column="0" colspan="4">
+         <widget class="QGroupBox" name="groupBox_3">
+          <property name="title">
+           <string>Resolution</string>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QLabel" name="mColumnsLabel">
+             <property name="text">
+              <string>Columns</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QgsSpinBox" name="mNColumnsSpinBox">
+             <property name="maximum">
+              <number>999999999</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="mRowsLabel">
+             <property name="text">
+              <string>Rows</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QgsSpinBox" name="mNRowsSpinBox">
+             <property name="maximum">
+              <number>999999999</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
        </layout>
