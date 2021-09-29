@@ -253,9 +253,14 @@ class TestQgsRenderContext(unittest.TestCase):
         r.setDistanceArea(da_wsg84)
         result_test_painterunits = r.convertToPainterUnits(meters_test, QgsUnitTypes.RenderMetersInMapUnits, c)
         self.assertAlmostEqual(result_test_painterunits, 60.0203759, 1)
+        result_test_painterunits = r.convertToPainterUnits(-meters_test, QgsUnitTypes.RenderMetersInMapUnits, c)
+        self.assertAlmostEqual(result_test_painterunits, -60.0203759, 1)
         result_test_mapunits = r.convertToMapUnits(meters_test, QgsUnitTypes.RenderMetersInMapUnits, c)
         self.assertEqual(QgsDistanceArea.formatDistance(result_test_mapunits, 7, QgsUnitTypes.DistanceDegrees, True),
                          QgsDistanceArea.formatDistance(meters_test_mapunits, 7, QgsUnitTypes.DistanceDegrees, True))
+        result_test_mapunits = r.convertToMapUnits(-meters_test, QgsUnitTypes.RenderMetersInMapUnits, c)
+        self.assertEqual(QgsDistanceArea.formatDistance(result_test_mapunits, 7, QgsUnitTypes.DistanceDegrees, True),
+                         QgsDistanceArea.formatDistance(-meters_test_mapunits, 7, QgsUnitTypes.DistanceDegrees, True))
         result_test_meters = r.convertFromMapUnits(meters_test_mapunits, QgsUnitTypes.RenderMetersInMapUnits)
         self.assertEqual(QgsDistanceArea.formatDistance(result_test_meters, 1, QgsUnitTypes.DistanceMeters, True),
                          QgsDistanceArea.formatDistance(meters_test, 1, QgsUnitTypes.DistanceMeters, True))
