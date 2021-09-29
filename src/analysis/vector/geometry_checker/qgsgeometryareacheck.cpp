@@ -35,8 +35,18 @@ void QgsGeometryAreaCheck::collectErrors( const QMap<QString, QgsFeaturePool *> 
       const QgsAbstractGeometry *part = QgsGeometryCheckerUtils::getGeomPart( geom, iPart );
       if ( checkThreshold( layerToMapUnits, part, value ) )
       {
-        QgsGeometry partGeometry = QgsGeometry( part->clone() );
-        errors.append( new QgsGeometryCheckError( this, layerFeature, partGeometry.pointOnSurface().asPoint(), QgsVertexId( iPart ), value * layerToMapUnits * layerToMapUnits, QgsGeometryCheckError::ValueArea ) );
+        const QgsGeometry pointOnSurface = QgsGeometry( part->clone() ).pointOnSurface();
+        QgsPointXY point;
+        if ( pointOnSurface.isNull() )
+        {
+          point = part->centroid();
+        }
+        else
+        {
+          point = pointOnSurface.asPoint();
+        }
+
+        errors.append( new QgsGeometryCheckError( this, layerFeature, point, QgsVertexId( iPart ), value * layerToMapUnits * layerToMapUnits, QgsGeometryCheckError::ValueArea ) );
       }
     }
   }
