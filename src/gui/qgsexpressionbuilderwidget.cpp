@@ -554,11 +554,11 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int 
       for ( QString str : strList )
       {
         if ( !result.isEmpty() )
-          result.append( ", " );
+          result.append( QStringLiteral( ", " ) );
 
         result.append( '\'' + str.replace( '\'', QLatin1String( "''" ) ) + '\'' );
       }
-      strValue = QString( "array(%1)" ).arg( result );
+      strValue = QStringLiteral( "array(%1)" ).arg( result );
       forceRepresentedValue = true;
     }
     else
