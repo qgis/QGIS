@@ -25,12 +25,12 @@
 #include "qgsmessagebar.h"
 #include "qgsexternalstoragefilewidget.h"
 
-#include <QWebFrame>
 #include <QLineEdit>
 #include <QSignalSpy>
 #include <QMovie>
 
 #ifdef WITH_QTWEBKIT
+#include <QWebFrame>
 #include <QWebView>
 #endif
 
@@ -391,7 +391,9 @@ void TestQgsExternalResourceWidgetWrapper::testLoadExternalDocument()
 
   // content still null, fetching in progress...
   QVERIFY( !ww.mQgsWidget->mPixmapLabel->isVisible() );
+#ifdef WITH_QTWEBKIT
   QVERIFY( !ww.mQgsWidget->mWebView->isVisible() );
+#endif
   QVERIFY( ww.mQgsWidget->mLoadingLabel->isVisible() );
   QVERIFY( ww.mQgsWidget->mLoadingMovie->state() == QMovie::Running );
   QVERIFY( !ww.mQgsWidget->mErrorLabel->isVisible() );
@@ -1072,7 +1074,9 @@ void TestQgsExternalResourceWidgetWrapper::testChangeValueBeforeLoaded()
 
   // content still null, fetching in progress...
   QVERIFY( !ww.mQgsWidget->mPixmapLabel->isVisible() );
+#ifdef WITH_QTWEBKIT
   QVERIFY( !ww.mQgsWidget->mWebView->isVisible() );
+#endif
   QVERIFY( ww.mQgsWidget->mLoadingLabel->isVisible() );
   QVERIFY( ww.mQgsWidget->mLoadingMovie->state() == QMovie::Running );
   QVERIFY( !ww.mQgsWidget->mErrorLabel->isVisible() );
@@ -1088,7 +1092,9 @@ void TestQgsExternalResourceWidgetWrapper::testChangeValueBeforeLoaded()
 
   // content still null, fetching in progress...
   QVERIFY( !ww.mQgsWidget->mPixmapLabel->isVisible() );
+#ifdef WITH_QTWEBKIT
   QVERIFY( !ww.mQgsWidget->mWebView->isVisible() );
+#endif
   QVERIFY( ww.mQgsWidget->mLoadingLabel->isVisible() );
   QVERIFY( ww.mQgsWidget->mLoadingMovie->state() == QMovie::Running );
   QVERIFY( !ww.mQgsWidget->mErrorLabel->isVisible() );
@@ -1101,7 +1107,9 @@ void TestQgsExternalResourceWidgetWrapper::testChangeValueBeforeLoaded()
 
   // content still null, fetching in progress...
   QVERIFY( !ww.mQgsWidget->mPixmapLabel->isVisible() );
+#ifdef WITH_QTWEBKIT
   QVERIFY( !ww.mQgsWidget->mWebView->isVisible() );
+#endif
   QVERIFY( ww.mQgsWidget->mLoadingLabel->isVisible() );
   QVERIFY( ww.mQgsWidget->mLoadingMovie->state() == QMovie::Running );
   QVERIFY( !ww.mQgsWidget->mErrorLabel->isVisible() );
