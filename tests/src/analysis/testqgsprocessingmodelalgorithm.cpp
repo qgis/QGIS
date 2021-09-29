@@ -96,6 +96,7 @@ class TestQgsProcessingModelAlgorithm: public QObject
     void modelExecution();
     void modelBranchPruning();
     void modelBranchPruningConditional();
+    void modelBranchMerger();
     void modelWithProviderWithLimitedTypes();
     void modelVectorOutputIsCompatibleType();
     void modelAcceptableValues();
@@ -1665,6 +1666,148 @@ void TestQgsProcessingModelAlgorithm::modelBranchPruningConditional()
 
   results = model1.run( params, context, &feedback, &ok );
   QVERIFY( ok ); // the branch with the exception should NOT be hit
+}
+
+void TestQgsProcessing::modelBranchMerger()
+{
+  QgsProject p;
+
+  QgsVectorLayer *vl1 = new QgsVectorLayer( "Point?crs=epsg:3111", "vl1", "memory" );
+  p.addMapLayer( vl1 );
+  QgsVectorLayer *vl2 = new QgsVectorLayer( "linestring?crs=epsg:3111", "vl2", "memory" );
+  p.addMapLayer( vl2 );
+
+
+  QgsProcessingContext context;
+  context.setProject( &p );
+
+  QgsProcessingModelAlgorithm model;
+
+  // CONDITIONS
+  context.expressionContext().appendScope( new QgsExpressionContextScope() );
+
+  QgsProcessingModelChildAlgorithm algC;
+  algC.setChildId( "branch" );
+  algC.setAlgorithmId( "native:condition" );
+  QVariantMap config;
+  QVariantList conditions;
+  QVariantMap cond1;
+  cond1.insert( QStringLiteral( "name" ), QStringLiteral( "enableBranchA" ) );
+  cond1.insert( QStringLiteral( "expression" ), QStringLiteral( "@enableBranchA" ) );
+  conditions << cond1;
+  QVariantMap cond2;
+  cond2.insert( QStringLiteral( "name" ), QStringLiteral( "enableBranchB" ) );
+  cond2.insert( QStringLiteral( "expression" ), QStringLiteral( "@enableBranchB" ) );
+  conditions << cond2;
+  config.insert( QStringLiteral( "conditions" ), conditions );
+  algC.setConfiguration( config );
+  model.addChildAlgorithm( algC );
+
+  // BRANCH A
+  QgsProcessingModelParameter param;
+  param.setParameterName( QStringLiteral( "LAYER_A" ) );
+  model.addModelParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "LAYER_A" ) ), param );
+
+  QgsProcessingModelChildAlgorithm algA1;
+  algA1.setChildId( "algBranchA1" );
+  algA1.setAlgorithmId( "native:deletecolumn" );
+  algA1.addParameterSources( QStringLiteral( "INPUT" ), QList< QgsProcessingModelChildParameterSource >() << QgsProcessingModelChildParameterSource::fromModelParameter( QStringLiteral( "LAYER_A" ) ) );
+
+  QMap<QString, QgsProcessingModelOutput> outputsA1;
+  QgsProcessingModelOutput outA1( "BRANCH_A_OUTPUT" );
+  outA1.setChildOutputName( "OUTPUT" );
+  outputsA1.insert( QStringLiteral( "BRANCH_A_OUTPUT" ), outA1 );
+  algA1.setModelOutputs( outputsA1 );
+
+  algA1.setDependencies( QList< QgsProcessingModelChildDependency >() << QgsProcessingModelChildDependency( QStringLiteral( "branch" ), QStringLiteral( "enableBranchA" ) ) );
+
+  model.addChildAlgorithm( algA1 );
+
+  // BRANCH B
+  param = QgsProcessingModelParameter();
+  param.setParameterName( QStringLiteral( "LAYER_B" ) );
+  model.addModelParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "LAYER_B" ) ), param );
+
+  QgsProcessingModelChildAlgorithm algB1;
+  algB1.setChildId( "algBranchB1" );
+  algB1.setAlgorithmId( "native:deletecolumn" );
+  algB1.addParameterSources( QStringLiteral( "INPUT" ), QList< QgsProcessingModelChildParameterSource >() << QgsProcessingModelChildParameterSource::fromModelParameter( QStringLiteral( "LAYER_B" ) ) );
+
+  QMap<QString, QgsProcessingModelOutput> outputsB1;
+  QgsProcessingModelOutput outB1( "BRANCH_B_OUTPUT" );
+  outB1.setChildOutputName( "OUTPUT" );
+  outputsB1.insert( QStringLiteral( "BRANCH_B_OUTPUT" ), outB1 );
+  algB1.setModelOutputs( outputsB1 );
+
+  algB1.setDependencies( QList< QgsProcessingModelChildDependency >() << QgsProcessingModelChildDependency( QStringLiteral( "branch" ), QStringLiteral( "enableBranchB" ) ) );
+
+  model.addChildAlgorithm( algB1 );
+
+  // MERGER
+  QgsProcessingModelChildAlgorithm algM;
+  algM.setChildId( "merger" );
+  algM.setAlgorithmId( "native:branchmerger" );
+  algM.addParameterSources( QStringLiteral( "DEFAULT_INPUT" ), QList< QgsProcessingModelChildParameterSource >() << QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "algBranchA1" ), QStringLiteral( "OUTPUT" ) ) );
+  algM.addParameterSources( QStringLiteral( "FALLBACK_INPUT" ), QList< QgsProcessingModelChildParameterSource >() << QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "algBranchB1" ), QStringLiteral( "OUTPUT" ) ) );
+  model.addChildAlgorithm( algM );
+
+  // MERGED BRANCH
+  QgsProcessingModelChildAlgorithm algc2;
+  algc2.setChildId( "algBranchMerged" );
+  algc2.setAlgorithmId( "native:deletecolumn" );
+  algc2.addParameterSources( QStringLiteral( "INPUT" ), QList< QgsProcessingModelChildParameterSource >() << QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "merger" ), QStringLiteral( "OUTPUT" ) ) );
+  QMap<QString, QgsProcessingModelOutput> outputsc2;
+  QgsProcessingModelOutput outc2( "MERGED_OUTPUT" );
+  outc2.setChildOutputName( "OUTPUT" );
+  outputsc2.insert( QStringLiteral( "MERGED_OUTPUT" ), outc2 );
+  algc2.setModelOutputs( outputsc2 );
+  model.addChildAlgorithm( algc2 );
+
+
+  QgsProcessingFeedback feedback;
+  QVariantMap params;
+
+  params.insert( QStringLiteral( "LAYER_A" ), QStringLiteral( "vl1" ) );
+  params.insert( QStringLiteral( "LAYER_B" ), QStringLiteral( "vl2" ) );
+  params.insert( QStringLiteral( "algBranchA1:BRANCH_A_OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  params.insert( QStringLiteral( "algBranchB1:BRANCH_B_OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  params.insert( QStringLiteral( "algBranchMerged:MERGED_OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  // case 1
+  context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "enableBranchA" ), 1 );
+  context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "enableBranchB" ), 1 );
+
+  QVariantMap results = model.run( params, context, &feedback );
+  QVERIFY( !results.value( QStringLiteral( "algBranchA1:BRANCH_A_OUTPUT" ) ).toString().isEmpty() );
+  QVERIFY( !results.value( QStringLiteral( "algBranchB1:BRANCH_B_OUTPUT" ) ).toString().isEmpty() );
+  QVERIFY( !results.value( QStringLiteral( "algBranchMerged:MERGED_OUTPUT" ) ).toString().isEmpty() );
+
+  // case 2
+  context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "enableBranchA" ), 0 );
+  context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "enableBranchB" ), 1 );
+
+  results = model.run( params, context, &feedback );
+  QVERIFY( !results.contains( QStringLiteral( "algBranchA1:BRANCH_A_OUTPUT" ) ) );
+  QVERIFY( !results.value( QStringLiteral( "algBranchB1:BRANCH_B_OUTPUT" ) ).toString().isEmpty() );
+  QVERIFY( !results.value( QStringLiteral( "algBranchMerged:MERGED_OUTPUT" ) ).toString().isEmpty() );
+
+  // case 3
+  context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "enableBranchA" ), 1 );
+  context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "enableBranchB" ), 0 );
+
+  results = model.run( params, context, &feedback );
+  QVERIFY( !results.value( QStringLiteral( "algBranchA1:BRANCH_A_OUTPUT" ) ).toString().isEmpty() );
+  QVERIFY( !results.contains( QStringLiteral( "algBranchB1:BRANCH_B_OUTPUT" ) ) );
+  QVERIFY( !results.value( QStringLiteral( "algBranchMerged:MERGED_OUTPUT" ) ).toString().isEmpty() );
+
+  // case 4
+  context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "enableBranchA" ), 0 );
+  context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "enableBranchB" ), 0 );
+
+  results = model.run( params, context, &feedback );
+  QVERIFY( !results.contains( QStringLiteral( "algBranchA1:BRANCH_B_OUTPUT" ) ) );
+  QVERIFY( !results.contains( QStringLiteral( "algBranchB1:BRANCH_B_OUTPUT" ) ) );
+  QVERIFY( !results.contains( QStringLiteral( "algBranchMerged:MERGED_OUTPUT" ) ) );
 }
 
 void TestQgsProcessingModelAlgorithm::modelWithProviderWithLimitedTypes()
