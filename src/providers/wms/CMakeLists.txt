@@ -65,7 +65,7 @@ if (WITH_GUI)
   target_compile_definitions(provider_wms_gui_a PRIVATE "-DQT_NO_FOREACH")
 endif()
 
-if (HAVE_STATIC_PROVIDERS)
+if (FORCE_STATIC_LIBS)
   # for (external) mobile apps to be able to pick up provider for linking
   install (TARGETS provider_wms_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
   if (WITH_GUI)
