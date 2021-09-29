@@ -660,6 +660,8 @@ class TestQgsFallbackFieldFormatter(unittest.TestCase):
                          '4')
         self.assertEqual(fieldFormatter.representValue(vl, 1, {}, None, "123"),
                          '123')
+        # bad field index
+        self.assertEqual(fieldFormatter.representValue(vl, 3, {}, None, 5), "")
 
 
 class TestQgsDateTimeFieldFormatter(unittest.TestCase):
