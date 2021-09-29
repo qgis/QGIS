@@ -342,6 +342,20 @@ QString QgsField::displayString( const QVariant &v ) const
   {
     return QObject::tr( "BLOB" );
   }
+  else if ( d->type == QVariant::StringList || d->type == QVariant::List )
+  {
+    // we return an empty string if the list is empty, not a null string
+    QString result( "" );
+    const QVariantList list = v.toList();
+    for ( const QVariant &var : list )
+    {
+      if ( !result.isEmpty() )
+        result.append( ", " );
+      result.append( var.toString() );
+    }
+    return result;
+  }
+
   // Fallback if special rules do not apply
   return v.toString();
 }
