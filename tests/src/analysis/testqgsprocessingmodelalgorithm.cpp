@@ -1683,7 +1683,7 @@ void TestQgsProcessing::modelBranchMerger()
 
   QgsProcessingModelAlgorithm model;
 
-  // CONDITIONS
+  // Conditions to enable / disable branches
   context.expressionContext().appendScope( new QgsExpressionContextScope() );
 
   QgsProcessingModelChildAlgorithm algC;
@@ -1707,7 +1707,7 @@ void TestQgsProcessing::modelBranchMerger()
   algC.setConfiguration( config );
   model.addChildAlgorithm( algC );
 
-  // BRANCH A
+  // Branch A side
   QgsProcessingModelParameter param;
   param.setParameterName( QStringLiteral( "LAYER_A" ) );
   model.addModelParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "LAYER_A" ) ), param );
@@ -1727,7 +1727,7 @@ void TestQgsProcessing::modelBranchMerger()
 
   model.addChildAlgorithm( algA1 );
 
-  // BRANCH B
+  // Branch B side
   param = QgsProcessingModelParameter();
   param.setParameterName( QStringLiteral( "LAYER_B" ) );
   model.addModelParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "LAYER_B" ) ), param );
@@ -1747,7 +1747,7 @@ void TestQgsProcessing::modelBranchMerger()
 
   model.addChildAlgorithm( algB1 );
 
-  // MERGER
+  // Merge 2 branches
   QgsProcessingModelChildAlgorithm algM;
   algM.setChildId( "merger" );
   algM.setAlgorithmId( "native:branchmerger" );
@@ -1758,7 +1758,7 @@ void TestQgsProcessing::modelBranchMerger()
 
   model.addChildAlgorithm( algM );
 
-  // MERGED BRANCH
+  // And a common algorithm
   QgsProcessingModelChildAlgorithm algc2;
   algc2.setChildId( "algBranchMerged" );
   algc2.setAlgorithmId( "native:deletecolumn" );
@@ -1782,7 +1782,7 @@ void TestQgsProcessing::modelBranchMerger()
 
   context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "enableMerger" ), 1 );
 
-  // case 1
+  // All branches enabled
   context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "enableBranchA" ), 1 );
   context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "enableBranchB" ), 1 );
 
@@ -1791,7 +1791,7 @@ void TestQgsProcessing::modelBranchMerger()
   QVERIFY( !results.value( QStringLiteral( "algBranchB1:BRANCH_B_OUTPUT" ) ).toString().isEmpty() );
   QVERIFY( !results.value( QStringLiteral( "algBranchMerged:MERGED_OUTPUT" ) ).toString().isEmpty() );
 
-  // case 2
+  // Disable branch A, the default input of the merger
   context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "enableBranchA" ), 0 );
   context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "enableBranchB" ), 1 );
 
@@ -1800,7 +1800,7 @@ void TestQgsProcessing::modelBranchMerger()
   QVERIFY( !results.value( QStringLiteral( "algBranchB1:BRANCH_B_OUTPUT" ) ).toString().isEmpty() );
   QVERIFY( !results.value( QStringLiteral( "algBranchMerged:MERGED_OUTPUT" ) ).toString().isEmpty() );
 
-  // case 3
+  // Disable branch B, the fallback input of the merger
   context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "enableBranchA" ), 1 );
   context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "enableBranchB" ), 0 );
 
@@ -1809,7 +1809,7 @@ void TestQgsProcessing::modelBranchMerger()
   QVERIFY( !results.contains( QStringLiteral( "algBranchB1:BRANCH_B_OUTPUT" ) ) );
   QVERIFY( !results.value( QStringLiteral( "algBranchMerged:MERGED_OUTPUT" ) ).toString().isEmpty() );
 
-  // case 4
+  // Disable the 2 branches
   context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "enableBranchA" ), 0 );
   context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "enableBranchB" ), 0 );
 
@@ -1818,7 +1818,7 @@ void TestQgsProcessing::modelBranchMerger()
   QVERIFY( !results.contains( QStringLiteral( "algBranchB1:BRANCH_B_OUTPUT" ) ) );
   QVERIFY( !results.contains( QStringLiteral( "algBranchMerged:MERGED_OUTPUT" ) ) );
 
-  // case 5
+  // Disable directly the merger
   context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "enableMerger" ), 0 );
   context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "enableBranchA" ), 1 );
   context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "enableBranchB" ), 1 );
