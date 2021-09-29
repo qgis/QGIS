@@ -50,9 +50,9 @@ QString QgsBranchMergeAlgorithm::groupId() const
 
 QString QgsBranchMergeAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm merges 2 branches by transferring one of 2 input layers to the output."
-                      "It checks if the layer of the first branch is valid before transferring."
-                      "If not, it does the same process with the second layer."
+  return QObject::tr( "This algorithm merges 2 branches by transferring one of 2 input layers to the output. "
+                      "It checks if the layer of the first branch is valid before transferring. "
+                      "If not, it does the same process with the second layer. "
                       "If it is not valid either, an error is raised."
                     );
 }
