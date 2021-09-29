@@ -26,6 +26,9 @@ QString QgsFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex
   Q_UNUSED( config )
   Q_UNUSED( cache )
 
+  if ( ! layer->fields().exists( fieldIndex ) )
+    return QString();
+
   QString defVal;
   if ( layer->fields().fieldOrigin( fieldIndex ) == QgsFields::OriginProvider && layer->dataProvider() )
     defVal = layer->dataProvider()->defaultValueClause( layer->fields().fieldOriginIndex( fieldIndex ) );
