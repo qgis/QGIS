@@ -506,6 +506,12 @@ class TestQgsServerWFS(QgsServerTestBase):
         self.wfs_request_compare(
             "GetFeature", '1.0.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&FEATUREID=testlayer.0", 'wfs_getFeature_1_0_0_featureid_0')
 
+    def test_getFeatureFeature11urn(self):
+        """Test GetFeature with SRSNAME urn:ogc:def:crs:EPSG::4326"""
+
+        self.wfs_request_compare(
+            "GetFeature", '1.1.0', "SRSNAME=urn:ogc:def:crs:EPSG::4326&TYPENAME=testlayer&FEATUREID=testlayer.0", 'wfs_getFeature_1_1_0_featureid_0_1_1_0')
+
     def test_getFeature_EXP_FILTER_regression_20927(self):
         """Test expressions with EXP_FILTER"""
 
