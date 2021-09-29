@@ -572,7 +572,9 @@ double QgsRenderContext::convertMetersToMapUnits( double meters ) const
       {
         pointCenter = mCoordTransform.transform( pointCenter );
       }
-      return mDistanceArea.measureLineProjected( pointCenter, meters );
+
+      const int multiplier = meters < 0 ? -1 : 1;
+      return multiplier * mDistanceArea.measureLineProjected( pointCenter, std::fabs( meters ) );
     }
     case QgsUnitTypes::DistanceKilometers:
     case QgsUnitTypes::DistanceFeet:
