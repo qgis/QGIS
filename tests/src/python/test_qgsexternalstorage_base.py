@@ -70,7 +70,7 @@ class TestPyQgsExternalStorageBase():
     def tearDownClass(cls):
         """Run after all tests"""
         cls.registry.unregisterExternalStorage(cls.storage)
-        assert not cls.storageType in cls.registry.externalStorages()
+        assert cls.storageType not in cls.registry.externalStorages()
 
     def setUp(self):
         """Run before each test."""
