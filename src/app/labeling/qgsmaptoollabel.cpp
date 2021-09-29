@@ -68,6 +68,33 @@ bool QgsMapToolLabel::labelAtPosition( QMouseEvent *e, QgsLabelPosition &p )
     return false;
 
   QList<QgsLabelPosition> labelPosList = labelingResults->labelsAtPosition( pt );
+  labelPosList.erase( std::remove_if( labelPosList.begin(), labelPosList.end(), []( const QgsLabelPosition & position )
+  {
+    if ( position.layerID.isEmpty() )
+      return true;
+
+    if ( QgsMapLayer *layer = QgsProject::instance()->mapLayer( position.layerID ) )
+    {
+      // strip out any labels from non vector layers (e.g. those from vector tile layers). Only vector layer labels
+      // are supported by the map tools.
+      switch ( layer->type() )
+      {
+        case QgsMapLayerType::VectorLayer:
+          return false;
+
+        case QgsMapLayerType::RasterLayer:
+        case QgsMapLayerType::PluginLayer:
+        case QgsMapLayerType::MeshLayer:
+        case QgsMapLayerType::VectorTileLayer:
+        case QgsMapLayerType::AnnotationLayer:
+        case QgsMapLayerType::PointCloudLayer:
+          return true;
+      }
+    }
+
+    return true;
+  } ), labelPosList.end() );
+
   if ( labelPosList.empty() )
     return false;
 
@@ -131,6 +158,32 @@ bool QgsMapToolLabel::calloutAtPosition( QMouseEvent *e, QgsCalloutPosition &p, 
   const double tol = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
 
   QList<QgsCalloutPosition> calloutPosList = labelingResults->calloutsWithinRectangle( QgsRectangle::fromCenterAndSize( pt, tol * 2, tol * 2 ) );
+  calloutPosList.erase( std::remove_if( calloutPosList.begin(), calloutPosList.end(), []( const QgsCalloutPosition & position )
+  {
+    if ( position.layerID.isEmpty() )
+      return true;
+
+    if ( QgsMapLayer *layer = QgsProject::instance()->mapLayer( position.layerID ) )
+    {
+      // strip out any callouts from non vector layers (e.g. those from vector tile layers). Only vector layer callouts
+      // are supported by the map tools.
+      switch ( layer->type() )
+      {
+        case QgsMapLayerType::VectorLayer:
+          return false;
+
+        case QgsMapLayerType::RasterLayer:
+        case QgsMapLayerType::PluginLayer:
+        case QgsMapLayerType::MeshLayer:
+        case QgsMapLayerType::VectorTileLayer:
+        case QgsMapLayerType::AnnotationLayer:
+        case QgsMapLayerType::PointCloudLayer:
+          return true;
+      }
+    }
+
+    return true;
+  } ), calloutPosList.end() );
   if ( calloutPosList.empty() )
     return false;
 
