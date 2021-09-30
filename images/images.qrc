@@ -937,6 +937,14 @@
         <file>themes/default/mActionAddGpsLayer.svg</file>
         <file>themes/default/mIconAnnotationLayer.svg</file>
         <file>themes/default/mActionCreateAnnotationLayer.svg</file>
+        <file>themes/default/mActionEditBold.svg</file>
+        <file>themes/default/mActionEditIndentLess.svg</file>
+        <file>themes/default/mActionEditIndentMore.svg</file>
+        <file>themes/default/mActionEditInsertImage.svg</file>
+        <file>themes/default/mActionEditInsertLink.svg</file>
+        <file>themes/default/mActionEditItalic.svg</file>
+        <file>themes/default/mActionEditUnderline.svg</file>
+        <file>themes/default/mActionStrikeOut.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
