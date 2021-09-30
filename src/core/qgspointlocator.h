@@ -296,7 +296,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
             {
               try
               {
-                point.transform( transform, QgsCoordinateTransform::ReverseTransform );
+                point.transform( transform, Qgis::TransformDirection::ReverseTransform );
               }
               catch ( QgsCsException & )
               {
