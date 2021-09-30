@@ -46,6 +46,9 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
 
     bool hasGeometry() const override { return !mGeometryAttribute.isEmpty(); }
 
+    //! Set a new filter and return the previous one. Only used to temporarily disable filtering when trying to get layer geometry type.
+    QString setWFSFilter( const QString &newFilter ) { QString oldFilter = mWFSFilter; mWFSFilter = newFilter; return oldFilter; }
+
   signals:
 
     //! Raise error
