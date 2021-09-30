@@ -68,6 +68,18 @@ class TestQgsRenderContext(unittest.TestCase):
         c.setSymbologyReferenceScale(1000)
         self.assertEqual(c.symbologyReferenceScale(), 1000)
 
+        self.assertTrue(c.outputSize().isEmpty())
+        c.setOutputSize(QSize(100, 200))
+        self.assertEqual(c.outputSize(), QSize(100, 200))
+
+        self.assertEqual(c.devicePixelRatio(), 1)
+        c.setDevicePixelRatio(2)
+        self.assertEqual(c.devicePixelRatio(), 2)
+        self.assertEqual(c.deviceOutputSize(), QSize(200, 400))
+
+        c.setImageFormat(QImage.Format_Alpha8)
+        self.assertEqual(c.imageFormat(), QImage.Format_Alpha8)
+
         # should have an invalid mapToPixel by default
         self.assertFalse(c.mapToPixel().isValid())
 
@@ -81,12 +93,19 @@ class TestQgsRenderContext(unittest.TestCase):
         c1.setMapExtent(QgsRectangle(1, 2, 3, 4))
         c1.setZRange(QgsDoubleRange(1, 10))
         c1.setSymbologyReferenceScale(1000)
+        c1.setOutputSize(QSize(100, 200))
+        c1.setImageFormat(QImage.Format_Alpha8)
+        c1.setDevicePixelRatio(2)
 
         c2 = QgsRenderContext(c1)
         self.assertEqual(c2.textRenderFormat(), QgsRenderContext.TextFormatAlwaysText)
         self.assertEqual(c2.mapExtent(), QgsRectangle(1, 2, 3, 4))
         self.assertEqual(c2.zRange(), QgsDoubleRange(1, 10))
         self.assertEqual(c2.symbologyReferenceScale(), 1000)
+        self.assertEqual(c2.outputSize(), QSize(100, 200))
+        self.assertEqual(c2.imageFormat(), QImage.Format_Alpha8)
+        self.assertEqual(c2.devicePixelRatio(), 2)
+        self.assertEqual(c2.deviceOutputSize(), QSize(200, 400))
 
         c1.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysOutlines)
         c2 = QgsRenderContext(c1)
@@ -150,6 +169,9 @@ class TestQgsRenderContext(unittest.TestCase):
         ms.setFlag(QgsMapSettings.LosslessImageRendering, True)
         ms.setFlag(QgsMapSettings.Render3DMap, True)
         ms.setZRange(QgsDoubleRange(1, 10))
+        ms.setOutputSize(QSize(100, 100))
+        ms.setDevicePixelRatio(2)
+        ms.setOutputImageFormat(QImage.Format_Alpha8)
 
         ms.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysText)
         rc = QgsRenderContext.fromMapSettings(ms)
@@ -159,6 +181,10 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertTrue(rc.testFlag(QgsRenderContext.Render3DMap))
         self.assertEqual(ms.zRange(), QgsDoubleRange(1, 10))
         self.assertEqual(rc.symbologyReferenceScale(), -1)
+        self.assertEqual(rc.outputSize(), QSize(100, 100))
+        self.assertEqual(rc.devicePixelRatio(), 2)
+        self.assertEqual(rc.deviceOutputSize(), QSize(200, 200))
+        self.assertEqual(rc.imageFormat(), QImage.Format_Alpha8)
 
         # should have an valid mapToPixel
         self.assertTrue(rc.mapToPixel().isValid())

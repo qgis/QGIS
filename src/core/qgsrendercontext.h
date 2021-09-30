@@ -889,6 +889,75 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      */
     void setZRange( const QgsDoubleRange &range );
 
+    /**
+     * Returns the size of the resulting rendered image, in pixels.
+     *
+     * \see deviceOutputSize()
+     * \see setOutputSize()
+     *
+     * \since QGIS 3.22
+     */
+    QSize outputSize() const;
+
+    /**
+     * Sets the \a size of the resulting rendered image, in pixels.
+     *
+     * \see outputSize()
+     * \since QGIS 3.22
+     */
+    void setOutputSize( QSize size );
+
+    /**
+     * Returns the device pixel ratio.
+     *
+     * Common values are 1 for normal-dpi displays and 2 for high-dpi "retina" displays.
+     *
+     * \see setDevicePixelRatio()
+     * \since QGIS 3.22
+     */
+    float devicePixelRatio() const;
+
+    /**
+     * Sets the device pixel \a ratio.
+     *
+     * Common values are 1 for normal-dpi displays and 2 for high-dpi "retina" displays.
+     *
+     * \see devicePixelRatio()
+     * \since QGIS 3.22
+     */
+    void setDevicePixelRatio( float ratio );
+
+    /**
+     * Returns the device output size of the render.
+     *
+     * This is equivalent to the output size multiplicated by the device pixel ratio.
+     *
+     * \see outputSize()
+     * \see devicePixelRatio()
+     * \see setOutputSize()
+     *
+     * \since QGIS 3.22
+     */
+    QSize deviceOutputSize() const;
+
+    /**
+     * Sets QImage \a format which should be used for QImages created
+     * during rendering.
+     *
+     * \see imageFormat()
+     * \since QGIS 3.22
+     */
+    void setImageFormat( QImage::Format format ) { mImageFormat = format; }
+
+    /**
+     * Returns the QImage format which should be used for QImages created
+     * during rendering.
+     *
+     * \see setImageFormat
+     * \since QGIS 3.22
+     */
+    QImage::Format imageFormat() const { return mImageFormat; }
+
   private:
 
     Qgis::RenderContextFlags mFlags;
@@ -994,6 +1063,10 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     QPointF mTextureOrigin;
 
     QgsDoubleRange mZRange;
+
+    QSize mSize;
+    float mDevicePixelRatio = 1.0;
+    QImage::Format mImageFormat = QImage::Format_ARGB32_Premultiplied;
 
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;
