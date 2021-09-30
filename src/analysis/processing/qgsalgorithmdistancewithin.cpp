@@ -39,28 +39,60 @@ void QgsDistanceWithinAlgorithm::process( const QgsProcessingContext &context, Q
     bool onlyRequireTargetIds,
     QgsProcessingFeedback *feedback, QgsExpressionContext &expressionContext )
 {
-  const bool isDynamicDistance = distanceProperty.isActive();
+  // By default we will iterate over the reference source and match back
+  // to the target source. We do this on the assumption that the most common
+  // use case is joining a points layer to a polygon layer (e.g. findings
+  // points near a polygon), so by iterating
+  // over the polygons we can take advantage of prepared geometries for
+  // the spatial relationship test.
+  bool iterateOverTarget = false;
 
-  if ( targetSource->sourceCrs() != referenceSource->sourceCrs()
-       || isDynamicDistance
-       || (
-         targetSource->featureCount() > 0 && referenceSource->featureCount() > 0
-         && targetSource->featureCount() < referenceSource->featureCount() ) )
+  //
+  // Possible reasons to iterate over target are considered here
+  //
+  do
   {
-    // joining FEWER features to a layer with MORE features. So we iterate over the FEW features and find matches from the MANY
-    // (note that we HAVE to do this if we have layers from two different CRSes, or if we are using dynamic distance!)
+    // If distance is dynamic, we MUST iterate over target
+    if ( distanceProperty.isActive() )
+    {
+      iterateOverTarget = true;
+      break;
+    }
+
+    // If reference needs reprojection, we MUST iterate over target
+    if ( targetSource->sourceCrs() != referenceSource->sourceCrs() )
+    {
+      iterateOverTarget = true;
+      break;
+    }
+
+    // if reference is POINTs and target is not, we prefer iterating
+    // over target, to benefit from preparation
+    if ( referenceSource->wkbType() == QgsWkbTypes::Point &&
+         targetSource->wkbType() != QgsWkbTypes::Point )
+    {
+      iterateOverTarget = true;
+      break;
+    }
+
+    // neither source nor target or both of them are POINTs, we will
+    // iterate over the source with FEWER features to prepare less
+    if ( targetSource->featureCount() < referenceSource->featureCount() )
+    {
+      iterateOverTarget = true;
+      break;
+    }
+  }
+  while ( 0 );
+
+  if ( iterateOverTarget )
+  {
     processByIteratingOverTargetSource( context, targetSource, referenceSource,
                                         distance, distanceProperty, handleFeatureFunction,
                                         onlyRequireTargetIds, feedback, expressionContext );
   }
   else
   {
-    // default -- iterate over the reference source and match back to the target source. We do this on the assumption that the most common
-    // use case is joining a points layer to a polygon layer (e.g. findings points near a polygon), so by iterating
-    // over the polygons we can take advantage of prepared geometries for the spatial relationship test.
-
-    // TODO - consider using more heuristics to determine whether it's always best to iterate over the reference
-    // source.
     processByIteratingOverReferenceSource( context, targetSource, referenceSource,
                                            distance, handleFeatureFunction,
                                            onlyRequireTargetIds, feedback );
