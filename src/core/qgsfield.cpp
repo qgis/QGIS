@@ -342,6 +342,19 @@ QString QgsField::displayString( const QVariant &v ) const
   {
     return QObject::tr( "BLOB" );
   }
+  else if ( d->type == QVariant::StringList || d->type == QVariant::List )
+  {
+    QString result;
+    const QVariantList list = v.toList();
+    for ( const QVariant &var : list )
+    {
+      if ( !result.isEmpty() )
+        result.append( QStringLiteral( ", " ) );
+      result.append( var.toString() );
+    }
+    return result;
+  }
+
   // Fallback if special rules do not apply
   return v.toString();
 }

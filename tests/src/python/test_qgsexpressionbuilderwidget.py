@@ -13,6 +13,7 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 import qgis  # NOQA
 
 from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QListView
 from qgis.testing import start_app, unittest
 from qgis.gui import QgsExpressionBuilderWidget
 from qgis.core import (QgsExpressionContext,
@@ -213,6 +214,88 @@ class TestQgsExpressionBuilderWidget(unittest.TestCase):
         self.assertEqual(len(items), 1)
 
         p.removeMapLayer(layer)
+
+    def testValuesList(self):
+        """
+        Test the content of values list widget
+        """
+
+        w = QgsExpressionBuilderWidget()
+
+        valuesList = w.findChild(QListView, 'mValuesListView')
+        self.assertTrue(valuesList)
+
+        valuesModel = valuesList.model()
+        self.assertTrue(valuesModel)
+
+        layer = QgsVectorLayer(
+            "None?field=myarray:string[]&field=mystr:string&field=myint:integer",
+            "arraylayer", "memory")
+
+        self.assertTrue(layer.isValid())
+
+        # add some features, one has invalid geometry
+        pr = layer.dataProvider()
+        f1 = QgsFeature(1)
+        f1.setAttributes([["one 'item'", 'B'], "another 'item'", 0])
+        f2 = QgsFeature(2)
+        f2.setAttributes([['C'], "", 1])
+        f3 = QgsFeature(3)
+        f3.setAttributes([[], "test", 2])
+        f4 = QgsFeature(4)
+        self.assertTrue(pr.addFeatures([f1, f2, f3, f4]))
+
+        w.setLayer(layer)
+
+        # test array
+        items = w.expressionTree().findExpressions("myarray")
+        self.assertEqual(len(items), 1)
+        currentIndex = w.expressionTree().model().mapFromSource(items[0].index())
+        self.assertTrue(currentIndex.isValid())
+        w.expressionTree().setCurrentIndex(currentIndex)
+        self.assertTrue(w.expressionTree().currentItem())
+
+        w.loadAllValues()
+
+        datas = sorted([(valuesModel.data(valuesModel.index(i, 0), Qt.DisplayRole), valuesModel.data(valuesModel.index(i, 0), Qt.UserRole + 1)) for i in range(4)])
+        self.assertEqual(datas, [(" [array()]", "array()"),
+                                 ("C [array('C')]", "array('C')"),
+                                 ("NULL [NULL]", "NULL"),
+                                 ("one 'item', B [array('one ''item''', 'B')]", "array('one ''item''', 'B')")])
+
+        # test string
+        items = w.expressionTree().findExpressions("mystr")
+        self.assertEqual(len(items), 1)
+        currentIndex = w.expressionTree().model().mapFromSource(items[0].index())
+        self.assertTrue(currentIndex.isValid())
+        w.expressionTree().setCurrentIndex(currentIndex)
+        self.assertTrue(w.expressionTree().currentItem())
+
+        w.loadAllValues()
+
+        datas = sorted([(valuesModel.data(valuesModel.index(i, 0), Qt.DisplayRole), valuesModel.data(valuesModel.index(i, 0), Qt.UserRole + 1)) for i in range(4)])
+
+        self.assertEqual(datas, [("", "''"),
+                                 ("NULL [NULL]", "NULL"),
+                                 ("another 'item'", "'another ''item'''"),
+                                 ("test", "'test'")])
+
+        # test int
+        items = w.expressionTree().findExpressions("myint")
+        self.assertEqual(len(items), 1)
+        currentIndex = w.expressionTree().model().mapFromSource(items[0].index())
+        self.assertTrue(currentIndex.isValid())
+        w.expressionTree().setCurrentIndex(currentIndex)
+        self.assertTrue(w.expressionTree().currentItem())
+
+        w.loadAllValues()
+
+        datas = sorted([(valuesModel.data(valuesModel.index(i, 0), Qt.DisplayRole), valuesModel.data(valuesModel.index(i, 0), Qt.UserRole + 1)) for i in range(4)])
+
+        self.assertEqual(datas, [("0", "0"),
+                                 ("1", "1"),
+                                 ("2", "2"),
+                                 ("NULL [NULL]", "NULL")])
 
 
 if __name__ == '__main__':
