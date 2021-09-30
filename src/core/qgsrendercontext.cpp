@@ -74,6 +74,9 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mFeatureClipGeometry( rh.mFeatureClipGeometry )
   , mTextureOrigin( rh.mTextureOrigin )
   , mZRange( rh.mZRange )
+  , mSize( rh.mSize )
+  , mDevicePixelRatio( rh.mDevicePixelRatio )
+  , mImageFormat( rh.mImageFormat )
 #ifdef QGISDEBUG
   , mHasTransformContext( rh.mHasTransformContext )
 #endif
@@ -114,6 +117,9 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mFeatureClipGeometry = rh.mFeatureClipGeometry;
   mTextureOrigin = rh.mTextureOrigin;
   mZRange = rh.mZRange;
+  mSize = rh.mSize;
+  mDevicePixelRatio = rh.mDevicePixelRatio;
+  mImageFormat = rh.mImageFormat;
   setIsTemporal( rh.isTemporal() );
   if ( isTemporal() )
     setTemporalRange( rh.temporalRange() );
@@ -258,6 +264,9 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
     ctx.setTemporalRange( mapSettings.temporalRange() );
 
   ctx.setZRange( mapSettings.zRange() );
+  ctx.setOutputSize( mapSettings.outputSize() );
+  ctx.setDevicePixelRatio( mapSettings.devicePixelRatio() );
+  ctx.setImageFormat( mapSettings.outputImageFormat() );
 
   ctx.mClippingRegions = mapSettings.clippingRegions();
 
@@ -627,6 +636,31 @@ QgsDoubleRange QgsRenderContext::zRange() const
 void QgsRenderContext::setZRange( const QgsDoubleRange &range )
 {
   mZRange = range;
+}
+
+QSize QgsRenderContext::outputSize() const
+{
+  return mSize;
+}
+
+void QgsRenderContext::setOutputSize( QSize size )
+{
+  mSize = size;
+}
+
+float QgsRenderContext::devicePixelRatio() const
+{
+  return mDevicePixelRatio;
+}
+
+void QgsRenderContext::setDevicePixelRatio( float ratio )
+{
+  mDevicePixelRatio = ratio;
+}
+
+QSize QgsRenderContext::deviceOutputSize() const
+{
+  return outputSize() * mDevicePixelRatio;
 }
 
 
