@@ -63,9 +63,9 @@ QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer, QWidg
   connect( mAllTimesButton, &QPushButton::clicked, this, &QgsMeshCalculatorDialog::mAllTimesButton_clicked );
   connect( mExpressionTextEdit, &QTextEdit::textChanged, this, &QgsMeshCalculatorDialog::updateInfoMessage );
 
-  connect( useMaskCb, &QCheckBox::stateChanged, this, &QgsMeshCalculatorDialog::toggleExtendMask );
-  connect( useExtentCb, &QCheckBox::stateChanged, this, &QgsMeshCalculatorDialog::toggleExtendMask );
+  connect( useMaskCb, &QRadioButton::toggled, this, &QgsMeshCalculatorDialog::toggleExtendMask );
   maskBox->setVisible( false );
+  useMaskCb->setEnabled( cboLayerMask->count() );
 
   mXMaxSpinBox->setShowClearButton( false );
   mXMinSpinBox->setShowClearButton( false );
@@ -279,19 +279,11 @@ void QgsMeshCalculatorDialog::datasetGroupEntry( const QModelIndex &index )
   mExpressionTextEdit->insertPlainText( QStringLiteral( " %1 " ).arg( group ) );
 }
 
-void QgsMeshCalculatorDialog::toggleExtendMask( int state )
+void QgsMeshCalculatorDialog::toggleExtendMask()
 {
-  Q_UNUSED( state )
-  if ( useMaskCb->checkState() == Qt::Checked )
-  {
-    extendBox->setVisible( false );
-    maskBox->setVisible( true );
-  }
-  else
-  {
-    extendBox->setVisible( true );
-    maskBox->setVisible( false );
-  }
+  bool visible = useMaskCb->isChecked();
+  extendBox->setVisible( !visible );
+  maskBox->setVisible( visible );
 }
 
 void QgsMeshCalculatorDialog::updateInfoMessage()
