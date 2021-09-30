@@ -2304,7 +2304,12 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(features[1].attribute('C'), 'C')
 
         self.assertTrue(vl.commitChanges())
-        self.assertEqual(vl.fields().names(), ['A', 'C', 'B'])
+
+        # This has been fixed in GDAL >= 3.4
+        if int(gdal.VersionInfo('VERSION_NUM')) >= GDAL_COMPUTE_VERSION(3, 4, 0):
+            self.assertEqual(vl.fields().names(), ['A', 'B', 'C'])
+        else:
+            self.assertEqual(vl.fields().names(), ['A', 'C', 'B'])
 
         features = [f for f in vl.getFeatures()]
 
