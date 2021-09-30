@@ -1144,11 +1144,6 @@ can break valid model execution - so use with extreme caution, and consider usin
 ``feedback`` to instead report non-fatal processing failures for features instead.
 %End
 
-  protected:
-
-    virtual void initAlgorithm( const QVariantMap &configuration = QVariantMap() );
-
-
     virtual QString inputParameterName() const;
 %Docstring
 Returns the name of the parameter corresponding to the input layer.
@@ -1220,6 +1215,12 @@ This is called once by the base class when creating the output sink for the algo
 not called once per feature processed).
 %End
 
+    QgsCoordinateReferenceSystem sourceCrs() const;
+%Docstring
+Returns the source's coordinate reference system. This will only return a valid CRS when
+called from a subclasses' :py:func:`~QgsProcessingFeatureBasedAlgorithm.processFeature` implementation.
+%End
+
     virtual QgsCoordinateReferenceSystem outputCrs( const QgsCoordinateReferenceSystem &inputCrs ) const;
 %Docstring
 Maps the input source coordinate reference system (``inputCrs``) to a corresponding
@@ -1229,23 +1230,6 @@ the same CRS as the input source.
 This is called once by the base class when creating the output sink for the algorithm (i.e. it is
 not called once per feature processed).
 %End
-
-    virtual void initParameters( const QVariantMap &configuration = QVariantMap() );
-%Docstring
-Initializes any extra parameters added by the algorithm subclass. There is no need
-to declare the input source or output sink, as these are automatically created by
-QgsProcessingFeatureBasedAlgorithm.
-%End
-
-    QgsCoordinateReferenceSystem sourceCrs() const;
-%Docstring
-Returns the source's coordinate reference system. This will only return a valid CRS when
-called from a subclasses' :py:func:`~QgsProcessingFeatureBasedAlgorithm.processFeature` implementation.
-%End
-
-
-    virtual QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) throw( QgsProcessingException );
-
 
     virtual QgsFeatureRequest request() const;
 %Docstring
@@ -1264,6 +1248,21 @@ checks based on the geometry type of the layer.
 
 .. versionadded:: 3.4
 %End
+
+  protected:
+
+    virtual void initAlgorithm( const QVariantMap &configuration = QVariantMap() );
+
+
+    virtual void initParameters( const QVariantMap &configuration = QVariantMap() );
+%Docstring
+Initializes any extra parameters added by the algorithm subclass. There is no need
+to declare the input source or output sink, as these are automatically created by
+QgsProcessingFeatureBasedAlgorithm.
+%End
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) throw( QgsProcessingException );
+
 
     void prepareSource( const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
