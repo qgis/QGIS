@@ -148,8 +148,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset theme="insert-link">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEditInsertLink.svg</normaloff>:/images/themes/default/mActionEditInsertLink.svg</iconset>
    </property>
    <property name="text">
     <string>Insert Link</string>
@@ -163,8 +163,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset theme="format-text-bold">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEditBold.svg</normaloff>:/images/themes/default/mActionEditBold.svg</iconset>
    </property>
    <property name="text">
     <string>Bold</string>
@@ -175,8 +175,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset theme="format-text-italic">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEditItalic.svg</normaloff>:/images/themes/default/mActionEditItalic.svg</iconset>
    </property>
    <property name="text">
     <string>Italic</string>
@@ -190,8 +190,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset theme="format-text-underline">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEditUnderline.svg</normaloff>:/images/themes/default/mActionEditUnderline.svg</iconset>
    </property>
    <property name="text">
     <string>Underline</string>
@@ -205,8 +205,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset theme="format-text-strikethrough">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionStrikeOut.svg</normaloff>:/images/themes/default/mActionStrikeOut.svg</iconset>
    </property>
    <property name="text">
     <string>Strike Out</string>
@@ -239,8 +239,8 @@
   </action>
   <action name="mActionDecreaseIndent">
    <property name="icon">
-    <iconset theme="format-indent-less">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEditIndentLess.svg</normaloff>:/images/themes/default/mActionEditIndentLess.svg</iconset>
    </property>
    <property name="text">
     <string>Decrease Indentation</string>
@@ -251,8 +251,8 @@
   </action>
   <action name="mActionIncreaseIndent">
    <property name="icon">
-    <iconset theme="format-indent-more">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEditIndentMore.svg</normaloff>:/images/themes/default/mActionEditIndentMore.svg</iconset>
    </property>
    <property name="text">
     <string>Increase Indentation</string>
@@ -263,8 +263,8 @@
   </action>
   <action name="mActionInsertImage">
    <property name="icon">
-    <iconset theme="insert-image">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEditInsertImage.svg</normaloff>:/images/themes/default/mActionEditInsertImage.svg</iconset>
    </property>
    <property name="text">
     <string>Insert Image</string>
