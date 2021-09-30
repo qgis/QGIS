@@ -151,6 +151,7 @@ class QgsDevToolsPanelWidget;
 class QgsDevToolWidgetFactory;
 class QgsNetworkLogger;
 class QgsNetworkLoggerWidgetFactory;
+class QgsAppQueryLogger;
 class QgsMapToolCapture;
 class QgsElevationProfileWidget;
 
@@ -2742,6 +2743,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsNetworkLogger *mNetworkLogger = nullptr;
     QgsScopedDevToolWidgetFactory mNetworkLoggerWidgetFactory;
     QgsScopedDevToolWidgetFactory mStartupProfilerWidgetFactory;
+    QgsAppQueryLogger *mQueryLogger = nullptr;
+    QgsScopedDevToolWidgetFactory mQueryLoggerWidgetFactory;
 
     QgsScopedOptionsWidgetFactory mCodeEditorWidgetFactory;
     QgsScopedOptionsWidgetFactory mBabelGpsDevicesWidgetFactory;

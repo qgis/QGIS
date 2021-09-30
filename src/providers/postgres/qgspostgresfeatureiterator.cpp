@@ -23,7 +23,7 @@
 #include "qgssettings.h"
 #include "qgsexception.h"
 #include "qgsgeometryengine.h"
-
+#include "qgsdbquerylog.h"
 #include <QElapsedTimer>
 #include <QObject>
 
@@ -422,8 +422,13 @@ bool QgsPostgresFeatureIterator::rewind()
     return false;
 
   // move cursor to first record
+  const QString query = QStringLiteral( "move absolute 0 in %1" ).arg( mCursorName );
 
-  mConn->PQexecNR( QStringLiteral( "move absolute 0 in %1" ).arg( mCursorName ) );
+  QgsDatabaseQueryLogEntry entry( query );
+  QgsSetQueryLogClass( entry, "QgsPostgresFeatureIterator" );
+  QgsDatabaseQueryLog::log( entry );
+  mConn->PQexecNR( query );
+
   mFeatureQueue.clear();
   mFetched = 0;
   mLastFetch = false;
@@ -763,7 +768,9 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString &whereClause, long
   if ( !orderBy.isEmpty() )
     query += QStringLiteral( " ORDER BY %1 " ).arg( orderBy );
 
-  if ( !mConn->openCursor( mCursorName, query ) )
+  QgsDatabaseQueryLogEntry entry( query );
+  QgsSetQueryLogClass( entry, "QgsPostgresFeatureIterator" );
+  if ( !mConn->openCursor( mCursorName, query, entry ) )
   {
     // reloading the fields might help next time around
     // TODO how to cleanly force reload of fields?  P->loadFields();

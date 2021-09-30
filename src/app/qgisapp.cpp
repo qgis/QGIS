@@ -437,6 +437,8 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
 #include "qgsnetworkloggerwidgetfactory.h"
+#include "devtools/querylogger/qgsappquerylogger.h"
+#include "devtools/querylogger/qgsqueryloggerwidgetfactory.h"
 #include "devtools/profiler/qgsprofilerwidgetfactory.h"
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgszipitem.h"
@@ -987,6 +989,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   // start the network logger early, we want all requests logged!
   startProfile( tr( "Create network logger" ) );
   mNetworkLogger = new QgsNetworkLogger( QgsNetworkAccessManager::instance(), this );
+  endProfile();
+
+  startProfile( tr( "Create database query logger" ) );
+  mQueryLogger = new QgsAppQueryLogger( this );
   endProfile();
 
   // load GUI: actions, menus, toolbars
@@ -1829,6 +1835,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
 
   mNetworkLoggerWidgetFactory.reset( std::make_unique< QgsNetworkLoggerWidgetFactory >( mNetworkLogger ) );
+  mQueryLoggerWidgetFactory.reset( std::make_unique< QgsDatabaseQueryLoggerWidgetFactory >( mQueryLogger ) );
 
   // update windows
   qApp->processEvents();

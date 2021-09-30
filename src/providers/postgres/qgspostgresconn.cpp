@@ -31,6 +31,7 @@
 #include "qgspostgresstringutils.h"
 #include "qgspostgresconnpool.h"
 #include "qgsvariantutils.h"
+#include "qgsdbquerylog.h"
 
 #include <QApplication>
 #include <QStringList>
@@ -48,6 +49,14 @@
 #endif
 
 const int PG_DEFAULT_TIMEOUT = 30;
+
+#include "qgsconfig.h"
+constexpr int sPostgresConQueryLogFilePrefixLength = CMAKE_SOURCE_DIR[sizeof( CMAKE_SOURCE_DIR ) - 1] == '/' ? sizeof( CMAKE_SOURCE_DIR ) + 1 : sizeof( CMAKE_SOURCE_DIR );
+#define LoggedPQExecNR(query) { QgsDatabaseQueryLogEntry logEntry( query ); entry.initiatorClass = _class; entry.origin = QString(QString( __FILE__ ).mid( sPostgresConQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")"); \
+    QgsDatabaseQueryLog::log( entry ); \
+    PQexecNR( query ); \
+    QgsDatabaseQueryLog::finished( entry ); }
+
 
 QgsPostgresResult::~QgsPostgresResult()
 {
@@ -412,8 +421,17 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
 
   if ( mPostgresqlVersion >= 90000 )
   {
-    PQexecNR( QStringLiteral( "SET application_name='QGIS'" ) );
-    PQexecNR( QStringLiteral( "SET extra_float_digits=3" ) );
+    QString query = QStringLiteral( "SET application_name='QGIS'" );
+    QgsDatabaseQueryLogEntry entry( query );
+    QgsSetQueryLogClass( entry, "QgsPostgresFeatureIterator" );
+    QgsDatabaseQueryLog::log( entry );
+    PQexecNR( query );
+
+    query = QStringLiteral( "SET extra_float_digits=3" );
+    entry = QgsDatabaseQueryLogEntry( query );
+    QgsSetQueryLogClass( entry, "QgsPostgresFeatureIterator" );
+    QgsDatabaseQueryLog::log( entry );
+    PQexecNR( query );
   }
 
   PQsetNoticeProcessor( mConn, noticeProcessor, nullptr );
@@ -817,7 +835,11 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       QgsMessageLog::logMessage( tr( "Database connection was successful, but the accessible tables could not be determined. The error message from the database was:\n%1\n" )
                                  .arg( result.PQresultErrorMessage() ),
                                  tr( "PostGIS" ) );
-      PQexecNR( QStringLiteral( "COMMIT" ) );
+      QString query = QStringLiteral( "COMMIT" );
+      QgsDatabaseQueryLogEntry entry( query );
+      QgsSetQueryLogClass( entry, "QgsPostgresConn" );
+      QgsDatabaseQueryLog::log( entry );
+      PQexecNR( query );
       return false;
     }
 
@@ -1021,7 +1043,11 @@ bool QgsPostgresConn::getSchemas( QList<QgsPostgresSchemaProperty> &schemas )
   result = PQexec( sql, true );
   if ( result.PQresultStatus() != PGRES_TUPLES_OK )
   {
-    PQexecNR( QStringLiteral( "COMMIT" ) );
+    QString query = QStringLiteral( "COMMIT" );
+    QgsDatabaseQueryLogEntry entry( query );
+    QgsSetQueryLogClass( entry, "QgsPostgresConn" );
+    QgsDatabaseQueryLog::log( entry );
+    PQexecNR( query );
     return false;
   }
 
@@ -1428,7 +1454,7 @@ int QgsPostgresConn::PQCancel()
   return result;
 }
 
-bool QgsPostgresConn::openCursor( const QString &cursorName, const QString &sql )
+bool QgsPostgresConn::openCursor( const QString &cursorName, const QString &sql, const QgsDatabaseQueryLogEntry &logEntry )
 {
   QMutexLocker locker( &mLock ); // to protect access to mOpenCursors
   QString preStr;
@@ -1442,8 +1468,12 @@ bool QgsPostgresConn::openCursor( const QString &cursorName, const QString &sql 
       preStr = QStringLiteral( "BEGIN;" );
   }
   QgsDebugMsgLevel( QStringLiteral( "Binary cursor %1 for %2" ).arg( cursorName, sql ), 3 );
-  return PQexecNR( QStringLiteral( "%1DECLARE %2 BINARY CURSOR%3 FOR %4" ).
-                   arg( preStr, cursorName, !mTransaction ? QString() : QStringLiteral( " WITH HOLD" ), sql ) );
+  const QString query = QStringLiteral( "%1DECLARE %2 BINARY CURSOR%3 FOR %4" ).
+                        arg( preStr, cursorName, !mTransaction ? QString() : QStringLiteral( " WITH HOLD" ), sql );
+  QgsDatabaseQueryLogEntry entry = logEntry;
+  entry.query = query;
+  QgsDatabaseQueryLog::log( entry );
+  return PQexecNR( query );
 }
 
 bool QgsPostgresConn::closeCursor( const QString &cursorName )
@@ -1457,7 +1487,11 @@ bool QgsPostgresConn::closeCursor( const QString &cursorName )
     postStr = QStringLiteral( ";COMMIT" );
   }
 
-  if ( !PQexecNR( QStringLiteral( "CLOSE %1%2" ).arg( cursorName, postStr ) ) )
+  QString query = QStringLiteral( "CLOSE %1%2" ).arg( cursorName, postStr );
+  QgsDatabaseQueryLogEntry entry( query );
+  QgsSetQueryLogClass( entry, "QgsPostgresConn" );
+  QgsDatabaseQueryLog::log( entry );
+  if ( !PQexecNR( query ) )
     return false;
 
   return true;
@@ -1495,7 +1529,11 @@ bool QgsPostgresConn::PQexecNR( const QString &query )
 
   if ( PQstatus() == CONNECTION_OK )
   {
-    PQexecNR( QStringLiteral( "ROLLBACK" ) );
+    QString query = QStringLiteral( "ROLLBACK" );
+    QgsDatabaseQueryLogEntry entry( query );
+    QgsSetQueryLogClass( entry, "QgsPostgresConn" );
+    QgsDatabaseQueryLog::log( entry );
+    PQexecNR( query );
   }
 
   return false;
@@ -1575,11 +1613,19 @@ bool QgsPostgresConn::begin()
   QMutexLocker locker( &mLock );
   if ( mTransaction )
   {
-    return PQexecNR( QStringLiteral( "SAVEPOINT transaction_savepoint" ) );
+    QString query = QStringLiteral( "SAVEPOINT transaction_savepoint" );
+    QgsDatabaseQueryLogEntry entry( query );
+    QgsSetQueryLogClass( entry, "QgsPostgresConn" );
+    QgsDatabaseQueryLog::log( entry );
+    return PQexecNR( query );
   }
   else
   {
-    return PQexecNR( QStringLiteral( "BEGIN" ) );
+    QString query = QStringLiteral( "BEGIN" );
+    QgsDatabaseQueryLogEntry entry( query );
+    QgsSetQueryLogClass( entry, "QgsPostgresConn" );
+    QgsDatabaseQueryLog::log( entry );
+    return PQexecNR( query );
   }
 }
 
@@ -1588,11 +1634,19 @@ bool QgsPostgresConn::commit()
   QMutexLocker locker( &mLock );
   if ( mTransaction )
   {
-    return PQexecNR( QStringLiteral( "RELEASE SAVEPOINT transaction_savepoint" ) );
+    QString query = QStringLiteral( "RELEASE SAVEPOINT transaction_savepoint" );
+    QgsDatabaseQueryLogEntry entry( query );
+    QgsSetQueryLogClass( entry, "QgsPostgresConn" );
+    QgsDatabaseQueryLog::log( entry );
+    return PQexecNR( query );
   }
   else
   {
-    return PQexecNR( QStringLiteral( "COMMIT" ) );
+    QString query = QStringLiteral( "COMMIT" );
+    QgsDatabaseQueryLogEntry entry( query );
+    QgsSetQueryLogClass( entry, "QgsPostgresConn" );
+    QgsDatabaseQueryLog::log( entry );
+    return PQexecNR( query );
   }
 }
 
@@ -1601,12 +1655,29 @@ bool QgsPostgresConn::rollback()
   QMutexLocker locker( &mLock );
   if ( mTransaction )
   {
-    return PQexecNR( QStringLiteral( "ROLLBACK TO SAVEPOINT transaction_savepoint" ) )
-           && PQexecNR( QStringLiteral( "RELEASE SAVEPOINT transaction_savepoint" ) );
+    QString query = QStringLiteral( "ROLLBACK TO SAVEPOINT transaction_savepoint" );
+    QgsDatabaseQueryLogEntry entry( query );
+    QgsSetQueryLogClass( entry, "QgsPostgresConn" );
+    QgsDatabaseQueryLog::log( entry );
+    bool res = false;
+    if ( PQexecNR( query ) )
+    {
+      query = QStringLiteral( "RELEASE SAVEPOINT transaction_savepoint" );
+      QgsDatabaseQueryLogEntry entry( query );
+      QgsSetQueryLogClass( entry, "QgsPostgresConn" );
+      QgsDatabaseQueryLog::log( entry );
+      if ( PQexecNR( query ) )
+        res = true;
+    }
+    return res;
   }
   else
   {
-    return PQexecNR( QStringLiteral( "ROLLBACK" ) );
+    QString query = QStringLiteral( "ROLLBACK" );
+    QgsDatabaseQueryLogEntry entry( query );
+    QgsSetQueryLogClass( entry, "QgsPostgresConn" );
+    QgsDatabaseQueryLog::log( entry );
+    return PQexecNR( query );
   }
 }
 
@@ -1898,7 +1969,10 @@ void QgsPostgresConn::deduceEndian()
   QgsDebugMsgLevel( QStringLiteral( "Creating binary cursor" ), 2 );
 
   // get the same value using a binary cursor
-  openCursor( QStringLiteral( "oidcursor" ), QStringLiteral( "select regclass('pg_class')::oid" ) );
+  QString query = QStringLiteral( "select regclass('pg_class')::oid" );
+  QgsDatabaseQueryLogEntry entry( query );
+  QgsSetQueryLogClass( entry, "QgsPostgresConn" );
+  openCursor( QStringLiteral( "oidcursor" ), query, entry );
 
   QgsDebugMsgLevel( QStringLiteral( "Fetching a record and attempting to get check endian-ness" ), 2 );
 

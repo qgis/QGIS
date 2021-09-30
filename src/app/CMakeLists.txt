@@ -169,6 +169,10 @@ set(QGIS_APP_SRCS
   devtools/networklogger/qgsnetworkloggerwidgetfactory.cpp
   devtools/profiler/qgsprofilerpanelwidget.cpp
   devtools/profiler/qgsprofilerwidgetfactory.cpp
+  devtools/querylogger/qgsappquerylogger.cpp
+  devtools/querylogger/qgsqueryloggernode.cpp
+  devtools/querylogger/qgsqueryloggerpanelwidget.cpp
+  devtools/querylogger/qgsqueryloggerwidgetfactory.cpp
 
   dwg/qgsdwgimportdialog.cpp
   dwg/qgsdwgimporter.cpp

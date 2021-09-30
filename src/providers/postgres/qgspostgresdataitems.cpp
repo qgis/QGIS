@@ -29,6 +29,7 @@
 #include "qgsvectorlayerexporter.h"
 #include "qgsprojectitem.h"
 #include "qgsfieldsitem.h"
+#include "qgsdbquerylog.h"
 #include <QMessageBox>
 #include <climits>
 
@@ -58,11 +59,17 @@ bool QgsPostgresUtils::deleteLayer( const QString &uri, QString &errCause )
   // handle deletion of views
   QString sqlViewCheck = QStringLiteral( "SELECT relkind FROM pg_class WHERE oid=regclass(%1)::oid" )
                          .arg( QgsPostgresConn::quotedValue( schemaTableName ) );
+  QgsDatabaseQueryLogEntry entry( sqlViewCheck );
+  QgsSetQueryLogClass( entry, "QgsPostgresUtils" );
+  QgsDatabaseQueryLog::log( entry );
   QgsPostgresResult resViewCheck( conn->PQexec( sqlViewCheck ) );
   QString type = resViewCheck.PQgetvalue( 0, 0 );
   if ( type == QLatin1String( "v" ) || type == QLatin1String( "m" ) )
   {
     QString sql = QStringLiteral( "DROP %1VIEW %2" ).arg( type == QLatin1String( "m" ) ? QStringLiteral( "MATERIALIZED " ) : QString(), schemaTableName );
+    QgsDatabaseQueryLogEntry entry( sql );
+    QgsSetQueryLogClass( entry, "QgsPostgresUtils" );
+    QgsDatabaseQueryLog::log( entry );
     QgsPostgresResult result( conn->PQexec( sql ) );
     if ( result.PQresultStatus() != PGRES_COMMAND_OK )
     {
@@ -85,6 +92,9 @@ bool QgsPostgresUtils::deleteLayer( const QString &uri, QString &errCause )
                          "AND f_table_schema=%1 AND f_table_name=%2" )
                 .arg( QgsPostgresConn::quotedValue( schemaName ),
                       QgsPostgresConn::quotedValue( tableName ) );
+  entry = QgsDatabaseQueryLogEntry( sql );
+  QgsSetQueryLogClass( entry, "QgsPostgresUtils" );
+  QgsDatabaseQueryLog::log( entry );
   QgsPostgresResult result( conn->PQexec( sql ) );
   if ( result.PQresultStatus() != PGRES_TUPLES_OK )
   {
@@ -113,6 +123,9 @@ bool QgsPostgresUtils::deleteLayer( const QString &uri, QString &errCause )
                 QgsPostgresConn::quotedValue( tableName ) );
   }
 
+  entry = QgsDatabaseQueryLogEntry( sql );
+  QgsSetQueryLogClass( entry, "QgsPostgresUtils" );
+  QgsDatabaseQueryLog::log( entry );
   result = conn->PQexec( sql );
   if ( result.PQresultStatus() != PGRES_TUPLES_OK )
   {
@@ -147,6 +160,9 @@ bool QgsPostgresUtils::deleteSchema( const QString &schema, const QgsDataSourceU
   QString sql = QStringLiteral( "DROP SCHEMA %1 %2" )
                 .arg( schemaName, cascade ? QStringLiteral( "CASCADE" ) : QString() );
 
+  QgsDatabaseQueryLogEntry entry( sql );
+  QgsSetQueryLogClass( entry, "QgsPostgresUtils" );
+  QgsDatabaseQueryLog::log( entry );
   QgsPostgresResult result( conn->PQexec( sql ) );
   if ( result.PQresultStatus() != PGRES_COMMAND_OK )
   {
@@ -262,7 +278,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData *data, const QString &toSc
     if ( srcLayer->isValid() )
     {
       uri.setDataSource( QString(), u.name,  srcLayer->geometryType() != QgsWkbTypes::NullGeometry ? QStringLiteral( "geom" ) : QString() );
-      QgsDebugMsgLevel( "URI " + uri.uri( false ), 2 );
+      QgsDebugMsgLevel( "URI " + uri.uri( false ), 3 );
 
       if ( !toSchema.isNull() )
       {
@@ -365,7 +381,7 @@ QString QgsPGLayerItem::createUri()
   if ( uri.wkbType() != QgsWkbTypes::NoGeometry && mLayerProperty.srids.at( 0 ) != std::numeric_limits<int>::min() )
     uri.setSrid( QString::number( mLayerProperty.srids.at( 0 ) ) );
 
-  QgsDebugMsgLevel( QStringLiteral( "layer uri: %1" ).arg( uri.uri( false ) ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "layer uri: %1" ).arg( uri.uri( false ) ), 3 );
   return uri.uri( false );
 }
 

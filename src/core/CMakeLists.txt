@@ -355,6 +355,7 @@ set(QGIS_CORE_SRCS
   qgsdataprovidertemporalcapabilities.cpp
   qgsdatetimestatisticalsummary.cpp
   qgsdbfilterproxymodel.cpp
+  qgsdbquerylog.cpp
   qgsdefaultvalue.cpp
   qgsdiagramrenderer.cpp
   qgsdistancearea.cpp
@@ -1004,6 +1005,7 @@ set(QGIS_CORE_HDRS
   qgsdatasourceuri.h
   qgsdatetimestatisticalsummary.h
   qgsdbfilterproxymodel.h
+  qgsdbquerylog.h
   qgsdefaultvalue.h
   qgsdiagramrenderer.h
   qgsdistancearea.h

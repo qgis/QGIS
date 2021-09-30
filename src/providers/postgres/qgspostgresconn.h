@@ -36,6 +36,7 @@ extern "C"
 }
 
 class QgsField;
+class QgsDatabaseQueryLogEntry;
 
 //! Spatial column types
 enum QgsPostgresGeometryColumnType
@@ -250,7 +251,7 @@ class QgsPostgresConn : public QObject
     bool PQexecNR( const QString &query );
 
     //! cursor handling
-    bool openCursor( const QString &cursorName, const QString &declare );
+    bool openCursor( const QString &cursorName, const QString &declare, const QgsDatabaseQueryLogEntry &logEntry );
     bool closeCursor( const QString &cursorName );
 
     QString uniqueCursorName();
