@@ -60,16 +60,17 @@ class TestPyQgsExternalStorageBase():
         assert(cls.authm.storeAuthenticationConfig(cls.auth_config)[0])
         assert cls.auth_config.isValid()
 
-        registry = QgsApplication.instance().externalStorageRegistry()
-        assert registry
+        cls.registry = QgsApplication.instance().externalStorageRegistry()
+        assert cls.registry
 
-        cls.storage = registry.externalStorageFromType(cls.storageType)
+        cls.storage = cls.registry.externalStorageFromType(cls.storageType)
         assert cls.storage
 
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
-        pass
+        cls.registry.unregisterExternalStorage(cls.storage)
+        assert cls.storageType not in cls.registry.externalStorages()
 
     def setUp(self):
         """Run before each test."""
@@ -91,6 +92,13 @@ class TestPyQgsExternalStorageBase():
         f = open(file_path, 'r')
         self.assertTrue(f.read(), b"New content")
         f.close()
+
+    def testStorageList(self):
+        """
+        Check that storage list in in correct order
+        """
+        self.assertEqual([storage.type() for storage in self.registry.externalStorages()],
+                         ["SimpleCopy", "WebDAV"])
 
     def testStoreFetchFileLater(self):
         """
