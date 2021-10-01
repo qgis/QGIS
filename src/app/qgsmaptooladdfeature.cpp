@@ -98,7 +98,25 @@ void QgsMapToolAddFeature::digitized( const QgsFeature &f )
       {
         if ( sm.at( i ).layer() )
         {
-          sm.at( i ).layer()->addTopologicalPoints( f.geometry().vertexAt( i ) );
+          if ( sm.at( i ).layer()->crs() != vlayer->crs() )
+          {
+            // transform geometry to vlayer crs and add topological point
+            QgsGeometry geom( f.geometry() );
+            try
+            {
+              geom.transform( QgsCoordinateTransform( vlayer->crs(), sm.at( i ).layer()->crs(), sm.at( i ).layer()->transformContext() ) );
+              sm.at( i ).layer()->addTopologicalPoints( geom.vertexAt( i ) );
+            }
+            catch ( QgsCsException &cse )
+            {
+              Q_UNUSED( cse )
+              QgsDebugMsg( QStringLiteral( "transformation to layer coordinate failed" ) );
+            }
+          }
+          else
+          {
+            sm.at( i ).layer()->addTopologicalPoints( f.geometry().vertexAt( i ) );
+          }
         }
       }
       vlayer->addTopologicalPoints( f.geometry() );
