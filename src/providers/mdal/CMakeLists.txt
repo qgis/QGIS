@@ -27,6 +27,7 @@ if (WITH_INTERNAL_MDAL)
   include_directories(
     ${CMAKE_SOURCE_DIR}/external/mdal
     ${CMAKE_SOURCE_DIR}/external/mdal/api
+    ${CMAKE_SOURCE_DIR}/external/mdal/3rdparty
   )
 
   set(MDAL_LIB_SRCS
@@ -47,6 +48,7 @@ if (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_esri_tin.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xms_tin.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ply.cpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/3rdparty/libplyxx/libplyxx.cpp
   )
 
   set(MDAL_LIB_HDRS
@@ -65,6 +67,9 @@ if (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_esri_tin.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xms_tin.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ply.hpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/3rdparty/libplyxx.h
+    ${CMAKE_SOURCE_DIR}/external/mdal/3rdparty/libplyxx/libplyxx_internal.h
+    ${CMAKE_SOURCE_DIR}/external/mdal/3rdparty/textio.h
   )
 
   if(HDF5_FOUND)

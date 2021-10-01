@@ -13,6 +13,8 @@
 
 #cmakedefine HAVE_SQLITE3
 
+#cmakedefine BUILD_PLY
+
 #endif // MDAL_CONFIG_HPP
 
  

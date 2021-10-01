@@ -21,7 +21,7 @@ static const char *EMPTY_STR = "";
 
 const char *MDAL_Version()
 {
-  return "0.8.92";
+  return "0.8.93";
 }
 
 MDAL_Status MDAL_LastStatus()
@@ -522,6 +522,7 @@ MDAL_DatasetGroupH MDAL_M_datasetGroup( MDAL_MeshH mesh, int index )
     return nullptr;
   }
   size_t i = static_cast<size_t>( index );
+
   return static_cast< MDAL_DatasetH >( m->datasetGroups[i].get() );
 }
 
@@ -1494,4 +1495,29 @@ void MDAL_M_setProjection( MDAL_MeshH mesh, const char *projection )
   }
 
   static_cast<MDAL::Mesh *>( mesh )->setSourceCrsFromWKT( std::string( projection ) );
+}
+
+void MDAL_M_addEdges( MDAL_MeshH mesh,
+                      int edgesCount,
+                      int *startVertexIndices,
+                      int *endVertexIndices )
+{
+  MDAL::Log::resetLastStatus();
+  if ( !mesh )
+  {
+    MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, "Mesh is not valid (null)" );
+    return;
+  }
+
+  MDAL::Mesh *m = static_cast<MDAL::Mesh *>( mesh );
+
+  if ( ! m->isEditable() )
+  {
+    MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, "Mesh is not editable" );
+  }
+
+  m->datasetGroups.clear();
+  std::shared_ptr<MDAL::Driver> driver = MDAL::DriverManager::instance().driver( m->driverName() );
+
+  m->addEdges( edgesCount, startVertexIndices, endVertexIndices );
 }

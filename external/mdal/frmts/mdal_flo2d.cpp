@@ -996,7 +996,7 @@ MDAL::DriverFlo2D::DriverFlo2D()
   : Driver(
       "FLO2D",
       "Flo2D",
-      "*.nc",
+      "*.nc;;*.DAT",
       Capability::ReadMesh | Capability::ReadDatasets | Capability::WriteDatasetsOnFaces )
 {
 

@@ -332,6 +332,22 @@ MDAL_EXPORT void MDAL_M_addFaces( MDAL_MeshH mesh,
                                   int *vertexIndices );
 
 /**
+ * Adds edges to the mesh
+ * \param mesh the mesh which the faces are added
+ * \param edgeCount the count of edges
+ * \param startVertexIndices must be allocated to edgesCount items to store start vertex indices for edges
+ * \param endVertexIndices must be allocated to edgesCount items to store end vertex indices for edges
+ *
+ * \note to avoid incompatible datasets, adding edges removes all the existing dataset group
+ *
+ * \since MDAL 0.9.0
+ */
+MDAL_EXPORT void MDAL_M_addEdges( MDAL_MeshH mesh,
+                                  int edgesCount,
+                                  int *startVertexIndices,
+                                  int *endVertexIndices );
+
+/**
  * Returns vertex count for the mesh
  */
 MDAL_EXPORT int MDAL_M_vertexCount( MDAL_MeshH mesh );
@@ -368,7 +384,7 @@ MDAL_EXPORT void MDAL_M_LoadDatasets( MDAL_MeshH mesh, const char *datasetFile )
 MDAL_EXPORT int MDAL_M_metadataCount( MDAL_MeshH mesh );
 
 /**
- * Returns dataset metadata key
+ * Returns mesh metadata key
  * not thread-safe and valid only till next call
  *
  * \since MDAL 0.9.0
@@ -376,7 +392,7 @@ MDAL_EXPORT int MDAL_M_metadataCount( MDAL_MeshH mesh );
 MDAL_EXPORT const char *MDAL_M_metadataKey( MDAL_MeshH mesh, int index );
 
 /**
- * Returns dataset metadata value
+ * Returns mesh metadata value
  * not thread-safe and valid only till next call
  *
  * \since MDAL 0.9.0
@@ -647,6 +663,8 @@ MDAL_EXPORT MDAL_DatasetH MDAL_G_addDataset(
  * \param verticalExtrusion Double Array holding the vertical level values for the voxels
  *               Size must be Face count + Volume count
  * \returns empty pointer if not possible to create dataset (e.g. group opened in read mode), otherwise handle to new dataset
+ *
+ * \since MDAL 0.9.0
  */
 
 MDAL_EXPORT MDAL_DatasetH MDAL_G_addDataset3D(

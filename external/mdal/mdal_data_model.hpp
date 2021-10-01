@@ -279,6 +279,8 @@ namespace MDAL
 
       virtual void addVertices( size_t vertexCount, double *coordinates );
       virtual void addFaces( size_t faceCount, size_t driverMaxVerticesPerFace, int *faceSizes, int *vertexIndices );
+      virtual void addEdges( size_t edgeCount, int *startVertexIndices, int *endVertexIndices );
+
 
     protected:
       void setFaceVerticesMaximumCount( const size_t &faceVerticesMaximumCount );

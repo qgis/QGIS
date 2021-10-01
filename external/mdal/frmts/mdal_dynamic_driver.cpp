@@ -218,6 +218,9 @@ bool MDAL::MeshDynamicDriver::populateDatasetGroups()
         group->setDataLocation( MDAL_DataLocation::DataOnFaces );
         break;
       case 3:
+        group->setDataLocation( MDAL_DataLocation::DataOnVolumes );
+        break;
+      case 4:
         group->setDataLocation( MDAL_DataLocation::DataOnEdges );
         break;
       default:
@@ -238,19 +241,50 @@ bool MDAL::MeshDynamicDriver::populateDatasetGroups()
 
     for ( int d = 0; d < datasetCount ; ++d )
     {
-      std::shared_ptr<DatasetDynamicDriver> dataset = std::make_shared<DatasetDynamicDriver>( group.get(), mId, i, d, mLibrary );
-      dataset->setSupportsActiveFlag( mDatasetSupportActiveFlagFunction( mId, i, d ) );
-      if ( !dataset->loadSymbol() )
-        return false;
+      std::shared_ptr<Dataset> dataset;
+
+      switch ( group->dataLocation() )
+      {
+        case DataInvalidLocation:
+          continue;
+          break;
+        case DataOnVertices:
+        case DataOnEdges:
+        case DataOnFaces:
+        {
+          std::shared_ptr<DatasetDynamicDriver2D> dataset2D = std::make_shared<DatasetDynamicDriver2D>( group.get(), mId, i, d, mLibrary );
+          dataset2D->setSupportsActiveFlag( mDatasetSupportActiveFlagFunction( mId, i, d ) );
+
+          if ( !dataset2D->loadSymbol() )
+            return false;
+
+          dataset2D->setStatistics( MDAL::calculateStatistics( dataset2D ) );
+          dataset2D->unloadData();
+          dataset = dataset2D;
+        }
+        break;
+        case DataOnVolumes:
+        {
+          size_t maxVerticalLevelCount = mDataset3DMaximumVerticalLevelCount( mId, i, d );
+          size_t volumesCount = mDataset3DVolumeCount( mId, i, d );
+          std::shared_ptr<DatasetDynamicDriver3D> dataset3D =
+            std::make_shared<DatasetDynamicDriver3D>( group.get(), mId, i, d, volumesCount, maxVerticalLevelCount, mLibrary );
+
+          if ( ! dataset3D->loadSymbol() )
+            return false;
+
+          dataset3D->setStatistics( MDAL::calculateStatistics( dataset3D ) );
+          dataset3D->unloadData();
+          dataset = dataset3D;
+        }
+        break;
+      }
 
       bool ok = true;
       double time = mDatasetTimeFunction( mId, i, d, &ok );
       if ( !ok )
         return false;
       dataset->setTime( RelativeTimestamp( time, RelativeTimestamp::hours ) );
-
-      dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
-      dataset->unloadData();
 
       group->datasets.push_back( dataset );
     }
@@ -277,6 +311,8 @@ bool MDAL::MeshDynamicDriver::loadSymbol()
   mDatasetTimeFunction = mLibrary.getSymbol<double, int, int, int, bool *>( "MDAL_DRIVER_D_time" );
   mDatasetDescriptionFunction = mLibrary.getSymbol<bool, int, int, bool *, int *, int *>( "MDAL_DRIVER_G_datasetsDescription" );
   mDatasetSupportActiveFlagFunction = mLibrary.getSymbol<bool, int, int, int>( "MDAL_DRIVER_D_hasActiveFlagCapability" );
+  mDataset3DMaximumVerticalLevelCount = mLibrary.getSymbol<int, int, int, int>( "MDAL_DRIVER_D_maximumVerticalLevelCount" );
+  mDataset3DVolumeCount = mLibrary.getSymbol<int, int, int, int>( "MDAL_DRIVER_D_volumeCount" );
   mCloseMeshFunction = mLibrary.getSymbol<void, int>( "MDAL_DRIVER_closeMesh" );
 
   if ( mMeshVertexCountFunction == nullptr ||
@@ -395,15 +431,50 @@ size_t MDAL::MeshEdgeIteratorDynamicDriver::next( size_t edgeCount, int *startVe
   return effectiveEdgesCount;
 }
 
-MDAL::DatasetDynamicDriver::DatasetDynamicDriver( MDAL::DatasetGroup *parentGroup, int meshId, int groupIndex, int datasetIndex, const MDAL::Library &library ):
-  Dataset2D( parentGroup )
-  , mMeshId( meshId )
+
+MDAL::DatasetDynamicDriver::DatasetDynamicDriver( int meshId, int groupIndex, int datasetIndex, const MDAL::Library &library )
+  : mMeshId( meshId )
   , mGroupIndex( groupIndex )
   , mDatasetIndex( datasetIndex )
   , mLibrary( library )
 {}
 
-size_t MDAL::DatasetDynamicDriver::scalarData( size_t indexStart, size_t count, double *buffer )
+MDAL::DatasetDynamicDriver2D::DatasetDynamicDriver2D( MDAL::DatasetGroup *parentGroup, int meshId, int groupIndex, int datasetIndex, const MDAL::Library &library )
+  : Dataset2D( parentGroup )
+  , DatasetDynamicDriver( meshId, groupIndex, datasetIndex, library )
+{}
+
+
+MDAL::DatasetDynamicDriver3D::DatasetDynamicDriver3D( MDAL::DatasetGroup *parentGroup, int meshId, int groupIndex, int datasetIndex, size_t volumes, size_t maxVerticalLevelCount, const MDAL::Library &library )
+  : Dataset3D( parentGroup, volumes, maxVerticalLevelCount )
+  , DatasetDynamicDriver( meshId, groupIndex, datasetIndex, library )
+{}
+
+size_t MDAL::DatasetDynamicDriver3D::verticalLevelCountData( size_t indexStart, size_t count, int *buffer )
+{
+  if ( !mVerticalLevelCountDataFunction )
+    return 0;
+
+  return mVerticalLevelCountDataFunction( mMeshId, mGroupIndex, mDatasetIndex, MDAL::toInt( indexStart ), MDAL::toInt( count ), buffer );
+}
+
+size_t MDAL::DatasetDynamicDriver3D::verticalLevelData( size_t indexStart, size_t count, double *buffer )
+{
+  if ( !mVerticalLevelDataFunction )
+    return 0;
+
+  return mVerticalLevelDataFunction( mMeshId, mGroupIndex, mDatasetIndex, MDAL::toInt( indexStart ), MDAL::toInt( count ), buffer );
+}
+
+size_t MDAL::DatasetDynamicDriver3D::faceToVolumeData( size_t indexStart, size_t count, int *buffer )
+{
+  if ( !mFaceToVolumeDataFunction )
+    return 0;
+
+  return mFaceToVolumeDataFunction( mMeshId, mGroupIndex, mDatasetIndex, MDAL::toInt( indexStart ), MDAL::toInt( count ), buffer );
+}
+
+size_t MDAL::DatasetDynamicDriver3D::scalarVolumesData( size_t indexStart, size_t count, double *buffer )
 {
   if ( !mDataFunction )
     return 0;
@@ -411,7 +482,7 @@ size_t MDAL::DatasetDynamicDriver::scalarData( size_t indexStart, size_t count, 
   return mDataFunction( mMeshId, mGroupIndex, mDatasetIndex, MDAL::toInt( indexStart ), MDAL::toInt( count ), buffer );
 }
 
-size_t MDAL::DatasetDynamicDriver::vectorData( size_t indexStart, size_t count, double *buffer )
+size_t MDAL::DatasetDynamicDriver3D::vectorVolumesData( size_t indexStart, size_t count, double *buffer )
 {
   if ( !mDataFunction )
     return 0;
@@ -419,7 +490,24 @@ size_t MDAL::DatasetDynamicDriver::vectorData( size_t indexStart, size_t count, 
   return mDataFunction( mMeshId, mGroupIndex, mDatasetIndex, MDAL::toInt( indexStart ), MDAL::toInt( count ), buffer );
 }
 
-size_t MDAL::DatasetDynamicDriver::activeData( size_t indexStart, size_t count, int *buffer )
+
+size_t MDAL::DatasetDynamicDriver2D::scalarData( size_t indexStart, size_t count, double *buffer )
+{
+  if ( !mDataFunction )
+    return 0;
+
+  return mDataFunction( mMeshId, mGroupIndex, mDatasetIndex, MDAL::toInt( indexStart ), MDAL::toInt( count ), buffer );
+}
+
+size_t MDAL::DatasetDynamicDriver2D::vectorData( size_t indexStart, size_t count, double *buffer )
+{
+  if ( !mDataFunction )
+    return 0;
+
+  return mDataFunction( mMeshId, mGroupIndex, mDatasetIndex, MDAL::toInt( indexStart ), MDAL::toInt( count ), buffer );
+}
+
+size_t MDAL::DatasetDynamicDriver2D::activeData( size_t indexStart, size_t count, int *buffer )
 {
   if ( !supportsActiveFlag() )
     return Dataset2D::activeData( indexStart, count, buffer );
@@ -434,12 +522,47 @@ bool MDAL::DatasetDynamicDriver::loadSymbol()
 {
   mDataFunction = mLibrary.getSymbol<int, int, int, int, int, int, double *>( "MDAL_DRIVER_D_data" );
   mUnloadFunction = mLibrary.getSymbol<void, int, int, int>( "MDAL_DRIVER_D_unload" );
+
+  if ( mDataFunction == nullptr ||
+       mUnloadFunction == nullptr )
+  {
+    MDAL::Log::error( MDAL_Status::Err_MissingDriver, "Driver is not valid" );
+    return false;
+  }
+
+  return true;
+}
+
+bool MDAL::DatasetDynamicDriver2D::loadSymbol()
+{
+  if ( !MDAL::DatasetDynamicDriver::loadSymbol() )
+    return false;
+
   if ( supportsActiveFlag() )
     mActiveFlagsFunction = mLibrary.getSymbol<int, int, int, int, int, int, int *>( "MDAL_DRIVER_D_activeFlags" );
 
-  if ( mDataFunction == nullptr ||
-       mUnloadFunction == nullptr ||
-       ( supportsActiveFlag() && mActiveFlagsFunction == nullptr ) )
+  if ( supportsActiveFlag() && mActiveFlagsFunction == nullptr )
+  {
+    MDAL::Log::error( MDAL_Status::Err_MissingDriver, "Driver is not valid" );
+    return false;
+  }
+
+  return true;
+}
+
+
+bool MDAL::DatasetDynamicDriver3D::loadSymbol()
+{
+  if ( !MDAL::DatasetDynamicDriver::loadSymbol() )
+    return false;
+
+  mVerticalLevelCountDataFunction = mLibrary.getSymbol<int, int, int, int, int, int, int *>( "MDAL_DRIVER_D_verticalLevelCountData" );
+  mVerticalLevelDataFunction = mLibrary.getSymbol<int, int, int, int, int, int, double *>( "MDAL_DRIVER_D_verticalLevelData" );
+  mFaceToVolumeDataFunction = mLibrary.getSymbol<int, int, int, int, int, int, int *>( "MDAL_DRIVER_D_faceToVolumeData" );
+
+  if ( mVerticalLevelCountDataFunction == nullptr ||
+       mVerticalLevelDataFunction == nullptr ||
+       mFaceToVolumeDataFunction == nullptr )
   {
     MDAL::Log::error( MDAL_Status::Err_MissingDriver, "Driver is not valid" );
     return false;
@@ -455,3 +578,4 @@ void MDAL::DatasetDynamicDriver::unloadData()
 
   mUnloadFunction( mMeshId, mGroupIndex, mDatasetIndex );
 }
+
