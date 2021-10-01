@@ -456,6 +456,39 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
 
         QgsProject.instance().removeMapLayer(points_layer)
 
+    def testNullsCount(self):
+        """Test for issue GH #45280"""
+
+        vl = QgsVectorLayer('Point?crs=epsg:4326&field=number:int',
+                            'test', 'memory')
+
+        f = QgsFeature(vl.fields())
+        f.setAttribute(0, 0)
+        f.setGeometry(QgsGeometry.fromWkt('point(7 45)'))
+        vl.dataProvider().addFeatures([f])
+        f = QgsFeature(vl.fields())
+        f.setGeometry(QgsGeometry.fromWkt('point(7 45)'))
+        f.setAttribute(0, 1)
+        vl.dataProvider().addFeatures([f])
+        f.setGeometry(QgsGeometry.fromWkt('point(7 45)'))
+        f = QgsFeature(vl.fields())
+        vl.dataProvider().addFeatures([f])
+
+        cats = []
+        cats.append(QgsRendererCategory(1, QgsMarkerSymbol(), 'one'))
+        cats.append(QgsRendererCategory(0, QgsMarkerSymbol(), 'zero'))
+        cats.append(QgsRendererCategory(None, QgsMarkerSymbol(), 'NULL'))
+        renderer = QgsCategorizedSymbolRenderer("number", cats)
+
+        vl.setRenderer(renderer)
+
+        counter = vl.countSymbolFeatures()
+        counter.waitForFinished()
+
+        self.assertEqual(counter.featureCount('0'), 1)
+        self.assertEqual(counter.featureCount('1'), 1)
+        self.assertEqual(counter.featureCount('2'), 1)
+
 
 if __name__ == '__main__':
     unittest.main()
