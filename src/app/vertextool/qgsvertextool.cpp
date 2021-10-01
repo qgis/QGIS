@@ -2094,16 +2094,56 @@ void QgsVertexTool::stopDragging()
 
 QgsPoint QgsVertexTool::matchToLayerPoint( const QgsVectorLayer *destLayer, const QgsPointXY &mapPoint, const QgsPointLocator::Match *match )
 {
-  // try to use point coordinates in the original CRS if it is the same
-  if ( match && match->hasVertex() && match->layer() && match->layer()->crs() == destLayer->crs() )
+  if ( match->layer() )
   {
-    QgsFeature f;
-    QgsFeatureIterator fi = match->layer()->getFeatures( QgsFeatureRequest( match->featureId() ).setNoAttributes() );
-    if ( fi.nextFeature( f ) )
-      return f.geometry().vertexAt( match->vertexIndex() );
+    switch ( match->type() )
+    {
+      case QgsPointLocator::Vertex:
+      case QgsPointLocator::LineEndpoint:
+      case QgsPointLocator::All:
+      {
+        //  use point coordinates of the layer
+        QgsFeature f;
+        QgsFeatureIterator fi = match->layer()->getFeatures( QgsFeatureRequest( match->featureId() ).setNoAttributes() );
+        if ( fi.nextFeature( f ) )
+        {
+          QgsPoint layerPoint = f.geometry().vertexAt( match->vertexIndex() );
+          if ( match->layer()->crs() == destLayer->crs() )
+          {
+            return layerPoint;
+          }
+          else
+          {
+            QgsCoordinateTransform transform( match->layer()->crs(), destLayer->crs(), mCanvas->mapSettings().transformContext() );
+            if ( transform.isValid() )
+            {
+              try
+              {
+                layerPoint.transform( transform );
+                return layerPoint;
+              }
+              catch ( QgsCsException & )
+              {
+                QgsDebugMsg( QStringLiteral( "transformation to layer coordinate failed" ) );
+              }
+            }
+            return layerPoint;
+          }
+        }
+      }
+      break;
+      case QgsPointLocator::Edge:
+      case QgsPointLocator::MiddleOfSegment:
+        return toLayerCoordinates( destLayer, match->interpolatedPoint( mCanvas->mapSettings().destinationCrs() ) );
+        break;
+      case QgsPointLocator::Invalid:
+      case QgsPointLocator::Area:
+      case QgsPointLocator::Centroid:
+        break;
+    }
   }
 
-  // fall back to reprojection of the map point to layer point if they are not the same CRS
+  // fall back to reprojection of the map point to layer point
   return QgsPoint( toLayerCoordinates( destLayer, mapPoint ) );
 }
 
@@ -2132,10 +2172,6 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
   stopDragging();
 
   QgsPoint layerPoint = matchToLayerPoint( dragLayer, mapPoint, mapPointMatch );
-
-  // needed to get Z value
-  if ( mapPointMatch && mapPointMatch->layer() && QgsWkbTypes::hasZ( mapPointMatch->layer()->wkbType() ) && ( mapPointMatch->hasEdge() || mapPointMatch->hasMiddleSegment() ) )
-    layerPoint = mapPointMatch->interpolatedPoint();
 
   QgsVertexId vid;
   if ( !geom.vertexIdFromVertexNr( dragVertexId, vid ) )
