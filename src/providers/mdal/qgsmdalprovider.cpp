@@ -657,6 +657,7 @@ void QgsMdalProvider::fileMeshExtensions( QStringList &fileMeshExtensions,
       for ( auto ext : extensions )
       {
         ext.remove( QStringLiteral( "*." ) );
+        ext = ext.toLower();
         if ( isMeshDriver )
           fileMeshExtensions += ext;
         else
