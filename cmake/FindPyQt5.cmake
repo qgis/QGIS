@@ -25,8 +25,7 @@ ELSE(EXISTS PYQT5_VERSION_STR)
   IF(SIP_BUILD_EXECUTABLE)
     # SIP >= 5.0 path
 
-
-    FILE(GLOB _pyqt5_metadata "${Python_SITEARCH}/PyQt5*.dist-info/METADATA")
+    FILE(GLOB _pyqt5_metadata "${Python_SITEARCH}/PyQt5-*.dist-info/METADATA")
     IF(_pyqt5_metadata)
       FILE(READ ${_pyqt5_metadata} _pyqt5_metadata_contents)
       STRING(REGEX REPLACE ".*\nVersion: ([^\n]+).*$" "\\1" PYQT5_VERSION_STR ${_pyqt5_metadata_contents})
