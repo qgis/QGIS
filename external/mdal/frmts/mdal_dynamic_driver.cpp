@@ -439,16 +439,22 @@ MDAL::DatasetDynamicDriver::DatasetDynamicDriver( int meshId, int groupIndex, in
   , mLibrary( library )
 {}
 
+MDAL::DatasetDynamicDriver::~DatasetDynamicDriver() = default;
+
 MDAL::DatasetDynamicDriver2D::DatasetDynamicDriver2D( MDAL::DatasetGroup *parentGroup, int meshId, int groupIndex, int datasetIndex, const MDAL::Library &library )
   : Dataset2D( parentGroup )
   , DatasetDynamicDriver( meshId, groupIndex, datasetIndex, library )
 {}
+
+MDAL::DatasetDynamicDriver2D::~DatasetDynamicDriver2D() = default;
 
 
 MDAL::DatasetDynamicDriver3D::DatasetDynamicDriver3D( MDAL::DatasetGroup *parentGroup, int meshId, int groupIndex, int datasetIndex, size_t volumes, size_t maxVerticalLevelCount, const MDAL::Library &library )
   : Dataset3D( parentGroup, volumes, maxVerticalLevelCount )
   , DatasetDynamicDriver( meshId, groupIndex, datasetIndex, library )
 {}
+
+MDAL::DatasetDynamicDriver3D::~DatasetDynamicDriver3D() = default;
 
 size_t MDAL::DatasetDynamicDriver3D::verticalLevelCountData( size_t indexStart, size_t count, int *buffer )
 {

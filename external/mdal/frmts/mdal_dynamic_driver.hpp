@@ -110,6 +110,7 @@ namespace MDAL
                             int groupIndex,
                             int datasetIndex,
                             const Library &library );
+      virtual ~DatasetDynamicDriver();
 
       virtual bool loadSymbol();
 
@@ -135,6 +136,7 @@ namespace MDAL
                               int groupIndex,
                               int datasetIndex,
                               const Library &library );
+      ~DatasetDynamicDriver2D() override;
 
       bool loadSymbol() override;
 
@@ -157,7 +159,7 @@ namespace MDAL
                               size_t volumes,
                               size_t maxVerticalLevelCount,
                               const Library &library );
-
+      ~DatasetDynamicDriver3D() override;
       bool loadSymbol() override;
 
       size_t verticalLevelCountData( size_t indexStart, size_t count, int *buffer ) override;
