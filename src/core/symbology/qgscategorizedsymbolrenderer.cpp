@@ -907,7 +907,7 @@ QgsLegendSymbolList QgsCategorizedSymbolRenderer::legendSymbolItems() const
 
 QSet<QString> QgsCategorizedSymbolRenderer::legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
-  QString value = valueForFeature( feature, context ).toString();
+  const QVariant value = valueForFeature( feature, context );
   int i = 0;
 
   for ( const QgsRendererCategory &cat : mCategories )
@@ -927,7 +927,17 @@ QSet<QString> QgsCategorizedSymbolRenderer::legendKeysForFeature( const QgsFeatu
     }
     else
     {
-      match = value == cat.value();
+      // Numeric NULL cat value is stored as an empty string
+      if ( value.isNull() && ( value.type() == QVariant::Double || value.type() == QVariant::Int ||
+                               value.type() == QVariant::UInt || value.type() == QVariant::LongLong ||
+                               value.type() == QVariant::ULongLong ) )
+      {
+        match = cat.value().toString().isEmpty();
+      }
+      else
+      {
+        match = value == cat.value();
+      }
     }
 
     if ( match )
