@@ -183,7 +183,7 @@ Converts a point to map coordinates and layer coordinates
 Fetches the original point from the source layer if it has the same
 CRS as the current layer.
 
-:return: 0 in case of success, 1 if not applicable (CRS mismatch), 2 in case of failure
+:return: 0 in case of success, 1 if not applicable (CRS mismatch / invalid layer), 2 in case of failure
 
 .. versionadded:: 2.14
 %End
