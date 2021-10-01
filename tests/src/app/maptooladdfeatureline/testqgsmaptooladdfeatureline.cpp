@@ -75,6 +75,8 @@ class TestQgsMapToolAddFeatureLine : public QObject
     void testStream();
     void testUndo();
     void testStreamTolerance();
+    void testWithTopologicalEditingDifferentCanvasCrs();
+    void testWithTopologicalEditingWIthDiffLayerWithDiffCrs();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -89,6 +91,8 @@ class TestQgsMapToolAddFeatureLine : public QObject
     QgsVectorLayer *mLayerLine2D = nullptr;
     QgsVectorLayer *mLayerCloseLine = nullptr;
     QgsVectorLayer *mLayerSelfSnapLine = nullptr;
+    QgsVectorLayer *mLayerCRS3946Line = nullptr;
+    QgsVectorLayer *mLayerCRS3945Line = nullptr;
     QgsFeatureId mFidLineF1 = 0;
     QgsFeatureId mFidCurvedF1 = 0;
 };
@@ -212,8 +216,19 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerSelfSnapLine );
   mLayerSelfSnapLine->startEditing();
 
+  // make layers with different CRS
+  mLayerCRS3946Line = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:3946" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerCRS3946Line ->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerCRS3946Line );
+  mLayerCRS3946Line->startEditing();
+
+  mLayerCRS3945Line = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:3945" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerCRS3945Line ->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerCRS3945Line );
+  mLayerCRS3945Line->startEditing();
+
   // add layers to canvas
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineCurved << mLayerLineCurvedOffset << mLayerLineZ << mLayerLine2D << mLayerSelfSnapLine );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineCurved << mLayerLineCurvedOffset << mLayerLineZ << mLayerLine2D << mLayerSelfSnapLine << mLayerCRS3946Line << mLayerCRS3945Line );
   mCanvas->setSnappingUtils( new QgsMapCanvasSnappingUtils( mCanvas, this ) );
 
   // create the tool
@@ -857,6 +872,149 @@ void TestQgsMapToolAddFeatureLine::testStreamTolerance()
 
   mLayerLine->undoStack()->undo();
 }
+
+void TestQgsMapToolAddFeatureLine::testWithTopologicalEditingDifferentCanvasCrs()
+{
+  mCanvas->setCurrentLayer( mLayerCRS3946Line );
+  mLayerCRS3946Line->startEditing();
+  mCaptureTool->setLayer( mLayerCRS3946Line );
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
+  QSet<QgsFeatureId> oldFeatures = utils.existingFeatureIds();
+
+  // the crs of canvas and the one of layer should be different
+  QVERIFY( mLayerCRS3946Line->sourceCrs() != mCanvas->mapSettings().destinationCrs() );
+
+  const QgsCoordinateTransform transform( mLayerCRS3946Line->sourceCrs(), mCanvas->mapSettings().destinationCrs(),
+                                          QgsProject::instance() );
+
+  // add a base line
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 10, 10, Qt::LeftButton );
+  utils.mouseClick( 1, 1, Qt::RightButton );
+
+  const QgsFeatureId baseGeomFid = utils.newFeatureId( oldFeatures );
+  QgsGeometry geom = mLayerCRS3946Line->getFeature( baseGeomFid ).geometry();
+  geom.transform( transform, Qgis::TransformDirection::Forward );
+  QCOMPARE( geom.asWkt( 2 ), QStringLiteral( "LineString (0 0, 10 10)" ) );
+
+  oldFeatures = utils.existingFeatureIds();
+
+  // enable snapping
+  QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
+  snapConfig.setEnabled( true );
+  snapConfig.setIntersectionSnapping( true );
+  snapConfig.setTypeFlag( Qgis::SnappingType::Segment );
+  bool topologicalEditing = snapConfig.project()->topologicalEditing();
+  snapConfig.project()->setTopologicalEditing( true );
+  mCanvas->snappingUtils()->setConfig( snapConfig );
+
+  // add a line with one vertex near the previous line
+  utils.mouseClick( 10, 0, Qt::LeftButton );
+  utils.mouseClick( 4.9, 5.1, Qt::LeftButton );
+  utils.mouseClick( 0, 10, Qt::LeftButton );
+  utils.mouseClick( 8, 8, Qt::RightButton );
+
+  const QgsFeatureId newFid = utils.newFeatureId( oldFeatures );
+  geom = mLayerCRS3946Line->getFeature( newFid ).geometry();
+  geom.transform( transform, Qgis::TransformDirection::Forward );
+  QCOMPARE( geom.asWkt( 2 ), QStringLiteral( "LineString (10 0, 5 5, 0 10)" ) );
+
+  // the base line should have one more vertex
+  geom = mLayerCRS3946Line->getFeature( baseGeomFid ).geometry();
+  geom.transform( transform, Qgis::TransformDirection::Forward );
+  QCOMPARE( geom.asWkt( 2 ), QStringLiteral( "LineString (0 0, 5 5, 10 10)" ) );
+
+  mLayerCRS3945Line->rollBack();
+  snapConfig.project()->setTopologicalEditing( topologicalEditing );
+}
+
+
+
+void TestQgsMapToolAddFeatureLine::testWithTopologicalEditingWIthDiffLayerWithDiffCrs()
+{
+  // the crs between the 2 lines should be different
+  QVERIFY( mLayerCRS3946Line->sourceCrs() != mLayerCRS3945Line->sourceCrs() );
+
+  const QgsCoordinateTransform transformFrom3945( mLayerCRS3945Line->sourceCrs(), mCanvas->mapSettings().destinationCrs(),
+      QgsProject::instance() );
+  const QgsCoordinateTransform transformFrom3946( mLayerCRS3946Line->sourceCrs(), mCanvas->mapSettings().destinationCrs(),
+      QgsProject::instance() );
+
+  // add a base line in the 3945 layer
+  mCanvas->setCurrentLayer( mLayerCRS3945Line );
+  mLayerCRS3945Line->startEditing();
+  mCaptureTool->setLayer( mLayerCRS3945Line );
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
+  QSet<QgsFeatureId> oldFeatures = utils.existingFeatureIds();
+
+  utils.mouseClick( 10, 0, Qt::LeftButton );
+  utils.mouseClick( 10, 10, Qt::LeftButton );
+  utils.mouseClick( 1, 1, Qt::RightButton );
+
+  const QgsFeatureId base3945GeomFid = utils.newFeatureId( oldFeatures );
+  QgsGeometry geom = mLayerCRS3945Line->getFeature( base3945GeomFid ).geometry();
+  geom.transform( transformFrom3945, Qgis::TransformDirection::Forward );
+  QCOMPARE( geom.asWkt( 2 ), QStringLiteral( "LineString (10 0, 10 10)" ) );
+
+  oldFeatures = utils.existingFeatureIds();
+
+  // add a base line in the 3946
+  mCanvas->setCurrentLayer( mLayerCRS3946Line );
+  mLayerCRS3946Line->startEditing();
+  mCaptureTool->setLayer( mLayerCRS3946Line );
+  utils = TestQgsMapToolAdvancedDigitizingUtils( mCaptureTool );
+
+  oldFeatures = utils.existingFeatureIds();
+
+  utils.mouseClick( 20, 0, Qt::LeftButton );
+  utils.mouseClick( 20, 10, Qt::LeftButton );
+  utils.mouseClick( 1, 1, Qt::RightButton );
+
+  const QgsFeatureId base3946GeomFid = utils.newFeatureId( oldFeatures );
+  geom = mLayerCRS3946Line->getFeature( base3946GeomFid ).geometry();
+  geom.transform( transformFrom3946, Qgis::TransformDirection::Forward );
+  QCOMPARE( geom.asWkt( 2 ), QStringLiteral( "LineString (20 0, 20 10)" ) );
+
+  oldFeatures = utils.existingFeatureIds();
+
+  // enable snapping
+  QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
+  snapConfig.setEnabled( true );
+  snapConfig.setMode( Qgis::SnappingMode::AllLayers );
+  snapConfig.setIntersectionSnapping( true );
+  snapConfig.setTypeFlag( Qgis::SnappingType::Segment );
+  bool topologicalEditing = snapConfig.project()->topologicalEditing();
+  snapConfig.project()->setTopologicalEditing( true );
+  mCanvas->snappingUtils()->setConfig( snapConfig );
+
+  // test the topological editing
+  utils.mouseClick( 0, 5, Qt::LeftButton );
+  utils.mouseClick( 10.1, 5, Qt::LeftButton );
+  utils.mouseClick( 20.1, 5, Qt::LeftButton );
+  utils.mouseClick( 30, 5, Qt::LeftButton );
+  utils.mouseClick( 8, 8, Qt::RightButton );
+
+  const QgsFeatureId newFid = utils.newFeatureId( oldFeatures );
+  geom = mLayerCRS3946Line->getFeature( newFid ).geometry();
+  geom.transform( transformFrom3946, Qgis::TransformDirection::Forward );
+  QCOMPARE( geom.asWkt( 2 ), QStringLiteral( "LineString (0 5, 10 5, 20 5, 30 5)" ) );
+
+  // check that there is one more vertex on the base lines
+  geom = mLayerCRS3945Line->getFeature( base3945GeomFid ).geometry();
+  geom.transform( transformFrom3945, Qgis::TransformDirection::Forward );
+  QCOMPARE( geom.asWkt( 2 ), QStringLiteral( "LineString (10 0, 10 5, 10 10)" ) );
+
+  geom = mLayerCRS3946Line->getFeature( base3946GeomFid ).geometry();
+  geom.transform( transformFrom3946, Qgis::TransformDirection::Forward );
+  QCOMPARE( geom.asWkt( 2 ), QStringLiteral( "LineString (20 0, 20 5, 20 10)" ) );
+
+  mLayerCRS3945Line->rollBack();
+  mLayerCRS3946Line->rollBack();
+  snapConfig.project()->setTopologicalEditing( topologicalEditing );
+}
+
 
 QGSTEST_MAIN( TestQgsMapToolAddFeatureLine )
 #include "testqgsmaptooladdfeatureline.moc"
