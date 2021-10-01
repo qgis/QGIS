@@ -929,12 +929,12 @@ if (WITH_CORE AND WITH_BINDINGS AND NOT WITH_QT6)
   set (QGIS_PYTHON_OUTPUT_DIRECTORY ${PYTHON_OUTPUT_DIRECTORY}/qgis)
 
   # python support: check for interpreter, sip, pyqt5
+  find_package(SIP REQUIRED)
   find_package(PyQt5 REQUIRED)
   set(PYQT_SIP_FLAGS ${PYQT5_SIP_FLAGS})
   set(PYQT_SIP_DIR ${PYQT5_SIP_DIR})
   separate_arguments(PYQT_SIP_FLAGS) # convert space separated values to a list
 
-  find_package(SIP REQUIRED)
   find_package(Qsci REQUIRED)
   include(PythonMacros)
   include(PyQtMacros)

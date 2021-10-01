@@ -167,8 +167,10 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   add_definitions(-std=c++14)
 endif()
 
-if(UNIX AND NOT SIP_VERSION_NUM LESS 265984)
+if((UNIX OR MINGW) AND SIP_VERSION_STR VERSION_GREATER_EQUAL 4.10 AND SIP_VERSION_STR VERSION_LESS 5.0)
   set(SIP_EXTRA_OPTIONS -P ${SIP_EXTRA_OPTIONS})
+  add_definitions(-Dprotected=public)
+elseif((UNIX OR MINGW) AND SIP_VERSION_STR VERSION_GREATER_EQUAL 5.0)
   add_definitions(-Dprotected=public)
 endif()
 
