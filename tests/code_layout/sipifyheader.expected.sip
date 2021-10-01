@@ -314,7 +314,7 @@ remove argument
     }
 %End
 
-  protected:
+  protected slots:
     bool thisShouldBeListed();
 
 
