@@ -111,11 +111,11 @@ bool QgsAggregateAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
     }
     else if ( aggregateType == QLatin1String( "concatenate" ) || aggregateType == QLatin1String( "concatenate_unique" ) )
     {
-      expression = QStringLiteral( "%1(%2, %3, %4, \'%5\')" ).arg( aggregateType,
+      expression = QStringLiteral( "%1(%2, %3, %4, %5)" ).arg( aggregateType,
                    source,
                    mGroupBy,
                    QStringLiteral( "TRUE" ),
-                   delimiter );
+                   QgsExpression::quotedString( delimiter ) );
     }
     else
     {
