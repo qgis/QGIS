@@ -45,7 +45,7 @@ class ANALYSIS_EXPORT QgsGeometryGapCheckError : public QgsGeometryCheckError
                               double area,
                               const QgsRectangle &gapAreaBBox,
                               const QgsRectangle &contextArea )
-      : QgsGeometryCheckError( check, layerId, FID_NULL, geometry, geometry.pointOnSurface().asPoint(), QgsVertexId(), area, ValueArea )
+      : QgsGeometryCheckError( check, layerId, FID_NULL, geometry, geometry.constGet()->centroid(), QgsVertexId(), area, ValueArea )
       , mNeighbors( neighbors )
       , mGapAreaBBox( gapAreaBBox )
       , mContextBoundingBox( contextArea )
