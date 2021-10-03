@@ -120,6 +120,24 @@ class CORE_EXPORT QgsDatabaseQueryLog: public QObject
     QgsDatabaseQueryLog( QObject *parent = nullptr );
 
     /**
+     * Enables query logging.
+     *
+     * If disabled, no signals will be emitted by the log. By default the log is disabled,
+     * and clients must manually enable it.
+     *
+     * \note Not available in Python bindings
+     * \see enabled()
+     */
+    static void setEnabled( bool enabled ) SIP_SKIP { sEnabled = enabled; }
+
+    /**
+     * Returns TRUE if logging is enabled.
+     *
+     * \see setEnabled()
+     */
+    static bool enabled() { return sEnabled; }
+
+    /**
      * Logs a database \a query as starting.
      *
      * This method can be safely called from any thread.
@@ -164,6 +182,10 @@ class CORE_EXPORT QgsDatabaseQueryLog: public QObject
      * \note Not available in Python bindings
      */
     void queryFinished( const QgsDatabaseQueryLogEntry &query ) SIP_SKIP;
+
+  private:
+
+    static bool sEnabled;
 
 };
 

@@ -26,11 +26,18 @@ Encapsulates a logged database query.
 Constructor for QgsDatabaseQueryLogEntry.
 %End
 
+    int queryId;
+
     QString query;
+
+    quint64 startedTime;
+
+    quint64 finishedTime;
 
     QString initiatorClass;
 
     QString origin;
+
 };
 
 
@@ -50,7 +57,7 @@ Example
 .. code-block:: python
 
        # Log a database query
-       QgsDatabaseQueryLogger.log('SELECT * FROM my_table')
+       QgsDatabaseQueryLog.log('SELECT * FROM my_table')
 
 .. versionadded:: 3.24
 %End
@@ -62,25 +69,30 @@ Example
 
     QgsDatabaseQueryLog( QObject *parent = 0 );
 %Docstring
-Creates a new query logger.
+Creates a new query log.
 
-:py:class:`QgsDatabaseQueryLogger` is not usually directly created, but rather accessed through
-:py:func:`QgsApplication.queryLogger()`.
+QgsDatabaseQueryLog is not usually directly created, but rather accessed through
+:py:func:`QgsApplication.databaseQueryLog()`.
 %End
 
-    static void log( const QString &query );
-%Docstring
-Logs a database query.
 
-Consider using the variant with a :py:class:`QgsDatabaseQueryLogEntry` argument instead, as that
-method allows more context for logged queries.
+    static bool enabled();
+%Docstring
+Returns ``True`` if logging is enabled.
+
+.. seealso:: :py:func:`setEnabled`
+%End
+
+    static void log( const QgsDatabaseQueryLogEntry &query );
+%Docstring
+Logs a database ``query`` as starting.
 
 This method can be safely called from any thread.
 %End
 
-    static void log( const QgsDatabaseQueryLogEntry &entry );
+    static void finished( const QgsDatabaseQueryLogEntry &query );
 %Docstring
-Logs a database query ``entry``.
+Records that the database ``query`` as finished.
 
 This method can be safely called from any thread.
 %End
@@ -88,7 +100,9 @@ This method can be safely called from any thread.
   public slots:
 
 
+
   signals:
+
 
 
 };

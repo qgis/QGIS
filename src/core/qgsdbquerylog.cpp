@@ -34,6 +34,8 @@ QgsDatabaseQueryLogEntry::QgsDatabaseQueryLogEntry( const QString &query )
 // QgsDatabaseQueryLog
 //
 
+bool QgsDatabaseQueryLog::sEnabled = false;
+
 QgsDatabaseQueryLog::QgsDatabaseQueryLog( QObject *parent )
   : QObject( parent )
 {
@@ -42,11 +44,17 @@ QgsDatabaseQueryLog::QgsDatabaseQueryLog( QObject *parent )
 
 void QgsDatabaseQueryLog::log( const QgsDatabaseQueryLogEntry &query )
 {
+  if ( !sEnabled )
+    return;
+
   QMetaObject::invokeMethod( QgsApplication::databaseQueryLog(), "queryStartedPrivate", Qt::QueuedConnection, Q_ARG( QgsDatabaseQueryLogEntry, query ) );
 }
 
 void QgsDatabaseQueryLog::finished( const QgsDatabaseQueryLogEntry &query )
 {
+  if ( !sEnabled )
+    return;
+
   // record time of completion
   QgsDatabaseQueryLogEntry finishedQuery = query;
   finishedQuery.finishedTime = QDateTime::currentMSecsSinceEpoch();
