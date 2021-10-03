@@ -79,8 +79,7 @@ void QgsGeometryOverlapCheck::collectErrors( const QMap<QString, QgsFeaturePool 
             const double area = interPart->area();
             if ( area > mContext->reducedTolerance && ( area < mOverlapThresholdMapUnits || mOverlapThresholdMapUnits == 0.0 ) )
             {
-              QgsGeometry interPartGeometry = QgsGeometry( interPart->clone() );
-              errors.append( new QgsGeometryOverlapCheckError( this, layerFeatureA, interPartGeometry, interPartGeometry.pointOnSurface().asPoint(), area, layerFeatureB ) );
+              errors.append( new QgsGeometryOverlapCheckError( this, layerFeatureA, QgsGeometry( interPart->clone() ), interPart->centroid(), area, layerFeatureB ) );
             }
           }
         }
@@ -135,7 +134,7 @@ void QgsGeometryOverlapCheck::fixError( const QMap<QString, QgsFeaturePool *> &f
   {
     QgsAbstractGeometry *part = QgsGeometryCheckerUtils::getGeomPart( interGeom.get(), iPart );
     if ( std::fabs( part->area() - overlapError->value().toDouble() ) < mContext->reducedTolerance &&
-         QgsGeometryCheckerUtils::pointsFuzzyEqual( QgsGeometry( part->clone() ).pointOnSurface().asPoint(), overlapError->location(), mContext->reducedTolerance ) )
+         QgsGeometryCheckerUtils::pointsFuzzyEqual( part->centroid(), overlapError->location(), mContext->reducedTolerance ) )
     {
       interPart = part;
       break;
