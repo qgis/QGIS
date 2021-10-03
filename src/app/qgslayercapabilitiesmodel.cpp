@@ -127,10 +127,13 @@ QVariant QgsLayerCapabilitiesModel::headerData( int section, Qt::Orientation ori
       switch ( section )
       {
         case LayerColumn:
-        case IdentifiableColumn:
-        case ReadOnlyColumn:
-        case SearchableColumn:
           return QVariant();
+        case IdentifiableColumn:
+          return tr( "Layers which can be queried with the \"Identify features\" tool." );
+        case ReadOnlyColumn:
+          return tr( "Layers which are protected from edit." );
+        case SearchableColumn:
+          return tr( "Layers which can be queried with the locator search tool." );
         case RequiredColumn:
           return tr( "Layers which are protected from inadvertent removal from the project." );
         case PrivateColumn:
@@ -162,7 +165,7 @@ Qt::ItemFlags QgsLayerCapabilitiesModel::flags( const QModelIndex &idx ) const
       {
         if ( layer->isSpatial() )
         {
-          return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
+          return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
         }
         else
         {
@@ -173,7 +176,7 @@ Qt::ItemFlags QgsLayerCapabilitiesModel::flags( const QModelIndex &idx ) const
       {
         if ( layer->type() == QgsMapLayerType::VectorLayer )
         {
-          return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
+          return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
         }
         else
         {
@@ -184,7 +187,7 @@ Qt::ItemFlags QgsLayerCapabilitiesModel::flags( const QModelIndex &idx ) const
       {
         if ( layer->type() == QgsMapLayerType::VectorLayer )
         {
-          return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
+          return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
         }
         else
         {
@@ -193,11 +196,11 @@ Qt::ItemFlags QgsLayerCapabilitiesModel::flags( const QModelIndex &idx ) const
       }
       case RequiredColumn:
       {
-        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
       }
       case PrivateColumn:
       {
-        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
       }
     }
   }

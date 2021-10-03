@@ -1549,6 +1549,9 @@
                 <property name="text">
                  <string>Toggle Selection</string>
                 </property>
+                <property name="toolTip">
+                 <string>Inverts the state of the selected checkboxes</string>
+                </property>
                </widget>
               </item>
               <item row="3" column="2">
