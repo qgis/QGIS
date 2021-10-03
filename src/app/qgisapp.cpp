@@ -5553,7 +5553,7 @@ void QgisApp::about()
     {
       versionString += QStringLiteral( "</tr><tr><td colspan=\"4\">%1</td>" ).arg( tr( "Active Python plugins" ) );
       const QStringList activePlugins = mPythonUtils->listActivePlugins();
-      for ( const auto &plugin : activePlugins )
+      for ( const QString &plugin : activePlugins )
       {
         const QString version = mPythonUtils->getPluginMetadata( plugin, QStringLiteral( "version" ) );
         versionString += QStringLiteral( "</tr><tr><td>%1</td><td colspan=\"3\">%2</td>" ).arg( plugin, version );
