@@ -4887,7 +4887,7 @@ void QgisApp::initLayerTreeView()
   // filter legend actions
   mFilterLegendToolButton = new QToolButton( this );
   mFilterLegendToolButton->setAutoRaise( true );
-  mFilterLegendToolButton->setToolTip( tr( "Filter Legend by Map Content" ) );
+  mFilterLegendToolButton->setToolTip( tr( "Filter Legend" ) );
   mFilterLegendToolButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFilter2.svg" ) ) );
   mFilterLegendToolButton->setPopupMode( QToolButton::InstantPopup );
   QMenu *filterLegendMenu = new QMenu( this );
