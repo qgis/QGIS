@@ -2,6 +2,8 @@
 
 DB=${DB:-qgis_test}
 
+cd $(dirname $0)/../../../ || exit 1
+
 SCRIPTS="
   tests/testdata/provider/testdata_pg.sql
   tests/testdata/provider/testdata_pg_relations.sql
