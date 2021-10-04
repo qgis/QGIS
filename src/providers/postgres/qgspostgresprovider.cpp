@@ -4384,8 +4384,23 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer( const QString &u
   }
 
   // get the pk's name and type
+  // Try to find a PK candidate from numeric NOT NULL / UNIQUE columns
+  if ( primaryKey.isEmpty() )
+  {
+    for ( const auto &field : std::as_const( fields ) )
+    {
+      if ( field.isNumeric() &&
+           ( field.constraints().constraints() & QgsFieldConstraints::Constraint::ConstraintUnique ) &&
+           ( field.constraints().constraints() & QgsFieldConstraints::Constraint::ConstraintNotNull ) &&
+           ( field.constraints().constraints() & QgsFieldConstraints::ConstraintOrigin::ConstraintOriginProvider ) )
+      {
+        primaryKey = field.name();
+        break;
+      }
+    }
+  }
 
-  // if no pk name was passed, define the new pk field name
+  // if no pk name was passed or guessed, define the new pk field name
   if ( primaryKey.isEmpty() )
   {
     int index = 0;

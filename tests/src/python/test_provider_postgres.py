@@ -3387,6 +3387,43 @@ class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCas
         self.assertTrue(feat.isValid())
         self.assertEqual(feat["name"], "test")
 
+    def testExportPkGuessLogic(self):
+        """Test that when creating an empty layer a NOT NULL UNIQUE numeric field is identified as a PK"""
+
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.dbconn, {})
+        conn.executeSql(
+            'DROP TABLE IF EXISTS qgis_test."testExportPkGuessLogic_source" CASCADE')
+        conn.executeSql(
+            'DROP TABLE IF EXISTS qgis_test."testExportPkGuessLogic_exported" CASCADE')
+        conn.executeSql(
+            """CREATE TABLE qgis_test."testExportPkGuessLogic_source" ( id bigint generated always as identity primary key,
+                    geom geometry(Point, 4326) check (st_isvalid(geom)),
+                    name text unique, author text not null)""")
+
+        source_layer = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'id\' srid=4326 type=POINT table="qgis_test"."testExportPkGuessLogic_source" (geom) sql=', 'testExportPkGuessLogic_source', 'postgres')
+
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn = md.createConnection(self.dbconn, {})
+        table = conn.table("qgis_test", "testExportPkGuessLogic_source")
+        self.assertEqual(table.primaryKeyColumns(), ['id'])
+
+        self.assertTrue(source_layer.isValid())
+
+        # Create the URI as the browser does (no PK information)
+        uri = self.dbconn + ' sslmode=disable srid=4326 type=POINT table="qgis_test"."testExportPkGuessLogic_exported" (geom) sql='
+
+        exporter = QgsVectorLayerExporter(uri, 'postgres', source_layer.fields(), source_layer.wkbType(), source_layer.crs(), True, {})
+        self.assertTrue(exporter.lastError() == '')
+
+        exported_layer = QgsVectorLayer(self.dbconn + ' sslmode=disable srid=4326 type=POINT table="qgis_test"."testExportPkGuessLogic_exported" (geom) sql=', 'testExportPkGuessLogic_exported', 'postgres')
+        self.assertTrue(exported_layer.isValid())
+
+        table = conn.table("qgis_test", "testExportPkGuessLogic_exported")
+        self.assertEqual(table.primaryKeyColumns(), ['id'])
+
+        self.assertEqual(exported_layer.fields().names(), ['id', 'name', 'author'])
+
 
 if __name__ == '__main__':
     unittest.main()
