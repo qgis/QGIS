@@ -621,6 +621,77 @@ void QgsAttributeForm::updateValuesDependenciesVirtualFields( const int originId
   }
 }
 
+void QgsAttributeForm::updateRelatedLayerFields()
+{
+  // Synchronize dependencies
+  for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
+  {
+    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+    if ( ! eww )
+      continue;
+
+    updateRelatedLayerFieldsDependencies( eww );
+  }
+
+  if ( mRelatedLayerFieldsDependencies.isEmpty() )
+    return;
+
+  if ( !mFeature.isValid() )
+    return;
+
+  QgsAttributes featureAttributes = mFeature.attributes();
+  for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
+  {
+    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+    if ( !eww )
+      continue;
+
+    QVariantList dstVars = QVariantList() << featureAttributes.at( eww->fieldIdx() );
+    QVariantList srcVars = QVariantList() << eww->value();
+    QList<int> fieldIndexes = QList<int>() << eww->fieldIdx();
+
+    // append additional fields
+    const QStringList additionalFields = eww->additionalFields();
+    for ( const QString &fieldName : additionalFields )
+    {
+      int idx = eww->layer()->fields().lookupField( fieldName );
+      fieldIndexes << idx;
+      dstVars << featureAttributes.at( idx );
+    }
+    srcVars.append( eww->additionalFieldValues() );
+
+    Q_ASSERT( dstVars.count() == srcVars.count() );
+
+    for ( int i = 0; i < dstVars.count(); i++ )
+    {
+      if ( !qgsVariantEqual( dstVars[i], srcVars[i] ) && srcVars[i].isValid() && fieldIsEditable( fieldIndexes[i] ) )
+        featureAttributes[fieldIndexes[i]] = srcVars[i];
+    }
+  }
+
+  // go through depending fields and update the fields with virtual field
+  for ( QgsWidgetWrapper *ww : std::as_const( mRelatedLayerFieldsDependencies ) )
+  {
+    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+    if ( !eww )
+      continue;
+
+    //do not update when this widget is already updating (avoid recursions)
+    if ( mAlreadyUpdatedFields.contains( eww->fieldIdx() ) )
+      continue;
+
+    // create updated Feature
+    QgsFeature updatedFeature = QgsFeature( mFeature );
+    updatedFeature.setAttributes( featureAttributes );
+    QgsExpressionContext context = createExpressionContext( updatedFeature );
+
+    QgsExpression exp( mLayer->expressionField( eww->fieldIdx() ) );
+    QVariant value = exp.evaluate( &context );
+
+    eww->setValue( value );
+  }
+}
+
 void QgsAttributeForm::resetMultiEdit( bool promptToSave )
 {
   if ( promptToSave )
@@ -1277,6 +1348,11 @@ void QgsAttributeForm::onAttributeDeleted( int idx )
   }
   init();
   setFeature( mFeature );
+}
+
+void QgsAttributeForm::onRelatedFeaturesChanged()
+{
+  updateRelatedLayerFields();
 }
 
 void QgsAttributeForm::onUpdatedFields()
@@ -2428,6 +2504,14 @@ void QgsAttributeForm::afterWidgetInit()
       connect( eww, &QgsEditorWidgetWrapper::valuesChanged, this, &QgsAttributeForm::onAttributeChanged );
       connect( eww, &QgsEditorWidgetWrapper::constraintStatusChanged, this, &QgsAttributeForm::onConstraintStatusChanged );
     }
+    else
+    {
+      QgsRelationWidgetWrapper *relationWidgetWrapper = qobject_cast<QgsRelationWidgetWrapper *>( ww );
+      if ( relationWidgetWrapper )
+      {
+        connect( relationWidgetWrapper, &QgsRelationWidgetWrapper::relatedFeaturesChanged, this, &QgsAttributeForm::onRelatedFeaturesChanged );
+      }
+    }
   }
 }
 
@@ -2714,6 +2798,7 @@ void QgsAttributeForm::updateFieldDependencies()
 {
   mDefaultValueDependencies.clear();
   mVirtualFieldsDependencies.clear();
+  mRelatedLayerFieldsDependencies.clear();
 
   //create defaultValueDependencies
   for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
@@ -2725,6 +2810,8 @@ void QgsAttributeForm::updateFieldDependencies()
     updateFieldDependenciesDefaultValue( eww );
 
     updateFieldDependenciesVirtualFields( eww );
+
+    updateRelatedLayerFieldsDependencies( eww );
   }
 }
 
@@ -2772,6 +2859,21 @@ void QgsAttributeForm::updateFieldDependenciesVirtualFields( QgsEditorWidgetWrap
     {
       mVirtualFieldsDependencies.insertMulti( mLayer->fields().lookupField( referencedColumn ), eww );
     }
+  }
+}
+
+void QgsAttributeForm::updateRelatedLayerFieldsDependencies(QgsEditorWidgetWrapper *eww)
+{
+  for ( QgsAttributeFormWidget *formWidget : mFormWidgets )
+  {
+    QgsAttributeFormRelationEditorWidget *relationEditorWidget = dynamic_cast<QgsAttributeFormRelationEditorWidget *>( formWidget );
+    if ( !relationEditorWidget )
+      continue;
+
+    QString expressionField = eww->layer()->expressionField( eww->fieldIdx() );
+    if ( expressionField.contains( QStringLiteral( "relation_aggregate" ) )
+         || expressionField.contains( QStringLiteral( "get_features" ) ) )
+      mRelatedLayerFieldsDependencies.insert( eww );
   }
 }
 

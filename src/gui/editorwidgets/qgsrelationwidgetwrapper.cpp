@@ -42,15 +42,17 @@ QWidget *QgsRelationWidgetWrapper::createWidget( QWidget *parent )
   if ( form )
     connect( form, &QgsAttributeForm::widgetValueChanged, this, &QgsRelationWidgetWrapper::widgetValueChanged );
 
-  QWidget *widget = QgsGui::instance()->relationWidgetRegistry()->create( mRelationEditorId, widgetConfig(), parent );
+  QgsAbstractRelationEditorWidget *relationEditorWidget = QgsGui::instance()->relationWidgetRegistry()->create( mRelationEditorId, widgetConfig(), parent );
 
-  if ( !widget )
+  if ( !relationEditorWidget )
   {
     QgsLogger::warning( QStringLiteral( "Failed to create relation widget \"%1\", fallback to \"basic\" relation widget" ).arg( mRelationEditorId ) );
-    widget = QgsGui::instance()->relationWidgetRegistry()->create( QStringLiteral( "relation_editor" ), widgetConfig(), parent );
+    relationEditorWidget = QgsGui::instance()->relationWidgetRegistry()->create( QStringLiteral( "relation_editor" ), widgetConfig(), parent );
   }
 
-  return widget;
+  connect( relationEditorWidget, &QgsAbstractRelationEditorWidget::relatedFeaturesChanged, this, &QgsRelationWidgetWrapper::onRelatedFeaturesChanged );
+
+  return relationEditorWidget;
 }
 
 void QgsRelationWidgetWrapper::setFeature( const QgsFeature &feature )
@@ -69,6 +71,11 @@ void QgsRelationWidgetWrapper::setVisible( bool visible )
 {
   if ( mWidget )
     mWidget->setVisible( visible );
+}
+
+void QgsRelationWidgetWrapper::onRelatedFeaturesChanged()
+{
+  emit relatedFeaturesChanged();
 }
 
 void QgsRelationWidgetWrapper::aboutToSave()
@@ -108,6 +115,7 @@ void QgsRelationWidgetWrapper::widgetValueChanged( const QString &attribute, con
 {
   if ( mWidget && attributeChanged )
   {
+    // Maybe from here the other bug? jump to first feature?
     QgsFeature feature { mWidget->feature() };
     if ( feature.attribute( attribute ) != newValue )
     {
