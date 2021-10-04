@@ -147,10 +147,10 @@ namespace libply
   {
     public:
 
-      IProperty &operator=( unsigned int value ) override { return *this; };
-      IProperty &operator=( int value ) override  { return *this; };
-      IProperty &operator=( float value ) override  { return *this; };
-      IProperty &operator=( double value ) override  { return *this; };
+      IProperty &operator=( unsigned int ) override { return *this; };
+      IProperty &operator=( int ) override  { return *this; };
+      IProperty &operator=( float ) override  { return *this; };
+      IProperty &operator=( double ) override  { return *this; };
 
       operator unsigned int() override { return 0; };
       operator int() override { return 0; };

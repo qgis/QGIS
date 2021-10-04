@@ -538,6 +538,8 @@ void MDAL::DriverPly::addDataset3D( MDAL::DatasetGroup *group,
 
 void MDAL::DriverPly::save( const std::string &fileName, const std::string &meshName, Mesh *mesh )
 {
+  MDAL_UNUSED( meshName );
+
   MDAL::Log::resetLastStatus();
 
   DatasetGroups groups = mesh->datasetGroups;
