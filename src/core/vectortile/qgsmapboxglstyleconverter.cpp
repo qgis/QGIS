@@ -2334,8 +2334,7 @@ QgsProperty QgsMapBoxGlStyleConverter::parseValueList( const QVariantList &json,
   }
   else
   {
-    context.pushWarning( QObject::tr( "%1: Could not interpret value list with method %2" ).arg( context.layerId(), method ) );
-    return QgsProperty();
+    return QgsProperty::fromExpression( parseExpression( json, context ) );
   }
 }
 
