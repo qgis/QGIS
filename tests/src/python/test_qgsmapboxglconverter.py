@@ -12,9 +12,11 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.PyQt.QtGui import (QColor)
+from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtGui import (QColor, QImage)
 from qgis.core import (QgsMapBoxGlStyleConverter,
                        QgsMapBoxGlStyleConversionContext,
+                       QgsSymbolLayer,
                        QgsWkbTypes,
                        QgsEffectStack
                        )
@@ -585,6 +587,30 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         self.assertTrue(has_labeling)
         self.assertEqual(labeling.labelSettings().fieldName, '''lower(concat(concat("name_en",' - ',"name_fr"),"bar"))''')
         self.assertTrue(labeling.labelSettings().isExpression)
+
+    def testDataDefinedIconRotate(self):
+        """ Test icon-rotate property that depends on a data attribute """
+        context = QgsMapBoxGlStyleConversionContext()
+
+        image = QImage(QSize(1, 1), QImage.Format_ARGB32)
+        context.setSprites(image, {"foo": {"x": 0, "y": 0, "width": 1, "height": 1, "pixelRatio": 1}})
+        style = {
+            "layout": {
+                "icon-image": "{foo}",
+                "icon-rotate": ["get", "ROTATION"],
+                "text-size": 11,
+                "icon-size": 1
+            },
+            "type": "symbol",
+            "id": "poi_label",
+            "source-layer": "poi_label"
+        }
+        renderer, has_renderer, labeling, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        self.assertTrue(has_renderer)
+        self.assertFalse(has_labeling)
+        dd_props = renderer.symbol().symbolLayers()[0].dataDefinedProperties()
+        prop = dd_props.property(QgsSymbolLayer.PropertyAngle)
+        self.assertEqual(prop.asExpression(), '"ROTATION"')
 
     def testCircleLayer(self):
         context = QgsMapBoxGlStyleConversionContext()
