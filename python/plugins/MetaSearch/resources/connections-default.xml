@@ -7,7 +7,7 @@
     <csw name="Iceland: National CSW (Iceland Service)" url="https://gatt.lmi.is/geonetwork/srv/eng/csw"/>
     <csw name="Italy: National CSW (Geoportale Nazionale - Servizio di ricerca Italiano)" url="http://www.pcn.minambiente.it/geoportal/csw"/>
     <csw name="Italy: RNDT - Repertorio Nazionale dei Dati Territoriali - Servizio di ricerca" url="https://geodati.gov.it/RNDT/csw"/>
-    <csw name="Italy: Istituto Nazionale di Geofisica e Vulcanologia (INGV)" url="https://data.ingv.it/metadata/csw/"/>
+    <csw name="Italy: Istituto Nazionale di Geofisica e Vulcanologia (INGV)" url="https://ogc.ingv.it/csw/"/>
     <csw name="New Zealand: LINZ Data Service" url="https://data.linz.govt.nz/services/csw/"/>
     <csw name="Netherlands: National CSW (Nationaal Georegister)" url="http://www.nationaalgeoregister.nl/geonetwork/srv/dut/csw"/>
     <csw name="Norway: National CSW (Geonorge)" url="http://www.geonorge.no/geonetwork/srv/no/csw"/>
