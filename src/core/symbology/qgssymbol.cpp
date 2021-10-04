@@ -127,7 +127,7 @@ QPolygonF QgsSymbol::_getLineString3d( QgsRenderContext &context, const QgsCurve
   {
     try
     {
-      pts.transform( ct, QgsCoordinateTransform::TransformDirection::ForwardTransform, true );
+      pts.transform( ct, Qgis::TransformDirection::Forward, true );
     }
     catch ( QgsCsException & )
     {
@@ -177,7 +177,7 @@ QPolygonF QgsSymbol::_getLineString2d( QgsRenderContext &context, const QgsCurve
   QPolygonF pts;
 
   //apply clipping for large lines to achieve a better rendering performance
-  if ( clipToExtent && nPoints > 1 && !( context.flags() & QgsRenderContext::ApplyClipAfterReprojection ) )
+  if ( clipToExtent && nPoints > 1 && !( context.flags() & Qgis::RenderContextFlag::ApplyClipAfterReprojection ) )
   {
     const QgsRectangle e = context.extent();
     const double cw = e.width() / 10;
@@ -210,7 +210,7 @@ QPolygonF QgsSymbol::_getLineString2d( QgsRenderContext &context, const QgsCurve
     return !std::isfinite( point.x() ) || !std::isfinite( point.y() );
   } ), pts.end() );
 
-  if ( clipToExtent && nPoints > 1 && context.flags() & QgsRenderContext::ApplyClipAfterReprojection )
+  if ( clipToExtent && nPoints > 1 && context.flags() & Qgis::RenderContextFlag::ApplyClipAfterReprojection )
   {
     // early clipping was not possible, so we have to apply it here after transformation
     const QgsRectangle e = context.mapExtent();
@@ -276,7 +276,7 @@ QPolygonF QgsSymbol::_getPolygonRing3d( QgsRenderContext &context, const QgsCurv
   {
     try
     {
-      poly.transform( ct, QgsCoordinateTransform::TransformDirection::ForwardTransform, true );
+      poly.transform( ct, Qgis::TransformDirection::Forward, true );
     }
     catch ( QgsCsException & )
     {
@@ -342,7 +342,7 @@ QPolygonF QgsSymbol::_getPolygonRing2d( QgsRenderContext &context, const QgsCurv
   }
 
   //clip close to view extent, if needed
-  if ( clipToExtent && !( context.flags() & QgsRenderContext::ApplyClipAfterReprojection ) && !context.extent().contains( poly.boundingRect() ) )
+  if ( clipToExtent && !( context.flags() & Qgis::RenderContextFlag::ApplyClipAfterReprojection ) && !context.extent().contains( poly.boundingRect() ) )
   {
     const QgsRectangle e = context.extent();
     const double cw = e.width() / 10;
@@ -371,7 +371,7 @@ QPolygonF QgsSymbol::_getPolygonRing2d( QgsRenderContext &context, const QgsCurv
     return !std::isfinite( point.x() ) || !std::isfinite( point.y() );
   } ), poly.end() );
 
-  if ( clipToExtent && context.flags() & QgsRenderContext::ApplyClipAfterReprojection && !context.mapExtent().contains( poly.boundingRect() ) )
+  if ( clipToExtent && context.flags() & Qgis::RenderContextFlag::ApplyClipAfterReprojection && !context.mapExtent().contains( poly.boundingRect() ) )
   {
     // early clipping was not possible, so we have to apply it here after transformation
     const QgsRectangle e = context.mapExtent();
