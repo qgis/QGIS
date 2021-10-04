@@ -43,6 +43,7 @@ class TestQgsMultiPoint: public QObject
     void clear();
     void assignment();
     void cast();
+    void isValid();
     void toCurveType();
     void toFromWKB();
     void toFromWKBWithZ();
@@ -59,6 +60,7 @@ class TestQgsMultiPoint: public QObject
     void closestSegment();
     void boundingBox();
     void boundary();
+    void segmentLength();
 };
 
 void TestQgsMultiPoint::constructor()
@@ -353,6 +355,16 @@ void TestQgsMultiPoint::insertGeometry()
 
   QVERIFY( mp.isEmpty() );
   QCOMPARE( mp.numGeometries(), 0 );
+
+  mp.insertGeometry( new QgsPoint(), 0 );
+
+  QVERIFY( mp.isEmpty() );
+  QCOMPARE( mp.numGeometries(), 1 );
+
+  mp.insertGeometry( new QgsPoint( 0, 0 ), 0 );
+
+  QVERIFY( !mp.isEmpty() );
+  QCOMPARE( mp.numGeometries(), 2 );
 }
 
 void TestQgsMultiPoint::clone()
@@ -424,6 +436,20 @@ void TestQgsMultiPoint::cast()
 
   mp.fromWkt( QStringLiteral( "MultiPointZM(PointZM(0 1 1 2))" ) );
   QVERIFY( QgsMultiPoint().cast( &mp ) );
+}
+
+void TestQgsMultiPoint::isValid()
+{
+  QString error;
+
+  QgsMultiPoint mp;
+  QVERIFY( mp.isValid( error ) );
+
+  mp.addGeometry( new QgsPoint() );
+  QVERIFY( mp.isValid( error ) );
+
+  mp.addGeometry( new QgsPoint( 0, 0 ) );
+  QVERIFY( mp.isValid( error ) );
 }
 
 void TestQgsMultiPoint::toCurveType()
@@ -607,6 +633,22 @@ void TestQgsMultiPoint::exportImport()
   QCOMPARE( exportC.asKml(), expectedKml );
   QString expectedKmlPrec3( QStringLiteral( "<MultiGeometry><Point><coordinates>1.111,11.111</coordinates></Point><Point><coordinates>1.333,0.667</coordinates></Point></MultiGeometry>" ) );
   QCOMPARE( exportFloat.asKml( 3 ), expectedKmlPrec3 );
+
+  QgsMultiPoint exportZ;
+  exportZ.addGeometry( new QgsPoint( QgsWkbTypes::PointZ, 0, 10, 0 ) );
+  exportZ.addGeometry( new QgsPoint( QgsWkbTypes::PointZ, 10, 0, 1 ) );
+
+  QString expectedJsonZ( "{\"coordinates\":[[0.0,10.0,0.0],[10.0,0.0,1.0]],\"type\":\"MultiPoint\"}" );
+  res = exportZ.asJson();
+  QCOMPARE( res, expectedJsonZ );
+
+  QgsMultiPoint exportM;
+  exportM.addGeometry( new QgsPoint( QgsWkbTypes::PointM, 0, 10, 0 ) );
+  exportM.addGeometry( new QgsPoint( QgsWkbTypes::PointM, 10, 0, 1 ) );
+
+  QString expectedJsonM( "{\"coordinates\":[[0.0,10.0],[10.0,0.0]],\"type\":\"MultiPoint\"}" );
+  res = exportM.asJson();
+  QCOMPARE( res, expectedJsonM );
 }
 
 void TestQgsMultiPoint::vertexNumberFromVertexId()
@@ -752,6 +794,17 @@ void TestQgsMultiPoint::boundary()
   mp.addGeometry( new QgsPoint( 1, 1 ) );
 
   QVERIFY( !mp.boundary() );
+}
+
+void TestQgsMultiPoint::segmentLength()
+{
+  QgsMultiPoint mp;
+  QCOMPARE( mp.segmentLength( QgsVertexId( 0, 0, 0 ) ), 0.0 );
+
+  mp.addGeometry( new QgsPoint( 0, 0 ) );
+  mp.addGeometry( new QgsPoint( 1, 1 ) );
+
+  QCOMPARE( mp.segmentLength( QgsVertexId( 1, 0, 0 ) ), 0.0 );
 }
 
 QGSTEST_MAIN( TestQgsMultiPoint )
