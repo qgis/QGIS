@@ -210,6 +210,18 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
     void initWidget( QWidget *editor ) override;
     bool valid() const override;
 
+  signals:
+
+    /**
+     * Emit this signal, whenever the related features changed.
+     * This happens for example when related features are added, removed,
+     * linked or unlinked.
+     *
+     * \param vectorLayer The modified layer
+     * \since QGIS 3.22
+     */
+    void relatedFeaturesChanged();
+
   public slots:
     void setFeature( const QgsFeature &feature ) override;
 
@@ -219,6 +231,10 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
      * \since QGIS 2.16
      */
     void setVisible( bool visible );
+
+  private slots:
+
+    void onRelatedFeaturesChanged();
 
   private:
     void aboutToSave() override;

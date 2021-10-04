@@ -170,6 +170,24 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
      */
     virtual void setConfig( const QVariantMap &config ) = 0;
 
+    /**
+     * Returns true if editing multiple features at a time
+     * \since QGIS 3.24
+     */
+    bool multiEditModeActive() const;
+
+  signals:
+
+    /**
+     * Emit this signal, whenever the related features changed.
+     * This happens for example when related features are added, removed,
+     * linked or unlinked.
+     *
+     * \param vectorLayer The modified layer
+     * \since QGIS 3.22
+     */
+    void relatedFeaturesChanged();
+
   public slots:
 
     /**
