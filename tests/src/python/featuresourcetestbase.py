@@ -634,7 +634,7 @@ class FeatureSourceTestCase(object):
         request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'), QgsProject.instance().transformContext()).setDistanceWithin(QgsGeometry.fromWkt('LineString (-7035391 11036245, -7622045 11023301, -7763421 15092839)'), 250000)
         features = [f['pk'] for f in self.source.getFeatures(request)]
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
-        assert set(features) == set([2, 5]), 'Got {} instead'.format(features)
+        self.assertEqual(set(features), {2, 5})
         self.assertTrue(all_valid)
 
         # point geometry
@@ -681,6 +681,15 @@ class FeatureSourceTestCase(object):
         # test that results match QgsFeatureRequest.acceptFeature
         for f in self.source.getFeatures():
             self.assertEqual(request.acceptFeature(f), f['pk'] in set([1, 2, 4]))
+
+        # test with linestring whose bounding box overlaps all query
+        # points but being only within one of them, which we hope will
+        # be returned NOT as the first one.
+        # This is a test for https://github.com/qgis/QGIS/issues/45352
+        request = QgsFeatureRequest().setDistanceWithin(
+            QgsGeometry.fromWkt('LINESTRING(-100 80, -100 66, -30 66, -30 80)'), 0.5)
+        features = {f['pk'] for f in self.source.getFeatures(request)}
+        self.assertEqual(features, {1}, "Unexpected return from QgsFeatureRequest with DistanceWithin filter")
 
     def testGeomAndAllAttributes(self):
         """
