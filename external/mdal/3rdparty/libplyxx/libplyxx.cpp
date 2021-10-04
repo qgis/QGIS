@@ -426,7 +426,7 @@ namespace libply
     properties.push_back( std::move( prop ) );
   }
 
-  void ElementBuffer::appendListProperty( Type type )
+  void ElementBuffer::appendListProperty( Type )
   {
     std::unique_ptr<IProperty> prop = std::make_unique<ListProperty>();
     properties.push_back( std::move( prop ) );
