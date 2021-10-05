@@ -105,10 +105,10 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         server = QgsServer()
         request = QgsServerRequest()
         projectPath = os.path.join(self.testdata_path, 'test_project.qgs')
-        request.setUrl( QUrl('http://localhost/qgis_mapserv.fcgi?MAP=' + projectPath + '&SERVICE=WMS&REQUEST=GetCapabilities') )
-        request.setOriginalUrl( QUrl('http://localhost/wms/test_project') )
+        request.setUrl(QUrl('http://localhost/qgis_mapserv.fcgi?MAP=' + projectPath + '&SERVICE=WMS&REQUEST=GetCapabilities'))
+        request.setOriginalUrl(QUrl('http://localhost/wms/test_project'))
         response = QgsBufferServerResponse()
-        server.handleRequest( request, response )
+        server.handleRequest(request, response)
         response.flush()
 
         headers = []
@@ -120,7 +120,7 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         reference_path = os.path.join(self.testdata_path, 'wms_getcapabilities_rewriting.txt')
         f = open(reference_path, 'rb')
         expected = f.read()
-        self.assertXMLEqual(b"\n".join(headers) + b"\n\n" + bytes(response.body()), expected )
+        self.assertXMLEqual(b"\n".join(headers) + b"\n\n" + bytes(response.body()), expected)
 
     def test_getprojectsettings(self):
         self.wms_request_compare('GetProjectSettings')
