@@ -902,6 +902,9 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertAlmostEqual(f['pk3'], 3.14159274)
         self.assertEqual(f['value'], 'test 2')
 
+        # Backup test table (will be edited)
+        self.backupTable('qgis_test', 'tb_test_composite_float_pk')
+
         # can we edit a field?
         vl.startEditing()
         vl.changeAttributeValue(f.id(), fields.indexOf('value'), 'Edited Test 2')
@@ -958,6 +961,9 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             got_feature = False
 
         self.assertFalse(got_feature)
+
+        # Restore test table
+        self.restoreTable('qgis_test', 'tb_test_composite_float_pk')
 
     def testPktFloatingPoint(self):
         """
