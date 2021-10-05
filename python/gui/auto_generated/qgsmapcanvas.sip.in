@@ -446,6 +446,18 @@ Emits signal scaleChanged to update scale in main window
 Returns the map layer at position index in the layer stack
 %End
 
+    QgsMapLayer *layer( const QString &id );
+%Docstring
+Returns the map layer with the matching ID, or ``None`` if no layers could be found.
+
+This method searches both layers associated with the map canvas (see :py:func:`~QgsMapCanvas.layers`)
+and layers from the :py:class:`QgsProject` associated with the canvas
+(which is current the :py:func:`QgsProject.instance()`). It can be used to resolve layer IDs to
+layers which may be visible in the canvas, but not associated with a :py:class:`QgsProject`.
+
+.. versionadded:: 3.22
+%End
+
     int layerCount() const;
 %Docstring
 Returns number of layers on the map

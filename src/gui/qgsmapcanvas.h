@@ -459,6 +459,18 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     //! Returns the map layer at position index in the layer stack
     QgsMapLayer *layer( int index );
 
+    /**
+     * Returns the map layer with the matching ID, or NULLPTR if no layers could be found.
+     *
+     * This method searches both layers associated with the map canvas (see layers())
+     * and layers from the QgsProject associated with the canvas
+     * (which is current the QgsProject::instance()). It can be used to resolve layer IDs to
+     * layers which may be visible in the canvas, but not associated with a QgsProject.
+     *
+     * \since QGIS 3.22
+     */
+    QgsMapLayer *layer( const QString &id );
+
     //! Returns number of layers on the map
     int layerCount() const;
 

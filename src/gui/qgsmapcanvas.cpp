@@ -336,6 +336,21 @@ QgsMapLayer *QgsMapCanvas::layer( int index )
     return nullptr;
 }
 
+QgsMapLayer *QgsMapCanvas::layer( const QString &id )
+{
+  // first check for layers from canvas map settings
+  const QList<QgsMapLayer *> layers = mapSettings().layers();
+  for ( QgsMapLayer *layer : layers )
+  {
+    if ( layer && layer->id() == id )
+      return layer;
+  }
+
+  // else fallback to searching project layers
+  // TODO: allow a specific project to be associated with a canvas!
+  return QgsProject::instance()->mapLayer( id );
+}
+
 void QgsMapCanvas::setCurrentLayer( QgsMapLayer *layer )
 {
   if ( mCurrentLayer == layer )
