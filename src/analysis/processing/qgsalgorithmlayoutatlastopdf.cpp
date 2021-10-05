@@ -74,6 +74,7 @@ void QgsLayoutAtlasToPdfAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "SORTBY_REVERSE" ), QObject::tr( "Reverse sort order (used when a sort expression is provided)" ), false, true ) );
 
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "PDF file" ), QObject::tr( "PDF Format" ) + " (*.pdf *.PDF)" ) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "SINGLE_FILE" ), QObject::tr( "Single file export when possible" ), true, true ) );
 
   std::unique_ptr< QgsProcessingParameterMultipleLayers > layersParam = std::make_unique< QgsProcessingParameterMultipleLayers>( QStringLiteral( "LAYERS" ), QObject::tr( "Map layers to assign to unlocked map item(s)" ), QgsProcessing::TypeMapLayer, QVariant(), true );
   layersParam->setFlags( layersParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
@@ -208,7 +209,22 @@ QVariantMap QgsLayoutAtlasToPdfAlgorithm::processAlgorithm( const QVariantMap &p
   if ( atlas->updateFeatures() )
   {
     feedback->pushInfo( QObject::tr( "Exporting %n atlas feature(s)", "", atlas->count() ) );
-    switch ( exporter.exportToPdf( atlas, dest, settings, error, feedback ) )
+    const bool singleFile = parameterAsBool( parameters, QStringLiteral( "SINGLE_FILE" ), context );
+    QgsLayoutExporter::ExportResult result;
+    if ( singleFile )
+    {
+      result = exporter.exportToPdf( atlas, dest, settings, error, feedback );
+    }
+    else
+    {
+      if ( atlas->filenameExpression().isEmpty() )
+      {
+        QString err;
+        atlas->setFilenameExpression( QString( "'output_'||@atlas_featurenumber" ), err );
+      }
+      result = exporter.exportToPdfs( atlas, dest, settings, error, feedback );
+    }
+    switch ( result )
     {
       case QgsLayoutExporter::Success:
       {
