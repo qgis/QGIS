@@ -1067,6 +1067,7 @@ QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode, QObject *parent, QgsLayo
 {
   setFlag( QgsLayerTreeModel::AllowLegendChangeState, false );
   setFlag( QgsLayerTreeModel::AllowNodeReorder, true );
+  connect( this, &QgsLegendModel::dataChanged, this, &QgsLegendModel::refreshLegend );
 }
 
 QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode,  QgsLayoutItemLegend *layout )
@@ -1075,6 +1076,7 @@ QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode,  QgsLayoutItemLegend *la
 {
   setFlag( QgsLayerTreeModel::AllowLegendChangeState, false );
   setFlag( QgsLayerTreeModel::AllowNodeReorder, true );
+  connect( this, &QgsLegendModel::dataChanged, this, &QgsLegendModel::refreshLegend );
 }
 
 QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
