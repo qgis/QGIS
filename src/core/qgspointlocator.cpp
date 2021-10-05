@@ -944,11 +944,11 @@ bool QgsPointLocator::init( int maxFeaturesToIndex, bool relaxed )
        || !mLayer->dataProvider()->isValid() )
     return false;
 
-  mRenderer.reset( mLayer->renderer() ? mLayer->renderer()->clone() : nullptr );
   mSource.reset( new QgsVectorLayerFeatureSource( mLayer ) );
 
   if ( mContext )
   {
+    mRenderer.reset( mLayer->renderer() ? mLayer->renderer()->clone() : nullptr );
     mContext->expressionContext() << QgsExpressionContextUtils::layerScope( mLayer );
   }
 
