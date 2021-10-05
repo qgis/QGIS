@@ -100,11 +100,28 @@ class CORE_EXPORT QgsMeshLayerTemporalProperties : public QgsMapLayerTemporalPro
      */
     void setMatchingMethod( const QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod &matchingMethod );
 
+    /**
+     * Returns whether the instance is valid
+     *
+     * \since QGIS 3.22
+     */
+    bool isValid() const;
+
+    /**
+     * Sets whether the instance is valid
+     *
+     * \param isValid whether the instance is valid
+     *
+     * \since QGIS 3.22
+     */
+    void setIsValid( bool isValid );
+
   private:
     QDateTime mReferenceTime;
     QgsDateTimeRange mTimeExtent;
     QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod mMatchingMethod =
       QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetBeforeStartRangeTime;
+    bool mIsValid = false;
 };
 
 #endif // QGSMESHLAYERTEMPORALPROPERTIES_H
