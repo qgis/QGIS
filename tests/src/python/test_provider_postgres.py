@@ -969,6 +969,11 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         """
         Check if we can handle floating point/numeric primary keys correctly
         """
+
+        # 0. Backup test table (will be edited)
+        self.backupTable('qgis_test', 'tb_test_float_pk')
+        self.backupTable('qgis_test', 'tb_test_double_pk')
+
         # 1. 32 bit float (PostgreSQL "REAL" type)
         vl = QgsVectorLayer(self.dbconn + ' sslmode=disable srid=4326 key="pk" table="qgis_test"."tb_test_float_pk" (geom)', "test_float_pk", "postgres")
         self.assertTrue(vl.isValid())
@@ -1083,6 +1088,10 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
         # no NUMERIC/DECIMAL checks here. NUMERIC primary keys are unsupported.
         # TODO: implement NUMERIC primary keys/arbitrary precision arithmethics/fixed point math in QGIS.
+
+        # Restore test tables
+        self.restoreTable('qgis_test', 'tb_test_float_pk')
+        self.restoreTable('qgis_test', 'tb_test_double_pk')
 
     def testPktMapInsert(self):
         vl = QgsVectorLayer('{} table="qgis_test"."{}" key="obj_id" sql='.format(self.dbconn, 'oid_serial_table'),
