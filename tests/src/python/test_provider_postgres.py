@@ -99,6 +99,15 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         cur.close()
         self.con.commit()
 
+    def backupTable(self, schema, table):
+        self.execSQLCommand('DROP TABLE IF EXISTS {s}.{t}_edit CASCADE'.format(s=schema, t=table))
+        self.execSQLCommand('CREATE TABLE {s}.{t}_edit AS SELECT * FROM {s}.{t}'.format(s=schema, t=table))
+
+    def restoreTable(self, schema, table):
+        self.execSQLCommand('TRUNCATE TABLE {s}.{t}'.format(s=schema, t=table))
+        self.execSQLCommand('INSERT INTO {s}.{t} SELECT * FROM {s}.{t}_edit'.format(s=schema, t=table))
+        self.execSQLCommand('DROP TABLE {s}.{t}_edit'.format(s=schema, t=table))
+
     def getSource(self):
         # create temporary table for edit tests
         self.execSQLCommand(
@@ -646,6 +655,9 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
         flds = vl.fields()
 
+        # Backup test table (will be edited)
+        self.backupTable('qgis_test', 'bigint_pk')
+
         # check if default values are correctly read back
         f = next(vl.getFeatures(QgsFeatureRequest()))
         bigint_with_default_idx = vl.fields().lookupField('bigint_attribute_def')
@@ -696,6 +708,9 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertEqual(f['bigint_attribute'], 84)
         self.assertEqual(f['bigint_attribute_def'], 42)
+
+        # Restore test table
+        self.restoreTable('qgis_test', 'bigint_pk')
 
     def testPktUpdateBigintPk(self):
         """Test if we can update objects with positive, zero and negative bigint PKs."""
