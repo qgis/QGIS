@@ -21,6 +21,7 @@
 #include "qgsmapcanvas.h"
 #include "qgslogger.h"
 #include "qgssettingsregistrycore.h"
+#include "qgsvectorlayer.h"
 
 class TestQgsMapToolEdit : public QObject
 {
@@ -36,6 +37,7 @@ class TestQgsMapToolEdit : public QObject
 
     void checkDefaultZValue();
     void checkDefaultMValue();
+    void checkLayers();
 
   private:
     QgsMapCanvas *mCanvas = nullptr;
@@ -89,6 +91,28 @@ void TestQgsMapToolEdit::checkDefaultMValue()
   settings.setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), m_value_for_test );
 
   QCOMPARE( tool->defaultMValue(), m_value_for_test );
+}
+
+void TestQgsMapToolEdit::checkLayers()
+{
+  QgsProject::instance()->clear();
+  //set up canvas with a mix of project and non-project layers
+  QgsVectorLayer *vl1 = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=halig:string&field=valig:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  QVERIFY( vl1->isValid() );
+  QgsProject::instance()->addMapLayer( vl1 );
+
+  std::unique_ptr< QgsVectorLayer > vl2 = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:3946&field=halig:string&field=valig:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  QVERIFY( vl2->isValid() );
+
+  std::unique_ptr< QgsMapCanvas > canvas = std::make_unique< QgsMapCanvas >();
+  canvas->setLayers( { vl1, vl2.get() } );
+
+  std::unique_ptr< QgsMapToolEdit > tool = std::make_unique< QgsMapToolEdit >( canvas.get() );
+
+  // retrieving layer by id should work for both layers from the project AND for freestanding layers
+  QCOMPARE( tool->layer( vl1->id() ), vl1 );
+  QCOMPARE( tool->layer( vl2->id() ), vl2.get() );
+  QCOMPARE( tool->layer( QStringLiteral( "xxx" ) ), nullptr );
 }
 
 QGSTEST_MAIN( TestQgsMapToolEdit )

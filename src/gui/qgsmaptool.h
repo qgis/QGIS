@@ -299,6 +299,17 @@ class GUI_EXPORT QgsMapTool : public QObject
     QPoint toCanvasCoordinates( const QgsPointXY &point ) const;
 
     /**
+     * Returns the map layer with the matching ID, or NULLPTR if no layers could be found.
+     *
+     * This method searches both layers associated with the map canvas (see QgsMapCanvas::layers())
+     * and layers from the QgsProject associated with the canvas. It can be used to resolve layer IDs to
+     * layers which may be visible in the canvas, but not associated with a QgsProject.
+     *
+     * \since QGIS 3.22
+     */
+    QgsMapLayer *layer( const QString &id );
+
+    /**
      * Sets the tool's \a name.
      *
      * \see toolName()
@@ -326,6 +337,8 @@ class GUI_EXPORT QgsMapTool : public QObject
 
     //! The translated name of the map tool
     QString mToolName;
+
+    friend class TestQgsMapToolEdit;
 
 };
 
