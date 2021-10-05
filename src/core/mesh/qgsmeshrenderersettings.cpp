@@ -740,3 +740,7 @@ void QgsMeshRendererVectorTracesSettings::setParticlesCount( int value )
   mParticlesCount = value;
 }
 
+bool QgsMeshRendererSettings::hasSettings( int datasetGroupIndex ) const
+{
+  return mRendererScalarSettings.contains( datasetGroupIndex ) || mRendererVectorSettings.contains( datasetGroupIndex );
+}
