@@ -584,6 +584,8 @@ QgsPointLocator::Match QgsSnappingUtils::snapToCurrentLayer( QPoint point, QgsPo
   QgsPointXY pointMap = mMapSettings.mapToPixel().toMapCoordinates( point );
   double tolerance = QgsTolerance::vertexSearchRadius( mMapSettings );
 
+  prepareIndex( QList<LayerAndAreaOfInterest>() << qMakePair( mCurrentLayer, _areaOfInterest( pointMap, tolerance ) ), true );
+
   QgsPointLocator *loc = locatorForLayerUsingStrategy( mCurrentLayer, pointMap, tolerance );
   if ( !loc )
     return QgsPointLocator::Match();
