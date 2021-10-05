@@ -100,7 +100,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     struct APP_EXPORT LabelDetails
     {
       LabelDetails() = default;
-      explicit LabelDetails( const QgsLabelPosition &p );
+      explicit LabelDetails( const QgsLabelPosition &p, QgsMapCanvas *canvas );
       bool valid = false;
       QgsLabelPosition pos;
       QgsVectorLayer *layer = nullptr;

@@ -99,7 +99,7 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
       return;
     }
 
-    mCurrentLabel = LabelDetails( labelPos );
+    mCurrentLabel = LabelDetails( labelPos, canvas() );
 
     if ( !mCurrentLabel.valid )
       return;
