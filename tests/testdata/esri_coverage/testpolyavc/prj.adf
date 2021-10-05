@@ -1,0 +1,9 @@
+Projection    UTM
+Zone          13
+Datum         NAD27
+Zunits        NO
+Units         METERS
+Spheroid      CLARKE1866
+Xshift        0.0000000000
+Yshift        0.0000000000
+Parameters
