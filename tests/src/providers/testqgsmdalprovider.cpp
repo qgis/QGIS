@@ -110,6 +110,12 @@ void TestQgsMdalProvider::encodeDecodeUri()
   QCOMPARE( parts.value( QStringLiteral( "driver" ) ).toString(), QStringLiteral( "Ugrid" ) );
   QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString() );
   QCOMPARE( mdalMetadata->encodeUri( parts ), QStringLiteral( "Ugrid:\"/home/data/test.nc\"" ) );
+
+  parts = mdalMetadata->decodeUri( QStringLiteral( "ESRI_TIN:\"/home/data/tdenv9.adf\"" ) );
+  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QStringLiteral( "/home/data/tdenv9.adf" ) );
+  QCOMPARE( parts.value( QStringLiteral( "driver" ) ).toString(), QStringLiteral( "ESRI_TIN" ) );
+  QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString() );
+  QCOMPARE( mdalMetadata->encodeUri( parts ), QStringLiteral( "ESRI_TIN:\"/home/data/tdenv9.adf\"" ) );
 }
 
 void TestQgsMdalProvider::load()
