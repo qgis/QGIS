@@ -57,6 +57,10 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
 
   const QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
   QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+  if ( options.loadDefaultStyle )
+  {
+    flags |= QgsDataProvider::FlagLoadDefaultStyle;
+  }
   if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
   {
     flags |= QgsDataProvider::FlagTrustDataSource;
@@ -65,7 +69,7 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
   resetDatasetGroupTreeItem();
   setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
 
-  if ( isValid() )
+  if ( isValid() && options.loadDefaultStyle )
     setDefaultRendererSettings( mDatasetGroupStore->datasetGroupIndexes() );
 
   connect( mDatasetGroupStore.get(), &QgsMeshDatasetGroupStore::datasetGroupsAdded, this, &QgsMeshLayer::onDatasetGroupsAdded );
@@ -199,6 +203,20 @@ bool QgsMeshLayer::supportsEditing() const
   const QgsMeshDriverMetadata driverMetadata = mDataProvider->driverMetadata();
 
   return driverMetadata.capabilities() & QgsMeshDriverMetadata::CanWriteMeshData;
+}
+
+QString QgsMeshLayer::loadDefaultStyle( bool &resultFlag )
+{
+  if ( mDataProvider )
+  {
+    for ( int i = 0; i < mDataProvider->datasetGroupCount(); ++i )
+      assignDefaultStyleToDatasetGroup( i );
+
+    emit rendererChanged();
+    emitStyleChanged();
+  }
+
+  return QgsMapLayer::loadDefaultStyle( resultFlag );
 }
 
 bool QgsMeshLayer::addDatasets( const QString &path, const QDateTime &defaultReferenceTime )
@@ -1694,7 +1712,12 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
   }
 
   mDataProvider->setTemporalUnit( mTemporalUnit );
+
+  // temporarily disconnect from datasetGroupsAdded -- we don't want to reset the style for reconnected dataset groups
+  disconnect( mDatasetGroupStore.get(), &QgsMeshDatasetGroupStore::datasetGroupsAdded, this, &QgsMeshLayer::onDatasetGroupsAdded );
   mDatasetGroupStore->setPersistentProvider( mDataProvider, mExtraDatasetUri );
+  connect( mDatasetGroupStore.get(), &QgsMeshDatasetGroupStore::datasetGroupsAdded, this, &QgsMeshLayer::onDatasetGroupsAdded );
+
   setCrs( mDataProvider->crs() );
 
   if ( provider == QLatin1String( "mesh_memory" ) )
@@ -1703,8 +1726,16 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
     mDataSource = mDataSource + QStringLiteral( "&uid=%1" ).arg( QUuid::createUuid().toString() );
   }
 
-  for ( int i = 0; i < mDataProvider->datasetGroupCount(); ++i )
-    assignDefaultStyleToDatasetGroup( i );
+  if ( flags & QgsDataProvider::FlagLoadDefaultStyle )
+  {
+    for ( int i = 0; i < mDataProvider->datasetGroupCount(); ++i )
+      assignDefaultStyleToDatasetGroup( i );
+
+    emit rendererChanged();
+    emitStyleChanged();
+  }
+
+  temporalProperties()->setIsActive( mDatasetGroupStore->hasTemporalCapabilities() );
 
   connect( mDataProvider, &QgsMeshDataProvider::dataChanged, this, &QgsMeshLayer::dataChanged );
 

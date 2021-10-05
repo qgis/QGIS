@@ -91,6 +91,7 @@ QgsMapLayer *QgsMapLayerFactory::createLayer( const QString &uri, const QString 
     {
       QgsMeshLayer::LayerOptions meshOptions;
       meshOptions.transformContext = options.transformContext;
+      meshOptions.loadDefaultStyle = options.loadDefaultStyle;
       return new QgsMeshLayer( uri, name, provider, meshOptions );
     }
 

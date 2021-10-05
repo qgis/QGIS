@@ -112,7 +112,16 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
         : transformContext( transformContext )
       {}
 
+      /**
+       * Coordinate transform context
+       */
       QgsCoordinateTransformContext transformContext;
+
+      /**
+       * Set to TRUE if the default layer style should be loaded.
+       * \since QGIS 3.22
+       */
+      bool loadDefaultStyle = true;
 
       /**
        * Controls whether the layer is allowed to have an invalid/unknown CRS.
@@ -182,6 +191,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QString htmlMetadata() const override;
     bool isEditable() const override;
     bool supportsEditing() const override;
+    QString loadDefaultStyle( bool &resultFlag SIP_OUT ) FINAL;
 
     //! Returns the provider type for this layer
     QString providerType() const;
