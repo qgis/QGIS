@@ -320,12 +320,6 @@ QgsDataItem *QgsFileBasedDataItemProvider::createDataItem( const QString &path, 
   if ( QgsProviderRegistry::instance()->uriIsBlocklisted( path ) )
     return nullptr;
 
-  // allow only normal files, supported directories, or VSIFILE items to continue
-  const QStringList dirExtensions = QgsOgrProviderUtils::directoryExtensions();
-  bool isOgrSupportedDirectory = info.isDir() && dirExtensions.contains( suffix );
-  if ( !isOgrSupportedDirectory && !info.isFile() )
-    return nullptr;
-
   QgsSettings settings;
 
   Qgis::SublayerQueryFlags queryFlags = Qgis::SublayerQueryFlags();
