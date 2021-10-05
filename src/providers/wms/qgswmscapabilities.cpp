@@ -470,6 +470,8 @@ bool QgsWmsCapabilities::parseResponse( const QByteArray &response, QgsWmsParser
       format = QgsRaster::IdentifyFormatFeature;
     else if ( f == QLatin1String( "application/json" ) )
       format = QgsRaster::IdentifyFormatFeature;
+    else if ( f == QLatin1String( "application/geojson" ) )
+      format = QgsRaster::IdentifyFormatFeature;
     else if ( f.contains( QLatin1String( "gml" ), Qt::CaseInsensitive ) )
       format = QgsRaster::IdentifyFormatFeature;
 
@@ -1915,6 +1917,8 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
         fmt = QgsRaster::IdentifyFormatFeature;
       else if ( format == QLatin1String( "application/json" ) )
         fmt = QgsRaster::IdentifyFormatFeature;
+      else if ( format == QLatin1String( "application/geojson" ) )
+        fmt = QgsRaster::IdentifyFormatFeature;
       else
       {
         QgsDebugMsg( QStringLiteral( "Unsupported featureInfoUrl format: %1" ).arg( format ) );
@@ -2065,6 +2069,8 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
         else  if ( format.contains( QLatin1String( "gml" ), Qt::CaseInsensitive ) )
           fmt = QgsRaster::IdentifyFormatFeature;
         else if ( format == QLatin1String( "application/json" ) )
+          fmt = QgsRaster::IdentifyFormatFeature;
+        else if ( format == QLatin1String( "application/geojson" ) )
           fmt = QgsRaster::IdentifyFormatFeature;
         else
         {
