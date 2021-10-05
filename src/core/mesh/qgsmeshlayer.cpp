@@ -49,8 +49,8 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &providerKey,
                             const QgsMeshLayer::LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::MeshLayer, baseName, meshLayerPath ),
-    mDatasetGroupStore( new QgsMeshDatasetGroupStore( this ) )
-
+    mDatasetGroupStore( new QgsMeshDatasetGroupStore( this ) ),
+    mTemporalProperties( new QgsMeshLayerTemporalProperties( this ) )
 {
   mShouldValidateCrs = !options.skipCrsValidation;
 
@@ -1159,7 +1159,6 @@ void QgsMeshLayer::setDataSourcePrivate( const QString &dataSource, const QStrin
 
   if ( !mDataSource.isEmpty() && !provider.isEmpty() )
     setDataProvider( provider, options, flags );
-
 }
 
 QgsPointXY QgsMeshLayer::snapOnElement( QgsMesh::ElementType elementType, const QgsPointXY &point, double searchRadius )
@@ -1497,8 +1496,6 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
   else
     mDatasetGroupStore->readXml( elemDatasetGroupsStore, context );
 
-  mTemporalProperties = new QgsMeshLayerTemporalProperties( this );
-
   setDataProvider( mProviderKey, providerOptions, flags );
 
   QString errorMsg;
@@ -1706,9 +1703,8 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
     return false;
   }
 
-  if ( !mTemporalProperties )
+  if ( !mTemporalProperties->isValid() )
   {
-    mTemporalProperties = new QgsMeshLayerTemporalProperties( this );
     mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( dataProvider()->temporalCapabilities() );
   }
 

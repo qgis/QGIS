@@ -749,6 +749,13 @@ Sets the active vector dataset group
 .. versionadded:: 3.14
 %End
 
+    bool hasSettings( int datasetGroupIndex ) const;
+%Docstring
+Returns whether the group with ``index`` has render settings (scalar or vector)
+
+.. versionadded:: 3.22
+%End
+
 };
 
 /************************************************************************
