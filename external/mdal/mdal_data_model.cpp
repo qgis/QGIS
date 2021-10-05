@@ -431,6 +431,14 @@ void MDAL::Mesh::addFaces( size_t faceCount, size_t driverMaxVerticesPerFace, in
   MDAL_UNUSED( vertexIndices );
 }
 
+void MDAL::Mesh::addEdges( size_t edgeCount, int *startVertexIndices, int *endVertexIndices )
+{
+  MDAL_UNUSED( edgeCount );
+  MDAL_UNUSED( startVertexIndices );
+  MDAL_UNUSED( endVertexIndices );
+}
+
+
 MDAL::MeshVertexIterator::~MeshVertexIterator() = default;
 
 MDAL::MeshFaceIterator::~MeshFaceIterator() = default;
