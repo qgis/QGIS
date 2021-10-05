@@ -37,6 +37,7 @@ email                : nyall dot dawson at gmail dot com
 #include <QDir>
 #include <QMessageBox>
 #include <QRegularExpression>
+#include <QDirIterator>
 
 ///@cond PRIVATE
 
@@ -1102,18 +1103,26 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
     }
   }
 
+  const QStringList dirExtensions = QgsOgrProviderUtils::directoryExtensions();
+
   const QString path = uriParts.value( QStringLiteral( "path" ) ).toString();
   const QFileInfo pathInfo( path );
-  if ( ( flags & Qgis::SublayerQueryFlag::FastScan ) && ( pathInfo.isFile() || pathInfo.isDir() ) )
+  const QString suffix = pathInfo.suffix().toLower();
+  bool isOgrSupportedDirectory = pathInfo.isDir() && dirExtensions.contains( suffix );
+
+  bool forceDeepScanDir = false;
+  if ( pathInfo.isDir() && !isOgrSupportedDirectory )
+  {
+    QDirIterator it( path, { QStringLiteral( "*.adf" ), QStringLiteral( "*.ADF" ) }, QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot );
+    forceDeepScanDir = it.hasNext();
+  }
+
+  if ( ( flags & Qgis::SublayerQueryFlag::FastScan ) && ( pathInfo.isFile() || pathInfo.isDir() ) && !forceDeepScanDir )
   {
     // fast scan, so we don't actually try to open the dataset and instead just check the extension alone
     const QStringList fileExtensions = QgsOgrProviderUtils::fileExtensions();
-    const QStringList dirExtensions = QgsOgrProviderUtils::directoryExtensions();
-
-    const QString suffix = pathInfo.suffix().toLower();
 
     // allow only normal files or supported directories to continue
-    const bool isOgrSupportedDirectory = pathInfo.isDir() && dirExtensions.contains( suffix );
     if ( !isOgrSupportedDirectory && !pathInfo.isFile() )
       return {};
 
