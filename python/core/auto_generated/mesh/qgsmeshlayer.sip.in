@@ -94,6 +94,8 @@ Constructor for LayerOptions with optional ``transformContext``.
 
       QgsCoordinateTransformContext transformContext;
 
+      bool loadDefaultStyle;
+
       bool skipCrsValidation;
     };
 
@@ -160,6 +162,8 @@ QgsMeshLayer cannot be copied.
     virtual bool isEditable() const;
 
     virtual bool supportsEditing() const;
+
+    virtual QString loadDefaultStyle( bool &resultFlag /Out/ ) ${SIP_FINAL};
 
 
     QString providerType() const;
