@@ -156,6 +156,7 @@ if (WITH_INTERNAL_MDAL)
 
 
   # create mdal_config.h
+  set (BUILD_PLY TRUE)
   configure_file(${CMAKE_SOURCE_DIR}/external/mdal/cmake_templates/mdal_config.hpp.in ${CMAKE_BINARY_DIR}/mdal_config.hpp)
   include_directories(${CMAKE_BINARY_DIR})
 
