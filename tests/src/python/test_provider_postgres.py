@@ -3275,6 +3275,17 @@ class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCas
         self.assertTrue(lines.isValid())
         self.assertTrue(polygons.isValid())
 
+    def test_read_wkb(self):
+        """ Test to read WKB from Postgis. """
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.dbconn, {})
+        results = conn.executeSql("SELECT ST_AsBinary(ST_MakePoint(5, 10));")
+        wkb = results[0][0]
+        geom = QgsGeometry()
+        import binascii
+        geom.fromWkb(binascii.unhexlify(wkb[2:]))
+        self.assertEqual(geom.asWkt(), "Point (5 10)")
+
     def testTrustFlag(self):
         """Test regression https://github.com/qgis/QGIS/issues/38809"""
 
