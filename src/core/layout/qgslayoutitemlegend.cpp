@@ -971,7 +971,7 @@ bool QgsLayoutItemLegend::legendFilterOutAtlas() const
 
 void QgsLayoutItemLegend::onAtlasFeature()
 {
-  if ( !mLayout->reportContext().feature().isValid() )
+  if ( !mLayout || !mLayout->reportContext().feature().isValid() )
     return;
   mInAtlas = mFilterOutAtlas;
   updateFilterByMap();
