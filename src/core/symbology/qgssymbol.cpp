@@ -1144,7 +1144,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
       case QgsWkbTypes::MultiPoint:
       {
-        const QgsMultiPoint *mp = qgsgeometry_cast< const QgsMultiPoint * >( part );
+        const QgsMultiPoint *mp = qgsgeometry_cast< const QgsMultiPoint * >( processedGeometry );
         markers.reserve( mp->numGeometries() );
       }
       FALLTHROUGH
@@ -1152,7 +1152,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       case QgsWkbTypes::MultiLineString:
       case QgsWkbTypes::GeometryCollection:
       {
-        const QgsGeometryCollection *geomCollection = qgsgeometry_cast<const QgsGeometryCollection *>( part );
+        const QgsGeometryCollection *geomCollection = qgsgeometry_cast<const QgsGeometryCollection *>( processedGeometry );
 
         const unsigned int num = geomCollection->numGeometries();
         for ( unsigned int i = 0; i < num; ++i )
@@ -1176,7 +1176,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
         QPolygonF pts;
 
-        const QgsGeometryCollection *geomCollection = dynamic_cast<const QgsGeometryCollection *>( part );
+        const QgsGeometryCollection *geomCollection = dynamic_cast<const QgsGeometryCollection *>( processedGeometry );
         const unsigned int num = geomCollection->numGeometries();
 
         // Sort components by approximate area (probably a bit faster than using
