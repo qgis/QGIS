@@ -68,12 +68,12 @@ bool QgsMapToolLabel::labelAtPosition( QMouseEvent *e, QgsLabelPosition &p )
     return false;
 
   QList<QgsLabelPosition> labelPosList = labelingResults->labelsAtPosition( pt );
-  labelPosList.erase( std::remove_if( labelPosList.begin(), labelPosList.end(), []( const QgsLabelPosition & position )
+  labelPosList.erase( std::remove_if( labelPosList.begin(), labelPosList.end(), [this]( const QgsLabelPosition & position )
   {
     if ( position.layerID.isEmpty() )
       return true;
 
-    if ( QgsMapLayer *layer = QgsProject::instance()->mapLayer( position.layerID ) )
+    if ( QgsMapLayer *layer = QgsMapTool::layer( position.layerID ) )
     {
       // strip out any labels from non vector layers (e.g. those from vector tile layers). Only vector layer labels
       // are supported by the map tools.
@@ -158,12 +158,12 @@ bool QgsMapToolLabel::calloutAtPosition( QMouseEvent *e, QgsCalloutPosition &p, 
   const double tol = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
 
   QList<QgsCalloutPosition> calloutPosList = labelingResults->calloutsWithinRectangle( QgsRectangle::fromCenterAndSize( pt, tol * 2, tol * 2 ) );
-  calloutPosList.erase( std::remove_if( calloutPosList.begin(), calloutPosList.end(), []( const QgsCalloutPosition & position )
+  calloutPosList.erase( std::remove_if( calloutPosList.begin(), calloutPosList.end(), [ this ]( const QgsCalloutPosition & position )
   {
     if ( position.layerID.isEmpty() )
       return true;
 
-    if ( QgsMapLayer *layer = QgsProject::instance()->mapLayer( position.layerID ) )
+    if ( QgsMapLayer *layer = QgsMapTool::layer( position.layerID ) )
     {
       // strip out any callouts from non vector layers (e.g. those from vector tile layers). Only vector layer callouts
       // are supported by the map tools.
@@ -880,10 +880,10 @@ bool QgsMapToolLabel::diagramCanShowHide( QgsVectorLayer *vlayer, int &showCol )
 
 //
 
-QgsMapToolLabel::LabelDetails::LabelDetails( const QgsLabelPosition &p )
+QgsMapToolLabel::LabelDetails::LabelDetails( const QgsLabelPosition &p, QgsMapCanvas *canvas )
   : pos( p )
 {
-  layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( pos.layerID );
+  layer = qobject_cast< QgsVectorLayer * >( canvas->layer( pos.layerID ) );
   if ( layer && layer->labelsEnabled() && !p.isDiagram )
   {
     settings = layer->labeling()->settings( pos.providerID );
@@ -1010,7 +1010,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( QgsCalloutIndexes &calloutIndexes )
 bool QgsMapToolLabel::createAuxiliaryFields( QgsCalloutPosition &details, QgsCalloutIndexes &calloutIndexes )
 {
   bool newAuxiliaryLayer = false;
-  QgsVectorLayer *vlayer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( details.layerID );
+  QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer * >( QgsMapTool::layer( details.layerID ) );
 
   if ( !vlayer )
     return newAuxiliaryLayer;
@@ -1112,7 +1112,7 @@ void QgsMapToolLabel::updateHoveredLabel( QgsMapMouseEvent *e )
     return;
   }
 
-  LabelDetails newHoverLabel( labelPos );
+  LabelDetails newHoverLabel( labelPos, canvas() );
 
   if ( mCurrentHoverLabel.valid &&
        newHoverLabel.layer == mCurrentHoverLabel.layer &&

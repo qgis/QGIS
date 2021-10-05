@@ -65,7 +65,7 @@ void QgsMapToolChangeLabelProperties::canvasPressEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  mCurrentLabel = LabelDetails( labelPos );
+  mCurrentLabel = LabelDetails( labelPos, canvas() );
   if ( !mCurrentLabel.valid || !mCurrentLabel.layer )
   {
     return;

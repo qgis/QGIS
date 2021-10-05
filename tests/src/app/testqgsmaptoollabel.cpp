@@ -295,7 +295,7 @@ class TestQgsMapToolLabel : public QObject
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl1->id() );
       QCOMPARE( pos.labelText, QStringLiteral( "label" ) );
-      tool->mCurrentLabel = QgsMapToolLabel::LabelDetails( pos );
+      tool->mCurrentLabel = QgsMapToolLabel::LabelDetails( pos, canvas.get() );
 
       // defaults to bottom left
       QString hali, vali;
@@ -315,7 +315,7 @@ class TestQgsMapToolLabel : public QObject
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl1->id() );
       QCOMPARE( pos.labelText, QStringLiteral( "label" ) );
-      tool->mCurrentLabel = QgsMapToolLabel::LabelDetails( pos );
+      tool->mCurrentLabel = QgsMapToolLabel::LabelDetails( pos, canvas.get() );
 
       tool->currentAlignment( hali, vali );
       QCOMPARE( hali, QStringLiteral( "right" ) );
@@ -330,7 +330,7 @@ class TestQgsMapToolLabel : public QObject
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl1->id() );
       QCOMPARE( pos.labelText, QStringLiteral( "label" ) );
-      tool->mCurrentLabel = QgsMapToolLabel::LabelDetails( pos );
+      tool->mCurrentLabel = QgsMapToolLabel::LabelDetails( pos, canvas.get() );
 
       tool->currentAlignment( hali, vali );
       QCOMPARE( hali, QStringLiteral( "center" ) );
@@ -354,7 +354,7 @@ class TestQgsMapToolLabel : public QObject
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl1->id() );
       QCOMPARE( pos.labelText, QStringLiteral( "label" ) );
-      tool->mCurrentLabel = QgsMapToolLabel::LabelDetails( pos );
+      tool->mCurrentLabel = QgsMapToolLabel::LabelDetails( pos, canvas.get() );
 
       tool->currentAlignment( hali, vali );
       QCOMPARE( hali, QStringLiteral( "left" ) );
@@ -369,7 +369,7 @@ class TestQgsMapToolLabel : public QObject
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl1->id() );
       QCOMPARE( pos.labelText, QStringLiteral( "label" ) );
-      tool->mCurrentLabel = QgsMapToolLabel::LabelDetails( pos );
+      tool->mCurrentLabel = QgsMapToolLabel::LabelDetails( pos, canvas.get() );
 
       tool->currentAlignment( hali, vali );
       QCOMPARE( hali, QStringLiteral( "right" ) );
