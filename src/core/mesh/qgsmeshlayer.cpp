@@ -207,11 +207,13 @@ bool QgsMeshLayer::supportsEditing() const
 
 QString QgsMeshLayer::loadDefaultStyle( bool &resultFlag )
 {
-  if ( mDataProvider )
-  {
-    for ( int i = 0; i < mDataProvider->datasetGroupCount(); ++i )
-      assignDefaultStyleToDatasetGroup( i );
+  const QList<int> groupsList = datasetGroupsIndexes();
 
+  for ( const int index : groupsList )
+    assignDefaultStyleToDatasetGroup( index );
+
+  if ( !groupsList.isEmpty() )
+  {
     emit rendererChanged();
     emitStyleChanged();
   }
@@ -1713,10 +1715,7 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
 
   mDataProvider->setTemporalUnit( mTemporalUnit );
 
-  // temporarily disconnect from datasetGroupsAdded -- we don't want to reset the style for reconnected dataset groups
-  disconnect( mDatasetGroupStore.get(), &QgsMeshDatasetGroupStore::datasetGroupsAdded, this, &QgsMeshLayer::onDatasetGroupsAdded );
   mDatasetGroupStore->setPersistentProvider( mDataProvider, mExtraDatasetUri );
-  connect( mDatasetGroupStore.get(), &QgsMeshDatasetGroupStore::datasetGroupsAdded, this, &QgsMeshLayer::onDatasetGroupsAdded );
 
   setCrs( mDataProvider->crs() );
 
@@ -1726,16 +1725,17 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
     mDataSource = mDataSource + QStringLiteral( "&uid=%1" ).arg( QUuid::createUuid().toString() );
   }
 
-  if ( flags & QgsDataProvider::FlagLoadDefaultStyle )
+  // set default style if required by flags or if the dataset group does not has a style yet
+  for ( int i = 0; i < mDataProvider->datasetGroupCount(); ++i )
   {
-    for ( int i = 0; i < mDataProvider->datasetGroupCount(); ++i )
-      assignDefaultStyleToDatasetGroup( i );
-
-    emit rendererChanged();
-    emitStyleChanged();
+    int globalIndex = mDatasetGroupStore->globalDatasetGroupIndexInSource( mDataProvider, i );
+    if ( globalIndex != -1 &&
+         ( !mRendererSettings.hasSettings( globalIndex ) || ( flags & QgsDataProvider::FlagLoadDefaultStyle ) ) )
+      assignDefaultStyleToDatasetGroup( globalIndex );
   }
 
-  temporalProperties()->setIsActive( mDatasetGroupStore->hasTemporalCapabilities() );
+  emit rendererChanged();
+  emitStyleChanged();
 
   connect( mDataProvider, &QgsMeshDataProvider::dataChanged, this, &QgsMeshLayer::dataChanged );
 

@@ -343,6 +343,16 @@ void QgsMeshDatasetGroupStore::readXml( const QDomElement &storeElem, const QgsR
     setDatasetGroupTreeItem( new QgsMeshDatasetGroupTreeItem( rootTreeItemElem, context ) );
 }
 
+int QgsMeshDatasetGroupStore::globalDatasetGroupIndexInSource( QgsMeshDatasetSourceInterface *source, int nativeGroupIndex ) const
+{
+  for ( QMap<int, DatasetGroup>::const_iterator it = mRegistery.cbegin(); it != mRegistery.cend(); ++it )
+  {
+    if ( it.value().first == source && it.value().second == nativeGroupIndex )
+      return it.key();
+  }
+
+  return -1;
+}
 
 bool QgsMeshDatasetGroupStore::saveDatasetGroup( QString filePath, int groupIndex, QString driver )
 {
