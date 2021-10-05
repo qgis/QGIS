@@ -34,6 +34,8 @@ from qgis.PyQt.QtGui import QColor
 from qgis.core import (QgsVectorLayer,
                        QgsMapSettings,
                        QgsProject,
+                       QgsFeature,
+                       QgsGeometry,
                        QgsRectangle,
                        QgsMultiRenderChecker,
                        QgsRuleBasedRenderer,
