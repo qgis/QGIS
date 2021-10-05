@@ -49,8 +49,7 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &providerKey,
                             const QgsMeshLayer::LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::MeshLayer, baseName, meshLayerPath ),
-    mDatasetGroupStore( new QgsMeshDatasetGroupStore( this ) ),
-    mTemporalProperties( new QgsMeshLayerTemporalProperties( this ) )
+    mDatasetGroupStore( new QgsMeshDatasetGroupStore( this ) )
 
 {
   mShouldValidateCrs = !options.skipCrsValidation;
@@ -1158,17 +1157,9 @@ void QgsMeshLayer::setDataSourcePrivate( const QString &dataSource, const QStrin
   mLayerName = baseName;
   setProviderType( provider );
 
-  // if we’re given a provider type, try to create and bind one to this layer
-  bool ok = false;
   if ( !mDataSource.isEmpty() && !provider.isEmpty() )
-  {
-    ok = setDataProvider( provider, options, flags );
-  }
+    setDataProvider( provider, options, flags );
 
-  if ( ok )
-  {
-    mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
-  }
 }
 
 QgsPointXY QgsMeshLayer::snapOnElement( QgsMesh::ElementType elementType, const QgsPointXY &point, double searchRadius )
@@ -1506,6 +1497,8 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
   else
     mDatasetGroupStore->readXml( elemDatasetGroupsStore, context );
 
+  mTemporalProperties = new QgsMeshLayerTemporalProperties( this );
+
   setDataProvider( mProviderKey, providerOptions, flags );
 
   QString errorMsg;
@@ -1711,6 +1704,12 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
   {
     QgsDebugMsgLevel( QStringLiteral( "Invalid mesh provider plugin %1" ).arg( QString( mDataSource.toUtf8() ) ), 2 );
     return false;
+  }
+
+  if ( !mTemporalProperties )
+  {
+    mTemporalProperties = new QgsMeshLayerTemporalProperties( this );
+    mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( dataProvider()->temporalCapabilities() );
   }
 
   mDataProvider->setTemporalUnit( mTemporalUnit );
