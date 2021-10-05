@@ -720,6 +720,9 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             "bigint_pk", "postgres")
         flds = vl.fields()
 
+        # Backup test table (will be edited)
+        self.backupTable('qgis_test', 'bigint_pk')
+
         self.assertTrue(vl.isValid())
 
         vl.startEditing()
@@ -762,6 +765,9 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             elif ft['value'] == '-1th value':
                 statuses[3] = 1
         self.assertTrue(all(x == 1 for x in statuses))
+
+        # Restore test table
+        self.restoreTable('qgis_test', 'bigint_pk')
 
     def testPktUpdateBigintPkNonFirst(self):
         """Test if we can update objects with positive, zero and negative bigint PKs in tables whose PK is not the first field"""
