@@ -74,7 +74,7 @@ void QgsFileDownloaderAlgorithm::initAlgorithm( const QVariantMap & )
         << QObject::tr( "GET" )
         << QObject::tr( "POST" ),
         false,
-        QStringLiteral( "GET" )
+        0
       );
   methodParam->setHelp( QObject::tr( "The HTTP method to use for the request" ) );
   methodParam->setFlags( methodParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
