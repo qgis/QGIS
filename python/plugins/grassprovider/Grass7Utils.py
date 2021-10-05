@@ -91,7 +91,7 @@ class Grass7Utils:
         """
         wkt = crs.toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED)
         wkt_file = QgsProcessingUtils.generateTempFilename('crs.prj')
-        with open(wkt_file, 'wt') as f:
+        with open(wkt_file, 'wt', encoding='utf-8') as f:
             f.write(wkt)
         return wkt_file
 

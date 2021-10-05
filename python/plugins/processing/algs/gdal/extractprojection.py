@@ -110,7 +110,7 @@ class ExtractProjection(GdalAlgorithm):
             crs = tmp.ExportToWkt()
             tmp = None
 
-            with open(outFileName + '.prj', 'wt') as prj:
+            with open(outFileName + '.prj', 'wt', encoding='utf-8') as prj:
                 prj.write(crs)
             results[self.PRJ_FILE] = outFileName + '.prj'
         else:
