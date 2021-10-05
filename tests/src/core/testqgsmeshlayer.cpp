@@ -1605,6 +1605,32 @@ void TestQgsMeshLayer::testMdalProviderQuerySublayers()
   res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/lines.shp" );
   QVERIFY( res.empty() );
 
+  // even though mdal reports support for .adf files, these are not a mesh:
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/aigrid/dblbnd.adf" );
+  QVERIFY( res.empty() );
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/aigrid/hdr.adf" );
+  QVERIFY( res.empty() );
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/aigrid/prj.adf" );
+  QVERIFY( res.empty() );
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/aigrid/sta.adf" );
+  QVERIFY( res.empty() );
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/aigrid/vat.adf" );
+  QVERIFY( res.empty() );
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/aigrid/w001001.adf" );
+  QVERIFY( res.empty() );
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/aigrid/w001001x.adf" );
+  QVERIFY( res.empty() );
+
+  // adf which IS a mesh
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/esri_tin/tdenv9.adf" );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 0 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "esri_tin" ) );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "ESRI_TIN:\"%1/esri_tin/tdenv9.adf\"" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
+  QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "ESRI_TIN" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
+
   // single layer mesh
   res = mdalMetadata->querySublayers( mDataDir + "/quad_and_triangle.2dm" );
   QCOMPARE( res.count(), 1 );
@@ -1707,6 +1733,34 @@ void TestQgsMeshLayer::testMdalProviderQuerySublayersFastScan()
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
   QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
   QVERIFY( res.at( 0 ).skippedContainerScan() );
+
+  // even though mdal reports support for .adf files, these are not a mesh:
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/aigrid/dblbnd.adf", Qgis::SublayerQueryFlag::FastScan );
+  QVERIFY( res.empty() );
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/aigrid/hdr.adf", Qgis::SublayerQueryFlag::FastScan );
+  QVERIFY( res.empty() );
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/aigrid/prj.adf", Qgis::SublayerQueryFlag::FastScan );
+  QVERIFY( res.empty() );
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/aigrid/sta.adf", Qgis::SublayerQueryFlag::FastScan );
+  QVERIFY( res.empty() );
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/aigrid/vat.adf", Qgis::SublayerQueryFlag::FastScan );
+  QVERIFY( res.empty() );
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/aigrid/w001001.adf", Qgis::SublayerQueryFlag::FastScan );
+  QVERIFY( res.empty() );
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/aigrid/w001001x.adf", Qgis::SublayerQueryFlag::FastScan );
+  QVERIFY( res.empty() );
+
+  // adf which IS a mesh
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/esri_tin/tdenv9.adf", Qgis::SublayerQueryFlag::FastScan );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 0 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "esri_tin" ) );
+  QCOMPARE( res.at( 0 ).uri(), QString( TEST_DATA_DIR ) + "/esri_tin/tdenv9.adf" );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
+  // only tdenv?.adf file should report capabilities
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/esri_tin/thul.adf", Qgis::SublayerQueryFlag::FastScan );
+  QVERIFY( res.empty() );
 }
 
 void TestQgsMeshLayer::testSelectByExpression()
