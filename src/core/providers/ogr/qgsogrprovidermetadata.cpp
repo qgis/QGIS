@@ -1134,6 +1134,17 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
         return {};
     }
 
+    // metadata.xml file next to tdenv?.adf files is a subcomponent of an ESRI tin layer alone, shouldn't be exposed
+    if ( pathInfo.fileName().compare( QLatin1String( "metadata.xml" ), Qt::CaseInsensitive ) == 0 )
+    {
+      const QDir dir  = pathInfo.dir();
+      if ( dir.exists( QStringLiteral( "tdenv9.adf" ) )
+           || dir.exists( QStringLiteral( "tdenv.adf" ) )
+           || dir.exists( QStringLiteral( "TDENV9.ADF" ) )
+           || dir.exists( QStringLiteral( "TDENV.ADF" ) ) )
+        return {};
+    }
+
     // if file is trivial to read then there's no need to rely on
     // the extension only scan here -- avoiding it always gives us the correct data type
     // and sublayer visibility
