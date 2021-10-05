@@ -247,6 +247,13 @@ class CORE_EXPORT QgsAction
      */
     QgsExpressionContextScope expressionContextScope() const;
 
+    /**
+     * Returns an HTML table with the basic information about this action.
+     *
+     * \since QGIS 3.24
+     */
+    QString html( ) const;
+
   private:
     ActionType mType = Generic;
     QString mDescription;
