@@ -74,7 +74,6 @@ bool QgsMapToolLabel::labelAtPosition( QMouseEvent *e, QgsLabelPosition &p )
         case QgsMapLayerType::MeshLayer:
         case QgsMapLayerType::VectorTileLayer:
         case QgsMapLayerType::AnnotationLayer:
-        case QgsMapLayerType::PointCloudLayer:
           return true;
       }
     }
