@@ -163,6 +163,7 @@ set(QGIS_APP_SRCS
   browser/qgsinbuiltdataitemproviders.cpp
 
   devtools/qgsappdevtoolutils.cpp
+  devtools/qgsdevtoolsmodelnode.cpp
   devtools/networklogger/qgsnetworklogger.cpp
   devtools/networklogger/qgsnetworkloggernode.cpp
   devtools/networklogger/qgsnetworkloggerpanelwidget.cpp

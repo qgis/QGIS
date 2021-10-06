@@ -26,89 +26,13 @@
 #include <QClipboard>
 #include <nlohmann/json.hpp>
 
-//
-// QgsDatabaseQueryLoggerNode
-//
-
-QgsDatabaseQueryLoggerNode::QgsDatabaseQueryLoggerNode() = default;
-QgsDatabaseQueryLoggerNode::~QgsDatabaseQueryLoggerNode() = default;
-
-
-//
-// QgsDatabaseQueryLoggerGroup
-//
-
-QgsDatabaseQueryLoggerGroup::QgsDatabaseQueryLoggerGroup( const QString &title )
-  : mGroupTitle( title )
-{
-}
-
-void QgsDatabaseQueryLoggerGroup::addChild( std::unique_ptr<QgsDatabaseQueryLoggerNode> child )
-{
-  if ( !child )
-    return;
-
-  Q_ASSERT( !child->mParent );
-  child->mParent = this;
-
-  mChildren.emplace_back( std::move( child ) );
-}
-
-int QgsDatabaseQueryLoggerGroup::indexOf( QgsDatabaseQueryLoggerNode *child ) const
-{
-  Q_ASSERT( child->mParent == this );
-  auto it = std::find_if( mChildren.begin(), mChildren.end(), [&]( const std::unique_ptr<QgsDatabaseQueryLoggerNode> &p )
-  {
-    return p.get() == child;
-  } );
-  if ( it != mChildren.end() )
-    return std::distance( mChildren.begin(), it );
-  return -1;
-}
-
-QgsDatabaseQueryLoggerNode *QgsDatabaseQueryLoggerGroup::childAt( int index )
-{
-  Q_ASSERT( static_cast< std::size_t >( index ) < mChildren.size() );
-  return mChildren[ index ].get();
-}
-
-void QgsDatabaseQueryLoggerGroup::clear()
-{
-  mChildren.clear();
-}
-
-QVariant QgsDatabaseQueryLoggerGroup::data( int role ) const
-{
-  switch ( role )
-  {
-    case Qt::DisplayRole:
-      return mGroupTitle;
-
-    default:
-      break;
-  }
-  return QVariant();
-}
-
-QVariant QgsDatabaseQueryLoggerGroup::toVariant() const
-{
-  QVariantMap res;
-  for ( const std::unique_ptr< QgsDatabaseQueryLoggerNode > &child : mChildren )
-  {
-    if ( const QgsDatabaseQueryLoggerValueNode *valueNode = dynamic_cast< const QgsDatabaseQueryLoggerValueNode *>( child.get() ) )
-    {
-      res.insert( valueNode->key(), valueNode->value() );
-    }
-  }
-  return res;
-}
 
 //
 // QgsDatabaseQueryLoggerRootNode
 //
 
 QgsDatabaseQueryLoggerRootNode::QgsDatabaseQueryLoggerRootNode()
-  : QgsDatabaseQueryLoggerGroup( QString() )
+  : QgsDevToolsModelGroup( QString() )
 {
 
 }
@@ -126,76 +50,214 @@ void QgsDatabaseQueryLoggerRootNode::removeRow( int row )
 QVariant QgsDatabaseQueryLoggerRootNode::toVariant() const
 {
   QVariantList res;
-  for ( const std::unique_ptr< QgsDatabaseQueryLoggerNode > &child : mChildren )
+  for ( const std::unique_ptr< QgsDevToolsModelNode > &child : mChildren )
     res << child->toVariant();
   return res;
 }
 
 
 //
-// QgsDatabaseQueryLoggerValueNode
+// QgsDatabaseQueryLoggerQueryGroup
 //
-QgsDatabaseQueryLoggerValueNode::QgsDatabaseQueryLoggerValueNode( const QString &key, const QString &value, const QColor &color )
-  : mKey( key )
-  , mValue( value )
-  , mColor( color )
+
+QgsDatabaseQueryLoggerQueryGroup::QgsDatabaseQueryLoggerQueryGroup( const QgsDatabaseQueryLogEntry &query )
+  : QgsDevToolsModelGroup( QString() )
+  , mSql( query.query )
+  , mQueryId( query.queryId )
 {
+#if 0
+  std::unique_ptr< QgsNetworkLoggerRequestDetailsGroup > detailsGroup = std::make_unique< QgsNetworkLoggerRequestDetailsGroup >( request );
+  mDetailsGroup = detailsGroup.get();
+  addChild( std::move( detailsGroup ) );
+#endif
+
+  addKeyValueNode( QObject::tr( "Provider" ), query.provider );
+  addKeyValueNode( QObject::tr( "URI" ), query.uri );
+  addKeyValueNode( QObject::tr( "Started at" ), QDateTime::fromMSecsSinceEpoch( query.startedTime ).toString( Qt::ISODateWithMs ) );
+#if 0
+  addKeyValueNode( QObject::tr( "Thread" ), query.originatingThreadId() );
+#endif
+  addKeyValueNode( QObject::tr( "Initiator" ), query.initiatorClass.isEmpty() ? QObject::tr( "unknown" ) : query.initiatorClass );
+  if ( !query.origin.isEmpty() )
+    addKeyValueNode( QObject::tr( "Location" ), query.origin );
 
 }
 
-QVariant QgsDatabaseQueryLoggerValueNode::data( int role ) const
+QVariant QgsDatabaseQueryLoggerQueryGroup::data( int role ) const
 {
   switch ( role )
   {
     case Qt::DisplayRole:
+      return QStringLiteral( "%1 %2" ).arg( QString::number( mQueryId ),
+                                            mSql );
+
     case Qt::ToolTipRole:
     {
-      return QStringLiteral( "%1: %2" ).arg( mKey.leftJustified( 30, ' ' ), mValue );
+#if 0
+      QString bytes = QObject::tr( "unknown" );
+      if ( mBytesTotal != 0 )
+      {
+        if ( mBytesReceived > 0 && mBytesReceived < mBytesTotal )
+          bytes = QStringLiteral( "%1/%2" ).arg( QString::number( mBytesReceived ), QString::number( mBytesTotal ) );
+        else if ( mBytesReceived > 0 && mBytesReceived == mBytesTotal )
+          bytes = QString::number( mBytesTotal );
+      }
+      // ?? adding <br/> instead of \n after (very long) url seems to break url up
+      // COMPLETE, Status: 200 - text/xml; charset=utf-8 - 2334 bytes - 657 milliseconds
+      return QStringLiteral( "%1<br/>%2 - Status: %3 - %4 - %5 bytes - %6 msec - %7 replies" )
+             .arg( mUrl.url(),
+                   statusToString( mStatus ),
+                   QString::number( mHttpStatus ),
+                   mContentType,
+                   bytes,
+                   mStatus == Status::Pending ? QString::number( mTimer.elapsed() / 1000 ) : QString::number( mTotalTime ),
+                   QString::number( mReplies ) );
+#endif
     }
+
+    case RoleStatus:
+      return static_cast< int >( mStatus );
+
+    case RoleId:
+      return mQueryId;
 
     case Qt::ForegroundRole:
     {
-      if ( mColor.isValid() )
-        return QBrush( mColor );
+      if ( mHasSslErrors )
+        return QBrush( QColor( 180, 65, 210 ) );
+      switch ( mStatus )
+      {
+        case QgsDatabaseQueryLoggerQueryGroup::Status::Pending:
+        case QgsDatabaseQueryLoggerQueryGroup::Status::Canceled:
+          return QBrush( QColor( 0, 0, 0, 100 ) );
+        case QgsDatabaseQueryLoggerQueryGroup::Status::Error:
+          return QBrush( QColor( 235, 10, 10 ) );
+        case QgsDatabaseQueryLoggerQueryGroup::Status::TimeOut:
+          return QBrush( QColor( 235, 10, 10 ) );
+        case QgsDatabaseQueryLoggerQueryGroup::Status::Complete:
+          break;
+      }
       break;
     }
+
+    case Qt::FontRole:
+    {
+      if ( mStatus == Status::Canceled )
+      {
+        QFont f;
+        f.setStrikeOut( true );
+        return f;
+      }
+      break;
+    }
+
     default:
       break;
   }
   return QVariant();
 }
 
-QList<QAction *> QgsDatabaseQueryLoggerValueNode::actions( QObject *parent )
+QList<QAction *> QgsDatabaseQueryLoggerQueryGroup::actions( QObject *parent )
 {
   QList< QAction * > res;
 
-  QAction *copyAction = new QAction( QObject::tr( "Copy" ), parent );
-  QObject::connect( copyAction, &QAction::triggered, copyAction, [ = ]
+  QAction *copyUrlAction = new QAction( QObject::tr( "Copy SQL" ), parent );
+  QObject::connect( copyUrlAction, &QAction::triggered, copyUrlAction, [ = ]
   {
-    QApplication::clipboard()->setText( QStringLiteral( "%1: %2" ).arg( mKey, mValue ) );
+    QApplication::clipboard()->setText( mSql );
   } );
+  res << copyUrlAction;
 
-  res << copyAction;
+  QAction *copyJsonAction = new QAction( QObject::tr( "Copy as JSON" ), parent );
+  QObject::connect( copyJsonAction, &QAction::triggered, copyJsonAction, [ = ]
+  {
+    const QVariant value = toVariant();
+    const QString json = QString::fromStdString( QgsJsonUtils::jsonFromVariant( value ).dump( 2 ) );
+    QApplication::clipboard()->setText( json );
+
+  } );
+  res << copyJsonAction;
 
   return res;
 }
 
-//
-// QgsDatabaseQueryLoggerGroup
-//
-
-void QgsDatabaseQueryLoggerGroup::addKeyValueNode( const QString &key, const QString &value, const QColor &color )
+QVariant QgsDatabaseQueryLoggerQueryGroup::toVariant() const
 {
-  addChild( std::make_unique< QgsDatabaseQueryLoggerValueNode >( key, value, color ) );
+  QVariantMap res;
+  res.insert( QStringLiteral( "SQL" ), mSql );
+  res.insert( QStringLiteral( "Total time (ms)" ), mTotalTime );
+#if 0
+  if ( mDetailsGroup )
+  {
+    const QVariantMap detailsMap = mDetailsGroup->toVariant().toMap();
+    for ( auto it = detailsMap.constBegin(); it != detailsMap.constEnd(); ++it )
+      res.insert( it.key(), it.value() );
+  }
+  if ( mReplyGroup )
+  {
+    res.insert( QObject::tr( "Reply" ), mReplyGroup->toVariant() );
+  }
+  if ( mSslErrorsGroup )
+  {
+    res.insert( QObject::tr( "SSL Errors" ), mSslErrorsGroup->toVariant() );
+  }
+#endif
+  return res;
+}
+
+void QgsDatabaseQueryLoggerQueryGroup::setFinished( const QgsDatabaseQueryLogEntry &query )
+{
+#if 0
+  switch ( reply.error() )
+  {
+    case QNetworkReply::OperationCanceledError:
+      mStatus = Status::Canceled;
+      break;
+
+    case QNetworkReply::NoError:
+#endif
+      mStatus = Status::Complete;
+#if 0
+      break;
+
+    default:
+      mStatus = Status::Error;
+      break;
+  }
+
+#endif
+#if 0
+  mTotalTime = mTimer.elapsed();
+  mHttpStatus = reply.attribute( QNetworkRequest::HttpStatusCodeAttribute ).toInt();
+  mContentType = reply.rawHeader( "Content - Type" );
+
+  std::unique_ptr< QgsNetworkLoggerReplyGroup > replyGroup = std::make_unique< QgsNetworkLoggerReplyGroup >( reply ) ;
+  mReplyGroup = replyGroup.get();
+  addChild( std::move( replyGroup ) );
+#endif
+}
+
+void QgsDatabaseQueryLoggerQueryGroup::setTimedOut()
+{
+  mStatus = Status::TimeOut;
+}
+
+QString QgsDatabaseQueryLoggerQueryGroup::statusToString( QgsDatabaseQueryLoggerQueryGroup::Status status )
+{
+  switch ( status )
+  {
+    case QgsDatabaseQueryLoggerQueryGroup::Status::Pending:
+      return QObject::tr( "Pending" );
+    case QgsDatabaseQueryLoggerQueryGroup::Status::Complete:
+      return QObject::tr( "Complete" );
+    case QgsDatabaseQueryLoggerQueryGroup::Status::Error:
+      return QObject::tr( "Error" );
+    case QgsDatabaseQueryLoggerQueryGroup::Status::TimeOut:
+      return QObject::tr( "Timeout" );
+    case QgsDatabaseQueryLoggerQueryGroup::Status::Canceled:
+      return QObject::tr( "Canceled" );
+  }
+  return QString();
 }
 
 
-QList<QAction *> QgsDatabaseQueryLoggerNode::actions( QObject * )
-{
-  return QList< QAction * >();
-}
-
-QVariant QgsDatabaseQueryLoggerNode::toVariant() const
-{
-  return QVariant();
-}

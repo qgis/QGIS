@@ -157,24 +157,24 @@ QgsDatabaseQueryLoggerPanelWidget::QgsDatabaseQueryLoggerPanelWidget( QgsAppQuer
 
   mFilterLineEdit->setShowClearButton( true );
   mFilterLineEdit->setShowSearchIcon( true );
-  mFilterLineEdit->setPlaceholderText( tr( "Filter requests" ) );
+  mFilterLineEdit->setPlaceholderText( tr( "Filter queries" ) );
 
-  mActionRecord->setChecked( mLogger->isLogging() );
+  mActionRecord->setChecked( QgsApplication::databaseQueryLog()->enabled() );
 
   connect( mFilterLineEdit, &QgsFilterLineEdit::textChanged, mTreeView, &QgsDatabaseQueryLoggerTreeView::setFilterString );
   connect( mActionClear, &QAction::triggered, mLogger, &QgsAppQueryLogger::clear );
   connect( mActionRecord, &QAction::toggled, this, [ = ]( bool enabled )
   {
-    QgsSettings().setValue( QStringLiteral( "logNetworkRequests" ), enabled, QgsSettings::App );
-    mLogger->enableLogging( enabled );
+    QgsSettings().setValue( QStringLiteral( "logDatabaseQueries" ), enabled, QgsSettings::App );
+    QgsApplication::databaseQueryLog()->setEnabled( enabled );
   } );
   connect( mActionSaveLog, &QAction::triggered, this, [ = ]()
   {
-    if ( QMessageBox::warning( this, tr( "Save Network Log" ),
-                               tr( "Security warning: network logs may contain sensitive data including usernames or passwords. Treat this log as confidential and be careful who you share it with. Continue?" ), QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
+    if ( QMessageBox::warning( this, tr( "Save Database Query Log" ),
+                               tr( "Security warning: query logs may contain sensitive data including usernames or passwords. Treat this log as confidential and be careful who you share it with. Continue?" ), QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
       return;
 
-    const QString saveFilePath = QFileDialog::getSaveFileName( this, tr( "Save Network Log" ), QDir::homePath(), tr( "Log files" ) + " (*.json)" );
+    const QString saveFilePath = QFileDialog::getSaveFileName( this, tr( "Save Query Log" ), QDir::homePath(), tr( "Log files" ) + " (*.json)" );
     if ( saveFilePath.isEmpty() )
     {
       return;

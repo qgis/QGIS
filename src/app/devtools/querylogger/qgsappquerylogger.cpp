@@ -16,6 +16,7 @@
 #include "qgsappquerylogger.h"
 #include "qgsqueryloggernode.h"
 #include "qgsapplication.h"
+#include "devtools/qgsdevtoolsmodelnode.h"
 #include "qgssettings.h"
 #include "qgis.h"
 #include <QThread>
@@ -29,34 +30,16 @@ QgsAppQueryLogger::QgsAppQueryLogger( QObject *parent )
   // logger must be created on the main thread
   Q_ASSERT( QThread::currentThread() == QApplication::instance()->thread() );
 
-  if ( QgsSettings().value( QStringLiteral( "logQueries" ), false, QgsSettings::App ).toBool() )
-    enableLogging( true );
-}
-
-bool QgsAppQueryLogger::isLogging() const
-{
-  return mIsLogging;
+  connect( QgsApplication::databaseQueryLog(), &QgsDatabaseQueryLog::queryStarted, this, &QgsAppQueryLogger::queryLogged );
+  connect( QgsApplication::databaseQueryLog(), &QgsDatabaseQueryLog::queryFinished, this, &QgsAppQueryLogger::queryFinished );
 }
 
 QgsAppQueryLogger::~QgsAppQueryLogger() = default;
 
-void QgsAppQueryLogger::enableLogging( bool enabled )
-{
-  if ( enabled )
-  {
-    connect( QgsApplication::databaseQueryLog(), &QgsDatabaseQueryLog::queryStarted, this, &QgsAppQueryLogger::queryLogged, Qt::UniqueConnection );
-  }
-  else
-  {
-    disconnect( QgsApplication::databaseQueryLog(), &QgsDatabaseQueryLog::queryStarted, this, &QgsAppQueryLogger::queryLogged );
-  }
-  mIsLogging = enabled;
-}
-
 void QgsAppQueryLogger::clear()
 {
   beginResetModel();
-  mRequestGroups.clear();
+  mQueryGroups.clear();
   mRootNode->clear();
   endResetModel();
 }
@@ -67,30 +50,48 @@ void QgsAppQueryLogger::queryLogged( const QgsDatabaseQueryLogEntry &query )
 
   beginInsertRows( QModelIndex(), childCount, childCount );
 
-  std::unique_ptr< QgsDatabaseQueryLoggerGroup > group = std::make_unique< QgsDatabaseQueryLoggerGroup >( query.query );
-//  mRequestGroups.insert( parameters.requestId(), group.get() );
+  std::unique_ptr< QgsDatabaseQueryLoggerQueryGroup > group = std::make_unique< QgsDatabaseQueryLoggerQueryGroup >( query );
+  mQueryGroups.insert( query.queryId, group.get() );
   mRootNode->addChild( std::move( group ) );
   endInsertRows();
 }
 
-QgsDatabaseQueryLoggerNode *QgsAppQueryLogger::index2node( const QModelIndex &index ) const
+void QgsAppQueryLogger::queryFinished( const QgsDatabaseQueryLogEntry &query )
+{
+  QgsDatabaseQueryLoggerQueryGroup *queryGroup = mQueryGroups.value( query.queryId );
+  if ( !queryGroup )
+    return;
+
+  // find the row: the position of the request in the rootNode
+  const QModelIndex requestIndex = node2index( queryGroup );
+  if ( !requestIndex.isValid() )
+    return;
+
+  beginInsertRows( requestIndex, queryGroup->childCount(), queryGroup->childCount() );
+  queryGroup->setFinished( query );
+  endInsertRows();
+
+  emit dataChanged( requestIndex, requestIndex );
+}
+
+QgsDevToolsModelNode *QgsAppQueryLogger::index2node( const QModelIndex &index ) const
 {
   if ( !index.isValid() )
     return mRootNode.get();
 
-  return reinterpret_cast<QgsDatabaseQueryLoggerNode *>( index.internalPointer() );
+  return reinterpret_cast<QgsDevToolsModelNode *>( index.internalPointer() );
 }
 
 QList<QAction *> QgsAppQueryLogger::actions( const QModelIndex &index, QObject *parent )
 {
-  QgsDatabaseQueryLoggerNode *node = index2node( index );
+  QgsDevToolsModelNode *node = index2node( index );
   if ( !node )
     return QList< QAction * >();
 
   return node->actions( parent );
 }
 
-QModelIndex QgsAppQueryLogger::node2index( QgsDatabaseQueryLoggerNode *node ) const
+QModelIndex QgsAppQueryLogger::node2index( QgsDevToolsModelNode *node ) const
 {
   if ( !node || !node->parent() )
     return QModelIndex(); // this is the only root item -> invalid index
@@ -102,11 +103,11 @@ QModelIndex QgsAppQueryLogger::node2index( QgsDatabaseQueryLoggerNode *node ) co
   return index( row, 0, parentIndex );
 }
 
-QModelIndex QgsAppQueryLogger::indexOfParentLayerTreeNode( QgsDatabaseQueryLoggerNode *parentNode ) const
+QModelIndex QgsAppQueryLogger::indexOfParentLayerTreeNode( QgsDevToolsModelNode *parentNode ) const
 {
   Q_ASSERT( parentNode );
 
-  QgsDatabaseQueryLoggerGroup *grandParentNode = parentNode->parent();
+  QgsDevToolsModelGroup *grandParentNode = parentNode->parent();
   if ( !grandParentNode )
     return QModelIndex();  // root node -> invalid index
 
@@ -123,8 +124,8 @@ void QgsAppQueryLogger::removeRequestRows( const QList<int> &rows )
 
   for ( int row : std::as_const( res ) )
   {
-    int popId = data( index( row, 0, QModelIndex() ), QgsDatabaseQueryLoggerNode::RoleId ).toInt();
-    mRequestGroups.remove( popId );
+    int popId = data( index( row, 0, QModelIndex() ), QgsDevToolsModelNode::RoleId ).toInt();
+    mQueryGroups.remove( popId );
 
     beginRemoveRows( QModelIndex(), row, row );
     mRootNode->removeRow( row );
@@ -139,7 +140,7 @@ QgsDatabaseQueryLoggerRootNode *QgsAppQueryLogger::rootGroup()
 
 int QgsAppQueryLogger::rowCount( const QModelIndex &parent ) const
 {
-  QgsDatabaseQueryLoggerNode *n = index2node( parent );
+  QgsDevToolsModelNode *n = index2node( parent );
   if ( !n )
     return 0;
 
@@ -158,7 +159,7 @@ QModelIndex QgsAppQueryLogger::index( int row, int column, const QModelIndex &pa
        row < 0 || row >= rowCount( parent ) )
     return QModelIndex();
 
-  QgsDatabaseQueryLoggerGroup *n = dynamic_cast< QgsDatabaseQueryLoggerGroup * >( index2node( parent ) );
+  QgsDevToolsModelGroup *n = dynamic_cast< QgsDevToolsModelGroup * >( index2node( parent ) );
   if ( !n )
     return QModelIndex(); // have no children
 
@@ -170,7 +171,7 @@ QModelIndex QgsAppQueryLogger::parent( const QModelIndex &child ) const
   if ( !child.isValid() )
     return QModelIndex();
 
-  if ( QgsDatabaseQueryLoggerNode *n = index2node( child ) )
+  if ( QgsDevToolsModelNode *n = index2node( child ) )
   {
     return indexOfParentLayerTreeNode( n->parent() ); // must not be null
   }
@@ -186,7 +187,7 @@ QVariant QgsAppQueryLogger::data( const QModelIndex &index, int role ) const
   if ( !index.isValid() || index.column() > 1 )
     return QVariant();
 
-  QgsDatabaseQueryLoggerNode *node = index2node( index );
+  QgsDevToolsModelNode *node = index2node( index );
   if ( !node )
     return QVariant();
 
@@ -232,7 +233,7 @@ void QgsDatabaseQueryLoggerProxyModel::setFilterString( const QString &string )
 
 bool QgsDatabaseQueryLoggerProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
-  QgsDatabaseQueryLoggerNode *node = mLogger->index2node( mLogger->index( source_row, 0, source_parent ) );
+  QgsDevToolsModelNode *node = mLogger->index2node( mLogger->index( source_row, 0, source_parent ) );
 #if 0
   if ( QgsDatabaseQueryLoggerRequestGroup *request = dynamic_cast< QgsDatabaseQueryLoggerRequestGroup * >( node ) )
   {

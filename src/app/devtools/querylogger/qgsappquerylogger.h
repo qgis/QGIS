@@ -21,9 +21,10 @@
 #include "qgsdbquerylog.h"
 #include <memory>
 
-class QgsDatabaseQueryLoggerNode;
-class QgsDatabaseQueryLoggerRequestGroup;
+class QgsDevToolsModelNode;
+class QgsDevToolsModelGroup;
 class QgsDatabaseQueryLoggerRootNode;
+class QgsDatabaseQueryLoggerQueryGroup;
 class QAction;
 
 /**
@@ -46,11 +47,6 @@ class QgsAppQueryLogger : public QAbstractItemModel
     QgsAppQueryLogger( QObject *parent );
     ~QgsAppQueryLogger() override;
 
-    /**
-     * Returns TRUE if the logger is currently logging activity.
-     */
-    bool isLogging() const;
-
     // Implementation of virtual functions from QAbstractItemModel
 
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -64,7 +60,7 @@ class QgsAppQueryLogger : public QAbstractItemModel
     /**
      * Returns node for given index. Returns root node for invalid index.
      */
-    QgsDatabaseQueryLoggerNode *index2node( const QModelIndex &index ) const;
+    QgsDevToolsModelNode *index2node( const QModelIndex &index ) const;
 
     /**
      * Returns a list of actions corresponding to the item at the specified \a index.
@@ -88,29 +84,23 @@ class QgsAppQueryLogger : public QAbstractItemModel
   public slots:
 
     /**
-     * Enables or disables logging, depending on the value of \a enabled.
-     */
-    void enableLogging( bool enabled );
-
-    /**
      * Clears all logged entries.
      */
     void clear();
 
   private slots:
     void queryLogged( const QgsDatabaseQueryLogEntry &query );
+    void queryFinished( const QgsDatabaseQueryLogEntry &query );
 
   private:
 
     //! Returns index for a given node
-    QModelIndex node2index( QgsDatabaseQueryLoggerNode *node ) const;
-    QModelIndex indexOfParentLayerTreeNode( QgsDatabaseQueryLoggerNode *parentNode ) const;
-
-    bool mIsLogging = false;
+    QModelIndex node2index( QgsDevToolsModelNode *node ) const;
+    QModelIndex indexOfParentLayerTreeNode( QgsDevToolsModelNode *parentNode ) const;
 
     std::unique_ptr< QgsDatabaseQueryLoggerRootNode > mRootNode;
 
-    QHash< int, QgsDatabaseQueryLoggerRequestGroup * > mRequestGroups;
+    QHash< int, QgsDatabaseQueryLoggerQueryGroup * > mQueryGroups;
 
 };
 

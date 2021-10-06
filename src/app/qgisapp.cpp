@@ -991,10 +991,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   mNetworkLogger = new QgsNetworkLogger( QgsNetworkAccessManager::instance(), this );
   endProfile();
 
-  startProfile( tr( "Create database query logger" ) );
-  mQueryLogger = new QgsAppQueryLogger( this );
-  endProfile();
-
   // load GUI: actions, menus, toolbars
   startProfile( tr( "Setting up UI" ) );
   setupUi( this );
@@ -1040,6 +1036,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
 
   QgsSettings settings;
 
+  startProfile( tr( "Create database query logger" ) );
+  mQueryLogger = new QgsAppQueryLogger( this );
+  QgsApplication::databaseQueryLog()->setEnabled( settings.value( QStringLiteral( "logDatabaseQueries" ), false, QgsSettings::App ).toBool() );
+  endProfile();
 
   startProfile( tr( "Building style sheet" ) );
   // set up stylesheet builder and apply saved or default style options

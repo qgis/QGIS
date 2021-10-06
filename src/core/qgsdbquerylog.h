@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
   qgsdbquerylog.h
   ------------
   Date                 : October 2021
@@ -43,6 +43,12 @@ class CORE_EXPORT QgsDatabaseQueryLogEntry
      * This ID will automatically be set on creation of a new QgsDatabaseQueryLogEntry object.
      */
     int queryId = 0;
+
+    //! Database URI
+    QString uri;
+
+    //! Provider key
+    QString provider;
 
     //! The logged database query (e.g. the SQL query)
     QString query;

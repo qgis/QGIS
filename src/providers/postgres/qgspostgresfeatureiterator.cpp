@@ -423,7 +423,7 @@ bool QgsPostgresFeatureIterator::rewind()
 
   // move cursor to first record
 
-  mConn->PQexecNR( QStringLiteral( "move absolute 0 in %1" ).arg( mCursorName ) );
+  mConn->LoggedPQexecNR( "QgsPostgresFeatureIterator", QStringLiteral( "move absolute 0 in %1" ).arg( mCursorName ) );
   mFeatureQueue.clear();
   mFetched = 0;
   mLastFetch = false;

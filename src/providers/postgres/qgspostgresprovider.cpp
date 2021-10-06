@@ -2369,7 +2369,7 @@ void QgsPostgresProvider::dropOrphanedTopoGeoms()
 
   QgsDebugMsgLevel( "TopoGeom orphans cleanup query: " + sql, 2 );
 
-  connectionRW()->PQexecNR( sql );
+  connectionRW()->LoggedPQexecNR( "QgsPostgresProvider", sql );
 }
 
 QString QgsPostgresProvider::geomParam( int offset ) const
@@ -2748,7 +2748,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       }
     }
 
-    conn->PQexecNR( QStringLiteral( "DEALLOCATE addfeatures" ) );
+    conn->LoggedPQexecNR( "QgsPostgresProvider", QStringLiteral( "DEALLOCATE addfeatures" ) );
 
     returnvalue &= conn->commit();
     if ( mTransaction )
@@ -2760,7 +2760,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   {
     pushError( tr( "PostGIS error while adding features: %1" ).arg( e.errorMessage() ) );
     conn->rollback();
-    conn->PQexecNR( QStringLiteral( "DEALLOCATE addfeatures" ) );
+    conn->LoggedPQexecNR( "QgsPostgresProvider", QStringLiteral( "DEALLOCATE addfeatures" ) );
     returnvalue = false;
   }
 
@@ -3434,11 +3434,11 @@ bool QgsPostgresProvider::changeGeometryValues( const QgsGeometryMap &geometry_m
 
     } // for each feature
 
-    conn->PQexecNR( QStringLiteral( "DEALLOCATE updatefeatures" ) );
+    conn->LoggedPQexecNR( "QgsPostgresProvider", QStringLiteral( "DEALLOCATE updatefeatures" ) );
     if ( mSpatialColType == SctTopoGeometry )
     {
-      connectionRO()->PQexecNR( QStringLiteral( "DEALLOCATE getid" ) );
-      conn->PQexecNR( QStringLiteral( "DEALLOCATE replacetopogeom" ) );
+      connectionRO()->LoggedPQexecNR( "QgsPostgresProvider", QStringLiteral( "DEALLOCATE getid" ) );
+      conn->LoggedPQexecNR( "QgsPostgresProvider", QStringLiteral( "DEALLOCATE replacetopogeom" ) );
     }
 
     returnvalue &= conn->commit();
@@ -3449,11 +3449,11 @@ bool QgsPostgresProvider::changeGeometryValues( const QgsGeometryMap &geometry_m
   {
     pushError( tr( "PostGIS error while changing geometry values: %1" ).arg( e.errorMessage() ) );
     conn->rollback();
-    conn->PQexecNR( QStringLiteral( "DEALLOCATE updatefeatures" ) );
+    conn->LoggedPQexecNR( "QgsPostgresProvider", QStringLiteral( "DEALLOCATE updatefeatures" ) );
     if ( mSpatialColType == SctTopoGeometry )
     {
-      connectionRO()->PQexecNR( QStringLiteral( "DEALLOCATE getid" ) );
-      conn->PQexecNR( QStringLiteral( "DEALLOCATE replacetopogeom" ) );
+      connectionRO()->LoggedPQexecNR( "QgsPostgresProvider", QStringLiteral( "DEALLOCATE getid" ) );
+      conn->LoggedPQexecNR( "QgsPostgresProvider", QStringLiteral( "DEALLOCATE replacetopogeom" ) );
     }
     returnvalue = false;
   }
@@ -3609,7 +3609,7 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
           throw PGException( result );
         }
 
-        conn->PQexecNR( QStringLiteral( "DEALLOCATE updatefeature" ) );
+        conn->LoggedPQexecNR( "QgsPostgresProvider", QStringLiteral( "DEALLOCATE updatefeature" ) );
       }
 
       // update feature id map if key was changed
@@ -3886,7 +3886,7 @@ QgsRectangle QgsPostgresProvider::extent() const
 
       result = connectionRO()->PQexec( sql );
       if ( result.PQresultStatus() != PGRES_TUPLES_OK )
-        connectionRO()->PQexecNR( QStringLiteral( "ROLLBACK" ) );
+        connectionRO()->LoggedPQexecNR( "QgsPostgresProvider", QStringLiteral( "ROLLBACK" ) );
       else if ( result.PQntuples() == 1 && !result.PQgetisnull( 0, 0 ) )
         ext = result.PQgetvalue( 0, 0 );
     }
@@ -4086,7 +4086,7 @@ bool QgsPostgresProvider::getGeometryDetails()
     }
     else
     {
-      connectionRO()->PQexecNR( QStringLiteral( "COMMIT" ) );
+      connectionRO()->LoggedPQexecNR( "QgsPostgresProvider", QStringLiteral( "COMMIT" ) );
     }
 
     if ( detectedType.isEmpty() )
@@ -4111,7 +4111,7 @@ bool QgsPostgresProvider::getGeometryDetails()
       }
       else
       {
-        connectionRO()->PQexecNR( QStringLiteral( "COMMIT" ) );
+        connectionRO()->LoggedPQexecNR( "QgsPostgresProvider", QStringLiteral( "COMMIT" ) );
       }
     }
 
@@ -4142,7 +4142,7 @@ bool QgsPostgresProvider::getGeometryDetails()
       }
       else
       {
-        connectionRO()->PQexecNR( QStringLiteral( "COMMIT" ) );
+        connectionRO()->LoggedPQexecNR( "QgsPostgresProvider", QStringLiteral( "COMMIT" ) );
       }
     }
 
@@ -4166,7 +4166,7 @@ bool QgsPostgresProvider::getGeometryDetails()
       }
       else
       {
-        connectionRO()->PQexecNR( QStringLiteral( "COMMIT" ) );
+        connectionRO()->LoggedPQexecNR( "QgsPostgresProvider", QStringLiteral( "COMMIT" ) );
       }
     }
 
@@ -4197,7 +4197,7 @@ bool QgsPostgresProvider::getGeometryDetails()
       }
       else
       {
-        connectionRO()->PQexecNR( QStringLiteral( "COMMIT" ) );
+        connectionRO()->LoggedPQexecNR( "QgsPostgresProvider", QStringLiteral( "COMMIT" ) );
       }
     }
   }
@@ -4231,7 +4231,7 @@ bool QgsPostgresProvider::getGeometryDetails()
       }
       else
       {
-        connectionRO()->PQexecNR( QStringLiteral( "COMMIT" ) );
+        connectionRO()->LoggedPQexecNR( "QgsPostgresProvider", QStringLiteral( "COMMIT" ) );
         detectedType = mRequestedGeomType == QgsWkbTypes::Unknown ? QString() : QgsPostgresConn::postgisWkbTypeName( mRequestedGeomType );
       }
     }
@@ -4587,7 +4587,7 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer( const QString &u
 
   try
   {
-    conn->PQexecNR( QStringLiteral( "BEGIN" ) );
+    conn->LoggedPQexecNR( "QgsPostgresProvider", QStringLiteral( "BEGIN" ) );
 
     // We want a valid schema name ...
     if ( schemaName.isEmpty() )
@@ -4688,7 +4688,7 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer( const QString &u
       geometryColumn.clear();
     }
 
-    conn->PQexecNR( QStringLiteral( "COMMIT" ) );
+    conn->LoggedPQexecNR( "QgsPostgresProvider", QStringLiteral( "COMMIT" ) );
   }
   catch ( PGException &e )
   {
@@ -4697,7 +4697,7 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer( const QString &u
                       .arg( schemaTableName,
                             e.errorMessage() );
 
-    conn->PQexecNR( QStringLiteral( "ROLLBACK" ) );
+    conn->LoggedPQexecNR( "QgsPostgresProvider", QStringLiteral( "ROLLBACK" ) );
     conn->unref();
     return Qgis::VectorExportResult::ErrorCreatingLayer;
   }
@@ -4879,7 +4879,7 @@ QString QgsPostgresProvider::getNextString( const QString &txt, int &i, const QS
     }
     i += match.captured( 1 ).length() + 2;
     jumpSpace( txt, i );
-    if ( !QStringView{txt}.mid( i ).startsWith( sep ) && i < txt.length() )
+    if ( !QStringView{txt} .mid( i ).startsWith( sep ) && i < txt.length() )
     {
       QgsMessageLog::logMessage( tr( "Cannot find separator: %1" ).arg( txt.mid( i ) ), tr( "PostGIS" ) );
       return QString();
@@ -4892,9 +4892,9 @@ QString QgsPostgresProvider::getNextString( const QString &txt, int &i, const QS
     int start = i;
     for ( ; i < txt.length(); i++ )
     {
-      if ( QStringView{txt}.mid( i ).startsWith( sep ) )
+      if ( QStringView{txt} .mid( i ).startsWith( sep ) )
       {
-        QStringView v( QStringView{txt}.mid( start, i - start ) );
+        QStringView v( QStringView{txt} .mid( start, i - start ) );
         i += sep.length();
         return v.trimmed().toString();
       }
