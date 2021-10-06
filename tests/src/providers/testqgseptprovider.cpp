@@ -60,6 +60,7 @@ class TestQgsEptProvider : public QObject
     void validLayerWithEptHierarchy();
     void attributes();
     void calculateZRange();
+    void testIdentify_data();
     void testIdentify();
 
   private:
@@ -286,9 +287,19 @@ void TestQgsEptProvider::calculateZRange()
   QGSCOMPARENEAR( range.upper(), 160.54, 0.01 );
 }
 
+void TestQgsEptProvider::testIdentify_data()
+{
+  QTest::addColumn<QString>( "datasetPath" );
+
+  QTest::newRow( "ept with bin" ) << mTestDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" );
+  QTest::newRow( "ept with laz" ) << mTestDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast-laz/ept.json" );
+}
+
 void TestQgsEptProvider::testIdentify()
 {
-  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
+  QFETCH( QString, datasetPath );
+
+  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( datasetPath, QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
 
   // identify 1 point click (rectangular point shape)
   {
@@ -355,9 +366,10 @@ void TestQgsEptProvider::testIdentify()
       point[ QStringLiteral( "UserData" ) ] =  "17" ;
       point[ QStringLiteral( "X" ) ] =  "498066.27" ;
       point[ QStringLiteral( "Y" ) ] =  "7050995.06" ;
-      point[ QStringLiteral( "Z" ) ] =  "74.60" ;
+      point[ QStringLiteral( "Z" ) ] =  74.6 ;
       expected.push_back( point );
     }
+
     QVERIFY( identifiedPoints == expected );
   }
 
