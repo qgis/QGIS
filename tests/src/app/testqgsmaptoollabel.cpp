@@ -53,7 +53,7 @@ class TestQgsMapToolLabel : public QObject
 
     void testSelectLabel()
     {
-      std::unique_ptr< QgsVectorLayer > vl1 = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:3946&field=text:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+      QgsVectorLayer *vl1 = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=text:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
       QVERIFY( vl1->isValid() );
       QgsFeature f1;
       f1.setAttributes( QgsAttributes() << QStringLiteral( "label" ) );
@@ -62,8 +62,9 @@ class TestQgsMapToolLabel : public QObject
       f1.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 3, 3 ) ) );
       f1.setAttributes( QgsAttributes() << QStringLiteral( "l" ) );
       QVERIFY( vl1->dataProvider()->addFeature( f1 ) );
+      QgsProject::instance()->addMapLayer( vl1 );
 
-      std::unique_ptr< QgsVectorLayer > vl2 = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:3946&field=text:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+      QgsVectorLayer *vl2 = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=text:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
       QVERIFY( vl2->isValid() );
       f1.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 1, 1 ) ) );
       f1.setAttributes( QgsAttributes() << QStringLiteral( "label" ) );
@@ -74,17 +75,18 @@ class TestQgsMapToolLabel : public QObject
       f1.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 3, 1 ) ) );
       f1.setAttributes( QgsAttributes() << QStringLiteral( "label3" ) );
       QVERIFY( vl2->dataProvider()->addFeature( f1 ) );
+      QgsProject::instance()->addMapLayer( vl2 );
 
       std::unique_ptr< QgsMapCanvas > canvas = qgis::make_unique< QgsMapCanvas >();
       canvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
-      canvas->setLayers( QList<QgsMapLayer *>() << vl1.get() << vl2.get() );
+      canvas->setLayers( QList<QgsMapLayer *>() << vl1 << vl2 );
 
       QgsMapSettings mapSettings;
       mapSettings.setOutputSize( QSize( 500, 500 ) );
       mapSettings.setExtent( QgsRectangle( -1, -1, 4, 4 ) );
       QVERIFY( mapSettings.hasValidSettings() );
 
-      mapSettings.setLayers( QList<QgsMapLayer *>() << vl1.get() << vl2.get() );
+      mapSettings.setLayers( QList<QgsMapLayer *>() << vl1 << vl2 );
 
       canvas->setFrameStyle( QFrame::NoFrame );
       canvas->resize( 500, 500 );
@@ -156,7 +158,7 @@ class TestQgsMapToolLabel : public QObject
       loop.exec();
 
       // should prioritize current layer
-      canvas->setCurrentLayer( vl1.get() );
+      canvas->setCurrentLayer( vl1 );
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 1, 1 );
       event = qgis::make_unique< QMouseEvent >(
                 QEvent::MouseButtonPress,
@@ -185,7 +187,7 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( pos.layerID, vl2->id() );
       QCOMPARE( pos.labelText, QStringLiteral( "label3" ) );
 
-      canvas->setCurrentLayer( vl2.get() );
+      canvas->setCurrentLayer( vl2 );
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 1, 1 );
       event = qgis::make_unique< QMouseEvent >(
                 QEvent::MouseButtonPress,
@@ -223,6 +225,8 @@ class TestQgsMapToolLabel : public QObject
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl1->id() );
       QCOMPARE( pos.labelText, QStringLiteral( "l" ) );
+
+      QgsProject::instance()->clear();
     }
 
     void testAlignment()
