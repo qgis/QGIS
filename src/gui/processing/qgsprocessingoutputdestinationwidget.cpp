@@ -240,25 +240,24 @@ void QgsProcessingLayerOutputDestinationWidget::menuAboutToShow()
       connect( actionSkipOutput, &QAction::triggered, this, &QgsProcessingLayerOutputDestinationWidget::skipOutput );
       mMenu->addAction( actionSkipOutput );
     }
-
-    QAction *actionSaveToTemp = nullptr;
-    if ( mParameter->type() == QgsProcessingParameterFeatureSink::typeName() && mParameter->supportsNonFileBasedOutput() )
-    {
-      // use memory layers for temporary layers if supported
-      actionSaveToTemp = new QAction( tr( "Create Temporary Layer" ), this );
-    }
-    else if ( mParameter->type() == QgsProcessingParameterFolderDestination::typeName() )
-    {
-      actionSaveToTemp = new QAction( tr( "Save to a Temporary Directory" ), this );
-    }
-    else
-    {
-      actionSaveToTemp = new QAction( tr( "Save to a Temporary File" ), this );
-    }
-
-    connect( actionSaveToTemp, &QAction::triggered, this, &QgsProcessingLayerOutputDestinationWidget::saveToTemporary );
-    mMenu->addAction( actionSaveToTemp );
   }
+
+  QAction *actionSaveToTemp = nullptr;
+  if ( mParameter->type() == QgsProcessingParameterFeatureSink::typeName() && mParameter->supportsNonFileBasedOutput() )
+  {
+    // use memory layers for temporary layers if supported
+    actionSaveToTemp = new QAction( tr( "Create Temporary Layer" ), this );
+  }
+  else if ( mParameter->type() == QgsProcessingParameterFolderDestination::typeName() )
+  {
+    actionSaveToTemp = new QAction( tr( "Save to a Temporary Directory" ), this );
+  }
+  else
+  {
+    actionSaveToTemp = new QAction( tr( "Save to a Temporary File" ), this );
+  }
+  connect( actionSaveToTemp, &QAction::triggered, this, &QgsProcessingLayerOutputDestinationWidget::saveToTemporary );
+  mMenu->addAction( actionSaveToTemp );
 
   QAction *actionSaveToFile = nullptr;
   if ( mParameter->type() == QgsProcessingParameterFolderDestination::typeName() )
