@@ -98,6 +98,13 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     void setFeature( const QgsFeature &feature, bool update = true );
 
     /**
+     * Set multiple feature to edit simultaneously.
+     * \param fids Multiple Id of features to edit
+     * \since QGIS 3.22
+     */
+    void setMultiEditFeatureIds( const QgsFeatureIds &fids );
+
+    /**
      * Sets the editor \a context
      * \note if context cadDockWidget is null, it won't be possible to digitize
      * the geometry of a referencing feature from this widget
@@ -229,7 +236,7 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     QgsAttributeEditorContext mEditorContext;
     QgsRelation mRelation;
     QgsRelation mNmRelation;
-    QgsFeature mFeature;
+    QgsFeatureList mFeatureList;
 
     bool mLayerInSameTransactionGroup = false;
 

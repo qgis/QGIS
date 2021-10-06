@@ -32,6 +32,7 @@
 #include "qgsvectorlayerselectionmanager.h"
 #include "qgis_gui.h"
 
+class QTreeWidget;
 class QgsFeature;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
@@ -227,6 +228,10 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     QToolButton *mFormViewButton = nullptr;
     QToolButton *mTableViewButton = nullptr;
     QToolButton *mAddFeatureGeometryButton = nullptr;
+    QStackedWidget *mStackedWidget = nullptr;
+    QWidget *mMultiEditStackedWidgetPage = nullptr;
+    QLabel *mMultiEditInformationLabel = nullptr;
+    QTreeWidget *mMultiEditTreeWidget = nullptr;
     QObjectUniquePtr<QgsMapToolDigitizeFeature> mMapToolDigitize;
     QButtonGroup *mViewModeButtonGroup = nullptr;
     QgsVectorLayerSelectionManager *mFeatureSelectionMgr = nullptr;

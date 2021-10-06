@@ -59,6 +59,12 @@ void QgsRelationWidgetWrapper::setFeature( const QgsFeature &feature )
     mWidget->setFeature( feature );
 }
 
+void QgsRelationWidgetWrapper::setMultiEditFeatureIds( const QgsFeatureIds &fids )
+{
+  if ( mWidget && mRelation.isValid() )
+    mWidget->setMultiEditFeatureIds( fids );
+}
+
 void QgsRelationWidgetWrapper::setVisible( bool visible )
 {
   if ( mWidget )

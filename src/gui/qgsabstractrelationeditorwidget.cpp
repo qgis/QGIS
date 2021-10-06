@@ -43,7 +43,8 @@ void QgsAbstractRelationEditorWidget::setRelationFeature( const QgsRelation &rel
   beforeSetRelationFeature( relation, feature );
 
   mRelation = relation;
-  mFeature = feature;
+  mFeatureList.clear();
+  mFeatureList.append( feature );
 
   setObjectName( QStringLiteral( "referenced/" ) + mRelation.name() );
 
@@ -103,12 +104,24 @@ QgsAttributeEditorContext QgsAbstractRelationEditorWidget::editorContext() const
 
 void QgsAbstractRelationEditorWidget::setFeature( const QgsFeature &feature, bool update )
 {
-  mFeature = feature;
+  mFeatureList.clear();
+  mFeatureList.append( feature );
 
+  // Is this OK???
   mEditorContext.setFormFeature( feature );
 
   if ( update )
     updateUi();
+}
+
+void QgsAbstractRelationEditorWidget::setMultiEditFeatureIds( const QgsFeatureIds &fids )
+{
+  mFeatureList.clear();
+
+  QgsFeatureIterator featureIterator = mRelation.referencedLayer()->getFeatures( QgsFeatureRequest().setFilterFids( fids ) );
+  QgsFeature feature;
+  while ( featureIterator.nextFeature( feature ) )
+    mFeatureList.append( feature );
 }
 
 void QgsAbstractRelationEditorWidget::setNmRelationId( const QVariant &nmRelationId )
@@ -161,7 +174,10 @@ void QgsAbstractRelationEditorWidget::updateTitle()
 
 QgsFeature QgsAbstractRelationEditorWidget::feature() const
 {
-  return mFeature;
+  if ( !mFeatureList.isEmpty() )
+    return mFeatureList.first();
+
+  return QgsFeature();
 }
 
 void QgsAbstractRelationEditorWidget::toggleEditing( bool state )
@@ -205,6 +221,12 @@ void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
 
   if ( mNmRelation.isValid() )
   {
+    if ( mFeatureList.size() > 1 )
+    {
+      QgsLogger::warning( tr( "Adding of feature not supported in multiple edit mode for n:m relations" ) );
+      return;
+    }
+
     // only normal relations support m:n relation
     Q_ASSERT( mNmRelation.type() == QgsRelation::Normal );
 
@@ -222,7 +244,7 @@ void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
     for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
     {
       const int index = fields.indexOf( fieldPair.first );
-      linkAttributes.insert( index,  mFeature.attribute( fieldPair.second ) );
+      linkAttributes.insert( index,  mFeatureList.first().attribute( fieldPair.second ) );
     }
 
     const auto constNmFieldPairs = mNmRelation.fieldPairs();
@@ -237,13 +259,19 @@ void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
   }
   else
   {
-    const auto constFieldPairs = mRelation.fieldPairs();
-    for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
+    int featureAdded = 0;
+    for ( const QgsFeature &feature : mFeatureList )
     {
-      keyAttrs.insert( fields.indexFromName( fieldPair.referencingField() ), mFeature.attribute( fieldPair.referencedField() ) );
-    }
+      const auto constFieldPairs = mRelation.fieldPairs();
+      for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
+      {
+        keyAttrs.insert( fields.indexFromName( fieldPair.referencingField() ), feature.attribute( fieldPair.referencedField() ) );
+      }
 
-    if ( !vlTools->addFeature( mRelation.referencingLayer(), keyAttrs, geometry ) )
+      if ( vlTools->addFeature( mRelation.referencingLayer(), keyAttrs, geometry ) )
+        featureAdded++;
+    }
+    if ( featureAdded == 0 )
       return;
   }
 
@@ -374,6 +402,12 @@ void QgsAbstractRelationEditorWidget::deleteFeatures( const QgsFeatureIds &fids 
 
 void QgsAbstractRelationEditorWidget::linkFeature()
 {
+  if ( mFeatureList.size() > 1 )
+  {
+    QgsLogger::warning( tr( "Linking of feature not supported in multiple edit mode" ) );
+    return;
+  }
+
   QgsVectorLayer *layer = nullptr;
 
   if ( mNmRelation.isValid() )
@@ -384,12 +418,14 @@ void QgsAbstractRelationEditorWidget::linkFeature()
     layer = mNmRelation.referencedLayer();
   }
   else
+  {
     layer = mRelation.referencingLayer();
+  }
 
   QgsFeatureSelectionDlg *selectionDlg = new QgsFeatureSelectionDlg( layer, mEditorContext, this );
   selectionDlg->setAttribute( Qt::WA_DeleteOnClose );
 
-  const QString displayString = QgsVectorLayerUtils::getFeatureDisplayString( mRelation.referencedLayer(), mFeature );
+  const QString displayString = QgsVectorLayerUtils::getFeatureDisplayString( mRelation.referencedLayer(), mFeatureList.first() );
   selectionDlg->setWindowTitle( tr( "Link existing child features for parent %1 \"%2\"" ).arg( mRelation.referencedLayer()->name(), displayString ) );
 
   connect( selectionDlg, &QDialog::accepted, this, &QgsAbstractRelationEditorWidget::onLinkFeatureDlgAccepted );
@@ -399,6 +435,13 @@ void QgsAbstractRelationEditorWidget::linkFeature()
 void QgsAbstractRelationEditorWidget::onLinkFeatureDlgAccepted()
 {
   QgsFeatureSelectionDlg *selectionDlg = qobject_cast<QgsFeatureSelectionDlg *>( sender() );
+
+  if ( mFeatureList.size() > 1 )
+  {
+    QgsLogger::warning( tr( "Linking of feature not supported in multiple edit mode" ) );
+    return;
+  }
+
   if ( mNmRelation.isValid() )
   {
     // only normal relations support m:n relation
@@ -434,7 +477,7 @@ void QgsAbstractRelationEditorWidget::onLinkFeatureDlgAccepted()
     for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
     {
       const int index = fields.indexOf( fieldPair.first );
-      linkAttributes.insert( index,  mFeature.attribute( fieldPair.second ) );
+      linkAttributes.insert( index, mFeatureList.first().attribute( fieldPair.second ) );
     }
 
     while ( it.nextFeature( relatedFeature ) )
@@ -464,7 +507,7 @@ void QgsAbstractRelationEditorWidget::onLinkFeatureDlgAccepted()
     for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
     {
       const int idx = mRelation.referencingLayer()->fields().lookupField( fieldPair.referencingField() );
-      const QVariant val = mFeature.attribute( fieldPair.referencedField() );
+      const QVariant val = mFeatureList.first().attribute( fieldPair.referencedField() );
       keys.insert( idx, val );
     }
 
@@ -502,6 +545,12 @@ void QgsAbstractRelationEditorWidget::unlinkFeature( const QgsFeatureId fid )
 
 void QgsAbstractRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &fids )
 {
+  if ( mFeatureList.size() > 1 )
+  {
+    QgsLogger::warning( tr( "Unlinking of features not supported in multiple edit mode" ) );
+    return;
+  }
+
   if ( mNmRelation.isValid() )
   {
     // only normal relations support m:n relation
@@ -522,7 +571,7 @@ void QgsAbstractRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &fids 
     }
 
     const QString filter = QStringLiteral( "(%1) AND (%2)" ).arg(
-                             mRelation.getRelatedFeaturesRequest( mFeature ).filterExpression()->expression(),
+                             mRelation.getRelatedFeaturesRequest( mFeatureList.first() ).filterExpression()->expression(),
                              filters.join( QLatin1String( " OR " ) ) );
 
     QgsFeatureIterator linkedIterator = mRelation.referencingLayer()->getFeatures( QgsFeatureRequest()

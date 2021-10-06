@@ -379,6 +379,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     void updateDefaultValueDependencies();
 
+    void setMultiEditFeatureIdsRelations( const QgsFeatureIds &fids );
+
     struct WidgetInfo
     {
       QWidget *widget = nullptr;

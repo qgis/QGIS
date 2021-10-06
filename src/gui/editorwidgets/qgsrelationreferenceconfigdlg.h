@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsrelationreferenceconfigdlgbase.h
+    qgsrelationreferenceconfigdlg.h
      --------------------------------------
     Date                 : 21.4.2013
     Copyright            : (C) 2013 Matthias Kuhn

@@ -45,3 +45,8 @@ QString QgsAttributeFormRelationEditorWidget::currentFilterExpression() const
 
   return filterExpression;
 }
+
+void QgsAttributeFormRelationEditorWidget::setMultiEditFeatureIds( const QgsFeatureIds &fids )
+{
+  mWrapper->setMultiEditFeatureIds( fids );
+}
