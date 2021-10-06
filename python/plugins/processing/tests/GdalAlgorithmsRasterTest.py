@@ -1734,6 +1734,22 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                  '-ps 256 256 -overlap 0 -levels 1 -r near -ot Float32 -v -tileIndex tindex.shp -targetDir {} '.format(outdir) +
                  source])
 
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': [source],
+                                        'ONLY_PYRAMIDS': True,
+                                        'OUTPUT': outdir}, context, feedback),
+                ['gdal_retile.py',
+                 '-ps 256 256 -overlap 0 -levels 1 -r near -ot Float32 -pyramidOnly -targetDir {} '.format(outdir) +
+                 source])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': [source],
+                                        'DIR_FOR_ROW': True,
+                                        'OUTPUT': outdir}, context, feedback),
+                ['gdal_retile.py',
+                 '-ps 256 256 -overlap 0 -levels 1 -r near -ot Float32 -useDirForEachRow -targetDir {} '.format(outdir) +
+                 source])
+
     def testWarp(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
