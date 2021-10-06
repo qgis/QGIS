@@ -314,6 +314,7 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
     ScanAngleRank,
     UserData,
     PointSourceId,
+    GpsTime,
     Red,
     Green,
     Blue,
@@ -385,6 +386,10 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
     {
       requestedAttributeDetails.emplace_back( RequestedAttributeDetails( LazAttribute::PointSourceId, requestedAttribute.type(), requestedAttribute.size() ) );
     }
+    else if ( requestedAttribute.name().compare( QLatin1String( "GpsTime" ), Qt::CaseInsensitive ) == 0 )
+    {
+      requestedAttributeDetails.emplace_back( RequestedAttributeDetails( LazAttribute::GpsTime, requestedAttribute.type(), requestedAttribute.size() ) );
+    }
     else if ( requestedAttribute.name().compare( QLatin1String( "Red" ), Qt::CaseInsensitive ) == 0 )
     {
       requestedAttributeDetails.emplace_back( RequestedAttributeDetails( LazAttribute::Red, requestedAttribute.type(), requestedAttribute.size() ) );
@@ -408,6 +413,7 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
   {
     f.readPoint( buf ); // read the point out
     const laszip::formats::las::point10 p = laszip::formats::packers<laszip::formats::las::point10>::unpack( buf );
+    const laszip::formats::las::gpstime gps = laszip::formats::packers<laszip::formats::las::gpstime>::unpack( buf + sizeof( laszip::formats::las::point10 ) );
     const laszip::formats::las::rgb rgb = laszip::formats::packers<laszip::formats::las::rgb>::unpack( buf + sizeof( laszip::formats::las::point10 ) + sizeof( laszip::formats::las::gpstime ) );
 
     for ( const RequestedAttributeDetails &requestedAttribute : requestedAttributeDetails )
@@ -449,6 +455,11 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
           break;
         case LazAttribute::PointSourceId:
           _storeToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, p.point_source_ID );
+          break;
+        case LazAttribute::GpsTime:
+          // lazperf internally stores gps value as int64 field, but in fact it is a double value
+          _storeToStream<double>( dataBuffer, outputOffset, requestedAttribute.type,
+                                  *reinterpret_cast<const double *>( reinterpret_cast<const void *>( &gps.value ) ) );
           break;
         case LazAttribute::Red:
           _storeToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, rgb.r );
