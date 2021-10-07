@@ -24,6 +24,7 @@ os.environ['QT_HASH_SEED'] = '1'
 from qgis.server import (
     QgsBufferServerRequest,
     QgsBufferServerResponse,
+    QgsServer,
     QgsServerApi,
     QgsServerApiBadRequestException,
     QgsServerQueryStringParameter,
@@ -2033,21 +2034,25 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
         project = QgsProject()
 
         api = QgsServerOgcApi(self.server.serverInterface(),
-                              '/', 'apifour', 'a fourth api', '1.2')
+                              '/services/api4', 'apifour', 'a fourth api', '1.2')
 
         h4 = Handler4()
         api.registerHandler(h4)
 
         request = QgsBufferServerRequest(
-            'http://localhost:19876/tms/france_parts.json?MAP=france_parts')
+            'http://localhost:19876/services/api4/tms/france_parts.json?MAP=france_parts')
         response = QgsBufferServerResponse()
 
-        ctx = QgsServerApiContext(
-            '/services/api4', request, response, project, self.server.serverInterface())
+        server = QgsServer()
+        iface = server.serverInterface()
+        iface.serviceRegistry().registerApi(api)
 
-        api.executeRequest(ctx)
+        server.handleRequest(request, response)
 
         self.assertEqual(h4.params, {'tilemapid': 'france_parts.json'})
+
+        ctx = QgsServerApiContext(api.rootPath(), request, response, project, iface)
+        self.assertEqual(h4.href(ctx), 'http://localhost:19876/services/api4/tms/france_parts?MAP=france_parts')
 
 
 if __name__ == '__main__':
