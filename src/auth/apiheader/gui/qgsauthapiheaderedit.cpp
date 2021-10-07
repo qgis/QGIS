@@ -2,9 +2,9 @@
     qgsauthapiheaderedit.cpp
     ------------------------
     begin                : October 2021
-    copyright            : (C) 2021 by Nyall Dawson
-    author               : Nyall Dawson
-    email                : nyall dot dawson at gmail dot com
+    copyright            : (C) 2021 by Tom Cummins
+    author               : Tom Cummins
+    email                : tom cumminsc9 at googlemail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
