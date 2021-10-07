@@ -780,44 +780,54 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
         vl.startEditing()
 
+        # Backup test table (will be edited)
+        self.backupTable('qgis_test', 'bigint_non_first_pk')
+
         statuses = [-1, -1, -1, -1]
+        values = ['first value', 'second value', 'zero value', 'negative value']
+        newvalues = ['1st value', '2nd value', '0th value', '-1th value']
         # changing values...
         for ft in vl.getFeatures():
-            if ft['value'] == 'first value':
+            if ft['value'] == values[0]:
                 vl.changeAttributeValue(
-                    ft.id(), flds.indexOf('value'), '1st value')
+                    ft.id(), flds.indexOf('value'), newvalues[0])
                 statuses[0] = 0
-            elif ft['value'] == 'second value':
+            elif ft['value'] == values[1]:
                 vl.changeAttributeValue(
-                    ft.id(), flds.indexOf('value'), '2nd value')
+                    ft.id(), flds.indexOf('value'), newvalues[1])
                 statuses[1] = 0
-            elif ft['value'] == 'zero value':
+            elif ft['value'] == values[2]:
                 vl.changeAttributeValue(
-                    ft.id(), flds.indexOf('value'), '0th value')
+                    ft.id(), flds.indexOf('value'), newvalues[2])
                 statuses[2] = 0
-            elif ft['value'] == 'negative value':
+            elif ft['value'] == values[3]:
                 vl.changeAttributeValue(
-                    ft.id(), flds.indexOf('value'), '-1th value')
+                    ft.id(), flds.indexOf('value'), newvalues[3])
                 statuses[3] = 0
         self.assertTrue(vl.commitChanges())
-        self.assertTrue(all(x == 0 for x in statuses))
+        for i in range(len(statuses)):
+            self.assertEqual(statuses[i], 0, 'start value "{}" not found'.format(values[i]))
 
         # now, let's see if the values were changed
         vl2 = QgsVectorLayer(
             '{} sslmode=disable srid=4326 key="pk" table="qgis_test".{} (geom)'.format(
-                self.dbconn, 'bigint_pk'),
+                self.dbconn, 'bigint_non_first_pk'),
             "bigint_pk_nonfirst", "postgres")
         self.assertTrue(vl2.isValid())
         for ft in vl2.getFeatures():
-            if ft['value'] == '1st value':
+            if ft['value'] == newvalues[0]:
                 statuses[0] = 1
-            elif ft['value'] == '2nd value':
+            elif ft['value'] == newvalues[1]:
                 statuses[1] = 1
-            elif ft['value'] == '0th value':
+            elif ft['value'] == newvalues[2]:
                 statuses[2] = 1
-            elif ft['value'] == '-1th value':
+            elif ft['value'] == newvalues[3]:
                 statuses[3] = 1
-        self.assertTrue(all(x == 1 for x in statuses))
+        for i in range(len(statuses)):
+            self.assertEqual(statuses[i], 1, 'changed value "{}" not found'.format(newvalues[i]))
+
+        # Restore test table
+        self.restoreTable('qgis_test', 'bigint_non_first_pk')
 
     def testPktComposite(self):
         """
