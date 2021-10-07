@@ -1749,6 +1749,36 @@ class Handler3(QgsServerOgcApiHandler):
             return self.templatePathOverride
 
 
+class Handler4(QgsServerOgcApiHandler):
+
+    def path(self):
+        return QtCore.QRegularExpression("/tms/(?P<tilemapid>[^/]+)")
+
+    def operationId(self):
+        return "handler4"
+
+    def summary(self):
+        return "Fourth of its name"
+
+    def description(self):
+        return "The fourth handler ever"
+
+    def linkTitle(self):
+        return "Handler Four Link Title"
+
+    def linkType(self):
+        return QgsServerOgcApi.data
+
+    def handleRequest(self, context):
+        """Simple mirror: returns the parameters"""
+
+        self.params = self.values(context)
+        self.write(self.params, context)
+
+    def parameters(self, context):
+        return []
+
+
 class HandlerException(QgsServerOgcApiHandler):
 
     def __init__(self):
@@ -1999,6 +2029,27 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
             str(ex.exception), "UTF-8 Exception 2 $ù~à^£")
 
         del(project)
+
+    def test_path_capture(self):
+        """Test issue GH #45439"""
+        project = QgsProject()
+
+        api = QgsServerOgcApi(self.server.serverInterface(),
+                              '/', 'apifour', 'a fourth api', '1.2')
+
+        h4 = Handler4()
+        api.registerHandler(h4)
+
+        request = QgsBufferServerRequest(
+            'http://localhost:19876/tms/france_parts.json?MAP=france_parts')
+        response = QgsBufferServerResponse()
+
+        ctx = QgsServerApiContext(
+            '/services/api4', request, response, project, self.server.serverInterface())
+
+        api.executeRequest(ctx)
+
+        self.assertEqual(h4.params, {'tilemapid': 'france_parts.json'})
 
 
 if __name__ == '__main__':

@@ -46,7 +46,8 @@ QVariantMap QgsServerOgcApiHandler::values( const QgsServerApiContext &context )
     // value() calls the validators and throws an exception if validation fails
     result[p.name()] = p.value( context );
   }
-  const auto match { path().match( context.request()->url().toString() ) };
+  const auto sanitizedPath { QgsServerOgcApi::sanitizeUrl( context.request()->url() ).path() };
+  const auto match { path().match( sanitizedPath ) };
   if ( match.hasMatch() )
   {
     const auto constNamed { path().namedCaptureGroups() };
