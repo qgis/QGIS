@@ -108,6 +108,19 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.execSQLCommand('INSERT INTO {s}.{t} SELECT * FROM {s}.{t}_edit'.format(s=schema, t=table))
         self.execSQLCommand('DROP TABLE {s}.{t}_edit'.format(s=schema, t=table))
 
+    class TableBackup():
+        def __init__(self, tester, schema, table):
+            self.schema = schema
+            self.table = table
+            self.tester = tester
+            tester.execSQLCommand('DROP TABLE IF EXISTS {s}.{t}_edit CASCADE'.format(s=schema, t=table))
+            tester.execSQLCommand('CREATE TABLE {s}.{t}_edit AS SELECT * FROM {s}.{t}'.format(s=schema, t=table))
+
+        def __del__(self):
+            self.tester.execSQLCommand('TRUNCATE TABLE {s}.{t}'.format(s=self.schema, t=self.table))
+            self.tester.execSQLCommand('INSERT INTO {s}.{t} SELECT * FROM {s}.{t}_edit'.format(s=self.schema, t=self.table))
+            self.tester.execSQLCommand('DROP TABLE {s}.{t}_edit'.format(s=self.schema, t=self.table))
+
     def getSource(self):
         # create temporary table for edit tests
         self.execSQLCommand(
@@ -1447,6 +1460,9 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         vl = QgsVectorLayer('%s table="qgis_test"."json" sql=' %
                             (self.dbconn), "testjson", "postgres")
         self.assertTrue(vl.isValid())
+
+        # Backup test table (will be edited)
+        tableBackup = self.TableBackup(self, 'qgis_test', 'json')
 
         attrs = (
             123,
