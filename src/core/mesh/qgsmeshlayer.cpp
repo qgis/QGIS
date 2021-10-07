@@ -585,15 +585,6 @@ QgsMeshDatasetIndex QgsMeshLayer::datasetIndexAtTime( const QgsDateTimeRange &ti
 
 QgsMeshDatasetIndex QgsMeshLayer::datasetIndexAtRelativeTime( const QgsInterval &relativeTime, int datasetGroupIndex ) const
 {
-  qint64 usedRelativeTime = relativeTime.seconds() * 1000;
-
-  //adjust relative time if layer reference time is different from provider reference time
-  if ( mTemporalProperties->referenceTime().isValid() &&
-       mDataProvider &&
-       mDataProvider->isValid() &&
-       mTemporalProperties->referenceTime() != mDataProvider->temporalCapabilities()->referenceTime() )
-    usedRelativeTime = usedRelativeTime + mTemporalProperties->referenceTime().msecsTo( mDataProvider->temporalCapabilities()->referenceTime() );
-
   return  mDatasetGroupStore->datasetIndexAtTime( relativeTime.seconds() * 1000, datasetGroupIndex, mTemporalProperties->matchingMethod() );
 }
 
