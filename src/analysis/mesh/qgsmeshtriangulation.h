@@ -181,6 +181,8 @@ class ANALYSIS_EXPORT QgsMeshEditingDelaunayTriangulation : public QgsMeshAdvanc
     //! Constructor
     QgsMeshEditingDelaunayTriangulation();
 
+    QString text() const override;
+
   private:
     QgsTopologicalMesh::Changes apply( QgsMeshEditor *meshEditor ) override;
 };

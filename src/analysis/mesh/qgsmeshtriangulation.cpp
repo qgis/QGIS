@@ -337,6 +337,11 @@ int QgsMeshZValueDataset::valuesCount() const
 
 QgsMeshEditingDelaunayTriangulation::QgsMeshEditingDelaunayTriangulation() = default;
 
+QString QgsMeshEditingDelaunayTriangulation::text() const
+{
+  return QObject::tr( "Delaunay triangulation" );
+}
+
 QgsTopologicalMesh::Changes QgsMeshEditingDelaunayTriangulation::apply( QgsMeshEditor *meshEditor )
 {
   //use only vertices that are on boundary or free, if boundary
