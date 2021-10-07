@@ -245,7 +245,6 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void forceByLineBySelectedFeature( QgsMapMouseEvent *e );
     void forceByLine( const QgsGeometry &lineGeometry );
 
-
     // members
     struct SelectedVertexData
     {
@@ -339,6 +338,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 
     QAction *mActionSelectByPolygon = nullptr;
     std::unique_ptr<QgsMapToolSelectionHandler> mSelectionHandler;
+    bool mIsSelectingPolygonInProgress = false;
 
     QAction *mActionTransformCoordinates = nullptr;
 
