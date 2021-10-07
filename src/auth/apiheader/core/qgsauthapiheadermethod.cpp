@@ -40,6 +40,9 @@ QgsAuthApiHeaderMethod::QgsAuthApiHeaderMethod()
   setVersion( 2 );
   setExpansions( QgsAuthMethod::NetworkRequest );
   setDataProviders( QStringList()
+                    << QStringLiteral( "ows" )
+                    << QStringLiteral( "wfs" )  // convert to lowercase
+                    << QStringLiteral( "wcs" )
                     << QStringLiteral( "wms" ) );
 }
 
