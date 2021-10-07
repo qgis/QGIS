@@ -351,28 +351,31 @@ void TestQgsEptProvider::testIdentify()
     QVector<QMap<QString, QVariant>> expected;
     {
       QMap<QString, QVariant> point;
-      point[ QStringLiteral( "Blue" ) ] = 0;
-      point[ QStringLiteral( "Classification" ) ] = 2;
-      point[ QStringLiteral( "EdgeOfFlightLine" ) ] = 0;
-      point[ QStringLiteral( "GpsTime" ) ] = 268793.3373408913;
-      point[ QStringLiteral( "Green" ) ] = 0;
-      point[ QStringLiteral( "Intensity" ) ] = 278;
-      point[ QStringLiteral( "NumberOfReturns" ) ] = 1;
-      point[ QStringLiteral( "PointSourceId" ) ] = 7041;
-      point[ QStringLiteral( "Red" ) ] = 0;
-      point[ QStringLiteral( "ReturnNumber" ) ] = 1;
-      point[ QStringLiteral( "ScanAngleRank" ) ] = -28;
-      point[ QStringLiteral( "ScanDirectionFlag" ) ] =  1;
-      point[ QStringLiteral( "UserData" ) ] = 17;
-      point[ QStringLiteral( "X" ) ] = 498066.27;
-      point[ QStringLiteral( "Y" ) ] = 7050995.06;
-      point[ QStringLiteral( "Z" ) ] = 74.60;
+      point[ QStringLiteral( "Blue" ) ] =  "0" ;
+      point[ QStringLiteral( "Classification" ) ] =  "2" ;
+      point[ QStringLiteral( "EdgeOfFlightLine" ) ] =  "0" ;
+      point[ QStringLiteral( "GpsTime" ) ] =  "268793.3373408913" ;
+      point[ QStringLiteral( "Green" ) ] =  "0" ;
+      point[ QStringLiteral( "Intensity" ) ] =  "278" ;
+      point[ QStringLiteral( "NumberOfReturns" ) ] =  "1" ;
+      point[ QStringLiteral( "PointSourceId" ) ] =  "7041" ;
+      point[ QStringLiteral( "Red" ) ] =  "0" ;
+      point[ QStringLiteral( "ReturnNumber" ) ] =  "1" ;
+      point[ QStringLiteral( "ScanAngleRank" ) ] =  "-28" ;
+      point[ QStringLiteral( "ScanDirectionFlag" ) ] =  "1" ;
+      point[ QStringLiteral( "UserData" ) ] =  "17" ;
+      point[ QStringLiteral( "X" ) ] =  "498066.27" ;
+      point[ QStringLiteral( "Y" ) ] =  "7050995.06" ;
+      point[ QStringLiteral( "Z" ) ] =  "74.60" ;
       expected.push_back( point );
     }
 
-    for ( QString k : expected[0].keys() )
-      QCOMPARE( identifiedPoints[0][k], expected[0][k] );
-    QVERIFY( identifiedPoints == expected );
+    // compare values using toDouble() so that fuzzy comparison is used in case of
+    // tiny rounding errors (e.g. 74.6 vs 74.60000000000001)
+    QCOMPARE( identifiedPoints.count(), 1 );
+    const QStringList keys = expected[0].keys();
+    for ( const QString &k : keys )
+      QCOMPARE( identifiedPoints[0][k].toDouble(), expected[0][k].toDouble() );
   }
 
   // test rectangle selection
