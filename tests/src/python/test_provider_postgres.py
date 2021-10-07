@@ -1146,13 +1146,15 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
     def testNestedInsert(self):
         tg = QgsTransactionGroup()
-        tg.addLayer(self.vl)
-        self.vl.startEditing()
-        it = self.vl.getFeatures()
+        l = self.getEditableLayer()
+        tg.addLayer(l)
+        l.startEditing()
+        it = l.getFeatures()
         f = next(it)
         f['pk'] = NULL
-        self.vl.addFeature(f)  # Should not deadlock during an active iteration
+        self.assertTrue(l.addFeature(f))  # Should not deadlock during an active iteration
         f = next(it)
+        l.commitChanges()
 
     def testTimeout(self):
         """
