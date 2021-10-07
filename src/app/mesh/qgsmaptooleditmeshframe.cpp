@@ -817,7 +817,7 @@ void QgsMapToolEditMeshFrame::cadCanvasPressEvent( QgsMapMouseEvent *e )
           // With the selection handler, if we can know if the selecting polygon change, that means the first case appears,
           // we can't know if a feature is found or not (if the user do not choose a feature, nothing happen like if no feature was found).
           // The workaround is to check if a feature exist under the mouse before sending the event to the selection handler.
-          // This is not ideal because that leads to a double search but no better idea for now to allow the editing context menu whith selecting by polygon
+          // This is not ideal because that leads to a double search but no better idea for now to allow the editing context menu with selecting by polygon
 
           bool hasSelectableFeature = !searchFeatureOnMap( e, mCanvas, QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PolygonGeometry ).isEmpty();
 
