@@ -11411,20 +11411,40 @@ bool QgisApp::toggleEditingMeshLayer( QgsMeshLayer *mlayer, bool allowCancel )
   if ( !mlayer->supportsEditing() )
     return false;
 
-  if ( QMessageBox::warning( this, tr( "Start Mesh Frame Edit" ), tr( "Starting editing the frame of this mesh layer will remove all dataset groups.\n"
-                             "Alternatively, you can create a new mesh layer from that one.\n\n"
-                             "Do you want to start edit this mesh layer?" ), QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel ) == QMessageBox::Cancel )
-  {
-    mActionToggleEditing->setChecked( false );
-    return false;
-  }
-
   bool res = false;
 
   QgsCoordinateTransform transform( mlayer->crs(), mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
 
   if ( !mlayer->isEditable() )
   {
+    QMessageBox *messageBox = new QMessageBox( QMessageBox::NoIcon, tr( "Start Mesh Frame Edit" ),
+        tr( "Starting editing the frame of this mesh layer will remove all dataset groups.\n"
+            "Alternatively, you can create a new mesh layer from that one." ), QMessageBox::Cancel );
+
+    messageBox->addButton( tr( "Edit Current Mesh" ), QMessageBox::NoRole );
+    QPushButton *editCopyButton = messageBox->addButton( tr( "Edit a Copy" ), QMessageBox::NoRole );
+    messageBox->setDefaultButton( QMessageBox::Cancel );
+
+    messageBox->exec();
+
+    if ( messageBox->clickedButton() == messageBox->button( QMessageBox::Cancel ) )
+    {
+      mActionToggleEditing->setChecked( false );
+      return false;
+    }
+    else if ( messageBox->clickedButton() == editCopyButton )
+    {
+      QgsNewMeshLayerDialog *newMeshDialog = new QgsNewMeshLayerDialog( this );
+      newMeshDialog->setSourceMeshLayer( mlayer, true );
+      if ( newMeshDialog->exec() )
+        mlayer = newMeshDialog->newLayer();
+      else
+      {
+        mActionToggleEditing->setChecked( false );
+        return false;
+      }
+    }
+
     res = mlayer->startFrameEditing( transform );
     mActionToggleEditing->setChecked( res );
 
