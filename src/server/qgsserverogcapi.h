@@ -145,7 +145,8 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
     void registerHandler( QgsServerOgcApiHandler *handler SIP_TRANSFER );
 
     /**
-     * Returns a sanitized \a url with extra slashes removed
+     * Returns a sanitized \a url with extra slashes removed and the path URL component that
+     * always starts with a slash.
      */
     static QUrl sanitizeUrl( const QUrl &url );
 
