@@ -256,6 +256,30 @@ bool QgsGeometryGeneratorSymbolLayer::isCompatibleWithSymbol( QgsSymbol *symbol 
   Q_UNUSED( symbol )
   return true;
 }
+
+QgsGeometry QgsGeometryGeneratorSymbolLayer::evaluateGeometryInPainterUnits( const QgsGeometry &input, const QgsFeature &feature, const QgsRenderContext &renderContext, QgsExpressionContext &expressionContext ) const
+{
+  QgsGeometry drawGeometry( input );
+  // step 1 - scale the draw geometry from PAINTER units to target units (e.g. millimeters)
+  const double scale = 1 / renderContext.convertToPainterUnits( 1, mUnits );
+  const QTransform painterToTargetUnits = QTransform::fromScale( scale, scale );
+  drawGeometry.transform( painterToTargetUnits );
+
+  // step 2 - set the feature to use the new scaled geometry, and inject it into the expression context
+  QgsFeature f( feature );
+  f.setGeometry( drawGeometry );
+  QgsExpressionContextScope *generatorScope = new QgsExpressionContextScope();
+  QgsExpressionContextScopePopper popper( expressionContext, generatorScope );
+  generatorScope->setFeature( f );
+
+  // step 3 - evaluate the new generated geometry.
+  QgsGeometry geom = mExpression->evaluate( &expressionContext ).value<QgsGeometry>();
+
+  // step 4 - transform geometry back from target units to painter units
+  geom.transform( painterToTargetUnits.inverted( ) );
+  return geom;
+}
+
 void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, QgsWkbTypes::GeometryType geometryType, const QPolygonF *points, const QVector<QPolygonF> *rings )
 {
   if ( mRenderingFeature && mHasRenderedFeature )
@@ -307,37 +331,25 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
         return; // unreachable
     }
 
-    // step 2 - scale the draw geometry from PAINTER units to target units (e.g. millimeters)
-    const double scale = 1 / context.renderContext().convertToPainterUnits( 1, mUnits );
-    const QTransform painterToTargetUnits = QTransform::fromScale( scale, scale );
-    drawGeometry.transform( painterToTargetUnits );
+    // step 2 - evaluate the result
+    QgsGeometry result = evaluateGeometryInPainterUnits( drawGeometry, f, context.renderContext(), expressionContext );
 
-    // step 3 - set the feature to use the new scaled geometry, and inject it into the expression context
-    f.setGeometry( drawGeometry );
-    QgsExpressionContextScope *generatorScope = new QgsExpressionContextScope();
-    QgsExpressionContextScopePopper popper( expressionContext, generatorScope );
-    generatorScope->setFeature( f );
-
-    // step 4 - evaluate the new generated geometry.
-    QgsGeometry geom = mExpression->evaluate( &expressionContext ).value<QgsGeometry>();
-
-    // step 5 - transform geometry back from target units to MAP units. We transform to map units here
+    // We transform back to map units here (from painter units)
     // as we'll ultimately be calling renderFeature, which excepts the feature has a geometry in map units.
     // Here we also scale the transform by the target unit to painter units factor to reverse that conversion
-    geom.transform( painterToTargetUnits.inverted( ) );
     QTransform mapToPixel = context.renderContext().mapToPixel().transform();
-    geom.transform( mapToPixel.inverted() );
+    result.transform( mapToPixel.inverted() );
     // also need to apply the coordinate transform from the render context
     try
     {
-      geom.transform( context.renderContext().coordinateTransform(), Qgis::TransformDirection::Reverse );
+      result.transform( context.renderContext().coordinateTransform(), Qgis::TransformDirection::Reverse );
     }
     catch ( QgsCsException & )
     {
       QgsDebugMsg( QStringLiteral( "Could no transform generated geometry to layer CRS" ) );
     }
 
-    f.setGeometry( geom );
+    f.setGeometry( result );
   }
   else if ( context.feature() )
   {
@@ -358,29 +370,28 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
       case QgsUnitTypes::RenderPoints:
       case QgsUnitTypes::RenderInches:
       {
-        // add a new scope for the transformed geometry
-        QgsExpressionContextScope *generatorScope = new QgsExpressionContextScope();
-        QgsExpressionContextScopePopper popper( expressionContext, generatorScope );
-
+        // convert feature geometry to painter units
         QgsGeometry transformed = f.geometry();
         transformed.transform( context.renderContext().coordinateTransform() );
-        QTransform mapToPixel = context.renderContext().mapToPixel().transform();
-
-        // scale transform to target units
-        const double scale = 1 / context.renderContext().convertToPainterUnits( 1, mUnits );
-        mapToPixel.scale( scale, scale );
-
+        const QTransform mapToPixel = context.renderContext().mapToPixel().transform();
         transformed.transform( mapToPixel );
-        f.setGeometry( transformed );
-        generatorScope->setFeature( f );
 
-        QgsGeometry geom = mExpression->evaluate( &expressionContext ).value<QgsGeometry>();
+        QgsGeometry result = evaluateGeometryInPainterUnits( transformed, f, context.renderContext(), expressionContext );
 
-        // transform geometry back from screen units to layer crs
-        geom.transform( mapToPixel.inverted() );
-        geom.transform( context.renderContext().coordinateTransform(), Qgis::TransformDirection::Reverse );
-
-        f.setGeometry( geom );
+        // We transform back to map units here (from painter units)
+        // as we'll ultimately be calling renderFeature, which excepts the feature has a geometry in map units.
+        // Here we also scale the transform by the target unit to painter units factor to reverse that conversion
+        result.transform( mapToPixel.inverted() );
+        // also need to apply the coordinate transform from the render context
+        try
+        {
+          result.transform( context.renderContext().coordinateTransform(), Qgis::TransformDirection::Reverse );
+        }
+        catch ( QgsCsException & )
+        {
+          QgsDebugMsg( QStringLiteral( "Could no transform generated geometry to layer CRS" ) );
+        }
+        f.setGeometry( result );
         break;
       }
     }
