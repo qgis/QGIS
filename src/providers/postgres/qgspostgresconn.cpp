@@ -251,10 +251,20 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
   };
   addDefaultTimeoutAndClientEncoding( expandedConnectionInfo );
 
+  QgsDataSourceUri expandedUri( expandedConnectionInfo );
+  static QString lastUser;
+
+  if ( !expandedUri.username().isEmpty() )
+    lastUser = expandedUri.username();
+  else if ( !getenv( "PGUSER" ) && !lastUser.isEmpty() )
+  {
+    QgsDebugMsgLevel( "Use saved user: " + lastUser, 2 );
+    expandedConnectionInfo += " user='" + lastUser + "'";
+  }
+
   mConn = PQconnectdb( expandedConnectionInfo.toUtf8() );
 
   // remove temporary cert/key/CA if they exist
-  QgsDataSourceUri expandedUri( expandedConnectionInfo );
   QStringList parameters;
   parameters << QStringLiteral( "sslcert" ) << QStringLiteral( "sslkey" ) << QStringLiteral( "sslrootcert" );
   const auto constParameters = parameters;
