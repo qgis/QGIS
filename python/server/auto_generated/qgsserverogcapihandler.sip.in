@@ -263,6 +263,14 @@ Set the content types to ``contentTypes``
 %End
 
 
+    QString handlerPath( const QgsServerApiContext &context ) const;
+%Docstring
+Returns the handler component of the URL path, i.e. the part of the path that comes
+after the API path.
+
+.. versionadded:: 3.22
+%End
+
 };
 
 /************************************************************************
