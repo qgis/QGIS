@@ -282,6 +282,8 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
 
         image = QImage(400, 400, QImage.Format_RGB32)
         image.fill(QColor(255, 255, 255))
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
         painter = QPainter(image)
 
         context = QgsRenderContext.fromQPainter(painter)
@@ -308,6 +310,8 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         symbol.changeSymbolLayer(0, buffer_layer)
 
         image = QImage(400, 400, QImage.Format_RGB32)
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
         image.fill(QColor(255, 255, 255))
         painter = QPainter(image)
 
