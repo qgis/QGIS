@@ -1751,7 +1751,7 @@ class Handler3(QgsServerOgcApiHandler):
 class Handler4(QgsServerOgcApiHandler):
 
     def path(self):
-        return QtCore.QRegularExpression("/tms/(?P<tilemapid>[^/]+)")
+        return QtCore.QRegularExpression("/(?P<tilemapid>[^/]+)")
 
     def operationId(self):
         return "handler4"
@@ -2031,16 +2031,15 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
 
     def test_path_capture(self):
         """Test issue GH #45439"""
-        project = QgsProject()
 
         api = QgsServerOgcApi(self.server.serverInterface(),
-                              '/services/api4', 'apifour', 'a fourth api', '1.2')
+                              '/api4', 'apifour', 'a fourth api', '1.2')
 
         h4 = Handler4()
         api.registerHandler(h4)
 
         request = QgsBufferServerRequest(
-            'http://localhost:19876/services/api4/tms/france_parts.json?MAP=france_parts')
+            'http://localhost:19876/api4/france_parts.json?MAP=france_parts')
         response = QgsBufferServerResponse()
 
         server = QgsServer()
@@ -2051,8 +2050,8 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
 
         self.assertEqual(h4.params, {'tilemapid': 'france_parts.json'})
 
-        ctx = QgsServerApiContext(api.rootPath(), request, response, project, iface)
-        self.assertEqual(h4.href(ctx), 'http://localhost:19876/services/api4/tms/france_parts?MAP=france_parts')
+        ctx = QgsServerApiContext(api.rootPath(), request, response, None, iface)
+        self.assertEqual(h4.href(ctx), 'http://localhost:19876/api4/france_parts?MAP=france_parts')
 
 
 if __name__ == '__main__':
