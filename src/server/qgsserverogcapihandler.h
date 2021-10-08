@@ -387,6 +387,14 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      */
     void setContentTypes( const QList<QgsServerOgcApi::ContentType> &contentTypes ) SIP_SKIP;
 
+    /**
+     * Returns the handler component of the URL path, i.e. the part of the path that comes
+     * after the API path.
+     *
+     * \since QGIS 3.22
+     */
+    QString handlerPath( const QgsServerApiContext &context ) const;
+
   private:
 
     //! List of content types this handler can serve, first is the default
