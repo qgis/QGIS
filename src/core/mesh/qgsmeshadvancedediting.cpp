@@ -611,10 +611,7 @@ bool QgsMeshEditRefineFaces::createNewBorderFaces( QgsMeshEditor *meshEditor,
 
 QString QgsMeshEditRefineFaces::text() const
 {
-  if ( mInputFaces.count() > 1 )
-    return QObject::tr( "refine %1 faces" ).arg( mInputFaces.count() );
-  else
-    return QObject::tr( "refine face" ).arg( mInputFaces.count() );
+  return QObject::tr( "Refine %1 faces", nullptr, mInputFaces.count() );
 }
 
 bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer )
@@ -757,10 +754,7 @@ bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer )
 
 QString QgsMeshTransformVerticesByExpression::text() const
 {
-  if ( mInputVertices.count() > 1 )
-    return QObject::tr( "transform %1 vertices by expression" ).arg( mInputFaces.count() );
-  else
-    return QObject::tr( "transform vertex by expression" ).arg( mInputFaces.count() );
+  return QObject::tr( "Transform %n vertices by expression", nullptr, mInputVertices.count() );
 }
 
 void QgsMeshTransformVerticesByExpression::setExpressions( const QString &expressionX, const QString &expressionY, const QString &expressionZ )

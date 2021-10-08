@@ -777,10 +777,7 @@ QgsMeshLayerUndoCommandAddVertices::QgsMeshLayerUndoCommandAddVertices( QgsMeshE
   , mVertices( vertices )
   , mTolerance( tolerance )
 {
-  if ( mVertices.count() > 1 )
-    setText( QObject::tr( "add %1 vertices" ).arg( vertices.count() ) );
-  else
-    setText( QObject::tr( "add vertex" ) );
+  setText( QObject::tr( "Add %n vertices", nullptr, mVertices.count() ) );
 }
 
 void QgsMeshLayerUndoCommandAddVertices::redo()
@@ -810,10 +807,7 @@ QgsMeshLayerUndoCommandRemoveVertices::QgsMeshLayerUndoCommandRemoveVertices( Qg
   , mVerticesToRemoveIndexes( verticesToRemoveIndexes )
   , mFillHole( fillHole )
 {
-  if ( verticesToRemoveIndexes.count() > 1 )
-    setText( QObject::tr( "remove %1 vertices" ).arg( verticesToRemoveIndexes.count() ) );
-  else
-    setText( QObject::tr( "remove vertex" ) );
+  setText( QObject::tr( "Remove %n vertices", nullptr, verticesToRemoveIndexes.count() ) ) ;
 }
 
 void QgsMeshLayerUndoCommandRemoveVertices::redo()
@@ -848,10 +842,7 @@ QgsMeshLayerUndoCommandAddFaces::QgsMeshLayerUndoCommandAddFaces( QgsMeshEditor 
   : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
   , mFaces( faces )
 {
-  if ( faces.meshFaces().count() > 1 )
-    setText( QObject::tr( "add %1 faces" ).arg( faces.meshFaces().count() ) );
-  else
-    setText( QObject::tr( "add face" ) );
+  setText( QObject::tr( "Add %n faces", nullptr, faces.meshFaces().count() ) );
 }
 
 void QgsMeshLayerUndoCommandAddFaces::redo()
@@ -875,10 +866,7 @@ QgsMeshLayerUndoCommandRemoveFaces::QgsMeshLayerUndoCommandRemoveFaces( QgsMeshE
   : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
   , mfacesToRemoveIndexes( facesToRemoveIndexes )
 {
-  if ( facesToRemoveIndexes.count() > 1 )
-    setText( QObject::tr( "remove %1 faces" ).arg( facesToRemoveIndexes.count() ) );
-  else
-    setText( QObject::tr( "remove face" ) );
+  setText( QObject::tr( "Remove %n faces", nullptr, facesToRemoveIndexes.count() ) );
 }
 
 void QgsMeshLayerUndoCommandRemoveFaces::redo()
@@ -974,10 +962,7 @@ QgsMeshLayerUndoCommandChangeZValue::QgsMeshLayerUndoCommandChangeZValue( QgsMes
   , mVerticesIndexes( verticesIndexes )
   , mNewValues( newValues )
 {
-  if ( verticesIndexes.count() > 1 )
-    setText( QObject::tr( "change %1 vertices Z Value" ).arg( verticesIndexes.count() ) );
-  else
-    setText( QObject::tr( "change vertex Z Value" ) );
+  setText( QObject::tr( "Change %n vertices Z Value", nullptr, verticesIndexes.count() ) );
 }
 
 void QgsMeshLayerUndoCommandChangeZValue::redo()
@@ -1002,10 +987,7 @@ QgsMeshLayerUndoCommandChangeXYValue::QgsMeshLayerUndoCommandChangeXYValue( QgsM
   , mVerticesIndexes( verticesIndexes )
   , mNewValues( newValues )
 {
-  if ( verticesIndexes.count() > 1 )
-    setText( QObject::tr( "move %1 vertices" ).arg( verticesIndexes.count() ) );
-  else
-    setText( QObject::tr( "move vertex" ) );
+  setText( QObject::tr( "Move %n vertices", nullptr, verticesIndexes.count() ) );
 }
 
 void QgsMeshLayerUndoCommandChangeXYValue::redo()
@@ -1031,10 +1013,7 @@ QgsMeshLayerUndoCommandChangeCoordinates::QgsMeshLayerUndoCommandChangeCoordinat
   , mVerticesIndexes( verticesIndexes )
   , mNewCoordinates( newCoordinates )
 {
-  if ( verticesIndexes.count() > 1 )
-    setText( QObject::tr( "transform %1 vertices coordinates" ).arg( verticesIndexes.count() ) );
-  else
-    setText( QObject::tr( "transform vertex coordinates" ) );
+  setText( QObject::tr( "Transform %n vertices coordinates", nullptr, verticesIndexes.count() ) );
 }
 
 void QgsMeshLayerUndoCommandChangeCoordinates::redo()
@@ -1075,7 +1054,7 @@ QgsMeshLayerUndoCommandFlipEdge::QgsMeshLayerUndoCommandFlipEdge( QgsMeshEditor 
   , mVertexIndex1( vertexIndex1 )
   , mVertexIndex2( vertexIndex2 )
 {
-  setText( QObject::tr( "flip edge" ) );
+  setText( QObject::tr( "Flip edge" ) );
 }
 
 void QgsMeshLayerUndoCommandFlipEdge::redo()
@@ -1100,7 +1079,7 @@ QgsMeshLayerUndoCommandMerge::QgsMeshLayerUndoCommandMerge( QgsMeshEditor *meshE
   , mVertexIndex1( vertexIndex1 )
   , mVertexIndex2( vertexIndex2 )
 {
-  setText( QObject::tr( "merge faces" ) );
+  setText( QObject::tr( "Merge faces" ) );
 }
 
 void QgsMeshLayerUndoCommandMerge::redo()
@@ -1124,10 +1103,7 @@ QgsMeshLayerUndoCommandSplitFaces::QgsMeshLayerUndoCommandSplitFaces( QgsMeshEdi
   : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
   , mFaceIndexes( faceIndexes )
 {
-  if ( faceIndexes.count() > 1 )
-    setText( QObject::tr( "split %1 faces" ).arg( faceIndexes.count() ) );
-  else
-    setText( QObject::tr( "split face" ) );
+  setText( QObject::tr( "Split %n faces", nullptr, faceIndexes.count() ) );
 }
 
 void QgsMeshLayerUndoCommandSplitFaces::redo()

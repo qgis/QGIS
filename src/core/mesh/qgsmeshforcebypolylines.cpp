@@ -1097,7 +1097,7 @@ bool QgsMeshEditForceByLine::finishForcingLine()
 
 QString QgsMeshEditForceByPolylines::text() const
 {
-  return QObject::tr( "force mesh by polyline" );
+  return QObject::tr( "Force mesh by polyline" );
 }
 
 bool QgsMeshEditForceByPolylines::isFinished() const
