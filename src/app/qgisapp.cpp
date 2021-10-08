@@ -11409,7 +11409,15 @@ bool QgisApp::toggleEditingMeshLayer( QgsMeshLayer *mlayer, bool allowCancel )
     return false;
 
   if ( !mlayer->supportsEditing() )
-    return false; //TODO: when adapted widget will be ready, ask the user if he want to create a new one based on this one
+    return false;
+
+  if ( QMessageBox::warning( this, tr( "Start Mesh Frame Edit" ), tr( "Starting editing the frame of this mesh layer will remove all dataset groups.\n"
+                             "Alternatively, you can create a new mesh layer from that one.\n\n"
+                             "Do you want to start edit this mesh layer?" ), QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel ) == QMessageBox::Cancel )
+  {
+    mActionToggleEditing->setChecked( false );
+    return false;
+  }
 
   bool res = false;
 
