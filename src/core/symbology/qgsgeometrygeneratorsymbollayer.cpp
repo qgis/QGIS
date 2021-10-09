@@ -19,6 +19,8 @@
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgspolygon.h"
+#include "qgslegendpatchshape.h"
+#include "qgsstyle.h"
 
 #include "qgsexpressioncontextutils.h"
 
@@ -203,7 +205,50 @@ QVariantMap QgsGeometryGeneratorSymbolLayer::properties() const
 void QgsGeometryGeneratorSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize size )
 {
   if ( mSymbol )
-    mSymbol->drawPreviewIcon( context.renderContext().painter(), size, nullptr, false, nullptr, context.patchShape() );
+  {
+    // evaluate expression
+    QgsGeometry patchShapeGeometry;
+
+    if ( context.patchShape() && !context.patchShape()->isNull() )
+    {
+      patchShapeGeometry = context.patchShape()->scaledGeometry( size );
+    }
+    if ( patchShapeGeometry.isEmpty() )
+    {
+      Qgis::SymbolType originalSymbolType;
+      switch ( context.originalGeometryType() )
+      {
+        case QgsWkbTypes::PointGeometry:
+          originalSymbolType = Qgis::SymbolType::Marker;
+          break;
+        case QgsWkbTypes::LineGeometry:
+          originalSymbolType = Qgis::SymbolType::Line;
+          break;
+        case QgsWkbTypes::PolygonGeometry:
+          originalSymbolType = Qgis::SymbolType::Fill;
+          break;
+        case QgsWkbTypes::UnknownGeometry:
+        case QgsWkbTypes::NullGeometry:
+          originalSymbolType = mSymbol->type();
+          break;
+      }
+      patchShapeGeometry = QgsStyle::defaultStyle()->defaultPatch( originalSymbolType, size ).scaledGeometry( size );
+    }
+
+    // evaluate geometry expression
+    QgsFeature feature;
+    if ( context.feature() )
+      feature = *context.feature();
+    else
+      feature.setGeometry( patchShapeGeometry );
+    const QgsGeometry iconGeometry = evaluateGeometryInPainterUnits( patchShapeGeometry, feature, context.renderContext(), context.renderContext().expressionContext() );
+
+    QgsLegendPatchShape evaluatedPatchShape( mSymbol->type(), iconGeometry );
+    // we don't want to rescale the patch shape to fit the legend symbol size -- we've already considered that here,
+    // and we don't want to undo the effects of a geometry generator which modifies the symbol bounds
+    evaluatedPatchShape.setScaleToOutputSize( false );
+    mSymbol->drawPreviewIcon( context.renderContext().painter(), size, &context.renderContext(), false, &context.renderContext().expressionContext(), &evaluatedPatchShape );
+  }
 }
 
 void QgsGeometryGeneratorSymbolLayer::setGeometryExpression( const QString &exp )
