@@ -93,7 +93,7 @@ and ability to be converted in double value.
     static double toDouble( const QString &input );
 %Docstring
 Converts ``input`` string to double value.
-It used locale interpretation first
+It uses locale interpretation first
 and C locale interpretation as fallback
 %End
 

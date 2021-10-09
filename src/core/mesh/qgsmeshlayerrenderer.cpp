@@ -310,7 +310,7 @@ bool QgsMeshLayerRenderer::render()
 
 bool QgsMeshLayerRenderer::forceRasterRender() const
 {
-  return renderContext()->testFlag( QgsRenderContext::UseAdvancedEffects ) && ( !qgsDoubleNear( mLayerOpacity, 1.0 ) );
+  return renderContext()->testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) && ( !qgsDoubleNear( mLayerOpacity, 1.0 ) );
 }
 
 void QgsMeshLayerRenderer::renderMesh()

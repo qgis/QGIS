@@ -222,7 +222,7 @@ void TestQgsMapRendererJob::performanceTest()
   mMapSettings->setExtent( mpPolysLayer->extent() );
   QgsRenderChecker myChecker;
   myChecker.setControlName( QStringLiteral( "expected_maprender" ) );
-  mMapSettings->setFlag( QgsMapSettings::Antialiasing );
+  mMapSettings->setFlag( Qgis::MapSettingsFlag::Antialiasing );
   myChecker.setMapSettings( *mMapSettings );
   myChecker.setColorTolerance( 5 );
   bool myResultFlag = myChecker.runTest( QStringLiteral( "maprender" ) );
@@ -319,7 +319,7 @@ void TestQgsMapRendererJob::testFourAdjacentTiles()
     mapSettings.setExtent( rect );
     mapSettings.setOutputSize( QSize( 256, 256 ) );
     mapSettings.setLayers( QList<QgsMapLayer *>() << vectorLayer );
-    mapSettings.setFlags( QgsMapSettings::RenderMapTile );
+    mapSettings.setFlags( Qgis::MapSettingsFlag::RenderMapTile );
     mapSettings.setOutputDpi( 96 );
 
     QgsMapRendererSequentialJob renderJob( mapSettings );
@@ -395,7 +395,7 @@ void TestQgsMapRendererJob::testRenderedFeatureHandlers()
   mapSettings.setDestinationCrs( linesLayer->crs() );
   mapSettings.setOutputSize( QSize( 256, 256 ) );
   mapSettings.setLayers( QList<QgsMapLayer *>() << pointsLayer.get() << linesLayer.get() << polygonsLayer.get() );
-  mapSettings.setFlags( QgsMapSettings::RenderMapTile );
+  mapSettings.setFlags( Qgis::MapSettingsFlag::RenderMapTile );
   mapSettings.setOutputDpi( 96 );
 
   QList< QgsFeature > features1;
@@ -511,7 +511,7 @@ void TestQgsMapRendererJob::stagedRenderer()
   mapSettings.setExtent( linesLayer->extent() );
   mapSettings.setDestinationCrs( linesLayer->crs() );
   mapSettings.setOutputSize( QSize( 512, 512 ) );
-  mapSettings.setFlag( QgsMapSettings::DrawLabeling, false );
+  mapSettings.setFlag( Qgis::MapSettingsFlag::DrawLabeling, false );
   mapSettings.setOutputDpi( 96 );
 
   std::unique_ptr< QgsMapRendererStagedRenderJob > job = std::make_unique< QgsMapRendererStagedRenderJob >( mapSettings );
@@ -584,7 +584,7 @@ void TestQgsMapRendererJob::stagedRenderer()
   QVERIFY( !job->renderCurrentPart( &painter ) );
 
   // job with labels
-  mapSettings.setFlag( QgsMapSettings::DrawLabeling, true );
+  mapSettings.setFlag( Qgis::MapSettingsFlag::DrawLabeling, true );
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
@@ -687,7 +687,7 @@ void TestQgsMapRendererJob::stagedRendererWithStagedLabeling()
   mapSettings.setExtent( linesLayer->extent() );
   mapSettings.setDestinationCrs( linesLayer->crs() );
   mapSettings.setOutputSize( QSize( 512, 512 ) );
-  mapSettings.setFlag( QgsMapSettings::DrawLabeling, false );
+  mapSettings.setFlag( Qgis::MapSettingsFlag::DrawLabeling, false );
   mapSettings.setOutputDpi( 96 );
 
   std::unique_ptr< QgsMapRendererStagedRenderJob > job = std::make_unique< QgsMapRendererStagedRenderJob >( mapSettings, QgsMapRendererStagedRenderJob::RenderLabelsByMapLayer );
@@ -748,7 +748,7 @@ void TestQgsMapRendererJob::stagedRendererWithStagedLabeling()
   QVERIFY( !job->renderCurrentPart( &painter ) );
 
   // job with labels
-  mapSettings.setFlag( QgsMapSettings::DrawLabeling, true );
+  mapSettings.setFlag( Qgis::MapSettingsFlag::DrawLabeling, true );
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
@@ -879,7 +879,7 @@ void TestQgsMapRendererJob::vectorLayerBoundsWithReprojection()
   mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
   mapSettings.setExtent( QgsRectangle( -37000835.1, -20182273.7, 37000835.1, 20182273.7 ) );
   mapSettings.setOutputSize( QSize( 512, 512 ) );
-  mapSettings.setFlag( QgsMapSettings::DrawLabeling, false );
+  mapSettings.setFlag( Qgis::MapSettingsFlag::DrawLabeling, false );
   mapSettings.setOutputDpi( 96 );
   mapSettings.setLayers( QList< QgsMapLayer * >() << gridLayer.get() );
 
@@ -900,7 +900,7 @@ void TestQgsMapRendererJob::temporalRender()
   mapSettings.setExtent( rasterLayer->extent() );
   mapSettings.setDestinationCrs( rasterLayer->crs() );
   mapSettings.setOutputSize( QSize( 512, 512 ) );
-  mapSettings.setFlag( QgsMapSettings::DrawLabeling, false );
+  mapSettings.setFlag( Qgis::MapSettingsFlag::DrawLabeling, false );
   mapSettings.setOutputDpi( 96 );
   mapSettings.setLayers( QList< QgsMapLayer * >() << rasterLayer.get() );
 
@@ -913,7 +913,7 @@ void TestQgsMapRendererJob::temporalRender()
   // set temporal properties for layer
   QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast< QgsRasterLayerTemporalProperties * >( rasterLayer->temporalProperties() );
   temporalProperties->setIsActive( true );
-  temporalProperties->setMode( QgsRasterLayerTemporalProperties::ModeFixedTemporalRange );
+  temporalProperties->setMode( Qgis::RasterTemporalMode::FixedTemporalRange );
   temporalProperties->setFixedTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) ),
       QDateTime( QDate( 2020, 1, 5 ), QTime( 0, 0, 0 ) ) ) );
 

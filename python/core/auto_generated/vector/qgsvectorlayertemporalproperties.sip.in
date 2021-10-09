@@ -64,28 +64,36 @@ The ``enabled`` argument specifies whether the temporal properties are initially
     virtual bool isVisibleInTemporalRange( const QgsDateTimeRange &range ) const;
 
 
-    enum TemporalMode
-    {
-      ModeFixedTemporalRange,
-      ModeFeatureDateTimeInstantFromField,
-      ModeFeatureDateTimeStartAndEndFromFields,
-      ModeFeatureDateTimeStartAndDurationFromFields,
-      ModeFeatureDateTimeStartAndEndFromExpressions,
-      ModeRedrawLayerOnly,
-    };
-
-    TemporalMode mode() const;
+    Qgis::VectorTemporalMode mode() const;
 %Docstring
 Returns the temporal properties mode.
 
 .. seealso:: :py:func:`setMode`
 %End
 
-    void setMode( TemporalMode mode );
+    void setMode( Qgis::VectorTemporalMode mode );
 %Docstring
 Sets the temporal properties ``mode``.
 
 .. seealso:: :py:func:`mode`
+%End
+
+    Qgis::VectorTemporalLimitMode limitMode() const;
+%Docstring
+Returns the temporal limit mode (to include or exclude begin/end limits).
+
+.. seealso:: :py:func:`setLimitMode`
+
+.. versionadded:: 3.22
+%End
+
+    void setLimitMode( Qgis::VectorTemporalLimitMode mode );
+%Docstring
+Sets the temporal ``limit`` mode (to include or exclude begin/end limits).
+
+.. seealso:: :py:func:`limitMode`
+
+.. versionadded:: 3.22
 %End
 
     virtual QgsTemporalProperty::Flags flags() const;

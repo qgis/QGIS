@@ -384,8 +384,8 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
     refreshAttributes();
   }
 
-  const bool prevTextFormatScaleFlag = context.renderContext().testFlag( QgsRenderContext::ApplyScalingWorkaroundForTextRendering );
-  context.renderContext().setFlag( QgsRenderContext::ApplyScalingWorkaroundForTextRendering );
+  const bool prevTextFormatScaleFlag = context.renderContext().testFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering );
+  context.renderContext().setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering );
 
   //calculate which rows to show in this frame
   QPair< int, int > rowsToShow = rowRange( context.renderContext(), frameIndex );
@@ -648,7 +648,7 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
     }
   }
 
-  context.renderContext().setFlag( QgsRenderContext::ApplyScalingWorkaroundForTextRendering, prevTextFormatScaleFlag );
+  context.renderContext().setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering, prevTextFormatScaleFlag );
 }
 
 void QgsLayoutTable::setCellMargin( const double margin )
@@ -1019,7 +1019,7 @@ QSizeF QgsLayoutTable::fixedFrameSize( const int frameIndex ) const
 QSizeF QgsLayoutTable::minFrameSize( const int frameIndex ) const
 {
   QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, nullptr );
-  context.setFlag( QgsRenderContext::ApplyScalingWorkaroundForTextRendering );
+  context.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering );
 
   double height = 0;
   if ( ( mHeaderMode == QgsLayoutTable::FirstFrame && frameIndex < 1 )
@@ -1088,7 +1088,7 @@ bool QgsLayoutTable::calculateMaxColumnWidths()
   double currentCellTextWidth;
 
   QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, nullptr );
-  context.setFlag( QgsRenderContext::ApplyScalingWorkaroundForTextRendering );
+  context.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering );
 
   //first, go through all the column headers and calculate the sizes
   int i = 0;
@@ -1172,7 +1172,7 @@ bool QgsLayoutTable::calculateMaxRowHeights()
   QVector< double > heights( cells );
 
   QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, nullptr );
-  context.setFlag( QgsRenderContext::ApplyScalingWorkaroundForTextRendering );
+  context.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering );
 
   //first, go through all the column headers and calculate the sizes
   int i = 0;
@@ -1280,7 +1280,7 @@ double QgsLayoutTable::totalHeight()
   double height = 0;
 
   QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, nullptr );
-  context.setFlag( QgsRenderContext::ApplyScalingWorkaroundForTextRendering );
+  context.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering );
 
   //loop through all existing frames to calculate how many rows are visible in each
   //as the entire height of a frame may not be utilized for content rows

@@ -29,6 +29,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayercache.h"
+#include "qgsrendercontext.h"
 
 //////////////////
 // Filter Model //
@@ -334,7 +335,7 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
     disconnectFilterModeConnections();
     connectFilterModeConnections( filterMode );
     mFilterMode = filterMode;
-    invalidateFilter();
+    invalidate();
   }
 }
 

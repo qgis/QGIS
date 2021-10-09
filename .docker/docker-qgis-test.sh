@@ -175,7 +175,28 @@ EOT
 
 fi
 
+#######################################
+# Wait for WebDAV container to be ready
+#######################################
 
+if [ $# -eq 0 ] || [ $1 = "ALL_BUT_PROVIDERS" ] || [ $1 = "ALL" ] ; then
+
+  echo "Wait for webdav to be ready..."
+  COUNT=0
+  while ! curl -f -X GET -u qgis:myPasswd! http://$QGIS_WEBDAV_HOST:$QGIS_WEBDAV_PORT/webdav_tests/ &> /dev/null;
+  do
+    printf "."
+    sleep 5
+    if [[ $(( COUNT++ )) -eq 40 ]]; then
+      break
+    fi
+  done
+  if [[ ${COUNT} -eq 41 ]]; then
+    echo "Error: WebDAV docker timeout!!!"
+  else
+    echo "done"
+  fi
+fi
 
 ###########
 # Run tests

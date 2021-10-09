@@ -19,32 +19,34 @@ on:
 
 jobs:
   mingw64-build:
-    env:
-      CCACHE_DIR: ${{ github.workspace }}/.ccache
     name: MinGW64 Windows Build
     runs-on: ubuntu-latest
+    container:
+      image: fedora:rawhide
+      options: --security-opt seccomp=unconfined
+      volumes:
+        - ${{ github.workspace }}:/w
     steps:
 
       - uses: actions/checkout@v2
 
-      - name: Build Docker Container with Build Environment
-        id: docker-build
-        uses: whoan/docker-build-with-cache-action@v5
-        with:
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          registry: docker.pkg.github.com
-          image_name: qgis3-mingw-buildenv
-          dockerfile: ms-windows/mingw/qgis3-build-deps-mingw.dockerfile
-          push_git_tag: true
-          push_image_and_stages: on:push
-          pull_image_and_stages: ${{ github.event_name != 'workflow_dispatch' }}
+      - name: Update system
+        run: dnf -y update
+
+      - name: Install core dependencies
+        run: dnf -y install zip
+
+      - name: Install build dependencies
+        run: ./ms-windows/mingw/mingwdeps.sh
+
+      - name: Create ccache dir
+        run: mkdir -p /w/.ccache/QGIS
 
       - name: Prepare build cache for pull request
         uses: pat-s/always-upload-cache@v2.1.5
         if: github.event_name == 'pull_request'
         with:
-          path: ${{ github.workspace }}/.ccache
+          path: /w/.ccache/QGIS
           key: mingw64-ccache-${{ github.actor }}-${{ github.head_ref }}-${{ github.sha }}
           # The head_ref or source branch of the pull request in a workflow run.
           # The base_ref or target branch of the pull request in a workflow run.
@@ -58,7 +60,7 @@ jobs:
         uses: pat-s/always-upload-cache@v2.1.5
         if: github.event_name != 'pull_request'
         with:
-          path: ${{ github.workspace }}/.ccache
+          path: /w/.ccache/QGIS
           # The branch or tag ref that triggered the workflow run. For branches this in the format refs/heads/<branch_name>, and for tags it is refs/tags/<tag_name>
           key: mingw64-ccache-${{ github.ref }}-${{ github.sha }}
           restore-keys: |
@@ -67,15 +69,7 @@ jobs:
 
       - name: Build QGIS Application
         run: |
-          mkdir -p ${GITHUB_WORKSPACE}/.ccache
-          docker run \
-            --env CCACHE_DIR=/QGIS/.ccache \
-            -w /QGIS \
-            -v ${GITHUB_WORKSPACE}:/QGIS \
-            ${DOCKER_IMAGE} \
-            ms-windows/mingw/build.sh x86_64 nodebug 4
-        env:
-          DOCKER_IMAGE: ${{ steps.docker-build.outputs.FULL_IMAGE_NAME }}
+          CCACHE_DIR=/w/.ccache/QGIS ./ms-windows/mingw/build.sh x86_64 nodebug 4
 
       - name: Create Portable zip
         run: |

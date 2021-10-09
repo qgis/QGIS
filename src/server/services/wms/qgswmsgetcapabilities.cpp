@@ -39,7 +39,7 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
-#include "qgsvectorlayerserverproperties.h"
+#include "qgsmaplayerserverproperties.h"
 
 
 namespace QgsWms
@@ -1172,11 +1172,11 @@ namespace QgsWms
           }
 
           // layer metadata URL
-          QString metadataUrl = l->metadataUrl();
-          if ( !metadataUrl.isEmpty() )
+          const QList<QgsMapLayerServerProperties::MetadataUrl> urls = l->serverProperties()->metadataUrls();
+          for ( const QgsMapLayerServerProperties::MetadataUrl &url : urls )
           {
             QDomElement metaUrlElem = doc.createElement( QStringLiteral( "MetadataURL" ) );
-            QString metadataUrlType = l->metadataUrlType();
+            QString metadataUrlType = url.type;
             if ( version == QLatin1String( "1.1.1" ) )
             {
               metaUrlElem.setAttribute( QStringLiteral( "type" ), metadataUrlType );
@@ -1193,7 +1193,7 @@ namespace QgsWms
             {
               metaUrlElem.setAttribute( QStringLiteral( "type" ), metadataUrlType );
             }
-            QString metadataUrlFormat = l->metadataUrlFormat();
+            QString metadataUrlFormat = url.format;
             if ( !metadataUrlFormat.isEmpty() )
             {
               QDomElement metaUrlFormatElem = doc.createElement( QStringLiteral( "Format" ) );
@@ -1204,7 +1204,7 @@ namespace QgsWms
             QDomElement metaUrlORElem = doc.createElement( QStringLiteral( "OnlineResource" ) );
             metaUrlORElem.setAttribute( QStringLiteral( "xmlns:xlink" ), QStringLiteral( "http://www.w3.org/1999/xlink" ) );
             metaUrlORElem.setAttribute( QStringLiteral( "xlink:type" ), QStringLiteral( "simple" ) );
-            metaUrlORElem.setAttribute( QStringLiteral( "xlink:href" ), metadataUrl );
+            metaUrlORElem.setAttribute( QStringLiteral( "xlink:href" ), url.url );
             metaUrlElem.appendChild( metaUrlORElem );
             layerElem.appendChild( metaUrlElem );
           }
@@ -1213,8 +1213,9 @@ namespace QgsWms
           if ( l->type() == QgsMapLayerType::VectorLayer )
           {
             QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l );
-            const QList<QgsVectorLayerServerProperties::WmsDimensionInfo> wmsDims = vl->serverProperties()->wmsDimensions();
-            for ( const  QgsVectorLayerServerProperties::WmsDimensionInfo &dim : wmsDims )
+            QgsMapLayerServerProperties *serverProperties = static_cast<QgsMapLayerServerProperties *>( vl->serverProperties() );
+            const QList<QgsMapLayerServerProperties::WmsDimensionInfo> wmsDims = serverProperties->wmsDimensions();
+            for ( const  QgsMapLayerServerProperties::WmsDimensionInfo &dim : wmsDims )
             {
               int fieldIndex = vl->fields().indexOf( dim.fieldName );
               // Check field index
@@ -1250,15 +1251,15 @@ namespace QgsWms
               {
                 dimElem.setAttribute( QStringLiteral( "unitSymbol" ), dim.unitSymbol );
               }
-              if ( dim.defaultDisplayType == QgsVectorLayerServerProperties::WmsDimensionInfo::MinValue )
+              if ( dim.defaultDisplayType == QgsMapLayerServerProperties::WmsDimensionInfo::MinValue )
               {
                 dimElem.setAttribute( QStringLiteral( "default" ), values.first().toString() );
               }
-              else if ( dim.defaultDisplayType == QgsVectorLayerServerProperties::WmsDimensionInfo::MaxValue )
+              else if ( dim.defaultDisplayType == QgsMapLayerServerProperties::WmsDimensionInfo::MaxValue )
               {
                 dimElem.setAttribute( QStringLiteral( "default" ), values.last().toString() );
               }
-              else if ( dim.defaultDisplayType == QgsVectorLayerServerProperties::WmsDimensionInfo::ReferenceValue )
+              else if ( dim.defaultDisplayType == QgsMapLayerServerProperties::WmsDimensionInfo::ReferenceValue )
               {
                 dimElem.setAttribute( QStringLiteral( "default" ), dim.referenceValue.toString() );
               }

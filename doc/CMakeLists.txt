@@ -91,6 +91,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/vector
       ${CMAKE_SOURCE_DIR}/src/core/vectortile
       ${CMAKE_SOURCE_DIR}/src/gui
+      ${CMAKE_SOURCE_DIR}/src/gui/annotations
       ${CMAKE_SOURCE_DIR}/src/gui/auth
       ${CMAKE_SOURCE_DIR}/src/gui/attributetable
       ${CMAKE_SOURCE_DIR}/src/gui/callouts

@@ -38,10 +38,17 @@ from qgis.core import (QgsMapSettings,
                        QgsAnnotationMarkerItem,
                        QgsLineSymbol,
                        QgsMarkerSymbol,
+                       QgsMapRendererSequentialJob,
+                       QgsMapRendererParallelJob,
+                       QgsGeometry,
+                       QgsAnnotationItemEditOperationMoveNode,
+                       QgsVertexId,
+                       QgsPointXY,
+                       Qgis
                        )
 from qgis.testing import start_app, unittest
 
-from utilities import unitTestDataPath
+from utilities import unitTestDataPath, compareWkt
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -111,6 +118,25 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         layer.clear()
         self.assertEqual(len(layer.items()), 0)
 
+    def testReplaceItem(self):
+        layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+
+        polygon_item_id = layer.addItem(QgsAnnotationPolygonItem(
+            QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)]))))
+        linestring_item_id = layer.addItem(
+            QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)])))
+        marker_item_id = layer.addItem(QgsAnnotationMarkerItem(QgsPoint(12, 13)))
+
+        self.assertEqual(layer.item(polygon_item_id).geometry().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 12 13))')
+        self.assertEqual(layer.item(linestring_item_id).geometry().asWkt(), 'LineString (11 13, 12 13, 12 15)')
+        self.assertEqual(layer.item(marker_item_id).geometry().asWkt(), 'POINT(12 13)')
+
+        layer.replaceItem(linestring_item_id,
+                          QgsAnnotationLineItem(QgsLineString([QgsPoint(21, 13), QgsPoint(22, 13), QgsPoint(22, 15)])))
+        self.assertEqual(layer.item(polygon_item_id).geometry().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 12 13))')
+        self.assertEqual(layer.item(linestring_item_id).geometry().asWkt(), 'LineString (21 13, 22 13, 22 15)')
+        self.assertEqual(layer.item(marker_item_id).geometry().asWkt(), 'POINT(12 13)')
+
     def testReset(self):
         layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
         self.assertTrue(layer.isValid())
@@ -159,10 +185,11 @@ class TestQgsAnnotationLayer(unittest.TestCase):
             QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 150)])))
         item3uuid = layer.addItem(QgsAnnotationMarkerItem(QgsPoint(120, 13)))
 
-        self.assertFalse(layer.itemsInBounds(QgsRectangle(-10, -10, -9, 9)))
-        self.assertCountEqual(layer.itemsInBounds(QgsRectangle(12, 13, 14, 15)), [item1uuid, item2uuid])
-        self.assertCountEqual(layer.itemsInBounds(QgsRectangle(12, 130, 14, 150)), [item2uuid])
-        self.assertCountEqual(layer.itemsInBounds(QgsRectangle(110, 0, 120, 20)), [item3uuid])
+        rc = QgsRenderContext()
+        self.assertFalse(layer.itemsInBounds(QgsRectangle(-10, -10, -9, 9), rc))
+        self.assertCountEqual(layer.itemsInBounds(QgsRectangle(12, 13, 14, 15), rc), [item1uuid, item2uuid])
+        self.assertCountEqual(layer.itemsInBounds(QgsRectangle(12, 130, 14, 150), rc), [item2uuid])
+        self.assertCountEqual(layer.itemsInBounds(QgsRectangle(110, 0, 120, 20), rc), [item3uuid])
 
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")
@@ -236,6 +263,34 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         self.assertIsInstance(p2.mainAnnotationLayer().items()[linestring_item_id], QgsAnnotationLineItem)
         self.assertIsInstance(p2.mainAnnotationLayer().items()[marker_item_id], QgsAnnotationMarkerItem)
 
+    def test_apply_edit(self):
+        """
+        Test applying edits to a layer
+        """
+        layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+        self.assertTrue(layer.isValid())
+
+        polygon_item_id = layer.addItem(QgsAnnotationPolygonItem(
+            QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)]))))
+        linestring_item_id = layer.addItem(
+            QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)])))
+        marker_item_id = layer.addItem(QgsAnnotationMarkerItem(QgsPoint(12, 13)))
+
+        rc = QgsRenderContext()
+        self.assertCountEqual(layer.itemsInBounds(QgsRectangle(1, 1, 20, 20), rc), [polygon_item_id, linestring_item_id, marker_item_id])
+
+        # can't apply a move to an item which doesn't exist in the layer
+        self.assertEqual(layer.applyEdit(QgsAnnotationItemEditOperationMoveNode('xxx', QgsVertexId(0, 0, 2), QgsPoint(14, 15), QgsPoint(19, 15))), Qgis.AnnotationItemEditOperationResult.Invalid)
+
+        # apply move to polygon
+        self.assertEqual(layer.applyEdit(
+            QgsAnnotationItemEditOperationMoveNode(polygon_item_id, QgsVertexId(0, 0, 2), QgsPoint(14, 15),
+                                                   QgsPoint(19, 15))), Qgis.AnnotationItemEditOperationResult.Success)
+
+        self.assertEqual(layer.item(polygon_item_id).geometry().asWkt(), 'Polygon ((12 13, 14 13, 19 15, 12 13))')
+        # ensure that spatial index was updated
+        self.assertCountEqual(layer.itemsInBounds(QgsRectangle(18, 1, 20, 16), rc), [polygon_item_id])
+
     def testRenderLayer(self):
         layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
         layer.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
@@ -246,17 +301,17 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         item.setSymbol(
             QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black', 'outline_width': '2'}))
         item.setZIndex(3)
-        layer.addItem(item)
+        i1_id = layer.addItem(item)
 
         item = QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]))
         item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
         item.setZIndex(2)
-        layer.addItem(item)
+        i2_id = layer.addItem(item)
 
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
         item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '6', 'outline_color': 'black'}))
         item.setZIndex(1)
-        layer.addItem(item)
+        i3_id = layer.addItem(item)
 
         settings = QgsMapSettings()
         settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
@@ -267,8 +322,8 @@ class TestQgsAnnotationLayer(unittest.TestCase):
 
         rc = QgsRenderContext.fromMapSettings(settings)
         image = QImage(200, 200, QImage.Format_ARGB32)
-        image.setDotsPerMeterX(96 / 25.4 * 1000)
-        image.setDotsPerMeterY(96 / 25.4 * 1000)
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
         image.fill(QColor(255, 255, 255))
         painter = QPainter(image)
         rc.setPainter(painter)
@@ -281,6 +336,17 @@ class TestQgsAnnotationLayer(unittest.TestCase):
 
         self.assertTrue(self.imageCheck('layer_render', 'layer_render', image))
 
+        # also check details of rendered items
+        item_details = renderer.takeRenderedItemDetails()
+        self.assertEqual([i.layerId() for i in item_details], [layer.id()] * 3)
+        self.assertCountEqual([i.itemId() for i in item_details], [i1_id, i2_id, i3_id])
+        self.assertEqual([i.boundingBox() for i in item_details if i.itemId() == i1_id][0],
+                         QgsRectangle(12, 13, 14, 15))
+        self.assertEqual([i.boundingBox() for i in item_details if i.itemId() == i2_id][0],
+                         QgsRectangle(11, 13, 12, 15))
+        self.assertEqual([i.boundingBox().toString(1) for i in item_details if i.itemId() == i3_id][0],
+                         '11.7,12.7 : 12.3,13.3')
+
     def testRenderWithTransform(self):
         layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
         self.assertTrue(layer.isValid())
@@ -290,17 +356,17 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         item.setSymbol(
             QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black', 'outline_width': '2'}))
         item.setZIndex(1)
-        layer.addItem(item)
+        i1_id = layer.addItem(item)
 
         item = QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]))
         item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
         item.setZIndex(2)
-        layer.addItem(item)
+        i2_id = layer.addItem(item)
 
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
         item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '6', 'outline_color': 'black'}))
         item.setZIndex(3)
-        layer.addItem(item)
+        i3_id = layer.addItem(item)
 
         layer.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
 
@@ -316,8 +382,8 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         rc.setExtent(
             rc.coordinateTransform().transformBoundingBox(settings.extent(), QgsCoordinateTransform.ReverseTransform))
         image = QImage(200, 200, QImage.Format_ARGB32)
-        image.setDotsPerMeterX(96 / 25.4 * 1000)
-        image.setDotsPerMeterY(96 / 25.4 * 1000)
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
         image.fill(QColor(255, 255, 255))
         painter = QPainter(image)
         rc.setPainter(painter)
@@ -329,6 +395,194 @@ class TestQgsAnnotationLayer(unittest.TestCase):
             painter.end()
 
         self.assertTrue(self.imageCheck('layer_render_transform', 'layer_render_transform', image))
+
+        # also check details of rendered items
+        item_details = renderer.takeRenderedItemDetails()
+        self.assertEqual([i.layerId() for i in item_details], [layer.id()] * 3)
+        self.assertCountEqual([i.itemId() for i in item_details], [i1_id, i2_id, i3_id])
+        self.assertEqual([i.boundingBox() for i in item_details if i.itemId() == i1_id][0],
+                         QgsRectangle(11.5, 13, 12, 13.5))
+        self.assertEqual([i.boundingBox() for i in item_details if i.itemId() == i2_id][0],
+                         QgsRectangle(11, 13, 12, 15))
+        self.assertEqual([i.boundingBox().toString(2) for i in item_details if i.itemId() == i3_id][0],
+                         '11.94,12.94 : 12.06,13.06')
+
+    def testRenderLayerWithReferenceScale(self):
+        layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+        layer.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        self.assertTrue(layer.isValid())
+
+        item = QgsAnnotationPolygonItem(
+            QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
+        item.setSymbol(
+            QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black', 'outline_width': '2'}))
+        item.setZIndex(3)
+        i1_id = layer.addItem(item)
+
+        item = QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]))
+        item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
+        item.setZIndex(2)
+        i2_id = layer.addItem(item)
+
+        item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
+        item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '6', 'outline_color': 'black'}))
+        item.setZIndex(1)
+        i3_id = layer.addItem(item)
+
+        settings = QgsMapSettings()
+        settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        settings.setExtent(QgsRectangle(10, 10, 18, 18))
+        settings.setOutputSize(QSize(300, 300))
+
+        settings.setFlag(QgsMapSettings.Antialiasing, False)
+
+        rc = QgsRenderContext.fromMapSettings(settings)
+
+        layer.item(i1_id).setUseSymbologyReferenceScale(True)
+        layer.item(i1_id).setSymbologyReferenceScale(rc.rendererScale() * 2)
+        # note item 3 has use symbology reference scale set to false, so should be ignored
+        layer.item(i2_id).setUseSymbologyReferenceScale(False)
+        layer.item(i2_id).setSymbologyReferenceScale(rc.rendererScale() * 2)
+        layer.item(i3_id).setUseSymbologyReferenceScale(True)
+        layer.item(i3_id).setSymbologyReferenceScale(rc.rendererScale() * 2)
+
+        image = QImage(200, 200, QImage.Format_ARGB32)
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+        rc.setPainter(painter)
+
+        try:
+            renderer = layer.createMapRenderer(rc)
+            renderer.render()
+        finally:
+            painter.end()
+
+        self.assertTrue(self.imageCheck('layer_render_reference_scale', 'layer_render_reference_scale', image))
+
+        # also check details of rendered items
+        item_details = renderer.takeRenderedItemDetails()
+        self.assertEqual([i.layerId() for i in item_details], [layer.id()] * 3)
+        self.assertCountEqual([i.itemId() for i in item_details], [i1_id, i2_id, i3_id])
+        self.assertEqual([i.boundingBox() for i in item_details if i.itemId() == i1_id][0],
+                         QgsRectangle(12, 13, 14, 15))
+        self.assertEqual([i.boundingBox() for i in item_details if i.itemId() == i2_id][0],
+                         QgsRectangle(11, 13, 12, 15))
+        self.assertEqual([i.boundingBox().toString(1) for i in item_details if i.itemId() == i3_id][0],
+                         '11.4,12.4 : 12.6,13.6')
+
+    def test_render_via_job(self):
+        """
+        Test rendering an annotation layer via a map render job
+        """
+        layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+        self.assertTrue(layer.isValid())
+
+        item = QgsAnnotationPolygonItem(
+            QgsPolygon(QgsLineString([QgsPoint(11.5, 13), QgsPoint(12, 13), QgsPoint(12, 13.5), QgsPoint(11.5, 13)])))
+        item.setSymbol(
+            QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black', 'outline_width': '2'}))
+        item.setZIndex(1)
+        i1_id = layer.addItem(item)
+
+        item = QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]))
+        item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
+        item.setZIndex(2)
+        i2_id = layer.addItem(item)
+
+        item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
+        item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '6', 'outline_color': 'black'}))
+        item.setZIndex(3)
+        i3_id = layer.addItem(item)
+
+        layer.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+
+        settings = QgsMapSettings()
+        settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        settings.setExtent(QgsRectangle(10, 10, 18, 18))
+        settings.setOutputSize(QSize(200, 200))
+        settings.setLayers([layer])
+
+        job = QgsMapRendererParallelJob(settings)
+        job.start()
+        job.waitForFinished()
+
+        # check rendered item results
+        item_results = job.takeRenderedItemResults()
+        item_details = item_results.renderedItems()
+        self.assertEqual(len(item_details), 3)
+        self.assertEqual([i.layerId() for i in item_details], [layer.id()] * 3)
+        self.assertCountEqual([i.itemId() for i in item_details], [i1_id, i2_id, i3_id])
+        self.assertCountEqual(
+            [i.itemId() for i in item_results.renderedAnnotationItemsInBounds(QgsRectangle(0, 0, 1, 1))], [])
+        self.assertCountEqual(
+            [i.itemId() for i in item_results.renderedAnnotationItemsInBounds(QgsRectangle(10, 10, 11, 18))], [i2_id])
+        self.assertCountEqual(
+            [i.itemId() for i in item_results.renderedAnnotationItemsInBounds(QgsRectangle(10, 10, 12, 18))],
+            [i1_id, i2_id, i3_id])
+
+        # bounds should be in map crs
+        self.assertEqual([i.boundingBox() for i in item_details if i.itemId() == i1_id][0],
+                         QgsRectangle(11.5, 13, 12, 13.5))
+        self.assertEqual([i.boundingBox() for i in item_details if i.itemId() == i2_id][0],
+                         QgsRectangle(11, 13, 12, 15))
+        self.assertEqual([i.boundingBox().toString(1) for i in item_details if i.itemId() == i3_id][0],
+                         '11.5,12.5 : 12.5,13.5')
+
+    def test_render_via_job_with_transform(self):
+        """
+        Test rendering an annotation layer via a map render job
+        """
+        layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+        self.assertTrue(layer.isValid())
+
+        item = QgsAnnotationPolygonItem(
+            QgsPolygon(QgsLineString([QgsPoint(11.5, 13), QgsPoint(12, 13), QgsPoint(12, 13.5), QgsPoint(11.5, 13)])))
+        item.setSymbol(
+            QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black', 'outline_width': '2'}))
+        item.setZIndex(1)
+        i1_id = layer.addItem(item)
+
+        item = QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]))
+        item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
+        item.setZIndex(2)
+        i2_id = layer.addItem(item)
+
+        item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
+        item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '6', 'outline_color': 'black'}))
+        item.setZIndex(3)
+        i3_id = layer.addItem(item)
+
+        layer.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+
+        settings = QgsMapSettings()
+        settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        settings.setExtent(QgsRectangle(1250958, 1386945, 1420709, 1532518))
+        settings.setOutputSize(QSize(200, 200))
+        settings.setLayers([layer])
+
+        job = QgsMapRendererSequentialJob(settings)
+        job.start()
+        job.waitForFinished()
+
+        # check rendered item results
+        item_results = job.takeRenderedItemResults()
+        item_details = item_results.renderedItems()
+        self.assertEqual(len(item_details), 3)
+        self.assertEqual([i.layerId() for i in item_details], [layer.id()] * 3)
+        self.assertCountEqual([i.itemId() for i in item_details], [i1_id, i2_id, i3_id])
+        # bounds should be in map crs
+        self.assertEqual(
+            [QgsGeometry.fromRect(i.boundingBox()).asWkt(0) for i in item_details if i.itemId() == i1_id][0],
+            'Polygon ((1280174 1459732, 1335834 1459732, 1335834 1516914, 1280174 1516914, 1280174 1459732))')
+        self.assertEqual(
+            [QgsGeometry.fromRect(i.boundingBox()).asWkt(0) for i in item_details if i.itemId() == i2_id][0],
+            'Polygon ((1224514 1459732, 1335834 1459732, 1335834 1689200, 1224514 1689200, 1224514 1459732))')
+        expected = 'Polygon ((1325786 1449684, 1345882 1449684, 1345882 1469780, 1325786 1469780, 1325786 1449684))'
+        result = [QgsGeometry.fromRect(i.boundingBox()).asWkt(0) for i in item_details if i.itemId() == i3_id][0]
+        self.assertTrue(compareWkt(result, expected, tol=1000), "mismatch Expected:\n{}\nGot:\n{}\n".format(expected,
+                                                                                                            result))
 
     def imageCheck(self, name, reference_image, image):
         TestQgsAnnotationLayer.report += "<h2>Render {}</h2>\n".format(name)

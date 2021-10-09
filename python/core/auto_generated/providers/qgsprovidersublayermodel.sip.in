@@ -46,6 +46,7 @@ embedded project items. The non-sublayer items can be added by calling
       LayerNumber,
       IsNonLayerItem,
       NonLayerItemType,
+      Flags,
     };
 
     enum class Column
@@ -234,6 +235,20 @@ Returns the filter string used for filtering items in the model.
 Sets the ``filter`` string used for filtering items in the model.
 
 .. seealso:: :py:func:`filterString`
+%End
+
+    bool includeSystemTables() const;
+%Docstring
+Returns ``True`` if system and internal tables will be shown in the model.
+
+.. seealso:: :py:func:`setIncludeSystemTables`
+%End
+
+    void setIncludeSystemTables( bool include );
+%Docstring
+Sets whether system and internal tables will be shown in the model.
+
+.. seealso:: :py:func:`includeSystemTables`
 %End
 
   protected:

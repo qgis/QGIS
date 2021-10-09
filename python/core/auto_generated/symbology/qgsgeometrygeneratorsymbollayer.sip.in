@@ -52,6 +52,12 @@ that is created by this generator.
 
     virtual bool usesMapUnits() const;
 
+    virtual QColor color() const;
+
+    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+
+    virtual QgsMapUnitScale mapUnitScale() const;
+
 
     virtual QgsSymbolLayer *clone() const /Factory/;
 
@@ -72,6 +78,30 @@ Set the expression to generate this geometry.
 Gets the expression to generate this geometry.
 %End
 
+    QgsUnitTypes::RenderUnit units() const;
+%Docstring
+Returns the unit for the geometry expression.
+
+By default this is :py:class:`QgsUnitTypes`.MapUnits, which means that the :py:func:`~QgsGeometryGeneratorSymbolLayer.geometryExpression`
+will return geometries in the associated layer's CRS.
+
+.. seealso:: :py:func:`setUnits`
+
+.. versionadded:: 3.22
+%End
+
+    void setUnits( QgsUnitTypes::RenderUnit units );
+%Docstring
+Sets the ``units`` for the geometry expression.
+
+By default this is :py:class:`QgsUnitTypes`.MapUnits, which means that the :py:func:`~QgsGeometryGeneratorSymbolLayer.geometryExpression`
+will return geometries in the associated layer's CRS.
+
+.. seealso:: :py:func:`units`
+
+.. versionadded:: 3.22
+%End
+
     virtual QgsSymbol *subSymbol();
 
     virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
@@ -90,7 +120,7 @@ This is a hybrid layer, it constructs its own geometry so it does not
 care about the geometry of its parents.
 %End
 
-    virtual void render( QgsSymbolRenderContext &context );
+    void render( QgsSymbolRenderContext &context, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::GeometryType::UnknownGeometry, const QPolygonF *points = 0, const QVector<QPolygonF> *rings = 0 );
 %Docstring
 Will render this symbol layer using the context.
 In comparison to other symbols there is no geometry passed in, since
@@ -98,8 +128,10 @@ the geometry will be created based on information from the context
 which contains a :py:class:`QgsRenderContext` which in turn contains an expression
 context which is available to the evaluated expression.
 
-:param context: The rendering context which will be used to render and to
-                construct a geometry.
+:param context: The rendering context which will be used to render and to construct a geometry.
+:param geometryType: type of original geometry being rendered by the parent symbol (since QGIS 3.22)
+:param points: optional list of original points which are being rendered by the parent symbol (since QGIS 3.22)
+:param rings: optional list of original rings which are being rendered by the parent symbol (since QGIS 3.22)
 %End
 
     virtual void setColor( const QColor &color );

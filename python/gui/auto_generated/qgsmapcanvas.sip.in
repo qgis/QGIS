@@ -100,7 +100,7 @@ Sets destination coordinate reference system
 .. versionadded:: 2.4
 %End
 
-    void setMapSettingsFlags( QgsMapSettings::Flags flags );
+    void setMapSettingsFlags( Qgis::MapSettingsFlags flags );
 %Docstring
 Resets the ``flags`` for the canvas' map settings.
 
@@ -115,6 +115,17 @@ Since QGIS 3.20, if the ``allowOutdatedResults`` flag is ``False`` then outdated
 as a result of an ongoing canvas render) will not be returned, and instead ``None`` will be returned.
 
 .. versionadded:: 2.4
+%End
+
+    const QgsRenderedItemResults *renderedItemResults( bool allowOutdatedResults = true ) const;
+%Docstring
+Gets access to the rendered item results (may be ``None``), which includes the results of rendering
+annotation items in the canvas map.
+
+If the ``allowOutdatedResults`` flag is ``False`` then outdated rendered item results (e.g.
+as a result of an ongoing canvas render) will not be returned, and instead ``None`` will be returned.
+
+.. versionadded:: 3.22
 %End
 
     void setCachingEnabled( bool enabled );
@@ -137,6 +148,7 @@ Make sure to remove any rendered images from cache (does nothing if cache is not
 
 .. versionadded:: 2.4
 %End
+
 
     void waitWhileRendering();
 %Docstring
@@ -432,6 +444,18 @@ Emits signal scaleChanged to update scale in main window
     QgsMapLayer *layer( int index );
 %Docstring
 Returns the map layer at position index in the layer stack
+%End
+
+    QgsMapLayer *layer( const QString &id );
+%Docstring
+Returns the map layer with the matching ID, or ``None`` if no layers could be found.
+
+This method searches both layers associated with the map canvas (see :py:func:`~QgsMapCanvas.layers`)
+and layers from the :py:class:`QgsProject` associated with the canvas
+(which is current the :py:func:`QgsProject.instance()`). It can be used to resolve layer IDs to
+layers which may be visible in the canvas, but not associated with a :py:class:`QgsProject`.
+
+.. versionadded:: 3.22
 %End
 
     int layerCount() const;

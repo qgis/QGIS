@@ -22,7 +22,7 @@
 #include "qgsmultipoint.h"
 #include "qgspoint.h"
 #include "qgsproject.h"
-
+#include "qgscoordinatetransform.h"
 #include "testgeometryutils.h"
 #include "testtransformer.h"
 
@@ -700,7 +700,7 @@ void TestQgsCircularString::circularString()
   QgsCircularString l21;
   l21.setPoints( QgsPointSequence() << QgsPoint( 6374985, -3626584 )
                  << QgsPoint( 6474985, -3526584 ) );
-  l21.transform( tr, QgsCoordinateTransform::ForwardTransform );
+  l21.transform( tr, Qgis::TransformDirection::Forward );
   QGSCOMPARENEAR( l21.pointN( 0 ).x(), 175.771, 0.001 );
   QGSCOMPARENEAR( l21.pointN( 0 ).y(), -39.724, 0.001 );
   QGSCOMPARENEAR( l21.pointN( 1 ).x(), 176.959, 0.001 );
@@ -714,7 +714,7 @@ void TestQgsCircularString::circularString()
   QgsCircularString l22;
   l22.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 6374985, -3626584, 1, 2 )
                  << QgsPoint( QgsWkbTypes::PointZM, 6474985, -3526584, 3, 4 ) );
-  l22.transform( tr, QgsCoordinateTransform::ForwardTransform );
+  l22.transform( tr, Qgis::TransformDirection::Forward );
   QGSCOMPARENEAR( l22.pointN( 0 ).x(), 175.771, 0.001 );
   QGSCOMPARENEAR( l22.pointN( 0 ).y(), -39.724, 0.001 );
   QGSCOMPARENEAR( l22.pointN( 0 ).z(), 1.0, 0.001 );
@@ -725,7 +725,7 @@ void TestQgsCircularString::circularString()
   QCOMPARE( l22.pointN( 1 ).m(), 4.0 );
 
   //reverse transform
-  l22.transform( tr, QgsCoordinateTransform::ReverseTransform );
+  l22.transform( tr, Qgis::TransformDirection::Reverse );
   QGSCOMPARENEAR( l22.pointN( 0 ).x(), 6374985, 0.01 );
   QGSCOMPARENEAR( l22.pointN( 0 ).y(), -3626584, 0.01 );
   QGSCOMPARENEAR( l22.pointN( 0 ).z(), 1, 0.001 );
@@ -737,10 +737,10 @@ void TestQgsCircularString::circularString()
 
 #if PROJ_VERSION_MAJOR<6 // note - z value transform doesn't currently work with proj 6+, because we don't yet support compound CRS definitions
   //z value transform
-  l22.transform( tr, QgsCoordinateTransform::ForwardTransform, true );
+  l22.transform( tr, Qgis::TransformDirection::Forward, true );
   QGSCOMPARENEAR( l22.pointN( 0 ).z(), -19.249066, 0.001 );
   QGSCOMPARENEAR( l22.pointN( 1 ).z(), -21.092128, 0.001 );
-  l22.transform( tr, QgsCoordinateTransform::ReverseTransform, true );
+  l22.transform( tr, Qgis::TransformDirection::Reverse, true );
   QGSCOMPARENEAR( l22.pointN( 0 ).z(), 1.0, 0.001 );
   QGSCOMPARENEAR( l22.pointN( 1 ).z(), 3.0, 0.001 );
 #endif

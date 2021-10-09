@@ -59,6 +59,7 @@ QgsRasterTransparencyWidget::QgsRasterTransparencyWidget( QgsRasterLayer *layer,
   connect( cboxTransparencyBand, &QgsRasterBandComboBox::bandChanged, this, &QgsPanelWidget::widgetChanged );
   connect( mSrcNoDataValueCheckBox, &QCheckBox::stateChanged, this, &QgsPanelWidget::widgetChanged );
   connect( leNoDataValue, &QLineEdit::textEdited, this, &QgsPanelWidget::widgetChanged );
+  leNoDataValue->setValidator( new QgsDoubleValidator( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), this ) );
   connect( mNodataColorButton, &QgsColorButton::colorChanged, this, &QgsPanelWidget::widgetChanged );
 
   mPixelSelectorTool = nullptr;
@@ -255,8 +256,8 @@ void QgsRasterTransparencyWidget::pbnAddValuesManually_clicked()
 
   setTransparencyCell( tableTransparency->rowCount() - 1, n, 100 );
 
-  tableTransparency->resizeColumnsToContents();
-  tableTransparency->resizeRowsToContents();
+  //tableTransparency->resizeColumnsToContents();
+  //tableTransparency->resizeRowsToContents();
 }
 
 void QgsRasterTransparencyWidget::pbnDefaultValues_clicked()
@@ -271,8 +272,8 @@ void QgsRasterTransparencyWidget::pbnDefaultValues_clicked()
 
   setupTransparencyTable( nBands );
 
-  tableTransparency->resizeColumnsToContents(); // works only with values
-  tableTransparency->resizeRowsToContents();
+  //tableTransparency->resizeColumnsToContents(); // works only with values
+  //tableTransparency->resizeRowsToContents();
 
 }
 
@@ -424,8 +425,8 @@ void QgsRasterTransparencyWidget::pbnImportTransparentPixelValues_clicked()
   {
     QMessageBox::warning( this, tr( "Load Pixel Values from File" ), tr( "Read access denied. Adjust the file permissions and try again.\n\n" ) );
   }
-  tableTransparency->resizeColumnsToContents();
-  tableTransparency->resizeRowsToContents();
+  //tableTransparency->resizeColumnsToContents();
+  //tableTransparency->resizeRowsToContents();
   emit widgetChanged();
 }
 
@@ -603,8 +604,8 @@ void QgsRasterTransparencyWidget::pixelSelected( const QgsPointXY &canvasPoint )
     setTransparencyCell( tableTransparency->rowCount() - 1, tableTransparency->columnCount() - 1, 100 );
   }
 
-  tableTransparency->resizeColumnsToContents();
-  tableTransparency->resizeRowsToContents();
+  //tableTransparency->resizeColumnsToContents();
+  //tableTransparency->resizeRowsToContents();
 }
 
 void QgsRasterTransparencyWidget::populateTransparencyTable( QgsRasterRenderer *renderer )
@@ -755,7 +756,7 @@ void QgsRasterTransparencyWidget::setTransparencyCell( int row, int column, doub
   {
     connect( lineEdit, &QLineEdit::textEdited, this, &QgsRasterTransparencyWidget::transparencyCellTextEdited );
   }
-  tableTransparency->resizeColumnsToContents();
+  //tableTransparency->resizeColumnsToContents();
   emit widgetChanged();
 }
 
@@ -788,4 +789,9 @@ double QgsRasterTransparencyWidget::transparencyCellValue( int row, int column )
   }
   return QgsDoubleValidator::toDouble( lineEdit->text() );
 
+}
+
+QgsMapToolEmitPoint *QgsRasterTransparencyWidget::pixelSelectorTool() const
+{
+  return mPixelSelectorTool;
 }

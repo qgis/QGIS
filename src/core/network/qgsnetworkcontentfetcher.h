@@ -105,6 +105,13 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
      */
     void downloadProgress( qint64 bytesReceived, qint64 bytesTotal );
 
+    /**
+     * Emitted when an error with \a code error occurred while processing the request
+     * \a errorMsg is a textual description of the error
+     * \since QGIS 3.22
+     */
+    void errorOccurred( QNetworkReply::NetworkError code, const QString &errorMsg );
+
   private:
 
     QString mAuthCfg;

@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
+#include "qgscoordinatetransform.h"
 
 class QgsVectorLayerCache;
 

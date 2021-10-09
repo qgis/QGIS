@@ -74,7 +74,7 @@ Sets the current file ``path``.
 .. seealso:: :py:func:`filePath`
 %End
 
-    void setReadOnly( bool readOnly );
+    virtual void setReadOnly( bool readOnly );
 %Docstring
 Sets whether the widget should be read only.
 %End

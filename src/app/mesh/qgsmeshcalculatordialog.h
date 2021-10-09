@@ -45,7 +45,7 @@ class APP_EXPORT QgsMeshCalculatorDialog: public QDialog, private Ui::QgsMeshCal
     void datasetGroupEntry( const QModelIndex &index );
     void mCurrentLayerExtentButton_clicked();
     void mAllTimesButton_clicked();
-    void toggleExtendMask( int state );
+    void toggleExtendMask();
     void updateInfoMessage();
     void onOutputRadioButtonChange();
     void onOutputFormatChange();

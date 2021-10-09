@@ -55,6 +55,7 @@ QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
 
 #ifdef WITH_QTWEBKIT
   mWebView = new QWebView( this );
+  mWebView->setAcceptDrops( false );
   layout->addWidget( mWebView, 2, 0 );
 #endif
 
@@ -316,37 +317,12 @@ void QgsExternalResourceWidget::loadDocument( const QString &path )
 
     if ( mFileWidget->externalStorage() )
     {
-      QgsExternalStorageFetchedContent *content = mFileWidget->externalStorage()->fetch( resolvedPath, storageAuthConfigId() );
-
-      auto onFetchFinished = [ = ]
+      if ( mContent )
       {
-        if ( content->status() == Qgis::ContentStatus::Failed )
-        {
-#ifdef WITH_QTWEBKIT
-          mWebView->setVisible( false );
-#endif
-          mPixmapLabel->setVisible( false );
-          mLoadingLabel->setVisible( false );
-          mLoadingMovie->stop();
-          mErrorLabel->setVisible( true );
+        mContent->cancel();
+      }
 
-          if ( messageBar() )
-          {
-            messageBar()->pushWarning( tr( "Fetching External Resource" ),
-                                       tr( "Error while fetching external resource '%1' : %2" ).arg( path, content->errorString() ) );
-          }
-        }
-        else if ( content->status() == Qgis::ContentStatus::Finished )
-        {
-          const QString filePath = mDocumentViewerContent == Web
-                                   ? QString( "file://%1" ).arg( content->filePath() )
-                                   : content->filePath();
-
-          updateDocumentContent( filePath );
-        }
-
-        content->deleteLater();
-      };
+      mContent = mFileWidget->externalStorage()->fetch( resolvedPath, storageAuthConfigId() );
 
 #ifdef WITH_QTWEBKIT
       mWebView->setVisible( false );
@@ -355,15 +331,48 @@ void QgsExternalResourceWidget::loadDocument( const QString &path )
       mErrorLabel->setVisible( false );
       mLoadingLabel->setVisible( true );
       mLoadingMovie->start();
-      connect( content, &QgsExternalStorageFetchedContent::fetched, onFetchFinished );
-      connect( content, &QgsExternalStorageFetchedContent::errorOccurred, onFetchFinished );
-      connect( content, &QgsExternalStorageFetchedContent::canceled, onFetchFinished );
+      connect( mContent, &QgsExternalStorageFetchedContent::fetched, this, &QgsExternalResourceWidget::onFetchFinished );
+      connect( mContent, &QgsExternalStorageFetchedContent::errorOccurred, this, &QgsExternalResourceWidget::onFetchFinished );
+      connect( mContent, &QgsExternalStorageFetchedContent::canceled, this, &QgsExternalResourceWidget::onFetchFinished );
 
-      content->fetch();
+      mContent->fetch();
     }
     else
     {
       updateDocumentContent( resolvedPath );
     }
   }
+}
+
+void QgsExternalResourceWidget::onFetchFinished()
+{
+  QgsExternalStorageFetchedContent *content = qobject_cast<QgsExternalStorageFetchedContent *>( sender() );
+
+  if ( content == mContent && mContent->status() == Qgis::ContentStatus::Failed )
+  {
+#ifdef WITH_QTWEBKIT
+    mWebView->setVisible( false );
+#endif
+    mPixmapLabel->setVisible( false );
+    mLoadingLabel->setVisible( false );
+    mLoadingMovie->stop();
+    mErrorLabel->setVisible( true );
+
+    if ( messageBar() )
+    {
+      messageBar()->pushWarning( tr( "Fetching External Resource" ),
+                                 tr( "Error while fetching external resource '%1' : %2" ).arg(
+                                   mFileWidget->filePath(), mContent->errorString() ) );
+    }
+  }
+  else if ( content == mContent && mContent->status() == Qgis::ContentStatus::Finished )
+  {
+    const QString filePath = mDocumentViewerContent == Web
+                             ? QString( "file://%1" ).arg( mContent->filePath() )
+                             : mContent->filePath();
+
+    updateDocumentContent( filePath );
+  }
+
+  content->deleteLater();
 }

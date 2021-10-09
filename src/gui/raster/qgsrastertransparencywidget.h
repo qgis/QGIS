@@ -35,7 +35,7 @@ class QgsPointXY;
  * \ingroup gui
  * \brief Widget to control a layers transparency and related options
  */
-class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, private QgsExpressionContextGenerator, private Ui::QgsRasterTransparencyWidget
+class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, private QgsExpressionContextGenerator, public Ui::QgsRasterTransparencyWidget
 {
     Q_OBJECT
   public:
@@ -52,6 +52,12 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
     void setContext( const QgsSymbolWidgetContext &context );
 
     QgsExpressionContext createExpressionContext() const override;
+
+    /**
+     * Returns the (possibly nullptr) map pixel selector tool.
+     * \since QGIS 3.22
+     */
+    QgsMapToolEmitPoint *pixelSelectorTool() const;
 
   public slots:
 

@@ -97,6 +97,14 @@ Emitted when data is received.
 .. versionadded:: 3.2
 %End
 
+    void errorOccurred( QNetworkReply::NetworkError code, const QString &errorMsg );
+%Docstring
+Emitted when an error with ``code`` error occurred while processing the request
+``errorMsg`` is a textual description of the error
+
+.. versionadded:: 3.22
+%End
+
 };
 
 /************************************************************************

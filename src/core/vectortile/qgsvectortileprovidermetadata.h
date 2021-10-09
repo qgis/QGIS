@@ -40,6 +40,11 @@ class QgsVectorTileProviderMetadata : public QgsProviderMetadata
     void deleteConnection( const QString &name ) override;
     void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name ) override;
 
+    ProviderCapabilities providerCapabilities() const override;
+
+    QVariantMap decodeUri( const QString &uri ) const override;
+    QString encodeUri( const QVariantMap &parts ) const override;
+
 };
 
 ///@endcond

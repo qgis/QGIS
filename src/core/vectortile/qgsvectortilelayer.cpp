@@ -36,8 +36,9 @@
 #include <QUrl>
 #include <QUrlQuery>
 
-QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseName )
+QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseName, const LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::VectorTileLayer, baseName )
+  , mTransformContext( options.transformContext )
 {
   mDataSource = uri;
 
@@ -47,6 +48,15 @@ QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseN
   QgsVectorTileBasicRenderer *renderer = new QgsVectorTileBasicRenderer;
   renderer->setStyles( QgsVectorTileBasicRenderer::simpleStyleWithRandomColors() );
   setRenderer( renderer );
+}
+
+void QgsVectorTileLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &, const QgsDataProvider::ProviderOptions &, QgsDataProvider::ReadFlags )
+{
+  mDataSource = dataSource;
+  mLayerName = baseName;
+  mDataProvider.reset();
+
+  setValid( loadDataSource() );
 }
 
 bool QgsVectorTileLayer::loadDataSource()
@@ -119,6 +129,12 @@ bool QgsVectorTileLayer::loadDataSource()
   }
 
   setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+
+  const QgsDataProvider::ProviderOptions providerOptions { mTransformContext };
+  const QgsDataProvider::ReadFlags flags;
+  mDataProvider.reset( new QgsVectorTileDataProvider( providerOptions, flags ) );
+  mProviderKey = mDataProvider->name();
+
   return true;
 }
 
@@ -192,9 +208,20 @@ QgsVectorTileLayer::~QgsVectorTileLayer() = default;
 
 QgsVectorTileLayer *QgsVectorTileLayer::clone() const
 {
-  QgsVectorTileLayer *layer = new QgsVectorTileLayer( source(), name() );
+  const QgsVectorTileLayer::LayerOptions options( mTransformContext );
+  QgsVectorTileLayer *layer = new QgsVectorTileLayer( source(), name(), options );
   layer->setRenderer( renderer() ? renderer()->clone() : nullptr );
   return layer;
+}
+
+QgsDataProvider *QgsVectorTileLayer::dataProvider()
+{
+  return mDataProvider.get();
+}
+
+const QgsDataProvider *QgsVectorTileLayer::dataProvider() const
+{
+  return mDataProvider.get();
 }
 
 QgsMapLayerRenderer *QgsVectorTileLayer::createMapRenderer( QgsRenderContext &rendererContext )
@@ -218,6 +245,15 @@ bool QgsVectorTileLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
 {
   QDomElement mapLayerNode = layerNode.toElement();
   mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::VectorTileLayer ) );
+
+  // add provider node
+  if ( mDataProvider )
+  {
+    QDomElement provider  = doc.createElement( QStringLiteral( "provider" ) );
+    const QDomText providerText = doc.createTextNode( providerType() );
+    provider.appendChild( providerText );
+    mapLayerNode.appendChild( provider );
+  }
 
   writeStyleManager( layerNode, doc );
 
@@ -351,7 +387,10 @@ bool QgsVectorTileLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
 
 void QgsVectorTileLayer::setTransformContext( const QgsCoordinateTransformContext &transformContext )
 {
-  Q_UNUSED( transformContext )
+  if ( mDataProvider )
+    mDataProvider->setTransformContext( transformContext );
+
+  mTransformContext = transformContext;
   invalidateWgs84Extent();
 }
 
@@ -594,21 +633,16 @@ QString QgsVectorTileLayer::htmlMetadata() const
 
   QString info = QStringLiteral( "<html><head></head>\n<body>\n" );
 
+  info += generalHtmlMetadata();
+
   info += QStringLiteral( "<h1>" ) + tr( "Information from provider" ) + QStringLiteral( "</h1>\n<hr>\n" ) %
-          QStringLiteral( "<table class=\"list-view\">\n" ) %
+          QStringLiteral( "<table class=\"list-view\">\n" );
 
-          // name
-          QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Name" ) % QStringLiteral( "</td><td>" ) % name() % QStringLiteral( "</td></tr>\n" );
-
-  info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "URI" ) % QStringLiteral( "</td><td>" ) % source() % QStringLiteral( "</td></tr>\n" );
   info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Source type" ) % QStringLiteral( "</td><td>" ) % sourceType() % QStringLiteral( "</td></tr>\n" );
-
-  const QString url = sourcePath();
-  info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Source path" ) % QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl( url ).toString(), sourcePath() ) ) + QStringLiteral( "</td></tr>\n" );
 
   info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Zoom levels" ) % QStringLiteral( "</td><td>" ) % QStringLiteral( "%1 - %2" ).arg( sourceMinZoom() ).arg( sourceMaxZoom() ) % QStringLiteral( "</td></tr>\n" );
 
-  info += QLatin1String( "</table>\n<br><br>" );
+  info += QLatin1String( "</table>\n<br>" );
 
   // CRS
   info += crsHtmlMetadata();
@@ -616,17 +650,17 @@ QString QgsVectorTileLayer::htmlMetadata() const
   // Identification section
   info += QStringLiteral( "<h1>" ) % tr( "Identification" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
           htmlFormatter.identificationSectionHtml() %
-          QStringLiteral( "<br><br>\n" ) %
+          QStringLiteral( "<br>\n" ) %
 
           // extent section
           QStringLiteral( "<h1>" ) % tr( "Extent" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
           htmlFormatter.extentSectionHtml( ) %
-          QStringLiteral( "<br><br>\n" ) %
+          QStringLiteral( "<br>\n" ) %
 
           // Start the Access section
           QStringLiteral( "<h1>" ) % tr( "Access" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
           htmlFormatter.accessSectionHtml( ) %
-          QStringLiteral( "<br><br>\n" ) %
+          QStringLiteral( "<br>\n" ) %
 
 
           // Start the contacts section
@@ -637,12 +671,12 @@ QString QgsVectorTileLayer::htmlMetadata() const
           // Start the links section
           QStringLiteral( "<h1>" ) % tr( "References" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
           htmlFormatter.linksSectionHtml( ) %
-          QStringLiteral( "<br><br>\n" ) %
+          QStringLiteral( "<br>\n" ) %
 
           // Start the history section
           QStringLiteral( "<h1>" ) % tr( "History" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
           htmlFormatter.historySectionHtml( ) %
-          QStringLiteral( "<br><br>\n" ) %
+          QStringLiteral( "<br>\n" ) %
 
           QStringLiteral( "\n</body>\n</html>\n" );
 
@@ -686,3 +720,41 @@ QgsVectorTileLabeling *QgsVectorTileLayer::labeling() const
 {
   return mLabeling.get();
 }
+
+
+
+//
+// QgsVectorTileDataProvider
+//
+///@cond PRIVATE
+QgsVectorTileDataProvider::QgsVectorTileDataProvider(
+  const ProviderOptions &options,
+  QgsDataProvider::ReadFlags flags )
+  : QgsDataProvider( QString(), options, flags )
+{}
+
+QgsCoordinateReferenceSystem QgsVectorTileDataProvider::crs() const
+{
+  return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) );
+}
+
+QString QgsVectorTileDataProvider::name() const
+{
+  return QStringLiteral( "vectortile" );
+}
+
+QString QgsVectorTileDataProvider::description() const
+{
+  return QString();
+}
+
+QgsRectangle QgsVectorTileDataProvider::extent() const
+{
+  return QgsRectangle();
+}
+
+bool QgsVectorTileDataProvider::isValid() const
+{
+  return true;
+}
+///@endcond

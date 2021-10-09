@@ -20,10 +20,10 @@
 #define QGSVECTORLAYERTEMPORALPROPERTIES_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgis_sip.h"
 #include "qgsrange.h"
 #include "qgsmaplayertemporalproperties.h"
-#include "qgsrasterdataprovidertemporalcapabilities.h"
 #include "qgsunittypes.h"
 
 class QgsVectorLayer;
@@ -84,31 +84,34 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
     QgsDateTimeRange calculateTemporalExtent( QgsMapLayer *layer ) const override SIP_SKIP;
 
     /**
-     * Mode of the vector temporal properties
-     */
-    enum TemporalMode
-    {
-      ModeFixedTemporalRange = 0, //!< Mode when temporal properties have fixed start and end datetimes.
-      ModeFeatureDateTimeInstantFromField, //!< Mode when features have a datetime instant taken from a single field
-      ModeFeatureDateTimeStartAndEndFromFields, //!< Mode when features have separate fields for start and end times
-      ModeFeatureDateTimeStartAndDurationFromFields, //!< Mode when features have a field for start time and a field for event duration
-      ModeFeatureDateTimeStartAndEndFromExpressions, //!< Mode when features use expressions for start and end times
-      ModeRedrawLayerOnly, //!< Redraw the layer when temporal range changes, but don't apply any filtering. Useful when symbology or rule based renderer expressions depend on the time range.
-    };
-
-    /**
      * Returns the temporal properties mode.
      *
      *\see setMode()
     */
-    TemporalMode mode() const;
+    Qgis::VectorTemporalMode mode() const;
 
     /**
      * Sets the temporal properties \a mode.
      *
      *\see mode()
     */
-    void setMode( TemporalMode mode );
+    void setMode( Qgis::VectorTemporalMode mode );
+
+    /**
+     * Returns the temporal limit mode (to include or exclude begin/end limits).
+     *
+     * \see setLimitMode()
+     * \since QGIS 3.22
+    */
+    Qgis::VectorTemporalLimitMode limitMode() const;
+
+    /**
+     * Sets the temporal \a limit mode (to include or exclude begin/end limits).
+     *
+     * \see limitMode()
+     * \since QGIS 3.22
+    */
+    void setLimitMode( Qgis::VectorTemporalLimitMode mode );
 
     /**
      * Returns flags associated to the temporal property.
@@ -340,7 +343,10 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
   private:
 
     //! Temporal layer mode.
-    TemporalMode mMode = ModeFixedTemporalRange;
+    Qgis::VectorTemporalMode mMode = Qgis::VectorTemporalMode::FixedTemporalRange;
+
+    //! How to handle the limits of the timeframe (include or exclude)
+    Qgis::VectorTemporalLimitMode mLimitMode = Qgis::VectorTemporalLimitMode::IncludeBeginExcludeEnd;
 
     //! Represents fixed temporal range.
     QgsDateTimeRange mFixedRange;

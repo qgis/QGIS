@@ -326,15 +326,14 @@ void QgsOptionsDialogBase::setCurrentPage( const QString &page )
 
 void QgsOptionsDialogBase::addPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget, const QStringList &path )
 {
-  QListWidgetItem *item = new QListWidgetItem();
-  item->setIcon( icon );
-  item->setText( title );
-  item->setToolTip( tooltip );
-
   int newPage = -1;
 
   if ( mOptListWidget )
   {
+    QListWidgetItem *item = new QListWidgetItem();
+    item->setIcon( icon );
+    item->setText( title );
+    item->setToolTip( tooltip );
     mOptListWidget->addItem( item );
   }
   else if ( mOptTreeModel )
@@ -409,13 +408,12 @@ void QgsOptionsDialogBase::insertPage( const QString &title, const QString &tool
     {
       //found the "before" page
 
-      QListWidgetItem *item = new QListWidgetItem();
-      item->setIcon( icon );
-      item->setText( title );
-      item->setToolTip( tooltip );
-
       if ( mOptListWidget )
       {
+        QListWidgetItem *item = new QListWidgetItem();
+        item->setIcon( icon );
+        item->setText( title );
+        item->setToolTip( tooltip );
         mOptListWidget->insertItem( page, item );
       }
       else if ( mOptTreeModel )

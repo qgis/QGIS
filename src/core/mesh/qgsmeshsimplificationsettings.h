@@ -29,7 +29,7 @@ SIP_NO_FILE
 /**
  * \ingroup core
  *
- * \brief Represents a overview renderer settings
+ * \brief Represents an overview renderer settings
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -51,11 +51,11 @@ class CORE_EXPORT QgsMeshSimplificationSettings
 
     /**
      * Sets the reduction factor used to build simplified mesh.
-     * The triangles count of the simplified mesh equals apromativly the triangles count of base mesh divised by this factor.
-     * This reduction factor is used for simplification of each successive simplified mesh. For  example, if the base mesh has 5M faces,
-     * and the reduction factor is 10, the first simplified mesh will have approximativly 500 000 faces, the second 50 000 faces,
+     * The triangles count of the simplified mesh equals approximately the triangles count of base mesh divided by this factor.
+     * This reduction factor is used for simplification of each successive simplified mesh. For example, if the base mesh has 5M faces,
+     * and the reduction factor is 10, the first simplified mesh will have approximately 500 000 faces, the second 50 000 faces,
      * the third 5000, ...
-     * If highter reduction factor leads to simpler meshes, it produces also fewer levels of detail.
+     * If higher reduction factor leads to simpler meshes, it produces also fewer levels of detail.
      * The reduction factor has to be strictly greater than 1. If not, the simplification processus will render nothing.
      */
     void setReductionFactor( double value );
@@ -65,13 +65,13 @@ class CORE_EXPORT QgsMeshSimplificationSettings
     //! Reads configuration from the given DOM element
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
-    //! Returns the mesh resolution e.i., the minimum size (average) of triangles in pixels
+    //! Returns the mesh resolution i.e., the minimum size (average) of triangles in pixels
     int meshResolution() const;
 
     /**
-     * Sets the mesh resolution e.i., the minimum size (average) of triangles in pixels
-     * This value is used during map rendering to choose the most appropriate mesh from he list of simplified mesh.
-     * The first mesh which has its average triangle size greater this value will be chosen.
+     * Sets the mesh resolution i.e., the minimum size (average) of triangles in pixels
+     * This value is used during map rendering to choose the most appropriate mesh from the list of simplified meshes.
+     * The first mesh which has its average triangle size greater than this value will be chosen.
      */
     void setMeshResolution( int meshResolution );
 

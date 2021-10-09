@@ -24,6 +24,7 @@ email                : tim at linfiniti.com
 #include "qgslayermetadataformatter.h"
 #include "qgslogger.h"
 #include "qgsmaplayerlegend.h"
+#include "qgsmaplayerutils.h"
 #include "qgsmaptopixel.h"
 #include "qgsmessagelog.h"
 #include "qgsmultibandcolorrenderer.h"
@@ -325,45 +326,12 @@ QString QgsRasterLayer::htmlMetadata() const
   const QgsLayerMetadataFormatter htmlFormatter( metadata() );
   QString myMetadata = QStringLiteral( "<html><head></head>\n<body>\n" );
 
+  myMetadata += generalHtmlMetadata();
+
   // Begin Provider section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Information from provider" ) + QStringLiteral( "</h1>\n<hr>\n" ) %
-                QStringLiteral( "<table class=\"list-view\">\n" ) %
-
-                // name
-                QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Name" ) % QStringLiteral( "</td><td>" ) % name() % QStringLiteral( "</td></tr>\n" );
-
-  // local path
-  QVariantMap uriComponents = QgsProviderRegistry::instance()->decodeUri( mProviderKey, publicSource() );
-  QString path;
-  bool isLocalPath = false;
-  if ( uriComponents.contains( QStringLiteral( "path" ) ) )
-  {
-    path = uriComponents[QStringLiteral( "path" )].toString();
-    if ( QFile::exists( path ) )
-    {
-      isLocalPath = true;
-      myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Path" ) % QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( path ).toString(), QDir::toNativeSeparators( path ) ) ) + QStringLiteral( "</td></tr>\n" );
-    }
-  }
-  if ( uriComponents.contains( QStringLiteral( "url" ) ) )
-  {
-    const QString url = uriComponents[QStringLiteral( "url" )].toString();
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "URL" ) % QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl( url ).toString(), url ) ) + QStringLiteral( "</td></tr>\n" );
-  }
-
-  // data source
-  if ( publicSource() != path || !isLocalPath )
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Source" ) + QStringLiteral( "</td><td>%1" ).arg( publicSource() != path ? publicSource() : path ) + QStringLiteral( "</td></tr>\n" );
-
-  myMetadata += QLatin1String( "</table>\n<br><br>" );
-
-  // CRS
-  myMetadata += crsHtmlMetadata();
-
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Properties" ) + QStringLiteral( "</h1>\n<hr>\n" ) + QStringLiteral( "<table class=\"list-view\">\n" );
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "Information from provider" ) + QStringLiteral( "</h1>\n<hr>\n" ) + QStringLiteral( "<table class=\"list-view\">\n" );
 
   myMetadata += QStringLiteral( "\n" ) %
-
                 // Extent
                 QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Extent" ) % QStringLiteral( "</td><td>" ) % extent().toString() % QStringLiteral( "</td></tr>\n" ) %
 
@@ -430,10 +398,13 @@ QString QgsRasterLayer::htmlMetadata() const
                 mDataProvider->htmlMetadata() %
 
                 // End Provider section
-                QStringLiteral( "</table>\n<br><br>" ) %
+                QStringLiteral( "</table>\n<br><br>" );
 
-                // Identification section
-                QStringLiteral( "<h1>" ) % tr( "Identification" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
+  // CRS
+  myMetadata += crsHtmlMetadata();
+
+  // Identification section
+  myMetadata += QStringLiteral( "<h1>" ) % tr( "Identification" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
                 htmlFormatter.identificationSectionHtml() %
                 QStringLiteral( "<br><br>\n" ) %
 
@@ -614,7 +585,7 @@ void QgsRasterLayer::init()
 {
   mRasterType = QgsRasterLayer::GrayOrUndefined;
 
-  setLegend( QgsMapLayerLegend::defaultRasterLegend( this ) );
+  whileBlocking( this )->setLegend( QgsMapLayerLegend::defaultRasterLegend( this ) );
 
   setRendererForDrawingStyle( QgsRaster::UndefinedDrawingStyle );
 
@@ -2259,7 +2230,7 @@ bool QgsRasterLayer::writeXml( QDomNode &layer_node,
     noDataRangeList.setAttribute( QStringLiteral( "useSrcNoData" ), mDataProvider->useSourceNoDataValue( bandNo ) );
 
     const auto constUserNoDataValues = mDataProvider->userNoDataValues( bandNo );
-    for ( const QgsRasterRange range : constUserNoDataValues )
+    for ( const QgsRasterRange &range : constUserNoDataValues )
     {
       QDomElement noDataRange = document.createElement( QStringLiteral( "noDataRange" ) );
 
@@ -2277,6 +2248,8 @@ bool QgsRasterLayer::writeXml( QDomNode &layer_node,
   }
 
   writeStyleManager( layer_node, document );
+
+  serverProperties()->writeXml( layer_node, document );
 
   //write out the symbology
   QString errorMsg;

@@ -69,12 +69,21 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     //! Constructor with a specified layer \a meshLayer
     QgsMeshEditor( QgsMeshLayer *meshLayer );
 
-    //! Constructoe with a specific mesh \a nativeMesh and an associatd triangular mesh \a triangularMesh
+    //! Constructor with a specific mesh \a nativeMesh and an associatd triangular mesh \a triangularMesh
     QgsMeshEditor( QgsMesh *nativeMesh, QgsTriangularMesh *triangularMesh, QObject *parent = nullptr ); SIP_SKIP
     ~QgsMeshEditor();
 
+    /**
+     * Creates and returns a scalar dataset group with value on vertex that is can be used to access the Z value of the edited mesh.
+     * The caller takes ownership.
+     */
+    QgsMeshDatasetGroup *createZValueDatasetGroup() SIP_TRANSFERBACK;
+
     //! Initialize the mesh editor and return errors if the internal native mesh have topologic errors
     QgsMeshEditingError initialize();
+
+    //! Resets the triangular mesh
+    void resetTriangularMesh( QgsTriangularMesh *triangularMesh ); SIP_SKIP
 
     //! Returns TRUE if a \a face can be added to the mesh
     bool faceCanBeAdded( const QgsMeshFace &face );
@@ -153,10 +162,31 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     void changeZValues( const QList<int> &verticesIndexes, const QList<double> &newValues );
 
     /**
+     * Returns TRUE if faces with index in \a transformedFaces can be transformed without obtaining topologic or geometrical errors
+     * condidering the transform function \a transformFunction
+     *
+     * The transform function takes a vertex index in parameter and return a QgsMeshVertex object with transformed coordinates.
+     * This transformation is done in layer coordinates
+     *
+     * \note Even only the faces with indexes in \a transformdFaces are checked to avoid testing all the mesh,
+     * all the mesh are supposed to path through this transform function (but it is possible that transform function is not able to transform all vertices).
+     * Moving free vertices of the mesh are also checked.
+     */
+    bool canBeTransformed( const QList<int> &facesToCheck, const std::function<const QgsMeshVertex( int )> &transformFunction ) const; SIP_SKIP
+
+    /**
      * Changes the (X,Y) coordinates values of the vertices with indexes in \a vertices indexes with the values in \a newValues.
-     * The caller has the responsibility to check if changing the vertices coordinates does not lead to topological errors
+     * The caller has the responsibility to check if changing the vertices coordinates does not lead to topological errors.
+     * New values are in layer CRS.
      */
     void changeXYValues( const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues );
+
+    /**
+     * Changes the (X,Y,Z) coordinates values of the vertices with indexes in \a vertices indexes with the values in \a newValues.
+     * The caller has the responsibility to check if changing the vertices coordinates does not lead to topological errors
+     * New coordinates are in layer CRS.
+     */
+    void changeCoordinates( const QList<int> &verticesIndexes, const QList<QgsPoint> &newCoordinates );
 
     /**
      * Applies an advance editing on the edited mesh, see QgsMeshAdvancedEditing
@@ -172,10 +202,19 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     //! Returns whether the mesh has been modified
     bool isModified() const;
 
+    /**
+     * Reindexes the mesh, that is remove unusued index of face and vertices, this operation void the undo/redo stack.
+     *
+     * If \a renumbering is true, a renumbering is operated to optimize the vertices indexes.
+     *
+     * Returns FALSE if the operation fail.
+     */
+    bool reindex( bool renumbering );
+
     //----------- access element methods
 
     //! Returns all the free vertices indexes
-    QList<int> freeVerticesIndexes();
+    QList<int> freeVerticesIndexes() const;
 
     //! Returns whether the vertex with index \a vertexIndex is on a boundary
     bool isVertexOnBoundary( int vertexIndex ) const;
@@ -195,8 +234,23 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     //! Returns a reference to the topological mesh
     QgsTopologicalMesh &topologicalMesh(); SIP_SKIP
 
+    //! Returns a pointer to the triangular mesh
+    QgsTriangularMesh *triangularMesh(); SIP_SKIP
+
     //! Return TRUE if the edited mesh is consistent
     bool checkConsistency() const;
+
+    /**
+     * Returns TRUE if an edge of face is closest than the tolerance from the \a point in triangular mesh coordinate
+     * Returns also the face index and the edge position in \a faceIndex and \a edgePosition
+     */
+    bool edgeIsClose( QgsPointXY point, double tolerance, int &faceIndex, int &edgePosition );
+
+    //! Returns the count of valid faces, that is non void faces in the mesh
+    int validFacesCount() const;
+
+    //! Returns the count of valid vertices, that is non void vertices in the mesh
+    int validVerticesCount() const;
 
   signals:
     //! Emitted when the mesh is edited
@@ -207,6 +261,9 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     QgsTopologicalMesh mTopologicalMesh;
     QgsTriangularMesh *mTriangularMesh = nullptr;
     int mMaximumVerticesPerFace = 0;
+    QgsMeshDatasetGroup *mZValueDatasetGroup = nullptr;
+    int mValidVerticesCount = 0;
+    int mValidFacesCount = 0;
 
     QVector<QgsMeshFace> prepareFaces( const QVector<QgsMeshFace> &faces, QgsMeshEditingError &error );
 
@@ -221,7 +278,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     void applyEdit( Edit &edit );
     void reverseEdit( Edit &edit );
 
-    void applyAddVertex( Edit &edit, const QgsMeshVertex &vertex );
+    void applyAddVertex( Edit &edit, const QgsMeshVertex &vertex, double tolerance );
     void applyRemoveVertexFillHole( Edit &edit, int vertexIndex );
     void applyRemoveVerticesWithoutFillHole( QgsMeshEditor::Edit &edit, const QList<int> &verticesIndexes );
     void applyAddFaces( Edit &edit, const QgsTopologicalMesh::TopologicalFaces &faces );
@@ -235,6 +292,8 @@ class CORE_EXPORT QgsMeshEditor : public QObject
 
     void applyEditOnTriangularMesh( Edit &edit, const QgsTopologicalMesh::Changes &topologicChanges );
 
+    void updateElementsCount( const QgsTopologicalMesh::Changes &changes, bool apply = true );
+
     friend class TestQgsMeshEditor;
     friend class QgsMeshLayerUndoCommandMeshEdit;
     friend class QgsMeshLayerUndoCommandAddVertices;
@@ -244,6 +303,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     friend class QgsMeshLayerUndoCommandSetZValue;
     friend class QgsMeshLayerUndoCommandChangeZValue;
     friend class QgsMeshLayerUndoCommandChangeXYValue;
+    friend class QgsMeshLayerUndoCommandChangeCoordinates;
     friend class QgsMeshLayerUndoCommandFlipEdge;
     friend class QgsMeshLayerUndoCommandMerge;
     friend class QgsMeshLayerUndoCommandSplitFaces;
@@ -287,11 +347,12 @@ class QgsMeshLayerUndoCommandAddVertices : public QgsMeshLayerUndoCommandMeshEdi
   public:
 
     //! Constructor with the associated \a meshEditor and \a vertices that will be added
-    QgsMeshLayerUndoCommandAddVertices( QgsMeshEditor *meshEditor, const QVector<QgsMeshVertex> &vertices );
+    QgsMeshLayerUndoCommandAddVertices( QgsMeshEditor *meshEditor, const QVector<QgsMeshVertex> &vertices, double tolerance );
     void redo() override;
 
   private:
     QVector<QgsMeshVertex> mVertices;
+    double mTolerance = 0;
 };
 
 /**
@@ -395,6 +456,29 @@ class QgsMeshLayerUndoCommandChangeXYValue : public QgsMeshLayerUndoCommandMeshE
   private:
     QList<int> mVerticesIndexes;
     QList<QgsPointXY> mNewValues;
+};
+
+/**
+ * \ingroup core
+ *
+ * \brief  Class for undo/redo command for changing coordinate (X,Y,Z) values of vertices
+ *
+ * \since QGIS 3.22
+ */
+class QgsMeshLayerUndoCommandChangeCoordinates : public QgsMeshLayerUndoCommandMeshEdit
+{
+  public:
+
+    /**
+     * Constructor with the associated \a meshEditor and indexes \a verticesIndexes of the vertices that will have
+     * the coordinate (X,Y,Z) values changed with \a newCoordinates
+     */
+    QgsMeshLayerUndoCommandChangeCoordinates( QgsMeshEditor *meshEditor, const QList<int> &verticesIndexes, const QList<QgsPoint> &newCoordinates );
+    void redo() override;
+
+  private:
+    QList<int> mVerticesIndexes;
+    QList<QgsPoint> mNewCoordinates;
 };
 
 /**

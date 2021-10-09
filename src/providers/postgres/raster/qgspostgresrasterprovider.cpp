@@ -1095,7 +1095,8 @@ bool QgsPostgresRasterProvider::init()
         QgsPolygon p;
         // Strip \x
         const QByteArray hexAscii { result.PQgetvalue( 0, 5 ).toLatin1().mid( 2 ) };
-        QgsConstWkbPtr ptr { QByteArray::fromHex( hexAscii ) };
+        const QByteArray hexBin = QByteArray::fromHex( hexAscii );
+        QgsConstWkbPtr ptr { hexBin };
 
         if ( hexAscii.isEmpty() || ! p.fromWkb( ptr ) )
         {
@@ -1418,7 +1419,7 @@ bool QgsPostgresRasterProvider::initFieldsAndTemporal( )
           mTemporalFieldIndex = temporalFieldIndex;
           temporalCapabilities()->setHasTemporalCapabilities( true );
           temporalCapabilities()->setAvailableTemporalRange( { minTime, maxTime } );
-          temporalCapabilities()->setIntervalHandlingMethod( QgsRasterDataProviderTemporalCapabilities::FindClosestMatchToStartOfRange );
+          temporalCapabilities()->setIntervalHandlingMethod( Qgis::TemporalIntervalMatchMethod::FindClosestMatchToStartOfRange );
           QgsDebugMsgLevel( QStringLiteral( "Raster temporal range for field %1: %2 - %3" ).arg( QString::number( mTemporalFieldIndex ), minTime.toString(), maxTime.toString() ), 3 );
 
           if ( mUri.hasParam( QStringLiteral( "temporalDefaultTime" ) ) )

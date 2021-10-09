@@ -133,6 +133,7 @@ set(QGIS_CORE_SRCS
   externalstorage/qgsexternalstorage.cpp
   externalstorage/qgsexternalstorageregistry.cpp
   externalstorage/qgssimplecopyexternalstorage.cpp
+  externalstorage/qgswebdavexternalstorage.cpp
 
   layertree/qgscolorramplegendnode.cpp
   layertree/qgscolorramplegendnodesettings.cpp
@@ -173,6 +174,8 @@ set(QGIS_CORE_SRCS
   auth/qgsauthmethodregistry.cpp
 
   annotations/qgsannotation.cpp
+  annotations/qgsannotationitem.cpp
+  annotations/qgsannotationitemeditoperation.cpp
   annotations/qgsannotationitemregistry.cpp
   annotations/qgsannotationlayer.cpp
   annotations/qgsannotationlayerrenderer.cpp
@@ -182,6 +185,7 @@ set(QGIS_CORE_SRCS
   annotations/qgsannotationpointtextitem.cpp
   annotations/qgsannotationpolygonitem.cpp
   annotations/qgshtmlannotation.cpp
+  annotations/qgsrenderedannotationitemdetails.cpp
   annotations/qgssvgannotation.cpp
   annotations/qgstextannotation.cpp
 
@@ -395,6 +399,8 @@ set(QGIS_CORE_SRCS
   qgsmaplayerlegend.cpp
   qgsmaplayermodel.cpp
   qgsmaplayerproxymodel.cpp
+  qgsmaplayerrenderer.cpp
+  qgsmaplayerserverproperties.cpp
   qgsmaplayerstore.cpp
   qgsmaplayerstyle.cpp
   qgsmaplayerstylemanager.cpp
@@ -440,12 +446,14 @@ set(QGIS_CORE_SRCS
   qgsreadwritelocker.cpp
   qgsrelation.cpp
   qgspolymorphicrelation.cpp
+  qgsrecentstylehandler.cpp
   qgsrelationcontext.cpp
   qgsweakrelation.cpp
   qgsrelationmanager.cpp
   qgsremappingproxyfeaturesink.cpp
   qgsrenderchecker.cpp
   qgsrendercontext.cpp
+  qgsrendereditemdetails.cpp
   qgsrunprocess.cpp
   qgsruntimeprofiler.cpp
   qgsscalecalculator.cpp
@@ -586,6 +594,7 @@ set(QGIS_CORE_SRCS
   maprenderer/qgsmaprenderersequentialjob.cpp
   maprenderer/qgsmaprendererstagedrenderjob.cpp
   maprenderer/qgsmaprenderertask.cpp
+  maprenderer/qgsrendereditemresults.cpp
 
   pal/costcalculator.cpp
   pal/feature.cpp
@@ -691,6 +700,7 @@ set(QGIS_CORE_SRCS
   mesh/qgsmeshvirtualdatasetgroup.cpp
   mesh/qgstopologicalmesh.cpp
   mesh/qgsmeshadvancedediting.cpp
+  mesh/qgsmeshforcebypolylines.cpp
 
   pointcloud/qgspointcloudattribute.cpp
   pointcloud/qgspointcloudattributebyramprenderer.cpp
@@ -800,7 +810,6 @@ set(QGIS_CORE_SRCS
   vector/qgsvectorlayerjoinbuffer.cpp
   vector/qgsvectorlayerjoininfo.cpp
   vector/qgsvectorlayerrenderer.cpp
-  vector/qgsvectorlayerserverproperties.cpp
   vector/qgsvectorlayertemporalproperties.cpp
   vector/qgsvectorlayertools.cpp
   vector/qgsvectorlayerundocommand.cpp
@@ -1026,6 +1035,7 @@ set(QGIS_CORE_HDRS
   qgsmaplayerproxymodel.h
   qgsmaplayerref.h
   qgsmaplayerrenderer.h
+  qgsmaplayerserverproperties.h
   qgsmaplayerstore.h
   qgsmaplayerstyle.h
   qgsmaplayerstylemanager.h
@@ -1073,6 +1083,7 @@ set(QGIS_CORE_HDRS
   qgsrange.h
   qgsreadwritecontext.h
   qgsreadwritelocker.h
+  qgsrecentstylehandler.h
   qgsrelation.h
   qgspolymorphicrelation.h
   qgsrelationcontext.h
@@ -1082,6 +1093,7 @@ set(QGIS_CORE_HDRS
   qgsrenderchecker.h
   qgsrendercontext.h
   qgsrenderedfeaturehandlerinterface.h
+  qgsrendereditemdetails.h
   qgsrunprocess.h
   qgsruntimeprofiler.h
   qgsscalecalculator.h
@@ -1146,6 +1158,8 @@ set(QGIS_CORE_HDRS
 
   annotations/qgsannotation.h
   annotations/qgsannotationitem.h
+  annotations/qgsannotationitemeditoperation.h
+  annotations/qgsannotationitemnode.h
   annotations/qgsannotationitemregistry.h
   annotations/qgsannotationlayer.h
   annotations/qgsannotationlayerrenderer.h
@@ -1156,6 +1170,7 @@ set(QGIS_CORE_HDRS
   annotations/qgsannotationpolygonitem.h
   annotations/qgsannotationregistry.h
   annotations/qgshtmlannotation.h
+  annotations/qgsrenderedannotationitemdetails.h
   annotations/qgssvgannotation.h
   annotations/qgstextannotation.h
 
@@ -1231,6 +1246,7 @@ set(QGIS_CORE_HDRS
   expression/qgsexpressionfunction.h
   expression/qgsexpressionnode.h
   expression/qgsexpressionnodeimpl.h
+  expression/qgsexpressionutils.h
 
   fieldformatter/qgscheckboxfieldformatter.h
   fieldformatter/qgsdatetimefieldformatter.h
@@ -1401,6 +1417,7 @@ set(QGIS_CORE_HDRS
   maprenderer/qgsmaprenderersequentialjob.h
   maprenderer/qgsmaprendererstagedrenderjob.h
   maprenderer/qgsmaprenderertask.h
+  maprenderer/qgsrendereditemresults.h
 
   mesh/qgsmesh3daveraging.h
   mesh/qgsmesheditor.h
@@ -1426,6 +1443,7 @@ set(QGIS_CORE_HDRS
   mesh/qgsmeshvirtualdatasetgroup.h
   mesh/qgstopologicalmesh.h
   mesh/qgsmeshadvancedediting.h
+  mesh/qgsmeshforcebypolylines.h
 
   pal/costcalculator.h
   pal/feature.h
@@ -1716,7 +1734,6 @@ set(QGIS_CORE_HDRS
   vector/qgsvectorlayerjoinbuffer.h
   vector/qgsvectorlayerjoininfo.h
   vector/qgsvectorlayerrenderer.h
-  vector/qgsvectorlayerserverproperties.h
   vector/qgsvectorlayertemporalproperties.h
   vector/qgsvectorlayertools.h
   vector/qgsvectorlayerundocommand.h
@@ -1750,8 +1767,8 @@ set(QGIS_CORE_PRIVATE_HDRS
   qgsspatialindexkdbush_p.h
 
   editform/qgseditformconfig_p.h
-
   externalstorage/qgssimplecopyexternalstorage_p.h
+  externalstorage/qgswebdavexternalstorage_p.h
 
   proj/qgscoordinatereferencesystem_p.h
   proj/qgscoordinatetransformcontext_p.h
@@ -2070,7 +2087,6 @@ target_link_libraries(qgis_core
   ${QT_VERSION_BASE}::Xml
   ${QT_VERSION_BASE}::Widgets
   ${QT_VERSION_BASE}::Svg
-  ${QT_VERSION_BASE}::PrintSupport
   ${QT_VERSION_BASE}::Network
   ${QT_VERSION_BASE}::Sql
   ${QT_VERSION_BASE}::Concurrent
@@ -2088,6 +2104,9 @@ target_link_libraries(qgis_core
   ${ZLIB_LIBRARIES}
   ${EXIV2_LIBRARY}
 )
+if (NOT IOS)
+  target_link_libraries(qgis_core ${QT_VERSION_BASE}::PrintSupport)
+endif()
 
 if (WITH_SPATIALITE)
   target_link_libraries(qgis_core ${SPATIALITE_LIBRARY})

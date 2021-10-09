@@ -850,7 +850,7 @@ QPicture QgsSymbolLayerUtils::symbolLayerPreviewPicture( const QgsSymbolLayer *l
   painter.setRenderHint( QPainter::Antialiasing );
   QgsRenderContext renderContext = QgsRenderContext::fromQPainter( &painter );
   renderContext.setForceVectorOutput( true );
-  renderContext.setFlag( QgsRenderContext::RenderSymbolPreview, true );
+  renderContext.setFlag( Qgis::RenderContextFlag::RenderSymbolPreview, true );
   QgsSymbolRenderContext symbolContext( renderContext, units, 1.0, false, Qgis::SymbolRenderHints(), nullptr );
   std::unique_ptr< QgsSymbolLayer > layerClone( layer->clone() );
   layerClone->drawPreviewIcon( symbolContext, size );
@@ -866,7 +866,7 @@ QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( const QgsSymbolLayer *layer, 
   painter.begin( &pixmap );
   painter.setRenderHint( QPainter::Antialiasing );
   QgsRenderContext renderContext = QgsRenderContext::fromQPainter( &painter );
-  renderContext.setFlag( QgsRenderContext::RenderSymbolPreview );
+  renderContext.setFlag( Qgis::RenderContextFlag::RenderSymbolPreview );
   // build a minimal expression context
   QgsExpressionContext expContext;
   expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( nullptr ) );
@@ -1197,7 +1197,17 @@ QgsSymbolLayer *QgsSymbolLayerUtils::loadSymbolLayer( QDomElement &element, cons
     const QDomElement ddProps = element.firstChildElement( QStringLiteral( "data_defined_properties" ) );
     if ( !ddProps.isNull() )
     {
+      const QgsPropertyCollection prevProperties = layer->dataDefinedProperties();
       layer->dataDefinedProperties().readXml( ddProps, QgsSymbolLayer::propertyDefinitions() );
+
+      // some symbol layers will be created with data defined properties by default -- we want to retain
+      // these if they weren't restored from the xml
+      const QSet< int > oldKeys = prevProperties.propertyKeys();
+      for ( int key : oldKeys )
+      {
+        if ( !layer->dataDefinedProperties().propertyKeys().contains( key ) )
+          layer->setDataDefinedProperty( static_cast< QgsSymbolLayer::Property >( key ), prevProperties.property( key ) );
+      }
     }
 
     return layer;

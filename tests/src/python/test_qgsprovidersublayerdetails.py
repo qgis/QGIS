@@ -77,6 +77,11 @@ class TestQgsProviderSublayerDetails(unittest.TestCase):
         d.setSkippedContainerScan(False)
         self.assertFalse(d.skippedContainerScan())
 
+        d.setFlags(Qgis.SublayerFlag.SystemTable)
+        self.assertEqual(d.flags(), Qgis.SublayerFlags(Qgis.SublayerFlag.SystemTable))
+        d.setFlags(Qgis.SublayerFlags())
+        self.assertEqual(d.flags(), Qgis.SublayerFlags())
+
     def test_equality(self):
         """
         Test equality operator
@@ -141,6 +146,11 @@ class TestQgsProviderSublayerDetails(unittest.TestCase):
         d.setSkippedContainerScan(True)
         self.assertNotEqual(d, d2)
         d2.setSkippedContainerScan(True)
+        self.assertEqual(d, d2)
+
+        d.setFlags(Qgis.SublayerFlag.SystemTable)
+        self.assertNotEqual(d, d2)
+        d2.setFlags(Qgis.SublayerFlag.SystemTable)
         self.assertEqual(d, d2)
 
     def test_to_layer(self):

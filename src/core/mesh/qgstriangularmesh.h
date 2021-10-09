@@ -31,9 +31,9 @@
 #include "qgsgeometry.h"
 #include "qgsmeshspatialindex.h"
 #include "qgstopologicalmesh.h"
+#include "qgscoordinatetransform.h"
 
 class QgsRenderContext;
-class QgsCoordinateTransform;
 class QgsRectangle;
 
 /**
@@ -189,10 +189,10 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
 
     /**
      * Returns simplified meshes.
-     * The first simplified mesh is simplified with a goal of a number of triangles equals to the
-     * number of triangles of the base mesh divised by the reduction factor. For the following mesh the same reduction factor is used with
-     * the prededent goal of number of triangles.
-     * There are as many simplified meshes as necessary to have a the minimum triangles count on the last simplified mesh.
+     * The first simplified mesh is simplified with a goal of a number of triangles equal to the
+     * number of triangles of the base mesh divided by the reduction factor. For the following mesh the same reduction factor is used with
+     * the preceding goal of number of triangles.
+     * There are as many simplified meshes as necessary to have the minimum triangles count on the last simplified mesh.
      *
      * The caller has to take the ownership of returned meshes.
      *
@@ -234,7 +234,7 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
     QgsRectangle extent() const;
 
     /**
-     * Returns whether the mesh contains at mesh elements of given type
+     * Returns whether the mesh contains mesh elements of given type
      *  \since QGIS 3.14
      */
     bool contains( const QgsMesh::ElementType &type ) const;
@@ -263,6 +263,7 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
       private:
         // triangular mesh elements that can be changed if the triangular mesh is updated, are not stored and have to be retrieve
         QVector<QgsMeshVertex> mAddedVertices;
+        QList<int> mVerticesIndexesToRemove;
         QList<int> mChangedVerticesCoordinates;
         mutable QList<double> mOldZValue;
         QList<double> mNewZValue;
@@ -294,7 +295,7 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
      *
      * \since QGIS 3.22
      */
-    void reverseChanges( const Changes &changes );
+    void reverseChanges( const Changes &changes, const QgsMesh &nativeMesh );
 
     /**
      * Transforms the \a vertex from native coordinates system to triangular mesh coordinates system.
@@ -336,7 +337,7 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
 
     void addVertex( const QgsMeshVertex &vertex );
 
-    QgsMeshVertex transformVertex( const QgsMeshVertex &vertex, QgsCoordinateTransform::TransformDirection direction ) const;
+    QgsMeshVertex transformVertex( const QgsMeshVertex &vertex, Qgis::TransformDirection direction ) const;
 
     // calculate the centroid of the native mesh, mNativeMeshCentroids container must have the emplacment for the corresponding centroid before calling this method
     QgsMeshVertex calculateCentroid( const QgsMeshFace &nativeFace );
@@ -360,7 +361,8 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
     QgsMeshSpatialIndex mSpatialEdgeIndex;
     QgsCoordinateTransform mCoordinateTransform; //coordinate transform used to convert native mesh vertices to map vertices
 
-    QgsRectangle mExtent;
+    mutable QgsRectangle mExtent;
+    mutable bool mIsExtentValid = false;
 
     // average size of the triangles
     double mAverageTriangleSize = 0;

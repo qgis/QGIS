@@ -15,6 +15,7 @@
 
 #include "qgisapp.h"
 #include "qgsclipboard.h"
+#include "qgsexpressionutils.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
@@ -158,6 +159,29 @@ void QgsStatisticalSummaryDockWidget::refreshStatistics()
   if ( !mFieldExpressionWidget->isExpression() )
   {
     mFieldType = fieldType( mFieldExpressionWidget->currentField() );
+  }
+  else
+  {
+    QgsExpressionContext context;
+    context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+    QgsFeatureRequest request;
+    if ( mSelectedOnlyCheckBox->isChecked() )
+      request.setFilterFids( mLayer->selectedFeatureIds() );
+
+    std::tuple<QVariant::Type, int> returnType = QgsExpressionUtils::determineResultType( mFieldExpressionWidget->expression(), mLayer, request, context );
+    switch ( std::get<0>( returnType ) )
+    {
+      case QVariant::String:
+        mFieldType = DataType::String;
+        break;
+      case QVariant::Date:
+      case QVariant::DateTime:
+        mFieldType = DataType::DateTime;
+        break;
+      default:
+        mFieldType = DataType::Numeric;
+        break;
+    }
   }
 
   if ( mFieldType != mPreviousFieldType )

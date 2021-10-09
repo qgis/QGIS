@@ -197,7 +197,7 @@ QgsGeometry QgsGeometry::fromPolygonXY( const QgsPolygonXY &polygon )
   std::unique_ptr< QgsPolygon > geom = QgsGeometryFactory::fromPolygonXY( polygon );
   if ( geom )
   {
-    return QgsGeometry( std::move( geom.release() ) );
+    return QgsGeometry( std::move( geom ) );
   }
   return QgsGeometry();
 }
@@ -3045,7 +3045,7 @@ bool QgsGeometry::requiresConversionToStraightSegments() const
   return d->geometry->hasCurvedSegments();
 }
 
-Qgis::GeometryOperationResult QgsGeometry::transform( const QgsCoordinateTransform &ct, const QgsCoordinateTransform::TransformDirection direction, const bool transformZ )
+Qgis::GeometryOperationResult QgsGeometry::transform( const QgsCoordinateTransform &ct, const Qgis::TransformDirection direction, const bool transformZ )
 {
   if ( !d->geometry )
   {

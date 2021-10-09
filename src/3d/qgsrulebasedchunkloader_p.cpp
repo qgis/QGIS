@@ -26,6 +26,7 @@
 #include "qgsrulebased3drenderer.h"
 
 #include <QtConcurrent>
+#include <Qt3DCore/QTransform>
 
 ///@cond PRIVATE
 

@@ -67,6 +67,18 @@ QVariant QgsProviderSublayerDialogModel::data( const QModelIndex &index, int rol
         }
       }
     }
+    else if ( details.flags() & Qgis::SublayerFlag::SystemTable )
+    {
+      switch ( role )
+      {
+        case Qt::FontRole:
+        {
+          QFont f =  QgsProviderSublayerModel::data( index, role ).value< QFont >();
+          f.setItalic( true );
+          return f;
+        }
+      }
+    }
   }
   return QgsProviderSublayerModel::data( index, role );
 }
@@ -151,7 +163,7 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   if ( QgsProviderUtils::sublayerDetailsAreIncomplete( initialDetails ) )
   {
     // initial details are incomplete, so fire up a task in the background to fully populate the model...
-    mTask = new QgsProviderSublayerTask( uri );
+    mTask = new QgsProviderSublayerTask( uri, true );
     connect( mTask.data(), &QgsProviderSublayerTask::taskCompleted, this, [ = ]
     {
       QList< QgsProviderSublayerDetails > res = mTask->results();
@@ -172,6 +184,7 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   connect( mBtnDeselectAll, &QAbstractButton::pressed, this, [ = ] { mLayersTree->selectionModel()->clear(); } );
   connect( mLayersTree->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsProviderSublayersDialog::treeSelectionChanged );
   connect( mSearchLineEdit, &QgsFilterLineEdit::textChanged, mProxyModel, &QgsProviderSublayerProxyModel::setFilterString );
+  connect( mCheckShowSystem, &QCheckBox::toggled, mProxyModel, &QgsProviderSublayerProxyModel::setIncludeSystemTables );
   connect( mLayersTree, &QTreeView::doubleClicked, this, [ = ]( const QModelIndex & index )
   {
     mLayersTree->selectionModel()->select( QItemSelection( mLayersTree->model()->index( index.row(), 0, index.parent() ),

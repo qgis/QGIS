@@ -18,6 +18,8 @@
 
 #include <QWidget>
 #include <QPointer>
+#include <QDialog>
+#include <QWidgetAction>
 
 #include "qgis_app.h"
 #include "qgsmaptooladvanceddigitizing.h"
@@ -31,6 +33,15 @@ class QgsRubberBand;
 class QgsVertexMarker;
 class QgsDoubleSpinBox;
 class QgsSnapIndicator;
+class QgsMeshTransformCoordinatesDockWidget;
+class QComboBox;
+class QCheckBox;
+class QgsUnitSelectionWidget;
+class QgsMapToolSelectionHandler;
+
+
+class QgsExpressionBuilderWidget;
+class QgsMeshSelectByExpressionDialog;
 
 
 class APP_EXPORT QgsZValueWidget : public QWidget
@@ -48,7 +59,7 @@ class APP_EXPORT QgsZValueWidget : public QWidget
     void setZValue( double z );
 
     /**
-     *  Sets the current value of the widget and set it as the default one ,
+     *  Sets the current value of the widget and set it as the default one,
      *  that is the value that is retrieve if the z value spin box is cleared
      */
     void setDefaultValue( double z );
@@ -57,6 +68,47 @@ class APP_EXPORT QgsZValueWidget : public QWidget
 
   private:
     QgsDoubleSpinBox *mZValueSpinBox = nullptr;
+};
+
+class QgsMeshEditForceByLineAction : public QWidgetAction
+{
+    Q_OBJECT
+  public:
+
+    enum IntepolationMode
+    {
+      Mesh,
+      Lines
+    };
+    Q_ENUM( IntepolationMode )
+
+    //! Constructor
+    QgsMeshEditForceByLineAction( QObject *parent = nullptr );
+
+    //! Sets the associated map canvas, used notably for map unit
+    void setMapCanvas( QgsMapCanvas *canvas );
+
+    //! Returns the interpolation mode
+    IntepolationMode interpolationMode() const;
+
+    //! Returns whether vertices will be added on edge intersection
+    bool newVertexOnIntersectingEdge() const;
+
+    //! Returns the tolerance value
+    double toleranceValue() const;
+
+    //! Returns the tolerance unit
+    QgsUnitTypes::RenderUnit toleranceUnit() const;
+
+  private slots:
+    void updateSettings();
+
+  private:
+
+    QComboBox *mComboInterpolateFrom = nullptr;
+    QCheckBox *mCheckBoxNewVertex = nullptr;
+    QgsUnitSelectionWidget *mUnitSelecionWidget = nullptr;
+    QgsDoubleSpinBox *mToleranceSpinBox = nullptr;
 };
 
 class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
@@ -68,13 +120,25 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QgsMapToolEditMeshFrame( QgsMapCanvas *canvas );
     ~QgsMapToolEditMeshFrame();
 
-    QList<QAction *> actions() const;
     QList<QAction *> mapToolActions();
+    QAction *digitizeAction() const;
+    QList<QAction *> selectActions() const;
+    QAction *defaultSelectActions() const;
+    QAction *transformAction() const;
+    QList<QAction *> forceByLinesActions() const;
+    QAction *defaultForceAction() const;
+    QWidgetAction *forceByLineWidgetActionSettings() const;
+    QAction *reindexAction() const;
+
+    void setActionsEnable( bool enable );
 
     void deactivate() override;
     void activate() override;
     bool populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEvent *event ) override;
     Flags flags() const override;
+
+  signals:
+    void selectionChange( QgsMeshLayer *meshLayer, const QList<int> verticesIndex );
 
   protected:
     void cadCanvasPressEvent( QgsMapMouseEvent *e ) override;
@@ -95,6 +159,13 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void removeFacesFromMesh();
     void splitSelectedFaces();
 
+    void triggerTransformCoordinatesDockWidget( bool checked );
+
+    void showSelectByExpressionDialog();
+    void selectByExpression( const QString &textExpression, Qgis::SelectBehavior behavior, QgsMesh::ElementType elementType );
+    void onZoomToSelected();
+    void reindexMesh();
+
   private:
 
     enum State
@@ -102,8 +173,9 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
       Digitizing, //!< Digitizing action can be start (add/remove vertices, selection, add/remove faces, move vertices)
       AddingNewFace, //!< Adding a face has been start and the user have to choose or digitize vertices
       Selecting, //!< Selection is in process
-      MovingVertex, //!< Moving vertex or vertices is processing
+      MovingSelection, //!< Moving vertex or vertices is processing
       SelectingByPolygon, //!< Selection elements by polygon is in progress
+      ForceByLines, //!< Force by a lines drawn or selected by users
     };
 
     typedef QPair<int, int> Edge; //first face index, second the vertex index corresponding to the end extremity (ccw)
@@ -116,23 +188,26 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     const QgsPointXY mapVertexXY( int index ) const;
     const QgsMeshFace nativeFace( int index ) const;
 
+    double currentZValue();
+
+    void searchFace( const QgsPointXY &mapPoint );
+    void searchEdge( const QgsPointXY &mapPoint );
     void highLight( const QgsPointXY &mapPoint );
     void highlightCurrentHoveredFace( const QgsPointXY &mapPoint );
-    void highlightCloseVertex( const QgsPointXY &mapPoint );
     void highlightCloseEdge( const QgsPointXY &mapPoint );
+    void highlightCloseVertex( const QgsPointXY &mapPoint );
     bool edgeCanBeInteractive( int vertexIndex1, int vertexIndex2 ) const;
     bool faceCanBeInteractive( int faceIndex ) const;
 
     void createZValueWidget();
-    void deleteZvalueWidget();
+    void deleteZValueWidget();
 
-    void clearSelection();
     void clearCanvasHelpers();
     void clearEdgeHelpers();
 
     void clearAll();
 
-    void addVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match &mapPointMatch, Qt::KeyboardModifiers modifiers );
+    void addVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match &mapPointMatch );
     void updateFreeVertices();
 
     //! Checks if we are closed to a vertex, if yes return the index of the vertex;
@@ -149,28 +224,40 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 
     // selection methods
     void select( const QgsPointXY &mapPoint, Qt::KeyboardModifiers modifiers, double tolerance );
-    void setSelectedVertices( const QList<int> newSelectedVertex,  Qt::KeyboardModifiers modifiers );
-    void clearSelectedvertex();
-    void selectInGeometry( const QgsGeometry &geometry,  Qt::KeyboardModifiers modifiers );
+    void addNewSelectedVertex( int vertexIndex );
+    void removeFromSelection( int vertexIndex );
+    bool isFaceSelected( int faceIndex );
+    void setSelectedVertices( const QList<int> newSelectedVertices,  Qgis::SelectBehavior behavior );
+    void setSelectedFaces( const QList<int> newSelectedFaces,  Qgis::SelectBehavior behavior );
+    void selectByGeometry( const QgsGeometry &geometry,  Qt::KeyboardModifiers modifiers );
+    void selectTouchedByGeometry( const QgsGeometry &geometry, Qgis::SelectBehavior behavior );
+    void selectContainedByGeometry( const QgsGeometry &geometry, Qgis::SelectBehavior behavior );
     void applyZValueOnSelectedVertices();
     void prepareSelection();
     void updateSelectecVerticesMarker();
+    void moveSelection( const QgsPointXY &destinationPoint );
+    void clearSelection();
 
-    bool testBorderMovingFace( const QgsMeshFace &borderMovingfaces, const QgsVector &translation ) const;
+    void setMovingRubberBandValidity( bool valid );
+    bool isSelectionGrapped( QgsPointXY &grappedPoint );
+
+    void forceByLineReleaseEvent( QgsMapMouseEvent *e );
+    void forceByLineBySelectedFeature( QgsMapMouseEvent *e );
+    void forceByLine( const QgsGeometry &lineGeometry );
+
 
     // members
     struct SelectedVertexData
     {
       //Here edges are the indexes of the face where the following vertices (ccw) is the other extremity of the edge
-      QList<Edge> selectedEdges;
-      QList<Edge> meshFixedEdges;
+      QList<Edge> meshFixedEdges; // that have one extremity not on the selection
+      QList<Edge> borderEdges; // that are on the border of the selection
     };
 
     bool mIsInitialized = false;
     State mCurrentState = Digitizing;
     bool mLeftButtonPressed = false;
     bool mKeepSelectionOnEdit = false;
-
 
     QPointer<QgsMeshLayer> mCurrentLayer = nullptr; //not own
     QPointer<QgsMeshEditor> mCurrentEditor = nullptr; // own by mesh layer
@@ -180,10 +267,9 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     int mCurrentVertexIndex = -1;
     QList<int> mNewFaceCandidate;
     bool mDoubleClicks = false;
-    QgsPointXY mLastClickPoint;
-    double mOrdinaryZValue = 0;
-    bool mIsSelectedZValue = false;
-    double mSelectedZValue = 0;
+    QgsPointXY mFirstClickPoint; //the first click point when double clicks, we need it when the point is constraint by the cad tool, second click could not be constraint
+    double mFirstClickZValue;
+    double mUserZValue = 0;
 
     //! Rubber band used to highlight a face that is on mouse over and not dragging anything, own by map canvas
     QgsRubberBand *mFaceRubberBand = nullptr;
@@ -204,17 +290,15 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QList<QgsVertexMarker *> mFreeVertexMarker;
 
     //! members for selection of vertices/faces
+    QList<QAction *> mSelectActions;
     QMap<int, SelectedVertexData> mSelectedVertices;
+    QgsRectangle mSelectedMapExtent;
     QSet<int> mSelectedFaces;
     QSet<int> mConcernedFaceBySelection;
     QgsVertexMarker *mSelectFaceMarker = nullptr; //own by map canvas
     QgsVertexMarker *mSelectEdgeMarker = nullptr; //own by map canvas
     QgsRubberBand *mSelectionBand = nullptr; //own by map canvas
     QPoint mStartSelectionPos;
-    QColor mSelectionBandPartiallyFillColor = QColor( 0, 215, 120, 63 );
-    QColor mSelectionBandPartiallyStrokeColor = QColor( 0, 204, 102, 100 );
-    QColor mSelectionBandTotalFillColor = QColor( 0, 120, 215, 63 );
-    QColor mSelectionBandTotalStrokeColor = QColor( 0, 102, 204, 100 );
     QgsRubberBand *mSelectedFacesRubberband = nullptr; //own by map canvas
     QMap< int, QgsVertexMarker * > mSelectedVerticesMarker;
 
@@ -223,8 +307,11 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     bool mCanMovingStart = false;
     QgsRubberBand *mMovingEdgesRubberband = nullptr; //own by map canvas
     QgsRubberBand *mMovingFacesRubberband = nullptr; //own by map canvas
-    QgsRubberBand *mMovingVerticesRubberband = nullptr; //own by map canvas
+    QgsRubberBand *mMovingFreeVertexRubberband = nullptr; //own by map canvas
     bool mIsMovingAllowed = false;
+
+    QgsRubberBand *mForceByLineRubberBand = nullptr; //own by map canvas
+    QList<double> mForcingLineZValue;
 
     //! members for edge flip
     QgsVertexMarker *mFlipEdgeMarker = nullptr; //own by map canvas
@@ -235,7 +322,10 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     //! members for split face
     int mSplittableFaceCount = 0;
 
+    // assiociated widget
     QgsZValueWidget *mZValueWidget = nullptr; //own by QgsUserInputWidget instance
+
+    QgsMeshTransformCoordinatesDockWidget *mTransformDockWidget = nullptr; //own by the application
 
     QAction *mActionRemoveVerticesFillingHole = nullptr;
     QAction *mActionRemoveVerticesWithoutFillingHole = nullptr;
@@ -246,7 +336,17 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QAction *mActionFacesRefinement = nullptr;
 
     QAction *mActionDigitizing = nullptr;
+
     QAction *mActionSelectByPolygon = nullptr;
+    std::unique_ptr<QgsMapToolSelectionHandler> mSelectionHandler;
+
+    QAction *mActionTransformCoordinates = nullptr;
+
+    QAction *mActionSelectByExpression = nullptr;
+    QAction *mActionForceByLines = nullptr;
+
+    QgsMeshEditForceByLineAction *mWidgetActionForceByLine = nullptr;
+    QAction *mActionReindexMesh = nullptr;
 
     friend class TestQgsMapToolEditMesh;
 };

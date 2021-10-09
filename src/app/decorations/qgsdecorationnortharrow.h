@@ -22,6 +22,7 @@
 #include "qgsdecorationitem.h"
 
 #include <QStringList>
+#include <QColor>
 #include "qgis_app.h"
 
 class QAction;

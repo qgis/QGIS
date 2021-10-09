@@ -207,12 +207,12 @@ void QgsWmstSettingsWidget::syncToLayer( QgsMapLayer *layer )
         mReferenceTimeCombo->setCurrentIndex( 0 );
     }
 
-    mFetchModeComboBox->addItem( tr( "Use Whole Temporal Range" ), QgsRasterDataProviderTemporalCapabilities::MatchUsingWholeRange );
-    mFetchModeComboBox->addItem( tr( "Match to Start of Range" ), QgsRasterDataProviderTemporalCapabilities::MatchExactUsingStartOfRange );
-    mFetchModeComboBox->addItem( tr( "Match to End of Range" ), QgsRasterDataProviderTemporalCapabilities::MatchExactUsingEndOfRange );
-    mFetchModeComboBox->addItem( tr( "Closest Match to Start of Range" ), QgsRasterDataProviderTemporalCapabilities::FindClosestMatchToStartOfRange );
-    mFetchModeComboBox->addItem( tr( "Closest Match to End of Range" ), QgsRasterDataProviderTemporalCapabilities::FindClosestMatchToEndOfRange );
-    mFetchModeComboBox->setCurrentIndex( mFetchModeComboBox->findData( qobject_cast< QgsRasterLayerTemporalProperties * >( mRasterLayer->temporalProperties() )->intervalHandlingMethod() ) );
+    mFetchModeComboBox->addItem( tr( "Use Whole Temporal Range" ), static_cast< int >( Qgis::TemporalIntervalMatchMethod::MatchUsingWholeRange ) );
+    mFetchModeComboBox->addItem( tr( "Match to Start of Range" ), static_cast< int >( Qgis::TemporalIntervalMatchMethod::MatchExactUsingStartOfRange ) );
+    mFetchModeComboBox->addItem( tr( "Match to End of Range" ), static_cast< int >( Qgis::TemporalIntervalMatchMethod::MatchExactUsingEndOfRange ) );
+    mFetchModeComboBox->addItem( tr( "Closest Match to Start of Range" ), static_cast< int >( Qgis::TemporalIntervalMatchMethod::FindClosestMatchToStartOfRange ) );
+    mFetchModeComboBox->addItem( tr( "Closest Match to End of Range" ), static_cast< int >( Qgis::TemporalIntervalMatchMethod::FindClosestMatchToEndOfRange ) );
+    mFetchModeComboBox->setCurrentIndex( mFetchModeComboBox->findData( static_cast< int >( qobject_cast< QgsRasterLayerTemporalProperties * >( mRasterLayer->temporalProperties() )->intervalHandlingMethod() ) ) );
 
     const QString temporalSource = uri.value( QStringLiteral( "temporalSource" ) ).toString();
     mDisableTime->setChecked( !uri.value( QStringLiteral( "enableTime" ), true ).toBool() );
@@ -258,7 +258,7 @@ void QgsWmstSettingsWidget::apply()
        mRasterLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() )
   {
     uri[ QStringLiteral( "enableTime" ) ] = !mDisableTime->isChecked();
-    qobject_cast< QgsRasterLayerTemporalProperties * >( mRasterLayer->temporalProperties() )->setIntervalHandlingMethod( static_cast< QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod >(
+    qobject_cast< QgsRasterLayerTemporalProperties * >( mRasterLayer->temporalProperties() )->setIntervalHandlingMethod( static_cast< Qgis::TemporalIntervalMatchMethod >(
           mFetchModeComboBox->currentData().toInt() ) );
 
     if ( mReferenceTimeGroupBox->isChecked() )

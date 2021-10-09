@@ -55,8 +55,8 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
     void changeShortcut();
     void resetShortcut();
     void setNoShortcut();
-    void saveShortcuts();
     void loadShortcuts();
+    void saveShortcutsPdf();
     void mLeFilter_textChanged( const QString &text );
 
     void actionChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous );
@@ -78,11 +78,18 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
     //! Returns the currently selected QShortcut, or NULLPTR if no shortcut selected
     QShortcut *currentShortcut();
 
+    //! Saves custom or all shortcuts to XML file
+    void saveShortcuts( bool saveAll = true );
+
     void setGettingShortcut( bool getting );
     void setCurrentActionShortcut( const QKeySequence &s );
     void updateShortcutText();
 
     QgsShortcutsManager *mManager = nullptr;
+    QMenu *mSaveMenu = nullptr;
+    QAction *mSaveUserShortcuts = nullptr;
+    QAction *mSaveAllShortcuts = nullptr;
+    QAction *mSaveAsPdf = nullptr;
 
     bool mGettingShortcut = false;
     int mModifiers = 0, mKey = 0;

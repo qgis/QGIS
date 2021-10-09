@@ -17,6 +17,7 @@
 #include "qgsdatums.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgsexception.h"
 
 QgsLayerTreeViewLowAccuracyIndicatorProvider::QgsLayerTreeViewLowAccuracyIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )

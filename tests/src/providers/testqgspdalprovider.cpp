@@ -33,6 +33,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgspdaleptgenerationtask.h"
 #include "qgsprovidersublayerdetails.h"
+#include "qgsgeometry.h"
 
 /**
  * \ingroup UnitTests

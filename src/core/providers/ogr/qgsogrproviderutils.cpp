@@ -25,6 +25,7 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsproviderregistry.h"
 #include "qgsgeopackageproviderconnection.h"
 #include "qgsogrdbconnection.h"
+#include "qgsfileutils.h"
 
 #include <ogr_srs_api.h>
 #include <cpl_port.h>
@@ -965,6 +966,23 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
 {
   CPLErrorReset();
 
+  // Avoid getting too close to the limit of files allowed in the process,
+  // to avoid potential crashes such as in https://github.com/qgis/QGIS/issues/43620
+  // This heuristics is not perfect because during rendering, files will be opened again
+  // Typically for a GPKG file we need 6 file descriptors: 3 for the .gpkg,
+  // .gpkg-wal, .gpkg-shm for the provider, and 2 for the .gpkg + for the .gpkg-wal
+  // used by feature iterator for rendering
+  // So if we hit the limit, some layers will not be displayable.
+  if ( QgsFileUtils::isCloseToLimitOfOpenedFiles() )
+  {
+#ifdef Q_OS_UNIX
+    QgsMessageLog::logMessage( QObject::tr( "Too many files opened (%1). Cannot open %2. You may raise the limit with the 'ulimit -n number_of_files' command before starting QGIS." ).arg( QgsFileUtils::openedFileCount() ).arg( QString( pszPath ) ), QObject::tr( "OGR" ) );
+#else
+    QgsMessageLog::logMessage( QObject::tr( "Too many files opened (%1). Cannot open %2" ).arg( QgsFileUtils::openedFileCount() ).arg( QString( pszPath ) ), QObject::tr( "OGR" ) );
+#endif
+    return nullptr;
+  }
+
   char **papszOpenOptions = CSLDuplicate( papszOpenOptionsIn );
 
   QString filePath( QString::fromUtf8( pszPath ) );
@@ -1477,7 +1495,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
   GDALDatasetH hDS = OpenHelper( dsName, updateMode, options );
   if ( !hDS )
   {
-    errCause = QObject::tr( "Cannot open %1." ).arg( dsName );
+    errCause = QObject::tr( "Cannot open %1 (%2)." ).arg( dsName, QString::fromUtf8( CPLGetLastErrorMsg() ) );
     return nullptr;
   }
 
@@ -2313,26 +2331,37 @@ bool QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( const QString &d
          !( updateMode && dsName.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) );
 }
 
-QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int i, QgsOgrLayer *layer, const QString &driverName, Qgis::SublayerQueryFlags flags, bool isSubLayer, const QString &baseUri, bool hasSingleLayerOnly, QgsFeedback *feedback )
+QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int i, QgsOgrLayer *layer, GDALDatasetH hDS, const QString &driverName, Qgis::SublayerQueryFlags flags, const QString &baseUri, bool hasSingleLayerOnly, QgsFeedback *feedback )
 {
   const QString layerName = QString::fromUtf8( layer->name() );
 
-  if ( !isSubLayer && ( layerName == QLatin1String( "layer_styles" ) ||
-                        layerName == QLatin1String( "qgis_projects" ) ) )
-  {
-    // Ignore layer_styles (coming from QGIS styling support) and
-    // qgis_projects (coming from http://plugins.qgis.org/plugins/QgisGeopackage/)
-    return {};
-  }
-
-  QStringList skippedLayerNames;
+  QStringList privateLayerNames { QStringLiteral( "layer_styles" ),
+                                  QStringLiteral( "qgis_projects" )};
   if ( driverName == QLatin1String( "SQLite" ) )
   {
-    skippedLayerNames = QgsSqliteUtils::systemTables();
+    privateLayerNames.append( QgsSqliteUtils::systemTables() );
   }
+
+  Qgis::SublayerFlags layerFlags;
   if ( ( driverName == QLatin1String( "SQLite" ) && layerName.contains( QRegularExpression( QStringLiteral( "idx_.*_geom(etry)?($|_.*)" ), QRegularExpression::PatternOption::CaseInsensitiveOption ) ) )
-       || skippedLayerNames.contains( layerName ) )
+       || privateLayerNames.contains( layerName ) )
   {
+    layerFlags |= Qgis::SublayerFlag::SystemTable;
+  }
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
+  // mark private layers, using GDAL API
+  if ( hDS && GDALDatasetIsLayerPrivate( hDS, i ) )
+  {
+    layerFlags |= Qgis::SublayerFlag::SystemTable;
+  }
+#else
+  ( void )hDS;
+#endif
+
+  if ( !( flags & Qgis::SublayerQueryFlag::IncludeSystemTables ) && ( layerFlags & Qgis::SublayerFlag::SystemTable ) )
+  {
+    // layer is a system table, and we are not scanning for them
     return {};
   }
 
@@ -2389,6 +2418,7 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
     details.setDescription( longDescription );
     details.setProviderKey( QStringLiteral( "ogr" ) );
     details.setDriverName( driverName );
+    details.setFlags( layerFlags );
 
     const QString uri = QgsOgrProviderMetadata().encodeUri( parts );
     details.setUri( uri );
@@ -2479,6 +2509,7 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
       details.setDescription( longDescription );
       details.setProviderKey( QStringLiteral( "ogr" ) );
       details.setDriverName( driverName );
+      details.setFlags( layerFlags );
 
       // if we had to iterate through the table to find geometry types, make sure to include these
       // in the uri for the sublayers (otherwise we'll be forced to re-do this iteration whenever
@@ -2520,6 +2551,7 @@ bool QgsOgrProviderUtils::saveConnection( const QString &path, const QString &og
     {
       QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
       QgsGeoPackageProviderConnection *providerConnection =  static_cast<QgsGeoPackageProviderConnection *>( providerMetadata->createConnection( connName ) );
+      providerConnection->setUri( path );
       providerMetadata->saveConnection( providerConnection, connName );
       return true;
     }

@@ -89,7 +89,7 @@ QPolygonF QgsSymbol::_getLineString( QgsRenderContext &context, const QgsCurve &
   QPolygonF pts;
 
   //apply clipping for large lines to achieve a better rendering performance
-  if ( clipToExtent && nPoints > 1 && !( context.flags() & QgsRenderContext::ApplyClipAfterReprojection ) )
+  if ( clipToExtent && nPoints > 1 && !( context.flags() & Qgis::RenderContextFlag::ApplyClipAfterReprojection ) )
   {
     const QgsRectangle e = context.extent();
     const double cw = e.width() / 10;
@@ -122,7 +122,7 @@ QPolygonF QgsSymbol::_getLineString( QgsRenderContext &context, const QgsCurve &
     return !std::isfinite( point.x() ) || !std::isfinite( point.y() );
   } ), pts.end() );
 
-  if ( clipToExtent && nPoints > 1 && context.flags() & QgsRenderContext::ApplyClipAfterReprojection )
+  if ( clipToExtent && nPoints > 1 && context.flags() & Qgis::RenderContextFlag::ApplyClipAfterReprojection )
   {
     // early clipping was not possible, so we have to apply it here after transformation
     const QgsRectangle e = context.mapExtent();
@@ -161,7 +161,7 @@ QPolygonF QgsSymbol::_getPolygonRing( QgsRenderContext &context, const QgsCurve 
   }
 
   //clip close to view extent, if needed
-  if ( clipToExtent && !( context.flags() & QgsRenderContext::ApplyClipAfterReprojection ) && !context.extent().contains( poly.boundingRect() ) )
+  if ( clipToExtent && !( context.flags() & Qgis::RenderContextFlag::ApplyClipAfterReprojection ) && !context.extent().contains( poly.boundingRect() ) )
   {
     const QgsRectangle e = context.extent();
     const double cw = e.width() / 10;
@@ -190,7 +190,7 @@ QPolygonF QgsSymbol::_getPolygonRing( QgsRenderContext &context, const QgsCurve 
     return !std::isfinite( point.x() ) || !std::isfinite( point.y() );
   } ), poly.end() );
 
-  if ( clipToExtent && context.flags() & QgsRenderContext::ApplyClipAfterReprojection && !context.mapExtent().contains( poly.boundingRect() ) )
+  if ( clipToExtent && context.flags() & Qgis::RenderContextFlag::ApplyClipAfterReprojection && !context.mapExtent().contains( poly.boundingRect() ) )
   {
     // early clipping was not possible, so we have to apply it here after transformation
     const QgsRectangle e = context.mapExtent();
@@ -567,7 +567,7 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
   {
     tempContext.reset( new QgsRenderContext( QgsRenderContext::fromQPainter( painter ) ) );
     context = tempContext.get();
-    context->setFlag( QgsRenderContext::RenderSymbolPreview, true );
+    context->setFlag( Qgis::RenderContextFlag::RenderSymbolPreview, true );
   }
 
   const bool prevForceVector = context->forceVectorOutput();
@@ -692,7 +692,7 @@ QImage QgsSymbol::bigSymbolPreviewImage( QgsExpressionContext *expressionContext
   }
 
   QgsRenderContext context = QgsRenderContext::fromQPainter( &p );
-  context.setFlag( QgsRenderContext::RenderSymbolPreview );
+  context.setFlag( Qgis::RenderContextFlag::RenderSymbolPreview );
   if ( expressionContext )
     context.setExpressionContext( *expressionContext );
 
@@ -778,7 +778,7 @@ QgsSymbolLayerList QgsSymbol::cloneLayers() const
   return lst;
 }
 
-void QgsSymbol::renderUsingLayer( QgsSymbolLayer *layer, QgsSymbolRenderContext &context )
+void QgsSymbol::renderUsingLayer( QgsSymbolLayer *layer, QgsSymbolRenderContext &context, QgsWkbTypes::GeometryType geometryType, const QPolygonF *points, const QVector<QPolygonF> *rings )
 {
   Q_ASSERT( layer->type() == Qgis::SymbolType::Hybrid );
 
@@ -791,11 +791,11 @@ void QgsSymbol::renderUsingLayer( QgsSymbolLayer *layer, QgsSymbolRenderContext 
   if ( effect && effect->enabled() )
   {
     QgsEffectPainter p( context.renderContext(), effect );
-    generatorLayer->render( context );
+    generatorLayer->render( context, geometryType, points, rings );
   }
   else
   {
-    generatorLayer->render( context );
+    generatorLayer->render( context, geometryType, points, rings );
   }
 }
 
@@ -931,7 +931,16 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
   }
 
   bool clippingEnabled = clipFeaturesToExtent();
-  if ( clippingEnabled && context.testFlag( QgsRenderContext::RenderMapTile ) )
+  // do any symbol layers prevent feature clipping?
+  for ( QgsSymbolLayer *layer : std::as_const( mLayers ) )
+  {
+    if ( layer->flags() & Qgis::SymbolLayerFlag::DisableFeatureClipping )
+    {
+      clippingEnabled = false;
+      break;
+    }
+  }
+  if ( clippingEnabled && context.testFlag( Qgis::RenderContextFlag::RenderMapTile ) )
   {
     // If the "avoid artifacts between adjacent tiles" flag is set (RenderMapTile), then we'll force disable
     // the geometry clipping IF (and only if) this symbol can potentially have rendering artifacts when rendered as map tiles.
@@ -941,6 +950,8 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       clippingEnabled = false;
     }
   }
+  if ( context.extent().isEmpty() )
+    clippingEnabled = false;
 
   mSymbolRenderContext->setGeometryPartCount( geom.constGet()->partCount() );
   mSymbolRenderContext->setGeometryPartNum( 1 );
@@ -1133,7 +1144,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
       case QgsWkbTypes::MultiPoint:
       {
-        const QgsMultiPoint *mp = qgsgeometry_cast< const QgsMultiPoint * >( part );
+        const QgsMultiPoint *mp = qgsgeometry_cast< const QgsMultiPoint * >( processedGeometry );
         markers.reserve( mp->numGeometries() );
       }
       FALLTHROUGH
@@ -1141,7 +1152,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       case QgsWkbTypes::MultiLineString:
       case QgsWkbTypes::GeometryCollection:
       {
-        const QgsGeometryCollection *geomCollection = qgsgeometry_cast<const QgsGeometryCollection *>( part );
+        const QgsGeometryCollection *geomCollection = qgsgeometry_cast<const QgsGeometryCollection *>( processedGeometry );
 
         const unsigned int num = geomCollection->numGeometries();
         for ( unsigned int i = 0; i < num; ++i )
@@ -1165,7 +1176,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
         QPolygonF pts;
 
-        const QgsGeometryCollection *geomCollection = dynamic_cast<const QgsGeometryCollection *>( part );
+        const QgsGeometryCollection *geomCollection = dynamic_cast<const QgsGeometryCollection *>( processedGeometry );
         const unsigned int num = geomCollection->numGeometries();
 
         // Sort components by approximate area (probably a bit faster than using
@@ -1311,7 +1322,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       markers.reserve( pointsToRender.size() );
       for ( const PointInfo &info : std::as_const( pointsToRender ) )
       {
-        if ( context.hasRenderedFeatureHandlers() || context.testFlag( QgsRenderContext::DrawSymbolBounds ) )
+        if ( context.hasRenderedFeatureHandlers() || context.testFlag( Qgis::RenderContextFlag::DrawSymbolBounds ) )
         {
           const QRectF bounds = static_cast<QgsMarkerSymbol *>( this )->bounds( info.renderPoint, context, feature );
           if ( context.hasRenderedFeatureHandlers() )
@@ -1319,7 +1330,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
             renderedBoundsGeom = renderedBoundsGeom.isNull() ? QgsGeometry::fromRect( bounds )
                                  : QgsGeometry::collectGeometry( QVector< QgsGeometry>() << QgsGeometry::fromRect( QgsRectangle( bounds ) ) << renderedBoundsGeom );
           }
-          if ( context.testFlag( QgsRenderContext::DrawSymbolBounds ) )
+          if ( context.testFlag( Qgis::RenderContextFlag::DrawSymbolBounds ) )
           {
             //draw debugging rect
             context.painter()->setPen( Qt::red );

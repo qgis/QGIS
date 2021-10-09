@@ -161,9 +161,9 @@ void TestQgsSvgMarkerSymbol::bounds()
   mSvgMarkerLayer->setStrokeWidth( 0.5 );
   mSvgMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty::fromExpression( QStringLiteral( "min(\"importance\" * 2, 6)" ) ) );
 
-  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, true );
+  mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, true );
   const bool result = imageCheck( QStringLiteral( "svgmarker_bounds" ) );
-  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, false );
+  mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, false );
   mSvgMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty() );
   QVERIFY( result );
 }
@@ -177,9 +177,9 @@ void TestQgsSvgMarkerSymbol::boundsWidth()
   mSvgMarkerLayer->setStrokeWidth( 0.5 );
   mSvgMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyWidth, QgsProperty::fromExpression( QStringLiteral( "min(\"importance\" * 2, 6)" ) ) );
 
-  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, true );
+  mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, true );
   const bool result = imageCheck( QStringLiteral( "svgmarker_bounds" ) );
-  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, false );
+  mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, false );
   mSvgMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyWidth, QgsProperty() );
   QVERIFY( result );
 }

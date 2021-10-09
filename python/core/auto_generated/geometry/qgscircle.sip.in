@@ -95,7 +95,7 @@ The azimuth is the angle between ``center`` and ``pt1``.
                                     const QgsPoint &pt1_tg2, const QgsPoint &pt2_tg2,
                                     const QgsPoint &pt1_tg3, const QgsPoint &pt2_tg3,
                                     double epsilon = 1E-8,
-                                    QgsPoint pos = QgsPoint() ) /HoldGIL/;
+                                    const QgsPoint &pos = QgsPoint() ) /HoldGIL/;
 %Docstring
 Constructs a circle by 3 tangents on the circle (aka inscribed circle of a triangle).
 Z and m values are dropped for the center point.
@@ -131,7 +131,7 @@ Example
         const QgsPoint &pt1_tg2, const QgsPoint &pt2_tg2,
         const QgsPoint &pt1_tg3, const QgsPoint &pt2_tg3,
         double epsilon = 1E-8,
-        QgsPoint pos = QgsPoint() ) /HoldGIL/;
+        const QgsPoint &pos = QgsPoint() ) /HoldGIL/;
 %Docstring
 Returns an array of circle constructed by 3 tangents on the circle (aka inscribed circle of a triangle).
 

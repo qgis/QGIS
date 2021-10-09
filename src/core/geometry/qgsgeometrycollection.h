@@ -22,6 +22,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractgeometry.h"
+#include "qgsrectangle.h"
 
 class QgsPoint;
 
@@ -180,7 +181,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 #endif
 
     void normalize() final SIP_HOLDGIL;
-    void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) override SIP_THROW( QgsCsException );
+    void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false ) override SIP_THROW( QgsCsException );
     void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
 
     void draw( QPainter &p ) const override;

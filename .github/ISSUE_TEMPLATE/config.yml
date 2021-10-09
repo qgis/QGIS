@@ -13,6 +13,8 @@ contact_links:
       GitHub issues are for bug reports and suggestions for new features.
 
   - name: QGIS plugin issue
+    # There must be a link to make this option valid for GitHub
+    url: https://plugins.qgis.org
     about: >
       If the issue concerns a third party plugin (downloaded with the plugin manager) then it can't be fixed
       by the QGIS core team. Please raise your issue in the dedicated bug tracker for that specific plugin

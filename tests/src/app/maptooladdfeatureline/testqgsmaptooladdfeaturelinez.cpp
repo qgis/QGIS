@@ -36,7 +36,7 @@ bool operator==( const QgsGeometry &g1, const QgsGeometry &g2 )
   if ( g1.isNull() && g2.isNull() )
     return true;
   else
-    return g1.isGeosEqual( g2 );
+    return g1.equals( g2 );
 }
 
 namespace QTest
@@ -245,9 +245,9 @@ void TestQgsMapToolAddFeatureLineZ::testTopologicalEditingZ()
   utils.mouseClick( 8, 6.5, Qt::RightButton );
   const QgsFeatureId newFid = utils.newFeatureId( oldFids );
 
-  QString wkt = "LineStringZ (6 6.5 5, 6.25 6.5 333, 6.75 6.5 333, 7.25 6.5 333, 7.5 6.5 333)";
+  QString wkt = "LineStringZ (6 6.5 333, 6.25 6.5 333, 6.75 6.5 333, 7.25 6.5 333, 7.5 6.5 333)";
   QCOMPARE( mLayerTopoZ->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
-  wkt = "MultiLineStringZ ((7.25 6 0, 7.25 6.5 333, 7.25 7 0, 7.5 7 0, 7.5 6.5 333, 7.5 6 0, 7.25 6 0),(6 6 0, 6 6.5 5, 6 7 10, 7 7 0, 7 6 0, 6 6 0),(6.25 6.25 0, 6.75 6.25 0, 6.75 6.5 333, 6.75 6.75 0, 6.25 6.75 0, 6.25 6.5 333, 6.25 6.25 0))";
+  wkt = "MultiLineStringZ ((7.25 6 0, 7.25 6.5 333, 7.25 7 0, 7.5 7 0, 7.5 6.5 333, 7.5 6 0, 7.25 6 0),(6 6 0, 6 6.5 333, 6 7 10, 7 7 0, 7 6 0, 6 6 0),(6.25 6.25 0, 6.75 6.25 0, 6.75 6.5 333, 6.75 6.75 0, 6.25 6.75 0, 6.25 6.5 333, 6.25 6.25 0))";
   QCOMPARE( mLayerTopoZ->getFeature( qgis::setToList( oldFids ).last() ).geometry(), QgsGeometry::fromWkt( wkt ) );
 
   mLayerLine->undoStack()->undo();
@@ -326,7 +326,7 @@ void TestQgsMapToolAddFeatureLineZ::testZSnapping()
   newFid = utils.newFeatureId( oldFids );
 
   QCOMPARE( mLayerLineZ->getFeature( newFid ).geometry().get()->is3D(), true );
-  wkt = "LineStringZ (25 20 123, 25 25 321)";
+  wkt = "LineStringZ (25 20 321, 25 25 321)";
   QCOMPARE( mLayerLineZ->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
 
   mLayerLineZ->undoStack()->undo();

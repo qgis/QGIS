@@ -274,7 +274,14 @@ Sets this rubber band to a map canvas rectangle
 :param rect: rectangle in canvas coordinates
 %End
 
-    void addGeometry( const QgsGeometry &geometry, QgsVectorLayer *layer, bool doUpdate = true );
+    void copyPointsFrom( const QgsRubberBand *other );
+%Docstring
+Copies the points from another rubber band.
+
+.. versionadded:: 3.22
+%End
+
+    void addGeometry( const QgsGeometry &geometry, QgsMapLayer *layer, bool doUpdate = true );
 %Docstring
 Adds the geometry of an existing feature to a rubberband
 This is useful for multi feature highlighting.
@@ -286,8 +293,7 @@ If additional geometries are to be added then set ``doUpdate`` to ``False`` to d
 After adding the final geometry :py:func:`~QgsRubberBand.updatePosition` should be called.
 
 :param geometry: the geometry object. Will be treated as a collection of vertices.
-:param layer: the layer containing the feature, used for coord transformation to map
-              crs. If ``layer`` is ``None``, the coordinates are not going to be transformed.
+:param layer: the layer associated with the geometry. This is used for transforming the geometry from the layer's CRS to the map crs. If ``layer`` is ``None`` no coordinate transformation will occur.
 :param doUpdate: set to ``False`` to defer updates of the rubber band.
 %End
 

@@ -142,7 +142,8 @@ QString QgsExpressionLineEdit::expression() const
 bool QgsExpressionLineEdit::isValidExpression( QString *expressionError ) const
 {
   QString temp;
-  return QgsExpression::checkExpression( expression(), &mExpressionContext, expressionError ? *expressionError : temp );
+  const QgsExpressionContext context = mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : mExpressionContext;
+  return QgsExpression::checkExpression( expression(), &context, expressionError ? *expressionError : temp );
 }
 
 void QgsExpressionLineEdit::registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator )
@@ -230,6 +231,8 @@ void QgsExpressionLineEdit::updateLineEditStyle( const QString &expression )
 bool QgsExpressionLineEdit::isExpressionValid( const QString &expressionStr )
 {
   QgsExpression expression( expressionStr );
+
+  const QgsExpressionContext context = mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : mExpressionContext;
   expression.prepare( &mExpressionContext );
   return !expression.hasParserError();
 }

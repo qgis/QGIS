@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsappmaptools.h"
+#include "qgisapp.h"
 #include "qgsmaptool.h"
 #include "qgsmaptoolselect.h"
 #include "qgsmaptoolidentifyaction.h"
@@ -72,6 +73,7 @@
 #include "qgsmaptooleditmeshframe.h"
 #include "qgsspinbox.h"
 #include "qgssettingsregistrycore.h"
+#include "qgsmaptoolmodifyannotation.h"
 
 //
 // QgsStreamDigitizingSettingsAction
@@ -100,7 +102,7 @@ QgsStreamDigitizingSettingsAction::QgsStreamDigitizingSettingsAction( QWidget *p
     QgsSettingsRegistryCore::settingsDigitizingStreamTolerance.setValue( value );
   } );
 
-  QWidget *w = new QWidget();
+  QWidget *w = new QWidget( parent );
   w->setLayout( gLayout );
   setDefaultWidget( w );
 }
@@ -178,8 +180,9 @@ QgsAppMapTools::QgsAppMapTools( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockW
   mTools.insert( Tool::RotateLabel, new QgsMapToolRotateLabel( canvas, cadDock ) );
   mTools.insert( Tool::ChangeLabelProperties, new QgsMapToolChangeLabelProperties( canvas, cadDock ) );
   mTools.insert( Tool::EditMeshFrame, new QgsMapToolEditMeshFrame( canvas ) );
+  mTools.insert( Tool::AnnotationEdit, new QgsMapToolModifyAnnotation( canvas, cadDock ) );
 
-  mStreamDigitizingSettingsAction = new QgsStreamDigitizingSettingsAction();
+  mStreamDigitizingSettingsAction = new QgsStreamDigitizingSettingsAction( QgisApp::instance() );
 }
 
 QgsAppMapTools::~QgsAppMapTools()

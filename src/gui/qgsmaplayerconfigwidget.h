@@ -23,6 +23,69 @@
 
 class QgsMapCanvas;
 class QgsMapLayer;
+class QgsMessageBar;
+
+/**
+ * \ingroup gui
+ * \class QgsMapLayerConfigWidgetContext
+ * \brief Encapsulates the context for a QgsMapLayerConfigWidget.
+ * \since QGIS 3.22
+ */
+class GUI_EXPORT QgsMapLayerConfigWidgetContext
+{
+  public:
+
+    /**
+     * Returns the item ID of the target annotation, when modifying
+     * an annotation from a QgsAnnotationLayer.
+     *
+     * \see setAnnotationId()
+     */
+    QString annotationId() const { return mAnnotationId; }
+
+    /**
+     * Sets the item \a id of the target annotation, when modifying
+     * an annotation from a QgsAnnotationLayer.
+     *
+     * \see annotationId()
+     */
+    void setAnnotationId( const QString &id ) { mAnnotationId = id; }
+
+    /**
+     * Sets the map \a canvas associated with the widget. This allows the widget to retrieve the current
+     * map scale and other properties from the canvas.
+     *
+     * \see mapCanvas()
+     */
+    void setMapCanvas( QgsMapCanvas *canvas ) { mMapCanvas = canvas; }
+
+    /**
+     * Returns the map canvas associated with the widget.
+     * \see setMapCanvas()
+     */
+    QgsMapCanvas *mapCanvas() const { return mMapCanvas; }
+
+    /**
+     * Sets the message \a bar associated with the widget. This allows the widget to push feedback messages
+     * to the appropriate message bar.
+     * \see messageBar()
+     */
+    void setMessageBar( QgsMessageBar *bar ) { mMessageBar = bar; }
+
+    /**
+     * Returns the message bar associated with the widget.
+     * \see setMessageBar()
+     */
+    QgsMessageBar *messageBar() const { return mMessageBar; }
+
+  private:
+
+    QString mAnnotationId;
+    QgsMapCanvas *mMapCanvas = nullptr;
+    QgsMessageBar *mMessageBar = nullptr;
+
+};
+
 
 /**
  * \ingroup gui
@@ -59,6 +122,13 @@ class GUI_EXPORT QgsMapLayerConfigWidget : public QgsPanelWidget
      */
     virtual void syncToLayer( QgsMapLayer *layer ) { Q_UNUSED( layer ) }
 
+    /**
+     * Sets the \a context under which the widget is being shown.
+     *
+     * Subclasses should take care to call the base class implementation when overriding this method.
+     */
+    virtual void setMapLayerConfigWidgetContext( const QgsMapLayerConfigWidgetContext &context );
+
   public slots:
 
     /**
@@ -66,6 +136,13 @@ class GUI_EXPORT QgsMapLayerConfigWidget : public QgsPanelWidget
      * Will be called when live update is enabled.
      */
     virtual void apply() = 0;
+
+    /**
+     * Focuses the default widget for the page.
+     *
+     * \since QGIS 3.22
+     */
+    virtual void focusDefaultWidget();
 
   signals:
 
@@ -85,6 +162,7 @@ class GUI_EXPORT QgsMapLayerConfigWidget : public QgsPanelWidget
 
     QgsMapLayer *mLayer = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
+    QgsMapLayerConfigWidgetContext mMapLayerConfigWidgetContext;
 };
 
 #endif // QGSMAPLAYERCONFIGWIDGET_H

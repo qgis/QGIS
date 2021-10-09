@@ -22,6 +22,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsfeaturesource.h"
 #include "qgsexpressioncontextscopegenerator.h"
+#include "qgscoordinatetransform.h"
 
 #include <QPointer>
 #include <QSet>

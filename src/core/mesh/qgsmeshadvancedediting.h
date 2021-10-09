@@ -23,6 +23,7 @@
 
 class QgsMeshEditor;
 class QgsProcessingFeedback;
+class QgsExpressionContext;
 
 /**
  * \ingroup core
@@ -55,15 +56,22 @@ class CORE_EXPORT QgsMeshAdvancedEditing : protected QgsTopologicalMesh::Changes
     //! Removes all data provided to the editing or created by the editing
     void clear();
 
+    /**
+     *  Returns whether the advanced edit is finished,
+     *  if not, this edit has to be applied again with QgsMeshEditor::advancedEdit() until is finished returns TRUE
+     */
+    virtual bool isFinished() const;
+
   protected:
     QList<int> mInputVertices;
     QList<int> mInputFaces;
     QString mMessage;
+    bool mIsFinished = false;
 
     /**
      * Apply a change to \a mesh Editor. This method is called by the QgsMeshEditor to apply the editing on the topological mesh
      *
-     * The method has to be implemented in the derived class to provide the changes of the advancd editing
+     * The method has to be implemented in the derived class to provide the changes of the advanced editing
      */
     virtual QgsTopologicalMesh::Changes apply( QgsMeshEditor *meshEditor ) = 0; SIP_SKIP
 
@@ -123,5 +131,68 @@ class CORE_EXPORT QgsMeshEditRefineFaces : public QgsMeshAdvancedEditing
     friend class TestQgsMeshEditor;
 };
 
+
+/**
+ * \ingroup core
+ *
+ * \brief Class that can transform vertices of a mesh by expression
+ *
+ * Each coordinates are associated with an expression that can be defined with function
+ * returning the current coordinates (see setExpressions()):
+ *
+ * - $vertex_x
+ * - $vertex_y
+ * - $vertex_z
+ *
+ * Example:
+ * Transposing a mesh and translate following axe X with a distance of 50 and increase the level of the mesh
+ * with an height of 80 when previous X coordinate is under 100 and de crease the level of 150 when X is under 100:
+ *
+ * expressionX: "$vertex_y + 50"
+ * expressionY: "$vertex_x"
+ * expressionZ: "if( $vertex_x <= 100 , $vertex_z + 80 , $vertex_z - 150)"
+ *
+ * \since QGIS 3.22
+ */
+class CORE_EXPORT QgsMeshTransformVerticesByExpression : public QgsMeshAdvancedEditing
+{
+  public:
+
+    //! Constructor
+    QgsMeshTransformVerticesByExpression() = default;
+
+    /**
+     * Sets the expressions for the coordinates transformation.
+     *
+     * \note Expressions are optional for each coordinate, the coordinate will not be transformed if the string is void.
+     */
+    void setExpressions( const QString &expressionX, const QString &expressionY, const QString &expressionZ );
+
+    /**
+     * Calculates the transformed vertices of the mesh \a layer, returns FALSE if this leads to topological or geometrical errors.
+     * The mesh layer must be in edit mode.
+     *
+     * \note this method not apply new vertices to the mesh layer but only store the calculated transformation
+     *       that can be apply later with QgsMeshEditor::advancedEdit()
+     */
+    bool calculate( QgsMeshLayer *layer );
+
+    /**
+     * Returns the transformed vertex from its index \a vertexIndex for the mesh \a layer
+     *
+     * If \a layer is not the same than the one used to make the calculation, this will create an undefined behavior
+     */
+    QgsMeshVertex transformedVertex( QgsMeshLayer *layer, int vertexIndex ) const;
+
+  private:
+    QString mExpressionX;
+    QString mExpressionY;
+    QString mExpressionZ;
+    QHash<int, int> mChangingVertexMap;
+
+    QgsTopologicalMesh::Changes apply( QgsMeshEditor *meshEditor ) override;
+
+    friend class TestQgsMeshEditor;
+};
 
 #endif // QGSMESHADVANCEDEDITING_H

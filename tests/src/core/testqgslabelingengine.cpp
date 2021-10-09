@@ -77,6 +77,7 @@ class TestQgsLabelingEngine : public QObject
     void testLabelBoundary();
     void testLabelBlockingRegion();
     void testLabelRotationWithReprojection();
+    void testLabelRotationUnit();
     void drawUnplaced();
     void labelingResults();
     void labelingResultsWithCallouts();
@@ -161,10 +162,10 @@ void TestQgsLabelingEngine::testEngineSettings()
   // default for new projects should be placement engine v2
   QCOMPARE( settings.placementVersion(), QgsLabelingEngineSettings::PlacementEngineVersion2 );
 
-  settings.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
-  QCOMPARE( settings.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
-  settings.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysOutlines );
-  QCOMPARE( settings.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
+  settings.setDefaultTextRenderFormat( Qgis::TextRenderFormat::AlwaysText );
+  QCOMPARE( settings.defaultTextRenderFormat(), Qgis::TextRenderFormat::AlwaysText );
+  settings.setDefaultTextRenderFormat( Qgis::TextRenderFormat::AlwaysOutlines );
+  QCOMPARE( settings.defaultTextRenderFormat(), Qgis::TextRenderFormat::AlwaysOutlines );
 
   settings.setPlacementVersion( QgsLabelingEngineSettings::PlacementEngineVersion1 );
   QCOMPARE( settings.placementVersion(), QgsLabelingEngineSettings::PlacementEngineVersion1 );
@@ -179,22 +180,22 @@ void TestQgsLabelingEngine::testEngineSettings()
 
   // reading from project
   QgsProject p;
-  settings.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
+  settings.setDefaultTextRenderFormat( Qgis::TextRenderFormat::AlwaysText );
   settings.setFlag( QgsLabelingEngineSettings::DrawUnplacedLabels, true );
   settings.setUnplacedLabelColor( QColor( 0, 255, 0 ) );
   settings.setPlacementVersion( QgsLabelingEngineSettings::PlacementEngineVersion1 );
   settings.writeSettingsToProject( &p );
   QgsLabelingEngineSettings settings2;
   settings2.readSettingsFromProject( &p );
-  QCOMPARE( settings2.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
+  QCOMPARE( settings2.defaultTextRenderFormat(), Qgis::TextRenderFormat::AlwaysText );
   QVERIFY( settings2.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) );
   QCOMPARE( settings2.unplacedLabelColor().name(), QStringLiteral( "#00ff00" ) );
 
-  settings.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysOutlines );
+  settings.setDefaultTextRenderFormat( Qgis::TextRenderFormat::AlwaysOutlines );
   settings.setFlag( QgsLabelingEngineSettings::DrawUnplacedLabels, false );
   settings.writeSettingsToProject( &p );
   settings2.readSettingsFromProject( &p );
-  QCOMPARE( settings2.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
+  QCOMPARE( settings2.defaultTextRenderFormat(), Qgis::TextRenderFormat::AlwaysOutlines );
   QVERIFY( !settings2.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) );
   QCOMPARE( settings2.placementVersion(), QgsLabelingEngineSettings::PlacementEngineVersion1 );
 
@@ -203,11 +204,11 @@ void TestQgsLabelingEngine::testEngineSettings()
   QgsLabelingEngineSettings settings3;
   p2.writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), false );
   settings3.readSettingsFromProject( &p2 );
-  QCOMPARE( settings3.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
+  QCOMPARE( settings3.defaultTextRenderFormat(), Qgis::TextRenderFormat::AlwaysText );
 
   p2.writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), true );
   settings3.readSettingsFromProject( &p2 );
-  QCOMPARE( settings3.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
+  QCOMPARE( settings3.defaultTextRenderFormat(), Qgis::TextRenderFormat::AlwaysOutlines );
 
   // when opening an older project, labeling engine version should be 1
   p2.removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/PlacementEngineVersion" ) );
@@ -1345,7 +1346,7 @@ void TestQgsLabelingEngine::testCurvedLabelsWithTinySegments()
   mapSettings.setExtent( g.boundingBox() );
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
   mapSettings.setOutputDpi( 96 );
-  mapSettings.setFlag( QgsMapSettings::UseRenderingOptimization, false );
+  mapSettings.setFlag( Qgis::MapSettingsFlag::UseRenderingOptimization, false );
 
   QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
   engineSettings.setFlag( QgsLabelingEngineSettings::UsePartialCandidates, false );
@@ -1852,6 +1853,50 @@ void TestQgsLabelingEngine::testLabelRotationWithReprojection()
 
   QImage img = job.renderedImage();
   QVERIFY( imageCheck( QStringLiteral( "label_rotate_with_reproject" ), img, 20 ) );
+}
+
+void TestQgsLabelingEngine::testLabelRotationUnit()
+{
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl );
+  mapSettings.setOutputDpi( 96 );
+
+  // first render the map and labeling separately
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+
+  QPainter p( &img );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.setPainter( &p );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "Class" );
+  setDefaultLabelParams( settings );
+
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromExpression( QString::number( 3.14 / 2.0 ) ) );
+  settings.setRotationUnit( QgsUnitTypes::AngleRadians );
+
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabelsEnabled( true );
+
+  QgsDefaultLabelingEngine engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
+  engine.run( context );
+
+  p.end();
+
+  QVERIFY( imageCheck( "label_rotate_unit", img, 20 ) );
+
+  vl->setLabeling( nullptr );
 }
 
 void TestQgsLabelingEngine::drawUnplaced()

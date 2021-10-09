@@ -75,6 +75,13 @@ Returns the global map layer action registry, used for registering map layer act
 Returns the global layout item GUI registry, used for registering the GUI behavior of layout items.
 %End
 
+    static QgsAnnotationItemGuiRegistry *annotationItemGuiRegistry() /KeepReference/;
+%Docstring
+Returns the global annotation item GUI registry, used for registering the GUI behavior of annotation items.
+
+.. versionadded:: 3.22
+%End
+
     static QgsProcessingGuiRegistry *processingGuiRegistry() /KeepReference/;
 %Docstring
 Returns the global processing gui registry, used for registering the GUI behavior of processing algorithms.

@@ -96,7 +96,7 @@ class CursorAdapter():
         return newres
 
     def _execute(self, sql=None):
-        if self.sql == sql and self.result is not None:
+        if (sql is None or self.sql == sql) and self.result is not None:
             return
         if (sql is not None):
             self.sql = sql
@@ -181,7 +181,7 @@ class CursorAdapter():
         self._execute()
         if len(self.result) - self.cursor:
             res = self.result[self.cursor]
-            ++self.cursor
+            self.cursor += 1
             return res
         return None
 

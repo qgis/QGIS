@@ -43,7 +43,7 @@ QgsMapOverviewCanvas::QgsMapOverviewCanvas( QWidget *parent, QgsMapCanvas *mapCa
   mPanningWidget = new QgsPanningWidget( this );
 
   mSettings.setTransformContext( mMapCanvas->mapSettings().transformContext() );
-  mSettings.setFlag( QgsMapSettings::DrawLabeling, false );
+  mSettings.setFlag( Qgis::MapSettingsFlag::DrawLabeling, false );
 
   connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsMapOverviewCanvas::drawExtentRect );
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapOverviewCanvas::destinationCrsChanged );

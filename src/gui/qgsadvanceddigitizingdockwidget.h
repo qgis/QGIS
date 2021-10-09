@@ -61,6 +61,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
       AbsoluteAngle = 1, //!< Azimuth
       RelativeAngle = 2, //!< Also for parallel and perpendicular
       RelativeCoordinates = 4, //!< This corresponds to distance and relative coordinates
+      Distance = 8, //!< Distance
     };
     Q_DECLARE_FLAGS( CadCapacities, CadCapacity )
     Q_FLAG( CadCapacities )
@@ -194,6 +195,22 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
          */
         void toggleRelative();
 
+        /**
+         * Returns the numeric precision (decimal places) to show in the associated widget.
+         *
+         * \see setPrecision()
+         * \since QGIS 3.22
+         */
+        int precision() const { return mPrecision; }
+
+        /**
+         * Sets the numeric precision (decimal places) to show in the associated widget.
+         *
+         * \see precision()
+         * \since QGIS 3.22
+         */
+        void setPrecision( int precision );
+
       private:
         QLineEdit *mLineEdit = nullptr;
         QToolButton *mLockerButton = nullptr;
@@ -203,6 +220,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
         bool mRepeatingLock;
         bool mRelative;
         double mValue;
+        int mPrecision = 6;
     };
 
     /**
@@ -250,6 +268,24 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! determines if CAD tools are enabled or if map tools behaves "nomally"
     bool cadEnabled() const { return mCadEnabled; }
 
+    /**
+     * Determines if Z or M will be enabled.
+     * \since QGIS 3.22
+     */
+    void switchZM( );
+
+    /**
+     * Sets whether Z is enabled
+     * \since QGIS 3.22
+     */
+    void setEnabledZ( bool enable );
+
+    /**
+     * Sets whether M is enabled
+     * \since QGIS 3.22
+     */
+    void setEnabledM( bool enable );
+
     //! construction mode is used to draw intermediate points. These points won't be given any further (i.e. to the map tools)
     bool constructionMode() const { return mConstructionMode; }
 
@@ -266,6 +302,18 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     const CadConstraint *constraintX() const { return mXConstraint.get(); }
     //! Returns the \a CadConstraint on the Y coordinate
     const CadConstraint *constraintY() const { return mYConstraint.get(); }
+
+    /**
+     * Returns the \a CadConstraint on the Z coordinate
+     * \since QGIS 3.22
+     */
+    const CadConstraint *constraintZ() const { return mZConstraint.get(); }
+
+    /**
+     * Returns the \a CadConstraint on the M coordinate
+     * \since QGIS 3.22
+     */
+    const CadConstraint *constraintM() const { return mMConstraint.get(); }
     //! Returns TRUE if a constraint on a common angle is active
     bool commonAngleConstraint() const { return !qgsDoubleNear( mCommonAngleConstraint, 0.0 ); }
 
@@ -306,22 +354,55 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * The last point.
      * Helper for the CAD point list. The CAD point list is the list of points
      * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
+     *
+     * \since QGIS 3.22
      */
-    QgsPointXY currentPoint( bool *exists  = nullptr ) const;
+    QgsPoint currentPointV2( bool *exists  = nullptr ) const;
+
+    /**
+     * Returns the last CAD point, in a map \a layer's coordinates.
+     *
+     * \since QGIS 3.22
+     */
+    QgsPoint currentPointLayerCoordinates( QgsMapLayer *layer ) const;
+
+    /**
+     * The last point.
+     * Helper for the CAD point list. The CAD point list is the list of points
+     * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
+     * \deprecated since QGIS 3.22. Use currentPointV2() instead.
+     */
+    Q_DECL_DEPRECATED QgsPointXY currentPoint( bool *exists  = nullptr ) const SIP_DEPRECATED { return currentPointV2( exists ); };
 
     /**
      * The previous point.
      * Helper for the CAD point list. The CAD point list is the list of points
      * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
      */
-    QgsPointXY previousPoint( bool *exists = nullptr ) const;
+    QgsPoint previousPointV2( bool *exists = nullptr ) const;
+
+    /**
+     * The previous point.
+     * Helper for the CAD point list. The CAD point list is the list of points
+     * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
+     * \deprecated since QGIS 3.22. Use previousPointV2() instead.
+     */
+    Q_DECL_DEPRECATED QgsPointXY previousPoint( bool *exists = nullptr ) const SIP_DEPRECATED { return previousPointV2( exists ); };
 
     /**
      * The penultimate point.
      * Helper for the CAD point list. The CAD point list is the list of points
      * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
      */
-    QgsPointXY penultimatePoint( bool *exists = nullptr ) const;
+    QgsPoint penultimatePointV2( bool *exists = nullptr ) const;
+
+    /**
+     * The penultimate point.
+     * Helper for the CAD point list. The CAD point list is the list of points
+     * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
+     * \deprecated since QGIS 3.22. Use penultimatePointV2() instead.
+     */
+    Q_DECL_DEPRECATED QgsPointXY penultimatePoint( bool *exists = nullptr ) const SIP_DEPRECATED { return penultimatePointV2( exists ); };
 
     /**
      * The number of points in the CAD point helper list
@@ -381,6 +462,26 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void setY( const QString &value, WidgetSetMode mode );
 
     /**
+    * Set the Z value on the widget.
+    * Can be used to set constraints by external widgets.
+    * \param mode What type of interaction to emulate
+    * \param value The value (as a QString, as it could be an expression)
+    * \note unstable API (will likely change)
+    * \since QGIS 3.22
+    */
+    void setZ( const QString &value, WidgetSetMode mode );
+
+    /**
+    * Set the M value on the widget.
+    * Can be used to set constraints by external widgets.
+    * \param mode What type of interaction to emulate
+    * \param value The value (as a QString, as it could be an expression)
+    * \note unstable API (will likely change)
+    * \since QGIS 3.22
+    */
+    void setM( const QString &value, WidgetSetMode mode );
+
+    /**
     * Set the angle value on the widget.
     * Can be used to set constraints by external widgets.
     * \param mode What type of interaction to emulate
@@ -400,7 +501,17 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     */
     void setDistance( const QString &value, WidgetSetMode mode );
 
+    /**
+     * Convenient method to get the Z value from the line edit wiget
+     * \since QGIS 3.22
+     */
+    double getLineZ( ) const;
 
+    /**
+     * Convenient method to get the M value from the line edit wiget
+     * \since QGIS 3.22
+     */
+    double getLineM( ) const;
 
   signals:
 
@@ -421,8 +532,18 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * when a constraint is toggled.
      *
      * \param point The last known digitizing point. Can be used to emulate a mouse event.
+     * \since QGIS 3.22
      */
-    void pointChanged( const QgsPointXY &point );
+    void pointChangedV2( const QgsPoint &point );
+
+    /**
+     * Sometimes a constraint may change the current point out of a mouse event. This happens normally
+     * when a constraint is toggled.
+     *
+     * \param point The last known digitizing point. Can be used to emulate a mouse event.
+     * \deprecated since QGIS 3.22. No longer used, will be removed in QGIS 4.0. Use pointChangedV2 instead.
+     */
+    Q_DECL_DEPRECATED void pointChanged( const QgsPointXY &point ) SIP_DEPRECATED;
 
     //! Signals for external widgets that need to update according to current values
 
@@ -450,6 +571,22 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     * \since QGIS 3.8
     */
     void valueYChanged( const QString &value );
+
+    /**
+    * Emitted whenever the Z \a value changes (either the mouse moved, or the user changed the input).
+    * Could be used by widgets that must reflect the current advanced digitizing state.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.22
+    */
+    void valueZChanged( const QString &value );
+
+    /**
+    * Emitted whenever the M \a value changes (either the mouse moved, or the user changed the input).
+    * Could be used by widgets that must reflect the current advanced digitizing state.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.22
+    */
+    void valueMChanged( const QString &value );
 
     /**
     * Emitted whenever the angle \a value changes (either the mouse moved, or the user changed the input).
@@ -482,6 +619,22 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     * \since QGIS 3.8
     */
     void lockYChanged( bool locked );
+
+    /**
+    * Emitted whenever the Z parameter is \a locked.
+    * Could be used by widgets that must reflect the current advanced digitizing state.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.22
+    */
+    void lockZChanged( bool locked );
+
+    /**
+    * Emitted whenever the M parameter is \a locked.
+    * Could be used by widgets that must reflect the current advanced digitizing state.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.22
+    */
+    void lockMChanged( bool locked );
 
     /**
     * Emitted whenever the angle parameter is \a locked.
@@ -520,6 +673,26 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void relativeYChanged( bool relative );
 
     /**
+    * Emitted whenever the Z parameter is toggled between absolute and relative.
+    * Could be used by widgets that must reflect the current advanced digitizing state.
+    *
+    * \param relative Whether the Z parameter is relative or not.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.22
+    */
+    void relativeZChanged( bool relative );
+
+    /**
+    * Emitted whenever the M parameter is toggled between absolute and relative.
+    * Could be used by widgets that must reflect the current advanced digitizing state.
+    *
+    * \param relative Whether the M parameter is relative or not.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.22
+    */
+    void relativeMChanged( bool relative );
+
+    /**
     * Emitted whenever the angleX parameter is toggled between absolute and relative.
     * Could be used by widgets that must reflect the current advanced digitizing state.
     *
@@ -552,6 +725,28 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     * \since QGIS 3.8
     */
     void enabledChangedY( bool enabled );
+
+    /**
+    * Emitted whenever the Z field is enabled or disabled. Depending on the context, some parameters
+    * do not make sense (e.g. you need a previous point to define a distance).
+    * Could be used by widgets that must reflect the current advanced digitizing state.
+    *
+    * \param enabled Whether the Z parameter is enabled or not.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.22
+    */
+    void enabledChangedZ( bool enabled );
+
+    /**
+    * Emitted whenever the M field is enabled or disabled. Depending on the context, some parameters
+    * do not make sense (e.g. you need a previous point to define a distance).
+    * Could be used by widgets that must reflect the current advanced digitizing state.
+    *
+    * \param enabled Whether the M parameter is enabled or not.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.22
+    */
+    void enabledChangedM( bool enabled );
 
     /**
     * Emitted whenever the angle field is enabled or disabled. Depending on the context, some parameters
@@ -590,6 +785,22 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     * \since QGIS 3.8
     */
     void focusOnYRequested();
+
+    /**
+    * Emitted whenever the Z field should get the focus using the shortcuts (Z).
+    * Could be used by widgets to capture the focus when a field is being edited.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.22
+    */
+    void focusOnZRequested();
+
+    /**
+    * Emitted whenever the M field should get the focus using the shortcuts (M).
+    * Could be used by widgets to capture the focus when a field is being edited.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.22
+    */
+    void focusOnMRequested();
 
     /**
     * Emitted whenever the angle field should get the focus using the shortcuts (A).
@@ -646,6 +857,12 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void settingsButtonTriggered( QAction *action );
 
   private:
+
+    /**
+     * Returns the layer currently associated with the map tool using the dock widget.
+     */
+    QgsMapLayer *targetLayer();
+
     //! updates the UI depending on activation of the tools and clear points / release locks.
     void setCadEnabled( bool enabled );
 
@@ -666,7 +883,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     QList<QgsPointXY> snapSegmentToAllLayers( const QgsPointXY &originalMapPoint, bool *snapped = nullptr ) const;
 
     //! update the current point in the CAD point list
-    void updateCurrentPoint( const QgsPointXY &point );
+    void updateCurrentPoint( const QgsPoint &point );
 
 
     /**
@@ -699,7 +916,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void updateConstraintValue( CadConstraint *constraint, const QString &textValue, bool convertExpression = false );
 
     //! Updates values of constraints that are not locked based on the current point
-    void updateUnlockedConstraintValues( const QgsPointXY &point );
+    void updateUnlockedConstraintValues( const QgsPoint &point );
 
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsAdvancedDigitizingCanvasItem *mCadPaintItem = nullptr;
@@ -723,11 +940,13 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     std::unique_ptr< CadConstraint > mDistanceConstraint;
     std::unique_ptr< CadConstraint > mXConstraint;
     std::unique_ptr< CadConstraint > mYConstraint;
+    std::unique_ptr< CadConstraint > mZConstraint;
+    std::unique_ptr< CadConstraint > mMConstraint;
     AdditionalConstraint mAdditionalConstraint;
     double mCommonAngleConstraint; // if 0: do not snap to common angles
 
     // point list and current snap point / segment
-    QList<QgsPointXY> mCadPointList;
+    QList<QgsPoint> mCadPointList;
     QList<QgsPointXY> mSnappedSegment;
 
     bool mSessionActive = false;
@@ -746,6 +965,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! event filter for line edits in the dock UI (angle/distance/x/y line edits)
     bool eventFilter( QObject *obj, QEvent *event );
 #endif
+    //! Convenient method to convert a 2D Point to a QgsPoint
+    QgsPoint pointXYToPoint( const QgsPointXY &point ) const;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAdvancedDigitizingDockWidget::CadCapacities )

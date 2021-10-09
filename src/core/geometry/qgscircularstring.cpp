@@ -1108,7 +1108,7 @@ void QgsCircularString::draw( QPainter &p ) const
   p.drawPath( path );
 }
 
-void QgsCircularString::transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
+void QgsCircularString::transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d, bool transformZ )
 {
   clearCache();
 

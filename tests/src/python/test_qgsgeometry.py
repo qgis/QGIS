@@ -75,7 +75,7 @@ class TestQgsGeometry(unittest.TestCase):
         myWKT = 'Point (10 10)'
         g = QgsGeometry.fromWkt(myWKT)
         self.assertTrue(g)
-        g.set(None)
+        g = QgsGeometry(None)
         self.assertFalse(g)
 
     def testIsEmpty(self):
@@ -1993,7 +1993,7 @@ class TestQgsGeometry(unittest.TestCase):
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
         # valid transform
-        ct = QgsCoordinateTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857),
+        ct = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:4326'), QgsCoordinateReferenceSystem('EPSG:3857'),
                                     QgsProject.instance())
 
         point = QgsGeometry.fromWkt("Point (1 1)")

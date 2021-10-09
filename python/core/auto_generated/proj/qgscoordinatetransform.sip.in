@@ -45,12 +45,6 @@ transforms coordinates from the layer's coordinate system to the map canvas.
 %End
   public:
 
-    enum TransformDirection
-    {
-      ForwardTransform,
-      ReverseTransform
-    };
-
     QgsCoordinateTransform();
 %Docstring
 Default constructor, creates an invalid QgsCoordinateTransform.
@@ -212,7 +206,7 @@ transform coordinates to.
 .. seealso:: :py:func:`sourceCrs`
 %End
 
-    QgsPointXY transform( const QgsPointXY &point, TransformDirection direction = ForwardTransform ) const throw( QgsCsException );
+    QgsPointXY transform( const QgsPointXY &point, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const throw( QgsCsException );
 %Docstring
 Transform the point from the source CRS to the destination CRS.
 If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -224,7 +218,7 @@ otherwise points are transformed from destination to source CRS.
 :return: transformed point
 %End
 
-    QgsPointXY transform( double x, double y, TransformDirection direction = ForwardTransform ) const;
+    QgsPointXY transform( double x, double y, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const;
 %Docstring
 Transform the point specified by x,y from the source CRS to the destination CRS.
 If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -237,7 +231,7 @@ otherwise points are transformed from destination to source CRS.
 :return: transformed point
 %End
 
-    QgsVector3D transform( const QgsVector3D &point, TransformDirection direction = ForwardTransform ) const;
+    QgsVector3D transform( const QgsVector3D &point, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const;
 %Docstring
 Transform the point specified in 3D coordinates from the source CRS to the destination CRS.
 If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -251,7 +245,7 @@ otherwise points are transformed from destination to source CRS.
 .. versionadded:: 3.18
 %End
 
-    QgsRectangle transformBoundingBox( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform, bool handle180Crossover = false ) const throw( QgsCsException );
+    QgsRectangle transformBoundingBox( const QgsRectangle &rectangle, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward, bool handle180Crossover = false ) const throw( QgsCsException );
 %Docstring
 Transforms a rectangle from the source CRS to the destination CRS.
 If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -268,7 +262,7 @@ the returned rectangle.
 :return: rectangle in destination CRS
 %End
 
-    void transformInPlace( double &x, double &y, double &z, TransformDirection direction = ForwardTransform ) const throw( QgsCsException );
+    void transformInPlace( double &x, double &y, double &z, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const throw( QgsCsException );
 %Docstring
 Transforms an array of x, y and z double coordinates in place, from the source CRS to the destination CRS.
 If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -286,7 +280,7 @@ otherwise points are transformed from destination to source CRS.
 
 
 
-    void transformPolygon( QPolygonF &polygon, TransformDirection direction = ForwardTransform ) const throw( QgsCsException );
+    void transformPolygon( QPolygonF &polygon, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const throw( QgsCsException );
 %Docstring
 Transforms a polygon to the destination coordinate system.
 
@@ -294,7 +288,7 @@ Transforms a polygon to the destination coordinate system.
 :param direction: transform direction (defaults to forward transformation)
 %End
 
-    QgsRectangle transform( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform ) const throw( QgsCsException );
+    QgsRectangle transform( const QgsRectangle &rectangle, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const throw( QgsCsException );
 %Docstring
 Transforms a rectangle to the destination CRS.
 If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -306,7 +300,7 @@ otherwise points are transformed from destination to source CRS.
 :return: transformed rectangle
 %End
 
-    void transformCoords( int numPoint, double *x, double *y, double *z, TransformDirection direction = ForwardTransform ) const throw( QgsCsException );
+    void transformCoords( int numPoint, double *x, double *y, double *z, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const throw( QgsCsException );
 %Docstring
 Transform an array of coordinates to the destination CRS.
 If the direction is ForwardTransform then coordinates are transformed from source to destination,

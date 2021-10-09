@@ -18,7 +18,8 @@ from qgis.core import (QgsDateTimeRange,
                        QgsVectorLayer,
                        QgsVectorDataProviderTemporalCapabilities,
                        QgsUnitTypes,
-                       QgsVectorLayerTemporalContext)
+                       QgsVectorLayerTemporalContext,
+                       Qgis)
 from qgis.PyQt.QtCore import (QDateTime,
                               QDate,
                               QTime,
@@ -258,6 +259,8 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         # OR start of feature <= end of range AND start of feature > start of range - duration
         self.assertEqual(props.createFilterString(context, range), '("start_field" > make_datetime(2019,3,1,11,12,13) AND "start_field" <= make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
 
+        # THIS is the QGIS default: using a range with includeBeginning=true and includeEnd=false
+        # and the temporal properties exactly the same
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeEnd=False)
         # map range              [-------------------------)
         # feature ranges         .                         . [-------)  (false)
@@ -272,6 +275,22 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         # => start of feature < end of range AND start of feature + duration > start of range
         # OR start of feature < end of range AND start of feature > start of range - duration
         self.assertEqual(props.createFilterString(context, range), '("start_field" > make_datetime(2019,3,1,11,12,13) AND "start_field" < make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
+
+        # since 3.22 there is also the option to include the end of the feature event
+        props.setLimitMode(Qgis.VectorTemporalLimitMode.IncludeBeginIncludeEnd)
+        # map range              [-------------------------)
+        # feature ranges         .                         . [-------]  (false)
+        #                        .                         [-------]    (false)
+        #                        .                     [---.---]        (true)
+        #                        .            [-------]    .            (true)
+        #                        [-------]                 .            (true)
+        #                    [---.---]                     .            (true)
+        #                [-------]                         .            (true)
+        #          [-------]     .                         .            (false)
+        # => start of feature < end of range AND start of feature + duration >= start of range
+        # OR start of feature < end of range AND start of feature >= start of range - duration
+        self.assertEqual(props.createFilterString(context, range), '("start_field" >= make_datetime(2019,3,1,11,12,13) AND "start_field" < make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
+        props.setLimitMode(Qgis.VectorTemporalLimitMode.IncludeBeginExcludeEnd)  # back to default
 
         # different unit
         props.setDurationUnits(QgsUnitTypes.TemporalMinutes)
@@ -451,6 +470,7 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeBeginning=False)
         self.assertEqual(props.createFilterString(context, range), '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND ("end_field" > make_datetime(2019,3,4,11,12,13) OR "end_field" IS NULL)')
 
+        # THIS is the QGIS default: using a range with includeBeginning=true and includeEnd=false
         # map range              [-------------------------)
         # feature ranges         .                         . [-------)  (false)
         #                        .                         [-------)    (false)
@@ -464,6 +484,21 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         # => start of feature < end of range AND end of feature > start of range
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeEnd=False)
         self.assertEqual(props.createFilterString(context, range), '("start_field" < make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND ("end_field" > make_datetime(2019,3,4,11,12,13) OR "end_field" IS NULL)')
+        # since 3.22 there is also the option to include the end of the feature event
+        props.setLimitMode(Qgis.VectorTemporalLimitMode.IncludeBeginIncludeEnd)
+        # map range              [-------------------------)
+        # feature ranges         .                         . [-------]  (false)
+        #                        .                         [-------]    (false)
+        #                        .                     [---.---]        (true)
+        #                        .            [-------]    .            (true)
+        #                        [-------]                 .            (true)
+        #                    [---.---]                     .            (true)
+        #                [-------]                         .            (true)
+        #          [-------]     .                         .            (false)
+        #
+        # => start of feature < end of range AND end of feature >= start of range
+        self.assertEqual(props.createFilterString(context, range), '("start_field" < make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND ("end_field" >= make_datetime(2019,3,4,11,12,13) OR "end_field" IS NULL)')
+        props.setLimitMode(Qgis.VectorTemporalLimitMode.IncludeBeginExcludeEnd)  # back to default
 
         # features go to +eternity
         props.setEndField('')
@@ -501,6 +536,7 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         # => start of feature <= end of range
         self.assertEqual(props.createFilterString(context, range), '"start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL')
 
+        # THIS is the QGIS default: using a range with includeBeginning=true and includeEnd=false
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeEnd=False)
         # map range              [-------------------------)
         # feature ranges         .                         . [-------->  (false)
@@ -549,8 +585,9 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         # => end of feature > start of range
         self.assertEqual(props.createFilterString(context, range), '"end_field" > make_datetime(2019,3,4,11,12,13) OR "end_field" IS NULL')
 
+        # THIS is the QGIS default: using a range with includeBeginning=true and includeEnd=false
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeEnd=False)
-        # map range              [-------------------------]
+        # map range              [-------------------------)
         # feature ranges --------.-------------------------.---------)  (true)
         #                --------.-------------------------)            (true)
         #                --------.--------------------)    .            (true)
@@ -559,6 +596,19 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         #
         # => end of feature > start of range
         self.assertEqual(props.createFilterString(context, range), '"end_field" > make_datetime(2019,3,4,11,12,13) OR "end_field" IS NULL')
+        # since 3.22 there is also the option to include the end of the feature event
+        # => end of feature >= start of range
+        props.setLimitMode(Qgis.VectorTemporalLimitMode.IncludeBeginIncludeEnd)
+        # map range              [-------------------------)
+        # feature ranges --------.-------------------------.---------]  (true)
+        #                --------.-------------------------]            (true)
+        #                --------.--------------------]    .            (true)
+        #                --------]                         .            (true)
+        #                -----]                            .            (false)
+        #
+        # => end of feature >= start of range
+        self.assertEqual(props.createFilterString(context, range), '"end_field" >= make_datetime(2019,3,4,11,12,13) OR "end_field" IS NULL')
+        props.setLimitMode(Qgis.VectorTemporalLimitMode.IncludeBeginExcludeEnd)  # back to default
 
     def testStartAndDurationMode(self):
         layer = QgsVectorLayer(
@@ -627,6 +677,7 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         self.assertEqual(props.createFilterString(context, range),
                          '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(0,0,0,0,0,0,"duration"/1000) > make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
 
+        # THIS is the QGIS default: using a range with includeBeginning=true and includeEnd=false
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)),
                                  QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeEnd=False)
         # map range              [-------------------------)
@@ -642,6 +693,21 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         # => start of feature < end of range AND start + duration > start of range
         self.assertEqual(props.createFilterString(context, range),
                          '("start_field" < make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(0,0,0,0,0,0,"duration"/1000) > make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
+        # map range              [-------------------------)
+        # feature ranges         .                         . [-------]  (false)
+        #                        .                         [-------]    (false)
+        #                        .                     [---.---]        (true)
+        #                        .            [-------]    .            (true)
+        #                        [-------]                 .            (true)
+        #                    [---.---]                     .            (true)
+        #                [-------]                         .            (true)
+        #          [-------]     .                         .            (false)
+        #
+        # => start of feature < end of range AND start + duration >= start of range
+        props.setLimitMode(Qgis.VectorTemporalLimitMode.IncludeBeginIncludeEnd)
+        self.assertEqual(props.createFilterString(context, range),
+                         '("start_field" < make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(0,0,0,0,0,0,"duration"/1000) >= make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
+        props.setLimitMode(Qgis.VectorTemporalLimitMode.IncludeBeginExcludeEnd)  # back to default
 
         # different units
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)),
@@ -741,6 +807,7 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         # => start expression <= end of range AND end expression > start of range
         self.assertEqual(props.createFilterString(context, range), '((to_datetime("my string field",  \'yyyy MM dd hh::mm:ss\')") <= make_datetime(2020,5,6,8,9,10)) AND ((to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')") > make_datetime(2019,3,4,11,12,13))')
 
+        # THIS is the QGIS default: using a range with includeBeginning=true and includeEnd=false
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeEnd=False)
         # map range              [-------------------------)
         # feature ranges         .                         . [-------)  (false)
@@ -754,6 +821,20 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         #
         # => start expression < end of range AND end expression > start of range
         self.assertEqual(props.createFilterString(context, range), '((to_datetime("my string field",  \'yyyy MM dd hh::mm:ss\')") < make_datetime(2020,5,6,8,9,10)) AND ((to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')") > make_datetime(2019,3,4,11,12,13))')
+        # map range              [-------------------------)
+        # feature ranges         .                         . [-------]  (false)
+        #                        .                         [-------]    (false)
+        #                        .                     [---.---]        (true)
+        #                        .            [-------]    .            (true)
+        #                        [-------]                 .            (true)
+        #                    [---.---]                     .            (true)
+        #                [-------]                         .            (true)
+        #          [-------]     .                         .            (false)
+        #
+        # => start expression < end of range AND end expression >= start of range
+        props.setLimitMode(Qgis.VectorTemporalLimitMode.IncludeBeginIncludeEnd)
+        self.assertEqual(props.createFilterString(context, range), '((to_datetime("my string field",  \'yyyy MM dd hh::mm:ss\')") < make_datetime(2020,5,6,8,9,10)) AND ((to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')") >= make_datetime(2019,3,4,11,12,13))')
+        props.setLimitMode(Qgis.VectorTemporalLimitMode.IncludeBeginExcludeEnd)  # back to default
 
         # features go to +eternity
         props.setEndExpression('')
@@ -839,6 +920,7 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         # => end of feature > start of range
         self.assertEqual(props.createFilterString(context, range), '(to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')") > make_datetime(2019,3,4,11,12,13)')
 
+        # THIS is the QGIS default: using a range with includeBeginning=true and includeEnd=false
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeEnd=False)
         # map range              [-------------------------)
         # feature ranges --------.-------------------------.---------)  (true)
@@ -849,6 +931,16 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         #
         # => end of feature > start of range
         self.assertEqual(props.createFilterString(context, range), '(to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')") > make_datetime(2019,3,4,11,12,13)')
+        # map range              [-------------------------)
+        # feature ranges --------.-------------------------.---------]  (true)
+        #                --------.-------------------------]            (true)
+        #                --------.--------------------]    .            (true)
+        #                --------]                         .            (true)
+        #                -----]                            .            (false)
+        #        # => end of feature >= start of range
+        props.setLimitMode(Qgis.VectorTemporalLimitMode.IncludeBeginIncludeEnd)
+        self.assertEqual(props.createFilterString(context, range), '(to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')") >= make_datetime(2019,3,4,11,12,13)')
+        props.setLimitMode(Qgis.VectorTemporalLimitMode.IncludeBeginExcludeEnd)  # back to default
 
 
 if __name__ == '__main__':

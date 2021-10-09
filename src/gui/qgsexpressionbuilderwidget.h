@@ -259,6 +259,13 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      */
     bool parserError() const;
 
+    /**
+     * Sets whether the expression preview is visible.
+     *
+     * \since QGIS 3.22
+     */
+    void setExpressionPreviewVisible( bool isVisible );
+
   public slots:
 
     /**

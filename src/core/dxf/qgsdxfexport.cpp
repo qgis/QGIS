@@ -663,7 +663,7 @@ void QgsDxfExport::writeEntities()
     const QgsCoordinateTransform ct( job->crs, mMapSettings.destinationCrs(), mMapSettings.transformContext() );
 
     QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( job->attributes, job->fields ).setExpressionContext( job->renderContext.expressionContext() );
-    request.setFilterRect( ct.transformBoundingBox( mExtent, QgsCoordinateTransform::ReverseTransform ) );
+    request.setFilterRect( ct.transformBoundingBox( mExtent, Qgis::TransformDirection::Reverse ) );
 
     QgsFeatureIterator featureIt = job->featureSource.getFeatures( request );
 
@@ -1625,11 +1625,16 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
         }
 
         const QgsCurve *curve = dynamic_cast<const QgsCurve *>( sourceGeom );
-        Q_ASSERT( curve );
-        writePolyline( *curve, layer, lineStyleName, penColor, width );
+        if ( curve )
+        {
+          writePolyline( *curve, layer, lineStyleName, penColor, width );
+          break;
+        }
 
-        break;
+        // Offset with miter might have turned the simple to a multiline string
+        offset = 0.0;
       }
+      FALLTHROUGH
 
       case QgsWkbTypes::MultiCurve:
       case QgsWkbTypes::MultiLineString:
@@ -1645,14 +1650,17 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
         }
 
         const QgsGeometryCollection *gc = dynamic_cast<const QgsGeometryCollection *>( sourceGeom );
-        Q_ASSERT( gc );
-
-        for ( int i = 0; i < gc->numGeometries(); i++ )
+        if ( gc )
         {
-          const QgsCurve *curve = dynamic_cast<const QgsCurve *>( gc->geometryN( i ) );
-          Q_ASSERT( curve );
-          writePolyline( *curve, layer, lineStyleName, penColor, width );
+          for ( int i = 0; i < gc->numGeometries(); i++ )
+          {
+            const QgsCurve *curve = dynamic_cast<const QgsCurve *>( gc->geometryN( i ) );
+            Q_ASSERT( curve );
+            writePolyline( *curve, layer, lineStyleName, penColor, width );
+          }
         }
+        else
+          Q_ASSERT( gc );
 
         break;
       }

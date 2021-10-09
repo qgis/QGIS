@@ -21,6 +21,7 @@
 #include "qgsproject.h"
 #include "qgsmaplayerrenderer.h"
 #include "qgsmaplayerlistutils.h"
+#include "qgsrendereditemresults.h"
 
 QgsMapRendererStagedRenderJob::QgsMapRendererStagedRenderJob( const QgsMapSettings &settings, Flags flags )
   : QgsMapRendererAbstractCustomPainterJob( settings )
@@ -47,7 +48,7 @@ void QgsMapRendererStagedRenderJob::startPrivate()
 
   mLabelingEngineV2.reset();
 
-  if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) )
+  if ( mSettings.testFlag( Qgis::MapSettingsFlag::DrawLabeling ) )
   {
     if ( mFlags & RenderLabelsByMapLayer )
       mLabelingEngineV2.reset( new QgsStagedRenderLabelingEngine() );

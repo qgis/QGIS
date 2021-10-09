@@ -23,6 +23,7 @@
 #include "qgis_quick.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
 #include "qgspoint.h"
 
 /**

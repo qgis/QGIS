@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsiconutils.h"
+#include "qgsmaplayerlistutils.h"
 #include <QMimeData>
 
 QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent, QgsProject *project )
@@ -158,6 +159,37 @@ void QgsMapLayerModel::setAdditionalItems( const QStringList &items )
   beginInsertRows( QModelIndex(), offset, offset + items.count() - 1 );
   mAdditionalItems = items;
   endInsertRows();
+}
+
+void QgsMapLayerModel::setAdditionalLayers( const QList<QgsMapLayer *> &layers )
+{
+  if ( layers == _qgis_listQPointerToRaw( mAdditionalLayers ) )
+    return;
+
+  QStringList layerIdsToRemove;
+  for ( QgsMapLayer *layer : std::as_const( mAdditionalLayers ) )
+  {
+    if ( layer )
+      layerIdsToRemove << layer->id();
+  }
+  removeLayers( layerIdsToRemove );
+
+  for ( QgsMapLayer *layer : layers )
+  {
+    if ( layer )
+    {
+      addLayers( { layer } );
+      const QString layerId = layer->id();
+      connect( layer, &QgsMapLayer::willBeDeleted, this, [this, layerId] { removeLayers( {layerId} ); } );
+    }
+  }
+
+  mAdditionalLayers = _qgis_listRawToQPointer( layers );
+}
+
+QList<QgsMapLayer *> QgsMapLayerModel::additionalLayers() const
+{
+  return _qgis_listQPointerToRaw( mAdditionalLayers );
 }
 
 void QgsMapLayerModel::removeLayers( const QStringList &layerIds )

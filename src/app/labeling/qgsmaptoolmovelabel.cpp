@@ -124,7 +124,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
 
       clearHoveredLabel();
 
-      QgsVectorLayer *vlayer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( mCurrentCallout.layerID );
+      QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer * >( QgsMapTool::layer( mCurrentCallout.layerID ) );
       if ( !vlayer || xCol < 0 || yCol < 0 )
       {
         return;
@@ -169,13 +169,12 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
       if ( !labelAtPosition( e, labelPos ) )
       {
         mCurrentLabel = LabelDetails();
-
         return;
       }
 
       clearHoveredLabel();
 
-      mCurrentLabel = LabelDetails( labelPos );
+      mCurrentLabel = LabelDetails( labelPos, canvas() );
 
       QgsVectorLayer *vlayer = mCurrentLabel.layer;
       if ( !vlayer )
@@ -193,7 +192,17 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
           return;
 
         if ( !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol ) )
+        {
+          QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, mCurrentLabel.settings, vlayer );
+          QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, mCurrentLabel.settings, vlayer );
+          if ( xCol < 0 && yCol < 0 )
+            QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "The label X/Y columns “%1” and “%2” do not exist in the layer" ).arg( xColName, yColName ) );
+          else if ( xCol < 0 )
+            QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "The label X column “%1” does not exist in the layer" ).arg( xColName ) );
+          else if ( yCol < 0 )
+            QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "The label Y column “%1” does not exist in the layer" ).arg( yColName ) );
           return;
+        }
 
         xCol = indexes[ QgsPalLayerSettings::PositionX ];
         yCol = indexes[ QgsPalLayerSettings::PositionY ];
@@ -231,7 +240,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
 
         mStartPointMapCoords = e->mapPoint();
         QgsPointXY referencePoint;
-        if ( !currentLabelRotationPoint( referencePoint, !currentLabelPreserveRotation(), false ) )
+        if ( !currentLabelRotationPoint( referencePoint, !currentLabelPreserveRotation() ) )
         {
           referencePoint.setX( mCurrentLabel.pos.labelRect.xMinimum() );
           referencePoint.setY( mCurrentLabel.pos.labelRect.yMinimum() );
@@ -266,7 +275,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
 
         deleteRubberBands();
 
-        QgsVectorLayer *vlayer = !isCalloutMove ? mCurrentLabel.layer : QgsProject::instance()->mapLayer<QgsVectorLayer *>( mCurrentCallout.layerID );
+        QgsVectorLayer *vlayer = !isCalloutMove ? mCurrentLabel.layer : qobject_cast< QgsVectorLayer * >( QgsMapTool::layer( mCurrentCallout.layerID ) );
         if ( !vlayer )
         {
           return;
@@ -443,7 +452,7 @@ void QgsMapToolMoveLabel::keyReleaseEvent( QKeyEvent *e )
 
         // delete the stored label/callout position
         const bool isCalloutMove = !mCurrentCallout.layerID.isEmpty();
-        QgsVectorLayer *vlayer = !isCalloutMove ? mCurrentLabel.layer : QgsProject::instance()->mapLayer<QgsVectorLayer *>( mCurrentCallout.layerID );
+        QgsVectorLayer *vlayer = !isCalloutMove ? mCurrentLabel.layer : qobject_cast< QgsVectorLayer * >( QgsMapTool::layer( mCurrentCallout.layerID ) );
         const QgsFeatureId featureId = !isCalloutMove ? mCurrentLabel.pos.featureId : mCurrentCallout.featureId;
         if ( vlayer )
         {
@@ -505,7 +514,7 @@ void QgsMapToolMoveLabel::keyReleaseEvent( QKeyEvent *e )
 
 bool QgsMapToolMoveLabel::canModifyCallout( const QgsCalloutPosition &pos, bool isOrigin, int &xCol, int &yCol )
 {
-  QgsVectorLayer *layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( pos.layerID );
+  QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsMapTool::layer( pos.layerID ) );
   QgsPalLayerSettings settings;
   if ( layer && layer->labelsEnabled() )
   {
@@ -549,7 +558,7 @@ bool QgsMapToolMoveLabel::canModifyCallout( const QgsCalloutPosition &pos, bool 
 
 bool QgsMapToolMoveLabel::currentCalloutDataDefinedPosition( double &x, bool &xSuccess, double &y, bool &ySuccess, int &xCol, int &yCol )
 {
-  QgsVectorLayer *vlayer =  QgsProject::instance()->mapLayer<QgsVectorLayer *>( mCurrentCallout.layerID );
+  QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer * >( QgsMapTool::layer( mCurrentCallout.layerID ) );
   const QgsFeatureId featureId = mCurrentCallout.featureId;
 
   xSuccess = false;

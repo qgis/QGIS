@@ -706,7 +706,7 @@ void QgsCompoundCurve::draw( QPainter &p ) const
   }
 }
 
-void QgsCompoundCurve::transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
+void QgsCompoundCurve::transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d, bool transformZ )
 {
   for ( QgsCurve *curve : std::as_const( mCurves ) )
   {

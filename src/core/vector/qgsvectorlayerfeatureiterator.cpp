@@ -903,7 +903,7 @@ bool QgsVectorLayerFeatureIterator::postProcessFeature( QgsFeature &feature )
 
   if ( result && mDistanceWithinEngine && feature.hasGeometry() )
   {
-    result = mDistanceWithinEngine->distance( feature.geometry().constGet() ) <= mDistanceWithin;
+    result = mDistanceWithinEngine->distanceWithin( feature.geometry().constGet(), mDistanceWithin );
   }
 
   return result;

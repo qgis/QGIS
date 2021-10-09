@@ -30,7 +30,7 @@ QgsTextPreview::QgsTextPreview( QWidget *parent )
   mContext.setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
   mContext.setUseAdvancedEffects( true );
 
-  mContext.setFlag( QgsRenderContext::Antialiasing, true );
+  mContext.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
 
   mContext.setIsGuiPreview( true );
 }

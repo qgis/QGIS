@@ -76,17 +76,11 @@ mkdir -p "$BUILDDIR"
 (
   CRSSYNC_BIN=$(readlink -f "$SRCDIR")/build/output/bin/crssync
   cd "$BUILDDIR"
-  QSCI_VER=$(grep -Eo '\s*([0-9]+\.[0-9]+\.[0-9]+)' "$MINGWROOT/include/qt5/Qsci/qsciglobal.h")
   mingw$bits-cmake \
     -DCMAKE_CROSS_COMPILING=1 \
     -DUSE_CCACHE=ON \
     -DCMAKE_BUILD_TYPE=$buildtype \
     -DNATIVE_CRSSYNC_BIN="$CRSSYNC_BIN" \
-    -DQSCINTILLA_VERSION_STR="$QSCI_VER" \
-    -DQSCINTILLA_LIBRARY="$MINGWROOT/lib/libqscintilla2_qt5.dll.a" \
-    -DQSCI_MOD_VERSION_STR="$QSCI_VER" \
-    -DQWT_INCLUDE_DIR="$MINGWROOT/include/qt5/qwt" \
-    -DQSCI_SIP_DIR="$MINGWROOT/share/sip/PyQt5/Qsci/" \
     -DBUILD_TESTING=OFF \
     -DENABLE_TESTS=OFF \
     -DQGIS_BIN_SUBDIR=bin \
@@ -100,9 +94,7 @@ mkdir -p "$BUILDDIR"
     -DQGIS_QML_SUBDIR=lib/qt5/qml \
     -DBINDINGS_GLOBAL_INSTALL=ON \
     -DSIP_GLOBAL_INSTALL=ON \
-    -DWITH_SERVER=OFF \
-    -DZSTD_INCLUDE_DIR="$MINGWROOT/include/zstd" \
-    -DZSTD_LIBRARY="$MINGWROOT/lib/libzstd.dll.a" \
+    -DWITH_SERVER=ON \
     -DTXT2TAGS_EXECUTABLE= \
     ..
 )
@@ -170,14 +162,15 @@ function linkDep {
     local name="$(basename $1)"
     test -e "$destdir/$name" && return 0
     test -e "$destdir/qgisplugins/$name" && return 0
-    [[ "$1" == *api-ms-win* ]] && return 0
+    [[ "$1" == *api-ms-win* ]] || [[ "$1" == *MSVCP*.dll ]] || [[ "$1" == *VCRUNTIME*.dll ]] && return 0
     echo "${indent}${1}"
     [ ! -e "$MINGWROOT/$1" ] && echo "Error: missing $MINGWROOT/$1" && return 1
     mkdir -p "$destdir" || return 1
     lnk "$MINGWROOT/$1" "$destdir/$name" || return 1
     echo "${2:-bin}/$name: $(rpm -qf "$MINGWROOT/$1")" >> $installprefix/origins.txt
     autoLinkDeps "$destdir/$name" "${indent}  " || return 1
-    ([ -e "$MINGWROOT/$1.debug" ] && lnk "$MINGWROOT/$1.debug" "$destdir/$name.debug") || ( ($DEBUG && echo "Warning: missing $name.debug") || :)
+    [ -e "/usr/lib/debug${MINGWROOT}/$1.debug" ] && lnk "/usr/lib/debug${MINGWROOT}/$1.debug" "$destdir/$name.debug" || :
+    [ -e "$MINGWROOT/$1.debug" ] && lnk "$MINGWROOT/$1.debug" "$destdir/$name.debug" || :
     return 0
 }
 
@@ -204,6 +197,10 @@ for file in $(find lib/python${pyver} -type f); do
 done
 IFS=$SAVEIFS
 )
+
+# Gdal plugins
+mkdir -p "$installprefix/lib/"
+cp -a "$MINGWROOT/lib/gdalplugins" "$installprefix/lib/gdalplugins"
 
 echo "Linking dependencies..."
 binaries=$(find "$installprefix" -name '*.exe' -or -name '*.dll' -or -name '*.pyd')
@@ -246,8 +243,8 @@ linkDep lib/qt5/plugins/crypto/libqca-gnupg.dll bin/crypto
 linkDep lib/qt5/plugins/crypto/libqca-ossl.dll bin/crypto
 
 mkdir -p "$installprefix/share/qt5/translations/"
-cp -a "$MINGWROOT/share/qt5/translations/qt_"*.qm  "$installprefix/share/qt5/translations"
-cp -a "$MINGWROOT/share/qt5/translations/qtbase_"*.qm  "$installprefix/share/qt5/translations"
+#cp -a "$MINGWROOT/share/qt5/translations/qt_"*.qm  "$installprefix/share/qt5/translations"
+#cp -a "$MINGWROOT/share/qt5/translations/qtbase_"*.qm  "$installprefix/share/qt5/translations"
 
 # Data files
 mkdir -p "$installprefix/share/"

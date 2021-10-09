@@ -17,6 +17,7 @@
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgssettings.h"
+#include "qgscoordinatereferencesystem.h"
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include "gdal.h"
@@ -623,6 +624,7 @@ QStringList QgsGdalUtils::multiLayerFileExtensions()
     QStringLiteral( "gpx" ),
     QStringLiteral( "pdf" ),
     QStringLiteral( "pbf" ),
+    QStringLiteral( "vrt" ),
     QStringLiteral( "nc" ),
     QStringLiteral( "shp.zip" ) };
   return SUPPORTED_DB_LAYERS_EXTENSIONS;

@@ -439,6 +439,7 @@
         <file>themes/default/mActionStop.svg</file>
         <file>themes/default/mActionStyleManager.svg</file>
         <file>themes/default/mActionSum.svg</file>
+        <file>themes/default/mActionText.svg</file>
         <file>themes/default/mActionTextAnnotation.svg</file>
         <file>themes/default/mActionToggleEditing.svg</file>
         <file>themes/default/mActionTouch.svg</file>
@@ -924,11 +925,26 @@
         <file>themes/default/mActionMeasureBearing.svg</file>
         <file>themes/default/mActionMeshDigitizing.svg</file>
         <file>themes/default/mActionMeshSelectPolygon.svg</file>
+        <file>themes/default/mActionMeshSelectExpression.svg</file>
         <file>themes/default/mActionNewMeshLayer.svg</file>
+        <file>themes/default/mActionMeshTransformByExpression.svg</file>
+        <file>themes/default/mIconVertexCoordinates.svg</file>
+        <file>themes/default/mActionMeshEditForceByVectorLines.svg</file>
+        <file>themes/default/mActionMeshReindex.svg</file>
         <file>themes/default/mIconGeometryCollectionLayer.svg</file>
         <file>themes/default/mIconGps.svg</file>
         <file>themes/default/mActionNewGpx.svg</file>
         <file>themes/default/mActionAddGpsLayer.svg</file>
+        <file>themes/default/mIconAnnotationLayer.svg</file>
+        <file>themes/default/mActionCreateAnnotationLayer.svg</file>
+        <file>themes/default/mActionEditBold.svg</file>
+        <file>themes/default/mActionEditIndentLess.svg</file>
+        <file>themes/default/mActionEditIndentMore.svg</file>
+        <file>themes/default/mActionEditInsertImage.svg</file>
+        <file>themes/default/mActionEditInsertLink.svg</file>
+        <file>themes/default/mActionEditItalic.svg</file>
+        <file>themes/default/mActionEditUnderline.svg</file>
+        <file>themes/default/mActionStrikeOut.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

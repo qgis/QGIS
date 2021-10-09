@@ -60,7 +60,7 @@ Sets the single color to define the coloring
 Returns the color corresponding to the magnitude
 %End
 
-    void setColoringMethod( const QgsInterpolatedLineColor::ColoringMethod &coloringMethod );
+    void setColoringMethod( ColoringMethod coloringMethod );
 %Docstring
 Sets the coloring method used
 
@@ -232,7 +232,7 @@ Returns the stroke width used to render
 .. versionadded:: 3.20
 %End
 
-    void setWidthUnit( const QgsUnitTypes::RenderUnit &strokeWidthUnit );
+    void setWidthUnit( QgsUnitTypes::RenderUnit strokeWidthUnit );
 %Docstring
 Sets the unit of the stroke width
 %End
@@ -260,6 +260,9 @@ Returns the stroke color used to render
 %Docstring
 Renders a line in the ``context`` between ``point1`` and ``point2``
 with color and width that vary depending on ``value1`` and ``value2``
+
+This method assumes that ``point1`` and ``point2`` are in map units. See :py:func:`~QgsInterpolatedLineRenderer.renderInDeviceCoordinates` for an equivalent
+method which renders lines in painter coordinates.
 %End
 
     void render( double valueColor1, double valueColor2, double valueWidth1, double valueWidth2, const QgsPointXY &point1, const QgsPointXY &point2, QgsRenderContext &context ) const;
@@ -267,7 +270,18 @@ with color and width that vary depending on ``value1`` and ``value2``
 Renders a line in the ``context`` between ``point1`` and ``point2``
 with color that varies depending on ``valueColor1`` and ``valueColor2`` and and width that varies between ``valueWidth1`` and ``valueWidth2``
 
+This method assumes that ``point1`` and ``point2`` are in map units. See :py:func:`~QgsInterpolatedLineRenderer.renderInDeviceCoordinates` for an equivalent
+method which renders lines in painter coordinates.
+
 .. versionadded:: 3.20
+%End
+
+    void renderInDeviceCoordinates( double valueColor1, double valueColor2, double valueWidth1, double valueWidth2, QPointF point1, QPointF point2, QgsRenderContext &context ) const;
+%Docstring
+Renders a line in the ``context`` between ``point1`` and ``point2`` in device (painter) coordinates
+with color that varies depending on ``valueColor1`` and ``valueColor2`` and and width that varies between ``valueWidth1`` and ``valueWidth2``.
+
+.. versionadded:: 3.22
 %End
 
     void setSelected( bool selected );
@@ -303,6 +317,8 @@ Constructor
 Creates the symbol layer
 %End
 
+    virtual Qgis::SymbolLayerFlags flags() const;
+
     virtual QString layerType() const;
 
     virtual void startRender( QgsSymbolRenderContext &context );
@@ -324,69 +340,97 @@ Creates the symbol layer
 
     virtual bool isCompatibleWithSymbol( QgsSymbol *symbol ) const;
 
-    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
-
     virtual bool canCauseArtifactsBetweenAdjacentTiles() const;
 
 
-    void setExpressionsStringForWidth( QString start, QString end );
+ void setExpressionsStringForWidth( const QString &start, const QString &end ) /Deprecated/;
 %Docstring
-Sets the expressions (as string) that define the extremety values af the line feature for width
+Sets the expressions (as string) that define the extremety values af the line feature for width.
+
+.. deprecated::
+   use setDataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineStartWidthValue ) and setDataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineEndWidthValue ) instead
 %End
 
-    QString startValueExpressionForWidth() const;
+ QString startValueExpressionForWidth() const /Deprecated/;
 %Docstring
-Returns the epression related to the start extremity value for width
+Returns the epression related to the start extremity value for width.
+
+.. deprecated::
+   use dataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineStartWidthValue ) instead.
 %End
 
-    QString endValueExpressionForWidth() const;
+ QString endValueExpressionForWidth() const /Deprecated/;
 %Docstring
-Returns the expression related to the end extremity value for width
+Returns the expression related to the end extremity value for width.
+
+.. deprecated::
+   use dataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineEndWidthValue ) instead.
 %End
 
-    void setWidthUnit( const QgsUnitTypes::RenderUnit &strokeWidthUnit );
+    void setWidthUnit( QgsUnitTypes::RenderUnit strokeWidthUnit );
 %Docstring
-Sets the width unit
+Sets the width unit.
+
+.. seealso:: :py:func:`widthUnit`
 %End
 
     QgsUnitTypes::RenderUnit widthUnit() const;
 %Docstring
-Returns the width unit
+Returns the width unit.
+
+.. seealso:: :py:func:`setWidthUnit`
 %End
 
     void setInterpolatedWidth( const QgsInterpolatedLineWidth &interpolatedLineWidth );
 %Docstring
-Sets the interpolated width used to render the width of lines, ``see`` :py:class:`QgsInterpolatedLineWidth`
+Sets the interpolated width used to render the width of lines, ``see`` :py:class:`QgsInterpolatedLineWidth`.
+
+.. seealso:: :py:func:`interpolatedWidth`
 %End
 
     QgsInterpolatedLineWidth interpolatedWidth() const;
 %Docstring
-Returns the interpolated width used to render the width of lines, see ``:py:class:`QgsInterpolatedLineWidth```
+Returns the interpolated width used to render the width of lines, see ``:py:class:`QgsInterpolatedLineWidth```.
+
+.. seealso:: :py:func:`setInterpolatedWidth`
 %End
 
-    void setExpressionsStringForColor( QString start, QString end );
+ void setExpressionsStringForColor( const QString &start, const QString &end ) /Deprecated/;
 %Docstring
-Sets the expressions (as string) that define the extremety values af the line feature for color
+Sets the expressions (as string) that define the extremety values af the line feature for color.
+
+.. deprecated::
+   use setDataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineStartColorValue ) and setDataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineEndColorValue ) instead
 %End
 
-    QString startValueExpressionForColor() const;
+ QString startValueExpressionForColor() const /Deprecated/;
 %Docstring
 Returns the epression related to the start extremity value for width for color
+
+.. deprecated::
+   use dataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineStartColorValue ) instead.
 %End
 
-    QString endValueExpressionForColor() const;
+ QString endValueExpressionForColor() const /Deprecated/;
 %Docstring
 Returns the expression related to the end extremity value for width for color
+
+.. deprecated::
+   use dataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineEndColorValue ) instead.
 %End
 
     void setInterpolatedColor( const QgsInterpolatedLineColor &interpolatedLineColor );
 %Docstring
-Sets the interpolated color used to render the colors of lines, ``see`` :py:class:`QgsInterpolatedLineColor`
+Sets the interpolated color used to render the colors of lines, ``see`` :py:class:`QgsInterpolatedLineColor`.
+
+.. seealso:: :py:func:`interpolatedColor`
 %End
 
     QgsInterpolatedLineColor interpolatedColor() const;
 %Docstring
-Returns the interpolated color used to render the colors of lines, see ``:py:class:`QgsInterpolatedLineColor```
+Returns the interpolated color used to render the colors of lines, see ``:py:class:`QgsInterpolatedLineColor```.
+
+.. seealso:: :py:func:`setInterpolatedColor`
 %End
 
   private:

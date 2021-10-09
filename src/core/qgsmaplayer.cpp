@@ -22,6 +22,7 @@
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdatasourceuri.h"
+#include "qgsfileutils.h"
 #include "qgslogger.h"
 #include "qgsauthmanager.h"
 #include "qgsmaplayer.h"
@@ -54,6 +55,7 @@
 #include <QDomNode>
 #include <QFile>
 #include <QFileInfo>
+#include <QLocale>
 #include <QTextStream>
 #include <QUrl>
 #include <QTimer>
@@ -82,6 +84,7 @@ QgsMapLayer::QgsMapLayer( QgsMapLayerType type,
   : mDataSource( source )
   , mLayerName( lyrname )
   , mLayerType( type )
+  , mServerProperties( std::make_unique<QgsMapLayerServerProperties>( this ) )
   , mUndoStack( new QUndoStack( this ) )
   , mUndoStackStyles( new QUndoStack( this ) )
   , mStyleManager( new QgsMapLayerStyleManager( this ) )
@@ -123,9 +126,6 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
   layer->setDataUrlFormat( dataUrlFormat() );
   layer->setAttribution( attribution() );
   layer->setAttributionUrl( attributionUrl() );
-  layer->setMetadataUrl( metadataUrl() );
-  layer->setMetadataUrlType( metadataUrlType() );
-  layer->setMetadataUrlFormat( metadataUrlFormat() );
   layer->setLegendUrl( legendUrl() );
   layer->setLegendUrlFormat( legendUrlFormat() );
   layer->setDependencies( dependencies() );
@@ -134,6 +134,7 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
   layer->setCustomProperties( mCustomProperties );
   layer->setOpacity( mLayerOpacity );
   layer->setMetadata( mMetadata );
+  layer->serverProperties()->copyTo( mServerProperties.get() );
 }
 
 QgsMapLayerType QgsMapLayer::type() const
@@ -194,6 +195,93 @@ const QgsDataProvider *QgsMapLayer::dataProvider() const
 QString QgsMapLayer::shortName() const
 {
   return mShortName;
+}
+
+void QgsMapLayer::setMetadataUrl( const QString &metaUrl )
+{
+  QList<QgsMapLayerServerProperties::MetadataUrl> urls = serverProperties()->metadataUrls();
+  if ( urls.isEmpty() )
+  {
+    const QgsMapLayerServerProperties::MetadataUrl newItem = QgsMapLayerServerProperties::MetadataUrl( metaUrl, QLatin1String(), QLatin1String() );
+    urls.prepend( newItem );
+  }
+  else
+  {
+    const QgsMapLayerServerProperties::MetadataUrl old = urls.takeFirst();
+    const QgsMapLayerServerProperties::MetadataUrl newItem( metaUrl, old.type, old.format );
+    urls.prepend( newItem );
+  }
+  serverProperties()->setMetadataUrls( urls );
+}
+
+QString QgsMapLayer::metadataUrl() const
+{
+  if ( mServerProperties->metadataUrls().isEmpty() )
+  {
+    return QLatin1String();
+  }
+  else
+  {
+    return mServerProperties->metadataUrls().first().url;
+  }
+}
+
+void QgsMapLayer::setMetadataUrlType( const QString &metaUrlType )
+{
+  QList<QgsMapLayerServerProperties::MetadataUrl> urls = mServerProperties->metadataUrls();
+  if ( urls.isEmpty() )
+  {
+    const QgsMapLayerServerProperties::MetadataUrl newItem( QLatin1String(), metaUrlType, QLatin1String() );
+    urls.prepend( newItem );
+  }
+  else
+  {
+    const QgsMapLayerServerProperties::MetadataUrl old = urls.takeFirst();
+    const QgsMapLayerServerProperties::MetadataUrl newItem( old.url, metaUrlType, old.format );
+    urls.prepend( newItem );
+  }
+  mServerProperties->setMetadataUrls( urls );
+}
+
+QString QgsMapLayer::metadataUrlType() const
+{
+  if ( mServerProperties->metadataUrls().isEmpty() )
+  {
+    return QLatin1String();
+  }
+  else
+  {
+    return mServerProperties->metadataUrls().first().type;
+  }
+}
+
+void QgsMapLayer::setMetadataUrlFormat( const QString &metaUrlFormat )
+{
+  QList<QgsMapLayerServerProperties::MetadataUrl> urls = mServerProperties->metadataUrls();
+  if ( urls.isEmpty() )
+  {
+    const QgsMapLayerServerProperties::MetadataUrl newItem( QLatin1String(), QLatin1String(), metaUrlFormat );
+    urls.prepend( newItem );
+  }
+  else
+  {
+    const QgsMapLayerServerProperties::MetadataUrl old = urls.takeFirst( );
+    const QgsMapLayerServerProperties::MetadataUrl newItem( old.url, old.type, metaUrlFormat );
+    urls.prepend( newItem );
+  }
+  mServerProperties->setMetadataUrls( urls );
+}
+
+QString QgsMapLayer::metadataUrlFormat() const
+{
+  if ( mServerProperties->metadataUrls().isEmpty() )
+  {
+    return QString();
+  }
+  else
+  {
+    return mServerProperties->metadataUrls().first().format;
+  }
 }
 
 QString QgsMapLayer::publicSource() const
@@ -360,7 +448,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
     mKeywordList = kwdList.join( QLatin1String( ", " ) );
   }
 
-  //metadataUrl
+  //dataUrl
   const QDomElement dataUrlElem = layerElement.firstChildElement( QStringLiteral( "dataUrl" ) );
   if ( !dataUrlElem.isNull() )
   {
@@ -384,13 +472,21 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
     mAttributionUrl = attribElem.attribute( QStringLiteral( "href" ), QString() );
   }
 
-  //metadataUrl
-  const QDomElement metaUrlElem = layerElement.firstChildElement( QStringLiteral( "metadataUrl" ) );
-  if ( !metaUrlElem.isNull() )
+  serverProperties()->readXml( layerElement );
+
+  if ( serverProperties()->metadataUrls().isEmpty() )
   {
-    mMetadataUrl = metaUrlElem.text();
-    mMetadataUrlType = metaUrlElem.attribute( QStringLiteral( "type" ), QString() );
-    mMetadataUrlFormat = metaUrlElem.attribute( QStringLiteral( "format" ), QString() );
+    // metadataUrl is still empty, maybe it's a QGIS Project < 3.22
+    // keep for legacy
+    const QDomElement metaUrlElem = layerElement.firstChildElement( QStringLiteral( "metadataUrl" ) );
+    if ( !metaUrlElem.isNull() )
+    {
+      const QString url = metaUrlElem.text();
+      const QString type = metaUrlElem.attribute( QStringLiteral( "type" ), QString() );
+      const QString format = metaUrlElem.attribute( QStringLiteral( "format" ), QString() );
+      const QgsMapLayerServerProperties::MetadataUrl newItem( url, type, format );
+      mServerProperties->setMetadataUrls( QList<QgsMapLayerServerProperties::MetadataUrl>() << newItem );
+    }
   }
 
   // mMetadata.readFromLayer( this );
@@ -511,7 +607,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
     layerElement.appendChild( layerKeywordList );
   }
 
-  // layer metadataUrl
+  // layer dataUrl
   const QString aDataUrl = dataUrl();
   if ( !aDataUrl.isEmpty() )
   {
@@ -542,18 +638,6 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
     layerAttribution.appendChild( layerAttributionText );
     layerAttribution.setAttribute( QStringLiteral( "href" ), attributionUrl() );
     layerElement.appendChild( layerAttribution );
-  }
-
-  // layer metadataUrl
-  const QString aMetadataUrl = metadataUrl();
-  if ( !aMetadataUrl.isEmpty() )
-  {
-    QDomElement layerMetadataUrl = document.createElement( QStringLiteral( "metadataUrl" ) );
-    const QDomText layerMetadataUrlText = document.createTextNode( aMetadataUrl );
-    layerMetadataUrl.appendChild( layerMetadataUrlText );
-    layerMetadataUrl.setAttribute( QStringLiteral( "type" ), metadataUrlType() );
-    layerMetadataUrl.setAttribute( QStringLiteral( "format" ), metadataUrlFormat() );
-    layerElement.appendChild( layerMetadataUrl );
   }
 
   // timestamp if supported
@@ -690,7 +774,17 @@ void QgsMapLayer::resolveReferences( QgsProject *project )
 
 void QgsMapLayer::readCustomProperties( const QDomNode &layerNode, const QString &keyStartsWith )
 {
+  const QgsObjectCustomProperties oldKeys = mCustomProperties;
+
   mCustomProperties.readXml( layerNode, keyStartsWith );
+
+  for ( const QString &key : mCustomProperties.keys() )
+  {
+    if ( !oldKeys.contains( key ) || mCustomProperties.value( key ) != oldKeys.value( key ) )
+    {
+      emit customPropertyChanged( key );
+    }
+  }
 }
 
 void QgsMapLayer::writeCustomProperties( QDomNode &layerNode, QDomDocument &doc ) const
@@ -1879,6 +1973,10 @@ void QgsMapLayer::setCustomProperty( const QString &key, const QVariant &value )
 void QgsMapLayer::setCustomProperties( const QgsObjectCustomProperties &properties )
 {
   mCustomProperties = properties;
+  for ( const QString &key : mCustomProperties.keys() )
+  {
+    emit customPropertyChanged( key );
+  }
 }
 
 const QgsObjectCustomProperties &QgsMapLayer::customProperties() const
@@ -1968,7 +2066,7 @@ void QgsMapLayer::setLegend( QgsMapLayerLegend *legend )
   if ( mLegend )
   {
     mLegend->setParent( this );
-    connect( mLegend, &QgsMapLayerLegend::itemsChanged, this, &QgsMapLayer::legendChanged );
+    connect( mLegend, &QgsMapLayerLegend::itemsChanged, this, &QgsMapLayer::legendChanged, Qt::UniqueConnection );
   }
 
   emit legendChanged();
@@ -2187,6 +2285,75 @@ void QgsMapLayer::invalidateWgs84Extent()
     return;
 
   mWgs84Extent = QgsRectangle();
+}
+
+QString QgsMapLayer::generalHtmlMetadata() const
+{
+  QString metadata = QStringLiteral( "<h1>" ) + tr( "General" ) + QStringLiteral( "</h1>\n<hr>\n" ) + QStringLiteral( "<table class=\"list-view\">\n" );
+
+  // name
+  metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Name" ) + QStringLiteral( "</td><td>" ) + name() + QStringLiteral( "</td></tr>\n" );
+
+  QString path;
+  bool isLocalPath = false;
+  if ( dataProvider() )
+  {
+    // local path
+    QVariantMap uriComponents = QgsProviderRegistry::instance()->decodeUri( dataProvider()->name(), publicSource() );
+    if ( uriComponents.contains( QStringLiteral( "path" ) ) )
+    {
+      path = uriComponents[QStringLiteral( "path" )].toString();
+      QFileInfo fi( path );
+      if ( fi.exists() )
+      {
+        isLocalPath = true;
+        metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Path" ) + QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( path ).toString(), QDir::toNativeSeparators( path ) ) ) + QStringLiteral( "</td></tr>\n" );
+
+        QDateTime lastModified = fi.lastModified();
+        QString lastModifiedFileName;
+        QSet<QString> sidecarFiles = QgsFileUtils::sidecarFilesForPath( path );
+        if ( fi.isFile() )
+        {
+          qint64 fileSize = fi.size();
+          if ( !sidecarFiles.isEmpty() )
+          {
+            lastModifiedFileName = fi.fileName();
+            QStringList sidecarFileNames;
+            for ( const QString &sidecarFile : sidecarFiles )
+            {
+              QFileInfo sidecarFi( sidecarFile );
+              fileSize += sidecarFi.size();
+              if ( sidecarFi.lastModified() > lastModified )
+              {
+                lastModified = sidecarFi.lastModified();
+                lastModifiedFileName = sidecarFi.fileName();
+              }
+              sidecarFileNames << sidecarFi.fileName();
+            }
+            metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + ( sidecarFiles.size() > 1 ? tr( "Sidecar files" ) : tr( "Sidecar file" ) ) + QStringLiteral( "</td><td>%1" ).arg( sidecarFileNames.join( QLatin1String( ", " ) ) ) + QStringLiteral( "</td></tr>\n" );
+          }
+          metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + ( !sidecarFiles.isEmpty() ? tr( "Total size" ) : tr( "Size" ) ) + QStringLiteral( "</td><td>%1" ).arg( QgsFileUtils::representFileSize( fileSize ) ) + QStringLiteral( "</td></tr>\n" );
+        }
+        metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Last modified" ) + QStringLiteral( "</td><td>%1" ).arg( QLocale().toString( fi.lastModified() ) ) + ( !lastModifiedFileName.isEmpty() ? QStringLiteral( " (%1)" ).arg( lastModifiedFileName ) : QString() ) + QStringLiteral( "</td></tr>\n" );
+      }
+    }
+    if ( uriComponents.contains( QStringLiteral( "url" ) ) )
+    {
+      const QString url = uriComponents[QStringLiteral( "url" )].toString();
+      metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "URL" ) + QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl( url ).toString(), url ) ) + QStringLiteral( "</td></tr>\n" );
+    }
+  }
+
+  // data source
+  if ( publicSource() != path || !isLocalPath )
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Source" ) + QStringLiteral( "</td><td>%1" ).arg( publicSource() != path ? publicSource() : path ) + QStringLiteral( "</td></tr>\n" );
+
+  // provider
+  if ( dataProvider() )
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Provider" ) + QStringLiteral( "</td><td>%1" ).arg( dataProvider()->name() ) + QStringLiteral( "</td></tr>\n" );
+
+  metadata += QStringLiteral( "</table>\n<br><br>" );
+  return metadata;
 }
 
 QString QgsMapLayer::crsHtmlMetadata() const

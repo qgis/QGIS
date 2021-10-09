@@ -68,6 +68,33 @@ bool QgsMapToolLabel::labelAtPosition( QMouseEvent *e, QgsLabelPosition &p )
     return false;
 
   QList<QgsLabelPosition> labelPosList = labelingResults->labelsAtPosition( pt );
+  labelPosList.erase( std::remove_if( labelPosList.begin(), labelPosList.end(), [this]( const QgsLabelPosition & position )
+  {
+    if ( position.layerID.isEmpty() )
+      return true;
+
+    if ( QgsMapLayer *layer = QgsMapTool::layer( position.layerID ) )
+    {
+      // strip out any labels from non vector layers (e.g. those from vector tile layers). Only vector layer labels
+      // are supported by the map tools.
+      switch ( layer->type() )
+      {
+        case QgsMapLayerType::VectorLayer:
+          return false;
+
+        case QgsMapLayerType::RasterLayer:
+        case QgsMapLayerType::PluginLayer:
+        case QgsMapLayerType::MeshLayer:
+        case QgsMapLayerType::VectorTileLayer:
+        case QgsMapLayerType::AnnotationLayer:
+        case QgsMapLayerType::PointCloudLayer:
+          return true;
+      }
+    }
+
+    return true;
+  } ), labelPosList.end() );
+
   if ( labelPosList.empty() )
     return false;
 
@@ -131,6 +158,32 @@ bool QgsMapToolLabel::calloutAtPosition( QMouseEvent *e, QgsCalloutPosition &p, 
   const double tol = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
 
   QList<QgsCalloutPosition> calloutPosList = labelingResults->calloutsWithinRectangle( QgsRectangle::fromCenterAndSize( pt, tol * 2, tol * 2 ) );
+  calloutPosList.erase( std::remove_if( calloutPosList.begin(), calloutPosList.end(), [ this ]( const QgsCalloutPosition & position )
+  {
+    if ( position.layerID.isEmpty() )
+      return true;
+
+    if ( QgsMapLayer *layer = QgsMapTool::layer( position.layerID ) )
+    {
+      // strip out any callouts from non vector layers (e.g. those from vector tile layers). Only vector layer callouts
+      // are supported by the map tools.
+      switch ( layer->type() )
+      {
+        case QgsMapLayerType::VectorLayer:
+          return false;
+
+        case QgsMapLayerType::RasterLayer:
+        case QgsMapLayerType::PluginLayer:
+        case QgsMapLayerType::MeshLayer:
+        case QgsMapLayerType::VectorTileLayer:
+        case QgsMapLayerType::AnnotationLayer:
+        case QgsMapLayerType::PointCloudLayer:
+          return true;
+      }
+    }
+
+    return true;
+  } ), calloutPosList.end() );
   if ( calloutPosList.empty() )
     return false;
 
@@ -203,7 +256,7 @@ void QgsMapToolLabel::createRubberBands()
 
     //fixpoint rubber band
     QgsPointXY fixPoint;
-    if ( currentLabelRotationPoint( fixPoint, false, false ) )
+    if ( currentLabelRotationPoint( fixPoint, false ) )
     {
       if ( mCanvas )
       {
@@ -389,7 +442,7 @@ bool QgsMapToolLabel::currentLabelPreserveRotation()
   return true; // default, so there is no accidental data loss
 }
 
-bool QgsMapToolLabel::currentLabelRotationPoint( QgsPointXY &pos, bool ignoreUpsideDown, bool rotatingUnpinned )
+bool QgsMapToolLabel::currentLabelRotationPoint( QgsPointXY &pos, bool ignoreUpsideDown )
 {
   QVector<QgsPointXY> cornerPoints = mCurrentLabel.pos.cornerPoints;
   if ( cornerPoints.size() < 4 )
@@ -418,14 +471,6 @@ bool QgsMapToolLabel::currentLabelRotationPoint( QgsPointXY &pos, bool ignoreUps
   QString haliString, valiString;
   currentAlignment( haliString, valiString );
 
-  // rotate unpinned labels (i.e. no hali/vali settings) as if hali/vali was Center/Half
-  if ( rotatingUnpinned )
-  {
-    haliString = QStringLiteral( "Center" );
-    valiString = QStringLiteral( "Half" );
-  }
-
-//  QFont labelFont = labelFontCurrentFeature();
   QFontMetricsF labelFontMetrics( mCurrentLabel.pos.labelFont );
 
   // NOTE: this assumes the label corner points comprise a rectangle and that the
@@ -528,12 +573,37 @@ QString QgsMapToolLabel::dataDefinedColumnName( QgsPalLayerSettings::Property p,
       QgsExpression expression( property.expressionString() );
       if ( expression.prepare( &context ) )
       {
+        // maybe the expression is effectively a single node in this context...
         const QgsExpressionNode *node = expression.rootNode()->effectiveNode();
         if ( node->nodeType() == QgsExpressionNode::ntColumnRef )
         {
           const QgsExpressionNodeColumnRef *columnRef = qgis::down_cast<const QgsExpressionNodeColumnRef *>( node );
           return columnRef->name();
         }
+
+        // ok, it's not. But let's be super smart and helpful for users!
+        // maybe it's a COALESCE("some field", 'some' || 'fallback' || 'expression') type expression, where the user wants to override
+        // some labels with a value stored in a field but all others use some expression
+        if ( node->nodeType() == QgsExpressionNode::ntFunction )
+        {
+          const QgsExpressionNodeFunction *functionNode = qgis::down_cast<const QgsExpressionNodeFunction *>( node );
+          if ( const QgsExpressionFunction *function = QgsExpression::QgsExpression::Functions()[functionNode->fnIndex()] )
+          {
+            if ( function->name() == QLatin1String( "coalesce" ) )
+            {
+              if ( const QgsExpressionNode *firstArg = functionNode->args()->list().value( 0 ) )
+              {
+                const QgsExpressionNode *firstArgNode = firstArg->effectiveNode();
+                if ( firstArgNode->nodeType() == QgsExpressionNode::ntColumnRef )
+                {
+                  const QgsExpressionNodeColumnRef *columnRef = qgis::down_cast<const QgsExpressionNodeColumnRef *>( firstArgNode );
+                  return columnRef->name();
+                }
+              }
+            }
+          }
+        }
+
       }
       break;
     }
@@ -606,30 +676,12 @@ bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess
   return true;
 }
 
-bool QgsMapToolLabel::layerIsRotatable( QgsVectorLayer *vlayer, int &rotationCol ) const
-{
-  if ( !vlayer || !vlayer->isEditable() || !vlayer->labelsEnabled() )
-  {
-    return false;
-  }
-
-  const auto constSubProviders = vlayer->labeling()->subProviders();
-  for ( const QString &providerId : constSubProviders )
-  {
-    if ( labelIsRotatable( vlayer, vlayer->labeling()->settings( providerId ), rotationCol ) )
-      return true;
-  }
-
-  return false;
-}
-
 bool QgsMapToolLabel::labelIsRotatable( QgsVectorLayer *layer, const QgsPalLayerSettings &settings, int &rotationCol ) const
 {
   QString rColName = dataDefinedColumnName( QgsPalLayerSettings::LabelRotation, settings, layer );
   rotationCol = layer->fields().lookupField( rColName );
   return rotationCol != -1;
 }
-
 
 bool QgsMapToolLabel::currentLabelDataDefinedRotation( double &rotation, bool &rotationSuccess, int &rCol, bool ignoreXY ) const
 {
@@ -828,10 +880,10 @@ bool QgsMapToolLabel::diagramCanShowHide( QgsVectorLayer *vlayer, int &showCol )
 
 //
 
-QgsMapToolLabel::LabelDetails::LabelDetails( const QgsLabelPosition &p )
+QgsMapToolLabel::LabelDetails::LabelDetails( const QgsLabelPosition &p, QgsMapCanvas *canvas )
   : pos( p )
 {
-  layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( pos.layerID );
+  layer = qobject_cast< QgsVectorLayer * >( canvas->layer( pos.layerID ) );
   if ( layer && layer->labelsEnabled() && !p.isDiagram )
   {
     settings = layer->labeling()->settings( pos.providerID );
@@ -849,12 +901,12 @@ QgsMapToolLabel::LabelDetails::LabelDetails( const QgsLabelPosition &p )
   }
 }
 
-bool QgsMapToolLabel::createAuxiliaryFields( QgsPalIndexes &indexes, bool overwriteExpression )
+bool QgsMapToolLabel::createAuxiliaryFields( QgsPalIndexes &indexes )
 {
-  return createAuxiliaryFields( mCurrentLabel, indexes, overwriteExpression );
+  return createAuxiliaryFields( mCurrentLabel, indexes );
 }
 
-bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexes &indexes, bool overwriteExpression ) const
+bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexes &indexes ) const
 {
   bool newAuxiliaryLayer = false;
   QgsVectorLayer *vlayer = details.layer;
@@ -885,9 +937,9 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexe
     {
       index = vlayer->fields().lookupField( prop.field() );
     }
-    else if ( prop.propertyType() != QgsProperty::ExpressionBasedProperty || overwriteExpression )
+    else
     {
-      index = QgsAuxiliaryLayer::createProperty( p, vlayer );
+      index = QgsAuxiliaryLayer::createProperty( p, vlayer, false );
       changed = true;
     }
 
@@ -901,12 +953,12 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexe
   return newAuxiliaryLayer;
 }
 
-bool QgsMapToolLabel::createAuxiliaryFields( QgsDiagramIndexes &indexes, bool overwriteExpression )
+bool QgsMapToolLabel::createAuxiliaryFields( QgsDiagramIndexes &indexes )
 {
-  return createAuxiliaryFields( mCurrentLabel, indexes, overwriteExpression );
+  return createAuxiliaryFields( mCurrentLabel, indexes );
 }
 
-bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIndexes &indexes, bool overwriteExpression )
+bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIndexes &indexes )
 {
   bool newAuxiliaryLayer = false;
   QgsVectorLayer *vlayer = details.layer;
@@ -936,9 +988,9 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIn
     {
       index = vlayer->fields().lookupField( prop.field() );
     }
-    else if ( prop.propertyType() != QgsProperty::ExpressionBasedProperty || overwriteExpression )
+    else
     {
-      index = QgsAuxiliaryLayer::createProperty( p, vlayer );
+      index = QgsAuxiliaryLayer::createProperty( p, vlayer, false );
       changed = true;
     }
 
@@ -950,15 +1002,15 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIn
   return newAuxiliaryLayer;
 }
 
-bool QgsMapToolLabel::createAuxiliaryFields( QgsCalloutIndexes &calloutIndexes, bool overwriteExpression )
+bool QgsMapToolLabel::createAuxiliaryFields( QgsCalloutIndexes &calloutIndexes )
 {
-  return createAuxiliaryFields( mCurrentCallout, calloutIndexes, overwriteExpression );
+  return createAuxiliaryFields( mCurrentCallout, calloutIndexes );
 }
 
-bool QgsMapToolLabel::createAuxiliaryFields( QgsCalloutPosition &details, QgsCalloutIndexes &calloutIndexes, bool overwriteExpression )
+bool QgsMapToolLabel::createAuxiliaryFields( QgsCalloutPosition &details, QgsCalloutIndexes &calloutIndexes )
 {
   bool newAuxiliaryLayer = false;
-  QgsVectorLayer *vlayer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( details.layerID );
+  QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer * >( QgsMapTool::layer( details.layerID ) );
 
   if ( !vlayer )
     return newAuxiliaryLayer;
@@ -986,12 +1038,11 @@ bool QgsMapToolLabel::createAuxiliaryFields( QgsCalloutPosition &details, QgsCal
     {
       index = vlayer->fields().lookupField( prop.field() );
     }
-    else if ( prop.propertyType() != QgsProperty::ExpressionBasedProperty || overwriteExpression )
+    else
     {
-      index = QgsAuxiliaryLayer::createProperty( p, vlayer );
+      index = QgsAuxiliaryLayer::createProperty( p, vlayer, false );
       changed = true;
     }
-
     calloutIndexes[p] = index;
   }
   if ( changed )
@@ -1061,7 +1112,7 @@ void QgsMapToolLabel::updateHoveredLabel( QgsMapMouseEvent *e )
     return;
   }
 
-  LabelDetails newHoverLabel( labelPos );
+  LabelDetails newHoverLabel( labelPos, canvas() );
 
   if ( mCurrentHoverLabel.valid &&
        newHoverLabel.layer == mCurrentHoverLabel.layer &&

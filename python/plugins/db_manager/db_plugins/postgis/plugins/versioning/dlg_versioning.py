@@ -175,7 +175,7 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
         QMessageBox.information(self, "Help", helpText)
 
     def sql_alterTable(self):
-        return u"ALTER TABLE %s ADD %s serial, ADD %s timestamp, ADD %s timestamp, ADD %s varchar;" % (
+        return u"ALTER TABLE %s ADD %s serial, ADD %s timestamp default '-infinity', ADD %s timestamp, ADD %s varchar;" % (
             self.schematable, self.colPkey, self.colStart, self.colEnd, self.colUser)
 
     def sql_setPkey(self):

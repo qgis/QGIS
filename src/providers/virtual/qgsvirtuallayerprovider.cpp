@@ -469,7 +469,7 @@ bool QgsVirtualLayerProvider::createIt()
 
 void QgsVirtualLayerProvider::createVirtualTable( QgsVectorLayer *vlayer, const QString &vname )
 {
-  const QString createStr = QStringLiteral( "DROP TABLE IF EXISTS \"%1\"; CREATE VIRTUAL TABLE \"%1\" USING QgsVLayer(%2);" ).arg( vname, vlayer->id() );
+  const QString createStr = QStringLiteral( "DROP TABLE IF EXISTS \"%1\"; CREATE VIRTUAL TABLE \"%1\" USING QgsVLayer('%2');" ).arg( vname, vlayer->id() );
   Sqlite::Query::exec( mSqlite.get(), createStr );
 }
 

@@ -13,10 +13,13 @@
 
 FIND_PATH(ZSTD_INCLUDE_DIR
   zstd.h
+  PATHS
   "$ENV{LIB_DIR}/include"
   "$ENV{INCLUDE}"
   /usr/local/include
   /usr/include
+  PATH_SUFFIXES
+  zstd
 )
 
 FIND_LIBRARY(ZSTD_LIBRARY NAMES zstd PATHS "$ENV{LIB_DIR}/lib" "$ENV{LIB}" /usr/local/lib /usr/lib )

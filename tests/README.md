@@ -53,11 +53,11 @@ machine does not have an X server.  In that case you need to run the test under
 Make sure that you have enabled building of postgres test in CMake.
 `cmake -DENABLE_TESTS=ON -DENABLE_PGTEST=ON ..`
 
-To test the postgres provider you will need to have a database available to
-which the postgres provider can connect. The server will need to have PostGIS
-support enabled.
+To test the postgres provider you will need to setup a test database
+to which the postgres provider can connect.
 
-By default the tests use the following connection string:
+By default the tests use the following connection string to access
+the test database:
 
     service=qgis_test
 
@@ -66,18 +66,25 @@ If these do not match your setup you can set the environment variable
 rely on standard libpq environment variables to tweak host, port user
 and password (PGHOST, PGPORT, PGUSER, PGPASSWORD).
 
-Please note that the test database needs to be initialized using
-the sql-scripts:
+The test database must be initialized using the sql-scripts:
 
     tests/testdata/provider/testdata_pg*.sql
 
-They take care of activating PostGIS for the test database and
-create some tables containing test data.
+They take care of activating PostGIS and creating some tables containing
+test data.
 
 For convenience, a shell script is provided to create the database
 and initialize it as needed:
 
     tests/testdata/provider/testdata_pg.sh
+
+Some tests will attempt to create database users too and expect them to
+be allowed to connect using a password.
+Most PostgreSQL installation by default use "ident" authentication
+model when connecting via unix sockets. Make sure the `qgis_test`
+service (or your `QGIS_PGTEST_DB` connection string) uses a connection
+method which allows passing username/password pair to connect (and
+which allows creating users)
 
 # Write tests
 

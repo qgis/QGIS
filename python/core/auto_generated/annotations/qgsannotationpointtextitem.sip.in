@@ -29,6 +29,8 @@ Constructor for QgsAnnotationPointTextItem, containing the specified ``text`` at
 %End
     ~QgsAnnotationPointTextItem();
 
+    virtual Qgis::AnnotationItemFlags flags() const;
+
     virtual QString type() const;
 
     virtual void render( QgsRenderContext &context, QgsFeedback *feedback );
@@ -46,6 +48,14 @@ Creates a new text at point annotation item.
     virtual QgsAnnotationPointTextItem *clone() /Factory/;
 
     virtual QgsRectangle boundingBox() const;
+
+    virtual QgsRectangle boundingBox( QgsRenderContext &context ) const;
+
+    virtual QList< QgsAnnotationItemNode > nodes() const;
+
+    virtual Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
+
+    virtual QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) /Factory/;
 
 
     QgsPointXY point() const;

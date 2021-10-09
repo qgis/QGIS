@@ -22,6 +22,8 @@ email                : jpalmer at linz dot govt dot nz
 #include <QFutureWatcher>
 
 #include "qgsvectorlayer.h"
+#include "qgscoordinatetransform.h"
+#include "qgsrendercontext.h"
 
 class QMouseEvent;
 class QgsMapCanvas;

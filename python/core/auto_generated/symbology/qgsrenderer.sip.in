@@ -390,7 +390,7 @@ Returns the current paint effect for the renderer.
 .. versionadded:: 2.9
 %End
 
-    void setPaintEffect( QgsPaintEffect *effect );
+    void setPaintEffect( QgsPaintEffect *effect /Transfer/ );
 %Docstring
 Sets the current paint effect for the renderer.
 

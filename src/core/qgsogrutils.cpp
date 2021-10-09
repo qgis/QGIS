@@ -339,15 +339,20 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
       case QVariant::DateTime:
       case QVariant::Time:
       {
-        int year, month, day, hour, minute, second, tzf;
+        int year, month, day, hour, minute, tzf;
+        float second;
+        float secondsPart = 0;
 
-        OGR_F_GetFieldAsDateTime( ogrFet, attIndex, &year, &month, &day, &hour, &minute, &second, &tzf );
+        OGR_F_GetFieldAsDateTimeEx( ogrFet, attIndex, &year, &month, &day, &hour, &minute, &second, &tzf );
+        float millisecondPart = std::modf( second, &secondsPart );
+
         if ( field.type() == QVariant::Date )
           value = QDate( year, month, day );
         else if ( field.type() == QVariant::Time )
-          value = QTime( hour, minute, second );
+          value = QTime( hour, minute, static_cast< int >( secondsPart ), static_cast< int >( 1000 * millisecondPart ) );
         else
-          value = QDateTime( QDate( year, month, day ), QTime( hour, minute, second ) );
+          value = QDateTime( QDate( year, month, day ),
+                             QTime( hour, minute, static_cast< int >( secondsPart ), static_cast< int >( 1000 * millisecondPart ) ) );
       }
       break;
 

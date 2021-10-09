@@ -21,6 +21,7 @@
 #include "qgsmessagelog.h"
 #include "qgsogcutils.h"
 #include "qgssettings.h"
+#include "qgscoordinatetransform.h"
 
 #include <cpl_minixml.h>
 
@@ -110,7 +111,7 @@ QString QgsWfsCapabilities::Capabilities::getNamespaceParameterValue( const QStr
   bool tryNameSpacing = ( !namespaces.isEmpty() && typeName.contains( ':' ) );
   if ( tryNameSpacing )
   {
-    QString prefixOfTypename = typeName.section( ':', 0, 0 );
+    QString prefixOfTypename = QgsWFSUtils::nameSpacePrefix( typeName );
     return "xmlns(" + prefixOfTypename +
            ( WFSVersion.startsWith( QLatin1String( "2.0" ) ) ? "," : "=" ) +
            namespaces + ")";
@@ -373,8 +374,6 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
             }
           }
         }
-
-        break;
       }
     }
   }
@@ -548,9 +547,9 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
           QgsCoordinateTransform ct( crsWGS84, crs, mOptions.transformContext );
 
           QgsPointXY ptMin( featureType.bbox.xMinimum(), featureType.bbox.yMinimum() );
-          QgsPointXY ptMinBack( ct.transform( ct.transform( ptMin, QgsCoordinateTransform::ForwardTransform ), QgsCoordinateTransform::ReverseTransform ) );
+          QgsPointXY ptMinBack( ct.transform( ct.transform( ptMin, Qgis::TransformDirection::Forward ), Qgis::TransformDirection::Reverse ) );
           QgsPointXY ptMax( featureType.bbox.xMaximum(), featureType.bbox.yMaximum() );
-          QgsPointXY ptMaxBack( ct.transform( ct.transform( ptMax, QgsCoordinateTransform::ForwardTransform ), QgsCoordinateTransform::ReverseTransform ) );
+          QgsPointXY ptMaxBack( ct.transform( ct.transform( ptMax, Qgis::TransformDirection::Forward ), Qgis::TransformDirection::Reverse ) );
 
           QgsDebugMsg( featureType.bbox.toString() );
           QgsDebugMsg( ptMinBack.toString() );

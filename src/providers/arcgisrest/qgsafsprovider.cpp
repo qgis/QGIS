@@ -209,11 +209,11 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
     temporalCapabilities()->setStartField( timeInfo.value( QStringLiteral( "startTimeField" ) ).toString() );
     temporalCapabilities()->setEndField( timeInfo.value( QStringLiteral( "endTimeField" ) ).toString() );
     if ( !temporalCapabilities()->endField().isEmpty() )
-      temporalCapabilities()->setMode( QgsVectorDataProviderTemporalCapabilities::ProviderStoresFeatureDateTimeStartAndEndInSeparateFields );
+      temporalCapabilities()->setMode( Qgis::VectorDataProviderTemporalMode::StoresFeatureDateTimeStartAndEndInSeparateFields );
     else if ( !temporalCapabilities()->startField().isEmpty() )
-      temporalCapabilities()->setMode( QgsVectorDataProviderTemporalCapabilities::ProviderStoresFeatureDateTimeInstantInField );
+      temporalCapabilities()->setMode( Qgis::VectorDataProviderTemporalMode::StoresFeatureDateTimeInstantInField );
     else
-      temporalCapabilities()->setMode( QgsVectorDataProviderTemporalCapabilities::ProviderHasFixedTemporalRange );
+      temporalCapabilities()->setMode( Qgis::VectorDataProviderTemporalMode::HasFixedTemporalRange );
 
     const QVariantList extent = timeInfo.value( QStringLiteral( "timeExtent" ) ).toList();
     if ( extent.size() == 2 )

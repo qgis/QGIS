@@ -65,6 +65,7 @@ class TestQgsExpression: public QObject
     QgsVectorLayer *mChildLayer2 = nullptr; // relation with composite keys
     QgsVectorLayer *mChildLayer = nullptr;
     QgsRasterLayer *mRasterLayer = nullptr;
+    QgsMeshLayer *mMeshLayer = nullptr;
 
   private slots:
 
@@ -122,6 +123,11 @@ class TestQgsExpression: public QObject
       mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                          rasterFileInfo.completeBaseName() );
       QgsProject::instance()->addMapLayer( mRasterLayer );
+
+      QString meshFileName = testDataDir + "/mesh/quad_flower.2dm";
+      mMeshLayer = new QgsMeshLayer( meshFileName, "mesh layer", "mdal" );
+      mMeshLayer->updateTriangularMesh();
+      QgsProject::instance()->addMapLayer( mMeshLayer );
 
       // test memory layer for get_feature tests
       mMemoryLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:string" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
@@ -255,6 +261,40 @@ class TestQgsExpression: public QObject
       rel_ck.addFieldPair( QStringLiteral( "name" ), QStringLiteral( "col4" ) );
       QVERIFY( rel_ck.isValid() );
       QgsProject::instance()->relationManager()->addRelation( rel_ck );
+    }
+
+    void evalMeshElement()
+    {
+      QgsExpressionContext context;
+      context.appendScope( QgsExpressionContextUtils::meshExpressionScope( QgsMesh::Vertex ) );
+      context.lastScope()->setVariable( QStringLiteral( "_mesh_vertex_index" ), 2 );
+      context.lastScope()->setVariable( QStringLiteral( "_mesh_layer" ), QVariant::fromValue( mMeshLayer ) );
+
+      QgsExpression expression( QStringLiteral( "$vertex_x" ) );
+      QCOMPARE( expression.evaluate( &context ).toDouble(), 2500.0 );
+
+      expression = QgsExpression( QStringLiteral( "$vertex_y" ) );
+      QCOMPARE( expression.evaluate( &context ).toDouble(), 2500.0 );
+
+      expression = QgsExpression( QStringLiteral( "$vertex_z" ) );
+      QCOMPARE( expression.evaluate( &context ).toDouble(), 800.0 );
+
+      expression = QgsExpression( QStringLiteral( "$vertex_index" ) );
+      QCOMPARE( expression.evaluate( &context ).toInt(), 2 );
+
+      expression = QgsExpression( QStringLiteral( "$vertex_as_point" ) );
+      QVariant out = expression.evaluate( &context );
+      QgsGeometry outGeom = out.value<QgsGeometry>();
+      QgsGeometry geom( new QgsPoint( 2500, 2500, 800 ) );
+      QCOMPARE( geom.equals( outGeom ), true );
+
+      context.appendScope( QgsExpressionContextUtils::meshExpressionScope( QgsMesh::Face ) );
+      context.lastScope()->setVariable( QStringLiteral( "_mesh_face_index" ), 2 );
+      expression = QgsExpression( QStringLiteral( "$face_area" ) );
+      QCOMPARE( expression.evaluate( &context ).toDouble(), 250000 );
+
+      expression = QgsExpression( QStringLiteral( "$face_index" ) );
+      QCOMPARE( expression.evaluate( &context ).toInt(), 2 );
     }
 
     void cleanupTestCase()
@@ -1282,6 +1322,13 @@ class TestQgsExpression: public QObject
       QTest::newRow( "rotate line fixed multi point" ) << "geom_to_wkt(rotate(geom_from_wkt('LineString(0 0, 10 0, 10 10)'),90, geom_from_wkt('MULTIPOINT((-5 -3))')))" << false << QVariant( "LineString (-2 -8, -2 -18, 8 -18)" );
       QTest::newRow( "rotate line fixed multi point multiple" ) << "geom_to_wkt(rotate(geom_from_wkt('LineString(0 0, 10 0, 10 10)'),90, geom_from_wkt('MULTIPOINT(-5 -3,1 2)')))" << true << QVariant();
       QTest::newRow( "rotate polygon centroid" ) << "geom_to_wkt(rotate(geom_from_wkt('Polygon((0 0, 10 0, 10 10, 0 0))'),-90))" << false << QVariant( "Polygon ((10 0, 10 10, 0 10, 10 0))" );
+      QTest::newRow( "affine_transform not geom" ) << "affine_transform('g', 0, 0, 0, 0, 0, 0)" << true << QVariant();
+      QTest::newRow( "affine_transform null" ) << "affine_transform(NULL, 0, 0, 0, 0, 0, 0)" << false << QVariant();
+      QTest::newRow( "affine_transform point XYZM" ) << "geom_to_wkt(affine_transform(geom_from_wkt('POINT(2 2 2 2)'), 2, 2, 180, 0, 1, 1, 1, 2, 2))" << false << QVariant( "PointZM (2 0 5 5)" );
+      QTest::newRow( "affine_transform point with negative scale" ) << "geom_to_wkt(affine_transform(geom_from_wkt('POINT(1 1)'), 0, 0, 90, -2, -2))" << false << QVariant( "Point (2 -2)" );
+      QTest::newRow( "affine_transform line XY" ) << "geom_to_wkt(affine_transform(geom_from_wkt('LINESTRING(1 0, 2 0)'), 0, 0, 90, 2, 1))" << false << QVariant( "LineString (0 2, 0 4)" );
+      QTest::newRow( "affine_transform polygon XYZ" ) << "geom_to_wkt(affine_transform(geom_from_wkt('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'), 0, 0, -90, 0.5, 0.5))" << false << QVariant( "Polygon ((0 0, 0.5 0, 0.5 -0.5, 0 -0.5, 0 0))" );
+      QTest::newRow( "affine_transform point XY with translation on ZM" ) << "geom_to_wkt(affine_transform(geom_from_wkt('POINT(1 1)'), 0, 0, 0, 1, 1, 3, 4))" << false << QVariant( "PointZM (1 1 3 4)" );
       QTest::newRow( "is_multipart true" ) << "is_multipart(geom_from_wkt('MULTIPOINT ((0 0),(1 1),(2 2))'))" << false << QVariant( true );
       QTest::newRow( "is_multipart false" ) << "is_multipart(geom_from_wkt('POINT (0 0)'))" << false << QVariant( false );
       QTest::newRow( "is_multipart false empty geometry" ) << "is_multipart(geom_from_wkt('POINT EMPTY'))" << false << QVariant( false );
@@ -2803,12 +2850,13 @@ class TestQgsExpression: public QObject
       QTest::addColumn<bool>( "evalError" );
       QTest::addColumn<QVariant>( "result" );
 
-      QgsPointXY point( 123, 456 );
+      QgsPoint point( 123, 456, 789 );
       QgsPolylineXY line;
       line << QgsPointXY( 1, 1 ) << QgsPointXY( 4, 2 ) << QgsPointXY( 3, 1 );
 
-      QTest::newRow( "geom x" ) << "$x" << QgsGeometry::fromPointXY( point ) << false << QVariant( 123. );
-      QTest::newRow( "geom y" ) << "$y" << QgsGeometry::fromPointXY( point ) << false << QVariant( 456. );
+      QTest::newRow( "geom x" ) << "$x" << QgsGeometry( std::make_unique<QgsPoint>( point ) ) << false << QVariant( 123. );
+      QTest::newRow( "geom y" ) << "$y" << QgsGeometry( std::make_unique<QgsPoint>( point ) ) << false << QVariant( 456. );
+      QTest::newRow( "geom z" ) << "$z" << QgsGeometry( std::make_unique<QgsPoint>( point ) ) << false << QVariant( 789. );
       QTest::newRow( "geom xat" ) << "xat(-1)" << QgsGeometry::fromPolylineXY( line ) << false << QVariant( 3. );
       QTest::newRow( "geom yat" ) << "yat(1)" << QgsGeometry::fromPolylineXY( line ) << false << QVariant( 2. );
       QTest::newRow( "null geometry" ) << "$geometry" << QgsGeometry() << false << QVariant();
@@ -4275,30 +4323,30 @@ class TestQgsExpression: public QObject
       QTest::addColumn<QStringList>( "input" );
       QTest::addColumn<bool>( "expected" );
       QTest::addColumn<QString>( "expression" );
-      QTest::newRow( "OR conditions mixed IN" ) << ( QStringList() << QStringLiteral( "field = 'value' OR field IN( 'value2', 'value3' )" ) ) << true << "field IN ('value','value2','value3')";
+      QTest::newRow( "OR conditions mixed IN" ) << ( QStringList() << QStringLiteral( "field = 'value' OR field IN( 'value2', 'value3' )" ) ) << true << "\"field\" IN ('value','value2','value3')";
       QTest::newRow( "OR conditions non literal" ) << ( QStringList() << QStringLiteral( "field = 'value' OR field = 'value2' OR field = var('qgis_version')" ) ) << false << QString();
-      QTest::newRow( "OR conditions mixed IN reverse" ) << ( QStringList() << QStringLiteral( "field IN ('value','value2') OR field = 'value3'" ) ) << true << "field IN ('value','value2','value3')";
+      QTest::newRow( "OR conditions mixed IN reverse" ) << ( QStringList() << QStringLiteral( "field IN ('value','value2') OR field = 'value3'" ) ) << true << "\"field\" IN ('value','value2','value3')";
       QTest::newRow( "OR conditions mixed IN different fields" ) << ( QStringList() << QStringLiteral( "field2 IN ('value','value2') OR field = 'value3'" ) ) << false << QString();
-      QTest::newRow( "OR conditions" ) << ( QStringList() << QStringLiteral( "field = 'value' OR field = 'value2'" ) ) << true << "field IN ('value','value2')";
+      QTest::newRow( "OR conditions" ) << ( QStringList() << QStringLiteral( "field = 'value' OR field = 'value2'" ) ) << true << "\"field\" IN ('value','value2')";
       QTest::newRow( "OR conditions different fields" ) << ( QStringList() << QStringLiteral( "field = 'value' OR field2 = 'value2'" ) ) << false << QString();
-      QTest::newRow( "OR conditions three" ) << ( QStringList() << QStringLiteral( "field = 'value' OR field = 'value2' OR field = 'value3'" ) ) << true << "field IN ('value','value2','value3')";
+      QTest::newRow( "OR conditions three" ) << ( QStringList() << QStringLiteral( "field = 'value' OR field = 'value2' OR field = 'value3'" ) ) << true << "\"field\" IN ('value','value2','value3')";
       QTest::newRow( "empty" ) << QStringList() << false << QString();
       QTest::newRow( "invalid" ) << ( QStringList() << QStringLiteral( "a=" ) ) << false << QString();
-      QTest::newRow( "not equality" ) << ( QStringList() << QStringLiteral( "field <> 'value'" ) ) << false << "field";
-      QTest::newRow( "one expression" ) << ( QStringList() << QStringLiteral( "field = 'value'" ) ) << true << "field IN ('value')";
-      QTest::newRow( "one IN expression" ) << ( QStringList() << QStringLiteral( "field IN ('value', 'value2')" ) ) << true << "field IN ('value','value2')";
-      QTest::newRow( "one NOT IN expression" ) << ( QStringList() << QStringLiteral( "field NOT IN ('value', 'value2')" ) ) << false << "field NOT IN ('value','value2')";
+      QTest::newRow( "not equality" ) << ( QStringList() << QStringLiteral( "field <> 'value'" ) ) << false << "\"field\"";
+      QTest::newRow( "one expression" ) << ( QStringList() << QStringLiteral( "field = 'value'" ) ) << true << "\"field\" IN ('value')";
+      QTest::newRow( "one IN expression" ) << ( QStringList() << QStringLiteral( "field IN ('value', 'value2')" ) ) << true << "\"field\" IN ('value','value2')";
+      QTest::newRow( "one NOT IN expression" ) << ( QStringList() << QStringLiteral( "field NOT IN ('value', 'value2')" ) ) << false << "\"field\" NOT IN ('value','value2')";
       QTest::newRow( "one IN expression non-literal" ) << ( QStringList() << QStringLiteral( "field IN ('value', 'value2', \"a field\")" ) ) << false << QString();
-      QTest::newRow( "two expressions" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field = 'value2'" ) ) << true << "field IN ('value','value2')";
-      QTest::newRow( "two expressions with IN" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field IN ('value2', 'value3')" ) ) << true << "field IN ('value','value2','value3')";
+      QTest::newRow( "two expressions" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field = 'value2'" ) ) << true << "\"field\" IN ('value','value2')";
+      QTest::newRow( "two expressions with IN" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field IN ('value2', 'value3')" ) ) << true << "\"field\" IN ('value','value2','value3')";
       QTest::newRow( "two expressions with a not IN" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field NOT IN ('value2', 'value3')" ) ) << false << QString();
       QTest::newRow( "two expressions with IN not literal" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field IN ('value2', 'value3', \"a field\")" ) ) << false << QString();
       QTest::newRow( "two expressions with IN different field" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field2 IN ('value2', 'value3')" ) ) << false << QString();
-      QTest::newRow( "two expressions first not equality" ) << ( QStringList() << QStringLiteral( "field <>'value'" )  << QStringLiteral( "field == 'value2'" ) ) << false << "field";
-      QTest::newRow( "two expressions second not equality" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field <> 'value2'" ) ) << false << "field";
-      QTest::newRow( "three expressions" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field = 'value2'" ) << QStringLiteral( "field = 'value3'" ) ) << true << "field IN ('value','value2','value3')";
-      QTest::newRow( "three expressions with IN" ) << ( QStringList() << QStringLiteral( "field IN ('v1', 'v2')" ) << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field = 'value2'" ) << QStringLiteral( "field = 'value3'" ) ) << true << "field IN ('v1','v2','value','value2','value3')";
-      QTest::newRow( "three expressions different fields" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field2 = 'value2'" ) << QStringLiteral( "field = 'value3'" ) ) << false << "field";
+      QTest::newRow( "two expressions first not equality" ) << ( QStringList() << QStringLiteral( "field <>'value'" )  << QStringLiteral( "field == 'value2'" ) ) << false << "\"field\"";
+      QTest::newRow( "two expressions second not equality" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field <> 'value2'" ) ) << false << "\"field\"";
+      QTest::newRow( "three expressions" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field = 'value2'" ) << QStringLiteral( "field = 'value3'" ) ) << true << "\"field\" IN ('value','value2','value3')";
+      QTest::newRow( "three expressions with IN" ) << ( QStringList() << QStringLiteral( "field IN ('v1', 'v2')" ) << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field = 'value2'" ) << QStringLiteral( "field = 'value3'" ) ) << true << "\"field\" IN ('v1','v2','value','value2','value3')";
+      QTest::newRow( "three expressions different fields" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field2 = 'value2'" ) << QStringLiteral( "\"field\" = 'value3'" ) ) << false << "field";
     }
 
     void testAttemptReduceToInClause()

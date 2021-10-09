@@ -1,0 +1,70 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/annotations/qgsannotationitemcommonpropertieswidget.h        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsAnnotationItemCommonPropertiesWidget: QWidget
+{
+%Docstring(signature="appended")
+
+A widget for configuring common properties for :py:class:`QgsAnnotationItems`
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsannotationitemcommonpropertieswidget.h"
+%End
+  public:
+
+    QgsAnnotationItemCommonPropertiesWidget( QWidget *parent /TransferThis/ );
+%Docstring
+Constructor for QgsAnnotationItemCommonPropertiesWidget.
+%End
+
+    void setItem( QgsAnnotationItem *item );
+%Docstring
+Sets the ``item`` whose properties should be shown in the widget.
+%End
+
+    void updateItem( QgsAnnotationItem *item );
+%Docstring
+Updates an ``item``, setting the properties defined in the widget.
+%End
+
+    void setContext( const QgsSymbolWidgetContext &context );
+%Docstring
+Sets the ``context`` in which the widget is shown, e.g., the associated map canvas and expression contexts.
+
+.. seealso:: :py:func:`context`
+%End
+
+    QgsSymbolWidgetContext context() const;
+%Docstring
+Returns the context in which the widget is shown, e.g., the associated map canvas and expression contexts.
+
+.. seealso:: :py:func:`setContext`
+%End
+
+  signals:
+
+    void itemChanged();
+%Docstring
+Emitted when the annotation item definition in the widget is changed by the user.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/annotations/qgsannotationitemcommonpropertieswidget.h        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

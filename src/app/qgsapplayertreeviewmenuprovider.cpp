@@ -50,6 +50,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgsxmlutils.h"
+#include "qgsmeshlayer.h"
 
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView *view, QgsMapCanvas *canvas )
@@ -153,6 +154,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
       QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer * >( layer );
+      QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer * >( layer );
 
       if ( layer && layer->isSpatial() )
       {
@@ -363,8 +365,8 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menu->addAction( tr( "&Filter…" ), QgisApp::instance(), qOverload<>( &QgisApp::layerSubsetString ) );
       }
 
-      // change data source is only supported for vectors and rasters, point clouds
-      if ( vlayer || rlayer || pcLayer )
+      // change data source is only supported for vectors, rasters, point clouds, mesh
+      if ( vlayer || rlayer || pcLayer || meshLayer )
       {
 
         QAction *a = new QAction( layer->isValid() ? tr( "C&hange Data Source…" ) : tr( "Repair Data Source…" ), menu );

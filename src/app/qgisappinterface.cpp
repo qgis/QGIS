@@ -47,7 +47,8 @@
 #include "qgslocatorwidget.h"
 #include "qgslocator.h"
 #include "qgsmessagebar.h"
-
+#include "qgsappmaptools.h"
+#include "qgsmaptoolmodifyannotation.h"
 
 QgisAppInterface::QgisAppInterface( QgisApp *_qgis )
   : qgis( _qgis )
@@ -907,3 +908,4 @@ QList<QgsMapDecoration *> QgisAppInterface::activeDecorations()
 {
   return qgis->activeDecorations();
 }
+

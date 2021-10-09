@@ -196,7 +196,9 @@ class CORE_EXPORT Qgis
       DynamicRotation = 2, //!< Rotation of symbol may be changed during rendering and symbol should not be cached
     };
     Q_ENUM( SymbolRenderHint )
-    Q_DECLARE_FLAGS( SymbolRenderHints, SymbolRenderHint )
+    //! Symbol render hints
+    Q_DECLARE_FLAGS( SymbolRenderHints, SymbolRenderHint ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsSymbol, RenderHints )
+
 
     /**
      * \brief Flags controlling behavior of symbols
@@ -208,6 +210,7 @@ class CORE_EXPORT Qgis
       RendererShouldUseSymbolLevels = 1 << 0, //!< If present, indicates that a QgsFeatureRenderer using the symbol should use symbol levels for best results
     };
     Q_ENUM( SymbolFlag )
+    //! Symbol flags
     Q_DECLARE_FLAGS( SymbolFlags, SymbolFlag )
 
     /**
@@ -220,7 +223,21 @@ class CORE_EXPORT Qgis
       FlagIncludeCrosshairsForMarkerSymbols = 1 << 0, //!< Include a crosshairs reference image in the background of marker symbol previews
     };
     Q_ENUM( SymbolPreviewFlag )
-    Q_DECLARE_FLAGS( SymbolPreviewFlags, SymbolPreviewFlag )
+    //! Symbol preview flags
+    Q_DECLARE_FLAGS( SymbolPreviewFlags, SymbolPreviewFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsSymbol, SymbolPreviewFlags )
+
+    /**
+     * \brief Flags controlling behavior of symbol layers
+     *
+     * \since QGIS 3.22
+     */
+    enum class SymbolLayerFlag : int
+    {
+      DisableFeatureClipping = 1 << 0, //!< If present, indicates that features should never be clipped to the map extent during rendering
+    };
+    Q_ENUM( SymbolLayerFlag )
+    //! Symbol layer flags
+    Q_DECLARE_FLAGS( SymbolLayerFlags, SymbolLayerFlag )
 
     /**
      * Browser item types.
@@ -271,7 +288,8 @@ class CORE_EXPORT Qgis
       ItemRepresentsFile = 1 << 6, //!< Item's path() directly represents a file on disk (since QGIS 3.22)
     };
     Q_ENUM( BrowserItemCapability )
-    Q_DECLARE_FLAGS( BrowserItemCapabilities, BrowserItemCapability )
+    //! Browser item capabilities
+    Q_DECLARE_FLAGS( BrowserItemCapabilities, BrowserItemCapability ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsDataItem, Capabilities )
 
     /**
      * Browser item layer types
@@ -310,6 +328,17 @@ class CORE_EXPORT Qgis
     Q_ENUM( BrowserDirectoryMonitoring )
 
     /**
+     * Different methods of HTTP requests
+     * \since 3.22
+     */
+    enum class HttpMethod : int
+    {
+      Get = 0, //!< GET method
+      Post = 1 //!< POST method
+    };
+    Q_ENUM( HttpMethod )
+
+    /**
      * Vector layer export result codes.
      *
      * \since QGIS 3.20
@@ -343,6 +372,7 @@ class CORE_EXPORT Qgis
       UnstableFeatureIds = 1 << 4   //!< SQL layer definition supports disabling select at id
     };
     Q_ENUM( SqlLayerDefinitionCapability )
+    //! SQL layer definition capabilities
     Q_DECLARE_FLAGS( SqlLayerDefinitionCapabilities, SqlLayerDefinitionCapability )
 
     /**
@@ -413,9 +443,24 @@ class CORE_EXPORT Qgis
       FastScan = 1 << 0, //!< Indicates that the provider must scan for sublayers using the fastest possible approach -- e.g. by first checking that a uri has an extension which is known to be readable by the provider
       ResolveGeometryType = 1 << 1, //!< Attempt to resolve the geometry type for vector sublayers
       CountFeatures = 1 << 2, //!< Count features in vector sublayers
+      IncludeSystemTables = 1 << 3, //!< Include system or internal tables (these are not included by default)
     };
+    //! Sublayer query flags
     Q_DECLARE_FLAGS( SublayerQueryFlags, SublayerQueryFlag )
     Q_ENUM( SublayerQueryFlag )
+
+    /**
+     * Flags which reflect the properties of sublayers in a dataset.
+     *
+     * \since QGIS 3.22
+     */
+    enum class SublayerFlag : int
+    {
+      SystemTable = 1 << 0, //!< Sublayer is a system or internal table, which should be hidden by default
+    };
+    //! Sublayer flags
+    Q_DECLARE_FLAGS( SublayerFlags, SublayerFlag )
+    Q_ENUM( SublayerFlag )
 
     /**
      * Raster pipe interface roles.
@@ -560,6 +605,7 @@ class CORE_EXPORT Qgis
       Routes = 1 << 3, //!< Format supports routes
       Tracks = 1 << 4, //!< Format supports tracks
     };
+    //! Babel GPS format capabilities
     Q_DECLARE_FLAGS( BabelFormatCapabilities, BabelFormatCapability )
     Q_ENUM( BabelFormatCapability )
 
@@ -573,6 +619,7 @@ class CORE_EXPORT Qgis
     {
       QuoteFilePaths = 1 << 0, //!< File paths should be enclosed in quotations and escaped
     };
+    //! Babel command flags
     Q_DECLARE_FLAGS( BabelCommandFlags, BabelCommandFlag )
     Q_ENUM( BabelCommandFlag )
 
@@ -628,7 +675,8 @@ class CORE_EXPORT Qgis
       {
       AllowSelfTouchingHoles SIP_MONKEYPATCH_COMPAT_NAME( FlagAllowSelfTouchingHoles ) = 1 << 0, //!< Indicates that self-touching holes are permitted. OGC validity states that self-touching holes are NOT permitted, whilst other vendor validity checks (e.g. ESRI) permit self-touching holes.
     };
-    Q_DECLARE_FLAGS( GeometryValidityFlags, GeometryValidityFlag )
+    //! Geometry validity flags
+    Q_DECLARE_FLAGS( GeometryValidityFlags, GeometryValidityFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsGeometry, ValidityFlags )
     Q_ENUM( GeometryValidityFlag )
 
     /**
@@ -703,6 +751,7 @@ class CORE_EXPORT Qgis
       IncludeMetadataFile = 1 << 0, //!< Indicates that any associated .qmd metadata file should be included with the operation
       IncludeStyleFile = 1 << 1, //!< Indicates that any associated .qml styling file should be included with the operation
     };
+    //! File operation flags
     Q_DECLARE_FLAGS( FileOperationFlags, FileOperationFlag )
     Q_ENUM( FileOperationFlag )
 
@@ -715,8 +764,222 @@ class CORE_EXPORT Qgis
     {
       UsersCannotToggleEditing = 1 << 0, //!< Indicates that users are not allowed to toggle editing for this layer. Note that this does not imply that the layer is non-editable (see isEditable(), supportsEditing() ), rather that the editable status of the layer cannot be changed by users manually. Since QGIS 3.22.
     };
+    //! Map layer properties
     Q_DECLARE_FLAGS( MapLayerProperties, MapLayerProperty )
     Q_ENUM( MapLayerProperty )
+
+    /**
+     * Flags for annotation items.
+     *
+     * \since QGIS 3.22
+     */
+    enum class AnnotationItemFlag : int
+    {
+      ScaleDependentBoundingBox = 1 << 0, //!< Item's bounding box will vary depending on map scale
+    };
+    //! Annotation item flags
+    Q_DECLARE_FLAGS( AnnotationItemFlags, AnnotationItemFlag )
+    Q_ENUM( AnnotationItemFlag )
+
+    /**
+     * Flags for controlling how an annotation item behaves in the GUI.
+     *
+     * \since QGIS 3.22
+     */
+    enum class AnnotationItemGuiFlag : int
+    {
+      FlagNoCreationTools = 1 << 0,  //!< Do not show item creation tools for the item type
+    };
+    //! Annotation item GUI flags
+    Q_DECLARE_FLAGS( AnnotationItemGuiFlags, AnnotationItemGuiFlag )
+    Q_ENUM( AnnotationItemGuiFlag )
+
+    /**
+     * Annotation item node types.
+     *
+     * \since QGIS 3.22
+     */
+    enum class AnnotationItemNodeType : int
+    {
+      VertexHandle, //!< Node is a handle for manipulating vertices
+    };
+    Q_ENUM( AnnotationItemNodeType )
+
+    /**
+     * Results from an edit operation on an annotation item.
+     *
+     * \since QGIS 3.22
+     */
+    enum class AnnotationItemEditOperationResult : int
+    {
+      Success, //!< Item was modified successfully
+      Invalid, //!< Operation has invalid parameters for the item, no change occurred
+      ItemCleared, //!< The operation results in the item being cleared, and the item should be removed from the layer as a result
+    };
+    Q_ENUM( AnnotationItemEditOperationResult )
+
+    /**
+     * Vector layer temporal feature modes
+     *
+     * \since QGIS 3.22
+     */
+    enum class VectorTemporalMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVectorLayerTemporalProperties, TemporalMode ) : int
+      {
+      FixedTemporalRange SIP_MONKEYPATCH_COMPAT_NAME( ModeFixedTemporalRange ) = 0, //!< Mode when temporal properties have fixed start and end datetimes.
+      FeatureDateTimeInstantFromField SIP_MONKEYPATCH_COMPAT_NAME( ModeFeatureDateTimeInstantFromField ), //!< Mode when features have a datetime instant taken from a single field
+      FeatureDateTimeStartAndEndFromFields SIP_MONKEYPATCH_COMPAT_NAME( ModeFeatureDateTimeStartAndEndFromFields ), //!< Mode when features have separate fields for start and end times
+      FeatureDateTimeStartAndDurationFromFields SIP_MONKEYPATCH_COMPAT_NAME( ModeFeatureDateTimeStartAndDurationFromFields ), //!< Mode when features have a field for start time and a field for event duration
+      FeatureDateTimeStartAndEndFromExpressions SIP_MONKEYPATCH_COMPAT_NAME( ModeFeatureDateTimeStartAndEndFromExpressions ), //!< Mode when features use expressions for start and end times
+      RedrawLayerOnly SIP_MONKEYPATCH_COMPAT_NAME( ModeRedrawLayerOnly ), //!< Redraw the layer when temporal range changes, but don't apply any filtering. Useful when symbology or rule based renderer expressions depend on the time range.
+    };
+    Q_ENUM( VectorTemporalMode )
+
+    /**
+     * Mode for the handling of the limits of the filtering timeframe for vector features
+     *
+     * \since QGIS 3.22
+     */
+    enum class VectorTemporalLimitMode : int
+    {
+      IncludeBeginExcludeEnd = 0, //!< Default mode: include the Begin limit, but exclude the End limit
+      IncludeBeginIncludeEnd, //!< Mode to include both limits of the filtering timeframe
+    };
+    Q_ENUM( VectorTemporalLimitMode )
+
+    /**
+     * Vector data provider temporal handling modes.
+     *
+     * \since QGIS 3.22
+     */
+    enum class VectorDataProviderTemporalMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVectorDataProviderTemporalCapabilities, TemporalMode ) : int
+      {
+      HasFixedTemporalRange SIP_MONKEYPATCH_COMPAT_NAME( ProviderHasFixedTemporalRange ) = 0, //!< Entire dataset from provider has a fixed start and end datetime.
+      StoresFeatureDateTimeInstantInField SIP_MONKEYPATCH_COMPAT_NAME( ProviderStoresFeatureDateTimeInstantInField ), //!< Dataset has feature datetime instants stored in a single field
+      StoresFeatureDateTimeStartAndEndInSeparateFields SIP_MONKEYPATCH_COMPAT_NAME( ProviderStoresFeatureDateTimeStartAndEndInSeparateFields ), //!< Dataset stores feature start and end datetimes in separate fields
+    };
+    Q_ENUM( VectorDataProviderTemporalMode )
+
+    /**
+     * Raster layer temporal modes
+     *
+     * \since QGIS 3.22
+     */
+    enum class RasterTemporalMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterLayerTemporalProperties, TemporalMode ) : int
+      {
+      FixedTemporalRange SIP_MONKEYPATCH_COMPAT_NAME( ModeFixedTemporalRange ) = 0, //!< Mode when temporal properties have fixed start and end datetimes.
+      TemporalRangeFromDataProvider SIP_MONKEYPATCH_COMPAT_NAME( ModeTemporalRangeFromDataProvider ) = 1, //!< Mode when raster layer delegates temporal range handling to the dataprovider.
+      RedrawLayerOnly SIP_MONKEYPATCH_COMPAT_NAME( ModeRedrawLayerOnly ) = 2, //!< Redraw the layer when temporal range changes, but don't apply any filtering. Useful when raster symbology expressions depend on the time range. (since QGIS 3.22)
+    };
+    Q_ENUM( RasterTemporalMode )
+
+    /**
+     * Method to use when resolving a temporal range to a data provider layer or band.
+     *
+     * \since QGIS 3.22
+     */
+    enum class TemporalIntervalMatchMethod SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterDataProviderTemporalCapabilities, IntervalHandlingMethod ) : int
+      {
+      MatchUsingWholeRange, //!< Use an exact match to the whole temporal range
+      MatchExactUsingStartOfRange, //!< Match the start of the temporal range to a corresponding layer or band, and only use exact matching results
+      MatchExactUsingEndOfRange, //!< Match the end of the temporal range to a corresponding layer or band, and only use exact matching results
+      FindClosestMatchToStartOfRange, //!< Match the start of the temporal range to the least previous closest datetime.
+      FindClosestMatchToEndOfRange //!< Match the end of the temporal range to the least previous closest datetime.
+    };
+    Q_ENUM( TemporalIntervalMatchMethod )
+
+    /**
+     * Indicates the direction (forward or inverse) of a transform.
+     *
+     * \since QGIS 3.22
+     */
+    enum class TransformDirection SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsCoordinateTransform, TransformDirection ) : int
+      {
+      Forward SIP_MONKEYPATCH_COMPAT_NAME( ForwardTransform ), //!< Forward transform (from source to destination)
+      Reverse SIP_MONKEYPATCH_COMPAT_NAME( ReverseTransform ) //!< Reverse/inverse transform (from destination to source)
+    };
+    Q_ENUM( TransformDirection )
+
+    /**
+     * Flags which adjust the way maps are rendered.
+     *
+     * \since QGIS 3.22
+     */
+    enum class MapSettingsFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapSettings, Flag ) : int
+      {
+      Antialiasing             = 0x01,  //!< Enable anti-aliasing for map rendering
+      DrawEditingInfo          = 0x02,  //!< Enable drawing of vertex markers for layers in editing mode
+      ForceVectorOutput        = 0x04,  //!< Vector graphics should not be cached and drawn as raster images
+      UseAdvancedEffects       = 0x08,  //!< Enable layer opacity and blending effects
+      DrawLabeling             = 0x10,  //!< Enable drawing of labels on top of the map
+      UseRenderingOptimization = 0x20,  //!< Enable vector simplification and other rendering optimizations
+      DrawSelection            = 0x40,  //!< Whether vector selections should be shown in the rendered map
+      DrawSymbolBounds         = 0x80,  //!< Draw bounds of symbols (for debugging/testing)
+      RenderMapTile            = 0x100, //!< Draw map such that there are no problems between adjacent tiles
+      RenderPartialOutput      = 0x200, //!< Whether to make extra effort to update map image with partially rendered layers (better for interactive map canvas). Added in QGIS 3.0
+      RenderPreviewJob         = 0x400, //!< Render is a 'canvas preview' render, and shortcuts should be taken to ensure fast rendering
+      RenderBlocking           = 0x800, //!< Render and load remote sources in the same thread to ensure rendering remote sources (svg and images). WARNING: this flag must NEVER be used from GUI based applications (like the main QGIS application) or crashes will result. Only for use in external scripts or QGIS server.
+      LosslessImageRendering   = 0x1000, //!< Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF). This flag only works with builds based on Qt 5.13 or later.
+      Render3DMap              = 0x2000, //!< Render is for a 3D map
+    };
+    //! Map settings flags
+    Q_DECLARE_FLAGS( MapSettingsFlags, MapSettingsFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsMapSettings, Flags )
+    Q_ENUM( MapSettingsFlag )
+
+    /**
+     * Flags which affect rendering operations.
+     *
+     * \since QGIS 3.22
+     */
+    enum class RenderContextFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRenderContext, Flag ) : int
+      {
+      DrawEditingInfo          = 0x01,  //!< Enable drawing of vertex markers for layers in editing mode
+      ForceVectorOutput        = 0x02,  //!< Vector graphics should not be cached and drawn as raster images
+      UseAdvancedEffects       = 0x04,  //!< Enable layer opacity and blending effects
+      UseRenderingOptimization = 0x08,  //!< Enable vector simplification and other rendering optimizations
+      DrawSelection            = 0x10,  //!< Whether vector selections should be shown in the rendered map
+      DrawSymbolBounds         = 0x20,  //!< Draw bounds of symbols (for debugging/testing)
+      RenderMapTile            = 0x40,  //!< Draw map such that there are no problems between adjacent tiles
+      Antialiasing             = 0x80,  //!< Use antialiasing while drawing
+      RenderPartialOutput      = 0x100, //!< Whether to make extra effort to update map image with partially rendered layers (better for interactive map canvas). Added in QGIS 3.0
+      RenderPreviewJob         = 0x200, //!< Render is a 'canvas preview' render, and shortcuts should be taken to ensure fast rendering
+      RenderBlocking           = 0x400, //!< Render and load remote sources in the same thread to ensure rendering remote sources (svg and images). WARNING: this flag must NEVER be used from GUI based applications (like the main QGIS application) or crashes will result. Only for use in external scripts or QGIS server.
+      RenderSymbolPreview      = 0x800, //!< The render is for a symbol preview only and map based properties may not be available, so care should be taken to handle map unit based sizes in an appropriate way.
+      LosslessImageRendering   = 0x1000, //!< Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF). This flag only works with builds based on Qt 5.13 or later.
+      ApplyScalingWorkaroundForTextRendering = 0x2000, //!< Whether a scaling workaround designed to stablise the rendering of small font sizes (or for painters scaled out by a large amount) when rendering text. Generally this is recommended, but it may incur some performance cost.
+      Render3DMap              = 0x4000, //!< Render is for a 3D map
+      ApplyClipAfterReprojection = 0x8000, //!< Feature geometry clipping to mapExtent() must be performed after the geometries are transformed using coordinateTransform(). Usually feature geometry clipping occurs using the extent() in the layer's CRS prior to geometry transformation, but in some cases when extent() could not be accurately calculated it is necessary to clip geometries to mapExtent() AFTER transforming them using coordinateTransform().
+    };
+    //! Render context flags
+    Q_DECLARE_FLAGS( RenderContextFlags, RenderContextFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsRenderContext, Flags )
+    Q_ENUM( RenderContextFlag )
+
+    // refs for below dox: https://github.com/qgis/QGIS/pull/1286#issuecomment-39806854
+    // https://github.com/qgis/QGIS/pull/8573#issuecomment-445585826
+
+    /**
+     * Options for rendering text.
+     * \since QGIS 3.22
+     */
+    enum class TextRenderFormat SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRenderContext, TextRenderFormat ) : int
+      {
+      AlwaysOutlines SIP_MONKEYPATCH_COMPAT_NAME( TextFormatAlwaysOutlines ), //!< Always render text using path objects (AKA outlines/curves). This setting guarantees the best quality rendering, even when using a raster paint surface (where sub-pixel path based text rendering is superior to sub-pixel text-based rendering). The downside is that text is converted to paths only, so users cannot open created vector outputs for post-processing in other applications and retain text editability.  This setting also guarantees complete compatibility with the full range of formatting options available through QgsTextRenderer and QgsTextFormat, some of which may not be possible to reproduce when using a vector-based paint surface and TextFormatAlwaysText mode. A final benefit to this setting is that vector exports created using text as outlines do not require all users to have the original fonts installed in order to display the text in its original style.
+      AlwaysText SIP_MONKEYPATCH_COMPAT_NAME( TextFormatAlwaysText ), //!< Always render text as text objects. While this mode preserves text objects as text for post-processing in external vector editing applications, it can result in rendering artifacts or poor quality rendering, depending on the text format settings. Even with raster based paint devices, TextFormatAlwaysText can result in inferior rendering quality to TextFormatAlwaysOutlines. When rendering using TextFormatAlwaysText to a vector based device (e.g. PDF or SVG), care must be taken to ensure that the required fonts are available to users when opening the created files, or default fallback fonts will be used to display the output instead. (Although PDF exports MAY automatically embed some fonts when possible, depending on the user's platform).
+    };
+    Q_ENUM( TextRenderFormat )
+
+    /**
+     * Rendering subcomponent properties.
+     *
+     * \since QGIS 3.22
+     */
+    enum class RenderSubcomponentProperty : int
+    {
+      Generic, //!< Generic subcomponent property
+      ShadowOffset, //!< Shadow offset
+      BlurSize, //!< Blur size
+      GlowSpread, //!< Glow spread size
+    };
+    Q_ENUM( RenderSubcomponentProperty )
 
     /**
      * Identify search radius in mm
@@ -834,13 +1097,20 @@ class CORE_EXPORT Qgis
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolRenderHints )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolPreviewFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolLayerFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BrowserItemCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SublayerQueryFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SublayerFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SqlLayerDefinitionCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelFormatCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelCommandFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::GeometryValidityFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::FileOperationFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AnnotationItemFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AnnotationItemGuiFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapSettingsFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RenderContextFlags )
+
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.
@@ -1081,6 +1351,20 @@ namespace qgis
 #endif
   }
 }
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+namespace std
+{
+  template<> struct hash<QString>
+  {
+    std::size_t operator()( const QString &s ) const noexcept
+    {
+      return ( size_t ) qHash( s );
+    }
+  };
+}
+#endif
+
 ///@endcond
 #endif
 

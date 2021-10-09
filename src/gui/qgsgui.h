@@ -31,6 +31,7 @@ class QgsMapLayerActionRegistry;
 class QgsSourceSelectProviderRegistry;
 class QgsNative;
 class QgsLayoutItemGuiRegistry;
+class QgsAnnotationItemGuiRegistry;
 class QgsWidgetStateHelper;
 class QgsProcessingGuiRegistry;
 class QgsProcessingRecentAlgorithmLog;
@@ -120,6 +121,13 @@ class GUI_EXPORT QgsGui : public QObject
      * Returns the global layout item GUI registry, used for registering the GUI behavior of layout items.
      */
     static QgsLayoutItemGuiRegistry *layoutItemGuiRegistry() SIP_KEEPREFERENCE;
+
+    /**
+     * Returns the global annotation item GUI registry, used for registering the GUI behavior of annotation items.
+     *
+     * \since QGIS 3.22
+     */
+    static QgsAnnotationItemGuiRegistry *annotationItemGuiRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the global processing gui registry, used for registering the GUI behavior of processing algorithms.
@@ -278,6 +286,7 @@ class GUI_EXPORT QgsGui : public QObject
     QgsLayerTreeEmbeddedWidgetRegistry *mLayerTreeEmbeddedWidgetRegistry = nullptr;
     QgsMapLayerActionRegistry *mMapLayerActionRegistry = nullptr;
     QgsLayoutItemGuiRegistry *mLayoutItemGuiRegistry = nullptr;
+    QgsAnnotationItemGuiRegistry *mAnnotationItemGuiRegistry = nullptr;
     QgsProcessingGuiRegistry *mProcessingGuiRegistry = nullptr;
     QgsProcessingRecentAlgorithmLog *mProcessingRecentAlgorithmLog = nullptr;
     QgsNumericFormatGuiRegistry *mNumericFormatGuiRegistry = nullptr;

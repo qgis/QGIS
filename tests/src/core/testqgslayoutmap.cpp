@@ -872,7 +872,7 @@ void TestQgsLayoutMap::testSimplificationMethod()
   QgsMapSettings settings = map->mapSettings( map->extent(), map->rect().size(), 300, false );
   // should default to no simplification during exports
   QCOMPARE( settings.simplifyMethod().simplifyHints(), QgsVectorSimplifyMethod::NoSimplification );
-  QVERIFY( !( settings.flags() & QgsMapSettings::UseRenderingOptimization ) );
+  QVERIFY( !( settings.flags() & Qgis::MapSettingsFlag::UseRenderingOptimization ) );
   // set a simplification method to use
   QgsVectorSimplifyMethod method;
   method.setSimplifyHints( QgsVectorSimplifyMethod::GeometrySimplification );
@@ -882,13 +882,13 @@ void TestQgsLayoutMap::testSimplificationMethod()
   l.renderContext().mIsPreviewRender = true;
   settings = map->mapSettings( map->extent(), map->rect().size(), 300, false );
   QCOMPARE( settings.simplifyMethod().simplifyHints(), QgsVectorSimplifyMethod::NoSimplification );
-  QVERIFY( settings.flags() & QgsMapSettings::UseRenderingOptimization );
+  QVERIFY( settings.flags() & Qgis::MapSettingsFlag::UseRenderingOptimization );
 
   // for exports, we respect the layout context's simplify method
   l.renderContext().mIsPreviewRender = false;
   settings = map->mapSettings( map->extent(), map->rect().size(), 300, false );
   QCOMPARE( settings.simplifyMethod().simplifyHints(), QgsVectorSimplifyMethod::GeometrySimplification );
-  QVERIFY( settings.flags() & QgsMapSettings::UseRenderingOptimization );
+  QVERIFY( settings.flags() & Qgis::MapSettingsFlag::UseRenderingOptimization );
 }
 
 class TestHandler : public QgsRenderedFeatureHandlerInterface

@@ -18,6 +18,7 @@
 #include "qgsgeometryrubberband.h"
 #include "qgsabstractgeometry.h"
 #include "qgsmapcanvas.h"
+#include "qgsrendercontext.h"
 #include "qgspoint.h"
 #include <QPainter>
 

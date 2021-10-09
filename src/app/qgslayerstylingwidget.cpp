@@ -53,6 +53,7 @@
 #include "qgsrasterminmaxwidget.h"
 #include "qgisapp.h"
 #include "qgssymbolwidgetcontext.h"
+#include "qgsannotationlayer.h"
 
 #ifdef HAVE_3D
 #include "qgsvectorlayer3drendererwidget.h"
@@ -70,6 +71,9 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBa
   , mPageFactories( pages )
 {
   setupUi( this );
+
+  mContext.setMapCanvas( canvas );
+  mContext.setMessageBar( messageBar );
 
   mOptionsListWidget->setIconSize( QgisApp::instance()->iconSize( false ) );
   mOptionsListWidget->setMaximumWidth( static_cast< int >( mOptionsListWidget->iconSize().width() * 1.18 ) );
@@ -107,7 +111,9 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBa
                            | QgsMapLayerProxyModel::Filter::PluginLayer
                            | QgsMapLayerProxyModel::Filter::MeshLayer
                            | QgsMapLayerProxyModel::Filter::VectorTileLayer
-                           | QgsMapLayerProxyModel::Filter::PointCloudLayer );
+                           | QgsMapLayerProxyModel::Filter::PointCloudLayer
+                           | QgsMapLayerProxyModel::Filter::AnnotationLayer );
+  mLayerCombo->setAdditionalLayers( { QgsProject::instance()->mainAnnotationLayer() } );
 
   mStackedWidget->setCurrentIndex( 0 );
 }
@@ -439,6 +445,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
     if ( panel )
     {
       panel->setDockMode( true );
+      panel->setMapLayerConfigWidgetContext( mContext );
       connect( panel, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
       mWidgetStack->setMainPanel( panel );
     }
@@ -665,11 +672,12 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
       }
 
       case QgsMapLayerType::PointCloudLayer:
+      case QgsMapLayerType::AnnotationLayer:
       {
         break;
       }
+
       case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::AnnotationLayer:
       {
         mStackedWidget->setCurrentIndex( mNotSupportedPage );
         break;
@@ -690,6 +698,26 @@ void QgsLayerStylingWidget::setCurrentPage( QgsLayerStylingWidget::Page page )
       mOptionsListWidget->setCurrentRow( i );
       return;
     }
+  }
+}
+
+void QgsLayerStylingWidget::setAnnotationItem( QgsAnnotationLayer *layer, const QString &itemId )
+{
+  mContext.setAnnotationId( itemId );
+  if ( layer )
+    setLayer( layer );
+
+  if ( QgsMapLayerConfigWidget *configWidget = qobject_cast< QgsMapLayerConfigWidget * >( mWidgetStack->mainPanel() ) )
+  {
+    configWidget->setMapLayerConfigWidgetContext( mContext );
+  }
+}
+
+void QgsLayerStylingWidget::focusDefaultWidget()
+{
+  if ( QgsMapLayerConfigWidget *configWidget = qobject_cast< QgsMapLayerConfigWidget * >( mWidgetStack->mainPanel() ) )
+  {
+    configWidget->focusDefaultWidget();
   }
 }
 

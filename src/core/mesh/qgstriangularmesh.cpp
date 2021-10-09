@@ -120,7 +120,7 @@ void QgsTriangularMesh::triangulate( const QgsMeshFace &face, int nativeIndex )
   triangulateFaces( face, nativeIndex, mTriangularMesh.faces, mTrianglesToNativeFaces, mTriangularMesh );
 }
 
-QgsMeshVertex QgsTriangularMesh::transformVertex( const QgsMeshVertex &vertex, QgsCoordinateTransform::TransformDirection direction ) const
+QgsMeshVertex QgsTriangularMesh::transformVertex( const QgsMeshVertex &vertex, Qgis::TransformDirection direction ) const
 {
   QgsMeshVertex transformedVertex = vertex;
 
@@ -160,14 +160,14 @@ bool QgsTriangularMesh::update( QgsMesh *nativeMesh, const QgsCoordinateTransfor
 
   bool needUpdateVerticesCoordinates = mTriangularMesh.vertices.size() != nativeMesh->vertices.size() ||
                                        ( ( mCoordinateTransform.isValid() || transform.isValid() ) &&
-                                         ( mCoordinateTransform.sourceCrs() != transform.sourceCrs() &&
-                                             mCoordinateTransform.destinationCrs() != transform.destinationCrs() &&
+                                         ( mCoordinateTransform.sourceCrs() != transform.sourceCrs() ||
+                                             mCoordinateTransform.destinationCrs() != transform.destinationCrs() ||
                                              mCoordinateTransform.isValid() != transform.isValid() ) ) ;
 
   bool needUpdateFrame =  mTriangularMesh.vertices.size() != nativeMesh->vertices.size() ||
                           mNativeMeshFaceCentroids.size() != nativeMesh->faces.size() ||
-                          mTriangularMesh.faces.size() >= nativeMesh->faces.size() ||
-                          mTriangularMesh.edges.size() == nativeMesh->edges.size();
+                          mTriangularMesh.faces.size() < nativeMesh->faces.size() ||
+                          mTriangularMesh.edges.size() != nativeMesh->edges.size();
 
 
   // FIND OUT IF UPDATE IS NEEDED
@@ -276,12 +276,12 @@ void QgsTriangularMesh::finalizeTriangles()
 
 QgsMeshVertex QgsTriangularMesh::nativeToTriangularCoordinates( const QgsMeshVertex &vertex ) const
 {
-  return transformVertex( vertex, QgsCoordinateTransform::ForwardTransform );
+  return transformVertex( vertex, Qgis::TransformDirection::Forward );
 }
 
 QgsMeshVertex QgsTriangularMesh::triangularToNativeCoordinates( const QgsMeshVertex &vertex ) const
 {
-  return transformVertex( vertex, QgsCoordinateTransform::ReverseTransform );
+  return transformVertex( vertex, Qgis::TransformDirection::Reverse );
 }
 
 QgsRectangle QgsTriangularMesh::nativeExtent()
@@ -291,7 +291,7 @@ QgsRectangle QgsTriangularMesh::nativeExtent()
   {
     try
     {
-      nativeExtent = mCoordinateTransform.transform( mExtent, QgsCoordinateTransform::ReverseTransform );
+      nativeExtent = mCoordinateTransform.transform( extent(), Qgis::TransformDirection::Reverse );
     }
     catch ( QgsCsException &cse )
     {
@@ -300,13 +300,22 @@ QgsRectangle QgsTriangularMesh::nativeExtent()
     }
   }
   else
-    nativeExtent = mExtent;
+    nativeExtent = extent();
 
   return nativeExtent;
 }
 
 QgsRectangle QgsTriangularMesh::extent() const
 {
+  if ( !mIsExtentValid )
+  {
+    mExtent.setMinimal();
+    for ( int i = 0; i < mTriangularMesh.vertices.size(); ++i )
+      if ( !mTriangularMesh.vertices.at( i ).isEmpty() )
+        mExtent.include( mTriangularMesh.vertices.at( i ) );
+
+    mIsExtentValid = true;
+  }
   return mExtent;
 }
 
@@ -795,11 +804,14 @@ void QgsTriangularMesh::applyChanges( const QgsTriangularMesh::Changes &changes 
   }
 
   for ( int i = 0; i < changes.mNativeFaceIndexesToRemove.count(); ++i )
-    mNativeMeshFaceCentroids[changes.mNativeFaceIndexesToRemove.at( i )] = QgsPoint();
+    mNativeMeshFaceCentroids[changes.mNativeFaceIndexesToRemove.at( i )] = QgsMeshVertex();
 
   // remove vertices
-  // for now, let's try to not remove the vertices, because if the vertex is not referenced in faces,
-  // there is no access anymore to the vertex. If we do not remove it, not need to store (x,y,z) in the changes instance
+  for ( int i = 0; i < changes.mVerticesIndexesToRemove.count(); ++i )
+    mTriangularMesh.vertices[changes.mVerticesIndexesToRemove.at( i )] = QgsMeshVertex();
+
+  if ( !changes.mVerticesIndexesToRemove.isEmpty() )
+    mIsExtentValid = false;
 
   // change Z value
   for ( int i = 0; i < changes.mNewZValue.count(); ++i )
@@ -832,7 +844,7 @@ void QgsTriangularMesh::applyChanges( const QgsTriangularMesh::Changes &changes 
     mNativeMeshFaceCentroids[changes.mNativeFaceIndexesGeometryChanged.at( i )] = calculateCentroid( changes.mNativeFacesGeometryChanged.at( i ) );
 }
 
-void QgsTriangularMesh::reverseChanges( const QgsTriangularMesh::Changes &changes )
+void QgsTriangularMesh::reverseChanges( const QgsTriangularMesh::Changes &changes, const QgsMesh &nativeMesh )
 {
   //reverse added faces and added vertices
   if ( !changes.mNativeFacesToAdd.isEmpty() )
@@ -849,6 +861,16 @@ void QgsTriangularMesh::reverseChanges( const QgsTriangularMesh::Changes &change
 
   int initialVerticesCount = mTriangularMesh.vertices.count() - changes.mAddedVertices.count();
   mTriangularMesh.vertices.resize( initialVerticesCount );
+
+  if ( !changes.mAddedVertices.isEmpty() )
+    mIsExtentValid = false;
+
+  // for each vertex to remove we need to update the vertices with the native vertex
+  for ( const int i : std::as_const( changes.mVerticesIndexesToRemove ) )
+    mTriangularMesh.vertices[i] = nativeToTriangularCoordinates( nativeMesh.vertex( i ) );
+
+  if ( !changes.mVerticesIndexesToRemove.isEmpty() )
+    mIsExtentValid = false;
 
   // reverse removed faces
   QVector<QgsMeshFace> restoredTriangles;
@@ -906,6 +928,7 @@ QgsTriangularMesh::Changes::Changes( const QgsTopologicalMesh::Changes &topologi
                                      const QgsMesh &nativeMesh )
 {
   mAddedVertices = topologicalChanges.addedVertices();
+  mVerticesIndexesToRemove = topologicalChanges.verticesToRemoveIndexes();
   mNativeFacesToAdd = topologicalChanges.addedFaces();
   mNativeFacesToRemove = topologicalChanges.removedFaces();
   mNativeFaceIndexesToRemove = topologicalChanges.removedFaceIndexes();

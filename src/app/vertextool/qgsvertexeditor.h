@@ -26,6 +26,7 @@
 #include "qgis_app.h"
 #include "qgsdockwidget.h"
 #include "qgspoint.h"
+#include "qgscoordinatereferencesystem.h"
 
 class QLabel;
 class QTableView;

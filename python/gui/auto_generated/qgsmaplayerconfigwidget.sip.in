@@ -9,6 +9,68 @@
 
 
 
+class QgsMapLayerConfigWidgetContext
+{
+%Docstring(signature="appended")
+Encapsulates the context for a :py:class:`QgsMapLayerConfigWidget`.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerconfigwidget.h"
+%End
+  public:
+
+    QString annotationId() const;
+%Docstring
+Returns the item ID of the target annotation, when modifying
+an annotation from a :py:class:`QgsAnnotationLayer`.
+
+.. seealso:: :py:func:`setAnnotationId`
+%End
+
+    void setAnnotationId( const QString &id );
+%Docstring
+Sets the item ``id`` of the target annotation, when modifying
+an annotation from a :py:class:`QgsAnnotationLayer`.
+
+.. seealso:: :py:func:`annotationId`
+%End
+
+    void setMapCanvas( QgsMapCanvas *canvas );
+%Docstring
+Sets the map ``canvas`` associated with the widget. This allows the widget to retrieve the current
+map scale and other properties from the canvas.
+
+.. seealso:: :py:func:`mapCanvas`
+%End
+
+    QgsMapCanvas *mapCanvas() const;
+%Docstring
+Returns the map canvas associated with the widget.
+
+.. seealso:: :py:func:`setMapCanvas`
+%End
+
+    void setMessageBar( QgsMessageBar *bar );
+%Docstring
+Sets the message ``bar`` associated with the widget. This allows the widget to push feedback messages
+to the appropriate message bar.
+
+.. seealso:: :py:func:`messageBar`
+%End
+
+    QgsMessageBar *messageBar() const;
+%Docstring
+Returns the message bar associated with the widget.
+
+.. seealso:: :py:func:`setMessageBar`
+%End
+
+};
+
+
 class QgsMapLayerConfigWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
@@ -52,12 +114,26 @@ Reset to original (vector layer) values
 .. versionadded:: 3.14
 %End
 
+    virtual void setMapLayerConfigWidgetContext( const QgsMapLayerConfigWidgetContext &context );
+%Docstring
+Sets the ``context`` under which the widget is being shown.
+
+Subclasses should take care to call the base class implementation when overriding this method.
+%End
+
   public slots:
 
     virtual void apply() = 0;
 %Docstring
 Called when changes to the layer need to be made.
 Will be called when live update is enabled.
+%End
+
+    virtual void focusDefaultWidget();
+%Docstring
+Focuses the default widget for the page.
+
+.. versionadded:: 3.22
 %End
 
   signals:

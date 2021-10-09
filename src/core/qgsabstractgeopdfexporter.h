@@ -26,6 +26,7 @@
 #include "qgsfeature.h"
 #include "qgsabstractmetadatabase.h"
 #include "qgspolygon.h"
+#include "qgscoordinatereferencesystem.h"
 
 #define SIP_NO_FILE
 

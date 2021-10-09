@@ -28,6 +28,8 @@
 #include "qgsmaplayerproxymodel.h"
 
 #ifdef _MSC_VER
+#include "qgsunittypes.h"
+
 template class CORE_EXPORT QgsSettingsEntryEnumFlag<QgsSnappingConfig::SnappingTypes> SIP_SKIP;
 template class CORE_EXPORT QgsSettingsEntryEnumFlag<QgsTolerance::UnitType> SIP_SKIP;
 template class CORE_EXPORT QgsSettingsEntryEnumFlag<Qgis::JoinStyle> SIP_SKIP;

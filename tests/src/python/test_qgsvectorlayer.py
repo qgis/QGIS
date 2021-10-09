@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsVectorLayer.
 
+From build dir, run:
+ctest -R PyQgsVectorLayer -V
+
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -51,6 +54,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsExpressionContextScope,
                        QgsExpressionContextUtils,
                        QgsLineSymbol,
+                       QgsMapLayerServerProperties,
                        QgsMapLayerStyle,
                        QgsMapLayerDependency,
                        QgsRenderContext,
@@ -2912,6 +2916,11 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertEqual(len(list(layer.getFeatures(req))), 2)
         layer.rollBack()
 
+    def test_server_properties(self):
+        """ Test server properties. """
+        layer = QgsVectorLayer('Point?field=fldtxt:string', 'layer_1', 'memory')
+        self.assertIsInstance(layer.serverProperties(), QgsMapLayerServerProperties)
+
     def testClone(self):
         # init crs
         srs = QgsCoordinateReferenceSystem.fromEpsgId(3111)
@@ -3564,7 +3573,6 @@ class TestQgsVectorLayerTransformContext(unittest.TestCase):
         """Prepare tc"""
         super(TestQgsVectorLayerTransformContext, self).setUp()
         self.ctx = QgsCoordinateTransformContext()
-        self.ctx.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857), 1234, 1235)
         self.ctx.addCoordinateOperation(QgsCoordinateReferenceSystem.fromEpsgId(4326),
                                         QgsCoordinateReferenceSystem.fromEpsgId(3857), 'test')
 
@@ -3622,6 +3630,35 @@ class TestQgsVectorLayerTransformContext(unittest.TestCase):
         p.setTransformContext(self.ctx)
         self.assertTrue(p.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
         self.assertTrue(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
+
+    def testDeletedFeaturesAreNotSelected(self):
+        """Test that when features are deleted are also removed from selected before
+           featuresDeleted is emitted"""
+
+        layer = QgsVectorLayer("point?crs=epsg:4326&field=id:integer", "Scratch point layer", "memory")
+        layer.startEditing()
+        layer.addFeature(QgsFeature(layer.fields()))
+        layer.commitChanges()
+
+        self.assertEqual(layer.featureCount(), 1)
+
+        test_errors = []
+
+        def onFeaturesDeleted(deleted_fids):
+            selected = layer.selectedFeatureIds()
+            for fid in selected:
+                test_errors.append(f'Feature with id {fid} was deleted but is still selected')
+
+        layer.featuresDeleted.connect(onFeaturesDeleted)
+
+        layer.startEditing()
+        layer.selectAll()
+        layer.deleteSelectedFeatures()
+        layer.commitChanges()
+
+        self.assertEqual(test_errors, [], test_errors)
+        self.assertEqual(layer.featureCount(), 0)
+        self.assertEqual(layer.selectedFeatureIds(), [])
 
     def testSubsetStringInvalidLayer(self):
         """

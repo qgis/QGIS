@@ -38,7 +38,8 @@ and parameters.
       TypeVector,
       TypeMesh,
       TypePlugin,
-      TypePointCloud
+      TypePointCloud,
+      TypeAnnotation
     };
 
     enum PythonOutputType

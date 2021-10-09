@@ -186,7 +186,7 @@ bool QgsRenderChecker::runTest( const QString &testName,
   // Now render our layers onto a pixmap
   //
   mMapSettings.setBackgroundColor( qRgb( 152, 219, 249 ) );
-  mMapSettings.setFlag( QgsMapSettings::Antialiasing );
+  mMapSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing );
   mMapSettings.setOutputSize( QSize( myExpectedImage.width(), myExpectedImage.height() ) / mMapSettings.devicePixelRatio() );
 
   QElapsedTimer myTime;

@@ -40,6 +40,7 @@ class QgsMapToolCapture : QgsMapToolAdvancedDigitizing
     {
       NoCapabilities,
       SupportsCurves,
+      ValidateGeometries,
     };
 
     typedef QFlags<QgsMapToolCapture::Capability> Capabilities;
@@ -157,7 +158,7 @@ Converts a map point to layer coordinates
 
 :return:
          0 in case of success
-         1 if the current layer is ``None`` or not a vector layer
+         1 if the current layer is ``None``
          2 if the transformation failed
 %End
 
@@ -219,7 +220,7 @@ WkbType of the current layer).
 %Docstring
 Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
 
-:return: 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed
+:return: 0 in case of success, 2 if coordinate transformation failed
 %End
 
     int addVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match &match );

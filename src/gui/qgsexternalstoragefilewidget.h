@@ -159,6 +159,8 @@ class GUI_EXPORT QgsExternalStorageFileWidget : public QgsFileWidget
      */
     static QgsExpressionContextScope *createFileWidgetScope();
 
+    void setReadOnly( bool readOnly ) override;
+
   protected:
 
     void updateLayout() override;
@@ -170,6 +172,10 @@ class GUI_EXPORT QgsExternalStorageFileWidget : public QgsFileWidget
      */
     void addFileWidgetScope();
 
+    void dragEnterEvent( QDragEnterEvent *event ) override;
+
+    void dropEvent( QDropEvent *event ) override;
+
   private:
 
     // stores \a fileNames files using current external storage.
@@ -177,6 +183,9 @@ class GUI_EXPORT QgsExternalStorageFileWidget : public QgsFileWidget
     // fileNames. When all files have been successfully stored, current mFilePath
     // is updated
     void storeExternalFiles( QStringList fileNames, QStringList storedUrls = QStringList() );
+
+    //! Update whether the widget accept drop or not
+    void updateAcceptDrops();
 
     bool mStoreInProgress = false;
 

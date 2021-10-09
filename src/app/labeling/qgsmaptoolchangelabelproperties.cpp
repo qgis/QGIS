@@ -65,7 +65,7 @@ void QgsMapToolChangeLabelProperties::canvasPressEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  mCurrentLabel = LabelDetails( labelPos );
+  mCurrentLabel = LabelDetails( labelPos, canvas() );
   if ( !mCurrentLabel.valid || !mCurrentLabel.layer )
   {
     return;
@@ -76,7 +76,7 @@ void QgsMapToolChangeLabelProperties::canvasPressEvent( QgsMapMouseEvent *e )
   if ( !mCurrentLabel.layer->isEditable() )
   {
     QgsPalIndexes indexes;
-    const bool newAuxiliaryLayer = createAuxiliaryFields( indexes, false );
+    const bool newAuxiliaryLayer = createAuxiliaryFields( indexes );
 
     if ( !newAuxiliaryLayer && !mCurrentLabel.layer->auxiliaryLayer() )
     {

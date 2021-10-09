@@ -128,7 +128,7 @@ void QgsGrassRegionEdit::setTransform()
   }
 }
 
-void QgsGrassRegionEdit::transform( QgsMapCanvas *, QVector<QgsPointXY> &points, const QgsCoordinateTransform &coordinateTransform, QgsCoordinateTransform::TransformDirection direction )
+void QgsGrassRegionEdit::transform( QgsMapCanvas *, QVector<QgsPointXY> &points, const QgsCoordinateTransform &coordinateTransform, Qgis::TransformDirection direction )
 {
   //! Coordinate transform
   //QgsDebugMsg ( "srcCrs = " +  coordinateTransform->sourceCrs().toWkt() );

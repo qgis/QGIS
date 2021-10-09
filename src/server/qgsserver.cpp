@@ -39,6 +39,7 @@
 #include "qgsserverparameters.h"
 #include "qgsapplication.h"
 #include "qgsruntimeprofiler.h"
+#include "qgscoordinatetransform.h"
 
 #include <QDomDocument>
 #include <QNetworkDiskCache>

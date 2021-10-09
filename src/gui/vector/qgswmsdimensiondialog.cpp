@@ -46,7 +46,7 @@ QgsWmsDimensionDialog::QgsWmsDimensionDialog( QgsVectorLayer *layer, QStringList
   connect( mDefaultDisplayComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsWmsDimensionDialog::defaultDisplayChanged );
 
   // Set available names
-  const QMetaEnum pnMetaEnum( QMetaEnum::fromType<QgsVectorLayerServerProperties::PredefinedWmsDimensionName>() );
+  const QMetaEnum pnMetaEnum( QMetaEnum::fromType<QgsMapLayerServerProperties::PredefinedWmsDimensionName>() );
   for ( int i = 0; i < pnMetaEnum.keyCount(); i++ )
   {
     const QString name( pnMetaEnum.key( i ) );
@@ -58,21 +58,21 @@ QgsWmsDimensionDialog::QgsWmsDimensionDialog( QgsVectorLayer *layer, QStringList
 
   // Set default display combobox
   mDefaultDisplayComboBox->clear();
-  QMap<int, QString> defaultDisplayLabels = QgsVectorLayerServerProperties::wmsDimensionDefaultDisplayLabels();
+  QMap<int, QString> defaultDisplayLabels = QgsMapLayerServerProperties::wmsDimensionDefaultDisplayLabels();
   for ( const int &k : defaultDisplayLabels.keys() )
   {
     mDefaultDisplayComboBox->addItem( defaultDisplayLabels[k], QVariant( k ) );
   }
   // Set default display to All values
-  mDefaultDisplayComboBox->setCurrentIndex( mDefaultDisplayComboBox->findData( QVariant( QgsVectorLayerServerProperties::WmsDimensionInfo::AllValues ) ) );
+  mDefaultDisplayComboBox->setCurrentIndex( mDefaultDisplayComboBox->findData( QVariant( QgsMapLayerServerProperties::WmsDimensionInfo::AllValues ) ) );
 
   mReferenceValueLabel->setEnabled( false );
   mReferenceValueComboBox->setEnabled( false );
 }
 
-void QgsWmsDimensionDialog::setInfo( const QgsVectorLayerServerProperties::WmsDimensionInfo &info )
+void QgsWmsDimensionDialog::setInfo( const QgsMapLayerServerProperties::WmsDimensionInfo &info )
 {
-  const QMetaEnum pnMetaEnum( QMetaEnum::fromType<QgsVectorLayerServerProperties::PredefinedWmsDimensionName>() );
+  const QMetaEnum pnMetaEnum( QMetaEnum::fromType<QgsMapLayerServerProperties::PredefinedWmsDimensionName>() );
   const int predefinedNameValue = pnMetaEnum.keyToValue( info.name.toUpper().toStdString().c_str() );
   if ( predefinedNameValue == -1 )
   {
@@ -91,7 +91,7 @@ void QgsWmsDimensionDialog::setInfo( const QgsVectorLayerServerProperties::WmsDi
   mUnitSymbolLineEdit->setText( info.unitSymbol );
 
   mDefaultDisplayComboBox->setCurrentIndex( mDefaultDisplayComboBox->findData( QVariant( info.defaultDisplayType ) ) );
-  if ( info.defaultDisplayType == QgsVectorLayerServerProperties::WmsDimensionInfo::ReferenceValue )
+  if ( info.defaultDisplayType == QgsMapLayerServerProperties::WmsDimensionInfo::ReferenceValue )
   {
     const int referenceValueIndex = mReferenceValueComboBox->findData( info.referenceValue );
     if ( referenceValueIndex == -1 )
@@ -109,7 +109,7 @@ void QgsWmsDimensionDialog::setInfo( const QgsVectorLayerServerProperties::WmsDi
   }
 }
 
-QgsVectorLayerServerProperties::WmsDimensionInfo QgsWmsDimensionDialog::info() const
+QgsMapLayerServerProperties::WmsDimensionInfo QgsWmsDimensionDialog::info() const
 {
   // Is the name a predefined value?
   QString name = mNameComboBox->currentText();
@@ -125,7 +125,7 @@ QgsVectorLayerServerProperties::WmsDimensionInfo QgsWmsDimensionDialog::info() c
   {
     refValue = mReferenceValueComboBox->currentData();
   }
-  return QgsVectorLayerServerProperties::WmsDimensionInfo( name, mFieldComboBox->currentField(),
+  return QgsMapLayerServerProperties::WmsDimensionInfo( name, mFieldComboBox->currentField(),
          mEndFieldComboBox->currentField(),
          mUnitsLineEdit->text(), mUnitSymbolLineEdit->text(),
          mDefaultDisplayComboBox->currentData().toInt(), refValue );
@@ -145,7 +145,7 @@ void QgsWmsDimensionDialog::nameChanged( const QString &name )
   if ( mNameComboBox->findText( name ) != -1 )
   {
     const int data = mNameComboBox->currentData().toInt();
-    if ( data == QgsVectorLayerServerProperties::TIME )
+    if ( data == QgsMapLayerServerProperties::TIME )
     {
       const QgsFieldProxyModel::Filters filters = QgsFieldProxyModel::String |
           QgsFieldProxyModel::Int |
@@ -160,7 +160,7 @@ void QgsWmsDimensionDialog::nameChanged( const QString &name )
       mUnitSymbolLabel->setEnabled( false );
       mUnitSymbolLineEdit->setEnabled( false );
     }
-    if ( data == QgsVectorLayerServerProperties::DATE )
+    if ( data == QgsMapLayerServerProperties::DATE )
     {
       mFieldComboBox->setFilters( QgsFieldProxyModel::String | QgsFieldProxyModel::Date );
       mEndFieldComboBox->setFilters( QgsFieldProxyModel::String | QgsFieldProxyModel::Date );
@@ -170,7 +170,7 @@ void QgsWmsDimensionDialog::nameChanged( const QString &name )
       mUnitSymbolLabel->setEnabled( false );
       mUnitSymbolLineEdit->setEnabled( false );
     }
-    else if ( data == QgsVectorLayerServerProperties::ELEVATION )
+    else if ( data == QgsMapLayerServerProperties::ELEVATION )
     {
       mFieldComboBox->setFilters( QgsFieldProxyModel::Numeric );
       mEndFieldComboBox->setFilters( QgsFieldProxyModel::Numeric );

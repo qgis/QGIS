@@ -145,6 +145,14 @@ QgsVectorTileMVTEncoder::QgsVectorTileMVTEncoder( QgsTileXYZ tileID )
 {
   const QgsTileMatrix tm = QgsTileMatrix::fromWebMercator( mTileID.zoomLevel() );
   mTileExtent = tm.tileExtent( mTileID );
+  mCrs = tm.crs();
+}
+
+QgsVectorTileMVTEncoder::QgsVectorTileMVTEncoder( QgsTileXYZ tileID, const QgsTileMatrix &tileMatrix )
+  : mTileID( tileID )
+{
+  mTileExtent = tileMatrix.tileExtent( mTileID );
+  mCrs = tileMatrix.crs();
 }
 
 void QgsVectorTileMVTEncoder::addLayer( QgsVectorLayer *layer, QgsFeedback *feedback, QString filterExpression, QString layerName )
@@ -152,12 +160,12 @@ void QgsVectorTileMVTEncoder::addLayer( QgsVectorLayer *layer, QgsFeedback *feed
   if ( feedback && feedback->isCanceled() )
     return;
 
-  const QgsCoordinateTransform ct( layer->crs(), QgsCoordinateReferenceSystem( "EPSG:3857" ), mTransformContext );
+  const QgsCoordinateTransform ct( layer->crs(), mCrs, mTransformContext );
 
   QgsRectangle layerTileExtent = mTileExtent;
   try
   {
-    layerTileExtent = ct.transformBoundingBox( layerTileExtent, QgsCoordinateTransform::ReverseTransform );
+    layerTileExtent = ct.transformBoundingBox( layerTileExtent, Qgis::TransformDirection::Reverse );
     if ( !layerTileExtent.intersects( layer->extent() ) )
     {
       return;  // tile is completely outside of the layer'e extent

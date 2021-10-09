@@ -2045,6 +2045,83 @@ class PyQgsOGRProvider(unittest.TestCase):
                                 'driverName': 'SQLite',
                                 'geomColName': ''}])
 
+        # sqlite
+        res = metadata.querySublayers(
+            os.path.join(TEST_DATA_DIR, "valuerelation_widget_wrapper_test.spatialite.sqlite"))
+        self.assertCountEqual([{'name': r.name(),
+                                'systemTable': bool(r.flags() & Qgis.SublayerFlag.SystemTable)} for r in res],
+                              [{'name': 'authors', 'systemTable': False},
+                               {'name': 'json', 'systemTable': False}])
+
+        # retrieve system tables
+        res = metadata.querySublayers(
+            os.path.join(TEST_DATA_DIR, "valuerelation_widget_wrapper_test.spatialite.sqlite"),
+            Qgis.SublayerQueryFlag.IncludeSystemTables)
+        self.assertCountEqual([{'name': r.name(),
+                                'systemTable': bool(r.flags() & Qgis.SublayerFlag.SystemTable)} for r in res],
+                              [{'name': 'ElementaryGeometries', 'systemTable': True},
+                               {'name': 'SpatialIndex', 'systemTable': True},
+                               {'name': 'authors', 'systemTable': False},
+                               {'name': 'geom_cols_ref_sys', 'systemTable': True},
+                               {'name': 'geometry_columns', 'systemTable': True},
+                               {'name': 'geometry_columns_auth', 'systemTable': True},
+                               {'name': 'geometry_columns_field_infos', 'systemTable': True},
+                               {'name': 'geometry_columns_statistics', 'systemTable': True},
+                               {'name': 'geometry_columns_time', 'systemTable': True},
+                               {'name': 'json', 'systemTable': False},
+                               {'name': 'spatial_ref_sys', 'systemTable': True},
+                               {'name': 'spatial_ref_sys_all', 'systemTable': True},
+                               {'name': 'spatial_ref_sys_aux', 'systemTable': True},
+                               {'name': 'spatialite_history', 'systemTable': True},
+                               {'name': 'sql_statements_log', 'systemTable': True},
+                               {'name': 'sqlite_sequence', 'systemTable': True},
+                               {'name': 'vector_layers', 'systemTable': True},
+                               {'name': 'vector_layers_auth', 'systemTable': True},
+                               {'name': 'vector_layers_field_infos', 'systemTable': True},
+                               {'name': 'vector_layers_statistics', 'systemTable': True},
+                               {'name': 'views_geometry_columns', 'systemTable': True},
+                               {'name': 'views_geometry_columns_auth', 'systemTable': True},
+                               {'name': 'views_geometry_columns_field_infos', 'systemTable': True},
+                               {'name': 'views_geometry_columns_statistics', 'systemTable': True},
+                               {'name': 'virts_geometry_columns', 'systemTable': True},
+                               {'name': 'virts_geometry_columns_auth', 'systemTable': True},
+                               {'name': 'virts_geometry_columns_field_infos', 'systemTable': True},
+                               {'name': 'virts_geometry_columns_statistics', 'systemTable': True}])
+
+        # metadata.xml file next to tdenv?.adf file -- this is a subcomponent of an ESRI tin layer, should not be exposed
+        res = metadata.querySublayers(
+            os.path.join(TEST_DATA_DIR, 'esri_tin', 'metadata.xml'))
+        self.assertFalse(res)
+
+        # ESRI Arcinfo file
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, 'esri_coverage', 'testpolyavc'))
+        self.assertEqual(len(res), 4)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "ARC")
+        self.assertEqual(res[0].description(), "")
+        self.assertEqual(res[0].uri(), '{}|layername=ARC'.format(os.path.join(TEST_DATA_DIR, 'esri_coverage', 'testpolyavc')))
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertFalse(res[0].skippedContainerScan())
+
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 4, 0), "GDAL 3.4 required")
+    def test_provider_sublayer_details_hierarchy(self):
+        """
+        Test retrieving sublayer details from a datasource with a hierarchy of layers
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, 'featuredataset.gdb'))
+        self.assertEqual(len(res), 4)
+        self.assertEqual(res[0].name(), 'fd1_lyr1')
+        self.assertEqual(res[0].path(), ['fd1'])
+        self.assertEqual(res[1].name(), 'fd1_lyr2')
+        self.assertEqual(res[1].path(), ['fd1'])
+        self.assertEqual(res[2].name(), 'standalone')
+        self.assertEqual(res[2].path(), [])
+        self.assertEqual(res[3].name(), 'fd2_lyr')
+        self.assertEqual(res[3].path(), ['fd2'])
+
     def test_provider_sublayer_details_fast_scan(self):
         """
         Test retrieving sublayer details from data provider metadata, using fast scan
@@ -2157,11 +2234,28 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].uri(), os.path.join(TEST_DATA_DIR, "vector_vrt.vrt"))
         self.assertEqual(res[0].providerKey(), "ogr")
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
-        self.assertFalse(res[0].skippedContainerScan())
+        self.assertTrue(res[0].skippedContainerScan())
 
         # raster vrt
         res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, "/raster/hub13263.vrt"), Qgis.SublayerQueryFlag.FastScan)
         self.assertEqual(len(res), 0)
+
+        # metadata.xml file next to tdenv?.adf file -- this is a subcomponent of an ESRI tin layer, should not be exposed
+        res = metadata.querySublayers(
+            os.path.join(TEST_DATA_DIR, 'esri_tin', 'metadata.xml'), Qgis.SublayerQueryFlag.FastScan)
+        self.assertFalse(res)
+
+        # ESRI Arcinfo file
+        res = metadata.querySublayers(
+            os.path.join(TEST_DATA_DIR, 'esri_coverage', 'testpolyavc'), Qgis.SublayerQueryFlag.FastScan)
+        self.assertEqual(len(res), 4)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "ARC")
+        self.assertEqual(res[0].description(), "")
+        self.assertEqual(res[0].uri(), '{}|layername=ARC'.format(os.path.join(TEST_DATA_DIR, 'esri_coverage', 'testpolyavc')))
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertFalse(res[0].skippedContainerScan())
 
     def test_provider_sidecar_files_for_uri(self):
         """

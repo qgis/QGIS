@@ -20,6 +20,8 @@
 #include "qgssymbollayerutils.h"
 #include "qgssurface.h"
 #include "qgsfillsymbol.h"
+#include "qgsannotationitemnode.h"
+#include "qgsannotationitemeditoperation.h"
 
 QgsAnnotationPolygonItem::QgsAnnotationPolygonItem( QgsCurvePolygon *polygon )
   : QgsAnnotationItem()
@@ -87,11 +89,112 @@ void QgsAnnotationPolygonItem::render( QgsRenderContext &context, QgsFeedback * 
 bool QgsAnnotationPolygonItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   element.setAttribute( QStringLiteral( "wkt" ), mPolygon->asWkt() );
-
-  element.setAttribute( QStringLiteral( "zIndex" ), zIndex() );
   element.appendChild( QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "lineSymbol" ), mSymbol.get(), document, context ) );
 
+  writeCommonProperties( element, document, context );
   return true;
+}
+
+QList<QgsAnnotationItemNode> QgsAnnotationPolygonItem::nodes() const
+{
+  QList< QgsAnnotationItemNode > res;
+
+  auto processRing  = [&res]( const QgsCurve * ring, int ringId )
+  {
+    // we don't want a duplicate node for the closed ring vertex
+    const int count = ring->isClosed() ? ring->numPoints() - 1 : ring->numPoints();
+    res.reserve( res.size() + count );
+    for ( int i = 0; i < count; ++i )
+    {
+      res << QgsAnnotationItemNode( QgsVertexId( 0, ringId, i ), QgsPointXY( ring->xAt( i ), ring->yAt( i ) ), Qgis::AnnotationItemNodeType::VertexHandle );
+    }
+  };
+
+  if ( const QgsCurve *ring = mPolygon->exteriorRing() )
+  {
+    processRing( ring, 0 );
+  }
+  for ( int i = 0; i < mPolygon->numInteriorRings(); ++i )
+  {
+    processRing( mPolygon->interiorRing( i ), i + 1 );
+  }
+
+  return res;
+}
+
+Qgis::AnnotationItemEditOperationResult QgsAnnotationPolygonItem::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
+{
+  switch ( operation->type() )
+  {
+    case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
+    {
+      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      if ( mPolygon->moveVertex( moveOperation->nodeId(), QgsPoint( moveOperation->after() ) ) )
+        return Qgis::AnnotationItemEditOperationResult::Success;
+      break;
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
+    {
+      QgsAnnotationItemEditOperationDeleteNode *deleteOperation = qgis::down_cast< QgsAnnotationItemEditOperationDeleteNode * >( operation );
+      if ( mPolygon->deleteVertex( deleteOperation->nodeId() ) )
+        return mPolygon->isEmpty() ? Qgis::AnnotationItemEditOperationResult::ItemCleared : Qgis::AnnotationItemEditOperationResult::Success;
+      break;
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
+    {
+      QgsAnnotationItemEditOperationAddNode *addOperation = qgis::down_cast< QgsAnnotationItemEditOperationAddNode * >( operation );
+
+      QgsPoint segmentPoint;
+      QgsVertexId endOfSegmentVertex;
+      mPolygon->closestSegment( addOperation->point(), segmentPoint, endOfSegmentVertex );
+      if ( mPolygon->insertVertex( endOfSegmentVertex, segmentPoint ) )
+        return Qgis::AnnotationItemEditOperationResult::Success;
+      break;
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
+    {
+      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
+      const QTransform transform = QTransform::fromTranslate( moveOperation->translationX(), moveOperation->translationY() );
+      mPolygon->transform( transform );
+      return Qgis::AnnotationItemEditOperationResult::Success;
+    }
+  }
+
+  return Qgis::AnnotationItemEditOperationResult::Invalid;
+}
+
+QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPolygonItem::transientEditResults( QgsAbstractAnnotationItemEditOperation *operation )
+{
+  switch ( operation->type() )
+  {
+    case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
+    {
+      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      std::unique_ptr< QgsCurvePolygon > modifiedPolygon( mPolygon->clone() );
+      if ( modifiedPolygon->moveVertex( moveOperation->nodeId(), QgsPoint( moveOperation->after() ) ) )
+      {
+        return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( std::move( modifiedPolygon ) ) );
+      }
+      break;
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
+    {
+      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
+      const QTransform transform = QTransform::fromTranslate( moveOperation->translationX(), moveOperation->translationY() );
+      std::unique_ptr< QgsCurvePolygon > modifiedPolygon( mPolygon->clone() );
+      modifiedPolygon->transform( transform );
+      return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( std::move( modifiedPolygon ) ) );
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
+    case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
+      break;
+  }
+  return nullptr;
 }
 
 QgsAnnotationPolygonItem *QgsAnnotationPolygonItem::create()
@@ -106,12 +209,11 @@ bool QgsAnnotationPolygonItem::readXml( const QDomElement &element, const QgsRea
   if ( const QgsCurvePolygon *polygon = qgsgeometry_cast< const QgsCurvePolygon * >( geometry.constGet() ) )
     mPolygon.reset( polygon->clone() );
 
-  setZIndex( element.attribute( QStringLiteral( "zIndex" ) ).toInt() );
-
   const QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !symbolElem.isNull() )
     setSymbol( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( symbolElem, context ) );
 
+  readCommonProperties( element, context );
   return true;
 }
 
@@ -119,7 +221,7 @@ QgsAnnotationPolygonItem *QgsAnnotationPolygonItem::clone()
 {
   std::unique_ptr< QgsAnnotationPolygonItem > item = std::make_unique< QgsAnnotationPolygonItem >( mPolygon->clone() );
   item->setSymbol( mSymbol->clone() );
-  item->setZIndex( zIndex() );
+  item->copyCommonProperties( this );;
   return item.release();
 }
 

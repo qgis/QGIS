@@ -34,7 +34,7 @@ from qgis.PyQt.QtNetwork import QNetworkRequest
 import qgis
 from qgis.core import Qgis, QgsApplication, QgsNetworkAccessManager, QgsSettings, QgsNetworkRequestParameters
 from qgis.gui import QgsMessageBar, QgsPasswordLineEdit, QgsHelp
-from qgis.utils import (iface, startPlugin, unloadPlugin, loadPlugin,
+from qgis.utils import (iface, startPlugin, unloadPlugin, loadPlugin, OverrideCursor,
                         reloadPlugin, updateAvailablePlugins, plugins_metadata_parser)
 from .installer_data import (repositories, plugins, officialRepo,
                              settingsGroup, reposGroup, removeDir)
@@ -95,11 +95,13 @@ class QgsPluginInstaller(QObject):
             msg.setText("%s <b>%s</b><br/><br/>%s" % (self.tr("Obsolete plugin:"), plugin["name"], self.tr("QGIS has detected an obsolete plugin that masks its more recent version shipped with this copy of QGIS. This is likely due to files associated with a previous installation of QGIS. Do you want to remove the old plugin right now and unmask the more recent version?")))
             msg.exec_()
             if not msg.result():
+                settings = QgsSettings()
+                plugin_is_active = settings.value("/PythonPlugins/" + key, False, type=bool)
+
                 # uninstall the update, update utils and reload if enabled
                 self.uninstallPlugin(key, quiet=True)
                 updateAvailablePlugins()
-                settings = QgsSettings()
-                if settings.value("/PythonPlugins/" + key, False, type=bool):
+                if plugin_is_active:
                     settings.setValue("/PythonPlugins/watchDog/" + key, True)
                     loadPlugin(key)
                     startPlugin(key)
@@ -110,25 +112,22 @@ class QgsPluginInstaller(QObject):
         """ Fetch plugins from all enabled repositories."""
         """  reloadMode = true:  Fully refresh data from QgsSettings to mRepositories  """
         """  reloadMode = false: Fetch unready repositories only """
-        QApplication.setOverrideCursor(Qt.WaitCursor)
+        with OverrideCursor(Qt.WaitCursor):
+            if reloadMode:
+                repositories.load()
+                plugins.clearRepoCache()
+                plugins.getAllInstalled()
 
-        if reloadMode:
-            repositories.load()
-            plugins.clearRepoCache()
-            plugins.getAllInstalled()
+            for key in repositories.allEnabled():
+                if reloadMode or repositories.all()[key]["state"] == 3:  # if state = 3 (error or not fetched yet), try to fetch once again
+                    repositories.requestFetching(key, force_reload=reloadMode)
 
-        for key in repositories.allEnabled():
-            if reloadMode or repositories.all()[key]["state"] == 3:  # if state = 3 (error or not fetched yet), try to fetch once again
-                repositories.requestFetching(key, force_reload=reloadMode)
-
-        if repositories.fetchingInProgress():
-            fetchDlg = QgsPluginInstallerFetchingDialog(iface.mainWindow())
-            fetchDlg.exec_()
-            del fetchDlg
-            for key in repositories.all():
-                repositories.killConnection(key)
-
-        QApplication.restoreOverrideCursor()
+            if repositories.fetchingInProgress():
+                fetchDlg = QgsPluginInstallerFetchingDialog(iface.mainWindow())
+                fetchDlg.exec_()
+                del fetchDlg
+                for key in repositories.all():
+                    repositories.killConnection(key)
 
         # display error messages for every unavailable repository, unless Shift pressed nor all repositories are unavailable
         keepQuiet = QgsApplication.keyboardModifiers() == Qt.KeyboardModifiers(Qt.ShiftModifier)
@@ -323,11 +322,10 @@ class QgsPluginInstaller(QObject):
                     "the list of installed plugins. You should find the plugin there, but it's not possible to "
                     "determine which of them it is and it's also not possible to inform you about available updates. "
                     "Please contact the plugin author and submit this issue.").format(plugin_path))
-            QApplication.setOverrideCursor(Qt.WaitCursor)
-            plugins.getAllInstalled()
-            plugins.rebuild()
-            self.exportPluginsToManager()
-            QApplication.restoreOverrideCursor()
+            with OverrideCursor(Qt.WaitCursor):
+                plugins.getAllInstalled()
+                plugins.rebuild()
+                self.exportPluginsToManager()
         else:
             QApplication.setOverrideCursor(Qt.WaitCursor)
             # update the list of plugins in plugin handling routines
@@ -451,6 +449,9 @@ class QgsPluginInstaller(QObject):
             self.exportPluginsToManager()
             QApplication.restoreOverrideCursor()
             iface.pluginManagerInterface().pushMessage(self.tr("Plugin uninstalled successfully"), Qgis.Info)
+
+            settings = QgsSettings()
+            settings.remove("/PythonPlugins/" + key)
 
     # ----------------------------------------- #
     def addRepository(self):
@@ -644,22 +645,22 @@ class QgsPluginInstaller(QObject):
                     keepTrying = False
 
         if success:
-            updateAvailablePlugins()
-            self.processDependencies(pluginName)
-            loadPlugin(pluginName)
-            plugins.getAllInstalled()
-            plugins.rebuild()
+            with OverrideCursor(Qt.WaitCursor):
+                updateAvailablePlugins()
+                self.processDependencies(pluginName)
+                loadPlugin(pluginName)
+                plugins.getAllInstalled()
+                plugins.rebuild()
 
-            if settings.contains('/PythonPlugins/' + pluginName):
-                if settings.value('/PythonPlugins/' + pluginName, False, bool):
-                    startPlugin(pluginName)
-                    reloadPlugin(pluginName)
+                if settings.contains('/PythonPlugins/' + pluginName):  # Plugin was available?
+                    if settings.value('/PythonPlugins/' + pluginName, False, bool):  # Plugin was also active?
+                        reloadPlugin(pluginName)  # unloadPlugin + loadPlugin + startPlugin
+                    else:
+                        unloadPlugin(pluginName)
+                        loadPlugin(pluginName)
                 else:
-                    unloadPlugin(pluginName)
-                    loadPlugin(pluginName)
-            else:
-                if startPlugin(pluginName):
-                    settings.setValue('/PythonPlugins/' + pluginName, True)
+                    if startPlugin(pluginName):
+                        settings.setValue('/PythonPlugins/' + pluginName, True)
 
             self.exportPluginsToManager()
             msg = "<b>%s</b>" % self.tr("Plugin installed successfully")

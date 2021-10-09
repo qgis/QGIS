@@ -71,22 +71,32 @@ class GUI_EXPORT QgsAdvancedDigitizingFloater : public QWidget, private Ui::QgsA
 
     void changeX( const QString &text );
     void changeY( const QString &text );
+    void changeZ( const QString &text );
+    void changeM( const QString &text );
     void changeDistance( const QString &text );
     void changeAngle( const QString &text );
     void changeLockX( bool locked );
     void changeLockY( bool locked );
+    void changeLockZ( bool locked );
+    void changeLockM( bool locked );
     void changeLockDistance( bool locked );
     void changeLockAngle( bool locked );
     void changeRelativeX( bool relative );
     void changeRelativeY( bool relative );
+    void changeRelativeZ( bool relative );
+    void changeRelativeM( bool relative );
     // void changeRelativeDistance( bool relative );  // doesn't happen
     void changeRelativeAngle( bool relative );
     void focusOnX();
     void focusOnY();
+    void focusOnZ();
+    void focusOnM();
     void focusOnAngle();
     void focusOnDistance();
     void enabledChangedX( bool enabled );
     void enabledChangedY( bool enabled );
+    void enabledChangedZ( bool enabled );
+    void enabledChangedM( bool enabled );
     void enabledChangedAngle( bool enabled );
     void enabledChangedDistance( bool enabled );
 

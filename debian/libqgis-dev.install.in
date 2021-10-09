@@ -9,5 +9,5 @@ usr/lib/libqgis_server.so
 usr/lib/libqgisgrass?.so
 usr/lib/libqgispython.so
 usr/share/qgis/FindQGIS.cmake
-#!sid#usr/share/sip/qgis
+/usr/share/sip/qgis
 #sid#usr/lib/python?/*-packages/qgis

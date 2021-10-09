@@ -120,8 +120,7 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
     return;
   }
 
-  //Failed to detect feature type from describeFeatureType -> get first feature from layer to detect type
-  if ( mShared->mWKBType == QgsWkbTypes::Unknown )
+  const auto GetGeometryTypeFromOneFeature = [&]()
   {
     const bool requestMadeFromMainThread = QThread::currentThread() == QApplication::instance()->thread();
     auto downloader = std::make_unique<QgsFeatureDownloader>();
@@ -140,6 +139,22 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
     }
     downloader->run( false, /* serialize features */
                      1 /* maxfeatures */ );
+  };
+
+  //Failed to detect feature type from describeFeatureType -> get first feature from layer to detect type
+  if ( mShared->mWKBType == QgsWkbTypes::Unknown )
+  {
+    GetGeometryTypeFromOneFeature();
+
+    // If we still didn't get the geometry type, and have a filter, temporarily
+    // disable the filter.
+    // See https://github.com/qgis/QGIS/issues/43950
+    if ( mShared->mWKBType == QgsWkbTypes::Unknown && !mSubsetString.isEmpty() )
+    {
+      const QString oldFilter = mShared->setWFSFilter( QString() );
+      GetGeometryTypeFromOneFeature();
+      mShared->setWFSFilter( oldFilter );
+    }
   }
 }
 
@@ -488,6 +503,12 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
     layerProperties.mGeometryAttribute = geometryAttribute;
     if ( typeName == mShared->mURI.typeName() )
       layerProperties.mSRSName = mShared->srsName();
+
+    if ( typeName.contains( ':' ) )
+    {
+      layerProperties.mNamespaceURI = mShared->mCaps.getNamespaceForTypename( typeName );
+      layerProperties.mNamespacePrefix = QgsWFSUtils::nameSpacePrefix( typeName );
+    }
 
     mShared->mLayerPropertiesList << layerProperties;
   }
@@ -1818,9 +1839,9 @@ bool QgsWFSProvider::getCapabilities()
 
     const QgsWfsCapabilities::Capabilities caps = getCapabilities.capabilities();
     mShared->mCaps = caps;
-    mShared->mURI.setGetEndpoints( caps.operationGetEndpoints );
-    mShared->mURI.setPostEndpoints( caps.operationPostEndpoints );
   }
+  mShared->mURI.setGetEndpoints( mShared->mCaps.operationGetEndpoints );
+  mShared->mURI.setPostEndpoints( mShared->mCaps.operationPostEndpoints );
 
   mShared->mWFSVersion = mShared->mCaps.version;
   if ( mShared->mURI.maxNumFeatures() > 0 && mShared->mCaps.maxFeatures > 0 && !( mShared->mCaps.supportsPaging && mShared->mURI.pagingEnabled() ) )
@@ -1891,7 +1912,7 @@ bool QgsWFSProvider::getCapabilities()
           QgsDebugMsgLevel( "src:" + src.authid(), 4 );
           QgsDebugMsgLevel( "dst:" + mShared->mSourceCrs.authid(), 4 );
 
-          mShared->mCapabilityExtent = ct.transformBoundingBox( r, QgsCoordinateTransform::ForwardTransform );
+          mShared->mCapabilityExtent = ct.transformBoundingBox( r, Qgis::TransformDirection::Forward );
         }
         else
         {

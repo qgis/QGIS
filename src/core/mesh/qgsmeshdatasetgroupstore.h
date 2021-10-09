@@ -210,6 +210,14 @@ class QgsMeshDatasetGroupStore: public QObject
     //! Reads the store's information from a DOM document
     void readXml( const QDomElement &storeElem, const QgsReadWriteContext &context );
 
+    /**
+     * Returns the global dataset group index of the dataset group with native index \a globalGroupIndex in the \a source
+     * Returns -1 if the group or the source is not registered
+     *
+     * Since QGIS 3.22
+     */
+    int globalDatasetGroupIndexInSource( QgsMeshDatasetSourceInterface *source, int nativeGroupIndex ) const;
+
   signals:
     //! Emitted after dataset groups are added
     void datasetGroupsAdded( QList<int> indexes );

@@ -22,6 +22,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsgui.h"
 #include "qgsapplication.h"
+#include "qgsrendercontext.h"
 #include <QAction>
 #include <QDialogButtonBox>
 #include <QPushButton>
@@ -41,8 +42,8 @@ QgsLabelEngineConfigWidget::QgsLabelEngineConfigWidget( QgsMapCanvas *canvas, QW
 
   const QgsLabelingEngineSettings engineSettings = QgsProject::instance()->labelingEngineSettings();
 
-  mTextRenderFormatComboBox->addItem( tr( "Always Render Labels as Paths (Recommended)" ), QgsRenderContext::TextFormatAlwaysOutlines );
-  mTextRenderFormatComboBox->addItem( tr( "Always Render Labels as Text" ), QgsRenderContext::TextFormatAlwaysText );
+  mTextRenderFormatComboBox->addItem( tr( "Always Render Labels as Paths (Recommended)" ), static_cast< int >( Qgis::TextRenderFormat::AlwaysOutlines ) );
+  mTextRenderFormatComboBox->addItem( tr( "Always Render Labels as Text" ), static_cast< int >( Qgis::TextRenderFormat::AlwaysText ) );
 
   mPlacementVersionComboBox->addItem( tr( "Version 1" ), QgsLabelingEngineSettings::PlacementEngineVersion1 );
   mPlacementVersionComboBox->addItem( tr( "Version 2 (Recommended)" ), QgsLabelingEngineSettings::PlacementEngineVersion2 );
@@ -74,7 +75,7 @@ QgsLabelEngineConfigWidget::QgsLabelEngineConfigWidget( QgsMapCanvas *canvas, QW
   mUnplacedColorButton->setDefaultColor( QColor( 255, 0, 0 ) );
   mUnplacedColorButton->setWindowTitle( tr( "Unplaced Label Color" ) );
 
-  mTextRenderFormatComboBox->setCurrentIndex( mTextRenderFormatComboBox->findData( engineSettings.defaultTextRenderFormat() ) );
+  mTextRenderFormatComboBox->setCurrentIndex( mTextRenderFormatComboBox->findData( static_cast< int >( engineSettings.defaultTextRenderFormat() ) ) );
 
   connect( spinCandLine, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsLabelEngineConfigWidget::widgetChanged );
   connect( spinCandPolygon, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsLabelEngineConfigWidget::widgetChanged );
@@ -118,7 +119,7 @@ void QgsLabelEngineConfigWidget::apply()
   engineSettings.setFlag( QgsLabelingEngineSettings::DrawUnplacedLabels, chkShowUnplaced->isChecked() );
   engineSettings.setFlag( QgsLabelingEngineSettings::UsePartialCandidates, chkShowPartialsLabels->isChecked() );
 
-  engineSettings.setDefaultTextRenderFormat( static_cast< QgsRenderContext::TextRenderFormat >( mTextRenderFormatComboBox->currentData().toInt() ) );
+  engineSettings.setDefaultTextRenderFormat( static_cast< Qgis::TextRenderFormat >( mTextRenderFormatComboBox->currentData().toInt() ) );
 
   engineSettings.setUnplacedLabelColor( mUnplacedColorButton->color() );
 
@@ -136,7 +137,7 @@ void QgsLabelEngineConfigWidget::setDefaults()
   chkShowCandidates->setChecked( false );
   chkShowAllLabels->setChecked( false );
   chkShowPartialsLabels->setChecked( p.showPartialLabels() );
-  mTextRenderFormatComboBox->setCurrentIndex( mTextRenderFormatComboBox->findData( QgsRenderContext::TextFormatAlwaysOutlines ) );
+  mTextRenderFormatComboBox->setCurrentIndex( mTextRenderFormatComboBox->findData( static_cast< int >( Qgis::TextRenderFormat::AlwaysOutlines ) ) );
   mPlacementVersionComboBox->setCurrentIndex( mPlacementVersionComboBox->findData( QgsLabelingEngineSettings::PlacementEngineVersion2 ) );
 }
 

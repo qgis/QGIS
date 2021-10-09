@@ -26,8 +26,6 @@
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmeshlayer.h"
 #include "qgsrasterlayer.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsrasterdataprovidertemporalcapabilities.h"
 
 #include <QAction>
 #include <QMenu>

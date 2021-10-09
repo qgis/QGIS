@@ -37,7 +37,7 @@ QgsRasterLayerRendererFeedback::QgsRasterLayerRendererFeedback( QgsRasterLayerRe
   : mR( r )
   , mMinimalPreviewInterval( 250 )
 {
-  setRenderPartialOutput( r->renderContext()->testFlag( QgsRenderContext::RenderPartialOutput ) );
+  setRenderPartialOutput( r->renderContext()->testFlag( Qgis::RenderContextFlag::RenderPartialOutput ) );
 }
 
 void QgsRasterLayerRendererFeedback::onNewData()
@@ -248,8 +248,8 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   QObject::connect( mPipe->provider(), &QgsRasterDataProvider::statusChanged, layer, &QgsRasterLayer::statusChanged );
   QgsRasterRenderer *rasterRenderer = mPipe->renderer();
   if ( rasterRenderer
-       && !( rendererContext.flags() & QgsRenderContext::RenderPreviewJob )
-       && !( rendererContext.flags() & QgsRenderContext::Render3DMap ) )
+       && !( rendererContext.flags() & Qgis::RenderContextFlag::RenderPreviewJob )
+       && !( rendererContext.flags() & Qgis::RenderContextFlag::Render3DMap ) )
   {
     layer->refreshRendererIfNeeded( rasterRenderer, rendererContext.extent() );
   }
@@ -261,11 +261,11 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   {
     switch ( temporalProperties->mode() )
     {
-      case QgsRasterLayerTemporalProperties::ModeFixedTemporalRange:
-      case QgsRasterLayerTemporalProperties::ModeRedrawLayerOnly:
+      case Qgis::RasterTemporalMode::FixedTemporalRange:
+      case Qgis::RasterTemporalMode::RedrawLayerOnly:
         break;
 
-      case QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider:
+      case Qgis::RasterTemporalMode::TemporalRangeFromDataProvider:
         // in this mode we need to pass on the desired render temporal range to the data provider
         if ( mPipe->provider()->temporalCapabilities() )
         {
@@ -295,7 +295,7 @@ QgsRasterLayerRenderer::~QgsRasterLayerRenderer()
 bool QgsRasterLayerRenderer::render()
 {
   // Skip rendering of out of view tiles (xyz)
-  if ( !mRasterViewPort || ( renderContext()->testFlag( QgsRenderContext::Flag::RenderPreviewJob ) &&
+  if ( !mRasterViewPort || ( renderContext()->testFlag( Qgis::RenderContextFlag::RenderPreviewJob ) &&
                              !( mProviderCapabilities &
                                 QgsRasterInterface::Capability::Prefetch ) ) )
     return true;
@@ -367,6 +367,6 @@ QgsFeedback *QgsRasterLayerRenderer::feedback() const
 bool QgsRasterLayerRenderer::forceRasterRender() const
 {
   // preview of intermediate raster rendering results requires a temporary output image
-  return renderContext()->testFlag( QgsRenderContext::RenderPartialOutput );
+  return renderContext()->testFlag( Qgis::RenderContextFlag::RenderPartialOutput );
 }
 

@@ -31,11 +31,13 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsproviderutils.h"
 #include "qgsgdalutils.h"
 
+#include <gdal.h>
 #include <QFileInfo>
 #include <QFile>
 #include <QDir>
 #include <QMessageBox>
 #include <QRegularExpression>
+#include <QDirIterator>
 
 ///@cond PRIVATE
 
@@ -390,6 +392,7 @@ bool QgsOgrProviderMetadata::saveStyle(
   OGR_L_SetAttributeFilter( hLayer, checkQuery.toUtf8().constData() );
   OGR_L_ResetReading( hLayer );
   gdal::ogr_feature_unique_ptr hFeature( OGR_L_GetNextFeature( hLayer ) );
+  OGR_L_ResetReading( hLayer );
   bool bNew = true;
 
   if ( hFeature )
@@ -609,6 +612,7 @@ QString QgsOgrProviderMetadata::loadStyle( const QString &uri, QString &errCause
 
     }
   }
+  OGR_L_ResetReading( hLayer );
 
   return styleQML;
 }
@@ -782,6 +786,7 @@ QString QgsOgrProviderMetadata::getStyleById( const QString &uri, QString styleI
   QString styleQML( QString::fromUtf8(
                       OGR_F_GetFieldAsString( hFeature.get(),
                           OGR_FD_GetFieldIndex( hLayerDefn, "styleQML" ) ) ) );
+  OGR_L_ResetReading( hLayer );
 
   return styleQML;
 }
@@ -1098,18 +1103,26 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
     }
   }
 
+  const QStringList dirExtensions = QgsOgrProviderUtils::directoryExtensions();
+
   const QString path = uriParts.value( QStringLiteral( "path" ) ).toString();
   const QFileInfo pathInfo( path );
-  if ( ( flags & Qgis::SublayerQueryFlag::FastScan ) && ( pathInfo.isFile() || pathInfo.isDir() ) )
+  const QString suffix = pathInfo.suffix().toLower();
+  bool isOgrSupportedDirectory = pathInfo.isDir() && dirExtensions.contains( suffix );
+
+  bool forceDeepScanDir = false;
+  if ( pathInfo.isDir() && !isOgrSupportedDirectory )
+  {
+    QDirIterator it( path, { QStringLiteral( "*.adf" ), QStringLiteral( "*.ADF" ) }, QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot );
+    forceDeepScanDir = it.hasNext();
+  }
+
+  if ( ( flags & Qgis::SublayerQueryFlag::FastScan ) && ( pathInfo.isFile() || pathInfo.isDir() ) && !forceDeepScanDir )
   {
     // fast scan, so we don't actually try to open the dataset and instead just check the extension alone
     const QStringList fileExtensions = QgsOgrProviderUtils::fileExtensions();
-    const QStringList dirExtensions = QgsOgrProviderUtils::directoryExtensions();
-
-    const QString suffix = pathInfo.suffix().toLower();
 
     // allow only normal files or supported directories to continue
-    const bool isOgrSupportedDirectory = pathInfo.isDir() && dirExtensions.contains( suffix );
     if ( !isOgrSupportedDirectory && !pathInfo.isFile() )
       return {};
 
@@ -1127,6 +1140,17 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
         }
       }
       if ( !matches )
+        return {};
+    }
+
+    // metadata.xml file next to tdenv?.adf files is a subcomponent of an ESRI tin layer alone, shouldn't be exposed
+    if ( pathInfo.fileName().compare( QLatin1String( "metadata.xml" ), Qt::CaseInsensitive ) == 0 )
+    {
+      const QDir dir  = pathInfo.dir();
+      if ( dir.exists( QStringLiteral( "tdenv9.adf" ) )
+           || dir.exists( QStringLiteral( "tdenv.adf" ) )
+           || dir.exists( QStringLiteral( "TDENV9.ADF" ) )
+           || dir.exists( QStringLiteral( "TDENV.ADF" ) ) )
         return {};
     }
 
@@ -1190,6 +1214,14 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
   if ( !firstLayer )
     return {};
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+  QMutex *mutex = nullptr;
+#else
+  QRecursiveMutex *mutex = nullptr;
+#endif
+  GDALDatasetH hDS = firstLayer->getDatasetHandleAndMutex( mutex );
+  QMutexLocker locker( mutex );
+
   const QString driverName = firstLayer->driverName();
 
   const int layerCount = firstLayer->GetLayerCount();
@@ -1197,7 +1229,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
   QList<QgsProviderSublayerDetails> res;
   if ( layerCount == 1 )
   {
-    res << QgsOgrProviderUtils::querySubLayerList( 0, firstLayer.get(), driverName, flags, false, uri, true, feedback );
+    res << QgsOgrProviderUtils::querySubLayerList( 0, firstLayer.get(), hDS, driverName, flags, uri, true, feedback );
   }
   else
   {
@@ -1238,7 +1270,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
       if ( !originalUriLayerName.isEmpty() && layerName != originalUriLayerName )
         continue;
 
-      res << QgsOgrProviderUtils::querySubLayerList( i, sublayer, driverName, flags, false, uri, false, feedback );
+      res << QgsOgrProviderUtils::querySubLayerList( i, sublayer, hDS, driverName, flags, uri, false, feedback );
     }
   }
 
@@ -1304,6 +1336,49 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
       return sublayer.wkbType() != originalGeometryTypeFilter;
     } ), res.end() );
   }
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
+  // retrieve layer paths
+  if ( GDALGroupH rootGroup = GDALDatasetGetRootGroup( hDS ) )
+  {
+    std::function< void( GDALGroupH, const QStringList & ) > recurseGroup;
+    recurseGroup = [&recurseGroup, &res]( GDALGroupH group, const QStringList & currentPath )
+    {
+      if ( char **vectorLayerNames = GDALGroupGetVectorLayerNames( group, nullptr ) )
+      {
+        const QStringList layers = QgsOgrUtils::cStringListToQStringList( vectorLayerNames );
+        CSLDestroy( vectorLayerNames );
+        // attach path to matching layers
+        for ( const QString &layer : layers )
+        {
+          for ( int i = 0; i < res.size(); ++i )
+          {
+            if ( res.at( i ).name() == layer )
+            {
+              res[i].setPath( currentPath );
+            }
+          }
+        }
+      }
+
+      if ( char **subgroupNames = GDALGroupGetGroupNames( group, nullptr ) )
+      {
+        for ( int i = 0; subgroupNames[i]; ++i )
+        {
+          if ( GDALGroupH subgroup = GDALGroupOpenGroup( group, subgroupNames[i], nullptr ) )
+          {
+            recurseGroup( subgroup, QStringList( currentPath ) << QString::fromUtf8( subgroupNames[i] ) );
+            GDALGroupRelease( subgroup );
+          }
+        }
+        CSLDestroy( subgroupNames );
+      }
+    };
+
+    recurseGroup( rootGroup, {} );
+    GDALGroupRelease( rootGroup );
+  }
+#endif
 
   return res;
 }

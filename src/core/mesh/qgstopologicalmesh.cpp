@@ -23,6 +23,7 @@
 
 #include <poly2tri.h>
 #include <QSet>
+#include <QQueue>
 
 static int vertexPositionInFace( int vertexIndex, const QgsMeshFace &face )
 {
@@ -50,6 +51,7 @@ static double crossProduct( int centralVertex, int vertex1, int vertex2, const Q
 
   return ux1 * vy1 - uy1 * vx1;
 }
+
 
 QgsMeshVertexCirculator::QgsMeshVertexCirculator( const QgsTopologicalMesh &topologicalMesh, int vertexIndex )
   : mFaces( topologicalMesh.mMesh->faces )
@@ -100,8 +102,7 @@ int QgsMeshVertexCirculator::turnCounterClockwise() const
   else
   {
     int currentPos = positionInCurrentFace();
-    if ( currentPos == -1 )
-      return -1;
+    Q_ASSERT( currentPos != -1 );
 
     const QgsMeshFace &currentFace = mFaces.at( mCurrentFace );
     int faceSize = currentFace.size();
@@ -119,8 +120,7 @@ int QgsMeshVertexCirculator::turnClockwise() const
   else
   {
     int currentPos = positionInCurrentFace();
-    if ( currentPos == -1 )
-      return -1;
+    Q_ASSERT( currentPos != -1 );
 
     const QgsMeshFace &currentFace = mFaces.at( mCurrentFace );
     int faceSize = currentFace.size();
@@ -246,6 +246,27 @@ QList<int> QgsMeshVertexCirculator::facesAround() const
   return ret;
 }
 
+int QgsMeshVertexCirculator::degree() const
+{
+  if ( mDegree != -1 )
+    return mDegree;
+
+  mDegree = 0;
+  if ( !mIsValid )
+    return mDegree;
+
+  goBoundaryCounterClockwise();
+  int firstFace = currentFaceIndex();
+
+  mDegree = 2; //if the vertex is not free, the vertex is linked with at least 2 other vertex
+
+  while ( turnClockwise() != firstFace && currentFaceIndex() != -1 )
+    ++mDegree;
+
+  return mDegree;
+}
+
+
 int QgsMeshVertexCirculator::positionInCurrentFace() const
 {
   if ( mCurrentFace < 0 || mCurrentFace > mFaces.count() )
@@ -336,7 +357,7 @@ void QgsTopologicalMesh::applyChanges( const QgsTopologicalMesh::Changes &change
     mVertexToFace.resize( newSize );
   }
 
-  if ( !changes.mFacesToAdd.empty() > 0 )
+  if ( !changes.mFacesToAdd.empty() )
   {
     int newSize = mMesh->faceCount() + changes.mFacesToAdd.count();
     mMesh->faces.resize( newSize );
@@ -345,8 +366,8 @@ void QgsTopologicalMesh::applyChanges( const QgsTopologicalMesh::Changes &change
 
   for ( int i = 0; i < changes.mFacesToRemove.count(); ++i )
   {
-    mMesh->faces[changes.removedFaceIndexInmesh( i )] = QgsMeshFace();
-    mFacesNeighborhood[changes.removedFaceIndexInmesh( i )] = FaceNeighbors();//changes.facesNeighborhoodToRemove[i];
+    mMesh->faces[changes.removedFaceIndexInMesh( i )] = QgsMeshFace();
+    mFacesNeighborhood[changes.removedFaceIndexInMesh( i )] = FaceNeighbors();//changes.facesNeighborhoodToRemove[i];
   }
 
   for ( int i = 0; i < changes.mVerticesToRemoveIndexes.count(); ++i )
@@ -420,8 +441,8 @@ void QgsTopologicalMesh::reverseChanges( const QgsTopologicalMesh::Changes &chan
 
   for ( int i = 0; i < changes.mFacesToRemove.count(); ++i )
   {
-    mMesh->faces[changes.removedFaceIndexInmesh( i )] = changes.mFacesToRemove.at( i );
-    mFacesNeighborhood[changes.removedFaceIndexInmesh( i )] = changes.mFacesNeighborhoodToRemove.at( i );
+    mMesh->faces[changes.removedFaceIndexInMesh( i )] = changes.mFacesToRemove.at( i );
+    mFacesNeighborhood[changes.removedFaceIndexInMesh( i )] = changes.mFacesNeighborhoodToRemove.at( i );
   }
 
   for ( int i = 0; i < changes.mVerticesToRemoveIndexes.count(); ++i )
@@ -449,7 +470,7 @@ void QgsTopologicalMesh::reverseChanges( const QgsTopologicalMesh::Changes &chan
       referenceAsFreeVertex( vertexIndex );
   }
 
-  if ( !changes.mFacesToAdd.empty() > 0 )
+  if ( !changes.mFacesToAdd.empty() )
   {
     int newSize = mMesh->faceCount() - changes.mFacesToAdd.count();
     mMesh->faces.resize( newSize );
@@ -530,6 +551,8 @@ QgsMeshEditingError QgsTopologicalMesh::checkConsistency() const
       if ( neighborIndex != -1 )
       {
         const QgsMeshFace &neighborFace = mMesh->faces.at( neighborIndex );
+        if ( neighborFace.isEmpty() )
+          return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidFace, faceIndex );
         int neighborSize = neighborFace.size();
         const FaceNeighbors &neighborhoodOfNeighbor = mFacesNeighborhood.at( neighborIndex );
         int posInNeighbor = vertexPositionInFace( *mMesh, vertexIndex, neighborIndex );
@@ -538,6 +561,18 @@ QgsMeshEditingError QgsTopologicalMesh::checkConsistency() const
       }
     }
 
+  }
+
+  for ( int vertexIndex = 0; vertexIndex < mMesh->vertexCount(); ++vertexIndex )
+  {
+    if ( mVertexToFace.at( vertexIndex ) != -1 )
+    {
+      if ( !mMesh->face( mVertexToFace.at( vertexIndex ) ).contains( vertexIndex ) )
+        return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, vertexIndex );
+
+      if ( facesAroundVertex( vertexIndex ).count() == 0 )
+        return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, vertexIndex );
+    }
   }
 
   return QgsMeshEditingError();
@@ -585,7 +620,7 @@ QList<int> QgsTopologicalMesh::freeVerticesIndexes() const
 #endif
 }
 
-QgsMeshEditingError QgsTopologicalMesh::counterClockWiseFaces( QgsMeshFace &face, QgsMesh *mesh )
+QgsMeshEditingError QgsTopologicalMesh::counterClockwiseFaces( QgsMeshFace &face, QgsMesh *mesh )
 {
   // First check if the face is convex and put it counter clockwise
   // If the index are not well ordered (edges intersect), invalid face --> return false
@@ -694,6 +729,284 @@ void QgsTopologicalMesh::reindex()
   mFacesNeighborhood.clear();
 }
 
+bool QgsTopologicalMesh::renumber()
+{
+  QVector<int> oldToNewVerticesIndexes;
+
+  if ( !renumberVertices( oldToNewVerticesIndexes ) )
+    return false;
+
+  for ( int i = 0; i < oldToNewVerticesIndexes.count(); ++i )
+  {
+    if ( oldToNewVerticesIndexes[i] == -1 )
+      return false;
+    for ( int j = i + 1; j < oldToNewVerticesIndexes.count(); ++j )
+    {
+      if ( oldToNewVerticesIndexes[i] == oldToNewVerticesIndexes[j] )
+        return false;
+    }
+  }
+
+  QVector<int> oldToNewFacesIndexes;
+
+  if ( !renumberFaces( oldToNewFacesIndexes ) )
+    return false;
+
+  for ( int i = 0; i < oldToNewFacesIndexes.count(); ++i )
+  {
+    if ( oldToNewFacesIndexes[i] == -1 )
+      return false;
+    for ( int j = i + 1; j < oldToNewFacesIndexes.count(); ++j )
+    {
+      if ( oldToNewFacesIndexes[i] == oldToNewFacesIndexes[j] )
+        return false;
+    }
+  }
+
+  // after the checks, apply the renumbering
+
+  QVector<QgsMeshVertex> tempVertices( mMesh->vertices.count() );
+  for ( int i = 0; i < oldToNewVerticesIndexes.count(); ++i )
+  {
+    tempVertices[oldToNewVerticesIndexes.at( i )] = mMesh->vertex( i );
+  }
+  mMesh->vertices = tempVertices;
+
+  QVector<QgsMeshFace> tempFaces( mMesh->faces.count() );
+  for ( int i = 0; i < oldToNewFacesIndexes.count(); ++i )
+  {
+    tempFaces[oldToNewFacesIndexes.at( i )] = mMesh->face( i );
+
+    QgsMeshFace &face = tempFaces[oldToNewFacesIndexes.at( i )];
+
+    for ( int fi = 0; fi < face.count(); ++fi )
+    {
+      face[fi] = oldToNewVerticesIndexes.at( face.at( fi ) );
+    }
+  }
+
+  mMesh->faces = tempFaces;
+
+  return true;
+
+}
+
+bool QgsTopologicalMesh::renumberVertices( QVector<int> &oldToNewIndex ) const
+{
+  std::vector<QgsMeshVertexCirculator> circulators;
+  circulators.reserve( mMesh->vertices.count() );
+  int minDegree = std::numeric_limits<int>::max();
+  int minDegreeVertex = -1;
+
+  QQueue<int> queue;
+  QSet<int> nonThreadedVertex;
+  oldToNewIndex = QVector<int> ( mMesh->vertexCount(), -1 );
+  for ( int i = 0; i < mMesh->vertexCount(); ++i )
+  {
+    circulators.emplace_back( *this, i );
+    const QgsMeshVertexCirculator &circulator = circulators.back();
+    if ( circulators.back().degree() < minDegree )
+    {
+      minDegreeVertex = circulators.size() - 1;
+      minDegree = circulator.degree();
+    }
+    nonThreadedVertex.insert( i );
+  }
+
+  auto sortedNeighbor = [ = ]( QList<int> &neighbors, int index )
+  {
+    const QgsMeshVertexCirculator &circ = circulators.at( index );
+
+    if ( !circ.isValid() )
+      return;
+
+    circ.goBoundaryCounterClockwise();
+    neighbors.append( circ.oppositeVertexCounterClockwise() );
+
+    int firsrFace = circ.currentFaceIndex();
+    do
+    {
+      int neighborIndex = circ.oppositeVertexClockwise();
+      int degree = circulators.at( neighborIndex ).degree();
+      QList<int>::Iterator it = neighbors.begin();
+      while ( it != neighbors.end() )
+      {
+        if ( degree <= circulators.at( *it ).degree() )
+        {
+          neighbors.insert( it, neighborIndex );
+          break;
+        }
+        it++;
+      }
+      if ( it == neighbors.end() )
+        neighbors.append( neighborIndex );
+    }
+    while ( circ.turnClockwise() != firsrFace && circ.currentFaceIndex() != -1 );
+  };
+
+  int newIndex = 0;
+  int currentVertex = minDegreeVertex;
+  nonThreadedVertex.remove( minDegreeVertex );
+
+  while ( newIndex < mMesh->vertexCount() )
+  {
+    if ( oldToNewIndex[currentVertex] == -1 )
+      oldToNewIndex[currentVertex] = newIndex++;
+
+    if ( circulators.at( currentVertex ).isValid() )
+    {
+      QList<int> neighbors;
+      sortedNeighbor( neighbors, currentVertex );
+
+      for ( const int i : std::as_const( neighbors ) )
+        if ( oldToNewIndex.at( i ) == -1 && nonThreadedVertex.contains( i ) )
+        {
+          queue.enqueue( i );
+          nonThreadedVertex.remove( i );
+        }
+    }
+
+    if ( queue.isEmpty() )
+    {
+      if ( nonThreadedVertex.isEmpty() && newIndex < mMesh->vertexCount() )
+        return false;
+
+      const QList<int> remainingVertex = qgis::setToList( nonThreadedVertex );
+      int minRemainingDegree = std::numeric_limits<int>::max();
+      int minRemainingVertex = -1;
+      for ( const int i : remainingVertex )
+      {
+        int degree = circulators.at( i ).degree();
+        if ( degree < minRemainingDegree )
+        {
+          minRemainingDegree = degree;
+          minRemainingVertex = i;
+        }
+      }
+      currentVertex = minRemainingVertex;
+      nonThreadedVertex.remove( currentVertex );
+    }
+    else
+    {
+      currentVertex = queue.dequeue();
+    }
+  }
+
+  return true;
+}
+
+bool QgsTopologicalMesh::renumberFaces( QVector<int> &oldToNewIndex ) const
+{
+  QQueue<int> queue;
+  QSet<int> nonThreadedFaces;
+
+  oldToNewIndex = QVector<int>( mMesh->faceCount(), -1 );
+
+  QVector<int> faceDegrees( mMesh->faceCount(), 0 );
+
+  int minDegree = std::numeric_limits<int>::max();
+  int minDegreeFace = -1;
+  for ( int faceIndex = 0; faceIndex < mMesh->faceCount(); ++faceIndex )
+  {
+    const FaceNeighbors &neighbors = mFacesNeighborhood.at( faceIndex );
+
+    int degree = 0;
+    for ( int n = 0; n < neighbors.size(); ++n )
+    {
+      if ( neighbors.at( n ) != -1 )
+        degree++;
+    }
+
+    if ( degree < minDegree )
+    {
+      minDegree = degree;
+      minDegreeFace = faceIndex;
+    }
+
+    faceDegrees[faceIndex] = degree;
+    nonThreadedFaces.insert( faceIndex );
+  }
+
+  int newIndex = 0;
+  int currentFace = minDegreeFace;
+  nonThreadedFaces.remove( minDegreeFace );
+
+  auto sortedNeighbor = [ = ]( QList<int> &neighbors, int index )
+  {
+    const FaceNeighbors &neighborhood = mFacesNeighborhood.at( index );
+
+    for ( int i = 0; i < neighborhood.count(); ++i )
+    {
+      int neighborIndex = neighborhood.at( i );
+      if ( neighborIndex == -1 )
+        continue;
+
+      int degree = faceDegrees.at( neighborIndex );
+      if ( neighbors.isEmpty() )
+        neighbors.append( neighborIndex );
+      else
+      {
+        QList<int>::Iterator it = neighbors.begin();
+        while ( it != neighbors.end() )
+        {
+          if ( degree <= faceDegrees.at( *it ) )
+          {
+            neighbors.insert( it, neighborIndex );
+            break;
+          }
+          it++;
+        }
+        if ( it == neighbors.end() )
+          neighbors.append( neighborIndex );
+      }
+    }
+  };
+
+  while ( newIndex < mMesh->faceCount() )
+  {
+    if ( oldToNewIndex[currentFace] == -1 )
+      oldToNewIndex[currentFace] = newIndex++;
+
+    QList<int> neighbors;
+    sortedNeighbor( neighbors, currentFace );
+
+    for ( const int i : std::as_const( neighbors ) )
+      if ( oldToNewIndex.at( i ) == -1 && nonThreadedFaces.contains( i ) )
+      {
+        queue.enqueue( i );
+        nonThreadedFaces.remove( i );
+      }
+
+    if ( queue.isEmpty() )
+    {
+      if ( nonThreadedFaces.isEmpty() && newIndex < mMesh->faceCount() )
+        return false;
+
+      const QList<int> remainingFace = qgis::setToList( nonThreadedFaces );
+      int minRemainingDegree = std::numeric_limits<int>::max();
+      int minRemainingFace = -1;
+      for ( const int i : remainingFace )
+      {
+        int degree = faceDegrees.at( i );
+        if ( degree < minRemainingDegree )
+        {
+          minRemainingDegree = degree;
+          minRemainingFace = i;
+        }
+      }
+      currentFace = minRemainingFace;
+      nonThreadedFaces.remove( currentFace );
+    }
+    else
+    {
+      currentFace = queue.dequeue();
+    }
+
+  }
+
+  return true;
+}
+
 QVector<QgsMeshFace> QgsTopologicalMesh::Changes::addedFaces() const
 {
   return mFacesToAdd;
@@ -739,6 +1052,11 @@ QList<int> QgsTopologicalMesh::Changes::nativeFacesIndexesGeometryChanged() cons
   return mNativeFacesIndexesGeometryChanged;
 }
 
+QList<int> QgsTopologicalMesh::Changes::verticesToRemoveIndexes() const
+{
+  return mVerticesToRemoveIndexes;
+}
+
 int QgsTopologicalMesh::Changes::addedFaceIndexInMesh( int internalIndex ) const
 {
   if ( internalIndex == -1 )
@@ -747,7 +1065,7 @@ int QgsTopologicalMesh::Changes::addedFaceIndexInMesh( int internalIndex ) const
   return internalIndex + mAddedFacesFirstIndex;
 }
 
-int QgsTopologicalMesh::Changes::removedFaceIndexInmesh( int internalIndex ) const
+int QgsTopologicalMesh::Changes::removedFaceIndexInMesh( int internalIndex ) const
 {
   if ( internalIndex == -1 )
     return -1;
@@ -1206,6 +1524,14 @@ QVector<QgsTopologicalMesh::FaceNeighbors> QgsTopologicalMesh::TopologicalFaces:
   return mFacesNeighborhood;
 }
 
+int QgsTopologicalMesh::TopologicalFaces::vertexToFace( int vertexIndex ) const
+{
+  if ( mVerticesToFace.contains( vertexIndex ) )
+    return mVerticesToFace.values( vertexIndex ).at( 0 );
+
+  return -1;
+}
+
 QgsTopologicalMesh QgsTopologicalMesh::createTopologicalMesh( QgsMesh *mesh, int maxVerticesPerFace, QgsMeshEditingError &error )
 {
   QgsTopologicalMesh topologicMesh;
@@ -1222,7 +1548,7 @@ QgsTopologicalMesh QgsTopologicalMesh::createTopologicalMesh( QgsMesh *mesh, int
       break;
     }
 
-    error = counterClockWiseFaces( mesh->faces[i], mesh );
+    error = counterClockwiseFaces( mesh->faces[i], mesh );
     if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
     {
       if ( error.errorType == Qgis::MeshEditingErrorType::InvalidFace || error.errorType == Qgis::MeshEditingErrorType::FlatFace )
@@ -1829,7 +2155,7 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::splitFace( int faceIndex )
 }
 
 
-QgsTopologicalMesh::Changes QgsTopologicalMesh::addVertexInface( int includingFaceIndex, const QgsMeshVertex &vertex )
+QgsTopologicalMesh::Changes QgsTopologicalMesh::addVertexInFace( int includingFaceIndex, const QgsMeshVertex &vertex )
 {
   Changes changes;
   changes.mVerticesToAdd.append( vertex );
@@ -1892,6 +2218,191 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::addVertexInface( int includingFa
   return changes;
 }
 
+QgsTopologicalMesh::Changes QgsTopologicalMesh::insertVertexInFacesEdge( int faceIndex, int position, const QgsMeshVertex &vertexToInsert )
+{
+  const QgsMeshFace face1 = mMesh->face( faceIndex );
+
+  Changes changes;
+  changes.mVerticesToAdd.append( vertexToInsert );
+  changes.mAddedFacesFirstIndex = mMesh->faceCount();
+
+  // triangulate the first face
+  int newVertexPositionInFace1 = position + 1;
+
+  auto triangulate = [this, &changes]( int removedFaceIndex, const QgsMeshVertex & newVertex, int newVertexPosition, QVector<int> &edgeFacesIndexes )->bool
+  {
+    const QgsMeshFace &initialFace = mMesh->face( removedFaceIndex );
+    changes.mFacesToRemove.append( initialFace );
+    changes.mFaceIndexesToRemove.append( removedFaceIndex );
+    changes.mFacesNeighborhoodToRemove.append( mFacesNeighborhood.at( removedFaceIndex ) );
+    const int addedVertexIndex = mMesh->vertexCount();
+
+    int faceStartGlobalIndex = mMesh->faceCount() + changes.mFacesToAdd.count();
+    int localStartIndex = changes.mFacesToAdd.count();
+
+    QVector<int> newBoundary = initialFace;
+    newBoundary.insert( newVertexPosition, addedVertexIndex );
+
+    try
+    {
+      QHash<p2t::Point *, int> mapPoly2TriPointToVertex;
+      std::vector<p2t::Point *> faceToFill( newBoundary.count() );
+      for ( int i = 0; i < newBoundary.count(); ++i )
+      {
+        QgsMeshVertex vert;
+
+        if ( newBoundary.at( i ) == addedVertexIndex )
+          vert = newVertex;
+        else
+          vert = mMesh->vertex( newBoundary.at( i ) );
+
+        faceToFill[i] = new p2t::Point( vert.x(), vert.y() );
+        mapPoly2TriPointToVertex.insert( faceToFill[i], newBoundary.at( i ) );
+      }
+
+      std::unique_ptr<p2t::CDT> cdt( new p2t::CDT( faceToFill ) );
+      cdt->Triangulate();
+      std::vector<p2t::Triangle *> triangles = cdt->GetTriangles();
+      QVector<QgsMeshFace> newFaces( triangles.size() );
+      for ( size_t i = 0; i < triangles.size(); ++i )
+      {
+        QgsMeshFace &face = newFaces[i];
+        face.resize( 3 );
+        for ( int j = 0; j < 3; j++ )
+        {
+          int vertInd = mapPoly2TriPointToVertex.value( triangles.at( i )->GetPoint( j ), -1 );
+          if ( vertInd == -1 )
+            throw std::exception();
+          face[j] = vertInd;
+        }
+      }
+
+      QgsMeshEditingError error;
+      QgsTopologicalMesh::TopologicalFaces topologicalFaces = createNewTopologicalFaces( newFaces, false, error );
+      if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
+        throw std::exception();
+
+      changes.mFacesToAdd.append( topologicalFaces.meshFaces() );
+      changes.mFacesNeighborhoodToAdd.append( topologicalFaces.mFacesNeighborhood );
+
+      // vertices to face changes
+      const QList<int> &verticesToFaceToChange = topologicalFaces.mVerticesToFace.keys();
+      for ( const int vtc : verticesToFaceToChange )
+        if ( vtc != addedVertexIndex && mVertexToFace.at( vtc ) == removedFaceIndex )
+          changes.mVerticesToFaceChanges.append(
+        {
+          vtc,
+          removedFaceIndex,
+          topologicalFaces.vertexToFace( vtc ) + faceStartGlobalIndex
+        } );
+
+      // reindex neighborhood for new faces
+      for ( int i = 0; i < topologicalFaces.mFaces.count(); ++i )
+      {
+        FaceNeighbors &faceNeighbors = changes.mFacesNeighborhoodToAdd[i + localStartIndex];
+        for ( int n = 0; n < faceNeighbors.count(); ++n )
+        {
+          if ( faceNeighbors.at( n ) != -1 )
+            faceNeighbors[n] += faceStartGlobalIndex; //reindex internal neighborhood
+        }
+      }
+
+      edgeFacesIndexes.resize( 2 );
+      // link neighborhood for boundaries of each side
+      for ( int i = 0 ; i < newBoundary.count(); ++i )
+      {
+        int vertexIndex = newBoundary.at( i );
+        QgsMeshVertexCirculator circulator = QgsMeshVertexCirculator( topologicalFaces, vertexIndex );
+        circulator.goBoundaryClockwise();
+        int newFaceBoundaryLocalIndex = localStartIndex + circulator.currentFaceIndex();
+
+        int newFaceBoundaryIndexInMesh = faceStartGlobalIndex;
+
+        int meshFaceBoundaryIndex;
+        if ( i == newVertexPosition )
+        {
+          meshFaceBoundaryIndex = -1; //face that are on the opposite side of the edge, filled later
+          edgeFacesIndexes[0] =  newFaceBoundaryLocalIndex;
+        }
+        else if ( i == ( newVertexPosition + newBoundary.count() - 1 ) % newBoundary.count() )
+        {
+          meshFaceBoundaryIndex = -1; //face that are on the opposite side of the edge, filled later
+          edgeFacesIndexes[1] =  newFaceBoundaryLocalIndex;
+        }
+        else
+          meshFaceBoundaryIndex = mFacesNeighborhood.at( removedFaceIndex ).at( vertexPositionInFace( vertexIndex, initialFace ) );
+
+        const QgsMeshFace &newFace = circulator.currentFace();
+        int positionInNewFaces = vertexPositionInFace( vertexIndex, newFace );
+
+        if ( meshFaceBoundaryIndex != -1 )
+        {
+          const QgsMeshFace meshFace = mMesh->face( meshFaceBoundaryIndex );
+          int positionInMeshFaceBoundary = vertexPositionInFace( *mMesh, vertexIndex, meshFaceBoundaryIndex );
+          positionInMeshFaceBoundary = ( positionInMeshFaceBoundary - 1 + meshFace.count() ) % meshFace.count(); //take the position just before
+
+          changes.mNeighborhoodChanges.append( {meshFaceBoundaryIndex,
+                                                positionInMeshFaceBoundary,
+                                                removedFaceIndex,
+                                                newFaceBoundaryIndexInMesh +
+                                                circulator.currentFaceIndex()} );
+        }
+
+        changes.mFacesNeighborhoodToAdd[newFaceBoundaryLocalIndex][positionInNewFaces] = meshFaceBoundaryIndex;
+      }
+
+      qDeleteAll( faceToFill );
+    }
+    catch ( ... )
+    {
+      return false;
+    }
+
+    return true;
+  };
+
+  QVector<int> edgeFacesIndexes;
+  if ( !triangulate( faceIndex, vertexToInsert, newVertexPositionInFace1, edgeFacesIndexes ) )
+    return Changes();
+
+  changes.mVertexToFaceToAdd.append( edgeFacesIndexes.at( 0 ) + changes.mAddedFacesFirstIndex );
+
+  int addedVertexIndex = mMesh->vertexCount();
+
+  //if exist, triangulate the second face if exists
+  int face2Index = mFacesNeighborhood.at( faceIndex ).at( position );
+  if ( face2Index != -1 )
+  {
+    const QgsMeshFace &face2 = mMesh->face( face2Index );
+    int vertexPositionInFace2 = vertexPositionInFace( face1.at( position ), face2 );
+    QVector<int> edgeFacesIndexesFace2;
+    if ( !triangulate( face2Index, vertexToInsert, vertexPositionInFace2, edgeFacesIndexesFace2 ) )
+      return Changes();
+
+    //link neighborhood with other side
+    const QgsMeshFace &firstFaceSide1 = changes.mFacesToAdd.at( edgeFacesIndexes.at( 0 ) );
+    int pos1InFaceSide1 = vertexPositionInFace( addedVertexIndex, firstFaceSide1 );
+
+    const QgsMeshFace &secondFaceSide1 = changes.mFacesToAdd.at( edgeFacesIndexes.at( 1 ) );
+    int pos2InFaceSide1 = vertexPositionInFace( addedVertexIndex, secondFaceSide1 );
+    pos2InFaceSide1 = ( pos2InFaceSide1 + secondFaceSide1.size() - 1 ) % secondFaceSide1.size();
+
+    const QgsMeshFace &firstFaceSide2 = changes.mFacesToAdd.at( edgeFacesIndexesFace2.at( 0 ) );
+    int pos1InFaceSide2 = vertexPositionInFace( addedVertexIndex, firstFaceSide2 );
+
+    const QgsMeshFace &secondFaceSide2 = changes.mFacesToAdd.at( edgeFacesIndexesFace2.at( 1 ) );
+    int pos2InFaceSide2 = vertexPositionInFace( addedVertexIndex, secondFaceSide2 );
+    pos2InFaceSide2 = ( pos2InFaceSide2 + secondFaceSide1.size() - 1 ) % secondFaceSide1.size();
+
+    changes.mFacesNeighborhoodToAdd[edgeFacesIndexes.at( 0 )][pos1InFaceSide1] = edgeFacesIndexesFace2.at( 1 ) + changes.mAddedFacesFirstIndex;
+    changes.mFacesNeighborhoodToAdd[edgeFacesIndexes.at( 1 )][pos2InFaceSide1] = edgeFacesIndexesFace2.at( 0 ) + changes.mAddedFacesFirstIndex;
+    changes.mFacesNeighborhoodToAdd[edgeFacesIndexesFace2.at( 0 )][pos1InFaceSide2] = edgeFacesIndexes.at( 1 ) + changes.mAddedFacesFirstIndex;
+    changes.mFacesNeighborhoodToAdd[edgeFacesIndexesFace2.at( 1 )][pos2InFaceSide2] = edgeFacesIndexes.at( 0 ) + changes.mAddedFacesFirstIndex;
+  }
+
+  applyChanges( changes );
+  return changes;
+}
 
 QgsTopologicalMesh::Changes QgsTopologicalMesh::changeZValue( const QList<int> &verticesIndexes, const QList<double> &newValues )
 {

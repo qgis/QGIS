@@ -2426,6 +2426,40 @@ static QVariant fcnY( const QVariantList &, const QgsExpressionContext *context,
   }
 }
 
+static QVariant fcnZ( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * )
+{
+  FEAT_FROM_CONTEXT( context, f )
+  ENSURE_GEOM_TYPE( f, g, QgsWkbTypes::PointGeometry )
+
+  if ( g.isEmpty() )
+    return QVariant();
+
+  const QgsAbstractGeometry *abGeom = g.constGet();
+
+  if ( g.isEmpty() || !abGeom->is3D() )
+    return QVariant();
+
+  if ( g.type() == QgsWkbTypes::PointGeometry && !g.isMultipart() )
+  {
+    const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( g.constGet() );
+    if ( point )
+      return point->z();
+  }
+  else if ( g.type() == QgsWkbTypes::PointGeometry && g.isMultipart() )
+  {
+    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( g.constGet() ) )
+    {
+      if ( collection->numGeometries() > 0 )
+      {
+        if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( collection->geometryN( 0 ) ) )
+          return point->z();
+      }
+    }
+  }
+
+  return QVariant();
+}
+
 static QVariant fcnGeomIsValid( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -3972,6 +4006,46 @@ static QVariant fcnRotate( const QVariantList &values, const QgsExpressionContex
   return QVariant::fromValue( fGeom );
 }
 
+static QVariant fcnAffineTransform( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  if ( fGeom.isNull() )
+  {
+    return QVariant();
+  }
+
+  const double deltaX = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
+  const double deltaY = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
+
+  const double rotationZ = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
+
+  const double scaleX = QgsExpressionUtils::getDoubleValue( values.at( 4 ), parent );
+  const double scaleY = QgsExpressionUtils::getDoubleValue( values.at( 5 ), parent );
+
+  const double deltaZ = QgsExpressionUtils::getDoubleValue( values.at( 6 ), parent );
+  const double deltaM = QgsExpressionUtils::getDoubleValue( values.at( 7 ), parent );
+  const double scaleZ = QgsExpressionUtils::getDoubleValue( values.at( 8 ), parent );
+  const double scaleM = QgsExpressionUtils::getDoubleValue( values.at( 9 ), parent );
+
+  if ( deltaZ != 0.0 && !fGeom.constGet()->is3D() )
+  {
+    fGeom.get()->addZValue( 0 );
+  }
+  if ( deltaM != 0.0 && !fGeom.constGet()->isMeasure() )
+  {
+    fGeom.get()->addMValue( 0 );
+  }
+
+  QTransform transform;
+  transform.translate( deltaX, deltaY );
+  transform.rotate( rotationZ );
+  transform.scale( scaleX, scaleY );
+  fGeom.transform( transform, deltaZ, scaleZ, deltaM, scaleM );
+
+  return QVariant::fromValue( fGeom );
+}
+
+
 static QVariant fcnCentroid( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -4285,7 +4359,7 @@ static QVariant fcnProject( const QVariantList &values, const QgsExpressionConte
 {
   QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
 
-  if ( geom.type() != QgsWkbTypes::PointGeometry )
+  if ( ! geom.constGet() || QgsWkbTypes::flatType( geom.constGet()->simplifiedTypeRef( )->wkbType() ) != QgsWkbTypes::Type::Point )
   {
     parent->setEvalErrorString( QStringLiteral( "'project' requires a point geometry" ) );
     return QVariant();
@@ -4295,7 +4369,7 @@ static QVariant fcnProject( const QVariantList &values, const QgsExpressionConte
   double azimuth = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
   double inclination = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
 
-  const QgsPoint *p = static_cast<const QgsPoint *>( geom.constGet() );
+  const QgsPoint *p = static_cast<const QgsPoint *>( geom.constGet()->simplifiedTypeRef( ) );
   QgsPoint newPoint = p->project( distance,  180.0 * azimuth / M_PI, 180.0 * inclination / M_PI );
 
   return QVariant::fromValue( QgsGeometry( new QgsPoint( newPoint ) ) );
@@ -6794,6 +6868,10 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     yFunc->setIsStatic( false );
     functions << yFunc;
 
+    QgsStaticExpressionFunction *zFunc = new QgsStaticExpressionFunction( QStringLiteral( "$z" ), 0, fcnZ, QStringLiteral( "GeometryGroup" ), QString(), true );
+    zFunc->setIsStatic( false );
+    functions << zFunc;
+
     QMap< QString, QgsExpressionFunction::FcnEval > geometry_overlay_definitions
     {
       { QStringLiteral( "overlay_intersects" ), fcnGeomOverlayIntersects },
@@ -6934,6 +7012,17 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "rotation" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "center" ), true ),
                                             fcnRotate, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "affine_transform" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "deltaX" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "deltaY" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "rotationZ" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "scaleX" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "scaleY" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "deltaZ" ), true, 0 )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "deltaM" ), true, 0 )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "scaleZ" ), true, 1 )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "scaleM" ), true, 1 ),
+                                            fcnAffineTransform, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "buffer" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8 ),

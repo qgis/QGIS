@@ -94,6 +94,14 @@ set(QGIS_GUI_SRCS
   attributetable/qgsorganizetablecolumnsdialog.cpp
   attributetable/qgsfeaturefilterwidget.cpp
 
+  annotations/qgsannotationitemcommonpropertieswidget.cpp
+  annotations/qgsannotationitemguiregistry.cpp
+  annotations/qgsannotationitemwidget.cpp
+  annotations/qgsannotationitemwidget_impl.cpp
+  annotations/qgscreateannotationitemmaptool.cpp
+  annotations/qgscreateannotationitemmaptool_impl.cpp
+  annotations/qgsmaptoolmodifyannotation.cpp
+
   auth/qgsauthauthoritieseditor.cpp
   auth/qgsauthcertificateinfo.cpp
   auth/qgsauthcertificatemanager.cpp
@@ -538,6 +546,7 @@ set(QGIS_GUI_SRCS
   qgsmessageviewer.cpp
   qgsmetadatawidget.cpp
   qgsmasksourceselectionwidget.cpp
+  qgsmetadataurlitemdelegate.cpp
   qgsnewauxiliarylayerdialog.cpp
   qgsnewauxiliaryfielddialog.cpp
   qgsnewdatabasetablenamewidget.cpp
@@ -788,6 +797,7 @@ set(QGIS_GUI_HDRS
   qgsmessageviewer.h
   qgsmetadatawidget.h
   qgsmasksourceselectionwidget.h
+  qgsmetadataurlitemdelegate.h
   qgsnewauxiliaryfielddialog.h
   qgsnewauxiliarylayerdialog.h
   qgsnewgeopackagelayerdialog.h
@@ -877,6 +887,12 @@ set(QGIS_GUI_HDRS
   qgsvertexmarker.h
   qgsvscrollarea.h
   qgswindowmanagerinterface.h
+
+  annotations/qgsannotationitemcommonpropertieswidget.h
+  annotations/qgsannotationitemguiregistry.h
+  annotations/qgsannotationitemwidget.h
+  annotations/qgscreateannotationitemmaptool.h
+  annotations/qgsmaptoolmodifyannotation.h
 
   attributeformconfig/qgsattributeformcontaineredit.h
   attributeformconfig/qgsattributetypedialog.h
@@ -1417,6 +1433,7 @@ endif()
 
 target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/annotations
   ${CMAKE_SOURCE_DIR}/src/gui/attributeformconfig
   ${CMAKE_SOURCE_DIR}/src/gui/symbology
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable

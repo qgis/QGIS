@@ -34,6 +34,7 @@ class QgsWMSConnectionItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
+    void refresh() override;
 
   public slots:
     void deleteLater() override;
@@ -69,8 +70,10 @@ class QgsWMSItemBase
      * - "allowTemporalUpdates": whether to allow updates on temporal parameters on this uri
      * - "temporalSource": the source of the layer's temporal range, can be either "provider" or "project"
      * - "enableTime": if the provider using time part in the temporal range datetime instances
+     *
+     * \param withStyle default TRUE, also adds the style to the URL, it should be empty for collection items
      */
-    QString createUri();
+    QString createUri( bool withStyle = true );
 
     //! Stores GetCapabilities response
     QgsWmsCapabilitiesProperty mCapabilitiesProperty;

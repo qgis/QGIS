@@ -22,7 +22,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include <QString>
 
 #include "qgis_core.h"
-#include "qgscoordinatetransform.h"
+#include "qgis.h"
 #include "qgswkbtypes.h"
 #include "qgswkbptr.h"
 
@@ -47,6 +47,9 @@ class QgsConstWkbPtr;
 class QPainterPath;
 class QgsAbstractGeometryTransformer;
 class QgsFeedback;
+class QgsCoordinateTransform;
+class QgsPoint;
+class QgsRectangle;
 
 typedef QVector< QgsPoint > QgsPointSequence;
 #ifndef SIP_RUN
@@ -373,7 +376,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * units (generally meters). If FALSE, then z coordinates will not be changed by the
      * transform.
      */
-    virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) SIP_THROW( QgsCsException ) = 0;
+    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false ) SIP_THROW( QgsCsException ) = 0;
 
     /**
      * Transforms the x and y components of the geometry using a QTransform object \a t.

@@ -37,6 +37,7 @@ class QgsVectorLayer;
 #include "qgsexpressionnode.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgssqlstatement.h"
+#include "qgscoordinatetransformcontext.h"
 
 /**
  * \ingroup core
@@ -250,6 +251,10 @@ class CORE_EXPORT QgsOgcUtils
         QString mGeometryAttribute;
         //! SRS name
         QString mSRSName;
+        //! Namespace prefix
+        QString mNamespacePrefix;
+        //! Namespace URI
+        QString mNamespaceURI;
     };
 #endif
 

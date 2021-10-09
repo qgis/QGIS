@@ -19,6 +19,7 @@
 #include "qgsmaprenderercustompainterjob.h"
 #include "qgspallabeling.h"
 #include "qgslabelingresults.h"
+#include "qgsrendereditemresults.h"
 
 QgsMapRendererSequentialJob::QgsMapRendererSequentialJob( const QgsMapSettings &settings )
   : QgsMapRendererQImageJob( settings )
@@ -137,6 +138,9 @@ void QgsMapRendererSequentialJob::internalFinished()
 
   mLabelingResults.reset( mInternalJob->takeLabelingResults() );
   mUsedCachedLabels = mInternalJob->usedCachedLabels();
+  mLayersRedrawnFromCache = mInternalJob->layersRedrawnFromCache();
+
+  mRenderedItemResults.reset( mInternalJob->takeRenderedItemResults() );
 
   mErrors = mInternalJob->errors();
 

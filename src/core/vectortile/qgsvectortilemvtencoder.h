@@ -21,7 +21,7 @@
 #include "qgstiles.h"
 #include "qgsvectortilerenderer.h"
 #include "vector_tile.pb.h"
-
+#include "qgscoordinatetransform.h"
 
 /**
  * \ingroup core
@@ -40,8 +40,11 @@
 class CORE_EXPORT QgsVectorTileMVTEncoder
 {
   public:
-    //! Creates MVT encoder for the given tile coordinates
+    //! Creates MVT encoder for the given tile coordinates for Web Mercator
     explicit QgsVectorTileMVTEncoder( QgsTileXYZ tileID );
+
+    //! Creates MVT encoder for the given tile coordinates and tile matrix
+    explicit QgsVectorTileMVTEncoder( QgsTileXYZ tileID, const QgsTileMatrix &tileMatrix );
 
     //! Returns resolution of coordinates of geometries within the tile. The default is 4096.
     int resolution() const { return mResolution; }
@@ -76,6 +79,7 @@ class CORE_EXPORT QgsVectorTileMVTEncoder
     QgsCoordinateTransformContext mTransformContext;
 
     QgsRectangle mTileExtent;
+    QgsCoordinateReferenceSystem mCrs;
 
     QgsVectorTileFeatures mFeatures;
 

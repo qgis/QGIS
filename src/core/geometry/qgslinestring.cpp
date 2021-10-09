@@ -1546,7 +1546,7 @@ int QgsLineString::dimension() const
  * See details in QEP #17
  ****************************************************************************/
 
-void QgsLineString::transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
+void QgsLineString::transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d, bool transformZ )
 {
   double *zArray = nullptr;
   bool hasZ = is3D();

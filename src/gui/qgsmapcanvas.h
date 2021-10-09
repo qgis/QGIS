@@ -29,6 +29,7 @@
 #include "qgstemporalrangeobject.h"
 #include "qgsmapcanvasinteractionblocker.h"
 #include "qgsproject.h"
+#include "qgsdistancearea.h"
 
 #include <QDomDocument>
 #include <QGraphicsView>
@@ -70,6 +71,7 @@ class QgsSnappingUtils;
 class QgsRubberBand;
 class QgsMapCanvasAnnotationItem;
 class QgsReferencedRectangle;
+class QgsRenderedItemResults;
 
 class QgsTemporalController;
 
@@ -158,7 +160,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * Resets the \a flags for the canvas' map settings.
      * \since QGIS 3.0
      */
-    void setMapSettingsFlags( QgsMapSettings::Flags flags );
+    void setMapSettingsFlags( Qgis::MapSettingsFlags flags );
 
     /**
      * Gets access to the labeling results (may be NULLPTR).
@@ -169,6 +171,17 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * \since QGIS 2.4
      */
     const QgsLabelingResults *labelingResults( bool allowOutdatedResults = true ) const;
+
+    /**
+     * Gets access to the rendered item results (may be NULLPTR), which includes the results of rendering
+     * annotation items in the canvas map.
+     *
+     * If the \a allowOutdatedResults flag is FALSE then outdated rendered item results (e.g.
+     * as a result of an ongoing canvas render) will not be returned, and instead NULLPTR will be returned.
+     *
+     * \since QGIS 3.22
+     */
+    const QgsRenderedItemResults *renderedItemResults( bool allowOutdatedResults = true ) const;
 
     /**
      * Set whether to cache images of rendered layers
@@ -187,6 +200,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * \since QGIS 2.4
      */
     void clearCache();
+
+    /**
+     * Cancel any rendering job, in a blocking way. Used for application closing.
+     * \note not available in Python bindings
+     */
+    void cancelJobs() SIP_SKIP;
 
     /**
      * Blocks until the rendering job has finished.
@@ -440,6 +459,18 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     //! Returns the map layer at position index in the layer stack
     QgsMapLayer *layer( int index );
 
+    /**
+     * Returns the map layer with the matching ID, or NULLPTR if no layers could be found.
+     *
+     * This method searches both layers associated with the map canvas (see layers())
+     * and layers from the QgsProject associated with the canvas
+     * (which is current the QgsProject::instance()). It can be used to resolve layer IDs to
+     * layers which may be visible in the canvas, but not associated with a QgsProject.
+     *
+     * \since QGIS 3.22
+     */
+    QgsMapLayer *layer( const QString &id );
+
     //! Returns number of layers on the map
     int layerCount() const;
 
@@ -582,7 +613,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     void enableAntiAliasing( bool flag );
 
     //! TRUE if antialiasing is enabled
-    bool antiAliasingEnabled() const { return mSettings.testFlag( QgsMapSettings::Antialiasing ); }
+    bool antiAliasingEnabled() const;
 
     //! sets map tile rendering flag
     void enableMapTileRendering( bool flag );
@@ -1300,6 +1331,25 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
 
     //! TRUE if the labeling results stored in mLabelingResults are outdated (e.g. as a result of an ongoing canvas render)
     bool mLabelingResultsOutdated = false;
+
+    /**
+     * Rendered results from the recently rendered map.
+     * \since QGIS 3.22
+     */
+    std::unique_ptr< QgsRenderedItemResults > mRenderedItemResults;
+
+    /**
+     * Rendered results stored from previously rendered maps
+     * \since QGIS 3.22
+     */
+    std::unique_ptr< QgsRenderedItemResults > mPreviousRenderedItemResults;
+
+    /**
+     * TRUE if the rendered item results stored in mRenderedItemResults are outdated (e.g. as a result of an ongoing canvas render)
+     *
+     * \since QGIS 3.22
+     */
+    bool mRenderedItemResultsOutdated = false;
 
     //! Whether layers are rendered sequentially or in parallel
     bool mUseParallelRendering = false;

@@ -66,6 +66,9 @@ class CORE_EXPORT QgsTopologicalMesh
         //! Returns the face neighborhood of the faces, indexing is local
         QVector<FaceNeighbors> facesNeighborhood() const;
 
+        //! Returns a face linked to the vertices with index \a vertexIndex
+        int vertexToFace( int vertexIndex ) const;
+
       private:
         QVector<QgsMeshFace> mFaces; // the faces containing the vertices indexes in the mesh
         QVector<FaceNeighbors> mFacesNeighborhood; // neighborhood of the faces, face indexes are local
@@ -99,6 +102,9 @@ class CORE_EXPORT QgsTopologicalMesh
 
         //! Returns the added vertices with this changes
         QVector<QgsMeshVertex> addedVertices() const;
+
+        //! Returns the indexes of vertices to remove
+        QList<int> verticesToRemoveIndexes() const;
 
         //! Returns the indexes of vertices that have changed coordinates
         QList<int> changedCoordinatesVerticesIndexes() const;
@@ -143,7 +149,7 @@ class CORE_EXPORT QgsTopologicalMesh
 
       private:
         int addedFaceIndexInMesh( int internalIndex ) const;
-        int removedFaceIndexInmesh( int internalIndex ) const;
+        int removedFaceIndexInMesh( int internalIndex ) const;
 
         friend class QgsTopologicalMesh;
     };
@@ -243,7 +249,13 @@ class CORE_EXPORT QgsTopologicalMesh
      * Adds a \a vertex in the face with index \a faceIndex. The including face is removed and new faces surrounding the added vertex are added.
      * The method returns a instance of the class QgsTopologicalMesh::Change that can be used to reverse or reapply the operation.
      */
-    Changes addVertexInface( int faceIndex, const QgsMeshVertex &vertex );
+    Changes addVertexInFace( int faceIndex, const QgsMeshVertex &vertex );
+
+    /**
+     * Inserts a \a vertex in the edge of face with index \a faceIndex at \a position . The faces that are on each side of the edge are removed and replaced
+     * by new faces constructed by a triangulation.
+     */
+    Changes insertVertexInFacesEdge( int faceIndex, int position, const QgsMeshVertex &vertex );
 
     /**
      * Adds a free \a vertex in the face, that is a vertex tha tis not included or linked with any faces.
@@ -282,14 +294,19 @@ class CORE_EXPORT QgsTopologicalMesh
     //! Reverses the changes
     void reverseChanges( const Changes &changes );
 
-    //! Checks the topology of the face and sets it counter clock wise if necessary
-    static QgsMeshEditingError counterClockWiseFaces( QgsMeshFace &face, QgsMesh *mesh );
+    //! Checks the topology of the face and sets it counter clockwise if necessary
+    static QgsMeshEditingError counterClockwiseFaces( QgsMeshFace &face, QgsMesh *mesh );
 
     /**
      * Reindexes faces and vertices, after this operation, the topological
      * mesh can't be edited anymore and only the method mesh can be used to access to the raw mesh.
      */
     void reindex();
+
+    /**
+     * Renumbers the  indexes of vertices and faces using the Reverse CutHill McKee Algorithm
+     */
+    bool renumber();
 
     //! Checks the consistency of the topological mesh and return FALSE if there is a consistency issue
     QgsMeshEditingError checkConsistency() const;
@@ -323,6 +340,9 @@ class CORE_EXPORT QgsTopologicalMesh
                                      int &neighborVertex1InFace2,
                                      int &neighborVertex2inFace1,
                                      int &neighborVertex2inFace2 ) const;
+
+    bool renumberVertices( QVector<int> &oldToNewIndex ) const;
+    bool renumberFaces( QVector<int> &oldToNewIndex ) const;
 
     //Attributes
     QgsMesh *mMesh = nullptr;
@@ -395,6 +415,9 @@ class CORE_EXPORT QgsMeshVertexCirculator
     //! Returns all the faces indexes around the vertex
     QList<int> facesAround() const;
 
+    //! Returns the degree of the vertex, that is the count of other vertices linked
+    int degree() const;
+
   private:
     const QVector<QgsMeshFace> mFaces;
     const QVector<QgsTopologicalMesh::FaceNeighbors> mFacesNeighborhood;
@@ -402,6 +425,7 @@ class CORE_EXPORT QgsMeshVertexCirculator
     mutable int mCurrentFace = -1;
     mutable int mLastValidFace = -1;
     bool mIsValid = false;
+    mutable int mDegree = -1;
 
     int positionInCurrentFace() const;
 };
