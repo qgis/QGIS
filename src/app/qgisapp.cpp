@@ -148,6 +148,8 @@
 #include "qgsopenclutils.h"
 #endif
 
+#include "ui_defaults.h"
+
 #include <QNetworkReply>
 #include <QNetworkProxy>
 #include <QAuthenticator>
@@ -2213,9 +2215,45 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
   onActiveLayerChanged( activeLayer() );
 }
 
+void QgisApp::resizeEvent( QResizeEvent *resizeEvent )
+{
+  QMainWindow::resizeEvent( resizeEvent );
+  if ( mRestoreStateOnResize )
+  {
+    QgsSettings settings;
+    restoreState( settings.value( QStringLiteral( "UI/state" ), QByteArray::fromRawData( reinterpret_cast< const char * >( defaultUIstate ), sizeof defaultUIstate ) ).toByteArray() );
+  }
+}
+
 bool QgisApp::event( QEvent *event )
 {
   bool done = false;
+
+  if ( mRestoreStateOnResize )
+  {
+    switch ( event->type() )
+    {
+      case QEvent::Enter:
+      case QEvent::DragEnter:
+      case QEvent::DragLeave:
+      case QEvent::DragMove:
+      case QEvent::Drop:
+      case QEvent::KeyPress:
+      case QEvent::KeyRelease:
+      case QEvent::MouseButtonDblClick:
+      case QEvent::MouseButtonPress:
+      case QEvent::MouseButtonRelease:
+      case QEvent::MouseMove:
+      case QEvent::NativeGesture:
+        // The user did something, end state restores
+        mRestoreStateOnResize = false;
+        break;
+
+      default:
+        break;
+    }
+  }
+
   if ( event->type() == QEvent::FileOpen )
   {
     // handle FileOpen event (double clicking a file icon in Mac OS X Finder)
@@ -5337,21 +5375,14 @@ void QgisApp::saveWindowState()
   QgsPluginRegistry::instance()->unloadAll();
 }
 
-#include "ui_defaults.h"
-
 void QgisApp::restoreWindowState()
 {
   // restore the toolbar and dock widgets positions using Qt4 settings API
   QgsSettings settings;
-#if 0
-  // because of Qt regression: https://bugreports.qt.io/browse/QTBUG-89034
-  // we have to wait till dialog is first shown to try to restore dock geometry or it's not correctly restored
-  // so this code was moved to showEvent for now...
   if ( !restoreState( settings.value( QStringLiteral( "UI/state" ), QByteArray::fromRawData( reinterpret_cast< const char * >( defaultUIstate ), sizeof defaultUIstate ) ).toByteArray() ) )
   {
     QgsDebugMsg( QStringLiteral( "restore of UI state failed" ) );
   }
-#endif
 
   if ( settings.value( QStringLiteral( "UI/hidebrowser" ), false ).toBool() )
   {
@@ -5370,6 +5401,8 @@ void QgisApp::restoreWindowState()
     move( pos.width(), pos.height() );
   }
 
+  // restore state on resize need to work around Qt regression: https://bugreports.qt.io/browse/QTBUG-89034
+  mRestoreStateOnResize = true;
 }
 ///////////// END OF GUI SETUP ROUTINES ///////////////
 void QgisApp::sponsors()
@@ -17542,20 +17575,4 @@ QgsAttributeEditorContext QgisApp::createAttributeEditorContext()
   context.setCadDockWidget( cadDockWidget() );
   context.setMainMessageBar( messageBar() );
   return context;
-}
-
-void QgisApp::showEvent( QShowEvent *event )
-{
-  QMainWindow::showEvent( event );
-  // because of Qt regression: https://bugreports.qt.io/browse/QTBUG-89034
-  // we have to wait till dialog is first shown to try to restore dock geometry or it's not correctly restored
-  static std::once_flag firstShow;
-  std::call_once( firstShow, [this]
-  {
-    QgsSettings settings;
-    if ( !restoreState( settings.value( QStringLiteral( "UI/state" ), QByteArray::fromRawData( reinterpret_cast< const char * >( defaultUIstate ), sizeof defaultUIstate ) ).toByteArray() ) )
-    {
-      QgsDebugMsg( QStringLiteral( "restore of UI state failed" ) );
-    }
-  } );
 }
