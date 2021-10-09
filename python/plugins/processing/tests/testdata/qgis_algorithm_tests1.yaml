@@ -240,6 +240,31 @@ tests:
           geometry:
             ignore_part_order: True
 
+  - name: Aggregate with a quoted delimiter
+    algorithm: qgis:aggregate
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      GROUP_BY: 'NULL'
+      AGGREGATES:
+        [{
+          input: 'fid',
+          aggregate: 'concatenate',
+          delimiter: '"'',''"',
+          name: 'fids',
+          type: 10,
+          length: 255,
+          precision: 0
+        }]
+    results:
+      OUTPUT:
+        name: expected/aggregate_quoted_delim.gml
+        type: vector
+        compare:
+          geometry:
+            ignore_part_order: True
+
   - name: Delete Holes
     algorithm: native:deleteholes
     params:
