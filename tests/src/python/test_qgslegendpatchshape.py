@@ -71,6 +71,10 @@ class TestQgsLegendPatchShape(unittest.TestCase):
         shape.setPreserveAspectRatio(True)
         self.assertTrue(shape.preserveAspectRatio())
 
+        self.assertTrue(shape.scaleToOutputSize())
+        shape.setScaleToOutputSize(False)
+        self.assertFalse(shape.scaleToOutputSize())
+
     @staticmethod
     def polys_to_list(polys):
         return [[[[round(p.x(), 3), round(p.y(), 3)] for p in ring] for ring in poly] for poly in polys]
@@ -187,6 +191,18 @@ class TestQgsLegendPatchShape(unittest.TestCase):
         shape = QgsLegendPatchShape(QgsSymbol.Fill, QgsGeometry.fromWkt('MultiPolygon(((5 5, 1 2, 3 4, 5 5), (4.5 4.5, 4.4 4.4, 4.5 4.4, 4.5 4.5)),((10 11, 11 11, 11 10, 10 11)))'), False)
         self.assertEqual(self.polys_to_list(shape.toQPolygonF(QgsSymbol.Fill, QSizeF(1, 1))), [[[[0.4, 0.667], [0.0, 1.0], [0.2, 0.778], [0.4, 0.667]], [[0.35, 0.722], [0.34, 0.733], [0.35, 0.733], [0.35, 0.722]]], [[[0.9, 0.0], [1.0, 0.0], [1.0, 0.111], [0.9, 0.0]]]])
         self.assertEqual(self.polys_to_list(shape.toQPolygonF(QgsSymbol.Fill, QSizeF(10, 2))), [[[[4.0, 1.333], [0.0, 2.0], [2.0, 1.556], [4.0, 1.333]], [[3.5, 1.444], [3.4, 1.467], [3.5, 1.467], [3.5, 1.444]]], [[[9.0, 0.0], [10.0, 0.0], [10.0, 0.222], [9.0, 0.0]]]])
+
+    def testScaledGeometry(self):
+        """
+        Test scaling geometry
+        """
+        shape = QgsLegendPatchShape(QgsSymbol.Line, QgsGeometry.fromWkt('LineString(5 5, 1 2)'))
+
+        self.assertEqual(shape.scaledGeometry(QSizeF(20, 30)).asWkt(1), 'LineString (20 7.5, 0 22.5)')
+        self.assertEqual(shape.scaledGeometry(QSizeF(200, 300)).asWkt(1), 'LineString (200 75, 0 225)')
+        shape.setScaleToOutputSize(False)
+        self.assertEqual(shape.scaledGeometry(QSizeF(20, 30)).asWkt(1), 'LineString (5 5, 1 2)')
+        self.assertEqual(shape.scaledGeometry(QSizeF(200, 300)).asWkt(1), 'LineString (5 5, 1 2)')
 
     def testRenderMarker(self):
         shape = QgsLegendPatchShape(QgsSymbol.Marker, QgsGeometry.fromWkt('MultiPoint((5 5), (3 4), (1 2))'), False)
