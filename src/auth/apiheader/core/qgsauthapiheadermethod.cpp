@@ -105,12 +105,8 @@ void QgsAuthApiHeaderMethod::clearCachedConfig( const QString &authcfg )
 
 void QgsAuthApiHeaderMethod::updateMethodConfig( QgsAuthMethodConfig &mconfig )
 {
-  if ( mconfig.hasConfig( QStringLiteral( "oldconfigstyle" ) ) )
-  {
-    QgsDebugMsg( QStringLiteral( "Updating old style auth method config" ) );
-  }
-
-  // NOTE: add updates as method version() increases due to config storage changes
+    Q_UNUSED( mconfig );
+    // NOTE: add updates as method version() increases due to config storage changes
 }
 
 QgsAuthMethodConfig QgsAuthApiHeaderMethod::getMethodConfig( const QString &authcfg, bool fullconfig )
