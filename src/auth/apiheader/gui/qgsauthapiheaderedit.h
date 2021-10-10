@@ -43,11 +43,27 @@ class QgsAuthApiHeaderEdit : public QgsAuthMethodEdit, private Ui::QgsAuthApiHea
     void clearConfig() override;
 
   private slots:
-    void textChanged( const QString &txt );
+    void addHeaderPair();
+
+    void removeHeaderPair();
+
+    void clearHeaderPairs();
+
+    void populateHeaderPairs( const QgsStringMap &headerpairs, bool append = false );
+
+    void headerTableSelectionChanged();
+
+    void headerTableCellChanged( const int row, const int column );
 
   private:
     QgsStringMap mConfigMap;
     bool mValid = false;
+
+    bool emptyHeadersKeysPresent();
+
+    void addHeaderPairRow( const QString &key, const QString &val );
+
+    QgsStringMap headerPairs() const;
 };
 
 #endif // QGSAUTHAPIHEADEREDIT_H

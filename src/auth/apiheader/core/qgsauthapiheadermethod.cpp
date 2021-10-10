@@ -19,6 +19,7 @@
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
+#include "qgsmessagelog.h"
 
 #ifdef HAVE_GUI
 #include "qgsauthapiheaderedit.h"
@@ -72,13 +73,28 @@ bool QgsAuthApiHeaderMethod::updateNetworkRequest( QNetworkRequest &request, con
     return false;
   }
 
-  const QString headerKey = mconfig.config( QStringLiteral( "headerKey" ) );
-  const QString headerValue = mconfig.config( QStringLiteral( "headerValue" ) );
-
-  if ( !headerKey.isEmpty() && !headerValue.isEmpty() )
+  QMapIterator<QString, QString> i( mconfig.configMap() );
+  while ( i.hasNext() )
   {
-    request.setRawHeader( QStringLiteral( "%1" ).arg( headerKey ).toLocal8Bit(),  QStringLiteral( "%1" ).arg( headerValue ).toLocal8Bit() );
+    i.next();
+
+    const QString headerKey = i.key();
+    const QString headerValue = i.value();
+
+    QgsDebugMsg( QStringLiteral( "HTTP Header: %1=%2" ).arg( headerKey ).arg( headerValue ) );
+
+    if ( !headerKey.isEmpty() )
+    {
+      request.setRawHeader( QStringLiteral( "%1" ).arg( headerKey ).toLocal8Bit(),
+                            QStringLiteral( "%1" ).arg( headerValue ).toLocal8Bit() );
+    }
+    else
+    {
+      const QString msg = "The header key was empty, we shouldn't have empty header keys at this point";
+      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
+    }
   }
+
   return true;
 }
 
