@@ -53,6 +53,7 @@
 #include <QClipboard>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QShortcut>
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -253,6 +254,13 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
   connect( mActionCopyItem, &QAction::triggered, this, &QgsStyleManagerDialog::copyItem );
   mActionPasteItem = new QAction( tr( "Paste Item…" ), this );
   connect( mActionPasteItem, &QAction::triggered, this, &QgsStyleManagerDialog::pasteItem );
+
+  QShortcut *copyShortcut = new QShortcut( QKeySequence( QKeySequence::StandardKey::Copy ), this );
+  connect( copyShortcut, &QShortcut::activated, this, &QgsStyleManagerDialog::copyItem );
+  QShortcut *pasteShortcut = new QShortcut( QKeySequence( QKeySequence::StandardKey::Paste ), this );
+  connect( pasteShortcut, &QShortcut::activated, this, &QgsStyleManagerDialog::pasteItem );
+  QShortcut *removeShortcut = new QShortcut( QKeySequence( QKeySequence::StandardKey::Delete ), this );
+  connect( removeShortcut, &QShortcut::activated, this, &QgsStyleManagerDialog::removeItem );
 
   shareMenu->addSeparator();
   shareMenu->addAction( actnExportAsPNG );
