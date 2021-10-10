@@ -5173,7 +5173,7 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
     return QStringLiteral( "None" );
 
   if ( value.canConvert<QgsProperty>() )
-    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+    return QStringLiteral( "QgsProperty.fromExpression(%1)" ).arg( QgsProcessingUtils::stringToPythonLiteral( value.value< QgsProperty >().asExpression() ) );
 
   if ( value.canConvert<QgsProcessingFeatureSourceDefinition>() )
   {
@@ -5212,7 +5212,7 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
 
       if ( fromVar.selectedFeaturesOnly || fromVar.featureLimit != -1 || fromVar.flags )
       {
-        return QStringLiteral( "QgsProcessingFeatureSourceDefinition('%1', selectedFeaturesOnly=%2, featureLimit=%3%4, geometryCheck=%5)" ).arg( layerString,
+        return QStringLiteral( "QgsProcessingFeatureSourceDefinition(%1, selectedFeaturesOnly=%2, featureLimit=%3%4, geometryCheck=%5)" ).arg( QgsProcessingUtils::stringToPythonLiteral( layerString ),
                fromVar.selectedFeaturesOnly ? QStringLiteral( "True" ) : QStringLiteral( "False" ),
                QString::number( fromVar.featureLimit ),
                flagString.isEmpty() ? QString() : ( QStringLiteral( ", flags=%1" ).arg( flagString ) ),
@@ -5227,8 +5227,8 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
     {
       if ( fromVar.selectedFeaturesOnly || fromVar.featureLimit != -1 || fromVar.flags )
       {
-        return QStringLiteral( "QgsProcessingFeatureSourceDefinition(QgsProperty.fromExpression('%1'), selectedFeaturesOnly=%2, featureLimit=%3%4, geometryCheck=%5)" )
-               .arg( fromVar.source.asExpression(),
+        return QStringLiteral( "QgsProcessingFeatureSourceDefinition(QgsProperty.fromExpression(%1), selectedFeaturesOnly=%2, featureLimit=%3%4, geometryCheck=%5)" )
+               .arg( QgsProcessingUtils::stringToPythonLiteral( fromVar.source.asExpression() ),
                      fromVar.selectedFeaturesOnly ? QStringLiteral( "True" ) : QStringLiteral( "False" ),
                      QString::number( fromVar.featureLimit ),
                      flagString.isEmpty() ? QString() : ( QStringLiteral( ", flags=%1" ).arg( flagString ) ),
@@ -5236,7 +5236,7 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
       }
       else
       {
-        return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( fromVar.source.asExpression() );
+        return QStringLiteral( "QgsProperty.fromExpression(%1)" ).arg( QgsProcessingUtils::stringToPythonLiteral( fromVar.source.asExpression() ) );
       }
     }
   }
