@@ -126,7 +126,9 @@ void QgsAuthApiHeaderEdit::headerTableSelectionChanged()
 
 void QgsAuthApiHeaderEdit::headerTableCellChanged( const int row, const int column )
 {
-  QgsDebugMsg( QStringLiteral( "Cell updated: row %1 column %2" ).arg( row ).arg( column ) );
+  Q_UNUSED( row );
+  Q_UNUSED( column );
+
   validateConfig();
 }
 
