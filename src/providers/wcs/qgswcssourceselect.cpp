@@ -19,6 +19,8 @@
 #include "qgis.h"
 #include "qgslogger.h"
 
+#include "qgscoordinatereferencesystem.h"
+
 #include "qgsnetworkaccessmanager.h"
 #include "qgswcsprovider.h"
 #include "qgswcssourceselect.h"
@@ -141,6 +143,18 @@ void QgsWCSSourceSelect::addButtonClicked()
     uri.setParam( QStringLiteral( "time" ), selectedTime() );
   }
 
+  if ( mSpatialExtentBox->isChecked() )
+  {
+      const QgsRectangle spatialExtent = mSpatialExtentBox->outputExtent();
+      QString bbox = QString( "%1, %2, %3, %4" ).
+              arg( spatialExtent.xMinimum() ).
+              arg( spatialExtent.yMinimum() ).
+              arg( spatialExtent.xMaximum() ).
+              arg ( spatialExtent.yMaximum() );
+
+      uri.setParam( QStringLiteral( "BBOX" ), bbox );
+  }
+
   QString cache;
   QgsDebugMsg( QStringLiteral( "selectedCacheLoadControl = %1" ).arg( selectedCacheLoadControl() ) );
   cache = QgsNetworkAccessManager::cacheLoadControlName( selectedCacheLoadControl() );
@@ -167,6 +181,21 @@ void QgsWCSSourceSelect::mLayersTreeWidget_itemSelectionChanged()
   updateButtons();
 
   emit enableButtons( true );
+}
+
+void QgsWCSSourceSelect::populateExtent()
+{
+    QgsCoordinateReferenceSystem crs;
+    if ( !selectedCrs().isEmpty() )
+        crs = QgsCoordinateReferenceSystem( selectedCrs() );
+    else
+        crs = QgsCoordinateReferenceSystem("EPSG:4326");
+
+    mSpatialExtentBox->setOutputCrs(crs);
+
+
+    mSpatialExtentBox->setCurrentExtent( crs.bounds(), crs );
+    mSpatialExtentBox->setOutputExtentFromCurrent();
 }
 
 void QgsWCSSourceSelect::updateButtons()

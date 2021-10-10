@@ -60,6 +60,7 @@ class QgsWCSSourceSelect : public QgsOWSSourceSelect
     QgsWcsCapabilities mCapabilities;
 
     QString selectedIdentifier();
+    void populateExtent();
 
     // QgsWcsCapabilities virtual methods
     void populateLayerList() override;
