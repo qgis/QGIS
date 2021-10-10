@@ -151,12 +151,15 @@ void QgsStyleExportImportDialog::doExportImport()
 
   if ( mDialogMode == Export )
   {
-    QString fileName = QFileDialog::getSaveFileName( this, tr( "Save Styles" ), QDir::homePath(),
+    QgsSettings settings;
+    const QString lastUsedDir = settings.value( QStringLiteral( "StyleManager/lastExportDir" ), QDir::homePath(), QgsSettings::Gui ).toString();
+    QString fileName = QFileDialog::getSaveFileName( this, tr( "Save Styles" ), lastUsedDir,
                        tr( "XML files (*.xml *.XML)" ) );
     if ( fileName.isEmpty() )
     {
       return;
     }
+    settings.setValue( QStringLiteral( "StyleManager/lastExportDir" ), QFileInfo( fileName ).absolutePath(), QgsSettings::Gui );
 
     // ensure the user never omitted the extension from the file name
     if ( !fileName.endsWith( QLatin1String( ".xml" ), Qt::CaseInsensitive ) )
