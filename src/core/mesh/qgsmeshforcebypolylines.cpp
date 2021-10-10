@@ -1095,6 +1095,11 @@ bool QgsMeshEditForceByLine::finishForcingLine()
 }
 
 
+QString QgsMeshEditForceByPolylines::text() const
+{
+  return QObject::tr( "Force mesh by polyline" );
+}
+
 bool QgsMeshEditForceByPolylines::isFinished() const
 {
   return mCurrentPolyline >= mPolylines.count() && QgsMeshEditForceByLine::isFinished();

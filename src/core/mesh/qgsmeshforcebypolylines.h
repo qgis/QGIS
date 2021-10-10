@@ -148,6 +148,7 @@ class CORE_EXPORT QgsMeshEditForceByPolylines : public QgsMeshEditForceByLine
     //! Constructor
     QgsMeshEditForceByPolylines() = default;
 
+    QString text() const override;
     bool isFinished() const override;
 
     /**
