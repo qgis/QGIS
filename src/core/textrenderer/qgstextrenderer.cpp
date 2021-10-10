@@ -726,6 +726,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
   // shared calculations between shapes and SVG
 
   // configure angles, set component rotation and rotationOffset
+  const double originAdjustRotationRadians = -component.rotation;
   if ( background.rotationType() != QgsTextBackgroundSettings::RotationFixed )
   {
     component.rotation = -( component.rotation * 180 / M_PI ); // RotationSync
@@ -790,6 +791,15 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
             component.center = QPointF( component.origin.x() - width / 2.0,
                                         component.origin.y() - height / 2.0 + originAdjust );
             break;
+        }
+
+        // apply rotation to center point
+        if ( !qgsDoubleNear( originAdjustRotationRadians, 0 ) )
+        {
+          const double dx = component.center.x() - component.origin.x();
+          const double dy = component.center.y() - component.origin.y();
+          component.center.setX( component.origin.x() + ( std::cos( originAdjustRotationRadians ) * dx - std::sin( originAdjustRotationRadians ) * dy ) );
+          component.center.setY( component.origin.y() + ( std::sin( originAdjustRotationRadians ) * dx + std::cos( originAdjustRotationRadians ) * dy ) );
         }
         break;
       }
