@@ -22,6 +22,8 @@ email                : jef at norbit dot de
 
 #include "qgsgeometry.h"
 
+class QgsCurvePolygon;
+
 /**
  * \ingroup core
  * \class QgsGeometryValidator
@@ -72,12 +74,12 @@ class CORE_EXPORT QgsGeometryValidator : public QThread
 
   private:
     void validatePolyline( int i, const QgsLineString *line, bool ring = false );
-    void validatePolygon( int partIndex, const QgsPolygon *polygon );
+    void validatePolygon( int partIndex, const QgsCurvePolygon *polygon );
     void checkRingIntersections( int partIndex0, int ringIndex0, const QgsLineString *ring0, int partIndex1, int ringIndex1, const QgsLineString *ring1 );
     double distLine2Point( double px, double py, QgsVector v, double qX, double qY );
     bool intersectLines( double px, double py, QgsVector v, double qx, double qy, QgsVector w, double &sX, double &sY );
-    bool ringInRing( const QgsLineString *inside, const QgsLineString *outside );
-    bool pointInRing( const QgsLineString *ring, double pX, double pY );
+    bool ringInRing( const QgsCurve *inside, const QgsCurve *outside );
+    bool pointInRing( const QgsCurve *ring, double pX, double pY );
 
     QgsGeometry mGeometry;
     QVector<QgsGeometry::Error> *mErrors;
