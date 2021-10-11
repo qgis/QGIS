@@ -4,8 +4,10 @@
     Date                 : August 2021
     Copyright            : (C) 2021 by Loïc Bartoletti
                            (C) 2021 by Antoine Facchini
+                           (C) 2021 by Benoit De Mezzo Facchini
     Email                : loic dot bartoletti at oslandia dot com
                            antoine dot facchini at oslandia dot com
+                           benoit dot de dot mezzo at oslandia dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

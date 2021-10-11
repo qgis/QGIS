@@ -97,7 +97,7 @@ QPolygonF QgsSymbol::_getLineString3d( QgsRenderContext &context, const QgsCurve
   const QgsMapToPixel &mtp = context.mapToPixel();
   QgsLineString pts;
 
-  //apply clipping for large lines to achieve a better rendering performance
+  // apply clipping for large lines to achieve a better rendering performance
   if ( clipToExtent && nPoints > 1 && !( context.flags() & Qgis::RenderContextFlag::ApplyClipAfterReprojection ) )
   {
     const QgsRectangle e = context.extent();
@@ -122,7 +122,7 @@ QPolygonF QgsSymbol::_getLineString3d( QgsRenderContext &context, const QgsCurve
     }
   }
 
-  //transform the QPolygonF to screen coordinates
+  // transform the QPolygonF to screen coordinates
   if ( ct.isValid() )
   {
     try
@@ -176,7 +176,7 @@ QPolygonF QgsSymbol::_getLineString2d( QgsRenderContext &context, const QgsCurve
   const QgsMapToPixel &mtp = context.mapToPixel();
   QPolygonF pts;
 
-  //apply clipping for large lines to achieve a better rendering performance
+  // apply clipping for large lines to achieve a better rendering performance
   if ( clipToExtent && nPoints > 1 && !( context.flags() & Qgis::RenderContextFlag::ApplyClipAfterReprojection ) )
   {
     const QgsRectangle e = context.extent();
@@ -190,7 +190,7 @@ QPolygonF QgsSymbol::_getLineString2d( QgsRenderContext &context, const QgsCurve
     pts = curve.asQPolygonF();
   }
 
-  //transform the QPolygonF to screen coordinates
+  // transform the QPolygonF to screen coordinates
   if ( ct.isValid() )
   {
     try
