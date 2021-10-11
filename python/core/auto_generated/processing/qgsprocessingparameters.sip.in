@@ -714,7 +714,7 @@ The ``variables`` list should contain the variable names only, without the usual
 .. versionadded:: 3.8
 %End
 
-  protected:
+  protected slots:
 
 
 
@@ -2844,7 +2844,7 @@ Sets the geometry ``types`` for sources acceptable by the parameter.
 .. seealso:: :py:func:`dataTypes`
 %End
 
-  protected:
+  protected slots:
 
 };
 
@@ -3269,7 +3269,7 @@ a value of ``False`` indicates that the destination should not be created by def
 .. seealso:: :py:func:`createByDefault`
 %End
 
-  protected:
+  protected slots:
 
     QgsProcessingProvider *originalProvider() const;
 %Docstring

@@ -80,7 +80,7 @@ exists for the lifetime of this algorithm.
     virtual bool supportInPlaceEdit( const QgsMapLayer *layer ) const;
 
 
-  protected:
+  protected slots:
     virtual QString outputName() const;
 
     virtual bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );

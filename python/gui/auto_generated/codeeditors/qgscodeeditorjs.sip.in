@@ -29,7 +29,7 @@ code autocompletion.
 Constructor for QgsCodeEditorJavascript
 %End
 
-  protected:
+  protected slots:
     virtual void initializeLexer();
 
 };

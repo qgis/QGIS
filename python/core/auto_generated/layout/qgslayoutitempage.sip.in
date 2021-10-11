@@ -138,7 +138,7 @@ page orientation.
     virtual void redraw();
 
 
-  protected:
+  protected slots:
 
     virtual void draw( QgsLayoutItemRenderContext &context );
 

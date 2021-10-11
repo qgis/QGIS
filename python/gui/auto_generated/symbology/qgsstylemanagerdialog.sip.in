@@ -256,7 +256,7 @@ Tag selected symbols using menu item selection
 Remove all tags from selected symbols
 %End
 
-  protected:
+  protected slots:
 
  void populateTypes() /Deprecated/;
 %Docstring

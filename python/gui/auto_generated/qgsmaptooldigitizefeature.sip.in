@@ -67,7 +67,7 @@ Emitted whenever the digitizing has been ended without digitizing
 any feature
 %End
 
-  protected:
+  protected slots:
 
     bool checkGeometryType() const;
 %Docstring

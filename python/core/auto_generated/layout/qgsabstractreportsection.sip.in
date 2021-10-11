@@ -355,8 +355,9 @@ should be canceled.
 .. versionadded:: 3.10
 %End
 
-  protected:
+  protected slots:
 
+protected:
     enum SubSection
     {
       Header,
@@ -365,7 +366,7 @@ should be canceled.
       Footer,
       End,
     };
-
+protected slots:
     void copyCommonProperties( QgsAbstractReportSection *destination ) const;
 %Docstring
 Copies the common properties of a report section to a ``destination`` section.

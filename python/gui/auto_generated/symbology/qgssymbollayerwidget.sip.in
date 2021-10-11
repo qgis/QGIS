@@ -56,7 +56,7 @@ Returns the vector layer associated with the widget.
 .. versionadded:: 2.12
 %End
 
-  protected:
+  protected slots:
 
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key );
 %Docstring
@@ -126,7 +126,7 @@ Creates a new QgsSimpleLineSymbolLayerWidget.
     virtual void setContext( const QgsSymbolWidgetContext &context );
 
 
-  protected:
+  protected slots:
 
     void updatePatternIcon();
 
@@ -172,7 +172,7 @@ Creates a new QgsSimpleMarkerSymbolLayerWidget.
     void setColorStroke( const QColor &color );
     void setColorFill( const QColor &color );
 
-  protected:
+  protected slots:
 
 };
 
@@ -211,7 +211,7 @@ Creates a new QgsSimpleFillSymbolLayerWidget.
     void setColor( const QColor &color );
     void setStrokeColor( const QColor &color );
 
-  protected:
+  protected slots:
 
 };
 
@@ -253,7 +253,7 @@ Creates a new QgsFilledMarkerSymbolLayerWidget.
     virtual QgsSymbolLayer *symbolLayer();
 
 
-  protected:
+  protected slots:
 
 };
 
@@ -300,7 +300,7 @@ Applies the color ramp passed on by the color ramp button
     void setCoordinateMode( int index );
     void setGradientSpread( int index );
 
-  protected:
+  protected slots:
 
 };
 
@@ -339,7 +339,7 @@ Creates a new QgsShapeburstFillSymbolLayerWidget.
     void setColor( const QColor &color );
     void setColor2( const QColor &color );
 
-  protected:
+  protected slots:
 
 };
 
@@ -381,7 +381,7 @@ Creates a new QgsMarkerLineSymbolLayerWidget.
     void setInterval( double val );
     void setOffsetAlongLine( double val );
 
-  protected:
+  protected slots:
 
 
 };
@@ -472,7 +472,7 @@ Sets the dynamic SVG parameters
 %End
 
 
-  protected:
+  protected slots:
 
  void populateList() /Deprecated/;
 %Docstring
@@ -531,7 +531,7 @@ Creates a new QgsRasterMarkerSymbolLayerWidget.
     virtual void setContext( const QgsSymbolWidgetContext &context );
 
 
-  protected:
+  protected slots:
 
 
 };
@@ -567,7 +567,7 @@ Creates a new QgsRasterFillSymbolLayerWidget.
     virtual QgsSymbolLayer *symbolLayer();
 
 
-  protected:
+  protected slots:
 
 };
 
@@ -604,7 +604,7 @@ Creates a new QgsSVGFillSymbolLayerWidget.
     virtual void setContext( const QgsSymbolWidgetContext &context );
 
 
-  protected:
+  protected slots:
 
     void updateParamGui( bool resetValues = true );
 %Docstring
@@ -648,7 +648,7 @@ Creates a new QgsLinePatternFillSymbolLayerWidget.
     virtual QgsSymbolLayer *symbolLayer();
 
 
-  protected:
+  protected slots:
 
 };
 
@@ -683,7 +683,7 @@ Creates a new QgsPointPatternFillSymbolLayerWidget.
     virtual QgsSymbolLayer *symbolLayer();
 
 
-  protected:
+  protected slots:
 
 };
 
@@ -788,7 +788,7 @@ Set the font marker character from a text string.
 .. versionadded:: 3.8
 %End
 
-  protected:
+  protected slots:
 
 };
 
@@ -824,7 +824,7 @@ Creates a new QgsCentroidFillSymbolLayerWidget.
     virtual QgsSymbolLayer *symbolLayer();
 
 
-  protected:
+  protected slots:
 
 };
 

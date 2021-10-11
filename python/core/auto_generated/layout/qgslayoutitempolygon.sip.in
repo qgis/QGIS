@@ -71,7 +71,7 @@ Ownership of ``symbol`` is not transferred.
 .. seealso:: :py:func:`symbol`
 %End
 
-  protected:
+  protected slots:
     virtual bool _addNode( int indexPoint, QPointF newPoint, double radius );
 
     virtual bool _removeNode( int nodeIndex );

@@ -382,7 +382,7 @@ Ownership of ``symbol`` is transferred to the rubberband.
 .. versionadded:: 3.20
 %End
 
-  protected:
+  protected slots:
 
     virtual void paint( QPainter *p );
 

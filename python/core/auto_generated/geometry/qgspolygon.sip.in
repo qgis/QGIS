@@ -91,7 +91,7 @@ negative if the point lies outside the polygon.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-  protected:
+  protected slots:
 
 
 };

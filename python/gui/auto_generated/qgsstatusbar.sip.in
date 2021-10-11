@@ -98,7 +98,7 @@ and shown on this status bar too.
 %End
 
 
-  protected:
+  protected slots:
 
     virtual void changeEvent( QEvent *event );
 

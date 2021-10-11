@@ -140,7 +140,7 @@ Defines the current configuration
     virtual void parentFormValueChanged( const QString &attribute, const QVariant &newValue );
 
 
-  protected:
+  protected slots:
     virtual void updateUi();
     virtual void beforeSetRelationFeature( const QgsRelation &newRelation, const QgsFeature &newFeature );
 

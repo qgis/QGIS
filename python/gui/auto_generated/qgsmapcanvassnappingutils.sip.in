@@ -33,7 +33,7 @@ Construct map canvas snapping utils object
                if ``False`` it will block until indexing is done
 %End
 
-  protected:
+  protected slots:
     virtual void prepareIndexStarting( int count );
 
     virtual void prepareIndexProgress( int index );

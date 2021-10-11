@@ -131,7 +131,7 @@ Sets the color to show in an optional "previous color" section
 :param color: previous color
 %End
 
-  protected:
+  protected slots:
 
     virtual void hideEvent( QHideEvent *e );
 

@@ -182,7 +182,7 @@ Emitted when an error occurs which prevented the layer being exported (or if
 the task is canceled). The export ``error`` and ``errorMessage`` will be reported.
 %End
 
-  protected:
+  protected slots:
 
     virtual bool run();
 

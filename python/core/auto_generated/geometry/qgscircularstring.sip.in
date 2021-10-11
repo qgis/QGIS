@@ -218,7 +218,7 @@ Appends the contents of another circular ``string`` to the end of this circular 
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-  protected:
+  protected slots:
 
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     virtual QgsRectangle calculateBoundingBox() const;

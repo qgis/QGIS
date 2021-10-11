@@ -410,7 +410,7 @@ Returns a list of dataset indexes of the dataset in a specific dataset group tha
 .. versionadded:: 3.22
 %End
 
-  protected:
+  protected slots:
 };
 
 

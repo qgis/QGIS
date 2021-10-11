@@ -120,7 +120,7 @@ with a format which differs per subclass (e.g. rectangles may describe
 a size using width and height, while circles may describe a size by radius).
 %End
 
-  protected:
+  protected slots:
 
     QRectF updateRect( QPointF start, QPointF position, bool constrainSquare, bool fromCenter );
 %Docstring

@@ -88,7 +88,7 @@ from the XML file with a matching name.
 .. versionadded:: 2.9
 %End
 
-  protected:
+  protected slots:
     virtual void setSymbolLevels( const QgsLegendSymbolList &levels, bool enabled );
 
 
@@ -97,7 +97,7 @@ from the XML file with a matching name.
     virtual void pasteSymbolToSelection();
 
 
-  protected:
+  protected slots:
 
     void updateUiFromRenderer();
 
@@ -132,7 +132,7 @@ Applies current symbol to selected categories, or to all categories if none is s
     virtual void keyPressEvent( QKeyEvent *event );
 
 
-  protected:
+  protected slots:
 
 
 

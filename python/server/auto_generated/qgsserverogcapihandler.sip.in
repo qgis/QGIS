@@ -255,7 +255,7 @@ Returns a vector layer from the ``collectionId`` in the given ``context``.
 
 
 
-  protected:
+  protected slots:
 
     void setContentTypesInt( const QList<int> &contentTypes ) /PyName=setContentTypes/;
 %Docstring

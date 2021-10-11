@@ -706,7 +706,7 @@ Emit a message to be displayed on status bar, usually used by network providers 
 .. versionadded:: 2.14
 %End
 
-  protected:
+  protected slots:
 
 
 

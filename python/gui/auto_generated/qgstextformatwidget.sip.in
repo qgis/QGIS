@@ -113,14 +113,15 @@ Emitted when an auxiliary field is created in the widget.
 .. versionadded:: 3.10
 %End
 
-  protected:
+  protected slots:
 
+protected:
     enum Mode
     {
       Text,
       Labeling,
     };
-
+protected slots:
     QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent /TransferThis/, Mode mode, QgsVectorLayer *layer = 0 );
 %Docstring
 Constructor for QgsTextFormatWidget.

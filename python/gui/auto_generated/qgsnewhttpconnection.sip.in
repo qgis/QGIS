@@ -76,8 +76,9 @@ Returns the current connection url.
     virtual void accept();
 
 
-  protected:
+  protected slots:
 
+protected:
     enum WfsVersionIndex
     {
       WFS_VERSION_MAX,
@@ -86,7 +87,7 @@ Returns the current connection url.
       WFS_VERSION_2_0,
       WFS_VERSION_API_FEATURES_1_0,
     };
-
+protected slots:
     virtual bool validate();
 %Docstring
 Returns ``True`` if dialog settings are valid, or ``False`` if current

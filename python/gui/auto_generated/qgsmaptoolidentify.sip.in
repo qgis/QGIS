@@ -139,7 +139,7 @@ this menu can also be customized
     void identifyMessage( const QString & );
     void changedRasterResults( QList<QgsMapToolIdentify::IdentifyResult> & );
 
-  protected:
+  protected slots:
 
     QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode,  const QList<QgsMapLayer *> &layerList, LayerType layerType = AllLayers, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
 %Docstring

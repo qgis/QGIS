@@ -50,7 +50,7 @@ Constructor for QgsDefaultSearchWidgetWrapper
     virtual void setExpression( const QString &exp );
 
 
-  protected:
+  protected slots:
     virtual QWidget *createWidget( QWidget *parent );
 
     virtual void initWidget( QWidget *editor );

@@ -435,7 +435,7 @@ Any existing values in this object will be overwritten by non-empty values from 
 .. versionadded:: 3.20
 %End
 
-  protected:
+  protected slots:
 
     QgsAbstractMetadataBase();
 %Docstring

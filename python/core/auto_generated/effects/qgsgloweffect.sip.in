@@ -325,7 +325,7 @@ color ramp or by specificing a single color.
 %End
 
 
-  protected:
+  protected slots:
 
     virtual QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const;
 
@@ -374,7 +374,7 @@ Creates a new QgsOuterGlowEffect effect from a properties string map.
     virtual QgsOuterGlowEffect *clone() const /Factory/;
 
 
-  protected:
+  protected slots:
 
     virtual bool shadeExterior() const;
 
@@ -410,7 +410,7 @@ Creates a new QgsInnerGlowEffect effect from a properties string map.
     virtual QgsInnerGlowEffect *clone() const /Factory/;
 
 
-  protected:
+  protected slots:
 
     virtual bool shadeExterior() const;
 

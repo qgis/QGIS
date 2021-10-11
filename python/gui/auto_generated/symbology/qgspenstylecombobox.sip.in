@@ -21,7 +21,7 @@ class QgsPenStyleComboBox : QComboBox
 
     void setPenStyle( Qt::PenStyle style );
 
-  protected:
+  protected slots:
     QIcon iconForPen( Qt::PenStyle style );
 
 };

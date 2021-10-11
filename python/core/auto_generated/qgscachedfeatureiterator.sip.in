@@ -46,7 +46,7 @@ Close this iterator. No further features will be available.
 :return: ``True`` if successful
 %End
 
-  protected:
+  protected slots:
 
     virtual bool fetchFeature( QgsFeature &f );
 
@@ -108,7 +108,7 @@ Close this iterator. No further features will be available.
 :return: ``True`` if successful
 %End
 
-  protected:
+  protected slots:
 
     virtual bool fetchFeature( QgsFeature &f );
 

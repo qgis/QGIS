@@ -179,7 +179,7 @@ Returns an icon that should be shown for this kind of error.
 
 .. versionadded:: 3.8
 %End
-  protected:
+  protected slots:
 
     QgsGeometryCheckError( const QgsGeometryCheck *check,
                            const QString &layerId,

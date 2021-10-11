@@ -21,7 +21,7 @@ Calculates total curvature as described by Wilson, Gallant (2000): terrain analy
   public:
     QgsTotalCurvatureFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat );
 
-  protected:
+  protected slots:
 
      virtual float processNineCellWindow( float *x11, float *x21, float *x31,
                                  float *x12, float *x22, float *x32,

@@ -244,7 +244,7 @@ All fields will be used if ``None`` is returned.
 .. versionadded:: 2.6
 %End
 
-  protected:
+  protected slots:
 
 
 

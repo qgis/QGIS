@@ -38,7 +38,7 @@ Constructor.
 Returns the underlying property definition.
 %End
 
-  protected:
+  protected slots:
     virtual void accept();
 
 

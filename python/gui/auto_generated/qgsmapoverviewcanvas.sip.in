@@ -55,7 +55,7 @@ Returns list of layers visible in the overview
 Triggered when a layer in the overview requests a repaint.
 %End
 
-  protected:
+  protected slots:
 
     void drawExtentRect();
 %Docstring

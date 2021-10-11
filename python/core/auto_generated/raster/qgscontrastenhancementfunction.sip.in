@@ -76,7 +76,7 @@ Returns the minimum value.
 .. versionadded:: 3.2
 %End
 
-  protected:
+  protected slots:
 
 
 

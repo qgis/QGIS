@@ -98,7 +98,7 @@ The old renderer does not have to be of the same type as returned by :py:func:`~
 
     virtual QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, QgsWkbTypes::GeometryType geomType ) /Factory/;
 
-  protected:
+  protected slots:
 };
 
 
@@ -128,7 +128,7 @@ Convenience metadata class that uses static functions to create renderer and its
 
     virtual QgsRendererAbstractMetadata::LayerTypes compatibleLayerTypes() const;
 
-  protected:
+  protected slots:
 
   private:
     QgsRendererMetadata();

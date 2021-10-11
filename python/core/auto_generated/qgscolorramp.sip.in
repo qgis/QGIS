@@ -292,7 +292,7 @@ Copy color ramp stops to a QGradient
 .. versionadded:: 2.1
 %End
 
-  protected:
+  protected slots:
 };
 
 
@@ -461,7 +461,7 @@ Sets the maximum value for generated colors
 .. seealso:: :py:func:`valMax`
 %End
 
-  protected:
+  protected slots:
 };
 
 class QgsRandomColorRamp: QgsColorRamp
@@ -519,7 +519,7 @@ Returns the string identifier for QgsRandomColorRamp.
     virtual QVariantMap properties() const;
 
 
-  protected:
+  protected slots:
 
 
 };
@@ -717,7 +717,7 @@ color brewer scheme name
 .. seealso:: :py:func:`listSchemeNames`
 %End
 
-  protected:
+  protected slots:
 
     void loadPalette();
 %Docstring
@@ -808,7 +808,7 @@ Returns the string identifier for QgsCptCityColorRamp.
     QString descFileName() const;
     QgsStringMap copyingInfo() const;
 
-  protected:
+  protected slots:
 
 };
 

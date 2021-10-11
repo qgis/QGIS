@@ -434,7 +434,7 @@ Creates a set of legend nodes representing the renderer.
 Returns a list of all rule keys for legend nodes created by the renderer.
 %End
 
-  protected:
+  protected slots:
 
     static void pointXY( QgsPointCloudRenderContext &context, const char *ptr, int i, double &x, double &y );
 %Docstring

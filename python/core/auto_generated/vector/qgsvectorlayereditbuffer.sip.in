@@ -270,7 +270,7 @@ Emitted after committing an attribute rename
     void committedAttributeValuesChanges( const QString &layerId, const QgsChangedAttributesMap &changedAttributesValues );
     void committedGeometriesChanges( const QString &layerId, const QgsGeometryMap &changedGeometries );
 
-  protected:
+  protected slots:
 
     QgsVectorLayerEditBuffer();
 %Docstring
@@ -304,7 +304,7 @@ Updates an index in an attribute map to a new value (for updates of changed attr
 
     void updateLayerFields();
 
-  protected:
+  protected slots:
 
 
 

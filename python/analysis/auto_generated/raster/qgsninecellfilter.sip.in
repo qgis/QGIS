@@ -75,7 +75,7 @@ First index of the input cell is the row, second index is the column
 :return: the calculated cell value for the central cell x22
 %End
 
-  protected:
+  protected slots:
 
 
 };
