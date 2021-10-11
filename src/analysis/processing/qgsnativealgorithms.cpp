@@ -175,6 +175,7 @@
 #include "qgsalgorithmsetmvalue.h"
 #include "qgsalgorithmsetvariable.h"
 #include "qgsalgorithmsetzvalue.h"
+#include "qgsalgorithmshortestline.h"
 #include "qgsalgorithmshortestpathlayertopoint.h"
 #include "qgsalgorithmshortestpathpointtolayer.h"
 #include "qgsalgorithmshortestpathpointtopoint.h"
@@ -457,6 +458,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsSetProjectVariableAlgorithm() );
   addAlgorithm( new QgsSetZValueAlgorithm() );
   addAlgorithm( new QgsShapefileEncodingInfoAlgorithm() );
+  addAlgorithm( new QgsShortestLineAlgorithm() );
   addAlgorithm( new QgsShortestPathLayerToPointAlgorithm() );
   addAlgorithm( new QgsShortestPathPointToLayerAlgorithm() );
   addAlgorithm( new QgsShortestPathPointToPointAlgorithm() );
