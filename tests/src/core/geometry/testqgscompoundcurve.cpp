@@ -453,25 +453,25 @@ void TestQgsCompoundCurve::compoundCurve()
   c9.moveVertex( QgsVertexId( 0, 0, 11 ), QgsPoint( 71.0, 2 ) ); //out of range
 
   QgsPoint p;
-  QgsVertexId::VertexType type;
+  Qgis::VertexType type;
   QVERIFY( !c9.pointAt( -1, p, type ) );
   QVERIFY( !c9.pointAt( 11, p, type ) );
   QVERIFY( c9.pointAt( 0, p, type ) );
   QCOMPARE( p.z(), 3.0 );
   QCOMPARE( p.m(), 4.0 );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
   QVERIFY( c9.pointAt( 1, p, type ) );
   QCOMPARE( p.z(), 13.0 );
   QCOMPARE( p.m(), 14.0 );
-  QCOMPARE( type, QgsVertexId::CurveVertex );
+  QCOMPARE( type, Qgis::VertexType::Curve );
   QVERIFY( c9.pointAt( 2, p, type ) );
   QCOMPARE( p.z(), 23.0 );
   QCOMPARE( p.m(), 24.0 );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
   QVERIFY( c9.pointAt( 3, p, type ) );
   QCOMPARE( p.z(), 13.0 );
   QCOMPARE( p.m(), 14.0 );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
 
   //equality
   QgsCompoundCurve e1;
@@ -893,7 +893,7 @@ void TestQgsCompoundCurve::compoundCurve()
   c22.addCurve( ls21.clone() );
   c22.transform( tr, Qgis::TransformDirection::Forward );
   QgsPoint pt;
-  QgsVertexId::VertexType v;
+  Qgis::VertexType v;
   c22.pointAt( 0, pt, v );
   QGSCOMPARENEAR( pt.x(), 175.771, 0.001 );
   QGSCOMPARENEAR( pt.y(), -39.724, 0.001 );
@@ -1567,19 +1567,19 @@ void TestQgsCompoundCurve::compoundCurve()
   QVERIFY( !c33.pointAt( 10, p, type ) );
   QVERIFY( c33.pointAt( 0, p, type ) );
   QCOMPARE( p, QgsPoint( 1, 2 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
   QVERIFY( c33.pointAt( 1, p, type ) );
   QCOMPARE( p, QgsPoint( 11, 12 ) );
-  QCOMPARE( type, QgsVertexId::CurveVertex );
+  QCOMPARE( type, Qgis::VertexType::Curve );
   QVERIFY( c33.pointAt( 2, p, type ) );
   QCOMPARE( p, QgsPoint( 1, 22 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
   QgsLineString ls33;
   ls33.setPoints( QgsPointSequence() << QgsPoint( 1, 22 ) << QgsPoint( 3, 34 ) );
   c33.addCurve( ls33.clone() );
   QVERIFY( c33.pointAt( 3, p, type ) );
   QCOMPARE( p, QgsPoint( 3, 34 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
 
   c33.clear();
   //CircularStringZ
@@ -1590,13 +1590,13 @@ void TestQgsCompoundCurve::compoundCurve()
   QCOMPARE( c33.vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( QgsWkbTypes::PointZ, 1, 22, 23 ) );
   QVERIFY( c33.pointAt( 0, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
   QVERIFY( c33.pointAt( 1, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZ, 11, 12, 13 ) );
-  QCOMPARE( type, QgsVertexId::CurveVertex );
+  QCOMPARE( type, Qgis::VertexType::Curve );
   QVERIFY( c33.pointAt( 2, p, type ) );
   QCOMPARE( p, QgsPoint( 1, 22, 23 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
 
   //CircularStringM
   c33.clear();
@@ -1607,13 +1607,13 @@ void TestQgsCompoundCurve::compoundCurve()
   QCOMPARE( c33.vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( QgsWkbTypes::PointM, 1, 22, 0, 24 ) );
   QVERIFY( c33.pointAt( 0, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 4 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
   QVERIFY( c33.pointAt( 1, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointM, 11, 12, 0, 14 ) );
-  QCOMPARE( type, QgsVertexId::CurveVertex );
+  QCOMPARE( type, Qgis::VertexType::Curve );
   QVERIFY( c33.pointAt( 2, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointM, 1, 22, 0, 24 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
   //CircularStringZM
   l33.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ) << QgsPoint( QgsWkbTypes::PointZM, 11, 12, 13, 14 ) << QgsPoint( QgsWkbTypes::PointZM, 1, 22, 23, 24 ) );
   c33.clear();
@@ -1623,13 +1623,13 @@ void TestQgsCompoundCurve::compoundCurve()
   QCOMPARE( c33.vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 22, 23, 24 ) );
   QVERIFY( c33.pointAt( 0, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
   QVERIFY( c33.pointAt( 1, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZM, 11, 12, 13, 14 ) );
-  QCOMPARE( type, QgsVertexId::CurveVertex );
+  QCOMPARE( type, Qgis::VertexType::Curve );
   QVERIFY( c33.pointAt( 2, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZM, 1, 22, 23, 24 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
 
   //centroid
   QgsCircularString l34;

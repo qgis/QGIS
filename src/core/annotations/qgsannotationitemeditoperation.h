@@ -21,7 +21,7 @@
 #include "qgis_sip.h"
 #include "qgis.h"
 #include "qgspointxy.h"
-#include "qgsabstractgeometry.h"
+#include "qgsvertexid.h"
 #include "qgsgeometry.h"
 
 /**

@@ -19,6 +19,7 @@
 #include "qgslinestring.h"
 #include "qgsmultipoint.h"
 #include "qgspoint.h"
+#include "qgsvertexid.h"
 
 #include "testgeometryutils.h"
 

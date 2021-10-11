@@ -613,7 +613,7 @@ bool QgsCurvePolygon::removeDuplicateNodes( double epsilon, bool useZValues )
     if ( ring->removeDuplicateNodes( epsilon, useZValues ) )
     {
       QgsPoint startPoint;
-      QgsVertexId::VertexType type;
+      Qgis::VertexType type;
       ring->pointAt( 0, startPoint, type );
       // ensure ring is properly closed - if we removed the final node, it may no longer be properly closed
       ring->moveVertex( QgsVertexId( -1, -1, ring->numPoints() - 1 ), startPoint );

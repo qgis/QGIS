@@ -609,6 +609,12 @@ The development version
       GlowSpread,
     };
 
+    enum class VertexType
+      {
+      Segment,
+      Curve,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

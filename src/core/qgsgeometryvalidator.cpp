@@ -22,6 +22,7 @@ email                : jef at norbit dot de
 #include "qgspolygon.h"
 #include "qgscurvepolygon.h"
 #include "qgscurve.h"
+#include "qgsvertexid.h"
 
 QgsGeometryValidator::QgsGeometryValidator( const QgsGeometry &geometry, QVector<QgsGeometry::Error> *errors, Qgis::GeometryValidationEngine method )
   : mGeometry( geometry )

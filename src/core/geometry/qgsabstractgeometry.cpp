@@ -20,6 +20,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmaptopixel.h"
 #include "qgspoint.h"
 #include "qgsgeometrycollection.h"
+#include "qgsvertexid.h"
 
 #include <nlohmann/json.hpp>
 #include <limits>
@@ -469,7 +470,7 @@ QgsVertexId QgsAbstractGeometry::vertex_iterator::vertexId() const
   }
 
   // get the vertex type: find out from the leaf geometry
-  QgsVertexId::VertexType vertexType = QgsVertexId::SegmentVertex;
+  Qgis::VertexType vertexType = Qgis::VertexType::Segment;
   if ( const QgsCurve *curve = dynamic_cast<const QgsCurve *>( levels[depth].g ) )
   {
     QgsPoint p;

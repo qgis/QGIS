@@ -809,7 +809,7 @@ bool QgsCompoundCurve::deleteVertex( QgsVertexId position )
          mCurves.at( curveIds.at( 1 ).first )->numPoints() > 3 )
     {
       QgsPoint intermediatePoint;
-      QgsVertexId::VertexType type;
+      Qgis::VertexType type;
       mCurves.at( curveIds.at( 1 ).first ) ->pointAt( 2, intermediatePoint, type );
       mCurves.at( curveIds.at( 0 ).first )->moveVertex(
         QgsVertexId( 0, 0, mCurves.at( curveIds.at( 0 ).first )->numPoints() - 1 ), intermediatePoint );
@@ -1013,7 +1013,7 @@ double QgsCompoundCurve::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt
   return QgsGeometryUtils::closestSegmentFromComponents( mCurves, QgsGeometryUtils::Vertex, pt, segmentPt, vertexAfter, leftOf, epsilon );
 }
 
-bool QgsCompoundCurve::pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const
+bool QgsCompoundCurve::pointAt( int node, QgsPoint &point, Qgis::VertexType &type ) const
 {
   int currentVertexId = 0;
   for ( int j = 0; j < mCurves.size(); ++j )

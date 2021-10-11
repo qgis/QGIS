@@ -1802,8 +1802,8 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
 
       scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum, true ) );
 
-      if ( ( placement == QgsTemplatedLineSymbolLayerBase::Vertex && vId.type == QgsVertexId::SegmentVertex )
-           || ( placement == QgsTemplatedLineSymbolLayerBase::CurvePoint && vId.type == QgsVertexId::CurveVertex ) )
+      if ( ( placement == QgsTemplatedLineSymbolLayerBase::Vertex && vId.type == Qgis::VertexType::Segment )
+           || ( placement == QgsTemplatedLineSymbolLayerBase::CurvePoint && vId.type == Qgis::VertexType::Curve ) )
       {
         //transform
         x = vPoint.x();
