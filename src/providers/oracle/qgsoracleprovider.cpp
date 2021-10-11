@@ -2188,7 +2188,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
                 }
 
                 QgsPoint p;
-                QgsVertexId::VertexType ignored;
+                Qgis::VertexType ignored;
                 lineCurve->pointAt( i, p, ignored );
                 g.ordinates << p.x();
                 g.ordinates << p.y();
