@@ -266,6 +266,8 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
   connect( pasteShortcut, &QShortcut::activated, this, &QgsStyleManagerDialog::pasteItem );
   QShortcut *removeShortcut = new QShortcut( QKeySequence( QKeySequence::StandardKey::Delete ), this );
   connect( removeShortcut, &QShortcut::activated, this, &QgsStyleManagerDialog::removeItem );
+  QShortcut *editShortcut = new QShortcut( QKeySequence( Qt::Key_Return ), this );
+  connect( editShortcut, &QShortcut::activated, this, &QgsStyleManagerDialog::editItem );
 
   shareMenu->addSeparator();
   shareMenu->addAction( actnExportAsPNG );
