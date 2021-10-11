@@ -836,7 +836,7 @@ corresponds to the last point in the line.
 
     QgsBox3d calculateBoundingBox3d() const;
 %Docstring
-Calculates the minimal 3d bounding box for the geometry.
+Calculates the minimal 3D bounding box for the geometry.
 
 .. seealso:: :py:func:`calculateBoundingBox`
 
