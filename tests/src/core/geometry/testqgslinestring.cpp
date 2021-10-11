@@ -19,6 +19,7 @@
 #include <QString>
 
 #include "qgscircularstring.h"
+#include "qgsfeedback.h"
 #include "qgsgeometryutils.h"
 #include "qgslinesegment.h"
 #include "qgslinestring.h"
@@ -97,6 +98,7 @@ class TestQgsLineString: public QObject
     void segmentLength();
     void boundingBoxIntersects();
     void orientation();
+    void collectDuplicateNodes();
     void removeDuplicateNodes();
     void swapXy();
     void filterVertices();
@@ -1363,10 +1365,24 @@ void TestQgsLineString::CRSTransform()
   QGSCOMPARENEAR( ls.boundingBox().xMaximum(), 176.959, 0.001 );
   QGSCOMPARENEAR( ls.boundingBox().yMaximum(), -38.7999, 0.001 );
 
-  //3d CRS transform
+  //3d CRS transform without considering Z
   ls = QgsLineString( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 6374985, -3626584, 1, 2 )
                       << QgsPoint( QgsWkbTypes::PointZM, 6474985, -3526584, 3, 4 ) );
   ls.transform( tr, QgsCoordinateTransform::ForwardTransform );
+
+  QGSCOMPARENEAR( ls.pointN( 0 ).x(), 175.771, 0.001 );
+  QGSCOMPARENEAR( ls.pointN( 0 ).y(), -39.724, 0.001 );
+  QGSCOMPARENEAR( ls.pointN( 0 ).z(), 1.0, 0.001 );
+  QCOMPARE( ls.pointN( 0 ).m(), 2.0 );
+  QGSCOMPARENEAR( ls.pointN( 1 ).x(), 176.959, 0.001 );
+  QGSCOMPARENEAR( ls.pointN( 1 ).y(), -38.7999, 0.001 );
+  QGSCOMPARENEAR( ls.pointN( 1 ).z(), 3.0, 0.001 );
+  QCOMPARE( ls.pointN( 1 ).m(), 4.0 );
+
+  //3d CRS transform with Z
+  ls = QgsLineString( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 6374985, -3626584, 1, 2 )
+                      << QgsPoint( QgsWkbTypes::PointZM, 6474985, -3526584, 3, 4 ) );
+  ls.transform( tr, QgsCoordinateTransform::ForwardTransform, true );
 
   QGSCOMPARENEAR( ls.pointN( 0 ).x(), 175.771, 0.001 );
   QGSCOMPARENEAR( ls.pointN( 0 ).y(), -39.724, 0.001 );
@@ -2517,6 +2533,34 @@ void TestQgsLineString::segmentLength()
   QCOMPARE( ls.segmentLength( QgsVertexId( 1, 1, 1 ) ), 100.0 );
 }
 
+void TestQgsLineString::collectDuplicateNodes()
+{
+  QgsLineString ls;
+
+  // with only one point
+  ls.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) );
+  QVERIFY( ls.collectDuplicateNodes( 0.0, false ).isEmpty() );
+
+
+  ls.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3 )
+                << QgsPoint( 1, 3, 3 ) << QgsPoint( 1, 3, 5 )
+                << QgsPoint( 2, 4, 3 ) << QgsPoint( 2, 4, 3 )
+                << QgsPoint( 4, 5, 6 ) );
+
+  // without considering Z
+  QVector< QgsVertexId > duplicateNodes = ls.collectDuplicateNodes( 0.1, false );
+
+  QCOMPARE( duplicateNodes.size(), 2 );
+  QCOMPARE( duplicateNodes[0], QgsVertexId( -1, -1, 2 ) );
+  QCOMPARE( duplicateNodes[1], QgsVertexId( -1, -1, 4 ) );
+
+  // considering Z
+  duplicateNodes = ls.collectDuplicateNodes( 0.1, true );
+
+  QCOMPARE( duplicateNodes.size(), 1 );
+  QCOMPARE( duplicateNodes[0], QgsVertexId( -1, -1, 4 ) );
+}
+
 void TestQgsLineString::removeDuplicateNodes()
 {
   QgsLineString ls;
@@ -2625,6 +2669,7 @@ void TestQgsLineString::transformVertices()
   TestTransformer transformer;
 
   // no crash
+  QVERIFY( !ls.transform( nullptr ) );
   QVERIFY( ls.transform( &transformer ) );
 
   ls.setPoints( QgsPointSequence()  << QgsPoint( 11, 2, 3, 4, QgsWkbTypes::PointZM )
@@ -2634,6 +2679,10 @@ void TestQgsLineString::transformVertices()
 
   QVERIFY( ls.transform( &transformer ) );
   QCOMPARE( ls.asWkt( 2 ), QStringLiteral( "LineStringZM (33 16 8 3, 3 16 8 3, 12 26 18 13, 333 26 28 23)" ) );
+
+  QgsFeedback feedback;
+  feedback.cancel();
+  QVERIFY( !ls.transform( &transformer, &feedback ) );
 
   TestFailTransformer failTransformer;
   QVERIFY( !ls.transform( &failTransformer ) );
