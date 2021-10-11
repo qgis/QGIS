@@ -48,7 +48,7 @@ class QgsAuthApiHeaderMethod : public QgsAuthMethod
                                const QString &dataprovider = QString() ) override;
 
     void clearCachedConfig( const QString &authcfg ) override;
-    void updateMethodConfig( QgsAuthMethodConfig &mconfig ) override;
+    void updateMethodConfig( QgsAuthMethodConfig &config ) override;
 
 #ifdef HAVE_GUI
     QWidget *editWidget( QWidget *parent )const override;
@@ -57,7 +57,7 @@ class QgsAuthApiHeaderMethod : public QgsAuthMethod
   private:
     QgsAuthMethodConfig getMethodConfig( const QString &authcfg, bool fullconfig = true );
 
-    void putMethodConfig( const QString &authcfg, const QgsAuthMethodConfig &mconfig );
+    void putMethodConfig( const QString &authcfg, const QgsAuthMethodConfig &config );
 
     void removeMethodConfig( const QString &authcfg );
 
