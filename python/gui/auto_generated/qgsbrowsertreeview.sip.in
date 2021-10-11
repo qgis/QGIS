@@ -48,7 +48,7 @@ Returns the browser model
 
     void setSettingsSection( const QString &section );
 
-  protected:
+  protected slots:
 
     virtual void keyPressEvent( QKeyEvent *event );
 
