@@ -387,7 +387,7 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
                                     ) = 0;
 
     /**
-     * Returns the dataset index of the dataset in a specific dataet group at \a time from the \a reference time
+     * Returns the dataset index of the dataset in a specific dataset group at \a time from the \a reference time
      *
      * \param referenceTime the reference time from where to find the dataset
      * \param groupIndex the index of the dataset group
@@ -398,7 +398,7 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
      */
     QgsMeshDatasetIndex datasetIndexAtTime( const QDateTime &referenceTime,
                                             int groupIndex,
-                                            quint64 time,
+                                            qint64 time,
                                             QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod method ) const;
 
   protected:

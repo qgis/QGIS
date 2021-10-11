@@ -379,10 +379,10 @@ On success, the mesh's dataset group count is changed
 
     QgsMeshDatasetIndex datasetIndexAtTime( const QDateTime &referenceTime,
                                             int groupIndex,
-                                            quint64 time,
+                                            qint64 time,
                                             QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod method ) const;
 %Docstring
-Returns the dataset index of the dataset in a specific dataet group at ``time`` from the ``reference`` time
+Returns the dataset index of the dataset in a specific dataset group at ``time`` from the ``reference`` time
 
 :param referenceTime: the reference time from where to find the dataset
 :param groupIndex: the index of the dataset group

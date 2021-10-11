@@ -48,14 +48,14 @@ QgsMeshDriverMetadata QgsMeshDataProvider::driverMetadata() const { return QgsMe
 
 QgsMeshDatasetIndex QgsMeshDatasetSourceInterface::datasetIndexAtTime(
   const QDateTime &referenceTime,
-  int groupIndex, quint64 time,
+  int groupIndex, qint64 time,
   QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod method ) const
 {
   const QDateTime requestDateTime = referenceTime.addMSecs( time );
-  quint64 providerTime;
+  qint64 providerTime;
   const QDateTime providerReferenceTime = mTemporalCapabilities->referenceTime();
-  if ( mTemporalCapabilities->referenceTime().isValid() )
-    providerTime = referenceTime.msecsTo( requestDateTime );
+  if ( providerReferenceTime.isValid() )
+    providerTime = providerReferenceTime.msecsTo( requestDateTime );
   else
     providerTime = time;
 

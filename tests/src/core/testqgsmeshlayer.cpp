@@ -1839,8 +1839,8 @@ void TestQgsMeshLayer::test_temporal()
   const QDateTime end = QDateTime( QDate( 1990, 1, 1 ), QTime( 6, 0, 1, 938 ), Qt::UTC );
   QCOMPARE( tempCap->timeExtent(), QgsDateTimeRange( begin, end ) );
 
-  const QDateTime time_1 = QDateTime( QDate( 1990, 1, 1 ), QTime( 3, 0, 0 ), Qt::UTC );
-  const QDateTime time_2 = time_1.addSecs( 300 );
+  QDateTime time_1 = QDateTime( QDate( 1990, 1, 1 ), QTime( 3, 0, 0 ), Qt::UTC );
+  QDateTime time_2 = time_1.addSecs( 300 );
   QgsMeshRendererSettings settings = mMdal3DLayer->rendererSettings();
   // Static dataset (bed elevation)
   settings.setActiveScalarDatasetGroup( 0 ); //static dataset (bed elevation)
@@ -1856,12 +1856,29 @@ void TestQgsMeshLayer::test_temporal()
   QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), 17 );
   mMdal3DLayer->setTemporalMatchingMethod( QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetFromStartRangeTime );
   QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), 18 );
+  QCOMPARE( mMdal3DLayer->datasetIndexAtRelativeTime( QgsInterval( 3, QgsUnitTypes::TemporalHours ), 1 ), QgsMeshDatasetIndex( 1, 18 ) );
   // Next dataset
   mMdal3DLayer->setTemporalMatchingMethod( QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetBeforeStartRangeTime );
   QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1.addSecs( 400 ), time_2.addSecs( 400 ) ) ).dataset(), 18 );
   mMdal3DLayer->setTemporalMatchingMethod( QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetFromStartRangeTime );
   QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1.addSecs( 400 ), time_2.addSecs( 400 ) ) ).dataset(), 19 );
-  mMdal3DLayer->temporalProperties();
+
+  // change reference time
+  QgsMeshLayerTemporalProperties *tempProp = static_cast<QgsMeshLayerTemporalProperties *>( mMdal3DLayer->temporalProperties() );
+  tempProp->setReferenceTime( QDateTime( QDate( 1980, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ), mMdal3DLayer->dataProvider()->temporalCapabilities() );
+  QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), -1 );
+  QCOMPARE( mMdal3DLayer->datasetIndexAtRelativeTime( QgsInterval( 3, QgsUnitTypes::TemporalHours ), 1 ), QgsMeshDatasetIndex( 1, 18 ) );
+  time_1 = QDateTime( QDate( 1980, 1, 1 ), QTime( 3, 0, 0 ), Qt::UTC );
+  time_2 = time_1.addSecs( 300 );
+  QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), 18 );
+  QCOMPARE( mMdal3DLayer->datasetIndexAtRelativeTime( QgsInterval( 3, QgsUnitTypes::TemporalHours ), 1 ), QgsMeshDatasetIndex( 1, 18 ) );
+
+  tempProp->setReferenceTime( QDateTime( QDate( 1995, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ), mMdal3DLayer->dataProvider()->temporalCapabilities() );
+  QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), -1 );
+  time_1 = QDateTime( QDate( 1995, 1, 1 ), QTime( 3, 0, 0 ), Qt::UTC );
+  time_2 = time_1.addSecs( 300 );
+  QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), 18 );
+  QCOMPARE( mMdal3DLayer->datasetIndexAtRelativeTime( QgsInterval( 3, QgsUnitTypes::TemporalHours ), 1 ), QgsMeshDatasetIndex( 1, 18 ) );
 }
 
 QGSTEST_MAIN( TestQgsMeshLayer )
