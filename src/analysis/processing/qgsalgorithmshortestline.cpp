@@ -71,25 +71,25 @@ void QgsShortestLineAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "SOURCE" ), QObject::tr( "Source layer" ), QList<int>() << QgsProcessing::TypeVectorAnyGeometry ) );
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "DESTINATION" ), QObject::tr( "Destination layer" ), QList<int>() << QgsProcessing::TypeVectorAnyGeometry ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "NEIGHBORS" ), QObject::tr( "Maximum number of neighbors" ), QgsProcessingParameterNumber::Integer, 1, false, 1) );
-  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "DISTANCE"), QObject::tr( "Maximum distance" ), QVariant(), QString("SOURCE"), true ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr("Shortest lines") ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "NEIGHBORS" ), QObject::tr( "Maximum number of neighbors" ), QgsProcessingParameterNumber::Integer, 1, false, 1 ) );
+  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "DISTANCE" ), QObject::tr( "Maximum distance" ), QVariant(), QString( "SOURCE" ), true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Shortest lines" ) ) );
 }
 
 bool QgsShortestLineAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mSource.reset( parameterAsSource( parameters, QStringLiteral( "SOURCE" ), context) );
+  mSource.reset( parameterAsSource( parameters, QStringLiteral( "SOURCE" ), context ) );
   if ( !mSource )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "SOURCE" ) ) );
 
-  mDestination.reset( parameterAsSource( parameters, QStringLiteral( "DESTINATION" ), context) );
+  mDestination.reset( parameterAsSource( parameters, QStringLiteral( "DESTINATION" ), context ) );
   if ( !mSource )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "DESTINATION" ) ) );
 
   mKNeighbors = parameterAsInt( parameters, QStringLiteral( "NEIGHBORS" ), context );
 
   double paramMaxDist = parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context ); //defaults to zero if not set
-  if(paramMaxDist)
+  if ( paramMaxDist )
     mMaxDistance = paramMaxDist;
 
   return true;
@@ -97,10 +97,10 @@ bool QgsShortestLineAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
 
 QVariantMap QgsShortestLineAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  if(mKNeighbors > mDestination->featureCount())
+  if ( mKNeighbors > mDestination->featureCount() )
     mKNeighbors = mDestination->featureCount();
 
-  QgsFields fields = QgsProcessingUtils::combineFields( mSource->fields(), mDestination->fields());
+  QgsFields fields = QgsProcessingUtils::combineFields( mSource->fields(), mDestination->fields() );
   fields.append( QgsField( QStringLiteral( "distance" ), QVariant::Double ) );
 
   QString dest;
@@ -111,46 +111,46 @@ QVariantMap QgsShortestLineAlgorithm::processAlgorithm( const QVariantMap &param
   QgsFeatureRequest request = QgsFeatureRequest();
   request.setDestinationCrs( mSource->sourceCrs(), context.transformContext() );
 
-  QgsSpatialIndex idx = QgsSpatialIndex( mDestination->getFeatures(request), nullptr, QgsSpatialIndex::FlagStoreFeatureGeometries );
+  QgsSpatialIndex idx = QgsSpatialIndex( mDestination->getFeatures( request ), nullptr, QgsSpatialIndex::FlagStoreFeatureGeometries );
 
   QgsFeatureIterator sourceIterator = mSource->getFeatures();
   double step = mSource->featureCount() > 0 ? 100.0 / mSource->featureCount() : 1;
 
   QgsDistanceArea da = QgsDistanceArea();
-  da.setSourceCrs(mSource->sourceCrs(), context.transformContext());
-  da.setEllipsoid(context.ellipsoid());
+  da.setSourceCrs( mSource->sourceCrs(), context.transformContext() );
+  da.setEllipsoid( context.ellipsoid() );
 
   int i = 0;
   QgsFeature sourceFeature;
   while ( sourceIterator.nextFeature( sourceFeature ) )
   {
-    if(feedback->isCanceled())
+    if ( feedback->isCanceled() )
       break;
 
 
     QgsGeometry sourceGeom = sourceFeature.geometry();
-    QgsFeatureIds nearestIds = idx.nearestNeighbor(sourceGeom, mKNeighbors, mMaxDistance).toSet();
+    QgsFeatureIds nearestIds = idx.nearestNeighbor( sourceGeom, mKNeighbors, mMaxDistance ).toSet();
 
     QgsFeatureRequest targetRequest = QgsFeatureRequest();
     targetRequest.setFilterFids( nearestIds );
 
-    QgsFeatureIterator destinationIterator = mDestination->getFeatures(targetRequest);
+    QgsFeatureIterator destinationIterator = mDestination->getFeatures( targetRequest );
     QgsFeature destinationFeature;
-    while ( destinationIterator.nextFeature(destinationFeature) )
+    while ( destinationIterator.nextFeature( destinationFeature ) )
     {
       QgsGeometry destinationGeom = destinationFeature.geometry();
 
-      QgsGeometry shortestLine = sourceGeom.shortestLine(destinationGeom);
-      double dist = da.measureLength(shortestLine);
+      QgsGeometry shortestLine = sourceGeom.shortestLine( destinationGeom );
+      double dist = da.measureLength( shortestLine );
 
       QgsFeature f;
 
       QgsAttributes attrs = sourceFeature.attributes();
       attrs << destinationFeature.attributes() << dist;
 
-      f.setAttributes(attrs);
-      f.setGeometry(shortestLine);
-      sink->addFeature(f, QgsFeatureSink::FastInsert);
+      f.setAttributes( attrs );
+      f.setGeometry( shortestLine );
+      sink->addFeature( f, QgsFeatureSink::FastInsert );
     }
 
     i++;
