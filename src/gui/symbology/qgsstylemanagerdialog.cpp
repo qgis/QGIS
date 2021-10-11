@@ -213,7 +213,12 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
 
   if ( !mReadOnly )
   {
-    connect( btnAddItem, &QPushButton::clicked, this, [ = ]( bool ) { addItem(); }
+    connect( btnAddItem, &QPushButton::clicked, this, [ = ]( bool )
+    {
+      // only show add item if the btn doesn't have a menu -- otherwise it should show the menu instead!
+      if ( !btnAddItem->menu() )
+      { addItem(); }
+    }
            );
 
     connect( btnRemoveItem, &QPushButton::clicked, this, [ = ]( bool ) { removeItem(); }
