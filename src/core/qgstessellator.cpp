@@ -206,7 +206,7 @@ static bool _isRingCounterClockWise( const QgsCurve &ring )
 {
   double a = 0;
   const int count = ring.numPoints();
-  QgsVertexId::VertexType vt;
+  Qgis::VertexType vt;
   QgsPoint pt, ptPrev;
   ring.pointAt( 0, ptPrev, vt );
   for ( int i = 1; i < count + 1; ++i )

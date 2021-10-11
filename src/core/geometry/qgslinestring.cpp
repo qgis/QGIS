@@ -1779,14 +1779,14 @@ double QgsLineString::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  
  * See details in QEP #17
  ****************************************************************************/
 
-bool QgsLineString::pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const
+bool QgsLineString::pointAt( int node, QgsPoint &point, Qgis::VertexType &type ) const
 {
   if ( node < 0 || node >= numPoints() )
   {
     return false;
   }
   point = pointN( node );
-  type = QgsVertexId::SegmentVertex;
+  type = Qgis::VertexType::Segment;
   return true;
 }
 

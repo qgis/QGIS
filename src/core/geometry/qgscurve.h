@@ -153,7 +153,7 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
      * \param type will be set to the vertex type of the node
      * \returns TRUE if node exists within the curve
      */
-    virtual bool pointAt( int node, QgsPoint &point SIP_OUT, QgsVertexId::VertexType &type SIP_OUT ) const = 0;
+    virtual bool pointAt( int node, QgsPoint &point SIP_OUT, Qgis::VertexType &type SIP_OUT ) const = 0;
 
     /**
      * Returns the index of the first vertex matching the given \a point, or -1 if a matching

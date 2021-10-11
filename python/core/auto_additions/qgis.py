@@ -897,3 +897,14 @@ Qgis.RenderSubcomponentProperty.GlowSpread.__doc__ = "Glow spread size"
 Qgis.RenderSubcomponentProperty.__doc__ = 'Rendering subcomponent properties.\n\n.. versionadded:: 3.22\n\n' + '* ``Generic``: ' + Qgis.RenderSubcomponentProperty.Generic.__doc__ + '\n' + '* ``ShadowOffset``: ' + Qgis.RenderSubcomponentProperty.ShadowOffset.__doc__ + '\n' + '* ``BlurSize``: ' + Qgis.RenderSubcomponentProperty.BlurSize.__doc__ + '\n' + '* ``GlowSpread``: ' + Qgis.RenderSubcomponentProperty.GlowSpread.__doc__
 # --
 Qgis.RenderSubcomponentProperty.baseClass = Qgis
+QgsVertexId.VertexType = Qgis.VertexType
+# monkey patching scoped based enum
+QgsVertexId.SegmentVertex = Qgis.VertexType.Segment
+QgsVertexId.SegmentVertex.is_monkey_patched = True
+QgsVertexId.SegmentVertex.__doc__ = "The actual start or end point of a segment"
+QgsVertexId.CurveVertex = Qgis.VertexType.Curve
+QgsVertexId.CurveVertex.is_monkey_patched = True
+QgsVertexId.CurveVertex.__doc__ = "An intermediate point on a segment defining the curvature of the segment"
+Qgis.VertexType.__doc__ = 'Types of vertex.\n\n.. versionadded:: 3.22\n\n' + '* ``SegmentVertex``: ' + Qgis.VertexType.Segment.__doc__ + '\n' + '* ``CurveVertex``: ' + Qgis.VertexType.Curve.__doc__
+# --
+Qgis.VertexType.baseClass = Qgis

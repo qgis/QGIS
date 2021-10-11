@@ -1581,7 +1581,7 @@ void TestQgsLineString::lineString()
   QgsLineString l33;
   l33.vertexAt( QgsVertexId( 0, 0, -10 ) ); //out of bounds, check for no crash
   l33.vertexAt( QgsVertexId( 0, 0, 10 ) ); //out of bounds, check for no crash
-  QgsVertexId::VertexType type;
+  Qgis::VertexType type;
   QVERIFY( !l33.pointAt( -10, p, type ) );
   QVERIFY( !l33.pointAt( 10, p, type ) );
   //LineString
@@ -1594,50 +1594,50 @@ void TestQgsLineString::lineString()
   QVERIFY( !l33.pointAt( 10, p, type ) );
   QVERIFY( l33.pointAt( 0, p, type ) );
   QCOMPARE( p, QgsPoint( 1, 2 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
   QVERIFY( l33.pointAt( 1, p, type ) );
   QCOMPARE( p, QgsPoint( 11, 12 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
   //LineStringZ
   l33.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) << QgsPoint( QgsWkbTypes::PointZ, 11, 12, 13 ) );
   QCOMPARE( l33.vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) );
   QCOMPARE( l33.vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( QgsWkbTypes::PointZ, 11, 12, 13 ) );
   QVERIFY( l33.pointAt( 0, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
   QVERIFY( l33.pointAt( 1, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZ, 11, 12, 13 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
   //LineStringM
   l33.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 4 ) << QgsPoint( QgsWkbTypes::PointM, 11, 12, 0, 14 ) );
   QCOMPARE( l33.vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 4 ) );
   QCOMPARE( l33.vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( QgsWkbTypes::PointM, 11, 12, 0, 14 ) );
   QVERIFY( l33.pointAt( 0, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 4 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
   QVERIFY( l33.pointAt( 1, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointM, 11, 12, 0, 14 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
   //LineStringZM
   l33.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ) << QgsPoint( QgsWkbTypes::PointZM, 11, 12, 13, 14 ) );
   QCOMPARE( l33.vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ) );
   QCOMPARE( l33.vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( QgsWkbTypes::PointZM, 11, 12, 13, 14 ) );
   QVERIFY( l33.pointAt( 0, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
   QVERIFY( l33.pointAt( 1, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZM, 11, 12, 13, 14 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
   //LineString25D
   l33.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point25D, 1, 2, 3 ) << QgsPoint( QgsWkbTypes::Point25D, 11, 12, 13 ) );
   QCOMPARE( l33.vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::Point25D, 1, 2, 3 ) );
   QCOMPARE( l33.vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( QgsWkbTypes::Point25D, 11, 12, 13 ) );
   QVERIFY( l33.pointAt( 0, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::Point25D, 1, 2, 3 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
   QVERIFY( l33.pointAt( 1, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::Point25D, 11, 12, 13 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
 
   //centroid
   QgsLineString l34;

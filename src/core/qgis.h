@@ -982,6 +982,17 @@ class CORE_EXPORT Qgis
     Q_ENUM( RenderSubcomponentProperty )
 
     /**
+     * Types of vertex.
+     * \since QGIS 3.22
+     */
+    enum class VertexType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVertexId, VertexType ) : int
+      {
+      Segment SIP_MONKEYPATCH_COMPAT_NAME( SegmentVertex ) = 1, //!< The actual start or end point of a segment
+      Curve SIP_MONKEYPATCH_COMPAT_NAME( CurveVertex ) = 2, //!< An intermediate point on a segment defining the curvature of the segment
+    };
+    Q_ENUM( VertexType )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

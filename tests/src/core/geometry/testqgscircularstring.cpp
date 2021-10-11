@@ -1139,7 +1139,7 @@ void TestQgsCircularString::circularString()
   QgsCircularString l33;
   l33.vertexAt( QgsVertexId( 0, 0, -10 ) ); //out of bounds, check for no crash
   l33.vertexAt( QgsVertexId( 0, 0, 10 ) ); //out of bounds, check for no crash
-  QgsVertexId::VertexType type;
+  Qgis::VertexType type;
   QVERIFY( !l33.pointAt( -10, p, type ) );
   QVERIFY( !l33.pointAt( 10, p, type ) );
   //CircularString
@@ -1153,13 +1153,13 @@ void TestQgsCircularString::circularString()
   QVERIFY( !l33.pointAt( 10, p, type ) );
   QVERIFY( l33.pointAt( 0, p, type ) );
   QCOMPARE( p, QgsPoint( 1, 2 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
   QVERIFY( l33.pointAt( 1, p, type ) );
   QCOMPARE( p, QgsPoint( 11, 12 ) );
-  QCOMPARE( type, QgsVertexId::CurveVertex );
+  QCOMPARE( type, Qgis::VertexType::Curve );
   QVERIFY( l33.pointAt( 2, p, type ) );
   QCOMPARE( p, QgsPoint( 1, 22 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
   //CircularStringZ
   l33.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) << QgsPoint( QgsWkbTypes::PointZ, 11, 12, 13 )  << QgsPoint( QgsWkbTypes::PointZ, 1, 22, 23 ) );
   QCOMPARE( l33.vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) );
@@ -1167,13 +1167,13 @@ void TestQgsCircularString::circularString()
   QCOMPARE( l33.vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( QgsWkbTypes::PointZ, 1, 22, 23 ) );
   QVERIFY( l33.pointAt( 0, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
   QVERIFY( l33.pointAt( 1, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZ, 11, 12, 13 ) );
-  QCOMPARE( type, QgsVertexId::CurveVertex );
+  QCOMPARE( type, Qgis::VertexType::Curve );
   QVERIFY( l33.pointAt( 2, p, type ) );
   QCOMPARE( p, QgsPoint( 1, 22, 23 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
   //CircularStringM
   l33.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 4 ) << QgsPoint( QgsWkbTypes::PointM, 11, 12, 0, 14 ) << QgsPoint( QgsWkbTypes::PointM, 1, 22, 0, 24 ) );
   QCOMPARE( l33.vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 4 ) );
@@ -1181,13 +1181,13 @@ void TestQgsCircularString::circularString()
   QCOMPARE( l33.vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( QgsWkbTypes::PointM, 1, 22, 0, 24 ) );
   QVERIFY( l33.pointAt( 0, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 4 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
   QVERIFY( l33.pointAt( 1, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointM, 11, 12, 0, 14 ) );
-  QCOMPARE( type, QgsVertexId::CurveVertex );
+  QCOMPARE( type, Qgis::VertexType::Curve );
   QVERIFY( l33.pointAt( 2, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointM, 1, 22, 0, 24 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
   //CircularStringZM
   l33.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ) << QgsPoint( QgsWkbTypes::PointZM, 11, 12, 13, 14 ) << QgsPoint( QgsWkbTypes::PointZM, 1, 22, 23, 24 ) );
   QCOMPARE( l33.vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ) );
@@ -1195,13 +1195,13 @@ void TestQgsCircularString::circularString()
   QCOMPARE( l33.vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 22, 23, 24 ) );
   QVERIFY( l33.pointAt( 0, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
   QVERIFY( l33.pointAt( 1, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZM, 11, 12, 13, 14 ) );
-  QCOMPARE( type, QgsVertexId::CurveVertex );
+  QCOMPARE( type, Qgis::VertexType::Curve );
   QVERIFY( l33.pointAt( 2, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZM, 1, 22, 23, 24 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
 
   //centroid
   QgsCircularString l34;

@@ -35,6 +35,7 @@ email                : morb at ozemail dot com dot au
 #include "qgspointxy.h"
 #include "qgspoint.h"
 #include "qgsfeatureid.h"
+#include "qgsvertexid.h"
 
 #ifndef SIP_RUN
 #include "json_fwd.hpp"

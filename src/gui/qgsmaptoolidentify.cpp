@@ -709,7 +709,7 @@ void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometry &geo
     derivedAttributes.insert( tr( "Closest vertex M" ), str );
   }
 
-  if ( vId.type == QgsVertexId::CurveVertex )
+  if ( vId.type == Qgis::VertexType::Curve )
   {
     double radius, centerX, centerY;
     QgsVertexId vIdBefore = vId;
