@@ -30,8 +30,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>538</width>
-        <height>498</height>
+        <width>532</width>
+        <height>492</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
@@ -139,15 +139,16 @@
                <bold>true</bold>
               </font>
              </property>
-             <property name="text">
-              <string notr="true">+</string>
+             <property name="icon">
+              <iconset>
+               <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
              </property>
             </widget>
            </item>
            <item>
             <widget class="QToolButton" name="btnRemoveHeaderPair">
              <property name="enabled">
-              <bool>true</bool>
+              <bool>false</bool>
              </property>
              <property name="minimumSize">
               <size>
@@ -161,8 +162,9 @@
                <bold>true</bold>
               </font>
              </property>
-             <property name="text">
-              <string notr="true">–</string>
+             <property name="icon">
+              <iconset>
+               <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
              </property>
             </widget>
            </item>

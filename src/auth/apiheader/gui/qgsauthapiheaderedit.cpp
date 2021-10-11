@@ -136,7 +136,7 @@ void QgsAuthApiHeaderEdit::headerTableCellChanged( const int row, const int colu
 bool QgsAuthApiHeaderEdit::emptyHeadersKeysPresent()
 {
   const int rowCount = tblwdgHeaderPairs->rowCount();
-  QgsDebugMsg( QStringLiteral( "Validate header table contains valid header keys for %1 rows" ).arg( rowCount ) );
+  QgsDebugMsgLevel( QStringLiteral( "Validate header table contains valid header keys for %1 rows" ).arg( rowCount ), 2 );
 
   for ( int i = 0; i < rowCount; ++i )
   {
@@ -152,19 +152,19 @@ bool QgsAuthApiHeaderEdit::emptyHeadersKeysPresent()
 
 void QgsAuthApiHeaderEdit::addHeaderPairRow( const QString &key, const QString &val )
 {
-  const int rowCnt = tblwdgHeaderPairs->rowCount();
-  tblwdgHeaderPairs->insertRow( rowCnt );
+  const int rowCount = tblwdgHeaderPairs->rowCount();
+  tblwdgHeaderPairs->insertRow( rowCount );
 
-  const Qt::ItemFlags itmFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable
-                                 | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
+  const Qt::ItemFlags itemFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable
+                                  | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
 
-  QTableWidgetItem *keyItm = new QTableWidgetItem( key );
-  keyItm->setFlags( itmFlags );
-  tblwdgHeaderPairs->setItem( rowCnt, 0, keyItm );
+  QTableWidgetItem *keyItem = new QTableWidgetItem( key );
+  keyItem->setFlags( itemFlags );
+  tblwdgHeaderPairs->setItem( rowCount, 0, keyItem );
 
-  QTableWidgetItem *valItm = new QTableWidgetItem( val );
-  keyItm->setFlags( itmFlags );
-  tblwdgHeaderPairs->setItem( rowCnt, 1, valItm );
+  QTableWidgetItem *valueItem = new QTableWidgetItem( val );
+  keyItem->setFlags( itemFlags );
+  tblwdgHeaderPairs->setItem( rowCount, 1, valueItem );
 
   validateConfig();
 }
