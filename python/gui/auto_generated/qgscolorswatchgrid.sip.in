@@ -102,7 +102,7 @@ Emitted when a color has been selected from the widget
 Emitted when mouse hovers over widget
 %End
 
-  protected:
+  protected slots:
 
     virtual void paintEvent( QPaintEvent *event );
 

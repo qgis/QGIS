@@ -56,7 +56,7 @@ Returns the widget
 
 
 
-  protected:
+  protected slots:
 
     virtual bool searchText( const QString &text ) = 0;
 %Docstring

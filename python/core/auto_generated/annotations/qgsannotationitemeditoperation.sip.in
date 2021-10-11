@@ -47,7 +47,7 @@ Returns the operation type.
 Returns the associated item ID.
 %End
 
-  protected:
+  protected slots:
 
 
 };

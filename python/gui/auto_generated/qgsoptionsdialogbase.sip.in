@@ -158,7 +158,7 @@ Remove tab and unregister widgets on page remove
 
     void warnAboutMissingObjects();
 
-  protected:
+  protected slots:
     virtual void showEvent( QShowEvent *e );
 
     virtual void paintEvent( QPaintEvent *e );

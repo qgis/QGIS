@@ -29,7 +29,7 @@ class QgsSingleSymbolRendererWidget : QgsRendererWidget
     virtual void setDockMode( bool dockMode );
 
 
-  protected:
+  protected slots:
     virtual void setSymbolLevels( const QList< QgsLegendSymbolItem > &levels, bool enabled );
 
 

@@ -311,7 +311,7 @@ Refreshes the object, causing a recalculation of any property overrides.
 Emitted when the object's properties change.
 %End
 
-  protected:
+  protected slots:
 
     bool writeObjectPropertiesToElement( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring

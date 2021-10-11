@@ -96,7 +96,7 @@ Sets the search filter ``string``.
 .. versionadded:: 3.22
 %End
 
-  protected:
+  protected slots:
 
     virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
 

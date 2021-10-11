@@ -224,8 +224,9 @@ Returns a new instance of a vector tile labeling representing the converted styl
 or ``None`` if the style could not be converted successfully.
 %End
 
-  protected:
+  protected slots:
 
+protected:
     enum PropertyType
     {
       Color,
@@ -233,7 +234,7 @@ or ``None`` if the style could not be converted successfully.
       Opacity,
       Point,
     };
-
+protected slots:
     void parseLayers( const QVariantList &layers, QgsMapBoxGlStyleConversionContext *context = 0 );
 %Docstring
 Parse list of ``layers`` from JSON.

@@ -638,7 +638,7 @@ Signals an error in this provider
 .. versionadded:: 3.0
 %End
 
-  protected:
+  protected slots:
 
     void clearMinMaxCache();
 %Docstring

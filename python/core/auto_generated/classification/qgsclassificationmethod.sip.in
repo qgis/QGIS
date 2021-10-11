@@ -322,7 +322,7 @@ One could use :py:class:`QgsProcessingParameters`.parameterAsXxxx to retrieve th
     static const int MAX_PRECISION;
     static const int MIN_PRECISION;
 
-  protected:
+  protected slots:
 
     void copyBase( QgsClassificationMethod *c ) const;
 %Docstring

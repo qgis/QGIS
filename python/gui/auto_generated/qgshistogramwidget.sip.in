@@ -191,7 +191,7 @@ Sets the source field or expression to use for values in the histogram.
 .. seealso:: :py:func:`setLayer`
 %End
 
-  protected:
+  protected slots:
 
     virtual void drawHistogram();
 %Docstring

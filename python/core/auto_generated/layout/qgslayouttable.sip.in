@@ -638,7 +638,7 @@ new data.
     virtual void recalculateFrameSizes();
 
 
-  protected:
+  protected slots:
 
 
 

@@ -41,7 +41,7 @@ Add a widget to be displayed in the dock.
 :param widget: widget to add. Ownership is not transferred.
 %End
 
-  protected:
+  protected slots:
     virtual void paintEvent( QPaintEvent *event );
 
 

@@ -37,7 +37,7 @@ Used for setting M coordinate to new vertex.
 .. versionadded:: 3.20
 %End
 
-  protected:
+  protected slots:
 
     static QColor digitizingStrokeColor();
 %Docstring
@@ -69,13 +69,14 @@ returned object
 Returns the current vector layer of the map canvas or 0
 %End
 
+protected:
     enum TopologicalResult
     {
       Success,
       InvalidCanvas,
       InvalidLayer,
     };
-
+protected slots:
  TopologicalResult addTopologicalPoints( const QVector<QgsPointXY> &vertices )  /Deprecated/;
 %Docstring
 Adds a list of ``vertices`` to other features to keep topology up to date, e.g. to neighbouring polygons.

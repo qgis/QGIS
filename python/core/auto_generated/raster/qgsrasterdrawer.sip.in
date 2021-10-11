@@ -39,7 +39,7 @@ Draws raster data.
 :param feedback: optional raster feedback object for cancellation/preview. Added in QGIS 3.0.
 %End
 
-  protected:
+  protected slots:
 
 
 };

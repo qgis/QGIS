@@ -44,7 +44,7 @@ execution without errors then ``successful`` will be ``True``. The ``results`` a
 contains the results reported by the algorithm.
 %End
 
-  protected:
+  protected slots:
 
     virtual bool run();
 

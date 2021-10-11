@@ -83,7 +83,7 @@ transferred to the renderer.
 
     void clearFeatureCounts();
 
-  protected:
+  protected slots:
 };
 
 
@@ -128,7 +128,7 @@ class QgsRuleBasedRendererWidget : QgsRendererWidget
     void saveSectionWidth( int section, int oldSize, int newSize );
     void restoreSectionWidths();
 
-  protected:
+  protected slots:
     void refineRule( int type );
     void refineRuleCategoriesGui();
 %Docstring
@@ -224,7 +224,7 @@ Set the widget in dock mode.
 :param dockMode: ``True`` for dock mode.
 %End
 
-  protected:
+  protected slots:
 
 
 };

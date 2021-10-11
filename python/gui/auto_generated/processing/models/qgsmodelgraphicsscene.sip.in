@@ -179,7 +179,7 @@ Emitted whenever the selected item changes.
 If ``None``, no item is selected.
 %End
 
-  protected:
+  protected slots:
 
     virtual QgsModelComponentGraphicItem *createParameterGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelParameter *param ) const /Factory/;
 %Docstring

@@ -321,14 +321,14 @@ Iterates through all geometries in the collection.
     virtual QgsGeometryCollection *createEmptyWithSameType() const /Factory/;
 
 
-  protected:
+  protected slots:
     virtual int childCount() const;
 
     virtual QgsAbstractGeometry *childGeometry( int index ) const;
 
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;
 
-  protected:
+  protected slots:
 
     virtual bool wktOmitChildType() const;
 %Docstring

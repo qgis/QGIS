@@ -481,7 +481,7 @@ Angle undefined. Always returns 0.0
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-  protected:
+  protected slots:
 
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     virtual int childCount() const;

@@ -245,7 +245,7 @@ updateLineEditStyle will re-style (color/font) the line edit depending on conten
 
     bool isExpressionValid( const QString &expressionStr );
 
-  protected:
+  protected slots:
     virtual void changeEvent( QEvent *event );
 
 

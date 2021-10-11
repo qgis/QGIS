@@ -206,7 +206,7 @@ The parameter ``destinationCrs`` depends of where the instance of this Match is 
 
         bool operator==( const QgsPointLocator::Match &other ) const;
 
-      protected:
+      protected slots:
     };
 
     typedef QList<QgsPointLocator::Match> MatchList;
@@ -335,7 +335,7 @@ Emitted whenever index has been built and initialization is finished
            features, otherwise ``True``
 %End
 
-  protected:
+  protected slots:
     bool rebuildIndex( int maxFeaturesToIndex = -1 );
 
   protected slots:

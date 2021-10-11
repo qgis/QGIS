@@ -39,7 +39,7 @@ Constructor for QgsLayoutViewToolZoom.
     virtual void deactivate();
 
 
-  protected:
+  protected slots:
 
 
 };

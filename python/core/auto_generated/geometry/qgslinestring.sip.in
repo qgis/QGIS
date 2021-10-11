@@ -822,7 +822,7 @@ corresponds to the last point in the line.
 %End
 
 
-  protected:
+  protected slots:
 
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     virtual QgsRectangle calculateBoundingBox() const;

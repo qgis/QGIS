@@ -29,7 +29,7 @@ This is used to search and highlight text in :py:class:`QgsOptionsDialogBase` im
 %Docstring
 constructs a highlight widget for a label
 %End
-  protected:
+  protected slots:
     virtual bool searchText( const QString &text );
 
     virtual bool highlightText( const QString &text );
@@ -55,7 +55,7 @@ This is used to search and highlight text in :py:class:`QgsOptionsDialogBase` im
 %Docstring
 constructs a highlight widget for a checkbox
 %End
-  protected:
+  protected slots:
     virtual bool searchText( const QString &text );
 
     virtual bool highlightText( const QString &text );
@@ -81,7 +81,7 @@ This is used to search and highlight text in :py:class:`QgsOptionsDialogBase` im
 %Docstring
 constructs a highlight widget for a button.
 %End
-  protected:
+  protected slots:
     virtual bool searchText( const QString &text );
 
     virtual bool highlightText( const QString &text );
@@ -107,7 +107,7 @@ This is used to search and highlight text in :py:class:`QgsOptionsDialogBase` im
 %Docstring
 constructs a highlight widget for a group box.
 %End
-  protected:
+  protected slots:
     virtual bool searchText( const QString &text );
 
     virtual bool highlightText( const QString &text );
@@ -135,7 +135,7 @@ in any tree view or inherited class.
 %Docstring
 constructs a highlight widget for a tree view or widget.
 %End
-  protected:
+  protected slots:
     virtual bool searchText( const QString &text );
 
     virtual bool highlightText( const QString &text );
@@ -161,7 +161,7 @@ This is used to search and highlight text in :py:class:`QgsOptionsDialogBase` im
 %Docstring
 constructs a highlight widget for a table view or widget.
 %End
-  protected:
+  protected slots:
     virtual bool searchText( const QString &text );
 
     virtual bool highlightText( const QString &text );

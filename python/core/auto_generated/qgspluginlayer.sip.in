@@ -62,7 +62,7 @@ Set source string. This is used for example in layer tree to show tooltip.
     virtual QgsDataProvider *dataProvider();
 
 
-  protected:
+  protected slots:
 };
 
 

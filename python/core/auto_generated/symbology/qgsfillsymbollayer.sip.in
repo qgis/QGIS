@@ -187,7 +187,7 @@ Returns the map unit scale for the fill's offset.
     virtual Qt::BrushStyle dxfBrushStyle() const;
 
 
-  protected:
+  protected slots:
 
 
 };
@@ -409,7 +409,7 @@ Returns the map unit scale for the fill's offset.
     virtual QgsMapUnitScale mapUnitScale() const;
 
 
-  protected:
+  protected slots:
 
 
 
@@ -835,7 +835,7 @@ Returns the stroke width map unit scale.
     virtual bool hasDataDefinedProperties() const;
 
 
-  protected:
+  protected slots:
 
 
 
@@ -1131,7 +1131,7 @@ Returns the map unit scale for the image's width.
 .. seealso:: :py:func:`widthUnit`
 %End
 
-  protected:
+  protected slots:
 
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context );
 
@@ -1430,7 +1430,7 @@ Sets the dynamic SVG parameters
 .. versionadded:: 3.18
 %End
 
-  protected:
+  protected slots:
 
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context );
 
@@ -1699,7 +1699,7 @@ Returns the map unit scale for the pattern's line offset.
     virtual bool hasDataDefinedProperties() const;
 
 
-  protected:
+  protected slots:
 
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context );
 
@@ -2022,7 +2022,7 @@ Returns the unit scale for the vertical offset between rows in the pattern.
     virtual QColor color() const;
 
 
-  protected:
+  protected slots:
 
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context );
 
@@ -2358,7 +2358,7 @@ Sets whether point markers should be ``clipped`` to the current part boundary on
     virtual void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
 
 
-  protected:
+  protected slots:
 
 
 

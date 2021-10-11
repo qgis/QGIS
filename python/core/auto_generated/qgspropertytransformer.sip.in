@@ -302,7 +302,7 @@ Attempts to parse an expression into a corresponding property transformer.
          be parsed to a transformer.
 %End
 
-  protected:
+  protected slots:
 
     double transformNumeric( double input ) const;
 %Docstring

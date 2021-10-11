@@ -126,7 +126,7 @@ Emitted when the shape's settings are changed.
 .. seealso:: :py:func:`setShape`
 %End
 
-  protected:
+  protected slots:
 
     virtual void changeEvent( QEvent *e );
 

@@ -278,7 +278,7 @@ This is only used when :py:func:`~QgsFontButton.mode` is ModeTextRenderer.
 Emitted when the widget's text format settings are changed.
 %End
 
-  protected:
+  protected slots:
 
     virtual bool event( QEvent *e );
 

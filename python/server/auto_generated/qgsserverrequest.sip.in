@@ -225,7 +225,7 @@ Returns the query string parameter with the given ``name`` from the request URL,
 .. versionadded:: 3.10
 %End
 
-  protected:
+  protected slots:
 
     void setOriginalUrl( const QUrl &url );
 %Docstring

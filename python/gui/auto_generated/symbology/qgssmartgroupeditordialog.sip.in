@@ -48,7 +48,7 @@ sets the remove button hidden state to 'hide'
   signals:
     void removed( int );
 
-  protected:
+  protected slots:
 
 };
 
@@ -99,7 +99,7 @@ function to create a new ConditionBox and update UI
 slot to remove the condition with id int
 %End
 
-  protected:
+  protected slots:
 
 };
 

@@ -295,7 +295,7 @@ Emitted when selecting context menu on the feature list to create the context me
 :param fid: feature id of the selected feature
 %End
 
-  protected:
+  protected slots:
     virtual void hideEvent( QHideEvent *event );
 
 

@@ -76,7 +76,7 @@ The vertex id of the error. May be invalid depending on the check.
 .. versionadded:: 3.4
 %End
 
-  protected:
+  protected slots:
 };
 
 class QgsGeometryCheckErrorSingle : QgsGeometryCheckError

@@ -36,7 +36,7 @@ Ownership of ``device`` is transferred to the connection.
 Parse available data source content
 %End
 
-  protected:
+  protected slots:
     void processStringBuffer();
 %Docstring
 Splits mStringBuffer into sentences and calls libnmea

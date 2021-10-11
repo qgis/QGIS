@@ -134,7 +134,7 @@ Signal emitted whenever the value changes.
 :param date: The new date/time value.
 %End
 
-  protected:
+  protected slots:
     virtual void mousePressEvent( QMouseEvent *event );
 
     virtual void focusOutEvent( QFocusEvent *event );
@@ -221,7 +221,7 @@ Sets the ``time`` for the widget and handles null times.
 Signal emitted whenever the time changes.
 %End
 
-  protected:
+  protected slots:
     virtual void emitValueChanged( const QVariant &value );
 
 
@@ -276,7 +276,7 @@ Sets the ``date`` for the widget and handles null dates.
 Signal emitted whenever the date changes.
 %End
 
-  protected:
+  protected slots:
     virtual void emitValueChanged( const QVariant &value );
 
 

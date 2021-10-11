@@ -89,7 +89,7 @@ the task is canceled). The writing ``error`` will be reported and a
 .. versionadded:: 3.10
 %End
 
-  protected:
+  protected slots:
 
     virtual bool run();
 

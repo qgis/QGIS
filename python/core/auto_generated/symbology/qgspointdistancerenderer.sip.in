@@ -276,7 +276,7 @@ Returns the map unit scale object for the distance tolerance. This is only used 
 .. seealso:: :py:func:`toleranceUnit`
 %End
 
-  protected:
+  protected slots:
 
 
 

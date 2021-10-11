@@ -118,7 +118,7 @@ Returns whether the frame is empty.
     virtual ExportLayerBehavior exportLayerBehavior() const;
 
 
-  protected:
+  protected slots:
 
     virtual void draw( QgsLayoutItemRenderContext &context );
 

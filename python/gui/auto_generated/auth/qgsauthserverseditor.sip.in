@@ -28,7 +28,7 @@ Widget for editing authentication configurations directly in database
 :param parent: Parent Widget
 %End
 
-  protected:
+  protected slots:
 
     virtual void showEvent( QShowEvent *e );
 

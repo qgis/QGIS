@@ -159,7 +159,7 @@ Emitted after a rollback
 Emitted if a sql query is executed and the underlying data is modified
 %End
 
-  protected:
+  protected slots:
 
 
 };

@@ -40,7 +40,7 @@ Constructor for QgsNullSymbolRendererWidget
 Returns a pointer to the configured renderer
 %End
 
-  protected:
+  protected slots:
 
 
 };

@@ -77,7 +77,7 @@ Writes the store contents to an XML node.
 .. seealso:: :py:func:`readXml`
 %End
 
-  protected:
+  protected slots:
 
 };
 

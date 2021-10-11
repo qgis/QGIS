@@ -283,7 +283,7 @@ algorithms.
 .. seealso:: :py:func:`refreshAlgorithms`
 %End
 
-  protected:
+  protected slots:
 
     virtual void loadAlgorithms() = 0;
 %Docstring

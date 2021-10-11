@@ -39,7 +39,7 @@ Calls QSortFilterProxyModel.setFilterWildcard and triggers update
 Calls QSortFilterProxyModel.setFilterRegExp and triggers update
 %End
 
-  protected:
+  protected slots:
     virtual bool filterAcceptsRow( int row, const QModelIndex &source_parent ) const;
 
 };

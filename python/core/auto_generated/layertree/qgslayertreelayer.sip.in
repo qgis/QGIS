@@ -229,7 +229,7 @@ Emitted when a previously available layer got unloaded (from layer registry).
 .. versionadded:: 2.6
 %End
 
-  protected:
+  protected slots:
     void attachToLayer();
 
 
