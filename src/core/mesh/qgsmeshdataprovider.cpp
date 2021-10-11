@@ -72,6 +72,35 @@ QgsMeshDatasetIndex QgsMeshDatasetSourceInterface::datasetIndexAtTime(
   return QgsMeshDatasetIndex();
 }
 
+QList<QgsMeshDatasetIndex> QgsMeshDatasetSourceInterface::datasetIndexInTimeInterval( const QDateTime &referenceTime, int groupIndex, qint64 time1, qint64 time2 ) const
+{
+  const QDateTime requestDateTime = referenceTime.addMSecs( time1 );
+  qint64 providerTime1;
+  qint64 providerTime2;
+  const QDateTime providerReferenceTime = mTemporalCapabilities->referenceTime();
+  if ( mTemporalCapabilities->referenceTime().isValid() )
+  {
+    providerTime1 = providerReferenceTime.msecsTo( requestDateTime );
+    providerTime2 = providerTime1 - time1 + time2;
+  }
+  else
+  {
+    providerTime1 = time1;
+    providerTime2 = time2;
+  }
+
+  QList<QgsMeshDatasetIndex> ret;
+  for ( int i = 0; i < datasetCount( groupIndex ); ++i )
+  {
+    QgsMeshDatasetIndex datasetIndex( groupIndex, i );
+    qint64 time = mTemporalCapabilities->datasetTime( datasetIndex );
+    if ( time >= providerTime1 && time <= providerTime2 )
+      ret.append( datasetIndex );
+  }
+
+  return ret;
+}
+
 QgsMeshDatasetSourceInterface::QgsMeshDatasetSourceInterface():
   mTemporalCapabilities( std::make_unique<QgsMeshDataProviderTemporalCapabilities>() ) {}
 

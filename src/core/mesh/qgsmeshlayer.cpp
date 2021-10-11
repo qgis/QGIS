@@ -588,6 +588,24 @@ QgsMeshDatasetIndex QgsMeshLayer::datasetIndexAtRelativeTime( const QgsInterval 
   return  mDatasetGroupStore->datasetIndexAtTime( relativeTime.seconds() * 1000, datasetGroupIndex, mTemporalProperties->matchingMethod() );
 }
 
+QList<QgsMeshDatasetIndex> QgsMeshLayer::datasetIndexInRelativeTimeInterval( const QgsInterval &startRelativeTime, const QgsInterval &endRelativeTime, int datasetGroupIndex ) const
+{
+  qint64 usedRelativeTime1 = startRelativeTime.seconds() * 1000;
+  qint64 usedRelativeTime2 = endRelativeTime.seconds() * 1000;
+
+  //adjust relative time if layer reference time is different from provider reference time
+  if ( mTemporalProperties->referenceTime().isValid() &&
+       mDataProvider &&
+       mDataProvider->isValid() &&
+       mTemporalProperties->referenceTime() != mDataProvider->temporalCapabilities()->referenceTime() )
+  {
+    usedRelativeTime1 = usedRelativeTime1 + mTemporalProperties->referenceTime().msecsTo( mDataProvider->temporalCapabilities()->referenceTime() );
+    usedRelativeTime2 = usedRelativeTime2 + mTemporalProperties->referenceTime().msecsTo( mDataProvider->temporalCapabilities()->referenceTime() );
+  }
+
+  return  mDatasetGroupStore->datasetIndexInTimeInterval( usedRelativeTime1, usedRelativeTime2, datasetGroupIndex );
+}
+
 void QgsMeshLayer::applyClassificationOnScalarSettings( const QgsMeshDatasetGroupMetadata &meta, QgsMeshRendererScalarSettings &scalarSettings ) const
 {
   if ( meta.extraOptions().contains( QStringLiteral( "classification" ) ) )
