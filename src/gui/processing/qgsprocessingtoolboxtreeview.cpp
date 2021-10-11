@@ -16,6 +16,8 @@
 #include "qgsprocessingtoolboxtreeview.h"
 #include "qgsprocessingtoolboxmodel.h"
 
+#include <QKeyEvent>
+
 ///@cond PRIVATE
 
 QgsProcessingToolboxTreeView::QgsProcessingToolboxTreeView( QWidget *parent,
@@ -117,6 +119,14 @@ QModelIndex QgsProcessingToolboxTreeView::findFirstVisibleAlgorithm( const QMode
       return index;
   }
   return QModelIndex();
+}
+
+void QgsProcessingToolboxTreeView::keyPressEvent( QKeyEvent *event )
+{
+  if ( event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter )
+    emit doubleClicked( currentIndex() );
+  else
+    QTreeView::keyPressEvent( event );
 }
 
 ///@endcond
