@@ -208,7 +208,7 @@ Switches the dialog to the parameters page.
     virtual void reject();
 
 
-  protected slots:
+  public:
 
     virtual void closeEvent( QCloseEvent *e );
 

@@ -34,7 +34,7 @@ log.
     virtual ~QgsProjectBadLayerHandler();
 
 
-  protected slots:
+  public:
 
 protected:
     enum DataType

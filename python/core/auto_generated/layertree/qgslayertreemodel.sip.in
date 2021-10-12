@@ -365,7 +365,7 @@ Emitted when layer flags have changed.
 
     void invalidateLegendMapBasedData();
 
-  protected slots:
+  public:
     void removeLegendFromLayer( QgsLayerTreeLayer *nodeLayer );
     void addLegendToLayer( QgsLayerTreeLayer *nodeL );
 
@@ -411,7 +411,7 @@ Filter nodes from :py:class:`QgsMapLayerLegend` according to the current filteri
     void legendCleanup();
     void legendInvalidateMapBasedData();
 
-  protected slots:
+  public:
 
 
 

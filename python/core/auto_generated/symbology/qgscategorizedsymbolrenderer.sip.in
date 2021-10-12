@@ -123,7 +123,7 @@ Returns a string representing the categories settings, used for debugging purpos
 Converts the category to a matching SLD rule, within the specified DOM document and ``element``.
 %End
 
-  protected slots:
+  public:
 
     void swap( QgsRendererCategory &other );
 };
@@ -456,7 +456,7 @@ configuration.
 .. versionadded:: 3.6
 %End
 
-  protected slots:
+  public:
 
 
 

@@ -42,7 +42,7 @@ Set the order by to manage
 Gets the order by defined in the dialog
 %End
 
-  protected slots:
+  public:
 
     virtual bool eventFilter( QObject *obj, QEvent *e );
 

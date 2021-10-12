@@ -115,7 +115,7 @@ Creates a QgsMergedFeatureRenderer by a conversion from an existing renderer.
 :return: a new renderer if the conversion was possible, otherwise ``None``.
 %End
 
-  protected slots:
+  public:
 
     QgsMergedFeatureRenderer( const QString &type, QgsFeatureRenderer *embeddedRenderer /Transfer/ );
 %Docstring

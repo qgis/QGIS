@@ -70,7 +70,7 @@ Returns the vector layer associated with the widget.
 Sets the geometry ``type`` of the features to customize the widget accordingly.
 %End
 
-  protected slots:
+  public:
 
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsCallout::Property key );
 %Docstring

@@ -356,7 +356,7 @@ defined.
 :return: version
 %End
 
-  protected slots:
+  public:
 
     virtual bool loadParameter( const QString &name, const QString &value );
 %Docstring

@@ -234,7 +234,7 @@ Forward the signal to the embedded form
 %End
 
 
-  protected slots:
+  public:
     virtual QWidget *createWidget( QWidget *parent );
 
     virtual void initWidget( QWidget *editor );

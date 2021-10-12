@@ -170,7 +170,7 @@ Emitted when an ``item`` is "focused" by the tool, i.e. it should become the act
 item and should have its properties displayed in any designer windows.
 %End
 
-  protected slots:
+  public:
 
     void setFlags( QgsLayoutViewTool::Flags flags );
 %Docstring

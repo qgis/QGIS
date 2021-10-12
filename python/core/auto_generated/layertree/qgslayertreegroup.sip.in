@@ -212,7 +212,7 @@ of -1 will determine automatically (either first one currently checked or none)
 
     void nodeVisibilityChanged( QgsLayerTreeNode *node );
 
-  protected slots:
+  public:
 
     void updateChildVisibilityMutuallyExclusive();
 %Docstring

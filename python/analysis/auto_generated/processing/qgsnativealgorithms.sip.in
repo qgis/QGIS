@@ -40,7 +40,7 @@ Constructor for QgsNativeAlgorithms.
     virtual bool supportsNonFileBasedOutput() const;
 
 
-  protected slots:
+  public:
 
     virtual void loadAlgorithms();
 

@@ -73,7 +73,7 @@ Returns a list of items contained by the group.
 
     virtual ExportLayerBehavior exportLayerBehavior() const;
 
-  protected slots:
+  public:
     virtual void draw( QgsLayoutItemRenderContext &context );
 
     virtual bool writePropertiesToElement( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;

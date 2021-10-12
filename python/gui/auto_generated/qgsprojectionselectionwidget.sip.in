@@ -163,7 +163,7 @@ to the preset CRSes shown in the widget.
 Opens the dialog for selecting a new CRS
 %End
 
-  protected slots:
+  public:
 
     virtual void dragEnterEvent( QDragEnterEvent *event );
 

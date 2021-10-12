@@ -41,7 +41,7 @@ Will also reload all globally registered functions.
 Field names will be added to the API.
 %End
 
-  protected slots:
+  public:
 
     virtual void initializeLexer();
 

@@ -33,7 +33,7 @@ Constructor for QgsMenuHeader, showing the specified ``text``.
     virtual QSize sizeHint() const;
 
 
-  protected slots:
+  public:
 
     virtual void paintEvent( QPaintEvent *event );
 

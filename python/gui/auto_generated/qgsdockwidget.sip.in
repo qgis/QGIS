@@ -103,7 +103,7 @@ and raised. If it is currently user visible it will be closed.
 .. versionadded:: 3.2
 %End
 
-  protected slots:
+  public:
 
     virtual void closeEvent( QCloseEvent * );
 

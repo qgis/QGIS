@@ -450,7 +450,7 @@ string.
 Associates this algorithm with its provider. No transfer of ownership is involved.
 %End
 
-  protected slots:
+  public:
 
     virtual QgsProcessingAlgorithm *createInstance() const = 0 /Factory,VirtualErrorHandler=processing_exception_handler/;
 %Docstring
@@ -1144,7 +1144,7 @@ can break valid model execution - so use with extreme caution, and consider usin
 ``feedback`` to instead report non-fatal processing failures for features instead.
 %End
 
-  protected slots:
+  public:
 
     virtual void initAlgorithm( const QVariantMap &configuration = QVariantMap() );
 

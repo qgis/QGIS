@@ -355,7 +355,7 @@ should be canceled.
 .. versionadded:: 3.10
 %End
 
-  protected slots:
+  public:
 
 protected:
     enum SubSection

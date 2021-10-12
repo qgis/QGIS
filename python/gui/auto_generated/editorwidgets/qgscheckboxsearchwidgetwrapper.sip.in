@@ -64,7 +64,7 @@ Returns a variant representing the current state of the widget.
     virtual void setEnabled( bool enabled );
 
 
-  protected slots:
+  public:
     virtual QWidget *createWidget( QWidget *parent );
 
     virtual void initWidget( QWidget *editor );

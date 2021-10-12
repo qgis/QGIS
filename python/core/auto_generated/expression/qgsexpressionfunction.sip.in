@@ -270,7 +270,7 @@ Returns ``True`` if the function handles NULL values in arguments by itself, and
 NULL value handling should be skipped.
 %End
 
-  protected slots:
+  public:
 
     static bool allParamsStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context );
 %Docstring

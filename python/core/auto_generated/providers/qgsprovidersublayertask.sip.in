@@ -51,7 +51,7 @@ Returns the sublayer details as calculated by the task.
     virtual void cancel();
 
 
-  protected slots:
+  public:
 
     virtual bool run();
 

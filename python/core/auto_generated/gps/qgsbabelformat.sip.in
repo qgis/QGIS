@@ -68,7 +68,7 @@ Generates a command for exporting GPS data into a different format using babel.
 Returns an empty list if the format does not support exports (see :py:func:`~QgsAbstractBabelFormat.capabilities`).
 %End
 
-  protected slots:
+  public:
 
     explicit QgsAbstractBabelFormat( const QString &name = QString() );
 %Docstring

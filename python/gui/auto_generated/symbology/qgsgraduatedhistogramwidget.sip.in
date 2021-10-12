@@ -49,7 +49,7 @@ Emitted when the user modifies the graduated ranges using the histogram widget.
                     modified existing range breaks
 %End
 
-  protected slots:
+  public:
 
     virtual void drawHistogram();
 

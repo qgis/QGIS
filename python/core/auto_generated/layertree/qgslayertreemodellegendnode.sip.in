@@ -276,7 +276,7 @@ Emitted when the size of this node changes.
 .. versionadded:: 3.16
 %End
 
-  protected slots:
+  public:
     explicit QgsLayerTreeModelLegendNode( QgsLayerTreeLayer *nodeL, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Construct the node with pointer to its parent layer node
@@ -287,7 +287,7 @@ Construct the node with pointer to its parent layer node
 Returns a temporary context or ``None`` if legendMapViewData are not valid
 %End
 
-  protected slots:
+  public:
 
 };
 

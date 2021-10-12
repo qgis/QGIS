@@ -115,7 +115,7 @@ Emitted when the anchor point changes
 Emitted when the anchor widget point changes
 %End
 
-  protected slots:
+  public:
     virtual void showEvent( QShowEvent *e );
 
     virtual void paintEvent( QPaintEvent *e );

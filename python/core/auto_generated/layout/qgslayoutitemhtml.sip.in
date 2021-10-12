@@ -252,7 +252,7 @@ Recalculates the frame sizes for the current viewport dimensions
     virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 
 
-  protected slots:
+  public:
 
     virtual bool writePropertiesToElement( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 

@@ -43,7 +43,7 @@ Constructor
       SimplifyEnvelope,
     };
 
-  protected slots:
+  public:
 
 
 

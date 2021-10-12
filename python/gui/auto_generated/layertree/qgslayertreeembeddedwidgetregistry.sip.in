@@ -103,7 +103,7 @@ Unregister a provider, the provider object is deleted.
 Returns ``True`` on success, ``False`` if the provider was not registered.
 %End
 
-  protected slots:
+  public:
 
 
   private:

@@ -31,7 +31,7 @@ Construct a dialog that will list the trusted Certificate Authorities
 :param trustedCAs: List of trusted Certificate Authorities objects
 %End
 
-  protected slots:
+  public:
 
     virtual void showEvent( QShowEvent *e );
 

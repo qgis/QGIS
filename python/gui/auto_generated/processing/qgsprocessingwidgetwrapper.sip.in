@@ -382,7 +382,7 @@ Sets the parent ``dialog`` in which the wrapper is shown.
 Emitted whenever the parameter value (as defined by the wrapped widget) is changed.
 %End
 
-  protected slots:
+  public:
 
     virtual QWidget *createWidget() = 0 /Factory/;
 %Docstring
@@ -433,7 +433,7 @@ buttons and property override buttons to correctly show the appropriate vector l
 .. versionadded:: 3.6
 %End
 
-  protected slots:
+  public:
 
 
 };
@@ -525,7 +525,7 @@ type will not be configurable when users add it as an input to their graphical m
 .. versionadded:: 3.10
 %End
 
-  protected slots:
+  public:
 
     virtual QStringList compatibleParameterTypes() const = 0;
 %Docstring
@@ -630,7 +630,7 @@ Constructor for QgsProcessingHiddenWidgetWrapper, for the specified
 Sets the vector layer linked to the wrapper.
 %End
 
-  protected slots:
+  public:
     virtual QWidget *createWidget();
 
     virtual QLabel *createLabel();

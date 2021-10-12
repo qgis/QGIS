@@ -113,7 +113,7 @@ Emitted when an auxiliary field is created in the widget.
 .. versionadded:: 3.10
 %End
 
-  protected slots:
+  public:
 
 protected:
     enum Mode

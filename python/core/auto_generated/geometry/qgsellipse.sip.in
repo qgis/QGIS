@@ -254,7 +254,7 @@ Members will be truncated to the specified precision.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-  protected slots:
+  public:
 
 };
 

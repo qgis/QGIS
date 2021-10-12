@@ -359,7 +359,7 @@ to be moved to reflect this.
 Emitted when the map layer associated with the annotation changes.
 %End
 
-  protected slots:
+  public:
 
     virtual void renderAnnotation( QgsRenderContext &context, QSizeF size ) const = 0;
 %Docstring

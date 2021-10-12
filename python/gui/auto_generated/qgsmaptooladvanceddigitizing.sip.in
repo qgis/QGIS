@@ -106,7 +106,7 @@ It is therefore possible to configure the behavior by the map tool.
 .. versionadded:: 3.0
 %End
 
-  protected slots:
+  public:
 
     void setAdvancedDigitizingAllowed( bool allowed );
 %Docstring

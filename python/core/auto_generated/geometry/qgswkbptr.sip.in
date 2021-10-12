@@ -40,7 +40,7 @@ A const WKB pointer.
 %TypeHeaderCode
 #include "qgswkbptr.h"
 %End
-  protected slots:
+  public:
 
 
 

@@ -76,7 +76,7 @@ Returns the current connection url.
     virtual void accept();
 
 
-  protected slots:
+  public:
 
 protected:
     enum WfsVersionIndex

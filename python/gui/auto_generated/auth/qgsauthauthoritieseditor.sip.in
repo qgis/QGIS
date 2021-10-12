@@ -28,7 +28,7 @@ Widget for viewing and editing certificate authorities directly in database
 :param parent: Parent widget
 %End
 
-  protected slots:
+  public:
     virtual void showEvent( QShowEvent *e );
 
 %Docstring

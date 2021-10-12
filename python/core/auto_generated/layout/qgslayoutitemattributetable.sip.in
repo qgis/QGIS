@@ -331,7 +331,7 @@ properties of the linked vector layer.
 .. versionadded:: 3.12
 %End
 
-  protected slots:
+  public:
 
     virtual bool writePropertiesToElement( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 

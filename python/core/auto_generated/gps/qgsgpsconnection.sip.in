@@ -188,7 +188,7 @@ Returns the current gps information (lat, lon, etc.)
     void stateChanged( const QgsGpsInformation &info );
     void nmeaSentenceReceived( const QString &substring ); // added to capture 'raw' data
 
-  protected slots:
+  public:
 
   protected slots:
     virtual void parseData() = 0;

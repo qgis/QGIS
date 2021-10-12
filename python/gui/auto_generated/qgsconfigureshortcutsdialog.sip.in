@@ -33,7 +33,7 @@ Constructor for QgsConfigureShortcutsDialog.
                 singleton :py:class:`QgsShortcutsManager` instance.
 %End
 
-  protected slots:
+  public:
     virtual void keyPressEvent( QKeyEvent *event );
 
     virtual void keyReleaseEvent( QKeyEvent *event );

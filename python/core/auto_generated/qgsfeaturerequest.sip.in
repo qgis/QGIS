@@ -964,7 +964,7 @@ if it should be canceled, if set.
 .. versionadded:: 3.20
 %End
 
-  protected slots:
+  public:
 
 
 
@@ -1005,7 +1005,7 @@ Gets an iterator for features matching the specified request
 %End
 
 
-  protected slots:
+  public:
     void iteratorOpened( QgsAbstractFeatureIterator *it );
     void iteratorClosed( QgsAbstractFeatureIterator *it );
 

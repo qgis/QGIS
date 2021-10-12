@@ -764,7 +764,7 @@ Returns some information about the dataset group
 Sets the reference time of the dataset group
 %End
 
-  protected slots:
+  public:
 
 
 };
