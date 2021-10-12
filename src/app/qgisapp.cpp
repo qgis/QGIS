@@ -11482,7 +11482,11 @@ bool QgisApp::toggleEditingMeshLayer( QgsMeshLayer *mlayer, bool allowCancel )
     mActionToggleEditing->setChecked( res );
 
     if ( !res )
-      QgsMessageLog::logMessage( tr( "Unable to start mesh editing for layer \"%1\"" ).arg( mlayer->name() ) );
+    {
+      visibleMessageBar()->pushWarning(
+        tr( "Mesh editing" ),
+        tr( "Unable to start mesh editing for layer \"%1\"" ).arg( mlayer->name() ) );
+    }
   }
   else if ( mlayer->isModified() )
   {
@@ -11504,6 +11508,9 @@ bool QgisApp::toggleEditingMeshLayer( QgsMeshLayer *mlayer, bool allowCancel )
         QgsCanvasRefreshBlocker refreshBlocker;
         if ( !mlayer->commitFrameEditing( transform, false ) )
         {
+          visibleMessageBar()->pushWarning(
+            tr( "Mesh editing" ),
+            tr( "Unable to save editing for layer \"%1\"" ).arg( mlayer->name() ) );
           res = false;
         }
 
@@ -11606,7 +11613,11 @@ void QgisApp::saveMeshLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool t
 
   QgsCanvasRefreshBlocker refreshBlocker;
   QgsCoordinateTransform transform( mlayer->crs(), mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
-  mlayer->commitFrameEditing( transform, leaveEditable );
+
+  if ( !mlayer->commitFrameEditing( transform, leaveEditable ) )
+    visibleMessageBar()->pushWarning(
+      tr( "Mesh editing" ),
+      tr( "Unable to save editing for layer \"%1\"" ).arg( mlayer->name() ) );
 
   if ( triggerRepaint )
   {
