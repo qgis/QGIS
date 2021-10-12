@@ -114,7 +114,7 @@
           <item row="1" column="0" colspan="3">
            <widget class="QCheckBox" name="checkBoxHighlight">
             <property name="text">
-             <string>Highlight contour of selected features</string>
+             <string>Highlight selected features</string>
             </property>
             <property name="checked">
              <bool>true</bool>
