@@ -966,7 +966,8 @@ bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform )
 
 bool QgsMeshLayer::commitFrameEditing( const QgsCoordinateTransform &transform, bool continueEditing )
 {
-  if ( !mMeshEditor->checkConsistency() )
+  QgsMeshEditingError error;
+  if ( !mMeshEditor->checkConsistency( error ) )
   {
     QgsMessageLog::logMessage( QObject::tr( "Mesh layer \"%1\" not support mesh editing" ).arg( name() ), QString(), Qgis::MessageLevel::Critical );
     return false;

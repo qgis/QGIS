@@ -1043,6 +1043,279 @@ void TestQgsMeshEditor::particularCases()
     QVERIFY( meshEditor.checkConsistency( error ) );
     meshEditor.mUndoStack->redo();
   }
+
+  {
+    // remove vertex filling hole on boundary -- first configuration: all other vertex inside or only one outide
+    QgsMesh mesh;
+    mesh.vertices.append( QgsMeshVertex( 0, 4, 0 ) ); // 0
+    mesh.vertices.append( QgsMeshVertex( 2, 2, 0 ) ); // 1
+    mesh.vertices.append( QgsMeshVertex( 4, 2, 0 ) ); // 2
+    mesh.vertices.append( QgsMeshVertex( 6, 2, 0 ) ); // 3
+    mesh.vertices.append( QgsMeshVertex( 8, 4, 0 ) ); // 4
+    mesh.vertices.append( QgsMeshVertex( 4, 10, 0 ) ); // 5
+    mesh.vertices.append( QgsMeshVertex( 0, 2, 0 ) ); // 6
+    mesh.vertices.append( QgsMeshVertex( 3, 0, 0 ) ); // 7
+    mesh.vertices.append( QgsMeshVertex( 5, 0, 0 ) ); // 8
+    mesh.vertices.append( QgsMeshVertex( 8, 2, 0 ) ); // 9
+
+    mesh.faces.append( {0, 6, 1} );
+    mesh.faces.append( {1, 7, 2} );
+    mesh.faces.append( {2, 8, 3} );
+    mesh.faces.append( {3, 9, 4} );
+    mesh.faces.append( {0, 1, 5} );
+    mesh.faces.append( {1, 2, 5} );
+    mesh.faces.append( {2, 3, 5} );
+    mesh.faces.append( {3, 4, 5} );
+
+    QCOMPARE( mesh.vertexCount(), 10 );
+    QCOMPARE( mesh.faceCount(), 8 );
+
+    QgsMeshEditingError error;
+    QgsTopologicalMesh topologicMesh = QgsTopologicalMesh::createTopologicalMesh( &mesh, 4, error );
+    Q_ASSERT( error == QgsMeshEditingError() );
+
+    QgsTopologicalMesh::Changes changes = topologicMesh.removeVertexFillHole( 5 );
+    QCOMPARE( changes.verticesToRemoveIndexes().count(), 1 );
+    QCOMPARE( changes.removedFaces().count(), 4 );
+    QCOMPARE( changes.addedFaces().count(), 3 );
+
+    QgsTopologicalMesh::createTopologicalMesh( &mesh, 4, error );
+    QVERIFY( error == QgsMeshEditingError() );
+
+    topologicMesh.reverseChanges( changes );
+
+    QCOMPARE( mesh.vertexCount(), 10 );
+    QCOMPARE( mesh.faceCount(), 8 );
+
+    // closing segment intersect one extremity of still existing edge,
+    // with this, we can't do the operation because that leads to an unique shared vertex
+    mesh.vertices[2] = QgsMeshVertex( 4, 4, 0 );
+
+    changes = topologicMesh.removeVertexFillHole( 5 );
+    QCOMPARE( changes.verticesToRemoveIndexes().count(), 0 );
+    QCOMPARE( changes.removedFaces().count(), 0 );
+    QCOMPARE( changes.addedFaces().count(), 0 );
+
+    QgsTopologicalMesh::createTopologicalMesh( &mesh, 4, error );
+    QVERIFY( error == QgsMeshEditingError() );
+
+    topologicMesh.reverseChanges( changes );
+
+    QCOMPARE( mesh.vertexCount(), 10 );
+    QCOMPARE( mesh.faceCount(), 8 );
+
+    // with the intersecting vertex completly out
+    mesh.vertices[2] = QgsMeshVertex( 4, 5, 0 );
+
+    changes = topologicMesh.removeVertexFillHole( 5 );
+    QCOMPARE( changes.verticesToRemoveIndexes().count(), 0 );
+    QCOMPARE( changes.removedFaces().count(), 0 );
+    QCOMPARE( changes.addedFaces().count(), 0 );
+
+    QgsTopologicalMesh::createTopologicalMesh( &mesh, 4, error );
+    QVERIFY( error == QgsMeshEditingError() );
+
+    topologicMesh.reverseChanges( changes );
+
+    QCOMPARE( mesh.vertexCount(), 10 );
+    QCOMPARE( mesh.faceCount(), 8 );
+
+    // with adding a face to make vertex 2 not an boundary anymore
+    QgsTopologicalMesh::Changes addFaceChanges = topologicMesh.addFaces( topologicMesh.createNewTopologicalFaces( {{2, 7, 8}}, false, error ) );
+    Q_ASSERT( error == QgsMeshEditingError() );
+
+    changes = topologicMesh.removeVertexFillHole( 5 );
+    QCOMPARE( changes.verticesToRemoveIndexes().count(), 1 );
+    QCOMPARE( changes.removedFaces().count(), 4 );
+    QCOMPARE( changes.addedFaces().count(), 2 );
+
+    QgsTopologicalMesh::createTopologicalMesh( &mesh, 4, error );
+    QVERIFY( error == QgsMeshEditingError() );
+
+    topologicMesh.reverseChanges( changes );
+    topologicMesh.reverseChanges( addFaceChanges );
+
+    QCOMPARE( mesh.vertexCount(), 10 );
+    QCOMPARE( mesh.faceCount(), 8 );
+
+    // try removing a face, no sufficient
+    QgsTopologicalMesh::Changes removeFaceChange = topologicMesh.removeFaces( {1} );
+
+    changes = topologicMesh.removeVertexFillHole( 5 );
+    QCOMPARE( changes.verticesToRemoveIndexes().count(), 0 );
+    QCOMPARE( changes.removedFaces().count(), 0 );
+    QCOMPARE( changes.addedFaces().count(), 0 );
+
+    QgsTopologicalMesh::createTopologicalMesh( &mesh, 4, error );
+    QVERIFY( error == QgsMeshEditingError() );
+
+    topologicMesh.reverseChanges( changes );
+    topologicMesh.reverseChanges( removeFaceChange );
+
+    QCOMPARE( mesh.vertexCount(), 10 );
+    QCOMPARE( mesh.faceCount(), 8 );
+
+    // try removing two faces, no sufficient
+    QgsTopologicalMesh::Changes remove2FacesChange = topologicMesh.removeFaces( {1, 2} );
+
+    changes = topologicMesh.removeVertexFillHole( 5 );
+    QCOMPARE( changes.verticesToRemoveIndexes().count(), 0 );
+    QCOMPARE( changes.removedFaces().count(), 0 );
+    QCOMPARE( changes.addedFaces().count(), 0 );
+
+    QgsTopologicalMesh::createTopologicalMesh( &mesh, 4, error );
+    QVERIFY( error == QgsMeshEditingError() );
+
+    topologicMesh.reverseChanges( changes );
+    topologicMesh.reverseChanges( remove2FacesChange );
+
+    QCOMPARE( mesh.vertexCount(), 10 );
+    QCOMPARE( mesh.faceCount(), 8 );
+  }
+
+  {
+    // remove vertex filling hole -- second configuration: all vertex outside
+    QgsMesh mesh;
+    mesh.vertices.append( QgsMeshVertex( 0, 2, 0 ) ); // 0
+    mesh.vertices.append( QgsMeshVertex( 2, 4, 0 ) ); // 1
+    mesh.vertices.append( QgsMeshVertex( 4, 5, 0 ) ); // 2
+    mesh.vertices.append( QgsMeshVertex( 6, 4, 0 ) ); // 3
+    mesh.vertices.append( QgsMeshVertex( 8, 2, 0 ) ); // 4
+    mesh.vertices.append( QgsMeshVertex( 4, 10, 0 ) ); // 5
+    mesh.vertices.append( QgsMeshVertex( 0, 0, 0 ) ); // 6
+    mesh.vertices.append( QgsMeshVertex( 3, 0, 0 ) ); // 7
+    mesh.vertices.append( QgsMeshVertex( 5, 0, 0 ) ); // 8
+    mesh.vertices.append( QgsMeshVertex( 8, 0, 0 ) ); // 9
+
+    mesh.faces.append( {0, 6, 1} );
+    mesh.faces.append( {1, 7, 2} );
+    mesh.faces.append( {2, 8, 3} );
+    mesh.faces.append( {3, 9, 4} );
+    mesh.faces.append( {0, 1, 5} );
+    mesh.faces.append( {1, 2, 5} );
+    mesh.faces.append( {2, 3, 5} );
+    mesh.faces.append( {3, 4, 5} );
+
+    QCOMPARE( mesh.vertexCount(), 10 );
+    QCOMPARE( mesh.faceCount(), 8 );
+
+    QgsMeshEditingError error;
+    QgsTopologicalMesh topologicalMesh = QgsTopologicalMesh::createTopologicalMesh( &mesh, 4, error );
+    Q_ASSERT( error == QgsMeshEditingError() );
+
+    QgsTopologicalMesh::Changes changes = topologicalMesh.removeVertexFillHole( 5 );
+    QCOMPARE( changes.verticesToRemoveIndexes().count(), 0 );
+    QCOMPARE( changes.removedFaces().count(), 0 );
+    QCOMPARE( changes.addedFaces().count(), 0 );
+
+    // try adding a face, not sufficient
+    QgsTopologicalMesh::Changes addFaceChanges = topologicalMesh.addFaces( topologicalMesh.createNewTopologicalFaces( {{1, 6, 7}}, true, error ) );
+    Q_ASSERT( error == QgsMeshEditingError() );
+
+    changes = topologicalMesh.removeVertexFillHole( 5 );
+    QCOMPARE( changes.verticesToRemoveIndexes().count(), 0 );
+    QCOMPARE( changes.removedFaces().count(), 0 );
+    QCOMPARE( changes.addedFaces().count(), 0 );
+
+    QgsTopologicalMesh::createTopologicalMesh( &mesh, 4, error );
+    QVERIFY( error == QgsMeshEditingError() );
+
+    topologicalMesh.reverseChanges( changes );
+    topologicalMesh.reverseChanges( addFaceChanges );
+
+    QCOMPARE( mesh.vertexCount(), 10 );
+    QCOMPARE( mesh.faceCount(), 8 );
+
+    // try adding two faces, not sufficient
+    QgsTopologicalMesh::Changes add2FacesChanges =
+    topologicalMesh.addFaces( topologicalMesh.createNewTopologicalFaces( {{1, 6, 7}, {2, 7, 8}}, true, error ) );
+    Q_ASSERT( error == QgsMeshEditingError() );
+
+    changes = topologicalMesh.removeVertexFillHole( 5 );
+    QCOMPARE( changes.verticesToRemoveIndexes().count(), 0 );
+    QCOMPARE( changes.removedFaces().count(), 0 );
+    QCOMPARE( changes.addedFaces().count(), 0 );
+
+    QgsTopologicalMesh::createTopologicalMesh( &mesh, 4, error );
+    QVERIFY( error == QgsMeshEditingError() );
+
+    topologicalMesh.reverseChanges( changes );
+    topologicalMesh.reverseChanges( add2FacesChanges );
+
+    QCOMPARE( mesh.vertexCount(), 10 );
+    QCOMPARE( mesh.faceCount(), 8 );
+
+    // try adding three faces, good
+    QgsTopologicalMesh::Changes add3FacesChanges =
+    topologicalMesh.addFaces( topologicalMesh.createNewTopologicalFaces( {{1, 6, 7}, {2, 7, 8}, {3, 8, 9}}, true, error ) );
+    Q_ASSERT( error == QgsMeshEditingError() );
+
+    changes = topologicalMesh.removeVertexFillHole( 5 );
+    QCOMPARE( changes.verticesToRemoveIndexes().count(), 1 );
+    QCOMPARE( changes.removedFaces().count(), 4 );
+    QCOMPARE( changes.addedFaces().count(), 0 );
+
+    QgsTopologicalMesh::createTopologicalMesh( &mesh, 4, error );
+    QVERIFY( error == QgsMeshEditingError() );
+
+    topologicalMesh.reverseChanges( changes );
+    topologicalMesh.reverseChanges( add3FacesChanges );
+
+    QCOMPARE( mesh.vertexCount(), 10 );
+    QCOMPARE( mesh.faceCount(), 8 );
+  }
+
+  {
+    // remove vertex filling hole on boundary -- enclosed void
+    QgsMesh mesh;
+    mesh.vertices.append( QgsMeshVertex( 0, 2, 0 ) ); // 0
+    mesh.vertices.append( QgsMeshVertex( 2, 2, 0 ) ); // 1
+    mesh.vertices.append( QgsMeshVertex( 4, 5, 0 ) ); // 2
+    mesh.vertices.append( QgsMeshVertex( 6, 2, 0 ) ); // 3
+    mesh.vertices.append( QgsMeshVertex( 8, 2, 0 ) ); // 4
+    mesh.vertices.append( QgsMeshVertex( 4, 10, 0 ) ); // 5
+    mesh.vertices.append( QgsMeshVertex( 0, 0, 0 ) ); // 6
+    mesh.vertices.append( QgsMeshVertex( 4, 0, 0 ) ); // 7
+    mesh.vertices.append( QgsMeshVertex( 8, 0, 0 ) ); // 8
+
+    mesh.faces.append( {6, 1, 0} ); // 0
+    mesh.faces.append( {1, 6, 7} ); // 1
+    mesh.faces.append( {1, 7, 3} ); // 2
+    mesh.faces.append( {3, 7, 8} ); // 3
+    mesh.faces.append( {3, 8, 4} ); // 4
+    mesh.faces.append( {0, 1, 5} ); // 5
+    mesh.faces.append( {1, 2, 5} ); // 6
+    mesh.faces.append( {2, 3, 5} ); // 7
+    mesh.faces.append( {3, 4, 5} ); // 8
+
+    QCOMPARE( mesh.vertexCount(), 9 );
+    QCOMPARE( mesh.faceCount(), 9 );
+
+    QgsMeshEditingError error;
+    QgsTopologicalMesh topologicalMesh = QgsTopologicalMesh::createTopologicalMesh( &mesh, 4, error );
+    Q_ASSERT( error == QgsMeshEditingError() );
+
+    QVERIFY( topologicalMesh.isVertexOnBoundary( 1 ) );
+    QVERIFY( topologicalMesh.isVertexOnBoundary( 2 ) );
+    QVERIFY( topologicalMesh.isVertexOnBoundary( 3 ) );
+
+    QgsTopologicalMesh::Changes changes = topologicalMesh.removeVertexFillHole( 2 );
+    QCOMPARE( changes.verticesToRemoveIndexes().count(), 1 );
+    QCOMPARE( changes.removedFaces().count(), 2 );
+    QCOMPARE( changes.addedFaces().count(), 1 );
+
+    QList<int> facesAround = topologicalMesh.facesAroundVertex( 3 );
+    QCOMPARE( facesAround, QList<int>( {2, 3, 4, 8, 9} ) );
+    facesAround = topologicalMesh.facesAroundVertex( 1 );
+    QCOMPARE( facesAround, QList<int>( {0, 1, 2, 9, 5} ) );
+
+    QVERIFY( !topologicalMesh.isVertexOnBoundary( 1 ) );
+    QVERIFY( !topologicalMesh.isVertexOnBoundary( 3 ) );
+    QVERIFY( topologicalMesh.edgeCanBeFlipped( 1, 3 ) );
+
+    QgsTopologicalMesh::createTopologicalMesh( &mesh, 4, error );
+    QVERIFY( error == QgsMeshEditingError() );
+  }
 }
 
 void TestQgsMeshEditor::meshEditorFromMeshLayer_quadTriangle()
