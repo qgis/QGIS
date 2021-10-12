@@ -129,8 +129,8 @@ QVariantMap QgsShortestLineAlgorithm::processAlgorithm( const QVariantMap &param
       break;
 
 
-    QgsGeometry sourceGeom = sourceFeature.geometry();
-    QgsFeatureIds nearestIds = idx.nearestNeighbor( sourceGeom, mKNeighbors, mMaxDistance ).toSet();
+    const QgsGeometry sourceGeom = sourceFeature.geometry();
+    QgsFeatureIds nearestIds = qgis::listToSet( idx.nearestNeighbor( sourceGeom, mKNeighbors, mMaxDistance ) );
 
     QgsFeatureRequest targetRequest = QgsFeatureRequest();
     targetRequest.setFilterFids( nearestIds );
@@ -139,9 +139,9 @@ QVariantMap QgsShortestLineAlgorithm::processAlgorithm( const QVariantMap &param
     QgsFeature destinationFeature;
     while ( destinationIterator.nextFeature( destinationFeature ) )
     {
-      QgsGeometry destinationGeom = destinationFeature.geometry();
+      const QgsGeometry destinationGeom = destinationFeature.geometry();
 
-      QgsGeometry shortestLine = sourceGeom.shortestLine( destinationGeom );
+      const QgsGeometry shortestLine = sourceGeom.shortestLine( destinationGeom );
       double dist = da.measureLength( shortestLine );
 
       QgsFeature f;
