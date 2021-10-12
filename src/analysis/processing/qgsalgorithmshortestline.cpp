@@ -143,7 +143,7 @@ QVariantMap QgsShortestLineAlgorithm::processAlgorithm( const QVariantMap &param
     {
       QgsGeometry destinationGeom;
 
-      if( mMethod == 1 )
+      if ( mMethod == 1 )
       {
         destinationGeom = destinationFeature.geometry().centroid();
       }
