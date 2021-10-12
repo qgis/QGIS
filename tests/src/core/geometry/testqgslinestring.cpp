@@ -1444,8 +1444,7 @@ void TestQgsLineString::insertVertex()
   //insert vertex in empty line
   QgsLineString ls;
 
-  QVERIFY( ls.insertVertex( 
-    ( 0, 0, 0 ), QgsPoint( 6.0, 7.0 ) ) );
+  QVERIFY( ls.insertVertex( QgsVertexId( 0, 0, 0 ), QgsPoint( 6.0, 7.0 ) ) );
   QCOMPARE( ls.numPoints(), 1 );
   QVERIFY( !ls.is3D() );
   QVERIFY( !ls.isMeasure() );
