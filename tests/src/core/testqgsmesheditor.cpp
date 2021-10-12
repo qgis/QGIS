@@ -1104,7 +1104,7 @@ void TestQgsMeshEditor::particularCases()
     QCOMPARE( mesh.vertexCount(), 10 );
     QCOMPARE( mesh.faceCount(), 8 );
 
-    // with the intersecting vertex completly out
+    // with the intersecting vertex completely out
     mesh.vertices[2] = QgsMeshVertex( 4, 5, 0 );
 
     changes = topologicMesh.removeVertexFillHole( 5 );

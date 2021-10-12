@@ -377,6 +377,7 @@ class QgsMeshLayerUndoCommandAddVertices : public QgsMeshLayerUndoCommandMeshEdi
 class QgsMeshLayerUndoCommandRemoveVerticesWithoutFillHoles : public QgsMeshLayerUndoCommandMeshEdit
 {
   public:
+
     /**
      * Constructor with the associated \a meshEditor and \a vertices that will be removed
      */
@@ -397,11 +398,12 @@ class QgsMeshLayerUndoCommandRemoveVerticesWithoutFillHoles : public QgsMeshLaye
 class QgsMeshLayerUndoCommandRemoveVerticesFillHoles : public QgsMeshLayerUndoCommandMeshEdit
 {
   public:
+
     /**
      * Constructor with the associated \a meshEditor and \a vertices that will be removed
      *
      * The pointer \a remainingVertex is used to know the remaining vertex that have not been removed by the operation
-     * afer the command was pushed in the undo/redo stack. The list pointed by \a remainingVertexPointer must not be
+     * after the command was pushed in the undo/redo stack. The list pointed by \a remainingVertexPointer must not be
      * destructed until the command is pushed to an undo/redo stack or the redo() method is called.
      *
      */

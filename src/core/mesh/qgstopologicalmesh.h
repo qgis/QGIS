@@ -314,7 +314,7 @@ class CORE_EXPORT QgsTopologicalMesh
     //! Checks the consistency of the topological mesh and return FALSE if there is a consistency issue
     QgsMeshEditingError checkConsistency() const;
 
-    //! Checks the topology of the mesh \mesh, if error occurs, this mesh can't be edited
+    //! Checks the topology of the mesh \a mesh, if error occurs, this mesh can't be edited
     static QgsMeshEditingError checkTopology( const QgsMesh &mesh, int maxVerticesPerFace );
 
   private:
