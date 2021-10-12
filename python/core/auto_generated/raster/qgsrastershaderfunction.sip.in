@@ -129,7 +129,7 @@ Sets label precision to ``labelPrecision``
 .. versionadded:: 3.16
 %End
 
-  protected:
+  public:
 
 
 

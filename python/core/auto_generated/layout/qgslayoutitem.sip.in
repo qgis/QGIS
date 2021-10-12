@@ -1133,7 +1133,7 @@ Emitted when the item's clipping path has changed.
 .. versionadded:: 3.16
 %End
 
-  protected:
+  public:
 
     virtual void drawDebugRect( QPainter *painter );
 %Docstring

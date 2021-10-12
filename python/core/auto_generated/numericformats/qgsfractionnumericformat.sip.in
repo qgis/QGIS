@@ -154,7 +154,7 @@ Converts numbers in an ``input`` string to unicode subscript equivalents.
 .. seealso:: :py:func:`toUnicodeSuperscript`
 %End
 
-  protected:
+  public:
 
     virtual void setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context );
 %Docstring

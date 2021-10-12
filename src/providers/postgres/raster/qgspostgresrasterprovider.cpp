@@ -1095,7 +1095,8 @@ bool QgsPostgresRasterProvider::init()
         QgsPolygon p;
         // Strip \x
         const QByteArray hexAscii { result.PQgetvalue( 0, 5 ).toLatin1().mid( 2 ) };
-        QgsConstWkbPtr ptr { QByteArray::fromHex( hexAscii ) };
+        const QByteArray hexBin = QByteArray::fromHex( hexAscii );
+        QgsConstWkbPtr ptr { hexBin };
 
         if ( hexAscii.isEmpty() || ! p.fromWkb( ptr ) )
         {

@@ -80,7 +80,7 @@ The ``parser`` argument must specify a valid :py:class:`QgsNewsFeedParser` objec
 must exist for the lifetime of this model.
 %End
 
-  protected:
+  public:
     virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
 
 

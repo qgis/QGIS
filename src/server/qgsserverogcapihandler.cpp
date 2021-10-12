@@ -46,7 +46,8 @@ QVariantMap QgsServerOgcApiHandler::values( const QgsServerApiContext &context )
     // value() calls the validators and throws an exception if validation fails
     result[p.name()] = p.value( context );
   }
-  const auto match { path().match( context.request()->url().toString() ) };
+  const auto sanitizedPath { QgsServerOgcApi::sanitizeUrl( context.handlerPath( ) ).path() };
+  const auto match { path().match( sanitizedPath ) };
   if ( match.hasMatch() )
   {
     const auto constNamed { path().namedCaptureGroups() };
@@ -140,7 +141,7 @@ std::string QgsServerOgcApiHandler::href( const QgsServerApiContext &context, co
 {
   QUrl url { context.request()->url() };
   QString urlBasePath { context.matchedPath() };
-  const auto match { path().match( url.path() ) };
+  const auto match { path().match( QgsServerOgcApi::sanitizeUrl( context.handlerPath( ) ).path( ) ) };
   if ( match.captured().count() > 0 )
   {
     url.setPath( urlBasePath + match.captured( 0 ) );

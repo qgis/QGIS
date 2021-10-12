@@ -323,7 +323,7 @@ QString QgsGeometryCollection::geometryType() const
   return QStringLiteral( "GeometryCollection" );
 }
 
-void QgsGeometryCollection::transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
+void QgsGeometryCollection::transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d, bool transformZ )
 {
   for ( QgsAbstractGeometry *g : std::as_const( mGeometries ) )
   {

@@ -78,7 +78,7 @@ Optionally a ``column`` can be specified, which will also bring that column into
 .. versionadded:: 3.16
 %End
 
-  protected:
+  public:
 
     virtual void mousePressEvent( QMouseEvent *event );
 

@@ -68,6 +68,7 @@
 #include "qgsattributeeditorcontainer.h"
 #include "qgsattributeeditorelement.h"
 #include "qgsattributeeditorfield.h"
+#include "qgsdimensionfilter.h"
 
 #include <QImage>
 #include <QPainter>
@@ -141,7 +142,7 @@ namespace QgsWms
     // configure painter
     QPainter painter( image.get() );
     QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
-    context.setFlag( QgsRenderContext::Antialiasing, true );
+    context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
     QgsScopedRenderContextScaleToMm scaleContext( context );
     // QGIS 4.0 -- take from real render context instead
     Q_NOWARN_DEPRECATED_PUSH
@@ -229,7 +230,7 @@ namespace QgsWms
 
       QgsCoordinateTransform tr = mapSettings.layerTransform( vl );
       context.setCoordinateTransform( tr );
-      context.setExtent( tr.transformBoundingBox( mapSettings.extent(), QgsCoordinateTransform::ReverseTransform ) );
+      context.setExtent( tr.transformBoundingBox( mapSettings.extent(), Qgis::TransformDirection::Reverse ) );
 
       SymbolSet &usedSymbols = hitTest[vl];
       runHitTestLayer( vl, usedSymbols, context );
@@ -274,7 +275,7 @@ namespace QgsWms
 
     // configure layers
     QgsMapSettings mapSettings;
-    mapSettings.setFlag( QgsMapSettings::RenderBlocking );
+    mapSettings.setFlag( Qgis::MapSettingsFlag::RenderBlocking );
     QList<QgsMapLayer *> layers = mContext.layersToRender();
     configureLayers( layers, &mapSettings );
 
@@ -360,15 +361,15 @@ namespace QgsWms
       }
       else
       {
-        QgsAttributeList pkIndexes = cLayer->primaryKeyAttributes();
+        const QgsAttributeList pkIndexes = cLayer->primaryKeyAttributes();
         if ( pkIndexes.size() < 1 )
         {
           throw QgsException( QStringLiteral( "An error occurred during the Atlas print" ) );
         }
         QStringList pkAttributeNames;
-        for ( int i = 0; i < pkIndexes.size(); ++i )
+        for ( int pkIndex : pkIndexes )
         {
-          pkAttributeNames.append( cLayer->fields()[pkIndexes.at( i )].name() );
+          pkAttributeNames.append( cLayer->fields().at( pkIndex ).name() );
         }
 
         int nAtlasFeatures = atlasPk.size() / pkIndexes.size();
@@ -423,7 +424,7 @@ namespace QgsWms
 
     // configure layers
     QgsMapSettings mapSettings;
-    mapSettings.setFlag( QgsMapSettings::RenderBlocking );
+    mapSettings.setFlag( Qgis::MapSettingsFlag::RenderBlocking );
     QList<QgsMapLayer *> layers = mContext.layersToRender();
     configureLayers( layers, &mapSettings );
 
@@ -437,13 +438,27 @@ namespace QgsWms
     // configure layout
     configurePrintLayout( layout.get(), mapSettings, atlas );
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-    QgsFeatureFilterProviderGroup filters;
-    mContext.accessControl()->resolveFilterFeatures( mapSettings.layers() );
-    filters.addProvider( mContext.accessControl() );
     QgsLayoutRenderContext &layoutRendererContext = layout->renderContext();
-    layoutRendererContext.setFeatureFilterProvider( &filters );
+    QgsFeatureFilterProviderGroup filters;
+    const QList<QgsMapLayer *> lyrs = mapSettings.layers();
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    mContext.accessControl()->resolveFilterFeatures( lyrs );
+    filters.addProvider( mContext.accessControl() );
 #endif
+
+    QMap<const QgsVectorLayer *, QStringList> fltrs;
+    for ( QgsMapLayer *l : lyrs )
+    {
+      if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l ) )
+      {
+        fltrs.insert( vl, dimensionFilter( vl ) );
+      }
+    }
+
+    QgsDimensionFilter dimFilter( fltrs );
+    filters.addProvider( &dimFilter );
+    layoutRendererContext.setFeatureFilterProvider( &filters );
 
     // Get the temporary output file
     const QgsWmsParameters::Format format = mWmsParameters.format();
@@ -903,7 +918,7 @@ namespace QgsWms
     QList<QgsMapLayer *> layers = mContext.layersToRender();
 
     QgsMapSettings mapSettings;
-    mapSettings.setFlag( QgsMapSettings::RenderBlocking );
+    mapSettings.setFlag( Qgis::MapSettingsFlag::RenderBlocking );
     configureLayers( layers, &mapSettings );
 
     // create the output image and the painter
@@ -1108,7 +1123,7 @@ namespace QgsWms
 
     // configure map settings (background, DPI, ...)
     QgsMapSettings mapSettings;
-    mapSettings.setFlag( QgsMapSettings::RenderBlocking );
+    mapSettings.setFlag( Qgis::MapSettingsFlag::RenderBlocking );
     configureMapSettings( outputImage.get(), mapSettings, mandatoryCrsParam );
 
     // compute scale denominator
@@ -1271,9 +1286,9 @@ namespace QgsWms
     mapSettings.setLabelingEngineSettings( mProject->labelingEngineSettings() );
 
     // enable rendering optimization
-    mapSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
+    mapSettings.setFlag( Qgis::MapSettingsFlag::UseRenderingOptimization );
 
-    mapSettings.setFlag( QgsMapSettings::RenderMapTile, mContext.renderMapTiles() );
+    mapSettings.setFlag( Qgis::MapSettingsFlag::RenderMapTile, mContext.renderMapTiles() );
 
     // set selection color
     mapSettings.setSelectionColor( mProject->selectionColor() );
@@ -3339,7 +3354,7 @@ namespace QgsWms
     const QList< QgsAnnotation * > annotations = annotationManager->annotations();
 
     QgsRenderContext renderContext = QgsRenderContext::fromQPainter( painter );
-    renderContext.setFlag( QgsRenderContext::RenderBlocking );
+    renderContext.setFlag( Qgis::RenderContextFlag::RenderBlocking );
     for ( QgsAnnotation *annotation : annotations )
     {
       if ( !annotation || !annotation->isVisible() )
@@ -3519,7 +3534,7 @@ namespace QgsWms
     if ( !mWmsParameters.bbox().isEmpty() )
     {
       QgsMapSettings mapSettings;
-      mapSettings.setFlag( QgsMapSettings::RenderBlocking );
+      mapSettings.setFlag( Qgis::MapSettingsFlag::RenderBlocking );
       std::unique_ptr<QImage> tmp( createImage( mContext.mapSize( false ) ) );
       configureMapSettings( tmp.get(), mapSettings );
       // QGIS 4.0 - require correct use of QgsRenderContext instead of these

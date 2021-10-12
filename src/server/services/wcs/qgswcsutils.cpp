@@ -18,7 +18,7 @@
 #include "qgswcsutils.h"
 #include "qgsconfigcache.h"
 #include "qgsserverprojectutils.h"
-
+#include "qgscoordinatetransform.h"
 #include "qgsproject.h"
 #include "qgsexception.h"
 #include "qgsrasterlayer.h"

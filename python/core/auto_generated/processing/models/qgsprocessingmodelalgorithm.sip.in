@@ -556,7 +556,7 @@ run through the designer.
 .. versionadded:: 3.14
 %End
 
-  protected:
+  public:
 
     virtual QgsProcessingAlgorithm *createInstance() const /Factory/;
 

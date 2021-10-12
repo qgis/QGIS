@@ -26,7 +26,7 @@
 #include "qgsmultipoint.h"
 #include "qgspoint.h"
 #include "qgsproject.h"
-
+#include "qgscoordinatetransform.h"
 #include "testgeometryutils.h"
 #include "testtransformer.h"
 
@@ -1354,7 +1354,7 @@ void TestQgsLineString::CRSTransform()
   QgsLineString ls;
   ls.setPoints( QgsPointSequence() << QgsPoint( 6374985, -3626584 )
                 << QgsPoint( 6474985, -3526584 ) );
-  ls.transform( tr, QgsCoordinateTransform::ForwardTransform );
+  ls.transform( tr, Qgis::TransformDirection::Forward );
 
   QGSCOMPARENEAR( ls.pointN( 0 ).x(), 175.771, 0.001 );
   QGSCOMPARENEAR( ls.pointN( 0 ).y(), -39.724, 0.001 );
@@ -1368,7 +1368,7 @@ void TestQgsLineString::CRSTransform()
   //3d CRS transform without considering Z
   ls = QgsLineString( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 6374985, -3626584, 1, 2 )
                       << QgsPoint( QgsWkbTypes::PointZM, 6474985, -3526584, 3, 4 ) );
-  ls.transform( tr, QgsCoordinateTransform::ForwardTransform );
+  ls.transform( tr, Qgis::TransformDirection::Forward );
 
   QGSCOMPARENEAR( ls.pointN( 0 ).x(), 175.771, 0.001 );
   QGSCOMPARENEAR( ls.pointN( 0 ).y(), -39.724, 0.001 );
@@ -1382,7 +1382,7 @@ void TestQgsLineString::CRSTransform()
   //3d CRS transform with Z
   ls = QgsLineString( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 6374985, -3626584, 1, 2 )
                       << QgsPoint( QgsWkbTypes::PointZM, 6474985, -3526584, 3, 4 ) );
-  ls.transform( tr, QgsCoordinateTransform::ForwardTransform, true );
+  ls.transform( tr, Qgis::TransformDirection::Forward, true );
 
   QGSCOMPARENEAR( ls.pointN( 0 ).x(), 175.771, 0.001 );
   QGSCOMPARENEAR( ls.pointN( 0 ).y(), -39.724, 0.001 );
@@ -1394,7 +1394,7 @@ void TestQgsLineString::CRSTransform()
   QCOMPARE( ls.pointN( 1 ).m(), 4.0 );
 
   //reverse transform
-  ls.transform( tr, QgsCoordinateTransform::ReverseTransform );
+  ls.transform( tr, Qgis::TransformDirection::Reverse );
 
   QGSCOMPARENEAR( ls.pointN( 0 ).x(), 6374985, 0.01 );
   QGSCOMPARENEAR( ls.pointN( 0 ).y(), -3626584, 0.01 );
@@ -1407,12 +1407,12 @@ void TestQgsLineString::CRSTransform()
 
 #if PROJ_VERSION_MAJOR<6 // note - z value transform doesn't currently work with proj 6+, because we don't yet support compound CRS definitions
   //z value transform
-  ls.transform( tr, QgsCoordinateTransform::ForwardTransform, true );
+  ls.transform( tr, Qgis::TransformDirection::Forward, true );
 
   QGSCOMPARENEAR( ls.pointN( 0 ).z(), -19.249066, 0.001 );
   QGSCOMPARENEAR( ls.pointN( 1 ).z(), -21.092128, 0.001 );
 
-  ls.transform( tr, QgsCoordinateTransform::ReverseTransform, true );
+  ls.transform( tr, Qgis::TransformDirection::Reverse, true );
 
   QGSCOMPARENEAR( ls.pointN( 0 ).z(), 1.0, 0.001 );
   QGSCOMPARENEAR( ls.pointN( 1 ).z(), 3.0, 0.001 );
@@ -1444,7 +1444,8 @@ void TestQgsLineString::insertVertex()
   //insert vertex in empty line
   QgsLineString ls;
 
-  QVERIFY( ls.insertVertex( QgsVertexId( 0, 0, 0 ), QgsPoint( 6.0, 7.0 ) ) );
+  QVERIFY( ls.insertVertex( 
+    ( 0, 0, 0 ), QgsPoint( 6.0, 7.0 ) ) );
   QCOMPARE( ls.numPoints(), 1 );
   QVERIFY( !ls.is3D() );
   QVERIFY( !ls.isMeasure() );
@@ -1988,7 +1989,7 @@ void TestQgsLineString::vertexAtPointAt()
   QgsLineString ls;
   QgsVertexId v;
   QgsPoint p;
-  QgsVertexId::VertexType type;
+  Qgis::VertexType type;
 
   ls.vertexAt( QgsVertexId( 0, 0, -10 ) ); //out of bounds, check for no crash
   ls.vertexAt( QgsVertexId( 0, 0, 10 ) ); //out of bounds, check for no crash
@@ -2006,10 +2007,10 @@ void TestQgsLineString::vertexAtPointAt()
   QVERIFY( !ls.pointAt( 10, p, type ) );
   QVERIFY( ls.pointAt( 0, p, type ) );
   QCOMPARE( p, QgsPoint( 1, 2 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
   QVERIFY( ls.pointAt( 1, p, type ) );
   QCOMPARE( p, QgsPoint( 11, 12 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
 }
 
 void TestQgsLineString::vertexAtPointAtZ()
@@ -2018,16 +2019,16 @@ void TestQgsLineString::vertexAtPointAtZ()
                     << QgsPoint( QgsWkbTypes::PointZ, 11, 12, 13 ) );
   QgsVertexId v;
   QgsPoint p;
-  QgsVertexId::VertexType type;
+  Qgis::VertexType type;
 
   QCOMPARE( ls.vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) );
   QCOMPARE( ls.vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( QgsWkbTypes::PointZ, 11, 12, 13 ) );
   QVERIFY( ls.pointAt( 0, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
   QVERIFY( ls.pointAt( 1, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZ, 11, 12, 13 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
 }
 
 void TestQgsLineString::vertexAtPointAtM()
@@ -2036,16 +2037,16 @@ void TestQgsLineString::vertexAtPointAtM()
                     << QgsPoint( QgsWkbTypes::PointM, 11, 12, 0, 14 ) );
   QgsVertexId v;
   QgsPoint p;
-  QgsVertexId::VertexType type;
+  Qgis::VertexType type;
 
   QCOMPARE( ls.vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 4 ) );
   QCOMPARE( ls.vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( QgsWkbTypes::PointM, 11, 12, 0, 14 ) );
   QVERIFY( ls.pointAt( 0, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 4 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
   QVERIFY( ls.pointAt( 1, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointM, 11, 12, 0, 14 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
 }
 
 void TestQgsLineString::vertexAtPointAtZM()
@@ -2055,16 +2056,16 @@ void TestQgsLineString::vertexAtPointAtZM()
                     << QgsPoint( QgsWkbTypes::PointZM, 11, 12, 13, 14 ) );
   QgsVertexId v;
   QgsPoint p;
-  QgsVertexId::VertexType type;
+  Qgis::VertexType type;
 
   QCOMPARE( ls.vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ) );
   QCOMPARE( ls.vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( QgsWkbTypes::PointZM, 11, 12, 13, 14 ) );
   QVERIFY( ls.pointAt( 0, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
   QVERIFY( ls.pointAt( 1, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZM, 11, 12, 13, 14 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
 }
 
 void TestQgsLineString::vertexAtPointAt25D()
@@ -2075,16 +2076,16 @@ void TestQgsLineString::vertexAtPointAt25D()
 
   QgsVertexId v;
   QgsPoint p;
-  QgsVertexId::VertexType type;
+  Qgis::VertexType type;
 
   QCOMPARE( ls.vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::Point25D, 1, 2, 3 ) );
   QCOMPARE( ls.vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( QgsWkbTypes::Point25D, 11, 12, 13 ) );
   QVERIFY( ls.pointAt( 0, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::Point25D, 1, 2, 3 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
   QVERIFY( ls.pointAt( 1, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::Point25D, 11, 12, 13 ) );
-  QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QCOMPARE( type, Qgis::VertexType::Segment );
 }
 
 void TestQgsLineString::centroid()

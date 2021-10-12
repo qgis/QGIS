@@ -184,7 +184,7 @@ void QgsGeometryOverlapCheck::fixError( const QMap<QString, QgsFeaturePool *> &f
       if ( shared1 < shared2 )
       {
         const QgsCoordinateTransform ct( featurePoolA->crs(), mContext->mapCrs, mContext->transformContext );
-        diff1->transform( ct, QgsCoordinateTransform::ReverseTransform );
+        diff1->transform( ct, Qgis::TransformDirection::Reverse );
         featureA.setGeometry( QgsGeometry( std::move( diff1 ) ) );
 
         changes[error->layerId()][featureA.id()].append( Change( ChangeFeature, ChangeChanged ) );
@@ -193,7 +193,7 @@ void QgsGeometryOverlapCheck::fixError( const QMap<QString, QgsFeaturePool *> &f
       else
       {
         const QgsCoordinateTransform ct( featurePoolB->crs(), mContext->mapCrs, mContext->transformContext );
-        diff2->transform( ct, QgsCoordinateTransform::ReverseTransform );
+        diff2->transform( ct, Qgis::TransformDirection::Reverse );
         featureB.setGeometry( QgsGeometry( std::move( diff2 ) ) );
 
         changes[overlapError->overlappedFeature().layerId()][featureB.id()].append( Change( ChangeFeature, ChangeChanged ) );

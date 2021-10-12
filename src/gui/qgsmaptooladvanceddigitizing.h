@@ -65,6 +65,15 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     QgsAdvancedDigitizingDockWidget *cadDockWidget() const { return mCadDockWidget; }
 
     /**
+     * Returns the layer associated with the map tool.
+     *
+     * By default this returns the map canvas' QgsMapCanvas::currentLayer().
+     *
+     * \since QGIS 3.22
+     */
+    virtual QgsMapLayer *layer() const;
+
+    /**
      * Returns whether functionality of advanced digitizing dock widget is currently allowed.
      *
      * Tools may decide to switch this support on/off based on the current state of the map tool.

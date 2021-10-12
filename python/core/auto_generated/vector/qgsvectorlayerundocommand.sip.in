@@ -39,7 +39,7 @@ Returns the layer associated with the undo command
     virtual int id() const;
     virtual bool mergeWith( const QUndoCommand * );
 
-  protected:
+  public:
 };
 
 

@@ -144,7 +144,7 @@ Sums up the area of the curve by iterating over the vertices (shoelace formula).
     virtual int vertexNumberFromVertexId( QgsVertexId id ) const;
 
 
-    virtual bool pointAt( int node, QgsPoint &point /Out/, QgsVertexId::VertexType &type /Out/ ) const = 0;
+    virtual bool pointAt( int node, QgsPoint &point /Out/, Qgis::VertexType &type /Out/ ) const = 0;
 %Docstring
 Returns the point and vertex id of a point within the curve.
 
@@ -318,7 +318,7 @@ Scrolls the curve vertices so that they start with the vertex at the given index
 
 
 
-  protected:
+  public:
 
     virtual void clearCache() const;
 

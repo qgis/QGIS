@@ -641,7 +641,7 @@ Internally, this notifies all symbol layers which were used via a call to
 .. versionadded:: 3.20
 %End
 
-  protected:
+  public:
 
     QgsSymbol( Qgis::SymbolType type, const QgsSymbolLayerList &layers /Transfer/ ); // can't be instantiated
 
@@ -677,7 +677,7 @@ Retrieve a cloned list of all layers that make up this symbol.
 Ownership is transferred to the caller.
 %End
 
-    void renderUsingLayer( QgsSymbolLayer *layer, QgsSymbolRenderContext &context );
+    void renderUsingLayer( QgsSymbolLayer *layer, QgsSymbolRenderContext &context, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::GeometryType::UnknownGeometry, const QPolygonF *points = 0, const QVector<QPolygonF> *rings = 0 );
 %Docstring
 Renders a context using a particular symbol layer without passing in a
 geometry. This is used as fallback, if the symbol being rendered is not
@@ -686,6 +686,9 @@ called and will call the layer's rendering method anyway but the
 geometry passed to the layer will be empty.
 This is required for layers that generate their own geometry from other
 information in the rendering context.
+
+Since QGIS 3.22, the optional ``geometryType``, ``points`` and ``rings`` arguments can specify the original
+geometry type, points and rings in which are being rendered by the parent symbol.
 %End
 
     void renderVertexMarker( QPointF pt, QgsRenderContext &context, Qgis::VertexMarkerType currentVertexMarkerType, double currentVertexMarkerSize );

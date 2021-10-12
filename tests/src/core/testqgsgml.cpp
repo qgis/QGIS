@@ -24,6 +24,7 @@
 #include <qgsgml.h>
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgscoordinatereferencesystem.h"
 
 /**
  * \ingroup UnitTests

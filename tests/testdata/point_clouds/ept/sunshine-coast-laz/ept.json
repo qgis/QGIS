@@ -1,0 +1,30 @@
+{
+"bounds": [498062.000000, 7050992.840000, 74.340000, 498067.680000, 7050998.520000, 80.020000],
+"boundsConforming": [498062.000000, 7050992.840000, 74.340000, 498067.390000, 7050997.040000, 80.020000],
+"dataType": "laszip",
+"hierarchyType": "json",
+"points": 253,
+"span": 128,
+"version": "1.0.0",
+"schema": [
+	{"name": "Red", "type": "unsigned", "size": 2, "count": 253, "maximum": 0, "minimum": 0, "mean": 0, "stddev": 0, "variance": 0},
+	{"name": "X", "type": "float", "scale": 0.01, "offset": 498065, "size": 8, "count": 253, "maximum": 498067, "minimum": 498062, "mean": 498065, "stddev": 1.56676, "variance": 2.45475},
+	{"name": "EdgeOfFlightLine", "type": "unsigned", "size": 1, "count": 253, "maximum": 0, "minimum": 0, "mean": 0, "stddev": 0, "variance": 0},
+	{"name": "Blue", "type": "unsigned", "size": 2, "count": 253, "maximum": 0, "minimum": 0, "mean": 0, "stddev": 0, "variance": 0},
+	{"name": "GpsTime", "type": "float", "size": 8, "count": 253, "maximum": 269161, "minimum": 268793, "mean": 268905, "stddev": 169.298, "variance": 28661.7},
+	{"name": "Y", "type": "float", "scale": 0.01, "offset": 7.051e+06, "size": 8, "count": 253, "maximum": 7.051e+06, "minimum": 7.05099e+06, "mean": 7.051e+06, "stddev": 1.24266, "variance": 1.54421},
+	{"name": "Z", "type": "float", "scale": 0.01, "offset": 77.18, "size": 8, "count": 253, "maximum": 80.02, "minimum": 74.34, "mean": 74.8334, "stddev": 0.532645, "variance": 0.28371},
+	{"name": "Green", "type": "unsigned", "size": 2, "count": 253, "maximum": 0, "minimum": 0, "mean": 0, "stddev": 0, "variance": 0},
+	{"name": "ReturnNumber", "type": "unsigned", "size": 1, "count": 253, "maximum": 2, "minimum": 1, "mean": 1.00791, "stddev": 0.0887343, "variance": 0.00787377},
+	{"name": "NumberOfReturns", "type": "unsigned", "size": 1, "count": 253, "maximum": 2, "minimum": 1, "mean": 1.01976, "stddev": 0.13946, "variance": 0.0194491},
+	{"name": "Intensity", "type": "unsigned", "size": 2, "count": 253, "maximum": 2086, "minimum": 199, "mean": 728.522, "stddev": 441.839, "variance": 195222},
+	{"name": "PointSourceId", "type": "unsigned", "size": 2, "count": 253, "maximum": 7042, "minimum": 7041, "mean": 7041.3, "stddev": 0.461043, "variance": 0.21256},
+	{"name": "ScanDirectionFlag", "type": "unsigned", "size": 1, "count": 253, "maximum": 1, "minimum": 1, "mean": 1, "stddev": 0, "variance": 0},
+	{"name": "UserData", "type": "unsigned", "size": 1, "count": 253, "maximum": 17, "minimum": 17, "mean": 17, "stddev": 0, "variance": 0},
+	{"name": "ScanAngleRank", "type": "float", "size": 4, "count": 253, "maximum": -12, "minimum": -28, "mean": -23.1304, "stddev": 7.37668, "variance": 54.4155},
+	{"name": "Classification", "type": "unsigned", "size": 1, "counts": [ {"value": 3, "count": 89}, {"value": 1, "count": 1}, {"value": 5, "count": 3}, {"value": 2, "count": 160}], "count": 253, "maximum": 5, "minimum": 1, "mean": 2.3834, "stddev": 0.562768, "variance": 0.316707}
+],
+"srs": {
+"wkt": "PROJCS[\"GDA94 / MGA zone 56\",GEOGCS[\"GDA94\",DATUM[\"Geocentric_Datum_of_Australia_1994\",SPHEROID[\"GRS 1980\",6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],AUTHORITY[\"EPSG\",\"6283\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4283\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",153],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",10000000],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"28356\"]]"
+}
+}

@@ -32,7 +32,7 @@ code autocompletion.
 Constructor for QgsCodeEditorHTML
 %End
 
-  protected:
+  public:
     virtual void initializeLexer();
 
 };

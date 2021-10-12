@@ -30,6 +30,7 @@
 #include "qgspolygon.h"
 #include "qgsgeometry.h"
 #include "qgsogrutils.h"
+#include "qgscoordinatereferencesystem.h"
 
 #include <QString>
 #include <QStringList>

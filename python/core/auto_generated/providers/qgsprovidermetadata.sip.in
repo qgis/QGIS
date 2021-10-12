@@ -679,7 +679,7 @@ relating to the connection have been updated.
 .. versionadded:: 3.14
 %End
 
-  protected:
+  public:
 
 
 };

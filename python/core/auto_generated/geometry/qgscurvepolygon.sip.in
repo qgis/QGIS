@@ -202,7 +202,7 @@ direction.
 
     virtual void draw( QPainter &p ) const;
 
-    virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) throw( QgsCsException );
+    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false ) throw( QgsCsException );
 
     virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
 
@@ -292,7 +292,7 @@ Returns approximate rotation angle for a vertex. Usually average angle between a
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-  protected:
+  public:
 
     virtual int childCount() const;
 
@@ -300,7 +300,7 @@ Returns approximate rotation angle for a vertex. Usually average angle between a
 
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;
 
-  protected:
+  public:
 
 
     virtual QgsRectangle calculateBoundingBox() const;

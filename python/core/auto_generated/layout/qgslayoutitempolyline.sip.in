@@ -216,7 +216,7 @@ Returns the pen width in millimeters for the stroke of the arrow head.
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 
-  protected:
+  public:
 
     virtual bool _addNode( int indexPoint, QPointF newPoint, double radius );
 

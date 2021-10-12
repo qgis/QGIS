@@ -37,7 +37,7 @@ FIND_PATH(QWT_INCLUDE_DIR NAMES qwt.h PATHS
   /usr/local/include/qt5
   "$ENV{LIB_DIR}/include"
   "$ENV{INCLUDE}"
-  PATH_SUFFIXES qwt-qt5 qwt qwt6
+  PATH_SUFFIXES qwt-qt5 qwt qwt6 qt5/qwt
 )
 
 IF (QWT_INCLUDE_DIR AND QWT_LIBRARY)

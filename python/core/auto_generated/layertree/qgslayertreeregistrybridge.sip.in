@@ -87,7 +87,7 @@ Tell others we have just added layers to the tree (used in QGIS to auto-select f
 
     void removeLayersFromRegistry( const QStringList &layerIds );
 
-  protected:
+  public:
 
 };
 

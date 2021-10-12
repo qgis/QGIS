@@ -146,7 +146,7 @@ Constructor for QgsGplColorScheme.
     virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() );
 
 
-  protected:
+  public:
 
     virtual QString gplFilePath() = 0;
 %Docstring
@@ -212,7 +212,7 @@ Sets whether a this scheme should be shown in color button menus.
 .. versionadded:: 3.0
 %End
 
-  protected:
+  public:
 
 
 

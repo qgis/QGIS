@@ -112,7 +112,7 @@ Returns the default layer settings to use for the specified vector ``layer``.
 .. versionadded:: 3.20
 %End
 
-  protected:
+  public:
 
     virtual void writeTextSymbolizer( QDomNode &parent, QgsPalLayerSettings &settings, const QVariantMap &props ) const;
 %Docstring

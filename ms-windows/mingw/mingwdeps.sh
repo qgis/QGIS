@@ -1,12 +1,5 @@
-# MinGW build environment for QGIS / KADAS Albireo
+#!/bin/sh
 
-FROM fedora:rawhide
-
-MAINTAINER Sandro Mani <manisandro@gmail.com>
-
-RUN \
-echo all > /etc/rpm/macros.image-language-conf && \
-rm -f /etc/yum.repos.d/*modular* && \
 dnf install -y --nogpgcheck \
   mingw64-dlfcn \
   mingw64-exiv2 \
@@ -39,6 +32,7 @@ dnf install -y --nogpgcheck \
   mingw64-python3-pillow \
   mingw64-python3-psycopg2 \
   mingw64-python3-pygments \
+  mingw64-python3-PyQt-builder \
   mingw64-python3-pytz \
   mingw64-python3-pyyaml \
   mingw64-python3-qscintilla-qt5 \
@@ -88,6 +82,3 @@ dnf install -y --nogpgcheck \
   wget \
   xorg-x11-server-Xvfb \
   zip
-
-WORKDIR /workspace
-VOLUME ["/workspace"]

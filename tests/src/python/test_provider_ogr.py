@@ -2088,6 +2088,22 @@ class PyQgsOGRProvider(unittest.TestCase):
                                {'name': 'virts_geometry_columns_field_infos', 'systemTable': True},
                                {'name': 'virts_geometry_columns_statistics', 'systemTable': True}])
 
+        # metadata.xml file next to tdenv?.adf file -- this is a subcomponent of an ESRI tin layer, should not be exposed
+        res = metadata.querySublayers(
+            os.path.join(TEST_DATA_DIR, 'esri_tin', 'metadata.xml'))
+        self.assertFalse(res)
+
+        # ESRI Arcinfo file
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, 'esri_coverage', 'testpolyavc'))
+        self.assertEqual(len(res), 4)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "ARC")
+        self.assertEqual(res[0].description(), "")
+        self.assertEqual(res[0].uri(), '{}|layername=ARC'.format(os.path.join(TEST_DATA_DIR, 'esri_coverage', 'testpolyavc')))
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertFalse(res[0].skippedContainerScan())
+
     @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 4, 0), "GDAL 3.4 required")
     def test_provider_sublayer_details_hierarchy(self):
         """
@@ -2223,6 +2239,23 @@ class PyQgsOGRProvider(unittest.TestCase):
         # raster vrt
         res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, "/raster/hub13263.vrt"), Qgis.SublayerQueryFlag.FastScan)
         self.assertEqual(len(res), 0)
+
+        # metadata.xml file next to tdenv?.adf file -- this is a subcomponent of an ESRI tin layer, should not be exposed
+        res = metadata.querySublayers(
+            os.path.join(TEST_DATA_DIR, 'esri_tin', 'metadata.xml'), Qgis.SublayerQueryFlag.FastScan)
+        self.assertFalse(res)
+
+        # ESRI Arcinfo file
+        res = metadata.querySublayers(
+            os.path.join(TEST_DATA_DIR, 'esri_coverage', 'testpolyavc'), Qgis.SublayerQueryFlag.FastScan)
+        self.assertEqual(len(res), 4)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "ARC")
+        self.assertEqual(res[0].description(), "")
+        self.assertEqual(res[0].uri(), '{}|layername=ARC'.format(os.path.join(TEST_DATA_DIR, 'esri_coverage', 'testpolyavc')))
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertFalse(res[0].skippedContainerScan())
 
     def test_provider_sidecar_files_for_uri(self):
         """

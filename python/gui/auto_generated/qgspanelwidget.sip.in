@@ -194,7 +194,7 @@ Accept the panel. Causes panelAccepted to be emitted.
 Widgets are normally removed form the interface using the panel manager or the caller.
 %End
 
-  protected:
+  public:
 
     virtual void keyPressEvent( QKeyEvent *event );
 

@@ -1018,6 +1018,9 @@ while ($LINE_IDX < $LINE_COUNT){
         dbg_info("going protected");
         $ACCESS[$#ACCESS] = PROTECTED;
         $COMMENT = '';
+        # make all protected methods slots
+        # https://github.com/qgis/QGIS/issues/45331
+        $LINE =~ s/protected:/public:/;
     }
     elsif ( $ACCESS[$#ACCESS] == PRIVATE && $LINE =~ m/SIP_FORCE/){
         dbg_info("private with SIP_FORCE");
@@ -1055,9 +1058,19 @@ while ($LINE_IDX < $LINE_COUNT){
 
     # Enum declaration
     # For scoped and type based enum, the type has to be removed
+    my $enum_is_protected = 0;
+    if ( $LINE =~ m/^\s*Q_DECLARE_FLAGS\s*\(\s*(?<flags_name>\w+)\s*,\s*(?<flag_name>\w+)\s*\)\s*SIP_MONKEYPATCH_FLAGS_UNNEST\s*\(\s*(?<emkb>\w+)\s*,\s*(?<emkf>\w+)\s*\)\s*$/ ){
+        push @OUTPUT_PYTHON, "$+{emkb}.$+{emkf} = $ACTUAL_CLASS.$+{flags_name}\n";
+        $LINE =~ s/\s*SIP_MONKEYPATCH_FLAGS_UNNEST\(.*?\)//;
+    }
     if ( $LINE =~ m/^(\s*enum(\s+Q_DECL_DEPRECATED)?\s+(?<isclass>class\s+)?(?<enum_qualname>\w+))(:?\s+SIP_.*)?(\s*:\s*\w+)?(?<oneliner>.*)$/ ){
         my $enum_decl = $1;
         $enum_decl =~ s/\s*\bQ_DECL_DEPRECATED\b//;
+        if ($ACCESS[$#ACCESS] == PROTECTED){
+          # we are in protected slots we need to create a simple protected section
+          $enum_is_protected = 1;
+          write_output("ENU0", "protected:\n");
+        }
         write_output("ENU1", "$enum_decl");
         write_output("ENU1", $+{oneliner}) if defined $+{oneliner};
         write_output("ENU1", "\n");
@@ -1144,6 +1157,9 @@ while ($LINE_IDX < $LINE_COUNT){
                 } else {
                     push @OUTPUT_PYTHON, "$enum_qualname.__doc__ = '$COMMENT\\n\\n' + " . join(" + '\\n' + ", @enum_members_doc) . "\n# --\n";
                 }
+            }
+            if ( $enum_is_protected == 1 ) {
+              write_output("ENU0", "protected slots:");
             }
             # enums don't have Docstring apparently
             $COMMENT = '';

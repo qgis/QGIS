@@ -9,6 +9,7 @@
 
 
 
+
 class QgsMapDecoration
 {
 %Docstring(signature="appended")
@@ -41,7 +42,7 @@ Returns the map decoration display name.
 .. versionadded:: 3.14
 %End
 
-  protected:
+  public:
 
     void setDisplayName( const QString &name );
 %Docstring

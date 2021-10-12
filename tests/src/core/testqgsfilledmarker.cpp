@@ -163,9 +163,9 @@ void TestQgsFilledMarkerSymbol::bounds()
   mFilledMarkerLayer->setSize( 5 );
   mFilledMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty::fromExpression( QStringLiteral( "min(\"importance\" * 2, 6)" ) ) );
 
-  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, true );
+  mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, true );
   const bool result = imageCheck( QStringLiteral( "filledmarker_bounds" ) );
-  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, false );
+  mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, false );
   mFilledMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty() );
   QVERIFY( result );
 }

@@ -101,7 +101,7 @@ Sets the maximum expected value for the range of values shown in the histogram.
 Emitted when the widget curve changes
 %End
 
-  protected:
+  public:
 
     virtual void keyPressEvent( QKeyEvent *event );
 

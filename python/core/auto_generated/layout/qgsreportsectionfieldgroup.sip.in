@@ -181,7 +181,7 @@ Sets the visibility mode for the footer.
     virtual void reloadSettings();
 
 
-  protected:
+  public:
 
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 

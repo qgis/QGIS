@@ -145,6 +145,7 @@
 %Include auto_generated/qgsrange.sip
 %Include auto_generated/qgsreadwritecontext.sip
 %Include auto_generated/qgsreadwritelocker.sip
+%Include auto_generated/qgsrecentstylehandler.sip
 %Include auto_generated/qgsrelation.sip
 %Include auto_generated/qgspolymorphicrelation.sip
 %Include auto_generated/qgsrelationcontext.sip
@@ -323,6 +324,7 @@
 %Include auto_generated/geometry/qgsregularpolygon.sip
 %Include auto_generated/geometry/qgssurface.sip
 %Include auto_generated/geometry/qgstriangle.sip
+%Include auto_generated/geometry/qgsvertexid.sip
 %Include auto_generated/geometry/qgswkbptr.sip
 %Include auto_generated/geometry/qgswkbtypes.sip
 %Include auto_generated/geometry/qgsray3d.sip

@@ -1358,6 +1358,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "m_min line M NaN" ) << "m_min(make_line(geom_from_wkt('PointZM (0 0 0 nan)'),geom_from_wkt('PointZM (1 1 1 2)')))" << false << QVariant( );
       QTest::newRow( "m_min line" ) << "m_min(make_line(make_point_m(0,0,1),make_point_m(-1,-1,2),make_point_m(-2,-2,0)))" << false << QVariant( 0.0 );
       QTest::newRow( "main angle polygon" ) << "round(main_angle( geom_from_wkt('POLYGON((0 0,2 9,9 2,0 0))')))" << false << QVariant( 77 );
+      QTest::newRow( "main angle polygon edge case" ) << "round(main_angle( geom_from_wkt('POLYGON((353542.63843526 378974.92373469, 353544.95808017 378975.73690545, 353545.27173175 378974.84218528, 353542.95208684 378974.02901451, 353542.63843526 378974.92373469))')))" << false << QVariant( 71 );
       QTest::newRow( "main angle multi polygon" ) << "round(main_angle( geom_from_wkt('MULTIPOLYGON(((0 0,3 10,1 10,1 6,0 0)))')))" << false << QVariant( 17 );
       QTest::newRow( "main angle point" ) << "main_angle( geom_from_wkt('POINT (1.5 0.5)') )" << true << QVariant();
       QTest::newRow( "main angle line" ) << "round(main_angle( geom_from_wkt('LINESTRING (-1 2, 9 12)') ))" << false << QVariant( 45 );
@@ -4323,30 +4324,30 @@ class TestQgsExpression: public QObject
       QTest::addColumn<QStringList>( "input" );
       QTest::addColumn<bool>( "expected" );
       QTest::addColumn<QString>( "expression" );
-      QTest::newRow( "OR conditions mixed IN" ) << ( QStringList() << QStringLiteral( "field = 'value' OR field IN( 'value2', 'value3' )" ) ) << true << "field IN ('value','value2','value3')";
+      QTest::newRow( "OR conditions mixed IN" ) << ( QStringList() << QStringLiteral( "field = 'value' OR field IN( 'value2', 'value3' )" ) ) << true << "\"field\" IN ('value','value2','value3')";
       QTest::newRow( "OR conditions non literal" ) << ( QStringList() << QStringLiteral( "field = 'value' OR field = 'value2' OR field = var('qgis_version')" ) ) << false << QString();
-      QTest::newRow( "OR conditions mixed IN reverse" ) << ( QStringList() << QStringLiteral( "field IN ('value','value2') OR field = 'value3'" ) ) << true << "field IN ('value','value2','value3')";
+      QTest::newRow( "OR conditions mixed IN reverse" ) << ( QStringList() << QStringLiteral( "field IN ('value','value2') OR field = 'value3'" ) ) << true << "\"field\" IN ('value','value2','value3')";
       QTest::newRow( "OR conditions mixed IN different fields" ) << ( QStringList() << QStringLiteral( "field2 IN ('value','value2') OR field = 'value3'" ) ) << false << QString();
-      QTest::newRow( "OR conditions" ) << ( QStringList() << QStringLiteral( "field = 'value' OR field = 'value2'" ) ) << true << "field IN ('value','value2')";
+      QTest::newRow( "OR conditions" ) << ( QStringList() << QStringLiteral( "field = 'value' OR field = 'value2'" ) ) << true << "\"field\" IN ('value','value2')";
       QTest::newRow( "OR conditions different fields" ) << ( QStringList() << QStringLiteral( "field = 'value' OR field2 = 'value2'" ) ) << false << QString();
-      QTest::newRow( "OR conditions three" ) << ( QStringList() << QStringLiteral( "field = 'value' OR field = 'value2' OR field = 'value3'" ) ) << true << "field IN ('value','value2','value3')";
+      QTest::newRow( "OR conditions three" ) << ( QStringList() << QStringLiteral( "field = 'value' OR field = 'value2' OR field = 'value3'" ) ) << true << "\"field\" IN ('value','value2','value3')";
       QTest::newRow( "empty" ) << QStringList() << false << QString();
       QTest::newRow( "invalid" ) << ( QStringList() << QStringLiteral( "a=" ) ) << false << QString();
-      QTest::newRow( "not equality" ) << ( QStringList() << QStringLiteral( "field <> 'value'" ) ) << false << "field";
-      QTest::newRow( "one expression" ) << ( QStringList() << QStringLiteral( "field = 'value'" ) ) << true << "field IN ('value')";
-      QTest::newRow( "one IN expression" ) << ( QStringList() << QStringLiteral( "field IN ('value', 'value2')" ) ) << true << "field IN ('value','value2')";
-      QTest::newRow( "one NOT IN expression" ) << ( QStringList() << QStringLiteral( "field NOT IN ('value', 'value2')" ) ) << false << "field NOT IN ('value','value2')";
+      QTest::newRow( "not equality" ) << ( QStringList() << QStringLiteral( "field <> 'value'" ) ) << false << "\"field\"";
+      QTest::newRow( "one expression" ) << ( QStringList() << QStringLiteral( "field = 'value'" ) ) << true << "\"field\" IN ('value')";
+      QTest::newRow( "one IN expression" ) << ( QStringList() << QStringLiteral( "field IN ('value', 'value2')" ) ) << true << "\"field\" IN ('value','value2')";
+      QTest::newRow( "one NOT IN expression" ) << ( QStringList() << QStringLiteral( "field NOT IN ('value', 'value2')" ) ) << false << "\"field\" NOT IN ('value','value2')";
       QTest::newRow( "one IN expression non-literal" ) << ( QStringList() << QStringLiteral( "field IN ('value', 'value2', \"a field\")" ) ) << false << QString();
-      QTest::newRow( "two expressions" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field = 'value2'" ) ) << true << "field IN ('value','value2')";
-      QTest::newRow( "two expressions with IN" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field IN ('value2', 'value3')" ) ) << true << "field IN ('value','value2','value3')";
+      QTest::newRow( "two expressions" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field = 'value2'" ) ) << true << "\"field\" IN ('value','value2')";
+      QTest::newRow( "two expressions with IN" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field IN ('value2', 'value3')" ) ) << true << "\"field\" IN ('value','value2','value3')";
       QTest::newRow( "two expressions with a not IN" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field NOT IN ('value2', 'value3')" ) ) << false << QString();
       QTest::newRow( "two expressions with IN not literal" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field IN ('value2', 'value3', \"a field\")" ) ) << false << QString();
       QTest::newRow( "two expressions with IN different field" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field2 IN ('value2', 'value3')" ) ) << false << QString();
-      QTest::newRow( "two expressions first not equality" ) << ( QStringList() << QStringLiteral( "field <>'value'" )  << QStringLiteral( "field == 'value2'" ) ) << false << "field";
-      QTest::newRow( "two expressions second not equality" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field <> 'value2'" ) ) << false << "field";
-      QTest::newRow( "three expressions" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field = 'value2'" ) << QStringLiteral( "field = 'value3'" ) ) << true << "field IN ('value','value2','value3')";
-      QTest::newRow( "three expressions with IN" ) << ( QStringList() << QStringLiteral( "field IN ('v1', 'v2')" ) << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field = 'value2'" ) << QStringLiteral( "field = 'value3'" ) ) << true << "field IN ('v1','v2','value','value2','value3')";
-      QTest::newRow( "three expressions different fields" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field2 = 'value2'" ) << QStringLiteral( "field = 'value3'" ) ) << false << "field";
+      QTest::newRow( "two expressions first not equality" ) << ( QStringList() << QStringLiteral( "field <>'value'" )  << QStringLiteral( "field == 'value2'" ) ) << false << "\"field\"";
+      QTest::newRow( "two expressions second not equality" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field <> 'value2'" ) ) << false << "\"field\"";
+      QTest::newRow( "three expressions" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field = 'value2'" ) << QStringLiteral( "field = 'value3'" ) ) << true << "\"field\" IN ('value','value2','value3')";
+      QTest::newRow( "three expressions with IN" ) << ( QStringList() << QStringLiteral( "field IN ('v1', 'v2')" ) << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field = 'value2'" ) << QStringLiteral( "field = 'value3'" ) ) << true << "\"field\" IN ('v1','v2','value','value2','value3')";
+      QTest::newRow( "three expressions different fields" ) << ( QStringList() << QStringLiteral( "field = 'value'" )  << QStringLiteral( "field2 = 'value2'" ) << QStringLiteral( "\"field\" = 'value3'" ) ) << false << "field";
     }
 
     void testAttemptReduceToInClause()

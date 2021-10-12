@@ -104,7 +104,7 @@ void QgsMaskSourceSelectionWidget::update()
           indexPath.append( idx );
 
           std::unique_ptr< QTreeWidgetItem > slItem = std::make_unique< QTreeWidgetItem >( rootItem );
-          const QIcon slIcon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( sl, QgsUnitTypes::RenderMillimeters, QSize( iconSize, iconSize ) );
+          const QIcon slIcon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( sl, QgsUnitTypes::RenderMillimeters, QSize( iconSize, iconSize ), QgsMapUnitScale(), symbol->type() );
           slItem->setIcon( 0, slIcon );
           if ( sl->layerType() == "MaskMarker" )
           {

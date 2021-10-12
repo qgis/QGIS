@@ -65,6 +65,8 @@ QgsMeshEditingError QgsMeshEditor::initialize()
 {
   QgsMeshEditingError error;
   mTopologicalMesh = QgsTopologicalMesh::createTopologicalMesh( mMesh, mMaximumVerticesPerFace, error );
+  mValidFacesCount = mMesh->faceCount();
+  mValidVerticesCount = mMesh->vertexCount();
   return error;
 }
 
@@ -197,6 +199,8 @@ void QgsMeshEditor::applyEdit( QgsMeshEditor::Edit &edit )
          !edit.topologicalChanges.verticesToRemoveIndexes().isEmpty() ||
          !edit.topologicalChanges.addedVertices().isEmpty() ) )
     mZValueDatasetGroup->setStatisticObsolete();
+
+  updateElementsCount( edit.topologicalChanges );
 }
 
 void QgsMeshEditor::reverseEdit( QgsMeshEditor::Edit &edit )
@@ -209,6 +213,8 @@ void QgsMeshEditor::reverseEdit( QgsMeshEditor::Edit &edit )
          !edit.topologicalChanges.verticesToRemoveIndexes().isEmpty() ||
          !edit.topologicalChanges.addedVertices().isEmpty() ) )
     mZValueDatasetGroup->setStatisticObsolete();
+
+  updateElementsCount( edit.topologicalChanges, false );
 }
 
 void QgsMeshEditor::applyAddVertex( QgsMeshEditor::Edit &edit, const QgsMeshVertex &vertex, double tolerance )
@@ -239,6 +245,8 @@ void QgsMeshEditor::applyAddVertex( QgsMeshEditor::Edit &edit, const QgsMeshVert
 
   if ( mZValueDatasetGroup )
     mZValueDatasetGroup->setStatisticObsolete();
+
+  updateElementsCount( edit.topologicalChanges );
 }
 
 void QgsMeshEditor::applyRemoveVertexFillHole( QgsMeshEditor::Edit &edit, int vertexIndex )
@@ -247,6 +255,8 @@ void QgsMeshEditor::applyRemoveVertexFillHole( QgsMeshEditor::Edit &edit, int ve
 
   if ( mZValueDatasetGroup )
     mZValueDatasetGroup->setStatisticObsolete();
+
+  updateElementsCount( edit.topologicalChanges );
 }
 
 void QgsMeshEditor::applyRemoveVerticesWithoutFillHole( QgsMeshEditor::Edit &edit, const QList<int> &verticesIndexes )
@@ -255,16 +265,22 @@ void QgsMeshEditor::applyRemoveVerticesWithoutFillHole( QgsMeshEditor::Edit &edi
 
   if ( mZValueDatasetGroup )
     mZValueDatasetGroup->setStatisticObsolete();
+
+  updateElementsCount( edit.topologicalChanges );
 }
 
 void QgsMeshEditor::applyAddFaces( QgsMeshEditor::Edit &edit, const QgsTopologicalMesh::TopologicalFaces &faces )
 {
   applyEditOnTriangularMesh( edit,  mTopologicalMesh.addFaces( faces ) );
+
+  updateElementsCount( edit.topologicalChanges );
 }
 
 void QgsMeshEditor::applyRemoveFaces( QgsMeshEditor::Edit &edit, const QList<int> &faceToRemoveIndex )
 {
   applyEditOnTriangularMesh( edit, mTopologicalMesh.removeFaces( faceToRemoveIndex ) );
+
+  updateElementsCount( edit.topologicalChanges );
 }
 
 void QgsMeshEditor::applyChangeZValue( QgsMeshEditor::Edit &edit, const QList<int> &verticesIndexes, const QList<double> &newValues )
@@ -283,16 +299,29 @@ void QgsMeshEditor::applyChangeXYValue( QgsMeshEditor::Edit &edit, const QList<i
 void QgsMeshEditor::applyFlipEdge( QgsMeshEditor::Edit &edit, int vertexIndex1, int vertexIndex2 )
 {
   applyEditOnTriangularMesh( edit, mTopologicalMesh.flipEdge( vertexIndex1, vertexIndex2 ) );
+
+  updateElementsCount( edit.topologicalChanges );
 }
 
 void QgsMeshEditor::applyMerge( QgsMeshEditor::Edit &edit, int vertexIndex1, int vertexIndex2 )
 {
   applyEditOnTriangularMesh( edit, mTopologicalMesh.merge( vertexIndex1, vertexIndex2 ) );
+
+  updateElementsCount( edit.topologicalChanges );
 }
 
 void QgsMeshEditor::applySplit( QgsMeshEditor::Edit &edit, int faceIndex )
 {
   applyEditOnTriangularMesh( edit, mTopologicalMesh.splitFace( faceIndex ) );
+
+  updateElementsCount( edit.topologicalChanges );
+}
+
+void QgsMeshEditor::applyAdvancedEdit( QgsMeshEditor::Edit &edit, QgsMeshAdvancedEditing *editing )
+{
+  applyEditOnTriangularMesh( edit, editing->apply( this ) );
+
+  updateElementsCount( edit.topologicalChanges );
 }
 
 void QgsMeshEditor::applyEditOnTriangularMesh( QgsMeshEditor::Edit &edit, const QgsTopologicalMesh::Changes &topologicChanges )
@@ -304,9 +333,19 @@ void QgsMeshEditor::applyEditOnTriangularMesh( QgsMeshEditor::Edit &edit, const 
   edit.triangularMeshChanges = triangularChanges;
 }
 
-void QgsMeshEditor::applyAdvancedEdit( QgsMeshEditor::Edit &edit, QgsMeshAdvancedEditing *editing )
+void QgsMeshEditor::updateElementsCount( const QgsTopologicalMesh::Changes &changes, bool apply )
 {
-  applyEditOnTriangularMesh( edit, editing->apply( this ) );
+  if ( apply )
+  {
+    mValidFacesCount += changes.addedFaces().count() - changes.removedFaces().count();
+    mValidVerticesCount += changes.addedVertices().count() - changes.verticesToRemoveIndexes().count();
+  }
+  else
+  {
+    //reverse
+    mValidFacesCount -= changes.addedFaces().count() - changes.removedFaces().count();
+    mValidVerticesCount -= changes.addedVertices().count() - changes.verticesToRemoveIndexes().count();
+  }
 }
 
 bool QgsMeshEditor::checkConsistency() const
@@ -378,6 +417,16 @@ bool QgsMeshEditor::edgeIsClose( QgsPointXY point, double tolerance, int &faceIn
 
   return false;
 
+}
+
+int QgsMeshEditor::validFacesCount() const
+{
+  return mValidFacesCount;
+}
+
+int QgsMeshEditor::validVerticesCount() const
+{
+  return mValidVerticesCount;
 }
 
 QgsMeshEditingError QgsMeshEditor::removeFaces( const QList<int> &facesToRemove )
@@ -684,6 +733,11 @@ void QgsMeshEditor::changeXYValues( const QList<int> &verticesIndexes, const QLi
   mUndoStack->push( new QgsMeshLayerUndoCommandChangeXYValue( this, verticesIndexes, newValues ) );
 }
 
+void QgsMeshEditor::changeCoordinates( const QList<int> &verticesIndexes, const QList<QgsPoint> &newCoordinates )
+{
+  mUndoStack->push( new QgsMeshLayerUndoCommandChangeCoordinates( this, verticesIndexes, newCoordinates ) );
+}
+
 void QgsMeshEditor::advancedEdit( QgsMeshAdvancedEditing *editing )
 {
   mUndoStack->push( new QgsMeshLayerUndoCommandAdvancedEditing( this, editing ) );
@@ -722,7 +776,9 @@ QgsMeshLayerUndoCommandAddVertices::QgsMeshLayerUndoCommandAddVertices( QgsMeshE
   : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
   , mVertices( vertices )
   , mTolerance( tolerance )
-{}
+{
+  setText( QObject::tr( "Add %n vertices", nullptr, mVertices.count() ) );
+}
 
 void QgsMeshLayerUndoCommandAddVertices::redo()
 {
@@ -750,7 +806,9 @@ QgsMeshLayerUndoCommandRemoveVertices::QgsMeshLayerUndoCommandRemoveVertices( Qg
   : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
   , mVerticesToRemoveIndexes( verticesToRemoveIndexes )
   , mFillHole( fillHole )
-{}
+{
+  setText( QObject::tr( "Remove %n vertices", nullptr, verticesToRemoveIndexes.count() ) ) ;
+}
 
 void QgsMeshLayerUndoCommandRemoveVertices::redo()
 {
@@ -783,7 +841,9 @@ void QgsMeshLayerUndoCommandRemoveVertices::redo()
 QgsMeshLayerUndoCommandAddFaces::QgsMeshLayerUndoCommandAddFaces( QgsMeshEditor *meshEditor, QgsTopologicalMesh::TopologicalFaces &faces )
   : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
   , mFaces( faces )
-{}
+{
+  setText( QObject::tr( "Add %n faces", nullptr, faces.meshFaces().count() ) );
+}
 
 void QgsMeshLayerUndoCommandAddFaces::redo()
 {
@@ -805,7 +865,9 @@ void QgsMeshLayerUndoCommandAddFaces::redo()
 QgsMeshLayerUndoCommandRemoveFaces::QgsMeshLayerUndoCommandRemoveFaces( QgsMeshEditor *meshEditor, const QList<int> &facesToRemoveIndexes )
   : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
   , mfacesToRemoveIndexes( facesToRemoveIndexes )
-{}
+{
+  setText( QObject::tr( "Remove %n faces", nullptr, facesToRemoveIndexes.count() ) );
+}
 
 void QgsMeshLayerUndoCommandRemoveFaces::redo()
 {
@@ -846,6 +908,8 @@ bool QgsMeshEditor::reindex( bool renumbering )
   mTopologicalMesh.reindex();
   mUndoStack->clear();
   QgsMeshEditingError error = initialize();
+  mValidFacesCount = mMesh->faceCount();
+  mValidVerticesCount = mMesh->vertexCount();
 
   if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
     return false;
@@ -897,7 +961,9 @@ QgsMeshLayerUndoCommandChangeZValue::QgsMeshLayerUndoCommandChangeZValue( QgsMes
   : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
   , mVerticesIndexes( verticesIndexes )
   , mNewValues( newValues )
-{}
+{
+  setText( QObject::tr( "Change %n vertices Z Value", nullptr, verticesIndexes.count() ) );
+}
 
 void QgsMeshLayerUndoCommandChangeZValue::redo()
 {
@@ -920,7 +986,9 @@ QgsMeshLayerUndoCommandChangeXYValue::QgsMeshLayerUndoCommandChangeXYValue( QgsM
   : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
   , mVerticesIndexes( verticesIndexes )
   , mNewValues( newValues )
-{}
+{
+  setText( QObject::tr( "Move %n vertices", nullptr, verticesIndexes.count() ) );
+}
 
 void QgsMeshLayerUndoCommandChangeXYValue::redo()
 {
@@ -940,11 +1008,54 @@ void QgsMeshLayerUndoCommandChangeXYValue::redo()
 }
 
 
+QgsMeshLayerUndoCommandChangeCoordinates::QgsMeshLayerUndoCommandChangeCoordinates( QgsMeshEditor *meshEditor, const QList<int> &verticesIndexes, const QList<QgsPoint> &newCoordinates )
+  : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
+  , mVerticesIndexes( verticesIndexes )
+  , mNewCoordinates( newCoordinates )
+{
+  setText( QObject::tr( "Transform %n vertices coordinates", nullptr, verticesIndexes.count() ) );
+}
+
+void QgsMeshLayerUndoCommandChangeCoordinates::redo()
+{
+  if ( !mVerticesIndexes.isEmpty() )
+  {
+    QgsMeshEditor::Edit editXY;
+    QList<QgsPointXY> newXY;
+    newXY.reserve( mNewCoordinates.count() );
+    QgsMeshEditor::Edit editZ;
+    QList<double> newZ;
+    newZ.reserve( mNewCoordinates.count() );
+
+    for ( const QgsPoint &pt : std::as_const( mNewCoordinates ) )
+    {
+      newXY.append( pt );
+      newZ.append( pt.z() );
+    }
+
+    mMeshEditor->applyChangeXYValue( editXY, mVerticesIndexes, newXY );
+    mEdits.append( editXY );
+    mMeshEditor->applyChangeZValue( editZ, mVerticesIndexes, newZ );
+    mEdits.append( editZ );
+    mVerticesIndexes.clear();
+    mNewCoordinates.clear();
+  }
+  else
+  {
+    for ( QgsMeshEditor::Edit &edit : mEdits )
+      mMeshEditor->applyEdit( edit );
+  }
+}
+
+
+
 QgsMeshLayerUndoCommandFlipEdge::QgsMeshLayerUndoCommandFlipEdge( QgsMeshEditor *meshEditor, int vertexIndex1, int vertexIndex2 )
   : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
   , mVertexIndex1( vertexIndex1 )
   , mVertexIndex2( vertexIndex2 )
-{}
+{
+  setText( QObject::tr( "Flip edge" ) );
+}
 
 void QgsMeshLayerUndoCommandFlipEdge::redo()
 {
@@ -967,7 +1078,9 @@ QgsMeshLayerUndoCommandMerge::QgsMeshLayerUndoCommandMerge( QgsMeshEditor *meshE
   : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
   , mVertexIndex1( vertexIndex1 )
   , mVertexIndex2( vertexIndex2 )
-{}
+{
+  setText( QObject::tr( "Merge faces" ) );
+}
 
 void QgsMeshLayerUndoCommandMerge::redo()
 {
@@ -989,7 +1102,9 @@ void QgsMeshLayerUndoCommandMerge::redo()
 QgsMeshLayerUndoCommandSplitFaces::QgsMeshLayerUndoCommandSplitFaces( QgsMeshEditor *meshEditor, const QList<int> &faceIndexes )
   : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
   , mFaceIndexes( faceIndexes )
-{}
+{
+  setText( QObject::tr( "Split %n faces", nullptr, faceIndexes.count() ) );
+}
 
 void QgsMeshLayerUndoCommandSplitFaces::redo()
 {
@@ -1013,7 +1128,9 @@ void QgsMeshLayerUndoCommandSplitFaces::redo()
 QgsMeshLayerUndoCommandAdvancedEditing::QgsMeshLayerUndoCommandAdvancedEditing( QgsMeshEditor *meshEditor, QgsMeshAdvancedEditing *advancdEdit )
   : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
   , mAdvancedEditing( advancdEdit )
-{}
+{
+  setText( advancdEdit->text() );
+}
 
 void QgsMeshLayerUndoCommandAdvancedEditing::redo()
 {

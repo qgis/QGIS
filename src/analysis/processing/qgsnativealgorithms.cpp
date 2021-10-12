@@ -87,7 +87,9 @@
 #include "qgsalgorithmforcerhr.h"
 #include "qgsalgorithmfuzzifyraster.h"
 #include "qgsalgorithmgeometrybyexpression.h"
+#if QT_CONFIG(process)
 #include "qgsalgorithmgpsbabeltools.h"
+#endif
 #include "qgsalgorithmgrid.h"
 #include "qgsalgorithmhillshade.h"
 #include "qgsalgorithmjoinbyattribute.h"
@@ -338,10 +340,12 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsFuzzifyRasterGaussianMembershipAlgorithm() );
   addAlgorithm( new QgsFuzzifyRasterNearMembershipAlgorithm() );
   addAlgorithm( new QgsGeometryByExpressionAlgorithm() );
+#if QT_CONFIG(process)
   addAlgorithm( new QgsConvertGpxFeatureTypeAlgorithm() );
   addAlgorithm( new QgsConvertGpsDataAlgorithm() );
   addAlgorithm( new QgsDownloadGpsDataAlgorithm() );
   addAlgorithm( new QgsUploadGpsDataAlgorithm() );
+#endif
   addAlgorithm( new QgsGridAlgorithm() );
   addAlgorithm( new QgsHillshadeAlgorithm() );
   addAlgorithm( new QgsImportPhotosAlgorithm() );

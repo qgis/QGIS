@@ -132,7 +132,7 @@ This slot is normally auto connected to panelAccepted when a panel is shown.
 :param panel: The panel to close.
 %End
 
-  protected:
+  public:
 
     virtual void mouseReleaseEvent( QMouseEvent *e );
 

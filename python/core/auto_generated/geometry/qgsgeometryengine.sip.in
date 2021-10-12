@@ -168,6 +168,13 @@ Calculates the distance between this and ``geom``.
 .. versionadded:: 3.0
 %End
 
+    virtual bool distanceWithin( const QgsAbstractGeometry *geom, double maxdistance, QString *errorMsg = 0 ) const = 0;
+%Docstring
+Checks if ``geom`` is within ``maxdistance`` distance from this geometry
+
+.. versionadded:: 3.22
+%End
+
     virtual bool intersects( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
 %Docstring
 Checks if ``geom`` intersects this.
@@ -309,7 +316,7 @@ these just results in noise. In this case setting ``enabled`` to ``False`` will 
 .. versionadded:: 3.16
 %End
 
-  protected:
+  public:
 
     void logError( const QString &engineName, const QString &message ) const;
 %Docstring

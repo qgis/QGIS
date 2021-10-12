@@ -132,7 +132,7 @@ class APP_EXPORT QgsCustomization : public QObject
     static void removeFromLayout( QLayout *layout, QWidget *widget );
 
     void updateBrowserWidget( QgsBrowserDockWidget *model );
-    void updateMainWindow( QMenu *toolBarMenu );
+    void updateMainWindow( QMenu *toolBarMenu, QMenu *panelMenu );
 
     // make sure to enable/disable before creating QgisApp in order to get it customized (or not)
     void setEnabled( bool enabled ) { mEnabled = enabled; }

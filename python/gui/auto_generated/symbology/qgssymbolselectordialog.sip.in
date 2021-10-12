@@ -239,7 +239,7 @@ alters tree and sets proper widget when Layer Type is changed
 \note: The layer is received from the LayerPropertiesWidget
 %End
 
-  protected:
+  public:
 
     virtual void keyPressEvent( QKeyEvent *e );
 

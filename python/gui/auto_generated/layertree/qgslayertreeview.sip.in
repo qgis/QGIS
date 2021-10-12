@@ -46,7 +46,7 @@ Returns if private layers are shown.
 Determines if private layers are shown.
 %End
 
-  protected:
+  public:
 
     virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
 
@@ -353,7 +353,7 @@ Returns the show private layers status
 Emitted when a current layer is changed
 %End
 
-  protected:
+  public:
     virtual void contextMenuEvent( QContextMenuEvent *event );
 
 
@@ -383,7 +383,7 @@ Emitted when a current layer is changed
     void onExpandedChanged( QgsLayerTreeNode *node, bool expanded );
     void onModelReset();
 
-  protected:
+  public:
 
 
 };

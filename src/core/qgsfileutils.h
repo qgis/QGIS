@@ -180,6 +180,40 @@ class CORE_EXPORT QgsFileUtils
      */
     static bool renameDataset( const QString &oldPath, const QString &newPath, QString &error SIP_OUT, Qgis::FileOperationFlags flags = Qgis::FileOperationFlag::IncludeMetadataFile | Qgis::FileOperationFlag::IncludeStyleFile );
 
+    /**
+     * Returns the limit of simultaneously opened files by the process.
+     *
+     * Currently only implemented on Unix.
+     *
+     * \returns Limit, or -1 if unknown.
+     * \note not available in Python bindings
+     * \since QGIS 3.22
+     */
+    static int openedFileLimit() SIP_SKIP;
+
+    /**
+     * Returns the number of currently opened files by the process.
+     *
+     * Currently only implemented on Linux.
+     *
+     * \returns Number of files, or -1 if unknown
+     * \note not available in Python bindings
+     * \since QGIS 3.22
+     */
+    static int openedFileCount() SIP_SKIP;
+
+    /**
+     * Returns whether when opening new file(s) will reach, or nearly reach,
+     * the limit of simultaneously opened files by the process.
+     *
+     * Currently only implemented on Linux.
+     *
+     * \param filesToBeOpened Number of files that will be opened.
+     * \returns true if close to the limit, or false if not, or unknown.
+     * \note not available in Python bindings
+     * \since QGIS 3.22
+     */
+    static bool isCloseToLimitOfOpenedFiles( int filesToBeOpened = 1 ) SIP_SKIP;
 };
 
 #endif // QGSFILEUTILS_H

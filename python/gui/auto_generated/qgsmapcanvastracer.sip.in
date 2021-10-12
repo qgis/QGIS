@@ -73,7 +73,7 @@ instances for easier access to the common tracer by various map tools
 Report a path finding error to the user
 %End
 
-  protected:
+  public:
     virtual void configure();
 
 %Docstring

@@ -81,10 +81,11 @@ void QgsNewMeshLayerDialog::setCrs( const QgsCoordinateReferenceSystem &crs )
   mProjectionSelectionWidget->setCrs( crs );
 }
 
-void QgsNewMeshLayerDialog::setSourceMeshLayer( QgsMeshLayer *meshLayer )
+void QgsNewMeshLayerDialog::setSourceMeshLayer( QgsMeshLayer *meshLayer, bool fromExistingAsDefault )
 {
   mMeshProjectComboBox->setLayer( meshLayer );
   mMeshProjectRadioButton->setChecked( true );
+  mInitializeMeshGroupBox->setChecked( fromExistingAsDefault );
 }
 
 void QgsNewMeshLayerDialog::accept()
@@ -263,12 +264,20 @@ bool QgsNewMeshLayerDialog::apply()
         newMeshLayer->setCrs( crs );
 
       if ( newMeshLayer->isValid() )
+      {
+        mNewLayer = newMeshLayer.get();
         QgsProject::instance()->addMapLayer( newMeshLayer.release(), true, true );
-      return true;
+        return true;
+      }
     }
   }
 
   QMessageBox::warning( this, windowTitle(), tr( "Unable to create a new mesh layer with format \"%1\"" ).arg( mFormatComboBox->currentText() ) );
   return false;
+}
+
+QgsMeshLayer *QgsNewMeshLayerDialog::newLayer() const
+{
+  return mNewLayer;
 }
 

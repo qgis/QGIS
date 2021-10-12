@@ -15,6 +15,7 @@
 
 #include "qgssnaptogridcanvasitem.h"
 #include "qgsmapcanvas.h"
+#include "qgsrendercontext.h"
 
 QgsSnapToGridCanvasItem::QgsSnapToGridCanvasItem( QgsMapCanvas *mapCanvas )
   : QgsMapCanvasItem( mapCanvas )
@@ -43,8 +44,8 @@ void QgsSnapToGridCanvasItem::paint( QPainter *painter )
 
   try
   {
-    const QgsRectangle layerExtent = mTransform.transformBoundingBox( mapRect, QgsCoordinateTransform::ReverseTransform );
-    const QgsPointXY layerPt = mTransform.transform( mPoint, QgsCoordinateTransform::ReverseTransform );
+    const QgsRectangle layerExtent = mTransform.transformBoundingBox( mapRect, Qgis::TransformDirection::Reverse );
+    const QgsPointXY layerPt = mTransform.transform( mPoint, Qgis::TransformDirection::Reverse );
 
     const double gridXMin = std::ceil( layerExtent.xMinimum() / mPrecision ) * mPrecision;
     const double gridXMax = std::ceil( layerExtent.xMaximum() / mPrecision ) * mPrecision;
@@ -153,8 +154,8 @@ void QgsSnapToGridCanvasItem::updateZoomFactor()
     const QgsPointXY pt2 = mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( static_cast<int>( canvasCenter.x() + threshold ),
                            static_cast<int>( canvasCenter.y() + threshold ) );
 
-    const QgsPointXY layerPt1 = mTransform.transform( pt1, QgsCoordinateTransform::ReverseTransform );
-    const QgsPointXY layerPt2 = mTransform.transform( pt2, QgsCoordinateTransform::ReverseTransform );
+    const QgsPointXY layerPt1 = mTransform.transform( pt1, Qgis::TransformDirection::Reverse );
+    const QgsPointXY layerPt2 = mTransform.transform( pt2, Qgis::TransformDirection::Reverse );
 
     const double dist = layerPt1.distance( layerPt2 );
 

@@ -67,7 +67,7 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
       AeTypeInvalid,   //!< Invalid
       AeTypeQmlElement, //!< A QML element
       AeTypeHtmlElement, //!< A HTML element
-      AeTypeAction //!< A layer action element
+      AeTypeAction //!< A layer action element (since QGIS 3.22)
     };
 
     /**

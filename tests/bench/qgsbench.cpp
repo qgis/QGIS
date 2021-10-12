@@ -184,12 +184,12 @@ void QgsBench::render()
   //mMapRenderer->setDestinationCrs( outputCRS );
 
   // Enable labeling
-  mMapSettings.setFlag( QgsMapSettings::DrawLabeling );
+  mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawLabeling );
 
   mMapSettings.setOutputSize( QSize( mWidth, mHeight ) );
 
   // TODO: do we need the other QPainter flags?
-  mMapSettings.setFlag( QgsMapSettings::Antialiasing, mRendererHints.testFlag( QPainter::Antialiasing ) );
+  mMapSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, mRendererHints.testFlag( QPainter::Antialiasing ) );
 
   for ( int i = 0; i < mIterations; i++ )
   {

@@ -540,11 +540,7 @@ class CORE_EXPORT QgsRasterInterface
       maximum = PyFloat_AsDouble( a4 );
     }
 
-#if defined(SIP_PROTECTED_IS_PUBLIC)
     sipCpp->initHistogram( *a0, a1, a2, minimum, maximum, *a5, a6, a7 );
-#else
-    sipCpp->sipProtect_initHistogram( *a0, a1, a2, minimum, maximum, *a5, a6, a7 );
-#endif
     % End
 #endif
 

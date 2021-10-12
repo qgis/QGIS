@@ -47,7 +47,7 @@ This method should be called during app initialization.
 Takes ownership of the object, deletes previous instance.
 %End
 
-  protected:
+  public:
     QgsPythonRunner();
 %Docstring
 Protected constructor: can be instantiated only from children

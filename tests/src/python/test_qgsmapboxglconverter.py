@@ -12,9 +12,11 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.PyQt.QtGui import (QColor)
+from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtGui import (QColor, QImage)
 from qgis.core import (QgsMapBoxGlStyleConverter,
                        QgsMapBoxGlStyleConversionContext,
+                       QgsSymbolLayer,
                        QgsWkbTypes,
                        QgsEffectStack
                        )
@@ -76,6 +78,42 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         self.assertEqual(props.expressionString(),
                          'CASE WHEN @vector_tile_zoom >= 0 AND @vector_tile_zoom < 150 THEN color_hsla(scale_exp(@vector_tile_zoom,0,150,59,352,2), scale_exp(@vector_tile_zoom,0,150,81,59,2), scale_exp(@vector_tile_zoom,0,150,70,44,2), 255) WHEN @vector_tile_zoom >= 150 AND @vector_tile_zoom < 250 THEN color_hsla(scale_exp(@vector_tile_zoom,150,250,352,0,2), scale_exp(@vector_tile_zoom,150,250,59,72,2), scale_exp(@vector_tile_zoom,150,250,44,63,2), 255) WHEN @vector_tile_zoom >= 250 THEN color_hsla(0, 72, 63, 255) ELSE color_hsla(0, 72, 63, 255) END')
         self.assertEqual(default_col.name(), '#f1f075')
+
+        props, default_col = QgsMapBoxGlStyleConverter.parseInterpolateColorByZoom({'base': 1,
+                                                                                    "stops": [["9",
+                                                                                               [
+                                                                                                   "match",
+                                                                                                   [
+                                                                                                       "get",
+                                                                                                       "class"
+                                                                                                   ],
+                                                                                                   [
+                                                                                                       "motorway",
+                                                                                                       "trunk"
+                                                                                                   ],
+                                                                                                   "rgb(255,230,160)",
+                                                                                                   "rgb(255,255,255)"
+                                                                                               ]
+                                                                                               ],
+                                                                                              [
+                                                                                        "15",
+                                                                                        [
+                                                                                            "match",
+                                                                                            [
+                                                                                                "get",
+                                                                                                "class"
+                                                                                            ],
+                                                                                            [
+                                                                                                "motorway",
+                                                                                                "trunk"
+                                                                                            ],
+                                                                                            "rgb(255, 224, 138)",
+                                                                                            "rgb(255,255,255)"
+                                                                                        ]
+                                                                                    ]
+                                                                                    ]
+                                                                                    }, conversion_context)
+        self.assertEqual(props.expressionString(), "CASE WHEN @vector_tile_zoom >= 9 AND @vector_tile_zoom < 15 THEN color_hsla(scale_linear(@vector_tile_zoom,9,15,color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,230,160,255) ELSE color_rgba(255,255,255,255) END,'hsl_hue'),color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,224,138,255) ELSE color_rgba(255,255,255,255) END,'hsl_hue')), scale_linear(@vector_tile_zoom,9,15,color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,230,160,255) ELSE color_rgba(255,255,255,255) END,'hsl_saturation'),color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,224,138,255) ELSE color_rgba(255,255,255,255) END,'hsl_saturation')), scale_linear(@vector_tile_zoom,9,15,color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,230,160,255) ELSE color_rgba(255,255,255,255) END,'lightness'),color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,224,138,255) ELSE color_rgba(255,255,255,255) END,'lightness')), scale_linear(@vector_tile_zoom,9,15,color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,230,160,255) ELSE color_rgba(255,255,255,255) END,'alpha'),color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,224,138,255) ELSE color_rgba(255,255,255,255) END,'alpha'))) WHEN @vector_tile_zoom >= 15 THEN color_hsla(color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,224,138,255) ELSE color_rgba(255,255,255,255) END,'hsl_hue'), color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,224,138,255) ELSE color_rgba(255,255,255,255) END,'hsl_saturation'), color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,224,138,255) ELSE color_rgba(255,255,255,255) END,'lightness'), color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,224,138,255) ELSE color_rgba(255,255,255,255) END,'alpha')) ELSE color_hsla(color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,224,138,255) ELSE color_rgba(255,255,255,255) END,'hsl_hue'), color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,224,138,255) ELSE color_rgba(255,255,255,255) END,'hsl_saturation'), color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,224,138,255) ELSE color_rgba(255,255,255,255) END,'lightness'), color_part(CASE WHEN \"class\" IN ('motorway', 'trunk') THEN color_rgba(255,224,138,255) ELSE color_rgba(255,255,255,255) END,'alpha')) END")
 
     def testParseStops(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
@@ -192,32 +230,33 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         self.assertEqual(default_val, 55.0)
 
     def testInterpolateOpacityByZoom(self):
+        conversion_context = QgsMapBoxGlStyleConversionContext()
         self.assertEqual(QgsMapBoxGlStyleConverter.parseInterpolateOpacityByZoom({'base': 1,
                                                                                   'stops': [[0, 0.1],
                                                                                             [150, 0.15],
                                                                                             [250, 0.2]]
-                                                                                  }, 255).expressionString(),
+                                                                                  }, 255, conversion_context).expressionString(),
                          "CASE WHEN @vector_tile_zoom < 0 THEN set_color_part(@symbol_color, 'alpha', 25.5) WHEN @vector_tile_zoom >= 0 AND @vector_tile_zoom < 150 THEN set_color_part(@symbol_color, 'alpha', scale_linear(@vector_tile_zoom,0,150,25.5,38.25)) WHEN @vector_tile_zoom >= 150 AND @vector_tile_zoom < 250 THEN set_color_part(@symbol_color, 'alpha', scale_linear(@vector_tile_zoom,150,250,38.25,51)) WHEN @vector_tile_zoom >= 250 THEN set_color_part(@symbol_color, 'alpha', 51) END")
         self.assertEqual(QgsMapBoxGlStyleConverter.parseInterpolateOpacityByZoom({'base': 1,
                                                                                   'stops': [[0, 0.1],
                                                                                             [150, 0.15],
                                                                                             [250, 0.2]]
-                                                                                  }, 100).expressionString(),
+                                                                                  }, 100, conversion_context).expressionString(),
                          "CASE WHEN @vector_tile_zoom < 0 THEN set_color_part(@symbol_color, 'alpha', 10) WHEN @vector_tile_zoom >= 0 AND @vector_tile_zoom < 150 THEN set_color_part(@symbol_color, 'alpha', scale_linear(@vector_tile_zoom,0,150,10,15)) WHEN @vector_tile_zoom >= 150 AND @vector_tile_zoom < 250 THEN set_color_part(@symbol_color, 'alpha', scale_linear(@vector_tile_zoom,150,250,15,20)) WHEN @vector_tile_zoom >= 250 THEN set_color_part(@symbol_color, 'alpha', 20) END")
         self.assertEqual(QgsMapBoxGlStyleConverter.parseInterpolateOpacityByZoom({'base': 1,
                                                                                   'stops': [[0, 0.1],
                                                                                             [150, 0.15]]
-                                                                                  }, 255).expressionString(),
+                                                                                  }, 255, conversion_context).expressionString(),
                          "set_color_part(@symbol_color, 'alpha', scale_linear(@vector_tile_zoom,0,150,25.5,38.25))")
         self.assertEqual(QgsMapBoxGlStyleConverter.parseInterpolateOpacityByZoom({'base': 2,
                                                                                   'stops': [[0, 0.1],
                                                                                             [150, 0.15]]
-                                                                                  }, 255).expressionString(),
+                                                                                  }, 255, conversion_context).expressionString(),
                          "set_color_part(@symbol_color, 'alpha', scale_exp(@vector_tile_zoom,0,150,25.5,38.25,2))")
         self.assertEqual(QgsMapBoxGlStyleConverter.parseInterpolateOpacityByZoom({'base': 2,
                                                                                   'stops': [[0, 0.1],
                                                                                             [150, 0.1]]
-                                                                                  }, 255).expressionString(),
+                                                                                  }, 255, conversion_context).expressionString(),
                          "set_color_part(@symbol_color, 'alpha', 25.5)")
 
     def testInterpolateListByZoom(self):
@@ -548,6 +587,30 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         self.assertTrue(has_labeling)
         self.assertEqual(labeling.labelSettings().fieldName, '''lower(concat(concat("name_en",' - ',"name_fr"),"bar"))''')
         self.assertTrue(labeling.labelSettings().isExpression)
+
+    def testDataDefinedIconRotate(self):
+        """ Test icon-rotate property that depends on a data attribute """
+        context = QgsMapBoxGlStyleConversionContext()
+
+        image = QImage(QSize(1, 1), QImage.Format_ARGB32)
+        context.setSprites(image, {"foo": {"x": 0, "y": 0, "width": 1, "height": 1, "pixelRatio": 1}})
+        style = {
+            "layout": {
+                "icon-image": "{foo}",
+                "icon-rotate": ["get", "ROTATION"],
+                "text-size": 11,
+                "icon-size": 1
+            },
+            "type": "symbol",
+            "id": "poi_label",
+            "source-layer": "poi_label"
+        }
+        renderer, has_renderer, labeling, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        self.assertTrue(has_renderer)
+        self.assertFalse(has_labeling)
+        dd_props = renderer.symbol().symbolLayers()[0].dataDefinedProperties()
+        prop = dd_props.property(QgsSymbolLayer.PropertyAngle)
+        self.assertEqual(prop.asExpression(), '"ROTATION"')
 
     def testCircleLayer(self):
         context = QgsMapBoxGlStyleConversionContext()

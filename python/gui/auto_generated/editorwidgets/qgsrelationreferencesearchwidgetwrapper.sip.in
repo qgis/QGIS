@@ -64,7 +64,7 @@ Returns the default flags (equalTo)
     virtual void setEnabled( bool enabled );
 
 
-  protected:
+  public:
     virtual QWidget *createWidget( QWidget *parent );
 
     virtual void initWidget( QWidget *editor );

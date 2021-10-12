@@ -157,7 +157,7 @@ This only has an effect if :py:func:`~QgsScaleComboBox.allowNull` is ``True``.
 .. versionadded:: 3.8
 %End
 
-  protected:
+  public:
     virtual void showPopup();
 
 

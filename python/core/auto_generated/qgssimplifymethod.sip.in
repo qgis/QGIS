@@ -74,7 +74,7 @@ Gets whether the simplification executes after fetch the geometries from provide
 Creates a geometry simplifier according to specified method
 %End
 
-  protected:
+  public:
 };
 
 /************************************************************************

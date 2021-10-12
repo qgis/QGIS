@@ -20,6 +20,7 @@
 #include "qgssettings.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
+#include "qgsrendercontext.h"
 
 QgsGCPCanvasItem::QgsGCPCanvasItem( QgsMapCanvas *mapCanvas, QgsGeorefDataPoint *dataPoint, bool isGCPSource )
   : QgsMapCanvasItem( mapCanvas )

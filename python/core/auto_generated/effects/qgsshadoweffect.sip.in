@@ -276,7 +276,7 @@ Returns the blend mode for the effect
 .. seealso:: :py:func:`setBlendMode`
 %End
 
-  protected:
+  public:
 
     virtual QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const;
 
@@ -325,7 +325,7 @@ Creates a new QgsDropShadowEffect effect from a properties string map.
     virtual QgsDropShadowEffect *clone() const /Factory/;
 
 
-  protected:
+  public:
 
     virtual bool exteriorShadow() const;
 
@@ -362,7 +362,7 @@ Creates a new QgsInnerShadowEffect effect from a properties string map.
     virtual QgsInnerShadowEffect *clone() const /Factory/;
 
 
-  protected:
+  public:
 
     virtual bool exteriorShadow() const;
 

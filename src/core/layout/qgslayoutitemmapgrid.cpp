@@ -627,7 +627,7 @@ void QgsLayoutItemMapGrid::draw( QPainter *p )
   //setup render context
   QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, p );
   context.setForceVectorOutput( true );
-  context.setFlag( QgsRenderContext::ApplyScalingWorkaroundForTextRendering, true );
+  context.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering, true );
   const QgsExpressionContext expressionContext = createExpressionContext();
   context.setExpressionContext( expressionContext );
 
@@ -2605,7 +2605,7 @@ int QgsLayoutItemMapGrid::crsGridParams( QgsRectangle &crsRect, QgsCoordinateTra
       if ( lowerLeft.x() > upperRight.x() )
       {
         //we've crossed the line
-        crsRect = tr.transformBoundingBox( mapBoundingRect, QgsCoordinateTransform::ForwardTransform, true );
+        crsRect = tr.transformBoundingBox( mapBoundingRect, Qgis::TransformDirection::Forward, true );
       }
       else
       {

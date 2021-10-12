@@ -176,9 +176,17 @@ class CORE_EXPORT QgsMeshEditor : public QObject
 
     /**
      * Changes the (X,Y) coordinates values of the vertices with indexes in \a vertices indexes with the values in \a newValues.
-     * The caller has the responsibility to check if changing the vertices coordinates does not lead to topological errors
+     * The caller has the responsibility to check if changing the vertices coordinates does not lead to topological errors.
+     * New values are in layer CRS.
      */
     void changeXYValues( const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues );
+
+    /**
+     * Changes the (X,Y,Z) coordinates values of the vertices with indexes in \a vertices indexes with the values in \a newValues.
+     * The caller has the responsibility to check if changing the vertices coordinates does not lead to topological errors
+     * New coordinates are in layer CRS.
+     */
+    void changeCoordinates( const QList<int> &verticesIndexes, const QList<QgsPoint> &newCoordinates );
 
     /**
      * Applies an advance editing on the edited mesh, see QgsMeshAdvancedEditing
@@ -238,6 +246,12 @@ class CORE_EXPORT QgsMeshEditor : public QObject
      */
     bool edgeIsClose( QgsPointXY point, double tolerance, int &faceIndex, int &edgePosition );
 
+    //! Returns the count of valid faces, that is non void faces in the mesh
+    int validFacesCount() const;
+
+    //! Returns the count of valid vertices, that is non void vertices in the mesh
+    int validVerticesCount() const;
+
   signals:
     //! Emitted when the mesh is edited
     void meshEdited();
@@ -248,6 +262,8 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     QgsTriangularMesh *mTriangularMesh = nullptr;
     int mMaximumVerticesPerFace = 0;
     QgsMeshDatasetGroup *mZValueDatasetGroup = nullptr;
+    int mValidVerticesCount = 0;
+    int mValidFacesCount = 0;
 
     QVector<QgsMeshFace> prepareFaces( const QVector<QgsMeshFace> &faces, QgsMeshEditingError &error );
 
@@ -276,6 +292,8 @@ class CORE_EXPORT QgsMeshEditor : public QObject
 
     void applyEditOnTriangularMesh( Edit &edit, const QgsTopologicalMesh::Changes &topologicChanges );
 
+    void updateElementsCount( const QgsTopologicalMesh::Changes &changes, bool apply = true );
+
     friend class TestQgsMeshEditor;
     friend class QgsMeshLayerUndoCommandMeshEdit;
     friend class QgsMeshLayerUndoCommandAddVertices;
@@ -285,6 +303,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     friend class QgsMeshLayerUndoCommandSetZValue;
     friend class QgsMeshLayerUndoCommandChangeZValue;
     friend class QgsMeshLayerUndoCommandChangeXYValue;
+    friend class QgsMeshLayerUndoCommandChangeCoordinates;
     friend class QgsMeshLayerUndoCommandFlipEdge;
     friend class QgsMeshLayerUndoCommandMerge;
     friend class QgsMeshLayerUndoCommandSplitFaces;
@@ -437,6 +456,29 @@ class QgsMeshLayerUndoCommandChangeXYValue : public QgsMeshLayerUndoCommandMeshE
   private:
     QList<int> mVerticesIndexes;
     QList<QgsPointXY> mNewValues;
+};
+
+/**
+ * \ingroup core
+ *
+ * \brief  Class for undo/redo command for changing coordinate (X,Y,Z) values of vertices
+ *
+ * \since QGIS 3.22
+ */
+class QgsMeshLayerUndoCommandChangeCoordinates : public QgsMeshLayerUndoCommandMeshEdit
+{
+  public:
+
+    /**
+     * Constructor with the associated \a meshEditor and indexes \a verticesIndexes of the vertices that will have
+     * the coordinate (X,Y,Z) values changed with \a newCoordinates
+     */
+    QgsMeshLayerUndoCommandChangeCoordinates( QgsMeshEditor *meshEditor, const QList<int> &verticesIndexes, const QList<QgsPoint> &newCoordinates );
+    void redo() override;
+
+  private:
+    QList<int> mVerticesIndexes;
+    QList<QgsPoint> mNewCoordinates;
 };
 
 /**

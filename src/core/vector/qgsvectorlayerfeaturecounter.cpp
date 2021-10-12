@@ -17,6 +17,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsfeatureid.h"
 #include "qgsfeedback.h"
+#include "qgsrendercontext.h"
 
 QgsVectorLayerFeatureCounter::QgsVectorLayerFeatureCounter( QgsVectorLayer *layer, const QgsExpressionContext &context, bool storeSymbolFids )
   : QgsTask( tr( "Counting features in %1" ).arg( layer->name() ), QgsTask::CanCancel | QgsTask::CancelWithoutPrompt )

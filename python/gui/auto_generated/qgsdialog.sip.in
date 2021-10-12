@@ -37,7 +37,7 @@ Returns the central layout. Widgets added to it must have this dialog as parent.
 Returns the button box.
 %End
 
-  protected:
+  public:
 };
 
 /************************************************************************

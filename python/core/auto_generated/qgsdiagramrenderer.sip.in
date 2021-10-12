@@ -744,7 +744,7 @@ Sets whether the renderer will show legend items for diagram attributes.
 .. versionadded:: 2.16
 %End
 
-  protected:
+  public:
     QgsDiagramRenderer( const QgsDiagramRenderer &other );
 
     virtual bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const = 0;
@@ -825,7 +825,7 @@ Constructor for QgsSingleCategoryDiagramRenderer
     virtual QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const /Factory/;
 
 
-  protected:
+  public:
     virtual bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const;
 
 
@@ -843,6 +843,11 @@ class QgsLinearlyInterpolatedDiagramRenderer : QgsDiagramRenderer
   public:
     QgsLinearlyInterpolatedDiagramRenderer();
     ~QgsLinearlyInterpolatedDiagramRenderer();
+    QgsLinearlyInterpolatedDiagramRenderer( const QgsLinearlyInterpolatedDiagramRenderer &other );
+%Docstring
+Copy constructor
+%End
+
 
     virtual QgsLinearlyInterpolatedDiagramRenderer *clone() const /Factory/;
 
@@ -921,17 +926,12 @@ Returns configuration of appearance of legend. Will return ``None`` if no config
 .. versionadded:: 3.0
 %End
 
-  protected:
+  public:
     virtual bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const;
 
 
     virtual QSizeF diagramSize( const QgsFeature &, const QgsRenderContext &c ) const;
 
-
-    QgsLinearlyInterpolatedDiagramRenderer( const QgsLinearlyInterpolatedDiagramRenderer &other );
-%Docstring
-Copy constructor
-%End
 
 };
 

@@ -21,7 +21,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsannotationitem.h"
-
+#include "qgspoint.h"
 
 /**
  * \ingroup core

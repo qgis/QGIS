@@ -74,7 +74,7 @@ Add a metadataUrl for the layer
 Gets the parent layer
 %End
 
-  protected:
+  public:
 
 
 
@@ -183,7 +183,7 @@ Returns the QGIS Server WMS Dimension list.
 Gets the parent layer
 %End
 
-  protected:
+  public:
 
 
 

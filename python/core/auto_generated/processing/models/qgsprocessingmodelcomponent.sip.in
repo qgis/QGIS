@@ -130,7 +130,7 @@ Clones the component.
 Ownership is transferred to the caller.
 %End
 
-  protected:
+  public:
 
     QgsProcessingModelComponent( const QString &description = QString() );
 %Docstring

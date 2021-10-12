@@ -56,7 +56,7 @@ Returns the widget
 
 
 
-  protected:
+  public:
 
     virtual bool searchText( const QString &text ) = 0;
 %Docstring

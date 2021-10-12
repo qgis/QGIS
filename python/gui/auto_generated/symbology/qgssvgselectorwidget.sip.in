@@ -75,7 +75,7 @@ Constructor for creating a model for SVG files in a specific path.
     virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
 
 
-  protected:
+  public:
 
 };
 
@@ -184,7 +184,7 @@ Emitted when the parameters have changed
 .. versionadded:: 3.18
 %End
 
-  protected:
+  public:
     void populateList();
 
 };
@@ -210,7 +210,7 @@ Constructor for QgsSvgSelectorDialog.
 Returns pointer to the embedded SVG selector widget
 %End
 
-  protected:
+  public:
 };
 
 /************************************************************************

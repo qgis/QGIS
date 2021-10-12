@@ -59,7 +59,7 @@ the editor widget's configured field format for date/time values.
     virtual void setEnabled( bool enabled );
 
 
-  protected:
+  public:
     virtual QWidget *createWidget( QWidget *parent );
 
     virtual void initWidget( QWidget *editor );

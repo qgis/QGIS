@@ -74,7 +74,8 @@ QString QgsProcessingParameterAggregate::asPythonString( QgsProcessing::PythonOu
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterAggregate('%1', '%2'" ).arg( name(), description() );
+      QString code = QStringLiteral( "QgsProcessingParameterAggregate('%1', %2" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( !mParentLayerParameterName.isEmpty() )
         code += QStringLiteral( ", parentLayerParameterName=%1" ).arg( QgsProcessingUtils::stringToPythonLiteral( mParentLayerParameterName ) );
 

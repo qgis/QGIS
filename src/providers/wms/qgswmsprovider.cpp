@@ -1919,7 +1919,7 @@ bool QgsWmsProvider::calculateExtent() const
 
           try
           {
-            QgsRectangle extent = ct.transformBoundingBox( mTileLayer->boundingBoxes.at( i ).box, QgsCoordinateTransform::ForwardTransform );
+            QgsRectangle extent = ct.transformBoundingBox( mTileLayer->boundingBoxes.at( i ).box, Qgis::TransformDirection::Forward );
 
             //make sure extent does not contain 'inf' or 'nan'
             if ( extent.isFinite() )

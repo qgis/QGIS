@@ -17,6 +17,7 @@
 
 #include "qgsmeshtracerenderer.h"
 #include "qgsmeshlayerrenderer.h"
+#include "qgsrendercontext.h"
 
 #include <QPointer>
 

@@ -37,6 +37,7 @@ class QgsVectorLayer;
 #include "qgsexpressionnode.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgssqlstatement.h"
+#include "qgscoordinatetransformcontext.h"
 
 /**
  * \ingroup core

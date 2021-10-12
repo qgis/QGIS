@@ -153,7 +153,7 @@ Removes a geometry from the collection by index.
 %End
 
     void normalize() final /HoldGIL/;
-    virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) throw( QgsCsException );
+    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false ) throw( QgsCsException );
 
     virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
 
@@ -321,14 +321,14 @@ Iterates through all geometries in the collection.
     virtual QgsGeometryCollection *createEmptyWithSameType() const /Factory/;
 
 
-  protected:
+  public:
     virtual int childCount() const;
 
     virtual QgsAbstractGeometry *childGeometry( int index ) const;
 
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;
 
-  protected:
+  public:
 
     virtual bool wktOmitChildType() const;
 %Docstring

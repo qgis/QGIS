@@ -192,7 +192,7 @@ Constructor for PdfExportSettings
 
       QgsLayoutRenderContext::Flags flags;
 
-      QgsRenderContext::TextRenderFormat textRenderFormat;
+      Qgis::TextRenderFormat textRenderFormat;
 
       bool simplifyGeometries;
 
@@ -312,7 +312,7 @@ Constructor for SvgExportSettings
 
       QgsLayoutRenderContext::Flags flags;
 
-      QgsRenderContext::TextRenderFormat textRenderFormat;
+      Qgis::TextRenderFormat textRenderFormat;
 
       bool simplifyGeometries;
 
@@ -412,7 +412,7 @@ such as opacity which will prevent these individual items from being exported as
 .. versionadded:: 3.20
 %End
 
-  protected:
+  public:
 
     virtual QString generateFileName( const PageExportDetails &details ) const;
 %Docstring

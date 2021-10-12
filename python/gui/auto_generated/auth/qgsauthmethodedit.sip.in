@@ -54,7 +54,7 @@ Clear GUI controls in subclassed widget, optionally reloading any previously loa
 Clear GUI controls in subclassed widget
 %End
 
-  protected:
+  public:
 
     explicit QgsAuthMethodEdit( QWidget *parent = 0 );
 %Docstring

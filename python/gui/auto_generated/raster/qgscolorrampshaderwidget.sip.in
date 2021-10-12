@@ -111,7 +111,7 @@ Executes the single band pseudo raster classification
 Loads min and max values from color ramp tree
 %End
 
-  protected:
+  public:
 
     void populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem> &colorRampItems );
 %Docstring

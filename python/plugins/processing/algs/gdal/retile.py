@@ -196,10 +196,10 @@ class retile(GdalAlgorithm):
             arguments.append(extra)
 
         if self.parameterAsBoolean(parameters, self.DIR_FOR_ROW, context):
-            arguments.append('-pyramidOnly')
+            arguments.append('-useDirForEachRow')
 
         if self.parameterAsBoolean(parameters, self.ONLY_PYRAMIDS, context):
-            arguments.append('-useDirForEachRow')
+            arguments.append('-pyramidOnly')
 
         csvFile = self.parameterAsFileOutput(parameters, self.OUTPUT_CSV, context)
         if csvFile:

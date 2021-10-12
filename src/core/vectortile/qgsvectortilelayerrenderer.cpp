@@ -29,6 +29,7 @@
 #include "qgslabelingengine.h"
 #include "qgsvectortilelabeling.h"
 #include "qgsmapclippingutils.h"
+#include "qgsrendercontext.h"
 
 QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
@@ -195,7 +196,7 @@ bool QgsVectorTileLayerRenderer::render()
 
 bool QgsVectorTileLayerRenderer::forceRasterRender() const
 {
-  return renderContext()->testFlag( QgsRenderContext::UseAdvancedEffects ) && ( !qgsDoubleNear( mLayerOpacity, 1.0 ) );
+  return renderContext()->testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) && ( !qgsDoubleNear( mLayerOpacity, 1.0 ) );
 }
 
 void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &rawTile )

@@ -89,7 +89,7 @@ Sets the current color for the dialog
 :param color: desired color
 %End
 
-  protected:
+  public:
 
     virtual void closeEvent( QCloseEvent *e );
 

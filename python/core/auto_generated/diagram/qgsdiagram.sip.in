@@ -83,7 +83,7 @@ Returns the size of the legend item for the diagram corresponding to a specified
 .. versionadded:: 2.16
 %End
 
-  protected:
+  public:
 
     QgsDiagram();
 %Docstring

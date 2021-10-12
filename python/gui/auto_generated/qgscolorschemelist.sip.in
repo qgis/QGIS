@@ -276,7 +276,7 @@ Emitted when a color is selected from the list
 :param color: color selected
 %End
 
-  protected:
+  public:
 
     virtual void keyPressEvent( QKeyEvent *event );
 

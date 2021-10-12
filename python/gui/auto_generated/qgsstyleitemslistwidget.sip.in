@@ -81,7 +81,7 @@ Returns the type of the item currently selected in the widget.
 .. seealso:: :py:func:`currentItemName`
 %End
 
-  protected:
+  public:
 
     virtual void showEvent( QShowEvent *event );
 

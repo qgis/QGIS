@@ -92,7 +92,7 @@ class CORE_EXPORT QgsMeshEditForceByLine : public QgsMeshAdvancedEditing
 
     void interpolateZValueOnMesh( QgsPoint &point ) const;
     void interpolateZValueOnMesh( int faceIndex, QgsPoint &point ) const;
-    void interPolateZValue( QgsMeshVertex &point, const QgsPoint &otherPoint1, const QgsPoint &otherPoint2 );
+    void interpolateZValue( QgsMeshVertex &point, const QgsPoint &otherPoint1, const QgsPoint &otherPoint2 );
 
 
     bool buildForcedElements();
@@ -103,7 +103,7 @@ class CORE_EXPORT QgsMeshEditForceByLine : public QgsMeshAdvancedEditing
                            QgsPoint &intersectionPoint,
                            bool outAllowed );
 
-    bool searchIntersectionEdgeFromSnappedVertex_v2(
+    bool searchIntersectionEdgeFromSnappedVertex(
       int &intersectionFaceIndex,
       int &previousSnappedVertex,
       int &currentSnappedVertexIndex,
@@ -148,12 +148,23 @@ class CORE_EXPORT QgsMeshEditForceByPolylines : public QgsMeshEditForceByLine
     //! Constructor
     QgsMeshEditForceByPolylines() = default;
 
+    QString text() const override;
     bool isFinished() const override;
 
-    //! Adds a input forcing line geometry in rendering coordinates
+    /**
+     * Adds a input forcing line geometry in rendering coordinates
+     *
+     * \note if the geometry is not 3D, the default Z value will be used for the Z value of the geometry's vertices.
+     *       This default Z value has to be set before adding the geometry (\see setDefaultZValue()
+     */
     void addLineFromGeometry( const QgsGeometry &geom );
 
-    //! Adds a list of input forcing lines geometry in rendering coordinates
+    /**
+     * Adds a list of input forcing lines geometry in rendering coordinates
+     *
+     * \note if the geometry is not 3D, the default Z value will be used for the Z value of the geometry's vertices.
+     *       This default Z value has to be set before adding the geometry (\see setDefaultZValue()
+     */
     void addLinesFromGeometries( const QList<QgsGeometry> geometries );
 
   private:

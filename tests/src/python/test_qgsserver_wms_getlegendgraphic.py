@@ -1015,6 +1015,13 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
                                  "&FORMAT=application/json",
                                  "wms_getlegendgraphic_json_multiple_layers")
 
+    def test_wms_GetLegendGraphic_JSON_multiple_symbol(self):
+        self.wms_request_compare("GetLegendGraphic",
+                                 "&LAYERS=cdb_lines"
+                                 "&FORMAT=application/json",
+                                 "wms_getlegendgraphic_json_multiple_symbol",
+                                 'test_project_wms_grouped_layers.qgs')
+
     def testJsonSymbolMaxMinScale(self):
         """Test min/max scale in symbol json export"""
 

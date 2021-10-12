@@ -362,6 +362,71 @@ void TestQgsMeshCalculator::virtualDatasetGroup()
   QCOMPARE( dataset->datasetValue( 2 ).scalar(), 7.0 );
   QCOMPARE( dataset->datasetValue( 3 ).scalar(), 5.5 );
   QCOMPARE( dataset->datasetValue( 4 ).scalar(), 4.0 );
+
+  formula = QStringLiteral( "\"VertexScalarDataset\" +  max_aggr (\"VertexScalarDataset\")" );
+  virtualDatasetGroup = QgsMeshVirtualDatasetGroup( "Virtual Dataset group", formula, mpMeshLayer, 0, 10000000 );
+  virtualDatasetGroup.initialize();
+  QCOMPARE( virtualDatasetGroup.datasetCount(), 2 );
+
+  dataset = virtualDatasetGroup.dataset( 0 );
+  QCOMPARE( dataset->valuesCount(), 5 );
+  QCOMPARE( dataset->datasetValue( 0 ).scalar(), 3.0 );
+  QCOMPARE( dataset->datasetValue( 1 ).scalar(), 5.0 );
+  QCOMPARE( dataset->datasetValue( 2 ).scalar(), 7.0 );
+  QCOMPARE( dataset->datasetValue( 3 ).scalar(), 5.0 );
+  QCOMPARE( dataset->datasetValue( 4 ).scalar(), 3.0 );
+
+  dataset = virtualDatasetGroup.dataset( 1 );
+  QCOMPARE( dataset->valuesCount(), 5 );
+  QCOMPARE( dataset->datasetValue( 0 ).scalar(), 4.0 );
+  QCOMPARE( dataset->datasetValue( 1 ).scalar(), 6.0 );
+  QCOMPARE( dataset->datasetValue( 2 ).scalar(), 8.0 );
+  QCOMPARE( dataset->datasetValue( 3 ).scalar(), 6.0 );
+  QCOMPARE( dataset->datasetValue( 4 ).scalar(), 4.0 );
+
+  formula = QStringLiteral( "max_aggr (\"FaceScalarDataset\") + min_aggr (\"FaceScalarDataset\")" );
+  virtualDatasetGroup = QgsMeshVirtualDatasetGroup( "Virtual Dataset group", formula, mpMeshLayer, 0, 10000000 );
+  virtualDatasetGroup.initialize();
+  QCOMPARE( virtualDatasetGroup.datasetCount(), 1 );
+
+  dataset = virtualDatasetGroup.dataset( 0 );
+  QCOMPARE( dataset->valuesCount(), 2 );
+  QCOMPARE( dataset->datasetValue( 0 ).scalar(), 3.0 );
+  QCOMPARE( dataset->datasetValue( 1 ).scalar(), 5.0 );
+
+  formula = QStringLiteral( "max_aggr (\"FaceScalarDataset\") + \"VertexScalarDataset\"" );
+  virtualDatasetGroup = QgsMeshVirtualDatasetGroup( "Virtual Dataset group", formula, mpMeshLayer, 0, 10000000 );
+  virtualDatasetGroup.initialize();
+  QCOMPARE( virtualDatasetGroup.datasetCount(), 2 );
+
+  dataset = virtualDatasetGroup.dataset( 0 );
+  QCOMPARE( dataset->valuesCount(), 5 );
+  QCOMPARE( dataset->datasetValue( 0 ).scalar(), 3.0 );
+  QCOMPARE( dataset->datasetValue( 1 ).scalar(), 4.5 );
+  QCOMPARE( dataset->datasetValue( 2 ).scalar(), 6.0 );
+  QCOMPARE( dataset->datasetValue( 3 ).scalar(), 4.5 );
+  QCOMPARE( dataset->datasetValue( 4 ).scalar(), 3.0 );
+
+  dataset = virtualDatasetGroup.dataset( 1 );
+  QCOMPARE( dataset->valuesCount(), 5 );
+  QCOMPARE( dataset->datasetValue( 0 ).scalar(), 4.0 );
+  QCOMPARE( dataset->datasetValue( 1 ).scalar(), 5.5 );
+  QCOMPARE( dataset->datasetValue( 2 ).scalar(), 7.0 );
+  QCOMPARE( dataset->datasetValue( 3 ).scalar(), 5.5 );
+  QCOMPARE( dataset->datasetValue( 4 ).scalar(), 4.0 );
+
+  formula = QStringLiteral( "max_aggr (\"FaceScalarDataset\" + \"VertexScalarDataset\")" );
+  virtualDatasetGroup = QgsMeshVirtualDatasetGroup( "Virtual Dataset group", formula, mpMeshLayer, 0, 10000000 );
+  virtualDatasetGroup.initialize();
+  QCOMPARE( virtualDatasetGroup.datasetCount(), 1 );
+
+  dataset = virtualDatasetGroup.dataset( 0 );
+  QCOMPARE( dataset->valuesCount(), 5 );
+  QCOMPARE( dataset->datasetValue( 0 ).scalar(), 4.0 );
+  QCOMPARE( dataset->datasetValue( 1 ).scalar(), 5.5 );
+  QCOMPARE( dataset->datasetValue( 2 ).scalar(), 7.0 );
+  QCOMPARE( dataset->datasetValue( 3 ).scalar(), 5.5 );
+  QCOMPARE( dataset->datasetValue( 4 ).scalar(), 4.0 );
 }
 
 
@@ -378,6 +443,7 @@ void TestQgsMeshCalculator::test_dataset_group_dependency()
     {
       const std::shared_ptr<QgsMeshMemoryDataset> ds = std::make_shared<QgsMeshMemoryDataset>();
       ds->time = i / 3600.0;
+      ds->valid = true;
       for ( int v = 0; v < vertexCount; ++v )
         ds->values.append( QgsMeshDatasetValue( v / 2.0 + dsg ) );
 
@@ -396,7 +462,7 @@ void TestQgsMeshCalculator::test_dataset_group_dependency()
   formulas.append( QStringLiteral( " max_aggr ( \"VertexScalarDataset\")  + \"virtual_0\"" ) );
   formulas.append( QStringLiteral( " \"virtual_0\" + max_aggr ( \"VertexScalarDataset\")  + 1" ) );
   formulas.append( QStringLiteral( "if ( \"FaceScalarDataset\" = \"VertexScalarDataset\" , 0 , 1 )" ) ); //temporal one, must have several datasets
-  formulas.append( QStringLiteral( "if ( 2 = 1 , 0 , 1 )" ) ); //dtatic one, must have one dataset
+  formulas.append( QStringLiteral( "if ( 2 = 1 , 0 , 1 )" ) ); //static one, must have one dataset
   formulas.append( QStringLiteral( "if ( 2 = 1 , \"FaceScalarDataset\" , 1 )" ) ); //temporal one, must have several datasets
   QVector<int> sizes{10, 10, 2, 1, 1, 10, 10, 2, 1, 2};
 

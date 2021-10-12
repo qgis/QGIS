@@ -185,6 +185,13 @@ class CORE_EXPORT QgsGeometryEngine
     virtual double distance( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0;
 
     /**
+     * Checks if \a geom is within \a maxdistance distance from this geometry
+     *
+     * \since QGIS 3.22
+     */
+    virtual bool distanceWithin( const QgsAbstractGeometry *geom, double maxdistance, QString *errorMsg = nullptr ) const = 0;
+
+    /**
      * Checks if \a geom intersects this.
      *
      * \since QGIS 3.0 \a geom is a pointer

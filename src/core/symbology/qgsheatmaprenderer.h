@@ -20,6 +20,7 @@
 #include "qgsrenderer.h"
 #include "qgsexpression.h"
 #include "qgsgeometry.h"
+#include "qgsmapunitscale.h"
 
 class QgsColorRamp;
 

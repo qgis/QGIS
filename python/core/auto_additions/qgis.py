@@ -137,6 +137,7 @@ QgsSymbol.DynamicRotation.__doc__ = "Rotation of symbol may be changed during re
 Qgis.SymbolRenderHint.__doc__ = 'Flags controlling behavior of symbols during rendering\n\n.. versionadded:: 3.20\n\n' + '* ``DynamicRotation``: ' + Qgis.SymbolRenderHint.DynamicRotation.__doc__
 # --
 Qgis.SymbolRenderHint.baseClass = Qgis
+QgsSymbol.RenderHints = Qgis.SymbolRenderHints
 # monkey patching scoped based enum
 Qgis.SymbolFlag.RendererShouldUseSymbolLevels.__doc__ = "If present, indicates that a QgsFeatureRenderer using the symbol should use symbol levels for best results"
 Qgis.SymbolFlag.__doc__ = 'Flags controlling behavior of symbols\n\n.. versionadded:: 3.20\n\n' + '* ``RendererShouldUseSymbolLevels``: ' + Qgis.SymbolFlag.RendererShouldUseSymbolLevels.__doc__
@@ -150,6 +151,12 @@ QgsSymbol.FlagIncludeCrosshairsForMarkerSymbols.__doc__ = "Include a crosshairs 
 Qgis.SymbolPreviewFlag.__doc__ = 'Flags for controlling how symbol preview images are generated.\n\n.. versionadded:: 3.20\n\n' + '* ``FlagIncludeCrosshairsForMarkerSymbols``: ' + Qgis.SymbolPreviewFlag.FlagIncludeCrosshairsForMarkerSymbols.__doc__
 # --
 Qgis.SymbolPreviewFlag.baseClass = Qgis
+QgsSymbol.SymbolPreviewFlags = Qgis.SymbolPreviewFlags
+# monkey patching scoped based enum
+Qgis.SymbolLayerFlag.DisableFeatureClipping.__doc__ = "If present, indicates that features should never be clipped to the map extent during rendering"
+Qgis.SymbolLayerFlag.__doc__ = 'Flags controlling behavior of symbol layers\n\n.. versionadded:: 3.22\n\n' + '* ``DisableFeatureClipping``: ' + Qgis.SymbolLayerFlag.DisableFeatureClipping.__doc__
+# --
+Qgis.SymbolLayerFlag.baseClass = Qgis
 QgsDataItem.Type = Qgis.BrowserItemType
 # monkey patching scoped based enum
 QgsDataItem.Collection = Qgis.BrowserItemType.Collection
@@ -225,6 +232,7 @@ QgsDataItem.ItemRepresentsFile.__doc__ = "Item's path() directly represents a fi
 Qgis.BrowserItemCapability.__doc__ = 'Browser item capabilities.\n\n.. versionadded:: 3.20\n\n' + '* ``NoCapabilities``: ' + Qgis.BrowserItemCapability.NoCapabilities.__doc__ + '\n' + '* ``SetCrs``: ' + Qgis.BrowserItemCapability.SetCrs.__doc__ + '\n' + '* ``Fertile``: ' + Qgis.BrowserItemCapability.Fertile.__doc__ + '\n' + '* ``Fast``: ' + Qgis.BrowserItemCapability.Fast.__doc__ + '\n' + '* ``Collapse``: ' + Qgis.BrowserItemCapability.Collapse.__doc__ + '\n' + '* ``Rename``: ' + Qgis.BrowserItemCapability.Rename.__doc__ + '\n' + '* ``Delete``: ' + Qgis.BrowserItemCapability.Delete.__doc__ + '\n' + '* ``ItemRepresentsFile``: ' + Qgis.BrowserItemCapability.ItemRepresentsFile.__doc__
 # --
 Qgis.BrowserItemCapability.baseClass = Qgis
+QgsDataItem.Capabilities = Qgis.BrowserItemCapabilities
 QgsLayerItem.LayerType = Qgis.BrowserLayerType
 # monkey patching scoped based enum
 QgsLayerItem.NoType = Qgis.BrowserLayerType.NoType
@@ -588,6 +596,7 @@ QgsGeometry.FlagAllowSelfTouchingHoles.is_monkey_patched = True
 QgsGeometry.FlagAllowSelfTouchingHoles.__doc__ = "Indicates that self-touching holes are permitted. OGC validity states that self-touching holes are NOT permitted, whilst other vendor validity checks (e.g. ESRI) permit self-touching holes."
 Qgis.GeometryValidityFlag.__doc__ = 'Geometry validity check flags.\n\n.. versionadded:: 3.22\n\n' + '* ``FlagAllowSelfTouchingHoles``: ' + Qgis.GeometryValidityFlag.AllowSelfTouchingHoles.__doc__
 # --
+QgsGeometry.ValidityFlags = Qgis.GeometryValidityFlags
 Qgis.GeometryValidityFlag.baseClass = Qgis
 QgsGeometry.ValidationMethod = Qgis.GeometryValidationEngine
 # monkey patching scoped based enum
@@ -756,3 +765,146 @@ QgsRasterDataProviderTemporalCapabilities.FindClosestMatchToEndOfRange.__doc__ =
 Qgis.TemporalIntervalMatchMethod.__doc__ = 'Method to use when resolving a temporal range to a data provider layer or band.\n\n.. versionadded:: 3.22\n\n' + '* ``MatchUsingWholeRange``: ' + Qgis.TemporalIntervalMatchMethod.MatchUsingWholeRange.__doc__ + '\n' + '* ``MatchExactUsingStartOfRange``: ' + Qgis.TemporalIntervalMatchMethod.MatchExactUsingStartOfRange.__doc__ + '\n' + '* ``MatchExactUsingEndOfRange``: ' + Qgis.TemporalIntervalMatchMethod.MatchExactUsingEndOfRange.__doc__ + '\n' + '* ``FindClosestMatchToStartOfRange``: ' + Qgis.TemporalIntervalMatchMethod.FindClosestMatchToStartOfRange.__doc__ + '\n' + '* ``FindClosestMatchToEndOfRange``: ' + Qgis.TemporalIntervalMatchMethod.FindClosestMatchToEndOfRange.__doc__
 # --
 Qgis.TemporalIntervalMatchMethod.baseClass = Qgis
+QgsCoordinateTransform.TransformDirection = Qgis.TransformDirection
+# monkey patching scoped based enum
+QgsCoordinateTransform.ForwardTransform = Qgis.TransformDirection.Forward
+QgsCoordinateTransform.ForwardTransform.is_monkey_patched = True
+QgsCoordinateTransform.ForwardTransform.__doc__ = "Forward transform (from source to destination)"
+QgsCoordinateTransform.ReverseTransform = Qgis.TransformDirection.Reverse
+QgsCoordinateTransform.ReverseTransform.is_monkey_patched = True
+QgsCoordinateTransform.ReverseTransform.__doc__ = "Reverse/inverse transform (from destination to source)"
+Qgis.TransformDirection.__doc__ = 'Indicates the direction (forward or inverse) of a transform.\n\n.. versionadded:: 3.22\n\n' + '* ``ForwardTransform``: ' + Qgis.TransformDirection.Forward.__doc__ + '\n' + '* ``ReverseTransform``: ' + Qgis.TransformDirection.Reverse.__doc__
+# --
+Qgis.TransformDirection.baseClass = Qgis
+QgsMapSettings.Flag = Qgis.MapSettingsFlag
+# monkey patching scoped based enum
+QgsMapSettings.Antialiasing = Qgis.MapSettingsFlag.Antialiasing
+QgsMapSettings.Antialiasing.is_monkey_patched = True
+QgsMapSettings.Antialiasing.__doc__ = "Enable anti-aliasing for map rendering"
+QgsMapSettings.DrawEditingInfo = Qgis.MapSettingsFlag.DrawEditingInfo
+QgsMapSettings.DrawEditingInfo.is_monkey_patched = True
+QgsMapSettings.DrawEditingInfo.__doc__ = "Enable drawing of vertex markers for layers in editing mode"
+QgsMapSettings.ForceVectorOutput = Qgis.MapSettingsFlag.ForceVectorOutput
+QgsMapSettings.ForceVectorOutput.is_monkey_patched = True
+QgsMapSettings.ForceVectorOutput.__doc__ = "Vector graphics should not be cached and drawn as raster images"
+QgsMapSettings.UseAdvancedEffects = Qgis.MapSettingsFlag.UseAdvancedEffects
+QgsMapSettings.UseAdvancedEffects.is_monkey_patched = True
+QgsMapSettings.UseAdvancedEffects.__doc__ = "Enable layer opacity and blending effects"
+QgsMapSettings.DrawLabeling = Qgis.MapSettingsFlag.DrawLabeling
+QgsMapSettings.DrawLabeling.is_monkey_patched = True
+QgsMapSettings.DrawLabeling.__doc__ = "Enable drawing of labels on top of the map"
+QgsMapSettings.UseRenderingOptimization = Qgis.MapSettingsFlag.UseRenderingOptimization
+QgsMapSettings.UseRenderingOptimization.is_monkey_patched = True
+QgsMapSettings.UseRenderingOptimization.__doc__ = "Enable vector simplification and other rendering optimizations"
+QgsMapSettings.DrawSelection = Qgis.MapSettingsFlag.DrawSelection
+QgsMapSettings.DrawSelection.is_monkey_patched = True
+QgsMapSettings.DrawSelection.__doc__ = "Whether vector selections should be shown in the rendered map"
+QgsMapSettings.DrawSymbolBounds = Qgis.MapSettingsFlag.DrawSymbolBounds
+QgsMapSettings.DrawSymbolBounds.is_monkey_patched = True
+QgsMapSettings.DrawSymbolBounds.__doc__ = "Draw bounds of symbols (for debugging/testing)"
+QgsMapSettings.RenderMapTile = Qgis.MapSettingsFlag.RenderMapTile
+QgsMapSettings.RenderMapTile.is_monkey_patched = True
+QgsMapSettings.RenderMapTile.__doc__ = "Draw map such that there are no problems between adjacent tiles"
+QgsMapSettings.RenderPartialOutput = Qgis.MapSettingsFlag.RenderPartialOutput
+QgsMapSettings.RenderPartialOutput.is_monkey_patched = True
+QgsMapSettings.RenderPartialOutput.__doc__ = "Whether to make extra effort to update map image with partially rendered layers (better for interactive map canvas). Added in QGIS 3.0"
+QgsMapSettings.RenderPreviewJob = Qgis.MapSettingsFlag.RenderPreviewJob
+QgsMapSettings.RenderPreviewJob.is_monkey_patched = True
+QgsMapSettings.RenderPreviewJob.__doc__ = "Render is a 'canvas preview' render, and shortcuts should be taken to ensure fast rendering"
+QgsMapSettings.RenderBlocking = Qgis.MapSettingsFlag.RenderBlocking
+QgsMapSettings.RenderBlocking.is_monkey_patched = True
+QgsMapSettings.RenderBlocking.__doc__ = "Render and load remote sources in the same thread to ensure rendering remote sources (svg and images). WARNING: this flag must NEVER be used from GUI based applications (like the main QGIS application) or crashes will result. Only for use in external scripts or QGIS server."
+QgsMapSettings.LosslessImageRendering = Qgis.MapSettingsFlag.LosslessImageRendering
+QgsMapSettings.LosslessImageRendering.is_monkey_patched = True
+QgsMapSettings.LosslessImageRendering.__doc__ = "Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF). This flag only works with builds based on Qt 5.13 or later."
+QgsMapSettings.Render3DMap = Qgis.MapSettingsFlag.Render3DMap
+QgsMapSettings.Render3DMap.is_monkey_patched = True
+QgsMapSettings.Render3DMap.__doc__ = "Render is for a 3D map"
+Qgis.MapSettingsFlag.__doc__ = 'Flags which adjust the way maps are rendered.\n\n.. versionadded:: 3.22\n\n' + '* ``Antialiasing``: ' + Qgis.MapSettingsFlag.Antialiasing.__doc__ + '\n' + '* ``DrawEditingInfo``: ' + Qgis.MapSettingsFlag.DrawEditingInfo.__doc__ + '\n' + '* ``ForceVectorOutput``: ' + Qgis.MapSettingsFlag.ForceVectorOutput.__doc__ + '\n' + '* ``UseAdvancedEffects``: ' + Qgis.MapSettingsFlag.UseAdvancedEffects.__doc__ + '\n' + '* ``DrawLabeling``: ' + Qgis.MapSettingsFlag.DrawLabeling.__doc__ + '\n' + '* ``UseRenderingOptimization``: ' + Qgis.MapSettingsFlag.UseRenderingOptimization.__doc__ + '\n' + '* ``DrawSelection``: ' + Qgis.MapSettingsFlag.DrawSelection.__doc__ + '\n' + '* ``DrawSymbolBounds``: ' + Qgis.MapSettingsFlag.DrawSymbolBounds.__doc__ + '\n' + '* ``RenderMapTile``: ' + Qgis.MapSettingsFlag.RenderMapTile.__doc__ + '\n' + '* ``RenderPartialOutput``: ' + Qgis.MapSettingsFlag.RenderPartialOutput.__doc__ + '\n' + '* ``RenderPreviewJob``: ' + Qgis.MapSettingsFlag.RenderPreviewJob.__doc__ + '\n' + '* ``RenderBlocking``: ' + Qgis.MapSettingsFlag.RenderBlocking.__doc__ + '\n' + '* ``LosslessImageRendering``: ' + Qgis.MapSettingsFlag.LosslessImageRendering.__doc__ + '\n' + '* ``Render3DMap``: ' + Qgis.MapSettingsFlag.Render3DMap.__doc__
+# --
+QgsMapSettings.Flags = Qgis.MapSettingsFlags
+Qgis.MapSettingsFlag.baseClass = Qgis
+QgsRenderContext.Flag = Qgis.RenderContextFlag
+# monkey patching scoped based enum
+QgsRenderContext.DrawEditingInfo = Qgis.RenderContextFlag.DrawEditingInfo
+QgsRenderContext.DrawEditingInfo.is_monkey_patched = True
+QgsRenderContext.DrawEditingInfo.__doc__ = "Enable drawing of vertex markers for layers in editing mode"
+QgsRenderContext.ForceVectorOutput = Qgis.RenderContextFlag.ForceVectorOutput
+QgsRenderContext.ForceVectorOutput.is_monkey_patched = True
+QgsRenderContext.ForceVectorOutput.__doc__ = "Vector graphics should not be cached and drawn as raster images"
+QgsRenderContext.UseAdvancedEffects = Qgis.RenderContextFlag.UseAdvancedEffects
+QgsRenderContext.UseAdvancedEffects.is_monkey_patched = True
+QgsRenderContext.UseAdvancedEffects.__doc__ = "Enable layer opacity and blending effects"
+QgsRenderContext.UseRenderingOptimization = Qgis.RenderContextFlag.UseRenderingOptimization
+QgsRenderContext.UseRenderingOptimization.is_monkey_patched = True
+QgsRenderContext.UseRenderingOptimization.__doc__ = "Enable vector simplification and other rendering optimizations"
+QgsRenderContext.DrawSelection = Qgis.RenderContextFlag.DrawSelection
+QgsRenderContext.DrawSelection.is_monkey_patched = True
+QgsRenderContext.DrawSelection.__doc__ = "Whether vector selections should be shown in the rendered map"
+QgsRenderContext.DrawSymbolBounds = Qgis.RenderContextFlag.DrawSymbolBounds
+QgsRenderContext.DrawSymbolBounds.is_monkey_patched = True
+QgsRenderContext.DrawSymbolBounds.__doc__ = "Draw bounds of symbols (for debugging/testing)"
+QgsRenderContext.RenderMapTile = Qgis.RenderContextFlag.RenderMapTile
+QgsRenderContext.RenderMapTile.is_monkey_patched = True
+QgsRenderContext.RenderMapTile.__doc__ = "Draw map such that there are no problems between adjacent tiles"
+QgsRenderContext.Antialiasing = Qgis.RenderContextFlag.Antialiasing
+QgsRenderContext.Antialiasing.is_monkey_patched = True
+QgsRenderContext.Antialiasing.__doc__ = "Use antialiasing while drawing"
+QgsRenderContext.RenderPartialOutput = Qgis.RenderContextFlag.RenderPartialOutput
+QgsRenderContext.RenderPartialOutput.is_monkey_patched = True
+QgsRenderContext.RenderPartialOutput.__doc__ = "Whether to make extra effort to update map image with partially rendered layers (better for interactive map canvas). Added in QGIS 3.0"
+QgsRenderContext.RenderPreviewJob = Qgis.RenderContextFlag.RenderPreviewJob
+QgsRenderContext.RenderPreviewJob.is_monkey_patched = True
+QgsRenderContext.RenderPreviewJob.__doc__ = "Render is a 'canvas preview' render, and shortcuts should be taken to ensure fast rendering"
+QgsRenderContext.RenderBlocking = Qgis.RenderContextFlag.RenderBlocking
+QgsRenderContext.RenderBlocking.is_monkey_patched = True
+QgsRenderContext.RenderBlocking.__doc__ = "Render and load remote sources in the same thread to ensure rendering remote sources (svg and images). WARNING: this flag must NEVER be used from GUI based applications (like the main QGIS application) or crashes will result. Only for use in external scripts or QGIS server."
+QgsRenderContext.RenderSymbolPreview = Qgis.RenderContextFlag.RenderSymbolPreview
+QgsRenderContext.RenderSymbolPreview.is_monkey_patched = True
+QgsRenderContext.RenderSymbolPreview.__doc__ = "The render is for a symbol preview only and map based properties may not be available, so care should be taken to handle map unit based sizes in an appropriate way."
+QgsRenderContext.LosslessImageRendering = Qgis.RenderContextFlag.LosslessImageRendering
+QgsRenderContext.LosslessImageRendering.is_monkey_patched = True
+QgsRenderContext.LosslessImageRendering.__doc__ = "Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF). This flag only works with builds based on Qt 5.13 or later."
+QgsRenderContext.ApplyScalingWorkaroundForTextRendering = Qgis.RenderContextFlag.ApplyScalingWorkaroundForTextRendering
+QgsRenderContext.ApplyScalingWorkaroundForTextRendering.is_monkey_patched = True
+QgsRenderContext.ApplyScalingWorkaroundForTextRendering.__doc__ = "Whether a scaling workaround designed to stablise the rendering of small font sizes (or for painters scaled out by a large amount) when rendering text. Generally this is recommended, but it may incur some performance cost."
+QgsRenderContext.Render3DMap = Qgis.RenderContextFlag.Render3DMap
+QgsRenderContext.Render3DMap.is_monkey_patched = True
+QgsRenderContext.Render3DMap.__doc__ = "Render is for a 3D map"
+QgsRenderContext.ApplyClipAfterReprojection = Qgis.RenderContextFlag.ApplyClipAfterReprojection
+QgsRenderContext.ApplyClipAfterReprojection.is_monkey_patched = True
+QgsRenderContext.ApplyClipAfterReprojection.__doc__ = "Feature geometry clipping to mapExtent() must be performed after the geometries are transformed using coordinateTransform(). Usually feature geometry clipping occurs using the extent() in the layer's CRS prior to geometry transformation, but in some cases when extent() could not be accurately calculated it is necessary to clip geometries to mapExtent() AFTER transforming them using coordinateTransform()."
+Qgis.RenderContextFlag.__doc__ = 'Flags which affect rendering operations.\n\n.. versionadded:: 3.22\n\n' + '* ``DrawEditingInfo``: ' + Qgis.RenderContextFlag.DrawEditingInfo.__doc__ + '\n' + '* ``ForceVectorOutput``: ' + Qgis.RenderContextFlag.ForceVectorOutput.__doc__ + '\n' + '* ``UseAdvancedEffects``: ' + Qgis.RenderContextFlag.UseAdvancedEffects.__doc__ + '\n' + '* ``UseRenderingOptimization``: ' + Qgis.RenderContextFlag.UseRenderingOptimization.__doc__ + '\n' + '* ``DrawSelection``: ' + Qgis.RenderContextFlag.DrawSelection.__doc__ + '\n' + '* ``DrawSymbolBounds``: ' + Qgis.RenderContextFlag.DrawSymbolBounds.__doc__ + '\n' + '* ``RenderMapTile``: ' + Qgis.RenderContextFlag.RenderMapTile.__doc__ + '\n' + '* ``Antialiasing``: ' + Qgis.RenderContextFlag.Antialiasing.__doc__ + '\n' + '* ``RenderPartialOutput``: ' + Qgis.RenderContextFlag.RenderPartialOutput.__doc__ + '\n' + '* ``RenderPreviewJob``: ' + Qgis.RenderContextFlag.RenderPreviewJob.__doc__ + '\n' + '* ``RenderBlocking``: ' + Qgis.RenderContextFlag.RenderBlocking.__doc__ + '\n' + '* ``RenderSymbolPreview``: ' + Qgis.RenderContextFlag.RenderSymbolPreview.__doc__ + '\n' + '* ``LosslessImageRendering``: ' + Qgis.RenderContextFlag.LosslessImageRendering.__doc__ + '\n' + '* ``ApplyScalingWorkaroundForTextRendering``: ' + Qgis.RenderContextFlag.ApplyScalingWorkaroundForTextRendering.__doc__ + '\n' + '* ``Render3DMap``: ' + Qgis.RenderContextFlag.Render3DMap.__doc__ + '\n' + '* ``ApplyClipAfterReprojection``: ' + Qgis.RenderContextFlag.ApplyClipAfterReprojection.__doc__
+# --
+QgsRenderContext.Flags = Qgis.RenderContextFlags
+Qgis.RenderContextFlag.baseClass = Qgis
+QgsRenderContext.TextRenderFormat = Qgis.TextRenderFormat
+# monkey patching scoped based enum
+QgsRenderContext.TextFormatAlwaysOutlines = Qgis.TextRenderFormat.AlwaysOutlines
+QgsRenderContext.TextFormatAlwaysOutlines.is_monkey_patched = True
+QgsRenderContext.TextFormatAlwaysOutlines.__doc__ = "Always render text using path objects (AKA outlines/curves). This setting guarantees the best quality rendering, even when using a raster paint surface (where sub-pixel path based text rendering is superior to sub-pixel text-based rendering). The downside is that text is converted to paths only, so users cannot open created vector outputs for post-processing in other applications and retain text editability.  This setting also guarantees complete compatibility with the full range of formatting options available through QgsTextRenderer and QgsTextFormat, some of which may not be possible to reproduce when using a vector-based paint surface and TextFormatAlwaysText mode. A final benefit to this setting is that vector exports created using text as outlines do not require all users to have the original fonts installed in order to display the text in its original style."
+QgsRenderContext.TextFormatAlwaysText = Qgis.TextRenderFormat.AlwaysText
+QgsRenderContext.TextFormatAlwaysText.is_monkey_patched = True
+QgsRenderContext.TextFormatAlwaysText.__doc__ = "Always render text as text objects. While this mode preserves text objects as text for post-processing in external vector editing applications, it can result in rendering artifacts or poor quality rendering, depending on the text format settings. Even with raster based paint devices, TextFormatAlwaysText can result in inferior rendering quality to TextFormatAlwaysOutlines. When rendering using TextFormatAlwaysText to a vector based device (e.g. PDF or SVG), care must be taken to ensure that the required fonts are available to users when opening the created files, or default fallback fonts will be used to display the output instead. (Although PDF exports MAY automatically embed some fonts when possible, depending on the user's platform)."
+Qgis.TextRenderFormat.__doc__ = 'Options for rendering text.\n\n.. versionadded:: 3.22\n\n' + '* ``TextFormatAlwaysOutlines``: ' + Qgis.TextRenderFormat.AlwaysOutlines.__doc__ + '\n' + '* ``TextFormatAlwaysText``: ' + Qgis.TextRenderFormat.AlwaysText.__doc__
+# --
+Qgis.TextRenderFormat.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.RenderSubcomponentProperty.Generic.__doc__ = "Generic subcomponent property"
+Qgis.RenderSubcomponentProperty.ShadowOffset.__doc__ = "Shadow offset"
+Qgis.RenderSubcomponentProperty.BlurSize.__doc__ = "Blur size"
+Qgis.RenderSubcomponentProperty.GlowSpread.__doc__ = "Glow spread size"
+Qgis.RenderSubcomponentProperty.__doc__ = 'Rendering subcomponent properties.\n\n.. versionadded:: 3.22\n\n' + '* ``Generic``: ' + Qgis.RenderSubcomponentProperty.Generic.__doc__ + '\n' + '* ``ShadowOffset``: ' + Qgis.RenderSubcomponentProperty.ShadowOffset.__doc__ + '\n' + '* ``BlurSize``: ' + Qgis.RenderSubcomponentProperty.BlurSize.__doc__ + '\n' + '* ``GlowSpread``: ' + Qgis.RenderSubcomponentProperty.GlowSpread.__doc__
+# --
+Qgis.RenderSubcomponentProperty.baseClass = Qgis
+QgsVertexId.VertexType = Qgis.VertexType
+# monkey patching scoped based enum
+QgsVertexId.SegmentVertex = Qgis.VertexType.Segment
+QgsVertexId.SegmentVertex.is_monkey_patched = True
+QgsVertexId.SegmentVertex.__doc__ = "The actual start or end point of a segment"
+QgsVertexId.CurveVertex = Qgis.VertexType.Curve
+QgsVertexId.CurveVertex.is_monkey_patched = True
+QgsVertexId.CurveVertex.__doc__ = "An intermediate point on a segment defining the curvature of the segment"
+Qgis.VertexType.__doc__ = 'Types of vertex.\n\n.. versionadded:: 3.22\n\n' + '* ``SegmentVertex``: ' + Qgis.VertexType.Segment.__doc__ + '\n' + '* ``CurveVertex``: ' + Qgis.VertexType.Curve.__doc__
+# --
+Qgis.VertexType.baseClass = Qgis

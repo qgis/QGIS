@@ -26,7 +26,7 @@ class QgsGroupBoxCollapseButton : QToolButton
     bool shiftDown() const;
     void setShiftDown( bool shiftdown );
 
-  protected:
+  public:
     virtual void mouseReleaseEvent( QMouseEvent *event );
 
 
@@ -104,7 +104,7 @@ Overridden to prepare base call and avoid crash due to specific QT versions
 .. versionadded:: 3.16
 %End
 
-  protected:
+  public:
     void init();
 
     void collapseExpandFixes();
@@ -203,7 +203,7 @@ The configuration path to which it is saved is defined by
 - The settingGroup
 %End
 
-  protected:
+  public:
     void init();
     virtual void showEvent( QShowEvent *event );
 

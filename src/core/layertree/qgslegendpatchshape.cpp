@@ -54,6 +54,16 @@ void QgsLegendPatchShape::setPreserveAspectRatio( bool preserveAspectRatio )
   mPreserveAspectRatio = preserveAspectRatio;
 }
 
+bool QgsLegendPatchShape::scaleToOutputSize() const
+{
+  return mScaleToTargetSize;
+}
+
+void QgsLegendPatchShape::setScaleToOutputSize( bool scale )
+{
+  mScaleToTargetSize = scale;
+}
+
 QPolygonF lineStringToQPolygonF( const QgsLineString *line )
 {
   const double *srcX = line->xData();
@@ -81,52 +91,61 @@ QPolygonF curveToPolygonF( const QgsCurve *curve )
   }
 }
 
+QgsGeometry QgsLegendPatchShape::scaledGeometry( QSizeF size ) const
+{
+  QgsGeometry geom = mGeometry;
+  if ( mScaleToTargetSize )
+  {
+    // scale and translate to desired size
+
+    const QRectF bounds = mGeometry.boundingBox().toRectF();
+
+    double dx = 0;
+    double dy = 0;
+    if ( mPreserveAspectRatio && bounds.height() > 0 && bounds.width() > 0 )
+    {
+      const double scaling = std::min( size.width() / bounds.width(), size.height() / bounds.height() );
+      const QSizeF scaledSize = bounds.size() * scaling;
+      dx = ( size.width() - scaledSize.width() ) / 2.0;
+      dy = ( size.height() - scaledSize.height() ) / 2.0;
+      size = scaledSize;
+    }
+
+    // important -- the transform needs to flip from north-up to painter style "increasing y down" coordinates
+    const QPolygonF targetRectPoly = QPolygonF() << QPointF( dx, dy + size.height() )
+                                     << QPointF( dx + size.width(), dy + size.height() )
+                                     << QPointF( dx + size.width(), dy )
+                                     << QPointF( dx, dy );
+    QTransform t;
+
+    if ( bounds.width() > 0 && bounds.height() > 0 )
+    {
+      QPolygonF patchRectPoly = QPolygonF( bounds );
+      //workaround QT Bug #21329
+      patchRectPoly.pop_back();
+
+      QTransform::quadToQuad( patchRectPoly, targetRectPoly, t );
+    }
+    else if ( bounds.width() > 0 )
+    {
+      t = QTransform::fromScale( size.width() / bounds.width(), 1 ).translate( -bounds.left(), size.height() / 2 - bounds.y() );
+    }
+    else if ( bounds.height() > 0 )
+    {
+      t = QTransform::fromScale( 1, size.height() / bounds.height() ).translate( size.width() / 2 - bounds.x(), -bounds.top() );
+    }
+
+    geom.transform( t );
+  }
+  return geom;
+}
+
 QList<QList<QPolygonF> > QgsLegendPatchShape::toQPolygonF( Qgis::SymbolType type, QSizeF size ) const
 {
   if ( isNull() || type != mSymbolType )
     return QgsStyle::defaultStyle()->defaultPatchAsQPolygonF( type, size );
 
-  // scale and translate to desired size
-
-  const QRectF bounds = mGeometry.boundingBox().toRectF();
-
-  double dx = 0;
-  double dy = 0;
-  if ( mPreserveAspectRatio && bounds.height() > 0 && bounds.width() > 0 )
-  {
-    const double scaling = std::min( size.width() / bounds.width(), size.height() / bounds.height() );
-    const QSizeF scaledSize = bounds.size() * scaling;
-    dx = ( size.width() - scaledSize.width() ) / 2.0;
-    dy = ( size.height() - scaledSize.height() ) / 2.0;
-    size = scaledSize;
-  }
-
-  // important -- the transform needs to flip from north-up to painter style "increasing y down" coordinates
-  const QPolygonF targetRectPoly = QPolygonF() << QPointF( dx, dy + size.height() )
-                                   << QPointF( dx + size.width(), dy + size.height() )
-                                   << QPointF( dx + size.width(), dy )
-                                   << QPointF( dx, dy );
-  QTransform t;
-
-  if ( bounds.width() > 0 && bounds.height() > 0 )
-  {
-    QPolygonF patchRectPoly = QPolygonF( bounds );
-    //workaround QT Bug #21329
-    patchRectPoly.pop_back();
-
-    QTransform::quadToQuad( patchRectPoly, targetRectPoly, t );
-  }
-  else if ( bounds.width() > 0 )
-  {
-    t = QTransform::fromScale( size.width() / bounds.width(), 1 ).translate( -bounds.left(), size.height() / 2 - bounds.y() );
-  }
-  else if ( bounds.height() > 0 )
-  {
-    t = QTransform::fromScale( 1, size.height() / bounds.height() ).translate( size.width() / 2 - bounds.x(), -bounds.top() );
-  }
-
-  QgsGeometry geom = mGeometry;
-  geom.transform( t );
+  const QgsGeometry geom = scaledGeometry( size );
 
   switch ( mSymbolType )
   {

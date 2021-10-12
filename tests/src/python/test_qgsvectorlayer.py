@@ -3573,7 +3573,6 @@ class TestQgsVectorLayerTransformContext(unittest.TestCase):
         """Prepare tc"""
         super(TestQgsVectorLayerTransformContext, self).setUp()
         self.ctx = QgsCoordinateTransformContext()
-        self.ctx.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857), 1234, 1235)
         self.ctx.addCoordinateOperation(QgsCoordinateReferenceSystem.fromEpsgId(4326),
                                         QgsCoordinateReferenceSystem.fromEpsgId(3857), 'test')
 
@@ -3631,6 +3630,35 @@ class TestQgsVectorLayerTransformContext(unittest.TestCase):
         p.setTransformContext(self.ctx)
         self.assertTrue(p.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
         self.assertTrue(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
+
+    def testDeletedFeaturesAreNotSelected(self):
+        """Test that when features are deleted are also removed from selected before
+           featuresDeleted is emitted"""
+
+        layer = QgsVectorLayer("point?crs=epsg:4326&field=id:integer", "Scratch point layer", "memory")
+        layer.startEditing()
+        layer.addFeature(QgsFeature(layer.fields()))
+        layer.commitChanges()
+
+        self.assertEqual(layer.featureCount(), 1)
+
+        test_errors = []
+
+        def onFeaturesDeleted(deleted_fids):
+            selected = layer.selectedFeatureIds()
+            for fid in selected:
+                test_errors.append(f'Feature with id {fid} was deleted but is still selected')
+
+        layer.featuresDeleted.connect(onFeaturesDeleted)
+
+        layer.startEditing()
+        layer.selectAll()
+        layer.deleteSelectedFeatures()
+        layer.commitChanges()
+
+        self.assertEqual(test_errors, [], test_errors)
+        self.assertEqual(layer.featureCount(), 0)
+        self.assertEqual(layer.selectedFeatureIds(), [])
 
     def testSubsetStringInvalidLayer(self):
         """

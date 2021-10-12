@@ -91,7 +91,7 @@ Emitted when the accept button is clicked.
 Emitted when the selection changes in the widget.
 %End
 
-  protected:
+  public:
 
     void addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle = false );
 %Docstring

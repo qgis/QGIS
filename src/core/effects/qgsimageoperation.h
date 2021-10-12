@@ -23,9 +23,11 @@
 #include <QColor>
 
 #include "qgis_core.h"
+#include "qgsfeedback.h"
 #include <cmath>
 
 class QgsColorRamp;
+class QgsFeedback;
 
 /**
  * \ingroup core
@@ -71,8 +73,9 @@ class CORE_EXPORT QgsImageOperation
      * Convert a QImage to a grayscale image. Alpha channel is preserved.
      * \param image QImage to convert
      * \param mode mode to use during grayscale conversion
+     * \param feedback optional feedback object for responsive cancellation (since QGIS 3.22)
      */
-    static void convertToGrayscale( QImage &image, GrayscaleMode mode = GrayscaleLuminosity );
+    static void convertToGrayscale( QImage &image, GrayscaleMode mode = GrayscaleLuminosity, QgsFeedback *feedback = nullptr );
 
     /**
      * Alter the brightness or contrast of a QImage.
@@ -83,8 +86,9 @@ class CORE_EXPORT QgsImageOperation
      * \param contrast contrast value. Must be a positive or zero value. A value of 1.0 indicates no change
      * to the contrast, a value of 0 represents an image with 0 contrast, and a value > 1.0 will increase the
      * contrast of the image.
+     * \param feedback optional feedback object for responsive cancellation (since QGIS 3.22)
      */
-    static void adjustBrightnessContrast( QImage &image, int brightness, double contrast );
+    static void adjustBrightnessContrast( QImage &image, int brightness, double contrast, QgsFeedback *feedback = nullptr );
 
     /**
      * Alter the hue or saturation of a QImage.
@@ -93,16 +97,18 @@ class CORE_EXPORT QgsImageOperation
      * \param colorizeColor color to use for colorizing image. Set to an invalid QColor to disable
      * colorization.
      * \param colorizeStrength double between 0 and 1, where 0 = no colorization and 1.0 = full colorization
+     * \param feedback optional feedback object for responsive cancellation (since QGIS 3.22)
      */
     static void adjustHueSaturation( QImage &image, double saturation, const QColor &colorizeColor = QColor(),
-                                     double colorizeStrength = 1.0 );
+                                     double colorizeStrength = 1.0, QgsFeedback *feedback = nullptr );
 
     /**
      * Multiplies opacity of image pixel values by a factor.
      * \param image QImage to alter
      * \param factor factor to multiple pixel's opacity by
+     * \param feedback optional feedback object for responsive cancellation (since QGIS 3.22)
      */
-    static void multiplyOpacity( QImage &image, double factor );
+    static void multiplyOpacity( QImage &image, double factor, QgsFeedback *feedback = nullptr );
 
     /**
      * Overlays a color onto an image. This operation retains the alpha channel of the
@@ -147,8 +153,9 @@ class CORE_EXPORT QgsImageOperation
      * \param image QImage to alter
      * \param properties DistanceTransformProperties object with parameters
      * for the distance transform operation
+     * \param feedback optional feedback object for responsive cancellation (since QGIS 3.22)
      */
-    static void distanceTransform( QImage &image, const QgsImageOperation::DistanceTransformProperties &properties );
+    static void distanceTransform( QImage &image, const QgsImageOperation::DistanceTransformProperties &properties, QgsFeedback *feedback = nullptr );
 
     /**
      * Performs a stack blur on an image. Stack blur represents a good balance between
@@ -156,20 +163,22 @@ class CORE_EXPORT QgsImageOperation
      * \param image QImage to blur
      * \param radius blur radius in pixels, maximum value of 16
      * \param alphaOnly set to TRUE to blur only the alpha component of the image
+     * \param feedback optional feedback object for responsive cancellation (since QGIS 3.22)
      * \note for fastest operation, ensure the source image is ARGB32_Premultiplied if
      * alphaOnly is set to FALSE, or ARGB32 if alphaOnly is TRUE
      */
-    static void stackBlur( QImage &image, int radius, bool alphaOnly = false );
+    static void stackBlur( QImage &image, int radius, bool alphaOnly = false, QgsFeedback *feedback = nullptr );
 
     /**
      * Performs a gaussian blur on an image. Gaussian blur is slower but results in a high
      * quality blur.
      * \param image QImage to blur
      * \param radius blur radius in pixels
+     * \param feedback optional feedback object for responsive cancellation (since QGIS 3.22)
      * \returns blurred image
      * \note for fastest operation, ensure the source image is ARGB32_Premultiplied
      */
-    static QImage *gaussianBlur( QImage &image, int radius ) SIP_FACTORY;
+    static QImage *gaussianBlur( QImage &image, int radius, QgsFeedback *feedback = nullptr ) SIP_FACTORY;
 
     /**
      * Flips an image horizontally or vertically
@@ -223,13 +232,15 @@ class CORE_EXPORT QgsImageOperation
     template <class RectOperation> static void runRectOperationOnWholeImage( QImage &image, RectOperation &operation );
 
     //for per pixel operations
-    template <class PixelOperation> static void runPixelOperation( QImage &image, PixelOperation &operation );
-    template <class PixelOperation> static void runPixelOperationOnWholeImage( QImage &image, PixelOperation &operation );
+    template <class PixelOperation> static void runPixelOperation( QImage &image, PixelOperation &operation, QgsFeedback *feedback = nullptr );
+    template <class PixelOperation> static void runPixelOperationOnWholeImage( QImage &image, PixelOperation &operation, QgsFeedback *feedback = nullptr );
     template <class PixelOperation>
     struct ProcessBlockUsingPixelOperation
     {
-      explicit ProcessBlockUsingPixelOperation( PixelOperation &operation )
-        : mOperation( operation ) { }
+      explicit ProcessBlockUsingPixelOperation( PixelOperation &operation, QgsFeedback *feedback )
+        : mOperation( operation )
+        , mFeedback( feedback )
+      { }
 
       typedef void result_type;
 
@@ -237,6 +248,9 @@ class CORE_EXPORT QgsImageOperation
       {
         for ( unsigned int y = block.beginLine; y < block.endLine; ++y )
         {
+          if ( mFeedback && mFeedback->isCanceled() )
+            break;
+
           QRgb *ref = reinterpret_cast< QRgb * >( block.image->scanLine( y ) );
           for ( unsigned int x = 0; x < block.lineLength; ++x )
           {
@@ -246,11 +260,12 @@ class CORE_EXPORT QgsImageOperation
       }
 
       PixelOperation &mOperation;
+      QgsFeedback *mFeedback = nullptr;
     };
 
     //for linear operations
-    template <typename LineOperation> static void runLineOperation( QImage &image, LineOperation &operation );
-    template <class LineOperation> static void runLineOperationOnWholeImage( QImage &image, LineOperation &operation );
+    template <typename LineOperation> static void runLineOperation( QImage &image, LineOperation &operation, QgsFeedback *feedback = nullptr );
+    template <class LineOperation> static void runLineOperationOnWholeImage( QImage &image, LineOperation &operation, QgsFeedback *feedback = nullptr );
     template <class LineOperation>
     struct ProcessBlockUsingLineOperation
     {
@@ -399,7 +414,7 @@ class CORE_EXPORT QgsImageOperation
         double mSpreadSquared;
         const DistanceTransformProperties &mProperties;
     };
-    static void distanceTransform2d( double *im, int width, int height );
+    static void distanceTransform2d( double *im, int width, int height, QgsFeedback *feedback = nullptr );
     static void distanceTransform1d( double *f, int n, int *v, double *z, double *d );
     static double maxValueInDistanceTransformArray( const double *array, unsigned int size );
 
@@ -407,12 +422,13 @@ class CORE_EXPORT QgsImageOperation
     class StackBlurLineOperation
     {
       public:
-        StackBlurLineOperation( int alpha, LineOperationDirection direction, bool forwardDirection, int i1, int i2 )
+        StackBlurLineOperation( int alpha, LineOperationDirection direction, bool forwardDirection, int i1, int i2, QgsFeedback *feedback )
           : mAlpha( alpha )
           , mDirection( direction )
           , mForwardDirection( forwardDirection )
           , mi1( i1 )
           , mi2( i2 )
+          , mFeedback( feedback )
         { }
 
         typedef void result_type;
@@ -421,6 +437,9 @@ class CORE_EXPORT QgsImageOperation
 
         void operator()( QRgb *startRef, int lineLength, int bytesPerLine )
         {
+          if ( mFeedback && mFeedback->isCanceled() )
+            return;
+
           unsigned char *p = reinterpret_cast< unsigned char * >( startRef );
           int rgba[4];
           int increment = ( mDirection == QgsImageOperation::ByRow ) ? 4 : bytesPerLine;
@@ -438,6 +457,9 @@ class CORE_EXPORT QgsImageOperation
           p += increment;
           for ( int j = 1; j < lineLength; ++j, p += increment )
           {
+            if ( mFeedback && mFeedback->isCanceled() )
+              break;
+
             for ( int i = mi1; i <= mi2; ++i )
             {
               p[i] = ( rgba[i] += ( ( p[i] << 4 ) - rgba[i] ) * mAlpha / 16 ) >> 4;
@@ -451,6 +473,7 @@ class CORE_EXPORT QgsImageOperation
         bool mForwardDirection;
         int mi1;
         int mi2;
+        QgsFeedback *mFeedback = nullptr;
     };
 
     static double *createGaussianKernel( int radius );
@@ -458,12 +481,13 @@ class CORE_EXPORT QgsImageOperation
     class GaussianBlurOperation
     {
       public:
-        GaussianBlurOperation( int radius, LineOperationDirection direction, QImage *destImage, double *kernel )
+        GaussianBlurOperation( int radius, LineOperationDirection direction, QImage *destImage, double *kernel, QgsFeedback *feedback )
           : mRadius( radius )
           , mDirection( direction )
           , mDestImage( destImage )
           , mDestImageBpl( destImage->bytesPerLine() )
           , mKernel( kernel )
+          , mFeedback( feedback )
         {}
 
         typedef void result_type;
@@ -476,6 +500,7 @@ class CORE_EXPORT QgsImageOperation
         QImage *mDestImage = nullptr;
         int mDestImageBpl;
         double *mKernel = nullptr;
+        QgsFeedback *mFeedback = nullptr;
 
         inline QRgb gaussianBlurVertical( int posy, unsigned char *sourceFirstLine, int sourceBpl, int height );
         inline QRgb gaussianBlurHorizontal( int posx, unsigned char *sourceFirstLine, int width );

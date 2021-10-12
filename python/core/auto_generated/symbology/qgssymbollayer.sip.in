@@ -152,6 +152,10 @@ class QgsSymbolLayer
       PropertyDashPatternOffset,
       PropertyTrimStart,
       PropertyTrimEnd,
+      PropertyLineStartWidthValue,
+      PropertyLineEndWidthValue,
+      PropertyLineStartColorValue,
+      PropertyLineEndColorValue,
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();
@@ -164,6 +168,13 @@ Returns the symbol layer property definitions.
     virtual ~QgsSymbolLayer();
 
 
+
+    virtual Qgis::SymbolLayerFlags flags() const;
+%Docstring
+Returns flags which control the symbol layer's behavior.
+
+.. versionadded:: 3.22
+%End
 
     bool enabled() const;
 %Docstring
@@ -562,7 +573,7 @@ This is a list of symbol layers of other layers that should be occluded.
 .. versionadded:: 3.12
 %End
 
-  protected:
+  public:
 
     QgsSymbolLayer( Qgis::SymbolType type, bool locked = false );
 %Docstring
@@ -924,7 +935,7 @@ any data defined overrides and offsets which are set for the marker layer.
 .. versionadded:: 2.14
 %End
 
-  protected:
+  public:
 
     QgsMarkerSymbolLayer( bool locked = false );
 %Docstring
@@ -1194,7 +1205,7 @@ for a polygon.
 .. versionadded:: 3.6
 %End
 
-  protected:
+  public:
     QgsLineSymbolLayer( bool locked = false );
 
 
@@ -1226,7 +1237,7 @@ The ``rings`` argument optionally specifies a list of polygon rings to render as
     void setAngle( double angle );
     double angle() const;
 
-  protected:
+  public:
     QgsFillSymbolLayer( bool locked = false );
     void _renderPolygon( QPainter *p, const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 %Docstring

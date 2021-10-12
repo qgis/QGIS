@@ -661,6 +661,19 @@ QgsLinearlyInterpolatedDiagramRenderer::~QgsLinearlyInterpolatedDiagramRenderer(
   delete mDataDefinedSizeLegend;
 }
 
+QgsLinearlyInterpolatedDiagramRenderer &QgsLinearlyInterpolatedDiagramRenderer::operator=( const QgsLinearlyInterpolatedDiagramRenderer &other )
+{
+  if ( &other == this )
+  {
+    return *this;
+  }
+  mSettings = other.mSettings;
+  mInterpolationSettings = other.mInterpolationSettings;
+  delete mDataDefinedSizeLegend;
+  mDataDefinedSizeLegend = new QgsDataDefinedSizeLegend( *other.mDataDefinedSizeLegend );
+  return *this;
+}
+
 QgsLinearlyInterpolatedDiagramRenderer *QgsLinearlyInterpolatedDiagramRenderer::clone() const
 {
   return new QgsLinearlyInterpolatedDiagramRenderer( *this );

@@ -40,7 +40,7 @@ Constructor for Qgs3DAlgorithms.
     virtual bool supportsNonFileBasedOutput() const;
 
 
-  protected:
+  public:
 
     virtual void loadAlgorithms();
 

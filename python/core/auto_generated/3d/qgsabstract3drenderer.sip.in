@@ -53,7 +53,7 @@ Reads renderer's properties from given XML element
 Resolves references to other objects - second phase of loading - after :py:func:`~QgsAbstract3DRenderer.readXml`
 %End
 
-  protected:
+  public:
     QgsAbstract3DRenderer();
 %Docstring
 Default constructor

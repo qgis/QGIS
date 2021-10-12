@@ -295,7 +295,7 @@ bool QgsVertexEditorModel::calcR( int row, double &r, double &minRadius ) const
 
   const QgsVertexEntry *entry = mLockedFeature->vertexMap().at( row );
 
-  const bool curvePoint = ( entry->vertexId().type == QgsVertexId::CurveVertex );
+  const bool curvePoint = ( entry->vertexId().type == Qgis::VertexType::Curve );
   if ( !curvePoint )
     return false;
 

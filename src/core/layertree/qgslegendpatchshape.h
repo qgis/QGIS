@@ -22,6 +22,8 @@ email                : nyall dot dawson at gmail dot com
 #include "qgis.h"
 #include "qgsgeometry.h"
 
+class QgsReadWriteContext;
+
 /**
  * \ingroup core
  * \brief Represents a patch shape for use in map legends.
@@ -121,6 +123,37 @@ class CORE_EXPORT QgsLegendPatchShape
     void setPreserveAspectRatio( bool preserve );
 
     /**
+     * Returns TRUE if the patch shape should by resized to the desired target size
+     * when rendering.
+     *
+     * Resizing to the target size is the default behavior.
+     *
+     * \see setScaleToOutputSize()
+     * \since QGIS 3.22
+     */
+    bool scaleToOutputSize() const;
+
+    /**
+     * Sets whether the patch shape should by resized to the desired target size
+     * when rendering.
+     *
+     * Resizing to the target size is the default behavior.
+     *
+     * \see scaleToOutputSize()
+     * \since QGIS 3.22
+     */
+    void setScaleToOutputSize( bool scale );
+
+    /**
+     * Returns the patch shape's geometry, scaled to the given size.
+     *
+     * Note that if scaleToOutputSize() is FALSE then no scaling will be applied.
+     *
+     * \since QGIS 3.22
+     */
+    QgsGeometry scaledGeometry( QSizeF size ) const;
+
+    /**
      * Converts the patch shape to a set of QPolygonF objects representing
      * how the patch should be drawn for a symbol of the given \a type at the specified \a size (as
      * geometry parts and rings).
@@ -143,6 +176,7 @@ class CORE_EXPORT QgsLegendPatchShape
     Qgis::SymbolType mSymbolType = Qgis::SymbolType::Fill;
     QgsGeometry mGeometry;
     bool mPreserveAspectRatio = true;
+    bool mScaleToTargetSize = true;
 
 };
 

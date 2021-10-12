@@ -31,6 +31,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsabstractgeometry.h"
+#include "qgscoordinatetransform.h"
 
 #include <QProgressDialog>
 

@@ -3038,7 +3038,12 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
           sql += delim + QStringLiteral( "%1=" ).arg( quotedIdentifier( fld.name() ) );
           delim = ',';
 
-          if ( fld.typeName() == QLatin1String( "geometry" ) )
+          QString defVal = defaultValueClause( siter.key() );
+          if ( qgsVariantEqual( *siter, defVal ) )
+          {
+            sql += defVal.isNull() ? "NULL" : defVal;
+          }
+          else if ( fld.typeName() == QLatin1String( "geometry" ) )
           {
             sql += QStringLiteral( "%1(%2)" )
                    .arg( connectionRO()->majorVersion() < 2 ? "geomfromewkt" : "st_geomfromewkt",
@@ -3474,7 +3479,11 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
 
         result = conn->PQexecPrepared( QStringLiteral( "updatefeature" ), params );
         if ( result.PQresultStatus() != PGRES_COMMAND_OK && result.PQresultStatus() != PGRES_TUPLES_OK )
+        {
+          conn->rollback();
+          conn->PQexecNR( QStringLiteral( "DEALLOCATE updatefeature" ) );
           throw PGException( result );
+        }
 
         conn->PQexecNR( QStringLiteral( "DEALLOCATE updatefeature" ) );
       }
@@ -4379,8 +4388,23 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer( const QString &u
   }
 
   // get the pk's name and type
+  // Try to find a PK candidate from numeric NOT NULL / UNIQUE columns
+  if ( primaryKey.isEmpty() )
+  {
+    for ( const auto &field : std::as_const( fields ) )
+    {
+      if ( field.isNumeric() &&
+           ( field.constraints().constraints() & QgsFieldConstraints::Constraint::ConstraintUnique ) &&
+           ( field.constraints().constraints() & QgsFieldConstraints::Constraint::ConstraintNotNull ) &&
+           ( field.constraints().constraints() & QgsFieldConstraints::ConstraintOrigin::ConstraintOriginProvider ) )
+      {
+        primaryKey = field.name();
+        break;
+      }
+    }
+  }
 
-  // if no pk name was passed, define the new pk field name
+  // if no pk name was passed or guessed, define the new pk field name
   if ( primaryKey.isEmpty() )
   {
     int index = 0;

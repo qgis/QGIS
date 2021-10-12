@@ -107,7 +107,10 @@ QgsAnnotationLayer::QgsAnnotationLayer( const QString &name, const LayerOptions 
 {
   mShouldValidateCrs = false;
   mValid = true;
-  mDataProvider = new QgsAnnotationLayerDataProvider( QgsDataProvider::ProviderOptions(), QgsDataProvider::ReadFlags() );
+
+  QgsDataProvider::ProviderOptions providerOptions;
+  providerOptions.transformContext = options.transformContext;
+  mDataProvider = new QgsAnnotationLayerDataProvider( providerOptions, QgsDataProvider::ReadFlags() );
 
   mPaintEffect.reset( QgsPaintEffectRegistry::defaultStack() );
   mPaintEffect->setEnabled( false );
@@ -325,6 +328,9 @@ QgsRectangle QgsAnnotationLayer::extent() const
 
 void QgsAnnotationLayer::setTransformContext( const QgsCoordinateTransformContext &context )
 {
+  if ( mDataProvider )
+    mDataProvider->setTransformContext( context );
+
   mTransformContext = context;
   invalidateWgs84Extent();
 }

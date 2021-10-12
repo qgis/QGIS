@@ -693,7 +693,7 @@ Subclasses should add provider- and/or connection- specific words.
 .. versionadded:: 3.22
 %End
 
-  protected:
+  public:
 
 
     void checkCapability( Capability capability ) const;

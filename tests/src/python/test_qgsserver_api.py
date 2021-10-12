@@ -26,6 +26,7 @@ os.environ['QT_HASH_SEED'] = '1'
 from qgis.server import (
     QgsBufferServerRequest,
     QgsBufferServerResponse,
+    QgsServer,
     QgsServerApi,
     QgsServerApiBadRequestException,
     QgsServerQueryStringParameter,
@@ -53,17 +54,17 @@ class QgsServerAPIUtilsTest(QgsServerTestBase):
     def test_parse_bbox(self):
         bbox = QgsServerApiUtils.parseBbox(
             '8.203495,44.901482,8.203497,44.901484')
-        self.assertEquals(bbox.xMinimum(), 8.203495)
-        self.assertEquals(bbox.yMinimum(), 44.901482)
-        self.assertEquals(bbox.xMaximum(), 8.203497)
-        self.assertEquals(bbox.yMaximum(), 44.901484)
+        self.assertEqual(bbox.xMinimum(), 8.203495)
+        self.assertEqual(bbox.yMinimum(), 44.901482)
+        self.assertEqual(bbox.xMaximum(), 8.203497)
+        self.assertEqual(bbox.yMaximum(), 44.901484)
 
         bbox = QgsServerApiUtils.parseBbox(
             '8.203495,44.901482,100,8.203497,44.901484,120')
-        self.assertEquals(bbox.xMinimum(), 8.203495)
-        self.assertEquals(bbox.yMinimum(), 44.901482)
-        self.assertEquals(bbox.xMaximum(), 8.203497)
-        self.assertEquals(bbox.yMaximum(), 44.901484)
+        self.assertEqual(bbox.xMinimum(), 8.203495)
+        self.assertEqual(bbox.yMinimum(), 44.901482)
+        self.assertEqual(bbox.xMaximum(), 8.203497)
+        self.assertEqual(bbox.yMaximum(), 44.901484)
 
         bbox = QgsServerApiUtils.parseBbox('something_wrong_here')
         self.assertTrue(bbox.isEmpty())
@@ -90,12 +91,12 @@ class QgsServerAPIUtilsTest(QgsServerTestBase):
 
         crs = QgsServerApiUtils.parseCrs(
             'http://www.opengis.net/def/crs/EPSG/9.6.2/4326')
-        self.assertEquals(crs.postgisSrid(), 4326)
+        self.assertEqual(crs.postgisSrid(), 4326)
 
         crs = QgsServerApiUtils.parseCrs(
             'http://www.opengis.net/def/crs/EPSG/9.6.2/3857')
         self.assertTrue(crs.isValid())
-        self.assertEquals(crs.postgisSrid(), 3857)
+        self.assertEqual(crs.postgisSrid(), 3857)
 
         crs = QgsServerApiUtils.parseCrs(
             'http://www.opengis.net/something_wrong_here')
@@ -1749,6 +1750,36 @@ class Handler3(QgsServerOgcApiHandler):
             return self.templatePathOverride
 
 
+class Handler4(QgsServerOgcApiHandler):
+
+    def path(self):
+        return QtCore.QRegularExpression("/(?P<tilemapid>[^/]+)")
+
+    def operationId(self):
+        return "handler4"
+
+    def summary(self):
+        return "Fourth of its name"
+
+    def description(self):
+        return "The fourth handler ever"
+
+    def linkTitle(self):
+        return "Handler Four Link Title"
+
+    def linkType(self):
+        return QgsServerOgcApi.data
+
+    def handleRequest(self, context):
+        """Simple mirror: returns the parameters"""
+
+        self.params = self.values(context)
+        self.write(self.params, context)
+
+    def parameters(self, context):
+        return []
+
+
 class HandlerException(QgsServerOgcApiHandler):
 
     def __init__(self):
@@ -1999,6 +2030,30 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
             str(ex.exception), "UTF-8 Exception 2 $ù~à^£")
 
         del(project)
+
+    def test_path_capture(self):
+        """Test issue GH #45439"""
+
+        api = QgsServerOgcApi(self.server.serverInterface(),
+                              '/api4', 'apifour', 'a fourth api', '1.2')
+
+        h4 = Handler4()
+        api.registerHandler(h4)
+
+        request = QgsBufferServerRequest(
+            'http://localhost:19876/api4/france_parts.json?MAP=france_parts')
+        response = QgsBufferServerResponse()
+
+        server = QgsServer()
+        iface = server.serverInterface()
+        iface.serviceRegistry().registerApi(api)
+
+        server.handleRequest(request, response)
+
+        self.assertEqual(h4.params, {'tilemapid': 'france_parts.json'})
+
+        ctx = QgsServerApiContext(api.rootPath(), request, response, None, iface)
+        self.assertEqual(h4.href(ctx), 'http://localhost:19876/api4/france_parts?MAP=france_parts')
 
 
 if __name__ == '__main__':

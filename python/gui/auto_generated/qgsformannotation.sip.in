@@ -64,7 +64,7 @@ Returns the path to the Qt Designer UI file to show in the annotation.
 Returns a new QgsFormAnnotation object.
 %End
 
-  protected:
+  public:
 
     virtual void renderAnnotation( QgsRenderContext &context, QSizeF size ) const;
 

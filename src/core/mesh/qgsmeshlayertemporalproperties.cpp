@@ -61,6 +61,7 @@ bool QgsMeshLayerTemporalProperties::readXml( const QDomElement &element, const 
   mMatchingMethod = static_cast<QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod>(
                       temporalElement.attribute( QStringLiteral( "matching-method" ) ).toInt() );
 
+  mIsValid = true;
   return true;
 }
 
@@ -74,6 +75,8 @@ void QgsMeshLayerTemporalProperties::setDefaultsFromDataProviderTemporalCapabili
 
   if ( mReferenceTime.isValid() )
     mTimeExtent = temporalCapabilities->timeExtent();
+
+  mIsValid = true;
 }
 
 QgsDateTimeRange QgsMeshLayerTemporalProperties::calculateTemporalExtent( QgsMapLayer * ) const
@@ -111,4 +114,14 @@ QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod QgsMeshLa
 void QgsMeshLayerTemporalProperties::setMatchingMethod( const QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod &matchingMethod )
 {
   mMatchingMethod = matchingMethod;
+}
+
+bool QgsMeshLayerTemporalProperties::isValid() const
+{
+  return mIsValid;
+}
+
+void QgsMeshLayerTemporalProperties::setIsValid( bool isValid )
+{
+  mIsValid = isValid;
 }

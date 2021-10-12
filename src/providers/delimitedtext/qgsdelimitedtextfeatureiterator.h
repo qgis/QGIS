@@ -19,6 +19,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgsfeature.h"
 #include "qgsexpressioncontext.h"
+#include "qgscoordinatetransform.h"
 
 #include "qgsdelimitedtextprovider.h"
 

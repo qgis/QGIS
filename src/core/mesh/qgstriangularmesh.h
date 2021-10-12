@@ -31,9 +31,9 @@
 #include "qgsgeometry.h"
 #include "qgsmeshspatialindex.h"
 #include "qgstopologicalmesh.h"
+#include "qgscoordinatetransform.h"
 
 class QgsRenderContext;
-class QgsCoordinateTransform;
 class QgsRectangle;
 
 /**
@@ -337,7 +337,7 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
 
     void addVertex( const QgsMeshVertex &vertex );
 
-    QgsMeshVertex transformVertex( const QgsMeshVertex &vertex, QgsCoordinateTransform::TransformDirection direction ) const;
+    QgsMeshVertex transformVertex( const QgsMeshVertex &vertex, Qgis::TransformDirection direction ) const;
 
     // calculate the centroid of the native mesh, mNativeMeshCentroids container must have the emplacment for the corresponding centroid before calling this method
     QgsMeshVertex calculateCentroid( const QgsMeshFace &nativeFace );

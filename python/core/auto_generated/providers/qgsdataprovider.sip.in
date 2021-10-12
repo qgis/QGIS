@@ -484,7 +484,7 @@ Emitted when the datasource issues a notification.
 %End
 
 
-  protected:
+  public:
 
 
 

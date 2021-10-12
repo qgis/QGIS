@@ -231,7 +231,7 @@ Returns the context
 .. versionadded:: 3.4
 %End
 
-  protected:
+  public:
 
 
 

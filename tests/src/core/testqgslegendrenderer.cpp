@@ -108,7 +108,7 @@ static QJsonObject _renderJsonLegend( QgsLayerTreeModel *legendModel, const QgsL
   QgsLegendRenderer legendRenderer( legendModel, settings );
 
   QgsRenderContext context;
-  context.setFlag( QgsRenderContext::Antialiasing, true );
+  context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
   return legendRenderer.exportLegendToJson( context );
 }
 

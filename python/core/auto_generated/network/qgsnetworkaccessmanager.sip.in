@@ -577,7 +577,7 @@ Emitted when the cookies changed.
 .. versionadded:: 3.22
 %End
 
-  protected:
+  public:
     virtual QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0 );
 
 

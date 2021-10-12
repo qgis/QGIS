@@ -146,7 +146,7 @@ Toggles the stream digitizing mode.
 .. versionadded:: 3.20
 %End
 
-  protected:
+  public:
 
 
     int nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint );
@@ -302,16 +302,6 @@ Set the points on which to work
     void closePolygon();
 %Docstring
 Close an open polygon
-%End
-
-    virtual QgsMapLayer *layer() const;
-%Docstring
-Returns the map layer associated with the geometry being captured.
-
-The base class implementation always returns the current map canvas layer, but
-subclasses can override this if they need to be associated with a specific layer.
-
-.. versionadded:: 3.22
 %End
 
   protected slots:

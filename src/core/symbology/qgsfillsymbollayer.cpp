@@ -37,6 +37,7 @@
 #include "qgssymbol.h"
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
+#include "qgsfeedback.h"
 
 #include <QPainter>
 #include <QFile>
@@ -1287,6 +1288,11 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, const
   int pointsHeight = static_cast< int >( std::round( points.boundingRect().height() ) );
   int imWidth = pointsWidth + ( sideBuffer * 2 );
   int imHeight = pointsHeight + ( sideBuffer * 2 );
+
+  // these are all potentially very expensive operations, so check regularly if the job is canceled and abort responsively
+  if ( context.renderContext().feedback() && context.renderContext().feedback()->isCanceled() )
+    return;
+
   std::unique_ptr< QImage > fillImage = std::make_unique< QImage >( imWidth,
                                         imHeight, QImage::Format_ARGB32_Premultiplied );
   if ( fillImage->isNull() )
@@ -1294,6 +1300,9 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, const
     QgsMessageLog::logMessage( QObject::tr( "Could not allocate sufficient memory for shapeburst fill" ) );
     return;
   }
+
+  if ( context.renderContext().feedback() && context.renderContext().feedback()->isCanceled() )
+    return;
 
   //also create an image to store the alpha channel
   std::unique_ptr< QImage > alphaImage = std::make_unique< QImage >( fillImage->width(), fillImage->height(), QImage::Format_ARGB32_Premultiplied );
@@ -1303,13 +1312,22 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, const
     return;
   }
 
+  if ( context.renderContext().feedback() && context.renderContext().feedback()->isCanceled() )
+    return;
+
   //Fill this image with black. Initially the distance transform is drawn in greyscale, where black pixels have zero distance from the
   //polygon boundary. Since we don't care about pixels which fall outside the polygon, we start with a black image and then draw over it the
   //polygon in white. The distance transform function then fills in the correct distance values for the white pixels.
   fillImage->fill( Qt::black );
 
+  if ( context.renderContext().feedback() && context.renderContext().feedback()->isCanceled() )
+    return;
+
   //initially fill the alpha channel image with a transparent color
   alphaImage->fill( Qt::transparent );
+
+  if ( context.renderContext().feedback() && context.renderContext().feedback()->isCanceled() )
+    return;
 
   //now, draw the polygon in the alpha channel image
   QPainter imgPainter;
@@ -1320,6 +1338,9 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, const
   imgPainter.translate( -points.boundingRect().left() + sideBuffer, - points.boundingRect().top() + sideBuffer );
   _renderPolygon( &imgPainter, points, rings, context );
   imgPainter.end();
+
+  if ( context.renderContext().feedback() && context.renderContext().feedback()->isCanceled() )
+    return;
 
   //now that we have a render of the polygon in white, draw this onto the shapeburst fill image too
   //(this avoids calling _renderPolygon twice, since that can be slow)
@@ -1340,6 +1361,9 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, const
   }
   imgPainter.end();
 
+  if ( context.renderContext().feedback() && context.renderContext().feedback()->isCanceled() )
+    return;
+
   //apply distance transform to image, uses the current color ramp to calculate final pixel colors
   double *dtArray = distanceTransform( fillImage.get(), context.renderContext() );
 
@@ -1348,7 +1372,7 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, const
                    context.renderContext(), useWholeShape, outputPixelMaxDist );
   if ( context.opacity() < 1 )
   {
-    QgsImageOperation::multiplyOpacity( *fillImage, context.opacity() );
+    QgsImageOperation::multiplyOpacity( *fillImage, context.opacity(), context.renderContext().feedback() );
   }
 
   //clean up some variables
@@ -1357,7 +1381,7 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, const
   //apply blur if desired
   if ( blurRadius > 0 )
   {
-    QgsImageOperation::stackBlur( *fillImage, blurRadius, false );
+    QgsImageOperation::stackBlur( *fillImage, blurRadius, false, context.renderContext().feedback() );
   }
 
   //apply alpha channel to distance transform image, so that areas outside the polygon are transparent
@@ -2073,11 +2097,11 @@ void QgsSVGFillSymbolLayer::applyPattern( QBrush &brush, const QString &svgFileP
     bool fitsInCache = true;
     double strokeWidth = context.renderContext().convertToPainterUnits( svgStrokeWidth, svgStrokeWidthUnit, svgStrokeWidthMapUnitScale );
     QImage patternImage = QgsApplication::svgCache()->svgAsImage( svgFilePath, size, svgFillColor, svgStrokeColor, strokeWidth,
-                          context.renderContext().scaleFactor(), fitsInCache, 0, ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ), svgParameters );
+                          context.renderContext().scaleFactor(), fitsInCache, 0, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ), svgParameters );
     if ( !fitsInCache )
     {
       QPicture patternPict = QgsApplication::svgCache()->svgAsPicture( svgFilePath, size, svgFillColor, svgStrokeColor, strokeWidth,
-                             context.renderContext().scaleFactor(), false, 0, ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ) );
+                             context.renderContext().scaleFactor(), false, 0, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
       double hwRatio = 1.0;
       if ( patternPict.width() > 0 )
       {
@@ -3369,9 +3393,9 @@ void QgsPointPatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext 
     pointRenderContext.setPainter( &p );
     pointRenderContext.setScaleFactor( context.renderContext().scaleFactor() );
 
-    if ( context.renderContext().flags() & QgsRenderContext::Antialiasing )
-      pointRenderContext.setFlag( QgsRenderContext::Antialiasing, true );
-    pointRenderContext.setFlag( QgsRenderContext::LosslessImageRendering, context.renderContext().flags() & QgsRenderContext::LosslessImageRendering );
+    if ( context.renderContext().flags() & Qgis::RenderContextFlag::Antialiasing )
+      pointRenderContext.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
+    pointRenderContext.setFlag( Qgis::RenderContextFlag::LosslessImageRendering, context.renderContext().flags() & Qgis::RenderContextFlag::LosslessImageRendering );
 
     context.renderContext().setPainterFlagsUsingContext( &p );
     QgsMapToPixel mtp( context.renderContext().mapToPixel().mapUnitsPerPixel() );
@@ -4399,7 +4423,7 @@ void QgsRasterFillSymbolLayer::applyPattern( QBrush &brush, const QString &image
   }
 
   bool cached;
-  QImage img = QgsApplication::imageCache()->pathAsImage( imageFilePath, size, true, alpha, cached, ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ) );
+  QImage img = QgsApplication::imageCache()->pathAsImage( imageFilePath, size, true, alpha, cached, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
   if ( img.isNull() )
     return;
 

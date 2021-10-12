@@ -86,7 +86,7 @@ Emitted when the map rendering is successfully completed.
 Emitted when map rendering failed.
 %End
 
-  protected:
+  public:
 
     virtual bool run();
 

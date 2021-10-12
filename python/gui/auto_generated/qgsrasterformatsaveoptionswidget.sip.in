@@ -116,7 +116,7 @@ Reloads profiles list from QGIS settings
     void updateOptions();
     void swapOptionsUI( int newIndex = -1 );
     void updateControls();
-  protected:
+  public:
     virtual void showEvent( QShowEvent *event );
 
 

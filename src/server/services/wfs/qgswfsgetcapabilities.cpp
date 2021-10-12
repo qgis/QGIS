@@ -28,6 +28,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
 
 namespace QgsWfs
 {
@@ -80,7 +81,7 @@ namespace QgsWfs
     QDomElement wfsCapabilitiesElement = doc.createElement( QStringLiteral( "WFS_Capabilities" )/*wms:WFS_Capabilities*/ );
     wfsCapabilitiesElement.setAttribute( QStringLiteral( "xmlns" ), WFS_NAMESPACE );
     wfsCapabilitiesElement.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
-    wfsCapabilitiesElement.setAttribute( QStringLiteral( "xsi:schemaLocation" ), WFS_NAMESPACE + " http://schemas.opengis.net/wfs/1.0.0/WFS-capabilities.xsd" );
+    wfsCapabilitiesElement.setAttribute( QStringLiteral( "xsi:schemaLocation" ), WFS_NAMESPACE + " http://schemas.opengis.net/wfs/1.1.0/wfs.xsd" );
     wfsCapabilitiesElement.setAttribute( QStringLiteral( "xmlns:ogc" ), OGC_NAMESPACE );
     wfsCapabilitiesElement.setAttribute( QStringLiteral( "xmlns:gml" ), GML_NAMESPACE );
     wfsCapabilitiesElement.setAttribute( QStringLiteral( "xmlns:ows" ), QStringLiteral( "http://www.opengis.net/ows" ) );
@@ -169,13 +170,10 @@ namespace QgsWfs
     QDomElement serviceElem = doc.createElement( QStringLiteral( "ows:ServiceIdentification" ) );
 
     const QString title = QgsServerProjectUtils::owsServiceTitle( *project );
-    if ( !title.isEmpty() )
-    {
-      QDomElement titleElem = doc.createElement( QStringLiteral( "ows:Title" ) );
-      const QDomText titleText = doc.createTextNode( title );
-      titleElem.appendChild( titleText );
-      serviceElem.appendChild( titleElem );
-    }
+    QDomElement titleElem = doc.createElement( QStringLiteral( "ows:Title" ) );
+    const QDomText titleText = doc.createTextNode( title );
+    titleElem.appendChild( titleText );
+    serviceElem.appendChild( titleElem );
 
     const QString abstract = QgsServerProjectUtils::owsServiceAbstract( *project );
     if ( !abstract.isEmpty() )

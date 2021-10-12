@@ -241,7 +241,7 @@ Emitted when the fetching limit for the feature request changes
 %End
 
 
-  protected:
+  public:
 
     QVariant extraIdentifierValue() const;
 %Docstring

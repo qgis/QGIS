@@ -9,7 +9,6 @@
 
 
 
-
 class QgsFeatureRequest
 {
 %Docstring(signature="appended")
@@ -965,7 +964,7 @@ if it should be canceled, if set.
 .. versionadded:: 3.20
 %End
 
-  protected:
+  public:
 
 
 
@@ -1006,7 +1005,7 @@ Gets an iterator for features matching the specified request
 %End
 
 
-  protected:
+  public:
     void iteratorOpened( QgsAbstractFeatureIterator *it );
     void iteratorClosed( QgsAbstractFeatureIterator *it );
 

@@ -58,7 +58,12 @@ Returns whether the advanced edit is finished,
 if not, this edit has to be applied again with :py:func:`QgsMeshEditor.advancedEdit()` until is finished returns ``True``
 %End
 
-  protected:
+    virtual QString text() const;
+%Docstring
+Returns a short text string describing what this advanced edit does. Default implementation return a void string.
+%End
+
+  public:
 
 };
 
@@ -85,6 +90,9 @@ Neighboring faces are triangulated to take account of the new vertex in the shar
 %Docstring
 Constructor
 %End
+
+    virtual QString text() const;
+
 
 };
 
@@ -122,6 +130,9 @@ expressionZ: "if( $vertex_x <= 100 , $vertex_z + 80 , $vertex_z - 150)"
 %Docstring
 Constructor
 %End
+
+    virtual QString text() const;
+
 
     void setExpressions( const QString &expressionX, const QString &expressionY, const QString &expressionZ );
 %Docstring

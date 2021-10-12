@@ -36,7 +36,7 @@ class QgsFeatureListViewDelegate : QItemDelegate
   signals:
     void editButtonClicked( QModelIndex &index );
 
-  protected:
+  public:
     virtual QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const;
 
     virtual void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;

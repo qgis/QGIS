@@ -443,7 +443,7 @@ Write base class members to xml.
 Sets base class members from xml. Usually called from :py:func:`~QgsRasterInterface.create` methods of subclasses
 %End
 
-  protected:
+  public:
 
 
 
@@ -492,11 +492,7 @@ Fill in histogram defaults if not specified
       maximum = PyFloat_AsDouble( a4 );
     }
 
-#if defined(SIP_PROTECTED_IS_PUBLIC)
     sipCpp->initHistogram( *a0, a1, a2, minimum, maximum, *a5, a6, a7 );
-#else
-    sipCpp->sipProtect_initHistogram( *a0, a1, a2, minimum, maximum, *a5, a6, a7 );
-#endif
 %End
 
 

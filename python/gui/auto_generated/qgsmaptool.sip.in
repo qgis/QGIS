@@ -269,7 +269,7 @@ signal emitted once the map tool is activated
 signal emitted once the map tool is deactivated
 %End
 
-  protected:
+  public:
 
     QgsMapTool( QgsMapCanvas *canvas /TransferThis/ );
 %Docstring
@@ -279,6 +279,15 @@ Constructor takes a map canvas as a parameter.
     QgsPointXY toMapCoordinates( QPoint point );
 %Docstring
 Transforms a ``point`` from screen coordinates to map coordinates.
+%End
+
+    QgsPoint toLayerCoordinates( const QgsMapLayer *layer, const QgsPoint &point ) /PyName=toLayerCoordinatesV2/;
+%Docstring
+Transforms a ``point`` from map coordinates to ``layer`` coordinates.
+
+.. note::
+
+   This method is available in the Python bindings as toLayerCoordinatesV2.
 %End
 
     QgsPointXY toLayerCoordinates( const QgsMapLayer *layer, QPoint point );
@@ -315,6 +324,17 @@ Transforms a ``rect`` from map coordinates to ``layer`` coordinates.
 Transforms a ``point`` from map coordinates to screen coordinates.
 %End
 
+    QgsMapLayer *layer( const QString &id );
+%Docstring
+Returns the map layer with the matching ID, or ``None`` if no layers could be found.
+
+This method searches both layers associated with the map canvas (see :py:func:`QgsMapCanvas.layers()`)
+and layers from the :py:class:`QgsProject` associated with the canvas. It can be used to resolve layer IDs to
+layers which may be visible in the canvas, but not associated with a :py:class:`QgsProject`.
+
+.. versionadded:: 3.22
+%End
+
     void setToolName( const QString &name );
 %Docstring
 Sets the tool's ``name``.
@@ -323,6 +343,7 @@ Sets the tool's ``name``.
 
 .. versionadded:: 3.20
 %End
+
 
 
 

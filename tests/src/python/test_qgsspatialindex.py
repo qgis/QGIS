@@ -33,7 +33,7 @@ class TestQgsSpatialIndex(unittest.TestCase):
                 ft = QgsFeature()
                 ft.setId(fid)
                 ft.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(x, y)))
-                idx.insertFeature(ft)
+                idx.addFeature(ft)
                 fid += 1
 
         # intersection test
@@ -68,8 +68,8 @@ class TestQgsSpatialIndex(unittest.TestCase):
                 ft = QgsFeature()
                 ft.setId(fid)
                 ft.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(x, y)))
-                idx.insertFeature(ft)
-                idx2.insertFeature(ft)
+                idx.addFeature(ft)
+                idx2.addFeature(ft)
                 fid += 1
 
         # not storing geometries, a keyerror should be raised

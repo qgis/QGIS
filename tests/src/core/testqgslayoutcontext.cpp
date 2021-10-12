@@ -176,31 +176,31 @@ void TestQgsLayoutContext::renderContextFlags()
 {
   QgsLayoutRenderContext context( nullptr );
   context.setFlags( QgsLayoutRenderContext::Flags() );
-  QgsRenderContext::Flags flags = context.renderContextFlags();
-  QVERIFY( !( flags & QgsRenderContext::Antialiasing ) );
-  QVERIFY( !( flags & QgsRenderContext::UseAdvancedEffects ) );
-  QVERIFY( ( flags & QgsRenderContext::ForceVectorOutput ) );
+  Qgis::RenderContextFlags flags = context.renderContextFlags();
+  QVERIFY( !( flags & Qgis::RenderContextFlag::Antialiasing ) );
+  QVERIFY( !( flags & Qgis::RenderContextFlag::UseAdvancedEffects ) );
+  QVERIFY( ( flags & Qgis::RenderContextFlag::ForceVectorOutput ) );
 
   context.setFlag( QgsLayoutRenderContext::FlagAntialiasing );
   flags = context.renderContextFlags();
-  QVERIFY( ( flags & QgsRenderContext::Antialiasing ) );
-  QVERIFY( !( flags & QgsRenderContext::UseAdvancedEffects ) );
-  QVERIFY( ( flags & QgsRenderContext::ForceVectorOutput ) );
+  QVERIFY( ( flags & Qgis::RenderContextFlag::Antialiasing ) );
+  QVERIFY( !( flags & Qgis::RenderContextFlag::UseAdvancedEffects ) );
+  QVERIFY( ( flags & Qgis::RenderContextFlag::ForceVectorOutput ) );
 
   context.setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects );
   flags = context.renderContextFlags();
-  QVERIFY( ( flags & QgsRenderContext::Antialiasing ) );
-  QVERIFY( ( flags & QgsRenderContext::UseAdvancedEffects ) );
-  QVERIFY( ( flags & QgsRenderContext::ForceVectorOutput ) );
+  QVERIFY( ( flags & Qgis::RenderContextFlag::Antialiasing ) );
+  QVERIFY( ( flags & Qgis::RenderContextFlag::UseAdvancedEffects ) );
+  QVERIFY( ( flags & Qgis::RenderContextFlag::ForceVectorOutput ) );
 }
 
 void TestQgsLayoutContext::textFormat()
 {
   QgsLayoutRenderContext context( nullptr );
-  context.setTextRenderFormat( QgsRenderContext::TextFormatAlwaysOutlines );
-  QCOMPARE( context.textRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
-  context.setTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
-  QCOMPARE( context.textRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
+  context.setTextRenderFormat( Qgis::TextRenderFormat::AlwaysOutlines );
+  QCOMPARE( context.textRenderFormat(), Qgis::TextRenderFormat::AlwaysOutlines );
+  context.setTextRenderFormat( Qgis::TextRenderFormat::AlwaysText );
+  QCOMPARE( context.textRenderFormat(), Qgis::TextRenderFormat::AlwaysText );
 }
 
 void TestQgsLayoutContext::boundingBoxes()

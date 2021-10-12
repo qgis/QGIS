@@ -43,6 +43,7 @@
 #include "qgslabellinesettings.h"
 #include "qgslabeling.h"
 #include "qgslabelposition.h"
+#include "qgscoordinatetransform.h"
 
 class QgsTextDocument;
 

@@ -16,6 +16,7 @@ email                : marco dot hugentobler at hugis dot net
  ***************************************************************************/
 
 #include "qgstextannotation.h"
+#include "qgsrendercontext.h"
 #include <QDomDocument>
 #include <QPainter>
 

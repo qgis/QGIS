@@ -67,7 +67,7 @@ The WKT must contain only 5 vertices, representing a rectangle aligned with X an
 .. versionadded:: 3.0
 %End
 
-    static QgsRectangle fromCenterAndSize( QgsPointXY center, double width, double height );
+    static QgsRectangle fromCenterAndSize( const QgsPointXY &center, double width, double height );
 %Docstring
 Creates a new rectangle, given the specified ``center`` point
 and ``width`` and ``height``.

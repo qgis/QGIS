@@ -84,6 +84,7 @@
 #include "processing/models/qgsprocessingmodelchilddependency.h"
 
 #include "layout/qgspagesizeregistry.h"
+#include "qgsrecentstylehandler.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 #include <QDesktopWidget>
@@ -300,6 +301,7 @@ void QgsApplication::init( QString profileFolder )
 #endif
     qRegisterMetaType<QPainter::CompositionMode>( "QPainter::CompositionMode" );
     qRegisterMetaType<QgsDateTimeRange>( "QgsDateTimeRange" );
+    qRegisterMetaType<QList<QgsMapLayer *>>( "QList<QgsMapLayer*>" );
   } );
 
   ( void ) resolvePkgPath();
@@ -2374,6 +2376,11 @@ QgsTileDownloadManager *QgsApplication::tileDownloadManager()
   return members()->mTileDownloadManager;
 }
 
+QgsRecentStyleHandler *QgsApplication::recentStyleHandler()
+{
+  return members()->mRecentStyleHandler;
+}
+
 QgsStyleModel *QgsApplication::defaultStyleModel()
 {
   return members()->mStyleModel;
@@ -2514,6 +2521,11 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     profiler->end();
   }
   {
+    profiler->start( tr( "Recent style handler" ) );
+    mRecentStyleHandler = new QgsRecentStyleHandler();
+    profiler->end();
+  }
+  {
     profiler->start( tr( "Setup callout registry" ) );
     mCalloutRegistry = new QgsCalloutRegistry();
     profiler->end();
@@ -2651,7 +2663,9 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mImageCache;
   delete mSourceCache;
   delete mCalloutRegistry;
+  delete mRecentStyleHandler;
   delete mSymbolLayerRegistry;
+  delete mExternalStorageRegistry;
   delete mTaskManager;
   delete mNetworkContentFetcherRegistry;
   delete mClassificationMethodRegistry;

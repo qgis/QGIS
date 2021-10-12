@@ -25,6 +25,7 @@
 #include <QPointer>
 #include <QUrl>
 
+class QgsFeedback;
 class QgsWebDAVExternalStorageStoreTask;
 class QgsFetchedContent;
 

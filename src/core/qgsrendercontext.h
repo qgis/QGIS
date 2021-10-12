@@ -64,97 +64,28 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     QgsRenderContext &operator=( const QgsRenderContext &rh );
 
     /**
-     * Enumeration of flags that affect rendering operations.
-     * \since QGIS 2.14
-     */
-    enum Flag
-    {
-      DrawEditingInfo          = 0x01,  //!< Enable drawing of vertex markers for layers in editing mode
-      ForceVectorOutput        = 0x02,  //!< Vector graphics should not be cached and drawn as raster images
-      UseAdvancedEffects       = 0x04,  //!< Enable layer opacity and blending effects
-      UseRenderingOptimization = 0x08,  //!< Enable vector simplification and other rendering optimizations
-      DrawSelection            = 0x10,  //!< Whether vector selections should be shown in the rendered map
-      DrawSymbolBounds         = 0x20,  //!< Draw bounds of symbols (for debugging/testing)
-      RenderMapTile            = 0x40,  //!< Draw map such that there are no problems between adjacent tiles
-      Antialiasing             = 0x80,  //!< Use antialiasing while drawing
-      RenderPartialOutput      = 0x100, //!< Whether to make extra effort to update map image with partially rendered layers (better for interactive map canvas). Added in QGIS 3.0
-      RenderPreviewJob         = 0x200, //!< Render is a 'canvas preview' render, and shortcuts should be taken to ensure fast rendering
-      RenderBlocking           = 0x400, //!< Render and load remote sources in the same thread to ensure rendering remote sources (svg and images). WARNING: this flag must NEVER be used from GUI based applications (like the main QGIS application) or crashes will result. Only for use in external scripts or QGIS server.
-      RenderSymbolPreview      = 0x800, //!< The render is for a symbol preview only and map based properties may not be available, so care should be taken to handle map unit based sizes in an appropriate way.
-      LosslessImageRendering   = 0x1000, //!< Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF). This flag only works with builds based on Qt 5.13 or later.
-      ApplyScalingWorkaroundForTextRendering = 0x2000, //!< Whether a scaling workaround designed to stablise the rendering of small font sizes (or for painters scaled out by a large amount) when rendering text. Generally this is recommended, but it may incur some performance cost.
-      Render3DMap              = 0x4000, //!< Render is for a 3D map
-      ApplyClipAfterReprojection = 0x8000, //!< Feature geometry clipping to mapExtent() must be performed after the geometries are transformed using coordinateTransform(). Usually feature geometry clipping occurs using the extent() in the layer's CRS prior to geometry transformation, but in some cases when extent() could not be accurately calculated it is necessary to clip geometries to mapExtent() AFTER transforming them using coordinateTransform().
-    };
-    Q_DECLARE_FLAGS( Flags, Flag )
-
-    /**
-     * Options for rendering text.
-     * \since QGIS 3.4.3
-     */
-    enum TextRenderFormat
-    {
-      // refs for below dox: https://github.com/qgis/QGIS/pull/1286#issuecomment-39806854
-      // https://github.com/qgis/QGIS/pull/8573#issuecomment-445585826
-
-      /**
-       * Always render text using path objects (AKA outlines/curves).
-       *
-       * This setting guarantees the best quality rendering, even when using a raster paint surface
-       * (where sub-pixel path based text rendering is superior to sub-pixel text-based rendering).
-       * The downside is that text is converted to paths only, so users cannot open created vector
-       * outputs for post-processing in other applications and retain text editability.
-       *
-       * This setting also guarantees complete compatibility with the full range of formatting options available
-       * through QgsTextRenderer and QgsTextFormat, some of which may not be possible to reproduce when using
-       * a vector-based paint surface and TextFormatAlwaysText mode.
-       *
-       * A final benefit to this setting is that vector exports created using text as outlines do
-       * not require all users to have the original fonts installed in order to display the
-       * text in its original style.
-       */
-      TextFormatAlwaysOutlines,
-
-      /**
-       * Always render text as text objects.
-       *
-       * While this mode preserves text objects as text for post-processing in external vector editing applications,
-       * it can result in rendering artifacts or poor quality rendering, depending on the text format settings.
-       *
-       * Even with raster based paint devices, TextFormatAlwaysText can result in inferior rendering quality
-       * to TextFormatAlwaysOutlines.
-       *
-       * When rendering using TextFormatAlwaysText to a vector based device (e.g. PDF or SVG), care must be
-       * taken to ensure that the required fonts are available to users when opening the created files,
-       * or default fallback fonts will be used to display the output instead. (Although PDF exports MAY
-       * automatically embed some fonts when possible, depending on the user's platform).
-       */
-      TextFormatAlwaysText,
-    };
-
-    /**
      * Set combination of flags that will be used for rendering.
      * \since QGIS 2.14
      */
-    void setFlags( QgsRenderContext::Flags flags );
+    void setFlags( Qgis::RenderContextFlags flags );
 
     /**
      * Enable or disable a particular flag (other flags are not affected)
      * \since QGIS 2.14
      */
-    void setFlag( Flag flag, bool on = true );
+    void setFlag( Qgis::RenderContextFlag flag, bool on = true );
 
     /**
      * Returns combination of flags used for rendering.
      * \since QGIS 2.14
      */
-    Flags flags() const;
+    Qgis::RenderContextFlags flags() const;
 
     /**
      * Check whether a particular flag is enabled.
      * \since QGIS 2.14
      */
-    bool testFlag( Flag flag ) const;
+    bool testFlag( Qgis::RenderContextFlag flag ) const;
 
     /**
      * create initialized QgsRenderContext instance from given QgsMapSettings
@@ -344,9 +275,35 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Returns TRUE if the rendering operation has been stopped and any ongoing
      * rendering should be canceled immediately.
      *
+     * \note Since QGIS 3.22 the feedback() member exists as an alternative means of cancellation support.
+     *
      * \see setRenderingStopped()
+     * \see feedback()
      */
     bool renderingStopped() const {return mRenderingStopped;}
+
+    /**
+     * Attach a \a feedback object that can be queried regularly during rendering to check
+     * if rendering should be canceled.
+     *
+     * Ownership of \a feedback is NOT transferred, and the caller must take care that it exists
+     * for the lifetime of the render context.
+     *
+     * \see feedback()
+     *
+     * \since QGIS 3.22
+     */
+    void setFeedback( QgsFeedback *feedback );
+
+    /**
+     * Returns the feedback object that can be queried regularly during rendering to check
+     * if rendering should be canceled, if set. Maybe be NULLPTR.
+     *
+     * \see setFeedback()
+     *
+     * \since QGIS 3.22
+     */
+    QgsFeedback *feedback() const;
 
     /**
      * Returns TRUE if rendering operations should use vector operations instead
@@ -482,7 +439,11 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Sets whether the rendering operation has been \a stopped and any ongoing
      * rendering should be canceled immediately.
      *
+     * \note Since QGIS 3.22 the feedback() member exists as an alternative means of cancellation support.
+     *
      * \see renderingStopped()
+     * \see feedback()
+     * \see setFeedback()
      */
     void setRenderingStopped( bool stopped ) {mRenderingStopped = stopped;}
 
@@ -709,10 +670,15 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     /**
      * Converts a size from the specified units to painter units (pixels). The conversion respects the limits
      * specified by the optional scale parameter.
+     *
+     * Since QGIS 3.22 the optional \a property argument can be used to specify the associated property. This
+     * is used in some contexts to refine the converted size. For example, a Qgis::RenderSubcomponentProperty::BlurSize
+     * property will be limited to a suitably fast range when the render context has the Qgis::RenderContextFlag::RenderSymbolPreview set.
+     *
      * \see convertToMapUnits()
      * \since QGIS 3.0
      */
-    double convertToPainterUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale() ) const;
+    double convertToPainterUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::RenderSubcomponentProperty property = Qgis::RenderSubcomponentProperty::Generic ) const;
 
     /**
      * Converts a size from the specified units to map units. The conversion respects the limits
@@ -743,7 +709,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \see setTextRenderFormat()
      * \since QGIS 3.4.3
      */
-    TextRenderFormat textRenderFormat() const
+    Qgis::TextRenderFormat textRenderFormat() const
     {
       return mTextRenderFormat;
     }
@@ -754,7 +720,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \see textRenderFormat()
      * \since QGIS 3.4.3
      */
-    void setTextRenderFormat( TextRenderFormat format )
+    void setTextRenderFormat( Qgis::TextRenderFormat format )
     {
       mTextRenderFormat = format;
     }
@@ -923,9 +889,78 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      */
     void setZRange( const QgsDoubleRange &range );
 
+    /**
+     * Returns the size of the resulting rendered image, in pixels.
+     *
+     * \see deviceOutputSize()
+     * \see setOutputSize()
+     *
+     * \since QGIS 3.22
+     */
+    QSize outputSize() const;
+
+    /**
+     * Sets the \a size of the resulting rendered image, in pixels.
+     *
+     * \see outputSize()
+     * \since QGIS 3.22
+     */
+    void setOutputSize( QSize size );
+
+    /**
+     * Returns the device pixel ratio.
+     *
+     * Common values are 1 for normal-dpi displays and 2 for high-dpi "retina" displays.
+     *
+     * \see setDevicePixelRatio()
+     * \since QGIS 3.22
+     */
+    float devicePixelRatio() const;
+
+    /**
+     * Sets the device pixel \a ratio.
+     *
+     * Common values are 1 for normal-dpi displays and 2 for high-dpi "retina" displays.
+     *
+     * \see devicePixelRatio()
+     * \since QGIS 3.22
+     */
+    void setDevicePixelRatio( float ratio );
+
+    /**
+     * Returns the device output size of the render.
+     *
+     * This is equivalent to the output size multiplicated by the device pixel ratio.
+     *
+     * \see outputSize()
+     * \see devicePixelRatio()
+     * \see setOutputSize()
+     *
+     * \since QGIS 3.22
+     */
+    QSize deviceOutputSize() const;
+
+    /**
+     * Sets QImage \a format which should be used for QImages created
+     * during rendering.
+     *
+     * \see imageFormat()
+     * \since QGIS 3.22
+     */
+    void setImageFormat( QImage::Format format ) { mImageFormat = format; }
+
+    /**
+     * Returns the QImage format which should be used for QImages created
+     * during rendering.
+     *
+     * \see setImageFormat
+     * \since QGIS 3.22
+     */
+    QImage::Format imageFormat() const { return mImageFormat; }
+
   private:
 
-    Flags mFlags;
+    Qgis::RenderContextFlags mFlags;
 
     //! Painter for rendering operations
     QPainter *mPainter = nullptr;
@@ -975,6 +1010,9 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     //! True if the rendering has been canceled
     bool mRenderingStopped = false;
 
+    //! Optional feedback object, as an alternative for mRenderingStopped for cancellation support
+    QgsFeedback *mFeedback = nullptr;
+
     //! Factor to scale line widths and point marker sizes
     double mScaleFactor = 1.0;
 
@@ -1012,7 +1050,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 
     QgsPathResolver mPathResolver;
 
-    TextRenderFormat mTextRenderFormat = TextFormatAlwaysOutlines;
+    Qgis::TextRenderFormat mTextRenderFormat = Qgis::TextRenderFormat::AlwaysOutlines;
     QList< QgsRenderedFeatureHandlerInterface * > mRenderedFeatureHandlers;
     bool mHasRenderedFeatureHandlers = false;
     QVariantMap mCustomRenderingFlags;
@@ -1026,12 +1064,14 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 
     QgsDoubleRange mZRange;
 
+    QSize mSize;
+    float mDevicePixelRatio = 1.0;
+    QImage::Format mImageFormat = QImage::Format_ARGB32_Premultiplied;
+
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;
 #endif
 };
-
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsRenderContext::Flags )
 
 #ifndef SIP_RUN
 

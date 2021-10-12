@@ -71,7 +71,7 @@ Refreshes the ranges for the renderer.
 The ``reset`` argument is deprecated and has no effect.
 %End
 
-  protected:
+  public:
     virtual void setSymbolLevels( const QgsLegendSymbolList &levels, bool enabled );
 
 
@@ -80,7 +80,7 @@ The ``reset`` argument is deprecated and has no effect.
     virtual void pasteSymbolToSelection();
 
 
-  protected:
+  public:
     void updateUiFromRenderer( bool updateCount = true );
     void connectUpdateHandlers();
     void disconnectUpdateHandlers();

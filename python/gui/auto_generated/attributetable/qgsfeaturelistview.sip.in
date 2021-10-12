@@ -100,7 +100,7 @@ setFeatureSelectionManager
 :param featureSelectionManager:
 %End
 
-  protected:
+  public:
     virtual void mouseMoveEvent( QMouseEvent *event );
 
     virtual void mousePressEvent( QMouseEvent *event );

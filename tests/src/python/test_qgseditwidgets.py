@@ -45,19 +45,19 @@ class TestQgsTextEditWidget(unittest.TestCase):
         config = configWdg.config()
         editwidget = reg.create('TextEdit', self.layer, idx, config, None, None)
 
-        editwidget.setValue('value')
+        editwidget.setValues('value', [])
         self.assertEqual(editwidget.value(), expected[0])
 
-        editwidget.setValue(123)
+        editwidget.setValues(123, [])
         self.assertEqual(editwidget.value(), expected[1])
 
-        editwidget.setValue(None)
+        editwidget.setValues(None, [])
         self.assertEqual(editwidget.value(), expected[2])
 
-        editwidget.setValue(NULL)
+        editwidget.setValues(NULL, [])
         self.assertEqual(editwidget.value(), expected[3])
 
-        editwidget.setValue(float('nan'))
+        editwidget.setValues(float('nan'), [])
         self.assertEqual(editwidget.value(), expected[4])
 
     def test_SetValue(self):
@@ -103,7 +103,7 @@ class TestQgsTextEditWidget(unittest.TestCase):
         config = configWdg.config()
         editwidget = reg.create('TextEdit', layer, 0, config, None, None)
 
-        editwidget.setValue('value')
+        editwidget.setValues('value', [])
         self.assertEqual(editwidget.value(), 'value')
         editwidget.showIndeterminateState()
         self.assertFalse(editwidget.value())

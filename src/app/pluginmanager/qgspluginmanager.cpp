@@ -223,8 +223,7 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
   vwPlugins->addAction( actionSortByDownloads );
   vwPlugins->addAction( actionSortByVote );
   vwPlugins->addAction( actionSortByStatus );
-  // TODO "create_date" and "update_date" are actually both representing "update_date" from the server side. Blocked by https://github.com/qgis/QGIS-Django/issues/69
-  // vwPlugins->addAction( actionSortByDateCreated );
+  vwPlugins->addAction( actionSortByDateCreated );
   vwPlugins->addAction( actionSortByDateUpdated );
   vwPlugins->setContextMenuPolicy( Qt::ActionsContextMenu );
   connect( actionSortByName, &QAction::triggered, mModelProxy, &QgsPluginSortFilterProxyModel::sortPluginsByName );

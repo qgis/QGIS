@@ -40,7 +40,7 @@ The dock widget retains ownership of the returned object.
 
 
 
-  protected:
+  public:
 
     virtual void keyPressEvent( QKeyEvent *e );
 

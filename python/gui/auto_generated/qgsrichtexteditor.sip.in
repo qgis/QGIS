@@ -79,7 +79,7 @@ The ``text`` can either be a plain text string or a HTML document.
 Clears the current text from the widget.
 %End
 
-  protected:
+  public:
     virtual void focusInEvent( QFocusEvent *event );
 
 

@@ -234,7 +234,7 @@ Ownership of ``settings`` is transferred.
 .. versionadded:: 3.18
 %End
 
-  protected:
+  public:
 
 
 };

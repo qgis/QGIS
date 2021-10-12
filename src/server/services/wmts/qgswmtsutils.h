@@ -23,6 +23,8 @@
 #include "qgswmtsparameters.h"
 #include "qgswmtsserviceexception.h"
 #include "qgsserversettings.h"
+#include "qgsunittypes.h"
+#include "qgsrectangle.h"
 
 #include <QDomDocument>
 

@@ -49,6 +49,7 @@ QgsEmbeddedSymbolRendererWidget::QgsEmbeddedSymbolRendererWidget( QgsVectorLayer
                                 .arg( layer->name() ), this );
     this->setLayout( layout );
     layout->addWidget( label );
+    mDefaultSymbolToolButton = nullptr;
     return;
   }
   setupUi( this );

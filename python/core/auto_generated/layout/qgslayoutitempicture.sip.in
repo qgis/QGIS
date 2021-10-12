@@ -340,7 +340,7 @@ Forces a recalculation of the picture's frame size
 Emitted on picture rotation change
 %End
 
-  protected:
+  public:
 
     virtual void draw( QgsLayoutItemRenderContext &context );
 

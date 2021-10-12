@@ -137,7 +137,7 @@ Emitted when mouse hovers over widget.
 .. versionadded:: 2.14
 %End
 
-  protected:
+  public:
 
 
 
@@ -305,7 +305,7 @@ Constructs a new color wheel widget.
     virtual void setColor( const QColor &color, bool emitSignals = false );
 
 
-  protected:
+  public:
 
     virtual void resizeEvent( QResizeEvent *event );
 
@@ -359,7 +359,7 @@ Construct a new color box widget.
     virtual void setColor( const QColor &color, bool emitSignals = false );
 
 
-  protected:
+  public:
 
     virtual void resizeEvent( QResizeEvent *event );
 
@@ -478,7 +478,7 @@ Emitted when the widget's color component value changes
 :param value: new value of color component
 %End
 
-  protected:
+  public:
 
     virtual void mouseMoveEvent( QMouseEvent *event );
 
@@ -557,7 +557,7 @@ Construct a new color line edit widget.
     virtual void setColor( const QColor &color, bool emitSignals = false );
 
 
-  protected:
+  public:
     virtual void resizeEvent( QResizeEvent *event );
 
 
@@ -616,7 +616,7 @@ Sets the second color for the widget
 .. seealso:: :py:func:`color2`
 %End
 
-  protected:
+  public:
 
     virtual void mousePressEvent( QMouseEvent *e );
 

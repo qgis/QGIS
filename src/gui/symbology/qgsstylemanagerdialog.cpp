@@ -53,6 +53,7 @@
 #include <QClipboard>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QShortcut>
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -212,7 +213,12 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
 
   if ( !mReadOnly )
   {
-    connect( btnAddItem, &QPushButton::clicked, this, [ = ]( bool ) { addItem(); }
+    connect( btnAddItem, &QPushButton::clicked, this, [ = ]( bool )
+    {
+      // only show add item if the btn doesn't have a menu -- otherwise it should show the menu instead!
+      if ( !btnAddItem->menu() )
+      { addItem(); }
+    }
            );
 
     connect( btnRemoveItem, &QPushButton::clicked, this, [ = ]( bool ) { removeItem(); }
@@ -253,6 +259,15 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
   connect( mActionCopyItem, &QAction::triggered, this, &QgsStyleManagerDialog::copyItem );
   mActionPasteItem = new QAction( tr( "Paste Item…" ), this );
   connect( mActionPasteItem, &QAction::triggered, this, &QgsStyleManagerDialog::pasteItem );
+
+  QShortcut *copyShortcut = new QShortcut( QKeySequence( QKeySequence::StandardKey::Copy ), this );
+  connect( copyShortcut, &QShortcut::activated, this, &QgsStyleManagerDialog::copyItem );
+  QShortcut *pasteShortcut = new QShortcut( QKeySequence( QKeySequence::StandardKey::Paste ), this );
+  connect( pasteShortcut, &QShortcut::activated, this, &QgsStyleManagerDialog::pasteItem );
+  QShortcut *removeShortcut = new QShortcut( QKeySequence( QKeySequence::StandardKey::Delete ), this );
+  connect( removeShortcut, &QShortcut::activated, this, &QgsStyleManagerDialog::removeItem );
+  QShortcut *editShortcut = new QShortcut( QKeySequence( Qt::Key_Return ), this );
+  connect( editShortcut, &QShortcut::activated, this, &QgsStyleManagerDialog::editItem );
 
   shareMenu->addSeparator();
   shareMenu->addAction( actnExportAsPNG );
@@ -1115,6 +1130,7 @@ bool QgsStyleManagerDialog::addTextFormat()
 {
   QgsTextFormat format;
   QgsTextFormatDialog formatDlg( format, nullptr, this );
+  formatDlg.setWindowTitle( tr( "New Text Format" ) );
   if ( !formatDlg.exec() )
     return false;
   format = formatDlg.format();
@@ -1267,19 +1283,23 @@ bool QgsStyleManagerDialog::addSymbol( int symbolType )
   // create new symbol with current type
   QgsSymbol *symbol = nullptr;
   QString name = tr( "new symbol" );
+  QString dialogTitle;
   switch ( symbolType == -1 ? currentItemType() : symbolType )
   {
     case static_cast< int >( Qgis::SymbolType::Marker ):
       symbol = new QgsMarkerSymbol();
       name = tr( "new marker" );
+      dialogTitle = tr( "New Marker Symbol" );
       break;
     case static_cast< int>( Qgis::SymbolType::Line ):
       symbol = new QgsLineSymbol();
       name = tr( "new line" );
+      dialogTitle = tr( "New Line Symbol" );
       break;
     case static_cast< int >( Qgis::SymbolType::Fill ):
       symbol = new QgsFillSymbol();
       name = tr( "new fill symbol" );
+      dialogTitle = tr( "New Fill Symbol" );
       break;
     default:
       Q_ASSERT( false && "unknown symbol type" );
@@ -1292,6 +1312,7 @@ bool QgsStyleManagerDialog::addSymbol( int symbolType )
   //        of style manager and symbol selector can be arrested
   //        See also: editSymbol()
   QgsSymbolSelectorDialog dlg( symbol, mStyle, nullptr, this );
+  dlg.setWindowTitle( dialogTitle );
   if ( dlg.exec() == 0 )
   {
     delete symbol;
@@ -1386,6 +1407,7 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget *parent, QgsStyle *st
   if ( rampType == QgsGradientColorRamp::typeString() )
   {
     QgsGradientColorRampDialog dlg( QgsGradientColorRamp(), parent );
+    dlg.setWindowTitle( tr( "New Gradient Color Ramp" ) );
     if ( !dlg.exec() )
     {
       return QString();
@@ -1396,6 +1418,7 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget *parent, QgsStyle *st
   else if ( rampType == QgsLimitedRandomColorRamp::typeString() )
   {
     QgsLimitedRandomColorRampDialog dlg( QgsLimitedRandomColorRamp(), parent );
+    dlg.setWindowTitle( tr( "New Random Color Ramp" ) );
     if ( !dlg.exec() )
     {
       return QString();
@@ -1406,6 +1429,7 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget *parent, QgsStyle *st
   else if ( rampType == QgsColorBrewerColorRamp::typeString() )
   {
     QgsColorBrewerColorRampDialog dlg( QgsColorBrewerColorRamp(), parent );
+    dlg.setWindowTitle( tr( "New ColorBrewer Ramp" ) );
     if ( !dlg.exec() )
     {
       return QString();
@@ -1416,6 +1440,7 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget *parent, QgsStyle *st
   else if ( rampType == QgsPresetSchemeColorRamp::typeString() )
   {
     QgsPresetColorRampDialog dlg( QgsPresetSchemeColorRamp(), parent );
+    dlg.setWindowTitle( tr( "New Preset Color Ramp" ) );
     if ( !dlg.exec() )
     {
       return QString();
@@ -1426,6 +1451,7 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget *parent, QgsStyle *st
   else if ( rampType == QgsCptCityColorRamp::typeString() )
   {
     QgsCptCityColorRampDialog dlg( QgsCptCityColorRamp( QString(), QString() ), parent );
+    dlg.setWindowTitle( tr( "New cpt-city Color Ramp" ) );
     if ( !dlg.exec() )
     {
       return QString();
@@ -1586,6 +1612,7 @@ bool QgsStyleManagerDialog::editSymbol()
 
   // let the user edit the symbol and update list when done
   QgsSymbolSelectorDialog dlg( symbol.get(), mStyle, nullptr, this );
+  dlg.setWindowTitle( symbolName );
   if ( mReadOnly )
     dlg.buttonBox()->button( QDialogButtonBox::Ok )->setEnabled( false );
 
@@ -1610,6 +1637,7 @@ bool QgsStyleManagerDialog::editColorRamp()
   {
     QgsGradientColorRamp *gradRamp = static_cast<QgsGradientColorRamp *>( ramp.get() );
     QgsGradientColorRampDialog dlg( *gradRamp, this );
+    dlg.setWindowTitle( name );
     if ( mReadOnly )
       dlg.buttonBox()->button( QDialogButtonBox::Ok )->setEnabled( false );
 
@@ -1623,6 +1651,7 @@ bool QgsStyleManagerDialog::editColorRamp()
   {
     QgsLimitedRandomColorRamp *randRamp = static_cast<QgsLimitedRandomColorRamp *>( ramp.get() );
     QgsLimitedRandomColorRampDialog dlg( *randRamp, this );
+    dlg.setWindowTitle( name );
     if ( mReadOnly )
       dlg.buttonBox()->button( QDialogButtonBox::Ok )->setEnabled( false );
 
@@ -1636,6 +1665,7 @@ bool QgsStyleManagerDialog::editColorRamp()
   {
     QgsColorBrewerColorRamp *brewerRamp = static_cast<QgsColorBrewerColorRamp *>( ramp.get() );
     QgsColorBrewerColorRampDialog dlg( *brewerRamp, this );
+    dlg.setWindowTitle( name );
     if ( mReadOnly )
       dlg.buttonBox()->button( QDialogButtonBox::Ok )->setEnabled( false );
 
@@ -1649,6 +1679,7 @@ bool QgsStyleManagerDialog::editColorRamp()
   {
     QgsPresetSchemeColorRamp *presetRamp = static_cast<QgsPresetSchemeColorRamp *>( ramp.get() );
     QgsPresetColorRampDialog dlg( *presetRamp, this );
+    dlg.setWindowTitle( name );
     if ( mReadOnly )
       dlg.buttonBox()->button( QDialogButtonBox::Ok )->setEnabled( false );
 
@@ -1662,6 +1693,7 @@ bool QgsStyleManagerDialog::editColorRamp()
   {
     QgsCptCityColorRamp *cptCityRamp = static_cast<QgsCptCityColorRamp *>( ramp.get() );
     QgsCptCityColorRampDialog dlg( *cptCityRamp, this );
+    dlg.setWindowTitle( name );
     if ( mReadOnly )
       dlg.buttonBox()->button( QDialogButtonBox::Ok )->setEnabled( false );
 
@@ -1698,6 +1730,7 @@ bool QgsStyleManagerDialog::editTextFormat()
 
   // let the user edit the format and update list when done
   QgsTextFormatDialog dlg( format, nullptr, this );
+  dlg.setWindowTitle( formatName );
   if ( mReadOnly )
     dlg.buttonBox()->button( QDialogButtonBox::Ok )->setEnabled( false );
 
@@ -1714,6 +1747,7 @@ bool QgsStyleManagerDialog::addLabelSettings( QgsWkbTypes::GeometryType type )
 {
   QgsPalLayerSettings settings;
   QgsLabelSettingsDialog settingsDlg( settings, nullptr, nullptr, this, type );
+  settingsDlg.setWindowTitle( tr( "New Label Settings" ) );
   if ( mReadOnly )
     settingsDlg.buttonBox()->button( QDialogButtonBox::Ok )->setEnabled( false );
 
@@ -1789,6 +1823,7 @@ bool QgsStyleManagerDialog::editLabelSettings()
 
   // let the user edit the settings and update list when done
   QgsLabelSettingsDialog dlg( settings, nullptr, nullptr, this, geomType );
+  dlg.setWindowTitle( formatName );
   if ( !dlg.exec() )
     return false;
 
@@ -1805,6 +1840,7 @@ bool QgsStyleManagerDialog::addLegendPatchShape( Qgis::SymbolType type )
 {
   QgsLegendPatchShape shape = mStyle->defaultPatch( type, QSizeF( 10, 5 ) );
   QgsLegendPatchShapeDialog dialog( shape, this );
+  dialog.setWindowTitle( tr( "New Legend Patch Shape" ) );
   if ( mReadOnly )
     dialog.buttonBox()->button( QDialogButtonBox::Ok )->setEnabled( false );
 
@@ -1880,6 +1916,7 @@ bool QgsStyleManagerDialog::editLegendPatchShape()
 
   // let the user edit the shape and update list when done
   QgsLegendPatchShapeDialog dlg( shape, this );
+  dlg.setWindowTitle( shapeName );
   if ( !dlg.exec() )
     return false;
 
@@ -1898,6 +1935,7 @@ bool QgsStyleManagerDialog::addSymbol3D( const QString &type )
     return false;
 
   Qgs3DSymbolDialog dialog( symbol.get(), this );
+  dialog.setWindowTitle( tr( "New 3D Symbol" ) );
   if ( mReadOnly )
     dialog.buttonBox()->button( QDialogButtonBox::Ok )->setEnabled( false );
 
@@ -1976,6 +2014,7 @@ bool QgsStyleManagerDialog::editSymbol3D()
 
   // let the user edit the symbol and update list when done
   Qgs3DSymbolDialog dlg( symbol.get(), this );
+  dlg.setWindowTitle( symbolName );
   if ( !dlg.exec() )
     return false;
 

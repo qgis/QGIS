@@ -1108,7 +1108,7 @@ void QgsCircularString::draw( QPainter &p ) const
   p.drawPath( path );
 }
 
-void QgsCircularString::transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
+void QgsCircularString::transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d, bool transformZ )
 {
   clearCache();
 
@@ -1344,14 +1344,14 @@ double QgsCircularString::closestSegment( const QgsPoint &pt, QgsPoint &segmentP
   return minDist;
 }
 
-bool QgsCircularString::pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const
+bool QgsCircularString::pointAt( int node, QgsPoint &point, Qgis::VertexType &type ) const
 {
   if ( node < 0 || node >= numPoints() )
   {
     return false;
   }
   point = pointN( node );
-  type = ( node % 2 == 0 ) ? QgsVertexId::SegmentVertex : QgsVertexId::CurveVertex;
+  type = ( node % 2 == 0 ) ? Qgis::VertexType::Segment : Qgis::VertexType::Curve;
   return true;
 }
 

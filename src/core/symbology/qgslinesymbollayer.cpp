@@ -419,6 +419,24 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &pts, QgsSymbolRe
   applyDataDefinedSymbology( context, mPen, mSelPen, offset );
 
   const QPen pen = context.selected() ? mSelPen : mPen;
+
+  if ( !pen.dashPattern().isEmpty() )
+  {
+    // check for a null (all 0) dash component, and shortcut out early if so -- these lines are rendered as "no pen"
+    const QVector<double> pattern = pen.dashPattern();
+    bool foundNonNull = false;
+    for ( int i = 0; i < pattern.size(); ++i )
+    {
+      if ( i % 2 == 0  && !qgsDoubleNear( pattern[i], 0 ) )
+      {
+        foundNonNull = true;
+        break;
+      }
+    }
+    if ( !foundNonNull )
+      return;
+  }
+
   p->setBrush( Qt::NoBrush );
 
   // Disable 'Antialiasing' if the geometry was generalized in the current RenderContext (We known that it must have least #2 points).
@@ -453,7 +471,7 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &pts, QgsSymbolRe
   else
   {
     double scaledOffset = context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale );
-    if ( mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits && context.renderContext().flags() & QgsRenderContext::RenderSymbolPreview )
+    if ( mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
     {
       // rendering for symbol previews -- a size in meters in map units can't be calculated, so treat the size as millimeters
       // and clamp it to a reasonable range. It's the best we can do in this situation!
@@ -1603,7 +1621,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
   }
 
   double painterUnitInterval = rc.convertToPainterUnits( interval, intervalUnit(), intervalMapUnitScale() );
-  if ( intervalUnit() == QgsUnitTypes::RenderMetersInMapUnits && rc.flags() & QgsRenderContext::RenderSymbolPreview )
+  if ( intervalUnit() == QgsUnitTypes::RenderMetersInMapUnits && rc.flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
   {
     // rendering for symbol previews -- an interval in meters in map units can't be calculated, so treat the size as millimeters
     // and clamp it to a reasonable range. It's the best we can do in this situation!
@@ -1614,7 +1632,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
     return;
 
   double painterUnitOffsetAlongLine = rc.convertToPainterUnits( offsetAlongLine, offsetAlongLineUnit(), offsetAlongLineMapUnitScale() );
-  if ( offsetAlongLineUnit() == QgsUnitTypes::RenderMetersInMapUnits && rc.flags() & QgsRenderContext::RenderSymbolPreview )
+  if ( offsetAlongLineUnit() == QgsUnitTypes::RenderMetersInMapUnits && rc.flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
   {
     // rendering for symbol previews -- an offset in meters in map units can't be calculated, so treat the size as millimeters
     // and clamp it to a reasonable range. It's the best we can do in this situation!
@@ -1784,8 +1802,8 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
 
       scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum, true ) );
 
-      if ( ( placement == QgsTemplatedLineSymbolLayerBase::Vertex && vId.type == QgsVertexId::SegmentVertex )
-           || ( placement == QgsTemplatedLineSymbolLayerBase::CurvePoint && vId.type == QgsVertexId::CurveVertex ) )
+      if ( ( placement == QgsTemplatedLineSymbolLayerBase::Vertex && vId.type == Qgis::VertexType::Segment )
+           || ( placement == QgsTemplatedLineSymbolLayerBase::CurvePoint && vId.type == Qgis::VertexType::Curve ) )
       {
         //transform
         x = vPoint.x();

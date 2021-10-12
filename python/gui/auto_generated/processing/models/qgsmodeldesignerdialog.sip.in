@@ -67,7 +67,7 @@ Loads a model into the designer from the specified file ``path``.
 Sets the related ``scene``.
 %End
 
-  protected:
+  public:
 
     virtual void repaintModel( bool showControls = true ) = 0;
     virtual void addAlgorithm( const QString &algorithmId, const QPointF &pos ) = 0;

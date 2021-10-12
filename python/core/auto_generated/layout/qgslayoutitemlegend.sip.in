@@ -596,7 +596,7 @@ Returns the legend's renderer settings object.
     virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 
 
-  protected:
+  public:
     virtual void draw( QgsLayoutItemRenderContext &context );
 
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;

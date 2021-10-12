@@ -196,6 +196,10 @@ class CORE_EXPORT QgsSymbolLayer
       PropertyDashPatternOffset, //!< Dash pattern offset,
       PropertyTrimStart, //!< Trim distance from start of line (since QGIS 3.20)
       PropertyTrimEnd, //!< Trim distance from end of line (since QGIS 3.20)
+      PropertyLineStartWidthValue, //!< Start line width for interpolated line renderer (since QGIS 3.22)
+      PropertyLineEndWidthValue, //!< End line width for interpolated line renderer (since QGIS 3.22)
+      PropertyLineStartColorValue, //!< Start line color for interpolated line renderer (since QGIS 3.22)
+      PropertyLineEndColorValue, //!< End line color for interpolated line renderer (since QGIS 3.22)
     };
 
     /**
@@ -211,6 +215,13 @@ class CORE_EXPORT QgsSymbolLayer
 
     //! QgsSymbolLayer cannot be copied
     QgsSymbolLayer &operator=( const QgsSymbolLayer &other ) = delete;
+
+    /**
+     * Returns flags which control the symbol layer's behavior.
+     *
+     * \since QGIS 3.22
+     */
+    virtual Qgis::SymbolLayerFlags flags() const;
 
     /**
      * Returns TRUE if symbol layer is enabled and will be drawn.

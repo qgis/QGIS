@@ -111,7 +111,7 @@ def pdfToPng(pdf_file_path, rendered_file_path, page, dpi=96):
 def svgToPng(svg_file_path, rendered_file_path, width):
     svgr = QSvgRenderer(svg_file_path)
 
-    height = width / svgr.viewBoxF().width() * svgr.viewBoxF().height()
+    height = int(width / svgr.viewBoxF().width() * svgr.viewBoxF().height())
 
     image = QImage(width, height, QImage.Format_ARGB32)
     image.fill(Qt.transparent)
@@ -135,7 +135,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
     def setUpClass(cls):
         """Run before all tests"""
         cls.basetestpath = tempfile.mkdtemp()
-        cls.dots_per_meter = 96 / 25.4 * 1000
+        cls.dots_per_meter = int(96 / 25.4 * 1000)
 
     def setUp(self):
         self.report = "<h1>Python QgsLayoutExporter Tests</h1>\n"

@@ -102,7 +102,7 @@ overridden to show "3D Map 1" type names
     virtual void refresh();
 
 
-  protected:
+  public:
     virtual void draw( QgsLayoutItemRenderContext &context );
 
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;

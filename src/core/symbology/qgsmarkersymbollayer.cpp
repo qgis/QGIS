@@ -168,7 +168,7 @@ void QgsSimpleMarkerSymbolLayerBase::startRender( QgsSymbolRenderContext &contex
   if ( !hasDataDefinedSize )
   {
     double scaledSize = context.renderContext().convertToPainterUnits( mSize, mSizeUnit, mSizeMapUnitScale );
-    if ( mSizeUnit == QgsUnitTypes::RenderMetersInMapUnits && context.renderContext().flags() & QgsRenderContext::RenderSymbolPreview )
+    if ( mSizeUnit == QgsUnitTypes::RenderMetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
     {
       // rendering for symbol previews -- an size in meters in map units can't be calculated, so treat the size as millimeters
       // and clamp it to a reasonable range. It's the best we can do in this situation!
@@ -254,7 +254,7 @@ void QgsSimpleMarkerSymbolLayerBase::renderPoint( QPointF point, QgsSymbolRender
   if ( hasDataDefinedSize || createdNewPath )
   {
     double s = context.renderContext().convertToPainterUnits( scaledSize, mSizeUnit, mSizeMapUnitScale );
-    if ( mSizeUnit == QgsUnitTypes::RenderMetersInMapUnits && context.renderContext().flags() & QgsRenderContext::RenderSymbolPreview )
+    if ( mSizeUnit == QgsUnitTypes::RenderMetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
     {
       // rendering for symbol previews -- a size in meters in map units can't be calculated, so treat the size as millimeters
       // and clamp it to a reasonable range. It's the best we can do in this situation!
@@ -1023,7 +1023,7 @@ void QgsSimpleMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 bool QgsSimpleMarkerSymbolLayer::prepareCache( QgsSymbolRenderContext &context )
 {
   double scaledSize = context.renderContext().convertToPainterUnits( mSize, mSizeUnit, mSizeMapUnitScale );
-  if ( mSizeUnit == QgsUnitTypes::RenderMetersInMapUnits && context.renderContext().flags() & QgsRenderContext::RenderSymbolPreview )
+  if ( mSizeUnit == QgsUnitTypes::RenderMetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
   {
     // rendering for symbol previews -- a size in meters in map units can't be calculated, so treat the size as millimeters
     // and clamp it to a reasonable range. It's the best we can do in this situation!
@@ -2221,7 +2221,7 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
       // adjust height of data defined path
       const QSizeF svgViewbox = QgsApplication::svgCache()->svgViewboxSize( path, scaledWidth, fillColor, strokeColor, strokeWidth,
                                 context.renderContext().scaleFactor(), aspectRatio,
-                                ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ), evaluatedParameters );
+                                ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ), evaluatedParameters );
       scaledHeight = svgViewbox.isValid() ? scaledWidth * svgViewbox.height() / svgViewbox.width() : scaledWidth;
     }
   }
@@ -2243,13 +2243,13 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
   {
     QImage img = QgsApplication::svgCache()->svgAsImage( path, width, fillColor, strokeColor, strokeWidth,
                  context.renderContext().scaleFactor(), fitsInCache, aspectRatio,
-                 ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ), evaluatedParameters );
+                 ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ), evaluatedParameters );
     if ( fitsInCache && img.width() > 1 )
     {
       usePict = false;
 
       if ( context.selected() )
-        QgsImageOperation::adjustHueSaturation( img, 1.0, context.renderContext().selectionColor(), 1.0 );
+        QgsImageOperation::adjustHueSaturation( img, 1.0, context.renderContext().selectionColor(), 1.0, context.renderContext().feedback() );
 
       //consider transparency
       if ( !qgsDoubleNear( context.opacity(), 1.0 ) )
@@ -2270,7 +2270,7 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
     p->setOpacity( context.opacity() );
     const QPicture pct = QgsApplication::svgCache()->svgAsPicture( path, width, fillColor, strokeColor, strokeWidth,
                          context.renderContext().scaleFactor(), context.renderContext().forceVectorOutput(), aspectRatio,
-                         ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ), evaluatedParameters );
+                         ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ), evaluatedParameters );
     if ( pct.width() > 1 )
     {
       const QgsScopedQPainterState painterPictureState( p );
@@ -2654,7 +2654,7 @@ bool QgsSvgMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFa
 
   const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( path, size, fillColor, strokeColor, strokeWidth,
                                  context.renderContext().scaleFactor(), mFixedAspectRatio,
-                                 ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ), evaluatedParameters );
+                                 ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ), evaluatedParameters );
 
   QSvgRenderer r( svgContent );
   if ( !r.isValid() )
@@ -2740,7 +2740,7 @@ QRectF QgsSvgMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &c
       // adjust height of data defined path
       const QSizeF svgViewbox = QgsApplication::svgCache()->svgViewboxSize( path, scaledWidth, fillColor, strokeColor, strokeWidth,
                                 context.renderContext().scaleFactor(), aspectRatio,
-                                ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ), evaluatedParameters );
+                                ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ), evaluatedParameters );
       scaledHeight = svgViewbox.isValid() ? scaledWidth * svgViewbox.height() / svgViewbox.width() : scaledWidth;
     }
   }
@@ -2961,11 +2961,11 @@ void QgsRasterMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderCont
   opacity *= context.opacity();
 
   bool cached;
-  QImage img = QgsApplication::imageCache()->pathAsImage( path, QSize( width, preservedAspectRatio() ? 0 : width * aspectRatio ), preservedAspectRatio(), opacity, cached, ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ) );
+  QImage img = QgsApplication::imageCache()->pathAsImage( path, QSize( width, preservedAspectRatio() ? 0 : width * aspectRatio ), preservedAspectRatio(), opacity, cached, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
   if ( !img.isNull() )
   {
     if ( context.selected() )
-      QgsImageOperation::adjustHueSaturation( img, 1.0, context.renderContext().selectionColor(), 1.0 );
+      QgsImageOperation::adjustHueSaturation( img, 1.0, context.renderContext().selectionColor(), 1.0, context.renderContext().feedback() );
 
     p->drawImage( -img.width() / 2.0, -img.height() / 2.0, img );
   }

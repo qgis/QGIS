@@ -197,7 +197,7 @@ Adds a non-layer item (e.g. an embedded QGIS project item) to the model.
     virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
 
 
-  protected:
+  public:
 
 
 
@@ -251,7 +251,7 @@ Sets whether system and internal tables will be shown in the model.
 .. seealso:: :py:func:`includeSystemTables`
 %End
 
-  protected:
+  public:
     virtual bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;
 
     virtual bool lessThan( const QModelIndex &source_left, const QModelIndex &source_right ) const;

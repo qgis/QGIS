@@ -1340,7 +1340,7 @@ QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettin
   QgsMapToPixel newCoordXForm;
   newCoordXForm.setParameters( 1, 0, 0, 0, 0, 0 );
   context.setMapToPixel( newCoordXForm );
-  context.setFlag( QgsRenderContext::Antialiasing, true );
+  context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
   const double logicalDpiX = QgsApplication::desktop()->logicalDpiX();

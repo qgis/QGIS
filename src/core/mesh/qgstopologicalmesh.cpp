@@ -102,8 +102,7 @@ int QgsMeshVertexCirculator::turnCounterClockwise() const
   else
   {
     int currentPos = positionInCurrentFace();
-    if ( currentPos == -1 )
-      return -1;
+    Q_ASSERT( currentPos != -1 );
 
     const QgsMeshFace &currentFace = mFaces.at( mCurrentFace );
     int faceSize = currentFace.size();
@@ -121,8 +120,7 @@ int QgsMeshVertexCirculator::turnClockwise() const
   else
   {
     int currentPos = positionInCurrentFace();
-    if ( currentPos == -1 )
-      return -1;
+    Q_ASSERT( currentPos != -1 );
 
     const QgsMeshFace &currentFace = mFaces.at( mCurrentFace );
     int faceSize = currentFace.size();
@@ -359,7 +357,7 @@ void QgsTopologicalMesh::applyChanges( const QgsTopologicalMesh::Changes &change
     mVertexToFace.resize( newSize );
   }
 
-  if ( !changes.mFacesToAdd.empty() > 0 )
+  if ( !changes.mFacesToAdd.empty() )
   {
     int newSize = mMesh->faceCount() + changes.mFacesToAdd.count();
     mMesh->faces.resize( newSize );
@@ -472,7 +470,7 @@ void QgsTopologicalMesh::reverseChanges( const QgsTopologicalMesh::Changes &chan
       referenceAsFreeVertex( vertexIndex );
   }
 
-  if ( !changes.mFacesToAdd.empty() > 0 )
+  if ( !changes.mFacesToAdd.empty() )
   {
     int newSize = mMesh->faceCount() - changes.mFacesToAdd.count();
     mMesh->faces.resize( newSize );
@@ -570,6 +568,9 @@ QgsMeshEditingError QgsTopologicalMesh::checkConsistency() const
     if ( mVertexToFace.at( vertexIndex ) != -1 )
     {
       if ( !mMesh->face( mVertexToFace.at( vertexIndex ) ).contains( vertexIndex ) )
+        return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, vertexIndex );
+
+      if ( facesAroundVertex( vertexIndex ).count() == 0 )
         return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, vertexIndex );
     }
   }

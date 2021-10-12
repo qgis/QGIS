@@ -71,7 +71,7 @@ Log a message from the server context
 :param level: log level of the message
 %End
 
-  protected:
+  public:
     QgsServerLogger();
 
 };

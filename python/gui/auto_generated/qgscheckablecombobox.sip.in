@@ -154,7 +154,7 @@ Set items which should be checked/selected.
 .. seealso:: :py:func:`checkedItems`
 %End
 
-  protected:
+  public:
 
     virtual void resizeEvent( QResizeEvent *event );
 
@@ -180,7 +180,7 @@ Selects all items.
 Removes selection from all items.
 %End
 
-  protected:
+  public:
 
 };
 

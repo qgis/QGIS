@@ -18,6 +18,7 @@
 #include "qgsproject.h"
 #include "qgslogger.h"
 #include "qgsmaplayerutils.h"
+#include "qgscoordinatetransform.h"
 #include <QDomElement>
 
 QgsProjectViewSettings::QgsProjectViewSettings( QgsProject *project )

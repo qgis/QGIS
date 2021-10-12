@@ -578,7 +578,7 @@ class TestQgsJsonUtils(unittest.TestCase):
         self.assertTrue(exporter.sourceCrs().isValid())
         self.assertEqual(exporter.sourceCrs().authid(), 'EPSG:3111')
 
-        exporter.setSourceCrs(QgsCoordinateReferenceSystem(3857, QgsCoordinateReferenceSystem.EpsgCrsId))
+        exporter.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
         self.assertTrue(exporter.sourceCrs().isValid())
         self.assertEqual(exporter.sourceCrs().authid(), 'EPSG:3857')
 

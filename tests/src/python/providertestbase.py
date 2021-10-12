@@ -1233,3 +1233,9 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertEqual(feature.attribute(1), "test:8")
         self.assertFalse(QgsVectorLayerUtils.fieldIsEditable(vl, 1, feature))
         self.assertFalse(QgsVectorLayerUtils.fieldIsEditable(vl, 0, feature))
+
+        # CLEANUP: delete features added during test (cleanup)
+        vl.startEditing()
+        self.assertTrue(vl.deleteFeature(10))
+        self.assertTrue(vl.commitChanges())
+        # TODO: further cleanups in case attributes have been changed

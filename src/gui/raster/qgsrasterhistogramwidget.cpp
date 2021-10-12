@@ -518,14 +518,14 @@ void QgsRasterHistogramWidget::refreshHistogram()
   double myBinXStep = 1;
   double myBinX = 0;
 
-  for ( int myIteratorInt = 1;
-        myIteratorInt <= myBandCountInt;
-        ++myIteratorInt )
+  for ( int bandNumber = 1;
+        bandNumber <= myBandCountInt;
+        ++bandNumber )
   {
     /* skip this band if mHistoShowBands != ShowAll and this band is not selected */
     if ( mHistoShowBands != ShowAll )
     {
-      if ( ! mySelectedBands.contains( myIteratorInt ) )
+      if ( ! mySelectedBands.contains( bandNumber ) )
         continue;
     }
 
@@ -534,12 +534,12 @@ void QgsRasterHistogramWidget::refreshHistogram()
     const std::unique_ptr< QgsRasterBlockFeedback > feedback( new QgsRasterBlockFeedback() );
     connect( feedback.get(), &QgsRasterBlockFeedback::progressChanged, mHistogramProgress, &QProgressBar::setValue );
 
-    const int binCount = getBinCount( mRasterLayer->dataProvider(), myIteratorInt, sampleSize );
-    const QgsRasterHistogram myHistogram = mRasterLayer->dataProvider()->histogram( myIteratorInt, binCount, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize, false, feedback.get() );
+    const int binCount = getBinCount( mRasterLayer->dataProvider(), bandNumber, sampleSize );
+    const QgsRasterHistogram myHistogram = mRasterLayer->dataProvider()->histogram( bandNumber, binCount, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize, false, feedback.get() );
 
-    QgsDebugMsg( QStringLiteral( "got raster histo for band %1 : min=%2 max=%3 count=%4" ).arg( myIteratorInt ).arg( myHistogram.minimum ).arg( myHistogram.maximum ).arg( myHistogram.binCount ) );
+    QgsDebugMsg( QStringLiteral( "got raster histo for band %1 : min=%2 max=%3 count=%4" ).arg( bandNumber ).arg( myHistogram.minimum ).arg( myHistogram.maximum ).arg( myHistogram.binCount ) );
 
-    const Qgis::DataType mySrcDataType = mRasterLayer->dataProvider()->sourceDataType( myIteratorInt );
+    const Qgis::DataType mySrcDataType = mRasterLayer->dataProvider()->sourceDataType( bandNumber );
     bool myDrawLines = true;
     if ( ! mHistoDrawLines &&
          ( mySrcDataType == Qgis::DataType::Byte ||
@@ -552,37 +552,29 @@ void QgsRasterHistogramWidget::refreshHistogram()
     QwtPlotCurve *mypCurve = nullptr;
     if ( myDrawLines )
     {
-      mypCurve = new QwtPlotCurve( tr( "Band %1" ).arg( myIteratorInt ) );
+      mypCurve = new QwtPlotCurve( tr( "Band %1" ).arg( bandNumber ) );
       //mypCurve->setCurveAttribute( QwtPlotCurve::Fitted );
       mypCurve->setRenderHint( QwtPlotItem::RenderAntialiased );
-      mypCurve->setPen( QPen( mHistoColors.at( myIteratorInt ) ) );
+      mypCurve->setPen( QPen( mHistoColors.at( bandNumber ) ) );
     }
 
     QwtPlotHistogram *mypHisto = nullptr;
     if ( ! myDrawLines )
     {
-      mypHisto = new QwtPlotHistogram( tr( "Band %1" ).arg( myIteratorInt ) );
+      mypHisto = new QwtPlotHistogram( tr( "Band %1" ).arg( bandNumber ) );
       mypHisto->setRenderHint( QwtPlotItem::RenderAntialiased );
       //mypHisto->setPen( QPen( mHistoColors.at( myIteratorInt ) ) );
       mypHisto->setPen( QPen( Qt::lightGray ) );
       // this is needed in order to see the colors in the legend
-      mypHisto->setBrush( QBrush( mHistoColors.at( myIteratorInt ) ) );
+      mypHisto->setBrush( QBrush( mHistoColors.at( bandNumber ) ) );
     }
 
     QVector<QPointF> data;
     QVector<QwtIntervalSample> dataHisto;
 
-    // calculate first bin x value and bin step size if not Byte data
-    if ( mySrcDataType != Qgis::DataType::Byte )
-    {
-      myBinXStep = ( myHistogram.maximum - myHistogram.minimum ) / myHistogram.binCount;
-      myBinX = myHistogram.minimum + myBinXStep / 2.0;
-    }
-    else
-    {
-      myBinXStep = 1;
-      myBinX = 0;
-    }
+    // calculate first bin x value and bin step size
+    myBinXStep = ( myHistogram.maximum - myHistogram.minimum ) / myHistogram.binCount;
+    myBinX = myHistogram.minimum + myBinXStep / 2.0;
 
     for ( int myBin = 0; myBin < myHistogram.binCount; myBin++ )
     {

@@ -75,7 +75,7 @@ This indicates that there is something wrong with the expression compiler.
 .. versionadded:: 3.2
 %End
 
-  protected:
+  public:
 
     virtual bool fetchFeature( QgsFeature &f ) = 0;
 %Docstring
@@ -182,7 +182,7 @@ Helper template that cares of two things: 1. automatic deletion of source if own
 
     ~QgsAbstractFeatureIteratorFromSource();
 
-  protected:
+  public:
     void iteratorClosed();
 %Docstring
 to be called by from subclass in :py:func:`~QgsAbstractFeatureIteratorFromSource.close`
@@ -274,7 +274,7 @@ This indicates that there is something wrong with the expression compiler.
 %End
 
 
-  protected:
+  public:
 
 
 };

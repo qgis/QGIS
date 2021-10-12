@@ -19,6 +19,7 @@
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include "qgsrenderer.h"
+#include "qgsrendercontext.h"
 
 QgsSnappingUtils::QgsSnappingUtils( QObject *parent, bool enableSnappingForInvisibleFeature )
   : QObject( parent )

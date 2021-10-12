@@ -54,7 +54,7 @@ Returns the mode used for the preview effect.
 .. versionadded:: 2.3
 %End
 
-  protected:
+  public:
     virtual void draw( QPainter *painter );
 
 

@@ -91,7 +91,7 @@ Emitted when the symbol levels settings have been changed.
    -- no longer emitted.
 %End
 
-  protected:
+  public:
 
 
 
@@ -224,7 +224,7 @@ Returns the vector layer associated with the widget.
   public slots:
     void dataDefinedChanged();
 
-  protected:
+  public:
 
     void init( int propertyKey ); // needed in children ctor to call virtual
 
@@ -244,7 +244,7 @@ class QgsDataDefinedSizeDialog : QgsDataDefinedValueDialog
   public:
     QgsDataDefinedSizeDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer );
 
-  protected:
+  public:
     virtual QgsProperty symbolDataDefined( const QgsSymbol *symbol ) const;
 
 
@@ -265,7 +265,7 @@ class QgsDataDefinedRotationDialog : QgsDataDefinedValueDialog
   public:
     QgsDataDefinedRotationDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer );
 
-  protected:
+  public:
     virtual QgsProperty symbolDataDefined( const QgsSymbol *symbol ) const;
 
 
@@ -285,7 +285,7 @@ class QgsDataDefinedWidthDialog : QgsDataDefinedValueDialog
   public:
     QgsDataDefinedWidthDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer );
 
-  protected:
+  public:
     virtual QgsProperty symbolDataDefined( const QgsSymbol *symbol ) const;
 
 

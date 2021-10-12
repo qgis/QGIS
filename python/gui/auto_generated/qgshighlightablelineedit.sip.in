@@ -42,7 +42,7 @@ Sets whether the line edit is currently ``highlighted``.
 .. seealso:: :py:func:`isHighlighted`
 %End
 
-  protected:
+  public:
     virtual void paintEvent( QPaintEvent *e );
 
 

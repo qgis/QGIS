@@ -44,7 +44,7 @@ Returns new layer of this type, using layer URI (specific to this plugin layer t
 Show plugin layer properties dialog. Return ``False`` if the dialog cannot be shown.
 %End
 
-  protected:
+  public:
 };
 
 

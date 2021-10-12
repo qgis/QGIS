@@ -19,6 +19,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgsreadwritelocker.h"
+#include "qgscoordinatetransform.h"
 #include <QUrl>
 #include <QUrlQuery>
 #include <QNetworkRequest>

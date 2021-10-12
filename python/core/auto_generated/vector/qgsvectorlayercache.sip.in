@@ -232,7 +232,7 @@ Returns the number of features contained in the source, or -1
 if the feature count is unknown.
 %End
 
-  protected:
+  public:
 
     void requestCompleted( const QgsFeatureRequest &featureRequest, const QgsFeatureIds &fids );
 %Docstring

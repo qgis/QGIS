@@ -47,6 +47,7 @@ set(QGIS_SERVER_SRCS
   qgsservicenativeloader.cpp
   qgsserviceregistry.cpp
   qgsfeaturefilterprovidergroup.cpp
+  qgsdimensionfilter.cpp
   qgsfeaturefilter.cpp
   qgsstorebadlayerinfo.cpp
   qgsserverquerystringparameter.cpp

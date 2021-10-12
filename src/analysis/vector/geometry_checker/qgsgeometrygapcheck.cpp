@@ -315,7 +315,7 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
     QgsFeaturePool *featurePool = featurePools.value( layerId );
     std::unique_ptr<QgsAbstractGeometry> errLayerGeom( errGeometry->clone() );
     const QgsCoordinateTransform ct( featurePool->crs(), mContext->mapCrs, mContext->transformContext );
-    errLayerGeom->transform( ct, QgsCoordinateTransform::ReverseTransform );
+    errLayerGeom->transform( ct, Qgis::TransformDirection::Reverse );
 
     const auto featureIds = err->neighbors().value( layerId );
 
@@ -406,7 +406,7 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
   QgsFeaturePool *featurePool = featurePools[ mergeLayerId ];
   std::unique_ptr<QgsAbstractGeometry> errLayerGeom( snappedErrGeom->clone() );
   const QgsCoordinateTransform ct( featurePool->crs(), mContext->mapCrs, mContext->transformContext );
-  errLayerGeom->transform( ct, QgsCoordinateTransform::ReverseTransform );
+  errLayerGeom->transform( ct, Qgis::TransformDirection::Reverse );
   const QgsGeometry mergeFeatureGeom = mergeFeature.geometry();
   const QgsAbstractGeometry *mergeGeom = mergeFeatureGeom.constGet();
   std::unique_ptr< QgsGeometryEngine > geomEngine = QgsGeometryCheckerUtils::createGeomEngine( errLayerGeom.get(), 0 );

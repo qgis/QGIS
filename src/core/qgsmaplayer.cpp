@@ -774,7 +774,17 @@ void QgsMapLayer::resolveReferences( QgsProject *project )
 
 void QgsMapLayer::readCustomProperties( const QDomNode &layerNode, const QString &keyStartsWith )
 {
+  const QgsObjectCustomProperties oldKeys = mCustomProperties;
+
   mCustomProperties.readXml( layerNode, keyStartsWith );
+
+  for ( const QString &key : mCustomProperties.keys() )
+  {
+    if ( !oldKeys.contains( key ) || mCustomProperties.value( key ) != oldKeys.value( key ) )
+    {
+      emit customPropertyChanged( key );
+    }
+  }
 }
 
 void QgsMapLayer::writeCustomProperties( QDomNode &layerNode, QDomDocument &doc ) const
@@ -1963,6 +1973,10 @@ void QgsMapLayer::setCustomProperty( const QString &key, const QVariant &value )
 void QgsMapLayer::setCustomProperties( const QgsObjectCustomProperties &properties )
 {
   mCustomProperties = properties;
+  for ( const QString &key : mCustomProperties.keys() )
+  {
+    emit customPropertyChanged( key );
+  }
 }
 
 const QgsObjectCustomProperties &QgsMapLayer::customProperties() const

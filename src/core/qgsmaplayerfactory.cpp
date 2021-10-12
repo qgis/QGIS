@@ -91,11 +91,15 @@ QgsMapLayer *QgsMapLayerFactory::createLayer( const QString &uri, const QString 
     {
       QgsMeshLayer::LayerOptions meshOptions;
       meshOptions.transformContext = options.transformContext;
+      meshOptions.loadDefaultStyle = options.loadDefaultStyle;
       return new QgsMeshLayer( uri, name, provider, meshOptions );
     }
 
     case QgsMapLayerType::VectorTileLayer:
-      return new QgsVectorTileLayer( uri, name );
+    {
+      const QgsVectorTileLayer::LayerOptions vectorTileOptions( options.transformContext );
+      return new QgsVectorTileLayer( uri, name, vectorTileOptions );
+    }
 
     case QgsMapLayerType::AnnotationLayer:
     {

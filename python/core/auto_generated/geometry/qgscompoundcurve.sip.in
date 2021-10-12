@@ -142,7 +142,7 @@ Converts the vertex at the given position from/to circular
 
     virtual void draw( QPainter &p ) const;
 
-    virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false )  throw( QgsCsException );
+    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false )  throw( QgsCsException );
 
     virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
 
@@ -158,7 +158,7 @@ Converts the vertex at the given position from/to circular
 
     virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/, QgsVertexId &vertexAfter /Out/, int *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const;
 
-    virtual bool pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const;
+    virtual bool pointAt( int node, QgsPoint &point, Qgis::VertexType &type ) const;
 
     virtual void sumUpArea( double &sum /Out/ ) const;
 
@@ -215,7 +215,7 @@ Appends first point if not already closed.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-  protected:
+  public:
 
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     virtual QgsRectangle calculateBoundingBox() const;

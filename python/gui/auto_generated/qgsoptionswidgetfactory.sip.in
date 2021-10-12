@@ -49,7 +49,7 @@ Called to permanently apply the settings shown in the options page (e.g. save th
 :py:class:`QgsSettings` objects). This is usually called when the options dialog is accepted.
 %End
 
-  protected:
+  public:
 
     void registerHighlightWidget( QgsOptionsDialogHighlightWidget *highlightWidget );
 %Docstring

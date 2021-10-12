@@ -29,6 +29,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayercache.h"
+#include "qgsrendercontext.h"
 
 //////////////////
 // Filter Model //

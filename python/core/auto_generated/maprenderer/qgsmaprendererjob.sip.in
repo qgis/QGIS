@@ -195,7 +195,7 @@ Rendering labels is not yet done. If the fully rendered layer including labels i
 emitted when asynchronous rendering is finished (or canceled).
 %End
 
-  protected:
+  public:
 
 
 

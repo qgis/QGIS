@@ -81,7 +81,7 @@ Creates a widget for configuring callouts of this type. Can return ``None`` if t
 Ownership of the widget is transferred to the caller.
 %End
 
-  protected:
+  public:
 };
 
 
@@ -106,7 +106,7 @@ Convenience metadata class that uses static functions to create callouts and the
     virtual QgsCalloutWidget *createCalloutWidget( QgsVectorLayer *vl ) /Factory/;
 
 
-  protected:
+  public:
 
   private:
     QgsCalloutMetadata();

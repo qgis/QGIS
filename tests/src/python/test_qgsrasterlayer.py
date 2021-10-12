@@ -1521,8 +1521,6 @@ class TestQgsRasterLayerTransformContext(unittest.TestCase):
         """Prepare tc"""
         super(TestQgsRasterLayerTransformContext, self).setUp()
         self.ctx = QgsCoordinateTransformContext()
-        self.ctx.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:4326'),
-                                                    QgsCoordinateReferenceSystem('EPSG:3857'), 1234, 1235)
         self.ctx.addCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:4326'), QgsCoordinateReferenceSystem('EPSG:3857'), 'test')
         self.rpath = os.path.join(unitTestDataPath(), 'landsat.tif')
 

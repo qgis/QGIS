@@ -19,6 +19,7 @@
 #include "qgsexception.h"
 #include "qgsexpressionsorter.h"
 #include "qgsfeedback.h"
+#include "qgscoordinatetransform.h"
 
 QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest &request )
   : mRequest( request )
@@ -124,7 +125,7 @@ QgsRectangle QgsAbstractFeatureIterator::filterRectToSourceCrs( const QgsCoordin
   if ( mRequest.filterRect().isNull() )
     return QgsRectangle();
 
-  return transform.transformBoundingBox( mRequest.filterRect(), QgsCoordinateTransform::ReverseTransform );
+  return transform.transformBoundingBox( mRequest.filterRect(), Qgis::TransformDirection::Reverse );
 }
 
 void QgsAbstractFeatureIterator::ref()

@@ -256,7 +256,7 @@ Set the ``expression`` which is currently used as filter for this widget.
     virtual void setFeature( const QgsFeature &feature );
 
 
-  protected:
+  public:
     void clearExpression();
 %Docstring
 clears the expression to search for all features

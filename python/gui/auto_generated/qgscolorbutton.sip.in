@@ -474,7 +474,7 @@ to a project color and is now no longer linked.
 .. versionadded:: 3.6
 %End
 
-  protected:
+  public:
 
     virtual bool event( QEvent *e );
 

@@ -58,7 +58,7 @@ Returns the memory usage in bytes for the entry.
 Dumps debugging strings containing the item's properties. For testing purposes only.
 %End
 
-  protected:
+  public:
 
     virtual bool isEqual( const QgsAbstractContentCacheEntry *other ) const = 0;
 %Docstring
@@ -99,7 +99,7 @@ Constructor for QgsAbstractContentCacheBase, with the specified ``parent`` objec
 Emitted when the cache has finished retrieving content from a remote ``url``.
 %End
 
-  protected:
+  public:
 
     virtual bool checkReply( QNetworkReply *reply, const QString &path ) const;
 %Docstring
