@@ -1059,6 +1059,28 @@ QList<int> QgsTopologicalMesh::Changes::nativeFacesIndexesGeometryChanged() cons
   return mNativeFacesIndexesGeometryChanged;
 }
 
+bool QgsTopologicalMesh::Changes::isEmpty() const
+{
+  return ( mFaceIndexesToRemove.isEmpty() &&
+           mFacesToAdd.isEmpty() &&
+           mFacesNeighborhoodToAdd.isEmpty() &&
+           mFacesToRemove.isEmpty() &&
+           mFacesNeighborhoodToRemove.isEmpty() &&
+           mNeighborhoodChanges.isEmpty() &&
+           mVerticesToAdd.isEmpty() &&
+           mVertexToFaceToAdd.isEmpty() &&
+           mVerticesToRemoveIndexes.isEmpty() &&
+           mRemovedVertices.isEmpty() &&
+           mVerticesToFaceRemoved.isEmpty() &&
+           mVerticesToFaceChanges.isEmpty() &&
+           mChangeCoordinateVerticesIndexes.isEmpty() &&
+           mNewZValues.isEmpty() &&
+           mOldZValues.isEmpty() &&
+           mNewXYValues.isEmpty() &&
+           mOldXYValues.isEmpty() &&
+           mNativeFacesIndexesGeometryChanged.isEmpty() );
+}
+
 QList<int> QgsTopologicalMesh::Changes::verticesToRemoveIndexes() const
 {
   return mVerticesToRemoveIndexes;
@@ -1122,7 +1144,8 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::addFreeVertex( const QgsMeshVert
 static double vertexPolygonOrientation( const QgsMesh &mesh, const QList<int> &vertexIndexes )
 {
   if ( vertexIndexes.count() < 3 )
-    return 0;
+    return 0.0;
+
   int hullDomainVertexPos = -1;
   double xMin = std::numeric_limits<double>::max();
   double yMin = std::numeric_limits<double>::max();
@@ -1146,9 +1169,8 @@ static double vertexPolygonOrientation( const QgsMesh &mesh, const QList<int> &v
     return cp;
   }
 
-  return 0;
+  return 0.0;
 }
-
 
 QgsTopologicalMesh::Changes QgsTopologicalMesh::removeVertexFillHole( int vertexIndex )
 {

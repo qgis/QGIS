@@ -129,32 +129,40 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     int splitFaces( const QList<int> &faceIndexes );
 
     /**
-     *  Adds vertices in triangular mesh coordinate in the mesh. Vertex is effectivly added if the transform
-     *  from triangular coordinate to layer coordinate succeeds or if any vertices are next the added vertex (under \a tolerance distance).
-     *  The method returns the number of vertices effectivly added.
+     * Adds vertices in triangular mesh coordinate in the mesh. Vertex is effectivly added if the transform
+     * from triangular coordinate to layer coordinate succeeds or if any vertices are next the added vertex (under \a tolerance distance).
+     * The method returns the number of vertices effectivly added.
      *
-     *  \note this operation remove including face if exists and replace it by new faces surrounding the vertex
-     *  if the mesh hasn't topological error before this operation, the toological operation always succeed.
+     * \note this operation remove including face if exists and replace it by new faces surrounding the vertex
+     * if the mesh hasn't topological error before this operation, the toological operation always succeed.
      */
     int addVertices( const QVector<QgsMeshVertex> &vertices, double tolerance ); SIP_SKIP
 
     /**
-     *  Adds points as vertices in triangular mesh coordinate in the mesh. Vertex is effectivly added if the transform
-     *  from triangular coordinate to layer coordinate succeeds or if any vertices are next the added vertex (under \a tolerance distance).
-     *  The method returns the number of vertices effectivly added.
+     * Adds points as vertices in triangular mesh coordinate in the mesh. Vertex is effectivly added if the transform
+     * from triangular coordinate to layer coordinate succeeds or if any vertices are next the added vertex (under \a tolerance distance).
+     * The method returns the number of vertices effectivly added.
      *
-     *  \note this operation remove including face if exists and replace it by new faces surrounding the vertex
-     *  if the mesh hasn't topological error before this operation, the toological operation always succeed
+     * \note this operation remove including face if exists and replace it by new faces surrounding the vertex
+     * if the mesh hasn't topological error before this operation, the toological operation always succeed
      */
     int addPointsAsVertices( const QVector<QgsPoint> &point, double tolerance );
 
     /**
-     *  Removes vertices with indexes in the list \a verticesToRemoveIndexes in the mesh
-     *  if \a fillHoles is set to TRUE, this operation will fill holes created in the mesh, if not remove the surrounding faces
+     * Removes vertices with indexes in the list \a verticesToRemoveIndexes in the mesh removing the surrounding faces without filling the freed space.
      *
-     *  If removing these vertices leads to a topological errors, the method will return the corresponding error and the operation is canceled
+     * If removing these vertices leads to a topological errors, the method will return the corresponding error and the operation is canceled
      */
-    QgsMeshEditingError removeVertices( const QList<int> &verticesToRemoveIndexes, bool fillHoles = false );
+    QgsMeshEditingError removeVerticesWithoutFillHoles( const QList<int> &verticesToRemoveIndexes );
+
+    /**
+     * Removes vertices with indexes in the list \a verticesToRemoveIndexes in the mesh the surrounding faces AND fills the freed space.
+     *
+     * This operation fills holes by a Delaunay triangulation using the surrounding vertices.
+     * Some vertices could no be deleted to avoid topological error even with hole filling (can not be detected before execution).
+     * A list of the remaining vertex indexes is returned.
+     */
+    QList<int> removeVerticesFillHoles( const QList<int> &verticesToRemoveIndexes );
 
     /**
      * Changes the Z values of the vertices with indexes in \a vertices indexes with the values in \a newValues
@@ -252,6 +260,9 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     //! Returns the count of valid vertices, that is non void vertices in the mesh
     int validVerticesCount() const;
 
+    //! Returns the maximum count of vertices per face that the mesh can support
+    int maximumVerticesPerFace() const;
+
   signals:
     //! Emitted when the mesh is edited
     void meshEdited();
@@ -279,7 +290,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     void reverseEdit( Edit &edit );
 
     void applyAddVertex( Edit &edit, const QgsMeshVertex &vertex, double tolerance );
-    void applyRemoveVertexFillHole( Edit &edit, int vertexIndex );
+    bool applyRemoveVertexFillHole( Edit &edit, int vertexIndex );
     void applyRemoveVerticesWithoutFillHole( QgsMeshEditor::Edit &edit, const QList<int> &verticesIndexes );
     void applyAddFaces( Edit &edit, const QgsTopologicalMesh::TopologicalFaces &faces );
     void applyRemoveFaces( Edit &edit, const QList<int> &faceToRemoveIndex );
@@ -297,7 +308,8 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     friend class TestQgsMeshEditor;
     friend class QgsMeshLayerUndoCommandMeshEdit;
     friend class QgsMeshLayerUndoCommandAddVertices;
-    friend class QgsMeshLayerUndoCommandRemoveVertices;
+    friend class QgsMeshLayerUndoCommandRemoveVerticesWithoutFillHoles;
+    friend class QgsMeshLayerUndoCommandRemoveVerticesFillHoles;
     friend class QgsMeshLayerUndoCommandAddFaces;
     friend class QgsMeshLayerUndoCommandRemoveFaces;
     friend class QgsMeshLayerUndoCommandSetZValue;
@@ -358,20 +370,47 @@ class QgsMeshLayerUndoCommandAddVertices : public QgsMeshLayerUndoCommandMeshEdi
 /**
  * \ingroup core
  *
- * \brief  Class for undo/redo command for removing vertices in mesh
+ * \brief  Class for undo/redo command for removing vertices in mesh without filling holes created by removed faces
  *
  * \since QGIS 3.22
  */
-class QgsMeshLayerUndoCommandRemoveVertices : public QgsMeshLayerUndoCommandMeshEdit
+class QgsMeshLayerUndoCommandRemoveVerticesWithoutFillHoles : public QgsMeshLayerUndoCommandMeshEdit
 {
   public:
-    //! Constructor with the associated \a meshEditor and \a vertices that will be removed and the flag \a fillHole
-    QgsMeshLayerUndoCommandRemoveVertices( QgsMeshEditor *meshEditor, const QList<int> &verticesToRemoveIndexes, bool fillHole );
+    /**
+     * Constructor with the associated \a meshEditor and \a vertices that will be removed
+     */
+    QgsMeshLayerUndoCommandRemoveVerticesWithoutFillHoles( QgsMeshEditor *meshEditor, const QList<int> &verticesToRemoveIndexes );
     void redo() override;
 
   private:
     QList<int> mVerticesToRemoveIndexes;
-    bool mFillHole = false;
+};
+
+/**
+ * \ingroup core
+ *
+ * \brief  Class for undo/redo command for removing vertices in mesh filling holes created by removed faces
+ *
+ * \since QGIS 3.22
+ */
+class QgsMeshLayerUndoCommandRemoveVerticesFillHoles : public QgsMeshLayerUndoCommandMeshEdit
+{
+  public:
+    /**
+     * Constructor with the associated \a meshEditor and \a vertices that will be removed
+     *
+     * The pointer \a remainingVertex is used to know the remaining vertex that have not been removed by the operation
+     * afer the command was pushed in the undo/redo stack. The list pointed by \a remainingVertexPointer must not be
+     * destructed until the command is pushed to an undo/redo stack or the redo() method is called.
+     *
+     */
+    QgsMeshLayerUndoCommandRemoveVerticesFillHoles( QgsMeshEditor *meshEditor, const QList<int> &verticesToRemoveIndexes, QList<int> *remainingVerticesPointer = nullptr );
+    void redo() override;
+
+  private:
+    QList<int> mVerticesToRemoveIndexes;
+    QList<int> *mRemainingVerticesPointer = nullptr;
 };
 
 /**

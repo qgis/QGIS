@@ -121,6 +121,9 @@ class CORE_EXPORT QgsTopologicalMesh
         //! Returns a list of the native face indexes that have a geometry changed
         QList<int> nativeFacesIndexesGeometryChanged() const;
 
+        //! Returns whether changes are empty, that there is nothing to change
+        bool isEmpty() const;
+
       protected:
         int mAddedFacesFirstIndex = 0;
         QList<int> mFaceIndexesToRemove; // the removed faces indexes in the mesh

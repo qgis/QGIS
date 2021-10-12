@@ -858,7 +858,7 @@ void TestQgsMeshEditor::particularCases()
     QVERIFY( meshEditor.initialize() == QgsMeshEditingError() );
     QVERIFY( meshEditor.checkConsistency( error ) );
 
-    QVERIFY( meshEditor.removeVertices( {5, 1}, false ) == QgsMeshEditingError() );
+    QVERIFY( meshEditor.removeVerticesWithoutFillHoles( {5, 1} ) == QgsMeshEditingError() );
     QVERIFY( meshEditor.checkConsistency( error ) );
 
     meshEditor.mUndoStack->undo();
@@ -867,7 +867,7 @@ void TestQgsMeshEditor::particularCases()
 
     QVERIFY( meshEditor.checkConsistency( error ) );
 
-    QVERIFY( meshEditor.removeVertices( {6}, false ) == QgsMeshEditingError() );
+    QVERIFY( meshEditor.removeVerticesWithoutFillHoles( {6} ) == QgsMeshEditingError() );
 
     meshEditor.stopEditing();
 
@@ -899,7 +899,7 @@ void TestQgsMeshEditor::particularCases()
     QVERIFY( meshEditor.initialize() == QgsMeshEditingError() );
     QVERIFY( meshEditor.checkConsistency( error ) );
 
-    QVERIFY( meshEditor.removeVertices( {5}, true ) == QgsMeshEditingError() );
+    QVERIFY( meshEditor.removeVerticesFillHoles( {5} ) == QList<int>() );
   }
 
   {
@@ -1031,7 +1031,7 @@ void TestQgsMeshEditor::particularCases()
         if ( j > 1 && j < sideSize - 2 && i < sideSize - 20 )
           verticesToRemove.append( i * sideSize + j );
 
-    QVERIFY( meshEditor.removeVertices( verticesToRemove, false ) == QgsMeshEditingError() );
+    QVERIFY( meshEditor.removeVerticesWithoutFillHoles( verticesToRemove ) == QgsMeshEditingError() );
     QVERIFY( meshEditor.checkConsistency( error ) );
 
     // just create a valid different transform to update the vertices of the triangular mesh
@@ -1596,7 +1596,7 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadTriangle()
   QCOMPARE( meshLayerQuadTriangle->meshEditor()->freeVerticesIndexes().count(), 1 );
   QVERIFY( meshLayerQuadTriangle->meshEditor()->freeVerticesIndexes().contains( 8 ) );
 
-  editor->removeVertices( {7} );
+  editor->removeVerticesWithoutFillHoles( {7} );
 
   centroid = meshLayerQuadTriangle->snapOnElement( QgsMesh::Face, QgsPoint( 1400, 2050, 0 ), 10 );
   QVERIFY( centroid.isEmpty() );
@@ -1702,11 +1702,11 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadFlower()
 
   QCOMPARE( meshLayerQuadFlower->datasetValue( QgsMeshDatasetIndex( 0, 0 ), QgsPointXY( 1420, 2220 ), 10 ).x(), -10 );
 
-  QVERIFY( editor->removeVertices( {0}, true ) == QgsMeshEditingError() );
+  QVERIFY( editor->removeVerticesFillHoles( {0} ) == QList<int>() );
 
   meshLayerQuadFlower->undoStack()->undo();
 
-  QVERIFY( editor->removeVertices( {0} ) == QgsMeshEditingError() );
+  QVERIFY( editor->removeVerticesWithoutFillHoles( {0} ) == QgsMeshEditingError() );
   QVERIFY( editor->checkConsistency( error ) );
 
   QgsPointXY centroid = meshLayerQuadFlower->snapOnElement( QgsMesh::Face, QgsPoint( 1200, 2500, 0 ), 10 );
@@ -1756,12 +1756,12 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadFlower()
   QVERIFY( !editor->edgeCanBeFlipped( 8, 9 ) );
   QVERIFY( !editor->edgeCanBeFlipped( 10, 17 ) );
 
-  QVERIFY( editor->removeVertices( {10}, true ) == QgsMeshEditingError() );
+  QVERIFY( editor->removeVerticesFillHoles( {10} ) == QList<int>() );
   QVERIFY( editor->checkConsistency( error ) );
 
   editor->mUndoStack->undo();
 
-  QVERIFY( editor->removeVertices( {10}, true ) == QgsMeshEditingError() );
+  QVERIFY( editor->removeVerticesFillHoles( {10} ) == QList<int>() );
 
   centroid = meshLayerQuadFlower->snapOnElement( QgsMesh::Face, QgsPoint( 1330, 2500, 0 ), 10 );
   QVERIFY( centroid.compare( QgsPointXY( 1400, 2500 ), 1e-2 ) );
@@ -1771,19 +1771,19 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadFlower()
 
   editor->mUndoStack->undo();
 
-  QVERIFY( editor->removeVertices( {13}, true ) == QgsMeshEditingError() );
+  QVERIFY( editor->removeVerticesFillHoles( {13} ) == QList<int>() );
 
-  QVERIFY( editor->removeVertices( {11}, true ) == QgsMeshEditingError() );
+  QVERIFY( editor->removeVerticesFillHoles( {11} ) == QList<int>() );
 
-  QVERIFY( editor->removeVertices( {9}, true ) == QgsMeshEditingError() );
+  QVERIFY( editor->removeVerticesFillHoles( {9} ) == QList<int>() );
 
-  QVERIFY( editor->removeVertices( {8}, true ) == QgsMeshEditingError() );
+  QVERIFY( editor->removeVerticesFillHoles( {8} ) == QList<int>() );
 
-  QVERIFY( editor->removeVertices( {15}, true ) == QgsMeshEditingError() );
+  QVERIFY( editor->removeVerticesFillHoles( {15} ) == QList<int>() );
 
-  QVERIFY( editor->removeVertices( {14}, true ) == QgsMeshEditingError() );
+  QVERIFY( editor->removeVerticesFillHoles( {14} ) == QList<int>() );
 
-  QVERIFY( editor->removeVertices( {7}, true ) == QgsMeshEditingError() );
+  QVERIFY( editor->removeVerticesFillHoles( {7} ) == QList<int>() );
 
   QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 5 );
   QCOMPARE( meshLayerQuadFlower->meshVertexCount(), 7 );
@@ -1798,13 +1798,13 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadFlower()
   QCOMPARE( meshLayerQuadFlower->meshVertexCount(), 7 );
   QCOMPARE( meshLayerQuadFlower->meshEditor()->freeVerticesIndexes().count(), 0 );
 
-  QVERIFY( editor->removeVertices( {3}, false ).errorType != Qgis::MeshEditingErrorType::NoError ); // leads to a topological error
+  QVERIFY( editor->removeVerticesWithoutFillHoles( {3} ).errorType != Qgis::MeshEditingErrorType::NoError ); // leads to a topological error
   QCOMPARE( meshLayerQuadFlower->meshEditor()->addVertices( {{4000, 4000, 0}, {4000, 4100, 0}, {4100, 4000, 0}, {4100, 4100, 0}}, 10 ), 4 );
   QCOMPARE( meshLayerQuadFlower->meshEditor()->freeVerticesIndexes().count(), 4 );
 
   //QVERIFY( editor->removeVertices( {3}, true ).errorType != Qgis::MeshEditingErrorType::NoError ); // filling after removing boundary not supported, so not fill and leads to a topological error
 
-  QVERIFY( editor->removeVertices( {4}, true ) == QgsMeshEditingError() );
+  QVERIFY( editor->removeVerticesFillHoles( {4} ) == QList<int>() );
   QVERIFY( editor->checkConsistency( error ) );
 
   meshLayerQuadFlower->commitFrameEditing( transform, true );
