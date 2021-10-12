@@ -1300,6 +1300,10 @@ void TestQgsLineString::length3D()
                 << QgsPoint( QgsWkbTypes::PointZ, 4, 6, 2 ) );
   QCOMPARE( ls.length3D(), 8.0 );
 
+  ls.clear();
+  ls.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 0 ) );
+  QCOMPARE( ls.length3D(), 0.0 );
+
   // with z and m
   ls.clear();
   ls.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 0, 0 )
