@@ -47,6 +47,7 @@ class QgsShortestLineAlgorithm : public QgsProcessingAlgorithm
   private:
     std::unique_ptr< QgsFeatureSource > mSource;
     std::unique_ptr< QgsFeatureSource > mDestination;
+    int mMethod = 0;
     long long mKNeighbors = 1;
     double mMaxDistance = 0.0;
 
