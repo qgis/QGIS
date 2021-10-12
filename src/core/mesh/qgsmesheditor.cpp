@@ -176,7 +176,7 @@ bool QgsMeshEditor::faceCanBeAdded( const QgsMeshFace &face )
 
   // Check if there is topological error with the mesh
   QgsTopologicalMesh::TopologicalFaces topologicalFaces = mTopologicalMesh.createNewTopologicalFaces( facesToAdd, true, error );
-  error = mTopologicalMesh.canFacesBeAdded( topologicalFaces );
+  error = mTopologicalMesh.facesCanBeAdded( topologicalFaces );
 
   if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
     return false;
@@ -431,7 +431,7 @@ int QgsMeshEditor::validVerticesCount() const
 
 QgsMeshEditingError QgsMeshEditor::removeFaces( const QList<int> &facesToRemove )
 {
-  QgsMeshEditingError error = mTopologicalMesh.canFacesBeRemoved( facesToRemove );
+  QgsMeshEditingError error = mTopologicalMesh.facesCanBeRemoved( facesToRemove );
   if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
     return error;
 
@@ -468,7 +468,7 @@ void QgsMeshEditor::merge( int vertexIndex1, int vertexIndex2 )
 
 bool QgsMeshEditor::faceCanBeSplit( int faceIndex ) const
 {
-  return mTopologicalMesh.faceCanBeSplit( faceIndex );
+  return mTopologicalMesh.canBeSplit( faceIndex );
 }
 
 int QgsMeshEditor::splitFaces( const QList<int> &faceIndexes )
@@ -520,7 +520,7 @@ QgsMeshEditingError QgsMeshEditor::addFaces( const QVector<QVector<int> > &faces
 
   QgsTopologicalMesh::TopologicalFaces topologicalFaces = mTopologicalMesh.createNewTopologicalFaces( facesToAdd, true, error );
 
-  error = mTopologicalMesh.canFacesBeAdded( topologicalFaces );
+  error = mTopologicalMesh.facesCanBeAdded( topologicalFaces );
 
   if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
     return error;
@@ -595,7 +595,7 @@ QgsMeshEditingError QgsMeshEditor::removeVertices( const QList<int> &verticesToR
     for ( const int vi : std::as_const( verticesIndexes ) )
       concernedNativeFaces.unite( qgis::listToSet( mTopologicalMesh.facesAroundVertex( vi ) ) );
 
-    error = mTopologicalMesh.canFacesBeRemoved( concernedNativeFaces.values() );
+    error = mTopologicalMesh.facesCanBeRemoved( concernedNativeFaces.values() );
     if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
       return error;
   }

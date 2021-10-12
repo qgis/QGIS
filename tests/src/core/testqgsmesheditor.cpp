@@ -252,10 +252,10 @@ void TestQgsMeshEditor::editTopologicMesh()
   QVERIFY( !topologicalMesh.edgeCanBeFlipped( 1, 2 ) );
   QVERIFY( !topologicalMesh.edgeCanBeFlipped( 1, 4 ) );
 
-  QVERIFY( topologicalMesh.faceCanBeSplit( 0 ) );
-  QVERIFY( !topologicalMesh.faceCanBeSplit( 1 ) );
-  QVERIFY( !topologicalMesh.faceCanBeSplit( 2 ) );
-  QVERIFY( !topologicalMesh.faceCanBeSplit( 3 ) );
+  QVERIFY( topologicalMesh.canBeSplit( 0 ) );
+  QVERIFY( !topologicalMesh.canBeSplit( 1 ) );
+  QVERIFY( !topologicalMesh.canBeSplit( 2 ) );
+  QVERIFY( !topologicalMesh.canBeSplit( 3 ) );
 
   QVector<QgsTopologicalMesh::Changes> topologicalChanges;
 
@@ -281,12 +281,12 @@ void TestQgsMeshEditor::editTopologicMesh()
   QVector<QgsMeshFace> faces;
   faces = {{5, 7, 6}};
   topologicFaces = topologicalMesh.createNewTopologicalFaces( faces, true, error );
-  QVERIFY( topologicalMesh.canFacesBeAdded( topologicFaces ) ==
+  QVERIFY( topologicalMesh.facesCanBeAdded( topologicFaces ) ==
            QgsMeshEditingError( Qgis::MeshEditingErrorType::UniqueSharedVertex, 5 ) );
 
   faces = {{5, 7, 6, 4}};
   topologicFaces = topologicalMesh.createNewTopologicalFaces( faces, true, error );
-  QVERIFY( topologicalMesh.canFacesBeAdded( topologicFaces ) == QgsMeshEditingError() );
+  QVERIFY( topologicalMesh.facesCanBeAdded( topologicFaces ) == QgsMeshEditingError() );
 
   faces =
   {
@@ -301,7 +301,7 @@ void TestQgsMeshEditor::editTopologicMesh()
 
   topologicFaces = topologicalMesh.createNewTopologicalFaces( faces, true, error );
 
-  QVERIFY( topologicalMesh.canFacesBeAdded( topologicFaces ) == QgsMeshEditingError() );
+  QVERIFY( topologicalMesh.facesCanBeAdded( topologicFaces ) == QgsMeshEditingError() );
 
   faces =
   {
@@ -315,7 +315,7 @@ void TestQgsMeshEditor::editTopologicMesh()
   };
 
   topologicFaces = topologicalMesh.createNewTopologicalFaces( faces, true, error );
-  QVERIFY( topologicalMesh.canFacesBeAdded( topologicFaces ).errorType ==  Qgis::MeshEditingErrorType::UniqueSharedVertex );
+  QVERIFY( topologicalMesh.facesCanBeAdded( topologicFaces ).errorType ==  Qgis::MeshEditingErrorType::UniqueSharedVertex );
   QCOMPARE( topologicalMesh.freeVerticesIndexes().count(), 6 );
 
   faces =
@@ -331,7 +331,7 @@ void TestQgsMeshEditor::editTopologicMesh()
   };
 
   topologicFaces = topologicalMesh.createNewTopologicalFaces( faces, true, error );
-  QVERIFY( topologicalMesh.canFacesBeAdded( topologicFaces ) == QgsMeshEditingError() );
+  QVERIFY( topologicalMesh.facesCanBeAdded( topologicFaces ) == QgsMeshEditingError() );
 
   faces =
   {
@@ -345,12 +345,12 @@ void TestQgsMeshEditor::editTopologicMesh()
 
   topologicFaces = topologicalMesh.createNewTopologicalFaces( faces, true, error );
   QVERIFY( error == QgsMeshEditingError() );
-  error = topologicalMesh.canFacesBeAdded( topologicFaces );
+  error = topologicalMesh.facesCanBeAdded( topologicFaces );
   QVERIFY( error == QgsMeshEditingError( Qgis::MeshEditingErrorType::ManifoldFace, 0 ) );
 
   faces = {{5, 7, 6, 4}};
   topologicFaces = topologicalMesh.createNewTopologicalFaces( faces, true, error );
-  QVERIFY( topologicalMesh.canFacesBeAdded( topologicFaces ) == QgsMeshEditingError() );
+  QVERIFY( topologicalMesh.facesCanBeAdded( topologicFaces ) == QgsMeshEditingError() );
   topologicalChanges.append( topologicalMesh.addFaces( topologicFaces ) ) ;
 
   QCOMPARE( topologicalMesh.freeVerticesIndexes().count(), 4 );
@@ -392,7 +392,7 @@ void TestQgsMeshEditor::editTopologicMesh()
   };
 
   topologicFaces = topologicalMesh.createNewTopologicalFaces( faces, true, error );
-  QVERIFY( topologicalMesh.canFacesBeAdded( topologicFaces ) == QgsMeshEditingError() );
+  QVERIFY( topologicalMesh.facesCanBeAdded( topologicFaces ) == QgsMeshEditingError() );
   topologicalChanges.append( topologicalMesh.addFaces( topologicFaces ) ) ;
 
   QCOMPARE( topologicalMesh.freeVerticesIndexes().count(), 0 );
@@ -470,28 +470,28 @@ void TestQgsMeshEditor::editTopologicMesh()
 
   QList<int> faceToRemove;
   faceToRemove = {2, 3};
-  QVERIFY( topologicalMesh.canFacesBeRemoved( faceToRemove ).errorType == Qgis::MeshEditingErrorType::UniqueSharedVertex );
+  QVERIFY( topologicalMesh.facesCanBeRemoved( faceToRemove ).errorType == Qgis::MeshEditingErrorType::UniqueSharedVertex );
 
   faceToRemove = {0, 1, 2, 3};
-  QVERIFY( topologicalMesh.canFacesBeRemoved( faceToRemove ).errorType == Qgis::MeshEditingErrorType::UniqueSharedVertex );
+  QVERIFY( topologicalMesh.facesCanBeRemoved( faceToRemove ).errorType == Qgis::MeshEditingErrorType::UniqueSharedVertex );
 
   faceToRemove = {0, 9};
-  QVERIFY( topologicalMesh.canFacesBeRemoved( faceToRemove ) == QgsMeshEditingError() );
+  QVERIFY( topologicalMesh.facesCanBeRemoved( faceToRemove ) == QgsMeshEditingError() );
 
   faceToRemove = {8, 0, 9, 10};
-  QVERIFY( topologicalMesh.canFacesBeRemoved( faceToRemove ) == QgsMeshEditingError() );
+  QVERIFY( topologicalMesh.facesCanBeRemoved( faceToRemove ) == QgsMeshEditingError() );
 
   faceToRemove = {1, 2, 3, 4, 5};
-  QVERIFY( topologicalMesh.canFacesBeRemoved( faceToRemove ) == QgsMeshEditingError() );
+  QVERIFY( topologicalMesh.facesCanBeRemoved( faceToRemove ) == QgsMeshEditingError() );
 
   faceToRemove = {0, 1, 2, 3, 4, 5};
-  QVERIFY( topologicalMesh.canFacesBeRemoved( faceToRemove ).errorType == Qgis::MeshEditingErrorType::UniqueSharedVertex );
+  QVERIFY( topologicalMesh.facesCanBeRemoved( faceToRemove ).errorType == Qgis::MeshEditingErrorType::UniqueSharedVertex );
 
   faceToRemove = {9, 0, 1, 2, 3, 4, 5};
-  QVERIFY( topologicalMesh.canFacesBeRemoved( faceToRemove ) == QgsMeshEditingError() );
+  QVERIFY( topologicalMesh.facesCanBeRemoved( faceToRemove ) == QgsMeshEditingError() );
 
   faceToRemove = {0, 6, 7, 8};
-  QVERIFY( topologicalMesh.canFacesBeRemoved( faceToRemove ) == QgsMeshEditingError() );
+  QVERIFY( topologicalMesh.facesCanBeRemoved( faceToRemove ) == QgsMeshEditingError() );
 
   topologicalChanges.append( topologicalMesh.removeFaces( {0, 9} ) );
 
@@ -562,7 +562,7 @@ void TestQgsMeshEditor::editTopologicMesh()
   QVERIFY( checkFacesAround( topologicalMesh, 3, {16, 25, 22, 10} ) );
   QVERIFY( topologicalMesh.checkConsistency() == QgsMeshEditingError() );
 
-  QVERIFY( topologicalMesh.faceCanBeSplit( 25 ) );
+  QVERIFY( topologicalMesh.canBeSplit( 25 ) );
   topologicalChanges.append( topologicalMesh.splitFace( 25 ) );
   QVERIFY( checkFacesAround( topologicalMesh, 12, {11, 12, 20, 22, 26, 27} ) );
   QVERIFY( checkFacesAround( topologicalMesh, 8, {18, 20, 27} ) );
@@ -928,7 +928,7 @@ void TestQgsMeshEditor::particularCases()
 
     const QgsTopologicalMesh::TopologicalFaces topologicFaces = meshEditor.mTopologicalMesh.createNewTopologicalFaces( facesToAdd, true, error );
     QVERIFY( error == QgsMeshEditingError() );
-    error = meshEditor.mTopologicalMesh.canFacesBeAdded( topologicFaces );
+    error = meshEditor.mTopologicalMesh.facesCanBeAdded( topologicFaces );
     QVERIFY( error == QgsMeshEditingError( Qgis::MeshEditingErrorType::ManifoldFace, 2 ) );
   }
 
@@ -960,7 +960,7 @@ void TestQgsMeshEditor::particularCases()
 
     const QgsTopologicalMesh::TopologicalFaces topologicFaces = meshEditor.mTopologicalMesh.createNewTopologicalFaces( facesToAdd, true, error );
     QVERIFY( error == QgsMeshEditingError() );
-    error = meshEditor.mTopologicalMesh.canFacesBeAdded( topologicFaces );
+    error = meshEditor.mTopologicalMesh.facesCanBeAdded( topologicFaces );
     QVERIFY( error == QgsMeshEditingError( Qgis::MeshEditingErrorType::ManifoldFace, 4 ) );
 
     QVERIFY( !meshEditor.isFaceGeometricallyCompatible( {1, 3, 2} ) );

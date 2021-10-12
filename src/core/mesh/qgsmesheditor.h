@@ -152,7 +152,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
      *  Removes vertices with indexes in the list \a verticesToRemoveIndexes in the mesh
      *  if \a fillHoles is set to TRUE, this operation will fill holes created in the mesh, if not remove the surrounding faces
      *
-     *  If removing these vertices leads to a topological errors, the method will return the corresponding error and the operatio is canceled
+     *  If removing these vertices leads to a topological errors, the method will return the corresponding error and the operation is canceled
      */
     QgsMeshEditingError removeVertices( const QList<int> &verticesToRemoveIndexes, bool fillHoles = false );
 
@@ -163,19 +163,19 @@ class CORE_EXPORT QgsMeshEditor : public QObject
 
     /**
      * Returns TRUE if faces with index in \a transformedFaces can be transformed without obtaining topologic or geometrical errors
-     * condidering the transform function \a transformFunction
+     * considering the transform function \a transformFunction
      *
      * The transform function takes a vertex index in parameter and return a QgsMeshVertex object with transformed coordinates.
      * This transformation is done in layer coordinates
      *
-     * \note Even only the faces with indexes in \a transformdFaces are checked to avoid testing all the mesh,
+     * \note Even only the faces with indexes in \a facesToCheck are checked to avoid testing all the mesh,
      * all the mesh are supposed to path through this transform function (but it is possible that transform function is not able to transform all vertices).
-     * Moving free vertices of the mesh are also checked.
+     * Moving free vertices of the mesh is also checked.
      */
     bool canBeTransformed( const QList<int> &facesToCheck, const std::function<const QgsMeshVertex( int )> &transformFunction ) const; SIP_SKIP
 
     /**
-     * Changes the (X,Y) coordinates values of the vertices with indexes in \a vertices indexes with the values in \a newValues.
+     * Changes the (X,Y) coordinates values of the vertices with indexes in \a verticesIndexes with the values in \a newValues.
      * The caller has the responsibility to check if changing the vertices coordinates does not lead to topological errors.
      * New values are in layer CRS.
      */

@@ -192,7 +192,7 @@ class CORE_EXPORT QgsTopologicalMesh
     //----------- editing methods
 
     //! Returns whether the faces can be added to the mesh
-    QgsMeshEditingError canFacesBeAdded( const TopologicalFaces &topologicalFaces ) const;
+    QgsMeshEditingError facesCanBeAdded( const TopologicalFaces &topologicalFaces ) const;
 
     /**
      * Adds faces \a topologicFaces to the topologic mesh.
@@ -204,7 +204,7 @@ class CORE_EXPORT QgsTopologicalMesh
      * Returns whether faces with index in \a faceIndexes can be removed/
      * The method an error object with type QgsMeshEditingError::NoError if the faces can be removed, otherwise returns the corresponding error
      */
-    QgsMeshEditingError canFacesBeRemoved( const QList<int> facesIndexes );
+    QgsMeshEditingError facesCanBeRemoved( const QList<int> facesIndexes );
 
     /**
      * Removes faces with index in \a faceIndexes.
@@ -237,7 +237,7 @@ class CORE_EXPORT QgsTopologicalMesh
     /**
      * Returns TRUE if face with index \a faceIndex can be split
      */
-    bool faceCanBeSplit( int faceIndex ) const;
+    bool canBeSplit( int faceIndex ) const;
 
     /**
      * Splits face with index \a faceIndex

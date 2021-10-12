@@ -1680,7 +1680,7 @@ QList<int> QgsTopologicalMesh::facesAroundVertex( int vertexIndex ) const
   return circ.facesAround();
 }
 
-QgsMeshEditingError QgsTopologicalMesh::canFacesBeRemoved( const QList<int> facesIndexes )
+QgsMeshEditingError QgsTopologicalMesh::facesCanBeRemoved( const QList<int> facesIndexes )
 {
   QSet<int> removedFaces = qgis::listToSet( facesIndexes );
   QSet<int> concernedFaces = concernedFacesBy( facesIndexes );
@@ -2072,7 +2072,7 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::merge( int vertexIndex1, int ver
   return changes;
 }
 
-bool QgsTopologicalMesh::faceCanBeSplit( int faceIndex ) const
+bool QgsTopologicalMesh::canBeSplit( int faceIndex ) const
 {
   const QgsMeshFace face = mMesh->face( faceIndex );
 
