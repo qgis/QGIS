@@ -1020,7 +1020,7 @@ while ($LINE_IDX < $LINE_COUNT){
         $COMMENT = '';
         # make all protected methods slots
         # https://github.com/qgis/QGIS/issues/45331
-        $LINE =~ s/protected:/protected slots:/;
+        $LINE =~ s/protected:/public:/;
     }
     elsif ( $ACCESS[$#ACCESS] == PRIVATE && $LINE =~ m/SIP_FORCE/){
         dbg_info("private with SIP_FORCE");
