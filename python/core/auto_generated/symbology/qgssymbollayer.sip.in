@@ -573,7 +573,7 @@ This is a list of symbol layers of other layers that should be occluded.
 .. versionadded:: 3.12
 %End
 
-  protected slots:
+  public:
 
     QgsSymbolLayer( Qgis::SymbolType type, bool locked = false );
 %Docstring
@@ -935,7 +935,7 @@ any data defined overrides and offsets which are set for the marker layer.
 .. versionadded:: 2.14
 %End
 
-  protected slots:
+  public:
 
     QgsMarkerSymbolLayer( bool locked = false );
 %Docstring
@@ -1205,7 +1205,7 @@ for a polygon.
 .. versionadded:: 3.6
 %End
 
-  protected slots:
+  public:
     QgsLineSymbolLayer( bool locked = false );
 
 
@@ -1237,7 +1237,7 @@ The ``rings`` argument optionally specifies a list of polygon rings to render as
     void setAngle( double angle );
     double angle() const;
 
-  protected slots:
+  public:
     QgsFillSymbolLayer( bool locked = false );
     void _renderPolygon( QPainter *p, const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 %Docstring

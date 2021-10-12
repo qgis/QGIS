@@ -42,7 +42,7 @@ constructor
     virtual void deactivate();
 
 
-  protected slots:
+  public:
 
 
 

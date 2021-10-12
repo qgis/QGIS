@@ -842,12 +842,12 @@ Clear all authentication configs from authentication method caches
 Clear an authentication config from its associated authentication method cache
 %End
 
-  protected slots:
+  public:
 
 
 
   public:
-  protected slots:
+  public:
 
 };
 

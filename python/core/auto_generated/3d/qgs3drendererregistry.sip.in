@@ -37,14 +37,14 @@ Returns new instance of the renderer given the DOM element. Returns ``None`` on 
 Pure virtual function: must be implemented in derived classes.
 %End
 
-  protected slots:
+  public:
 
     explicit Qgs3DRendererAbstractMetadata( const QString &type );
 %Docstring
 Constructor of the base class
 %End
 
-  protected slots:
+  public:
 };
 
 

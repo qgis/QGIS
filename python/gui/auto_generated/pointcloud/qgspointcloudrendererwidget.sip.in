@@ -55,7 +55,7 @@ Returns the point cloud layer associated with the widget.
 
   signals:
 
-  protected slots:
+  public:
 
 
 };

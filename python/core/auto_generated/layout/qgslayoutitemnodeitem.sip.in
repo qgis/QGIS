@@ -113,7 +113,7 @@ Deselects any selected nodes.
     virtual double estimatedFrameBleed() const;
 
 
-  protected slots:
+  public:
 
     QgsLayoutNodesItem( QgsLayout *layout );
 %Docstring

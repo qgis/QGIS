@@ -139,7 +139,7 @@ Focuses the default widget for the page.
   signals:
 
 
-  protected slots:
+  public:
 
 };
 

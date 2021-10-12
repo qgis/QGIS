@@ -57,7 +57,7 @@ the scroll area widget.
 .. versionadded:: 3.8
 %End
 
-  protected slots:
+  public:
     virtual void wheelEvent( QWheelEvent *event );
 
     virtual void resizeEvent( QResizeEvent *event );

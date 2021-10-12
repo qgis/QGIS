@@ -84,7 +84,7 @@ If the list is empty, all types are shown.
 Sets the filter text to search for a layer in the tree
 %End
 
-  protected slots:
+  public:
     virtual bool isLayerChecked( QgsMapLayer *layer ) const;
 %Docstring
 Returns if the layer is checked or not

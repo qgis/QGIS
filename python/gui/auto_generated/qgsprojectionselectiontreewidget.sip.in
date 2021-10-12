@@ -183,7 +183,7 @@ Emitted when the selection in the tree is changed from a valid selection to an i
 .. versionadded:: 3.18
 %End
 
-  protected slots:
+  public:
     virtual void showEvent( QShowEvent *event );
 
 

@@ -146,7 +146,7 @@ Toggles the stream digitizing mode.
 .. versionadded:: 3.20
 %End
 
-  protected slots:
+  public:
 
 
     int nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint );

@@ -226,7 +226,7 @@ Toggles the state of snapping
 Emitted when the snapping settings object changes.
 %End
 
-  protected slots:
+  public:
 
     virtual void prepareIndexStarting( int count );
 %Docstring

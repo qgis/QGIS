@@ -58,7 +58,7 @@ show whatever error is exposed.
 Sets status message to theMessage
 %End
 
-  protected slots:
+  public:
 
     virtual QList<QgsOWSSourceSelect::SupportedFormat> providerFormats();
 %Docstring

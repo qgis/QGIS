@@ -129,7 +129,7 @@ The default format is SVG.
 Defines the mode of the source line edit
 %End
 
-  protected slots:
+  public:
 
     QgsPictureSourceLineEditBase( Format format, QWidget *parent /TransferThis/ = 0 );
 %Docstring

@@ -158,7 +158,7 @@ It defines the variable containing the user selected file name
     virtual void setReadOnly( bool readOnly );
 
 
-  protected slots:
+  public:
 
     virtual void updateLayout();
 

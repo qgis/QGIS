@@ -327,7 +327,7 @@ depend on the parent form scope.
 .. versionadded:: 3.14
 %End
 
-  protected slots:
+  public:
 
     virtual void updateConstraintWidgetStatus();
 %Docstring

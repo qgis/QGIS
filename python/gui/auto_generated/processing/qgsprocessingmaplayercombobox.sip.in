@@ -111,7 +111,7 @@ Returns whether the combo box value can be freely edited.
 Emitted whenever the value is changed in the widget.
 %End
 
-  protected slots:
+  public:
 
     virtual void dragEnterEvent( QDragEnterEvent *event );
 

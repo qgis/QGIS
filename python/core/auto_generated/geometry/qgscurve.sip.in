@@ -318,7 +318,7 @@ Scrolls the curve vertices so that they start with the vertex at the given index
 
 
 
-  protected slots:
+  public:
 
     virtual void clearCache() const;
 

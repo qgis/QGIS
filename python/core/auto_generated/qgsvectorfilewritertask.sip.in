@@ -58,7 +58,7 @@ Emitted when an error occurs which prevented the file being written (or if
 the task is canceled). The writing ``error`` and ``errorMessage`` will be reported.
 %End
 
-  protected slots:
+  public:
 
     virtual bool run();
 

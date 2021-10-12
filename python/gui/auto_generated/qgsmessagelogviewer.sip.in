@@ -34,7 +34,7 @@ Create a new message log viewer. The viewer will automatically connect to the sy
 Logs a ``message`` to the viewer.
 %End
 
-  protected slots:
+  public:
     virtual void closeEvent( QCloseEvent *e );
 
     virtual void reject();

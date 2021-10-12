@@ -39,7 +39,7 @@ Constructor for QgsVectorLayerUndoPassthroughCommand
 Returns error status
 %End
 
-  protected slots:
+  public:
 
     bool rollBackToSavePoint();
 %Docstring

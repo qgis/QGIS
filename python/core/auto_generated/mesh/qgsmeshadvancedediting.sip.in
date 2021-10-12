@@ -63,7 +63,7 @@ if not, this edit has to be applied again with :py:func:`QgsMeshEditor.advancedE
 Returns a short text string describing what this advanced edit does. Default implementation return a void string.
 %End
 
-  protected slots:
+  public:
 
 };
 

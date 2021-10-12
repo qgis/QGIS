@@ -29,7 +29,7 @@ Child classes must call init(QAbstractTableModel*) from their constructor.
 Constructor.
 %End
 
-  protected slots:
+  public:
 
     void init( QAbstractTableModel *model );
 %Docstring

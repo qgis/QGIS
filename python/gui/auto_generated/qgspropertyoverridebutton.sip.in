@@ -245,7 +245,7 @@ Emitted when the activated status of the widget changes
 Emitted when creating a new auxiliary field
 %End
 
-  protected slots:
+  public:
     virtual void mouseReleaseEvent( QMouseEvent *event );
 
 

@@ -94,7 +94,7 @@ Updates the effect stack when the currently selected effect changes properties.
 :param newEffect: new effect to replace existing effect at selected position within the stack.
 %End
 
-  protected slots:
+  public:
 
 
     void loadStack();
@@ -172,7 +172,7 @@ Sets the picture to use for effect previews for the dialog
 :param picture: preview picture
 %End
 
-  protected slots:
+  public:
 
 
 };

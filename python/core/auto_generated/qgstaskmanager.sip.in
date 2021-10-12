@@ -256,7 +256,7 @@ an internal error).
    be emitted
 %End
 
-  protected slots:
+  public:
 
     virtual bool run() = 0;
 %Docstring

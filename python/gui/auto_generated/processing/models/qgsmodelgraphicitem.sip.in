@@ -66,7 +66,7 @@ Returns the associated model view.
 Emitted when the button is clicked.
 %End
 
-  protected slots:
+  public:
 
     void setPicture( const QPicture &picture );
 %Docstring

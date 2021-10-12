@@ -140,7 +140,7 @@ Returns ``True`` if settings were applied.
 .. versionadded:: 3.14
 %End
 
-  protected slots:
+  public:
 
     void drawDefaultLabels( QgsRenderContext &context,
                             const QgsScaleBarSettings &settings,

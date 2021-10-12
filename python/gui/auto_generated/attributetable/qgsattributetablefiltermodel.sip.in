@@ -245,7 +245,7 @@ Emitted when an error occurred while filtering features
 .. versionadded:: 3.18
 %End
 
-  protected slots:
+  public:
 
     virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
 

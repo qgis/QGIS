@@ -295,7 +295,7 @@ Emitted when the name of the node is changed
 .. versionadded:: 3.0
 %End
 
-  protected slots:
+  public:
 
     QgsLayerTreeNode( NodeType t, bool checked = true );
 %Docstring
@@ -322,7 +322,7 @@ Low-level insertion of children to the node. The children must not have any pare
 Low-level removal of children from the node.
 %End
 
-  protected slots:
+  public:
 
 
 };

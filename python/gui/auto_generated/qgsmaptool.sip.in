@@ -269,7 +269,7 @@ signal emitted once the map tool is activated
 signal emitted once the map tool is deactivated
 %End
 
-  protected slots:
+  public:
 
     QgsMapTool( QgsMapCanvas *canvas /TransferThis/ );
 %Docstring

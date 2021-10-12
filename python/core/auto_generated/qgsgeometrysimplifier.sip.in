@@ -75,7 +75,7 @@ is specified in layer units.
     virtual QgsAbstractGeometry *simplify( const QgsAbstractGeometry *geometry ) const /Factory/;
 
 
-  protected slots:
+  public:
 
 };
 

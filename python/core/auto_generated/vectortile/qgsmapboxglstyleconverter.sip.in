@@ -224,7 +224,7 @@ Returns a new instance of a vector tile labeling representing the converted styl
 or ``None`` if the style could not be converted successfully.
 %End
 
-  protected slots:
+  public:
 
 protected:
     enum PropertyType

@@ -58,7 +58,7 @@ Remove a child ``settingsRegistry`` from the register.
 Returns the list of registered child QgsSettingsRegistry.
 %End
 
-  protected slots:
+  public:
 
     void addSettingsEntry( const QgsSettingsEntryBase *settingsEntry );
 %Docstring

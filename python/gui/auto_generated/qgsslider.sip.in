@@ -36,7 +36,7 @@ Constructor for QgsSlider
   signals:
     void valueChanged( const QVariant & );
 
-  protected slots:
+  public:
     virtual void paintEvent( QPaintEvent *event );
 
 

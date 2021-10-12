@@ -300,7 +300,7 @@ Creates a deep copy of this list. Ownership is transferred to the caller
 Dump list
 %End
 
-      protected slots:
+      public:
     };
 
     class NodeUnaryOperator : QgsSQLStatement::Node
@@ -337,7 +337,7 @@ Operand
         virtual QgsSQLStatement::Node *clone() const /Factory/;
 
 
-      protected slots:
+      public:
     };
 
     class NodeBinaryOperator : QgsSQLStatement::Node
@@ -389,7 +389,7 @@ Precedence
 Is left associative ?
 %End
 
-      protected slots:
+      public:
 
     };
 
@@ -432,7 +432,7 @@ Values list
         virtual QgsSQLStatement::Node *clone() const /Factory/;
 
 
-      protected slots:
+      public:
     };
 
     class NodeBetweenOperator : QgsSQLStatement::Node
@@ -478,7 +478,7 @@ Maximum bound
         virtual QgsSQLStatement::Node *clone() const /Factory/;
 
 
-      protected slots:
+      public:
     };
 
     class NodeFunction : QgsSQLStatement::Node
@@ -515,7 +515,7 @@ Returns arguments
         virtual QgsSQLStatement::Node *clone() const /Factory/;
 
 
-      protected slots:
+      public:
 
     };
 
@@ -547,7 +547,7 @@ The value of the literal.
         virtual QgsSQLStatement::Node *clone() const /Factory/;
 
 
-      protected slots:
+      public:
     };
 
     class NodeColumnRef : QgsSQLStatement::Node
@@ -606,7 +606,7 @@ Whether this is prefixed by DISTINCT
 Clone with same type return
 %End
 
-      protected slots:
+      public:
     };
 
     class NodeSelectedColumn : QgsSQLStatement::Node
@@ -652,7 +652,7 @@ Alias name
 Clone with same type return
 %End
 
-      protected slots:
+      public:
     };
 
     class NodeCast : QgsSQLStatement::Node
@@ -689,7 +689,7 @@ Type
         virtual QgsSQLStatement::Node *clone() const /Factory/;
 
 
-      protected slots:
+      public:
     };
 
     class NodeTableDef : QgsSQLStatement::Node
@@ -733,7 +733,7 @@ Table alias
 Clone with same type return
 %End
 
-      protected slots:
+      public:
     };
 
     class NodeJoin : QgsSQLStatement::Node
@@ -788,7 +788,7 @@ Join type
 Clone with same type return
 %End
 
-      protected slots:
+      public:
     };
 
     class NodeColumnSorted : QgsSQLStatement::Node
@@ -829,7 +829,7 @@ Whether the column is sorted in ascending order
 Clone with same type return
 %End
 
-      protected slots:
+      public:
     };
 
     class NodeSelect : QgsSQLStatement::Node
@@ -898,7 +898,7 @@ Returns the list of order by columns
         virtual QgsSQLStatement::Node *clone() const /Factory/;
 
 
-      protected slots:
+      public:
     };
 
 
@@ -1005,7 +1005,7 @@ Constructor
 Entry function for the visitor pattern
 %End
 
-  protected slots:
+  public:
 
     QgsSQLStatement( const QString &statement, bool allowFragments );
 %Docstring

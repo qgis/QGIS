@@ -37,7 +37,7 @@ Used for setting M coordinate to new vertex.
 .. versionadded:: 3.20
 %End
 
-  protected slots:
+  public:
 
     static QColor digitizingStrokeColor();
 %Docstring

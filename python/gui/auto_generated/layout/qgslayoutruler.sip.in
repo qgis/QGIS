@@ -79,7 +79,7 @@ the view.
 Emitted when mouse cursor coordinates change
 %End
 
-  protected slots:
+  public:
     virtual void paintEvent( QPaintEvent *event );
 
     virtual void mouseMoveEvent( QMouseEvent *event );

@@ -237,7 +237,7 @@ Delayed initialization, needed because the provider registry must be already pop
 .. seealso:: :py:func:`initialized`
 %End
 
-  protected slots:
+  public:
     void addRootItems();
 %Docstring
 Populates the model

@@ -172,7 +172,7 @@ Sets the default action for a layer
 Returns the default action for a layer
 %End
 
-  protected slots:
+  public:
 
 
   signals:

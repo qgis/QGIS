@@ -97,7 +97,7 @@ Sets a ``filter`` string, used to filter out the contents of the view
 to matching algorithms.
 %End
 
-  protected slots:
+  public:
 
     virtual void keyPressEvent( QKeyEvent *event );
 

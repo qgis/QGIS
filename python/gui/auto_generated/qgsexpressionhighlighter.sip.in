@@ -20,7 +20,7 @@ class QgsExpressionHighlighter : QSyntaxHighlighter
     QgsExpressionHighlighter( QTextDocument *parent = 0 );
     void addFields( const QStringList &fieldList );
 
-  protected slots:
+  public:
     virtual void highlightBlock( const QString &text );
 
 

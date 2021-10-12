@@ -75,7 +75,7 @@ warnings in the ``context`` if not.
 .. versionadded:: 3.20
 %End
 
-  protected slots:
+  public:
 };
 
 
@@ -99,7 +99,7 @@ Convenience metadata class that uses static functions to create symbol layer and
 
     virtual void resolveFonts( const QVariantMap &properties, const QgsReadWriteContext &context );
 
-  protected slots:
+  public:
 
 
   private:

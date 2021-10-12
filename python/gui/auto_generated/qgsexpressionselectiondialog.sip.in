@@ -76,7 +76,7 @@ Sets a map canvas associated with the dialog.
 .. versionadded:: 3.0
 %End
 
-  protected slots:
+  public:
 
     virtual void closeEvent( QCloseEvent *closeEvent );
 

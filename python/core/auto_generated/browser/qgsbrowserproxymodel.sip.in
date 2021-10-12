@@ -187,7 +187,7 @@ Sets show layers to ``showLayers``
 .. versionadded:: 3.14
 %End
 
-  protected slots:
+  public:
 
     virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
 

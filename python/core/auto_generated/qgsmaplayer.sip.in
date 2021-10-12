@@ -1828,7 +1828,7 @@ Emitted when modifications has been done on layer
 .. versionadded:: 3.22
 %End
 
-  protected slots:
+  public:
 
     void clone( QgsMapLayer *layer ) const;
 %Docstring

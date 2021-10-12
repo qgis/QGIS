@@ -927,7 +927,7 @@ Returns the map's item based clip path settings.
 .. versionadded:: 3.16
 %End
 
-  protected slots:
+  public:
 
     virtual void draw( QgsLayoutItemRenderContext &context );
 

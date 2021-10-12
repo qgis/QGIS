@@ -21,7 +21,7 @@ class QgsBrushStyleComboBox : QComboBox
 
     void setBrushStyle( Qt::BrushStyle style );
 
-  protected slots:
+  public:
     QIcon iconForBrush( Qt::BrushStyle style );
 
 };

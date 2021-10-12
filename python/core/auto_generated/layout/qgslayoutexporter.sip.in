@@ -412,7 +412,7 @@ such as opacity which will prevent these individual items from being exported as
 .. versionadded:: 3.20
 %End
 
-  protected slots:
+  public:
 
     virtual QString generateFileName( const PageExportDetails &details ) const;
 %Docstring

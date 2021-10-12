@@ -88,7 +88,7 @@ Emitted when any of the settings described by the widget are changed.
 Emitted when an auxiliary field is created in the widget.
 %End
 
-  protected slots:
+  public:
 
     virtual QgsExpressionContext createExpressionContext() const;
 

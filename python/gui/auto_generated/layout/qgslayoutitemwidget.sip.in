@@ -115,7 +115,7 @@ Sets the master layout associated with the item.
 .. versionadded:: 3.10
 %End
 
-  protected slots:
+  public:
 
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsLayoutObject::DataDefinedProperty property );
 %Docstring

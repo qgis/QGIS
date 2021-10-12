@@ -61,7 +61,7 @@ Add optimization strategy
 Returns director name
 %End
 
-  protected slots:
+  public:
 };
 
 /************************************************************************

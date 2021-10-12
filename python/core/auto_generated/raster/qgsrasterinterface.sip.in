@@ -443,7 +443,7 @@ Write base class members to xml.
 Sets base class members from xml. Usually called from :py:func:`~QgsRasterInterface.create` methods of subclasses
 %End
 
-  protected slots:
+  public:
 
 
 

@@ -46,7 +46,7 @@ the item.
 .. seealso:: :py:func:`setCompositionMode`
 %End
 
-  protected slots:
+  public:
 
     virtual void draw( QPainter *painter );
 

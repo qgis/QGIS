@@ -49,7 +49,7 @@ Constructor
     virtual void setDockMode( bool dockMode );
 
 
-  protected slots:
+  public:
 
 };
 

@@ -248,7 +248,7 @@ Returns the blend mode for the effect
 .. seealso:: :py:func:`setBlendMode`
 %End
 
-  protected slots:
+  public:
 
     virtual void draw( QgsRenderContext &context );
 

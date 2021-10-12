@@ -54,7 +54,7 @@ Returns the file path for the source SVG file.
 Returns a new QgsSvgAnnotation object.
 %End
 
-  protected slots:
+  public:
 
     virtual void renderAnnotation( QgsRenderContext &context, QSizeF size ) const;
 
