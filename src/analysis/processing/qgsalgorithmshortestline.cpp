@@ -18,6 +18,7 @@
 //Disclaimer:This feature was originally developed in Python by: Matteo Ghetta, August 2021
 
 #include "qgsalgorithmshortestline.h"
+#include "qgsdistancearea.h"
 
 QString QgsShortestLineAlgorithm::name() const
 {
