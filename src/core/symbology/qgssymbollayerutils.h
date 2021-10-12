@@ -260,10 +260,11 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param u size units
      * \param size target size of preview icon
      * \param scale map unit scale for preview
+     * \param parentSymbolType since QGIS 3.22, can be used to specify the parent symbol type so that geometry generator preview icons are correctly calculated
      * \returns icon containing symbol layer preview
      * \see symbolLayerPreviewPicture()
      */
-    static QIcon symbolLayerPreviewIcon( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
+    static QIcon symbolLayerPreviewIcon( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid );
 
     /**
      * Returns an icon preview for a color ramp.

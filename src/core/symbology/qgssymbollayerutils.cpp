@@ -858,7 +858,7 @@ QPicture QgsSymbolLayerUtils::symbolLayerPreviewPicture( const QgsSymbolLayer *l
   return picture;
 }
 
-QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale & )
+QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &, Qgis::SymbolType parentSymbolType )
 {
   QPixmap pixmap( size );
   pixmap.fill( Qt::transparent );
@@ -873,6 +873,22 @@ QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( const QgsSymbolLayer *layer, 
   renderContext.setExpressionContext( expContext );
 
   QgsSymbolRenderContext symbolContext( renderContext, u, 1.0, false, Qgis::SymbolRenderHints(), nullptr );
+
+  switch ( parentSymbolType )
+  {
+    case Qgis::SymbolType::Marker:
+      symbolContext.setOriginalGeometryType( QgsWkbTypes::PointGeometry );
+      break;
+    case Qgis::SymbolType::Line:
+      symbolContext.setOriginalGeometryType( QgsWkbTypes::LineGeometry );
+      break;
+    case Qgis::SymbolType::Fill:
+      symbolContext.setOriginalGeometryType( QgsWkbTypes::PolygonGeometry );
+      break;
+    case Qgis::SymbolType::Hybrid:
+      break;
+  }
+
   std::unique_ptr< QgsSymbolLayer > layerClone( layer->clone() );
   layerClone->drawPreviewIcon( symbolContext, size );
   painter.end();
