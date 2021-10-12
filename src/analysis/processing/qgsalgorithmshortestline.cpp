@@ -72,6 +72,7 @@ void QgsShortestLineAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "SOURCE" ), QObject::tr( "Source layer" ), QList<int>() << QgsProcessing::TypeVectorAnyGeometry ) );
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "DESTINATION" ), QObject::tr( "Destination layer" ), QList<int>() << QgsProcessing::TypeVectorAnyGeometry ) );
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method" ), QStringList() << "distance to nearest point on geometry" << "distance to geometry centroid", false, QVariant( "boundary" ) ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "NEIGHBORS" ), QObject::tr( "Maximum number of neighbors" ), QgsProcessingParameterNumber::Integer, 1, false, 1 ) );
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "DISTANCE" ), QObject::tr( "Maximum distance" ), QVariant(), QString( "SOURCE" ), true ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Shortest lines" ) ) );
@@ -86,6 +87,8 @@ bool QgsShortestLineAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   mDestination.reset( parameterAsSource( parameters, QStringLiteral( "DESTINATION" ), context ) );
   if ( !mSource )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "DESTINATION" ) ) );
+
+  mMethod = parameterAsInt( parameters, QStringLiteral( "METHOD" ), context );
 
   mKNeighbors = parameterAsInt( parameters, QStringLiteral( "NEIGHBORS" ), context );
 
@@ -128,7 +131,6 @@ QVariantMap QgsShortestLineAlgorithm::processAlgorithm( const QVariantMap &param
     if ( feedback->isCanceled() )
       break;
 
-
     const QgsGeometry sourceGeom = sourceFeature.geometry();
     QgsFeatureIds nearestIds = qgis::listToSet( idx.nearestNeighbor( sourceGeom, mKNeighbors, mMaxDistance ) );
 
@@ -139,7 +141,16 @@ QVariantMap QgsShortestLineAlgorithm::processAlgorithm( const QVariantMap &param
     QgsFeature destinationFeature;
     while ( destinationIterator.nextFeature( destinationFeature ) )
     {
-      const QgsGeometry destinationGeom = destinationFeature.geometry();
+      QgsGeometry destinationGeom;
+
+      if( mMethod == 1 )
+      {
+        destinationGeom = destinationFeature.geometry().centroid();
+      }
+      else
+      {
+        destinationGeom = destinationFeature.geometry();
+      }
 
       const QgsGeometry shortestLine = sourceGeom.shortestLine( destinationGeom );
       double dist = da.measureLength( shortestLine );
