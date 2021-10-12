@@ -348,9 +348,10 @@ void QgsMeshEditor::updateElementsCount( const QgsTopologicalMesh::Changes &chan
   }
 }
 
-bool QgsMeshEditor::checkConsistency() const
+bool QgsMeshEditor::checkConsistency( QgsMeshEditingError &error ) const
 {
-  switch ( mTopologicalMesh.checkConsistency().errorType )
+  error = mTopologicalMesh.checkConsistency();
+  switch ( error.errorType )
   {
     case Qgis::MeshEditingErrorType::NoError:
       break;

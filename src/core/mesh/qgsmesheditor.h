@@ -46,9 +46,9 @@ class CORE_EXPORT QgsMeshEditingError
     //! Constructor with eht error \a type and the index of the element \a elementIndex
     QgsMeshEditingError( Qgis::MeshEditingErrorType type, int elementIndex );
 
-    Qgis::MeshEditingErrorType errorType;
+    Qgis::MeshEditingErrorType errorType = Qgis::MeshEditingErrorType::NoError;
 
-    int elementIndex;
+    int elementIndex = -1;
 
     bool operator==( const QgsMeshEditingError &other ) const {return ( other.errorType == errorType && other.elementIndex == elementIndex );}
     bool operator!=( const QgsMeshEditingError &other ) const {return !operator==( other );}
@@ -238,7 +238,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     QgsTriangularMesh *triangularMesh(); SIP_SKIP
 
     //! Return TRUE if the edited mesh is consistent
-    bool checkConsistency() const;
+    bool checkConsistency( QgsMeshEditingError &error ) const;
 
     /**
      * Returns TRUE if an edge of face is closest than the tolerance from the \a point in triangular mesh coordinate
