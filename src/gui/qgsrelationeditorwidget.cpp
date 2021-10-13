@@ -343,8 +343,14 @@ void QgsRelationEditorWidget::updateButtons()
     const bool multieditLinkedChildSelected = ! selectedChildFeatureIds().isEmpty();
 
     canAddGeometry = false;
+
+    canRemove = canRemove && !nmRelation().isValid();
     canRemove = canRemove && multieditLinkedChildSelected;
-    canLink = false;
+
+    // In 1:n relations an element can be linked only to 1 feature
+    canLink = canLink && mNmRelation.isValid();
+
+    canUnlink = canUnlink && !mNmRelation.isValid();
     canUnlink = canUnlink && multieditLinkedChildSelected;
   }
   else
@@ -409,7 +415,6 @@ void QgsRelationEditorWidget::addFeatureGeometry()
     mMessageBarItem = QgsMessageBar::createMessage( title, msg, this );
     lMainMessageBar->pushItem( mMessageBarItem );
   }
-
 }
 
 void QgsRelationEditorWidget::onDigitizingCompleted( const QgsFeature &feature )
@@ -486,12 +491,36 @@ void QgsRelationEditorWidget::updateUi()
       QgsFeature featureChild;
       while ( featureIterator.nextFeature( featureChild ) )
       {
-        QTreeWidgetItem *treeWidgetItemChild = new QTreeWidgetItem( treeWidgetItem );
-        treeWidgetItemChild->setData( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureType ), static_cast<int>( MultiEditFeatureType::Child ) );
-        treeWidgetItemChild->setData( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureId ), featureChild.id() );
-        treeWidgetItemChild->setText( 0, QgsVectorLayerUtils::getFeatureDisplayString( mRelation.referencingLayer(), featureChild ) );
-        treeWidgetItemChild->setIcon( 0, QgsIconUtils::iconForLayer( mRelation.referencingLayer() ) );
-        treeWidgetItem->addChild( treeWidgetItemChild );
+        if ( mNmRelation.isValid() )
+        {
+          QgsFeatureRequest requestFinalChild = mNmRelation.getReferencedFeatureRequest( featureChild );
+          QgsFeatureIterator featureIteratorFinalChild = mNmRelation.referencedLayer()->getFeatures( requestFinalChild );
+          QgsFeature featureChildChild;
+          while ( featureIteratorFinalChild.nextFeature( featureChildChild ) )
+          {
+            QTreeWidgetItem *treeWidgetItemChild = new QTreeWidgetItem( treeWidgetItem );
+            treeWidgetItemChild->setData( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureType ), static_cast<int>( MultiEditFeatureType::Child ) );
+            treeWidgetItemChild->setData( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureId ), featureChildChild.id() );
+            treeWidgetItemChild->setText( 0, QgsVectorLayerUtils::getFeatureDisplayString( mNmRelation.referencedLayer(), featureChildChild ) );
+            treeWidgetItemChild->setIcon( 0, QgsIconUtils::iconForLayer( mNmRelation.referencedLayer() ) );
+
+            // For nm relations deleting/unlinking ist not supported now, so selection
+            // is also not possible
+            if ( nmRelation().isValid() )
+              treeWidgetItem->setFlags( Qt::ItemIsEnabled );
+
+            treeWidgetItem->addChild( treeWidgetItemChild );
+          }
+        }
+        else
+        {
+          QTreeWidgetItem *treeWidgetItemChild = new QTreeWidgetItem( treeWidgetItem );
+          treeWidgetItemChild->setData( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureType ), static_cast<int>( MultiEditFeatureType::Child ) );
+          treeWidgetItemChild->setData( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureId ), featureChild.id() );
+          treeWidgetItemChild->setText( 0, QgsVectorLayerUtils::getFeatureDisplayString( mRelation.referencingLayer(), featureChild ) );
+          treeWidgetItemChild->setIcon( 0, QgsIconUtils::iconForLayer( mRelation.referencingLayer() ) );
+          treeWidgetItem->addChild( treeWidgetItemChild );
+        }
       }
 
       treeWidgetItem->setExpanded( true );

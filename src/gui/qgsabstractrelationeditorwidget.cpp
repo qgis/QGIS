@@ -221,19 +221,13 @@ void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
 
   if ( mNmRelation.isValid() )
   {
-    if ( multiEditModeActive() )
-    {
-      QgsLogger::warning( tr( "Adding of feature not supported in multiple edit mode for n:m relations" ) );
-      return;
-    }
-
     // only normal relations support m:n relation
     Q_ASSERT( mNmRelation.type() == QgsRelation::Normal );
 
     // n:m Relation: first let the user create a new feature on the other table
     // and autocreate a new linking feature.
-    QgsFeature f;
-    if ( !vlTools->addFeature( mNmRelation.referencedLayer(), QgsAttributeMap(), geometry, &f ) )
+    QgsFeature finalFeature;
+    if ( !vlTools->addFeature( mNmRelation.referencedLayer(), QgsAttributeMap(), geometry, &finalFeature ) )
       return;
 
     // Expression context for the linking table
@@ -241,21 +235,26 @@ void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
 
     QgsAttributeMap linkAttributes = keyAttrs;
     const auto constFieldPairs = mRelation.fieldPairs();
-    for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
-    {
-      const int index = fields.indexOf( fieldPair.first );
-      linkAttributes.insert( index,  mFeatureList.first().attribute( fieldPair.second ) );
-    }
 
-    const auto constNmFieldPairs = mNmRelation.fieldPairs();
-    for ( const QgsRelation::FieldPair &fieldPair : constNmFieldPairs )
+    for ( const QgsFeature &editingFeature : mFeatureList )
     {
-      const int index = fields.indexOf( fieldPair.first );
-      linkAttributes.insert( index, f.attribute( fieldPair.second ) );
-    }
-    QgsFeature linkFeature = QgsVectorLayerUtils::createFeature( mRelation.referencingLayer(), QgsGeometry(), linkAttributes, &context );
+      for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
+      {
+        const int index = fields.indexOf( fieldPair.first );
+        linkAttributes.insert( index,  editingFeature.attribute( fieldPair.second ) );
+      }
 
-    mRelation.referencingLayer()->addFeature( linkFeature );
+      const auto constNmFieldPairs = mNmRelation.fieldPairs();
+      for ( const QgsRelation::FieldPair &fieldPair : constNmFieldPairs )
+      {
+        const int index = fields.indexOf( fieldPair.first );
+        linkAttributes.insert( index, finalFeature.attribute( fieldPair.second ) );
+      }
+
+      QgsFeature linkFeature = QgsVectorLayerUtils::createFeature( mRelation.referencingLayer(), QgsGeometry(), linkAttributes, &context );
+
+      mRelation.referencingLayer()->addFeature( linkFeature );
+    }
   }
   else
   {
@@ -267,6 +266,7 @@ void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
     if ( !vlTools->addFeature( mRelation.referencingLayer(), keyAttrs, geometry, &linkFeature ) )
       return;
 
+    // In multiedit add to other features to but whitout dialog
     for ( const QgsFeature &feature : mFeatureList )
     {
       // First feature already added
@@ -413,12 +413,6 @@ void QgsAbstractRelationEditorWidget::deleteFeatures( const QgsFeatureIds &fids 
 
 void QgsAbstractRelationEditorWidget::linkFeature()
 {
-  if ( multiEditModeActive() )
-  {
-    QgsLogger::warning( tr( "Linking of feature not supported in multiple edit mode" ) );
-    return;
-  }
-
   QgsVectorLayer *layer = nullptr;
 
   if ( mNmRelation.isValid() )
@@ -430,6 +424,12 @@ void QgsAbstractRelationEditorWidget::linkFeature()
   }
   else
   {
+    if ( multiEditModeActive() )
+    {
+      QgsLogger::warning( tr( "For 1:n relations is not possible to link to multiple features" ) );
+      return;
+    }
+
     layer = mRelation.referencingLayer();
   }
 
@@ -446,12 +446,6 @@ void QgsAbstractRelationEditorWidget::linkFeature()
 void QgsAbstractRelationEditorWidget::onLinkFeatureDlgAccepted()
 {
   QgsFeatureSelectionDlg *selectionDlg = qobject_cast<QgsFeatureSelectionDlg *>( sender() );
-
-  if ( multiEditModeActive() )
-  {
-    QgsLogger::warning( tr( "Linking of feature not supported in multiple edit mode" ) );
-    return;
-  }
 
   if ( mNmRelation.isValid() )
   {
@@ -484,24 +478,28 @@ void QgsAbstractRelationEditorWidget::onLinkFeatureDlgAccepted()
                              polyRel.layerRepresentation( mRelation.referencedLayer() ) );
     }
 
-    const auto constFieldPairs = mRelation.fieldPairs();
-    for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
-    {
-      const int index = fields.indexOf( fieldPair.first );
-      linkAttributes.insert( index, mFeatureList.first().attribute( fieldPair.second ) );
-    }
-
     while ( it.nextFeature( relatedFeature ) )
     {
-      const auto constFieldPairs = mNmRelation.fieldPairs();
-      for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
+      for ( const QgsFeature &editFeature : mFeatureList )
       {
-        const int index = fields.indexOf( fieldPair.first );
-        linkAttributes.insert( index, relatedFeature.attribute( fieldPair.second ) );
-      }
-      const QgsFeature linkFeature = QgsVectorLayerUtils::createFeature( mRelation.referencingLayer(), QgsGeometry(), linkAttributes, &context );
+        {
+          const auto constFieldPairs = mRelation.fieldPairs();
+          for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
+          {
+            const int index = fields.indexOf( fieldPair.first );
+            linkAttributes.insert( index, editFeature.attribute( fieldPair.second ) );
+          }
+        }
 
-      newFeatures << linkFeature;
+        const auto constFieldPairs = mNmRelation.fieldPairs();
+        for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
+        {
+          const int index = fields.indexOf( fieldPair.first );
+          linkAttributes.insert( index, relatedFeature.attribute( fieldPair.second ) );
+        }
+        const QgsFeature linkFeature = QgsVectorLayerUtils::createFeature( mRelation.referencingLayer(), QgsGeometry(), linkAttributes, &context );
+        newFeatures << linkFeature;
+      }
     }
 
     mRelation.referencingLayer()->addFeatures( newFeatures );
@@ -513,6 +511,12 @@ void QgsAbstractRelationEditorWidget::onLinkFeatureDlgAccepted()
   }
   else
   {
+    if ( multiEditModeActive() )
+    {
+      QgsLogger::warning( tr( "For 1:n relations is not possible to link to multiple features" ) );
+      return;
+    }
+
     QMap<int, QVariant> keys;
     const auto constFieldPairs = mRelation.fieldPairs();
     for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
