@@ -4017,6 +4017,37 @@ static QVariant fcnRotate( const QVariantList &values, const QgsExpressionContex
   return QVariant::fromValue( fGeom );
 }
 
+static QVariant fcnScale( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  const double xScale = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
+  const double yScale = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
+  const QgsGeometry center = values.at( 3 ).isValid() ? QgsExpressionUtils::getGeometry( values.at( 3 ), parent )
+                             : QgsGeometry();
+
+  QgsPointXY pt;
+  if ( center.isNull() )
+  {
+    // if center wasn't specified, use bounding box centroid
+    pt = fGeom.boundingBox().center();
+  }
+  else if ( QgsWkbTypes::flatType( center.constGet()->simplifiedTypeRef()->wkbType() ) != QgsWkbTypes::Point )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function 'scale' requires a point value for the center" ) );
+    return QVariant();
+  }
+  else
+  {
+    pt = center.asPoint();
+  }
+
+  QTransform t = QTransform::fromTranslate( pt.x(), pt.y() );
+  t.scale( xScale, yScale );
+  t.translate( -pt.x(), -pt.y() );
+  fGeom.transform( t );
+  return QVariant::fromValue( fGeom );
+}
+
 static QVariant fcnAffineTransform( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -7023,6 +7054,11 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "rotation" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "center" ), true ),
                                             fcnRotate, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "scale" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "x_scale" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "y_scale" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "center" ), true ),
+                                            fcnScale, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "affine_transform" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "deltaX" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "deltaY" ) )
