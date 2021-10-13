@@ -212,6 +212,19 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     void initDualView( QgsVectorLayer *layer, const QgsFeatureRequest &request );
     void setMapTool( QgsMapTool *mapTool );
     void unsetMapTool();
+    QgsFeatureIds selectedChildFeatureIds() const;
+
+    enum class MultiEditFeatureType : int
+    {
+      Parent,
+      Child
+    };
+
+    enum class MultiEditTreeWidgetRole : int
+    {
+      FeatureType = Qt::UserRole + 1,
+      FeatureId = Qt::UserRole + 2
+    };
 
     QgsDualView *mDualView = nullptr;
     QPointer<QgsMessageBarItem> mMessageBarItem;
@@ -230,7 +243,6 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     QToolButton *mAddFeatureGeometryButton = nullptr;
     QStackedWidget *mStackedWidget = nullptr;
     QWidget *mMultiEditStackedWidgetPage = nullptr;
-    QLabel *mMultiEditInformationLabel = nullptr;
     QTreeWidget *mMultiEditTreeWidget = nullptr;
     QObjectUniquePtr<QgsMapToolDigitizeFeature> mMapToolDigitize;
     QButtonGroup *mViewModeButtonGroup = nullptr;

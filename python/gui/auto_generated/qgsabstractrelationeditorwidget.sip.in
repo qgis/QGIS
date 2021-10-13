@@ -221,6 +221,13 @@ Duplicates a feature
 Duplicates features
 %End
 
+    bool multiEditModeActive() const;
+%Docstring
+Return true if editing multiple features at a time
+
+.. versionadded:: 3.22
+%End
+
   protected:
 
 

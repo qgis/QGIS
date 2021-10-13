@@ -221,7 +221,7 @@ void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
 
   if ( mNmRelation.isValid() )
   {
-    if ( mFeatureList.size() > 1 )
+    if ( multiEditModeActive() )
     {
       QgsLogger::warning( tr( "Adding of feature not supported in multiple edit mode for n:m relations" ) );
       return;
@@ -259,20 +259,25 @@ void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
   }
   else
   {
-    int featureAdded = 0;
+    const auto constFieldPairs = mRelation.fieldPairs();
+    for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
+      keyAttrs.insert( fields.indexFromName( fieldPair.referencingField() ), mFeatureList.first().attribute( fieldPair.referencedField() ) );
+
+    QgsFeature linkFeature;
+    if ( !vlTools->addFeature( mRelation.referencingLayer(), keyAttrs, geometry, &linkFeature ) )
+      return;
+
     for ( const QgsFeature &feature : mFeatureList )
     {
-      const auto constFieldPairs = mRelation.fieldPairs();
-      for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
-      {
-        keyAttrs.insert( fields.indexFromName( fieldPair.referencingField() ), feature.attribute( fieldPair.referencedField() ) );
-      }
+      // First feature already added
+      if ( mFeatureList.first() == feature )
+        continue;
 
-      if ( vlTools->addFeature( mRelation.referencingLayer(), keyAttrs, geometry ) )
-        featureAdded++;
+      for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
+        linkFeature.setAttribute( fields.indexFromName( fieldPair.referencingField() ), feature.attribute( fieldPair.referencedField() ) );
+
+      mRelation.referencingLayer()->addFeature( linkFeature );
     }
-    if ( featureAdded == 0 )
-      return;
   }
 
   updateUi();
@@ -290,6 +295,12 @@ void QgsAbstractRelationEditorWidget::deleteFeatures( const QgsFeatureIds &fids 
   QgsVectorLayer *layer;
   if ( mNmRelation.isValid() )
   {
+    if ( multiEditModeActive() )
+    {
+      QgsLogger::warning( tr( "Deleting of features not supported in multiple edit mode for n:m relations" ) );
+      return;
+    }
+
     // only normal relations support m:n relation
     Q_ASSERT( mNmRelation.type() == QgsRelation::Normal );
 
@@ -402,7 +413,7 @@ void QgsAbstractRelationEditorWidget::deleteFeatures( const QgsFeatureIds &fids 
 
 void QgsAbstractRelationEditorWidget::linkFeature()
 {
-  if ( mFeatureList.size() > 1 )
+  if ( multiEditModeActive() )
   {
     QgsLogger::warning( tr( "Linking of feature not supported in multiple edit mode" ) );
     return;
@@ -436,7 +447,7 @@ void QgsAbstractRelationEditorWidget::onLinkFeatureDlgAccepted()
 {
   QgsFeatureSelectionDlg *selectionDlg = qobject_cast<QgsFeatureSelectionDlg *>( sender() );
 
-  if ( mFeatureList.size() > 1 )
+  if ( multiEditModeActive() )
   {
     QgsLogger::warning( tr( "Linking of feature not supported in multiple edit mode" ) );
     return;
@@ -545,14 +556,14 @@ void QgsAbstractRelationEditorWidget::unlinkFeature( const QgsFeatureId fid )
 
 void QgsAbstractRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &fids )
 {
-  if ( mFeatureList.size() > 1 )
-  {
-    QgsLogger::warning( tr( "Unlinking of features not supported in multiple edit mode" ) );
-    return;
-  }
-
   if ( mNmRelation.isValid() )
   {
+    if ( multiEditModeActive() )
+    {
+      QgsLogger::warning( tr( "Unlinking of features not supported in multiple edit mode for n:m relations" ) );
+      return;
+    }
+
     // only normal relations support m:n relation
     Q_ASSERT( mNmRelation.type() == QgsRelation::Normal );
 
@@ -673,6 +684,11 @@ void QgsAbstractRelationEditorWidget::duplicateFeatures( const QgsFeatureIds &fi
     QgsVectorLayerUtils::QgsDuplicateFeatureContext duplicatedFeatureContext;
     QgsVectorLayerUtils::duplicateFeature( layer, f, QgsProject::instance(), duplicatedFeatureContext );
   }
+}
+
+bool QgsAbstractRelationEditorWidget::multiEditModeActive() const
+{
+  return mFeatureList.size() > 1;
 }
 
 void QgsAbstractRelationEditorWidget::showEvent( QShowEvent * )

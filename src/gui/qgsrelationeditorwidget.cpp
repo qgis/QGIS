@@ -206,13 +206,12 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( const QVariantMap &config, QWi
   // add multi feature editing page
   mMultiEditStackedWidgetPage = new QWidget( this );
   {
-    QVBoxLayout *vBoxLayout = new QVBoxLayout( this );
+    QVBoxLayout *vBoxLayout = new QVBoxLayout();
     vBoxLayout->setContentsMargins( 0, 0, 0, 0 );
 
-    mMultiEditInformationLabel = new QLabel( this );
-    vBoxLayout->addWidget( mMultiEditInformationLabel );
-
     mMultiEditTreeWidget = new QTreeWidget( this );
+    mMultiEditTreeWidget->setHeaderHidden( true );
+    mMultiEditTreeWidget->setSelectionMode( QTreeWidget::ExtendedSelection );
     vBoxLayout->addWidget( mMultiEditTreeWidget );
 
     mMultiEditStackedWidgetPage->setLayout( vBoxLayout );
@@ -239,6 +238,7 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( const QVariantMap &config, QWi
   connect( mLinkFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::linkFeature );
   connect( mUnlinkFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::unlinkSelectedFeatures );
   connect( mZoomToFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::zoomToSelectedFeatures );
+  connect( mMultiEditTreeWidget, &QTreeWidget::itemSelectionChanged, this, &QgsRelationEditorWidget::updateButtons );
 
   // Set initial state for add/remove etc. buttons
   updateButtons();
@@ -246,7 +246,7 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( const QVariantMap &config, QWi
 
 void QgsRelationEditorWidget::initDualView( QgsVectorLayer *layer, const QgsFeatureRequest &request )
 {
-  if ( mFeatureList.size() > 1 )
+  if ( multiEditModeActive() )
   {
     QgsLogger::warning( tr( "Dual view should not be used in multiple edit mode" ) );
     return;
@@ -311,9 +311,9 @@ void QgsRelationEditorWidget::updateButtons()
   bool canAddGeometry = false;
   bool canRemove = false;
   bool canEdit = false;
-  bool canLinkUnlink = false;
+  bool canLink = false;
+  bool canUnlink = false;
   bool spatial = false;
-  const bool selectionNotEmpty = mFeatureSelectionMgr ? mFeatureSelectionMgr->selectedFeatureCount() : false;
 
   if ( mRelation.isValid() )
   {
@@ -322,7 +322,8 @@ void QgsRelationEditorWidget::updateButtons()
     canAddGeometry = mRelation.referencingLayer()->isEditable();
     canRemove = mRelation.referencingLayer()->isEditable();
     canEdit = mRelation.referencingLayer()->isEditable();
-    canLinkUnlink = mRelation.referencingLayer()->isEditable();
+    canLink = mRelation.referencingLayer()->isEditable();
+    canUnlink = mRelation.referencingLayer()->isEditable();
     spatial = mRelation.referencingLayer()->isSpatial();
   }
 
@@ -336,24 +337,32 @@ void QgsRelationEditorWidget::updateButtons()
     spatial = mNmRelation.referencedLayer()->isSpatial();
   }
 
-  if ( mFeatureList.size() > 1 )
+  const bool selectionNotEmpty = mFeatureSelectionMgr ? mFeatureSelectionMgr->selectedFeatureCount() : false;
+  if ( multiEditModeActive() )
   {
+    const bool multieditLinkedChildSelected = ! selectedChildFeatureIds().isEmpty();
+
     canAddGeometry = false;
-    canRemove = false;
-    canEdit = false;
-    canLinkUnlink = false;
+    canRemove = canRemove && multieditLinkedChildSelected;
+    canLink = false;
+    canUnlink = canUnlink && multieditLinkedChildSelected;
+  }
+  else
+  {
+    canRemove = canRemove && selectionNotEmpty;
+    canUnlink = canUnlink && selectionNotEmpty;
   }
 
   mToggleEditingButton->setEnabled( toggleEditingButtonEnabled );
   mAddFeatureButton->setEnabled( canAdd );
   mAddFeatureGeometryButton->setEnabled( canAddGeometry );
   mDuplicateFeatureButton->setEnabled( canEdit && selectionNotEmpty );
-  mLinkFeatureButton->setEnabled( canLinkUnlink );
-  mDeleteFeatureButton->setEnabled( canRemove && selectionNotEmpty );
-  mUnlinkFeatureButton->setEnabled( canLinkUnlink && selectionNotEmpty );
+  mLinkFeatureButton->setEnabled( canLink );
+  mDeleteFeatureButton->setEnabled( canRemove );
+  mUnlinkFeatureButton->setEnabled( canUnlink );
   mZoomToFeatureButton->setEnabled( selectionNotEmpty );
   mToggleEditingButton->setChecked( canEdit );
-  mSaveEditsButton->setEnabled( canEdit || canLinkUnlink );
+  mSaveEditsButton->setEnabled( canEdit || canLink || canUnlink );
 
   mToggleEditingButton->setVisible( !mLayerInSameTransactionGroup );
 
@@ -369,7 +378,7 @@ void QgsRelationEditorWidget::updateButtons()
 
 void QgsRelationEditorWidget::addFeatureGeometry()
 {
-  if ( mFeatureList.size() > 1 )
+  if ( multiEditModeActive() )
   {
     QgsLogger::warning( tr( "Adding a geometry feature is not supported in multiple edit mode" ) );
     return;
@@ -425,7 +434,10 @@ void QgsRelationEditorWidget::updateUi()
   if ( !isVisible() )
     return;
 
-  if ( mFeatureList.size() == 1 )
+  mFormViewButton->setVisible( !multiEditModeActive() );
+  mTableViewButton->setVisible( !multiEditModeActive() );
+
+  if ( !multiEditModeActive() )
   {
     mStackedWidget->setCurrentWidget( mDualView );
 
@@ -456,27 +468,33 @@ void QgsRelationEditorWidget::updateUi()
   else
   {
     mStackedWidget->setCurrentWidget( mMultiEditStackedWidgetPage ) ;
-    mMultiEditInformationLabel->setText( tr( "Simultaneously editing of %1 features." ).arg( mFeatureList.size() ) );
 
     mMultiEditTreeWidget->clear();
-    for ( const QgsFeature &feature : mFeatureList )
+    for ( const QgsFeature &feature : std::as_const( mFeatureList ) )
     {
       QTreeWidgetItem *treeWidgetItem = new QTreeWidgetItem( mMultiEditTreeWidget );
-      treeWidgetItem->setText( 0, QString::number( feature.id() ) );
+      treeWidgetItem->setData( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureType ), static_cast<int>( MultiEditFeatureType::Parent ) );
+      treeWidgetItem->setText( 0, QgsVectorLayerUtils::getFeatureDisplayString( mRelation.referencedLayer(), feature ) );
       treeWidgetItem->setIcon( 0, QgsIconUtils::iconForLayer( mRelation.referencedLayer() ) );
+
+      // Parent feature items are not selectable
+      treeWidgetItem->setFlags( Qt::ItemIsEnabled );
 
       // Get child features
       QgsFeatureRequest request = relation().getRelatedFeaturesRequest( feature );
-      QgsFeatureIterator fit = mRelation.referencingLayer()->getFeatures( request );
+      QgsFeatureIterator featureIterator = mRelation.referencingLayer()->getFeatures( request );
       QgsFeature featureChild;
-      while ( fit.nextFeature( featureChild ) )
+      while ( featureIterator.nextFeature( featureChild ) )
       {
         QTreeWidgetItem *treeWidgetItemChild = new QTreeWidgetItem( treeWidgetItem );
-        treeWidgetItemChild->setText( 0, QString::number( featureChild.id() ) );
+        treeWidgetItemChild->setData( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureType ), static_cast<int>( MultiEditFeatureType::Child ) );
+        treeWidgetItemChild->setData( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureId ), featureChild.id() );
+        treeWidgetItemChild->setText( 0, QgsVectorLayerUtils::getFeatureDisplayString( mRelation.referencingLayer(), featureChild ) );
         treeWidgetItemChild->setIcon( 0, QgsIconUtils::iconForLayer( mRelation.referencingLayer() ) );
         treeWidgetItem->addChild( treeWidgetItemChild );
       }
 
+      treeWidgetItem->setExpanded( true );
       mMultiEditTreeWidget->addTopLevelItem( treeWidgetItem );
     }
   }
@@ -547,6 +565,24 @@ void QgsRelationEditorWidget::unsetMapTool()
 
   disconnect( mapCanvas, &QgsMapCanvas::keyPressed, this, &QgsRelationEditorWidget::onKeyPressed );
   disconnect( mMapToolDigitize, &QgsMapToolDigitizeFeature::digitizingCompleted, this, &QgsRelationEditorWidget::onDigitizingCompleted );
+}
+
+QgsFeatureIds QgsRelationEditorWidget::selectedChildFeatureIds() const
+{
+  if ( multiEditModeActive() )
+  {
+    QgsFeatureIds featureIds;
+    for ( QTreeWidgetItem *treeWidgetItem : mMultiEditTreeWidget->selectedItems() )
+    {
+      if ( static_cast<MultiEditFeatureType>( treeWidgetItem->data( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureType ) ).toInt() ) != MultiEditFeatureType::Child )
+        continue;
+
+      featureIds.insert( treeWidgetItem->data( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureId ) ).toLongLong() );
+    }
+    return featureIds;
+  }
+  else
+    return mFeatureSelectionMgr->selectedFeatureIds();
 }
 
 void QgsRelationEditorWidget::onKeyPressed( QKeyEvent *e )
@@ -655,7 +691,8 @@ QgsIFeatureSelectionManager *QgsRelationEditorWidget::featureSelectionManager()
 
 void QgsRelationEditorWidget::unlinkSelectedFeatures()
 {
-  unlinkFeatures( mFeatureSelectionMgr->selectedFeatureIds() );
+  const QgsFeatureIds selectedFids = selectedChildFeatureIds();
+  unlinkFeatures( selectedFids );
 }
 
 void QgsRelationEditorWidget::duplicateFeature()
@@ -670,7 +707,7 @@ void QgsRelationEditorWidget::duplicateSelectedFeatures()
 
 void QgsRelationEditorWidget::deleteSelectedFeatures()
 {
-  const QgsFeatureIds selectedFids = mFeatureSelectionMgr->selectedFeatureIds();
+  const QgsFeatureIds selectedFids = selectedChildFeatureIds();
   deleteFeatures( selectedFids );
 }
 
