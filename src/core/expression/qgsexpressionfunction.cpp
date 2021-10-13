@@ -3823,18 +3823,29 @@ static QVariant fcnWithin( const QVariantList &values, const QgsExpressionContex
   QgsGeometry sGeom = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
   return fGeom.within( sGeom ) ? TVL_True : TVL_False;
 }
+
 static QVariant fcnBuffer( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  if ( values.length() < 2 || values.length() > 3 )
-    return QVariant();
+  const QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  const double dist = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
+  const int seg = QgsExpressionUtils::getNativeIntValue( values.at( 2 ), parent );
+  const QString endCapString = QgsExpressionUtils::getStringValue( values.at( 3 ), parent ).trimmed();
+  const QString joinString = QgsExpressionUtils::getStringValue( values.at( 4 ), parent ).trimmed();
+  const double miterLimit = QgsExpressionUtils::getDoubleValue( values.at( 5 ), parent );
 
-  QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
-  double dist = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
-  int seg = 8;
-  if ( values.length() == 3 )
-    seg = QgsExpressionUtils::getNativeIntValue( values.at( 2 ), parent );
+  Qgis::EndCapStyle capStyle = Qgis::EndCapStyle::Round;
+  if ( endCapString.compare( QLatin1String( "flat" ), Qt::CaseInsensitive ) == 0 )
+    capStyle = Qgis::EndCapStyle::Flat;
+  else if ( endCapString.compare( QLatin1String( "square" ), Qt::CaseInsensitive ) == 0 )
+    capStyle = Qgis::EndCapStyle::Square;
 
-  QgsGeometry geom = fGeom.buffer( dist, seg );
+  Qgis::JoinStyle joinStyle = Qgis::JoinStyle::Round;
+  if ( joinString.compare( QLatin1String( "miter" ), Qt::CaseInsensitive ) == 0 )
+    joinStyle = Qgis::JoinStyle::Miter;
+  else if ( joinString.compare( QLatin1String( "bevel" ), Qt::CaseInsensitive ) == 0 )
+    joinStyle = Qgis::JoinStyle::Bevel;
+
+  QgsGeometry geom = fGeom.buffer( dist, seg, capStyle, joinStyle, miterLimit );
   QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
@@ -7025,7 +7036,10 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             fcnAffineTransform, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "buffer" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8 ),
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8 )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "cap" ), true, QStringLiteral( "round" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "join" ), true, QStringLiteral( "round" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "miter_limit" ), true, 2 ),
                                             fcnBuffer, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "force_rhr" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
                                             fcnForceRHR, QStringLiteral( "GeometryGroup" ) )
