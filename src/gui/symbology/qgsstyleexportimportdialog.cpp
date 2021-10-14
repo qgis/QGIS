@@ -121,6 +121,9 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
 
   const double iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 10;
   listItems->setIconSize( QSize( static_cast< int >( iconSize ), static_cast< int >( iconSize * 0.9 ) ) );  // ~100, 90 on low dpi
+  // set a grid size which allows sufficient vertical spacing to fit reasonably sized entity names
+  listItems->setGridSize( QSize( static_cast< int >( listItems->iconSize().width() * 1.4 ), static_cast< int >( listItems->iconSize().height() * 1.7 ) ) );
+  listItems->setTextElideMode( Qt::TextElideMode::ElideRight );
 
   mModel = new QgsStyleProxyModel( dialogStyle, this );
 
