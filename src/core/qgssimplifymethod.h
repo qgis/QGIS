@@ -61,6 +61,12 @@ class CORE_EXPORT QgsSimplifyMethod
     //! Creates a geometry simplifier according to specified method
     static QgsAbstractGeometrySimplifier *createGeometrySimplifier( const QgsSimplifyMethod &simplifyMethod );
 
+    //! Equality operator
+    bool operator==( const QgsSimplifyMethod &v ) const;
+
+    //! Inequality operator
+    bool operator!=( const QgsSimplifyMethod &v ) const;
+
   protected:
     //! Simplification method
     MethodType mMethodType = QgsSimplifyMethod::NoSimplification;

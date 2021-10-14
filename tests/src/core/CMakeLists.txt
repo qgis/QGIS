@@ -164,6 +164,7 @@ set(TESTS
  testqgssettingsregistry.cpp
  testqgsshapeburst.cpp
  testqgssimplemarker.cpp
+ testqgssimplifymethod.cpp
  testqgssnappingutils.cpp
  testqgsspatialindex.cpp
  testqgsspatialindexkdbush.cpp
