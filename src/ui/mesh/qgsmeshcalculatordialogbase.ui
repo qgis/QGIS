@@ -40,6 +40,19 @@
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
          <layout class="QGridLayout" name="gridLayout_5">
+          <item row="0" column="0" colspan="3">
+           <widget class="QCheckBox" name="mUseVirtualProviderCheckBox">
+            <property name="layoutDirection">
+             <enum>Qt::LeftToRight</enum>
+            </property>
+            <property name="text">
+             <string>Create on-the-fly mesh instead of writing layer to disk</string>
+            </property>
+            <property name="tristate">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
           <item row="3" column="0">
            <widget class="QLabel" name="mOutputFormatLabel_2">
             <property name="text">
@@ -54,41 +67,17 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QRadioButton" name="mOutputOnFileRadioButton">
-            <property name="text">
-             <string>On file</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="1" colspan="2">
            <widget class="QgsFileWidget" name="mOutputDatasetFileWidget" native="true"/>
           </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="mOutputDatasetLabel">
-            <property name="text">
-             <string>Output dataset</string>
-            </property>
-           </widget>
-          </item>
           <item row="2" column="1" colspan="2">
            <widget class="QComboBox" name="mOutputFormatComboBox"/>
-          </item>
-          <item row="0" column="2">
-           <widget class="QRadioButton" name="mOutputVirtualRadioButton">
-            <property name="text">
-             <string>Virtual</string>
-            </property>
-           </widget>
           </item>
           <item row="3" column="1" colspan="2">
            <widget class="QLineEdit" name="mOutputGroupNameLineEdit"/>
           </item>
           <item row="1" column="0">
-           <widget class="QLabel" name="label_4">
+           <widget class="QLabel" name="mOutputDatasetFileLabel">
             <property name="text">
              <string>Output file</string>
             </property>
@@ -685,8 +674,7 @@
  </customwidgets>
  <tabstops>
   <tabstop>mDatasetsListWidget</tabstop>
-  <tabstop>mOutputOnFileRadioButton</tabstop>
-  <tabstop>mOutputVirtualRadioButton</tabstop>
+  <tabstop>mUseVirtualProviderCheckBox</tabstop>
   <tabstop>mOutputFormatComboBox</tabstop>
   <tabstop>mOutputGroupNameLineEdit</tabstop>
   <tabstop>useExtentCb</tabstop>
