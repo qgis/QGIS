@@ -144,13 +144,13 @@ int QgsAttributeTableFilterModel::columnCount( const QModelIndex &parent ) const
   return mColumnMapping.count();
 }
 
-void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTableConfig &config )
+void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTableConfig &config, bool force )
 {
   const QgsAttributeTableConfig oldConfig = mConfig;
   mConfig = config;
   mConfig.update( layer()->fields() );
 
-  if ( mConfig.hasSameColumns( oldConfig ) )
+  if ( !force && mConfig.hasSameColumns( oldConfig ) )
   {
     return;
   }

@@ -329,6 +329,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     * and the new file will be opened.
     */
     void reloadProviderData() override;
+
 };
 
 ///@endcond
