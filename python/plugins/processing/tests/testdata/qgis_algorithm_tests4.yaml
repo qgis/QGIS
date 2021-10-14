@@ -2787,6 +2787,8 @@ tests:
 
   - algorithm: native:shortestline
     name: Test (native:shortestline)
+    ellipsoid: EPSG:7030
+    project_crs: EPSG:3857
     params:
       DESTINATION:
         name: custom/snap_lines_3857.shp
@@ -2803,6 +2805,8 @@ tests:
 
   - algorithm: native:shortestline
     name: Test (native:shortestline)
+    ellipsoid: EPSG:7030
+    project_crs: EPSG:3857
     params:
       DESTINATION:
         name: custom/snap_lines_3857.shp
