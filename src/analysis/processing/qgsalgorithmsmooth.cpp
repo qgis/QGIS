@@ -49,11 +49,6 @@ QString QgsSmoothAlgorithm::outputName() const
   return QObject::tr( "Smoothed" );
 }
 
-QgsProcessing::SourceType QgsSmoothAlgorithm::outputLayerType() const
-{
-  return QgsProcessing::TypeVectorLine;
-}
-
 QString QgsSmoothAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm smooths the geometries in a line or polygon layer. It creates a new layer with the "
