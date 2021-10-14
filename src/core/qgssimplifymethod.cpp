@@ -54,3 +54,17 @@ QgsAbstractGeometrySimplifier *QgsSimplifyMethod::createGeometrySimplifier( cons
     return nullptr;
   }
 }
+
+bool QgsSimplifyMethod::operator==( const QgsSimplifyMethod &v ) const
+{
+  return
+    mMethodType == v.mMethodType &&
+    mTolerance == v.mTolerance &&
+    mThreshold == v.mThreshold &&
+    mForceLocalOptimization == v.mForceLocalOptimization;
+}
+
+bool QgsSimplifyMethod::operator!=( const QgsSimplifyMethod &v ) const
+{
+  return !( v == *this );
+}
