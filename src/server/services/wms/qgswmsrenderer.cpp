@@ -363,7 +363,7 @@ namespace QgsWms
       {
         const QgsAttributeList pkIndexes = cLayer->primaryKeyAttributes();
         const int pkIndexesSize {std::max( pkIndexes.size(), 1 )};
-        if ( pkIndexesSize )
+        if ( pkIndexesSize == 0 )
         {
           QgsDebugMsgLevel( QStringLiteral( "Atlas print: layer %1 has no primary key attributes" ).arg( cLayer->name() ), 2 );
         }
