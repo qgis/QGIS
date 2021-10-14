@@ -356,8 +356,10 @@ void QgsMeshCalculatorDialog::updateInfoMessage()
 
 void QgsMeshCalculatorDialog::onVirtualCheckboxChange()
 {
-  mOutputDatasetFileWidget->setEnabled( !mUseVirtualProviderCheckBox->isChecked() );
-  mOutputFormatComboBox->setEnabled( !mUseVirtualProviderCheckBox->isChecked() );
+  mOutputDatasetFileWidget->setVisible( !mUseVirtualProviderCheckBox->isChecked() );
+  mOutputDatasetFileLabel->setVisible( !mUseVirtualProviderCheckBox->isChecked() );
+  mOutputFormatComboBox->setVisible( !mUseVirtualProviderCheckBox->isChecked() );
+  mOutputFormatLabel->setVisible( !mUseVirtualProviderCheckBox->isChecked() );
   updateInfoMessage();
 }
 
