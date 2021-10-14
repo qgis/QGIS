@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>743</width>
-    <height>615</height>
+    <height>686</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -438,7 +438,7 @@ Always network: always load from network and do not check if the cache has a val
           <item>
            <widget class="QgsExtentGroupBox" name="mSpatialExtentBox">
             <property name="title">
-             <string>Spatial Extent</string>
+             <string>Extent (current: none)</string>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -446,8 +446,42 @@ Always network: always load from network and do not check if the cache has a val
             <property name="checked">
              <bool>false</bool>
             </property>
-            <property name="collapsed" stdset="0">
+            <property name="collapsed">
              <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="widget" native="true">
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Select Bands</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBox">
+            <property name="text">
+             <string>Band 1</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBox_2">
+            <property name="text">
+             <string>Band 2</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBox_3">
+            <property name="text">
+             <string>Band 3</string>
             </property>
            </widget>
           </item>
