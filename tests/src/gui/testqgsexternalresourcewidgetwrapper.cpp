@@ -68,6 +68,8 @@ class TestQgsExternalResourceWidgetWrapper : public QObject
     void testStoreExternalDocumentNoExpression();
     void testChangeValueBeforeLoaded();
     void testChangeValueBeforeLoaded_data();
+    void testBlankAfterValue();
+
 
   private:
     std::unique_ptr<QgsVectorLayer> vl;
@@ -1136,6 +1138,44 @@ void TestQgsExternalResourceWidgetWrapper::testChangeValueBeforeLoaded()
   // wait for the fetch content object to be destroyed
   connect( QgsTestExternalStorage::sFetchContent, &QObject::destroyed, &loop, &QEventLoop::quit );
   loop.exec();
+}
+
+
+void TestQgsExternalResourceWidgetWrapper::testBlankAfterValue()
+{
+  // test that application doesn't crash when we set a blank page in web preview
+  // after an item have been set
+
+  QgsExternalResourceWidgetWrapper ww( vl.get(), 0, nullptr, nullptr );
+  QWidget *widget = ww.createWidget( nullptr );
+  QVERIFY( widget );
+
+  QVariantMap config;
+  config.insert( QStringLiteral( "DocumentViewer" ), QgsExternalResourceWidget::Web );
+  ww.setConfig( config );
+
+  QgsFeature feat = vl->getFeature( 1 );
+  QVERIFY( feat.isValid() );
+  ww.setFeature( feat );
+
+  ww.initWidget( widget );
+  QVERIFY( ww.mQgsWidget );
+
+  widget->show();
+
+  QEventLoop loop;
+  connect( ww.mQgsWidget->mWebView, &QWebView::loadFinished, &loop, &QEventLoop::quit );
+
+  ww.setValues( QString( "file://%1" ).arg( SAMPLE_IMAGE ), QVariantList() );
+
+  QVERIFY( ww.mQgsWidget->mWebView->isVisible() );
+
+  loop.exec();
+
+  ww.setValues( QString(), QVariantList() );
+
+  QVERIFY( ww.mQgsWidget->mWebView->isVisible() );
+  QCOMPARE( ww.mQgsWidget->mWebView->url().toString(), QStringLiteral( "about:blank" ) );
 }
 
 QGSTEST_MAIN( TestQgsExternalResourceWidgetWrapper )
