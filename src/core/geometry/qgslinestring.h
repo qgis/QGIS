@@ -997,7 +997,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 #endif
 
     /**
-     * Calculates the minimal 3d bounding box for the geometry.
+     * Calculates the minimal 3D bounding box for the geometry.
      * \see calculateBoundingBox()
      * \since QGIS 3.22
      */
