@@ -74,6 +74,10 @@ Gets whether the simplification executes after fetch the geometries from provide
 Creates a geometry simplifier according to specified method
 %End
 
+    bool operator==( const QgsSimplifyMethod &v ) const;
+
+    bool operator!=( const QgsSimplifyMethod &v ) const;
+
   protected:
 };
 
