@@ -20,6 +20,8 @@
 #include "qgsalgorithmshortestline.h"
 #include "qgsdistancearea.h"
 
+///@cond PRIVATE
+
 QString QgsShortestLineAlgorithm::name() const
 {
   return QStringLiteral( "shortestline" );
@@ -174,3 +176,5 @@ QVariantMap QgsShortestLineAlgorithm::processAlgorithm( const QVariantMap &param
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
   return outputs;
 }
+
+///@endcond

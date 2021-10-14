@@ -26,6 +26,11 @@
 #include "qgsapplication.h"
 #include "qgsprocessingalgorithm.h"
 
+///@cond PRIVATE
+
+/**
+ * Native Shortest Line between layers algorithm.
+ */
 class QgsShortestLineAlgorithm : public QgsProcessingAlgorithm
 {
 
@@ -53,5 +58,7 @@ class QgsShortestLineAlgorithm : public QgsProcessingAlgorithm
 
 
 };
+
+///@endcond PRIVATE
 
 #endif // QGSALGORITHMSHORTESTLINE_H
