@@ -137,12 +137,20 @@ The method returns the number of vertices effectivly added.
    if the mesh hasn't topological error before this operation, the toological operation always succeed
 %End
 
-    QgsMeshEditingError removeVertices( const QList<int> &verticesToRemoveIndexes, bool fillHoles = false );
+    QgsMeshEditingError removeVerticesWithoutFillHoles( const QList<int> &verticesToRemoveIndexes );
 %Docstring
-Removes vertices with indexes in the list ``verticesToRemoveIndexes`` in the mesh
-if ``fillHoles`` is set to ``True``, this operation will fill holes created in the mesh, if not remove the surrounding faces
+Removes vertices with indexes in the list ``verticesToRemoveIndexes`` in the mesh removing the surrounding faces without filling the freed space.
 
-If removing these vertices leads to a topological errors, the method will return the corresponding error and the operatio is canceled
+If removing these vertices leads to a topological errors, the method will return the corresponding error and the operation is canceled
+%End
+
+    QList<int> removeVerticesFillHoles( const QList<int> &verticesToRemoveIndexes );
+%Docstring
+Removes vertices with indexes in the list ``verticesToRemoveIndexes`` in the mesh the surrounding faces AND fills the freed space.
+
+This operation fills holes by a Delaunay triangulation using the surrounding vertices.
+Some vertices could no be deleted to avoid topological error even with hole filling (can not be detected before execution).
+A list of the remaining vertex indexes is returned.
 %End
 
     void changeZValues( const QList<int> &verticesIndexes, const QList<double> &newValues );
@@ -152,7 +160,7 @@ Changes the Z values of the vertices with indexes in ``vertices`` indexes with t
 
     void changeXYValues( const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues );
 %Docstring
-Changes the (X,Y) coordinates values of the vertices with indexes in ``vertices`` indexes with the values in ``newValues``.
+Changes the (X,Y) coordinates values of the vertices with indexes in ``verticesIndexes`` with the values in ``newValues``.
 The caller has the responsibility to check if changing the vertices coordinates does not lead to topological errors.
 New values are in layer CRS.
 %End
@@ -209,7 +217,7 @@ Returns whether the vertex with index ``vertexIndex`` is on a boundary
 Returns whether the vertex with index ``vertexIndex`` is a free vertex
 %End
 
-    bool checkConsistency() const;
+    bool checkConsistency( QgsMeshEditingError &error ) const;
 %Docstring
 Return ``True`` if the edited mesh is consistent
 %End
@@ -228,6 +236,11 @@ Returns the count of valid faces, that is non void faces in the mesh
     int validVerticesCount() const;
 %Docstring
 Returns the count of valid vertices, that is non void vertices in the mesh
+%End
+
+    int maximumVerticesPerFace() const;
+%Docstring
+Returns the maximum count of vertices per face that the mesh can support
 %End
 
   signals:

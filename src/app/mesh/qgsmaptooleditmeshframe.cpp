@@ -1709,12 +1709,27 @@ void QgsMapToolEditMeshFrame::setSelectedFaces( const QList<int> newSelectedFace
 
 void QgsMapToolEditMeshFrame::removeSelectedVerticesFromMesh( bool fillHole )
 {
-  QgsMeshEditingError error = mCurrentEditor->removeVertices( mSelectedVertices.keys(), fillHole );
-  if ( error != QgsMeshEditingError() )
+  if ( fillHole )
   {
-    QgisApp::instance()->messageBar()->pushWarning(
-      tr( "Mesh editing" ),
-      tr( "removing the vertex %1 leads to a topological error, operation canceled." ).arg( error.elementIndex ) );
+
+    QList<int> remainingVertex = mCurrentEditor->removeVerticesFillHoles( mSelectedVertices.keys() );
+
+    if ( !remainingVertex.isEmpty() )
+    {
+      QgisApp::instance()->messageBar()->pushWarning(
+        tr( "Mesh editing" ),
+        tr( "%n vertices were not removed", nullptr, remainingVertex.count() ) );
+    }
+  }
+  else
+  {
+    QgsMeshEditingError error = mCurrentEditor->removeVerticesWithoutFillHoles( mSelectedVertices.keys() );
+    if ( error != QgsMeshEditingError() )
+    {
+      QgisApp::instance()->messageBar()->pushWarning(
+        tr( "Mesh editing" ),
+        tr( "removing the vertex %1 leads to a topological error, operation canceled." ).arg( error.elementIndex ) );
+    }
   }
 }
 

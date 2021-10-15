@@ -176,7 +176,7 @@ bool QgsMeshEditor::faceCanBeAdded( const QgsMeshFace &face )
 
   // Check if there is topological error with the mesh
   QgsTopologicalMesh::TopologicalFaces topologicalFaces = mTopologicalMesh.createNewTopologicalFaces( facesToAdd, true, error );
-  error = mTopologicalMesh.canFacesBeAdded( topologicalFaces );
+  error = mTopologicalMesh.facesCanBeAdded( topologicalFaces );
 
   if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
     return false;
@@ -249,14 +249,22 @@ void QgsMeshEditor::applyAddVertex( QgsMeshEditor::Edit &edit, const QgsMeshVert
   updateElementsCount( edit.topologicalChanges );
 }
 
-void QgsMeshEditor::applyRemoveVertexFillHole( QgsMeshEditor::Edit &edit, int vertexIndex )
+bool QgsMeshEditor::applyRemoveVertexFillHole( QgsMeshEditor::Edit &edit, int vertexIndex )
 {
-  applyEditOnTriangularMesh( edit, mTopologicalMesh.removeVertexFillHole( vertexIndex ) );
+  QgsTopologicalMesh::Changes changes = mTopologicalMesh.removeVertexFillHole( vertexIndex );
 
-  if ( mZValueDatasetGroup )
-    mZValueDatasetGroup->setStatisticObsolete();
+  if ( !changes.isEmpty() )
+  {
+    applyEditOnTriangularMesh( edit, changes );
 
-  updateElementsCount( edit.topologicalChanges );
+    if ( mZValueDatasetGroup )
+      mZValueDatasetGroup->setStatisticObsolete();
+
+    updateElementsCount( edit.topologicalChanges );
+    return true;
+  }
+  else
+    return false;
 }
 
 void QgsMeshEditor::applyRemoveVerticesWithoutFillHole( QgsMeshEditor::Edit &edit, const QList<int> &verticesIndexes )
@@ -348,9 +356,10 @@ void QgsMeshEditor::updateElementsCount( const QgsTopologicalMesh::Changes &chan
   }
 }
 
-bool QgsMeshEditor::checkConsistency() const
+bool QgsMeshEditor::checkConsistency( QgsMeshEditingError &error ) const
 {
-  switch ( mTopologicalMesh.checkConsistency().errorType )
+  error = mTopologicalMesh.checkConsistency();
+  switch ( error.errorType )
   {
     case Qgis::MeshEditingErrorType::NoError:
       break;
@@ -429,9 +438,14 @@ int QgsMeshEditor::validVerticesCount() const
   return mValidVerticesCount;
 }
 
+int QgsMeshEditor::maximumVerticesPerFace() const
+{
+  return mMaximumVerticesPerFace;
+}
+
 QgsMeshEditingError QgsMeshEditor::removeFaces( const QList<int> &facesToRemove )
 {
-  QgsMeshEditingError error = mTopologicalMesh.canFacesBeRemoved( facesToRemove );
+  QgsMeshEditingError error = mTopologicalMesh.facesCanBeRemoved( facesToRemove );
   if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
     return error;
 
@@ -468,7 +482,7 @@ void QgsMeshEditor::merge( int vertexIndex1, int vertexIndex2 )
 
 bool QgsMeshEditor::faceCanBeSplit( int faceIndex ) const
 {
-  return mTopologicalMesh.faceCanBeSplit( faceIndex );
+  return mTopologicalMesh.canBeSplit( faceIndex );
 }
 
 int QgsMeshEditor::splitFaces( const QList<int> &faceIndexes )
@@ -520,7 +534,7 @@ QgsMeshEditingError QgsMeshEditor::addFaces( const QVector<QVector<int> > &faces
 
   QgsTopologicalMesh::TopologicalFaces topologicalFaces = mTopologicalMesh.createNewTopologicalFaces( facesToAdd, true, error );
 
-  error = mTopologicalMesh.canFacesBeAdded( topologicalFaces );
+  error = mTopologicalMesh.facesCanBeAdded( topologicalFaces );
 
   if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
     return error;
@@ -583,30 +597,33 @@ int QgsMeshEditor::addPointsAsVertices( const QVector<QgsPoint> &point, double t
   return addVertices( point, tolerance );
 }
 
-QgsMeshEditingError QgsMeshEditor::removeVertices( const QList<int> &verticesToRemoveIndexes, bool fillHoles )
+QgsMeshEditingError QgsMeshEditor::removeVerticesWithoutFillHoles( const QList<int> &verticesToRemoveIndexes )
 {
   QgsMeshEditingError error;
 
   QList<int> verticesIndexes = verticesToRemoveIndexes;
 
-  if ( !fillHoles )
-  {
-    QSet<int> concernedNativeFaces;
-    for ( const int vi : std::as_const( verticesIndexes ) )
-      concernedNativeFaces.unite( qgis::listToSet( mTopologicalMesh.facesAroundVertex( vi ) ) );
+  QSet<int> concernedNativeFaces;
+  for ( const int vi : std::as_const( verticesIndexes ) )
+    concernedNativeFaces.unite( qgis::listToSet( mTopologicalMesh.facesAroundVertex( vi ) ) );
 
-    error = mTopologicalMesh.canFacesBeRemoved( concernedNativeFaces.values() );
-    if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
-      return error;
-  }
+  error = mTopologicalMesh.facesCanBeRemoved( concernedNativeFaces.values() );
 
-  if ( error.errorType == Qgis::MeshEditingErrorType::NoError )
-  {
-    mUndoStack->push( new QgsMeshLayerUndoCommandRemoveVertices( this, verticesIndexes, fillHoles ) );
-  }
+  if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
+    return error;
 
+  mUndoStack->push( new QgsMeshLayerUndoCommandRemoveVerticesWithoutFillHoles( this, verticesIndexes ) );
   return error;
 }
+
+QList<int> QgsMeshEditor::removeVerticesFillHoles( const QList<int> &verticesToRemoveIndexes )
+{
+  QList<int> remainingVertices;
+  mUndoStack->push( new QgsMeshLayerUndoCommandRemoveVerticesFillHoles( this, verticesToRemoveIndexes, &remainingVertices ) );
+
+  return remainingVertices;
+}
+
 
 void QgsMeshEditor::changeZValues( const QList<int> &verticesIndexes, const QList<double> &newZValues )
 {
@@ -802,32 +819,76 @@ void QgsMeshLayerUndoCommandAddVertices::redo()
   }
 }
 
-QgsMeshLayerUndoCommandRemoveVertices::QgsMeshLayerUndoCommandRemoveVertices( QgsMeshEditor *meshEditor, const QList<int> &verticesToRemoveIndexes, bool fillHole )
+QgsMeshLayerUndoCommandRemoveVerticesFillHoles::QgsMeshLayerUndoCommandRemoveVerticesFillHoles(
+  QgsMeshEditor *meshEditor,
+  const QList<int> &verticesToRemoveIndexes,
+  QList<int> *remainingVerticesPointer )
   : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
   , mVerticesToRemoveIndexes( verticesToRemoveIndexes )
-  , mFillHole( fillHole )
+  , mRemainingVerticesPointer( remainingVerticesPointer )
 {
-  setText( QObject::tr( "Remove %n vertices", nullptr, verticesToRemoveIndexes.count() ) ) ;
+  setText( QObject::tr( "Remove %n vertices filling holes", nullptr, verticesToRemoveIndexes.count() ) );
 }
 
-void QgsMeshLayerUndoCommandRemoveVertices::redo()
+void QgsMeshLayerUndoCommandRemoveVerticesFillHoles::redo()
+{
+  int initialVertexCount = mVerticesToRemoveIndexes.count();
+  if ( !mVerticesToRemoveIndexes.isEmpty() )
+  {
+    QgsMeshEditor::Edit edit;
+    QList<int> vertexToRetry;
+    while ( !mVerticesToRemoveIndexes.isEmpty() )
+    {
+      // try again and again until there is no vertices to remove anymore or nothing is removed.
+      for ( const int &vertex : std::as_const( mVerticesToRemoveIndexes ) )
+      {
+        if ( mMeshEditor->applyRemoveVertexFillHole( edit, vertex ) )
+          mEdits.append( edit );
+        else
+          vertexToRetry.append( vertex );
+      }
+
+      if ( vertexToRetry.count() == mVerticesToRemoveIndexes.count() )
+        break;
+      else
+        mVerticesToRemoveIndexes = vertexToRetry;
+    }
+
+    if ( initialVertexCount == mVerticesToRemoveIndexes.count() )
+      setObsolete( true );
+
+    if ( mRemainingVerticesPointer != nullptr )
+      *mRemainingVerticesPointer = mVerticesToRemoveIndexes;
+
+    mRemainingVerticesPointer = nullptr;
+
+    mVerticesToRemoveIndexes.clear(); //not needed anymore, changes are store in mEdits
+  }
+  else
+  {
+    for ( QgsMeshEditor::Edit &edit : mEdits )
+      mMeshEditor->applyEdit( edit );
+  }
+}
+
+
+QgsMeshLayerUndoCommandRemoveVerticesWithoutFillHoles::QgsMeshLayerUndoCommandRemoveVerticesWithoutFillHoles(
+  QgsMeshEditor *meshEditor,
+  const QList<int> &verticesToRemoveIndexes )
+  : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
+  , mVerticesToRemoveIndexes( verticesToRemoveIndexes )
+{
+  setText( QObject::tr( "Remove %n vertices without filling holes", nullptr, verticesToRemoveIndexes.count() ) ) ;
+}
+
+void QgsMeshLayerUndoCommandRemoveVerticesWithoutFillHoles::redo()
 {
   if ( !mVerticesToRemoveIndexes.isEmpty() )
   {
     QgsMeshEditor::Edit edit;
-    if ( mFillHole )
-    {
-      for ( const int &vertex : std::as_const( mVerticesToRemoveIndexes ) )
-      {
-        mMeshEditor->applyRemoveVertexFillHole( edit, vertex );
-        mEdits.append( edit );
-      }
-    }
-    else
-    {
-      mMeshEditor->applyRemoveVerticesWithoutFillHole( edit, mVerticesToRemoveIndexes );
-      mEdits.append( edit );
-    }
+
+    mMeshEditor->applyRemoveVerticesWithoutFillHole( edit, mVerticesToRemoveIndexes );
+    mEdits.append( edit );
 
     mVerticesToRemoveIndexes.clear(); //not needed anymore, changes are store in mEdits
   }
