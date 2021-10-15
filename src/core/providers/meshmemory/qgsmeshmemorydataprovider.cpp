@@ -314,7 +314,9 @@ bool QgsMeshMemoryDataProvider::addDatasetValues( const QString &def, std::share
       }
       else
       {
-        point.setX( values[0].toDouble() );
+        bool ok;
+        double val = values.at( 0 ).toDouble( &ok );
+        point.setX( ok ? val : std::numeric_limits<double>::quiet_NaN() );
       }
     }
     else
@@ -327,8 +329,11 @@ bool QgsMeshMemoryDataProvider::addDatasetValues( const QString &def, std::share
       }
       else
       {
-        point.setX( values[0].toDouble() );
-        point.setY( values[1].toDouble() );
+        bool ok;
+        double val = values.at( 0 ).toDouble( &ok );
+        point.setX( ok ? val : std::numeric_limits<double>::quiet_NaN() );
+        val = values.at( 1 ).toDouble( &ok );
+        point.setY( ok ? val : std::numeric_limits<double>::quiet_NaN() );
       }
     }
 
