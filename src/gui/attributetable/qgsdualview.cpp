@@ -1236,7 +1236,10 @@ void QgsDualView::featureFormAttributeChanged( const QString &attribute, const Q
   Q_UNUSED( attribute )
   Q_UNUSED( value )
   if ( attributeChanged )
+  {
     mFeatureListView->setCurrentFeatureEdited( true );
+    mAttributeForm->save();
+  }
 }
 
 void QgsDualView::setFilteredFeatures( const QgsFeatureIds &filteredFeatures )
