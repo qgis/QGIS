@@ -51,13 +51,13 @@ class TestQgsMeshLayer : public QObject
     QgsMeshLayer *mMemory1DLayer = nullptr;
     QgsMeshLayer *mMdal1DLayer = nullptr;
     QgsMeshLayer *mMdal3DLayer = nullptr;
+    QString readFile( const QString &fname ) const;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
-    QString readFile( const QString &fname ) const;
 
     void test_write_read_project();
 
@@ -92,6 +92,8 @@ class TestQgsMeshLayer : public QObject
 
     void test_memory_dataset_group();
     void test_memory_dataset_group_1d();
+
+    void test_memoryproviderdataset_invalid_values();
 
     void test_setDataSource();
 
@@ -1492,6 +1494,34 @@ void TestQgsMeshLayer::test_memory_dataset_group_1d()
 
   QCOMPARE( mMdal1DLayer->datasetGroupCount(), 7 );
   QCOMPARE( mMdal1DLayer->extraDatasetGroupCount(), 2 );
+}
+
+void TestQgsMeshLayer::test_memoryproviderdataset_invalid_values()
+{
+  std::unique_ptr<QgsMeshLayer> memoryLayer = std::make_unique<QgsMeshLayer>( readFile( "/quad_and_triangle.txt" ), "Triangle and Quad Memory", "mesh_memory" );
+  memoryLayer->addDatasets( readFile( "/quad_and_triangle_face_scalar_invalid_values.txt" ) );
+  memoryLayer->addDatasets( readFile( "/quad_and_triangle_face_vector_invalid_values.txt" ) );
+
+  QCOMPARE( 2, memoryLayer->datasetGroupCount() );
+
+  QgsMeshDatasetIndex dsi( 0, 0 );
+  QCOMPARE( memoryLayer->datasetValue( dsi, 0 ).scalar(), 0 );
+  QVERIFY( std::isnan( memoryLayer->datasetValue( dsi, 1 ).scalar() ) );
+  dsi = QgsMeshDatasetIndex( 0, 1 );
+  QCOMPARE( memoryLayer->datasetValue( dsi, 1 ).scalar(), 2 );
+  QVERIFY( std::isnan( memoryLayer->datasetValue( dsi, 0 ).scalar() ) );
+
+  dsi = QgsMeshDatasetIndex( 1, 0 );
+  QCOMPARE( memoryLayer->datasetValue( dsi, 1 ).x(), 2 );
+  QCOMPARE( memoryLayer->datasetValue( dsi, 1 ).y(), 2 );
+  QVERIFY( std::isnan( memoryLayer->datasetValue( dsi, 0 ).x() ) );
+  QCOMPARE( memoryLayer->datasetValue( dsi, 0 ).y(), 1 );
+
+  dsi = QgsMeshDatasetIndex( 1, 1 );
+  QCOMPARE( memoryLayer->datasetValue( dsi, 0 ).x(), 2 );
+  QCOMPARE( memoryLayer->datasetValue( dsi, 0 ).y(), 2 );
+  QVERIFY( std::isnan( memoryLayer->datasetValue( dsi, 1 ).y() ) );
+  QCOMPARE( memoryLayer->datasetValue( dsi, 1 ).x(), 3 );
 }
 
 void TestQgsMeshLayer::test_setDataSource()
