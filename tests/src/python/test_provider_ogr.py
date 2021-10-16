@@ -2351,6 +2351,24 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(features[1].attribute('B'), 'B')
         self.assertEqual(features[1].attribute('C'), 'C')
 
+    def test_provider_feature_iterator_options(self):
+        """Test issue GH #45534"""
+
+        datasource = os.path.join(self.basetestpath, 'testProviderFeatureIteratorOptions.csv')
+        with open(datasource, 'wt') as f:
+            f.write('id,Longitude,Latitude\n')
+            f.write('1,1.0,1.0\n')
+            f.write('2,2.0,2.0\n')
+
+        vl = QgsVectorLayer('{}|option:X_POSSIBLE_NAMES=Longitude|option:Y_POSSIBLE_NAMES=Latitude'.format(datasource), 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+
+        f = vl.getFeature(1)
+        self.assertEqual(f.geometry().asWkt(), 'Point (1 1)')
+        f = vl.getFeature(2)
+        self.assertEqual(f.geometry().asWkt(), 'Point (2 2)')
+
 
 if __name__ == '__main__':
     unittest.main()

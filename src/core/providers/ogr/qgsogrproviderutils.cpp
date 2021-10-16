@@ -957,7 +957,17 @@ QString QgsOgrProviderUtils::connectionPoolId( const QString &dataSourceURI, boo
     QString filePath = dataSourceURI.left( dataSourceURI.indexOf( QLatin1Char( '|' ) ) );
     QFileInfo fi( filePath );
     if ( fi.isFile() )
-      return filePath;
+    {
+      // Preserve open options so pooled connections always carry those on
+      QString openOptions;
+      static thread_local QRegularExpression openOptionsRegex( QStringLiteral( "((?:\\|option:(?:[^|]*))+)" ) );
+      QRegularExpressionMatch match = openOptionsRegex.match( dataSourceURI );
+      if ( match.hasMatch() )
+      {
+        openOptions = match.captured( 1 );
+      }
+      return filePath + openOptions;
+    }
   }
   return dataSourceURI;
 }
