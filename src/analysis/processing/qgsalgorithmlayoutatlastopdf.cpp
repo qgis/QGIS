@@ -22,7 +22,6 @@
 #include "qgslayoututils.h"
 #include "qgsprintlayout.h"
 #include "qgsprocessingoutputs.h"
-#include "qgslayoutexporter.h"
 
 ///@cond PRIVATE
 
@@ -96,43 +95,7 @@ void QgsLayoutAtlasToPdfAlgorithmBase::initAlgorithm( const QVariantMap & )
   addParameter( textFormat.release() );
 }
 
-// QgsLayoutAtlasToPdfAlgorithm
-
-QString QgsLayoutAtlasToPdfAlgorithm::name() const
-{
-  return QStringLiteral( "atlaslayouttopdf" );
-}
-
-QString QgsLayoutAtlasToPdfAlgorithm::displayName() const
-{
-  return QObject::tr( "Export atlas layout as PDF (single file)" );
-}
-
-QString QgsLayoutAtlasToPdfAlgorithm::shortDescription() const
-{
-  return QObject::tr( "Exports an atlas layout as a single PDF file." );
-}
-
-QString QgsLayoutAtlasToPdfAlgorithm::shortHelpString() const
-{
-  return QObject::tr( "This algorithm outputs an atlas layout as a single PDF file.\n\n"
-                      "If a coverage layer is set, the selected layout's atlas settings exposed in this algorithm "
-                      "will be overwritten. In this case, an empty filter or sort by expression will turn those "
-                      "settings off." );
-}
-
-void QgsLayoutAtlasToPdfAlgorithm::initAlgorithm( const QVariantMap & )
-{
-  QgsLayoutAtlasToPdfAlgorithmBase::initAlgorithm();
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "PDF file" ), QObject::tr( "PDF Format" ) + " (*.pdf *.PDF)" ) );
-}
-
-QgsLayoutAtlasToPdfAlgorithm *QgsLayoutAtlasToPdfAlgorithm::createInstance() const
-{
-  return new QgsLayoutAtlasToPdfAlgorithm();
-}
-
-QVariantMap QgsLayoutAtlasToPdfAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+bool QgsLayoutAtlasToPdfAlgorithmBase::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   // this needs to be done in main thread, layouts are not thread safe
   QgsPrintLayout *l = parameterAsLayout( parameters, QStringLiteral( "LAYOUT" ), context );
@@ -211,6 +174,81 @@ QVariantMap QgsLayoutAtlasToPdfAlgorithm::processAlgorithm( const QVariantMap &p
       }
     }
   }
+
+  mAtlas = atlas;
+  mExporter = exporter;
+  mSettings = settings;
+  mError = error;
+
+  return true;
+}
+
+QgsLayoutAtlas *QgsLayoutAtlasToPdfAlgorithmBase::atlas()
+{
+  return mAtlas;
+}
+
+QgsLayoutExporter QgsLayoutAtlasToPdfAlgorithmBase::exporter()
+{
+  return mExporter;
+}
+
+QgsLayoutExporter::PdfExportSettings QgsLayoutAtlasToPdfAlgorithmBase::settings()
+{
+  return mSettings;
+}
+
+QString QgsLayoutAtlasToPdfAlgorithmBase::error()
+{
+  return mError;
+}
+
+
+
+// QgsLayoutAtlasToPdfAlgorithm
+
+QString QgsLayoutAtlasToPdfAlgorithm::name() const
+{
+  return QStringLiteral( "atlaslayouttopdf" );
+}
+
+QString QgsLayoutAtlasToPdfAlgorithm::displayName() const
+{
+  return QObject::tr( "Export atlas layout as PDF (single file)" );
+}
+
+QString QgsLayoutAtlasToPdfAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Exports an atlas layout as a single PDF file." );
+}
+
+QString QgsLayoutAtlasToPdfAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm outputs an atlas layout as a single PDF file.\n\n"
+                      "If a coverage layer is set, the selected layout's atlas settings exposed in this algorithm "
+                      "will be overwritten. In this case, an empty filter or sort by expression will turn those "
+                      "settings off." );
+}
+
+void QgsLayoutAtlasToPdfAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  QgsLayoutAtlasToPdfAlgorithmBase::initAlgorithm();
+  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "PDF file" ), QObject::tr( "PDF Format" ) + " (*.pdf *.PDF)" ) );
+}
+
+QgsLayoutAtlasToPdfAlgorithm *QgsLayoutAtlasToPdfAlgorithm::createInstance() const
+{
+  return new QgsLayoutAtlasToPdfAlgorithm();
+}
+
+QVariantMap QgsLayoutAtlasToPdfAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  QgsLayoutAtlasToPdfAlgorithmBase::prepareAlgorithm( parameters, context, feedback );
+
+  QgsLayoutAtlas *atlas = QgsLayoutAtlasToPdfAlgorithmBase::atlas();
+  QgsLayoutExporter exporter = QgsLayoutAtlasToPdfAlgorithmBase::exporter();
+  QgsLayoutExporter::PdfExportSettings settings = QgsLayoutAtlasToPdfAlgorithmBase::settings();
+  QString error = QgsLayoutAtlasToPdfAlgorithmBase::error();
 
   const QString dest = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
   if ( atlas->updateFeatures() )
@@ -295,85 +333,16 @@ QgsLayoutAtlasToMultiplePdfAlgorithm *QgsLayoutAtlasToMultiplePdfAlgorithm::crea
   return new QgsLayoutAtlasToMultiplePdfAlgorithm();
 }
 
+
 QVariantMap QgsLayoutAtlasToMultiplePdfAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  // this needs to be done in main thread, layouts are not thread safe
-  QgsPrintLayout *l = parameterAsLayout( parameters, QStringLiteral( "LAYOUT" ), context );
-  if ( !l )
-    throw QgsProcessingException( QObject::tr( "Cannot find layout with name \"%1\"" ).arg( parameters.value( QStringLiteral( "LAYOUT" ) ).toString() ) );
+  QgsLayoutAtlasToPdfAlgorithmBase::prepareAlgorithm( parameters, context, feedback );
 
-  std::unique_ptr< QgsPrintLayout > layout( l->clone() );
-  QgsLayoutAtlas *atlas = layout->atlas();
+  QgsLayoutAtlas *atlas = QgsLayoutAtlasToPdfAlgorithmBase::atlas();
+  QgsLayoutExporter exporter = QgsLayoutAtlasToPdfAlgorithmBase::exporter();
+  QgsLayoutExporter::PdfExportSettings settings = QgsLayoutAtlasToPdfAlgorithmBase::settings();
+  QString error = QgsLayoutAtlasToPdfAlgorithmBase::error();
 
-  QString expression, error;
-  QgsVectorLayer *layer = parameterAsVectorLayer( parameters, QStringLiteral( "COVERAGE_LAYER" ), context );
-  if ( layer )
-  {
-    atlas->setEnabled( true );
-    atlas->setCoverageLayer( layer );
-
-    expression = parameterAsString( parameters, QStringLiteral( "FILTER_EXPRESSION" ), context );
-    atlas->setFilterExpression( expression, error );
-    atlas->setFilterFeatures( !expression.isEmpty() && error.isEmpty() );
-    if ( !expression.isEmpty() && !error.isEmpty() )
-    {
-      throw QgsProcessingException( QObject::tr( "Error setting atlas filter expression" ) );
-    }
-    error.clear();
-
-    expression = parameterAsString( parameters, QStringLiteral( "SORTBY_EXPRESSION" ), context );
-    if ( !expression.isEmpty() )
-    {
-      const bool sortByReverse = parameterAsBool( parameters, QStringLiteral( "SORTBY_REVERSE" ), context );
-      atlas->setSortFeatures( true );
-      atlas->setSortExpression( expression );
-      atlas->setSortAscending( !sortByReverse );
-    }
-    else
-    {
-      atlas->setSortFeatures( false );
-    }
-  }
-  else if ( !atlas->enabled() )
-  {
-    throw QgsProcessingException( QObject::tr( "Layout being export doesn't have an enabled atlas" ) );
-  }
-
-  const QgsLayoutExporter exporter( layout.get() );
-  QgsLayoutExporter::PdfExportSettings settings;
-
-  if ( parameters.value( QStringLiteral( "DPI" ) ).isValid() )
-  {
-    settings.dpi = parameterAsDouble( parameters, QStringLiteral( "DPI" ), context );
-  }
-  settings.forceVectorOutput = parameterAsBool( parameters, QStringLiteral( "FORCE_VECTOR" ), context );
-  settings.appendGeoreference = parameterAsBool( parameters, QStringLiteral( "GEOREFERENCE" ), context );
-  settings.exportMetadata = parameterAsBool( parameters, QStringLiteral( "INCLUDE_METADATA" ), context );
-  settings.simplifyGeometries = parameterAsBool( parameters, QStringLiteral( "SIMPLIFY" ), context );
-  settings.textRenderFormat = parameterAsEnum( parameters, QStringLiteral( "TEXT_FORMAT" ), context ) == 0 ? QgsRenderContext::TextFormatAlwaysOutlines : QgsRenderContext::TextFormatAlwaysText;
-
-  if ( parameterAsBool( parameters, QStringLiteral( "DISABLE_TILED" ), context ) )
-    settings.flags = settings.flags | QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
-  else
-    settings.flags = settings.flags & ~QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
-
-  settings.predefinedMapScales = QgsLayoutUtils::predefinedScales( layout.get() );
-
-  const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
-  if ( layers.size() > 0 )
-  {
-    const QList<QGraphicsItem *> items = layout->items();
-    for ( QGraphicsItem *graphicsItem : items )
-    {
-      QgsLayoutItem *item = dynamic_cast<QgsLayoutItem *>( graphicsItem );
-      QgsLayoutItemMap *map = dynamic_cast<QgsLayoutItemMap *>( item );
-      if ( map && !map->followVisibilityPreset() && !map->keepLayerSet() )
-      {
-        map->setKeepLayerSet( true );
-        map->setLayers( layers );
-      }
-    }
-  }
   const QString filename = parameterAsString( parameters, QStringLiteral( "OUTPUT_FILENAME" ), context );
 
   const QString destFolder = parameterAsFile( parameters, QStringLiteral( "OUTPUT_FOLDER" ), context );

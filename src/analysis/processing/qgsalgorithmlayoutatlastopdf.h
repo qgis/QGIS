@@ -22,6 +22,9 @@
 
 #include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
+#include "qgslayoutexporter.h"
+
+class QgsLayoutAtlas;
 
 ///@cond PRIVATE
 
@@ -39,6 +42,23 @@ class QgsLayoutAtlasToPdfAlgorithmBase : public QgsProcessingAlgorithm
     QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
+
+    QgsLayoutAtlas *atlas();
+    QgsLayoutExporter exporter();
+    QgsLayoutExporter::PdfExportSettings settings();
+    QString error();
+
+
+
+  protected:
+
+    bool prepareAlgorithm( const QVariantMap &parameters,
+                           QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+  private:
+    QgsLayoutAtlas *mAtlas;
+    QgsLayoutExporter mExporter = QgsLayoutExporter( nullptr );
+    QgsLayoutExporter::PdfExportSettings mSettings;
+    QString mError;
 };
 
 
