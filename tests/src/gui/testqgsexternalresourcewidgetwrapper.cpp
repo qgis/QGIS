@@ -1171,6 +1171,7 @@ void TestQgsExternalResourceWidgetWrapper::testBlankAfterValue()
 
   widget->show();
 
+#ifdef WITH_QTWEBKIT
   QEventLoop loop;
   connect( ww.mQgsWidget->mWebView, &QWebView::loadFinished, &loop, &QEventLoop::quit );
 
@@ -1184,6 +1185,7 @@ void TestQgsExternalResourceWidgetWrapper::testBlankAfterValue()
 
   QVERIFY( ww.mQgsWidget->mWebView->isVisible() );
   QCOMPARE( ww.mQgsWidget->mWebView->url().toString(), QStringLiteral( "about:blank" ) );
+#endif
 }
 
 QGSTEST_MAIN( TestQgsExternalResourceWidgetWrapper )
