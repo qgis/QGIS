@@ -203,7 +203,7 @@ void QgsAbstractRelationEditorWidget::saveEdits()
     mEditorContext.vectorLayerTools()->saveEdits( mNmRelation.referencedLayer() );
 }
 
-void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
+QgsFeatureIds QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
 {
   QgsAttributeMap keyAttrs;
 
@@ -211,6 +211,8 @@ void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
 
   // Fields of the linking table
   const QgsFields fields = mRelation.referencingLayer()->fields();
+
+  QgsFeatureIds addedFeatureIds;
 
   // For generated relations insert the referenced layer field
   if ( mRelation.type() == QgsRelation::Generated )
@@ -228,7 +230,9 @@ void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
     // and autocreate a new linking feature.
     QgsFeature finalFeature;
     if ( !vlTools->addFeature( mNmRelation.referencedLayer(), QgsAttributeMap(), geometry, &finalFeature ) )
-      return;
+      return QgsFeatureIds();
+
+    addedFeatureIds.insert( finalFeature.id() );
 
     // Expression context for the linking table
     QgsExpressionContext context = mRelation.referencingLayer()->createExpressionContext();
@@ -264,7 +268,9 @@ void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
 
     QgsFeature linkFeature;
     if ( !vlTools->addFeature( mRelation.referencingLayer(), keyAttrs, geometry, &linkFeature ) )
-      return;
+      return QgsFeatureIds();
+
+    addedFeatureIds.insert( linkFeature.id() );
 
     // In multiedit add to other features to but whitout dialog
     for ( const QgsFeature &feature : mFeatureList )
@@ -277,10 +283,13 @@ void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
         linkFeature.setAttribute( fields.indexFromName( fieldPair.referencingField() ), feature.attribute( fieldPair.referencedField() ) );
 
       mRelation.referencingLayer()->addFeature( linkFeature );
+      addedFeatureIds.insert( linkFeature.id() );
     }
   }
 
   updateUi();
+
+  return addedFeatureIds;
 }
 
 void QgsAbstractRelationEditorWidget::deleteFeature( const QgsFeatureId fid )

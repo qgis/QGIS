@@ -199,7 +199,7 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     /**
      * Adds a new feature with given \a geometry
      */
-    void addFeature( const QgsGeometry &geometry = QgsGeometry() );
+    QgsFeatureIds addFeature( const QgsGeometry &geometry = QgsGeometry() );
 
     /**
      * Delete a feature with given \a fid

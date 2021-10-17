@@ -186,7 +186,7 @@ Toggles editing state of the widget
 Saves the current modifications in the relation
 %End
 
-    void addFeature( const QgsGeometry &geometry = QgsGeometry() );
+    QgsFeatureIds addFeature( const QgsGeometry &geometry = QgsGeometry() );
 %Docstring
 Adds a new feature with given ``geometry``
 %End

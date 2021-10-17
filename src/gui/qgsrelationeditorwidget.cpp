@@ -231,7 +231,7 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( const QVariantMap &config, QWi
 #endif
   connect( mToggleEditingButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::toggleEditing );
   connect( mSaveEditsButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::saveEdits );
-  connect( mAddFeatureButton, &QAbstractButton::clicked, this, [this]() { addFeature(); } );
+  connect( mAddFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::addFeature );
   connect( mAddFeatureGeometryButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::addFeatureGeometry );
   connect( mDuplicateFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::duplicateSelectedFeatures );
   connect( mDeleteFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::deleteSelectedFeatures );
@@ -382,6 +382,29 @@ void QgsRelationEditorWidget::updateButtons()
   mZoomToFeatureButton->setVisible( mButtonsVisibility.testFlag( QgsRelationEditorWidget::Button::ZoomToChildFeature ) && mEditorContext.mapCanvas() && spatial );
 }
 
+void QgsRelationEditorWidget::addFeature()
+{
+  const QgsFeatureIds addedFeatures = QgsAbstractRelationEditorWidget::addFeature();
+
+  if ( !multiEditModeActive() )
+    return;
+
+  QTreeWidgetItemIterator treeWidgetItemIterator( mMultiEditTreeWidget );
+  while ( *treeWidgetItemIterator )
+  {
+    if ( ( *treeWidgetItemIterator )->data( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureType ) ).toInt() != static_cast<int>( MultiEditFeatureType::Child ) )
+    {
+      ++treeWidgetItemIterator;
+      continue;
+    }
+
+    if ( addedFeatures.contains( ( *treeWidgetItemIterator )->data( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureId ) ).toInt() ) )
+      ( *treeWidgetItemIterator )->setSelected( true );
+
+    ++treeWidgetItemIterator;
+  }
+}
+
 void QgsRelationEditorWidget::addFeatureGeometry()
 {
   if ( multiEditModeActive() )
@@ -419,7 +442,7 @@ void QgsRelationEditorWidget::addFeatureGeometry()
 
 void QgsRelationEditorWidget::onDigitizingCompleted( const QgsFeature &feature )
 {
-  addFeature( feature.geometry() );
+  QgsAbstractRelationEditorWidget::addFeature( feature.geometry() );
 
   unsetMapTool();
 }

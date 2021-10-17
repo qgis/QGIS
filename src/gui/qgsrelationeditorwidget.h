@@ -201,6 +201,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     void setViewMode( int mode ) {setViewMode( static_cast<QgsDualView::ViewMode>( mode ) );}
     void updateButtons();
 
+    void addFeature();
     void addFeatureGeometry();
     void toggleEditing( bool state );
     void showContextMenu( QgsActionMenu *menu, QgsFeatureId fid );
