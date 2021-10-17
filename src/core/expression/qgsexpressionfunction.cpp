@@ -5477,7 +5477,7 @@ static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionCo
   }
   QgsFeatureRequest req;
   QString cacheValueKey;
-  if ( values.size() == 2 && values.at( 1 ).type() == QVariant::Map )
+  if ( values.at( 1 ).type() == QVariant::Map )
   {
     QVariantMap attributeMap = QgsExpressionUtils::getMapValue( values.at( 1 ), parent );
 
