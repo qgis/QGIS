@@ -52,6 +52,11 @@ class QMenu;
 #include <qgsmaptoolemitpoint.h>
 #include <qgsmaptoolidentify.h>
 #include <qgsmaptooldigitizefeature.h>
+#include <qgsmaptoolextent.h>
+#include <qgsmaptoolidentifyfeature.h>
+#include <qgsmaptoolcapture.h>
+#include <qgsmaptooladvanceddigitizing.h>
+#include <qgsmaptooledit.h>
 % End
 #endif
 
@@ -73,10 +78,20 @@ class GUI_EXPORT QgsMapTool : public QObject
       sipType = sipType_QgsMapToolPan;
     else if ( dynamic_cast<QgsMapToolEmitPoint *>( sipCpp ) != NULL )
       sipType = sipType_QgsMapToolEmitPoint;
+    else if ( dynamic_cast<QgsMapToolExtent *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolExtent;
+    else if ( dynamic_cast<QgsMapToolIdentifyFeature *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolIdentifyFeature;
     else if ( dynamic_cast<QgsMapToolIdentify *>( sipCpp ) != NULL )
       sipType = sipType_QgsMapToolIdentify;
     else if ( dynamic_cast<QgsMapToolDigitizeFeature *>( sipCpp ) != NULL )
       sipType = sipType_QgsMapToolDigitizeFeature;
+    else if ( dynamic_cast<QgsMapToolCapture *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolCapture;
+    else if ( dynamic_cast<QgsMapToolAdvancedDigitizing *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolAdvancedDigitizing;
+    else if ( dynamic_cast<QgsMapToolEdit *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolEdit;
     else
       sipType = NULL;
     SIP_END
