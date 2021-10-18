@@ -463,6 +463,13 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     void setScaleFactor( double factor ) {mScaleFactor = factor;}
 
     /**
+     * Sets the magnification factor for the render.
+     * \see magnificationFactor()
+     * \since QGIS 3.22
+     */
+    void setMagnificationFactor( double factor ) {mMagnificationFactor = factor;}
+
+    /**
      * Sets the targeted \a dpi for rendering.
      *
      * \see dpiTarget()
@@ -958,6 +965,14 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      */
     QImage::Format imageFormat() const { return mImageFormat; }
 
+    /**
+     * Returns the magnification factor.
+     *
+     * \see setMagnificationFactor()
+     * \since QGIS 3.22
+     */
+    double magnificationFactor() const;
+
   private:
 
     Qgis::RenderContextFlags mFlags;
@@ -1015,6 +1030,9 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 
     //! Factor to scale line widths and point marker sizes
     double mScaleFactor = 1.0;
+
+    //! Magnification factor
+    double mMagnificationFactor = 1.0;
 
     //! Targeted DPI
     double mDpiTarget = -1.0;

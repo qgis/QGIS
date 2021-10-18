@@ -30,6 +30,8 @@ struct QgsRasterViewPort
   QgsCoordinateReferenceSystem mDestCRS;
 
   QgsCoordinateTransformContext mTransformContext;
+
+  double mMagnificationFactor;
 };
 
 /************************************************************************

@@ -461,6 +461,15 @@ per millimeter.
 .. seealso:: :py:func:`scaleFactor`
 %End
 
+    void setMagnificationFactor( double factor );
+%Docstring
+Sets the magnification factor for the render.
+
+.. seealso:: :py:func:`magnificationFactor`
+
+.. versionadded:: 3.22
+%End
+
     void setDpiTarget( double dpi );
 %Docstring
 Sets the targeted ``dpi`` for rendering.
@@ -1024,6 +1033,15 @@ Returns the QImage format which should be used for QImages created
 during rendering.
 
 .. seealso:: :py:func:`setImageFormat`
+
+.. versionadded:: 3.22
+%End
+
+    double magnificationFactor() const;
+%Docstring
+Returns the magnification factor.
+
+.. seealso:: :py:func:`setMagnificationFactor`
 
 .. versionadded:: 3.22
 %End

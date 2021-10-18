@@ -52,6 +52,7 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mRenderingStopped( rh.mRenderingStopped )
   , mFeedback( rh.mFeedback )
   , mScaleFactor( rh.mScaleFactor )
+  , mMagnificationFactor( rh.mMagnificationFactor )
   , mDpiTarget( rh.mDpiTarget )
   , mRendererScale( rh.mRendererScale )
   , mSymbologyReferenceScale( rh.mSymbologyReferenceScale )
@@ -243,6 +244,7 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setFlag( Qgis::RenderContextFlag::Render3DMap, mapSettings.testFlag( Qgis::MapSettingsFlag::Render3DMap ) );
   ctx.setScaleFactor( mapSettings.outputDpi() / 25.4 ); // = pixels per mm
   ctx.setDpiTarget( mapSettings.dpiTarget() >= 0.0 ? mapSettings.dpiTarget() : -1.0 );
+  ctx.setMagnificationFactor( mapSettings.magnificationFactor() );
   ctx.setRendererScale( mapSettings.scale() );
   ctx.setExpressionContext( mapSettings.expressionContext() );
   ctx.setSegmentationTolerance( mapSettings.segmentationTolerance() );
@@ -661,6 +663,11 @@ void QgsRenderContext::setDevicePixelRatio( float ratio )
 QSize QgsRenderContext::deviceOutputSize() const
 {
   return outputSize() * mDevicePixelRatio;
+}
+
+double QgsRenderContext::magnificationFactor() const
+{
+  return mMagnificationFactor;
 }
 
 

@@ -75,6 +75,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
 {
   mReadyToCompose = false;
   QgsMapToPixel mapToPixel = rendererContext.mapToPixel();
+
   if ( rendererContext.mapToPixel().mapRotation() )
   {
     // unset rotation for the sake of local computations.
@@ -336,6 +337,8 @@ bool QgsRasterLayerRenderer::render()
     }
     projector->setCrs( mRasterViewPort->mSrcCRS, mRasterViewPort->mDestCRS, mRasterViewPort->mTransformContext );
   }
+
+  mRasterViewPort->mMagnificationFactor = renderContext()->magnificationFactor();
 
   // Drawer to pipe?
   QgsRasterIterator iterator( mPipe->last() );

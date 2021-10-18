@@ -45,7 +45,17 @@ void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsM
 
   // last pipe filter has only 1 band
   const int bandNumber = 1;
-  mIterator->startRasterRead( bandNumber, viewPort->mWidth, viewPort->mHeight, viewPort->mDrawnExtent, feedback );
+  mIterator->startRasterRead( bandNumber, viewPort->mWidth / viewPort->mMagnificationFactor, viewPort->mHeight / viewPort->mMagnificationFactor, viewPort->mDrawnExtent, feedback );
+
+  QgsMapToPixel mtp
+  {
+    qgsMapToPixel->mapUnitsPerPixel() / viewPort->mMagnificationFactor,
+    qgsMapToPixel->xCenter(),
+    qgsMapToPixel->yCenter(),
+    static_cast<int>( qgsMapToPixel->mapWidth() / viewPort->mMagnificationFactor ),
+    static_cast<int>( qgsMapToPixel->mapHeight() / viewPort->mMagnificationFactor ),
+    qgsMapToPixel->mapRotation()
+  };
 
   //number of cols/rows in output pixels
   int nCols = 0;
@@ -102,7 +112,7 @@ void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsM
       p->setCompositionMode( QPainter::CompositionMode_Source );
     }
 
-    drawImage( p, viewPort, img, topLeftCol, topLeftRow, qgsMapToPixel );
+    drawImage( p, viewPort, img, topLeftCol, topLeftRow, &mtp );
 
     if ( feedback && feedback->renderPartialOutput() )
     {
@@ -124,7 +134,7 @@ void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const
     return;
   }
 
-  const double dpiScaleFactor = mDpiTarget >= 0.0 ? mDpiTarget / p->device()->logicalDpiX() : 1.0;
+  const double dpiScaleFactor = mDpiTarget >= 0.0 ? mDpiTarget / p->device()->logicalDpiX() / viewPort->mMagnificationFactor : 1.0 / viewPort->mMagnificationFactor;
   //top left position in device coords
   const QPoint tlPoint = QPoint( viewPort->mTopLeftPoint.x() + std::floor( topLeftCol / dpiScaleFactor ), viewPort->mTopLeftPoint.y() + std::floor( topLeftRow / dpiScaleFactor ) );
 

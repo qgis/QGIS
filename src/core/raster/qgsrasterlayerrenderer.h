@@ -91,6 +91,7 @@ class CORE_EXPORT QgsRasterLayerRenderer : public QgsMapLayerRenderer
     QList< QgsMapClippingRegion > mClippingRegions;
 
     friend class QgsRasterLayerRendererFeedback;
+
 };
 
 

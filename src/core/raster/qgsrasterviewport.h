@@ -70,6 +70,13 @@ struct CORE_EXPORT QgsRasterViewPort
    * Coordinate transform context
    */
   QgsCoordinateTransformContext mTransformContext;
+
+  /**
+   *  Magnification factor.
+   *
+   *  \since QGIS 3.22
+   */
+  double mMagnificationFactor;
 };
 
 #endif //QGSRASTERVIEWPORT_H
