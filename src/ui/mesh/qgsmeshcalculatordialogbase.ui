@@ -46,7 +46,7 @@
              <enum>Qt::LeftToRight</enum>
             </property>
             <property name="text">
-             <string>Create on-the-fly mesh instead of writing layer to disk</string>
+             <string>Create on-the-fly dataset group instead of writing layer to disk</string>
             </property>
             <property name="tristate">
              <bool>false</bool>
