@@ -26,6 +26,7 @@ class TestQgsRectangle: public QObject
     Q_OBJECT
   private slots:
     void isEmpty();
+    void isNull();
     void fromWkt();
     void constructor();
     void constructorTwoPoints();
@@ -66,6 +67,23 @@ void TestQgsRectangle::isEmpty()
   r.setYMaximum( 1 );
   QVERIFY( r.isEmpty() );
 }
+
+void TestQgsRectangle::isNull()
+{
+  QgsRectangle r0;
+  QVERIFY( r0.isNull() );
+  QVERIFY( r0.isEmpty() );
+
+  QgsRectangle r2( 1, 1, 1, 1 );
+  QVERIFY( ! r2.isNull() );
+  QVERIFY( r2.isEmpty() );
+
+  QgsRectangle r1( 0, 0, 0, 0 );
+  QVERIFY( ! r1.isNull() );
+  QVERIFY( r1.isEmpty() );
+
+}
+
 
 void TestQgsRectangle::fromWkt()
 {
