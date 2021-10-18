@@ -1107,7 +1107,8 @@ bool QgsPostgresRasterProvider::init()
 
           QgsPostgresResult extentResult( connectionRO()->PQexec( extentSql ) );
           const QByteArray extentHexAscii { extentResult.PQgetvalue( 0, 0 ).toLatin1() };
-          QgsConstWkbPtr extentPtr { QByteArray::fromHex( extentHexAscii ) };
+          const QByteArray extentHexBin = QByteArray::fromHex( extentHexAscii );
+          QgsConstWkbPtr extentPtr { extentHexBin };
           if ( extentHexAscii.isEmpty() || ! p.fromWkb( extentPtr ) )
           {
             throw QgsPostgresRasterProviderException( tr( "Cannot get extent from raster" ) );
@@ -1259,7 +1260,8 @@ bool QgsPostgresRasterProvider::init()
     QgsPolygon p;
     try
     {
-      QgsConstWkbPtr ptr { QByteArray::fromHex( result.PQgetvalue( 0, 0 ).toLatin1() ) };
+      const QByteArray hexBin = QByteArray::fromHex( result.PQgetvalue( 0, 0 ).toLatin1() );
+      QgsConstWkbPtr ptr { hexBin };
       if ( ! p.fromWkb( ptr ) )
       {
         QgsMessageLog::logMessage( tr( "Cannot get extent from raster" ),
