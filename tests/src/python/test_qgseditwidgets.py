@@ -164,5 +164,39 @@ class TestQgsValueMapEditWidget(unittest.TestCase):
         QgsProject.instance().removeAllMapLayers()
 
 
+class TestQgsUuidWidget(unittest.TestCase):
+
+    def test_create_uuid(self):
+        layer = QgsVectorLayer("none?field=text_no_limit:text(0)&field=text_limit:text(10)", "layer", "memory")
+        self.assertTrue(layer.isValid())
+        QgsProject.instance().addMapLayer(layer)
+
+        # unlimited length text field
+        wrapper = QgsGui.editorWidgetRegistry().create('UuidGenerator', layer, 0, {}, None, None)
+        _ = wrapper.widget()
+        feature = QgsFeature(layer.fields())
+        wrapper.setFeature(feature)
+        val = wrapper.value()
+        # we can't directly check the result, as it will be random, so just check it's general properties
+        self.assertEqual(len(val), 38)
+        self.assertEqual(val[0], '{')
+        self.assertEqual(val[-1], '}')
+
+        # limited length text field, value must be truncated
+        wrapper = QgsGui.editorWidgetRegistry().create('UuidGenerator', layer, 1, {}, None, None)
+        _ = wrapper.widget()
+        feature = QgsFeature(layer.fields())
+        wrapper.setFeature(feature)
+        val = wrapper.value()
+        # we can't directly check the result, as it will be random, so just check it's general properties
+        self.assertEqual(len(val), 10)
+        self.assertNotEqual(val[0], '{')
+        self.assertNotEqual(val[-1], '}')
+        with self.assertRaises(ValueError):
+            val.index('-')
+
+        QgsProject.instance().removeAllMapLayers()
+
+
 if __name__ == "__main__":
     unittest.main()
