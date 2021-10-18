@@ -1373,7 +1373,7 @@ static QVariant fcnLength( const QVariantList &values, const QgsExpressionContex
     if ( geom.type() != QgsWkbTypes::LineGeometry )
       return QVariant();
 
-    return QVariant( geom.length() );
+    return QVariant( geom.constGet()->length() );
   }
 
   //otherwise fall back to string variant
@@ -3331,7 +3331,7 @@ static QVariant fcnGeomArea( const QVariantList &, const QgsExpressionContext *c
   }
   else
   {
-    return QVariant( f.geometry().area() );
+    return QVariant( f.geometry().constGet()->area() );
   }
 }
 
@@ -3342,7 +3342,7 @@ static QVariant fcnArea( const QVariantList &values, const QgsExpressionContext 
   if ( geom.type() != QgsWkbTypes::PolygonGeometry )
     return QVariant();
 
-  return QVariant( geom.area() );
+  return QVariant( geom.constGet()->area() );
 }
 
 static QVariant fcnGeomLength( const QVariantList &, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -3358,7 +3358,7 @@ static QVariant fcnGeomLength( const QVariantList &, const QgsExpressionContext 
   }
   else
   {
-    return QVariant( f.geometry().length() );
+    return QVariant( f.geometry().constGet()->length() );
   }
 }
 
@@ -3387,7 +3387,7 @@ static QVariant fcnPerimeter( const QVariantList &values, const QgsExpressionCon
     return QVariant();
 
   //length for polygons = perimeter
-  return QVariant( geom.length() );
+  return QVariant( geom.constGet()->perimeter() );
 }
 
 static QVariant fcnGeomNumPoints( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
