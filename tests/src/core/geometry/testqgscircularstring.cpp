@@ -156,6 +156,7 @@ void TestQgsCircularString::constructorFrom3Points()
   QCOMPARE( cs.xAt( 0 ), 1.0 );
   QCOMPARE( cs.yAt( 0 ), 2.0 );
   QCOMPARE( cs.pointN( 0 ).m(), 3.0 );
+  QVERIFY( std::isnan( cs.pointN( 0 ).z() ) );
   QCOMPARE( cs.xAt( 1 ), 21.0 );
   QCOMPARE( cs.yAt( 1 ), 22.0 );
   QCOMPARE( cs.pointN( 1 ).m(), 23.0 );
