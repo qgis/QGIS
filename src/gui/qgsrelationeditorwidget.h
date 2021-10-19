@@ -33,6 +33,7 @@
 #include "qgis_gui.h"
 
 class QTreeWidget;
+class QTreeWidgetItem;
 class QgsFeature;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
@@ -209,6 +210,8 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     void onKeyPressed( QKeyEvent *e );
     void onDigitizingCompleted( const QgsFeature &feature );
 
+    void multiEditItemSelectionChanged();
+
   private:
     void initDualView( QgsVectorLayer *layer, const QgsFeatureRequest &request );
     void setMapTool( QgsMapTool *mapTool );
@@ -251,6 +254,8 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
 
     Buttons mButtonsVisibility = Button::AllButtons;
     bool mShowFirstFeature = true;
+
+    QList<QTreeWidgetItem *> mMultiEditPreviousSelectedItems;
 };
 
 

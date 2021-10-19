@@ -304,12 +304,6 @@ void QgsAbstractRelationEditorWidget::deleteFeatures( const QgsFeatureIds &fids 
   QgsVectorLayer *layer;
   if ( mNmRelation.isValid() )
   {
-    if ( multiEditModeActive() )
-    {
-      QgsLogger::warning( tr( "Deleting of features not supported in multiple edit mode for n:m relations" ) );
-      return;
-    }
-
     // only normal relations support m:n relation
     Q_ASSERT( mNmRelation.type() == QgsRelation::Normal );
 
@@ -571,12 +565,6 @@ void QgsAbstractRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &fids 
 {
   if ( mNmRelation.isValid() )
   {
-    if ( multiEditModeActive() )
-    {
-      QgsLogger::warning( tr( "Unlinking of features not supported in multiple edit mode for n:m relations" ) );
-      return;
-    }
-
     // only normal relations support m:n relation
     Q_ASSERT( mNmRelation.type() == QgsRelation::Normal );
 
@@ -594,8 +582,14 @@ void QgsAbstractRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &fids 
       filters << '(' + mNmRelation.getRelatedFeaturesRequest( f ).filterExpression()->expression() + ')';
     }
 
+    QStringList featureFilters;
+    for ( const QgsFeature &editingFeature : std::as_const( mFeatureList ) )
+    {
+      featureFilters.append( mRelation.getRelatedFeaturesRequest( editingFeature ).filterExpression()->expression() );
+    }
+
     const QString filter = QStringLiteral( "(%1) AND (%2)" ).arg(
-                             mRelation.getRelatedFeaturesRequest( mFeatureList.first() ).filterExpression()->expression(),
+                             featureFilters.join( QLatin1String( " OR " ) ),
                              filters.join( QLatin1String( " OR " ) ) );
 
     QgsFeatureIterator linkedIterator = mRelation.referencingLayer()->getFeatures( QgsFeatureRequest()

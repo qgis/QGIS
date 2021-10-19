@@ -238,7 +238,7 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( const QVariantMap &config, QWi
   connect( mLinkFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::linkFeature );
   connect( mUnlinkFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::unlinkSelectedFeatures );
   connect( mZoomToFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::zoomToSelectedFeatures );
-  connect( mMultiEditTreeWidget, &QTreeWidget::itemSelectionChanged, this, &QgsRelationEditorWidget::updateButtons );
+  connect( mMultiEditTreeWidget, &QTreeWidget::itemSelectionChanged, this, &QgsRelationEditorWidget::multiEditItemSelectionChanged );
 
   // Set initial state for add/remove etc. buttons
   updateButtons();
@@ -344,13 +344,10 @@ void QgsRelationEditorWidget::updateButtons()
 
     canAddGeometry = false;
 
-    canRemove = canRemove && !nmRelation().isValid();
     canRemove = canRemove && multieditLinkedChildSelected;
 
     // In 1:n relations an element can be linked only to 1 feature
     canLink = canLink && mNmRelation.isValid();
-
-    canUnlink = canUnlink && !mNmRelation.isValid();
     canUnlink = canUnlink && multieditLinkedChildSelected;
   }
   else
@@ -389,6 +386,7 @@ void QgsRelationEditorWidget::addFeature()
   if ( !multiEditModeActive() )
     return;
 
+  mMultiEditTreeWidget->blockSignals( true );
   QTreeWidgetItemIterator treeWidgetItemIterator( mMultiEditTreeWidget );
   while ( *treeWidgetItemIterator )
   {
@@ -403,6 +401,7 @@ void QgsRelationEditorWidget::addFeature()
 
     ++treeWidgetItemIterator;
   }
+  mMultiEditTreeWidget->blockSignals( false );
 }
 
 void QgsRelationEditorWidget::addFeatureGeometry()
@@ -445,6 +444,47 @@ void QgsRelationEditorWidget::onDigitizingCompleted( const QgsFeature &feature )
   QgsAbstractRelationEditorWidget::addFeature( feature.geometry() );
 
   unsetMapTool();
+}
+
+void QgsRelationEditorWidget::multiEditItemSelectionChanged()
+{
+  const QList<QTreeWidgetItem *> selectedItems = mMultiEditTreeWidget->selectedItems();
+
+  if ( ! mNmRelation.isValid() )
+  {
+    updateButtons();
+    return;
+  }
+
+  // Select all items pointing to the same feature
+  // but only if we are not deselecting.
+  if ( selectedItems.size() == 1
+       && mMultiEditPreviousSelectedItems.size() <= 1 )
+  {
+    if ( selectedItems.first()->data( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureType ) ).toInt() == static_cast<int>( MultiEditFeatureType::Child ) )
+    {
+      QgsFeatureId featureId = selectedItems.first()->data( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureId ) ).toInt();
+
+      mMultiEditTreeWidget->blockSignals( true );
+      QTreeWidgetItemIterator treeWidgetItemIterator( mMultiEditTreeWidget );
+      while ( *treeWidgetItemIterator )
+      {
+        if ( ( *treeWidgetItemIterator )->data( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureType ) ).toInt() != static_cast<int>( MultiEditFeatureType::Child ) )
+        {
+          ++treeWidgetItemIterator;
+          continue;
+        }
+
+        if ( featureId == ( *treeWidgetItemIterator )->data( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureId ) ).toInt() )
+          ( *treeWidgetItemIterator )->setSelected( true );
+
+        ++treeWidgetItemIterator;
+      }
+      mMultiEditTreeWidget->blockSignals( false );
+    }
+  }
+  mMultiEditPreviousSelectedItems = selectedItems;
+  updateButtons();
 }
 
 void QgsRelationEditorWidget::toggleEditing( bool state )
