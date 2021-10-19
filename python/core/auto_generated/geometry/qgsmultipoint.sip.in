@@ -90,7 +90,7 @@ Returns the point with the specified ``index``.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-  public:
+  protected:
 
     virtual bool wktOmitChildType() const;
 

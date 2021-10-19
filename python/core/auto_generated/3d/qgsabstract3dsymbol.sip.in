@@ -86,7 +86,7 @@ Sets the symbol layer's property collection, used for data defined overrides.
 %End
 
 
-  public:
+  protected:
 
     void copyBaseSettings( QgsAbstract3DSymbol *destination ) const;
 %Docstring

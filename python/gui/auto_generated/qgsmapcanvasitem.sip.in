@@ -19,7 +19,7 @@ map canvas.
 %TypeHeaderCode
 #include "qgsmapcanvasitem.h"
 %End
-  public:
+  protected:
 
     QgsMapCanvasItem( QgsMapCanvas *mapCanvas /TransferThis/ );
 %Docstring
@@ -82,7 +82,7 @@ transformation from screen coordinates to map coordinates
 transformation from map coordinates to screen coordinates
 %End
 
-  public:
+  protected:
 
 
 

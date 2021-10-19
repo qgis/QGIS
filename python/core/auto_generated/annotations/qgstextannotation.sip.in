@@ -56,7 +56,7 @@ within the annotation. Ownership is not transferred.
 Returns a new QgsTextAnnotation object.
 %End
 
-  public:
+  protected:
 
     virtual void renderAnnotation( QgsRenderContext &context, QSizeF size ) const;
 

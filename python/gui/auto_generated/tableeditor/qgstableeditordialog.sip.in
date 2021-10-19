@@ -138,7 +138,7 @@ Emitted whenever the table contents are changed.
 Emitted whenever the "include table header" setting is changed.
 %End
 
-  public:
+  protected:
 
     virtual void closeEvent( QCloseEvent * );
 

@@ -60,7 +60,7 @@ Constructor for QgsRelationReferenceWidgetWrapper
     virtual void setEnabled( bool enabled );
 
 
-  public:
+  protected:
     virtual void updateConstraintWidgetStatus();
 
 

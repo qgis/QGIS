@@ -74,7 +74,7 @@ if there's no GUI for the paint effect class.
 :return: configuration widget
 %End
 
-  public:
+  protected:
 
 };
 

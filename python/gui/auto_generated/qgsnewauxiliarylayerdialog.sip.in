@@ -32,7 +32,7 @@ Constructor.
 :param parent: Parent window
 %End
 
-  public:
+  protected:
     virtual void accept();
 
 

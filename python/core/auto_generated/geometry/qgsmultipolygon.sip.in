@@ -90,7 +90,7 @@ Returns the geometry converted to the more generic curve type :py:class:`QgsMult
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-  public:
+  protected:
 
     virtual bool wktOmitChildType() const;
 

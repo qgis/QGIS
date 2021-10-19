@@ -92,7 +92,7 @@ Sets whether the body for the section is ``enabled``.
     virtual void reloadSettings();
 
 
-  public:
+  protected:
 
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 

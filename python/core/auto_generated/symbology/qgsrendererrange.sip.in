@@ -67,7 +67,7 @@ Creates a DOM element representing the range in SLD format.
                    rather than a < test.
 %End
 
-  public:
+  protected:
 
     void swap( QgsRendererRange &other );
 };
@@ -120,7 +120,7 @@ class QgsRendererRangeLabelFormat /Deprecated/
     static const int MAX_PRECISION;
     static const int MIN_PRECISION;
 
-  public:
+  protected:
 };
 
 

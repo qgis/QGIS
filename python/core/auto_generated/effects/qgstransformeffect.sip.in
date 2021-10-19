@@ -309,7 +309,7 @@ Returns whether transform will be reflected along the y-axis
 .. seealso:: :py:func:`reflectX`
 %End
 
-  public:
+  protected:
 
     virtual void draw( QgsRenderContext &context );
 

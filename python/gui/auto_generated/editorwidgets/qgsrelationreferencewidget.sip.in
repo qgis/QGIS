@@ -261,7 +261,7 @@ activate the map tool to select a new related feature on the map
 unset the currently related feature
 %End
 
-  public:
+  protected:
     virtual void showEvent( QShowEvent *e );
 
 

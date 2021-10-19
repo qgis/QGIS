@@ -33,7 +33,7 @@ Ownership is transferred to the caller.
 
 
 
-  public:
+  protected:
 
     virtual void clearCache() const;
 

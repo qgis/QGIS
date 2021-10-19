@@ -420,7 +420,7 @@ Sets the blending ``mode`` used for drawing callouts.
 .. versionadded:: 3.20
 %End
 
-  public:
+  protected:
 
     virtual void draw( QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext ) = 0;
 %Docstring
@@ -718,7 +718,7 @@ Sets whether callout lines should be drawn to all feature parts.
 .. seealso:: :py:func:`drawCalloutToAllParts`
 %End
 
-  public:
+  protected:
     virtual void draw( QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext );
 
 
@@ -765,7 +765,7 @@ serialized in the ``properties`` map (corresponding to the output from
     virtual QgsManhattanLineCallout *clone() const;
 
 
-  public:
+  protected:
     virtual QgsCurve *createCalloutLine( const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext ) const /Factory/;
 
 
@@ -844,7 +844,7 @@ Sets the callout line's curve ``orientation``.
 .. seealso:: :py:func:`orientation`
 %End
 
-  public:
+  protected:
     virtual QgsCurve *createCalloutLine( const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext ) const /Factory/;
 
 
@@ -1141,7 +1141,7 @@ Returns the map unit scale for the corner radius.
 %End
 
 
-  public:
+  protected:
     virtual void draw( QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext );
 
 

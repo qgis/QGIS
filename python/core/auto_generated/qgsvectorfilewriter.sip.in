@@ -705,7 +705,7 @@ Returns whether there are among the attributes specified some that do not exist 
 .. versionadded:: 3.0
 %End
 
-  public:
+  protected:
 
 
 

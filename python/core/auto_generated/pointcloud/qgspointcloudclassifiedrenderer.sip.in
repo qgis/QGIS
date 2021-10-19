@@ -95,7 +95,7 @@ Sets whether the category is currently enabled and should be rendered.
 .. seealso:: :py:func:`renderState`
 %End
 
-  public:
+  protected:
 };
 
 typedef QList<QgsPointCloudCategory> QgsPointCloudCategoryList;

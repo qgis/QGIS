@@ -84,7 +84,7 @@ from the current values of the width and height spin boxes.
 Emitted whenever the lock state changes.
 %End
 
-  public:
+  protected:
 
     virtual void changeEvent( QEvent *e );
 

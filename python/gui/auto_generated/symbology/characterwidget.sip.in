@@ -119,7 +119,7 @@ Clears the currently selected character in the widget.
 Emitted when a character is selected in the widget.
 %End
 
-  public:
+  protected:
     virtual void keyPressEvent( QKeyEvent *event );
 
     virtual void mouseMoveEvent( QMouseEvent *event );

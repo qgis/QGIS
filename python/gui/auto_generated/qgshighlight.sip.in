@@ -137,7 +137,7 @@ Returns the layer for which this highlight has been created.
     virtual void updatePosition();
 
 
-  public:
+  protected:
     virtual void paint( QPainter *p );
 
 

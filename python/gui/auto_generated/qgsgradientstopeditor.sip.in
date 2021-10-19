@@ -152,7 +152,7 @@ Emitted when the current selected stop changes.
 :param stop: details about newly selected stop
 %End
 
-  public:
+  protected:
 
     virtual void mouseMoveEvent( QMouseEvent *event );
 

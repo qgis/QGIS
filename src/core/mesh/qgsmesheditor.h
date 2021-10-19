@@ -26,8 +26,11 @@
 #include "qgstriangularmesh.h"
 #include "qgstopologicalmesh.h"
 
-
 class QgsMeshAdvancedEditing;
+
+#if defined(_MSC_VER)
+template CORE_EXPORT QVector<QVector<int>> SIP_SKIP;
+#endif
 
 /**
  * \ingroup core

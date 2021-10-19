@@ -17,7 +17,7 @@ A zip file: contains layers, using GDAL/OGR VSIFILE mechanism
 %TypeHeaderCode
 #include "qgszipitem.h"
 %End
-  public:
+  protected:
 
   public:
     QgsZipItem( QgsDataItem *parent, const QString &name, const QString &path );

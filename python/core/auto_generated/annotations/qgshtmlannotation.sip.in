@@ -75,7 +75,7 @@ Returns html source text
 Returns a new QgsHtmlAnnotation object.
 %End
 
-  public:
+  protected:
 
     virtual void renderAnnotation( QgsRenderContext &context, QSizeF size ) const;
 

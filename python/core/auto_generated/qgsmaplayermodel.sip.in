@@ -230,7 +230,7 @@ Returns the icon corresponding to a specified map ``layer``.
     void removeLayers( const QStringList &layerIds );
     void addLayers( const QList<QgsMapLayer *> &layers );
 
-  public:
+  protected:
 
 
 };

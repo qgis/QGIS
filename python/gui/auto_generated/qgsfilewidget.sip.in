@@ -261,7 +261,7 @@ the appearance and behavior of the line edit portion of the widget.
 Emitted whenever the current file or directory ``path`` is changed.
 %End
 
-  public:
+  protected:
 
     virtual void updateLayout();
 %Docstring

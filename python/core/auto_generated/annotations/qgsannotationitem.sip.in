@@ -205,7 +205,7 @@ exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered a
 .. seealso:: :py:func:`setUseSymbologyReferenceScale`
 %End
 
-  public:
+  protected:
 
     void copyCommonProperties( const QgsAnnotationItem *other );
 %Docstring

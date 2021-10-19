@@ -77,7 +77,7 @@ keywords.
 .. versionadded:: 3.22
 %End
 
-  public:
+  protected:
     virtual void initializeLexer();
 
 

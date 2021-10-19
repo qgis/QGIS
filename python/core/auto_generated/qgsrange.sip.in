@@ -121,7 +121,7 @@ Returns ``True`` if this range overlaps another range.
 
     bool operator!=( const QgsRange<T> &other ) const;
 
-  public:
+  protected:
 
 
 };

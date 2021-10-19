@@ -31,7 +31,7 @@ Opens the dialog modally and returns when the user has selected a character.
 If ``initialSelection`` is specified, then that character will be initially selected in the dialog.
 %End
 
-  public:
+  protected:
 };
 
 /************************************************************************

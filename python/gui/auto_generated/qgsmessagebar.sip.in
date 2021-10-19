@@ -232,7 +232,7 @@ Pushes a critical warning ``message`` that must be manually dismissed by the use
 .. versionadded:: 2.8
 %End
 
-  public:
+  protected:
     virtual void mousePressEvent( QMouseEvent *e );
 
 

@@ -58,7 +58,7 @@ Sync the widget state to the layer set for the widget.
 Apply any changes on the widget to the set layer.
 %End
 
-  public:
+  protected:
 
 
 };

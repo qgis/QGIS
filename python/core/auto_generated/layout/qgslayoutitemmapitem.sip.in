@@ -197,7 +197,7 @@ Returns the internal map layer used by this item, if available.
     virtual QgsExpressionContext createExpressionContext() const;
 
 
-  public:
+  protected:
 
 
 
@@ -291,7 +291,7 @@ Returns ``True`` if the stack has any currently enabled items.
 Returns a reference to the item at the specified ``index`` within the stack.
 %End
 
-  public:
+  protected:
 
     void addItem( QgsLayoutItemMapItem *item /Transfer/ );
 %Docstring
@@ -354,7 +354,7 @@ Returns a reference to an item which matching ``itemId`` within the stack.
 Returns a list of :py:class:`QgsLayoutItemMapItems` contained by the stack.
 %End
 
-  public:
+  protected:
 
 
 

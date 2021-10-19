@@ -366,7 +366,7 @@ Sets the table ``headers``.
 .. seealso:: :py:func:`tableHeaders`
 %End
 
-  public:
+  protected:
     virtual void keyPressEvent( QKeyEvent *event );
 
 

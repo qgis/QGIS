@@ -92,7 +92,7 @@ Sets vertex marker icon type
 Sets whether the vertices are drawn
 %End
 
-  public:
+  protected:
     virtual void paint( QPainter *painter );
 
 

@@ -207,12 +207,12 @@ Slot to enable/disable mutually exclusive group flag
 .. versionadded:: 2.12
 %End
 
-  public:
+  protected:
     void zoomToLayers( QgsMapCanvas *canvas, const QList<QgsMapLayer *> &layers );
 
     QString uniqueGroupName( QgsLayerTreeGroup *parentGroup );
 
-  public:
+  protected:
 };
 
 

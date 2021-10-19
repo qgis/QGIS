@@ -46,7 +46,7 @@ Constructor for QgsValueMapSearchWidgetWrapper
     virtual void setEnabled( bool enabled );
 
 
-  public:
+  protected:
     virtual QWidget *createWidget( QWidget *parent );
 
     virtual void initWidget( QWidget *editor );

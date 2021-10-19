@@ -316,7 +316,7 @@ these just results in noise. In this case setting ``enabled`` to ``False`` will 
 .. versionadded:: 3.16
 %End
 
-  public:
+  protected:
 
     void logError( const QString &engineName, const QString &message ) const;
 %Docstring

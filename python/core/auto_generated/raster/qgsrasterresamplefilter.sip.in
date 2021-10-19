@@ -61,7 +61,7 @@ Sets resampler for zoomed out scales. Takes ownership of the object
 Sets base class members from xml. Usually called from :py:func:`~QgsRasterResampleFilter.create` methods of subclasses
 %End
 
-  public:
+  protected:
 
 
 };

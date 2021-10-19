@@ -177,7 +177,7 @@ setLayer set the current layer selected in the combo
 Emitted whenever the currently selected layer changes.
 %End
 
-  public:
+  protected:
 
     virtual void dragEnterEvent( QDragEnterEvent *event );
 

@@ -41,7 +41,7 @@ change the layer used by the map tool to identify
     void featureIdentified( const QgsFeature & );
     void featureIdentified( QgsFeatureId );
 
-  public:
+  protected:
     virtual void keyPressEvent( QKeyEvent *e );
 
 

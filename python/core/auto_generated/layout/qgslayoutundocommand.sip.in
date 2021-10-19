@@ -78,7 +78,7 @@ Returns the after state for the layout.
 Returns ``True`` if both the before and after states are valid and different.
 %End
 
-  public:
+  protected:
 
     virtual void saveState( QDomDocument &stateDoc ) const = 0;
 %Docstring

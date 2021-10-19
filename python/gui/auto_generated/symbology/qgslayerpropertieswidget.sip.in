@@ -65,7 +65,7 @@ widgets and not open dialogs
     void changed();
     void changeLayer( QgsSymbolLayer * );
 
-  public:
+  protected:
     void populateLayerTypes();
     void updateSymbolLayerWidget( QgsSymbolLayer *layer );
 
@@ -81,7 +81,7 @@ and help text for the associated property.
 .. versionadded:: 3.0
 %End
 
-  public: // data
+  protected: // data
 
 
 };

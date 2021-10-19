@@ -115,7 +115,7 @@ Creates a QgsMergedFeatureRenderer by a conversion from an existing renderer.
 :return: a new renderer if the conversion was possible, otherwise ``None``.
 %End
 
-  public:
+  protected:
 
     QgsMergedFeatureRenderer( const QString &type, QgsFeatureRenderer *embeddedRenderer /Transfer/ );
 %Docstring
@@ -125,14 +125,13 @@ Constructor for QgsMergedFeatureRenderer.
 :param embeddedRenderer: optional embeddedRenderer. Ownership will be transferred.
 %End
 
-protected:
     enum GeometryOperation
     {
       Merge,
       InvertOnly,
       MergeAndInvert,
     };
-protected slots:
+
 
 
 };

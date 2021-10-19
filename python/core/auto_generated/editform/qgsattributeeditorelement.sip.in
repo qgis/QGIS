@@ -124,7 +124,7 @@ Controls if this element should be labeled with a title (field, relation or grou
 .. versionadded:: 2.18
 %End
 
-  public:
+  protected:
 
 };
 

@@ -225,7 +225,7 @@ effect if the paint effect is used in a :py:class:`QgsEffectStack`.
 .. seealso:: :py:func:`drawMode`
 %End
 
-  public:
+  protected:
 
 
     virtual void draw( QgsRenderContext &context ) = 0;
@@ -399,7 +399,7 @@ Returns the blend mode for the effect
 .. seealso:: :py:func:`setBlendMode`
 %End
 
-  public:
+  protected:
 
     virtual void draw( QgsRenderContext &context );
 

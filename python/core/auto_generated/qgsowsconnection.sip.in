@@ -90,7 +90,7 @@ Retrieves the selected connection for the specified service
 Marks the specified connection for the specified service as selected
 %End
 
-  public:
+  protected:
 
 };
 

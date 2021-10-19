@@ -29,7 +29,7 @@ code autocompletion.
 Constructor for QgsCodeEditorJson
 %End
 
-  public:
+  protected:
     virtual void initializeLexer();
 
 
