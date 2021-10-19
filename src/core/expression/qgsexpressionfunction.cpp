@@ -1482,13 +1482,10 @@ static QVariant fcnReplace( const QVariantList &values, const QgsExpressionConte
 
 static QVariant fcnRegexpReplace( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  if ( ! values.at( 2 ).isValid() )
-  {
-    return QVariant();
-  }
   QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
   QString regexp = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
   QString after = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
+  bool isValid_after{ values.at( 2 ).isValid() };
 
   QRegularExpression re( regexp, QRegularExpression::UseUnicodePropertiesOption );
   if ( !re.isValid() )
@@ -1496,6 +1493,12 @@ static QVariant fcnRegexpReplace( const QVariantList &values, const QgsExpressio
     parent->setEvalErrorString( QObject::tr( "Invalid regular expression '%1': %2" ).arg( regexp, re.errorString() ) );
     return QVariant();
   }
+
+  if ( ! isValid_after && str.contains( re ) ) // fix https://github.com/qgis/QGIS/issues/44274
+  {
+    return QVariant();
+  }
+
   return QVariant( str.replace( re, after ) );
 }
 
