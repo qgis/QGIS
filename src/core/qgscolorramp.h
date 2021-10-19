@@ -137,8 +137,10 @@ class CORE_EXPORT QgsGradientStop
 //! List of gradient stops
 typedef QList<QgsGradientStop> QgsGradientStopsList;
 
-#define DEFAULT_GRADIENT_COLOR1 QColor(0,0,255)
-#define DEFAULT_GRADIENT_COLOR2 QColor(0,255,0)
+// these are the QGIS branding colors, exaggerated a bit to make a default ramp with greater color variation
+// then the official QGIS color gradient!
+#define DEFAULT_GRADIENT_COLOR1 QColor(69, 116, 40)
+#define DEFAULT_GRADIENT_COLOR2 QColor(188, 220, 60)
 
 /**
  * \ingroup core
