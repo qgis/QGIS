@@ -262,9 +262,9 @@ bool QgsMeshMemoryDataProvider::addDatasetGroupMetadata( const QString &def, Qgs
   for ( int i = 0; i < metadataLines.size(); ++i )
   {
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    const QStringList keyVal = metadataLines[i].split( ':', QString::SkipEmptyParts );
+    const QStringList keyVal = metadataLines[i].split( QStringLiteral( ": " ), QString::SkipEmptyParts );
 #else
-    const QStringList keyVal = metadataLines[i].split( ':', Qt::SkipEmptyParts );
+    const QStringList keyVal = metadataLines[i].split( QStringLiteral( ": " ), Qt::SkipEmptyParts );
 #endif
     if ( keyVal.size() != 2 )
     {
@@ -405,6 +405,13 @@ void QgsMeshMemoryDataProvider::addGroupToTemporalCapabilities( int groupIndex, 
 
   if ( group.datasetCount() > 1 ) //non temporal dataset groups (count=1) have no time in the capabilities
   {
+    QString timeReferenceString = group.extraMetadata().value( QStringLiteral( "reference_time" ) );
+    if ( !timeReferenceString.isEmpty() )
+    {
+      timeReferenceString.append( 'Z' );//For now provider doesn't support time zone and return always in local time, force UTC
+      const QDateTime referenceTime = QDateTime::fromString( timeReferenceString, Qt::ISODate );
+      tempCap->addGroupReferenceDateTime( groupIndex, referenceTime );
+    }
     for ( int i = 0; i < group.memoryDatasets.count(); ++i )
       if ( group.memoryDatasets.at( i ) )
         tempCap->addDatasetTime( groupIndex, group.memoryDatasets.at( i )->time );
