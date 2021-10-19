@@ -276,7 +276,6 @@ void MDAL::DriverManager::loadDynamicDrivers()
 
     if ( driver )
       mDrivers.push_back( driver );
-
   }
 
 }

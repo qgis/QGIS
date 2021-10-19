@@ -16,6 +16,12 @@
 #include <ctime>
 #include <stdlib.h>
 
+#if defined _WIN32
+#define UNICODE
+#include <locale>
+#include <codecvt>
+#endif
+
 std::string MDAL::getEnvVar( const std::string &varname, const std::string &defaultVal )
 {
   if ( varname.empty() )
@@ -29,9 +35,56 @@ std::string MDAL::getEnvVar( const std::string &varname, const std::string &defa
     return std::string( envVarC );
 }
 
+bool MDAL::openInputFile( std::ifstream &inputFileStream, const std::string &fileName, std::ios_base::openmode mode )
+{
+#if defined _WIN32
+  std::wstring_convert< std::codecvt_utf8_utf16< wchar_t > > converter;
+  std::wstring wStr = converter.from_bytes( fileName );
+  inputFileStream.open( wStr, std::ifstream::in | mode );
+#else
+  inputFileStream.open( fileName, std::ifstream::in | mode );
+#endif
+
+  return inputFileStream.is_open();
+}
+
+std::ifstream MDAL::openInputFile( const std::string &fileName, std::ios_base::openmode mode )
+{
+  std::ifstream ret;
+
+#if defined _WIN32
+  std::wstring_convert< std::codecvt_utf8_utf16< wchar_t > > converter;
+  std::wstring wStr = converter.from_bytes( fileName );
+  ret.open( wStr, mode );
+#else
+  ret.open( fileName, mode );
+#endif
+
+  return ret;
+}
+
+std::ofstream MDAL::openOutputFile( const std::string &fileName, std::ios_base::openmode mode )
+{
+  std::ofstream ret;
+
+#if defined _WIN32
+  std::wstring_convert< std::codecvt_utf8_utf16< wchar_t > > converter;
+  std::wstring wStr = converter.from_bytes( fileName );
+  ret.open( wStr, mode );
+#else
+  ret.open( fileName, mode );
+#endif
+
+  return ret;
+}
+
 bool MDAL::fileExists( const std::string &filename )
 {
-  std::ifstream in( filename );
+  std::ifstream in;
+
+  if ( !openInputFile( in, filename ) )
+    return false;
+
   return in.good();
 }
 
@@ -39,7 +92,8 @@ std::string MDAL::readFileToString( const std::string &filename )
 {
   if ( MDAL::fileExists( filename ) )
   {
-    std::ifstream t( filename );
+    std::ifstream t = openInputFile( filename );
+
     std::stringstream buffer;
     buffer << t.rdbuf();
     return buffer.str();
@@ -976,6 +1030,7 @@ MDAL::Library::Library( std::string libraryFile )
 {
   d = new Data;
   d->mLibraryFile = libraryFile;
+  d->mRef++;
 }
 
 MDAL::Library::~Library()
@@ -993,6 +1048,7 @@ MDAL::Library::~Library()
 MDAL::Library::Library( const MDAL::Library &other )
 {
   *this = other;
+  d->mRef++;
 }
 
 MDAL::Library &MDAL::Library::operator=( const MDAL::Library &other )
