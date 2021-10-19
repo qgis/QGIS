@@ -1406,7 +1406,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "regexp_replace invalid" ) << "regexp_replace('HeLLo','[[[', '-')" << true << QVariant();
       QTest::newRow( "regexp_replace match, with null" ) << "regexp_replace('aaaa','a',NULL)" << false << QVariant( ); // fix https://github.com/qgis/QGIS/issues/44274
       QTest::newRow( "regexp_replace not full match, with null" ) << "regexp_replace('aaabbb','b',NULL)" << false << QVariant( );
-      QTest::newRow( "regexp_replace no match with null" ) << "regexp_replace('zzz', 'b', NULL)" << false << QVariant( );
+      QTest::newRow( "regexp_replace no match with null" ) << "regexp_replace('zzz', 'b', NULL)" << false << QVariant( "zzz" );
       QTest::newRow( "substr" ) << "substr('HeLLo', 3,2)" << false << QVariant( "LL" );
       QTest::newRow( "substr named parameters" ) << "substr(string:='HeLLo',start:=3,length:=2)" << false << QVariant( "LL" );
       QTest::newRow( "substr negative start" ) << "substr('HeLLo', -4)" << false << QVariant( "eLLo" );
