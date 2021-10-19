@@ -187,7 +187,7 @@ This is a persistent setting, which is saved in QSettings.
 
     void directoryChanged();
 
-  public:
+  protected:
     void init();
 
 
@@ -208,7 +208,7 @@ Browser parameter widget implementation for directory items.
   public:
     QgsDirectoryParamWidget( const QString &path, QWidget *parent /TransferThis/ = 0 );
 
-  public:
+  protected:
     virtual void mousePressEvent( QMouseEvent *event );
 
 

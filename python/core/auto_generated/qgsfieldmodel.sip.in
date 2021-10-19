@@ -185,7 +185,7 @@ Set the layer from which fields are displayed.
 Called when the model must be updated.
 %End
 
-  public:
+  protected:
 
 
 };

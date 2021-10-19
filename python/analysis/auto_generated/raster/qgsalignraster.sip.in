@@ -84,7 +84,7 @@ Write contents of the object to standard error stream - for debugging
 Gets raster value at the given coordinates (from the first band)
 %End
 
-      public:
+      protected:
 
       private:
         RasterInfo( const QgsAlignRaster::RasterInfo &rh );
@@ -264,7 +264,7 @@ write contents of the object to standard error stream - for debugging
 Returns the index of the layer which has smallest cell size (returns -1 on error)
 %End
 
-  public:
+  protected:
 
     bool createAndWarp( const Item &raster );
 %Docstring
@@ -276,7 +276,7 @@ Internal function for processing of one raster (1. create output, 2. do the alig
 Determine suggested output of raster warp to a different CRS. Returns ``True`` on success
 %End
 
-  public:
+  protected:
 
 
 

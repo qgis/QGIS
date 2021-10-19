@@ -71,7 +71,7 @@ After using this method, user should wait for :py:func:`QgsExternalStorageStored
 It's possible to give ``authCfg`` authentication configuration id in case its needed.
 %End
 
-  public:
+  protected:
 
     virtual QgsExternalStorageStoredContent *doStore( const QString &filePath, const QString &url, const QString &authCfg = QString() ) const = 0 /Factory/;
 %Docstring
@@ -135,7 +135,7 @@ The signal is emitted whenever content fetching/storing estimated progression va
 The signal is emitted when content fetching/storing has been canceled
 %End
 
-  public:
+  protected:
 
     void reportError( const QString &errorMsg );
 %Docstring

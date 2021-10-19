@@ -147,7 +147,7 @@ Sets the current expression to show in the widget.
 .. seealso:: :py:func:`expression`
 %End
 
-  public:
+  protected:
 
     virtual void changeEvent( QEvent *event );
 

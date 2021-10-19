@@ -121,7 +121,7 @@ Ownership of items is transferred to the caller.
 .. versionadded:: 3.22
 %End
 
-  public:
+  protected:
 
 
 

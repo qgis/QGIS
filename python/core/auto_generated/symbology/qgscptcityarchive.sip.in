@@ -121,7 +121,7 @@ Base class for all items in the model
 
     bool isValid();
 
-  public:
+  protected:
 
 
   signals:
@@ -162,7 +162,7 @@ Item that represents a layer that can be opened with one of the providers
 
     void init();
 
-  public:
+  protected:
 
 };
 
@@ -185,7 +185,7 @@ A Collection: logical collection of subcollections and color ramps
     void addChild( QgsCptCityDataItem *item /Transfer/ );
     QVector<QgsCptCityDataItem *> childrenRamps( bool recursive );
 
-  public:
+  protected:
 };
 
 class QgsCptCityDirectoryItem : QgsCptCityCollectionItem
@@ -210,7 +210,7 @@ A directory: contains subdirectories and color ramps
     static QgsCptCityDataItem *dataItem( QgsCptCityDataItem *parent,
                                          const QString &name, const QString &path );
 
-  public:
+  protected:
     QMap< QString, QStringList > rampsMap();
     QStringList dirEntries() const;
 };
@@ -235,7 +235,7 @@ A selection: contains subdirectories and color ramps
 
     QStringList selectionsList() const;
 
-  public:
+  protected:
     void parseXml();
 };
 
@@ -255,7 +255,7 @@ An "All ramps item", which contains all items in a flat hierarchy
     virtual QVector<QgsCptCityDataItem *> createChildren();
 
 
-  public:
+  protected:
 };
 
 class QgsCptCityBrowserModel : QAbstractItemModel
@@ -334,7 +334,7 @@ Returns index of a path
     void beginRemoveItems( QgsCptCityDataItem *parent, int first, int last );
     void endRemoveItems();
 
-  public:
+  protected:
 
     void addRootItems();
     void removeRootItems();

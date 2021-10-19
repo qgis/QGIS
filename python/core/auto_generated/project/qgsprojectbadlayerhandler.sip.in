@@ -34,17 +34,15 @@ log.
     virtual ~QgsProjectBadLayerHandler();
 
 
-  public:
+  protected:
 
-protected:
     enum DataType
     {
       IS_VECTOR,
       IS_RASTER,
       IS_BOGUS
     };
-protected slots:
-protected:
+
     enum ProviderType
     {
       IS_FILE,
@@ -52,7 +50,7 @@ protected:
       IS_URL,
       IS_Unknown
     };
-protected slots:
+
 
     DataType dataType( const QDomNode &layerNode );
 %Docstring

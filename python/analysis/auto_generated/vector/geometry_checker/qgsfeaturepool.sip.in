@@ -86,7 +86,7 @@ Should be preferred over :py:func:`~QgsFeaturePool.layer`.name() because it can 
 the background thread.
 %End
 
-  public:
+  protected:
 
     void insertFeature( const QgsFeature &feature, bool skipLock = false );
 %Docstring

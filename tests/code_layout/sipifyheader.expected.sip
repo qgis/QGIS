@@ -314,7 +314,7 @@ remove argument
     }
 %End
 
-  public:
+  protected:
     bool thisShouldBeListed();
 
 

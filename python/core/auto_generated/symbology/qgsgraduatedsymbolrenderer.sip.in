@@ -506,7 +506,7 @@ range matches the value.
 .. versionadded:: 3.10.1
 %End
 
-  public:
+  protected:
 
 
 

@@ -905,7 +905,7 @@ Sets the ``range`` of z-values which will be visible in the map.
 .. versionadded:: 3.18
 %End
 
-  public:
+  protected:
 
 
 

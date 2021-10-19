@@ -184,7 +184,7 @@ Signal when :py:class:`QgsAttributeEditorContext` mContext changed
 .. versionadded:: 3.4
 %End
 
-  public:
+  protected:
 
     virtual QWidget *createWidget( QWidget *parent ) = 0;
 %Docstring

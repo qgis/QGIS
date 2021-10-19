@@ -167,7 +167,7 @@ Emitted when the name is changed in the dialog.
   public slots:
     void nameChanged();
 
-  public:
+  protected:
 
     QString highlightText( const QString &text );
 %Docstring

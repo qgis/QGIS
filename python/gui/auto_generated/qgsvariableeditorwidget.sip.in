@@ -119,7 +119,7 @@ after adding or removing scopes from the attached context.
 Emitted when the user has modified a scope using the widget.
 %End
 
-  public:
+  protected:
 
     virtual void showEvent( QShowEvent *event );
 

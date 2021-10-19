@@ -419,7 +419,7 @@ Ownership of the returned objects is transferred to the caller.
 .. versionadded:: 3.16
 %End
 
-  public:
+  protected:
     virtual void populate( const QVector<QgsDataItem *> &children );
 
     virtual void refresh( const QVector<QgsDataItem *> &children );

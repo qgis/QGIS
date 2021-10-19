@@ -131,7 +131,7 @@ Replaces the headers in the table with a specified list of :py:class:`QgsLayoutT
 .. seealso:: :py:func:`headers`
 %End
 
-  public:
+  protected:
 
     virtual bool writePropertiesToElement( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 

@@ -812,7 +812,7 @@ Adjusts the scale bar box size and updates the item.
     virtual ExportLayerBehavior exportLayerBehavior() const;
 
 
-  public:
+  protected:
 
     virtual void draw( QgsLayoutItemRenderContext &context );
 

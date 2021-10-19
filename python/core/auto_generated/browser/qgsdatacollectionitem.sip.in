@@ -62,7 +62,7 @@ Returns the standard browser data collection icon.
     virtual QgsAbstractDatabaseProviderConnection *databaseConnection() const;
 
 
-  public:
+  protected:
 
     static QIcon openDirIcon( const QColor &fillColor = QColor(), const QColor &strokeColor = QColor() );
 %Docstring

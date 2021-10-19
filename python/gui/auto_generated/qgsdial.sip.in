@@ -33,7 +33,7 @@ Constructor for QgsDial
   signals:
     void valueChanged( const QVariant & );
 
-  public:
+  protected:
     virtual void paintEvent( QPaintEvent *event );
 
 

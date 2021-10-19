@@ -849,7 +849,7 @@ To create it, the geometry is default constructed and then the WKB is changed.
 .. versionadded:: 3.0
 %End
 
-  public:
+  protected:
 
     int sortIndex() const;
 %Docstring
@@ -917,7 +917,7 @@ Returns point at index (for geometries without child geometries - i.e. curve / p
 .. versionadded:: 3.0
 %End
 
-  public:
+  protected:
 
     void setZMTypeFromSubGeometry( const QgsAbstractGeometry *subggeom, QgsWkbTypes::Type baseGeomType );
 %Docstring

@@ -77,7 +77,7 @@ Focuses the default widget for the page.
 Emitted when the annotation item definition in the widget is changed by the user.
 %End
 
-  public:
+  protected:
 
     virtual bool setNewItem( QgsAnnotationItem *item );
 %Docstring

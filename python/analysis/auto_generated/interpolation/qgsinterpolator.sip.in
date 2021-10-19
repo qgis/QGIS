@@ -98,7 +98,7 @@ Calculates interpolation value for map coordinates x, y
 %End
 
 
-  public:
+  protected:
 
     Result cacheBaseData( QgsFeedback *feedback = 0 );
 %Docstring

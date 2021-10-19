@@ -405,7 +405,7 @@ with the context.
 .. versionadded:: 3.0
 %End
 
-  public:
+  protected:
     virtual void showEvent( QShowEvent *e );
 
 

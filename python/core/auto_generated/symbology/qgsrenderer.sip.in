@@ -36,7 +36,7 @@ The symbol of this symbol level
 The layer of this symbol level
 %End
 
-  public:
+  protected:
 };
 
 typedef QList< QgsSymbolLevelItem > QgsSymbolLevel;
@@ -557,7 +557,7 @@ Currently clones
 .. versionadded:: 3.22
 %End
 
-  public:
+  protected:
     QgsFeatureRenderer( const QString &type );
 
     void renderFeatureWithSymbol( const QgsFeature &feature, QgsSymbol *symbol, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker ) throw( QgsCsException );

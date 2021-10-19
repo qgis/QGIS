@@ -215,7 +215,7 @@ Appends first point if not already closed.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-  public:
+  protected:
 
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     virtual QgsRectangle calculateBoundingBox() const;

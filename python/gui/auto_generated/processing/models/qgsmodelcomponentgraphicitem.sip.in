@@ -250,7 +250,7 @@ Called when the component should be edited.
 The default implementation does nothing.
 %End
 
-  public:
+  protected:
 
     QString truncatedTextForItem( const QString &text ) const;
 %Docstring
@@ -341,7 +341,7 @@ Ownership of ``parameter`` is transferred to the item.
     virtual bool canDeleteComponent();
 
 
-  public:
+  protected:
 
     virtual QColor fillColor( State state ) const;
 
@@ -404,7 +404,7 @@ Sets the results obtained for this child algorithm for the last model execution 
 Sets the inputs used for this child algorithm for the last model execution through the dialog.
 %End
 
-  public:
+  protected:
 
     virtual QColor fillColor( State state ) const;
 
@@ -464,7 +464,7 @@ Ownership of ``output`` is transferred to the item.
     virtual bool canDeleteComponent();
 
 
-  public:
+  protected:
 
     virtual QColor fillColor( State state ) const;
 
@@ -526,7 +526,7 @@ Ownership of ``output`` is transferred to the item.
 Returns the parent model component item.
 %End
 
-  public:
+  protected:
 
     virtual QColor fillColor( State state ) const;
 
@@ -581,7 +581,7 @@ Ownership of ``output`` is transferred to the item.
 
     virtual bool canDeleteComponent();
 
-  public:
+  protected:
 
     virtual QColor fillColor( State state ) const;
 

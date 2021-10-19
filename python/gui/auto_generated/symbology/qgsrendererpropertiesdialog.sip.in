@@ -113,7 +113,7 @@ and block the user.
 %End
 
 
-  public:
+  protected:
 
     void connectValueChanged( const QList<QWidget *> &widgets, const char *slot );
 %Docstring

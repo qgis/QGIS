@@ -158,7 +158,7 @@ then the QGIS locale separator is used instead.
 .. seealso:: :py:func:`decimalSeparator`
 %End
 
-  public:
+  protected:
 
     virtual void setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context );
 %Docstring

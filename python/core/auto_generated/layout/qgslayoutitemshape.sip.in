@@ -109,7 +109,7 @@ Returns the corner radius for rounded rectangle corners.
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 
-  public:
+  protected:
 
     virtual void draw( QgsLayoutItemRenderContext &context );
 

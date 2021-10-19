@@ -861,7 +861,7 @@ calculating individual symbol angles.
     virtual bool canCauseArtifactsBetweenAdjacentTiles() const;
 
 
-  public:
+  protected:
 
     virtual void setSymbolLineAngle( double angle ) = 0;
 %Docstring
@@ -1004,7 +1004,7 @@ Shall the marker be rotated.
     virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context );
 
 
-  public:
+  protected:
 
 
     virtual void setSymbolLineAngle( double angle );
@@ -1166,7 +1166,7 @@ Returns the map unit scale for the hash length.
     virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context );
 
 
-  public:
+  protected:
 
     virtual void setSymbolLineAngle( double angle );
 

@@ -118,7 +118,7 @@ Returns ``True`` if the output was automatically created when adding a parameter
 .. versionadded:: 3.14
 %End
 
-  public:
+  protected:
 
 
 

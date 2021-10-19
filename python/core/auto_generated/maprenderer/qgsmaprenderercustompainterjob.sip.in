@@ -28,7 +28,7 @@ Constructor for QgsMapRendererAbstractCustomPainterJob, using the given
 map ``settings``.
 %End
 
-  public:
+  protected:
 
     void preparePainter( QPainter *painter, const QColor &backgroundColor = Qt::transparent );
 %Docstring

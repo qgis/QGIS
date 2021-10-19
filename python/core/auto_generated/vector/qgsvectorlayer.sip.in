@@ -2996,7 +2996,7 @@ Emitted when the feature count for symbols on this layer has been recalculated.
 .. versionadded:: 3.0
 %End
 
-  public:
+  protected:
     virtual void setExtent( const QgsRectangle &rect ) ${SIP_FINAL};
 
 %Docstring

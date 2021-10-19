@@ -641,7 +641,7 @@ Internally, this notifies all symbol layers which were used via a call to
 .. versionadded:: 3.20
 %End
 
-  public:
+  protected:
 
     QgsSymbol( Qgis::SymbolType type, const QgsSymbolLayerList &layers /Transfer/ ); // can't be instantiated
 

@@ -240,7 +240,7 @@ and replacing them with their current values.
 .. versionadded:: 3.20
 %End
 
-  public:
+  protected:
     virtual void draw( QgsLayoutItemRenderContext &context );
 
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;

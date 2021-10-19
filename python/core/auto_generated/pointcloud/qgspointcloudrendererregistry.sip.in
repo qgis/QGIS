@@ -72,7 +72,7 @@ Pure virtual function: must be implemented in derived classes.
 %End
 
 
-  public:
+  protected:
 };
 
 
@@ -95,7 +95,7 @@ Convenience metadata class that uses static functions to create point cloud rend
 
 
 
-  public:
+  protected:
 
   private:
     QgsPointCloudRendererMetadata();

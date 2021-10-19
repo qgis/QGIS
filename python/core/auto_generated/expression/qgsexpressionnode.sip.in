@@ -294,7 +294,7 @@ Returns a reference to the current object if no optimizations were applied.
 .. versionadded:: 3.20
 %End
 
-  public:
+  protected:
 
     QgsExpressionNode();
 %Docstring

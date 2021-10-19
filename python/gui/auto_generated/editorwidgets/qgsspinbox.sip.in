@@ -138,7 +138,7 @@ is equal to :py:func:`~QgsSpinBox.minimum`. Typical use is to indicate that this
     virtual QValidator::State validate( QString &input, int &pos ) const;
 
 
-  public:
+  protected:
 
     virtual void changeEvent( QEvent *event );
 

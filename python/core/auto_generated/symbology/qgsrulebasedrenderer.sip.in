@@ -444,7 +444,7 @@ should be canceled.
 .. versionadded:: 3.10
 %End
 
-      public:
+      protected:
         void initFilter();
 
       private:
@@ -563,7 +563,7 @@ Since QGIS 3.20, the optional ``layer`` parameter is required for conversions of
 helper function to convert the size scale and rotation fields present in some other renderers to data defined symbology
 %End
 
-  public:
+  protected:
 
 
 

@@ -62,7 +62,7 @@ Returns the layer id of the source layer.
 .. versionadded:: 3.4
 %End
 
-  public:
+  protected:
 
 
 
@@ -122,7 +122,7 @@ end of iterating: free the resources / lock
     virtual bool isValid() const;
 
 
-  public:
+  protected:
     virtual bool fetchFeature( QgsFeature &feature );
 
 %Docstring

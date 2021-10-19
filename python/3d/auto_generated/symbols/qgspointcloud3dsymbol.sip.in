@@ -72,7 +72,7 @@ Sets the point size
 Returns the byte stride for the geometries used to for the vertex buffer
 %End
 
-  public:
+  protected:
 };
 
 class QgsSingleColorPointCloud3DSymbol : QgsPointCloud3DSymbol
