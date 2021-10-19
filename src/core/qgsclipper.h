@@ -124,7 +124,7 @@ class CORE_EXPORT QgsClipper
 
     /**
      * Takes a \a curve with 3D coordinates and clips it to clipExtent
-     * \param curve the linestring
+     * \param curve the linestring to clip
      * \param clipExtent clipping bounds
      * \returns clipped line coordinates
      * \since QGIS 3.22
