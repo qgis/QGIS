@@ -112,20 +112,33 @@ QVariantMap QgsShortestLineAlgorithm::processAlgorithm( const QVariantMap &param
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-  QgsFeatureRequest request = QgsFeatureRequest();
-  request.setDestinationCrs( mSource->sourceCrs(), context.transformContext() );
-  request.setNoAttributes();
+  const QgsFeatureIterator destinationIterator = mDestination->getFeatures( QgsFeatureRequest().setDestinationCrs( mDestination->sourceCrs(), context.transformContext() ) );
+  QHash< QgsFeatureId, QgsAttributes > destinationAttributeCache;
+  double step = mDestination->featureCount() > 0 ? 50.0 / mDestination->featureCount() : 1;
+  int i = 0;
+  const QgsSpatialIndex idx( destinationIterator, [&]( const QgsFeature & f )->bool
+  {
+    i++;
+    if ( feedback-> isCanceled() )
+      return false;
 
-  QgsSpatialIndex idx = QgsSpatialIndex( mDestination->getFeatures( request ), feedback, QgsSpatialIndex::FlagStoreFeatureGeometries );
+    feedback->setProgress( i * step );
 
+    if ( !f.hasGeometry() )
+      return false;
+
+    destinationAttributeCache.insert( f.id(), f.attributes() );
+
+    return true;
+  }, QgsSpatialIndex::FlagStoreFeatureGeometries );
+
+  step = mSource->featureCount() > 0 ? 50.0 / mSource->featureCount() : 1;
   QgsFeatureIterator sourceIterator = mSource->getFeatures();
-  double step = mSource->featureCount() > 0 ? 100.0 / mSource->featureCount() : 1;
 
   QgsDistanceArea da = QgsDistanceArea();
   da.setSourceCrs( mSource->sourceCrs(), context.transformContext() );
   da.setEllipsoid( context.ellipsoid() );
 
-  int i = 0;
   QgsFeature sourceFeature;
   while ( sourceIterator.nextFeature( sourceFeature ) )
   {
@@ -135,31 +148,19 @@ QVariantMap QgsShortestLineAlgorithm::processAlgorithm( const QVariantMap &param
     const QgsGeometry sourceGeom = sourceFeature.geometry();
     QgsFeatureIds nearestIds = qgis::listToSet( idx.nearestNeighbor( sourceGeom, mKNeighbors, mMaxDistance ) );
 
-    QgsFeatureRequest targetRequest = QgsFeatureRequest();
-    targetRequest.setFilterFids( nearestIds );
-
-    QgsFeatureIterator destinationIterator = mDestination->getFeatures( targetRequest );
-    QgsFeature destinationFeature;
-    while ( destinationIterator.nextFeature( destinationFeature ) )
+    for ( const QgsFeatureId id : nearestIds )
     {
-      QgsGeometry destinationGeom;
-
+      QgsGeometry destinationGeom = idx.geometry( id );
       if ( mMethod == 1 )
       {
-        destinationGeom = destinationFeature.geometry().centroid();
-      }
-      else
-      {
-        destinationGeom = destinationFeature.geometry();
+        destinationGeom = idx.geometry( id ).centroid();
       }
 
       const QgsGeometry shortestLine = sourceGeom.shortestLine( destinationGeom );
       double dist = da.measureLength( shortestLine );
-
       QgsFeature f;
-
       QgsAttributes attrs = sourceFeature.attributes();
-      attrs << destinationFeature.attributes() << dist;
+      attrs << destinationAttributeCache.value( id ) << dist;
 
       f.setAttributes( attrs );
       f.setGeometry( shortestLine );
