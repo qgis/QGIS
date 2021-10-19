@@ -87,7 +87,7 @@ bool QgsShortestLineAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "SOURCE" ) ) );
 
   mDestination.reset( parameterAsSource( parameters, QStringLiteral( "DESTINATION" ), context ) );
-  if ( !mSource )
+  if ( !mDestination )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "DESTINATION" ) ) );
 
   mMethod = parameterAsInt( parameters, QStringLiteral( "METHOD" ), context );
