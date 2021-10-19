@@ -128,7 +128,7 @@ class TestQgsRectangle(unittest.TestCase):
 
     def testToString(self):
         """Test the different string representations"""
-        self.assertEqual(QgsRectangle().toString(), 'Empty')
+        self.assertEqual(QgsRectangle().toString(), 'Null')
         rect = QgsRectangle(0, 0.1, 0.2, 0.3)
         self.assertEqual(rect.toString(), '0.0000000000000000,0.1000000000000000 : 0.2000000000000000,0.3000000000000000')
 

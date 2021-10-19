@@ -140,7 +140,9 @@ QString QgsRectangle::toString( int precision ) const
     }
   }
 
-  if ( isEmpty() )
+  if ( isNull() )
+    rep = QStringLiteral( "Null" );
+  else if ( isEmpty() )
     rep = QStringLiteral( "Empty" );
   else
     rep = QStringLiteral( "%1,%2 : %3,%4" )
