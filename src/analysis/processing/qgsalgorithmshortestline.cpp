@@ -29,12 +29,12 @@ QString QgsShortestLineAlgorithm::name() const
 
 QString QgsShortestLineAlgorithm::displayName() const
 {
-  return QObject::tr( "Shortest line between layers" );
+  return QObject::tr( "Shortest line between features" );
 }
 
 QStringList QgsShortestLineAlgorithm::tags() const
 {
-  return QObject::tr( "distance,shortest,minimum,nearest" ).split( ',' );
+  return QObject::tr( "distance,shortest,minimum,nearest,closest,proximity" ).split( ',' );
 }
 
 QString QgsShortestLineAlgorithm::group() const
@@ -53,12 +53,12 @@ QString QgsShortestLineAlgorithm::shortHelpString() const
                       "shortest line between the source and the destination layer. "
                       "By default only the first nearest feature of the "
                       "destination layer is taken into account. "
-                      "The n-nearest neighboring features number can be specified. "
+                      "The n-nearest neighboring features number can be specified.\n\n"
                       "If a maximum distance is specified, then only "
                       "features which are closer than this distance will "
-                      "be considered. The output features will contain all the "
+                      "be considered.\n\nThe output features will contain all the "
                       "source layer attributes, all the attributes from the n-nearest "
-                      "feature and the additional field of the distance. "
+                      "feature and the additional field of the distance.\n\n"
                       "This algorithm uses purely Cartesian calculations for distance, "
                       "and does not consider geodetic or ellipsoid properties when "
                       "determining feature proximity."
@@ -74,10 +74,10 @@ void QgsShortestLineAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "SOURCE" ), QObject::tr( "Source layer" ), QList<int>() << QgsProcessing::TypeVectorAnyGeometry ) );
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "DESTINATION" ), QObject::tr( "Destination layer" ), QList<int>() << QgsProcessing::TypeVectorAnyGeometry ) );
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method" ), QStringList() << "distance to nearest point on geometry" << "distance to geometry centroid", false, QVariant( "boundary" ) ) );
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method" ), QStringList() << "Distance to Nearest Point on feature" << "Distance to Feature Centroid", false, 0 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "NEIGHBORS" ), QObject::tr( "Maximum number of neighbors" ), QgsProcessingParameterNumber::Integer, 1, false, 1 ) );
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "DISTANCE" ), QObject::tr( "Maximum distance" ), QVariant(), QString( "SOURCE" ), true ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Shortest lines" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Shortest lines" ), QgsProcessing::TypeVectorLine ) );
 }
 
 bool QgsShortestLineAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
@@ -94,9 +94,7 @@ bool QgsShortestLineAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
 
   mKNeighbors = parameterAsInt( parameters, QStringLiteral( "NEIGHBORS" ), context );
 
-  double paramMaxDist = parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context ); //defaults to zero if not set
-  if ( paramMaxDist )
-    mMaxDistance = paramMaxDist;
+  mMaxDistance = parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context ); //defaults to zero if not set
 
   return true;
 }
@@ -116,8 +114,9 @@ QVariantMap QgsShortestLineAlgorithm::processAlgorithm( const QVariantMap &param
 
   QgsFeatureRequest request = QgsFeatureRequest();
   request.setDestinationCrs( mSource->sourceCrs(), context.transformContext() );
+  request.setNoAttributes();
 
-  QgsSpatialIndex idx = QgsSpatialIndex( mDestination->getFeatures( request ), nullptr, QgsSpatialIndex::FlagStoreFeatureGeometries );
+  QgsSpatialIndex idx = QgsSpatialIndex( mDestination->getFeatures( request ), feedback, QgsSpatialIndex::FlagStoreFeatureGeometries );
 
   QgsFeatureIterator sourceIterator = mSource->getFeatures();
   double step = mSource->featureCount() > 0 ? 100.0 / mSource->featureCount() : 1;
