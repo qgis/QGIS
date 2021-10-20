@@ -330,6 +330,9 @@ void QgsMeshEditor::applyAdvancedEdit( QgsMeshEditor::Edit &edit, QgsMeshAdvance
   applyEditOnTriangularMesh( edit, editing->apply( this ) );
 
   updateElementsCount( edit.topologicalChanges );
+
+  if ( mZValueDatasetGroup )
+    mZValueDatasetGroup->setStatisticObsolete();
 }
 
 void QgsMeshEditor::applyEditOnTriangularMesh( QgsMeshEditor::Edit &edit, const QgsTopologicalMesh::Changes &topologicChanges )
