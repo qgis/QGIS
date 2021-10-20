@@ -2834,6 +2834,123 @@ static QVariant fcnSmooth( const QVariantList &values, const QgsExpressionContex
   return smoothed;
 }
 
+static QVariant fcnTriangularWave( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isNull() )
+    return QVariant();
+
+  const double wavelength = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
+  const double amplitude = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
+  const bool strict = QgsExpressionUtils::getIntValue( values.at( 3 ), parent );
+
+  const QgsGeometry waved = geom.triangularWaves( wavelength, amplitude, strict );
+  if ( waved.isNull() )
+    return QVariant();
+
+  return waved;
+}
+
+static QVariant fcnTriangularWaveRandomized( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isNull() )
+    return QVariant();
+
+  const double minWavelength = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
+  const double maxWavelength = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
+  const double minAmplitude = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
+  const double maxAmplitude = QgsExpressionUtils::getDoubleValue( values.at( 4 ), parent );
+  const long long seed = QgsExpressionUtils::getIntValue( values.at( 5 ), parent );
+
+  const QgsGeometry waved = geom.triangularWavesRandomized( minWavelength, maxWavelength,
+                            minAmplitude, maxAmplitude, seed );
+  if ( waved.isNull() )
+    return QVariant();
+
+  return waved;
+}
+
+static QVariant fcnSquareWave( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isNull() )
+    return QVariant();
+
+  const double wavelength = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
+  const double amplitude = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
+  const bool strict = QgsExpressionUtils::getIntValue( values.at( 3 ), parent );
+
+  const QgsGeometry waved = geom.squareWaves( wavelength, amplitude, strict );
+  if ( waved.isNull() )
+    return QVariant();
+
+  return waved;
+}
+
+static QVariant fcnSquareWaveRandomized( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isNull() )
+    return QVariant();
+
+  const double minWavelength = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
+  const double maxWavelength = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
+  const double minAmplitude = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
+  const double maxAmplitude = QgsExpressionUtils::getDoubleValue( values.at( 4 ), parent );
+  const long long seed = QgsExpressionUtils::getIntValue( values.at( 5 ), parent );
+
+  const QgsGeometry waved = geom.squareWavesRandomized( minWavelength, maxWavelength,
+                            minAmplitude, maxAmplitude, seed );
+  if ( waved.isNull() )
+    return QVariant();
+
+  return waved;
+}
+
+static QVariant fcnRoundWave( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isNull() )
+    return QVariant();
+
+  const double wavelength = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
+  const double amplitude = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
+  const bool strict = QgsExpressionUtils::getIntValue( values.at( 3 ), parent );
+
+  const QgsGeometry waved = geom.roundWaves( wavelength, amplitude, strict );
+  if ( waved.isNull() )
+    return QVariant();
+
+  return waved;
+}
+
+static QVariant fcnRoundWaveRandomized( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isNull() )
+    return QVariant();
+
+  const double minWavelength = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
+  const double maxWavelength = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
+  const double minAmplitude = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
+  const double maxAmplitude = QgsExpressionUtils::getDoubleValue( values.at( 4 ), parent );
+  const long long seed = QgsExpressionUtils::getIntValue( values.at( 5 ), parent );
+
+  const QgsGeometry waved = geom.roundWavesRandomized( minWavelength, maxWavelength,
+                            minAmplitude, maxAmplitude, seed );
+  if ( waved.isNull() )
+    return QVariant();
+
+  return waved;
+}
+
 static QVariant fcnCollectGeometries( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QVariantList list;
@@ -7093,6 +7210,54 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "offset" ), true, 0.25 )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "min_length" ), true, -1 )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "max_angle" ), true, 180 ), fcnSmooth, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "triangular_wave" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "wavelength" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "amplitude" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "strict" ), true, false )
+    }, fcnTriangularWave, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "triangular_wave_randomized" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "min_wavelength" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "max_wavelength" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "min_amplitude" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "max_amplitude" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "seed" ), true, 0 )
+    }, fcnTriangularWaveRandomized, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "square_wave" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "wavelength" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "amplitude" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "strict" ), true, false )
+    }, fcnSquareWave, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "square_wave_randomized" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "min_wavelength" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "max_wavelength" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "min_amplitude" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "max_amplitude" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "seed" ), true, 0 )
+    }, fcnSquareWaveRandomized, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "wave" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "wavelength" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "amplitude" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "strict" ), true, false )
+    }, fcnRoundWave, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "wave_randomized" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "min_wavelength" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "max_wavelength" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "min_amplitude" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "max_amplitude" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "seed" ), true, 0 )
+    }, fcnRoundWaveRandomized, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "num_points" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnGeomNumPoints, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "num_interior_rings" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnGeomNumInteriorRings, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "num_rings" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnGeomNumRings, QStringLiteral( "GeometryGroup" ) )
