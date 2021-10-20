@@ -220,11 +220,26 @@ void TestQgsCircle::from3tangentsMulti()
 
 void TestQgsCircle::minimalCircleFrom3points()
 {
+  // equivalent to from2Points
   QgsCircle circ = QgsCircle().minimalCircleFrom3Points( QgsPoint( 0, 5 ), QgsPoint( 0, -5 ), QgsPoint( 1, 2 ) );
 
   QGSCOMPARENEARPOINT( circ.center(), QgsPoint( 0, 0 ), 0.0001 );
   QGSCOMPARENEAR( circ.radius(), 5.0, 0.0001 );
+  QCOMPARE( circ,  QgsCircle().from2Points( QgsPoint( 0, 5 ), QgsPoint( 0, -5 ) ));
 
+  circ = QgsCircle().minimalCircleFrom3Points( QgsPoint( 0, -5 ), QgsPoint( 1, 2 ), QgsPoint( 0, 5 ) );
+
+  QGSCOMPARENEARPOINT( circ.center(), QgsPoint( 0, 0 ), 0.0001 );
+  QGSCOMPARENEAR( circ.radius(), 5.0, 0.0001 );
+  QCOMPARE( circ,  QgsCircle().from2Points( QgsPoint( 0, 5 ), QgsPoint( 0, -5 ) ));
+
+  circ = QgsCircle().minimalCircleFrom3Points( QgsPoint( 1, 2 ), QgsPoint( 0, 5 ), QgsPoint( 0, -5 ));
+
+  QGSCOMPARENEARPOINT( circ.center(), QgsPoint( 0, 0 ), 0.0001 );
+  QGSCOMPARENEAR( circ.radius(), 5.0, 0.0001 );
+  QCOMPARE( circ,  QgsCircle().from2Points( QgsPoint( 0, 5 ), QgsPoint( 0, -5 ) ));
+
+  // equivalent to from3Points
   circ = QgsCircle().minimalCircleFrom3Points( QgsPoint( 0, 5 ), QgsPoint( 5, 0 ), QgsPoint( -5, 0 ) );
 
   QGSCOMPARENEARPOINT( circ.center(), QgsPoint( 0, 0 ), 0.0001 );
@@ -535,9 +550,14 @@ void TestQgsCircle::toString()
 void TestQgsCircle::asGML()
 {
   // asGML3
-  QgsCircle exportCircle( QgsPoint( 1, 1 ), 3 );
   QDomDocument doc( "gml" );
-  QString expectedGML3( QStringLiteral( "<Circle xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1 4 4 1 1 -2</posList></Circle>" ) );
+
+  QgsCircle exportCircle;
+  QString expectedGML3( QStringLiteral( "<Circle xmlns=\"gml\"/>" ) );
+  QGSCOMPAREGML( elemToString( exportCircle.asGml3( doc ) ), expectedGML3 );
+
+  exportCircle = QgsCircle( QgsPoint( 1, 1 ), 3 );
+  expectedGML3 = QString( QStringLiteral( "<Circle xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1 4 4 1 1 -2</posList></Circle>" ) );
   QGSCOMPAREGML( elemToString( exportCircle.asGml3( doc ) ), expectedGML3 );
 
   // asGML2
