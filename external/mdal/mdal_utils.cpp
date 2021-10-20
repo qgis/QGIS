@@ -67,7 +67,7 @@ std::ofstream MDAL::openOutputFile( const std::string &fileName, std::ios_base::
 {
   std::ofstream ret;
 
-#if defined _WIN32
+#if defined _MSC_VER
   std::wstring_convert< std::codecvt_utf8_utf16< wchar_t > > converter;
   std::wstring wStr = converter.from_bytes( fileName );
   ret.open( wStr, mode );
