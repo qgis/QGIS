@@ -1028,6 +1028,114 @@ straight line an angle must be before it is attempted to be straightened.
 .. versionadded:: 3.0
 %End
 
+    QgsGeometry triangularWaves( double wavelength, double amplitude, bool strictWavelength = false ) const;
+%Docstring
+Constructs triangular waves along the boundary of the geometry, with the
+specified ``wavelength`` and ``amplitude``.
+
+By default the ``wavelength`` argument is treated as a "maximum wavelength", where the actual
+wavelength will be dynamically adjusted so that an exact number of triangular waves are created
+along the boundaries of the geometry. If ``strictWavelength`` is set to ``True`` then the ``wavelength``
+will be used exactly and an incomplete pattern may be used for the final waveform.
+
+.. seealso:: :py:func:`triangularWavesRandomized`
+
+.. versionadded:: 3.24
+%End
+
+    QgsGeometry triangularWavesRandomized( double minimumWavelength, double maximumWavelength, double minimumAmplitude, double maximumAmplitude, unsigned long seed = 0 ) const;
+%Docstring
+Constructs randomized triangular waves along the boundary of the geometry, with the
+specified wavelength and amplitude ranges.
+
+The ``minimumWavelength`` and ``maximumWavelength`` arguments set the range for the randomized
+wavelength. This is evaluated for each individual triangular waveform created along the geometry
+boundaries, so the resultant geometry will consist of many different wavelengths.
+
+Similarly, the ``minimumAmplitude`` and ``maximumAmplitude`` arguments define the range for the
+randomized amplitude of the triangular components. Randomized amplitude values will be calculated
+individually for triangles placed on each either side of the input geometry boundaries.
+
+Optionally, a specific random ``seed`` can be used when generating points. If ``seed``
+is 0, then a completely random sequence of points will be generated.
+
+.. seealso:: :py:func:`triangularWaves`
+
+.. versionadded:: 3.24
+%End
+
+    QgsGeometry squareWaves( double wavelength, double amplitude, bool strictWavelength = false ) const;
+%Docstring
+Constructs square waves along the boundary of the geometry, with the
+specified ``wavelength`` and ``amplitude``.
+
+By default the ``wavelength`` argument is treated as a "maximum wavelength", where the actual
+wavelength will be dynamically adjusted so that an exact number of square waves are created
+along the boundaries of the geometry. If ``strictWavelength`` is set to ``True`` then the ``wavelength``
+will be used exactly and an incomplete pattern may be used for the final waveform.
+
+.. seealso:: :py:func:`squareWavesRandomized`
+
+.. versionadded:: 3.24
+%End
+
+    QgsGeometry squareWavesRandomized( double minimumWavelength, double maximumWavelength, double minimumAmplitude, double maximumAmplitude, unsigned long seed = 0 ) const;
+%Docstring
+Constructs randomized square waves along the boundary of the geometry, with the
+specified wavelength and amplitude ranges.
+
+The ``minimumWavelength`` and ``maximumWavelength`` arguments set the range for the randomized
+wavelength. This is evaluated for each individual square waveform created along the geometry
+boundaries, so the resultant geometry will consist of many different wavelengths.
+
+Similarly, the ``minimumAmplitude`` and ``maximumAmplitude`` arguments define the range for the
+randomized amplitude of the square components. Randomized amplitude values will be calculated
+individually for squares placed on each either side of the input geometry boundaries.
+
+Optionally, a specific random ``seed`` can be used when generating points. If ``seed``
+is 0, then a completely random sequence of points will be generated.
+
+.. seealso:: :py:func:`squareWaves`
+
+.. versionadded:: 3.24
+%End
+
+    QgsGeometry roundWaves( double wavelength, double amplitude, bool strictWavelength = false ) const;
+%Docstring
+Constructs rounded (sine-like) waves along the boundary of the geometry, with the
+specified ``wavelength`` and ``amplitude``.
+
+By default the ``wavelength`` argument is treated as a "maximum wavelength", where the actual
+wavelength will be dynamically adjusted so that an exact number of waves are created
+along the boundaries of the geometry. If ``strictWavelength`` is set to ``True`` then the ``wavelength``
+will be used exactly and an incomplete pattern may be used for the final waveform.
+
+.. seealso:: :py:func:`roundWavesRandomized`
+
+.. versionadded:: 3.24
+%End
+
+    QgsGeometry roundWavesRandomized( double minimumWavelength, double maximumWavelength, double minimumAmplitude, double maximumAmplitude, unsigned long seed = 0 ) const;
+%Docstring
+Constructs randomized rounded (sine-like) waves along the boundary of the geometry, with the
+specified wavelength and amplitude ranges.
+
+The ``minimumWavelength`` and ``maximumWavelength`` arguments set the range for the randomized
+wavelength. This is evaluated for each individual waveform created along the geometry
+boundaries, so the resultant geometry will consist of many different wavelengths.
+
+Similarly, the ``minimumAmplitude`` and ``maximumAmplitude`` arguments define the range for the
+randomized amplitude of the square components. Randomized amplitude values will be calculated
+individually for waves placed on each either side of the input geometry boundaries.
+
+Optionally, a specific random ``seed`` can be used when generating points. If ``seed``
+is 0, then a completely random sequence of points will be generated.
+
+.. seealso:: :py:func:`squareWaves`
+
+.. versionadded:: 3.24
+%End
+
     QgsGeometry snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const;
 %Docstring
 Returns a new geometry with all points or vertices snapped to the closest point of the grid.
