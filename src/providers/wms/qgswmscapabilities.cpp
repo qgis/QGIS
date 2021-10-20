@@ -1161,10 +1161,18 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
 #endif
 
   layerProperty.orderId     = ++mLayerCount;
-  layerProperty.queryable   = element.attribute( QStringLiteral( "queryable" ) ).toUInt();
+
+  QString queryableAttribute = element.attribute( QStringLiteral( "queryable" ) );
+  layerProperty.queryable = ( queryableAttribute == QLatin1String( "1" ) || queryableAttribute == QLatin1String( "true" ) );
+
   layerProperty.cascaded    = element.attribute( QStringLiteral( "cascaded" ) ).toUInt();
-  layerProperty.opaque      = element.attribute( QStringLiteral( "opaque" ) ).toUInt();
-  layerProperty.noSubsets   = element.attribute( QStringLiteral( "noSubsets" ) ).toUInt();
+
+  QString opaqueAttribute = element.attribute( QStringLiteral( "opaque" ) );
+  layerProperty.opaque = ( opaqueAttribute == QLatin1String( "1" ) || opaqueAttribute == QLatin1String( "true" ) );
+
+  QString noSubsetsAttribute = element.attribute( QStringLiteral( "noSubsets" ) );
+  layerProperty.noSubsets = ( noSubsetsAttribute == QLatin1String( "1" ) || noSubsetsAttribute == QLatin1String( "true" ) );
+
   layerProperty.fixedWidth  = element.attribute( QStringLiteral( "fixedWidth" ) ).toUInt();
   layerProperty.fixedHeight = element.attribute( QStringLiteral( "fixedHeight" ) ).toUInt();
 
