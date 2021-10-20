@@ -20,6 +20,7 @@
 #include "qgsrendererwidget.h"
 #include "qgsproxystyle.h"
 #include <QStandardItem>
+#include <QStyledItemDelegate>
 
 
 class QgsCategorizedSymbolRenderer;
@@ -81,6 +82,35 @@ class QgsCategorizedSymbolRendererViewStyle: public QgsProxyStyle
     void drawPrimitive( PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget = nullptr ) const override;
 };
 
+/**
+ * \ingroup gui
+ * \brief Custom delegate for localized numeric input.
+ */
+class QgsCategorizedRendererViewItemDelegate: public QStyledItemDelegate
+{
+    Q_OBJECT
+
+  public:
+    explicit QgsCategorizedRendererViewItemDelegate( QObject *parent = nullptr );
+
+    // QAbstractItemDelegate interface
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+};
+
+
+/*
+class QgsCategorizedRendererItemEditorFactory: public QItemEditorFactory
+{
+    Q_OBJECT
+
+  public:
+
+    QgsCategorizedRendererItemEditorFactory();
+
+    // QItemEditorFactory interface
+    QWidget* createEditor(int userType, QWidget* parent) const override;
+};
+*/
 ///@endcond
 
 #endif

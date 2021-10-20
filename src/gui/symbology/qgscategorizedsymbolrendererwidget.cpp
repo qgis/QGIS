@@ -51,6 +51,7 @@
 #include <QPainter>
 #include <QFileDialog>
 #include <QClipboard>
+#include <QStyledItemDelegate>
 
 ///@cond PRIVATE
 
@@ -248,6 +249,12 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
         case 2:
           return category.label();
       }
+      break;
+    }
+    case Qt::UserRole:
+    {
+      if ( index.column() == 1 )
+        return category.value();
       break;
     }
   }
@@ -487,6 +494,72 @@ void QgsCategorizedSymbolRendererViewStyle::drawPrimitive( PrimitiveElement elem
   QProxyStyle::drawPrimitive( element, option, painter, widget );
 }
 
+
+QgsCategorizedRendererViewItemDelegate::QgsCategorizedRendererViewItemDelegate( QObject *parent )
+  : QStyledItemDelegate( parent )
+{
+}
+
+QWidget *QgsCategorizedRendererViewItemDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  const QVariant::Type userType { index.data( Qt::UserRole ).type() };
+  QgsDoubleSpinBox *editor = nullptr;
+  switch ( userType )
+  {
+    case QVariant::Type::Double:
+    {
+      editor = new QgsDoubleSpinBox( parent );
+      editor->setDecimals( 12 );
+      editor->setMaximum( std::numeric_limits<double>::max() );
+      editor->setMinimum( std::numeric_limits<double>::lowest() );
+      break;
+    }
+    case QVariant::Type::Int:
+    {
+      editor = new QgsDoubleSpinBox( parent );
+      editor->setDecimals( 0 );
+      editor->setMaximum( std::numeric_limits<int>::max() );
+      editor->setMinimum( std::numeric_limits<int>::min() );
+      break;
+    }
+    case QVariant::Type::Char:
+    {
+      editor = new QgsDoubleSpinBox( parent );
+      editor->setDecimals( 0 );
+      editor->setMaximum( std::numeric_limits<char>::max() );
+      editor->setMinimum( std::numeric_limits<char>::min() );
+      break;
+    }
+    case QVariant::Type::UInt:
+    {
+      editor = new QgsDoubleSpinBox( parent );
+      editor->setDecimals( 0 );
+      editor->setMaximum( std::numeric_limits<unsigned int>::max() );
+      editor->setMinimum( 0 );
+      break;
+    }
+    case QVariant::Type::LongLong:
+    {
+      editor = new QgsDoubleSpinBox( parent );
+      editor->setDecimals( 0 );
+      editor->setMaximum( static_cast<double>( std::numeric_limits<qlonglong>::max() ) );
+      editor->setMinimum( std::numeric_limits<qlonglong>::min() );
+      break;
+    }
+    case QVariant::Type::ULongLong:
+    {
+      editor = new QgsDoubleSpinBox( parent );
+      editor->setDecimals( 0 );
+      editor->setMaximum( static_cast<double>( std::numeric_limits<unsigned long long>::max() ) );
+      editor->setMinimum( 0 );
+      break;
+    }
+    default:
+      break;
+  }
+  return editor ? editor : QStyledItemDelegate::createEditor( parent, option, index );
+}
+
 ///@endcond
 
 // ------------------------------ Widget ------------------------------------
@@ -555,6 +628,7 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   viewCategories->resizeColumnToContents( 0 );
   viewCategories->resizeColumnToContents( 1 );
   viewCategories->resizeColumnToContents( 2 );
+  viewCategories->setItemDelegateForColumn( 1, new QgsCategorizedRendererViewItemDelegate( viewCategories ) );
 
   viewCategories->setStyle( new QgsCategorizedSymbolRendererViewStyle( viewCategories ) );
   connect( viewCategories->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsCategorizedSymbolRendererWidget::selectionChanged );
