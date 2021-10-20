@@ -668,6 +668,39 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
   QgsSymbolMap symbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem, context );
   QgsCategoryList cats;
 
+  // Value from string (long, ulong, double and string)
+  const auto valueFromString = []( const QString & value, const QString & valueType ) -> QVariant
+  {
+    if ( valueType == QStringLiteral( "double" ) )
+    {
+      bool ok;
+      const auto val { value.toDouble( &ok ) };
+      if ( ok )
+      {
+        return val;
+      }
+    }
+    else if ( valueType == QStringLiteral( "ulong" ) )
+    {
+      bool ok;
+      const auto val { value.toULongLong( &ok ) };
+      if ( ok )
+      {
+        return val;
+      }
+    }
+    else if ( valueType == QStringLiteral( "long" ) )
+    {
+      bool ok;
+      const auto val { value.toLongLong( &ok ) };
+      if ( ok )
+      {
+        return val;
+      }
+    }
+    return value;
+  };
+
   QDomElement catElem = catsElem.firstChildElement();
   while ( !catElem.isNull() )
   {
@@ -676,7 +709,8 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
       QVariant value;
       if ( catElem.hasAttribute( QStringLiteral( "value" ) ) )
       {
-        value = QVariant( catElem.attribute( QStringLiteral( "value" ) ) );
+        value = valueFromString( catElem.attribute( QStringLiteral( "value" ) ), catElem.attribute( QStringLiteral( "type" ), QString() ) ) ;
+
       }
       else
       {
@@ -686,7 +720,7 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
         {
           if ( valElem.tagName() == QLatin1String( "val" ) )
           {
-            values << QVariant( valElem.attribute( QStringLiteral( "value" ) ) );
+            values << valueFromString( valElem.attribute( QStringLiteral( "value" ) ), valElem.attribute( QStringLiteral( "type" ), QString() ) );
           }
           valElem = valElem.nextSiblingElement();
         }
@@ -778,6 +812,28 @@ QDomElement QgsCategorizedSymbolRenderer::save( QDomDocument &doc, const QgsRead
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "categorizedSymbol" ) );
   rendererElem.setAttribute( QStringLiteral( "attr" ), mAttrName );
 
+  // String for type
+  // We just need string and three numeric types: double, ulong and long for unsigned, signed and float/double
+  const auto stringForType = []( const QVariant::Type type ) -> QString
+  {
+    if ( type == QVariant::Char || type == QVariant::Int || type == QVariant::LongLong )
+    {
+      return QStringLiteral( "long" );
+    }
+    else if ( type == QVariant::UInt || type == QVariant::ULongLong )
+    {
+      return QStringLiteral( "ulong" );
+    }
+    else if ( type == QVariant::Double )
+    {
+      return QStringLiteral( "double" ) ;
+    }
+    else // Default: string
+    {
+      return QStringLiteral( "string" );
+    }
+  };
+
   // categories
   if ( !mCategories.isEmpty() )
   {
@@ -798,13 +854,15 @@ QDomElement QgsCategorizedSymbolRenderer::save( QDomDocument &doc, const QgsRead
         for ( const QVariant &v : list )
         {
           QDomElement valueElem = doc.createElement( QStringLiteral( "val" ) );
-          valueElem.setAttribute( "value", v.toString() );
+          valueElem.setAttribute( QStringLiteral( "value" ), v.toString() );
+          valueElem.setAttribute( QStringLiteral( "type" ), stringForType( v.type() ) );
           catElem.appendChild( valueElem );
         }
       }
       else
       {
         catElem.setAttribute( QStringLiteral( "value" ), cat.value().toString() );
+        catElem.setAttribute( QStringLiteral( "type" ), stringForType( cat.value().type() ) );
       }
       catElem.setAttribute( QStringLiteral( "symbol" ), symbolName );
       catElem.setAttribute( QStringLiteral( "label" ), cat.label() );

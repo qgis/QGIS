@@ -41,7 +41,7 @@ from qgis.core import (QgsCategorizedSymbolRenderer,
                        QgsEmbeddedSymbolRenderer,
                        QgsGeometry
                        )
-from qgis.PyQt.QtCore import Qt, QVariant, QSize, QLocale
+from qgis.PyQt.QtCore import Qt, QVariant, QSize, QLocale, QTemporaryDir
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -754,6 +754,47 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         self.assertEqual(QgsCategorizedSymbolRenderer.displayString(1234567, 4), "1.234.567")
 
         QLocale().setDefault(original_locale)
+
+    def test_loclizedCategories(self):
+
+        layer = QgsVectorLayer("Point?field=flddbl:double&field=fldint:integer", "addfeat", "memory")
+        result = QgsCategorizedSymbolRenderer.createCategories([1234.5, 2345.6, 3456.7], QgsMarkerSymbol(), layer, 'flddouble')
+
+        self.assertEqual(result[0].label(), '1,234.5')
+        self.assertEqual(result[1].label(), '2,345.6')
+        self.assertEqual(result[2].label(), '3,456.7')
+
+        original_locale = QLocale()
+        # Test a non-dot locale
+        QLocale().setDefault(QLocale(QLocale.Italian))
+
+        result = QgsCategorizedSymbolRenderer.createCategories([1234.5, 2345.6, 3456.7], QgsMarkerSymbol(), layer, 'flddouble')
+
+        self.assertEqual(result[0].label(), '1.234,5')
+        self.assertEqual(result[1].label(), '2.345,6')
+        self.assertEqual(result[2].label(), '3.456,7')
+
+        # Test round trip
+        temp_dir = QTemporaryDir()
+        temp_file = os.path.join(temp_dir.path(), 'project.qgs')
+
+        project = QgsProject()
+        layer.setRenderer(QgsCategorizedSymbolRenderer('Class', result))
+        project.addMapLayers([layer])
+        project.write(temp_file)
+
+        QLocale().setDefault(original_locale)
+
+        project = QgsProject()
+        project.read(temp_file)
+        results = project.mapLayersByName('addfeat')[0].renderer().categories()
+
+        self.assertEqual(result[0].label(), '1.234,5')
+        self.assertEqual(result[1].label(), '2.345,6')
+        self.assertEqual(result[2].label(), '3.456,7')
+        self.assertEqual(result[0].value(), 1234.5)
+        self.assertEqual(result[1].value(), 2345.6)
+        self.assertEqual(result[2].value(), 3456.7)
 
 
 if __name__ == "__main__":

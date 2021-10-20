@@ -53,6 +53,9 @@
    </item>
    <item row="0" column="1">
     <widget class="QgsDoubleSpinBox" name="mLowerEdit">
+     <property name="decimals">
+      <number>12</number>
+     </property>
      <property name="minimum">
       <double>-1000000000000.000000000000000</double>
      </property>
@@ -63,6 +66,9 @@
    </item>
    <item row="1" column="1">
     <widget class="QgsDoubleSpinBox" name="mUpperEdit">
+     <property name="decimals">
+      <number>12</number>
+     </property>
      <property name="minimum">
       <double>-1000000000000.000000000000000</double>
      </property>
