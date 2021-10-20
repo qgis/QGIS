@@ -53,7 +53,7 @@ class CORE_EXPORT QgsTopologicalMesh
      *
      * \since QGIS 3.22
      */
-    class TopologicalFaces
+    class CORE_EXPORT TopologicalFaces
     {
       public:
 
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsTopologicalMesh
      *
      * \since QGIS 3.22
      */
-    class Changes
+    class CORE_EXPORT Changes
     {
       public:
 
