@@ -78,6 +78,9 @@ class QgsHanaProviderConnection : public QgsAbstractDatabaseProviderConnection
     void remove( const QString &name ) const override;
     QIcon icon() const override;
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
+    QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const override;
+    QMultiMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary() override;
+    SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;
 
   private:
     QgsHanaConnectionRef createConnection() const;
