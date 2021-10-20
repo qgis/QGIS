@@ -441,6 +441,18 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
      */
     static QgsCategoryList createCategories( const QVariantList &values, const QgsSymbol *symbol, QgsVectorLayer *layer = nullptr, const QString &fieldName = QString() );
 
+    /**
+     *  Returns a localized representation of \a value with the given \a precision,
+     *  if precision is -1 then precision is guessed from the default QVariant::toString
+     *  output.
+     *
+     *  \note Precision is ignored for integers.
+     *
+     *  \since QGIS 3.21
+     */
+    static QString displayString( const QVariant &value, int precision = -1 );
+
+
   protected:
     QString mAttrName;
     QgsCategoryList mCategories;
@@ -498,6 +510,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 
     //! Returns list of legend symbol items from individual categories
     QgsLegendSymbolList baseLegendSymbolItems() const;
+
 };
 
 #endif // QGSCATEGORIZEDSYMBOLRENDERER_H

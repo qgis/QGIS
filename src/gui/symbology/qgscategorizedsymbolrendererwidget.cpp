@@ -162,7 +162,7 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
             const QVariantList list = category.value().toList();
             res.reserve( list.size() );
             for ( const QVariant &v : list )
-              res << v.toString();
+              res << QgsCategorizedSymbolRenderer::displayString( v );
 
             if ( role == Qt::DisplayRole )
               return res.join( ';' );
@@ -175,7 +175,7 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
           }
           else
           {
-            return category.value().toString();
+            return QgsCategorizedSymbolRenderer::displayString( category.value() );
           }
         }
         case 2:

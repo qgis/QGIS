@@ -456,6 +456,20 @@ configuration.
 .. versionadded:: 3.6
 %End
 
+    static QString displayString( const QVariant &value, int precision = -1 );
+%Docstring
+Returns a localized representation of ``value`` with the given ``precision``,
+if precision is -1 then precision is guessed from the default QVariant.toString
+output.
+
+.. note::
+
+   Precision is ignored for integers.
+
+.. versionadded:: 3.21
+%End
+
+
   protected:
 
 

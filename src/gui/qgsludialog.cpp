@@ -29,17 +29,27 @@ QString QgsLUDialog::lowerValue() const
   return mLowerEdit->text();
 }
 
+double QgsLUDialog::lowerValueDouble() const
+{
+  return mLowerEdit->value();
+}
+
 QString QgsLUDialog::upperValue() const
 {
   return mUpperEdit->text();
 }
 
+double QgsLUDialog::upperValueDouble() const
+{
+  return mUpperEdit->value();
+}
+
 void QgsLUDialog::setLowerValue( const QString &val )
 {
-  mLowerEdit->setText( val );
+  mLowerEdit->setValue( QLocale().toDouble( val ) );
 }
 
 void QgsLUDialog::setUpperValue( const QString &val )
 {
-  mUpperEdit->setText( val );
+  mUpperEdit->setValue( QLocale().toDouble( val ) );
 }

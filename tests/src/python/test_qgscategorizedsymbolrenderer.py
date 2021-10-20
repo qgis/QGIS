@@ -41,7 +41,7 @@ from qgis.core import (QgsCategorizedSymbolRenderer,
                        QgsEmbeddedSymbolRenderer,
                        QgsGeometry
                        )
-from qgis.PyQt.QtCore import Qt, QVariant, QSize
+from qgis.PyQt.QtCore import Qt, QVariant, QSize, QLocale
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -730,6 +730,30 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         self.assertEqual(cc.value(), None)
         self.assertEqual(cc.label(), '')
         self.assertEqual(cc.symbol().color().name(), '#ff00ff')
+
+    def test_displayString(self):
+        """Test the displayString method"""
+
+        # Default locale for tests is EN
+        self.assertEqual(QgsCategorizedSymbolRenderer.displayString(1234.56), "1,234.56")
+        self.assertEqual(QgsCategorizedSymbolRenderer.displayString(1234.56, 4), "1,234.5600")
+        self.assertEqual(QgsCategorizedSymbolRenderer.displayString(1234567), "1,234,567")
+        self.assertEqual(QgsCategorizedSymbolRenderer.displayString(1234567.0, 4), "1,234,567.0000")
+        # Precision is ignored for integers
+        self.assertEqual(QgsCategorizedSymbolRenderer.displayString(1234567, 4), "1,234,567")
+
+        original_locale = QLocale()
+
+        # Test a non-dot locale
+        QLocale().setDefault(QLocale(QLocale.Italian))
+        self.assertEqual(QgsCategorizedSymbolRenderer.displayString(1234.56), "1.234,56")
+        self.assertEqual(QgsCategorizedSymbolRenderer.displayString(1234.56, 4), "1.234,5600")
+        self.assertEqual(QgsCategorizedSymbolRenderer.displayString(1234567), "1.234.567")
+        self.assertEqual(QgsCategorizedSymbolRenderer.displayString(1234567.0, 4), "1.234.567,0000")
+        # Precision is ignored for integers
+        self.assertEqual(QgsCategorizedSymbolRenderer.displayString(1234567, 4), "1.234.567")
+
+        QLocale().setDefault(original_locale)
 
 
 if __name__ == "__main__":

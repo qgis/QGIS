@@ -865,6 +865,111 @@ QgsLegendSymbolList QgsCategorizedSymbolRenderer::baseLegendSymbolItems() const
   return lst;
 }
 
+QString QgsCategorizedSymbolRenderer::displayString( const QVariant &v, int precision )
+{
+  if ( v.isNull() )
+  {
+    return QgsApplication::nullRepresentation();
+  }
+
+  const bool isNumeric {v.type() == QVariant::Double || v.type() == QVariant::Int || v.type() == QVariant::UInt || v.type() == QVariant::LongLong || v.type() == QVariant::ULongLong};
+
+  // Special treatment for numeric types if group separator is set or decimalPoint is not a dot
+  if ( v.type() == QVariant::Double )
+  {
+    // if value doesn't contain a double (a default value expression for instance),
+    // apply no transformation
+    bool ok;
+    v.toDouble( &ok );
+    if ( !ok )
+      return v.toString();
+
+    // Locales with decimal point != '.' or that require group separator: use QLocale
+    if ( QLocale().decimalPoint() != '.' ||
+         !( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator ) )
+    {
+      if ( precision > 0 )
+      {
+        if ( -1 < v.toDouble() && v.toDouble() < 1 )
+        {
+          return QLocale().toString( v.toDouble(), 'g', precision );
+        }
+        else
+        {
+          return QLocale().toString( v.toDouble(), 'f', precision );
+        }
+      }
+      else
+      {
+        // Precision is not set, let's guess it from the
+        // standard conversion to string
+        const QString s( v.toString() );
+        const int dotPosition( s.indexOf( '.' ) );
+        int precision;
+        if ( dotPosition < 0 && s.indexOf( 'e' ) < 0 )
+        {
+          precision = 0;
+          return QLocale().toString( v.toDouble(), 'f', precision );
+        }
+        else
+        {
+          if ( dotPosition < 0 ) precision = 0;
+          else precision = s.length() - dotPosition - 1;
+
+          if ( -1 < v.toDouble() && v.toDouble() < 1 )
+          {
+            return QLocale().toString( v.toDouble(), 'g', precision );
+          }
+          else
+          {
+            return QLocale().toString( v.toDouble(), 'f', precision );
+          }
+        }
+      }
+    }
+    // Default for doubles with precision
+    else if ( precision > 0 )
+    {
+      if ( -1 < v.toDouble() && v.toDouble() < 1 )
+      {
+        return QString::number( v.toDouble(), 'g', precision );
+      }
+      else
+      {
+        return QString::number( v.toDouble(), 'f', precision );
+      }
+    }
+  }
+  // Other numeric types than doubles
+  else if ( isNumeric &&
+            !( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator ) )
+  {
+    bool ok;
+    const qlonglong converted( v.toLongLong( &ok ) );
+    if ( ok )
+      return QLocale().toString( converted );
+  }
+  else if ( v.type() == QVariant::ByteArray )
+  {
+    return QObject::tr( "BLOB" );
+  }
+  else if ( v.type() == QVariant::StringList || v.type() == QVariant::List )
+  {
+    QString result;
+    const QVariantList list = v.toList();
+    for ( const QVariant &var : list )
+    {
+      if ( !result.isEmpty() )
+        result.append( QStringLiteral( ", " ) );
+      result.append( var.toString() );
+    }
+    return result;
+  }
+
+  // Fallback if special rules do not apply
+  return v.toString();
+}
+
 QgsLegendSymbolList QgsCategorizedSymbolRenderer::legendSymbolItems() const
 {
   if ( mDataDefinedSizeLegend && mSourceSymbol && mSourceSymbol->type() == Qgis::SymbolType::Marker )
@@ -1209,8 +1314,8 @@ QgsCategoryList QgsCategorizedSymbolRenderer::createCategories( const QList<QVar
       QgsSymbol *newSymbol = symbol->clone();
       if ( !value.isNull() )
       {
-        int fieldIdx = fields.lookupField( attributeName );
-        QString categoryName = value.toString();
+        const int fieldIdx = fields.lookupField( attributeName );
+        QString categoryName = displayString( value );
         if ( fieldIdx != -1 )
         {
           const QgsField field = fields.at( fieldIdx );
