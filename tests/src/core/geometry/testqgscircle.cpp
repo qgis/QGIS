@@ -52,7 +52,6 @@ class TestQgsCircle: public QObject
     void toCircularString();
     void toString();
     void asGML();
-
 };
 
 void TestQgsCircle::constructor()
@@ -225,19 +224,19 @@ void TestQgsCircle::minimalCircleFrom3points()
 
   QGSCOMPARENEARPOINT( circ.center(), QgsPoint( 0, 0 ), 0.0001 );
   QGSCOMPARENEAR( circ.radius(), 5.0, 0.0001 );
-  QCOMPARE( circ,  QgsCircle().from2Points( QgsPoint( 0, 5 ), QgsPoint( 0, -5 ) ));
+  QCOMPARE( circ,  QgsCircle().from2Points( QgsPoint( 0, 5 ), QgsPoint( 0, -5 ) ) );
 
   circ = QgsCircle().minimalCircleFrom3Points( QgsPoint( 0, -5 ), QgsPoint( 1, 2 ), QgsPoint( 0, 5 ) );
 
   QGSCOMPARENEARPOINT( circ.center(), QgsPoint( 0, 0 ), 0.0001 );
   QGSCOMPARENEAR( circ.radius(), 5.0, 0.0001 );
-  QCOMPARE( circ,  QgsCircle().from2Points( QgsPoint( 0, 5 ), QgsPoint( 0, -5 ) ));
+  QCOMPARE( circ,  QgsCircle().from2Points( QgsPoint( 0, 5 ), QgsPoint( 0, -5 ) ) );
 
-  circ = QgsCircle().minimalCircleFrom3Points( QgsPoint( 1, 2 ), QgsPoint( 0, 5 ), QgsPoint( 0, -5 ));
+  circ = QgsCircle().minimalCircleFrom3Points( QgsPoint( 1, 2 ), QgsPoint( 0, 5 ), QgsPoint( 0, -5 ) );
 
   QGSCOMPARENEARPOINT( circ.center(), QgsPoint( 0, 0 ), 0.0001 );
   QGSCOMPARENEAR( circ.radius(), 5.0, 0.0001 );
-  QCOMPARE( circ,  QgsCircle().from2Points( QgsPoint( 0, 5 ), QgsPoint( 0, -5 ) ));
+  QCOMPARE( circ,  QgsCircle().from2Points( QgsPoint( 0, 5 ), QgsPoint( 0, -5 ) ) );
 
   // equivalent to from3Points
   circ = QgsCircle().minimalCircleFrom3Points( QgsPoint( 0, 5 ), QgsPoint( 5, 0 ), QgsPoint( -5, 0 ) );
@@ -291,8 +290,10 @@ void TestQgsCircle::areaPerimeter()
 
 void TestQgsCircle::boundingBox()
 {
-  QVERIFY( QgsRectangle( QgsPointXY( -2.5, -2.5 ), QgsPointXY( 2.5, 2.5 ) ) == QgsCircle( QgsPoint( 0, 0 ), 2.5, 0 ).boundingBox() );
-  QVERIFY( QgsRectangle( QgsPointXY( -2.5, -2.5 ), QgsPointXY( 2.5, 2.5 ) ) == QgsCircle( QgsPoint( 0, 0 ), 2.5, 45 ).boundingBox() );
+  QVERIFY( QgsRectangle( QgsPointXY( -2.5, -2.5 ), QgsPointXY( 2.5, 2.5 ) )
+           == QgsCircle( QgsPoint( 0, 0 ), 2.5, 0 ).boundingBox() );
+  QVERIFY( QgsRectangle( QgsPointXY( -2.5, -2.5 ), QgsPointXY( 2.5, 2.5 ) )
+           == QgsCircle( QgsPoint( 0, 0 ), 2.5, 45 ).boundingBox() );
 }
 
 void TestQgsCircle::northQuadrant()
