@@ -1068,6 +1068,108 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry orthogonalize( double tolerance = 1.0E-8, int maxIterations = 1000, double angleThreshold = 15.0 ) const;
 
     /**
+     * Constructs triangular waves along the boundary of the geometry, with the
+     * specified \a wavelength and \a amplitude.
+     *
+     * By default the \a wavelength argument is treated as a "maximum wavelength", where the actual
+     * wavelength will be dynamically adjusted so that an exact number of triangular waves are created
+     * along the boundaries of the geometry. If \a strictWavelength is set to TRUE then the \a wavelength
+     * will be used exactly and an incomplete pattern may be used for the final waveform.
+     *
+     * \see triangularWavesRandomized()
+     * \since QGIS 3.24
+     */
+    QgsGeometry triangularWaves( double wavelength, double amplitude, bool strictWavelength = false ) const;
+
+    /**
+     * Constructs randomized triangular waves along the boundary of the geometry, with the
+     * specified wavelength and amplitude ranges.
+     *
+     * The \a minimumWavelength and \a maximumWavelength arguments set the range for the randomized
+     * wavelength. This is evaluated for each individual triangular waveform created along the geometry
+     * boundaries, so the resultant geometry will consist of many different wavelengths.
+     *
+     * Similarly, the \a minimumAmplitude and \a maximumAmplitude arguments define the range for the
+     * randomized amplitude of the triangular components. Randomized amplitude values will be calculated
+     * individually for triangles placed on each either side of the input geometry boundaries.
+     *
+     * Optionally, a specific random \a seed can be used when generating points. If \a seed
+     * is 0, then a completely random sequence of points will be generated.
+     *
+     * \see triangularWaves()
+     * \since QGIS 3.24
+     */
+    QgsGeometry triangularWavesRandomized( double minimumWavelength, double maximumWavelength, double minimumAmplitude, double maximumAmplitude, unsigned long seed = 0 ) const;
+
+    /**
+     * Constructs square waves along the boundary of the geometry, with the
+     * specified \a wavelength and \a amplitude.
+     *
+     * By default the \a wavelength argument is treated as a "maximum wavelength", where the actual
+     * wavelength will be dynamically adjusted so that an exact number of square waves are created
+     * along the boundaries of the geometry. If \a strictWavelength is set to TRUE then the \a wavelength
+     * will be used exactly and an incomplete pattern may be used for the final waveform.
+     *
+     * \see squareWavesRandomized()
+     * \since QGIS 3.24
+     */
+    QgsGeometry squareWaves( double wavelength, double amplitude, bool strictWavelength = false ) const;
+
+    /**
+     * Constructs randomized square waves along the boundary of the geometry, with the
+     * specified wavelength and amplitude ranges.
+     *
+     * The \a minimumWavelength and \a maximumWavelength arguments set the range for the randomized
+     * wavelength. This is evaluated for each individual square waveform created along the geometry
+     * boundaries, so the resultant geometry will consist of many different wavelengths.
+     *
+     * Similarly, the \a minimumAmplitude and \a maximumAmplitude arguments define the range for the
+     * randomized amplitude of the square components. Randomized amplitude values will be calculated
+     * individually for squares placed on each either side of the input geometry boundaries.
+     *
+     * Optionally, a specific random \a seed can be used when generating points. If \a seed
+     * is 0, then a completely random sequence of points will be generated.
+     *
+     * \see squareWaves()
+     * \since QGIS 3.24
+     */
+    QgsGeometry squareWavesRandomized( double minimumWavelength, double maximumWavelength, double minimumAmplitude, double maximumAmplitude, unsigned long seed = 0 ) const;
+
+    /**
+     * Constructs rounded (sine-like) waves along the boundary of the geometry, with the
+     * specified \a wavelength and \a amplitude.
+     *
+     * By default the \a wavelength argument is treated as a "maximum wavelength", where the actual
+     * wavelength will be dynamically adjusted so that an exact number of waves are created
+     * along the boundaries of the geometry. If \a strictWavelength is set to TRUE then the \a wavelength
+     * will be used exactly and an incomplete pattern may be used for the final waveform.
+     *
+     * \see roundWavesRandomized()
+     * \since QGIS 3.24
+     */
+    QgsGeometry roundWaves( double wavelength, double amplitude, bool strictWavelength = false ) const;
+
+    /**
+     * Constructs randomized rounded (sine-like) waves along the boundary of the geometry, with the
+     * specified wavelength and amplitude ranges.
+     *
+     * The \a minimumWavelength and \a maximumWavelength arguments set the range for the randomized
+     * wavelength. This is evaluated for each individual waveform created along the geometry
+     * boundaries, so the resultant geometry will consist of many different wavelengths.
+     *
+     * Similarly, the \a minimumAmplitude and \a maximumAmplitude arguments define the range for the
+     * randomized amplitude of the square components. Randomized amplitude values will be calculated
+     * individually for waves placed on each either side of the input geometry boundaries.
+     *
+     * Optionally, a specific random \a seed can be used when generating points. If \a seed
+     * is 0, then a completely random sequence of points will be generated.
+     *
+     * \see squareWaves()
+     * \since QGIS 3.24
+     */
+    QgsGeometry roundWavesRandomized( double minimumWavelength, double maximumWavelength, double minimumAmplitude, double maximumAmplitude, unsigned long seed = 0 ) const;
+
+    /**
      * Returns a new geometry with all points or vertices snapped to the closest point of the grid.
      *
      * If the gridified geometry could not be calculated (or was totally collapsed) an empty geometry will be returned.

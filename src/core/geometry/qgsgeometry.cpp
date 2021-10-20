@@ -1197,6 +1197,42 @@ QgsGeometry QgsGeometry::orthogonalize( double tolerance, int maxIterations, dou
   return engine.orthogonalize( tolerance, maxIterations, angleThreshold );
 }
 
+QgsGeometry QgsGeometry::triangularWaves( double wavelength, double amplitude, bool strictWavelength ) const
+{
+  QgsInternalGeometryEngine engine( *this );
+  return engine.triangularWaves( wavelength, amplitude, strictWavelength );
+}
+
+QgsGeometry QgsGeometry::triangularWavesRandomized( double minimumWavelength, double maximumWavelength, double minimumAmplitude, double maximumAmplitude, unsigned long seed ) const
+{
+  QgsInternalGeometryEngine engine( *this );
+  return engine.triangularWavesRandomized( minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, seed );
+}
+
+QgsGeometry QgsGeometry::squareWaves( double wavelength, double amplitude, bool strictWavelength ) const
+{
+  QgsInternalGeometryEngine engine( *this );
+  return engine.squareWaves( wavelength, amplitude, strictWavelength );
+}
+
+QgsGeometry QgsGeometry::squareWavesRandomized( double minimumWavelength, double maximumWavelength, double minimumAmplitude, double maximumAmplitude, unsigned long seed ) const
+{
+  QgsInternalGeometryEngine engine( *this );
+  return engine.squareWavesRandomized( minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, seed );
+}
+
+QgsGeometry QgsGeometry::roundWaves( double wavelength, double amplitude, bool strictWavelength ) const
+{
+  QgsInternalGeometryEngine engine( *this );
+  return engine.roundWaves( wavelength, amplitude, strictWavelength );
+}
+
+QgsGeometry QgsGeometry::roundWavesRandomized( double minimumWavelength, double maximumWavelength, double minimumAmplitude, double maximumAmplitude, unsigned long seed ) const
+{
+  QgsInternalGeometryEngine engine( *this );
+  return engine.roundWavesRandomized( minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, seed );
+}
+
 QgsGeometry QgsGeometry::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing ) const
 {
   if ( !d->geometry )

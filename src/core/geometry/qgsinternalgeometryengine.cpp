@@ -1645,3 +1645,985 @@ QgsGeometry QgsInternalGeometryEngine::orientedMinimumBoundingBox( double &area,
 
   return minBounds;
 }
+
+std::unique_ptr< QgsLineString > triangularWavesAlongLine( const QgsLineString *line, double wavelength, const double amplitude, const bool strictWavelength )
+{
+  const int totalPoints = line->numPoints();
+  if ( totalPoints < 2 )
+    return nullptr;
+
+  const double *x = line->xData();
+  const double *y = line->yData();
+
+  double prevX = *x++;
+  double prevY = *y++;
+
+  QVector< double > outX;
+  QVector< double > outY;
+  const double totalLength = line->length();
+
+  const int maxRepetitions = std::ceil( totalLength / wavelength );
+  if ( !strictWavelength )
+    wavelength = totalLength / maxRepetitions;
+
+  const int estimatedPoints = maxRepetitions * 2 + 2;
+  outX.reserve( estimatedPoints );
+  outY.reserve( estimatedPoints );
+  outX.append( prevX );
+  outY.append( prevY );
+
+  double distanceToNextPointFromStartOfSegment = wavelength / 4;
+  int side = -1;
+  for ( int i = 1; i < totalPoints; ++i )
+  {
+    double thisX = *x++;
+    double thisY = *y++;
+
+    const double segmentAngleRadians = QgsGeometryUtils::lineAngle( prevX, prevY, thisX, thisY );
+    const double segmentLength = std::sqrt( ( thisX - prevX ) * ( thisX - prevX ) + ( thisY - prevY ) * ( thisY - prevY ) );
+    while ( distanceToNextPointFromStartOfSegment < segmentLength || qgsDoubleNear( distanceToNextPointFromStartOfSegment, segmentLength ) )
+    {
+      // point falls on this segment - truncate to segment length if qgsDoubleNear test was actually > segment length
+      const double distanceToPoint = std::min( distanceToNextPointFromStartOfSegment, segmentLength );
+      double pX, pY;
+      QgsGeometryUtils::pointOnLineWithDistance( prevX, prevY, thisX, thisY, distanceToPoint, pX, pY );
+
+      // project point on line out by amplitude
+      const double outPointX = pX + side * amplitude * std::sin( segmentAngleRadians + M_PI_2 );
+      const double outPointY = pY + side * amplitude * std::cos( segmentAngleRadians + M_PI_2 );
+
+      outX.append( outPointX );
+      outY.append( outPointY );
+
+      distanceToNextPointFromStartOfSegment += wavelength / 2;
+      side = -side;
+    }
+
+    prevX = thisX;
+    prevY = thisY;
+    distanceToNextPointFromStartOfSegment -= segmentLength;
+  }
+
+  outX.append( prevX );
+  outY.append( prevY );
+
+  return std::make_unique< QgsLineString >( outX, outY );
+}
+
+std::unique_ptr< QgsLineString > triangularWavesRandomizedAlongLine( const QgsLineString *line,
+    const double minimumWavelength, const double maximumWavelength,
+    const double minimumAmplitude, const double maximumAmplitude,
+    std::uniform_real_distribution<> &uniformDist, std::mt19937 &mt )
+{
+  const int totalPoints = line->numPoints();
+  if ( totalPoints < 2 )
+    return nullptr;
+
+  const double *x = line->xData();
+  const double *y = line->yData();
+
+  double prevX = *x++;
+  double prevY = *y++;
+
+  QVector< double > outX;
+  QVector< double > outY;
+  const double totalLength = line->length();
+
+  const int maxRepetitions = std::ceil( totalLength / minimumWavelength );
+
+  const int estimatedPoints = maxRepetitions * 2 + 2;
+  outX.reserve( estimatedPoints );
+  outY.reserve( estimatedPoints );
+  outX.append( prevX );
+  outY.append( prevY );
+
+  double wavelength = uniformDist( mt ) * ( maximumWavelength - minimumWavelength ) + minimumWavelength;
+  double distanceToNextPointFromStartOfSegment = wavelength / 4;
+  double amplitude = uniformDist( mt ) * ( maximumAmplitude - minimumAmplitude ) + minimumAmplitude;
+
+  int side = -1;
+  for ( int i = 1; i < totalPoints; ++i )
+  {
+    double thisX = *x++;
+    double thisY = *y++;
+
+    const double segmentAngleRadians = QgsGeometryUtils::lineAngle( prevX, prevY, thisX, thisY );
+    const double segmentLength = std::sqrt( ( thisX - prevX ) * ( thisX - prevX ) + ( thisY - prevY ) * ( thisY - prevY ) );
+    while ( distanceToNextPointFromStartOfSegment < segmentLength || qgsDoubleNear( distanceToNextPointFromStartOfSegment, segmentLength ) )
+    {
+      // point falls on this segment - truncate to segment length if qgsDoubleNear test was actually > segment length
+      const double distanceToPoint = std::min( distanceToNextPointFromStartOfSegment, segmentLength );
+      double pX, pY;
+      QgsGeometryUtils::pointOnLineWithDistance( prevX, prevY, thisX, thisY, distanceToPoint, pX, pY );
+
+      // project point on line out by amplitude
+      const double outPointX = pX + side * amplitude * std::sin( segmentAngleRadians + M_PI_2 );
+      const double outPointY = pY + side * amplitude * std::cos( segmentAngleRadians + M_PI_2 );
+      outX.append( outPointX );
+      outY.append( outPointY );
+
+      wavelength = uniformDist( mt ) * ( maximumWavelength - minimumWavelength ) + minimumWavelength;
+      amplitude = uniformDist( mt ) * ( maximumAmplitude - minimumAmplitude ) + minimumAmplitude;
+
+      distanceToNextPointFromStartOfSegment += wavelength / 2;
+      side = -side;
+    }
+
+    prevX = thisX;
+    prevY = thisY;
+    distanceToNextPointFromStartOfSegment -= segmentLength;
+  }
+
+  outX.append( prevX );
+  outY.append( prevY );
+
+  return std::make_unique< QgsLineString >( outX, outY );
+}
+
+std::unique_ptr< QgsAbstractGeometry > triangularWavesPrivate( const QgsAbstractGeometry *geom, double wavelength, double amplitude, bool strictWavelength )
+{
+  std::unique_ptr< QgsAbstractGeometry > segmentizedCopy;
+  if ( QgsWkbTypes::isCurvedType( geom->wkbType() ) )
+  {
+    segmentizedCopy.reset( geom->segmentize() );
+    geom = segmentizedCopy.get();
+  }
+
+  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::LineGeometry )
+  {
+    return triangularWavesAlongLine( static_cast< const QgsLineString * >( geom ), wavelength, amplitude, strictWavelength );
+  }
+  else
+  {
+    // polygon
+    const QgsPolygon *polygon = static_cast< const QgsPolygon * >( geom );
+    std::unique_ptr< QgsPolygon > result = std::make_unique< QgsPolygon >();
+
+    result->setExteriorRing( triangularWavesAlongLine( static_cast< const QgsLineString * >( polygon->exteriorRing() ),
+                             wavelength, amplitude, strictWavelength ).release() );
+    for ( int i = 0; i < polygon->numInteriorRings(); ++i )
+    {
+      result->addInteriorRing( triangularWavesAlongLine( static_cast< const QgsLineString * >( polygon->interiorRing( i ) ),
+                               wavelength, amplitude, strictWavelength ).release() );
+    }
+
+    return result;
+  }
+}
+
+std::unique_ptr< QgsAbstractGeometry > triangularWavesRandomizedPrivate( const QgsAbstractGeometry *geom, double minimumWavelength, double maximumWavelength, double minimumAmplitude, double maximumAmplitude, std::uniform_real_distribution<> &uniformDist, std::mt19937 &mt )
+{
+  std::unique_ptr< QgsAbstractGeometry > segmentizedCopy;
+  if ( QgsWkbTypes::isCurvedType( geom->wkbType() ) )
+  {
+    segmentizedCopy.reset( geom->segmentize() );
+    geom = segmentizedCopy.get();
+  }
+
+  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::LineGeometry )
+  {
+    return triangularWavesRandomizedAlongLine( static_cast< const QgsLineString * >( geom ), minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, uniformDist, mt );
+  }
+  else
+  {
+    // polygon
+    const QgsPolygon *polygon = static_cast< const QgsPolygon * >( geom );
+    std::unique_ptr< QgsPolygon > result = std::make_unique< QgsPolygon >();
+
+    result->setExteriorRing( triangularWavesRandomizedAlongLine( static_cast< const QgsLineString * >( polygon->exteriorRing() ),
+                             minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, uniformDist, mt ).release() );
+    for ( int i = 0; i < polygon->numInteriorRings(); ++i )
+    {
+      result->addInteriorRing( triangularWavesRandomizedAlongLine( static_cast< const QgsLineString * >( polygon->interiorRing( i ) ),
+                               minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, uniformDist, mt ).release() );
+    }
+
+    return result;
+  }
+}
+
+QgsGeometry QgsInternalGeometryEngine::triangularWaves( double wavelength, double amplitude, bool strictWavelength ) const
+{
+  if ( wavelength < 0 || qgsDoubleNear( wavelength, 0 ) )
+    return QgsGeometry();
+
+  mLastError.clear();
+  if ( !mGeometry )
+  {
+    return QgsGeometry();
+  }
+
+  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == QgsWkbTypes::PointGeometry )
+  {
+    return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
+  }
+
+  if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( mGeometry ) )
+  {
+    int numGeom = gc->numGeometries();
+    QVector< QgsAbstractGeometry * > geometryList;
+    geometryList.reserve( numGeom );
+    for ( int i = 0; i < numGeom; ++i )
+    {
+      geometryList << triangularWavesPrivate( gc->geometryN( i ), wavelength, amplitude, strictWavelength ).release();
+    }
+
+    QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
+    for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
+    {
+      first.addPart( g );
+    }
+    return first;
+  }
+  else
+  {
+    return QgsGeometry( triangularWavesPrivate( mGeometry, wavelength, amplitude, strictWavelength ) );
+  }
+}
+
+QgsGeometry QgsInternalGeometryEngine::triangularWavesRandomized( double minimumWavelength, double maximumWavelength, double minimumAmplitude, double maximumAmplitude, unsigned long seed ) const
+{
+  if ( minimumWavelength < 0 || qgsDoubleNear( minimumWavelength, 0 ) || maximumWavelength < 0 || qgsDoubleNear( maximumWavelength, 0 ) || maximumWavelength < minimumWavelength )
+    return QgsGeometry();
+
+  mLastError.clear();
+  if ( !mGeometry )
+  {
+    return QgsGeometry();
+  }
+
+  std::random_device rd;
+  std::mt19937 mt( seed == 0 ? rd() : seed );
+  std::uniform_real_distribution<> uniformDist( 0, 1 );
+
+  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == QgsWkbTypes::PointGeometry )
+  {
+    return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
+  }
+
+  if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( mGeometry ) )
+  {
+    int numGeom = gc->numGeometries();
+    QVector< QgsAbstractGeometry * > geometryList;
+    geometryList.reserve( numGeom );
+    for ( int i = 0; i < numGeom; ++i )
+    {
+      geometryList << triangularWavesRandomizedPrivate( gc->geometryN( i ), minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, uniformDist, mt ).release();
+    }
+
+    QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
+    for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
+    {
+      first.addPart( g );
+    }
+    return first;
+  }
+  else
+  {
+    return QgsGeometry( triangularWavesRandomizedPrivate( mGeometry, minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, uniformDist, mt ) );
+  }
+}
+
+std::unique_ptr< QgsLineString > squareWavesAlongLine( const QgsLineString *line, double wavelength, const double amplitude, const bool strictWavelength )
+{
+  const int totalPoints = line->numPoints();
+  if ( totalPoints < 2 )
+    return nullptr;
+
+  const double *x = line->xData();
+  const double *y = line->yData();
+
+  double prevX = *x++;
+  double prevY = *y++;
+
+  QVector< double > outX;
+  QVector< double > outY;
+  const double totalLength = line->length();
+
+  const int maxRepetitions = std::ceil( totalLength / wavelength );
+  if ( !strictWavelength )
+    wavelength = totalLength / maxRepetitions;
+
+  const int estimatedPoints = maxRepetitions * 4 + 2;
+  outX.reserve( estimatedPoints );
+  outY.reserve( estimatedPoints );
+  outX.append( prevX );
+  outY.append( prevY );
+
+  const double startSegmentAngleRadians = QgsGeometryUtils::lineAngle( prevX, prevY, *x, *y );
+  outX.append( prevX - amplitude * std::sin( startSegmentAngleRadians + M_PI_2 ) );
+  outY.append( prevY - amplitude * std::cos( startSegmentAngleRadians + M_PI_2 ) );
+
+  double distanceToNextPointFromStartOfSegment = wavelength / 2;
+
+  int side = -1;
+  for ( int i = 1; i < totalPoints; ++i )
+  {
+    double thisX = *x++;
+    double thisY = *y++;
+
+    const double segmentAngleRadians = QgsGeometryUtils::lineAngle( prevX, prevY, thisX, thisY );
+    const double segmentLength = std::sqrt( ( thisX - prevX ) * ( thisX - prevX ) + ( thisY - prevY ) * ( thisY - prevY ) );
+    while ( distanceToNextPointFromStartOfSegment < segmentLength || qgsDoubleNear( distanceToNextPointFromStartOfSegment, segmentLength ) )
+    {
+      // point falls on this segment - truncate to segment length if qgsDoubleNear test was actually > segment length
+      const double distanceToPoint = std::min( distanceToNextPointFromStartOfSegment, segmentLength );
+      double pX, pY;
+      QgsGeometryUtils::pointOnLineWithDistance( prevX, prevY, thisX, thisY, distanceToPoint, pX, pY );
+
+      // project point on line out by amplitude
+      const double sinAngle = std::sin( segmentAngleRadians + M_PI_2 );
+      const double cosAngle = std::cos( segmentAngleRadians + M_PI_2 );
+      outX.append( pX + side * amplitude * sinAngle );
+      outY.append( pY + side * amplitude * cosAngle );
+      outX.append( pX - side * amplitude * sinAngle );
+      outY.append( pY - side * amplitude * cosAngle );
+
+      distanceToNextPointFromStartOfSegment += wavelength / 2;
+      side = -side;
+    }
+
+    prevX = thisX;
+    prevY = thisY;
+    distanceToNextPointFromStartOfSegment -= segmentLength;
+  }
+
+  // replace last point, which will be projected out to amplitude of wave, with the actual end point of the line
+  outX.pop_back();
+  outY.pop_back();
+  outX.append( prevX );
+  outY.append( prevY );
+
+  return std::make_unique< QgsLineString >( outX, outY );
+}
+
+std::unique_ptr< QgsLineString > squareWavesRandomizedAlongLine( const QgsLineString *line,
+    const double minimumWavelength, const double maximumWavelength,
+    const double minimumAmplitude, const double maximumAmplitude,
+    std::uniform_real_distribution<> &uniformDist, std::mt19937 &mt )
+{
+  const int totalPoints = line->numPoints();
+  if ( totalPoints < 2 )
+    return nullptr;
+
+  const double *x = line->xData();
+  const double *y = line->yData();
+
+  double prevX = *x++;
+  double prevY = *y++;
+
+  QVector< double > outX;
+  QVector< double > outY;
+  const double totalLength = line->length();
+
+  const int maxRepetitions = std::ceil( totalLength / minimumWavelength );
+
+  const int estimatedPoints = maxRepetitions * 4 + 2;
+  outX.reserve( estimatedPoints );
+  outY.reserve( estimatedPoints );
+  outX.append( prevX );
+  outY.append( prevY );
+
+  double amplitude = uniformDist( mt ) * ( maximumAmplitude - minimumAmplitude ) + minimumAmplitude;
+
+  double segmentAngleRadians = QgsGeometryUtils::lineAngle( prevX, prevY, *x, *y );
+  outX.append( prevX - amplitude * std::sin( segmentAngleRadians + M_PI_2 ) );
+  outY.append( prevY - amplitude * std::cos( segmentAngleRadians + M_PI_2 ) );
+
+  double wavelength = uniformDist( mt ) * ( maximumWavelength - minimumWavelength ) + minimumWavelength;
+  double distanceToNextPointFromStartOfSegment = wavelength / 2;
+
+  int side = -1;
+  for ( int i = 1; i < totalPoints; ++i )
+  {
+    double thisX = *x++;
+    double thisY = *y++;
+
+    segmentAngleRadians = QgsGeometryUtils::lineAngle( prevX, prevY, thisX, thisY );
+    const double segmentLength = std::sqrt( ( thisX - prevX ) * ( thisX - prevX ) + ( thisY - prevY ) * ( thisY - prevY ) );
+    while ( distanceToNextPointFromStartOfSegment < segmentLength || qgsDoubleNear( distanceToNextPointFromStartOfSegment, segmentLength ) )
+    {
+      // point falls on this segment - truncate to segment length if qgsDoubleNear test was actually > segment length
+      const double distanceToPoint = std::min( distanceToNextPointFromStartOfSegment, segmentLength );
+      double pX, pY;
+      QgsGeometryUtils::pointOnLineWithDistance( prevX, prevY, thisX, thisY, distanceToPoint, pX, pY );
+
+      // project point on line out by amplitude
+      const double sinAngle = std::sin( segmentAngleRadians + M_PI_2 );
+      const double cosAngle = std::cos( segmentAngleRadians + M_PI_2 );
+      outX.append( pX + side * amplitude * sinAngle );
+      outY.append( pY + side * amplitude * cosAngle );
+
+      amplitude = uniformDist( mt ) * ( maximumAmplitude - minimumAmplitude ) + minimumAmplitude;
+      outX.append( pX - side * amplitude * sinAngle );
+      outY.append( pY - side * amplitude * cosAngle );
+
+      wavelength = uniformDist( mt ) * ( maximumWavelength - minimumWavelength ) + minimumWavelength;
+      distanceToNextPointFromStartOfSegment += wavelength / 2;
+      side = -side;
+    }
+
+    prevX = thisX;
+    prevY = thisY;
+    distanceToNextPointFromStartOfSegment -= segmentLength;
+  }
+
+  outX.append( prevX + side * amplitude * std::sin( segmentAngleRadians + M_PI_2 ) );
+  outY.append( prevY + side * amplitude * std::cos( segmentAngleRadians + M_PI_2 ) );
+  outX.append( prevX );
+  outY.append( prevY );
+
+  return std::make_unique< QgsLineString >( outX, outY );
+}
+
+std::unique_ptr< QgsAbstractGeometry > squareWavesPrivate( const QgsAbstractGeometry *geom, double wavelength, double amplitude, bool strictWavelength )
+{
+  std::unique_ptr< QgsAbstractGeometry > segmentizedCopy;
+  if ( QgsWkbTypes::isCurvedType( geom->wkbType() ) )
+  {
+    segmentizedCopy.reset( geom->segmentize() );
+    geom = segmentizedCopy.get();
+  }
+
+  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::LineGeometry )
+  {
+    return squareWavesAlongLine( static_cast< const QgsLineString * >( geom ), wavelength, amplitude, strictWavelength );
+  }
+  else
+  {
+    // polygon
+    const QgsPolygon *polygon = static_cast< const QgsPolygon * >( geom );
+    std::unique_ptr< QgsPolygon > result = std::make_unique< QgsPolygon >();
+
+    result->setExteriorRing( squareWavesAlongLine( static_cast< const QgsLineString * >( polygon->exteriorRing() ),
+                             wavelength, amplitude, strictWavelength ).release() );
+    for ( int i = 0; i < polygon->numInteriorRings(); ++i )
+    {
+      result->addInteriorRing( squareWavesAlongLine( static_cast< const QgsLineString * >( polygon->interiorRing( i ) ),
+                               wavelength, amplitude, strictWavelength ).release() );
+    }
+
+    return result;
+  }
+}
+
+std::unique_ptr< QgsAbstractGeometry > squareWavesRandomizedPrivate( const QgsAbstractGeometry *geom, double minimumWavelength, double maximumWavelength, double minimumAmplitude, double maximumAmplitude, std::uniform_real_distribution<> &uniformDist, std::mt19937 &mt )
+{
+  std::unique_ptr< QgsAbstractGeometry > segmentizedCopy;
+  if ( QgsWkbTypes::isCurvedType( geom->wkbType() ) )
+  {
+    segmentizedCopy.reset( geom->segmentize() );
+    geom = segmentizedCopy.get();
+  }
+
+  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::LineGeometry )
+  {
+    return squareWavesRandomizedAlongLine( static_cast< const QgsLineString * >( geom ), minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, uniformDist, mt );
+  }
+  else
+  {
+    // polygon
+    const QgsPolygon *polygon = static_cast< const QgsPolygon * >( geom );
+    std::unique_ptr< QgsPolygon > result = std::make_unique< QgsPolygon >();
+
+    result->setExteriorRing( squareWavesRandomizedAlongLine( static_cast< const QgsLineString * >( polygon->exteriorRing() ),
+                             minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, uniformDist, mt ).release() );
+    for ( int i = 0; i < polygon->numInteriorRings(); ++i )
+    {
+      result->addInteriorRing( squareWavesRandomizedAlongLine( static_cast< const QgsLineString * >( polygon->interiorRing( i ) ),
+                               minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, uniformDist, mt ).release() );
+    }
+
+    return result;
+  }
+}
+
+QgsGeometry QgsInternalGeometryEngine::squareWaves( double wavelength, double amplitude, bool strictWavelength ) const
+{
+  if ( wavelength < 0 || qgsDoubleNear( wavelength, 0 ) )
+    return QgsGeometry();
+
+  mLastError.clear();
+  if ( !mGeometry )
+  {
+    return QgsGeometry();
+  }
+
+  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == QgsWkbTypes::PointGeometry )
+  {
+    return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
+  }
+
+  if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( mGeometry ) )
+  {
+    int numGeom = gc->numGeometries();
+    QVector< QgsAbstractGeometry * > geometryList;
+    geometryList.reserve( numGeom );
+    for ( int i = 0; i < numGeom; ++i )
+    {
+      geometryList << squareWavesPrivate( gc->geometryN( i ), wavelength, amplitude, strictWavelength ).release();
+    }
+
+    QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
+    for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
+    {
+      first.addPart( g );
+    }
+    return first;
+  }
+  else
+  {
+    return QgsGeometry( squareWavesPrivate( mGeometry, wavelength, amplitude, strictWavelength ) );
+  }
+}
+
+QgsGeometry QgsInternalGeometryEngine::squareWavesRandomized( double minimumWavelength, double maximumWavelength, double minimumAmplitude, double maximumAmplitude, unsigned long seed ) const
+{
+  if ( minimumWavelength < 0 || qgsDoubleNear( minimumWavelength, 0 ) || maximumWavelength < 0 || qgsDoubleNear( maximumWavelength, 0 ) || maximumWavelength < minimumWavelength )
+    return QgsGeometry();
+
+  mLastError.clear();
+  if ( !mGeometry )
+  {
+    return QgsGeometry();
+  }
+
+  std::random_device rd;
+  std::mt19937 mt( seed == 0 ? rd() : seed );
+  std::uniform_real_distribution<> uniformDist( 0, 1 );
+
+  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == QgsWkbTypes::PointGeometry )
+  {
+    return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
+  }
+
+  if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( mGeometry ) )
+  {
+    int numGeom = gc->numGeometries();
+    QVector< QgsAbstractGeometry * > geometryList;
+    geometryList.reserve( numGeom );
+    for ( int i = 0; i < numGeom; ++i )
+    {
+      geometryList << squareWavesRandomizedPrivate( gc->geometryN( i ), minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, uniformDist, mt ).release();
+    }
+
+    QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
+    for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
+    {
+      first.addPart( g );
+    }
+    return first;
+  }
+  else
+  {
+    return QgsGeometry( squareWavesRandomizedPrivate( mGeometry, minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, uniformDist, mt ) );
+  }
+}
+
+std::unique_ptr< QgsLineString > roundWavesAlongLine( const QgsLineString *line, double wavelength, const double amplitude, const bool strictWavelength )
+{
+  const int totalPoints = line->numPoints();
+  if ( totalPoints < 2 )
+    return nullptr;
+
+  const double *x = line->xData();
+  const double *y = line->yData();
+
+  double prevX = *x++;
+  double prevY = *y++;
+
+  const double totalLength = line->length();
+
+  const int maxRepetitions = std::ceil( totalLength / wavelength );
+  if ( !strictWavelength )
+    wavelength = totalLength / maxRepetitions;
+
+  const int segments = 10;
+
+  int side = -1;
+
+  double xOutBuffer[4];
+  double yOutBuffer[4];
+  xOutBuffer[0] = prevX;
+  yOutBuffer[0] = prevY;
+  bool isFirstPart = true;
+
+  double distanceToNextPointFromStartOfSegment = wavelength / 8;
+  int bufferIndex = 1;
+  std::unique_ptr< QgsLineString > out = std::make_unique< QgsLineString >();
+
+  double segmentAngleRadians = 0;
+  double remainingDistance = totalLength;
+  double totalCoveredDistance = 0;
+
+  for ( int i = 1; i < totalPoints; ++i )
+  {
+    double thisX = *x++;
+    double thisY = *y++;
+
+    segmentAngleRadians = QgsGeometryUtils::lineAngle( prevX, prevY, thisX, thisY );
+    const double segmentLength = std::sqrt( ( thisX - prevX ) * ( thisX - prevX ) + ( thisY - prevY ) * ( thisY - prevY ) );
+    while ( distanceToNextPointFromStartOfSegment < segmentLength || qgsDoubleNear( distanceToNextPointFromStartOfSegment, segmentLength ) )
+    {
+      // point falls on this segment - truncate to segment length if qgsDoubleNear test was actually > segment length
+      const double distanceToPoint = std::min( distanceToNextPointFromStartOfSegment, segmentLength );
+      double pX, pY;
+      QgsGeometryUtils::pointOnLineWithDistance( prevX, prevY, thisX, thisY, distanceToPoint, pX, pY );
+      remainingDistance = totalLength - totalCoveredDistance - distanceToPoint;
+
+      const double sinAngle = std::sin( segmentAngleRadians + M_PI_2 );
+      const double cosAngle = std::cos( segmentAngleRadians + M_PI_2 );
+
+      if ( bufferIndex == 0 )
+      {
+        xOutBuffer[0] = pX + side * amplitude * sinAngle;
+        yOutBuffer[0] = pY + side * amplitude * cosAngle;
+        bufferIndex = 1;
+        distanceToNextPointFromStartOfSegment += wavelength / 4;
+      }
+      else if ( bufferIndex == 1 && isFirstPart )
+      {
+        xOutBuffer[1] = ( xOutBuffer[0] + pX - side * amplitude * sinAngle ) * 0.5;
+        yOutBuffer[1] = ( yOutBuffer[0] + pY - side * amplitude * cosAngle ) * 0.5;
+        xOutBuffer[2] = pX - side * amplitude * sinAngle;
+        yOutBuffer[2] = pY - side * amplitude * cosAngle;
+        bufferIndex = 2;
+        distanceToNextPointFromStartOfSegment += wavelength / 8;
+      }
+      else if ( bufferIndex == 1 )
+      {
+        xOutBuffer[1] = pX + side * amplitude * sinAngle;
+        yOutBuffer[1] = pY + side * amplitude * cosAngle;
+        xOutBuffer[2] = pX - side * amplitude * sinAngle;
+        yOutBuffer[2] = pY - side * amplitude * cosAngle;
+        bufferIndex = 2;
+        distanceToNextPointFromStartOfSegment += wavelength / 4;
+      }
+      else if ( bufferIndex == 2 )
+      {
+        xOutBuffer[3] = pX - side * amplitude * sinAngle;
+        yOutBuffer[3] = pY - side * amplitude * cosAngle;
+
+        if ( isFirstPart )
+        {
+          xOutBuffer[2] = ( xOutBuffer[2] + xOutBuffer[3] ) * 0.5;
+          yOutBuffer[2] = ( yOutBuffer[2] + yOutBuffer[3] ) * 0.5;
+          isFirstPart = false;
+        }
+
+        // flush curve
+        std::unique_ptr< QgsLineString > bezier( QgsLineString::fromBezierCurve( QgsPoint( xOutBuffer[0], yOutBuffer[0] ),
+            QgsPoint( xOutBuffer[1], yOutBuffer[1] ),
+            QgsPoint( xOutBuffer[2], yOutBuffer[2] ),
+            QgsPoint( xOutBuffer[3], yOutBuffer[3] ),
+            segments ) );
+        out->append( bezier.get() );
+
+        // shuffle buffer alone
+        xOutBuffer[0] = xOutBuffer[3];
+        yOutBuffer[0] = yOutBuffer[3];
+        bufferIndex = 1;
+        side = -side;
+        distanceToNextPointFromStartOfSegment += wavelength / 4;
+      }
+    }
+    totalCoveredDistance += segmentLength;
+    prevX = thisX;
+    prevY = thisY;
+    distanceToNextPointFromStartOfSegment -= segmentLength;
+  }
+
+  const double midX = prevX - remainingDistance / 2 * std::sin( segmentAngleRadians );
+  const double midY = prevY - remainingDistance / 2 * std::cos( segmentAngleRadians );
+  const double pX = midX + side * amplitude * std::sin( segmentAngleRadians + M_PI_2 );
+  const double pY = midY + side * amplitude * std::cos( segmentAngleRadians + M_PI_2 );
+
+  std::unique_ptr< QgsLineString > bezier( QgsLineString::fromBezierCurve( out->endPoint(),
+      QgsPoint( ( out->endPoint().x() + pX ) * 0.5, ( out->endPoint().y() + pY ) * 0.5 ),
+      QgsPoint( ( prevX + pX ) * 0.5, ( prevY + pY ) * 0.5 ),
+      QgsPoint( prevX, prevY ),
+      segments / 2 ) );
+  out->append( bezier.get() );
+
+  return out;
+}
+
+std::unique_ptr< QgsLineString > roundWavesRandomizedAlongLine( const QgsLineString *line,
+    const double minimumWavelength, const double maximumWavelength,
+    const double minimumAmplitude, const double maximumAmplitude,
+    std::uniform_real_distribution<> &uniformDist, std::mt19937 &mt )
+{
+  const int totalPoints = line->numPoints();
+  if ( totalPoints < 2 )
+    return nullptr;
+
+  const double *x = line->xData();
+  const double *y = line->yData();
+
+  double prevX = *x++;
+  double prevY = *y++;
+
+  const double totalLength = line->length();
+
+  const int segments = 10;
+
+  int side = -1;
+
+  double xOutBuffer[4];
+  double yOutBuffer[4];
+  xOutBuffer[0] = prevX;
+  yOutBuffer[0] = prevY;
+  bool isFirstPart = true;
+
+  double amplitude = uniformDist( mt ) * ( maximumAmplitude - minimumAmplitude ) + minimumAmplitude;
+  double wavelength = uniformDist( mt ) * ( maximumWavelength - minimumWavelength ) + minimumWavelength;
+
+  double distanceToNextPointFromStartOfSegment = wavelength / 8;
+  int bufferIndex = 1;
+  std::unique_ptr< QgsLineString > out = std::make_unique< QgsLineString >();
+
+  double segmentAngleRadians = 0;
+
+  double remainingDistance = totalLength;
+  double totalCoveredDistance = 0;
+
+  for ( int i = 1; i < totalPoints; ++i )
+  {
+    double thisX = *x++;
+    double thisY = *y++;
+
+    segmentAngleRadians = QgsGeometryUtils::lineAngle( prevX, prevY, thisX, thisY );
+    const double segmentLength = std::sqrt( ( thisX - prevX ) * ( thisX - prevX ) + ( thisY - prevY ) * ( thisY - prevY ) );
+    while ( distanceToNextPointFromStartOfSegment < segmentLength || qgsDoubleNear( distanceToNextPointFromStartOfSegment, segmentLength ) )
+    {
+      // point falls on this segment - truncate to segment length if qgsDoubleNear test was actually > segment length
+      const double distanceToPoint = std::min( distanceToNextPointFromStartOfSegment, segmentLength );
+      double pX, pY;
+      QgsGeometryUtils::pointOnLineWithDistance( prevX, prevY, thisX, thisY, distanceToPoint, pX, pY );
+      remainingDistance = totalLength - totalCoveredDistance - distanceToPoint;
+
+      const double sinAngle = std::sin( segmentAngleRadians + M_PI_2 );
+      const double cosAngle = std::cos( segmentAngleRadians + M_PI_2 );
+
+      if ( bufferIndex == 0 )
+      {
+        xOutBuffer[0] = pX + side * amplitude * sinAngle;
+        yOutBuffer[0] = pY + side * amplitude * cosAngle;
+        bufferIndex = 1;
+        distanceToNextPointFromStartOfSegment += wavelength / 4;
+      }
+      else if ( bufferIndex == 1 && isFirstPart )
+      {
+        xOutBuffer[1] = ( xOutBuffer[0] + pX - side * amplitude * sinAngle ) * 0.5;
+        yOutBuffer[1] = ( yOutBuffer[0] + pY - side * amplitude * cosAngle ) * 0.5;
+        xOutBuffer[2] = pX - side * amplitude * sinAngle;
+        yOutBuffer[2] = pY - side * amplitude * cosAngle;
+        bufferIndex = 2;
+        distanceToNextPointFromStartOfSegment += wavelength / 8;
+      }
+      else if ( bufferIndex == 1 )
+      {
+        xOutBuffer[1] = pX + side * amplitude * sinAngle;
+        yOutBuffer[1] = pY + side * amplitude * cosAngle;
+        amplitude = uniformDist( mt ) * ( maximumAmplitude - minimumAmplitude ) + minimumAmplitude;
+        xOutBuffer[2] = pX - side * amplitude * sinAngle;
+        bufferIndex = 2;
+        yOutBuffer[2] = pY - side * amplitude * cosAngle;
+        distanceToNextPointFromStartOfSegment += wavelength / 4;
+      }
+      else if ( bufferIndex == 2 )
+      {
+        xOutBuffer[3] = pX - side * amplitude * sinAngle;
+        yOutBuffer[3] = pY - side * amplitude * cosAngle;
+
+        if ( isFirstPart )
+        {
+          xOutBuffer[2] = ( xOutBuffer[2] + xOutBuffer[3] ) * 0.5;
+          yOutBuffer[2] = ( yOutBuffer[2] + yOutBuffer[3] ) * 0.5;
+          isFirstPart = false;
+        }
+
+        // flush curve
+        std::unique_ptr< QgsLineString > bezier( QgsLineString::fromBezierCurve( QgsPoint( xOutBuffer[0], yOutBuffer[0] ),
+            QgsPoint( xOutBuffer[1], yOutBuffer[1] ),
+            QgsPoint( xOutBuffer[2], yOutBuffer[2] ),
+            QgsPoint( xOutBuffer[3], yOutBuffer[3] ),
+            segments ) );
+        out->append( bezier.get() );
+
+        // shuffle buffer alone
+        xOutBuffer[0] = xOutBuffer[3];
+        yOutBuffer[0] = yOutBuffer[3];
+        bufferIndex = 1;
+        side = -side;
+
+        wavelength = uniformDist( mt ) * ( maximumWavelength - minimumWavelength ) + minimumWavelength;
+
+        distanceToNextPointFromStartOfSegment += wavelength / 4;
+      }
+    }
+    totalCoveredDistance += segmentLength;
+
+    prevX = thisX;
+    prevY = thisY;
+    distanceToNextPointFromStartOfSegment -= segmentLength;
+  }
+
+  const double midX = prevX - remainingDistance / 2 * std::sin( segmentAngleRadians );
+  const double midY = prevY - remainingDistance / 2 * std::cos( segmentAngleRadians );
+  const double pX = midX + side * amplitude * std::sin( segmentAngleRadians + M_PI_2 );
+  const double pY = midY + side * amplitude * std::cos( segmentAngleRadians + M_PI_2 );
+
+  std::unique_ptr< QgsLineString > bezier( QgsLineString::fromBezierCurve( out->endPoint(),
+      QgsPoint( ( out->endPoint().x() + pX ) * 0.5, ( out->endPoint().y() + pY ) * 0.5 ),
+      QgsPoint( ( prevX + pX ) * 0.5, ( prevY + pY ) * 0.5 ),
+      QgsPoint( prevX, prevY ),
+      segments ) );
+  out->append( bezier.get() );
+
+  return out;
+}
+
+std::unique_ptr< QgsAbstractGeometry > roundWavesPrivate( const QgsAbstractGeometry *geom, double wavelength, double amplitude, bool strictWavelength )
+{
+  std::unique_ptr< QgsAbstractGeometry > segmentizedCopy;
+  if ( QgsWkbTypes::isCurvedType( geom->wkbType() ) )
+  {
+    segmentizedCopy.reset( geom->segmentize() );
+    geom = segmentizedCopy.get();
+  }
+
+  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::LineGeometry )
+  {
+    return roundWavesAlongLine( static_cast< const QgsLineString * >( geom ), wavelength, amplitude, strictWavelength );
+  }
+  else
+  {
+    // polygon
+    const QgsPolygon *polygon = static_cast< const QgsPolygon * >( geom );
+    std::unique_ptr< QgsPolygon > result = std::make_unique< QgsPolygon >();
+
+    result->setExteriorRing( roundWavesAlongLine( static_cast< const QgsLineString * >( polygon->exteriorRing() ),
+                             wavelength, amplitude, strictWavelength ).release() );
+    for ( int i = 0; i < polygon->numInteriorRings(); ++i )
+    {
+      result->addInteriorRing( roundWavesAlongLine( static_cast< const QgsLineString * >( polygon->interiorRing( i ) ),
+                               wavelength, amplitude, strictWavelength ).release() );
+    }
+
+    return result;
+  }
+}
+
+std::unique_ptr< QgsAbstractGeometry > roundWavesRandomizedPrivate( const QgsAbstractGeometry *geom, double minimumWavelength, double maximumWavelength, double minimumAmplitude, double maximumAmplitude, std::uniform_real_distribution<> &uniformDist, std::mt19937 &mt )
+{
+  std::unique_ptr< QgsAbstractGeometry > segmentizedCopy;
+  if ( QgsWkbTypes::isCurvedType( geom->wkbType() ) )
+  {
+    segmentizedCopy.reset( geom->segmentize() );
+    geom = segmentizedCopy.get();
+  }
+
+  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::LineGeometry )
+  {
+    return roundWavesRandomizedAlongLine( static_cast< const QgsLineString * >( geom ), minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, uniformDist, mt );
+  }
+  else
+  {
+    // polygon
+    const QgsPolygon *polygon = static_cast< const QgsPolygon * >( geom );
+    std::unique_ptr< QgsPolygon > result = std::make_unique< QgsPolygon >();
+
+    result->setExteriorRing( roundWavesRandomizedAlongLine( static_cast< const QgsLineString * >( polygon->exteriorRing() ),
+                             minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, uniformDist, mt ).release() );
+    for ( int i = 0; i < polygon->numInteriorRings(); ++i )
+    {
+      result->addInteriorRing( roundWavesRandomizedAlongLine( static_cast< const QgsLineString * >( polygon->interiorRing( i ) ),
+                               minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, uniformDist, mt ).release() );
+    }
+
+    return result;
+  }
+}
+
+QgsGeometry QgsInternalGeometryEngine::roundWaves( double wavelength, double amplitude, bool strictWavelength ) const
+{
+  if ( wavelength < 0 || qgsDoubleNear( wavelength, 0 ) )
+    return QgsGeometry();
+
+  mLastError.clear();
+  if ( !mGeometry )
+  {
+    return QgsGeometry();
+  }
+
+  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == QgsWkbTypes::PointGeometry )
+  {
+    return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
+  }
+
+  if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( mGeometry ) )
+  {
+    int numGeom = gc->numGeometries();
+    QVector< QgsAbstractGeometry * > geometryList;
+    geometryList.reserve( numGeom );
+    for ( int i = 0; i < numGeom; ++i )
+    {
+      geometryList << roundWavesPrivate( gc->geometryN( i ), wavelength, amplitude, strictWavelength ).release();
+    }
+
+    QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
+    for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
+    {
+      first.addPart( g );
+    }
+    return first;
+  }
+  else
+  {
+    return QgsGeometry( roundWavesPrivate( mGeometry, wavelength, amplitude, strictWavelength ) );
+  }
+}
+
+QgsGeometry QgsInternalGeometryEngine::roundWavesRandomized( double minimumWavelength, double maximumWavelength, double minimumAmplitude, double maximumAmplitude, unsigned long seed ) const
+{
+  if ( minimumWavelength < 0 || qgsDoubleNear( minimumWavelength, 0 ) || maximumWavelength < 0 || qgsDoubleNear( maximumWavelength, 0 ) || maximumWavelength < minimumWavelength )
+    return QgsGeometry();
+
+  mLastError.clear();
+  if ( !mGeometry )
+  {
+    return QgsGeometry();
+  }
+
+  std::random_device rd;
+  std::mt19937 mt( seed == 0 ? rd() : seed );
+  std::uniform_real_distribution<> uniformDist( 0, 1 );
+
+  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == QgsWkbTypes::PointGeometry )
+  {
+    return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
+  }
+
+  if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( mGeometry ) )
+  {
+    int numGeom = gc->numGeometries();
+    QVector< QgsAbstractGeometry * > geometryList;
+    geometryList.reserve( numGeom );
+    for ( int i = 0; i < numGeom; ++i )
+    {
+      geometryList << roundWavesRandomizedPrivate( gc->geometryN( i ), minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, uniformDist, mt ).release();
+    }
+
+    QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
+    for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
+    {
+      first.addPart( g );
+    }
+    return first;
+  }
+  else
+  {
+    return QgsGeometry( roundWavesRandomizedPrivate( mGeometry, minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, uniformDist, mt ) );
+  }
+}
