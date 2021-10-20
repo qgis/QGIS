@@ -106,7 +106,7 @@ MDAL::Driver2dm::~Driver2dm() = default;
 
 bool MDAL::Driver2dm::canReadMesh( const std::string &uri )
 {
-  std::ifstream in( uri, std::ifstream::in );
+  std::ifstream in = MDAL::openInputFile( uri );
   std::string line;
   if ( !MDAL::getHeaderLine( in, line ) || !startsWith( line, "MESH2D" ) )
   {
@@ -121,7 +121,8 @@ std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, 
 
   MDAL::Log::resetLastStatus();
 
-  std::ifstream in( mMeshFile, std::ifstream::in );
+  std::ifstream in = MDAL::openInputFile( meshFile );
+
   std::string line;
   if ( !std::getline( in, line ) || !startsWith( line, "MESH2D" ) )
   {
@@ -380,7 +381,7 @@ void MDAL::Driver2dm::save( const std::string &fileName, const std::string &, MD
 {
   MDAL::Log::resetLastStatus();
 
-  std::ofstream file( fileName, std::ofstream::out );
+  std::ofstream file = MDAL::openOutputFile( fileName, std::ofstream::out );
 
   if ( !file.is_open() )
   {

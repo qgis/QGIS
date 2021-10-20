@@ -45,7 +45,7 @@ MDAL::DriverXmsTin::~DriverXmsTin() = default;
 
 bool MDAL::DriverXmsTin::canReadMesh( const std::string &uri )
 {
-  std::ifstream in( uri, std::ifstream::in );
+  std::ifstream in = MDAL::openInputFile( uri, std::ifstream::in );
   std::string line;
   if ( !MDAL::getHeaderLine( in, line ) || !startsWith( line, "TIN" ) )
   {
@@ -58,7 +58,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverXmsTin::load( const std::string &meshFil
 {
   MDAL::Log::resetLastStatus();
 
-  std::ifstream in( meshFile, std::ifstream::in );
+  std::ifstream in = MDAL::openInputFile( meshFile, std::ifstream::in );
   std::string line;
   // skip first line with "TIN" already checked in the canReadMesh
   std::getline( in, line );
