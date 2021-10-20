@@ -633,17 +633,17 @@ QString QgsStringUtils::wordWrap( const QString &string, const int length, const
       if ( useMaxLineLength )
       {
         //first try to locate delimiter backwards
-        strHit = lines.at( i ).lastIndexOf( rx, strCurrent + length );
+        strHit = ( strCurrent + length >= strLength ) ? -1 : lines.at( i ).lastIndexOf( rx, strCurrent + length );
         if ( strHit == lastHit || strHit == -1 )
         {
           //if no new backward delimiter found, try to locate forward
-          strHit = lines.at( i ).indexOf( rx, strCurrent + std::abs( length ) );
+          strHit = ( strCurrent + std::abs( length ) >= strLength ) ? -1 : lines.at( i ).indexOf( rx, strCurrent + std::abs( length ) );
         }
         lastHit = strHit;
       }
       else
       {
-        strHit = lines.at( i ).indexOf( rx, strCurrent + std::abs( length ) );
+        strHit = ( strCurrent + std::abs( length ) >= strLength ) ? -1 : lines.at( i ).indexOf( rx, strCurrent + std::abs( length ) );
       }
       if ( strHit > -1 )
       {
