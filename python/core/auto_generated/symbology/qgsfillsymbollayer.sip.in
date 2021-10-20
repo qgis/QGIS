@@ -201,39 +201,16 @@ class QgsGradientFillSymbolLayer : QgsFillSymbolLayer
 %End
   public:
 
-    enum GradientColorType
-    {
-      SimpleTwoColor,
-      ColorRamp
-    };
-
-    enum GradientType
-    {
-      Linear,
-      Radial,
-      Conical
-    };
-
-    enum GradientCoordinateMode
-    {
-      Feature,
-      Viewport
-    };
-
-    enum GradientSpread
-    {
-      Pad,
-      Reflect,
-      Repeat
-    };
-
     QgsGradientFillSymbolLayer( const QColor &color = DEFAULT_SIMPLEFILL_COLOR,
                                 const QColor &color2 = Qt::white,
-                                GradientColorType gradientColorType = SimpleTwoColor,
-                                GradientType gradientType = Linear,
-                                GradientCoordinateMode coordinateMode = Feature,
-                                GradientSpread gradientSpread = Pad
+                                Qgis::GradientColorSource gradientColorType = Qgis::GradientColorSource::SimpleTwoColor,
+                                Qgis::GradientType gradientType = Qgis::GradientType::Linear,
+                                Qgis::SymbolCoordinateReference coordinateMode = Qgis::SymbolCoordinateReference::Feature,
+                                Qgis::GradientSpread gradientSpread = Qgis::GradientSpread::Pad
                               );
+%Docstring
+Constructor for QgsGradientFillSymbolLayer.
+%End
 
     ~QgsGradientFillSymbolLayer();
 
@@ -263,17 +240,33 @@ Caller takes ownership of the returned symbol layer.
     virtual bool canCauseArtifactsBetweenAdjacentTiles() const;
 
 
-    GradientType gradientType() const;
+    Qgis::GradientType gradientType() const;
 %Docstring
-Type of gradient, e.g., linear or radial
-%End
-    void setGradientType( GradientType gradientType );
+Returns the type of gradient, e.g., linear or radial.
 
-    GradientColorType gradientColorType() const;
-%Docstring
-Gradient color mode, controls how gradient color stops are created
+.. seealso:: :py:func:`setGradientType`
 %End
-    void setGradientColorType( GradientColorType gradientColorType );
+
+    void setGradientType( Qgis::GradientType gradientType );
+%Docstring
+Sets the type of gradient, e.g., linear or radial.
+
+.. seealso:: :py:func:`gradientType`
+%End
+
+    Qgis::GradientColorSource gradientColorType() const;
+%Docstring
+Returns the gradient color mode, which controls how gradient color stops are created.
+
+.. seealso:: :py:func:`setGradientColorType`
+%End
+
+    void setGradientColorType( Qgis::GradientColorSource gradientColorType );
+%Docstring
+Sets the gradient color mode, which controls how gradient color stops are created.
+
+.. seealso:: :py:func:`gradientColorType`
+%End
 
     QgsColorRamp *colorRamp();
 %Docstring
@@ -299,45 +292,102 @@ used if the gradient color type is set to ColorRamp.
 
     QColor color2() const;
 %Docstring
-Color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor
+Returns the color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor.
+
+.. seealso:: :py:func:`setColor2`
 %End
+
     void setColor2( const QColor &color2 );
-
-    GradientCoordinateMode coordinateMode() const;
 %Docstring
-Coordinate mode for gradient. Controls how the gradient stops are positioned.
-%End
-    void setCoordinateMode( GradientCoordinateMode coordinateMode );
+Sets the color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor.
 
-    GradientSpread gradientSpread() const;
-%Docstring
-Gradient spread mode. Controls how the gradient behaves outside of the predefined stops
+.. seealso:: :py:func:`color2`
 %End
-    void setGradientSpread( GradientSpread gradientSpread );
+
+    Qgis::SymbolCoordinateReference coordinateMode() const;
+%Docstring
+Returns the coordinate mode for gradient, which controls how the gradient stops are positioned.
+
+.. seealso:: :py:func:`setCoordinateMode`
+%End
+
+    void setCoordinateMode( Qgis::SymbolCoordinateReference coordinateMode );
+%Docstring
+Sets the coordinate mode for gradient, which controls how the gradient stops are positioned.
+
+.. seealso:: :py:func:`coordinateMode`
+%End
+
+    Qgis::GradientSpread gradientSpread() const;
+%Docstring
+Returns the gradient spread mode, which controls how the gradient behaves outside of the predefined stops.
+
+.. seealso:: :py:func:`setGradientSpread`
+%End
+
+    void setGradientSpread( Qgis::GradientSpread gradientSpread );
+%Docstring
+Sets the gradient spread mode, which controls how the gradient behaves outside of the predefined stops.
+
+.. seealso:: :py:func:`gradientSpread`
+%End
 
     void setReferencePoint1( QPointF referencePoint );
 %Docstring
-Starting point of gradient fill, in the range [0,0] - [1,1]
+Sets the starting point of gradient fill, in the range [0,0] - [1,1].
+
+.. seealso:: :py:func:`referencePoint1`
 %End
+
     QPointF referencePoint1() const;
+%Docstring
+Returns the starting point of gradient fill, in the range [0,0] - [1,1].
+
+.. seealso:: :py:func:`setReferencePoint1`
+%End
 
     void setReferencePoint1IsCentroid( bool isCentroid );
 %Docstring
-Sets the starting point of the gradient to be the feature centroid
+Sets whether the starting point for the gradient is taken from the feature centroid.
+
+.. seealso:: :py:func:`referencePoint1IsCentroid`
 %End
+
     bool referencePoint1IsCentroid() const;
+%Docstring
+Returns whether the starting point for the gradient is taken from the feature centroid.
+
+.. seealso:: :py:func:`setReferencePoint1IsCentroid`
+%End
 
     void setReferencePoint2( QPointF referencePoint );
 %Docstring
-End point of gradient fill, in the range [0,0] - [1,1]
+Sets the end point of gradient fill, in the range [0,0] - [1,1].
+
+.. seealso:: :py:func:`referencePoint2`
 %End
+
     QPointF referencePoint2() const;
+%Docstring
+Returns the end point of gradient fill, in the range [0,0] - [1,1].
+
+.. seealso:: :py:func:`setReferencePoint2`
+%End
 
     void setReferencePoint2IsCentroid( bool isCentroid );
 %Docstring
-Sets the end point of the gradient to be the feature centroid
+Sets whether the end point for the gradient is taken from the feature centroid.
+
+.. seealso:: :py:func:`referencePoint2IsCentroid`
 %End
+
+
     bool referencePoint2IsCentroid() const;
+%Docstring
+Returns whether the end point for the gradient is taken from the feature centroid.
+
+.. seealso:: :py:func:`setReferencePoint2IsCentroid`
+%End
 
     void setOffset( QPointF offset );
 %Docstring
@@ -2045,13 +2095,7 @@ A fill symbol layer which places markers at random locations within polygons.
 %End
   public:
 
-    enum CountMethod
-    {
-      AbsoluteCount,
-      DensityBasedCount,
-    };
-
-    QgsRandomMarkerFillSymbolLayer( int pointCount = 10, CountMethod method = AbsoluteCount, double densityArea = 250.0, unsigned long seed = 0 );
+    QgsRandomMarkerFillSymbolLayer( int pointCount = 10, Qgis::PointCountMethod method = Qgis::PointCountMethod::Absolute, double densityArea = 250.0, unsigned long seed = 0 );
 %Docstring
 Constructor for QgsRandomMarkerFillSymbolLayer, with the specified ``pointCount``.
 
@@ -2155,14 +2199,14 @@ Sets whether point markers should be ``clipped`` to the polygon boundary.
 .. seealso:: :py:func:`clipPoints`
 %End
 
-    CountMethod countMethod() const;
+    Qgis::PointCountMethod countMethod() const;
 %Docstring
 Returns the count method used to randomly fill the polygon.
 
 .. seealso:: :py:func:`setCountMethod`
 %End
 
-    void setCountMethod( CountMethod method );
+    void setCountMethod( Qgis::PointCountMethod method );
 %Docstring
 Sets the count ``method`` used to randomly fill the polygon.
 

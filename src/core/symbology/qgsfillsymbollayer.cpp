@@ -520,8 +520,8 @@ Qt::BrushStyle QgsSimpleFillSymbolLayer::dxfBrushStyle() const
 //QgsGradientFillSymbolLayer
 
 QgsGradientFillSymbolLayer::QgsGradientFillSymbolLayer( const QColor &color, const QColor &color2,
-    GradientColorType colorType, GradientType gradientType,
-    GradientCoordinateMode coordinateMode, GradientSpread spread )
+    Qgis::GradientColorSource colorType, Qgis::GradientType gradientType,
+    Qgis::SymbolCoordinateReference coordinateMode, Qgis::GradientSpread spread )
   : mGradientColorType( colorType )
   , mGradientType( gradientType )
   , mCoordinateMode( coordinateMode )
@@ -541,10 +541,10 @@ QgsGradientFillSymbolLayer::~QgsGradientFillSymbolLayer()
 QgsSymbolLayer *QgsGradientFillSymbolLayer::create( const QVariantMap &props )
 {
   //default to a two-color, linear gradient with feature mode and pad spreading
-  GradientType type = QgsGradientFillSymbolLayer::Linear;
-  GradientColorType colorType = QgsGradientFillSymbolLayer::SimpleTwoColor;
-  GradientCoordinateMode coordinateMode = QgsGradientFillSymbolLayer::Feature;
-  GradientSpread gradientSpread = QgsGradientFillSymbolLayer::Pad;
+  Qgis::GradientType type = Qgis::GradientType::Linear;
+  Qgis::GradientColorSource colorType = Qgis::GradientColorSource::SimpleTwoColor;
+  Qgis::SymbolCoordinateReference coordinateMode = Qgis::SymbolCoordinateReference::Feature;
+  Qgis::GradientSpread gradientSpread = Qgis::GradientSpread::Pad;
   //default to gradient from the default fill color to white
   QColor color = DEFAULT_SIMPLEFILL_COLOR, color2 = Qt::white;
   QPointF referencePoint1 = QPointF( 0.5, 0 );
@@ -556,13 +556,13 @@ QgsSymbolLayer *QgsGradientFillSymbolLayer::create( const QVariantMap &props )
 
   //update gradient properties from props
   if ( props.contains( QStringLiteral( "type" ) ) )
-    type = static_cast< GradientType >( props[QStringLiteral( "type" )].toInt() );
+    type = static_cast< Qgis::GradientType >( props[QStringLiteral( "type" )].toInt() );
   if ( props.contains( QStringLiteral( "coordinate_mode" ) ) )
-    coordinateMode = static_cast< GradientCoordinateMode >( props[QStringLiteral( "coordinate_mode" )].toInt() );
+    coordinateMode = static_cast< Qgis::SymbolCoordinateReference >( props[QStringLiteral( "coordinate_mode" )].toInt() );
   if ( props.contains( QStringLiteral( "spread" ) ) )
-    gradientSpread = static_cast< GradientSpread >( props[QStringLiteral( "spread" )].toInt() );
+    gradientSpread = static_cast< Qgis::GradientSpread >( props[QStringLiteral( "spread" )].toInt() );
   if ( props.contains( QStringLiteral( "color_type" ) ) )
-    colorType = static_cast< GradientColorType >( props[QStringLiteral( "color_type" )].toInt() );
+    colorType = static_cast< Qgis::GradientColorSource >( props[QStringLiteral( "color_type" )].toInt() );
   if ( props.contains( QStringLiteral( "gradient_color" ) ) )
   {
     //pre 2.5 projects used "gradient_color"
@@ -672,7 +672,7 @@ void QgsGradientFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderConte
   }
 
   //gradient type
-  QgsGradientFillSymbolLayer::GradientType gradientType = mGradientType;
+  Qgis::GradientType gradientType = mGradientType;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyGradientType ) )
   {
     QString currentType = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyGradientType, context.renderContext().expressionContext(), QString(), &ok );
@@ -680,21 +680,21 @@ void QgsGradientFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderConte
     {
       if ( currentType == QObject::tr( "linear" ) )
       {
-        gradientType = QgsGradientFillSymbolLayer::Linear;
+        gradientType = Qgis::GradientType::Linear;
       }
       else if ( currentType == QObject::tr( "radial" ) )
       {
-        gradientType = QgsGradientFillSymbolLayer::Radial;
+        gradientType = Qgis::GradientType::Radial;
       }
       else if ( currentType == QObject::tr( "conical" ) )
       {
-        gradientType = QgsGradientFillSymbolLayer::Conical;
+        gradientType = Qgis::GradientType::Conical;
       }
     }
   }
 
   //coordinate mode
-  GradientCoordinateMode coordinateMode = mCoordinateMode;
+  Qgis::SymbolCoordinateReference coordinateMode = mCoordinateMode;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyCoordinateMode ) )
   {
     QString currentCoordMode = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyCoordinateMode, context.renderContext().expressionContext(), QString(), &ok );
@@ -702,17 +702,17 @@ void QgsGradientFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderConte
     {
       if ( currentCoordMode == QObject::tr( "feature" ) )
       {
-        coordinateMode = QgsGradientFillSymbolLayer::Feature;
+        coordinateMode = Qgis::SymbolCoordinateReference::Feature;
       }
       else if ( currentCoordMode == QObject::tr( "viewport" ) )
       {
-        coordinateMode = QgsGradientFillSymbolLayer::Viewport;
+        coordinateMode = Qgis::SymbolCoordinateReference::Viewport;
       }
     }
   }
 
   //gradient spread
-  GradientSpread spread = mGradientSpread;
+  Qgis::GradientSpread spread = mGradientSpread;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyGradientSpread ) )
   {
     QString currentSpread = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyGradientSpread, context.renderContext().expressionContext(), QString(), &ok );
@@ -720,15 +720,15 @@ void QgsGradientFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderConte
     {
       if ( currentSpread == QObject::tr( "pad" ) )
       {
-        spread = QgsGradientFillSymbolLayer::Pad;
+        spread = Qgis::GradientSpread::Pad;
       }
       else if ( currentSpread == QObject::tr( "repeat" ) )
       {
-        spread = QgsGradientFillSymbolLayer::Repeat;
+        spread = Qgis::GradientSpread::Repeat;
       }
       else if ( currentSpread == QObject::tr( "reflect" ) )
       {
-        spread = QgsGradientFillSymbolLayer::Reflect;
+        spread = Qgis::GradientSpread::Reflect;
       }
     }
   }
@@ -823,9 +823,9 @@ QPointF QgsGradientFillSymbolLayer::rotateReferencePoint( QPointF refPoint, doub
 }
 
 void QgsGradientFillSymbolLayer::applyGradient( const QgsSymbolRenderContext &context, QBrush &brush,
-    const QColor &color, const QColor &color2, GradientColorType gradientColorType,
-    QgsColorRamp *gradientRamp, GradientType gradientType,
-    GradientCoordinateMode coordinateMode, GradientSpread gradientSpread,
+    const QColor &color, const QColor &color2, Qgis::GradientColorSource gradientColorType,
+    QgsColorRamp *gradientRamp, Qgis::GradientType gradientType,
+    Qgis::SymbolCoordinateReference coordinateMode, Qgis::GradientSpread gradientSpread,
     QPointF referencePoint1, QPointF referencePoint2, const double angle )
 {
   //update alpha of gradient colors
@@ -842,40 +842,40 @@ void QgsGradientFillSymbolLayer::applyGradient( const QgsSymbolRenderContext &co
   QGradient gradient;
   switch ( gradientType )
   {
-    case QgsGradientFillSymbolLayer::Linear:
+    case Qgis::GradientType::Linear:
       gradient = QLinearGradient( rotatedReferencePoint1, rotatedReferencePoint2 );
       break;
-    case QgsGradientFillSymbolLayer::Radial:
+    case Qgis::GradientType::Radial:
       gradient = QRadialGradient( rotatedReferencePoint1, QLineF( rotatedReferencePoint1, rotatedReferencePoint2 ).length() );
       break;
-    case QgsGradientFillSymbolLayer::Conical:
+    case Qgis::GradientType::Conical:
       gradient = QConicalGradient( rotatedReferencePoint1, QLineF( rotatedReferencePoint1, rotatedReferencePoint2 ).angle() );
       break;
   }
   switch ( coordinateMode )
   {
-    case QgsGradientFillSymbolLayer::Feature:
+    case Qgis::SymbolCoordinateReference::Feature:
       gradient.setCoordinateMode( QGradient::ObjectBoundingMode );
       break;
-    case QgsGradientFillSymbolLayer::Viewport:
+    case Qgis::SymbolCoordinateReference::Viewport:
       gradient.setCoordinateMode( QGradient::StretchToDeviceMode );
       break;
   }
   switch ( gradientSpread )
   {
-    case QgsGradientFillSymbolLayer::Pad:
+    case Qgis::GradientSpread::Pad:
       gradient.setSpread( QGradient::PadSpread );
       break;
-    case QgsGradientFillSymbolLayer::Reflect:
+    case Qgis::GradientSpread::Reflect:
       gradient.setSpread( QGradient::ReflectSpread );
       break;
-    case QgsGradientFillSymbolLayer::Repeat:
+    case Qgis::GradientSpread::Repeat:
       gradient.setSpread( QGradient::RepeatSpread );
       break;
   }
 
   //add stops to gradient
-  if ( gradientColorType == QgsGradientFillSymbolLayer::ColorRamp && gradientRamp &&
+  if ( gradientColorType == Qgis::GradientColorSource::ColorRamp && gradientRamp &&
        ( gradientRamp->type() == QgsGradientColorRamp::typeString() || gradientRamp->type() == QgsCptCityColorRamp::typeString() ) )
   {
     //color ramp gradient
@@ -950,10 +950,10 @@ QVariantMap QgsGradientFillSymbolLayer::properties() const
   QVariantMap map;
   map[QStringLiteral( "color" )] = QgsSymbolLayerUtils::encodeColor( mColor );
   map[QStringLiteral( "gradient_color2" )] = QgsSymbolLayerUtils::encodeColor( mColor2 );
-  map[QStringLiteral( "color_type" )] = QString::number( mGradientColorType );
-  map[QStringLiteral( "type" )] = QString::number( mGradientType );
-  map[QStringLiteral( "coordinate_mode" )] = QString::number( mCoordinateMode );
-  map[QStringLiteral( "spread" )] = QString::number( mGradientSpread );
+  map[QStringLiteral( "color_type" )] = QString::number( static_cast< int >( mGradientColorType ) );
+  map[QStringLiteral( "type" )] = QString::number( static_cast<int>( mGradientType ) );
+  map[QStringLiteral( "coordinate_mode" )] = QString::number( static_cast< int >( mCoordinateMode ) );
+  map[QStringLiteral( "spread" )] = QString::number( static_cast< int >( mGradientSpread ) );
   map[QStringLiteral( "reference_point1" )] = QgsSymbolLayerUtils::encodePoint( mReferencePoint1 );
   map[QStringLiteral( "reference_point1_iscentroid" )] = QString::number( mReferencePoint1IsCentroid );
   map[QStringLiteral( "reference_point2" )] = QgsSymbolLayerUtils::encodePoint( mReferencePoint2 );
@@ -4439,7 +4439,7 @@ void QgsRasterFillSymbolLayer::applyPattern( QBrush &brush, const QString &image
 // QgsRandomMarkerFillSymbolLayer
 //
 
-QgsRandomMarkerFillSymbolLayer::QgsRandomMarkerFillSymbolLayer( int pointCount, CountMethod method, double densityArea, unsigned long seed )
+QgsRandomMarkerFillSymbolLayer::QgsRandomMarkerFillSymbolLayer( int pointCount, Qgis::PointCountMethod method, double densityArea, unsigned long seed )
   : mCountMethod( method )
   , mPointCount( pointCount )
   , mDensityArea( densityArea )
@@ -4452,7 +4452,7 @@ QgsRandomMarkerFillSymbolLayer::~QgsRandomMarkerFillSymbolLayer() = default;
 
 QgsSymbolLayer *QgsRandomMarkerFillSymbolLayer::create( const QVariantMap &properties )
 {
-  const CountMethod countMethod  = static_cast< CountMethod >( properties.value( QStringLiteral( "count_method" ), QStringLiteral( "0" ) ).toInt() );
+  const Qgis::PointCountMethod countMethod  = static_cast< Qgis::PointCountMethod >( properties.value( QStringLiteral( "count_method" ), QStringLiteral( "0" ) ).toInt() );
   const int pointCount = properties.value( QStringLiteral( "point_count" ), QStringLiteral( "10" ) ).toInt();
   const double densityArea = properties.value( QStringLiteral( "density_area" ), QStringLiteral( "250.0" ) ).toDouble();
 
@@ -4592,7 +4592,7 @@ void QgsRandomMarkerFillSymbolLayer::render( QgsRenderContext &context, const QV
 
   switch ( mCountMethod )
   {
-    case DensityBasedCount:
+    case Qgis::PointCountMethod::DensityBased:
     {
       double densityArea = mDensityArea;
       if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyDensityArea ) )
@@ -4605,7 +4605,7 @@ void QgsRandomMarkerFillSymbolLayer::render( QgsRenderContext &context, const QV
       count = std::max( 0.0, std::ceil( count * ( geom.area() / densityArea ) ) );
       break;
     }
-    case AbsoluteCount:
+    case Qgis::PointCountMethod::Absolute:
       break;
   }
 
@@ -4742,12 +4742,12 @@ void QgsRandomMarkerFillSymbolLayer::setClipPoints( bool clipPoints )
   mClipPoints = clipPoints;
 }
 
-QgsRandomMarkerFillSymbolLayer::CountMethod QgsRandomMarkerFillSymbolLayer::countMethod() const
+Qgis::PointCountMethod QgsRandomMarkerFillSymbolLayer::countMethod() const
 {
   return mCountMethod;
 }
 
-void QgsRandomMarkerFillSymbolLayer::setCountMethod( CountMethod method )
+void QgsRandomMarkerFillSymbolLayer::setCountMethod( Qgis::PointCountMethod method )
 {
   mCountMethod = method;
 }

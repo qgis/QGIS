@@ -615,6 +615,82 @@ The development version
       Curve,
     };
 
+    enum class MarkerShape
+      {
+      Square,
+      Diamond,
+      Pentagon,
+      Hexagon,
+      Triangle,
+      EquilateralTriangle,
+      Star,
+      Arrow,
+      Circle,
+      Cross,
+      CrossFill,
+      Cross2,
+      Line,
+      ArrowHead,
+      ArrowHeadFilled,
+      SemiCircle,
+      ThirdCircle,
+      QuarterCircle,
+      QuarterSquare,
+      HalfSquare,
+      DiagonalHalfSquare,
+      RightHalfTriangle,
+      LeftHalfTriangle,
+      Octagon,
+      SquareWithCorners,
+      AsteriskFill,
+      HalfArc,
+      ThirdArc,
+      QuarterArc,
+    };
+
+    enum class MarkerLinePlacement
+      {
+      Interval,
+      Vertex,
+      LastVertex,
+      FirstVertex,
+      CentralPoint,
+      CurvePoint,
+      SegmentCenter,
+    };
+
+    enum class GradientColorSource
+      {
+      SimpleTwoColor,
+      ColorRamp,
+    };
+
+    enum class GradientType
+      {
+      Linear,
+      Radial,
+      Conical,
+    };
+
+    enum class SymbolCoordinateReference
+      {
+      Feature,
+      Viewport,
+    };
+
+    enum class GradientSpread
+      {
+      Pad,
+      Reflect,
+      Repeat,
+    };
+
+    enum class PointCountMethod
+      {
+      Absolute,
+      DensityBased,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

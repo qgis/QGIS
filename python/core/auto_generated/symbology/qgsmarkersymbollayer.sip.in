@@ -25,45 +25,12 @@ leaves the actual drawing of the symbols to subclasses.
 %End
   public:
 
-    enum Shape
-    {
-      Square,
-      Diamond,
-      Pentagon,
-      Hexagon,
-      Triangle,
-      EquilateralTriangle,
-      Star,
-      Arrow,
-      Circle,
-      Cross,
-      CrossFill,
-      Cross2,
-      Line,
-      ArrowHead,
-      ArrowHeadFilled,
-      SemiCircle,
-      ThirdCircle,
-      QuarterCircle,
-      QuarterSquare,
-      HalfSquare,
-      DiagonalHalfSquare,
-      RightHalfTriangle,
-      LeftHalfTriangle,
-      Octagon,
-      SquareWithCorners,
-      AsteriskFill,
-      HalfArc,
-      ThirdArc,
-      QuarterArc,
-    };
-
-    static QList< QgsSimpleMarkerSymbolLayerBase::Shape > availableShapes();
+    static QList< Qgis::MarkerShape > availableShapes();
 %Docstring
 Returns a list of all available shape types.
 %End
 
-    static bool shapeIsFilled( QgsSimpleMarkerSymbolLayerBase::Shape shape );
+    static bool shapeIsFilled( Qgis::MarkerShape shape );
 %Docstring
 Returns ``True`` if a symbol shape has a fill.
 
@@ -72,7 +39,7 @@ Returns ``True`` if a symbol shape has a fill.
 :return: ``True`` if shape uses a fill, or ``False`` if shape uses lines only
 %End
 
-    QgsSimpleMarkerSymbolLayerBase( QgsSimpleMarkerSymbolLayerBase::Shape shape = Circle,
+    QgsSimpleMarkerSymbolLayerBase( Qgis::MarkerShape shape = Qgis::MarkerShape::Circle,
                                     double size = DEFAULT_SIMPLEMARKER_SIZE,
                                     double angle = DEFAULT_SIMPLEMARKER_ANGLE,
                                     Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
@@ -87,14 +54,14 @@ Constructor for QgsSimpleMarkerSymbolLayerBase.
 
     ~QgsSimpleMarkerSymbolLayerBase();
 
-    QgsSimpleMarkerSymbolLayerBase::Shape shape() const;
+    Qgis::MarkerShape shape() const;
 %Docstring
 Returns the shape for the rendered marker symbol.
 
 .. seealso:: :py:func:`setShape`
 %End
 
-    void setShape( QgsSimpleMarkerSymbolLayerBase::Shape shape );
+    void setShape( Qgis::MarkerShape shape );
 %Docstring
 Sets the rendered marker shape.
 
@@ -103,7 +70,7 @@ Sets the rendered marker shape.
 .. seealso:: :py:func:`shape`
 %End
 
-    static QgsSimpleMarkerSymbolLayerBase::Shape decodeShape( const QString &name, bool *ok = 0 );
+    static Qgis::MarkerShape decodeShape( const QString &name, bool *ok = 0 );
 %Docstring
 Attempts to decode a string representation of a shape name to the corresponding
 shape.
@@ -116,7 +83,7 @@ shape.
 .. seealso:: :py:func:`encodeShape`
 %End
 
-    static QString encodeShape( QgsSimpleMarkerSymbolLayerBase::Shape shape );
+    static QString encodeShape( Qgis::MarkerShape shape );
 %Docstring
 Encodes a shape to its string representation.
 
@@ -138,17 +105,17 @@ Encodes a shape to its string representation.
 
   protected:
 
-    bool prepareMarkerShape( Shape shape );
+    bool prepareMarkerShape( Qgis::MarkerShape shape );
 %Docstring
 Prepares the layer for drawing the specified shape (QPolygonF version)
 %End
 
-    bool prepareMarkerPath( Shape symbol );
+    bool prepareMarkerPath( Qgis::MarkerShape symbol );
 %Docstring
 Prepares the layer for drawing the specified shape (QPainterPath version)
 %End
 
-    bool shapeToPolygon( Shape shape, QPolygonF &polygon ) const;
+    bool shapeToPolygon( Qgis::MarkerShape shape, QPolygonF &polygon ) const;
 %Docstring
 Creates a polygon representing the specified shape.
 
@@ -183,7 +150,7 @@ Calculates the marker offset and rotation.
 
 
   private:
-    virtual void draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path ) = 0;
+    virtual void draw( QgsSymbolRenderContext &context, Qgis::MarkerShape shape, const QPolygonF &polygon, const QPainterPath &path ) = 0;
 %Docstring
 Derived classes must implement :py:func:`~QgsSimpleMarkerSymbolLayerBase.draw` to handle drawing the generated shape onto the painter surface.
 
@@ -206,7 +173,7 @@ Simple marker symbol layer, consisting of a rendered shape with solid fill color
 %End
   public:
 
-    QgsSimpleMarkerSymbolLayer( QgsSimpleMarkerSymbolLayerBase::Shape shape = Circle,
+    QgsSimpleMarkerSymbolLayer( Qgis::MarkerShape shape = Qgis::MarkerShape::Circle,
                                 double size = DEFAULT_SIMPLEMARKER_SIZE,
                                 double angle = DEFAULT_SIMPLEMARKER_ANGLE,
                                 Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD,
@@ -495,7 +462,7 @@ Prepares cache image
 
 
   private:
-    virtual void draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path );
+    virtual void draw( QgsSymbolRenderContext &context, Qgis::MarkerShape shape, const QPolygonF &polygon, const QPainterPath &path );
 
 };
 
@@ -513,7 +480,7 @@ the symbol to support advanced styling of the interior and stroke of the shape.
 %End
   public:
 
-    QgsFilledMarkerSymbolLayer( QgsSimpleMarkerSymbolLayerBase::Shape shape = Circle,
+    QgsFilledMarkerSymbolLayer( Qgis::MarkerShape shape = Qgis::MarkerShape::Circle,
                                 double size = DEFAULT_SIMPLEMARKER_SIZE,
                                 double angle = DEFAULT_SIMPLEMARKER_ANGLE,
                                 Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
@@ -566,7 +533,7 @@ Creates a new QgsFilledMarkerSymbolLayer.
 
   private:
     QgsFilledMarkerSymbolLayer( const QgsFilledMarkerSymbolLayer & );
-    virtual void draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path );
+    virtual void draw( QgsSymbolRenderContext &context, Qgis::MarkerShape shape, const QPolygonF &polygon, const QPainterPath &path );
 
 };
 

@@ -552,20 +552,6 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
   public:
 
     /**
-     * Defines how/where the templated symbol should be placed on the line.
-     */
-    enum Placement
-    {
-      Interval, //!< Place symbols at regular intervals
-      Vertex, //!< Place symbols on every vertex in the line
-      LastVertex, //!< Place symbols on the last vertex in the line
-      FirstVertex, //!< Place symbols on the first vertex in the line
-      CentralPoint, //!< Place symbols at the mid point of the line
-      CurvePoint, //!< Place symbols at every virtual curve point in the line (used when rendering curved geometry types only)
-      SegmentCenter, //!< Place symbols at the center of every line segment
-    };
-
-    /**
      * Constructor for QgsTemplatedLineSymbolLayerBase. Creates a template
      * line placed at the specified \a interval (in millimeters).
      *
@@ -639,13 +625,13 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      * Returns the placement of the symbols.
      * \see setPlacement()
      */
-    Placement placement() const { return mPlacement; }
+    Qgis::MarkerLinePlacement placement() const { return mPlacement; }
 
     /**
      * Sets the \a placement of the symbols.
      * \see placement()
      */
-    void setPlacement( Placement placement ) { mPlacement = placement; }
+    void setPlacement( Qgis::MarkerLinePlacement placement ) { mPlacement = placement; }
 
     /**
      * Returns the offset along the line for the symbol placement. For Interval placements, this is the distance
@@ -820,7 +806,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
   private:
 
     void renderPolylineInterval( const QPolygonF &points, QgsSymbolRenderContext &context, double averageAngleOver );
-    void renderPolylineVertex( const QPolygonF &points, QgsSymbolRenderContext &context, QgsTemplatedLineSymbolLayerBase::Placement placement = QgsTemplatedLineSymbolLayerBase::Vertex );
+    void renderPolylineVertex( const QPolygonF &points, QgsSymbolRenderContext &context, Qgis::MarkerLinePlacement placement = Qgis::MarkerLinePlacement::Vertex );
     void renderPolylineCentral( const QPolygonF &points, QgsSymbolRenderContext &context, double averageAngleOver );
     double markerAngle( const QPolygonF &points, bool isRing, int vertex );
 
@@ -846,7 +832,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     double mInterval = 3;
     QgsUnitTypes::RenderUnit mIntervalUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mIntervalMapUnitScale;
-    Placement mPlacement = Interval;
+    Qgis::MarkerLinePlacement mPlacement = Qgis::MarkerLinePlacement::Interval;
     double mOffsetAlongLine = 0; //distance to offset along line before marker is drawn
     QgsUnitTypes::RenderUnit mOffsetAlongLineUnit = QgsUnitTypes::RenderMillimeters; //unit for offset along line
     QgsMapUnitScale mOffsetAlongLineMapUnitScale;

@@ -185,7 +185,7 @@ class CORE_EXPORT QgsArcGisRestUtils
     static std::unique_ptr< QgsMarkerSymbol > parseEsriMarkerSymbolJson( const QVariantMap &symbolData );
     static std::unique_ptr< QgsMarkerSymbol > parseEsriPictureMarkerSymbolJson( const QVariantMap &symbolData );
 
-    static QgsSimpleMarkerSymbolLayerBase::Shape parseEsriMarkerShape( const QString &style );
+    static Qgis::MarkerShape parseEsriMarkerShape( const QString &style );
 
     friend class TestQgsArcGisRestUtils;
 };
