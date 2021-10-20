@@ -588,17 +588,6 @@ lines at intervals along the line feature.
 %End
   public:
 
-    enum Placement
-    {
-      Interval,
-      Vertex,
-      LastVertex,
-      FirstVertex,
-      CentralPoint,
-      CurvePoint,
-      SegmentCenter,
-    };
-
     QgsTemplatedLineSymbolLayerBase( bool rotateSymbol = true,
                                      double interval = 3 );
 %Docstring
@@ -687,14 +676,14 @@ Returns the map unit scale for the interval between symbols.
 .. seealso:: :py:func:`interval`
 %End
 
-    Placement placement() const;
+    Qgis::MarkerLinePlacement placement() const;
 %Docstring
 Returns the placement of the symbols.
 
 .. seealso:: :py:func:`setPlacement`
 %End
 
-    void setPlacement( Placement placement );
+    void setPlacement( Qgis::MarkerLinePlacement placement );
 %Docstring
 Sets the ``placement`` of the symbols.
 

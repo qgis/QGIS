@@ -224,16 +224,16 @@ std::unique_ptr<QgsMarkerSymbolLayer> backgroundToMarkerLayer( const QgsTextBack
     {
       QgsSimpleMarkerSymbolLayer *marker = new QgsSimpleMarkerSymbolLayer();
       // default value
-      QgsSimpleMarkerSymbolLayerBase::Shape shape = QgsSimpleMarkerSymbolLayerBase::Diamond;
+      Qgis::MarkerShape shape = Qgis::MarkerShape::Diamond;
       switch ( settings.type() )
       {
         case QgsTextBackgroundSettings::ShapeCircle:
         case QgsTextBackgroundSettings::ShapeEllipse:
-          shape = QgsSimpleMarkerSymbolLayerBase::Circle;
+          shape = Qgis::MarkerShape::Circle;
           break;
         case QgsTextBackgroundSettings::ShapeRectangle:
         case QgsTextBackgroundSettings::ShapeSquare:
-          shape = QgsSimpleMarkerSymbolLayerBase::Square;
+          shape = Qgis::MarkerShape::Square;
           break;
         case QgsTextBackgroundSettings::ShapeSVG:
         case QgsTextBackgroundSettings::ShapeMarkerSymbol:

@@ -689,7 +689,7 @@ QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( QgsVectorLay
 
   const double markerSize = size * 0.8;
   const auto shapes = QgsSimpleMarkerSymbolLayerBase::availableShapes();
-  for ( const QgsSimpleMarkerSymbolLayerBase::Shape shape : shapes )
+  for ( const Qgis::MarkerShape shape : shapes )
   {
     QgsSimpleMarkerSymbolLayer *lyr = new QgsSimpleMarkerSymbolLayer( shape, markerSize );
     lyr->setSizeUnit( QgsUnitTypes::RenderPixels );
@@ -727,10 +727,10 @@ void QgsSimpleMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mLayer = static_cast<QgsSimpleMarkerSymbolLayer *>( layer );
 
   // set values
-  const QgsSimpleMarkerSymbolLayerBase::Shape shape = mLayer->shape();
+  const Qgis::MarkerShape shape = mLayer->shape();
   for ( int i = 0; i < lstNames->count(); ++i )
   {
-    if ( static_cast< QgsSimpleMarkerSymbolLayerBase::Shape >( lstNames->item( i )->data( Qt::UserRole ).toInt() ) == shape )
+    if ( static_cast< Qgis::MarkerShape >( lstNames->item( i )->data( Qt::UserRole ).toInt() ) == shape )
     {
       lstNames->setCurrentRow( i );
       break;
@@ -814,7 +814,7 @@ QgsSymbolLayer *QgsSimpleMarkerSymbolLayerWidget::symbolLayer()
 
 void QgsSimpleMarkerSymbolLayerWidget::setShape()
 {
-  mLayer->setShape( static_cast< QgsSimpleMarkerSymbolLayerBase::Shape>( lstNames->currentItem()->data( Qt::UserRole ).toInt() ) );
+  mLayer->setShape( static_cast< Qgis::MarkerShape >( lstNames->currentItem()->data( Qt::UserRole ).toInt() ) );
   btnChangeColorFill->setEnabled( QgsSimpleMarkerSymbolLayerBase::shapeIsFilled( mLayer->shape() ) );
   emit changed();
 }
@@ -1132,7 +1132,7 @@ QgsFilledMarkerSymbolLayerWidget::QgsFilledMarkerSymbolLayerWidget( QgsVectorLay
 
   const double markerSize = size * 0.8;
   const auto shapes = QgsSimpleMarkerSymbolLayerBase::availableShapes();
-  for ( const QgsSimpleMarkerSymbolLayerBase::Shape shape : shapes )
+  for ( const Qgis::MarkerShape shape : shapes )
   {
     QgsSimpleMarkerSymbolLayer *lyr = new QgsSimpleMarkerSymbolLayer( shape, markerSize );
     lyr->setSizeUnit( QgsUnitTypes::RenderPixels );
@@ -1166,10 +1166,10 @@ void QgsFilledMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mLayer = static_cast<QgsFilledMarkerSymbolLayer *>( layer );
 
   // set values
-  const QgsSimpleMarkerSymbolLayerBase::Shape shape = mLayer->shape();
+  const Qgis::MarkerShape shape = mLayer->shape();
   for ( int i = 0; i < lstNames->count(); ++i )
   {
-    if ( static_cast< QgsSimpleMarkerSymbolLayerBase::Shape >( lstNames->item( i )->data( Qt::UserRole ).toInt() ) == shape )
+    if ( static_cast< Qgis::MarkerShape >( lstNames->item( i )->data( Qt::UserRole ).toInt() ) == shape )
     {
       lstNames->setCurrentRow( i );
       break;
@@ -1210,7 +1210,7 @@ QgsSymbolLayer *QgsFilledMarkerSymbolLayerWidget::symbolLayer()
 
 void QgsFilledMarkerSymbolLayerWidget::setShape()
 {
-  mLayer->setShape( static_cast< QgsSimpleMarkerSymbolLayerBase::Shape>( lstNames->currentItem()->data( Qt::UserRole ).toInt() ) );
+  mLayer->setShape( static_cast< Qgis::MarkerShape >( lstNames->currentItem()->data( Qt::UserRole ).toInt() ) );
   emit changed();
 }
 
@@ -1349,7 +1349,7 @@ void QgsGradientFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   btnChangeColor2->setColor( mLayer->color2() );
   btnChangeColor2->blockSignals( false );
 
-  if ( mLayer->gradientColorType() == QgsGradientFillSymbolLayer::SimpleTwoColor )
+  if ( mLayer->gradientColorType() == Qgis::GradientColorSource::SimpleTwoColor )
   {
     radioTwoColor->setChecked( true );
     btnColorRamp->setEnabled( false );
@@ -1372,13 +1372,13 @@ void QgsGradientFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   cboGradientType->blockSignals( true );
   switch ( mLayer->gradientType() )
   {
-    case QgsGradientFillSymbolLayer::Linear:
+    case Qgis::GradientType::Linear:
       cboGradientType->setCurrentIndex( 0 );
       break;
-    case QgsGradientFillSymbolLayer::Radial:
+    case Qgis::GradientType::Radial:
       cboGradientType->setCurrentIndex( 1 );
       break;
-    case QgsGradientFillSymbolLayer::Conical:
+    case Qgis::GradientType::Conical:
       cboGradientType->setCurrentIndex( 2 );
       break;
   }
@@ -1387,12 +1387,12 @@ void QgsGradientFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   cboCoordinateMode->blockSignals( true );
   switch ( mLayer->coordinateMode() )
   {
-    case QgsGradientFillSymbolLayer::Viewport:
+    case Qgis::SymbolCoordinateReference::Viewport:
       cboCoordinateMode->setCurrentIndex( 1 );
       checkRefPoint1Centroid->setEnabled( false );
       checkRefPoint2Centroid->setEnabled( false );
       break;
-    case QgsGradientFillSymbolLayer::Feature:
+    case Qgis::SymbolCoordinateReference::Feature:
     default:
       cboCoordinateMode->setCurrentIndex( 0 );
       break;
@@ -1402,13 +1402,13 @@ void QgsGradientFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   cboGradientSpread->blockSignals( true );
   switch ( mLayer->gradientSpread() )
   {
-    case QgsGradientFillSymbolLayer::Pad:
+    case Qgis::GradientSpread::Pad:
       cboGradientSpread->setCurrentIndex( 0 );
       break;
-    case QgsGradientFillSymbolLayer::Repeat:
+    case Qgis::GradientSpread::Repeat:
       cboGradientSpread->setCurrentIndex( 1 );
       break;
-    case QgsGradientFillSymbolLayer::Reflect:
+    case Qgis::GradientSpread::Reflect:
       cboGradientSpread->setCurrentIndex( 2 );
       break;
   }
@@ -1494,11 +1494,11 @@ void QgsGradientFillSymbolLayerWidget::colorModeChanged()
 {
   if ( radioTwoColor->isChecked() )
   {
-    mLayer->setGradientColorType( QgsGradientFillSymbolLayer::SimpleTwoColor );
+    mLayer->setGradientColorType( Qgis::GradientColorSource::SimpleTwoColor );
   }
   else
   {
-    mLayer->setGradientColorType( QgsGradientFillSymbolLayer::ColorRamp );
+    mLayer->setGradientColorType( Qgis::GradientColorSource::ColorRamp );
   }
   emit changed();
 }
@@ -1517,7 +1517,7 @@ void QgsGradientFillSymbolLayerWidget::setGradientType( int index )
   switch ( index )
   {
     case 0:
-      mLayer->setGradientType( QgsGradientFillSymbolLayer::Linear );
+      mLayer->setGradientType( Qgis::GradientType::Linear );
       //set sensible default reference points
       spinRefPoint1X->setValue( 0.5 );
       spinRefPoint1Y->setValue( 0 );
@@ -1525,7 +1525,7 @@ void QgsGradientFillSymbolLayerWidget::setGradientType( int index )
       spinRefPoint2Y->setValue( 1 );
       break;
     case 1:
-      mLayer->setGradientType( QgsGradientFillSymbolLayer::Radial );
+      mLayer->setGradientType( Qgis::GradientType::Radial );
       //set sensible default reference points
       spinRefPoint1X->setValue( 0 );
       spinRefPoint1Y->setValue( 0 );
@@ -1533,7 +1533,7 @@ void QgsGradientFillSymbolLayerWidget::setGradientType( int index )
       spinRefPoint2Y->setValue( 1 );
       break;
     case 2:
-      mLayer->setGradientType( QgsGradientFillSymbolLayer::Conical );
+      mLayer->setGradientType( Qgis::GradientType::Conical );
       spinRefPoint1X->setValue( 0.5 );
       spinRefPoint1Y->setValue( 0.5 );
       spinRefPoint2X->setValue( 1 );
@@ -1550,14 +1550,14 @@ void QgsGradientFillSymbolLayerWidget::setCoordinateMode( int index )
   {
     case 0:
       //feature coordinate mode
-      mLayer->setCoordinateMode( QgsGradientFillSymbolLayer::Feature );
+      mLayer->setCoordinateMode( Qgis::SymbolCoordinateReference::Feature );
       //allow choice of centroid reference positions
       checkRefPoint1Centroid->setEnabled( true );
       checkRefPoint2Centroid->setEnabled( true );
       break;
     case 1:
       //viewport coordinate mode
-      mLayer->setCoordinateMode( QgsGradientFillSymbolLayer::Viewport );
+      mLayer->setCoordinateMode( Qgis::SymbolCoordinateReference::Viewport );
       //disable choice of centroid reference positions
       checkRefPoint1Centroid->setChecked( Qt::Unchecked );
       checkRefPoint1Centroid->setEnabled( false );
@@ -1574,13 +1574,13 @@ void QgsGradientFillSymbolLayerWidget::setGradientSpread( int index )
   switch ( index )
   {
     case 0:
-      mLayer->setGradientSpread( QgsGradientFillSymbolLayer::Pad );
+      mLayer->setGradientSpread( Qgis::GradientSpread::Pad );
       break;
     case 1:
-      mLayer->setGradientSpread( QgsGradientFillSymbolLayer::Repeat );
+      mLayer->setGradientSpread( Qgis::GradientSpread::Repeat );
       break;
     case 2:
-      mLayer->setGradientSpread( QgsGradientFillSymbolLayer::Reflect );
+      mLayer->setGradientSpread( Qgis::GradientSpread::Reflect );
       break;
   }
 
@@ -1956,17 +1956,17 @@ void QgsMarkerLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   spinOffset->blockSignals( true );
   spinOffset->setValue( mLayer->offset() );
   spinOffset->blockSignals( false );
-  if ( mLayer->placement() == QgsTemplatedLineSymbolLayerBase::Interval )
+  if ( mLayer->placement() == Qgis::MarkerLinePlacement::Interval )
     radInterval->setChecked( true );
-  else if ( mLayer->placement() == QgsTemplatedLineSymbolLayerBase::Vertex )
+  else if ( mLayer->placement() == Qgis::MarkerLinePlacement::Vertex )
     radVertex->setChecked( true );
-  else if ( mLayer->placement() == QgsTemplatedLineSymbolLayerBase::LastVertex )
+  else if ( mLayer->placement() == Qgis::MarkerLinePlacement::LastVertex )
     radVertexLast->setChecked( true );
-  else if ( mLayer->placement() == QgsTemplatedLineSymbolLayerBase::CentralPoint )
+  else if ( mLayer->placement() == Qgis::MarkerLinePlacement::CentralPoint )
     radCentralPoint->setChecked( true );
-  else if ( mLayer->placement() == QgsTemplatedLineSymbolLayerBase::CurvePoint )
+  else if ( mLayer->placement() == Qgis::MarkerLinePlacement::CurvePoint )
     radCurvePoint->setChecked( true );
-  else if ( mLayer->placement() == QgsTemplatedLineSymbolLayerBase::SegmentCenter )
+  else if ( mLayer->placement() == Qgis::MarkerLinePlacement::SegmentCenter )
     radSegmentCentralPoint->setChecked( true );
   else
     radVertexFirst->setChecked( true );
@@ -2061,19 +2061,19 @@ void QgsMarkerLineSymbolLayerWidget::setPlacement()
   mAverageAngleUnit->setEnabled( mSpinAverageAngleLength->isEnabled() );
   //mLayer->setPlacement( interval ? QgsMarkerLineSymbolLayer::Interval : QgsMarkerLineSymbolLayer::Vertex );
   if ( radInterval->isChecked() )
-    mLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::Interval );
+    mLayer->setPlacement( Qgis::MarkerLinePlacement::Interval );
   else if ( radVertex->isChecked() )
-    mLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::Vertex );
+    mLayer->setPlacement( Qgis::MarkerLinePlacement::Vertex );
   else if ( radVertexLast->isChecked() )
-    mLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::LastVertex );
+    mLayer->setPlacement( Qgis::MarkerLinePlacement::LastVertex );
   else if ( radVertexFirst->isChecked() )
-    mLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::FirstVertex );
+    mLayer->setPlacement( Qgis::MarkerLinePlacement::FirstVertex );
   else if ( radCurvePoint->isChecked() )
-    mLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::CurvePoint );
+    mLayer->setPlacement( Qgis::MarkerLinePlacement::CurvePoint );
   else if ( radSegmentCentralPoint->isChecked() )
-    mLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::SegmentCenter );
+    mLayer->setPlacement( Qgis::MarkerLinePlacement::SegmentCenter );
   else
-    mLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::CentralPoint );
+    mLayer->setPlacement( Qgis::MarkerLinePlacement::CentralPoint );
 
   emit changed();
 }
@@ -2208,17 +2208,17 @@ void QgsHashedLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   spinOffset->blockSignals( true );
   spinOffset->setValue( mLayer->offset() );
   spinOffset->blockSignals( false );
-  if ( mLayer->placement() == QgsTemplatedLineSymbolLayerBase::Interval )
+  if ( mLayer->placement() == Qgis::MarkerLinePlacement::Interval )
     radInterval->setChecked( true );
-  else if ( mLayer->placement() == QgsTemplatedLineSymbolLayerBase::Vertex )
+  else if ( mLayer->placement() == Qgis::MarkerLinePlacement::Vertex )
     radVertex->setChecked( true );
-  else if ( mLayer->placement() == QgsTemplatedLineSymbolLayerBase::LastVertex )
+  else if ( mLayer->placement() == Qgis::MarkerLinePlacement::LastVertex )
     radVertexLast->setChecked( true );
-  else if ( mLayer->placement() == QgsTemplatedLineSymbolLayerBase::CentralPoint )
+  else if ( mLayer->placement() == Qgis::MarkerLinePlacement::CentralPoint )
     radCentralPoint->setChecked( true );
-  else if ( mLayer->placement() == QgsTemplatedLineSymbolLayerBase::CurvePoint )
+  else if ( mLayer->placement() == Qgis::MarkerLinePlacement::CurvePoint )
     radCurvePoint->setChecked( true );
-  else if ( mLayer->placement() == QgsTemplatedLineSymbolLayerBase::SegmentCenter )
+  else if ( mLayer->placement() == Qgis::MarkerLinePlacement::SegmentCenter )
     radSegmentCentralPoint->setChecked( true );
   else
     radVertexFirst->setChecked( true );
@@ -2328,19 +2328,19 @@ void QgsHashedLineSymbolLayerWidget::setPlacement()
   mAverageAngleUnit->setEnabled( mSpinAverageAngleLength->isEnabled() );
   //mLayer->setPlacement( interval ? QgsMarkerLineSymbolLayer::Interval : QgsMarkerLineSymbolLayer::Vertex );
   if ( radInterval->isChecked() )
-    mLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::Interval );
+    mLayer->setPlacement( Qgis::MarkerLinePlacement::Interval );
   else if ( radVertex->isChecked() )
-    mLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::Vertex );
+    mLayer->setPlacement( Qgis::MarkerLinePlacement::Vertex );
   else if ( radVertexLast->isChecked() )
-    mLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::LastVertex );
+    mLayer->setPlacement( Qgis::MarkerLinePlacement::LastVertex );
   else if ( radVertexFirst->isChecked() )
-    mLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::FirstVertex );
+    mLayer->setPlacement( Qgis::MarkerLinePlacement::FirstVertex );
   else if ( radCurvePoint->isChecked() )
-    mLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::CurvePoint );
+    mLayer->setPlacement( Qgis::MarkerLinePlacement::CurvePoint );
   else if ( radSegmentCentralPoint->isChecked() )
-    mLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::SegmentCenter );
+    mLayer->setPlacement( Qgis::MarkerLinePlacement::SegmentCenter );
   else
-    mLayer->setPlacement( QgsTemplatedLineSymbolLayerBase::CentralPoint );
+    mLayer->setPlacement( Qgis::MarkerLinePlacement::CentralPoint );
 
   emit changed();
 }
@@ -4348,8 +4348,8 @@ QgsRandomMarkerFillSymbolLayerWidget::QgsRandomMarkerFillSymbolLayerWidget( QgsV
 {
   setupUi( this );
 
-  mCountMethodComboBox->addItem( tr( "Absolute Count" ), QgsRandomMarkerFillSymbolLayer::AbsoluteCount );
-  mCountMethodComboBox->addItem( tr( "Density-based Count" ), QgsRandomMarkerFillSymbolLayer::DensityBasedCount );
+  mCountMethodComboBox->addItem( tr( "Absolute Count" ), static_cast< int >( Qgis::PointCountMethod::Absolute ) );
+  mCountMethodComboBox->addItem( tr( "Density-based Count" ), static_cast< int >( Qgis::PointCountMethod::DensityBased ) );
 
   mPointCountSpinBox->setShowClearButton( true );
   mPointCountSpinBox->setClearValue( 100 );
@@ -4390,10 +4390,10 @@ void QgsRandomMarkerFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer
   bool showDensityBasedCountWidgets = false;
   switch ( mLayer->countMethod() )
   {
-    case QgsRandomMarkerFillSymbolLayer::DensityBasedCount:
+    case Qgis::PointCountMethod::DensityBased:
       showDensityBasedCountWidgets = true;
       break;
-    case QgsRandomMarkerFillSymbolLayer::AbsoluteCount:
+    case Qgis::PointCountMethod::Absolute:
       break;
   }
   mDensityAreaLabel->setVisible( showDensityBasedCountWidgets );
@@ -4401,7 +4401,7 @@ void QgsRandomMarkerFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer
   mDensityAreaUnitWidget->setVisible( showDensityBasedCountWidgets );
   mDensityAreaDdbtn->setVisible( showDensityBasedCountWidgets );
 
-  whileBlocking( mCountMethodComboBox )->setCurrentIndex( mCountMethodComboBox->findData( mLayer->countMethod() ) );
+  whileBlocking( mCountMethodComboBox )->setCurrentIndex( mCountMethodComboBox->findData( static_cast< int >( mLayer->countMethod() ) ) );
   whileBlocking( mDensityAreaSpinBox )->setValue( mLayer->densityArea() );
   mDensityAreaUnitWidget->blockSignals( true );
   mDensityAreaUnitWidget->setUnit( mLayer->densityAreaUnit() );
@@ -4423,12 +4423,12 @@ void QgsRandomMarkerFillSymbolLayerWidget::countMethodChanged( int )
 {
 
   bool showDensityBasedCountWidgets = false;
-  switch ( static_cast< QgsRandomMarkerFillSymbolLayer::CountMethod >( mCountMethodComboBox->currentData().toInt() ) )
+  switch ( static_cast< Qgis::PointCountMethod >( mCountMethodComboBox->currentData().toInt() ) )
   {
-    case QgsRandomMarkerFillSymbolLayer::DensityBasedCount:
+    case Qgis::PointCountMethod::DensityBased:
       showDensityBasedCountWidgets = true;
       break;
-    case QgsRandomMarkerFillSymbolLayer::AbsoluteCount:
+    case Qgis::PointCountMethod::Absolute:
       break;
   }
   mDensityAreaLabel->setVisible( showDensityBasedCountWidgets );
@@ -4438,7 +4438,7 @@ void QgsRandomMarkerFillSymbolLayerWidget::countMethodChanged( int )
 
   if ( mLayer )
   {
-    mLayer->setCountMethod( static_cast< QgsRandomMarkerFillSymbolLayer::CountMethod >( mCountMethodComboBox->currentData().toInt() ) );
+    mLayer->setCountMethod( static_cast< Qgis::PointCountMethod >( mCountMethodComboBox->currentData().toInt() ) );
     emit changed();
   }
 }

@@ -212,38 +212,15 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
 {
   public:
 
-    enum GradientColorType
-    {
-      SimpleTwoColor,
-      ColorRamp
-    };
-
-    enum GradientType
-    {
-      Linear,
-      Radial,
-      Conical
-    };
-
-    enum GradientCoordinateMode
-    {
-      Feature,
-      Viewport
-    };
-
-    enum GradientSpread
-    {
-      Pad,
-      Reflect,
-      Repeat
-    };
-
+    /**
+     * Constructor for QgsGradientFillSymbolLayer.
+     */
     QgsGradientFillSymbolLayer( const QColor &color = DEFAULT_SIMPLEFILL_COLOR,
                                 const QColor &color2 = Qt::white,
-                                GradientColorType gradientColorType = SimpleTwoColor,
-                                GradientType gradientType = Linear,
-                                GradientCoordinateMode coordinateMode = Feature,
-                                GradientSpread gradientSpread = Pad
+                                Qgis::GradientColorSource gradientColorType = Qgis::GradientColorSource::SimpleTwoColor,
+                                Qgis::GradientType gradientType = Qgis::GradientType::Linear,
+                                Qgis::SymbolCoordinateReference coordinateMode = Qgis::SymbolCoordinateReference::Feature,
+                                Qgis::GradientSpread gradientSpread = Qgis::GradientSpread::Pad
                               );
 
     ~QgsGradientFillSymbolLayer() override;
@@ -268,13 +245,33 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
     bool canCauseArtifactsBetweenAdjacentTiles() const override;
 
-    //! Type of gradient, e.g., linear or radial
-    GradientType gradientType() const { return mGradientType; }
-    void setGradientType( GradientType gradientType ) { mGradientType = gradientType; }
+    /**
+     * Returns the type of gradient, e.g., linear or radial.
+     *
+     * \see setGradientType()
+     */
+    Qgis::GradientType gradientType() const { return mGradientType; }
 
-    //! Gradient color mode, controls how gradient color stops are created
-    GradientColorType gradientColorType() const { return mGradientColorType; }
-    void setGradientColorType( GradientColorType gradientColorType ) { mGradientColorType = gradientColorType; }
+    /**
+     * Sets the type of gradient, e.g., linear or radial.
+     *
+     * \see gradientType()
+     */
+    void setGradientType( Qgis::GradientType gradientType ) { mGradientType = gradientType; }
+
+    /**
+     * Returns the gradient color mode, which controls how gradient color stops are created.
+     *
+     * \see setGradientColorType()
+     */
+    Qgis::GradientColorSource gradientColorType() const { return mGradientColorType; }
+
+    /**
+     * Sets the gradient color mode, which controls how gradient color stops are created.
+     *
+     * \see gradientColorType()
+     */
+    void setGradientColorType( Qgis::GradientColorSource gradientColorType ) { mGradientColorType = gradientColorType; }
 
     /**
      * Returns the color ramp used for the gradient fill. This is only
@@ -293,32 +290,103 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
      */
     void setColorRamp( QgsColorRamp *ramp SIP_TRANSFER );
 
-    //! Color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor
+    /**
+     * Returns the color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor.
+     *
+     * \see setColor2()
+     */
     QColor color2() const { return mColor2; }
+
+    /**
+     * Sets the color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor.
+     *
+     * \see color2()
+     */
     void setColor2( const QColor &color2 ) { mColor2 = color2; }
 
-    //! Coordinate mode for gradient. Controls how the gradient stops are positioned.
-    GradientCoordinateMode coordinateMode() const { return mCoordinateMode; }
-    void setCoordinateMode( GradientCoordinateMode coordinateMode ) { mCoordinateMode = coordinateMode; }
+    /**
+     * Returns the coordinate mode for gradient, which controls how the gradient stops are positioned.
+     *
+     * \see setCoordinateMode()
+     */
+    Qgis::SymbolCoordinateReference coordinateMode() const { return mCoordinateMode; }
 
-    //! Gradient spread mode. Controls how the gradient behaves outside of the predefined stops
-    GradientSpread gradientSpread() const { return mGradientSpread; }
-    void setGradientSpread( GradientSpread gradientSpread ) { mGradientSpread = gradientSpread; }
+    /**
+     * Sets the coordinate mode for gradient, which controls how the gradient stops are positioned.
+     *
+     * \see coordinateMode()
+     */
+    void setCoordinateMode( Qgis::SymbolCoordinateReference coordinateMode ) { mCoordinateMode = coordinateMode; }
 
-    //! Starting point of gradient fill, in the range [0,0] - [1,1]
+    /**
+     * Returns the gradient spread mode, which controls how the gradient behaves outside of the predefined stops.
+     *
+     * \see setGradientSpread()
+     */
+    Qgis::GradientSpread gradientSpread() const { return mGradientSpread; }
+
+    /**
+     * Sets the gradient spread mode, which controls how the gradient behaves outside of the predefined stops.
+     *
+     * \see gradientSpread()
+     */
+    void setGradientSpread( Qgis::GradientSpread gradientSpread ) { mGradientSpread = gradientSpread; }
+
+    /**
+     * Sets the starting point of gradient fill, in the range [0,0] - [1,1].
+     *
+     * \see referencePoint1()
+     */
     void setReferencePoint1( QPointF referencePoint ) { mReferencePoint1 = referencePoint; }
+
+    /**
+     * Returns the starting point of gradient fill, in the range [0,0] - [1,1].
+     *
+     * \see setReferencePoint1()
+     */
     QPointF referencePoint1() const { return mReferencePoint1; }
 
-    //! Sets the starting point of the gradient to be the feature centroid
+    /**
+     * Sets whether the starting point for the gradient is taken from the feature centroid.
+     *
+     * \see referencePoint1IsCentroid()
+     */
     void setReferencePoint1IsCentroid( bool isCentroid ) { mReferencePoint1IsCentroid = isCentroid; }
+
+    /**
+     * Returns whether the starting point for the gradient is taken from the feature centroid.
+     *
+     * \see setReferencePoint1IsCentroid()
+     */
     bool referencePoint1IsCentroid() const { return mReferencePoint1IsCentroid; }
 
-    //! End point of gradient fill, in the range [0,0] - [1,1]
+    /**
+     * Sets the end point of gradient fill, in the range [0,0] - [1,1].
+     *
+     * \see referencePoint2()
+     */
     void setReferencePoint2( QPointF referencePoint ) { mReferencePoint2 = referencePoint; }
+
+    /**
+     * Returns the end point of gradient fill, in the range [0,0] - [1,1].
+     *
+     * \see setReferencePoint2()
+     */
     QPointF referencePoint2() const { return mReferencePoint2; }
 
-    //! Sets the end point of the gradient to be the feature centroid
+    /**
+     * Sets whether the end point for the gradient is taken from the feature centroid.
+     *
+     * \see referencePoint2IsCentroid()
+     */
     void setReferencePoint2IsCentroid( bool isCentroid ) { mReferencePoint2IsCentroid = isCentroid; }
+
+
+    /**
+     * Returns whether the end point for the gradient is taken from the feature centroid.
+     *
+     * \see setReferencePoint2IsCentroid()
+     */
     bool referencePoint2IsCentroid() const { return mReferencePoint2IsCentroid; }
 
     /**
@@ -380,12 +448,12 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
     QBrush mBrush;
     QBrush mSelBrush;
 
-    GradientColorType mGradientColorType;
+    Qgis::GradientColorSource mGradientColorType;
     QColor mColor2;
     QgsColorRamp *mGradientRamp = nullptr;
-    GradientType mGradientType;
-    GradientCoordinateMode mCoordinateMode;
-    GradientSpread mGradientSpread;
+    Qgis::GradientType mGradientType;
+    Qgis::SymbolCoordinateReference mCoordinateMode;
+    Qgis::GradientSpread mGradientSpread;
 
     QPointF mReferencePoint1;
     bool mReferencePoint1IsCentroid = false;
@@ -403,8 +471,8 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
 
     //! Applies the gradient to a brush
     void applyGradient( const QgsSymbolRenderContext &context, QBrush &brush, const QColor &color, const QColor &color2,
-                        GradientColorType gradientColorType, QgsColorRamp *gradientRamp, GradientType gradientType,
-                        GradientCoordinateMode coordinateMode, GradientSpread gradientSpread,
+                        Qgis::GradientColorSource gradientColorType, QgsColorRamp *gradientRamp, Qgis::GradientType gradientType,
+                        Qgis::SymbolCoordinateReference coordinateMode, Qgis::GradientSpread gradientSpread,
                         QPointF referencePoint1, QPointF referencePoint2, double angle );
 
     //! Rotates a reference point by a specified angle around the point (0.5, 0.5)
@@ -1834,20 +1902,13 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
 {
   public:
 
-    //! Methods to define the number of points randomly filling the polygon
-    enum CountMethod
-    {
-      AbsoluteCount, //!< The point count is used as an absolute count of markers
-      DensityBasedCount, //!< The point count is part of a marker density count
-    };
-
     /**
      * Constructor for QgsRandomMarkerFillSymbolLayer, with the specified \a pointCount.
      *
      * Optionally a specific random number \a seed can be used when generating points. A \a seed of 0 indicates that
      * a truly random sequence will be used on every rendering, causing points to appear in different locations with every map refresh.
      */
-    QgsRandomMarkerFillSymbolLayer( int pointCount = 10, CountMethod method = AbsoluteCount, double densityArea = 250.0, unsigned long seed = 0 );
+    QgsRandomMarkerFillSymbolLayer( int pointCount = 10, Qgis::PointCountMethod method = Qgis::PointCountMethod::Absolute, double densityArea = 250.0, unsigned long seed = 0 );
 
     ~QgsRandomMarkerFillSymbolLayer() override;
 
@@ -1931,14 +1992,14 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
      *
      * \see setCountMethod()
      */
-    CountMethod countMethod() const;
+    Qgis::PointCountMethod countMethod() const;
 
     /**
      * Sets the count \a method used to randomly fill the polygon.
      *
      * \see countMethod()
      */
-    void setCountMethod( CountMethod method );
+    void setCountMethod( Qgis::PointCountMethod method );
 
     /**
      * Returns the density area used to count the number of points to randomly fill the polygon.
@@ -2007,7 +2068,7 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
     void render( QgsRenderContext &context, const QVector< Part > &parts, const QgsFeature &feature, bool selected );
 
     std::unique_ptr< QgsMarkerSymbol > mMarker;
-    CountMethod mCountMethod = AbsoluteCount;
+    Qgis::PointCountMethod mCountMethod = Qgis::PointCountMethod::Absolute;
     int mPointCount = 10;
     double mDensityArea = 250.0;
     QgsUnitTypes::RenderUnit mDensityAreaUnit = QgsUnitTypes::RenderMillimeters;
