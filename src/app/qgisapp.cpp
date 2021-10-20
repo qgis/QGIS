@@ -6887,7 +6887,13 @@ void QgisApp::showRasterCalculator()
 
 void QgisApp::showMeshCalculator()
 {
-  QgsMeshCalculatorDialog d( qobject_cast<QgsMeshLayer *>( activeLayer() ), this );
+  QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( activeLayer() );
+  if ( meshLayer && meshLayer->isEditable() )
+  {
+    QMessageBox::information( this, tr( "Mesh Calculator" ), tr( "Mesh calculator with mesh layer in edit mode is not supported." ) );
+    return;
+  }
+  QgsMeshCalculatorDialog d( meshLayer, this );
   if ( d.exec() == QDialog::Accepted )
   {
     //invoke analysis library
