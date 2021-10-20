@@ -1107,15 +1107,15 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
   layerProperty.orderId     = ++mLayerCount;
 
   QString queryableAttribute = element.attribute( QStringLiteral( "queryable" ) );
-  layerProperty.queryable = ( queryableAttribute == QLatin1String( "1" ) || queryableAttribute == QLatin1String( "true" ) );
+  layerProperty.queryable = queryableAttribute == QLatin1String( "1" ) || queryableAttribute.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
 
   layerProperty.cascaded    = element.attribute( QStringLiteral( "cascaded" ) ).toUInt();
 
   QString opaqueAttribute = element.attribute( QStringLiteral( "opaque" ) );
-  layerProperty.opaque = ( opaqueAttribute == QLatin1String( "1" ) || opaqueAttribute == QLatin1String( "true" ) );
+  layerProperty.opaque = opaqueAttribute == QLatin1String( "1" ) || opaqueAttribute.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
 
   QString noSubsetsAttribute = element.attribute( QStringLiteral( "noSubsets" ) );
-  layerProperty.noSubsets = ( noSubsetsAttribute == QLatin1String( "1" ) || noSubsetsAttribute == QLatin1String( "true" ) );
+  layerProperty.noSubsets = noSubsetsAttribute == QLatin1String( "1" ) || noSubsetsAttribute.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
 
   layerProperty.fixedWidth  = element.attribute( QStringLiteral( "fixedWidth" ) ).toUInt();
   layerProperty.fixedHeight = element.attribute( QStringLiteral( "fixedHeight" ) ).toUInt();
