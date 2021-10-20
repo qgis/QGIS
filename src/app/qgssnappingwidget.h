@@ -158,7 +158,7 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     QToolButton *mTypeButton = nullptr;
     QAction *mTypeAction = nullptr; // hide widget does not work on toolbar, action needed
     QList< QAction * > mSnappingFlagActions;
-    QDoubleSpinBox *mToleranceSpinBox = nullptr;
+    QgsDoubleSpinBox *mToleranceSpinBox = nullptr;
     QgsScaleWidget *mMinScaleWidget = nullptr;
     QgsScaleWidget *mMaxScaleWidget = nullptr;
     QAction *mToleranceAction = nullptr; // hide widget does not work on toolbar, action needed
