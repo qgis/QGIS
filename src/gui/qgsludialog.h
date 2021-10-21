@@ -48,6 +48,10 @@ class GUI_EXPORT QgsLUDialog: public QDialog, private Ui::QgsLUDialogBase
      */
     double upperValueDouble() const;
     void setUpperValue( const QString &val );
+
+  private:
+
+    void setDecimalPlaces( QgsDoubleSpinBox *widget, double value ) const;
 };
 
 #endif
