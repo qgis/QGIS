@@ -230,7 +230,7 @@ void QgsQuickMapSettings::onReadProject( const QDomDocument &doc )
     QDomNode node = nodes.item( 0 );
     QDomElement element = node.toElement();
 
-    if ( element.hasAttribute( QStringLiteral( "name" ) ) && element.attribute( QStringLiteral( "name" ) ) == QStringLiteral( "theMapCanvas" ) )
+    if ( element.hasAttribute( QStringLiteral( "name" ) ) && element.attribute( QStringLiteral( "name" ) ) == QLatin1String( "theMapCanvas" ) )
     {
       foundTheMapCanvas = true;
       mMapSettings.readXml( node );

@@ -2352,7 +2352,7 @@ QString QgsMapLayer::generalHtmlMetadata() const
   if ( dataProvider() )
     metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Provider" ) + QStringLiteral( "</td><td>%1" ).arg( dataProvider()->name() ) + QStringLiteral( "</td></tr>\n" );
 
-  metadata += QStringLiteral( "</table>\n<br><br>" );
+  metadata += QLatin1String( "</table>\n<br><br>" );
   return metadata;
 }
 

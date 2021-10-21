@@ -66,7 +66,7 @@ class QgsTestExternalStorageStoredContent : public QgsExternalStorageStoredConte
 
     QgsTestExternalStorageStoredContent( const QString &filePath, const QString &url )
       : QgsExternalStorageStoredContent(),
-        mUrl( filePath.endsWith( QStringLiteral( "mydir" ) ) ? url + "mydir/" : url )
+        mUrl( filePath.endsWith( QLatin1String( "mydir" ) ) ? url + "mydir/" : url )
     {}
 
     void store() override

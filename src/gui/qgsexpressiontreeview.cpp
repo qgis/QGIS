@@ -743,7 +743,7 @@ void QgsExpressionTreeView::loadExpressionsFromJson( const QJsonDocument &expres
     QMessageBox::information( this,
                               tr( "Skipped Expression Imports" ),
                               QStringLiteral( "%1\n%2" ).arg( tr( "The following expressions have been skipped:" ),
-                                  skippedExpressionLabelsQuoted.join( QStringLiteral( ", " ) ) ) );
+                                  skippedExpressionLabelsQuoted.join( QLatin1String( ", " ) ) ) );
   }
 }
 

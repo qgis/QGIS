@@ -234,7 +234,7 @@ QString QgsBabelFormatRegistry::importFileFilter() const
   for ( auto it = descriptionToString.constBegin(); it != descriptionToString.constEnd(); ++it )
     res << it.value();
 
-  return res.join( QStringLiteral( ";;" ) );
+  return res.join( QLatin1String( ";;" ) );
 }
 
 QStringList QgsBabelFormatRegistry::deviceNames() const
