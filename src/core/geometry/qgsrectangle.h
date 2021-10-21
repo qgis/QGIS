@@ -43,7 +43,12 @@ class CORE_EXPORT QgsRectangle
   public:
 
     //! Constructor for a null rectangle
-    QgsRectangle() = default; // optimised constructor for null rectangle - no need to call normalize here
+    QgsRectangle()
+      : mXmin( std::numeric_limits<double>::max() )
+      , mYmin( std::numeric_limits<double>::max() )
+      , mXmax( -std::numeric_limits<double>::max() )
+      , mYmax( -std::numeric_limits<double>::max() )
+    {}
 
     /**
      * Constructs a QgsRectangle from a set of x and y minimum and maximum coordinates.
@@ -479,8 +484,7 @@ class CORE_EXPORT QgsRectangle
     bool isNull() const
     {
       // rectangle created QgsRectangle() or with rect.setMinimal() ?
-      return ( qgsDoubleNear( mXmin, 0.0 ) && qgsDoubleNear( mXmax, 0.0 ) && qgsDoubleNear( mYmin, 0.0 ) && qgsDoubleNear( mYmax, 0.0 ) ) ||
-             ( qgsDoubleNear( mXmin, std::numeric_limits<double>::max() ) && qgsDoubleNear( mYmin, std::numeric_limits<double>::max() ) &&
+      return ( qgsDoubleNear( mXmin, std::numeric_limits<double>::max() ) && qgsDoubleNear( mYmin, std::numeric_limits<double>::max() ) &&
                qgsDoubleNear( mXmax, -std::numeric_limits<double>::max() ) && qgsDoubleNear( mYmax, -std::numeric_limits<double>::max() ) );
     }
 
