@@ -2326,7 +2326,7 @@ Acts on all layers.</string>
     <string>Grid</string>
    </property>
    <property name="whatsThis">
-    <string>Creates a scale bar that is displayed on the map canvas</string>
+    <string>Creates a grid that is displayed on the map canvas</string>
    </property>
   </action>
   <action name="mActionPinLabels">
