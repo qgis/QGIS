@@ -17,6 +17,7 @@
 
 #include "qgssimplifymethod.h"
 #include "qgsexception.h"
+#include "qgslinestring.h"
 #include "qgsexpressionsorter_p.h"
 #include "qgsfeedback.h"
 #include "qgscoordinatetransform.h"
@@ -116,6 +117,37 @@ void QgsAbstractFeatureIterator::geometryToDestinationCrs( QgsFeature &feature, 
       }
       // remove geometry - we can't reproject so better not return a geometry in a different crs
       feature.clearGeometry();
+    }
+  }
+}
+
+void QgsAbstractFeatureIterator::updateRequestToSourceCrs( QgsFeatureRequest &request, const QgsCoordinateTransform &transform ) const
+{
+  switch ( request.spatialFilterType() )
+  {
+    case Qgis::SpatialFilterType::NoFilter:
+      break;
+    case Qgis::SpatialFilterType::BoundingBox:
+    {
+      QgsRectangle newRect = transform.transformBoundingBox( request.filterRect(), Qgis::TransformDirection::Reverse );
+      request.setFilterRect( newRect );
+      break;
+    }
+    case Qgis::SpatialFilterType::DistanceWithin:
+    {
+      QgsGeometry geom = request.referenceGeometry();
+      QgsRectangle bbox = geom.boundingBox();
+      double x0 = bbox.xMaximum();
+      double y0 = bbox.yMaximum();
+      double dist = request.distanceWithin();
+      QgsPoint p0( x0, y0 );
+      QgsPoint p1( x0 + dist, y0 );
+      QgsLineString newDistLine( p0, p1 );
+      newDistLine.transform( transform, Qgis::TransformDirection::Reverse );
+      dist = newDistLine.length();
+      geom.transform( transform, Qgis::TransformDirection::Reverse );
+      request.setDistanceWithin( geom, dist );
+      break;
     }
   }
 }
