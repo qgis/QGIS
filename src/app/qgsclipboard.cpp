@@ -214,9 +214,9 @@ QgsFeatureList QgsClipboard::stringToFeatureList( const QString &string, const Q
   QgsAttributes attrs;
   QgsGeometry geom;
   QString attrVal;
-  bool isFirstLine {string.startsWith( QStringLiteral( "wkt_geom" ) )};
+  bool isFirstLine {string.startsWith( QLatin1String( "wkt_geom" ) )};
   // it seems there is no other way to check for header
-  const bool hasHeader{string.startsWith( QStringLiteral( "wkt_geom" ) )};
+  const bool hasHeader{string.startsWith( QLatin1String( "wkt_geom" ) )};
   QgsGeometry geometry;
   bool setFields {fields.isEmpty()};
   QgsFields fieldsFromClipboard;
@@ -232,7 +232,7 @@ QgsFeatureList QgsClipboard::stringToFeatureList( const QString &string, const Q
 
     if ( isFirstLine ) // ... name
     {
-      if ( attrVal != QStringLiteral( "wkt_geom" ) ) // ignore this one
+      if ( attrVal != QLatin1String( "wkt_geom" ) ) // ignore this one
       {
         fieldsFromClipboard.append( QgsField{attrVal, QVariant::String } );
       }

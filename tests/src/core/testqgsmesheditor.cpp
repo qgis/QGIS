@@ -123,7 +123,7 @@ void TestQgsMeshEditor::startStopEditing()
   datasetGroupIndex = meshLayerQuadTriangle->datasetGroupsIndexes().at( 0 );
   meta = meshLayerQuadTriangle->datasetGroupMetadata( datasetGroupIndex );
   QVERIFY( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices );
-  QVERIFY( meta.name() == QStringLiteral( "vertices Z value" ) );
+  QVERIFY( meta.name() == QLatin1String( "vertices Z value" ) );
   QCOMPARE( meta.isTemporal(), false );
   QCOMPARE( meta.isScalar(), true );
   QCOMPARE( meta.minimum(), 10.0 );
@@ -153,7 +153,7 @@ void TestQgsMeshEditor::startStopEditing()
   datasetGroupIndex = meshLayerQuadTriangle->datasetGroupsIndexes().at( 0 );
   meta = meshLayerQuadTriangle->datasetGroupMetadata( datasetGroupIndex );
   QVERIFY( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices );
-  QVERIFY( meta.name() == QStringLiteral( "vertices Z value" ) );
+  QVERIFY( meta.name() == QLatin1String( "vertices Z value" ) );
   QCOMPARE( meta.isTemporal(), false );
   QCOMPARE( meta.isScalar(), true );
   QCOMPARE( meta.minimum(), 10.0 );
@@ -175,7 +175,7 @@ void TestQgsMeshEditor::startStopEditing()
   datasetGroupIndex = meshLayerQuadTriangle->datasetGroupsIndexes().at( 0 );
   meta = meshLayerQuadTriangle->datasetGroupMetadata( datasetGroupIndex );
   QVERIFY( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices );
-  QVERIFY( meta.name() == QStringLiteral( "Bed Elevation" ) );
+  QVERIFY( meta.name() == QLatin1String( "Bed Elevation" ) );
   QCOMPARE( meta.isTemporal(), false );
   QCOMPARE( meta.isScalar(), true );
   QCOMPARE( meta.minimum(), 10.0 );

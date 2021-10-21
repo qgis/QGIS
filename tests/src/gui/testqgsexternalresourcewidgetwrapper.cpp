@@ -84,7 +84,7 @@ class QgsTestExternalStorageFetchedContent
 
     QgsTestExternalStorageFetchedContent( QString url )
       : QgsExternalStorageFetchedContent()
-      , mCached( url.endsWith( QStringLiteral( "cached.txt" ) ) )
+      , mCached( url.endsWith( QLatin1String( "cached.txt" ) ) )
       , mUrl( mCached ? SAMPLE_IMAGE : url )
     {
     }

@@ -211,5 +211,5 @@ QString QgsAction::html() const
    <b>Action:</b><br>
    <pre>%6</pre>
 </p>
-  )html" ).arg( mDescription, mShortTitle, typeText, actionScopes().values().join( QStringLiteral( ", " ) ), mCommand )};
+  )html" ).arg( mDescription, mShortTitle, typeText, actionScopes().values().join( QLatin1String( ", " ) ), mCommand )};
 };

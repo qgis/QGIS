@@ -43,7 +43,7 @@ QgsProviderSublayerItem::QgsProviderSublayerItem( QgsDataItem *parent, const QSt
   mToolTip = details.uri();
 
   // no children, except for sqlite, which gets special handling because of the unusual situation with the spatialite provider
-  setState( details.driverName() == QStringLiteral( "SQLite" ) ? Qgis::BrowserItemState::NotPopulated : Qgis::BrowserItemState::Populated );
+  setState( details.driverName() == QLatin1String( "SQLite" ) ? Qgis::BrowserItemState::NotPopulated : Qgis::BrowserItemState::Populated );
 }
 
 QVector<QgsDataItem *> QgsProviderSublayerItem::createChildren()

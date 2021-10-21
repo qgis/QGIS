@@ -57,7 +57,7 @@ QgsNewMeshLayerDialog::QgsNewMeshLayerDialog( QWidget *parent, Qt::WindowFlags f
   const QStringList filters = mDriverFileFilters.values();
   mFormatComboBox->setCurrentIndex( -1 );
   mFileWidget->setStorageMode( QgsFileWidget::SaveFile );
-  mFileWidget->setFilter( filters.join( QStringLiteral( ";;" ) ) );
+  mFileWidget->setFilter( filters.join( QLatin1String( ";;" ) ) );
   mMeshProjectComboBox->setFilters( QgsMapLayerProxyModel::MeshLayer );
 
   connect( mFormatComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
