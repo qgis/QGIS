@@ -56,7 +56,7 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
 
   // first/last vertex marker to distinguish vertices from nodes
   QgsMarkerLineSymbolLayer *firstVertexMarkerLine = new QgsMarkerLineSymbolLayer( false );
-  QgsSimpleMarkerSymbolLayer *markerSymbolLayer = new QgsSimpleMarkerSymbolLayer( QgsSimpleMarkerSymbolLayerBase::Cross2, 2 );
+  QgsSimpleMarkerSymbolLayer *markerSymbolLayer = new QgsSimpleMarkerSymbolLayer( Qgis::MarkerShape::Cross2, 2 );
   markerSymbolLayer->setColor( QColor( 255, 0, 0 ) );
   markerSymbolLayer->setStrokeColor( QColor( 255, 0, 0 ) );
   markerSymbolLayer->setStrokeWidth( 0.5 );
