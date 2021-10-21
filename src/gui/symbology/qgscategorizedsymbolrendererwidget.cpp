@@ -51,7 +51,6 @@
 #include <QPainter>
 #include <QFileDialog>
 #include <QClipboard>
-#include <QStyledItemDelegate>
 
 ///@cond PRIVATE
 
@@ -251,7 +250,7 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
       }
       break;
     }
-    case Qt::UserRole:
+    case QgsCategorizedSymbolRendererWidget::CustomRoles::ValueRole:
     {
       if ( index.column() == 1 )
         return category.value();
@@ -502,7 +501,7 @@ QgsCategorizedRendererViewItemDelegate::QgsCategorizedRendererViewItemDelegate( 
 
 QWidget *QgsCategorizedRendererViewItemDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  const QVariant::Type userType { index.data( Qt::UserRole ).type() };
+  const QVariant::Type userType { index.data( QgsCategorizedSymbolRendererWidget::CustomRoles::ValueRole ).type() };
   QgsDoubleSpinBox *editor = nullptr;
   switch ( userType )
   {

@@ -466,7 +466,7 @@ output.
 
    Precision is ignored for integers.
 
-.. versionadded:: 3.21
+.. versionadded:: 3.22.1
 %End
 
 

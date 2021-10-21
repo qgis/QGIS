@@ -98,19 +98,6 @@ class QgsCategorizedRendererViewItemDelegate: public QStyledItemDelegate
 };
 
 
-/*
-class QgsCategorizedRendererItemEditorFactory: public QItemEditorFactory
-{
-    Q_OBJECT
-
-  public:
-
-    QgsCategorizedRendererItemEditorFactory();
-
-    // QItemEditorFactory interface
-    QWidget* createEditor(int userType, QWidget* parent) const override;
-};
-*/
 ///@endcond
 
 #endif
@@ -123,6 +110,16 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
 {
     Q_OBJECT
   public:
+
+    /**
+     * CustomRoles enum represent custom roles for the widget.
+     * \since QGIS 3.22.1
+     */
+    enum CustomRoles
+    {
+      ValueRole = Qt::UserRole + 1 //!< Category value
+    };
+
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
     QgsCategorizedSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );

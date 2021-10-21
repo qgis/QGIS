@@ -735,6 +735,11 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         """Test the displayString method"""
 
         # Default locale for tests is EN
+        original_locale = QLocale()
+        locale = QLocale(QLocale.English)
+        locale.setNumberOptions(QLocale.DefaultNumberOptions)
+        QLocale().setDefault(locale)
+
         self.assertEqual(QgsCategorizedSymbolRenderer.displayString(1234.56), "1,234.56")
         self.assertEqual(QgsCategorizedSymbolRenderer.displayString(1234.56, 4), "1,234.5600")
         self.assertEqual(QgsCategorizedSymbolRenderer.displayString(1234567), "1,234,567")
@@ -742,10 +747,20 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         # Precision is ignored for integers
         self.assertEqual(QgsCategorizedSymbolRenderer.displayString(1234567, 4), "1,234,567")
 
-        original_locale = QLocale()
+        # Test list
+        self.assertEqual(QgsCategorizedSymbolRenderer.displayString([1234567, 891234], 4), "1,234,567;891,234")
+        self.assertEqual(QgsCategorizedSymbolRenderer.displayString([1234567.123, 891234.123], 4), "1,234,567.1230;891,234.1230")
+
+        locale.setNumberOptions(QLocale.OmitGroupSeparator)
+        QLocale().setDefault(locale)
+        self.assertTrue(QLocale().numberOptions() & QLocale.OmitGroupSeparator)
+        self.assertEqual(QgsCategorizedSymbolRenderer.displayString([1234567, 891234], 4), "1234567;891234")
+        self.assertEqual(QgsCategorizedSymbolRenderer.displayString([1234567.123, 891234.123], 4), "1234567.1230;891234.1230")
 
         # Test a non-dot locale
-        QLocale().setDefault(QLocale(QLocale.Italian))
+        locale = QLocale(QLocale.Italian)
+        locale.setNumberOptions(QLocale.DefaultNumberOptions)
+        QLocale().setDefault(locale)
         self.assertEqual(QgsCategorizedSymbolRenderer.displayString(1234.56), "1.234,56")
         self.assertEqual(QgsCategorizedSymbolRenderer.displayString(1234.56, 4), "1.234,5600")
         self.assertEqual(QgsCategorizedSymbolRenderer.displayString(1234567), "1.234.567")
@@ -753,9 +768,24 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         # Precision is ignored for integers
         self.assertEqual(QgsCategorizedSymbolRenderer.displayString(1234567, 4), "1.234.567")
 
+        # Test list
+        self.assertEqual(QgsCategorizedSymbolRenderer.displayString([1234567, 891234], 4), "1.234.567;891.234")
+        self.assertEqual(QgsCategorizedSymbolRenderer.displayString([1234567.123, 891234.123], 4), "1.234.567,1230;891.234,1230")
+
+        locale.setNumberOptions(QLocale.OmitGroupSeparator)
+        QLocale().setDefault(locale)
+        self.assertEqual(QgsCategorizedSymbolRenderer.displayString([1234567, 891234], 4), "1234567;891234")
+        self.assertEqual(QgsCategorizedSymbolRenderer.displayString([1234567.123, 891234.123], 4), "1234567,1230;891234,1230")
+
         QLocale().setDefault(original_locale)
 
-    def test_loclizedCategories(self):
+    def test_localizedCategories(self):
+
+        # Default locale for tests is EN
+        original_locale = QLocale()
+        locale = QLocale(QLocale.English)
+        locale.setNumberOptions(QLocale.DefaultNumberOptions)
+        QLocale().setDefault(locale)
 
         layer = QgsVectorLayer("Point?field=flddbl:double&field=fldint:integer", "addfeat", "memory")
         result = QgsCategorizedSymbolRenderer.createCategories([1234.5, 2345.6, 3456.7], QgsMarkerSymbol(), layer, 'flddouble')
@@ -764,13 +794,12 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         self.assertEqual(result[1].label(), '2,345.6')
         self.assertEqual(result[2].label(), '3,456.7')
 
-        original_locale = QLocale()
         # Test a non-dot locale
         QLocale().setDefault(QLocale(QLocale.Italian))
 
-        result = QgsCategorizedSymbolRenderer.createCategories([1234.5, 2345.6, 3456.7], QgsMarkerSymbol(), layer, 'flddouble')
+        result = QgsCategorizedSymbolRenderer.createCategories([[1234.5, 6789.1], 2345.6, 3456.7], QgsMarkerSymbol(), layer, 'flddouble')
 
-        self.assertEqual(result[0].label(), '1.234,5')
+        self.assertEqual(result[0].label(), '1.234,5;6.789,1')
         self.assertEqual(result[1].label(), '2.345,6')
         self.assertEqual(result[2].label(), '3.456,7')
 
@@ -789,10 +818,10 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         project.read(temp_file)
         results = project.mapLayersByName('addfeat')[0].renderer().categories()
 
-        self.assertEqual(result[0].label(), '1.234,5')
+        self.assertEqual(result[0].label(), '1.234,5;6.789,1')
         self.assertEqual(result[1].label(), '2.345,6')
         self.assertEqual(result[2].label(), '3.456,7')
-        self.assertEqual(result[0].value(), 1234.5)
+        self.assertEqual(result[0].value(), [1234.5, 6789.1])
         self.assertEqual(result[1].value(), 2345.6)
         self.assertEqual(result[2].value(), 3456.7)
 
