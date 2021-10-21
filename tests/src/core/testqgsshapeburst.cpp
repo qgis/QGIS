@@ -162,9 +162,9 @@ void TestQgsShapeburst::shapeburstSymbolRamp()
   gradientRamp->setStops( stops );
 
   mShapeburstFill->setColorRamp( gradientRamp );
-  mShapeburstFill->setColorType( QgsShapeburstFillSymbolLayer::ColorRamp );
+  mShapeburstFill->setColorType( Qgis::GradientColorSource::ColorRamp );
   QVERIFY( imageCheck( "shapeburst_ramp" ) );
-  mShapeburstFill->setColorType( QgsShapeburstFillSymbolLayer::SimpleTwoColor );
+  mShapeburstFill->setColorType( Qgis::GradientColorSource::SimpleTwoColor );
 }
 
 void TestQgsShapeburst::shapeburstBlur()

@@ -1691,7 +1691,7 @@ void QgsShapeburstFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   btnChangeColor2->setColor( mLayer->color2() );
   btnChangeColor2->blockSignals( false );
 
-  if ( mLayer->colorType() == QgsShapeburstFillSymbolLayer::SimpleTwoColor )
+  if ( mLayer->colorType() == Qgis::GradientColorSource::SimpleTwoColor )
   {
     radioTwoColor->setChecked( true );
     btnColorRamp->setEnabled( false );
@@ -1800,11 +1800,11 @@ void QgsShapeburstFillSymbolLayerWidget::colorModeChanged()
 
   if ( radioTwoColor->isChecked() )
   {
-    mLayer->setColorType( QgsShapeburstFillSymbolLayer::SimpleTwoColor );
+    mLayer->setColorType( Qgis::GradientColorSource::SimpleTwoColor );
   }
   else
   {
-    mLayer->setColorType( QgsShapeburstFillSymbolLayer::ColorRamp );
+    mLayer->setColorType( Qgis::GradientColorSource::ColorRamp );
   }
   emit changed();
 }
@@ -4117,10 +4117,10 @@ void QgsRasterFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   cboCoordinateMode->blockSignals( true );
   switch ( mLayer->coordinateMode() )
   {
-    case QgsRasterFillSymbolLayer::Viewport:
+    case Qgis::SymbolCoordinateReference::Viewport:
       cboCoordinateMode->setCurrentIndex( 1 );
       break;
-    case QgsRasterFillSymbolLayer::Feature:
+    case Qgis::SymbolCoordinateReference::Feature:
     default:
       cboCoordinateMode->setCurrentIndex( 0 );
       break;
@@ -4169,11 +4169,11 @@ void QgsRasterFillSymbolLayerWidget::setCoordinateMode( int index )
   {
     case 0:
       //feature coordinate mode
-      mLayer->setCoordinateMode( QgsRasterFillSymbolLayer::Feature );
+      mLayer->setCoordinateMode( Qgis::SymbolCoordinateReference::Feature );
       break;
     case 1:
       //viewport coordinate mode
-      mLayer->setCoordinateMode( QgsRasterFillSymbolLayer::Viewport );
+      mLayer->setCoordinateMode( Qgis::SymbolCoordinateReference::Viewport );
       break;
   }
 

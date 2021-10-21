@@ -356,7 +356,7 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
       rasterFill->setImageFilePath( sprite );
       rasterFill->setWidth( spriteSize.width() );
       rasterFill->setWidthUnit( context.targetUnit() );
-      rasterFill->setCoordinateMode( QgsRasterFillSymbolLayer::Viewport );
+      rasterFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Viewport );
 
       if ( rasterOpacity >= 0 )
       {

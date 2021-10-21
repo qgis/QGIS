@@ -487,14 +487,11 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 {
   public:
 
-    enum ShapeburstColorType
-    {
-      SimpleTwoColor,
-      ColorRamp
-    };
-
+    /**
+     * Constructor for QgsShapeburstFillSymbolLayer.
+     */
     QgsShapeburstFillSymbolLayer( const QColor &color = DEFAULT_SIMPLEFILL_COLOR, const QColor &color2 = Qt::white,
-                                  ShapeburstColorType colorType = SimpleTwoColor,
+                                  Qgis::GradientColorSource colorType = Qgis::GradientColorSource::SimpleTwoColor,
                                   int blurRadius = 0, bool useWholeShape = true, double maxDistance = 5 );
 
     ~QgsShapeburstFillSymbolLayer() override;
@@ -617,7 +614,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * \see setColorRamp
      * \since QGIS 2.3
      */
-    void setColorType( ShapeburstColorType colorType ) { mColorType = colorType; }
+    void setColorType( Qgis::GradientColorSource colorType ) { mColorType = colorType; }
 
     /**
      * Returns the color mode used for the shapeburst fill. Shapeburst can either be drawn using a QgsColorRamp color ramp
@@ -629,7 +626,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * \see colorRamp
      * \since QGIS 2.3
      */
-    ShapeburstColorType colorType() const { return mColorType; }
+    Qgis::GradientColorSource colorType() const { return mColorType; }
 
     /**
      * Sets the color \a ramp used to draw the shapeburst fill. Color ramps are only used if setColorType is set ShapeburstColorType::ColorRamp.
@@ -743,7 +740,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     QgsUnitTypes::RenderUnit mDistanceUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mDistanceMapUnitScale;
 
-    ShapeburstColorType mColorType = SimpleTwoColor;
+    Qgis::GradientColorSource mColorType = Qgis::GradientColorSource::SimpleTwoColor;
     QColor mColor2;
 
     bool mIgnoreRings = false;
@@ -869,13 +866,6 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
 {
   public:
 
-    //! Fill coordinate modes, dictates fill tiling behavior
-    enum FillCoordinateMode
-    {
-      Feature, //!< Tiling is based on feature bounding box
-      Viewport, //!< Tiling is based on complete map viewport
-    };
-
     /**
      * Constructor for QgsRasterFillSymbolLayer, using a raster fill from the
      * specified \a imageFilePath.
@@ -931,7 +921,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * \param mode coordinate mode
      * \see coordinateMode
      */
-    void setCoordinateMode( FillCoordinateMode mode );
+    void setCoordinateMode( Qgis::SymbolCoordinateReference mode );
 
     /**
      * Coordinate mode for fill. Controls how the top left corner of the image
@@ -939,7 +929,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * \returns coordinate mode
      * \see setCoordinateMode
      */
-    FillCoordinateMode coordinateMode() const { return mCoordinateMode; }
+    Qgis::SymbolCoordinateReference coordinateMode() const { return mCoordinateMode; }
 
     /**
      * Sets the \a opacity for the raster image used in the fill.
@@ -1073,7 +1063,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
 
     //! Path to the image file
     QString mImageFilePath;
-    FillCoordinateMode mCoordinateMode = QgsRasterFillSymbolLayer::Feature;
+    Qgis::SymbolCoordinateReference mCoordinateMode = Qgis::SymbolCoordinateReference::Feature;
     double mOpacity = 1.0;
 
     QPointF mOffset;

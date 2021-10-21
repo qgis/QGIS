@@ -1029,7 +1029,7 @@ QgsMapUnitScale QgsGradientFillSymbolLayer::mapUnitScale() const
 
 //QgsShapeburstFillSymbolLayer
 
-QgsShapeburstFillSymbolLayer::QgsShapeburstFillSymbolLayer( const QColor &color, const QColor &color2, ShapeburstColorType colorType,
+QgsShapeburstFillSymbolLayer::QgsShapeburstFillSymbolLayer( const QColor &color, const QColor &color2, Qgis::GradientColorSource colorType,
     int blurRadius, bool useWholeShape, double maxDistance )
   : mBlurRadius( blurRadius )
   , mUseWholeShape( useWholeShape )
@@ -1045,7 +1045,7 @@ QgsShapeburstFillSymbolLayer::~QgsShapeburstFillSymbolLayer() = default;
 QgsSymbolLayer *QgsShapeburstFillSymbolLayer::create( const QVariantMap &props )
 {
   //default to a two-color gradient
-  ShapeburstColorType colorType = QgsShapeburstFillSymbolLayer::SimpleTwoColor;
+  Qgis::GradientColorSource colorType = Qgis::GradientColorSource::SimpleTwoColor;
   QColor color = DEFAULT_SIMPLEFILL_COLOR, color2 = Qt::white;
   int blurRadius = 0;
   bool useWholeShape = true;
@@ -1055,7 +1055,7 @@ QgsSymbolLayer *QgsShapeburstFillSymbolLayer::create( const QVariantMap &props )
   //update fill properties from props
   if ( props.contains( QStringLiteral( "color_type" ) ) )
   {
-    colorType = static_cast< ShapeburstColorType >( props[QStringLiteral( "color_type" )].toInt() );
+    colorType = static_cast< Qgis::GradientColorSource >( props[QStringLiteral( "color_type" )].toInt() );
   }
   if ( props.contains( QStringLiteral( "shapeburst_color" ) ) )
   {
@@ -1273,7 +1273,7 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, const
 
   //if we are using the two color mode, create a gradient ramp
   std::unique_ptr< QgsGradientColorRamp > twoColorGradientRamp;
-  if ( mColorType == QgsShapeburstFillSymbolLayer::SimpleTwoColor )
+  if ( mColorType == Qgis::GradientColorSource::SimpleTwoColor )
   {
     twoColorGradientRamp = std::make_unique< QgsGradientColorRamp >( color1, color2 );
   }
@@ -1368,7 +1368,7 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, const
   double *dtArray = distanceTransform( fillImage.get(), context.renderContext() );
 
   //copy distance transform values back to QImage, shading by appropriate color ramp
-  dtArrayToQImage( dtArray, fillImage.get(), mColorType == QgsShapeburstFillSymbolLayer::SimpleTwoColor ? twoColorGradientRamp.get() : mGradientRamp.get(),
+  dtArrayToQImage( dtArray, fillImage.get(), mColorType == Qgis::GradientColorSource::SimpleTwoColor ? twoColorGradientRamp.get() : mGradientRamp.get(),
                    context.renderContext(), useWholeShape, outputPixelMaxDist );
   if ( context.opacity() < 1 )
   {
@@ -1609,7 +1609,7 @@ QVariantMap QgsShapeburstFillSymbolLayer::properties() const
   QVariantMap map;
   map[QStringLiteral( "color" )] = QgsSymbolLayerUtils::encodeColor( mColor );
   map[QStringLiteral( "gradient_color2" )] = QgsSymbolLayerUtils::encodeColor( mColor2 );
-  map[QStringLiteral( "color_type" )] = QString::number( mColorType );
+  map[QStringLiteral( "color_type" )] = QString::number( static_cast< int >( mColorType ) );
   map[QStringLiteral( "blur_radius" )] = QString::number( mBlurRadius );
   map[QStringLiteral( "use_whole_shape" )] = QString::number( mUseWholeShape );
   map[QStringLiteral( "max_distance" )] = QString::number( mMaxDistance );
@@ -4156,7 +4156,7 @@ QgsRasterFillSymbolLayer::~QgsRasterFillSymbolLayer() = default;
 
 QgsSymbolLayer *QgsRasterFillSymbolLayer::create( const QVariantMap &properties )
 {
-  FillCoordinateMode mode = QgsRasterFillSymbolLayer::Feature;
+  Qgis::SymbolCoordinateReference mode = Qgis::SymbolCoordinateReference::Feature;
   double alpha = 1.0;
   QPointF offset;
   double angle = 0.0;
@@ -4169,7 +4169,7 @@ QgsSymbolLayer *QgsRasterFillSymbolLayer::create( const QVariantMap &properties 
   }
   if ( properties.contains( QStringLiteral( "coordinate_mode" ) ) )
   {
-    mode = static_cast< FillCoordinateMode >( properties[QStringLiteral( "coordinate_mode" )].toInt() );
+    mode = static_cast< Qgis::SymbolCoordinateReference >( properties[QStringLiteral( "coordinate_mode" )].toInt() );
   }
   if ( properties.contains( QStringLiteral( "alpha" ) ) )
   {
@@ -4262,7 +4262,7 @@ void QgsRasterFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVe
     offset.setY( context.renderContext().convertToPainterUnits( offset.y(), mOffsetUnit, mOffsetMapUnitScale ) );
     p->translate( offset );
   }
-  if ( mCoordinateMode == Feature )
+  if ( mCoordinateMode == Qgis::SymbolCoordinateReference::Feature )
   {
     QRectF boundingRect = points.boundingRect();
     mBrush.setTransform( mBrush.transform().translate( boundingRect.left() - mBrush.transform().dx(),
@@ -4290,7 +4290,7 @@ QVariantMap QgsRasterFillSymbolLayer::properties() const
 {
   QVariantMap map;
   map[QStringLiteral( "imageFile" )] = mImageFilePath;
-  map[QStringLiteral( "coordinate_mode" )] = QString::number( mCoordinateMode );
+  map[QStringLiteral( "coordinate_mode" )] = QString::number( static_cast< int >( mCoordinateMode ) );
   map[QStringLiteral( "alpha" )] = QString::number( mOpacity );
   map[QStringLiteral( "offset" )] = QgsSymbolLayerUtils::encodePoint( mOffset );
   map[QStringLiteral( "offset_unit" )] = QgsUnitTypes::encodeUnit( mOffsetUnit );
@@ -4335,7 +4335,7 @@ void QgsRasterFillSymbolLayer::setImageFilePath( const QString &imagePath )
   mImageFilePath = imagePath;
 }
 
-void QgsRasterFillSymbolLayer::setCoordinateMode( const QgsRasterFillSymbolLayer::FillCoordinateMode mode )
+void QgsRasterFillSymbolLayer::setCoordinateMode( const Qgis::SymbolCoordinateReference mode )
 {
   mCoordinateMode = mode;
 }
