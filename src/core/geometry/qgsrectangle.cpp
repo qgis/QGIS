@@ -193,6 +193,8 @@ QgsBox3D QgsRectangle::toBox3d( double zMin, double zMax ) const
 
 QgsRectangle QgsRectangle::snappedToGrid( double spacing ) const
 {
+  if ( isNull() ) return *this;
+
   // helper function
   auto gridifyValue = []( double value, double spacing ) -> double
   {
