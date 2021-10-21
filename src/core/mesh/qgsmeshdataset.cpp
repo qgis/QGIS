@@ -1111,9 +1111,10 @@ QgsMeshDataBlock QgsMeshVerticesElevationDataset::datasetValues( bool isScalar, 
     return QgsMeshDataBlock();
 
   QgsMeshDataBlock block( QgsMeshDataBlock::ScalarDouble, count );
-  QVector<double> values( std::min( count, ( mMesh->vertexCount() - valueIndex ) ) );
-  for ( int i = 0; i < values.count(); ++i )
-    values[i] = mMesh->vertex( i ).z();
+  int effectiveValueCount = std::min( count, ( mMesh->vertexCount() - valueIndex ) );
+  QVector<double> values( effectiveValueCount );
+  for ( int i = valueIndex; i < effectiveValueCount; ++i )
+    values[i] = mMesh->vertex( i - valueIndex ).z();
   block.setValues( values );
   block.setValid( true );
   return block;

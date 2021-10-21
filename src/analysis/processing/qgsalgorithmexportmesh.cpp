@@ -258,6 +258,9 @@ bool QgsExportMeshOnElement::prepareAlgorithm( const QVariantMap &parameters, Qg
   if ( !meshLayer || !meshLayer->isValid() )
     return false;
 
+  if ( meshLayer->isEditable() )
+    throw QgsProcessingException( QObject::tr( "Input mesh layer in edit mode is not supported" ) );
+
   QgsCoordinateReferenceSystem outputCrs = parameterAsCrs( parameters, QStringLiteral( "CRS_OUTPUT" ), context );
   if ( !outputCrs.isValid() )
     outputCrs = meshLayer->crs();
@@ -505,7 +508,6 @@ void QgsExportMeshOnGridAlgorithm::initAlgorithm( const QVariantMap &configurati
 
 static void extractDatasetValues( const QList<int> &datasetGroups,
                                   QgsMeshLayer *meshLayer,
-                                  const QgsTriangularMesh &triangularMesh,
                                   const QgsMesh &nativeMesh,
                                   const QgsInterval &relativeTime,
                                   const QSet<int> supportedDataType,
@@ -522,7 +524,7 @@ static void extractDatasetValues( const QList<int> &datasetGroups,
     if ( supportedDataType.contains( dataGroup.metadata.dataType() ) )
     {
       int valueCount = dataGroup.metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices ?
-                       triangularMesh.vertices().count() : nativeMesh.faceCount();
+                       nativeMesh.vertices.count() : nativeMesh.faceCount();
       dataGroup.datasetValues = meshLayer->datasetValues( datasetIndex, 0, valueCount );
       dataGroup.activeFaces = meshLayer->areFacesActive( datasetIndex, 0, nativeMesh.faceCount() );
       if ( dataGroup.metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVolumes )
@@ -550,7 +552,6 @@ bool QgsExportMeshOnGridAlgorithm::prepareAlgorithm( const QVariantMap &paramete
   if ( !meshLayer->nativeMesh() )
     meshLayer->updateTriangularMesh( mTransform ); //necessary to load the native mesh
 
-  mTriangularMesh = *meshLayer->triangularMesh();
   const QgsMesh &nativeMesh = *meshLayer->nativeMesh();
 
   QList<int> datasetGroups =
@@ -565,7 +566,8 @@ bool QgsExportMeshOnGridAlgorithm::prepareAlgorithm( const QVariantMap &paramete
   QVariant parameterTimeVariant = parameters.value( QStringLiteral( "DATASET_TIME" ) );
   QgsInterval relativeTime = datasetRelativetime( parameterTimeVariant, meshLayer, context );
 
-  extractDatasetValues( datasetGroups, meshLayer, mTriangularMesh, nativeMesh, relativeTime, supportedDataType(), mDataPerGroup, feedback );
+  extractDatasetValues( datasetGroups, meshLayer, nativeMesh, relativeTime, supportedDataType(), mDataPerGroup, feedback );
+  mTriangularMesh.update( meshLayer->nativeMesh(), mTransform );
 
   mExportVectorOption = parameterAsInt( parameters, QStringLiteral( "VECTOR_OPTION" ), context );
 
@@ -770,7 +772,7 @@ bool QgsMeshRasterizeAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
   if ( !meshLayer->nativeMesh() )
     meshLayer->updateTriangularMesh( mTransform ); //necessary to load the native mesh
 
-  mTriangularMesh = *meshLayer->triangularMesh();
+  mTriangularMesh.update( meshLayer->nativeMesh(), mTransform );
 
   QList<int> datasetGroups =
     QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( parameters.value( QStringLiteral( "DATASET_GROUPS" ) ) );
@@ -784,7 +786,7 @@ bool QgsMeshRasterizeAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
   QVariant parameterTimeVariant = parameters.value( QStringLiteral( "DATASET_TIME" ) );
   QgsInterval relativeTime = datasetRelativetime( parameterTimeVariant, meshLayer, context );
 
-  extractDatasetValues( datasetGroups, meshLayer, mTriangularMesh, *meshLayer->nativeMesh(), relativeTime, supportedDataType(), mDataPerGroup, feedback );
+  extractDatasetValues( datasetGroups, meshLayer, *meshLayer->nativeMesh(), relativeTime, supportedDataType(), mDataPerGroup, feedback );
 
   mLayerRendererSettings = meshLayer->rendererSettings();
 
@@ -962,7 +964,7 @@ bool QgsMeshContoursAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   if ( !meshLayer->nativeMesh() )
     meshLayer->updateTriangularMesh( mTransform ); //necessary to load the native mesh
 
-  mTriangularMesh = *meshLayer->triangularMesh();
+  mTriangularMesh.update( meshLayer->nativeMesh(), mTransform );
   mNativeMesh = *meshLayer->nativeMesh();
 
   // Prepare levels
@@ -1029,7 +1031,7 @@ bool QgsMeshContoursAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
 
   mDateTimeString = meshLayer->formatTime( relativeTime.hours() );
 
-  extractDatasetValues( datasetGroups, meshLayer, mTriangularMesh, mNativeMesh, relativeTime, supportedDataType(), mDataPerGroup, feedback );
+  extractDatasetValues( datasetGroups, meshLayer, mNativeMesh, relativeTime, supportedDataType(), mDataPerGroup, feedback );
 
   mLayerRendererSettings = meshLayer->rendererSettings();
 
@@ -1237,8 +1239,7 @@ bool QgsMeshExportCrossSection::prepareAlgorithm( const QVariantMap &parameters,
     return false;
 
   mMeshLayerCrs = meshLayer->crs();
-  mTriangularMesh = *meshLayer->triangularMesh();
-
+  mTriangularMesh.update( meshLayer->nativeMesh() );
   QList<int> datasetGroups =
     QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( parameters.value( QStringLiteral( "DATASET_GROUPS" ) ) );
 
@@ -1251,7 +1252,7 @@ bool QgsMeshExportCrossSection::prepareAlgorithm( const QVariantMap &parameters,
   QVariant parameterTimeVariant = parameters.value( QStringLiteral( "DATASET_TIME" ) );
   QgsInterval relativeTime = datasetRelativetime( parameterTimeVariant, meshLayer, context );
 
-  extractDatasetValues( datasetGroups, meshLayer, mTriangularMesh, *meshLayer->nativeMesh(), relativeTime, supportedDataType(), mDataPerGroup, feedback );
+  extractDatasetValues( datasetGroups, meshLayer, *meshLayer->nativeMesh(), relativeTime, supportedDataType(), mDataPerGroup, feedback );
 
   mLayerRendererSettings = meshLayer->rendererSettings();
 
@@ -1455,7 +1456,7 @@ bool QgsMeshExportTimeSeries::prepareAlgorithm( const QVariantMap &parameters, Q
     return false;
 
   mMeshLayerCrs = meshLayer->crs();
-  mTriangularMesh = *meshLayer->triangularMesh();
+  mTriangularMesh.update( meshLayer->nativeMesh() );
 
   QList<int> datasetGroups =
     QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( parameters.value( QStringLiteral( "DATASET_GROUPS" ) ) );

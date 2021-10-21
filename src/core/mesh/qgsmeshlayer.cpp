@@ -964,6 +964,8 @@ bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform )
     return false;
   }
 
+  mSimplificationSettings.setEnabled( false );
+
   updateTriangularMesh( transform );
 
   mMeshEditor = new QgsMeshEditor( this );
