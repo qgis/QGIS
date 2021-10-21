@@ -28,6 +28,7 @@ import time
 from datetime import datetime
 
 from qgis.core import (
+    QgsApplication,
     QgsVectorLayer,
     QgsVectorLayerExporter,
     QgsFeatureRequest,
@@ -35,7 +36,6 @@ from qgis.core import (
     QgsFeature,
     QgsFieldConstraints,
     QgsDataProvider,
-    NULL,
     QgsVectorLayerUtils,
     QgsSettings,
     QgsTransactionGroup,
@@ -43,6 +43,9 @@ from qgis.core import (
     QgsRectangle,
     QgsDefaultValue,
     QgsCoordinateReferenceSystem,
+    QgsProcessingUtils,
+    QgsProcessingContext,
+    QgsProcessingFeedback,
     QgsProject,
     QgsWkbTypes,
     QgsGeometry,
@@ -50,7 +53,9 @@ from qgis.core import (
     QgsVectorDataProvider,
     QgsDataSourceUri,
     QgsProviderConnectionException,
+    NULL,
 )
+from qgis.analysis import QgsNativeAlgorithms
 from qgis.gui import QgsGui, QgsAttributeForm
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir, QObject, QByteArray, QTemporaryDir
 from qgis.PyQt.QtWidgets import QLabel
@@ -124,6 +129,22 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
                 self.tester.execSQLCommand('DROP TABLE {s}.{t}_edit'.format(s=self.schema, t=self.table))
 
         return ScopedBackup(self, schema, table)
+
+    def temporarySchema(self, name):
+
+        class TemporarySchema():
+            def __init__(self, tester, name):
+                self.tester = tester
+                self.name = name
+
+            def __enter__(self):
+                self.tester.execSQLCommand('CREATE SCHEMA {}'.format(self.name))
+                return self.name
+
+            def __exit__(self, type, value, traceback):
+                self.tester.execSQLCommand('DROP SCHEMA {} CASCADE'.format(self.name))
+
+        return TemporarySchema(self, 'qgis_test_' + name)
 
     def getSource(self):
         # create temporary table for edit tests
@@ -2869,6 +2890,89 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(feat["thetext2"], NULL)
         self.assertEqual(feat["thetext3"], "blabla")
         self.assertEqual(feat["thenumber"], 4)
+
+    def testExtractWithinDistanceAlgorithm(self):
+
+        with self.temporarySchema('extract_within_distance') as schema:
+
+            # Create data tables
+            self.execSQLCommand(
+                'CREATE TABLE {}.target (id serial primary key, g geometry(linestring))'
+                .format(schema))
+            self.execSQLCommand(
+                "INSERT INTO {}.target (g) values('LINESTRING(0 0, 1000 1000)')"
+                .format(schema))
+            self.execSQLCommand(
+                'CREATE TABLE {}.reference (id serial primary key, g geometry(point))'
+                .format(schema))
+            self.execSQLCommand(
+                "INSERT INTO {}.reference (g) values('POINT(500 999)')"
+                .format(schema))
+            self.execSQLCommand(
+                "INSERT INTO {}.reference (g) values('POINT(501 999)')"
+                .format(schema))
+            self.execSQLCommand(
+                # -- this is ON the line (id=4)
+                "INSERT INTO {}.reference (g) values('POINT(500 500)')"
+                .format(schema))
+            self.execSQLCommand(
+                "INSERT INTO {}.reference (g) values('POINT(503 999)')"
+                .format(schema))
+            self.execSQLCommand(
+                "INSERT INTO {}.reference (g) values('POINT(504 999)')"
+                .format(schema))
+
+            # Create target and reference layers
+            vl_target = QgsVectorLayer(
+                '{} sslmode=disable key=id srid=0 type=LINESTRING table="{}"."target" (g) sql='
+                .format(self.dbconn, schema),
+                'target', 'postgres')
+            assert vl_target.isValid(), "Could not create a layer from the '{}.target' table using dbconn '{}'" .format(schema, self.dbconn)
+            vl_reference = QgsVectorLayer(
+                '{} sslmode=disable key=id srid=0 type=POINT table="{}"."reference" (g) sql='
+                .format(self.dbconn, schema),
+                'reference', 'postgres')
+            assert vl_target.isValid(), "Could not create a layer from the '{}.reference' table using dbconn '{}'" .format(schema, self.dbconn)
+
+            # Create the ExtractWithinDistance algorithm
+            # TODO: move registry initialization in class initialization ?
+            QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
+            registry = QgsApplication.instance().processingRegistry()
+            alg = registry.createAlgorithmById('native:extractwithindistance')
+            self.assertIsNotNone(alg)
+
+            # Run the ExtractWithinDistance algorithm
+            parameters = {
+                # extract features from here:
+                'INPUT': vl_target,
+                # extracted features must be within given
+                # distance from this layer:
+                'REFERENCE': vl_reference,
+                # distance
+                'DISTANCE': 10,
+                'OUTPUT': 'memory:result'
+            }
+
+            class ConsoleFeedBack(QgsProcessingFeedback):
+                _error = ''
+
+                def reportError(self, error, fatalError=False):
+                    self._error = error
+                    print(error)
+
+            feedback = ConsoleFeedBack()
+            context = QgsProcessingContext()
+            # Note: the following returns true also in case of errors ...
+
+            result = alg.run(parameters, context, feedback)
+            self.assertEqual(result[1], True)
+
+            result_layer_name = result[0]['OUTPUT']
+            vl_result = QgsProcessingUtils.mapLayerFromString(result_layer_name, context)
+            self.assertTrue(vl_result.isValid())
+
+            extracted_fids = [f['id'] for f in vl_result.getFeatures()]
+            self.assertEqual(set(extracted_fids), {1})
 
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
