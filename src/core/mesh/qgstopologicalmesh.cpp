@@ -739,38 +739,16 @@ void QgsTopologicalMesh::reindex()
 bool QgsTopologicalMesh::renumber()
 {
   QVector<int> oldToNewVerticesIndexes;
-
   if ( !renumberVertices( oldToNewVerticesIndexes ) )
     return false;
 
-  for ( int i = 0; i < oldToNewVerticesIndexes.count(); ++i )
-  {
-    if ( oldToNewVerticesIndexes[i] == -1 )
-      return false;
-    for ( int j = i + 1; j < oldToNewVerticesIndexes.count(); ++j )
-    {
-      if ( oldToNewVerticesIndexes[i] == oldToNewVerticesIndexes[j] )
-        return false;
-    }
-  }
 
   QVector<int> oldToNewFacesIndexes;
 
   if ( !renumberFaces( oldToNewFacesIndexes ) )
     return false;
 
-  for ( int i = 0; i < oldToNewFacesIndexes.count(); ++i )
-  {
-    if ( oldToNewFacesIndexes[i] == -1 )
-      return false;
-    for ( int j = i + 1; j < oldToNewFacesIndexes.count(); ++j )
-    {
-      if ( oldToNewFacesIndexes[i] == oldToNewFacesIndexes[j] )
-        return false;
-    }
-  }
-
-  // after the checks, apply the renumbering
+  // If we are here, we can apply the renumbering
 
   QVector<QgsMeshVertex> tempVertices( mMesh->vertices.count() );
   for ( int i = 0; i < oldToNewVerticesIndexes.count(); ++i )
