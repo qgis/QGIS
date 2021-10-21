@@ -105,6 +105,7 @@
       <string>&amp;Decorations</string>
      </property>
      <addaction name="mActionDecorationGrid"/>
+     <addaction name="mActionDecorationTileGrid"/>
      <addaction name="mActionDecorationScaleBar"/>
      <addaction name="mActionDecorationImage"/>
      <addaction name="mActionDecorationNorthArrow"/>
@@ -2327,6 +2328,21 @@ Acts on all layers.</string>
    </property>
    <property name="whatsThis">
     <string>Creates a grid that is displayed on the map canvas</string>
+   </property>
+  </action>
+  <action name="mActionDecorationTileGrid">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/tilegrid.svg</normaloff>:/images/themes/default/tilegrid.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Tile grid…</string>
+   </property>
+   <property name="toolTip">
+    <string>Tile grid</string>
+   </property>
+   <property name="whatsThis">
+    <string>Creates a tile grid that is displayed on a WebMercator map canvas</string>
    </property>
   </action>
   <action name="mActionPinLabels">

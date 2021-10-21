@@ -229,6 +229,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsdecorationnortharrow.h"
 #include "qgsdecorationscalebar.h"
 #include "qgsdecorationgrid.h"
+#include "qgsdecorationtilegrid.h"
 #include "qgsdecorationlayoutextent.h"
 #include "qgsencodingfiledialog.h"
 #include "qgserror.h"
@@ -4312,6 +4313,7 @@ void QgisApp::setTheme( const QString &themeName )
   mActionDecorationNorthArrow->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/north_arrow.svg" ) ) );
   mActionDecorationScaleBar->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionScaleBar.svg" ) ) );
   mActionDecorationGrid->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/grid.svg" ) ) );
+  mActionDecorationTileGrid->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/tilegrid.svg" ) ) );
   mActionReverseLine->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionReverseLine.svg" ) ) );
   mActionTrimExtendFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionTrimExtendFeature.svg" ) ) );
   mActionTemporalController->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/temporal.svg" ) ) );
@@ -5087,11 +5089,15 @@ void QgisApp::createDecorations()
   QgsDecorationGrid *decorationGrid = new QgsDecorationGrid( this );
   connect( mActionDecorationGrid, &QAction::triggered, decorationGrid, &QgsDecorationGrid::run );
 
+  QgsDecorationTileGrid *decorationTileGrid = new QgsDecorationTileGrid( this );
+  connect( mActionDecorationTileGrid, &QAction::triggered, decorationTileGrid, &QgsDecorationTileGrid::run );
+
   QgsDecorationLayoutExtent *decorationLayoutExtent = new QgsDecorationLayoutExtent( this );
   connect( mActionDecorationLayoutExtent, &QAction::triggered, decorationLayoutExtent, &QgsDecorationLayoutExtent::run );
 
   // add the decorations in a particular order so they are rendered in that order
   addDecorationItem( decorationGrid );
+  addDecorationItem( decorationTileGrid );
   addDecorationItem( decorationImage );
   addDecorationItem( decorationTitle );
   addDecorationItem( decorationCopyright );

@@ -124,6 +124,8 @@ set(QGIS_APP_SRCS
   decorations/qgsdecorationscalebardialog.cpp
   decorations/qgsdecorationgrid.cpp
   decorations/qgsdecorationgriddialog.cpp
+  decorations/qgsdecorationtilegrid.cpp
+  decorations/qgsdecorationtilegriddialog.cpp
 
   pointcloud/qgspointcloudelevationpropertieswidget.cpp
   pointcloud/qgspointcloudlayerproperties.cpp
