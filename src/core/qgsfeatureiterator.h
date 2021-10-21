@@ -149,6 +149,16 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      */
     QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const SIP_THROW( QgsCsException );
 
+    /**
+     * Update a QgsFeatureRequest so that spatial filters are
+     * transformed to the source's coordinate reference system.
+     * Iterators should call this method against the request used for filtering
+     * features to ensure that any QgsFeatureRequest::destinationCrs() set on the request is respected.
+     * Will throw a QgsCsException if the rect cannot be transformed from the destination CRS.
+     * \since QGIS 3.22
+     */
+    void updateRequestToSourceCrs( QgsFeatureRequest &request, const QgsCoordinateTransform &transform ) const SIP_THROW( QgsCsException );
+
     //! A copy of the feature request.
     QgsFeatureRequest mRequest;
 
