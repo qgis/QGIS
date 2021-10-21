@@ -27,7 +27,10 @@ Examples are storing a layer extent or the current view extent of a map
 %End
   public:
 
-    QgsRectangle(); // optimised constructor for null rectangle - no need to call normalize here
+    QgsRectangle();
+%Docstring
+Constructor for a null rectangle
+%End
 
     explicit QgsRectangle( double xMin, double yMin = 0, double xMax = 0, double yMax = 0, bool normalize = true ) /HoldGIL/;
 %Docstring
