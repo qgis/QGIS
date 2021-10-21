@@ -1126,6 +1126,20 @@ class CORE_EXPORT Qgis
     Q_ENUM( PointCountMethod )
 
     /**
+     * Marker clipping modes.
+     *
+     * \since QGIS 3.24
+     */
+    enum class MarkerClipMode : int
+    {
+      NoClipping, //!< No clipping, render complete markers
+      Shape, //!< Clip to polygon shape
+      CentroidWithin, //!< Render complete markers wherever their centroid falls within the polygon shape
+      CompletelyWithin, //!< Render complete markers wherever the completely fall within the polygon shape
+    };
+    Q_ENUM( MarkerClipMode )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

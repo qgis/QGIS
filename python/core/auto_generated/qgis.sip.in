@@ -691,6 +691,14 @@ The development version
       DensityBased,
     };
 
+    enum class MarkerClipMode
+    {
+      NoClipping,
+      Shape,
+      CentroidWithin,
+      CompletelyWithin,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

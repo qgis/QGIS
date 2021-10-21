@@ -38,6 +38,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
 #include "qgsfeedback.h"
+#include "qgsgeometryengine.h"
 
 #include <QPainter>
 #include <QFile>
@@ -3186,20 +3187,11 @@ QgsSymbolLayer *QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &eleme
 QgsPointPatternFillSymbolLayer::QgsPointPatternFillSymbolLayer()
   : QgsImageFillSymbolLayer()
 {
-  mDistanceX = 15;
-  mDistanceY = 15;
-  mDisplacementX = 0;
-  mDisplacementY = 0;
-  mOffsetX = 0;
-  mOffsetY = 0;
   setSubSymbol( new QgsMarkerSymbol() );
   QgsImageFillSymbolLayer::setSubSymbol( nullptr ); //no stroke
 }
 
-QgsPointPatternFillSymbolLayer::~QgsPointPatternFillSymbolLayer()
-{
-  delete mMarkerSymbol;
-}
+QgsPointPatternFillSymbolLayer::~QgsPointPatternFillSymbolLayer() = default;
 
 void QgsPointPatternFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
@@ -3214,7 +3206,6 @@ void QgsPointPatternFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit uni
   {
     mMarkerSymbol->setOutputUnit( unit );
   }
-
 }
 
 QgsUnitTypes::RenderUnit QgsPointPatternFillSymbolLayer::outputUnit() const
@@ -3347,6 +3338,10 @@ QgsSymbolLayer *QgsPointPatternFillSymbolLayer::create( const QVariantMap &prope
   {
     layer->setStrokeWidthMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "outline_width_map_unit_scale" )].toString() ) );
   }
+  if ( properties.contains( QStringLiteral( "clip_mode" ) ) )
+  {
+    layer->setClipMode( QgsSymbolLayerUtils::decodeMarkerClipMode( properties.value( QStringLiteral( "clip_mode" ) ).toString() ) );
+  }
 
   layer->restoreOldDataDefinedProperties( properties );
 
@@ -3454,7 +3449,10 @@ void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolRenderContext &contex
 {
   // if we are using a vector based output, we need to render points as vectors
   // (OR if the marker has data defined symbology, in which case we need to evaluate this point-by-point)
-  mRenderUsingMarkers = context.renderContext().forceVectorOutput() || mMarkerSymbol->hasDataDefinedProperties();
+  mRenderUsingMarkers = context.renderContext().forceVectorOutput()
+                        || mMarkerSymbol->hasDataDefinedProperties()
+                        || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyMarkerClipping )
+                        || mClipMode != Qgis::MarkerClipMode::Shape;
 
   if ( mRenderUsingMarkers )
   {
@@ -3564,16 +3562,57 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
 
   p->save();
 
-  QPainterPath path;
-  path.addPolygon( points );
-  if ( rings )
+  Qgis::MarkerClipMode clipMode = mClipMode;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyMarkerClipping ) )
   {
-    for ( const QPolygonF &ring : *rings )
+    context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeMarkerClipMode( clipMode ) );
+    bool ok = false;
+    const QString valueString = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyMarkerClipping, context.renderContext().expressionContext(), QString(), &ok );
+    if ( ok )
     {
-      path.addPolygon( ring );
+      Qgis::MarkerClipMode decodedMode = QgsSymbolLayerUtils::decodeMarkerClipMode( valueString, &ok );
+      if ( ok )
+        clipMode = decodedMode;
     }
   }
-  p->setClipPath( path, Qt::IntersectClip );
+
+  std::unique_ptr< QgsPolygon > shapePolygon;
+  std::unique_ptr< QgsGeometryEngine > shapeEngine;
+  switch ( clipMode )
+  {
+    case Qgis::MarkerClipMode::NoClipping:
+    case Qgis::MarkerClipMode::CentroidWithin:
+    case Qgis::MarkerClipMode::CompletelyWithin:
+    {
+      shapePolygon = std::make_unique< QgsPolygon >();
+      shapePolygon->setExteriorRing( QgsLineString::fromQPolygonF( points ) );
+      if ( rings )
+      {
+        for ( const QPolygonF &ring : *rings )
+        {
+          shapePolygon->addInteriorRing( QgsLineString::fromQPolygonF( ring ) );
+        }
+      }
+      shapeEngine.reset( QgsGeometry::createGeometryEngine( shapePolygon.get() ) );
+      shapeEngine->prepareGeometry();
+      break;
+    }
+
+    case Qgis::MarkerClipMode::Shape:
+    {
+      QPainterPath path;
+      path.addPolygon( points );
+      if ( rings )
+      {
+        for ( const QPolygonF &ring : *rings )
+        {
+          path.addPolygon( ring );
+        }
+      }
+      p->setClipPath( path, Qt::IntersectClip );
+      break;
+    }
+  }
 
   const double left = points.boundingRect().left() - 2 * width;
   const double top = points.boundingRect().top() - 2 * height;
@@ -3609,6 +3648,40 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
       {
         scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum, true ) );
         scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_marker_row" ), ++currentRow, true ) );
+      }
+
+      if ( shapeEngine )
+      {
+        bool renderPoint = true;
+        switch ( clipMode )
+        {
+          case Qgis::MarkerClipMode::CentroidWithin:
+          {
+            // we test using the marker bounds here and NOT just the x,y point, as the marker symbol may have offsets or other data defined properties which affect its visual placement
+            const QgsRectangle markerRect = QgsRectangle( mMarkerSymbol->bounds( QPointF( x, y ), context.renderContext(), context.feature() ? *context.feature() : QgsFeature() ) );
+            QgsPoint p( markerRect.center() );
+            renderPoint = shapeEngine->intersects( &p );
+            break;
+          }
+
+          case Qgis::MarkerClipMode::NoClipping:
+          case Qgis::MarkerClipMode::CompletelyWithin:
+          {
+            const QgsGeometry markerBounds = QgsGeometry::fromRect( QgsRectangle( mMarkerSymbol->bounds( QPointF( x, y ), context.renderContext(), context.feature() ? *context.feature() : QgsFeature() ) ) );
+
+            if ( clipMode == Qgis::MarkerClipMode::CompletelyWithin )
+              renderPoint = shapeEngine->contains( markerBounds.constGet() );
+            else
+              renderPoint = shapeEngine->intersects( markerBounds.constGet() );
+            break;
+          }
+
+          case Qgis::MarkerClipMode::Shape:
+            break;
+        }
+
+        if ( !renderPoint )
+          continue;
       }
 
       mMarkerSymbol->renderPoint( QPointF( x, y ), context.feature(), context.renderContext() );
@@ -3653,6 +3726,7 @@ QVariantMap QgsPointPatternFillSymbolLayer::properties() const
   map.insert( QStringLiteral( "offset_y_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetYMapUnitScale ) );
   map.insert( QStringLiteral( "outline_width_unit" ), QgsUnitTypes::encodeUnit( mStrokeWidthUnit ) );
   map.insert( QStringLiteral( "outline_width_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mStrokeWidthMapUnitScale ) );
+  map.insert( QStringLiteral( "clip_mode" ), QgsSymbolLayerUtils::encodeMarkerClipMode( mClipMode ) );
   return map;
 }
 
@@ -3663,6 +3737,7 @@ QgsPointPatternFillSymbolLayer *QgsPointPatternFillSymbolLayer::clone() const
   {
     clonedLayer->setSubSymbol( mMarkerSymbol->clone() );
   }
+  clonedLayer->setClipMode( mClipMode );
   copyDataDefinedProperties( clonedLayer );
   copyPaintEffect( clonedLayer );
   return clonedLayer;
@@ -3727,15 +3802,14 @@ bool QgsPointPatternFillSymbolLayer::setSubSymbol( QgsSymbol *symbol )
   if ( symbol->type() == Qgis::SymbolType::Marker )
   {
     QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( symbol );
-    delete mMarkerSymbol;
-    mMarkerSymbol = markerSymbol;
+    mMarkerSymbol.reset( markerSymbol );
   }
   return true;
 }
 
 QgsSymbol *QgsPointPatternFillSymbolLayer::subSymbol()
 {
-  return mMarkerSymbol;
+  return mMarkerSymbol.get();
 }
 
 void QgsPointPatternFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderContext &context )
@@ -3804,7 +3878,7 @@ QSet<QString> QgsPointPatternFillSymbolLayer::usedAttributes( const QgsRenderCon
 
 bool QgsPointPatternFillSymbolLayer::hasDataDefinedProperties() const
 {
-  if ( QgsSymbolLayer::hasDataDefinedProperties() )
+  if ( QgsImageFillSymbolLayer::hasDataDefinedProperties() )
     return true;
   if ( mMarkerSymbol && mMarkerSymbol->hasDataDefinedProperties() )
     return true;

@@ -66,11 +66,15 @@ class TestQgsPointPatternFillSymbol : public QObject
     void dataDefinedSubSymbol();
     void zeroSpacedPointPatternFillSymbol();
     void zeroSpacedPointPatternFillSymbolVector();
+    void pointPatternFillNoClip();
+    void pointPatternFillCompletelyWithin();
+    void pointPatternFillCentroidWithin();
+    void pointPatternFillDataDefinedClip();
 
   private:
     bool mTestHasError =  false ;
 
-    bool imageCheck( const QString &type );
+    bool imageCheck( const QString &type, QgsVectorLayer *layer = nullptr );
     QgsMapSettings mMapSettings;
     QgsVectorLayer *mpPolysLayer = nullptr;
     QgsPointPatternFillSymbolLayer *mPointPatternFill = nullptr;
@@ -312,16 +316,126 @@ void TestQgsPointPatternFillSymbol::zeroSpacedPointPatternFillSymbolVector()
   QVERIFY( res );
 }
 
+void TestQgsPointPatternFillSymbol::pointPatternFillNoClip()
+{
+  mReport += QLatin1String( "<h2>Point pattern no clip mode</h2>\n" );
+
+  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  QVERIFY( layer->isValid() );
+
+  QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, pointPatternFill );
+  layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+  QVariantMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
+  properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
+  properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+
+  pointPatternFill->setSubSymbol( pointSymbol );
+  pointPatternFill->setDistanceX( 10 );
+  pointPatternFill->setDistanceY( 10 );
+  pointPatternFill->setClipMode( Qgis::MarkerClipMode::NoClipping );
+  const bool res = imageCheck( "symbol_pointfill_no_clip", layer.get() );
+  QVERIFY( res );
+}
+
+void TestQgsPointPatternFillSymbol::pointPatternFillCompletelyWithin()
+{
+  mReport += QLatin1String( "<h2>Point pattern completely within</h2>\n" );
+
+  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  QVERIFY( layer->isValid() );
+
+  QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, pointPatternFill );
+  layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+  QVariantMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
+  properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
+  properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+
+  pointPatternFill->setSubSymbol( pointSymbol );
+  pointPatternFill->setDistanceX( 10 );
+  pointPatternFill->setDistanceY( 10 );
+  pointPatternFill->setClipMode( Qgis::MarkerClipMode::CompletelyWithin );
+  const bool res = imageCheck( "symbol_pointfill_completely_within", layer.get() );
+  QVERIFY( res );
+}
+
+void TestQgsPointPatternFillSymbol::pointPatternFillCentroidWithin()
+{
+  mReport += QLatin1String( "<h2>Point pattern centroid within</h2>\n" );
+
+  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  QVERIFY( layer->isValid() );
+
+  QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, pointPatternFill );
+  layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+  QVariantMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
+  properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
+  properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+
+  pointPatternFill->setSubSymbol( pointSymbol );
+  pointPatternFill->setDistanceX( 10 );
+  pointPatternFill->setDistanceY( 10 );
+  pointPatternFill->setClipMode( Qgis::MarkerClipMode::CentroidWithin );
+  const bool res = imageCheck( "symbol_pointfill_centroid_within", layer.get() );
+  QVERIFY( res );
+}
+
+void TestQgsPointPatternFillSymbol::pointPatternFillDataDefinedClip()
+{
+  mReport += QLatin1String( "<h2>Point pattern data defined clip</h2>\n" );
+
+  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  QVERIFY( layer->isValid() );
+
+  QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, pointPatternFill );
+  layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+  QVariantMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
+  properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
+  properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+
+  pointPatternFill->setSubSymbol( pointSymbol );
+  pointPatternFill->setDistanceX( 10 );
+  pointPatternFill->setDistanceY( 10 );
+  pointPatternFill->setClipMode( Qgis::MarkerClipMode::Shape );
+  pointPatternFill->dataDefinedProperties().setProperty( QgsSymbolLayer::PropertyMarkerClipping, QgsProperty::fromExpression( QStringLiteral( "case when $id % 4 = 0 then 'shape' when $id % 4 = 1 then 'centroid_within' when $id % 4 = 2 then 'completely_within' else 'no' end" ) ) );
+  const bool res = imageCheck( "symbol_pointfill_datadefined_clip", layer.get() );
+  QVERIFY( res );
+}
+
 //
 // Private helper functions not called directly by CTest
 //
 
 
-bool TestQgsPointPatternFillSymbol::imageCheck( const QString &testType )
+bool TestQgsPointPatternFillSymbol::imageCheck( const QString &testType, QgsVectorLayer *layer )
 {
+  if ( !layer )
+    layer = mpPolysLayer;
+
+  mMapSettings.setLayers( {layer } );
+
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
-  mMapSettings.setExtent( mpPolysLayer->extent() );
+  mMapSettings.setExtent( layer->extent() );
   mMapSettings.setOutputDpi( 96 );
   QgsRenderChecker myChecker;
   myChecker.setControlPathPrefix( QStringLiteral( "symbol_pointpatternfill" ) );

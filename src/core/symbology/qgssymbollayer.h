@@ -200,6 +200,7 @@ class CORE_EXPORT QgsSymbolLayer
       PropertyLineEndWidthValue, //!< End line width for interpolated line renderer (since QGIS 3.22)
       PropertyLineStartColorValue, //!< Start line color for interpolated line renderer (since QGIS 3.22)
       PropertyLineEndColorValue, //!< End line color for interpolated line renderer (since QGIS 3.22)
+      PropertyMarkerClipping, //!< Marker clipping mode (since QGIS 3.24)
     };
 
     /**

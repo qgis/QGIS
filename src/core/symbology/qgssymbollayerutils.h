@@ -104,6 +104,26 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static QgsArrowSymbolLayer::ArrowType decodeArrowType( const QVariant &value, bool *ok SIP_OUT = nullptr );
 
     /**
+     * Decodes a \a string representing a marker clip mode.
+     *
+     * \param string string to decode
+     * \param ok will be set to TRUE if \a string was successfully decoded
+     * \returns decoded marker clip mode
+     *
+     * \see encodeMarkerClipMode()
+     * \since QGIS 3.24
+     */
+    static Qgis::MarkerClipMode decodeMarkerClipMode( const QString &string, bool *ok SIP_OUT = nullptr );
+
+    /**
+     * Encodes a marker clip \a mode to a string.
+     *
+     * \see decodeMarkerClipMode()
+     * \since QGIS 3.24
+     */
+    static QString encodeMarkerClipMode( Qgis::MarkerClipMode mode );
+
+    /**
      * Encodes a QPointF to a string.
      * \see decodePoint()
      * \see encodeSize()
