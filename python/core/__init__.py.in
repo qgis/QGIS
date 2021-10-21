@@ -73,6 +73,14 @@ QgsMarkerLineSymbolLayer.FirstVertex = Qgis.MarkerLinePlacement.FirstVertex
 QgsMarkerLineSymbolLayer.CentralPoint = Qgis.MarkerLinePlacement.CentralPoint
 QgsMarkerLineSymbolLayer.CurvePoint = Qgis.MarkerLinePlacement.CurvePoint
 
+QgsRasterFillSymbolLayer.FillCoordinateMode = Qgis.SymbolCoordinateReference
+QgsRasterFillSymbolLayer.Feature = Qgis.SymbolCoordinateReference.Feature
+QgsRasterFillSymbolLayer.Viewport = Qgis.SymbolCoordinateReference.Viewport
+
+QgsShapeburstFillSymbolLayer.ShapeburstColorType = Qgis.GradientColorSource
+QgsShapeburstFillSymbolLayer.SimpleTwoColor = Qgis.GradientColorSource.SimpleTwoColor
+QgsShapeburstFillSymbolLayer.ColorRamp = Qgis.GradientColorSource.ColorRamp
+
 QgsVectorLayer.VertexMarkerType = Qgis.VertexMarkerType
 QgsVectorLayer.SemiTransparentCircle = Qgis.VertexMarkerType.SemiTransparentCircle
 QgsVectorLayer.SemiTransparentCircle.is_monkey_patched = True
