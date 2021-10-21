@@ -70,6 +70,29 @@ Decodes a ``value`` representing an arrow type.
 .. versionadded:: 3.2
 %End
 
+    static Qgis::MarkerClipMode decodeMarkerClipMode( const QString &string, bool *ok /Out/ = 0 );
+%Docstring
+Decodes a ``string`` representing a marker clip mode.
+
+:param string: string to decode
+
+:return: - decoded marker clip mode
+         - ok: will be set to ``True`` if ``string`` was successfully decoded
+
+.. seealso:: :py:func:`encodeMarkerClipMode`
+
+.. versionadded:: 3.24
+%End
+
+    static QString encodeMarkerClipMode( Qgis::MarkerClipMode mode );
+%Docstring
+Encodes a marker clip ``mode`` to a string.
+
+.. seealso:: :py:func:`decodeMarkerClipMode`
+
+.. versionadded:: 3.24
+%End
+
     static QString encodePoint( QPointF point );
 %Docstring
 Encodes a QPointF to a string.

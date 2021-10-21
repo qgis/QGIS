@@ -37,7 +37,8 @@ from qgis.core import (
     QgsSimpleFillSymbolLayer,
     QgsSymbolLayer,
     QgsProperty,
-    QgsMapUnitScale
+    QgsMapUnitScale,
+    Qgis
 )
 from qgis.testing import unittest, start_app
 
@@ -227,6 +228,33 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         self.assertFalse(ok)
         type, ok = QgsSymbolLayerUtils.decodeArrowType(34)
         self.assertFalse(ok)
+
+    def test_decode_marker_clip(self):
+        """
+        Test decode marker clip
+        """
+        self.assertEqual(QgsSymbolLayerUtils.decodeMarkerClipMode(''), (Qgis.MarkerClipMode.Shape, False))
+        self.assertEqual(QgsSymbolLayerUtils.decodeMarkerClipMode('xxx'), (Qgis.MarkerClipMode.Shape, False))
+        self.assertEqual(QgsSymbolLayerUtils.decodeMarkerClipMode(' no   '), (Qgis.MarkerClipMode.NoClipping, True))
+        self.assertEqual(QgsSymbolLayerUtils.decodeMarkerClipMode(' NO   '), (Qgis.MarkerClipMode.NoClipping, True))
+        self.assertEqual(QgsSymbolLayerUtils.decodeMarkerClipMode(' shape   '), (Qgis.MarkerClipMode.Shape, True))
+        self.assertEqual(QgsSymbolLayerUtils.decodeMarkerClipMode(' Shape   '), (Qgis.MarkerClipMode.Shape, True))
+        self.assertEqual(QgsSymbolLayerUtils.decodeMarkerClipMode(' centroid_within   '), (Qgis.MarkerClipMode.CentroidWithin, True))
+        self.assertEqual(QgsSymbolLayerUtils.decodeMarkerClipMode(' Centroid_Within   '),
+                         (Qgis.MarkerClipMode.CentroidWithin, True))
+        self.assertEqual(QgsSymbolLayerUtils.decodeMarkerClipMode(' completely_within   '),
+                         (Qgis.MarkerClipMode.CompletelyWithin, True))
+        self.assertEqual(QgsSymbolLayerUtils.decodeMarkerClipMode(' Completely_Within   '),
+                         (Qgis.MarkerClipMode.CompletelyWithin, True))
+
+    def test_encode_marker_clip(self):
+        """
+        Test encode marker clip
+        """
+        self.assertEqual(QgsSymbolLayerUtils.encodeMarkerClipMode(Qgis.MarkerClipMode.Shape), 'shape')
+        self.assertEqual(QgsSymbolLayerUtils.encodeMarkerClipMode(Qgis.MarkerClipMode.NoClipping), 'no')
+        self.assertEqual(QgsSymbolLayerUtils.encodeMarkerClipMode(Qgis.MarkerClipMode.CentroidWithin), 'centroid_within')
+        self.assertEqual(QgsSymbolLayerUtils.encodeMarkerClipMode(Qgis.MarkerClipMode.CompletelyWithin), 'completely_within')
 
     def testSymbolToFromMimeData(self):
         """

@@ -2209,6 +2209,24 @@ Returns the unit scale for the vertical offset between rows in the pattern.
 .. versionadded:: 3.8
 %End
 
+    Qgis::MarkerClipMode clipMode() const;
+%Docstring
+Returns the marker clipping mode, which defines how markers are clipped at the edges of shapes.
+
+.. seealso:: :py:func:`setClipMode`
+
+.. versionadded:: 3.24
+%End
+
+    void setClipMode( Qgis::MarkerClipMode mode );
+%Docstring
+Sets the marker clipping ``mode``, which defines how markers are clipped at the edges of shapes.
+
+.. seealso:: :py:func:`clipMode`
+
+.. versionadded:: 3.24
+%End
+
   protected:
 
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context );

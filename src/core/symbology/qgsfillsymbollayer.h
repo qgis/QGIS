@@ -1965,8 +1965,24 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     */
     const QgsMapUnitScale &offsetYMapUnitScale() const { return mOffsetYMapUnitScale; }
 
+    /**
+     * Returns the marker clipping mode, which defines how markers are clipped at the edges of shapes.
+     *
+     * \see setClipMode()
+     * \since QGIS 3.24
+     */
+    Qgis::MarkerClipMode clipMode() const { return mClipMode; }
+
+    /**
+     * Sets the marker clipping \a mode, which defines how markers are clipped at the edges of shapes.
+     *
+     * \see clipMode()
+     * \since QGIS 3.24
+     */
+    void setClipMode( Qgis::MarkerClipMode mode ) { mClipMode = mode; }
+
   protected:
-    QgsMarkerSymbol *mMarkerSymbol = nullptr;
+    std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
     double mDistanceX = 15;
     QgsUnitTypes::RenderUnit mDistanceXUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mDistanceXMapUnitScale;
@@ -1995,6 +2011,8 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
     void applyPattern( const QgsSymbolRenderContext &context, QBrush &brush, double distanceX, double distanceY,
                        double displacementX, double displacementY, double offsetX, double offsetY );
+
+    Qgis::MarkerClipMode mClipMode = Qgis::MarkerClipMode::Shape;
 
     bool mRenderUsingMarkers = false;
 };

@@ -7,266 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>401</width>
-    <height>206</height>
+    <height>342</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout" columnstretch="0,1,0">
-   <item row="0" column="0" colspan="3">
-    <widget class="QLabel" name="mHorizontalDistanceLabel">
-     <property name="text">
-      <string>Distance</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0" colspan="3">
-    <widget class="QLabel" name="mHorizontalDisplacementLabel">
-     <property name="text">
-      <string>Displacement</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0" colspan="3">
-    <widget class="QLabel" name="mOffsetLabel">
-     <property name="text">
-      <string>Offset</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0">
-    <widget class="QLabel" name="mHorizontalOffsetLabel">
-     <property name="text">
-      <string>Horizontal</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout_6">
-     <item>
-      <widget class="QgsDoubleSpinBox" name="mHorizontalOffsetSpinBox">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>1</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="decimals">
-        <number>6</number>
-       </property>
-       <property name="minimum">
-        <double>-99999999.989999994635582</double>
-       </property>
-       <property name="maximum">
-        <double>99999999.989999994635582</double>
-       </property>
-       <property name="singleStep">
-        <double>0.200000000000000</double>
-       </property>
-       <property name="clearValue">
-        <double>0.0</double>
-       </property>
-       <property name="showClearButton" stdset="0">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QgsUnitSelectionWidget" name="mHorizontalOffsetUnitWidget" native="true">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="focusPolicy">
-        <enum>Qt::StrongFocus</enum>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="7" column="2">
-    <widget class="QgsPropertyOverrideButton" name="mHorizontalOffsetDDBtn">
-     <property name="text">
-      <string>…</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="mVerticalOffsetLabel">
-     <property name="text">
-      <string>Vertical</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout_7">
-     <item>
-      <widget class="QgsDoubleSpinBox" name="mVerticalOffsetSpinBox">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>1</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="decimals">
-        <number>6</number>
-       </property>
-       <property name="minimum">
-        <double>-99999999.989999994635582</double>
-       </property>
-       <property name="maximum">
-        <double>99999999.989999994635582</double>
-       </property>
-       <property name="singleStep">
-        <double>0.200000000000000</double>
-       </property>
-       <property name="clearValue">
-        <double>0.0</double>
-       </property>
-       <property name="showClearButton" stdset="0">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QgsUnitSelectionWidget" name="mVerticalOffsetUnitWidget" native="true">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="focusPolicy">
-        <enum>Qt::StrongFocus</enum>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="8" column="2">
-    <widget class="QgsPropertyOverrideButton" name="mVerticalOffsetDDBtn">
-     <property name="text">
-      <string>…</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="mHorizontalDistanceLabel1">
-     <property name="text">
-      <string>Horizontal</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="mHorizontalDisplacementLabel1">
-     <property name="text">
-      <string>Horizontal</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QgsDoubleSpinBox" name="mVerticalDistanceSpinBox">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>1</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="decimals">
-        <number>6</number>
-       </property>
-       <property name="maximum">
-        <double>999999999.990000009536743</double>
-       </property>
-       <property name="singleStep">
-        <double>0.200000000000000</double>
-       </property>
-       <property name="showClearButton" stdset="0">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QgsUnitSelectionWidget" name="mVerticalDistanceUnitWidget" native="true">
-       <property name="focusPolicy">
-        <enum>Qt::StrongFocus</enum>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="2" column="2">
-    <widget class="QgsPropertyOverrideButton" name="mVerticalDistanceDDBtn">
-     <property name="text">
-      <string>…</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="mVerticalDisplacementLabel">
-     <property name="text">
-      <string>Vertical</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout_5">
-     <item>
-      <widget class="QgsDoubleSpinBox" name="mVerticalDisplacementSpinBox">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>1</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="decimals">
-        <number>6</number>
-       </property>
-       <property name="maximum">
-        <double>99999999.989999994635582</double>
-       </property>
-       <property name="singleStep">
-        <double>0.200000000000000</double>
-       </property>
-       <property name="showClearButton" stdset="0">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QgsUnitSelectionWidget" name="mVerticalDisplacementUnitWidget" native="true">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="focusPolicy">
-        <enum>Qt::StrongFocus</enum>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="1" column="2">
-    <widget class="QgsPropertyOverrideButton" name="mHorizontalDistanceDDBtn">
-     <property name="text">
-      <string>…</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="mVerticalDistanceLabel">
-     <property name="text">
-      <string>Vertical</string>
-     </property>
-    </widget>
-   </item>
    <item row="4" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
@@ -306,10 +53,58 @@
      </item>
     </layout>
    </item>
-   <item row="4" column="2">
-    <widget class="QgsPropertyOverrideButton" name="mHorizontalDisplacementDDBtn">
+   <item row="7" column="2">
+    <widget class="QgsPropertyOverrideButton" name="mHorizontalOffsetDDBtn">
      <property name="text">
       <string>…</string>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="0" colspan="3">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="2" column="2">
+    <widget class="QgsPropertyOverrideButton" name="mVerticalDistanceDDBtn">
+     <property name="text">
+      <string>…</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="3">
+    <widget class="QLabel" name="mHorizontalDisplacementLabel">
+     <property name="text">
+      <string>Displacement</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0">
+    <widget class="QLabel" name="mVerticalOffsetLabel">
+     <property name="text">
+      <string>Vertical</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="mHorizontalDisplacementLabel1">
+     <property name="text">
+      <string>Horizontal</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="mVerticalDistanceLabel">
+     <property name="text">
+      <string>Vertical</string>
      </property>
     </widget>
    </item>
@@ -352,6 +147,72 @@
      </item>
     </layout>
    </item>
+   <item row="7" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_6">
+     <item>
+      <widget class="QgsDoubleSpinBox" name="mHorizontalOffsetSpinBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="minimum">
+        <double>-99999999.989999994635582</double>
+       </property>
+       <property name="maximum">
+        <double>99999999.989999994635582</double>
+       </property>
+       <property name="singleStep">
+        <double>0.200000000000000</double>
+       </property>
+       <property name="clearValue" stdset="0">
+        <double>0.000000000000000</double>
+       </property>
+       <property name="showClearButton" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsUnitSelectionWidget" name="mHorizontalOffsetUnitWidget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="mVerticalDisplacementLabel">
+     <property name="text">
+      <string>Vertical</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0" colspan="3">
+    <widget class="QLabel" name="mOffsetLabel">
+     <property name="text">
+      <string>Offset</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="3">
+    <widget class="QLabel" name="mHorizontalDistanceLabel">
+     <property name="text">
+      <string>Distance</string>
+     </property>
+    </widget>
+   </item>
    <item row="5" column="2">
     <widget class="QgsPropertyOverrideButton" name="mVerticalDisplacementDDBtn">
      <property name="text">
@@ -359,18 +220,174 @@
      </property>
     </widget>
    </item>
-   <item row="9" column="0" colspan="3">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
+   <item row="2" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QgsDoubleSpinBox" name="mVerticalDistanceSpinBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="maximum">
+        <double>999999999.990000009536743</double>
+       </property>
+       <property name="singleStep">
+        <double>0.200000000000000</double>
+       </property>
+       <property name="showClearButton" stdset="0">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsUnitSelectionWidget" name="mVerticalDistanceUnitWidget" native="true">
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="mHorizontalDistanceLabel1">
+     <property name="text">
+      <string>Horizontal</string>
      </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QgsPropertyOverrideButton" name="mHorizontalDistanceDDBtn">
+     <property name="text">
+      <string>…</string>
      </property>
-    </spacer>
+    </widget>
+   </item>
+   <item row="8" column="2">
+    <widget class="QgsPropertyOverrideButton" name="mVerticalOffsetDDBtn">
+     <property name="text">
+      <string>…</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_7">
+     <item>
+      <widget class="QgsDoubleSpinBox" name="mVerticalOffsetSpinBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="minimum">
+        <double>-99999999.989999994635582</double>
+       </property>
+       <property name="maximum">
+        <double>99999999.989999994635582</double>
+       </property>
+       <property name="singleStep">
+        <double>0.200000000000000</double>
+       </property>
+       <property name="clearValue" stdset="0">
+        <double>0.000000000000000</double>
+       </property>
+       <property name="showClearButton" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsUnitSelectionWidget" name="mVerticalOffsetUnitWidget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="5" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <item>
+      <widget class="QgsDoubleSpinBox" name="mVerticalDisplacementSpinBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="maximum">
+        <double>99999999.989999994635582</double>
+       </property>
+       <property name="singleStep">
+        <double>0.200000000000000</double>
+       </property>
+       <property name="showClearButton" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsUnitSelectionWidget" name="mVerticalDisplacementUnitWidget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="mHorizontalOffsetLabel">
+     <property name="text">
+      <string>Horizontal</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2">
+    <widget class="QgsPropertyOverrideButton" name="mHorizontalDisplacementDDBtn">
+     <property name="text">
+      <string>…</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="1">
+    <widget class="QComboBox" name="mClipModeComboBox"/>
+   </item>
+   <item row="9" column="0">
+    <widget class="QLabel" name="mOffsetLabel_2">
+     <property name="text">
+      <string>Clipping</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="2">
+    <widget class="QgsPropertyOverrideButton" name="mClippingDDBtn">
+     <property name="text">
+      <string>…</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

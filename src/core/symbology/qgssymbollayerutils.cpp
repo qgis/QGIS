@@ -437,6 +437,42 @@ QgsArrowSymbolLayer::ArrowType QgsSymbolLayerUtils::decodeArrowType( const QVari
   return QgsArrowSymbolLayer::ArrowPlain;
 }
 
+Qgis::MarkerClipMode QgsSymbolLayerUtils::decodeMarkerClipMode( const QString &string, bool *ok )
+{
+  const QString compareString = string.trimmed();
+  if ( ok )
+    *ok = true;
+
+  if ( compareString.compare( QLatin1String( "no" ), Qt::CaseInsensitive ) == 0 )
+    return Qgis::MarkerClipMode::NoClipping;
+  else if ( compareString.compare( QLatin1String( "shape" ), Qt::CaseInsensitive ) == 0 )
+    return Qgis::MarkerClipMode::Shape;
+  else if ( compareString.compare( QLatin1String( "centroid_within" ), Qt::CaseInsensitive ) == 0 )
+    return Qgis::MarkerClipMode::CentroidWithin;
+  else if ( compareString.compare( QLatin1String( "completely_within" ), Qt::CaseInsensitive ) == 0 )
+    return Qgis::MarkerClipMode::CompletelyWithin;
+
+  if ( ok )
+    *ok = false;
+  return  Qgis::MarkerClipMode::Shape;
+}
+
+QString QgsSymbolLayerUtils::encodeMarkerClipMode( Qgis::MarkerClipMode mode )
+{
+  switch ( mode )
+  {
+    case Qgis::MarkerClipMode::NoClipping:
+      return QStringLiteral( "no" );
+    case Qgis::MarkerClipMode::Shape:
+      return QStringLiteral( "shape" );
+    case Qgis::MarkerClipMode::CentroidWithin:
+      return QStringLiteral( "centroid_within" );
+    case Qgis::MarkerClipMode::CompletelyWithin:
+      return QStringLiteral( "completely_within" );
+  }
+  return QString(); // no warnings
+}
+
 QString QgsSymbolLayerUtils::encodePoint( QPointF point )
 {
   return QStringLiteral( "%1,%2" ).arg( qgsDoubleToString( point.x() ), qgsDoubleToString( point.y() ) );

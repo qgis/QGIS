@@ -1087,3 +1087,11 @@ QgsRandomMarkerFillSymbolLayer.DensityBasedCount.__doc__ = "The point count is p
 Qgis.PointCountMethod.__doc__ = 'Methods which define the number of points randomly filling a polygon.\n\n.. note::\n\n   Prior to QGIS 3.24 this was available as :py:class:`QgsRandomMarkerFillSymbolLayer`.CountMethod\n\n.. versionadded:: 3.24\n\n' + '* ``AbsoluteCount``: ' + Qgis.PointCountMethod.Absolute.__doc__ + '\n' + '* ``DensityBasedCount``: ' + Qgis.PointCountMethod.DensityBased.__doc__
 # --
 Qgis.PointCountMethod.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.MarkerClipMode.NoClipping.__doc__ = "No clipping, render complete markers"
+Qgis.MarkerClipMode.Shape.__doc__ = "Clip to polygon shape"
+Qgis.MarkerClipMode.CentroidWithin.__doc__ = "Render complete markers wherever their centroid falls within the polygon shape"
+Qgis.MarkerClipMode.CompletelyWithin.__doc__ = "Render complete markers wherever the completely fall within the polygon shape"
+Qgis.MarkerClipMode.__doc__ = 'Marker clipping modes.\n\n.. versionadded:: 3.24\n\n' + '* ``NoClipping``: ' + Qgis.MarkerClipMode.NoClipping.__doc__ + '\n' + '* ``Shape``: ' + Qgis.MarkerClipMode.Shape.__doc__ + '\n' + '* ``CentroidWithin``: ' + Qgis.MarkerClipMode.CentroidWithin.__doc__ + '\n' + '* ``CompletelyWithin``: ' + Qgis.MarkerClipMode.CompletelyWithin.__doc__
+# --
+Qgis.MarkerClipMode.baseClass = Qgis

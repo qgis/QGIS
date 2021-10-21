@@ -3204,6 +3204,19 @@ QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( QgsV
                                          << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mVerticalOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                        << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+
+  mClipModeComboBox->addItem( tr( "Clip to Shape" ), static_cast< int >( Qgis::MarkerClipMode::Shape ) );
+  mClipModeComboBox->addItem( tr( "Marker Centroid Within Shape" ), static_cast< int >( Qgis::MarkerClipMode::CentroidWithin ) );
+  mClipModeComboBox->addItem( tr( "Marker Completely Within Shape" ), static_cast< int >( Qgis::MarkerClipMode::CompletelyWithin ) );
+  mClipModeComboBox->addItem( tr( "No Clipping" ), static_cast< int >( Qgis::MarkerClipMode::NoClipping ) );
+  connect( mClipModeComboBox, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]
+  {
+    if ( mLayer )
+    {
+      mLayer->setClipMode( static_cast< Qgis::MarkerClipMode >( mClipModeComboBox->currentData().toInt() ) );
+      emit changed();
+    }
+  } );
 }
 
 
@@ -3247,12 +3260,15 @@ void QgsPointPatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer
   mVerticalOffsetUnitWidget->setMapUnitScale( mLayer->offsetYMapUnitScale() );
   mVerticalOffsetUnitWidget->blockSignals( false );
 
+  whileBlocking( mClipModeComboBox )->setCurrentIndex( mClipModeComboBox->findData( static_cast< int >( mLayer->clipMode() ) ) );
+
   registerDataDefinedButton( mHorizontalDistanceDDBtn, QgsSymbolLayer::PropertyDistanceX );
   registerDataDefinedButton( mVerticalDistanceDDBtn, QgsSymbolLayer::PropertyDistanceY );
   registerDataDefinedButton( mHorizontalDisplacementDDBtn, QgsSymbolLayer::PropertyDisplacementX );
   registerDataDefinedButton( mVerticalDisplacementDDBtn, QgsSymbolLayer::PropertyDisplacementY );
   registerDataDefinedButton( mHorizontalOffsetDDBtn, QgsSymbolLayer::PropertyOffsetX );
   registerDataDefinedButton( mVerticalOffsetDDBtn, QgsSymbolLayer::PropertyOffsetY );
+  registerDataDefinedButton( mClippingDDBtn, QgsSymbolLayer::PropertyMarkerClipping );
 }
 
 QgsSymbolLayer *QgsPointPatternFillSymbolLayerWidget::symbolLayer()
