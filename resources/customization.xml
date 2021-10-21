@@ -2005,6 +2005,20 @@
     <widget objectName="mOffsetYEdit" class="QLineEdit" label=""/>
     <widget objectName="buttonBox" class="QDialogButtonBox" label=""/>
   </widget>
+  <widget objectName="QgsDecorationTileGridDialog" class="QDialog" label="">
+    <widget objectName="chkEnable" class="QCheckBox" label="Enable grid"/>
+    <widget objectName="mZoomLevel" class="QLabel" label="Zoom level"/>
+    <widget objectName="mGridTypeLabel" class="QLabel" label="Grid type"/>
+    <widget objectName="mLineSymbolLabel" class="QLabel" label="Line symbol"/>
+    <widget objectName="mGridTypeComboBox" class="QComboBox" label=""/>
+    <widget objectName="mLineSymbolButton" class="QPushButton" label=""/>
+    <widget objectName="mDrawAnnotationCheckBox" class="QGroupBox" label="">
+      <widget objectName="mAnnotationFontButton" class="QPushButton" label="Font…"/>
+    </widget>
+    <widget objectName="mMarkerSymbolLabel" class="QLabel" label="Marker symbol"/>
+    <widget objectName="mMarkerSymbolButton" class="QPushButton" label=""/>
+    <widget objectName="buttonBox" class="QDialogButtonBox" label=""/>
+  </widget>
   <widget objectName="QgsGenericProjectionSelectorBase" class="QDialog" label="">
     <widget objectName="textEdit" class="QTextEdit" label="">
       <widget objectName="qt_scrollarea_viewport" class="QWidget" label=""/>
