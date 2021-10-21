@@ -508,7 +508,20 @@ QWidget *QgsCategorizedRendererViewItemDelegate::createEditor( QWidget *parent, 
     case QVariant::Type::Double:
     {
       editor = new QgsDoubleSpinBox( parent );
-      editor->setDecimals( 12 );
+      bool ok;
+      const QVariant value = index.data( QgsCategorizedSymbolRendererWidget::CustomRoles::ValueRole );
+      int decimals {2};
+      if ( value.toDouble( &ok ); ok )
+      {
+        const QString strVal { value.toString() };
+        const int dotPosition( strVal.indexOf( '.' ) );
+        if ( dotPosition >= 0 )
+        {
+          decimals = std::max<int>( 2, strVal.length() - dotPosition - 1 );
+        }
+      }
+      editor->setDecimals( decimals );
+      editor->setClearValue( 0 );
       editor->setMaximum( std::numeric_limits<double>::max() );
       editor->setMinimum( std::numeric_limits<double>::lowest() );
       break;
@@ -517,6 +530,7 @@ QWidget *QgsCategorizedRendererViewItemDelegate::createEditor( QWidget *parent, 
     {
       editor = new QgsDoubleSpinBox( parent );
       editor->setDecimals( 0 );
+      editor->setClearValue( 0 );
       editor->setMaximum( std::numeric_limits<int>::max() );
       editor->setMinimum( std::numeric_limits<int>::min() );
       break;
@@ -525,6 +539,7 @@ QWidget *QgsCategorizedRendererViewItemDelegate::createEditor( QWidget *parent, 
     {
       editor = new QgsDoubleSpinBox( parent );
       editor->setDecimals( 0 );
+      editor->setClearValue( 0 );
       editor->setMaximum( std::numeric_limits<char>::max() );
       editor->setMinimum( std::numeric_limits<char>::min() );
       break;
@@ -533,6 +548,7 @@ QWidget *QgsCategorizedRendererViewItemDelegate::createEditor( QWidget *parent, 
     {
       editor = new QgsDoubleSpinBox( parent );
       editor->setDecimals( 0 );
+      editor->setClearValue( 0 );
       editor->setMaximum( std::numeric_limits<unsigned int>::max() );
       editor->setMinimum( 0 );
       break;
@@ -541,6 +557,7 @@ QWidget *QgsCategorizedRendererViewItemDelegate::createEditor( QWidget *parent, 
     {
       editor = new QgsDoubleSpinBox( parent );
       editor->setDecimals( 0 );
+      editor->setClearValue( 0 );
       editor->setMaximum( static_cast<double>( std::numeric_limits<qlonglong>::max() ) );
       editor->setMinimum( std::numeric_limits<qlonglong>::min() );
       break;
@@ -549,6 +566,7 @@ QWidget *QgsCategorizedRendererViewItemDelegate::createEditor( QWidget *parent, 
     {
       editor = new QgsDoubleSpinBox( parent );
       editor->setDecimals( 0 );
+      editor->setClearValue( 0 );
       editor->setMaximum( static_cast<double>( std::numeric_limits<unsigned long long>::max() ) );
       editor->setMinimum( 0 );
       break;

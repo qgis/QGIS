@@ -35,6 +35,7 @@ Returns the upper value.
 .. versionadded:: 3.21
 %End
     void setUpperValue( const QString &val );
+
 };
 
 /************************************************************************
