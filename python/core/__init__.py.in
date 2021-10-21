@@ -66,12 +66,12 @@ QgsProviderMetadata = PyProviderMetadata
 
 # monkey patch deprecated enum values to maintain API
 # TODO - remove for QGIS 4.0
-QgsMarkerLineSymbolLayer.Interval = QgsTemplatedLineSymbolLayerBase.Interval
-QgsMarkerLineSymbolLayer.Vertex = QgsTemplatedLineSymbolLayerBase.Vertex
-QgsMarkerLineSymbolLayer.LastVertex = QgsTemplatedLineSymbolLayerBase.LastVertex
-QgsMarkerLineSymbolLayer.FirstVertex = QgsTemplatedLineSymbolLayerBase.FirstVertex
-QgsMarkerLineSymbolLayer.CentralPoint = QgsTemplatedLineSymbolLayerBase.CentralPoint
-QgsMarkerLineSymbolLayer.CurvePoint = QgsTemplatedLineSymbolLayerBase.CurvePoint
+QgsMarkerLineSymbolLayer.Interval = Qgis.MarkerLinePlacement.Interval
+QgsMarkerLineSymbolLayer.Vertex = Qgis.MarkerLinePlacement.Vertex
+QgsMarkerLineSymbolLayer.LastVertex = Qgis.MarkerLinePlacement.LastVertex
+QgsMarkerLineSymbolLayer.FirstVertex = Qgis.MarkerLinePlacement.FirstVertex
+QgsMarkerLineSymbolLayer.CentralPoint = Qgis.MarkerLinePlacement.CentralPoint
+QgsMarkerLineSymbolLayer.CurvePoint = Qgis.MarkerLinePlacement.CurvePoint
 
 QgsVectorLayer.VertexMarkerType = Qgis.VertexMarkerType
 QgsVectorLayer.SemiTransparentCircle = Qgis.VertexMarkerType.SemiTransparentCircle
