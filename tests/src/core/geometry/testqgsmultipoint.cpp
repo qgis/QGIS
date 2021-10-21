@@ -771,7 +771,7 @@ void TestQgsMultiPoint::boundingBox()
   QCOMPARE( mp.boundingBox(), QgsRectangle( 0, 0, 1, 2 ) );
 
   mp.clear();
-  QCOMPARE( mp.boundingBox(), QgsRectangle( 0, 0, 0, 0 ) );
+  QCOMPARE( mp.boundingBox(), QgsRectangle() );
 
   mp.addGeometry( new QgsPoint( 1, 2 ) );
   QCOMPARE( mp.boundingBox(), QgsRectangle( 1, 2, 1, 2 ) );
