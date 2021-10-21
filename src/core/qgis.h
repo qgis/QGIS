@@ -1012,7 +1012,7 @@ class CORE_EXPORT Qgis
       Circle, //!< Circle
       Cross, //!< Cross (lines only)
       CrossFill, //!< Solid filled cross
-      Cross2, //!< Rotated cross (lines only), "x" shape
+      Cross2, //!< Rotated cross (lines only), 'x' shape
       Line, //!< Vertical line
       ArrowHead, //!< Right facing arrow head (unfilled, lines only)
       ArrowHeadFilled, //!< Right facing filled arrow head
