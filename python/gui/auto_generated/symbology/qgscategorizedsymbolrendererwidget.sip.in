@@ -19,6 +19,12 @@ class QgsCategorizedSymbolRendererWidget : QgsRendererWidget
 #include "qgscategorizedsymbolrendererwidget.h"
 %End
   public:
+
+    enum CustomRoles
+    {
+      ValueRole
+    };
+
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
 
     QgsCategorizedSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );

@@ -448,7 +448,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
      *
      *  \note Precision is ignored for integers.
      *
-     *  \since QGIS 3.21
+     *  \since QGIS 3.22.1
      */
     static QString displayString( const QVariant &value, int precision = -1 );
 
