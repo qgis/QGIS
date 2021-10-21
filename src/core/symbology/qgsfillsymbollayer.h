@@ -1625,6 +1625,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
 /**
  * \ingroup core
  * \class QgsPointPatternFillSymbolLayer
+ * \brief A fill symbol layer which fills polygon shapes with repeating marker symbols.
  */
 class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
 {
@@ -1641,31 +1642,236 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
     QString layerType() const override;
-
     void startRender( QgsSymbolRenderContext &context ) override;
     void stopRender( QgsSymbolRenderContext &context ) override;
     void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
-
     QVariantMap properties() const override;
-
     QgsPointPatternFillSymbolLayer *clone() const override SIP_FACTORY;
-
     void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
-
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
+    bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
+    QgsSymbol *subSymbol() override;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
+    QgsUnitTypes::RenderUnit outputUnit() const override;
+    bool usesMapUnits() const override;
+    void setMapUnitScale( const QgsMapUnitScale &scale ) override;
+    QgsMapUnitScale mapUnitScale() const override;
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    bool hasDataDefinedProperties() const override;
+    void setColor( const QColor &c ) override;
+    QColor color() const override;
 
-    //getters and setters
+    /**
+     * Returns the horizontal distance between rendered markers in the fill.
+     *
+     * Units are retrieved via distanceXUnit().
+     *
+     * \see setDistanceX()
+     * \see distanceXUnit()
+     * \see distanceXMapUnitScale()
+     */
     double distanceX() const { return mDistanceX; }
+
+    /**
+     * Sets the horizontal distance between rendered markers in the fill.
+     *
+     * Units are set via setDistanceXUnit().
+     *
+     * \see distanceX()
+     * \see setDistanceXUnit()
+     * \see setDistanceXMapUnitScale()
+     */
     void setDistanceX( double d ) { mDistanceX = d; }
 
+    /**
+     * Sets the \a unit for the horizontal distance between points in the pattern.
+     * \param unit distance units
+     * \see distanceXUnit()
+     * \see setDistanceYUnit()
+    */
+    void setDistanceXUnit( QgsUnitTypes::RenderUnit unit ) { mDistanceXUnit = unit; }
+
+    /**
+     * Returns the units for the horizontal distance between points in the pattern.
+     * \see setDistanceXUnit()
+     * \see distanceYUnit()
+    */
+    QgsUnitTypes::RenderUnit distanceXUnit() const { return mDistanceXUnit; }
+
+    /**
+     * Sets the map unit \a scale for the horizontal distance between points in the pattern.
+     *
+     * \see distanceXMapUnitScale()
+     * \see setDistanceX()
+     */
+    void setDistanceXMapUnitScale( const QgsMapUnitScale &scale ) { mDistanceXMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale for the horizontal distance between points in the pattern.
+     *
+     * \see setDistanceXMapUnitScale()
+     * \see distanceX()
+     */
+    const QgsMapUnitScale &distanceXMapUnitScale() const { return mDistanceXMapUnitScale; }
+
+    /**
+     * Returns the vertical distance between rendered markers in the fill.
+     *
+     * Units are retrieved via distanceYUnit().
+     *
+     * \see setDistanceY()
+     * \see distanceYUnit()
+     * \see distanceYMapUnitScale()
+     */
     double distanceY() const { return mDistanceY; }
+
+    /**
+     * Sets the vertical distance between rendered markers in the fill.
+     *
+     * Units are set via setDistanceYUnit().
+     *
+     * \see distanceY()
+     * \see setDistanceYUnit()
+     * \see setDistanceYMapUnitScale()
+     */
     void setDistanceY( double d ) { mDistanceY = d; }
 
+    /**
+     * Sets the \a unit for the vertical distance between points in the pattern.
+     * \param unit distance units
+     * \see distanceYUnit()
+     * \see setDistanceXUnit()
+    */
+    void setDistanceYUnit( QgsUnitTypes::RenderUnit unit ) { mDistanceYUnit = unit; }
+
+    /**
+     * Returns the units for the vertical distance between points in the pattern.
+     * \see setDistanceYUnit()
+     * \see distanceXUnit()
+    */
+    QgsUnitTypes::RenderUnit distanceYUnit() const { return mDistanceYUnit; }
+
+    /**
+     * Sets the map unit \a scale for the vertical distance between points in the pattern.
+     *
+     * \see distanceYMapUnitScale()
+     * \see setDistanceY()
+     */
+    void setDistanceYMapUnitScale( const QgsMapUnitScale &scale ) { mDistanceYMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale for the vertical distance between points in the pattern.
+     *
+     * \see setDistanceYMapUnitScale()
+     * \see distanceY()
+     */
+    const QgsMapUnitScale &distanceYMapUnitScale() const { return mDistanceYMapUnitScale; }
+
+    /**
+     * Returns the horizontal displacement for odd numbered rows in the pattern.
+     *
+     * Units are retrieved via displacementXUnit().
+     *
+     * \see setDisplacementX()
+     * \see displacementXUnit()
+     * \see displacementXMapUnitScale()
+     */
     double displacementX() const { return mDisplacementX; }
+
+    /**
+     * Sets the horizontal displacement for odd numbered rows in the pattern.
+     *
+     * Units are set via setDisplacementXUnit().
+     *
+     * \see displacementX()
+     * \see setDisplacementXUnit()
+     * \see setDisplacementXMapUnitScale()
+     */
     void setDisplacementX( double d ) { mDisplacementX = d; }
 
+    /**
+     * Sets the units for the horizontal displacement between rows in the pattern.
+     * \param unit displacement units
+     * \see displacementXUnit()
+     * \see setDisplacementYUnit()
+    */
+    void setDisplacementXUnit( QgsUnitTypes::RenderUnit unit ) { mDisplacementXUnit = unit; }
+
+    /**
+     * Returns the units for the horizontal displacement between rows in the pattern.
+     * \see setDisplacementXUnit()
+     * \see displacementYUnit()
+    */
+    QgsUnitTypes::RenderUnit displacementXUnit() const { return mDisplacementXUnit; }
+
+    /**
+     * Sets the map unit \a scale for the horizontal displacement between odd numbered rows in the pattern.
+     *
+     * \see displacementXMapUnitScale()
+     * \see setDisplacementX()
+     */
+    void setDisplacementXMapUnitScale( const QgsMapUnitScale &scale ) { mDisplacementXMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale for the horizontal displacement between odd numbered rows in the pattern.
+     *
+     * \see setDisplacementXMapUnitScale()
+     * \see displacementX()
+     */
+    const QgsMapUnitScale &displacementXMapUnitScale() const { return mDisplacementXMapUnitScale; }
+
+    /**
+     * Returns the vertical displacement for odd numbered columns in the pattern.
+     *
+     * Units are retrieved via displacementYUnit().
+     *
+     * \see setDisplacementY()
+     * \see displacementYUnit()
+     * \see displacementYMapUnitScale()
+     */
     double displacementY() const { return mDisplacementY; }
+
+    /**
+     * Sets the vertical displacement for odd numbered columns in the pattern.
+     *
+     * Units are set via setDisplacementYUnit().
+     *
+     * \see displacementY()
+     * \see setDisplacementYUnit()
+     * \see setDisplacementYMapUnitScale()
+     */
     void setDisplacementY( double d ) { mDisplacementY = d; }
+
+    /**
+     * Sets the units for the vertical displacement between rows in the pattern.
+     * \param unit displacement units
+     * \see displacementYUnit()
+     * \see setDisplacementXUnit()
+    */
+    void setDisplacementYUnit( QgsUnitTypes::RenderUnit unit ) { mDisplacementYUnit = unit; }
+
+    /**
+     * Returns the units for the vertical displacement between rows in the pattern.
+     * \see setDisplacementYUnit()
+     * \see displacementXUnit()
+    */
+    QgsUnitTypes::RenderUnit displacementYUnit() const { return mDisplacementYUnit; }
+
+    /**
+     * Sets the map unit \a scale for the vertical displacement between odd numbered columns in the pattern.
+     *
+     * \see displacementYMapUnitScale()
+     * \see setDisplacementY()
+     */
+    void setDisplacementYMapUnitScale( const QgsMapUnitScale &scale ) { mDisplacementYMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale for the vertical displacement between odd numbered columns in the pattern.
+     *
+     * \see setDisplacementYMapUnitScale()
+     * \see displacementY()
+     */
+    const QgsMapUnitScale &displacementYMapUnitScale() const { return mDisplacementYMapUnitScale; }
 
     /**
      * Sets the horizontal offset values for points in the pattern.
@@ -1700,81 +1906,6 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
      * \since QGIS 3.8
     */
     double offsetY() const { return mOffsetY; }
-
-    bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
-    QgsSymbol *subSymbol() override;
-
-    /**
-     * Sets the units for the horizontal distance between points in the pattern.
-     * \param unit distance units
-     * \see distanceXUnit()
-     * \see setDistanceYUnit()
-    */
-    void setDistanceXUnit( QgsUnitTypes::RenderUnit unit ) { mDistanceXUnit = unit; }
-
-    /**
-     * Returns the units for the horizontal distance between points in the pattern.
-     * \see setDistanceXUnit()
-     * \see distanceYUnit()
-    */
-    QgsUnitTypes::RenderUnit distanceXUnit() const { return mDistanceXUnit; }
-
-    void setDistanceXMapUnitScale( const QgsMapUnitScale &scale ) { mDistanceXMapUnitScale = scale; }
-    const QgsMapUnitScale &distanceXMapUnitScale() const { return mDistanceXMapUnitScale; }
-
-    /**
-     * Sets the units for the vertical distance between points in the pattern.
-     * \param unit distance units
-     * \see distanceYUnit()
-     * \see setDistanceXUnit()
-    */
-    void setDistanceYUnit( QgsUnitTypes::RenderUnit unit ) { mDistanceYUnit = unit; }
-
-    /**
-     * Returns the units for the vertical distance between points in the pattern.
-     * \see setDistanceYUnit()
-     * \see distanceXUnit()
-    */
-    QgsUnitTypes::RenderUnit distanceYUnit() const { return mDistanceYUnit; }
-
-    void setDistanceYMapUnitScale( const QgsMapUnitScale &scale ) { mDistanceYMapUnitScale = scale; }
-    const QgsMapUnitScale &distanceYMapUnitScale() const { return mDistanceYMapUnitScale; }
-
-    /**
-     * Sets the units for the horizontal displacement between rows in the pattern.
-     * \param unit displacement units
-     * \see displacementXUnit()
-     * \see setDisplacementYUnit()
-    */
-    void setDisplacementXUnit( QgsUnitTypes::RenderUnit unit ) { mDisplacementXUnit = unit; }
-
-    /**
-     * Returns the units for the horizontal displacement between rows in the pattern.
-     * \see setDisplacementXUnit()
-     * \see displacementYUnit()
-    */
-    QgsUnitTypes::RenderUnit displacementXUnit() const { return mDisplacementXUnit; }
-
-    void setDisplacementXMapUnitScale( const QgsMapUnitScale &scale ) { mDisplacementXMapUnitScale = scale; }
-    const QgsMapUnitScale &displacementXMapUnitScale() const { return mDisplacementXMapUnitScale; }
-
-    /**
-     * Sets the units for the vertical displacement between rows in the pattern.
-     * \param unit displacement units
-     * \see displacementYUnit()
-     * \see setDisplacementXUnit()
-    */
-    void setDisplacementYUnit( QgsUnitTypes::RenderUnit unit ) { mDisplacementYUnit = unit; }
-
-    /**
-     * Returns the units for the vertical displacement between rows in the pattern.
-     * \see setDisplacementYUnit()
-     * \see displacementXUnit()
-    */
-    QgsUnitTypes::RenderUnit displacementYUnit() const { return mDisplacementYUnit; }
-
-    void setDisplacementYMapUnitScale( const QgsMapUnitScale &scale ) { mDisplacementYMapUnitScale = scale; }
-    const QgsMapUnitScale &displacementYMapUnitScale() const { return mDisplacementYMapUnitScale; }
 
     /**
      * Sets the units for the horizontal offset between rows in the pattern.
@@ -1843,18 +1974,6 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
      * \since QGIS 3.8
     */
     const QgsMapUnitScale &offsetYMapUnitScale() const { return mOffsetYMapUnitScale; }
-
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
-    QgsUnitTypes::RenderUnit outputUnit() const override;
-    bool usesMapUnits() const override;
-
-    void setMapUnitScale( const QgsMapUnitScale &scale ) override;
-    QgsMapUnitScale mapUnitScale() const override;
-
-    QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
-    bool hasDataDefinedProperties() const override;
-    void setColor( const QColor &c ) override;
-    QColor color() const override;
 
   protected:
     QgsMarkerSymbol *mMarkerSymbol = nullptr;
