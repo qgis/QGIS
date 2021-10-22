@@ -596,7 +596,7 @@ void QgsAttributeForm::updateVirtualFields( const int originIdx )
     }
   }
 
-  // go through depending fields and update the fields with virtual field
+// go through depending fields and update the virtual field with its expression
   QList<QgsWidgetWrapper *> relevantWidgets = mVirtualFieldsDependencies.values( originIdx );
   for ( QgsWidgetWrapper *ww : std::as_const( relevantWidgets ) )
   {
