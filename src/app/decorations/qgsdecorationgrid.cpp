@@ -61,31 +61,22 @@ QgsDecorationGrid::QgsDecorationGrid( QObject *parent )
   setDisplayName( tr( "Grid" ) );
   mConfigurationName = QStringLiteral( "Grid" );
 
-
-  mLineSymbol = nullptr;
-  mMarkerSymbol = nullptr;
   projectRead();
 
   connect( QgisApp::instance()->mapCanvas(), &QgsMapCanvas::destinationCrsChanged,
            this, &QgsDecorationGrid::checkMapUnitsChanged );
 }
 
-QgsDecorationGrid::~QgsDecorationGrid()
-{
-  delete mLineSymbol;
-  delete mMarkerSymbol;
-}
+QgsDecorationGrid::~QgsDecorationGrid() = default;
 
 void QgsDecorationGrid::setLineSymbol( QgsLineSymbol *symbol )
 {
-  delete mLineSymbol;
-  mLineSymbol = symbol;
+  mLineSymbol.reset( symbol );
 }
 
 void QgsDecorationGrid::setMarkerSymbol( QgsMarkerSymbol *symbol )
 {
-  delete mMarkerSymbol;
-  mMarkerSymbol = symbol;
+  mMarkerSymbol.reset( symbol );
 }
 
 void QgsDecorationGrid::projectRead()
@@ -132,10 +123,10 @@ void QgsDecorationGrid::projectRead()
   {
     doc.setContent( xml );
     elem = doc.documentElement();
-    mLineSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elem, rwContext );
+    mLineSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elem, rwContext ) );
   }
   if ( ! mLineSymbol )
-    mLineSymbol = new QgsLineSymbol();
+    mLineSymbol = std::make_unique< QgsLineSymbol >();
 
   if ( mMarkerSymbol )
     setMarkerSymbol( nullptr );
@@ -144,15 +135,14 @@ void QgsDecorationGrid::projectRead()
   {
     doc.setContent( xml );
     elem = doc.documentElement();
-    mMarkerSymbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( elem, rwContext );
+    mMarkerSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( elem, rwContext ) );
   }
   if ( ! mMarkerSymbol )
   {
     // set default symbol : cross with width=3
     QgsSymbolLayerList symbolList;
     symbolList << new QgsSimpleMarkerSymbolLayer( Qgis::MarkerShape::Cross, 3, 0 );
-    mMarkerSymbol = new QgsMarkerSymbol( symbolList );
-    // mMarkerSymbol = new QgsMarkerSymbol();
+    mMarkerSymbol = std::make_unique< QgsMarkerSymbol >( symbolList );
   }
 }
 
@@ -185,7 +175,7 @@ void QgsDecorationGrid::saveToProject()
   rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
   if ( mLineSymbol )
   {
-    elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "line symbol" ), mLineSymbol, doc, rwContext );
+    elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "line symbol" ), mLineSymbol.get(), doc, rwContext );
     doc.appendChild( elem );
     // FIXME this works, but XML will not be valid as < is replaced by &lt;
     QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/LineSymbol" ), doc.toString() );
@@ -193,7 +183,7 @@ void QgsDecorationGrid::saveToProject()
   if ( mMarkerSymbol )
   {
     doc.setContent( QString() );
-    elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "marker symbol" ), mMarkerSymbol, doc, rwContext );
+    elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "marker symbol" ), mMarkerSymbol.get(), doc, rwContext );
     doc.appendChild( elem );
     QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/MarkerSymbol" ), doc.toString() );
   }

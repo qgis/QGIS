@@ -118,11 +118,11 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
 
     //! Sets symbol that is used to draw grid lines. Takes ownership
     void setLineSymbol( QgsLineSymbol *symbol );
-    const QgsLineSymbol *lineSymbol() const { return mLineSymbol; }
+    const QgsLineSymbol *lineSymbol() const { return mLineSymbol.get(); }
 
     //! Sets symbol that is used to draw markers. Takes ownership
     void setMarkerSymbol( QgsMarkerSymbol *symbol );
-    const QgsMarkerSymbol *markerSymbol() const { return mMarkerSymbol; }
+    const QgsMarkerSymbol *markerSymbol() const { return mMarkerSymbol.get(); }
 
     //! Sets map unit type
     void setMapUnits( QgsUnitTypes::DistanceUnit t ) { mMapUnits = t; }
@@ -187,8 +187,8 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     //! Annotation can be horizontal / vertical or different for axes
     GridAnnotationDirection mGridAnnotationDirection;
 
-    QgsLineSymbol *mLineSymbol = nullptr;
-    QgsMarkerSymbol *mMarkerSymbol = nullptr;
+    std::unique_ptr< QgsLineSymbol > mLineSymbol;
+    std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
 
     QgsUnitTypes::DistanceUnit mMapUnits;
 
