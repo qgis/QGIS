@@ -451,9 +451,9 @@ int QgsDecorationGrid::xGridLines( const QgsMapSettings &mapSettings, QList< QPa
   if ( mGridIntervalY / mapSettings.mapUnitsPerPixel() < 1 )
     return 1;
 
-  const QPolygonF &canvasPoly = canvasPolygon( mapSettings );
-  const QPolygonF &mapPolygon = canvasExtent( mapSettings );
-  const QRectF &mapBoundingRect = mapPolygon.boundingRect();
+  const QPolygonF canvasPoly = canvasPolygon( mapSettings );
+  const QPolygonF mapPolygon = canvasExtent( mapSettings );
+  const QRectF mapBoundingRect = mapPolygon.boundingRect();
   const QLineF lineEast( mapPolygon[2], mapPolygon[1] );
   const QLineF lineWest( mapPolygon[3], mapPolygon[0] );
 
@@ -496,15 +496,15 @@ int QgsDecorationGrid::yGridLines( const QgsMapSettings &mapSettings, QList< QPa
   if ( mGridIntervalX / mapSettings.mapUnitsPerPixel() < 1 )
     return 1;
 
-  const QPolygonF &canvasPoly = canvasPolygon( mapSettings );
-  const QPolygonF &mapPolygon = canvasExtent( mapSettings );
+  const QPolygonF canvasPoly = canvasPolygon( mapSettings );
+  const QPolygonF mapPolygon = canvasExtent( mapSettings );
   const QLineF lineSouth( mapPolygon[3], mapPolygon[2] );
   const QLineF lineNorth( mapPolygon[0], mapPolygon[1] );
 
   const double len = lineSouth.length();
   Q_ASSERT( std::fabs( len - lineNorth.length() ) < 1e-6 ); // no shear
 
-  const QRectF &mapBoundingRect = mapPolygon.boundingRect();
+  const QRectF mapBoundingRect = mapPolygon.boundingRect();
   const double roundCorrection = mapBoundingRect.left() > 0 ? 1.0 : 0.0;
   double dist = static_cast< int >( ( mapBoundingRect.left() - mGridOffsetX ) / mGridIntervalX + roundCorrection ) * mGridIntervalX + mGridOffsetX;
   dist = dist - mapBoundingRect.left();
