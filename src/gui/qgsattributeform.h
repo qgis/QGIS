@@ -414,7 +414,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     //! update the default values in the fields after a referenced field changed
     bool updateDefaultValues( const int originIdx );
 
-    //! update the virtual fields values in the fields after a referenced field changed
+//! update the value in the virtual fields after a referenced field changed
     void updateVirtualFields( const int originIdx );
 
     void clearMultiEditMessages();
