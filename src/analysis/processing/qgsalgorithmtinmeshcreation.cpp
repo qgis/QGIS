@@ -35,9 +35,14 @@ QString QgsTinMeshCreationAlgorithm::groupId() const
   return QStringLiteral( "mesh" );
 }
 
+QString QgsTinMeshCreationAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a TIN mesh layer from vector layers" );
+}
+
 QString QgsTinMeshCreationAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "TIN mesh creation from vector layers" );
+  return QObject::tr( "This algorithm creates a TIN mesh layer from vector layers." );
 }
 
 QString QgsTinMeshCreationAlgorithm::name() const
@@ -71,8 +76,8 @@ void QgsTinMeshCreationAlgorithm::initAlgorithm( const QVariantMap &configuratio
       mAvailableFormat.append( driverMeta.name() );
 
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "MESH_FORMAT" ), QObject::tr( "Output format" ), mAvailableFormat, false, 0 ) );
-  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS_OUTPUT" ), QObject::tr( "Output Coordinate System" ), QVariant(), true ) );
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT_MESH" ), QObject::tr( "Output File" ) ) );
+  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS_OUTPUT" ), QObject::tr( "Output coordinate system" ), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT_MESH" ), QObject::tr( "Output file" ) ) );
 }
 
 bool QgsTinMeshCreationAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
