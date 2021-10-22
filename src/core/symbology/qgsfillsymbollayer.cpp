@@ -3571,10 +3571,10 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
   }
   p->setClipPath( path, Qt::IntersectClip );
 
-  const double left = points.boundingRect().left();
-  const double top = points.boundingRect().top();
-  const double right = points.boundingRect().right();
-  const double bottom = points.boundingRect().bottom();
+  const double left = points.boundingRect().left() - 2 * width;
+  const double top = points.boundingRect().top() - 2 * height;
+  const double right = points.boundingRect().right() + 2 * width;
+  const double bottom = points.boundingRect().bottom() + 2 * height;
 
   QgsExpressionContextScope *scope = new QgsExpressionContextScope();
   QgsExpressionContextScopePopper scopePopper( context.renderContext().expressionContext(), scope );
@@ -3583,7 +3583,7 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
 
   bool alternateColumn = false;
   int currentCol = -3; // because we actually render a few rows/cols outside the bounds, try to align the col/row numbers to start at 1 for the first visible row/col
-  for ( double currentX = ( std::floor( left / width ) - 2 ) * width; currentX <= right + 2 * width; currentX += width, alternateColumn = !alternateColumn )
+  for ( double currentX = left; currentX <= right; currentX += width, alternateColumn = !alternateColumn )
   {
     if ( needsExpressionContext )
       scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_marker_column" ), ++currentCol, true ) );
@@ -3591,7 +3591,7 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
     bool alternateRow = false;
     const double columnX = currentX + widthOffset;
     int currentRow = -3;
-    for ( double currentY = ( std::floor( top / height ) - 2 ) * height; currentY <= bottom + 2 * height; currentY += height, alternateRow = !alternateRow )
+    for ( double currentY = top; currentY <= bottom; currentY += height, alternateRow = !alternateRow )
     {
       double y = currentY + heightOffset;
       double x = columnX;
