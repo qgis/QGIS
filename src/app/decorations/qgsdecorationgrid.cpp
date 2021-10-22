@@ -513,7 +513,7 @@ int QgsDecorationGrid::yGridLines( const QgsMapSettings &mapSettings, QList< QPa
   return 0;
 }
 
-QgsDecorationGrid::Border QgsDecorationGrid::borderForLineCoord( QPointF point, QPainter *p ) const
+QgsDecorationGrid::Border QgsDecorationGrid::borderForLineCoord( QPointF point, const QPainter *p ) const
 {
   if ( point.x() <= mGridPen.widthF() )
   {
@@ -572,7 +572,7 @@ void QgsDecorationGrid::setDirty( bool dirty )
   }
 }
 
-bool QgsDecorationGrid::getIntervalFromExtent( double *values, bool useXAxis )
+bool QgsDecorationGrid::getIntervalFromExtent( double *values, bool useXAxis ) const
 {
   // get default interval from current extents
   // calculate a default interval that is approx (extent width)/5, adjusted so that it is a rounded number
@@ -601,7 +601,7 @@ bool QgsDecorationGrid::getIntervalFromExtent( double *values, bool useXAxis )
   return true;
 }
 
-bool QgsDecorationGrid::getIntervalFromCurrentLayer( double *values )
+bool QgsDecorationGrid::getIntervalFromCurrentLayer( double *values ) const
 {
   // get current layer and make sure it is a raster layer and CRSs match
   QgsMapLayer *layer = QgisApp::instance()->mapCanvas()->currentLayer();
