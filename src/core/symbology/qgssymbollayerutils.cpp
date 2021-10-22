@@ -2126,7 +2126,7 @@ bool QgsSymbolLayerUtils::fillFromSld( QDomElement &element, Qt::BrushStyle &bru
     QgsStringMap svgParams = getSvgParameterList( element );
     for ( QgsStringMap::iterator it = svgParams.begin(); it != svgParams.end(); ++it )
     {
-      QgsDebugMsg( QStringLiteral( "found SvgParameter %1: %2" ).arg( it.key(), it.value() ) );
+      QgsDebugMsgLevel( QStringLiteral( "found SvgParameter %1: %2" ).arg( it.key(), it.value() ), 2 );
 
       if ( it.key() == QLatin1String( "fill" ) )
         color = QColor( it.value() );
@@ -2272,7 +2272,7 @@ bool QgsSymbolLayerUtils::lineFromSld( QDomElement &element,
   QgsStringMap svgParams = getSvgParameterList( element );
   for ( QgsStringMap::iterator it = svgParams.begin(); it != svgParams.end(); ++it )
   {
-    QgsDebugMsg( QStringLiteral( "found SvgParameter %1: %2" ).arg( it.key(), it.value() ) );
+    QgsDebugMsgLevel( QStringLiteral( "found SvgParameter %1: %2" ).arg( it.key(), it.value() ), 2 );
 
     if ( it.key() == QLatin1String( "stroke" ) )
     {
@@ -2356,7 +2356,7 @@ bool QgsSymbolLayerUtils::lineFromSld( QDomElement &element,
           }
           else
           {
-            QgsDebugMsg( QStringLiteral( "custom dash pattern required but not provided. Using default dash pattern." ) );
+            QgsDebugMsgLevel( QStringLiteral( "custom dash pattern required but not provided. Using default dash pattern." ), 2 );
             penStyle = Qt::DashLine;
           }
         }
@@ -2612,7 +2612,7 @@ bool QgsSymbolLayerUtils::wellKnownMarkerFromSld( QDomElement &element,
   if ( !wellKnownNameElem.isNull() )
   {
     name = wellKnownNameElem.firstChild().nodeValue();
-    QgsDebugMsg( "found Mark with well known name: " + name );
+    QgsDebugMsgLevel( "found Mark with well known name: " + name, 2 );
   }
 
   // <Fill>
@@ -3028,7 +3028,7 @@ QgsStringMap QgsSymbolLayerUtils::getSvgParameterList( QDomElement &element )
         if ( paramElem.firstChild().nodeType() == QDomNode::ElementNode &&
              paramElem.firstChild().localName() == QLatin1String( "Literal" ) )
         {
-          QgsDebugMsg( paramElem.firstChild().localName() );
+          QgsDebugMsgLevel( paramElem.firstChild().localName(), 3 );
           value = paramElem.firstChild().firstChild().nodeValue();
         }
         else
@@ -4612,7 +4612,7 @@ QList<double> QgsSymbolLayerUtils::prettyBreaks( double minimum, double maximum,
   {
     end = end + 1;
   }
-  QgsDebugMsg( QStringLiteral( "pretty classes: %1" ).arg( end ) );
+  QgsDebugMsgLevel( QStringLiteral( "pretty classes: %1" ).arg( end ), 3 );
 
   // If we don't have quite enough labels, extend the range out
   // to make more (these labels are beyond the data :()
