@@ -1721,11 +1721,17 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVec
   p->setPen( QPen( Qt::NoPen ) );
 
   QTransform bkTransform = mBrush.transform();
-  if ( applyBrushTransformFromContext() && !context.renderContext().textureOrigin().isNull() )
+  if ( applyBrushTransformFromContext( &context ) && !context.renderContext().textureOrigin().isNull() )
   {
     QPointF leftCorner = context.renderContext().textureOrigin();
     QTransform t = mBrush.transform();
     t.translate( leftCorner.x(), leftCorner.y() );
+    mBrush.setTransform( t );
+  }
+  else
+  {
+    QTransform t = mBrush.transform();
+    t.translate( 0, 0 );
     mBrush.setTransform( t );
   }
 
@@ -1855,6 +1861,13 @@ Qt::PenStyle QgsImageFillSymbolLayer::dxfPenStyle() const
 #endif //0
 }
 
+QVariantMap QgsImageFillSymbolLayer::properties() const
+{
+  QVariantMap map;
+  map.insert( QStringLiteral( "coordinate_reference" ), QgsSymbolLayerUtils::encodeCoordinateReference( mCoordinateReference ) );
+  return map;
+}
+
 QSet<QString> QgsImageFillSymbolLayer::usedAttributes( const QgsRenderContext &context ) const
 {
   QSet<QString> attr = QgsFillSymbolLayer::usedAttributes( context );
@@ -1872,9 +1885,23 @@ bool QgsImageFillSymbolLayer::hasDataDefinedProperties() const
   return false;
 }
 
-bool QgsImageFillSymbolLayer::applyBrushTransformFromContext() const
+bool QgsImageFillSymbolLayer::applyBrushTransformFromContext( QgsSymbolRenderContext *context ) const
 {
-  return true;
+  //coordinate reference
+  Qgis::SymbolCoordinateReference coordinateReference = mCoordinateReference;
+  if ( context && mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyCoordinateMode ) )
+  {
+    bool ok = false;
+    QString string = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyCoordinateMode, context->renderContext().expressionContext(), QString(), &ok );
+    if ( ok )
+    {
+      coordinateReference = QgsSymbolLayerUtils::decodeCoordinateReference( string, &ok );
+      if ( !ok )
+        coordinateReference = mCoordinateReference;
+    }
+  }
+
+  return coordinateReference == Qgis::SymbolCoordinateReference::Feature;
 }
 
 
@@ -2680,6 +2707,10 @@ QgsSymbolLayer *QgsLinePatternFillSymbolLayer::create( const QVariantMap &proper
   {
     patternLayer->setStrokeWidthMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "outline_width_map_unit_scale" )].toString() ) );
   }
+  if ( properties.contains( QStringLiteral( "coordinate_reference" ) ) )
+  {
+    patternLayer->setCoordinateReference( QgsSymbolLayerUtils::decodeCoordinateReference( properties[QStringLiteral( "coordinate_reference" )].toString() ) );
+  }
 
   patternLayer->restoreOldDataDefinedProperties( properties );
 
@@ -2998,7 +3029,7 @@ void QgsLinePatternFillSymbolLayer::stopRender( QgsSymbolRenderContext &context 
 
 QVariantMap QgsLinePatternFillSymbolLayer::properties() const
 {
-  QVariantMap map;
+  QVariantMap map = QgsImageFillSymbolLayer::properties();
   map.insert( QStringLiteral( "angle" ), QString::number( mLineAngle ) );
   map.insert( QStringLiteral( "distance" ), QString::number( mDistance ) );
   map.insert( QStringLiteral( "line_width" ), QString::number( mLineWidth ) );
@@ -3342,6 +3373,10 @@ QgsSymbolLayer *QgsPointPatternFillSymbolLayer::create( const QVariantMap &prope
   {
     layer->setClipMode( QgsSymbolLayerUtils::decodeMarkerClipMode( properties.value( QStringLiteral( "clip_mode" ) ).toString() ) );
   }
+  if ( properties.contains( QStringLiteral( "coordinate_reference" ) ) )
+  {
+    layer->setCoordinateReference( QgsSymbolLayerUtils::decodeCoordinateReference( properties[QStringLiteral( "coordinate_reference" )].toString() ) );
+  }
 
   layer->restoreOldDataDefinedProperties( properties );
 
@@ -3614,10 +3649,16 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
     }
   }
 
-  const double left = points.boundingRect().left() - 2 * width;
-  const double top = points.boundingRect().top() - 2 * height;
-  const double right = points.boundingRect().right() + 2 * width;
-  const double bottom = points.boundingRect().bottom() + 2 * height;
+  const QRectF boundingRect = points.boundingRect();
+  double left = boundingRect.left() - 2 * width;
+  double top = boundingRect.top() - 2 * height;
+  const double right = boundingRect.right() + 2 * width;
+  const double bottom = boundingRect.bottom() + 2 * height;
+  if ( !applyBrushTransformFromContext( &context ) )
+  {
+    left -= boundingRect.left() - ( width * std::floor( boundingRect.left() / width ) );
+    top -= boundingRect.top() - ( height * std::floor( boundingRect.top() / height ) );
+  }
 
   QgsExpressionContextScope *scope = new QgsExpressionContextScope();
   QgsExpressionContextScopePopper scopePopper( context.renderContext().expressionContext(), scope );
@@ -3705,7 +3746,7 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
 
 QVariantMap QgsPointPatternFillSymbolLayer::properties() const
 {
-  QVariantMap map;
+  QVariantMap map = QgsImageFillSymbolLayer::properties();
   map.insert( QStringLiteral( "distance_x" ), QString::number( mDistanceX ) );
   map.insert( QStringLiteral( "distance_y" ), QString::number( mDistanceY ) );
   map.insert( QStringLiteral( "displacement_x" ), QString::number( mDisplacementX ) );
@@ -4224,6 +4265,7 @@ QgsRasterFillSymbolLayer::QgsRasterFillSymbolLayer( const QString &imageFilePath
   , mImageFilePath( imageFilePath )
 {
   QgsImageFillSymbolLayer::setSubSymbol( nullptr ); //disable sub symbol
+  mCoordinateReference = Qgis::SymbolCoordinateReference::Viewport;
 }
 
 QgsRasterFillSymbolLayer::~QgsRasterFillSymbolLayer() = default;
@@ -4469,7 +4511,7 @@ void QgsRasterFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderContext 
   applyPattern( mBrush, file, width, opacity, context );
 }
 
-bool QgsRasterFillSymbolLayer::applyBrushTransformFromContext() const
+bool QgsRasterFillSymbolLayer::applyBrushTransformFromContext( QgsSymbolRenderContext * ) const
 {
   return false;
 }

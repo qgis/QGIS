@@ -56,6 +56,31 @@ class QgsSymbolLayerUtils
     static QString encodeSldBrushStyle( Qt::BrushStyle style );
     static Qt::BrushStyle decodeSldBrushStyle( const QString &str );
 
+    static Qgis::SymbolCoordinateReference decodeCoordinateReference( const QString &string, bool *ok /Out/ = 0 );
+%Docstring
+Decodes a ``string`` representing a symbol coordinate reference mode.
+
+:param string: string to decode
+
+:return: - decoded marker clip mode
+         - ok: will be set to ``True`` if ``string`` was successfully decoded
+
+.. seealso:: :py:func:`encodeCoordinateReference`
+
+.. versionadded:: 3.24
+%End
+
+    static QString encodeCoordinateReference( Qgis::SymbolCoordinateReference coordinateReference );
+%Docstring
+Encodes a symbol coordinate reference mode to a string.
+
+:param coordinateReference: coordinate reference mode
+
+.. seealso:: :py:func:`decodeCoordinateReference`
+
+.. versionadded:: 3.24
+%End
+
     static QgsArrowSymbolLayer::HeadType decodeArrowHeadType( const QVariant &value, bool *ok /Out/ = 0 );
 %Docstring
 Decodes a ``value`` representing an arrow head type.

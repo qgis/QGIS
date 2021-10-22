@@ -387,6 +387,34 @@ Qt::BrushStyle QgsSymbolLayerUtils::decodeSldBrushStyle( const QString &str )
   return Qt::NoBrush;
 }
 
+Qgis::SymbolCoordinateReference QgsSymbolLayerUtils::decodeCoordinateReference( const QString &string, bool *ok )
+{
+  const QString compareString = string.trimmed();
+  if ( ok )
+    *ok = true;
+
+  if ( compareString.compare( QLatin1String( "feature" ), Qt::CaseInsensitive ) == 0 )
+    return Qgis::SymbolCoordinateReference::Feature;
+  else if ( compareString.compare( QLatin1String( "viewport" ), Qt::CaseInsensitive ) == 0 )
+    return Qgis::SymbolCoordinateReference::Viewport;
+
+  if ( ok )
+    *ok = false;
+  return  Qgis::SymbolCoordinateReference::Feature;
+}
+
+QString QgsSymbolLayerUtils::encodeCoordinateReference( Qgis::SymbolCoordinateReference coordinateReference )
+{
+  switch ( coordinateReference )
+  {
+    case Qgis::SymbolCoordinateReference::Feature:
+      return QStringLiteral( "feature" );
+    case Qgis::SymbolCoordinateReference::Viewport:
+      return QStringLiteral( "viewport" );
+  }
+  return QString(); // no warnings
+}
+
 QgsArrowSymbolLayer::HeadType QgsSymbolLayerUtils::decodeArrowHeadType( const QVariant &value, bool *ok )
 {
   if ( ok )

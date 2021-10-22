@@ -3084,6 +3084,17 @@ QgsLinePatternFillSymbolLayerWidget::QgsLinePatternFillSymbolLayerWidget( QgsVec
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mOffsetSpinBox->setClearValue( 0 );
   mAngleSpinBox->setClearValue( 0 );
+
+  mCoordinateReferenceComboBox->addItem( tr( "Align Pattern to Feature" ), static_cast< int >( Qgis::SymbolCoordinateReference::Feature ) );
+  mCoordinateReferenceComboBox->addItem( tr( "Align Pattern to Map Extent" ), static_cast< int >( Qgis::SymbolCoordinateReference::Viewport ) );
+  connect( mCoordinateReferenceComboBox, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]
+  {
+    if ( mLayer )
+    {
+      mLayer->setCoordinateReference( static_cast< Qgis::SymbolCoordinateReference >( mCoordinateReferenceComboBox->currentData().toInt() ) );
+      emit changed();
+    }
+  } );
 }
 
 void QgsLinePatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
@@ -3097,15 +3108,9 @@ void QgsLinePatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer 
   if ( patternLayer )
   {
     mLayer = patternLayer;
-    mAngleSpinBox->blockSignals( true );
-    mAngleSpinBox->setValue( mLayer->lineAngle() );
-    mAngleSpinBox->blockSignals( false );
-    mDistanceSpinBox->blockSignals( true );
-    mDistanceSpinBox->setValue( mLayer->distance() );
-    mDistanceSpinBox->blockSignals( false );
-    mOffsetSpinBox->blockSignals( true );
-    mOffsetSpinBox->setValue( mLayer->offset() );
-    mOffsetSpinBox->blockSignals( false );
+    whileBlocking( mAngleSpinBox )->setValue( mLayer->lineAngle() );
+    whileBlocking( mDistanceSpinBox )->setValue( mLayer->distance() );
+    whileBlocking( mOffsetSpinBox )->setValue( mLayer->offset() );
 
     //units
     mDistanceUnitWidget->blockSignals( true );
@@ -3116,10 +3121,13 @@ void QgsLinePatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer 
     mOffsetUnitWidget->setUnit( mLayer->offsetUnit() );
     mOffsetUnitWidget->setMapUnitScale( mLayer->offsetMapUnitScale() );
     mOffsetUnitWidget->blockSignals( false );
+
+    whileBlocking( mCoordinateReferenceComboBox )->setCurrentIndex( mCoordinateReferenceComboBox->findData( static_cast< int >( mLayer->coordinateReference() ) ) );
   }
 
   registerDataDefinedButton( mAngleDDBtn, QgsSymbolLayer::PropertyLineAngle );
   registerDataDefinedButton( mDistanceDDBtn, QgsSymbolLayer::PropertyLineDistance );
+  registerDataDefinedButton( mCoordinateReferenceDDBtn, QgsSymbolLayer::PropertyCoordinateMode );
 }
 
 QgsSymbolLayer *QgsLinePatternFillSymbolLayerWidget::symbolLayer()
@@ -3217,6 +3225,17 @@ QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( QgsV
       emit changed();
     }
   } );
+
+  mCoordinateReferenceComboBox->addItem( tr( "Align Pattern to Feature" ), static_cast< int >( Qgis::SymbolCoordinateReference::Feature ) );
+  mCoordinateReferenceComboBox->addItem( tr( "Align Pattern to Map Extent" ), static_cast< int >( Qgis::SymbolCoordinateReference::Viewport ) );
+  connect( mCoordinateReferenceComboBox, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]
+  {
+    if ( mLayer )
+    {
+      mLayer->setCoordinateReference( static_cast< Qgis::SymbolCoordinateReference >( mCoordinateReferenceComboBox->currentData().toInt() ) );
+      emit changed();
+    }
+  } );
 }
 
 
@@ -3261,6 +3280,7 @@ void QgsPointPatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer
   mVerticalOffsetUnitWidget->blockSignals( false );
 
   whileBlocking( mClipModeComboBox )->setCurrentIndex( mClipModeComboBox->findData( static_cast< int >( mLayer->clipMode() ) ) );
+  whileBlocking( mCoordinateReferenceComboBox )->setCurrentIndex( mCoordinateReferenceComboBox->findData( static_cast< int >( mLayer->coordinateReference() ) ) );
 
   registerDataDefinedButton( mHorizontalDistanceDDBtn, QgsSymbolLayer::PropertyDistanceX );
   registerDataDefinedButton( mVerticalDistanceDDBtn, QgsSymbolLayer::PropertyDistanceY );
@@ -3269,6 +3289,7 @@ void QgsPointPatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer
   registerDataDefinedButton( mHorizontalOffsetDDBtn, QgsSymbolLayer::PropertyOffsetX );
   registerDataDefinedButton( mVerticalOffsetDDBtn, QgsSymbolLayer::PropertyOffsetY );
   registerDataDefinedButton( mClippingDDBtn, QgsSymbolLayer::PropertyMarkerClipping );
+  registerDataDefinedButton( mCoordinateReferenceDDBtn, QgsSymbolLayer::PropertyCoordinateMode );
 }
 
 QgsSymbolLayer *QgsPointPatternFillSymbolLayerWidget::symbolLayer()

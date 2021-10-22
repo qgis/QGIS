@@ -818,6 +818,24 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
     */
     const QgsMapUnitScale &strokeWidthMapUnitScale() const { return mStrokeWidthMapUnitScale; }
 
+    /**
+     * Sets the coordinate reference mode for fill which controls how the top left corner of the image
+     * fill is positioned relative to the feature.
+     * \param coordinateReference coordinate reference mode
+     * \see coordinateReference
+     * \since QGIS 3.24
+     */
+    void setCoordinateReference( Qgis::SymbolCoordinateReference coordinateReference ) { mCoordinateReference = coordinateReference; }
+
+    /**
+     * Returns the coordinate reference mode for fill which controls how the top left corner of the image
+     * fill is positioned relative to the feature.
+     * \returns coordinate reference mode
+     * \see setCoordinateReference
+     * \since QGIS 3.24
+     */
+    Qgis::SymbolCoordinateReference coordinateReference() const { return mCoordinateReference; }
+
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
@@ -827,10 +845,12 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
     QColor dxfColor( QgsSymbolRenderContext &context ) const override;
     Qt::PenStyle dxfPenStyle() const override;
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    QVariantMap properties() const override;
     bool hasDataDefinedProperties() const override;
 
   protected:
     QBrush mBrush;
+    Qgis::SymbolCoordinateReference mCoordinateReference = Qgis::SymbolCoordinateReference::Feature;
     double mNextAngle = 0.0; // mAngle / data defined angle
 
     //! Stroke width
@@ -848,7 +868,7 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
      *
      * \since QGIS 3.16
      */
-    virtual bool applyBrushTransformFromContext() const;
+    virtual bool applyBrushTransformFromContext( QgsSymbolRenderContext *context = nullptr ) const;
 
   private:
 #ifdef SIP_RUN
@@ -1058,7 +1078,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
   protected:
 
     void applyDataDefinedSettings( QgsSymbolRenderContext &context ) override;
-    bool applyBrushTransformFromContext() const override;
+    bool applyBrushTransformFromContext( QgsSymbolRenderContext *context = nullptr ) const override;
   private:
 
     //! Path to the image file

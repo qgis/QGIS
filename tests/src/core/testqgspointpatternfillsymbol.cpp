@@ -61,6 +61,8 @@ class TestQgsPointPatternFillSymbol : public QObject
 
     void pointPatternFillSymbol();
     void pointPatternFillSymbolVector();
+    void viewportPointPatternFillSymbol();
+    void viewportPointPatternFillSymbolVector();
     void offsettedPointPatternFillSymbol();
     void offsettedPointPatternFillSymbolVector();
     void dataDefinedSubSymbol();
@@ -201,6 +203,67 @@ void TestQgsPointPatternFillSymbol::pointPatternFillSymbolVector()
 
   const QByteArray ba = buffer.data();
   QVERIFY( ba.contains( "fill=\"#ff0000\"" ) );
+}
+
+void TestQgsPointPatternFillSymbol::viewportPointPatternFillSymbol()
+{
+  mReport += QLatin1String( "<h2>Viewport coordinate reference point pattern fill symbol renderer test</h2>\n" );
+
+  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  QVERIFY( layer->isValid() );
+
+  QgsVectorSimplifyMethod simplifyMethod;
+  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  layer->setSimplifyMethod( simplifyMethod );
+
+  //setup gradient fill
+  QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, pointPatternFill );
+  layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+
+  QVariantMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
+  properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
+  properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  pointPatternFill->setSubSymbol( pointSymbol );
+  pointPatternFill->setCoordinateReference( Qgis::SymbolCoordinateReference::Viewport );
+  QVERIFY( imageCheck( "symbol_pointfill_viewport", layer.get() ) );
+}
+
+void TestQgsPointPatternFillSymbol::viewportPointPatternFillSymbolVector()
+{
+  mReport += QLatin1String( "<h2>Viewport coordinate reference point pattern fill symbol renderer test</h2>\n" );
+
+  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  QVERIFY( layer->isValid() );
+
+  QgsVectorSimplifyMethod simplifyMethod;
+  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  layer->setSimplifyMethod( simplifyMethod );
+
+  //setup gradient fill
+  QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, pointPatternFill );
+  layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+
+  QVariantMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
+  properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
+  properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+
+  pointPatternFill->setSubSymbol( pointSymbol );
+  pointPatternFill->setDistanceX( 10 );
+  pointPatternFill->setDistanceY( 10 );
+  pointPatternFill->setCoordinateReference( Qgis::SymbolCoordinateReference::Viewport );
+  mMapSettings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, true );
+  QVERIFY( imageCheck( "symbol_pointfill_viewport_vector", layer.get() ) );
+  mMapSettings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, false );
 }
 
 void TestQgsPointPatternFillSymbol::offsettedPointPatternFillSymbol()

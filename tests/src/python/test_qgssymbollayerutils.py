@@ -25,6 +25,7 @@ from qgis.PyQt.QtGui import (
     QImage
 )
 from qgis.core import (
+    Qgis,
     QgsSymbolLayerUtils,
     QgsMarkerSymbol,
     QgsArrowSymbolLayer,
@@ -129,6 +130,14 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         # bad string
         s2 = QgsSymbolLayerUtils.decodePoint('')
         self.assertEqual(s2, QPointF())
+
+    def testEncodeDecodeCoordinateReference(self):
+        items = {'feature': Qgis.SymbolCoordinateReference.Feature, 'viewport': Qgis.SymbolCoordinateReference.Viewport}
+        for item in items.keys():
+            encoded = QgsSymbolLayerUtils.encodeCoordinateReference(items[item])
+            self.assertEqual(item, encoded)
+            decoded, ok = QgsSymbolLayerUtils.decodeCoordinateReference(encoded)
+            self.assertEqual(items[item], decoded)
 
     def testToPoint(self):
         s2, ok = QgsSymbolLayerUtils.toPoint(None)
