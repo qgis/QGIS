@@ -91,10 +91,14 @@ class QgsCategorizedRendererViewItemDelegate: public QStyledItemDelegate
     Q_OBJECT
 
   public:
-    explicit QgsCategorizedRendererViewItemDelegate( QObject *parent = nullptr );
+    explicit QgsCategorizedRendererViewItemDelegate( QgsFieldExpressionWidget *expressionWidget, QObject *parent = nullptr );
 
     // QAbstractItemDelegate interface
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+
+  private:
+
+    QgsFieldExpressionWidget *mFieldExpressionWidget = nullptr;
 };
 
 
