@@ -72,6 +72,9 @@ class TestQgsPointPatternFillSymbol : public QObject
     void pointPatternFillCompletelyWithin();
     void pointPatternFillCentroidWithin();
     void pointPatternFillDataDefinedClip();
+    void pointPatternRandomOffset();
+    void pointPatternRandomOffsetPercent();
+    void pointPatternRandomOffsetDataDefined();
 
   private:
     bool mTestHasError =  false ;
@@ -481,6 +484,95 @@ void TestQgsPointPatternFillSymbol::pointPatternFillDataDefinedClip()
   pointPatternFill->setClipMode( Qgis::MarkerClipMode::Shape );
   pointPatternFill->dataDefinedProperties().setProperty( QgsSymbolLayer::PropertyMarkerClipping, QgsProperty::fromExpression( QStringLiteral( "case when $id % 4 = 0 then 'shape' when $id % 4 = 1 then 'centroid_within' when $id % 4 = 2 then 'completely_within' else 'no' end" ) ) );
   const bool res = imageCheck( "symbol_pointfill_datadefined_clip", layer.get() );
+  QVERIFY( res );
+}
+
+void TestQgsPointPatternFillSymbol::pointPatternRandomOffset()
+{
+  mReport += QLatin1String( "<h2>Point pattern random offset</h2>\n" );
+
+  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  QVERIFY( layer->isValid() );
+
+  QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, pointPatternFill );
+  layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+  QVariantMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
+  properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
+  properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+
+  pointPatternFill->setSubSymbol( pointSymbol );
+  pointPatternFill->setDistanceX( 10 );
+  pointPatternFill->setDistanceY( 10 );
+  pointPatternFill->setMaximumRandomDeviationX( 5 );
+  pointPatternFill->setMaximumRandomDeviationY( 3 );
+  pointPatternFill->setSeed( 1 );
+
+  const bool res = imageCheck( "symbol_pointfill_random_offset", layer.get() );
+  QVERIFY( res );
+}
+
+void TestQgsPointPatternFillSymbol::pointPatternRandomOffsetPercent()
+{
+  mReport += QLatin1String( "<h2>Point pattern random offset in percent</h2>\n" );
+
+  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  QVERIFY( layer->isValid() );
+
+  QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, pointPatternFill );
+  layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+  QVariantMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
+  properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
+  properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+
+  pointPatternFill->setSubSymbol( pointSymbol );
+  pointPatternFill->setDistanceX( 10 );
+  pointPatternFill->setDistanceY( 10 );
+  pointPatternFill->setMaximumRandomDeviationX( 50 );
+  pointPatternFill->setMaximumRandomDeviationY( 30 );
+  pointPatternFill->setRandomDeviationXUnit( QgsUnitTypes::RenderPercentage );
+  pointPatternFill->setRandomDeviationYUnit( QgsUnitTypes::RenderPercentage );
+  pointPatternFill->setSeed( 1 );
+
+  const bool res = imageCheck( "symbol_pointfill_percent_random_offset", layer.get() );
+  QVERIFY( res );
+}
+
+void TestQgsPointPatternFillSymbol::pointPatternRandomOffsetDataDefined()
+{
+  mReport += QLatin1String( "<h2>Point pattern data defined random offset</h2>\n" );
+
+  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  QVERIFY( layer->isValid() );
+
+  QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, pointPatternFill );
+  layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+  QVariantMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
+  properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
+  properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+
+  pointPatternFill->setSubSymbol( pointSymbol );
+  pointPatternFill->setDistanceX( 10 );
+  pointPatternFill->setDistanceY( 10 );
+  pointPatternFill->dataDefinedProperties().setProperty( QgsSymbolLayer::PropertyRandomOffsetX, QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 5 else 10 end" ) ) );
+  pointPatternFill->dataDefinedProperties().setProperty( QgsSymbolLayer::PropertyRandomOffsetY, QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 3 else 6 end" ) ) );
+  pointPatternFill->dataDefinedProperties().setProperty( QgsSymbolLayer::PropertyRandomSeed, QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 1 else 2 end" ) ) );
+
+  const bool res = imageCheck( "symbol_pointfill_data_defined_random_offset", layer.get() );
   QVERIFY( res );
 }
 

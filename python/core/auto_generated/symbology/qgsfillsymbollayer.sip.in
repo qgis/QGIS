@@ -2253,7 +2253,169 @@ Sets the marker clipping ``mode``, which defines how markers are clipped at the 
 .. versionadded:: 3.24
 %End
 
+    void setMaximumRandomDeviationX( double deviation );
+%Docstring
+Sets the maximum horizontal random ``deviation`` of points in the pattern.
+
+Units are set via :py:func:`~QgsPointPatternFillSymbolLayer.setMaximumRandomDeviationXUnit`.
+
+.. seealso:: :py:func:`maximumRandomDeviationX`
+
+.. seealso:: :py:func:`setMaximumRandomDeviationY`
+
+.. versionadded:: 3.24
+%End
+
+    double maximumRandomDeviationX() const;
+%Docstring
+Returns the maximum horizontal random deviation of points in the pattern.
+
+Units are retrieved via :py:func:`~QgsPointPatternFillSymbolLayer.maximumRandomDeviationXUnit`.
+
+.. seealso:: :py:func:`setMaximumRandomDeviationX`
+
+.. seealso:: :py:func:`maximumRandomDeviationY`
+
+.. versionadded:: 3.24
+%End
+
+    void setMaximumRandomDeviationY( double deviation );
+%Docstring
+Sets the maximum vertical random ``deviation`` of points in the pattern.
+
+Units are set via :py:func:`~QgsPointPatternFillSymbolLayer.setMaximumRandomDeviationYUnit`.
+
+.. seealso:: :py:func:`maximumRandomDeviationY`
+
+.. seealso:: :py:func:`setMaximumRandomDeviationX`
+
+.. versionadded:: 3.24
+%End
+
+    double maximumRandomDeviationY() const;
+%Docstring
+Returns the maximum vertical random deviation of points in the pattern.
+
+Units are retrieved via :py:func:`~QgsPointPatternFillSymbolLayer.maximumRandomDeviationYUnit`.
+
+.. seealso:: :py:func:`setMaximumRandomDeviationY`
+
+.. seealso:: :py:func:`maximumRandomDeviationX`
+
+.. versionadded:: 3.24
+%End
+
+    void setRandomDeviationXUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the horizontal random deviation of points in the pattern.
+
+.. seealso:: :py:func:`randomDeviationXUnit`
+
+.. seealso:: :py:func:`setRandomDeviationYUnit`
+
+.. versionadded:: 3.24
+%End
+
+    QgsUnitTypes::RenderUnit randomDeviationXUnit() const;
+%Docstring
+Returns the units for the horizontal random deviation of points in the pattern.
+
+.. seealso:: :py:func:`setRandomDeviationXUnit`
+
+.. seealso:: :py:func:`randomDeviationYUnit`
+
+.. versionadded:: 3.24
+%End
+
+    void setRandomDeviationYUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the vertical random deviation of points in the pattern.
+
+.. seealso:: :py:func:`randomDeviationYUnit`
+
+.. seealso:: :py:func:`setRandomDeviationXUnit`
+
+.. versionadded:: 3.24
+%End
+
+    QgsUnitTypes::RenderUnit randomDeviationYUnit() const;
+%Docstring
+Returns the units for the vertical random deviation of points in the pattern.
+
+.. seealso:: :py:func:`setRandomDeviationYUnit`
+
+.. seealso:: :py:func:`randomDeviationXUnit`
+
+.. versionadded:: 3.24
+%End
+
+    const QgsMapUnitScale &randomDeviationXMapUnitScale() const;
+%Docstring
+Returns the unit scale for the horizontal random deviation of points in the pattern.
+
+.. seealso:: :py:func:`setRandomDeviationXMapUnitScale`
+
+.. seealso:: :py:func:`randomDeviationYMapUnitScale`
+
+.. versionadded:: 3.24
+%End
+
+    const QgsMapUnitScale &randomDeviationYMapUnitScale() const;
+%Docstring
+Returns the unit scale for the vertical random deviation of points in the pattern.
+
+.. seealso:: :py:func:`setRandomDeviationXMapUnitScale`
+
+.. seealso:: :py:func:`randomDeviationXMapUnitScale`
+
+.. versionadded:: 3.24
+%End
+
+    void setRandomDeviationXMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the unit ``scale`` for the horizontal random deviation of points in the pattern.
+
+.. seealso:: :py:func:`randomDeviationXMapUnitScale`
+
+.. seealso:: :py:func:`setRandomDeviationYMapUnitScale`
+
+.. versionadded:: 3.24
+%End
+
+    void setRandomDeviationYMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the unit ``scale`` for the vertical random deviation of points in the pattern.
+
+.. seealso:: :py:func:`randomDeviationYMapUnitScale`
+
+.. seealso:: :py:func:`setRandomDeviationXMapUnitScale`
+
+.. versionadded:: 3.24
+%End
+
+    unsigned long seed() const;
+%Docstring
+Returns the random number seed to use when randomly shifting points, or 0 if
+a truly random sequence will be used (causing points to appear in different locations with every map refresh).
+
+.. seealso:: :py:func:`setSeed`
+
+.. versionadded:: 3.24
+%End
+
+    void setSeed( unsigned long seed );
+%Docstring
+Sets the random number ``seed`` to use when randomly shifting points, or 0 if
+a truly random sequence will be used on every rendering (causing points to appear
+in different locations with every map refresh).
+
+.. seealso:: :py:func:`seed`
+
+.. versionadded:: 3.24
+%End
+
   protected:
+
 
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context );
 

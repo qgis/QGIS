@@ -117,6 +117,8 @@ void QgsSymbolLayer::initPropertyDefinitions()
     { QgsSymbolLayer::PropertyLineStartColorValue, QgsPropertyDefinition( "lineStartColorValue", QObject::tr( "Line start color value" ), QgsPropertyDefinition::Double, origin )},
     { QgsSymbolLayer::PropertyLineEndColorValue, QgsPropertyDefinition( "lineEndColorValue", QObject::tr( "Line end color value" ), QgsPropertyDefinition::Double, origin )},
     { QgsSymbolLayer::PropertyMarkerClipping, QgsPropertyDefinition( "markerClipping", QgsPropertyDefinition::DataTypeString, QObject::tr( "Marker clipping mode" ),  QObject::tr( "string " ) + QLatin1String( "[<b>no</b>|<b>shape</b>|<b>centroid_within</b>|<b>completely_within</b>]" ), origin )},
+    { QgsSymbolLayer::PropertyRandomOffsetX, QgsPropertyDefinition( "randomOffsetX", QObject::tr( "Horizontal random offset" ), QgsPropertyDefinition::Double, origin )},
+    { QgsSymbolLayer::PropertyRandomOffsetY, QgsPropertyDefinition( "randomOffsetY", QObject::tr( "Vertical random offset" ), QgsPropertyDefinition::Double, origin )},
   };
 }
 
