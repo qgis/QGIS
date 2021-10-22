@@ -1,7 +1,7 @@
 /***************************************************************************
                          qgsalgorithmroundness.cpp
                          ---------------------
-    begin                : Septembre 2021
+    begin                : September 2021
     copyright            : (C) 2021 by Antoine Facchini
     email                : antoine dot facchini @oslandia dot com
  ***************************************************************************/
