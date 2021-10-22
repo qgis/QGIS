@@ -171,12 +171,12 @@ QString QgsExportMeshOnElement::groupId() const
 
 QString QgsExportMeshVerticesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm exports mesh layer's vertices to a point vector layer, with the dataset values on vertices as attribute values." );
+  return QObject::tr( "This algorithm exports a mesh layer's vertices to a point vector layer, with the dataset values on vertices as attribute values." );
 }
 
 QString QgsExportMeshVerticesAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Exports mesh layer's vertices to a point vector layer" );
+  return QObject::tr( "Exports mesh vertices to a point vector layer" );
 }
 
 QString QgsExportMeshVerticesAlgorithm::name() const
@@ -400,12 +400,12 @@ QVariantMap QgsExportMeshOnElement::processAlgorithm( const QVariantMap &paramet
 
 QString QgsExportMeshFacesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm exports mesh layer's faces to a polygon vector layer, with the dataset values on faces as attribute values." );
+  return QObject::tr( "This algorithm exports a mesh layer's faces to a polygon vector layer, with the dataset values on faces as attribute values." );
 }
 
 QString QgsExportMeshFacesAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Exports mesh layer's faces to a polygon vector layer" );
+  return QObject::tr( "Exports mesh faces to a polygon vector layer" );
 }
 
 QString QgsExportMeshFacesAlgorithm::name() const
@@ -436,12 +436,12 @@ QgsGeometry QgsExportMeshFacesAlgorithm::meshElement( int index ) const
 
 QString QgsExportMeshEdgesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm exports mesh layer's edges to a line vector layer, with the dataset values on edges as attribute values." );
+  return QObject::tr( "This algorithm exports a mesh layer's edges to a line vector layer, with the dataset values on edges as attribute values." );
 }
 
 QString QgsExportMeshEdgesAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Exports mesh layer's edges to a line vector layer" );
+  return QObject::tr( "Exports mesh edges to a line vector layer" );
 }
 
 QString QgsExportMeshEdgesAlgorithm::name() const
@@ -479,14 +479,14 @@ QString QgsExportMeshOnGridAlgorithm::groupId() const {return QStringLiteral( "m
 
 QString QgsExportMeshOnGridAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm exports mesh layer's dataset values to a gridded point vector layer, with the dataset values on this point as attribute values.\n"
+  return QObject::tr( "This algorithm exports a mesh layer's dataset values to a gridded point vector layer, with the dataset values on each point as attribute values.\n"
                       "For data on volume (3D stacked dataset values), the exported dataset values are averaged on faces using the method defined in the mesh layer properties (default is Multi level averaging method).\n"
                       "1D meshes are not supported." );
 }
 
 QString QgsExportMeshOnGridAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Exports mesh layer's dataset values to a gridded point vector layer" );
+  return QObject::tr( "Exports mesh dataset values to a gridded point vector layer" );
 }
 
 QgsProcessingAlgorithm *QgsExportMeshOnGridAlgorithm::createInstance() const
@@ -931,7 +931,7 @@ QString QgsMeshContoursAlgorithm::groupId() const
 
 QString QgsMeshContoursAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates contours as vector layer from mesh scalar dataset." );
+  return QObject::tr( "This algorithm creates contours as a vector layer from a mesh scalar dataset." );
 }
 
 QString QgsMeshContoursAlgorithm::shortDescription() const
@@ -1222,7 +1222,7 @@ QString QgsMeshExportCrossSection::shortHelpString() const
 
 QString QgsMeshExportCrossSection::shortDescription() const
 {
-  return QObject::tr( "Extracts mesh's dataset values from line contained in a vector layer" );
+  return QObject::tr( "Extracts a mesh dataset's values from lines contained in a vector layer" );
 }
 
 QgsProcessingAlgorithm *QgsMeshExportCrossSection::createInstance() const
@@ -1438,7 +1438,7 @@ QString QgsMeshExportTimeSeries::shortHelpString() const
 
 QString QgsMeshExportTimeSeries::shortDescription() const
 {
-  return QObject::tr( "Extracts mesh's dataset time series values from points contained in a vector layer" );
+  return QObject::tr( "Extracts a mesh dataset's time series values from points contained in a vector layer" );
 }
 
 QgsProcessingAlgorithm *QgsMeshExportTimeSeries::createInstance() const
