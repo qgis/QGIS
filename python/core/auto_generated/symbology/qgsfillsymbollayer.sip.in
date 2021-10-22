@@ -861,6 +861,30 @@ Returns the stroke width map unit scale.
 .. versionadded:: 2.16
 %End
 
+    void setCoordinateReference( Qgis::SymbolCoordinateReference coordinateReference );
+%Docstring
+Sets the coordinate reference mode for fill which controls how the top left corner of the image
+fill is positioned relative to the feature.
+
+:param coordinateReference: coordinate reference mode
+
+.. seealso:: :py:func:`coordinateReference`
+
+.. versionadded:: 3.24
+%End
+
+    Qgis::SymbolCoordinateReference coordinateReference() const;
+%Docstring
+Returns the coordinate reference mode for fill which controls how the top left corner of the image
+fill is positioned relative to the feature.
+
+:return: coordinate reference mode
+
+.. seealso:: :py:func:`setCoordinateReference`
+
+.. versionadded:: 3.24
+%End
+
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 
     virtual QgsUnitTypes::RenderUnit outputUnit() const;
@@ -879,6 +903,8 @@ Returns the stroke width map unit scale.
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
+    virtual QVariantMap properties() const;
+
     virtual bool hasDataDefinedProperties() const;
 
 
@@ -891,7 +917,7 @@ Returns the stroke width map unit scale.
 Custom stroke
 %End
 
-    virtual bool applyBrushTransformFromContext() const;
+    virtual bool applyBrushTransformFromContext( QgsSymbolRenderContext *context = 0 ) const;
 %Docstring
 Returns ``True`` if the image brush should be transformed using the render context's texture origin.
 
@@ -1176,7 +1202,7 @@ Returns the map unit scale for the image's width.
 
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context );
 
-    virtual bool applyBrushTransformFromContext() const;
+    virtual bool applyBrushTransformFromContext( QgsSymbolRenderContext *context = 0 ) const;
 
 };
 

@@ -56,6 +56,7 @@ class TestQgsLineFillSymbol : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void lineFillSymbol();
+    void viewportLineFillSymbol();
     void lineFillSymbolOffset();
     void lineFillLargeOffset();
     void lineFillNegativeAngle();
@@ -65,7 +66,7 @@ class TestQgsLineFillSymbol : public QObject
   private:
     bool mTestHasError =  false ;
 
-    bool imageCheck( const QString &type );
+    bool imageCheck( const QString &type, QgsVectorLayer *layer = nullptr );
     QgsMapSettings mMapSettings;
     QgsVectorLayer *mpPolysLayer = nullptr;
     QgsLinePatternFillSymbolLayer *mLineFill = nullptr;
@@ -145,6 +146,34 @@ void TestQgsLineFillSymbol::lineFillSymbol()
   QVERIFY( imageCheck( QStringLiteral( "symbol_linefill" ) ) );
 }
 
+void TestQgsLineFillSymbol::viewportLineFillSymbol()
+{
+  mReport += QLatin1String( "<h2>Viewport coordinate reference line fill symbol renderer test</h2>\n" );
+
+  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  QVERIFY( layer->isValid() );
+
+  QgsVectorSimplifyMethod simplifyMethod;
+  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  layer->setSimplifyMethod( simplifyMethod );
+
+  //setup gradient fill
+  QgsLinePatternFillSymbolLayer *lineFill = new QgsLinePatternFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, lineFill );
+  layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+
+  QVariantMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
+  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+  lineFill->setSubSymbol( lineSymbol );
+  lineFill->setCoordinateReference( Qgis::SymbolCoordinateReference::Viewport );
+
+  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_viewport" ), layer.get() ) );
+}
+
 void TestQgsLineFillSymbol::lineFillSymbolOffset()
 {
   mReport += QLatin1String( "<h2>Line fill symbol renderer test</h2>\n" );
@@ -198,11 +227,16 @@ void TestQgsLineFillSymbol::dataDefinedSubSymbol()
 //
 
 
-bool TestQgsLineFillSymbol::imageCheck( const QString &testType )
+bool TestQgsLineFillSymbol::imageCheck( const QString &testType, QgsVectorLayer *layer )
 {
+  if ( !layer )
+    layer = mpPolysLayer;
+
+  mMapSettings.setLayers( {layer } );
+
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
-  mMapSettings.setExtent( mpPolysLayer->extent() );
+  mMapSettings.setExtent( layer->extent() );
   mMapSettings.setOutputDpi( 96 );
   QgsRenderChecker myChecker;
   myChecker.setControlPathPrefix( QStringLiteral( "symbol_linefill" ) );

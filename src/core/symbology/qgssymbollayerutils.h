@@ -92,6 +92,27 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static Qt::BrushStyle decodeSldBrushStyle( const QString &str );
 
     /**
+     * Decodes a \a string representing a symbol coordinate reference mode.
+     *
+     * \param string string to decode
+     * \param ok will be set to TRUE if \a string was successfully decoded
+     * \returns decoded marker clip mode
+     *
+     * \see encodeCoordinateReference()
+     * \since QGIS 3.24
+     */
+    static Qgis::SymbolCoordinateReference decodeCoordinateReference( const QString &string, bool *ok SIP_OUT = nullptr );
+
+    /**
+     * Encodes a symbol coordinate reference mode to a string.
+     *
+     * \param coordinateReference coordinate reference mode
+     * \see decodeCoordinateReference()
+     * \since QGIS 3.24
+     */
+    static QString encodeCoordinateReference( Qgis::SymbolCoordinateReference coordinateReference );
+
+    /**
      * Decodes a \a value representing an arrow head type.
      * \since QGIS 3.2
      */
