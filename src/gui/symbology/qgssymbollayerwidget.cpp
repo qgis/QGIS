@@ -3236,8 +3236,59 @@ QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( QgsV
       emit changed();
     }
   } );
-}
 
+  mSeedSpinBox->setShowClearButton( true );
+  mSeedSpinBox->setClearValue( 0 );
+  mRandomXSpinBox->setClearValue( 0 );
+  mRandomYSpinBox->setClearValue( 0 );
+
+  mRandomXOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                      << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches << QgsUnitTypes::RenderPercentage );
+  mRandomYOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                      << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches << QgsUnitTypes::RenderPercentage );
+  connect( mRandomXSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double d )
+  {
+    if ( mLayer )
+    {
+      mLayer->setMaximumRandomDeviationX( d );
+      emit changed();
+    }
+  } );
+  connect( mRandomYSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double d )
+  {
+    if ( mLayer )
+    {
+      mLayer->setMaximumRandomDeviationY( d );
+      emit changed();
+    }
+  } );
+  connect( mRandomXOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, [ = ]
+  {
+    if ( mLayer )
+    {
+      mLayer->setRandomDeviationXUnit( mRandomXOffsetUnitWidget->unit() );
+      mLayer->setRandomDeviationXMapUnitScale( mRandomXOffsetUnitWidget->getMapUnitScale() );
+      emit changed();
+    }
+  } );
+  connect( mRandomYOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, [ = ]
+  {
+    if ( mLayer )
+    {
+      mLayer->setRandomDeviationYUnit( mRandomYOffsetUnitWidget->unit() );
+      mLayer->setRandomDeviationYMapUnitScale( mRandomYOffsetUnitWidget->getMapUnitScale() );
+      emit changed();
+    }
+  } );
+  connect( mSeedSpinBox, qOverload< int > ( &QSpinBox::valueChanged ), this, [ = ]( int v )
+  {
+    if ( mLayer )
+    {
+      mLayer->setSeed( v );
+      emit changed();
+    }
+  } );
+}
 
 void QgsPointPatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
@@ -3282,6 +3333,14 @@ void QgsPointPatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer
   whileBlocking( mClipModeComboBox )->setCurrentIndex( mClipModeComboBox->findData( static_cast< int >( mLayer->clipMode() ) ) );
   whileBlocking( mCoordinateReferenceComboBox )->setCurrentIndex( mCoordinateReferenceComboBox->findData( static_cast< int >( mLayer->coordinateReference() ) ) );
 
+  whileBlocking( mRandomXSpinBox )->setValue( mLayer->maximumRandomDeviationX() );
+  whileBlocking( mRandomYSpinBox )->setValue( mLayer->maximumRandomDeviationY() );
+  whileBlocking( mRandomXOffsetUnitWidget )->setUnit( mLayer->randomDeviationXUnit() );
+  whileBlocking( mRandomXOffsetUnitWidget )->setMapUnitScale( mLayer->randomDeviationXMapUnitScale() );
+  whileBlocking( mRandomYOffsetUnitWidget )->setUnit( mLayer->randomDeviationYUnit() );
+  whileBlocking( mRandomYOffsetUnitWidget )->setMapUnitScale( mLayer->randomDeviationYMapUnitScale() );
+  whileBlocking( mSeedSpinBox )->setValue( mLayer->seed() );
+
   registerDataDefinedButton( mHorizontalDistanceDDBtn, QgsSymbolLayer::PropertyDistanceX );
   registerDataDefinedButton( mVerticalDistanceDDBtn, QgsSymbolLayer::PropertyDistanceY );
   registerDataDefinedButton( mHorizontalDisplacementDDBtn, QgsSymbolLayer::PropertyDisplacementX );
@@ -3290,6 +3349,9 @@ void QgsPointPatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer
   registerDataDefinedButton( mVerticalOffsetDDBtn, QgsSymbolLayer::PropertyOffsetY );
   registerDataDefinedButton( mClippingDDBtn, QgsSymbolLayer::PropertyMarkerClipping );
   registerDataDefinedButton( mCoordinateReferenceDDBtn, QgsSymbolLayer::PropertyCoordinateMode );
+  registerDataDefinedButton( mRandomXDDBtn, QgsSymbolLayer::PropertyRandomOffsetX );
+  registerDataDefinedButton( mRandomYDDBtn, QgsSymbolLayer::PropertyRandomOffsetY );
+  registerDataDefinedButton( mSeedDdbtn, QgsSymbolLayer::PropertyRandomSeed );
 }
 
 QgsSymbolLayer *QgsPointPatternFillSymbolLayerWidget::symbolLayer()

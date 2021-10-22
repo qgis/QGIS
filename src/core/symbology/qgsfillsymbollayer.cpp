@@ -3233,6 +3233,12 @@ void QgsPointPatternFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit uni
   mDisplacementYUnit = unit;
   mOffsetXUnit = unit;
   mOffsetYUnit = unit;
+  // don't change "percentage" units -- since they adapt directly to whatever other unit is set
+  if ( mRandomDeviationXUnit != QgsUnitTypes::RenderPercentage )
+    mRandomDeviationXUnit = unit;
+  if ( mRandomDeviationYUnit != QgsUnitTypes::RenderPercentage )
+    mRandomDeviationYUnit = unit;
+
   if ( mMarkerSymbol )
   {
     mMarkerSymbol->setOutputUnit( unit );
@@ -3242,7 +3248,14 @@ void QgsPointPatternFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit uni
 QgsUnitTypes::RenderUnit QgsPointPatternFillSymbolLayer::outputUnit() const
 {
   QgsUnitTypes::RenderUnit unit = QgsImageFillSymbolLayer::outputUnit();
-  if ( mDistanceXUnit != unit || mDistanceYUnit != unit || mDisplacementXUnit != unit || mDisplacementYUnit != unit || mOffsetXUnit != unit || mOffsetYUnit != unit )
+  if ( mDistanceXUnit != unit ||
+       mDistanceYUnit != unit ||
+       mDisplacementXUnit != unit ||
+       mDisplacementYUnit != unit ||
+       mOffsetXUnit != unit ||
+       mOffsetYUnit != unit ||
+       ( mRandomDeviationXUnit != QgsUnitTypes::RenderPercentage && mRandomDeviationXUnit != unit ) ||
+       ( mRandomDeviationYUnit != QgsUnitTypes::RenderPercentage && mRandomDeviationYUnit != unit ) )
   {
     return QgsUnitTypes::RenderUnknownUnit;
   }
@@ -3256,7 +3269,9 @@ bool QgsPointPatternFillSymbolLayer::usesMapUnits() const
          || mDisplacementXUnit == QgsUnitTypes::RenderMapUnits || mDisplacementXUnit == QgsUnitTypes::RenderMetersInMapUnits
          || mDisplacementYUnit == QgsUnitTypes::RenderMapUnits || mDisplacementYUnit == QgsUnitTypes::RenderMetersInMapUnits
          || mOffsetXUnit == QgsUnitTypes::RenderMapUnits || mOffsetXUnit == QgsUnitTypes::RenderMetersInMapUnits
-         || mOffsetYUnit == QgsUnitTypes::RenderMapUnits || mOffsetYUnit == QgsUnitTypes::RenderMetersInMapUnits;
+         || mOffsetYUnit == QgsUnitTypes::RenderMapUnits || mOffsetYUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mRandomDeviationXUnit == QgsUnitTypes::RenderMapUnits || mRandomDeviationXUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mRandomDeviationYUnit == QgsUnitTypes::RenderMapUnits || mRandomDeviationYUnit == QgsUnitTypes::RenderMetersInMapUnits;
 }
 
 void QgsPointPatternFillSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
@@ -3268,6 +3283,8 @@ void QgsPointPatternFillSymbolLayer::setMapUnitScale( const QgsMapUnitScale &sca
   mDisplacementYMapUnitScale = scale;
   mOffsetXMapUnitScale = scale;
   mOffsetYMapUnitScale = scale;
+  mRandomDeviationXMapUnitScale = scale;
+  mRandomDeviationYMapUnitScale = scale;
 }
 
 QgsMapUnitScale QgsPointPatternFillSymbolLayer::mapUnitScale() const
@@ -3277,7 +3294,9 @@ QgsMapUnitScale QgsPointPatternFillSymbolLayer::mapUnitScale() const
        mDistanceYMapUnitScale == mDisplacementXMapUnitScale &&
        mDisplacementXMapUnitScale == mDisplacementYMapUnitScale &&
        mDisplacementYMapUnitScale == mOffsetXMapUnitScale &&
-       mOffsetXMapUnitScale == mOffsetYMapUnitScale )
+       mOffsetXMapUnitScale == mOffsetYMapUnitScale &&
+       mRandomDeviationXMapUnitScale == mOffsetYMapUnitScale &&
+       mRandomDeviationYMapUnitScale == mRandomDeviationXMapUnitScale )
   {
     return mDistanceXMapUnitScale;
   }
@@ -3360,6 +3379,44 @@ QgsSymbolLayer *QgsPointPatternFillSymbolLayer::create( const QVariantMap &prope
   {
     layer->setOffsetYMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "offset_y_map_unit_scale" )].toString() ) );
   }
+
+  if ( properties.contains( QStringLiteral( "random_deviation_x" ) ) )
+  {
+    layer->setMaximumRandomDeviationX( properties[QStringLiteral( "random_deviation_x" )].toDouble() );
+  }
+  if ( properties.contains( QStringLiteral( "random_deviation_y" ) ) )
+  {
+    layer->setMaximumRandomDeviationY( properties[QStringLiteral( "random_deviation_y" )].toDouble() );
+  }
+  if ( properties.contains( QStringLiteral( "random_deviation_x_unit" ) ) )
+  {
+    layer->setRandomDeviationXUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "random_deviation_x_unit" )].toString() ) );
+  }
+  if ( properties.contains( QStringLiteral( "random_deviation_x_map_unit_scale" ) ) )
+  {
+    layer->setRandomDeviationXMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "random_deviation_x_map_unit_scale" )].toString() ) );
+  }
+  if ( properties.contains( QStringLiteral( "random_deviation_y_unit" ) ) )
+  {
+    layer->setRandomDeviationYUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "random_deviation_y_unit" )].toString() ) );
+  }
+  if ( properties.contains( QStringLiteral( "random_deviation_y_map_unit_scale" ) ) )
+  {
+    layer->setRandomDeviationYMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "random_deviation_y_map_unit_scale" )].toString() ) );
+  }
+  unsigned long seed = 0;
+  if ( properties.contains( QStringLiteral( "seed" ) ) )
+    seed = properties.value( QStringLiteral( "seed" ) ).toUInt();
+  else
+  {
+    // if we a creating a new point pattern fill from scratch, we default to a random seed
+    // because seed based fills are just nicer for users vs seeing points jump around with every map refresh
+    std::random_device rd;
+    std::mt19937 mt( seed == 0 ? rd() : seed );
+    std::uniform_int_distribution<> uniformDist( 1, 999999999 );
+    seed = uniformDist( mt );
+  }
+  layer->setSeed( seed );
 
   if ( properties.contains( QStringLiteral( "outline_width_unit" ) ) )
   {
@@ -3487,7 +3544,11 @@ void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolRenderContext &contex
   mRenderUsingMarkers = context.renderContext().forceVectorOutput()
                         || mMarkerSymbol->hasDataDefinedProperties()
                         || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyMarkerClipping )
-                        || mClipMode != Qgis::MarkerClipMode::Shape;
+                        || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyRandomOffsetX )
+                        || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyRandomOffsetY )
+                        || mClipMode != Qgis::MarkerClipMode::Shape
+                        || !qgsDoubleNear( mRandomDeviationX, 0 )
+                        || !qgsDoubleNear( mRandomDeviationY, 0 );
 
   if ( mRenderUsingMarkers )
   {
@@ -3660,6 +3721,36 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
     top -= boundingRect.top() - ( height * std::floor( boundingRect.top() / height ) );
   }
 
+  unsigned long seed = mSeed;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyRandomSeed ) )
+  {
+    context.renderContext().expressionContext().setOriginalValueVariable( static_cast< unsigned long long >( seed ) );
+    seed = mDataDefinedProperties.valueAsInt( QgsSymbolLayer::PropertyRandomSeed, context.renderContext().expressionContext(), seed );
+  }
+
+  double maxRandomDeviationX = mRandomDeviationX;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyRandomOffsetX ) )
+  {
+    context.setOriginalValueVariable( maxRandomDeviationX );
+    maxRandomDeviationX = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyRandomOffsetX, context.renderContext().expressionContext(), maxRandomDeviationX );
+  }
+  const double maxRandomDeviationPixelX = mRandomDeviationXUnit == QgsUnitTypes::RenderPercentage ? ( maxRandomDeviationX * width / 100 )
+                                          : context.renderContext().convertToPainterUnits( maxRandomDeviationX, mRandomDeviationXUnit, mRandomDeviationXMapUnitScale );
+
+  double maxRandomDeviationY = mRandomDeviationY;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyRandomOffsetY ) )
+  {
+    context.setOriginalValueVariable( maxRandomDeviationY );
+    maxRandomDeviationY = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyRandomOffsetY, context.renderContext().expressionContext(), maxRandomDeviationY );
+  }
+  const double maxRandomDeviationPixelY = mRandomDeviationYUnit == QgsUnitTypes::RenderPercentage ? ( maxRandomDeviationY * height / 100 )
+                                          : context.renderContext().convertToPainterUnits( maxRandomDeviationY, mRandomDeviationYUnit, mRandomDeviationYMapUnitScale );
+
+  std::random_device rd;
+  std::mt19937 mt( seed == 0 ? rd() : seed );
+  std::uniform_real_distribution<> uniformDist( 0, 1 );
+  const bool useRandomShift = !qgsDoubleNear( maxRandomDeviationPixelX, 0 ) || !qgsDoubleNear( maxRandomDeviationPixelY, 0 );
+
   QgsExpressionContextScope *scope = new QgsExpressionContextScope();
   QgsExpressionContextScopePopper scopePopper( context.renderContext().expressionContext(), scope );
   int pointNum = 0;
@@ -3684,6 +3775,12 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
 
       if ( !alternateColumn )
         y -= displacementPixelY;
+
+      if ( useRandomShift )
+      {
+        x += ( 2 * uniformDist( mt ) - 1 ) * maxRandomDeviationPixelX;
+        y += ( 2 * uniformDist( mt ) - 1 ) * maxRandomDeviationPixelY;
+      }
 
       if ( needsExpressionContext )
       {
@@ -3768,6 +3865,13 @@ QVariantMap QgsPointPatternFillSymbolLayer::properties() const
   map.insert( QStringLiteral( "outline_width_unit" ), QgsUnitTypes::encodeUnit( mStrokeWidthUnit ) );
   map.insert( QStringLiteral( "outline_width_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mStrokeWidthMapUnitScale ) );
   map.insert( QStringLiteral( "clip_mode" ), QgsSymbolLayerUtils::encodeMarkerClipMode( mClipMode ) );
+  map.insert( QStringLiteral( "random_deviation_x" ), QString::number( mRandomDeviationX ) );
+  map.insert( QStringLiteral( "random_deviation_y" ), QString::number( mRandomDeviationY ) );
+  map.insert( QStringLiteral( "random_deviation_x_unit" ), QgsUnitTypes::encodeUnit( mRandomDeviationXUnit ) );
+  map.insert( QStringLiteral( "random_deviation_y_unit" ), QgsUnitTypes::encodeUnit( mRandomDeviationYUnit ) );
+  map.insert( QStringLiteral( "random_deviation_x_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mRandomDeviationXMapUnitScale ) );
+  map.insert( QStringLiteral( "random_deviation_y_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mRandomDeviationYMapUnitScale ) );
+  map.insert( QStringLiteral( "seed" ), QString::number( mSeed ) );
   return map;
 }
 

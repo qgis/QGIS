@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>401</width>
-    <height>342</height>
+    <height>521</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -406,6 +406,163 @@
      </property>
     </widget>
    </item>
+   <item row="11" column="0" colspan="3">
+    <widget class="QgsCollapsibleGroupBoxBasic" name="mRandomGroupBox">
+     <property name="title">
+      <string>Randomize Pattern</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="2" column="0" rowspan="2">
+       <widget class="QLabel" name="mVerticalOffsetLabel_2">
+        <property name="text">
+         <string>Vertically</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3" rowspan="2">
+       <widget class="QgsPropertyOverrideButton" name="mRandomYDDBtn">
+        <property name="text">
+         <string>…</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" rowspan="2" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout_8">
+        <item>
+         <widget class="QgsDoubleSpinBox" name="mRandomYSpinBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>1</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="decimals">
+           <number>6</number>
+          </property>
+          <property name="minimum">
+           <double>0.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>99999999.989999994635582</double>
+          </property>
+          <property name="singleStep">
+           <double>0.200000000000000</double>
+          </property>
+          <property name="clearValue" stdset="0">
+           <double>0.000000000000000</double>
+          </property>
+          <property name="showClearButton" stdset="0">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QgsUnitSelectionWidget" name="mRandomYOffsetUnitWidget" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="0" column="3" rowspan="2">
+       <widget class="QgsPropertyOverrideButton" name="mRandomXDDBtn">
+        <property name="text">
+         <string>…</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" rowspan="2" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout_9">
+        <item>
+         <widget class="QgsDoubleSpinBox" name="mRandomXSpinBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>1</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="decimals">
+           <number>6</number>
+          </property>
+          <property name="minimum">
+           <double>0.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>99999999.989999994635582</double>
+          </property>
+          <property name="singleStep">
+           <double>0.200000000000000</double>
+          </property>
+          <property name="clearValue" stdset="0">
+           <double>0.000000000000000</double>
+          </property>
+          <property name="showClearButton" stdset="0">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QgsUnitSelectionWidget" name="mRandomXOffsetUnitWidget" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="0" column="0" rowspan="2">
+       <widget class="QLabel" name="mHorizontalOffsetLabel_2">
+        <property name="text">
+         <string>Horizontally</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Seed</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="3">
+       <widget class="QgsPropertyOverrideButton" name="mSeedDdbtn">
+        <property name="text">
+         <string>…</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1" colspan="2">
+       <widget class="QgsSpinBox" name="mSeedSpinBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>1</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="specialValueText">
+         <string>randomised</string>
+        </property>
+        <property name="maximum">
+         <number>999999999</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -424,6 +581,17 @@
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -447,6 +615,16 @@
   <tabstop>mVerticalOffsetSpinBox</tabstop>
   <tabstop>mVerticalOffsetUnitWidget</tabstop>
   <tabstop>mVerticalOffsetDDBtn</tabstop>
+  <tabstop>mClipModeComboBox</tabstop>
+  <tabstop>mClippingDDBtn</tabstop>
+  <tabstop>mRandomXSpinBox</tabstop>
+  <tabstop>mRandomXOffsetUnitWidget</tabstop>
+  <tabstop>mRandomXDDBtn</tabstop>
+  <tabstop>mRandomYSpinBox</tabstop>
+  <tabstop>mRandomYOffsetUnitWidget</tabstop>
+  <tabstop>mRandomYDDBtn</tabstop>
+  <tabstop>mSeedSpinBox</tabstop>
+  <tabstop>mSeedDdbtn</tabstop>
  </tabstops>
  <resources/>
  <connections/>

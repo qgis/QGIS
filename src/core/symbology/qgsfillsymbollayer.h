@@ -2001,6 +2001,141 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
      */
     void setClipMode( Qgis::MarkerClipMode mode ) { mClipMode = mode; }
 
+    /**
+     * Sets the maximum horizontal random \a deviation of points in the pattern.
+     *
+     * Units are set via setMaximumRandomDeviationXUnit().
+     *
+     * \see maximumRandomDeviationX()
+     * \see setMaximumRandomDeviationY()
+     * \since QGIS 3.24
+    */
+    void setMaximumRandomDeviationX( double deviation ) { mRandomDeviationX = deviation; }
+
+    /**
+     * Returns the maximum horizontal random deviation of points in the pattern.
+     *
+     * Units are retrieved via maximumRandomDeviationXUnit().
+     *
+     * \see setMaximumRandomDeviationX()
+     * \see maximumRandomDeviationY()
+     * \since QGIS 3.24
+    */
+    double maximumRandomDeviationX() const { return mRandomDeviationX; }
+
+    /**
+     * Sets the maximum vertical random \a deviation of points in the pattern.
+     *
+     * Units are set via setMaximumRandomDeviationYUnit().
+     *
+     * \see maximumRandomDeviationY()
+     * \see setMaximumRandomDeviationX()
+     * \since QGIS 3.24
+    */
+    void setMaximumRandomDeviationY( double deviation ) { mRandomDeviationY = deviation; }
+
+    /**
+     * Returns the maximum vertical random deviation of points in the pattern.
+     *
+     * Units are retrieved via maximumRandomDeviationYUnit().
+     *
+     * \see setMaximumRandomDeviationY()
+     * \see maximumRandomDeviationX()
+     * \since QGIS 3.24
+    */
+    double maximumRandomDeviationY() const { return mRandomDeviationY; }
+
+    /**
+     * Sets the \a unit for the horizontal random deviation of points in the pattern.
+     *
+     * \see randomDeviationXUnit()
+     * \see setRandomDeviationYUnit()
+     * \since QGIS 3.24
+    */
+    void setRandomDeviationXUnit( QgsUnitTypes::RenderUnit unit ) { mRandomDeviationXUnit = unit; }
+
+    /**
+     * Returns the units for the horizontal random deviation of points in the pattern.
+     * \see setRandomDeviationXUnit()
+     * \see randomDeviationYUnit()
+     *
+     * \since QGIS 3.24
+    */
+    QgsUnitTypes::RenderUnit randomDeviationXUnit() const { return mRandomDeviationXUnit; }
+
+    /**
+     * Sets the \a unit for the vertical random deviation of points in the pattern.
+     *
+     * \see randomDeviationYUnit()
+     * \see setRandomDeviationXUnit()
+     * \since QGIS 3.24
+    */
+    void setRandomDeviationYUnit( QgsUnitTypes::RenderUnit unit ) { mRandomDeviationYUnit = unit; }
+
+    /**
+     * Returns the units for the vertical random deviation of points in the pattern.
+     *
+     * \see setRandomDeviationYUnit()
+     * \see randomDeviationXUnit()
+     *
+     * \since QGIS 3.24
+    */
+    QgsUnitTypes::RenderUnit randomDeviationYUnit() const { return mRandomDeviationYUnit; }
+
+    /**
+     * Returns the unit scale for the horizontal random deviation of points in the pattern.
+     *
+     * \see setRandomDeviationXMapUnitScale()
+     * \see randomDeviationYMapUnitScale()
+     * \since QGIS 3.24
+    */
+    const QgsMapUnitScale &randomDeviationXMapUnitScale() const { return mRandomDeviationXMapUnitScale; }
+
+    /**
+     * Returns the unit scale for the vertical random deviation of points in the pattern.
+     *
+     * \see setRandomDeviationXMapUnitScale()
+     * \see randomDeviationXMapUnitScale()
+     * \since QGIS 3.24
+    */
+    const QgsMapUnitScale &randomDeviationYMapUnitScale() const { return mRandomDeviationYMapUnitScale; }
+
+    /**
+     * Sets the unit \a scale for the horizontal random deviation of points in the pattern.
+     *
+     * \see randomDeviationXMapUnitScale()
+     * \see setRandomDeviationYMapUnitScale()
+     * \since QGIS 3.24
+    */
+    void setRandomDeviationXMapUnitScale( const QgsMapUnitScale &scale ) { mRandomDeviationXMapUnitScale = scale; }
+
+    /**
+     * Sets the unit \a scale for the vertical random deviation of points in the pattern.
+     *
+     * \see randomDeviationYMapUnitScale()
+     * \see setRandomDeviationXMapUnitScale()
+     * \since QGIS 3.24
+    */
+    void setRandomDeviationYMapUnitScale( const QgsMapUnitScale &scale ) { mRandomDeviationYMapUnitScale = scale; }
+
+    /**
+     * Returns the random number seed to use when randomly shifting points, or 0 if
+     * a truly random sequence will be used (causing points to appear in different locations with every map refresh).
+     * \see setSeed()
+     * \since QGIS 3.24
+     */
+    unsigned long seed() const { return mSeed; }
+
+    /**
+     * Sets the random number \a seed to use when randomly shifting points, or 0 if
+     * a truly random sequence will be used on every rendering (causing points to appear
+     * in different locations with every map refresh).
+     *
+     * \see seed()
+     * \since QGIS 3.24
+     */
+    void setSeed( unsigned long seed ) { mSeed = seed; }
+
   protected:
     std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
     double mDistanceX = 15;
@@ -2021,6 +2156,14 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     double mOffsetY = 0;
     QgsUnitTypes::RenderUnit mOffsetYUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mOffsetYMapUnitScale;
+
+    double mRandomDeviationX = 0;
+    QgsUnitTypes::RenderUnit mRandomDeviationXUnit = QgsUnitTypes::RenderMillimeters;
+    QgsMapUnitScale mRandomDeviationXMapUnitScale;
+    double mRandomDeviationY = 0;
+    QgsUnitTypes::RenderUnit mRandomDeviationYUnit = QgsUnitTypes::RenderMillimeters;
+    QgsMapUnitScale mRandomDeviationYMapUnitScale;
+    unsigned long mSeed = 0;
 
     void applyDataDefinedSettings( QgsSymbolRenderContext &context ) override;
 
