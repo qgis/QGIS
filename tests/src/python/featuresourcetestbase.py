@@ -634,7 +634,7 @@ class FeatureSourceTestCase(object):
         request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'), QgsProject.instance().transformContext()).setDistanceWithin(QgsGeometry.fromWkt('LineString (-7035391 11036245, -7622045 11023301, -7763421 15092839)'), 250000)
         features = [f['pk'] for f in self.source.getFeatures(request)]
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
-        assert set(features) == set([2, 5]), 'Got {} instead'.format(features)
+        self.assertEqual(set(features), {2, 5})
         self.assertTrue(all_valid)
 
         # point geometry
