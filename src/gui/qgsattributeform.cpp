@@ -482,14 +482,18 @@ bool QgsAttributeForm::saveEdits( QString *error )
   return success;
 }
 
-bool QgsAttributeForm::updateDefaultValues( const int originIdx )
+void QgsAttributeForm::updateValuesDependencies( const int originIdx )
 {
+  updateFieldDependencies();
 
-  // Synchronize
-  updateDefaultValueDependencies();
+  updateValuesDependenciesDefaultValues( originIdx );
+  updateValuesDependenciesVirtualFields( originIdx );
+}
 
+void QgsAttributeForm::updateValuesDependenciesDefaultValues( const int originIdx )
+{
   if ( !mDefaultValueDependencies.contains( originIdx ) )
-    return false;
+    return;
 
   // create updated Feature
   QgsFeature updatedFeature = QgsFeature( mFeature );
@@ -552,14 +556,10 @@ bool QgsAttributeForm::updateDefaultValues( const int originIdx )
       }
     }
   }
-  return true;
 }
 
-void QgsAttributeForm::updateVirtualFields( const int originIdx )
+void QgsAttributeForm::updateValuesDependenciesVirtualFields( const int originIdx )
 {
-  // Synchronize
-  updateVirtualFieldsDependencies();
-
   if ( !mVirtualFieldsDependencies.contains( originIdx ) )
     return;
 
@@ -596,7 +596,7 @@ void QgsAttributeForm::updateVirtualFields( const int originIdx )
     }
   }
 
-// go through depending fields and update the virtual field with its expression
+  // go through depending fields and update the virtual field with its expression
   QList<QgsWidgetWrapper *> relevantWidgets = mVirtualFieldsDependencies.values( originIdx );
   for ( QgsWidgetWrapper *ww : std::as_const( relevantWidgets ) )
   {
@@ -1025,8 +1025,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariant
 
   //append field index here, so it's not updated recursive
   mAlreadyUpdatedFields.append( eww->fieldIdx() );
-  updateDefaultValues( eww->fieldIdx() );
-  updateVirtualFields( eww->fieldIdx() );
+  updateValuesDependencies( eww->fieldIdx() );
   mAlreadyUpdatedFields.removeAll( eww->fieldIdx() );
 
   // Updates expression controlled labels
@@ -1834,8 +1833,7 @@ void QgsAttributeForm::init()
     }
   }
 
-  updateDefaultValueDependencies();
-  updateVirtualFieldsDependencies();
+  updateFieldDependencies();
 
   if ( !mButtonBox )
   {
@@ -2701,67 +2699,67 @@ bool QgsAttributeForm::fieldIsEditable( int fieldIndex ) const
   return QgsVectorLayerUtils::fieldIsEditable( mLayer, fieldIndex, mFeature );
 }
 
-void QgsAttributeForm::updateDefaultValueDependencies()
+void QgsAttributeForm::updateFieldDependencies()
 {
   mDefaultValueDependencies.clear();
+  mVirtualFieldsDependencies.clear();
+
   //create defaultValueDependencies
   for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
-    if ( eww )
-    {
-      QgsExpression exp( eww->field().defaultValueDefinition().expression() );
-      const QSet<QString> referencedColumns = exp.referencedColumns();
-      for ( const QString &referencedColumn : referencedColumns )
-      {
-        if ( referencedColumn == QgsFeatureRequest::ALL_ATTRIBUTES )
-        {
-          const QList<int> allAttributeIds( mLayer->fields().allAttributesList() );
+    if ( ! eww )
+      continue;
 
-          for ( const int id : allAttributeIds )
-          {
-            mDefaultValueDependencies.insertMulti( id, eww );
-          }
-        }
-        else
-        {
-          mDefaultValueDependencies.insertMulti( mLayer->fields().lookupField( referencedColumn ), eww );
-        }
+    updateFieldDependenciesDefaultValue( eww );
+
+    updateFieldDependenciesVirtualFields( eww );
+  }
+}
+
+void QgsAttributeForm::updateFieldDependenciesDefaultValue( QgsEditorWidgetWrapper *eww )
+{
+  QgsExpression exp( eww->field().defaultValueDefinition().expression() );
+  const QSet<QString> referencedColumns = exp.referencedColumns();
+  for ( const QString &referencedColumn : referencedColumns )
+  {
+    if ( referencedColumn == QgsFeatureRequest::ALL_ATTRIBUTES )
+    {
+      const QList<int> allAttributeIds( mLayer->fields().allAttributesList() );
+
+      for ( const int id : allAttributeIds )
+      {
+        mDefaultValueDependencies.insertMulti( id, eww );
       }
+    }
+    else
+    {
+      mDefaultValueDependencies.insertMulti( mLayer->fields().lookupField( referencedColumn ), eww );
     }
   }
 }
 
-void QgsAttributeForm::updateVirtualFieldsDependencies()
+void QgsAttributeForm::updateFieldDependenciesVirtualFields( QgsEditorWidgetWrapper *eww )
 {
-  mVirtualFieldsDependencies.clear();
+  QString expressionField = eww->layer()->expressionField( eww->fieldIdx() );
+  if ( expressionField.isEmpty() )
+    return;
 
-  for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
+  QgsExpression exp( expressionField );
+  const QSet<QString> referencedColumns = exp.referencedColumns();
+  for ( const QString &referencedColumn : referencedColumns )
   {
-    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
-    if ( !eww )
-      continue;
-
-    QString expressionField = eww->layer()->expressionField( eww->fieldIdx() );
-    QgsExpression exp( expressionField );
-    if ( expressionField.isEmpty() )
-      continue;
-
-    const QSet<QString> referencedColumns = exp.referencedColumns();
-    for ( const QString &referencedColumn : referencedColumns )
+    if ( referencedColumn == QgsFeatureRequest::ALL_ATTRIBUTES )
     {
-      if ( referencedColumn == QgsFeatureRequest::ALL_ATTRIBUTES )
+      const QList<int> allAttributeIds( mLayer->fields().allAttributesList() );
+      for ( const int id : allAttributeIds )
       {
-        const QList<int> allAttributeIds( mLayer->fields().allAttributesList() );
-        for ( const int id : allAttributeIds )
-        {
-          mVirtualFieldsDependencies.insertMulti( id, eww );
-        }
+        mVirtualFieldsDependencies.insertMulti( id, eww );
       }
-      else
-      {
-        mVirtualFieldsDependencies.insertMulti( mLayer->fields().lookupField( referencedColumn ), eww );
-      }
+    }
+    else
+    {
+      mVirtualFieldsDependencies.insertMulti( mLayer->fields().lookupField( referencedColumn ), eww );
     }
   }
 }
