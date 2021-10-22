@@ -320,7 +320,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'EXTENT': extent,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdal_translate',
-                 '-projwin 0.0 0.0 0.0 0.0 -of JPEG ' +
+                 '-of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
             # with NODATA value
@@ -330,7 +330,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'NODATA': 9999,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdal_translate',
-                 '-projwin 0.0 0.0 0.0 0.0 -a_nodata 9999.0 -of JPEG ' +
+                 '-a_nodata 9999.0 -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
             # with "0" NODATA value
@@ -340,7 +340,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'NODATA': 0,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdal_translate',
-                 '-projwin 0.0 0.0 0.0 0.0 -a_nodata 0.0 -of JPEG ' +
+                 '-a_nodata 0.0 -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
             # with "0" NODATA value and custom data type
@@ -351,7 +351,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'DATA_TYPE': 6,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdal_translate',
-                 '-projwin 0.0 0.0 0.0 0.0 -a_nodata 0.0 -ot Float32 -of JPEG ' +
+                 '-a_nodata 0.0 -ot Float32 -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
 
@@ -363,7 +363,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'DATA_TYPE': 0,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdal_translate',
-                 '-projwin 0.0 0.0 0.0 0.0 -of JPEG -co COMPRESS=DEFLATE -co PREDICTOR=2 -co ZLEVEL=9 ' +
+                 '-of JPEG -co COMPRESS=DEFLATE -co PREDICTOR=2 -co ZLEVEL=9 ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
 
@@ -375,7 +375,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'DATA_TYPE': 0,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdal_translate',
-                 '-projwin 0.0 0.0 0.0 0.0 -of JPEG -s_srs EPSG:4326 -tps -tr 0.1 0.1 ' +
+                 '-of JPEG -s_srs EPSG:4326 -tps -tr 0.1 0.1 ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
 
@@ -386,7 +386,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'OVERCRS': True,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdal_translate',
-                 '-projwin 0.0 0.0 0.0 0.0 -a_srs EPSG:4326 -of JPEG ' +
+                 '-a_srs EPSG:4326 -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
 
