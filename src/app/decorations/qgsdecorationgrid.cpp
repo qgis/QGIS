@@ -375,12 +375,6 @@ void QgsDecorationGrid::drawCoordinateAnnotation( QgsRenderContext &context, QPo
   QgsTextRenderer::drawText( QPointF( xpos, ypos ), rotation, QgsTextRenderer::AlignLeft, annotationStringList, context, mTextFormat );
 }
 
-QPolygonF canvasPolygon( const QgsMapSettings &mapSettings )
-{
-  const QPolygonF poly;
-  return mapSettings.visiblePolygon();
-}
-
 bool clipByRect( QLineF &line, const QPolygonF &rect )
 {
   QVector<QLineF> borderLines;
@@ -441,7 +435,7 @@ int QgsDecorationGrid::xGridLines( const QgsMapSettings &mapSettings, QList< QPa
   if ( mGridIntervalY / mapSettings.mapUnitsPerPixel() < 1 )
     return 1;
 
-  const QPolygonF canvasPoly = canvasPolygon( mapSettings );
+  const QPolygonF canvasPoly = mapSettings.visiblePolygon();
   const QPolygonF mapPolygon = canvasExtent( mapSettings );
   const QRectF mapBoundingRect = mapPolygon.boundingRect();
   const QLineF lineEast( mapPolygon[2], mapPolygon[1] );
@@ -486,7 +480,7 @@ int QgsDecorationGrid::yGridLines( const QgsMapSettings &mapSettings, QList< QPa
   if ( mGridIntervalX / mapSettings.mapUnitsPerPixel() < 1 )
     return 1;
 
-  const QPolygonF canvasPoly = canvasPolygon( mapSettings );
+  const QPolygonF canvasPoly = mapSettings.visiblePolygon();
   const QPolygonF mapPolygon = canvasExtent( mapSettings );
   const QLineF lineSouth( mapPolygon[3], mapPolygon[2] );
   const QLineF lineNorth( mapPolygon[0], mapPolygon[1] );
