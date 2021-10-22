@@ -30,7 +30,8 @@ from qgis.core import (
     QgsFontMarkerSymbolLayer, QgsEllipseSymbolLayer, QgsSimpleLineSymbolLayer,
     QgsMarkerLineSymbolLayer, QgsMarkerSymbol, QgsSimpleFillSymbolLayer, QgsSVGFillSymbolLayer,
     QgsLinePatternFillSymbolLayer, QgsPointPatternFillSymbolLayer, QgsVectorLayer, QgsVectorLayerSimpleLabeling,
-    QgsTextBufferSettings, QgsPalLayerSettings, QgsTextBackgroundSettings, QgsRuleBasedLabeling)
+    QgsTextBufferSettings, QgsPalLayerSettings, QgsTextBackgroundSettings, QgsRuleBasedLabeling,
+    QgsLineSymbol)
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 
@@ -293,6 +294,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         symbol.setSvgFillColor(QColor('blue'))
         symbol.setSvgStrokeWidth(3)
         symbol.setSvgStrokeColor(QColor('yellow'))
+        symbol.setSubSymbol(QgsLineSymbol())
         symbol.subSymbol().setWidth(10)
 
         dom, root = self.symbolToSld(symbol)
@@ -313,6 +315,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
     def testSvgFillPixel(self):
         symbol = QgsSVGFillSymbolLayer('test/star.svg', 10, 45)
+        symbol.setSubSymbol(QgsLineSymbol())
         symbol.setSvgFillColor(QColor('blue'))
         symbol.setSvgStrokeWidth(3)
         symbol.setSvgStrokeColor(QColor('black'))
