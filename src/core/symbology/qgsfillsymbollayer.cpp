@@ -3558,6 +3558,10 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
     _renderPolygon( p, points, rings, context );
   }
 
+  // if invalid parameters, skip out
+  if ( qgsDoubleNear( width, 0 ) || qgsDoubleNear( height, 0 ) || width < 0 || height < 0 )
+    return;
+
   p->save();
 
   QPainterPath path;

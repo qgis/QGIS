@@ -161,9 +161,13 @@ void TestQgsPointPatternFillSymbol::pointPatternFillSymbolVector()
   QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
 
   mPointPatternFill->setSubSymbol( pointSymbol );
+  mPointPatternFill->setDistanceX( 10 );
+  mPointPatternFill->setDistanceY( 10 );
   mMapSettings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, true );
   const bool res = imageCheck( "symbol_pointfill_vector" );
   mMapSettings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, false );
+  mPointPatternFill->setDistanceX( 15 );
+  mPointPatternFill->setDistanceY( 15 );
   QVERIFY( res );
 
   // also confirm that output is indeed vector!
