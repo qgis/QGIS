@@ -375,7 +375,7 @@ void QgsDecorationGrid::drawCoordinateAnnotation( QgsRenderContext &context, QPo
   QgsTextRenderer::drawText( QPointF( xpos, ypos ), rotation, QgsTextRenderer::AlignLeft, annotationStringList, context, mTextFormat );
 }
 
-bool clipByRect( QLineF &line, const QPolygonF &rect )
+static bool clipByRect( QLineF &line, const QPolygonF &rect )
 {
   QVector<QLineF> borderLines;
   borderLines << QLineF( rect.at( 0 ), rect.at( 1 ) );
@@ -407,7 +407,7 @@ bool clipByRect( QLineF &line, const QPolygonF &rect )
   return true;
 }
 
-QPolygonF canvasExtent( const QgsMapSettings &mapSettings )
+static QPolygonF canvasExtent( const QgsMapSettings &mapSettings )
 {
   QPolygonF poly;
   const QgsRectangle extent = mapSettings.visibleExtent();
