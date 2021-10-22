@@ -692,7 +692,7 @@ void TestQgsCompoundCurve::gettersSetters()
 }
 
 
-void TestQgsCompoundCurve::pointAt() // todo add tests with xy
+void TestQgsCompoundCurve::pointAt()
 {
   QgsCompoundCurve cc;
 
@@ -711,21 +711,21 @@ void TestQgsCompoundCurve::pointAt() // todo add tests with xy
   Qgis::VertexType type;
   QVERIFY( !cc.pointAt( -1, p, type ) );
   QVERIFY( !cc.pointAt( 11, p, type ) );
+
   QVERIFY( cc.pointAt( 0, p, type ) );
-  QCOMPARE( p.z(), 3.0 );
-  QCOMPARE( p.m(), 4.0 );
+  QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ) );
   QCOMPARE( type, Qgis::VertexType::Segment );
+
   QVERIFY( cc.pointAt( 1, p, type ) );
-  QCOMPARE( p.z(), 13.0 );
-  QCOMPARE( p.m(), 14.0 );
+  QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZM, 11, 12, 13, 14 ) );
   QCOMPARE( type, Qgis::VertexType::Curve );
+
   QVERIFY( cc.pointAt( 2, p, type ) );
-  QCOMPARE( p.z(), 23.0 );
-  QCOMPARE( p.m(), 24.0 );
+  QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZM, 21, 22, 23, 24 ) );
   QCOMPARE( type, Qgis::VertexType::Segment );
+
   QVERIFY( cc.pointAt( 3, p, type ) );
-  QCOMPARE( p.z(), 13.0 );
-  QCOMPARE( p.m(), 14.0 );
+  QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZM, 31, 22, 13, 14 ) );
   QCOMPARE( type, Qgis::VertexType::Segment );
 }
 
