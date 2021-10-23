@@ -446,7 +446,12 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
 
   subSymbolExpressionContextScope->setFeature( f );
 
+  const bool prevIsSubsymbol = context.renderContext().flags() & Qgis::RenderContextFlag::RenderingSubSymbol;
+  context.renderContext().setFlag( Qgis::RenderContextFlag::RenderingSubSymbol );
+
   mSymbol->renderFeature( f, context.renderContext(), -1, context.selected() );
+
+  context.renderContext().setFlag( Qgis::RenderContextFlag::RenderingSubSymbol, prevIsSubsymbol );
 
   if ( mRenderingFeature )
     mHasRenderedFeature = true;
