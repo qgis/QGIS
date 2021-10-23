@@ -144,6 +144,9 @@ void QgsVectorFieldSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderConte
 
   const QgsRenderContext &ctx = context.renderContext();
 
+  const bool prevIsSubsymbol = context.renderContext().flags() & Qgis::RenderContextFlag::RenderingSubSymbol;
+  context.renderContext().setFlag( Qgis::RenderContextFlag::RenderingSubSymbol );
+
   if ( !context.feature() )
   {
     //preview
@@ -151,6 +154,7 @@ void QgsVectorFieldSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderConte
     line << QPointF( 0, 50 );
     line << QPointF( 100, 50 );
     mLineSymbol->renderPolyline( line, nullptr, context.renderContext() );
+    context.renderContext().setFlag( Qgis::RenderContextFlag::RenderingSubSymbol, prevIsSubsymbol );
     return;
   }
 
@@ -209,7 +213,9 @@ void QgsVectorFieldSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderConte
   }
 
   line << destPoint;
+
   mLineSymbol->renderPolyline( line, &f, context.renderContext() );
+  context.renderContext().setFlag( Qgis::RenderContextFlag::RenderingSubSymbol, prevIsSubsymbol );
 }
 
 void QgsVectorFieldSymbolLayer::startRender( QgsSymbolRenderContext &context )

@@ -590,6 +590,7 @@ The development version
       ApplyScalingWorkaroundForTextRendering,
       Render3DMap,
       ApplyClipAfterReprojection,
+      RenderingSubSymbol,
     };
     typedef QFlags<Qgis::RenderContextFlag> RenderContextFlags;
 
