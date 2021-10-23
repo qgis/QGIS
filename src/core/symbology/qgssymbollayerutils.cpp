@@ -1168,22 +1168,40 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
       }
       else
       {
-        QgsSymbolLayer *layer = loadSymbolLayer( e, context );
-
-        if ( layer )
+        if ( QgsSymbolLayer *layer = loadSymbolLayer( e, context ) )
         {
           // Dealing with sub-symbols nested into a layer
           const QDomElement s = e.firstChildElement( QStringLiteral( "symbol" ) );
           if ( !s.isNull() )
           {
-            QgsSymbol *subSymbol = loadSymbol( s, context );
-            const bool res = layer->setSubSymbol( subSymbol );
-            if ( !res )
+            std::unique_ptr< QgsSymbol > subSymbol( loadSymbol( s, context ) );
+            // special handling for SVG fill symbol layer -- upgrade the subsymbol which
+            // was historically used for the fill stroke to be dedicated symbol layer instead
+            // in order to match the behavior of all other fill symbol layer types
+            if ( dynamic_cast< QgsSVGFillSymbolLayer * >( layer ) )
             {
-              QgsDebugMsg( "symbol layer refused subsymbol: " + s.attribute( "name" ) );
+              // add the SVG fill first
+              layers.append( layer );
+              // then add the layers from the subsymbol stroke outline on top
+              for ( int i = 0; i < subSymbol->symbolLayerCount(); ++i )
+              {
+                layers.append( subSymbol->symbolLayer( i )->clone() );
+              }
+            }
+            else
+            {
+              const bool res = layer->setSubSymbol( subSymbol.release() );
+              if ( !res )
+              {
+                QgsDebugMsg( QStringLiteral( "symbol layer refused subsymbol: " ) + s.attribute( "name" ) );
+              }
+              layers.append( layer );
             }
           }
-          layers.append( layer );
+          else
+          {
+            layers.append( layer );
+          }
         }
       }
     }
