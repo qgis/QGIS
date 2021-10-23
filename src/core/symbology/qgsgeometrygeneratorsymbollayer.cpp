@@ -333,10 +333,12 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
   QgsExpressionContext &expressionContext = context.renderContext().expressionContext();
   QgsFeature f = expressionContext.feature();
 
-  if ( !context.feature() && points )
+  if ( ( !context.feature() || context.renderContext().flags() & Qgis::RenderContextFlag::RenderingSubSymbol ) && points )
   {
     // oh dear, we don't have a feature to work from... but that's ok, we are probably being rendered as a plain old symbol!
-    // in this case we need to build up a feature which represents the points being rendered
+    // in this case we need to build up a feature which represents the points being rendered.
+    // note that we also do this same logic when we are rendering a subsymbol. In that case the $geometry part of the
+    // expression should refer to the shape of the subsymbol being rendered, NOT the feature's original geometry
     QgsGeometry drawGeometry;
 
     // step 1 - convert points and rings to geometry
