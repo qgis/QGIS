@@ -2510,7 +2510,7 @@ QgsGeometry QgsGeos::mergeLines( QString *errorMsg ) const
 
 QgsGeometry QgsGeos::closestPoint( const QgsGeometry &other, QString *errorMsg ) const
 {
-  if ( !mGeos || isEmpty() || other.isNull() )
+  if ( !mGeos || isEmpty() || other.isEmpty() )
   {
     return QgsGeometry();
   }
