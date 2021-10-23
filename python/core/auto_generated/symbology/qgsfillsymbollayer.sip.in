@@ -818,11 +818,6 @@ Base class for polygon renderers generating texture images
     virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
 
-    virtual QgsSymbol *subSymbol();
-
-    virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
-
-
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
 Sets the ``units`` fo the symbol's stroke width.
@@ -893,28 +888,19 @@ fill is positioned relative to the feature.
 
     virtual QgsMapUnitScale mapUnitScale() const;
 
-    virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
-
     virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
-
-    virtual QColor dxfColor( QgsSymbolRenderContext &context ) const;
 
     virtual Qt::PenStyle dxfPenStyle() const;
 
-    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
-
     virtual QVariantMap properties() const;
-
-    virtual bool hasDataDefinedProperties() const;
 
 
   protected:
 
 
-
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context );
 %Docstring
-Custom stroke
+Applies data defined settings prior to generating the fill symbol brush.
 %End
 
     virtual bool applyBrushTransformFromContext( QgsSymbolRenderContext *context = 0 ) const;
@@ -1256,6 +1242,8 @@ Used internally when reading/writing symbols.
 
     virtual void stopRender( QgsSymbolRenderContext &context );
 
+    virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
+
     virtual QVariantMap properties() const;
 
     virtual QgsSVGFillSymbolLayer *clone() const /Factory/;
@@ -1263,6 +1251,18 @@ Used internally when reading/writing symbols.
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
     virtual bool usesMapUnits() const;
+
+    virtual QgsSymbol *subSymbol();
+
+    virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
+
+    virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
+
+    virtual QColor dxfColor( QgsSymbolRenderContext &context ) const;
+
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
+    virtual bool hasDataDefinedProperties() const;
 
 
     void setSvgFilePath( const QString &svgPath );

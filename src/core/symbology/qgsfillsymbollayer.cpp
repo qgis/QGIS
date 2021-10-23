@@ -1702,7 +1702,6 @@ QgsMapUnitScale QgsShapeburstFillSymbolLayer::mapUnitScale() const
 
 QgsImageFillSymbolLayer::QgsImageFillSymbolLayer()
 {
-  setSubSymbol( new QgsLineSymbol() );
 }
 
 QgsImageFillSymbolLayer::~QgsImageFillSymbolLayer() = default;
@@ -1750,49 +1749,8 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVec
   }
   p->setBrush( mBrush );
   _renderPolygon( p, points, rings, context );
-  if ( mStroke )
-  {
-    mStroke->renderPolyline( points, context.feature(), context.renderContext(), -1, SELECT_FILL_BORDER && context.selected() );
-    if ( rings )
-    {
-      for ( auto ringIt = rings->constBegin(); ringIt != rings->constEnd(); ++ringIt )
-      {
-        mStroke->renderPolyline( *ringIt, context.feature(), context.renderContext(), -1, SELECT_FILL_BORDER && context.selected() );
-      }
-    }
-  }
 
   mBrush.setTransform( bkTransform );
-}
-
-QgsSymbol *QgsImageFillSymbolLayer::subSymbol()
-{
-  return mStroke.get();
-}
-
-bool QgsImageFillSymbolLayer::setSubSymbol( QgsSymbol *symbol )
-{
-  if ( !symbol ) //unset current stroke
-  {
-    mStroke.reset( nullptr );
-    return true;
-  }
-
-  if ( symbol->type() != Qgis::SymbolType::Line )
-  {
-    delete symbol;
-    return false;
-  }
-
-  QgsLineSymbol *lineSymbol = dynamic_cast<QgsLineSymbol *>( symbol );
-  if ( lineSymbol )
-  {
-    mStroke.reset( lineSymbol );
-    return true;
-  }
-
-  delete symbol;
-  return false;
 }
 
 void QgsImageFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
@@ -1815,16 +1773,6 @@ QgsMapUnitScale QgsImageFillSymbolLayer::mapUnitScale() const
   return mStrokeWidthMapUnitScale;
 }
 
-double QgsImageFillSymbolLayer::estimateMaxBleed( const QgsRenderContext &context ) const
-{
-  if ( mStroke && mStroke->symbolLayer( 0 ) )
-  {
-    double subLayerBleed = mStroke->symbolLayer( 0 )->estimateMaxBleed( context );
-    return subLayerBleed;
-  }
-  return 0;
-}
-
 double QgsImageFillSymbolLayer::dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const
 {
   double width = mStrokeWidth;
@@ -1834,16 +1782,6 @@ double QgsImageFillSymbolLayer::dxfWidth( const QgsDxfExport &e, QgsSymbolRender
     width = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyWidth, context.renderContext().expressionContext(), mStrokeWidth );
   }
   return width * e.mapUnitScaleFactor( e.symbologyScale(), mStrokeWidthUnit, e.mapUnits(), context.renderContext().mapToPixel().mapUnitsPerPixel() );
-}
-
-QColor QgsImageFillSymbolLayer::dxfColor( QgsSymbolRenderContext &context ) const
-{
-  Q_UNUSED( context )
-  if ( !mStroke )
-  {
-    return QColor( Qt::black );
-  }
-  return mStroke->color();
 }
 
 Qt::PenStyle QgsImageFillSymbolLayer::dxfPenStyle() const
@@ -1866,23 +1804,6 @@ QVariantMap QgsImageFillSymbolLayer::properties() const
   QVariantMap map;
   map.insert( QStringLiteral( "coordinate_reference" ), QgsSymbolLayerUtils::encodeCoordinateReference( mCoordinateReference ) );
   return map;
-}
-
-QSet<QString> QgsImageFillSymbolLayer::usedAttributes( const QgsRenderContext &context ) const
-{
-  QSet<QString> attr = QgsFillSymbolLayer::usedAttributes( context );
-  if ( mStroke )
-    attr.unite( mStroke->usedAttributes( context ) );
-  return attr;
-}
-
-bool QgsImageFillSymbolLayer::hasDataDefinedProperties() const
-{
-  if ( QgsSymbolLayer::hasDataDefinedProperties() )
-    return true;
-  if ( mStroke && mStroke->hasDataDefinedProperties() )
-    return true;
-  return false;
 }
 
 bool QgsImageFillSymbolLayer::applyBrushTransformFromContext( QgsSymbolRenderContext *context ) const
@@ -1926,7 +1847,6 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray &svgData, double 
   mStrokeWidth = 0.3;
   mAngle = angle;
   mColor = QColor( 255, 255, 255 );
-  setSubSymbol( new QgsLineSymbol() );
   setDefaultSvgParams();
 }
 
@@ -1938,7 +1858,8 @@ void QgsSVGFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
   mPatternWidthUnit = unit;
   mSvgStrokeWidthUnit = unit;
   mStrokeWidthUnit = unit;
-  mStroke->setOutputUnit( unit );
+  if ( mStroke )
+    mStroke->setOutputUnit( unit );
 }
 
 QgsUnitTypes::RenderUnit QgsSVGFillSymbolLayer::outputUnit() const
@@ -2177,6 +2098,23 @@ void QgsSVGFillSymbolLayer::stopRender( QgsSymbolRenderContext &context )
   }
 }
 
+void QgsSVGFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
+{
+  QgsImageFillSymbolLayer::renderPolygon( points, rings, context );
+
+  if ( mStroke )
+  {
+    mStroke->renderPolyline( points, context.feature(), context.renderContext(), -1, SELECT_FILL_BORDER && context.selected() );
+    if ( rings )
+    {
+      for ( auto ringIt = rings->constBegin(); ringIt != rings->constEnd(); ++ringIt )
+      {
+        mStroke->renderPolyline( *ringIt, context.feature(), context.renderContext(), -1, SELECT_FILL_BORDER && context.selected() );
+      }
+    }
+  }
+}
+
 QVariantMap QgsSVGFillSymbolLayer::properties() const
 {
   QVariantMap map;
@@ -2302,6 +2240,73 @@ bool QgsSVGFillSymbolLayer::usesMapUnits() const
 {
   return mPatternWidthUnit == QgsUnitTypes::RenderMapUnits || mPatternWidthUnit == QgsUnitTypes::RenderMetersInMapUnits
          || mSvgStrokeWidthUnit == QgsUnitTypes::RenderMapUnits || mSvgStrokeWidthUnit == QgsUnitTypes::RenderMetersInMapUnits;
+}
+
+QgsSymbol *QgsSVGFillSymbolLayer::subSymbol()
+{
+  return mStroke.get();
+}
+
+bool QgsSVGFillSymbolLayer::setSubSymbol( QgsSymbol *symbol )
+{
+  if ( !symbol ) //unset current stroke
+  {
+    mStroke.reset( nullptr );
+    return true;
+  }
+
+  if ( symbol->type() != Qgis::SymbolType::Line )
+  {
+    delete symbol;
+    return false;
+  }
+
+  QgsLineSymbol *lineSymbol = dynamic_cast<QgsLineSymbol *>( symbol );
+  if ( lineSymbol )
+  {
+    mStroke.reset( lineSymbol );
+    return true;
+  }
+
+  delete symbol;
+  return false;
+}
+
+double QgsSVGFillSymbolLayer::estimateMaxBleed( const QgsRenderContext &context ) const
+{
+  if ( mStroke && mStroke->symbolLayer( 0 ) )
+  {
+    double subLayerBleed = mStroke->symbolLayer( 0 )->estimateMaxBleed( context );
+    return subLayerBleed;
+  }
+  return 0;
+}
+
+QColor QgsSVGFillSymbolLayer::dxfColor( QgsSymbolRenderContext &context ) const
+{
+  Q_UNUSED( context )
+  if ( !mStroke )
+  {
+    return QColor( Qt::black );
+  }
+  return mStroke->color();
+}
+
+QSet<QString> QgsSVGFillSymbolLayer::usedAttributes( const QgsRenderContext &context ) const
+{
+  QSet<QString> attr = QgsImageFillSymbolLayer::usedAttributes( context );
+  if ( mStroke )
+    attr.unite( mStroke->usedAttributes( context ) );
+  return attr;
+}
+
+bool QgsSVGFillSymbolLayer::hasDataDefinedProperties() const
+{
+  if ( QgsImageFillSymbolLayer::hasDataDefinedProperties() )
+    return true;
+  if ( mStroke && mStroke->hasDataDefinedProperties() )
+    return true;
+  return false;
 }
 
 QgsSymbolLayer *QgsSVGFillSymbolLayer::createFromSld( QDomElement &element )
@@ -3561,11 +3566,6 @@ void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolRenderContext &contex
     // optimised render for screen only, use image based brush
     applyPattern( context, mBrush, mDistanceX, mDistanceY, mDisplacementX, mDisplacementY, mOffsetX, mOffsetY );
   }
-
-  if ( mStroke )
-  {
-    mStroke->startRender( context.renderContext(), context.fields() );
-  }
 }
 
 void QgsPointPatternFillSymbolLayer::stopRender( QgsSymbolRenderContext &context )
@@ -3573,11 +3573,6 @@ void QgsPointPatternFillSymbolLayer::stopRender( QgsSymbolRenderContext &context
   if ( mRenderUsingMarkers )
   {
     mMarkerSymbol->stopRender( context.renderContext() );
-  }
-
-  if ( mStroke )
-  {
-    mStroke->stopRender( context.renderContext() );
   }
 }
 
@@ -3832,18 +3827,6 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
   }
 
   p->restore();
-
-  if ( mStroke )
-  {
-    mStroke->renderPolyline( points, context.feature(), context.renderContext(), -1, SELECT_FILL_BORDER && context.selected() );
-    if ( rings )
-    {
-      for ( auto ringIt = rings->constBegin(); ringIt != rings->constEnd(); ++ringIt )
-      {
-        mStroke->renderPolyline( *ringIt, context.feature(), context.renderContext(), -1, SELECT_FILL_BORDER && context.selected() );
-      }
-    }
-  }
 
   context.renderContext().setFlag( Qgis::RenderContextFlag::RenderingSubSymbol, prevIsSubsymbol );
 }

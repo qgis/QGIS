@@ -783,9 +783,6 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
 
     void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
 
-    QgsSymbol *subSymbol() override;
-    bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
-
     /**
      * Sets the \a units fo the symbol's stroke width.
      * \see strokeWidthUnit()
@@ -840,13 +837,9 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
     QgsUnitTypes::RenderUnit outputUnit() const override;
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
-    double estimateMaxBleed( const QgsRenderContext &context ) const override;
     double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
-    QColor dxfColor( QgsSymbolRenderContext &context ) const override;
     Qt::PenStyle dxfPenStyle() const override;
-    QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     QVariantMap properties() const override;
-    bool hasDataDefinedProperties() const override;
 
   protected:
     QBrush mBrush;
@@ -858,9 +851,9 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
     QgsUnitTypes::RenderUnit mStrokeWidthUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mStrokeWidthMapUnitScale;
 
-    //! Custom stroke
-    std::unique_ptr< QgsLineSymbol > mStroke;
-
+    /**
+     * Applies data defined settings prior to generating the fill symbol brush.
+     */
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context ) { Q_UNUSED( context ) }
 
     /**
@@ -1143,10 +1136,17 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     QString layerType() const override;
     void startRender( QgsSymbolRenderContext &context ) override;
     void stopRender( QgsSymbolRenderContext &context ) override;
+    void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
     QVariantMap properties() const override;
     QgsSVGFillSymbolLayer *clone() const override SIP_FACTORY;
     void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
     bool usesMapUnits() const override;
+    QgsSymbol *subSymbol() override;
+    bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
+    double estimateMaxBleed( const QgsRenderContext &context ) const override;
+    QColor dxfColor( QgsSymbolRenderContext &context ) const override;
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    bool hasDataDefinedProperties() const override;
 
     /**
      * Sets the path to the SVG file to render in the fill.
@@ -1371,6 +1371,9 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     double mSvgStrokeWidth = 0.2;
     QgsUnitTypes::RenderUnit mSvgStrokeWidthUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mSvgStrokeWidthMapUnitScale;
+
+    //! Custom stroke -- here for historic reasons only
+    std::unique_ptr< QgsLineSymbol > mStroke;
 
     //! Helper function that gets the view box from the byte array
     void storeViewBox();
