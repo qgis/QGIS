@@ -124,22 +124,6 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
   : QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource>( source, ownSource, request )
   , mFetchedFid( false )
 {
-  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
-  {
-    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs(), mRequest.transformContext() );
-  }
-  try
-  {
-    mFilterRect = filterRectToSourceCrs( mTransform );
-  }
-  catch ( QgsCsException & )
-  {
-    // can't reproject mFilterRect
-    close();
-    return;
-  }
-
-
   // prepare spatial filter geometries for optimal speed
   switch ( mRequest.spatialFilterType() )
   {
@@ -158,10 +142,22 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
       break;
   }
 
-  if ( !mFilterRect.isNull() )
+  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
   {
-    // update request to be the unprojected filter rect
-    mRequest.setFilterRect( mFilterRect );
+    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs(), mRequest.transformContext() );
+
+    try
+    {
+      // update request to be the unprojected filter rect
+      filtersToSourceCrs( mRequest, mTransform );
+      mFilterRect = mRequest.filterRect();
+    }
+    catch ( QgsCsException & )
+    {
+      // can't reproject mFilterRect
+      close();
+      return;
+    }
   }
 
   // check whether the order by clause(s) can be delegated to the provider

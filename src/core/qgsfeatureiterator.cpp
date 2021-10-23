@@ -20,6 +20,7 @@
 #include "qgsexpressionsorter.h"
 #include "qgsfeedback.h"
 #include "qgscoordinatetransform.h"
+#include "qgslinestring.h"
 
 QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest &request )
   : mRequest( request )
@@ -126,6 +127,38 @@ QgsRectangle QgsAbstractFeatureIterator::filterRectToSourceCrs( const QgsCoordin
     return QgsRectangle();
 
   return transform.transformBoundingBox( mRequest.filterRect(), Qgis::TransformDirection::Reverse );
+}
+
+void QgsAbstractFeatureIterator::filtersToSourceCrs( QgsFeatureRequest &request, const QgsCoordinateTransform &transform ) const
+{
+  // update request to be use unprojected spatial filters
+  switch ( request.spatialFilterType() )
+  {
+    case Qgis::SpatialFilterType::NoFilter:
+      break;
+    case Qgis::SpatialFilterType::BoundingBox:
+    {
+      QgsRectangle newRect = transform.transformBoundingBox( request.filterRect(), Qgis::TransformDirection::Reverse );
+      request.setFilterRect( newRect );
+      break;
+    }
+    case Qgis::SpatialFilterType::DistanceWithin:
+    {
+      QgsGeometry geom = request.referenceGeometry();
+      QgsRectangle bbox = geom.boundingBox();
+      double x0 = bbox.xMaximum();
+      double y0 = bbox.yMaximum();
+      double dist = request.distanceWithin();
+      QgsPoint p0( x0, y0 );
+      QgsPoint p1( x0 + dist, y0 );
+      QgsLineString newDistLine( p0, p1 );
+      newDistLine.transform( transform, Qgis::TransformDirection::Reverse );
+      dist = newDistLine.length();
+      geom.transform( transform, Qgis::TransformDirection::Reverse );
+      request.setDistanceWithin( geom, dist );
+      break;
+    }
+  }
 }
 
 void QgsAbstractFeatureIterator::ref()

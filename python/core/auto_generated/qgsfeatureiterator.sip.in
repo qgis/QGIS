@@ -138,6 +138,18 @@ Will throw a :py:class:`QgsCsException` if the rect cannot be transformed from t
 .. versionadded:: 3.0
 %End
 
+    void filtersToSourceCrs( QgsFeatureRequest &request, const QgsCoordinateTransform &transform ) const throw( QgsCsException );
+%Docstring
+Update the :py:class:`QgsFeatureRequest` spatial filters to be in the
+source's coordinate referenc esystem.
+
+Iterators should call this method and use the returned rectangle for filtering
+features to ensure that any :py:func:`QgsFeatureRequest.destinationCrs()` set on the request is respected.
+Will throw a :py:class:`QgsCsException` if the rect cannot be transformed from the destination CRS.
+
+.. versionadded:: 3.0
+%End
+
 
 
 
