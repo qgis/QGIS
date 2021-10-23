@@ -357,7 +357,7 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature &feature )
       if ( !feature.hasGeometry()
            || !mReferenceGeometryEngine
            || !feature.geometry().boundingBoxIntersects( mFilterRect )
-           || mReferenceGeometryEngine->distance( feature.geometry().constGet() ) > mDistanceWithin
+           || !mReferenceGeometryEngine->distanceWithin( feature.geometry().constGet(), mDistanceWithin )
          )
         return false;
       break;
