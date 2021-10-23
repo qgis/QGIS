@@ -453,7 +453,7 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
     }
 
     int tileZoom = QgsVectorTileUtils::scaleToZoomLevel( mCanvas->scale(), layer->sourceMinZoom(), layer->sourceMaxZoom() );
-    QgsTileMatrix tileMatrix = QgsTileMatrix::fromWebMercator( tileZoom );
+    const QgsTileMatrix tileMatrix = QgsTileMatrix::fromWebMercator( tileZoom );
     QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( r );
 
     for ( int row = tileRange.startRow(); row <= tileRange.endRow(); ++row )

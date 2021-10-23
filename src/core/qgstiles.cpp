@@ -93,7 +93,7 @@ QgsPointXY QgsTileMatrix::tileCenter( QgsTileXYZ id ) const
   return QgsPointXY( x, y );
 }
 
-QgsTileRange QgsTileMatrix::tileRangeFromExtent( const QgsRectangle &r )
+QgsTileRange QgsTileMatrix::tileRangeFromExtent( const QgsRectangle &r ) const
 {
   double x0 = std::clamp( r.xMinimum(), mExtent.xMinimum(), mExtent.xMaximum() );
   double y0 = std::clamp( r.yMinimum(), mExtent.yMinimum(), mExtent.yMaximum() );
