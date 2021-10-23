@@ -2518,7 +2518,12 @@ void QgsMarkerLineSymbolLayer::setSymbolAngle( double angle )
 
 void QgsMarkerLineSymbolLayer::renderSymbol( const QPointF &point, const QgsFeature *feature, QgsRenderContext &context, int layer, bool selected )
 {
+  const bool prevIsSubsymbol = context.flags() & Qgis::RenderContextFlag::RenderingSubSymbol;
+  context.setFlag( Qgis::RenderContextFlag::RenderingSubSymbol );
+
   mMarker->renderPoint( point, feature, context, layer, selected );
+
+  context.setFlag( Qgis::RenderContextFlag::RenderingSubSymbol, prevIsSubsymbol );
 }
 
 double QgsMarkerLineSymbolLayer::width() const
@@ -2795,8 +2800,12 @@ void QgsHashedLineSymbolLayer::renderSymbol( const QPointF &point, const QgsFeat
   QPolygonF points;
   points <<  QPointF( start.x(), start.y() ) << QPointF( end.x(), end.y() );
 
+  const bool prevIsSubsymbol = context.flags() & Qgis::RenderContextFlag::RenderingSubSymbol;
+  context.setFlag( Qgis::RenderContextFlag::RenderingSubSymbol );
 
   mHashSymbol->renderPolyline( points, feature, context, layer, selected );
+
+  context.setFlag( Qgis::RenderContextFlag::RenderingSubSymbol, prevIsSubsymbol );
 }
 
 double QgsHashedLineSymbolLayer::hashAngle() const

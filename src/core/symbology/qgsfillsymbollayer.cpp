@@ -2939,6 +2939,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
   lineRenderContext.setMapToPixel( mtp );
   lineRenderContext.setForceVectorOutput( false );
   lineRenderContext.setExpressionContext( context.renderContext().expressionContext() );
+  lineRenderContext.setFlag( Qgis::RenderContextFlag::RenderingSubSymbol );
 
   fillLineSymbol->startRender( lineRenderContext, context.fields() );
 
@@ -3402,6 +3403,7 @@ void QgsPointPatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext 
     pointRenderContext.setMapToPixel( mtp );
     pointRenderContext.setForceVectorOutput( false );
     pointRenderContext.setExpressionContext( context.renderContext().expressionContext() );
+    pointRenderContext.setFlag( Qgis::RenderContextFlag::RenderingSubSymbol );
 
     mMarkerSymbol->startRender( pointRenderContext, context.fields() );
 
@@ -3585,6 +3587,9 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
   int pointNum = 0;
   const bool needsExpressionContext = hasDataDefinedProperties();
 
+  const bool prevIsSubsymbol = context.renderContext().flags() & Qgis::RenderContextFlag::RenderingSubSymbol;
+  context.renderContext().setFlag( Qgis::RenderContextFlag::RenderingSubSymbol );
+
   bool alternateColumn = false;
   int currentCol = -3; // because we actually render a few rows/cols outside the bounds, try to align the col/row numbers to start at 1 for the first visible row/col
   for ( double currentX = left; currentX <= right; currentX += width, alternateColumn = !alternateColumn )
@@ -3628,6 +3633,8 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
       }
     }
   }
+
+  context.renderContext().setFlag( Qgis::RenderContextFlag::RenderingSubSymbol, prevIsSubsymbol );
 }
 
 QVariantMap QgsPointPatternFillSymbolLayer::properties() const
@@ -3998,7 +4005,11 @@ void QgsCentroidFillSymbolLayer::render( QgsRenderContext &context, const QVecto
     }
 
     QPointF centroid = pointOnSurface ? QgsSymbolLayerUtils::polygonPointOnSurface( part.exterior, &part.rings ) : QgsSymbolLayerUtils::polygonCentroid( part.exterior );
+
+    const bool prevIsSubsymbol = context.flags() & Qgis::RenderContextFlag::RenderingSubSymbol;
+    context.setFlag( Qgis::RenderContextFlag::RenderingSubSymbol );
     mMarker->renderPoint( centroid, feature.isValid() ? &feature : nullptr, context, -1, selected );
+    context.setFlag( Qgis::RenderContextFlag::RenderingSubSymbol, prevIsSubsymbol );
 
     if ( clipPoints )
     {
@@ -4630,12 +4641,17 @@ void QgsRandomMarkerFillSymbolLayer::render( QgsRenderContext &context, const QV
   int pointNum = 0;
   const bool needsExpressionContext = hasDataDefinedProperties();
 
+  const bool prevIsSubsymbol = context.flags() & Qgis::RenderContextFlag::RenderingSubSymbol;
+  context.setFlag( Qgis::RenderContextFlag::RenderingSubSymbol );
+
   for ( const QgsPointXY &p : std::as_const( randomPoints ) )
   {
     if ( needsExpressionContext )
       scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum, true ) );
     mMarker->renderPoint( QPointF( p.x(), p.y() ), feature.isValid() ? &feature : nullptr, context, -1, selected );
   }
+
+  context.setFlag( Qgis::RenderContextFlag::RenderingSubSymbol, prevIsSubsymbol );
 
   if ( clipPoints )
   {

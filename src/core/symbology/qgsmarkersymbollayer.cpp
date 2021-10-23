@@ -1913,6 +1913,9 @@ void QgsFilledMarkerSymbolLayer::draw( QgsSymbolRenderContext &context, QgsSimpl
   }
   p->setPen( Qt::black );
 
+  const bool prevIsSubsymbol = context.renderContext().flags() & Qgis::RenderContextFlag::RenderingSubSymbol;
+  context.renderContext().setFlag( Qgis::RenderContextFlag::RenderingSubSymbol );
+
   if ( !polygon.isEmpty() )
   {
     mFill->renderPolygon( polygon, /* rings */ nullptr, context.feature(), context.renderContext(), -1, context.selected() );
@@ -1922,6 +1925,8 @@ void QgsFilledMarkerSymbolLayer::draw( QgsSymbolRenderContext &context, QgsSimpl
     const QPolygonF poly = path.toFillPolygon();
     mFill->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext(), -1, context.selected() );
   }
+
+  context.renderContext().setFlag( Qgis::RenderContextFlag::RenderingSubSymbol, prevIsSubsymbol );
 
   mFill->setOpacity( prevOpacity );
 }
