@@ -61,7 +61,8 @@ QString QgsShortestLineAlgorithm::shortHelpString() const
                       "feature and the additional field of the distance.\n\n"
                       "This algorithm uses purely Cartesian calculations for distance, "
                       "and does not consider geodetic or ellipsoid properties when "
-                      "determining feature proximity."
+                      "determining feature proximity. The measurement and output coordinate "
+                      "system is based on the coordinate system of the source layer."
                     );
 }
 
@@ -112,7 +113,7 @@ QVariantMap QgsShortestLineAlgorithm::processAlgorithm( const QVariantMap &param
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-  const QgsFeatureIterator destinationIterator = mDestination->getFeatures( QgsFeatureRequest().setDestinationCrs( mDestination->sourceCrs(), context.transformContext() ) );
+  const QgsFeatureIterator destinationIterator = mDestination->getFeatures( QgsFeatureRequest().setDestinationCrs( mSource->sourceCrs(), context.transformContext() ) );
   QHash< QgsFeatureId, QgsAttributes > destinationAttributeCache;
   double step = mDestination->featureCount() > 0 ? 50.0 / mDestination->featureCount() : 1;
   int i = 0;
@@ -134,7 +135,6 @@ QVariantMap QgsShortestLineAlgorithm::processAlgorithm( const QVariantMap &param
 
   QgsDistanceArea da = QgsDistanceArea();
   da.setSourceCrs( mSource->sourceCrs(), context.transformContext() );
-  da.setEllipsoid( context.ellipsoid() );
 
   QgsFeature sourceFeature;
   while ( sourceIterator.nextFeature( sourceFeature ) )
