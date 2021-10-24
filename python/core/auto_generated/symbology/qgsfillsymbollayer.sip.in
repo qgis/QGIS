@@ -2414,7 +2414,26 @@ in different locations with every map refresh).
 .. versionadded:: 3.24
 %End
 
+    double angle() const;
+%Docstring
+Returns the rotation angle of the pattern, in degrees clockwise.
+
+.. seealso:: :py:func:`setAngle`
+
+.. versionadded:: 3.24
+%End
+
+    void setAngle( double angle );
+%Docstring
+Sets the rotation ``angle`` of the pattern, in degrees clockwise.
+
+.. seealso:: :py:func:`angle`
+
+.. versionadded:: 3.24
+%End
+
   protected:
+
 
 
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context );

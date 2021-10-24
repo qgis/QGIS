@@ -75,6 +75,9 @@ class TestQgsPointPatternFillSymbol : public QObject
     void pointPatternRandomOffset();
     void pointPatternRandomOffsetPercent();
     void pointPatternRandomOffsetDataDefined();
+    void pointPatternAngle();
+    void pointPatternAngleDataDefined();
+    void pointPatternAngleViewport();
 
   private:
     bool mTestHasError =  false ;
@@ -573,6 +576,89 @@ void TestQgsPointPatternFillSymbol::pointPatternRandomOffsetDataDefined()
   pointPatternFill->dataDefinedProperties().setProperty( QgsSymbolLayer::PropertyRandomSeed, QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 1 else 2 end" ) ) );
 
   const bool res = imageCheck( "symbol_pointfill_data_defined_random_offset", layer.get() );
+  QVERIFY( res );
+}
+
+void TestQgsPointPatternFillSymbol::pointPatternAngle()
+{
+  mReport += QLatin1String( "<h2>Point pattern angle</h2>\n" );
+
+  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  QVERIFY( layer->isValid() );
+
+  QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, pointPatternFill );
+  layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+  QVariantMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
+  properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
+  properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+
+  pointPatternFill->setSubSymbol( pointSymbol );
+  pointPatternFill->setDistanceX( 10 );
+  pointPatternFill->setDistanceY( 6 );
+  pointPatternFill->setAngle( 25 );
+
+  const bool res = imageCheck( "symbol_pointfill_angle", layer.get() );
+  QVERIFY( res );
+}
+
+void TestQgsPointPatternFillSymbol::pointPatternAngleDataDefined()
+{
+  mReport += QLatin1String( "<h2>Point pattern angle data defined</h2>\n" );
+
+  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  QVERIFY( layer->isValid() );
+
+  QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, pointPatternFill );
+  layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+  QVariantMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
+  properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
+  properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+
+  pointPatternFill->setSubSymbol( pointSymbol );
+  pointPatternFill->setDistanceX( 10 );
+  pointPatternFill->setDistanceY( 6 );
+  pointPatternFill->setAngle( 25 );
+  pointPatternFill->dataDefinedProperties().setProperty( QgsSymbolLayer::PropertyAngle, QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then -10 else 25 end" ) ) );
+
+  const bool res = imageCheck( "symbol_pointfill_data_defined_angle", layer.get() );
+  QVERIFY( res );
+}
+
+void TestQgsPointPatternFillSymbol::pointPatternAngleViewport()
+{
+  mReport += QLatin1String( "<h2>Point pattern angle viewport mode</h2>\n" );
+
+  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  QVERIFY( layer->isValid() );
+
+  QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, pointPatternFill );
+  layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+  QVariantMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
+  properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
+  properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+
+  pointPatternFill->setSubSymbol( pointSymbol );
+  pointPatternFill->setDistanceX( 10 );
+  pointPatternFill->setDistanceY( 6 );
+  pointPatternFill->setCoordinateReference( Qgis::SymbolCoordinateReference::Viewport );
+  pointPatternFill->setAngle( 25 );
+
+  const bool res = imageCheck( "symbol_pointfill_viewport_angle", layer.get() );
   QVERIFY( res );
 }
 

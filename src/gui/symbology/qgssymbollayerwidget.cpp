@@ -3288,6 +3288,17 @@ QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( QgsV
       emit changed();
     }
   } );
+
+  mAngleSpinBox->setShowClearButton( true );
+  mAngleSpinBox->setClearValue( 0 );
+  connect( mAngleSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double d )
+  {
+    if ( mLayer )
+    {
+      mLayer->setAngle( d );
+      emit changed();
+    }
+  } );
 }
 
 void QgsPointPatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
@@ -3304,6 +3315,7 @@ void QgsPointPatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer
   whileBlocking( mVerticalDisplacementSpinBox )->setValue( mLayer->displacementY() );
   whileBlocking( mHorizontalOffsetSpinBox )->setValue( mLayer->offsetX() );
   whileBlocking( mVerticalOffsetSpinBox )->setValue( mLayer->offsetY() );
+  whileBlocking( mAngleSpinBox )->setValue( mLayer->angle() );
 
   mHorizontalDistanceUnitWidget->blockSignals( true );
   mHorizontalDistanceUnitWidget->setUnit( mLayer->distanceXUnit() );
@@ -3352,6 +3364,7 @@ void QgsPointPatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer
   registerDataDefinedButton( mRandomXDDBtn, QgsSymbolLayer::PropertyRandomOffsetX );
   registerDataDefinedButton( mRandomYDDBtn, QgsSymbolLayer::PropertyRandomOffsetY );
   registerDataDefinedButton( mSeedDdbtn, QgsSymbolLayer::PropertyRandomSeed );
+  registerDataDefinedButton( mAngleDDBtn, QgsSymbolLayer::PropertyAngle );
 }
 
 QgsSymbolLayer *QgsPointPatternFillSymbolLayerWidget::symbolLayer()
