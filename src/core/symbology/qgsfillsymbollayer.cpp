@@ -3441,6 +3441,11 @@ QgsSymbolLayer *QgsPointPatternFillSymbolLayer::create( const QVariantMap &prope
     layer->setCoordinateReference( QgsSymbolLayerUtils::decodeCoordinateReference( properties[QStringLiteral( "coordinate_reference" )].toString() ) );
   }
 
+  if ( properties.contains( QStringLiteral( "angle" ) ) )
+  {
+    layer->setAngle( properties[QStringLiteral( "angle" )].toDouble() );
+  }
+
   layer->restoreOldDataDefinedProperties( properties );
 
   return layer.release();
@@ -3555,7 +3560,9 @@ void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolRenderContext &contex
                         || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyRandomOffsetY )
                         || mClipMode != Qgis::MarkerClipMode::Shape
                         || !qgsDoubleNear( mRandomDeviationX, 0 )
-                        || !qgsDoubleNear( mRandomDeviationY, 0 );
+                        || !qgsDoubleNear( mRandomDeviationY, 0 )
+                        || !qgsDoubleNear( mAngle, 0 )
+                        || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyAngle );
 
   if ( mRenderUsingMarkers )
   {
@@ -3590,6 +3597,13 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
   if ( !p )
   {
     return;
+  }
+
+  double angle = mAngle;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyAngle ) )
+  {
+    context.setOriginalValueVariable( angle );
+    angle = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyAngle, context.renderContext().expressionContext(), angle );
   }
 
   double distanceX = mDistanceX;
@@ -3707,15 +3721,58 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
     }
   }
 
+  const bool applyBrushTransform = applyBrushTransformFromContext( &context );
   const QRectF boundingRect = points.boundingRect();
-  double left = boundingRect.left() - 2 * width;
-  double top = boundingRect.top() - 2 * height;
-  const double right = boundingRect.right() + 2 * width;
-  const double bottom = boundingRect.bottom() + 2 * height;
-  if ( !applyBrushTransformFromContext( &context ) )
+
+  QTransform invertedRotateTransform;
+  double left;
+  double top;
+  double right;
+  double bottom;
+
+  if ( !qgsDoubleNear( angle, 0 ) )
   {
-    left -= boundingRect.left() - ( width * std::floor( boundingRect.left() / width ) );
-    top -= boundingRect.top() - ( height * std::floor( boundingRect.top() / height ) );
+    QTransform transform;
+    if ( applyBrushTransform )
+    {
+      // rotation applies around center of feature
+      transform.translate( -boundingRect.center().x(),
+                           -boundingRect.center().y() );
+      transform.rotate( -angle );
+      transform.translate( boundingRect.center().x(),
+                           boundingRect.center().y() );
+    }
+    else
+    {
+      // rotation applies around top of viewport
+      transform.rotate( -angle );
+    }
+
+    const QRectF transformedBounds = transform.map( points ).boundingRect();
+    left = transformedBounds.left() - 2 * width;
+    top = transformedBounds.top() - 2 * height;
+    right = transformedBounds.right() + 2 * width;
+    bottom = transformedBounds.bottom() + 2 * height;
+    invertedRotateTransform = transform.inverted();
+
+    if ( !applyBrushTransform )
+    {
+      left -= transformedBounds.left() - ( width * std::floor( transformedBounds.left() / width ) );
+      top -= transformedBounds.top() - ( height * std::floor( transformedBounds.top() / height ) );
+    }
+  }
+  else
+  {
+    left = boundingRect.left() - 2 * width;
+    top = boundingRect.top() - 2 * height;
+    right = boundingRect.right() + 2 * width;
+    bottom = boundingRect.bottom() + 2 * height;
+
+    if ( !applyBrushTransform )
+    {
+      left -= boundingRect.left() - ( width * std::floor( boundingRect.left() / width ) );
+      top -= boundingRect.top() - ( height * std::floor( boundingRect.top() / height ) );
+    }
   }
 
   unsigned long seed = mSeed;
@@ -3775,6 +3832,13 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
 
       if ( !alternateColumn )
         y -= displacementPixelY;
+
+      if ( !qgsDoubleNear( angle, 0 ) )
+      {
+        double xx = x;
+        double yy = y;
+        invertedRotateTransform.map( xx, yy, &x, &y );
+      }
 
       if ( useRandomShift )
       {
@@ -3862,6 +3926,7 @@ QVariantMap QgsPointPatternFillSymbolLayer::properties() const
   map.insert( QStringLiteral( "random_deviation_x_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mRandomDeviationXMapUnitScale ) );
   map.insert( QStringLiteral( "random_deviation_y_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mRandomDeviationYMapUnitScale ) );
   map.insert( QStringLiteral( "seed" ), QString::number( mSeed ) );
+  map.insert( QStringLiteral( "angle" ), mAngle );
   return map;
 }
 
