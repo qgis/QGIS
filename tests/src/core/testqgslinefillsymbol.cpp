@@ -56,17 +56,22 @@ class TestQgsLineFillSymbol : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void lineFillSymbol();
+    void lineFillSymbolVector();
     void viewportLineFillSymbol();
+    void viewportLineFillSymbolVector();
     void lineFillSymbolOffset();
+    void lineFillSymbolOffsetVector();
     void lineFillLargeOffset();
+    void lineFillLargeOffsetVector();
     void lineFillNegativeAngle();
+    void lineFillNegativeAngleVector();
 
     void dataDefinedSubSymbol();
 
   private:
     bool mTestHasError =  false ;
 
-    bool imageCheck( const QString &type, QgsVectorLayer *layer = nullptr );
+    bool imageCheck( const QString &type, QgsVectorLayer *layer = nullptr, bool forceVector = false );
     QgsMapSettings mMapSettings;
     QgsVectorLayer *mpPolysLayer = nullptr;
     QgsLinePatternFillSymbolLayer *mLineFill = nullptr;
@@ -146,6 +151,27 @@ void TestQgsLineFillSymbol::lineFillSymbol()
   QVERIFY( imageCheck( QStringLiteral( "symbol_linefill" ) ) );
 }
 
+void TestQgsLineFillSymbol::lineFillSymbolVector()
+{
+  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer> ( mTestDataDir + "polys.shp" );
+  QVERIFY( layer->isValid() );
+
+  QgsLinePatternFillSymbolLayer *lineFill = new QgsLinePatternFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, lineFill );
+  layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+
+  QVariantMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
+  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+
+  lineFill->setSubSymbol( lineSymbol );
+
+  QVERIFY( imageCheck( QStringLiteral( "symbol_vector_linefill" ), layer.get(), true ) );
+}
+
 void TestQgsLineFillSymbol::viewportLineFillSymbol()
 {
   mReport += QLatin1String( "<h2>Viewport coordinate reference line fill symbol renderer test</h2>\n" );
@@ -174,6 +200,27 @@ void TestQgsLineFillSymbol::viewportLineFillSymbol()
   QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_viewport" ), layer.get() ) );
 }
 
+void TestQgsLineFillSymbol::viewportLineFillSymbolVector()
+{
+  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  QVERIFY( layer->isValid() );
+
+  QgsLinePatternFillSymbolLayer *lineFill = new QgsLinePatternFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, lineFill );
+  layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+
+  QVariantMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
+  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+  lineFill->setSubSymbol( lineSymbol );
+  lineFill->setCoordinateReference( Qgis::SymbolCoordinateReference::Viewport );
+
+  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_vector_viewport" ), layer.get(), true ) );
+}
+
 void TestQgsLineFillSymbol::lineFillSymbolOffset()
 {
   mReport += QLatin1String( "<h2>Line fill symbol renderer test</h2>\n" );
@@ -184,6 +231,30 @@ void TestQgsLineFillSymbol::lineFillSymbolOffset()
   mLineFill->setOffset( -0.5 );
   QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_negoffset" ) ) );
   mLineFill->setOffset( 0 );
+}
+
+void TestQgsLineFillSymbol::lineFillSymbolOffsetVector()
+{
+  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  QVERIFY( layer->isValid() );
+
+  QgsLinePatternFillSymbolLayer *lineFill = new QgsLinePatternFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, lineFill );
+  layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+
+  QVariantMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
+  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+  lineFill->setSubSymbol( lineSymbol );
+
+  lineFill->setOffset( 0.5 );
+  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_vector_posoffset" ), layer.get(), true ) );
+
+  lineFill->setOffset( -0.5 );
+  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_vector_negoffset" ), layer.get(), true ) );
 }
 
 void TestQgsLineFillSymbol::lineFillLargeOffset()
@@ -197,6 +268,31 @@ void TestQgsLineFillSymbol::lineFillLargeOffset()
   mLineFill->setOffset( 0 );
 }
 
+void TestQgsLineFillSymbol::lineFillLargeOffsetVector()
+{
+  // test line fill with large offset compared to line distance
+  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  QVERIFY( layer->isValid() );
+
+  QgsLinePatternFillSymbolLayer *lineFill = new QgsLinePatternFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, lineFill );
+  layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+
+  QVariantMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
+  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+  lineFill->setSubSymbol( lineSymbol );
+
+  lineFill->setOffset( 8 );
+  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_vector_large_posoffset" ), layer.get(), true ) );
+
+  lineFill->setOffset( -8 );
+  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_vector_large_negoffset" ), layer.get(), true ) );
+}
+
 void TestQgsLineFillSymbol::lineFillNegativeAngle()
 {
   mLineFill->setOffset( -8 );
@@ -206,6 +302,29 @@ void TestQgsLineFillSymbol::lineFillNegativeAngle()
   mLineFill->setOffset( 0 );
   mLineFill->setLineAngle( 45 );
   mLineFill->setDistance( 5 );
+}
+
+void TestQgsLineFillSymbol::lineFillNegativeAngleVector()
+{
+  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  QVERIFY( layer->isValid() );
+
+  QgsLinePatternFillSymbolLayer *lineFill = new QgsLinePatternFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, lineFill );
+  layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+
+  QVariantMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
+  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+  lineFill->setSubSymbol( lineSymbol );
+
+  lineFill->setOffset( -8 );
+  lineFill->setDistance( 2.2 );
+  lineFill->setLineAngle( -130 );
+  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_vector_negangle" ), layer.get(), true ) );
 }
 
 void TestQgsLineFillSymbol::dataDefinedSubSymbol()
@@ -227,7 +346,7 @@ void TestQgsLineFillSymbol::dataDefinedSubSymbol()
 //
 
 
-bool TestQgsLineFillSymbol::imageCheck( const QString &testType, QgsVectorLayer *layer )
+bool TestQgsLineFillSymbol::imageCheck( const QString &testType, QgsVectorLayer *layer, bool forceVector )
 {
   if ( !layer )
     layer = mpPolysLayer;
@@ -238,6 +357,7 @@ bool TestQgsLineFillSymbol::imageCheck( const QString &testType, QgsVectorLayer 
   //ensure the rendered output matches our control image
   mMapSettings.setExtent( layer->extent() );
   mMapSettings.setOutputDpi( 96 );
+  mMapSettings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, forceVector );
   QgsRenderChecker myChecker;
   myChecker.setControlPathPrefix( QStringLiteral( "symbol_linefill" ) );
   myChecker.setControlName( "expected_" + testType );

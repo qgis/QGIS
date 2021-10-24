@@ -2497,10 +2497,7 @@ QgsLinePatternFillSymbolLayer::QgsLinePatternFillSymbolLayer()
   QgsImageFillSymbolLayer::setSubSymbol( nullptr ); //no stroke
 }
 
-QgsLinePatternFillSymbolLayer::~QgsLinePatternFillSymbolLayer()
-{
-  delete mFillLineSymbol;
-}
+QgsLinePatternFillSymbolLayer::~QgsLinePatternFillSymbolLayer() = default;
 
 void QgsLinePatternFillSymbolLayer::setLineWidth( double w )
 {
@@ -2528,14 +2525,8 @@ bool QgsLinePatternFillSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 
   if ( symbol->type() == Qgis::SymbolType::Line )
   {
-    QgsLineSymbol *lineSymbol = dynamic_cast<QgsLineSymbol *>( symbol );
-    if ( lineSymbol )
-    {
-      delete mFillLineSymbol;
-      mFillLineSymbol = lineSymbol;
-
-      return true;
-    }
+    mFillLineSymbol.reset( qgis::down_cast<QgsLineSymbol *>( symbol ) );
+    return true;
   }
   delete symbol;
   return false;
@@ -2543,7 +2534,7 @@ bool QgsLinePatternFillSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 
 QgsSymbol *QgsLinePatternFillSymbolLayer::subSymbol()
 {
-  return mFillLineSymbol;
+  return mFillLineSymbol.get();
 }
 
 QSet<QString> QgsLinePatternFillSymbolLayer::usedAttributes( const QgsRenderContext &context ) const
@@ -2561,6 +2552,16 @@ bool QgsLinePatternFillSymbolLayer::hasDataDefinedProperties() const
   if ( mFillLineSymbol && mFillLineSymbol->hasDataDefinedProperties() )
     return true;
   return false;
+}
+
+void QgsLinePatternFillSymbolLayer::startFeatureRender( const QgsFeature &, QgsRenderContext & )
+{
+  // deliberately don't pass this on to subsymbol here
+}
+
+void QgsLinePatternFillSymbolLayer::stopFeatureRender( const QgsFeature &, QgsRenderContext & )
+{
+  // deliberately don't pass this on to subsymbol here
 }
 
 double QgsLinePatternFillSymbolLayer::estimateMaxBleed( const QgsRenderContext & ) const
@@ -3017,20 +3018,176 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
 
 void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
-  applyPattern( context, mBrush, mLineAngle, mDistance );
+  // if we are using a vector based output, we need to render points as vectors
+  // (OR if the marker has data defined symbology, in which case we need to evaluate this point-by-point)
+  mRenderUsingLines = context.renderContext().forceVectorOutput()
+                      || mFillLineSymbol->hasDataDefinedProperties();
 
-  if ( mFillLineSymbol )
+  if ( mRenderUsingLines )
   {
-    mFillLineSymbol->startRender( context.renderContext(), context.fields() );
+    if ( mFillLineSymbol )
+      mFillLineSymbol->startRender( context.renderContext(), context.fields() );
+  }
+  else
+  {
+    // optimised render for screen only, use image based brush
+    applyPattern( context, mBrush, mLineAngle, mDistance );
   }
 }
 
 void QgsLinePatternFillSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 {
-  if ( mFillLineSymbol )
+  if ( mRenderUsingLines && mFillLineSymbol )
   {
     mFillLineSymbol->stopRender( context.renderContext() );
   }
+}
+
+void QgsLinePatternFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
+{
+  if ( !mRenderUsingLines )
+  {
+    // use image based brush for speed
+    QgsImageFillSymbolLayer::renderPolygon( points, rings, context );
+    return;
+  }
+
+  // vector based output - so draw line by line!
+  QPainter *p = context.renderContext().painter();
+  if ( !p )
+  {
+    return;
+  }
+
+  double lineAngle = mLineAngle;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyLineAngle ) )
+  {
+    context.setOriginalValueVariable( mLineAngle );
+    lineAngle = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyLineAngle, context.renderContext().expressionContext(), mLineAngle );
+  }
+
+  double distance = mDistance;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyLineDistance ) )
+  {
+    context.setOriginalValueVariable( mDistance );
+    distance = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyLineDistance, context.renderContext().expressionContext(), mDistance );
+  }
+  const double outputPixelDistance = context.renderContext().convertToPainterUnits( distance, mDistanceUnit, mDistanceMapUnitScale );
+
+  double offset = mOffset;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyLineDistance ) )
+  {
+    context.setOriginalValueVariable( mDistance );
+    distance = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyLineDistance, context.renderContext().expressionContext(), mDistance );
+  }
+  double outputPixelOffset = context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale );
+
+  // fix truncated pattern with larger offsets
+  outputPixelOffset = std::fmod( outputPixelOffset, outputPixelDistance );
+  if ( outputPixelOffset > outputPixelDistance / 2.0 )
+    outputPixelOffset -= outputPixelDistance;
+
+  p->setPen( QPen( Qt::NoPen ) );
+
+  if ( context.selected() )
+  {
+    QColor selColor = context.renderContext().selectionColor();
+    p->setBrush( QBrush( selColor ) );
+    _renderPolygon( p, points, rings, context );
+  }
+
+  // if invalid parameters, skip out
+  if ( qgsDoubleNear( distance, 0 ) )
+    return;
+
+  p->save();
+
+  QPainterPath path;
+  path.addPolygon( points );
+  if ( rings )
+  {
+    for ( const QPolygonF &ring : *rings )
+    {
+      path.addPolygon( ring );
+    }
+  }
+  p->setClipPath( path, Qt::IntersectClip );
+
+  const bool applyBrushTransform = applyBrushTransformFromContext( &context );
+  const QRectF boundingRect = points.boundingRect();
+
+  QTransform invertedRotateTransform;
+  double left;
+  double top;
+  double right;
+  double bottom;
+
+  QTransform transform;
+  if ( applyBrushTransform )
+  {
+    // rotation applies around center of feature
+    transform.translate( -boundingRect.center().x(),
+                         -boundingRect.center().y() );
+    transform.rotate( lineAngle );
+    transform.translate( boundingRect.center().x(),
+                         boundingRect.center().y() );
+  }
+  else
+  {
+    // rotation applies around top of viewport
+    transform.rotate( lineAngle );
+  }
+
+  const QRectF transformedBounds = transform.map( points ).boundingRect();
+
+  // bounds are expanded out a bit to account for maximum line width
+  const double buffer = QgsSymbolLayerUtils::estimateMaxSymbolBleed( mFillLineSymbol.get(), context.renderContext() );
+  left = transformedBounds.left() - buffer * 2;
+  top = transformedBounds.top() - buffer * 2;
+  right = transformedBounds.right() + buffer * 2;
+  bottom = transformedBounds.bottom() + buffer * 2;
+  invertedRotateTransform = transform.inverted();
+
+  if ( !applyBrushTransform )
+  {
+    top -= transformedBounds.top() - ( outputPixelDistance * std::floor( transformedBounds.top() / outputPixelDistance ) );
+  }
+
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+  QgsExpressionContextScopePopper scopePopper( context.renderContext().expressionContext(), scope );
+  const bool needsExpressionContext = mFillLineSymbol->hasDataDefinedProperties();
+
+  const bool prevIsSubsymbol = context.renderContext().flags() & Qgis::RenderContextFlag::RenderingSubSymbol;
+  context.renderContext().setFlag( Qgis::RenderContextFlag::RenderingSubSymbol );
+
+  int currentLine = 0;
+  for ( double currentY = top; currentY <= bottom; currentY += outputPixelDistance )
+  {
+    if ( context.renderContext().renderingStopped() )
+      break;
+
+    if ( needsExpressionContext )
+      scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_line_number" ), ++currentLine, true ) );
+
+    double x1 = left;
+    double y1 = currentY;
+    double x2 = left;
+    double y2 = currentY;
+    invertedRotateTransform.map( left, currentY - outputPixelOffset, &x1, &y1 );
+    invertedRotateTransform.map( right, currentY - outputPixelOffset, &x2, &y2 );
+
+    // todo -- if we do proper intersects clipping, we may end up with multiline string here, so we'd need to wrap the
+    // rendering of each part with in
+    // mFillLineSymbol->startFeatureRender();
+    // ...
+    // mFillLineSymbol->stopFeatureRender();
+
+    mFillLineSymbol->renderPolyline( QPolygonF() << QPointF( x1, y1 ) << QPointF( x2, y2 ), context.feature(), context.renderContext() );
+  }
+
+  p->restore();
+
+  context.renderContext().setFlag( Qgis::RenderContextFlag::RenderingSubSymbol, prevIsSubsymbol );
 }
 
 QVariantMap QgsLinePatternFillSymbolLayer::properties() const
@@ -3831,6 +3988,9 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
   int currentCol = -3; // because we actually render a few rows/cols outside the bounds, try to align the col/row numbers to start at 1 for the first visible row/col
   for ( double currentX = left; currentX <= right; currentX += width, alternateColumn = !alternateColumn )
   {
+    if ( context.renderContext().renderingStopped() )
+      break;
+
     if ( needsExpressionContext )
       scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_marker_column" ), ++currentCol, true ) );
 
@@ -3839,6 +3999,9 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
     int currentRow = -3;
     for ( double currentY = top; currentY <= bottom; currentY += height, alternateRow = !alternateRow )
     {
+      if ( context.renderContext().renderingStopped() )
+        break;
+
       double y = currentY + heightOffset;
       double x = columnX;
       if ( alternateRow )
