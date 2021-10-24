@@ -2786,8 +2786,7 @@ tests:
         type: vector
 
   - algorithm: native:shortestline
-    name: Test (native:shortestline)
-    ellipsoid: EPSG:7030
+    name: Test native:shortestline using centroid destination and matching CRSs
     project_crs: EPSG:3857
     params:
       DESTINATION:
@@ -2800,12 +2799,11 @@ tests:
         type: vector
     results:
       OUTPUT:
-        name: expected/shortest_line_point_to_lineCentroid.shp
+        name: expected/shortest_line_point_to_lineCentroid_3857.shp
         type: vector
 
   - algorithm: native:shortestline
-    name: Test (native:shortestline)
-    ellipsoid: EPSG:7030
+    name: Test native:shortestline using nearest point on line geometry destination and matching CRSs
     project_crs: EPSG:3857
     params:
       DESTINATION:
@@ -2818,7 +2816,39 @@ tests:
         type: vector
     results:
       OUTPUT:
-        name: expected/shortest_line_point_to_line.shp
+        name: expected/shortest_line_point_to_line_3857.shp
+        type: vector
+
+  - algorithm: native:shortestline
+    name: Test native:shortestline using nearest point on polygon geometry destination and differing CRSs
+    params:
+      DESTINATION:
+        name: custom/polys_epsg31256.shp
+        type: vector
+      METHOD: '0'
+      NEIGHBORS: 1
+      SOURCE:
+        name: custom/points.shp
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/shortest_line_point_to_polygon_4326_to_31256.shp
+        type: vector
+
+  - algorithm: native:shortestline
+    name: Test native:shortestline using nearest point on line geometry destination and differing CRSs
+    params:
+      DESTINATION:
+        name: custom/snap_lines_3857.shp
+        type: vector
+      METHOD: '0'
+      NEIGHBORS: 1
+      SOURCE:
+        name: custom/points.shp
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/shortest_line_point_to_line_4326_to_3857.shp
         type: vector
 
 # See ../README.md for a description of the file format
