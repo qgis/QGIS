@@ -124,9 +124,6 @@ QVariantMap QgsShortestLineAlgorithm::processAlgorithm( const QVariantMap &param
 
     feedback->setProgress( i * step );
 
-    if ( !f.hasGeometry() )
-      return false;
-
     destinationAttributeCache.insert( f.id(), f.attributes() );
 
     return true;
