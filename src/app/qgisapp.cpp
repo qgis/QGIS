@@ -3402,7 +3402,8 @@ void QgisApp::createToolBars()
                       << mLabelToolBar
                       << mSnappingToolBar
                       << mMeshToolBar
-                      << mAnnotationsToolBar;
+                      << mAnnotationsToolBar
+                      << mCogoToolBar;
 
   mSnappingWidget = new QgsSnappingWidget( QgsProject::instance(), mMapCanvas, mSnappingToolBar );
   mSnappingWidget->setObjectName( QStringLiteral( "mSnappingWidget" ) );
