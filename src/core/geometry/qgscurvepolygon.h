@@ -74,7 +74,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * The returned value is between 0 and 1.
      * \since QGIS 3.24
      */
-    double roundness() const SIP_FACTORY;
+    double roundness() const;
 
     //curve polygon interface
 
