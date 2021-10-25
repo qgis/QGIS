@@ -85,16 +85,25 @@ QgsFields QgsRoundnessAlgorithm::outputFields( const QgsFields &inputFields ) co
 QgsFeatureList QgsRoundnessAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   QgsFeature f = feature;
+  QgsAttributes attributes = f.attributes();
   if ( f.hasGeometry() )
   {
     QgsGeometry geom = f.geometry();
-    const QgsCurvePolygon *poly = qgsgeometry_cast< const QgsCurvePolygon * >( geom.constGet() );
-
-    double roundness = poly->roundness();
-    QgsAttributes attributes = f.attributes();
-    attributes << QVariant( roundness );
-    f.setAttributes( attributes );
+    if ( const QgsCurvePolygon *poly = qgsgeometry_cast< const QgsCurvePolygon * >( geom.constGet()->simplifiedTypeRef() ) )
+    {
+        double roundness = poly->roundness();
+        attributes << QVariant( roundness );
+     }
+     else
+     {
+        attributes << QVariant();
+     }
   }
+  else
+  {
+     attributes << QVariant();
+  }
+  f.setAttributes( attributes );
   return QgsFeatureList() << f;
 }
 
