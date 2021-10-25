@@ -38,6 +38,7 @@ class TestQgsMultiCurve: public QObject
     void addGeometryDimensionPreservationM();
     void addGeometryDimensionPreservationZM();
     void insertGeometry();
+    void curveN();
     void clear();
     void clone();
     void copy();
@@ -436,6 +437,35 @@ void TestQgsMultiCurve::insertGeometry()
 
   QVERIFY( !mc.isEmpty() );
   QCOMPARE( mc.numGeometries(), 1 );
+}
+
+void TestQgsMultiCurve::curveN()
+{
+  QgsMultiCurve mc;
+
+  QVERIFY( !mc.curveN( 0 ) );
+  QVERIFY( !std::as_const( mc ).curveN( 0 ) );
+
+  QgsCircularString part;
+  part.setPoints( QgsPointSequence() << QgsPoint( 7, 17 )
+                  << QgsPoint( 3, 13 ) << QgsPoint( 7, 11 ) );
+  mc.addGeometry( part.clone() );
+
+  QCOMPARE( *mc.curveN( 0 ), part );
+  QCOMPARE( *std::as_const( mc ).curveN( 0 ), part );
+
+  part.setPoints( QgsPointSequence() << QgsPoint( 2, 20 )
+                  << QgsPoint( 3, 31 ) << QgsPoint( 2, 41 ) );
+  mc.addGeometry( part.clone() );
+
+  QCOMPARE( *mc.curveN( 1 ), part );
+  QCOMPARE( *std::as_const( mc ).curveN( 1 ), part );
+
+  QVERIFY( !mc.curveN( 3 ) );
+  QVERIFY( !std::as_const( mc ).curveN( 3 ) );
+
+  QVERIFY( !mc.curveN( -1 ) );
+  QVERIFY( !std::as_const( mc ).curveN( -1 ) );
 }
 
 void TestQgsMultiCurve::clear()
