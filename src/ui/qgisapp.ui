@@ -809,6 +809,20 @@
    </attribute>
    <addaction name="mActionModifyAnnotation"/>
   </widget>
+  <widget class="QToolBar" name="mCogoToolBar">
+   <property name="windowTitle">
+    <string>CoGo Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>CoGo Toolbar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
   <action name="mActionNewProject">
    <property name="icon">
     <iconset resource="../../images/images.qrc">

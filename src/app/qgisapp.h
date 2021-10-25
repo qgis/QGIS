@@ -663,6 +663,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QToolBar *advancedDigitizeToolBar() { return mAdvancedDigitizeToolBar; }
     QToolBar *shapeDigitizeToolBar() { return mShapeDigitizeToolBar; }
     QToolBar *attributesToolBar() { return mAttributesToolBar; }
+    QToolBar *cogoToolBar() { return mCogoToolBar; }
 
     /**
      * Returns selection toolbar
