@@ -75,6 +75,7 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
   connect( mTilesetsTableWidget, &QTableWidget::itemClicked, this, &QgsOWSSourceSelect::mTilesetsTableWidget_itemClicked );
   connect( mLayerUpButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mLayerUpButton_clicked );
   connect( mLayerDownButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mLayerDownButton_clicked );
+  connect( this, &QgsAbstractDataSourceWidget::mapCanvasChanged, this, &QgsOWSSourceSelect::prepareExtent );
   setupButtons( buttonBox );
 
 
@@ -114,8 +115,23 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
     mCacheWidget->hide();
   }
 
+  prepareExtent();
+
   // set up the WMS connections we already know about
   populateConnectionList();
+}
+
+void QgsOWSSourceSelect::prepareExtent()
+{
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+  mSpatialExtentBox->setOutputCrs( crs );
+  QgsMapCanvas *mapCanvas = QgsAbstractDataSourceWidget::mapCanvas();
+  if ( !mapCanvas )
+    return;
+  QgsCoordinateReferenceSystem destinationCrs = mapCanvas->mapSettings().destinationCrs();
+  mSpatialExtentBox->setCurrentExtent( destinationCrs.bounds(), destinationCrs );
+  mSpatialExtentBox->setOutputExtentFromCurrent();
+  mSpatialExtentBox->setMapCanvas( mapCanvas );
 }
 
 void QgsOWSSourceSelect::refresh()

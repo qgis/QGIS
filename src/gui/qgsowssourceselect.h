@@ -127,6 +127,15 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
     //! Add a few example servers to the list.
     void addDefaultServers();
 
+    /**
+     * Prepares the spatial extent box with the general settings
+     * including original crs, destination crs and the map
+     * canvas if it is available.
+     *
+     * \since QGIS 3.24
+     */
+    void prepareExtent();
+
     //! Service name
     QString mService;
 
