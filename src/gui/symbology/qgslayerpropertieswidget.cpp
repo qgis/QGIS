@@ -330,6 +330,12 @@ void QgsLayerPropertiesWidget::layerTypeChanged()
   if ( !newLayer )
     return;
 
+  // also try to copy the subsymbol, if its the same type as the new symbol layer's subsymbol
+  if ( newLayer->subSymbol() && layer->subSymbol() && newLayer->subSymbol()->type() == layer->subSymbol()->type() )
+  {
+    newLayer->setSubSymbol( layer->subSymbol()->clone() );
+  }
+
   updateSymbolLayerWidget( newLayer );
   emit changeLayer( newLayer );
 }
