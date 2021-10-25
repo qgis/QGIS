@@ -83,9 +83,17 @@ void QgsLocationBasedAlgorithm::process( const QgsProcessingContext &context, Qg
     QgsProcessingFeedback *feedback,
     const QgsFeatureIds &skipTargetFeatureIds )
 {
+  // skip if there are no features to select from!
+  if ( targetSource->featureCount() == 0 )
+    return;
 
-  if ( targetSource->featureCount() > 0 && intersectSource->featureCount() > 0
-       && targetSource->featureCount() < intersectSource->featureCount() )
+  // skip if intersect layer is empty, unless we are looking for disjoints
+  if ( intersectSource->featureCount() == 0 &&
+       !selectedPredicates.contains( Disjoint ) )
+    return;
+
+  if ( targetSource->featureCount() > 0 && intersectSource->featureCount() > 0 &&
+       targetSource->featureCount() < intersectSource->featureCount() )
   {
     // joining FEWER features to a layer with MORE features. So we iterate over the FEW features and find matches from the MANY
     processByIteratingOverTargetSource( context, targetSource, intersectSource,
