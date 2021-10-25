@@ -1141,6 +1141,19 @@ class CORE_EXPORT Qgis
     Q_ENUM( MarkerClipMode )
 
     /**
+     * Line clipping modes.
+     *
+     * \since QGIS 3.24
+     */
+    enum class LineClipMode : int
+    {
+      ClipPainterOnly, //!< Applying clipping on the painter only (i.e. line endpoints will coincide with polygon bounding box, but will not be part of the visible portion of the line)
+      ClipToIntersection, //!< Clip lines to intersection with polygon shape (slower) (i.e. line endpoints will coincide with polygon exterior)
+      NoClipping, //!< Lines are not clipped, will extend to shape's bounding box.
+    };
+    Q_ENUM( LineClipMode )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

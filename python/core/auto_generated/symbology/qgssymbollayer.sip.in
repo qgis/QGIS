@@ -159,6 +159,7 @@ class QgsSymbolLayer
       PropertyMarkerClipping,
       PropertyRandomOffsetX,
       PropertyRandomOffsetY,
+      PropertyLineClipping,
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();

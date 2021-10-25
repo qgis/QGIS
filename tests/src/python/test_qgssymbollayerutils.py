@@ -265,6 +265,28 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         self.assertEqual(QgsSymbolLayerUtils.encodeMarkerClipMode(Qgis.MarkerClipMode.CentroidWithin), 'centroid_within')
         self.assertEqual(QgsSymbolLayerUtils.encodeMarkerClipMode(Qgis.MarkerClipMode.CompletelyWithin), 'completely_within')
 
+    def test_decode_line_clip(self):
+        """
+        Test decode line clip
+        """
+        self.assertEqual(QgsSymbolLayerUtils.decodeLineClipMode(''), (Qgis.LineClipMode.ClipPainterOnly, False))
+        self.assertEqual(QgsSymbolLayerUtils.decodeLineClipMode('xxx'), (Qgis.LineClipMode.ClipPainterOnly, False))
+        self.assertEqual(QgsSymbolLayerUtils.decodeLineClipMode(' no   '), (Qgis.LineClipMode.NoClipping, True))
+        self.assertEqual(QgsSymbolLayerUtils.decodeLineClipMode(' NO   '), (Qgis.LineClipMode.NoClipping, True))
+        self.assertEqual(QgsSymbolLayerUtils.decodeLineClipMode(' during_render   '), (Qgis.LineClipMode.ClipPainterOnly, True))
+        self.assertEqual(QgsSymbolLayerUtils.decodeLineClipMode(' DURING_Render   '), (Qgis.LineClipMode.ClipPainterOnly, True))
+        self.assertEqual(QgsSymbolLayerUtils.decodeLineClipMode(' before_render   '), (Qgis.LineClipMode.ClipToIntersection, True))
+        self.assertEqual(QgsSymbolLayerUtils.decodeLineClipMode(' BEFORE_REnder   '),
+                         (Qgis.LineClipMode.ClipToIntersection, True))
+
+    def test_encode_line_clip(self):
+        """
+        Test encode line clip
+        """
+        self.assertEqual(QgsSymbolLayerUtils.encodeLineClipMode(Qgis.LineClipMode.ClipPainterOnly), 'during_render')
+        self.assertEqual(QgsSymbolLayerUtils.encodeLineClipMode(Qgis.LineClipMode.NoClipping), 'no')
+        self.assertEqual(QgsSymbolLayerUtils.encodeLineClipMode(Qgis.LineClipMode.ClipToIntersection), 'before_render')
+
     def testSymbolToFromMimeData(self):
         """
         Test converting symbols to and from mime data

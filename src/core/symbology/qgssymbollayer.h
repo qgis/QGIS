@@ -203,6 +203,7 @@ class CORE_EXPORT QgsSymbolLayer
       PropertyMarkerClipping, //!< Marker clipping mode (since QGIS 3.24)
       PropertyRandomOffsetX, //!< Random offset X (since QGIS 3.24)
       PropertyRandomOffsetY, //!< Random offset Y (since QGIS 3.24)
+      PropertyLineClipping, //!< Line clipping mode (since QGIS 3.24)
     };
 
     /**

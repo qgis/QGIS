@@ -1595,6 +1595,22 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
      */
     const QgsMapUnitScale &offsetMapUnitScale() const { return mOffsetMapUnitScale; }
 
+    /**
+     * Returns the line clipping mode, which defines how lines are clipped at the edges of shapes.
+     *
+     * \see setClipMode()
+     * \since QGIS 3.24
+     */
+    Qgis::LineClipMode clipMode() const { return mClipMode; }
+
+    /**
+     * Sets the line clipping \a mode, which defines how lines are clipped at the edges of shapes.
+     *
+     * \see clipMode()
+     * \since QGIS 3.24
+     */
+    void setClipMode( Qgis::LineClipMode mode ) { mClipMode = mode; }
+
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
     bool usesMapUnits() const override;
@@ -1638,6 +1654,8 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
     //! Fill line
     std::unique_ptr< QgsLineSymbol > mFillLineSymbol;
+
+    Qgis::LineClipMode mClipMode = Qgis::LineClipMode::ClipPainterOnly;
 };
 
 /**
