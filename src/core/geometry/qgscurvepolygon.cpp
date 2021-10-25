@@ -529,10 +529,11 @@ double QgsCurvePolygon::perimeter() const
 
 double QgsCurvePolygon::roundness() const
 {
-  if ( qgsDoubleNear( perimeter(), 0.0 ) )
+  const double p = perimeter();
+  if ( qgsDoubleNear( p, 0.0 ) )
     return 0.0;
 
-  return 4.0 * M_PI * area() / pow( perimeter(), 2.0 );
+  return 4.0 * M_PI * area() / pow( p, 2.0 );
 }
 
 QgsPolygon *QgsCurvePolygon::surfaceToPolygon() const
