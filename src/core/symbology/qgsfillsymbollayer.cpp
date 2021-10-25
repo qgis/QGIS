@@ -3808,7 +3808,7 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
   QgsExpressionContextScope *scope = new QgsExpressionContextScope();
   QgsExpressionContextScopePopper scopePopper( context.renderContext().expressionContext(), scope );
   int pointNum = 0;
-  const bool needsExpressionContext = hasDataDefinedProperties();
+  const bool needsExpressionContext = mMarkerSymbol->hasDataDefinedProperties();
 
   const bool prevIsSubsymbol = context.renderContext().flags() & Qgis::RenderContextFlag::RenderingSubSymbol;
   context.renderContext().setFlag( Qgis::RenderContextFlag::RenderingSubSymbol );
@@ -4907,7 +4907,7 @@ void QgsRandomMarkerFillSymbolLayer::render( QgsRenderContext &context, const QV
   QgsExpressionContextScope *scope = new QgsExpressionContextScope();
   QgsExpressionContextScopePopper scopePopper( context.expressionContext(), scope );
   int pointNum = 0;
-  const bool needsExpressionContext = hasDataDefinedProperties();
+  const bool needsExpressionContext = mMarker->hasDataDefinedProperties();
 
   const bool prevIsSubsymbol = context.flags() & Qgis::RenderContextFlag::RenderingSubSymbol;
   context.setFlag( Qgis::RenderContextFlag::RenderingSubSymbol );
