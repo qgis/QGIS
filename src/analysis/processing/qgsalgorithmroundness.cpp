@@ -53,7 +53,7 @@ QString QgsRoundnessAlgorithm::outputName() const
 QString QgsRoundnessAlgorithm::shortHelpString() const
 {
   return QObject::tr( "Calculates the roundness of each feature and stores it as a new field. The input vector layer must contain polygons.\n\n"
-                                  "The roundness of a polygon is defined as 4π × polygon area / perimeter². The roundness value varies between 0 and 1. A perfect circle has a roundness of 1, while a completely flat polygon has a roundness of 0." );
+                      "The roundness of a polygon is defined as 4π × polygon area / perimeter². The roundness value varies between 0 and 1. A perfect circle has a roundness of 1, while a completely flat polygon has a roundness of 0." );
 }
 
 QString QgsRoundnessAlgorithm::shortDescription() const
@@ -92,17 +92,17 @@ QgsFeatureList QgsRoundnessAlgorithm::processFeature( const QgsFeature &feature,
     QgsGeometry geom = f.geometry();
     if ( const QgsCurvePolygon *poly = qgsgeometry_cast< const QgsCurvePolygon * >( geom.constGet()->simplifiedTypeRef() ) )
     {
-        double roundness = poly->roundness();
-        attributes << QVariant( roundness );
-     }
-     else
-     {
-        attributes << QVariant();
-     }
+      double roundness = poly->roundness();
+      attributes << QVariant( roundness );
+    }
+    else
+    {
+      attributes << QVariant();
+    }
   }
   else
   {
-     attributes << QVariant();
+    attributes << QVariant();
   }
   f.setAttributes( attributes );
   return QgsFeatureList() << f;

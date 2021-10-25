@@ -1476,7 +1476,7 @@ void TestQgsProcessingAlgs::roundness()
   const QgsFeature result = runForFeature( alg, feature, QStringLiteral( "Polygon" ) );
 
   const double roundnessResult = result.attribute( QStringLiteral( "roundness" ) ).toDouble();
-  QGSCOMPARENEAR( roundnessResult, expectedAttribute , 0.001 );
+  QGSCOMPARENEAR( roundnessResult, expectedAttribute, 0.001 );
 }
 
 Q_DECLARE_METATYPE( Qgis::DataType )
