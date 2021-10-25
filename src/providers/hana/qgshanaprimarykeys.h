@@ -66,6 +66,7 @@ class QgsHanaPrimaryKeyUtils
                                      const QList<int> &pkAttrs, QgsHanaPrimaryKeyContext &primaryKeyCntx );
     static QString buildWhereClause( const QgsFeatureIds &featureIds, const QgsFields &fields, QgsHanaPrimaryKeyType pkType,
                                      const QList<int> &pkAttrs, QgsHanaPrimaryKeyContext &primaryKeyCntx );
+    static QStringList parseUriKey( const QString &key );
 };
 
 
