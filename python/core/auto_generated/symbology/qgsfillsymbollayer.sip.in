@@ -1802,6 +1802,10 @@ Caller takes ownership of the returned symbol layer.
 
     virtual void stopRender( QgsSymbolRenderContext &context );
 
+    virtual void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
+    virtual void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
     virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
     virtual QVariantMap properties() const;

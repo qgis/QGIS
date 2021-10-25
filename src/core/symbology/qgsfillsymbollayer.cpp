@@ -3583,6 +3583,20 @@ void QgsPointPatternFillSymbolLayer::stopRender( QgsSymbolRenderContext &context
   }
 }
 
+void QgsPointPatternFillSymbolLayer::startFeatureRender( const QgsFeature &, QgsRenderContext & )
+{
+  // The base class version passes this on to the subsymbol, but we deliberately don't do that here.
+  // Otherwise generators used in the subsymbol will only render a single point per feature (they
+  // have logic to only render once per paired call to startFeatureRender/stopFeatureRender).
+}
+
+void QgsPointPatternFillSymbolLayer::stopFeatureRender( const QgsFeature &, QgsRenderContext & )
+{
+  // The base class version passes this on to the subsymbol, but we deliberately don't do that here.
+  // Otherwise generators used in the subsymbol will only render a single point per feature (they
+  // have logic to only render once per paired call to startFeatureRender/stopFeatureRender).
+}
+
 void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
   if ( !mRenderUsingMarkers )
