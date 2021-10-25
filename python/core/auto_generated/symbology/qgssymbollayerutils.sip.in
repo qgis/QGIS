@@ -118,6 +118,29 @@ Encodes a marker clip ``mode`` to a string.
 .. versionadded:: 3.24
 %End
 
+    static Qgis::LineClipMode decodeLineClipMode( const QString &string, bool *ok /Out/ = 0 );
+%Docstring
+Decodes a ``string`` representing a line clip mode.
+
+:param string: string to decode
+
+:return: - decoded line clip mode
+         - ok: will be set to ``True`` if ``string`` was successfully decoded
+
+.. seealso:: :py:func:`encodeLineClipMode`
+
+.. versionadded:: 3.24
+%End
+
+    static QString encodeLineClipMode( Qgis::LineClipMode mode );
+%Docstring
+Encodes a line clip ``mode`` to a string.
+
+.. seealso:: :py:func:`decodeLineClipMode`
+
+.. versionadded:: 3.24
+%End
+
     static QString encodePoint( QPointF point );
 %Docstring
 Encodes a QPointF to a string.

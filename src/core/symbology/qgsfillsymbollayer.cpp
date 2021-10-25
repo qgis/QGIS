@@ -2717,6 +2717,10 @@ QgsSymbolLayer *QgsLinePatternFillSymbolLayer::create( const QVariantMap &proper
   {
     patternLayer->setCoordinateReference( QgsSymbolLayerUtils::decodeCoordinateReference( properties[QStringLiteral( "coordinate_reference" )].toString() ) );
   }
+  if ( properties.contains( QStringLiteral( "clip_mode" ) ) )
+  {
+    patternLayer->setClipMode( QgsSymbolLayerUtils::decodeLineClipMode( properties.value( QStringLiteral( "clip_mode" ) ).toString() ) );
+  }
 
   patternLayer->restoreOldDataDefinedProperties( properties );
 
@@ -3021,7 +3025,9 @@ void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolRenderContext &context
   // if we are using a vector based output, we need to render points as vectors
   // (OR if the line has data defined symbology, in which case we need to evaluate this line-by-line)
   mRenderUsingLines = context.renderContext().forceVectorOutput()
-                      || mFillLineSymbol->hasDataDefinedProperties();
+                      || mFillLineSymbol->hasDataDefinedProperties()
+                      || mClipMode != Qgis::LineClipMode::ClipPainterOnly
+                      || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyLineClipping );
 
   if ( mRenderUsingLines )
   {
@@ -3102,16 +3108,58 @@ void QgsLinePatternFillSymbolLayer::renderPolygon( const QPolygonF &points, cons
 
   p->save();
 
-  QPainterPath path;
-  path.addPolygon( points );
-  if ( rings )
+  Qgis::LineClipMode clipMode = mClipMode;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyLineClipping ) )
   {
-    for ( const QPolygonF &ring : *rings )
+    context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeLineClipMode( clipMode ) );
+    bool ok = false;
+    const QString valueString = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyLineClipping, context.renderContext().expressionContext(), QString(), &ok );
+    if ( ok )
     {
-      path.addPolygon( ring );
+      Qgis::LineClipMode decodedMode = QgsSymbolLayerUtils::decodeLineClipMode( valueString, &ok );
+      if ( ok )
+        clipMode = decodedMode;
     }
   }
-  p->setClipPath( path, Qt::IntersectClip );
+
+  std::unique_ptr< QgsPolygon > shapePolygon;
+  std::unique_ptr< QgsGeometryEngine > shapeEngine;
+  switch ( clipMode )
+  {
+    case Qgis::LineClipMode::NoClipping:
+      break;
+
+    case Qgis::LineClipMode::ClipToIntersection:
+    {
+      shapePolygon = std::make_unique< QgsPolygon >();
+      shapePolygon->setExteriorRing( QgsLineString::fromQPolygonF( points ) );
+      if ( rings )
+      {
+        for ( const QPolygonF &ring : *rings )
+        {
+          shapePolygon->addInteriorRing( QgsLineString::fromQPolygonF( ring ) );
+        }
+      }
+      shapeEngine.reset( QgsGeometry::createGeometryEngine( shapePolygon.get() ) );
+      shapeEngine->prepareGeometry();
+      break;
+    }
+
+    case Qgis::LineClipMode::ClipPainterOnly:
+    {
+      QPainterPath path;
+      path.addPolygon( points );
+      if ( rings )
+      {
+        for ( const QPolygonF &ring : *rings )
+        {
+          path.addPolygon( ring );
+        }
+      }
+      p->setClipPath( path, Qt::IntersectClip );
+      break;
+    }
+  }
 
   const bool applyBrushTransform = applyBrushTransformFromContext( &context );
   const QRectF boundingRect = points.boundingRect();
@@ -3176,13 +3224,22 @@ void QgsLinePatternFillSymbolLayer::renderPolygon( const QPolygonF &points, cons
     invertedRotateTransform.map( left, currentY - outputPixelOffset, &x1, &y1 );
     invertedRotateTransform.map( right, currentY - outputPixelOffset, &x2, &y2 );
 
-    // todo -- if we do proper intersects clipping, we may end up with multiline string here, so we'd need to wrap the
-    // rendering of each part with in
-    // mFillLineSymbol->startFeatureRender();
-    // ...
-    // mFillLineSymbol->stopFeatureRender();
-
-    mFillLineSymbol->renderPolyline( QPolygonF() << QPointF( x1, y1 ) << QPointF( x2, y2 ), context.feature(), context.renderContext() );
+    if ( shapeEngine )
+    {
+      QgsLineString ls( QgsPoint( x1, y1 ), QgsPoint( x2, y2 ) );
+      std::unique_ptr< QgsAbstractGeometry > intersection( shapeEngine->intersection( &ls ) );
+      for ( auto it = intersection->const_parts_begin(); it != intersection->const_parts_end(); ++it )
+      {
+        if ( const QgsLineString *ls = qgsgeometry_cast< const QgsLineString * >( *it ) )
+        {
+          mFillLineSymbol->renderPolyline( ls->asQPolygonF(), context.feature(), context.renderContext() );
+        }
+      }
+    }
+    else
+    {
+      mFillLineSymbol->renderPolyline( QPolygonF() << QPointF( x1, y1 ) << QPointF( x2, y2 ), context.feature(), context.renderContext() );
+    }
   }
 
   p->restore();
@@ -3206,6 +3263,7 @@ QVariantMap QgsLinePatternFillSymbolLayer::properties() const
   map.insert( QStringLiteral( "offset_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale ) );
   map.insert( QStringLiteral( "outline_width_unit" ), QgsUnitTypes::encodeUnit( mStrokeWidthUnit ) );
   map.insert( QStringLiteral( "outline_width_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mStrokeWidthMapUnitScale ) );
+  map.insert( QStringLiteral( "clip_mode" ), QgsSymbolLayerUtils::encodeLineClipMode( mClipMode ) );
   return map;
 }
 

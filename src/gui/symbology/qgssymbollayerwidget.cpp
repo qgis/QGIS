@@ -3095,6 +3095,19 @@ QgsLinePatternFillSymbolLayerWidget::QgsLinePatternFillSymbolLayerWidget( QgsVec
       emit changed();
     }
   } );
+
+  mClipModeComboBox->addItem( tr( "Clip During Render Only" ), static_cast< int >( Qgis::LineClipMode::ClipPainterOnly ) );
+  mClipModeComboBox->addItem( tr( "Clip Lines Before Render" ), static_cast< int >( Qgis::LineClipMode::ClipToIntersection ) );
+  mClipModeComboBox->addItem( tr( "No Clipping" ), static_cast< int >( Qgis::LineClipMode::NoClipping ) );
+  connect( mClipModeComboBox, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]
+  {
+    if ( mLayer )
+    {
+      mLayer->setClipMode( static_cast< Qgis::LineClipMode >( mClipModeComboBox->currentData().toInt() ) );
+      emit changed();
+    }
+  } );
+
 }
 
 void QgsLinePatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
@@ -3123,11 +3136,14 @@ void QgsLinePatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer 
     mOffsetUnitWidget->blockSignals( false );
 
     whileBlocking( mCoordinateReferenceComboBox )->setCurrentIndex( mCoordinateReferenceComboBox->findData( static_cast< int >( mLayer->coordinateReference() ) ) );
+
+    whileBlocking( mClipModeComboBox )->setCurrentIndex( mClipModeComboBox->findData( static_cast< int >( mLayer->clipMode() ) ) );
   }
 
   registerDataDefinedButton( mAngleDDBtn, QgsSymbolLayer::PropertyLineAngle );
   registerDataDefinedButton( mDistanceDDBtn, QgsSymbolLayer::PropertyLineDistance );
   registerDataDefinedButton( mCoordinateReferenceDDBtn, QgsSymbolLayer::PropertyCoordinateMode );
+  registerDataDefinedButton( mClippingDDBtn, QgsSymbolLayer::PropertyLineClipping );
 }
 
 QgsSymbolLayer *QgsLinePatternFillSymbolLayerWidget::symbolLayer()

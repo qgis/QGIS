@@ -1098,3 +1098,10 @@ Qgis.MarkerClipMode.CompletelyWithin.__doc__ = "Render complete markers wherever
 Qgis.MarkerClipMode.__doc__ = 'Marker clipping modes.\n\n.. versionadded:: 3.24\n\n' + '* ``NoClipping``: ' + Qgis.MarkerClipMode.NoClipping.__doc__ + '\n' + '* ``Shape``: ' + Qgis.MarkerClipMode.Shape.__doc__ + '\n' + '* ``CentroidWithin``: ' + Qgis.MarkerClipMode.CentroidWithin.__doc__ + '\n' + '* ``CompletelyWithin``: ' + Qgis.MarkerClipMode.CompletelyWithin.__doc__
 # --
 Qgis.MarkerClipMode.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.LineClipMode.ClipPainterOnly.__doc__ = "Applying clipping on the painter only (i.e. line endpoints will coincide with polygon bounding box, but will not be part of the visible portion of the line)"
+Qgis.LineClipMode.ClipToIntersection.__doc__ = "Clip lines to intersection with polygon shape (slower) (i.e. line endpoints will coincide with polygon exterior)"
+Qgis.LineClipMode.NoClipping.__doc__ = "Lines are not clipped, will extend to shape's bounding box."
+Qgis.LineClipMode.__doc__ = 'Line clipping modes.\n\n.. versionadded:: 3.24\n\n' + '* ``ClipPainterOnly``: ' + Qgis.LineClipMode.ClipPainterOnly.__doc__ + '\n' + '* ``ClipToIntersection``: ' + Qgis.LineClipMode.ClipToIntersection.__doc__ + '\n' + '* ``NoClipping``: ' + Qgis.LineClipMode.NoClipping.__doc__
+# --
+Qgis.LineClipMode.baseClass = Qgis

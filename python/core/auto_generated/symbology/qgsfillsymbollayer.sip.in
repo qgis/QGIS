@@ -1749,6 +1749,24 @@ Returns the map unit scale for the pattern's line offset.
 .. seealso:: :py:func:`offsetUnit`
 %End
 
+    Qgis::LineClipMode clipMode() const;
+%Docstring
+Returns the line clipping mode, which defines how lines are clipped at the edges of shapes.
+
+.. seealso:: :py:func:`setClipMode`
+
+.. versionadded:: 3.24
+%End
+
+    void setClipMode( Qgis::LineClipMode mode );
+%Docstring
+Sets the line clipping ``mode``, which defines how lines are clipped at the edges of shapes.
+
+.. seealso:: :py:func:`clipMode`
+
+.. versionadded:: 3.24
+%End
+
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 
     virtual QgsUnitTypes::RenderUnit outputUnit() const;

@@ -34,6 +34,7 @@
 #include "qgsproperty.h"
 #include "qgsfillsymbol.h"
 #include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
 
 //qgis test includes
 #include "qgsrenderchecker.h"
@@ -65,6 +66,10 @@ class TestQgsLineFillSymbol : public QObject
     void lineFillLargeOffsetVector();
     void lineFillNegativeAngle();
     void lineFillNegativeAngleVector();
+    void lineFillClipPainter();
+    void lineFillClipIntersection();
+    void lineFillNoClip();
+    void lineFillDataDefinedClip();
 
     void dataDefinedSubSymbol();
 
@@ -325,6 +330,164 @@ void TestQgsLineFillSymbol::lineFillNegativeAngleVector()
   lineFill->setDistance( 2.2 );
   lineFill->setLineAngle( -130 );
   QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_vector_negangle" ), layer.get(), true ) );
+}
+
+void TestQgsLineFillSymbol::lineFillClipPainter()
+{
+  // test clipping using painter path
+  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer> ( mTestDataDir + "polys.shp" );
+  QVERIFY( layer->isValid() );
+
+  QgsLinePatternFillSymbolLayer *lineFill = new QgsLinePatternFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, lineFill );
+  layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+
+  QVariantMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
+  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+
+  properties.clear();
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "255,0,0,255" ) );
+  properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#ff0000" ) );
+  properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
+  properties.insert( QStringLiteral( "size" ), QStringLiteral( "3.0" ) );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerLineSymbolLayer *markerLine = new QgsMarkerLineSymbolLayer();
+  markerLine->setSubSymbol( pointSymbol->clone() );
+  markerLine->setPlacement( Qgis::MarkerLinePlacement::FirstVertex );
+  lineSymbol->appendSymbolLayer( markerLine );
+  markerLine = new QgsMarkerLineSymbolLayer();
+  markerLine->setSubSymbol( pointSymbol );
+  markerLine->setPlacement( Qgis::MarkerLinePlacement::LastVertex );
+  lineSymbol->appendSymbolLayer( markerLine );
+
+  lineFill->setSubSymbol( lineSymbol );
+  lineFill->setDistance( 6 );
+  lineFill->setClipMode( Qgis::LineClipMode::ClipPainterOnly );
+
+  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_clip_painter" ), layer.get() ) );
+}
+
+void TestQgsLineFillSymbol::lineFillClipIntersection()
+{
+  // test clipping using intersections
+  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer> ( mTestDataDir + "polys.shp" );
+  QVERIFY( layer->isValid() );
+
+  QgsLinePatternFillSymbolLayer *lineFill = new QgsLinePatternFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, lineFill );
+  layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+
+  QVariantMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
+  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+
+  properties.clear();
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "255,0,0,255" ) );
+  properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#ff0000" ) );
+  properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
+  properties.insert( QStringLiteral( "size" ), QStringLiteral( "3.0" ) );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerLineSymbolLayer *markerLine = new QgsMarkerLineSymbolLayer();
+  markerLine->setSubSymbol( pointSymbol->clone() );
+  markerLine->setPlacement( Qgis::MarkerLinePlacement::FirstVertex );
+  lineSymbol->appendSymbolLayer( markerLine );
+  markerLine = new QgsMarkerLineSymbolLayer();
+  markerLine->setSubSymbol( pointSymbol );
+  markerLine->setPlacement( Qgis::MarkerLinePlacement::LastVertex );
+  lineSymbol->appendSymbolLayer( markerLine );
+
+  lineFill->setSubSymbol( lineSymbol );
+  lineFill->setDistance( 6 );
+  lineFill->setClipMode( Qgis::LineClipMode::ClipToIntersection );
+
+  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_clip_intersection" ), layer.get() ) );
+}
+
+void TestQgsLineFillSymbol::lineFillNoClip()
+{
+  // test no clipping
+  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer> ( mTestDataDir + "polys.shp" );
+  QVERIFY( layer->isValid() );
+
+  QgsLinePatternFillSymbolLayer *lineFill = new QgsLinePatternFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, lineFill );
+  layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+
+  QVariantMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
+  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+
+  properties.clear();
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "255,0,0,255" ) );
+  properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#ff0000" ) );
+  properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
+  properties.insert( QStringLiteral( "size" ), QStringLiteral( "3.0" ) );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerLineSymbolLayer *markerLine = new QgsMarkerLineSymbolLayer();
+  markerLine->setSubSymbol( pointSymbol->clone() );
+  markerLine->setPlacement( Qgis::MarkerLinePlacement::FirstVertex );
+  lineSymbol->appendSymbolLayer( markerLine );
+  markerLine = new QgsMarkerLineSymbolLayer();
+  markerLine->setSubSymbol( pointSymbol );
+  markerLine->setPlacement( Qgis::MarkerLinePlacement::LastVertex );
+  lineSymbol->appendSymbolLayer( markerLine );
+
+  lineFill->setSubSymbol( lineSymbol );
+  lineFill->setDistance( 6 );
+  lineFill->setClipMode( Qgis::LineClipMode::NoClipping );
+
+  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_clip_no" ), layer.get() ) );
+}
+
+void TestQgsLineFillSymbol::lineFillDataDefinedClip()
+{
+  // test data defined clipping
+  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer> ( mTestDataDir + "polys.shp" );
+  QVERIFY( layer->isValid() );
+
+  QgsLinePatternFillSymbolLayer *lineFill = new QgsLinePatternFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, lineFill );
+  layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+
+  QVariantMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
+  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+
+  properties.clear();
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "255,0,0,255" ) );
+  properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#ff0000" ) );
+  properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
+  properties.insert( QStringLiteral( "size" ), QStringLiteral( "3.0" ) );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerLineSymbolLayer *markerLine = new QgsMarkerLineSymbolLayer();
+  markerLine->setSubSymbol( pointSymbol->clone() );
+  markerLine->setPlacement( Qgis::MarkerLinePlacement::FirstVertex );
+  lineSymbol->appendSymbolLayer( markerLine );
+  markerLine = new QgsMarkerLineSymbolLayer();
+  markerLine->setSubSymbol( pointSymbol );
+  markerLine->setPlacement( Qgis::MarkerLinePlacement::LastVertex );
+  lineSymbol->appendSymbolLayer( markerLine );
+
+  lineFill->setSubSymbol( lineSymbol );
+  lineFill->setDistance( 6 );
+  lineFill->setDataDefinedProperty(
+    QgsSymbolLayer::PropertyLineClipping,
+    QgsProperty::fromExpression( QStringLiteral( "case when $id % 3 =0 then 'no' when $id % 3 = 1 then 'during_render' else 'before_render' end" ) ) );
+
+  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_clip_data_defined" ), layer.get() ) );
 }
 
 void TestQgsLineFillSymbol::dataDefinedSubSymbol()

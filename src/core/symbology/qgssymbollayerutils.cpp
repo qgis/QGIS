@@ -501,6 +501,38 @@ QString QgsSymbolLayerUtils::encodeMarkerClipMode( Qgis::MarkerClipMode mode )
   return QString(); // no warnings
 }
 
+Qgis::LineClipMode QgsSymbolLayerUtils::decodeLineClipMode( const QString &string, bool *ok )
+{
+  const QString compareString = string.trimmed();
+  if ( ok )
+    *ok = true;
+
+  if ( compareString.compare( QLatin1String( "no" ), Qt::CaseInsensitive ) == 0 )
+    return Qgis::LineClipMode::NoClipping;
+  else if ( compareString.compare( QLatin1String( "during_render" ), Qt::CaseInsensitive ) == 0 )
+    return Qgis::LineClipMode::ClipPainterOnly;
+  else if ( compareString.compare( QLatin1String( "before_render" ), Qt::CaseInsensitive ) == 0 )
+    return Qgis::LineClipMode::ClipToIntersection;
+
+  if ( ok )
+    *ok = false;
+  return  Qgis::LineClipMode::ClipPainterOnly;
+}
+
+QString QgsSymbolLayerUtils::encodeLineClipMode( Qgis::LineClipMode mode )
+{
+  switch ( mode )
+  {
+    case Qgis::LineClipMode::NoClipping:
+      return QStringLiteral( "no" );
+    case Qgis::LineClipMode::ClipPainterOnly:
+      return QStringLiteral( "during_render" );
+    case Qgis::LineClipMode::ClipToIntersection:
+      return QStringLiteral( "before_render" );
+  }
+  return QString(); // no warnings
+}
+
 QString QgsSymbolLayerUtils::encodePoint( QPointF point )
 {
   return QStringLiteral( "%1,%2" ).arg( qgsDoubleToString( point.x() ), qgsDoubleToString( point.y() ) );
