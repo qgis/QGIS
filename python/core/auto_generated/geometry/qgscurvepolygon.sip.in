@@ -75,7 +75,7 @@ Curve polygon geometry type
     virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const /HoldGIL/;
 
 
-    double roundness() const /Factory/;
+    double roundness() const;
 %Docstring
 Returns the roundness of the curve polygon.
 The returned value is between 0 and 1.
