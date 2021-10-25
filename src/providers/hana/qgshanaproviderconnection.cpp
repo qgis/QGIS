@@ -17,6 +17,7 @@
 #include "qgshanaproviderconnection.h"
 #include "qgshanaconnectionpool.h"
 #include "qgshanaexception.h"
+#include "qgshanaprimarykeys.h"
 #include "qgshanaprovider.h"
 #include "qgshanaresultset.h"
 #include "qgshanasettings.h"
@@ -525,7 +526,7 @@ QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsHanaProviderConn
 {
   SqlVectorLayerOptions options;
   const QgsDataSourceUri tUri( layerSource );
-  options.primaryKeyColumns = tUri.keyColumn().split( ',' );
+  options.primaryKeyColumns = QgsHanaPrimaryKeyUtils::parseUriKey( tUri.keyColumn() );
   options.disableSelectAtId = tUri.selectAtIdDisabled();
   options.geometryColumn = tUri.geometryColumn();
   options.filter = tUri.sql();
@@ -1863,17 +1864,24 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsHanaProviderConnection::sqlD
       Qgis::SqlKeywordCategory::Aggregate,
       {
         QStringLiteral( "AUTO_CORR" ),
+        QStringLiteral( "AVG" ),
         QStringLiteral( "CORR" ),
         QStringLiteral( "CORR_SPEARMAN" ),
+        QStringLiteral( "COUNT" ),
         QStringLiteral( "CROSS_CORR" ),
         QStringLiteral( "DFT" ),
         QStringLiteral( "FIRST_VALUE" ),
         QStringLiteral( "LAST_VALUE" ),
+        QStringLiteral( "MAX" ),
         QStringLiteral( "MEDIAN" ),
+        QStringLiteral( "MIN" ),
         QStringLiteral( "NTH_VALUE" ),
+        QStringLiteral( "STDDEV" ),
         QStringLiteral( "STDDEV_POP" ),
         QStringLiteral( "STDDEV_SAMP" ),
         QStringLiteral( "STRING_AGG" ),
+        QStringLiteral( "SUM" ),
+        QStringLiteral( "VAR" ),
         QStringLiteral( "VAR_POP" ),
         QStringLiteral( "VAR_SAMP" ),
       }
