@@ -30,7 +30,7 @@ QgsProviderRegistry::WidgetMode QgsAbstractDataSourceWidget::widgetMode() const
   return mWidgetMode;
 }
 
-const QgsMapCanvas *QgsAbstractDataSourceWidget::mapCanvas() const
+QgsMapCanvas *QgsAbstractDataSourceWidget::mapCanvas()
 {
   return mMapCanvas;
 }
@@ -58,9 +58,10 @@ void QgsAbstractDataSourceWidget::setupButtons( QDialogButtonBox *buttonBox )
   connect( closeButton, &QPushButton::clicked, this, &QgsAbstractDataSourceWidget::reject );
 }
 
-void QgsAbstractDataSourceWidget::setMapCanvas( const QgsMapCanvas *mapCanvas )
+void QgsAbstractDataSourceWidget::setMapCanvas( QgsMapCanvas *mapCanvas )
 {
   mMapCanvas = mapCanvas;
+  emit mapCanvasChanged();
 }
 
 void QgsAbstractDataSourceWidget::setBrowserModel( QgsBrowserModel *model )
