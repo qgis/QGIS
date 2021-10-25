@@ -20,6 +20,7 @@
 #include "qgslogger.h"
 
 #include "qgscoordinatereferencesystem.h"
+#include "qgsmapcanvas.h"
 
 #include "qgsnetworkaccessmanager.h"
 #include "qgswcsprovider.h"
@@ -44,6 +45,7 @@ QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsWCSSourceSelect::showHelp );
 }
+
 
 void QgsWCSSourceSelect::populateLayerList()
 {
@@ -145,14 +147,15 @@ void QgsWCSSourceSelect::addButtonClicked()
 
   if ( mSpatialExtentBox->isChecked() )
   {
-      const QgsRectangle spatialExtent = mSpatialExtentBox->outputExtent();
-      QString bbox = QString( "%1, %2, %3, %4" ).
-              arg( spatialExtent.xMinimum() ).
-              arg( spatialExtent.yMinimum() ).
-              arg( spatialExtent.xMaximum() ).
-              arg ( spatialExtent.yMaximum() );
+    const QgsRectangle spatialExtent = mSpatialExtentBox->outputExtent();
+    bool inverted = uri.hasParam( QStringLiteral( "InvertAxisOrientation" ) );
+    QString bbox = QString( inverted ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
+                   .arg( qgsDoubleToString( spatialExtent.xMinimum() ),
+                         qgsDoubleToString( spatialExtent.yMinimum() ),
+                         qgsDoubleToString( spatialExtent.xMaximum() ),
+                         qgsDoubleToString( spatialExtent.yMaximum() ) );
 
-      uri.setParam( QStringLiteral( "BBOX" ), bbox );
+    uri.setParam( QStringLiteral( "bbox" ), bbox );
   }
 
   QString cache;
@@ -185,17 +188,15 @@ void QgsWCSSourceSelect::mLayersTreeWidget_itemSelectionChanged()
 
 void QgsWCSSourceSelect::populateExtent()
 {
-    QgsCoordinateReferenceSystem crs;
-    if ( !selectedCrs().isEmpty() )
-        crs = QgsCoordinateReferenceSystem( selectedCrs() );
-    else
-        crs = QgsCoordinateReferenceSystem("EPSG:4326");
+  QgsCoordinateReferenceSystem crs;
+  if ( !selectedCrs().isEmpty() )
+    crs = QgsCoordinateReferenceSystem( selectedCrs() );
+  else
+    crs = QgsCoordinateReferenceSystem( "EPSG:4326" );
 
-    mSpatialExtentBox->setOutputCrs(crs);
-
-
-    mSpatialExtentBox->setCurrentExtent( crs.bounds(), crs );
-    mSpatialExtentBox->setOutputExtentFromCurrent();
+  mSpatialExtentBox->setOutputCrs( crs );
+  mSpatialExtentBox->setCurrentExtent( crs.bounds(), crs );
+  mSpatialExtentBox->setOutputExtentFromCurrent();
 }
 
 void QgsWCSSourceSelect::updateButtons()

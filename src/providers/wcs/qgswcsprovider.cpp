@@ -358,6 +358,7 @@ QgsWcsProvider::QgsWcsProvider( const QgsWcsProvider &other, const QgsDataProvid
   , mBaseUrl( other.mBaseUrl )
   , mIdentifier( other.mIdentifier )
   , mTime( other.mTime )
+  , mBBOX( other.mBBOX )
   , mFormat( other.mFormat )
   , mValid( other.mValid )
   , mCapabilities( other.mCapabilities )
@@ -442,6 +443,8 @@ bool QgsWcsProvider::parseUri( const QString &uriString )
   mIdentifier = uri.param( QStringLiteral( "identifier" ) );
 
   mTime = uri.param( QStringLiteral( "time" ) );
+
+  mBBOX = uri.param( QStringLiteral( "bbox" ) );
 
   setFormat( uri.param( QStringLiteral( "format" ) ) );
 
@@ -731,7 +734,9 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const &viewExtent, int 
       // raster (all values 0).
       setQueryItem( url, QStringLiteral( "TIME" ), mTime );
     }
-    setQueryItem( url, QStringLiteral( "BBOX" ), bbox );
+
+    setQueryItem( url, QStringLiteral( "BBOX" ), !mBBOX.isEmpty() ? mBBOX : bbox );
+
     setQueryItem( url, QStringLiteral( "CRS" ), crs ); // request BBOX CRS
     setQueryItem( url, QStringLiteral( "RESPONSE_CRS" ), crs ); // response CRS
     setQueryItem( url, QStringLiteral( "WIDTH" ), QString::number( pixelWidth ) );
@@ -750,7 +755,8 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const &viewExtent, int 
       setQueryItem( url, QStringLiteral( "TIMESEQUENCE" ), mTime );
     }
 
-    setQueryItem( url, QStringLiteral( "BOUNDINGBOX" ), bbox );
+    setQueryItem( url, QStringLiteral( "BOUNDINGBOX" ), !mBBOX.isEmpty() ? mBBOX : bbox );
+
 
     //  Example:
     //   GridBaseCRS=urn:ogc:def:crs:SG:6.6:32618

@@ -261,6 +261,9 @@ class QgsWcsProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     //! Time (temporalDomain), optional
     QString mTime;
 
+    //! Specified bounding box
+    QString mBBOX;
+
     //! Format of coverage to be used in request
     QString mFormat;
 
