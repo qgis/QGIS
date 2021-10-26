@@ -1,68 +1,112 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>QgsIntersection2Circles</class>
- <widget class="QWidget" name="QgsIntersection2Circles">
+ <widget class="QDialog" name="QgsIntersection2Circles">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>439</width>
+    <width>426</width>
     <height>164</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Intersection between 2 circles</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="4">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Rayon</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="QgsDoubleSpinBox" name="mY1"/>
-   </item>
-   <item row="1" column="5">
-    <widget class="QToolButton" name="mSelectCenter1">
-     <property name="text">
-      <string>...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Y</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="4">
-    <widget class="QgsDoubleSpinBox" name="mRadius2"/>
-   </item>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetFixedSize</enum>
+   </property>
    <item row="0" column="0">
-    <widget class="QLabel" name="label_2">
+    <widget class="QLabel" name="labelX">
      <property name="text">
       <string>X</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="4">
+   <item row="0" column="1">
+    <widget class="QLabel" name="labelY">
+     <property name="text">
+      <string>Y</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QLabel" name="labelRadius">
+     <property name="text">
+      <string>Radius</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QgsDoubleSpinBox" name="mX1"/>
+   </item>
+   <item row="1" column="1">
+    <widget class="QgsDoubleSpinBox" name="mY1"/>
+   </item>
+   <item row="1" column="2">
     <widget class="QgsDoubleSpinBox" name="mRadius1">
      <property name="minimum">
       <double>0.000000000000000</double>
      </property>
     </widget>
    </item>
-   <item row="2" column="5">
+   <item row="1" column="3">
+    <widget class="QToolButton" name="mSelectCenter1">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="../../../images/images.qrc">
+       <normaloff>:/images/themes/default/mActionMoveFeatureCopyPoint.svg</normaloff>:/images/themes/default/mActionMoveFeatureCopyPoint.svg</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QgsDoubleSpinBox" name="mX2"/>
+   </item>
+   <item row="2" column="1">
+    <widget class="QgsDoubleSpinBox" name="mY2"/>
+   </item>
+   <item row="2" column="2">
+    <widget class="QgsDoubleSpinBox" name="mRadius2"/>
+   </item>
+   <item row="2" column="3">
     <widget class="QToolButton" name="mSelectCenter2">
      <property name="text">
       <string>...</string>
      </property>
+     <property name="icon">
+      <iconset resource="../../../images/images.qrc">
+       <normaloff>:/images/themes/default/mActionMoveFeatureCopyPoint.svg</normaloff>:/images/themes/default/mActionMoveFeatureCopyPoint.svg</iconset>
+     </property>
     </widget>
    </item>
-   <item row="4" column="4">
+   <item row="3" column="0" colspan="4">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QRadioButton" name="mIntersection1">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Intersection 1</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QRadioButton" name="mIntersection2">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Intersection 2</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="2" colspan="2">
     <widget class="QDialogButtonBox" name="mButtonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -71,35 +115,6 @@
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QRadioButton" name="mIntersection1">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="text">
-      <string>Intersection 1</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="4">
-    <widget class="QRadioButton" name="mIntersection2">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="text">
-      <string>Intersection 2</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QgsDoubleSpinBox" name="mX1"/>
-   </item>
-   <item row="2" column="0">
-    <widget class="QgsDoubleSpinBox" name="mX2"/>
-   </item>
-   <item row="2" column="2">
-    <widget class="QgsDoubleSpinBox" name="mY2"/>
    </item>
   </layout>
  </widget>
@@ -110,6 +125,41 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
- <connections/>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>mButtonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>QgsIntersection2Circles</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>309</x>
+     <y>141</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>219</x>
+     <y>81</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mButtonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>QgsIntersection2Circles</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>303</x>
+     <y>141</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>213</x>
+     <y>81</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
