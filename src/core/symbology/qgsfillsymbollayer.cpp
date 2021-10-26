@@ -2580,7 +2580,7 @@ void QgsLinePatternFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit
 QgsUnitTypes::RenderUnit QgsLinePatternFillSymbolLayer::outputUnit() const
 {
   QgsUnitTypes::RenderUnit unit = QgsImageFillSymbolLayer::outputUnit();
-  if ( mDistanceUnit != unit || mLineWidthUnit != unit || mOffsetUnit != unit )
+  if ( mDistanceUnit != unit || mLineWidthUnit != unit || ( mOffsetUnit != unit && mOffsetUnit != QgsUnitTypes::RenderPercentage ) )
   {
     return QgsUnitTypes::RenderUnknownUnit;
   }
@@ -2746,7 +2746,8 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
   const QgsRenderContext &ctx = context.renderContext();
   //double strokePixelWidth = lineWidth * QgsSymbolLayerUtils::pixelSizeScaleFactor( ctx,  mLineWidthUnit, mLineWidthMapUnitScale );
   double outputPixelDist = ctx.convertToPainterUnits( distance, mDistanceUnit, mDistanceMapUnitScale );
-  double outputPixelOffset = ctx.convertToPainterUnits( mOffset, mOffsetUnit, mOffsetMapUnitScale );
+  double outputPixelOffset = mOffsetUnit == QgsUnitTypes::RenderPercentage ? outputPixelDist * mOffset / 100
+                             : ctx.convertToPainterUnits( mOffset, mOffsetUnit, mOffsetMapUnitScale );
 
   // NOTE: this may need to be modified if we ever change from a forced rasterized/brush approach,
   // because potentially we may want to allow vector based line pattern fills where the first line
@@ -3075,12 +3076,8 @@ void QgsLinePatternFillSymbolLayer::renderPolygon( const QPolygonF &points, cons
   const double outputPixelDistance = context.renderContext().convertToPainterUnits( distance, mDistanceUnit, mDistanceMapUnitScale );
 
   double offset = mOffset;
-  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyLineDistance ) )
-  {
-    context.setOriginalValueVariable( mDistance );
-    distance = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyLineDistance, context.renderContext().expressionContext(), mDistance );
-  }
-  double outputPixelOffset = context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale );
+  double outputPixelOffset = mOffsetUnit == QgsUnitTypes::RenderPercentage ? outputPixelDistance * offset / 100
+                             :  context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale );
 
   // fix truncated pattern with larger offsets
   outputPixelOffset = std::fmod( outputPixelOffset, outputPixelDistance );
@@ -3392,11 +3389,15 @@ void QgsPointPatternFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit uni
   QgsImageFillSymbolLayer::setOutputUnit( unit );
   mDistanceXUnit = unit;
   mDistanceYUnit = unit;
-  mDisplacementXUnit = unit;
-  mDisplacementYUnit = unit;
-  mOffsetXUnit = unit;
-  mOffsetYUnit = unit;
   // don't change "percentage" units -- since they adapt directly to whatever other unit is set
+  if ( mDisplacementXUnit != QgsUnitTypes::RenderPercentage )
+    mDisplacementXUnit = unit;
+  if ( mDisplacementYUnit != QgsUnitTypes::RenderPercentage )
+    mDisplacementYUnit = unit;
+  if ( mOffsetXUnit != QgsUnitTypes::RenderPercentage )
+    mOffsetXUnit = unit;
+  if ( mOffsetYUnit != QgsUnitTypes::RenderPercentage )
+    mOffsetYUnit = unit;
   if ( mRandomDeviationXUnit != QgsUnitTypes::RenderPercentage )
     mRandomDeviationXUnit = unit;
   if ( mRandomDeviationYUnit != QgsUnitTypes::RenderPercentage )
@@ -3413,10 +3414,10 @@ QgsUnitTypes::RenderUnit QgsPointPatternFillSymbolLayer::outputUnit() const
   QgsUnitTypes::RenderUnit unit = QgsImageFillSymbolLayer::outputUnit();
   if ( mDistanceXUnit != unit ||
        mDistanceYUnit != unit ||
-       mDisplacementXUnit != unit ||
-       mDisplacementYUnit != unit ||
-       mOffsetXUnit != unit ||
-       mOffsetYUnit != unit ||
+       ( mDisplacementXUnit != QgsUnitTypes::RenderPercentage && mDisplacementXUnit != unit ) ||
+       ( mDisplacementYUnit != QgsUnitTypes::RenderPercentage && mDisplacementYUnit != unit ) ||
+       ( mOffsetXUnit != QgsUnitTypes::RenderPercentage && mOffsetXUnit != unit ) ||
+       ( mOffsetYUnit != QgsUnitTypes::RenderPercentage && mOffsetYUnit != unit ) ||
        ( mRandomDeviationXUnit != QgsUnitTypes::RenderPercentage && mRandomDeviationXUnit != unit ) ||
        ( mRandomDeviationYUnit != QgsUnitTypes::RenderPercentage && mRandomDeviationYUnit != unit ) )
   {
@@ -3621,8 +3622,12 @@ void QgsPointPatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext 
   double width = ctx.convertToPainterUnits( distanceX, mDistanceXUnit, mDistanceXMapUnitScale ) * 2.0;
   double height = ctx.convertToPainterUnits( distanceY, mDistanceYUnit, mDisplacementYMapUnitScale ) * 2.0;
 
-  double widthOffset = std::fmod( ctx.convertToPainterUnits( offsetX, mOffsetXUnit, mOffsetXMapUnitScale ), width );
-  double heightOffset = std::fmod( ctx.convertToPainterUnits( offsetY, mOffsetYUnit, mOffsetYMapUnitScale ), height );
+  double widthOffset = std::fmod(
+                         mOffsetXUnit == QgsUnitTypes::RenderPercentage ? ( width * offsetX / 200 ) : ctx.convertToPainterUnits( offsetX, mOffsetXUnit, mOffsetXMapUnitScale ),
+                         width );
+  double heightOffset = std::fmod(
+                          mOffsetYUnit == QgsUnitTypes::RenderPercentage ? ( height * offsetY / 200 ) : ctx.convertToPainterUnits( offsetY, mOffsetYUnit, mOffsetYMapUnitScale ),
+                          height );
 
   if ( width > 10000 || height > 10000 ) //protect symbol layer from eating too much memory
   {
@@ -3671,8 +3676,12 @@ void QgsPointPatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext 
     }
 
     //render displaced points
-    double displacementPixelX = ctx.convertToPainterUnits( displacementX, mDisplacementXUnit, mDisplacementXMapUnitScale );
-    double displacementPixelY = ctx.convertToPainterUnits( displacementY, mDisplacementYUnit, mDisplacementYMapUnitScale );
+    double displacementPixelX = mDisplacementXUnit == QgsUnitTypes::RenderPercentage
+                                ? ( width * displacementX / 200 )
+                                : ctx.convertToPainterUnits( displacementX, mDisplacementXUnit, mDisplacementXMapUnitScale );
+    double displacementPixelY =  mDisplacementYUnit == QgsUnitTypes::RenderPercentage
+                                 ? ( height * displacementY / 200 )
+                                 : ctx.convertToPainterUnits( displacementY, mDisplacementYUnit, mDisplacementYMapUnitScale );
     for ( double currentX = -width; currentX <= width * 2.0; currentX += width )
     {
       for ( double currentY = -height / 2.0; currentY <= height * 2.0; currentY += height )
@@ -3799,7 +3808,11 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
     context.setOriginalValueVariable( mOffsetX );
     offsetX = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOffsetX, context.renderContext().expressionContext(), mOffsetX );
   }
-  const double widthOffset = std::fmod( context.renderContext().convertToPainterUnits( offsetX, mOffsetXUnit, mOffsetXMapUnitScale ), width );
+  const double widthOffset = std::fmod(
+                               mOffsetXUnit == QgsUnitTypes::RenderPercentage
+                               ? ( offsetX * width / 100 )
+                               : context.renderContext().convertToPainterUnits( offsetX, mOffsetXUnit, mOffsetXMapUnitScale ),
+                               width );
 
   double offsetY = mOffsetY;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOffsetY ) )
@@ -3807,7 +3820,11 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
     context.setOriginalValueVariable( mOffsetY );
     offsetY = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOffsetY, context.renderContext().expressionContext(), mOffsetY );
   }
-  const double heightOffset = std::fmod( context.renderContext().convertToPainterUnits( offsetY, mOffsetYUnit, mOffsetYMapUnitScale ), height );
+  const double heightOffset = std::fmod(
+                                mOffsetYUnit == QgsUnitTypes::RenderPercentage
+                                ? ( offsetY * height / 100 )
+                                : context.renderContext().convertToPainterUnits( offsetY, mOffsetYUnit, mOffsetYMapUnitScale ),
+                                height );
 
   double displacementX = mDisplacementX;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyDisplacementX ) )
@@ -3815,7 +3832,9 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
     context.setOriginalValueVariable( mDisplacementX );
     displacementX = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyDisplacementX, context.renderContext().expressionContext(), mDisplacementX );
   }
-  const double displacementPixelX = context.renderContext().convertToPainterUnits( displacementX, mDisplacementXUnit, mDisplacementXMapUnitScale );
+  const double displacementPixelX = mDisplacementXUnit == QgsUnitTypes::RenderPercentage
+                                    ? ( displacementX * width / 100 )
+                                    : context.renderContext().convertToPainterUnits( displacementX, mDisplacementXUnit, mDisplacementXMapUnitScale );
 
   double displacementY = mDisplacementY;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyDisplacementY ) )
@@ -3823,7 +3842,9 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
     context.setOriginalValueVariable( mDisplacementY );
     displacementY = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyDisplacementY, context.renderContext().expressionContext(), mDisplacementY );
   }
-  const double displacementPixelY = context.renderContext().convertToPainterUnits( displacementY, mDisplacementYUnit, mDisplacementYMapUnitScale );
+  const double displacementPixelY = mDisplacementYUnit == QgsUnitTypes::RenderPercentage
+                                    ? ( displacementY * height / 100 )
+                                    : context.renderContext().convertToPainterUnits( displacementY, mDisplacementYUnit, mDisplacementYMapUnitScale );
 
   p->setPen( QPen( Qt::NoPen ) );
 
