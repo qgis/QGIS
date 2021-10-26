@@ -30,14 +30,14 @@ class QgsRendererRasterPropertiesTestCases(TestCase):
     def test_syncToLayer_SingleBandGray(self):
 
         lyr = self.multibandRasterLayer()
-        lyr.setRenderer(QgsSingleBandGrayRenderer(lyr.dataProvider(), 1))
+        lyr.setRenderer(QgsSingleBandGrayRenderer(lyr.dataProvider(), 2))
         c = QgsMapCanvas()
         w = QgsRendererRasterPropertiesWidget(lyr, c)
         assert isinstance(w.currentRenderWidget().renderer(), QgsSingleBandGrayRenderer)
-        assert w.currentRenderWidget().renderer().grayBand() == 1
-        lyr.renderer().setGrayBand(2)
-        w.syncToLayer(lyr)
         assert w.currentRenderWidget().renderer().grayBand() == 2
+        lyr.renderer().setGrayBand(1)
+        w.syncToLayer(lyr)
+        assert w.currentRenderWidget().renderer().grayBand() == 1
 
     def test_syncToLayer_MultiBand(self):
 
