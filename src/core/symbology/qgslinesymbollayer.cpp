@@ -28,6 +28,10 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
+#include "qgsapplication.h"
+#include "qgsimagecache.h"
+#include "qgsfeedback.h"
+#include "qgsimageoperation.h"
 
 #include <algorithm>
 #include <QPainter>
@@ -2825,3 +2829,561 @@ void QgsHashedLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
   QgsTemplatedLineSymbolLayerBase::renderPolyline( points, context );
   mHashSymbol->setOpacity( prevOpacity );
 }
+
+
+
+//
+// QgsRasterLineSymbolLayer
+//
+
+QgsRasterLineSymbolLayer::QgsRasterLineSymbolLayer( const QString &path )
+  : mPath( path )
+{
+}
+
+QgsRasterLineSymbolLayer::~QgsRasterLineSymbolLayer() = default;
+
+QgsSymbolLayer *QgsRasterLineSymbolLayer::create( const QVariantMap &properties )
+{
+  std::unique_ptr< QgsRasterLineSymbolLayer > res = std::make_unique<QgsRasterLineSymbolLayer>();
+
+  if ( properties.contains( QStringLiteral( "line_width" ) ) )
+  {
+    res->setWidth( properties[QStringLiteral( "line_width" )].toDouble() );
+  }
+  if ( properties.contains( QStringLiteral( "line_width_unit" ) ) )
+  {
+    res->setWidthUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "line_width_unit" )].toString() ) );
+  }
+  if ( properties.contains( QStringLiteral( "width_map_unit_scale" ) ) )
+  {
+    res->setWidthMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "width_map_unit_scale" )].toString() ) );
+  }
+
+  if ( properties.contains( QStringLiteral( "imageFile" ) ) )
+    res->setPath( properties[QStringLiteral( "imageFile" )].toString() );
+
+  if ( properties.contains( QStringLiteral( "offset" ) ) )
+  {
+    res->setOffset( properties[QStringLiteral( "offset" )].toDouble() );
+  }
+  if ( properties.contains( QStringLiteral( "offset_unit" ) ) )
+  {
+    res->setOffsetUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "offset_unit" )].toString() ) );
+  }
+  if ( properties.contains( QStringLiteral( "offset_map_unit_scale" ) ) )
+  {
+    res->setOffsetMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "offset_map_unit_scale" )].toString() ) );
+  }
+
+  if ( properties.contains( QStringLiteral( "joinstyle" ) ) )
+    res->setPenJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( properties[QStringLiteral( "joinstyle" )].toString() ) );
+  if ( properties.contains( QStringLiteral( "capstyle" ) ) )
+    res->setPenCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( properties[QStringLiteral( "capstyle" )].toString() ) );
+
+  if ( properties.contains( QStringLiteral( "alpha" ) ) )
+  {
+    res->setOpacity( properties[QStringLiteral( "alpha" )].toDouble() );
+  }
+
+  return res.release();
+}
+
+
+QVariantMap QgsRasterLineSymbolLayer::properties() const
+{
+  QVariantMap map;
+  map[QStringLiteral( "imageFile" )] = mPath;
+
+  map[QStringLiteral( "line_width" )] = QString::number( mWidth );
+  map[QStringLiteral( "line_width_unit" )] = QgsUnitTypes::encodeUnit( mWidthUnit );
+  map[QStringLiteral( "width_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mWidthMapUnitScale );
+
+  map[QStringLiteral( "joinstyle" )] = QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle );
+  map[QStringLiteral( "capstyle" )] = QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle );
+
+  map[QStringLiteral( "offset" )] = QString::number( mOffset );
+  map[QStringLiteral( "offset_unit" )] = QgsUnitTypes::encodeUnit( mOffsetUnit );
+  map[QStringLiteral( "offset_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale );
+
+  map[QStringLiteral( "alpha" )] = QString::number( mOpacity );
+
+  return map;
+}
+
+QgsRasterLineSymbolLayer *QgsRasterLineSymbolLayer::clone() const
+{
+  std::unique_ptr< QgsRasterLineSymbolLayer > res = std::make_unique< QgsRasterLineSymbolLayer >( mPath );
+  res->setWidth( mWidth );
+  res->setWidthUnit( mWidthUnit );
+  res->setWidthMapUnitScale( mWidthMapUnitScale );
+  res->setPenJoinStyle( mPenJoinStyle );
+  res->setPenCapStyle( mPenCapStyle );
+  res->setOffsetUnit( mOffsetUnit );
+  res->setOffsetMapUnitScale( mOffsetMapUnitScale );
+  res->setOffset( mOffset );
+  res->setOpacity( mOpacity );
+  copyDataDefinedProperties( res.get() );
+  copyPaintEffect( res.get() );
+  return res.release();
+}
+
+void QgsRasterLineSymbolLayer::resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving )
+{
+  const QVariantMap::iterator it = properties.find( QStringLiteral( "imageFile" ) );
+  if ( it != properties.end() && it.value().type() == QVariant::String )
+  {
+    if ( saving )
+      it.value() = QgsSymbolLayerUtils::svgSymbolPathToName( it.value().toString(), pathResolver );
+    else
+      it.value() =  QgsSymbolLayerUtils::svgSymbolNameToPath( it.value().toString(), pathResolver );
+  }
+}
+
+void QgsRasterLineSymbolLayer::setPath( const QString &path )
+{
+  mPath = path;
+}
+
+QString QgsRasterLineSymbolLayer::layerType() const
+{
+  return QStringLiteral( "RasterLine" );
+}
+
+void QgsRasterLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
+{
+  double scaledHeight = context.renderContext().convertToPainterUnits( mWidth, mWidthUnit, mWidthMapUnitScale );
+
+  const QSize originalSize = QgsApplication::imageCache()->originalSize( mPath, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
+
+  double opacity = mOpacity * context.opacity();
+  bool cached = false;
+  mLineImage = QgsApplication::imageCache()->pathAsImage( mPath,
+               QSize( static_cast< int >( std::round( originalSize.width() / originalSize.height() * scaledHeight ) ),
+                      static_cast< int >( std::ceil( scaledHeight ) ) ),
+               true, opacity, cached, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
+}
+
+void QgsRasterLineSymbolLayer::stopRender( QgsSymbolRenderContext & )
+{
+}
+
+void QgsRasterLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context )
+{
+  if ( !context.renderContext().painter() )
+    return;
+
+  QImage sourceImage = mLineImage;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeWidth )
+       || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFile )
+       || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOpacity ) )
+  {
+    QString path = mPath;
+    if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFile ) )
+    {
+      context.setOriginalValueVariable( path );
+      path = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyFile, context.renderContext().expressionContext(), path );
+    }
+
+    double strokeWidth = mWidth;
+    if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeWidth ) )
+    {
+      context.setOriginalValueVariable( strokeWidth );
+      strokeWidth = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext(), strokeWidth );
+    }
+    const double scaledHeight = context.renderContext().convertToPainterUnits( strokeWidth, mWidthUnit, mWidthMapUnitScale );
+
+    const QSize originalSize = QgsApplication::imageCache()->originalSize( path, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
+    double opacity = mOpacity;
+    if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOpacity ) )
+    {
+      context.setOriginalValueVariable( mOpacity );
+      opacity = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOpacity, context.renderContext().expressionContext(), opacity * 100 ) / 100.0;
+    }
+    opacity *= context.opacity();
+
+    bool cached = false;
+    sourceImage = QgsApplication::imageCache()->pathAsImage( path,
+                  QSize( static_cast< int >( std::round( originalSize.width() / originalSize.height() * scaledHeight ) ),
+                         static_cast< int >( std::ceil( scaledHeight ) ) ),
+                  true, opacity, cached, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
+  }
+
+
+  double offset = mOffset;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOffset ) )
+  {
+    context.setOriginalValueVariable( offset );
+    offset = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOffset, context.renderContext().expressionContext(), offset );
+  }
+
+  if ( context.selected() )
+  {
+    QgsImageOperation::adjustHueSaturation( sourceImage, 1.0, context.renderContext().selectionColor(), 1.0, context.renderContext().feedback() );
+  }
+
+  const QBrush brush( sourceImage );
+
+  QPolygonF offsetPoints;
+  if ( qgsDoubleNear( offset, 0 ) )
+  {
+    renderLine( points, context, sourceImage.height(), sourceImage.width(), brush );
+  }
+  else
+  {
+    const double scaledOffset = context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale );
+
+    const QList<QPolygonF> offsetLine = ::offsetLine( points, scaledOffset, context.originalGeometryType() != QgsWkbTypes::UnknownGeometry ? context.originalGeometryType() : QgsWkbTypes::LineGeometry );
+    for ( const QPolygonF &part : offsetLine )
+    {
+      renderLine( part, context, sourceImage.height(), sourceImage.width(), brush );
+    }
+  }
+}
+
+void QgsRasterLineSymbolLayer::renderLine( const QPolygonF &points, QgsSymbolRenderContext &context, const double lineThickness,
+    const double patternLength, const QBrush &sourceBrush )
+{
+  QPainter *p = context.renderContext().painter();
+  if ( !p )
+    return;
+
+  QBrush brush = sourceBrush;
+
+  // duplicate points mess up the calculations, we need to remove them first
+  // we'll calculate the min/max coordinate at the same time, since we're already looping
+  // through the points
+  QPolygonF inputPoints;
+  inputPoints.reserve( points.size() );
+  QPointF prev;
+  double minX = std::numeric_limits< double >::max();
+  double minY = std::numeric_limits< double >::max();
+  double maxX = std::numeric_limits< double >::lowest();
+  double maxY = std::numeric_limits< double >::lowest();
+
+  for ( const QPointF &pt : std::as_const( points ) )
+  {
+    if ( !inputPoints.empty() && qgsDoubleNear( prev.x(), pt.x(), 0.01 ) && qgsDoubleNear( prev.y(), pt.y(), 0.01 ) )
+      continue;
+
+    inputPoints << pt;
+    prev = pt;
+    minX = std::min( minX, pt.x() );
+    minY = std::min( minY, pt.y() );
+    maxX = std::max( maxX, pt.x() );
+    maxY = std::max( maxY, pt.y() );
+  }
+
+  if ( inputPoints.size() < 2 ) // nothing to render
+    return;
+
+  // buffer size to extend out the temporary image, just to ensure that we don't clip out any antialiasing effects
+  constexpr int ANTIALIAS_ALLOWANCE_PIXELS = 10;
+  // amount of overlap to use when rendering adjacent line segments to ensure that no artifacts are visible between segments
+  constexpr int ANTIALIAS_OVERLAP_PIXELS = 1;
+
+  // our temporary image needs to extend out by the line thickness on each side, and we'll also add an allowance for antialiasing effects on each side
+  const int imageWidth = static_cast< int >( std::ceil( maxX - minX ) + lineThickness * 2 ) + ANTIALIAS_ALLOWANCE_PIXELS * 2;
+  const int imageHeight = static_cast< int >( std::ceil( maxY - minY ) + lineThickness * 2 ) + ANTIALIAS_ALLOWANCE_PIXELS * 2;
+
+  const bool isClosedLine = qgsDoubleNear( points.at( 0 ).x(), points.constLast().x(), 0.01 )
+                            && qgsDoubleNear( points.at( 0 ).y(), points.constLast().y(), 0.01 );
+
+  QImage temporaryImage( imageWidth, imageHeight, QImage::Format_ARGB32_Premultiplied );
+  if ( temporaryImage.isNull() )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Could not allocate sufficient memory for raster line symbol" ) );
+    return;
+  }
+
+  // clear temporary image contents
+  if ( context.renderContext().feedback() && context.renderContext().feedback()->isCanceled() )
+    return;
+  temporaryImage.fill( Qt::transparent );
+  if ( context.renderContext().feedback() && context.renderContext().feedback()->isCanceled() )
+    return;
+
+  Qt::PenJoinStyle join = mPenJoinStyle;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyJoinStyle ) )
+  {
+    context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenJoinStyle( join ) );
+    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyJoinStyle, context.renderContext().expressionContext() );
+    if ( !exprVal.isNull() )
+      join = QgsSymbolLayerUtils::decodePenJoinStyle( exprVal.toString() );
+  }
+
+  Qt::PenCapStyle cap = mPenCapStyle;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyCapStyle ) )
+  {
+    context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenCapStyle( cap ) );
+    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyCapStyle, context.renderContext().expressionContext() );
+    if ( !exprVal.isNull() )
+      cap = QgsSymbolLayerUtils::decodePenCapStyle( exprVal.toString() );
+  }
+
+  // stroke out the path using the correct line cap/join style. We'll then use this as a clipping path
+  QPainterPathStroker stroker;
+  stroker.setWidth( lineThickness );
+  stroker.setCapStyle( cap );
+  stroker.setJoinStyle( join );
+
+  QPainterPath path;
+  path.addPolygon( inputPoints );
+  const QPainterPath stroke = stroker.createStroke( path ).simplified();
+
+  // prepare temporary image
+  QPainter imagePainter;
+  imagePainter.begin( &temporaryImage );
+  imagePainter.setRenderHint( QPainter::Antialiasing, true );
+  imagePainter.setRenderHint( QPainter::SmoothPixmapTransform, true );
+  imagePainter.translate( -minX + lineThickness + ANTIALIAS_ALLOWANCE_PIXELS, -minY + lineThickness + ANTIALIAS_ALLOWANCE_PIXELS );
+
+  imagePainter.setClipPath( stroke, Qt::IntersectClip );
+  imagePainter.setPen( Qt::NoPen );
+
+  // important -- the painter uses a "source" mode (not "source over"), as we want to replace any existing pixels when drawing a line
+  // segment from any previously drawn line segments (and not draw them over the existing ones). Otherwise non-opaque images will
+  // show antialiasing artifacts as the start of each segment will have ~1px overlaps with previously rendered ones, which will
+  // be visible if we allow the opacity from the pixels to combine.
+  imagePainter.setCompositionMode( QPainter::CompositionMode_Source );
+
+  QPointF segmentStartPoint = inputPoints.at( 0 );
+
+  // current brush progress through the image (horizontally). Used to track which column of image data to start the next brush segment using.
+  double progressThroughImage = 0;
+
+  QgsPoint prevSegmentPolygonEndLeft;
+  QgsPoint prevSegmentPolygonEndRight;
+
+  // for closed rings this will store the left/right polygon points of the start/end of the line
+  QgsPoint startLinePolygonLeft;
+  QgsPoint startLinePolygonRight;
+
+  for ( int i = 1; i < inputPoints.size(); ++i )
+  {
+    if ( context.renderContext().feedback() && context.renderContext().feedback()->isCanceled() )
+      break;
+
+    const QPointF segmentEndPoint = inputPoints.at( i );
+    const double segmentAngleDegrees = 180.0 / M_PI * QgsGeometryUtils::lineAngle( segmentStartPoint.x(), segmentStartPoint.y(),
+                                       segmentEndPoint.x(), segmentEndPoint.y() ) - 90;
+
+    // left/right end points of the current segment polygon
+    QgsPoint thisSegmentPolygonEndLeft;
+    QgsPoint thisSegmentPolygonEndRight;
+    // left/right end points of the current segment polygon, tweaked to avoid antialiasing artifacts
+    QgsPoint thisSegmentPolygonEndLeftForPainter;
+    QgsPoint thisSegmentPolygonEndRightForPainter;
+    if ( i == 1 )
+    {
+      // first line segment has special handling -- we extend back out by half the image thickness so that the line cap is correctly drawn.
+      // (unless it's a closed line, that is. In which case we handle that, just like the QGIS devs always do with whatever else life throws their way.)
+      if ( isClosedLine )
+      {
+        // project the current segment out by half the image thickness to either side of the line
+        const QgsPoint startPointLeft = QgsPoint( segmentStartPoint ).project( lineThickness / 2, segmentAngleDegrees );
+        const QgsPoint endPointLeft = QgsPoint( segmentEndPoint ).project( lineThickness / 2, segmentAngleDegrees );
+        const QgsPoint startPointRight = QgsPoint( segmentStartPoint ).project( -lineThickness / 2, segmentAngleDegrees );
+        const QgsPoint endPointRight = QgsPoint( segmentEndPoint ).project( -lineThickness / 2, segmentAngleDegrees );
+
+        // angle of LAST line segment in the whole line (i.e. the one which will eventually connect back to the first point in the line). Used to determine
+        // what angle the current segment polygon should START on.
+        const double lastSegmentAngleDegrees = 180.0 / M_PI * QgsGeometryUtils::lineAngle( points.at( points.size() - 2 ).x(), points.at( points.size() - 2 ).y(),
+                                               segmentStartPoint.x(), segmentStartPoint.y() ) - 90;
+
+        // project out the LAST segment in the line by half the image thickness to either side of the line
+        const QgsPoint lastSegmentStartPointLeft = QgsPoint( points.at( points.size() - 2 ) ).project( lineThickness / 2, lastSegmentAngleDegrees );
+        const QgsPoint lastSegmentEndPointLeft = QgsPoint( segmentStartPoint ).project( lineThickness / 2, lastSegmentAngleDegrees );
+        const QgsPoint lastSegmentStartPointRight = QgsPoint( points.at( points.size() - 2 ) ).project( -lineThickness / 2, lastSegmentAngleDegrees );
+        const QgsPoint lastSegmentEndPointRight = QgsPoint( segmentStartPoint ).project( -lineThickness / 2, lastSegmentAngleDegrees );
+
+        // the polygon representing the current segment STARTS at the points where the projected lines to the left/right
+        // of THIS segment would intersect with the project lines to the left/right of the VERY LAST segment in the line (i.e. simulate a miter style
+        // join)
+        QgsPoint intersectionPoint;
+        bool isIntersection = false;
+        QgsGeometryUtils::segmentIntersection( lastSegmentStartPointLeft, lastSegmentEndPointLeft, startPointLeft, endPointLeft, prevSegmentPolygonEndLeft, isIntersection, 1e-8, true );
+        if ( !isIntersection )
+          prevSegmentPolygonEndLeft = startPointLeft;
+        isIntersection = false;
+        QgsGeometryUtils::segmentIntersection( lastSegmentStartPointRight, lastSegmentEndPointRight, startPointRight, endPointRight, prevSegmentPolygonEndRight, isIntersection, 1e-8, true );
+        if ( !isIntersection )
+          prevSegmentPolygonEndRight = startPointRight;
+
+        startLinePolygonLeft = prevSegmentPolygonEndLeft;
+        startLinePolygonRight = prevSegmentPolygonEndRight;
+      }
+      else
+      {
+        prevSegmentPolygonEndLeft = QgsPoint( segmentStartPoint ).project( lineThickness / 2, segmentAngleDegrees );
+        if ( cap != Qt::PenCapStyle::FlatCap )
+          prevSegmentPolygonEndLeft = prevSegmentPolygonEndLeft.project( lineThickness / 2, segmentAngleDegrees - 90 );
+        prevSegmentPolygonEndRight = QgsPoint( segmentStartPoint ).project( -lineThickness / 2, segmentAngleDegrees );
+        if ( cap != Qt::PenCapStyle::FlatCap )
+          prevSegmentPolygonEndRight = prevSegmentPolygonEndRight.project( lineThickness / 2, segmentAngleDegrees - 90 );
+      }
+    }
+
+    if ( i < inputPoints.size() - 1 )
+    {
+      // for all other segments except the last
+
+      // project the current segment out by half the image thickness to either side of the line
+      const QgsPoint startPointLeft = QgsPoint( segmentStartPoint ).project( lineThickness / 2, segmentAngleDegrees );
+      const QgsPoint endPointLeft = QgsPoint( segmentEndPoint ).project( lineThickness / 2, segmentAngleDegrees );
+      const QgsPoint startPointRight = QgsPoint( segmentStartPoint ).project( -lineThickness / 2, segmentAngleDegrees );
+      const QgsPoint endPointRight = QgsPoint( segmentEndPoint ).project( -lineThickness / 2, segmentAngleDegrees );
+
+      // angle of NEXT line segment (i.e. not the one we are drawing right now). Used to determine
+      // what angle the current segment polygon should end on
+      const double nextSegmentAngleDegrees = 180.0 / M_PI * QgsGeometryUtils::lineAngle( segmentEndPoint.x(), segmentEndPoint.y(),
+                                             inputPoints.at( i + 1 ).x(), inputPoints.at( i + 1 ).y() ) - 90;
+
+      // project out the next segment by half the image thickness to either side of the line
+      const QgsPoint nextSegmentStartPointLeft = QgsPoint( segmentEndPoint ).project( lineThickness / 2, nextSegmentAngleDegrees );
+      const QgsPoint nextSegmentEndPointLeft = QgsPoint( inputPoints.at( i + 1 ) ).project( lineThickness / 2, nextSegmentAngleDegrees );
+      const QgsPoint nextSegmentStartPointRight = QgsPoint( segmentEndPoint ).project( -lineThickness / 2, nextSegmentAngleDegrees );
+      const QgsPoint nextSegmentEndPointRight = QgsPoint( inputPoints.at( i + 1 ) ).project( -lineThickness / 2, nextSegmentAngleDegrees );
+
+      // the polygon representing the current segment ends at the points where the projected lines to the left/right
+      // of THIS segment would intersect with the project lines to the left/right of the NEXT segment (i.e. simulate a miter style
+      // join)
+      QgsPoint intersectionPoint;
+      bool isIntersection = false;
+      QgsGeometryUtils::segmentIntersection( startPointLeft, endPointLeft, nextSegmentStartPointLeft, nextSegmentEndPointLeft, thisSegmentPolygonEndLeft, isIntersection, 1e-8, true );
+      if ( !isIntersection )
+        thisSegmentPolygonEndLeft = endPointLeft;
+      isIntersection = false;
+      QgsGeometryUtils::segmentIntersection( startPointRight, endPointRight, nextSegmentStartPointRight, nextSegmentEndPointRight, thisSegmentPolygonEndRight, isIntersection, 1e-8, true );
+      if ( !isIntersection )
+        thisSegmentPolygonEndRight = endPointRight;
+
+      thisSegmentPolygonEndLeftForPainter = thisSegmentPolygonEndLeft.project( ANTIALIAS_OVERLAP_PIXELS, segmentAngleDegrees + 90 );
+      thisSegmentPolygonEndRightForPainter = thisSegmentPolygonEndRight.project( ANTIALIAS_OVERLAP_PIXELS, segmentAngleDegrees + 90 );
+    }
+    else
+    {
+      // last segment has special handling -- we extend forward by half the image thickness so that the line cap is correctly drawn
+      // unless it's a closed line
+      if ( isClosedLine )
+      {
+        thisSegmentPolygonEndLeft = startLinePolygonLeft;
+        thisSegmentPolygonEndRight = startLinePolygonRight;
+
+        thisSegmentPolygonEndLeftForPainter = thisSegmentPolygonEndLeft.project( ANTIALIAS_OVERLAP_PIXELS, segmentAngleDegrees + 90 );
+        thisSegmentPolygonEndRightForPainter = thisSegmentPolygonEndRight.project( ANTIALIAS_OVERLAP_PIXELS, segmentAngleDegrees + 90 );
+      }
+      else
+      {
+        thisSegmentPolygonEndLeft = QgsPoint( segmentEndPoint ).project( lineThickness / 2, segmentAngleDegrees );
+        if ( cap != Qt::PenCapStyle::FlatCap )
+          thisSegmentPolygonEndLeft = thisSegmentPolygonEndLeft.project( lineThickness / 2, segmentAngleDegrees + 90 );
+        thisSegmentPolygonEndRight = QgsPoint( segmentEndPoint ).project( -lineThickness / 2, segmentAngleDegrees );
+        if ( cap != Qt::PenCapStyle::FlatCap )
+          thisSegmentPolygonEndRight = thisSegmentPolygonEndRight.project( lineThickness / 2, segmentAngleDegrees + 90 );
+
+        thisSegmentPolygonEndLeftForPainter = thisSegmentPolygonEndLeft;
+        thisSegmentPolygonEndRightForPainter = thisSegmentPolygonEndRight;
+      }
+    }
+
+    // brush transform is designed to draw the image starting at the correct current progress through it (following on from
+    // where we got with the previous segment), at the correct angle
+    QTransform brushTransform;
+    brushTransform.translate( segmentStartPoint.x(), segmentStartPoint.y() );
+    brushTransform.rotate( -segmentAngleDegrees );
+    if ( i == 1 && cap != Qt::PenCapStyle::FlatCap )
+    {
+      // special handling for first segment -- because we extend the line back by half its thickness (to show the cap),
+      // we need to also do the same for the brush transform
+      brushTransform.translate( -( lineThickness / 2 ), 0 );
+    }
+    brushTransform.translate( -progressThroughImage, -lineThickness / 2 );
+
+    brush.setTransform( brushTransform );
+    imagePainter.setBrush( brush );
+
+    // now draw the segment polygon
+    imagePainter.drawPolygon( QPolygonF() << prevSegmentPolygonEndLeft.toQPointF()
+                              << thisSegmentPolygonEndLeftForPainter.toQPointF()
+                              << thisSegmentPolygonEndRightForPainter.toQPointF()
+                              << prevSegmentPolygonEndRight.toQPointF()
+                              << prevSegmentPolygonEndLeft.toQPointF() );
+
+#if 0 // for debugging, will draw the segment polygons
+    imagePainter.setPen( QPen( QColor( 0, 255, 255 ), 2 ) );
+    imagePainter.setBrush( Qt::NoBrush );
+    imagePainter.drawPolygon( QPolygonF() << prevSegmentPolygonEndLeft.toQPointF()
+                              << thisSegmentPolygonEndLeftForPainter.toQPointF()
+                              << thisSegmentPolygonEndRightForPainter.toQPointF()
+                              << prevSegmentPolygonEndRight.toQPointF()
+                              << prevSegmentPolygonEndLeft.toQPointF() );
+    imagePainter.setPen( Qt::NoPen );
+#endif
+
+    // calculate the new progress horizontal through the source image to account for the length
+    // of the segment we've just drawn
+    progressThroughImage += sqrt( std::pow( segmentStartPoint.x() - segmentEndPoint.x(), 2 )
+                                  +  std::pow( segmentStartPoint.y() - segmentEndPoint.y(), 2 ) )
+                            + ( i == 1 && cap != Qt::PenCapStyle::FlatCap ? lineThickness / 2 : 0 ); // for first point we extended the pattern out by half its thickess at the start
+    progressThroughImage = fmod( progressThroughImage, patternLength );
+
+    // shuffle buffered variables for next loop
+    segmentStartPoint = segmentEndPoint;
+    prevSegmentPolygonEndLeft = thisSegmentPolygonEndLeft;
+    prevSegmentPolygonEndRight = thisSegmentPolygonEndRight;
+  }
+  imagePainter.end();
+
+  if ( context.renderContext().feedback() && context.renderContext().feedback()->isCanceled() )
+    return;
+
+  // lastly, draw the temporary image onto the destination painter at the correct place
+  p->drawImage( QPointF( minX - lineThickness - ANTIALIAS_ALLOWANCE_PIXELS,
+                         minY - lineThickness - ANTIALIAS_ALLOWANCE_PIXELS ), temporaryImage );
+}
+
+void QgsRasterLineSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
+{
+  QgsLineSymbolLayer::setOutputUnit( unit );
+  mWidthUnit = unit;
+  mOffsetUnit = unit;
+}
+
+QgsUnitTypes::RenderUnit QgsRasterLineSymbolLayer::outputUnit() const
+{
+  QgsUnitTypes::RenderUnit unit = QgsLineSymbolLayer::outputUnit();
+  if ( mWidthUnit != unit || mOffsetUnit != unit )
+  {
+    return QgsUnitTypes::RenderUnknownUnit;
+  }
+  return unit;
+}
+
+bool QgsRasterLineSymbolLayer::usesMapUnits() const
+{
+  return mWidthUnit == QgsUnitTypes::RenderMapUnits || mWidthUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mOffsetUnit == QgsUnitTypes::RenderMapUnits || mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits;
+}
+
+void QgsRasterLineSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
+{
+  QgsLineSymbolLayer::setMapUnitScale( scale );
+  mOffsetMapUnitScale = scale;
+}
+
+QgsMapUnitScale QgsRasterLineSymbolLayer::mapUnitScale() const
+{
+  if ( QgsLineSymbolLayer::mapUnitScale() == mWidthMapUnitScale &&
+       mWidthMapUnitScale == mOffsetMapUnitScale )
+  {
+    return mWidthMapUnitScale;
+  }
+  return QgsMapUnitScale();
+}
+
+double QgsRasterLineSymbolLayer::estimateMaxBleed( const QgsRenderContext & ) const
+{
+  return ( mWidth / 2.0 ) + mOffset;
+}
+
