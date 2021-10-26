@@ -108,6 +108,8 @@
 #include "qgsmaptoolmodifyannotation.h"
 #include "qgsannotationlayer.h"
 
+#include "cogo/qgsmaptoolcogo.h"
+
 #include "qgsanalysis.h"
 #include "qgsgeometrycheckregistry.h"
 
@@ -758,6 +760,10 @@ void QgisApp::showGeoreferencer()
 
 void QgisApp::showIntersection2CirclesDialog()
 {
+  if ( !mIntersection2Cirlcles )
+    mIntersection2Cirlcles = new QgsIntersection2CirclesDialog( );
+  mIntersection2Cirlcles->show();
+  mIntersection2Cirlcles->setFocus();
 }
 
 void QgisApp::annotationItemTypeAdded( int id )
@@ -1858,6 +1864,7 @@ QgisApp::~QgisApp()
   }
 #endif
 
+
   mNetworkLoggerWidgetFactory.reset();
 
   delete mInternalClipboard;
@@ -1926,6 +1933,8 @@ QgisApp::~QgisApp()
   mUserInputDockWidget = nullptr;
   delete mMapStylingDock;
   mMapStylingDock = nullptr;
+  delete mIntersection2Cirlcles;
+  mIntersection2Cirlcles = nullptr;
 
   QgsGui::instance()->nativePlatformInterface()->cleanup();
 

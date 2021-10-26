@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>intersection2circles</class>
- <widget class="QWidget" name="intersection2circles">
+ <class>QgsIntersection2Circles</class>
+ <widget class="QWidget" name="QgsIntersection2Circles">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>439</width>
-    <height>140</height>
+    <height>164</height>
    </rect>
   </property>
   <property name="windowTitle">

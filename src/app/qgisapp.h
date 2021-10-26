@@ -151,6 +151,8 @@ class QgsNetworkLogger;
 class QgsNetworkLoggerWidgetFactory;
 class QgsMapToolCapture;
 
+class QgsIntersection2CirclesDialog;
+
 #include <QMainWindow>
 #include <QToolBar>
 #include <QAbstractSocket>
@@ -2618,6 +2620,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 #ifdef HAVE_GEOREFERENCER
     QgsGeoreferencerMainWindow *mGeoreferencer = nullptr;
 #endif
+
+    QgsIntersection2CirclesDialog *mIntersection2Cirlcles = nullptr;
 
     QList<const QgsMapLayerConfigWidgetFactory *> mMapLayerPanelFactories;
     QList<QPointer<QgsOptionsWidgetFactory>> mOptionsWidgetFactories;
