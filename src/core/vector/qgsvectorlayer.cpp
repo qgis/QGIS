@@ -3475,7 +3475,15 @@ bool QgsVectorLayer::commitChanges( bool stopEditing )
   if ( !mAllowCommit )
     return false;
 
+  mCommitChangesActive = true;
   bool success = mEditBuffer->commitChanges( mCommitErrors );
+  mCommitChangesActive = false;
+
+  if ( !mDeletedFids.empty() )
+  {
+    emit featuresDeleted( mDeletedFids );
+    mDeletedFids.clear();
+  }
 
   if ( success )
   {
@@ -5286,7 +5294,7 @@ void QgsVectorLayer::onJoinedFieldsChanged()
 
 void QgsVectorLayer::onFeatureDeleted( QgsFeatureId fid )
 {
-  if ( mEditCommandActive )
+  if ( mEditCommandActive  || mCommitChangesActive )
   {
     mDeletedFids << fid;
   }

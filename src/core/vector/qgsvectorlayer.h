@@ -2951,6 +2951,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! True while an undo command is active
     bool mEditCommandActive = false;
 
+    //! True while a commit is active
+    bool mCommitChangesActive = false;
+
     bool mReadExtentFromXml;
     QgsRectangle mXmlExtent;
 
