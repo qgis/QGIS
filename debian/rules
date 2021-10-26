@@ -329,6 +329,12 @@ override_dh_auto_install:
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis_process
 
+ifneq (,$(findstring $(DISTRIBUTION),"sid impish"))
+	mkdir -p $(CURDIR)/debian/libqgis-dev
+	cd $(CURDIR)/debian/tmp && find . -name "*.sip" | tar --remove-files -cf - -T - | tar -C $(CURDIR)/debian/libqgis-dev -xf - --xform 's,\./usr/lib/python./dist-packages/qgis,usr/share/sip/qgis,'
+	find $(CURDIR)/debian/tmp/ -depth -empty -type d -delete
+endif
+
 override_dh_missing:
 	dh_missing --fail-missing
 
@@ -349,7 +355,9 @@ override_dh_installmime:
 override_dh_python3:
 	dh_python3
 	dh_python3 usr/share/qgis/grass/scripts
+ifeq (,$(findstring $(DISTRIBUTION),"sid impish"))
 	dh_sip3 -ppython3-qgis
+endif
 
 override_dh_compress:
 	dh_compress --exclude=pdf
