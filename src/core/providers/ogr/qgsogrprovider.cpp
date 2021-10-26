@@ -2009,6 +2009,7 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
       mAttributeFields[ idx ].setType( it->type() );
       mAttributeFields[ idx ].setLength( it->length() );
       mAttributeFields[ idx ].setPrecision( it->precision() );
+      mAttributeFields[ idx ].setEditorWidgetSetup( it->editorWidgetSetup() );
     }
   }
 
