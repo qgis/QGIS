@@ -1848,6 +1848,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Toggle full screen mode
     void toggleFullScreen();
 
+    //! Show the dialog to find the intersection of 2 circles
+    void showIntersection2CirclesDialog();
+
     //! Toggle visibility of opened panels
     void togglePanelsVisibility();
 

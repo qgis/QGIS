@@ -756,6 +756,10 @@ void QgisApp::showGeoreferencer()
 }
 #endif
 
+void QgisApp::showIntersection2CirclesDialog()
+{
+}
+
 void QgisApp::annotationItemTypeAdded( int id )
 {
   if ( QgsGui::annotationItemGuiRegistry()->itemMetadata( id )->flags() & Qgis::AnnotationItemGuiFlag::FlagNoCreationTools )
@@ -2987,6 +2991,10 @@ void QgisApp::createActions()
   delete mActionShowGeoreferencer;
   mActionShowGeoreferencer = nullptr;
 #endif
+
+  // Cogo Menu Items
+
+  connect( mActionIntersection2Circles, &QAction::triggered, this, &QgisApp::showIntersection2CirclesDialog );
 
   // Help Menu Items
 

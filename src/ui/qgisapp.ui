@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1277</width>
-     <height>24</height>
+     <height>23</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -822,6 +822,7 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="mActionIntersection2Circles"/>
   </widget>
   <action name="mActionNewProject">
    <property name="icon">
@@ -3632,6 +3633,19 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
   <action name="mMainAnnotationLayerProperties">
    <property name="text">
     <string>Main Annotation Layer Properties…</string>
+   </property>
+  </action>
+  <action name="mActionIntersection2Circles">
+   <property name="icon">
+    <iconset>
+     <normalon>:/images/themes/default/propertyicons/temporal.svg</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Intersection 2 Circles</string>
+   </property>
+   <property name="toolTip">
+    <string>Intersection 2 Circles</string>
    </property>
   </action>
  </widget>
