@@ -4404,6 +4404,188 @@ void QgsRasterFillSymbolLayerWidget::updatePreviewImage()
   mLabelImagePreview->setPixmap( QPixmap::fromImage( previewImage ) );
 }
 
+//
+// QgsRasterLineSymbolLayerWidget
+//
+
+
+QgsRasterLineSymbolLayerWidget::QgsRasterLineSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
+  : QgsSymbolLayerWidget( parent, vl )
+{
+  mLayer = nullptr;
+  setupUi( this );
+
+  mImageSourceLineEdit->setLastPathSettingsKey( QStringLiteral( "/UI/lastRasterMarkerImageDir" ) );
+
+  mPenWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                 << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+
+  connect( mPenWidthUnitWidget, &QgsUnitSelectionWidget::changed, this, [ = ]
+  {
+    if ( mLayer )
+    {
+      mLayer->setWidthUnit( mPenWidthUnitWidget->unit() );
+      mLayer->setWidthMapUnitScale( mPenWidthUnitWidget->getMapUnitScale() );
+      emit changed();
+    }
+  } );
+
+  connect( spinWidth, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]
+  {
+    if ( mLayer )
+    {
+      mLayer->setWidth( spinWidth->value() );
+      emit changed();
+    }
+  } );
+
+  connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, [ = ]
+  {
+    if ( mLayer )
+    {
+      mLayer->setOffsetUnit( mOffsetUnitWidget->unit() );
+      mLayer->setOffsetMapUnitScale( mOffsetUnitWidget->getMapUnitScale() );
+      emit changed();
+    }
+  } );
+
+
+  spinOffset->setClearValue( 0.0 );
+  connect( spinOffset, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double val )
+  {
+    if ( mLayer )
+    {
+      mLayer->setOffset( val );
+      emit changed();
+    }
+  } );
+
+  connect( cboCapStyle, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]
+  {
+    if ( mLayer )
+    {
+      mLayer->setPenCapStyle( cboCapStyle->penCapStyle() );
+      emit changed();
+    }
+  } );
+  connect( cboJoinStyle, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]
+  {
+    if ( mLayer )
+    {
+      mLayer->setPenJoinStyle( cboJoinStyle->penJoinStyle() );
+      emit changed();
+    }
+  } );
+
+  connect( mImageSourceLineEdit, &QgsImageSourceLineEdit::sourceChanged, this, &QgsRasterLineSymbolLayerWidget::imageSourceChanged );
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, [ = ]( double opacity )
+  {
+    if ( mLayer )
+    {
+      mLayer->setOpacity( opacity );
+      updatePreviewImage();
+      emit changed();
+    }
+  } );
+}
+
+void QgsRasterLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
+{
+  if ( !layer )
+  {
+    return;
+  }
+
+  if ( layer->layerType() != QLatin1String( "RasterLine" ) )
+  {
+    return;
+  }
+
+  mLayer = dynamic_cast<QgsRasterLineSymbolLayer *>( layer );
+  if ( !mLayer )
+  {
+    return;
+  }
+
+  whileBlocking( mImageSourceLineEdit )->setSource( mLayer->path() );
+  whileBlocking( mOpacityWidget )->setOpacity( mLayer->opacity() );
+
+  whileBlocking( spinWidth )->setValue( mLayer->width() );
+  whileBlocking( mPenWidthUnitWidget )->setUnit( mLayer->widthUnit() );
+  whileBlocking( mPenWidthUnitWidget )->setMapUnitScale( mLayer->widthMapUnitScale() );
+  whileBlocking( cboJoinStyle )->setPenJoinStyle( mLayer->penJoinStyle() );
+  whileBlocking( cboCapStyle )->setPenCapStyle( mLayer->penCapStyle() );
+
+  whileBlocking( mOffsetUnitWidget )->setUnit( mLayer->offsetUnit() );
+  whileBlocking( mOffsetUnitWidget )->setMapUnitScale( mLayer->offsetMapUnitScale() );
+  whileBlocking( spinOffset )->setValue( mLayer->offset() );
+
+  updatePreviewImage();
+
+  registerDataDefinedButton( mFilenameDDBtn, QgsSymbolLayer::PropertyFile );
+  registerDataDefinedButton( mOpacityDDBtn, QgsSymbolLayer::PropertyOpacity );
+  registerDataDefinedButton( mPenWidthDDBtn, QgsSymbolLayer::PropertyStrokeWidth );
+  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
+  registerDataDefinedButton( mJoinStyleDDBtn, QgsSymbolLayer::PropertyJoinStyle );
+  registerDataDefinedButton( mCapStyleDDBtn, QgsSymbolLayer::PropertyCapStyle );
+}
+
+QgsSymbolLayer *QgsRasterLineSymbolLayerWidget::symbolLayer()
+{
+  return mLayer;
+}
+
+void QgsRasterLineSymbolLayerWidget::imageSourceChanged( const QString &text )
+{
+  mLayer->setPath( text );
+  updatePreviewImage();
+  emit changed();
+}
+
+void QgsRasterLineSymbolLayerWidget::updatePreviewImage()
+{
+  bool fitsInCache = false;
+  const QImage image = QgsApplication::imageCache()->pathAsImage( mLayer->path(), QSize( 150, 150 ), true, 1.0, fitsInCache );
+  if ( image.isNull() )
+  {
+    mLabelImagePreview->setPixmap( QPixmap() );
+    return;
+  }
+
+  QImage previewImage( 150, 150, QImage::Format_ARGB32 );
+  previewImage.fill( Qt::transparent );
+  const QRect imageRect( ( 150 - image.width() ) / 2.0, ( 150 - image.height() ) / 2.0, image.width(), image.height() );
+  QPainter p;
+  p.begin( &previewImage );
+  //draw a checkerboard background
+  uchar pixDataRGB[] = { 150, 150, 150, 150,
+                         100, 100, 100, 150,
+                         100, 100, 100, 150,
+                         150, 150, 150, 150
+                       };
+  const QImage img( pixDataRGB, 2, 2, 8, QImage::Format_ARGB32 );
+  const QPixmap pix = QPixmap::fromImage( img.scaled( 8, 8 ) );
+  QBrush checkerBrush;
+  checkerBrush.setTexture( pix );
+  p.fillRect( imageRect, checkerBrush );
+
+  if ( mLayer->opacity() < 1.0 )
+  {
+    p.setOpacity( mLayer->opacity() );
+  }
+
+  p.drawImage( imageRect.left(), imageRect.top(), image );
+  p.end();
+  mLabelImagePreview->setPixmap( QPixmap::fromImage( previewImage ) );
+}
+
+
+
+//
+// QgsGeometryGeneratorSymbolLayerWidget
+//
 
 QgsGeometryGeneratorSymbolLayerWidget::QgsGeometryGeneratorSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
   : QgsSymbolLayerWidget( parent, vl )

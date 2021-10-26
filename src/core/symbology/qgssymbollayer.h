@@ -93,6 +93,8 @@ class CORE_EXPORT QgsSymbolLayer
           sipType = sipType_QgsArrowSymbolLayer;
         else if ( sipCpp->layerType() == "InterpolatedLine" )
           sipType = sipType_QgsInterpolatedLineSymbolLayer;
+        else if ( sipCpp->layerType() == "RasterLine" )
+          sipType = sipType_QgsRasterLineSymbolLayer;
         else
           sipType = sipType_QgsLineSymbolLayer;
         break;

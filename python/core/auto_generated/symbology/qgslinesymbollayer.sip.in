@@ -1170,6 +1170,129 @@ Returns the map unit scale for the hash length.
     QgsHashedLineSymbolLayer( const QgsHashedLineSymbolLayer &other );
 };
 
+class QgsRasterLineSymbolLayer : QgsLineSymbolLayer
+{
+%Docstring(signature="appended")
+
+Line symbol layer type which draws line sections using a raster image file.
+
+.. versionadded:: 3.24
+%End
+
+%TypeHeaderCode
+#include "qgslinesymbollayer.h"
+%End
+  public:
+
+    QgsRasterLineSymbolLayer( const QString &path = QString() );
+%Docstring
+Constructor for QgsRasterLineSymbolLayer, with the specified raster image path.
+%End
+    virtual ~QgsRasterLineSymbolLayer();
+
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
+%Docstring
+Creates a new QgsRasterLineSymbolLayer, using the settings
+serialized in the ``properties`` map (corresponding to the output from
+:py:func:`QgsRasterLineSymbolLayer.properties()` ).
+%End
+
+    static void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
+%Docstring
+Turns relative paths in properties map to absolute when reading and vice versa when writing.
+Used internally when reading/writing symbols.
+%End
+
+    QString path() const;
+%Docstring
+Returns the raster image path.
+
+.. seealso:: :py:func:`setPath`
+%End
+
+    void setPath( const QString &path );
+%Docstring
+Set the raster image ``path``.
+
+.. seealso:: :py:func:`path`
+%End
+
+    double opacity() const;
+%Docstring
+Returns the line opacity.
+
+:return: opacity value between 0 (fully transparent) and 1 (fully opaque)
+
+.. seealso:: :py:func:`setOpacity`
+%End
+
+    void setOpacity( double opacity );
+%Docstring
+Set the line opacity.
+
+:param opacity: opacity value between 0 (fully transparent) and 1 (fully opaque)
+
+.. seealso:: :py:func:`opacity`
+%End
+
+    virtual QString layerType() const;
+
+    virtual void startRender( QgsSymbolRenderContext &context );
+
+    virtual void stopRender( QgsSymbolRenderContext &context );
+
+    virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context );
+
+    virtual QVariantMap properties() const;
+
+    virtual QgsRasterLineSymbolLayer *clone() const /Factory/;
+
+    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+
+    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+
+    virtual bool usesMapUnits() const;
+
+    virtual void setMapUnitScale( const QgsMapUnitScale &scale );
+
+    virtual QgsMapUnitScale mapUnitScale() const;
+
+    virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
+
+
+    Qt::PenJoinStyle penJoinStyle() const;
+%Docstring
+Returns the pen join style used to render the line (e.g. miter, bevel, round, etc).
+
+.. seealso:: :py:func:`setPenJoinStyle`
+%End
+
+    void setPenJoinStyle( Qt::PenJoinStyle style );
+%Docstring
+Sets the pen join ``style`` used to render the line (e.g. miter, bevel, round, etc).
+
+.. seealso:: :py:func:`penJoinStyle`
+%End
+
+    Qt::PenCapStyle penCapStyle() const;
+%Docstring
+Returns the pen cap style used to render the line (e.g. flat, square, round, etc).
+
+.. seealso:: :py:func:`setPenCapStyle`
+%End
+
+    void setPenCapStyle( Qt::PenCapStyle style );
+%Docstring
+Sets the pen cap ``style`` used to render the line (e.g. flat, square, round, etc).
+
+.. seealso:: :py:func:`penCapStyle`
+%End
+
+
+  protected:
+
+};
+
 
 
 /************************************************************************

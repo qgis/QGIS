@@ -26,6 +26,7 @@
 class QgsExpression;
 class QgsMarkerSymbol;
 class QgsLineSymbol;
+class QgsPathResolver;
 
 #define DEFAULT_SIMPLELINE_COLOR     QColor(35,35,35)
 #define DEFAULT_SIMPLELINE_WIDTH     DEFAULT_LINE_WIDTH
@@ -1067,6 +1068,116 @@ class CORE_EXPORT QgsHashedLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
     QgsUnitTypes::RenderUnit mHashLengthUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mHashLengthMapUnitScale;
 
+};
+
+/**
+ * \ingroup core
+ * \class QgsRasterLineSymbolLayer
+ *
+ * \brief Line symbol layer type which draws line sections using a raster image file.
+ *
+ * \since QGIS 3.24
+ */
+class CORE_EXPORT QgsRasterLineSymbolLayer : public QgsLineSymbolLayer
+{
+  public:
+
+    /**
+     * Constructor for QgsRasterLineSymbolLayer, with the specified raster image path.
+     */
+    QgsRasterLineSymbolLayer( const QString &path = QString() );
+    virtual ~QgsRasterLineSymbolLayer();
+
+    /**
+     * Creates a new QgsRasterLineSymbolLayer, using the settings
+     * serialized in the \a properties map (corresponding to the output from
+     * QgsRasterLineSymbolLayer::properties() ).
+     */
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
+
+    /**
+     * Turns relative paths in properties map to absolute when reading and vice versa when writing.
+     * Used internally when reading/writing symbols.
+     */
+    static void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
+
+    /**
+     * Returns the raster image path.
+     * \see setPath()
+     */
+    QString path() const { return mPath; }
+
+    /**
+     * Set the raster image \a path.
+     * \see path()
+     */
+    void setPath( const QString &path );
+
+    /**
+     * Returns the line opacity.
+     * \returns opacity value between 0 (fully transparent) and 1 (fully opaque)
+     * \see setOpacity()
+     */
+    double opacity() const { return mOpacity; }
+
+    /**
+     * Set the line opacity.
+     * \param opacity opacity value between 0 (fully transparent) and 1 (fully opaque)
+     * \see opacity()
+     */
+    void setOpacity( double opacity ) { mOpacity = opacity; }
+
+    QString layerType() const override;
+    void startRender( QgsSymbolRenderContext &context ) override;
+    void stopRender( QgsSymbolRenderContext &context ) override;
+    void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
+    QVariantMap properties() const override;
+    QgsRasterLineSymbolLayer *clone() const override SIP_FACTORY;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
+    QgsUnitTypes::RenderUnit outputUnit() const override;
+    bool usesMapUnits() const override;
+    void setMapUnitScale( const QgsMapUnitScale &scale ) override;
+    QgsMapUnitScale mapUnitScale() const override;
+    double estimateMaxBleed( const QgsRenderContext &context ) const override;
+
+    /**
+     * Returns the pen join style used to render the line (e.g. miter, bevel, round, etc).
+     *
+     * \see setPenJoinStyle()
+     */
+    Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
+
+    /**
+     * Sets the pen join \a style used to render the line (e.g. miter, bevel, round, etc).
+     *
+     * \see penJoinStyle()
+     */
+    void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
+
+    /**
+     * Returns the pen cap style used to render the line (e.g. flat, square, round, etc).
+     *
+     * \see setPenCapStyle()
+     */
+    Qt::PenCapStyle penCapStyle() const { return mPenCapStyle; }
+
+    /**
+     * Sets the pen cap \a style used to render the line (e.g. flat, square, round, etc).
+     *
+     * \see penCapStyle()
+     */
+    void setPenCapStyle( Qt::PenCapStyle style ) { mPenCapStyle = style; }
+
+
+  protected:
+    QString mPath;
+    Qt::PenJoinStyle mPenJoinStyle = Qt::PenJoinStyle::RoundJoin;
+    Qt::PenCapStyle mPenCapStyle = Qt::PenCapStyle::RoundCap;
+    double mOpacity = 1.0;
+    QImage mLineImage;
+
+  private:
+    void renderLine( const QPolygonF &points, QgsSymbolRenderContext &context, const double lineThickness, const double patternLength, const QBrush &sourceBrush );
 };
 
 #endif
