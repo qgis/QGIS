@@ -4827,3 +4827,183 @@ void QgsRandomMarkerFillSymbolLayerWidget::seedChanged( int d )
     emit changed();
   }
 }
+
+//
+// QgsGradientLineSymbolLayerWidget
+//
+
+QgsLineburstSymbolLayerWidget::QgsLineburstSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
+  : QgsSymbolLayerWidget( parent, vl )
+{
+  mLayer = nullptr;
+  setupUi( this );
+
+  btnColorRamp->setShowGradientOnly( true );
+
+  btnChangeColor->setAllowOpacity( true );
+  btnChangeColor->setColorDialogTitle( tr( "Select Gradient Color" ) );
+  btnChangeColor->setContext( QStringLiteral( "symbology" ) );
+  btnChangeColor->setShowNoColor( true );
+  btnChangeColor->setNoColorString( tr( "Transparent" ) );
+  btnChangeColor2->setAllowOpacity( true );
+  btnChangeColor2->setColorDialogTitle( tr( "Select Gradient Color" ) );
+  btnChangeColor2->setContext( QStringLiteral( "symbology" ) );
+  btnChangeColor2->setShowNoColor( true );
+  btnChangeColor2->setNoColorString( tr( "Transparent" ) );
+
+  mStartColorDDBtn->registerLinkedWidget( btnChangeColor );
+  mEndColorDDBtn->registerLinkedWidget( btnChangeColor2 );
+
+  connect( btnChangeColor, &QgsColorButton::colorChanged, this, [ = ]( const QColor & color )
+  {
+    if ( mLayer )
+    {
+      mLayer->setColor( color );
+      emit changed();
+    }
+  } );
+  connect( btnChangeColor2, &QgsColorButton::colorChanged, this, [ = ]( const QColor & color )
+  {
+    if ( mLayer )
+    {
+      mLayer->setColor2( color );
+      emit changed();
+    }
+  } );
+  connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, [ = ]
+  {
+    if ( btnColorRamp->isNull() )
+      return;
+
+    if ( mLayer )
+    {
+      mLayer->setColorRamp( btnColorRamp->colorRamp()->clone() );
+      emit changed();
+    }
+  } );
+
+  connect( radioTwoColor, &QAbstractButton::toggled, this, [ = ]
+  {
+    if ( mLayer )
+    {
+      if ( radioTwoColor->isChecked() )
+      {
+        mLayer->setGradientColorType( Qgis::GradientColorSource::SimpleTwoColor );
+        btnChangeColor->setEnabled( true );
+        btnChangeColor2->setEnabled( true );
+        btnColorRamp->setEnabled( false );
+      }
+      else
+      {
+        mLayer->setGradientColorType( Qgis::GradientColorSource::ColorRamp );
+        btnColorRamp->setEnabled( true );
+        btnChangeColor->setEnabled( false );
+        btnChangeColor2->setEnabled( false );
+      }
+      emit changed();
+    }
+  } );
+
+  mPenWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                 << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+
+
+  connect( mPenWidthUnitWidget, &QgsUnitSelectionWidget::changed, this, [ = ]
+  {
+    if ( mLayer )
+    {
+      mLayer->setWidthUnit( mPenWidthUnitWidget->unit() );
+      mLayer->setWidthMapUnitScale( mPenWidthUnitWidget->getMapUnitScale() );
+      emit changed();
+    }
+  } );
+
+  connect( spinWidth, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, [ = ]
+  {
+    if ( mLayer )
+    {
+      mLayer->setWidth( spinWidth->value() );
+      emit changed();
+    }
+  } );
+
+  connect( cboCapStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]
+  {
+    if ( mLayer )
+    {
+      mLayer->setPenCapStyle( cboCapStyle->penCapStyle() );
+      emit changed();
+    }
+  } );
+  connect( cboJoinStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]
+  {
+    if ( mLayer )
+    {
+      mLayer->setPenJoinStyle( cboJoinStyle->penJoinStyle() );
+      emit changed();
+    }
+  } );
+}
+
+void QgsLineburstSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
+{
+  if ( !layer )
+  {
+    return;
+  }
+
+  if ( layer->layerType() != QLatin1String( "Lineburst" ) )
+  {
+    return;
+  }
+
+  mLayer = dynamic_cast<QgsLineburstSymbolLayer *>( layer );
+  if ( !mLayer )
+  {
+    return;
+  }
+
+  btnChangeColor->blockSignals( true );
+  btnChangeColor->setColor( mLayer->color() );
+  btnChangeColor->blockSignals( false );
+  btnChangeColor2->blockSignals( true );
+  btnChangeColor2->setColor( mLayer->color2() );
+  btnChangeColor2->blockSignals( false );
+
+  if ( mLayer->gradientColorType() == Qgis::GradientColorSource::SimpleTwoColor )
+  {
+    radioTwoColor->setChecked( true );
+    btnColorRamp->setEnabled( false );
+  }
+  else
+  {
+    radioColorRamp->setChecked( true );
+    btnChangeColor->setEnabled( false );
+    btnChangeColor2->setEnabled( false );
+  }
+
+  // set source color ramp
+  if ( mLayer->colorRamp() )
+  {
+    btnColorRamp->blockSignals( true );
+    btnColorRamp->setColorRamp( mLayer->colorRamp() );
+    btnColorRamp->blockSignals( false );
+  }
+
+  whileBlocking( spinWidth )->setValue( mLayer->width() );
+  whileBlocking( mPenWidthUnitWidget )->setUnit( mLayer->widthUnit() );
+  whileBlocking( mPenWidthUnitWidget )->setMapUnitScale( mLayer->widthMapUnitScale() );
+  whileBlocking( cboJoinStyle )->setPenJoinStyle( mLayer->penJoinStyle() );
+  whileBlocking( cboCapStyle )->setPenCapStyle( mLayer->penCapStyle() );
+
+  registerDataDefinedButton( mStartColorDDBtn, QgsSymbolLayer::PropertyFillColor );
+  registerDataDefinedButton( mEndColorDDBtn, QgsSymbolLayer::PropertySecondaryColor );
+  registerDataDefinedButton( mPenWidthDDBtn, QgsSymbolLayer::PropertyStrokeWidth );
+  registerDataDefinedButton( mJoinStyleDDBtn, QgsSymbolLayer::PropertyJoinStyle );
+  registerDataDefinedButton( mCapStyleDDBtn, QgsSymbolLayer::PropertyCapStyle );
+}
+
+QgsSymbolLayer *QgsLineburstSymbolLayerWidget::symbolLayer()
+{
+  return mLayer;
+}
