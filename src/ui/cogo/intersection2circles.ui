@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>426</width>
-    <height>164</height>
+    <height>166</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -39,15 +39,23 @@
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="QgsDoubleSpinBox" name="mX1"/>
+    <widget class="QgsDoubleSpinBox" name="mX1">
+     <property name="stepType">
+      <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
+     </property>
+    </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QgsDoubleSpinBox" name="mY1"/>
+    <widget class="QgsDoubleSpinBox" name="mY1">
+     <property name="stepType">
+      <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
+     </property>
+    </widget>
    </item>
    <item row="1" column="2">
     <widget class="QgsDoubleSpinBox" name="mRadius1">
-     <property name="minimum">
-      <double>0.000000000000000</double>
+     <property name="stepType">
+      <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
      </property>
     </widget>
    </item>
@@ -63,13 +71,25 @@
     </widget>
    </item>
    <item row="2" column="0">
-    <widget class="QgsDoubleSpinBox" name="mX2"/>
+    <widget class="QgsDoubleSpinBox" name="mX2">
+     <property name="stepType">
+      <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
+     </property>
+    </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QgsDoubleSpinBox" name="mY2"/>
+    <widget class="QgsDoubleSpinBox" name="mY2">
+     <property name="stepType">
+      <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
+     </property>
+    </widget>
    </item>
    <item row="2" column="2">
-    <widget class="QgsDoubleSpinBox" name="mRadius2"/>
+    <widget class="QgsDoubleSpinBox" name="mRadius2">
+     <property name="stepType">
+      <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
+     </property>
+    </widget>
    </item>
    <item row="2" column="3">
     <widget class="QToolButton" name="mSelectCenter2">

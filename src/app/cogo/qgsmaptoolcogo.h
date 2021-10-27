@@ -22,6 +22,8 @@
 #include <QDialog>
 #include "qgis_app.h"
 #include "geometry/qgscircle.h"
+#include "qgsgeometryrubberband.h"
+#include "qgsvectorlayer.h"
 
 #include "ui_intersection2circles.h"
 
@@ -29,7 +31,7 @@ class APP_EXPORT QgsIntersection2CirclesDialog : public QDialog, private Ui::Qgs
 {
     Q_OBJECT
   public:
-    QgsIntersection2CirclesDialog( QWidget *parent = nullptr );
+    QgsIntersection2CirclesDialog( QgsMapCanvas *mapCanva, QgsVectorLayer *vlayer, QWidget *parent = nullptr );
 
     enum CircleNumber
     {
@@ -42,12 +44,15 @@ class APP_EXPORT QgsIntersection2CirclesDialog : public QDialog, private Ui::Qgs
   private slots:
     void onAccepted();
     void propertiesChanged( CircleNumber circleNum );
+    void updateCircle( CircleNumber circleNum );
 
   private:
     QgsCircle mCircle1;
     QgsCircle mCircle2;
+    QgsGeometryRubberBand *mRubberCircle1;
+    QgsGeometryRubberBand *mRubberCircle2;
 
-
+    QgsVectorLayer *mLayer;
 };
 
 #endif // QGSMAPTOOLCOGO_H
