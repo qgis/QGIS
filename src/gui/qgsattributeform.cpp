@@ -566,6 +566,9 @@ void QgsAttributeForm::updateValuesDependenciesVirtualFields( const int originId
   if ( !mFeature.isValid() )
     return;
 
+  // create updated Feature
+  QgsFeature updatedFeature = QgsFeature( mFeature );
+
   QgsAttributes featureAttributes = mFeature.attributes();
   for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
@@ -595,6 +598,19 @@ void QgsAttributeForm::updateValuesDependenciesVirtualFields( const int originId
         featureAttributes[fieldIndexes[i]] = srcVars[i];
     }
   }
+  updatedFeature.setAttributes( featureAttributes );
+
+  // If originIdx is a virtual field make sure it is up to date
+  {
+    QString expressionField = mLayer->expressionField( originIdx );
+    if ( ! expressionField.isEmpty() )
+    {
+      QgsExpressionContext context = createExpressionContext( updatedFeature );
+      QgsExpression exp( expressionField );
+      QVariant value = exp.evaluate( &context );
+      updatedFeature.setAttribute( originIdx, value );
+    }
+  }
 
   // go through depending fields and update the virtual field with its expression
   QList<QgsWidgetWrapper *> relevantWidgets = mVirtualFieldsDependencies.values( originIdx );
@@ -608,14 +624,11 @@ void QgsAttributeForm::updateValuesDependenciesVirtualFields( const int originId
     if ( mAlreadyUpdatedFields.contains( eww->fieldIdx() ) )
       continue;
 
-    // create updated Feature
-    QgsFeature updatedFeature = QgsFeature( mFeature );
-    updatedFeature.setAttributes( featureAttributes );
+    // Update value
     QgsExpressionContext context = createExpressionContext( updatedFeature );
-
     QgsExpression exp( mLayer->expressionField( eww->fieldIdx() ) );
     QVariant value = exp.evaluate( &context );
-
+    updatedFeature.setAttribute( eww->fieldIdx(), value );
     eww->setValue( value );
   }
 }
