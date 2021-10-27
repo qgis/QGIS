@@ -15208,6 +15208,10 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
 
   bool identifyModeIsActiveLayer = QgsSettings().enumValue( QStringLiteral( "/Map/identifyMode" ), QgsMapToolIdentify::ActiveLayer ) == QgsMapToolIdentify::ActiveLayer;
 
+  // Since there is only one case where this action is enabled
+  // It's disabled every time, except for the relevant case
+  mActionIntersection2Circles->setEnabled( false );
+
   if ( !layer )
   {
     mMenuSelect->setEnabled( false );
@@ -15509,6 +15513,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
           mActionRotatePointSymbols->setEnabled( false );
           mActionOffsetPointSymbol->setEnabled( false );
           mActionOffsetCurve->setEnabled( false );
+          mActionIntersection2Circles->setEnabled( isEditable );
 
           if ( isEditable && canChangeAttributes )
           {
