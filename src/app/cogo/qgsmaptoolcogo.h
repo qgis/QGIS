@@ -21,6 +21,7 @@
 #include <QWidget>
 #include <QDialog>
 #include "qgis_app.h"
+#include "geometry/qgscircle.h"
 
 #include "ui_intersection2circles.h"
 
@@ -30,9 +31,23 @@ class APP_EXPORT QgsIntersection2CirclesDialog : public QDialog, private Ui::Qgs
   public:
     QgsIntersection2CirclesDialog( QWidget *parent = nullptr );
 
+    enum CircleNumber
+    {
+      CircleNum1,
+      CircleNum2,
+    };
+
   signals:
 
-  public slots:
+  private slots:
+    void onAccepted();
+    void propertiesChanged( CircleNumber circleNum );
+
+  private:
+    QgsCircle mCircle1;
+    QgsCircle mCircle2;
+
+
 };
 
 #endif // QGSMAPTOOLCOGO_H
