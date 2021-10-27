@@ -46,6 +46,7 @@
 #include "qgsimagecache.h"
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
+#include "qgsfillsymbol.h"
 #include "qgsiconutils.h"
 
 #include <QAbstractButton>
@@ -4643,7 +4644,44 @@ void QgsGeometryGeneratorSymbolLayerWidget::updateExpression( const QString &str
 
 void QgsGeometryGeneratorSymbolLayerWidget::updateSymbolType()
 {
+  // we try to keep the subsymbol, if we can!
+  std::unique_ptr< QgsSymbol > subSymbol( mLayer->subSymbol()->clone() );
+
   mLayer->setSymbolType( static_cast<Qgis::SymbolType>( cbxGeometryType->currentData().toInt() ) );
+
+  switch ( mLayer->symbolType() )
+  {
+    case Qgis::SymbolType::Marker:
+    case Qgis::SymbolType::Hybrid:
+      break;
+    case Qgis::SymbolType::Line:
+    {
+      if ( subSymbol->type() == Qgis::SymbolType::Fill )
+      {
+        // going from fill -> line type, so we can copy any LINE symbol layers across
+        QgsSymbolLayerList layers;
+        for ( int i = 0; i < subSymbol->symbolLayerCount(); ++i )
+        {
+          if ( const QgsLineSymbolLayer *lineLayer = dynamic_cast< const QgsLineSymbolLayer * >( subSymbol->symbolLayer( i ) ) )
+            layers << subSymbol->symbolLayer( i )->clone();
+        }
+
+        if ( !layers.empty() )
+          mLayer->setSubSymbol( new QgsLineSymbol( layers ) );
+      }
+      break;
+    }
+    case Qgis::SymbolType::Fill:
+      if ( subSymbol->type() == Qgis::SymbolType::Line )
+      {
+        // going from line -> fill type, so copy ALL line symbol layers across
+        QgsSymbolLayerList layers;
+        for ( int i = 0; i < subSymbol->symbolLayerCount(); ++i )
+          layers << subSymbol->symbolLayer( i )->clone();
+        mLayer->setSubSymbol( new QgsFillSymbol( layers ) );
+      }
+      break;
+  }
 
   emit symbolChanged();
 }
