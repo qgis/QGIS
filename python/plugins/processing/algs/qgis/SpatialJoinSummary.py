@@ -114,7 +114,7 @@ class SpatialJoinSummary(QgisAlgorithm):
                                                               self.tr('Join to features in'),
                                                               [QgsProcessing.TypeVectorAnyGeometry]))
         predicate = QgsProcessingParameterEnum(self.PREDICATE,
-                                               self.tr('Features they (geometric predicate)'),
+                                               self.tr('Where the features'),
                                                options=[p[1] for p in self.predicates],
                                                allowMultiple=True, defaultValue=[0])
         predicate.setMetadata({
