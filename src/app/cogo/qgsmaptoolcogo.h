@@ -41,14 +41,19 @@ class APP_EXPORT QgsIntersection2CirclesDialog : public QDialog, private Ui::Qgs
       CircleNum2,
     };
 
+  public slots:
+    void show();
+
   signals:
 
   private slots:
-    void onAccepted();
     void toggleSelectCenter( CircleNumber circleNum );
     void propertiesChanged( CircleNumber circleNum );
     void updateCenterPoint( CircleNumber circleNum, const QgsPointXY &point, Qt::MouseButton button );
     void updateCircle( CircleNumber circleNum );
+
+    void onAccepted();
+    void reject();
 
   private:
     QgsCircle mCircle1;

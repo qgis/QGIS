@@ -153,7 +153,7 @@
    <sender>mButtonBox</sender>
    <signal>rejected()</signal>
    <receiver>QgsIntersection2Circles</receiver>
-   <slot>close()</slot>
+   <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>309</x>

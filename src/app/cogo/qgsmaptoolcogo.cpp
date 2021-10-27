@@ -36,9 +36,9 @@ QgsIntersection2CirclesDialog::QgsIntersection2CirclesDialog( QgsMapCanvas *mapC
   mRubberCircle2 = new QgsGeometryRubberBand( mapCanva );
 
   mRubberCircle1->setStrokeWidth( 2 );
-  mRubberCircle1->setIconType( QgsGeometryRubberBand::ICON_NONE );
+  mRubberCircle1->setVertexDrawingEnabled( false );
   mRubberCircle2->setStrokeWidth( 2 );
-  mRubberCircle2->setIconType( QgsGeometryRubberBand::ICON_NONE );
+  mRubberCircle2->setVertexDrawingEnabled( false );
 
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsIntersection2CirclesDialog::onAccepted );
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
@@ -79,6 +79,26 @@ QgsIntersection2CirclesDialog::QgsIntersection2CirclesDialog( QgsMapCanvas *mapC
   [ = ]( double ) { propertiesChanged( CircleNum2 ); } );
   connect( mRadius2, QOverload<double>::of( &QgsDoubleSpinBox::valueChanged ),
   [ = ]( double ) { propertiesChanged( CircleNum2 ); } );
+}
+
+
+void QgsIntersection2CirclesDialog::show()
+{
+  mRubberCircle1->show();
+  mRubberCircle2->show();
+
+  QDialog::show();
+}
+
+void QgsIntersection2CirclesDialog::reject()
+{
+  delete mMapToolPoint;
+  mMapToolPoint = nullptr;
+
+  mRubberCircle1->hide();
+  mRubberCircle2->hide();
+
+  QDialog::reject();
 }
 
 void QgsIntersection2CirclesDialog::onAccepted()
