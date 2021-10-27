@@ -24,6 +24,8 @@
 #include "geometry/qgscircle.h"
 #include "qgsgeometryrubberband.h"
 #include "qgsvectorlayer.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaptoolemitpoint.h"
 
 #include "ui_intersection2circles.h"
 
@@ -43,7 +45,9 @@ class APP_EXPORT QgsIntersection2CirclesDialog : public QDialog, private Ui::Qgs
 
   private slots:
     void onAccepted();
+    void toggleSelectCenter( CircleNumber circleNum );
     void propertiesChanged( CircleNumber circleNum );
+    void updateCenterPoint( CircleNumber circleNum, const QgsPointXY &point, Qt::MouseButton button );
     void updateCircle( CircleNumber circleNum );
 
   private:
@@ -53,6 +57,8 @@ class APP_EXPORT QgsIntersection2CirclesDialog : public QDialog, private Ui::Qgs
     QgsGeometryRubberBand *mRubberCircle2;
 
     QgsVectorLayer *mLayer;
+    QgsMapCanvas *mMapCanva;
+    QgsMapToolEmitPoint *mMapToolPoint = nullptr;
 };
 
 #endif // QGSMAPTOOLCOGO_H
