@@ -40,17 +40,17 @@ QgsIntersection2CirclesDialog::QgsIntersection2CirclesDialog( QgsMapCanvas *mapC
   mRubberCircle1->setColor( QColor( 0, 255, 0, 150 ) );
   mRubberCircle2->setColor( QColor( 0, 255, 0, 150 ) );
 
-  mIntersection1 = new QgsRubberBand( mapCanva, QgsWkbTypes::PointGeometry );
-  mIntersection2 = new QgsRubberBand( mapCanva, QgsWkbTypes::PointGeometry );
+  mRubberInter1 = new QgsRubberBand( mapCanva, QgsWkbTypes::PointGeometry );
+  mRubberInter2 = new QgsRubberBand( mapCanva, QgsWkbTypes::PointGeometry );
 
-  mIntersection1->setIconSize( 10 );
-  mIntersection2->setIconSize( 10 );
-  mIntersection1->setWidth( 2 );
-  mIntersection2->setWidth( 2 );
-  mIntersection1->setIcon( QgsRubberBand::ICON_CROSS );
-  mIntersection2->setIcon( QgsRubberBand::ICON_CROSS );
-  mIntersection1->setColor( QColor( 0, 255, 0, 150 ) );
-  mIntersection2->setColor( QColor( 0, 255, 0, 150 ) );
+  mRubberInter1->setIconSize( 10 );
+  mRubberInter2->setIconSize( 10 );
+  mRubberInter1->setWidth( 2 );
+  mRubberInter2->setWidth( 2 );
+  mRubberInter1->setIcon( QgsRubberBand::ICON_CROSS );
+  mRubberInter2->setIcon( QgsRubberBand::ICON_CROSS );
+  mRubberInter1->setColor( QColor( 0, 255, 0, 150 ) );
+  mRubberInter2->setColor( QColor( 0, 255, 0, 150 ) );
 
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsIntersection2CirclesDialog::onAccepted );
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
@@ -99,8 +99,8 @@ void QgsIntersection2CirclesDialog::show()
   mRubberCircle1->show();
   mRubberCircle2->show();
 
-  mIntersection1->show();
-  mIntersection2->show();
+  mRubberInter1->show();
+  mRubberInter2->show();
 
   QDialog::show();
 }
@@ -113,8 +113,8 @@ void QgsIntersection2CirclesDialog::reject()
   mRubberCircle1->hide();
   mRubberCircle2->hide();
 
-  mIntersection1->hide();
-  mIntersection2->hide();
+  mRubberInter1->hide();
+  mRubberInter2->hide();
 
   QDialog::reject();
 }
@@ -171,10 +171,10 @@ void QgsIntersection2CirclesDialog::propertiesChanged( CircleNumber circleNum )
   center = QgsPoint( mX2->value(), mY2->value() );
   mCircle2 = QgsCircle( center, mRadius2->value() );
 
-  QgsPoint inter1, inter2;
-  int numOfIntersections = mCircle1.intersections( mCircle2, inter1, inter2 );
-  mIntersection1->setToGeometry( QgsGeometry( inter1.clone() ) );
-  mIntersection2->setToGeometry( QgsGeometry( inter2.clone() ) );
+  const int numOfIntersections = mCircle1.intersections( mCircle2, mIntersection1, mIntersection2 );
+  mRubberInter1->setToGeometry( QgsGeometry( mIntersection1.clone() ) );
+  mRubberInter2->setToGeometry( QgsGeometry( mIntersection2.clone() ) );
+
 
   updateCircle( circleNum );
 }
