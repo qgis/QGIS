@@ -811,6 +811,48 @@ class GUI_EXPORT QgsRasterLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
 
 };
 
+
+///////////
+
+#include "ui_widget_gradientline.h"
+
+class QgsLineburstSymbolLayer;
+
+/**
+ * \ingroup gui
+ * \class QgsLineburstSymbolLayerWidget
+ * \brief Widget for configuring QgsLineburstSymbolLayer symbol layers.
+ * \since QGIS 3.24
+ */
+class GUI_EXPORT QgsLineburstSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetGradientLine
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsLineburstSymbolLayerWidget.
+     * \param vl associated vector layer
+     * \param parent parent widget
+     */
+    QgsLineburstSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Creates a new QgsLineburstSymbolLayerWidget.
+     * \param vl associated vector layer
+     */
+    static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsLineburstSymbolLayerWidget( vl ); }
+
+    // from base class
+    void setSymbolLayer( QgsSymbolLayer *layer ) override;
+    QgsSymbolLayer *symbolLayer() override;
+
+  protected:
+
+    QgsLineburstSymbolLayer *mLayer = nullptr;
+
+};
+
 ///////////
 
 #include "ui_widget_svgfill.h"

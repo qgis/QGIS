@@ -2830,185 +2830,14 @@ void QgsHashedLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
   mHashSymbol->setOpacity( prevOpacity );
 }
 
-
-
 //
-// QgsRasterLineSymbolLayer
+// QgsAbstractBrushedLineSymbolLayer
 //
 
-QgsRasterLineSymbolLayer::QgsRasterLineSymbolLayer( const QString &path )
-  : mPath( path )
-{
-}
-
-QgsRasterLineSymbolLayer::~QgsRasterLineSymbolLayer() = default;
-
-QgsSymbolLayer *QgsRasterLineSymbolLayer::create( const QVariantMap &properties )
-{
-  std::unique_ptr< QgsRasterLineSymbolLayer > res = std::make_unique<QgsRasterLineSymbolLayer>();
-
-  if ( properties.contains( QStringLiteral( "line_width" ) ) )
-  {
-    res->setWidth( properties[QStringLiteral( "line_width" )].toDouble() );
-  }
-  if ( properties.contains( QStringLiteral( "line_width_unit" ) ) )
-  {
-    res->setWidthUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "line_width_unit" )].toString() ) );
-  }
-  if ( properties.contains( QStringLiteral( "width_map_unit_scale" ) ) )
-  {
-    res->setWidthMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "width_map_unit_scale" )].toString() ) );
-  }
-
-  if ( properties.contains( QStringLiteral( "imageFile" ) ) )
-    res->setPath( properties[QStringLiteral( "imageFile" )].toString() );
-
-  if ( properties.contains( QStringLiteral( "offset" ) ) )
-  {
-    res->setOffset( properties[QStringLiteral( "offset" )].toDouble() );
-  }
-  if ( properties.contains( QStringLiteral( "offset_unit" ) ) )
-  {
-    res->setOffsetUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "offset_unit" )].toString() ) );
-  }
-  if ( properties.contains( QStringLiteral( "offset_map_unit_scale" ) ) )
-  {
-    res->setOffsetMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "offset_map_unit_scale" )].toString() ) );
-  }
-
-  if ( properties.contains( QStringLiteral( "joinstyle" ) ) )
-    res->setPenJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( properties[QStringLiteral( "joinstyle" )].toString() ) );
-  if ( properties.contains( QStringLiteral( "capstyle" ) ) )
-    res->setPenCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( properties[QStringLiteral( "capstyle" )].toString() ) );
-
-  if ( properties.contains( QStringLiteral( "alpha" ) ) )
-  {
-    res->setOpacity( properties[QStringLiteral( "alpha" )].toDouble() );
-  }
-
-  return res.release();
-}
-
-
-QVariantMap QgsRasterLineSymbolLayer::properties() const
-{
-  QVariantMap map;
-  map[QStringLiteral( "imageFile" )] = mPath;
-
-  map[QStringLiteral( "line_width" )] = QString::number( mWidth );
-  map[QStringLiteral( "line_width_unit" )] = QgsUnitTypes::encodeUnit( mWidthUnit );
-  map[QStringLiteral( "width_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mWidthMapUnitScale );
-
-  map[QStringLiteral( "joinstyle" )] = QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle );
-  map[QStringLiteral( "capstyle" )] = QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle );
-
-  map[QStringLiteral( "offset" )] = QString::number( mOffset );
-  map[QStringLiteral( "offset_unit" )] = QgsUnitTypes::encodeUnit( mOffsetUnit );
-  map[QStringLiteral( "offset_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale );
-
-  map[QStringLiteral( "alpha" )] = QString::number( mOpacity );
-
-  return map;
-}
-
-QgsRasterLineSymbolLayer *QgsRasterLineSymbolLayer::clone() const
-{
-  std::unique_ptr< QgsRasterLineSymbolLayer > res = std::make_unique< QgsRasterLineSymbolLayer >( mPath );
-  res->setWidth( mWidth );
-  res->setWidthUnit( mWidthUnit );
-  res->setWidthMapUnitScale( mWidthMapUnitScale );
-  res->setPenJoinStyle( mPenJoinStyle );
-  res->setPenCapStyle( mPenCapStyle );
-  res->setOffsetUnit( mOffsetUnit );
-  res->setOffsetMapUnitScale( mOffsetMapUnitScale );
-  res->setOffset( mOffset );
-  res->setOpacity( mOpacity );
-  copyDataDefinedProperties( res.get() );
-  copyPaintEffect( res.get() );
-  return res.release();
-}
-
-void QgsRasterLineSymbolLayer::resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving )
-{
-  const QVariantMap::iterator it = properties.find( QStringLiteral( "imageFile" ) );
-  if ( it != properties.end() && it.value().type() == QVariant::String )
-  {
-    if ( saving )
-      it.value() = QgsSymbolLayerUtils::svgSymbolPathToName( it.value().toString(), pathResolver );
-    else
-      it.value() =  QgsSymbolLayerUtils::svgSymbolNameToPath( it.value().toString(), pathResolver );
-  }
-}
-
-void QgsRasterLineSymbolLayer::setPath( const QString &path )
-{
-  mPath = path;
-}
-
-QString QgsRasterLineSymbolLayer::layerType() const
-{
-  return QStringLiteral( "RasterLine" );
-}
-
-void QgsRasterLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
-{
-  double scaledHeight = context.renderContext().convertToPainterUnits( mWidth, mWidthUnit, mWidthMapUnitScale );
-
-  const QSize originalSize = QgsApplication::imageCache()->originalSize( mPath, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
-
-  double opacity = mOpacity * context.opacity();
-  bool cached = false;
-  mLineImage = QgsApplication::imageCache()->pathAsImage( mPath,
-               QSize( static_cast< int >( std::round( originalSize.width() / originalSize.height() * scaledHeight ) ),
-                      static_cast< int >( std::ceil( scaledHeight ) ) ),
-               true, opacity, cached, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
-}
-
-void QgsRasterLineSymbolLayer::stopRender( QgsSymbolRenderContext & )
-{
-}
-
-void QgsRasterLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context )
+void QgsAbstractBrushedLineSymbolLayer::renderPolylineUsingBrush( const QPolygonF &points, QgsSymbolRenderContext &context, const QBrush &brush, double patternThickness, double patternLength )
 {
   if ( !context.renderContext().painter() )
     return;
-
-  QImage sourceImage = mLineImage;
-  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeWidth )
-       || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFile )
-       || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOpacity ) )
-  {
-    QString path = mPath;
-    if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFile ) )
-    {
-      context.setOriginalValueVariable( path );
-      path = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyFile, context.renderContext().expressionContext(), path );
-    }
-
-    double strokeWidth = mWidth;
-    if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeWidth ) )
-    {
-      context.setOriginalValueVariable( strokeWidth );
-      strokeWidth = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext(), strokeWidth );
-    }
-    const double scaledHeight = context.renderContext().convertToPainterUnits( strokeWidth, mWidthUnit, mWidthMapUnitScale );
-
-    const QSize originalSize = QgsApplication::imageCache()->originalSize( path, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
-    double opacity = mOpacity;
-    if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOpacity ) )
-    {
-      context.setOriginalValueVariable( mOpacity );
-      opacity = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOpacity, context.renderContext().expressionContext(), opacity * 100 ) / 100.0;
-    }
-    opacity *= context.opacity();
-
-    bool cached = false;
-    sourceImage = QgsApplication::imageCache()->pathAsImage( path,
-                  QSize( static_cast< int >( std::round( originalSize.width() / originalSize.height() * scaledHeight ) ),
-                         static_cast< int >( std::ceil( scaledHeight ) ) ),
-                  true, opacity, cached, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
-  }
-
 
   double offset = mOffset;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOffset ) )
@@ -3017,17 +2846,10 @@ void QgsRasterLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
     offset = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOffset, context.renderContext().expressionContext(), offset );
   }
 
-  if ( context.selected() )
-  {
-    QgsImageOperation::adjustHueSaturation( sourceImage, 1.0, context.renderContext().selectionColor(), 1.0, context.renderContext().feedback() );
-  }
-
-  const QBrush brush( sourceImage );
-
   QPolygonF offsetPoints;
   if ( qgsDoubleNear( offset, 0 ) )
   {
-    renderLine( points, context, sourceImage.height(), sourceImage.width(), brush );
+    renderLine( points, context, patternThickness, patternLength, brush );
   }
   else
   {
@@ -3036,12 +2858,12 @@ void QgsRasterLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
     const QList<QPolygonF> offsetLine = ::offsetLine( points, scaledOffset, context.originalGeometryType() != QgsWkbTypes::UnknownGeometry ? context.originalGeometryType() : QgsWkbTypes::LineGeometry );
     for ( const QPolygonF &part : offsetLine )
     {
-      renderLine( part, context, sourceImage.height(), sourceImage.width(), brush );
+      renderLine( part, context, patternThickness, patternLength, brush );
     }
   }
 }
 
-void QgsRasterLineSymbolLayer::renderLine( const QPolygonF &points, QgsSymbolRenderContext &context, const double lineThickness,
+void QgsAbstractBrushedLineSymbolLayer::renderLine( const QPolygonF &points, QgsSymbolRenderContext &context, const double lineThickness,
     const double patternLength, const QBrush &sourceBrush )
 {
   QPainter *p = context.renderContext().painter();
@@ -3080,7 +2902,7 @@ void QgsRasterLineSymbolLayer::renderLine( const QPolygonF &points, QgsSymbolRen
   // buffer size to extend out the temporary image, just to ensure that we don't clip out any antialiasing effects
   constexpr int ANTIALIAS_ALLOWANCE_PIXELS = 10;
   // amount of overlap to use when rendering adjacent line segments to ensure that no artifacts are visible between segments
-  constexpr int ANTIALIAS_OVERLAP_PIXELS = 1;
+  constexpr double ANTIALIAS_OVERLAP_PIXELS = 0.5;
 
   // our temporary image needs to extend out by the line thickness on each side, and we'll also add an allowance for antialiasing effects on each side
   const int imageWidth = static_cast< int >( std::ceil( maxX - minX ) + lineThickness * 2 ) + ANTIALIAS_ALLOWANCE_PIXELS * 2;
@@ -3140,12 +2962,6 @@ void QgsRasterLineSymbolLayer::renderLine( const QPolygonF &points, QgsSymbolRen
 
   imagePainter.setClipPath( stroke, Qt::IntersectClip );
   imagePainter.setPen( Qt::NoPen );
-
-  // important -- the painter uses a "source" mode (not "source over"), as we want to replace any existing pixels when drawing a line
-  // segment from any previously drawn line segments (and not draw them over the existing ones). Otherwise non-opaque images will
-  // show antialiasing artifacts as the start of each segment will have ~1px overlaps with previously rendered ones, which will
-  // be visible if we allow the opacity from the pixels to combine.
-  imagePainter.setCompositionMode( QPainter::CompositionMode_Source );
 
   QPointF segmentStartPoint = inputPoints.at( 0 );
 
@@ -3343,6 +3159,194 @@ void QgsRasterLineSymbolLayer::renderLine( const QPolygonF &points, QgsSymbolRen
                          minY - lineThickness - ANTIALIAS_ALLOWANCE_PIXELS ), temporaryImage );
 }
 
+
+//
+// QgsRasterLineSymbolLayer
+//
+
+QgsRasterLineSymbolLayer::QgsRasterLineSymbolLayer( const QString &path )
+  : mPath( path )
+{
+}
+
+QgsRasterLineSymbolLayer::~QgsRasterLineSymbolLayer() = default;
+
+QgsSymbolLayer *QgsRasterLineSymbolLayer::create( const QVariantMap &properties )
+{
+  std::unique_ptr< QgsRasterLineSymbolLayer > res = std::make_unique<QgsRasterLineSymbolLayer>();
+
+  if ( properties.contains( QStringLiteral( "line_width" ) ) )
+  {
+    res->setWidth( properties[QStringLiteral( "line_width" )].toDouble() );
+  }
+  if ( properties.contains( QStringLiteral( "line_width_unit" ) ) )
+  {
+    res->setWidthUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "line_width_unit" )].toString() ) );
+  }
+  if ( properties.contains( QStringLiteral( "width_map_unit_scale" ) ) )
+  {
+    res->setWidthMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "width_map_unit_scale" )].toString() ) );
+  }
+
+  if ( properties.contains( QStringLiteral( "imageFile" ) ) )
+    res->setPath( properties[QStringLiteral( "imageFile" )].toString() );
+
+  if ( properties.contains( QStringLiteral( "offset" ) ) )
+  {
+    res->setOffset( properties[QStringLiteral( "offset" )].toDouble() );
+  }
+  if ( properties.contains( QStringLiteral( "offset_unit" ) ) )
+  {
+    res->setOffsetUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "offset_unit" )].toString() ) );
+  }
+  if ( properties.contains( QStringLiteral( "offset_map_unit_scale" ) ) )
+  {
+    res->setOffsetMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "offset_map_unit_scale" )].toString() ) );
+  }
+
+  if ( properties.contains( QStringLiteral( "joinstyle" ) ) )
+    res->setPenJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( properties[QStringLiteral( "joinstyle" )].toString() ) );
+  if ( properties.contains( QStringLiteral( "capstyle" ) ) )
+    res->setPenCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( properties[QStringLiteral( "capstyle" )].toString() ) );
+
+  if ( properties.contains( QStringLiteral( "alpha" ) ) )
+  {
+    res->setOpacity( properties[QStringLiteral( "alpha" )].toDouble() );
+  }
+
+  return res.release();
+}
+
+
+QVariantMap QgsRasterLineSymbolLayer::properties() const
+{
+  QVariantMap map;
+  map[QStringLiteral( "imageFile" )] = mPath;
+
+  map[QStringLiteral( "line_width" )] = QString::number( mWidth );
+  map[QStringLiteral( "line_width_unit" )] = QgsUnitTypes::encodeUnit( mWidthUnit );
+  map[QStringLiteral( "width_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mWidthMapUnitScale );
+
+  map[QStringLiteral( "joinstyle" )] = QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle );
+  map[QStringLiteral( "capstyle" )] = QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle );
+
+  map[QStringLiteral( "offset" )] = QString::number( mOffset );
+  map[QStringLiteral( "offset_unit" )] = QgsUnitTypes::encodeUnit( mOffsetUnit );
+  map[QStringLiteral( "offset_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale );
+
+  map[QStringLiteral( "alpha" )] = QString::number( mOpacity );
+
+  return map;
+}
+
+QgsRasterLineSymbolLayer *QgsRasterLineSymbolLayer::clone() const
+{
+  std::unique_ptr< QgsRasterLineSymbolLayer > res = std::make_unique< QgsRasterLineSymbolLayer >( mPath );
+  res->setWidth( mWidth );
+  res->setWidthUnit( mWidthUnit );
+  res->setWidthMapUnitScale( mWidthMapUnitScale );
+  res->setPenJoinStyle( mPenJoinStyle );
+  res->setPenCapStyle( mPenCapStyle );
+  res->setOffsetUnit( mOffsetUnit );
+  res->setOffsetMapUnitScale( mOffsetMapUnitScale );
+  res->setOffset( mOffset );
+  res->setOpacity( mOpacity );
+  copyDataDefinedProperties( res.get() );
+  copyPaintEffect( res.get() );
+  return res.release();
+}
+
+void QgsRasterLineSymbolLayer::resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving )
+{
+  const QVariantMap::iterator it = properties.find( QStringLiteral( "imageFile" ) );
+  if ( it != properties.end() && it.value().type() == QVariant::String )
+  {
+    if ( saving )
+      it.value() = QgsSymbolLayerUtils::svgSymbolPathToName( it.value().toString(), pathResolver );
+    else
+      it.value() =  QgsSymbolLayerUtils::svgSymbolNameToPath( it.value().toString(), pathResolver );
+  }
+}
+
+void QgsRasterLineSymbolLayer::setPath( const QString &path )
+{
+  mPath = path;
+}
+
+QString QgsRasterLineSymbolLayer::layerType() const
+{
+  return QStringLiteral( "RasterLine" );
+}
+
+void QgsRasterLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
+{
+  double scaledHeight = context.renderContext().convertToPainterUnits( mWidth, mWidthUnit, mWidthMapUnitScale );
+
+  const QSize originalSize = QgsApplication::imageCache()->originalSize( mPath, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
+
+  double opacity = mOpacity * context.opacity();
+  bool cached = false;
+  mLineImage = QgsApplication::imageCache()->pathAsImage( mPath,
+               QSize( static_cast< int >( std::round( originalSize.width() / originalSize.height() * scaledHeight ) ),
+                      static_cast< int >( std::ceil( scaledHeight ) ) ),
+               true, opacity, cached, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
+}
+
+void QgsRasterLineSymbolLayer::stopRender( QgsSymbolRenderContext & )
+{
+}
+
+void QgsRasterLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context )
+{
+  if ( !context.renderContext().painter() )
+    return;
+
+  QImage sourceImage = mLineImage;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeWidth )
+       || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFile )
+       || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOpacity ) )
+  {
+    QString path = mPath;
+    if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFile ) )
+    {
+      context.setOriginalValueVariable( path );
+      path = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyFile, context.renderContext().expressionContext(), path );
+    }
+
+    double strokeWidth = mWidth;
+    if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeWidth ) )
+    {
+      context.setOriginalValueVariable( strokeWidth );
+      strokeWidth = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext(), strokeWidth );
+    }
+    const double scaledHeight = context.renderContext().convertToPainterUnits( strokeWidth, mWidthUnit, mWidthMapUnitScale );
+
+    const QSize originalSize = QgsApplication::imageCache()->originalSize( path, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
+    double opacity = mOpacity;
+    if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOpacity ) )
+    {
+      context.setOriginalValueVariable( mOpacity );
+      opacity = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOpacity, context.renderContext().expressionContext(), opacity * 100 ) / 100.0;
+    }
+    opacity *= context.opacity();
+
+    bool cached = false;
+    sourceImage = QgsApplication::imageCache()->pathAsImage( path,
+                  QSize( static_cast< int >( std::round( originalSize.width() / originalSize.height() * scaledHeight ) ),
+                         static_cast< int >( std::ceil( scaledHeight ) ) ),
+                  true, opacity, cached, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
+  }
+
+  if ( context.selected() )
+  {
+    QgsImageOperation::adjustHueSaturation( sourceImage, 1.0, context.renderContext().selectionColor(), 1.0, context.renderContext().feedback() );
+  }
+
+  const QBrush brush( sourceImage );
+
+  renderPolylineUsingBrush( points, context, brush, sourceImage.height(), sourceImage.width() );
+}
+
 void QgsRasterLineSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   QgsLineSymbolLayer::setOutputUnit( unit );
@@ -3387,3 +3391,244 @@ double QgsRasterLineSymbolLayer::estimateMaxBleed( const QgsRenderContext & ) co
   return ( mWidth / 2.0 ) + mOffset;
 }
 
+
+//
+// QgsLineburstSymbolLayer
+//
+
+QgsLineburstSymbolLayer::QgsLineburstSymbolLayer( const QColor &color, const QColor &color2 )
+  : QgsAbstractBrushedLineSymbolLayer()
+  , mColor2( color2 )
+{
+  setColor( color );
+}
+
+QgsLineburstSymbolLayer::~QgsLineburstSymbolLayer() = default;
+
+QgsSymbolLayer *QgsLineburstSymbolLayer::create( const QVariantMap &properties )
+{
+  std::unique_ptr< QgsLineburstSymbolLayer > res = std::make_unique<QgsLineburstSymbolLayer>();
+
+  if ( properties.contains( QStringLiteral( "line_width" ) ) )
+  {
+    res->setWidth( properties[QStringLiteral( "line_width" )].toDouble() );
+  }
+  if ( properties.contains( QStringLiteral( "line_width_unit" ) ) )
+  {
+    res->setWidthUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "line_width_unit" )].toString() ) );
+  }
+  if ( properties.contains( QStringLiteral( "width_map_unit_scale" ) ) )
+  {
+    res->setWidthMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "width_map_unit_scale" )].toString() ) );
+  }
+
+  if ( properties.contains( QStringLiteral( "offset" ) ) )
+  {
+    res->setOffset( properties[QStringLiteral( "offset" )].toDouble() );
+  }
+  if ( properties.contains( QStringLiteral( "offset_unit" ) ) )
+  {
+    res->setOffsetUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "offset_unit" )].toString() ) );
+  }
+  if ( properties.contains( QStringLiteral( "offset_map_unit_scale" ) ) )
+  {
+    res->setOffsetMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "offset_map_unit_scale" )].toString() ) );
+  }
+
+  if ( properties.contains( QStringLiteral( "joinstyle" ) ) )
+    res->setPenJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( properties[QStringLiteral( "joinstyle" )].toString() ) );
+  if ( properties.contains( QStringLiteral( "capstyle" ) ) )
+    res->setPenCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( properties[QStringLiteral( "capstyle" )].toString() ) );
+
+  if ( properties.contains( QStringLiteral( "color_type" ) ) )
+    res->setGradientColorType( static_cast< Qgis::GradientColorSource >( properties[QStringLiteral( "color_type" )].toInt() ) );
+
+  if ( properties.contains( QStringLiteral( "color" ) ) )
+  {
+    res->setColor( QgsSymbolLayerUtils::decodeColor( properties[QStringLiteral( "color" )].toString() ) );
+  }
+  if ( properties.contains( QStringLiteral( "gradient_color2" ) ) )
+  {
+    res->setColor2( QgsSymbolLayerUtils::decodeColor( properties[QStringLiteral( "gradient_color2" )].toString() ) );
+  }
+
+  //attempt to create color ramp from props
+  if ( properties.contains( QStringLiteral( "rampType" ) ) && properties[QStringLiteral( "rampType" )] == QgsCptCityColorRamp::typeString() )
+  {
+    res->setColorRamp( QgsCptCityColorRamp::create( properties ) );
+  }
+  else
+  {
+    res->setColorRamp( QgsGradientColorRamp::create( properties ) );
+  }
+
+  return res.release();
+}
+
+QVariantMap QgsLineburstSymbolLayer::properties() const
+{
+  QVariantMap map;
+
+  map[QStringLiteral( "line_width" )] = QString::number( mWidth );
+  map[QStringLiteral( "line_width_unit" )] = QgsUnitTypes::encodeUnit( mWidthUnit );
+  map[QStringLiteral( "width_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mWidthMapUnitScale );
+
+  map[QStringLiteral( "joinstyle" )] = QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle );
+  map[QStringLiteral( "capstyle" )] = QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle );
+
+  map[QStringLiteral( "offset" )] = QString::number( mOffset );
+  map[QStringLiteral( "offset_unit" )] = QgsUnitTypes::encodeUnit( mOffsetUnit );
+  map[QStringLiteral( "offset_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale );
+
+  map[QStringLiteral( "color" )] = QgsSymbolLayerUtils::encodeColor( mColor );
+  map[QStringLiteral( "gradient_color2" )] = QgsSymbolLayerUtils::encodeColor( mColor2 );
+  map[QStringLiteral( "color_type" )] = QString::number( static_cast< int >( mGradientColorType ) );
+  if ( mGradientRamp )
+  {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+    map.unite( mGradientRamp->properties() );
+#else
+    map.insert( mGradientRamp->properties() );
+#endif
+  }
+
+  return map;
+}
+
+QgsLineburstSymbolLayer *QgsLineburstSymbolLayer::clone() const
+{
+  std::unique_ptr< QgsLineburstSymbolLayer > res = std::make_unique< QgsLineburstSymbolLayer >();
+  res->setWidth( mWidth );
+  res->setWidthUnit( mWidthUnit );
+  res->setWidthMapUnitScale( mWidthMapUnitScale );
+  res->setPenJoinStyle( mPenJoinStyle );
+  res->setPenCapStyle( mPenCapStyle );
+  res->setOffsetUnit( mOffsetUnit );
+  res->setOffsetMapUnitScale( mOffsetMapUnitScale );
+  res->setOffset( mOffset );
+  res->setColor( mColor );
+  res->setColor2( mColor2 );
+  res->setGradientColorType( mGradientColorType );
+  if ( mGradientRamp )
+    res->setColorRamp( mGradientRamp->clone() );
+  copyDataDefinedProperties( res.get() );
+  copyPaintEffect( res.get() );
+  return res.release();
+}
+
+QString QgsLineburstSymbolLayer::layerType() const
+{
+  return QStringLiteral( "Lineburst" );
+}
+
+void QgsLineburstSymbolLayer::startRender( QgsSymbolRenderContext & )
+{
+}
+
+void QgsLineburstSymbolLayer::stopRender( QgsSymbolRenderContext & )
+{
+}
+
+void QgsLineburstSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context )
+{
+  if ( !context.renderContext().painter() )
+    return;
+
+  double strokeWidth = mWidth;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeWidth ) )
+  {
+    context.setOriginalValueVariable( strokeWidth );
+    strokeWidth = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext(), strokeWidth );
+  }
+  const double scaledWidth = context.renderContext().convertToPainterUnits( strokeWidth, mWidthUnit, mWidthMapUnitScale );
+
+  //update alpha of gradient colors
+  QColor color1 = mColor;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeColor ) )
+  {
+    context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mColor ) );
+    color1 = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyStrokeColor, context.renderContext().expressionContext(), mColor );
+  }
+  if ( context.selected() )
+  {
+    color1 = context.renderContext().selectionColor();
+  }
+  color1.setAlphaF( context.opacity() * color1.alphaF() );
+
+  //second gradient color
+  QColor color2 = mColor2;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertySecondaryColor ) )
+  {
+    context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mColor2 ) );
+    color2 = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertySecondaryColor, context.renderContext().expressionContext(), mColor2 );
+  }
+
+  //create a QGradient with the desired properties
+  QGradient gradient = QLinearGradient( QPointF( 0, 0 ), QPointF( 0, scaledWidth ) );
+  //add stops to gradient
+  if ( mGradientColorType == Qgis::GradientColorSource::ColorRamp && mGradientRamp &&
+       ( mGradientRamp->type() == QgsGradientColorRamp::typeString() || mGradientRamp->type() == QgsCptCityColorRamp::typeString() ) )
+  {
+    //color ramp gradient
+    QgsGradientColorRamp *gradRamp = static_cast<QgsGradientColorRamp *>( mGradientRamp.get() );
+    gradRamp->addStopsToGradient( &gradient, context.opacity() );
+  }
+  else
+  {
+    //two color gradient
+    gradient.setColorAt( 0.0, color1 );
+    gradient.setColorAt( 1.0, color2 );
+  }
+  const QBrush brush( gradient );
+
+  renderPolylineUsingBrush( points, context, brush, scaledWidth, 100 );
+}
+
+void QgsLineburstSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
+{
+  QgsLineSymbolLayer::setOutputUnit( unit );
+  mWidthUnit = unit;
+  mOffsetUnit = unit;
+}
+
+QgsUnitTypes::RenderUnit QgsLineburstSymbolLayer::outputUnit() const
+{
+  QgsUnitTypes::RenderUnit unit = QgsLineSymbolLayer::outputUnit();
+  if ( mWidthUnit != unit || mOffsetUnit != unit )
+  {
+    return QgsUnitTypes::RenderUnknownUnit;
+  }
+  return unit;
+}
+
+bool QgsLineburstSymbolLayer::usesMapUnits() const
+{
+  return mWidthUnit == QgsUnitTypes::RenderMapUnits || mWidthUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mOffsetUnit == QgsUnitTypes::RenderMapUnits || mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits;
+}
+
+void QgsLineburstSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
+{
+  QgsLineSymbolLayer::setMapUnitScale( scale );
+  mOffsetMapUnitScale = scale;
+}
+
+QgsMapUnitScale QgsLineburstSymbolLayer::mapUnitScale() const
+{
+  if ( QgsLineSymbolLayer::mapUnitScale() == mWidthMapUnitScale &&
+       mWidthMapUnitScale == mOffsetMapUnitScale )
+  {
+    return mWidthMapUnitScale;
+  }
+  return QgsMapUnitScale();
+}
+
+double QgsLineburstSymbolLayer::estimateMaxBleed( const QgsRenderContext & ) const
+{
+  return ( mWidth / 2.0 ) + mOffset;
+}
+
+void QgsLineburstSymbolLayer::setColorRamp( QgsColorRamp *ramp )
+{
+  mGradientRamp.reset( ramp );
+}

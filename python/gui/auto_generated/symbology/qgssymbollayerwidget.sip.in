@@ -616,6 +616,48 @@ Creates a new QgsRasterLineSymbolLayerWidget.
 
 
 
+
+class QgsLineburstSymbolLayerWidget : QgsSymbolLayerWidget
+{
+%Docstring(signature="appended")
+Widget for configuring :py:class:`QgsLineburstSymbolLayer` symbol layers.
+
+.. versionadded:: 3.24
+%End
+
+%TypeHeaderCode
+#include "qgssymbollayerwidget.h"
+%End
+  public:
+
+    QgsLineburstSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsLineburstSymbolLayerWidget.
+
+:param vl: associated vector layer
+:param parent: parent widget
+%End
+
+    static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
+%Docstring
+Creates a new QgsLineburstSymbolLayerWidget.
+
+:param vl: associated vector layer
+%End
+
+    virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
+    virtual QgsSymbolLayer *symbolLayer();
+
+
+  protected:
+
+
+};
+
+
+
+
 class QgsSVGFillSymbolLayerWidget : QgsSymbolLayerWidget
 {
 
