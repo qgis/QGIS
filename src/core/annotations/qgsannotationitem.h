@@ -20,7 +20,6 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsrendercontext.h"
 #include "qgslinestring.h"
 #include "qgspolygon.h"
 
@@ -31,6 +30,8 @@ class QgsFillSymbol;
 class QgsAnnotationItemNode;
 class QgsAbstractAnnotationItemEditOperation;
 class QgsAnnotationItemEditOperationTransientResults;
+class QgsRenderContext;
+class QgsReadWriteContext;
 
 /**
  * \ingroup core

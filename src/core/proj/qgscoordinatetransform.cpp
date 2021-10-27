@@ -25,6 +25,7 @@
 #include "qgsproject.h"
 #include "qgsreadwritelocker.h"
 #include "qgsvector3d.h"
+#include "qgis.h"
 
 //qt includes
 #include <QDomNode>
@@ -209,7 +210,7 @@ QgsCoordinateReferenceSystem QgsCoordinateTransform::destinationCrs() const
   return d->mDestCRS;
 }
 
-QgsPointXY QgsCoordinateTransform::transform( const QgsPointXY &point, TransformDirection direction ) const
+QgsPointXY QgsCoordinateTransform::transform( const QgsPointXY &point, Qgis::TransformDirection direction ) const
 {
   if ( !d->mIsValid || d->mShortCircuit )
     return point;
@@ -233,7 +234,7 @@ QgsPointXY QgsCoordinateTransform::transform( const QgsPointXY &point, Transform
 }
 
 
-QgsPointXY QgsCoordinateTransform::transform( const double theX, const double theY = 0.0, TransformDirection direction ) const
+QgsPointXY QgsCoordinateTransform::transform( const double theX, const double theY = 0.0, Qgis::TransformDirection direction ) const
 {
   try
   {
@@ -247,7 +248,7 @@ QgsPointXY QgsCoordinateTransform::transform( const double theX, const double th
   }
 }
 
-QgsRectangle QgsCoordinateTransform::transform( const QgsRectangle &rect, TransformDirection direction ) const
+QgsRectangle QgsCoordinateTransform::transform( const QgsRectangle &rect, Qgis::TransformDirection direction ) const
 {
   if ( !d->mIsValid || d->mShortCircuit )
     return rect;
@@ -283,7 +284,7 @@ QgsRectangle QgsCoordinateTransform::transform( const QgsRectangle &rect, Transf
   return QgsRectangle( x1, y1, x2, y2 );
 }
 
-QgsVector3D QgsCoordinateTransform::transform( const QgsVector3D &point, TransformDirection direction ) const
+QgsVector3D QgsCoordinateTransform::transform( const QgsVector3D &point, Qgis::TransformDirection direction ) const
 {
   double x = point.x();
   double y = point.y();
@@ -302,7 +303,7 @@ QgsVector3D QgsCoordinateTransform::transform( const QgsVector3D &point, Transfo
 }
 
 void QgsCoordinateTransform::transformInPlace( double &x, double &y, double &z,
-    TransformDirection direction ) const
+    Qgis::TransformDirection direction ) const
 {
   if ( !d->mIsValid || d->mShortCircuit )
     return;
@@ -323,7 +324,7 @@ void QgsCoordinateTransform::transformInPlace( double &x, double &y, double &z,
 }
 
 void QgsCoordinateTransform::transformInPlace( float &x, float &y, double &z,
-    TransformDirection direction ) const
+    Qgis::TransformDirection direction ) const
 {
   double xd = static_cast< double >( x ), yd = static_cast< double >( y );
   transformInPlace( xd, yd, z, direction );
@@ -332,7 +333,7 @@ void QgsCoordinateTransform::transformInPlace( float &x, float &y, double &z,
 }
 
 void QgsCoordinateTransform::transformInPlace( float &x, float &y, float &z,
-    TransformDirection direction ) const
+    Qgis::TransformDirection direction ) const
 {
   if ( !d->mIsValid || d->mShortCircuit )
     return;
@@ -358,7 +359,7 @@ void QgsCoordinateTransform::transformInPlace( float &x, float &y, float &z,
   }
 }
 
-void QgsCoordinateTransform::transformPolygon( QPolygonF &poly, TransformDirection direction ) const
+void QgsCoordinateTransform::transformPolygon( QPolygonF &poly, Qgis::TransformDirection direction ) const
 {
   if ( !d->mIsValid || d->mShortCircuit )
   {
@@ -410,9 +411,8 @@ void QgsCoordinateTransform::transformPolygon( QPolygonF &poly, TransformDirecti
     throw QgsCsException( err );
 }
 
-void QgsCoordinateTransform::transformInPlace(
-  QVector<double> &x, QVector<double> &y, QVector<double> &z,
-  TransformDirection direction ) const
+void QgsCoordinateTransform::transformInPlace( QVector<double> &x, QVector<double> &y, QVector<double> &z,
+    Qgis::TransformDirection direction ) const
 {
 
   if ( !d->mIsValid || d->mShortCircuit )
@@ -438,9 +438,8 @@ void QgsCoordinateTransform::transformInPlace(
 }
 
 
-void QgsCoordinateTransform::transformInPlace(
-  QVector<float> &x, QVector<float> &y, QVector<float> &z,
-  TransformDirection direction ) const
+void QgsCoordinateTransform::transformInPlace( QVector<float> &x, QVector<float> &y, QVector<float> &z,
+    Qgis::TransformDirection direction ) const
 {
   if ( !d->mIsValid || d->mShortCircuit )
     return;
@@ -499,7 +498,7 @@ void QgsCoordinateTransform::transformInPlace(
   }
 }
 
-QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &rect, TransformDirection direction, const bool handle180Crossover ) const
+QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &rect, Qgis::TransformDirection direction, const bool handle180Crossover ) const
 {
   // Calculate the bounding box of a QgsRectangle in the source CRS
   // when projected to the destination CRS (or the inverse).
@@ -618,7 +617,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   return bb_rect;
 }
 
-void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *y, double *z, TransformDirection direction ) const
+void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *y, double *z, Qgis::TransformDirection direction ) const
 {
   if ( !d->mIsValid || d->mShortCircuit )
     return;
@@ -677,7 +676,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
   int projResult = 0;
 
   proj_errno_reset( projData );
-  proj_trans_generic( projData, ( direction == ForwardTransform && !d->mIsReversed ) || ( direction == ReverseTransform && d->mIsReversed ) ? PJ_FWD : PJ_INV,
+  proj_trans_generic( projData, ( direction == Qgis::TransformDirection::Forward && !d->mIsReversed ) || ( direction == Qgis::TransformDirection::Reverse && d->mIsReversed ) ? PJ_FWD : PJ_INV,
                       x, sizeof( double ), numPoints,
                       y, sizeof( double ), numPoints,
                       z, sizeof( double ), numPoints,
@@ -722,7 +721,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
     {
       projResult = 0;
       proj_errno_reset( transform );
-      proj_trans_generic( transform, direction == ForwardTransform ? PJ_FWD : PJ_INV,
+      proj_trans_generic( transform, direction == Qgis::TransformDirection::Forward ? PJ_FWD : PJ_INV,
                           xprev.data(), sizeof( double ), numPoints,
                           yprev.data(), sizeof( double ), numPoints,
                           zprev.data(), sizeof( double ), numPoints,
@@ -775,7 +774,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
     for ( int i = 0; i < numPoints; ++i )
     {
-      if ( direction == ForwardTransform )
+      if ( direction == Qgis::TransformDirection::Forward )
       {
         points += QStringLiteral( "(%1, %2)\n" ).arg( x[i], 0, 'f' ).arg( y[i], 0, 'f' );
       }
@@ -785,7 +784,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
       }
     }
 
-    const QString dir = ( direction == ForwardTransform ) ? QObject::tr( "forward transform" ) : QObject::tr( "inverse transform" );
+    const QString dir = ( direction == Qgis::TransformDirection::Forward ) ? QObject::tr( "forward transform" ) : QObject::tr( "inverse transform" );
 
     const QString msg = QObject::tr( "%1 of\n"
                                      "%2"

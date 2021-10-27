@@ -87,6 +87,7 @@ void QgsRelationAddPolymorphicDialog::setPolymorphicRelation( const QgsPolymorph
   mReferencingLayerComboBox->setLayer( polyRel.referencingLayer() );
   mReferencedLayerFieldComboBox->setLayer( polyRel.referencingLayer() );
   mReferencedLayerFieldComboBox->setField( polyRel.referencedLayerField() );
+  mReferencedLayerExpressionWidget->setLayer( polyRel.referencingLayer() );
   mReferencedLayerExpressionWidget->setExpression( polyRel.referencedLayerExpression() );
   mRelationStrengthComboBox->setCurrentIndex( mRelationStrengthComboBox->findData( polyRel.strength() ) );
 
@@ -280,6 +281,7 @@ void QgsRelationAddPolymorphicDialog::updateReferencingFieldsComboBoxes()
 void QgsRelationAddPolymorphicDialog::updateReferencedLayerFieldComboBox()
 {
   mReferencedLayerFieldComboBox->setLayer( mReferencingLayerComboBox->currentLayer() );
+  mReferencedLayerExpressionWidget->setLayer( mReferencingLayerComboBox->currentLayer() );
 }
 
 void QgsRelationAddPolymorphicDialog::referencedLayersChanged()

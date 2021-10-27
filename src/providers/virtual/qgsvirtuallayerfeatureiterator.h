@@ -21,6 +21,7 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsvirtuallayerprovider.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometryengine.h"
+#include "qgscoordinatetransform.h"
 
 #include <memory>
 #include <QPointer>

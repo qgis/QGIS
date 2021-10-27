@@ -61,43 +61,43 @@ static void _fixQPictureDPI( QPainter *p )
 // QgsSimpleMarkerSymbolLayerBase
 //
 
-QList<QgsSimpleMarkerSymbolLayerBase::Shape> QgsSimpleMarkerSymbolLayerBase::availableShapes()
+QList<Qgis::MarkerShape> QgsSimpleMarkerSymbolLayerBase::availableShapes()
 {
-  QList< Shape > shapes;
-  shapes << Square
-         << Diamond
-         << Pentagon
-         << Hexagon
-         << Octagon
-         << SquareWithCorners
-         << Triangle
-         << EquilateralTriangle
-         << Star
-         << Arrow
-         << Circle
-         << Cross
-         << CrossFill
-         << Cross2
-         << Line
-         << HalfArc
-         << ThirdArc
-         << QuarterArc
-         << ArrowHead
-         << ArrowHeadFilled
-         << SemiCircle
-         << ThirdCircle
-         << QuarterCircle
-         << QuarterSquare
-         << HalfSquare
-         << DiagonalHalfSquare
-         << RightHalfTriangle
-         << LeftHalfTriangle
-         << AsteriskFill;
+  QList< Qgis::MarkerShape > shapes;
+  shapes << Qgis::MarkerShape::Square
+         << Qgis::MarkerShape::Diamond
+         << Qgis::MarkerShape::Pentagon
+         << Qgis::MarkerShape::Hexagon
+         << Qgis::MarkerShape::Octagon
+         << Qgis::MarkerShape::SquareWithCorners
+         << Qgis::MarkerShape::Triangle
+         << Qgis::MarkerShape::EquilateralTriangle
+         << Qgis::MarkerShape::Star
+         << Qgis::MarkerShape::Arrow
+         << Qgis::MarkerShape::Circle
+         << Qgis::MarkerShape::Cross
+         << Qgis::MarkerShape::CrossFill
+         << Qgis::MarkerShape::Cross2
+         << Qgis::MarkerShape::Line
+         << Qgis::MarkerShape::HalfArc
+         << Qgis::MarkerShape::ThirdArc
+         << Qgis::MarkerShape::QuarterArc
+         << Qgis::MarkerShape::ArrowHead
+         << Qgis::MarkerShape::ArrowHeadFilled
+         << Qgis::MarkerShape::SemiCircle
+         << Qgis::MarkerShape::ThirdCircle
+         << Qgis::MarkerShape::QuarterCircle
+         << Qgis::MarkerShape::QuarterSquare
+         << Qgis::MarkerShape::HalfSquare
+         << Qgis::MarkerShape::DiagonalHalfSquare
+         << Qgis::MarkerShape::RightHalfTriangle
+         << Qgis::MarkerShape::LeftHalfTriangle
+         << Qgis::MarkerShape::AsteriskFill;
 
   return shapes;
 }
 
-QgsSimpleMarkerSymbolLayerBase::QgsSimpleMarkerSymbolLayerBase( QgsSimpleMarkerSymbolLayerBase::Shape shape, double size, double angle, Qgis::ScaleMethod scaleMethod )
+QgsSimpleMarkerSymbolLayerBase::QgsSimpleMarkerSymbolLayerBase( Qgis::MarkerShape shape, double size, double angle, Qgis::ScaleMethod scaleMethod )
   : mShape( shape )
 {
   mSize = size;
@@ -110,41 +110,41 @@ QgsSimpleMarkerSymbolLayerBase::QgsSimpleMarkerSymbolLayerBase( QgsSimpleMarkerS
 
 QgsSimpleMarkerSymbolLayerBase::~QgsSimpleMarkerSymbolLayerBase() = default;
 
-bool QgsSimpleMarkerSymbolLayerBase::shapeIsFilled( QgsSimpleMarkerSymbolLayerBase::Shape shape )
+bool QgsSimpleMarkerSymbolLayerBase::shapeIsFilled( Qgis::MarkerShape shape )
 {
   switch ( shape )
   {
-    case Square:
-    case Diamond:
-    case Pentagon:
-    case Hexagon:
-    case Octagon:
-    case SquareWithCorners:
-    case Triangle:
-    case EquilateralTriangle:
-    case Star:
-    case Arrow:
-    case Circle:
-    case CrossFill:
-    case ArrowHeadFilled:
-    case SemiCircle:
-    case ThirdCircle:
-    case QuarterCircle:
-    case QuarterSquare:
-    case HalfSquare:
-    case DiagonalHalfSquare:
-    case RightHalfTriangle:
-    case LeftHalfTriangle:
-    case AsteriskFill:
+    case Qgis::MarkerShape::Square:
+    case Qgis::MarkerShape::Diamond:
+    case Qgis::MarkerShape::Pentagon:
+    case Qgis::MarkerShape::Hexagon:
+    case Qgis::MarkerShape::Octagon:
+    case Qgis::MarkerShape::SquareWithCorners:
+    case Qgis::MarkerShape::Triangle:
+    case Qgis::MarkerShape::EquilateralTriangle:
+    case Qgis::MarkerShape::Star:
+    case Qgis::MarkerShape::Arrow:
+    case Qgis::MarkerShape::Circle:
+    case Qgis::MarkerShape::CrossFill:
+    case Qgis::MarkerShape::ArrowHeadFilled:
+    case Qgis::MarkerShape::SemiCircle:
+    case Qgis::MarkerShape::ThirdCircle:
+    case Qgis::MarkerShape::QuarterCircle:
+    case Qgis::MarkerShape::QuarterSquare:
+    case Qgis::MarkerShape::HalfSquare:
+    case Qgis::MarkerShape::DiagonalHalfSquare:
+    case Qgis::MarkerShape::RightHalfTriangle:
+    case Qgis::MarkerShape::LeftHalfTriangle:
+    case Qgis::MarkerShape::AsteriskFill:
       return true;
 
-    case Cross:
-    case Cross2:
-    case Line:
-    case ArrowHead:
-    case HalfArc:
-    case ThirdArc:
-    case QuarterArc:
+    case Qgis::MarkerShape::Cross:
+    case Qgis::MarkerShape::Cross2:
+    case Qgis::MarkerShape::Line:
+    case Qgis::MarkerShape::ArrowHead:
+    case Qgis::MarkerShape::HalfArc:
+    case Qgis::MarkerShape::ThirdArc:
+    case Qgis::MarkerShape::QuarterArc:
       return false;
   }
   return true;
@@ -168,7 +168,7 @@ void QgsSimpleMarkerSymbolLayerBase::startRender( QgsSymbolRenderContext &contex
   if ( !hasDataDefinedSize )
   {
     double scaledSize = context.renderContext().convertToPainterUnits( mSize, mSizeUnit, mSizeMapUnitScale );
-    if ( mSizeUnit == QgsUnitTypes::RenderMetersInMapUnits && context.renderContext().flags() & QgsRenderContext::RenderSymbolPreview )
+    if ( mSizeUnit == QgsUnitTypes::RenderMetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
     {
       // rendering for symbol previews -- an size in meters in map units can't be calculated, so treat the size as millimeters
       // and clamp it to a reasonable range. It's the best we can do in this situation!
@@ -220,14 +220,14 @@ void QgsSimpleMarkerSymbolLayerBase::renderPoint( QPointF point, QgsSymbolRender
   //data defined shape?
   bool createdNewPath = false;
   bool ok = true;
-  Shape symbol = mShape;
+  Qgis::MarkerShape symbol = mShape;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyName ) )
   {
     context.setOriginalValueVariable( encodeShape( symbol ) );
     const QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyName, context.renderContext().expressionContext() );
     if ( !exprVal.isNull() )
     {
-      const Shape decoded = decodeShape( exprVal.toString(), &ok );
+      const Qgis::MarkerShape decoded = decodeShape( exprVal.toString(), &ok );
       if ( ok )
       {
         symbol = decoded;
@@ -254,7 +254,7 @@ void QgsSimpleMarkerSymbolLayerBase::renderPoint( QPointF point, QgsSymbolRender
   if ( hasDataDefinedSize || createdNewPath )
   {
     double s = context.renderContext().convertToPainterUnits( scaledSize, mSizeUnit, mSizeMapUnitScale );
-    if ( mSizeUnit == QgsUnitTypes::RenderMetersInMapUnits && context.renderContext().flags() & QgsRenderContext::RenderSymbolPreview )
+    if ( mSizeUnit == QgsUnitTypes::RenderMetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
     {
       // rendering for symbol previews -- a size in meters in map units can't be calculated, so treat the size as millimeters
       // and clamp it to a reasonable range. It's the best we can do in this situation!
@@ -310,158 +310,158 @@ QRectF QgsSimpleMarkerSymbolLayerBase::bounds( QPointF point, QgsSymbolRenderCon
                                     scaledSize ) );
 }
 
-QgsSimpleMarkerSymbolLayerBase::Shape QgsSimpleMarkerSymbolLayerBase::decodeShape( const QString &name, bool *ok )
+Qgis::MarkerShape QgsSimpleMarkerSymbolLayerBase::decodeShape( const QString &name, bool *ok )
 {
   if ( ok )
     *ok = true;
   const QString cleaned = name.toLower().trimmed();
 
   if ( cleaned == QLatin1String( "square" ) || cleaned == QLatin1String( "rectangle" ) )
-    return Square;
+    return Qgis::MarkerShape::Square;
   else if ( cleaned == QLatin1String( "square_with_corners" ) )
-    return SquareWithCorners;
+    return Qgis::MarkerShape::SquareWithCorners;
   else if ( cleaned == QLatin1String( "diamond" ) )
-    return Diamond;
+    return Qgis::MarkerShape::Diamond;
   else if ( cleaned == QLatin1String( "pentagon" ) )
-    return Pentagon;
+    return Qgis::MarkerShape::Pentagon;
   else if ( cleaned == QLatin1String( "hexagon" ) )
-    return Hexagon;
+    return Qgis::MarkerShape::Hexagon;
   else if ( cleaned == QLatin1String( "octagon" ) )
-    return Octagon;
+    return Qgis::MarkerShape::Octagon;
   else if ( cleaned == QLatin1String( "triangle" ) )
-    return Triangle;
+    return Qgis::MarkerShape::Triangle;
   else if ( cleaned == QLatin1String( "equilateral_triangle" ) )
-    return EquilateralTriangle;
+    return Qgis::MarkerShape::EquilateralTriangle;
   else if ( cleaned == QLatin1String( "star" ) || cleaned == QLatin1String( "regular_star" ) )
-    return Star;
+    return Qgis::MarkerShape::Star;
   else if ( cleaned == QLatin1String( "arrow" ) )
-    return Arrow;
+    return Qgis::MarkerShape::Arrow;
   else if ( cleaned == QLatin1String( "circle" ) )
-    return Circle;
+    return Qgis::MarkerShape::Circle;
   else if ( cleaned == QLatin1String( "cross" ) )
-    return Cross;
+    return Qgis::MarkerShape::Cross;
   else if ( cleaned == QLatin1String( "cross_fill" ) )
-    return CrossFill;
+    return Qgis::MarkerShape::CrossFill;
   else if ( cleaned == QLatin1String( "cross2" ) || cleaned == QLatin1String( "x" ) )
-    return Cross2;
+    return Qgis::MarkerShape::Cross2;
   else if ( cleaned == QLatin1String( "line" ) )
-    return Line;
+    return Qgis::MarkerShape::Line;
   else if ( cleaned == QLatin1String( "arrowhead" ) )
-    return ArrowHead;
+    return Qgis::MarkerShape::ArrowHead;
   else if ( cleaned == QLatin1String( "filled_arrowhead" ) )
-    return ArrowHeadFilled;
+    return Qgis::MarkerShape::ArrowHeadFilled;
   else if ( cleaned == QLatin1String( "semi_circle" ) )
-    return SemiCircle;
+    return Qgis::MarkerShape::SemiCircle;
   else if ( cleaned == QLatin1String( "third_circle" ) )
-    return ThirdCircle;
+    return Qgis::MarkerShape::ThirdCircle;
   else if ( cleaned == QLatin1String( "quarter_circle" ) )
-    return QuarterCircle;
+    return Qgis::MarkerShape::QuarterCircle;
   else if ( cleaned == QLatin1String( "quarter_square" ) )
-    return QuarterSquare;
+    return Qgis::MarkerShape::QuarterSquare;
   else if ( cleaned == QLatin1String( "half_square" ) )
-    return HalfSquare;
+    return Qgis::MarkerShape::HalfSquare;
   else if ( cleaned == QLatin1String( "diagonal_half_square" ) )
-    return DiagonalHalfSquare;
+    return Qgis::MarkerShape::DiagonalHalfSquare;
   else if ( cleaned == QLatin1String( "right_half_triangle" ) )
-    return RightHalfTriangle;
+    return Qgis::MarkerShape::RightHalfTriangle;
   else if ( cleaned == QLatin1String( "left_half_triangle" ) )
-    return LeftHalfTriangle;
+    return Qgis::MarkerShape::LeftHalfTriangle;
   else if ( cleaned == QLatin1String( "asterisk_fill" ) )
-    return AsteriskFill;
+    return Qgis::MarkerShape::AsteriskFill;
   else if ( cleaned == QLatin1String( "half_arc" ) )
-    return HalfArc;
+    return Qgis::MarkerShape::HalfArc;
   else if ( cleaned == QLatin1String( "third_arc" ) )
-    return ThirdArc;
+    return Qgis::MarkerShape::ThirdArc;
   else if ( cleaned == QLatin1String( "quarter_arc" ) )
-    return QuarterArc;
+    return Qgis::MarkerShape::QuarterArc;
 
   if ( ok )
     *ok = false;
-  return Circle;
+  return Qgis::MarkerShape::Circle;
 }
 
-QString QgsSimpleMarkerSymbolLayerBase::encodeShape( QgsSimpleMarkerSymbolLayerBase::Shape shape )
+QString QgsSimpleMarkerSymbolLayerBase::encodeShape( Qgis::MarkerShape shape )
 {
   switch ( shape )
   {
-    case Square:
+    case Qgis::MarkerShape::Square:
       return QStringLiteral( "square" );
-    case QuarterSquare:
+    case Qgis::MarkerShape::QuarterSquare:
       return QStringLiteral( "quarter_square" );
-    case HalfSquare:
+    case Qgis::MarkerShape::HalfSquare:
       return QStringLiteral( "half_square" );
-    case DiagonalHalfSquare:
+    case Qgis::MarkerShape::DiagonalHalfSquare:
       return QStringLiteral( "diagonal_half_square" );
-    case Diamond:
+    case Qgis::MarkerShape::Diamond:
       return QStringLiteral( "diamond" );
-    case Pentagon:
+    case Qgis::MarkerShape::Pentagon:
       return QStringLiteral( "pentagon" );
-    case Hexagon:
+    case Qgis::MarkerShape::Hexagon:
       return QStringLiteral( "hexagon" );
-    case Octagon:
+    case Qgis::MarkerShape::Octagon:
       return QStringLiteral( "octagon" );
-    case SquareWithCorners:
+    case Qgis::MarkerShape::SquareWithCorners:
       return QStringLiteral( "square_with_corners" );
-    case Triangle:
+    case Qgis::MarkerShape::Triangle:
       return QStringLiteral( "triangle" );
-    case EquilateralTriangle:
+    case Qgis::MarkerShape::EquilateralTriangle:
       return QStringLiteral( "equilateral_triangle" );
-    case LeftHalfTriangle:
+    case Qgis::MarkerShape::LeftHalfTriangle:
       return QStringLiteral( "left_half_triangle" );
-    case RightHalfTriangle:
+    case Qgis::MarkerShape::RightHalfTriangle:
       return QStringLiteral( "right_half_triangle" );
-    case Star:
+    case Qgis::MarkerShape::Star:
       return QStringLiteral( "star" );
-    case Arrow:
+    case Qgis::MarkerShape::Arrow:
       return QStringLiteral( "arrow" );
-    case ArrowHeadFilled:
+    case Qgis::MarkerShape::ArrowHeadFilled:
       return QStringLiteral( "filled_arrowhead" );
-    case CrossFill:
+    case Qgis::MarkerShape::CrossFill:
       return QStringLiteral( "cross_fill" );
-    case Circle:
+    case Qgis::MarkerShape::Circle:
       return QStringLiteral( "circle" );
-    case Cross:
+    case Qgis::MarkerShape::Cross:
       return QStringLiteral( "cross" );
-    case Cross2:
+    case Qgis::MarkerShape::Cross2:
       return QStringLiteral( "cross2" );
-    case Line:
+    case Qgis::MarkerShape::Line:
       return QStringLiteral( "line" );
-    case ArrowHead:
+    case Qgis::MarkerShape::ArrowHead:
       return QStringLiteral( "arrowhead" );
-    case SemiCircle:
+    case Qgis::MarkerShape::SemiCircle:
       return QStringLiteral( "semi_circle" );
-    case ThirdCircle:
+    case Qgis::MarkerShape::ThirdCircle:
       return QStringLiteral( "third_circle" );
-    case QuarterCircle:
+    case Qgis::MarkerShape::QuarterCircle:
       return QStringLiteral( "quarter_circle" );
-    case AsteriskFill:
+    case Qgis::MarkerShape::AsteriskFill:
       return QStringLiteral( "asterisk_fill" );
-    case HalfArc:
+    case Qgis::MarkerShape::HalfArc:
       return QStringLiteral( "half_arc" );
-    case ThirdArc:
+    case Qgis::MarkerShape::ThirdArc:
       return QStringLiteral( "third_arc" );
-    case QuarterArc:
+    case Qgis::MarkerShape::QuarterArc:
       return QStringLiteral( "quarter_arc" );
   }
   return QString();
 }
 
-bool QgsSimpleMarkerSymbolLayerBase::prepareMarkerShape( QgsSimpleMarkerSymbolLayerBase::Shape shape )
+bool QgsSimpleMarkerSymbolLayerBase::prepareMarkerShape( Qgis::MarkerShape shape )
 {
   return shapeToPolygon( shape, mPolygon );
 }
 
-bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( QgsSimpleMarkerSymbolLayerBase::Shape shape, QPolygonF &polygon ) const
+bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( Qgis::MarkerShape shape, QPolygonF &polygon ) const
 {
   polygon.clear();
 
   switch ( shape )
   {
-    case Square:
+    case Qgis::MarkerShape::Square:
       polygon = QPolygonF( QRectF( QPointF( -1, -1 ), QPointF( 1, 1 ) ) );
       return true;
 
-    case SquareWithCorners:
+    case Qgis::MarkerShape::SquareWithCorners:
     {
       static constexpr double VERTEX_OFFSET_FROM_ORIGIN = 0.6072;
 
@@ -477,24 +477,24 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( QgsSimpleMarkerSymbolLayerB
       return true;
     }
 
-    case QuarterSquare:
+    case Qgis::MarkerShape::QuarterSquare:
       polygon = QPolygonF( QRectF( QPointF( -1, -1 ), QPointF( 0, 0 ) ) );
       return true;
 
-    case HalfSquare:
+    case Qgis::MarkerShape::HalfSquare:
       polygon = QPolygonF( QRectF( QPointF( -1, -1 ), QPointF( 0, 1 ) ) );
       return true;
 
-    case DiagonalHalfSquare:
+    case Qgis::MarkerShape::DiagonalHalfSquare:
       polygon << QPointF( -1, -1 ) << QPointF( 1, 1 ) << QPointF( -1, 1 ) << QPointF( -1, -1 );
       return true;
 
-    case Diamond:
+    case Qgis::MarkerShape::Diamond:
       polygon << QPointF( -1, 0 ) << QPointF( 0, 1 )
               << QPointF( 1, 0 ) << QPointF( 0, -1 ) << QPointF( -1, 0 );
       return true;
 
-    case Pentagon:
+    case Qgis::MarkerShape::Pentagon:
       /* angular-representation of hardcoded values used
       polygon << QPointF( std::sin( DEG2RAD( 288.0 ) ), - std::cos( DEG2RAD( 288.0 ) ) )
       << QPointF( std::sin( DEG2RAD( 216.0 ) ), - std::cos( DEG2RAD( 216.0 ) ) )
@@ -509,7 +509,7 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( QgsSimpleMarkerSymbolLayerB
               << QPointF( -0.9511, -0.3090 );
       return true;
 
-    case Hexagon:
+    case Qgis::MarkerShape::Hexagon:
       /* angular-representation of hardcoded values used
       polygon << QPointF( std::sin( DEG2RAD( 300.0 ) ), - std::cos( DEG2RAD( 300.0 ) ) )
       << QPointF( std::sin( DEG2RAD( 240.0 ) ), - std::cos( DEG2RAD( 240.0 ) ) )
@@ -526,7 +526,7 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( QgsSimpleMarkerSymbolLayerB
               << QPointF( -0.8660, -0.5 );
       return true;
 
-    case Octagon:
+    case Qgis::MarkerShape::Octagon:
     {
       static constexpr double VERTEX_OFFSET_FROM_ORIGIN = 1.0 / ( 1 + M_SQRT2 );
 
@@ -542,11 +542,11 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( QgsSimpleMarkerSymbolLayerB
       return true;
     }
 
-    case Triangle:
+    case Qgis::MarkerShape::Triangle:
       polygon << QPointF( -1, 1 ) << QPointF( 1, 1 ) << QPointF( 0, -1 ) << QPointF( -1, 1 );
       return true;
 
-    case EquilateralTriangle:
+    case Qgis::MarkerShape::EquilateralTriangle:
       /* angular-representation of hardcoded values used
       polygon << QPointF( std::sin( DEG2RAD( 240.0 ) ), - std::cos( DEG2RAD( 240.0 ) ) )
       << QPointF( std::sin( DEG2RAD( 120.0 ) ), - std::cos( DEG2RAD( 120.0 ) ) )
@@ -557,15 +557,15 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( QgsSimpleMarkerSymbolLayerB
               << QPointF( -0.8660, 0.5 );
       return true;
 
-    case LeftHalfTriangle:
+    case Qgis::MarkerShape::LeftHalfTriangle:
       polygon << QPointF( 0, 1 ) << QPointF( 1, 1 ) << QPointF( 0, -1 ) << QPointF( 0, 1 );
       return true;
 
-    case RightHalfTriangle:
+    case Qgis::MarkerShape::RightHalfTriangle:
       polygon << QPointF( -1, 1 ) << QPointF( 0, 1 ) << QPointF( 0, -1 ) << QPointF( -1, 1 );
       return true;
 
-    case Star:
+    case Qgis::MarkerShape::Star:
     {
       const double inner_r = std::cos( DEG2RAD( 72.0 ) ) / std::cos( DEG2RAD( 36.0 ) );
 
@@ -583,7 +583,7 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( QgsSimpleMarkerSymbolLayerB
       return true;
     }
 
-    case Arrow:
+    case Qgis::MarkerShape::Arrow:
       polygon << QPointF( 0, -1 )
               << QPointF( 0.5,  -0.5 )
               << QPointF( 0.25, -0.5 )
@@ -594,11 +594,11 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( QgsSimpleMarkerSymbolLayerB
               << QPointF( 0, -1 );
       return true;
 
-    case ArrowHeadFilled:
+    case Qgis::MarkerShape::ArrowHeadFilled:
       polygon << QPointF( 0, 0 ) << QPointF( -1, 1 ) << QPointF( -1, -1 ) << QPointF( 0, 0 );
       return true;
 
-    case CrossFill:
+    case Qgis::MarkerShape::CrossFill:
       polygon << QPointF( -1, -0.2 )
               << QPointF( -1, -0.2 )
               << QPointF( -1, 0.2 )
@@ -615,7 +615,7 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( QgsSimpleMarkerSymbolLayerB
               << QPointF( -1, -0.2 );
       return true;
 
-    case AsteriskFill:
+    case Qgis::MarkerShape::AsteriskFill:
     {
       static constexpr double THICKNESS = 0.3;
       static constexpr double HALF_THICKNESS = THICKNESS / 2.0;
@@ -651,107 +651,107 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( QgsSimpleMarkerSymbolLayerB
       return true;
     }
 
-    case Circle:
-    case Cross:
-    case Cross2:
-    case Line:
-    case ArrowHead:
-    case SemiCircle:
-    case ThirdCircle:
-    case QuarterCircle:
-    case HalfArc:
-    case ThirdArc:
-    case QuarterArc:
+    case Qgis::MarkerShape::Circle:
+    case Qgis::MarkerShape::Cross:
+    case Qgis::MarkerShape::Cross2:
+    case Qgis::MarkerShape::Line:
+    case Qgis::MarkerShape::ArrowHead:
+    case Qgis::MarkerShape::SemiCircle:
+    case Qgis::MarkerShape::ThirdCircle:
+    case Qgis::MarkerShape::QuarterCircle:
+    case Qgis::MarkerShape::HalfArc:
+    case Qgis::MarkerShape::ThirdArc:
+    case Qgis::MarkerShape::QuarterArc:
       return false;
   }
 
   return false;
 }
 
-bool QgsSimpleMarkerSymbolLayerBase::prepareMarkerPath( QgsSimpleMarkerSymbolLayerBase::Shape symbol )
+bool QgsSimpleMarkerSymbolLayerBase::prepareMarkerPath( Qgis::MarkerShape symbol )
 {
   mPath = QPainterPath();
 
   switch ( symbol )
   {
-    case Circle:
+    case Qgis::MarkerShape::Circle:
 
       mPath.addEllipse( QRectF( -1, -1, 2, 2 ) ); // x,y,w,h
       return true;
 
-    case SemiCircle:
+    case Qgis::MarkerShape::SemiCircle:
       mPath.arcTo( -1, -1, 2, 2, 0, 180 );
       mPath.lineTo( 0, 0 );
       return true;
 
-    case ThirdCircle:
+    case Qgis::MarkerShape::ThirdCircle:
       mPath.arcTo( -1, -1, 2, 2, 90, 120 );
       mPath.lineTo( 0, 0 );
       return true;
 
-    case QuarterCircle:
+    case Qgis::MarkerShape::QuarterCircle:
       mPath.arcTo( -1, -1, 2, 2, 90, 90 );
       mPath.lineTo( 0, 0 );
       return true;
 
-    case HalfArc:
+    case Qgis::MarkerShape::HalfArc:
       mPath.moveTo( 1, 0 );
       mPath.arcTo( -1, -1, 2, 2, 0, 180 );
       return true;
 
-    case ThirdArc:
+    case Qgis::MarkerShape::ThirdArc:
       mPath.moveTo( 0, -1 );
       mPath.arcTo( -1, -1, 2, 2, 90, 120 );
       return true;
 
-    case QuarterArc:
+    case Qgis::MarkerShape::QuarterArc:
       mPath.moveTo( 0, -1 );
       mPath.arcTo( -1, -1, 2, 2, 90, 90 );
       return true;
 
-    case Cross:
+    case Qgis::MarkerShape::Cross:
       mPath.moveTo( -1, 0 );
       mPath.lineTo( 1, 0 ); // horizontal
       mPath.moveTo( 0, -1 );
       mPath.lineTo( 0, 1 ); // vertical
       return true;
 
-    case Cross2:
+    case Qgis::MarkerShape::Cross2:
       mPath.moveTo( -1, -1 );
       mPath.lineTo( 1, 1 );
       mPath.moveTo( 1, -1 );
       mPath.lineTo( -1, 1 );
       return true;
 
-    case Line:
+    case Qgis::MarkerShape::Line:
       mPath.moveTo( 0, -1 );
       mPath.lineTo( 0, 1 ); // vertical line
       return true;
 
-    case ArrowHead:
+    case Qgis::MarkerShape::ArrowHead:
       mPath.moveTo( -1, -1 );
       mPath.lineTo( 0, 0 );
       mPath.lineTo( -1, 1 );
       return true;
 
-    case Square:
-    case SquareWithCorners:
-    case QuarterSquare:
-    case HalfSquare:
-    case DiagonalHalfSquare:
-    case Diamond:
-    case Pentagon:
-    case Hexagon:
-    case Octagon:
-    case Triangle:
-    case EquilateralTriangle:
-    case LeftHalfTriangle:
-    case RightHalfTriangle:
-    case Star:
-    case Arrow:
-    case ArrowHeadFilled:
-    case CrossFill:
-    case AsteriskFill:
+    case Qgis::MarkerShape::Square:
+    case Qgis::MarkerShape::SquareWithCorners:
+    case Qgis::MarkerShape::QuarterSquare:
+    case Qgis::MarkerShape::HalfSquare:
+    case Qgis::MarkerShape::DiagonalHalfSquare:
+    case Qgis::MarkerShape::Diamond:
+    case Qgis::MarkerShape::Pentagon:
+    case Qgis::MarkerShape::Hexagon:
+    case Qgis::MarkerShape::Octagon:
+    case Qgis::MarkerShape::Triangle:
+    case Qgis::MarkerShape::EquilateralTriangle:
+    case Qgis::MarkerShape::LeftHalfTriangle:
+    case Qgis::MarkerShape::RightHalfTriangle:
+    case Qgis::MarkerShape::Star:
+    case Qgis::MarkerShape::Arrow:
+    case Qgis::MarkerShape::ArrowHeadFilled:
+    case Qgis::MarkerShape::CrossFill:
+    case Qgis::MarkerShape::AsteriskFill:
       return false;
   }
   return false;
@@ -838,7 +838,7 @@ void QgsSimpleMarkerSymbolLayerBase::calculateOffsetAndRotation( QgsSymbolRender
 // QgsSimpleMarkerSymbolLayer
 //
 
-QgsSimpleMarkerSymbolLayer::QgsSimpleMarkerSymbolLayer( QgsSimpleMarkerSymbolLayerBase::Shape shape, double size, double angle, Qgis::ScaleMethod scaleMethod, const QColor &color, const QColor &strokeColor, Qt::PenJoinStyle penJoinStyle )
+QgsSimpleMarkerSymbolLayer::QgsSimpleMarkerSymbolLayer( Qgis::MarkerShape shape, double size, double angle, Qgis::ScaleMethod scaleMethod, const QColor &color, const QColor &strokeColor, Qt::PenJoinStyle penJoinStyle )
   : QgsSimpleMarkerSymbolLayerBase( shape, size, angle, scaleMethod )
   , mStrokeColor( strokeColor )
   , mPenJoinStyle( penJoinStyle )
@@ -850,7 +850,7 @@ QgsSimpleMarkerSymbolLayer::~QgsSimpleMarkerSymbolLayer() = default;
 
 QgsSymbolLayer *QgsSimpleMarkerSymbolLayer::create( const QVariantMap &props )
 {
-  Shape shape = Circle;
+  Qgis::MarkerShape shape = Qgis::MarkerShape::Circle;
   QColor color = DEFAULT_SIMPLEMARKER_COLOR;
   QColor strokeColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR;
   Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEMARKER_JOINSTYLE;
@@ -1023,7 +1023,7 @@ void QgsSimpleMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 bool QgsSimpleMarkerSymbolLayer::prepareCache( QgsSymbolRenderContext &context )
 {
   double scaledSize = context.renderContext().convertToPainterUnits( mSize, mSizeUnit, mSizeMapUnitScale );
-  if ( mSizeUnit == QgsUnitTypes::RenderMetersInMapUnits && context.renderContext().flags() & QgsRenderContext::RenderSymbolPreview )
+  if ( mSizeUnit == QgsUnitTypes::RenderMetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
   {
     // rendering for symbol previews -- a size in meters in map units can't be calculated, so treat the size as millimeters
     // and clamp it to a reasonable range. It's the best we can do in this situation!
@@ -1092,7 +1092,7 @@ bool QgsSimpleMarkerSymbolLayer::prepareCache( QgsSymbolRenderContext &context )
   return true;
 }
 
-void QgsSimpleMarkerSymbolLayer::draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path )
+void QgsSimpleMarkerSymbolLayer::draw( QgsSymbolRenderContext &context, Qgis::MarkerShape shape, const QPolygonF &polygon, const QPainterPath &path )
 {
   //making changes here? Don't forget to also update ::bounds if the changes affect the bounding box
   //of the rendered point!
@@ -1389,7 +1389,7 @@ QgsSymbolLayer *QgsSimpleMarkerSymbolLayer::createFromSld( QDomElement &element 
   QPointF offset;
   QgsSymbolLayerUtils::displacementFromSldElement( graphicElem, offset );
 
-  const Shape shape = decodeShape( name );
+  const Qgis::MarkerShape shape = decodeShape( name );
 
   const QString uom = element.attribute( QStringLiteral( "uom" ) );
   size = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, size );
@@ -1506,7 +1506,7 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScal
     angle = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyAngle, context.renderContext().expressionContext(), mAngle ) + mLineAngle;
   }
 
-  Shape shape = mShape;
+  Qgis::MarkerShape shape = mShape;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyName ) )
   {
     context.setOriginalValueVariable( encodeShape( shape ) );
@@ -1549,7 +1549,7 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScal
     if ( mPen.style() != Qt::NoPen )
       e.writePolyline( p, layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
   }
-  else if ( shape == Circle )
+  else if ( shape == Qgis::MarkerShape::Circle )
   {
     shift += QPointF( off.x(), -off.y() );
     if ( mBrush.style() != Qt::NoBrush )
@@ -1557,7 +1557,7 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScal
     if ( mPen.style() != Qt::NoPen )
       e.writeCircle( layerName, pc, QgsPoint( shift ), halfSize, QStringLiteral( "CONTINUOUS" ), strokeWidth );
   }
-  else if ( shape == Line )
+  else if ( shape == Qgis::MarkerShape::Line )
   {
     const QPointF pt1 = t.map( QPointF( 0, -halfSize ) );
     const QPointF pt2 = t.map( QPointF( 0, halfSize ) );
@@ -1565,7 +1565,7 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScal
     if ( mPen.style() != Qt::NoPen )
       e.writeLine( QgsPoint( pt1 ), QgsPoint( pt2 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
   }
-  else if ( shape == Cross )
+  else if ( shape == Qgis::MarkerShape::Cross )
   {
     if ( mPen.style() != Qt::NoPen )
     {
@@ -1578,7 +1578,7 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScal
       e.writeLine( QgsPoint( pt3 ), QgsPoint( pt4 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
     }
   }
-  else if ( shape == Cross2 )
+  else if ( shape == Qgis::MarkerShape::Cross2 )
   {
     if ( mPen.style() != Qt::NoPen )
     {
@@ -1591,7 +1591,7 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScal
       e.writeLine( QgsPoint( pt3 ), QgsPoint( pt4 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
     }
   }
-  else if ( shape == ArrowHead )
+  else if ( shape == Qgis::MarkerShape::ArrowHead )
   {
     if ( mPen.style() != Qt::NoPen )
     {
@@ -1720,7 +1720,7 @@ QColor QgsSimpleMarkerSymbolLayer::color() const
 // QgsFilledMarkerSymbolLayer
 //
 
-QgsFilledMarkerSymbolLayer::QgsFilledMarkerSymbolLayer( QgsSimpleMarkerSymbolLayerBase::Shape shape, double size, double angle, Qgis::ScaleMethod scaleMethod )
+QgsFilledMarkerSymbolLayer::QgsFilledMarkerSymbolLayer( Qgis::MarkerShape shape, double size, double angle, Qgis::ScaleMethod scaleMethod )
   : QgsSimpleMarkerSymbolLayerBase( shape, size, angle, scaleMethod )
 {
   mFill.reset( static_cast<QgsFillSymbol *>( QgsFillSymbol::createSimple( QVariantMap() ) ) );
@@ -1889,7 +1889,7 @@ bool QgsFilledMarkerSymbolLayer::usesMapUnits() const
          || ( mFill && mFill->usesMapUnits() );
 }
 
-void QgsFilledMarkerSymbolLayer::draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path )
+void QgsFilledMarkerSymbolLayer::draw( QgsSymbolRenderContext &context, Qgis::MarkerShape shape, const QPolygonF &polygon, const QPainterPath &path )
 {
   //making changes here? Don't forget to also update ::bounds if the changes affect the bounding box
   //of the rendered point!
@@ -1913,6 +1913,9 @@ void QgsFilledMarkerSymbolLayer::draw( QgsSymbolRenderContext &context, QgsSimpl
   }
   p->setPen( Qt::black );
 
+  const bool prevIsSubsymbol = context.renderContext().flags() & Qgis::RenderContextFlag::RenderingSubSymbol;
+  context.renderContext().setFlag( Qgis::RenderContextFlag::RenderingSubSymbol );
+
   if ( !polygon.isEmpty() )
   {
     mFill->renderPolygon( polygon, /* rings */ nullptr, context.feature(), context.renderContext(), -1, context.selected() );
@@ -1922,6 +1925,8 @@ void QgsFilledMarkerSymbolLayer::draw( QgsSymbolRenderContext &context, QgsSimpl
     const QPolygonF poly = path.toFillPolygon();
     mFill->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext(), -1, context.selected() );
   }
+
+  context.renderContext().setFlag( Qgis::RenderContextFlag::RenderingSubSymbol, prevIsSubsymbol );
 
   mFill->setOpacity( prevOpacity );
 }
@@ -2221,7 +2226,7 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
       // adjust height of data defined path
       const QSizeF svgViewbox = QgsApplication::svgCache()->svgViewboxSize( path, scaledWidth, fillColor, strokeColor, strokeWidth,
                                 context.renderContext().scaleFactor(), aspectRatio,
-                                ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ), evaluatedParameters );
+                                ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ), evaluatedParameters );
       scaledHeight = svgViewbox.isValid() ? scaledWidth * svgViewbox.height() / svgViewbox.width() : scaledWidth;
     }
   }
@@ -2243,13 +2248,13 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
   {
     QImage img = QgsApplication::svgCache()->svgAsImage( path, width, fillColor, strokeColor, strokeWidth,
                  context.renderContext().scaleFactor(), fitsInCache, aspectRatio,
-                 ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ), evaluatedParameters );
+                 ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ), evaluatedParameters );
     if ( fitsInCache && img.width() > 1 )
     {
       usePict = false;
 
       if ( context.selected() )
-        QgsImageOperation::adjustHueSaturation( img, 1.0, context.renderContext().selectionColor(), 1.0 );
+        QgsImageOperation::adjustHueSaturation( img, 1.0, context.renderContext().selectionColor(), 1.0, context.renderContext().feedback() );
 
       //consider transparency
       if ( !qgsDoubleNear( context.opacity(), 1.0 ) )
@@ -2270,7 +2275,7 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
     p->setOpacity( context.opacity() );
     const QPicture pct = QgsApplication::svgCache()->svgAsPicture( path, width, fillColor, strokeColor, strokeWidth,
                          context.renderContext().scaleFactor(), context.renderContext().forceVectorOutput(), aspectRatio,
-                         ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ), evaluatedParameters );
+                         ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ), evaluatedParameters );
     if ( pct.width() > 1 )
     {
       const QgsScopedQPainterState painterPictureState( p );
@@ -2654,7 +2659,7 @@ bool QgsSvgMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFa
 
   const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( path, size, fillColor, strokeColor, strokeWidth,
                                  context.renderContext().scaleFactor(), mFixedAspectRatio,
-                                 ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ), evaluatedParameters );
+                                 ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ), evaluatedParameters );
 
   QSvgRenderer r( svgContent );
   if ( !r.isValid() )
@@ -2740,7 +2745,7 @@ QRectF QgsSvgMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &c
       // adjust height of data defined path
       const QSizeF svgViewbox = QgsApplication::svgCache()->svgViewboxSize( path, scaledWidth, fillColor, strokeColor, strokeWidth,
                                 context.renderContext().scaleFactor(), aspectRatio,
-                                ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ), evaluatedParameters );
+                                ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ), evaluatedParameters );
       scaledHeight = svgViewbox.isValid() ? scaledWidth * svgViewbox.height() / svgViewbox.width() : scaledWidth;
     }
   }
@@ -2961,11 +2966,11 @@ void QgsRasterMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderCont
   opacity *= context.opacity();
 
   bool cached;
-  QImage img = QgsApplication::imageCache()->pathAsImage( path, QSize( width, preservedAspectRatio() ? 0 : width * aspectRatio ), preservedAspectRatio(), opacity, cached, ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ) );
+  QImage img = QgsApplication::imageCache()->pathAsImage( path, QSize( width, preservedAspectRatio() ? 0 : width * aspectRatio ), preservedAspectRatio(), opacity, cached, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
   if ( !img.isNull() )
   {
     if ( context.selected() )
-      QgsImageOperation::adjustHueSaturation( img, 1.0, context.renderContext().selectionColor(), 1.0 );
+      QgsImageOperation::adjustHueSaturation( img, 1.0, context.renderContext().selectionColor(), 1.0, context.renderContext().feedback() );
 
     p->drawImage( -img.width() / 2.0, -img.height() / 2.0, img );
   }

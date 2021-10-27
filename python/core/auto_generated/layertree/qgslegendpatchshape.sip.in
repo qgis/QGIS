@@ -8,6 +8,7 @@
 
 
 
+
 class QgsLegendPatchShape
 {
 %Docstring(signature="appended")
@@ -109,6 +110,39 @@ it is resized to fit a desired legend patch size.
 The default behavior is to respect the :py:func:`~QgsLegendPatchShape.geometry`'s aspect ratio.
 
 .. seealso:: :py:func:`setPreserveAspectRatio`
+%End
+
+    bool scaleToOutputSize() const;
+%Docstring
+Returns ``True`` if the patch shape should by resized to the desired target size
+when rendering.
+
+Resizing to the target size is the default behavior.
+
+.. seealso:: :py:func:`setScaleToOutputSize`
+
+.. versionadded:: 3.22
+%End
+
+    void setScaleToOutputSize( bool scale );
+%Docstring
+Sets whether the patch shape should by resized to the desired target size
+when rendering.
+
+Resizing to the target size is the default behavior.
+
+.. seealso:: :py:func:`scaleToOutputSize`
+
+.. versionadded:: 3.22
+%End
+
+    QgsGeometry scaledGeometry( QSizeF size ) const;
+%Docstring
+Returns the patch shape's geometry, scaled to the given size.
+
+Note that if :py:func:`~QgsLegendPatchShape.scaleToOutputSize` is ``False`` then no scaling will be applied.
+
+.. versionadded:: 3.22
 %End
 
     QList< QList< QPolygonF > > toQPolygonF( Qgis::SymbolType type, QSizeF size ) const;

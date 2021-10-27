@@ -1522,6 +1522,28 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.background().setSizeUnit(QgsUnitTypes.RenderMapUnits)
         assert self.checkRender(format, 'background_rect_mapunits', QgsTextRenderer.Background)
 
+    def testDrawBackgroundRectangleFixedSizeWithRotatedText(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(40)
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(20, 20))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRenderPoint(format, 'background_rect_fixed_rotated_text', angle=3.141 / 4)
+
+    def testDrawBackgroundRectangleBufferSizeWithRotatedText(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(40)
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(2, 3))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeBuffer)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRenderPoint(format, 'background_rect_buffer_rotated_text', angle=3.141 / 4)
+
     def testDrawBackgroundRectangleMultilineFixedSizeMapUnits(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))

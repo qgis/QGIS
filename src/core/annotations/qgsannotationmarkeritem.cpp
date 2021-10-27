@@ -192,7 +192,7 @@ QgsRectangle QgsAnnotationMarkerItem::boundingBox( QgsRenderContext &context ) c
   const QgsPointXY bottomRight = context.mapToPixel().toMapCoordinates( boundsInPixels.right(), boundsInPixels.bottom() );
 
   const QgsRectangle boundsMapUnits = QgsRectangle( topLeft.x(), bottomLeft.y(), bottomRight.x(), topRight.y() );
-  return context.coordinateTransform().transformBoundingBox( boundsMapUnits, QgsCoordinateTransform::ReverseTransform );
+  return context.coordinateTransform().transformBoundingBox( boundsMapUnits, Qgis::TransformDirection::Reverse );
 }
 
 const QgsMarkerSymbol *QgsAnnotationMarkerItem::symbol() const

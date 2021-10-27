@@ -1353,6 +1353,19 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         feat = next(vl.getFeatures())
         self.assertEqual(feat.attribute('fldlonglong'), bigint)
 
+    def test_layer_starting_with_digit(self):
+        """Test issue GH #45347"""
+
+        project = QgsProject.instance()
+        project.clear()
+        layer = QgsVectorLayer('Point?crs=epsg:4326&field=fid:integer', '1_layer', 'memory')
+        project.addMapLayers([layer])
+
+        df = QgsVirtualLayerDefinition()
+        df.setQuery('select * from "1_layer"')
+        vl = QgsVectorLayer(df.toString(), "1_layer_virtual", "virtual")
+        self.assertTrue(vl.isValid())
+
 
 if __name__ == '__main__':
     unittest.main()

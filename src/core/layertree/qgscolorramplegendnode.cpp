@@ -195,7 +195,7 @@ QSizeF QgsColorRampLegendNode::drawSymbol( const QgsLegendSettings &settings, It
     Q_NOWARN_DEPRECATED_PUSH
     tempRenderContext->setScaleFactor( settings.dpi() / 25.4 );
     tempRenderContext->setRendererScale( settings.mapScale() );
-    tempRenderContext->setFlag( QgsRenderContext::Antialiasing, true );
+    tempRenderContext->setFlag( Qgis::RenderContextFlag::Antialiasing, true );
     tempRenderContext->setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * tempRenderContext->scaleFactor() ) ) );
     Q_NOWARN_DEPRECATED_POP
     tempRenderContext->setForceVectorOutput( true );
@@ -399,7 +399,7 @@ QSizeF QgsColorRampLegendNode::drawSymbolText( const QgsLegendSettings &settings
     Q_NOWARN_DEPRECATED_PUSH
     tempRenderContext->setScaleFactor( settings.dpi() / 25.4 );
     tempRenderContext->setRendererScale( settings.mapScale() );
-    tempRenderContext->setFlag( QgsRenderContext::Antialiasing, true );
+    tempRenderContext->setFlag( Qgis::RenderContextFlag::Antialiasing, true );
     tempRenderContext->setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * tempRenderContext->scaleFactor() ) ) );
     Q_NOWARN_DEPRECATED_POP
     tempRenderContext->setForceVectorOutput( true );

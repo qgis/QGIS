@@ -911,7 +911,7 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         self.execSQLCommand("DELETE FROM user_sdo_geom_metadata  where TABLE_NAME='EMPTY_LAYER'", ignore_errors=True)
 
         uri = self.dbconn + "srid=4326 type=POINT table=\"EMPTY_LAYER\" (GEOM)"
-        exporter = QgsVectorLayerExporter(uri=uri, provider='oracle', fields=QgsFields(), geometryType=QgsWkbTypes.Point, crs=QgsCoordinateReferenceSystem(4326), overwrite=True)
+        exporter = QgsVectorLayerExporter(uri=uri, provider='oracle', fields=QgsFields(), geometryType=QgsWkbTypes.Point, crs=QgsCoordinateReferenceSystem('EPSG:4326'), overwrite=True)
         self.assertEqual(exporter.errorCount(), 0)
         self.assertEqual(exporter.errorCode(), 0)
 

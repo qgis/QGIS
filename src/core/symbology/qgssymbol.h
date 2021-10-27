@@ -18,8 +18,8 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
-#include "qgsrendercontext.h"
 #include "qgspropertycollection.h"
+#include "qgsrendercontext.h"
 
 class QgsSymbolLayer;
 class QgsLegendPatchShape;

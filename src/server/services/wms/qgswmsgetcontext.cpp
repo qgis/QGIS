@@ -135,15 +135,11 @@ namespace QgsWms
       generalElem.appendChild( windowElem );
 
       //OWS title
-      //why not use project title ?
       const QString title = QgsServerProjectUtils::owsServiceTitle( *project );
-      if ( !title.isEmpty() )
-      {
-        QDomElement titleElem = doc.createElement( QStringLiteral( "ows:Title" ) );
-        const QDomText titleText = doc.createTextNode( title );
-        titleElem.appendChild( titleText );
-        generalElem.appendChild( titleElem );
-      }
+      QDomElement titleElem = doc.createElement( QStringLiteral( "ows:Title" ) );
+      const QDomText titleText = doc.createTextNode( title );
+      titleElem.appendChild( titleText );
+      generalElem.appendChild( titleElem );
 
       //OWS abstract
       const QString abstract = QgsServerProjectUtils::owsServiceAbstract( *project );

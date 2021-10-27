@@ -29,8 +29,6 @@
 
 #include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
-#include "qgsrasterprojector.h"
-#include "qgsmapsettings.h"
 
 ///@cond PRIVATE
 

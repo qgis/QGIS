@@ -52,6 +52,11 @@ class QMenu;
 #include <qgsmaptoolemitpoint.h>
 #include <qgsmaptoolidentify.h>
 #include <qgsmaptooldigitizefeature.h>
+#include <qgsmaptoolextent.h>
+#include <qgsmaptoolidentifyfeature.h>
+#include <qgsmaptoolcapture.h>
+#include <qgsmaptooladvanceddigitizing.h>
+#include <qgsmaptooledit.h>
 % End
 #endif
 
@@ -73,10 +78,20 @@ class GUI_EXPORT QgsMapTool : public QObject
       sipType = sipType_QgsMapToolPan;
     else if ( dynamic_cast<QgsMapToolEmitPoint *>( sipCpp ) != NULL )
       sipType = sipType_QgsMapToolEmitPoint;
+    else if ( dynamic_cast<QgsMapToolExtent *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolExtent;
+    else if ( dynamic_cast<QgsMapToolIdentifyFeature *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolIdentifyFeature;
     else if ( dynamic_cast<QgsMapToolIdentify *>( sipCpp ) != NULL )
       sipType = sipType_QgsMapToolIdentify;
     else if ( dynamic_cast<QgsMapToolDigitizeFeature *>( sipCpp ) != NULL )
       sipType = sipType_QgsMapToolDigitizeFeature;
+    else if ( dynamic_cast<QgsMapToolCapture *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolCapture;
+    else if ( dynamic_cast<QgsMapToolAdvancedDigitizing *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolAdvancedDigitizing;
+    else if ( dynamic_cast<QgsMapToolEdit *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolEdit;
     else
       sipType = NULL;
     SIP_END
@@ -271,6 +286,12 @@ class GUI_EXPORT QgsMapTool : public QObject
     //! Transforms a \a point from screen coordinates to map coordinates.
     QgsPointXY toMapCoordinates( QPoint point );
 
+    /**
+     * Transforms a \a point from map coordinates to \a layer coordinates.
+     * \note This method is available in the Python bindings as toLayerCoordinatesV2.
+     */
+    QgsPoint toLayerCoordinates( const QgsMapLayer *layer, const QgsPoint &point ) SIP_PYNAME( toLayerCoordinatesV2 );
+
     //! Transforms a \a point from screen coordinates to \a layer coordinates.
     QgsPointXY toLayerCoordinates( const QgsMapLayer *layer, QPoint point );
 
@@ -291,6 +312,17 @@ class GUI_EXPORT QgsMapTool : public QObject
 
     //! Transforms a \a point from map coordinates to screen coordinates.
     QPoint toCanvasCoordinates( const QgsPointXY &point ) const;
+
+    /**
+     * Returns the map layer with the matching ID, or NULLPTR if no layers could be found.
+     *
+     * This method searches both layers associated with the map canvas (see QgsMapCanvas::layers())
+     * and layers from the QgsProject associated with the canvas. It can be used to resolve layer IDs to
+     * layers which may be visible in the canvas, but not associated with a QgsProject.
+     *
+     * \since QGIS 3.22
+     */
+    QgsMapLayer *layer( const QString &id );
 
     /**
      * Sets the tool's \a name.
@@ -320,6 +352,8 @@ class GUI_EXPORT QgsMapTool : public QObject
 
     //! The translated name of the map tool
     QString mToolName;
+
+    friend class TestQgsMapToolEdit;
 
 };
 

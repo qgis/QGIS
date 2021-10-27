@@ -61,6 +61,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
       AbsoluteAngle = 1, //!< Azimuth
       RelativeAngle = 2, //!< Also for parallel and perpendicular
       RelativeCoordinates = 4, //!< This corresponds to distance and relative coordinates
+      Distance = 8, //!< Distance
     };
     Q_DECLARE_FLAGS( CadCapacities, CadCapacity )
     Q_FLAG( CadCapacities )
@@ -194,6 +195,22 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
          */
         void toggleRelative();
 
+        /**
+         * Returns the numeric precision (decimal places) to show in the associated widget.
+         *
+         * \see setPrecision()
+         * \since QGIS 3.22
+         */
+        int precision() const { return mPrecision; }
+
+        /**
+         * Sets the numeric precision (decimal places) to show in the associated widget.
+         *
+         * \see precision()
+         * \since QGIS 3.22
+         */
+        void setPrecision( int precision );
+
       private:
         QLineEdit *mLineEdit = nullptr;
         QToolButton *mLockerButton = nullptr;
@@ -203,6 +220,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
         bool mRepeatingLock;
         bool mRelative;
         double mValue;
+        int mPrecision = 6;
     };
 
     /**
@@ -839,6 +857,12 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void settingsButtonTriggered( QAction *action );
 
   private:
+
+    /**
+     * Returns the layer currently associated with the map tool using the dock widget.
+     */
+    QgsMapLayer *targetLayer();
+
     //! updates the UI depending on activation of the tools and clear points / release locks.
     void setCadEnabled( bool enabled );
 

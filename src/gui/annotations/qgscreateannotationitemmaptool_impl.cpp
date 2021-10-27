@@ -26,8 +26,50 @@
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsapplication.h"
+#include "qgsrecentstylehandler.h"
 
 ///@cond PRIVATE
+
+//
+// QgsMapToolCaptureAnnotationItem
+//
+
+QgsMapToolCaptureAnnotationItem::QgsMapToolCaptureAnnotationItem( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )
+  : QgsMapToolCapture( canvas, cadDockWidget, mode )
+{
+
+}
+
+QgsCreateAnnotationItemMapToolHandler *QgsMapToolCaptureAnnotationItem::handler()
+{
+  return mHandler;
+}
+
+QgsMapTool *QgsMapToolCaptureAnnotationItem::mapTool()
+{
+  return this;
+}
+
+QgsMapLayer *QgsMapToolCaptureAnnotationItem::layer() const
+{
+  return mHandler->targetLayer();
+}
+
+
+QgsMapToolCapture::Capabilities QgsMapToolCaptureAnnotationItem::capabilities() const
+{
+  // no geometry validation!
+  return SupportsCurves;
+}
+
+bool QgsMapToolCaptureAnnotationItem::supportsTechnique( CaptureTechnique ) const
+{
+  return true;
+}
+
+
+
 
 //
 // QgsCreatePointTextItemMapTool
@@ -75,13 +117,10 @@ QgsMapTool *QgsCreatePointTextItemMapTool::mapTool()
 //
 
 QgsCreateMarkerItemMapTool::QgsCreateMarkerItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
-  : QgsMapToolCapture( canvas, cadDockWidget, CapturePoint )
-  , mHandler( new QgsCreateAnnotationItemMapToolHandler( canvas, cadDockWidget ) )
+  : QgsMapToolCaptureAnnotationItem( canvas, cadDockWidget, CapturePoint )
 {
-
+  mHandler = new QgsCreateAnnotationItemMapToolHandler( canvas, cadDockWidget, this );
 }
-
-QgsCreateMarkerItemMapTool::~QgsCreateMarkerItemMapTool() = default;
 
 void QgsCreateMarkerItemMapTool::cadCanvasReleaseEvent( QgsMapMouseEvent *event )
 {
@@ -90,7 +129,12 @@ void QgsCreateMarkerItemMapTool::cadCanvasReleaseEvent( QgsMapMouseEvent *event 
 
   const QgsPointXY layerPoint = toLayerCoordinates( mHandler->targetLayer(), event->mapPoint() );
   std::unique_ptr< QgsAnnotationMarkerItem > createdItem = std::make_unique< QgsAnnotationMarkerItem >( QgsPoint( layerPoint ) );
-  createdItem->setSymbol( qgis::down_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
+
+  std::unique_ptr< QgsMarkerSymbol > markerSymbol = QgsApplication::recentStyleHandler()->recentSymbol< QgsMarkerSymbol >( QStringLiteral( "marker_annotation_item" ) );
+  if ( !markerSymbol )
+    markerSymbol.reset( qgis::down_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
+  createdItem->setSymbol( markerSymbol.release() );
+
   // set reference scale to match canvas scale, but don't enable it by default for marker items
   createdItem->setSymbologyReferenceScale( canvas()->scale() );
 
@@ -101,52 +145,14 @@ void QgsCreateMarkerItemMapTool::cadCanvasReleaseEvent( QgsMapMouseEvent *event 
   cadDockWidget()->clearPoints();
 }
 
-QgsCreateAnnotationItemMapToolHandler *QgsCreateMarkerItemMapTool::handler()
-{
-  return mHandler;
-}
-
-QgsMapTool *QgsCreateMarkerItemMapTool::mapTool()
-{
-  return this;
-}
-
-QgsMapLayer *QgsCreateMarkerItemMapTool::layer() const
-{
-  return mHandler->targetLayer();
-}
-
-//
-// QgsMapToolCaptureAnnotationItem
-//
-
-QgsMapToolCaptureAnnotationItem::QgsMapToolCaptureAnnotationItem( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )
-  : QgsMapToolCapture( canvas, cadDockWidget, mode )
-{
-
-}
-
-QgsMapToolCapture::Capabilities QgsMapToolCaptureAnnotationItem::capabilities() const
-{
-  // no geometry validation!
-  return SupportsCurves;
-}
-
-bool QgsMapToolCaptureAnnotationItem::supportsTechnique( CaptureTechnique ) const
-{
-  return true;
-}
-
-
 //
 // QgsCreateLineMapTool
 //
 
 QgsCreateLineItemMapTool::QgsCreateLineItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QgsMapToolCaptureAnnotationItem( canvas, cadDockWidget, CaptureLine )
-  , mHandler( new QgsCreateAnnotationItemMapToolHandler( canvas, cadDockWidget ) )
 {
-
+  mHandler = new QgsCreateAnnotationItemMapToolHandler( canvas, cadDockWidget, this );
 }
 
 void QgsCreateLineItemMapTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
@@ -180,7 +186,12 @@ void QgsCreateLineItemMapTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     if ( qgsgeometry_cast< QgsCurve * >( geometry.get() ) )
     {
       std::unique_ptr< QgsAnnotationLineItem > createdItem = std::make_unique< QgsAnnotationLineItem >( qgsgeometry_cast< QgsCurve * >( geometry.release() ) );
-      createdItem->setSymbol( qgis::down_cast< QgsLineSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::LineGeometry ) ) );
+
+      std::unique_ptr< QgsLineSymbol > lineSymbol = QgsApplication::recentStyleHandler()->recentSymbol< QgsLineSymbol >( QStringLiteral( "line_annotation_item" ) );
+      if ( !lineSymbol )
+        lineSymbol.reset( qgis::down_cast< QgsLineSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::LineGeometry ) ) );
+      createdItem->setSymbol( lineSymbol.release() );
+
       // set reference scale to match canvas scale, but don't enable it by default for marker items
       createdItem->setSymbologyReferenceScale( canvas()->scale() );
 
@@ -190,34 +201,14 @@ void QgsCreateLineItemMapTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   }
 }
 
-QgsCreateLineItemMapTool::~QgsCreateLineItemMapTool() = default;
-
-QgsCreateAnnotationItemMapToolHandler *QgsCreateLineItemMapTool::handler()
-{
-  return mHandler;
-}
-
-QgsMapTool *QgsCreateLineItemMapTool::mapTool()
-{
-  return this;
-}
-
-QgsMapLayer *QgsCreateLineItemMapTool::layer() const
-{
-  return mHandler->targetLayer();
-}
-
-
-
 //
 // QgsCreatePolygonItemMapTool
 //
 
 QgsCreatePolygonItemMapTool::QgsCreatePolygonItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QgsMapToolCaptureAnnotationItem( canvas, cadDockWidget, CapturePolygon )
-  , mHandler( new QgsCreateAnnotationItemMapToolHandler( canvas, cadDockWidget ) )
 {
-
+  mHandler = new QgsCreateAnnotationItemMapToolHandler( canvas, cadDockWidget, this );
 }
 
 void QgsCreatePolygonItemMapTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
@@ -254,7 +245,12 @@ void QgsCreatePolygonItemMapTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       std::unique_ptr< QgsCurvePolygon > newPolygon = std::make_unique< QgsCurvePolygon >();
       newPolygon->setExteriorRing( qgsgeometry_cast< QgsCurve * >( geometry.release() ) );
       std::unique_ptr< QgsAnnotationPolygonItem > createdItem = std::make_unique< QgsAnnotationPolygonItem >( newPolygon.release() );
-      createdItem->setSymbol( qgis::down_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry ) ) );
+
+      std::unique_ptr< QgsFillSymbol > fillSymbol = QgsApplication::recentStyleHandler()->recentSymbol< QgsFillSymbol >( QStringLiteral( "polygon_annotation_item" ) );
+      if ( !fillSymbol )
+        fillSymbol.reset( qgis::down_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry ) ) );
+      createdItem->setSymbol( fillSymbol.release() );
+
       // set reference scale to match canvas scale, but don't enable it by default for marker items
       createdItem->setSymbologyReferenceScale( canvas()->scale() );
 
@@ -264,21 +260,5 @@ void QgsCreatePolygonItemMapTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   }
 }
 
-QgsCreatePolygonItemMapTool::~QgsCreatePolygonItemMapTool() = default;
-
-QgsCreateAnnotationItemMapToolHandler *QgsCreatePolygonItemMapTool::handler()
-{
-  return mHandler;
-}
-
-QgsMapTool *QgsCreatePolygonItemMapTool::mapTool()
-{
-  return this;
-}
-
-QgsMapLayer *QgsCreatePolygonItemMapTool::layer() const
-{
-  return mHandler->targetLayer();
-}
-
 ///@endcond PRIVATE
+

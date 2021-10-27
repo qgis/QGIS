@@ -37,7 +37,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         da = QgsDistanceArea()
 
         # try setting using a CRS object
-        crs = QgsCoordinateReferenceSystem(3111, QgsCoordinateReferenceSystem.EpsgCrsId)
+        crs = QgsCoordinateReferenceSystem('EPSG:3111')
         da.setSourceCrs(crs, QgsProject.instance().transformContext())
         self.assertEqual(da.sourceCrs().srsid(), crs.srsid())
 
@@ -294,7 +294,7 @@ class TestQgsDistanceArea(unittest.TestCase):
             print('-I-> Berlin 5665 length_meter_mapunits[{}] point_meter_result[{}]'.format(
                 QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_5665.lengthUnits(), True),
                 point_meter_result.asWkt()))
-            self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 1.0, da_5665.lengthUnits(), True),
+            self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 1, da_5665.lengthUnits(), True),
                              '1.0 m')
             self.assertEqual(point_meter_result.toString(7), point_berlin_5665_project.toString(7))
         print('\n12 points ''above over'' and on the Equator')
@@ -800,7 +800,7 @@ class TestQgsDistanceArea(unittest.TestCase):
 
     def testGeodesicIntersectionAtAntimeridian(self):
         da = QgsDistanceArea()
-        crs = QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+        crs = QgsCoordinateReferenceSystem('EPSG:4326')
         da.setSourceCrs(crs, QgsProject.instance().transformContext())
         da.setEllipsoid("WGS84")
 
@@ -918,7 +918,7 @@ class TestQgsDistanceArea(unittest.TestCase):
 
     def testGeodesicLine(self):
         da = QgsDistanceArea()
-        crs = QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+        crs = QgsCoordinateReferenceSystem('EPSG:4326')
         da.setSourceCrs(crs, QgsProject.instance().transformContext())
         da.setEllipsoid("WGS84")
         g = QgsGeometry.fromMultiPolylineXY(da.geodesicLine(QgsPointXY(105.4, 66.4), QgsPointXY(208.4, -77.8),
@@ -983,7 +983,7 @@ class TestQgsDistanceArea(unittest.TestCase):
 
     def testSplitGeometryAtAntimeridian(self):
         da = QgsDistanceArea()
-        crs = QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+        crs = QgsCoordinateReferenceSystem('EPSG:4326')
         da.setSourceCrs(crs, QgsProject.instance().transformContext())
         da.setEllipsoid("WGS84")
 

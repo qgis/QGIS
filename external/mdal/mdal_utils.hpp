@@ -55,6 +55,14 @@ namespace MDAL
   //! returns quiet_NaN if value equals nodata value, otherwise returns val itself
   double safeValue( double val, double nodata, double eps = std::numeric_limits<double>::epsilon() );
 
+  //! Opens the file related to \a inputFileStream
+  bool openInputFile( std::ifstream &inputFileStream, const std::string &fileName, std::ifstream::openmode mode = std::ifstream::binary );
+  //! Returns a opened input stream file with\a fileName and \a mode
+  std::ifstream openInputFile( const std::string &fileName, std::ios_base::openmode mode = std::ifstream::in );
+
+  //! Returns a opened output stream file with\a fileName and \a mode
+  std::ofstream openOutputFile( const std::string &fileName, std::ios_base::openmode mode = std::ios_base::in );
+
   /** Return whether file exists */
   bool fileExists( const std::string &filename );
   std::string baseName( const std::string &filename, bool keepExtension = false );
@@ -304,7 +312,7 @@ namespace MDAL
 #else
         void *mLibrary = nullptr;
 #endif
-        mutable int mRef = 1;
+        mutable int mRef = 0;
         std::string mLibraryFile;
       };
 

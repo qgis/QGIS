@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsrenderer.h"
+#include "qgsmapunitscale.h"
 #include <QFont>
 
 class QgsSpatialIndex;

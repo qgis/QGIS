@@ -3495,9 +3495,17 @@ bool QgsVectorLayer::commitChanges( bool stopEditing )
   }
 
   updateFields();
-  mDataProvider->updateExtents();
 
+  mDataProvider->updateExtents();
   mDataProvider->leaveUpdateMode();
+
+  // This second call is required because OGR provider with JSON
+  // driver might have changed fields order after the call to
+  // leaveUpdateMode
+  if ( mFields.names() != mDataProvider->fields().names() )
+  {
+    updateFields();
+  }
 
   triggerRepaint();
 
@@ -4025,6 +4033,7 @@ void QgsVectorLayer::updateFields()
     emit updatedFields();
     mEditFormConfig.setFields( mFields );
   }
+
 }
 
 

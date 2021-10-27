@@ -981,7 +981,7 @@ bool QgsOracleProvider::uniqueData( QString query, QString colName )
   // This is tricky: in case of SQL query layers we have a generated uid in the form "qgis_generated_uid_%1_" which cannot be quoted as identifier.
 
   QString sql = QString( "SELECT (SELECT count(distinct %1) FROM %2)-(SELECT count(%1) FROM %2) FROM dual" )
-                .arg( colName.startsWith( QStringLiteral( "qgis_generated_uid_" ) ) ? colName : quotedIdentifier( colName ), mQuery );
+                .arg( colName.startsWith( QLatin1String( "qgis_generated_uid_" ) ) ? colName : quotedIdentifier( colName ), mQuery );
 
   if ( !exec( qry, sql, QVariantList() ) || !qry.next() )
   {
@@ -2188,7 +2188,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
                 }
 
                 QgsPoint p;
-                QgsVertexId::VertexType ignored;
+                Qgis::VertexType ignored;
                 lineCurve->pointAt( i, p, ignored );
                 g.ordinates << p.x();
                 g.ordinates << p.y();

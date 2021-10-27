@@ -75,7 +75,7 @@ class TestQgsGeometry(unittest.TestCase):
         myWKT = 'Point (10 10)'
         g = QgsGeometry.fromWkt(myWKT)
         self.assertTrue(g)
-        g.set(None)
+        g = QgsGeometry(None)
         self.assertFalse(g)
 
     def testIsEmpty(self):
@@ -711,6 +711,11 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(QgsGeometry.fromWkt('PointZ(11 13 14)').asPoint(), QgsPointXY(11, 13))
         self.assertEqual(QgsGeometry.fromWkt('PointM(11 13 14)').asPoint(), QgsPointXY(11, 13))
         self.assertEqual(QgsGeometry.fromWkt('PointZM(11 13 14 15)').asPoint(), QgsPointXY(11, 13))
+        # multipoint with single point should work too!
+        self.assertEqual(QgsGeometry.fromWkt('MultiPoint(11 13)').asPoint(), QgsPointXY(11, 13))
+        self.assertEqual(QgsGeometry.fromWkt('MultiPointZ(11 13 14)').asPoint(), QgsPointXY(11, 13))
+        self.assertEqual(QgsGeometry.fromWkt('MultiPointM(11 13 14)').asPoint(), QgsPointXY(11, 13))
+        self.assertEqual(QgsGeometry.fromWkt('MultiPointZM(11 13 14 15)').asPoint(), QgsPointXY(11, 13))
         with self.assertRaises(TypeError):
             QgsGeometry.fromWkt('MultiPoint(11 13,14 15)').asPoint()
         with self.assertRaises(TypeError):
@@ -1993,7 +1998,8 @@ class TestQgsGeometry(unittest.TestCase):
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
         # valid transform
-        ct = QgsCoordinateTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857),
+        ct = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:4326'),
+                                    QgsCoordinateReferenceSystem('EPSG:3857'),
                                     QgsProject.instance())
 
         point = QgsGeometry.fromWkt("Point (1 1)")
@@ -2674,7 +2680,8 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(g.reshapeGeometry(QgsLineString([QgsPoint(4, 2), QgsPoint(7, 2)])), 0)
         expWkt = 'LineString (0 0, 5 0, 5 1, 6 1, 6 0, 7 0)'
         wkt = g.asWkt()
-        self.assertTrue(compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
+        self.assertTrue(compareWkt(expWkt, wkt),
+                        "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
 
         g = QgsGeometry.fromWkt('Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
         g.reshapeGeometry(QgsLineString([QgsPoint(0, 1.5), QgsPoint(1.5, 0)]))
@@ -2735,20 +2742,23 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(g.reshapeGeometry(QgsLineString([QgsPoint(2, 0), QgsPoint(6, 0)])), 0)
         expWkt = 'LineString (0 0, 2 0, 5 0, 6 0, 7 0)'
         wkt = g.asWkt()
-        self.assertTrue(compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
+        self.assertTrue(compareWkt(expWkt, wkt),
+                        "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
 
         g = QgsGeometry.fromWkt('LineString (0 0, 5 0, 5 1, 6 1, 6 0, 7 0)')
         self.assertEqual(g.reshapeGeometry(QgsLineString([QgsPoint(5, 0), QgsPoint(7, 0)])), 0)
         expWkt = 'LineString (0 0, 5 0, 6 0, 7 0)'
         wkt = g.asWkt()
-        self.assertTrue(compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
+        self.assertTrue(compareWkt(expWkt, wkt),
+                        "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
 
         # reshape line overlaps at both start and end
         g = QgsGeometry.fromWkt('LineString (0 0, 5 0, 5 1, 6 1, 6 0, 7 0)')
         self.assertEqual(g.reshapeGeometry(QgsLineString([QgsPoint(4, 0), QgsPoint(7, 0)])), 0)
         expWkt = 'LineString (0 0, 4 0, 5 0, 6 0, 7 0)'
         wkt = g.asWkt()
-        self.assertTrue(compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
+        self.assertTrue(compareWkt(expWkt, wkt),
+                        "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
 
         # test that tolerance is correctly handled
         g = QgsGeometry.fromWkt(
@@ -2759,7 +2769,8 @@ class TestQgsGeometry(unittest.TestCase):
                                                           QgsPoint(152.9655739, -25.6083169)])), 0)
         expWkt = 'LineString (152.96371 -25.60916, 152.96371 -25.60913, 152.96401 -25.60859, 152.96423 -25.60858, 152.96423 -25.60858, 152.96428 -25.60858, 152.96538 -25.60854, 152.96576 -25.6088)'
         wkt = g.asWkt(5)
-        self.assertTrue(compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
+        self.assertTrue(compareWkt(expWkt, wkt),
+                        "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
 
     def testConvertToMultiType(self):
         """ Test converting geometries to multi type """
@@ -4581,7 +4592,8 @@ class TestQgsGeometry(unittest.TestCase):
         for wkt_before, wkt_expected in test_setup.items():
             geom = QgsGeometry.fromWkt(wkt_before)
             geom.toggleCircularAtVertex(geom.closestVertex(QgsPointXY(10, 10))[1])
-            self.assertTrue(QgsGeometry.equals(geom, QgsGeometry.fromWkt(wkt_expected)), f'toggleCircularAtVertex() did not create expected geometry.\nconverted wkt : {geom.asWkt()}\nexpected wkt :  {wkt_expected}\ninput wkt :     {wkt_before}).')
+            self.assertTrue(QgsGeometry.equals(geom, QgsGeometry.fromWkt(wkt_expected)),
+                            f'toggleCircularAtVertex() did not create expected geometry.\nconverted wkt : {geom.asWkt()}\nexpected wkt :  {wkt_expected}\ninput wkt :     {wkt_before}).')
 
     def testSingleSidedBuffer(self):
 
@@ -5724,24 +5736,35 @@ class TestQgsGeometry(unittest.TestCase):
 
     def testConvertToCurves(self):
         tests = [
-            ["LINESTRING Z (3 3 3,2.4142135623731 1.58578643762691 3,1 1 3,-0.414213562373092 1.5857864376269 3,-1 2.99999999999999 3,-0.414213562373101 4.41421356237309 3,0.999999999999991 5 3,2.41421356237309 4.4142135623731 3,3 3 3)",
-             "CompoundCurveZ (CircularStringZ (3 3 3, -1 2.99999999999998979 3, 3 3 3))", 0.00000001, 0.0000001],
+            [
+                "LINESTRING Z (3 3 3,2.4142135623731 1.58578643762691 3,1 1 3,-0.414213562373092 1.5857864376269 3,-1 2.99999999999999 3,-0.414213562373101 4.41421356237309 3,0.999999999999991 5 3,2.41421356237309 4.4142135623731 3,3 3 3)",
+                "CompoundCurveZ (CircularStringZ (3 3 3, -1 2.99999999999998979 3, 3 3 3))", 0.00000001, 0.0000001],
             ["LINESTRING(0 0,10 0,10 10,0 10,0 0)", "CompoundCurve((0 0,10 0,10 10,0 10,0 0))", 0.00000001, 0.00000001],
             ["LINESTRING(0 0,10 0,10 10,0 10)", "CompoundCurve((0 0,10 0,10 10,0 10))", 0.00000001, 0.00000001],
             ["LINESTRING(10 10,0 10,0 0,10 0)", "CompoundCurve((10 10,0 10,0 0,10 0))", 0.0000001, 0.00000001],
             ["LINESTRING(0 0, 1 1)", "CompoundCurve((0 0, 1 1))", 0.00000001, 0.00000001],
             ["GEOMETRYCOLLECTION(LINESTRING(10 10,10 11),LINESTRING(10 11,11 11),LINESTRING(11 11,10 10))",
-             "MultiCurve (CompoundCurve ((10 10, 10 11)),CompoundCurve ((10 11, 11 11)),CompoundCurve ((11 11, 10 10)))", 0.000001, 0.000001],
+             "MultiCurve (CompoundCurve ((10 10, 10 11)),CompoundCurve ((10 11, 11 11)),CompoundCurve ((11 11, 10 10)))",
+             0.000001, 0.000001],
             ["GEOMETRYCOLLECTION(LINESTRING(4 4,4 8),CIRCULARSTRING(4 8,6 10,8 8),LINESTRING(8 8,8 4))",
-             "MultiCurve (CompoundCurve ((4 4, 4 8)),CompoundCurve (CircularString (4 8, 6 10, 8 8)),CompoundCurve ((8 8, 8 4)))", 0.0000001, 0.0000001],
-            ["LINESTRING(-13151357.927248 3913656.64539871,-13151419.0845266 3913664.12016378,-13151441.323537 3913666.61175286,-13151456.8908442 3913666.61175286,-13151476.9059536 3913666.61175286,-13151496.921063 3913666.61175287,-13151521.3839744 3913666.61175287,-13151591.4368571 3913665.36595828)",
-             "CompoundCurve ((-13151357.92724799923598766 3913656.64539870992302895, -13151419.08452660031616688 3913664.12016378017142415, -13151441.32353699952363968 3913666.61175285978242755, -13151456.8908441998064518 3913666.61175285978242755, -13151476.90595359914004803 3913666.61175285978242755, -13151496.92106300033628941 3913666.61175287002697587, -13151521.38397439941763878 3913666.61175287002697587, -13151591.43685710057616234 3913665.36595827993005514))", 0.000001, 0.0000001],
+             "MultiCurve (CompoundCurve ((4 4, 4 8)),CompoundCurve (CircularString (4 8, 6 10, 8 8)),CompoundCurve ((8 8, 8 4)))",
+             0.0000001, 0.0000001],
+            [
+                "LINESTRING(-13151357.927248 3913656.64539871,-13151419.0845266 3913664.12016378,-13151441.323537 3913666.61175286,-13151456.8908442 3913666.61175286,-13151476.9059536 3913666.61175286,-13151496.921063 3913666.61175287,-13151521.3839744 3913666.61175287,-13151591.4368571 3913665.36595828)",
+                "CompoundCurve ((-13151357.92724799923598766 3913656.64539870992302895, -13151419.08452660031616688 3913664.12016378017142415, -13151441.32353699952363968 3913666.61175285978242755, -13151456.8908441998064518 3913666.61175285978242755, -13151476.90595359914004803 3913666.61175285978242755, -13151496.92106300033628941 3913666.61175287002697587, -13151521.38397439941763878 3913666.61175287002697587, -13151591.43685710057616234 3913665.36595827993005514))",
+                0.000001, 0.0000001],
             ["Point( 1 2 )", "Point( 1 2 )", 0.00001, 0.00001],
             ["MultiPoint( 1 2, 3 4 )", "MultiPoint( (1 2 ), (3 4 ))", 0.00001, 0.00001],
             # A polygon converts to curve
-            ["POLYGON((3 3,2.4142135623731 1.58578643762691,1 1,-0.414213562373092 1.5857864376269,-1 2.99999999999999,-0.414213562373101 4.41421356237309,0.999999999999991 5,2.41421356237309 4.4142135623731,3 3))", "CURVEPOLYGON(COMPOUNDCURVE(CircularString(3 3, -1 2.99999999999998979, 3 3)))", 0.00000001, 0.00000001],
+            [
+                "POLYGON((3 3,2.4142135623731 1.58578643762691,1 1,-0.414213562373092 1.5857864376269,-1 2.99999999999999,-0.414213562373101 4.41421356237309,0.999999999999991 5,2.41421356237309 4.4142135623731,3 3))",
+                "CURVEPOLYGON(COMPOUNDCURVE(CircularString(3 3, -1 2.99999999999998979, 3 3)))", 0.00000001,
+                0.00000001],
             # The same polygon, even if already CURVEPOLYGON, still converts to curve
-            ["CURVEPOLYGON((3 3,2.4142135623731 1.58578643762691,1 1,-0.414213562373092 1.5857864376269,-1 2.99999999999999,-0.414213562373101 4.41421356237309,0.999999999999991 5,2.41421356237309 4.4142135623731,3 3))", "CURVEPOLYGON(COMPOUNDCURVE(CircularString(3 3, -1 2.99999999999998979, 3 3)))", 0.00000001, 0.00000001],
+            [
+                "CURVEPOLYGON((3 3,2.4142135623731 1.58578643762691,1 1,-0.414213562373092 1.5857864376269,-1 2.99999999999999,-0.414213562373101 4.41421356237309,0.999999999999991 5,2.41421356237309 4.4142135623731,3 3))",
+                "CURVEPOLYGON(COMPOUNDCURVE(CircularString(3 3, -1 2.99999999999998979, 3 3)))", 0.00000001,
+                0.00000001],
         ]
         for t in tests:
             g1 = QgsGeometry.fromWkt(t[0])
@@ -5921,15 +5944,18 @@ class TestQgsGeometry(unittest.TestCase):
     def testCollectDuplicateNodes(self):
         g = QgsGeometry.fromWkt("LineString (1 1, 1 1, 1 1, 1 2, 1 3, 1 3, 1 3, 1 4, 1 5, 1 6, 1 6)")
         res = g.constGet().collectDuplicateNodes()
-        self.assertCountEqual(res, [QgsVertexId(-1, -1, 1), QgsVertexId(-1, -1, 2), QgsVertexId(-1, -1, 5), QgsVertexId(-1, -1, 6), QgsVertexId(-1, -1, 10)])
+        self.assertCountEqual(res, [QgsVertexId(-1, -1, 1), QgsVertexId(-1, -1, 2), QgsVertexId(-1, -1, 5),
+                                    QgsVertexId(-1, -1, 6), QgsVertexId(-1, -1, 10)])
 
         g = QgsGeometry.fromWkt("LineString (1 1, 1 2, 1 3, 1 4, 1 5, 1 6)")
         res = g.constGet().collectDuplicateNodes()
         self.assertFalse(res)
 
-        g = QgsGeometry.fromWkt("LineStringZ (1 1 1, 1 1 2, 1 1 3, 1 2 1, 1 3 1, 1 3 1, 1 3 2, 1 4 1, 1 5 1, 1 6 1, 1 6 2)")
+        g = QgsGeometry.fromWkt(
+            "LineStringZ (1 1 1, 1 1 2, 1 1 3, 1 2 1, 1 3 1, 1 3 1, 1 3 2, 1 4 1, 1 5 1, 1 6 1, 1 6 2)")
         res = g.constGet().collectDuplicateNodes()
-        self.assertCountEqual(res, [QgsVertexId(-1, -1, 1), QgsVertexId(-1, -1, 2), QgsVertexId(-1, -1, 5), QgsVertexId(-1, -1, 6), QgsVertexId(-1, -1, 10)])
+        self.assertCountEqual(res, [QgsVertexId(-1, -1, 1), QgsVertexId(-1, -1, 2), QgsVertexId(-1, -1, 5),
+                                    QgsVertexId(-1, -1, 6), QgsVertexId(-1, -1, 10)])
 
         # consider z values
         res = g.constGet().collectDuplicateNodes(useZValues=True)
@@ -6135,6 +6161,205 @@ class TestQgsGeometry(unittest.TestCase):
                                        QgsWkbTypes.MultiLineString),
                          ['MultiLineString ((1 1, 1 2, 2 2, 1 1),(3 3, 4 3, 4 4, 3 3))'])
 
+    def testTriangularWaves(self):
+        """Test triangular waves"""
+        self.assertEqual(QgsGeometry.fromWkt('Point (1 1)').triangularWaves(1, 2).asWkt(3), 'Point (1 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1)').triangularWaves(1, 2).asWkt(3), '')  # don't crash!
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').triangularWaves(1, 2).asWkt(3),
+                         'LineString (1 1, 1.25 3, 1.75 -1, 2.25 3, 2.75 -1, 3.25 3, 3.75 -1, 4.25 3, 4.75 -1, 5.25 3, 5.75 -1, 6.25 3, 6.75 -1, 7.25 3, 7.75 -1, 8.25 3, 8.75 -1, 9.25 3, 9.75 -1, 10 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').triangularWaves(5, 2).asWkt(3),
+                         'LineString (1 1, 2.125 3, 4.375 -1, 6.625 3, 8.875 -1, 10 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').triangularWaves(8, 2).asWkt(3),
+                         'LineString (1 1, 2.125 3, 4.375 -1, 6.625 3, 8.875 -1, 10 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').triangularWaves(8, 2, True).asWkt(3),
+                         'LineString (1 1, 3 3, 7 -1, 10 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').triangularWaves(10, 2).asWkt(3),
+                         'LineString (1 1, 3.25 3, 7.75 -1, 10 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').triangularWaves(20, 2).asWkt(3),
+                         'LineString (1 1, 3.25 3, 7.75 -1, 10 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1, 10 10)').triangularWaves(5, 2).asWkt(3),
+                         'LineString (1 1, 2.125 3, 4.375 -1, 6.625 3, 8.875 -1, 8 2.125, 12 4.375, 8 6.625, 12 8.875, 10 10)')
+        self.assertEqual(
+            QgsGeometry.fromWkt('MultiLineString ((1 1, 10 1),(10 10, 0 10))').triangularWaves(5, 2).asWkt(3),
+            'MultiLineString ((1 1, 2.125 3, 4.375 -1, 6.625 3, 8.875 -1, 10 1),(10 10, 8.75 8, 6.25 12, 3.75 8, 1.25 12, 0 10))')
+        self.assertEqual(
+            QgsGeometry.fromWkt('Polygon ((1 1, 10 1, 10 10, 1 10, 1 1),(3 4, 8 4, 7 7, 4 6, 3 4))').triangularWaves(5,
+                                                                                                                     .5).asWkt(
+                3),
+            'Polygon ((1 1, 2.125 1.5, 4.375 0.5, 6.625 1.5, 8.875 0.5, 9.5 2.125, 10.5 4.375, 9.5 6.625, 10.5 8.875, 8.875 9.5, 6.625 10.5, 4.375 9.5, 2.125 10.5, 1.5 8.875, 0.5 6.625, 1.5 4.375, 0.5 2.125, 1 1),(3 4, 4.13 4.5, 6.39 3.5, 7.32 4.459, 7.554 6.919, 5.253 5.891, 3.058 5.234, 3 4))')
+        self.assertEqual(QgsGeometry.fromWkt(
+            'MultiPolygon (((1 1, 10 1, 10 10, 1 10, 1 1)),((20 20, 20 30, 30 20, 20 20)))').triangularWaves(5,
+                                                                                                             0.5).asWkt(
+            3),
+            'MultiPolygon (((1 1, 2.125 1.5, 4.375 0.5, 6.625 1.5, 8.875 0.5, 9.5 2.125, 10.5 4.375, 9.5 6.625, 10.5 8.875, 8.875 9.5, 6.625 10.5, 4.375 9.5, 2.125 10.5, 1.5 8.875, 0.5 6.625, 1.5 4.375, 0.5 2.125, 1 1)),((20 20, 19.5 21.219, 20.5 23.658, 19.5 26.097, 20.5 28.536, 21.042 29.665, 22.06 27.233, 24.491 26.216, 25.509 23.784, 27.94 22.767, 28.958 20.335, 28.536 19.5, 26.097 20.5, 23.658 19.5, 21.219 20.5, 20 20)))')
+
+    def testTriangularRandomizedWaves(self):
+        """Test randomized triangular waves"""
+        self.assertEqual(QgsGeometry.fromWkt('Point (1 1)').triangularWavesRandomized(1, 2, 2, 3, 1).asWkt(3),
+                         'Point (1 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1)').triangularWavesRandomized(1, 2, 2, 3, 1).asWkt(3),
+                         '')  # don't crash!
+        self.assertEqual(
+            QgsGeometry.fromWkt('LineString (1 1, 10 1)').triangularWavesRandomized(1, 2, 2, 3, 1).asWkt(3),
+            'LineString (1 1, 1.499 3.933, 2.063 -1.999, 2.681 3.397, 3.375 -1.67, 4.343 3.846, 5 -1.525, 5.721 3.23, 6.489 -1.914, 7.217 3.431, 8.187 -1.778, 9.045 3.803, 9.591 -1.518, 10 1)')
+        self.assertEqual(
+            QgsGeometry.fromWkt('LineString (1 1, 10 1)').triangularWavesRandomized(5, 6, 2, 3, 1).asWkt(3),
+            'LineString (1 1, 2.499 3.933, 5.063 -1.999, 7.681 3.397, 10 1)')
+        self.assertEqual(
+            QgsGeometry.fromWkt('LineString (1 1, 10 1)').triangularWavesRandomized(8, 9, 2, 3, 1).asWkt(3),
+            'LineString (1 1, 3.249 3.933, 7.313 -1.999, 10 1)')
+        self.assertEqual(
+            QgsGeometry.fromWkt('LineString (1 1, 10 1)').triangularWavesRandomized(10, 12, 1, 2, 1).asWkt(3),
+            'LineString (1 1, 3.999 2.933, 9.127 -0.999, 10 1)')
+        self.assertEqual(
+            QgsGeometry.fromWkt('LineString (1 1, 10 1)').triangularWavesRandomized(20, 25, 2, 3, 1).asWkt(3),
+            'LineString (1 1, 7.246 3.933, 10 1)')
+        self.assertEqual(
+            QgsGeometry.fromWkt('LineString (1 1, 10 1, 10 10)').triangularWavesRandomized(5, 6, 2, 3, 1).asWkt(3),
+            'LineString (1 1, 2.499 3.933, 5.063 -1.999, 7.681 3.397, 12.67 1.375, 7.154 4.343, 12.525 7, 7.77 9.721, 10 10)')
+        self.assertEqual(
+            QgsGeometry.fromWkt('MultiLineString ((1 1, 10 1),(10 10, 0 10))').triangularWavesRandomized(5, 6, 2, 3,
+                                                                                                         1).asWkt(3),
+            'MultiLineString ((1 1, 2.499 3.933, 5.063 -1.999, 7.681 3.397, 10 1),(10 10, 8.516 7.154, 5.859 12.525, 3.138 7.77, 0.371 12.914, 0 10))')
+        self.assertEqual(QgsGeometry.fromWkt(
+            'Polygon ((1 1, 10 1, 10 10, 1 10, 1 1),(3 4, 8 4, 7 7, 4 6, 3 4))').triangularWavesRandomized(5, 6, 0.2,
+                                                                                                           0.5,
+                                                                                                           1).asWkt(3),
+            'Polygon ((1 1, 2.499 1.48, 5.063 0.5, 7.681 1.319, 10.401 1.375, 9.546 4.343, 10.357 7, 9.731 9.721, 7.511 10.474, 4.783 9.671, 1.813 10.434, 1.441 7.955, 0.645 5.409, 1.449 2.476, 1 1),(3 4, 4.265 4.401, 7.061 3.599, 7.195 5.595, 5.738 6.835, 3.852 4.979, 3 4))')
+        self.assertEqual(QgsGeometry.fromWkt(
+            'MultiPolygon (((1 1, 10 1, 10 10, 1 10, 1 1)),((20 20, 20 30, 30 20, 20 20)))').triangularWavesRandomized(
+            5, 6, 0.2, 0.5, 1).asWkt(3),
+            'MultiPolygon (((1 1, 2.499 1.48, 5.063 0.5, 7.681 1.319, 10.401 1.375, 9.546 4.343, 10.357 7, 9.731 9.721, 7.511 10.474, 4.783 9.671, 1.813 10.434, 1.441 7.955, 0.645 5.409, 1.449 2.476, 1 1)),((20 20, 19.599 21.265, 20.401 24.061, 19.741 26.767, 20.243 29.412, 21.858 28.6, 23.135 26.317, 25.615 24.795, 27.147 22.476, 29.37 21.112, 28.683 20.471, 26.123 19.643, 23.582 20.475, 20.626 19.71, 20 20)))')
+
+    def testSquareWaves(self):
+        """Test square waves"""
+        self.assertEqual(QgsGeometry.fromWkt('Point (1 1)').squareWaves(1, 2).asWkt(3), 'Point (1 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1)').squareWaves(1, 2).asWkt(3), '')  # just don't crash!
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').squareWaves(1, 2).asWkt(3),
+                         'LineString (1 1, 1 3, 1.5 3, 1.5 -1, 2 -1, 2 3, 2.5 3, 2.5 -1, 3 -1, 3 3, 3.5 3, 3.5 -1, 4 -1, 4 3, 4.5 3, 4.5 -1, 5 -1, 5 3, 5.5 3, 5.5 -1, 6 -1, 6 3, 6.5 3, 6.5 -1, 7 -1, 7 3, 7.5 3, 7.5 -1, 8 -1, 8 3, 8.5 3, 8.5 -1, 9 -1, 9 3, 9.5 3, 9.5 -1, 10 -1, 10 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').squareWaves(5, 2).asWkt(3),
+                         'LineString (1 1, 1 3, 3.25 3, 3.25 -1, 5.5 -1, 5.5 3, 7.75 3, 7.75 -1, 10 -1, 10 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').squareWaves(8, 2).asWkt(3),
+                         'LineString (1 1, 1 3, 3.25 3, 3.25 -1, 5.5 -1, 5.5 3, 7.75 3, 7.75 -1, 10 -1, 10 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').squareWaves(8, 2, True).asWkt(3),
+                         'LineString (1 1, 1 3, 5 3, 5 -1, 9 -1, 10 1)')  # this one could possibly be improved!
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').squareWaves(10, 2).asWkt(3),
+                         'LineString (1 1, 1 3, 5.5 3, 5.5 -1, 10 -1, 10 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').squareWaves(20, 2).asWkt(3),
+                         'LineString (1 1, 1 3, 5.5 3, 5.5 -1, 10 -1, 10 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1, 10 10)').squareWaves(5, 2).asWkt(3),
+                         'LineString (1 1, 1 3, 3.25 3, 3.25 -1, 5.5 -1, 5.5 3, 7.75 3, 7.75 -1, 10 -1, 10 3, 8 3.25, 12 3.25, 12 5.5, 8 5.5, 8 7.75, 12 7.75, 12 10, 10 10)')
+        self.assertEqual(QgsGeometry.fromWkt('MultiLineString ((1 1, 10 1),(10 10, 0 10))').squareWaves(5, 2).asWkt(3),
+                         'MultiLineString ((1 1, 1 3, 3.25 3, 3.25 -1, 5.5 -1, 5.5 3, 7.75 3, 7.75 -1, 10 -1, 10 1),(10 10, 10 8, 7.5 8, 7.5 12, 5 12, 5 8, 2.5 8, 2.5 12, 0 12, 0 10))')
+        self.assertEqual(
+            QgsGeometry.fromWkt('Polygon ((1 1, 10 1, 10 10, 1 10, 1 1),(3 4, 8 4, 7 7, 4 6, 3 4))').squareWaves(5,
+                                                                                                                 0.5).asWkt(
+                3),
+            'Polygon ((1 1, 1 1.5, 3.25 1.5, 3.25 0.5, 5.5 0.5, 5.5 1.5, 7.75 1.5, 7.75 0.5, 10 0.5, 10 1.5, 9.5 3.25, 10.5 3.25, 10.5 5.5, 9.5 5.5, 9.5 7.75, 10.5 7.75, 10.5 10, 9.5 10, 7.75 9.5, 7.75 10.5, 5.5 10.5, 5.5 9.5, 3.25 9.5, 3.25 10.5, 1 10.5, 1 9.5, 1.5 7.75, 0.5 7.75, 0.5 5.5, 1.5 5.5, 1.5 3.25, 0.5 3.25, 0.5 1, 1 1),(3 4, 3 4.5, 5.26 4.5, 5.26 3.5, 7.52 3.5, 7.52 4.5, 6.963 5.531, 7.911 5.847, 6.009 7.197, 6.325 6.248, 4.181 5.533, 3 4))')
+        self.assertEqual(QgsGeometry.fromWkt(
+            'MultiPolygon (((1 1, 10 1, 10 10, 1 10, 1 1)),((20 20, 20 30, 30 20, 20 20)))').squareWaves(5, 0.5).asWkt(
+            3),
+            'MultiPolygon (((1 1, 1 1.5, 3.25 1.5, 3.25 0.5, 5.5 0.5, 5.5 1.5, 7.75 1.5, 7.75 0.5, 10 0.5, 10 1.5, 9.5 3.25, 10.5 3.25, 10.5 5.5, 9.5 5.5, 9.5 7.75, 10.5 7.75, 10.5 10, 9.5 10, 7.75 9.5, 7.75 10.5, 5.5 10.5, 5.5 9.5, 3.25 9.5, 3.25 10.5, 1 10.5, 1 9.5, 1.5 7.75, 0.5 7.75, 0.5 5.5, 1.5 5.5, 1.5 3.25, 0.5 3.25, 0.5 1, 1 1)),((20 20, 19.5 20, 19.5 22.439, 20.5 22.439, 20.5 24.877, 19.5 24.877, 19.5 27.316, 20.5 27.316, 20.5 29.755, 19.5 29.755, 21.905 28.802, 21.198 28.095, 22.922 26.371, 23.629 27.078, 25.354 25.354, 24.646 24.646, 26.371 22.922, 27.078 23.629, 28.802 21.905, 28.095 21.198, 29.755 20.5, 29.755 19.5, 27.316 19.5, 27.316 20.5, 24.877 20.5, 24.877 19.5, 22.439 19.5, 20 20)))')
+
+    def testSquareRandomizedWaves(self):
+        """Test randomized square waves"""
+        self.assertEqual(QgsGeometry.fromWkt('Point (1 1)').squareWavesRandomized(1, 2, 2, 3, 1).asWkt(3),
+                         'Point (1 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1)').squareWavesRandomized(1, 2, 2, 3, 1).asWkt(3),
+                         '')  # just don't crash!
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').squareWavesRandomized(1, 2, 2, 3, 1).asWkt(3),
+                         'LineString (1 1, 1 3.997, 1.966 3.997, 1.966 -1.128, 2.966 -1.128, 2.966 3.236, 3.664 3.236, 3.664 -1.388, 4.499 -1.388, 4.499 3.936, 5.422 3.936, 5.422 -1.313, 6.184 -1.313, 6.184 3.443, 6.799 3.443, 6.799 -1.534, 7.756 -1.534, 7.756 3.457, 8.472 3.457, 8.472 -1.939, 9.361 -1.939, 9.361 3.716, 10 3.716, 10 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').squareWavesRandomized(5, 6, 2, 3, 1).asWkt(3),
+                         'LineString (1 1, 1 3.997, 3.966 3.997, 3.966 -1.128, 6.966 -1.128, 6.966 3.236, 9.664 3.236, 9.664 -1.388, 10 -1.388, 10 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').squareWavesRandomized(8, 9, 2, 3, 1).asWkt(3),
+                         'LineString (1 1, 1 3.997, 5.466 3.997, 5.466 -1.128, 9.966 -1.128, 9.966 3.236, 10 3.236, 10 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').squareWavesRandomized(10, 12, 1, 2, 1).asWkt(3),
+                         'LineString (1 1, 1 2.997, 6.933 2.997, 6.933 -0.128, 10 -0.128, 10 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').squareWavesRandomized(20, 25, 2, 3, 1).asWkt(3),
+                         'LineString (1 1, 1 3.997, 10 3.997, 10 1)')
+        self.assertEqual(
+            QgsGeometry.fromWkt('LineString (1 1, 10 1, 10 10)').squareWavesRandomized(5, 6, 2, 3, 1).asWkt(3),
+            'LineString (1 1, 1 3.997, 3.966 3.997, 3.966 -1.128, 6.966 -1.128, 6.966 3.236, 9.664 3.236, 9.664 -1.388, 12.388 3.499, 7.064 3.499, 7.064 6.422, 12.313 6.422, 12.313 9.184, 7.557 9.184, 7.557 10, 10 10)')
+        self.assertEqual(
+            QgsGeometry.fromWkt('MultiLineString ((1 1, 10 1),(10 10, 0 10))').squareWavesRandomized(5, 6, 2, 3,
+                                                                                                     1).asWkt(3),
+            'MultiLineString ((1 1, 1 3.997, 3.966 3.997, 3.966 -1.128, 6.966 -1.128, 6.966 3.236, 9.664 3.236, 9.664 -1.388, 10 -1.388, 10 1),(10 10, 10 7.064, 7.077 7.064, 7.077 12.313, 4.315 12.313, 4.315 7.557, 1.7 7.557, 1.7 12.534, 0 12.534, 0 10))')
+        self.assertEqual(QgsGeometry.fromWkt(
+            'Polygon ((1 1, 10 1, 10 10, 1 10, 1 1),(3 4, 8 4, 7 7, 4 6, 3 4))').squareWavesRandomized(3, 5, 0.2, 0.5,
+                                                                                                       1).asWkt(3),
+            'Polygon ((1 1, 1 1.499, 3.433 1.499, 3.433 0.762, 5.932 0.762, 5.932 1.271, 7.828 1.271, 7.828 0.684, 9.998 0.684, 9.998 1.481, 9.519 3.344, 10.294 3.344, 10.294 5.369, 9.667 5.369, 9.667 7.098, 10.36 7.098, 10.36 9.512, 9.663 9.512, 8.557 9.663, 8.557 10.482, 6.279 10.482, 6.279 9.585, 3.976 9.585, 3.976 10.228, 1.958 10.228, 1.958 9.54, 1.46 8.629, 0.551 8.629, 0.551 6.855, 1.218 6.855, 1.218 4.685, 0.622 4.685, 0.622 2.513, 1.324 2.513, 1.324 1, 1 1),(3 4, 3 4.287, 4.642 4.287, 4.642 3.565, 6.555 3.565, 6.555 4.21, 7.586 4.577, 8.163 4.77, 7.594 6.476, 6.9 6.244, 6.122 6.355, 5.946 6.883, 4.078 6.26, 4.22 5.832, 3.205 3.898, 3 4))')
+        self.assertEqual(QgsGeometry.fromWkt(
+            'MultiPolygon (((1 1, 10 1, 10 10, 1 10, 1 1)),((20 20, 20 30, 30 20, 20 20)))').squareWavesRandomized(3, 5,
+                                                                                                                   0.2,
+                                                                                                                   0.5,
+                                                                                                                   1).asWkt(
+            3),
+            'MultiPolygon (((1 1, 1 1.499, 3.433 1.499, 3.433 0.762, 5.932 0.762, 5.932 1.271, 7.828 1.271, 7.828 0.684, 9.998 0.684, 9.998 1.481, 9.519 3.344, 10.294 3.344, 10.294 5.369, 9.667 5.369, 9.667 7.098, 10.36 7.098, 10.36 9.512, 9.663 9.512, 8.557 9.663, 8.557 10.482, 6.279 10.482, 6.279 9.585, 3.976 9.585, 3.976 10.228, 1.958 10.228, 1.958 9.54, 1.46 8.629, 0.551 8.629, 0.551 6.855, 1.218 6.855, 1.218 4.685, 0.622 4.685, 0.622 2.513, 1.324 2.513, 1.324 1, 1 1)),((20 20, 19.713 20, 19.713 21.642, 20.435 21.642, 20.435 23.555, 19.79 23.555, 19.79 25.679, 20.398 25.679, 20.398 27.477, 19.666 27.477, 19.666 29.199, 20.222 29.199, 20.669 29.017, 20.988 29.336, 22.688 27.636, 22.359 27.308, 23.791 25.876, 24.117 26.202, 25.826 24.493, 25.332 23.999, 26.604 22.727, 27.204 23.327, 28.665 21.866, 28.128 21.329, 29.807 20.384, 29.807 19.722, 28.076 19.722, 28.076 20.36, 25.626 20.36, 25.626 19.652, 23.586 19.652, 23.586 20.43, 22.04 20.43, 22.04 19.758, 20 19.758, 20 20)))')
+
+    def testRoundWaves(self):
+        """Test round waves"""
+        self.assertEqual(QgsGeometry.fromWkt('Point (1 1)').roundWaves(1, 2).asWkt(3), 'Point (1 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1)').roundWaves(1, 2).asWkt(3), '')  # just don't crash!
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').roundWaves(1, 2).asWkt(3),
+                         'LineString (1 1, 1.021 0.701, 1.044 0.408, 1.07 0.127, 1.097 -0.136, 1.125 -0.375, 1.153 -0.584, 1.18 -0.757, 1.206 -0.888, 1.23 -0.971, 1.25 -1, 1.318 -0.888, 1.374 -0.584, 1.421 -0.136, 1.462 0.408, 1.5 1, 1.538 1.592, 1.579 2.136, 1.626 2.584, 1.682 2.888, 1.75 3, 1.818 2.888, 1.874 2.584, 1.921 2.136, 1.962 1.592, 2 1, 2.038 0.408, 2.079 -0.136, 2.126 -0.584, 2.182 -0.888, 2.25 -1, 2.318 -0.888, 2.374 -0.584, 2.421 -0.136, 2.462 0.408, 2.5 1, 2.538 1.592, 2.579 2.136, 2.626 2.584, 2.682 2.888, 2.75 3, 2.818 2.888, 2.874 2.584, 2.921 2.136, 2.962 1.592, 3 1, 3.038 0.408, 3.079 -0.136, 3.126 -0.584, 3.182 -0.888, 3.25 -1, 3.318 -0.888, 3.374 -0.584, 3.421 -0.136, 3.462 0.408, 3.5 1, 3.538 1.592, 3.579 2.136, 3.626 2.584, 3.682 2.888, 3.75 3, 3.818 2.888, 3.874 2.584, 3.921 2.136, 3.962 1.592, 4 1, 4.038 0.408, 4.079 -0.136, 4.126 -0.584, 4.182 -0.888, 4.25 -1, 4.318 -0.888, 4.374 -0.584, 4.421 -0.136, 4.462 0.408, 4.5 1, 4.538 1.592, 4.579 2.136, 4.626 2.584, 4.682 2.888, 4.75 3, 4.818 2.888, 4.874 2.584, 4.921 2.136, 4.962 1.592, 5 1, 5.038 0.408, 5.079 -0.136, 5.126 -0.584, 5.182 -0.888, 5.25 -1, 5.318 -0.888, 5.374 -0.584, 5.421 -0.136, 5.462 0.408, 5.5 1, 5.538 1.592, 5.579 2.136, 5.626 2.584, 5.682 2.888, 5.75 3, 5.818 2.888, 5.874 2.584, 5.921 2.136, 5.962 1.592, 6 1, 6.038 0.408, 6.079 -0.136, 6.126 -0.584, 6.182 -0.888, 6.25 -1, 6.318 -0.888, 6.374 -0.584, 6.421 -0.136, 6.462 0.408, 6.5 1, 6.538 1.592, 6.579 2.136, 6.626 2.584, 6.682 2.888, 6.75 3, 6.818 2.888, 6.874 2.584, 6.921 2.136, 6.962 1.592, 7 1, 7.038 0.408, 7.079 -0.136, 7.126 -0.584, 7.182 -0.888, 7.25 -1, 7.318 -0.888, 7.374 -0.584, 7.421 -0.136, 7.462 0.408, 7.5 1, 7.538 1.592, 7.579 2.136, 7.626 2.584, 7.682 2.888, 7.75 3, 7.818 2.888, 7.874 2.584, 7.921 2.136, 7.962 1.592, 8 1, 8.038 0.408, 8.079 -0.136, 8.126 -0.584, 8.182 -0.888, 8.25 -1, 8.318 -0.888, 8.374 -0.584, 8.421 -0.136, 8.462 0.408, 8.5 1, 8.538 1.592, 8.579 2.136, 8.626 2.584, 8.682 2.888, 8.75 3, 8.818 2.888, 8.874 2.584, 8.921 2.136, 8.962 1.592, 9 1, 9.038 0.408, 9.079 -0.136, 9.126 -0.584, 9.182 -0.888, 9.25 -1, 9.318 -0.888, 9.374 -0.584, 9.421 -0.136, 9.462 0.408, 9.5 1, 9.538 1.592, 9.579 2.136, 9.626 2.584, 9.682 2.888, 9.75 3, 9.824 2.888, 9.892 2.584, 9.948 2.136, 9.986 1.592, 10 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').roundWaves(5, 2).asWkt(3),
+                         'LineString (1 1, 1.092 0.701, 1.198 0.408, 1.314 0.127, 1.437 -0.136, 1.563 -0.375, 1.689 -0.584, 1.811 -0.757, 1.927 -0.888, 2.033 -0.971, 2.125 -1, 2.431 -0.888, 2.683 -0.584, 2.895 -0.136, 3.079 0.408, 3.25 1, 3.421 1.592, 3.606 2.136, 3.817 2.584, 4.069 2.888, 4.375 3, 4.681 2.888, 4.933 2.584, 5.145 2.136, 5.329 1.592, 5.5 1, 5.671 0.408, 5.856 -0.136, 6.067 -0.584, 6.319 -0.888, 6.625 -1, 6.931 -0.888, 7.183 -0.584, 7.395 -0.136, 7.579 0.408, 7.75 1, 7.921 1.592, 8.106 2.136, 8.317 2.584, 8.569 2.888, 8.875 3, 9.208 2.888, 9.514 2.584, 9.766 2.136, 9.937 1.592, 10 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').roundWaves(8, 2).asWkt(3),
+                         'LineString (1 1, 1.092 0.701, 1.198 0.408, 1.314 0.127, 1.437 -0.136, 1.563 -0.375, 1.689 -0.584, 1.811 -0.757, 1.927 -0.888, 2.033 -0.971, 2.125 -1, 2.431 -0.888, 2.683 -0.584, 2.895 -0.136, 3.079 0.408, 3.25 1, 3.421 1.592, 3.606 2.136, 3.817 2.584, 4.069 2.888, 4.375 3, 4.681 2.888, 4.933 2.584, 5.145 2.136, 5.329 1.592, 5.5 1, 5.671 0.408, 5.856 -0.136, 6.067 -0.584, 6.319 -0.888, 6.625 -1, 6.931 -0.888, 7.183 -0.584, 7.395 -0.136, 7.579 0.408, 7.75 1, 7.921 1.592, 8.106 2.136, 8.317 2.584, 8.569 2.888, 8.875 3, 9.208 2.888, 9.514 2.584, 9.766 2.136, 9.937 1.592, 10 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').roundWaves(8, 2, True).asWkt(3),
+                         'LineString (1 1, 1.164 0.701, 1.352 0.408, 1.558 0.127, 1.776 -0.136, 2 -0.375, 2.224 -0.584, 2.442 -0.757, 2.648 -0.888, 2.836 -0.971, 3 -1, 3.544 -0.888, 3.992 -0.584, 4.368 -0.136, 4.696 0.408, 5 1, 5.304 1.592, 5.632 2.136, 6.008 2.584, 6.456 2.888, 7 3, 7.768 2.888, 8.524 2.584, 9.196 2.136, 9.712 1.592, 10 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').roundWaves(10, 2).asWkt(3),
+                         'LineString (1 1, 1.185 0.701, 1.396 0.408, 1.628 0.127, 1.873 -0.136, 2.125 -0.375, 2.377 -0.584, 2.622 -0.757, 2.854 -0.888, 3.066 -0.971, 3.25 -1, 3.862 -0.888, 4.366 -0.584, 4.789 -0.136, 5.158 0.408, 5.5 1, 5.842 1.592, 6.211 2.136, 6.634 2.584, 7.138 2.888, 7.75 3, 8.416 2.888, 9.028 2.584, 9.532 2.136, 9.874 1.592, 10 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').roundWaves(20, 2).asWkt(3),
+                         'LineString (1 1, 1.185 0.701, 1.396 0.408, 1.628 0.127, 1.873 -0.136, 2.125 -0.375, 2.377 -0.584, 2.622 -0.757, 2.854 -0.888, 3.066 -0.971, 3.25 -1, 3.862 -0.888, 4.366 -0.584, 4.789 -0.136, 5.158 0.408, 5.5 1, 5.842 1.592, 6.211 2.136, 6.634 2.584, 7.138 2.888, 7.75 3, 8.416 2.888, 9.028 2.584, 9.532 2.136, 9.874 1.592, 10 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1, 10 10)').roundWaves(5, 2).asWkt(3),
+                         'LineString (1 1, 1.092 0.701, 1.198 0.408, 1.314 0.127, 1.437 -0.136, 1.563 -0.375, 1.689 -0.584, 1.811 -0.757, 1.927 -0.888, 2.033 -0.971, 2.125 -1, 2.431 -0.888, 2.683 -0.584, 2.895 -0.136, 3.079 0.408, 3.25 1, 3.421 1.592, 3.606 2.136, 3.817 2.584, 4.069 2.888, 4.375 3, 4.681 2.888, 4.933 2.584, 5.145 2.136, 5.329 1.592, 5.5 1, 5.671 0.408, 5.856 -0.136, 6.067 -0.584, 6.319 -0.888, 6.625 -1, 6.931 -0.888, 7.183 -0.584, 7.395 -0.136, 7.579 0.408, 7.75 1, 7.921 1.592, 8.106 2.136, 8.317 2.584, 8.569 2.888, 8.875 3, 9.182 2.891, 9.44 2.609, 9.668 2.22, 9.885 1.792, 10.109 1.391, 10.36 1.083, 10.656 0.936, 11.015 1.016, 11.457 1.39, 12 2.125, 11.888 2.431, 11.584 2.683, 11.136 2.895, 10.592 3.079, 10 3.25, 9.408 3.421, 8.864 3.606, 8.416 3.817, 8.112 4.069, 8 4.375, 8.112 4.681, 8.416 4.933, 8.864 5.145, 9.408 5.329, 10 5.5, 10.592 5.671, 11.136 5.856, 11.584 6.067, 11.888 6.319, 12 6.625, 11.888 6.931, 11.584 7.183, 11.136 7.395, 10.592 7.579, 10 7.75, 9.408 7.921, 8.864 8.106, 8.416 8.317, 8.112 8.569, 8 8.875, 8.112 9.208, 8.416 9.514, 8.864 9.766, 9.408 9.937, 10 10)')
+        self.assertEqual(QgsGeometry.fromWkt('MultiLineString ((1 1, 10 1),(10 10, 0 10))').roundWaves(5, 2).asWkt(3),
+                         'MultiLineString ((1 1, 1.092 0.701, 1.198 0.408, 1.314 0.127, 1.437 -0.136, 1.563 -0.375, 1.689 -0.584, 1.811 -0.757, 1.927 -0.888, 2.033 -0.971, 2.125 -1, 2.431 -0.888, 2.683 -0.584, 2.895 -0.136, 3.079 0.408, 3.25 1, 3.421 1.592, 3.606 2.136, 3.817 2.584, 4.069 2.888, 4.375 3, 4.681 2.888, 4.933 2.584, 5.145 2.136, 5.329 1.592, 5.5 1, 5.671 0.408, 5.856 -0.136, 6.067 -0.584, 6.319 -0.888, 6.625 -1, 6.931 -0.888, 7.183 -0.584, 7.395 -0.136, 7.579 0.408, 7.75 1, 7.921 1.592, 8.106 2.136, 8.317 2.584, 8.569 2.888, 8.875 3, 9.208 2.888, 9.514 2.584, 9.766 2.136, 9.937 1.592, 10 1),(10 10, 9.897 10.299, 9.78 10.592, 9.651 10.873, 9.515 11.136, 9.375 11.375, 9.235 11.584, 9.099 11.757, 8.97 11.888, 8.853 11.971, 8.75 12, 8.41 11.888, 8.13 11.584, 7.895 11.136, 7.69 10.592, 7.5 10, 7.31 9.408, 7.105 8.864, 6.87 8.416, 6.59 8.112, 6.25 8, 5.91 8.112, 5.63 8.416, 5.395 8.864, 5.19 9.408, 5 10, 4.81 10.592, 4.605 11.136, 4.37 11.584, 4.09 11.888, 3.75 12, 3.41 11.888, 3.13 11.584, 2.895 11.136, 2.69 10.592, 2.5 10, 2.31 9.408, 2.105 8.864, 1.87 8.416, 1.59 8.112, 1.25 8, 0.88 8.112, 0.54 8.416, 0.26 8.864, 0.07 9.408, 0 10))')
+        self.assertEqual(
+            QgsGeometry.fromWkt('Polygon ((1 1, 10 1, 10 10, 1 10, 1 1),(3 4, 8 4, 7 7, 4 6, 3 4))').roundWaves(5,
+                                                                                                                0.2).asWkt(
+                3),
+            'Polygon ((1 1, 1.092 0.97, 1.198 0.941, 1.314 0.913, 1.437 0.886, 1.563 0.863, 1.689 0.842, 1.811 0.824, 1.927 0.811, 2.033 0.803, 2.125 0.8, 2.431 0.811, 2.683 0.842, 2.895 0.886, 3.079 0.941, 3.25 1, 3.421 1.059, 3.606 1.114, 3.817 1.158, 4.069 1.189, 4.375 1.2, 4.681 1.189, 4.933 1.158, 5.145 1.114, 5.329 1.059, 5.5 1, 5.671 0.941, 5.856 0.886, 6.067 0.842, 6.319 0.811, 6.625 0.8, 6.931 0.811, 7.183 0.842, 7.395 0.886, 7.579 0.941, 7.75 1, 7.921 1.059, 8.106 1.114, 8.317 1.158, 8.569 1.189, 8.875 1.2, 9.18 1.19, 9.426 1.169, 9.62 1.149, 9.77 1.144, 9.884 1.166, 9.971 1.227, 10.038 1.341, 10.093 1.52, 10.145 1.777, 10.2 2.125, 10.189 2.431, 10.158 2.683, 10.114 2.895, 10.059 3.079, 10 3.25, 9.941 3.421, 9.886 3.606, 9.842 3.817, 9.811 4.069, 9.8 4.375, 9.811 4.681, 9.842 4.933, 9.886 5.145, 9.941 5.329, 10 5.5, 10.059 5.671, 10.114 5.856, 10.158 6.067, 10.189 6.319, 10.2 6.625, 10.189 6.931, 10.158 7.183, 10.114 7.395, 10.059 7.579, 10 7.75, 9.941 7.921, 9.886 8.106, 9.842 8.317, 9.811 8.569, 9.8 8.875, 9.81 9.18, 9.831 9.426, 9.851 9.62, 9.856 9.77, 9.834 9.884, 9.773 9.971, 9.659 10.038, 9.48 10.093, 9.223 10.145, 8.875 10.2, 8.569 10.189, 8.317 10.158, 8.106 10.114, 7.921 10.059, 7.75 10, 7.579 9.941, 7.395 9.886, 7.183 9.842, 6.931 9.811, 6.625 9.8, 6.319 9.811, 6.067 9.842, 5.856 9.886, 5.671 9.941, 5.5 10, 5.329 10.059, 5.145 10.114, 4.933 10.158, 4.681 10.189, 4.375 10.2, 4.069 10.189, 3.817 10.158, 3.606 10.114, 3.421 10.059, 3.25 10, 3.079 9.941, 2.895 9.886, 2.683 9.842, 2.431 9.811, 2.125 9.8, 1.82 9.81, 1.574 9.831, 1.38 9.851, 1.23 9.856, 1.116 9.834, 1.029 9.773, 0.962 9.659, 0.907 9.48, 0.855 9.223, 0.8 8.875, 0.811 8.569, 0.842 8.317, 0.886 8.106, 0.941 7.921, 1 7.75, 1.059 7.579, 1.114 7.395, 1.158 7.183, 1.189 6.931, 1.2 6.625, 1.189 6.319, 1.158 6.067, 1.114 5.856, 1.059 5.671, 1 5.5, 0.941 5.329, 0.886 5.145, 0.842 4.933, 0.811 4.681, 0.8 4.375, 0.811 4.069, 0.842 3.817, 0.886 3.606, 0.941 3.421, 1 3.25, 1.059 3.079, 1.114 2.895, 1.158 2.683, 1.189 2.431, 1.2 2.125, 1.189 1.792, 1.158 1.486, 1.114 1.234, 1.059 1.063, 1 1),(3 4, 3.093 3.97, 3.199 3.941, 3.315 3.913, 3.438 3.886, 3.565 3.863, 3.692 3.842, 3.815 3.824, 3.931 3.811, 4.037 3.803, 4.13 3.8, 4.437 3.811, 4.691 3.842, 4.903 3.886, 5.088 3.941, 5.26 4, 5.432 4.059, 5.617 4.114, 5.83 4.158, 6.083 4.189, 6.39 4.2, 6.697 4.19, 6.945 4.165, 7.145 4.137, 7.306 4.116, 7.437 4.11, 7.548 4.131, 7.649 4.188, 7.749 4.292, 7.857 4.453, 7.984 4.68, 7.876 4.968, 7.767 5.199, 7.658 5.386, 7.547 5.545, 7.437 5.689, 7.327 5.833, 7.216 5.992, 7.107 6.179, 6.998 6.41, 6.89 6.698, 6.707 6.663, 6.546 6.654, 6.4 6.662, 6.26 6.679, 6.115 6.698, 5.959 6.712, 5.781 6.712, 5.573 6.691, 5.326 6.641, 5.032 6.555, 4.744 6.446, 4.518 6.334, 4.344 6.214, 4.21 6.084, 4.107 5.94, 4.023 5.781, 3.95 5.602, 3.876 5.401, 3.791 5.175, 3.684 4.921, 3.585 4.748, 3.451 4.548, 3.298 4.341, 3.142 4.151, 3 4))')
+        self.assertEqual(QgsGeometry.fromWkt(
+            'MultiPolygon (((1 1, 10 1, 10 10, 1 10, 1 1)),((20 20, 20 30, 30 20, 20 20)))').roundWaves(5, 0.2).asWkt(
+            3),
+            'MultiPolygon (((1 1, 1.092 0.97, 1.198 0.941, 1.314 0.913, 1.437 0.886, 1.563 0.863, 1.689 0.842, 1.811 0.824, 1.927 0.811, 2.033 0.803, 2.125 0.8, 2.431 0.811, 2.683 0.842, 2.895 0.886, 3.079 0.941, 3.25 1, 3.421 1.059, 3.606 1.114, 3.817 1.158, 4.069 1.189, 4.375 1.2, 4.681 1.189, 4.933 1.158, 5.145 1.114, 5.329 1.059, 5.5 1, 5.671 0.941, 5.856 0.886, 6.067 0.842, 6.319 0.811, 6.625 0.8, 6.931 0.811, 7.183 0.842, 7.395 0.886, 7.579 0.941, 7.75 1, 7.921 1.059, 8.106 1.114, 8.317 1.158, 8.569 1.189, 8.875 1.2, 9.18 1.19, 9.426 1.169, 9.62 1.149, 9.77 1.144, 9.884 1.166, 9.971 1.227, 10.038 1.341, 10.093 1.52, 10.145 1.777, 10.2 2.125, 10.189 2.431, 10.158 2.683, 10.114 2.895, 10.059 3.079, 10 3.25, 9.941 3.421, 9.886 3.606, 9.842 3.817, 9.811 4.069, 9.8 4.375, 9.811 4.681, 9.842 4.933, 9.886 5.145, 9.941 5.329, 10 5.5, 10.059 5.671, 10.114 5.856, 10.158 6.067, 10.189 6.319, 10.2 6.625, 10.189 6.931, 10.158 7.183, 10.114 7.395, 10.059 7.579, 10 7.75, 9.941 7.921, 9.886 8.106, 9.842 8.317, 9.811 8.569, 9.8 8.875, 9.81 9.18, 9.831 9.426, 9.851 9.62, 9.856 9.77, 9.834 9.884, 9.773 9.971, 9.659 10.038, 9.48 10.093, 9.223 10.145, 8.875 10.2, 8.569 10.189, 8.317 10.158, 8.106 10.114, 7.921 10.059, 7.75 10, 7.579 9.941, 7.395 9.886, 7.183 9.842, 6.931 9.811, 6.625 9.8, 6.319 9.811, 6.067 9.842, 5.856 9.886, 5.671 9.941, 5.5 10, 5.329 10.059, 5.145 10.114, 4.933 10.158, 4.681 10.189, 4.375 10.2, 4.069 10.189, 3.817 10.158, 3.606 10.114, 3.421 10.059, 3.25 10, 3.079 9.941, 2.895 9.886, 2.683 9.842, 2.431 9.811, 2.125 9.8, 1.82 9.81, 1.574 9.831, 1.38 9.851, 1.23 9.856, 1.116 9.834, 1.029 9.773, 0.962 9.659, 0.907 9.48, 0.855 9.223, 0.8 8.875, 0.811 8.569, 0.842 8.317, 0.886 8.106, 0.941 7.921, 1 7.75, 1.059 7.579, 1.114 7.395, 1.158 7.183, 1.189 6.931, 1.2 6.625, 1.189 6.319, 1.158 6.067, 1.114 5.856, 1.059 5.671, 1 5.5, 0.941 5.329, 0.886 5.145, 0.842 4.933, 0.811 4.681, 0.8 4.375, 0.811 4.069, 0.842 3.817, 0.886 3.606, 0.941 3.421, 1 3.25, 1.059 3.079, 1.114 2.895, 1.158 2.683, 1.189 2.431, 1.2 2.125, 1.189 1.792, 1.158 1.486, 1.114 1.234, 1.059 1.063, 1 1)),((20 20, 20.03 20.1, 20.059 20.215, 20.087 20.34, 20.114 20.473, 20.138 20.61, 20.158 20.746, 20.176 20.879, 20.189 21.005, 20.197 21.119, 20.2 21.219, 20.189 21.551, 20.158 21.824, 20.114 22.053, 20.059 22.253, 20 22.439, 19.941 22.624, 19.886 22.824, 19.842 23.053, 19.811 23.326, 19.8 23.658, 19.811 23.99, 19.842 24.263, 19.886 24.492, 19.941 24.692, 20 24.877, 20.059 25.063, 20.114 25.263, 20.158 25.492, 20.189 25.765, 20.2 26.097, 20.189 26.428, 20.158 26.702, 20.114 26.931, 20.059 27.131, 20 27.316, 19.941 27.502, 19.886 27.701, 19.842 27.931, 19.811 28.204, 19.8 28.536, 19.812 28.865, 19.844 29.126, 19.896 29.321, 19.963 29.454, 20.043 29.529, 20.134 29.55, 20.233 29.521, 20.336 29.446, 20.442 29.327, 20.547 29.17, 20.79 28.943, 21.005 28.771, 21.198 28.641, 21.378 28.538, 21.551 28.449, 21.724 28.36, 21.904 28.257, 22.098 28.126, 22.312 27.955, 22.555 27.728, 22.781 27.486, 22.953 27.271, 23.083 27.077, 23.186 26.897, 23.276 26.724, 23.365 26.552, 23.468 26.372, 23.598 26.178, 23.77 25.963, 23.996 25.721, 24.239 25.494, 24.453 25.323, 24.647 25.192, 24.827 25.089, 25 25, 25.173 24.911, 25.353 24.808, 25.547 24.677, 25.761 24.506, 26.004 24.279, 26.23 24.037, 26.402 23.822, 26.532 23.628, 26.635 23.448, 26.724 23.276, 26.814 23.103, 26.917 22.923, 27.047 22.729, 27.219 22.514, 27.445 22.272, 27.688 22.045, 27.902 21.874, 28.096 21.743, 28.276 21.64, 28.449 21.551, 28.622 21.462, 28.802 21.359, 28.995 21.229, 29.21 21.057, 29.453 20.83, 29.533 20.562, 29.59 20.369, 29.618 20.24, 29.612 20.163, 29.565 20.129, 29.472 20.125, 29.328 20.141, 29.128 20.167, 28.866 20.19, 28.536 20.2, 28.204 20.189, 27.931 20.158, 27.701 20.114, 27.502 20.059, 27.316 20, 27.131 19.941, 26.931 19.886, 26.702 19.842, 26.428 19.811, 26.097 19.8, 25.765 19.811, 25.492 19.842, 25.263 19.886, 25.063 19.941, 24.877 20, 24.692 20.059, 24.492 20.114, 24.263 20.158, 23.99 20.189, 23.658 20.2, 23.326 20.189, 23.053 20.158, 22.824 20.114, 22.624 20.059, 22.439 20, 22.253 19.941, 22.053 19.886, 21.824 19.842, 21.551 19.811, 21.219 19.8, 21.005 19.811, 20.746 19.842, 20.473 19.886, 20.215 19.941, 20 20)))')
+
+    def testRoundRandomizedWaves(self):
+        """Test randomized round waves"""
+        self.assertEqual(QgsGeometry.fromWkt('Point (1 1)').roundWavesRandomized(1, 2, 2, 3, 1).asWkt(3), 'Point (1 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1)').roundWavesRandomized(1, 2, 2, 3, 1).asWkt(3),
+                         '')  # just don't crash!
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').roundWavesRandomized(1, 2, 2, 3, 1).asWkt(3),
+                         'LineString (1 1, 1.04 0.552, 1.085 0.113, 1.135 -0.308, 1.187 -0.702, 1.242 -1.061, 1.296 -1.374, 1.348 -1.633, 1.398 -1.829, 1.444 -1.954, 1.483 -1.997, 1.56 -1.829, 1.623 -1.374, 1.676 -0.702, 1.722 0.113, 1.765 1.001, 1.808 1.888, 1.854 2.704, 1.907 3.375, 1.97 3.831, 2.047 3.999, 2.131 3.848, 2.2 3.438, 2.259 2.834, 2.309 2.1, 2.356 1.301, 2.403 0.503, 2.454 -0.231, 2.512 -0.835, 2.581 -1.246, 2.665 -1.397, 2.76 -1.255, 2.837 -0.87, 2.903 -0.302, 2.959 0.387, 3.012 1.137, 3.065 1.886, 3.122 2.575, 3.187 3.143, 3.265 3.528, 3.359 3.67, 3.491 3.515, 3.599 3.096, 3.69 2.478, 3.77 1.728, 3.843 0.912, 3.917 0.095, 3.996 -0.655, 4.087 -1.273, 4.195 -1.692, 4.327 -1.846, 4.416 -1.696, 4.49 -1.288, 4.552 -0.686, 4.605 0.044, 4.655 0.839, 4.705 1.634, 4.759 2.364, 4.821 2.966, 4.894 3.374, 4.984 3.525, 5.082 3.391, 5.163 3.03, 5.23 2.498, 5.29 1.851, 5.344 1.147, 5.399 0.444, 5.459 -0.203, 5.526 -0.735, 5.607 -1.096, 5.705 -1.23, 5.81 -1.086, 5.896 -0.695, 5.968 -0.119, 6.031 0.581, 6.089 1.342, 6.147 2.103, 6.21 2.803, 6.282 3.379, 6.368 3.77, 6.473 3.914, 6.572 3.764, 6.653 3.358, 6.722 2.76, 6.781 2.033, 6.837 1.242, 6.892 0.451, 6.952 -0.276, 7.02 -0.875, 7.102 -1.281, 7.201 -1.431, 7.333 -1.285, 7.442 -0.889, 7.533 -0.306, 7.612 0.403, 7.686 1.174, 7.76 1.945, 7.839 2.653, 7.93 3.237, 8.039 3.633, 8.171 3.778, 8.287 3.622, 8.383 3.198, 8.464 2.573, 8.534 1.814, 8.6 0.988, 8.665 0.162, 8.735 -0.597, 8.816 -1.222, 8.912 -1.646, 9.029 -1.803, 9.103 -1.654, 9.164 -1.249, 9.216 -0.653, 9.26 0.07, 9.302 0.858, 9.343 1.645, 9.388 2.369, 9.44 2.965, 9.501 3.369, 9.575 3.518, 9.61 3.482, 9.65 3.377, 9.694 3.212, 9.74 2.994, 9.788 2.731, 9.835 2.43, 9.881 2.099, 9.925 1.745, 9.965 1.376, 10 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').roundWavesRandomized(5, 6, 2, 3, 1).asWkt(3),
+                         'LineString (1 1, 1.122 0.552, 1.261 0.113, 1.414 -0.308, 1.575 -0.702, 1.742 -1.061, 1.908 -1.374, 2.069 -1.633, 2.222 -1.829, 2.362 -1.954, 2.483 -1.997, 2.832 -1.829, 3.119 -1.374, 3.36 -0.702, 3.57 0.113, 3.765 1.001, 3.96 1.888, 4.17 2.704, 4.411 3.375, 4.698 3.831, 5.047 3.999, 5.403 3.848, 5.696 3.438, 5.943 2.834, 6.157 2.1, 6.356 1.301, 6.555 0.503, 6.77 -0.231, 7.016 -0.835, 7.309 -1.246, 7.665 -1.397, 7.948 -1.399, 8.238 -1.328, 8.529 -1.191, 8.814 -0.996, 9.085 -0.75, 9.337 -0.46, 9.561 -0.132, 9.751 0.225, 9.899 0.605, 10 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').roundWavesRandomized(8, 9, 2, 3, 1).asWkt(3),
+                         'LineString (1 1, 1.183 0.552, 1.393 0.113, 1.623 -0.308, 1.866 -0.702, 2.117 -1.061, 2.367 -1.374, 2.61 -1.633, 2.84 -1.829, 3.05 -1.954, 3.233 -1.997, 3.786 -1.829, 4.241 -1.374, 4.623 -0.702, 4.956 0.113, 5.265 1.001, 5.574 1.888, 5.907 2.704, 6.289 3.375, 6.744 3.831, 7.297 3.999, 7.658 3.874, 8.02 3.687, 8.376 3.445, 8.717 3.158, 9.035 2.836, 9.322 2.487, 9.57 2.119, 9.771 1.743, 9.917 1.367, 10 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').roundWavesRandomized(10, 12, 1, 2, 1).asWkt(3),
+                         'LineString (1 1, 1.243 0.701, 1.522 0.409, 1.828 0.128, 2.151 -0.134, 2.483 -0.373, 2.815 -0.582, 3.139 -0.755, 3.444 -0.885, 3.723 -0.968, 3.966 -0.997, 4.664 -0.885, 5.238 -0.582, 5.72 -0.134, 6.141 0.409, 6.53 1.001, 6.92 1.592, 7.341 2.136, 7.823 2.583, 8.397 2.887, 9.094 2.999, 9.169 2.97, 9.254 2.887, 9.347 2.756, 9.446 2.583, 9.547 2.374, 9.649 2.135, 9.747 1.873, 9.841 1.592, 9.926 1.299, 10 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').roundWavesRandomized(20, 25, 2, 3, 1).asWkt(3),
+                         'LineString (1 1, 1.506 0.552, 2.085 0.113, 2.72 -0.308, 3.392 -0.702, 4.083 -1.061, 4.773 -1.374, 5.445 -1.633, 6.081 -1.829, 6.66 -1.954, 7.166 -1.997, 7.398 -1.954, 7.665 -1.829, 7.956 -1.633, 8.265 -1.374, 8.583 -1.061, 8.9 -0.702, 9.209 -0.308, 9.501 0.113, 9.768 0.552, 10 1)')
+        self.assertEqual(
+            QgsGeometry.fromWkt('LineString (1 1, 10 1, 10 10)').roundWavesRandomized(5, 6, 2, 3, 1).asWkt(3),
+            'LineString (1 1, 1.122 0.552, 1.261 0.113, 1.414 -0.308, 1.575 -0.702, 1.742 -1.061, 1.908 -1.374, 2.069 -1.633, 2.222 -1.829, 2.362 -1.954, 2.483 -1.997, 2.832 -1.829, 3.119 -1.374, 3.36 -0.702, 3.57 0.113, 3.765 1.001, 3.96 1.888, 4.17 2.704, 4.411 3.375, 4.698 3.831, 5.047 3.999, 5.403 3.848, 5.696 3.438, 5.943 2.834, 6.157 2.1, 6.356 1.301, 6.555 0.503, 6.77 -0.231, 7.016 -0.835, 7.309 -1.246, 7.665 -1.397, 8.029 -1.257, 8.309 -0.888, 8.505 -0.365, 8.614 0.239, 8.634 0.848, 8.563 1.387, 8.399 1.783, 8.14 1.96, 7.785 1.844, 7.33 1.359, 7.485 1.763, 7.904 2.095, 8.522 2.374, 9.272 2.618, 10.088 2.843, 10.905 3.069, 11.655 3.312, 12.273 3.591, 12.692 3.923, 12.846 4.327, 12.696 4.688, 12.288 4.986, 11.686 5.236, 10.956 5.453, 10.161 5.655, 9.366 5.857, 8.636 6.075, 8.034 6.325, 7.626 6.622, 7.475 6.984, 7.609 7.354, 7.97 7.659, 8.502 7.914, 9.149 8.138, 9.853 8.344, 10.556 8.551, 11.203 8.775, 11.735 9.03, 12.096 9.335, 12.23 9.705, 12.197 9.729, 12.105 9.757, 11.959 9.788, 11.766 9.82, 11.533 9.853, 11.266 9.886, 10.973 9.918, 10.66 9.948, 10.333 9.976, 10 10)')
+        self.assertEqual(
+            QgsGeometry.fromWkt('MultiLineString ((1 1, 10 1),(10 10, 0 10))').roundWavesRandomized(5, 6, 2, 3,
+                                                                                                    1).asWkt(3),
+            'MultiLineString ((1 1, 1.122 0.552, 1.261 0.113, 1.414 -0.308, 1.575 -0.702, 1.742 -1.061, 1.908 -1.374, 2.069 -1.633, 2.222 -1.829, 2.362 -1.954, 2.483 -1.997, 2.832 -1.829, 3.119 -1.374, 3.36 -0.702, 3.57 0.113, 3.765 1.001, 3.96 1.888, 4.17 2.704, 4.411 3.375, 4.698 3.831, 5.047 3.999, 5.403 3.848, 5.696 3.438, 5.943 2.834, 6.157 2.1, 6.356 1.301, 6.555 0.503, 6.77 -0.231, 7.016 -0.835, 7.309 -1.246, 7.665 -1.397, 7.948 -1.399, 8.238 -1.328, 8.529 -1.191, 8.814 -0.996, 9.085 -0.75, 9.337 -0.46, 9.561 -0.132, 9.751 0.225, 9.899 0.605, 10 1),(10 10, 9.88 10.439, 9.743 10.869, 9.592 11.281, 9.433 11.667, 9.269 12.018, 9.106 12.325, 8.946 12.579, 8.796 12.771, 8.658 12.893, 8.538 12.936, 8.177 12.783, 7.88 12.368, 7.63 11.756, 7.412 11.014, 7.21 10.205, 7.008 9.397, 6.79 8.655, 6.541 8.043, 6.243 7.628, 5.882 7.475, 5.512 7.609, 5.207 7.97, 4.951 8.502, 4.728 9.149, 4.521 9.853, 4.314 10.556, 4.091 11.203, 3.835 11.735, 3.53 12.096, 3.16 12.23, 2.784 12.086, 2.474 11.695, 2.214 11.119, 1.987 10.419, 1.776 9.658, 1.566 8.897, 1.339 8.197, 1.079 7.621, 0.769 7.23, 0.393 7.086, 0.361 7.128, 0.324 7.249, 0.283 7.44, 0.24 7.692, 0.196 7.997, 0.152 8.345, 0.11 8.728, 0.069 9.137, 0.032 9.564, 0 10))')
+        self.assertEqual(QgsGeometry.fromWkt(
+            'Polygon ((1 1, 10 1, 10 10, 1 10, 1 1),(3 4, 8 4, 7 7, 4 6, 3 4))').roundWavesRandomized(5, 6, 0.2, 0.3,
+                                                                                                      1).asWkt(3),
+            'Polygon ((1 1, 1.122 0.955, 1.261 0.911, 1.414 0.869, 1.575 0.83, 1.742 0.794, 1.908 0.763, 2.069 0.737, 2.222 0.717, 2.362 0.705, 2.483 0.7, 2.832 0.717, 3.119 0.763, 3.36 0.83, 3.57 0.911, 3.765 1, 3.96 1.089, 4.17 1.17, 4.411 1.238, 4.698 1.283, 5.047 1.3, 5.403 1.285, 5.696 1.244, 5.943 1.183, 6.157 1.11, 6.356 1.03, 6.555 0.95, 6.77 0.877, 7.016 0.816, 7.309 0.775, 7.665 0.76, 8.031 0.775, 8.328 0.814, 8.57 0.872, 8.767 0.945, 8.934 1.025, 9.082 1.109, 9.223 1.189, 9.37 1.262, 9.536 1.32, 9.733 1.359, 9.748 1.763, 9.79 2.095, 9.852 2.374, 9.927 2.618, 10.009 2.843, 10.09 3.069, 10.165 3.312, 10.227 3.591, 10.269 3.923, 10.285 4.327, 10.27 4.688, 10.229 4.986, 10.169 5.236, 10.096 5.453, 10.016 5.655, 9.937 5.857, 9.864 6.075, 9.803 6.325, 9.763 6.622, 9.748 6.984, 9.761 7.354, 9.797 7.659, 9.85 7.914, 9.915 8.138, 9.985 8.344, 10.056 8.551, 10.12 8.775, 10.174 9.03, 10.21 9.335, 10.223 9.705, 9.866 9.831, 9.572 9.904, 9.324 9.934, 9.106 9.93, 8.902 9.901, 8.696 9.857, 8.472 9.806, 8.213 9.758, 7.904 9.722, 7.527 9.709, 7.156 9.724, 6.851 9.764, 6.594 9.824, 6.371 9.897, 6.163 9.976, 5.956 10.055, 5.732 10.128, 5.476 10.187, 5.17 10.228, 4.799 10.243, 4.395 10.228, 4.062 10.189, 3.783 10.131, 3.54 10.06, 3.314 9.983, 3.088 9.906, 2.845 9.835, 2.566 9.776, 2.233 9.737, 1.829 9.722, 1.664 9.634, 1.502 9.554, 1.346 9.472, 1.2 9.378, 1.068 9.262, 0.951 9.112, 0.855 8.919, 0.782 8.671, 0.736 8.359, 0.72 7.971, 0.735 7.625, 0.775 7.34, 0.835 7.1, 0.907 6.892, 0.986 6.698, 1.065 6.505, 1.137 6.296, 1.196 6.056, 1.237 5.771, 1.252 5.425, 1.237 5.026, 1.196 4.698, 1.136 4.422, 1.064 4.182, 0.984 3.959, 0.905 3.736, 0.833 3.495, 0.773 3.22, 0.732 2.891, 0.717 2.492, 0.729 2.272, 0.746 2.055, 0.769 1.846, 0.796 1.651, 0.826 1.473, 0.859 1.317, 0.894 1.187, 0.93 1.088, 0.965 1.024, 1 1),(3 4, 3.116 3.969, 3.25 3.939, 3.396 3.91, 3.55 3.883, 3.709 3.858, 3.868 3.837, 4.022 3.819, 4.168 3.806, 4.301 3.797, 4.418 3.794, 4.798 3.807, 5.111 3.843, 5.374 3.896, 5.603 3.961, 5.816 4.031, 6.028 4.101, 6.258 4.165, 6.521 4.218, 6.834 4.254, 7.214 4.267, 7.322 4.323, 7.431 4.384, 7.534 4.458, 7.626 4.55, 7.701 4.668, 7.752 4.819, 7.773 5.009, 7.759 5.247, 7.704 5.539, 7.601 5.891, 7.401 6.229, 7.241 6.475, 7.106 6.64, 6.984 6.732, 6.86 6.763, 6.72 6.743, 6.552 6.682, 6.341 6.59, 6.074 6.477, 5.737 6.353, 5.36 6.24, 5.045 6.165, 4.779 6.113, 4.551 6.068, 4.347 6.015, 4.156 5.939, 3.966 5.824, 3.764 5.656, 3.539 5.418, 3.278 5.095, 3.241 5.013, 3.203 4.916, 3.166 4.807, 3.131 4.69, 3.099 4.568, 3.069 4.444, 3.044 4.323, 3.023 4.206, 3.008 4.097, 3 4))')
+        self.assertEqual(QgsGeometry.fromWkt(
+            'MultiPolygon (((1 1, 10 1, 10 10, 1 10, 1 1)),((20 20, 20 30, 30 20, 20 20)))').roundWavesRandomized(5, 6,
+                                                                                                                  0.2,
+                                                                                                                  0.3,
+                                                                                                                  1).asWkt(
+            3),
+            'MultiPolygon (((1 1, 1.122 0.955, 1.261 0.911, 1.414 0.869, 1.575 0.83, 1.742 0.794, 1.908 0.763, 2.069 0.737, 2.222 0.717, 2.362 0.705, 2.483 0.7, 2.832 0.717, 3.119 0.763, 3.36 0.83, 3.57 0.911, 3.765 1, 3.96 1.089, 4.17 1.17, 4.411 1.238, 4.698 1.283, 5.047 1.3, 5.403 1.285, 5.696 1.244, 5.943 1.183, 6.157 1.11, 6.356 1.03, 6.555 0.95, 6.77 0.877, 7.016 0.816, 7.309 0.775, 7.665 0.76, 8.031 0.775, 8.328 0.814, 8.57 0.872, 8.767 0.945, 8.934 1.025, 9.082 1.109, 9.223 1.189, 9.37 1.262, 9.536 1.32, 9.733 1.359, 9.748 1.763, 9.79 2.095, 9.852 2.374, 9.927 2.618, 10.009 2.843, 10.09 3.069, 10.165 3.312, 10.227 3.591, 10.269 3.923, 10.285 4.327, 10.27 4.688, 10.229 4.986, 10.169 5.236, 10.096 5.453, 10.016 5.655, 9.937 5.857, 9.864 6.075, 9.803 6.325, 9.763 6.622, 9.748 6.984, 9.761 7.354, 9.797 7.659, 9.85 7.914, 9.915 8.138, 9.985 8.344, 10.056 8.551, 10.12 8.775, 10.174 9.03, 10.21 9.335, 10.223 9.705, 9.866 9.831, 9.572 9.904, 9.324 9.934, 9.106 9.93, 8.902 9.901, 8.696 9.857, 8.472 9.806, 8.213 9.758, 7.904 9.722, 7.527 9.709, 7.156 9.724, 6.851 9.764, 6.594 9.824, 6.371 9.897, 6.163 9.976, 5.956 10.055, 5.732 10.128, 5.476 10.187, 5.17 10.228, 4.799 10.243, 4.395 10.228, 4.062 10.189, 3.783 10.131, 3.54 10.06, 3.314 9.983, 3.088 9.906, 2.845 9.835, 2.566 9.776, 2.233 9.737, 1.829 9.722, 1.664 9.634, 1.502 9.554, 1.346 9.472, 1.2 9.378, 1.068 9.262, 0.951 9.112, 0.855 8.919, 0.782 8.671, 0.736 8.359, 0.72 7.971, 0.735 7.625, 0.775 7.34, 0.835 7.1, 0.907 6.892, 0.986 6.698, 1.065 6.505, 1.137 6.296, 1.196 6.056, 1.237 5.771, 1.252 5.425, 1.237 5.026, 1.196 4.698, 1.136 4.422, 1.064 4.182, 0.984 3.959, 0.905 3.736, 0.833 3.495, 0.773 3.22, 0.732 2.891, 0.717 2.492, 0.729 2.272, 0.746 2.055, 0.769 1.846, 0.796 1.651, 0.826 1.473, 0.859 1.317, 0.894 1.187, 0.93 1.088, 0.965 1.024, 1 1)),((20 20, 20.031 20.116, 20.061 20.25, 20.09 20.396, 20.117 20.55, 20.142 20.709, 20.163 20.868, 20.181 21.022, 20.194 21.168, 20.203 21.301, 20.206 21.418, 20.193 21.798, 20.157 22.111, 20.104 22.374, 20.039 22.603, 19.969 22.816, 19.899 23.028, 19.835 23.258, 19.782 23.521, 19.746 23.834, 19.733 24.214, 19.746 24.582, 19.783 24.885, 19.838 25.14, 19.904 25.361, 19.976 25.567, 20.048 25.773, 20.115 25.995, 20.169 26.249, 20.206 26.552, 20.22 26.92, 20.208 27.28, 20.175 27.576, 20.126 27.825, 20.067 28.041, 20.003 28.242, 19.939 28.443, 19.88 28.66, 19.831 28.909, 19.798 29.205, 19.786 29.565, 20.071 29.52, 20.288 29.461, 20.454 29.384, 20.585 29.286, 20.698 29.164, 20.809 29.015, 20.935 28.837, 21.092 28.626, 21.297 28.379, 21.566 28.092, 21.818 27.86, 22.045 27.688, 22.252 27.561, 22.446 27.463, 22.634 27.381, 22.822 27.298, 23.017 27.2, 23.224 27.073, 23.45 26.901, 23.702 26.669, 23.965 26.387, 24.163 26.136, 24.312 25.909, 24.428 25.698, 24.529 25.494, 24.63 25.29, 24.746 25.079, 24.896 24.852, 25.093 24.601, 25.356 24.319, 25.627 24.066, 25.866 23.875, 26.083 23.73, 26.285 23.615, 26.478 23.516, 26.672 23.417, 26.873 23.303, 27.09 23.158, 27.33 22.966, 27.601 22.713, 27.835 22.46, 28.011 22.234, 28.143 22.028, 28.245 21.836, 28.332 21.651, 28.419 21.465, 28.521 21.273, 28.652 21.067, 28.828 20.841, 29.063 20.588, 29.263 20.481, 29.415 20.366, 29.516 20.248, 29.563 20.131, 29.552 20.021, 29.482 19.921, 29.347 19.835, 29.146 19.768, 28.875 19.725, 28.53 19.71, 28.182 19.725, 27.896 19.766, 27.655 19.827, 27.445 19.901, 27.25 19.981, 27.056 20.061, 26.846 20.135, 26.605 20.196, 26.319 20.237, 25.971 20.252, 25.625 20.237, 25.34 20.196, 25.101 20.135, 24.893 20.061, 24.7 19.98, 24.507 19.9, 24.298 19.826, 24.059 19.765, 23.774 19.724, 23.429 19.708, 23.027 19.723, 22.696 19.763, 22.418 19.821, 22.176 19.892, 21.951 19.969, 21.727 20.046, 21.484 20.117, 21.206 20.176, 20.875 20.215, 20.474 20.23, 20.435 20.227, 20.39 20.217, 20.341 20.202, 20.29 20.182, 20.237 20.158, 20.184 20.131, 20.132 20.1, 20.083 20.068, 20.039 20.034, 20 20)))')
+
     def testGeosCrash(self):
         # test we don't crash when geos returns a point geometry with no points
         QgsGeometry.fromWkt('Polygon ((0 0, 1 1, 1 0, 0 0))').intersection(QgsGeometry.fromWkt('Point (42 0)')).isNull()
@@ -6159,11 +6384,15 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertTrue(QgsGeometry.fromWkt('Polygon((0 0, 0 1, 1 1, 1 0, 0 0))').isAxisParallelRectangle(0))
         self.assertTrue(QgsGeometry.fromWkt('Polygon((0 0, 0 1, 1 1, 1 0, 0 0))').isAxisParallelRectangle(0, True))
         # with rings
-        self.assertFalse(QgsGeometry.fromWkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0), (0.1 0.1, 0.2 0.1, 0.2 0.2, 0.1 0.2, 0.1 0.1))').isAxisParallelRectangle(0))
+        self.assertFalse(QgsGeometry.fromWkt(
+            'Polygon((0 0, 1 0, 1 1, 0 1, 0 0), (0.1 0.1, 0.2 0.1, 0.2 0.2, 0.1 0.2, 0.1 0.1))').isAxisParallelRectangle(
+            0))
         # densified
-        self.assertTrue(QgsGeometry.fromWkt('Polygon((0 0, 0.5 0.0, 1 0, 1 1, 0 1, 0 0))').densifyByCount(5).isAxisParallelRectangle(0))
+        self.assertTrue(QgsGeometry.fromWkt('Polygon((0 0, 0.5 0.0, 1 0, 1 1, 0 1, 0 0))').densifyByCount(
+            5).isAxisParallelRectangle(0))
         # not a simple rectangle
-        self.assertFalse(QgsGeometry.fromWkt('Polygon((0 0, 0.5 0.0, 1 0, 1 1, 0 1, 0 0))').densifyByCount(5).isAxisParallelRectangle(0, True))
+        self.assertFalse(QgsGeometry.fromWkt('Polygon((0 0, 0.5 0.0, 1 0, 1 1, 0 1, 0 0))').densifyByCount(
+            5).isAxisParallelRectangle(0, True))
 
         # starting mid way through a side
         self.assertTrue(QgsGeometry.fromWkt('Polygon((0.5 0, 1 0, 1 1, 0 1, 0 0, 0.5 0))').densifyByCount(
@@ -6176,13 +6405,15 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertTrue(QgsGeometry.fromWkt('Polygon((0 0, 1 0.001, 1 1, 0 1, 0 0))').isAxisParallelRectangle(1))
         self.assertFalse(QgsGeometry.fromWkt('Polygon((0 0, 1 0.1, 1 1, 0 1, 0 0))').isAxisParallelRectangle(1))
         self.assertTrue(QgsGeometry.fromWkt('Polygon((0 0, 1 0.1, 1 1, 0 1, 0 0))').isAxisParallelRectangle(10))
-        self.assertTrue(QgsGeometry.fromWkt('Polygon((0 0, 1 0.1, 1 1, 0 1, 0 0))').densifyByCount(5).isAxisParallelRectangle(10))
+        self.assertTrue(
+            QgsGeometry.fromWkt('Polygon((0 0, 1 0.1, 1 1, 0 1, 0 0))').densifyByCount(5).isAxisParallelRectangle(10))
 
     def testTransformWithClass(self):
         """
         Test transforming using a python based class (most of the tests for this are in c++, this is just
         checking the sip bindings!)
         """
+
         class Transformer(QgsAbstractGeometryTransformer):
 
             def transformPoint(self, x, y, z, m):
@@ -6221,7 +6452,8 @@ class TestQgsGeometry(unittest.TestCase):
         g1 = QgsGeometry.fromWkt('POLYGON ((50 50, 150 50, 150 150, 50 150, 50 50))')
         self.assertEqual(g1.largestEmptyCircle(1).asWkt(), 'LineString (100 100, 100 50)')
         self.assertEqual(g1.largestEmptyCircle(0.1).asWkt(), 'LineString (100 100, 100 50)')
-        g2 = QgsGeometry.fromWkt('MultiPolygon (((95.03667481662591854 163.45354523227382515, 95.03667481662591854 122.0354523227383936, 34.10757946210270575 122.0354523227383936, 34.10757946210270575 163.45354523227382515, 95.03667481662591854 163.45354523227382515)),((35.64792176039119198 76.3386308068459698, 94.52322738386308743 76.3386308068459698, 94.52322738386308743 41.25305623471882654, 35.64792176039119198 41.25305623471882654, 35.64792176039119198 76.3386308068459698)),((185.23227383863081741 108.34352078239608375, 185.23227383863081741 78.56356968215158076, 118.99755501222495013 78.56356968215158076, 118.99755501222495013 108.34352078239608375, 185.23227383863081741 108.34352078239608375)))')
+        g2 = QgsGeometry.fromWkt(
+            'MultiPolygon (((95.03667481662591854 163.45354523227382515, 95.03667481662591854 122.0354523227383936, 34.10757946210270575 122.0354523227383936, 34.10757946210270575 163.45354523227382515, 95.03667481662591854 163.45354523227382515)),((35.64792176039119198 76.3386308068459698, 94.52322738386308743 76.3386308068459698, 94.52322738386308743 41.25305623471882654, 35.64792176039119198 41.25305623471882654, 35.64792176039119198 76.3386308068459698)),((185.23227383863081741 108.34352078239608375, 185.23227383863081741 78.56356968215158076, 118.99755501222495013 78.56356968215158076, 118.99755501222495013 108.34352078239608375, 185.23227383863081741 108.34352078239608375)))')
         self.assertEqual(g2.largestEmptyCircle(0.1).asWkt(1), 'LineString (129.3 142.5, 129.3 108.3)')
 
     @unittest.skipIf(Qgis.geosVersionInt() < 30600, "GEOS 3.6 required")
@@ -6253,20 +6485,26 @@ class TestQgsGeometry(unittest.TestCase):
         Test QgsGeometry.node
         """
         l1 = QgsGeometry.fromWkt('LINESTRINGZ(0 0 0, 10 10 10, 0 10 5, 10 0 3)')
-        self.assertEqual(l1.node().asWkt(6), 'MultiLineStringZ ((0 0 0, 5 5 4.5),(5 5 4.5, 10 10 10, 0 10 5, 5 5 4.5),(5 5 4.5, 10 0 3))')
+        self.assertEqual(l1.node().asWkt(6),
+                         'MultiLineStringZ ((0 0 0, 5 5 4.5),(5 5 4.5, 10 10 10, 0 10 5, 5 5 4.5),(5 5 4.5, 10 0 3))')
         l1 = QgsGeometry.fromWkt('MULTILINESTRING ((2 5, 2 1, 7 1), (6 1, 4 1, 2 3, 2 5))')
-        self.assertEqual(l1.node().asWkt(6), 'MultiLineString ((2 5, 2 3),(2 3, 2 1, 4 1),(4 1, 6 1),(6 1, 7 1),(4 1, 2 3))')
+        self.assertEqual(l1.node().asWkt(6),
+                         'MultiLineString ((2 5, 2 3),(2 3, 2 1, 4 1),(4 1, 6 1),(6 1, 7 1),(4 1, 2 3))')
 
     def testSharedPaths(self):
         """
         Test QgsGeometry.sharedPaths
         """
-        l1 = QgsGeometry.fromWkt('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),(51 150,101 150,76 175,51 150))')
+        l1 = QgsGeometry.fromWkt(
+            'MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),(51 150,101 150,76 175,51 150))')
         l2 = QgsGeometry.fromWkt('LINESTRING(151 100,126 156.25,126 125,90 161, 76 175)')
-        self.assertEqual(l1.sharedPaths(l2).asWkt(6), 'GeometryCollection (MultiLineString ((126 156.25, 126 125),(101 150, 90 161),(90 161, 76 175)),MultiLineString EMPTY)')
+        self.assertEqual(l1.sharedPaths(l2).asWkt(6),
+                         'GeometryCollection (MultiLineString ((126 156.25, 126 125),(101 150, 90 161),(90 161, 76 175)),MultiLineString EMPTY)')
         l1 = QgsGeometry.fromWkt('LINESTRING(76 175,90 161,126 125,126 156.25,151 100)')
-        l2 = QgsGeometry.fromWkt('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),(51 150,101 150,76 175,51 150))')
-        self.assertEqual(l1.sharedPaths(l2).asWkt(6), 'GeometryCollection (MultiLineString EMPTY,MultiLineString ((76 175, 90 161),(90 161, 101 150),(126 125, 126 156.25)))')
+        l2 = QgsGeometry.fromWkt(
+            'MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),(51 150,101 150,76 175,51 150))')
+        self.assertEqual(l1.sharedPaths(l2).asWkt(6),
+                         'GeometryCollection (MultiLineString EMPTY,MultiLineString ((76 175, 90 161),(90 161, 101 150),(126 125, 126 156.25)))')
 
     def renderGeometry(self, geom, use_pen, as_polygon=False, as_painter_path=False):
         image = QImage(200, 200, QImage.Format_RGB32)
@@ -6435,7 +6673,9 @@ class TestQgsGeometry(unittest.TestCase):
 
             geom = get_geom()
             rendered_image = self.renderGeometryUsingPath(geom)
-            self.assertTrue(self.imageCheck(test['name'], test['reference_image'], rendered_image, control_path="geometry_path"), test['name'])
+            self.assertTrue(
+                self.imageCheck(test['name'], test['reference_image'], rendered_image, control_path="geometry_path"),
+                test['name'])
 
             # Note - each test is repeated with the same geometry and reference image, but with added
             # z and m dimensions. This tests that presence of the dimensions does not affect rendering
@@ -6444,18 +6684,21 @@ class TestQgsGeometry(unittest.TestCase):
             geom_z = get_geom()
             geom_z.get().addZValue(5)
             rendered_image = self.renderGeometryUsingPath(geom_z)
-            assert self.imageCheck(test['name'] + 'Z', test['reference_image'], rendered_image, control_path="geometry_path")
+            assert self.imageCheck(test['name'] + 'Z', test['reference_image'], rendered_image,
+                                   control_path="geometry_path")
 
             # test with ZM
             geom_z.get().addMValue(15)
             rendered_image = self.renderGeometryUsingPath(geom_z)
-            assert self.imageCheck(test['name'] + 'ZM', test['reference_image'], rendered_image, control_path="geometry_path")
+            assert self.imageCheck(test['name'] + 'ZM', test['reference_image'], rendered_image,
+                                   control_path="geometry_path")
 
             # test with M
             geom_m = get_geom()
             geom_m.get().addMValue(15)
             rendered_image = self.renderGeometryUsingPath(geom_m)
-            assert self.imageCheck(test['name'] + 'M', test['reference_image'], rendered_image, control_path="geometry_path")
+            assert self.imageCheck(test['name'] + 'M', test['reference_image'], rendered_image,
+                                   control_path="geometry_path")
 
     def renderGeometryUsingPath(self, geom):
         image = QImage(200, 200, QImage.Format_RGB32)

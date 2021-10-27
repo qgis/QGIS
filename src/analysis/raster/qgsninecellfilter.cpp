@@ -22,6 +22,7 @@
 #include "qgsfeedback.h"
 #include "qgsogrutils.h"
 #include "qgsmessagelog.h"
+#include "qgsconfig.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"

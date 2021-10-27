@@ -21,6 +21,7 @@
 #include "qgstriangle.h"
 
 #include <memory>
+#include <utility>
 
 QgsCircle::QgsCircle() :
   QgsEllipse( QgsPoint(), 0.0, 0.0, 0.0 )
@@ -188,7 +189,7 @@ QgsCircle QgsCircle::fromCenterPoint( const QgsPoint &center, const QgsPoint &pt
   return QgsCircle( centerPt, centerPt.distance( pt1 ), azimuth );
 }
 
-static QVector<QgsCircle> from2ParallelsLine( const QgsPoint &pt1_par1, const QgsPoint &pt2_par1, const QgsPoint &pt1_par2, const QgsPoint &pt2_par2, const QgsPoint &pt1_line1, const QgsPoint &pt2_line1, QgsPoint pos, double epsilon )
+static QVector<QgsCircle> from2ParallelsLine( const QgsPoint &pt1_par1, const QgsPoint &pt2_par1, const QgsPoint &pt1_par2, const QgsPoint &pt2_par2, const QgsPoint &pt1_line1, const QgsPoint &pt2_line1, const QgsPoint &pos, double epsilon )
 {
   const double radius = QgsGeometryUtils::perpendicularSegment( pt1_par2, pt1_par1, pt2_par1 ).length() / 2.0;
 
@@ -274,7 +275,7 @@ static QVector<QgsCircle> from2ParallelsLine( const QgsPoint &pt1_par1, const Qg
   return circles;
 }
 
-QVector<QgsCircle> QgsCircle::from3TangentsMulti( const QgsPoint &pt1_tg1, const QgsPoint &pt2_tg1, const QgsPoint &pt1_tg2, const QgsPoint &pt2_tg2, const QgsPoint &pt1_tg3, const QgsPoint &pt2_tg3, double epsilon, QgsPoint pos )
+QVector<QgsCircle> QgsCircle::from3TangentsMulti( const QgsPoint &pt1_tg1, const QgsPoint &pt2_tg1, const QgsPoint &pt1_tg2, const QgsPoint &pt2_tg2, const QgsPoint &pt1_tg3, const QgsPoint &pt2_tg3, double epsilon, const QgsPoint &pos )
 {
   QgsPoint p1, p2, p3;
   bool isIntersect_tg1tg2 = false;
@@ -314,7 +315,7 @@ QVector<QgsCircle> QgsCircle::from3TangentsMulti( const QgsPoint &pt1_tg1, const
   return circles;
 }
 
-QgsCircle QgsCircle::from3Tangents( const QgsPoint &pt1_tg1, const QgsPoint &pt2_tg1, const QgsPoint &pt1_tg2, const QgsPoint &pt2_tg2, const QgsPoint &pt1_tg3, const QgsPoint &pt2_tg3, double epsilon, QgsPoint pos )
+QgsCircle QgsCircle::from3Tangents( const QgsPoint &pt1_tg1, const QgsPoint &pt2_tg1, const QgsPoint &pt1_tg2, const QgsPoint &pt2_tg2, const QgsPoint &pt1_tg3, const QgsPoint &pt2_tg3, double epsilon, const QgsPoint &pos )
 {
   const QVector<QgsCircle> circles = from3TangentsMulti( pt1_tg1, pt2_tg1, pt1_tg2, pt2_tg2, pt1_tg3, pt2_tg3, epsilon, pos );
   if ( circles.length() != 1 )

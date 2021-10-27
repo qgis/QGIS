@@ -24,6 +24,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmargins.h"
 #include "qgsmaplayer.h"
+#include "qgsfeature.h"
 
 #include <QPointer>
 

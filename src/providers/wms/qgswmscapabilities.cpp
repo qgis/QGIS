@@ -470,6 +470,8 @@ bool QgsWmsCapabilities::parseResponse( const QByteArray &response, QgsWmsParser
       format = QgsRaster::IdentifyFormatFeature;
     else if ( f == QLatin1String( "application/json" ) )
       format = QgsRaster::IdentifyFormatFeature;
+    else if ( f == QLatin1String( "application/geojson" ) )
+      format = QgsRaster::IdentifyFormatFeature;
     else if ( f.contains( QLatin1String( "gml" ), Qt::CaseInsensitive ) )
       format = QgsRaster::IdentifyFormatFeature;
 
@@ -1103,10 +1105,18 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
 #endif
 
   layerProperty.orderId     = ++mLayerCount;
-  layerProperty.queryable   = element.attribute( QStringLiteral( "queryable" ) ).toUInt();
+
+  QString queryableAttribute = element.attribute( QStringLiteral( "queryable" ) );
+  layerProperty.queryable = queryableAttribute == QLatin1String( "1" ) || queryableAttribute.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
+
   layerProperty.cascaded    = element.attribute( QStringLiteral( "cascaded" ) ).toUInt();
-  layerProperty.opaque      = element.attribute( QStringLiteral( "opaque" ) ).toUInt();
-  layerProperty.noSubsets   = element.attribute( QStringLiteral( "noSubsets" ) ).toUInt();
+
+  QString opaqueAttribute = element.attribute( QStringLiteral( "opaque" ) );
+  layerProperty.opaque = opaqueAttribute == QLatin1String( "1" ) || opaqueAttribute.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
+
+  QString noSubsetsAttribute = element.attribute( QStringLiteral( "noSubsets" ) );
+  layerProperty.noSubsets = noSubsetsAttribute == QLatin1String( "1" ) || noSubsetsAttribute.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
+
   layerProperty.fixedWidth  = element.attribute( QStringLiteral( "fixedWidth" ) ).toUInt();
   layerProperty.fixedHeight = element.attribute( QStringLiteral( "fixedHeight" ) ).toUInt();
 
@@ -1915,6 +1925,8 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
         fmt = QgsRaster::IdentifyFormatFeature;
       else if ( format == QLatin1String( "application/json" ) )
         fmt = QgsRaster::IdentifyFormatFeature;
+      else if ( format == QLatin1String( "application/geojson" ) )
+        fmt = QgsRaster::IdentifyFormatFeature;
       else
       {
         QgsDebugMsg( QStringLiteral( "Unsupported featureInfoUrl format: %1" ).arg( format ) );
@@ -2065,6 +2077,8 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
         else  if ( format.contains( QLatin1String( "gml" ), Qt::CaseInsensitive ) )
           fmt = QgsRaster::IdentifyFormatFeature;
         else if ( format == QLatin1String( "application/json" ) )
+          fmt = QgsRaster::IdentifyFormatFeature;
+        else if ( format == QLatin1String( "application/geojson" ) )
           fmt = QgsRaster::IdentifyFormatFeature;
         else
         {
@@ -2286,6 +2300,16 @@ QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( const QString &baseUrl, 
 QgsWmsCapabilitiesDownload::~QgsWmsCapabilitiesDownload()
 {
   abort();
+}
+
+bool QgsWmsCapabilitiesDownload::forceRefresh()
+{
+  return mForceRefresh;
+}
+
+void QgsWmsCapabilitiesDownload::setForceRefresh( bool forceRefresh )
+{
+  mForceRefresh = forceRefresh;
 }
 
 bool QgsWmsCapabilitiesDownload::downloadCapabilities( const QString &baseUrl, const QgsWmsAuthorization &auth )

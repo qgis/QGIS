@@ -102,7 +102,7 @@ class CORE_EXPORT QgsMeshMemoryDataProvider final: public QgsMeshDataProvider
      *
      * Data string contains simple definition of datasets
      * Each entry is separated by "\n" sign and section deliminer "---"
-     * First section defines the dataset group: Vertex/Edge/Face Vector/Scalar Name
+     * First section defines the dataset group: vertex/edge/face vector/scalar Name
      * Second section defines the group metadata: key: value pairs
      * Third section defines the datasets (timesteps). First line is time,
      * other lines are values (one value on line). For vectors separated by comma
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsMeshMemoryDataProvider final: public QgsMeshDataProvider
      *
      *  \code
      *    QString uri(
-     *      "Vertex Vector MyVertexVectorDataset\n" \
+     *      "vertex vector MyVertexVectorDataset\n" \
      *      "---"
      *      "description: My great dataset \n" \
      *      "reference_time: Midnight  \n" \

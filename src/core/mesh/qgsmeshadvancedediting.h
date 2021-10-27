@@ -62,6 +62,9 @@ class CORE_EXPORT QgsMeshAdvancedEditing : protected QgsTopologicalMesh::Changes
      */
     virtual bool isFinished() const;
 
+    //! Returns a short text string describing what this advanced edit does. Default implementation return a void string.
+    virtual QString text() const;
+
   protected:
     QList<int> mInputVertices;
     QList<int> mInputFaces;
@@ -96,6 +99,8 @@ class CORE_EXPORT QgsMeshEditRefineFaces : public QgsMeshAdvancedEditing
 
     //! Constructor
     QgsMeshEditRefineFaces();
+
+    QString text() const override;
 
   private:
     QgsTopologicalMesh::Changes apply( QgsMeshEditor *meshEditor ) override;
@@ -160,6 +165,8 @@ class CORE_EXPORT QgsMeshTransformVerticesByExpression : public QgsMeshAdvancedE
 
     //! Constructor
     QgsMeshTransformVerticesByExpression() = default;
+
+    QString text() const override;
 
     /**
      * Sets the expressions for the coordinates transformation.

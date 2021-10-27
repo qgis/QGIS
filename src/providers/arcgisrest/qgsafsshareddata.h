@@ -21,6 +21,7 @@
 #include "qgsfields.h"
 #include "qgsfeature.h"
 #include "qgsdatasourceuri.h"
+#include "qgscoordinatereferencesystem.h"
 
 class QgsFeedback;
 

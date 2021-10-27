@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include <QFile>
 #include <QObject>
+#include <qgsrasterinterface.h>
 #include "qgstest.h"
 #include <qgswmscapabilities.h>
 #include <qgsapplication.h>
@@ -447,6 +448,40 @@ class TestQgsWmsCapabilities: public QObject
 
       QCOMPARE( firstLayerProp.equal( secondLayerProp ), result );
 
+    }
+
+    void wmsIdentifyFormat_data()
+    {
+      QTest::addColumn<QByteArray>( "format" );
+      QTest::addColumn<int>( "capability" );
+
+      QTest::newRow( "text/plain" ) << QByteArray( "text/plain" ) << static_cast<int>( QgsRasterInterface::IdentifyText );
+      QTest::newRow( "text/xml" ) << QByteArray( "text/xml" ) << static_cast<int>( QgsRasterInterface::NoCapabilities );
+      QTest::newRow( "text/html" ) << QByteArray( "text/html" ) << static_cast<int>( QgsRasterInterface::IdentifyHtml );
+      QTest::newRow( "application/json" ) << QByteArray( "application/json" ) << static_cast<int>( QgsRasterInterface::IdentifyFeature );
+      QTest::newRow( "application/geojson" ) << QByteArray( "application/geojson" ) << static_cast<int>( QgsRasterInterface::IdentifyFeature );
+      QTest::newRow( "application/vnd.ogc.gml" ) << QByteArray( "application/vnd.ogc.gml" ) << static_cast<int>( QgsRasterInterface::IdentifyFeature );
+      QTest::newRow( "application/vnd.esri.wms_featureinfo_xml" ) << QByteArray( "application/vnd.esri.wms_featureinfo_xml" ) << static_cast<int>( QgsRasterInterface::NoCapabilities );
+    }
+
+    void wmsIdentifyFormat()
+    {
+      QFETCH( QByteArray, format );
+      QFETCH( int, capability );
+
+      QgsWmsCapabilities capabilities;
+
+      QFile file( QStringLiteral( TEST_DATA_DIR ) + "/provider/GetCapabilities3.xml" );
+      QVERIFY( file.open( QIODevice::ReadOnly | QIODevice::Text ) );
+      const QByteArray content = file.readAll().replace( "@INFO_FORMAT@", format );
+
+      QVERIFY( content.size() > 0 );
+      const QgsWmsParserSettings config;
+
+      QVERIFY( capabilities.parseResponse( content, config ) );
+
+      // check info formats
+      QVERIFY( capabilities.identifyCapabilities() == capability );
     }
 
 };

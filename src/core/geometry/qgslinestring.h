@@ -835,7 +835,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     void draw( QPainter &p ) const override;
 
-    void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) override  SIP_THROW( QgsCsException );
+    void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false ) override  SIP_THROW( QgsCsException );
     void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
 
     void addToPainterPath( QPainterPath &path ) const override;
@@ -850,7 +850,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     QgsLineString *curveSubstring( double startDistance, double endDistance ) const override SIP_FACTORY;
 
     double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, int *leftOf SIP_OUT = nullptr, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const override;
-    bool pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const override;
+    bool pointAt( int node, QgsPoint &point, Qgis::VertexType &type ) const override;
 
     QgsPoint centroid() const override;
 

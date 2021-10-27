@@ -81,3 +81,17 @@ void QgsServerApiContext::setRequest( const QgsServerRequest *request )
 {
   mRequest = request;
 }
+
+QString QgsServerApiContext::handlerPath() const
+{
+  const QUrl url { request()->url() };
+  const QString urlBasePath { matchedPath() };
+  if ( ! urlBasePath.isEmpty() )
+  {
+    return url.path().mid( urlBasePath.length() );
+  }
+  else
+  {
+    return url.path();
+  }
+}

@@ -24,6 +24,7 @@
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
+#include "qgscoordinatetransform.h"
 
 #include "qgsmssqlprovider.h"
 

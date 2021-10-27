@@ -323,17 +323,34 @@ void QgsAdvancedDigitizingDockWidget::switchZM( )
   bool enableZ = false;
   bool enableM = false;
 
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
-  if ( vlayer )
+  if ( QgsMapLayer *layer = targetLayer() )
   {
-    const QgsWkbTypes::Type type = vlayer->wkbType();
-    enableZ = QgsWkbTypes::hasZ( type );
-    enableM = QgsWkbTypes::hasM( type );
-  }
+    switch ( layer->type() )
+    {
+      case QgsMapLayerType::VectorLayer:
+      {
+        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+        const QgsWkbTypes::Type type = vlayer->wkbType();
+        enableZ = QgsWkbTypes::hasZ( type );
+        enableM = QgsWkbTypes::hasM( type );
+        break;
+      }
 
-  QgsMeshLayer *mlayer = qobject_cast<QgsMeshLayer *>( mMapCanvas->currentLayer() );
-  if ( mlayer )
-    enableZ = mlayer->isEditable();
+      case QgsMapLayerType::MeshLayer:
+      {
+        QgsMeshLayer *mlayer = qobject_cast<QgsMeshLayer *>( layer );
+        enableZ = mlayer->isEditable();
+        break;
+      }
+
+      case QgsMapLayerType::RasterLayer:
+      case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::VectorTileLayer:
+      case QgsMapLayerType::AnnotationLayer:
+      case QgsMapLayerType::PointCloudLayer:
+        break;
+    }
+  }
 
   setEnabledZ( enableZ );
   setEnabledM( enableM );
@@ -349,6 +366,7 @@ void QgsAdvancedDigitizingDockWidget::setEnabledZ( bool enable )
   else
     mZLineEdit->clear();
   mLockZButton->setEnabled( enable );
+  emit enabledChangedZ( enable );
 }
 
 void QgsAdvancedDigitizingDockWidget::setEnabledM( bool enable )
@@ -361,6 +379,7 @@ void QgsAdvancedDigitizingDockWidget::setEnabledM( bool enable )
   else
     mMLineEdit->clear();
   mLockMButton->setEnabled( enable );
+  emit enabledChangedM( enable );
 }
 
 void QgsAdvancedDigitizingDockWidget::activateCad( bool enabled )
@@ -467,6 +486,18 @@ void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction *action )
     QgsSettings().setValue( QStringLiteral( "/Cad/CommonAngle" ), ica.value() );
     mSettingsAction->setChecked( mCommonAngleConstraint != 0 );
     return;
+  }
+}
+
+QgsMapLayer *QgsAdvancedDigitizingDockWidget::targetLayer()
+{
+  if ( QgsMapToolAdvancedDigitizing *advancedTool = qobject_cast< QgsMapToolAdvancedDigitizing * >( mMapCanvas->mapTool() ) )
+  {
+    return advancedTool->layer();
+  }
+  else
+  {
+    return mMapCanvas->currentLayer();
   }
 }
 
@@ -716,14 +747,21 @@ void QgsAdvancedDigitizingDockWidget::lockAdditionalConstraint( AdditionalConstr
 void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange )
 {
   CadCapacities newCapacities = CadCapacities();
+  const bool isGeographic = mMapCanvas->mapSettings().destinationCrs().isGeographic();
+  if ( !isGeographic )
+    newCapacities |= Distance;
+
   // first point is the mouse point (it doesn't count)
   if ( mCadPointList.count() > 1 )
   {
-    newCapacities |= AbsoluteAngle | RelativeCoordinates;
+    newCapacities |=  RelativeCoordinates;
+    if ( !isGeographic )
+      newCapacities |= AbsoluteAngle;
   }
   if ( mCadPointList.count() > 2 )
   {
-    newCapacities |= RelativeAngle;
+    if ( !isGeographic )
+      newCapacities |= RelativeAngle;
   }
   if ( !updateUIwithoutChange && newCapacities == mCapacities )
   {
@@ -735,12 +773,13 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
   // update the UI according to new capacities
   // still keep the old to compare
 
+  const bool distance =  mCadEnabled && newCapacities.testFlag( Distance );
   const bool relativeAngle = mCadEnabled && newCapacities.testFlag( RelativeAngle );
   const bool absoluteAngle = mCadEnabled && newCapacities.testFlag( AbsoluteAngle );
   const bool relativeCoordinates = mCadEnabled && newCapacities.testFlag( RelativeCoordinates );
 
-  mPerpendicularAction->setEnabled( absoluteAngle && snappingEnabled );
-  mParallelAction->setEnabled( absoluteAngle && snappingEnabled );
+  mPerpendicularAction->setEnabled( distance && absoluteAngle && snappingEnabled );
+  mParallelAction->setEnabled( distance && absoluteAngle && snappingEnabled );
 
   //update tooltips on buttons
   if ( !snappingEnabled )
@@ -782,10 +821,10 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
   }
 
   // distance is always relative
-  mLockDistanceButton->setEnabled( relativeCoordinates );
-  mDistanceLineEdit->setEnabled( relativeCoordinates );
-  emit enabledChangedDistance( relativeCoordinates );
-  if ( !relativeCoordinates )
+  mLockDistanceButton->setEnabled( distance && relativeCoordinates );
+  mDistanceLineEdit->setEnabled( distance && relativeCoordinates );
+  emit enabledChangedDistance( distance && relativeCoordinates );
+  if ( !( distance && relativeCoordinates ) )
   {
     mDistanceConstraint->setLockMode( CadConstraint::NoLock );
   }
@@ -822,7 +861,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   context.angleConstraint = _constraint( mAngleConstraint.get() );
   context.setCadPoints( mCadPointList );
 
-  context.commonAngleConstraint.locked = true;
+  context.commonAngleConstraint.locked = !mMapCanvas->mapSettings().destinationCrs().isGeographic();
   context.commonAngleConstraint.relative = context.angleConstraint.relative;
   context.commonAngleConstraint.value = mCommonAngleConstraint;
 
@@ -861,6 +900,13 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   }
 
   /*
+   * Ensure that Z and M are passed
+   * It will be dropped as needed later.
+   */
+  point.setZ( QgsMapToolEdit( mMapCanvas ).defaultZValue() );
+  point.setM( QgsMapToolEdit( mMapCanvas ).defaultMValue() );
+
+  /*
    * Constraints are applied in 2D, they are always called when using the tool
    * but they do not take into account if when you snap on a vertex it has
    * a Z value.
@@ -875,23 +921,17 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
     e->snapPoint();
     point = mSnapMatch.interpolatedPoint();
   }
-  /*
-   * Ensure that Z and M are passed
-   * It will be dropped as needed later.
-   */
-  point.addZValue( QgsMapToolEdit( mMapCanvas ).defaultZValue() );
-  point.addMValue( QgsMapToolEdit( mMapCanvas ).defaultMValue() );
 
   /*
    * And if M or Z lock button is activated get the value of the input.
    */
   if ( mLockZButton->isChecked() )
   {
-    point.setZ( mZLineEdit->text().toFloat() );
+    point.setZ( QLocale().toDouble( mZLineEdit->text() ) );
   }
   if ( mLockMButton->isChecked() )
   {
-    point.setM( mMLineEdit->text().toFloat() );
+    point.setM( QLocale().toDouble( mMLineEdit->text() ) );
   }
 
   // update the point list
@@ -1330,7 +1370,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
       // modifier+d ONLY caught for ShortcutOverride events...
       if ( type == QEvent::ShortcutOverride && ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier ) )
       {
-        if ( mCapacities.testFlag( RelativeCoordinates ) )
+        if ( mCapacities.testFlag( RelativeCoordinates ) && mCapacities.testFlag( Distance ) )
         {
           mDistanceConstraint->toggleLocked();
           emit lockDistanceChanged( mDistanceConstraint->isLocked() );
@@ -1396,25 +1436,44 @@ void QgsAdvancedDigitizingDockWidget::enable()
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsAdvancedDigitizingDockWidget::enable, Qt::UniqueConnection );
   if ( mMapCanvas->mapSettings().destinationCrs().isGeographic() )
   {
-    mErrorLabel->setText( tr( "CAD tools can not be used on geographic coordinates. Change the coordinates system in the project properties." ) );
-    mErrorLabel->show();
-    mEnableAction->setEnabled( false );
-    setCadEnabled( false );
+    mAngleLineEdit->setEnabled( false );
+    mAngleLineEdit->setToolTip( tr( "Angle constraint cannot be used on geographic coordinates. Change the coordinates system in the project properties." ) );
+
+    mDistanceLineEdit->setEnabled( false );
+    mDistanceLineEdit->setToolTip( tr( "Distance constraint cannot be used on geographic coordinates. Change the coordinates system in the project properties." ) );
+
+    mLabelX->setText( tr( "Long" ) );
+    mLabelY->setText( tr( "Lat" ) );
+
+    mXConstraint->setPrecision( 8 );
+    mYConstraint->setPrecision( 8 );
   }
   else
   {
-    mEnableAction->setEnabled( true );
-    mErrorLabel->hide();
-    mCadWidget->show();
+    mAngleLineEdit->setToolTip( "<b>" + tr( "Angle" ) + "</b><br>(" + tr( "press a for quick access" ) + ")" );
+    mAngleLineEdit->setToolTip( QString() );
 
-    mCurrentMapToolSupportsCad = true;
+    mDistanceLineEdit->setEnabled( true );
+    mDistanceLineEdit->setToolTip( "<b>" + tr( "Distance" ) + "</b><br>(" + tr( "press d for quick access" ) + ")" );
 
-    if ( mSessionActive && !isVisible() )
-    {
-      show();
-    }
-    setCadEnabled( mSessionActive );
+    mLabelX->setText( tr( "x" ) );
+    mLabelY->setText( tr( "y" ) );
+
+    mXConstraint->setPrecision( 6 );
+    mYConstraint->setPrecision( 6 );
   }
+
+  mEnableAction->setEnabled( true );
+  mErrorLabel->hide();
+  mCadWidget->show();
+
+  mCurrentMapToolSupportsCad = true;
+
+  if ( mSessionActive && !isVisible() )
+  {
+    show();
+  }
+  setCadEnabled( mSessionActive );
 }
 
 void QgsAdvancedDigitizingDockWidget::disable()
@@ -1530,8 +1589,8 @@ void QgsAdvancedDigitizingDockWidget::CadConstraint::setRelative( bool relative 
 void QgsAdvancedDigitizingDockWidget::CadConstraint::setValue( double value, bool updateWidget )
 {
   mValue = value;
-  if ( updateWidget )
-    mLineEdit->setText( QLocale().toString( value, 'f', 6 ) );
+  if ( updateWidget && mLineEdit->isEnabled() )
+    mLineEdit->setText( QLocale().toString( value, 'f', mPrecision ) );
 }
 
 void QgsAdvancedDigitizingDockWidget::CadConstraint::toggleLocked()
@@ -1542,6 +1601,13 @@ void QgsAdvancedDigitizingDockWidget::CadConstraint::toggleLocked()
 void QgsAdvancedDigitizingDockWidget::CadConstraint::toggleRelative()
 {
   setRelative( !mRelative );
+}
+
+void QgsAdvancedDigitizingDockWidget::CadConstraint::setPrecision( int precision )
+{
+  mPrecision = precision;
+  if ( mLineEdit->isEnabled() )
+    mLineEdit->setText( QLocale().toString( mValue, 'f', mPrecision ) );
 }
 
 QgsPoint QgsAdvancedDigitizingDockWidget::currentPointV2( bool *exist ) const
@@ -1594,10 +1660,10 @@ QgsPoint QgsAdvancedDigitizingDockWidget::pointXYToPoint( const QgsPointXY &poin
 
 double QgsAdvancedDigitizingDockWidget::getLineZ( ) const
 {
-  return mZLineEdit->isEnabled() ? mZLineEdit->text().toFloat() : std::numeric_limits<double>::quiet_NaN();
+  return mZLineEdit->isEnabled() ? QLocale().toDouble( mZLineEdit->text() ) : std::numeric_limits<double>::quiet_NaN();
 }
 
 double QgsAdvancedDigitizingDockWidget::getLineM( ) const
 {
-  return mMLineEdit->isEnabled() ? mMLineEdit->text().toFloat() : std::numeric_limits<double>::quiet_NaN();
+  return mMLineEdit->isEnabled() ? QLocale().toDouble( mMLineEdit->text() ) : std::numeric_limits<double>::quiet_NaN();
 }

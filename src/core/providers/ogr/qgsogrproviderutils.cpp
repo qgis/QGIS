@@ -25,6 +25,7 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsproviderregistry.h"
 #include "qgsgeopackageproviderconnection.h"
 #include "qgsogrdbconnection.h"
+#include "qgsfileutils.h"
 
 #include <ogr_srs_api.h>
 #include <cpl_port.h>
@@ -956,7 +957,17 @@ QString QgsOgrProviderUtils::connectionPoolId( const QString &dataSourceURI, boo
     QString filePath = dataSourceURI.left( dataSourceURI.indexOf( QLatin1Char( '|' ) ) );
     QFileInfo fi( filePath );
     if ( fi.isFile() )
-      return filePath;
+    {
+      // Preserve open options so pooled connections always carry those on
+      QString openOptions;
+      static thread_local QRegularExpression openOptionsRegex( QStringLiteral( "((?:\\|option:(?:[^|]*))+)" ) );
+      QRegularExpressionMatch match = openOptionsRegex.match( dataSourceURI );
+      if ( match.hasMatch() )
+      {
+        openOptions = match.captured( 1 );
+      }
+      return filePath + openOptions;
+    }
   }
   return dataSourceURI;
 }
@@ -964,6 +975,23 @@ QString QgsOgrProviderUtils::connectionPoolId( const QString &dataSourceURI, boo
 GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUpdate, char **papszOpenOptionsIn, GDALDriverH *phDriver )
 {
   CPLErrorReset();
+
+  // Avoid getting too close to the limit of files allowed in the process,
+  // to avoid potential crashes such as in https://github.com/qgis/QGIS/issues/43620
+  // This heuristics is not perfect because during rendering, files will be opened again
+  // Typically for a GPKG file we need 6 file descriptors: 3 for the .gpkg,
+  // .gpkg-wal, .gpkg-shm for the provider, and 2 for the .gpkg + for the .gpkg-wal
+  // used by feature iterator for rendering
+  // So if we hit the limit, some layers will not be displayable.
+  if ( QgsFileUtils::isCloseToLimitOfOpenedFiles() )
+  {
+#ifdef Q_OS_UNIX
+    QgsMessageLog::logMessage( QObject::tr( "Too many files opened (%1). Cannot open %2. You may raise the limit with the 'ulimit -n number_of_files' command before starting QGIS." ).arg( QgsFileUtils::openedFileCount() ).arg( QString( pszPath ) ), QObject::tr( "OGR" ) );
+#else
+    QgsMessageLog::logMessage( QObject::tr( "Too many files opened (%1). Cannot open %2" ).arg( QgsFileUtils::openedFileCount() ).arg( QString( pszPath ) ), QObject::tr( "OGR" ) );
+#endif
+    return nullptr;
+  }
 
   char **papszOpenOptions = CSLDuplicate( papszOpenOptionsIn );
 

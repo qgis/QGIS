@@ -140,7 +140,7 @@ class CORE_EXPORT QgsTileMatrix
     QgsPointXY tileCenter( QgsTileXYZ id ) const;
 
     //! Returns tile range that fully covers the given extent
-    QgsTileRange tileRangeFromExtent( const QgsRectangle &mExtent );
+    QgsTileRange tileRangeFromExtent( const QgsRectangle &mExtent ) const;
 
     //! Returns row/column coordinates (floating point number) from the given point in map coordinates
     QPointF mapToTileCoordinates( const QgsPointXY &mapPoint ) const;

@@ -25,6 +25,7 @@
 #include "qgsmulticurve.h"
 #include "qgspoint.h"
 #include "qgspolygon.h"
+#include "qgsvertexid.h"
 
 #include "testgeometryutils.h"
 

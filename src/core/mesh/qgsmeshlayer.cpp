@@ -51,12 +51,15 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
   : QgsMapLayer( QgsMapLayerType::MeshLayer, baseName, meshLayerPath ),
     mDatasetGroupStore( new QgsMeshDatasetGroupStore( this ) ),
     mTemporalProperties( new QgsMeshLayerTemporalProperties( this ) )
-
 {
   mShouldValidateCrs = !options.skipCrsValidation;
 
   const QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
   QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+  if ( options.loadDefaultStyle )
+  {
+    flags |= QgsDataProvider::FlagLoadDefaultStyle;
+  }
   if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
   {
     flags |= QgsDataProvider::FlagTrustDataSource;
@@ -65,7 +68,7 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
   resetDatasetGroupTreeItem();
   setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
 
-  if ( isValid() )
+  if ( isValid() && options.loadDefaultStyle )
     setDefaultRendererSettings( mDatasetGroupStore->datasetGroupIndexes() );
 
   connect( mDatasetGroupStore.get(), &QgsMeshDatasetGroupStore::datasetGroupsAdded, this, &QgsMeshLayer::onDatasetGroupsAdded );
@@ -199,6 +202,22 @@ bool QgsMeshLayer::supportsEditing() const
   const QgsMeshDriverMetadata driverMetadata = mDataProvider->driverMetadata();
 
   return driverMetadata.capabilities() & QgsMeshDriverMetadata::CanWriteMeshData;
+}
+
+QString QgsMeshLayer::loadDefaultStyle( bool &resultFlag )
+{
+  const QList<int> groupsList = datasetGroupsIndexes();
+
+  for ( const int index : groupsList )
+    assignDefaultStyleToDatasetGroup( index );
+
+  if ( !groupsList.isEmpty() )
+  {
+    emit rendererChanged();
+    emitStyleChanged();
+  }
+
+  return QgsMapLayer::loadDefaultStyle( resultFlag );
 }
 
 bool QgsMeshLayer::addDatasets( const QString &path, const QDateTime &defaultReferenceTime )
@@ -566,16 +585,25 @@ QgsMeshDatasetIndex QgsMeshLayer::datasetIndexAtTime( const QgsDateTimeRange &ti
 
 QgsMeshDatasetIndex QgsMeshLayer::datasetIndexAtRelativeTime( const QgsInterval &relativeTime, int datasetGroupIndex ) const
 {
-  qint64 usedRelativeTime = relativeTime.seconds() * 1000;
+  return  mDatasetGroupStore->datasetIndexAtTime( relativeTime.seconds() * 1000, datasetGroupIndex, mTemporalProperties->matchingMethod() );
+}
+
+QList<QgsMeshDatasetIndex> QgsMeshLayer::datasetIndexInRelativeTimeInterval( const QgsInterval &startRelativeTime, const QgsInterval &endRelativeTime, int datasetGroupIndex ) const
+{
+  qint64 usedRelativeTime1 = startRelativeTime.seconds() * 1000;
+  qint64 usedRelativeTime2 = endRelativeTime.seconds() * 1000;
 
   //adjust relative time if layer reference time is different from provider reference time
   if ( mTemporalProperties->referenceTime().isValid() &&
        mDataProvider &&
        mDataProvider->isValid() &&
        mTemporalProperties->referenceTime() != mDataProvider->temporalCapabilities()->referenceTime() )
-    usedRelativeTime = usedRelativeTime + mTemporalProperties->referenceTime().msecsTo( mDataProvider->temporalCapabilities()->referenceTime() );
+  {
+    usedRelativeTime1 = usedRelativeTime1 + mTemporalProperties->referenceTime().msecsTo( mDataProvider->temporalCapabilities()->referenceTime() );
+    usedRelativeTime2 = usedRelativeTime2 + mTemporalProperties->referenceTime().msecsTo( mDataProvider->temporalCapabilities()->referenceTime() );
+  }
 
-  return  mDatasetGroupStore->datasetIndexAtTime( relativeTime.seconds() * 1000, datasetGroupIndex, mTemporalProperties->matchingMethod() );
+  return  mDatasetGroupStore->datasetIndexInTimeInterval( usedRelativeTime1, usedRelativeTime2, datasetGroupIndex );
 }
 
 void QgsMeshLayer::applyClassificationOnScalarSettings( const QgsMeshDatasetGroupMetadata &meta, QgsMeshRendererScalarSettings &scalarSettings ) const
@@ -891,6 +919,37 @@ qint64 QgsMeshLayer::datasetRelativeTimeInMilliseconds( const QgsMeshDatasetInde
   return mDatasetGroupStore->datasetRelativeTime( index );
 }
 
+static QString detailsErrorMessage( const QgsMeshEditingError &error )
+{
+  QString message;
+
+  switch ( error.errorType )
+  {
+    case Qgis::MeshEditingErrorType::NoError:
+      break;
+    case Qgis::MeshEditingErrorType::InvalidFace:
+      message = QObject::tr( "Face %1 invalid" ).arg( error.elementIndex );
+      break;
+    case Qgis::MeshEditingErrorType::TooManyVerticesInFace:
+      message =  QObject::tr( "Too many vertices for face %1" ).arg( error.elementIndex );
+      break;
+    case Qgis::MeshEditingErrorType::FlatFace:
+      message =  QObject::tr( "Face %1 is flat" ).arg( error.elementIndex );
+      break;
+    case Qgis::MeshEditingErrorType::UniqueSharedVertex:
+      message =  QObject::tr( "Vertex %1 is a unique shared vertex" ).arg( error.elementIndex );
+      break;
+    case Qgis::MeshEditingErrorType::InvalidVertex:
+      message =  QObject::tr( "Vertex %1 is invalid" ).arg( error.elementIndex );
+      break;
+    case Qgis::MeshEditingErrorType::ManifoldFace:
+      message =  QObject::tr( "Face %1 is manifold" ).arg( error.elementIndex );
+      break;
+  }
+
+  return message;
+}
+
 bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform )
 {
   if ( !supportsEditing() )
@@ -905,6 +964,8 @@ bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform )
     return false;
   }
 
+  mSimplificationSettings.setEnabled( false );
+
   updateTriangularMesh( transform );
 
   mMeshEditor = new QgsMeshEditor( this );
@@ -915,7 +976,9 @@ bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform )
   {
     mMeshEditor->deleteLater();
     mMeshEditor = nullptr;
-    QgsMessageLog::logMessage( QObject::tr( "Unable to start editing of mesh layer \"%1\"." ).arg( name() ), QString(), Qgis::MessageLevel::Critical );
+
+    QgsMessageLog::logMessage( QObject::tr( "Unable to start editing of mesh layer \"%1\": %2" ).
+                               arg( name(), detailsErrorMessage( error ) ), QString(), Qgis::MessageLevel::Critical );
     return false;
   }
 
@@ -938,9 +1001,23 @@ bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform )
 
 bool QgsMeshLayer::commitFrameEditing( const QgsCoordinateTransform &transform, bool continueEditing )
 {
-  if ( !mMeshEditor->checkConsistency() )
+  QgsMeshEditingError error;
+  QString detailsError;
+  if ( !mMeshEditor->checkConsistency( error ) )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Mesh layer \"%1\" not support mesh editing" ).arg( name() ), QString(), Qgis::MessageLevel::Critical );
+    if ( error.errorType == Qgis::MeshEditingErrorType::NoError )
+      detailsError = tr( "Unknown inconsistent mesh error" );
+  }
+  else
+  {
+    error = QgsTopologicalMesh::checkTopology( *mNativeMesh, mMeshEditor->maximumVerticesPerFace() );
+    detailsError = detailsErrorMessage( error );
+  }
+
+  if ( !detailsError.isEmpty() )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Edited mesh layer \"%1\" can't be save due to an error: %2" ).
+                               arg( name(), detailsError ), QString(), Qgis::MessageLevel::Critical );
     return false;
   }
 
@@ -1138,17 +1215,8 @@ void QgsMeshLayer::setDataSourcePrivate( const QString &dataSource, const QStrin
   mLayerName = baseName;
   setProviderType( provider );
 
-  // if we’re given a provider type, try to create and bind one to this layer
-  bool ok = false;
   if ( !mDataSource.isEmpty() && !provider.isEmpty() )
-  {
-    ok = setDataProvider( provider, options, flags );
-  }
-
-  if ( ok )
-  {
-    mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
-  }
+    setDataProvider( provider, options, flags );
 }
 
 QgsPointXY QgsMeshLayer::snapOnElement( QgsMesh::ElementType elementType, const QgsPointXY &point, double searchRadius )
@@ -1693,8 +1761,15 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
     return false;
   }
 
+  if ( !mTemporalProperties->isValid() )
+  {
+    mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( dataProvider()->temporalCapabilities() );
+  }
+
   mDataProvider->setTemporalUnit( mTemporalUnit );
+
   mDatasetGroupStore->setPersistentProvider( mDataProvider, mExtraDatasetUri );
+
   setCrs( mDataProvider->crs() );
 
   if ( provider == QLatin1String( "mesh_memory" ) )
@@ -1703,8 +1778,17 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
     mDataSource = mDataSource + QStringLiteral( "&uid=%1" ).arg( QUuid::createUuid().toString() );
   }
 
+  // set default style if required by flags or if the dataset group does not has a style yet
   for ( int i = 0; i < mDataProvider->datasetGroupCount(); ++i )
-    assignDefaultStyleToDatasetGroup( i );
+  {
+    int globalIndex = mDatasetGroupStore->globalDatasetGroupIndexInSource( mDataProvider, i );
+    if ( globalIndex != -1 &&
+         ( !mRendererSettings.hasSettings( globalIndex ) || ( flags & QgsDataProvider::FlagLoadDefaultStyle ) ) )
+      assignDefaultStyleToDatasetGroup( globalIndex );
+  }
+
+  emit rendererChanged();
+  emitStyleChanged();
 
   connect( mDataProvider, &QgsMeshDataProvider::dataChanged, this, &QgsMeshLayer::dataChanged );
 

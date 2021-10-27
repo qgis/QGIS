@@ -156,6 +156,10 @@ class QgsSymbolLayer
       PropertyLineEndWidthValue,
       PropertyLineStartColorValue,
       PropertyLineEndColorValue,
+      PropertyMarkerClipping,
+      PropertyRandomOffsetX,
+      PropertyRandomOffsetY,
+      PropertyLineClipping,
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();

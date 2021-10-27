@@ -314,7 +314,7 @@ void QgsMapCanvasAnnotationItem::paint( QPainter *painter )
     return;
 
   QgsRenderContext rc = QgsRenderContext::fromQPainter( painter );
-  rc.setFlag( QgsRenderContext::Antialiasing, true );
+  rc.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
 
   if ( mAnnotation )
     mAnnotation->render( rc );

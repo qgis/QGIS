@@ -152,7 +152,7 @@ Write configuration of the labeling engine to a project
 %End
 
 
-    QgsRenderContext::TextRenderFormat defaultTextRenderFormat() const;
+    Qgis::TextRenderFormat defaultTextRenderFormat() const;
 %Docstring
 Returns the default text rendering format for the labels.
 
@@ -161,7 +161,7 @@ Returns the default text rendering format for the labels.
 .. versionadded:: 3.4.3
 %End
 
-    void setDefaultTextRenderFormat( QgsRenderContext::TextRenderFormat format );
+    void setDefaultTextRenderFormat( Qgis::TextRenderFormat format );
 %Docstring
 Sets the default text rendering ``format`` for the labels.
 

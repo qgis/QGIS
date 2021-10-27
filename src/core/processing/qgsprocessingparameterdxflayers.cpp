@@ -145,7 +145,8 @@ QString QgsProcessingParameterDxfLayers::asPythonString( QgsProcessing::PythonOu
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterDxfLayers('%1', '%2')" ).arg( name(), description() );
+      QString code = QStringLiteral( "QgsProcessingParameterDxfLayers('%1', %2)" )
+                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       return code;
     }
   }

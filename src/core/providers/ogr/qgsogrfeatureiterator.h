@@ -19,6 +19,7 @@
 #include "qgsogrconnpool.h"
 #include "qgsfields.h"
 #include "qgsogrutils.h"
+#include "qgscoordinatetransform.h"
 
 #include <ogr_api.h>
 

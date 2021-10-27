@@ -148,6 +148,8 @@
 #include "qgsopenclutils.h"
 #endif
 
+#include "ui_defaults.h"
+
 #include <QNetworkReply>
 #include <QNetworkProxy>
 #include <QAuthenticator>
@@ -941,7 +943,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   sInstance = this;
   QgsRuntimeProfiler *profiler = QgsApplication::profiler();
 
-  QColor splashTextColor = Qgis::releaseName() == QStringLiteral( "Master" ) ? QColor( 93, 153, 51 ) : Qt::black;
+  QColor splashTextColor = Qgis::releaseName() == QLatin1String( "Master" ) ? QColor( 93, 153, 51 ) : Qt::black;
 
   startProfile( tr( "Create user profile manager" ) );
   mUserProfileManager = new QgsUserProfileManager( QString(), this );
@@ -1616,7 +1618,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   // do main window customization - after window state has been restored, before the window is shown
   startProfile( tr( "Update customization on main window" ) );
-  QgsCustomization::instance()->updateMainWindow( mToolbarMenu );
+  QgsCustomization::instance()->updateMainWindow( mToolbarMenu, mPanelMenu );
   endProfile();
 
   mSplash->showMessage( tr( "Populate saved styles" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );
@@ -1862,6 +1864,10 @@ QgisApp::~QgisApp()
     mMapCanvas->unsetMapTool( tool );
   mMapTools.reset();
 
+  // must come after deleting map tools
+  delete mAdvancedDigitizingDockWidget;
+  mAdvancedDigitizingDockWidget = nullptr;
+
   delete mpMaptip;
 
   delete mpGpsWidget;
@@ -1914,6 +1920,8 @@ QgisApp::~QgisApp()
   mSnappingUtils = nullptr;
   delete mUserInputDockWidget;
   mUserInputDockWidget = nullptr;
+  delete mMapStylingDock;
+  mMapStylingDock = nullptr;
 
   QgsGui::instance()->nativePlatformInterface()->cleanup();
 
@@ -2153,7 +2161,8 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
     {
       QgsTemporaryCursorOverride busyCursor( Qt::WaitCursor );
 
-      QgsVectorTileLayer *layer = new QgsVectorTileLayer( uri, u.name );
+      const QgsVectorTileLayer::LayerOptions options( QgsProject::instance()->transformContext() );
+      QgsVectorTileLayer *layer = new QgsVectorTileLayer( uri, u.name, options );
       bool ok = false;
       layer->loadDefaultMetadata( ok );
 
@@ -2206,9 +2215,45 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
   onActiveLayerChanged( activeLayer() );
 }
 
+void QgisApp::resizeEvent( QResizeEvent *resizeEvent )
+{
+  QMainWindow::resizeEvent( resizeEvent );
+  if ( mRestoreStateOnResize )
+  {
+    QgsSettings settings;
+    restoreState( settings.value( QStringLiteral( "UI/state" ), QByteArray::fromRawData( reinterpret_cast< const char * >( defaultUIstate ), sizeof defaultUIstate ) ).toByteArray() );
+  }
+}
+
 bool QgisApp::event( QEvent *event )
 {
   bool done = false;
+
+  if ( mRestoreStateOnResize )
+  {
+    switch ( event->type() )
+    {
+      case QEvent::Enter:
+      case QEvent::DragEnter:
+      case QEvent::DragLeave:
+      case QEvent::DragMove:
+      case QEvent::Drop:
+      case QEvent::KeyPress:
+      case QEvent::KeyRelease:
+      case QEvent::MouseButtonDblClick:
+      case QEvent::MouseButtonPress:
+      case QEvent::MouseButtonRelease:
+      case QEvent::MouseMove:
+      case QEvent::NativeGesture:
+        // The user did something, end state restores
+        mRestoreStateOnResize = false;
+        break;
+
+      default:
+        break;
+    }
+  }
+
   if ( event->type() == QEvent::FileOpen )
   {
     // handle FileOpen event (double clicking a file icon in Mac OS X Finder)
@@ -3355,8 +3400,9 @@ void QgisApp::createToolBars()
                       << mDatabaseToolBar
                       << mWebToolBar
                       << mLabelToolBar
-                      << mSnappingToolBar;
-
+                      << mSnappingToolBar
+                      << mMeshToolBar
+                      << mAnnotationsToolBar;
 
   mSnappingWidget = new QgsSnappingWidget( QgsProject::instance(), mMapCanvas, mSnappingToolBar );
   mSnappingWidget->setObjectName( QStringLiteral( "mSnappingWidget" ) );
@@ -3372,7 +3418,7 @@ void QgisApp::createToolBars()
 
   mDigitizeModeToolButton = new QToolButton();
   mDigitizeModeToolButton->setPopupMode( QToolButton::MenuButtonPopup );
-  QMenu *digitizeMenu = new QMenu();
+  QMenu *digitizeMenu = new QMenu( mDigitizeModeToolButton );
   digitizeMenu->addAction( mActionDigitizeWithCurve );
   digitizeMenu->addAction( mActionStreamDigitize );
   digitizeMenu->addSeparator();
@@ -3854,7 +3900,7 @@ void QgisApp::createToolBars()
 
     QToolButton *meshForceByLinesToolButton = new QToolButton();
     meshForceByLinesToolButton->setPopupMode( QToolButton::MenuButtonPopup );
-    QMenu *meshForceByLineMenu = new QMenu();
+    QMenu *meshForceByLineMenu = new QMenu( meshForceByLinesToolButton );
 
     //meshForceByLineMenu->addActions( editMeshMapTool->forceByLinesActions() );
     meshForceByLinesToolButton->setDefaultAction( editMeshMapTool->defaultForceAction() );
@@ -3875,7 +3921,7 @@ void QgisApp::createToolBars()
 
   QToolButton *annotationLayerToolButton = new QToolButton();
   annotationLayerToolButton->setPopupMode( QToolButton::MenuButtonPopup );
-  QMenu *annotationLayerMenu = new QMenu();
+  QMenu *annotationLayerMenu = new QMenu( annotationLayerToolButton );
   annotationLayerMenu->addAction( mActionCreateAnnotationLayer );
   annotationLayerMenu->addAction( mMainAnnotationLayerProperties );
   annotationLayerToolButton->setMenu( annotationLayerMenu );
@@ -4880,7 +4926,7 @@ void QgisApp::initLayerTreeView()
   // filter legend actions
   mFilterLegendToolButton = new QToolButton( this );
   mFilterLegendToolButton->setAutoRaise( true );
-  mFilterLegendToolButton->setToolTip( tr( "Filter Legend by Map Content" ) );
+  mFilterLegendToolButton->setToolTip( tr( "Filter Legend" ) );
   mFilterLegendToolButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFilter2.svg" ) ) );
   mFilterLegendToolButton->setPopupMode( QToolButton::InstantPopup );
   QMenu *filterLegendMenu = new QMenu( this );
@@ -5330,21 +5376,14 @@ void QgisApp::saveWindowState()
   QgsPluginRegistry::instance()->unloadAll();
 }
 
-#include "ui_defaults.h"
-
 void QgisApp::restoreWindowState()
 {
   // restore the toolbar and dock widgets positions using Qt4 settings API
   QgsSettings settings;
-#if 0
-  // because of Qt regression: https://bugreports.qt.io/browse/QTBUG-89034
-  // we have to wait till dialog is first shown to try to restore dock geometry or it's not correctly restored
-  // so this code was moved to showEvent for now...
   if ( !restoreState( settings.value( QStringLiteral( "UI/state" ), QByteArray::fromRawData( reinterpret_cast< const char * >( defaultUIstate ), sizeof defaultUIstate ) ).toByteArray() ) )
   {
     QgsDebugMsg( QStringLiteral( "restore of UI state failed" ) );
   }
-#endif
 
   if ( settings.value( QStringLiteral( "UI/hidebrowser" ), false ).toBool() )
   {
@@ -5363,6 +5402,8 @@ void QgisApp::restoreWindowState()
     move( pos.width(), pos.height() );
   }
 
+  // restore state on resize need to work around Qt regression: https://bugreports.qt.io/browse/QTBUG-89034
+  mRestoreStateOnResize = true;
 }
 ///////////// END OF GUI SETUP ROUTINES ///////////////
 void QgisApp::sponsors()
@@ -5544,8 +5585,13 @@ void QgisApp::about()
 #ifdef WITH_BINDINGS
     if ( mPythonUtils && mPythonUtils->isEnabled() )
     {
+      versionString += QStringLiteral( "</tr><tr><td colspan=\"4\">%1</td>" ).arg( tr( "Active Python plugins" ) );
       const QStringList activePlugins = mPythonUtils->listActivePlugins();
-      versionString += QStringLiteral( "</tr><tr><td>%1</td><td colspan=\"3\">%2</td>" ).arg( tr( "Active Python plugins" ), activePlugins.join( "<br />" ) );
+      for ( const QString &plugin : activePlugins )
+      {
+        const QString version = mPythonUtils->getPluginMetadata( plugin, QStringLiteral( "version" ) );
+        versionString += QStringLiteral( "</tr><tr><td>%1</td><td colspan=\"3\">%2</td>" ).arg( plugin, version );
+      }
     }
 #endif
 
@@ -5998,7 +6044,8 @@ QgsVectorTileLayer *QgisApp::addVectorTileLayerPrivate( const QString &url, cons
   QgsDebugMsgLevel( "completeBaseName: " + base, 2 );
 
   // create the layer
-  std::unique_ptr<QgsVectorTileLayer> layer( new QgsVectorTileLayer( url, base ) );
+  const QgsVectorTileLayer::LayerOptions options( QgsProject::instance()->transformContext() );
+  std::unique_ptr<QgsVectorTileLayer> layer( new QgsVectorTileLayer( url, base, options ) );
 
   if ( !layer || !layer->isValid() )
   {
@@ -6841,7 +6888,13 @@ void QgisApp::showRasterCalculator()
 
 void QgisApp::showMeshCalculator()
 {
-  QgsMeshCalculatorDialog d( qobject_cast<QgsMeshLayer *>( activeLayer() ), this );
+  QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( activeLayer() );
+  if ( meshLayer && meshLayer->isEditable() )
+  {
+    QMessageBox::information( this, tr( "Mesh Calculator" ), tr( "Mesh calculator with mesh layer in edit mode is not supported." ) );
+    return;
+  }
+  QgsMeshCalculatorDialog d( meshLayer, this );
   if ( d.exec() == QDialog::Accepted )
   {
     //invoke analysis library
@@ -7603,7 +7656,8 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
         QUrlQuery uq;
         uq.addQueryItem( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
         uq.addQueryItem( QStringLiteral( "url" ), fileName );
-        std::unique_ptr<QgsVectorTileLayer> vtLayer( new QgsVectorTileLayer( uq.toString(), fileInfo.completeBaseName() ) );
+        const QgsVectorTileLayer::LayerOptions options( QgsProject::instance()->transformContext() );
+        std::unique_ptr<QgsVectorTileLayer> vtLayer( new QgsVectorTileLayer( uq.toString(), fileInfo.completeBaseName(), options ) );
         if ( vtLayer->isValid() )
         {
           QgsProject::instance()->addMapLayer( vtLayer.release() );
@@ -11395,7 +11449,7 @@ bool QgisApp::toggleEditingMeshLayer( QgsMeshLayer *mlayer, bool allowCancel )
     return false;
 
   if ( !mlayer->supportsEditing() )
-    return false; //TODO: when adapted widget will be ready, ask the user if he want to create a new one based on this one
+    return false;
 
   bool res = false;
 
@@ -11403,11 +11457,43 @@ bool QgisApp::toggleEditingMeshLayer( QgsMeshLayer *mlayer, bool allowCancel )
 
   if ( !mlayer->isEditable() )
   {
+    QMessageBox *messageBox = new QMessageBox( QMessageBox::NoIcon, tr( "Start Mesh Frame Edit" ),
+        tr( "Starting editing the frame of this mesh layer will remove all dataset groups.\n"
+            "Alternatively, you can create a new mesh layer from that one." ), QMessageBox::Cancel );
+
+    messageBox->addButton( tr( "Edit Current Mesh" ), QMessageBox::NoRole );
+    QPushButton *editCopyButton = messageBox->addButton( tr( "Edit a Copy" ), QMessageBox::NoRole );
+    messageBox->setDefaultButton( QMessageBox::Cancel );
+
+    messageBox->exec();
+
+    if ( messageBox->clickedButton() == messageBox->button( QMessageBox::Cancel ) )
+    {
+      mActionToggleEditing->setChecked( false );
+      return false;
+    }
+    else if ( messageBox->clickedButton() == editCopyButton )
+    {
+      QgsNewMeshLayerDialog *newMeshDialog = new QgsNewMeshLayerDialog( this );
+      newMeshDialog->setSourceMeshLayer( mlayer, true );
+      if ( newMeshDialog->exec() )
+        mlayer = newMeshDialog->newLayer();
+      else
+      {
+        mActionToggleEditing->setChecked( false );
+        return false;
+      }
+    }
+
     res = mlayer->startFrameEditing( transform );
     mActionToggleEditing->setChecked( res );
 
     if ( !res )
-      QgsMessageLog::logMessage( tr( "Unable to start mesh editing for layer \"%1\"" ).arg( mlayer->name() ) );
+    {
+      visibleMessageBar()->pushWarning(
+        tr( "Mesh editing" ),
+        tr( "Unable to start mesh editing for layer \"%1\"" ).arg( mlayer->name() ) );
+    }
   }
   else if ( mlayer->isModified() )
   {
@@ -11429,6 +11515,9 @@ bool QgisApp::toggleEditingMeshLayer( QgsMeshLayer *mlayer, bool allowCancel )
         QgsCanvasRefreshBlocker refreshBlocker;
         if ( !mlayer->commitFrameEditing( transform, false ) )
         {
+          visibleMessageBar()->pushWarning(
+            tr( "Mesh editing" ),
+            tr( "Unable to save editing for layer \"%1\"" ).arg( mlayer->name() ) );
           res = false;
         }
 
@@ -11531,7 +11620,11 @@ void QgisApp::saveMeshLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool t
 
   QgsCanvasRefreshBlocker refreshBlocker;
   QgsCoordinateTransform transform( mlayer->crs(), mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
-  mlayer->commitFrameEditing( transform, leaveEditable );
+
+  if ( !mlayer->commitFrameEditing( transform, leaveEditable ) )
+    visibleMessageBar()->pushWarning(
+      tr( "Mesh editing" ),
+      tr( "Unable to save editing for layer \"%1\"" ).arg( mlayer->name() ) );
 
   if ( triggerRepaint )
   {
@@ -13998,6 +14091,7 @@ void QgisApp::closeProject()
   // clear out any stuff from project
   mMapCanvas->setLayers( QList<QgsMapLayer *>() );
   mMapCanvas->clearCache();
+  mMapCanvas->cancelJobs();
   mOverviewCanvas->setLayers( QList<QgsMapLayer *>() );
 
   // Avoid unnecessary layer changed handling for each layer removed - instead,
@@ -15653,7 +15747,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionSelectByForm->setEnabled( false );
       mActionOpenFieldCalc->setEnabled( false );
       mActionSaveLayerEdits->setEnabled( false );
-      mUndoDock->widget()->setEnabled( false );
       mActionSaveLayerDefinition->setEnabled( true );
       mActionLayerSaveAs->setEnabled( false );
       mActionAddFeature->setEnabled( false );
@@ -15692,6 +15785,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionToggleEditing->setChecked( canSupportEditing && isEditable );
       mActionSaveLayerEdits->setEnabled( canSupportEditing && isEditable && mlayer->isModified() );
       enableMeshEditingTools( isEditable );
+      mUndoDock->widget()->setEnabled( canSupportEditing && isEditable );
       mActionUndo->setEnabled( canSupportEditing && isEditable );
       mActionRedo->setEnabled( canSupportEditing && isEditable );
       updateUndoActions();
@@ -17527,20 +17621,4 @@ QgsAttributeEditorContext QgisApp::createAttributeEditorContext()
   context.setCadDockWidget( cadDockWidget() );
   context.setMainMessageBar( messageBar() );
   return context;
-}
-
-void QgisApp::showEvent( QShowEvent *event )
-{
-  QMainWindow::showEvent( event );
-  // because of Qt regression: https://bugreports.qt.io/browse/QTBUG-89034
-  // we have to wait till dialog is first shown to try to restore dock geometry or it's not correctly restored
-  static std::once_flag firstShow;
-  std::call_once( firstShow, [this]
-  {
-    QgsSettings settings;
-    if ( !restoreState( settings.value( QStringLiteral( "UI/state" ), QByteArray::fromRawData( reinterpret_cast< const char * >( defaultUIstate ), sizeof defaultUIstate ) ).toByteArray() ) )
-    {
-      QgsDebugMsg( QStringLiteral( "restore of UI state failed" ) );
-    }
-  } );
 }

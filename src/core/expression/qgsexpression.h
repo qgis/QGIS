@@ -604,9 +604,24 @@ class CORE_EXPORT QgsExpression
     static QStringList tags( const QString &name );
 
     /**
+     * Adds a help string for a custom variable.
+     *
+     * The specified variable \a name should not have an existing help string set. If a help string is already present then
+     * FALSE will be returned and no changes will occur.
+     *
+     * \param name variable name
+     * \param description the help string to add. This is user visible, and should be a translated string.
+     * \returns TRUE if the help string was successfully added
+     * \see variableHelpText()
+     * \since QGIS 3.22
+     */
+    static bool addVariableHelpText( const QString name, const QString &description );
+
+    /**
      * Returns the help text for a specified variable.
      * \param variableName name of variable
      * \see helpText()
+     * \see addVariableHelpText()
      * \since QGIS 2.12
      */
     static QString variableHelpText( const QString &variableName );

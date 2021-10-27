@@ -64,8 +64,6 @@ QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface *iface, QD
   }
   ui.listWidgetInputLayers->setIconSize( QSize( 16, 16 ) );
 
-  ui.lineEditFilenamePrefix->setText( QSettings().value( "/geometry_checker/previous_values/filename_prefix", tr( "checked_" ) ).toString() );
-
   connect( mRunButton, &QAbstractButton::clicked, this, &QgsGeometryCheckerSetupTab::runChecks );
   connect( ui.listWidgetInputLayers, &QListWidget::itemChanged, this, &QgsGeometryCheckerSetupTab::validateInput );
   connect( QgsProject::instance(), &QgsProject::layersAdded, this, &QgsGeometryCheckerSetupTab::updateLayers );
@@ -80,6 +78,17 @@ QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface *iface, QD
   connect( ui.checkBoxSliverArea, &QAbstractButton::toggled, ui.doubleSpinBoxSliverArea, &QWidget::setEnabled );
   connect( ui.checkLineLayerIntersection, &QAbstractButton::toggled, ui.comboLineLayerIntersection, &QComboBox::setEnabled );
   connect( ui.checkBoxFollowBoundaries, &QAbstractButton::toggled, ui.comboBoxFollowBoundaries, &QComboBox::setEnabled );
+
+  ui.lineEditFilenamePrefix->setText( QgsSettings().value( "/geometry_checker/previous_values/filename_prefix", tr( "checked_" ) ).toString() );
+  ui.spinBoxTolerance->setValue( QgsSettings().value( "/geometry_checker/previous_values/toleranceDigits", 8 ).toInt() );
+  if ( QgsSettings().value( "/geometry_checker/previous_values/createNewLayers", true ).toBool() )
+  {
+    ui.radioButtonOutputNew->setChecked( true );
+  }
+  else
+  {
+    ui.radioButtonOutputModifyInput->setChecked( true );
+  }
 
   for ( const QgsGeometryCheckFactory *factory : QgsGeometryCheckFactoryRegistry::getCheckFactories() )
   {
@@ -260,6 +269,8 @@ void QgsGeometryCheckerSetupTab::selectOutputDirectory()
 
 void QgsGeometryCheckerSetupTab::runChecks()
 {
+  QgsSettings().setValue( "/geometry_checker/previous_values/createNewLayers", ui.radioButtonOutputNew->isChecked() );
+  QgsSettings().setValue( "/geometry_checker/previous_values/toleranceDigits", ui.spinBoxTolerance->value() );
   // Get selected layer
   const QList<QgsVectorLayer *> layers = getSelectedLayers();
   if ( layers.isEmpty() )
@@ -320,7 +331,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
 
     // List over input layers, check which existing project layers need to be removed and create output layers
     QString filenamePrefix = ui.lineEditFilenamePrefix->text();
-    QSettings().setValue( "/geometry_checker/previous_values/filename_prefix", filenamePrefix );
+    QgsSettings().setValue( "/geometry_checker/previous_values/filename_prefix", filenamePrefix );
     QStringList toRemove;
     QStringList createErrors;
     for ( QgsVectorLayer *layer : layers )

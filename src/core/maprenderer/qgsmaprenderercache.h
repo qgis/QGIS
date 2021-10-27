@@ -23,6 +23,7 @@
 
 #include "qgsrectangle.h"
 #include "qgsmaplayer.h"
+#include "qgsmaptopixel.h"
 
 
 /**

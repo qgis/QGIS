@@ -43,14 +43,29 @@ void QgsColorEffect::draw( QgsRenderContext &context )
   //rasterize source and apply modifications
   QImage image = sourceAsImage( context )->copy();
 
-  QgsImageOperation::adjustBrightnessContrast( image, mBrightness, mContrast / 100.0 + 1 );
+  QgsImageOperation::adjustBrightnessContrast( image, mBrightness, mContrast / 100.0 + 1, context.feedback() );
+
+  if ( context.feedback() && context.feedback()->isCanceled() )
+    return;
+
   if ( mGrayscaleMode != QgsImageOperation::GrayscaleOff )
   {
-    QgsImageOperation::convertToGrayscale( image, static_cast< QgsImageOperation::GrayscaleMode >( mGrayscaleMode ) );
+    QgsImageOperation::convertToGrayscale( image, static_cast< QgsImageOperation::GrayscaleMode >( mGrayscaleMode ), context.feedback() );
   }
-  QgsImageOperation::adjustHueSaturation( image, mSaturation, mColorizeOn ? mColorizeColor : QColor(), mColorizeStrength / 100.0 );
 
-  QgsImageOperation::multiplyOpacity( image, mOpacity );
+  if ( context.feedback() && context.feedback()->isCanceled() )
+    return;
+
+  QgsImageOperation::adjustHueSaturation( image, mSaturation, mColorizeOn ? mColorizeColor : QColor(), mColorizeStrength / 100.0, context.feedback() );
+
+  if ( context.feedback() && context.feedback()->isCanceled() )
+    return;
+
+  QgsImageOperation::multiplyOpacity( image, mOpacity, context.feedback() );
+
+  if ( context.feedback() && context.feedback()->isCanceled() )
+    return;
+
   QgsScopedQPainterState painterState( painter );
   painter->setCompositionMode( mBlendMode );
   painter->drawImage( imageOffset( context ), image );

@@ -384,6 +384,22 @@ void QgsLayoutItemPicture::loadRemotePicture( const QString &url )
   if ( reply )
   {
     QImageReader imageReader( reply );
+    imageReader.setAutoTransform( true );
+
+    if ( imageReader.format() == "pdf" )
+    {
+      // special handling for this format -- we need to pass the desired target size onto the image reader
+      // so that it can correctly render the (vector) pdf content at the desired dpi. Otherwise it returns
+      // a very low resolution image (the driver assumes points == pixels!)
+      // For other image formats, we read the original image size only and defer resampling to later in this
+      // function. That gives us more control over the resampling method used.
+
+      // driver assumes points == pixels, so driver image size is reported assuming 72 dpi.
+      const QSize sizeAt72Dpi = imageReader.size();
+      const QSize sizeAtTargetDpi = sizeAt72Dpi * mLayout->renderContext().dpi() / 72;
+      imageReader.setScaledSize( sizeAtTargetDpi );
+    }
+
     mImage = imageReader.read();
     mMode = FormatRaster;
   }
@@ -434,6 +450,22 @@ void QgsLayoutItemPicture::loadLocalPicture( const QString &path )
     {
       //try to open raster with QImageReader
       QImageReader imageReader( pic.fileName() );
+      imageReader.setAutoTransform( true );
+
+      if ( imageReader.format() == "pdf" )
+      {
+        // special handling for this format -- we need to pass the desired target size onto the image reader
+        // so that it can correctly render the (vector) pdf content at the desired dpi. Otherwise it returns
+        // a very low resolution image (the driver assumes points == pixels!)
+        // For other image formats, we read the original image size only and defer resampling to later in this
+        // function. That gives us more control over the resampling method used.
+
+        // driver assumes points == pixels, so driver image size is reported assuming 72 dpi.
+        const QSize sizeAt72Dpi = imageReader.size();
+        const QSize sizeAtTargetDpi = sizeAt72Dpi * mLayout->renderContext().dpi() / 72;
+        imageReader.setScaledSize( sizeAtTargetDpi );
+      }
+
       if ( imageReader.read( &mImage ) )
       {
         mMode = FormatRaster;
@@ -463,7 +495,7 @@ void QgsLayoutItemPicture::loadPictureUsingCache( const QString &path )
     {
       bool fitsInCache = false;
       bool isMissing = false;
-      mImage = QgsApplication::imageCache()->pathAsImage( path, QSize(), true, 1, fitsInCache, true, &isMissing );
+      mImage = QgsApplication::imageCache()->pathAsImage( path, QSize(), true, 1, fitsInCache, true, mLayout->renderContext().dpi(), &isMissing );
       if ( mImage.isNull() || isMissing )
         mMode = FormatUnknown;
       break;
@@ -506,6 +538,7 @@ void QgsLayoutItemPicture::updateNorthArrowRotation( double rotation )
 
 void QgsLayoutItemPicture::loadPicture( const QVariant &data )
 {
+  const Format origFormat = mMode;
   mIsMissingImage = false;
   QVariant imageData( data );
   mEvaluatedPath = data.toString();
@@ -545,18 +578,27 @@ void QgsLayoutItemPicture::loadPicture( const QVariant &data )
   else if ( mHasExpressionError || !mEvaluatedPath.isEmpty() )
   {
     //trying to load an invalid file or bad expression, show cross picture
-    mMode = FormatSVG;
     mIsMissingImage = true;
-    const QString badFile( QStringLiteral( ":/images/composer/missing_image.svg" ) );
-    mSVG.load( badFile );
-    if ( mSVG.isValid() )
+    if ( origFormat == FormatRaster )
     {
-      mMode = FormatSVG;
-      const QRect viewBox = mSVG.viewBox(); //take width/height ratio from view box instead of default size
-      mDefaultSvgSize.setWidth( viewBox.width() );
-      mDefaultSvgSize.setHeight( viewBox.height() );
-      recalculateSize();
+      const QString badFile( QStringLiteral( ":/images/composer/missing_image.png" ) );
+      QImageReader imageReader( badFile );
+      if ( imageReader.read( &mImage ) )
+        mMode = FormatRaster;
     }
+    else
+    {
+      const QString badFile( QStringLiteral( ":/images/composer/missing_image.svg" ) );
+      mSVG.load( badFile );
+      if ( mSVG.isValid() )
+      {
+        mMode = FormatSVG;
+        const QRect viewBox = mSVG.viewBox(); //take width/height ratio from view box instead of default size
+        mDefaultSvgSize.setWidth( viewBox.width() );
+        mDefaultSvgSize.setHeight( viewBox.height() );
+      }
+    }
+    recalculateSize();
   }
 
   update();

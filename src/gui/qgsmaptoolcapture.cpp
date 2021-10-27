@@ -696,7 +696,7 @@ int QgsMapToolCapture::addCurve( QgsCurve *c )
   const QgsCoordinateTransform ct = mCanvas->mapSettings().layerTransform( layer() );
   if ( ct.isValid() )
   {
-    c->transform( ct, QgsCoordinateTransform::ReverseTransform );
+    c->transform( ct, Qgis::TransformDirection::Reverse );
   }
   const int countBefore = mCaptureCurve.vertexCount();
   //if there is only one point, this the first digitized point that are in the this first curve added --> remove the point
@@ -871,11 +871,6 @@ void QgsMapToolCapture::closePolygon()
 {
   mCaptureCurve.close();
   updateExtraSnapLayer();
-}
-
-QgsMapLayer *QgsMapToolCapture::layer() const
-{
-  return canvas()->currentLayer();
 }
 
 void QgsMapToolCapture::validateGeometry()

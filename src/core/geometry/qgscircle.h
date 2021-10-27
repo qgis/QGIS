@@ -132,7 +132,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
                                     const QgsPoint &pt1_tg2, const QgsPoint &pt2_tg2,
                                     const QgsPoint &pt1_tg3, const QgsPoint &pt2_tg3,
                                     double epsilon = 1E-8,
-                                    QgsPoint pos = QgsPoint() ) SIP_HOLDGIL;
+                                    const QgsPoint &pos = QgsPoint() ) SIP_HOLDGIL;
 
     /**
      * Returns an array of circle constructed by 3 tangents on the circle (aka inscribed circle of a triangle).
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
         const QgsPoint &pt1_tg2, const QgsPoint &pt2_tg2,
         const QgsPoint &pt1_tg3, const QgsPoint &pt2_tg3,
         double epsilon = 1E-8,
-        QgsPoint pos = QgsPoint() ) SIP_HOLDGIL;
+        const QgsPoint &pos = QgsPoint() ) SIP_HOLDGIL;
 
     /**
      * Constructs a circle by an extent (aka bounding box / QgsRectangle).

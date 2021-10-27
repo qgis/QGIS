@@ -20,7 +20,6 @@
 
 #include "ui_qgsmeshcalculatordialogbase.h"
 #include "qgsmeshcalculator.h"
-#include "qgshelp.h"
 #include "qgis_app.h"
 
 //! A dialog to enter a mesh calculation expression
@@ -45,9 +44,10 @@ class APP_EXPORT QgsMeshCalculatorDialog: public QDialog, private Ui::QgsMeshCal
     void datasetGroupEntry( const QModelIndex &index );
     void mCurrentLayerExtentButton_clicked();
     void mAllTimesButton_clicked();
-    void toggleExtendMask( int state );
+    void toggleExtendMask();
     void updateInfoMessage();
-    void onOutputRadioButtonChange();
+    //! Disables some options that are not required if using Virtual Provider
+    void onVirtualCheckboxChange();
     void onOutputFormatChange();
 
     //calculator buttons

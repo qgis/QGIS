@@ -85,7 +85,7 @@ void QgsMapMouseEvent::snapToGrid( double precision, const QgsCoordinateReferenc
     pt.setX( std::round( pt.x() / precision ) * precision );
     pt.setY( std::round( pt.y() / precision ) * precision );
 
-    pt = ct.transform( pt, QgsCoordinateTransform::ReverseTransform );
+    pt = ct.transform( pt, Qgis::TransformDirection::Reverse );
 
     setMapPoint( pt );
   }

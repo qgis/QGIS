@@ -198,6 +198,13 @@ class QgsMeshDatasetGroupStore: public QObject
                                             int groupIndex,
                                             QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod method ) const;
 
+    /**
+     * Returns the global dataset index of the dataset int the dataset group with \a groupIndex, that is between relative times \a time1 and \a time2
+     *
+     * Since QGIS 3.22
+     */
+    QList<QgsMeshDatasetIndex> datasetIndexInTimeInterval( qint64 time1, qint64 time2, int groupIndex ) const;
+
     //! Returns the relative time of the dataset from the persistent provider reference time
     qint64 datasetRelativeTime( const QgsMeshDatasetIndex &index ) const;
 
@@ -209,6 +216,14 @@ class QgsMeshDatasetGroupStore: public QObject
 
     //! Reads the store's information from a DOM document
     void readXml( const QDomElement &storeElem, const QgsReadWriteContext &context );
+
+    /**
+     * Returns the global dataset group index of the dataset group with native index \a globalGroupIndex in the \a source
+     * Returns -1 if the group or the source is not registered
+     *
+     * Since QGIS 3.22
+     */
+    int globalDatasetGroupIndexInSource( QgsMeshDatasetSourceInterface *source, int nativeGroupIndex ) const;
 
   signals:
     //! Emitted after dataset groups are added

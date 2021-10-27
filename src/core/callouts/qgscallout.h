@@ -25,6 +25,7 @@
 #include "qgsmapunitscale.h"
 #include "qgscalloutposition.h"
 #include "qgsmargins.h"
+#include "qgscoordinatetransform.h"
 
 #include <QPainter>
 #include <QString>

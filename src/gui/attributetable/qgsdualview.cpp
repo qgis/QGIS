@@ -128,6 +128,13 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   mAttributeForm = nullptr;
 
   mLayer = layer;
+
+  // Keep fields order in sync: force config reset
+  connect( mLayer, &QgsVectorLayer::updatedFields, this, [ = ]
+  {
+    mFilterModel->setAttributeTableConfig( attributeTableConfig(), /* force */ true );
+  } );
+
   mEditorContext = context;
 
   // create an empty form to find out if it needs geometry or not
@@ -1229,7 +1236,10 @@ void QgsDualView::featureFormAttributeChanged( const QString &attribute, const Q
   Q_UNUSED( attribute )
   Q_UNUSED( value )
   if ( attributeChanged )
+  {
     mFeatureListView->setCurrentFeatureEdited( true );
+    mAttributeForm->save();
+  }
 }
 
 void QgsDualView::setFilteredFeatures( const QgsFeatureIds &filteredFeatures )

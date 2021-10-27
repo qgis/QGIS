@@ -21,6 +21,11 @@
 #include <qgsmaptoolemitpoint.h>
 #include <qgsmaptoolidentify.h>
 #include <qgsmaptooldigitizefeature.h>
+#include <qgsmaptoolextent.h>
+#include <qgsmaptoolidentifyfeature.h>
+#include <qgsmaptoolcapture.h>
+#include <qgsmaptooladvanceddigitizing.h>
+#include <qgsmaptooledit.h>
 %End
 
 class QgsMapTool : QObject
@@ -42,10 +47,20 @@ implemented as map tools.
       sipType = sipType_QgsMapToolPan;
     else if ( dynamic_cast<QgsMapToolEmitPoint *>( sipCpp ) != NULL )
       sipType = sipType_QgsMapToolEmitPoint;
+    else if ( dynamic_cast<QgsMapToolExtent *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolExtent;
+    else if ( dynamic_cast<QgsMapToolIdentifyFeature *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolIdentifyFeature;
     else if ( dynamic_cast<QgsMapToolIdentify *>( sipCpp ) != NULL )
       sipType = sipType_QgsMapToolIdentify;
     else if ( dynamic_cast<QgsMapToolDigitizeFeature *>( sipCpp ) != NULL )
       sipType = sipType_QgsMapToolDigitizeFeature;
+    else if ( dynamic_cast<QgsMapToolCapture *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolCapture;
+    else if ( dynamic_cast<QgsMapToolAdvancedDigitizing *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolAdvancedDigitizing;
+    else if ( dynamic_cast<QgsMapToolEdit *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolEdit;
     else
       sipType = NULL;
 %End
@@ -281,6 +296,15 @@ Constructor takes a map canvas as a parameter.
 Transforms a ``point`` from screen coordinates to map coordinates.
 %End
 
+    QgsPoint toLayerCoordinates( const QgsMapLayer *layer, const QgsPoint &point ) /PyName=toLayerCoordinatesV2/;
+%Docstring
+Transforms a ``point`` from map coordinates to ``layer`` coordinates.
+
+.. note::
+
+   This method is available in the Python bindings as toLayerCoordinatesV2.
+%End
+
     QgsPointXY toLayerCoordinates( const QgsMapLayer *layer, QPoint point );
 %Docstring
 Transforms a ``point`` from screen coordinates to ``layer`` coordinates.
@@ -315,6 +339,17 @@ Transforms a ``rect`` from map coordinates to ``layer`` coordinates.
 Transforms a ``point`` from map coordinates to screen coordinates.
 %End
 
+    QgsMapLayer *layer( const QString &id );
+%Docstring
+Returns the map layer with the matching ID, or ``None`` if no layers could be found.
+
+This method searches both layers associated with the map canvas (see :py:func:`QgsMapCanvas.layers()`)
+and layers from the :py:class:`QgsProject` associated with the canvas. It can be used to resolve layer IDs to
+layers which may be visible in the canvas, but not associated with a :py:class:`QgsProject`.
+
+.. versionadded:: 3.22
+%End
+
     void setToolName( const QString &name );
 %Docstring
 Sets the tool's ``name``.
@@ -323,6 +358,7 @@ Sets the tool's ``name``.
 
 .. versionadded:: 3.20
 %End
+
 
 
 

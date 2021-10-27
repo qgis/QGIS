@@ -181,7 +181,7 @@ void QgsLayoutNodesItem::drawNodes( QgsLayoutItemRenderContext &context ) const
   symbol->setAngle( 45 );
 
   symbol->startRender( context.renderContext() );
-  for ( const QPointF pt : mPolygon )
+  for ( const QPointF pt : std::as_const( mPolygon ) )
     symbol->renderPoint( pt * context.viewScaleFactor(), nullptr, context.renderContext() );
   symbol->stopRender( context.renderContext() );
 
@@ -219,7 +219,7 @@ int QgsLayoutNodesItem::nodeAtPosition( QPointF node,
   int idx = -1;
 
   int i = 0;
-  for ( const QPointF polyPt : mPolygon )
+  for ( const QPointF polyPt : std::as_const( mPolygon ) )
   {
     distance = computeDistance( pt, polyPt );
     if ( distance < nearestDistance && distance < maxDistance )
@@ -360,7 +360,7 @@ bool QgsLayoutNodesItem::writePropertiesToElement( QDomElement &elem, QDomDocume
 
   // write nodes
   QDomElement nodesElem = doc.createElement( QStringLiteral( "nodes" ) );
-  for ( const QPointF pt : mPolygon )
+  for ( const QPointF pt : std::as_const( mPolygon ) )
   {
     QDomElement nodeElem = doc.createElement( QStringLiteral( "node" ) );
     nodeElem.setAttribute( QStringLiteral( "x" ), QString::number( pt.x() ) );

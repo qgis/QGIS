@@ -737,8 +737,8 @@ class TestSelectiveMasking(unittest.TestCase):
         map.setLayers([self.points_layer, self.lines_layer, self.polys_layer])
 
         image = QImage(591, 591, QImage.Format_RGB32)
-        image.setDotsPerMeterX(300 / 25.3 * 1000)
-        image.setDotsPerMeterY(300 / 25.3 * 1000)
+        image.setDotsPerMeterX(int(300 / 25.3 * 1000))
+        image.setDotsPerMeterY(int(300 / 25.3 * 1000))
         image.fill(0)
         p = QPainter(image)
         exporter = QgsLayoutExporter(layout)

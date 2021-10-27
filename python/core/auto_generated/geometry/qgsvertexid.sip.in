@@ -1,0 +1,72 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsvertexid.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+struct QgsVertexId
+{
+
+  explicit QgsVertexId( int _part = -1, int _ring = -1, int _vertex = -1, Qgis::VertexType _type = Qgis::VertexType::Segment ) /HoldGIL/;
+%Docstring
+Constructor for :py:class:`QgsVertexId`.
+%End
+
+  bool isValid() const  /HoldGIL/;
+%Docstring
+Returns ``True`` if the vertex id is valid
+%End
+
+  bool operator==( QgsVertexId other ) const /HoldGIL/;
+  bool operator!=( QgsVertexId other ) const /HoldGIL/;
+
+  bool partEqual( QgsVertexId o ) const /HoldGIL/;
+%Docstring
+Returns ``True`` if this vertex ID belongs to the same part as another vertex ID.
+%End
+
+  bool ringEqual( QgsVertexId o ) const /HoldGIL/;
+%Docstring
+Returns ``True`` if this vertex ID belongs to the same ring as another vertex ID (i.e. the part
+and ring number are equal).
+%End
+
+  bool vertexEqual( QgsVertexId o ) const /HoldGIL/;
+%Docstring
+Returns ``True`` if this vertex ID corresponds to the same vertex as another vertex ID (i.e. the part,
+ring number and vertex number are equal).
+%End
+
+  bool isValid( const QgsAbstractGeometry *geom ) const /HoldGIL/;
+%Docstring
+Returns ``True`` if this vertex ID is valid for the specified ``geom``.
+%End
+
+  int part;
+
+  int ring;
+
+  int vertex;
+
+  Qgis::VertexType type;
+
+  SIP_PYOBJECT __repr__();
+%MethodCode
+  QString str = QStringLiteral( "<QgsVertexId: %1,%2,%3 %4>" ).arg( sipCpp->part ).arg( sipCpp->ring ).arg( sipCpp->vertex ).arg( qgsEnumValueToKey( sipCpp->type ) );
+  sipRes = PyUnicode_FromString( str.toUtf8().data() );
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsvertexid.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

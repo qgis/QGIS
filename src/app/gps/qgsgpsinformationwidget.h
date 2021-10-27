@@ -26,6 +26,8 @@
 #include "qgsmaptoolcapture.h"
 #include "qgspanelwidget.h"
 #include "qgsmapcanvasinteractionblocker.h"
+#include "qgsdistancearea.h"
+
 #include <qwt_plot_curve.h>
 #ifdef WITH_QWTPOLAR
 #include <qwt_polar_plot.h>

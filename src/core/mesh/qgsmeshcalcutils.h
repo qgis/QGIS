@@ -66,19 +66,49 @@ class CORE_EXPORT QgsMeshCalcUtils
                       double endTime );
 
     /**
-     * Creates the utils and validates the input
+     * Creates the utils and validates the input for a calculation only for a dataset at time \a relativeTime
      *
      * The constructor fetches dataset values from selected dataset corresponding to the relative time \a relativeTime
-     * (see QgsMeshLayer::datasetIndexAtRelativeTime() and creates memory datasets from them.
+     * (see QgsMeshLayer::datasetIndexAtRelativeTime()) and creates memory datasets from them.
      * There are only one dataset per group, selected with the matching method defined for the layer.
      *
      * \param layer mesh layer
      * \param usedGroupNames dataset group's names that are used in the expression
-     * \param timeRange time range
+     * \param relativeTime time of the calculation
+     *
+     * \note this instance do not support aggregate functions
+     *
+     * \deprecated QGIS 3.22 because the constructor does not specify any time interval to calculate aggregate functions
+     */
+    Q_DECL_DEPRECATED QgsMeshCalcUtils( QgsMeshLayer *layer,
+                                        const QStringList &usedGroupNames,
+                                        const QgsInterval &relativeTime );
+
+    /**
+     * Creates the utils and validates the input for a calculation only for a dataset at time \a relativeTime
+     *
+     * The constructor fetches dataset values from selected dataset corresponding to the relative time \a relativeTime
+     * (see QgsMeshLayer::datasetIndexAtRelativeTime()) and creates memory datasets from them.
+     * There are only one dataset per group, selected with the matching method defined for the layer,
+     * excepted when an aggregate function is involved upstream of a node. In this case,
+     * all the dataset that are between start time and end time are selected.
+     *
+     * \param layer mesh layer
+     * \param usedGroupNames dataset group's names that are used in the expression and not involved in a aggregate function
+     * \param usedGroupNamesForAggregate dataset group's names that are used in the expression and involved in a aggregate function
+     * \param relativeTime time of the calculation
+     * \param startTime retlative start time for aggregate functions
+     * \param endTime relative end time for aggregate functions
+     *
+     * \since QGIS 3.22
      */
     QgsMeshCalcUtils( QgsMeshLayer *layer,
                       const QStringList &usedGroupNames,
-                      const QgsInterval &relativeTime );
+                      const QStringList &usedGroupNamesForAggregate,
+                      const QgsInterval &relativeTime,
+                      const QgsInterval &startTime,
+                      const QgsInterval &endTime );
+
 
     //! Returns whether the input parameters are consistent and valid for given mesh layer
     bool isValid() const;
@@ -99,7 +129,7 @@ class CORE_EXPORT QgsMeshCalcUtils
     std::shared_ptr<QgsMeshMemoryDataset> number( double val, double time ) const;
 
     //! Creates a deepcopy of group with groupName to group1. Does not copy datasets for filtered out times.
-    void copy( QgsMeshMemoryDatasetGroup &group1, const QString &groupName ) const;
+    void copy( QgsMeshMemoryDatasetGroup &group1, const QString &groupName, bool forAggregate = false ) const;
 
     //! Creates a deepcopy of dataset0
     std::shared_ptr<QgsMeshMemoryDataset> copy( std::shared_ptr<const QgsMeshMemoryDataset> dataset0 ) const;
@@ -229,7 +259,20 @@ class CORE_EXPORT QgsMeshCalcUtils
      * memory dataset group. Returns NULLPTR if no such dataset group
      * exists. Resulting datasets are guaranteed to have the same mOutputType type
      */
-    std::shared_ptr<QgsMeshMemoryDatasetGroup> createMemoryDatasetGroup( const QString &datasetGroupName, const QgsInterval &relativeTime = QgsInterval() ) const;
+    std::shared_ptr<QgsMeshMemoryDatasetGroup> createMemoryDatasetGroup( const QString &datasetGroupName,
+        const QgsInterval &relativeTime = QgsInterval(),
+        const QgsInterval &startTime = QgsInterval(),
+        const QgsInterval &endTime = QgsInterval() ) const;
+
+    /**
+     *  Returns dataset group based on name, the dataset count contained in the group will depend on \a isAggregate.
+     *  If isAggregate is TRUE, the dataset group will contained all dataset needed to calculate aggregate function.
+     *  If isAggregate isFALSE, the datasetgroup will only contain dataset group needed to calculate non aggregate function.
+     *  For example, if \a this instance is created with a relative time, a start time and an end time, that is a calculation that
+     *  will be operated only for this relative time, dataset group involved in a aggregate function will have all the dataset between
+     *  start time and end time, other dataset will only have the dataset corresponding to relative time.
+     */
+    std::shared_ptr<const QgsMeshMemoryDatasetGroup> group( const QString &groupName, bool isAggregate ) const;
 
     /**
      *  Creates dataset based on group. Initializes values and active based on group type.
@@ -303,6 +346,9 @@ class CORE_EXPORT QgsMeshCalcUtils
     //!< E.g. one dataset with element outputs and one with node outputs
     QVector<double> mTimes;
     QMap < QString, std::shared_ptr<QgsMeshMemoryDatasetGroup> > mDatasetGroupMap; //!< Groups that are referenced in the expression
+    QMap < QString, std::shared_ptr<QgsMeshMemoryDatasetGroup> > mDatasetGroupMapForAggregate; //!< Groups that are referenced in the expression and used for aggregate function
+
+    bool mIgnoreTime = false; // with virtual datasetgroup, we only consider the current time step, except for aggregate function where we don't care about time value
 };
 
 ///@endcond

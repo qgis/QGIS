@@ -79,6 +79,7 @@ class TestQgsMapCanvas : public QObject
     void testDragDrop();
     void testZoomResolutions();
     void testTooltipEvent();
+    void testMapLayers();
 
   private:
     QgsMapCanvas *mCanvas = nullptr;
@@ -563,6 +564,27 @@ void TestQgsMapCanvas::testTooltipEvent()
   QApplication::sendEvent( mCanvas->viewport(), &helpEvent );
 
   QVERIFY( mapTool.gotTooltipEvent() );
+}
+
+void TestQgsMapCanvas::testMapLayers()
+{
+  QgsProject::instance()->clear();
+  //set up canvas with a mix of project and non-project layers
+  QgsVectorLayer *vl1 = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=halig:string&field=valig:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  QVERIFY( vl1->isValid() );
+  QgsProject::instance()->addMapLayer( vl1 );
+
+  std::unique_ptr< QgsVectorLayer > vl2 = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:3946&field=halig:string&field=valig:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  QVERIFY( vl2->isValid() );
+
+  std::unique_ptr< QgsMapCanvas > canvas = std::make_unique< QgsMapCanvas >();
+  canvas->setLayers( { vl1, vl2.get() } );
+
+  QCOMPARE( canvas->layers(), QList< QgsMapLayer * >( { vl1, vl2.get() } ) );
+  // retrieving layer by id should work for both layers from the project AND for freestanding layers
+  QCOMPARE( canvas->layer( vl1->id() ), vl1 );
+  QCOMPARE( canvas->layer( vl2->id() ), vl2.get() );
+  QCOMPARE( canvas->layer( QStringLiteral( "xxx" ) ), nullptr );
 }
 
 QGSTEST_MAIN( TestQgsMapCanvas )

@@ -22,6 +22,7 @@
 #include "qgspoint.h"
 #include "qgsmultipoint.h"
 #include "qgsgeos.h"
+#include "qgsvertexid.h"
 
 bool QgsCurve::operator==( const QgsAbstractGeometry &other ) const
 {
@@ -197,7 +198,7 @@ int QgsCurve::partCount() const
 QgsPoint QgsCurve::vertexAt( QgsVertexId id ) const
 {
   QgsPoint v;
-  QgsVertexId::VertexType type;
+  Qgis::VertexType type;
   pointAt( id.vertex, v, type );
   return v;
 }
@@ -305,7 +306,7 @@ int QgsCurve::childCount() const
 QgsPoint QgsCurve::childPoint( int index ) const
 {
   QgsPoint point;
-  QgsVertexId::VertexType type;
+  Qgis::VertexType type;
   const bool res = pointAt( index, point, type );
   Q_ASSERT( res );
   Q_UNUSED( res )

@@ -657,6 +657,7 @@ void QgsMdalProvider::fileMeshExtensions( QStringList &fileMeshExtensions,
       for ( auto ext : extensions )
       {
         ext.remove( QStringLiteral( "*." ) );
+        ext = ext.toLower();
         if ( isMeshDriver )
           fileMeshExtensions += ext;
         else
@@ -1078,7 +1079,7 @@ QVariantMap QgsMdalProviderMetadata::decodeUri( const QString &uri ) const
 {
   QVariantMap uriComponents;
 
-  const QRegularExpression layerRegex( QStringLiteral( "^([a-zA-Z0-9]+?):\"(.*)\"(?::([a-zA-Z0-9]+?$)|($))" ) );
+  const QRegularExpression layerRegex( QStringLiteral( "^([a-zA-Z0-9_]+?):\"(.*)\"(?::([a-zA-Z0-9_]+?$)|($))" ) );
   const QRegularExpressionMatch layerNameMatch = layerRegex.match( uri );
   if ( layerNameMatch.hasMatch() )
   {
@@ -1153,6 +1154,12 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
 
     // Filter files by extension
     if ( !sExtensions.contains( suffix ) )
+      return {};
+
+    // special handling for .adf files -- although mdal reports support for the .adf file format, we only
+    // want to report sublayers for tdenv.adf or tdenv9.adf files (otherwise we are reporting that any arcinfo grids or coverages are meshes)
+    if ( suffix == QLatin1String( "adf" )
+         && !info.completeBaseName().startsWith( QLatin1String( "tdenv" ), Qt::CaseInsensitive ) )
       return {};
   }
 

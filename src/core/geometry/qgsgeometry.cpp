@@ -197,7 +197,7 @@ QgsGeometry QgsGeometry::fromPolygonXY( const QgsPolygonXY &polygon )
   std::unique_ptr< QgsPolygon > geom = QgsGeometryFactory::fromPolygonXY( polygon );
   if ( geom )
   {
-    return QgsGeometry( std::move( geom.release() ) );
+    return QgsGeometry( std::move( geom ) );
   }
   return QgsGeometry();
 }
@@ -1197,6 +1197,42 @@ QgsGeometry QgsGeometry::orthogonalize( double tolerance, int maxIterations, dou
   return engine.orthogonalize( tolerance, maxIterations, angleThreshold );
 }
 
+QgsGeometry QgsGeometry::triangularWaves( double wavelength, double amplitude, bool strictWavelength ) const
+{
+  QgsInternalGeometryEngine engine( *this );
+  return engine.triangularWaves( wavelength, amplitude, strictWavelength );
+}
+
+QgsGeometry QgsGeometry::triangularWavesRandomized( double minimumWavelength, double maximumWavelength, double minimumAmplitude, double maximumAmplitude, unsigned long seed ) const
+{
+  QgsInternalGeometryEngine engine( *this );
+  return engine.triangularWavesRandomized( minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, seed );
+}
+
+QgsGeometry QgsGeometry::squareWaves( double wavelength, double amplitude, bool strictWavelength ) const
+{
+  QgsInternalGeometryEngine engine( *this );
+  return engine.squareWaves( wavelength, amplitude, strictWavelength );
+}
+
+QgsGeometry QgsGeometry::squareWavesRandomized( double minimumWavelength, double maximumWavelength, double minimumAmplitude, double maximumAmplitude, unsigned long seed ) const
+{
+  QgsInternalGeometryEngine engine( *this );
+  return engine.squareWavesRandomized( minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, seed );
+}
+
+QgsGeometry QgsGeometry::roundWaves( double wavelength, double amplitude, bool strictWavelength ) const
+{
+  QgsInternalGeometryEngine engine( *this );
+  return engine.roundWaves( wavelength, amplitude, strictWavelength );
+}
+
+QgsGeometry QgsGeometry::roundWavesRandomized( double minimumWavelength, double maximumWavelength, double minimumAmplitude, double maximumAmplitude, unsigned long seed ) const
+{
+  QgsInternalGeometryEngine engine( *this );
+  return engine.roundWavesRandomized( minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, seed );
+}
+
 QgsGeometry QgsGeometry::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing ) const
 {
   if ( !d->geometry )
@@ -1625,17 +1661,18 @@ bool QgsGeometry::convertGeometryCollectionToSubclass( QgsWkbTypes::GeometryType
 
 QgsPointXY QgsGeometry::asPoint() const
 {
-  if ( !d->geometry || QgsWkbTypes::flatType( d->geometry->wkbType() ) != QgsWkbTypes::Point )
+  if ( !d->geometry )
   {
     return QgsPointXY();
   }
-  QgsPoint *pt = qgsgeometry_cast<QgsPoint *>( d->geometry.get() );
-  if ( !pt )
+  if ( QgsPoint *pt = qgsgeometry_cast<QgsPoint *>( d->geometry->simplifiedTypeRef() ) )
+  {
+    return QgsPointXY( pt->x(), pt->y() );
+  }
+  else
   {
     return QgsPointXY();
   }
-
-  return QgsPointXY( pt->x(), pt->y() );
 }
 
 QgsPolylineXY QgsGeometry::asPolyline() const
@@ -3045,7 +3082,7 @@ bool QgsGeometry::requiresConversionToStraightSegments() const
   return d->geometry->hasCurvedSegments();
 }
 
-Qgis::GeometryOperationResult QgsGeometry::transform( const QgsCoordinateTransform &ct, const QgsCoordinateTransform::TransformDirection direction, const bool transformZ )
+Qgis::GeometryOperationResult QgsGeometry::transform( const QgsCoordinateTransform &ct, const Qgis::TransformDirection direction, const bool transformZ )
 {
   if ( !d->geometry )
   {
@@ -3189,7 +3226,7 @@ bool QgsGeometry::vertexIdFromVertexNr( int nr, QgsVertexId &id ) const
     return false;
   }
 
-  id.type = QgsVertexId::SegmentVertex;
+  id.type = Qgis::VertexType::Segment;
 
   bool res = vertexIndexInfo( d->geometry.get(), nr, id.part, id.ring, id.vertex );
   if ( !res )

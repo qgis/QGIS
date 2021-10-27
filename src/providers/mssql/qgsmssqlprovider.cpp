@@ -405,23 +405,23 @@ void QgsMssqlProvider::loadFields()
 
     // if we don't have an explicitly set geometry column name, and this is a geometry column, then use it
     // but if we DO have an explicitly set geometry column name, then load the other information if this is that column
-    if ( ( mGeometryColName.isEmpty() && ( sqlTypeName == QStringLiteral( "geometry" ) || sqlTypeName == QStringLiteral( "geography" ) ) )
+    if ( ( mGeometryColName.isEmpty() && ( sqlTypeName == QLatin1String( "geometry" ) || sqlTypeName == QLatin1String( "geography" ) ) )
          || colName == mGeometryColName )
     {
       mGeometryColName = colName;
       mGeometryColType = sqlTypeName;
-      mParser.mIsGeography = sqlTypeName == QStringLiteral( "geography" );
+      mParser.mIsGeography = sqlTypeName == QLatin1String( "geography" );
     }
     else
     {
       const QVariant::Type sqlType = DecodeSqlType( sqlTypeName );
-      if ( sqlTypeName == QStringLiteral( "int identity" ) || sqlTypeName == QStringLiteral( "bigint identity" ) )
+      if ( sqlTypeName == QLatin1String( "int identity" ) || sqlTypeName == QLatin1String( "bigint identity" ) )
       {
         mPrimaryKeyType = PktInt;
         mPrimaryKeyAttrs << mAttributeFields.size();
         isIdentity = true;
       }
-      else if ( sqlTypeName == QStringLiteral( "int" ) || sqlTypeName == QStringLiteral( "bigint" ) )
+      else if ( sqlTypeName == QLatin1String( "int" ) || sqlTypeName == QLatin1String( "bigint" ) )
       {
         pkCandidates << colName;
       }
@@ -447,7 +447,7 @@ void QgsMssqlProvider::loadFields()
                           sqlType,
                           sqlTypeName,
                           query.value( QStringLiteral( "PRECISION" ) ).toInt(),
-                          sqlTypeName == QStringLiteral( "decimal" ) ? query.value( QStringLiteral( "SCALE" ) ).toInt() : -1 );
+                          sqlTypeName == QLatin1String( "decimal" ) ? query.value( QStringLiteral( "SCALE" ) ).toInt() : -1 );
       }
       else if ( sqlType == QVariant::Date || sqlType == QVariant::DateTime || sqlType == QVariant::Time )
       {

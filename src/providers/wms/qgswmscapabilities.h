@@ -18,6 +18,7 @@
 #include <QHash>
 #include <QMap>
 #include <QNetworkRequest>
+#include <QSet>
 #include <QStringList>
 #include <QVector>
 
@@ -1033,6 +1034,22 @@ class QgsWmsCapabilitiesDownload : public QObject
     bool downloadCapabilities();
 
     bool downloadCapabilities( const QString &baseUrl, const QgsWmsAuthorization &auth );
+
+    /**
+     * Returns the download refresh state.
+     * \see setForceRefresh()
+     *
+     * \since QGIS 3.22
+     */
+    bool forceRefresh();
+
+    /**
+     * Sets the download refresh state.
+     * \see forceRefresh()
+     *
+     * \since QGIS 3.22
+     */
+    void setForceRefresh( bool forceRefresh );
 
     QString lastError() const { return mError; }
 

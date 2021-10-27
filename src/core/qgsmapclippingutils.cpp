@@ -66,7 +66,7 @@ QgsGeometry QgsMapClippingUtils::calculateFeatureRequestGeometry( const QList< Q
   // lastly transform back to layer CRS
   try
   {
-    result.transform( context.coordinateTransform(), QgsCoordinateTransform::ReverseTransform );
+    result.transform( context.coordinateTransform(), Qgis::TransformDirection::Reverse );
   }
   catch ( QgsCsException & )
   {
@@ -112,7 +112,7 @@ QgsGeometry QgsMapClippingUtils::calculateFeatureIntersectionGeometry( const QLi
   // lastly transform back to layer CRS
   try
   {
-    result.transform( context.coordinateTransform(), QgsCoordinateTransform::ReverseTransform );
+    result.transform( context.coordinateTransform(), Qgis::TransformDirection::Reverse );
   }
   catch ( QgsCsException & )
   {
@@ -216,7 +216,7 @@ QgsGeometry QgsMapClippingUtils::calculateLabelIntersectionGeometry( const QList
   // lastly transform back to layer CRS
   try
   {
-    result.transform( context.coordinateTransform(), QgsCoordinateTransform::ReverseTransform );
+    result.transform( context.coordinateTransform(), Qgis::TransformDirection::Reverse );
   }
   catch ( QgsCsException & )
   {

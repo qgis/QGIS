@@ -21,6 +21,7 @@
 #include "qgsapplication.h"
 #include "qgstiles.h"
 #include "qgsvectorlayer.h"
+#include "qgscoordinatetransform.h"
 
 /**
  * \ingroup UnitTests

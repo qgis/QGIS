@@ -35,6 +35,7 @@ email                : morb at ozemail dot com dot au
 #include "qgspointxy.h"
 #include "qgspoint.h"
 #include "qgsfeatureid.h"
+#include "qgsvertexid.h"
 
 #ifndef SIP_RUN
 #include "json_fwd.hpp"
@@ -918,7 +919,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \returns OperationResult a result code: success or reason of failure
      */
-    Qgis::GeometryOperationResult transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) SIP_THROW( QgsCsException );
+    Qgis::GeometryOperationResult transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward, bool transformZ = false ) SIP_THROW( QgsCsException );
 
     /**
      * Transforms the x and y components of the geometry using a QTransform object \a t.
@@ -1065,6 +1066,108 @@ class CORE_EXPORT QgsGeometry
      * \since QGIS 3.0
      */
     QgsGeometry orthogonalize( double tolerance = 1.0E-8, int maxIterations = 1000, double angleThreshold = 15.0 ) const;
+
+    /**
+     * Constructs triangular waves along the boundary of the geometry, with the
+     * specified \a wavelength and \a amplitude.
+     *
+     * By default the \a wavelength argument is treated as a "maximum wavelength", where the actual
+     * wavelength will be dynamically adjusted so that an exact number of triangular waves are created
+     * along the boundaries of the geometry. If \a strictWavelength is set to TRUE then the \a wavelength
+     * will be used exactly and an incomplete pattern may be used for the final waveform.
+     *
+     * \see triangularWavesRandomized()
+     * \since QGIS 3.24
+     */
+    QgsGeometry triangularWaves( double wavelength, double amplitude, bool strictWavelength = false ) const;
+
+    /**
+     * Constructs randomized triangular waves along the boundary of the geometry, with the
+     * specified wavelength and amplitude ranges.
+     *
+     * The \a minimumWavelength and \a maximumWavelength arguments set the range for the randomized
+     * wavelength. This is evaluated for each individual triangular waveform created along the geometry
+     * boundaries, so the resultant geometry will consist of many different wavelengths.
+     *
+     * Similarly, the \a minimumAmplitude and \a maximumAmplitude arguments define the range for the
+     * randomized amplitude of the triangular components. Randomized amplitude values will be calculated
+     * individually for triangles placed on each either side of the input geometry boundaries.
+     *
+     * Optionally, a specific random \a seed can be used when generating points. If \a seed
+     * is 0, then a completely random sequence of points will be generated.
+     *
+     * \see triangularWaves()
+     * \since QGIS 3.24
+     */
+    QgsGeometry triangularWavesRandomized( double minimumWavelength, double maximumWavelength, double minimumAmplitude, double maximumAmplitude, unsigned long seed = 0 ) const;
+
+    /**
+     * Constructs square waves along the boundary of the geometry, with the
+     * specified \a wavelength and \a amplitude.
+     *
+     * By default the \a wavelength argument is treated as a "maximum wavelength", where the actual
+     * wavelength will be dynamically adjusted so that an exact number of square waves are created
+     * along the boundaries of the geometry. If \a strictWavelength is set to TRUE then the \a wavelength
+     * will be used exactly and an incomplete pattern may be used for the final waveform.
+     *
+     * \see squareWavesRandomized()
+     * \since QGIS 3.24
+     */
+    QgsGeometry squareWaves( double wavelength, double amplitude, bool strictWavelength = false ) const;
+
+    /**
+     * Constructs randomized square waves along the boundary of the geometry, with the
+     * specified wavelength and amplitude ranges.
+     *
+     * The \a minimumWavelength and \a maximumWavelength arguments set the range for the randomized
+     * wavelength. This is evaluated for each individual square waveform created along the geometry
+     * boundaries, so the resultant geometry will consist of many different wavelengths.
+     *
+     * Similarly, the \a minimumAmplitude and \a maximumAmplitude arguments define the range for the
+     * randomized amplitude of the square components. Randomized amplitude values will be calculated
+     * individually for squares placed on each either side of the input geometry boundaries.
+     *
+     * Optionally, a specific random \a seed can be used when generating points. If \a seed
+     * is 0, then a completely random sequence of points will be generated.
+     *
+     * \see squareWaves()
+     * \since QGIS 3.24
+     */
+    QgsGeometry squareWavesRandomized( double minimumWavelength, double maximumWavelength, double minimumAmplitude, double maximumAmplitude, unsigned long seed = 0 ) const;
+
+    /**
+     * Constructs rounded (sine-like) waves along the boundary of the geometry, with the
+     * specified \a wavelength and \a amplitude.
+     *
+     * By default the \a wavelength argument is treated as a "maximum wavelength", where the actual
+     * wavelength will be dynamically adjusted so that an exact number of waves are created
+     * along the boundaries of the geometry. If \a strictWavelength is set to TRUE then the \a wavelength
+     * will be used exactly and an incomplete pattern may be used for the final waveform.
+     *
+     * \see roundWavesRandomized()
+     * \since QGIS 3.24
+     */
+    QgsGeometry roundWaves( double wavelength, double amplitude, bool strictWavelength = false ) const;
+
+    /**
+     * Constructs randomized rounded (sine-like) waves along the boundary of the geometry, with the
+     * specified wavelength and amplitude ranges.
+     *
+     * The \a minimumWavelength and \a maximumWavelength arguments set the range for the randomized
+     * wavelength. This is evaluated for each individual waveform created along the geometry
+     * boundaries, so the resultant geometry will consist of many different wavelengths.
+     *
+     * Similarly, the \a minimumAmplitude and \a maximumAmplitude arguments define the range for the
+     * randomized amplitude of the square components. Randomized amplitude values will be calculated
+     * individually for waves placed on each either side of the input geometry boundaries.
+     *
+     * Optionally, a specific random \a seed can be used when generating points. If \a seed
+     * is 0, then a completely random sequence of points will be generated.
+     *
+     * \see squareWaves()
+     * \since QGIS 3.24
+     */
+    QgsGeometry roundWavesRandomized( double minimumWavelength, double maximumWavelength, double minimumAmplitude, double maximumAmplitude, unsigned long seed = 0 ) const;
 
     /**
      * Returns a new geometry with all points or vertices snapped to the closest point of the grid.
@@ -1864,7 +1967,8 @@ class CORE_EXPORT QgsGeometry
      *
      * Any z or m values present in the geometry will be discarded.
      *
-     * \warning If the geometry is not a single-point type, an empty QgsPointXY() will be returned.
+     * \warning If the geometry is not a single-point type (or a multipoint containing a single point)
+     * an empty QgsPointXY() will be returned.
      */
     QgsPointXY asPoint() const;
 #else
@@ -1876,25 +1980,28 @@ class CORE_EXPORT QgsGeometry
      *
      * This method works only with single-point geometry types.
      *
-     * \throws TypeError if the geometry is not a single-point type
+     * \throws TypeError if the geometry is not a single-point type (or a multipoint containing a single point)
      * \throws ValueError if the geometry is null
      */
     SIP_PYOBJECT asPoint() const SIP_TYPEHINT( QgsPointXY );
     % MethodCode
-    const QgsWkbTypes::Type type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
       PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a point." ).toUtf8().constData() );
       sipIsErr = 1;
     }
-    else if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::Point )
-    {
-      PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a point. Only Point types are permitted." ).arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
-      sipIsErr = 1;
-    }
     else
     {
-      sipRes = sipConvertFromNewType( new QgsPointXY( sipCpp->asPoint() ), sipType_QgsPointXY, Py_None );
+      const QgsAbstractGeometry *geom = sipCpp->constGet();
+      if ( QgsWkbTypes::flatType( geom->simplifiedTypeRef()->wkbType() ) != QgsWkbTypes::Point )
+      {
+        PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a point. Only Point types are permitted." ).arg( QgsWkbTypes::displayString( geom->wkbType() ) ).toUtf8().constData() );
+        sipIsErr = 1;
+      }
+      else
+      {
+        sipRes = sipConvertFromNewType( new QgsPointXY( sipCpp->asPoint() ), sipType_QgsPointXY, Py_None );
+      }
     }
     % End
 #endif

@@ -9,7 +9,6 @@
 
 
 
-
 class QgsAnnotationMarkerItem : QgsAnnotationItem
 {
 %Docstring(signature="appended")

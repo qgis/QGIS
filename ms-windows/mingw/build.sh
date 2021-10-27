@@ -76,17 +76,11 @@ mkdir -p "$BUILDDIR"
 (
   CRSSYNC_BIN=$(readlink -f "$SRCDIR")/build/output/bin/crssync
   cd "$BUILDDIR"
-  QSCI_VER=$(grep -Eo '\s*([0-9]+\.[0-9]+\.[0-9]+)' "$MINGWROOT/include/qt5/Qsci/qsciglobal.h")
   mingw$bits-cmake \
     -DCMAKE_CROSS_COMPILING=1 \
     -DUSE_CCACHE=ON \
     -DCMAKE_BUILD_TYPE=$buildtype \
     -DNATIVE_CRSSYNC_BIN="$CRSSYNC_BIN" \
-    -DQSCINTILLA_VERSION_STR="$QSCI_VER" \
-    -DQSCINTILLA_LIBRARY="$MINGWROOT/lib/libqscintilla2_qt5.dll.a" \
-    -DQSCI_MOD_VERSION_STR="$QSCI_VER" \
-    -DQWT_INCLUDE_DIR="$MINGWROOT/include/qt5/qwt" \
-    -DQSCI_SIP_DIR="$MINGWROOT/share/sip/PyQt5/Qsci/" \
     -DBUILD_TESTING=OFF \
     -DENABLE_TESTS=OFF \
     -DQGIS_BIN_SUBDIR=bin \
@@ -101,8 +95,6 @@ mkdir -p "$BUILDDIR"
     -DBINDINGS_GLOBAL_INSTALL=ON \
     -DSIP_GLOBAL_INSTALL=ON \
     -DWITH_SERVER=ON \
-    -DZSTD_INCLUDE_DIR="$MINGWROOT/include/zstd" \
-    -DZSTD_LIBRARY="$MINGWROOT/lib/libzstd.dll.a" \
     -DTXT2TAGS_EXECUTABLE= \
     ..
 )
@@ -251,8 +243,8 @@ linkDep lib/qt5/plugins/crypto/libqca-gnupg.dll bin/crypto
 linkDep lib/qt5/plugins/crypto/libqca-ossl.dll bin/crypto
 
 mkdir -p "$installprefix/share/qt5/translations/"
-cp -a "$MINGWROOT/share/qt5/translations/qt_"*.qm  "$installprefix/share/qt5/translations"
-cp -a "$MINGWROOT/share/qt5/translations/qtbase_"*.qm  "$installprefix/share/qt5/translations"
+#cp -a "$MINGWROOT/share/qt5/translations/qt_"*.qm  "$installprefix/share/qt5/translations"
+#cp -a "$MINGWROOT/share/qt5/translations/qtbase_"*.qm  "$installprefix/share/qt5/translations"
 
 # Data files
 mkdir -p "$installprefix/share/"

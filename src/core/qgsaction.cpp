@@ -163,4 +163,53 @@ void QgsAction::setExpressionContextScope( const QgsExpressionContextScope &scop
 QgsExpressionContextScope QgsAction::expressionContextScope() const
 {
   return mExpressionContextScope;
+}
+
+QString QgsAction::html() const
+{
+  QString typeText;
+  switch ( mType )
+  {
+    case Generic:
+    {
+      typeText = QObject::tr( "Generic" );
+      break;
+    }
+    case GenericPython:
+    {
+      typeText = QObject::tr( "Generic Python" );
+      break;
+    }
+    case Mac:
+    {
+      typeText = QObject::tr( "Mac" );
+      break;
+    }
+    case Windows:
+    {
+      typeText = QObject::tr( "Windows" );
+      break;
+    }
+    case Unix:
+    {
+      typeText = QObject::tr( "Unix" );
+      break;
+    }
+    case OpenUrl:
+    {
+      typeText = QObject::tr( "Open URL" );
+      break;
+    }
+  }
+  return { QObject::tr( R"html(
+<h2>Action Details</h2>
+<p>
+   <b>Description:</b> %1<br>
+   <b>Short title:</b> %2<br>
+   <b>Type:</b> %3<br>
+   <b>Scope:</b> %4<br>
+   <b>Action:</b><br>
+   <pre>%6</pre>
+</p>
+  )html" ).arg( mDescription, mShortTitle, typeText, actionScopes().values().join( QLatin1String( ", " ) ), mCommand )};
 };

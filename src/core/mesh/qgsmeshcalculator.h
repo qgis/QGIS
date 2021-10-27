@@ -25,10 +25,12 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsrectangle.h"
-#include "qgsmeshlayer.h"
-#include "qgsmeshdataprovider.h"
+#include "qgsgeometry.h"
+#include "qgsmeshdataset.h"
 #include "qgsprovidermetadata.h"
-#include "qgsfeedback.h"
+
+class QgsMeshLayer;
+class QgsFeedback;
 
 /**
  * \ingroup core

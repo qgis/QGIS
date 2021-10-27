@@ -37,6 +37,7 @@ email                : nyall dot dawson at gmail dot com
 #include <QDir>
 #include <QMessageBox>
 #include <QRegularExpression>
+#include <QDirIterator>
 
 ///@cond PRIVATE
 
@@ -391,6 +392,7 @@ bool QgsOgrProviderMetadata::saveStyle(
   OGR_L_SetAttributeFilter( hLayer, checkQuery.toUtf8().constData() );
   OGR_L_ResetReading( hLayer );
   gdal::ogr_feature_unique_ptr hFeature( OGR_L_GetNextFeature( hLayer ) );
+  OGR_L_ResetReading( hLayer );
   bool bNew = true;
 
   if ( hFeature )
@@ -610,6 +612,7 @@ QString QgsOgrProviderMetadata::loadStyle( const QString &uri, QString &errCause
 
     }
   }
+  OGR_L_ResetReading( hLayer );
 
   return styleQML;
 }
@@ -783,6 +786,7 @@ QString QgsOgrProviderMetadata::getStyleById( const QString &uri, QString styleI
   QString styleQML( QString::fromUtf8(
                       OGR_F_GetFieldAsString( hFeature.get(),
                           OGR_FD_GetFieldIndex( hLayerDefn, "styleQML" ) ) ) );
+  OGR_L_ResetReading( hLayer );
 
   return styleQML;
 }
@@ -1099,18 +1103,26 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
     }
   }
 
+  const QStringList dirExtensions = QgsOgrProviderUtils::directoryExtensions();
+
   const QString path = uriParts.value( QStringLiteral( "path" ) ).toString();
   const QFileInfo pathInfo( path );
-  if ( ( flags & Qgis::SublayerQueryFlag::FastScan ) && ( pathInfo.isFile() || pathInfo.isDir() ) )
+  const QString suffix = pathInfo.suffix().toLower();
+  bool isOgrSupportedDirectory = pathInfo.isDir() && dirExtensions.contains( suffix );
+
+  bool forceDeepScanDir = false;
+  if ( pathInfo.isDir() && !isOgrSupportedDirectory )
+  {
+    QDirIterator it( path, { QStringLiteral( "*.adf" ), QStringLiteral( "*.ADF" ) }, QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot );
+    forceDeepScanDir = it.hasNext();
+  }
+
+  if ( ( flags & Qgis::SublayerQueryFlag::FastScan ) && ( pathInfo.isFile() || pathInfo.isDir() ) && !forceDeepScanDir )
   {
     // fast scan, so we don't actually try to open the dataset and instead just check the extension alone
     const QStringList fileExtensions = QgsOgrProviderUtils::fileExtensions();
-    const QStringList dirExtensions = QgsOgrProviderUtils::directoryExtensions();
-
-    const QString suffix = pathInfo.suffix().toLower();
 
     // allow only normal files or supported directories to continue
-    const bool isOgrSupportedDirectory = pathInfo.isDir() && dirExtensions.contains( suffix );
     if ( !isOgrSupportedDirectory && !pathInfo.isFile() )
       return {};
 
@@ -1128,6 +1140,17 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
         }
       }
       if ( !matches )
+        return {};
+    }
+
+    // metadata.xml file next to tdenv?.adf files is a subcomponent of an ESRI tin layer alone, shouldn't be exposed
+    if ( pathInfo.fileName().compare( QLatin1String( "metadata.xml" ), Qt::CaseInsensitive ) == 0 )
+    {
+      const QDir dir  = pathInfo.dir();
+      if ( dir.exists( QStringLiteral( "tdenv9.adf" ) )
+           || dir.exists( QStringLiteral( "tdenv.adf" ) )
+           || dir.exists( QStringLiteral( "TDENV9.ADF" ) )
+           || dir.exists( QStringLiteral( "TDENV.ADF" ) ) )
         return {};
     }
 

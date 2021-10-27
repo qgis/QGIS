@@ -26,7 +26,9 @@ from qgis.PyQt.QtCore import QUrl
 from qgis.core import (QgsVectorLayer,
                        QgsVectorTileWriter,
                        QgsDataSourceUri,
-                       QgsTileXYZ)
+                       QgsTileXYZ,
+                       QgsProviderRegistry,
+                       QgsProviderMetadata)
 
 from pathlib import Path
 
@@ -86,6 +88,34 @@ class TestVectorTile(unittest.TestCase):
 
         # Compare binary data
         self.assertEqual(ascii(data.data()), ascii(output))
+
+    def testEncodeDecodeUri(self):
+        """ Test encodeUri/decodeUri metadata functions """
+        md = QgsProviderRegistry.instance().providerMetadata('vectortile')
+
+        uri = 'type=mbtiles&url=/my/file.mbtiles'
+        parts = md.decodeUri(uri)
+        self.assertEqual(parts, {'type': 'mbtiles', 'path': '/my/file.mbtiles'})
+
+        parts['path'] = '/my/new/file.mbtiles'
+        uri = md.encodeUri(parts)
+        self.assertEqual(uri, 'type=mbtiles&url=/my/new/file.mbtiles')
+
+        uri = 'type=xyz&url=https://fake.server/%7Bx%7D/%7By%7D/%7Bz%7D.png&zmin=0&zmax=2'
+        parts = md.decodeUri(uri)
+        self.assertEqual(parts, {'type': 'xyz', 'url': 'https://fake.server/{x}/{y}/{z}.png', 'zmin': '0', 'zmax': '2'})
+
+        parts['url'] = 'https://fake.new.server/{x}/{y}/{z}.png'
+        uri = md.encodeUri(parts)
+        self.assertEqual(uri, 'type=xyz&url=https://fake.new.server/%7Bx%7D/%7By%7D/%7Bz%7D.png&zmax=2&zmin=0')
+
+        uri = 'type=xyz&serviceType=arcgis&url=https://fake.server/%7Bx%7D/%7By%7D/%7Bz%7D.png&zmax=2&referer=https://qgis.org/&styleUrl=https://qgis.org/'
+        parts = md.decodeUri(uri)
+        self.assertEqual(parts, {'type': 'xyz', 'serviceType': 'arcgis', 'url': 'https://fake.server/{x}/{y}/{z}.png', 'zmax': '2', 'referer': 'https://qgis.org/', 'styleUrl': 'https://qgis.org/'})
+
+        parts['url'] = 'https://fake.new.server/{x}/{y}/{z}.png'
+        uri = md.encodeUri(parts)
+        self.assertEqual(uri, 'referer=https://qgis.org/&serviceType=arcgis&styleUrl=https://qgis.org/&type=xyz&url=https://fake.new.server/%7Bx%7D/%7By%7D/%7Bz%7D.png&zmax=2')
 
 
 if __name__ == '__main__':

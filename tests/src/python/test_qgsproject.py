@@ -1351,9 +1351,7 @@ class TestQgsProject(unittest.TestCase):
         p = QgsProject()
         spy = QSignalSpy(p.transformContextChanged)
         ctx = QgsCoordinateTransformContext()
-        ctx.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857),
-                                               1234, 1235)
-        ctx.addCoordinateOperation(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857), 'x')
+        ctx.addCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:4326'), QgsCoordinateReferenceSystem('EPSG:3857'), 'x')
         p.setTransformContext(ctx)
         self.assertEqual(len(spy), 1)
 
@@ -1383,31 +1381,32 @@ class TestQgsProject(unittest.TestCase):
 
     def testMapScales(self):
         p = QgsProject()
-        self.assertFalse(p.mapScales())
-        self.assertFalse(p.useProjectScales())
+        vs = p.viewSettings()
+        self.assertFalse(vs.mapScales())
+        self.assertFalse(vs.useProjectScales())
 
         spy = QSignalSpy(p.mapScalesChanged)
-        p.setMapScales([])
+        vs.setMapScales([])
         self.assertEqual(len(spy), 0)
-        p.setUseProjectScales(False)
+        vs.setUseProjectScales(False)
         self.assertEqual(len(spy), 0)
 
-        p.setMapScales([5000, 6000, 3000, 4000])
+        vs.setMapScales([5000, 6000, 3000, 4000])
         # scales must be sorted
-        self.assertEqual(p.mapScales(), [6000.0, 5000.0, 4000.0, 3000.0])
+        self.assertEqual(vs.mapScales(), [6000.0, 5000.0, 4000.0, 3000.0])
         self.assertEqual(len(spy), 1)
-        p.setMapScales([5000, 6000, 3000, 4000])
+        vs.setMapScales([5000, 6000, 3000, 4000])
         self.assertEqual(len(spy), 1)
-        self.assertEqual(p.mapScales(), [6000.0, 5000.0, 4000.0, 3000.0])
-        p.setMapScales([5000, 6000, 3000, 4000, 1000])
+        self.assertEqual(vs.mapScales(), [6000.0, 5000.0, 4000.0, 3000.0])
+        vs.setMapScales([5000, 6000, 3000, 4000, 1000])
         self.assertEqual(len(spy), 2)
-        self.assertEqual(p.mapScales(), [6000.0, 5000.0, 4000.0, 3000.0, 1000.0])
+        self.assertEqual(vs.mapScales(), [6000.0, 5000.0, 4000.0, 3000.0, 1000.0])
 
-        p.setUseProjectScales(True)
+        vs.setUseProjectScales(True)
         self.assertEqual(len(spy), 3)
-        p.setUseProjectScales(True)
+        vs.setUseProjectScales(True)
         self.assertEqual(len(spy), 3)
-        p.setUseProjectScales(False)
+        vs.setUseProjectScales(False)
         self.assertEqual(len(spy), 4)
 
     def testSetInstance(self):

@@ -443,7 +443,7 @@ QStringList QgsRasterCalcNode::cleanRasterReferences()
   {
 
     QString layerRef( r->toString() );
-    if ( layerRef.at( 0 ) == QStringLiteral( "\"" ) && layerRef.at( layerRef.size() - 1 ) == QStringLiteral( "\"" ) )
+    if ( layerRef.at( 0 ) == QLatin1String( "\"" ) && layerRef.at( layerRef.size() - 1 ) == QLatin1String( "\"" ) )
     {
       layerRef.remove( 0, 1 );
       layerRef.chop( 1 );

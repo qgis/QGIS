@@ -97,6 +97,11 @@ Sets a ``filter`` string, used to filter out the contents of the view
 to matching algorithms.
 %End
 
+  protected:
+
+    virtual void keyPressEvent( QKeyEvent *event );
+
+
 };
 
 /************************************************************************

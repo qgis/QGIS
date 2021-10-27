@@ -102,25 +102,22 @@ namespace MDAL
       std::function<int ( int, int, int, int *, int * )> mEdgesFunction;
   };
 
-  class DatasetDynamicDriver: public Dataset2D
+
+  class DatasetDynamicDriver
   {
     public:
-      DatasetDynamicDriver( DatasetGroup *parentGroup,
-                            int meshId,
+      DatasetDynamicDriver( int meshId,
                             int groupIndex,
                             int datasetIndex,
                             const Library &library );
+      virtual ~DatasetDynamicDriver();
 
-      size_t scalarData( size_t indexStart, size_t count, double *buffer ) override;
-      size_t vectorData( size_t indexStart, size_t count, double *buffer ) override;
-      size_t activeData( size_t indexStart, size_t count, int *buffer ) override;
-
-      bool loadSymbol();
+      virtual bool loadSymbol();
 
       //! Removes stored data in memory (for drivers that support lazy loading)
       void unloadData();
 
-    private:
+    protected:
       int mMeshId = -1;
       int mGroupIndex = -1;
       int mDatasetIndex = -1;
@@ -128,8 +125,55 @@ namespace MDAL
 
       //************************************
       std::function<int ( int, int, int, int, int, double * )> mDataFunction;
-      std::function<int ( int, int, int, int, int, int * )> mActiveFlagsFunction;
       std::function<void( int, int, int )> mUnloadFunction;
+  };
+
+  class DatasetDynamicDriver2D: public Dataset2D, public DatasetDynamicDriver
+  {
+    public:
+      DatasetDynamicDriver2D( DatasetGroup *parentGroup,
+                              int meshId,
+                              int groupIndex,
+                              int datasetIndex,
+                              const Library &library );
+      ~DatasetDynamicDriver2D() override;
+
+      bool loadSymbol() override;
+
+      size_t scalarData( size_t indexStart, size_t count, double *buffer ) override;
+      size_t vectorData( size_t indexStart, size_t count, double *buffer ) override;
+      size_t activeData( size_t indexStart, size_t count, int *buffer ) override;
+
+    private:
+
+      std::function<int ( int, int, int, int, int, int * )> mActiveFlagsFunction;
+  };
+
+  class DatasetDynamicDriver3D: public Dataset3D, public DatasetDynamicDriver
+  {
+    public:
+      DatasetDynamicDriver3D( DatasetGroup *parentGroup,
+                              int meshId,
+                              int groupIndex,
+                              int datasetIndex,
+                              size_t volumes,
+                              size_t maxVerticalLevelCount,
+                              const Library &library );
+      ~DatasetDynamicDriver3D() override;
+      bool loadSymbol() override;
+
+      size_t verticalLevelCountData( size_t indexStart, size_t count, int *buffer ) override;
+      size_t verticalLevelData( size_t indexStart, size_t count, double *buffer ) override;
+      size_t faceToVolumeData( size_t indexStart, size_t count, int *buffer ) override;
+      size_t scalarVolumesData( size_t indexStart, size_t count, double *buffer ) override;
+      size_t vectorVolumesData( size_t indexStart, size_t count, double *buffer ) override;
+
+    private:
+
+      std::function<int ( int, int, int, int, int, int * )> mVerticalLevelCountDataFunction;
+      std::function<int ( int, int, int, int, int, double * )> mVerticalLevelDataFunction;
+      std::function<int ( int, int, int, int, int, int * )> mFaceToVolumeDataFunction;
+
   };
 
   class MeshDynamicDriver: public Mesh
@@ -178,6 +222,8 @@ namespace MDAL
       std::function < bool ( int, int, bool *, int *, int * )> mDatasetDescriptionFunction;
       std::function < double( int, int, int, bool * )> mDatasetTimeFunction;
       std::function<bool ( int, int, int )> mDatasetSupportActiveFlagFunction;
+      std::function<int ( int, int, int )> mDataset3DMaximumVerticalLevelCount;
+      std::function<int ( int, int, int )> mDataset3DVolumeCount;
 
       std::function<void ( int )> mCloseMeshFunction;
   };

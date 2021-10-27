@@ -270,7 +270,7 @@ QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer,
   // selection geometry must be in layer CRS for QgsPointCloudDataProvider::identify
   try
   {
-    selectionGeometry.transform( renderContext.coordinateTransform(), QgsCoordinateTransform::ReverseTransform );
+    selectionGeometry.transform( renderContext.coordinateTransform(), Qgis::TransformDirection::Reverse );
   }
   catch ( QgsCsException & )
   {

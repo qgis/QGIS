@@ -120,7 +120,7 @@ void QgsTriangularMesh::triangulate( const QgsMeshFace &face, int nativeIndex )
   triangulateFaces( face, nativeIndex, mTriangularMesh.faces, mTrianglesToNativeFaces, mTriangularMesh );
 }
 
-QgsMeshVertex QgsTriangularMesh::transformVertex( const QgsMeshVertex &vertex, QgsCoordinateTransform::TransformDirection direction ) const
+QgsMeshVertex QgsTriangularMesh::transformVertex( const QgsMeshVertex &vertex, Qgis::TransformDirection direction ) const
 {
   QgsMeshVertex transformedVertex = vertex;
 
@@ -276,12 +276,12 @@ void QgsTriangularMesh::finalizeTriangles()
 
 QgsMeshVertex QgsTriangularMesh::nativeToTriangularCoordinates( const QgsMeshVertex &vertex ) const
 {
-  return transformVertex( vertex, QgsCoordinateTransform::ForwardTransform );
+  return transformVertex( vertex, Qgis::TransformDirection::Forward );
 }
 
 QgsMeshVertex QgsTriangularMesh::triangularToNativeCoordinates( const QgsMeshVertex &vertex ) const
 {
-  return transformVertex( vertex, QgsCoordinateTransform::ReverseTransform );
+  return transformVertex( vertex, Qgis::TransformDirection::Reverse );
 }
 
 QgsRectangle QgsTriangularMesh::nativeExtent()
@@ -291,7 +291,7 @@ QgsRectangle QgsTriangularMesh::nativeExtent()
   {
     try
     {
-      nativeExtent = mCoordinateTransform.transform( extent(), QgsCoordinateTransform::ReverseTransform );
+      nativeExtent = mCoordinateTransform.transform( extent(), Qgis::TransformDirection::Reverse );
     }
     catch ( QgsCsException &cse )
     {
@@ -639,8 +639,11 @@ static QSet<int> _nativeElementsFromElements( const QList<int> &indexes, const Q
   QSet<int> nativeElements;
   for ( const int index : indexes )
   {
-    const int nativeIndex = elementToNativeElements[index];
-    nativeElements.insert( nativeIndex );
+    if ( index < elementToNativeElements.count() )
+    {
+      const int nativeIndex = elementToNativeElements[index];
+      nativeElements.insert( nativeIndex );
+    }
   }
   return nativeElements;
 }

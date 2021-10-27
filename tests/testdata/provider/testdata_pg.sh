@@ -1,6 +1,8 @@
 #!/bin/sh
 
-DB=${DB:-qgis_test}
+DB=${1:-qgis_test}
+
+cd "$(dirname "$0")"/../../../ || exit 1
 
 SCRIPTS="
   tests/testdata/provider/testdata_pg.sql
@@ -24,41 +26,59 @@ SCRIPTS12="
   tests/testdata/provider/testdata_pg_12_generated.sql
 "
 
-dropdb --if-exists $DB
-createdb $DB -E UTF8 -T template0 || exit 1
+echo "Dropping DB $DB"
+dropdb --if-exists "${DB}"
+echo "Creating DB $DB"
+# TODO: use service=qgis_test to connect to "template1" and use SQL ?
+createdb "${DB}" -E UTF8 -T template0 || exit 1
 for f in ${SCRIPTS}; do
-  echo "Restoring $f"
-  psql -q --echo-errors -c "SET client_min_messages TO WARNING;" -f $f $DB -v ON_ERROR_STOP=1 || exit 1
+  echo "Loading $f"
+  psql -q --echo-errors -c "SET client_min_messages TO WARNING;" -f "${f}" "${DB}" -v ON_ERROR_STOP=1 || exit 1
 done
 
-PGSERVERVERSION=$(psql -XtA -c 'SHOW server_version_num' $DB)
-if test $PGSERVERVERSION -gt 120000; then
+PGSERVERVERSION=$(psql -XtA -c 'SHOW server_version_num' "${DB}")
+if test "${PGSERVERVERSION}" -gt 120000; then
   for f in ${SCRIPTS12}; do
-    echo "Restoring $f"
-    psql -q --echo-errors -c "SET client_min_messages TO WARNING;" -f $f $DB -v ON_ERROR_STOP=1 || exit 1
+    echo "Loading $f"
+    psql -q --echo-errors -c "SET client_min_messages TO WARNING;" -f "${f}" "${DB}" -v ON_ERROR_STOP=1 || exit 1
   done
 fi
 
-# Test existence of qgis_test service, and recommend how to set it up
-# otherwise
-TESTDB=$(psql -XtA 'service=qgis_test' -c "select current_database()")
-if test "${TESTDB}" != "${DB}"; then
+FINGERPRINT="${DB}-$(date +%s)"
+echo "Storing fingerprint ${FINGERPRINT} in $DB"
+psql -q --echo-errors "${DB}" -v ON_ERROR_STOP=1 <<EOF || exit 1
+CREATE TABLE qgis_test.schema_info AS SELECT
+  'fingerprint' var, '${FINGERPRINT}' val;
+EOF
+
+# Test service=qgis_test connects to the just-created database
+CHECK=$(psql -XtA 'service=qgis_test' -c "select val from qgis_test.schema_info where var='fingerprint'")
+if test "${CHECK}" != "${FINGERPRINT}"; then
   exec >&2
-  if test -n "${TESTDB}"; then
-    echo "WARNING: [qgis_test] service section points to db '${TESTDB}'" \
-         "but we populated db '${DB}' instead"
-  else
-    echo "ERROR: [qgis_test] service not found in ~/.pg_service.conf"
-    echo "HINT: create a section like the following:"
-    cat <<EOF
-  [qgis_test]
+  echo "ERROR: Could not access the just created test database ${DB} via service=qgis_test"
+  echo "HINT: create a section like the following in ~/.pg_service.conf"
+  cat <<EOF
+[qgis_test]
   host=localhost
   port=5432
   dbname=${DB}
   user=USERNAME
   password=PASSWORD
 EOF
-  fi
-else
-  echo "Database ${DB} populated and ready for use with 'service=qgis_test'"
+  exit 1
 fi
+
+# TODO: Test service=qgis_test connects via a method which accepts
+# username/password
+CHECK=$(psql -XtA 'service=qgis_test user=qgis_test_user password=qgis_test_user_password' -c "select version()")
+if test -z "${CHECK}"; then
+  exec >&2
+  echo "ERROR: Cannot service=qgis_test via username/password"
+  echo "HINT: make sure MD5 method is accepted in pg_hba.conf "
+  echo "(specifying host=localhost in the [qgis_test] section of "
+  echo "'~/.pg_service.conf' often does help)"
+  exit 1
+fi
+
+
+echo "Database ${DB} populated and ready for use with 'service=qgis_test'"

@@ -71,6 +71,7 @@ class Qgs3DSymbolRegistry;
 class QgsPointCloudRendererRegistry;
 class QgsTileDownloadManager;
 class QgsCoordinateReferenceSystemRegistry;
+class QgsRecentStyleHandler;
 
 /**
  * \ingroup core
@@ -778,6 +779,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsTileDownloadManager *tileDownloadManager() SIP_SKIP;
 
     /**
+     * Returns the handler for recently used style items.
+     * \since QGIS 3.22
+     */
+    static QgsRecentStyleHandler *recentStyleHandler() SIP_KEEPREFERENCE;
+
+    /**
      * Returns a shared QgsStyleModel containing the default style library (see QgsStyle::defaultStyle()).
      *
      * Using this shared model instead of creating a new QgsStyleModel improves performance.
@@ -1083,6 +1090,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsBookmarkManager *mBookmarkManager = nullptr;
       QgsTileDownloadManager *mTileDownloadManager = nullptr;
       QgsStyleModel *mStyleModel = nullptr;
+      QgsRecentStyleHandler *mRecentStyleHandler = nullptr;
       QString mNullRepresentation;
       QStringList mSvgPathCache;
       bool mSvgPathCacheValid = false;
