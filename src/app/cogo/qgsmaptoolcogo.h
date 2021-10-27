@@ -60,6 +60,8 @@ class APP_EXPORT QgsIntersection2CirclesDialog : public QDialog, private Ui::Qgs
     QgsCircle mCircle2;
     QgsGeometryRubberBand *mRubberCircle1;
     QgsGeometryRubberBand *mRubberCircle2;
+    QgsGeometryRubberBand *mIntersection1;
+    QgsGeometryRubberBand *mIntersection2;
 
     QgsVectorLayer *mLayer;
     QgsMapCanvas *mMapCanva;

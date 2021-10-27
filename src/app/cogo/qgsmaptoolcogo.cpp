@@ -40,6 +40,14 @@ QgsIntersection2CirclesDialog::QgsIntersection2CirclesDialog( QgsMapCanvas *mapC
   mRubberCircle2->setStrokeWidth( 2 );
   mRubberCircle2->setVertexDrawingEnabled( false );
 
+  mIntersection1 = new QgsGeometryRubberBand( mapCanva, QgsWkbTypes::PointGeometry );
+  mIntersection2 = new QgsGeometryRubberBand( mapCanva, QgsWkbTypes::PointGeometry );
+
+  mIntersection1->setStrokeWidth( 2 );
+  mIntersection2->setStrokeWidth( 2 );
+  mIntersection1->setIconType( QgsGeometryRubberBand::ICON_X );
+  mIntersection2->setIconType( QgsGeometryRubberBand::ICON_X );
+
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsIntersection2CirclesDialog::onAccepted );
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 
@@ -87,6 +95,9 @@ void QgsIntersection2CirclesDialog::show()
   mRubberCircle1->show();
   mRubberCircle2->show();
 
+  mIntersection1->show();
+  mIntersection2->show();
+
   QDialog::show();
 }
 
@@ -97,6 +108,9 @@ void QgsIntersection2CirclesDialog::reject()
 
   mRubberCircle1->hide();
   mRubberCircle2->hide();
+
+  mIntersection1->hide();
+  mIntersection2->hide();
 
   QDialog::reject();
 }
@@ -152,6 +166,11 @@ void QgsIntersection2CirclesDialog::propertiesChanged( CircleNumber circleNum )
 
   center = QgsPoint( mX2->value(), mY2->value() );
   mCircle2 = QgsCircle( center, mRadius2->value() );
+
+  QgsPoint inter1, inter2;
+  int numOfIntersections = mCircle1.intersections( mCircle2, inter1, inter2 );
+  mIntersection1->setGeometry( inter1.clone() );
+  mIntersection2->setGeometry( inter2.clone() );
 
   updateCircle( circleNum );
 }
