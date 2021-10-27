@@ -353,6 +353,7 @@ To compile with 3D enabled, you need to add some cmake options:
 CMAKE_PREFIX_PATH={path to QGIS Git repo}/external/qt3dextra-headers/cmake
 QT5_3DEXTRA_INCLUDE_DIR={path to QGIS Git repo}/external/qt3dextra-headers
 QT5_3DEXTRA_LIBRARY=/usr/lib/x86_64-linux-gnu/libQt53DExtras.so
+Qt53DExtras_DIR={path to QGIS Git repo}/external/qt3dextra-headers/cmake/Qt53DExtras
 ```
 
 ## 3.9. Building different branches
