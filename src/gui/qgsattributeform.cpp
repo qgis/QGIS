@@ -594,23 +594,11 @@ void QgsAttributeForm::updateValuesDependenciesVirtualFields( const int originId
 
     for ( int i = 0; i < dstVars.count(); i++ )
     {
-      if ( !qgsVariantEqual( dstVars[i], srcVars[i] ) && srcVars[i].isValid() && fieldIsEditable( fieldIndexes[i] ) )
+      if ( !qgsVariantEqual( dstVars[i], srcVars[i] ) && srcVars[i].isValid() )
         featureAttributes[fieldIndexes[i]] = srcVars[i];
     }
   }
   updatedFeature.setAttributes( featureAttributes );
-
-  // If originIdx is a virtual field make sure it is up to date
-  {
-    QString expressionField = mLayer->expressionField( originIdx );
-    if ( ! expressionField.isEmpty() )
-    {
-      QgsExpressionContext context = createExpressionContext( updatedFeature );
-      QgsExpression exp( expressionField );
-      QVariant value = exp.evaluate( &context );
-      updatedFeature.setAttribute( originIdx, value );
-    }
-  }
 
   // go through depending fields and update the virtual field with its expression
   QList<QgsWidgetWrapper *> relevantWidgets = mVirtualFieldsDependencies.values( originIdx );
