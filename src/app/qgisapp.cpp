@@ -761,7 +761,11 @@ void QgisApp::showGeoreferencer()
 void QgisApp::showIntersection2CirclesDialog()
 {
   if ( !mIntersection2Cirlcles )
-    mIntersection2Cirlcles = new QgsIntersection2CirclesDialog( );
+  {
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
+    mIntersection2Cirlcles = new QgsIntersection2CirclesDialog( mMapCanvas, vlayer, this );
+  }
+
   mIntersection2Cirlcles->show();
   mIntersection2Cirlcles->setFocus();
 }
