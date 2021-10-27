@@ -22,7 +22,7 @@
 #include <QDialog>
 #include "qgis_app.h"
 #include "geometry/qgscircle.h"
-#include "qgsgeometryrubberband.h"
+#include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptoolemitpoint.h"
@@ -58,10 +58,10 @@ class APP_EXPORT QgsIntersection2CirclesDialog : public QDialog, private Ui::Qgs
   private:
     QgsCircle mCircle1;
     QgsCircle mCircle2;
-    QgsGeometryRubberBand *mRubberCircle1;
-    QgsGeometryRubberBand *mRubberCircle2;
-    QgsGeometryRubberBand *mIntersection1;
-    QgsGeometryRubberBand *mIntersection2;
+    QgsRubberBand *mRubberCircle1;
+    QgsRubberBand *mRubberCircle2;
+    QgsRubberBand *mIntersection1;
+    QgsRubberBand *mIntersection2;
 
     QgsVectorLayer *mLayer;
     QgsMapCanvas *mMapCanva;

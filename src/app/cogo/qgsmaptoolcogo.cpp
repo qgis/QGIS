@@ -17,7 +17,7 @@
 
 #include "qgsmaptoolcogo.h"
 #include "qgis.h"
-#include "qgsgeometryrubberband.h"
+#include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaptoolemitpoint.h"
 #include "qgsmapcanvas.h"
@@ -32,21 +32,25 @@ QgsIntersection2CirclesDialog::QgsIntersection2CirclesDialog( QgsMapCanvas *mapC
   mLayer = vlayer;
   mMapCanva = mapCanva;
 
-  mRubberCircle1 = new QgsGeometryRubberBand( mapCanva );
-  mRubberCircle2 = new QgsGeometryRubberBand( mapCanva );
+  mRubberCircle1 = new QgsRubberBand( mapCanva );
+  mRubberCircle2 = new QgsRubberBand( mapCanva );
 
-  mRubberCircle1->setStrokeWidth( 2 );
-  mRubberCircle1->setVertexDrawingEnabled( false );
-  mRubberCircle2->setStrokeWidth( 2 );
-  mRubberCircle2->setVertexDrawingEnabled( false );
+  mRubberCircle1->setWidth( 2 );
+  mRubberCircle2->setWidth( 2 );
+  mRubberCircle1->setColor( QColor( 0, 255, 0, 150 ) );
+  mRubberCircle2->setColor( QColor( 0, 255, 0, 150 ) );
 
-  mIntersection1 = new QgsGeometryRubberBand( mapCanva, QgsWkbTypes::PointGeometry );
-  mIntersection2 = new QgsGeometryRubberBand( mapCanva, QgsWkbTypes::PointGeometry );
+  mIntersection1 = new QgsRubberBand( mapCanva, QgsWkbTypes::PointGeometry );
+  mIntersection2 = new QgsRubberBand( mapCanva, QgsWkbTypes::PointGeometry );
 
-  mIntersection1->setStrokeWidth( 2 );
-  mIntersection2->setStrokeWidth( 2 );
-  mIntersection1->setIconType( QgsGeometryRubberBand::ICON_X );
-  mIntersection2->setIconType( QgsGeometryRubberBand::ICON_X );
+  mIntersection1->setIconSize( 10 );
+  mIntersection2->setIconSize( 10 );
+  mIntersection1->setWidth( 2 );
+  mIntersection2->setWidth( 2 );
+  mIntersection1->setIcon( QgsRubberBand::ICON_CROSS );
+  mIntersection2->setIcon( QgsRubberBand::ICON_CROSS );
+  mIntersection1->setColor( QColor( 0, 255, 0, 150 ) );
+  mIntersection2->setColor( QColor( 0, 255, 0, 150 ) );
 
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsIntersection2CirclesDialog::onAccepted );
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
@@ -169,14 +173,14 @@ void QgsIntersection2CirclesDialog::propertiesChanged( CircleNumber circleNum )
 
   QgsPoint inter1, inter2;
   int numOfIntersections = mCircle1.intersections( mCircle2, inter1, inter2 );
-  mIntersection1->setGeometry( inter1.clone() );
-  mIntersection2->setGeometry( inter2.clone() );
+  mIntersection1->setToGeometry( QgsGeometry( inter1.clone() ) );
+  mIntersection2->setToGeometry( QgsGeometry( inter2.clone() ) );
 
   updateCircle( circleNum );
 }
 
 void QgsIntersection2CirclesDialog::updateCircle( CircleNumber circleNum )
 {
-  mRubberCircle1->setGeometry( mCircle1.toCircularString( true )->clone() );
-  mRubberCircle2->setGeometry( mCircle2.toCircularString( true )->clone() );
+  mRubberCircle1->setToGeometry( QgsGeometry( mCircle1.toCircularString( true )->clone() ) );
+  mRubberCircle2->setToGeometry( QgsGeometry( mCircle2.toCircularString( true )->clone() ) );
 }
