@@ -258,6 +258,18 @@ QString QgsHanaPrimaryKeyUtils::buildWhereClause( const QgsFeatureIds &featureId
   return QString(); //avoid warning
 }
 
+QString QgsHanaPrimaryKeyUtils::buildUriKey( const QStringList &columns )
+{
+  QString ret;
+  for ( auto i = 0; i < columns.size(); ++i )
+  {
+    ret += QgsHanaUtils::quotedIdentifier( columns[i] );
+    if ( i != columns.size() - 1 )
+      ret += ',';
+  }
+  return ret;
+}
+
 QStringList QgsHanaPrimaryKeyUtils::parseUriKey( const QString &key )
 {
   if ( key.isEmpty() )
@@ -290,7 +302,6 @@ QStringList QgsHanaPrimaryKeyUtils::parseUriKey( const QString &key )
           i++;
           Q_ASSERT( key[i] == '"' );
           i++;
-          col.clear();
           continue;
         }
       }

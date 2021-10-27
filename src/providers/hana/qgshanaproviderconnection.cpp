@@ -492,7 +492,7 @@ QgsVectorLayer *QgsHanaProviderConnection::createSqlVectorLayer( const SqlVector
 
   if ( ! options.primaryKeyColumns.isEmpty() )
   {
-    tUri.setKeyColumn( options.primaryKeyColumns.join( ',' ) );
+    tUri.setKeyColumn( QgsHanaPrimaryKeyUtils::buildUriKey( options.primaryKeyColumns ) );
     tUri.setTable( QStringLiteral( "(%1)" ).arg( options.sql ) );
   }
   else
@@ -633,7 +633,6 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsHanaProviderConnection::sqlD
         QStringLiteral( "AUTOCOMMIT" ),
         QStringLiteral( "AUTOMATIC" ),
         QStringLiteral( "AUTOMERGE" ),
-        QStringLiteral( "AVG" ),
         QStringLiteral( "AXIS" ),
         QStringLiteral( "BACKINT" ),
         QStringLiteral( "BACKUP" ),
@@ -762,7 +761,6 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsHanaProviderConnection::sqlD
         QStringLiteral( "COPY" ),
         QStringLiteral( "COREFILE" ),
         QStringLiteral( "CORRELATION" ),
-        QStringLiteral( "COUNT" ),
         QStringLiteral( "COVERAGE" ),
         QStringLiteral( "CPBTREE" ),
         QStringLiteral( "CPU" ),
@@ -1010,7 +1008,6 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsHanaProviderConnection::sqlD
         QStringLiteral( "FINALIZE" ),
         QStringLiteral( "FINISH" ),
         QStringLiteral( "FIRST" ),
-        QStringLiteral( "FIRST_VALUE" ),
         QStringLiteral( "FLAG" ),
         QStringLiteral( "FLAGS" ),
         QStringLiteral( "FLATTEN" ),
@@ -1181,7 +1178,6 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsHanaProviderConnection::sqlD
         QStringLiteral( "LANGUAGE" ),
         QStringLiteral( "LAST" ),
         QStringLiteral( "LAST_DAY" ),
-        QStringLiteral( "LAST_VALUE" ),
         QStringLiteral( "LATENCY" ),
         QStringLiteral( "LATERAL" ),
         QStringLiteral( "LAYOUT" ),
@@ -1243,7 +1239,6 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsHanaProviderConnection::sqlD
         QStringLiteral( "MATCHED" ),
         QStringLiteral( "MATCHES" ),
         QStringLiteral( "MATCHING" ),
-        QStringLiteral( "MAX" ),
         QStringLiteral( "MAXITERATIONS" ),
         QStringLiteral( "MAXVALUE" ),
         QStringLiteral( "MB" ),
@@ -1260,7 +1255,6 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsHanaProviderConnection::sqlD
         QStringLiteral( "METADATA" ),
         QStringLiteral( "MIGRATE" ),
         QStringLiteral( "MIME" ),
-        QStringLiteral( "MIN" ),
         QStringLiteral( "MIN_ROWS_FOR_PARTITIONING" ),
         QStringLiteral( "MINING" ),
         QStringLiteral( "MINOR" ),
@@ -1318,7 +1312,6 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsHanaProviderConnection::sqlD
         QStringLiteral( "NOW" ),
         QStringLiteral( "NOWAIT" ),
         QStringLiteral( "NTEXT" ),
-        QStringLiteral( "NTH_VALUE" ),
         QStringLiteral( "NTILE" ),
         QStringLiteral( "NULL" ),
         QStringLiteral( "NULLABLE" ),
@@ -1642,12 +1635,10 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsHanaProviderConnection::sqlD
         QStringLiteral( "STATEMENT_NAME" ),
         QStringLiteral( "STATIC" ),
         QStringLiteral( "STATISTICS" ),
-        QStringLiteral( "STDDEV" ),
         QStringLiteral( "STOP" ),
         QStringLiteral( "STORAGE" ),
         QStringLiteral( "STORE" ),
         QStringLiteral( "STRING" ),
-        QStringLiteral( "STRING_AGG" ),
         QStringLiteral( "STRIP" ),
         QStringLiteral( "STRUCTURED" ),
         QStringLiteral( "STRUCTUREDPRIVILEGE" ),
@@ -1665,7 +1656,6 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsHanaProviderConnection::sqlD
         QStringLiteral( "SUBTOTAL" ),
         QStringLiteral( "SUBTYPE" ),
         QStringLiteral( "SUCCESSFUL" ),
-        QStringLiteral( "SUM" ),
         QStringLiteral( "SUPPORT" ),
         QStringLiteral( "SUSPEND" ),
         QStringLiteral( "SYNC" ),
@@ -1808,7 +1798,6 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsHanaProviderConnection::sqlD
         QStringLiteral( "VALIDATION" ),
         QStringLiteral( "VALUE" ),
         QStringLiteral( "VALUES" ),
-        QStringLiteral( "VAR" ),
         QStringLiteral( "VARBINARY" ),
         QStringLiteral( "VARCHAR" ),
         QStringLiteral( "VARCHAR1" ),
