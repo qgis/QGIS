@@ -21,6 +21,9 @@
 #include "qgsvectorlayer.h"
 #include "qgsmaptoolemitpoint.h"
 #include "qgsmapcanvas.h"
+#include "qgsattributedialog.h"
+#include "qgsattributeeditorcontext.h"
+#include "qgsfeatureaction.h"
 
 #include <iostream>
 #include <QPushButton>
@@ -56,7 +59,7 @@ QgsIntersection2CirclesDialog::QgsIntersection2CirclesDialog( QgsMapCanvas *mapC
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 
   const double maxValue = std::numeric_limits<double>::max();
-  const double minValue = -maxValue + 1;
+  const double minValue = -maxValue;
 
   mX1->setMinimum( minValue );
   mX1->setMaximum( maxValue );
@@ -71,7 +74,7 @@ QgsIntersection2CirclesDialog::QgsIntersection2CirclesDialog( QgsMapCanvas *mapC
   mRadius2->setMaximum( maxValue );
 
   // Circle 1
-  connect( mSelectCenter1, &QRadioButton::pressed,
+  connect( mSelectCenter1, &QToolButton::pressed,
   [ = ]() { toggleSelectCenter( CircleNum1 ); } );
 
   connect( mX1, QOverload<double>::of( &QgsDoubleSpinBox::valueChanged ),
@@ -82,7 +85,7 @@ QgsIntersection2CirclesDialog::QgsIntersection2CirclesDialog( QgsMapCanvas *mapC
   [ = ]( double ) { propertiesChanged( CircleNum1 ); } );
 
   // Circle 2
-  connect( mSelectCenter2, &QRadioButton::pressed,
+  connect( mSelectCenter2, &QToolButton::pressed,
   [ = ]() { toggleSelectCenter( CircleNum2 ); } );
 
   connect( mX2, QOverload<double>::of( &QgsDoubleSpinBox::valueChanged ),
@@ -121,7 +124,26 @@ void QgsIntersection2CirclesDialog::reject()
 
 void QgsIntersection2CirclesDialog::onAccepted()
 {
+  QgsFeature f;
+  QgsFields fields = mLayer->fields();
 
+  if ( mBtnIntersection1->isEnabled() && mBtnIntersection1->isChecked() )
+  {
+    f = QgsFeature();
+    f.setGeometry( QgsGeometry( mIntersection1.clone() ) );
+
+    QgsFeatureAction action( tr( "Feature added" ), f, mLayer );
+    action.addFeature();
+  }
+
+  if ( mBtnIntersection2->isEnabled() && mBtnIntersection2->isChecked() )
+  {
+    f = QgsFeature();
+    f.setGeometry( QgsGeometry( mIntersection2.clone() ) );
+
+    QgsFeatureAction action( tr( "Feature added" ), f, mLayer );
+    action.addFeature();
+  }
 }
 
 void QgsIntersection2CirclesDialog::toggleSelectCenter( CircleNumber circleNum )
@@ -175,6 +197,30 @@ void QgsIntersection2CirclesDialog::propertiesChanged( CircleNumber circleNum )
   mRubberInter1->setToGeometry( QgsGeometry( mIntersection1.clone() ) );
   mRubberInter2->setToGeometry( QgsGeometry( mIntersection2.clone() ) );
 
+  switch ( numOfIntersections )
+  {
+    case 0:
+      mBtnIntersection1->setEnabled( false );
+      mRubberInter1->hide();
+      mBtnIntersection2->setEnabled( false );
+      mRubberInter2->hide();
+      break;
+    case 1:
+      mBtnIntersection1->setEnabled( true );
+      mBtnIntersection2->setEnabled( false );
+      mRubberInter2->hide();
+
+      mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
+      break;
+    case 2:
+      mBtnIntersection1->setEnabled( true );
+      mBtnIntersection2->setEnabled( true );
+
+      mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
+      break;
+    default:
+      break;
+  }
 
   updateCircle( circleNum );
 }
