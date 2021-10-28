@@ -28,6 +28,9 @@ class QgsPalettedRendererWidget: QgsRasterRendererWidget
 
 
     void setFromRenderer( const QgsRasterRenderer *r );
+%Docstring
+Sets the widget state from the specified renderer.
+%End
 
 };
 
