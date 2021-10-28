@@ -37,7 +37,7 @@ class GUI_EXPORT QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget
 
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) SIP_FACTORY { return new QgsSingleBandGrayRendererWidget( layer, extent ); }
 
-    QgsRasterRenderer *renderer() override;
+    QgsRasterRenderer *renderer() SIP_FACTORY override;
     void setMapCanvas( QgsMapCanvas *canvas ) override;
 
     /**
