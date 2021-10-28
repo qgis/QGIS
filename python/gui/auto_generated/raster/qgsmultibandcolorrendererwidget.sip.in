@@ -20,7 +20,7 @@ class QgsMultiBandColorRendererWidget: QgsRasterRendererWidget
     QgsMultiBandColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent );
 
-    virtual QgsRasterRenderer *renderer();
+    virtual QgsRasterRenderer *renderer() /Factory/;
 
     virtual void setMapCanvas( QgsMapCanvas *canvas );
 
