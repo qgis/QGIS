@@ -47,7 +47,7 @@ class GUI_EXPORT QgsAttributeFormRelationEditorWidget : public QgsAttributeFormW
     /**
      * Set multiple feature to edit simultaneously.
      * \param fids Multiple Id of features to edit
-     * \since QGIS 3.22
+     * \since QGIS 3.24
      */
     void setMultiEditFeatureIds( const QgsFeatureIds &fids );
 

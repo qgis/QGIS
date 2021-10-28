@@ -40,7 +40,7 @@ Set multiple feature to edit simultaneously.
 
 :param fids: Multiple Id of features to edit
 
-.. versionadded:: 3.22
+.. versionadded:: 3.24
 %End
 
 };

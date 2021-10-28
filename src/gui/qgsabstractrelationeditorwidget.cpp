@@ -107,7 +107,6 @@ void QgsAbstractRelationEditorWidget::setFeature( const QgsFeature &feature, boo
   mFeatureList.clear();
   mFeatureList.append( feature );
 
-  // Is this OK???
   mEditorContext.setFormFeature( feature );
 
   if ( update )
@@ -122,6 +121,9 @@ void QgsAbstractRelationEditorWidget::setMultiEditFeatureIds( const QgsFeatureId
   QgsFeature feature;
   while ( featureIterator.nextFeature( feature ) )
     mFeatureList.append( feature );
+
+  if ( ! mFeatureList.isEmpty() )
+    mEditorContext.setFormFeature( mFeatureList.first() );
 }
 
 void QgsAbstractRelationEditorWidget::setNmRelationId( const QVariant &nmRelationId )

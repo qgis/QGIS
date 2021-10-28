@@ -100,7 +100,7 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     /**
      * Set multiple feature to edit simultaneously.
      * \param fids Multiple Id of features to edit
-     * \since QGIS 3.22
+     * \since QGIS 3.24
      */
     void setMultiEditFeatureIds( const QgsFeatureIds &fids );
 
@@ -197,7 +197,8 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     void saveEdits();
 
     /**
-     * Adds a new feature with given \a geometry
+     * Adds new features with given \a geometry
+     * Return the Id of added features \since QGIS 3.24
      */
     QgsFeatureIds addFeature( const QgsGeometry &geometry = QgsGeometry() );
 
@@ -233,7 +234,7 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
 
     /**
      * Return true if editing multiple features at a time
-     * \since QGIS 3.22
+     * \since QGIS 3.24
      */
     bool multiEditModeActive() const;
 

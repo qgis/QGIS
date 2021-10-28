@@ -82,7 +82,7 @@ Set multiple feature to edit simultaneously.
 
 :param fids: Multiple Id of features to edit
 
-.. versionadded:: 3.22
+.. versionadded:: 3.24
 %End
 
     virtual void setEditorContext( const QgsAttributeEditorContext &context );
@@ -188,7 +188,9 @@ Saves the current modifications in the relation
 
     QgsFeatureIds addFeature( const QgsGeometry &geometry = QgsGeometry() );
 %Docstring
-Adds a new feature with given ``geometry``
+Adds new features with given ``geometry``
+
+.. versionadded:: 3.24
 %End
 
     void deleteFeature( QgsFeatureId fid = QgsFeatureId() );
@@ -225,7 +227,7 @@ Duplicates features
 %Docstring
 Return true if editing multiple features at a time
 
-.. versionadded:: 3.22
+.. versionadded:: 3.24
 %End
 
   protected:
