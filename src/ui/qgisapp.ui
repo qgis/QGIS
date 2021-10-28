@@ -3638,7 +3638,7 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
   <action name="mActionIntersection2Circles">
    <property name="icon">
     <iconset>
-     <normalon>:/images/themes/default/propertyicons/temporal.svg</normalon>
+     <normalon>:/images/themes/default/mActionIntersection2Circles.svg</normalon>
     </iconset>
    </property>
    <property name="text">
