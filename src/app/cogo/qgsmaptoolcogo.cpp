@@ -28,23 +28,23 @@
 #include <iostream>
 #include <QPushButton>
 
-QgsIntersection2CirclesDialog::QgsIntersection2CirclesDialog( QgsMapCanvas *mapCanva, QgsVectorLayer *vlayer, QWidget *parent ) : QDialog( parent )
+QgsIntersection2CirclesDialog::QgsIntersection2CirclesDialog( QgsMapCanvas *mapCanvas, QgsVectorLayer *vlayer, QWidget *parent ) : QDialog( parent )
 {
   setupUi( this );
 
   mLayer = vlayer;
-  mMapCanva = mapCanva;
+  mMapCanvas = mapCanvas;
 
-  mRubberCircle1 = new QgsRubberBand( mapCanva );
-  mRubberCircle2 = new QgsRubberBand( mapCanva );
+  mRubberCircle1 = new QgsRubberBand( mapCanvas );
+  mRubberCircle2 = new QgsRubberBand( mapCanvas );
 
   mRubberCircle1->setWidth( 2 );
   mRubberCircle2->setWidth( 2 );
   mRubberCircle1->setColor( QColor( 0, 255, 0, 150 ) );
   mRubberCircle2->setColor( QColor( 0, 255, 0, 150 ) );
 
-  mRubberInter1 = new QgsRubberBand( mapCanva, QgsWkbTypes::PointGeometry );
-  mRubberInter2 = new QgsRubberBand( mapCanva, QgsWkbTypes::PointGeometry );
+  mRubberInter1 = new QgsRubberBand( mapCanvas, QgsWkbTypes::PointGeometry );
+  mRubberInter2 = new QgsRubberBand( mapCanvas, QgsWkbTypes::PointGeometry );
 
   mRubberInter1->setIconSize( 10 );
   mRubberInter2->setIconSize( 10 );
@@ -59,9 +59,6 @@ QgsIntersection2CirclesDialog::QgsIntersection2CirclesDialog( QgsMapCanvas *mapC
   [ = ]() { selectIntersection( mRubberInter1, mBtnIntersection1 ); } );
   connect( mBtnIntersection2, &QCheckBox::stateChanged,
   [ = ]() { selectIntersection( mRubberInter2, mBtnIntersection2 ); } );
-
-  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsIntersection2CirclesDialog::onAccepted );
-  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 
   const double maxValue = std::numeric_limits<double>::max();
   const double minValue = -maxValue;
@@ -78,27 +75,28 @@ QgsIntersection2CirclesDialog::QgsIntersection2CirclesDialog( QgsMapCanvas *mapC
   mY2->setMaximum( maxValue );
   mRadius2->setMaximum( maxValue );
 
-  // Circle 1
   connect( mSelectCenter1, &QToolButton::pressed,
   [ = ]() { toggleSelectCenter( CircleNum1 ); } );
-
-  connect( mX1, QOverload<double>::of( &QgsDoubleSpinBox::valueChanged ),
-  [ = ]( double ) { propertiesChanged( CircleNum1 ); } );
-  connect( mY1, QOverload<double>::of( &QgsDoubleSpinBox::valueChanged ),
-  [ = ]( double ) { propertiesChanged( CircleNum1 ); } );
-  connect( mRadius1, QOverload<double>::of( &QgsDoubleSpinBox::valueChanged ),
-  [ = ]( double ) { propertiesChanged( CircleNum1 ); } );
-
-  // Circle 2
   connect( mSelectCenter2, &QToolButton::pressed,
   [ = ]() { toggleSelectCenter( CircleNum2 ); } );
 
+  connect( mX1, QOverload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+  [ = ]( double ) { propertiesChanged(); } );
   connect( mX2, QOverload<double>::of( &QgsDoubleSpinBox::valueChanged ),
-  [ = ]( double ) { propertiesChanged( CircleNum2 ); } );
+  [ = ]( double ) { propertiesChanged(); } );
+
+  connect( mY1, QOverload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+  [ = ]( double ) { propertiesChanged(); } );
   connect( mY2, QOverload<double>::of( &QgsDoubleSpinBox::valueChanged ),
-  [ = ]( double ) { propertiesChanged( CircleNum2 ); } );
+  [ = ]( double ) { propertiesChanged(); } );
+
+  connect( mRadius1, QOverload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+  [ = ]( double ) { propertiesChanged(); } );
   connect( mRadius2, QOverload<double>::of( &QgsDoubleSpinBox::valueChanged ),
-  [ = ]( double ) { propertiesChanged( CircleNum2 ); } );
+  [ = ]( double ) { propertiesChanged(); } );
+
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsIntersection2CirclesDialog::onAccepted );
+  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 }
 
 void QgsIntersection2CirclesDialog::show()
@@ -129,7 +127,7 @@ void QgsIntersection2CirclesDialog::reject()
 void QgsIntersection2CirclesDialog::onAccepted()
 {
   QgsFeature f;
-  QgsFields fields = mLayer->fields();
+  const QgsFields fields = mLayer->fields();
 
   if ( mBtnIntersection1->isEnabled() && mBtnIntersection1->isChecked() )
   {
@@ -158,8 +156,8 @@ void QgsIntersection2CirclesDialog::toggleSelectCenter( CircleNumber circleNum )
     mMapToolPoint = nullptr;
   }
 
-  mMapToolPoint = new QgsMapToolEmitPoint( mMapCanva );
-  mMapCanva->setMapTool( mMapToolPoint );
+  mMapToolPoint = new QgsMapToolEmitPoint( mMapCanvas );
+  mMapCanvas->setMapTool( mMapToolPoint );
 
   connect( mMapToolPoint, &QgsMapToolEmitPoint::canvasClicked,
            [ = ]( const QgsPointXY & point, Qt::MouseButton button )
@@ -177,19 +175,18 @@ void QgsIntersection2CirclesDialog::updateCenterPoint( CircleNumber circleNum, c
     return;
   }
 
-  if ( circleNum == CircleNum1 )
+  switch ( circleNum )
   {
-    mX1->setValue( point.x() );
-    mY1->setValue( point.y() );
-  }
-  else
-  {
-    mX2->setValue( point.x() );
-    mY2->setValue( point.y() );
+    case CircleNum1:
+      mX1->setValue( point.x() );
+      mY1->setValue( point.y() );
+    case CircleNum2:
+      mX2->setValue( point.x() );
+      mY2->setValue( point.y() );
   }
 }
 
-void QgsIntersection2CirclesDialog::propertiesChanged( CircleNumber circleNum )
+void QgsIntersection2CirclesDialog::propertiesChanged()
 {
   QgsPoint center( mX1->value(), mY1->value() );
   mCircle1 = QgsCircle( center, mRadius1->value() );
@@ -209,6 +206,7 @@ void QgsIntersection2CirclesDialog::propertiesChanged( CircleNumber circleNum )
       mBtnIntersection2->setEnabled( false );
       mRubberInter2->hide();
       break;
+
     case 1:
       mBtnIntersection1->setEnabled( true );
       mBtnIntersection2->setEnabled( false );
@@ -216,20 +214,22 @@ void QgsIntersection2CirclesDialog::propertiesChanged( CircleNumber circleNum )
 
       mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
       break;
+
     case 2:
       mBtnIntersection1->setEnabled( true );
       mBtnIntersection2->setEnabled( true );
 
       mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
       break;
+
     default:
       break;
   }
 
-  updateCircle( circleNum );
+  updateCircle();
 }
 
-void QgsIntersection2CirclesDialog::updateCircle( CircleNumber circleNum )
+void QgsIntersection2CirclesDialog::updateCircle()
 {
   mRubberCircle1->setToGeometry( QgsGeometry( mCircle1.toCircularString( true )->clone() ) );
   mRubberCircle2->setToGeometry( QgsGeometry( mCircle2.toCircularString( true )->clone() ) );

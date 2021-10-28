@@ -44,13 +44,11 @@ class APP_EXPORT QgsIntersection2CirclesDialog : public QDialog, private Ui::Qgs
   public slots:
     void show();
 
-  signals:
-
   private slots:
     void toggleSelectCenter( CircleNumber circleNum );
-    void propertiesChanged( CircleNumber circleNum );
+    void propertiesChanged();
     void updateCenterPoint( CircleNumber circleNum, const QgsPointXY &point, Qt::MouseButton button );
-    void updateCircle( CircleNumber circleNum );
+    void updateCircle();
     void selectIntersection( QgsRubberBand *intersection, QCheckBox *button );
 
     void onAccepted();
@@ -68,7 +66,7 @@ class APP_EXPORT QgsIntersection2CirclesDialog : public QDialog, private Ui::Qgs
     QgsRubberBand *mRubberInter2;
 
     QgsVectorLayer *mLayer;
-    QgsMapCanvas *mMapCanva;
+    QgsMapCanvas *mMapCanvas;
     QgsMapToolEmitPoint *mMapToolPoint = nullptr;
 };
 
