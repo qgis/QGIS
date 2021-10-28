@@ -178,6 +178,7 @@ void QgsIntersection2CirclesDialog::updateCenterPoint( CircleNumber circleNum, c
     case CircleNum1:
       mX1->setValue( point.x() );
       mY1->setValue( point.y() );
+      break;
     case CircleNum2:
       mX2->setValue( point.x() );
       mY2->setValue( point.y() );
