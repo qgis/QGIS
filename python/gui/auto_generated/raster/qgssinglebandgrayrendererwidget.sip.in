@@ -27,6 +27,9 @@ class QgsSingleBandGrayRendererWidget: QgsRasterRendererWidget
 
 
     void setFromRenderer( const QgsRasterRenderer *r );
+%Docstring
+Sets the widget state from the specified renderer.
+%End
 
     virtual QString min( int index = 0 );
     virtual QString max( int index = 0 );

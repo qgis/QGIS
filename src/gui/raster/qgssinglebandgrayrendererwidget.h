@@ -40,6 +40,9 @@ class GUI_EXPORT QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget
     QgsRasterRenderer *renderer() override;
     void setMapCanvas( QgsMapCanvas *canvas ) override;
 
+    /**
+     * Sets the widget state from the specified renderer.
+     */
     void setFromRenderer( const QgsRasterRenderer *r );
 
     QString min( int index = 0 ) override { Q_UNUSED( index ) return mMinLineEdit->text(); }
