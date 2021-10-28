@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsmaptoolcogo.cpp
+                         qgsintersection2circles.cpp
                          ----------------------
     begin                : October 2021
     copyright            : (C) 2021 by Antoine Facchini
@@ -15,18 +15,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaptoolcogo.h"
+#include <iostream>
+#include <QPushButton>
+
 #include "qgis.h"
-#include "qgsrubberband.h"
-#include "qgsvectorlayer.h"
-#include "qgsmaptoolemitpoint.h"
-#include "qgsmapcanvas.h"
 #include "qgsattributedialog.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgsfeatureaction.h"
+#include "qgsintersection2circles.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaptoolemitpoint.h"
+#include "qgsrubberband.h"
+#include "qgsvectorlayer.h"
 
-#include <iostream>
-#include <QPushButton>
 
 QgsIntersection2CirclesDialog::QgsIntersection2CirclesDialog( QgsMapCanvas *mapCanvas, QgsVectorLayer *vlayer, QWidget *parent ) : QDialog( parent )
 {

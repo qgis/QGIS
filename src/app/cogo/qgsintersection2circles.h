@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsmaptoolcogo.h
+                         qgsintersection2circles.h
                          ----------------------
     begin                : October 2021
     copyright            : (C) 2021 by Antoine Facchini
@@ -15,17 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSMAPTOOLCOGO_H
-#define QGSMAPTOOLCOGO_H
+#ifndef QGSINTERSECTION2CIRCLES_H
+#define QGSINTERSECTION2CIRCLES_H
 
 #include <QWidget>
 #include <QDialog>
+
 #include "qgis_app.h"
 #include "geometry/qgscircle.h"
-#include "qgsrubberband.h"
-#include "qgsvectorlayer.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptoolemitpoint.h"
+#include "qgsrubberband.h"
+#include "qgsvectorlayer.h"
 
 #include "ui_intersection2circles.h"
 
@@ -70,4 +71,4 @@ class APP_EXPORT QgsIntersection2CirclesDialog : public QDialog, private Ui::Qgs
     QgsMapToolEmitPoint *mMapToolPoint = nullptr;
 };
 
-#endif // QGSMAPTOOLCOGO_H
+#endif // QGSINTERSECTION2CIRCLES_H

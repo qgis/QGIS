@@ -109,7 +109,7 @@ set(QGIS_APP_SRCS
   annotations/qgsannotationitempropertieswidget.cpp
   annotations/qgsannotationlayerproperties.cpp
 
-  cogo/qgsmaptoolcogo.cpp
+  cogo/qgsintersection2circles.cpp
 
   decorations/qgsdecorationitem.cpp
   decorations/qgsdecorationtitle.cpp
