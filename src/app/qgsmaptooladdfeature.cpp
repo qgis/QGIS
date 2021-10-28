@@ -96,7 +96,7 @@ void QgsMapToolAddFeature::digitized( const QgsFeature &f )
       const QList<QgsPointLocator::Match> sm = snappingMatches();
       for ( int i = 0; i < sm.size() ; ++i )
       {
-        if ( sm.at( i ).layer() )
+        if ( sm.at( i ).layer() && sm.at( i ).layer()->isEditable() && sm.at( i ).layer() != vlayer() )
         {
           if ( sm.at( i ).layer()->crs() != vlayer->crs() )
           {
