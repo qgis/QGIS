@@ -198,7 +198,7 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
 
     /**
      * Adds new features with given \a geometry
-     * Return the Id of added features \since QGIS 3.24
+     * Returns the Id of added features \since QGIS 3.24
      */
     QgsFeatureIds addFeature( const QgsGeometry &geometry = QgsGeometry() );
 
