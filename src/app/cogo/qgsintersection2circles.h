@@ -56,6 +56,8 @@ class APP_EXPORT QgsIntersection2CirclesDialog : public QDialog, private Ui::Qgs
     void reject();
 
   private:
+    void hideDrawings();
+
     QgsCircle mCircle1;
     QgsCircle mCircle2;
     QgsPoint mIntersection1;

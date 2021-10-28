@@ -108,7 +108,7 @@ void QgsIntersection2CirclesDialog::show()
   QDialog::show();
 }
 
-void QgsIntersection2CirclesDialog::reject()
+void QgsIntersection2CirclesDialog::hideDrawings()
 {
   delete mMapToolPoint;
   mMapToolPoint = nullptr;
@@ -118,7 +118,11 @@ void QgsIntersection2CirclesDialog::reject()
 
   mRubberInter1->hide();
   mRubberInter2->hide();
+}
 
+void QgsIntersection2CirclesDialog::reject()
+{
+  hideDrawings();
   QDialog::reject();
 }
 
@@ -144,6 +148,8 @@ void QgsIntersection2CirclesDialog::onAccepted()
     QgsFeatureAction action( tr( "Feature added" ), f, mLayer );
     action.addFeature();
   }
+
+  hideDrawings();
 }
 
 void QgsIntersection2CirclesDialog::toggleSelectCenter( CircleNumber circleNum )
