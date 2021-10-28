@@ -2840,6 +2840,10 @@ static QVariant fcnMakePolygon( const QVariantList &values, const QgsExpressionC
   }
 
   QgsGeometry outerRing = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+
+  if ( outerRing.type() == QgsWkbTypes::PolygonGeometry )
+    return outerRing; // if it's already a polygon we have nothing to do
+
   if ( outerRing.type() != QgsWkbTypes::LineGeometry || outerRing.isNull() )
     return QVariant();
 
