@@ -296,7 +296,7 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &render
       const QgsRectangle myExtent = mMapCanvas->mapSettings().outputExtentToLayerExtent( mRasterLayer, mMapCanvas->extent() );
       if ( oldWidget )
       {
-        QgsRasterRenderer *oldRenderer = oldWidget->renderer();
+        std::unique_ptr< QgsRasterRenderer > oldRenderer( oldWidget->renderer() );
         if ( !oldRenderer || oldRenderer->type() != rendererName )
         {
           if ( rendererName == QLatin1String( "singlebandgray" ) )
@@ -310,7 +310,6 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &render
             whileBlocking( mRasterLayer )->setDefaultContrastEnhancement();
           }
         }
-        delete oldRenderer;
       }
       mRasterLayer->renderer()->setAlphaBand( alphaBand );
       mRasterLayer->renderer()->setOpacity( opacity );
