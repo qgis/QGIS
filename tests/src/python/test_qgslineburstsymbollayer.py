@@ -33,7 +33,9 @@ from qgis.core import (QgsGeometry,
                        QgsGradientColorRamp,
                        QgsGradientStop,
                        QgsLineSymbol,
-                       QgsLineburstSymbolLayer
+                       QgsLineburstSymbolLayer,
+                       QgsSymbolLayer,
+                       QgsProperty
                        )
 from qgis.testing import unittest, start_app
 
@@ -67,6 +69,23 @@ class TestQgsLineburstSymbolLayer(unittest.TestCase):
         g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
         self.assertTrue(self.imageCheck('lineburst_two_color', 'lineburst_two_color', rendered_image))
+
+    def testDataDefinedColors(self):
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        line = QgsLineburstSymbolLayer()
+        line.setColor(QColor(255, 0, 0))
+        line.setColor2(QColor(0, 255, 0))
+        line.setWidth(8)
+        line.setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor, QgsProperty.fromExpression("'orange'"))
+        line.setDataDefinedProperty(QgsSymbolLayer.PropertySecondaryColor, QgsProperty.fromExpression("'purple'"))
+
+        s.appendSymbolLayer(line.clone())
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(self.imageCheck('lineburst_datadefined_color', 'lineburst_datadefined_color', rendered_image))
 
     def testColorRamp(self):
         s = QgsLineSymbol()

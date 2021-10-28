@@ -4662,7 +4662,7 @@ void QgsGeometryGeneratorSymbolLayerWidget::updateSymbolType()
         QgsSymbolLayerList layers;
         for ( int i = 0; i < subSymbol->symbolLayerCount(); ++i )
         {
-          if ( const QgsLineSymbolLayer *lineLayer = dynamic_cast< const QgsLineSymbolLayer * >( subSymbol->symbolLayer( i ) ) )
+          if ( dynamic_cast< const QgsLineSymbolLayer * >( subSymbol->symbolLayer( i ) ) )
             layers << subSymbol->symbolLayer( i )->clone();
         }
 
@@ -4996,7 +4996,7 @@ void QgsLineburstSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   whileBlocking( cboJoinStyle )->setPenJoinStyle( mLayer->penJoinStyle() );
   whileBlocking( cboCapStyle )->setPenCapStyle( mLayer->penCapStyle() );
 
-  registerDataDefinedButton( mStartColorDDBtn, QgsSymbolLayer::PropertyFillColor );
+  registerDataDefinedButton( mStartColorDDBtn, QgsSymbolLayer::PropertyStrokeColor );
   registerDataDefinedButton( mEndColorDDBtn, QgsSymbolLayer::PropertySecondaryColor );
   registerDataDefinedButton( mPenWidthDDBtn, QgsSymbolLayer::PropertyStrokeWidth );
   registerDataDefinedButton( mJoinStyleDDBtn, QgsSymbolLayer::PropertyJoinStyle );
