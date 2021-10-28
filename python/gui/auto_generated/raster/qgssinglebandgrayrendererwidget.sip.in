@@ -21,7 +21,7 @@ class QgsSingleBandGrayRendererWidget: QgsRasterRendererWidget
 
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) /Factory/;
 
-    virtual QgsRasterRenderer *renderer();
+    virtual QgsRasterRenderer *renderer() /Factory/;
 
     virtual void setMapCanvas( QgsMapCanvas *canvas );
 

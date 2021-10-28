@@ -33,7 +33,7 @@ Creates new raster renderer widget
 Creates new raster renderer widget
 %End
 
-    virtual QgsRasterRenderer *renderer();
+    virtual QgsRasterRenderer *renderer() /Factory/;
 
     virtual void setMapCanvas( QgsMapCanvas *canvas );
 
