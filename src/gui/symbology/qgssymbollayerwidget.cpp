@@ -4906,7 +4906,8 @@ QgsLineburstSymbolLayerWidget::QgsLineburstSymbolLayerWidget( QgsVectorLayer *vl
 
   mPenWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-
+  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   connect( mPenWidthUnitWidget, &QgsUnitSelectionWidget::changed, this, [ = ]
   {
@@ -4923,6 +4924,26 @@ QgsLineburstSymbolLayerWidget::QgsLineburstSymbolLayerWidget( QgsVectorLayer *vl
     if ( mLayer )
     {
       mLayer->setWidth( spinWidth->value() );
+      emit changed();
+    }
+  } );
+
+  connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, [ = ]
+  {
+    if ( mLayer )
+    {
+      mLayer->setOffsetUnit( mOffsetUnitWidget->unit() );
+      mLayer->setOffsetMapUnitScale( mOffsetUnitWidget->getMapUnitScale() );
+      emit changed();
+    }
+  } );
+
+  spinOffset->setClearValue( 0.0 );
+  connect( spinOffset, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double val )
+  {
+    if ( mLayer )
+    {
+      mLayer->setOffset( val );
       emit changed();
     }
   } );
@@ -4993,12 +5014,18 @@ void QgsLineburstSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   whileBlocking( spinWidth )->setValue( mLayer->width() );
   whileBlocking( mPenWidthUnitWidget )->setUnit( mLayer->widthUnit() );
   whileBlocking( mPenWidthUnitWidget )->setMapUnitScale( mLayer->widthMapUnitScale() );
+
+  whileBlocking( mOffsetUnitWidget )->setUnit( mLayer->offsetUnit() );
+  whileBlocking( mOffsetUnitWidget )->setMapUnitScale( mLayer->offsetMapUnitScale() );
+  whileBlocking( spinOffset )->setValue( mLayer->offset() );
+
   whileBlocking( cboJoinStyle )->setPenJoinStyle( mLayer->penJoinStyle() );
   whileBlocking( cboCapStyle )->setPenCapStyle( mLayer->penCapStyle() );
 
   registerDataDefinedButton( mStartColorDDBtn, QgsSymbolLayer::PropertyStrokeColor );
   registerDataDefinedButton( mEndColorDDBtn, QgsSymbolLayer::PropertySecondaryColor );
   registerDataDefinedButton( mPenWidthDDBtn, QgsSymbolLayer::PropertyStrokeWidth );
+  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
   registerDataDefinedButton( mJoinStyleDDBtn, QgsSymbolLayer::PropertyJoinStyle );
   registerDataDefinedButton( mCapStyleDDBtn, QgsSymbolLayer::PropertyCapStyle );
 }
