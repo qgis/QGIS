@@ -402,6 +402,8 @@ void QgsRelationEditorWidget::addFeature()
     ++treeWidgetItemIterator;
   }
   mMultiEditTreeWidget->blockSignals( false );
+
+  updateButtons();
 }
 
 void QgsRelationEditorWidget::addFeatureGeometry()
