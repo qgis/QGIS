@@ -243,7 +243,7 @@ void QgsGeometryGeneratorSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &c
       feature.setGeometry( patchShapeGeometry );
     const QgsGeometry iconGeometry = evaluateGeometryInPainterUnits( patchShapeGeometry, feature, context.renderContext(), context.renderContext().expressionContext() );
 
-    QgsLegendPatchShape evaluatedPatchShape( mSymbol->type(), iconGeometry );
+    QgsLegendPatchShape evaluatedPatchShape( mSymbol->type(), coerceToExpectedType( iconGeometry ) );
     // we don't want to rescale the patch shape to fit the legend symbol size -- we've already considered that here,
     // and we don't want to undo the effects of a geometry generator which modifies the symbol bounds
     evaluatedPatchShape.setScaleToOutputSize( false );
@@ -322,7 +322,42 @@ QgsGeometry QgsGeometryGeneratorSymbolLayer::evaluateGeometryInPainterUnits( con
 
   // step 4 - transform geometry back from target units to painter units
   geom.transform( painterToTargetUnits.inverted( ) );
+
   return geom;
+}
+
+QgsGeometry QgsGeometryGeneratorSymbolLayer::coerceToExpectedType( const QgsGeometry &geometry ) const
+{
+  switch ( mSymbolType )
+  {
+    case Qgis::SymbolType::Marker:
+      if ( geometry.type() != QgsWkbTypes::PointGeometry )
+      {
+        QVector< QgsGeometry > geoms = geometry.coerceToType( QgsWkbTypes::MultiPoint );
+        if ( !geoms.empty() )
+          return geoms.at( 0 );
+      }
+      break;
+    case Qgis::SymbolType::Line:
+      if ( geometry.type() != QgsWkbTypes::LineGeometry )
+      {
+        QVector< QgsGeometry > geoms = geometry.coerceToType( QgsWkbTypes::MultiLineString );
+        if ( !geoms.empty() )
+          return geoms.at( 0 );
+      }
+      break;
+    case Qgis::SymbolType::Fill:
+      if ( geometry.type() != QgsWkbTypes::PolygonGeometry )
+      {
+        QVector< QgsGeometry > geoms = geometry.coerceToType( QgsWkbTypes::MultiPolygon );
+        if ( !geoms.empty() )
+          return geoms.at( 0 );
+      }
+      break;
+    case Qgis::SymbolType::Hybrid:
+      break;
+  }
+  return geometry;
 }
 
 void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, QgsWkbTypes::GeometryType geometryType, const QPolygonF *points, const QVector<QPolygonF> *rings )
@@ -396,7 +431,7 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
       QgsDebugMsg( QStringLiteral( "Could no transform generated geometry to layer CRS" ) );
     }
 
-    f.setGeometry( result );
+    f.setGeometry( coerceToExpectedType( result ) );
   }
   else if ( context.feature() )
   {
@@ -408,7 +443,7 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
       case QgsUnitTypes::RenderPercentage: // unsupported, not exposed as an option
       {
         QgsGeometry geom = mExpression->evaluate( &expressionContext ).value<QgsGeometry>();
-        f.setGeometry( geom );
+        f.setGeometry( coerceToExpectedType( geom ) );
         break;
       }
 
@@ -438,7 +473,7 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
         {
           QgsDebugMsg( QStringLiteral( "Could no transform generated geometry to layer CRS" ) );
         }
-        f.setGeometry( result );
+        f.setGeometry( coerceToExpectedType( result ) );
         break;
       }
     }
