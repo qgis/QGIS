@@ -203,6 +203,8 @@ void QgsIntersection2CirclesDialog::propertiesChanged()
       mRubberInter1->hide();
       mBtnIntersection2->setEnabled( false );
       mRubberInter2->hide();
+
+      mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
       break;
 
     case 1:
