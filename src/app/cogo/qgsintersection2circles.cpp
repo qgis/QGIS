@@ -15,18 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <iostream>
 #include <QPushButton>
 
-#include "qgis.h"
-#include "qgsattributedialog.h"
-#include "qgsattributeeditorcontext.h"
 #include "qgsfeatureaction.h"
-#include "qgsintersection2circles.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptoolemitpoint.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
+
+#include "qgsintersection2circles.h"
 
 
 QgsIntersection2CirclesDialog::QgsIntersection2CirclesDialog( QgsMapCanvas *mapCanvas, QgsVectorLayer *vlayer, QWidget *parent ) : QDialog( parent )

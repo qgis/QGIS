@@ -22,7 +22,7 @@
 #include <QDialog>
 
 #include "qgis_app.h"
-#include "geometry/qgscircle.h"
+#include "qgscircle.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptoolemitpoint.h"
 #include "qgsrubberband.h"
