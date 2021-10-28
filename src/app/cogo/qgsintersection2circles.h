@@ -57,6 +57,10 @@ class APP_EXPORT QgsIntersection2CirclesDialog : public QDialog, private Ui::Qgs
 
   private:
     void hideDrawings();
+    void initCircleParameters( QgsRubberBand *&rubberCircle, QgsRubberBand *&rubberInter,
+                               QCheckBox *btnIntersection, QgsDoubleSpinBox *x1,
+                               QgsDoubleSpinBox *y1, QgsDoubleSpinBox *radius,
+                               QToolButton *selectCenter, CircleNumber circleNum );
 
     QgsCircle mCircle1;
     QgsCircle mCircle2;

@@ -33,68 +33,51 @@ QgsIntersection2CirclesDialog::QgsIntersection2CirclesDialog( QgsMapCanvas *mapC
   mLayer = vlayer;
   mMapCanvas = mapCanvas;
 
-  mRubberCircle1 = new QgsRubberBand( mapCanvas );
-  mRubberCircle2 = new QgsRubberBand( mapCanvas );
+  initCircleParameters( mRubberCircle1, mRubberInter1, mBtnIntersection1,
+                        mX1, mY1, mRadius1, mSelectCenter1, CircleNum1 );
+  initCircleParameters( mRubberCircle2, mRubberInter2, mBtnIntersection2,
+                        mX2, mY2, mRadius2, mSelectCenter2, CircleNum2 );
 
-  mRubberCircle1->setWidth( 2 );
-  mRubberCircle2->setWidth( 2 );
-  mRubberCircle1->setColor( mDefaultColor );
-  mRubberCircle2->setColor( mDefaultColor );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsIntersection2CirclesDialog::onAccepted );
+  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
+}
 
-  mRubberInter1 = new QgsRubberBand( mapCanvas, QgsWkbTypes::PointGeometry );
-  mRubberInter2 = new QgsRubberBand( mapCanvas, QgsWkbTypes::PointGeometry );
+void QgsIntersection2CirclesDialog::initCircleParameters( QgsRubberBand *&rubberCircle, QgsRubberBand *&rubberInter,
+    QCheckBox *btnIntersection, QgsDoubleSpinBox *x,
+    QgsDoubleSpinBox *y, QgsDoubleSpinBox *radius,
+    QToolButton *selectCenter, CircleNumber circleNum )
+{
+  rubberCircle = new QgsRubberBand( mMapCanvas );
+  rubberCircle->setWidth( 2 );
+  rubberCircle->setColor( mDefaultColor );
 
-  mRubberInter1->setIconSize( 10 );
-  mRubberInter2->setIconSize( 10 );
-  mRubberInter1->setWidth( 2 );
-  mRubberInter2->setWidth( 2 );
-  mRubberInter1->setIcon( QgsRubberBand::ICON_CROSS );
-  mRubberInter2->setIcon( QgsRubberBand::ICON_CROSS );
-  mRubberInter1->setColor( mDefaultColor );
-  mRubberInter2->setColor( mDefaultColor );
+  rubberInter = new QgsRubberBand( mMapCanvas, QgsWkbTypes::PointGeometry );
+  rubberInter->setIconSize( 10 );
+  rubberInter->setWidth( 2 );
+  rubberInter->setIcon( QgsRubberBand::ICON_CROSS );
+  rubberInter->setColor( mDefaultColor );
 
-  connect( mBtnIntersection1, &QCheckBox::stateChanged,
-  [ = ]() { selectIntersection( mRubberInter1, mBtnIntersection1 ); } );
-  connect( mBtnIntersection2, &QCheckBox::stateChanged,
-  [ = ]() { selectIntersection( mRubberInter2, mBtnIntersection2 ); } );
+  connect( btnIntersection, &QCheckBox::stateChanged,
+  [ = ]() { selectIntersection( rubberInter, btnIntersection ); } );
 
   const double maxValue = std::numeric_limits<double>::max();
   const double minValue = -maxValue;
 
-  mX1->setMinimum( minValue );
-  mX1->setMaximum( maxValue );
-  mY1->setMinimum( minValue );
-  mY1->setMaximum( maxValue );
-  mRadius1->setMaximum( maxValue );
+  x->setMinimum( minValue );
+  x->setMaximum( maxValue );
+  y->setMinimum( minValue );
+  y->setMaximum( maxValue );
+  radius->setMaximum( maxValue );
 
-  mX2->setMinimum( minValue );
-  mX2->setMaximum( maxValue );
-  mY2->setMinimum( minValue );
-  mY2->setMaximum( maxValue );
-  mRadius2->setMaximum( maxValue );
+  connect( selectCenter, &QToolButton::pressed,
+  [ = ]() { toggleSelectCenter( circleNum ); } );
 
-  connect( mSelectCenter1, &QToolButton::pressed,
-  [ = ]() { toggleSelectCenter( CircleNum1 ); } );
-  connect( mSelectCenter2, &QToolButton::pressed,
-  [ = ]() { toggleSelectCenter( CircleNum2 ); } );
-
-  connect( mX1, QOverload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+  connect( x, QOverload<double>::of( &QgsDoubleSpinBox::valueChanged ),
   [ = ]( double ) { propertiesChanged(); } );
-  connect( mX2, QOverload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+  connect( y, QOverload<double>::of( &QgsDoubleSpinBox::valueChanged ),
   [ = ]( double ) { propertiesChanged(); } );
-
-  connect( mY1, QOverload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+  connect( radius, QOverload<double>::of( &QgsDoubleSpinBox::valueChanged ),
   [ = ]( double ) { propertiesChanged(); } );
-  connect( mY2, QOverload<double>::of( &QgsDoubleSpinBox::valueChanged ),
-  [ = ]( double ) { propertiesChanged(); } );
-
-  connect( mRadius1, QOverload<double>::of( &QgsDoubleSpinBox::valueChanged ),
-  [ = ]( double ) { propertiesChanged(); } );
-  connect( mRadius2, QOverload<double>::of( &QgsDoubleSpinBox::valueChanged ),
-  [ = ]( double ) { propertiesChanged(); } );
-
-  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsIntersection2CirclesDialog::onAccepted );
-  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 }
 
 void QgsIntersection2CirclesDialog::show()
@@ -128,25 +111,25 @@ void QgsIntersection2CirclesDialog::reject()
 
 void QgsIntersection2CirclesDialog::onAccepted()
 {
-  QgsFeature f;
-  const QgsFields fields = mLayer->fields();
-
-  if ( mBtnIntersection1->isEnabled() && mBtnIntersection1->isChecked() )
+  auto addFeature = [ = ]( QgsPoint point )
   {
+    QgsFeature f;
+    const QgsFields fields = mLayer->fields();
     f = QgsFeature();
-    f.setGeometry( QgsGeometry( mIntersection1.clone() ) );
+    f.setGeometry( QgsGeometry( point.clone() ) );
 
     QgsFeatureAction action( tr( "Feature added" ), f, mLayer );
     action.addFeature();
+  };
+
+  if ( mBtnIntersection1->isEnabled() && mBtnIntersection1->isChecked() )
+  {
+    addFeature( mIntersection1 );
   }
 
   if ( mBtnIntersection2->isEnabled() && mBtnIntersection2->isChecked() )
   {
-    f = QgsFeature();
-    f.setGeometry( QgsGeometry( mIntersection2.clone() ) );
-
-    QgsFeatureAction action( tr( "Feature added" ), f, mLayer );
-    action.addFeature();
+    addFeature( mIntersection2 );
   }
 
   hideDrawings();
