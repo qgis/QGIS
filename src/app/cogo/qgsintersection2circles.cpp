@@ -38,8 +38,8 @@ QgsIntersection2CirclesDialog::QgsIntersection2CirclesDialog( QgsMapCanvas *mapC
 
   mRubberCircle1->setWidth( 2 );
   mRubberCircle2->setWidth( 2 );
-  mRubberCircle1->setColor( QColor( 0, 255, 0, 150 ) );
-  mRubberCircle2->setColor( QColor( 0, 255, 0, 150 ) );
+  mRubberCircle1->setColor( mDefaultColor );
+  mRubberCircle2->setColor( mDefaultColor );
 
   mRubberInter1 = new QgsRubberBand( mapCanvas, QgsWkbTypes::PointGeometry );
   mRubberInter2 = new QgsRubberBand( mapCanvas, QgsWkbTypes::PointGeometry );
@@ -50,8 +50,8 @@ QgsIntersection2CirclesDialog::QgsIntersection2CirclesDialog( QgsMapCanvas *mapC
   mRubberInter2->setWidth( 2 );
   mRubberInter1->setIcon( QgsRubberBand::ICON_CROSS );
   mRubberInter2->setIcon( QgsRubberBand::ICON_CROSS );
-  mRubberInter1->setColor( QColor( 0, 255, 0, 150 ) );
-  mRubberInter2->setColor( QColor( 0, 255, 0, 150 ) );
+  mRubberInter1->setColor( mDefaultColor );
+  mRubberInter2->setColor( mDefaultColor );
 
   connect( mBtnIntersection1, &QCheckBox::stateChanged,
   [ = ]() { selectIntersection( mRubberInter1, mBtnIntersection1 ); } );
@@ -235,7 +235,7 @@ void QgsIntersection2CirclesDialog::updateCircle()
 
 void QgsIntersection2CirclesDialog::selectIntersection( QgsRubberBand *intersection, QCheckBox *button )
 {
-  const QColor color = button->isChecked() ? QColor( 0, 255, 0, 150 ) : QColor( Qt::blue );
+  const QColor color = button->isChecked() ? mSelectedColor : mDefaultColor;
   intersection->setColor( color );
   intersection->update();
 }

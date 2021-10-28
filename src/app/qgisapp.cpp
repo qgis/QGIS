@@ -108,7 +108,7 @@
 #include "qgsmaptoolmodifyannotation.h"
 #include "qgsannotationlayer.h"
 
-#include "cogo/qgsmaptoolcogo.h"
+#include "cogo/qgsintersection2circles.h"
 
 #include "qgsanalysis.h"
 #include "qgsgeometrycheckregistry.h"
