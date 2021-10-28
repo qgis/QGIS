@@ -55,6 +55,11 @@ QgsIntersection2CirclesDialog::QgsIntersection2CirclesDialog( QgsMapCanvas *mapC
   mRubberInter1->setColor( QColor( 0, 255, 0, 150 ) );
   mRubberInter2->setColor( QColor( 0, 255, 0, 150 ) );
 
+  connect( mBtnIntersection1, &QCheckBox::stateChanged,
+  [ = ]() { selectIntersection( mRubberInter1, mBtnIntersection1 ); } );
+  connect( mBtnIntersection2, &QCheckBox::stateChanged,
+  [ = ]() { selectIntersection( mRubberInter2, mBtnIntersection2 ); } );
+
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsIntersection2CirclesDialog::onAccepted );
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 
@@ -95,7 +100,6 @@ QgsIntersection2CirclesDialog::QgsIntersection2CirclesDialog( QgsMapCanvas *mapC
   connect( mRadius2, QOverload<double>::of( &QgsDoubleSpinBox::valueChanged ),
   [ = ]( double ) { propertiesChanged( CircleNum2 ); } );
 }
-
 
 void QgsIntersection2CirclesDialog::show()
 {
@@ -229,4 +233,11 @@ void QgsIntersection2CirclesDialog::updateCircle( CircleNumber circleNum )
 {
   mRubberCircle1->setToGeometry( QgsGeometry( mCircle1.toCircularString( true )->clone() ) );
   mRubberCircle2->setToGeometry( QgsGeometry( mCircle2.toCircularString( true )->clone() ) );
+}
+
+void QgsIntersection2CirclesDialog::selectIntersection( QgsRubberBand *intersection, QCheckBox *button )
+{
+  const QColor color = button->isChecked() ? QColor( 0, 255, 0, 150 ) : QColor( Qt::blue );
+  intersection->setColor( color );
+  intersection->update();
 }

@@ -51,6 +51,7 @@ class APP_EXPORT QgsIntersection2CirclesDialog : public QDialog, private Ui::Qgs
     void propertiesChanged( CircleNumber circleNum );
     void updateCenterPoint( CircleNumber circleNum, const QgsPointXY &point, Qt::MouseButton button );
     void updateCircle( CircleNumber circleNum );
+    void selectIntersection( QgsRubberBand *intersection, QCheckBox *button );
 
     void onAccepted();
     void reject();
