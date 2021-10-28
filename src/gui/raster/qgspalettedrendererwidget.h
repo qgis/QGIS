@@ -195,6 +195,9 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
 
     QgsRasterRenderer *renderer() override;
 
+    /**
+     * Sets the widget state from the specified renderer.
+     */
     void setFromRenderer( const QgsRasterRenderer *r );
 
   private:
