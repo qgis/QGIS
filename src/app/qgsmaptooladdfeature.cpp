@@ -105,7 +105,7 @@ void QgsMapToolAddFeature::featureDigitized( const QgsFeature &feature )
         {
           if ( sm.at( i ).layer()->crs() != vlayer->crs() )
           {
-            // transform geometry to vlayer crs and add topological point
+            // transform digitized geometry from vlayer crs to snapping layer crs and add topological point
             QgsGeometry geom( feature.geometry() );
             try
             {
