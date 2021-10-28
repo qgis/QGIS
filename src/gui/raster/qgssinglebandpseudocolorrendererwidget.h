@@ -56,7 +56,9 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     //! Returns the current raster band number
     int currentBand() const;
 
-    //! Set state of the widget from renderer settings
+    /**
+     * Sets the widget state from the specified renderer.
+     */
     void setFromRenderer( const QgsRasterRenderer *r );
 
   public slots:
