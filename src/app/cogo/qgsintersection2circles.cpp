@@ -20,8 +20,12 @@
 #include "qgsapplication.h"
 #include "qgsfeatureaction.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaptooledit.h"
 #include "qgsmaptoolemitpoint.h"
+#include "qgsproject.h"
 #include "qgsrubberband.h"
+#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsvectorlayer.h"
 
 #include "qgsintersection2circles.h"
@@ -33,6 +37,9 @@ QgsIntersection2CirclesDialog::QgsIntersection2CirclesDialog( QgsMapCanvas *mapC
 
   mLayer = vlayer;
   mMapCanvas = mapCanvas;
+
+  mDefaultColor = QgsMapToolEdit::digitizingStrokeColor();
+  mSelectedColor = QgsProject::instance()->selectionColor();
 
   initCircleParameters( mRubberCircle1, mRubberInter1, mBtnIntersection1,
                         mX1, mY1, mRadius1, mSelectCenter1, CircleNum1 );

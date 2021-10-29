@@ -76,8 +76,8 @@ class APP_EXPORT QgsIntersection2CirclesDialog : public QDialog, private Ui::Qgs
     QgsMapCanvas *mMapCanvas;
     QgsMapToolEmitPoint *mMapToolPoint = nullptr;
 
-    const QColor mDefaultColor = QColor( 0, 255, 0, 150 );
-    const QColor mSelectedColor = QColor( 0, 0, 255, 150 );
+    QColor mDefaultColor;
+    QColor mSelectedColor;
 };
 
 #endif // QGSINTERSECTION2CIRCLES_H
