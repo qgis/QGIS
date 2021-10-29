@@ -34,7 +34,7 @@ class APP_EXPORT QgsIntersection2CirclesDialog : public QDialog, private Ui::Qgs
 {
     Q_OBJECT
   public:
-    QgsIntersection2CirclesDialog( QgsMapCanvas *mapCanva, QgsVectorLayer *vlayer, QWidget *parent = nullptr );
+    QgsIntersection2CirclesDialog( QgsMapCanvas *mapCanva, QWidget *parent = nullptr );
 
     enum CircleNumber
     {
@@ -73,7 +73,6 @@ class APP_EXPORT QgsIntersection2CirclesDialog : public QDialog, private Ui::Qgs
     QgsRubberBand *mRubberInter1;
     QgsRubberBand *mRubberInter2;
 
-    QgsVectorLayer *mLayer;
     QgsMapCanvas *mMapCanvas;
     QgsMapToolEmitPoint *mMapToolPoint = nullptr;
 

@@ -762,8 +762,7 @@ void QgisApp::showIntersection2CirclesDialog()
 {
   if ( !mIntersection2Cirlcles )
   {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
-    mIntersection2Cirlcles = new QgsIntersection2CirclesDialog( mMapCanvas, vlayer, this );
+    mIntersection2Cirlcles = new QgsIntersection2CirclesDialog( mMapCanvas, this );
   }
 
   mIntersection2Cirlcles->show();

@@ -17,11 +17,13 @@
 
 #include <QPushButton>
 
+#include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsfeatureaction.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptooledit.h"
 #include "qgsmaptoolemitpoint.h"
+#include "qgsmessagebar.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
 #include "qgssettings.h"
@@ -31,11 +33,10 @@
 #include "qgsintersection2circles.h"
 
 
-QgsIntersection2CirclesDialog::QgsIntersection2CirclesDialog( QgsMapCanvas *mapCanvas, QgsVectorLayer *vlayer, QWidget *parent ) : QDialog( parent )
+QgsIntersection2CirclesDialog::QgsIntersection2CirclesDialog( QgsMapCanvas *mapCanvas, QWidget *parent ) : QDialog( parent )
 {
   setupUi( this );
 
-  mLayer = vlayer;
   mMapCanvas = mapCanvas;
 
   mDefaultColor = QgsMapToolEdit::digitizingStrokeColor();
@@ -133,14 +134,23 @@ void QgsIntersection2CirclesDialog::reject()
 
 void QgsIntersection2CirclesDialog::onAccepted()
 {
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
+  if ( !vlayer || vlayer->geometryType() != QgsWkbTypes::PointGeometry || !vlayer->isEditable() )
+  {
+    QgisApp::instance()->messageBar()->pushMessage(
+      QObject::tr( "No editable point layer" ),
+      Qgis::MessageLevel::Warning );
+    return;
+  }
+
   auto addFeature = [ = ]( QgsPoint point )
   {
     QgsFeature f;
-    const QgsFields fields = mLayer->fields();
+    const QgsFields fields = vlayer->fields();
     f = QgsFeature();
     f.setGeometry( QgsGeometry( point.clone() ) );
 
-    QgsFeatureAction action( tr( "Feature added" ), f, mLayer );
+    QgsFeatureAction action( tr( "Feature added" ), f, vlayer );
     action.addFeature();
   };
 
