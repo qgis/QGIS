@@ -25,6 +25,7 @@
 %Include auto_generated/qgsserverinterface.sip
 %End
 %Include auto_generated/qgsserverprojectutils.sip
+%Include auto_generated/qgsserverfeatureid.sip
 %Include auto_generated/qgsserverrequest.sip
 %Include auto_generated/qgsserverresponse.sip
 %Include auto_generated/qgsservice.sip
