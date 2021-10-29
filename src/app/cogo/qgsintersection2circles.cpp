@@ -17,6 +17,7 @@
 
 #include <QPushButton>
 
+#include "qgsapplication.h"
 #include "qgsfeatureaction.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptoolemitpoint.h"
@@ -145,6 +146,7 @@ void QgsIntersection2CirclesDialog::toggleSelectCenter( CircleNumber circleNum )
 
   mMapToolPoint = new QgsMapToolEmitPoint( mMapCanvas );
   mMapCanvas->setMapTool( mMapToolPoint );
+  mMapCanvas->setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CapturePoint ) );
 
   connect( mMapToolPoint, &QgsMapToolEmitPoint::canvasClicked,
            [ = ]( const QgsPointXY & point, Qt::MouseButton button )
