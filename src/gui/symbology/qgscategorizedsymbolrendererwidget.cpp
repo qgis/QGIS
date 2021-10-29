@@ -162,7 +162,7 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
             const QVariantList list = category.value().toList();
             res.reserve( list.size() );
             for ( const QVariant &v : list )
-              res << v.toString();
+              res << QgsCategorizedSymbolRenderer::displayString( v );
 
             if ( role == Qt::DisplayRole )
               return res.join( ';' );
@@ -175,7 +175,7 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
           }
           else
           {
-            return category.value().toString();
+            return QgsCategorizedSymbolRenderer::displayString( category.value() );
           }
         }
         case 2:
@@ -250,6 +250,12 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
       }
       break;
     }
+    case QgsCategorizedSymbolRendererWidget::CustomRoles::ValueRole:
+    {
+      if ( index.column() == 1 )
+        return category.value();
+      break;
+    }
   }
 
   return QVariant();
@@ -274,33 +280,37 @@ bool QgsCategorizedSymbolRendererModel::setData( const QModelIndex &index, const
   {
     case 1: // value
     {
-      // try to preserve variant type for this value
-      QVariant val;
-      switch ( mRenderer->categories().value( index.row() ).value().type() )
+      // try to preserve variant type for this value, unless it was an empty string (other values)
+      QVariant val = value;
+      const QVariant previousValue = mRenderer->categories().value( index.row() ).value();
+      if ( previousValue.type() != QVariant::String && ! previousValue.toString().isEmpty() )
       {
-        case QVariant::Int:
-          val = value.toInt();
-          break;
-        case QVariant::Double:
-          val = value.toDouble();
-          break;
-        case QVariant::List:
+        switch ( previousValue.type() )
         {
-          const QStringList parts = value.toString().split( ';' );
-          QVariantList list;
-          list.reserve( parts.count() );
-          for ( const QString &p : parts )
-            list << p;
+          case QVariant::Int:
+            val = value.toInt();
+            break;
+          case QVariant::Double:
+            val = value.toDouble();
+            break;
+          case QVariant::List:
+          {
+            const QStringList parts = value.toString().split( ';' );
+            QVariantList list;
+            list.reserve( parts.count() );
+            for ( const QString &p : parts )
+              list << p;
 
-          if ( list.count() == 1 )
-            val = list.at( 0 );
-          else
-            val = list;
-          break;
+            if ( list.count() == 1 )
+              val = list.at( 0 );
+            else
+              val = list;
+            break;
+          }
+          default:
+            val = value.toString();
+            break;
         }
-        default:
-          val = value.toString();
-          break;
       }
       mRenderer->updateCategoryValue( index.row(), val );
       break;
@@ -487,6 +497,123 @@ void QgsCategorizedSymbolRendererViewStyle::drawPrimitive( PrimitiveElement elem
   QProxyStyle::drawPrimitive( element, option, painter, widget );
 }
 
+
+QgsCategorizedRendererViewItemDelegate::QgsCategorizedRendererViewItemDelegate( QgsFieldExpressionWidget *expressionWidget, QObject *parent )
+  : QStyledItemDelegate( parent )
+  , mFieldExpressionWidget( expressionWidget )
+{
+}
+
+QWidget *QgsCategorizedRendererViewItemDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  QVariant::Type userType { index.data( QgsCategorizedSymbolRendererWidget::CustomRoles::ValueRole ).type() };
+
+  // In case of new values the type is not known
+  if ( userType == QVariant::String && index.data( QgsCategorizedSymbolRendererWidget::CustomRoles::ValueRole ).isNull() )
+  {
+    bool isExpression;
+    bool isValid;
+    const QString fieldName { mFieldExpressionWidget->currentField( &isExpression, &isValid ) };
+    if ( ! fieldName.isEmpty() && mFieldExpressionWidget->layer() && mFieldExpressionWidget->layer()->fields().lookupField( fieldName ) != -1 )
+    {
+      userType = mFieldExpressionWidget->layer()->fields().field( fieldName ).type();
+    }
+    else if ( isExpression && isValid )
+    {
+      // Try to guess the type from the expression return value
+      QgsFeature feat;
+      if ( mFieldExpressionWidget->layer()->getFeatures().nextFeature( feat ) )
+      {
+        QgsExpressionContext expressionContext;
+        expressionContext.appendScope( QgsExpressionContextUtils::globalScope() );
+        expressionContext.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+        expressionContext.appendScope( mFieldExpressionWidget->layer()->createExpressionContextScope() );
+        expressionContext.setFeature( feat );
+        QgsExpression exp { mFieldExpressionWidget->expression() };
+        const QVariant value = exp.evaluate( &expressionContext );
+        if ( !exp.hasEvalError() )
+        {
+          userType = value.type();
+        }
+      }
+    }
+  }
+
+  QgsDoubleSpinBox *editor = nullptr;
+  switch ( userType )
+  {
+    case QVariant::Type::Double:
+    {
+      editor = new QgsDoubleSpinBox( parent );
+      bool ok;
+      const QVariant value = index.data( QgsCategorizedSymbolRendererWidget::CustomRoles::ValueRole );
+      int decimals {2};
+      if ( value.toDouble( &ok ); ok )
+      {
+        const QString strVal { value.toString() };
+        const int dotPosition( strVal.indexOf( '.' ) );
+        if ( dotPosition >= 0 )
+        {
+          decimals = std::max<int>( 2, strVal.length() - dotPosition - 1 );
+        }
+      }
+      editor->setDecimals( decimals );
+      editor->setClearValue( 0 );
+      editor->setMaximum( std::numeric_limits<double>::max() );
+      editor->setMinimum( std::numeric_limits<double>::lowest() );
+      break;
+    }
+    case QVariant::Type::Int:
+    {
+      editor = new QgsDoubleSpinBox( parent );
+      editor->setDecimals( 0 );
+      editor->setClearValue( 0 );
+      editor->setMaximum( std::numeric_limits<int>::max() );
+      editor->setMinimum( std::numeric_limits<int>::min() );
+      break;
+    }
+    case QVariant::Type::Char:
+    {
+      editor = new QgsDoubleSpinBox( parent );
+      editor->setDecimals( 0 );
+      editor->setClearValue( 0 );
+      editor->setMaximum( std::numeric_limits<char>::max() );
+      editor->setMinimum( std::numeric_limits<char>::min() );
+      break;
+    }
+    case QVariant::Type::UInt:
+    {
+      editor = new QgsDoubleSpinBox( parent );
+      editor->setDecimals( 0 );
+      editor->setClearValue( 0 );
+      editor->setMaximum( std::numeric_limits<unsigned int>::max() );
+      editor->setMinimum( 0 );
+      break;
+    }
+    case QVariant::Type::LongLong:
+    {
+      editor = new QgsDoubleSpinBox( parent );
+      editor->setDecimals( 0 );
+      editor->setClearValue( 0 );
+      editor->setMaximum( static_cast<double>( std::numeric_limits<qlonglong>::max() ) );
+      editor->setMinimum( std::numeric_limits<qlonglong>::min() );
+      break;
+    }
+    case QVariant::Type::ULongLong:
+    {
+      editor = new QgsDoubleSpinBox( parent );
+      editor->setDecimals( 0 );
+      editor->setClearValue( 0 );
+      editor->setMaximum( static_cast<double>( std::numeric_limits<unsigned long long>::max() ) );
+      editor->setMinimum( 0 );
+      break;
+    }
+    default:
+      break;
+  }
+  return editor ? editor : QStyledItemDelegate::createEditor( parent, option, index );
+}
+
 ///@endcond
 
 // ------------------------------ Widget ------------------------------------
@@ -555,6 +682,7 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   viewCategories->resizeColumnToContents( 0 );
   viewCategories->resizeColumnToContents( 1 );
   viewCategories->resizeColumnToContents( 2 );
+  viewCategories->setItemDelegateForColumn( 1, new QgsCategorizedRendererViewItemDelegate( mExpressionWidget, viewCategories ) );
 
   viewCategories->setStyle( new QgsCategorizedSymbolRendererViewStyle( viewCategories ) );
   connect( viewCategories->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsCategorizedSymbolRendererWidget::selectionChanged );

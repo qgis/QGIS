@@ -20,6 +20,7 @@
 #include "qgsrendererwidget.h"
 #include "qgsproxystyle.h"
 #include <QStandardItem>
+#include <QStyledItemDelegate>
 
 
 class QgsCategorizedSymbolRenderer;
@@ -81,6 +82,26 @@ class QgsCategorizedSymbolRendererViewStyle: public QgsProxyStyle
     void drawPrimitive( PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget = nullptr ) const override;
 };
 
+/**
+ * \ingroup gui
+ * \brief Custom delegate for localized numeric input.
+ */
+class QgsCategorizedRendererViewItemDelegate: public QStyledItemDelegate
+{
+    Q_OBJECT
+
+  public:
+    explicit QgsCategorizedRendererViewItemDelegate( QgsFieldExpressionWidget *expressionWidget, QObject *parent = nullptr );
+
+    // QAbstractItemDelegate interface
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+
+  private:
+
+    QgsFieldExpressionWidget *mFieldExpressionWidget = nullptr;
+};
+
+
 ///@endcond
 
 #endif
@@ -93,6 +114,16 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
 {
     Q_OBJECT
   public:
+
+    /**
+     * CustomRoles enum represent custom roles for the widget.
+     * \since QGIS 3.22.1
+     */
+    enum CustomRoles
+    {
+      ValueRole = Qt::UserRole + 1 //!< Category value
+    };
+
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
     QgsCategorizedSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
