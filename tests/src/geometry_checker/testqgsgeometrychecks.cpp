@@ -83,6 +83,7 @@ class TestQgsGeometryChecks: public QObject
     void testDegeneratePolygonCheck();
     void testDuplicateCheck();
     void testDuplicateNodesCheck();
+    void testDuplicateNodesCheckTolerance();
     void testFollowBoundariesCheck();
     void testGapCheck();
     void testAllowedGaps();
@@ -486,6 +487,27 @@ void TestQgsGeometryChecks::testDuplicateNodesCheck()
   testContext.second[errs1[0]->layerId()]->getFeature( errs1[0]->featureId(), f );
   const int n2 = f.geometry().constGet()->vertexCount( errs1[0]->vidx().part, errs1[0]->vidx().ring );
   QCOMPARE( n1, n2 + 1 );
+
+  cleanupTestContext( testContext );
+}
+
+void TestQgsGeometryChecks::testDuplicateNodesCheckTolerance()
+{
+  QTemporaryDir dir;
+  QMap<QString, QString> layers;
+  layers.insert( "line_layer.shp", "" );
+  auto testContext = createTestContext( dir, layers, QgsCoordinateReferenceSystem( "EPSG:4326" ), 3 );
+
+  QList<QgsGeometryCheckError *> checkErrors;
+  QStringList messages;
+  QgsFeedback feedback;
+
+  const QgsGeometryDuplicateNodesCheck check( testContext.first, QVariantMap() );
+  check.collectErrors( testContext.second, checkErrors, messages, &feedback );
+  listErrors( checkErrors, messages );
+
+  int nErrors = checkErrors.size();
+  QCOMPARE( nErrors, 3 );
 
   cleanupTestContext( testContext );
 }
