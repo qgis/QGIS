@@ -362,13 +362,16 @@ namespace QgsWms
       else
       {
         const QgsAttributeList pkIndexes = cLayer->primaryKeyAttributes();
-        const int pkIndexesSize {std::max( pkIndexes.size(), 1 )};
-        if ( pkIndexesSize == 0 )
+        if ( pkIndexes.size() == 0 )
         {
           QgsDebugMsgLevel( QStringLiteral( "Atlas print: layer %1 has no primary key attributes" ).arg( cLayer->name() ), 2 );
         }
+
+        // Handles the pk-less case
+        const int pkIndexesSize {std::max( pkIndexes.size(), 1 )};
+
         QStringList pkAttributeNames;
-        for ( int pkIndex : pkIndexes )
+        for ( int pkIndex : std::as_const( pkIndexes ) )
         {
           pkAttributeNames.append( cLayer->fields().at( pkIndex ).name() );
         }
@@ -414,7 +417,7 @@ namespace QgsWms
               {
                 filterString.append( " AND " );
               }
-              filterString.append( QStringLiteral( "\"%1\" = %2" ).arg( pkAttributeNames.at( j ), atlasPk.at( currentAtlasPk ) ) );
+              filterString.append( QgsExpression::createFieldEqualityExpression( pkAttributeNames.at( j ), atlasPk.at( currentAtlasPk ) ) );
               ++currentAtlasPk;
             }
           }
