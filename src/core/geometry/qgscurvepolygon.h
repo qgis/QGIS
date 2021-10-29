@@ -242,9 +242,34 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * ring is oriented in a clockwise direction and the interior rings in a counter-clockwise
      * direction.
      *
+     * \warning Due to the conflicting definitions of the right-hand-rule in general use, it is recommended
+     * to use the explicit forceClockwise() or forceCounterClockwise() methods instead.
+     *
+     * \see forceClockwise()
+     * \see forceCounterClockwise()
      * \since QGIS 3.6
      */
     void forceRHR();
+
+    /**
+     * Forces the polygon to respect the exterior ring is clockwise, interior rings are counter-clockwise convention.
+     *
+     * This convention is used primarily by ESRI software.
+     *
+     * \see forceCounterClockwise()
+     * \since QGIS 3.24
+     */
+    void forceClockwise();
+
+    /**
+     * Forces the polygon to respect the exterior ring is counter-clockwise, interior rings are clockwise convention.
+     *
+     * This convention matches the OGC Simple Features specification.
+     *
+     * \see forceClockwise()
+     * \since QGIS 3.24
+     */
+    void forceCounterClockwise();
 
     QPainterPath asQPainterPath() const override;
     void draw( QPainter &p ) const override;

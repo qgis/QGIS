@@ -2885,6 +2885,11 @@ QgsGeometry QgsGeometry::makeValid() const
 
 QgsGeometry QgsGeometry::forceRHR() const
 {
+  return forcePolygonClockwise();
+}
+
+QgsGeometry QgsGeometry::forcePolygonClockwise() const
+{
   if ( !d->geometry )
     return QgsGeometry();
 
@@ -2899,7 +2904,7 @@ QgsGeometry QgsGeometry::forceRHR() const
       if ( const QgsCurvePolygon *cp = qgsgeometry_cast< const QgsCurvePolygon * >( g ) )
       {
         std::unique_ptr< QgsCurvePolygon > corrected( cp->clone() );
-        corrected->forceRHR();
+        corrected->forceClockwise();
         newCollection->addGeometry( corrected.release() );
       }
       else
@@ -2914,7 +2919,49 @@ QgsGeometry QgsGeometry::forceRHR() const
     if ( const QgsCurvePolygon *cp = qgsgeometry_cast< const QgsCurvePolygon * >( d->geometry.get() ) )
     {
       std::unique_ptr< QgsCurvePolygon > corrected( cp->clone() );
-      corrected->forceRHR();
+      corrected->forceClockwise();
+      return QgsGeometry( std::move( corrected ) );
+    }
+    else
+    {
+      // not a curve polygon, so return unchanged
+      return *this;
+    }
+  }
+}
+
+QgsGeometry QgsGeometry::forcePolygonCounterClockwise() const
+{
+  if ( !d->geometry )
+    return QgsGeometry();
+
+  if ( isMultipart() )
+  {
+    const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( d->geometry.get() );
+    std::unique_ptr< QgsGeometryCollection > newCollection( collection->createEmptyWithSameType() );
+    newCollection->reserve( collection->numGeometries() );
+    for ( int i = 0; i < collection->numGeometries(); ++i )
+    {
+      const QgsAbstractGeometry *g = collection->geometryN( i );
+      if ( const QgsCurvePolygon *cp = qgsgeometry_cast< const QgsCurvePolygon * >( g ) )
+      {
+        std::unique_ptr< QgsCurvePolygon > corrected( cp->clone() );
+        corrected->forceCounterClockwise();
+        newCollection->addGeometry( corrected.release() );
+      }
+      else
+      {
+        newCollection->addGeometry( g->clone() );
+      }
+    }
+    return QgsGeometry( std::move( newCollection ) );
+  }
+  else
+  {
+    if ( const QgsCurvePolygon *cp = qgsgeometry_cast< const QgsCurvePolygon * >( d->geometry.get() ) )
+    {
+      std::unique_ptr< QgsCurvePolygon > corrected( cp->clone() );
+      corrected->forceCounterClockwise();
       return QgsGeometry( std::move( corrected ) );
     }
     else

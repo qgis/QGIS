@@ -803,6 +803,11 @@ void QgsCurvePolygon::removeInvalidRings()
 
 void QgsCurvePolygon::forceRHR()
 {
+  forceClockwise();
+}
+
+void QgsCurvePolygon::forceClockwise()
+{
   if ( mExteriorRing && mExteriorRing->orientation() != QgsCurve::Clockwise )
   {
     // flip exterior ring orientation
@@ -814,6 +819,32 @@ void QgsCurvePolygon::forceRHR()
   for ( QgsCurve *curve : std::as_const( mInteriorRings ) )
   {
     if ( curve && curve->orientation() != QgsCurve::CounterClockwise )
+    {
+      // flip interior ring orientation
+      QgsCurve *flipped = curve->reversed();
+      validRings << flipped;
+      delete curve;
+    }
+    else
+    {
+      validRings << curve;
+    }
+  }
+  mInteriorRings = validRings;
+}
+
+void QgsCurvePolygon::forceCounterClockwise()
+{
+  if ( mExteriorRing && mExteriorRing->orientation() != QgsCurve::CounterClockwise )
+  {
+    // flip exterior ring orientation
+    mExteriorRing.reset( mExteriorRing->reversed() );
+  }
+
+  QVector<QgsCurve *> validRings;
+  for ( QgsCurve *curve : std::as_const( mInteriorRings ) )
+  {
+    if ( curve && curve->orientation() != QgsCurve::Clockwise )
     {
       // flip interior ring orientation
       QgsCurve *flipped = curve->reversed();
