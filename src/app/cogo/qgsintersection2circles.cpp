@@ -73,9 +73,12 @@ void QgsIntersection2CirclesDialog::initCircleParameters( QgsRubberBand *&rubber
 
   x->setMinimum( minValue );
   x->setMaximum( maxValue );
+  x->setClearValue( 0.0 );
   y->setMinimum( minValue );
   y->setMaximum( maxValue );
+  y->setClearValue( 0.0 );
   radius->setMaximum( maxValue );
+  radius->setClearValue( 0.0 );
 
   connect( selectCenter, &QToolButton::pressed,
   [ = ]() { toggleSelectCenter( circleNum ); } );
@@ -99,6 +102,16 @@ void QgsIntersection2CirclesDialog::show()
   QDialog::show();
 }
 
+void QgsIntersection2CirclesDialog::clearInformations()
+{
+  mX1->clear();
+  mY1->clear();
+  mX2->clear();
+  mY2->clear();
+  mRadius1->clear();
+  mRadius2->clear();
+}
+
 void QgsIntersection2CirclesDialog::hideDrawings()
 {
   delete mMapToolPoint;
@@ -114,6 +127,7 @@ void QgsIntersection2CirclesDialog::hideDrawings()
 void QgsIntersection2CirclesDialog::reject()
 {
   hideDrawings();
+  clearInformations();
   QDialog::reject();
 }
 
@@ -141,6 +155,7 @@ void QgsIntersection2CirclesDialog::onAccepted()
   }
 
   hideDrawings();
+  clearInformations();
 }
 
 void QgsIntersection2CirclesDialog::toggleSelectCenter( CircleNumber circleNum )
