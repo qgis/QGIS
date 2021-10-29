@@ -25,6 +25,8 @@ void QgsGeometryDuplicateNodesCheck::collectErrors( const QMap<QString, QgsFeatu
 
   const QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
   const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext );
+  const double sqrTolerance = mContext->tolerance * mContext->tolerance;
+
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
     const QgsAbstractGeometry *geom = layerFeature.geometry().constGet();
@@ -39,7 +41,7 @@ void QgsGeometryDuplicateNodesCheck::collectErrors( const QMap<QString, QgsFeatu
         {
           const QgsPoint pi = geom->vertexAt( QgsVertexId( iPart, iRing, iVert ) );
           const QgsPoint pj = geom->vertexAt( QgsVertexId( iPart, iRing, jVert ) );
-          if ( QgsGeometryUtils::sqrDistance2D( pi, pj ) < mContext->tolerance )
+          if ( QgsGeometryUtils::sqrDistance2D( pi, pj ) < sqrTolerance )
           {
             errors.append( new QgsGeometryCheckError( this, layerFeature, pj, QgsVertexId( iPart, iRing, jVert ) ) );
           }
