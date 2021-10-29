@@ -2343,9 +2343,34 @@ class CORE_EXPORT QgsGeometry
      * is to the right of the boundary. In particular, the exterior ring is oriented in a clockwise direction
      * and the interior rings in a counter-clockwise direction.
      *
+     * \warning Due to the conflicting definitions of the right-hand-rule in general use, it is recommended
+     * to use the explicit forcePolygonClockwise() or forcePolygonCounterClockwise() methods instead.
+     *
+     * \see forcePolygonClockwise()
+     * \see forcePolygonCounterClockwise()
      * \since QGIS 3.6
      */
     QgsGeometry forceRHR() const;
+
+    /**
+     * Forces geometries to respect the exterior ring is clockwise, interior rings are counter-clockwise convention.
+     *
+     * This convention is used primarily by ESRI software.
+     *
+     * \see forcePolygonCounterClockwise()
+     * \since QGIS 3.24
+     */
+    QgsGeometry forcePolygonClockwise() const;
+
+    /**
+     * Forces geometries to respect the exterior ring is counter-clockwise, interior rings are clockwise convention.
+     *
+     * This convention matches the OGC Simple Features specification.
+     *
+     * \see forcePolygonClockwise()
+     * \since QGIS 3.24
+     */
+    QgsGeometry forcePolygonCounterClockwise() const;
 
     /**
      * \ingroup core

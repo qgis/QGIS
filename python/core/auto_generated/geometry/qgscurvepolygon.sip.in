@@ -195,7 +195,38 @@ bounded by the polygon is to the right of the boundary. In particular, the exter
 ring is oriented in a clockwise direction and the interior rings in a counter-clockwise
 direction.
 
+.. warning::
+
+   Due to the conflicting definitions of the right-hand-rule in general use, it is recommended
+   to use the explicit :py:func:`~QgsCurvePolygon.forceClockwise` or :py:func:`~QgsCurvePolygon.forceCounterClockwise` methods instead.
+
+.. seealso:: :py:func:`forceClockwise`
+
+.. seealso:: :py:func:`forceCounterClockwise`
+
 .. versionadded:: 3.6
+%End
+
+    void forceClockwise();
+%Docstring
+Forces the polygon to respect the exterior ring is clockwise, interior rings are counter-clockwise convention.
+
+This convention is used primarily by ESRI software.
+
+.. seealso:: :py:func:`forceCounterClockwise`
+
+.. versionadded:: 3.24
+%End
+
+    void forceCounterClockwise();
+%Docstring
+Forces the polygon to respect the exterior ring is counter-clockwise, interior rings are clockwise convention.
+
+This convention matches the OGC Simple Features specification.
+
+.. seealso:: :py:func:`forceClockwise`
+
+.. versionadded:: 3.24
 %End
 
     virtual QPainterPath asQPainterPath() const;

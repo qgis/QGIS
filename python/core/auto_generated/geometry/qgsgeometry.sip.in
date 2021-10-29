@@ -2283,7 +2283,38 @@ Forces geometries to respect the Right-Hand-Rule, in which the area that is boun
 is to the right of the boundary. In particular, the exterior ring is oriented in a clockwise direction
 and the interior rings in a counter-clockwise direction.
 
+.. warning::
+
+   Due to the conflicting definitions of the right-hand-rule in general use, it is recommended
+   to use the explicit :py:func:`~QgsGeometry.forcePolygonClockwise` or :py:func:`~QgsGeometry.forcePolygonCounterClockwise` methods instead.
+
+.. seealso:: :py:func:`forcePolygonClockwise`
+
+.. seealso:: :py:func:`forcePolygonCounterClockwise`
+
 .. versionadded:: 3.6
+%End
+
+    QgsGeometry forcePolygonClockwise() const;
+%Docstring
+Forces geometries to respect the exterior ring is clockwise, interior rings are counter-clockwise convention.
+
+This convention is used primarily by ESRI software.
+
+.. seealso:: :py:func:`forcePolygonCounterClockwise`
+
+.. versionadded:: 3.24
+%End
+
+    QgsGeometry forcePolygonCounterClockwise() const;
+%Docstring
+Forces geometries to respect the exterior ring is counter-clockwise, interior rings are clockwise convention.
+
+This convention matches the OGC Simple Features specification.
+
+.. seealso:: :py:func:`forcePolygonClockwise`
+
+.. versionadded:: 3.24
 %End
 
     class Error
