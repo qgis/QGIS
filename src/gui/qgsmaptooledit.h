@@ -52,6 +52,13 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
      */
     double defaultMValue() const;
 
+    //! Returns stroke color for rubber bands (from global settings)
+    static QColor digitizingStrokeColor();
+    //! Returns stroke width for rubber bands (from global settings)
+    static int digitizingStrokeWidth();
+    //! Returns fill color for rubber bands (from global settings)
+    static QColor digitizingFillColor();
+
   private slots:
     //! Vector layers' editingStopped SIGNAL will eventually trigger a clean
     void connectLayers( const QList<QgsMapLayer *> &layers );
@@ -63,13 +70,6 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
     void cleanCanvas();
 
   protected:
-
-    //! Returns stroke color for rubber bands (from global settings)
-    static QColor digitizingStrokeColor();
-    //! Returns stroke width for rubber bands (from global settings)
-    static int digitizingStrokeWidth();
-    //! Returns fill color for rubber bands (from global settings)
-    static QColor digitizingFillColor();
 
     /**
      * Creates a rubber band with the color/line width from
