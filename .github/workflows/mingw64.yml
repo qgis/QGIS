@@ -22,7 +22,7 @@ jobs:
     name: MinGW64 Windows Build
     runs-on: ubuntu-latest
     container:
-      image: fedora:rawhide
+      image: fedora:34
       options: --security-opt seccomp=unconfined
       volumes:
         - ${{ github.workspace }}:/w
