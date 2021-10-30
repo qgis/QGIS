@@ -1233,6 +1233,12 @@ QgsGeometry QgsGeometry::roundWavesRandomized( double minimumWavelength, double 
   return engine.roundWavesRandomized( minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, seed );
 }
 
+QgsGeometry QgsGeometry::applyDashPattern( const QVector<double> &pattern, Qgis::DashPatternLineEndingRule startRule, Qgis::DashPatternLineEndingRule endRule, Qgis::DashPatternSizeAdjustment adjustment, double patternOffset ) const
+{
+  QgsInternalGeometryEngine engine( *this );
+  return engine.applyDashPattern( pattern, startRule, endRule, adjustment, patternOffset );
+}
+
 QgsGeometry QgsGeometry::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing ) const
 {
   if ( !d->geometry )

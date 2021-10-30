@@ -1105,3 +1105,19 @@ Qgis.LineClipMode.NoClipping.__doc__ = "Lines are not clipped, will extend to sh
 Qgis.LineClipMode.__doc__ = 'Line clipping modes.\n\n.. versionadded:: 3.24\n\n' + '* ``ClipPainterOnly``: ' + Qgis.LineClipMode.ClipPainterOnly.__doc__ + '\n' + '* ``ClipToIntersection``: ' + Qgis.LineClipMode.ClipToIntersection.__doc__ + '\n' + '* ``NoClipping``: ' + Qgis.LineClipMode.NoClipping.__doc__
 # --
 Qgis.LineClipMode.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.DashPatternLineEndingRule.NoRule.__doc__ = "No special rule"
+Qgis.DashPatternLineEndingRule.FullDash.__doc__ = "Start or finish the pattern with a full dash"
+Qgis.DashPatternLineEndingRule.HalfDash.__doc__ = "Start or finish the pattern with a half length dash"
+Qgis.DashPatternLineEndingRule.FullGap.__doc__ = "Start or finish the pattern with a full gap"
+Qgis.DashPatternLineEndingRule.HalfGap.__doc__ = "Start or finish the pattern with a half length gap"
+Qgis.DashPatternLineEndingRule.__doc__ = 'Dash pattern line ending rules.\n\n.. versionadded:: 3.24\n\n' + '* ``NoRule``: ' + Qgis.DashPatternLineEndingRule.NoRule.__doc__ + '\n' + '* ``FullDash``: ' + Qgis.DashPatternLineEndingRule.FullDash.__doc__ + '\n' + '* ``HalfDash``: ' + Qgis.DashPatternLineEndingRule.HalfDash.__doc__ + '\n' + '* ``FullGap``: ' + Qgis.DashPatternLineEndingRule.FullGap.__doc__ + '\n' + '* ``HalfGap``: ' + Qgis.DashPatternLineEndingRule.HalfGap.__doc__
+# --
+Qgis.DashPatternLineEndingRule.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.DashPatternSizeAdjustment.ScaleBothDashAndGap.__doc__ = "Both the dash and gap lengths are adjusted equally"
+Qgis.DashPatternSizeAdjustment.ScaleDashOnly.__doc__ = "Only dash lengths are adjusted"
+Qgis.DashPatternSizeAdjustment.ScaleGapOnly.__doc__ = "Only gap lengths are adjusted"
+Qgis.DashPatternSizeAdjustment.__doc__ = 'Dash pattern size adjustment options.\n\n.. versionadded:: 3.24\n\n' + '* ``ScaleBothDashAndGap``: ' + Qgis.DashPatternSizeAdjustment.ScaleBothDashAndGap.__doc__ + '\n' + '* ``ScaleDashOnly``: ' + Qgis.DashPatternSizeAdjustment.ScaleDashOnly.__doc__ + '\n' + '* ``ScaleGapOnly``: ' + Qgis.DashPatternSizeAdjustment.ScaleGapOnly.__doc__
+# --
+Qgis.DashPatternSizeAdjustment.baseClass = Qgis

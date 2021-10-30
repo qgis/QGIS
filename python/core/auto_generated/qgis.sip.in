@@ -707,6 +707,22 @@ The development version
       NoClipping,
     };
 
+    enum class DashPatternLineEndingRule
+    {
+      NoRule,
+      FullDash,
+      HalfDash,
+      FullGap,
+      HalfGap,
+    };
+
+    enum class DashPatternSizeAdjustment
+    {
+      ScaleBothDashAndGap,
+      ScaleDashOnly,
+      ScaleGapOnly,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

@@ -1154,6 +1154,34 @@ class CORE_EXPORT Qgis
     Q_ENUM( LineClipMode )
 
     /**
+     * Dash pattern line ending rules.
+     *
+     * \since QGIS 3.24
+     */
+    enum class DashPatternLineEndingRule : int
+    {
+      NoRule, //!< No special rule
+      FullDash, //!< Start or finish the pattern with a full dash
+      HalfDash, //!< Start or finish the pattern with a half length dash
+      FullGap, //!< Start or finish the pattern with a full gap
+      HalfGap, //!< Start or finish the pattern with a half length gap
+    };
+    Q_ENUM( DashPatternLineEndingRule )
+
+    /**
+     * Dash pattern size adjustment options.
+     *
+     * \since QGIS 3.24
+     */
+    enum class DashPatternSizeAdjustment : int
+    {
+      ScaleBothDashAndGap, //!< Both the dash and gap lengths are adjusted equally
+      ScaleDashOnly, //!< Only dash lengths are adjusted
+      ScaleGapOnly, //!< Only gap lengths are adjusted
+    };
+    Q_ENUM( DashPatternSizeAdjustment )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */
