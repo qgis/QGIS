@@ -97,6 +97,7 @@ void QgsFilteredSelectionManager::onSelectionChanged( const QgsFeatureIds &selec
 QgsRelationEditorWidget::QgsRelationEditorWidget( const QVariantMap &config, QWidget *parent )
   : QgsAbstractRelationEditorWidget( config, parent )
   , mButtonsVisibility( qgsFlagKeysToValue( config.value( QStringLiteral( "buttons" ) ).toString(), QgsRelationEditorWidget::Button::AllButtons ) )
+  , mShowFirstFeature( config.value( QStringLiteral( "show_first_feature" ), true ).toBool() )
 {
   QVBoxLayout *rootLayout = new QVBoxLayout( this );
   rootLayout->setContentsMargins( 0, 9, 0, 0 );
@@ -226,7 +227,7 @@ void QgsRelationEditorWidget::initDualView( QgsVectorLayer *layer, const QgsFeat
 {
   QgsAttributeEditorContext ctx { mEditorContext };
   ctx.setParentFormFeature( mFeature );
-  mDualView->init( layer, mEditorContext.mapCanvas(), request, ctx );
+  mDualView->init( layer, mEditorContext.mapCanvas(), request, ctx, true, mShowFirstFeature );
   mFeatureSelectionMgr = new QgsFilteredSelectionManager( layer, request, mDualView );
   mDualView->setFeatureSelectionManager( mFeatureSelectionMgr );
 
@@ -489,12 +490,14 @@ void QgsRelationEditorWidget::mapToolDeactivated()
 
 QVariantMap QgsRelationEditorWidget::config() const
 {
-  return QVariantMap( {{"buttons", qgsFlagValueToKeys( visibleButtons() )}} );
+  return QVariantMap( {{"buttons", qgsFlagValueToKeys( visibleButtons() )},
+    {"show_first_feature", mShowFirstFeature}} );
 }
 
 void QgsRelationEditorWidget::setConfig( const QVariantMap &config )
 {
   mButtonsVisibility = qgsFlagKeysToValue( config.value( QStringLiteral( "buttons" ) ).toString(), QgsRelationEditorWidget::Button::AllButtons );
+  mShowFirstFeature = config.value( QStringLiteral( "show_first_feature" ), true ).toBool();
   updateButtons();
 }
 
@@ -623,6 +626,7 @@ QVariantMap QgsRelationEditorConfigWidget::config()
   return QVariantMap(
   {
     {"buttons", qgsFlagValueToKeys( buttons )},
+    {"show_first_feature", mShowFirstFeature->isChecked()}
   } );
 }
 
@@ -637,6 +641,7 @@ void QgsRelationEditorConfigWidget::setConfig( const QVariantMap &config )
   mRelationShowZoomToFeatureCheckBox->setChecked( buttons.testFlag( QgsRelationEditorWidget::Button::ZoomToChildFeature ) );
   mRelationDeleteChildFeatureCheckBox->setChecked( buttons.testFlag( QgsRelationEditorWidget::Button::DeleteChildFeature ) );
   mRelationShowSaveChildEditsCheckBox->setChecked( buttons.testFlag( QgsRelationEditorWidget::Button::SaveChildEdits ) );
+  mShowFirstFeature->setChecked( config.value( QStringLiteral( "show_first_feature" ), true ).toBool() );
 }
 
 
