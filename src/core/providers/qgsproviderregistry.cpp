@@ -45,6 +45,7 @@
 #ifdef HAVE_STATIC_PROVIDERS
 #include "qgswmsprovider.h"
 #include "qgspostgresprovider.h"
+#include "qgsdelimitedtextprovider.h"
 #endif
 
 #include <QString>
@@ -191,6 +192,7 @@ void QgsProviderRegistry::init()
 #ifdef HAVE_STATIC_PROVIDERS
   mProviders[ QgsWmsProvider::providerKey() ] = new QgsWmsProviderMetadata();
   mProviders[ QgsPostgresProvider::providerKey() ] = new QgsPostgresProviderMetadata();
+  mProviders[ QgsDelimitedTextProvider::providerKey() ] = new QgsDelimitedTextProviderMetadata();
 #endif
 
   // add dynamic providers
