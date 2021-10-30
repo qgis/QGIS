@@ -232,6 +232,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     QgsVectorLayerSelectionManager *mFeatureSelectionMgr = nullptr;
 
     Buttons mButtonsVisibility = Button::AllButtons;
+    bool mShowFirstFeature = true;
 };
 
 
