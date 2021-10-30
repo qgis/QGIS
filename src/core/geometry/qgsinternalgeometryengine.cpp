@@ -29,6 +29,7 @@
 #include "qgstessellator.h"
 #include "qgsfeedback.h"
 #include "qgsgeometryengine.h"
+#include "qgsmultilinestring.h"
 #include <QTransform>
 #include <functional>
 #include <memory>
@@ -2625,5 +2626,328 @@ QgsGeometry QgsInternalGeometryEngine::roundWavesRandomized( double minimumWavel
   else
   {
     return QgsGeometry( roundWavesRandomizedPrivate( mGeometry, minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, uniformDist, mt ) );
+  }
+}
+
+std::unique_ptr< QgsMultiLineString > dashPatternAlongLine( const QgsLineString *line,
+    const QVector< double> &pattern,
+    Qgis::DashPatternLineEndingRule startRule,
+    Qgis::DashPatternLineEndingRule endRule,
+    Qgis::DashPatternSizeAdjustment adjustment,
+    double patternOffset )
+{
+  const int totalPoints = line->numPoints();
+  if ( totalPoints < 2 )
+    return nullptr;
+
+  const int patternSize = pattern.size();
+
+  const double *x = line->xData();
+  const double *y = line->yData();
+
+  double prevX = *x++;
+  double prevY = *y++;
+
+  std::unique_ptr< QgsMultiLineString > result = std::make_unique< QgsMultiLineString >();
+
+  QVector< double > outX;
+  QVector< double > outY;
+  const double totalLength = line->length();
+
+  double patternLength = 0;
+  double patternDashLength = 0;
+  double patternGapLength = 0;
+  for ( int i = 0; i < pattern.size(); ++i )
+  {
+    patternLength += pattern.at( i );
+    if ( i % 2 == 0 )
+      patternDashLength += pattern.at( i );
+    else
+      patternGapLength += pattern.at( i );
+  }
+
+  double firstPatternLength = 0;
+  double firstPatternDashLength = 0;
+  double firstPatternGapLength = 0;
+  switch ( startRule )
+  {
+    case Qgis::DashPatternLineEndingRule::NoRule:
+    case Qgis::DashPatternLineEndingRule::FullDash:
+      firstPatternLength = patternLength;
+      firstPatternDashLength = patternDashLength;
+      firstPatternGapLength = patternGapLength;
+      break;
+    case Qgis::DashPatternLineEndingRule::HalfDash:
+      firstPatternLength = patternLength - pattern.at( 0 ) * 0.5; // remove half of first dash
+      firstPatternDashLength = patternDashLength - pattern.at( 0 ) * 0.5;
+      firstPatternGapLength = patternGapLength;
+      break;
+    case Qgis::DashPatternLineEndingRule::FullGap:
+      firstPatternLength = pattern.at( patternSize - 1 ); // start at LAST dash
+      firstPatternDashLength = 0;
+      firstPatternGapLength = pattern.at( patternSize - 1 );
+      break;
+    case Qgis::DashPatternLineEndingRule::HalfGap:
+      firstPatternLength = pattern.at( patternSize - 1 ) * 0.5; // start at half of last dash
+      firstPatternDashLength = 0;
+      firstPatternGapLength = pattern.at( patternSize - 1 ) * 0.5;
+      break;
+  }
+
+  const bool isSmallEnoughForSinglePattern = ( totalLength - firstPatternLength ) < patternLength * 0.5;
+
+  double lastPatternLength = isSmallEnoughForSinglePattern ? firstPatternLength : patternLength;
+  double lastPatternDashLength = isSmallEnoughForSinglePattern ? firstPatternDashLength : patternDashLength;
+  double lastPatternGapLength = isSmallEnoughForSinglePattern ? firstPatternGapLength : patternGapLength;
+  switch ( endRule )
+  {
+    case Qgis::DashPatternLineEndingRule::NoRule:
+      lastPatternLength = 0;
+      lastPatternDashLength = 0;
+      lastPatternGapLength = 0;
+      break;
+    case Qgis::DashPatternLineEndingRule::FullDash:
+      lastPatternLength -= pattern.at( patternSize - 1 ); // remove last gap
+      lastPatternGapLength -= pattern.at( patternSize - 1 );
+      break;
+    case Qgis::DashPatternLineEndingRule::HalfDash:
+      lastPatternLength -= pattern.at( patternSize - 1 ) + pattern.at( patternSize - 2 ) * 0.5; // remove last gap, half of last dash
+      lastPatternDashLength -= pattern.at( patternSize - 2 ) * 0.5;
+      lastPatternGapLength -= pattern.at( patternSize - 1 );
+      break;
+    case Qgis::DashPatternLineEndingRule::FullGap:
+      lastPatternGapLength = patternGapLength;
+      break;
+    case Qgis::DashPatternLineEndingRule::HalfGap:
+      lastPatternLength -= pattern.at( patternSize - 1 ) * 0.5; // remove half of last gap
+      lastPatternGapLength -= pattern.at( patternSize - 1 ) * 0.5;
+      break;
+  }
+
+  const double remainingLengthForCompletePatterns = totalLength - ( !isSmallEnoughForSinglePattern ? firstPatternLength : 0 ) - lastPatternLength;
+  const int middlePatternRepetitions = std::max( static_cast< int >( std::round( remainingLengthForCompletePatterns / patternLength ) ), 0 );
+
+  const double totalUnscaledLengthOfPatterns = ( !isSmallEnoughForSinglePattern ? firstPatternLength : 0 ) + middlePatternRepetitions * patternLength + lastPatternLength;
+  const double totalUnscaledLengthOfDashes = ( !isSmallEnoughForSinglePattern ? firstPatternDashLength : 0 ) + middlePatternRepetitions * patternDashLength + lastPatternDashLength;
+  const double totalUnscaledLengthOfGaps = ( !isSmallEnoughForSinglePattern ? firstPatternGapLength : 0 ) + middlePatternRepetitions * patternGapLength + lastPatternGapLength;
+
+  double dashLengthScalingFactor = 1;
+  double gapLengthScalingFactor = 1;
+  if ( endRule != Qgis::DashPatternLineEndingRule::NoRule )
+  {
+    // calculate scaling factors
+    const double lengthToShrinkBy = totalUnscaledLengthOfPatterns - totalLength;
+
+    switch ( adjustment )
+    {
+      case Qgis::DashPatternSizeAdjustment::ScaleBothDashAndGap:
+        dashLengthScalingFactor = totalLength / totalUnscaledLengthOfPatterns;
+        gapLengthScalingFactor = dashLengthScalingFactor;
+        break;
+      case Qgis::DashPatternSizeAdjustment::ScaleDashOnly:
+        dashLengthScalingFactor = ( totalUnscaledLengthOfDashes - lengthToShrinkBy ) / totalUnscaledLengthOfDashes;
+        break;
+      case Qgis::DashPatternSizeAdjustment::ScaleGapOnly:
+        gapLengthScalingFactor = ( totalUnscaledLengthOfGaps - lengthToShrinkBy ) / totalUnscaledLengthOfGaps;
+        break;
+    }
+  }
+
+  dashLengthScalingFactor = std::max( dashLengthScalingFactor, 0.0 );
+  gapLengthScalingFactor = std::max( gapLengthScalingFactor, 0.0 );
+
+  const int maxPatterns = middlePatternRepetitions + 2;
+  result->reserve( maxPatterns );
+
+  int patternIndex = 0;
+  double distanceToNextPointFromStartOfSegment = pattern.at( 0 ) * dashLengthScalingFactor;
+  bool isDash = true;
+  switch ( startRule )
+  {
+    case Qgis::DashPatternLineEndingRule::NoRule:
+    case Qgis::DashPatternLineEndingRule::FullDash:
+      break;
+    case Qgis::DashPatternLineEndingRule::HalfDash:
+      distanceToNextPointFromStartOfSegment *= 0.5; // skip to half way through first dash
+      break;
+    case Qgis::DashPatternLineEndingRule::FullGap:
+      patternIndex = patternSize - 1; // start at last gap
+      isDash = false;
+      distanceToNextPointFromStartOfSegment = pattern.at( patternSize - 1 ) * gapLengthScalingFactor;
+      break;
+    case Qgis::DashPatternLineEndingRule::HalfGap:
+      patternIndex = patternSize - 1; // skip straight to half way through last gap
+      isDash = false;
+      distanceToNextPointFromStartOfSegment = 0.5 * pattern.at( patternSize - 1 ) * gapLengthScalingFactor;
+      break;
+  }
+
+  const double adjustedOffset = fmod( patternOffset, patternLength );
+  const double scaledOffset = ( adjustedOffset < 0 ? ( adjustedOffset + patternLength ) : adjustedOffset ) * ( gapLengthScalingFactor + dashLengthScalingFactor ) / 2;
+  if ( !qgsDoubleNear( scaledOffset, 0 ) )
+  {
+    // shuffle pattern along by offset
+    double remainingOffset = scaledOffset;
+    while ( remainingOffset > 0 )
+    {
+      if ( distanceToNextPointFromStartOfSegment > remainingOffset )
+      {
+        distanceToNextPointFromStartOfSegment -= remainingOffset;
+        break;
+      }
+
+      remainingOffset -= distanceToNextPointFromStartOfSegment;
+      isDash = !isDash;
+      patternIndex++;
+      if ( patternIndex == patternSize )
+        patternIndex = 0;
+
+      distanceToNextPointFromStartOfSegment = pattern.at( patternIndex ) * ( isDash ? dashLengthScalingFactor : gapLengthScalingFactor );
+    }
+  }
+
+  if ( isDash )
+  {
+    outX.append( prevX );
+    outY.append( prevY );
+  }
+
+  for ( int i = 1; i < totalPoints; ++i )
+  {
+    double thisX = *x++;
+    double thisY = *y++;
+
+    const double segmentLength = std::sqrt( ( thisX - prevX ) * ( thisX - prevX ) + ( thisY - prevY ) * ( thisY - prevY ) );
+    while ( distanceToNextPointFromStartOfSegment < segmentLength || qgsDoubleNear( distanceToNextPointFromStartOfSegment, segmentLength ) )
+    {
+      // point falls on this segment - truncate to segment length if qgsDoubleNear test was actually > segment length
+      const double distanceToPoint = std::min( distanceToNextPointFromStartOfSegment, segmentLength );
+      double pX, pY;
+      QgsGeometryUtils::pointOnLineWithDistance( prevX, prevY, thisX, thisY, distanceToPoint, pX, pY );
+
+      outX.append( pX );
+      outY.append( pY );
+      if ( isDash )
+      {
+        result->addGeometry( new QgsLineString( outX, outY ) );
+        outX.resize( 0 );
+        outY.resize( 0 );
+      }
+
+      isDash = !isDash;
+      patternIndex++;
+      if ( patternIndex >= patternSize )
+        patternIndex = 0;
+
+      distanceToNextPointFromStartOfSegment += pattern.at( patternIndex ) * ( isDash ? dashLengthScalingFactor : gapLengthScalingFactor );
+    }
+
+    if ( isDash )
+    {
+      outX.append( thisX );
+      outY.append( thisY );
+    }
+
+    prevX = thisX;
+    prevY = thisY;
+    distanceToNextPointFromStartOfSegment -= segmentLength;
+  }
+
+  if ( isDash )
+  {
+    outX.append( prevX );
+    outY.append( prevY );
+    result->addGeometry( new QgsLineString( outX, outY ) );
+  }
+
+  return result;
+}
+
+std::unique_ptr< QgsAbstractGeometry > applyDashPatternPrivate( const QgsAbstractGeometry *geom,
+    const QVector<double> &pattern,
+    Qgis::DashPatternLineEndingRule startRule,
+    Qgis::DashPatternLineEndingRule endRule,
+    Qgis::DashPatternSizeAdjustment adjustment,
+    double patternOffset )
+{
+  std::unique_ptr< QgsAbstractGeometry > segmentizedCopy;
+  if ( QgsWkbTypes::isCurvedType( geom->wkbType() ) )
+  {
+    segmentizedCopy.reset( geom->segmentize() );
+    geom = segmentizedCopy.get();
+  }
+
+  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::LineGeometry )
+  {
+    return dashPatternAlongLine( static_cast< const QgsLineString * >( geom ), pattern, startRule, endRule, adjustment, patternOffset );
+  }
+  else
+  {
+    // polygon
+    const QgsPolygon *polygon = static_cast< const QgsPolygon * >( geom );
+    std::unique_ptr< QgsMultiLineString > result = std::make_unique< QgsMultiLineString >();
+
+    std::unique_ptr< QgsMultiLineString > exteriorParts = dashPatternAlongLine( static_cast< const QgsLineString * >( polygon->exteriorRing() ), pattern, startRule, endRule, adjustment, patternOffset );
+    for ( int i = 0; i < exteriorParts->numGeometries(); ++i )
+      result->addGeometry( exteriorParts->geometryN( i )->clone() );
+
+    for ( int i = 0; i < polygon->numInteriorRings(); ++i )
+    {
+      std::unique_ptr< QgsMultiLineString > ringParts = dashPatternAlongLine( static_cast< const QgsLineString * >( polygon->interiorRing( i ) ), pattern, startRule, endRule, adjustment, patternOffset );
+      for ( int j = 0; j < ringParts->numGeometries(); ++j )
+        result->addGeometry( ringParts->geometryN( j )->clone() );
+    }
+
+    return result;
+  }
+}
+
+QgsGeometry QgsInternalGeometryEngine::applyDashPattern( const QVector<double> &pattern, Qgis::DashPatternLineEndingRule startRule, Qgis::DashPatternLineEndingRule endRule, Qgis::DashPatternSizeAdjustment adjustment, double patternOffset ) const
+{
+  if ( pattern.size() < 2 )
+    return QgsGeometry( mGeometry->clone() );
+
+  mLastError.clear();
+  if ( !mGeometry )
+  {
+    return QgsGeometry();
+  }
+
+  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == QgsWkbTypes::PointGeometry )
+  {
+    return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
+  }
+
+  if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( mGeometry ) )
+  {
+    int numGeom = gc->numGeometries();
+    QVector< QgsAbstractGeometry * > geometryList;
+    geometryList.reserve( numGeom );
+    for ( int i = 0; i < numGeom; ++i )
+    {
+      geometryList << applyDashPatternPrivate( gc->geometryN( i ), pattern, startRule, endRule, adjustment, patternOffset ).release();
+    }
+
+    QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
+    for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
+    {
+      if ( const QgsGeometryCollection *collection = qgsgeometry_cast< QgsGeometryCollection * >( g ) )
+      {
+        for ( int j = 0; j < collection->numGeometries(); ++j )
+        {
+          first.addPart( collection->geometryN( j )->clone() );
+        }
+        delete collection;
+      }
+      else
+      {
+        first.addPart( g );
+      }
+    }
+    return first;
+  }
+  else
+  {
+    return QgsGeometry( applyDashPatternPrivate( mGeometry, pattern, startRule, endRule, adjustment, patternOffset ) );
   }
 }

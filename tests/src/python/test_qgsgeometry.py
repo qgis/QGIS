@@ -6360,6 +6360,113 @@ class TestQgsGeometry(unittest.TestCase):
             3),
             'MultiPolygon (((1 1, 1.122 0.955, 1.261 0.911, 1.414 0.869, 1.575 0.83, 1.742 0.794, 1.908 0.763, 2.069 0.737, 2.222 0.717, 2.362 0.705, 2.483 0.7, 2.832 0.717, 3.119 0.763, 3.36 0.83, 3.57 0.911, 3.765 1, 3.96 1.089, 4.17 1.17, 4.411 1.238, 4.698 1.283, 5.047 1.3, 5.403 1.285, 5.696 1.244, 5.943 1.183, 6.157 1.11, 6.356 1.03, 6.555 0.95, 6.77 0.877, 7.016 0.816, 7.309 0.775, 7.665 0.76, 8.031 0.775, 8.328 0.814, 8.57 0.872, 8.767 0.945, 8.934 1.025, 9.082 1.109, 9.223 1.189, 9.37 1.262, 9.536 1.32, 9.733 1.359, 9.748 1.763, 9.79 2.095, 9.852 2.374, 9.927 2.618, 10.009 2.843, 10.09 3.069, 10.165 3.312, 10.227 3.591, 10.269 3.923, 10.285 4.327, 10.27 4.688, 10.229 4.986, 10.169 5.236, 10.096 5.453, 10.016 5.655, 9.937 5.857, 9.864 6.075, 9.803 6.325, 9.763 6.622, 9.748 6.984, 9.761 7.354, 9.797 7.659, 9.85 7.914, 9.915 8.138, 9.985 8.344, 10.056 8.551, 10.12 8.775, 10.174 9.03, 10.21 9.335, 10.223 9.705, 9.866 9.831, 9.572 9.904, 9.324 9.934, 9.106 9.93, 8.902 9.901, 8.696 9.857, 8.472 9.806, 8.213 9.758, 7.904 9.722, 7.527 9.709, 7.156 9.724, 6.851 9.764, 6.594 9.824, 6.371 9.897, 6.163 9.976, 5.956 10.055, 5.732 10.128, 5.476 10.187, 5.17 10.228, 4.799 10.243, 4.395 10.228, 4.062 10.189, 3.783 10.131, 3.54 10.06, 3.314 9.983, 3.088 9.906, 2.845 9.835, 2.566 9.776, 2.233 9.737, 1.829 9.722, 1.664 9.634, 1.502 9.554, 1.346 9.472, 1.2 9.378, 1.068 9.262, 0.951 9.112, 0.855 8.919, 0.782 8.671, 0.736 8.359, 0.72 7.971, 0.735 7.625, 0.775 7.34, 0.835 7.1, 0.907 6.892, 0.986 6.698, 1.065 6.505, 1.137 6.296, 1.196 6.056, 1.237 5.771, 1.252 5.425, 1.237 5.026, 1.196 4.698, 1.136 4.422, 1.064 4.182, 0.984 3.959, 0.905 3.736, 0.833 3.495, 0.773 3.22, 0.732 2.891, 0.717 2.492, 0.729 2.272, 0.746 2.055, 0.769 1.846, 0.796 1.651, 0.826 1.473, 0.859 1.317, 0.894 1.187, 0.93 1.088, 0.965 1.024, 1 1)),((20 20, 20.031 20.116, 20.061 20.25, 20.09 20.396, 20.117 20.55, 20.142 20.709, 20.163 20.868, 20.181 21.022, 20.194 21.168, 20.203 21.301, 20.206 21.418, 20.193 21.798, 20.157 22.111, 20.104 22.374, 20.039 22.603, 19.969 22.816, 19.899 23.028, 19.835 23.258, 19.782 23.521, 19.746 23.834, 19.733 24.214, 19.746 24.582, 19.783 24.885, 19.838 25.14, 19.904 25.361, 19.976 25.567, 20.048 25.773, 20.115 25.995, 20.169 26.249, 20.206 26.552, 20.22 26.92, 20.208 27.28, 20.175 27.576, 20.126 27.825, 20.067 28.041, 20.003 28.242, 19.939 28.443, 19.88 28.66, 19.831 28.909, 19.798 29.205, 19.786 29.565, 20.071 29.52, 20.288 29.461, 20.454 29.384, 20.585 29.286, 20.698 29.164, 20.809 29.015, 20.935 28.837, 21.092 28.626, 21.297 28.379, 21.566 28.092, 21.818 27.86, 22.045 27.688, 22.252 27.561, 22.446 27.463, 22.634 27.381, 22.822 27.298, 23.017 27.2, 23.224 27.073, 23.45 26.901, 23.702 26.669, 23.965 26.387, 24.163 26.136, 24.312 25.909, 24.428 25.698, 24.529 25.494, 24.63 25.29, 24.746 25.079, 24.896 24.852, 25.093 24.601, 25.356 24.319, 25.627 24.066, 25.866 23.875, 26.083 23.73, 26.285 23.615, 26.478 23.516, 26.672 23.417, 26.873 23.303, 27.09 23.158, 27.33 22.966, 27.601 22.713, 27.835 22.46, 28.011 22.234, 28.143 22.028, 28.245 21.836, 28.332 21.651, 28.419 21.465, 28.521 21.273, 28.652 21.067, 28.828 20.841, 29.063 20.588, 29.263 20.481, 29.415 20.366, 29.516 20.248, 29.563 20.131, 29.552 20.021, 29.482 19.921, 29.347 19.835, 29.146 19.768, 28.875 19.725, 28.53 19.71, 28.182 19.725, 27.896 19.766, 27.655 19.827, 27.445 19.901, 27.25 19.981, 27.056 20.061, 26.846 20.135, 26.605 20.196, 26.319 20.237, 25.971 20.252, 25.625 20.237, 25.34 20.196, 25.101 20.135, 24.893 20.061, 24.7 19.98, 24.507 19.9, 24.298 19.826, 24.059 19.765, 23.774 19.724, 23.429 19.708, 23.027 19.723, 22.696 19.763, 22.418 19.821, 22.176 19.892, 21.951 19.969, 21.727 20.046, 21.484 20.117, 21.206 20.176, 20.875 20.215, 20.474 20.23, 20.435 20.227, 20.39 20.217, 20.341 20.202, 20.29 20.182, 20.237 20.158, 20.184 20.131, 20.132 20.1, 20.083 20.068, 20.039 20.034, 20 20)))')
 
+    def testApplyDashPattern(self):
+        """Test apply dash pattern"""
+        self.assertEqual(QgsGeometry.fromWkt('Point (1 1)').applyDashPattern([1, 2]).asWkt(3), 'Point (1 1)')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1)').applyDashPattern([1, 2]).asWkt(3), '')  # don't crash!
+        # bad pattern length
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10)').applyDashPattern([1, 2, 3]).asWkt(3), '')  # don't crash!
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').applyDashPattern([1, 2]).asWkt(3),
+                         'MultiLineString ((1 1, 2 1),(4 1, 5 1),(7 1, 8 1),(10 1, 10 1, 10 1))')
+
+        # pattern ends on gap
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').applyDashPattern([1, 2, 0.5, 0.1]).asWkt(3),
+                         'MultiLineString ((1 1, 2 1),(4 1, 4.5 1),(4.6 1, 5.6 1),(7.6 1, 8.1 1),(8.2 1, 9.2 1))')
+
+        # pattern ends on dash
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').applyDashPattern([1.1, 1, 0.5, 0.1]).asWkt(3),
+                         'MultiLineString ((1 1, 2.1 1),(3.1 1, 3.6 1),(3.7 1, 4.8 1),(5.8 1, 6.3 1),(6.4 1, 7.5 1),(8.5 1, 9 1),(9.1 1, 10 1, 10 1))')
+
+        # pattern rules
+
+        # start rule only
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').applyDashPattern([1, 2, 0.5, 0.1], Qgis.DashPatternLineEndingRule.FullDash).asWkt(3),
+                         'MultiLineString ((1 1, 2 1),(4 1, 4.5 1),(4.6 1, 5.6 1),(7.6 1, 8.1 1),(8.2 1, 9.2 1))')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').applyDashPattern([1, 2, 0.5, 0.1], Qgis.DashPatternLineEndingRule.HalfDash).asWkt(3),
+                         'MultiLineString ((1 1, 1.5 1),(3.5 1, 4 1),(4.1 1, 5.1 1),(7.1 1, 7.6 1),(7.7 1, 8.7 1))')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').applyDashPattern([1, 2, 0.5, 0.1], Qgis.DashPatternLineEndingRule.FullGap).asWkt(3),
+                         'MultiLineString ((1.1 1, 2.1 1),(4.1 1, 4.6 1),(4.7 1, 5.7 1),(7.7 1, 8.2 1),(8.3 1, 9.3 1))')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').applyDashPattern([1, 2, 0.5, 0.1], Qgis.DashPatternLineEndingRule.HalfGap).asWkt(3),
+                         'MultiLineString ((1.05 1, 2.05 1),(4.05 1, 4.55 1),(4.65 1, 5.65 1),(7.65 1, 8.15 1),(8.25 1, 9.25 1))')
+
+        # end rule only
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').applyDashPattern([1, 2, 0.5, 0.1], endRule=Qgis.DashPatternLineEndingRule.FullDash).asWkt(3),
+                         'MultiLineString ((1 1, 1.841 1),(3.523 1, 3.944 1),(4.028 1, 4.869 1),(6.551 1, 6.972 1),(7.056 1, 7.897 1),(9.579 1, 10 1))')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').applyDashPattern([1, 2, 0.5, 0.1], endRule=Qgis.DashPatternLineEndingRule.HalfDash).asWkt(3),
+                         'MultiLineString ((1 1, 1.861 1),(3.584 1, 4.014 1),(4.1 1, 4.962 1),(6.684 1, 7.115 1),(7.201 1, 8.062 1),(9.785 1, 10 1, 10 1))')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').applyDashPattern([1, 2, 0.5, 0.1], endRule=Qgis.DashPatternLineEndingRule.FullGap).asWkt(3),
+                         'MultiLineString ((1 1, 1.833 1),(3.5 1, 3.917 1),(4 1, 4.833 1),(6.5 1, 6.917 1),(7 1, 7.833 1),(9.5 1, 9.917 1),(10 1, 10 1, 10 1))')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').applyDashPattern([1, 2, 0.5, 0.1], endRule=Qgis.DashPatternLineEndingRule.HalfGap).asWkt(3),
+                         'MultiLineString ((1 1, 1.837 1),(3.512 1, 3.93 1),(4.014 1, 4.851 1),(6.526 1, 6.944 1),(7.028 1, 7.865 1),(9.54 1, 9.958 1))')
+
+        # start and end rules
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').applyDashPattern([1, 2, 0.5, 0.1],
+                                                                                        Qgis.DashPatternLineEndingRule.FullDash,
+                                                                                        Qgis.DashPatternLineEndingRule.FullDash).asWkt(3),
+                         'MultiLineString ((1 1, 1.841 1),(3.523 1, 3.944 1),(4.028 1, 4.869 1),(6.551 1, 6.972 1),(7.056 1, 7.897 1),(9.579 1, 10 1))')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').applyDashPattern([1, 2, 0.5, 0.1], Qgis.DashPatternLineEndingRule.HalfDash,
+                                                                                        Qgis.DashPatternLineEndingRule.FullDash).asWkt(3),
+                         'MultiLineString ((1 1, 1.441 1),(3.206 1, 3.647 1),(3.735 1, 4.618 1),(6.382 1, 6.824 1),(6.912 1, 7.794 1),(9.559 1, 10 1, 10 1))')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').applyDashPattern([1, 2, 0.5, 0.1], Qgis.DashPatternLineEndingRule.FullGap,
+                                                                                        Qgis.DashPatternLineEndingRule.FullDash).asWkt(3),
+                         'MultiLineString ((1.083 1, 1.917 1),(3.583 1, 4 1),(4.083 1, 4.917 1),(6.583 1, 7 1),(7.083 1, 7.917 1),(9.583 1, 10 1))')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').applyDashPattern([1, 2, 0.5, 0.1], Qgis.DashPatternLineEndingRule.HalfGap,
+                                                                                        Qgis.DashPatternLineEndingRule.FullDash).asWkt(3),
+                         'MultiLineString ((1.042 1, 1.879 1),(3.553 1, 3.972 1),(4.056 1, 4.893 1),(6.567 1, 6.986 1),(7.07 1, 7.907 1),(9.581 1, 10 1))')
+
+        # adjustment rule
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').applyDashPattern([1, 2, 0.5, 0.1],
+                                                                                        Qgis.DashPatternLineEndingRule.FullDash,
+                                                                                        Qgis.DashPatternLineEndingRule.FullDash,
+                                                                                        Qgis.DashPatternSizeAdjustment.ScaleDashOnly).asWkt(3),
+                         'MultiLineString ((1 1, 1.622 1),(3.622 1, 3.933 1),(4.033 1, 4.656 1),(6.656 1, 6.967 1),(7.067 1, 7.689 1),(9.689 1, 10 1, 10 1))')
+
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').applyDashPattern([1, 2, 0.5, 0.1],
+                                                                                        Qgis.DashPatternLineEndingRule.FullDash,
+                                                                                        Qgis.DashPatternLineEndingRule.FullDash,
+                                                                                        Qgis.DashPatternSizeAdjustment.ScaleGapOnly).asWkt(3),
+                         'MultiLineString ((1 1, 2 1),(3.452 1, 3.952 1),(4.024 1, 5.024 1),(6.476 1, 6.976 1),(7.048 1, 8.048 1),(9.5 1, 10 1, 10 1))')
+
+        # pattern offset
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').applyDashPattern([1, 2, 0.5, 0.1],
+                                                                                        Qgis.DashPatternLineEndingRule.FullDash,
+                                                                                        Qgis.DashPatternLineEndingRule.FullDash,
+                                                                                        patternOffset=15).asWkt(3),
+                         'MultiLineString ((1 1, 1.336 1),(3.019 1, 3.439 1),(3.523 1, 4.364 1),(6.047 1, 6.467 1),(6.551 1, 7.393 1),(9.075 1, 9.495 1),(9.579 1, 10 1, 10 1))')
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').applyDashPattern([1, 2, 0.5, 0.1],
+                                                                                        Qgis.DashPatternLineEndingRule.FullDash,
+                                                                                        Qgis.DashPatternLineEndingRule.FullDash,
+                                                                                        patternOffset=-15).asWkt(3),
+                         'MultiLineString ((1 1, 1.421 1),(1.505 1, 2.346 1),(4.028 1, 4.449 1),(4.533 1, 5.374 1),(7.056 1, 7.477 1),(7.561 1, 8.402 1))')
+
+        # short line compared to pattern length
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 4 1)').applyDashPattern([1, 2, 0.5, 0.1],
+                                                                                       Qgis.DashPatternLineEndingRule.FullDash,
+                                                                                       Qgis.DashPatternLineEndingRule.FullDash,
+                                                                                       Qgis.DashPatternSizeAdjustment.ScaleDashOnly).asWkt(3),
+                         'MultiLineString ((1 1, 1.667 1),(3.667 1, 4 1))')
+
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 2 1)').applyDashPattern([1, 2],
+                                                                                       Qgis.DashPatternLineEndingRule.FullDash,
+                                                                                       Qgis.DashPatternLineEndingRule.FullDash).asWkt(3),
+                         'MultiLineString ((1 1, 2 1))')
+
+        self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1, 10 10)').applyDashPattern([1, 2, 0.5, 0.1]).asWkt(3),
+                         'MultiLineString ((1 1, 2 1),(4 1, 4.5 1),(4.6 1, 5.6 1),(7.6 1, 8.1 1),(8.2 1, 9.2 1),(10 2.2, 10 2.7),(10 2.8, 10 3.8),(10 5.8, 10 6.3),(10 6.4, 10 7.4),(10 9.4, 10 9.9),(10 10, 10 10, 10 10))')
+
+        self.assertEqual(
+            QgsGeometry.fromWkt('MultiLineString ((1 1, 10 1),(10 10, 0 10))').applyDashPattern([1, 2, 0.5, 0.1]).asWkt(3),
+            'MultiLineString ((1 1, 2 1),(4 1, 4.5 1),(4.6 1, 5.6 1),(7.6 1, 8.1 1),(8.2 1, 9.2 1),(10 10, 9 10),(7 10, 6.5 10),(6.4 10, 5.4 10),(3.4 10, 2.9 10),(2.8 10, 1.8 10))')
+
+        self.assertEqual(
+            QgsGeometry.fromWkt('Polygon ((1 1, 10 1, 10 10, 1 10, 1 1),(3 4, 8 4, 7 7, 4 6, 3 4))').applyDashPattern([1, 2, 0.5, 0.1]).asWkt(
+                3),
+            'MultiLineString ((1 1, 2 1),(4 1, 4.5 1),(4.6 1, 5.6 1),(7.6 1, 8.1 1),(8.2 1, 9.2 1),(10 2.2, 10 2.7),(10 2.8, 10 3.8),(10 5.8, 10 6.3),(10 6.4, 10 7.4),(10 9.4, 10 9.9),(10 10, 10 10, 9 10),(7 10, 6.5 10),(6.4 10, 5.4 10),(3.4 10, 2.9 10),(2.8 10, 1.8 10),(1 8.8, 1 8.3),(1 8.2, 1 7.2),(1 5.2, 1 4.7),(1 4.6, 1 3.6),(1 1.6, 1 1.1),(1 1, 1 1, 1 1),(3 4, 4 4),(6 4, 6.5 4),(6.6 4, 7.6 4),(7.494 5.518, 7.336 5.992),(7.304 6.087, 7 7, 6.964 6.988),(5.067 6.356, 4.593 6.198),(4.498 6.166, 4 6, 3.787 5.575))')
+        self.assertEqual(QgsGeometry.fromWkt(
+            'MultiPolygon (((1 1, 10 1, 10 10, 1 10, 1 1)),((20 20, 20 30, 30 20, 20 20)))').applyDashPattern([1, 2, 0.5, 0.1]).asWkt(
+            3),
+            'MultiLineString ((1 1, 2 1),(4 1, 4.5 1),(4.6 1, 5.6 1),(7.6 1, 8.1 1),(8.2 1, 9.2 1),(10 2.2, 10 2.7),(10 2.8, 10 3.8),(10 5.8, 10 6.3),(10 6.4, 10 7.4),(10 9.4, 10 9.9),(10 10, 10 10, 9 10),(7 10, 6.5 10),(6.4 10, 5.4 10),(3.4 10, 2.9 10),(2.8 10, 1.8 10),(1 8.8, 1 8.3),(1 8.2, 1 7.2),(1 5.2, 1 4.7),(1 4.6, 1 3.6),(1 1.6, 1 1.1),(1 1, 1 1, 1 1),(20 20, 20 21),(20 23, 20 23.5),(20 23.6, 20 24.6),(20 26.6, 20 27.1),(20 27.2, 20 28.2),(20.141 29.859, 20.495 29.505),(20.566 29.434, 21.273 28.727),(22.687 27.313, 23.041 26.959),(23.111 26.889, 23.818 26.182),(25.233 24.767, 25.586 24.414),(25.657 24.343, 26.364 23.636),(27.778 22.222, 28.132 21.868),(28.202 21.798, 28.91 21.09),(29.542 20, 29.042 20),(28.942 20, 27.942 20),(25.942 20, 25.442 20),(25.342 20, 24.342 20),(22.342 20, 21.842 20),(21.742 20, 20.742 20))')
+
     def testGeosCrash(self):
         # test we don't crash when geos returns a point geometry with no points
         QgsGeometry.fromWkt('Polygon ((0 0, 1 1, 1 0, 0 0))').intersection(QgsGeometry.fromWkt('Point (42 0)')).isNull()

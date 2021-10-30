@@ -1170,6 +1170,25 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry roundWavesRandomized( double minimumWavelength, double maximumWavelength, double minimumAmplitude, double maximumAmplitude, unsigned long seed = 0 ) const;
 
     /**
+     * Applies a dash pattern to a geometry, returning a MultiLineString geometry which is the
+     * input geometry stroked along each line/ring with the specified \a pattern.
+     *
+     * The \a startRule and \a endRule options can be set to control how the dash pattern is adjusted
+     * at line endings. If a \a startRule or \a endRule is set, the \a adjustment option defines whether
+     * both dash and gaps, or only dash or gap sizes are adjusted to apply the rules.
+     *
+     * The \a patternOffset option specifies how far along the pattern the result should start at.
+     * The offset is applied AFTER any start/end rules are applied.
+     *
+     * \since QGIS 3.24
+     */
+    QgsGeometry applyDashPattern( const QVector< double > &pattern,
+                                  Qgis::DashPatternLineEndingRule startRule = Qgis::DashPatternLineEndingRule::NoRule,
+                                  Qgis::DashPatternLineEndingRule endRule = Qgis::DashPatternLineEndingRule::NoRule,
+                                  Qgis::DashPatternSizeAdjustment adjustment = Qgis::DashPatternSizeAdjustment::ScaleBothDashAndGap,
+                                  double patternOffset = 0 ) const;
+
+    /**
      * Returns a new geometry with all points or vertices snapped to the closest point of the grid.
      *
      * If the gridified geometry could not be calculated (or was totally collapsed) an empty geometry will be returned.
