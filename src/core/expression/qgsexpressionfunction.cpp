@@ -2951,6 +2951,96 @@ static QVariant fcnRoundWaveRandomized( const QVariantList &values, const QgsExp
   return waved;
 }
 
+static QVariant fcnApplyDashPattern( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isNull() )
+    return QVariant();
+
+  const QVariantList pattern = QgsExpressionUtils::getListValue( values.at( 1 ), parent );
+  QVector< double > dashPattern;
+  dashPattern.reserve( pattern.size() );
+  for ( const QVariant &value : std::as_const( pattern ) )
+  {
+    bool ok = false;
+    double v = value.toDouble( &ok );
+    if ( ok )
+    {
+      dashPattern << v;
+    }
+    else
+    {
+      parent->setEvalErrorString( QStringLiteral( "Dash pattern must be an array of numbers" ) );
+      return QgsGeometry();
+    }
+  }
+
+  if ( dashPattern.size() % 2 != 0 )
+  {
+    parent->setEvalErrorString( QStringLiteral( "Dash pattern must contain an even number of elements" ) );
+    return QgsGeometry();
+  }
+
+  const QString startRuleString = QgsExpressionUtils::getStringValue( values.at( 2 ), parent ).trimmed();
+  Qgis::DashPatternLineEndingRule startRule = Qgis::DashPatternLineEndingRule::NoRule;
+  if ( startRuleString.compare( QLatin1String( "no_rule" ), Qt::CaseInsensitive ) == 0 )
+    startRule = Qgis::DashPatternLineEndingRule::NoRule;
+  else if ( startRuleString.compare( QLatin1String( "full_dash" ), Qt::CaseInsensitive ) == 0 )
+    startRule = Qgis::DashPatternLineEndingRule::FullDash;
+  else if ( startRuleString.compare( QLatin1String( "half_dash" ), Qt::CaseInsensitive ) == 0 )
+    startRule = Qgis::DashPatternLineEndingRule::HalfDash;
+  else if ( startRuleString.compare( QLatin1String( "full_gap" ), Qt::CaseInsensitive ) == 0 )
+    startRule = Qgis::DashPatternLineEndingRule::FullGap;
+  else if ( startRuleString.compare( QLatin1String( "half_gap" ), Qt::CaseInsensitive ) == 0 )
+    startRule = Qgis::DashPatternLineEndingRule::HalfGap;
+  else
+  {
+    parent->setEvalErrorString( QStringLiteral( "'%1' is not a valid dash pattern rule" ).arg( startRuleString ) );
+    return QgsGeometry();
+  }
+
+  const QString endRuleString = QgsExpressionUtils::getStringValue( values.at( 3 ), parent ).trimmed();
+  Qgis::DashPatternLineEndingRule endRule = Qgis::DashPatternLineEndingRule::NoRule;
+  if ( endRuleString.compare( QLatin1String( "no_rule" ), Qt::CaseInsensitive ) == 0 )
+    endRule = Qgis::DashPatternLineEndingRule::NoRule;
+  else if ( endRuleString.compare( QLatin1String( "full_dash" ), Qt::CaseInsensitive ) == 0 )
+    endRule = Qgis::DashPatternLineEndingRule::FullDash;
+  else if ( endRuleString.compare( QLatin1String( "half_dash" ), Qt::CaseInsensitive ) == 0 )
+    endRule = Qgis::DashPatternLineEndingRule::HalfDash;
+  else if ( endRuleString.compare( QLatin1String( "full_gap" ), Qt::CaseInsensitive ) == 0 )
+    endRule = Qgis::DashPatternLineEndingRule::FullGap;
+  else if ( endRuleString.compare( QLatin1String( "half_gap" ), Qt::CaseInsensitive ) == 0 )
+    endRule = Qgis::DashPatternLineEndingRule::HalfGap;
+  else
+  {
+    parent->setEvalErrorString( QStringLiteral( "'%1' is not a valid dash pattern rule" ).arg( endRuleString ) );
+    return QgsGeometry();
+  }
+
+  const QString adjustString = QgsExpressionUtils::getStringValue( values.at( 4 ), parent ).trimmed();
+  Qgis::DashPatternSizeAdjustment adjustment = Qgis::DashPatternSizeAdjustment::ScaleBothDashAndGap;
+  if ( adjustString.compare( QLatin1String( "both" ), Qt::CaseInsensitive ) == 0 )
+    adjustment = Qgis::DashPatternSizeAdjustment::ScaleBothDashAndGap;
+  else if ( adjustString.compare( QLatin1String( "dash" ), Qt::CaseInsensitive ) == 0 )
+    adjustment = Qgis::DashPatternSizeAdjustment::ScaleDashOnly;
+  else if ( adjustString.compare( QLatin1String( "gap" ), Qt::CaseInsensitive ) == 0 )
+    adjustment = Qgis::DashPatternSizeAdjustment::ScaleGapOnly;
+  else
+  {
+    parent->setEvalErrorString( QStringLiteral( "'%1' is not a valid dash pattern size adjustment" ).arg( adjustString ) );
+    return QgsGeometry();
+  }
+
+  const double patternOffset = QgsExpressionUtils::getDoubleValue( values.at( 5 ), parent );
+
+  const QgsGeometry result = geom.applyDashPattern( dashPattern, startRule, endRule, adjustment, patternOffset );
+  if ( result.isNull() )
+    return QVariant();
+
+  return result;
+}
+
 static QVariant fcnCollectGeometries( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QVariantList list;
@@ -7298,6 +7388,15 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       QgsExpressionFunction::Parameter( QStringLiteral( "max_amplitude" ) ),
       QgsExpressionFunction::Parameter( QStringLiteral( "seed" ), true, 0 )
     }, fcnRoundWaveRandomized, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "apply_dash_pattern" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "pattern" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "start_rule" ), true, QStringLiteral( "no_rule" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "end_rule" ), true, QStringLiteral( "no_rule" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "adjustment" ), true, QStringLiteral( "both" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "pattern_offset" ), true, 0 ),
+    }, fcnApplyDashPattern, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "num_points" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnGeomNumPoints, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "num_interior_rings" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnGeomNumInteriorRings, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "num_rings" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnGeomNumRings, QStringLiteral( "GeometryGroup" ) )
