@@ -391,6 +391,7 @@ void QgsAttributeTableModel::loadAttributes()
   mWidgetFactories.clear();
   mAttributeWidgetCaches.clear();
   mWidgetConfigs.clear();
+  mFieldFormatters.clear();
 
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
