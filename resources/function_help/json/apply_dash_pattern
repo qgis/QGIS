@@ -4,7 +4,7 @@
   "groups": ["GeometryGroup"],
   "description": "Applies a dash pattern to a geometry, returning a MultiLineString geometry which is the input geometry stroked along each line/ring with the specified pattern.",
   "arguments": [
-    {"arg":"geometry","description":"a geometry"},
+    {"arg":"geometry","description":"a geometry (accepts (multi)linestrings or (multi)polygons)."},
     {"arg":"pattern","description":"dash pattern, as an array of numbers representing dash and gap lengths. Must contain an even number of elements."},
     {"arg":"start_rule","optional": true, "default": "no_rule", "description":"optional rule for constraining the start of the pattern. Valid values are 'no_rule', 'full_dash', 'half_dash', 'full_gap', 'half_gap'."},
     {"arg":"end_rule","optional": true, "default": "no_rule", "description":"optional rule for constraining the end of the pattern. Valid values are 'no_rule', 'full_dash', 'half_dash', 'full_gap', 'half_gap'."},
