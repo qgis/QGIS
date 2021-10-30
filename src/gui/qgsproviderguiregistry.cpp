@@ -36,6 +36,7 @@
 #ifdef HAVE_STATIC_PROVIDERS
 #include "qgswmsprovidergui.h"
 #include "qgspostgresprovidergui.h"
+#include "qgsdelimitedtextprovidergui.h"
 #endif
 
 /**
@@ -95,6 +96,9 @@ void QgsProviderGuiRegistry::loadStaticProviders( )
 
   QgsProviderGuiMetadata *postgres = new QgsPostgresProviderGuiMetadata();
   mProviders[ postgres->key() ] = postgres;
+
+  QgsProviderGuiMetadata *delimitedtext = new QgsDelimitedTextProviderGuiMetadata();
+  mProviders[ delimitedtext->key() ] = delimitedtext;
 #endif
 }
 

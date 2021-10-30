@@ -2134,6 +2134,7 @@ if (FORCE_STATIC_LIBS)
   target_link_libraries(qgis_core
     provider_wms_a
     provider_postgres_a
+    provider_delimitedtext_a
   )
 
   if (WITH_AUTH)
