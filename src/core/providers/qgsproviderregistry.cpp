@@ -44,7 +44,9 @@
 
 #ifdef HAVE_STATIC_PROVIDERS
 #include "qgswmsprovider.h"
+#ifdef HAVE_POSTGRESQL
 #include "qgspostgresprovider.h"
+#endif
 #include "qgsdelimitedtextprovider.h"
 #endif
 
@@ -191,7 +193,9 @@ void QgsProviderRegistry::init()
 
 #ifdef HAVE_STATIC_PROVIDERS
   mProviders[ QgsWmsProvider::providerKey() ] = new QgsWmsProviderMetadata();
+#ifdef HAVE_POSTGRESQL
   mProviders[ QgsPostgresProvider::providerKey() ] = new QgsPostgresProviderMetadata();
+#endif
   mProviders[ QgsDelimitedTextProvider::providerKey() ] = new QgsDelimitedTextProviderMetadata();
 #endif
 
