@@ -237,17 +237,17 @@ void QgsRelationEditorWidget::initDualView( QgsVectorLayer *layer, const QgsFeat
   if ( layer->geometryType() == QgsWkbTypes::PointGeometry )
   {
     icon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionCapturePoint.svg" ) );
-    text = tr( "Add Point child Feature" );
+    text = tr( "Add Point Child Feature" );
   }
   else if ( layer->geometryType() == QgsWkbTypes::LineGeometry )
   {
     icon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionCaptureLine.svg" ) );
-    text = tr( "Add Line child Feature" );
+    text = tr( "Add Line Child Feature" );
   }
   else if ( layer->geometryType() == QgsWkbTypes::PolygonGeometry )
   {
     icon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionCapturePolygon.svg" ) );
-    text = tr( "Add Polygon Feature" );
+    text = tr( "Add Polygon Child Feature" );
   }
 
   mAddFeatureGeometryButton->setIcon( icon );
