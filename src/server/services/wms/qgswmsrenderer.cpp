@@ -377,7 +377,7 @@ namespace QgsWms
         }
 
         const int nAtlasFeatures = atlasPk.size() / pkIndexesSize;
-        if ( nAtlasFeatures * pkIndexesSize != atlasPk.size() ) //Test is atlasPk.size() is a multiple of pkIndexesSize. Bail out if not
+        if ( nAtlasFeatures * pkIndexesSize != atlasPk.size() ) //Test if atlasPk.size() is a multiple of pkIndexesSize. Bail out if not
         {
           throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
                                         QStringLiteral( "Wrong number of ATLAS_PK parameters" ) );
