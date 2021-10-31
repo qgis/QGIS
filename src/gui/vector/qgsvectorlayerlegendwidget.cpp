@@ -78,11 +78,13 @@ QgsVectorLayerLegendWidget::QgsVectorLayerLegendWidget( QWidget *parent )
     mImageSourceLineEdit->setSource( mLayer->legendPlaceholderImage() );
   }
 
+  QHBoxLayout *placeholderLayout = new QHBoxLayout;
+  placeholderLayout->addWidget( mPlaceholderImageLabel );
+  placeholderLayout->addWidget( mImageSourceLineEdit );
 
   QVBoxLayout *layout = new QVBoxLayout;
   layout->setContentsMargins( 0, 0, 0, 0 );
-  layout->addWidget( mPlaceholderImageLabel );
-  layout->addWidget( mImageSourceLineEdit );
+  layout->addLayout( placeholderLayout );
   layout->addWidget( mLabelLegendGroupBox );
   layout->addWidget( mTextOnSymbolGroupBox );
 
