@@ -71,21 +71,21 @@ QgsArcGisRestProviderGuiMetadata::QgsArcGisRestProviderGuiMetadata()
 {
 }
 
-QList<QgsDataItemGuiProvider *> QgsArcGisRestProviderGuiMetadata::dataItemGuiProviders() override
+QList<QgsDataItemGuiProvider *> QgsArcGisRestProviderGuiMetadata::dataItemGuiProviders()
 {
   QList<QgsDataItemGuiProvider *> providers;
   providers << new QgsArcGisRestDataItemGuiProvider();
   return providers;
 }
 
-QList<QgsSourceSelectProvider *> QgsArcGisRestProviderGuiMetadata::sourceSelectProviders() override
+QList<QgsSourceSelectProvider *> QgsArcGisRestProviderGuiMetadata::sourceSelectProviders()
 {
   QList<QgsSourceSelectProvider *> providers;
   providers << new QgsArcGisRestSourceSelectProvider;
   return providers;
 }
 
-QList<QgsProviderSourceWidgetProvider *> QgsArcGisRestProviderGuiMetadata::sourceWidgetProviders() override
+QList<QgsProviderSourceWidgetProvider *> QgsArcGisRestProviderGuiMetadata::sourceWidgetProviders()
 {
   QList<QgsProviderSourceWidgetProvider *> providers;
   providers << new QgsArcGisRestSourceWidgetProvider();

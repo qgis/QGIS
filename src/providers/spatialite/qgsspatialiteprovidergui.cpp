@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsspatialiteprovidergui.h"
+
 #include "qgsapplication.h"
 #include "qgsproviderguimetadata.h"
 #include "qgssourceselectprovider.h"
@@ -44,14 +46,14 @@ QgsSpatiaLiteProviderGuiMetadata::QgsSpatiaLiteProviderGuiMetadata()
 {
 }
 
-QList<QgsSourceSelectProvider *> QgsSpatiaLiteProviderGuiMetadata::sourceSelectProviders() override
+QList<QgsSourceSelectProvider *> QgsSpatiaLiteProviderGuiMetadata::sourceSelectProviders()
 {
   QList<QgsSourceSelectProvider *> providers;
   providers << new QgsSpatialiteSourceSelectProvider;
   return providers;
 }
 
-QList<QgsDataItemGuiProvider *> QgsSpatiaLiteProviderGuiMetadata::dataItemGuiProviders() override
+QList<QgsDataItemGuiProvider *> QgsSpatiaLiteProviderGuiMetadata::dataItemGuiProviders()
 {
   return QList<QgsDataItemGuiProvider *>()
          << new QgsSpatiaLiteDataItemGuiProvider;
