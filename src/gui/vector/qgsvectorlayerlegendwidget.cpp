@@ -133,7 +133,7 @@ void QgsVectorLayerLegendWidget::populateLabelLegendTreeWidget()
 {
   mLabelLegendTreeWidget->clear();
   mLabelLegendTreeWidget->setColumnCount( 2 );
-  QTreeWidgetItem *headerItem = new QTreeWidgetItem( QStringList() << tr( "Description" ) << tr( "LegendText" ) );
+  QTreeWidgetItem *headerItem = new QTreeWidgetItem( QStringList() << tr( "Description" ) << tr( "Legend Text" ) );
   mLabelLegendTreeWidget->setHeaderItem( headerItem );
 
   const QgsAbstractVectorLayerLabeling *labeling = mLayer->labeling();
