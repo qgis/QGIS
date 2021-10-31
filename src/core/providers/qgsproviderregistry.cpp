@@ -47,6 +47,8 @@
 #include "qgsdelimitedtextprovider.h"
 #ifdef HAVE_SPATIALITE
 #include "qgsspatialiteprovider.h"
+#include "qgswfsprovider.h"
+#include "qgsoapifprovider.h"
 #endif
 #ifdef HAVE_POSTGRESQL
 #include "qgspostgresprovider.h"
@@ -199,6 +201,8 @@ void QgsProviderRegistry::init()
   mProviders[ QgsDelimitedTextProvider::providerKey() ] = new QgsDelimitedTextProviderMetadata();
 #ifdef HAVE_SPATIALITE
   mProviders[ QgsSpatiaLiteProvider::providerKey() ] = new QgsSpatiaLiteProviderMetadata();
+  mProviders[ QgsWFSProvider::providerKey() ] = new QgsWfsProviderMetadata();
+  mProviders[ QgsOapifProvider::providerKey() ] = new QgsOapifProviderMetadata();
 #endif
 #ifdef HAVE_POSTGRESQL
   mProviders[ QgsPostgresProvider::providerKey() ] = new QgsPostgresProviderMetadata();
