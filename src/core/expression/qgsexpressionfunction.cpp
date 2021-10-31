@@ -4194,38 +4194,45 @@ static QVariant fcnRotate( const QVariantList &values, const QgsExpressionContex
   const double rotation = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
   const QgsGeometry center = values.at( 2 ).isValid() ? QgsExpressionUtils::getGeometry( values.at( 2 ), parent )
                              : QgsGeometry();
+  const bool perPart = values.value( 3 ).toBool();
 
-  QgsPointXY pt;
-  if ( center.isNull() )
+  if ( center.isNull() && perPart && fGeom.isMultipart() )
   {
-    // if center wasn't specified, use bounding box centroid
-    pt = fGeom.boundingBox().center();
-  }
-  else if ( center.type() != QgsWkbTypes::PointGeometry )
-  {
-    parent->setEvalErrorString( QObject::tr( "Function 'rotate' requires a point value for the center" ) );
-    return QVariant();
-  }
-  else if ( center.isMultipart() )
-  {
-    QgsMultiPointXY multiPoint = center.asMultiPoint();
-    if ( multiPoint.count() == 1 )
+    // no explicit center, rotating per part
+    // (note that we only do this branch for multipart geometries -- for singlepart geometries
+    // the result is equivalent to setting perPart as false anyway)
+    std::unique_ptr< QgsGeometryCollection > collection( qgsgeometry_cast< QgsGeometryCollection * >( fGeom.constGet()->clone() ) );
+    for ( auto it = collection->parts_begin(); it != collection->parts_end(); ++it )
     {
-      pt = multiPoint[0];
+      const QgsPointXY partCenter = ( *it )->boundingBox().center();
+      QTransform t = QTransform::fromTranslate( partCenter.x(), partCenter.y() );
+      t.rotate( -rotation );
+      t.translate( -partCenter.x(), -partCenter.y() );
+      ( *it )->transform( t );
     }
-    else
+    return QVariant::fromValue( QgsGeometry( std::move( collection ) ) );
+  }
+  else
+  {
+    QgsPointXY pt;
+    if ( center.isEmpty() )
+    {
+      // if center wasn't specified, use bounding box centroid
+      pt = fGeom.boundingBox().center();
+    }
+    else if ( QgsWkbTypes::flatType( center.constGet()->simplifiedTypeRef()->wkbType() ) != QgsWkbTypes::Point )
     {
       parent->setEvalErrorString( QObject::tr( "Function 'rotate' requires a point value for the center" ) );
       return QVariant();
     }
-  }
-  else
-  {
-    pt = center.asPoint();
-  }
+    else
+    {
+      pt = QgsPointXY( *qgsgeometry_cast< const QgsPoint * >( center.constGet()->simplifiedTypeRef() ) );
+    }
 
-  fGeom.rotate( rotation, pt );
-  return QVariant::fromValue( fGeom );
+    fGeom.rotate( rotation, pt );
+    return QVariant::fromValue( fGeom );
+  }
 }
 
 static QVariant fcnScale( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -7263,7 +7270,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             fcnTranslate, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "rotate" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "rotation" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "center" ), true ),
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "center" ), true )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "per_part" ), true, false ),
                                             fcnRotate, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "scale" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "x_scale" ) )
