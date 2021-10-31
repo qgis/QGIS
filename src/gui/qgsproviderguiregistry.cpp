@@ -35,8 +35,13 @@
 
 #ifdef HAVE_STATIC_PROVIDERS
 #include "qgswmsprovidergui.h"
-#include "qgspostgresprovidergui.h"
 #include "qgsdelimitedtextprovidergui.h"
+#ifdef HAVE_SPATIALITE
+#include "qgsspatialiteprovidergui.h"
+#endif
+#ifdef HAVE_POSTGRESQL
+#include "qgspostgresprovidergui.h"
+#endif
 #endif
 
 /**
@@ -94,11 +99,16 @@ void QgsProviderGuiRegistry::loadStaticProviders( )
   QgsProviderGuiMetadata *wms = new QgsWmsProviderGuiMetadata();
   mProviders[ wms->key() ] = wms;
 
-  QgsProviderGuiMetadata *postgres = new QgsPostgresProviderGuiMetadata();
-  mProviders[ postgres->key() ] = postgres;
-
   QgsProviderGuiMetadata *delimitedtext = new QgsDelimitedTextProviderGuiMetadata();
   mProviders[ delimitedtext->key() ] = delimitedtext;
+#ifdef HAVE_SPATIALITE
+  QgsProviderGuiMetadata *spatialite = new QgsSpatiaLiteProviderGuiMetadata();
+  mProviders[ spatialite->key() ] = spatialite;
+#endif
+#ifdef HAVE_POSTGRESQL
+  QgsProviderGuiMetadata *postgres = new QgsPostgresProviderGuiMetadata();
+  mProviders[ postgres->key() ] = postgres;
+#endif
 #endif
 }
 

@@ -1544,9 +1544,18 @@ endif()
 if (FORCE_STATIC_LIBS)
   target_link_libraries(qgis_gui
     provider_wms_gui_a
-    provider_postgres_gui_a
     provider_delimitedtext_gui_a
   )
+  if (HAVE_SPATIALITE)
+    target_link_libraries(qgis_gui
+      provider_spatialite_gui_a
+    )
+  endif()
+  if (HAVE_POSTGRESQL)
+    target_link_libraries(qgis_gui
+      provider_postgres_gui_a
+    )
+  endif()
 endif()
 
 if(ENABLE_MODELTEST)

@@ -3788,6 +3788,10 @@ QString QgsSpatiaLiteProvider::name() const
   return SPATIALITE_KEY;
 }                               //  QgsSpatiaLiteProvider::name()
 
+QString QgsSpatiaLiteProvider::providerKey()
+{
+  return SPATIALITE_KEY;
+}
 
 QString QgsSpatiaLiteProvider::description() const
 {
@@ -6476,8 +6480,9 @@ void QgsSpatiaLiteProviderMetadata::saveConnection( const QgsAbstractProviderCon
 }
 
 
+#ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsSpatiaLiteProviderMetadata();
 }
-
+#endif

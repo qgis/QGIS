@@ -2133,9 +2133,18 @@ endif()
 if (FORCE_STATIC_LIBS)
   target_link_libraries(qgis_core
     provider_wms_a
-    provider_postgres_a
     provider_delimitedtext_a
   )
+  if (HAVE_SPATIALITE)
+    target_link_libraries(qgis_core
+      provider_spatialite_a
+    )
+  endif()
+  if (HAVE_POSTGRESQL)
+    target_link_libraries(qgis_core
+      provider_postgres_a
+    )
+  endif()
 
   if (WITH_AUTH)
     target_link_libraries(qgis_core
