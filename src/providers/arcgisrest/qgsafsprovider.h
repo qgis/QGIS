@@ -78,6 +78,8 @@ class QgsAfsProvider : public QgsVectorDataProvider
     QgsAbstractVectorLayerLabeling *createLabeling( const QVariantMap &configuration = QVariantMap() ) const override;
     bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
 
+    static QString providerKey();
+
   private:
     bool mValid = false;
     std::shared_ptr<QgsAfsSharedData> mSharedData;

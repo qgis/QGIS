@@ -36,6 +36,7 @@
 #ifdef HAVE_STATIC_PROVIDERS
 #include "qgswmsprovidergui.h"
 #include "qgsdelimitedtextprovidergui.h"
+#include "qgsarcgisrestprovidergui.h"
 #ifdef HAVE_SPATIALITE
 #include "qgsspatialiteprovidergui.h"
 #include "qgswfsprovidergui.h"
@@ -100,9 +101,10 @@ void QgsProviderGuiRegistry::loadStaticProviders( )
 #ifdef HAVE_STATIC_PROVIDERS
   QgsProviderGuiMetadata *wms = new QgsWmsProviderGuiMetadata();
   mProviders[ wms->key() ] = wms;
-
   QgsProviderGuiMetadata *delimitedtext = new QgsDelimitedTextProviderGuiMetadata();
   mProviders[ delimitedtext->key() ] = delimitedtext;
+  QgsProviderGuiMetadata *arc = new QgsArcGisRestProviderGuiMetadata();
+  mProviders[ arc->key() ] = arc;
 #ifdef HAVE_SPATIALITE
   QgsProviderGuiMetadata *spatialite = new QgsSpatiaLiteProviderGuiMetadata();
   mProviders[ spatialite->key() ] = spatialite;

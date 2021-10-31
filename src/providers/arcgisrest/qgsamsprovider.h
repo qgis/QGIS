@@ -88,6 +88,8 @@ class QgsAmsProvider : public QgsRasterDataProvider
     bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
     QgsLayerMetadata layerMetadata() const override;
 
+    static QString providerKey();
+
     /* Inherited from QgsRasterInterface */
     int bandCount() const override { return 1; }
     int capabilities() const override { return Identify | IdentifyText | IdentifyFeature | Prefetch; }
