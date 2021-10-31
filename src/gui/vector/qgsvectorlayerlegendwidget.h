@@ -24,7 +24,6 @@
 #include "qgstextformat.h"
 #include "qgis_gui.h"
 
-class QCheckBox;
 class QgsImageSourceLineEdit;
 class QLabel;
 class QPushButton;
@@ -60,7 +59,6 @@ class GUI_EXPORT QgsVectorLayerLegendWidget : public QWidget
 
   private slots:
     void labelsFromExpression();
-    void enableLabelLegendGroupBox( bool enable );
     void labelLegendTreeWidgetItemDoubleClicked( QTreeWidgetItem *item, int column );
 
   private:
@@ -74,7 +72,6 @@ class GUI_EXPORT QgsVectorLayerLegendWidget : public QWidget
     QPushButton *mTextOnSymbolFromExpressionButton = nullptr;
     QgsCollapsibleGroupBox *mTextOnSymbolGroupBox = nullptr;
     QLabel *mTextOnSymbolLabel = nullptr;
-    QCheckBox *mShowLabelLegendCheckBox = nullptr;
     QgsCollapsibleGroupBox *mLabelLegendGroupBox = nullptr;
     QTreeWidget *mLabelLegendTreeWidget = nullptr;
     QLabel *mPlaceholderImageLabel = nullptr;
