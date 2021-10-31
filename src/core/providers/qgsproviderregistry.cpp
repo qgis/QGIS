@@ -44,10 +44,13 @@
 
 #ifdef HAVE_STATIC_PROVIDERS
 #include "qgswmsprovider.h"
+#include "qgsdelimitedtextprovider.h"
+#ifdef HAVE_SPATIALITE
+#include "qgsspatialiteprovider.h"
+#endif
 #ifdef HAVE_POSTGRESQL
 #include "qgspostgresprovider.h"
 #endif
-#include "qgsdelimitedtextprovider.h"
 #endif
 
 #include <QString>
@@ -193,10 +196,13 @@ void QgsProviderRegistry::init()
 
 #ifdef HAVE_STATIC_PROVIDERS
   mProviders[ QgsWmsProvider::providerKey() ] = new QgsWmsProviderMetadata();
+  mProviders[ QgsDelimitedTextProvider::providerKey() ] = new QgsDelimitedTextProviderMetadata();
+#ifdef HAVE_SPATIALITE
+  mProviders[ QgsSpatiaLiteProvider::providerKey() ] = new QgsSpatiaLiteProviderMetadata();
+#endif
 #ifdef HAVE_POSTGRESQL
   mProviders[ QgsPostgresProvider::providerKey() ] = new QgsPostgresProviderMetadata();
 #endif
-  mProviders[ QgsDelimitedTextProvider::providerKey() ] = new QgsDelimitedTextProviderMetadata();
 #endif
 
   // add dynamic providers
