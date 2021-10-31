@@ -387,6 +387,7 @@ void QgsRelationEditorWidget::addFeature()
     return;
 
   mMultiEditTreeWidget->blockSignals( true );
+  mMultiEdit1NJustAddedIds = addedFeatures;
   QTreeWidgetItemIterator treeWidgetItemIterator( mMultiEditTreeWidget );
   while ( *treeWidgetItemIterator )
   {
@@ -452,12 +453,6 @@ void QgsRelationEditorWidget::multiEditItemSelectionChanged()
 {
   const QList<QTreeWidgetItem *> selectedItems = mMultiEditTreeWidget->selectedItems();
 
-  if ( ! mNmRelation.isValid() )
-  {
-    updateButtons();
-    return;
-  }
-
   // Select all items pointing to the same feature
   // but only if we are not deselecting.
   if ( selectedItems.size() == 1
@@ -465,9 +460,10 @@ void QgsRelationEditorWidget::multiEditItemSelectionChanged()
   {
     if ( selectedItems.first()->data( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureType ) ).toInt() == static_cast<int>( MultiEditFeatureType::Child ) )
     {
-      QgsFeatureId featureId = selectedItems.first()->data( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureId ) ).toInt();
-
       mMultiEditTreeWidget->blockSignals( true );
+
+      const QgsFeatureId featureIdSelectedItem = selectedItems.first()->data( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureId ) ).toInt();
+
       QTreeWidgetItemIterator treeWidgetItemIterator( mMultiEditTreeWidget );
       while ( *treeWidgetItemIterator )
       {
@@ -477,8 +473,20 @@ void QgsRelationEditorWidget::multiEditItemSelectionChanged()
           continue;
         }
 
-        if ( featureId == ( *treeWidgetItemIterator )->data( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureId ) ).toInt() )
-          ( *treeWidgetItemIterator )->setSelected( true );
+        const QgsFeatureId featureIdCurrentItem = ( *treeWidgetItemIterator )->data( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureId ) ).toInt();
+        if ( mNmRelation.isValid() )
+        {
+          if ( featureIdSelectedItem == featureIdCurrentItem )
+            ( *treeWidgetItemIterator )->setSelected( true );
+        }
+        else
+        {
+          if ( ! mMultiEdit1NJustAddedIds.contains( featureIdSelectedItem ) )
+            break;
+
+          if ( mMultiEdit1NJustAddedIds.contains( featureIdCurrentItem ) )
+            ( *treeWidgetItemIterator )->setSelected( true );
+        }
 
         ++treeWidgetItemIterator;
       }

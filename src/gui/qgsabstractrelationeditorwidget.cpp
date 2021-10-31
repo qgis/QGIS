@@ -242,7 +242,8 @@ QgsFeatureIds QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &ge
     QgsAttributeMap linkAttributes = keyAttrs;
     const auto constFieldPairs = mRelation.fieldPairs();
 
-    for ( const QgsFeature &editingFeature : mFeatureList )
+    QgsVectorLayerUtils::QgsFeaturesDataList linkFeatureDataList;
+    for ( const QgsFeature &editingFeature : std::as_const( mFeatureList ) )
     {
       for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
       {
@@ -257,10 +258,10 @@ QgsFeatureIds QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &ge
         linkAttributes.insert( index, finalFeature.attribute( fieldPair.second ) );
       }
 
-      QgsFeature linkFeature = QgsVectorLayerUtils::createFeature( mRelation.referencingLayer(), QgsGeometry(), linkAttributes, &context );
-
-      mRelation.referencingLayer()->addFeature( linkFeature );
+      linkFeatureDataList.append( QgsVectorLayerUtils::QgsFeatureData( QgsGeometry(), linkAttributes ) );
     }
+    QgsFeatureList linkFeatureList = QgsVectorLayerUtils::createFeatures( mRelation.referencingLayer(), linkFeatureDataList, &context );
+    mRelation.referencingLayer()->addFeatures( linkFeatureList );
   }
   else
   {
@@ -275,7 +276,7 @@ QgsFeatureIds QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &ge
     addedFeatureIds.insert( linkFeature.id() );
 
     // In multiedit add to other features to but whitout dialog
-    for ( const QgsFeature &feature : mFeatureList )
+    for ( const QgsFeature &feature : std::as_const( mFeatureList ) )
     {
       // First feature already added
       if ( mFeatureList.first() == feature )
@@ -457,20 +458,8 @@ void QgsAbstractRelationEditorWidget::onLinkFeatureDlgAccepted()
     // only normal relations support m:n relation
     Q_ASSERT( mNmRelation.type() == QgsRelation::Normal );
 
-    QgsFeatureIterator it = mNmRelation.referencedLayer()->getFeatures(
-                              QgsFeatureRequest()
-                              .setFilterFids( selectionDlg->selectedFeatures() )
-                              .setSubsetOfAttributes( mNmRelation.referencedFields() ) );
-
-    QgsFeature relatedFeature;
-
-    QgsFeatureList newFeatures;
-
     // Fields of the linking table
     const QgsFields fields = mRelation.referencingLayer()->fields();
-
-    // Expression context for the linking table
-    QgsExpressionContext context = mRelation.referencingLayer()->createExpressionContext();
 
     QgsAttributeMap linkAttributes;
 
@@ -483,9 +472,15 @@ void QgsAbstractRelationEditorWidget::onLinkFeatureDlgAccepted()
                              polyRel.layerRepresentation( mRelation.referencedLayer() ) );
     }
 
+    QgsVectorLayerUtils::QgsFeaturesDataList linkFeatureDataList;
+    QgsFeature relatedFeature;
+    QgsFeatureIterator it = mNmRelation.referencedLayer()->getFeatures(
+                              QgsFeatureRequest()
+                              .setFilterFids( selectionDlg->selectedFeatures() )
+                              .setSubsetOfAttributes( mNmRelation.referencedFields() ) );
     while ( it.nextFeature( relatedFeature ) )
     {
-      for ( const QgsFeature &editFeature : mFeatureList )
+      for ( const QgsFeature &editFeature : std::as_const( mFeatureList ) )
       {
         {
           const auto constFieldPairs = mRelation.fieldPairs();
@@ -502,14 +497,19 @@ void QgsAbstractRelationEditorWidget::onLinkFeatureDlgAccepted()
           const int index = fields.indexOf( fieldPair.first );
           linkAttributes.insert( index, relatedFeature.attribute( fieldPair.second ) );
         }
-        const QgsFeature linkFeature = QgsVectorLayerUtils::createFeature( mRelation.referencingLayer(), QgsGeometry(), linkAttributes, &context );
-        newFeatures << linkFeature;
+
+        linkFeatureDataList.append( QgsVectorLayerUtils::QgsFeatureData( QgsGeometry(), linkAttributes ) );
       }
     }
 
-    mRelation.referencingLayer()->addFeatures( newFeatures );
+    // Expression context for the linking table
+    QgsExpressionContext context = mRelation.referencingLayer()->createExpressionContext();
+
+    QgsFeatureList linkFeaturesList = QgsVectorLayerUtils::createFeatures( mRelation.referencingLayer(), linkFeatureDataList, &context );
+
+    mRelation.referencingLayer()->addFeatures( linkFeaturesList );
     QgsFeatureIds ids;
-    const auto constNewFeatures = newFeatures;
+    const auto constNewFeatures = linkFeaturesList;
     for ( const QgsFeature &f : constNewFeatures )
       ids << f.id();
     mRelation.referencingLayer()->selectByIds( ids );

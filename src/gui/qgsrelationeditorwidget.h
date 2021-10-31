@@ -256,6 +256,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     bool mShowFirstFeature = true;
 
     QList<QTreeWidgetItem *> mMultiEditPreviousSelectedItems;
+    QgsFeatureIds mMultiEdit1NJustAddedIds;
 };
 
 
