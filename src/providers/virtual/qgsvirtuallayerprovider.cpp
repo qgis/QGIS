@@ -20,8 +20,6 @@ extern "C"
 #include <spatialite.h>
 }
 
-#include <QUrl>
-
 #include <stdexcept>
 
 #include "qgsvirtuallayerprovider.h"
@@ -30,23 +28,23 @@ extern "C"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgslogger.h"
-#include "qgsapplication.h"
 
 #include "qgsvirtuallayerprovider.h"
 #include "qgsvirtuallayersqlitemodule.h"
 #include "qgsvirtuallayerqueryparser.h"
 
-const QString VIRTUAL_LAYER_KEY = QStringLiteral( "virtual" );
-const QString VIRTUAL_LAYER_DESCRIPTION = QStringLiteral( "Virtual layer data provider" );
+#include <QUrl>
 
-const QString VIRTUAL_LAYER_QUERY_VIEW = QStringLiteral( "_query" );
+const QString QgsVirtualLayerProvider::VIRTUAL_LAYER_KEY = QStringLiteral( "virtual" );
+const QString QgsVirtualLayerProvider::VIRTUAL_LAYER_DESCRIPTION = QStringLiteral( "Virtual layer data provider" );
+const QString QgsVirtualLayerProvider::VIRTUAL_LAYER_QUERY_VIEW = QStringLiteral( "_query" );
 
 static QString quotedColumn( QString name )
 {
   return "\"" + name.replace( QLatin1String( "\"" ), QLatin1String( "\"\"" ) ) + "\"";
 }
 
-#define PROVIDER_ERROR( msg ) do { mError = QgsError( msg, VIRTUAL_LAYER_KEY ); QgsDebugMsg( msg ); } while(0)
+#define PROVIDER_ERROR( msg ) do { mError = QgsError( msg, QgsVirtualLayerProvider::VIRTUAL_LAYER_KEY ); QgsDebugMsg( msg ); } while(0)
 
 
 QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const &uri,
@@ -673,7 +671,7 @@ QgsVirtualLayerProvider *QgsVirtualLayerProviderMetadata::createProvider(
 }
 
 QgsVirtualLayerProviderMetadata::QgsVirtualLayerProviderMetadata():
-  QgsProviderMetadata( VIRTUAL_LAYER_KEY, VIRTUAL_LAYER_DESCRIPTION )
+  QgsProviderMetadata( QgsVirtualLayerProvider::VIRTUAL_LAYER_KEY, QgsVirtualLayerProvider::VIRTUAL_LAYER_DESCRIPTION )
 {
 }
 

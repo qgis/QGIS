@@ -44,7 +44,13 @@ if (WITH_GUI)
   endif()
   
   add_library(provider_arcgisfeatureserver_gui_a STATIC ${AFS_GUI_SRCS} ${AFS_UIS_H})
+
+  # require c++17
+  target_compile_features(provider_arcgisfeatureserver_gui_a PRIVATE cxx_std_17)
   
+  target_link_libraries(provider_arcgisfeatureserver_a
+    qgis_gui
+  )
   target_link_libraries(provider_arcgisfeatureserver_gui_a
     qgis_gui
   )

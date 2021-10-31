@@ -33,6 +33,10 @@ class QgsVirtualLayerProvider final: public QgsVectorDataProvider
     Q_OBJECT
   public:
 
+    static const QString VIRTUAL_LAYER_KEY;
+    static const QString VIRTUAL_LAYER_DESCRIPTION;
+    static const QString VIRTUAL_LAYER_QUERY_VIEW;
+
     /**
      * Constructor of the vector provider
      * \param uri uniform resource locator (URI) for a dataset

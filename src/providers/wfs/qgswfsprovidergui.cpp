@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgswfsprovidergui.h"
+
 #include "qgswfsprovider.h"
 #include "qgswfsdataitemguiprovider.h"
 #include "qgswfssourceselect.h"
@@ -65,20 +67,20 @@ QgsWfsProviderGuiMetadata::QgsWfsProviderGuiMetadata()
 {
 }
 
-QList<QgsSourceSelectProvider *> QgsWfsProviderGuiMetadata::sourceSelectProviders() override
+QList<QgsSourceSelectProvider *> QgsWfsProviderGuiMetadata::sourceSelectProviders()
 {
   QList<QgsSourceSelectProvider *> providers;
   providers << new QgsWfsSourceSelectProvider;
   return providers;
 }
 
-QList<QgsDataItemGuiProvider *> QgsWfsProviderGuiMetadata::dataItemGuiProviders() override
+QList<QgsDataItemGuiProvider *> QgsWfsProviderGuiMetadata::dataItemGuiProviders()
 {
   return QList<QgsDataItemGuiProvider *>()
          << new QgsWfsDataItemGuiProvider;
 }
 
-QList<QgsSubsetStringEditorProvider *> QgsWfsProviderGuiMetadata::subsetStringEditorProviders() override
+QList<QgsSubsetStringEditorProvider *> QgsWfsProviderGuiMetadata::subsetStringEditorProviders()
 {
   return QList<QgsSubsetStringEditorProvider *>()
          << new QgsWfsSubsetStringEditorProvider;

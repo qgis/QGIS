@@ -14,7 +14,10 @@
  ***************************************************************************/
 
 #include "qgsvirtuallayerprovidergui.h"
+
+#include "qgsapplication.h"
 #include "qgssourceselectprovider.h"
+#include "qgsvirtuallayerprovider.h"
 #include "qgsvirtuallayersourceselect.h"
 
 //! Provider for virtual layers source select
@@ -35,7 +38,7 @@ class QgsVirtualSourceSelectProvider : public QgsSourceSelectProvider
 
 
 QgsVirtualLayerProviderGuiMetadata::QgsVirtualLayerProviderGuiMetadata()
-  : QgsProviderGuiMetadata( VIRTUAL_LAYER_KEY )
+  : QgsProviderGuiMetadata( QgsVirtualLayerProvider::VIRTUAL_LAYER_KEY )
 {
 }
 

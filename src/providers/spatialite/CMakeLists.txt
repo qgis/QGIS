@@ -58,6 +58,9 @@ if (WITH_GUI)
     ${CMAKE_BINARY_DIR}/src/providers/spatialite
   )
 
+  target_link_libraries(provider_spatialite_a
+    qgis_gui
+  )
   target_link_libraries(provider_spatialite_gui_a
     qgis_gui
   )
@@ -82,7 +85,7 @@ if (FORCE_STATIC_LIBS)
     install (TARGETS provider_spatialite_gui_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
   endif()
 else()
-  add_library(provider_spatialite MODULE ${SPATIALITE_SRCS} ${SPATIALITE_GUI_SRCS})
+  add_library(provider_spatialite MODULE ${SPATIALITE_SRCS} ${SPATIALITE_GUI_SRCS} ${SPATIALITE_UIS_H})
 
   # require c++17
   target_compile_features(provider_spatialite PRIVATE cxx_std_17)
@@ -95,7 +98,7 @@ else()
   )
 
   if (WITH_GUI)
-    target_link_libraries (provider_spatialite
+    target_link_libraries(provider_spatialite
       qgis_gui
     )
     add_dependencies(provider_spatialite ui)

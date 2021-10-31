@@ -72,6 +72,9 @@ if (WITH_GUI)
     ${CMAKE_BINARY_DIR}/src/providers/wfs
   )
 
+  target_link_libraries(provider_wfs_a
+    qgis_gui
+  )
   target_link_libraries(provider_wfs_gui_a
     qgis_gui
   )
