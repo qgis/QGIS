@@ -350,6 +350,8 @@ QgsRasterDataProvider::ProviderCapabilities QgsAmsProvider::providerCapabilities
 
 QString QgsAmsProvider::name() const { return AMS_PROVIDER_KEY; }
 
+QString QgsAmsProvider::providerKey() { return AMS_PROVIDER_KEY; }
+
 QString QgsAmsProvider::description() const { return AMS_PROVIDER_DESCRIPTION; }
 
 QStringList QgsAmsProvider::subLayerStyles() const
@@ -1318,7 +1320,9 @@ QString QgsAmsProviderMetadata::encodeUri( const QVariantMap &parts ) const
   return dsUri.uri( false );
 }
 
+#ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsAmsProviderMetadata();
 }
+#endif

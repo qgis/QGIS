@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsdelimitedtextprovidergui.h"
+
 #include "qgsapplication.h"
 #include "qgsproviderguimetadata.h"
 #include "qgssourceselectprovider.h"
@@ -36,24 +38,21 @@ class QgsDelimitedTextSourceSelectProvider : public QgsSourceSelectProvider
 };
 
 
-class QgsDelimitedTextProviderGuiMetadata: public QgsProviderGuiMetadata
+QgsDelimitedTextProviderGuiMetadata::QgsDelimitedTextProviderGuiMetadata()
+  : QgsProviderGuiMetadata( QgsDelimitedTextProvider::TEXT_PROVIDER_KEY )
 {
-  public:
-    QgsDelimitedTextProviderGuiMetadata()
-      : QgsProviderGuiMetadata( QgsDelimitedTextProvider::TEXT_PROVIDER_KEY )
-    {
-    }
+}
 
-    QList<QgsSourceSelectProvider *> sourceSelectProviders() override
-    {
-      QList<QgsSourceSelectProvider *> providers;
-      providers << new QgsDelimitedTextSourceSelectProvider;
-      return providers;
-    }
-};
+QList<QgsSourceSelectProvider *> QgsDelimitedTextProviderGuiMetadata::sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> providers;
+  providers << new QgsDelimitedTextSourceSelectProvider;
+  return providers;
+}
 
-
+#ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
 {
   return new QgsDelimitedTextProviderGuiMetadata();
 }
+#endif

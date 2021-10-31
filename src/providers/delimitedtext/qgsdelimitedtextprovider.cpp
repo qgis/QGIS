@@ -1257,6 +1257,11 @@ QString  QgsDelimitedTextProvider::name() const
   return TEXT_PROVIDER_KEY;
 }
 
+QString QgsDelimitedTextProvider::providerKey()
+{
+  return TEXT_PROVIDER_KEY;
+}
+
 QString  QgsDelimitedTextProvider::description() const
 {
   return TEXT_PROVIDER_DESCRIPTION;
@@ -1330,7 +1335,9 @@ QgsDelimitedTextProviderMetadata::QgsDelimitedTextProviderMetadata():
 {
 }
 
+#ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsDelimitedTextProviderMetadata();
 }
+#endif

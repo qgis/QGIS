@@ -1586,7 +1586,12 @@ QString QgsWcsProvider::lastErrorFormat()
   return mErrorFormat;
 }
 
-QString  QgsWcsProvider::name() const
+QString QgsWcsProvider::name() const
+{
+  return WCS_KEY;
+}
+
+QString QgsWcsProvider::providerKey()
 {
   return WCS_KEY;
 }
@@ -1979,7 +1984,10 @@ QList< QgsDataItemProvider * > QgsWcsProviderMetadata::dataItemProviders() const
 QgsWcsProviderMetadata::QgsWcsProviderMetadata():
   QgsProviderMetadata( QgsWcsProvider::WCS_KEY, QgsWcsProvider::WCS_DESCRIPTION ) {}
 
+
+#ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsWcsProviderMetadata();
 }
+#endif
