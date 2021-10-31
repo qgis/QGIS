@@ -1323,6 +1323,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "rotate line fixed multi point" ) << "geom_to_wkt(rotate(geom_from_wkt('LineString(0 0, 10 0, 10 10)'),90, geom_from_wkt('MULTIPOINT((-5 -3))')))" << false << QVariant( "LineString (-2 -8, -2 -18, 8 -18)" );
       QTest::newRow( "rotate line fixed multi point multiple" ) << "geom_to_wkt(rotate(geom_from_wkt('LineString(0 0, 10 0, 10 10)'),90, geom_from_wkt('MULTIPOINT(-5 -3,1 2)')))" << true << QVariant();
       QTest::newRow( "rotate polygon centroid" ) << "geom_to_wkt(rotate(geom_from_wkt('Polygon((0 0, 10 0, 10 10, 0 0))'),-90))" << false << QVariant( "Polygon ((10 0, 10 10, 0 10, 10 0))" );
+      QTest::newRow( "rotate multiline centroid, not per part" ) << "geom_to_wkt(rotate(geom_from_wkt('MultiLineString((0 0, 10 0, 10 10), (12 0, 12 12))'),90))" << false << QVariant( "MultiLineString ((0 12, 0 2, 10 2),(0 0, 12 0))" );
+      QTest::newRow( "rotate multiline centroid, per part" ) << "geom_to_wkt(rotate(geom_from_wkt('MultiLineString((0 0, 10 0, 10 10), (12 0, 12 12))'),90, per_part:=true))" << false << QVariant( "MultiLineString ((0 10, 0 0, 10 0),(6 6, 18 6))" );
       QTest::newRow( "scale not geom" ) << "scale('g', 1.2, 0.8)" << true << QVariant();
       QTest::newRow( "scale null" ) << "scale(NULL, 1.2, 0.8)" << false << QVariant();
       QTest::newRow( "scale point" ) << "geom_to_wkt(scale(geom_from_wkt('POINT( 20 10)'), 1.2, 0.8, geom_from_wkt('POINT( 30 15)')))" << false << QVariant( "Point (18 11)" );
