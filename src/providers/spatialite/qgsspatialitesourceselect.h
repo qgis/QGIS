@@ -16,7 +16,9 @@
  ***************************************************************************/
 #ifndef QGSSPATIALITESOURCESELECT_H
 #define QGSSPATIALITESOURCESELECT_H
+
 #include "ui_qgsdbsourceselectbase.h"
+
 #include "qgsguiutils.h"
 #include "qgsdbfilterproxymodel.h"
 #include "qgsspatialitetablemodel.h"

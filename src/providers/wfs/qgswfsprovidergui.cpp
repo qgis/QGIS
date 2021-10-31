@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgswfsprovidergui.h"
+
 #include "qgswfsprovider.h"
 #include "qgswfsdataitemguiprovider.h"
 #include "qgswfssourceselect.h"
@@ -60,37 +62,34 @@ class QgsWfsSubsetStringEditorProvider: public QgsSubsetStringEditorProvider
 };
 
 
-class QgsWfsProviderGuiMetadata: public QgsProviderGuiMetadata
+QgsWfsProviderGuiMetadata::QgsWfsProviderGuiMetadata()
+  : QgsProviderGuiMetadata( QgsWFSProvider::WFS_PROVIDER_KEY )
 {
-  public:
-    QgsWfsProviderGuiMetadata()
-      : QgsProviderGuiMetadata( QgsWFSProvider::WFS_PROVIDER_KEY )
-    {
-    }
+}
 
-    QList<QgsSourceSelectProvider *> sourceSelectProviders() override
-    {
-      QList<QgsSourceSelectProvider *> providers;
-      providers << new QgsWfsSourceSelectProvider;
-      return providers;
-    }
+QList<QgsSourceSelectProvider *> QgsWfsProviderGuiMetadata::sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> providers;
+  providers << new QgsWfsSourceSelectProvider;
+  return providers;
+}
 
-    QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override
-    {
-      return QList<QgsDataItemGuiProvider *>()
-             << new QgsWfsDataItemGuiProvider;
-    }
+QList<QgsDataItemGuiProvider *> QgsWfsProviderGuiMetadata::dataItemGuiProviders()
+{
+  return QList<QgsDataItemGuiProvider *>()
+         << new QgsWfsDataItemGuiProvider;
+}
 
-    QList<QgsSubsetStringEditorProvider *> subsetStringEditorProviders() override
-    {
-      return QList<QgsSubsetStringEditorProvider *>()
-             << new QgsWfsSubsetStringEditorProvider;
-    }
-
-};
+QList<QgsSubsetStringEditorProvider *> QgsWfsProviderGuiMetadata::subsetStringEditorProviders()
+{
+  return QList<QgsSubsetStringEditorProvider *>()
+         << new QgsWfsSubsetStringEditorProvider;
+}
 
 
+#ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
 {
   return new QgsWfsProviderGuiMetadata();
 }
+#endif
