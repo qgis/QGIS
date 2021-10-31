@@ -128,12 +128,12 @@ class QgsBaseNetworkRequest : public QObject
 };
 
 
-class DownloaderThread : public QThread
+class _DownloaderThread : public QThread
 {
     Q_OBJECT
 
   public:
-    DownloaderThread( std::function<void()> function, QObject *parent = nullptr )
+    _DownloaderThread( std::function<void()> function, QObject *parent = nullptr )
       : QThread( parent )
       , mFunction( function )
     {

@@ -216,7 +216,7 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
 
   if ( synchronous && QThread::currentThread() == QApplication::instance()->thread() )
   {
-    std::unique_ptr<DownloaderThread> downloaderThread = std::make_unique<DownloaderThread>( downloaderFunction );
+    std::unique_ptr<_DownloaderThread> downloaderThread = std::make_unique<_DownloaderThread>( downloaderFunction );
     downloaderThread->start();
 
     while ( true )
