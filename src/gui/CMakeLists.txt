@@ -1545,6 +1545,7 @@ if (FORCE_STATIC_LIBS)
   target_link_libraries(qgis_gui
     provider_wms_gui_a
     provider_delimitedtext_gui_a
+    provider_arcgisfeatureserver_gui_a
   )
   if (HAVE_SPATIALITE)
     target_link_libraries(qgis_gui

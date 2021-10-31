@@ -2134,6 +2134,8 @@ if (FORCE_STATIC_LIBS)
   target_link_libraries(qgis_core
     provider_wms_a
     provider_delimitedtext_a
+    provider_arcgisfeatureserver_a
+    provider_arcgismapserver_a
   )
   if (HAVE_SPATIALITE)
     target_link_libraries(qgis_core
