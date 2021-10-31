@@ -190,6 +190,8 @@ class QgsWcsProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     QgsRasterDataProvider::ProviderCapabilities providerCapabilities() const override;
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const override;
 
+    static QString providerKey();
+
     int colorInterpretation( int bandNo ) const override;
 
     static QMap<QString, QString> supportedMimes();

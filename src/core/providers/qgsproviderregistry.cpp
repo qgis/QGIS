@@ -44,6 +44,7 @@
 
 #ifdef HAVE_STATIC_PROVIDERS
 #include "qgswmsprovider.h"
+#include "qgswcsprovider.h"
 #include "qgsdelimitedtextprovider.h"
 #include "qgsafsprovider.h"
 #include "qgsamsprovider.h"
@@ -201,6 +202,7 @@ void QgsProviderRegistry::init()
 
 #ifdef HAVE_STATIC_PROVIDERS
   mProviders[ QgsWmsProvider::providerKey() ] = new QgsWmsProviderMetadata();
+  mProviders[ QgsWcsProvider::providerKey() ] = new QgsWcsProviderMetadata();
   mProviders[ QgsDelimitedTextProvider::providerKey() ] = new QgsDelimitedTextProviderMetadata();
   mProviders[ QgsAfsProvider::providerKey() ] = new QgsAfsProviderMetadata();
   mProviders[ QgsAmsProvider::providerKey() ] = new QgsAmsProviderMetadata();
