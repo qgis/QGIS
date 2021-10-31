@@ -9,6 +9,7 @@ add_subdirectory(delimitedtext)
 if (WITH_SPATIALITE)
   add_subdirectory(spatialite)
   add_subdirectory(wfs)
+  add_subdirectory(virtual)
 endif()
 
 if (POSTGRES_FOUND)
@@ -25,10 +26,6 @@ if (NOT FORCE_STATIC_LIBS)
   add_subdirectory(mdal)
   if (WITH_ANALYSIS)
     add_subdirectory(virtualraster)
-  endif()
-
-  if (WITH_SPATIALITE)
-    add_subdirectory(virtual)
   endif()
 
   if (WITH_ORACLE)

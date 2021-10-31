@@ -2139,6 +2139,7 @@ if (FORCE_STATIC_LIBS)
     target_link_libraries(qgis_core
       provider_spatialite_a
       provider_wfs_a
+      provider_virtuallayer_a
     )
   endif()
   if (HAVE_POSTGRESQL)

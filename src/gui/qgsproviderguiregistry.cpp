@@ -39,6 +39,7 @@
 #ifdef HAVE_SPATIALITE
 #include "qgsspatialiteprovidergui.h"
 #include "qgswfsprovidergui.h"
+#include "qgsvirtuallayerprovidergui.h"
 #endif
 #ifdef HAVE_POSTGRESQL
 #include "qgspostgresprovidergui.h"
@@ -107,6 +108,8 @@ void QgsProviderGuiRegistry::loadStaticProviders( )
   mProviders[ spatialite->key() ] = spatialite;
   QgsProviderGuiMetadata *wfs = new QgsWfsProviderGuiMetadata();
   mProviders[ wfs->key() ] = wfs;
+  QgsProviderGuiMetadata *virtuallayer = new QgsVirtualLayerProviderGuiMetadata();
+  mProviders[ virtuallayer->key() ] = virtuallayer;
 #endif
 #ifdef HAVE_POSTGRESQL
   QgsProviderGuiMetadata *postgres = new QgsPostgresProviderGuiMetadata();
