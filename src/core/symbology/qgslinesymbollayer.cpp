@@ -770,14 +770,14 @@ void QgsSimpleLineSymbolLayer::drawPathWithDashPatternTweaks( QPainter *painter,
   if ( pen.dashPattern().empty() || points.size() < 2 )
     return;
 
+  if ( pen.widthF() <= 1.0 )
+    pen.setWidthF( 1.0001 );
+
   QVector< qreal > sourcePattern = pen.dashPattern();
-  const double dashWidthDiv = std::max( 1.0001, pen.widthF() );
+  const double dashWidthDiv = pen.widthF();
   // back to painter units
   for ( int i = 0; i < sourcePattern.size(); ++ i )
     sourcePattern[i] *= pen.widthF();
-
-  if ( pen.widthF() <= 1.0 )
-    pen.setWidthF( 1.0001 );
 
   QVector< qreal > buffer;
   QPolygonF bufferedPoints;
@@ -953,6 +953,8 @@ void QgsSimpleLineSymbolLayer::drawPathWithDashPatternTweaks( QPainter *painter,
           patternIndex++;
           currentRemainingDashLength = 0.0;
           currentRemainingGapLength = sourcePattern.at( patternIndex );
+          if ( currentRemainingGapLength == 0.0 )
+            patternIndex++;
         }
         else
         {
@@ -985,7 +987,7 @@ void QgsSimpleLineSymbolLayer::drawPathWithDashPatternTweaks( QPainter *painter,
         }
       }
 
-      if ( patternIndex >= sourcePattern.size() )
+      if ( patternIndex + 1 >= sourcePattern.size() )
         patternIndex = 0;
 
       const double nextPatternDashLength = sourcePattern.at( patternIndex );
