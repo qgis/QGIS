@@ -1913,15 +1913,7 @@ double QgsGeometry::length() const
     return -1.0;
   }
 
-  // avoid calling geos for trivial geometry calculations
-  if ( QgsWkbTypes::geometryType( d->geometry->wkbType() ) == QgsWkbTypes::PointGeometry || QgsWkbTypes::geometryType( d->geometry->wkbType() ) == QgsWkbTypes::LineGeometry )
-  {
-    return d->geometry->length();
-  }
-
-  QgsGeos g( d->geometry.get() );
-  mLastError.clear();
-  return g.length( &mLastError );
+  return d->geometry->length();
 }
 
 double QgsGeometry::distance( const QgsGeometry &geom ) const
