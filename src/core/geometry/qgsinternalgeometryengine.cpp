@@ -2475,12 +2475,24 @@ std::unique_ptr< QgsLineString > roundWavesRandomizedAlongLine( const QgsLineStr
   const double pX = midX + side * amplitude * std::sin( segmentAngleRadians + M_PI_2 );
   const double pY = midY + side * amplitude * std::cos( segmentAngleRadians + M_PI_2 );
 
-  std::unique_ptr< QgsLineString > bezier( QgsLineString::fromBezierCurve( out->endPoint(),
-      QgsPoint( ( out->endPoint().x() + pX ) * 0.5, ( out->endPoint().y() + pY ) * 0.5 ),
-      QgsPoint( ( prevX + pX ) * 0.5, ( prevY + pY ) * 0.5 ),
-      QgsPoint( prevX, prevY ),
-      segments ) );
-  out->append( bezier.get() );
+  if ( out->isEmpty() )
+  {
+    std::unique_ptr< QgsLineString > bezier( QgsLineString::fromBezierCurve( line->startPoint(),
+        QgsPoint( ( line->startPoint().x() + pX ) * 0.5, ( line->startPoint().y() + pY ) * 0.5 ),
+        QgsPoint( ( prevX + pX ) * 0.5, ( prevY + pY ) * 0.5 ),
+        QgsPoint( prevX, prevY ),
+        segments ) );
+    out->append( bezier.get() );
+  }
+  else
+  {
+    std::unique_ptr< QgsLineString > bezier( QgsLineString::fromBezierCurve( out->endPoint(),
+        QgsPoint( ( out->endPoint().x() + pX ) * 0.5, ( out->endPoint().y() + pY ) * 0.5 ),
+        QgsPoint( ( prevX + pX ) * 0.5, ( prevY + pY ) * 0.5 ),
+        QgsPoint( prevX, prevY ),
+        segments ) );
+    out->append( bezier.get() );
+  }
 
   return out;
 }
