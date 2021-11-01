@@ -6409,6 +6409,9 @@ class TestQgsGeometry(unittest.TestCase):
         """Test apply dash pattern"""
         self.assertEqual(QgsGeometry.fromWkt('Point (1 1)').applyDashPattern([1, 2]).asWkt(3), 'Point (1 1)')
         self.assertEqual(QgsGeometry.fromWkt('LineString (1 1)').applyDashPattern([1, 2]).asWkt(3), '')  # don't crash!
+        self.assertEqual(QgsGeometry.fromWkt('LineString EMPTY').applyDashPattern([1, 2]).asWkt(3), '')  # don't crash!
+        self.assertEqual(QgsGeometry.fromWkt('Polygon EMPTY').applyDashPattern([1, 2]).asWkt(3), '')  # don't crash!
+
         # bad pattern length
         self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10)').applyDashPattern([1, 2, 3]).asWkt(3), '')  # don't crash!
         self.assertEqual(QgsGeometry.fromWkt('LineString (1 1, 10 1)').applyDashPattern([1, 2]).asWkt(3),

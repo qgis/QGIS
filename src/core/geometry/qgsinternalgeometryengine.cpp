@@ -2920,7 +2920,7 @@ QgsGeometry QgsInternalGeometryEngine::applyDashPattern( const QVector<double> &
     return QgsGeometry( mGeometry->clone() );
 
   mLastError.clear();
-  if ( !mGeometry )
+  if ( !mGeometry || mGeometry->isEmpty() )
   {
     return QgsGeometry();
   }
