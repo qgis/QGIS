@@ -321,7 +321,7 @@ Returns a pixmap preview for a color ramp.
 .. seealso:: :py:func:`symbolPreviewIcon`
 %End
 
-    static QPicture symbolLayerPreviewPicture( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
+    static QPicture symbolLayerPreviewPicture( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid );
 %Docstring
 Draws a symbol layer preview to a QPicture
 
@@ -329,6 +329,7 @@ Draws a symbol layer preview to a QPicture
 :param units: size units
 :param size: target size of preview picture
 :param scale: map unit scale for preview
+:param parentSymbolType: since QGIS 3.22, can be used to specify the parent symbol type so that geometry generator preview icons are correctly calculated
 
 :return: QPicture containing symbol layer preview
 

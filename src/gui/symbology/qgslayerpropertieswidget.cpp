@@ -404,7 +404,7 @@ void QgsLayerPropertiesWidget::emitSignalChanged()
     mLayer->paintEffect()->setEnabled( false );
     paintEffectToggled = true;
   }
-  mEffectWidget->setPreviewPicture( QgsSymbolLayerUtils::symbolLayerPreviewPicture( mLayer, QgsUnitTypes::RenderMillimeters, QSize( 60, 60 ) ) );
+  mEffectWidget->setPreviewPicture( QgsSymbolLayerUtils::symbolLayerPreviewPicture( mLayer, QgsUnitTypes::RenderMillimeters, QSize( 60, 60 ), QgsMapUnitScale(), mSymbol ? mSymbol->type() : Qgis::SymbolType::Hybrid ) );
   if ( paintEffectToggled )
   {
     mLayer->paintEffect()->setEnabled( true );

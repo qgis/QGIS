@@ -938,7 +938,7 @@ double QgsSymbolLayerUtils::estimateMaxSymbolBleed( QgsSymbol *symbol, const Qgs
   return maxBleed;
 }
 
-QPicture QgsSymbolLayerUtils::symbolLayerPreviewPicture( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale & )
+QPicture QgsSymbolLayerUtils::symbolLayerPreviewPicture( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale &, Qgis::SymbolType parentSymbolType )
 {
   QPicture picture;
   QPainter painter;
@@ -948,6 +948,22 @@ QPicture QgsSymbolLayerUtils::symbolLayerPreviewPicture( const QgsSymbolLayer *l
   renderContext.setForceVectorOutput( true );
   renderContext.setFlag( Qgis::RenderContextFlag::RenderSymbolPreview, true );
   QgsSymbolRenderContext symbolContext( renderContext, units, 1.0, false, Qgis::SymbolRenderHints(), nullptr );
+
+  switch ( parentSymbolType )
+  {
+    case Qgis::SymbolType::Marker:
+      symbolContext.setOriginalGeometryType( QgsWkbTypes::PointGeometry );
+      break;
+    case Qgis::SymbolType::Line:
+      symbolContext.setOriginalGeometryType( QgsWkbTypes::LineGeometry );
+      break;
+    case Qgis::SymbolType::Fill:
+      symbolContext.setOriginalGeometryType( QgsWkbTypes::PolygonGeometry );
+      break;
+    case Qgis::SymbolType::Hybrid:
+      break;
+  }
+
   std::unique_ptr< QgsSymbolLayer > layerClone( layer->clone() );
   layerClone->drawPreviewIcon( symbolContext, size );
   painter.end();
