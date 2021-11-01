@@ -37,13 +37,8 @@ Renderer widget for the hill shade renderer.
 Factory method to create the renderer for this type.
 %End
 
-    virtual QgsRasterRenderer *renderer();
+    virtual QgsRasterRenderer *renderer() /Factory/;
 
-%Docstring
-The renderer for the widget.
-
-:return: A new renderer for the the config in the widget
-%End
 
     void setFromRenderer( const QgsRasterRenderer *renderer );
 %Docstring
