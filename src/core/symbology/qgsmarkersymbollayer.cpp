@@ -2972,7 +2972,10 @@ void QgsRasterMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderCont
     if ( context.selected() )
       QgsImageOperation::adjustHueSaturation( img, 1.0, context.renderContext().selectionColor(), 1.0, context.renderContext().feedback() );
 
+    const bool prevSmoothTransform = p->testRenderHint( QPainter::RenderHint::SmoothPixmapTransform );
+    p->setRenderHint( QPainter::RenderHint::SmoothPixmapTransform, true );
     p->drawImage( -img.width() / 2.0, -img.height() / 2.0, img );
+    p->setRenderHint( QPainter::RenderHint::SmoothPixmapTransform, prevSmoothTransform );
   }
 }
 
