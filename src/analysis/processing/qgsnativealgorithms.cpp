@@ -64,6 +64,7 @@
 #include "qgsalgorithmexplode.h"
 #include "qgsalgorithmexplodehstore.h"
 #include "qgsalgorithmexportlayersinformation.h"
+#include "qgsalgorithmexporttopostgresql.h"
 #include "qgsalgorithmextendlines.h"
 #include "qgsalgorithmextentfromlayer.h"
 #include "qgsalgorithmextenttolayer.h"
@@ -310,6 +311,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsExportMeshFacesAlgorithm );
   addAlgorithm( new QgsExportMeshEdgesAlgorithm );
   addAlgorithm( new QgsExportMeshOnGridAlgorithm );
+  addAlgorithm( new QgsExportToPostgresqlAlgorithm );
   addAlgorithm( new QgsExportToSpreadsheetAlgorithm() );
   addAlgorithm( new QgsExtendLinesAlgorithm() );
   addAlgorithm( new QgsExtentFromLayerAlgorithm() );
