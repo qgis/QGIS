@@ -1264,7 +1264,10 @@ void QgsMapCanvas::setExtent( const QgsRectangle &r, bool magnified )
     mLastExtent.removeAt( i );
   }
 
-  mLastExtent.append( extent() );
+  if ( !mLastExtent.isEmpty() && mLastExtent.last() != extent() )
+  {
+    mLastExtent.append( extent() );
+  }
 
   // adjust history to no more than 100
   if ( mLastExtent.size() > 100 )
