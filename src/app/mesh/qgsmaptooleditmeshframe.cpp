@@ -732,7 +732,7 @@ static QList<QgsMapToolIdentify::IdentifyResult> searchFeatureOnMap( QgsMapMouse
         {
           rect = transform.transformBoundingBox( rect, Qgis::TransformDirection::Reverse );
         }
-        catch ( QgsCsException &exception )
+        catch ( QgsCsException & )
         {
           QgsDebugMsg( QStringLiteral( "Could not transform geometry to layer CRS" ) );
         }
@@ -772,7 +772,7 @@ void QgsMapToolEditMeshFrame::forceByLineBySelectedFeature( QgsMapMouseEvent *e 
     {
       geom.transform( transform );
     }
-    catch ( QgsCsException &exception )
+    catch ( QgsCsException & )
     {
       QgsDebugMsg( QStringLiteral( "Could not transform geometry to layer CRS" ) );
     }
