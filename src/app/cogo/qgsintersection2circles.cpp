@@ -157,12 +157,10 @@ void QgsIntersection2CirclesDialog::onAccepted()
     return;
   }
 
-  const QgsCoordinateReferenceSystem projectCrs = QgsProject::instance()->crs();
-  const QgsCoordinateReferenceSystem layerCrs = vlayer->crs();
-  if ( projectCrs != layerCrs )
+  const QgsCoordinateTransform ct = mMapCanvas->mapSettings().layerTransform( vlayer );
+  if ( ct.isValid() )
   {
-    QgsCoordinateTransform tr( projectCrs, layerCrs, QgsProject::instance() );
-    intersection.transform( tr, Qgis::TransformDirection::Forward, true ); // and M ?
+    intersection.transform( ct, Qgis::TransformDirection::Reverse );
   }
 
   QgsFeature f;
