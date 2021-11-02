@@ -225,7 +225,7 @@ Duplicates features
 
     bool multiEditModeActive() const;
 %Docstring
-Return true if editing multiple features at a time
+Returns true if editing multiple features at a time
 
 .. versionadded:: 3.24
 %End

@@ -233,7 +233,7 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     void duplicateFeatures( const QgsFeatureIds &fids );
 
     /**
-     * Return true if editing multiple features at a time
+     * Returns true if editing multiple features at a time
      * \since QGIS 3.24
      */
     bool multiEditModeActive() const;
