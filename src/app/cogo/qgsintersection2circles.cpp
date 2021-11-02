@@ -145,6 +145,15 @@ void QgsIntersection2CirclesDialog::onAccepted()
 
   auto addFeature = [ = ]( QgsPoint point )
   {
+    const QgsCoordinateReferenceSystem projectCrs = QgsProject::instance()->crs();
+    const QgsCoordinateReferenceSystem layerCrs = vlayer->crs();
+    if ( projectCrs != layerCrs )
+    {
+      QgsCoordinateTransform tr( projectCrs, layerCrs, QgsProject::instance() );
+      point.transform( tr, Qgis::TransformDirection::Forward, true ); // and M ?
+    }
+
+
     QgsFeature f;
     const QgsFields fields = vlayer->fields();
     f = QgsFeature();
