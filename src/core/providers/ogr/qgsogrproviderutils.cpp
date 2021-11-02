@@ -1300,6 +1300,30 @@ QString QgsOgrProviderUtils::quotedValue( const QVariant &value )
 
 OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds, QTextCodec *encoding, const QString &subsetString )
 {
+  // Remove any comments
+  QStringList lines {subsetString.split( QChar( '\n' ) )};
+  lines.erase( std::remove_if( lines.begin(), lines.end(), []( const QString & line )
+  {
+    return line.startsWith( QStringLiteral( "--" ) );
+  } ), lines.end() );
+  for ( auto &line : lines )
+  {
+    bool inLiteral {false};
+    for ( int i = 0; i < line.length(); ++i )
+    {
+      if ( line[i] == QChar( '\'' ) && ( i == 0 || line[i - 1] != QChar( '\\' ) ) )
+      {
+        inLiteral = !inLiteral;
+      }
+      if ( !inLiteral && line.midRef( i ).startsWith( QStringLiteral( "--" ) ) )
+      {
+        line = line.left( i );
+        break;
+      }
+    }
+  }
+  const QString cleanedSubsetString {lines.join( QChar( ' ' ) ).trimmed() };
+
   QByteArray layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( layer ) );
   GDALDriverH driver = GDALGetDatasetDriver( ds );
   QString driverName = GDALGetDriverShortName( driver );
@@ -1315,16 +1339,16 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
     }
   }
   OGRLayerH subsetLayer = nullptr;
-  if ( subsetString.startsWith( QLatin1String( "SELECT " ), Qt::CaseInsensitive ) )
+  if ( cleanedSubsetString.startsWith( QLatin1String( "SELECT " ), Qt::CaseInsensitive ) )
   {
-    QByteArray sql = encoding->fromUnicode( subsetString );
+    QByteArray sql = encoding->fromUnicode( cleanedSubsetString );
 
     QgsDebugMsgLevel( QStringLiteral( "SQL: %1" ).arg( encoding->toUnicode( sql ) ), 2 );
     subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
   }
   else
   {
-    if ( OGR_L_SetAttributeFilter( layer, encoding->fromUnicode( subsetString ).constData() ) != OGRERR_NONE )
+    if ( OGR_L_SetAttributeFilter( layer, encoding->fromUnicode( cleanedSubsetString ).constData() ) != OGRERR_NONE )
     {
       return nullptr;
     }
