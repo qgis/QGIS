@@ -26,7 +26,7 @@
 class QgsGeometry;
 class QgsAbstractGeometry;
 class QgsCurve;
-class geod_geodesic;
+struct geod_geodesic;
 
 /**
  * \ingroup core
