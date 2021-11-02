@@ -1368,13 +1368,17 @@ QStringList QgsGeometryUtils::wktGetChildBlocks( const QString &wkt, const QStri
 {
   int level = 0;
   QString block;
+  block.reserve( wkt.size() );
   QStringList blocks;
-  for ( int i = 0, n = wkt.length(); i < n; ++i )
+
+  const QChar *wktData = wkt.data();
+  const int wktLength = wkt.length();
+  for ( int i = 0, n = wktLength; i < n; ++i, ++wktData )
   {
-    if ( ( wkt[i].isSpace() || wkt[i] == '\n' || wkt[i] == '\t' ) && level == 0 )
+    if ( ( wktData->isSpace() || *wktData == '\n' || *wktData == '\t' ) && level == 0 )
       continue;
 
-    if ( wkt[i] == ',' && level == 0 )
+    if ( *wktData == ',' && level == 0 )
     {
       if ( !block.isEmpty() )
       {
@@ -1382,14 +1386,14 @@ QStringList QgsGeometryUtils::wktGetChildBlocks( const QString &wkt, const QStri
           block.prepend( defaultType + ' ' );
         blocks.append( block );
       }
-      block.clear();
+      block.resize( 0 );
       continue;
     }
-    if ( wkt[i] == '(' )
+    if ( *wktData == '(' )
       ++level;
-    else if ( wkt[i] == ')' )
+    else if ( *wktData == ')' )
       --level;
-    block += wkt[i];
+    block += *wktData;
   }
   if ( !block.isEmpty() )
   {
