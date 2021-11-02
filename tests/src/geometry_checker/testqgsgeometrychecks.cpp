@@ -612,7 +612,9 @@ void TestQgsGeometryChecks::testAllowedGaps()
   }
   else
   {
-    QCOMPARE( f.geometry().asWkt( 4 ), QgsGeometry::fromWkt( "Polygon ((0.246 -0.8659, 0.3939 -0.77, 0.26 -0.8839, 0.27 -0.9998, 0.246 -0.8659))" ).asWkt( 4 ) );
+    QgsGeometry res = f.geometry();
+    res.normalize();
+    QCOMPARE( res.asWkt( 4 ), QgsGeometry::fromWkt( "Polygon ((0.246 -0.8659, 0.3939 -0.77, 0.26 -0.8839, 0.27 -0.9998, 0.246 -0.8659))" ).asWkt( 4 ) );
   }
 
   // Run check again after adding the gap geometry to the allowed gaps layer: one less error
