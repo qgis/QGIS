@@ -1414,8 +1414,9 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
     {
       QAction *sqlAction = new QAction( QObject::tr( "Execute SQL…" ), menu );
 
-      QObject::connect( sqlAction, &QAction::triggered, item, [ item, context ]
+      QObject::connect( sqlAction, &QAction::triggered, item, [ item, context, this ]
       {
+        ( void )this;
         std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2( item->databaseConnection() );
         // This should never happen but let's play safe
         if ( ! conn2 )
