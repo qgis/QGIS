@@ -404,7 +404,7 @@ void TestQgsVectorLayer::testAddTopologicalPoints()
 
   delete layerPoint;
 
-  QgsVectorLayer *layerInvalid = new QgsVectorLayer( QStringLiteral(), QStringLiteral( "layer invalid" ), QStringLiteral( "none" ) );
+  QgsVectorLayer *layerInvalid = new QgsVectorLayer( QString(), QStringLiteral( "layer invalid" ), QStringLiteral( "none" ) );
   QVERIFY( !layerInvalid->isValid() );
 
   result = layerInvalid->addTopologicalPoints( QgsPoint( 2, 2 ) );
