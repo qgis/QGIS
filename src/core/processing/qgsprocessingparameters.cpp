@@ -3625,8 +3625,8 @@ QString QgsProcessingParameterMatrix::asPythonString( const QgsProcessing::Pytho
                      .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( mFlags & FlagOptional )
         code += QLatin1String( ", optional=True" );
-      code += QStringLiteral( ", numberRows=" ).arg( mNumberRows );
-      code += QStringLiteral( ", hasFixedNumberRows=" ).arg( mFixedNumberRows ? QStringLiteral( "True" ) : QStringLiteral( "False" ) );
+      code += QStringLiteral( ", numberRows=%1" ).arg( mNumberRows );
+      code += QStringLiteral( ", hasFixedNumberRows=%1" ).arg( mFixedNumberRows ? QStringLiteral( "True" ) : QStringLiteral( "False" ) );
 
       QStringList headers;
       headers.reserve( mHeaders.size() );
