@@ -315,6 +315,11 @@ void QgsPostgresProvider::reloadProviderData()
   mLayerExtent.setMinimal();
 }
 
+bool QgsPostgresProvider::isQuery() const
+{
+  return mIsQuery;
+}
+
 
 QgsPostgresConn *QgsPostgresProvider::connectionRW()
 {

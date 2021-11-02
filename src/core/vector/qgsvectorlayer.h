@@ -570,6 +570,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     QString capabilitiesString() const;
 
+
+    /**
+     * Returns TRUE if the layer is a query (SQL) layer.
+     *
+     * \since QGIS 3.24
+     */
+    virtual bool isQuery() const;
+
     /**
      * Returns a description for this layer as defined in the data provider.
      */

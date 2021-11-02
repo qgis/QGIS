@@ -5962,6 +5962,11 @@ void QgsSpatiaLiteProvider::setTransaction( QgsTransaction *transaction )
   mTransaction = static_cast<QgsSpatiaLiteTransaction *>( transaction );
 }
 
+bool QgsSpatiaLiteProvider::isQuery() const
+{
+  return mIsQuery;
+}
+
 QgsTransaction *QgsSpatiaLiteProvider::transaction( ) const
 {
   return static_cast<QgsTransaction *>( mTransaction );

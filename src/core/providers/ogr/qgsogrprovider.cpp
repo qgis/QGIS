@@ -3174,6 +3174,11 @@ QgsFeatureSource::SpatialIndexPresence QgsOgrProvider::hasSpatialIndex() const
     return QgsFeatureSource::SpatialIndexUnknown;
 }
 
+bool QgsOgrProvider::isQuery() const
+{
+  return mSubsetString.trimmed().startsWith( QStringLiteral( "SELECT" ), Qt::CaseSensitivity::CaseInsensitive );
+}
+
 QVariant QgsOgrProvider::minimumValue( int index ) const
 {
   if ( !mValid || index < 0 || index >= mAttributeFields.count() )

@@ -2814,6 +2814,11 @@ bool QgsOracleProvider::convertField( QgsField &field )
   return true;
 }
 
+bool QgsOracleProvider::isQuery() const
+{
+  return mIsQuery;
+}
+
 Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer(
   const QString &uri,
   const QgsFields &fields,

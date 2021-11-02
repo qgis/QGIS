@@ -46,7 +46,7 @@ using namespace std;
 
 namespace
 {
-  bool isQuery( const QString &source )
+  bool sourceIsQuery( const QString &source )
   {
     QString trimmed = source.trimmed();
     return trimmed.startsWith( '(' ) && trimmed.endsWith( ')' );
@@ -54,7 +54,7 @@ namespace
 
   QString buildQuery( const QString &source, const QString &columns, const QString &where, const QString &orderBy, int limit )
   {
-    if ( isQuery( source ) && columns == QLatin1String( "*" ) && where.isEmpty() && limit <= 0 )
+    if ( sourceIsQuery( source ) && columns == QLatin1String( "*" ) && where.isEmpty() && limit <= 0 )
       return source;
 
     QString sql = QStringLiteral( "SELECT %1 FROM %2" ).arg( columns, source );
@@ -385,7 +385,7 @@ QgsHanaProvider::QgsHanaProvider(
     return;
   }
 
-  if ( isQuery( mTableName ) )
+  if ( sourceIsQuery( mTableName ) )
   {
     mIsQuery = true;
     mQuerySource = mTableName;
@@ -1433,7 +1433,7 @@ void QgsHanaProvider::readGeometryType( QgsHanaConnection &conn )
   if ( mIsQuery )
   {
     QString query = buildQuery( QStringLiteral( "*" ) );
-    if ( !isQuery( query ) )
+    if ( !sourceIsQuery( query ) )
       query = "(" + query + ")";
     mDetectedGeometryType = conn.getColumnGeometryType( query, mGeometryColumn );
   }
@@ -1553,6 +1553,11 @@ void QgsHanaProvider::updateFeatureIdMap( QgsFeatureId fid, const QgsAttributeMa
   }
 
   mPrimaryKeyCntx->insertFid( fid, values );
+}
+
+bool QgsHanaProvider::isQuery() const
+{
+  return mIsQuery;
 }
 
 QgsCoordinateReferenceSystem QgsHanaProvider::crs() const

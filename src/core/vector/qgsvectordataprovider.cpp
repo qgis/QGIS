@@ -61,6 +61,11 @@ bool QgsVectorDataProvider::empty() const
     return true;
 }
 
+bool QgsVectorDataProvider::isQuery() const
+{
+  return false;
+}
+
 QgsFeatureSource::FeatureAvailability QgsVectorDataProvider::hasFeatures() const
 {
   if ( empty() )

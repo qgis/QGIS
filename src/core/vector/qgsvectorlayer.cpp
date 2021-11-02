@@ -372,6 +372,11 @@ QString QgsVectorLayer::capabilitiesString() const
   return QString();
 }
 
+bool QgsVectorLayer::isQuery() const
+{
+  return mDataProvider && mDataProvider->isQuery();
+}
+
 QString QgsVectorLayer::dataComment() const
 {
   if ( mDataProvider )
