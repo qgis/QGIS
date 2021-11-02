@@ -77,7 +77,8 @@ class AddModelFromFileAction(ToolboxAction):
                     QMessageBox.Yes | QMessageBox.No,
                     QMessageBox.No)
 
-                if reply == QMessageBox.Yes:
-                    shutil.copyfile(filename, destFilename)
+                if reply == QMessageBox.No:
+                    return
 
+            shutil.copyfile(filename, destFilename)
             QgsApplication.processingRegistry().providerById('model').refreshAlgorithms()
