@@ -40,13 +40,9 @@ class EditModelAction(ContextAction):
 
     def execute(self):
         alg = self.itemData
-        ok, msg = alg.canExecute()
-        if not ok:
-            iface.messageBar().pushMessage(QCoreApplication.translate('EditModelAction', 'Cannot edit model: {}').format(msg), level=Qgis.Warning)
-        else:
-            dlg = ModelerDialog.create(alg)
-            dlg.update_model.connect(self.updateModel)
-            dlg.show()
+        dlg = ModelerDialog.create(alg)
+        dlg.update_model.connect(self.updateModel)
+        dlg.show()
 
     def updateModel(self):
         QgsApplication.processingRegistry().providerById('model').refreshAlgorithms()
