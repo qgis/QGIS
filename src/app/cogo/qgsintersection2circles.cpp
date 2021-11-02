@@ -115,8 +115,7 @@ void QgsIntersection2CirclesDialog::clearInformations()
 
 void QgsIntersection2CirclesDialog::hideDrawings()
 {
-  delete mMapToolPoint;
-  mMapToolPoint = nullptr;
+  mMapCanvas->unsetMapTool( mMapToolPoint );
 
   mRubberCircle1->hide();
   mRubberCircle2->hide();
@@ -177,11 +176,7 @@ void QgsIntersection2CirclesDialog::onAccepted()
 
 void QgsIntersection2CirclesDialog::toggleSelectCenter( CircleNumber circleNum )
 {
-  if ( mMapToolPoint )
-  {
-    delete mMapToolPoint;
-    mMapToolPoint = nullptr;
-  }
+  mMapCanvas->unsetMapTool( mMapToolPoint );
 
   mMapToolPoint = new QgsMapToolEmitPoint( mMapCanvas );
   mMapCanvas->setMapTool( mMapToolPoint );
@@ -198,8 +193,7 @@ void QgsIntersection2CirclesDialog::updateCenterPoint( CircleNumber circleNum, c
 {
   if ( button != Qt::LeftButton )
   {
-    delete mMapToolPoint;
-    mMapToolPoint = nullptr;
+    mMapCanvas->unsetMapTool( mMapToolPoint );
     return;
   }
 
