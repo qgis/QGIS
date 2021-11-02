@@ -57,11 +57,27 @@ void QgsZipItem::init()
   mIconName = QStringLiteral( "/mIconZip.svg" );
   mVsiPrefix = vsiPrefix( mFilePath );
 
+  setCapabilities( capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile );
+
   static std::once_flag initialized;
   std::call_once( initialized, [ = ]
   {
     sProviderNames << QStringLiteral( "OGR" ) << QStringLiteral( "GDAL" );
   } );
+}
+
+bool QgsZipItem::hasDragEnabled() const
+{
+  return true;
+}
+
+QgsMimeDataUtils::UriList QgsZipItem::mimeUris() const
+{
+  QgsMimeDataUtils::Uri u;
+  u.layerType = QStringLiteral( "collection" );
+  u.uri = path();
+  u.filePath = path();
+  return { u };
 }
 
 QVector<QgsDataItem *> QgsZipItem::createChildren()
