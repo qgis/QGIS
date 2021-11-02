@@ -1107,7 +1107,9 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
 
   const QString path = uriParts.value( QStringLiteral( "path" ) ).toString();
   const QFileInfo pathInfo( path );
-  const QString suffix = pathInfo.suffix().toLower();
+  const QString suffix = uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty()
+                         ? pathInfo.suffix().toLower()
+                         : QFileInfo( uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString() ).suffix().toLower();
   bool isOgrSupportedDirectory = pathInfo.isDir() && dirExtensions.contains( suffix );
 
   bool forceDeepScanDir = false;
