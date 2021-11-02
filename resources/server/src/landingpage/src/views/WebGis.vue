@@ -317,6 +317,7 @@ export default {
         tileSize: 512,
         transparent: true,
         format: "image/png",
+        maxZoom: 25, 
         dpi: window.devicePixelRatio * 96,
         onGetFeatureInfo: this.onGetFeatureInfo,
         onGetFeatureInfoStarted: this.onGetFeatureInfoStarted,
