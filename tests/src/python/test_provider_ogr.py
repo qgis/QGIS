@@ -1600,6 +1600,27 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
 
+        # zip file layer vector, explicit file in zip
+        res = metadata.querySublayers('/vsizip/' + TEST_DATA_DIR + '/zip/points2.zip/points.shp')
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "points.shp")
+        self.assertEqual(res[0].description(), '')
+        self.assertEqual(res[0].uri(), '/vsizip/' + TEST_DATA_DIR + "/zip/points2.zip/points.shp|layername=points")
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertEqual(res[0].wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(res[0].geometryColumnName(), '')
+        self.assertEqual(res[0].driverName(), 'ESRI Shapefile')
+        options = QgsProviderSublayerDetails.LayerOptions(QgsCoordinateTransformContext())
+        vl = res[0].toLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+
+        # zip file layer vector, explicit file in zip which is NOT a OGR supported source
+        res = metadata.querySublayers('/vsizip/' + TEST_DATA_DIR + '/zip/points2.zip/points.qml')
+        self.assertEqual(len(res), 0)
+
         # multi-layer archive
         res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, 'zip', 'testtar.tgz'))
         self.assertEqual(len(res), 2)
@@ -2309,6 +2330,26 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].providerKey(), "ogr")
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
         self.assertFalse(res[0].skippedContainerScan())
+
+        # zip file layer vector, explicit file in zip
+        res = metadata.querySublayers('/vsizip/' + TEST_DATA_DIR + '/zip/points2.zip/points.shp', Qgis.SublayerQueryFlag.FastScan)
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "points2") # this is wrong
+        self.assertEqual(res[0].description(), '')
+        self.assertEqual(res[0].uri(), '/vsizip/' + TEST_DATA_DIR + "/zip/points2.zip/points.shp")
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertEqual(res[0].wkbType(), QgsWkbTypes.Unknown)
+        self.assertEqual(res[0].geometryColumnName(), '')
+        options = QgsProviderSublayerDetails.LayerOptions(QgsCoordinateTransformContext())
+        vl = res[0].toLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+
+        # zip file layer vector, explicit file in zip which is NOT a OGR supported source
+        res = metadata.querySublayers('/vsizip/' + TEST_DATA_DIR + '/zip/points2.zip/points.qml', Qgis.SublayerQueryFlag.FastScan)
+        self.assertEqual(len(res), 0)
 
     def test_provider_sidecar_files_for_uri(self):
         """
