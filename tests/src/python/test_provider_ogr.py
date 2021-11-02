@@ -2335,7 +2335,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         res = metadata.querySublayers('/vsizip/' + TEST_DATA_DIR + '/zip/points2.zip/points.shp', Qgis.SublayerQueryFlag.FastScan)
         self.assertEqual(len(res), 1)
         self.assertEqual(res[0].layerNumber(), 0)
-        self.assertEqual(res[0].name(), "points2") # this is wrong
+        self.assertEqual(res[0].name(), "points")
         self.assertEqual(res[0].description(), '')
         self.assertEqual(res[0].uri(), '/vsizip/' + TEST_DATA_DIR + "/zip/points2.zip/points.shp")
         self.assertEqual(res[0].providerKey(), "ogr")
