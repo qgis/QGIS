@@ -3694,7 +3694,9 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
     details.setType( QgsMapLayerType::RasterLayer );
     details.setProviderKey( QStringLiteral( "gdal" ) );
     details.setUri( uri );
-    details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( path ) );
+    details.setName( uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty()
+                     ? QgsProviderUtils::suggestLayerNameFromFilePath( path )
+                     : QFileInfo( uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString() ).fileName() );
     if ( QgsGdalUtils::multiLayerFileExtensions().contains( suffix ) )
     {
       // uri may contain sublayers, but query flags prevent us from examining them
