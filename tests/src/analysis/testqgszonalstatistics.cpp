@@ -321,27 +321,27 @@ void TestQgsZonalStatistics::testSmallPolygons()
   QgsFeatureIterator it = vectorLayer->getFeatures( request );
   bool fetched = it.nextFeature( f );
   QVERIFY( fetched );
-  QGSCOMPARENEAR( f.attribute( "ncount" ).toDouble(), 0.698248, 0.001 );
-  QGSCOMPARENEAR( f.attribute( "nsum" ).toDouble(), 588.711, 0.001 );
-  QCOMPARE( f.attribute( "nmin" ).toDouble(), 826.0 );
-  QCOMPARE( f.attribute( "nmax" ).toDouble(), 851.0 );
-  QGSCOMPARENEAR( f.attribute( "nmean" ).toDouble(), 843.125292, 0.001 );
+  QGSCOMPARENEAR( f.attribute( QStringLiteral( "ncount" ) ).toDouble(), 0.698248, 0.001 );
+  QGSCOMPARENEAR( f.attribute( QStringLiteral( "nsum" ) ).toDouble(), 588.711, 0.01 );
+  QCOMPARE( f.attribute( QStringLiteral( "nmin" ) ).toDouble(), 826.0 );
+  QCOMPARE( f.attribute( QStringLiteral( "nmax" ) ).toDouble(), 851.0 );
+  QGSCOMPARENEAR( f.attribute( QStringLiteral( "nmean" ) ).toDouble(), 843.125292, 0.01 );
 
   fetched = it.nextFeature( f );
   QVERIFY( fetched );
-  QGSCOMPARENEAR( f.attribute( "ncount" ).toDouble(), 0.240808, 0.001 );
-  QGSCOMPARENEAR( f.attribute( "nsum" ).toDouble(), 208.030921, 0.001 );
-  QCOMPARE( f.attribute( "nmin" ).toDouble(), 859.0 );
-  QCOMPARE( f.attribute( "nmax" ).toDouble(), 868.0 );
-  QGSCOMPARENEAR( f.attribute( "nmean" ).toDouble(), 863.887500, 0.001 );
+  QGSCOMPARENEAR( f.attribute( QStringLiteral( "ncount" ) ).toDouble(), 0.240808, 0.001 );
+  QGSCOMPARENEAR( f.attribute( QStringLiteral( "nsum" ) ).toDouble(), 208.030921, 0.01 );
+  QCOMPARE( f.attribute( QStringLiteral( "nmin" ) ).toDouble(), 859.0 );
+  QCOMPARE( f.attribute( QStringLiteral( "nmax" ) ).toDouble(), 868.0 );
+  QGSCOMPARENEAR( f.attribute( QStringLiteral( "nmean" ) ).toDouble(), 863.887500, 0.01 );
 
   fetched = it.nextFeature( f );
   QVERIFY( fetched );
-  QGSCOMPARENEAR( f.attribute( "ncount" ).toDouble(), 0.259522, 0.001 );
-  QGSCOMPARENEAR( f.attribute( "nsum" ).toDouble(), 224.300747, 0.001 );
-  QCOMPARE( f.attribute( "nmin" ).toDouble(), 851.0 );
-  QCOMPARE( f.attribute( "nmax" ).toDouble(), 872.0 );
-  QGSCOMPARENEAR( f.attribute( "nmean" ).toDouble(), 864.285638, 0.001 );
+  QGSCOMPARENEAR( f.attribute( QStringLiteral( "ncount" ) ).toDouble(), 0.259522, 0.001 );
+  QGSCOMPARENEAR( f.attribute( QStringLiteral( "nsum" ) ).toDouble(), 224.300747, 0.01 );
+  QCOMPARE( f.attribute( QStringLiteral( "nmin" ) ).toDouble(), 851.0 );
+  QCOMPARE( f.attribute( QStringLiteral( "nmax" ) ).toDouble(), 872.0 );
+  QGSCOMPARENEAR( f.attribute( QStringLiteral( "nmean" ) ).toDouble(), 864.285638, 0.01 );
 }
 
 void TestQgsZonalStatistics::testShortName()
