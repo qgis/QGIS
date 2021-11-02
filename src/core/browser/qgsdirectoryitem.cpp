@@ -307,7 +307,7 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
     if ( fileInfo.suffix().compare( QLatin1String( "zip" ), Qt::CaseInsensitive ) == 0 ||
          fileInfo.suffix().compare( QLatin1String( "tar" ), Qt::CaseInsensitive ) == 0 )
     {
-      QgsDataItem *item = QgsZipItem::itemFromPath( this, path, name, mPath + '/' + name );
+      QgsDataItem *item = QgsZipItem::itemFromPath( this, path, name, path );
       if ( item )
       {
         children.append( item );

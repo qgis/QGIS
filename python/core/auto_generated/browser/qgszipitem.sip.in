@@ -40,6 +40,11 @@ Constructor
 
     QStringList getZipFileList();
 
+    virtual bool hasDragEnabled() const;
+
+    virtual QgsMimeDataUtils::UriList mimeUris() const;
+
+
     static QStringList sProviderNames;
 
     static QString vsiPrefix( const QString &uri );
