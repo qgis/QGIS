@@ -60,7 +60,7 @@ void QgsZipItem::init()
   static std::once_flag initialized;
   std::call_once( initialized, [ = ]
   {
-    sProviderNames << QStringLiteral( "OGR" ) << QStringLiteral( "GDAL" );
+    sProviderNames << QStringLiteral( "files" );
   } );
 }
 
