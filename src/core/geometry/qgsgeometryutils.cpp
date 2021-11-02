@@ -1127,8 +1127,8 @@ QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateLi
   //first scan through for extra unexpected dimensions
   bool foundZ = false;
   bool foundM = false;
-  const QRegularExpression rx( QStringLiteral( "\\s" ) );
-  const QRegularExpression rxIsNumber( QStringLiteral( "^[+-]?(\\d\\.?\\d*[Ee][+\\-]?\\d+|(\\d+\\.\\d*|\\d*\\.\\d+)|\\d+)$" ) );
+  const thread_local QRegularExpression rx( QStringLiteral( "\\s" ) );
+  const thread_local QRegularExpression rxIsNumber( QStringLiteral( "^[+-]?(\\d\\.?\\d*[Ee][+\\-]?\\d+|(\\d+\\.\\d*|\\d*\\.\\d+)|\\d+)$" ) );
   for ( const QString &pointCoordinates : coordList )
   {
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
@@ -1336,11 +1336,10 @@ QPair<QgsWkbTypes::Type, QString> QgsGeometryUtils::wktReadBlock( const QString 
 {
   QString wktParsed = wkt;
   QString contents;
-  if ( wkt.contains( QString( "EMPTY" ), Qt::CaseInsensitive ) )
+  if ( wkt.contains( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) )
   {
-    QRegularExpression wktRegEx( QStringLiteral( "^\\s*(\\w+)\\s+(\\w+)\\s*$" ) );
-    wktRegEx.setPatternOptions( QRegularExpression::DotMatchesEverythingOption );
-    const QRegularExpressionMatch match = wktRegEx.match( wkt );
+    const thread_local QRegularExpression sWktRegEx( QStringLiteral( "^\\s*(\\w+)\\s+(\\w+)\\s*$" ), QRegularExpression::DotMatchesEverythingOption );
+    const QRegularExpressionMatch match = sWktRegEx.match( wkt );
     if ( match.hasMatch() )
     {
       wktParsed = match.captured( 1 );
@@ -1357,8 +1356,7 @@ QPair<QgsWkbTypes::Type, QString> QgsGeometryUtils::wktReadBlock( const QString 
     // removes extra parentheses
     wktParsed.truncate( wktParsed.size() - ( closedParenthesisCount - openedParenthesisCount ) );
 
-    QRegularExpression cooRegEx( QStringLiteral( "^[^\\(]*\\((.*)\\)[^\\)]*$" ) );
-    cooRegEx.setPatternOptions( QRegularExpression::DotMatchesEverythingOption );
+    const thread_local QRegularExpression cooRegEx( QStringLiteral( "^[^\\(]*\\((.*)\\)[^\\)]*$" ), QRegularExpression::DotMatchesEverythingOption );
     const QRegularExpressionMatch match = cooRegEx.match( wktParsed );
     contents = match.hasMatch() ? match.captured( 1 ) : QString();
   }
