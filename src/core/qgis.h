@@ -1809,7 +1809,11 @@ typedef unsigned long long qgssize;
 #endif
 
 #ifndef SIP_RUN
-#if defined(__GNUC__) && !defined(__clang__)
+#ifdef _MSC_VER
+#define DEFAULT_BUILTIN_UNREACHABLE \
+  default: \
+  __assume(false);
+#elif defined(__GNUC__) && !defined(__clang__)
 // Workaround a GCC bug where a -Wreturn-type warning is emitted in constructs
 // like:
 // switch( mVariableThatCanOnlyBeXorY )
