@@ -2420,7 +2420,14 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
     {
       if ( parts.value( QStringLiteral( "layerName" ) ).toString().isEmpty() )
         parts.insert( QStringLiteral( "layerName" ), layerName );
-      details.setName( parts.value( QStringLiteral( "vsiSuffix" ) ).toString().mid( 1 ) );
+      if ( hasSingleLayerOnly )
+      {
+        details.setName( parts.value( QStringLiteral( "vsiSuffix" ) ).toString().mid( 1 ) );
+      }
+      else
+      {
+        details.setName( layerName );
+      }
     }
     details.setFeatureCount( layerFeatureCount );
     details.setWkbType( QgsOgrUtils::ogrGeometryTypeToQgsWkbType( layerGeomType ) );
@@ -2511,7 +2518,14 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
       {
         if ( parts.value( QStringLiteral( "layerName" ) ).toString().isEmpty() )
           parts.insert( QStringLiteral( "layerName" ), layerName );
-        details.setName( parts.value( QStringLiteral( "vsiSuffix" ) ).toString().mid( 1 ) );
+        if ( hasSingleLayerOnly )
+        {
+          details.setName( parts.value( QStringLiteral( "vsiSuffix" ) ).toString().mid( 1 ) );
+        }
+        else
+        {
+          details.setName( layerName );
+        }
       }
       details.setFeatureCount( fCount.value( countIt.key() ) );
       details.setWkbType( QgsOgrUtils::ogrGeometryTypeToQgsWkbType( ( bIs25D ) ? wkbSetZ( countIt.key() ) : countIt.key() ) );

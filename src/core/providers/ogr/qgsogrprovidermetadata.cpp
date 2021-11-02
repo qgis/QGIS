@@ -1171,7 +1171,9 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
       details.setType( QgsMapLayerType::VectorLayer );
       details.setProviderKey( QStringLiteral( "ogr" ) );
       details.setUri( uri );
-      details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( path ) );
+      details.setName( uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty()
+                       ? QgsProviderUtils::suggestLayerNameFromFilePath( path )
+                       : QgsProviderUtils::suggestLayerNameFromFilePath( uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString() ) );
       if ( QgsGdalUtils::multiLayerFileExtensions().contains( suffix ) )
       {
         // uri may contain sublayers, but query flags prevent us from examining them
