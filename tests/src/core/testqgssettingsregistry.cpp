@@ -52,7 +52,7 @@ void TestQgsSettingsRegistry::getSettingsEntries()
   const QString settingsEntryBoolKey( QStringLiteral( "/qgis/testing/settingsEntryBool" ) );
   QgsSettingsEntryBool settingsEntryBool( settingsEntryBoolKey, QgsSettings::NoSection, false );
   const QString settingsEntryIntegerKey( QStringLiteral( "/qgis/testing/settingsEntryInteger" ) );
-  QgsSettingsEntryBool settingsEntryInteger( settingsEntryIntegerKey, QgsSettings::NoSection, 123 );
+  QgsSettingsEntryInteger settingsEntryInteger( settingsEntryIntegerKey, QgsSettings::NoSection, 123 );
 
   const QString settingsEntryInexisting( QStringLiteral( "/qgis/testing/settingsEntryInexisting" ) );
 
