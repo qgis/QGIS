@@ -278,17 +278,12 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
   connect( exportAction, &QAction::triggered, this, &QgsStyleManagerDialog::exportItems );
   btnShare->setMenu( shareMenu );
 
-  double iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 10;
-  listItems->setIconSize( QSize( static_cast< int >( iconSize ), static_cast< int >( iconSize * 0.9 ) ) );  // ~100, 90 on low dpi
-  // set a grid size which allows sufficient vertical spacing to fit reasonably sized entity names
-  listItems->setGridSize( QSize( static_cast< int >( listItems->iconSize().width() * 1.4 ), static_cast< int >( listItems->iconSize().height() * 1.7 ) ) );
   listItems->setTextElideMode( Qt::TextElideMode::ElideRight );
   double treeIconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 2;
   mSymbolTreeView->setIconSize( QSize( static_cast< int >( treeIconSize ), static_cast< int >( treeIconSize ) ) );
 
   mModel = mStyle == QgsStyle::defaultStyle() ? new QgsCheckableStyleModel( QgsApplication::defaultStyleModel(), this, mReadOnly )
            : new QgsCheckableStyleModel( mStyle, this, mReadOnly );
-  mModel->addDesiredIconSize( listItems->iconSize() );
   mModel->addDesiredIconSize( mSymbolTreeView->iconSize() );
   listItems->setModel( mModel );
   mSymbolTreeView->setModel( mModel );
@@ -515,6 +510,11 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
     QgsSettings().setValue( QStringLiteral( "Windows/StyleV2Manager/treeState" ), mSymbolTreeView->header()->saveState(), QgsSettings::Gui );
   } );
 
+  const int thumbnailSize = settings.value( QStringLiteral( "Windows/StyleV2Manager/thumbnailSize" ), 0, QgsSettings::Gui ).toInt();
+  mSliderIconSize->setValue( thumbnailSize );
+  connect( mSliderIconSize, &QSlider::valueChanged, this, &QgsStyleManagerDialog::setThumbnailSize );
+  setThumbnailSize( thumbnailSize );
+
   // set initial disabled state for actions requiring a selection
   selectedSymbolsChanged( QItemSelection(), QItemSelection() );
 }
@@ -732,6 +732,21 @@ void QgsStyleManagerDialog::pasteItem()
     mStyle->saveTextFormat( saveDlg.name(), format, saveDlg.isFavorite(), symbolTags );
     return;
   }
+}
+
+void QgsStyleManagerDialog::setThumbnailSize( int value )
+{
+  // value ranges from 0-10
+  const double iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * ( value * 2.5 + 10 );
+  // set a grid size which allows sufficient vertical spacing to fit reasonably sized entity names
+  const double spacing = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * ( value * 2.2 + 14 );
+  const double verticalSpacing = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 7
+                                 + iconSize * 0.8;
+  listItems->setIconSize( QSize( static_cast< int >( iconSize ), static_cast< int >( iconSize * 0.9 ) ) );
+  listItems->setGridSize( QSize( static_cast< int >( spacing ), static_cast< int >( verticalSpacing ) ) );
+  mModel->addDesiredIconSize( listItems->iconSize() );
+
+  QgsSettings().setValue( QStringLiteral( "Windows/StyleV2Manager/thumbnailSize" ), value, QgsSettings::Gui );
 }
 
 int QgsStyleManagerDialog::selectedItemType()

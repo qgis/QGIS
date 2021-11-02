@@ -347,6 +347,8 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
 
     void pasteItem();
 
+    void setThumbnailSize( int );
+
   private:
     int selectedItemType();
 
