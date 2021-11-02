@@ -1913,7 +1913,22 @@ double QgsGeometry::length() const
     return -1.0;
   }
 
-  return d->geometry->length();
+  switch ( QgsWkbTypes::geometryType( d->geometry->wkbType() ) )
+  {
+    case QgsWkbTypes::PointGeometry:
+      return 0.0;
+
+    case QgsWkbTypes::LineGeometry:
+      return d->geometry->length();
+
+    case QgsWkbTypes::PolygonGeometry:
+      return d->geometry->perimeter();
+
+    case QgsWkbTypes::UnknownGeometry:
+    case QgsWkbTypes::NullGeometry:
+      return d->geometry->length();
+  }
+  return -1;
 }
 
 double QgsGeometry::distance( const QgsGeometry &geom ) const
