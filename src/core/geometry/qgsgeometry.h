@@ -419,6 +419,8 @@ class CORE_EXPORT QgsGeometry
     /**
      * Returns the planar, 2-dimensional length of geometry.
      *
+     * If the geometry is a polygon geometry then the perimeter of the polygon will be returned.
+     *
      * \warning QgsGeometry objects are inherently Cartesian/planar geometries, and the length
      * returned by this method is calculated using strictly Cartesian mathematics. In contrast,
      * the QgsDistanceArea class exposes methods for calculating the lengths of geometries using
