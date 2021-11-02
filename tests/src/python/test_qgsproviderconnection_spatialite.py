@@ -148,6 +148,7 @@ class TestPyQgsProviderConnectionSpatialite(unittest.TestCase, TestPyQgsProvider
         options.geometryColumn = 'geom'
         vl = conn.createSqlVectorLayer(options)
         self.assertTrue(vl.isValid())
+        self.assertTrue(vl.isQuery())
         self.assertEqual(vl.geometryType(), QgsWkbTypes.PolygonGeometry)
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 2)
@@ -156,6 +157,7 @@ class TestPyQgsProviderConnectionSpatialite(unittest.TestCase, TestPyQgsProvider
         options.filter = 'name == \'Sülfeld\''
         vl = conn.createSqlVectorLayer(options)
         self.assertTrue(vl.isValid())
+        self.assertTrue(vl.isQuery())
         self.assertEqual(vl.geometryType(), QgsWkbTypes.PolygonGeometry)
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 1)

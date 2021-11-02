@@ -165,6 +165,17 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     virtual bool empty() const;
 
     /**
+     * Returns TRUE if the layer is a query (SQL) layer.
+     *
+     * \note the default implementation return FALSE, individual providers
+     *       must override if they support query layers.
+     *
+     * \since QGIS 3.24
+     */
+    virtual bool isQuery() const;
+
+
+    /**
      * Will always return FeatureAvailability::FeaturesAvailable or
      * FeatureAvailability::NoFeaturesAvailable.
      *

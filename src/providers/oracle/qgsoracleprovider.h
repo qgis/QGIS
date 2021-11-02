@@ -189,6 +189,8 @@ class QgsOracleProvider final: public QgsVectorDataProvider
      */
     QString getWorkspace() const;
 
+    bool isQuery() const override;
+
   private:
     QString whereClause( QgsFeatureId featureId, QVariantList &args ) const;
     QString pkParamWhereClause() const;

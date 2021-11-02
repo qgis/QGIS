@@ -128,6 +128,19 @@ Returns ``True`` if the layer does not contain any feature.
 .. versionadded:: 3.4
 %End
 
+    virtual bool isQuery() const;
+%Docstring
+Returns ``True`` if the layer is a query (SQL) layer.
+
+.. note::
+
+   the default implementation return ``False``, individual providers
+   must override if they support query layers.
+
+.. versionadded:: 3.24
+%End
+
+
     virtual QgsFeatureSource::FeatureAvailability hasFeatures() const;
 
 %Docstring

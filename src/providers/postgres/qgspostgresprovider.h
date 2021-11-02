@@ -243,6 +243,8 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
      */
     void setListening( bool isListening ) override;
 
+    bool isQuery() const override;
+
   private:
 
     /**
