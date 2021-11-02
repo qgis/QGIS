@@ -1889,21 +1889,8 @@ double QgsGeometry::area() const
   {
     return -1.0;
   }
-  QgsGeos g( d->geometry.get() );
 
-#if 0
-  //debug: compare geos area with calculation in QGIS
-  double geosArea = g.area();
-  double qgisArea = 0;
-  QgsSurface *surface = qgsgeometry_cast<QgsSurface *>( d->geometry );
-  if ( surface )
-  {
-    qgisArea = surface->area();
-  }
-#endif
-
-  mLastError.clear();
-  return g.area( &mLastError );
+  return d->geometry->area();
 }
 
 double QgsGeometry::length() const
