@@ -3597,7 +3597,7 @@ QString QgsProcessingParameterMatrix::valueAsPythonString( const QVariant &value
         else if ( v2.toString().isEmpty() )
           parts2 << QStringLiteral( "''" );
         else
-          parts2 << v2.toString();
+          parts2 << QgsProcessingUtils::stringToPythonLiteral( v2.toString() );
       }
       parts << parts2.join( ',' ).prepend( '[' ).append( ']' );
     }
@@ -3608,7 +3608,7 @@ QString QgsProcessingParameterMatrix::valueAsPythonString( const QVariant &value
       else if ( v.toString().isEmpty() )
         parts << QStringLiteral( "''" );
       else
-        parts << v.toString();
+        parts << QgsProcessingUtils::stringToPythonLiteral( v.toString() );
     }
   }
 
