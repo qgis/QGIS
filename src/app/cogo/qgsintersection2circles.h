@@ -50,7 +50,7 @@ class APP_EXPORT QgsIntersection2CirclesDialog : public QDialog, private Ui::Qgs
     void propertiesChanged();
     void updateCenterPoint( CircleNumber circleNum, const QgsPointXY &point, Qt::MouseButton button );
     void updateCircle();
-    void selectIntersection( QgsRubberBand *intersection, QCheckBox *button );
+    void selectIntersection( QgsRubberBand *intersection, QRadioButton *button );
 
     void onAccepted();
     void reject();
@@ -59,7 +59,7 @@ class APP_EXPORT QgsIntersection2CirclesDialog : public QDialog, private Ui::Qgs
     void hideDrawings();
     void clearInformations();
     void initCircleParameters( QgsRubberBand *&rubberCircle, QgsRubberBand *&rubberInter,
-                               QCheckBox *btnIntersection, QgsDoubleSpinBox *x1,
+                               QRadioButton *btnIntersection, QgsDoubleSpinBox *x1,
                                QgsDoubleSpinBox *y1, QgsDoubleSpinBox *radius,
                                QToolButton *selectCenter, CircleNumber circleNum );
 

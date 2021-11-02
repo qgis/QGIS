@@ -52,7 +52,7 @@ QgsIntersection2CirclesDialog::QgsIntersection2CirclesDialog( QgsMapCanvas *mapC
 }
 
 void QgsIntersection2CirclesDialog::initCircleParameters( QgsRubberBand *&rubberCircle, QgsRubberBand *&rubberInter,
-    QCheckBox *btnIntersection, QgsDoubleSpinBox *x,
+    QRadioButton *btnIntersection, QgsDoubleSpinBox *x,
     QgsDoubleSpinBox *y, QgsDoubleSpinBox *radius,
     QToolButton *selectCenter, CircleNumber circleNum )
 {
@@ -66,7 +66,7 @@ void QgsIntersection2CirclesDialog::initCircleParameters( QgsRubberBand *&rubber
   rubberInter->setIcon( QgsRubberBand::ICON_CROSS );
   rubberInter->setColor( mDefaultColor );
 
-  connect( btnIntersection, &QCheckBox::stateChanged,
+  connect( btnIntersection, &QRadioButton::toggled,
   [ = ]() { selectIntersection( rubberInter, btnIntersection ); } );
 
   const double maxValue = std::numeric_limits<double>::max();
@@ -143,35 +143,35 @@ void QgsIntersection2CirclesDialog::onAccepted()
     return;
   }
 
-  auto addFeature = [ = ]( QgsPoint point )
-  {
-    const QgsCoordinateReferenceSystem projectCrs = QgsProject::instance()->crs();
-    const QgsCoordinateReferenceSystem layerCrs = vlayer->crs();
-    if ( projectCrs != layerCrs )
-    {
-      QgsCoordinateTransform tr( projectCrs, layerCrs, QgsProject::instance() );
-      point.transform( tr, Qgis::TransformDirection::Forward, true ); // and M ?
-    }
-
-
-    QgsFeature f;
-    const QgsFields fields = vlayer->fields();
-    f = QgsFeature();
-    f.setGeometry( QgsGeometry( point.clone() ) );
-
-    QgsFeatureAction action( tr( "Feature added" ), f, vlayer );
-    action.addFeature();
-  };
-
+  QgsPoint intersection;
   if ( mBtnIntersection1->isEnabled() && mBtnIntersection1->isChecked() )
   {
-    addFeature( mIntersection1 );
+    intersection = mIntersection1;
+  }
+  else if ( mBtnIntersection2->isEnabled() && mBtnIntersection2->isChecked() )
+  {
+    intersection = mIntersection2;
+  }
+  else
+  {
+    return;
   }
 
-  if ( mBtnIntersection2->isEnabled() && mBtnIntersection2->isChecked() )
+  const QgsCoordinateReferenceSystem projectCrs = QgsProject::instance()->crs();
+  const QgsCoordinateReferenceSystem layerCrs = vlayer->crs();
+  if ( projectCrs != layerCrs )
   {
-    addFeature( mIntersection2 );
+    QgsCoordinateTransform tr( projectCrs, layerCrs, QgsProject::instance() );
+    intersection.transform( tr, Qgis::TransformDirection::Forward, true ); // and M ?
   }
+
+  QgsFeature f;
+  const QgsFields fields = vlayer->fields();
+  f = QgsFeature();
+  f.setGeometry( QgsGeometry( intersection.clone() ) );
+
+  QgsFeatureAction action( tr( "Feature added" ), f, vlayer );
+  action.addFeature();
 
   hideDrawings();
   clearInformations();
@@ -260,6 +260,8 @@ void QgsIntersection2CirclesDialog::propertiesChanged()
   }
 
   updateCircle();
+  mRubberInter1->updatePosition();
+  mRubberInter2->updatePosition();
 }
 
 void QgsIntersection2CirclesDialog::updateCircle()
@@ -268,7 +270,7 @@ void QgsIntersection2CirclesDialog::updateCircle()
   mRubberCircle2->setToGeometry( QgsGeometry( mCircle2.toCircularString( true )->clone() ) );
 }
 
-void QgsIntersection2CirclesDialog::selectIntersection( QgsRubberBand *intersection, QCheckBox *button )
+void QgsIntersection2CirclesDialog::selectIntersection( QgsRubberBand *intersection, QRadioButton *button )
 {
   const QColor color = button->isChecked() ? mSelectedColor : mDefaultColor;
   intersection->setColor( color );
