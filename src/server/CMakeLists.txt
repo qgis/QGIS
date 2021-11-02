@@ -35,11 +35,11 @@ set(QGIS_SERVER_SRCS
   qgsserverparameters.cpp
   qgsserverexception.cpp
   qgsserverfilter.cpp
+  qgsserverfeatureid.cpp
   qgsserverinterface.cpp
   qgsserverinterfaceimpl.cpp
   qgsserverlogger.cpp
   qgsserverprojectutils.cpp
-  qgsserverfeatureid.cpp
   qgsserverrequest.cpp
   qgsserverresponse.cpp
   qgsserversettings.cpp
@@ -64,6 +64,7 @@ set (QGIS_SERVER_HDRS
   qgsserverogcapihandler.h
   qgsserverstatichandler.h
   qgsserverparameters.h
+  qgsserverfeatureid.h
   qgsserverquerystringparameter.h
   qgsserversettings.h
   qgsservicemodule.h
