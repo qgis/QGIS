@@ -60,6 +60,7 @@ class QgsPluginDependenciesDialog(QtWidgets.QDialog, Ui_QgsPluginDependenciesDia
             widget = QtWidgets.QLabel("<b>%s</b>" % name)
             widget.p_id = data['id']
             widget.action = data['action']
+            widget.use_stable_version = data['use_stable_version']
             self.pluginList.setCellWidget(i, 0, widget)
             widget = QtWidgets.QTableWidgetItem(_display(data['version_installed']))
             widget.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
@@ -106,7 +107,9 @@ class QgsPluginDependenciesDialog(QtWidgets.QDialog, Ui_QgsPluginDependenciesDia
         for i in range(self.pluginList.rowCount()):
             try:
                 if self.pluginList.cellWidget(i, 4).isChecked():
-                    self.__actions[self.pluginList.cellWidget(i, 0).p_id] = self.pluginList.cellWidget(i, 0).action
+                    self.__actions[self.pluginList.cellWidget(i, 0).p_id] = {
+                        'action': self.pluginList.cellWidget(i, 0).action,
+                        'use_stable_version': self.pluginList.cellWidget(i, 0).use_stable_version}
             except:
                 pass
         super().accept()
