@@ -116,7 +116,7 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
   }
   else if ( role == Qt::TextAlignmentRole )
   {
-    return Qt::AlignLeft;
+    return static_cast<Qt::Alignment::Int>( Qt::AlignLeft );
   }
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
