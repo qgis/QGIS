@@ -2118,7 +2118,21 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
 
     QgsPoint pt( layerPoint );
     if ( QgsWkbTypes::hasZ( dragLayer->wkbType() ) && !pt.is3D() )
-      pt.addZValue( defaultZValue() );
+    {
+      if ( addingAtEndpoint )
+      {
+        pt.addZValue( geom.vertexAt( dragVertexId ).z() );
+      }
+      else
+      {
+        const QgsPoint pointPrev = geom.vertexAt( dragVertexId - 1 );
+        const QgsPoint pointNext = geom.vertexAt( dragVertexId );
+        const double distPrev = QgsPointXY( pointPrev ).distance( QgsPointXY( pt ) );
+        const double distNext = QgsPointXY( pointNext ).distance( QgsPointXY( pt ) );
+        const double d = distPrev + distNext;
+        pt.addZValue( ( pointPrev.z() * distNext + pointNext.z() * distPrev ) / d );
+      }
+    }
 
     if ( !geomTmp->insertVertex( vid, pt ) )
     {

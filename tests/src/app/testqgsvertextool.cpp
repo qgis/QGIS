@@ -66,7 +66,9 @@ class TestQgsVertexTool : public QObject
     void testMoveVertex();
     void testMoveEdge();
     void testAddVertex();
+    void testAddVertexZ();
     void testAddVertexAtEndpoint();
+    void testAddVertexAtEndpointZ();
     void testAddVertexDoubleClick();
     void testAddVertexDoubleClickWithShift();
     void testDeleteVertex();
@@ -392,6 +394,10 @@ void TestQgsVertexTool::testTopologicalEditingMoveVertexOnSegmentZ()
   mLayerLineZ->undoStack()->undo();
   cfg.setEnabled( false );
   mCanvas->snappingUtils()->setConfig( cfg );
+
+  mLayerLineZ->undoStack()->undo();
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt(), QString( "LineStringZ (5 5 1, 6 6 1, 7 5 1)" ) );
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF2 ).geometry().asWkt(), QString( "LineStringZ (5 7 5, 7 7 10)" ) );
 }
 
 void TestQgsVertexTool::testMoveVertex()
@@ -537,6 +543,23 @@ void TestQgsVertexTool::testAddVertex()
   QCOMPARE( mLayerPoint->undoStack()->index(), 1 );
 }
 
+void TestQgsVertexTool::testAddVertexZ()
+{
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt(), QString( "LineStringZ (5 5 1, 6 6 1, 7 5 1)" ) );
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF2 ).geometry().asWkt(), QString( "LineStringZ (5 7 5, 7 7 10)" ) );
+
+  mouseClick( 6, 7, Qt::LeftButton );
+  mouseClick( 6, 8, Qt::LeftButton );
+
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt(), QString( "LineStringZ (5 5 1, 6 6 1, 7 5 1)" ) );
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF2 ).geometry().asWkt(), QString( "LineStringZ (5 7 5, 6 8 7.5, 7 7 10)" ) );
+
+  mLayerLineZ->undoStack()->undo();
+
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt(), QString( "LineStringZ (5 5 1, 6 6 1, 7 5 1)" ) );
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF2 ).geometry().asWkt(), QString( "LineStringZ (5 7 5, 7 7 10)" ) );
+}
+
 void TestQgsVertexTool::testAddVertexAtEndpoint()
 {
   // offset of the endpoint marker - currently set as 15px away from the last vertex in direction of the line
@@ -591,6 +614,37 @@ void TestQgsVertexTool::testAddVertexAtEndpoint()
 
   QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
 
+}
+
+void TestQgsVertexTool::testAddVertexAtEndpointZ()
+{
+  // offset of the endpoint marker - currently set as 15px away from the last vertex in direction of the line
+  double offsetInMapUnits = 15 * mCanvas->mapSettings().mapUnitsPerPixel();
+
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt(), QString( "LineStringZ (5 5 1, 6 6 1, 7 5 1)" ) );
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF2 ).geometry().asWkt(), QString( "LineStringZ (5 7 5, 7 7 10)" ) );
+
+  mouseMove( 5, 7 ); // first we need to move to the vertex
+  mouseClick( 5 - offsetInMapUnits, 7, Qt::LeftButton );
+  mouseClick( 4, 7, Qt::LeftButton );
+  mouseClick( 4, 7, Qt::RightButton ); // we need a right click to stop adding new nodes
+
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt(), QString( "LineStringZ (5 5 1, 6 6 1, 7 5 1)" ) );
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF2 ).geometry().asWkt(), QString( "LineStringZ (4 7 5, 5 7 5, 7 7 10)" ) );
+
+  mouseMove( 7, 7 ); // first we need to move to the vertex
+  mouseClick( 7 + offsetInMapUnits, 7, Qt::LeftButton );
+  mouseClick( 8, 7, Qt::LeftButton );
+  mouseClick( 8, 7, Qt::RightButton ); // we need a right click to stop adding new nodes
+
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt(), QString( "LineStringZ (5 5 1, 6 6 1, 7 5 1)" ) );
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF2 ).geometry().asWkt(), QString( "LineStringZ (4 7 5, 5 7 5, 7 7 10, 8 7 10)" ) );
+
+  mLayerLineZ->undoStack()->undo();
+  mLayerLineZ->undoStack()->undo();
+
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt(), QString( "LineStringZ (5 5 1, 6 6 1, 7 5 1)" ) );
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF2 ).geometry().asWkt(), QString( "LineStringZ (5 7 5, 7 7 10)" ) );
 }
 
 void TestQgsVertexTool::testAddVertexDoubleClick()
