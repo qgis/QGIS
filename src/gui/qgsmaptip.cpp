@@ -27,6 +27,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsvectorlayertemporalproperties.h"
+#include "qgsrendercontext.h"
 
 // Qt includes
 #include <QPoint>

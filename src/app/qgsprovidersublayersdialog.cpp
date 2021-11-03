@@ -348,4 +348,5 @@ void QgsProviderSublayersDialog::selectAll()
                                              QItemSelectionModel::Select );
     }
   }
+  mButtonBox->button( QDialogButtonBox::Ok )->setFocus();
 }

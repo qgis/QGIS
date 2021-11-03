@@ -8,6 +8,7 @@
 
 
 
+
 class QgsScopedExpressionFunction : QgsExpressionFunction
 {
 %Docstring(signature="appended")

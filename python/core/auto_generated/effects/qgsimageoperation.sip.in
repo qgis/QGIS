@@ -46,15 +46,16 @@ on which is faster for the particular operation.
       FlipVertical
     };
 
-    static void convertToGrayscale( QImage &image, GrayscaleMode mode = GrayscaleLuminosity );
+    static void convertToGrayscale( QImage &image, GrayscaleMode mode = GrayscaleLuminosity, QgsFeedback *feedback = 0 );
 %Docstring
 Convert a QImage to a grayscale image. Alpha channel is preserved.
 
 :param image: QImage to convert
 :param mode: mode to use during grayscale conversion
+:param feedback: optional feedback object for responsive cancellation (since QGIS 3.22)
 %End
 
-    static void adjustBrightnessContrast( QImage &image, int brightness, double contrast );
+    static void adjustBrightnessContrast( QImage &image, int brightness, double contrast, QgsFeedback *feedback = 0 );
 %Docstring
 Alter the brightness or contrast of a QImage.
 
@@ -65,10 +66,11 @@ Alter the brightness or contrast of a QImage.
 :param contrast: contrast value. Must be a positive or zero value. A value of 1.0 indicates no change
                  to the contrast, a value of 0 represents an image with 0 contrast, and a value > 1.0 will increase the
                  contrast of the image.
+:param feedback: optional feedback object for responsive cancellation (since QGIS 3.22)
 %End
 
     static void adjustHueSaturation( QImage &image, double saturation, const QColor &colorizeColor = QColor(),
-                                     double colorizeStrength = 1.0 );
+                                     double colorizeStrength = 1.0, QgsFeedback *feedback = 0 );
 %Docstring
 Alter the hue or saturation of a QImage.
 
@@ -77,14 +79,16 @@ Alter the hue or saturation of a QImage.
 :param colorizeColor: color to use for colorizing image. Set to an invalid QColor to disable
                       colorization.
 :param colorizeStrength: double between 0 and 1, where 0 = no colorization and 1.0 = full colorization
+:param feedback: optional feedback object for responsive cancellation (since QGIS 3.22)
 %End
 
-    static void multiplyOpacity( QImage &image, double factor );
+    static void multiplyOpacity( QImage &image, double factor, QgsFeedback *feedback = 0 );
 %Docstring
 Multiplies opacity of image pixel values by a factor.
 
 :param image: QImage to alter
 :param factor: factor to multiple pixel's opacity by
+:param feedback: optional feedback object for responsive cancellation (since QGIS 3.22)
 %End
 
     static void overlayColor( QImage &image, const QColor &color );
@@ -108,7 +112,7 @@ original image, but replaces all image pixel colors with the specified color.
       QgsColorRamp *ramp;
     };
 
-    static void distanceTransform( QImage &image, const QgsImageOperation::DistanceTransformProperties &properties );
+    static void distanceTransform( QImage &image, const QgsImageOperation::DistanceTransformProperties &properties, QgsFeedback *feedback = 0 );
 %Docstring
 Performs a distance transform on the source image and shades the result
 using a color ramp.
@@ -116,9 +120,10 @@ using a color ramp.
 :param image: QImage to alter
 :param properties: DistanceTransformProperties object with parameters
                    for the distance transform operation
+:param feedback: optional feedback object for responsive cancellation (since QGIS 3.22)
 %End
 
-    static void stackBlur( QImage &image, int radius, bool alphaOnly = false );
+    static void stackBlur( QImage &image, int radius, bool alphaOnly = false, QgsFeedback *feedback = 0 );
 %Docstring
 Performs a stack blur on an image. Stack blur represents a good balance between
 speed and blur quality.
@@ -126,6 +131,7 @@ speed and blur quality.
 :param image: QImage to blur
 :param radius: blur radius in pixels, maximum value of 16
 :param alphaOnly: set to ``True`` to blur only the alpha component of the image
+:param feedback: optional feedback object for responsive cancellation (since QGIS 3.22)
 
 .. note::
 
@@ -133,13 +139,14 @@ speed and blur quality.
    alphaOnly is set to ``False``, or ARGB32 if alphaOnly is ``True``
 %End
 
-    static QImage *gaussianBlur( QImage &image, int radius ) /Factory/;
+    static QImage *gaussianBlur( QImage &image, int radius, QgsFeedback *feedback = 0 ) /Factory/;
 %Docstring
 Performs a gaussian blur on an image. Gaussian blur is slower but results in a high
 quality blur.
 
 :param image: QImage to blur
 :param radius: blur radius in pixels
+:param feedback: optional feedback object for responsive cancellation (since QGIS 3.22)
 
 :return: blurred image
 

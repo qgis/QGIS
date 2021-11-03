@@ -221,7 +221,7 @@ void QgsDrawSourceEffect::draw( QgsRenderContext &context )
   {
     //rasterize source and apply modifications
     QImage image = sourceAsImage( context )->copy();
-    QgsImageOperation::multiplyOpacity( image, mOpacity );
+    QgsImageOperation::multiplyOpacity( image, mOpacity, context.feedback() );
     const QgsScopedQPainterState painterState( painter );
     painter->setCompositionMode( mBlendMode );
     painter->drawImage( imageOffset( context ), image );

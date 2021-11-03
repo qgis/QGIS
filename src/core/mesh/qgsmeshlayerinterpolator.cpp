@@ -33,6 +33,7 @@
 #include "qgscoordinatetransformcontext.h"
 #include "qgscoordinatetransform.h"
 #include "qgsmeshdataprovider.h"
+#include "qgsrendercontext.h"
 
 QgsMeshLayerInterpolator::QgsMeshLayerInterpolator(
   const QgsTriangularMesh &m,

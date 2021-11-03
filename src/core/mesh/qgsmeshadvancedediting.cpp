@@ -23,6 +23,7 @@
 #include "qgsexpression.h"
 #include "qgsexpressioncontextutils.h"
 
+
 QgsMeshAdvancedEditing::QgsMeshAdvancedEditing() = default;
 
 QgsMeshAdvancedEditing::~QgsMeshAdvancedEditing() = default;
@@ -47,8 +48,18 @@ void QgsMeshAdvancedEditing::clear()
   mInputVertices.clear();
   mInputFaces.clear();
   mMessage.clear();
-
+  mIsFinished = false;
   clearChanges();
+}
+
+bool QgsMeshAdvancedEditing::isFinished() const
+{
+  return mIsFinished;
+}
+
+QString QgsMeshAdvancedEditing::text() const
+{
+  return QString();
 }
 
 static int vertexPositionInFace( int vertexIndex, const QgsMeshFace &face )
@@ -92,6 +103,8 @@ QgsTopologicalMesh::Changes QgsMeshEditRefineFaces::apply( QgsMeshEditor *meshEd
   }
 
   meshEditor->topologicalMesh().applyChanges( *this );
+
+  mIsFinished = true;
 
   return *this;
 }
@@ -596,6 +609,11 @@ bool QgsMeshEditRefineFaces::createNewBorderFaces( QgsMeshEditor *meshEditor,
   return true;
 }
 
+QString QgsMeshEditRefineFaces::text() const
+{
+  return QObject::tr( "Refine %n faces", nullptr, mInputFaces.count() );
+}
+
 bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer )
 {
   if ( !layer || !layer->meshEditor() || !layer->nativeMesh() )
@@ -734,6 +752,11 @@ bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer )
   return layer->meshEditor()->canBeTransformed( mNativeFacesIndexesGeometryChanged, transformFunction );
 }
 
+QString QgsMeshTransformVerticesByExpression::text() const
+{
+  return QObject::tr( "Transform %n vertices by expression", nullptr, mInputVertices.count() );
+}
+
 void QgsMeshTransformVerticesByExpression::setExpressions( const QString &expressionX, const QString &expressionY, const QString &expressionZ )
 {
   mExpressionX = expressionX;
@@ -746,6 +769,7 @@ void QgsMeshTransformVerticesByExpression::setExpressions( const QString &expres
 QgsTopologicalMesh::Changes QgsMeshTransformVerticesByExpression::apply( QgsMeshEditor *meshEditor )
 {
   meshEditor->topologicalMesh().applyChanges( *this );
+  mIsFinished = true;
   return *this;
 }
 
@@ -772,4 +796,3 @@ QgsMeshVertex QgsMeshTransformVerticesByExpression::transformedVertex( QgsMeshLa
   else
     return layer->nativeMesh()->vertex( vertexIndex );
 }
-

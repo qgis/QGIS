@@ -60,11 +60,9 @@ QgsVectorLayerLegendWidget::QgsVectorLayerLegendWidget( QWidget *parent )
   mTextOnSymbolGroupBox->setLayout( groupLayout );
   mTextOnSymbolGroupBox->setCollapsed( false );
 
-  mShowLabelLegendCheckBox = new QCheckBox( tr( "Show label legend" ) );
-  connect( mShowLabelLegendCheckBox, &QCheckBox::toggled, this, &QgsVectorLayerLegendWidget::enableLabelLegendGroupBox );
   mLabelLegendGroupBox = new QgsCollapsibleGroupBox;
-  mLabelLegendGroupBox->setVisible( false );
-  mLabelLegendGroupBox->setTitle( tr( "Label legend" ) );
+  mLabelLegendGroupBox->setCheckable( true );
+  mLabelLegendGroupBox->setTitle( tr( "Show Label Legend" ) );
 
   mLabelLegendTreeWidget = new QTreeWidget;
   connect( mLabelLegendTreeWidget, &QTreeWidget::itemDoubleClicked, this, &QgsVectorLayerLegendWidget::labelLegendTreeWidgetItemDoubleClicked );
@@ -80,25 +78,17 @@ QgsVectorLayerLegendWidget::QgsVectorLayerLegendWidget( QWidget *parent )
     mImageSourceLineEdit->setSource( mLayer->legendPlaceholderImage() );
   }
 
+  QHBoxLayout *placeholderLayout = new QHBoxLayout;
+  placeholderLayout->addWidget( mPlaceholderImageLabel );
+  placeholderLayout->addWidget( mImageSourceLineEdit );
 
   QVBoxLayout *layout = new QVBoxLayout;
   layout->setContentsMargins( 0, 0, 0, 0 );
-  layout->addWidget( mPlaceholderImageLabel );
-  layout->addWidget( mImageSourceLineEdit );
-  layout->addWidget( mShowLabelLegendCheckBox );
+  layout->addLayout( placeholderLayout );
   layout->addWidget( mLabelLegendGroupBox );
   layout->addWidget( mTextOnSymbolGroupBox );
 
   setLayout( layout );
-}
-
-void QgsVectorLayerLegendWidget::enableLabelLegendGroupBox( bool enable )
-{
-  mLabelLegendGroupBox->setVisible( enable );
-  if ( enable )
-  {
-    populateLabelLegendTreeWidget();
-  }
 }
 
 void QgsVectorLayerLegendWidget::labelLegendTreeWidgetItemDoubleClicked( QTreeWidgetItem *item, int column )
@@ -128,7 +118,8 @@ void QgsVectorLayerLegendWidget::setLayer( QgsVectorLayer *layer )
   if ( !legend )
     return;
 
-  mShowLabelLegendCheckBox->setChecked( legend->showLabelLegend() );
+  mLabelLegendGroupBox->setChecked( legend->showLabelLegend() );
+  populateLabelLegendTreeWidget();
   mTextOnSymbolGroupBox->setChecked( legend->textOnSymbolEnabled() );
   mTextOnSymbolFormatButton->setTextFormat( legend->textOnSymbolTextFormat() );
   populateLegendTreeView( legend->textOnSymbolContent() );
@@ -142,7 +133,7 @@ void QgsVectorLayerLegendWidget::populateLabelLegendTreeWidget()
 {
   mLabelLegendTreeWidget->clear();
   mLabelLegendTreeWidget->setColumnCount( 2 );
-  QTreeWidgetItem *headerItem = new QTreeWidgetItem( QStringList() << tr( "Description" ) << tr( "LegendText" ) );
+  QTreeWidgetItem *headerItem = new QTreeWidgetItem( QStringList() << tr( "Description" ) << tr( "Legend Text" ) );
   mLabelLegendTreeWidget->setHeaderItem( headerItem );
 
   const QgsAbstractVectorLayerLabeling *labeling = mLayer->labeling();
@@ -227,7 +218,7 @@ void QgsVectorLayerLegendWidget::applyToLayer()
   }
   legend->setTextOnSymbolContent( content );
 
-  const bool showLabelLegend = mShowLabelLegendCheckBox->isChecked();
+  const bool showLabelLegend = mLabelLegendGroupBox->isChecked();
   legend->setShowLabelLegend( showLabelLegend );
   if ( showLabelLegend )
   {

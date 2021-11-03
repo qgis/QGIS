@@ -105,7 +105,7 @@ void QgsLabelPropertyDialog::buttonBox_clicked( QAbstractButton *button )
 void QgsLabelPropertyDialog::init( const QString &layerId, const QString &providerId, QgsFeatureId featureId, const QString &labelText )
 {
   //get feature attributes
-  QgsVectorLayer *vlayer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( layerId );
+  QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer * >( mCanvas->layer( layerId ) );
   if ( !vlayer )
   {
     return;
@@ -321,6 +321,28 @@ int QgsLabelPropertyDialog::dataDefinedColumnIndex( QgsPalLayerSettings::Propert
         {
           const QgsExpressionNodeColumnRef *columnRef = qgis::down_cast<const QgsExpressionNodeColumnRef *>( node );
           fieldName = columnRef->name();
+        }
+        // ok, it's not. But let's be super smart and helpful for users!
+        // maybe it's a COALESCE("some field", 'some' || 'fallback' || 'expression') type expression, where the user wants to override
+        // some labels with a value stored in a field but all others use some expression
+        else if ( node->nodeType() == QgsExpressionNode::ntFunction )
+        {
+          const QgsExpressionNodeFunction *functionNode = qgis::down_cast<const QgsExpressionNodeFunction *>( node );
+          if ( const QgsExpressionFunction *function = QgsExpression::QgsExpression::Functions()[functionNode->fnIndex()] )
+          {
+            if ( function->name() == QLatin1String( "coalesce" ) )
+            {
+              if ( const QgsExpressionNode *firstArg = functionNode->args()->list().value( 0 ) )
+              {
+                const QgsExpressionNode *firstArgNode = firstArg->effectiveNode();
+                if ( firstArgNode->nodeType() == QgsExpressionNode::ntColumnRef )
+                {
+                  const QgsExpressionNodeColumnRef *columnRef = qgis::down_cast<const QgsExpressionNodeColumnRef *>( firstArgNode );
+                  fieldName = columnRef->name();
+                }
+              }
+            }
+          }
         }
       }
       break;

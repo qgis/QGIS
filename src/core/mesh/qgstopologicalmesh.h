@@ -20,6 +20,12 @@
 
 #include "qgsmeshdataprovider.h"
 
+#if defined(_MSC_VER)
+template CORE_EXPORT QVector<int> SIP_SKIP;
+template CORE_EXPORT QList<int> SIP_SKIP;
+template CORE_EXPORT QVector<QVector<int>> SIP_SKIP;
+#endif
+
 SIP_NO_FILE
 
 class QgsMeshEditingError;
@@ -53,7 +59,7 @@ class CORE_EXPORT QgsTopologicalMesh
      *
      * \since QGIS 3.22
      */
-    class TopologicalFaces
+    class CORE_EXPORT TopologicalFaces
     {
       public:
 
@@ -65,6 +71,9 @@ class CORE_EXPORT QgsTopologicalMesh
 
         //! Returns the face neighborhood of the faces, indexing is local
         QVector<FaceNeighbors> facesNeighborhood() const;
+
+        //! Returns a face linked to the vertices with index \a vertexIndex
+        int vertexToFace( int vertexIndex ) const;
 
       private:
         QVector<QgsMeshFace> mFaces; // the faces containing the vertices indexes in the mesh
@@ -84,7 +93,7 @@ class CORE_EXPORT QgsTopologicalMesh
      *
      * \since QGIS 3.22
      */
-    class Changes
+    class CORE_EXPORT Changes
     {
       public:
 
@@ -118,6 +127,9 @@ class CORE_EXPORT QgsTopologicalMesh
         //! Returns a list of the native face indexes that have a geometry changed
         QList<int> nativeFacesIndexesGeometryChanged() const;
 
+        //! Returns whether changes are empty, that there is nothing to change
+        bool isEmpty() const;
+
       protected:
         int mAddedFacesFirstIndex = 0;
         QList<int> mFaceIndexesToRemove; // the removed faces indexes in the mesh
@@ -146,7 +158,7 @@ class CORE_EXPORT QgsTopologicalMesh
 
       private:
         int addedFaceIndexInMesh( int internalIndex ) const;
-        int removedFaceIndexInmesh( int internalIndex ) const;
+        int removedFaceIndexInMesh( int internalIndex ) const;
 
         friend class QgsTopologicalMesh;
     };
@@ -189,7 +201,7 @@ class CORE_EXPORT QgsTopologicalMesh
     //----------- editing methods
 
     //! Returns whether the faces can be added to the mesh
-    QgsMeshEditingError canFacesBeAdded( const TopologicalFaces &topologicalFaces ) const;
+    QgsMeshEditingError facesCanBeAdded( const TopologicalFaces &topologicalFaces ) const;
 
     /**
      * Adds faces \a topologicFaces to the topologic mesh.
@@ -201,7 +213,7 @@ class CORE_EXPORT QgsTopologicalMesh
      * Returns whether faces with index in \a faceIndexes can be removed/
      * The method an error object with type QgsMeshEditingError::NoError if the faces can be removed, otherwise returns the corresponding error
      */
-    QgsMeshEditingError canFacesBeRemoved( const QList<int> facesIndexes );
+    QgsMeshEditingError facesCanBeRemoved( const QList<int> facesIndexes );
 
     /**
      * Removes faces with index in \a faceIndexes.
@@ -234,7 +246,7 @@ class CORE_EXPORT QgsTopologicalMesh
     /**
      * Returns TRUE if face with index \a faceIndex can be split
      */
-    bool faceCanBeSplit( int faceIndex ) const;
+    bool canBeSplit( int faceIndex ) const;
 
     /**
      * Splits face with index \a faceIndex
@@ -246,7 +258,13 @@ class CORE_EXPORT QgsTopologicalMesh
      * Adds a \a vertex in the face with index \a faceIndex. The including face is removed and new faces surrounding the added vertex are added.
      * The method returns a instance of the class QgsTopologicalMesh::Change that can be used to reverse or reapply the operation.
      */
-    Changes addVertexInface( int faceIndex, const QgsMeshVertex &vertex );
+    Changes addVertexInFace( int faceIndex, const QgsMeshVertex &vertex );
+
+    /**
+     * Inserts a \a vertex in the edge of face with index \a faceIndex at \a position . The faces that are on each side of the edge are removed and replaced
+     * by new faces constructed by a triangulation.
+     */
+    Changes insertVertexInFacesEdge( int faceIndex, int position, const QgsMeshVertex &vertex );
 
     /**
      * Adds a free \a vertex in the face, that is a vertex tha tis not included or linked with any faces.
@@ -294,8 +312,16 @@ class CORE_EXPORT QgsTopologicalMesh
      */
     void reindex();
 
+    /**
+     * Renumbers the  indexes of vertices and faces using the Reverse CutHill McKee Algorithm
+     */
+    bool renumber();
+
     //! Checks the consistency of the topological mesh and return FALSE if there is a consistency issue
     QgsMeshEditingError checkConsistency() const;
+
+    //! Checks the topology of the mesh \a mesh, if error occurs, this mesh can't be edited
+    static QgsMeshEditingError checkTopology( const QgsMesh &mesh, int maxVerticesPerFace );
 
   private:
 
@@ -326,6 +352,9 @@ class CORE_EXPORT QgsTopologicalMesh
                                      int &neighborVertex1InFace2,
                                      int &neighborVertex2inFace1,
                                      int &neighborVertex2inFace2 ) const;
+
+    bool renumberVertices( QVector<int> &oldToNewIndex ) const;
+    bool renumberFaces( QVector<int> &oldToNewIndex ) const;
 
     //Attributes
     QgsMesh *mMesh = nullptr;
@@ -398,6 +427,9 @@ class CORE_EXPORT QgsMeshVertexCirculator
     //! Returns all the faces indexes around the vertex
     QList<int> facesAround() const;
 
+    //! Returns the degree of the vertex, that is the count of other vertices linked
+    int degree() const;
+
   private:
     const QVector<QgsMeshFace> mFaces;
     const QVector<QgsTopologicalMesh::FaceNeighbors> mFacesNeighborhood;
@@ -405,6 +437,7 @@ class CORE_EXPORT QgsMeshVertexCirculator
     mutable int mCurrentFace = -1;
     mutable int mLastValidFace = -1;
     bool mIsValid = false;
+    mutable int mDegree = -1;
 
     int positionInCurrentFace() const;
 };

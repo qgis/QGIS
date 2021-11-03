@@ -20,6 +20,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsmarkersymbol.h"
 #include "qgsannotationitemnode.h"
+#include "qgsannotationitemeditoperation.h"
 
 QgsAnnotationMarkerItem::QgsAnnotationMarkerItem( const QgsPoint &point )
   : QgsAnnotationItem()
@@ -76,7 +77,61 @@ Qgis::AnnotationItemFlags QgsAnnotationMarkerItem::flags() const
 
 QList<QgsAnnotationItemNode> QgsAnnotationMarkerItem::nodes() const
 {
-  return { QgsAnnotationItemNode( mPoint, Qgis::AnnotationItemNodeType::VertexHandle )};
+  return { QgsAnnotationItemNode( QgsVertexId( 0, 0, 0 ), mPoint, Qgis::AnnotationItemNodeType::VertexHandle )};
+}
+
+Qgis::AnnotationItemEditOperationResult QgsAnnotationMarkerItem::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
+{
+  switch ( operation->type() )
+  {
+    case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
+    {
+      QgsAnnotationItemEditOperationMoveNode *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      mPoint = QgsPoint( moveOperation->after() );
+      return Qgis::AnnotationItemEditOperationResult::Success;
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
+    {
+      return Qgis::AnnotationItemEditOperationResult::ItemCleared;
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
+    {
+      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
+      mPoint.setX( mPoint.x() + moveOperation->translationX() );
+      mPoint.setY( mPoint.y() + moveOperation->translationY() );
+      return Qgis::AnnotationItemEditOperationResult::Success;
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
+      break;
+  }
+
+  return Qgis::AnnotationItemEditOperationResult::Invalid;
+}
+
+QgsAnnotationItemEditOperationTransientResults *QgsAnnotationMarkerItem::transientEditResults( QgsAbstractAnnotationItemEditOperation *operation )
+{
+  switch ( operation->type() )
+  {
+    case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
+    {
+      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( moveOperation->after().clone() ) );
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
+    {
+      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
+      return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( new QgsPoint( mPoint.x() + moveOperation->translationX(), mPoint.y() + moveOperation->translationY() ) ) );
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
+    case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
+      break;
+  }
+  return nullptr;
 }
 
 QgsAnnotationMarkerItem *QgsAnnotationMarkerItem::create()
@@ -137,13 +192,7 @@ QgsRectangle QgsAnnotationMarkerItem::boundingBox( QgsRenderContext &context ) c
   const QgsPointXY bottomRight = context.mapToPixel().toMapCoordinates( boundsInPixels.right(), boundsInPixels.bottom() );
 
   const QgsRectangle boundsMapUnits = QgsRectangle( topLeft.x(), bottomLeft.y(), bottomRight.x(), topRight.y() );
-  return context.coordinateTransform().transformBoundingBox( boundsMapUnits, QgsCoordinateTransform::ReverseTransform );
-}
-
-bool QgsAnnotationMarkerItem::transform( const QTransform &transform )
-{
-  mPoint.transform( transform );
-  return true;
+  return context.coordinateTransform().transformBoundingBox( boundsMapUnits, Qgis::TransformDirection::Reverse );
 }
 
 const QgsMarkerSymbol *QgsAnnotationMarkerItem::symbol() const

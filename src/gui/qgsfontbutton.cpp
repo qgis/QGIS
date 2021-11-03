@@ -898,7 +898,7 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
 
       context.setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
       context.setUseAdvancedEffects( true );
-      context.setFlag( QgsRenderContext::Antialiasing, true );
+      context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
       context.setPainter( &p );
 
       // slightly inset text to account for buffer/background

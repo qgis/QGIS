@@ -20,6 +20,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgspointxy.h"
+#include "qgsvertexid.h"
 #include "qgis.h"
 
 /**
@@ -37,22 +38,29 @@ class CORE_EXPORT QgsAnnotationItemNode
     QgsAnnotationItemNode() = default;
 
     /**
-     * Constructor for QgsAnnotationItemNode, with the specified \a point and \a type.
+     * Constructor for QgsAnnotationItemNode, with the specified \a id, \a point and \a type.
      */
-    QgsAnnotationItemNode( const QgsPointXY &point, Qgis::AnnotationItemNodeType type )
-      : mPoint( point )
+    QgsAnnotationItemNode( const QgsVertexId &id, const QgsPointXY &point, Qgis::AnnotationItemNodeType type )
+      : mId( id )
+      , mPoint( point )
       , mType( type )
     {}
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsAnnotationItemNode: %1 (%2, %3)>" ).arg( qgsEnumValueToKey( sipCpp->type() ) )
+    QString str = QStringLiteral( "<QgsAnnotationItemNode: %1 - %2 (%3, %4)>" ).arg( sipCpp->id().vertex )
+                  .arg( qgsEnumValueToKey( sipCpp->type() ) )
                   .arg( sipCpp->point().x() )
                   .arg( sipCpp->point().y() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
+
+    /**
+     * Returns the ID number of the node, used for uniquely identifying the node in the item.
+     */
+    QgsVertexId id() const { return mId; }
 
     /**
      * Returns the node's position, in geographic coordinates.
@@ -89,7 +97,7 @@ class CORE_EXPORT QgsAnnotationItemNode
     // TODO c++20 - replace with = default
     bool operator==( const QgsAnnotationItemNode &other ) const
     {
-      return mType == other.mType && mPoint == other.mPoint;
+      return mId == other.mId && mType == other.mType && mPoint == other.mPoint;
     }
 
     bool operator!=( const QgsAnnotationItemNode &other ) const
@@ -99,6 +107,7 @@ class CORE_EXPORT QgsAnnotationItemNode
 
   private:
 
+    QgsVertexId mId;
     QgsPointXY mPoint;
     Qgis::AnnotationItemNodeType mType = Qgis::AnnotationItemNodeType::VertexHandle;
 

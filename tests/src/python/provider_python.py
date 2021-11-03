@@ -291,7 +291,7 @@ class PyProvider(QgsVectorDataProvider):
             f_added.append(_f)
 
             if self._spatialindex is not None:
-                self._spatialindex.insertFeature(_f)
+                self._spatialindex.addFeature(_f)
 
         if len(f_added):
             self.clearMinMaxCache()

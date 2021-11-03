@@ -453,7 +453,7 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
     }
 
     int tileZoom = QgsVectorTileUtils::scaleToZoomLevel( mCanvas->scale(), layer->sourceMinZoom(), layer->sourceMaxZoom() );
-    QgsTileMatrix tileMatrix = QgsTileMatrix::fromWebMercator( tileZoom );
+    const QgsTileMatrix tileMatrix = QgsTileMatrix::fromWebMercator( tileZoom );
     QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( r );
 
     for ( int row = tileRange.startRow(); row <= tileRange.endRow(); ++row )
@@ -709,7 +709,7 @@ void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometry &geo
     derivedAttributes.insert( tr( "Closest vertex M" ), str );
   }
 
-  if ( vId.type == QgsVertexId::CurveVertex )
+  if ( vId.type == Qgis::VertexType::Curve )
   {
     double radius, centerX, centerY;
     QgsVertexId vIdBefore = vId;

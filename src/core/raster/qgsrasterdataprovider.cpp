@@ -728,7 +728,7 @@ QgsRasterDataProvider::VirtualRasterParameters QgsRasterDataProvider::decodeVirt
 
   for ( const auto &item : query.queryItems() )
   {
-    if ( !( item.first.mid( item.first.indexOf( ':' ), -1 ) == QStringLiteral( ":uri" ) ) )
+    if ( !( item.first.mid( item.first.indexOf( ':' ), -1 ) == QLatin1String( ":uri" ) ) )
     {
       continue;
     }

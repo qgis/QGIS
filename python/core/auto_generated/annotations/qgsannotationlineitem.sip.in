@@ -37,9 +37,9 @@ Constructor for QgsAnnotationLineItem, with the specified ``linestring``.
 
     virtual QList< QgsAnnotationItemNode > nodes() const;
 
-    virtual QgsGeometry rubberBandGeometry() const;
+    virtual Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
 
-    virtual bool transform( const QTransform &transform );
+    virtual QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) /Factory/;
 
 
     static QgsAnnotationLineItem *create() /Factory/;

@@ -33,7 +33,12 @@ from qgis.core import (QgsMapSettings,
                        QgsRectangle,
                        QgsAnnotationItemNode,
                        Qgis,
-                       QgsPointXY
+                       QgsPointXY,
+                       QgsVertexId,
+                       QgsAnnotationItemEditOperationMoveNode,
+                       QgsAnnotationItemEditOperationDeleteNode,
+                       QgsAnnotationItemEditOperationTranslateItem,
+                       QgsAnnotationItemEditOperationAddNode
                        )
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -76,15 +81,45 @@ class TestQgsAnnotationMarkerItem(unittest.TestCase):
         Test nodes for item
         """
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
-        self.assertEqual(item.nodes(), [QgsAnnotationItemNode(QgsPointXY(12, 13), Qgis.AnnotationItemNodeType.VertexHandle)])
+        self.assertEqual(item.nodes(), [QgsAnnotationItemNode(QgsVertexId(0, 0, 0), QgsPointXY(12, 13), Qgis.AnnotationItemNodeType.VertexHandle)])
 
     def test_transform(self):
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
         self.assertEqual(item.geometry().asWkt(), 'POINT(12 13)')
 
-        transform = QTransform.fromTranslate(100, 200)
-        item.transform(transform)
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationTranslateItem('', 100, 200)), Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.geometry().asWkt(), 'POINT(112 213)')
+
+    def test_apply_move_node_edit(self):
+        item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
+        self.assertEqual(item.geometry().asWkt(), 'POINT(12 13)')
+
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPoint(14, 13), QgsPoint(17, 18))), Qgis.AnnotationItemEditOperationResult.Success)
+        self.assertEqual(item.geometry().asWkt(), 'POINT(17 18)')
+
+    def test_apply_delete_node_edit(self):
+        item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
+        self.assertEqual(item.geometry().asWkt(), 'POINT(12 13)')
+
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 0), QgsPoint(12, 13))), Qgis.AnnotationItemEditOperationResult.ItemCleared)
+
+    def test_apply_add_node_edit(self):
+        item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationAddNode('', QgsPoint(13, 14))), Qgis.AnnotationItemEditOperationResult.Invalid)
+
+    def test_transient_move_operation(self):
+        item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
+        self.assertEqual(item.geometry().asWkt(), 'POINT(12 13)')
+
+        res = item.transientEditResults(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 0), QgsPoint(12, 13), QgsPoint(17, 18)))
+        self.assertEqual(res.representativeGeometry().asWkt(), 'Point (17 18)')
+
+    def test_transient_translate_operation(self):
+        item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
+        self.assertEqual(item.geometry().asWkt(), 'POINT(12 13)')
+
+        res = item.transientEditResults(QgsAnnotationItemEditOperationTranslateItem('', 100, 200))
+        self.assertEqual(res.representativeGeometry().asWkt(), 'Point (112 213)')
 
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")
@@ -136,8 +171,8 @@ class TestQgsAnnotationMarkerItem(unittest.TestCase):
 
         rc = QgsRenderContext.fromMapSettings(settings)
         image = QImage(200, 200, QImage.Format_ARGB32)
-        image.setDotsPerMeterX(96 / 25.4 * 1000)
-        image.setDotsPerMeterY(96 / 25.4 * 1000)
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
         image.fill(QColor(255, 255, 255))
         painter = QPainter(image)
         rc.setPainter(painter)
@@ -163,8 +198,8 @@ class TestQgsAnnotationMarkerItem(unittest.TestCase):
         rc = QgsRenderContext.fromMapSettings(settings)
         rc.setCoordinateTransform(QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:4326'), settings.destinationCrs(), QgsProject.instance()))
         image = QImage(200, 200, QImage.Format_ARGB32)
-        image.setDotsPerMeterX(96 / 25.4 * 1000)
-        image.setDotsPerMeterY(96 / 25.4 * 1000)
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
         image.fill(QColor(255, 255, 255))
         painter = QPainter(image)
         rc.setPainter(painter)

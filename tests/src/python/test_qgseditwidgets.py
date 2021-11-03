@@ -45,19 +45,19 @@ class TestQgsTextEditWidget(unittest.TestCase):
         config = configWdg.config()
         editwidget = reg.create('TextEdit', self.layer, idx, config, None, None)
 
-        editwidget.setValue('value')
+        editwidget.setValues('value', [])
         self.assertEqual(editwidget.value(), expected[0])
 
-        editwidget.setValue(123)
+        editwidget.setValues(123, [])
         self.assertEqual(editwidget.value(), expected[1])
 
-        editwidget.setValue(None)
+        editwidget.setValues(None, [])
         self.assertEqual(editwidget.value(), expected[2])
 
-        editwidget.setValue(NULL)
+        editwidget.setValues(NULL, [])
         self.assertEqual(editwidget.value(), expected[3])
 
-        editwidget.setValue(float('nan'))
+        editwidget.setValues(float('nan'), [])
         self.assertEqual(editwidget.value(), expected[4])
 
     def test_SetValue(self):
@@ -103,7 +103,7 @@ class TestQgsTextEditWidget(unittest.TestCase):
         config = configWdg.config()
         editwidget = reg.create('TextEdit', layer, 0, config, None, None)
 
-        editwidget.setValue('value')
+        editwidget.setValues('value', [])
         self.assertEqual(editwidget.value(), 'value')
         editwidget.showIndeterminateState()
         self.assertFalse(editwidget.value())
@@ -160,6 +160,40 @@ class TestQgsValueMapEditWidget(unittest.TestCase):
         # is returned intact.
         configWdg.setConfig(config)
         self.assertEqual(configWdg.config(), config)
+
+        QgsProject.instance().removeAllMapLayers()
+
+
+class TestQgsUuidWidget(unittest.TestCase):
+
+    def test_create_uuid(self):
+        layer = QgsVectorLayer("none?field=text_no_limit:text(0)&field=text_limit:text(10)", "layer", "memory")
+        self.assertTrue(layer.isValid())
+        QgsProject.instance().addMapLayer(layer)
+
+        # unlimited length text field
+        wrapper = QgsGui.editorWidgetRegistry().create('UuidGenerator', layer, 0, {}, None, None)
+        _ = wrapper.widget()
+        feature = QgsFeature(layer.fields())
+        wrapper.setFeature(feature)
+        val = wrapper.value()
+        # we can't directly check the result, as it will be random, so just check it's general properties
+        self.assertEqual(len(val), 38)
+        self.assertEqual(val[0], '{')
+        self.assertEqual(val[-1], '}')
+
+        # limited length text field, value must be truncated
+        wrapper = QgsGui.editorWidgetRegistry().create('UuidGenerator', layer, 1, {}, None, None)
+        _ = wrapper.widget()
+        feature = QgsFeature(layer.fields())
+        wrapper.setFeature(feature)
+        val = wrapper.value()
+        # we can't directly check the result, as it will be random, so just check it's general properties
+        self.assertEqual(len(val), 10)
+        self.assertNotEqual(val[0], '{')
+        self.assertNotEqual(val[-1], '}')
+        with self.assertRaises(ValueError):
+            val.index('-')
 
         QgsProject.instance().removeAllMapLayers()
 

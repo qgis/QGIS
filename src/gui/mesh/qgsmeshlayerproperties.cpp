@@ -216,8 +216,10 @@ void QgsMeshLayerProperties::syncToLayer()
     w->syncToLayer( mMeshLayer );
 
   QgsDebugMsgLevel( QStringLiteral( "populate rendering tab" ), 4 );
-  QgsMeshSimplificationSettings simplifySettings = mMeshLayer->meshSimplificationSettings();
+  if ( mMeshLayer->isEditable() )
+    mSimplifyMeshGroupBox->setEnabled( false );
 
+  QgsMeshSimplificationSettings simplifySettings = mMeshLayer->meshSimplificationSettings();
   mSimplifyMeshGroupBox->setChecked( simplifySettings.isEnabled() );
   mSimplifyReductionFactorSpinBox->setValue( simplifySettings.reductionFactor() );
   mSimplifyMeshResolutionSpinBox->setValue( simplifySettings.meshResolution() );

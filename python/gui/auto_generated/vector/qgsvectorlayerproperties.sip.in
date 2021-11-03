@@ -11,6 +11,7 @@
 
 
 
+
 class QgsVectorLayerProperties : QgsOptionsDialogBase
 {
 %Docstring(signature="appended")
@@ -43,7 +44,6 @@ Adds a properties page factory to the vector layer properties dialog.
 
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

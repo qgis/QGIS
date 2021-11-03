@@ -43,8 +43,8 @@ class QgsLayoutChecker(QgsMultiRenderChecker):
         # get width/height, create image and render the composition to it
         outputImage = QImage(self.size, QImage.Format_RGB32)
 
-        outputImage.setDotsPerMeterX(self.dots_per_meter)
-        outputImage.setDotsPerMeterY(self.dots_per_meter)
+        outputImage.setDotsPerMeterX(int(self.dots_per_meter))
+        outputImage.setDotsPerMeterY(int(self.dots_per_meter))
         QgsMultiRenderChecker.drawBackground(outputImage)
         p = QPainter(outputImage)
         exporter = QgsLayoutExporter(self.layout)

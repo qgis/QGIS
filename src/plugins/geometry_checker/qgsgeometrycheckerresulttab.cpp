@@ -83,7 +83,7 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface *iface, 
   connect( ui.pushButtonFixWithDefault, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::fixErrorsWithDefault );
   connect( ui.pushButtonFixWithPrompt, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::fixErrorsWithPrompt );
   connect( ui.pushButtonErrorResolutionSettings, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::setDefaultResolutionMethods );
-  connect( ui.checkBoxHighlight, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::highlightErrors );
+  connect( ui.checkBoxHighlight, &QAbstractButton::clicked, this, [ = ] { QgsGeometryCheckerResultTab::highlightErrors(); } );
   connect( QgsProject::instance(), static_cast<void ( QgsProject::* )( const QStringList & )>( &QgsProject::layersWillBeRemoved ), this, &QgsGeometryCheckerResultTab::checkRemovedLayer );
   connect( ui.pushButtonExport, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::exportErrors );
 
@@ -222,11 +222,18 @@ void QgsGeometryCheckerResultTab::updateError( QgsGeometryCheckError *error, boo
 
 void QgsGeometryCheckerResultTab::exportErrors()
 {
-  QString initialdir;
-  QDir dir = QFileInfo( mChecker->featurePools().first()->layer()->dataProvider()->dataSourceUri() ).dir();
+  QString initialdir = QgsSettings().value( "/geometry_checker/previous_values/exportDirectory", QDir::homePath() ).toString();
+  QDir dir = QDir( initialdir );
+  if ( !dir.exists() )
+    dir = QFileInfo( mChecker->featurePools().first()->layer()->dataProvider()->dataSourceUri() ).dir();
+
   if ( dir.exists() )
   {
     initialdir = dir.absolutePath();
+  }
+  else
+  {
+    initialdir = QDir::homePath();
   }
 
   QString selectedFilter;
@@ -236,6 +243,8 @@ void QgsGeometryCheckerResultTab::exportErrors()
     return;
   }
 
+  dir = QFileInfo( file ).dir();
+  QgsSettings().setValue( "/geometry_checker/previous_values/exportDirectory", dir.absolutePath() );
   file = QgsFileUtils::addExtensionFromFilter( file, selectedFilter );
   if ( !exportErrorsDo( file ) )
   {
@@ -247,8 +256,9 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
 {
   QList< QPair<QString, QString> > attributes;
   attributes.append( qMakePair( QStringLiteral( "Layer" ), QStringLiteral( "String;30;" ) ) );
-  attributes.append( qMakePair( QStringLiteral( "FeatureID" ), QStringLiteral( "String;10;" ) ) );
+  attributes.append( qMakePair( QStringLiteral( "FeatureID" ), QStringLiteral( "String;20;" ) ) );
   attributes.append( qMakePair( QStringLiteral( "ErrorDesc" ), QStringLiteral( "String;80;" ) ) );
+  attributes.append( qMakePair( QStringLiteral( "Value" ), QStringLiteral( "Real" ) ) );
 
   QFileInfo fi( file );
   QString ext = fi.suffix();
@@ -272,6 +282,7 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
   int fieldLayer = layer->fields().lookupField( QStringLiteral( "Layer" ) );
   int fieldFeatureId = layer->fields().lookupField( QStringLiteral( "FeatureID" ) );
   int fieldErrDesc = layer->fields().lookupField( QStringLiteral( "ErrorDesc" ) );
+  int fieldValue = layer->fields().lookupField( QStringLiteral( "Value" ) );
   for ( int row = 0, nRows = ui.tableWidgetErrors->rowCount(); row < nRows; ++row )
   {
     QgsGeometryCheckError *error = ui.tableWidgetErrors->item( row, 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError *>();
@@ -287,6 +298,7 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
     f.setAttribute( fieldLayer, layerName );
     f.setAttribute( fieldFeatureId, error->featureId() );
     f.setAttribute( fieldErrDesc, error->description() );
+    f.setAttribute( fieldValue, error->value() );
     QgsGeometry geom( new QgsPoint( error->location() ) );
     f.setGeometry( geom );
     layer->dataProvider()->addFeatures( QgsFeatureList() << f );
@@ -333,7 +345,10 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
 
   if ( current )
   {
-    items.append( ui.tableWidgetErrors->currentItem() );
+    if ( QTableWidgetItem *item = ui.tableWidgetErrors->currentItem() )
+    {
+      items.append( item );
+    }
   }
   else
   {
@@ -347,9 +362,11 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
     if ( ui.checkBoxHighlight->isChecked() && !geom.isNull() )
     {
       QgsRubberBand *featureRubberBand = new QgsRubberBand( mIface->mapCanvas() );
-      featureRubberBand->addGeometry( geom, nullptr );
+      featureRubberBand->setToGeometry( geom, nullptr );
       featureRubberBand->setWidth( 5 );
-      featureRubberBand->setColor( Qt::yellow );
+      QColor color( Qt::yellow );
+      color.setAlpha( 43 );
+      featureRubberBand->setColor( color );
       mCurrentRubberBands.append( featureRubberBand );
     }
 
@@ -413,19 +430,10 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
   mIface->mapCanvas()->refresh();
 }
 
-void QgsGeometryCheckerResultTab::onSelectionChanged( const QItemSelection &newSel, const QItemSelection &/*oldSel*/ )
+void QgsGeometryCheckerResultTab::onSelectionChanged( const QItemSelection &, const QItemSelection & )
 {
-  QModelIndex idx = ui.tableWidgetErrors->currentIndex();
-  if ( idx.isValid() && !ui.tableWidgetErrors->isRowHidden( idx.row() ) && newSel.contains( idx ) )
-  {
-    highlightErrors();
-  }
-  else
-  {
-    qDeleteAll( mCurrentRubberBands );
-    mCurrentRubberBands.clear();
-  }
-  ui.pushButtonOpenAttributeTable->setEnabled( !newSel.isEmpty() );
+  highlightErrors();
+  ui.pushButtonOpenAttributeTable->setEnabled( ui.tableWidgetErrors->selectionModel()->hasSelection() );
 }
 
 void QgsGeometryCheckerResultTab::openAttributeTable()

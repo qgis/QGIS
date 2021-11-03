@@ -23,6 +23,7 @@
 #include "qgis.h"
 
 #include "qgsrenderer.h"
+#include "qgsrendercontext.h"
 
 class QgsExpression;
 

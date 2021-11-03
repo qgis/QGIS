@@ -84,15 +84,6 @@ Returns the bounding box of the item's geographic location, in the parent layer'
 Returns the bounding box of the item's geographic location, in the parent layer's coordinate reference system.
 %End
 
-    virtual bool transform( const QTransform &transform ) = 0;
-%Docstring
-Transforms the item's geometry using the specified ``transform``.
-
-Returns ``True`` if the transformation was successful.
-
-.. versionadded:: 3.22
-%End
-
     virtual void render( QgsRenderContext &context, QgsFeedback *feedback ) = 0;
 %Docstring
 Renders the item to the specified render ``context``.
@@ -121,6 +112,20 @@ Implementations should include a call to :py:func:`~QgsAnnotationItem.readCommon
 .. seealso:: :py:func:`writeXml`
 
 .. seealso:: :py:func:`readCommonProperties`
+%End
+
+    virtual Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
+%Docstring
+Applies an edit ``operation`` to the item.
+
+.. versionadded:: 3.22
+%End
+
+    virtual QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) /Factory/;
+%Docstring
+Retrieves the results of a transient (in progress) edit ``operation`` on the item.
+
+.. versionadded:: 3.22
 %End
 
     int zIndex() const;
@@ -198,16 +203,6 @@ exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered a
 .. seealso:: :py:func:`symbologyReferenceScale`
 
 .. seealso:: :py:func:`setUseSymbologyReferenceScale`
-%End
-
-    virtual QgsGeometry rubberBandGeometry() const;
-%Docstring
-Returns the geometry to use as a rubber band for map tools which manipulate the item.
-
-The default implementation returns a null geometry, which indicates that the item bounds should
-be used as the rubber band.
-
-.. versionadded:: 3.22
 %End
 
   protected:

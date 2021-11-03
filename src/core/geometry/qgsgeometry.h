@@ -35,6 +35,7 @@ email                : morb at ozemail dot com dot au
 #include "qgspointxy.h"
 #include "qgspoint.h"
 #include "qgsfeatureid.h"
+#include "qgsvertexid.h"
 
 #ifndef SIP_RUN
 #include "json_fwd.hpp"
@@ -237,12 +238,43 @@ class CORE_EXPORT QgsGeometry
      */
     static QgsGeometry fromPolyline( const QgsPolyline &polyline );
 
-    //! Creates a new geometry from a QgsMultiPolylineXY object
+    /**
+     * Creates a new geometry from a QgsMultiPolylineXY object.
+     */
     static QgsGeometry fromMultiPolylineXY( const QgsMultiPolylineXY &multiline );
-    //! Creates a new geometry from a QgsPolygon
+
+#ifndef SIP_RUN
+
+    /**
+     * Creates a new geometry from a QgsPolygonXY.
+     */
+#else
+
+    /**
+     * Creates a new polygon geometry from a list of lists of QgsPointXY.
+     *
+     * The first list of QgsPointXY objects specifies the exterior ring of the polygon, and the remaining
+     * lists specify any interior rings.
+     *
+     * ### Example
+     *
+     * \code{.py}
+     *   # Create a polygon geometry with a single exterior ring (a triangle)
+     *   polygon = QgsGeometry.fromPolygonXY([[QgsPointXY(1, 2), QgsPointXY(5, 2), QgsPointXY(5, 10), QgsPointXY(1, 2)]]))
+     *
+     *   # Create a donut shaped polygon geometry with an interior ring
+     *   polygon = QgsGeometry.fromPolygonXY([[QgsPointXY(1, 2), QgsPointXY(5, 2), QgsPointXY(5, 10), QgsPointXY(1, 10), QgsPointXY(1, 2)],
+     *                                        [QgsPointXY(3, 4), QgsPointXY(4, 4), QgsPointXY(4, 6), QgsPointXY(3, 6), QgsPointXY(3, 4)]])
+     * \endcode
+     */
+#endif
     static QgsGeometry fromPolygonXY( const QgsPolygonXY &polygon );
-    //! Creates a new geometry from a QgsMultiPolygon
+
+    /**
+     * Creates a new geometry from a QgsMultiPolygonXY.
+     */
     static QgsGeometry fromMultiPolygonXY( const QgsMultiPolygonXY &multipoly );
+
     //! Creates a new geometry from a QgsRectangle
     static QgsGeometry fromRect( const QgsRectangle &rect ) SIP_HOLDGIL;
     //! Creates a new multipart geometry from a list of QgsGeometry objects
@@ -386,6 +418,8 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * Returns the planar, 2-dimensional length of geometry.
+     *
+     * If the geometry is a polygon geometry then the perimeter of the polygon will be returned.
      *
      * \warning QgsGeometry objects are inherently Cartesian/planar geometries, and the length
      * returned by this method is calculated using strictly Cartesian mathematics. In contrast,
@@ -887,7 +921,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \returns OperationResult a result code: success or reason of failure
      */
-    Qgis::GeometryOperationResult transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) SIP_THROW( QgsCsException );
+    Qgis::GeometryOperationResult transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward, bool transformZ = false ) SIP_THROW( QgsCsException );
 
     /**
      * Transforms the x and y components of the geometry using a QTransform object \a t.
@@ -1034,6 +1068,127 @@ class CORE_EXPORT QgsGeometry
      * \since QGIS 3.0
      */
     QgsGeometry orthogonalize( double tolerance = 1.0E-8, int maxIterations = 1000, double angleThreshold = 15.0 ) const;
+
+    /**
+     * Constructs triangular waves along the boundary of the geometry, with the
+     * specified \a wavelength and \a amplitude.
+     *
+     * By default the \a wavelength argument is treated as a "maximum wavelength", where the actual
+     * wavelength will be dynamically adjusted so that an exact number of triangular waves are created
+     * along the boundaries of the geometry. If \a strictWavelength is set to TRUE then the \a wavelength
+     * will be used exactly and an incomplete pattern may be used for the final waveform.
+     *
+     * \see triangularWavesRandomized()
+     * \since QGIS 3.24
+     */
+    QgsGeometry triangularWaves( double wavelength, double amplitude, bool strictWavelength = false ) const;
+
+    /**
+     * Constructs randomized triangular waves along the boundary of the geometry, with the
+     * specified wavelength and amplitude ranges.
+     *
+     * The \a minimumWavelength and \a maximumWavelength arguments set the range for the randomized
+     * wavelength. This is evaluated for each individual triangular waveform created along the geometry
+     * boundaries, so the resultant geometry will consist of many different wavelengths.
+     *
+     * Similarly, the \a minimumAmplitude and \a maximumAmplitude arguments define the range for the
+     * randomized amplitude of the triangular components. Randomized amplitude values will be calculated
+     * individually for triangles placed on each either side of the input geometry boundaries.
+     *
+     * Optionally, a specific random \a seed can be used when generating points. If \a seed
+     * is 0, then a completely random sequence of points will be generated.
+     *
+     * \see triangularWaves()
+     * \since QGIS 3.24
+     */
+    QgsGeometry triangularWavesRandomized( double minimumWavelength, double maximumWavelength, double minimumAmplitude, double maximumAmplitude, unsigned long seed = 0 ) const;
+
+    /**
+     * Constructs square waves along the boundary of the geometry, with the
+     * specified \a wavelength and \a amplitude.
+     *
+     * By default the \a wavelength argument is treated as a "maximum wavelength", where the actual
+     * wavelength will be dynamically adjusted so that an exact number of square waves are created
+     * along the boundaries of the geometry. If \a strictWavelength is set to TRUE then the \a wavelength
+     * will be used exactly and an incomplete pattern may be used for the final waveform.
+     *
+     * \see squareWavesRandomized()
+     * \since QGIS 3.24
+     */
+    QgsGeometry squareWaves( double wavelength, double amplitude, bool strictWavelength = false ) const;
+
+    /**
+     * Constructs randomized square waves along the boundary of the geometry, with the
+     * specified wavelength and amplitude ranges.
+     *
+     * The \a minimumWavelength and \a maximumWavelength arguments set the range for the randomized
+     * wavelength. This is evaluated for each individual square waveform created along the geometry
+     * boundaries, so the resultant geometry will consist of many different wavelengths.
+     *
+     * Similarly, the \a minimumAmplitude and \a maximumAmplitude arguments define the range for the
+     * randomized amplitude of the square components. Randomized amplitude values will be calculated
+     * individually for squares placed on each either side of the input geometry boundaries.
+     *
+     * Optionally, a specific random \a seed can be used when generating points. If \a seed
+     * is 0, then a completely random sequence of points will be generated.
+     *
+     * \see squareWaves()
+     * \since QGIS 3.24
+     */
+    QgsGeometry squareWavesRandomized( double minimumWavelength, double maximumWavelength, double minimumAmplitude, double maximumAmplitude, unsigned long seed = 0 ) const;
+
+    /**
+     * Constructs rounded (sine-like) waves along the boundary of the geometry, with the
+     * specified \a wavelength and \a amplitude.
+     *
+     * By default the \a wavelength argument is treated as a "maximum wavelength", where the actual
+     * wavelength will be dynamically adjusted so that an exact number of waves are created
+     * along the boundaries of the geometry. If \a strictWavelength is set to TRUE then the \a wavelength
+     * will be used exactly and an incomplete pattern may be used for the final waveform.
+     *
+     * \see roundWavesRandomized()
+     * \since QGIS 3.24
+     */
+    QgsGeometry roundWaves( double wavelength, double amplitude, bool strictWavelength = false ) const;
+
+    /**
+     * Constructs randomized rounded (sine-like) waves along the boundary of the geometry, with the
+     * specified wavelength and amplitude ranges.
+     *
+     * The \a minimumWavelength and \a maximumWavelength arguments set the range for the randomized
+     * wavelength. This is evaluated for each individual waveform created along the geometry
+     * boundaries, so the resultant geometry will consist of many different wavelengths.
+     *
+     * Similarly, the \a minimumAmplitude and \a maximumAmplitude arguments define the range for the
+     * randomized amplitude of the square components. Randomized amplitude values will be calculated
+     * individually for waves placed on each either side of the input geometry boundaries.
+     *
+     * Optionally, a specific random \a seed can be used when generating points. If \a seed
+     * is 0, then a completely random sequence of points will be generated.
+     *
+     * \see squareWaves()
+     * \since QGIS 3.24
+     */
+    QgsGeometry roundWavesRandomized( double minimumWavelength, double maximumWavelength, double minimumAmplitude, double maximumAmplitude, unsigned long seed = 0 ) const;
+
+    /**
+     * Applies a dash pattern to a geometry, returning a MultiLineString geometry which is the
+     * input geometry stroked along each line/ring with the specified \a pattern.
+     *
+     * The \a startRule and \a endRule options can be set to control how the dash pattern is adjusted
+     * at line endings. If a \a startRule or \a endRule is set, the \a adjustment option defines whether
+     * both dash and gaps, or only dash or gap sizes are adjusted to apply the rules.
+     *
+     * The \a patternOffset option specifies how far along the pattern the result should start at.
+     * The offset is applied AFTER any start/end rules are applied.
+     *
+     * \since QGIS 3.24
+     */
+    QgsGeometry applyDashPattern( const QVector< double > &pattern,
+                                  Qgis::DashPatternLineEndingRule startRule = Qgis::DashPatternLineEndingRule::NoRule,
+                                  Qgis::DashPatternLineEndingRule endRule = Qgis::DashPatternLineEndingRule::NoRule,
+                                  Qgis::DashPatternSizeAdjustment adjustment = Qgis::DashPatternSizeAdjustment::ScaleBothDashAndGap,
+                                  double patternOffset = 0 ) const;
 
     /**
      * Returns a new geometry with all points or vertices snapped to the closest point of the grid.
@@ -1833,7 +1988,8 @@ class CORE_EXPORT QgsGeometry
      *
      * Any z or m values present in the geometry will be discarded.
      *
-     * \warning If the geometry is not a single-point type, an empty QgsPointXY() will be returned.
+     * \warning If the geometry is not a single-point type (or a multipoint containing a single point)
+     * an empty QgsPointXY() will be returned.
      */
     QgsPointXY asPoint() const;
 #else
@@ -1845,25 +2001,28 @@ class CORE_EXPORT QgsGeometry
      *
      * This method works only with single-point geometry types.
      *
-     * \throws TypeError if the geometry is not a single-point type
+     * \throws TypeError if the geometry is not a single-point type (or a multipoint containing a single point)
      * \throws ValueError if the geometry is null
      */
     SIP_PYOBJECT asPoint() const SIP_TYPEHINT( QgsPointXY );
     % MethodCode
-    const QgsWkbTypes::Type type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
       PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a point." ).toUtf8().constData() );
       sipIsErr = 1;
     }
-    else if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::Point )
-    {
-      PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a point. Only Point types are permitted." ).arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
-      sipIsErr = 1;
-    }
     else
     {
-      sipRes = sipConvertFromNewType( new QgsPointXY( sipCpp->asPoint() ), sipType_QgsPointXY, Py_None );
+      const QgsAbstractGeometry *geom = sipCpp->constGet();
+      if ( QgsWkbTypes::flatType( geom->simplifiedTypeRef()->wkbType() ) != QgsWkbTypes::Point )
+      {
+        PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a point. Only Point types are permitted." ).arg( QgsWkbTypes::displayString( geom->wkbType() ) ).toUtf8().constData() );
+        sipIsErr = 1;
+      }
+      else
+      {
+        sipRes = sipConvertFromNewType( new QgsPointXY( sipCpp->asPoint() ), sipType_QgsPointXY, Py_None );
+      }
     }
     % End
 #endif
@@ -2205,9 +2364,34 @@ class CORE_EXPORT QgsGeometry
      * is to the right of the boundary. In particular, the exterior ring is oriented in a clockwise direction
      * and the interior rings in a counter-clockwise direction.
      *
+     * \warning Due to the conflicting definitions of the right-hand-rule in general use, it is recommended
+     * to use the explicit forcePolygonClockwise() or forcePolygonCounterClockwise() methods instead.
+     *
+     * \see forcePolygonClockwise()
+     * \see forcePolygonCounterClockwise()
      * \since QGIS 3.6
      */
     QgsGeometry forceRHR() const;
+
+    /**
+     * Forces geometries to respect the exterior ring is clockwise, interior rings are counter-clockwise convention.
+     *
+     * This convention is used primarily by ESRI software.
+     *
+     * \see forcePolygonCounterClockwise()
+     * \since QGIS 3.24
+     */
+    QgsGeometry forcePolygonClockwise() const;
+
+    /**
+     * Forces geometries to respect the exterior ring is counter-clockwise, interior rings are clockwise convention.
+     *
+     * This convention matches the OGC Simple Features specification.
+     *
+     * \see forcePolygonClockwise()
+     * \since QGIS 3.24
+     */
+    QgsGeometry forcePolygonCounterClockwise() const;
 
     /**
      * \ingroup core

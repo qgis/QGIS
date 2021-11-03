@@ -35,6 +35,15 @@ QgsQuadrilateral QgsQuadrilateral::rectangleFrom3Points( const QgsPoint &p1, con
   QgsWkbTypes::Type pType( QgsWkbTypes::Point );
 
   double z = std::numeric_limits< double >::quiet_NaN();
+  double m = std::numeric_limits< double >::quiet_NaN();
+
+  // We don't need the m value right away, it will only be inserted at the end.
+  if ( p1.isMeasure() )
+    m = p1.m();
+  if ( p2.isMeasure() && std::isnan( m ) )
+    m = p2.m();
+  if ( p3.isMeasure() && std::isnan( m ) )
+    m = p3.m();
 
   if ( p1.is3D() )
     z = p1.z();
@@ -75,7 +84,6 @@ QgsQuadrilateral QgsQuadrilateral::rectangleFrom3Points( const QgsPoint &p1, con
         distance = point2.distance( point3 );
       }
 
-      rect.setPoints( point1, point2, point2.project( distance, azimuth, inclination ), point1.project( distance, azimuth, inclination ) );
       break;
     }
     case Projected:
@@ -92,24 +100,33 @@ QgsQuadrilateral QgsQuadrilateral::rectangleFrom3Points( const QgsPoint &p1, con
       else
         distance = p3.distance( pV3 );
 
-      // Final points
-      QgsPoint fp1 = point1;
-      QgsPoint fp2 = point2;
-      QgsPoint fp3 = point2.project( distance, azimuth, inclination );
-      QgsPoint fp4 = point1.project( distance, azimuth, inclination ) ;
-
-      if ( pType != QgsWkbTypes::PointZ )
-      {
-        fp1.dropZValue();
-        fp2.dropZValue();
-        fp3.dropZValue();
-        fp4.dropZValue();
-      }
-      rect.setPoints( fp1, fp2, fp3, fp4 );
       break;
     }
   }
 
+  // Final points
+  QgsPoint fp1 = point1;
+  QgsPoint fp2 = point2;
+  QgsPoint fp3 = point2.project( distance, azimuth, inclination );
+  QgsPoint fp4 = point1.project( distance, azimuth, inclination ) ;
+
+  if ( pType != QgsWkbTypes::PointZ )
+  {
+    fp1.dropZValue();
+    fp2.dropZValue();
+    fp3.dropZValue();
+    fp4.dropZValue();
+  }
+
+  if ( !std::isnan( m ) )
+  {
+    fp1.addMValue( m );
+    fp2.addMValue( m );
+    fp3.addMValue( m );
+    fp4.addMValue( m );
+  }
+
+  rect.setPoints( fp1, fp2, fp3, fp4 );
   return rect;
 
 }
@@ -121,6 +138,7 @@ QgsQuadrilateral QgsQuadrilateral::rectangleFromExtent( const QgsPoint &p1, cons
 
   QgsQuadrilateral quad;
   const double z = p1.z();
+  const double m = p1.m();
 
   double xMin = 0, xMax = 0, yMin = 0, yMax = 0;
 
@@ -148,10 +166,10 @@ QgsQuadrilateral QgsQuadrilateral::rectangleFromExtent( const QgsPoint &p1, cons
     yMax = p1.y();
   }
 
-  quad.setPoints( QgsPoint( xMin, yMin, z ),
-                  QgsPoint( xMin, yMax, z ),
-                  QgsPoint( xMax, yMax, z ),
-                  QgsPoint( xMax, yMin, z ) );
+  quad.setPoints( QgsPoint( p1.wkbType(), xMin, yMin, z, m ),
+                  QgsPoint( p1.wkbType(), xMin, yMax, z, m ),
+                  QgsPoint( p1.wkbType(), xMax, yMax, z, m ),
+                  QgsPoint( p1.wkbType(), xMax, yMin, z, m ) );
 
   return quad;
 }
@@ -161,6 +179,9 @@ QgsQuadrilateral QgsQuadrilateral::squareFromDiagonal( const QgsPoint &p1, const
 
   if ( QgsPoint( p1.x(), p1.y() ) == QgsPoint( p2.x(), p2.y() ) )
     return QgsQuadrilateral();
+
+  const double z = p1.z();
+  const double m = p1.m();
 
   QgsQuadrilateral quad;
   QgsPoint point2, point3 = QgsPoint( p2.x(), p2.y() ), point4;
@@ -172,14 +193,10 @@ QgsQuadrilateral QgsQuadrilateral::squareFromDiagonal( const QgsPoint &p1, const
   point2 = midPoint.project( -distance, azimuth );
   point4 = midPoint.project( distance, azimuth );
 
-  if ( p1.is3D() )
-  {
-    double z = 0;
-    z = p1.z();
-    point2 = QgsPoint( point2.x(), point2.y(), z );
-    point3 = QgsPoint( point3.x(), point3.y(), z );
-    point4 = QgsPoint( point4.x(), point4.y(), z );
-  }
+  // add z and m, could be NaN
+  point2 = QgsPoint( p1.wkbType(), point2.x(), point2.y(), z, m );
+  point3 = QgsPoint( p1.wkbType(), point3.x(), point3.y(), z, m );
+  point4 = QgsPoint( p1.wkbType(), point4.x(), point4.y(), z, m );
 
   quad.setPoints( p1, point2, point3, point4 );
 
@@ -193,10 +210,10 @@ QgsQuadrilateral QgsQuadrilateral::rectangleFromCenterPoint( const QgsPoint &cen
   const double xOffset = std::fabs( point.x() - center.x() );
   const double yOffset = std::fabs( point.y() - center.y() );
 
-  return QgsQuadrilateral( QgsPoint( center.x() - xOffset, center.y() - yOffset, center.z() ),
-                           QgsPoint( center.x() - xOffset, center.y() + yOffset, center.z() ),
-                           QgsPoint( center.x() + xOffset, center.y() + yOffset, center.z() ),
-                           QgsPoint( center.x() + xOffset, center.y() - yOffset, center.z() ) );
+  return QgsQuadrilateral( QgsPoint( center.wkbType(), center.x() - xOffset, center.y() - yOffset, center.z(), center.m() ),
+                           QgsPoint( center.wkbType(), center.x() - xOffset, center.y() + yOffset, center.z(), center.m() ),
+                           QgsPoint( center.wkbType(), center.x() + xOffset, center.y() + yOffset, center.z(), center.m() ),
+                           QgsPoint( center.wkbType(), center.x() + xOffset, center.y() - yOffset, center.z(), center.m() ) );
 }
 
 QgsQuadrilateral QgsQuadrilateral::fromRectangle( const QgsRectangle &rectangle )
@@ -394,6 +411,9 @@ QgsLineString *QgsQuadrilateral::toLineString( bool force2D ) const
 
   if ( force2D )
     ext->dropZValue();
+
+  if ( force2D )
+    ext->dropMValue();
 
   return ext.release();
 }

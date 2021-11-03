@@ -16,7 +16,7 @@
 #include "qgswfsdataitemguiprovider.h"
 
 #include "qgsmanageconnectionsdialog.h"
-#include "qgsnewhttpconnection.h"
+#include "qgswfsnewconnection.h"
 #include "qgswfsconnection.h"
 #include "qgswfsconstants.h"
 #include "qgswfsdataitems.h"
@@ -62,7 +62,7 @@ void QgsWfsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
 
 void QgsWfsDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWfs, QgsWFSConstants::CONNECTIONS_WFS );
+  QgsWFSNewConnection nc( nullptr );
   nc.setWindowTitle( tr( "Create a New WFS Connection" ) );
 
   if ( nc.exec() )
@@ -73,7 +73,7 @@ void QgsWfsDataItemGuiProvider::newConnection( QgsDataItem *item )
 
 void QgsWfsDataItemGuiProvider::editConnection( QgsDataItem *item )
 {
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWfs, QgsWFSConstants::CONNECTIONS_WFS, item->name() );
+  QgsWFSNewConnection nc( nullptr, item->name() );
   nc.setWindowTitle( tr( "Modify WFS Connection" ) );
 
   if ( nc.exec() )

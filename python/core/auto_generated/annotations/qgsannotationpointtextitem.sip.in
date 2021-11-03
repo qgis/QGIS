@@ -53,7 +53,9 @@ Creates a new text at point annotation item.
 
     virtual QList< QgsAnnotationItemNode > nodes() const;
 
-    virtual bool transform( const QTransform &transform );
+    virtual Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
+
+    virtual QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) /Factory/;
 
 
     QgsPointXY point() const;

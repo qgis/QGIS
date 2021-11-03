@@ -45,6 +45,7 @@ class QgsLayoutItemHtml;
 class QgsLayoutItemAttributeTable;
 class QgsLayoutItemGroup;
 class QgsLayoutAtlas;
+class QgsProject;
 
 /**
  * \brief QgsCompositionConverter class converts a QGIS 2.x composition to a QGIS 3.x layout

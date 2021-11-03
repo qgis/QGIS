@@ -30,6 +30,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsrenderedfeaturehandlerinterface.h"
+#include "qgsrendercontext.h"
 
 class TestHandler : public QgsRenderedFeatureHandlerInterface
 {
@@ -53,6 +54,7 @@ class TestQgsMapSettings: public QObject
     void mapUnitsPerPixel();
     void testDevicePixelRatio();
     void visiblePolygon();
+    void visiblePolygonWithBuffer();
     void testIsLayerVisible();
     void testMapLayerListUtils();
     void testXmlReadWrite();
@@ -108,10 +110,10 @@ void TestQgsMapSettings::testGettersSetters()
   // basic getter/setter tests
   QgsMapSettings ms;
 
-  ms.setTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
-  QCOMPARE( ms.textRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
-  ms.setTextRenderFormat( QgsRenderContext::TextFormatAlwaysOutlines );
-  QCOMPARE( ms.textRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
+  ms.setTextRenderFormat( Qgis::TextRenderFormat::AlwaysText );
+  QCOMPARE( ms.textRenderFormat(), Qgis::TextRenderFormat::AlwaysText );
+  ms.setTextRenderFormat( Qgis::TextRenderFormat::AlwaysOutlines );
+  QCOMPARE( ms.textRenderFormat(), Qgis::TextRenderFormat::AlwaysOutlines );
 
   // must default to no simplification
   QCOMPARE( ms.simplifyMethod().simplifyHints(), QgsVectorSimplifyMethod::NoSimplification );
@@ -137,16 +139,16 @@ void TestQgsMapSettings::testLabelingEngineSettings()
   QCOMPARE( ms.labelingEngineSettings().maximumPolygonCandidatesPerCmSquared(), 8.0 );
 
   // ensure that setting labeling engine settings also sets text format
-  les.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
+  les.setDefaultTextRenderFormat( Qgis::TextRenderFormat::AlwaysText );
   ms.setLabelingEngineSettings( les );
-  QCOMPARE( ms.textRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
-  les.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysOutlines );
+  QCOMPARE( ms.textRenderFormat(), Qgis::TextRenderFormat::AlwaysText );
+  les.setDefaultTextRenderFormat( Qgis::TextRenderFormat::AlwaysOutlines );
   ms.setLabelingEngineSettings( les );
-  QCOMPARE( ms.textRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
+  QCOMPARE( ms.textRenderFormat(), Qgis::TextRenderFormat::AlwaysOutlines );
   // but we should be able to override this manually
-  ms.setTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
-  QCOMPARE( ms.textRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
-  QCOMPARE( ms.labelingEngineSettings().defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
+  ms.setTextRenderFormat( Qgis::TextRenderFormat::AlwaysText );
+  QCOMPARE( ms.textRenderFormat(), Qgis::TextRenderFormat::AlwaysText );
+  QCOMPARE( ms.labelingEngineSettings().defaultTextRenderFormat(), Qgis::TextRenderFormat::AlwaysText );
 }
 
 void TestQgsMapSettings::visibleExtent()
@@ -258,6 +260,31 @@ void TestQgsMapSettings::visiblePolygon()
   ms.setRotation( -45 );
   QCOMPARE( toString( ms.visiblePolygon() ),
             QString( "32.32 28.03,103.03 -42.67,67.67 -78.03,-3.03 -7.32" ) );
+}
+
+void TestQgsMapSettings::visiblePolygonWithBuffer()
+{
+  QgsMapSettings ms;
+
+  ms.setExtent( QgsRectangle( 0, 0, 100, 100 ) );
+  ms.setOutputSize( QSize( 100, 50 ) );
+  QCOMPARE( toString( ms.visiblePolygonWithBuffer() ),
+            QString( "-50 100,150 100,150 0,-50 0" ) );
+
+  ms.setExtentBuffer( 10 );
+  QCOMPARE( toString( ms.visiblePolygonWithBuffer() ),
+            QString( "-70 120,170 120,170 -20,-70 -20" ) );
+
+  ms.setExtent( QgsRectangle( 0, -50, 100, 0 ) );
+  ms.setOutputSize( QSize( 100, 50 ) );
+  ms.setRotation( 90 );
+  ms.setExtentBuffer( 0 );
+  QCOMPARE( toString( ms.visiblePolygonWithBuffer() ),
+            QString( "25 -75,25 25,75 25,75 -75" ) );
+
+  ms.setExtentBuffer( 10 );
+  QCOMPARE( toString( ms.visiblePolygonWithBuffer() ),
+            QString( "15 -85,15 35,85 35,85 -85" ) );
 }
 
 void TestQgsMapSettings::testIsLayerVisible()

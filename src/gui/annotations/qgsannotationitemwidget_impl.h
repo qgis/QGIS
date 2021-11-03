@@ -128,6 +128,7 @@ class QgsAnnotationPointTextItemWidget : public QgsAnnotationItemBaseWidget, pri
     bool setNewItem( QgsAnnotationItem *item ) override;
 
   private:
+    void mInsertExpressionButton_clicked();
 
     QgsTextFormatWidget *mTextFormatWidget = nullptr;
     bool mBlockChangedSignal = false;

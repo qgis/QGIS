@@ -975,18 +975,12 @@ QDomElement QgsMeshMemoryDatasetGroup::writeXml( QDomDocument &doc, const QgsRea
 
 void QgsMeshDatasetGroup::calculateStatistic()
 {
-  double min = std::numeric_limits<double>::max();
-  double max = std::numeric_limits<double>::min();
+  updateStatictic();
+}
 
-  const int count = datasetCount();
-  for ( int i = 0; i < count; ++i )
-  {
-    const QgsMeshDatasetMetadata &meta = datasetMetadata( i );
-    min = std::min( min,  meta.minimum() );
-    max = std::max( max, meta.maximum() );
-  }
-  mMinimum = min;
-  mMaximum = max;
+void QgsMeshDatasetGroup::setStatisticObsolete()
+{
+  mIsStatisticObsolete = true;
 }
 
 QStringList QgsMeshDatasetGroup::datasetGroupNamesDependentOn() const
@@ -1002,6 +996,27 @@ QString QgsMeshDatasetGroup::description() const
 void QgsMeshDatasetGroup::setReferenceTime( const QDateTime &referenceTime )
 {
   mReferenceTime = referenceTime;
+}
+
+void QgsMeshDatasetGroup::updateStatictic() const
+{
+  if ( !mIsStatisticObsolete )
+    return;
+
+  double min = std::numeric_limits<double>::max();
+  double max = std::numeric_limits<double>::min();
+
+  const int count = datasetCount();
+  for ( int i = 0; i < count; ++i )
+  {
+    const QgsMeshDatasetMetadata &meta = datasetMetadata( i );
+    min = std::min( min,  meta.minimum() );
+    max = std::max( max, meta.maximum() );
+  }
+  mMinimum = min;
+  mMaximum = max;
+
+  mIsStatisticObsolete = false;
 }
 
 bool QgsMeshDatasetGroup::checkValueCountPerDataset( int count ) const
@@ -1021,11 +1036,13 @@ QgsMeshDatasetGroup::QgsMeshDatasetGroup( const QString &name ): mName( name ) {
 
 double QgsMeshDatasetGroup::minimum() const
 {
+  updateStatictic();
   return mMinimum;
 }
 
 double QgsMeshDatasetGroup::maximum() const
 {
+  updateStatictic();
   return mMaximum;
 }
 
@@ -1094,9 +1111,10 @@ QgsMeshDataBlock QgsMeshVerticesElevationDataset::datasetValues( bool isScalar, 
     return QgsMeshDataBlock();
 
   QgsMeshDataBlock block( QgsMeshDataBlock::ScalarDouble, count );
-  QVector<double> values( std::min( count, ( mMesh->vertexCount() - valueIndex ) ) );
-  for ( int i = 0; i < values.count(); ++i )
-    values[i] = mMesh->vertex( i ).z();
+  int effectiveValueCount = std::min( count, ( mMesh->vertexCount() - valueIndex ) );
+  QVector<double> values( effectiveValueCount );
+  for ( int i = valueIndex; i < effectiveValueCount; ++i )
+    values[i] = mMesh->vertex( i - valueIndex ).z();
   block.setValues( values );
   block.setValid( true );
   return block;

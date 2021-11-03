@@ -19,9 +19,11 @@
 #include <limits>
 #include <memory>
 
+#include "qgsfeedback.h"
 #include "qgsmeshcalcnode.h"
 #include "qgsmeshcalculator.h"
 #include "qgsmeshcalcutils.h"
+#include "qgsmeshlayer.h"
 #include "qgsmeshmemorydataprovider.h"
 #include "qgsmeshvirtualdatasetgroup.h"
 #include "qgis.h"

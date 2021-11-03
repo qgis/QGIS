@@ -59,6 +59,11 @@ QgsPointXY QgsMapTool::toLayerCoordinates( const QgsMapLayer *layer, const QgsPo
   return mCanvas->mapSettings().mapToLayerCoordinates( layer, point );
 }
 
+QgsPoint QgsMapTool::toLayerCoordinates( const QgsMapLayer *layer, const QgsPoint &point )
+{
+  return mCanvas->mapSettings().mapToLayerCoordinates( layer, point );
+}
+
 QgsPointXY QgsMapTool::toMapCoordinates( const QgsMapLayer *layer, const QgsPointXY &point )
 {
   return mCanvas->mapSettings().layerToMapCoordinates( layer, point );
@@ -74,6 +79,11 @@ QPoint QgsMapTool::toCanvasCoordinates( const QgsPointXY &point ) const
   qreal x = point.x(), y = point.y();
   mCanvas->getCoordinateTransform()->transformInPlace( x, y );
   return QPoint( std::round( x ), std::round( y ) );
+}
+
+QgsMapLayer *QgsMapTool::layer( const QString &id )
+{
+  return mCanvas->layer( id );
 }
 
 void QgsMapTool::setToolName( const QString &name )

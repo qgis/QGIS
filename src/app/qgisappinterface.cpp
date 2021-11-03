@@ -909,7 +909,3 @@ QList<QgsMapDecoration *> QgisAppInterface::activeDecorations()
   return qgis->activeDecorations();
 }
 
-QgsMapToolModifyAnnotation *QgisAppInterface::modifyAnnotationTool()
-{
-  return qobject_cast< QgsMapToolModifyAnnotation * >( qgis->mMapTools->mapTool( QgsAppMapTools::AnnotationEdit ) );
-}

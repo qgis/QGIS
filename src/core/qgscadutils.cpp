@@ -57,10 +57,10 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
   }
 
   QgsPointXY previousPt, penultimatePt;
-  if ( ctx.cadPointList.count() >= 2 )
-    previousPt = ctx.cadPointList.at( 1 );
-  if ( ctx.cadPointList.count() >= 3 )
-    penultimatePt = ctx.cadPointList.at( 2 );
+  if ( ctx.cadPoints().count() >= 2 )
+    previousPt = ctx.cadPoint( 1 );
+  if ( ctx.cadPoints().count() >= 3 )
+    penultimatePt = ctx.cadPoint( 2 );
 
   // *****************************
   // ---- X constraint
@@ -70,7 +70,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
     {
       point.setX( ctx.xConstraint.value );
     }
-    else if ( ctx.cadPointList.count() >= 2 )
+    else if ( ctx.cadPoints().count() >= 2 )
     {
       point.setX( previousPt.x() + ctx.xConstraint.value );
     }
@@ -98,7 +98,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
     {
       point.setY( ctx.yConstraint.value );
     }
-    else if ( ctx.cadPointList.count() >= 2 )
+    else if ( ctx.cadPoints().count() >= 2 )
     {
       point.setY( previousPt.y() + ctx.yConstraint.value );
     }
@@ -120,7 +120,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
 
   // *****************************
   // ---- Common Angle constraint
-  if ( !ctx.angleConstraint.locked && ctx.cadPointList.count() >= 2 && ctx.commonAngleConstraint.locked && ctx.commonAngleConstraint.value != 0 )
+  if ( !ctx.angleConstraint.locked && ctx.cadPoints().count() >= 2 && ctx.commonAngleConstraint.locked && ctx.commonAngleConstraint.value != 0 )
   {
     const double commonAngle = ctx.commonAngleConstraint.value * M_PI / 180;
     // see if soft common angle constraint should be performed
@@ -128,7 +128,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
     double softAngle = std::atan2( point.y() - previousPt.y(),
                                    point.x() - previousPt.x() );
     double deltaAngle = 0;
-    if ( ctx.commonAngleConstraint.relative && ctx.cadPointList.count() >= 3 )
+    if ( ctx.commonAngleConstraint.relative && ctx.cadPoints().count() >= 3 )
     {
       // compute the angle relative to the last segment (0° is aligned with last segment)
       deltaAngle = std::atan2( previousPt.y() - penultimatePt.y(),
@@ -175,7 +175,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
   if ( angleLocked )
   {
     double angleValue = angleValueDeg * M_PI / 180;
-    if ( angleRelative && ctx.cadPointList.count() >= 3 )
+    if ( angleRelative && ctx.cadPoints().count() >= 3 )
     {
       // compute the angle relative to the last segment (0° is aligned with last segment)
       angleValue += std::atan2( previousPt.y() - penultimatePt.y(),
@@ -256,7 +256,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
 
   // *****************************
   // ---- Distance constraint
-  if ( ctx.distanceConstraint.locked && ctx.cadPointList.count() >= 2 )
+  if ( ctx.distanceConstraint.locked && ctx.cadPoints().count() >= 2 )
   {
     if ( ctx.xConstraint.locked || ctx.yConstraint.locked )
     {

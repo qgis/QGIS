@@ -577,15 +577,16 @@ def isPluginLoaded(packageName: str) -> bool:
     return (packageName in active_plugins)
 
 
-def reloadPlugin(packageName: str):
+def reloadPlugin(packageName: str) -> bool:
     """ unload and start again a plugin """
     global active_plugins
     if packageName not in active_plugins:
-        return  # it's not active
+        return False  # it's not active
 
     unloadPlugin(packageName)
     loadPlugin(packageName)
-    startPlugin(packageName)
+    started = startPlugin(packageName)
+    return started
 
 
 def showPluginHelp(packageName: str = None, filename: str = "index", section: str = ""):

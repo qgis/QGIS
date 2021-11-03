@@ -137,6 +137,11 @@ void QgsStyleItemsListWidget::setStyle( QgsStyle *style )
 
   mModel->addDesiredIconSize( viewSymbols->iconSize() );
   mModel->addDesiredIconSize( mSymbolTreeView->iconSize() );
+
+  // set a grid size which allows sufficient vertical spacing to fit reasonably sized entity names
+  viewSymbols->setGridSize( QSize( static_cast< int >( viewSymbols->iconSize().width() * 1.4 ), static_cast< int >( viewSymbols->iconSize().height() * 1.7 ) ) );
+  viewSymbols->setTextElideMode( Qt::TextElideMode::ElideRight );
+
   viewSymbols->setModel( mModel );
   mSymbolTreeView->setModel( mModel );
 

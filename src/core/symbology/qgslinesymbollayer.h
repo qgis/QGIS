@@ -26,6 +26,7 @@
 class QgsExpression;
 class QgsMarkerSymbol;
 class QgsLineSymbol;
+class QgsPathResolver;
 
 #define DEFAULT_SIMPLELINE_COLOR     QColor(35,35,35)
 #define DEFAULT_SIMPLELINE_WIDTH     DEFAULT_LINE_WIDTH
@@ -552,20 +553,6 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
   public:
 
     /**
-     * Defines how/where the templated symbol should be placed on the line.
-     */
-    enum Placement
-    {
-      Interval, //!< Place symbols at regular intervals
-      Vertex, //!< Place symbols on every vertex in the line
-      LastVertex, //!< Place symbols on the last vertex in the line
-      FirstVertex, //!< Place symbols on the first vertex in the line
-      CentralPoint, //!< Place symbols at the mid point of the line
-      CurvePoint, //!< Place symbols at every virtual curve point in the line (used when rendering curved geometry types only)
-      SegmentCenter, //!< Place symbols at the center of every line segment
-    };
-
-    /**
      * Constructor for QgsTemplatedLineSymbolLayerBase. Creates a template
      * line placed at the specified \a interval (in millimeters).
      *
@@ -639,13 +626,13 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      * Returns the placement of the symbols.
      * \see setPlacement()
      */
-    Placement placement() const { return mPlacement; }
+    Qgis::MarkerLinePlacement placement() const { return mPlacement; }
 
     /**
      * Sets the \a placement of the symbols.
      * \see placement()
      */
-    void setPlacement( Placement placement ) { mPlacement = placement; }
+    void setPlacement( Qgis::MarkerLinePlacement placement ) { mPlacement = placement; }
 
     /**
      * Returns the offset along the line for the symbol placement. For Interval placements, this is the distance
@@ -820,7 +807,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
   private:
 
     void renderPolylineInterval( const QPolygonF &points, QgsSymbolRenderContext &context, double averageAngleOver );
-    void renderPolylineVertex( const QPolygonF &points, QgsSymbolRenderContext &context, QgsTemplatedLineSymbolLayerBase::Placement placement = QgsTemplatedLineSymbolLayerBase::Vertex );
+    void renderPolylineVertex( const QPolygonF &points, QgsSymbolRenderContext &context, Qgis::MarkerLinePlacement placement = Qgis::MarkerLinePlacement::Vertex );
     void renderPolylineCentral( const QPolygonF &points, QgsSymbolRenderContext &context, double averageAngleOver );
     double markerAngle( const QPolygonF &points, bool isRing, int vertex );
 
@@ -846,7 +833,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     double mInterval = 3;
     QgsUnitTypes::RenderUnit mIntervalUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mIntervalMapUnitScale;
-    Placement mPlacement = Interval;
+    Qgis::MarkerLinePlacement mPlacement = Qgis::MarkerLinePlacement::Interval;
     double mOffsetAlongLine = 0; //distance to offset along line before marker is drawn
     QgsUnitTypes::RenderUnit mOffsetAlongLineUnit = QgsUnitTypes::RenderMillimeters; //unit for offset along line
     QgsMapUnitScale mOffsetAlongLineMapUnitScale;
@@ -1080,6 +1067,236 @@ class CORE_EXPORT QgsHashedLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
     double mHashLength = 3;
     QgsUnitTypes::RenderUnit mHashLengthUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mHashLengthMapUnitScale;
+
+};
+
+
+/**
+ * \ingroup core
+ * \class QgsAbstractBrushedLineSymbolLayer
+ *
+ * \brief Base class for line symbol layer types which draws line sections using a QBrush.
+ *
+ * \since QGIS 3.24
+ */
+class CORE_EXPORT QgsAbstractBrushedLineSymbolLayer : public QgsLineSymbolLayer
+{
+  public:
+
+    /**
+     * Returns the pen join style used to render the line (e.g. miter, bevel, round, etc).
+     *
+     * \see setPenJoinStyle()
+     */
+    Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
+
+    /**
+     * Sets the pen join \a style used to render the line (e.g. miter, bevel, round, etc).
+     *
+     * \see penJoinStyle()
+     */
+    void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
+
+    /**
+     * Returns the pen cap style used to render the line (e.g. flat, square, round, etc).
+     *
+     * \see setPenCapStyle()
+     */
+    Qt::PenCapStyle penCapStyle() const { return mPenCapStyle; }
+
+    /**
+     * Sets the pen cap \a style used to render the line (e.g. flat, square, round, etc).
+     *
+     * \see penCapStyle()
+     */
+    void setPenCapStyle( Qt::PenCapStyle style ) { mPenCapStyle = style; }
+
+  protected:
+
+    /**
+     * Renders a polyline of \a points using the specified \a brush.
+     */
+    void renderPolylineUsingBrush( const QPolygonF &points, QgsSymbolRenderContext &context, const QBrush &brush,
+                                   double patternThickness, double patternLength );
+
+    Qt::PenJoinStyle mPenJoinStyle = Qt::PenJoinStyle::RoundJoin;
+    Qt::PenCapStyle mPenCapStyle = Qt::PenCapStyle::RoundCap;
+
+  private:
+    void renderLine( const QPolygonF &points, QgsSymbolRenderContext &context, const double lineThickness, const double patternLength, const QBrush &sourceBrush );
+};
+
+
+
+/**
+ * \ingroup core
+ * \class QgsRasterLineSymbolLayer
+ *
+ * \brief Line symbol layer type which draws line sections using a raster image file.
+ *
+ * \since QGIS 3.24
+ */
+class CORE_EXPORT QgsRasterLineSymbolLayer : public QgsAbstractBrushedLineSymbolLayer
+{
+  public:
+
+    /**
+     * Constructor for QgsRasterLineSymbolLayer, with the specified raster image path.
+     */
+    QgsRasterLineSymbolLayer( const QString &path = QString() );
+    virtual ~QgsRasterLineSymbolLayer();
+
+    /**
+     * Creates a new QgsRasterLineSymbolLayer, using the settings
+     * serialized in the \a properties map (corresponding to the output from
+     * QgsRasterLineSymbolLayer::properties() ).
+     */
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
+
+    /**
+     * Turns relative paths in properties map to absolute when reading and vice versa when writing.
+     * Used internally when reading/writing symbols.
+     */
+    static void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
+
+    /**
+     * Returns the raster image path.
+     * \see setPath()
+     */
+    QString path() const { return mPath; }
+
+    /**
+     * Set the raster image \a path.
+     * \see path()
+     */
+    void setPath( const QString &path );
+
+    /**
+     * Returns the line opacity.
+     * \returns opacity value between 0 (fully transparent) and 1 (fully opaque)
+     * \see setOpacity()
+     */
+    double opacity() const { return mOpacity; }
+
+    /**
+     * Set the line opacity.
+     * \param opacity opacity value between 0 (fully transparent) and 1 (fully opaque)
+     * \see opacity()
+     */
+    void setOpacity( double opacity ) { mOpacity = opacity; }
+
+    QString layerType() const override;
+    void startRender( QgsSymbolRenderContext &context ) override;
+    void stopRender( QgsSymbolRenderContext &context ) override;
+    void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
+    QVariantMap properties() const override;
+    QgsRasterLineSymbolLayer *clone() const override SIP_FACTORY;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
+    QgsUnitTypes::RenderUnit outputUnit() const override;
+    bool usesMapUnits() const override;
+    void setMapUnitScale( const QgsMapUnitScale &scale ) override;
+    QgsMapUnitScale mapUnitScale() const override;
+    double estimateMaxBleed( const QgsRenderContext &context ) const override;
+
+  protected:
+    QString mPath;
+    double mOpacity = 1.0;
+    QImage mLineImage;
+
+};
+
+
+/**
+ * \ingroup core
+ * \class QgsLineburstSymbolLayer
+ *
+ * \brief Line symbol layer type which draws a gradient pattern perpendicularly along a line.
+ *
+ * See QgsInterpolatedLineSymbolLayer for a line symbol layer which draws gradients along the length
+ * of a line.
+ *
+ * \since QGIS 3.24
+ */
+class CORE_EXPORT QgsLineburstSymbolLayer : public QgsAbstractBrushedLineSymbolLayer
+{
+  public:
+
+    /**
+     * Constructor for QgsLineburstSymbolLayer, with the specified start and end gradient colors.
+     */
+    QgsLineburstSymbolLayer( const QColor &color = DEFAULT_SIMPLELINE_COLOR,
+                             const QColor &color2 = Qt::white );
+    ~QgsLineburstSymbolLayer() override;
+
+    /**
+     * Creates a new QgsLineburstSymbolLayer, using the settings
+     * serialized in the \a properties map (corresponding to the output from
+     * QgsLineburstSymbolLayer::properties() ).
+     */
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
+
+    QString layerType() const override;
+    void startRender( QgsSymbolRenderContext &context ) override;
+    void stopRender( QgsSymbolRenderContext &context ) override;
+    void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
+    QVariantMap properties() const override;
+    QgsLineburstSymbolLayer *clone() const override SIP_FACTORY;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
+    QgsUnitTypes::RenderUnit outputUnit() const override;
+    bool usesMapUnits() const override;
+    void setMapUnitScale( const QgsMapUnitScale &scale ) override;
+    QgsMapUnitScale mapUnitScale() const override;
+    double estimateMaxBleed( const QgsRenderContext &context ) const override;
+
+    /**
+     * Returns the gradient color mode, which controls how gradient color stops are created.
+     *
+     * \see setGradientColorType()
+     */
+    Qgis::GradientColorSource gradientColorType() const { return mGradientColorType; }
+
+    /**
+     * Sets the gradient color mode, which controls how gradient color stops are created.
+     *
+     * \see gradientColorType()
+     */
+    void setGradientColorType( Qgis::GradientColorSource gradientColorType ) { mGradientColorType = gradientColorType; }
+
+    /**
+     * Returns the color ramp used for the gradient line. This is only
+     * used if the gradient color type is set to ColorRamp.
+     * \see setColorRamp()
+     * \see gradientColorType()
+     */
+    QgsColorRamp *colorRamp() { return mGradientRamp.get(); }
+
+    /**
+     * Sets the color ramp used for the gradient line. This is only
+     * used if the gradient color type is set to ColorRamp.
+     * \param ramp color ramp. Ownership is transferred.
+     * \see colorRamp()
+     * \see setGradientColorType()
+     */
+    void setColorRamp( QgsColorRamp *ramp SIP_TRANSFER );
+
+    /**
+     * Returns the color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor.
+     *
+     * \see setColor2()
+     */
+    QColor color2() const { return mColor2; }
+
+    /**
+     * Sets the color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor.
+     *
+     * \see color2()
+     */
+    void setColor2( const QColor &color2 ) { mColor2 = color2; }
+
+  protected:
+    Qgis::GradientColorSource mGradientColorType = Qgis::GradientColorSource::SimpleTwoColor;
+    QColor mColor2;
+    std::unique_ptr< QgsColorRamp > mGradientRamp;
 
 };
 

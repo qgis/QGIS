@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1064</width>
+    <width>1277</width>
     <height>506</height>
    </rect>
   </property>
@@ -16,7 +16,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1064</width>
+     <width>1277</width>
      <height>24</height>
     </rect>
    </property>
@@ -784,6 +784,9 @@
    <property name="windowTitle">
     <string>Mesh Digitizing Toolbar</string>
    </property>
+   <property name="toolTip">
+    <string>Mesh Digitizing Toolbar</string>
+   </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
@@ -793,7 +796,10 @@
   </widget>
   <widget class="QToolBar" name="mAnnotationsToolBar">
    <property name="windowTitle">
-    <string>Annotations</string>
+    <string>Annotations Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Annotations Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -801,7 +807,6 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="mActionCreateAnnotationLayer"/>
    <addaction name="mActionModifyAnnotation"/>
   </widget>
   <action name="mActionNewProject">
@@ -2321,7 +2326,7 @@ Acts on all layers.</string>
     <string>Grid</string>
    </property>
    <property name="whatsThis">
-    <string>Creates a scale bar that is displayed on the map canvas</string>
+    <string>Creates a grid that is displayed on the map canvas</string>
    </property>
   </action>
   <action name="mActionPinLabels">
@@ -3564,7 +3569,7 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
   </action>
   <action name="mActionNewMeshLayer">
    <property name="icon">
-    <iconset>
+    <iconset resource="../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionNewMeshLayer.svg</normaloff>:/images/themes/default/mActionNewMeshLayer.svg</iconset>
    </property>
    <property name="text">
@@ -3608,6 +3613,11 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="toolTip">
     <string>Modify Annotations</string>
+   </property>
+  </action>
+  <action name="mMainAnnotationLayerProperties">
+   <property name="text">
+    <string>Main Annotation Layer Properties…</string>
    </property>
   </action>
  </widget>

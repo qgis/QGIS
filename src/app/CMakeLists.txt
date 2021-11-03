@@ -107,6 +107,7 @@ set(QGIS_APP_SRCS
   qgsmaptooltextannotation.cpp
 
   annotations/qgsannotationitempropertieswidget.cpp
+  annotations/qgsannotationlayerproperties.cpp
 
   decorations/qgsdecorationitem.cpp
   decorations/qgsdecorationtitle.cpp

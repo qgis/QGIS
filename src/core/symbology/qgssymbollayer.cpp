@@ -112,6 +112,14 @@ void QgsSymbolLayer::initPropertyDefinitions()
     { QgsSymbolLayer::PropertyDashPatternOffset, QgsPropertyDefinition( "dashPatternOffset", QObject::tr( "Dash pattern offset" ), QgsPropertyDefinition::DoublePositive, origin )},
     { QgsSymbolLayer::PropertyTrimStart, QgsPropertyDefinition( "trimStart", QObject::tr( "Start trim distance" ), QgsPropertyDefinition::DoublePositive, origin )},
     { QgsSymbolLayer::PropertyTrimEnd, QgsPropertyDefinition( "trimEnd", QObject::tr( "End trim distance" ), QgsPropertyDefinition::DoublePositive, origin )},
+    { QgsSymbolLayer::PropertyLineStartWidthValue, QgsPropertyDefinition( "lineStartWidthValue", QObject::tr( "Line start width value" ), QgsPropertyDefinition::Double, origin )},
+    { QgsSymbolLayer::PropertyLineEndWidthValue, QgsPropertyDefinition( "lineEndWidthValue", QObject::tr( "Line end width value" ), QgsPropertyDefinition::Double, origin )},
+    { QgsSymbolLayer::PropertyLineStartColorValue, QgsPropertyDefinition( "lineStartColorValue", QObject::tr( "Line start color value" ), QgsPropertyDefinition::Double, origin )},
+    { QgsSymbolLayer::PropertyLineEndColorValue, QgsPropertyDefinition( "lineEndColorValue", QObject::tr( "Line end color value" ), QgsPropertyDefinition::Double, origin )},
+    { QgsSymbolLayer::PropertyMarkerClipping, QgsPropertyDefinition( "markerClipping", QgsPropertyDefinition::DataTypeString, QObject::tr( "Marker clipping mode" ),  QObject::tr( "string " ) + QLatin1String( "[<b>no</b>|<b>shape</b>|<b>centroid_within</b>|<b>completely_within</b>]" ), origin )},
+    { QgsSymbolLayer::PropertyRandomOffsetX, QgsPropertyDefinition( "randomOffsetX", QObject::tr( "Horizontal random offset" ), QgsPropertyDefinition::Double, origin )},
+    { QgsSymbolLayer::PropertyRandomOffsetY, QgsPropertyDefinition( "randomOffsetY", QObject::tr( "Vertical random offset" ), QgsPropertyDefinition::Double, origin )},
+    { QgsSymbolLayer::PropertyLineClipping, QgsPropertyDefinition( "lineClipping", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line clipping mode" ),  QObject::tr( "string " ) + QLatin1String( "[<b>no</b>|<b>during_render</b>|<b>before_render</b>]" ), origin )},
   };
 }
 
@@ -218,6 +226,11 @@ QgsSymbolLayer::QgsSymbolLayer( Qgis::SymbolType type, bool locked )
   : mType( type )
   , mLocked( locked )
 {
+}
+
+Qgis::SymbolLayerFlags QgsSymbolLayer::flags() const
+{
+  return Qgis::SymbolLayerFlags();
 }
 
 void QgsSymbolLayer::prepareExpressions( const QgsSymbolRenderContext &context )
@@ -561,7 +574,7 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext &context, double
   }
 
   double anchorPointCorrectionX = context.renderContext().convertToPainterUnits( width, widthUnit, widthMapUnitScale ) / 2.0;
-  if ( widthUnit == QgsUnitTypes::RenderMetersInMapUnits && context.renderContext().flags() & QgsRenderContext::RenderSymbolPreview )
+  if ( widthUnit == QgsUnitTypes::RenderMetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
   {
     // rendering for symbol previews -- an size in meters in map units can't be calculated, so treat the size as millimeters
     // and clamp it to a reasonable range. It's the best we can do in this situation!
@@ -569,7 +582,7 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext &context, double
   }
 
   double anchorPointCorrectionY = context.renderContext().convertToPainterUnits( height, heightUnit, heightMapUnitScale ) / 2.0;
-  if ( heightUnit == QgsUnitTypes::RenderMetersInMapUnits && context.renderContext().flags() & QgsRenderContext::RenderSymbolPreview )
+  if ( heightUnit == QgsUnitTypes::RenderMetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
   {
     // rendering for symbol previews -- an size in meters in map units can't be calculated, so treat the size as millimeters
     // and clamp it to a reasonable range. It's the best we can do in this situation!

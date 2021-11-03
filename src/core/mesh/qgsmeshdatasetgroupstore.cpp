@@ -237,6 +237,28 @@ QgsMeshDatasetIndex QgsMeshDatasetGroupStore::datasetIndexAtTime(
                               group.first->datasetIndexAtTime( referenceTime, group.second, time, method ).dataset() );
 }
 
+QList<QgsMeshDatasetIndex> QgsMeshDatasetGroupStore::datasetIndexInTimeInterval(
+  qint64 time1,
+  qint64 time2,
+  int groupIndex ) const
+{
+  const QgsMeshDatasetGroupStore::DatasetGroup  group = datasetGroup( groupIndex );
+  if ( !group.first )
+    return QList<QgsMeshDatasetIndex>();
+
+  const QDateTime &referenceTime = mPersistentProvider ? mPersistentProvider->temporalCapabilities()->referenceTime() : QDateTime();
+
+  const QList<QgsMeshDatasetIndex> datasetIndexes = group.first->datasetIndexInTimeInterval( referenceTime, group.second, time1, time2 );
+
+  QList<QgsMeshDatasetIndex> ret;
+  ret.reserve( datasetIndexes.count() );
+
+  for ( const QgsMeshDatasetIndex &sourceDatasetIndex : datasetIndexes )
+    ret.append( QgsMeshDatasetIndex( groupIndex, sourceDatasetIndex.dataset() ) );
+
+  return ret;
+}
+
 qint64 QgsMeshDatasetGroupStore::datasetRelativeTime( const QgsMeshDatasetIndex &index ) const
 {
   QgsMeshDatasetGroupStore::DatasetGroup  group = datasetGroup( index.group() );
@@ -343,6 +365,16 @@ void QgsMeshDatasetGroupStore::readXml( const QDomElement &storeElem, const QgsR
     setDatasetGroupTreeItem( new QgsMeshDatasetGroupTreeItem( rootTreeItemElem, context ) );
 }
 
+int QgsMeshDatasetGroupStore::globalDatasetGroupIndexInSource( QgsMeshDatasetSourceInterface *source, int nativeGroupIndex ) const
+{
+  for ( QMap<int, DatasetGroup>::const_iterator it = mRegistery.cbegin(); it != mRegistery.cend(); ++it )
+  {
+    if ( it.value().first == source && it.value().second == nativeGroupIndex )
+      return it.key();
+  }
+
+  return -1;
+}
 
 bool QgsMeshDatasetGroupStore::saveDatasetGroup( QString filePath, int groupIndex, QString driver )
 {

@@ -13,12 +13,16 @@
   <property name="windowTitle">
    <string notr="true">Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0" colspan="2">
+  <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,1">
+   <item row="2" column="0" colspan="2">
     <widget class="QgsExpressionLineEdit" name="modificationExpressionSelector" native="true"/>
    </item>
-   <item row="0" column="1">
-    <widget class="QComboBox" name="cbxGeometryType"/>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Units</string>
+     </property>
+    </widget>
    </item>
    <item row="0" column="0">
     <widget class="QLabel" name="label">
@@ -33,6 +37,22 @@
      </property>
     </widget>
    </item>
+   <item row="1" column="1">
+    <widget class="QgsUnitSelectionWidget" name="mUnitWidget" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QComboBox" name="cbxGeometryType"/>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -40,6 +60,12 @@
    <class>QgsExpressionLineEdit</class>
    <extends>QWidget</extends>
    <header>qgsexpressionlineedit.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

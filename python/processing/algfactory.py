@@ -67,6 +67,7 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterDatabaseTable,
                        QgsProcessingParameterCoordinateOperation,
                        QgsProcessingParameterPointCloudLayer,
+                       QgsProcessingParameterAnnotationLayer,
                        QgsProcessingOutputString,
                        QgsProcessingOutputBoolean,
                        QgsProcessingOutputFile,
@@ -346,6 +347,7 @@ class ProcessingAlgFactory():
     DATABASE_TABLE = "DATABASE_TABLE"
     COORDINATE_OPERATION = "COORDINATE_OPERATION"
     POINT_CLOUD_LAYER = "POINT_CLOUD_LAYER"
+    ANNOTATION_LAYER = "ANNOTATION_LAYER"
 
     def __init__(self):
         self._current = None
@@ -486,6 +488,7 @@ class ProcessingAlgFactory():
             alg.DATABASE_TABLE: QgsProcessingParameterDatabaseTable
             alg.COORDINATE_OPERATION: QgsProcessingParameterCoordinateOperation
             alg.POINT_CLOUD_LAYER: QgsProcessingParameterPointCloudLayer
+            alg.ANNOTATION_LAYER: QgsProcessingParameterAnnotationLayer
 
         :param type: The type of the input. This should be a type define on `alg` like alg.STRING, alg.DISTANCE
         :keyword label: The label of the output. Translates into `description` arg.
@@ -544,7 +547,8 @@ input_type_mapping = {
     ProcessingAlgFactory.DATABASE_SCHEMA: QgsProcessingParameterDatabaseSchema,
     ProcessingAlgFactory.DATABASE_TABLE: QgsProcessingParameterDatabaseTable,
     ProcessingAlgFactory.COORDINATE_OPERATION: QgsProcessingParameterCoordinateOperation,
-    ProcessingAlgFactory.POINT_CLOUD_LAYER: QgsProcessingParameterPointCloudLayer
+    ProcessingAlgFactory.POINT_CLOUD_LAYER: QgsProcessingParameterPointCloudLayer,
+    ProcessingAlgFactory.ANNOTATION_LAYER: QgsProcessingParameterAnnotationLayer
 }
 
 output_type_mapping = {

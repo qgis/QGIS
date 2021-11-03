@@ -68,7 +68,6 @@ class TestItem : public QgsAnnotationItem // clazy:exclude=missing-qobject-macro
     void render( QgsRenderContext &, QgsFeedback * ) override {}
     bool writeXml( QDomElement &, QDomDocument &, const QgsReadWriteContext & ) const override { return true; }
     bool readXml( const QDomElement &, const QgsReadWriteContext & ) override { return true; }
-    bool transform( const QTransform & ) override { return true; }
 };
 
 class TestItemWidget: public QgsAnnotationItemBaseWidget

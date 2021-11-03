@@ -588,17 +588,6 @@ lines at intervals along the line feature.
 %End
   public:
 
-    enum Placement
-    {
-      Interval,
-      Vertex,
-      LastVertex,
-      FirstVertex,
-      CentralPoint,
-      CurvePoint,
-      SegmentCenter,
-    };
-
     QgsTemplatedLineSymbolLayerBase( bool rotateSymbol = true,
                                      double interval = 3 );
 %Docstring
@@ -687,14 +676,14 @@ Returns the map unit scale for the interval between symbols.
 .. seealso:: :py:func:`interval`
 %End
 
-    Placement placement() const;
+    Qgis::MarkerLinePlacement placement() const;
 %Docstring
 Returns the placement of the symbols.
 
 .. seealso:: :py:func:`setPlacement`
 %End
 
-    void setPlacement( Placement placement );
+    void setPlacement( Qgis::MarkerLinePlacement placement );
 %Docstring
 Sets the ``placement`` of the symbols.
 
@@ -1179,6 +1168,267 @@ Returns the map unit scale for the hash length.
 
   private:
     QgsHashedLineSymbolLayer( const QgsHashedLineSymbolLayer &other );
+};
+
+
+class QgsAbstractBrushedLineSymbolLayer : QgsLineSymbolLayer
+{
+%Docstring(signature="appended")
+
+Base class for line symbol layer types which draws line sections using a QBrush.
+
+.. versionadded:: 3.24
+%End
+
+%TypeHeaderCode
+#include "qgslinesymbollayer.h"
+%End
+  public:
+
+    Qt::PenJoinStyle penJoinStyle() const;
+%Docstring
+Returns the pen join style used to render the line (e.g. miter, bevel, round, etc).
+
+.. seealso:: :py:func:`setPenJoinStyle`
+%End
+
+    void setPenJoinStyle( Qt::PenJoinStyle style );
+%Docstring
+Sets the pen join ``style`` used to render the line (e.g. miter, bevel, round, etc).
+
+.. seealso:: :py:func:`penJoinStyle`
+%End
+
+    Qt::PenCapStyle penCapStyle() const;
+%Docstring
+Returns the pen cap style used to render the line (e.g. flat, square, round, etc).
+
+.. seealso:: :py:func:`setPenCapStyle`
+%End
+
+    void setPenCapStyle( Qt::PenCapStyle style );
+%Docstring
+Sets the pen cap ``style`` used to render the line (e.g. flat, square, round, etc).
+
+.. seealso:: :py:func:`penCapStyle`
+%End
+
+  protected:
+
+    void renderPolylineUsingBrush( const QPolygonF &points, QgsSymbolRenderContext &context, const QBrush &brush,
+                                   double patternThickness, double patternLength );
+%Docstring
+Renders a polyline of ``points`` using the specified ``brush``.
+%End
+
+
+};
+
+
+
+class QgsRasterLineSymbolLayer : QgsAbstractBrushedLineSymbolLayer
+{
+%Docstring(signature="appended")
+
+Line symbol layer type which draws line sections using a raster image file.
+
+.. versionadded:: 3.24
+%End
+
+%TypeHeaderCode
+#include "qgslinesymbollayer.h"
+%End
+  public:
+
+    QgsRasterLineSymbolLayer( const QString &path = QString() );
+%Docstring
+Constructor for QgsRasterLineSymbolLayer, with the specified raster image path.
+%End
+    virtual ~QgsRasterLineSymbolLayer();
+
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
+%Docstring
+Creates a new QgsRasterLineSymbolLayer, using the settings
+serialized in the ``properties`` map (corresponding to the output from
+:py:func:`QgsRasterLineSymbolLayer.properties()` ).
+%End
+
+    static void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
+%Docstring
+Turns relative paths in properties map to absolute when reading and vice versa when writing.
+Used internally when reading/writing symbols.
+%End
+
+    QString path() const;
+%Docstring
+Returns the raster image path.
+
+.. seealso:: :py:func:`setPath`
+%End
+
+    void setPath( const QString &path );
+%Docstring
+Set the raster image ``path``.
+
+.. seealso:: :py:func:`path`
+%End
+
+    double opacity() const;
+%Docstring
+Returns the line opacity.
+
+:return: opacity value between 0 (fully transparent) and 1 (fully opaque)
+
+.. seealso:: :py:func:`setOpacity`
+%End
+
+    void setOpacity( double opacity );
+%Docstring
+Set the line opacity.
+
+:param opacity: opacity value between 0 (fully transparent) and 1 (fully opaque)
+
+.. seealso:: :py:func:`opacity`
+%End
+
+    virtual QString layerType() const;
+
+    virtual void startRender( QgsSymbolRenderContext &context );
+
+    virtual void stopRender( QgsSymbolRenderContext &context );
+
+    virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context );
+
+    virtual QVariantMap properties() const;
+
+    virtual QgsRasterLineSymbolLayer *clone() const /Factory/;
+
+    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+
+    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+
+    virtual bool usesMapUnits() const;
+
+    virtual void setMapUnitScale( const QgsMapUnitScale &scale );
+
+    virtual QgsMapUnitScale mapUnitScale() const;
+
+    virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
+
+
+  protected:
+
+};
+
+
+class QgsLineburstSymbolLayer : QgsAbstractBrushedLineSymbolLayer
+{
+%Docstring(signature="appended")
+
+Line symbol layer type which draws a gradient pattern perpendicularly along a line.
+
+See :py:class:`QgsInterpolatedLineSymbolLayer` for a line symbol layer which draws gradients along the length
+of a line.
+
+.. versionadded:: 3.24
+%End
+
+%TypeHeaderCode
+#include "qgslinesymbollayer.h"
+%End
+  public:
+
+    QgsLineburstSymbolLayer( const QColor &color = DEFAULT_SIMPLELINE_COLOR,
+                             const QColor &color2 = Qt::white );
+%Docstring
+Constructor for QgsLineburstSymbolLayer, with the specified start and end gradient colors.
+%End
+    ~QgsLineburstSymbolLayer();
+
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
+%Docstring
+Creates a new QgsLineburstSymbolLayer, using the settings
+serialized in the ``properties`` map (corresponding to the output from
+:py:func:`QgsLineburstSymbolLayer.properties()` ).
+%End
+
+    virtual QString layerType() const;
+
+    virtual void startRender( QgsSymbolRenderContext &context );
+
+    virtual void stopRender( QgsSymbolRenderContext &context );
+
+    virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context );
+
+    virtual QVariantMap properties() const;
+
+    virtual QgsLineburstSymbolLayer *clone() const /Factory/;
+
+    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+
+    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+
+    virtual bool usesMapUnits() const;
+
+    virtual void setMapUnitScale( const QgsMapUnitScale &scale );
+
+    virtual QgsMapUnitScale mapUnitScale() const;
+
+    virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
+
+
+    Qgis::GradientColorSource gradientColorType() const;
+%Docstring
+Returns the gradient color mode, which controls how gradient color stops are created.
+
+.. seealso:: :py:func:`setGradientColorType`
+%End
+
+    void setGradientColorType( Qgis::GradientColorSource gradientColorType );
+%Docstring
+Sets the gradient color mode, which controls how gradient color stops are created.
+
+.. seealso:: :py:func:`gradientColorType`
+%End
+
+    QgsColorRamp *colorRamp();
+%Docstring
+Returns the color ramp used for the gradient line. This is only
+used if the gradient color type is set to ColorRamp.
+
+.. seealso:: :py:func:`setColorRamp`
+
+.. seealso:: :py:func:`gradientColorType`
+%End
+
+    void setColorRamp( QgsColorRamp *ramp /Transfer/ );
+%Docstring
+Sets the color ramp used for the gradient line. This is only
+used if the gradient color type is set to ColorRamp.
+
+:param ramp: color ramp. Ownership is transferred.
+
+.. seealso:: :py:func:`colorRamp`
+
+.. seealso:: :py:func:`setGradientColorType`
+%End
+
+    QColor color2() const;
+%Docstring
+Returns the color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor.
+
+.. seealso:: :py:func:`setColor2`
+%End
+
+    void setColor2( const QColor &color2 );
+%Docstring
+Sets the color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor.
+
+.. seealso:: :py:func:`color2`
+%End
+
+  protected:
+
 };
 
 

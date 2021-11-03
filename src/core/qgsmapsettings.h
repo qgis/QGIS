@@ -34,6 +34,7 @@
 #include "qgsgeometry.h"
 #include "qgstemporalrangeobject.h"
 #include "qgsmapclippingregion.h"
+#include "qgsvectorsimplifymethod.h"
 
 class QPainter;
 
@@ -394,35 +395,14 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      */
     QColor selectionColor() const { return mSelectionColor; }
 
-    //! Enumeration of flags that adjust the way the map is rendered
-    enum Flag
-    {
-      Antialiasing             = 0x01,  //!< Enable anti-aliasing for map rendering
-      DrawEditingInfo          = 0x02,  //!< Enable drawing of vertex markers for layers in editing mode
-      ForceVectorOutput        = 0x04,  //!< Vector graphics should not be cached and drawn as raster images
-      UseAdvancedEffects       = 0x08,  //!< Enable layer opacity and blending effects
-      DrawLabeling             = 0x10,  //!< Enable drawing of labels on top of the map
-      UseRenderingOptimization = 0x20,  //!< Enable vector simplification and other rendering optimizations
-      DrawSelection            = 0x40,  //!< Whether vector selections should be shown in the rendered map
-      DrawSymbolBounds         = 0x80,  //!< Draw bounds of symbols (for debugging/testing)
-      RenderMapTile            = 0x100, //!< Draw map such that there are no problems between adjacent tiles
-      RenderPartialOutput      = 0x200, //!< Whether to make extra effort to update map image with partially rendered layers (better for interactive map canvas). Added in QGIS 3.0
-      RenderPreviewJob         = 0x400, //!< Render is a 'canvas preview' render, and shortcuts should be taken to ensure fast rendering
-      RenderBlocking           = 0x800, //!< Render and load remote sources in the same thread to ensure rendering remote sources (svg and images). WARNING: this flag must NEVER be used from GUI based applications (like the main QGIS application) or crashes will result. Only for use in external scripts or QGIS server.
-      LosslessImageRendering   = 0x1000, //!< Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF). This flag only works with builds based on Qt 5.13 or later.
-      Render3DMap              = 0x2000, //!< Render is for a 3D map
-      // TODO: ignore scale-based visibility (overview)
-    };
-    Q_DECLARE_FLAGS( Flags, Flag )
-
     //! Sets combination of flags that will be used for rendering
-    void setFlags( QgsMapSettings::Flags flags );
+    void setFlags( Qgis::MapSettingsFlags flags );
     //! Enable or disable a particular flag (other flags are not affected)
-    void setFlag( Flag flag, bool on = true );
+    void setFlag( Qgis::MapSettingsFlag flag, bool on = true );
     //! Returns combination of flags used for rendering
-    Flags flags() const;
+    Qgis::MapSettingsFlags flags() const;
     //! Check whether a particular flag is enabled
-    bool testFlag( Flag flag ) const;
+    bool testFlag( Qgis::MapSettingsFlag flag ) const;
 
     /**
      * Returns the text render format, which dictates how text is rendered (e.g. as paths or real text objects).
@@ -430,7 +410,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * \see setTextRenderFormat()
      * \since QGIS 3.4.3
      */
-    QgsRenderContext::TextRenderFormat textRenderFormat() const
+    Qgis::TextRenderFormat textRenderFormat() const
     {
       return mTextRenderFormat;
     }
@@ -444,7 +424,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * \see textRenderFormat()
      * \since QGIS 3.4.3
      */
-    void setTextRenderFormat( QgsRenderContext::TextRenderFormat format )
+    void setTextRenderFormat( Qgis::TextRenderFormat format )
     {
       mTextRenderFormat = format;
       // ensure labeling engine setting is also kept in sync, just in case anyone accesses QgsMapSettings::labelingEngineSettings().defaultTextRenderFormat()
@@ -467,6 +447,14 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * \since QGIS 2.8
      */
     QPolygonF visiblePolygon() const;
+
+    /**
+     * Returns the visible area as a polygon (may be rotated) with extent buffer included
+     * \see extentBuffer()
+     * \since QGIS 3.22
+     */
+    QPolygonF visiblePolygonWithBuffer() const;
+
     //! Returns the distance in geographical coordinates that equals to one pixel in the map
     double mapUnitsPerPixel() const;
 
@@ -839,7 +827,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     QColor mBackgroundColor;
     QColor mSelectionColor;
 
-    Flags mFlags;
+    Qgis::MapSettingsFlags mFlags;
 
     QImage::Format mImageFormat = QImage::Format_ARGB32_Premultiplied;
 
@@ -864,7 +852,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
 
     QgsPathResolver mPathResolver;
 
-    QgsRenderContext::TextRenderFormat mTextRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
+    Qgis::TextRenderFormat mTextRenderFormat = Qgis::TextRenderFormat::AlwaysOutlines;
 
     QgsGeometry mLabelBoundaryGeometry;
 
@@ -885,8 +873,5 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     QgsDoubleRange mZRange;
 
 };
-
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapSettings::Flags )
-
 
 #endif // QGSMAPSETTINGS_H

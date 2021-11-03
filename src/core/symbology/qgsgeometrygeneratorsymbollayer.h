@@ -59,6 +59,9 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
     void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
     void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
     bool usesMapUnits() const override;
+    QColor color() const override;
+    QgsUnitTypes::RenderUnit outputUnit() const override;
+    QgsMapUnitScale mapUnitScale() const override;
 
     QgsSymbolLayer *clone() const override SIP_FACTORY;
 
@@ -75,6 +78,28 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
      * Gets the expression to generate this geometry.
      */
     QString geometryExpression() const { return mExpression->expression(); }
+
+    /**
+     * Returns the unit for the geometry expression.
+     *
+     * By default this is QgsUnitTypes::MapUnits, which means that the geometryExpression()
+     * will return geometries in the associated layer's CRS.
+     *
+     * \see setUnits()
+     * \since QGIS 3.22
+     */
+    QgsUnitTypes::RenderUnit units() const { return mUnits; }
+
+    /**
+     * Sets the \a units for the geometry expression.
+     *
+     * By default this is QgsUnitTypes::MapUnits, which means that the geometryExpression()
+     * will return geometries in the associated layer's CRS.
+     *
+     * \see units()
+     * \since QGIS 3.22
+     */
+    void setUnits( QgsUnitTypes::RenderUnit units ) { mUnits = units;}
 
     QgsSymbol *subSymbol() override { return mSymbol; }
 
@@ -97,10 +122,12 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
      * which contains a QgsRenderContext which in turn contains an expression
      * context which is available to the evaluated expression.
      *
-     * \param context The rendering context which will be used to render and to
-     *                construct a geometry.
+     * \param context The rendering context which will be used to render and to construct a geometry.
+     * \param geometryType type of original geometry being rendered by the parent symbol (since QGIS 3.22)
+     * \param points optional list of original points which are being rendered by the parent symbol (since QGIS 3.22)
+     * \param rings optional list of original rings which are being rendered by the parent symbol (since QGIS 3.22)
      */
-    virtual void render( QgsSymbolRenderContext &context );
+    void render( QgsSymbolRenderContext &context, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::GeometryType::UnknownGeometry, const QPolygonF *points = nullptr, const QVector<QPolygonF> *rings = nullptr );
 
     void setColor( const QColor &color ) override;
 
@@ -110,6 +137,17 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
 #ifdef SIP_RUN
     QgsGeometryGeneratorSymbolLayer( const QgsGeometryGeneratorSymbolLayer &copy );
 #endif
+
+    /**
+     * Input geometry must be in painter units!
+     */
+    QgsGeometry evaluateGeometryInPainterUnits( const QgsGeometry &input, const QgsFeature &feature, const QgsRenderContext &renderContext, QgsExpressionContext &expressionContext ) const;
+
+    /**
+     * Tries to coerce the geometry output by the generator expression into
+     * a type usable by the symbol.
+     */
+    QgsGeometry coerceToExpectedType( const QgsGeometry &geometry ) const;
 
     std::unique_ptr<QgsExpression> mExpression;
     std::unique_ptr<QgsFillSymbol> mFillSymbol;
@@ -121,6 +159,8 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
      * The type of the sub symbol.
      */
     Qgis::SymbolType mSymbolType;
+
+    QgsUnitTypes::RenderUnit mUnits = QgsUnitTypes::RenderMapUnits;
 
     bool mRenderingFeature = false;
     bool mHasRenderedFeature = false;

@@ -159,7 +159,7 @@ class DBTree(QTreeView):
     def addLayer(self):
         table = self.currentTable()
         if table is not None:
-            layer = table.toMapLayer()
+            layer = table.toMapLayer(table.geometryType())
             layers = QgsProject.instance().addMapLayers([layer])
             if len(layers) != 1:
                 QgsMessageLog.logMessage(

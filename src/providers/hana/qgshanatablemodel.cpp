@@ -16,6 +16,7 @@
  ***************************************************************************/
 #include "qgsapplication.h"
 #include "qgsdatasourceuri.h"
+#include "qgshanaprimarykeys.h"
 #include "qgshanatablemodel.h"
 #include "qgshanasettings.h"
 #include "qgshanautils.h"
@@ -320,14 +321,11 @@ QString QgsHanaTableModel::layerURI( const QModelIndex &index, const QString &co
   QString schemaName = index.sibling( index.row(), DbtmSchema ).data( Qt::DisplayRole ).toString();
   QString tableName = index.sibling( index.row(), DbtmTable ).data( Qt::DisplayRole ).toString();
 
-  QgsHanaSettings settings( connName, true );
-  settings.setKeyColumns( schemaName, tableName, qgis::setToList( pkColumnsSelected ) );
-  settings.save();
+  QStringList pkColumns = qgis::setToList( pkColumnsSelected );
 
-  QStringList pkColumns;
-  pkColumns.reserve( pkColumnsSelected.size() );
-  for ( const QString &column : pkColumnsSelected )
-    pkColumns <<  QgsHanaUtils::quotedIdentifier( column );
+  QgsHanaSettings settings( connName, true );
+  settings.setKeyColumns( schemaName, tableName, pkColumns );
+  settings.save();
 
   QString geomColumnName;
   QString srid;
@@ -346,7 +344,7 @@ QString QgsHanaTableModel::layerURI( const QModelIndex &index, const QString &co
   QString sql = index.sibling( index.row(), DbtmSql ).data( Qt::DisplayRole ).toString();
 
   QgsDataSourceUri uri( connInfo );
-  uri.setDataSource( schemaName, tableName, geomColumnName, sql,  pkColumns.join( ',' ) );
+  uri.setDataSource( schemaName, tableName, geomColumnName, sql,  QgsHanaPrimaryKeyUtils::buildUriKey( pkColumns ) );
   uri.setWkbType( wkbType );
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );

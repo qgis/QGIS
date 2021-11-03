@@ -9,7 +9,6 @@
 
 
 
-
 class QgsAnnotationMarkerItem : QgsAnnotationItem
 {
 %Docstring(signature="appended")
@@ -39,6 +38,10 @@ Constructor for QgsAnnotationMarkerItem, at the specified ``point``.
 
     virtual QList< QgsAnnotationItemNode > nodes() const;
 
+    virtual Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
+
+    virtual QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) /Factory/;
+
 
     static QgsAnnotationMarkerItem *create() /Factory/;
 %Docstring
@@ -52,8 +55,6 @@ Creates a new marker annotation item.
     virtual QgsRectangle boundingBox() const;
 
     virtual QgsRectangle boundingBox( QgsRenderContext &context ) const;
-
-    virtual bool transform( const QTransform &transform );
 
 
     QgsPointXY geometry() const;

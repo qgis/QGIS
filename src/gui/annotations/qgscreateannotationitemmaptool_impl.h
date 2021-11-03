@@ -24,6 +24,23 @@
 
 ///@cond PRIVATE
 
+class QgsMapToolCaptureAnnotationItem: public QgsMapToolCapture, public QgsCreateAnnotationItemMapToolInterface
+{
+    Q_OBJECT
+  public:
+    QgsMapToolCaptureAnnotationItem( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode );
+    QgsCreateAnnotationItemMapToolHandler *handler() override;
+    QgsMapTool *mapTool() override;
+    QgsMapLayer *layer() const override;
+    QgsMapToolCapture::Capabilities capabilities() const override;
+    bool supportsTechnique( CaptureTechnique technique ) const override;
+
+  protected:
+
+    QgsCreateAnnotationItemMapToolHandler *mHandler = nullptr;
+
+};
+
 class QgsCreatePointTextItemMapTool: public QgsMapToolAdvancedDigitizing, public QgsCreateAnnotationItemMapToolInterface
 {
     Q_OBJECT
@@ -43,74 +60,40 @@ class QgsCreatePointTextItemMapTool: public QgsMapToolAdvancedDigitizing, public
 
 };
 
-class QgsCreateMarkerItemMapTool: public QgsMapToolCapture, public QgsCreateAnnotationItemMapToolInterface
+
+class QgsCreateMarkerItemMapTool: public QgsMapToolCaptureAnnotationItem
 {
     Q_OBJECT
 
   public:
 
     QgsCreateMarkerItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
-    ~QgsCreateMarkerItemMapTool() override;
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *event ) override;
-    QgsCreateAnnotationItemMapToolHandler *handler() override;
-    QgsMapTool *mapTool() override;
-    QgsMapLayer *layer() const override;
-
-  private:
-
-    QgsCreateAnnotationItemMapToolHandler *mHandler = nullptr;
 
 };
 
-class QgsMapToolCaptureAnnotationItem : public QgsMapToolCapture
-{
-    Q_OBJECT
-  public:
-    QgsMapToolCaptureAnnotationItem( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode );
-
-    QgsMapToolCapture::Capabilities capabilities() const override;
-    bool supportsTechnique( CaptureTechnique technique ) const override;
-
-};
-
-class QgsCreateLineItemMapTool: public QgsMapToolCaptureAnnotationItem, public QgsCreateAnnotationItemMapToolInterface
+class QgsCreateLineItemMapTool: public QgsMapToolCaptureAnnotationItem
 {
     Q_OBJECT
 
   public:
 
     QgsCreateLineItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
-    ~QgsCreateLineItemMapTool() override;
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
-    QgsCreateAnnotationItemMapToolHandler *handler() override;
-    QgsMapTool *mapTool() override;
-    QgsMapLayer *layer() const override;
-
-  private:
-
-    QgsCreateAnnotationItemMapToolHandler *mHandler = nullptr;
 
 };
 
-class QgsCreatePolygonItemMapTool: public QgsMapToolCaptureAnnotationItem, public QgsCreateAnnotationItemMapToolInterface
+class QgsCreatePolygonItemMapTool: public QgsMapToolCaptureAnnotationItem
 {
     Q_OBJECT
 
   public:
 
     QgsCreatePolygonItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
-    ~QgsCreatePolygonItemMapTool() override;
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
-    QgsCreateAnnotationItemMapToolHandler *handler() override;
-    QgsMapTool *mapTool() override;
-    QgsMapLayer *layer() const override;
-
-  private:
-
-    QgsCreateAnnotationItemMapToolHandler *mHandler = nullptr;
 
 };
 

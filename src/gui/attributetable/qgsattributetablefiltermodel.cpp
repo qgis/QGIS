@@ -29,6 +29,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayercache.h"
+#include "qgsrendercontext.h"
 
 //////////////////
 // Filter Model //
@@ -143,13 +144,13 @@ int QgsAttributeTableFilterModel::columnCount( const QModelIndex &parent ) const
   return mColumnMapping.count();
 }
 
-void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTableConfig &config )
+void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTableConfig &config, bool force )
 {
   const QgsAttributeTableConfig oldConfig = mConfig;
   mConfig = config;
   mConfig.update( layer()->fields() );
 
-  if ( mConfig.hasSameColumns( oldConfig ) )
+  if ( !force && mConfig.hasSameColumns( oldConfig ) )
   {
     return;
   }

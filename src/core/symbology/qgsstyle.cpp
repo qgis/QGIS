@@ -76,7 +76,7 @@ QgsStyle *QgsStyle::sDefaultStyle = nullptr;
 
 QgsStyle::QgsStyle()
 {
-  std::unique_ptr< QgsSimpleMarkerSymbolLayer > simpleMarker = std::make_unique< QgsSimpleMarkerSymbolLayer >( QgsSimpleMarkerSymbolLayerBase::Circle,
+  std::unique_ptr< QgsSimpleMarkerSymbolLayer > simpleMarker = std::make_unique< QgsSimpleMarkerSymbolLayer >( Qgis::MarkerShape::Circle,
       1.6, 0, Qgis::ScaleMethod::ScaleArea, QColor( 84, 176, 74 ), QColor( 61, 128, 53 ) );
   simpleMarker->setStrokeWidth( 0.4 );
   mPatchMarkerSymbol = std::make_unique< QgsMarkerSymbol >( QgsSymbolLayerList() << simpleMarker.release() );

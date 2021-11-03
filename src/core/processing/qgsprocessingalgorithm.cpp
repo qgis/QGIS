@@ -801,6 +801,11 @@ QgsPointCloudLayer *QgsProcessingAlgorithm::parameterAsPointCloudLayer( const QV
   return QgsProcessingParameters::parameterAsPointCloudLayer( parameterDefinition( name ), parameters, context );
 }
 
+QgsAnnotationLayer *QgsProcessingAlgorithm::parameterAsAnnotationLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
+{
+  return QgsProcessingParameters::parameterAsAnnotationLayer( parameterDefinition( name ), parameters, context );
+}
+
 QString QgsProcessingAlgorithm::invalidSourceError( const QVariantMap &parameters, const QString &name )
 {
   if ( !parameters.contains( name ) )

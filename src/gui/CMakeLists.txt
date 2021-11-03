@@ -546,6 +546,7 @@ set(QGIS_GUI_SRCS
   qgsmessageviewer.cpp
   qgsmetadatawidget.cpp
   qgsmasksourceselectionwidget.cpp
+  qgsmetadataurlitemdelegate.cpp
   qgsnewauxiliarylayerdialog.cpp
   qgsnewauxiliaryfielddialog.cpp
   qgsnewdatabasetablenamewidget.cpp
@@ -796,6 +797,7 @@ set(QGIS_GUI_HDRS
   qgsmessageviewer.h
   qgsmetadatawidget.h
   qgsmasksourceselectionwidget.h
+  qgsmetadataurlitemdelegate.h
   qgsnewauxiliaryfielddialog.h
   qgsnewauxiliarylayerdialog.h
   qgsnewgeopackagelayerdialog.h
@@ -1542,8 +1544,22 @@ endif()
 if (FORCE_STATIC_LIBS)
   target_link_libraries(qgis_gui
     provider_wms_gui_a
-    provider_postgres_gui_a
+    provider_wcs_gui_a
+    provider_delimitedtext_gui_a
+    provider_arcgisfeatureserver_gui_a
   )
+  if (HAVE_SPATIALITE)
+    target_link_libraries(qgis_gui
+      provider_spatialite_gui_a
+      provider_wfs_gui_a
+      provider_virtuallayer_gui_a
+    )
+  endif()
+  if (HAVE_POSTGRESQL)
+    target_link_libraries(qgis_gui
+      provider_postgres_gui_a
+    )
+  endif()
 endif()
 
 if(ENABLE_MODELTEST)

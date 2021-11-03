@@ -17,6 +17,7 @@
 
 #include "qgsfeatureiterator.h"
 #include "qgsafsshareddata.h"
+#include "qgscoordinatetransform.h"
 #include <memory>
 
 class QgsSpatialIndex;

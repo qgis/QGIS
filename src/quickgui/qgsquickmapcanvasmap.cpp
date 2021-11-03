@@ -24,6 +24,7 @@
 #include "qgsmessagelog.h"
 #include "qgspallabeling.h"
 #include "qgsproject.h"
+#include "qgsannotationlayer.h"
 #include "qgsvectorlayer.h"
 #include "qgslabelingresults.h"
 
@@ -112,14 +113,19 @@ void QgsQuickMapCanvasMap::refreshMap()
     expressionContext << QgsExpressionContextUtils::projectScope( project );
 
     mapSettings.setLabelingEngineSettings( project->labelingEngineSettings() );
+
+    // render main annotation layer above all other layers
+    QList<QgsMapLayer *> allLayers = mapSettings.layers();
+    allLayers.insert( 0, project->mainAnnotationLayer() );
+    mapSettings.setLayers( allLayers );
   }
 
   mapSettings.setExpressionContext( expressionContext );
 
   // enables on-the-fly simplification of geometries to spend less time rendering
-  mapSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
+  mapSettings.setFlag( Qgis::MapSettingsFlag::UseRenderingOptimization );
   // with incremental rendering - enables updates of partially rendered layers (good for WMTS, XYZ layers)
-  mapSettings.setFlag( QgsMapSettings::RenderPartialOutput, mIncrementalRendering );
+  mapSettings.setFlag( Qgis::MapSettingsFlag::RenderPartialOutput, mIncrementalRendering );
 
   // create the renderer job
   Q_ASSERT( !mJob );

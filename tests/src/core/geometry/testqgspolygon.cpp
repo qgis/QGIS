@@ -22,7 +22,7 @@
 #include "qgspoint.h"
 #include "qgspolygon.h"
 #include "qgsproject.h"
-
+#include "qgscoordinatetransform.h"
 #include "testgeometryutils.h"
 #include "testtransformer.h"
 
@@ -970,7 +970,7 @@ void TestQgsPolygon::polygon()
                  << QgsPoint( 6374985, -3626584 ) );
   pTransform.setExteriorRing( l21.clone() );
   pTransform.addInteriorRing( l21.clone() );
-  pTransform.transform( tr, QgsCoordinateTransform::ForwardTransform );
+  pTransform.transform( tr, Qgis::TransformDirection::Forward );
   const QgsLineString *extR = static_cast< const QgsLineString * >( pTransform.exteriorRing() );
   QGSCOMPARENEAR( extR->pointN( 0 ).x(), 175.771, 0.001 );
   QGSCOMPARENEAR( extR->pointN( 0 ).y(), -39.724, 0.001 );
@@ -1007,7 +1007,7 @@ void TestQgsPolygon::polygon()
   pTransform.clear();
   pTransform.setExteriorRing( l22.clone() );
   pTransform.addInteriorRing( l22.clone() );
-  pTransform.transform( tr, QgsCoordinateTransform::ForwardTransform );
+  pTransform.transform( tr, Qgis::TransformDirection::Forward );
   extR = static_cast< const QgsLineString * >( pTransform.exteriorRing() );
   QGSCOMPARENEAR( extR->pointN( 0 ).x(), 175.771, 0.001 );
   QGSCOMPARENEAR( extR->pointN( 0 ).y(), -39.724, 0.001 );
@@ -1052,7 +1052,7 @@ void TestQgsPolygon::polygon()
   QGSCOMPARENEAR( pTransform.interiorRing( 0 )->boundingBox().yMaximum(), -38.7999, 0.001 );
 
   //reverse transform
-  pTransform.transform( tr, QgsCoordinateTransform::ReverseTransform );
+  pTransform.transform( tr, Qgis::TransformDirection::Reverse );
   extR = static_cast< const QgsLineString * >( pTransform.exteriorRing() );
   QGSCOMPARENEAR( extR->pointN( 0 ).x(), 6374984, 100 );
   QGSCOMPARENEAR( extR->pointN( 0 ).y(), -3626584, 100 );
@@ -1098,7 +1098,7 @@ void TestQgsPolygon::polygon()
 
 #if PROJ_VERSION_MAJOR<6 // note - z value transform doesn't currently work with proj 6+, because we don't yet support compound CRS definitions
   //z value transform
-  pTransform.transform( tr, QgsCoordinateTransform::ForwardTransform, true );
+  pTransform.transform( tr, Qgis::TransformDirection::Forward, true );
   extR = static_cast< const QgsLineString * >( pTransform.exteriorRing() );
   QGSCOMPARENEAR( extR->pointN( 0 ).z(), -19.249066, 0.001 );
   QGSCOMPARENEAR( extR->pointN( 1 ).z(), -19.148357, 0.001 );
@@ -1109,7 +1109,7 @@ void TestQgsPolygon::polygon()
   QGSCOMPARENEAR( intR->pointN( 1 ).z(), -19.148357, 0.001 );
   QGSCOMPARENEAR( intR->pointN( 2 ).z(), -19.092128, 0.001 );
   QGSCOMPARENEAR( intR->pointN( 3 ).z(), -19.249066, 0.001 );
-  pTransform.transform( tr, QgsCoordinateTransform::ReverseTransform, true );
+  pTransform.transform( tr, Qgis::TransformDirection::Reverse, true );
   extR = static_cast< const QgsLineString * >( pTransform.exteriorRing() );
   QGSCOMPARENEAR( extR->pointN( 0 ).z(), 1, 0.001 );
   QGSCOMPARENEAR( extR->pointN( 1 ).z(), 3, 0.001 );
@@ -1897,6 +1897,44 @@ void TestQgsPolygon::polygon()
   rhr.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 10 20 3 4, 20 10 6 8, 10 10 1 2))" ) );
   rhr.forceRHR();
   QCOMPARE( rhr.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 6 8, 10 20 3 4, 10 10 1 2))" ) );
+
+  // force cw (same as force RHR)
+  rhr = QgsPolygon();
+  rhr.forceClockwise(); // no crash
+  rhr.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4))" ) );
+  rhr.forceClockwise();
+  QCOMPARE( rhr.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4))" ) );
+  rhr.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 100 0 13 14, 100 100 23 24, 0 100 23 24, 0 0 3 4))" ) );
+  rhr.forceClockwise();
+  QCOMPARE( rhr.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 23 24, 100 100 23 24, 100 0 13 14, 0 0 3 4))" ) );
+  rhr.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))" ) );
+  rhr.forceClockwise();
+  QCOMPARE( rhr.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 10 20 6 8, 10 10 1 2))" ) );
+  rhr.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 100 0 13 14, 100 100 13 14, 0 100 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))" ) );
+  rhr.forceClockwise();
+  QCOMPARE( rhr.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 23 24, 100 100 13 14, 100 0 13 14, 0 0 3 4),(10 10 1 2, 20 10 3 4, 10 20 6 8, 10 10 1 2))" ) );
+  rhr.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 10 20 3 4, 20 10 6 8, 10 10 1 2))" ) );
+  rhr.forceClockwise();
+  QCOMPARE( rhr.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 6 8, 10 20 3 4, 10 10 1 2))" ) );
+
+  // force ccw
+  QgsPolygon ccw;
+  ccw.forceCounterClockwise(); // no crash
+  ccw.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4))" ) );
+  ccw.forceCounterClockwise();
+  QCOMPARE( ccw.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 100 0 23 24, 100 100 13 14, 0 100 13 14, 0 0 3 4))" ) );
+  ccw.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 100 0 13 14, 100 100 23 24, 0 100 23 24, 0 0 3 4))" ) );
+  ccw.forceCounterClockwise();
+  QCOMPARE( ccw.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 100 0 13 14, 100 100 23 24, 0 100 23 24, 0 0 3 4))" ) );
+  ccw.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))" ) );
+  ccw.forceCounterClockwise();
+  QCOMPARE( ccw.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 100 0 23 24, 100 100 13 14, 0 100 13 14, 0 0 3 4),(10 10 1 2, 10 20 6 8, 20 10 3 4, 10 10 1 2))" ) );
+  ccw.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 100 0 13 14, 100 100 13 14, 0 100 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))" ) );
+  ccw.forceCounterClockwise();
+  QCOMPARE( ccw.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 100 0 13 14, 100 100 13 14, 0 100 23 24, 0 0 3 4),(10 10 1 2, 10 20 6 8, 20 10 3 4, 10 10 1 2))" ) );
+  ccw.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 10 20 3 4, 20 10 6 8, 10 10 1 2))" ) );
+  ccw.forceCounterClockwise();
+  QCOMPARE( ccw.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 100 0 23 24, 100 100 13 14, 0 100 13 14, 0 0 3 4),(10 10 1 2, 10 20 3 4, 20 10 6 8, 10 10 1 2))" ) );
 
   // test bounding box intersects
   QgsPolygon bb;

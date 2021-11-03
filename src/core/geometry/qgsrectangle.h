@@ -111,7 +111,7 @@ class CORE_EXPORT QgsRectangle
      * and \a width and \a height.
      * \since QGIS 3.0
      */
-    static QgsRectangle fromCenterAndSize( QgsPointXY center, double width, double height );
+    static QgsRectangle fromCenterAndSize( const QgsPointXY &center, double width, double height );
 
     /**
      * Sets the rectangle from two QgsPoints.
@@ -308,7 +308,7 @@ class CORE_EXPORT QgsRectangle
     {
       if ( p.x() < xMinimum() )
         setXMinimum( p.x() );
-      else if ( p.x() > xMaximum() )
+      if ( p.x() > xMaximum() )
         setXMaximum( p.x() );
       if ( p.y() < yMinimum() )
         setYMinimum( p.y() );

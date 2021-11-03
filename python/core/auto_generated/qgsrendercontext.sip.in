@@ -31,60 +31,28 @@ to be rendered etc.
 
     QgsRenderContext( const QgsRenderContext &rh );
 
-    enum Flag
-    {
-      DrawEditingInfo,
-      ForceVectorOutput,
-      UseAdvancedEffects,
-      UseRenderingOptimization,
-      DrawSelection,
-      DrawSymbolBounds,
-      RenderMapTile,
-      Antialiasing,
-      RenderPartialOutput,
-      RenderPreviewJob,
-      RenderBlocking,
-      RenderSymbolPreview,
-      LosslessImageRendering,
-      ApplyScalingWorkaroundForTextRendering,
-      Render3DMap,
-      ApplyClipAfterReprojection,
-    };
-    typedef QFlags<QgsRenderContext::Flag> Flags;
-
-
-    enum TextRenderFormat
-    {
-      // refs for below dox: https://github.com/qgis/QGIS/pull/1286#issuecomment-39806854
-      // https://github.com/qgis/QGIS/pull/8573#issuecomment-445585826
-
-      TextFormatAlwaysOutlines,
-
-      TextFormatAlwaysText,
-    };
-
-    void setFlags( QgsRenderContext::Flags flags );
+    void setFlags( Qgis::RenderContextFlags flags );
 %Docstring
 Set combination of flags that will be used for rendering.
 
 .. versionadded:: 2.14
 %End
 
-    void setFlag( Flag flag, bool on = true );
+    void setFlag( Qgis::RenderContextFlag flag, bool on = true );
 %Docstring
 Enable or disable a particular flag (other flags are not affected)
 
 .. versionadded:: 2.14
 %End
 
-    Flags flags() const;
+    Qgis::RenderContextFlags flags() const;
 %Docstring
 Returns combination of flags used for rendering.
 
 .. versionadded:: 2.14
 %End
 
-    bool testFlag( Flag flag ) const;
+    bool testFlag( Qgis::RenderContextFlag flag ) const;
 %Docstring
 Check whether a particular flag is enabled.
 
@@ -294,7 +262,36 @@ Returns the targeted DPI for rendering.
 Returns ``True`` if the rendering operation has been stopped and any ongoing
 rendering should be canceled immediately.
 
+.. note::
+
+   Since QGIS 3.22 the :py:func:`~QgsRenderContext.feedback` member exists as an alternative means of cancellation support.
+
 .. seealso:: :py:func:`setRenderingStopped`
+
+.. seealso:: :py:func:`feedback`
+%End
+
+    void setFeedback( QgsFeedback *feedback );
+%Docstring
+Attach a ``feedback`` object that can be queried regularly during rendering to check
+if rendering should be canceled.
+
+Ownership of ``feedback`` is NOT transferred, and the caller must take care that it exists
+for the lifetime of the render context.
+
+.. seealso:: :py:func:`feedback`
+
+.. versionadded:: 3.22
+%End
+
+    QgsFeedback *feedback() const;
+%Docstring
+Returns the feedback object that can be queried regularly during rendering to check
+if rendering should be canceled, if set. Maybe be ``None``.
+
+.. seealso:: :py:func:`setFeedback`
+
+.. versionadded:: 3.22
 %End
 
     bool forceVectorOutput() const;
@@ -436,7 +433,15 @@ Sets whether edit markers should be drawn during the render operation.
 Sets whether the rendering operation has been ``stopped`` and any ongoing
 rendering should be canceled immediately.
 
+.. note::
+
+   Since QGIS 3.22 the :py:func:`~QgsRenderContext.feedback` member exists as an alternative means of cancellation support.
+
 .. seealso:: :py:func:`renderingStopped`
+
+.. seealso:: :py:func:`feedback`
+
+.. seealso:: :py:func:`setFeedback`
 %End
 
     void setDistanceArea( const QgsDistanceArea &distanceArea );
@@ -683,10 +688,14 @@ Gets segmentation tolerance type (maximum angle or maximum difference between cu
 %End
 
 
-    double convertToPainterUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale() ) const;
+    double convertToPainterUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::RenderSubcomponentProperty property = Qgis::RenderSubcomponentProperty::Generic ) const;
 %Docstring
 Converts a size from the specified units to painter units (pixels). The conversion respects the limits
 specified by the optional scale parameter.
+
+Since QGIS 3.22 the optional ``property`` argument can be used to specify the associated property. This
+is used in some contexts to refine the converted size. For example, a Qgis.RenderSubcomponentProperty.BlurSize
+property will be limited to a suitably fast range when the render context has the Qgis.RenderContextFlag.RenderSymbolPreview set.
 
 .. seealso:: :py:func:`convertToMapUnits`
 
@@ -721,7 +730,7 @@ When the :py:func:`~QgsRenderContext.sourceCrs` is geographic, the center of the
 .. versionadded:: 3.0
 %End
 
-    TextRenderFormat textRenderFormat() const;
+    Qgis::TextRenderFormat textRenderFormat() const;
 %Docstring
 Returns the text render format, which dictates how text is rendered (e.g. as paths or real text objects).
 
@@ -730,7 +739,7 @@ Returns the text render format, which dictates how text is rendered (e.g. as pat
 .. versionadded:: 3.4.3
 %End
 
-    void setTextRenderFormat( TextRenderFormat format );
+    void setTextRenderFormat( Qgis::TextRenderFormat format );
 %Docstring
 Sets the text render ``format``, which dictates how text is rendered (e.g. as paths or real text objects).
 
@@ -942,10 +951,84 @@ Sets the ``range`` of z-values which should be rendered.
 .. versionadded:: 3.18
 %End
 
+    QSize outputSize() const;
+%Docstring
+Returns the size of the resulting rendered image, in pixels.
+
+.. seealso:: :py:func:`deviceOutputSize`
+
+.. seealso:: :py:func:`setOutputSize`
+
+.. versionadded:: 3.22
+%End
+
+    void setOutputSize( QSize size );
+%Docstring
+Sets the ``size`` of the resulting rendered image, in pixels.
+
+.. seealso:: :py:func:`outputSize`
+
+.. versionadded:: 3.22
+%End
+
+    float devicePixelRatio() const;
+%Docstring
+Returns the device pixel ratio.
+
+Common values are 1 for normal-dpi displays and 2 for high-dpi "retina" displays.
+
+.. seealso:: :py:func:`setDevicePixelRatio`
+
+.. versionadded:: 3.22
+%End
+
+    void setDevicePixelRatio( float ratio );
+%Docstring
+Sets the device pixel ``ratio``.
+
+Common values are 1 for normal-dpi displays and 2 for high-dpi "retina" displays.
+
+.. seealso:: :py:func:`devicePixelRatio`
+
+.. versionadded:: 3.22
+%End
+
+    QSize deviceOutputSize() const;
+%Docstring
+Returns the device output size of the render.
+
+This is equivalent to the output size multiplicated by the device pixel ratio.
+
+.. seealso:: :py:func:`outputSize`
+
+.. seealso:: :py:func:`devicePixelRatio`
+
+.. seealso:: :py:func:`setOutputSize`
+
+.. versionadded:: 3.22
+%End
+
+    void setImageFormat( QImage::Format format );
+%Docstring
+Sets QImage ``format`` which should be used for QImages created
+during rendering.
+
+.. seealso:: :py:func:`imageFormat`
+
+.. versionadded:: 3.22
+%End
+
+    QImage::Format imageFormat() const;
+%Docstring
+Returns the QImage format which should be used for QImages created
+during rendering.
+
+.. seealso:: :py:func:`setImageFormat`
+
+.. versionadded:: 3.22
+%End
+
 };
-
-QFlags<QgsRenderContext::Flag> operator|(QgsRenderContext::Flag f1, QFlags<QgsRenderContext::Flag> f2);
-
 
 
 /************************************************************************

@@ -1,0 +1,83 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsrecentstylehandler.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsRecentStyleHandler
+{
+%Docstring(signature="appended")
+Handles and tracks style items recently used in the QGIS GUI.
+
+:py:class:`QgsRecentStyleHandler` is not usually directly created, but rather accessed through
+:py:func:`QgsApplication.recentStyleHandler()`.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsrecentstylehandler.h"
+%End
+  public:
+
+    QgsRecentStyleHandler();
+%Docstring
+Creates a new recent style handler.
+
+QgsRecentStyleHandler is not usually directly created, but rather accessed through
+:py:func:`QgsApplication.recentStyleHandler()`.
+%End
+
+
+    ~QgsRecentStyleHandler();
+
+    void pushRecentSymbol( const QString &identifier, QgsSymbol *symbol /Transfer/ );
+%Docstring
+Pushes a recently used ``symbol`` with the specified ``identifier``.
+
+Ownership of ``symbol`` is transferred.
+
+Example
+-------
+
+.. code-block:: python
+
+       # create a new simple fill symbol
+       my_fill_symbol = QgsFillSymbol.createSimple( { 'color': '#ff0000' } )
+
+       # push this symbol to the recent style handler, using a custom identifier "fill_symbol_for_new_rectangles"
+       QgsApplication.recentStyleHandler().pushRecentSymbol( 'fill_symbol_for_new_rectangles', my_fill_symbol )
+
+       # ... later in the same QGIS session, retrieve a copy of this symbol so that we can use it for a newly created rectangle
+       new_symbol = QgsApplication.recentStyleHandler().recentSymbol( 'fill_symbol_for_new_rectangles' )
+
+.. seealso:: :py:func:`recentSymbol`
+%End
+
+    QgsSymbol *recentSymbol( const QString &identifier ) const /Factory/;
+%Docstring
+Returns a copy of the recently used symbol with the specified ``identifier``, or ``None`` if no symbol
+with the identifier exists.
+
+Caller takes ownership of the returned object.
+
+.. seealso:: :py:func:`pushRecentSymbol`
+%End
+
+
+  private:
+    QgsRecentStyleHandler( const QgsRecentStyleHandler &other );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsrecentstylehandler.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

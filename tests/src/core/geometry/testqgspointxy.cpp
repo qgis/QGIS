@@ -112,7 +112,7 @@ void TestQgsPointXY::constructors()
   const QgsPointXY point1 = QgsPointXY( 20.0, -20.0 );
   QCOMPARE( point1.x(), 20.0 );
   QCOMPARE( point1.y(), -20.0 );
-  const QgsPointXY point2( point1 );
+  const QgsPointXY &point2( point1 );
   QCOMPARE( point2, point1 );
 
   const QPointF sourceQPointF( 20.0, -20.0 );

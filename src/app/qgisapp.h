@@ -1070,7 +1070,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     */
     void legendLayerStretchUsingCurrentExtent();
 
-    //! Watch for QFileOpenEvent.
+    //! Watches for QFileOpenEvent.
     bool event( QEvent *event ) override;
 
     //! Sets the CRS of the current legend group
@@ -1276,7 +1276,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsAttributeEditorContext createAttributeEditorContext();
 
   protected:
-    void showEvent( QShowEvent *event ) override;
+
+    //! Listens to resize event in order to properly restore UI upon re-launching QGIS
+    void resizeEvent( QResizeEvent *resizeEvent ) override;
 
     //! Handle state changes (WindowTitleChange)
     void changeEvent( QEvent *event ) override;
@@ -2688,6 +2690,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsScopedOptionsWidgetFactory m3DOptionsWidgetFactory;
 
     QMap< QString, QToolButton * > mAnnotationItemGroupToolButtons;
+    QAction *mAnnotationsItemInsertBefore = nullptr; // Used to insert annotation items at the appropriate location in the annotations toolbar
 
     class QgsCanvasRefreshBlocker
     {
@@ -2730,6 +2733,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     };
     int mFreezeCount = 0;
     friend class QgsCanvasRefreshBlocker;
+
+    bool mRestoreStateOnResize = false;
 
     friend class TestQgisAppPython;
     friend class QgisAppInterface;

@@ -27,17 +27,23 @@ Contains information about a node used for editing an annotation item.
 Default constructor
 %End
 
-    QgsAnnotationItemNode( const QgsPointXY &point, Qgis::AnnotationItemNodeType type );
+    QgsAnnotationItemNode( const QgsVertexId &id, const QgsPointXY &point, Qgis::AnnotationItemNodeType type );
 %Docstring
-Constructor for QgsAnnotationItemNode, with the specified ``point`` and ``type``.
+Constructor for QgsAnnotationItemNode, with the specified ``id``, ``point`` and ``type``.
 %End
 
     SIP_PYOBJECT __repr__();
 %MethodCode
-    QString str = QStringLiteral( "<QgsAnnotationItemNode: %1 (%2, %3)>" ).arg( qgsEnumValueToKey( sipCpp->type() ) )
+    QString str = QStringLiteral( "<QgsAnnotationItemNode: %1 - %2 (%3, %4)>" ).arg( sipCpp->id().vertex )
+                  .arg( qgsEnumValueToKey( sipCpp->type() ) )
                   .arg( sipCpp->point().x() )
                   .arg( sipCpp->point().y() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    QgsVertexId id() const;
+%Docstring
+Returns the ID number of the node, used for uniquely identifying the node in the item.
 %End
 
     QgsPointXY point() const;

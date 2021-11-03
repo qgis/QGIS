@@ -18,10 +18,14 @@
 
 #include "qgis_core.h"
 #include "qgslayoutmeasurementconverter.h"
-#include "qgsrendercontext.h"
+#include "qgsvectorsimplifymethod.h"
+#include "qgis.h"
 #include <QtGlobal>
+#include <QColor>
+#include <QVector>
 
 class QgsLayout;
+class QgsFeatureFilterProvider;
 
 /**
  * \ingroup core
@@ -93,7 +97,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     /**
      * Returns the combination of render context flags matched to the layout context's settings.
      */
-    QgsRenderContext::Flags renderContextFlags() const;
+    Qgis::RenderContextFlags renderContextFlags() const;
 
     /**
      * Sets the \a dpi for outputting the layout. This also sets the
@@ -211,7 +215,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * \see setTextRenderFormat()
      * \since QGIS 3.4.3
      */
-    QgsRenderContext::TextRenderFormat textRenderFormat() const
+    Qgis::TextRenderFormat textRenderFormat() const
     {
       return mTextRenderFormat;
     }
@@ -222,7 +226,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * \see textRenderFormat()
      * \since QGIS 3.4.3
      */
-    void setTextRenderFormat( QgsRenderContext::TextRenderFormat format )
+    void setTextRenderFormat( Qgis::TextRenderFormat format )
     {
       mTextRenderFormat = format;
     }
@@ -354,7 +358,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     bool mBoundingBoxesVisible = true;
     bool mPagesVisible = true;
 
-    QgsRenderContext::TextRenderFormat mTextRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
+    Qgis::TextRenderFormat mTextRenderFormat = Qgis::TextRenderFormat::AlwaysOutlines;
 
     QStringList mExportThemes;
 

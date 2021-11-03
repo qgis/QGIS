@@ -128,12 +128,7 @@ QValidator::State QgsDoubleValidator::validate( QString &input ) const
 double QgsDoubleValidator::toDouble( const QString &input )
 {
   bool ok = false;
-  double value = QLocale().toDouble( input, &ok );
-  if ( ! ok )
-  {
-    value = QLocale( QLocale::C ).toDouble( input, &ok );
-  }
-  return value;
+  return toDouble( input, &ok );
 }
 
 double QgsDoubleValidator::toDouble( const QString &input, bool *ok )
@@ -143,6 +138,11 @@ double QgsDoubleValidator::toDouble( const QString &input, bool *ok )
   if ( ! *ok )
   {
     value = QLocale( QLocale::C ).toDouble( input, ok );
+  }
+  // Still non ok? Try without locale's group separator
+  if ( ! *ok && ! QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator )
+  {
+    value = QLocale( ).toDouble( QString( input ).replace( QLocale().groupSeparator(), QString() ), ok );
   }
   return value ;
 }

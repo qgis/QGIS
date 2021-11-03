@@ -69,7 +69,7 @@ class CORE_EXPORT QgsExternalStorageRegistry
     void unregisterExternalStorage( QgsExternalStorage *storage );
 
   private:
-    QHash<QString, QgsExternalStorage *> mBackends;
+    QList< QgsExternalStorage * > mBackends;
 };
 
 #endif // QGSEXTERNALSTORAGEREGISTRY_H

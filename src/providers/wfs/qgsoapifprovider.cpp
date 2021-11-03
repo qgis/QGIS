@@ -340,6 +340,11 @@ QString QgsOapifProvider::name() const
   return OAPIF_PROVIDER_KEY;
 }
 
+QString QgsOapifProvider::providerKey()
+{
+  return OAPIF_PROVIDER_KEY;
+}
+
 QString QgsOapifProvider::description() const
 {
   return OAPIF_PROVIDER_DESCRIPTION;
@@ -587,7 +592,7 @@ bool QgsOapifSharedData::computeServerFilter( QString &errorMsg )
   return true;
 }
 
-void QgsOapifSharedData::pushError( const QString &errorMsg )
+void QgsOapifSharedData::pushError( const QString &errorMsg ) const
 {
   QgsMessageLog::logMessage( errorMsg, tr( "OAPIF" ) );
   emit raiseError( errorMsg );

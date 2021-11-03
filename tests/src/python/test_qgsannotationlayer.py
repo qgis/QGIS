@@ -40,7 +40,11 @@ from qgis.core import (QgsMapSettings,
                        QgsMarkerSymbol,
                        QgsMapRendererSequentialJob,
                        QgsMapRendererParallelJob,
-                       QgsGeometry
+                       QgsGeometry,
+                       QgsAnnotationItemEditOperationMoveNode,
+                       QgsVertexId,
+                       QgsPointXY,
+                       Qgis
                        )
 from qgis.testing import start_app, unittest
 
@@ -259,6 +263,34 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         self.assertIsInstance(p2.mainAnnotationLayer().items()[linestring_item_id], QgsAnnotationLineItem)
         self.assertIsInstance(p2.mainAnnotationLayer().items()[marker_item_id], QgsAnnotationMarkerItem)
 
+    def test_apply_edit(self):
+        """
+        Test applying edits to a layer
+        """
+        layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+        self.assertTrue(layer.isValid())
+
+        polygon_item_id = layer.addItem(QgsAnnotationPolygonItem(
+            QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)]))))
+        linestring_item_id = layer.addItem(
+            QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)])))
+        marker_item_id = layer.addItem(QgsAnnotationMarkerItem(QgsPoint(12, 13)))
+
+        rc = QgsRenderContext()
+        self.assertCountEqual(layer.itemsInBounds(QgsRectangle(1, 1, 20, 20), rc), [polygon_item_id, linestring_item_id, marker_item_id])
+
+        # can't apply a move to an item which doesn't exist in the layer
+        self.assertEqual(layer.applyEdit(QgsAnnotationItemEditOperationMoveNode('xxx', QgsVertexId(0, 0, 2), QgsPoint(14, 15), QgsPoint(19, 15))), Qgis.AnnotationItemEditOperationResult.Invalid)
+
+        # apply move to polygon
+        self.assertEqual(layer.applyEdit(
+            QgsAnnotationItemEditOperationMoveNode(polygon_item_id, QgsVertexId(0, 0, 2), QgsPoint(14, 15),
+                                                   QgsPoint(19, 15))), Qgis.AnnotationItemEditOperationResult.Success)
+
+        self.assertEqual(layer.item(polygon_item_id).geometry().asWkt(), 'Polygon ((12 13, 14 13, 19 15, 12 13))')
+        # ensure that spatial index was updated
+        self.assertCountEqual(layer.itemsInBounds(QgsRectangle(18, 1, 20, 16), rc), [polygon_item_id])
+
     def testRenderLayer(self):
         layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
         layer.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
@@ -290,8 +322,8 @@ class TestQgsAnnotationLayer(unittest.TestCase):
 
         rc = QgsRenderContext.fromMapSettings(settings)
         image = QImage(200, 200, QImage.Format_ARGB32)
-        image.setDotsPerMeterX(96 / 25.4 * 1000)
-        image.setDotsPerMeterY(96 / 25.4 * 1000)
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
         image.fill(QColor(255, 255, 255))
         painter = QPainter(image)
         rc.setPainter(painter)
@@ -350,8 +382,8 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         rc.setExtent(
             rc.coordinateTransform().transformBoundingBox(settings.extent(), QgsCoordinateTransform.ReverseTransform))
         image = QImage(200, 200, QImage.Format_ARGB32)
-        image.setDotsPerMeterX(96 / 25.4 * 1000)
-        image.setDotsPerMeterY(96 / 25.4 * 1000)
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
         image.fill(QColor(255, 255, 255))
         painter = QPainter(image)
         rc.setPainter(painter)
@@ -415,8 +447,8 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         layer.item(i3_id).setSymbologyReferenceScale(rc.rendererScale() * 2)
 
         image = QImage(200, 200, QImage.Format_ARGB32)
-        image.setDotsPerMeterX(96 / 25.4 * 1000)
-        image.setDotsPerMeterY(96 / 25.4 * 1000)
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
         image.fill(QColor(255, 255, 255))
         painter = QPainter(image)
         rc.setPainter(painter)

@@ -21,9 +21,11 @@ class QWebView;
 class QgsPixmapLabel;
 class QgsMessageBar;
 class QgsExternalStorageFileWidget;
+class QgsExternalStorageFetchedContent;
 
 #include <QWidget>
 #include <QVariant>
+#include <QPointer>
 
 #include "qgsfilewidget.h"
 #include "qgis_gui.h"
@@ -196,6 +198,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
 
   private slots:
     void loadDocument( const QString &path );
+    void onFetchFinished();
 
   private:
     void updateDocumentViewer();
@@ -230,6 +233,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     QLabel *mLoadingLabel = nullptr;
     QLabel *mErrorLabel = nullptr;
     QMovie *mLoadingMovie = nullptr;
+    QPointer<QgsExternalStorageFetchedContent> mContent;
 
     friend class TestQgsExternalResourceWidgetWrapper;
 };

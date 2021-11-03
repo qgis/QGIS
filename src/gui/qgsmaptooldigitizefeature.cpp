@@ -166,12 +166,12 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       if ( res == 0 )
       {
-        savePoint = QgsPoint( layerWKBType, fetchPoint.x(), fetchPoint.y(), fetchPoint.z(), fetchPoint.m() );
+        savePoint = QgsPoint( QgsWkbTypes::singleType( layerWKBType ), fetchPoint.x(), fetchPoint.y(), fetchPoint.z(), fetchPoint.m() );
       }
       else
       {
         const QgsPointXY layerPoint = toLayerCoordinates( vlayer, e->mapPoint() );
-        savePoint = QgsPoint( layerWKBType, layerPoint.x(), layerPoint.y(), fetchPoint.z(), fetchPoint.m() );
+        savePoint = QgsPoint( QgsWkbTypes::singleType( layerWKBType ), layerPoint.x(), layerPoint.y(), fetchPoint.z(), fetchPoint.m() );
       }
     }
     catch ( QgsCsException &cse )
@@ -189,7 +189,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       QgsFeature f( vlayer->fields() );
 
       QgsGeometry g;
-      const QgsPoint result( layerWKBType, savePoint.x(), savePoint.y(), isMatchPointZ ? savePoint.z() : defaultZValue(), isMatchPointM ? savePoint.m() : defaultMValue() );
+      const QgsPoint result( QgsWkbTypes::singleType( layerWKBType ), savePoint.x(), savePoint.y(), isMatchPointZ ? savePoint.z() : defaultZValue(), isMatchPointM ? savePoint.m() : defaultMValue() );
       if ( mCheckGeometryType == false )
       {
         // if layer supports more types (mCheckGeometryType is false)

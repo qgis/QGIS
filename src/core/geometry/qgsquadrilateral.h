@@ -70,7 +70,7 @@ class CORE_EXPORT QgsQuadrilateral
     enum ConstructionOption
     {
       Distance, //!< Second distance is equal to the distance between 2nd and 3rd point
-      Projected, //!< Second distance is equal to the distance of the perpendicualr projection of the 3rd point on the segment or its extension.
+      Projected, //!< Second distance is equal to the distance of the perpendicular projection of the 3rd point on the segment or its extension.
     };
 
     /**
@@ -80,6 +80,7 @@ class CORE_EXPORT QgsQuadrilateral
      * the z used will be the one of the first point with a Z.
      * This ensures consistency in point types and the ability to export to a
      * Polygon or LineString.
+     * M is taken from point \a p1.
      * \param p1 first point
      * \param p2 second point
      * \param p3 third point
@@ -91,7 +92,8 @@ class CORE_EXPORT QgsQuadrilateral
     /**
      * Construct a QgsQuadrilateral as a rectangle from an extent, defined by
      * two opposite corner points.
-     * Z is taken from point \a p1.
+     * Z and M are taken from point \a p1.
+     * QgsQuadrilateral will have the same dimension as \a p1 dimension.
      * \param p1 first point
      * \param p2 second point
      */
@@ -107,7 +109,8 @@ class CORE_EXPORT QgsQuadrilateral
 
     /**
      * Construct a QgsQuadrilateral as a square from a diagonal.
-     * Z is taken from point \a p1.
+     * Z and M are taken from point \a p1.
+     * QgsQuadrilateral will have the same dimension as \a p1 dimension.
      * \param p1 first point
      * \param p2 second point
      */
@@ -116,7 +119,8 @@ class CORE_EXPORT QgsQuadrilateral
     /**
      * Construct a QgsQuadrilateral as a rectangle from center point \a center
      * and another point \a point.
-     * Z is taken from \a center point.
+     * Z and M are taken from point \a p1.
+     * QgsQuadrilateral will have the same dimension as \a center dimension.
      * \param center center point
      * \param point corner point
      */

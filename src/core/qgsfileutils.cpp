@@ -26,6 +26,12 @@
 #include <QSet>
 #include <QDirIterator>
 
+#ifdef Q_OS_UNIX
+// For getrlimit()
+#include <sys/resource.h>
+#include <sys/time.h>
+#endif
+
 #ifdef MSVC
 #include <Windows.h>
 #include <ShlObj.h>
@@ -432,7 +438,7 @@ bool QgsFileUtils::renameDataset( const QString &oldPath, const QString &newPath
   }
   if ( !res )
   {
-    error = QObject::tr( "Destination files already exist %1" ).arg( errors.join( QStringLiteral( ", " ) ) );
+    error = QObject::tr( "Destination files already exist %1" ).arg( errors.join( QLatin1String( ", " ) ) );
     return false;
   }
 
@@ -457,8 +463,41 @@ bool QgsFileUtils::renameDataset( const QString &oldPath, const QString &newPath
   }
   if ( !res )
   {
-    error = QObject::tr( "Could not rename %1" ).arg( errors.join( QStringLiteral( ", " ) ) );
+    error = QObject::tr( "Could not rename %1" ).arg( errors.join( QLatin1String( ", " ) ) );
   }
 
   return res;
+}
+
+int QgsFileUtils::openedFileLimit()
+{
+#ifdef Q_OS_UNIX
+  struct rlimit rescLimit;
+  if ( getrlimit( RLIMIT_NOFILE, &rescLimit ) == 0 )
+  {
+    return rescLimit.rlim_cur;
+  }
+#endif
+  return -1;
+}
+
+int QgsFileUtils::openedFileCount()
+{
+#ifdef Q_OS_LINUX
+  int res = static_cast<int>( QDir( "/proc/self/fd" ).entryList().size() );
+  if ( res == 0 )
+    res = -1;
+  return res;
+#else
+  return -1;
+#endif
+}
+
+bool QgsFileUtils::isCloseToLimitOfOpenedFiles( int filesToBeOpened )
+{
+  const int nFileLimit = QgsFileUtils::openedFileLimit();
+  const int nFileCount = QgsFileUtils::openedFileCount();
+  // We need some margin as Qt will crash if it cannot create some file descriptors
+  constexpr int SOME_MARGIN = 20;
+  return nFileCount > 0 && nFileLimit > 0 && nFileCount + filesToBeOpened > nFileLimit - SOME_MARGIN;
 }

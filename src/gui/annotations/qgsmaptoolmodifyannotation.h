@@ -22,17 +22,21 @@
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qobjectuniqueptr.h"
 #include "qgspointxy.h"
+#include "qgsannotationitemnode.h"
 
 class QgsRubberBand;
 class QgsRenderedAnnotationItemDetails;
 class QgsAnnotationItem;
 class QgsAnnotationLayer;
 class QgsAnnotationItemNodesSpatialIndex;
-class QgsAnnotationItemNode;
+class QgsSnapIndicator;
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup gui
  * \brief A map tool for modifying annotations in a QgsAnnotationLayer
+ * \note Not available in Python bindings
  * \since QGIS 3.22
  */
 class GUI_EXPORT QgsMapToolModifyAnnotation : public QgsMapToolAdvancedDigitizing
@@ -51,6 +55,7 @@ class GUI_EXPORT QgsMapToolModifyAnnotation : public QgsMapToolAdvancedDigitizin
     void deactivate() override;
     void cadCanvasMoveEvent( QgsMapMouseEvent *event ) override;
     void cadCanvasPressEvent( QgsMapMouseEvent *event ) override;
+    void canvasDoubleClickEvent( QgsMapMouseEvent *event ) override;
     void keyPressEvent( QKeyEvent *event ) override;
 
   signals:
@@ -72,7 +77,8 @@ class GUI_EXPORT QgsMapToolModifyAnnotation : public QgsMapToolAdvancedDigitizin
     enum class Action
     {
       NoAction,
-      MoveItem
+      MoveItem,
+      MoveNode
     };
 
     void clearHoveredItem();
@@ -93,6 +99,8 @@ class GUI_EXPORT QgsMapToolModifyAnnotation : public QgsMapToolAdvancedDigitizin
     QSizeF deltaForKeyEvent( QgsAnnotationLayer *layer, const QgsPointXY &originalCanvasPoint, QKeyEvent *event );
 
     Action mCurrentAction = Action::NoAction;
+
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
     QObjectUniquePtr<QgsRubberBand> mHoverRubberBand;
     std::vector< QObjectUniquePtr<QgsRubberBand> > mHoveredItemNodeRubberBands;
@@ -117,6 +125,8 @@ class GUI_EXPORT QgsMapToolModifyAnnotation : public QgsMapToolAdvancedDigitizin
     QgsPointXY mMoveStartPointLayerCrs;
 
     bool mRefreshSelectedItemAfterRedraw = false;
+
+    QgsAnnotationItemNode mTargetNode;
 
 };
 

@@ -280,8 +280,8 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
         // if we transform from a projected coordinate system check
         // check if transforming back roughly returns the input
         // extend - otherwise render the world.
-        QgsRectangle extent1 = approxTransform.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
-        QgsRectangle extent2 = approxTransform.transformBoundingBox( extent1, QgsCoordinateTransform::ForwardTransform );
+        QgsRectangle extent1 = approxTransform.transformBoundingBox( extent, Qgis::TransformDirection::Reverse );
+        QgsRectangle extent2 = approxTransform.transformBoundingBox( extent1, Qgis::TransformDirection::Forward );
 
         QgsDebugMsgLevel( QStringLiteral( "\n0:%1 %2x%3\n1:%4\n2:%5 %6x%7 (w:%8 h:%9)" )
                           .arg( extent.toString() ).arg( extent.width() ).arg( extent.height() )
@@ -309,15 +309,15 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
       {
         // Note: ll = lower left point
         QgsPointXY ll = approxTransform.transform( extent.xMinimum(), extent.yMinimum(),
-                        QgsCoordinateTransform::ReverseTransform );
+                        Qgis::TransformDirection::Reverse );
 
         //   and ur = upper right point
         QgsPointXY ur = approxTransform.transform( extent.xMaximum(), extent.yMaximum(),
-                        QgsCoordinateTransform::ReverseTransform );
+                        Qgis::TransformDirection::Reverse );
 
         QgsDebugMsgLevel( QStringLiteral( "in:%1 (ll:%2 ur:%3)" ).arg( extent.toString(), ll.toString(), ur.toString() ), 4 );
 
-        extent = approxTransform.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+        extent = approxTransform.transformBoundingBox( extent, Qgis::TransformDirection::Reverse );
 
         QgsDebugMsgLevel( QStringLiteral( "out:%1 (w:%2 h:%3)" ).arg( extent.toString() ).arg( extent.width() ).arg( extent.height() ), 4 );
 
@@ -354,7 +354,7 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
         res = false;
       }
       else
-        extent = approxTransform.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+        extent = approxTransform.transformBoundingBox( extent, Qgis::TransformDirection::Reverse );
     }
   }
   catch ( QgsCsException & )
@@ -389,9 +389,9 @@ QPainter *QgsMapRendererJob::allocateImageAndPainter( QString layerId, QImage *&
   if ( image )
   {
     painter = new QPainter( image );
-    painter->setRenderHint( QPainter::Antialiasing, mSettings.testFlag( QgsMapSettings::Antialiasing ) );
+    painter->setRenderHint( QPainter::Antialiasing, mSettings.testFlag( Qgis::MapSettingsFlag::Antialiasing ) );
 #if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
-    painter->setRenderHint( QPainter::LosslessImageRendering, mSettings.testFlag( QgsMapSettings::LosslessImageRendering ) );
+    painter->setRenderHint( QPainter::LosslessImageRendering, mSettings.testFlag( Qgis::MapSettingsFlag::LosslessImageRendering ) );
 #endif
   }
   return painter;
@@ -494,7 +494,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
     job.context()->setCoordinateTransform( ct );
     job.context()->setExtent( r1 );
     if ( !haveExtentInLayerCrs )
-      job.context()->setFlag( QgsRenderContext::ApplyClipAfterReprojection, true );
+      job.context()->setFlag( Qgis::RenderContextFlag::ApplyClipAfterReprojection, true );
 
     if ( mFeatureFilterProvider )
       job.context()->setFeatureFilterProvider( mFeatureFilterProvider );
@@ -526,7 +526,10 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
     layerTime.start();
     job.renderer = ml->createMapRenderer( *( job.context() ) );
     if ( job.renderer )
+    {
       job.renderer->setLayerRenderingTimeHint( job.estimatedRenderingTime );
+      job.context()->setFeedback( job.renderer->feedback() );
+    }
 
     // If we are drawing with an alternative blending mode then we need to render to a separate image
     // before compositing this on the map. This effectively flattens the layer and prevents
@@ -744,6 +747,10 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     // the first pass job, would be to be able to call QgsMapLayerRenderer::render() with a QgsRenderContext.
     QgsVectorLayerRenderer *mapRenderer = static_cast<QgsVectorLayerRenderer *>( vl1->createMapRenderer( *job2.context() ) );
     job2.renderer = mapRenderer;
+    if ( job2.renderer )
+    {
+      job2.context()->setFeedback( job2.renderer->feedback() );
+    }
 
     // Modify the render context so that symbol layers get disabled as needed.
     // The map renderer stores a reference to the context, so we can modify it even after the map renderer creation (what we need here)
@@ -762,7 +769,7 @@ LabelRenderJob QgsMapRendererJob::prepareLabelingJob( QPainter *painter, QgsLabe
 
   QgsRectangle r1 = mSettings.visibleExtent();
   r1.grow( mSettings.extentBuffer() );
-  job.context.setExtent( mSettings.visibleExtent() );
+  job.context.setExtent( r1 );
 
   job.context.setFeatureFilterProvider( mFeatureFilterProvider );
   QgsCoordinateTransform ct;

@@ -254,7 +254,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>3</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -299,8 +299,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>650</width>
-                <height>673</height>
+                <width>253</width>
+                <height>392</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -422,8 +422,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>643</width>
-                <height>679</height>
+                <width>462</width>
+                <height>306</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -953,347 +953,13 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QgsScrollArea" name="scrollArea_2">
+            <widget class="QgsScrollArea" name="transparencyScrollArea">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
              <property name="widgetResizable">
               <bool>true</bool>
              </property>
-             <widget class="QWidget" name="scrollAreaWidgetContents_2">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>643</width>
-                <height>679</height>
-               </rect>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_5">
-               <property name="leftMargin">
-                <number>0</number>
-               </property>
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="rightMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <widget class="QgsCollapsibleGroupBox" name="gboxNoDataValue_2">
-                 <property name="title">
-                  <string>Global Opacity</string>
-                 </property>
-                 <property name="syncGroup" stdset="0">
-                  <string notr="true">rastertransp</string>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_13">
-                  <item row="0" column="0">
-                   <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true">
-                    <property name="focusPolicy">
-                     <enum>Qt::StrongFocus</enum>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QgsPropertyOverrideButton" name="mOpacityDDBtn">
-                    <property name="text">
-                     <string>…</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <widget class="QgsCollapsibleGroupBox" name="gboxNoDataValue">
-                 <property name="title">
-                  <string>No Data Value</string>
-                 </property>
-                 <property name="syncGroup" stdset="0">
-                  <string notr="true">rastertransp</string>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_11">
-                  <item row="0" column="0">
-                   <layout class="QHBoxLayout" name="horizontalLayout_5">
-                    <property name="leftMargin">
-                     <number>1</number>
-                    </property>
-                    <item>
-                     <widget class="QCheckBox" name="mSrcNoDataValueCheckBox">
-                      <property name="toolTip">
-                       <string>Use original source no data value.</string>
-                      </property>
-                      <property name="text">
-                       <string>No data value</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="lblSrcNoDataValue">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="toolTip">
-                       <string>Original data source no data value, if exists.</string>
-                      </property>
-                      <property name="text">
-                       <string>&lt;src no data value&gt;</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item row="1" column="0">
-                   <layout class="QHBoxLayout" name="horizontalLayout_6">
-                    <item>
-                     <widget class="QLabel" name="lblUserNoDataValueLabel">
-                      <property name="toolTip">
-                       <string>Additional user defined no data value.</string>
-                      </property>
-                      <property name="text">
-                       <string>Additional no data value</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLineEdit" name="leNoDataValue">
-                      <property name="toolTip">
-                       <string>Additional user defined no data value.</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <widget class="QgsCollapsibleGroupBox" name="gboxCustomTransparency">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>5</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="title">
-                  <string>Custom Transparency Options</string>
-                 </property>
-                 <property name="syncGroup" stdset="0">
-                  <string notr="true">rastertransp</string>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_3">
-                  <item row="2" column="1">
-                   <layout class="QVBoxLayout" name="_2">
-                    <property name="leftMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="topMargin">
-                     <number>6</number>
-                    </property>
-                    <property name="rightMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="bottomMargin">
-                     <number>6</number>
-                    </property>
-                    <item>
-                     <widget class="QToolButton" name="pbnAddValuesManually">
-                      <property name="toolTip">
-                       <string>Add values manually</string>
-                      </property>
-                      <property name="text">
-                       <string>…</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QToolButton" name="pbnAddValuesFromDisplay">
-                      <property name="enabled">
-                       <bool>true</bool>
-                      </property>
-                      <property name="toolTip">
-                       <string>Add values from display</string>
-                      </property>
-                      <property name="text">
-                       <string>…</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/mActionContextHelp.png</normaloff>:/images/themes/default/mActionContextHelp.png</iconset>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QToolButton" name="pbnRemoveSelectedRow">
-                      <property name="toolTip">
-                       <string>Remove selected row</string>
-                      </property>
-                      <property name="text">
-                       <string>…</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QToolButton" name="pbnDefaultValues">
-                      <property name="toolTip">
-                       <string>Default values</string>
-                      </property>
-                      <property name="text">
-                       <string>…</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/mActionOpenTable.svg</normaloff>:/images/themes/default/mActionOpenTable.svg</iconset>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QToolButton" name="pbnImportTransparentPixelValues">
-                      <property name="toolTip">
-                       <string>Import from file</string>
-                      </property>
-                      <property name="text">
-                       <string>…</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QToolButton" name="pbnExportTransparentPixelValues">
-                      <property name="toolTip">
-                       <string>Export to file</string>
-                      </property>
-                      <property name="text">
-                       <string>…</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="verticalSpacer_2">
-                      <property name="orientation">
-                       <enum>Qt::Vertical</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>20</width>
-                        <height>40</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
-                  </item>
-                  <item row="0" column="0">
-                   <layout class="QHBoxLayout" name="horizontalLayout_7">
-                    <item>
-                     <widget class="QLabel" name="lblTransparent">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>Transparency band</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QgsRasterBandComboBox" name="cboxTransparencyBand" native="true">
-                      <property name="enabled">
-                       <bool>true</bool>
-                      </property>
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="minimumSize">
-                       <size>
-                        <width>150</width>
-                        <height>0</height>
-                       </size>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QTableWidget" name="tableTransparency">
-                    <property name="verticalScrollBarPolicy">
-                     <enum>Qt::ScrollBarAsNeeded</enum>
-                    </property>
-                    <property name="alternatingRowColors">
-                     <bool>true</bool>
-                    </property>
-                    <property name="selectionMode">
-                     <enum>QAbstractItemView::SingleSelection</enum>
-                    </property>
-                    <property name="selectionBehavior">
-                     <enum>QAbstractItemView::SelectRows</enum>
-                    </property>
-                    <property name="showGrid">
-                     <bool>false</bool>
-                    </property>
-                    <property name="rowCount">
-                     <number>0</number>
-                    </property>
-                    <property name="columnCount">
-                     <number>0</number>
-                    </property>
-                    <attribute name="horizontalHeaderStretchLastSection">
-                     <bool>true</bool>
-                    </attribute>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="label_6">
-                    <property name="text">
-                     <string>Transparent pixel list</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <spacer name="verticalSpacer_5">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-              </layout>
-             </widget>
             </widget>
            </item>
           </layout>
@@ -1325,8 +991,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>643</width>
-                <height>679</height>
+                <width>89</width>
+                <height>31</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -1543,8 +1209,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>650</width>
-                <height>673</height>
+                <width>442</width>
+                <height>155</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1613,7 +1279,7 @@
                        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Noto Sans'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Cantarell'; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
@@ -1719,8 +1385,28 @@ p, li { white-space: pre-wrap; }
           </layout>
          </widget>
          <widget class="QWidget" name="mOptsPage_Legend">
-          <layout class="QGridLayout" name="gridLayout_15">
-           <item row="2" column="0">
+          <layout class="QVBoxLayout" name="verticalLayout_151">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_5">
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="mLegendPlaceholderLabel">
+               <property name="text">
+                <string>Legend placeholder image</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QgsImageSourceLineEdit" name="mLegendPlaceholderWidget" native="true"/>
+             </item>
+            </layout>
+           </item>
+           <item>
             <widget class="QGroupBox" name="groupBox">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -1732,20 +1418,22 @@ p, li { white-space: pre-wrap; }
               <string>Embedded Widgets in Legend</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_17">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
               <item>
                <widget class="QgsLayerTreeEmbeddedConfigWidget" name="mLegendConfigEmbeddedWidget" native="true"/>
               </item>
              </layout>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QgsImageSourceLineEdit" name="mLegendPlaceholderWidget" native="true"/>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="mLegendPlaceholderLabel">
-             <property name="text">
-              <string>Legend placeholder image</string>
-             </property>
             </widget>
            </item>
           </layout>
@@ -1777,8 +1465,8 @@ p, li { white-space: pre-wrap; }
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>629</width>
-                <height>793</height>
+                <width>263</width>
+                <height>566</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_12">
@@ -1984,80 +1672,11 @@ p, li { white-space: pre-wrap; }
                  <property name="syncGroup" stdset="0">
                   <string notr="true">vectormeta</string>
                  </property>
-                 <layout class="QGridLayout" name="gridLayout_9">
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="mLayerMetadataUrlLabel">
-                    <property name="text">
-                     <string>Url</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QLineEdit" name="mLayerMetadataUrlLineEdit">
-                    <property name="toolTip">
-                     <string>The URL of the metadata document.</string>
-                    </property>
-                    <property name="placeholderText">
-                     <string>The URL of the metadata document.</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <layout class="QHBoxLayout" name="horizontalLayout_8">
+                 <layout class="QVBoxLayout" name="verticalLayout_18">
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_4">
                     <item>
-                     <widget class="QLabel" name="mLayerMetadataUrlTypeLabel">
-                      <property name="text">
-                       <string>Type</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QComboBox" name="mLayerMetadataUrlTypeComboBox">
-                      <item>
-                       <property name="text">
-                        <string notr="true"/>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string notr="true" extracomment="FGDC-STD-001-1988">FGDC</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string notr="true" extracomment="ISO 19115">TC211</string>
-                       </property>
-                      </item>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="mLayerMetadataUrlFormatLabel">
-                      <property name="text">
-                       <string>Format</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QComboBox" name="mLayerMetadataUrlFormatComboBox">
-                      <item>
-                       <property name="text">
-                        <string notr="true"/>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string notr="true">text/plain</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string notr="true">text/xml</string>
-                       </property>
-                      </item>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_4">
+                     <spacer name="horizontalSpacer_3">
                       <property name="orientation">
                        <enum>Qt::Horizontal</enum>
                       </property>
@@ -2069,7 +1688,32 @@ p, li { white-space: pre-wrap; }
                       </property>
                      </spacer>
                     </item>
+                    <item>
+                     <widget class="QPushButton" name="buttonAddMetadataUrl">
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="../../images/images.qrc">
+                        <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="buttonRemoveMetadataUrl">
+                      <property name="text">
+                       <string notr="true"/>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="../../images/images.qrc">
+                        <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                      </property>
+                     </widget>
+                    </item>
                    </layout>
+                  </item>
+                  <item>
+                   <widget class="QTableView" name="tableViewMetadataUrl"/>
                   </item>
                  </layout>
                 </widget>
@@ -2241,30 +1885,15 @@ p, li { white-space: pre-wrap; }
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsOpacityWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsopacitywidget.h</header>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsRasterBandComboBox</class>
-   <extends>QWidget</extends>
-   <header>qgsrasterbandcombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsFilterLineEdit</class>
@@ -2298,17 +1927,6 @@ p, li { white-space: pre-wrap; }
    <class>QgsBlendModeComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsblendmodecombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsOpacityWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsopacitywidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsRasterBandComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsrasterbandcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsImageSourceLineEdit</class>
@@ -2345,18 +1963,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>mZoomedOutResamplingComboBox</tabstop>
   <tabstop>mMaximumOversamplingSpinBox</tabstop>
   <tabstop>mCbEarlyResampling</tabstop>
-  <tabstop>scrollArea_2</tabstop>
-  <tabstop>mOpacityWidget</tabstop>
-  <tabstop>mOpacityDDBtn</tabstop>
-  <tabstop>mSrcNoDataValueCheckBox</tabstop>
-  <tabstop>leNoDataValue</tabstop>
-  <tabstop>tableTransparency</tabstop>
-  <tabstop>pbnAddValuesManually</tabstop>
-  <tabstop>pbnAddValuesFromDisplay</tabstop>
-  <tabstop>pbnRemoveSelectedRow</tabstop>
-  <tabstop>pbnDefaultValues</tabstop>
-  <tabstop>pbnImportTransparentPixelValues</tabstop>
-  <tabstop>pbnExportTransparentPixelValues</tabstop>
+  <tabstop>transparencyScrollArea</tabstop>
   <tabstop>scrollArea_6</tabstop>
   <tabstop>chkUseScaleDependentRendering</tabstop>
   <tabstop>mRefreshLayerCheckBox</tabstop>
@@ -2376,9 +1983,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>mLayerDataUrlFormatComboBox</tabstop>
   <tabstop>mLayerAttributionLineEdit</tabstop>
   <tabstop>mLayerAttributionUrlLineEdit</tabstop>
-  <tabstop>mLayerMetadataUrlLineEdit</tabstop>
-  <tabstop>mLayerMetadataUrlTypeComboBox</tabstop>
-  <tabstop>mLayerMetadataUrlFormatComboBox</tabstop>
+  <tabstop>buttonAddMetadataUrl</tabstop>
+  <tabstop>buttonRemoveMetadataUrl</tabstop>
   <tabstop>mLayerLegendUrlLineEdit</tabstop>
   <tabstop>mLayerLegendUrlFormatComboBox</tabstop>
   <tabstop>mWMSPrintLayerLineEdit</tabstop>

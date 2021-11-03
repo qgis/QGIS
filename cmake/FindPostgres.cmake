@@ -14,6 +14,18 @@
 #    POSTGRES_INCLUDE_DIR
 #    POSTGRES_LIBRARY
 
+# First try using the cmake native FindPostgreSQL script.
+# For cmake < 3.20 this also requires server components.
+# Once the minimum cmake version for QGIS is bumped to 3.20
+# we can get rid of our custom script
+find_package(PostgreSQL)
+if(${PostgreSQL_FOUND})
+  set(POSTGRES_INCLUDE_DIR ${PostgreSQL_INCLUDE_DIRS})
+  set(POSTGRES_LIBRARY ${PostgreSQL_LIBRARIES})
+  set(POSTGRES_FOUND TRUE)
+  return()
+endif()
+
 IF(ANDROID)
   SET(POSTGRES_INCLUDE_DIR ${POSTGRES_INCLUDE_DIR} CACHE STRING INTERNAL)
   SET(POSTGRES_LIBRARY ${PG_TMP}/libpq.so CACHE STRING INTERNAL)

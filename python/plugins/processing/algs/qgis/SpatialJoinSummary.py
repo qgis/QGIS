@@ -111,7 +111,7 @@ class SpatialJoinSummary(QgisAlgorithm):
             ('mean_length', self.tr('mean_length'))]
 
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer'),
+                                                              self.tr('Base layer'),
                                                               [QgsProcessing.TypeVectorAnyGeometry]))
         self.addParameter(QgsProcessingParameterFeatureSource(self.JOIN,
                                                               self.tr('Join layer'),

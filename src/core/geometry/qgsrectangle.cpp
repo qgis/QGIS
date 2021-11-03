@@ -49,7 +49,7 @@ QgsRectangle QgsRectangle::fromWkt( const QString &wkt )
     return QgsRectangle();
 }
 
-QgsRectangle QgsRectangle::fromCenterAndSize( QgsPointXY center, double width, double height )
+QgsRectangle QgsRectangle::fromCenterAndSize( const QgsPointXY &center, double width, double height )
 {
   const double xMin = center.x() - width / 2.0;
   const double xMax = xMin + width;

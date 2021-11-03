@@ -51,13 +51,13 @@ class TestQgsMeshLayer : public QObject
     QgsMeshLayer *mMemory1DLayer = nullptr;
     QgsMeshLayer *mMdal1DLayer = nullptr;
     QgsMeshLayer *mMdal3DLayer = nullptr;
+    QString readFile( const QString &fname ) const;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
-    QString readFile( const QString &fname ) const;
 
     void test_write_read_project();
 
@@ -92,6 +92,8 @@ class TestQgsMeshLayer : public QObject
 
     void test_memory_dataset_group();
     void test_memory_dataset_group_1d();
+
+    void test_memoryproviderdataset_invalid_values();
 
     void test_setDataSource();
 
@@ -136,6 +138,8 @@ void TestQgsMeshLayer::initTestCase()
   QCOMPARE( mMemoryLayer->datasetGroupTreeRootItem()->childCount(), 5 );
   QVERIFY( mMemoryLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
   QVERIFY( mMemoryLayer->temporalProperties()->isActive() );
+  QDateTime referenceTime = mMemoryLayer->dataProvider()->temporalCapabilities()->referenceTime();
+  QCOMPARE( referenceTime, QDateTime( QDate( 2017, 2, 27 ), QTime( 1, 2, 3 ), Qt::UTC ) );
   QVERIFY( !mMemoryLayer->supportsEditing() );
   QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mMemoryLayer );
@@ -1494,6 +1498,34 @@ void TestQgsMeshLayer::test_memory_dataset_group_1d()
   QCOMPARE( mMdal1DLayer->extraDatasetGroupCount(), 2 );
 }
 
+void TestQgsMeshLayer::test_memoryproviderdataset_invalid_values()
+{
+  std::unique_ptr<QgsMeshLayer> memoryLayer = std::make_unique<QgsMeshLayer>( readFile( "/quad_and_triangle.txt" ), "Triangle and Quad Memory", "mesh_memory" );
+  memoryLayer->addDatasets( readFile( "/quad_and_triangle_face_scalar_invalid_values.txt" ) );
+  memoryLayer->addDatasets( readFile( "/quad_and_triangle_face_vector_invalid_values.txt" ) );
+
+  QCOMPARE( 2, memoryLayer->datasetGroupCount() );
+
+  QgsMeshDatasetIndex dsi( 0, 0 );
+  QCOMPARE( memoryLayer->datasetValue( dsi, 0 ).scalar(), 0 );
+  QVERIFY( std::isnan( memoryLayer->datasetValue( dsi, 1 ).scalar() ) );
+  dsi = QgsMeshDatasetIndex( 0, 1 );
+  QCOMPARE( memoryLayer->datasetValue( dsi, 1 ).scalar(), 2 );
+  QVERIFY( std::isnan( memoryLayer->datasetValue( dsi, 0 ).scalar() ) );
+
+  dsi = QgsMeshDatasetIndex( 1, 0 );
+  QCOMPARE( memoryLayer->datasetValue( dsi, 1 ).x(), 2 );
+  QCOMPARE( memoryLayer->datasetValue( dsi, 1 ).y(), 2 );
+  QVERIFY( std::isnan( memoryLayer->datasetValue( dsi, 0 ).x() ) );
+  QCOMPARE( memoryLayer->datasetValue( dsi, 0 ).y(), 1 );
+
+  dsi = QgsMeshDatasetIndex( 1, 1 );
+  QCOMPARE( memoryLayer->datasetValue( dsi, 0 ).x(), 2 );
+  QCOMPARE( memoryLayer->datasetValue( dsi, 0 ).y(), 2 );
+  QVERIFY( std::isnan( memoryLayer->datasetValue( dsi, 1 ).y() ) );
+  QCOMPARE( memoryLayer->datasetValue( dsi, 1 ).x(), 3 );
+}
+
 void TestQgsMeshLayer::test_setDataSource()
 {
   // MDAL Layer
@@ -1605,6 +1637,32 @@ void TestQgsMeshLayer::testMdalProviderQuerySublayers()
   res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/lines.shp" );
   QVERIFY( res.empty() );
 
+  // even though mdal reports support for .adf files, these are not a mesh:
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/aigrid/dblbnd.adf" );
+  QVERIFY( res.empty() );
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/aigrid/hdr.adf" );
+  QVERIFY( res.empty() );
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/aigrid/prj.adf" );
+  QVERIFY( res.empty() );
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/aigrid/sta.adf" );
+  QVERIFY( res.empty() );
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/aigrid/vat.adf" );
+  QVERIFY( res.empty() );
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/aigrid/w001001.adf" );
+  QVERIFY( res.empty() );
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/aigrid/w001001x.adf" );
+  QVERIFY( res.empty() );
+
+  // adf which IS a mesh
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/esri_tin/tdenv9.adf" );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 0 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "esri_tin" ) );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "ESRI_TIN:\"%1/esri_tin/tdenv9.adf\"" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
+  QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "ESRI_TIN" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
+
   // single layer mesh
   res = mdalMetadata->querySublayers( mDataDir + "/quad_and_triangle.2dm" );
   QCOMPARE( res.count(), 1 );
@@ -1707,6 +1765,34 @@ void TestQgsMeshLayer::testMdalProviderQuerySublayersFastScan()
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
   QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
   QVERIFY( res.at( 0 ).skippedContainerScan() );
+
+  // even though mdal reports support for .adf files, these are not a mesh:
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/aigrid/dblbnd.adf", Qgis::SublayerQueryFlag::FastScan );
+  QVERIFY( res.empty() );
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/aigrid/hdr.adf", Qgis::SublayerQueryFlag::FastScan );
+  QVERIFY( res.empty() );
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/aigrid/prj.adf", Qgis::SublayerQueryFlag::FastScan );
+  QVERIFY( res.empty() );
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/aigrid/sta.adf", Qgis::SublayerQueryFlag::FastScan );
+  QVERIFY( res.empty() );
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/aigrid/vat.adf", Qgis::SublayerQueryFlag::FastScan );
+  QVERIFY( res.empty() );
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/aigrid/w001001.adf", Qgis::SublayerQueryFlag::FastScan );
+  QVERIFY( res.empty() );
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/aigrid/w001001x.adf", Qgis::SublayerQueryFlag::FastScan );
+  QVERIFY( res.empty() );
+
+  // adf which IS a mesh
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/esri_tin/tdenv9.adf", Qgis::SublayerQueryFlag::FastScan );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 0 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "esri_tin" ) );
+  QCOMPARE( res.at( 0 ).uri(), QString( TEST_DATA_DIR ) + "/esri_tin/tdenv9.adf" );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
+  // only tdenv?.adf file should report capabilities
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/esri_tin/thul.adf", Qgis::SublayerQueryFlag::FastScan );
+  QVERIFY( res.empty() );
 }
 
 void TestQgsMeshLayer::testSelectByExpression()
@@ -1785,8 +1871,8 @@ void TestQgsMeshLayer::test_temporal()
   const QDateTime end = QDateTime( QDate( 1990, 1, 1 ), QTime( 6, 0, 1, 938 ), Qt::UTC );
   QCOMPARE( tempCap->timeExtent(), QgsDateTimeRange( begin, end ) );
 
-  const QDateTime time_1 = QDateTime( QDate( 1990, 1, 1 ), QTime( 3, 0, 0 ), Qt::UTC );
-  const QDateTime time_2 = time_1.addSecs( 300 );
+  QDateTime time_1 = QDateTime( QDate( 1990, 1, 1 ), QTime( 3, 0, 0 ), Qt::UTC );
+  QDateTime time_2 = time_1.addSecs( 300 );
   QgsMeshRendererSettings settings = mMdal3DLayer->rendererSettings();
   // Static dataset (bed elevation)
   settings.setActiveScalarDatasetGroup( 0 ); //static dataset (bed elevation)
@@ -1802,12 +1888,29 @@ void TestQgsMeshLayer::test_temporal()
   QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), 17 );
   mMdal3DLayer->setTemporalMatchingMethod( QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetFromStartRangeTime );
   QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), 18 );
+  QCOMPARE( mMdal3DLayer->datasetIndexAtRelativeTime( QgsInterval( 3, QgsUnitTypes::TemporalHours ), 1 ), QgsMeshDatasetIndex( 1, 18 ) );
   // Next dataset
   mMdal3DLayer->setTemporalMatchingMethod( QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetBeforeStartRangeTime );
   QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1.addSecs( 400 ), time_2.addSecs( 400 ) ) ).dataset(), 18 );
   mMdal3DLayer->setTemporalMatchingMethod( QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetFromStartRangeTime );
   QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1.addSecs( 400 ), time_2.addSecs( 400 ) ) ).dataset(), 19 );
-  mMdal3DLayer->temporalProperties();
+
+  // change reference time
+  QgsMeshLayerTemporalProperties *tempProp = static_cast<QgsMeshLayerTemporalProperties *>( mMdal3DLayer->temporalProperties() );
+  tempProp->setReferenceTime( QDateTime( QDate( 1980, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ), mMdal3DLayer->dataProvider()->temporalCapabilities() );
+  QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), -1 );
+  QCOMPARE( mMdal3DLayer->datasetIndexAtRelativeTime( QgsInterval( 3, QgsUnitTypes::TemporalHours ), 1 ), QgsMeshDatasetIndex( 1, 18 ) );
+  time_1 = QDateTime( QDate( 1980, 1, 1 ), QTime( 3, 0, 0 ), Qt::UTC );
+  time_2 = time_1.addSecs( 300 );
+  QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), 18 );
+  QCOMPARE( mMdal3DLayer->datasetIndexAtRelativeTime( QgsInterval( 3, QgsUnitTypes::TemporalHours ), 1 ), QgsMeshDatasetIndex( 1, 18 ) );
+
+  tempProp->setReferenceTime( QDateTime( QDate( 1995, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ), mMdal3DLayer->dataProvider()->temporalCapabilities() );
+  QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), -1 );
+  time_1 = QDateTime( QDate( 1995, 1, 1 ), QTime( 3, 0, 0 ), Qt::UTC );
+  time_2 = time_1.addSecs( 300 );
+  QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), 18 );
+  QCOMPARE( mMdal3DLayer->datasetIndexAtRelativeTime( QgsInterval( 3, QgsUnitTypes::TemporalHours ), 1 ), QgsMeshDatasetIndex( 1, 18 ) );
 }
 
 QGSTEST_MAIN( TestQgsMeshLayer )

@@ -24,6 +24,10 @@
 
 
 class QgsAnnotationItem;
+class QgsAbstractAnnotationItemEditOperation;
+class QgsPaintEffect;
+
+
 ///@cond PRIVATE
 class QgsAnnotationLayerSpatialIndex;
 ///@endcond
@@ -146,6 +150,15 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
      */
     QStringList itemsInBounds( const QgsRectangle &bounds, QgsRenderContext &context, QgsFeedback *feedback = nullptr ) const;
 
+    /**
+     * Applies an edit \a operation to the layer.
+     *
+     * Returns TRUE if the operation was successfully applied.
+     *
+     * \since QGIS 3.22
+     */
+    Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
+
     Qgis::MapLayerProperties properties() const override;
     QgsAnnotationLayer *clone() const override SIP_FACTORY;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
@@ -159,6 +172,24 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     bool supportsEditing() const override;
     QgsDataProvider *dataProvider() override;
     const QgsDataProvider *dataProvider() const override SIP_SKIP;
+    QString htmlMetadata() const override;
+
+    /**
+     * Returns the current paint effect for the layer.
+     * \see setPaintEffect()
+     * \since QGIS 3.22
+     */
+    QgsPaintEffect *paintEffect() const;
+
+    /**
+     * Sets the current paint \a effect for the layer.
+     *
+     * Ownership is transferred to the renderer.
+     *
+     * \see paintEffect()
+     * \since QGIS 3.22
+     */
+    void setPaintEffect( QgsPaintEffect *effect SIP_TRANSFER );
 
   private:
 
@@ -171,6 +202,8 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     QSet< QString > mNonIndexedItems;
 
     QgsDataProvider *mDataProvider = nullptr;
+
+    std::unique_ptr< QgsPaintEffect > mPaintEffect;
 
     friend class QgsAnnotationLayerRenderer;
 

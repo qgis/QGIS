@@ -43,7 +43,7 @@ QgsProviderSublayerItem::QgsProviderSublayerItem( QgsDataItem *parent, const QSt
   mToolTip = details.uri();
 
   // no children, except for sqlite, which gets special handling because of the unusual situation with the spatialite provider
-  setState( details.driverName() == QStringLiteral( "SQLite" ) ? Qgis::BrowserItemState::NotPopulated : Qgis::BrowserItemState::Populated );
+  setState( details.driverName() == QLatin1String( "SQLite" ) ? Qgis::BrowserItemState::NotPopulated : Qgis::BrowserItemState::Populated );
 }
 
 QVector<QgsDataItem *> QgsProviderSublayerItem::createChildren()
@@ -318,12 +318,6 @@ QgsDataItem *QgsFileBasedDataItemProvider::createDataItem( const QString &path, 
 
   // hide blocklisted URIs, such as .aux.xml files
   if ( QgsProviderRegistry::instance()->uriIsBlocklisted( path ) )
-    return nullptr;
-
-  // allow only normal files, supported directories, or VSIFILE items to continue
-  const QStringList dirExtensions = QgsOgrProviderUtils::directoryExtensions();
-  bool isOgrSupportedDirectory = info.isDir() && dirExtensions.contains( suffix );
-  if ( !isOgrSupportedDirectory && !info.isFile() )
     return nullptr;
 
   QgsSettings settings;

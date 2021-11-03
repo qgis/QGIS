@@ -1046,9 +1046,9 @@ QPixmap QgsTextFormat::textFormatPreviewPixmap( const QgsTextFormat &format, QSi
   context.setScaleFactor( logicalDpiX / 25.4 );
 
   context.setUseAdvancedEffects( true );
-  context.setFlag( QgsRenderContext::Antialiasing, true );
+  context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
   context.setPainter( &painter );
-  context.setFlag( QgsRenderContext::Antialiasing, true );
+  context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
 
   // slightly inset text to account for buffer/background
   double xtrans = 0;

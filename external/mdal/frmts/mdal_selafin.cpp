@@ -39,8 +39,7 @@ void MDAL::SelafinFile::initialize()
   {
     throw MDAL::Error( MDAL_Status::Err_FileNotFound, "Did not find file " + mFileName );
   }
-
-  mIn = std::ifstream( mFileName, std::ifstream::in | std::ifstream::binary );
+  mIn = MDAL::openInputFile( mFileName, std::ios_base::in | std::ios_base::binary );
   if ( !mIn )
     throw MDAL::Error( MDAL_Status::Err_FileNotFound, "File " + mFileName + " could not be open" ); // Couldn't open the file
 
@@ -985,7 +984,7 @@ static void writeVertices( std::ofstream &file, MDAL::Mesh *mesh )
 
 void MDAL::DriverSelafin::save( const std::string &fileName, const std::string &, MDAL::Mesh *mesh )
 {
-  std::ofstream file( fileName.c_str(), std::ofstream::binary );
+  std::ofstream file = MDAL::openOutputFile( fileName.c_str(), std::ofstream::binary );
 
   std::string header( "Selafin file created by MDAL library" );
   std::string remainingStr( " ", 72 - header.size() );
@@ -1156,7 +1155,7 @@ bool MDAL::SelafinFile::addDatasetGroup( MDAL::DatasetGroup *datasetGroup )
   tempFileName.append( ".tmp" );
 
   mIn.seekg( 0, mIn.beg );
-  std::ofstream out( tempFileName, std::ios_base::binary );
+  std::ofstream out = MDAL::openOutputFile( tempFileName, std::ios_base::binary );
   if ( ! out.is_open() )
     throw MDAL::Error( MDAL_Status::Err_FailToWriteToDisk, "Unable to add dataset in file" );
 

@@ -37,7 +37,12 @@ from qgis.core import (QgsMapSettings,
                        QgsCircularString,
                        QgsAnnotationItemNode,
                        Qgis,
-                       QgsPointXY
+                       QgsPointXY,
+                       QgsVertexId,
+                       QgsAnnotationItemEditOperationMoveNode,
+                       QgsAnnotationItemEditOperationDeleteNode,
+                       QgsAnnotationItemEditOperationTranslateItem,
+                       QgsAnnotationItemEditOperationAddNode
                        )
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -79,25 +84,67 @@ class TestQgsAnnotationPolygonItem(unittest.TestCase):
         """
         item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
         # nodes shouldn't form a closed ring
-        self.assertEqual(item.nodes(), [QgsAnnotationItemNode(QgsPointXY(12, 13), Qgis.AnnotationItemNodeType.VertexHandle),
-                                        QgsAnnotationItemNode(QgsPointXY(14, 13), Qgis.AnnotationItemNodeType.VertexHandle),
-                                        QgsAnnotationItemNode(QgsPointXY(14, 15), Qgis.AnnotationItemNodeType.VertexHandle)])
-
-    def test_rubberbandgeometry(self):
-        """
-        Test creating rubber band geometry
-        """
-        item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
-        band = item.rubberBandGeometry()
-        self.assertEqual(band.asWkt(), 'Polygon ((12 13, 14 13, 14 15, 12 13))')
+        self.assertEqual(item.nodes(), [QgsAnnotationItemNode(QgsVertexId(0, 0, 0), QgsPointXY(12, 13), Qgis.AnnotationItemNodeType.VertexHandle),
+                                        QgsAnnotationItemNode(QgsVertexId(0, 0, 1), QgsPointXY(14, 13), Qgis.AnnotationItemNodeType.VertexHandle),
+                                        QgsAnnotationItemNode(QgsVertexId(0, 0, 2), QgsPointXY(14, 15), Qgis.AnnotationItemNodeType.VertexHandle)])
 
     def test_transform(self):
         item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
         self.assertEqual(item.geometry().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 12 13))')
 
-        transform = QTransform.fromTranslate(100, 200)
-        item.transform(transform)
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationTranslateItem('', 100, 200)), Qgis.AnnotationItemEditOperationResult.Success)
         self.assertEqual(item.geometry().asWkt(), 'Polygon ((112 213, 114 213, 114 215, 112 213))')
+
+    def test_apply_move_node_edit(self):
+        item = QgsAnnotationPolygonItem(
+            QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
+        self.assertEqual(item.geometry().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 12 13))')
+
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPoint(14, 13), QgsPoint(17, 18))), Qgis.AnnotationItemEditOperationResult.Success)
+        self.assertEqual(item.geometry().asWkt(), 'Polygon ((12 13, 17 18, 14 15, 12 13))')
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 3), QgsPoint(12, 13), QgsPoint(19, 20))), Qgis.AnnotationItemEditOperationResult.Success)
+        self.assertEqual(item.geometry().asWkt(), 'Polygon ((19 20, 17 18, 14 15, 19 20))')
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 4), QgsPoint(14, 15), QgsPoint(19, 20))), Qgis.AnnotationItemEditOperationResult.Invalid)
+        self.assertEqual(item.geometry().asWkt(), 'Polygon ((19 20, 17 18, 14 15, 19 20))')
+
+    def test_apply_delete_node_edit(self):
+        item = QgsAnnotationPolygonItem(
+            QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(14.5, 15.5), QgsPoint(14.5, 16.5), QgsPoint(14.5, 17.5), QgsPoint(12, 13)])))
+        self.assertEqual(item.geometry().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 14.5 15.5, 14.5 16.5, 14.5 17.5, 12 13))')
+
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 1), QgsPoint(14, 13))), Qgis.AnnotationItemEditOperationResult.Success)
+        self.assertEqual(item.geometry().asWkt(), 'Polygon ((12 13, 14 15, 14.5 15.5, 14.5 16.5, 14.5 17.5, 12 13))')
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 2), QgsPoint(14.5, 15.5))), Qgis.AnnotationItemEditOperationResult.Success)
+        self.assertEqual(item.geometry().asWkt(), 'Polygon ((12 13, 14 15, 14.5 16.5, 14.5 17.5, 12 13))')
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 7), QgsPoint(14, 15))), Qgis.AnnotationItemEditOperationResult.Invalid)
+        self.assertEqual(item.geometry().asWkt(), 'Polygon ((12 13, 14 15, 14.5 16.5, 14.5 17.5, 12 13))')
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 0), QgsPoint(12, 13))), Qgis.AnnotationItemEditOperationResult.Success)
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 0), QgsPoint(12, 13))), Qgis.AnnotationItemEditOperationResult.ItemCleared)
+        self.assertEqual(item.geometry().asWkt(), 'Polygon EMPTY')
+
+    def test_apply_add_node_edit(self):
+        item = QgsAnnotationPolygonItem(
+            QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(14.5, 15.5), QgsPoint(14.5, 16.5), QgsPoint(14.5, 17.5), QgsPoint(12, 13)])))
+        self.assertEqual(item.geometry().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 14.5 15.5, 14.5 16.5, 14.5 17.5, 12 13))')
+
+        self.assertEqual(item.applyEdit(QgsAnnotationItemEditOperationAddNode('', QgsPoint(15, 16))), Qgis.AnnotationItemEditOperationResult.Success)
+        self.assertEqual(item.geometry().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 14.5 15.5, 14.5 16, 14.5 16.5, 14.5 17.5, 12 13))')
+
+    def test_transient_move_operation(self):
+        item = QgsAnnotationPolygonItem(
+            QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
+        self.assertEqual(item.geometry().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 12 13))')
+
+        res = item.transientEditResults(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPoint(14, 13), QgsPoint(17, 18)))
+        self.assertEqual(res.representativeGeometry().asWkt(), 'Polygon ((12 13, 17 18, 14 15, 12 13))')
+
+    def test_transient_translate_operation(self):
+        item = QgsAnnotationPolygonItem(
+            QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
+        self.assertEqual(item.geometry().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 12 13))')
+
+        res = item.transientEditResults(QgsAnnotationItemEditOperationTranslateItem('', 100, 200))
+        self.assertEqual(res.representativeGeometry().asWkt(), 'Polygon ((112 213, 114 213, 114 215, 112 213))')
 
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")
@@ -147,8 +194,8 @@ class TestQgsAnnotationPolygonItem(unittest.TestCase):
 
         rc = QgsRenderContext.fromMapSettings(settings)
         image = QImage(200, 200, QImage.Format_ARGB32)
-        image.setDotsPerMeterX(96 / 25.4 * 1000)
-        image.setDotsPerMeterY(96 / 25.4 * 1000)
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
         image.fill(QColor(255, 255, 255))
         painter = QPainter(image)
         rc.setPainter(painter)
@@ -177,8 +224,8 @@ class TestQgsAnnotationPolygonItem(unittest.TestCase):
 
         rc = QgsRenderContext.fromMapSettings(settings)
         image = QImage(200, 200, QImage.Format_ARGB32)
-        image.setDotsPerMeterX(96 / 25.4 * 1000)
-        image.setDotsPerMeterY(96 / 25.4 * 1000)
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
         image.fill(QColor(255, 255, 255))
         painter = QPainter(image)
         rc.setPainter(painter)
@@ -204,8 +251,8 @@ class TestQgsAnnotationPolygonItem(unittest.TestCase):
         rc = QgsRenderContext.fromMapSettings(settings)
         rc.setCoordinateTransform(QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:4326'), settings.destinationCrs(), QgsProject.instance()))
         image = QImage(200, 200, QImage.Format_ARGB32)
-        image.setDotsPerMeterX(96 / 25.4 * 1000)
-        image.setDotsPerMeterY(96 / 25.4 * 1000)
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
         image.fill(QColor(255, 255, 255))
         painter = QPainter(image)
         rc.setPainter(painter)

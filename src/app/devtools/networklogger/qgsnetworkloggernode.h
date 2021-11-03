@@ -170,6 +170,7 @@ class QgsNetworkLoggerValueNode : public QgsNetworkLoggerNode
 
     QVariant data( int role = Qt::DisplayRole ) const override final;
     int childCount() const override final { return 0; }
+    QList< QAction * > actions( QObject *parent ) override final;
 
   private:
 

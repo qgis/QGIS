@@ -23,6 +23,16 @@ Qgis::AnnotationItemFlags QgsAnnotationItem::flags() const
   return Qgis::AnnotationItemFlags();
 }
 
+Qgis::AnnotationItemEditOperationResult QgsAnnotationItem::applyEdit( QgsAbstractAnnotationItemEditOperation * )
+{
+  return Qgis::AnnotationItemEditOperationResult::Invalid;
+}
+
+QgsAnnotationItemEditOperationTransientResults *QgsAnnotationItem::transientEditResults( QgsAbstractAnnotationItemEditOperation * )
+{
+  return nullptr;
+}
+
 QList<QgsAnnotationItemNode> QgsAnnotationItem::nodes() const
 {
   return {};
@@ -49,9 +59,4 @@ bool QgsAnnotationItem::readCommonProperties( const QDomElement &element, const 
   setUseSymbologyReferenceScale( element.attribute( QStringLiteral( "useReferenceScale" ), QStringLiteral( "0" ) ).toInt() );
   setSymbologyReferenceScale( element.attribute( QStringLiteral( "referenceScale" ) ).toDouble() );
   return true;
-}
-
-QgsGeometry QgsAnnotationItem::rubberBandGeometry() const
-{
-  return QgsGeometry();
 }

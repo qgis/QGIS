@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsappmaptools.h"
+#include "qgisapp.h"
 #include "qgsmaptool.h"
 #include "qgsmaptoolselect.h"
 #include "qgsmaptoolidentifyaction.h"
@@ -101,7 +102,7 @@ QgsStreamDigitizingSettingsAction::QgsStreamDigitizingSettingsAction( QWidget *p
     QgsSettingsRegistryCore::settingsDigitizingStreamTolerance.setValue( value );
   } );
 
-  QWidget *w = new QWidget();
+  QWidget *w = new QWidget( parent );
   w->setLayout( gLayout );
   setDefaultWidget( w );
 }
@@ -181,7 +182,7 @@ QgsAppMapTools::QgsAppMapTools( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockW
   mTools.insert( Tool::EditMeshFrame, new QgsMapToolEditMeshFrame( canvas ) );
   mTools.insert( Tool::AnnotationEdit, new QgsMapToolModifyAnnotation( canvas, cadDock ) );
 
-  mStreamDigitizingSettingsAction = new QgsStreamDigitizingSettingsAction();
+  mStreamDigitizingSettingsAction = new QgsStreamDigitizingSettingsAction( QgisApp::instance() );
 }
 
 QgsAppMapTools::~QgsAppMapTools()

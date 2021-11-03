@@ -25,6 +25,8 @@
 #include "qgsrenderedannotationitemdetails.h"
 #include "qgsannotationitem.h"
 #include "qgsannotationitemnode.h"
+#include "qgsannotationitemeditoperation.h"
+#include "qgssnapindicator.h"
 #include "RTree.h"
 #include <QTransform>
 #include <QWindow>
@@ -103,6 +105,7 @@ class QgsAnnotationItemNodesSpatialIndex : public RTree<int, float, 2, float>
 
 QgsMapToolModifyAnnotation::QgsMapToolModifyAnnotation( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
+  , mSnapIndicator( new QgsSnapIndicator( canvas ) )
 {
 
   connect( QgsMapToolModifyAnnotation::canvas(), &QgsMapCanvas::mapCanvasRefreshed, this, &QgsMapToolModifyAnnotation::onCanvasRefreshed );
@@ -112,12 +115,17 @@ QgsMapToolModifyAnnotation::~QgsMapToolModifyAnnotation() = default;
 
 void QgsMapToolModifyAnnotation::deactivate()
 {
+  mSnapIndicator->setMatch( QgsPointLocator::Match() );
+
   clearHoveredItem();
   QgsMapToolAdvancedDigitizing::deactivate();
 }
 
 void QgsMapToolModifyAnnotation::cadCanvasMoveEvent( QgsMapMouseEvent *event )
 {
+  event->snapPoint();
+  mSnapIndicator->setMatch( event->mapPointMatch() );
+
   const QgsPointXY mapPoint = event->mapPoint();
 
   switch ( mCurrentAction )
@@ -157,18 +165,21 @@ void QgsMapToolModifyAnnotation::cadCanvasMoveEvent( QgsMapMouseEvent *event )
 
       // track hovered node too!... here we want to identify the closest node to the cursor position
       QgsAnnotationItemNode hoveredNode;
-      double currentNodeDistance = std::numeric_limits< double >::max();
-      mHoveredItemNodesSpatialIndex->intersects( searchRect, [&hoveredNode, &currentNodeDistance, &mapPoint, this]( int index )-> bool
+      if ( closestItem->itemId() == mSelectedItemId && closestItem->layerId() == mSelectedItemLayerId )
       {
-        const QgsAnnotationItemNode &thisNode = mHoveredItemNodes.at( index );
-        const double nodeDistance = thisNode.point().sqrDist( mapPoint );
-        if ( nodeDistance < currentNodeDistance )
+        double currentNodeDistance = std::numeric_limits< double >::max();
+        mHoveredItemNodesSpatialIndex->intersects( searchRect, [&hoveredNode, &currentNodeDistance, &mapPoint, this]( int index )-> bool
         {
-          hoveredNode = thisNode;
-          currentNodeDistance = nodeDistance;
-        }
-        return true;
-      } );
+          const QgsAnnotationItemNode &thisNode = mHoveredItemNodes.at( index );
+          const double nodeDistance = thisNode.point().sqrDist( mapPoint );
+          if ( nodeDistance < currentNodeDistance )
+          {
+            hoveredNode = thisNode;
+            currentNodeDistance = nodeDistance;
+          }
+          return true;
+        } );
+      }
 
       if ( hoveredNode.point().isEmpty() )
       {
@@ -193,22 +204,50 @@ void QgsMapToolModifyAnnotation::cadCanvasMoveEvent( QgsMapMouseEvent *event )
 
     case Action::MoveItem:
     {
-      const QgsVector delta = event->mapPoint() - mMoveStartPointCanvasCrs;
-      if ( mTemporaryRubberBand )
+      if ( QgsAnnotationItem *item = annotationItemFromId( mSelectedItemLayerId, mSelectedItemId ) )
       {
-        mTemporaryRubberBand->setTranslationOffset( delta.x(), delta.y() );
-        mTemporaryRubberBand->updatePosition();
-        mTemporaryRubberBand->update();
-      }
-      for ( QgsRubberBand *band : mHoveredItemNodeRubberBands )
-      {
-        band->setTranslationOffset( delta.x(), delta.y() );
-        band->updatePosition();
-        band->update();
+        QgsAnnotationLayer *layer = annotationLayerFromId( mSelectedItemLayerId );
+        const QgsVector delta = toLayerCoordinates( layer, event->mapPoint() ) - mMoveStartPointLayerCrs;
+
+        QgsAnnotationItemEditOperationTranslateItem operation( mSelectedItemId, delta.x(), delta.y() );
+        std::unique_ptr< QgsAnnotationItemEditOperationTransientResults > operationResults( item->transientEditResults( &operation ) );
+        if ( operationResults )
+        {
+          mTemporaryRubberBand.reset( new QgsRubberBand( mCanvas, operationResults->representativeGeometry().type() ) );
+          const double scaleFactor = canvas()->fontMetrics().xHeight() * .2;
+          mTemporaryRubberBand->setWidth( scaleFactor );
+          mTemporaryRubberBand->setToGeometry( operationResults->representativeGeometry(), layer->crs() );
+        }
+        else
+        {
+          mTemporaryRubberBand.reset();
+        }
       }
       break;
     }
 
+    case Action::MoveNode:
+    {
+      if ( QgsAnnotationItem *item = annotationItemFromId( mSelectedItemLayerId, mSelectedItemId ) )
+      {
+        QgsAnnotationLayer *layer = annotationLayerFromId( mSelectedItemLayerId );
+        const QgsPointXY endPointLayer = toLayerCoordinates( layer, event->mapPoint() );
+        QgsAnnotationItemEditOperationMoveNode operation( mSelectedItemId, mTargetNode.id(), QgsPoint( mTargetNode.point() ), QgsPoint( endPointLayer ) );
+        std::unique_ptr< QgsAnnotationItemEditOperationTransientResults > operationResults( item->transientEditResults( &operation ) );
+        if ( operationResults )
+        {
+          mTemporaryRubberBand.reset( new QgsRubberBand( mCanvas, operationResults->representativeGeometry().type() ) );
+          const double scaleFactor = canvas()->fontMetrics().xHeight() * .2;
+          mTemporaryRubberBand->setWidth( scaleFactor );
+          mTemporaryRubberBand->setToGeometry( operationResults->representativeGeometry(), layer->crs() );
+        }
+        else
+        {
+          mTemporaryRubberBand.reset();
+        }
+      }
+      break;
+    }
   }
 
 }
@@ -231,23 +270,40 @@ void QgsMapToolModifyAnnotation::cadCanvasPressEvent( QgsMapMouseEvent *event )
         // press is on selected item => move that item
         if ( QgsAnnotationLayer *layer = annotationLayerFromId( mSelectedItemLayerId ) )
         {
-          mCurrentAction = Action::MoveItem;
-          mMoveStartPointCanvasCrs = event->mapPoint();
+          const QgsPointXY mapPoint = event->mapPoint();
+          QgsRectangle searchRect = QgsRectangle( mapPoint.x(), mapPoint.y(), mapPoint.x(), mapPoint.y() );
+          searchRect.grow( searchRadiusMU( canvas() ) );
+
+          QgsAnnotationItemNode hoveredNode;
+          double currentNodeDistance = std::numeric_limits< double >::max();
+          mHoveredItemNodesSpatialIndex->intersects( searchRect, [&hoveredNode, &currentNodeDistance, &mapPoint, this]( int index )-> bool
+          {
+            const QgsAnnotationItemNode &thisNode = mHoveredItemNodes.at( index );
+            const double nodeDistance = thisNode.point().sqrDist( mapPoint );
+            if ( nodeDistance < currentNodeDistance )
+            {
+              hoveredNode = thisNode;
+              currentNodeDistance = nodeDistance;
+            }
+            return true;
+          } );
+
+          mMoveStartPointCanvasCrs = mapPoint;
           mMoveStartPointLayerCrs = toLayerCoordinates( layer, mMoveStartPointCanvasCrs );
           if ( mHoverRubberBand )
             mHoverRubberBand->hide();
           if ( mSelectedRubberBand )
             mSelectedRubberBand->hide();
 
-          QgsAnnotationItem *item = annotationItemFromId( mSelectedItemLayerId, mSelectedItemId );
-          QgsGeometry rubberBandGeom = item->rubberBandGeometry();
-          if ( rubberBandGeom.isNull() )
-            rubberBandGeom = mSelectedRubberBand->asGeometry();
-
-          mTemporaryRubberBand.reset( new QgsRubberBand( mCanvas, rubberBandGeom.type() ) );
-          const double scaleFactor = canvas()->fontMetrics().xHeight() * .2;
-          mTemporaryRubberBand->setWidth( scaleFactor );
-          mTemporaryRubberBand->setToGeometry( rubberBandGeom, layer->crs() );
+          if ( hoveredNode.point().isEmpty() )
+          {
+            mCurrentAction = Action::MoveItem;
+          }
+          else
+          {
+            mCurrentAction = Action::MoveNode;
+            mTargetNode = hoveredNode;
+          }
         }
       }
       else
@@ -286,16 +342,21 @@ void QgsMapToolModifyAnnotation::cadCanvasPressEvent( QgsMapMouseEvent *event )
       else if ( event->button() == Qt::LeftButton )
       {
         // apply move
-        if ( QgsAnnotationItem *item = annotationItemFromId( mSelectedItemLayerId, mSelectedItemId ) )
+        if ( QgsAnnotationLayer *layer = annotationLayerFromId( mSelectedItemLayerId ) )
         {
-          QgsAnnotationLayer *layer = annotationLayerFromId( mSelectedItemLayerId );
           const QgsVector delta = toLayerCoordinates( layer, event->mapPoint() ) - mMoveStartPointLayerCrs;
-          const QTransform transform = QTransform::fromTranslate( delta.x(), delta.y() );
 
-          std::unique_ptr< QgsAnnotationItem > transformedItem( item->clone() );
-          transformedItem->transform( transform );
-          layer->replaceItem( mSelectedItemId, transformedItem.release() );
-          mRefreshSelectedItemAfterRedraw = true;
+          QgsAnnotationItemEditOperationTranslateItem operation( mSelectedItemId, delta.x(), delta.y() );
+          switch ( layer->applyEdit( &operation ) )
+          {
+            case Qgis::AnnotationItemEditOperationResult::Success:
+              QgsProject::instance()->setDirty( true );
+              mRefreshSelectedItemAfterRedraw = true;
+              break;
+            case Qgis::AnnotationItemEditOperationResult::Invalid:
+            case Qgis::AnnotationItemEditOperationResult::ItemCleared:
+              break;
+          }
         }
 
         mTemporaryRubberBand.reset();
@@ -304,6 +365,100 @@ void QgsMapToolModifyAnnotation::cadCanvasPressEvent( QgsMapMouseEvent *event )
       }
       break;
     }
+
+    case Action::MoveNode:
+    {
+      if ( event->button() == Qt::RightButton )
+      {
+        mCurrentAction = Action::NoAction;
+        mTemporaryRubberBand.reset();
+        mHoveredItemNodeRubberBands.clear();
+        mTemporaryRubberBand.reset();
+        setCursor( Qt::ArrowCursor );
+      }
+      else if ( event->button() == Qt::LeftButton )
+      {
+        if ( QgsAnnotationLayer *layer = annotationLayerFromId( mSelectedItemLayerId ) )
+        {
+          const QgsPointXY endPointLayer = toLayerCoordinates( layer, event->mapPoint() );
+          QgsAnnotationItemEditOperationMoveNode operation( mSelectedItemId, mTargetNode.id(), QgsPoint( mTargetNode.point() ), QgsPoint( endPointLayer ) );
+          switch ( layer->applyEdit( &operation ) )
+          {
+            case Qgis::AnnotationItemEditOperationResult::Success:
+              QgsProject::instance()->setDirty( true );
+              mRefreshSelectedItemAfterRedraw = true;
+              break;
+
+            case Qgis::AnnotationItemEditOperationResult::Invalid:
+            case Qgis::AnnotationItemEditOperationResult::ItemCleared:
+              break;
+          }
+        }
+
+        mTemporaryRubberBand.reset();
+        mHoveredItemNodeRubberBands.clear();
+        mHoveredItemNodes.clear();
+        mTemporaryRubberBand.reset();
+        mCurrentAction = Action::NoAction;
+        setCursor( Qt::ArrowCursor );
+      }
+      break;
+    }
+  }
+}
+
+void QgsMapToolModifyAnnotation::canvasDoubleClickEvent( QgsMapMouseEvent *event )
+{
+  switch ( mCurrentAction )
+  {
+    case Action::NoAction:
+    case Action::MoveItem:
+    {
+      if ( event->button() != Qt::LeftButton )
+        return;
+
+      mCurrentAction = Action::NoAction;
+      if ( mHoveredItemId == mSelectedItemId && mHoveredItemLayerId == mSelectedItemLayerId )
+      {
+        // double-click on selected item => add node
+        if ( QgsAnnotationLayer *layer = annotationLayerFromId( mSelectedItemLayerId ) )
+        {
+          const QgsPointXY layerPoint = toLayerCoordinates( layer, event->mapPoint() );
+          QgsAnnotationItemEditOperationAddNode operation( mSelectedItemId, QgsPoint( layerPoint ) );
+          switch ( layer->applyEdit( &operation ) )
+          {
+            case Qgis::AnnotationItemEditOperationResult::Success:
+              QgsProject::instance()->setDirty( true );
+              mRefreshSelectedItemAfterRedraw = true;
+              break;
+
+            case Qgis::AnnotationItemEditOperationResult::Invalid:
+            case Qgis::AnnotationItemEditOperationResult::ItemCleared:
+              break;
+          }
+        }
+      }
+      else
+      {
+        // press is on a different item to selected item => select that item
+        mSelectedItemId = mHoveredItemId;
+        mSelectedItemLayerId = mHoveredItemLayerId;
+
+        if ( !mSelectedRubberBand )
+          createSelectedItemBand();
+
+        mSelectedRubberBand->copyPointsFrom( mHoverRubberBand );
+        mSelectedRubberBand->show();
+
+        setCursor( Qt::OpenHandCursor );
+
+        emit itemSelected( annotationLayerFromId( mSelectedItemLayerId ), mSelectedItemId );
+      }
+      break;
+    }
+
+    case Action::MoveNode:
+      break;
   }
 }
 
@@ -330,25 +485,63 @@ void QgsMapToolModifyAnnotation::keyPressEvent( QKeyEvent *event )
                 || event->key() == Qt::Key_Down )
       {
         QgsAnnotationLayer *layer = annotationLayerFromId( mSelectedItemLayerId );
-        QgsAnnotationItem *annotationItem = annotationItemFromId( mSelectedItemLayerId, mSelectedItemId );
-        if ( !layer || !annotationItem )
+        if ( !layer )
           return;
 
         const QSizeF deltaLayerCoordinates = deltaForKeyEvent( layer, mSelectedRubberBand->asGeometry().centroid().asPoint(), event );
-        const QTransform transform = QTransform::fromTranslate( deltaLayerCoordinates.width(), deltaLayerCoordinates.height() );
 
-        std::unique_ptr< QgsAnnotationItem > transformedItem( annotationItem->clone() );
-        transformedItem->transform( transform );
-        layer->replaceItem( mSelectedItemId, transformedItem.release() );
-        mRefreshSelectedItemAfterRedraw = true;
-
+        QgsAnnotationItemEditOperationTranslateItem operation( mSelectedItemId, deltaLayerCoordinates.width(), deltaLayerCoordinates.height() );
+        switch ( layer->applyEdit( &operation ) )
+        {
+          case Qgis::AnnotationItemEditOperationResult::Success:
+            QgsProject::instance()->setDirty( true );
+            mRefreshSelectedItemAfterRedraw = true;
+            break;
+          case Qgis::AnnotationItemEditOperationResult::Invalid:
+          case Qgis::AnnotationItemEditOperationResult::ItemCleared:
+            break;
+        }
         event->ignore(); // disable default shortcut handling (move map)
       }
       break;
     }
 
+    case Action::MoveNode:
+    {
+      if ( event->key() == Qt::Key_Delete || event->key() == Qt::Key_Backspace )
+      {
+        if ( QgsAnnotationLayer *layer = annotationLayerFromId( mSelectedItemLayerId ) )
+        {
+          QgsAnnotationItemEditOperationDeleteNode operation( mSelectedItemId, mTargetNode.id(), QgsPoint( mTargetNode.point() ) );
+          switch ( layer->applyEdit( &operation ) )
+          {
+            case Qgis::AnnotationItemEditOperationResult::Success:
+              QgsProject::instance()->setDirty( true );
+              mRefreshSelectedItemAfterRedraw = true;
+              break;
+            case Qgis::AnnotationItemEditOperationResult::Invalid:
+              break;
+            case Qgis::AnnotationItemEditOperationResult::ItemCleared:
+              QgsProject::instance()->setDirty( true );
+              break;
+          }
+        }
+
+        mTemporaryRubberBand.reset();
+        mHoveredItemNodeRubberBands.clear();
+        mHoveredItemNodes.clear();
+        mTemporaryRubberBand.reset();
+        mCurrentAction = Action::NoAction;
+        setCursor( Qt::ArrowCursor );
+        event->ignore(); // disable default shortcut handling (delete vector feature)
+        break;
+      }
+      FALLTHROUGH
+    }
+
     case Action::MoveItem:
     {
+      // warning -- fallthrough above!
       if ( event->key() == Qt::Key_Escape )
       {
         mCurrentAction = Action::NoAction;
@@ -405,6 +598,8 @@ void QgsMapToolModifyAnnotation::onCanvasRefreshed()
 void QgsMapToolModifyAnnotation::setHoveredItem( const QgsRenderedAnnotationItemDetails *item, const QgsRectangle &itemMapBounds )
 {
   mHoveredItemNodeRubberBands.clear();
+  if ( mHoveredNodeRubberBand )
+    mHoveredNodeRubberBand->hide();
   mHoveredItemId = item->itemId();
   mHoveredItemLayerId = item->layerId();
   if ( !mHoverRubberBand )

@@ -122,11 +122,20 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
   }
   else
   {
+    QSet<QString> setNamespaces;
     for ( const QgsOgcUtils::LayerProperties &layerProperties : std::as_const( mShared->mLayerPropertiesList ) )
     {
       if ( !typenames.isEmpty() )
         typenames += QLatin1Char( ',' );
       typenames += layerProperties.mName;
+      const QString lNamespace = mShared->mCaps.getNamespaceParameterValue( mShared->mWFSVersion, layerProperties.mName );
+      if ( !lNamespace.isEmpty() && !setNamespaces.contains( lNamespace ) )
+      {
+        if ( !namespaces.isEmpty() )
+          namespaces += QLatin1Char( ',' );
+        namespaces += lNamespace;
+        setNamespaces.insert( lNamespace );
+      }
     }
   }
   if ( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
@@ -202,6 +211,8 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
     QString geometryAttribute( mShared->mGeometryAttribute );
     if ( mShared->mLayerPropertiesList.size() > 1 )
       geometryAttribute = mShared->mURI.typeName() + "/" + geometryAttribute;
+    else if ( mShared->mLayerPropertiesList.size() == 1 && !mShared->mLayerPropertiesList[0].mNamespacePrefix.isEmpty() )
+      geometryAttribute = mShared->mLayerPropertiesList[0].mNamespacePrefix + QStringLiteral( ":" ) + geometryAttribute;
     QDomElement bboxElem = QgsOgcUtils::expressionToOgcFilter( bboxExp, doc,
                            gmlVersion, filterVersion, geometryAttribute, mShared->srsName(),
                            honourAxisOrientation, mShared->mURI.invertAxisOrientation() );
@@ -218,6 +229,19 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
     andElem.appendChild( bboxNode );
     andElem.appendChild( filterNode );
     doc.firstChildElement().appendChild( andElem );
+
+    QSet<QString> setNamespaceURI;
+    for ( const QgsOgcUtils::LayerProperties &props : std::as_const( mShared->mLayerPropertiesList ) )
+    {
+      if ( !props.mNamespacePrefix.isEmpty() && !props.mNamespaceURI.isEmpty() &&
+           !setNamespaceURI.contains( props.mNamespaceURI ) )
+      {
+        setNamespaceURI.insert( props.mNamespaceURI );
+        QDomAttr attr = doc.createAttribute( QStringLiteral( "xmlns:" ) + props.mNamespacePrefix );
+        attr.setValue( props.mNamespaceURI );
+        doc.firstChildElement().setAttributeNode( attr );
+      }
+    }
 
     query.addQueryItem( QStringLiteral( "FILTER" ), sanitizeFilter( doc.toString() ) );
   }

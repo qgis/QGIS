@@ -23,6 +23,7 @@
 #include "qgsalgorithmaffinetransform.h"
 #include "qgsalgorithmaggregate.h"
 #include "qgsalgorithmangletonearest.h"
+#include "qgsalgorithmannotations.h"
 #include "qgsalgorithmapplylayerstyle.h"
 #include "qgsalgorithmarraytranslatedfeatures.h"
 #include "qgsalgorithmaspect.h"
@@ -86,7 +87,9 @@
 #include "qgsalgorithmforcerhr.h"
 #include "qgsalgorithmfuzzifyraster.h"
 #include "qgsalgorithmgeometrybyexpression.h"
+#if QT_CONFIG(process)
 #include "qgsalgorithmgpsbabeltools.h"
+#endif
 #include "qgsalgorithmgrid.h"
 #include "qgsalgorithmhillshade.h"
 #include "qgsalgorithmjoinbyattribute.h"
@@ -172,6 +175,7 @@
 #include "qgsalgorithmsetmvalue.h"
 #include "qgsalgorithmsetvariable.h"
 #include "qgsalgorithmsetzvalue.h"
+#include "qgsalgorithmshortestline.h"
 #include "qgsalgorithmshortestpathlayertopoint.h"
 #include "qgsalgorithmshortestpathpointtolayer.h"
 #include "qgsalgorithmshortestpathpointtopoint.h"
@@ -337,10 +341,12 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsFuzzifyRasterGaussianMembershipAlgorithm() );
   addAlgorithm( new QgsFuzzifyRasterNearMembershipAlgorithm() );
   addAlgorithm( new QgsGeometryByExpressionAlgorithm() );
+#if QT_CONFIG(process)
   addAlgorithm( new QgsConvertGpxFeatureTypeAlgorithm() );
   addAlgorithm( new QgsConvertGpsDataAlgorithm() );
   addAlgorithm( new QgsDownloadGpsDataAlgorithm() );
   addAlgorithm( new QgsUploadGpsDataAlgorithm() );
+#endif
   addAlgorithm( new QgsGridAlgorithm() );
   addAlgorithm( new QgsHillshadeAlgorithm() );
   addAlgorithm( new QgsImportPhotosAlgorithm() );
@@ -452,6 +458,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsSetProjectVariableAlgorithm() );
   addAlgorithm( new QgsSetZValueAlgorithm() );
   addAlgorithm( new QgsShapefileEncodingInfoAlgorithm() );
+  addAlgorithm( new QgsShortestLineAlgorithm() );
   addAlgorithm( new QgsShortestPathLayerToPointAlgorithm() );
   addAlgorithm( new QgsShortestPathPointToLayerAlgorithm() );
   addAlgorithm( new QgsShortestPathPointToPointAlgorithm() );
@@ -477,6 +484,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsTaperedBufferAlgorithm() );
   addAlgorithm( new QgsTinMeshCreationAlgorithm() );
   addAlgorithm( new QgsTransectAlgorithm() );
+  addAlgorithm( new QgsTransferAnnotationsFromMainAlgorithm() );
   addAlgorithm( new QgsTransformAlgorithm() );
   addAlgorithm( new QgsTranslateAlgorithm() );
   addAlgorithm( new QgsTruncateTableAlgorithm() );

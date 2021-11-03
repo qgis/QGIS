@@ -35,6 +35,18 @@
 
 QgsVectorTileWriter::QgsVectorTileWriter()
 {
+  setRootTileMatrix( QgsTileMatrix::fromWebMercator( 0 ) );
+}
+
+
+bool QgsVectorTileWriter::setRootTileMatrix( const QgsTileMatrix &tileMatrix )
+{
+  if ( tileMatrix.isRootTileMatrix() )
+  {
+    mRootTileMatrix = tileMatrix;
+    return true;
+  }
+  return false;
 }
 
 
@@ -94,7 +106,7 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
   int tilesToCreate = 0;
   for ( int zoomLevel = mMinZoom; zoomLevel <= mMaxZoom; ++zoomLevel )
   {
-    QgsTileMatrix tileMatrix = QgsTileMatrix::fromWebMercator( zoomLevel );
+    const QgsTileMatrix tileMatrix = QgsTileMatrix::fromTileMatrix( zoomLevel, mRootTileMatrix );
 
     QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( outputExtent );
     tilesToCreate += ( tileRange.endRow() - tileRange.startRow() + 1 ) *
@@ -137,7 +149,7 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
     {
       try
       {
-        QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( "EPSG:3857" ), QgsCoordinateReferenceSystem( "EPSG:4326" ), mTransformContext );
+        QgsCoordinateTransform ct( mRootTileMatrix.crs(), QgsCoordinateReferenceSystem( "EPSG:4326" ), mTransformContext );
         QgsRectangle wgsExtent = ct.transform( outputExtent );
         QString boundsStr = QString( "%1,%2,%3,%4" )
                             .arg( wgsExtent.xMinimum() ).arg( wgsExtent.yMinimum() )
@@ -149,12 +161,14 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
         // bounds won't be written (not a problem - it is an optional value)
       }
     }
+    if ( !mMetadata.contains( "crs" ) )
+      mbtiles->setMetadataValue( "crs",  mRootTileMatrix.crs().authid() );
   }
 
   int tilesCreated = 0;
   for ( int zoomLevel = mMinZoom; zoomLevel <= mMaxZoom; ++zoomLevel )
   {
-    QgsTileMatrix tileMatrix = QgsTileMatrix::fromWebMercator( zoomLevel );
+    const QgsTileMatrix tileMatrix = QgsTileMatrix::fromTileMatrix( zoomLevel, mRootTileMatrix );
 
     QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( outputExtent );
     for ( int row = tileRange.startRow(); row <= tileRange.endRow(); ++row )
@@ -216,12 +230,11 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
 QgsRectangle QgsVectorTileWriter::fullExtent() const
 {
   QgsRectangle extent;
-  QgsCoordinateReferenceSystem destCrs( "EPSG:3857" );
 
   for ( const Layer &layer : mLayers )
   {
     QgsVectorLayer *vl = layer.layer();
-    QgsCoordinateTransform ct( vl->crs(), destCrs, mTransformContext );
+    QgsCoordinateTransform ct( vl->crs(), mRootTileMatrix.crs(), mTransformContext );
     try
     {
       QgsRectangle r = ct.transformBoundingBox( vl->extent() );
@@ -318,4 +331,3 @@ QByteArray QgsVectorTileWriter::writeSingleTile( QgsTileXYZ tileID, QgsFeedback 
 
   return encoder.encode();
 }
-

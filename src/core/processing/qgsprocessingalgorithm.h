@@ -989,6 +989,21 @@ class CORE_EXPORT QgsProcessingAlgorithm
     QgsPointCloudLayer *parameterAsPointCloudLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 
     /**
+     * Evaluates the parameter with matching \a name to an annotation layer.
+     *
+     * Annotation layers will be taken from \a context's active project. Callers do not
+     * need to handle deletion of the returned layer.
+     *
+     * \warning Working with annotation layers is generally not thread safe (unless the layers are from
+     * a QgsProject loaded directly in a background thread). Ensure your algorithm returns the
+     * QgsProcessingAlgorithm::FlagNoThreading flag or only accesses annotation layers from a prepareAlgorithm()
+     * or postProcessAlgorithm() step.
+     *
+     * \since QGIS 3.22
+     */
+    QgsAnnotationLayer *parameterAsAnnotationLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+
+    /**
      * Returns a user-friendly string to use as an error when a source parameter could
      * not be loaded.
      *

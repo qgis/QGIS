@@ -24,10 +24,13 @@ class QgsPalettedRendererWidget: QgsRasterRendererWidget
     ~QgsPalettedRendererWidget();
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) /Factory/;
 
-    virtual QgsRasterRenderer *renderer();
+    virtual QgsRasterRenderer *renderer() /Factory/;
 
 
     void setFromRenderer( const QgsRasterRenderer *r );
+%Docstring
+Sets the widget state from the specified renderer.
+%End
 
 };
 

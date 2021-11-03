@@ -192,7 +192,7 @@ Constructor for PdfExportSettings
 
       QgsLayoutRenderContext::Flags flags;
 
-      QgsRenderContext::TextRenderFormat textRenderFormat;
+      Qgis::TextRenderFormat textRenderFormat;
 
       bool simplifyGeometries;
 
@@ -312,7 +312,7 @@ Constructor for SvgExportSettings
 
       QgsLayoutRenderContext::Flags flags;
 
-      QgsRenderContext::TextRenderFormat textRenderFormat;
+      Qgis::TextRenderFormat textRenderFormat;
 
       bool simplifyGeometries;
 

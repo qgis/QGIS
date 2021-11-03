@@ -82,31 +82,31 @@ class TestQgsLayoutPicture(unittest.TestCase, LayoutItemTestCase):
     def testMode(self):
         pic = QgsLayoutItemPicture(self.layout)
         # should default to unknown
-        self.assertEquals(pic.mode(), QgsLayoutItemPicture.FormatUnknown)
+        self.assertEqual(pic.mode(), QgsLayoutItemPicture.FormatUnknown)
         spy = QSignalSpy(pic.changed)
         pic.setMode(QgsLayoutItemPicture.FormatRaster)
-        self.assertEquals(pic.mode(), QgsLayoutItemPicture.FormatRaster)
+        self.assertEqual(pic.mode(), QgsLayoutItemPicture.FormatRaster)
         self.assertEqual(len(spy), 1)
         pic.setMode(QgsLayoutItemPicture.FormatRaster)
         self.assertEqual(len(spy), 1)
         pic.setMode(QgsLayoutItemPicture.FormatSVG)
         self.assertEqual(len(spy), 3)  # ideally only 2!
-        self.assertEquals(pic.mode(), QgsLayoutItemPicture.FormatSVG)
+        self.assertEqual(pic.mode(), QgsLayoutItemPicture.FormatSVG)
 
         # set picture path without explicit format
         pic.setPicturePath(self.pngImage)
-        self.assertEquals(pic.mode(), QgsLayoutItemPicture.FormatRaster)
+        self.assertEqual(pic.mode(), QgsLayoutItemPicture.FormatRaster)
         pic.setPicturePath(self.svgImage)
-        self.assertEquals(pic.mode(), QgsLayoutItemPicture.FormatSVG)
+        self.assertEqual(pic.mode(), QgsLayoutItemPicture.FormatSVG)
         # forced format
         pic.setPicturePath(self.pngImage, QgsLayoutItemPicture.FormatSVG)
-        self.assertEquals(pic.mode(), QgsLayoutItemPicture.FormatSVG)
+        self.assertEqual(pic.mode(), QgsLayoutItemPicture.FormatSVG)
         pic.setPicturePath(self.pngImage, QgsLayoutItemPicture.FormatRaster)
-        self.assertEquals(pic.mode(), QgsLayoutItemPicture.FormatRaster)
+        self.assertEqual(pic.mode(), QgsLayoutItemPicture.FormatRaster)
         pic.setPicturePath(self.svgImage, QgsLayoutItemPicture.FormatSVG)
-        self.assertEquals(pic.mode(), QgsLayoutItemPicture.FormatSVG)
+        self.assertEqual(pic.mode(), QgsLayoutItemPicture.FormatSVG)
         pic.setPicturePath(self.svgImage, QgsLayoutItemPicture.FormatRaster)
-        self.assertEquals(pic.mode(), QgsLayoutItemPicture.FormatRaster)
+        self.assertEqual(pic.mode(), QgsLayoutItemPicture.FormatRaster)
 
     def testReadWriteXml(self):
         pr = QgsProject()
@@ -238,6 +238,21 @@ class TestQgsLayoutPicture(unittest.TestCase, LayoutItemTestCase):
         # add an offset
         picture.setNorthOffset(-10)
         self.assertAlmostEqual(picture.pictureRotation(), -38.18 + 35, 1)
+
+    def testMissingImage(self):
+        layout = QgsLayout(QgsProject.instance())
+
+        picture = QgsLayoutItemPicture(layout)
+
+        # SVG
+        picture.setPicturePath("invalid_path", QgsLayoutItemPicture.FormatSVG)
+        self.assertEqual(picture.isMissingImage(), True)
+        self.assertEqual(picture.mode(), QgsLayoutItemPicture.FormatSVG)
+
+        # Raster
+        picture.setPicturePath("invalid_path", QgsLayoutItemPicture.FormatRaster)
+        self.assertEqual(picture.isMissingImage(), True)
+        self.assertEqual(picture.mode(), QgsLayoutItemPicture.FormatRaster)
 
 
 if __name__ == '__main__':

@@ -695,7 +695,7 @@ bool ProjectorData::checkCols( const QgsCoordinateTransform &ct )
       }
       try
       {
-        const QgsPointXY myDestApprox = ct.transform( mySrcApprox, QgsCoordinateTransform::ReverseTransform );
+        const QgsPointXY myDestApprox = ct.transform( mySrcApprox, Qgis::TransformDirection::Reverse );
         const double mySqrDist = myDestApprox.sqrDist( myDestPoint );
         if ( mySqrDist > mSqrTolerance )
         {
@@ -740,7 +740,7 @@ bool ProjectorData::checkRows( const QgsCoordinateTransform &ct )
       }
       try
       {
-        const QgsPointXY myDestApprox = ct.transform( mySrcApprox, QgsCoordinateTransform::ReverseTransform );
+        const QgsPointXY myDestApprox = ct.transform( mySrcApprox, Qgis::TransformDirection::Reverse );
         const double mySqrDist = myDestApprox.sqrDist( myDestPoint );
         if ( mySqrDist > mSqrTolerance )
         {

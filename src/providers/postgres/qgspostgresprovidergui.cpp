@@ -25,6 +25,7 @@
 #include "qgspostgresdataitemguiprovider.h"
 #include "raster/qgspostgresrastertemporalsettingswidget.h"
 
+
 //! Provider for postgres source select
 class QgsPostgresSourceSelectProvider : public QgsSourceSelectProvider  //#spellok
 {

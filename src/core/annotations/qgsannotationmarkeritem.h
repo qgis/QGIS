@@ -21,7 +21,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsannotationitem.h"
-
+#include "qgspoint.h"
 
 /**
  * \ingroup core
@@ -44,6 +44,8 @@ class CORE_EXPORT QgsAnnotationMarkerItem : public QgsAnnotationItem
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     Qgis::AnnotationItemFlags flags() const override;
     QList< QgsAnnotationItemNode > nodes() const override;
+    Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation ) override;
+    QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) override SIP_FACTORY;
 
     /**
      * Creates a new marker annotation item.
@@ -54,7 +56,6 @@ class CORE_EXPORT QgsAnnotationMarkerItem : public QgsAnnotationItem
     QgsAnnotationMarkerItem *clone() override SIP_FACTORY;
     QgsRectangle boundingBox() const override;
     QgsRectangle boundingBox( QgsRenderContext &context ) const override;
-    bool transform( const QTransform &transform ) override;
 
     /**
      * Returns the point geometry of the marker.

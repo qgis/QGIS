@@ -20,7 +20,6 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsrendercontext.h"
 #include "qgslinestring.h"
 #include "qgspolygon.h"
 
@@ -29,6 +28,10 @@ class QgsMarkerSymbol;
 class QgsLineSymbol;
 class QgsFillSymbol;
 class QgsAnnotationItemNode;
+class QgsAbstractAnnotationItemEditOperation;
+class QgsAnnotationItemEditOperationTransientResults;
+class QgsRenderContext;
+class QgsReadWriteContext;
 
 /**
  * \ingroup core
@@ -112,15 +115,6 @@ class CORE_EXPORT QgsAnnotationItem
     virtual QgsRectangle boundingBox( QgsRenderContext &context ) const { Q_UNUSED( context ) return boundingBox();}
 
     /**
-     * Transforms the item's geometry using the specified \a transform.
-     *
-     * Returns TRUE if the transformation was successful.
-     *
-     * \since QGIS 3.22
-     */
-    virtual bool transform( const QTransform &transform ) = 0;
-
-    /**
      * Renders the item to the specified render \a context.
      *
      * The \a feedback argument can be used to detect render cancellations during expensive
@@ -147,6 +141,20 @@ class CORE_EXPORT QgsAnnotationItem
      * \see readCommonProperties()
      */
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) = 0;
+
+    /**
+     * Applies an edit \a operation to the item.
+     *
+     * \since QGIS 3.22
+     */
+    virtual Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
+
+    /**
+     * Retrieves the results of a transient (in progress) edit \a operation on the item.
+     *
+     * \since QGIS 3.22
+     */
+    virtual QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) SIP_FACTORY;
 
     /**
      * Returns the item's z index, which controls the order in which annotation items
@@ -220,16 +228,6 @@ class CORE_EXPORT QgsAnnotationItem
      * \see setUseSymbologyReferenceScale()
      */
     void setSymbologyReferenceScale( double scale ) { mReferenceScale = scale; }
-
-    /**
-     * Returns the geometry to use as a rubber band for map tools which manipulate the item.
-     *
-     * The default implementation returns a null geometry, which indicates that the item bounds should
-     * be used as the rubber band.
-     *
-     * \since QGIS 3.22
-     */
-    virtual QgsGeometry rubberBandGeometry() const;
 
   protected:
 

@@ -195,10 +195,11 @@ The id of the feature to which the snapped geometry belongs.
 Only for a valid edge match - obtain endpoints of the edge
 %End
 
-        QgsPoint interpolatedPoint() const;
+        QgsPoint interpolatedPoint( const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem() ) const;
 %Docstring
 Convenient method to return a point on an edge with linear
 interpolation of the Z value.
+The parameter ``destinationCrs`` depends of where the instance of this Match is created (geom.cache: layer CRS, map canvas snapper: dest CRS)
 
 .. versionadded:: 3.10
 %End

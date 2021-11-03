@@ -23,7 +23,10 @@
 #include "qgsannotationlineitem.h"
 #include "qgsannotationmarkeritem.h"
 #include "qgsannotationpointtextitem.h"
+#include "qgsexpressionbuilderdialog.h"
 #include "qgstextformatwidget.h"
+#include "qgsapplication.h"
+#include "qgsrecentstylehandler.h"
 
 ///@cond PRIVATE
 
@@ -37,7 +40,10 @@ QgsAnnotationPolygonItemWidget::QgsAnnotationPolygonItemWidget( QWidget *parent 
   connect( mSelector, &QgsSymbolSelectorWidget::symbolModified, this, [ = ]
   {
     if ( !mBlockChangedSignal )
+    {
       emit itemChanged();
+      QgsApplication::recentStyleHandler()->pushRecentSymbol( QStringLiteral( "polygon_annotation_item" ), qgis::down_cast< QgsFillSymbol * >( mSelector->symbol()->clone() ) );
+    }
   } );
   connect( mSelector, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
 
@@ -126,7 +132,10 @@ QgsAnnotationLineItemWidget::QgsAnnotationLineItemWidget( QWidget *parent )
   connect( mSelector, &QgsSymbolSelectorWidget::symbolModified, this, [ = ]
   {
     if ( !mBlockChangedSignal )
+    {
       emit itemChanged();
+      QgsApplication::recentStyleHandler()->pushRecentSymbol( QStringLiteral( "line_annotation_item" ), qgis::down_cast< QgsLineSymbol * >( mSelector->symbol()->clone() ) );
+    }
   } );
   connect( mSelector, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
 
@@ -215,7 +224,10 @@ QgsAnnotationMarkerItemWidget::QgsAnnotationMarkerItemWidget( QWidget *parent )
   connect( mSelector, &QgsSymbolSelectorWidget::symbolModified, this, [ = ]
   {
     if ( !mBlockChangedSignal )
+    {
       emit itemChanged();
+      QgsApplication::recentStyleHandler()->pushRecentSymbol( QStringLiteral( "marker_annotation_item" ), qgis::down_cast< QgsMarkerSymbol * >( mSelector->symbol()->clone() ) );
+    }
   } );
   connect( mSelector, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
 
@@ -319,6 +331,7 @@ QgsAnnotationPointTextItemWidget::QgsAnnotationPointTextItemWidget( QWidget *par
     if ( !mBlockChangedSignal )
       emit itemChanged();
   } );
+  connect( mInsertExpressionButton, &QPushButton::clicked, this, &QgsAnnotationPointTextItemWidget::mInsertExpressionButton_clicked );
   connect( mPropertiesWidget, &QgsAnnotationItemCommonPropertiesWidget::itemChanged, this, [ = ]
   {
     if ( !mBlockChangedSignal )
@@ -383,6 +396,36 @@ bool QgsAnnotationPointTextItemWidget::setNewItem( QgsAnnotationItem *item )
   mBlockChangedSignal = false;
 
   return true;
+}
+
+void QgsAnnotationPointTextItemWidget::mInsertExpressionButton_clicked()
+{
+  QString selText = mTextEdit->textCursor().selectedText();
+
+  // html editor replaces newlines with Paragraph Separator characters - see https://github.com/qgis/QGIS/issues/27568
+  selText = selText.replace( QChar( 0x2029 ), QChar( '\n' ) );
+
+  // edit the selected expression if there's one
+  if ( selText.startsWith( QLatin1String( "[%" ) ) && selText.endsWith( QLatin1String( "%]" ) ) )
+    selText = selText.mid( 2, selText.size() - 4 );
+
+  QgsExpressionContext expressionContext;
+  if ( context().expressionContext() )
+    expressionContext = *( context().expressionContext() );
+  else
+    expressionContext = QgsProject::instance()->createExpressionContext();
+
+  QgsExpressionBuilderDialog exprDlg( nullptr, selText, this, QStringLiteral( "generic" ), expressionContext );
+
+  exprDlg.setWindowTitle( tr( "Insert Expression" ) );
+  if ( exprDlg.exec() == QDialog::Accepted )
+  {
+    QString expression = exprDlg.expressionText();
+    if ( !expression.isEmpty() )
+    {
+      mTextEdit->insertPlainText( "[%" + expression + "%]" );
+    }
+  }
 }
 
 ///@endcond PRIVATE

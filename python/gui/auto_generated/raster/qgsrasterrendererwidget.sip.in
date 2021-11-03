@@ -13,6 +13,10 @@
 
 class QgsRasterRendererWidget: QWidget
 {
+%Docstring(signature="appended")
+
+Abstract base class for widgets which configure a :py:class:`QgsRasterRenderer`.
+%End
 
 %TypeHeaderCode
 #include "qgsrasterrendererwidget.h"
@@ -22,9 +26,25 @@ class QgsRasterRendererWidget: QWidget
     QgsRasterRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent );
 
     virtual QgsRasterRenderer *renderer() = 0 /Factory/;
+%Docstring
+Creates a new renderer, using the properties defined in the widget.
+
+The caller takes ownership of the returned renderer.
+%End
 
     void setRasterLayer( QgsRasterLayer *layer );
+%Docstring
+Sets the raster ``layer`` associated with the widget.
+
+.. seealso:: :py:func:`rasterLayer`
+%End
+
     const QgsRasterLayer *rasterLayer() const;
+%Docstring
+Returns the raster layer associated with the widget.
+
+.. seealso:: :py:func:`setRasterLayer`
+%End
 
     virtual void setMapCanvas( QgsMapCanvas *canvas );
 %Docstring

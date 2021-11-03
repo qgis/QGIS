@@ -48,6 +48,9 @@ class TestQgsMapToolEditAnnotation : public QObject
     void testSelectItem();
     void testDeleteItem();
     void testMoveItem();
+    void testMoveNode();
+    void testDeleteNode();
+    void testAddNode();
 
 };
 
@@ -312,6 +315,245 @@ void TestQgsMapToolEditAnnotation::testMoveItem()
   utils.mouseClick( 4.5, 4.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   // check that item was NOT moved
   QCOMPARE( qgis::down_cast< QgsAnnotationPolygonItem * >( layer->item( i1id ) )->geometry()->asWkt( 1 ), QStringLiteral( "Polygon ((0.9 1, 4.9 1, 4.9 5, 0.9 5, 0.9 1))" ) );
+}
+
+void TestQgsMapToolEditAnnotation::testMoveNode()
+{
+  QgsProject::instance()->clear();
+  QgsMapCanvas canvas;
+  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  canvas.setFrameStyle( QFrame::NoFrame );
+  canvas.resize( 600, 600 );
+  canvas.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+  canvas.show(); // to make the canvas resize
+
+  QgsAnnotationLayer *layer = new QgsAnnotationLayer( QStringLiteral( "test" ), QgsAnnotationLayer::LayerOptions( QgsProject::instance()->transformContext() ) );
+  QVERIFY( layer->isValid() );
+  QgsProject::instance()->addMapLayers( { layer } );
+
+  QgsAnnotationPolygonItem *item1 = new QgsAnnotationPolygonItem( new QgsPolygon( new QgsLineString( QVector<QgsPoint> { QgsPoint( 1, 1 ), QgsPoint( 5, 1 ), QgsPoint( 5, 5 ), QgsPoint( 1, 5 ), QgsPoint( 1, 1 ) } ) ) );
+  item1->setZIndex( 1 );
+  const QString i1id = layer->addItem( item1 );
+  QCOMPARE( qgis::down_cast< QgsAnnotationPolygonItem * >( layer->item( i1id ) )->geometry()->asWkt(), QStringLiteral( "Polygon ((1 1, 5 1, 5 5, 1 5, 1 1))" ) );
+
+  layer->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+
+  canvas.setLayers( { layer } );
+  while ( !canvas.isDrawing() )
+  {
+    QgsApplication::processEvents();
+  }
+  canvas.waitWhileRendering();
+  QCOMPARE( canvas.renderedItemResults()->renderedItems().size(), 1 );
+
+  QgsAdvancedDigitizingDockWidget cadDock( &canvas );
+  QgsMapToolModifyAnnotation tool( &canvas, &cadDock );
+  canvas.setMapTool( &tool );
+
+  QSignalSpy spy( &tool, &QgsMapToolModifyAnnotation::itemSelected );
+  TestQgsMapToolUtils utils( &tool );
+
+  // click on item
+  utils.mouseMove( 1.5, 1.5 );
+  utils.mouseClick( 1.5, 1.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 1 ).toString(), i1id );
+
+  // click on a node
+  utils.mouseMove( 5, 5 );
+  utils.mouseClick( 5, 5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  // second click isn't selecting an item, so no new signals should be emitted
+  QCOMPARE( spy.count(), 1 );
+
+  // move mouse and click to end node move
+  utils.mouseMove( 4.5, 4.5 );
+  utils.mouseClick( 4.5, 4.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  while ( !canvas.isDrawing() )
+  {
+    QgsApplication::processEvents();
+  }
+  canvas.waitWhileRendering();
+  QCOMPARE( canvas.renderedItemResults()->renderedItems().size(), 1 );
+
+  // check that item was moved
+  QCOMPARE( qgis::down_cast< QgsAnnotationPolygonItem * >( layer->item( i1id ) )->geometry()->asWkt(), QStringLiteral( "Polygon ((1 1, 5 1, 4.5 4.5, 1 5, 1 1))" ) );
+
+  // start a new move node
+  // click on item -- it should already be selected, so this will start a new move, not emit the itemSelected signal
+  utils.mouseMove( 5, 1 );
+  utils.mouseClick( 5, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  QCOMPARE( spy.count(), 1 );
+
+  utils.mouseMove( 5.5, 1.5 );
+  utils.mouseClick( 5.5, 1.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  while ( !canvas.isDrawing() )
+  {
+    QgsApplication::processEvents();
+  }
+  canvas.waitWhileRendering();
+  QCOMPARE( canvas.renderedItemResults()->renderedItems().size(), 1 );
+
+  // check that item was moved
+  QCOMPARE( qgis::down_cast< QgsAnnotationPolygonItem * >( layer->item( i1id ) )->geometry()->asWkt( 1 ), QStringLiteral( "Polygon ((1 1, 5.5 1.5, 4.5 4.5, 1 5, 1 1))" ) );
+
+  // start a move then cancel it via right click
+  utils.mouseMove( 4.5, 4.5 );
+  utils.mouseClick( 4.5, 4.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  QCOMPARE( spy.count(), 1 );
+
+  utils.mouseMove( 4.9, 4.9 );
+  utils.mouseClick( 4.9, 4.9, Qt::RightButton, Qt::KeyboardModifiers(), true );
+  // check that node was NOT moved
+  QCOMPARE( qgis::down_cast< QgsAnnotationPolygonItem * >( layer->item( i1id ) )->geometry()->asWkt( 1 ), QStringLiteral( "Polygon ((1 1, 5.5 1.5, 4.5 4.5, 1 5, 1 1))" ) );
+
+  // cancel a move via escape key
+  utils.mouseMove( 4.5, 4.5 );
+  utils.mouseClick( 4.5, 4.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  QCOMPARE( spy.count(), 1 );
+
+  utils.mouseMove( 4.9, 4.9 );
+  // escape should cancel
+  utils.keyClick( Qt::Key_Escape );
+  //... so next click is not "finish move", but "clear selection"
+  utils.mouseClick( 6.5, 6.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  // check that node was NOT moved
+  QCOMPARE( qgis::down_cast< QgsAnnotationPolygonItem * >( layer->item( i1id ) )->geometry()->asWkt( 1 ), QStringLiteral( "Polygon ((1 1, 5.5 1.5, 4.5 4.5, 1 5, 1 1))" ) );
+}
+
+void TestQgsMapToolEditAnnotation::testDeleteNode()
+{
+  QgsProject::instance()->clear();
+  QgsMapCanvas canvas;
+  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  canvas.setFrameStyle( QFrame::NoFrame );
+  canvas.resize( 600, 600 );
+  canvas.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+  canvas.show(); // to make the canvas resize
+
+  QgsAnnotationLayer *layer = new QgsAnnotationLayer( QStringLiteral( "test" ), QgsAnnotationLayer::LayerOptions( QgsProject::instance()->transformContext() ) );
+  QVERIFY( layer->isValid() );
+  QgsProject::instance()->addMapLayers( { layer } );
+
+  QgsAnnotationPolygonItem *item1 = new QgsAnnotationPolygonItem( new QgsPolygon( new QgsLineString( QVector<QgsPoint> { QgsPoint( 1, 1 ), QgsPoint( 5, 1 ), QgsPoint( 5, 5 ), QgsPoint( 1, 5 ), QgsPoint( 1, 1 ) } ) ) );
+  item1->setZIndex( 1 );
+  const QString i1id = layer->addItem( item1 );
+  QCOMPARE( qgis::down_cast< QgsAnnotationPolygonItem * >( layer->item( i1id ) )->geometry()->asWkt(), QStringLiteral( "Polygon ((1 1, 5 1, 5 5, 1 5, 1 1))" ) );
+
+  layer->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+
+  canvas.setLayers( { layer } );
+  while ( !canvas.isDrawing() )
+  {
+    QgsApplication::processEvents();
+  }
+  canvas.waitWhileRendering();
+  QCOMPARE( canvas.renderedItemResults()->renderedItems().size(), 1 );
+
+  QgsAdvancedDigitizingDockWidget cadDock( &canvas );
+  QgsMapToolModifyAnnotation tool( &canvas, &cadDock );
+  canvas.setMapTool( &tool );
+
+  QSignalSpy spy( &tool, &QgsMapToolModifyAnnotation::itemSelected );
+  TestQgsMapToolUtils utils( &tool );
+
+  // click on item
+  utils.mouseMove( 1.5, 1.5 );
+  utils.mouseClick( 1.5, 1.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 1 ).toString(), i1id );
+
+  // click on a node
+  utils.mouseMove( 5, 5 );
+  utils.mouseClick( 5, 5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  // second click isn't selecting an item, so no new signals should be emitted
+  QCOMPARE( spy.count(), 1 );
+
+  // delete node
+  utils.keyClick( Qt::Key_Delete );
+  while ( !canvas.isDrawing() )
+  {
+    QgsApplication::processEvents();
+  }
+  canvas.waitWhileRendering();
+  QCOMPARE( canvas.renderedItemResults()->renderedItems().size(), 1 );
+
+  // check that node was deleted
+  QCOMPARE( qgis::down_cast< QgsAnnotationPolygonItem * >( layer->item( i1id ) )->geometry()->asWkt(), QStringLiteral( "Polygon ((1 1, 5 1, 1 5, 1 1))" ) );
+
+  // start a new delete node
+  // click on item -- it should already be selected, so this will start a new move, not emit the itemSelected signal
+  utils.mouseMove( 5, 1 );
+  utils.mouseClick( 5, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  QCOMPARE( spy.count(), 1 );
+
+  utils.keyClick( Qt::Key_Delete );
+  while ( !canvas.isDrawing() )
+  {
+    QgsApplication::processEvents();
+  }
+  canvas.waitWhileRendering();
+
+  // check that node was deleted -- this should delete the whole item, as its geometry was cleared
+  QCOMPARE( canvas.renderedItemResults()->renderedItems().size(), 0 );
+  QVERIFY( !layer->item( i1id ) );
+}
+
+void TestQgsMapToolEditAnnotation::testAddNode()
+{
+  QgsProject::instance()->clear();
+  QgsMapCanvas canvas;
+  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  canvas.setFrameStyle( QFrame::NoFrame );
+  canvas.resize( 600, 600 );
+  canvas.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+  canvas.show(); // to make the canvas resize
+
+  QgsAnnotationLayer *layer = new QgsAnnotationLayer( QStringLiteral( "test" ), QgsAnnotationLayer::LayerOptions( QgsProject::instance()->transformContext() ) );
+  QVERIFY( layer->isValid() );
+  QgsProject::instance()->addMapLayers( { layer } );
+
+  QgsAnnotationPolygonItem *item1 = new QgsAnnotationPolygonItem( new QgsPolygon( new QgsLineString( QVector<QgsPoint> { QgsPoint( 1, 1 ), QgsPoint( 5, 1 ), QgsPoint( 5, 5 ), QgsPoint( 1, 5 ), QgsPoint( 1, 1 ) } ) ) );
+  item1->setZIndex( 1 );
+  const QString i1id = layer->addItem( item1 );
+  QCOMPARE( qgis::down_cast< QgsAnnotationPolygonItem * >( layer->item( i1id ) )->geometry()->asWkt(), QStringLiteral( "Polygon ((1 1, 5 1, 5 5, 1 5, 1 1))" ) );
+
+  layer->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+
+  canvas.setLayers( { layer } );
+  while ( !canvas.isDrawing() )
+  {
+    QgsApplication::processEvents();
+  }
+  canvas.waitWhileRendering();
+  QCOMPARE( canvas.renderedItemResults()->renderedItems().size(), 1 );
+
+  QgsAdvancedDigitizingDockWidget cadDock( &canvas );
+  QgsMapToolModifyAnnotation tool( &canvas, &cadDock );
+  canvas.setMapTool( &tool );
+
+  QSignalSpy spy( &tool, &QgsMapToolModifyAnnotation::itemSelected );
+  TestQgsMapToolUtils utils( &tool );
+
+  // click on item
+  utils.mouseMove( 1.5, 1.5 );
+  utils.mouseClick( 1.5, 1.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 1 ).toString(), i1id );
+
+  // double-click a segment
+  utils.mouseMove( 5, 3 );
+  utils.mouseDoubleClick( 5, 3, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  // second click isn't selecting an item, so no new signals should be emitted
+  QCOMPARE( spy.count(), 1 );
+  while ( !canvas.isDrawing() )
+  {
+    QgsApplication::processEvents();
+  }
+  canvas.waitWhileRendering();
+  QCOMPARE( canvas.renderedItemResults()->renderedItems().size(), 1 );
+
+  // check that node was added
+  QCOMPARE( qgis::down_cast< QgsAnnotationPolygonItem * >( layer->item( i1id ) )->geometry()->asWkt(), QStringLiteral( "Polygon ((1 1, 5 1, 5 3, 5 5, 1 5, 1 1))" ) );
 }
 
 

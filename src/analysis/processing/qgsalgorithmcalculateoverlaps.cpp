@@ -18,6 +18,7 @@
 #include "qgsalgorithmcalculateoverlaps.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometryengine.h"
+#include "qgsdistancearea.h"
 
 ///@cond PRIVATE
 

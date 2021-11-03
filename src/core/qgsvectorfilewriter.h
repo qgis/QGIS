@@ -28,6 +28,7 @@
 #include "qgsrenderer.h"
 #include "qgsgeometryengine.h"
 #include "qgsfeaturesink.h"
+#include "qgsrendercontext.h"
 #include <ogr_api.h>
 
 class QgsSymbolLayer;

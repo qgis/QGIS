@@ -328,6 +328,24 @@ void MDAL::MemoryMesh::addFaces( size_t faceCount, size_t driverMaxVerticesPerFa
   std::move( newFaces.begin(), newFaces.end(), std::back_inserter( mFaces ) );
 }
 
+void MDAL::MemoryMesh::addEdges( size_t edgeCount, int *startVertexIndices, int *endVertexIndices )
+{
+  int maxVertex = mVertices.size();
+  for ( size_t edgeIndex = 0 ; edgeIndex < edgeCount; ++edgeIndex )
+  {
+    Edge edge;
+    if ( startVertexIndices[edgeIndex] >= maxVertex || endVertexIndices[edgeIndex] >= maxVertex )
+    {
+      MDAL::Log::error( Err_InvalidData, "Invalid vertex index when adding edges" );
+      return;
+    }
+    edge.startVertex = startVertexIndices[edgeIndex];
+    edge.endVertex = endVertexIndices[edgeIndex];
+
+    mEdges.push_back( std::move( edge ) );
+  }
+}
+
 MDAL::MemoryMesh::~MemoryMesh() = default;
 
 MDAL::MemoryMeshVertexIterator::MemoryMeshVertexIterator( const MDAL::MemoryMesh *mesh )

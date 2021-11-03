@@ -18,18 +18,20 @@
 
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
+#include "ui_qgsannotationitempropertieswidgetbase.h"
 #include <QPointer>
 
 class QgsAnnotationLayer;
 class QgsAnnotationItemBaseWidget;
 class QStackedWidget;
 
-class QgsAnnotationItemPropertiesWidget : public QgsMapLayerConfigWidget
+class QgsAnnotationItemPropertiesWidget : public QgsMapLayerConfigWidget, public Ui::QgsAnnotationItemPropertiesWidgetBase
 {
     Q_OBJECT
   public:
 
     QgsAnnotationItemPropertiesWidget( QgsAnnotationLayer *layer, QgsMapCanvas *canvas, QWidget *parent );
+    ~QgsAnnotationItemPropertiesWidget() override;
 
     void syncToLayer( QgsMapLayer *layer ) override;
     void setMapLayerConfigWidgetContext( const QgsMapLayerConfigWidgetContext &context ) override;
@@ -42,14 +44,17 @@ class QgsAnnotationItemPropertiesWidget : public QgsMapLayerConfigWidget
   private slots:
 
     void onChanged();
+    void onLayerPropertyChanged();
   private:
 
     void setItemId( const QString &itemId );
 
-    QStackedWidget *mStack = nullptr;
     QPointer< QgsAnnotationLayer > mLayer;
     QPointer< QgsAnnotationItemBaseWidget > mItemWidget;
     QWidget *mPageNoItem = nullptr;
+    bool mBlockLayerUpdates = false;
+
+    std::unique_ptr< QgsPaintEffect > mPaintEffect;
 
 };
 

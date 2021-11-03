@@ -22,6 +22,7 @@ __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
 from pprint import pformat
+import datetime
 import time
 
 from qgis.PyQt.QtCore import QCoreApplication
@@ -155,7 +156,11 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             if self.algorithm().provider().warningMessage():
                 self.feedback.reportError(self.algorithm().provider().warningMessage())
 
-            self.setProgressText(QCoreApplication.translate('AlgorithmDialog', 'Processing algorithm…'))
+            self.feedback.pushInfo(
+                QCoreApplication.translate('AlgorithmDialog', 'Algorithm started at: {}').format(
+                    datetime.datetime.now().replace(microsecond=0).isoformat()
+                )
+            )
 
             self.setInfo(
                 QCoreApplication.translate('AlgorithmDialog', '<b>Algorithm \'{0}\' starting&hellip;</b>').format(

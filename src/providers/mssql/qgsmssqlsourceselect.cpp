@@ -29,6 +29,7 @@
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
 #include "qgsmssqlconnection.h"
+#include "qgsmssqldatabase.h"
 #include "qgsproject.h"
 #include "qgsgui.h"
 #include "qgsiconutils.h"
@@ -508,18 +509,18 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
     mConnInfo += " service='" + service + '\'';
 
   QgsDebugMsg( QStringLiteral( "GetDatabase" ) );
-  QSqlDatabase db = QgsMssqlConnection::getDatabase( service, host, database, username, password );
+  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( service, host, database, username, password );
 
-  if ( !QgsMssqlConnection::openDatabase( db ) )
+  if ( !db->isValid() )
   {
     // Let user know we couldn't initialize the MSSQL provider
     QMessageBox::warning( this,
-                          tr( "MSSQL Provider" ), db.lastError().text() );
+                          tr( "MSSQL Provider" ), db->errorText() );
     return;
   }
 
   // Test for geometry columns table first.  Don't use it if not found.
-  QSqlQuery q = QSqlQuery( db );
+  QSqlQuery q = QSqlQuery( db->db() );
   q.setForwardOnly( true );
 
   if ( useGeometryColumns )
@@ -545,7 +546,7 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
   const QString query = QgsMssqlConnection::buildQueryForTables( cmbConnections->currentText(), allowGeometrylessTables );
 
   // issue the sql query
-  q = QSqlQuery( db );
+  q = QSqlQuery( db->db() );
   q.setForwardOnly( true );
   ( void )q.exec( query );
 

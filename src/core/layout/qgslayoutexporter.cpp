@@ -358,7 +358,7 @@ class LayoutContextSettingsRestorer
     QgsLayout *mLayout = nullptr;
     double mPreviousDpi = 0;
     QgsLayoutRenderContext::Flags mPreviousFlags = QgsLayoutRenderContext::Flags();
-    QgsRenderContext::TextRenderFormat mPreviousTextFormat = QgsRenderContext::TextFormatAlwaysOutlines;
+    Qgis::TextRenderFormat mPreviousTextFormat = Qgis::TextRenderFormat::AlwaysOutlines;
     int mPreviousExportLayer = 0;
     QgsVectorSimplifyMethod mPreviousSimplifyMethod;
     QStringList mExportThemes;

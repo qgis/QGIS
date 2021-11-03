@@ -20,8 +20,6 @@ extern "C"
 #include <spatialite.h>
 }
 
-#include <QUrl>
-
 #include <stdexcept>
 
 #include "qgsvirtuallayerprovider.h"
@@ -30,28 +28,23 @@ extern "C"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgslogger.h"
-#include "qgsapplication.h"
 
 #include "qgsvirtuallayerprovider.h"
 #include "qgsvirtuallayersqlitemodule.h"
 #include "qgsvirtuallayerqueryparser.h"
 
-#ifdef HAVE_GUI
-#include "qgssourceselectprovider.h"
-#include "qgsvirtuallayersourceselect.h"
-#endif
+#include <QUrl>
 
-const QString VIRTUAL_LAYER_KEY = QStringLiteral( "virtual" );
-const QString VIRTUAL_LAYER_DESCRIPTION = QStringLiteral( "Virtual layer data provider" );
-
-const QString VIRTUAL_LAYER_QUERY_VIEW = QStringLiteral( "_query" );
+const QString QgsVirtualLayerProvider::VIRTUAL_LAYER_KEY = QStringLiteral( "virtual" );
+const QString QgsVirtualLayerProvider::VIRTUAL_LAYER_DESCRIPTION = QStringLiteral( "Virtual layer data provider" );
+const QString QgsVirtualLayerProvider::VIRTUAL_LAYER_QUERY_VIEW = QStringLiteral( "_query" );
 
 static QString quotedColumn( QString name )
 {
   return "\"" + name.replace( QLatin1String( "\"" ), QLatin1String( "\"\"" ) ) + "\"";
 }
 
-#define PROVIDER_ERROR( msg ) do { mError = QgsError( msg, VIRTUAL_LAYER_KEY ); QgsDebugMsg( msg ); } while(0)
+#define PROVIDER_ERROR( msg ) do { mError = QgsError( msg, QgsVirtualLayerProvider::VIRTUAL_LAYER_KEY ); QgsDebugMsg( msg ); } while(0)
 
 
 QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const &uri,
@@ -469,7 +462,7 @@ bool QgsVirtualLayerProvider::createIt()
 
 void QgsVirtualLayerProvider::createVirtualTable( QgsVectorLayer *vlayer, const QString &vname )
 {
-  const QString createStr = QStringLiteral( "DROP TABLE IF EXISTS \"%1\"; CREATE VIRTUAL TABLE \"%1\" USING QgsVLayer(%2);" ).arg( vname, vlayer->id() );
+  const QString createStr = QStringLiteral( "DROP TABLE IF EXISTS \"%1\"; CREATE VIRTUAL TABLE \"%1\" USING QgsVLayer('%2');" ).arg( vname, vlayer->id() );
   Sqlite::Query::exec( mSqlite.get(), createStr );
 }
 
@@ -629,6 +622,11 @@ QString QgsVirtualLayerProvider::name() const
   return VIRTUAL_LAYER_KEY;
 }
 
+QString QgsVirtualLayerProvider::providerKey()
+{
+  return VIRTUAL_LAYER_KEY;
+}
+
 QString QgsVirtualLayerProvider::description() const
 {
   return VIRTUAL_LAYER_DESCRIPTION;
@@ -672,53 +670,15 @@ QgsVirtualLayerProvider *QgsVirtualLayerProviderMetadata::createProvider(
   return new QgsVirtualLayerProvider( uri, options, flags );
 }
 
-
-#ifdef HAVE_GUI
-
-//! Provider for virtual layers source select
-class QgsVirtualSourceSelectProvider : public QgsSourceSelectProvider
-{
-  public:
-
-    QString providerKey() const override { return QStringLiteral( "virtual" ); }
-    QString text() const override { return QObject::tr( "Virtual Layer" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 60; }
-    QString toolTip() const override { return QObject::tr( "Add Virtual Layer" ); }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddVirtualLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
-    {
-      return new QgsVirtualLayerSourceSelect( parent, fl, widgetMode );
-    }
-};
-
-
-QgsVirtualLayerProviderGuiMetadata::QgsVirtualLayerProviderGuiMetadata()
-  : QgsProviderGuiMetadata( VIRTUAL_LAYER_KEY )
-{
-}
-
-QList<QgsSourceSelectProvider *> QgsVirtualLayerProviderGuiMetadata::sourceSelectProviders()
-{
-  QList<QgsSourceSelectProvider *> providers;
-  providers << new QgsVirtualSourceSelectProvider;
-  return providers;
-}
-#endif
-
 QgsVirtualLayerProviderMetadata::QgsVirtualLayerProviderMetadata():
-  QgsProviderMetadata( VIRTUAL_LAYER_KEY, VIRTUAL_LAYER_DESCRIPTION )
+  QgsProviderMetadata( QgsVirtualLayerProvider::VIRTUAL_LAYER_KEY, QgsVirtualLayerProvider::VIRTUAL_LAYER_DESCRIPTION )
 {
 }
 
 
+#ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsVirtualLayerProviderMetadata();
-}
-
-#ifdef HAVE_GUI
-QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
-{
-  return new QgsVirtualLayerProviderGuiMetadata();
 }
 #endif

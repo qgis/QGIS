@@ -121,7 +121,7 @@ void QgsMapToolAdvancedDigitizing::canvasMoveEvent( QgsMapMouseEvent *e )
 void QgsMapToolAdvancedDigitizing::activate()
 {
   QgsMapToolEdit::activate();
-  connect( mCadDockWidget, &QgsAdvancedDigitizingDockWidget::pointChanged, this, &QgsMapToolAdvancedDigitizing::cadPointChanged );
+  connect( mCadDockWidget, &QgsAdvancedDigitizingDockWidget::pointChangedV2, this, &QgsMapToolAdvancedDigitizing::cadPointChanged );
   mCadDockWidget->enable();
   mSnapToGridCanvasItem = new QgsSnapToGridCanvasItem( mCanvas );
   QgsVectorLayer *layer = currentVectorLayer();
@@ -136,10 +136,15 @@ void QgsMapToolAdvancedDigitizing::activate()
 void QgsMapToolAdvancedDigitizing::deactivate()
 {
   QgsMapToolEdit::deactivate();
-  disconnect( mCadDockWidget, &QgsAdvancedDigitizingDockWidget::pointChanged, this, &QgsMapToolAdvancedDigitizing::cadPointChanged );
+  disconnect( mCadDockWidget, &QgsAdvancedDigitizingDockWidget::pointChangedV2, this, &QgsMapToolAdvancedDigitizing::cadPointChanged );
   mCadDockWidget->disable();
   delete mSnapToGridCanvasItem;
   mSnapToGridCanvasItem = nullptr;
+}
+
+QgsMapLayer *QgsMapToolAdvancedDigitizing::layer() const
+{
+  return canvas()->currentLayer();
 }
 
 void QgsMapToolAdvancedDigitizing::cadPointChanged( const QgsPointXY &point )

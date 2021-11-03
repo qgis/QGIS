@@ -22,6 +22,7 @@
 #include "qgshanaprimarykeys.h"
 #include "qgshanaprovider.h"
 #include "qgshanaresultset.h"
+#include "qgscoordinatetransform.h"
 
 #include "odbc/Forwards.h"
 

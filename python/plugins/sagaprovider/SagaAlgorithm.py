@@ -348,7 +348,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
         if crs is not None:
             for out in output_layers:
                 prjFile = os.path.splitext(out)[0] + '.prj'
-                with open(prjFile, 'w') as f:
+                with open(prjFile, 'wt', encoding='utf-8') as f:
                     f.write(crs.toWkt())
 
         for old, new in output_files_nonascii.items():

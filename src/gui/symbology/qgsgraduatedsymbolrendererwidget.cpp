@@ -1212,27 +1212,20 @@ void QgsGraduatedSymbolRendererWidget::changeRange( int rangeIdx )
 
   if ( dialog.exec() == QDialog::Accepted )
   {
-    bool ok = false;
-    double lowerValue = qgsPermissiveToDouble( dialog.lowerValue(), ok );
-    if ( ! ok )
-      lowerValue = 0.0;
-    double upperValue = qgsPermissiveToDouble( dialog.upperValue(), ok );
-    if ( ! ok )
-      upperValue = 0.0;
-    mRenderer->updateRangeUpperValue( rangeIdx, upperValue );
-    mRenderer->updateRangeLowerValue( rangeIdx, lowerValue );
+    mRenderer->updateRangeUpperValue( rangeIdx, dialog.upperValueDouble() );
+    mRenderer->updateRangeLowerValue( rangeIdx, dialog.lowerValueDouble() );
 
     //If the boundaries have to stay linked, we update the ranges above and below, as well as their label if needed
     if ( cbxLinkBoundaries->isChecked() )
     {
       if ( rangeIdx > 0 )
       {
-        mRenderer->updateRangeUpperValue( rangeIdx - 1, lowerValue );
+        mRenderer->updateRangeUpperValue( rangeIdx - 1, dialog.lowerValueDouble() );
       }
 
       if ( rangeIdx < mRenderer->ranges().size() - 1 )
       {
-        mRenderer->updateRangeLowerValue( rangeIdx + 1, upperValue );
+        mRenderer->updateRangeLowerValue( rangeIdx + 1, dialog.upperValueDouble() );
       }
     }
   }

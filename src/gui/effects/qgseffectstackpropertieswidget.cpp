@@ -211,6 +211,7 @@ void QgsEffectStackPropertiesWidget::updatePreview()
   painter.begin( &previewImage );
   painter.setRenderHint( QPainter::Antialiasing );
   QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
+  context.setFlag( Qgis::RenderContextFlag::RenderSymbolPreview, true );
   if ( mPreviewPicture.isNull() )
   {
     QPicture previewPic;

@@ -20,6 +20,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsspatialindex.h"
 #include "qgsvectordataprovider.h"
+#include "qgscoordinatetransform.h"
 
 class QDataStream;
 class QFile;

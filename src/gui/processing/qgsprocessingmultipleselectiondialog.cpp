@@ -22,6 +22,7 @@
 #include "qgsrasterlayer.h"
 #include "qgspluginlayer.h"
 #include "qgspointcloudlayer.h"
+#include "qgsannotationlayer.h"
 #include "qgsproject.h"
 #include "processing/models/qgsprocessingmodelchildparametersource.h"
 #include <QStandardItemModel>
@@ -71,6 +72,10 @@ QgsProcessingMultipleSelectionPanelWidget::QgsProcessingMultipleSelectionPanelWi
   populateList( availableOptions, selectedOptions );
 
   connect( mModel, &QStandardItemModel::itemChanged, this, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged );
+
+  // When user moves an item, a new item is created and another one is removed, so we need to fire selectionChanged
+  // see https://github.com/qgis/QGIS/issues/44270
+  connect( mModel, &QStandardItemModel::rowsRemoved, this, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged );
 }
 
 void QgsProcessingMultipleSelectionPanelWidget::setValueFormatter( const std::function<QString( const QVariant & )> &formatter )
@@ -362,6 +367,9 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
 
 
     QString id = layer->id();
+    if ( layer == project->mainAnnotationLayer() )
+      id = QStringLiteral( "main" );
+
     for ( int i = 0; i < mModel->rowCount(); ++i )
     {
       // try to match project layers to current layers
@@ -417,6 +425,17 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
       break;
     }
 
+    case QgsProcessing::TypeAnnotation:
+    {
+      const QList<QgsAnnotationLayer *> options = QgsProcessingUtils::compatibleAnnotationLayers( project, false );
+      for ( const QgsAnnotationLayer *layer : options )
+      {
+        addLayer( layer );
+      }
+
+      break;
+    }
+
     case QgsProcessing::TypePointCloud:
     {
       const QList<QgsPointCloudLayer *> options = QgsProcessingUtils::compatiblePointCloudLayers( project, false );
@@ -464,6 +483,11 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
       }
       const QList<QgsPointCloudLayer *> pointClouds = QgsProcessingUtils::compatiblePointCloudLayers( project );
       for ( const QgsPointCloudLayer *layer : pointClouds )
+      {
+        addLayer( layer );
+      }
+      const QList<QgsAnnotationLayer *> annotations = QgsProcessingUtils::compatibleAnnotationLayers( project );
+      for ( const QgsAnnotationLayer *layer : annotations )
       {
         addLayer( layer );
       }

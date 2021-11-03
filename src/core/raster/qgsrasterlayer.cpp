@@ -585,7 +585,7 @@ void QgsRasterLayer::init()
 {
   mRasterType = QgsRasterLayer::GrayOrUndefined;
 
-  setLegend( QgsMapLayerLegend::defaultRasterLegend( this ) );
+  whileBlocking( this )->setLegend( QgsMapLayerLegend::defaultRasterLegend( this ) );
 
   setRendererForDrawingStyle( QgsRaster::UndefinedDrawingStyle );
 
@@ -2230,7 +2230,7 @@ bool QgsRasterLayer::writeXml( QDomNode &layer_node,
     noDataRangeList.setAttribute( QStringLiteral( "useSrcNoData" ), mDataProvider->useSourceNoDataValue( bandNo ) );
 
     const auto constUserNoDataValues = mDataProvider->userNoDataValues( bandNo );
-    for ( const QgsRasterRange range : constUserNoDataValues )
+    for ( const QgsRasterRange &range : constUserNoDataValues )
     {
       QDomElement noDataRange = document.createElement( QStringLiteral( "noDataRange" ) );
 
@@ -2248,6 +2248,8 @@ bool QgsRasterLayer::writeXml( QDomNode &layer_node,
   }
 
   writeStyleManager( layer_node, document );
+
+  serverProperties()->writeXml( layer_node, document );
 
   //write out the symbology
   QString errorMsg;

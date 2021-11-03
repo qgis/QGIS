@@ -3107,7 +3107,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::prepareWriteAsVectorFormat
       try
       {
         // map filter rect back from destination CRS to layer CRS
-        filterRect = options.ct.transformBoundingBox( filterRect, QgsCoordinateTransform::ReverseTransform );
+        filterRect = options.ct.transformBoundingBox( filterRect, Qgis::TransformDirection::Reverse );
       }
       catch ( QgsCsException & )
       {

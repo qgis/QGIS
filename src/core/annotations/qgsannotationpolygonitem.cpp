@@ -21,6 +21,7 @@
 #include "qgssurface.h"
 #include "qgsfillsymbol.h"
 #include "qgsannotationitemnode.h"
+#include "qgsannotationitemeditoperation.h"
 
 QgsAnnotationPolygonItem::QgsAnnotationPolygonItem( QgsCurvePolygon *polygon )
   : QgsAnnotationItem()
@@ -98,38 +99,102 @@ QList<QgsAnnotationItemNode> QgsAnnotationPolygonItem::nodes() const
 {
   QList< QgsAnnotationItemNode > res;
 
-  auto processRing  = [&res]( const QgsCurve * ring )
+  auto processRing  = [&res]( const QgsCurve * ring, int ringId )
   {
     // we don't want a duplicate node for the closed ring vertex
     const int count = ring->isClosed() ? ring->numPoints() - 1 : ring->numPoints();
     res.reserve( res.size() + count );
     for ( int i = 0; i < count; ++i )
     {
-      res << QgsAnnotationItemNode( QgsPointXY( ring->xAt( i ), ring->yAt( i ) ), Qgis::AnnotationItemNodeType::VertexHandle );
+      res << QgsAnnotationItemNode( QgsVertexId( 0, ringId, i ), QgsPointXY( ring->xAt( i ), ring->yAt( i ) ), Qgis::AnnotationItemNodeType::VertexHandle );
     }
   };
 
   if ( const QgsCurve *ring = mPolygon->exteriorRing() )
   {
-    processRing( ring );
+    processRing( ring, 0 );
   }
   for ( int i = 0; i < mPolygon->numInteriorRings(); ++i )
   {
-    processRing( mPolygon->interiorRing( i ) );
+    processRing( mPolygon->interiorRing( i ), i + 1 );
   }
 
   return res;
 }
 
-QgsGeometry QgsAnnotationPolygonItem::rubberBandGeometry() const
+Qgis::AnnotationItemEditOperationResult QgsAnnotationPolygonItem::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
 {
-  return QgsGeometry( mPolygon->clone() );
+  switch ( operation->type() )
+  {
+    case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
+    {
+      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      if ( mPolygon->moveVertex( moveOperation->nodeId(), QgsPoint( moveOperation->after() ) ) )
+        return Qgis::AnnotationItemEditOperationResult::Success;
+      break;
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
+    {
+      QgsAnnotationItemEditOperationDeleteNode *deleteOperation = qgis::down_cast< QgsAnnotationItemEditOperationDeleteNode * >( operation );
+      if ( mPolygon->deleteVertex( deleteOperation->nodeId() ) )
+        return mPolygon->isEmpty() ? Qgis::AnnotationItemEditOperationResult::ItemCleared : Qgis::AnnotationItemEditOperationResult::Success;
+      break;
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
+    {
+      QgsAnnotationItemEditOperationAddNode *addOperation = qgis::down_cast< QgsAnnotationItemEditOperationAddNode * >( operation );
+
+      QgsPoint segmentPoint;
+      QgsVertexId endOfSegmentVertex;
+      mPolygon->closestSegment( addOperation->point(), segmentPoint, endOfSegmentVertex );
+      if ( mPolygon->insertVertex( endOfSegmentVertex, segmentPoint ) )
+        return Qgis::AnnotationItemEditOperationResult::Success;
+      break;
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
+    {
+      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
+      const QTransform transform = QTransform::fromTranslate( moveOperation->translationX(), moveOperation->translationY() );
+      mPolygon->transform( transform );
+      return Qgis::AnnotationItemEditOperationResult::Success;
+    }
+  }
+
+  return Qgis::AnnotationItemEditOperationResult::Invalid;
 }
 
-bool QgsAnnotationPolygonItem::transform( const QTransform &transform )
+QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPolygonItem::transientEditResults( QgsAbstractAnnotationItemEditOperation *operation )
 {
-  mPolygon->transform( transform );
-  return true;
+  switch ( operation->type() )
+  {
+    case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
+    {
+      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      std::unique_ptr< QgsCurvePolygon > modifiedPolygon( mPolygon->clone() );
+      if ( modifiedPolygon->moveVertex( moveOperation->nodeId(), QgsPoint( moveOperation->after() ) ) )
+      {
+        return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( std::move( modifiedPolygon ) ) );
+      }
+      break;
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
+    {
+      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
+      const QTransform transform = QTransform::fromTranslate( moveOperation->translationX(), moveOperation->translationY() );
+      std::unique_ptr< QgsCurvePolygon > modifiedPolygon( mPolygon->clone() );
+      modifiedPolygon->transform( transform );
+      return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( std::move( modifiedPolygon ) ) );
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
+    case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
+      break;
+  }
+  return nullptr;
 }
 
 QgsAnnotationPolygonItem *QgsAnnotationPolygonItem::create()

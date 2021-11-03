@@ -17,8 +17,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsrendercontext.h"
+#include "qgis.h"
 #include <QFlags>
+#include <QColor>
 
 class QgsProject;
 
@@ -165,7 +166,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
      * \see setDefaultTextRenderFormat()
      * \since QGIS 3.4.3
      */
-    QgsRenderContext::TextRenderFormat defaultTextRenderFormat() const
+    Qgis::TextRenderFormat defaultTextRenderFormat() const
     {
       return mDefaultTextRenderFormat;
     }
@@ -176,7 +177,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
      * \see defaultTextRenderFormat()
      * \since QGIS 3.4.3
      */
-    void setDefaultTextRenderFormat( QgsRenderContext::TextRenderFormat format )
+    void setDefaultTextRenderFormat( Qgis::TextRenderFormat format )
     {
       mDefaultTextRenderFormat = format;
     }
@@ -227,7 +228,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
 
     PlacementEngineVersion mPlacementVersion = PlacementEngineVersion2;
 
-    QgsRenderContext::TextRenderFormat mDefaultTextRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
+    Qgis::TextRenderFormat mDefaultTextRenderFormat = Qgis::TextRenderFormat::AlwaysOutlines;
 
 };
 

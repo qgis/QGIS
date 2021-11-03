@@ -108,9 +108,26 @@ Please note that we follow the XYZ convention of X/Y axes, i.e. top-left tile ha
 %End
   public:
 
-    static QgsTileMatrix fromWebMercator( int mZoomLevel );
+    static QgsTileMatrix fromWebMercator( int zoomLevel );
 %Docstring
 Returns a tile matrix for the usual web mercator
+%End
+
+    static QgsTileMatrix fromCustomDef( int zoomLevel, const QgsCoordinateReferenceSystem &crs,
+                                        const QgsPointXY &z0TopLeftPoint, double z0Dimension,
+                                        int z0MatrixWidth = 1, int z0MatrixHeight = 1 );
+%Docstring
+Returns a tile matrix for a specific CRS, top left point, zoom level 0 dimension in CRS units
+%End
+
+    static QgsTileMatrix fromTileMatrix( const int &zoomLevel, const QgsTileMatrix &tileMatrix );
+%Docstring
+Returns a tile matrix based on another one
+%End
+
+    QgsCoordinateReferenceSystem crs() const;
+%Docstring
+Returns the authority identifier for the CRS of the tile matrix
 %End
 
     int zoomLevel() const;
@@ -148,7 +165,7 @@ Returns extent of the given tile in this matrix
 Returns center of the given tile in this matrix
 %End
 
-    QgsTileRange tileRangeFromExtent( const QgsRectangle &mExtent );
+    QgsTileRange tileRangeFromExtent( const QgsRectangle &mExtent ) const;
 %Docstring
 Returns tile range that fully covers the given extent
 %End
@@ -156,6 +173,11 @@ Returns tile range that fully covers the given extent
     QPointF mapToTileCoordinates( const QgsPointXY &mapPoint ) const;
 %Docstring
 Returns row/column coordinates (floating point number) from the given point in map coordinates
+%End
+
+    bool isRootTileMatrix() const;
+%Docstring
+Returns the root status of the tile matrix (zoom level == 0)
 %End
 
 };

@@ -22,6 +22,7 @@
 #include "qgsexpression.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
+#include "qgsrendercontext.h"
 
 /**
  * \ingroup core

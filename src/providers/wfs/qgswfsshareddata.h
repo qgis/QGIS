@@ -48,10 +48,13 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
 
     const QgsWfsCapabilities::Capabilities &capabilities() const { return mCaps; }
 
+    //! Set a new filter and return the previous one. Only used to temporarily disable filtering when trying to get layer geometry type.
+    QString setWFSFilter( const QString &newFilter ) { QString oldFilter = mWFSFilter; mWFSFilter = newFilter; return oldFilter; }
+
   signals:
 
     //! Raise error
-    void raiseError( const QString &errorMsg );
+    void raiseError( const QString &errorMsg ) const;
 
     //! Extent has been updated
     void extentUpdated();
@@ -102,6 +105,9 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     //! Create GML parser
     QgsGmlStreamingParser *createParser() const;
 
+    //! Returns true if it is likely that the server doesn't properly honor axis order.
+    bool detectPotentialServerAxisOrderIssueFromSingleFeatureExtent() const override;
+
   private:
 
     //! WFS filter
@@ -111,7 +117,7 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     QString mSortBy;
 
     //! Log error to QgsMessageLog and raise it to the provider
-    void pushError( const QString &errorMsg ) override;
+    void pushError( const QString &errorMsg ) const override;
 
     void emitExtentUpdated() override { emit extentUpdated(); }
 

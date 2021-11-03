@@ -52,6 +52,9 @@ class GUI_EXPORT QgsExternalResourceConfigDlg : public QgsEditorConfigWidget, pr
     //! Modify RelativeDefault according to mRootPath content
     void enableRelativeDefault();
 
+    //! Enable interaction with a combobox item
+    void enableCbxItem( QComboBox *comboBox, int index, bool enabled );
+
     //! change storage type according to index from storage type combo box
     void changeStorageType( int storageTypeIndex );
 

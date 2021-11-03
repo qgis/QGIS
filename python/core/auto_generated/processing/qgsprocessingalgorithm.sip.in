@@ -989,6 +989,23 @@ need to handle deletion of the returned layer.
 .. versionadded:: 3.22
 %End
 
+    QgsAnnotationLayer *parameterAsAnnotationLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+%Docstring
+Evaluates the parameter with matching ``name`` to an annotation layer.
+
+Annotation layers will be taken from ``context``'s active project. Callers do not
+need to handle deletion of the returned layer.
+
+.. warning::
+
+   Working with annotation layers is generally not thread safe (unless the layers are from
+   a :py:class:`QgsProject` loaded directly in a background thread). Ensure your algorithm returns the
+   QgsProcessingAlgorithm.FlagNoThreading flag or only accesses annotation layers from a :py:func:`~QgsProcessingAlgorithm.prepareAlgorithm`
+   or :py:func:`~QgsProcessingAlgorithm.postProcessAlgorithm` step.
+
+.. versionadded:: 3.22
+%End
+
     static QString invalidSourceError( const QVariantMap &parameters, const QString &name );
 %Docstring
 Returns a user-friendly string to use as an error when a source parameter could
