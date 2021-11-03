@@ -90,7 +90,7 @@ QVariant QgsReportSectionModel::data( const QModelIndex &index, int role ) const
 
     case Qt::TextAlignmentRole:
     {
-      return ( index.column() == 2 || index.column() == 3 ) ? Qt::AlignRight : Qt::AlignLeft;
+      return ( index.column() == 2 || index.column() == 3 ) ? static_cast<Qt::Alignment::Int>( Qt::AlignRight ) : static_cast<Qt::Alignment::Int>( Qt::AlignLeft );
     }
 
     case Qt::EditRole:

@@ -173,7 +173,7 @@ QVariant QgsLayoutModel::data( const QModelIndex &index, int role ) const
       return QVariant::fromValue( qobject_cast<QObject *>( item ) );
 
     case Qt::TextAlignmentRole:
-      return Qt::AlignLeft & Qt::AlignVCenter;
+      return static_cast<Qt::Alignment::Int>( Qt::AlignLeft & Qt::AlignVCenter );
 
     case Qt::CheckStateRole:
       switch ( index.column() )
@@ -255,7 +255,7 @@ QVariant QgsLayoutModel::headerData( int section, Qt::Orientation orientation, i
     }
 
     case Qt::TextAlignmentRole:
-      return Qt::AlignLeft & Qt::AlignVCenter;
+      return static_cast<Qt::Alignment::Int>( Qt::AlignLeft & Qt::AlignVCenter );
 
     default:
       return QAbstractItemModel::headerData( section, orientation, role );
