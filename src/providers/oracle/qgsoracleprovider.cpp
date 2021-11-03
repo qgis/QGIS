@@ -219,6 +219,16 @@ QString QgsOracleProvider::getWorkspace() const
   return mUri.param( "dbworkspace" );
 }
 
+Qgis::VectorLayerTypeFlags QgsOracleProvider::vectorLayerTypeFlags() const
+{
+  Qgis::VectorLayerTypeFlags flags;
+  if ( mValid && mIsQuery )
+  {
+    flags.setFlag( Qgis::VectorLayerTypeFlag::SqlQuery );
+  }
+  return flags;
+}
+
 void QgsOracleProvider::setWorkspace( const QString &workspace )
 {
   QgsDataSourceUri prevUri( mUri );
@@ -2814,10 +2824,6 @@ bool QgsOracleProvider::convertField( QgsField &field )
   return true;
 }
 
-bool QgsOracleProvider::isQuery() const
-{
-  return mIsQuery;
-}
 
 Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer(
   const QString &uri,

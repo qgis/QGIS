@@ -222,7 +222,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       }
 
       // No raster support in createSqlVectorLayer (yet)
-      if ( vlayer && vlayer->isQuery() )
+      if ( vlayer && vlayer->isSqlQuery() )
       {
         const std::unique_ptr< QgsAbstractDatabaseProviderConnection> conn { QgsMapLayerUtils::databaseConnection( layer ) };
         if ( conn )

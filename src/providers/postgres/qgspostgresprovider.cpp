@@ -309,17 +309,21 @@ void QgsPostgresProvider::setListening( bool isListening )
   }
 }
 
+Qgis::VectorLayerTypeFlags QgsPostgresProvider::vectorLayerTypeFlags() const
+{
+  Qgis::VectorLayerTypeFlags flags;
+  if ( mValid && mIsQuery )
+  {
+    flags.setFlag( Qgis::VectorLayerTypeFlag::SqlQuery );
+  }
+  return flags;
+}
+
 void QgsPostgresProvider::reloadProviderData()
 {
   mShared->setFeaturesCounted( -1 );
   mLayerExtent.setMinimal();
 }
-
-bool QgsPostgresProvider::isQuery() const
-{
-  return mIsQuery;
-}
-
 
 QgsPostgresConn *QgsPostgresProvider::connectionRW()
 {

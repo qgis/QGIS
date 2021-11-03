@@ -17,6 +17,7 @@ import os
 import time
 from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
 from qgis.core import (
+    Qgis,
     QgsWkbTypes,
     QgsAbstractDatabaseProviderConnection,
     QgsProviderConnectionException,
@@ -477,7 +478,9 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         options.geometryColumn = 'geom'
         vl = conn.createSqlVectorLayer(options)
         self.assertTrue(vl.isValid())
-        self.assertTrue(vl.isQuery())
+        self.assertTrue(vl.isSqlQuery())
+        # Test flags
+        self.assertTrue(vl.vectorLayerTypeFlags() & Qgis.VectorLayerTypeFlag.SqlQuery)
         self.assertEqual(vl.geometryType(), QgsWkbTypes.PointGeometry)
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 0)
@@ -485,7 +488,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         options.sql = 'SELECT id, geom FROM qgis_test.query_layer1 WHERE id > 200 LIMIT 2'
         vl = conn.createSqlVectorLayer(options)
         self.assertTrue(vl.isValid())
-        self.assertTrue(vl.isQuery())
+        self.assertTrue(vl.isSqlQuery())
         self.assertEqual(vl.geometryType(), QgsWkbTypes.PointGeometry)
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 2)
@@ -493,7 +496,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         options.sql = 'SELECT id, geom FROM qgis_test.query_layer1 WHERE id > 210 LIMIT 2'
         vl = conn.createSqlVectorLayer(options)
         self.assertTrue(vl.isValid())
-        self.assertTrue(vl.isQuery())
+        self.assertTrue(vl.isSqlQuery())
         self.assertEqual(vl.geometryType(), QgsWkbTypes.PointGeometry)
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 1)
@@ -502,7 +505,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         options.filter = 'id > 210'
         vl = conn.createSqlVectorLayer(options)
         self.assertTrue(vl.isValid())
-        self.assertTrue(vl.isQuery())
+        self.assertTrue(vl.isSqlQuery())
         self.assertEqual(vl.geometryType(), QgsWkbTypes.PointGeometry)
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 1)
@@ -511,20 +514,21 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         options.primaryKeyColumns = ['DOES_NOT_EXIST']
         vl = conn.createSqlVectorLayer(options)
         self.assertFalse(vl.isValid())
-        self.assertFalse(vl.isQuery())
+        self.assertFalse(vl.vectorLayerTypeFlags() & Qgis.VectorLayerTypeFlag.SqlQuery)
+        self.assertFalse(vl.isSqlQuery())
 
         options.primaryKeyColumns = ['id']
         options.geometryColumn = 'DOES_NOT_EXIST'
         vl = conn.createSqlVectorLayer(options)
         self.assertFalse(vl.isValid())
-        self.assertFalse(vl.isQuery())
+        self.assertFalse(vl.isSqlQuery())
 
         options.sql = 'SELECT id, geom FROM qgis_test.query_layer1 WHERE id > 210 LIMIT 2'
         options.primaryKeyColumns = []
         options.geometryColumn = ''
         vl = conn.createSqlVectorLayer(options)
         self.assertTrue(vl.isValid())
-        self.assertTrue(vl.isQuery())
+        self.assertTrue(vl.isSqlQuery())
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 1)
 
@@ -534,7 +538,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         options.geometryColumn = ''
         vl = conn.createSqlVectorLayer(options)
         self.assertTrue(vl.isValid())
-        self.assertTrue(vl.isQuery())
+        self.assertTrue(vl.isSqlQuery())
         self.assertNotEqual(vl.geometryType(), QgsWkbTypes.PointGeometry)
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 1)
@@ -560,7 +564,10 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         options.geometryColumn = 'geom'
         vl = conn.createSqlVectorLayer(options)
         self.assertTrue(vl.isValid())
-        self.assertTrue(vl.isQuery())
+        self.assertTrue(vl.isSqlQuery())
+        # Test flags
+        self.assertTrue(vl.vectorLayerTypeFlags() & Qgis.VectorLayerTypeFlag.SqlQuery)
+
         self.assertEqual(vl.geometryType(), QgsWkbTypes.PointGeometry)
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 1)
@@ -569,7 +576,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         options.primaryKeyColumns = []
         options.geometryColumn = 'geom'
         vl = conn.createSqlVectorLayer(options)
-        self.assertTrue(vl.isQuery())
+        self.assertTrue(vl.isSqlQuery())
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.geometryType(), QgsWkbTypes.PointGeometry)
         features = [f for f in vl.getFeatures()]

@@ -102,7 +102,7 @@ class QgsHanaProvider final : public QgsVectorDataProvider
       const QMap<QString, QVariant> *options = nullptr
     );
 
-    bool isQuery() const override;
+    Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const override;
 
   private:
     QgsHanaConnectionRef createConnection() const;

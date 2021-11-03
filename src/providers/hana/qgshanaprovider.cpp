@@ -1555,9 +1555,15 @@ void QgsHanaProvider::updateFeatureIdMap( QgsFeatureId fid, const QgsAttributeMa
   mPrimaryKeyCntx->insertFid( fid, values );
 }
 
-bool QgsHanaProvider::isQuery() const
+
+Qgis::VectorLayerTypeFlags QgsHanaProvider::vectorLayerTypeFlags() const
 {
-  return mIsQuery;
+  Qgis::VectorLayerTypeFlags flags;
+  if ( mValid && mIsQuery )
+  {
+    flags.setFlag( Qgis::VectorLayerTypeFlag::SqlQuery );
+  }
+  return flags;
 }
 
 QgsCoordinateReferenceSystem QgsHanaProvider::crs() const

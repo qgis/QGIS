@@ -103,6 +103,14 @@ The development version
       ARGB32_Premultiplied
     };
 
+    enum class VectorLayerTypeFlag
+      {
+      SqlQuery
+    };
+    typedef QFlags<Qgis::VectorLayerTypeFlag> VectorLayerTypeFlags;
+
+
+
     enum class PythonMacroMode
       {
       Never,

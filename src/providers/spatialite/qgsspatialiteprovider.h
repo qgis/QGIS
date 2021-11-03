@@ -414,7 +414,9 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
     // QgsVectorDataProvider interface
   public:
     virtual QString defaultValueClause( int fieldIndex ) const override;
-    bool isQuery() const override;
+
+    Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const override;
+
 };
 
 class QgsSpatiaLiteProviderMetadata final: public QgsProviderMetadata

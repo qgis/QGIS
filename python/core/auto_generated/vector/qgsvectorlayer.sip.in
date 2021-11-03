@@ -452,12 +452,29 @@ Capabilities for this layer, comma separated and translated.
 %End
 
 
-    virtual bool isQuery() const;
+    bool isSqlQuery() const;
 %Docstring
 Returns ``True`` if the layer is a query (SQL) layer.
 
+.. note::
+
+   this is simply a shortcut to check if the SqlQuery flag
+   is set.
+
+.. seealso:: :py:func:`vectorLayerTypeFlags`
+
 .. versionadded:: 3.24
 %End
+
+    Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const;
+%Docstring
+Returns ``True`` if the layer is a query (SQL) layer.
+
+.. seealso:: :py:func:`isSqlQuery`
+
+.. versionadded:: 3.24
+%End
+
 
     QString dataComment() const;
 %Docstring
