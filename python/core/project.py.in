@@ -37,6 +37,7 @@ class QgisCore(PyQtBindings):
         super().__init__(project, 'core')
         self.sip_file = 'core.sip'
         self.exceptions = True
+        self.release_gil = True
         self.disabled_features = "@SIP_DISABLE_FEATURES@".split(";")
 
     def apply_user_defaults(self, tool):
