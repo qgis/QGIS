@@ -89,8 +89,8 @@ jobs:
           GITHUB_PR_NUMBER: ${{github.event.number}}
         run: |
           # Be aware that these instructions are duplicated in run-tests job
-          DOCKER_TAG=$(echo $( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo ${GITHUB_BASE_REF} || echo ${GITHUB_REF##*/} ) | sed 's/^master$/latest/')${{ matrix.docker-tag-suffix }}
-          CTEST_BUILD_NAME=$( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo "PR${GITHUB_PR_NUMBER}" || echo ${GITHUB_REF##*/} )"_${GITHUB_SHA}"
+          DOCKER_TAG=$(echo $( [[ ${GITHUB_EVENT_NAME} == pull_request ]] && echo ${GITHUB_BASE_REF} || echo ${GITHUB_REF##*/} ) | sed 's/^master$/latest/')${{ matrix.docker-tag-suffix }}
+          CTEST_BUILD_NAME=$( [[ ${GITHUB_EVENT_NAME} == pull_request ]] && echo "PR${GITHUB_PR_NUMBER}" || echo ${GITHUB_REF##*/} )"_${GITHUB_SHA}"
           echo "DOCKER_TAG=${DOCKER_TAG}" >> $GITHUB_ENV
           echo "CTEST_BUILD_NAME=${CTEST_BUILD_NAME}" >> $GITHUB_ENV
           echo "QT_VERSION=${{ matrix.qt-version }}" >> $GITHUB_ENV
@@ -324,7 +324,7 @@ jobs:
           GITHUB_PR_NUMBER: ${{github.event.number}}
         run: |
           # Be aware that these instructions are duplicated in build job
-          CTEST_BUILD_NAME=$( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo "PR${GITHUB_PR_NUMBER}" || echo ${GITHUB_REF##*/} )"_${GITHUB_SHA}_${{ matrix.test-batch }}"
+          CTEST_BUILD_NAME=$( [[ ${GITHUB_EVENT_NAME} == pull_request ]] && echo "PR${GITHUB_PR_NUMBER}" || echo ${GITHUB_REF##*/} )"_${GITHUB_SHA}_${{ matrix.test-batch }}"
           echo "CTEST_BUILD_NAME=${CTEST_BUILD_NAME}" >> $GITHUB_ENV
           echo "QT_VERSION=${{ matrix.qt-version }}" >> $GITHUB_ENV
 
