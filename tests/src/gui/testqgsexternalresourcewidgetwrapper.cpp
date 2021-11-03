@@ -22,6 +22,13 @@
 
 #include <QLineEdit>
 
+#ifdef WITH_QTWEBKIT
+#include <QWebFrame>
+#include <QWebView>
+#endif
+
+#define SAMPLE_IMAGE QStringLiteral( "%1/sample_image.png" ).arg( TEST_DATA_DIR )
+
 /**
  * @ingroup UnitTests
  * This is a unit test for the external resource widget wrapper
@@ -37,6 +44,7 @@ class TestQgsExternalResourceWidgetWrapper : public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void test_setNullValues();
+    void testBlankAfterValue();
 
   private:
     std::unique_ptr<QgsVectorLayer> vl;
@@ -63,6 +71,14 @@ void TestQgsExternalResourceWidgetWrapper::init()
   vl = qgis::make_unique<QgsVectorLayer>( QStringLiteral( "NoGeometry?field=link:string" ),
                                           QStringLiteral( "myvl" ),
                                           QLatin1String( "memory" ) );
+
+  QgsFeature feat1( vl->fields(),  1 );
+  feat1.setAttribute( QStringLiteral( "type" ), QStringLiteral( "type1" ) );
+  vl->dataProvider()->addFeature( feat1 );
+
+  QgsFeature feat2( vl->fields(),  2 );
+  feat2.setAttribute( QStringLiteral( "type" ), QStringLiteral( "type2" ) );
+  vl->dataProvider()->addFeature( feat2 );
 }
 
 void TestQgsExternalResourceWidgetWrapper::cleanup()
@@ -97,6 +113,43 @@ void TestQgsExternalResourceWidgetWrapper::test_setNullValues()
   QCOMPARE( spy.count(), 2 );
 
   delete widget;
+}
+
+void TestQgsExternalResourceWidgetWrapper::testBlankAfterValue()
+{
+  // test that application doesn't crash when we set a blank page in web preview
+  // after an item have been set
+
+  QgsExternalResourceWidgetWrapper ww( vl.get(), 0, nullptr, nullptr );
+  QWidget *widget = ww.createWidget( nullptr );
+  QVERIFY( widget );
+
+  QVariantMap config;
+  config.insert( QStringLiteral( "DocumentViewer" ), QgsExternalResourceWidget::Web );
+  ww.setConfig( config );
+
+  QgsFeature feat = vl->getFeature( 1 );
+  QVERIFY( feat.isValid() );
+  ww.setFeature( feat );
+
+  ww.initWidget( widget );
+  QVERIFY( ww.mQgsWidget );
+
+  widget->show();
+
+  QEventLoop loop;
+  connect( ww.mQgsWidget->mWebView, &QWebView::loadFinished, &loop, &QEventLoop::quit );
+
+  ww.setValues( QString( "file://%1" ).arg( SAMPLE_IMAGE ), QVariantList() );
+
+  QVERIFY( ww.mQgsWidget->mWebView->isVisible() );
+
+  loop.exec();
+
+  ww.setValues( QString(), QVariantList() );
+
+  QVERIFY( ww.mQgsWidget->mWebView->isVisible() );
+  QCOMPARE( ww.mQgsWidget->mWebView->url().toString(), QStringLiteral( "about:blank" ) );
 }
 
 QGSTEST_MAIN( TestQgsExternalResourceWidgetWrapper )
