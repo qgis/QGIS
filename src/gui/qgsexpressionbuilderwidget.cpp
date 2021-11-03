@@ -538,30 +538,15 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int 
   for ( const QVariant &value : qgis::as_const( values ) )
   {
     QString strValue;
-    bool forceRepresentedValue = false;
     if ( value.isNull() )
       strValue = QStringLiteral( "NULL" );
     else if ( value.type() == QVariant::Int || value.type() == QVariant::Double || value.type() == QVariant::LongLong )
       strValue = value.toString();
-    else if ( value.type() == QVariant::StringList )
-    {
-      QString result;
-      const QStringList strList = value.toStringList();
-      for ( QString str : strList )
-      {
-        if ( !result.isEmpty() )
-          result.append( QStringLiteral( ", " ) );
-
-        result.append( '\'' + str.replace( '\'', QLatin1String( "''" ) ) + '\'' );
-      }
-      strValue = QStringLiteral( "array(%1)" ).arg( result );
-      forceRepresentedValue = true;
-    }
     else
       strValue = '\'' + value.toString().replace( '\'', QLatin1String( "''" ) ) + '\'';
 
     QString representedValue = formatter->representValue( mLayer, fieldIndex, setup.config(), QVariant(), value );
-    if ( forceRepresentedValue || representedValue != value.toString() )
+    if ( representedValue != value.toString() )
       representedValue = representedValue + QStringLiteral( " [" ) + strValue + ']';
 
     QStandardItem *item = new QStandardItem( representedValue );

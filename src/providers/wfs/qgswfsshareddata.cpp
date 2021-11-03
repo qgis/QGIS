@@ -182,7 +182,7 @@ bool QgsWFSSharedData::computeFilter( QString &errorMsg )
   return true;
 }
 
-void QgsWFSSharedData::pushError( const QString &errorMsg ) const
+void QgsWFSSharedData::pushError( const QString &errorMsg )
 {
   QgsMessageLog::logMessage( errorMsg, tr( "WFS" ) );
   emit raiseError( errorMsg );
@@ -235,21 +235,6 @@ int QgsWFSSharedData::getFeatureCountFromServer() const
 {
   QgsWFSFeatureHitsRequest request( mURI );
   return request.getFeatureCount( mWFSVersion, mWFSFilter, mCaps );
-}
-
-bool QgsWFSSharedData::detectPotentialServerAxisOrderIssueFromSingleFeatureExtent() const
-{
-  Q_ASSERT( !mComputedExtent.isNull() );
-  if ( mWFSVersion.startsWith( QLatin1String( "1.1" ) ) &&
-       !mURI.ignoreAxisOrientation() &&
-       !mURI.invertAxisOrientation() &&
-       mSourceCrs.hasAxisInverted() &&
-       mCapabilityExtent.contains( mComputedExtent ) )
-  {
-    pushError( QObject::tr( "It is likely that there is an issue with coordinate axis order of geometries when interacting with the server. You may want to enable the Ignore axis orientation and/or Invert axis orientation settings of the WFS connection." ) );
-    return true;
-  }
-  return false;
 }
 
 // -------------------------

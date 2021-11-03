@@ -1984,20 +1984,6 @@ QDomElement QgsOgcUtils::SQLStatementToOgcFilter( const QgsSQLStatement &stateme
       attr.setValue( GML_NAMESPACE );
     filterElem.setAttributeNode( attr );
   }
-
-  QSet<QString> setNamespaceURI;
-  for ( const LayerProperties &props : layerProperties )
-  {
-    if ( !props.mNamespacePrefix.isEmpty() && !props.mNamespaceURI.isEmpty() &&
-         !setNamespaceURI.contains( props.mNamespaceURI ) )
-    {
-      setNamespaceURI.insert( props.mNamespaceURI );
-      QDomAttr attr = doc.createAttribute( QStringLiteral( "xmlns:" ) + props.mNamespacePrefix );
-      attr.setValue( props.mNamespaceURI );
-      filterElem.setAttributeNode( attr );
-    }
-  }
-
   filterElem.appendChild( exprRootElem );
   return filterElem;
 }
@@ -2625,13 +2611,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
 {
   QDomElement propElem = mDoc.createElement( mFilterPrefix + ":" + mPropertyName );
   if ( node->tableName().isEmpty() || mLayerProperties.size() == 1 )
-  {
-    if ( mLayerProperties.size() == 1 && !mLayerProperties[0].mNamespacePrefix.isEmpty() )
-      propElem.appendChild( mDoc.createTextNode(
-                              mLayerProperties[0].mNamespacePrefix + QStringLiteral( ":" ) + node->name() ) );
-    else
-      propElem.appendChild( mDoc.createTextNode( node->name() ) );
-  }
+    propElem.appendChild( mDoc.createTextNode( node->name() ) );
   else
   {
     QString tableName( mMapTableAliasToNames[node->tableName()] );

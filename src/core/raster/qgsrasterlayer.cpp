@@ -601,7 +601,7 @@ void QgsRasterLayer::init()
 {
   mRasterType = QgsRasterLayer::GrayOrUndefined;
 
-  whileBlocking( this )->setLegend( QgsMapLayerLegend::defaultRasterLegend( this ) );
+  setLegend( QgsMapLayerLegend::defaultRasterLegend( this ) );
 
   setRendererForDrawingStyle( QgsRaster::UndefinedDrawingStyle );
 

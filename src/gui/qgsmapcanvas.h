@@ -184,12 +184,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     void clearCache();
 
     /**
-     * Cancel any rendering job, in a blocking way. Used for application closing.
-     * \note not available in Python bindings
-     */
-    void cancelJobs() SIP_SKIP;
-
-    /**
      * Blocks until the rendering job has finished.
      *
      * In almost all cases you do NOT want to call this, as it will hang the UI

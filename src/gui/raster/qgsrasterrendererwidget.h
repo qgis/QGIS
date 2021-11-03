@@ -32,8 +32,6 @@ class QgsRasterMinMaxWidget;
 /**
  * \ingroup gui
  * \class QgsRasterRendererWidget
- *
- * \brief Abstract base class for widgets which configure a QgsRasterRenderer.
  */
 class GUI_EXPORT QgsRasterRendererWidget: public QWidget
 {
@@ -47,25 +45,9 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
       , mExtent( extent )
     {}
 
-    /**
-     * Creates a new renderer, using the properties defined in the widget.
-     *
-     * The caller takes ownership of the returned renderer.
-     */
     virtual QgsRasterRenderer *renderer() = 0 SIP_FACTORY;
 
-    /**
-     * Sets the raster \a layer associated with the widget.
-     *
-     * \see rasterLayer()
-     */
     void setRasterLayer( QgsRasterLayer *layer ) { mRasterLayer = layer; }
-
-    /**
-     * Returns the raster layer associated with the widget.
-     *
-     * \see setRasterLayer()
-     */
     const QgsRasterLayer *rasterLayer() const { return mRasterLayer; }
 
     /**

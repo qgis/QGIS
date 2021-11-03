@@ -345,24 +345,6 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
   applyDataDefinedSymbology( context, mPen, mSelPen, offset );
 
   const QPen pen = context.selected() ? mSelPen : mPen;
-
-  if ( !pen.dashPattern().isEmpty() )
-  {
-    // check for a null (all 0) dash component, and shortcut out early if so -- these lines are rendered as "no pen"
-    const QVector<double> pattern = pen.dashPattern();
-    bool foundNonNull = false;
-    for ( int i = 0; i < pattern.size(); ++i )
-    {
-      if ( i % 2 == 0  && !qgsDoubleNear( pattern[i], 0 ) )
-      {
-        foundNonNull = true;
-        break;
-      }
-    }
-    if ( !foundNonNull )
-      return;
-  }
-
   p->setBrush( Qt::NoBrush );
 
   // Disable 'Antialiasing' if the geometry was generalized in the current RenderContext (We known that it must have least #2 points).

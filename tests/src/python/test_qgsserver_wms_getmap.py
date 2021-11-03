@@ -1806,25 +1806,6 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Tiled_Labels_True")
 
-        # Check with rotated labels and tiled=true
-        qs = "?" + "&".join(["%s=%s" % i for i in list({
-            "MAP": urllib.parse.quote(
-                os.path.join(self.testdata_path, 'wms_tile_buffer.qgs')),
-            "SERVICE": "WMS",
-            "VERSION": "1.3.0",
-            "REQUEST": "GetMap",
-            "BBOX": "317914,6163276,327923,6173244",
-            "CRS": "EPSG:3857",
-            "WIDTH": "512",
-            "HEIGHT": "512",
-            "LAYERS": "wms_tile_buffer_labels_rotated",
-            "FORMAT": "image/png",
-            "TILED": "true"
-        }.items())])
-
-        r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetMap_Tiled_Rotated_Labels_True")
-
     @unittest.skipIf(os.getenv('QGIS_CONTINUOUS_INTEGRATION_RUN'), "This tests fails on GH workflow")
     def test_mode8bit_with_transparency(self):
         # 8 bits

@@ -1792,7 +1792,7 @@ void QgsMapLayer::setLegend( QgsMapLayerLegend *legend )
   if ( mLegend )
   {
     mLegend->setParent( this );
-    connect( mLegend, &QgsMapLayerLegend::itemsChanged, this, &QgsMapLayer::legendChanged, Qt::UniqueConnection );
+    connect( mLegend, &QgsMapLayerLegend::itemsChanged, this, &QgsMapLayer::legendChanged );
   }
 
   emit legendChanged();

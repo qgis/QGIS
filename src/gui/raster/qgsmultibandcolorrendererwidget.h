@@ -41,12 +41,9 @@ class GUI_EXPORT QgsMultiBandColorRendererWidget: public QgsRasterRendererWidget
     QgsMultiBandColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) { return new QgsMultiBandColorRendererWidget( layer, extent ); }
 
-    QgsRasterRenderer *renderer() override SIP_FACTORY;
+    QgsRasterRenderer *renderer() override;
     void setMapCanvas( QgsMapCanvas *canvas ) override;
 
-    /**
-     * Sets the widget state from the specified renderer.
-     */
     void setFromRenderer( const QgsRasterRenderer *r );
 
     QString min( int index = 0 ) override;

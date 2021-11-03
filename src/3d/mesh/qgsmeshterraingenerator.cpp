@@ -72,7 +72,7 @@ float QgsMeshTerrainGenerator::rootChunkError( const Qgs3DMapSettings & ) const
 void QgsMeshTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) const
 {
   float min = std::numeric_limits<float>::max();
-  float max = -std::numeric_limits<float>::max();
+  float max = std::numeric_limits<float>::min();
 
   for ( int i = 0; i < mTriangularMesh.vertices().count(); ++i )
   {
@@ -123,7 +123,25 @@ QgsTerrainGenerator::Type QgsMeshTerrainGenerator::type() const {return QgsTerra
 
 QgsRectangle QgsMeshTerrainGenerator::extent() const
 {
-  return mTriangularMesh.extent();
+  QgsRectangle layerextent;
+  if ( mLayer )
+    layerextent = mLayer->extent();
+  else
+    return QgsRectangle();
+
+  QgsCoordinateTransform terrainToMapTransform( mLayer->crs(), mCrs, mTransformContext );
+  QgsRectangle extentInMap;
+
+  try
+  {
+    extentInMap = terrainToMapTransform.transform( mLayer->extent() );
+  }
+  catch ( QgsCsException & )
+  {
+    extentInMap = mLayer->extent();
+  }
+
+  return extentInMap;
 }
 
 void QgsMeshTerrainGenerator::writeXml( QDomElement &elem ) const
@@ -164,7 +182,7 @@ void QgsMeshTerrainGenerator::updateTriangularMesh()
 {
   if ( meshLayer() )
   {
-    const QgsCoordinateTransform transform( meshLayer()->crs(), mCrs, mTransformContext );
+    QgsCoordinateTransform transform( mCrs, meshLayer()->crs(), mTransformContext );
     meshLayer()->updateTriangularMesh( transform );
     mTriangularMesh = *meshLayer()->triangularMesh();
   }

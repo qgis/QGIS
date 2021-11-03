@@ -37,12 +37,9 @@ class GUI_EXPORT QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget
 
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) SIP_FACTORY { return new QgsSingleBandGrayRendererWidget( layer, extent ); }
 
-    QgsRasterRenderer *renderer() SIP_FACTORY override;
+    QgsRasterRenderer *renderer() override;
     void setMapCanvas( QgsMapCanvas *canvas ) override;
 
-    /**
-     * Sets the widget state from the specified renderer.
-     */
     void setFromRenderer( const QgsRasterRenderer *r );
 
     QString min( int index = 0 ) override { Q_UNUSED( index ) return mMinLineEdit->text(); }

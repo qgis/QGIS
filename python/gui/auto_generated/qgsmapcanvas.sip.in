@@ -133,7 +133,6 @@ Make sure to remove any rendered images from cache (does nothing if cache is not
 .. versionadded:: 2.4
 %End
 
-
     void waitWhileRendering();
 %Docstring
 Blocks until the rendering job has finished.

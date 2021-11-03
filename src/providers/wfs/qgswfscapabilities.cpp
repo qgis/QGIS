@@ -109,7 +109,7 @@ QString QgsWfsCapabilities::Capabilities::getNamespaceParameterValue( const QStr
   bool tryNameSpacing = ( !namespaces.isEmpty() && typeName.contains( ':' ) );
   if ( tryNameSpacing )
   {
-    QString prefixOfTypename = QgsWFSUtils::nameSpacePrefix( typeName );
+    QString prefixOfTypename = typeName.section( ':', 0, 0 );
     return "xmlns(" + prefixOfTypename +
            ( WFSVersion.startsWith( QLatin1String( "2.0" ) ) ? "," : "=" ) +
            namespaces + ")";
@@ -372,6 +372,8 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
             }
           }
         }
+
+        break;
       }
     }
   }

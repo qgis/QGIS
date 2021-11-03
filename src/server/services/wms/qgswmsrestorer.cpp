@@ -73,18 +73,17 @@ QgsLayerRestorer::~QgsLayerRestorer()
 {
   for ( QgsMapLayer *layer : mLayerSettings.keys() )
   {
-    // Firstly check if a SLD file has been loaded for rendering and removed it
+    QgsLayerSettings settings = mLayerSettings[layer];
+    layer->styleManager()->setCurrentStyle( settings.mNamedStyle );
+    layer->setName( mLayerSettings[layer].name );
+
+    // if a SLD file has been loaded for rendering, we restore the previous style
     const QString sldStyleName { layer->customProperty( "sldStyleName", "" ).toString() };
     if ( !sldStyleName.isEmpty() )
     {
       layer->styleManager()->removeStyle( sldStyleName );
       layer->removeCustomProperty( "sldStyleName" );
     }
-
-    // Then restore the previous style
-    const QgsLayerSettings settings = mLayerSettings[layer];
-    layer->styleManager()->setCurrentStyle( settings.mNamedStyle );
-    layer->setName( mLayerSettings[layer].name );
 
     switch ( layer->type() )
     {

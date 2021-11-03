@@ -1070,12 +1070,6 @@ namespace QgsWfs
 
         hrefString = mapUrl.toString();
 
-        QString wfsSchema;
-        if ( mWfsParameters.version().isEmpty() || mWfsParameters.versionAsNumber() >= QgsProjectVersion( 1, 1, 0 ) )
-          wfsSchema = QStringLiteral( "http://schemas.opengis.net/wfs/1.1.0/wfs.xsd" );
-        else
-          wfsSchema = QStringLiteral( "http://schemas.opengis.net/wfs/1.0.0/wfs.xsd" );
-
         //wfs:FeatureCollection valid
         fcString = QStringLiteral( "<wfs:FeatureCollection" );
         fcString += " xmlns:wfs=\"" + WFS_NAMESPACE + "\"";
@@ -1085,7 +1079,7 @@ namespace QgsWfs
         fcString += QLatin1String( " xmlns:xlink=\"http://www.w3.org/1999/xlink\"" );
         fcString += " xmlns:qgs=\"" + QGS_NAMESPACE + "\"";
         fcString += QLatin1String( " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" );
-        fcString += " xsi:schemaLocation=\"" + WFS_NAMESPACE + " " + wfsSchema + " " + QGS_NAMESPACE + " " + hrefString.replace( QLatin1String( "&" ), QLatin1String( "&amp;" ) ) + "\"";
+        fcString += " xsi:schemaLocation=\"" + WFS_NAMESPACE + " http://schemas.opengis.net/wfs/1.0.0/wfs.xsd " + QGS_NAMESPACE + " " + hrefString.replace( QLatin1String( "&" ), QLatin1String( "&amp;" ) ) + "\"";
         fcString += "\n timeStamp=\"" + now.toString( Qt::ISODate ) + "\"";
         fcString += "\n numberOfFeatures=\"" + QString::number( numberOfFeatures ) + "\"";
         fcString += QLatin1String( ">\n" );
@@ -1178,12 +1172,6 @@ namespace QgsWfs
 
         hrefString = mapUrl.toString();
 
-        QString wfsSchema;
-        if ( mWfsParameters.version().isEmpty() || mWfsParameters.versionAsNumber() >= QgsProjectVersion( 1, 1, 0 ) )
-          wfsSchema = QStringLiteral( "http://schemas.opengis.net/wfs/1.1.0/wfs.xsd" );
-        else
-          wfsSchema = QStringLiteral( "http://schemas.opengis.net/wfs/1.0.0/wfs.xsd" );
-
         //wfs:FeatureCollection valid
         fcString = QStringLiteral( "<wfs:FeatureCollection" );
         fcString += " xmlns:wfs=\"" + WFS_NAMESPACE + "\"";
@@ -1193,7 +1181,7 @@ namespace QgsWfs
         fcString += QLatin1String( " xmlns:xlink=\"http://www.w3.org/1999/xlink\"" );
         fcString += " xmlns:qgs=\"" + QGS_NAMESPACE + "\"";
         fcString += QLatin1String( " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" );
-        fcString += " xsi:schemaLocation=\"" + WFS_NAMESPACE + " " + wfsSchema + " " + QGS_NAMESPACE + " " + hrefString.replace( QLatin1String( "&" ), QLatin1String( "&amp;" ) ) + "\"";
+        fcString += " xsi:schemaLocation=\"" + WFS_NAMESPACE + " http://schemas.opengis.net/wfs/1.0.0/wfs.xsd " + QGS_NAMESPACE + " " + hrefString.replace( QLatin1String( "&" ), QLatin1String( "&amp;" ) ) + "\"";
         fcString += QLatin1String( ">\n" );
 
         response.write( fcString.toUtf8() );

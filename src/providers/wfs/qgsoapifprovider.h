@@ -142,7 +142,7 @@ class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedShared
   signals:
 
     //! Raise error
-    void raiseError( const QString &errorMsg ) const;
+    void raiseError( const QString &errorMsg );
 
     //! Extent has been updated
     void extentUpdated();
@@ -186,7 +186,7 @@ class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedShared
                                    QString &untranslatedPart );
 
     //! Log error to QgsMessageLog and raise it to the provider
-    void pushError( const QString &errorMsg ) const override;
+    void pushError( const QString &errorMsg ) override;
 
     void emitExtentUpdated() override { emit extentUpdated(); }
 
