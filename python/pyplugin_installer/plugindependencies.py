@@ -79,8 +79,26 @@ def find_dependencies(plugin_id, plugin_data=None, plugin_deps=None, installed_p
             "version_installed": installed_plugins.get(name, None),
             "version_required": version_required,
             "version_available": plugin_data[p_id].get('version_available', None),
+            "use_stable_version": True,  # Prefer stable by default
             "action": None,
         })
+        version_available_stable = plugin_data[p_id].get('version_available_stable', None)
+        version_available_experimental = plugin_data[p_id].get('version_available_experimental', None)
+
+        if version_required is not None and version_required == version_available_stable:
+            affected_plugin["version_available"] = version_available_stable
+            affected_plugin["use_stable_version"] = True
+        elif version_required is not None and version_required == version_available_experimental:
+            affected_plugin["version_available"] = version_available_experimental
+            affected_plugin["use_stable_version"] = False
+        elif version_required is None:
+            if version_available_stable:  # None if not found, "" if not offered
+                # Prefer the stable version, if any
+                affected_plugin["version_available"] = version_available_stable
+                affected_plugin["use_stable_version"] = True
+            else:  # The only available version is experimental
+                affected_plugin["version_available"] = version_available_experimental
+                affected_plugin["use_stable_version"] = False
 
         # Install is needed
         if name not in installed_plugins:
@@ -95,7 +113,7 @@ def find_dependencies(plugin_id, plugin_data=None, plugin_deps=None, installed_p
         else:
             continue
 
-        if affected_plugin['version_required'] == affected_plugin['version_available'] or affected_plugin['version_required'] is None:
+        if version_required == affected_plugin['version_available'] or version_required is None:
             destination_list.update({name: affected_plugin})
         else:
             affected_plugin['error'] = 'unavailable {}'.format(affected_plugin['action'])
