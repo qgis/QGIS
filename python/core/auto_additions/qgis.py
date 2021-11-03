@@ -72,13 +72,10 @@ Qgis.DataType.__doc__ = 'Raster data types.\nThis is modified and extended copy 
 # --
 Qgis.DataType.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.SqlQuery = Qgis.VectorLayerTypeFlag.SqlQuery
-Qgis.SqlQuery.is_monkey_patched = True
-Qgis.SqlQuery.__doc__ = "SQL query layer"
+Qgis.VectorLayerTypeFlag.SqlQuery.__doc__ = "SQL query layer"
 Qgis.VectorLayerTypeFlag.__doc__ = 'Vector layer type flags.\n\n.. versionadded:: 3.24\n\n' + '* ``SqlQuery``: ' + Qgis.VectorLayerTypeFlag.SqlQuery.__doc__
 # --
 Qgis.VectorLayerTypeFlag.baseClass = Qgis
-QgsVectorLayer.VectorLayerTypeFlags = Qgis.VectorLayerTypeFlags
 # monkey patching scoped based enum
 Qgis.Never = Qgis.PythonMacroMode.Never
 Qgis.Never.is_monkey_patched = True

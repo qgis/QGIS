@@ -140,13 +140,13 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.24
      */
-    enum class VectorLayerTypeFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( Qgis, VectorLayerTypeFlag ) : int
-      {
+    enum class VectorLayerTypeFlag : int
+    {
       SqlQuery = 1 << 0 //!< SQL query layer
     };
     Q_ENUM( VectorLayerTypeFlag )
     //! Vector layer type flags
-    Q_DECLARE_FLAGS( VectorLayerTypeFlags, VectorLayerTypeFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsVectorLayer, VectorLayerTypeFlags )
+    Q_DECLARE_FLAGS( VectorLayerTypeFlags, VectorLayerTypeFlag )
 
 
     /**

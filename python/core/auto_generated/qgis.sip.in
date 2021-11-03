@@ -104,7 +104,7 @@ The development version
     };
 
     enum class VectorLayerTypeFlag
-      {
+    {
       SqlQuery
     };
     typedef QFlags<Qgis::VectorLayerTypeFlag> VectorLayerTypeFlags;
