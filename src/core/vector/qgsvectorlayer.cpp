@@ -372,9 +372,14 @@ QString QgsVectorLayer::capabilitiesString() const
   return QString();
 }
 
-bool QgsVectorLayer::isQuery() const
+bool QgsVectorLayer::isSqlQuery() const
 {
-  return mDataProvider && mDataProvider->isQuery();
+  return mDataProvider && mDataProvider->isSqlQuery();
+}
+
+Qgis::VectorLayerTypeFlags QgsVectorLayer::vectorLayerTypeFlags() const
+{
+  return mDataProvider ? mDataProvider->vectorLayerTypeFlags() : Qgis::VectorLayerTypeFlags();
 }
 
 QString QgsVectorLayer::dataComment() const

@@ -23,7 +23,8 @@ import time
 import qgis  # NOQA
 from osgeo import gdal, ogr
 from providertestbase import ProviderTestCase
-from qgis.core import (QgsFeature,
+from qgis.core import (Qgis,
+                       QgsFeature,
                        QgsCoordinateReferenceSystem,
                        QgsFeatureRequest,
                        QgsFeatureSink,
@@ -2337,7 +2338,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         g = [f.geometry() for f in vl.getFeatures()][0]
         self.assertEqual(g.asWkt(), 'Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))')
 
-    def testIsQuery(self):
+    def testIsSqlQuery(self):
         """Test that isQuery returns what it should in case of simple filters"""
 
         tmp_dir = QTemporaryDir()
@@ -2357,13 +2358,19 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
 
         vl1 = QgsVectorLayer(f'{tmpfile}|subset=SELECT * FROM test WHERE "text_field"=\'one\''.format(tmpfile), 'test', 'ogr')
         self.assertTrue(vl1.isValid())
-        self.assertTrue(vl1.isQuery())
+        self.assertTrue(vl1.isSqlQuery())
         self.assertEqual(vl1.featureCount(), 1)
+
+        # Test flags
+        self.assertTrue(vl1.vectorLayerTypeFlags() & Qgis.VectorLayerTypeFlag.SqlQuery)
 
         vl2 = QgsVectorLayer(f'{tmpfile}|subset="text_field"=\'one\''.format(tmpfile), 'test', 'ogr')
         self.assertTrue(vl2.isValid())
-        self.assertFalse(vl2.isQuery())
+        self.assertFalse(vl2.isSqlQuery())
         self.assertEqual(vl2.featureCount(), 1)
+
+        # Test flags
+        self.assertFalse(vl2.vectorLayerTypeFlags() & Qgis.VectorLayerTypeFlag.SqlQuery)
 
 
 if __name__ == '__main__':

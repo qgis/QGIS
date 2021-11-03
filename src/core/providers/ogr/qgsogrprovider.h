@@ -124,7 +124,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
                                        QgsFeedback *feedback = nullptr ) const override;
     QgsFeatureSource::SpatialIndexPresence hasSpatialIndex() const override;
-    bool isQuery() const override;
+    Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const override;
 
     QString name() const override;
     static QString providerKey();

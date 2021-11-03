@@ -167,13 +167,21 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     /**
      * Returns TRUE if the layer is a query (SQL) layer.
      *
-     * \note the default implementation return FALSE, individual providers
-     *       must override if they support query layers.
+     * \note this is simply a shortcut to check if the SqlQuery flag
+     *       is set.
      *
+     *\see vectorLayerTypeFlags()
      * \since QGIS 3.24
      */
-    virtual bool isQuery() const;
+    virtual bool isSqlQuery() const;
 
+    /**
+     * Returns the vector layer type flags.
+     *
+     * \see isSqlQuery()
+     * \since QGIS 3.24
+     */
+    virtual Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const;
 
     /**
      * Will always return FeatureAvailability::FeaturesAvailable or

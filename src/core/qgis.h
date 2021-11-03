@@ -136,6 +136,20 @@ class CORE_EXPORT Qgis
     Q_ENUM( DataType )
 
     /**
+     * Vector layer type flags.
+     *
+     * \since QGIS 3.24
+     */
+    enum class VectorLayerTypeFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( Qgis, VectorLayerTypeFlag ) : int
+      {
+      SqlQuery = 1 << 0 //!< SQL query layer
+    };
+    Q_ENUM( VectorLayerTypeFlag )
+    //! Vector layer type flags
+    Q_DECLARE_FLAGS( VectorLayerTypeFlags, VectorLayerTypeFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsVectorLayer, VectorLayerTypeFlags )
+
+
+    /**
      * Authorisation to run Python Macros
      * \since QGIS 3.10
      */

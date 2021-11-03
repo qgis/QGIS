@@ -189,7 +189,7 @@ class QgsOracleProvider final: public QgsVectorDataProvider
      */
     QString getWorkspace() const;
 
-    bool isQuery() const override;
+    Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const override;
 
   private:
     QString whereClause( QgsFeatureId featureId, QVariantList &args ) const;

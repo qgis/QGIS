@@ -23,7 +23,8 @@ from qgis.PyQt.QtCore import QDate, QDateTime, QVariant, Qt, QDateTime, QDate, Q
 from qgis.PyQt.QtGui import QPainter, QColor
 from qgis.PyQt.QtXml import QDomDocument
 
-from qgis.core import (QgsWkbTypes,
+from qgis.core import (Qgis,
+                       QgsWkbTypes,
                        QgsAction,
                        QgsAuxiliaryStorage,
                        QgsCoordinateTransformContext,
@@ -3708,6 +3709,12 @@ class TestQgsVectorLayerTransformContext(unittest.TestCase):
             'test', 'no')
         vl2.readXml(elem, QgsReadWriteContext())
         self.assertEqual(vl2.subsetString(), 'xxxxxxxxx')
+
+    def testLayerTypeFlags(self):
+        """Basic API test, DB providers that support query layers should test the flag individually"""
+
+        layer = QgsVectorLayer("point?crs=epsg:4326&field=name:string", "Scratch point layer", "memory")
+        self.assertEqual(layer.vectorLayerTypeFlags(), Qgis.VectorLayerTypeFlags())
 
     def testLayerWithoutProvider(self):
         """Test that we don't crash when invoking methods on a layer with a broken provider"""

@@ -574,9 +574,22 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Returns TRUE if the layer is a query (SQL) layer.
      *
+     * \note this is simply a shortcut to check if the SqlQuery flag
+     *       is set.
+     *
+     * \see vectorLayerTypeFlags()
      * \since QGIS 3.24
      */
-    virtual bool isQuery() const;
+    bool isSqlQuery() const;
+
+    /**
+     * Returns TRUE if the layer is a query (SQL) layer.
+     *
+     * \see isSqlQuery()
+     * \since QGIS 3.24
+     */
+    Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const;
+
 
     /**
      * Returns a description for this layer as defined in the data provider.

@@ -558,7 +558,7 @@ class TestPyQgsProviderConnectionBase():
         options.primaryKeyColumns = table_info.primaryKeyColumns()
 
         vl = conn.createSqlVectorLayer(options)
-        self.assertTrue(vl.isQuery())
+        self.assertTrue(vl.isSqlQuery())
         self.assertTrue(vl.isValid())
         self.assertTrue(vl.isSpatial())
         self.assertEqual(vl.name(), options.layerName)
@@ -572,7 +572,7 @@ class TestPyQgsProviderConnectionBase():
         if sql_layer_capabilities & Qgis.SqlLayerDefinitionCapability.PrimaryKeys:
             options.primaryKeyColumns = []
             vl = conn.createSqlVectorLayer(options)
-            self.assertTrue(vl.isQuery())
+            self.assertTrue(vl.isSqlQuery())
             self.assertTrue(vl.isValid())
             self.assertTrue(vl.isSpatial())
 
@@ -582,7 +582,7 @@ class TestPyQgsProviderConnectionBase():
             options.geometryColumn = ''
             vl = conn.createSqlVectorLayer(options)
             self.assertTrue(vl.isValid())
-            self.assertTrue(vl.isQuery())
+            self.assertTrue(vl.isSqlQuery())
             # This may fail for OGR where the provider is smart enough to guess the geometry column
             if self.providerKey != 'ogr':
                 self.assertFalse(vl.isSpatial())
@@ -594,5 +594,5 @@ class TestPyQgsProviderConnectionBase():
             options.filter = f'"{options.primaryKeyColumns[0]}" > 0'
             vl = conn.createSqlVectorLayer(options)
             self.assertTrue(vl.isValid())
-            self.assertTrue(vl.isQuery())
+            self.assertTrue(vl.isSqlQuery())
             self.assertTrue(vl.isSpatial())

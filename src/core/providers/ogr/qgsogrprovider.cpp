@@ -3174,9 +3174,14 @@ QgsFeatureSource::SpatialIndexPresence QgsOgrProvider::hasSpatialIndex() const
     return QgsFeatureSource::SpatialIndexUnknown;
 }
 
-bool QgsOgrProvider::isQuery() const
+Qgis::VectorLayerTypeFlags QgsOgrProvider::vectorLayerTypeFlags() const
 {
-  return mSubsetString.trimmed().startsWith( QStringLiteral( "SELECT" ), Qt::CaseSensitivity::CaseInsensitive );
+  Qgis::VectorLayerTypeFlags flags;
+  if ( mValid && mSubsetString.trimmed().startsWith( QStringLiteral( "SELECT" ), Qt::CaseSensitivity::CaseInsensitive ) )
+  {
+    flags.setFlag( Qgis::VectorLayerTypeFlag::SqlQuery );
+  }
+  return flags;
 }
 
 QVariant QgsOgrProvider::minimumValue( int index ) const
