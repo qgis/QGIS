@@ -75,18 +75,13 @@ QUrl QgsServerOgcApi::sanitizeUrl( const QUrl &url )
   {
     u.setPath( u.path().replace( QLatin1String( "//" ), QChar( '/' ) ) );
   }
-  // Make sure the path starts with '/'
-  if ( !u.path().startsWith( '/' ) )
-  {
-    u.setPath( u.path().prepend( '/' ) );
-  }
   return u;
 }
 
 void QgsServerOgcApi::executeRequest( const QgsServerApiContext &context ) const
 {
   // Get url
-  const auto path { sanitizeUrl( context.handlerPath( ) ).path() };
+  auto path { sanitizeUrl( context.request()->url() ).path() };
   // Find matching handler
   auto hasMatch { false };
   for ( const auto &h : mHandlers )

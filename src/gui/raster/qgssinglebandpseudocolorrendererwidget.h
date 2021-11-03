@@ -48,7 +48,7 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     //! Creates new raster renderer widget
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) SIP_FACTORY { return new QgsSingleBandPseudoColorRendererWidget( layer, extent ); }
 
-    QgsRasterRenderer *renderer() SIP_FACTORY override;
+    QgsRasterRenderer *renderer() override;
     void setMapCanvas( QgsMapCanvas *canvas ) override;
     void doComputations() override;
     QgsRasterMinMaxWidget *minMaxWidget() override;
@@ -56,9 +56,7 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     //! Returns the current raster band number
     int currentBand() const;
 
-    /**
-     * Sets the widget state from the specified renderer.
-     */
+    //! Set state of the widget from renderer settings
     void setFromRenderer( const QgsRasterRenderer *r );
 
   public slots:

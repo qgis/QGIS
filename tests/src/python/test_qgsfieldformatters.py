@@ -12,7 +12,6 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 
 
 import tempfile
-import os
 
 import qgis  # NOQA
 
@@ -24,7 +23,6 @@ from qgis.core import (QgsFeature, QgsProject, QgsRelation, QgsVectorLayer,
 
 from qgis.PyQt.QtCore import QCoreApplication, QLocale, QVariant
 from qgis.testing import start_app, unittest
-from qgis.utils import spatialite_connect
 from utilities import writeShape
 
 start_app()
@@ -600,41 +598,6 @@ class TestQgsFallbackFieldFormatter(unittest.TestCase):
 
         # No precision here
         _test(gpkg_layer, True)
-
-    def test_representValueWithDefault(self):
-        """
-        Check representValue behaves correctly when used on a layer which define default values
-        """
-
-        dbname = os.path.join(tempfile.mkdtemp(), 'test.sqlite')
-        con = spatialite_connect(dbname, isolation_level=None)
-        cur = con.cursor()
-        cur.execute("BEGIN")
-        sql = """
-        CREATE TABLE test_table_default_values (
-            id integer primary key autoincrement,
-            anumber INTEGER DEFAULT 123
-        )
-        """
-        cur.execute(sql)
-        cur.execute("COMMIT")
-        con.close()
-
-        vl = QgsVectorLayer(dbname + '|layername=test_table_default_values', 'test_table_default_values', 'ogr')
-        self.assertTrue(vl.isValid())
-
-        fieldFormatter = QgsFallbackFieldFormatter()
-
-        QLocale.setDefault(QLocale('en'))
-
-        self.assertEqual(fieldFormatter.representValue(vl, 1, {}, None, QVariant(QVariant.Int)),
-                         'NULL')
-        self.assertEqual(fieldFormatter.representValue(vl, 1, {}, None, 4),
-                         '4')
-        self.assertEqual(fieldFormatter.representValue(vl, 1, {}, None, "123"),
-                         '123')
-        # bad field index
-        self.assertEqual(fieldFormatter.representValue(vl, 3, {}, None, 5), "")
 
 
 if __name__ == '__main__':

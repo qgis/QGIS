@@ -3021,12 +3021,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
           sql += delim + QStringLiteral( "%1=" ).arg( quotedIdentifier( fld.name() ) );
           delim = ',';
 
-          QString defVal = defaultValueClause( siter.key() );
-          if ( qgsVariantEqual( *siter, defVal ) )
-          {
-            sql += defVal.isNull() ? "NULL" : defVal;
-          }
-          else if ( fld.typeName() == QLatin1String( "geometry" ) )
+          if ( fld.typeName() == QLatin1String( "geometry" ) )
           {
             sql += QStringLiteral( "%1(%2)" )
                    .arg( connectionRO()->majorVersion() < 2 ? "geomfromewkt" : "st_geomfromewkt",
@@ -3462,11 +3457,7 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
 
         result = conn->PQexecPrepared( QStringLiteral( "updatefeature" ), params );
         if ( result.PQresultStatus() != PGRES_COMMAND_OK && result.PQresultStatus() != PGRES_TUPLES_OK )
-        {
-          conn->rollback();
-          conn->PQexecNR( QStringLiteral( "DEALLOCATE updatefeature" ) );
           throw PGException( result );
-        }
 
         conn->PQexecNR( QStringLiteral( "DEALLOCATE updatefeature" ) );
       }
@@ -5450,14 +5441,13 @@ int QgsPostgresProviderMetadata::listStyles( const QString &uri, QStringList &id
                                         " WHERE f_table_catalog=%1"
                                         " AND f_table_schema=%2"
                                         " AND f_table_name=%3"
-                                        " AND %4"
+                                        " AND f_geometry_column=%4"
                                         " AND (type=%5 OR type IS NULL)"
                                         " ORDER BY useasdefault DESC, update_time DESC" )
                                .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
                                .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
                                .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
-                               .arg( dsUri.geometryColumn().isEmpty() ? "f_geometry_column is NULL" :
-                                     QString( "f_geometry_column=%1" ).arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) ) )
+                               .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) )
                                .arg( wkbTypeString );
 
   QgsPostgresResult result( conn->PQexec( selectRelatedQuery ) );

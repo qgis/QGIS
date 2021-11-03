@@ -190,11 +190,8 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
     ~QgsPalettedRendererWidget() override;
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) SIP_FACTORY { return new QgsPalettedRendererWidget( layer, extent ); }
 
-    QgsRasterRenderer *renderer() SIP_FACTORY override;
+    QgsRasterRenderer *renderer() override;
 
-    /**
-     * Sets the widget state from the specified renderer.
-     */
     void setFromRenderer( const QgsRasterRenderer *r );
 
   private:

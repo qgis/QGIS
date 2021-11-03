@@ -250,10 +250,6 @@ class CORE_EXPORT QgsOgcUtils
         QString mGeometryAttribute;
         //! SRS name
         QString mSRSName;
-        //! Namespace prefix
-        QString mNamespacePrefix;
-        //! Namespace URI
-        QString mNamespaceURI;
     };
 #endif
 
