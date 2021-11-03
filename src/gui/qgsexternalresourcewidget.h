@@ -171,6 +171,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     QWebView *mWebView = nullptr;
 #endif
 
+    friend class TestQgsExternalResourceWidgetWrapper;
 };
 
 #endif // QGSEXTERNALRESOURCEWIDGET_H
