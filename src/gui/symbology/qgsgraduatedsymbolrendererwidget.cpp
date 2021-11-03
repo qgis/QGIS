@@ -181,7 +181,7 @@ QVariant QgsGraduatedSymbolRendererModel::data( const QModelIndex &index, int ro
   }
   else if ( role == Qt::TextAlignmentRole )
   {
-    return ( index.column() == 0 ) ? Qt::AlignHCenter : Qt::AlignLeft;
+    return ( index.column() == 0 ) ? static_cast<Qt::Alignment::Int>( Qt::AlignHCenter ) : static_cast<Qt::Alignment::Int>( Qt::AlignLeft );
   }
   else if ( role == Qt::EditRole )
   {
