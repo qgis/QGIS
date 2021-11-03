@@ -37,6 +37,7 @@ class QgisServer(PyQtBindings):
         super().__init__(project, 'server')
         self.sip_file = 'server.sip'
         self.exceptions = True
+        self.release_gil = True
         self.disabled_features = "@SIP_DISABLE_FEATURES@".split(";")
 
     def apply_user_defaults(self, tool):
