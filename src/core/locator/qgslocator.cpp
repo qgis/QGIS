@@ -186,7 +186,7 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
     std::unique_ptr< QgsLocatorFilter > clone( filter->clone() );
     if ( ! clone )
     {
-      QgsMessageLog::logMessage( QObject::tr( "QgsLocatorFilter '%1' could not provide a valid clone" ).arg( filter->name() ), QString(), Qgis::MessageLevel::Critical );
+      QgsMessageLog::logMessage( tr( "QgsLocatorFilter '%1' could not provide a valid clone" ).arg( filter->name() ), QString(), Qgis::MessageLevel::Critical );
       continue;
     }
     connect( clone.get(), &QgsLocatorFilter::resultFetched, clone.get(), [this, filter]( QgsLocatorResult result )
