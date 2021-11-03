@@ -425,6 +425,7 @@ if(WITH_CORE)
   else()
     set(QT_MIN_VERSION 5.12.0)
     set(QT_VERSION_BASE "Qt5")
+    set(WITH_QT5_KDE_FORK FALSE CACHE BOOL "Using KDE's Qt 5.15 fork")
   endif()
 
   # Use Qt5SerialPort optionally for GPS

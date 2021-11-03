@@ -104,5 +104,7 @@
 
 #cmakedefine ENABLE_TESTS
 
+#cmakedefine WITH_QT5_KDE_FORK
+
 #endif
 
