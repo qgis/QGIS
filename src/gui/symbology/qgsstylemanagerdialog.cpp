@@ -168,6 +168,8 @@ bool QgsCheckableStyleModel::setData( const QModelIndex &i, const QVariant &valu
 
 #include "qgsgui.h"
 
+QString QgsStyleManagerDialog::sPreviousTag;
+
 QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, Qt::WindowFlags flags, bool readOnly )
   : QDialog( parent, flags )
   , mStyle( style )
@@ -302,7 +304,9 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
   groupTree->setModel( groupModel );
   groupTree->setHeaderHidden( true );
   populateGroups();
-  groupTree->setCurrentIndex( groupTree->model()->index( 0, 0 ) );
+
+  const QModelIndexList prevIndex = groupTree->model()->match( groupTree->model()->index( 0, 0 ), Qt::UserRole + 1, sPreviousTag, 1, Qt::MatchFixedString | Qt::MatchCaseSensitive | Qt::MatchRecursive );
+  groupTree->setCurrentIndex( !prevIndex.empty() ? prevIndex.at( 0 ) : groupTree->model()->index( 0, 0 ) );
 
   connect( groupTree->selectionModel(), &QItemSelectionModel::currentChanged,
            this, &QgsStyleManagerDialog::groupChanged );
@@ -2266,6 +2270,8 @@ void QgsStyleManagerDialog::groupChanged( const QModelIndex &index )
   QStringList groupSymbols;
 
   const QString category = index.data( Qt::UserRole + 1 ).toString();
+  sPreviousTag = category;
+
   if ( mGroupingMode )
   {
     mModel->setTagId( -1 );

@@ -425,6 +425,8 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     bool mSmartGroupVisible = true;
     QString mBaseName;
 
+    static QString sPreviousTag;
+
     bool addTextFormat();
     bool editTextFormat();
 
