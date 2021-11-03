@@ -4123,7 +4123,7 @@ class TestQgsExpression: public QObject
       const QVariant t_float( 12345.001F );
       const QVariant t_double( 12345.001 );
 
-      QLocale().setDefault( QLocale::English );
+      QLocale::setDefault( QLocale::English );
 
       QCOMPARE( QgsExpression::formatPreviewString( t_int ), QStringLiteral( "12,345" ) );
       QCOMPARE( QgsExpression::formatPreviewString( t_uint ), QStringLiteral( "12,345" ) );
@@ -4132,7 +4132,7 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpression::formatPreviewString( t_float ), QStringLiteral( "12,345.0009765625" ) );
       QCOMPARE( QgsExpression::formatPreviewString( t_double ), QStringLiteral( "12,345.001" ) );
 
-      QLocale().setDefault( QLocale::Italian );
+      QLocale::setDefault( QLocale::Italian );
 
       QCOMPARE( QgsExpression::formatPreviewString( t_int ), QStringLiteral( "12.345" ) );
       QCOMPARE( QgsExpression::formatPreviewString( t_uint ), QStringLiteral( "12.345" ) );
@@ -4141,7 +4141,7 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpression::formatPreviewString( t_float ), QStringLiteral( "12.345,0009765625" ) );
       QCOMPARE( QgsExpression::formatPreviewString( t_double ), QStringLiteral( "12.345,001" ) );
 
-      QLocale().setDefault( QLocale::English );
+      QLocale::setDefault( QLocale::English );
 
     }
 
@@ -4643,7 +4643,7 @@ class TestQgsExpression: public QObject
       t_ulong = 12346;
       const QVariant t_double( 123456.801 );
 
-      QLocale().setDefault( QLocale::English );
+      QLocale::setDefault( QLocale::English );
 
       qDebug() << QVariant( 123456.801 ).toString();
 
@@ -4653,7 +4653,7 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpressionUtils::toLocalizedString( t_ulong ), QStringLiteral( "12,346" ) );
       QCOMPARE( QgsExpressionUtils::toLocalizedString( t_double ), QStringLiteral( "123,456.801" ) );
 
-      QLocale().setDefault( QLocale::Italian );
+      QLocale::setDefault( QLocale::Italian );
 
       QCOMPARE( QgsExpressionUtils::toLocalizedString( t_int ), QStringLiteral( "12.346" ) );
       QCOMPARE( QgsExpressionUtils::toLocalizedString( t_uint ), QStringLiteral( "12.346" ) );
@@ -4661,7 +4661,7 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpressionUtils::toLocalizedString( t_ulong ), QStringLiteral( "12.346" ) );
       QCOMPARE( QgsExpressionUtils::toLocalizedString( t_double ), QStringLiteral( "123.456,801" ) );
 
-      QLocale().setDefault( QLocale::English );
+      QLocale::setDefault( QLocale::English );
 
       QCOMPARE( QgsExpressionUtils::toLocalizedString( QString( "hello world" ) ), QStringLiteral( "hello world" ) );
     }
