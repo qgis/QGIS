@@ -824,7 +824,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 
     // auth request handler, will be set for main thread ONLY
     std::unique_ptr< QgsNetworkAuthenticationHandler > mAuthHandler;
-    // Used by worker threads to wait for authentification handler run in main thread
+    // Used by worker threads to wait for authentication handler run in main thread
     QSemaphore mAuthRequestHandlerSemaphore;
 };
 
