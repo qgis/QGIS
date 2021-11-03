@@ -221,7 +221,9 @@ QString QgsRelation::getRelatedFeaturesFilter( const QgsFeature &feature ) const
   for ( const FieldPair &pair : std::as_const( d->mFieldPairs ) )
   {
     QVariant val( feature.attribute( pair.referencedField() ) );
-    conditions << QgsExpression::createFieldEqualityExpression( pair.referencingField(), val );
+    int referencingIdx = referencingLayer()->fields().lookupField( pair.referencingField() );
+    QVariant::Type fieldType = referencingLayer()->fields().at( referencingIdx ).type();
+    conditions << QgsExpression::createFieldEqualityExpression( pair.referencingField(), val, fieldType );
   }
 
   return conditions.join( QLatin1String( " AND " ) );
@@ -233,8 +235,10 @@ QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsAttributes 
 
   for ( const FieldPair &pair : std::as_const( d->mFieldPairs ) )
   {
+    int referencedIdx = referencedLayer()->fields().lookupField( pair.referencedField() );
+    QVariant::Type fieldType = referencedLayer()->fields().at( referencedIdx ).type();
     int referencingIdx = referencingLayer()->fields().lookupField( pair.referencingField() );
-    conditions << QgsExpression::createFieldEqualityExpression( pair.referencedField(), attributes.at( referencingIdx ) );
+    conditions << QgsExpression::createFieldEqualityExpression( pair.referencedField(), attributes.at( referencingIdx ), fieldType );
   }
 
   QgsFeatureRequest myRequest;
