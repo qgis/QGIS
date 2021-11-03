@@ -1112,14 +1112,16 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   }
 }
 
-QString QgsExpression::createFieldEqualityExpression( const QString &fieldName, const QVariant &value )
+QString QgsExpression::createFieldEqualityExpression( const QString &fieldName, const QVariant &value, QVariant::Type fieldType )
 {
   QString expr;
 
   if ( value.isNull() )
     expr = QStringLiteral( "%1 IS NULL" ).arg( quotedColumnRef( fieldName ) );
-  else
+  else if ( fieldType == QVariant::Type::Invalid )
     expr = QStringLiteral( "%1 = %2" ).arg( quotedColumnRef( fieldName ), quotedValue( value ) );
+  else
+    expr = QStringLiteral( "%1 = %2" ).arg( quotedColumnRef( fieldName ), quotedValue( value, fieldType ) );
 
   return expr;
 }
