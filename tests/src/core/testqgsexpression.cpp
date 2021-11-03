@@ -1966,6 +1966,8 @@ class TestQgsExpression: public QObject
 
     void run_evaluation_test( QgsExpression &exp, bool evalError, QVariant &expected )
     {
+      QLocale::setDefault( QLocale::c() );
+
       if ( exp.hasParserError() )
         qDebug() << exp.parserErrorString();
       QCOMPARE( exp.hasParserError(), false );
