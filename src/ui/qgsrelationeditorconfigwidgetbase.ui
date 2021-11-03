@@ -17,7 +17,10 @@
    <item>
     <widget class="QCheckBox" name="mShowFirstFeature">
      <property name="text">
-      <string>Automatically show first child feature</string>
+      <string>Automatically select first child feature and show attribute form</string>
+     </property>
+     <property name="toolTip">
+      <string>Unchecking this can lead to faster loading time of attribute forms and avoid unnecessary queries.</string>
      </property>
     </widget>
    </item>
