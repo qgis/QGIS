@@ -1309,11 +1309,13 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
   for ( auto &line : lines )
   {
     bool inLiteral {false};
+    QChar literalChar { ' ' };
     for ( int i = 0; i < line.length(); ++i )
     {
-      if ( line[i] == QChar( '\'' ) && ( i == 0 || line[i - 1] != QChar( '\\' ) ) )
+      if ( ( ( line[i] == QChar( '\'' ) || line[i] == QChar( '"' ) ) && ( i == 0 || line[i - 1] != QChar( '\\' ) ) ) && ( line[i] != literalChar ) )
       {
         inLiteral = !inLiteral;
+        literalChar = inLiteral ? line[i] : QChar( ' ' );
       }
       if ( !inLiteral && line.mid( i ).startsWith( QStringLiteral( "--" ) ) )
       {
