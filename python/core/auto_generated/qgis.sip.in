@@ -730,6 +730,20 @@ The development version
       ScaleGapOnly,
     };
 
+
+
+    enum class Capitalization
+      {
+      MixedCase,
+      AllUppercase,
+      AllLowercase,
+      ForceFirstLetterToCapital,
+      SmallCaps,
+      TitleCase,
+      UpperCamelCase,
+      AllSmallCaps,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

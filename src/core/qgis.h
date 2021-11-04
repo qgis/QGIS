@@ -1194,6 +1194,29 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( DashPatternSizeAdjustment )
 
+
+    // NOTE -- the hardcoded numbers here must match QFont::Capitalization!
+
+    /**
+     * String capitalization options.
+     *
+     * \note Prior to QGIS 3.24 this was available as QgsStringUtils::Capitalization
+     *
+     * \since QGIS 3.24
+     */
+    enum class Capitalization SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsStringUtils, Capitalization ) : int
+      {
+      MixedCase = 0, //!< Mixed case, ie no change
+      AllUppercase = 1, //!< Convert all characters to uppercase
+      AllLowercase = 2,  //!< Convert all characters to lowercase
+      ForceFirstLetterToCapital = 4, //!< Convert just the first letter of each word to uppercase, leave the rest untouched
+      SmallCaps = 5, //!< Mixed case small caps (since QGIS 3.24)
+      TitleCase = 1004, //!< Simple title case conversion - does not fully grammatically parse the text and uses simple rules only. Note that this method does not convert any characters to lowercase, it only uppercases required letters. Callers must ensure that input strings are already lowercased.
+      UpperCamelCase = 1005, //!< Convert the string to upper camel case. Note that this method does not unaccent characters.
+      AllSmallCaps = 1006, //!< Force all characters to small caps (since QGIS 3.24)
+    };
+    Q_ENUM( Capitalization )
+
     /**
      * Identify search radius in mm
      * \since QGIS 2.3

@@ -104,7 +104,8 @@
 
 #cmakedefine ENABLE_TESTS
 
-#cmakedefine WITH_QT5_KDE_FORK
+#cmakedefine HAS_KDE_QT5_PDF_TRANSFORM_FIX
+#cmakedefine HAS_KDE_QT5_SMALL_CAPS_FIX
 
 #endif
 

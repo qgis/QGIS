@@ -192,16 +192,16 @@ void TestQgsStringUtils::titleCase()
 {
   QFETCH( QString, input );
   QFETCH( QString, expected );
-  QCOMPARE( QgsStringUtils::capitalize( input, QgsStringUtils::TitleCase ), expected );
+  QCOMPARE( QgsStringUtils::capitalize( input, Qgis::Capitalization::TitleCase ), expected );
 }
 
 void TestQgsStringUtils::camelCase()
 {
-  QCOMPARE( QgsStringUtils::capitalize( QString(), QgsStringUtils::UpperCamelCase ), QString() );
-  QCOMPARE( QgsStringUtils::capitalize( QString( " abc def" ), QgsStringUtils::UpperCamelCase ), QString( "AbcDef" ) );
-  QCOMPARE( QgsStringUtils::capitalize( QString( "ABC DEF" ), QgsStringUtils::UpperCamelCase ), QString( "AbcDef" ) );
-  QCOMPARE( QgsStringUtils::capitalize( QString( "àbc def" ), QgsStringUtils::UpperCamelCase ), QString( "ÀbcDef" ) );
-  QCOMPARE( QgsStringUtils::capitalize( QString( "àbc dÉf" ), QgsStringUtils::UpperCamelCase ), QString( "ÀbcDéf" ) );
+  QCOMPARE( QgsStringUtils::capitalize( QString(), Qgis::Capitalization::UpperCamelCase ), QString() );
+  QCOMPARE( QgsStringUtils::capitalize( QString( " abc def" ), Qgis::Capitalization::UpperCamelCase ), QString( "AbcDef" ) );
+  QCOMPARE( QgsStringUtils::capitalize( QString( "ABC DEF" ), Qgis::Capitalization::UpperCamelCase ), QString( "AbcDef" ) );
+  QCOMPARE( QgsStringUtils::capitalize( QString( "àbc def" ), Qgis::Capitalization::UpperCamelCase ), QString( "ÀbcDef" ) );
+  QCOMPARE( QgsStringUtils::capitalize( QString( "àbc dÉf" ), Qgis::Capitalization::UpperCamelCase ), QString( "ÀbcDéf" ) );
 }
 
 void TestQgsStringUtils::htmlToMarkdown()

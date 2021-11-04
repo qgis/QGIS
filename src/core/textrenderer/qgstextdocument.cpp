@@ -187,7 +187,7 @@ void QgsTextDocument::splitLines( const QString &wrapCharacter, int autoWrapLeng
   }
 }
 
-void QgsTextDocument::applyCapitalization( QgsStringUtils::Capitalization capitalization )
+void QgsTextDocument::applyCapitalization( Qgis::Capitalization capitalization )
 {
   for ( QgsTextBlock &block : mBlocks )
   {

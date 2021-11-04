@@ -152,7 +152,7 @@ class CORE_EXPORT QgsTextDocument
      *
      * \since QGIS 3.16
      */
-    void applyCapitalization( QgsStringUtils::Capitalization capitalization );
+    void applyCapitalization( Qgis::Capitalization capitalization );
 
 #ifndef SIP_RUN
     ///@cond PRIVATE

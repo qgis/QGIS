@@ -116,7 +116,7 @@ argument controls whether the lines should be wrapped to an ideal maximum of ``a
 if ``False`` then the lines are wrapped to an ideal minimum length of ``autoWrapLength`` characters.
 %End
 
-    void applyCapitalization( QgsStringUtils::Capitalization capitalization );
+    void applyCapitalization( Qgis::Capitalization capitalization );
 %Docstring
 Applies a ``capitalization`` style to the document's text.
 

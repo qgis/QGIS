@@ -374,7 +374,7 @@ class CORE_EXPORT QgsTextFormat
      * \see setCapitalization()
      * \since QGIS 3.16
      */
-    QgsStringUtils::Capitalization capitalization() const;
+    Qgis::Capitalization capitalization() const;
 
     /**
      * Sets the text \a capitalization style.
@@ -382,7 +382,7 @@ class CORE_EXPORT QgsTextFormat
      * \see capitalization()
      * \since QGIS 3.16
      */
-    void setCapitalization( QgsStringUtils::Capitalization capitalization );
+    void setCapitalization( Qgis::Capitalization capitalization );
 
     /**
      * Returns TRUE if text should be treated as a HTML document and HTML tags should be used for formatting

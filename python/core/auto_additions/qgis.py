@@ -1126,3 +1126,32 @@ Qgis.DashPatternSizeAdjustment.ScaleGapOnly.__doc__ = "Only gap lengths are adju
 Qgis.DashPatternSizeAdjustment.__doc__ = 'Dash pattern size adjustment options.\n\n.. versionadded:: 3.24\n\n' + '* ``ScaleBothDashAndGap``: ' + Qgis.DashPatternSizeAdjustment.ScaleBothDashAndGap.__doc__ + '\n' + '* ``ScaleDashOnly``: ' + Qgis.DashPatternSizeAdjustment.ScaleDashOnly.__doc__ + '\n' + '* ``ScaleGapOnly``: ' + Qgis.DashPatternSizeAdjustment.ScaleGapOnly.__doc__
 # --
 Qgis.DashPatternSizeAdjustment.baseClass = Qgis
+QgsStringUtils.Capitalization = Qgis.Capitalization
+# monkey patching scoped based enum
+QgsStringUtils.MixedCase = Qgis.Capitalization.MixedCase
+QgsStringUtils.MixedCase.is_monkey_patched = True
+QgsStringUtils.MixedCase.__doc__ = "Mixed case, ie no change"
+QgsStringUtils.AllUppercase = Qgis.Capitalization.AllUppercase
+QgsStringUtils.AllUppercase.is_monkey_patched = True
+QgsStringUtils.AllUppercase.__doc__ = "Convert all characters to uppercase"
+QgsStringUtils.AllLowercase = Qgis.Capitalization.AllLowercase
+QgsStringUtils.AllLowercase.is_monkey_patched = True
+QgsStringUtils.AllLowercase.__doc__ = "Convert all characters to lowercase"
+QgsStringUtils.ForceFirstLetterToCapital = Qgis.Capitalization.ForceFirstLetterToCapital
+QgsStringUtils.ForceFirstLetterToCapital.is_monkey_patched = True
+QgsStringUtils.ForceFirstLetterToCapital.__doc__ = "Convert just the first letter of each word to uppercase, leave the rest untouched"
+QgsStringUtils.SmallCaps = Qgis.Capitalization.SmallCaps
+QgsStringUtils.SmallCaps.is_monkey_patched = True
+QgsStringUtils.SmallCaps.__doc__ = "Mixed case small caps (since QGIS 3.24)"
+QgsStringUtils.TitleCase = Qgis.Capitalization.TitleCase
+QgsStringUtils.TitleCase.is_monkey_patched = True
+QgsStringUtils.TitleCase.__doc__ = "Simple title case conversion - does not fully grammatically parse the text and uses simple rules only. Note that this method does not convert any characters to lowercase, it only uppercases required letters. Callers must ensure that input strings are already lowercased."
+QgsStringUtils.UpperCamelCase = Qgis.Capitalization.UpperCamelCase
+QgsStringUtils.UpperCamelCase.is_monkey_patched = True
+QgsStringUtils.UpperCamelCase.__doc__ = "Convert the string to upper camel case. Note that this method does not unaccent characters."
+QgsStringUtils.AllSmallCaps = Qgis.Capitalization.AllSmallCaps
+QgsStringUtils.AllSmallCaps.is_monkey_patched = True
+QgsStringUtils.AllSmallCaps.__doc__ = "Force all characters to small caps (since QGIS 3.24)"
+Qgis.Capitalization.__doc__ = 'String capitalization options.\n\n.. note::\n\n   Prior to QGIS 3.24 this was available as :py:class:`QgsStringUtils`.Capitalization\n\n.. versionadded:: 3.24\n\n' + '* ``MixedCase``: ' + Qgis.Capitalization.MixedCase.__doc__ + '\n' + '* ``AllUppercase``: ' + Qgis.Capitalization.AllUppercase.__doc__ + '\n' + '* ``AllLowercase``: ' + Qgis.Capitalization.AllLowercase.__doc__ + '\n' + '* ``ForceFirstLetterToCapital``: ' + Qgis.Capitalization.ForceFirstLetterToCapital.__doc__ + '\n' + '* ``SmallCaps``: ' + Qgis.Capitalization.SmallCaps.__doc__ + '\n' + '* ``TitleCase``: ' + Qgis.Capitalization.TitleCase.__doc__ + '\n' + '* ``UpperCamelCase``: ' + Qgis.Capitalization.UpperCamelCase.__doc__ + '\n' + '* ``AllSmallCaps``: ' + Qgis.Capitalization.AllSmallCaps.__doc__
+# --
+Qgis.Capitalization.baseClass = Qgis

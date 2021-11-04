@@ -19,7 +19,7 @@
 #include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgstextcharacterformat.h"
-#include "qgsstringutils.h"
+#include "qgis.h"
 
 class QTextFragment;
 
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsTextFragment
      *
      * \since QGIS 3.16
      */
-    void applyCapitalization( QgsStringUtils::Capitalization capitalization );
+    void applyCapitalization( Qgis::Capitalization capitalization );
 
   private:
 

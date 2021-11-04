@@ -152,7 +152,7 @@ void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *alg
   QString title;
   if ( ( QgsGui::higFlags() & QgsGui::HigDialogTitleIsTitleCase ) && !( algorithm->flags() & QgsProcessingAlgorithm::FlagDisplayNameIsLiteral ) )
   {
-    title = QgsStringUtils::capitalize( mAlgorithm->displayName(), QgsStringUtils::TitleCase );
+    title = QgsStringUtils::capitalize( mAlgorithm->displayName(), Qgis::Capitalization::TitleCase );
   }
   else
   {
