@@ -117,6 +117,8 @@ void QgsIntersection2CirclesDialog::show()
 
 void QgsIntersection2CirclesDialog::clearInformations()
 {
+  mIntersection1.clear();
+  mIntersection2.clear();
   mX1->clear();
   mY1->clear();
   mX2->clear();
