@@ -91,6 +91,8 @@ class APP_EXPORT QgsIntersection2CirclesDialog : public QDialog, private Ui::Qgs
 
     QColor mDefaultColor;
     QColor mSelectedColor;
+
+    friend class TestQgsIntersection2CirclesDialog;
 };
 
 #endif // QGSINTERSECTION2CIRCLES_H

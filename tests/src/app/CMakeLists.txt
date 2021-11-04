@@ -15,6 +15,7 @@ set(TESTS
   testqgisappdockwidgets.cpp
   testqgsattributetable.cpp
   testqgsapplocatorfilters.cpp
+  testqgscogointersectioncircles.cpp
   testqgsdecorationscalebar.cpp
   testqgsfieldcalculator.cpp
   testqgsmaptooleditannotation.cpp
