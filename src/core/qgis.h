@@ -1810,8 +1810,7 @@ typedef unsigned long long qgssize;
 
 #ifndef SIP_RUN
 #ifdef _MSC_VER
-#define DEFAULT_BUILTIN_UNREACHABLE \
-  default: \
+#define BUILTIN_UNREACHABLE \
   __assume(false);
 #elif defined(__GNUC__) && !defined(__clang__)
 // Workaround a GCC bug where a -Wreturn-type warning is emitted in constructs
@@ -1824,11 +1823,10 @@ typedef unsigned long long qgssize;
 //        return "foo";
 // }
 // See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=87951
-#define DEFAULT_BUILTIN_UNREACHABLE \
-  default: \
+#define BUILTIN_UNREACHABLE \
   __builtin_unreachable();
 #else
-#define DEFAULT_BUILTIN_UNREACHABLE
+#define BUILTIN_UNREACHABLE
 #endif
 #endif // SIP_RUN
 
