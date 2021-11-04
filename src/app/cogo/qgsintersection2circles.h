@@ -27,8 +27,21 @@
 #include "qgsmaptoolemitpoint.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
+#include "qgsmaptoolcapture.h"
 
 #include "ui_intersection2circles.h"
+
+class QgsSnapPoint: public QgsMapToolCapture
+{
+    Q_OBJECT
+
+  public:
+    QgsSnapPoint( QgsMapCanvas *canvas );
+    void cadCanvasPressEvent( QgsMapMouseEvent *e ) override;
+
+  signals:
+    void selectPoint( QgsPoint point, Qt::MouseButton button );
+};
 
 class APP_EXPORT QgsIntersection2CirclesDialog : public QDialog, private Ui::QgsIntersection2Circles
 {
@@ -48,7 +61,7 @@ class APP_EXPORT QgsIntersection2CirclesDialog : public QDialog, private Ui::Qgs
   private slots:
     void toggleSelectCenter( CircleNumber circleNum );
     void propertiesChanged();
-    void updateCenterPoint( CircleNumber circleNum, const QgsPointXY &point, Qt::MouseButton button );
+    void updateCenterPoint( CircleNumber circleNum, const QgsPoint &point, Qt::MouseButton button );
     void updateCircle();
     void selectIntersection( QgsRubberBand *intersection, QRadioButton *button );
 
@@ -74,7 +87,7 @@ class APP_EXPORT QgsIntersection2CirclesDialog : public QDialog, private Ui::Qgs
     QgsRubberBand *mRubberInter2;
 
     QgsMapCanvas *mMapCanvas;
-    QgsMapToolEmitPoint *mMapToolPoint = nullptr;
+    QgsSnapPoint *mMapToolPoint = nullptr;
 
     QColor mDefaultColor;
     QColor mSelectedColor;

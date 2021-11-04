@@ -29,8 +29,20 @@
 #include "qgssettings.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsvectorlayer.h"
+#include "qgsmapmouseevent.h"
 
 #include "qgsintersection2circles.h"
+
+
+QgsSnapPoint::QgsSnapPoint( QgsMapCanvas *canvas )
+  : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsSnapPoint::CapturePoint )
+{}
+
+void QgsSnapPoint::cadCanvasPressEvent( QgsMapMouseEvent *e )
+{
+  emit selectPoint( mapPoint( *e ), e->button() );
+}
+
 
 
 QgsIntersection2CirclesDialog::QgsIntersection2CirclesDialog( QgsMapCanvas *mapCanvas, QWidget *parent ) : QDialog( parent )
@@ -178,18 +190,18 @@ void QgsIntersection2CirclesDialog::toggleSelectCenter( CircleNumber circleNum )
 {
   mMapCanvas->unsetMapTool( mMapToolPoint );
 
-  mMapToolPoint = new QgsMapToolEmitPoint( mMapCanvas );
+  mMapToolPoint = new QgsSnapPoint( mMapCanvas );
   mMapCanvas->setMapTool( mMapToolPoint );
-  mMapCanvas->setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CapturePoint ) );
+//  mMapCanvas->setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CapturePoint ) );
 
-  connect( mMapToolPoint, &QgsMapToolEmitPoint::canvasClicked,
-           [ = ]( const QgsPointXY & point, Qt::MouseButton button )
+  connect( mMapToolPoint, &QgsSnapPoint::selectPoint,
+           [ = ]( const QgsPoint & point, Qt::MouseButton button )
   {
     updateCenterPoint( circleNum, point, button );
   } );
 }
 
-void QgsIntersection2CirclesDialog::updateCenterPoint( CircleNumber circleNum, const QgsPointXY &point, Qt::MouseButton button )
+void QgsIntersection2CirclesDialog::updateCenterPoint( CircleNumber circleNum, const QgsPoint &point, Qt::MouseButton button )
 {
   if ( button != Qt::LeftButton )
   {
