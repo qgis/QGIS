@@ -14,10 +14,11 @@ import os
 
 import qgis  # NOQA
 from PyQt5.QtSvg import QSvgGenerator
-from qgis.PyQt.QtCore import (Qt, QSizeF, QPointF, QRectF, QDir, QSize)
+from qgis.PyQt.QtCore import (Qt, QT_VERSION_STR, QSizeF, QPointF, QRectF, QDir, QSize)
 from qgis.PyQt.QtGui import (QColor, QPainter, QFont, QImage, QBrush, QPen)
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.core import (QgsTextBufferSettings,
+from qgis.core import (Qgis,
+                       QgsTextBufferSettings,
                        QgsTextMaskSettings,
                        QgsTextBackgroundSettings,
                        QgsTextShadowSettings,
@@ -1505,6 +1506,24 @@ class PyQgsTextRenderer(unittest.TestCase):
 
         painter.end()
         return self.imageCheck(name, name, image)
+
+    @unittest.skipIf(int(QT_VERSION_STR.split('.')[0]) < 6 or (int(QT_VERSION_STR.split('.')[0]) == 6 and int(QT_VERSION_STR.split('.')[1]) < 3), 'Too old Qt')
+    def testDrawSmallCaps(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setCapitalization(Qgis.Capitalization.SmallCaps)
+        format.setSize(30)
+        assert self.checkRender(format, 'mixed_small_caps', text=['Small Caps'])
+        assert False
+
+    @unittest.skipIf(int(QT_VERSION_STR.split('.')[0]) < 6 or (int(QT_VERSION_STR.split('.')[0]) == 6 and int(QT_VERSION_STR.split('.')[1]) < 3), 'Too old Qt')
+    def testDrawAllSmallCaps(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setCapitalization(Qgis.Capitalization.AllSmallCaps)
+        assert self.checkRender(format, 'all_small_caps', text=['Small Caps'])
+        assert False
 
     def testDrawBackgroundDisabled(self):
         format = QgsTextFormat()
