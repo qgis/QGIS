@@ -92,11 +92,11 @@ INSERT INTO qgis_test.books_authors(fk_book, fk_author)
 -- table for mismatching field pairs type
 -- fkey is text, attribute is integer
 
-CREATE TABLE qgis_test.owner(id serial not null,name text);
-CREATE TABLE qgis_test.product(id serial not null,name text, fk_owner text);
+CREATE TABLE qgis_test.owner(id serial not null PRIMARY KEY, id_text text, name text);
+CREATE TABLE qgis_test.product(id serial not null PRIMARY KEY, name text, fk_owner_text text, fk_owner_int int);
 
-INSERT INTO qgis_test.owner(id, name) VALUES (1, 'Superman');
-INSERT INTO qgis_test.product(name, fk_owner) VALUES('Flying suit', '1');
+INSERT INTO qgis_test.owner(id, id_text, name) VALUES (1, '1', 'Superman');
+INSERT INTO qgis_test.product(name, fk_owner_text, fk_owner_int) VALUES('Flying suit', '1', 1);
 
 
 -----------------------------

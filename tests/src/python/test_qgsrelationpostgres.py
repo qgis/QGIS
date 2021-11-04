@@ -17,6 +17,7 @@ import os
 from qgis.core import (
     QgsVectorLayer,
     QgsProject,
+    QgsRelation,
     QgsRelationManager
 )
 from qgis.gui import (
@@ -43,7 +44,6 @@ class TestQgsRelationPostgresql(unittest.TestCase):
         Setup the involved layers and relations for a n:m relation
         :return:
         """
-
         QgsProject.instance().clear()
 
     def tearDown(self):
@@ -88,24 +88,49 @@ class TestQgsRelationPostgresql(unittest.TestCase):
         """
         mix field types (fkey is text, attribute is integer)
         """
-        vl_product = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'id\' table="qgis_test"."product" sql=', 'product', 'postgres')
-        vl_owner = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'id\' table="qgis_test"."owner" sql=', 'owner', 'postgres')
+        vl_product = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'id\' table="qgis_test"."product" sql=', 'product', 'postgres')
+        vl_owner = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'id\' table="qgis_test"."owner" sql=', 'owner', 'postgres')
 
-        QgsProject.instance().clear()
         QgsProject.instance().addMapLayers([vl_product, vl_owner])
+        layers = QgsProject.instance().mapLayers()
 
+        self.assertTrue(vl_product.isValid())
+        self.assertTrue(vl_owner.isValid())
+
+        # fkey is int, id is text
         rel = QgsRelation()
         rel.setId('rel1')
         rel.setName('Super Relation')
-        rel.setReferencingLayer(vl_owner.id())
-        rel.setReferencedLayer(vl_product.id())
-        rel.addFieldPair('fk_owner', 'id')
-        feat = next(self.referencingLayer.getFeatures("fk_owner = '1'"))
-        self.assertTrue(feat.isValid())
-        f = rel.getReferencedFeature(feat)
-        self.assertTrue(f.isValid())
-        self.assertEqual(f, 1)
+        rel.setReferencingLayer(vl_product.id())
+        rel.setReferencedLayer(vl_owner.id())
+        rel.addFieldPair('fk_owner_int', 'id_text')
+        # referenced
+        referencing_feature = next(vl_product.getFeatures("name = 'Flying suit'"))
+        self.assertTrue(referencing_feature.isValid())
+        referenced_feature = rel.getReferencedFeature(referencing_feature)
+        self.assertTrue(referenced_feature.isValid())
+        self.assertEqual(referenced_feature[2], 'Superman')
+        # referencing
+        referencing_feature = next(rel.getRelatedFeatures(referenced_feature))
+        self.assertTrue(referencing_feature.isValid())
+        self.assertEqual(referencing_feature[1], 'Flying suit')
 
+        # fkey is text, id is int
+        rel2 = QgsRelation()
+        rel2.setId('rel2')
+        rel2.setName('Super Relation 2')
+        rel2.setReferencingLayer(vl_product.id())
+        rel2.setReferencedLayer(vl_owner.id())
+        rel2.addFieldPair('fk_owner_text', 'id')
+        referencing_feature = next(vl_product.getFeatures("name = 'Flying suit'"))
+        self.assertTrue(referencing_feature.isValid())
+        referenced_feature = rel.getReferencedFeature(referencing_feature)
+        self.assertTrue(referenced_feature.isValid())
+        self.assertEqual(referenced_feature[2], 'Superman')
+        # referencing
+        referencing_feature = next(rel.getRelatedFeatures(referenced_feature))
+        self.assertTrue(referencing_feature.isValid())
+        self.assertEqual(referencing_feature[1], 'Flying suit')
 
 
 if __name__ == '__main__':
