@@ -1457,6 +1457,14 @@ class TestQgsExpression: public QObject
       QTest::newRow( "straight_distance_2d linestring" ) << "round(straight_distance_2d(geom_from_wkt('LINESTRING(1 4, 3 5, 5 0)')), 3)" << false << QVariant( 5.657 );
       QTest::newRow( "straight_distance_2d closed linestring" ) << "straight_distance_2d(geom_from_wkt('LINESTRING(2 2, 3 6, 2 2)'))" << false << QVariant( 0.0 );
       QTest::newRow( "straight_distance_2d circularstring" ) << "round(straight_distance_2d(geom_from_wkt('CircularString (20 30, 50 30, 10 50)')), 3)" << false << QVariant( 22.361 );
+      QTest::newRow( "roundness not geom" ) << "roundness('r')" << true << QVariant();
+      QTest::newRow( "roundness null" ) << "roundness(NULL)" << false << QVariant();
+      QTest::newRow( "roundness not polygon" ) << "roundness(geom_from_wkt('POINT(1 2)'))" << true << QVariant();
+      QTest::newRow( "roundness polygon" ) << "round(roundness(geom_from_wkt('POLYGON(( 0 0, 0 1, 1 1, 1 0, 0 0))')), 3)" << false << QVariant( 0.785 );
+      QTest::newRow( "roundness single part multi polygon" ) << "round(roundness(geom_from_wkt('MULTIPOLYGON (((0 0, 0 1, 1 1, 1 0, 0 0)))')), 3)" << false << QVariant( 0.785 );
+      QTest::newRow( "roundness multi polygon" ) << "round(roundness(geom_from_wkt('MULTIPOLYGON( ((0 0, 0 1, 1 1, 1 0, 0 0)), ((5 2, 4 9, 5 9, 6 5, 5 2)) )')))" << true << QVariant();
+      QTest::newRow( "roundness thin polygon" ) << "roundness(geom_from_wkt('POLYGON(( 0 0, 0.5 0, 1 0, 0.6 0, 0 0))'))" << false << QVariant( 0.0 );
+      QTest::newRow( "roundness circle polygon" ) << "roundness(geom_from_wkt('CurvePolygon (CompoundCurve (CircularString (0 0, 0 1, 1 1, 1 0, 0 0)))'))" << false << QVariant( 1.0 );
 
       // string functions
       QTest::newRow( "format_number" ) << "format_number(1999.567,2)" << false << QVariant( "1,999.57" );

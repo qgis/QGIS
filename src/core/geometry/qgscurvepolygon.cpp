@@ -527,6 +527,15 @@ double QgsCurvePolygon::perimeter() const
   return perimeter;
 }
 
+double QgsCurvePolygon::roundness() const
+{
+  const double p = perimeter();
+  if ( qgsDoubleNear( p, 0.0 ) )
+    return 0.0;
+
+  return 4.0 * M_PI * area() / pow( p, 2.0 );
+}
+
 QgsPolygon *QgsCurvePolygon::surfaceToPolygon() const
 {
   std::unique_ptr< QgsPolygon > polygon( new QgsPolygon() );

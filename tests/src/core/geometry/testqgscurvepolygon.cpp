@@ -55,6 +55,7 @@ class TestQgsCurvePolygon: public QObject
     void testClosestSegment();
     void testBoundary();
     void testBoundingBox();
+    void testRoundness();
     void testDropZValue();
     void testDropMValue();
     void testToPolygon();
@@ -1251,6 +1252,30 @@ void TestQgsCurvePolygon::testBoundingBox()
   QGSCOMPARENEAR( bBox.xMaximum(), 1.012344, 0.001 );
   QGSCOMPARENEAR( bBox.yMinimum(), 0.000000, 0.001 );
   QGSCOMPARENEAR( bBox.yMaximum(), 18, 0.001 );
+}
+
+void TestQgsCurvePolygon::testRoundness()
+{
+  QgsCurvePolygon poly;
+
+  //empty
+  QCOMPARE( poly.roundness(), 0 );
+
+  QgsCircularString ext;
+  ext.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 1 )
+                 << QgsPoint( 1, 1 ) << QgsPoint( 1, 0 ) << QgsPoint( 0, 0 ) );
+  poly.setExteriorRing( ext.clone() );
+
+  QCOMPARE( poly.roundness(), 1.0 );
+
+  //with  Z
+  QgsLineString extLine;
+  extLine.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 5 )
+                     << QgsPoint( 0, 0.01, 4 ) << QgsPoint( 1, 0.01, 2 )
+                     << QgsPoint( 1, 0, 10 ) << QgsPoint( 0, 0, 5 ) );
+  poly.setExteriorRing( extLine.clone() );
+
+  QGSCOMPARENEAR( poly.roundness(), 0.031, 0.001 );
 }
 
 void TestQgsCurvePolygon::testDropZValue()

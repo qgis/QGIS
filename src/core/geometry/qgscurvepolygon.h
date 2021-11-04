@@ -69,6 +69,13 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
     bool boundingBoxIntersects( const QgsRectangle &rectangle ) const override SIP_HOLDGIL;
 
+    /**
+     * Returns the roundness of the curve polygon.
+     * The returned value is between 0 and 1.
+     * \since QGIS 3.24
+     */
+    double roundness() const;
+
     //curve polygon interface
 
     /**
