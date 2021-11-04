@@ -61,6 +61,8 @@ QgsIntersection2CirclesDialog::QgsIntersection2CirclesDialog( QgsMapCanvas *mapC
 
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsIntersection2CirclesDialog::onAccepted );
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
+
+  mMapToolPoint = new QgsSnapPoint( mMapCanvas );
 }
 
 void QgsIntersection2CirclesDialog::initCircleParameters( QgsRubberBand *&rubberCircle, QgsRubberBand *&rubberInter,
@@ -190,11 +192,9 @@ void QgsIntersection2CirclesDialog::onAccepted()
 
 void QgsIntersection2CirclesDialog::toggleSelectCenter( CircleNumber circleNum )
 {
-  mMapCanvas->unsetMapTool( mMapToolPoint );
+  disconnect( mMapToolPoint, &QgsSnapPoint::selectPoint, 0, 0 );
 
-  mMapToolPoint = new QgsSnapPoint( mMapCanvas );
   mMapCanvas->setMapTool( mMapToolPoint );
-//  mMapCanvas->setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CapturePoint ) );
 
   connect( mMapToolPoint, &QgsSnapPoint::selectPoint,
            [ = ]( const QgsPoint & point, Qt::MouseButton button )
@@ -248,6 +248,7 @@ void QgsIntersection2CirclesDialog::propertiesChanged()
 
     case 1:
       mBtnIntersection1->setEnabled( true );
+      mBtnIntersection1->setChecked( true ); // prevent the case where mBtnIntersection2 is already checked
       mBtnIntersection2->setEnabled( false );
       mRubberInter2->hide();
 
