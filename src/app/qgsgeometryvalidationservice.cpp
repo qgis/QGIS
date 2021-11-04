@@ -457,7 +457,6 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer,
   mLayerChecks[layer].topologyCheckFeedbacks = feedbacks.values();
 
   QFutureWatcher<void> *futureWatcher = new QFutureWatcher<void>();
-  
   connect( futureWatcher, &QFutureWatcherBase::finished, this, [&allErrors, layer, feedbacks, futureWatcher, stopEditing, this]()
   {
     QgsReadWriteLocker errorLocker( mTopologyCheckLock, QgsReadWriteLocker::Read );
