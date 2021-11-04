@@ -110,7 +110,6 @@ The development version
     typedef QFlags<Qgis::VectorLayerTypeFlag> VectorLayerTypeFlags;
 
 
-
     enum class PythonMacroMode
       {
       Never,
@@ -827,6 +826,8 @@ QFlags<Qgis::AnnotationItemGuiFlag> operator|(Qgis::AnnotationItemGuiFlag f1, QF
 QFlags<Qgis::MapSettingsFlag> operator|(Qgis::MapSettingsFlag f1, QFlags<Qgis::MapSettingsFlag> f2);
 
 QFlags<Qgis::RenderContextFlag> operator|(Qgis::RenderContextFlag f1, QFlags<Qgis::RenderContextFlag> f2);
+
+QFlags<Qgis::VectorLayerTypeFlag> operator|(Qgis::VectorLayerTypeFlag f1, QFlags<Qgis::VectorLayerTypeFlag> f2);
 
 
 

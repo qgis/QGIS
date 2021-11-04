@@ -468,7 +468,7 @@ Returns ``True`` if the layer is a query (SQL) layer.
 
     Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const;
 %Docstring
-Returns ``True`` if the layer is a query (SQL) layer.
+Returns the vector layer type flags.
 
 .. seealso:: :py:func:`isSqlQuery`
 
