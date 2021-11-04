@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>600</width>
-    <height>629</height>
+    <height>456</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -75,6 +75,9 @@
       </item>
       <item row="0" column="5">
        <widget class="QToolButton" name="mSetToProjectTimeButton">
+        <property name="toolTip">
+         <string>Set to the project fixed time extent or the extent from the project's layers</string>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -256,7 +259,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Save</set>
      </property>
     </widget>
    </item>
@@ -273,12 +276,18 @@
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsExtentGroupBox</class>
    <extends>QgsCollapsibleGroupBox</extends>
    <header>qgsextentgroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsRatioLockButton</class>
@@ -291,11 +300,6 @@
    <extends>QWidget</extends>
    <header>qgsfilewidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
