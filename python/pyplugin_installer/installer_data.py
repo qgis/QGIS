@@ -50,7 +50,7 @@ Data structure:
 mRepositories = dict of dicts: {repoName : {"url" unicode,
                                             "enabled" bool,
                                             "valid" bool,
-                                            "Relay" Relay, # Relay object for transmitting signals from QPHttp with adding the repoName information
+                                            "Relay" Relay,  # Relay object for transmitting signals from QPHttp with adding the repoName information
                                             "Request" QNetworkRequest,
                                             "xmlData" QNetworkReply,
                                             "state" int,   (0 - disabled, 1-loading, 2-loaded ok, 3-error (to be retried), 4-rejected)
@@ -78,14 +78,19 @@ mPlugins = dict of dicts {id : {
     "installed" boolean,                        # True if installed
     "available" boolean,                        # True if available in repositories
     "status" unicode,                           # ( not installed | new ) | ( installed | upgradeable | orphan | newer )
+    "status_exp" unicode,                       # ( not installed | new ) | ( installed | upgradeable | orphan | newer )
     "error" unicode,                            # NULL | broken | incompatible | dependent
     "error_details" unicode,                    # error description
     "experimental" boolean,                     # true if experimental, false if stable
     "deprecated" boolean,                       # true if deprecated, false if actual
     "trusted" boolean,                          # true if trusted, false if not trusted
     "version_available" unicode,                # available version
+    "version_available_stable" unicode,         # available stable version
+    "version_available_experimental" unicode,   # available experimental version
     "zip_repository" unicode,                   # the remote repository id
     "download_url" unicode,                     # url for downloading the plugin
+    "download_url_stable" unicode,              # url for downloading the plugin's stable version
+    "download_url_experimental" unicode,        # url for downloading the plugin's experimental version
     "filename" unicode,                         # the zip file name to be unzipped after downloaded
     "downloads" unicode,                        # number of downloads
     "average_vote" unicode,                     # average vote

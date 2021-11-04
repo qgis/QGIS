@@ -44,12 +44,13 @@ def find_dependencies(plugin_id, plugin_data=None, plugin_deps=None, installed_p
     to_upgrade = {}
     not_found = {}
 
-    if plugin_deps is None:
+    if plugin_deps is None or installed_plugins is None:
         updateAvailablePlugins()
+
+    if plugin_deps is None:
         plugin_deps = get_plugin_deps(plugin_id)
 
     if installed_plugins is None:
-        updateAvailablePlugins()
         metadata_parser = metadataParser()
         installed_plugins = {metadata_parser[k].get('general', 'name'): metadata_parser[k].get('general', 'version') for k, v in metadata_parser.items()}
 
