@@ -148,7 +148,6 @@ class CORE_EXPORT Qgis
     //! Vector layer type flags
     Q_DECLARE_FLAGS( VectorLayerTypeFlags, VectorLayerTypeFlag )
 
-
     /**
      * Authorisation to run Python Macros
      * \since QGIS 3.10
@@ -1324,6 +1323,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AnnotationItemFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AnnotationItemGuiFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapSettingsFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RenderContextFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorLayerTypeFlags )
 
 
 // hack to workaround warnings when casting void pointers
