@@ -119,7 +119,7 @@ QgsDualView::~QgsDualView()
 }
 
 void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request,
-                        const QgsAttributeEditorContext &context, bool loadFeatures )
+                        const QgsAttributeEditorContext &context, bool loadFeatures, bool showFirstFeature )
 {
   if ( !layer )
     return;
@@ -128,6 +128,13 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   mAttributeForm = nullptr;
 
   mLayer = layer;
+
+  // Keep fields order in sync: force config reset
+  connect( mLayer, &QgsVectorLayer::updatedFields, this, [ = ]
+  {
+    mFilterModel->setAttributeTableConfig( attributeTableConfig(), /* force */ true );
+  } );
+
   mEditorContext = context;
 
   // create an empty form to find out if it needs geometry or not
@@ -155,9 +162,8 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   // This slows down load of the attribute table heaps and uses loads of memory.
   //mTableView->resizeColumnsToContents();
 
-  if ( mFeatureListModel->rowCount( ) > 0 )
+  if ( showFirstFeature && mFeatureListModel->rowCount( ) > 0 )
     mFeatureListView->setEditSelection( QgsFeatureIds() << mFeatureListModel->data( mFeatureListModel->index( 0, 0 ), QgsFeatureListModel::Role::FeatureRole ).value<QgsFeature>().id() );
-
 }
 
 void QgsDualView::initAttributeForm( const QgsFeature &feature )
@@ -1229,7 +1235,10 @@ void QgsDualView::featureFormAttributeChanged( const QString &attribute, const Q
   Q_UNUSED( attribute )
   Q_UNUSED( value )
   if ( attributeChanged )
+  {
     mFeatureListView->setCurrentFeatureEdited( true );
+    mAttributeForm->save();
+  }
 }
 
 void QgsDualView::setFilteredFeatures( const QgsFeatureIds &filteredFeatures )

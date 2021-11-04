@@ -790,12 +790,15 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
 
         fields.append(QgsField('id', QVariant.Int))
         self.assertEqual(QgsVectorLayerUtils.guessFriendlyIdentifierField(fields), 'id')
+        self.assertEqual(QgsVectorLayerUtils.guessFriendlyIdentifierFieldV2(fields), ('id', False))
 
         fields.append(QgsField('name', QVariant.String))
         self.assertEqual(QgsVectorLayerUtils.guessFriendlyIdentifierField(fields), 'name')
+        self.assertEqual(QgsVectorLayerUtils.guessFriendlyIdentifierFieldV2(fields), ('name', True))
 
         fields.append(QgsField('title', QVariant.String))
         self.assertEqual(QgsVectorLayerUtils.guessFriendlyIdentifierField(fields), 'name')
+        self.assertEqual(QgsVectorLayerUtils.guessFriendlyIdentifierFieldV2(fields), ('name', True))
 
         # regardless of actual field order, we prefer "name" over "title"
         fields = QgsFields()

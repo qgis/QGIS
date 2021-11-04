@@ -70,9 +70,9 @@ QVariantMap QgsVectorTileProviderMetadata::decodeUri( const QString &uri ) const
   if ( dsUri.hasParam( QStringLiteral( "serviceType" ) ) )
     uriComponents.insert( QStringLiteral( "serviceType" ), dsUri.param( QStringLiteral( "serviceType" ) ) );
 
-  if ( uriComponents[ QStringLiteral( "type" ) ] == QStringLiteral( "mbtiles" ) ||
-       ( uriComponents[ QStringLiteral( "type" ) ] == QStringLiteral( "xyz" ) &&
-         !dsUri.param( QStringLiteral( "url" ) ).startsWith( QStringLiteral( "http" ) ) ) )
+  if ( uriComponents[ QStringLiteral( "type" ) ] == QLatin1String( "mbtiles" ) ||
+       ( uriComponents[ QStringLiteral( "type" ) ] == QLatin1String( "xyz" ) &&
+         !dsUri.param( QStringLiteral( "url" ) ).startsWith( QLatin1String( "http" ) ) ) )
   {
     uriComponents.insert( QStringLiteral( "path" ), dsUri.param( QStringLiteral( "url" ) ) );
   }

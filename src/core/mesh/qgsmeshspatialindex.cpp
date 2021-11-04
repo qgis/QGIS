@@ -409,11 +409,11 @@ void QgsMeshSpatialIndex::addFace( int faceIndex, const QgsMesh &mesh )
   if ( !ok )
     return;
 
-  const QMutexLocker locker( &d->mMutex );
+  const QMutexLocker locker( &d.constData()->mMutex );
 
   try
   {
-    d->mRTree->insertData( 0, nullptr, r, faceIndex );
+    d.constData()->mRTree->insertData( 0, nullptr, r, faceIndex );
   }
   catch ( Tools::Exception &e )
   {
@@ -435,7 +435,7 @@ void QgsMeshSpatialIndex::removeFace( int faceIndex, const QgsMesh &mesh )
 {
   if ( mesh.face( faceIndex ).isEmpty() )
     return;
-  const QMutexLocker locker( &d->mMutex );
+  const QMutexLocker locker( &d.constData()->mMutex );
   bool ok = false;
-  d->mRTree->deleteData( faceToRegion( mesh, faceIndex, ok ), faceIndex );
+  d.constData()->mRTree->deleteData( faceToRegion( mesh, faceIndex, ok ), faceIndex );
 }

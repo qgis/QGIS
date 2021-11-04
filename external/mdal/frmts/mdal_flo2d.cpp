@@ -94,7 +94,7 @@ void MDAL::DriverFlo2D::parseCADPTSFile( const std::string &datFileName, std::ve
     throw MDAL::Error( MDAL_Status::Err_FileNotFound, "Could not find file " + cadptsFile );
   }
 
-  std::ifstream cadptsStream( cadptsFile, std::ifstream::in );
+  std::ifstream cadptsStream = MDAL::openInputFile( cadptsFile, std::ifstream::in );
   std::string line;
   // CADPTS.DAT - COORDINATES OF CELL CENTERS (ELEM NUM, X, Y)
   while ( std::getline( cadptsStream, line ) )
@@ -132,7 +132,7 @@ void MDAL::DriverFlo2D::parseCHANBANKFile( const std::string &datFileName,
   {
     throw MDAL::Error( MDAL_Status::Err_FileNotFound, "Could not find file " + chanBankFile );
   }
-  std::ifstream chanBankStream( chanBankFile, std::ifstream::in );
+  std::ifstream chanBankStream = MDAL::openInputFile( chanBankFile, std::ifstream::in );
   std::string line;
   // CHANBANK.DAT - Cell id of each bank (Left Bank id , Right Bank id), if right bank id is 0, channel is only on left cell
   size_t vertexIndex = 0;
@@ -176,7 +176,7 @@ void MDAL::DriverFlo2D::parseCHANFile( const std::string &datFileName, const std
   {
     throw MDAL::Error( MDAL_Status::Err_FileNotFound, "Could not find file " + chanFile );
   }
-  std::ifstream chanStream( chanFile, std::ifstream::in );
+  std::ifstream chanStream = MDAL::openInputFile( chanFile, std::ifstream::in );
   std::string line;
   // CHAN.DAT - each reachs are represented by following line beginning by R, V,T or N
   // Confluences are represented by line beginning by C
@@ -293,7 +293,7 @@ void MDAL::DriverFlo2D::parseHYCHANFile( const std::string &datFileName, const s
   {
     return;
   }
-  std::ifstream hyChanStream( hyChanFile, std::ifstream::in );
+  std::ifstream hyChanStream = MDAL::openInputFile( hyChanFile, std::ifstream::in );
   std::string line;
 
   std::vector<std::string> variablesName;
@@ -487,7 +487,7 @@ void MDAL::DriverFlo2D::parseFPLAINFile( std::vector<double> &elevations,
     throw MDAL::Error( MDAL_Status::Err_FileNotFound, "Could not find file " + fplainFile );
   }
 
-  std::ifstream fplainStream( fplainFile, std::ifstream::in );
+  std::ifstream fplainStream = MDAL::openInputFile( fplainFile, std::ifstream::in );
   std::string line;
 
   bool cellSizeCalculated = false;
@@ -550,7 +550,7 @@ void MDAL::DriverFlo2D::parseTIMDEPFile( const std::string &datFileName, const s
     return;
   }
 
-  std::ifstream inStream( inFile, std::ifstream::in );
+  std::ifstream inStream = MDAL::openInputFile( inFile, std::ifstream::in );
   std::string line;
 
   size_t nVertexs = mMesh->verticesCount();
@@ -661,7 +661,7 @@ void MDAL::DriverFlo2D::parseDEPTHFile( const std::string &datFileName, const st
     return; //optional file
   }
 
-  std::ifstream depthStream( depthFile, std::ifstream::in );
+  std::ifstream depthStream = MDAL::openInputFile( depthFile, std::ifstream::in );
   std::string line;
 
   size_t nFaces = mMesh->facesCount();
@@ -711,7 +711,7 @@ void MDAL::DriverFlo2D::parseVELFPVELOCFile( const std::string &datFileName )
       return; //optional file
     }
 
-    std::ifstream velocityStream( velocityFile, std::ifstream::in );
+    std::ifstream velocityStream = MDAL::openInputFile( velocityFile, std::ifstream::in );
     std::string line;
 
     size_t vertex_idx = 0;
@@ -742,7 +742,7 @@ void MDAL::DriverFlo2D::parseVELFPVELOCFile( const std::string &datFileName )
       return; //optional file
     }
 
-    std::ifstream velocityStream( velocityFile, std::ifstream::in );
+    std::ifstream velocityStream = MDAL::openInputFile( velocityFile, std::ifstream::in );
     std::string line;
 
     size_t vertex_idx = 0;
@@ -818,8 +818,8 @@ void MDAL::DriverFlo2D::createMesh2d( const std::vector<CellCenter> &cells, cons
                      cellCenterExtent.minY - half_cell_size,
                      cellCenterExtent.maxY + half_cell_size );
 
-  size_t width = MDAL::toSizeT( ( vertexExtent.maxX - vertexExtent.minX ) / cell_size + 1 );
-  size_t heigh = MDAL::toSizeT( ( vertexExtent.maxY - vertexExtent.minY ) / cell_size + 1 );
+  size_t width = MDAL::toSizeT( ( vertexExtent.maxX - vertexExtent.minX ) / cell_size + 1.5 );
+  size_t heigh = MDAL::toSizeT( ( vertexExtent.maxY - vertexExtent.minY ) / cell_size + 1.5 );
   std::vector<std::vector<size_t>> vertexGrid( width, std::vector<size_t>( heigh, INVALID_INDEX ) );
 
   Vertices vertices;

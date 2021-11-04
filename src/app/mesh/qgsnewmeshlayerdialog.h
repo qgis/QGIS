@@ -41,7 +41,10 @@ class APP_EXPORT QgsNewMeshLayerDialog : public QDialog, private Ui::QgsNewMeshL
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 
     //! Sets a mesh layer that could be used as base for the new mesh
-    void setSourceMeshLayer( QgsMeshLayer *meshLayer );
+    void setSourceMeshLayer( QgsMeshLayer *meshLayer, bool fromExistingAsDefault = false );
+
+    //! Returns a pointer to the new created mesh layer
+    QgsMeshLayer *newLayer() const;
 
   private slots:
     void updateDialog();
@@ -57,6 +60,8 @@ class APP_EXPORT QgsNewMeshLayerDialog : public QDialog, private Ui::QgsNewMeshL
     bool mSourceMeshFrameReady;
     QMap<QString, QString> mDriverSuffixes;
     QMap<QString, QString> mDriverFileFilters;
+
+    QgsMeshLayer *mNewLayer = nullptr;
 };
 
 #endif // QGSNEWMESHLAYERDIALOG_H

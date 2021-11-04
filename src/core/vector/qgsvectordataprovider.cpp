@@ -61,6 +61,16 @@ bool QgsVectorDataProvider::empty() const
     return true;
 }
 
+bool QgsVectorDataProvider::isSqlQuery() const
+{
+  return vectorLayerTypeFlags().testFlag( Qgis::VectorLayerTypeFlag::SqlQuery );
+}
+
+Qgis::VectorLayerTypeFlags QgsVectorDataProvider::vectorLayerTypeFlags() const
+{
+  return Qgis::VectorLayerTypeFlags();
+}
+
 QgsFeatureSource::FeatureAvailability QgsVectorDataProvider::hasFeatures() const
 {
   if ( empty() )

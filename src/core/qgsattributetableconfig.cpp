@@ -86,8 +86,14 @@ void QgsAttributeTableConfig::update( const QgsFields &fields )
       newColumn.hidden = false;
       newColumn.type = Field;
       newColumn.name = field.name();
-
-      mColumns.append( newColumn );
+      if ( containsActionColumn )
+      {
+        mColumns.insert( mColumns.size() - 1, newColumn );
+      }
+      else
+      {
+        mColumns.append( newColumn );
+      }
     }
   }
 

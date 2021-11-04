@@ -128,6 +128,29 @@ Returns ``True`` if the layer does not contain any feature.
 .. versionadded:: 3.4
 %End
 
+    virtual bool isSqlQuery() const;
+%Docstring
+Returns ``True`` if the layer is a query (SQL) layer.
+
+.. note::
+
+   this is simply a shortcut to check if the SqlQuery flag
+   is set.
+
+.. seealso:: :py:func:`vectorLayerTypeFlags`
+
+.. versionadded:: 3.24
+%End
+
+    virtual Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const;
+%Docstring
+Returns the vector layer type flags.
+
+.. seealso:: :py:func:`isSqlQuery`
+
+.. versionadded:: 3.24
+%End
+
     virtual QgsFeatureSource::FeatureAvailability hasFeatures() const;
 
 %Docstring

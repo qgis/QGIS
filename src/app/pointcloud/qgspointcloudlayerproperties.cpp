@@ -488,13 +488,13 @@ QVariant QgsPointCloudAttributeStatisticsModel::data( const QModelIndex &index, 
       switch ( index.column() )
       {
         case Name:
-          return QVariant( Qt::AlignLeft | Qt::AlignVCenter );
+          return static_cast<Qt::Alignment::Int>( Qt::AlignLeft | Qt::AlignVCenter );
 
         case Min:
         case Max:
         case Mean:
         case StDev:
-          return QVariant( Qt::AlignRight | Qt::AlignVCenter );
+          return static_cast<Qt::Alignment::Int>( Qt::AlignRight | Qt::AlignVCenter );
 
       }
       return QVariant();

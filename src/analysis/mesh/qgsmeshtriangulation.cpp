@@ -337,6 +337,11 @@ int QgsMeshZValueDataset::valuesCount() const
 
 QgsMeshEditingDelaunayTriangulation::QgsMeshEditingDelaunayTriangulation() = default;
 
+QString QgsMeshEditingDelaunayTriangulation::text() const
+{
+  return QObject::tr( "Delaunay triangulation" );
+}
+
 QgsTopologicalMesh::Changes QgsMeshEditingDelaunayTriangulation::apply( QgsMeshEditor *meshEditor )
 {
   //use only vertices that are on boundary or free, if boundary
@@ -396,7 +401,7 @@ QgsTopologicalMesh::Changes QgsMeshEditingDelaunayTriangulation::apply( QgsMeshE
       topologicFaces = meshEditor->topologicalMesh().createNewTopologicalFaces( destinationFaces, true, error );
 
       if ( error == QgsMeshEditingError() )
-        error = meshEditor->topologicalMesh().canFacesBeAdded( topologicFaces );
+        error = meshEditor->topologicalMesh().facesCanBeAdded( topologicFaces );
 
       switch ( error.errorType )
       {
@@ -431,7 +436,7 @@ QgsTopologicalMesh::Changes QgsMeshEditingDelaunayTriangulation::apply( QgsMeshE
   Q_ASSERT( meshEditor->topologicalMesh().checkConsistency() == QgsMeshEditingError() );
 
   if ( !removedVerticesFromTriangulation.isEmpty() )
-    mMessage = QObject::tr( "%1 vertices have not been included in the triangulation" ).arg( removedVerticesFromTriangulation.count() );
+    mMessage = QObject::tr( "%n vertices have not been included in the triangulation", nullptr, removedVerticesFromTriangulation.count() );
 
   mIsFinished = true;
 

@@ -151,7 +151,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
       if ( !mRequest.referenceGeometry().isEmpty() )
       {
         mDistanceWithinGeom = mRequest.referenceGeometry();
-        mDistanceWithinEngine.reset( QgsGeometry::createGeometryEngine( mDistanceWithinGeom.constGet() ) );
+        mDistanceWithinEngine = mRequest.referenceGeometryEngine();
         mDistanceWithinEngine->prepareGeometry();
         mDistanceWithin = mRequest.distanceWithin();
       }

@@ -353,6 +353,11 @@ QString QgsAfsProvider::name() const
   return AFS_PROVIDER_KEY;
 }
 
+QString QgsAfsProvider::providerKey()
+{
+  return AFS_PROVIDER_KEY;
+}
+
 QString QgsAfsProvider::description() const
 {
   return AFS_PROVIDER_DESCRIPTION;
@@ -469,7 +474,9 @@ QgsAfsProvider *QgsAfsProviderMetadata::createProvider( const QString &uri, cons
 }
 
 
+#ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsAfsProviderMetadata();
 }
+#endif

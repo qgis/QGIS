@@ -141,10 +141,10 @@ void TestQgsGradients::gradientSymbol()
   mReport += QLatin1String( "<h2>Gradient symbol renderer test</h2>\n" );
   mGradientFill->setColor( QColor( "red" ) );
   mGradientFill->setColor2( QColor( "blue" ) );
-  mGradientFill->setGradientType( QgsGradientFillSymbolLayer::Linear );
-  mGradientFill->setGradientColorType( QgsGradientFillSymbolLayer::SimpleTwoColor );
-  mGradientFill->setCoordinateMode( QgsGradientFillSymbolLayer::Feature );
-  mGradientFill->setGradientSpread( QgsGradientFillSymbolLayer::Pad );
+  mGradientFill->setGradientType( Qgis::GradientType::Linear );
+  mGradientFill->setGradientColorType( Qgis::GradientColorSource::SimpleTwoColor );
+  mGradientFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Feature );
+  mGradientFill->setGradientSpread( Qgis::GradientSpread::Pad );
   mGradientFill->setReferencePoint1( QPointF( 0, 0 ) );
   mGradientFill->setReferencePoint2( QPointF( 1, 1 ) );
   QVERIFY( imageCheck( "gradient" ) );
@@ -168,35 +168,35 @@ void TestQgsGradients::gradientSymbolRamp()
   gradientRamp->setStops( stops );
 
   mGradientFill->setColorRamp( gradientRamp );
-  mGradientFill->setGradientColorType( QgsGradientFillSymbolLayer::ColorRamp );
+  mGradientFill->setGradientColorType( Qgis::GradientColorSource::ColorRamp );
   QVERIFY( imageCheck( "gradient_ramp" ) );
-  mGradientFill->setGradientColorType( QgsGradientFillSymbolLayer::SimpleTwoColor );
+  mGradientFill->setGradientColorType( Qgis::GradientColorSource::SimpleTwoColor );
 }
 
 void TestQgsGradients::gradientSymbolRadial()
 {
   mReport += QLatin1String( "<h2>Gradient symbol renderer radial test</h2>\n" );
-  mGradientFill->setGradientType( QgsGradientFillSymbolLayer::Radial );
+  mGradientFill->setGradientType( Qgis::GradientType::Radial );
   QVERIFY( imageCheck( "gradient_radial" ) );
-  mGradientFill->setGradientType( QgsGradientFillSymbolLayer::Linear );
+  mGradientFill->setGradientType( Qgis::GradientType::Linear );
 }
 
 void TestQgsGradients::gradientSymbolConical()
 {
   mReport += QLatin1String( "<h2>Gradient symbol renderer conical test</h2>\n" );
-  mGradientFill->setGradientType( QgsGradientFillSymbolLayer::Conical );
+  mGradientFill->setGradientType( Qgis::GradientType::Conical );
   mGradientFill->setReferencePoint1( QPointF( 0.5, 0.5 ) );
   QVERIFY( imageCheck( "gradient_conical" ) );
   mGradientFill->setReferencePoint1( QPointF( 0, 0 ) );
-  mGradientFill->setGradientType( QgsGradientFillSymbolLayer::Linear );
+  mGradientFill->setGradientType( Qgis::GradientType::Linear );
 }
 
 void TestQgsGradients::gradientSymbolViewport()
 {
   mReport += QLatin1String( "<h2>Gradient symbol renderer viewport test</h2>\n" );
-  mGradientFill->setCoordinateMode( QgsGradientFillSymbolLayer::Viewport );
+  mGradientFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Viewport );
   QVERIFY( imageCheck( "gradient_viewport" ) );
-  mGradientFill->setCoordinateMode( QgsGradientFillSymbolLayer::Feature );
+  mGradientFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Feature );
 }
 
 void TestQgsGradients::gradientSymbolReferencePoints()
@@ -224,9 +224,9 @@ void TestQgsGradients::gradientSymbolReflectSpread()
 {
   mReport += QLatin1String( "<h2>Gradient symbol renderer reflect spread test</h2>\n" );
   mGradientFill->setReferencePoint2( QPointF( 0.5, 0.5 ) );
-  mGradientFill->setGradientSpread( QgsGradientFillSymbolLayer::Reflect );
+  mGradientFill->setGradientSpread( Qgis::GradientSpread::Reflect );
   QVERIFY( imageCheck( "gradient_reflect" ) );
-  mGradientFill->setGradientSpread( QgsGradientFillSymbolLayer::Pad );
+  mGradientFill->setGradientSpread( Qgis::GradientSpread::Pad );
   mGradientFill->setReferencePoint2( QPointF( 1, 1 ) );
 }
 
@@ -234,9 +234,9 @@ void TestQgsGradients::gradientSymbolRepeatSpread()
 {
   mReport += QLatin1String( "<h2>Gradient symbol renderer repeat spread test</h2>\n" );
   mGradientFill->setReferencePoint2( QPointF( 0.5, 0.5 ) );
-  mGradientFill->setGradientSpread( QgsGradientFillSymbolLayer::Repeat );
+  mGradientFill->setGradientSpread( Qgis::GradientSpread::Repeat );
   QVERIFY( imageCheck( "gradient_repeat" ) );
-  mGradientFill->setGradientSpread( QgsGradientFillSymbolLayer::Pad );
+  mGradientFill->setGradientSpread( Qgis::GradientSpread::Pad );
   mGradientFill->setReferencePoint2( QPointF( 1, 1 ) );
 }
 

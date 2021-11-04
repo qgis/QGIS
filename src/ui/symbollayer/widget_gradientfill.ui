@@ -55,8 +55,11 @@
    </item>
    <item row="7" column="2">
     <widget class="QgsDoubleSpinBox" name="spinRefPoint1Y">
+     <property name="minimum">
+      <double>-10.000000000000000</double>
+     </property>
      <property name="maximum">
-      <double>1.000000000000000</double>
+      <double>10.000000000000000</double>
      </property>
      <property name="singleStep">
       <double>0.200000000000000</double>
@@ -232,8 +235,11 @@
    </item>
    <item row="11" column="2">
     <widget class="QgsDoubleSpinBox" name="spinRefPoint2Y">
+     <property name="minimum">
+      <double>-10.000000000000000</double>
+     </property>
      <property name="maximum">
-      <double>1.000000000000000</double>
+      <double>10.000000000000000</double>
      </property>
      <property name="singleStep">
       <double>0.200000000000000</double>
@@ -326,8 +332,11 @@
    </item>
    <item row="6" column="2">
     <widget class="QgsDoubleSpinBox" name="spinRefPoint1X">
+     <property name="minimum">
+      <double>-10.000000000000000</double>
+     </property>
      <property name="maximum">
-      <double>1.000000000000000</double>
+      <double>10.000000000000000</double>
      </property>
      <property name="singleStep">
       <double>0.200000000000000</double>
@@ -339,8 +348,11 @@
    </item>
    <item row="10" column="2">
     <widget class="QgsDoubleSpinBox" name="spinRefPoint2X">
+     <property name="minimum">
+      <double>-10.000000000000000</double>
+     </property>
      <property name="maximum">
-      <double>1.000000000000000</double>
+      <double>10.000000000000000</double>
      </property>
      <property name="singleStep">
       <double>0.200000000000000</double>

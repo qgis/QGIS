@@ -1127,8 +1127,8 @@ QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateLi
   //first scan through for extra unexpected dimensions
   bool foundZ = false;
   bool foundM = false;
-  const QRegularExpression rx( QStringLiteral( "\\s" ) );
-  const QRegularExpression rxIsNumber( QStringLiteral( "^[+-]?(\\d\\.?\\d*[Ee][+\\-]?\\d+|(\\d+\\.\\d*|\\d*\\.\\d+)|\\d+)$" ) );
+  const thread_local QRegularExpression rx( QStringLiteral( "\\s" ) );
+  const thread_local QRegularExpression rxIsNumber( QStringLiteral( "^[+-]?(\\d\\.?\\d*[Ee][+\\-]?\\d+|(\\d+\\.\\d*|\\d*\\.\\d+)|\\d+)$" ) );
   for ( const QString &pointCoordinates : coordList )
   {
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
@@ -1336,11 +1336,10 @@ QPair<QgsWkbTypes::Type, QString> QgsGeometryUtils::wktReadBlock( const QString 
 {
   QString wktParsed = wkt;
   QString contents;
-  if ( wkt.contains( QString( "EMPTY" ), Qt::CaseInsensitive ) )
+  if ( wkt.contains( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) )
   {
-    QRegularExpression wktRegEx( QStringLiteral( "^\\s*(\\w+)\\s+(\\w+)\\s*$" ) );
-    wktRegEx.setPatternOptions( QRegularExpression::DotMatchesEverythingOption );
-    const QRegularExpressionMatch match = wktRegEx.match( wkt );
+    const thread_local QRegularExpression sWktRegEx( QStringLiteral( "^\\s*(\\w+)\\s+(\\w+)\\s*$" ), QRegularExpression::DotMatchesEverythingOption );
+    const QRegularExpressionMatch match = sWktRegEx.match( wkt );
     if ( match.hasMatch() )
     {
       wktParsed = match.captured( 1 );
@@ -1357,8 +1356,7 @@ QPair<QgsWkbTypes::Type, QString> QgsGeometryUtils::wktReadBlock( const QString 
     // removes extra parentheses
     wktParsed.truncate( wktParsed.size() - ( closedParenthesisCount - openedParenthesisCount ) );
 
-    QRegularExpression cooRegEx( QStringLiteral( "^[^\\(]*\\((.*)\\)[^\\)]*$" ) );
-    cooRegEx.setPatternOptions( QRegularExpression::DotMatchesEverythingOption );
+    const thread_local QRegularExpression cooRegEx( QStringLiteral( "^[^\\(]*\\((.*)\\)[^\\)]*$" ), QRegularExpression::DotMatchesEverythingOption );
     const QRegularExpressionMatch match = cooRegEx.match( wktParsed );
     contents = match.hasMatch() ? match.captured( 1 ) : QString();
   }
@@ -1370,13 +1368,17 @@ QStringList QgsGeometryUtils::wktGetChildBlocks( const QString &wkt, const QStri
 {
   int level = 0;
   QString block;
+  block.reserve( wkt.size() );
   QStringList blocks;
-  for ( int i = 0, n = wkt.length(); i < n; ++i )
+
+  const QChar *wktData = wkt.data();
+  const int wktLength = wkt.length();
+  for ( int i = 0, n = wktLength; i < n; ++i, ++wktData )
   {
-    if ( ( wkt[i].isSpace() || wkt[i] == '\n' || wkt[i] == '\t' ) && level == 0 )
+    if ( ( wktData->isSpace() || *wktData == '\n' || *wktData == '\t' ) && level == 0 )
       continue;
 
-    if ( wkt[i] == ',' && level == 0 )
+    if ( *wktData == ',' && level == 0 )
     {
       if ( !block.isEmpty() )
       {
@@ -1384,14 +1386,14 @@ QStringList QgsGeometryUtils::wktGetChildBlocks( const QString &wkt, const QStri
           block.prepend( defaultType + ' ' );
         blocks.append( block );
       }
-      block.clear();
+      block.resize( 0 );
       continue;
     }
-    if ( wkt[i] == '(' )
+    if ( *wktData == '(' )
       ++level;
-    else if ( wkt[i] == ')' )
+    else if ( *wktData == ')' )
       --level;
-    block += wkt[i];
+    block += *wktData;
   }
   if ( !block.isEmpty() )
   {

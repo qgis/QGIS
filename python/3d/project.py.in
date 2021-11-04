@@ -37,6 +37,7 @@ class Qgis3D(PyQtBindings):
         super().__init__(project, '3d')
         self.sip_file = '3d.sip'
         self.exceptions = True
+        self.release_gil = True
         self.disabled_features = "@SIP_DISABLE_FEATURES@".split(";")
 
     def apply_user_defaults(self, tool):

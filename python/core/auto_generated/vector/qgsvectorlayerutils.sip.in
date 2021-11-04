@@ -347,15 +347,45 @@ feature depending on the join's "upsert on edit" capabilities.
 .. versionadded:: 3.14
 %End
 
-    static QString guessFriendlyIdentifierField( const QgsFields &fields );
+
+    static QString guessFriendlyIdentifierField( const QgsFields &fields, bool *foundFriendly /Out/ = 0 ) /PyName=guessFriendlyIdentifierFieldV2/;
 %Docstring
-Given a set of ``fields``, attempts to pick the "most useful" field
+Given a set of fields, attempts to pick the "most useful" field
 for user-friendly identification of features.
 
 For instance, if a field called "name" is present, this will be returned.
 
 Assumes that the user has organized the data with the more "interesting" field
 names first. As such, "name" would be selected before "oldname", "othername", etc.
+
+If no friendly identifier is found, the function will fallback to the
+first available.
+
+:param fields: list of fields to pick a friendly identifier from
+
+:return: - field name
+         - foundFriendly: set to ``True`` if the returned field name is a friendly identifier
+
+.. versionadded:: 3.22
+%End
+
+
+    static QString guessFriendlyIdentifierField( const QgsFields &fields );
+%Docstring
+Given a set of fields, attempts to pick the "most useful" field
+for user-friendly identification of features.
+
+For instance, if a field called "name" is present, this will be returned.
+
+Assumes that the user has organized the data with the more "interesting" field
+names first. As such, "name" would be selected before "oldname", "othername", etc.
+
+If no friendly identifier is found, the function will fallback to the
+first available.
+
+:param fields: list of fields to pick a friendly identifier from
+
+:return: field name
 
 .. versionadded:: 3.18
 %End

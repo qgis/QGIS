@@ -173,6 +173,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrescaleraster.cpp
   processing/qgsalgorithmreverselinedirection.cpp
   processing/qgsalgorithmrotate.cpp
+  processing/qgsalgorithmroundness.cpp
   processing/qgsalgorithmroundrastervalues.cpp
   processing/qgsalgorithmruggedness.cpp
   processing/qgsalgorithmsavefeatures.cpp
@@ -185,6 +186,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmsetmvalue.cpp
   processing/qgsalgorithmsetvariable.cpp
   processing/qgsalgorithmsetzvalue.cpp
+  processing/qgsalgorithmshortestline.cpp
   processing/qgsalgorithmshortestpathlayertopoint.cpp
   processing/qgsalgorithmshortestpathpointtolayer.cpp
   processing/qgsalgorithmshortestpathpointtopoint.cpp

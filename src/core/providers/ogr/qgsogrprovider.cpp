@@ -2009,6 +2009,7 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
       mAttributeFields[ idx ].setType( it->type() );
       mAttributeFields[ idx ].setLength( it->length() );
       mAttributeFields[ idx ].setPrecision( it->precision() );
+      mAttributeFields[ idx ].setEditorWidgetSetup( it->editorWidgetSetup() );
     }
   }
 
@@ -3173,6 +3174,16 @@ QgsFeatureSource::SpatialIndexPresence QgsOgrProvider::hasSpatialIndex() const
     return QgsFeatureSource::SpatialIndexUnknown;
 }
 
+Qgis::VectorLayerTypeFlags QgsOgrProvider::vectorLayerTypeFlags() const
+{
+  Qgis::VectorLayerTypeFlags flags;
+  if ( mValid && mSubsetString.trimmed().startsWith( QStringLiteral( "SELECT" ), Qt::CaseSensitivity::CaseInsensitive ) )
+  {
+    flags.setFlag( Qgis::VectorLayerTypeFlag::SqlQuery );
+  }
+  return flags;
+}
+
 QVariant QgsOgrProvider::minimumValue( int index ) const
 {
   if ( !mValid || index < 0 || index >= mAttributeFields.count() )
@@ -3720,7 +3731,7 @@ bool QgsOgrProvider::leaveUpdateMode()
     {
       // Backup fields since if we created new fields, but didn't populate it
       // with any feature yet, it will disappear.
-      QgsFields oldFields = mAttributeFields;
+      const QgsFields oldFields = mAttributeFields;
       reloadData();
       if ( mValid )
       {
@@ -3734,9 +3745,9 @@ bool QgsOgrProvider::leaveUpdateMode()
           {
             bool ignoreErrorOut = false;
             addAttributeOGRLevel( field, ignoreErrorOut );
+            mAttributeFields.append( field );
           }
         }
-        mAttributeFields = oldFields;
       }
     }
     return true;

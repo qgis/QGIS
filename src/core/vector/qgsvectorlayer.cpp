@@ -372,6 +372,16 @@ QString QgsVectorLayer::capabilitiesString() const
   return QString();
 }
 
+bool QgsVectorLayer::isSqlQuery() const
+{
+  return mDataProvider && mDataProvider->isSqlQuery();
+}
+
+Qgis::VectorLayerTypeFlags QgsVectorLayer::vectorLayerTypeFlags() const
+{
+  return mDataProvider ? mDataProvider->vectorLayerTypeFlags() : Qgis::VectorLayerTypeFlags();
+}
+
 QString QgsVectorLayer::dataComment() const
 {
   if ( mDataProvider )
@@ -3475,7 +3485,15 @@ bool QgsVectorLayer::commitChanges( bool stopEditing )
   if ( !mAllowCommit )
     return false;
 
+  mCommitChangesActive = true;
   bool success = mEditBuffer->commitChanges( mCommitErrors );
+  mCommitChangesActive = false;
+
+  if ( !mDeletedFids.empty() )
+  {
+    emit featuresDeleted( mDeletedFids );
+    mDeletedFids.clear();
+  }
 
   if ( success )
   {
@@ -3495,9 +3513,17 @@ bool QgsVectorLayer::commitChanges( bool stopEditing )
   }
 
   updateFields();
-  mDataProvider->updateExtents();
 
+  mDataProvider->updateExtents();
   mDataProvider->leaveUpdateMode();
+
+  // This second call is required because OGR provider with JSON
+  // driver might have changed fields order after the call to
+  // leaveUpdateMode
+  if ( mFields.names() != mDataProvider->fields().names() )
+  {
+    updateFields();
+  }
 
   triggerRepaint();
 
@@ -4025,6 +4051,7 @@ void QgsVectorLayer::updateFields()
     emit updatedFields();
     mEditFormConfig.setFields( mFields );
   }
+
 }
 
 
@@ -5277,7 +5304,7 @@ void QgsVectorLayer::onJoinedFieldsChanged()
 
 void QgsVectorLayer::onFeatureDeleted( QgsFeatureId fid )
 {
-  if ( mEditCommandActive )
+  if ( mEditCommandActive  || mCommitChangesActive )
   {
     mDeletedFids << fid;
   }

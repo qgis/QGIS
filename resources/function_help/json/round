@@ -9,6 +9,7 @@
   ],
   "examples": [
 	{ "expression":"round(1234.567, 2)", "returns":"1234.57"},
-	{ "expression":"round(1234.567)", "returns":"1235"}
+	{ "expression":"round(1234.567)", "returns":"1235"},
+	{ "expression":"round(1234.567, -1)", "returns":"1230"}
   ]
 }

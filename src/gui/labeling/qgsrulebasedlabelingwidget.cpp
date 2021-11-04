@@ -296,7 +296,7 @@ QVariant QgsRuleBasedLabelingModel::data( const QModelIndex &index, int role ) c
   }
   else if ( role == Qt::TextAlignmentRole )
   {
-    return ( index.column() == 2 || index.column() == 3 ) ? Qt::AlignRight : Qt::AlignLeft;
+    return ( index.column() == 2 || index.column() == 3 ) ? static_cast<Qt::Alignment::Int>( Qt::AlignRight ) : static_cast<Qt::Alignment::Int>( Qt::AlignLeft );
   }
   else if ( role == Qt::FontRole && index.column() == 1 )
   {

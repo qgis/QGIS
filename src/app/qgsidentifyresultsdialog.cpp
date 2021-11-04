@@ -844,7 +844,12 @@ QgsIdentifyPlotCurve::QgsIdentifyPlotCurve( const QMap<QString, QString> &attrib
   for ( QMap<QString, QString>::const_iterator it = attributes.begin();
         it != attributes.end(); ++it )
   {
-    myData << QPointF( double( i++ ), it.value().toDouble() );
+    bool ok;
+    const double val {it.value().toDouble( &ok )};
+    if ( ok && std::isfinite( val ) )
+    {
+      myData << QPointF( double( i++ ), val );
+    }
   }
   mPlotCurve->setSamples( myData );
 

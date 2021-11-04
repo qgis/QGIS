@@ -165,7 +165,7 @@ Returns extent of the given tile in this matrix
 Returns center of the given tile in this matrix
 %End
 
-    QgsTileRange tileRangeFromExtent( const QgsRectangle &mExtent );
+    QgsTileRange tileRangeFromExtent( const QgsRectangle &mExtent ) const;
 %Docstring
 Returns tile range that fully covers the given extent
 %End

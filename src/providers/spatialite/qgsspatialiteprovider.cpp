@@ -3788,6 +3788,10 @@ QString QgsSpatiaLiteProvider::name() const
   return SPATIALITE_KEY;
 }                               //  QgsSpatiaLiteProvider::name()
 
+QString QgsSpatiaLiteProvider::providerKey()
+{
+  return SPATIALITE_KEY;
+}
 
 QString QgsSpatiaLiteProvider::description() const
 {
@@ -5958,6 +5962,16 @@ void QgsSpatiaLiteProvider::setTransaction( QgsTransaction *transaction )
   mTransaction = static_cast<QgsSpatiaLiteTransaction *>( transaction );
 }
 
+Qgis::VectorLayerTypeFlags QgsSpatiaLiteProvider::vectorLayerTypeFlags() const
+{
+  Qgis::VectorLayerTypeFlags flags;
+  if ( mValid && mIsQuery )
+  {
+    flags.setFlag( Qgis::VectorLayerTypeFlag::SqlQuery );
+  }
+  return flags;
+}
+
 QgsTransaction *QgsSpatiaLiteProvider::transaction( ) const
 {
   return static_cast<QgsTransaction *>( mTransaction );
@@ -6476,8 +6490,9 @@ void QgsSpatiaLiteProviderMetadata::saveConnection( const QgsAbstractProviderCon
 }
 
 
+#ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsSpatiaLiteProviderMetadata();
 }
-
+#endif

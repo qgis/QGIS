@@ -499,8 +499,6 @@ Fill in histogram defaults if not specified
 #endif
 %End
 
-
-
     void initStatistics( QgsRasterBandStats &statistics, int bandNo,
                          int stats = QgsRasterBandStats::All,
                          const QgsRectangle &boundingBox = QgsRectangle(),

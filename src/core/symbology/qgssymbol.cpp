@@ -577,7 +577,22 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
 
   QgsSymbolRenderContext symbolContext( *context, QgsUnitTypes::RenderUnknownUnit, opacity, false, mRenderHints, nullptr );
   symbolContext.setSelected( selected );
-  symbolContext.setOriginalGeometryType( mType == Qgis::SymbolType::Fill ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::UnknownGeometry );
+  switch ( mType )
+  {
+    case Qgis::SymbolType::Marker:
+      symbolContext.setOriginalGeometryType( QgsWkbTypes::PointGeometry );
+      break;
+    case Qgis::SymbolType::Line:
+      symbolContext.setOriginalGeometryType( QgsWkbTypes::LineGeometry );
+      break;
+    case Qgis::SymbolType::Fill:
+      symbolContext.setOriginalGeometryType( QgsWkbTypes::PolygonGeometry );
+      break;
+    case Qgis::SymbolType::Hybrid:
+      symbolContext.setOriginalGeometryType( QgsWkbTypes::UnknownGeometry );
+      break;
+  }
+
   if ( patchShape )
     symbolContext.setPatchShape( *patchShape );
 

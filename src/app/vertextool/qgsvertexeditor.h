@@ -27,6 +27,7 @@
 #include "qgsdockwidget.h"
 #include "qgspoint.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsvertexid.h"
 
 class QLabel;
 class QTableView;

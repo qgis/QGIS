@@ -30,7 +30,7 @@ Constructs the widget
 Widget creation function (mainly for the use by the renderer registry)
 %End
 
-    virtual QgsRasterRenderer *renderer();
+    virtual QgsRasterRenderer *renderer() /Factory/;
 
 };
 

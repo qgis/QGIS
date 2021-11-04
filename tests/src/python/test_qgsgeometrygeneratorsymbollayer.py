@@ -44,7 +44,8 @@ from qgis.core import (
     QgsRenderContext,
     QgsRenderChecker,
     QgsCoordinateReferenceSystem,
-    QgsCoordinateTransform
+    QgsCoordinateTransform,
+    QgsArrowSymbolLayer
 )
 
 from qgis.testing import start_app, unittest
@@ -282,6 +283,8 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
 
         image = QImage(400, 400, QImage.Format_RGB32)
         image.fill(QColor(255, 255, 255))
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
         painter = QPainter(image)
 
         context = QgsRenderContext.fromQPainter(painter)
@@ -308,6 +311,8 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         symbol.changeSymbolLayer(0, buffer_layer)
 
         image = QImage(400, 400, QImage.Format_RGB32)
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
         image.fill(QColor(255, 255, 255))
         painter = QPainter(image)
 
@@ -322,6 +327,47 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         painter.end()
 
         self.assertTrue(self.imageCheck('geometrygenerator_nofeature', 'geometrygenerator_nofeature', image))
+
+    def test_subsymbol(self):
+        """
+        Test rendering a generator in a subsymbol of another symbol
+        """
+        sym = QgsLineSymbol()
+        arrow = QgsArrowSymbolLayer()
+        arrow.setIsRepeated(False)
+        arrow.setArrowStartWidth(10)
+        arrow.setArrowWidth(5)
+        arrow.setHeadLength(20)
+        arrow.setHeadThickness(10)
+
+        sym.changeSymbolLayer(0, arrow)
+
+        self.lines_layer.renderer().setSymbol(sym)
+
+        # here "$geometry" must refer to the created ARROW shape, NOT the original feature line geometry!
+        generator_layer = QgsGeometryGeneratorSymbolLayer.create(
+            {'geometryModifier': 'buffer($geometry, 3)'})
+        generator_layer.setSymbolType(QgsSymbol.Fill)
+        generator_layer.setUnits(QgsUnitTypes.RenderMillimeters)
+        self.assertIsNotNone(generator_layer.subSymbol())
+
+        generator_layer.subSymbol().symbolLayer(0).setColor(QColor(255, 255, 255))
+        generator_layer.subSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
+        generator_layer.subSymbol().symbolLayer(0).setStrokeWidth(2)
+
+        sub_symbol = QgsFillSymbol()
+        sub_symbol.changeSymbolLayer(0, generator_layer)
+        arrow.setSubSymbol(sub_symbol)
+
+        rendered_layers = [self.lines_layer]
+        self.mapsettings.setLayers(rendered_layers)
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setControlName('expected_geometrygenerator_subsymbol')
+        res = renderchecker.runTest('geometrygenerator_subsymbol')
+        self.report += renderchecker.report()
+        self.assertTrue(res)
 
     def imageCheck(self, name, reference_image, image):
         self.report += "<h2>Render {}</h2>\n".format(name)

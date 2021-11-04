@@ -239,6 +239,21 @@ class TestQgsLayoutPicture(unittest.TestCase, LayoutItemTestCase):
         picture.setNorthOffset(-10)
         self.assertAlmostEqual(picture.pictureRotation(), -38.18 + 35, 1)
 
+    def testMissingImage(self):
+        layout = QgsLayout(QgsProject.instance())
+
+        picture = QgsLayoutItemPicture(layout)
+
+        # SVG
+        picture.setPicturePath("invalid_path", QgsLayoutItemPicture.FormatSVG)
+        self.assertEqual(picture.isMissingImage(), True)
+        self.assertEqual(picture.mode(), QgsLayoutItemPicture.FormatSVG)
+
+        # Raster
+        picture.setPicturePath("invalid_path", QgsLayoutItemPicture.FormatRaster)
+        self.assertEqual(picture.isMissingImage(), True)
+        self.assertEqual(picture.mode(), QgsLayoutItemPicture.FormatRaster)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -99,10 +99,10 @@ void TestQgsFilledMarkerSymbol::initTestCase()
   QgsGradientFillSymbolLayer *gradientFill = new QgsGradientFillSymbolLayer();
   gradientFill->setColor( QColor( "red" ) );
   gradientFill->setColor2( QColor( "blue" ) );
-  gradientFill->setGradientType( QgsGradientFillSymbolLayer::Linear );
-  gradientFill->setGradientColorType( QgsGradientFillSymbolLayer::SimpleTwoColor );
-  gradientFill->setCoordinateMode( QgsGradientFillSymbolLayer::Feature );
-  gradientFill->setGradientSpread( QgsGradientFillSymbolLayer::Pad );
+  gradientFill->setGradientType( Qgis::GradientType::Linear );
+  gradientFill->setGradientColorType( Qgis::GradientColorSource::SimpleTwoColor );
+  gradientFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Feature );
+  gradientFill->setGradientSpread( Qgis::GradientSpread::Pad );
   gradientFill->setReferencePoint1( QPointF( 0, 0 ) );
   gradientFill->setReferencePoint2( QPointF( 1, 1 ) );
   QgsFillSymbol *fillSymbol = new QgsFillSymbol();
@@ -141,14 +141,14 @@ void TestQgsFilledMarkerSymbol::cleanupTestCase()
 
 void TestQgsFilledMarkerSymbol::filledMarkerSymbol()
 {
-  mFilledMarkerLayer->setShape( QgsSimpleMarkerSymbolLayerBase::Circle );
+  mFilledMarkerLayer->setShape( Qgis::MarkerShape::Circle );
   mFilledMarkerLayer->setSize( 15 );
   QVERIFY( imageCheck( "filledmarker" ) );
 }
 
 void TestQgsFilledMarkerSymbol::dataDefinedShape()
 {
-  mFilledMarkerLayer->setShape( QgsSimpleMarkerSymbolLayerBase::Circle );
+  mFilledMarkerLayer->setShape( Qgis::MarkerShape::Circle );
   mFilledMarkerLayer->setSize( 10 );
   mFilledMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyName, QgsProperty::fromExpression( QStringLiteral( "if(\"class\"='Jet','square','star')" ) ) );
   const bool result = imageCheck( QStringLiteral( "filledmarker_datadefinedshape" ) );
@@ -159,7 +159,7 @@ void TestQgsFilledMarkerSymbol::dataDefinedShape()
 void TestQgsFilledMarkerSymbol::bounds()
 {
   mFilledMarkerLayer->setColor( QColor( 200, 200, 200 ) );
-  mFilledMarkerLayer->setShape( QgsSimpleMarkerSymbolLayerBase::Circle );
+  mFilledMarkerLayer->setShape( Qgis::MarkerShape::Circle );
   mFilledMarkerLayer->setSize( 5 );
   mFilledMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty::fromExpression( QStringLiteral( "min(\"importance\" * 2, 6)" ) ) );
 

@@ -1,0 +1,78 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserverfeatureid.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+%ModuleHeaderCode
+#include "qgsserverfeatureid.h"
+%End
+
+
+
+namespace QgsServerFeatureId
+{
+
+  QString getServerFid( const QgsFeature &feature, const QgsAttributeList &pkAttributes );
+%Docstring
+Returns the feature id based on primary keys.
+
+:param feature: the feature
+:param pkAttributes: the primary keys list
+
+:return: the feature id based on primary keys
+
+.. versionadded:: 3.4.9
+%End
+
+  QgsFeatureRequest updateFeatureRequestFromServerFids( QgsFeatureRequest &featureRequest, const QStringList &serverFids, const QgsVectorDataProvider *provider );
+%Docstring
+Returns the feature request based on feature ids build with primary keys.
+
+:param featureRequest: the feature request to update
+:param serverFids: the feature ids build with :py:class:`QgsServerFeatureId`.getServerFid
+:param provider: the vector layer provider to provide fields and primary keys list
+
+:return: the feature request updated
+
+.. versionadded:: 3.4.9
+%End
+
+  QString getExpressionFromServerFid( const QString &serverFid, const QgsVectorDataProvider *provider );
+%Docstring
+Returns the expression feature id based on primary keys.
+
+:param serverFid: the feature id build with primary keys
+:param provider: the vector layer provider to provide fields and primary keys list
+
+:return: the feature id based on primary keys
+
+.. versionadded:: 3.4.9
+%End
+
+  QString pkSeparator();
+%Docstring
+Returns the primary keys separator
+
+:return: @@ the primary keys separator
+
+.. versionadded:: 3.4.9
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserverfeatureid.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

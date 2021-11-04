@@ -54,6 +54,10 @@ class QgsSymbolLayer
           sipType = sipType_QgsArrowSymbolLayer;
         else if ( sipCpp->layerType() == "InterpolatedLine" )
           sipType = sipType_QgsInterpolatedLineSymbolLayer;
+        else if ( sipCpp->layerType() == "RasterLine" )
+          sipType = sipType_QgsRasterLineSymbolLayer;
+        else if ( sipCpp->layerType() == "Lineburst" )
+          sipType = sipType_QgsLineburstSymbolLayer;
         else
           sipType = sipType_QgsLineSymbolLayer;
         break;
@@ -156,6 +160,10 @@ class QgsSymbolLayer
       PropertyLineEndWidthValue,
       PropertyLineStartColorValue,
       PropertyLineEndColorValue,
+      PropertyMarkerClipping,
+      PropertyRandomOffsetX,
+      PropertyRandomOffsetY,
+      PropertyLineClipping,
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();

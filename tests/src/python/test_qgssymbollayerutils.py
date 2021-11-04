@@ -25,6 +25,7 @@ from qgis.PyQt.QtGui import (
     QImage
 )
 from qgis.core import (
+    Qgis,
     QgsSymbolLayerUtils,
     QgsMarkerSymbol,
     QgsArrowSymbolLayer,
@@ -37,7 +38,8 @@ from qgis.core import (
     QgsSimpleFillSymbolLayer,
     QgsSymbolLayer,
     QgsProperty,
-    QgsMapUnitScale
+    QgsMapUnitScale,
+    Qgis
 )
 from qgis.testing import unittest, start_app
 
@@ -128,6 +130,14 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         # bad string
         s2 = QgsSymbolLayerUtils.decodePoint('')
         self.assertEqual(s2, QPointF())
+
+    def testEncodeDecodeCoordinateReference(self):
+        items = {'feature': Qgis.SymbolCoordinateReference.Feature, 'viewport': Qgis.SymbolCoordinateReference.Viewport}
+        for item in items.keys():
+            encoded = QgsSymbolLayerUtils.encodeCoordinateReference(items[item])
+            self.assertEqual(item, encoded)
+            decoded, ok = QgsSymbolLayerUtils.decodeCoordinateReference(encoded)
+            self.assertEqual(items[item], decoded)
 
     def testToPoint(self):
         s2, ok = QgsSymbolLayerUtils.toPoint(None)
@@ -227,6 +237,55 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         self.assertFalse(ok)
         type, ok = QgsSymbolLayerUtils.decodeArrowType(34)
         self.assertFalse(ok)
+
+    def test_decode_marker_clip(self):
+        """
+        Test decode marker clip
+        """
+        self.assertEqual(QgsSymbolLayerUtils.decodeMarkerClipMode(''), (Qgis.MarkerClipMode.Shape, False))
+        self.assertEqual(QgsSymbolLayerUtils.decodeMarkerClipMode('xxx'), (Qgis.MarkerClipMode.Shape, False))
+        self.assertEqual(QgsSymbolLayerUtils.decodeMarkerClipMode(' no   '), (Qgis.MarkerClipMode.NoClipping, True))
+        self.assertEqual(QgsSymbolLayerUtils.decodeMarkerClipMode(' NO   '), (Qgis.MarkerClipMode.NoClipping, True))
+        self.assertEqual(QgsSymbolLayerUtils.decodeMarkerClipMode(' shape   '), (Qgis.MarkerClipMode.Shape, True))
+        self.assertEqual(QgsSymbolLayerUtils.decodeMarkerClipMode(' Shape   '), (Qgis.MarkerClipMode.Shape, True))
+        self.assertEqual(QgsSymbolLayerUtils.decodeMarkerClipMode(' centroid_within   '), (Qgis.MarkerClipMode.CentroidWithin, True))
+        self.assertEqual(QgsSymbolLayerUtils.decodeMarkerClipMode(' Centroid_Within   '),
+                         (Qgis.MarkerClipMode.CentroidWithin, True))
+        self.assertEqual(QgsSymbolLayerUtils.decodeMarkerClipMode(' completely_within   '),
+                         (Qgis.MarkerClipMode.CompletelyWithin, True))
+        self.assertEqual(QgsSymbolLayerUtils.decodeMarkerClipMode(' Completely_Within   '),
+                         (Qgis.MarkerClipMode.CompletelyWithin, True))
+
+    def test_encode_marker_clip(self):
+        """
+        Test encode marker clip
+        """
+        self.assertEqual(QgsSymbolLayerUtils.encodeMarkerClipMode(Qgis.MarkerClipMode.Shape), 'shape')
+        self.assertEqual(QgsSymbolLayerUtils.encodeMarkerClipMode(Qgis.MarkerClipMode.NoClipping), 'no')
+        self.assertEqual(QgsSymbolLayerUtils.encodeMarkerClipMode(Qgis.MarkerClipMode.CentroidWithin), 'centroid_within')
+        self.assertEqual(QgsSymbolLayerUtils.encodeMarkerClipMode(Qgis.MarkerClipMode.CompletelyWithin), 'completely_within')
+
+    def test_decode_line_clip(self):
+        """
+        Test decode line clip
+        """
+        self.assertEqual(QgsSymbolLayerUtils.decodeLineClipMode(''), (Qgis.LineClipMode.ClipPainterOnly, False))
+        self.assertEqual(QgsSymbolLayerUtils.decodeLineClipMode('xxx'), (Qgis.LineClipMode.ClipPainterOnly, False))
+        self.assertEqual(QgsSymbolLayerUtils.decodeLineClipMode(' no   '), (Qgis.LineClipMode.NoClipping, True))
+        self.assertEqual(QgsSymbolLayerUtils.decodeLineClipMode(' NO   '), (Qgis.LineClipMode.NoClipping, True))
+        self.assertEqual(QgsSymbolLayerUtils.decodeLineClipMode(' during_render   '), (Qgis.LineClipMode.ClipPainterOnly, True))
+        self.assertEqual(QgsSymbolLayerUtils.decodeLineClipMode(' DURING_Render   '), (Qgis.LineClipMode.ClipPainterOnly, True))
+        self.assertEqual(QgsSymbolLayerUtils.decodeLineClipMode(' before_render   '), (Qgis.LineClipMode.ClipToIntersection, True))
+        self.assertEqual(QgsSymbolLayerUtils.decodeLineClipMode(' BEFORE_REnder   '),
+                         (Qgis.LineClipMode.ClipToIntersection, True))
+
+    def test_encode_line_clip(self):
+        """
+        Test encode line clip
+        """
+        self.assertEqual(QgsSymbolLayerUtils.encodeLineClipMode(Qgis.LineClipMode.ClipPainterOnly), 'during_render')
+        self.assertEqual(QgsSymbolLayerUtils.encodeLineClipMode(Qgis.LineClipMode.NoClipping), 'no')
+        self.assertEqual(QgsSymbolLayerUtils.encodeLineClipMode(Qgis.LineClipMode.ClipToIntersection), 'before_render')
 
     def testSymbolToFromMimeData(self):
         """

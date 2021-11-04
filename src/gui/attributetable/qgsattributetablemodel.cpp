@@ -391,6 +391,7 @@ void QgsAttributeTableModel::loadAttributes()
   mWidgetFactories.clear();
   mAttributeWidgetCaches.clear();
   mWidgetConfigs.clear();
+  mFieldFormatters.clear();
 
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
@@ -686,7 +687,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
 
   if ( role == Qt::TextAlignmentRole )
   {
-    return QVariant( mFieldFormatters.at( index.column() )->alignmentFlag( mLayer, fieldId, mWidgetConfigs.at( index.column() ) ) | Qt::AlignVCenter );
+    return static_cast<Qt::Alignment::Int>( mFieldFormatters.at( index.column() )->alignmentFlag( mLayer, fieldId, mWidgetConfigs.at( index.column() ) ) | Qt::AlignVCenter );
   }
 
   if ( mFeat.id() != rowId || !mFeat.isValid() )

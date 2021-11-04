@@ -3650,7 +3650,9 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
       QgsDebugMsgLevel( QStringLiteral( "wildcards: " ) + sWildcards.join( ' ' ), 2 );
     } );
 
-    const QString suffix = pathInfo.suffix().toLower();
+    const QString suffix = uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty()
+                           ? pathInfo.suffix().toLower()
+                           : QFileInfo( uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString() ).suffix().toLower();
 
     if ( !sExtensions.contains( suffix ) )
     {
@@ -3692,7 +3694,9 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
     details.setType( QgsMapLayerType::RasterLayer );
     details.setProviderKey( QStringLiteral( "gdal" ) );
     details.setUri( uri );
-    details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( path ) );
+    details.setName( uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty()
+                     ? QgsProviderUtils::suggestLayerNameFromFilePath( path )
+                     : QFileInfo( uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString() ).fileName() );
     if ( QgsGdalUtils::multiLayerFileExtensions().contains( suffix ) )
     {
       // uri may contain sublayers, but query flags prevent us from examining them

@@ -57,6 +57,11 @@ bool QgsMeshAdvancedEditing::isFinished() const
   return mIsFinished;
 }
 
+QString QgsMeshAdvancedEditing::text() const
+{
+  return QString();
+}
+
 static int vertexPositionInFace( int vertexIndex, const QgsMeshFace &face )
 {
   return face.indexOf( vertexIndex );
@@ -604,6 +609,11 @@ bool QgsMeshEditRefineFaces::createNewBorderFaces( QgsMeshEditor *meshEditor,
   return true;
 }
 
+QString QgsMeshEditRefineFaces::text() const
+{
+  return QObject::tr( "Refine %n faces", nullptr, mInputFaces.count() );
+}
+
 bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer )
 {
   if ( !layer || !layer->meshEditor() || !layer->nativeMesh() )
@@ -740,6 +750,11 @@ bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer )
 
   mNativeFacesIndexesGeometryChanged = qgis::setToList( concernedFaces );
   return layer->meshEditor()->canBeTransformed( mNativeFacesIndexesGeometryChanged, transformFunction );
+}
+
+QString QgsMeshTransformVerticesByExpression::text() const
+{
+  return QObject::tr( "Transform %n vertices by expression", nullptr, mInputVertices.count() );
 }
 
 void QgsMeshTransformVerticesByExpression::setExpressions( const QString &expressionX, const QString &expressionY, const QString &expressionZ )

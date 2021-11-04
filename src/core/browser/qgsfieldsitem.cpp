@@ -160,7 +160,7 @@ QgsFieldItem::QgsFieldItem( QgsDataItem *parent, const QgsField &field )
   }
   if ( ! constraintsText.isEmpty() )
   {
-    setToolTip( QStringLiteral( "<ul><li>%1</li></ul>" ).arg( constraintsText.join( QStringLiteral( "</li><li>" ) ) ) );
+    setToolTip( QStringLiteral( "<ul><li>%1</li></ul>" ).arg( constraintsText.join( QLatin1String( "</li><li>" ) ) ) );
   }
 }
 

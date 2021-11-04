@@ -16,7 +16,7 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import os
 
-from qgis.server import QgsServer
+from qgis.server import QgsServer, QgsServiceRegistry, QgsService
 from qgis.core import QgsMessageLog
 from qgis.testing import unittest
 from utilities import unitTestDataPath
@@ -64,6 +64,9 @@ class TestQgsServerPlugins(QgsServerTestBase):
 
             def sendResponse(self):
                 QgsMessageLog.logMessage("SimpleHelloFilter.sendResponse")
+
+            def onSendResponse(self):
+                QgsMessageLog.logMessage("SimpleHelloFilter.onSendResponse")
 
             def responseComplete(self):
                 request = self.serverInterface().requestHandler()
@@ -267,6 +270,108 @@ class TestQgsServerPlugins(QgsServerTestBase):
         self.assertEqual(filter1.path, '/mypath/')
 
         serverIface.setFilters({})
+
+    def test_streaming_pipeline(self):
+        """ Test streaming pipeline propagation
+        """
+        try:
+            from qgis.server import QgsServerFilter
+            from qgis.core import QgsProject
+        except ImportError:
+            print("QGIS Server plugins are not compiled. Skipping test")
+            return
+
+        # create a service for streaming data
+        class StreamedService(QgsService):
+
+            def __init__(self):
+                super().__init__()
+                self._response = b"Should never appear"
+                self._name = "TestStreamedService"
+                self._version = "1.0"
+
+            def name(self):
+                return self._name
+
+            def version(self):
+                return self._version
+
+            def executeRequest(self, request, response, project):
+                response.setStatusCode(206)
+                response.write(self._response)
+                response.flush()
+
+        class Filter1(QgsServerFilter):
+
+            def onRequestReady(self):
+                request = self.serverInterface().requestHandler()
+                return self.propagate
+
+            def onSendResponse(self):
+                request = self.serverInterface().requestHandler()
+                request.clearBody()
+                request.appendBody(b'A')
+                request.sendResponse()
+                request.appendBody(b'B')
+                request.sendResponse()
+                # Stop propagating
+                return self.propagate
+
+            def onResponseComplete(self):
+                request = self.serverInterface().requestHandler()
+                request.appendBody(b'C')
+                return self.propagate
+
+        # Methods should be called only if filter1 propagate
+        class Filter2(QgsServerFilter):
+            def __init__(self, iface):
+                super().__init__(iface)
+                self.request_ready = False
+
+            def onRequestReady(self):
+                request = self.serverInterface().requestHandler()
+                self.request_ready = True
+                return True
+
+            def onSendResponse(self):
+                request = self.serverInterface().requestHandler()
+                request.appendBody(b'D')
+                return True
+
+            def onResponseComplete(self):
+                request = self.serverInterface().requestHandler()
+                request.appendBody(b'E')
+                return True
+
+        serverIface = self.server.serverInterface()
+        serverIface.setFilters({})
+
+        service0 = StreamedService()
+
+        reg = serverIface.serviceRegistry()
+        reg.registerService(service0)
+
+        filter1 = Filter1(serverIface)
+        filter2 = Filter2(serverIface)
+        serverIface.registerFilter(filter1, 200)
+        serverIface.registerFilter(filter2, 300)
+
+        project = QgsProject()
+
+        # Test no propagation
+        filter1.propagate = False
+        _, body = self._execute_request_project('?service=%s' % service0.name(), project=project)
+        self.assertFalse(filter2.request_ready)
+        self.assertEqual(body, b'ABC')
+
+        # Test with propagation
+        filter1.propagate = True
+        _, body = self._execute_request_project('?service=%s' % service0.name(), project=project)
+        self.assertTrue(filter2.request_ready)
+        self.assertEqual(body, b'ABDCE')
+
+        serverIface.setFilters({})
+        reg.unregisterService(service0.name(), service0.version())
 
 
 if __name__ == '__main__':

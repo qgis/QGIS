@@ -146,6 +146,8 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
     void invalidateConnections( const QString &connection ) override;
     QList<QgsRelation> discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const override;
 
+    static QString providerKey();
+
     // static functions
     static void convertToGeosWKB( const unsigned char *blob, int blob_size,
                                   unsigned char **wkb, int *geom_size );
@@ -412,6 +414,9 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
     // QgsVectorDataProvider interface
   public:
     virtual QString defaultValueClause( int fieldIndex ) const override;
+
+    Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const override;
+
 };
 
 class QgsSpatiaLiteProviderMetadata final: public QgsProviderMetadata

@@ -19,6 +19,7 @@
 
 #include "qgsserverfilter.h"
 #include "qgslogger.h"
+#include "qgis.h"
 
 /**
  * QgsServerFilter
@@ -42,8 +43,33 @@ void QgsServerFilter::responseComplete()
   QgsDebugMsg( QStringLiteral( "QgsServerFilter plugin default responseComplete called" ) );
 }
 
-
 void QgsServerFilter::sendResponse()
 {
   QgsDebugMsg( QStringLiteral( "QgsServerFilter plugin default sendResponse called" ) );
 }
+
+bool QgsServerFilter::onRequestReady()
+{
+  Q_NOWARN_DEPRECATED_PUSH
+  requestReady();
+  Q_NOWARN_DEPRECATED_POP
+  return true;
+}
+
+bool QgsServerFilter::onResponseComplete()
+{
+  Q_NOWARN_DEPRECATED_PUSH
+  responseComplete();
+  Q_NOWARN_DEPRECATED_POP
+  return true;
+}
+
+bool QgsServerFilter::onSendResponse()
+{
+  Q_NOWARN_DEPRECATED_PUSH
+  sendResponse();
+  Q_NOWARN_DEPRECATED_POP
+  return true;
+}
+
+

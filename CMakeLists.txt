@@ -17,7 +17,7 @@ set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 #############################################################
 # Project and version
 set(CPACK_PACKAGE_VERSION_MAJOR "3")
-set(CPACK_PACKAGE_VERSION_MINOR "21")
+set(CPACK_PACKAGE_VERSION_MINOR "23")
 set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 set(RELEASE_NAME "Master")
@@ -425,6 +425,7 @@ if(WITH_CORE)
   else()
     set(QT_MIN_VERSION 5.12.0)
     set(QT_VERSION_BASE "Qt5")
+    set(WITH_QT5_KDE_FORK FALSE CACHE BOOL "Using KDE's Qt 5.15 fork")
   endif()
 
   # Use Qt5SerialPort optionally for GPS

@@ -106,7 +106,7 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
   int tilesToCreate = 0;
   for ( int zoomLevel = mMinZoom; zoomLevel <= mMaxZoom; ++zoomLevel )
   {
-    QgsTileMatrix tileMatrix = QgsTileMatrix::fromTileMatrix( zoomLevel, mRootTileMatrix );
+    const QgsTileMatrix tileMatrix = QgsTileMatrix::fromTileMatrix( zoomLevel, mRootTileMatrix );
 
     QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( outputExtent );
     tilesToCreate += ( tileRange.endRow() - tileRange.startRow() + 1 ) *
@@ -168,7 +168,7 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
   int tilesCreated = 0;
   for ( int zoomLevel = mMinZoom; zoomLevel <= mMaxZoom; ++zoomLevel )
   {
-    QgsTileMatrix tileMatrix = QgsTileMatrix::fromTileMatrix( zoomLevel, mRootTileMatrix );
+    const QgsTileMatrix tileMatrix = QgsTileMatrix::fromTileMatrix( zoomLevel, mRootTileMatrix );
 
     QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( outputExtent );
     for ( int row = tileRange.startRow(); row <= tileRange.endRow(); ++row )

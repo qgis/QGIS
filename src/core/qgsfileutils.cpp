@@ -438,7 +438,7 @@ bool QgsFileUtils::renameDataset( const QString &oldPath, const QString &newPath
   }
   if ( !res )
   {
-    error = QObject::tr( "Destination files already exist %1" ).arg( errors.join( QStringLiteral( ", " ) ) );
+    error = QObject::tr( "Destination files already exist %1" ).arg( errors.join( QLatin1String( ", " ) ) );
     return false;
   }
 
@@ -463,7 +463,7 @@ bool QgsFileUtils::renameDataset( const QString &oldPath, const QString &newPath
   }
   if ( !res )
   {
-    error = QObject::tr( "Could not rename %1" ).arg( errors.join( QStringLiteral( ", " ) ) );
+    error = QObject::tr( "Could not rename %1" ).arg( errors.join( QLatin1String( ", " ) ) );
   }
 
   return res;

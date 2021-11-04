@@ -243,6 +243,8 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
      */
     void setListening( bool isListening ) override;
 
+    Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const override;
+
   private:
 
     /**

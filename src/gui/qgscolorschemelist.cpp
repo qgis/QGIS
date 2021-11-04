@@ -382,7 +382,7 @@ QVariant QgsColorSchemeModel::data( const QModelIndex &index, int role ) const
       }
 
     case Qt::TextAlignmentRole:
-      return QVariant( Qt::AlignLeft | Qt::AlignVCenter );
+      return static_cast<Qt::Alignment::Int>( Qt::AlignLeft | Qt::AlignVCenter );
 
     default:
       return QVariant();
@@ -465,9 +465,9 @@ QVariant QgsColorSchemeModel::headerData( int section, Qt::Orientation orientati
       switch ( section )
       {
         case ColorSwatch:
-          return QVariant( Qt::AlignHCenter | Qt::AlignVCenter );
+          return static_cast<Qt::Alignment::Int>( Qt::AlignHCenter | Qt::AlignVCenter );
         case ColorLabel:
-          return QVariant( Qt::AlignLeft | Qt::AlignVCenter );
+          return static_cast<Qt::Alignment::Int>( Qt::AlignLeft | Qt::AlignVCenter );
         default:
           return QVariant();
       }

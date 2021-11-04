@@ -93,6 +93,10 @@ class CORE_EXPORT QgsSymbolLayer
           sipType = sipType_QgsArrowSymbolLayer;
         else if ( sipCpp->layerType() == "InterpolatedLine" )
           sipType = sipType_QgsInterpolatedLineSymbolLayer;
+        else if ( sipCpp->layerType() == "RasterLine" )
+          sipType = sipType_QgsRasterLineSymbolLayer;
+        else if ( sipCpp->layerType() == "Lineburst" )
+          sipType = sipType_QgsLineburstSymbolLayer;
         else
           sipType = sipType_QgsLineSymbolLayer;
         break;
@@ -200,6 +204,10 @@ class CORE_EXPORT QgsSymbolLayer
       PropertyLineEndWidthValue, //!< End line width for interpolated line renderer (since QGIS 3.22)
       PropertyLineStartColorValue, //!< Start line color for interpolated line renderer (since QGIS 3.22)
       PropertyLineEndColorValue, //!< End line color for interpolated line renderer (since QGIS 3.22)
+      PropertyMarkerClipping, //!< Marker clipping mode (since QGIS 3.24)
+      PropertyRandomOffsetX, //!< Random offset X (since QGIS 3.24)
+      PropertyRandomOffsetY, //!< Random offset Y (since QGIS 3.24)
+      PropertyLineClipping, //!< Line clipping mode (since QGIS 3.24)
     };
 
     /**

@@ -56,7 +56,7 @@ class TestQgsImageCache : public QObject
     void base64();
     void empty();
     void dpi();
-
+    void cachesize();
 };
 
 
@@ -316,6 +316,14 @@ void TestQgsImageCache::dpi()
   entry1.size = QSize( 100, 100 );
   entry2.size = QSize( 100, 100 );
   QVERIFY( entry1.isEqual( &entry2 ) );
+}
+
+void TestQgsImageCache::cachesize()
+{
+  uint cacheSize = 100000000;
+  QgsSettings().setValue( QStringLiteral( "/qgis/maxImageCacheSize" ), cacheSize );
+  QgsImageCache cache;
+  QCOMPARE( cache.mMaxCacheSize, cacheSize );
 }
 
 bool TestQgsImageCache::imageCheck( const QString &testName, QImage &image, int mismatchCount )

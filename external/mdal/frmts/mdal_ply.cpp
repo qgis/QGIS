@@ -583,9 +583,9 @@ void MDAL::DriverPly::save( const std::string &fileName, const std::string &mesh
 
   libply::ElementsDefinition definitions;
   std::vector<libply::Property> vproperties;
-  vproperties.emplace_back( "X", libply::Type::FLOAT64, false );
-  vproperties.emplace_back( "Y", libply::Type::FLOAT64, false );
-  vproperties.emplace_back( "Z", libply::Type::FLOAT64, false );
+  vproperties.emplace_back( "X", libply::Type::COORDINATE, false );
+  vproperties.emplace_back( "Y", libply::Type::COORDINATE, false );
+  vproperties.emplace_back( "Z", libply::Type::COORDINATE, false );
   for ( std::shared_ptr<DatasetGroup> group : vgroups )
   {
     vproperties.emplace_back( group->name(), libply::Type::FLOAT64, ! group->isScalar() );

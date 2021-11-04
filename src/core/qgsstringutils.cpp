@@ -621,7 +621,16 @@ QString QgsStringUtils::wordWrap( const QString &string, const int length, const
 
   for ( int i = 0; i < lines.size(); i++ )
   {
-    strLength = lines.at( i ).length();
+    const QString line = lines.at( i );
+    strLength = line.length();
+    if ( strLength <= length )
+    {
+      // shortcut, no wrapping required
+      newstr.append( line );
+      if ( i < lines.size() - 1 )
+        newstr.append( '\n' );
+      continue;
+    }
     strCurrent = 0;
     strHit = 0;
     lastHit = 0;
@@ -633,24 +642,24 @@ QString QgsStringUtils::wordWrap( const QString &string, const int length, const
       if ( useMaxLineLength )
       {
         //first try to locate delimiter backwards
-        strHit = lines.at( i ).lastIndexOf( rx, strCurrent + length );
+        strHit = ( strCurrent + length >= strLength ) ? -1 : line.lastIndexOf( rx, strCurrent + length );
         if ( strHit == lastHit || strHit == -1 )
         {
           //if no new backward delimiter found, try to locate forward
-          strHit = lines.at( i ).indexOf( rx, strCurrent + std::abs( length ) );
+          strHit = ( strCurrent + std::abs( length ) >= strLength ) ? -1 : line.indexOf( rx, strCurrent + std::abs( length ) );
         }
         lastHit = strHit;
       }
       else
       {
-        strHit = lines.at( i ).indexOf( rx, strCurrent + std::abs( length ) );
+        strHit = ( strCurrent + std::abs( length ) >= strLength ) ? -1 : line.indexOf( rx, strCurrent + std::abs( length ) );
       }
       if ( strHit > -1 )
       {
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
-        newstr.append( lines.at( i ).midRef( strCurrent, strHit - strCurrent ) );
+        newstr.append( line.midRef( strCurrent, strHit - strCurrent ) );
 #else
-        newstr.append( QStringView {lines.at( i )} .mid( strCurrent, strHit - strCurrent ) );
+        newstr.append( QStringView {line} .mid( strCurrent, strHit - strCurrent ) );
 #endif
         newstr.append( '\n' );
         strCurrent = strHit + delimiterLength;
@@ -658,9 +667,9 @@ QString QgsStringUtils::wordWrap( const QString &string, const int length, const
       else
       {
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
-        newstr.append( lines.at( i ).midRef( strCurrent ) );
+        newstr.append( line.midRef( strCurrent ) );
 #else
-        newstr.append( QStringView {lines.at( i )}.mid( strCurrent ) );
+        newstr.append( QStringView {line}.mid( strCurrent ) );
 #endif
         strCurrent = strLength;
       }

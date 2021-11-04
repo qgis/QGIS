@@ -103,6 +103,13 @@ The development version
       ARGB32_Premultiplied
     };
 
+    enum class VectorLayerTypeFlag
+    {
+      SqlQuery
+    };
+    typedef QFlags<Qgis::VectorLayerTypeFlag> VectorLayerTypeFlags;
+
+
     enum class PythonMacroMode
       {
       Never,
@@ -590,6 +597,7 @@ The development version
       ApplyScalingWorkaroundForTextRendering,
       Render3DMap,
       ApplyClipAfterReprojection,
+      RenderingSubSymbol,
     };
     typedef QFlags<Qgis::RenderContextFlag> RenderContextFlags;
 
@@ -607,6 +615,119 @@ The development version
       ShadowOffset,
       BlurSize,
       GlowSpread,
+    };
+
+    enum class VertexType
+      {
+      Segment,
+      Curve,
+    };
+
+    enum class MarkerShape
+      {
+      Square,
+      Diamond,
+      Pentagon,
+      Hexagon,
+      Triangle,
+      EquilateralTriangle,
+      Star,
+      Arrow,
+      Circle,
+      Cross,
+      CrossFill,
+      Cross2,
+      Line,
+      ArrowHead,
+      ArrowHeadFilled,
+      SemiCircle,
+      ThirdCircle,
+      QuarterCircle,
+      QuarterSquare,
+      HalfSquare,
+      DiagonalHalfSquare,
+      RightHalfTriangle,
+      LeftHalfTriangle,
+      Octagon,
+      SquareWithCorners,
+      AsteriskFill,
+      HalfArc,
+      ThirdArc,
+      QuarterArc,
+    };
+
+    enum class MarkerLinePlacement
+      {
+      Interval,
+      Vertex,
+      LastVertex,
+      FirstVertex,
+      CentralPoint,
+      CurvePoint,
+      SegmentCenter,
+    };
+
+    enum class GradientColorSource
+      {
+      SimpleTwoColor,
+      ColorRamp,
+    };
+
+    enum class GradientType
+      {
+      Linear,
+      Radial,
+      Conical,
+    };
+
+    enum class SymbolCoordinateReference
+      {
+      Feature,
+      Viewport,
+    };
+
+    enum class GradientSpread
+      {
+      Pad,
+      Reflect,
+      Repeat,
+    };
+
+    enum class PointCountMethod
+      {
+      Absolute,
+      DensityBased,
+    };
+
+    enum class MarkerClipMode
+    {
+      NoClipping,
+      Shape,
+      CentroidWithin,
+      CompletelyWithin,
+    };
+
+    enum class LineClipMode
+    {
+      ClipPainterOnly,
+      ClipToIntersection,
+      NoClipping,
+    };
+
+    enum class DashPatternLineEndingRule
+    {
+      NoRule,
+      FullDash,
+      HalfDash,
+      FullGap,
+      HalfGap,
+    };
+
+    enum class DashPatternSizeAdjustment
+    {
+      ScaleBothDashAndGap,
+      ScaleDashOnly,
+      ScaleGapOnly,
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -705,6 +826,8 @@ QFlags<Qgis::AnnotationItemGuiFlag> operator|(Qgis::AnnotationItemGuiFlag f1, QF
 QFlags<Qgis::MapSettingsFlag> operator|(Qgis::MapSettingsFlag f1, QFlags<Qgis::MapSettingsFlag> f2);
 
 QFlags<Qgis::RenderContextFlag> operator|(Qgis::RenderContextFlag f1, QFlags<Qgis::RenderContextFlag> f2);
+
+QFlags<Qgis::VectorLayerTypeFlag> operator|(Qgis::VectorLayerTypeFlag f1, QFlags<Qgis::VectorLayerTypeFlag> f2);
 
 
 

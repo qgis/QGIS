@@ -548,8 +548,6 @@ class CORE_EXPORT QgsRasterInterface
     % End
 #endif
 
-
-
     //! Fill in statistics defaults if not specified
     void initStatistics( QgsRasterBandStats &statistics, int bandNo,
                          int stats = QgsRasterBandStats::All,

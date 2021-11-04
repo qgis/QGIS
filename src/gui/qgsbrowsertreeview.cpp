@@ -20,12 +20,22 @@
 #include "qgsguiutils.h"
 #include "qgsdataitem.h"
 
+#include <QKeyEvent>
+
 QgsBrowserTreeView::QgsBrowserTreeView( QWidget *parent )
   : QTreeView( parent )
   , mSettingsSection( QStringLiteral( "browser" ) )
 {
   setEditTriggers( QAbstractItemView::EditKeyPressed );
   setIndentation( QgsGuiUtils::scaleIconSize( 16 ) );
+}
+
+void QgsBrowserTreeView::keyPressEvent( QKeyEvent *event )
+{
+  if ( event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter )
+    emit doubleClicked( currentIndex() );
+  else
+    QTreeView::keyPressEvent( event );
 }
 
 void QgsBrowserTreeView::setModel( QAbstractItemModel *model )

@@ -239,6 +239,8 @@ void TestQgsStringUtils::wordWrap_data()
   QTest::addColumn<QString>( "expected" );
 
   QTest::newRow( "wordwrap" ) << "university of qgis" << 13 << true << QString() << "university of\nqgis";
+  QTest::newRow( "wordwrap not possible" ) << "universityofqgis" << 13 << true << QString() << "universityofqgis";
+  QTest::newRow( "wordwrap not required" ) << "uni of qgis" << 13 << true << QString() << "uni of qgis";
   QTest::newRow( "optional parameters unspecified" ) << "test string" << 5 << true << QString() << "test\nstring";
   QTest::newRow( "wordwrap with delim" ) << "university of qgis" << 13 << true << QStringLiteral( " " ) << "university of\nqgis";
   QTest::newRow( "wordwrap min" ) << "university of qgis" << 3 << false << QStringLiteral( " " ) << "university\nof qgis";

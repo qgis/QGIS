@@ -92,6 +92,27 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static Qt::BrushStyle decodeSldBrushStyle( const QString &str );
 
     /**
+     * Decodes a \a string representing a symbol coordinate reference mode.
+     *
+     * \param string string to decode
+     * \param ok will be set to TRUE if \a string was successfully decoded
+     * \returns decoded marker clip mode
+     *
+     * \see encodeCoordinateReference()
+     * \since QGIS 3.24
+     */
+    static Qgis::SymbolCoordinateReference decodeCoordinateReference( const QString &string, bool *ok SIP_OUT = nullptr );
+
+    /**
+     * Encodes a symbol coordinate reference mode to a string.
+     *
+     * \param coordinateReference coordinate reference mode
+     * \see decodeCoordinateReference()
+     * \since QGIS 3.24
+     */
+    static QString encodeCoordinateReference( Qgis::SymbolCoordinateReference coordinateReference );
+
+    /**
      * Decodes a \a value representing an arrow head type.
      * \since QGIS 3.2
      */
@@ -102,6 +123,46 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \since QGIS 3.2
      */
     static QgsArrowSymbolLayer::ArrowType decodeArrowType( const QVariant &value, bool *ok SIP_OUT = nullptr );
+
+    /**
+     * Decodes a \a string representing a marker clip mode.
+     *
+     * \param string string to decode
+     * \param ok will be set to TRUE if \a string was successfully decoded
+     * \returns decoded marker clip mode
+     *
+     * \see encodeMarkerClipMode()
+     * \since QGIS 3.24
+     */
+    static Qgis::MarkerClipMode decodeMarkerClipMode( const QString &string, bool *ok SIP_OUT = nullptr );
+
+    /**
+     * Encodes a marker clip \a mode to a string.
+     *
+     * \see decodeMarkerClipMode()
+     * \since QGIS 3.24
+     */
+    static QString encodeMarkerClipMode( Qgis::MarkerClipMode mode );
+
+    /**
+     * Decodes a \a string representing a line clip mode.
+     *
+     * \param string string to decode
+     * \param ok will be set to TRUE if \a string was successfully decoded
+     * \returns decoded line clip mode
+     *
+     * \see encodeLineClipMode()
+     * \since QGIS 3.24
+     */
+    static Qgis::LineClipMode decodeLineClipMode( const QString &string, bool *ok SIP_OUT = nullptr );
+
+    /**
+     * Encodes a line clip \a mode to a string.
+     *
+     * \see decodeLineClipMode()
+     * \since QGIS 3.24
+     */
+    static QString encodeLineClipMode( Qgis::LineClipMode mode );
 
     /**
      * Encodes a QPointF to a string.
@@ -248,11 +309,12 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param units size units
      * \param size target size of preview picture
      * \param scale map unit scale for preview
+     * \param parentSymbolType since QGIS 3.22, can be used to specify the parent symbol type so that geometry generator preview icons are correctly calculated
      * \returns QPicture containing symbol layer preview
      * \see symbolLayerPreviewIcon()
      * \since QGIS 2.9
      */
-    static QPicture symbolLayerPreviewPicture( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
+    static QPicture symbolLayerPreviewPicture( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid );
 
     /**
      * Draws a symbol layer preview to an icon.
@@ -260,10 +322,11 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param u size units
      * \param size target size of preview icon
      * \param scale map unit scale for preview
+     * \param parentSymbolType since QGIS 3.22, can be used to specify the parent symbol type so that geometry generator preview icons are correctly calculated
      * \returns icon containing symbol layer preview
      * \see symbolLayerPreviewPicture()
      */
-    static QIcon symbolLayerPreviewIcon( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
+    static QIcon symbolLayerPreviewIcon( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid );
 
     /**
      * Returns an icon preview for a color ramp.

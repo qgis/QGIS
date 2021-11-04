@@ -163,6 +163,7 @@
 #include "qgsalgorithmrescaleraster.h"
 #include "qgsalgorithmreverselinedirection.h"
 #include "qgsalgorithmrotate.h"
+#include "qgsalgorithmroundness.h"
 #include "qgsalgorithmroundrastervalues.h"
 #include "qgsalgorithmruggedness.h"
 #include "qgsalgorithmsavefeatures.h"
@@ -175,6 +176,7 @@
 #include "qgsalgorithmsetmvalue.h"
 #include "qgsalgorithmsetvariable.h"
 #include "qgsalgorithmsetzvalue.h"
+#include "qgsalgorithmshortestline.h"
 #include "qgsalgorithmshortestpathlayertopoint.h"
 #include "qgsalgorithmshortestpathpointtolayer.h"
 #include "qgsalgorithmshortestpathpointtopoint.h"
@@ -441,6 +443,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRetainTableFieldsAlgorithm() );
   addAlgorithm( new QgsReverseLineDirectionAlgorithm() );
   addAlgorithm( new QgsRotateFeaturesAlgorithm() );
+  addAlgorithm( new QgsRoundnessAlgorithm() );
   addAlgorithm( new QgsRoundRasterValuesAlgorithm() );
   addAlgorithm( new QgsRuggednessAlgorithm() );
   addAlgorithm( new QgsSaveFeaturesAlgorithm() );
@@ -457,6 +460,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsSetProjectVariableAlgorithm() );
   addAlgorithm( new QgsSetZValueAlgorithm() );
   addAlgorithm( new QgsShapefileEncodingInfoAlgorithm() );
+  addAlgorithm( new QgsShortestLineAlgorithm() );
   addAlgorithm( new QgsShortestPathLayerToPointAlgorithm() );
   addAlgorithm( new QgsShortestPathPointToLayerAlgorithm() );
   addAlgorithm( new QgsShortestPathPointToPointAlgorithm() );

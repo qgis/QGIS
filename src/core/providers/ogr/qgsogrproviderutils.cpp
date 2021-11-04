@@ -957,7 +957,17 @@ QString QgsOgrProviderUtils::connectionPoolId( const QString &dataSourceURI, boo
     QString filePath = dataSourceURI.left( dataSourceURI.indexOf( QLatin1Char( '|' ) ) );
     QFileInfo fi( filePath );
     if ( fi.isFile() )
-      return filePath;
+    {
+      // Preserve open options so pooled connections always carry those on
+      QString openOptions;
+      static thread_local QRegularExpression openOptionsRegex( QStringLiteral( "((?:\\|option:(?:[^|]*))+)" ) );
+      QRegularExpressionMatch match = openOptionsRegex.match( dataSourceURI );
+      if ( match.hasMatch() )
+      {
+        openOptions = match.captured( 1 );
+      }
+      return filePath + openOptions;
+    }
   }
   return dataSourceURI;
 }
@@ -2410,7 +2420,14 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
     {
       if ( parts.value( QStringLiteral( "layerName" ) ).toString().isEmpty() )
         parts.insert( QStringLiteral( "layerName" ), layerName );
-      details.setName( parts.value( QStringLiteral( "vsiSuffix" ) ).toString().mid( 1 ) );
+      if ( hasSingleLayerOnly )
+      {
+        details.setName( parts.value( QStringLiteral( "vsiSuffix" ) ).toString().mid( 1 ) );
+      }
+      else
+      {
+        details.setName( layerName );
+      }
     }
     details.setFeatureCount( layerFeatureCount );
     details.setWkbType( QgsOgrUtils::ogrGeometryTypeToQgsWkbType( layerGeomType ) );
@@ -2501,7 +2518,14 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
       {
         if ( parts.value( QStringLiteral( "layerName" ) ).toString().isEmpty() )
           parts.insert( QStringLiteral( "layerName" ), layerName );
-        details.setName( parts.value( QStringLiteral( "vsiSuffix" ) ).toString().mid( 1 ) );
+        if ( hasSingleLayerOnly )
+        {
+          details.setName( parts.value( QStringLiteral( "vsiSuffix" ) ).toString().mid( 1 ) );
+        }
+        else
+        {
+          details.setName( layerName );
+        }
       }
       details.setFeatureCount( fCount.value( countIt.key() ) );
       details.setWkbType( QgsOgrUtils::ogrGeometryTypeToQgsWkbType( ( bIs25D ) ? wkbSetZ( countIt.key() ) : countIt.key() ) );

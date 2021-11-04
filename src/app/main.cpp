@@ -172,8 +172,8 @@ void usage( const QString &appName )
       << QStringLiteral( "\t[--help]\t\tthis text\n" )
       << QStringLiteral( "\t[--]\t\ttreat all following arguments as FILEs\n\n" )
       << QStringLiteral( "  FILE:\n" )
-      << QStringLiteral( "    Files specified on the command line can include rasters,\n" )
-      << QStringLiteral( "    vectors, and QGIS project files (.qgs and .qgz): \n" )
+      << QStringLiteral( "    Files specified on the command line can include rasters, vectors,\n" )
+      << QStringLiteral( "    QGIS layer definition files (.qlr) and QGIS project files (.qgs and .qgz): \n" )
       << QStringLiteral( "     1. Rasters - supported formats include GeoTiff, DEM \n" )
       << QStringLiteral( "        and others supported by GDAL\n" )
       << QStringLiteral( "     2. Vectors - supported formats include ESRI Shapefiles\n" )
@@ -1403,9 +1403,17 @@ int main( int argc, char *argv[] )
   {
     QgsDebugMsg( QStringLiteral( "Trying to load file : %1" ).arg( layerName ) );
     // don't load anything with a .qgs extension - these are project files
-    if ( !layerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) &&
-         !layerName.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) &&
-         !QgsZipUtils::isZipFile( layerName ) )
+    if ( layerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) ||
+         layerName.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) ||
+         QgsZipUtils::isZipFile( layerName ) )
+    {
+      continue;
+    }
+    else if ( layerName.endsWith( QLatin1String( ".qlr" ), Qt::CaseInsensitive ) )
+    {
+      qgis->openLayerDefinition( layerName );
+    }
+    else
     {
       qgis->openLayer( layerName );
     }

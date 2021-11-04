@@ -135,6 +135,8 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
      */
     QStringList readCsvtFieldTypes( const QString &filename, QString *message = nullptr );
 
+    static QString providerKey();
+
   private slots:
 
     void onFileUpdated();

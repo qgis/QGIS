@@ -165,6 +165,25 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     virtual bool empty() const;
 
     /**
+     * Returns TRUE if the layer is a query (SQL) layer.
+     *
+     * \note this is simply a shortcut to check if the SqlQuery flag
+     *       is set.
+     *
+     *\see vectorLayerTypeFlags()
+     * \since QGIS 3.24
+     */
+    virtual bool isSqlQuery() const;
+
+    /**
+     * Returns the vector layer type flags.
+     *
+     * \see isSqlQuery()
+     * \since QGIS 3.24
+     */
+    virtual Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const;
+
+    /**
      * Will always return FeatureAvailability::FeaturesAvailable or
      * FeatureAvailability::NoFeaturesAvailable.
      *

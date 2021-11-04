@@ -347,6 +347,8 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
 
     void pasteItem();
 
+    void setThumbnailSize( int );
+
   private:
     int selectedItemType();
 
@@ -422,6 +424,8 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     bool mFavoritesGroupVisible = true;
     bool mSmartGroupVisible = true;
     QString mBaseName;
+
+    static QString sPreviousTag;
 
     bool addTextFormat();
     bool editTextFormat();

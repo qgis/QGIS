@@ -639,8 +639,11 @@ static QSet<int> _nativeElementsFromElements( const QList<int> &indexes, const Q
   QSet<int> nativeElements;
   for ( const int index : indexes )
   {
-    const int nativeIndex = elementToNativeElements[index];
-    nativeElements.insert( nativeIndex );
+    if ( index < elementToNativeElements.count() )
+    {
+      const int nativeIndex = elementToNativeElements[index];
+      nativeElements.insert( nativeIndex );
+    }
   }
   return nativeElements;
 }

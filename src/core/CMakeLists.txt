@@ -765,6 +765,7 @@ set(QGIS_CORE_SRCS
   geometry/qgsregularpolygon.cpp
   geometry/qgssurface.cpp
   geometry/qgstriangle.cpp
+  geometry/qgsvertexid.cpp
   geometry/qgswkbptr.cpp
   geometry/qgswkbtypes.cpp
   geometry/qgsray3d.cpp
@@ -1300,6 +1301,7 @@ set(QGIS_CORE_HDRS
   geometry/qgsregularpolygon.h
   geometry/qgssurface.h
   geometry/qgstriangle.h
+  geometry/qgsvertexid.h
   geometry/qgswkbptr.h
   geometry/qgswkbtypes.h
   geometry/qgsray3d.h
@@ -2131,8 +2133,23 @@ endif()
 if (FORCE_STATIC_LIBS)
   target_link_libraries(qgis_core
     provider_wms_a
-    provider_postgres_a
+    provider_wcs_a
+    provider_delimitedtext_a
+    provider_arcgisfeatureserver_a
+    provider_arcgismapserver_a
   )
+  if (HAVE_SPATIALITE)
+    target_link_libraries(qgis_core
+      provider_spatialite_a
+      provider_wfs_a
+      provider_virtuallayer_a
+    )
+  endif()
+  if (HAVE_POSTGRESQL)
+    target_link_libraries(qgis_core
+      provider_postgres_a
+    )
+  endif()
 
   if (WITH_AUTH)
     target_link_libraries(qgis_core

@@ -44,7 +44,7 @@ MDAL::DriverAsciiDat::~DriverAsciiDat( ) = default;
 
 bool MDAL::DriverAsciiDat::canReadDatasets( const std::string &uri )
 {
-  std::ifstream in( uri, std::ifstream::in );
+  std::ifstream in = MDAL::openInputFile( uri );
   std::string line;
   if ( !MDAL::getHeaderLine( in, line ) )
   {
@@ -335,7 +335,7 @@ void MDAL::DriverAsciiDat::load( const std::string &datFile, MDAL::Mesh *mesh )
     return;
   }
 
-  std::ifstream in( mDatFile, std::ifstream::in );
+  std::ifstream in = MDAL::openInputFile( mDatFile );
   std::string line;
   if ( !std::getline( in, line ) )
   {
@@ -496,7 +496,7 @@ bool MDAL::DriverAsciiDat::persist( MDAL::DatasetGroup *group )
     return true;
   }
 
-  std::ofstream out( uri, std::ofstream::out );
+  std::ofstream out = MDAL::openOutputFile( uri, std::ofstream::out );
 
   // implementation based on information from:
   // https://www.xmswiki.com/wiki/SMS:ASCII_Dataset_Files_*.dat

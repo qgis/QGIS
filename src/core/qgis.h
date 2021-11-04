@@ -136,6 +136,19 @@ class CORE_EXPORT Qgis
     Q_ENUM( DataType )
 
     /**
+     * Vector layer type flags.
+     *
+     * \since QGIS 3.24
+     */
+    enum class VectorLayerTypeFlag : int
+    {
+      SqlQuery = 1 << 0 //!< SQL query layer
+    };
+    Q_ENUM( VectorLayerTypeFlag )
+    //! Vector layer type flags
+    Q_DECLARE_FLAGS( VectorLayerTypeFlags, VectorLayerTypeFlag )
+
+    /**
      * Authorisation to run Python Macros
      * \since QGIS 3.10
      */
@@ -948,6 +961,7 @@ class CORE_EXPORT Qgis
       ApplyScalingWorkaroundForTextRendering = 0x2000, //!< Whether a scaling workaround designed to stablise the rendering of small font sizes (or for painters scaled out by a large amount) when rendering text. Generally this is recommended, but it may incur some performance cost.
       Render3DMap              = 0x4000, //!< Render is for a 3D map
       ApplyClipAfterReprojection = 0x8000, //!< Feature geometry clipping to mapExtent() must be performed after the geometries are transformed using coordinateTransform(). Usually feature geometry clipping occurs using the extent() in the layer's CRS prior to geometry transformation, but in some cases when extent() could not be accurately calculated it is necessary to clip geometries to mapExtent() AFTER transforming them using coordinateTransform().
+      RenderingSubSymbol       = 0x10000, //!< Set whenever a sub-symbol of a parent symbol is currently being rendered. Can be used during symbol and symbol layer rendering to determine whether the symbol being rendered is a subsymbol. (Since QGIS 3.24)
     };
     //! Render context flags
     Q_DECLARE_FLAGS( RenderContextFlags, RenderContextFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsRenderContext, Flags )
@@ -980,6 +994,205 @@ class CORE_EXPORT Qgis
       GlowSpread, //!< Glow spread size
     };
     Q_ENUM( RenderSubcomponentProperty )
+
+    /**
+     * Types of vertex.
+     * \since QGIS 3.22
+     */
+    enum class VertexType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVertexId, VertexType ) : int
+      {
+      Segment SIP_MONKEYPATCH_COMPAT_NAME( SegmentVertex ) = 1, //!< The actual start or end point of a segment
+      Curve SIP_MONKEYPATCH_COMPAT_NAME( CurveVertex ) = 2, //!< An intermediate point on a segment defining the curvature of the segment
+    };
+    Q_ENUM( VertexType )
+
+    /**
+     * Marker shapes.
+     *
+     * \note Prior to QGIS 3.24 this was available as QgsSimpleMarkerSymbolLayerBase::Shape
+     *
+     * \since QGIS 3.24
+     */
+    enum class MarkerShape SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSimpleMarkerSymbolLayerBase, Shape ) : int
+      {
+      Square, //!< Square
+      Diamond, //!< Diamond
+      Pentagon, //!< Pentagon
+      Hexagon, //!< Hexagon
+      Triangle, //!< Triangle
+      EquilateralTriangle, //!< Equilateral triangle
+      Star, //!< Star
+      Arrow, //!< Arrow
+      Circle, //!< Circle
+      Cross, //!< Cross (lines only)
+      CrossFill, //!< Solid filled cross
+      Cross2, //!< Rotated cross (lines only), 'x' shape
+      Line, //!< Vertical line
+      ArrowHead, //!< Right facing arrow head (unfilled, lines only)
+      ArrowHeadFilled, //!< Right facing filled arrow head
+      SemiCircle, //!< Semi circle (top half)
+      ThirdCircle, //!< One third circle (top left third)
+      QuarterCircle, //!< Quarter circle (top left quarter)
+      QuarterSquare, //!< Quarter square (top left quarter)
+      HalfSquare, //!< Half square (left half)
+      DiagonalHalfSquare, //!< Diagonal half square (bottom left half)
+      RightHalfTriangle, //!< Right half of triangle
+      LeftHalfTriangle, //!< Left half of triangle
+      Octagon, //!< Octagon (since QGIS 3.18)
+      SquareWithCorners, //!< A square with diagonal corners (since QGIS 3.18)
+      AsteriskFill, //!< A filled asterisk shape (since QGIS 3.18)
+      HalfArc, //!< A line-only half arc (since QGIS 3.20)
+      ThirdArc, //!< A line-only one third arc (since QGIS 3.20)
+      QuarterArc, //!< A line-only one quarter arc (since QGIS 3.20)
+    };
+    Q_ENUM( MarkerShape )
+
+    /**
+     * Defines how/where the symbols should be placed on a line.
+     *
+     * \note Prior to QGIS 3.24 this was available as QgsTemplatedLineSymbolLayerBase::Placement
+     *
+     * \since QGIS 3.24
+     */
+    enum class MarkerLinePlacement SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTemplatedLineSymbolLayerBase, Placement ) : int
+      {
+      Interval, //!< Place symbols at regular intervals
+      Vertex, //!< Place symbols on every vertex in the line
+      LastVertex, //!< Place symbols on the last vertex in the line
+      FirstVertex, //!< Place symbols on the first vertex in the line
+      CentralPoint, //!< Place symbols at the mid point of the line
+      CurvePoint, //!< Place symbols at every virtual curve point in the line (used when rendering curved geometry types only)
+      SegmentCenter, //!< Place symbols at the center of every line segment
+    };
+    Q_ENUM( MarkerLinePlacement )
+
+    /**
+     * Gradient color sources.
+     *
+     * \note Prior to QGIS 3.24 this was available as QgsGradientFillSymbolLayer::GradientColorType
+     *
+     * \since QGIS 3.24
+     */
+    enum class GradientColorSource SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsGradientFillSymbolLayer, GradientColorType ) : int
+      {
+      SimpleTwoColor, //!< Simple two color gradient
+      ColorRamp, //!< Gradient color ramp
+    };
+    Q_ENUM( GradientColorSource )
+
+    /**
+     * Gradient types.
+     *
+     * \note Prior to QGIS 3.24 this was available as QgsGradientFillSymbolLayer::GradientType
+     *
+     * \since QGIS 3.24
+     */
+    enum class GradientType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsGradientFillSymbolLayer, GradientType ) : int
+      {
+      Linear, //!< Linear gradient
+      Radial, //!< Radial (circular) gradient
+      Conical, //!< Conical (polar) gradient
+    };
+    Q_ENUM( GradientType )
+
+    /**
+     * Symbol coordinate reference modes.
+     *
+     * \note Prior to QGIS 3.24 this was available as QgsGradientFillSymbolLayer::GradientCoordinateMode
+     *
+     * \since QGIS 3.24
+     */
+    enum class SymbolCoordinateReference SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsGradientFillSymbolLayer, GradientCoordinateMode ) : int
+      {
+      Feature, //!< Relative to feature/shape being rendered
+      Viewport, //!< Relative to the whole viewport/output device
+    };
+    Q_ENUM( SymbolCoordinateReference )
+
+    /**
+     * Gradient spread options, which control how gradients are rendered outside of their
+     * start and end points.
+     *
+     * \note Prior to QGIS 3.24 this was available as QgsGradientFillSymbolLayer::GradientSpread
+     *
+     * \since QGIS 3.24
+     */
+    enum class GradientSpread SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsGradientFillSymbolLayer, GradientSpread ) : int
+      {
+      Pad, //!< Pad out gradient using colors at endpoint of gradient
+      Reflect, //!< Reflect gradient
+      Repeat, //!< Repeat gradient
+    };
+    Q_ENUM( GradientSpread )
+
+    /**
+     * Methods which define the number of points randomly filling a polygon.
+     *
+     * \note Prior to QGIS 3.24 this was available as QgsRandomMarkerFillSymbolLayer::CountMethod
+     *
+     * \since QGIS 3.24
+     */
+    enum class PointCountMethod SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRandomMarkerFillSymbolLayer, CountMethod ) : int
+      {
+      Absolute SIP_MONKEYPATCH_COMPAT_NAME( AbsoluteCount ), //!< The point count is used as an absolute count of markers
+      DensityBased SIP_MONKEYPATCH_COMPAT_NAME( DensityBasedCount ), //!< The point count is part of a marker density count
+    };
+    Q_ENUM( PointCountMethod )
+
+    /**
+     * Marker clipping modes.
+     *
+     * \since QGIS 3.24
+     */
+    enum class MarkerClipMode : int
+    {
+      NoClipping, //!< No clipping, render complete markers
+      Shape, //!< Clip to polygon shape
+      CentroidWithin, //!< Render complete markers wherever their centroid falls within the polygon shape
+      CompletelyWithin, //!< Render complete markers wherever the completely fall within the polygon shape
+    };
+    Q_ENUM( MarkerClipMode )
+
+    /**
+     * Line clipping modes.
+     *
+     * \since QGIS 3.24
+     */
+    enum class LineClipMode : int
+    {
+      ClipPainterOnly, //!< Applying clipping on the painter only (i.e. line endpoints will coincide with polygon bounding box, but will not be part of the visible portion of the line)
+      ClipToIntersection, //!< Clip lines to intersection with polygon shape (slower) (i.e. line endpoints will coincide with polygon exterior)
+      NoClipping, //!< Lines are not clipped, will extend to shape's bounding box.
+    };
+    Q_ENUM( LineClipMode )
+
+    /**
+     * Dash pattern line ending rules.
+     *
+     * \since QGIS 3.24
+     */
+    enum class DashPatternLineEndingRule : int
+    {
+      NoRule, //!< No special rule
+      FullDash, //!< Start or finish the pattern with a full dash
+      HalfDash, //!< Start or finish the pattern with a half length dash
+      FullGap, //!< Start or finish the pattern with a full gap
+      HalfGap, //!< Start or finish the pattern with a half length gap
+    };
+    Q_ENUM( DashPatternLineEndingRule )
+
+    /**
+     * Dash pattern size adjustment options.
+     *
+     * \since QGIS 3.24
+     */
+    enum class DashPatternSizeAdjustment : int
+    {
+      ScaleBothDashAndGap, //!< Both the dash and gap lengths are adjusted equally
+      ScaleDashOnly, //!< Only dash lengths are adjusted
+      ScaleGapOnly, //!< Only gap lengths are adjusted
+    };
+    Q_ENUM( DashPatternSizeAdjustment )
 
     /**
      * Identify search radius in mm
@@ -1110,6 +1323,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AnnotationItemFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AnnotationItemGuiFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapSettingsFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RenderContextFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorLayerTypeFlags )
 
 
 // hack to workaround warnings when casting void pointers
@@ -1797,7 +2011,10 @@ typedef unsigned long long qgssize;
 #endif
 
 #ifndef SIP_RUN
-#if defined(__GNUC__) && !defined(__clang__)
+#ifdef _MSC_VER
+#define BUILTIN_UNREACHABLE \
+  __assume(false);
+#elif defined(__GNUC__) && !defined(__clang__)
 // Workaround a GCC bug where a -Wreturn-type warning is emitted in constructs
 // like:
 // switch( mVariableThatCanOnlyBeXorY )
@@ -1808,11 +2025,10 @@ typedef unsigned long long qgssize;
 //        return "foo";
 // }
 // See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=87951
-#define DEFAULT_BUILTIN_UNREACHABLE \
-  default: \
+#define BUILTIN_UNREACHABLE \
   __builtin_unreachable();
 #else
-#define DEFAULT_BUILTIN_UNREACHABLE
+#define BUILTIN_UNREACHABLE
 #endif
 #endif // SIP_RUN
 

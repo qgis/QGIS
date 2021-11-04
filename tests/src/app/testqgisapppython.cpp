@@ -132,9 +132,9 @@ void TestQgisAppPython::pythonPluginDependencyOrder()
   QVERIFY( mQgisApp->mPythonUtils->pluginList().contains( QStringLiteral( "dependent_plugin_1" ) ) );
   QVERIFY( mQgisApp->mPythonUtils->pluginList().contains( QStringLiteral( "dependent_plugin_2" ) ) );
 
-  const int indexIndependentPlugin = mQgisApp->mPythonUtils->pluginList().indexOf( QStringLiteral( "PluginPathTest" ) );
-  const int indexDependentPlugin1 = mQgisApp->mPythonUtils->pluginList().indexOf( QStringLiteral( "dependent_plugin_1" ) );
-  const int indexDependentPlugin2 = mQgisApp->mPythonUtils->pluginList().indexOf( QStringLiteral( "dependent_plugin_2" ) );
+  const int indexIndependentPlugin = mQgisApp->mPythonUtils->pluginList().indexOf( QLatin1String( "PluginPathTest" ) );
+  const int indexDependentPlugin1 = mQgisApp->mPythonUtils->pluginList().indexOf( QLatin1String( "dependent_plugin_1" ) );
+  const int indexDependentPlugin2 = mQgisApp->mPythonUtils->pluginList().indexOf( QLatin1String( "dependent_plugin_2" ) );
 
   // Dependent plugins should appear in this list after their dependencies,
   // since that's the order in which they'll be loaded to QGIS

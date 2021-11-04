@@ -106,6 +106,10 @@ class GUI_EXPORT QgsProcessingToolboxTreeView : public QTreeView
      */
     void setFilterString( const QString &filter );
 
+  protected:
+
+    void keyPressEvent( QKeyEvent *event ) override;
+
   private:
 
     QgsProcessingToolboxProxyModel *mModel = nullptr;
