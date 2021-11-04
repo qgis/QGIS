@@ -694,7 +694,7 @@ void TestQgsLabelingEngine::testCapitalization()
   QCOMPARE( provider2->mLabels.at( 0 )->labelText(), QString( "A TEST LABEL" ) );
 
   font.setCapitalization( QFont::MixedCase );
-  format.setCapitalization( QgsStringUtils::AllUppercase );
+  format.setCapitalization( Qgis::Capitalization::AllUppercase );
   format.setFont( font );
   settings.setFormat( format );
   QgsVectorLayerLabelProvider *provider2b = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test2" ), true, &settings );
@@ -705,7 +705,7 @@ void TestQgsLabelingEngine::testCapitalization()
 
   //lowercase
   font.setCapitalization( QFont::AllLowercase );
-  format.setCapitalization( QgsStringUtils::MixedCase );
+  format.setCapitalization( Qgis::Capitalization::MixedCase );
   format.setFont( font );
   settings.setFormat( format );
   QgsVectorLayerLabelProvider *provider3 = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test3" ), true, &settings );
@@ -715,7 +715,7 @@ void TestQgsLabelingEngine::testCapitalization()
   QCOMPARE( provider3->mLabels.at( 0 )->labelText(), QString( "a test label" ) );
 
   font.setCapitalization( QFont::MixedCase );
-  format.setCapitalization( QgsStringUtils::AllLowercase );
+  format.setCapitalization( Qgis::Capitalization::AllLowercase );
   format.setFont( font );
   settings.setFormat( format );
   QgsVectorLayerLabelProvider *provider3b = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test3" ), true, &settings );
@@ -726,7 +726,7 @@ void TestQgsLabelingEngine::testCapitalization()
 
   //first letter uppercase
   font.setCapitalization( QFont::Capitalize );
-  format.setCapitalization( QgsStringUtils::MixedCase );
+  format.setCapitalization( Qgis::Capitalization::MixedCase );
   format.setFont( font );
   settings.setFormat( format );
   QgsVectorLayerLabelProvider *provider4 = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test4" ), true, &settings );
@@ -736,7 +736,7 @@ void TestQgsLabelingEngine::testCapitalization()
   QCOMPARE( provider4->mLabels.at( 0 )->labelText(), QString( "A TeSt LABEL" ) );
 
   font.setCapitalization( QFont::MixedCase );
-  format.setCapitalization( QgsStringUtils::ForceFirstLetterToCapital );
+  format.setCapitalization( Qgis::Capitalization::ForceFirstLetterToCapital );
   format.setFont( font );
   settings.setFormat( format );
   QgsVectorLayerLabelProvider *provider4b = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test4" ), true, &settings );
@@ -746,7 +746,7 @@ void TestQgsLabelingEngine::testCapitalization()
   QCOMPARE( provider4b->mLabels.at( 0 )->labelText(), QString( "A TeSt LABEL" ) );
 
   settings.fieldName = QStringLiteral( "'A TEST LABEL'" );
-  format.setCapitalization( QgsStringUtils::TitleCase );
+  format.setCapitalization( Qgis::Capitalization::TitleCase );
   format.setFont( font );
   settings.setFormat( format );
   QgsVectorLayerLabelProvider *provider5 = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test4" ), true, &settings );

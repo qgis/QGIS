@@ -77,7 +77,7 @@ QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( 
           QgsUnitTypes::TemporalCenturies
         } )
   {
-    const QString title = ( QgsGui::higFlags() & QgsGui::HigDialogTitleIsTitleCase ) ? QgsStringUtils::capitalize( QgsUnitTypes::toString( u ), QgsStringUtils::TitleCase )
+    const QString title = ( QgsGui::higFlags() & QgsGui::HigDialogTitleIsTitleCase ) ? QgsStringUtils::capitalize( QgsUnitTypes::toString( u ), Qgis::Capitalization::TitleCase )
                           : QgsUnitTypes::toString( u );
     mDurationUnitsComboBox->addItem( title, u );
     mFixedDurationUnitsComboBox->addItem( title, u );

@@ -488,7 +488,7 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
     n.replace( rx2, QString() );
     if ( !capitalize )
       n = n.replace( ' ', '_' );
-    return capitalize ? QgsStringUtils::capitalize( n, QgsStringUtils::UpperCamelCase ) : n;
+    return capitalize ? QgsStringUtils::capitalize( n, Qgis::Capitalization::UpperCamelCase ) : n;
   };
 
   auto uniqueSafeName = [ &safeName ]( const QString & name, bool capitalize, const QMap< QString, QString > &friendlyNames )->QString

@@ -402,7 +402,7 @@ Sets the ``orientation`` for the text.
 .. versionadded:: 3.10
 %End
 
-    QgsStringUtils::Capitalization capitalization() const;
+    Qgis::Capitalization capitalization() const;
 %Docstring
 Returns the text capitalization style.
 
@@ -411,7 +411,7 @@ Returns the text capitalization style.
 .. versionadded:: 3.16
 %End
 
-    void setCapitalization( QgsStringUtils::Capitalization capitalization );
+    void setCapitalization( Qgis::Capitalization capitalization );
 %Docstring
 Sets the text ``capitalization`` style.
 

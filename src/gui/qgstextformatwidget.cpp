@@ -39,6 +39,7 @@
 #include "qgsfillsymbol.h"
 #include "qgsiconutils.h"
 #include "qgssymbollayerreference.h"
+#include "qgsconfig.h"
 
 #include <QButtonGroup>
 #include <QMessageBox>
@@ -895,7 +896,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   mFontLetterSpacingSpinBox->setValue( format.font().letterSpacing() );
   whileBlocking( mKerningCheckBox )->setChecked( format.font().kerning() );
 
-  whileBlocking( mFontCapitalsComboBox )->setCurrentIndex( mFontCapitalsComboBox->findData( format.capitalization() ) );
+  whileBlocking( mFontCapitalsComboBox )->setCurrentIndex( mFontCapitalsComboBox->findData( static_cast< int >( format.capitalization() ) ) );
   QgsFontUtils::updateFontViaStyle( mRefFont, format.namedStyle() );
   updateFont( mRefFont );
 
@@ -1031,7 +1032,7 @@ QgsTextFormat QgsTextFormatWidget::format( bool includeDataDefinedProperties ) c
   format.setPreviewBackgroundColor( mPreviewBackgroundColor );
   format.setOrientation( static_cast< QgsTextFormat::TextOrientation >( mTextOrientationComboBox->currentData().toInt() ) );
   format.setAllowHtmlFormatting( mHtmlFormattingCheckBox->isChecked( ) );
-  format.setCapitalization( static_cast< QgsStringUtils::Capitalization >( mFontCapitalsComboBox->currentData().toInt() ) );
+  format.setCapitalization( static_cast< Qgis::Capitalization >( mFontCapitalsComboBox->currentData().toInt() ) );
 
   // buffer
   QgsTextBufferSettings buffer;
@@ -1422,14 +1423,17 @@ void QgsTextFormatWidget::updatePlacementWidgets()
 
 void QgsTextFormatWidget::populateFontCapitalsComboBox()
 {
-  mFontCapitalsComboBox->addItem( tr( "No Change" ), QgsStringUtils::MixedCase );
-  mFontCapitalsComboBox->addItem( tr( "All Uppercase" ), QgsStringUtils::AllUppercase );
-  mFontCapitalsComboBox->addItem( tr( "All Lowercase" ), QgsStringUtils::AllLowercase );
-  // Small caps doesn't work right with QPainterPath::addText()
+  mFontCapitalsComboBox->addItem( tr( "No Change" ), static_cast< int >( Qgis::Capitalization::MixedCase ) );
+  mFontCapitalsComboBox->addItem( tr( "All Uppercase" ), static_cast< int >( Qgis::Capitalization::AllUppercase ) );
+  mFontCapitalsComboBox->addItem( tr( "All Lowercase" ), static_cast< int >( Qgis::Capitalization::AllLowercase ) );
+#if defined(HAS_KDE_QT5_SMALL_CAPS_FIX) || QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
+  // Requires new enough build due to
   // https://bugreports.qt.io/browse/QTBUG-13965
-//  mFontCapitalsComboBox->addItem( tr( "Small Caps" ), QVariant( 3 ) );
-  mFontCapitalsComboBox->addItem( tr( "Title Case" ), QgsStringUtils::TitleCase );
-  mFontCapitalsComboBox->addItem( tr( "Force First Letter to Capital" ), QgsStringUtils::ForceFirstLetterToCapital );
+  mFontCapitalsComboBox->addItem( tr( "Small Caps" ), static_cast< int >( Qgis::Capitalization::SmallCaps ) );
+  mFontCapitalsComboBox->addItem( tr( "All Small Caps" ), static_cast< int >( Qgis::Capitalization::AllSmallCaps ) );
+#endif
+  mFontCapitalsComboBox->addItem( tr( "Title Case" ), static_cast< int >( Qgis::Capitalization::TitleCase ) );
+  mFontCapitalsComboBox->addItem( tr( "Force First Letter to Capital" ), static_cast< int >( Qgis::Capitalization::ForceFirstLetterToCapital ) );
 }
 
 void QgsTextFormatWidget::populateFontStyleComboBox()

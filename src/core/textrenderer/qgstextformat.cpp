@@ -22,6 +22,7 @@
 #include "qgspainting.h"
 #include "qgstextrendererutils.h"
 #include "qgspallabeling.h"
+#include "qgsconfig.h"
 #include <QFontDatabase>
 #include <QMimeData>
 #include <QWidget>
@@ -194,6 +195,10 @@ QFont QgsTextFormat::scaledFont( const QgsRenderContext &context, double scaleFa
   font.setLetterSpacing( QFont::AbsoluteSpacing, context.convertToPainterUnits( d->textFont.letterSpacing(), d->fontSizeUnits, d->fontSizeMapUnitScale ) * scaleFactor );
   font.setWordSpacing( context.convertToPainterUnits( d->textFont.wordSpacing(), d->fontSizeUnits, d->fontSizeMapUnitScale ) * scaleFactor  * scaleFactor );
 
+  if ( d->capitalization == Qgis::Capitalization::SmallCaps
+       || d->capitalization == Qgis::Capitalization::AllSmallCaps )
+    font.setCapitalization( QFont::SmallCaps );
+
   return font;
 }
 
@@ -318,17 +323,23 @@ void QgsTextFormat::setOrientation( TextOrientation orientation )
   d->orientation = orientation;
 }
 
-QgsStringUtils::Capitalization QgsTextFormat::capitalization() const
+Qgis::Capitalization QgsTextFormat::capitalization() const
 {
   // bit of complexity here to maintain API..
-  return d->capitalization == QgsStringUtils::MixedCase && d->textFont.capitalization() != QFont::MixedCase ? static_cast< QgsStringUtils::Capitalization >( d->textFont.capitalization() ) : d->capitalization ;
+  return d->capitalization == Qgis::Capitalization::MixedCase && d->textFont.capitalization() != QFont::MixedCase
+         ? static_cast< Qgis::Capitalization >( d->textFont.capitalization() )
+         : d->capitalization ;
 }
 
-void QgsTextFormat::setCapitalization( QgsStringUtils::Capitalization capitalization )
+void QgsTextFormat::setCapitalization( Qgis::Capitalization capitalization )
 {
   d->isValid = true;
   d->capitalization = capitalization;
+#if defined(HAS_KDE_QT5_SMALL_CAPS_FIX) || QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
+  d->textFont.setCapitalization( capitalization == Qgis::Capitalization::SmallCaps || capitalization == Qgis::Capitalization::AllSmallCaps ? QFont::SmallCaps : QFont::MixedCase );
+#else
   d->textFont.setCapitalization( QFont::MixedCase );
+#endif
 }
 
 bool QgsTextFormat::allowHtmlFormatting() const
@@ -413,7 +424,7 @@ void QgsTextFormat::readFromLayer( QgsVectorLayer *layer )
   d->textFont = QFont( fontFamily, d->fontSize, fontWeight, fontItalic );
   d->textNamedStyle = QgsFontUtils::translateNamedStyle( layer->customProperty( QStringLiteral( "labeling/namedStyle" ), QVariant( "" ) ).toString() );
   QgsFontUtils::updateFontViaStyle( d->textFont, d->textNamedStyle ); // must come after textFont.setPointSizeF()
-  d->capitalization = static_cast< QgsStringUtils::Capitalization >( layer->customProperty( QStringLiteral( "labeling/fontCapitals" ), QVariant( 0 ) ).toUInt() );
+  d->capitalization = static_cast< Qgis::Capitalization >( layer->customProperty( QStringLiteral( "labeling/fontCapitals" ), QVariant( 0 ) ).toUInt() );
   d->textFont.setUnderline( layer->customProperty( QStringLiteral( "labeling/fontUnderline" ) ).toBool() );
   d->textFont.setStrikeOut( layer->customProperty( QStringLiteral( "labeling/fontStrikeout" ) ).toBool() );
   d->textFont.setLetterSpacing( QFont::AbsoluteSpacing, layer->customProperty( QStringLiteral( "labeling/fontLetterSpacing" ), QVariant( 0.0 ) ).toDouble() );
@@ -557,9 +568,12 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   }
 
   if ( textStyleElem.hasAttribute( QStringLiteral( "capitalization" ) ) )
-    d->capitalization = static_cast< QgsStringUtils::Capitalization >( textStyleElem.attribute( QStringLiteral( "capitalization" ), QString::number( QgsStringUtils::MixedCase ) ).toInt() );
+    d->capitalization = static_cast< Qgis::Capitalization >( textStyleElem.attribute( QStringLiteral( "capitalization" ), QString::number( static_cast< int >( Qgis::Capitalization::MixedCase ) ) ).toInt() );
   else
-    d->capitalization = static_cast< QgsStringUtils::Capitalization >( textStyleElem.attribute( QStringLiteral( "fontCapitals" ), QStringLiteral( "0" ) ).toUInt() );
+    d->capitalization = static_cast< Qgis::Capitalization >( textStyleElem.attribute( QStringLiteral( "fontCapitals" ), QStringLiteral( "0" ) ).toUInt() );
+
+  if ( d->capitalization == Qgis::Capitalization::SmallCaps || d->capitalization == Qgis::Capitalization::AllSmallCaps )
+    d->textFont.setCapitalization( QFont::SmallCaps );
 
   d->allowHtmlFormatting = textStyleElem.attribute( QStringLiteral( "allowHtml" ), QStringLiteral( "0" ) ).toInt();
 

@@ -953,7 +953,7 @@ QString QgsMapLayer::formatLayerName( const QString &name )
 {
   QString layerName( name );
   layerName.replace( '_', ' ' );
-  layerName = QgsStringUtils::capitalize( layerName, QgsStringUtils::ForceFirstLetterToCapital );
+  layerName = QgsStringUtils::capitalize( layerName, Qgis::Capitalization::ForceFirstLetterToCapital );
   return layerName;
 }
 

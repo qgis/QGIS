@@ -1897,11 +1897,11 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   }
 
   // apply capitalization
-  QgsStringUtils::Capitalization capitalization = mFormat.capitalization();
+  Qgis::Capitalization capitalization = mFormat.capitalization();
   // maintain API - capitalization may have been set in textFont
-  if ( capitalization == QgsStringUtils::MixedCase && mFormat.font().capitalization() != QFont::MixedCase )
+  if ( capitalization == Qgis::Capitalization::MixedCase && mFormat.font().capitalization() != QFont::MixedCase )
   {
-    capitalization = static_cast< QgsStringUtils::Capitalization >( mFormat.font().capitalization() );
+    capitalization = static_cast< Qgis::Capitalization >( mFormat.font().capitalization() );
   }
   // data defined font capitalization?
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::FontCase ) )
@@ -1916,24 +1916,34 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
       {
         if ( fcase.compare( QLatin1String( "NoChange" ), Qt::CaseInsensitive ) == 0 )
         {
-          capitalization = QgsStringUtils::MixedCase;
+          capitalization = Qgis::Capitalization::MixedCase;
         }
         else if ( fcase.compare( QLatin1String( "Upper" ), Qt::CaseInsensitive ) == 0 )
         {
-          capitalization = QgsStringUtils::AllUppercase;
+          capitalization = Qgis::Capitalization::AllUppercase;
         }
         else if ( fcase.compare( QLatin1String( "Lower" ), Qt::CaseInsensitive ) == 0 )
         {
-          capitalization = QgsStringUtils::AllLowercase;
+          capitalization = Qgis::Capitalization::AllLowercase;
         }
         else if ( fcase.compare( QLatin1String( "Capitalize" ), Qt::CaseInsensitive ) == 0 )
         {
-          capitalization = QgsStringUtils::ForceFirstLetterToCapital;
+          capitalization = Qgis::Capitalization::ForceFirstLetterToCapital;
         }
         else if ( fcase.compare( QLatin1String( "Title" ), Qt::CaseInsensitive ) == 0 )
         {
-          capitalization = QgsStringUtils::TitleCase;
+          capitalization = Qgis::Capitalization::TitleCase;
         }
+#if defined(HAS_KDE_QT5_SMALL_CAPS_FIX) || QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
+        else if ( fcase.compare( QLatin1String( "SmallCaps" ), Qt::CaseInsensitive ) == 0 )
+        {
+          capitalization = Qgis::Capitalization::SmallCaps;
+        }
+        else if ( fcase.compare( QLatin1String( "AllSmallCaps" ), Qt::CaseInsensitive ) == 0 )
+        {
+          capitalization = Qgis::Capitalization::AllSmallCaps;
+        }
+#endif
       }
     }
   }
