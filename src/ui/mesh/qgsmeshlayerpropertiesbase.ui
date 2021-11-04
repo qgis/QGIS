@@ -376,19 +376,15 @@
                 <widget class="QgsMeshDatasetGroupTreeWidget" name="mDatasetGroupTreeWidget" native="true"/>
                </item>
                <item>
-                <widget class="QCheckBox" name="mTemporalStaticDatasetCheckBox">
-                 <property name="toolTip">
-                  <string>Static dataset even if the temporal navigation is on</string>
-                 </property>
-                 <property name="text">
-                  <string>Always treat as a static dataset, regardless of temporal properties</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
                 <widget class="QgsCollapsibleGroupBoxBasic" name="mStaticDatasetGroupBox">
+                 <property name="toolTip">
+                  <string>Always treat as a static dataset even if the temporal navigation is on</string>
+                 </property>
                  <property name="title">
-                  <string>Static Dataset</string>
+                  <string>Treat as Static Dataset</string>
+                 </property>
+                 <property name="checkable">
+                  <bool>true</bool>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_7">
                   <item>
@@ -881,7 +877,7 @@
   <tabstop>mLayerOrigNameLineEd</tabstop>
   <tabstop>mCrsGroupBox</tabstop>
   <tabstop>mCrsSelector</tabstop>
-  <tabstop>mTemporalStaticDatasetCheckBox</tabstop>
+  <tabstop>mStaticDatasetGroupBox</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>mSimplifyMeshGroupBox</tabstop>
   <tabstop>mSimplifyReductionFactorSpinBox</tabstop>

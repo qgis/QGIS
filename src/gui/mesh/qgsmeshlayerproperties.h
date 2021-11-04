@@ -87,8 +87,6 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
 
     void onTimeReferenceChange();
 
-    void onStaticDatasetCheckBoxChanged();
-
     void urlClicked( const QUrl &url );
     void loadMetadata();
     void saveMetadataAs();
