@@ -119,14 +119,14 @@ void QgsIntersection2CirclesDialog::show()
 
 void QgsIntersection2CirclesDialog::clearInformations()
 {
-  mIntersection1.clear();
-  mIntersection2.clear();
   mX1->clear();
   mY1->clear();
   mX2->clear();
   mY2->clear();
   mRadius1->clear();
   mRadius2->clear();
+  mIntersection1.clear();
+  mIntersection2.clear();
 }
 
 void QgsIntersection2CirclesDialog::hideDrawings()
@@ -186,8 +186,8 @@ void QgsIntersection2CirclesDialog::onAccepted()
   QgsFeatureAction action( tr( "Feature added" ), f, vlayer );
   action.addFeature();
 
-  hideDrawings();
   clearInformations();
+  hideDrawings();
 }
 
 void QgsIntersection2CirclesDialog::toggleSelectCenter( CircleNumber circleNum )
