@@ -69,7 +69,7 @@ INSERT INTO qgis_test.authors(name)
 INSERT INTO qgis_test.editors(name, year)
        VALUES
 	        ('Sputnik Editions', 1961),
-			('Apollo Editions', 1969);
+          ('Apollo Editions', 1969);
 
 
 INSERT INTO qgis_test.books(name, fk_editor_name, fk_editor_year)
@@ -86,6 +86,20 @@ INSERT INTO qgis_test.books_authors(fk_book, fk_author)
               (1, 4);
 
 -- Table: qgis_test.pipes
+
+-----------------------------
+
+-- table for mismatching field pairs type
+-- fkey is text, attribute is integer
+
+CREATE TABLE qgis_test.owner(id serial not null,name text);
+CREATE TABLE qgis_test.product(id serial not null,name text, fk_owner text);
+
+INSERT INTO qgis_test.owner(id, name) VALUES (1, 'Superman');
+INSERT INTO qgis_test.product(name, fk_owner) VALUES('Flying suit', '1');
+
+
+-----------------------------
 
 CREATE EXTENSION IF NOT EXISTS postgis;
 

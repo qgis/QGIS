@@ -46,6 +46,9 @@ class TestQgsRelationPostgresql(unittest.TestCase):
 
         QgsProject.instance().clear()
 
+    def tearDown(self):
+        QgsProject.instance().removeAllMapLayers()
+
     def test_discover_relations(self):
         """
         Test the automatic discovery of relations
@@ -80,6 +83,29 @@ class TestQgsRelationPostgresql(unittest.TestCase):
 
         relations = self.relMgr.discoverRelations([], [vl_child, vl_parent])
         self.assertEqual(len(relations), 1)
+
+    def test_relation_with_mismatching_field_pairs_type(self):
+        """
+        mix field types (fkey is text, attribute is integer)
+        """
+        vl_product = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'id\' table="qgis_test"."product" sql=', 'product', 'postgres')
+        vl_owner = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'id\' table="qgis_test"."owner" sql=', 'owner', 'postgres')
+
+        QgsProject.instance().clear()
+        QgsProject.instance().addMapLayers([vl_product, vl_owner])
+
+        rel = QgsRelation()
+        rel.setId('rel1')
+        rel.setName('Super Relation')
+        rel.setReferencingLayer(vl_owner.id())
+        rel.setReferencedLayer(vl_product.id())
+        rel.addFieldPair('fk_owner', 'id')
+        feat = next(self.referencingLayer.getFeatures("fk_owner = '1'"))
+        self.assertTrue(feat.isValid())
+        f = rel.getReferencedFeature(feat)
+        self.assertTrue(f.isValid())
+        self.assertEqual(f, 1)
+
 
 
 if __name__ == '__main__':
