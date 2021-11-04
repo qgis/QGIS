@@ -931,18 +931,29 @@ class TestQgsGeometry(unittest.TestCase):
                 result = geom.constGet().area()
                 self.assertAlmostEqual(result, exp, 5,
                                        "Area {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result))
+                result = geom.area()
+                self.assertAlmostEqual(result, exp, 5,
+                                       "Length {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result))
 
                 # test length calculation
                 exp = float(row['length'])
                 result = geom.constGet().length()
                 self.assertAlmostEqual(result, exp, 5,
                                        "Length {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result))
+                if geom.type() != QgsWkbTypes.PolygonGeometry:
+                    result = geom.length()
+                    self.assertAlmostEqual(result, exp, 5,
+                                           "Length {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result))
 
                 # test perimeter calculation
                 exp = float(row['perimeter'])
                 result = geom.constGet().perimeter()
                 self.assertAlmostEqual(result, exp, 5,
                                        "Perimeter {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result))
+                if geom.type() == QgsWkbTypes.PolygonGeometry:
+                    result = geom.length()
+                    self.assertAlmostEqual(result, exp, 5,
+                                           "Length {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result))
 
     def testCollection(self):
         g = QgsGeometry.fromWkt('MultiLineString EMPTY')
