@@ -64,7 +64,7 @@ void QgsGridAlgorithm::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Grid CRS" ), QStringLiteral( "ProjectCrs" ) ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Grid" ), QgsProcessing::TypeVectorPolygon ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Grid" ), QgsProcessing::TypeVectorAnyGeometry ) );
 }
 
 QString QgsGridAlgorithm::shortHelpString() const
