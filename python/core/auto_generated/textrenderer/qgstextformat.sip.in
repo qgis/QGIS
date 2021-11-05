@@ -348,6 +348,36 @@ Sets the text's opacity.
 .. seealso:: :py:func:`opacity`
 %End
 
+    int stretchFactor() const;
+%Docstring
+Returns the text's stretch factor.
+
+The stretch factor matches a condensed or expanded version of the font or applies a stretch
+transform that changes the width of all characters in the font by factor percent.
+
+For example, a factor of 150 results in all characters in the font being 1.5 times
+(ie. 150%) wider. The minimum stretch factor is 1, and the maximum stretch factor is 4000.
+
+.. seealso:: :py:func:`setStretchFactor`
+
+.. versionadded:: 3.24
+%End
+
+    void setStretchFactor( int factor );
+%Docstring
+Sets the text's stretch ``factor``.
+
+The stretch factor matches a condensed or expanded version of the font or applies a stretch
+transform that changes the width of all characters in the font by factor percent.
+
+For example, setting ``factor`` to 150 results in all characters in the font being 1.5 times
+(ie. 150%) wider. The minimum stretch factor is 1, and the maximum stretch factor is 4000.
+
+.. seealso:: :py:func:`stretchFactor`
+
+.. versionadded:: 3.24
+%End
+
     QPainter::CompositionMode blendMode() const;
 %Docstring
 Returns the blending mode used for drawing the text.

@@ -290,6 +290,17 @@ void QgsTextFormat::setOpacity( double opacity )
   d->opacity = opacity;
 }
 
+int QgsTextFormat::stretchFactor() const
+{
+  return d->textFont.stretch();
+}
+
+void QgsTextFormat::setStretchFactor( int factor )
+{
+  d->isValid = true;
+  d->textFont.setStretch( factor );
+}
+
 QPainter::CompositionMode QgsTextFormat::blendMode() const
 {
   return d->blendMode;
@@ -551,6 +562,7 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   {
     d->opacity = ( textStyleElem.attribute( QStringLiteral( "textOpacity" ) ).toDouble() );
   }
+  d->textFont.setStretch( textStyleElem.attribute( QStringLiteral( "stretchFactor" ), QStringLiteral( "100" ) ).toInt() );
   d->orientation = QgsTextRendererUtils::decodeTextOrientation( textStyleElem.attribute( QStringLiteral( "textOrientation" ) ) );
   d->previewBackgroundColor = QgsSymbolLayerUtils::decodeColor( textStyleElem.attribute( QStringLiteral( "previewBkgrdColor" ), QgsSymbolLayerUtils::encodeColor( Qt::white ) ) );
 
@@ -655,6 +667,7 @@ QDomElement QgsTextFormat::writeXml( QDomDocument &doc, const QgsReadWriteContex
   textStyleElem.setAttribute( QStringLiteral( "fontWordSpacing" ), d->textFont.wordSpacing() );
   textStyleElem.setAttribute( QStringLiteral( "fontKerning" ), d->textFont.kerning() );
   textStyleElem.setAttribute( QStringLiteral( "textOpacity" ), d->opacity );
+  textStyleElem.setAttribute( QStringLiteral( "stretchFactor" ), d->textFont.stretch() );
   textStyleElem.setAttribute( QStringLiteral( "textOrientation" ), QgsTextRendererUtils::encodeTextOrientation( d->orientation ) );
   textStyleElem.setAttribute( QStringLiteral( "blendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
   textStyleElem.setAttribute( QStringLiteral( "multilineHeight" ), d->multilineHeight );
@@ -961,6 +974,16 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
     if ( !val.isNull() )
     {
       d->opacity = val.toDouble() / 100.0;
+    }
+  }
+
+  if ( d->mDataDefinedProperties.isActive( QgsPalLayerSettings::FontStretchFactor ) )
+  {
+    context.expressionContext().setOriginalValueVariable( d->textFont.stretch() );
+    const QVariant val = d->mDataDefinedProperties.value( QgsPalLayerSettings::FontStretchFactor, context.expressionContext(), d->textFont.stretch() );
+    if ( !val.isNull() )
+    {
+      d->textFont.setStretch( val.toInt() );
     }
   }
 

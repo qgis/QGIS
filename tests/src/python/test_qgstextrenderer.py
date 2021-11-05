@@ -163,6 +163,10 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertTrue(t.isValid())
 
         t = QgsTextFormat()
+        t.setStretchFactor(110)
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
         t.dataDefinedProperties().setProperty(QgsPalLayerSettings.Bold, QgsProperty.fromValue(True))
         self.assertTrue(t.isValid())
 
@@ -707,6 +711,9 @@ class PyQgsTextRenderer(unittest.TestCase):
         s.setPreviewBackgroundColor(QColor(100, 150, 200))
         s.setOrientation(QgsTextFormat.VerticalOrientation)
         s.setAllowHtmlFormatting(True)
+
+        s.setStretchFactor(110)
+
         s.dataDefinedProperties().setProperty(QgsPalLayerSettings.Bold, QgsProperty.fromExpression('1>2'))
         return s
 
@@ -808,6 +815,10 @@ class PyQgsTextRenderer(unittest.TestCase):
         s.setFamilies(['Times New Roman'])
         self.assertNotEqual(s, s2)
 
+        s = self.createFormatSettings()
+        s.setStretchFactor(120)
+        self.assertNotEqual(s, s2)
+
     def checkTextFormat(self, s):
         """ test QgsTextFormat """
         self.assertTrue(s.buffer().enabled())
@@ -834,6 +845,10 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertEqual(s.capitalization(), QgsStringUtils.TitleCase)
         self.assertTrue(s.allowHtmlFormatting())
         self.assertEqual(s.dataDefinedProperties().property(QgsPalLayerSettings.Bold).expressionString(), '1>2')
+
+        if int(QT_VERSION_STR.split('.')[0]) > 6 or (
+                int(QT_VERSION_STR.split('.')[0]) == 6 and int(QT_VERSION_STR.split('.')[1]) >= 3):
+            self.assertEqual(s.stretchFactor(), 110)
 
     def testFormatGettersSetters(self):
         s = self.createFormatSettings()
@@ -1295,6 +1310,13 @@ class PyQgsTextRenderer(unittest.TestCase):
         f.updateDataDefinedProperties(context)
         self.assertEqual(f.blendMode(), QPainter.CompositionMode_ColorBurn)
 
+        if int(QT_VERSION_STR.split('.')[0]) > 6 or (
+                int(QT_VERSION_STR.split('.')[0]) == 6 and int(QT_VERSION_STR.split('.')[1]) >= 3):
+            # stretch
+            f.dataDefinedProperties().setProperty(QgsPalLayerSettings.FontStretchFactor, QgsProperty.fromExpression("135"))
+            f.updateDataDefinedProperties(context)
+            self.assertEqual(f.stretchFactor(), 135)
+
     def testFontFoundFromLayer(self):
         layer = createEmptyLayer()
         layer.setCustomProperty('labeling/fontFamily', 'asdasd')
@@ -1366,6 +1388,12 @@ class PyQgsTextRenderer(unittest.TestCase):
         s.setSizeUnit(QgsUnitTypes.RenderInches)
         qfont = s.toQFont()
         self.assertAlmostEqual(qfont.pointSizeF(), 360.0, 2)
+
+        if int(QT_VERSION_STR.split('.')[0]) > 6 or (
+                int(QT_VERSION_STR.split('.')[0]) == 6 and int(QT_VERSION_STR.split('.')[1]) >= 3):
+            s.setStretchFactor(115)
+            qfont = s.toQFont()
+            self.assertEqual(qfont.stretch(), 115)
 
     def testFontMetrics(self):
         """
@@ -1514,7 +1542,6 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setCapitalization(Qgis.Capitalization.SmallCaps)
         format.setSize(30)
         assert self.checkRender(format, 'mixed_small_caps', text=['Small Caps'])
-        assert False
 
     @unittest.skipIf(int(QT_VERSION_STR.split('.')[0]) < 6 or (int(QT_VERSION_STR.split('.')[0]) == 6 and int(QT_VERSION_STR.split('.')[1]) < 3), 'Too old Qt')
     def testDrawAllSmallCaps(self):
@@ -1523,7 +1550,22 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setSize(30)
         format.setCapitalization(Qgis.Capitalization.AllSmallCaps)
         assert self.checkRender(format, 'all_small_caps', text=['Small Caps'])
-        assert False
+
+    @unittest.skipIf(int(QT_VERSION_STR.split('.')[0]) < 6 or (int(QT_VERSION_STR.split('.')[0]) == 6 and int(QT_VERSION_STR.split('.')[1]) < 3), 'Too old Qt')
+    def testDrawStretch(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setStretchFactor(150)
+        assert self.checkRender(format, 'stretch_expand')
+
+    @unittest.skipIf(int(QT_VERSION_STR.split('.')[0]) < 6 or (int(QT_VERSION_STR.split('.')[0]) == 6 and int(QT_VERSION_STR.split('.')[1]) < 3), 'Too old Qt')
+    def testDrawStretchCondense(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setStretchFactor(50)
+        assert self.checkRender(format, 'stretch_condense')
 
     def testDrawBackgroundDisabled(self):
         format = QgsTextFormat()
