@@ -64,9 +64,9 @@ void TestQgsIntersection2CirclesDialog::initTestCase()
   mQgisApp = new QgisApp();
 
   mCanvas = new QgsMapCanvas();
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
 
-  mLayer = new QgsVectorLayer( QStringLiteral( "Point?crs=EPSG:4326" ), QStringLiteral( "layer" ), QStringLiteral( "memory" ) );
+  mLayer = new QgsVectorLayer( QStringLiteral( "Point?crs=EPSG:3946" ), QStringLiteral( "layer" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayer->isValid() );
 
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayer );
@@ -322,7 +322,7 @@ void TestQgsIntersection2CirclesDialog::createPointWhenOneIntersection()
 
 //  QCOMPARE( mLayer->featureCount(), 0 );
 
-//  mLayer = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:4326" ), QStringLiteral( "layer1" ), QStringLiteral( "memory" ) );
+//  mLayer = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:3946" ), QStringLiteral( "layer1" ), QStringLiteral( "memory" ) );
 //  QVERIFY( mLayer->isValid() );
 
 //  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayer );
@@ -341,7 +341,7 @@ void TestQgsIntersection2CirclesDialog::createPointWhenOneIntersection()
 
 //  dialog->mBtnIntersection1->click();
 
-//  mLayer = new QgsVectorLayer( QStringLiteral( "Point?crs=EPSG:4326" ), QStringLiteral( "layer2" ), QStringLiteral( "memory" ) );
+//  mLayer = new QgsVectorLayer( QStringLiteral( "Point?crs=EPSG:3946" ), QStringLiteral( "layer2" ), QStringLiteral( "memory" ) );
 //  QVERIFY( mLayer->isValid() );
 
 //  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayer );
