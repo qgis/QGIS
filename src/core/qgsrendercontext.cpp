@@ -145,6 +145,8 @@ QgsRenderContext QgsRenderContext::fromQPainter( QPainter *painter )
 
   if ( painter && painter->renderHints() & QPainter::Antialiasing )
     context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
+  if ( painter && painter->renderHints() & QPainter::SmoothPixmapTransform )
+    context.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms, true );
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
   if ( painter && painter->renderHints() & QPainter::LosslessImageRendering )
@@ -166,6 +168,7 @@ void QgsRenderContext::setPainterFlagsUsingContext( QPainter *painter ) const
 #if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
   painter->setRenderHint( QPainter::LosslessImageRendering, mFlags & Qgis::RenderContextFlag::LosslessImageRendering );
 #endif
+  painter->setRenderHint( QPainter::SmoothPixmapTransform, mFlags & Qgis::RenderContextFlag::HighQualityImageTransforms );
 }
 
 QgsCoordinateTransformContext QgsRenderContext::transformContext() const
@@ -241,6 +244,7 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setFlag( Qgis::RenderContextFlag::RenderBlocking, mapSettings.testFlag( Qgis::MapSettingsFlag::RenderBlocking ) );
   ctx.setFlag( Qgis::RenderContextFlag::LosslessImageRendering, mapSettings.testFlag( Qgis::MapSettingsFlag::LosslessImageRendering ) );
   ctx.setFlag( Qgis::RenderContextFlag::Render3DMap, mapSettings.testFlag( Qgis::MapSettingsFlag::Render3DMap ) );
+  ctx.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms, mapSettings.testFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms ) );
   ctx.setScaleFactor( mapSettings.outputDpi() / 25.4 ); // = pixels per mm
   ctx.setDpiTarget( mapSettings.dpiTarget() >= 0.0 ? mapSettings.dpiTarget() : -1.0 );
   ctx.setRendererScale( mapSettings.scale() );

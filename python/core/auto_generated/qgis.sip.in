@@ -575,6 +575,7 @@ The development version
       RenderBlocking,
       LosslessImageRendering,
       Render3DMap,
+      HighQualityImageTransforms,
     };
     typedef QFlags<Qgis::MapSettingsFlag> MapSettingsFlags;
 
@@ -598,6 +599,7 @@ The development version
       Render3DMap,
       ApplyClipAfterReprojection,
       RenderingSubSymbol,
+      HighQualityImageTransforms,
     };
     typedef QFlags<Qgis::RenderContextFlag> RenderContextFlags;
 

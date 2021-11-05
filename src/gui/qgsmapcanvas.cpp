@@ -315,6 +315,7 @@ double QgsMapCanvas::magnificationFactor() const
 void QgsMapCanvas::enableAntiAliasing( bool flag )
 {
   mSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, flag );
+  mSettings.setFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms, flag );
 }
 
 bool QgsMapCanvas::antiAliasingEnabled() const

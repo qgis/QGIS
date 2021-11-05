@@ -3711,10 +3711,6 @@ void QgsPointPatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext 
     pointRenderContext.setPainter( &p );
     pointRenderContext.setScaleFactor( context.renderContext().scaleFactor() );
 
-    if ( context.renderContext().flags() & Qgis::RenderContextFlag::Antialiasing )
-      pointRenderContext.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
-    pointRenderContext.setFlag( Qgis::RenderContextFlag::LosslessImageRendering, context.renderContext().flags() & Qgis::RenderContextFlag::LosslessImageRendering );
-
     context.renderContext().setPainterFlagsUsingContext( &p );
     QgsMapToPixel mtp( context.renderContext().mapToPixel().mapUnitsPerPixel() );
     pointRenderContext.setMapToPixel( mtp );
