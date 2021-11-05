@@ -329,6 +329,12 @@ void QgsTextFormatWidget::initWidget()
   connect( mBackgroundEffectWidget, &QgsEffectStackCompactWidget::changed, this, &QgsTextFormatWidget::updatePreview );
   mBackgroundEffectWidget->setPaintEffect( mBackgroundEffect.get() );
 
+#ifndef HAS_KDE_QT5_FONT_STRETCH_FIX
+  mLabelStretch->hide();
+  mSpinStretch->hide();
+  mFontStretchDDBtn->hide();
+#endif
+
   setDockMode( false );
 
   QList<QWidget *> widgets;
@@ -366,6 +372,7 @@ void QgsTextFormatWidget::initWidget()
           << mFontStyleComboBox
           << mTextOrientationComboBox
           << mTextOpacityWidget
+          << mSpinStretch
           << mFontWordSpacingSpinBox
           << mFormatNumChkBx
           << mFormatNumDecimalsSpnBx
@@ -582,6 +589,10 @@ void QgsTextFormatWidget::toggleDDButtons( bool visible )
   const auto buttons = findChildren< QgsPropertyOverrideButton * >();
   for ( QgsPropertyOverrideButton *button : buttons )
   {
+#ifndef HAS_KDE_QT5_FONT_STRETCH_FIX
+    if ( button == mFontStretchDDBtn )
+      continue; // always hidden
+#endif
     button->setVisible( visible );
   }
 }
@@ -693,6 +704,7 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
   registerDataDefinedButton( mFontLetterSpacingDDBtn, QgsPalLayerSettings::FontLetterSpacing );
   registerDataDefinedButton( mFontWordSpacingDDBtn, QgsPalLayerSettings::FontWordSpacing );
   registerDataDefinedButton( mFontBlendModeDDBtn, QgsPalLayerSettings::FontBlendMode );
+  registerDataDefinedButton( mFontStretchDDBtn, QgsPalLayerSettings::FontStretchFactor );
 
   // text formatting
   registerDataDefinedButton( mWrapCharDDBtn, QgsPalLayerSettings::MultiLineWrapChar );
@@ -887,6 +899,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   mRefFont = format.font();
   mFontSizeSpinBox->setValue( format.size() );
   btnTextColor->setColor( format.color() );
+  whileBlocking( mSpinStretch )->setValue( format.stretchFactor() );
   mTextOpacityWidget->setOpacity( format.opacity() );
   comboBlendMode->setBlendMode( format.blendMode() );
   mTextOrientationComboBox->setCurrentIndex( mTextOrientationComboBox->findData( format.orientation() ) );
@@ -1025,6 +1038,7 @@ QgsTextFormat QgsTextFormatWidget::format( bool includeDataDefinedProperties ) c
   format.setSize( mFontSizeSpinBox->value() );
   format.setNamedStyle( mFontStyleComboBox->currentText() );
   format.setOpacity( mTextOpacityWidget->opacity() );
+  format.setStretchFactor( mSpinStretch->value() );
   format.setBlendMode( comboBlendMode->blendMode() );
   format.setSizeUnit( mFontSizeUnitWidget->unit() );
   format.setSizeMapUnitScale( mFontSizeUnitWidget->getMapUnitScale() );
