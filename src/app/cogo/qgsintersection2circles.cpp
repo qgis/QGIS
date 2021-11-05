@@ -151,8 +151,8 @@ void QgsIntersection2CirclesDialog::hideDrawings()
 
 void QgsIntersection2CirclesDialog::reject()
 {
-  hideDrawings();
   clearInformations();
+  hideDrawings();
   QDialog::reject();
 }
 
