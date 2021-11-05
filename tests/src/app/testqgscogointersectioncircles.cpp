@@ -43,6 +43,7 @@ class TestQgsIntersection2CirclesDialog : public QObject
     void createPointWhenTwoIntersections();
     void createPointWhenOneIntersection();
     void createPointWithZM();
+    void createPointWithDiffCrs();
 
     void checkNoIntersection( QgsIntersection2CirclesDialog *dialog );
     void checkOneIntersection( QgsIntersection2CirclesDialog *dialog );
@@ -279,6 +280,52 @@ void TestQgsIntersection2CirclesDialog::createPointWithZM()
 
   QCOMPARE( point->wkbType(), QgsWkbTypes::PointZM );
   QCOMPARE( *point, QgsPoint( 0, 0, 59, 43 ) );
+
+  QgsProject::instance()->removeAllMapLayers();
+}
+
+void TestQgsIntersection2CirclesDialog::createPointWithDiffCrs()
+{
+  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?crs=EPSG:3950" ), QStringLiteral( "layer" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer->isValid() );
+
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << layer );
+  QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem( "EPSG:3948" ) );
+
+  mCanvas->setLayers( QList<QgsMapLayer *>() << layer );
+  mCanvas->setCurrentLayer( layer );
+  layer->startEditing();
+
+  QCOMPARE( layer->featureCount(), 0 );
+
+  std::unique_ptr< QgsIntersection2CirclesDialog > dialog( new QgsIntersection2CirclesDialog( mCanvas ) );
+
+  dialog->mX1->setValue( 0.0 );
+  dialog->mY1->setValue( 1.0 );
+  dialog->mRadius1->setValue( 1.0 );
+
+  dialog->mX2->setValue( 0.0 );
+  dialog->mY2->setValue( -1.0 );
+  dialog->mRadius2->setValue( 1.0 );
+
+  checkOneIntersection( dialog.get() );
+
+  dialog->mBtnIntersection2->click();
+  dialog->mButtonBox->button( QDialogButtonBox::Ok )->click();
+
+  QCOMPARE( layer->featureCount(), 1 );
+
+  QgsFeature feature;
+  layer->getFeatures().nextFeature( feature );
+  const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( feature.geometry().constGet() );
+
+  QCOMPARE( point->wkbType(), QgsWkbTypes::Point );
+
+  QgsPoint pt = QgsPoint( 0, 0 );
+  const QgsCoordinateTransform ct = mCanvas->mapSettings().layerTransform( layer );
+  pt.transform( ct, Qgis::TransformDirection::Reverse );
+
+  QCOMPARE( *point, pt );
 
   QgsProject::instance()->removeAllMapLayers();
 }
