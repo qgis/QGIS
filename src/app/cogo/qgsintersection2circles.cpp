@@ -187,10 +187,17 @@ void QgsIntersection2CirclesDialog::onAccepted()
     intersection.transform( ct, Qgis::TransformDirection::Reverse );
   }
 
+  QgsPoint *point = intersection.clone();
+
+  if ( QgsWkbTypes::hasZ( vlayer->wkbType() ) )
+    point->addZValue( QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.value() );
+  if ( QgsWkbTypes::hasM( vlayer->wkbType() ) )
+    point->addMValue( QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.value() );
+
   QgsFeature f;
   const QgsFields fields = vlayer->fields();
   f = QgsFeature();
-  f.setGeometry( QgsGeometry( intersection.clone() ) );
+  f.setGeometry( QgsGeometry( point ) );
 
   QgsFeatureAction action( tr( "Feature added" ), f, vlayer );
   action.addFeature();
