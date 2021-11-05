@@ -133,10 +133,14 @@ void QgsIntersection2CirclesDialog::hideDrawings()
 {
   mMapCanvas->unsetMapTool( mMapToolPoint );
 
+  mRubberCircle1->reset();
   mRubberCircle1->hide();
+  mRubberCircle2->reset();
   mRubberCircle2->hide();
 
+  mRubberInter1->reset();
   mRubberInter1->hide();
+  mRubberInter2->reset();
   mRubberInter2->hide();
 }
 
