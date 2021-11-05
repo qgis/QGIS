@@ -197,6 +197,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
   mapSettings.setOutputImageFormat( QImage::Format_ARGB32 );
   mapSettings.setDestinationCrs( context.project()->crs() );
   mapSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, true );
+  mapSettings.setFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms, true );
   mapSettings.setFlag( Qgis::MapSettingsFlag::RenderMapTile, true );
   mapSettings.setFlag( Qgis::MapSettingsFlag::UseAdvancedEffects, true );
   mapSettings.setTransformContext( context.transformContext() );

@@ -2956,8 +2956,7 @@ void QgsAbstractBrushedLineSymbolLayer::renderLine( const QPolygonF &points, Qgs
   // prepare temporary image
   QPainter imagePainter;
   imagePainter.begin( &temporaryImage );
-  imagePainter.setRenderHint( QPainter::Antialiasing, true );
-  imagePainter.setRenderHint( QPainter::SmoothPixmapTransform, true );
+  context.renderContext().setPainterFlagsUsingContext( &imagePainter );
   imagePainter.translate( -minX + lineThickness + ANTIALIAS_ALLOWANCE_PIXELS, -minY + lineThickness + ANTIALIAS_ALLOWANCE_PIXELS );
 
   imagePainter.setClipPath( stroke, Qt::IntersectClip );

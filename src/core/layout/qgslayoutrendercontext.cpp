@@ -63,7 +63,10 @@ Qgis::RenderContextFlags QgsLayoutRenderContext::renderContextFlags() const
 {
   Qgis::RenderContextFlags flags = Qgis::RenderContextFlags();
   if ( mFlags & FlagAntialiasing )
+  {
     flags = flags | Qgis::RenderContextFlag::Antialiasing;
+    flags = flags | Qgis::RenderContextFlag::HighQualityImageTransforms;
+  }
   if ( mFlags & FlagUseAdvancedEffects )
     flags = flags | Qgis::RenderContextFlag::UseAdvancedEffects;
   if ( mFlags & FlagLosslessImageRendering )

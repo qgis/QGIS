@@ -683,6 +683,7 @@ QImage QgsSymbol::asImage( QSize size, QgsRenderContext *customContext )
 
   QPainter p( &image );
   p.setRenderHint( QPainter::Antialiasing );
+  p.setRenderHint( QPainter::SmoothPixmapTransform );
 
   drawPreviewIcon( &p, size, customContext );
 
@@ -708,6 +709,9 @@ QImage QgsSymbol::bigSymbolPreviewImage( QgsExpressionContext *expressionContext
 
   QgsRenderContext context = QgsRenderContext::fromQPainter( &p );
   context.setFlag( Qgis::RenderContextFlag::RenderSymbolPreview );
+  context.setFlag( Qgis::RenderContextFlag::Antialiasing );
+  context.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms );
+  context.setPainterFlagsUsingContext( &p );
   if ( expressionContext )
     context.setExpressionContext( *expressionContext );
 
