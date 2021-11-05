@@ -759,6 +759,7 @@ void QgsDxfExport::prepareRenderers()
 
   mRenderContext.expressionContext().appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
   mRenderContext.expressionContext().appendScope( QgsExpressionContextUtils::globalScope() );
+  mRenderContext.expressionContext().appendScope( QgsExpressionContextUtils::mapSettingsScope( mMapSettings ) );
 
   mLabelingEngine = qgis::make_unique<QgsDefaultLabelingEngine>();
   mLabelingEngine->setMapSettings( mMapSettings );
