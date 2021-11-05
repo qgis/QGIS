@@ -127,6 +127,11 @@ void QgsIntersection2CirclesDialog::clearInformations()
   mRadius2->clear();
   mIntersection1.clear();
   mIntersection2.clear();
+
+  mBtnIntersection1->setAutoExclusive( false );
+  mBtnIntersection1->setChecked( false );
+  mBtnIntersection2->setChecked( false );
+  mBtnIntersection1->setAutoExclusive( true );
 }
 
 void QgsIntersection2CirclesDialog::hideDrawings()
