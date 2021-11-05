@@ -1640,6 +1640,20 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(vl.dataProvider().defaultValueClause(0), '')
         self.assertEqual(vl.dataProvider().defaultValue(0), 1)
 
+    def testViewsExtentFilter(self):
+        """Test extent filtering of a views-based spatialite layer"""
+
+        vl = QgsVectorLayer("dbname='%s' table=\"vs_controle_ok_nok\" (geom)" %
+                            os.path.join(TEST_DATA_DIR, "views_test.sqlite"), "vs_controle_ok_nok", "spatialite")
+        self.assertTrue(vl.isValid())
+
+        feature = QgsFeature()
+        rect = QgsRectangle(822733, 6699265, 829351, 6707266)
+        it = vl.getFeatures(rect)
+        it.nextFeature(feature)
+
+        self.assertTrue(feature.isValid())
+
 
 if __name__ == '__main__':
     unittest.main()
