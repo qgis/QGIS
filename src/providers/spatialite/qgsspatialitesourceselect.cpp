@@ -311,11 +311,14 @@ bool QgsSpatiaLiteSourceSelect::newConnection( QWidget *parent )
 
   // Persist last used SpatiaLite dir
   settings.setValue( QStringLiteral( "UI/lastSpatiaLiteDir" ), myPath );
+
+  QgsDataSourceUri dsUri;
+  dsUri.setDatabase( myFile );
+
   // inserting this SQLite DB path
   QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "spatialite" ) );
-  QgsSpatiaLiteProviderConnection *providerConnection =  static_cast<QgsSpatiaLiteProviderConnection *>( providerMetadata->createConnection( savedName ) );
+  QgsSpatiaLiteProviderConnection *providerConnection =  static_cast<QgsSpatiaLiteProviderConnection *>( providerMetadata->createConnection( dsUri.uri(), QVariantMap() ) );
   providerMetadata->saveConnection( providerConnection, savedName );
-
   return true;
 }
 
