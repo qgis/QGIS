@@ -3041,6 +3041,36 @@ static QVariant fcnApplyDashPattern( const QVariantList &values, const QgsExpres
   return result;
 }
 
+static QVariant fcnDensifyByCount( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isNull() )
+    return QVariant();
+
+  const long long count = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
+  const QgsGeometry densified = geom.densifyByCount( static_cast< int >( count ) );
+  if ( densified.isNull() )
+    return QVariant();
+
+  return densified;
+}
+
+static QVariant fcnDensifyByDistance( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isNull() )
+    return QVariant();
+
+  const double distance = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
+  const QgsGeometry densified = geom.densifyByDistance( distance );
+  if ( densified.isNull() )
+    return QVariant();
+
+  return densified;
+}
+
 static QVariant fcnCollectGeometries( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QVariantList list;
@@ -7441,6 +7471,16 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       QgsExpressionFunction::Parameter( QStringLiteral( "adjustment" ), true, QStringLiteral( "both" ) ),
       QgsExpressionFunction::Parameter( QStringLiteral( "pattern_offset" ), true, 0 ),
     }, fcnApplyDashPattern, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "densify_by_count" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "vertices" ) )
+    }, fcnDensifyByCount, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "densify_by_distance" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) )
+    }, fcnDensifyByDistance, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "num_points" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnGeomNumPoints, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "num_interior_rings" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnGeomNumInteriorRings, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "num_rings" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnGeomNumRings, QStringLiteral( "GeometryGroup" ) )
