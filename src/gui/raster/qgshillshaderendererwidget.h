@@ -48,11 +48,7 @@ class GUI_EXPORT QgsHillshadeRendererWidget: public QgsRasterRendererWidget, pri
       */
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) SIP_FACTORY { return new QgsHillshadeRendererWidget( layer, extent ); }
 
-    /**
-     * \brief The renderer for the widget.
-     * \returns A new renderer for the the config in the widget
-     */
-    QgsRasterRenderer *renderer() override;
+    QgsRasterRenderer *renderer() override SIP_FACTORY;
 
     /**
      * \brief Set the widget state from the given renderer.

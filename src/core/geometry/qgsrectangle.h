@@ -287,7 +287,7 @@ class CORE_EXPORT QgsRectangle
     {
       if ( p.x() < xMinimum() )
         setXMinimum( p.x() );
-      else if ( p.x() > xMaximum() )
+      if ( p.x() > xMaximum() )
         setXMaximum( p.x() );
       if ( p.y() < yMinimum() )
         setYMinimum( p.y() );

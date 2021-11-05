@@ -19,24 +19,31 @@
 #include "qgsfields.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
-
+#include "qgsapplication.h"
 
 QString QgsFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {
   Q_UNUSED( config )
   Q_UNUSED( cache )
 
+  if ( ! layer->fields().exists( fieldIndex ) )
+    return QString();
+
   QString defVal;
   if ( layer->fields().fieldOrigin( fieldIndex ) == QgsFields::OriginProvider && layer->dataProvider() )
     defVal = layer->dataProvider()->defaultValueClause( layer->fields().fieldOriginIndex( fieldIndex ) );
 
-  if ( ! layer->fields().exists( fieldIndex ) )
+  if ( !defVal.isNull() && defVal == value )
   {
     return defVal;
   }
+  else if ( value.isNull() )
+  {
+    return QgsApplication::nullRepresentation();
+  }
   else
   {
-    return layer->fields().at( fieldIndex ).displayString( value.isNull() ? defVal : value );
+    return layer->fields().at( fieldIndex ).displayString( value );
   }
 }
 

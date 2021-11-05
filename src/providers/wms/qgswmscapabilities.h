@@ -18,6 +18,7 @@
 #include <QHash>
 #include <QMap>
 #include <QNetworkRequest>
+#include <QSet>
 #include <QStringList>
 #include <QVector>
 

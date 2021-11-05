@@ -36,7 +36,7 @@ class GUI_EXPORT QgsRasterContourRendererWidget : public QgsRasterRendererWidget
     //! Widget creation function (mainly for the use by the renderer registry)
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) SIP_FACTORY { return new QgsRasterContourRendererWidget( layer, extent ); }
 
-    QgsRasterRenderer *renderer() override;
+    QgsRasterRenderer *renderer() SIP_FACTORY override;
 };
 
 #endif // QGSRASTERCONTOURRENDERERWIDGET_H
