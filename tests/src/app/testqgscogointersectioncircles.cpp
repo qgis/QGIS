@@ -41,7 +41,6 @@ class TestQgsIntersection2CirclesDialog : public QObject
     void selectCircleByHands();
     void createPointWhenTwoIntersections();
     void createPointWhenOneIntersection();
-//    void createPointWithInvalidCondtions();
 
     void checkNoIntersection( QgsIntersection2CirclesDialog *dialog );
     void checkOneIntersection( QgsIntersection2CirclesDialog *dialog );
@@ -286,77 +285,6 @@ void TestQgsIntersection2CirclesDialog::createPointWhenOneIntersection()
 
   mLayer->rollBack();
 }
-
-//void TestQgsIntersection2CirclesDialog::createPointWithInvalidCondtions()
-//{
-//  // should not happen
-
-//  QCOMPARE( mLayer->featureCount(), 0 );
-
-//  mLayer->startEditing();
-
-//  std::unique_ptr< QgsIntersection2CirclesDialog > dialog( new QgsIntersection2CirclesDialog( mCanvas ) );
-
-//  dialog->mButtonBox->button( QDialogButtonBox::Ok )->click();
-
-//  QCOMPARE( mLayer->featureCount(), 0 );
-
-//  dialog.reset(new QgsIntersection2CirclesDialog( mCanvas ));
-
-//  dialog->mX1->setValue( 0.0 );
-//  dialog->mY1->setValue( 1.0 );
-//  dialog->mRadius1->setValue( 1.0 );
-
-//  dialog->mX2->setValue( 0.0 );
-//  dialog->mY2->setValue( -1.0 );
-//  dialog->mRadius2->setValue( 1.0 );
-
-//  dialog->show();
-//  dialog->mButtonBox->button( QDialogButtonBox::Ok )->click();
-
-//  mLayer->rollBack();
-
-//  dialog->show();
-//  dialog->mBtnIntersection2->click();
-//  dialog->mButtonBox->button( QDialogButtonBox::Ok )->click();
-
-//  QCOMPARE( mLayer->featureCount(), 0 );
-
-//  mLayer = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:3946" ), QStringLiteral( "layer1" ), QStringLiteral( "memory" ) );
-//  QVERIFY( mLayer->isValid() );
-
-//  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayer );
-
-//  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayer );
-//  mCanvas->setCurrentLayer( mLayer );
-
-//  QCOMPARE( mLayer->featureCount(), 0 );
-
-//  mLayer->startEditing();
-
-//  dialog->show();
-//  dialog->mButtonBox->button( QDialogButtonBox::Ok )->click();
-
-//  QCOMPARE( mLayer->featureCount(), 0 );
-
-//  dialog->mBtnIntersection1->click();
-
-//  mLayer = new QgsVectorLayer( QStringLiteral( "Point?crs=EPSG:3946" ), QStringLiteral( "layer2" ), QStringLiteral( "memory" ) );
-//  QVERIFY( mLayer->isValid() );
-
-//  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayer );
-
-//  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayer );
-//  mCanvas->setCurrentLayer( mLayer );
-
-//  QCOMPARE( mLayer->featureCount(), 0 );
-
-//  mLayer->startEditing();
-
-//  dialog->show();
-//  dialog->mButtonBox->button( QDialogButtonBox::Ok )->click();
-//  QCOMPARE( mLayer->featureCount(), 1 );
-//}
 
 QGSTEST_MAIN( TestQgsIntersection2CirclesDialog )
 #include "testqgscogointersectioncircles.moc"
