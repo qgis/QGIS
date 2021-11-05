@@ -50,6 +50,7 @@ QgsIntersection2CirclesDialog::QgsIntersection2CirclesDialog( QgsMapCanvas *mapC
   setupUi( this );
 
   mMapCanvas = mapCanvas;
+  mMapToolPoint = new QgsSnapPoint( mMapCanvas );
 
   mDefaultColor = QgsMapToolEdit::digitizingStrokeColor();
   mSelectedColor = QgsProject::instance()->selectionColor();
@@ -61,8 +62,6 @@ QgsIntersection2CirclesDialog::QgsIntersection2CirclesDialog( QgsMapCanvas *mapC
 
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsIntersection2CirclesDialog::onAccepted );
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
-
-  mMapToolPoint = new QgsSnapPoint( mMapCanvas );
 }
 
 void QgsIntersection2CirclesDialog::initCircleParameters( QgsRubberBand *&rubberCircle, QgsRubberBand *&rubberInter,

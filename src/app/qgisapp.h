@@ -150,8 +150,8 @@ class QgsDevToolWidgetFactory;
 class QgsNetworkLogger;
 class QgsNetworkLoggerWidgetFactory;
 class QgsMapToolCapture;
-
 class QgsIntersection2CirclesDialog;
+
 
 #include <QMainWindow>
 #include <QToolBar>

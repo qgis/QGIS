@@ -1867,7 +1867,6 @@ QgisApp::~QgisApp()
   }
 #endif
 
-
   mNetworkLoggerWidgetFactory.reset();
 
   delete mInternalClipboard;
