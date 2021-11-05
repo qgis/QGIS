@@ -112,6 +112,9 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 
+  public slots:
+    void accept() override;
+
   private slots:
     void mAddAttributeButton_clicked();
     void mRemoveAttributeButton_clicked();
@@ -126,6 +129,8 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
 
   private:
     QPushButton *mOkButton = nullptr;
+
+    void updateExtension();
 };
 
 #endif //qgsnewvectorlayerdialog_H

@@ -297,8 +297,11 @@ void QgsLabelingEngine::solve( QgsRenderContext &context )
 
   QPainter *painter = context.painter();
 
-  QgsGeometry extentGeom = QgsGeometry::fromRect( mMapSettings.visibleExtent() );
-  QPolygonF visiblePoly = mMapSettings.visiblePolygon();
+  QgsRectangle r1 = mMapSettings.visibleExtent();
+  r1.grow( mMapSettings.extentBuffer() );
+  QgsGeometry extentGeom = QgsGeometry::fromRect( r1 );
+
+  QPolygonF visiblePoly = mMapSettings.visiblePolygonWithBuffer();
   visiblePoly.append( visiblePoly.at( 0 ) ); //close polygon
 
   // get map label boundary geometry - if one hasn't been explicitly set, we use the whole of the map's visible polygon
@@ -773,4 +776,3 @@ QgsLabeling::LinePlacementFlags QgsLabelingUtils::decodeLinePlacementFlags( cons
     flags |= QgsLabeling::LinePlacementFlag::MapOrientation;
   return flags;
 }
-
