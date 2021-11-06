@@ -192,7 +192,7 @@ class SLTable(Table):
     def mimeUri(self):
         return Table.mimeUri(self)
 
-    def toMapLayer(self):
+    def toMapLayer(self, geometryType=None, crs=None):
         from qgis.core import QgsVectorLayer
 
         provider = self.database().dbplugin().providerName()
@@ -278,7 +278,7 @@ class SLRasterTable(SLTable, RasterTable):
         uri = u"raster:gdal:%s:%s" % (self.name, self.uri().database())
         return uri
 
-    def toMapLayer(self):
+    def toMapLayer(self, geometryType=None, crs=None):
         from qgis.core import QgsRasterLayer, QgsContrastEnhancement
 
         # QGIS has no provider to load Rasterlite rasters, let's use GDAL
