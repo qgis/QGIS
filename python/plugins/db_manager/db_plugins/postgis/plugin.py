@@ -378,7 +378,7 @@ class PGRasterTable(PGTable, RasterTable):
         uri = u"raster:postgresraster:{}:{}".format(self.name, re.sub(":", r"\:", self.uri()))
         return uri
 
-    def toMapLayer(self):
+    def toMapLayer(self, geometryType=None, crs=None):
         from qgis.core import QgsRasterLayer, QgsContrastEnhancement, QgsDataSourceUri, QgsCredentials
 
         rl = QgsRasterLayer(self.uri(), self.name, "postgresraster")
