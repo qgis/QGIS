@@ -185,7 +185,7 @@ class LVectorTable(LTable, VectorTable):
     def runAction(self, action):
         return
 
-    def toMapLayer(self):
+    def toMapLayer(self, geometryType=None, crs=None):
         return QgsProject.instance().mapLayer(self.geomTableName)
 
 
