@@ -49,10 +49,10 @@ class QgsExportToPostgresqlAlgorithm : public QgsProcessingAlgorithm
   private:
     std::unique_ptr<QgsProcessingFeatureSource> mSource;
     std::unique_ptr<QgsAbstractDatabaseProviderConnection> mConn;
-    const QString mProviderName = QStringLiteral("postgres");
+    const QString mProviderName = QStringLiteral( "postgres" );
     QString mSchema;
-    QString mTable = QStringLiteral("");
-    QString mPrimaryKeyField = QStringLiteral("id");
+    QString mTable = QStringLiteral( "" );
+    QString mPrimaryKeyField = QStringLiteral( "id" );
     QString mGeomColumn;
     QString mEncoding = QStringLiteral( "UTF-8" );
     bool mCreateIndex = true;
