@@ -87,7 +87,7 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   mSelectButton->setToolTip( tr( "Select input" ) );
   layout->addWidget( mSelectButton );
   layout->setAlignment( mSelectButton, Qt::AlignTop );
-  if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() )
+  if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() || mParameter->type() == QgsProcessingParameterVectorLayer::typeName() )
   {
     mFeatureSourceMenu = new QMenu( this );
     QAction *selectFromFileAction = new QAction( tr( "Select File…" ), mFeatureSourceMenu );
