@@ -1070,7 +1070,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     */
     void legendLayerStretchUsingCurrentExtent();
 
-    //! Watches for QFileOpenEvent.
+    //! Watch for QFileOpenEvent.
     bool event( QEvent *event ) override;
 
     //! Sets the CRS of the current legend group
@@ -1276,9 +1276,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsAttributeEditorContext createAttributeEditorContext();
 
   protected:
-
-    //! Listens to resize event in order to properly restore UI upon re-launching QGIS
-    void resizeEvent( QResizeEvent *resizeEvent ) override;
+    void showEvent( QShowEvent *event ) override;
 
     //! Handle state changes (WindowTitleChange)
     void changeEvent( QEvent *event ) override;
@@ -2733,8 +2731,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     };
     int mFreezeCount = 0;
     friend class QgsCanvasRefreshBlocker;
-
-    bool mRestoreStateOnResize = false;
 
     friend class TestQgisAppPython;
     friend class QgisAppInterface;
