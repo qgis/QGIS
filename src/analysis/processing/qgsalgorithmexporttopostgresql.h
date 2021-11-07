@@ -26,6 +26,10 @@
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsvectorlayerexporter.h"
 
+///@cond PRIVATE
+/**
+ * Native Export to PostgreSQL algorithm.
+ */
 class QgsExportToPostgresqlAlgorithm : public QgsProcessingAlgorithm
 {
 
@@ -60,7 +64,8 @@ class QgsExportToPostgresqlAlgorithm : public QgsProcessingAlgorithm
     QMap< QString, QVariant > mOptions;
     std::unique_ptr<QgsVectorLayerExporter> mExporter;
 
-
 };
+
+///@endcond PRIVATE
 
 #endif // QGSALGORITHMEXPORTTOPOSTGRESQL_H
