@@ -25,7 +25,7 @@
 
 QString QgsExportToPostgresqlAlgorithm::name() const
 {
-  return QStringLiteral( "exporttopostgresql" );
+  return QStringLiteral( "importintopostgis" );
 }
 
 QString QgsExportToPostgresqlAlgorithm::displayName() const
@@ -51,7 +51,7 @@ QString QgsExportToPostgresqlAlgorithm::groupId() const
 void QgsExportToPostgresqlAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Layer to export" ), QList<int>() << QgsProcessing::TypeVector) );
-  addParameter( new QgsProcessingParameterProviderConnection( QStringLiteral( "DATABASE" ), QObject::tr( "Database (connection name" ), QStringLiteral( "postgres" ) ) );
+  addParameter( new QgsProcessingParameterProviderConnection( QStringLiteral( "DATABASE" ), QObject::tr( "Database (connection name)" ), QStringLiteral( "postgres" ) ) );
   addParameter( new QgsProcessingParameterDatabaseSchema( QStringLiteral( "SCHEMA"), QObject::tr( "Schema (schema name)"), QStringLiteral( "DATABASE" ), QStringLiteral( "public" ), true ) );
   addParameter( new QgsProcessingParameterDatabaseTable( QStringLiteral( "TABLENAME" ), QObject::tr( "Table to export to (leave blank to use layer name)" ), QStringLiteral( "DATABASE" ), QStringLiteral( "SCHEMA" ), QVariant(), true, true ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "PRIMARY_KEY" ), QObject::tr( "Primary key field" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, false, true ) );
@@ -59,14 +59,14 @@ void QgsExportToPostgresqlAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterString( QStringLiteral( "ENCODING" ), QObject::tr( "Encoding" ), QStringLiteral( "UTF-8" ), false, true) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "OVERWRITE" ), QObject::tr( "Overwrite" ), true ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "CREATEINDEX" ), QObject::tr( "Create spatial index"), true ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "LOWERCASE_NAME" ), QObject::tr( "Convert field names to lowercase" ), true ) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "LOWERCASE_NAMES" ), QObject::tr( "Convert field names to lowercase" ), true ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DROP_STRING_LENGTH" ), QObject::tr( "Drop length constraints on character fields"), false ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "FORCE_SINGLEPART" ), QObject::tr( "Create single-part geometries instead of multipart" ), false ) );
 }
 
 QString QgsExportToPostgresqlAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm exports a vector layer into a PostgreSQL "
+  return QObject::tr( "This algorithm exports a vector layer to a PostgreSQL "
                       "database, creating a new table.\n\n"
                       "Prior to this a connection between QGIS and the PostgreSQL "
                       "database has to be created (for example with the DB Manager)."

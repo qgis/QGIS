@@ -48,7 +48,6 @@ from .HubDistanceLines import HubDistanceLines
 from .HubDistancePoints import HubDistancePoints
 from .HypsometricCurves import HypsometricCurves
 from .IdwInterpolation import IdwInterpolation
-from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
 from .KeepNBiggestParts import KeepNBiggestParts
 from .KNearestConcaveHull import KNearestConcaveHull
@@ -116,7 +115,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 HubDistancePoints(),
                 HypsometricCurves(),
                 IdwInterpolation(),
-                ImportIntoPostGIS(),
                 ImportIntoSpatialite(),
                 KeepNBiggestParts(),
                 KNearestConcaveHull(),

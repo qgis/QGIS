@@ -54,9 +54,9 @@ class QgsExportToPostgresqlAlgorithm : public QgsProcessingAlgorithm
     QString mTable = QStringLiteral("");
     QString mPrimaryKeyField = QStringLiteral("id");
     QString mGeomColumn;
-    QString mEncoding;
-    bool mCreateIndex;
-    bool mOverwrite;
+    QString mEncoding = QStringLiteral( "UTF-8" );
+    bool mCreateIndex = true;
+    bool mOverwrite = true;
     QMap< QString, QVariant > mOptions;
     std::unique_ptr<QgsVectorLayerExporter> mExporter;
 
