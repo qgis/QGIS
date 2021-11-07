@@ -1233,8 +1233,10 @@ void QgsTextRenderer::drawShadow( QgsRenderContext &context, const QgsTextRender
                    -offsetDist * std::sin( angleRad + M_PI_2 ) );
 
   p->save();
-  p->setRenderHint( QPainter::SmoothPixmapTransform );
   context.setPainterFlagsUsingContext( p );
+  // this was historically ALWAYS set for text renderer. We may want to consider getting it to respect the
+  // corresponding flag in the render context instead...
+  p->setRenderHint( QPainter::SmoothPixmapTransform );
   if ( context.useAdvancedEffects() )
   {
     p->setCompositionMode( shadow.blendMode() );
