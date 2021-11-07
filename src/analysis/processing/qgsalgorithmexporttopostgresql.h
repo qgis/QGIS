@@ -55,7 +55,7 @@ class QgsExportToPostgresqlAlgorithm : public QgsProcessingAlgorithm
     std::unique_ptr<QgsAbstractDatabaseProviderConnection> mConn;
     const QString mProviderName = QStringLiteral( "postgres" );
     QString mSchema;
-    QString mTable = QStringLiteral( "" );
+    QString mTable = QString();
     QString mPrimaryKeyField = QStringLiteral( "id" );
     QString mGeomColumn;
     QString mEncoding = QStringLiteral( "UTF-8" );

@@ -111,13 +111,13 @@ bool QgsExportToPostgresqlAlgorithm::prepareAlgorithm( const QVariantMap &parame
     mTable = mSource->sourceName();
     mTable = mTable.replace( QStringLiteral( "." ), QStringLiteral( "_" ) );
   }
-  mTable = mTable.replace( QStringLiteral( " " ), QStringLiteral( "" ) ).right( 63 );
+  mTable = mTable.replace( QStringLiteral( " " ), QString() ).right( 63 );
 
   mGeomColumn = parameterAsString( parameters, QStringLiteral( "GEOMETRY_COLUMN" ), context );
   if ( mTable.isEmpty() )
     mGeomColumn = QStringLiteral( "geom" );
   if ( mSource->wkbType() == QgsWkbTypes::NoGeometry )
-    mGeomColumn = QStringLiteral( "" ); //port note: equivalent to initializing with python None
+    mGeomColumn = QString(); //port note: equivalent to initializing with python None
 
   mCreateIndex = parameterAsBoolean( parameters, QStringLiteral( "CREATEINDEX" ), context );
 
