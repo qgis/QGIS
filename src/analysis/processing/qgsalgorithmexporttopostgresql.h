@@ -27,6 +27,7 @@
 #include "qgsvectorlayerexporter.h"
 
 ///@cond PRIVATE
+
 /**
  * Native Export to PostgreSQL algorithm.
  */
