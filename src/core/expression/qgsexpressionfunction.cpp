@@ -6543,7 +6543,7 @@ static QVariant fcnFromBase64( const QVariantList &values, const QgsExpressionCo
 
 typedef bool ( QgsGeometry::*RelationFunction )( const QgsGeometry &geometry ) const;
 
-static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const RelationFunction &relationFunction, bool invert = false, double bboxGrow = 0, bool isNearestFunc = false )
+static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const RelationFunction &relationFunction, bool invert = false, double bboxGrow = 0, bool isNearestFunc = false, bool isIntersectsFunc = false )
 {
 
   const QVariant sourceLayerRef = context->variable( QStringLiteral( "layer" ) ); //used to detect if sourceLayer and targetLayer are the same
@@ -6608,6 +6608,18 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   QVariant cacheValue = node->eval( parent, context );
   ENSURE_NO_EVAL_ERROR
   bool cacheEnabled = cacheValue.toBool();
+
+  // Sixth parameter (for intersects only) is the min area
+  double minArea { -1 };
+  if ( isIntersectsFunc )
+  {
+    // Fourth parameter is the limit
+    node = QgsExpressionUtils::getNode( values.at( 5 ), parent ); //in expressions overlay functions throw the exception: Eval Error: Cannot convert '' to int
+    ENSURE_NO_EVAL_ERROR
+    const QVariant minAreaValue = node->eval( parent, context );
+    ENSURE_NO_EVAL_ERROR
+    minArea = QgsExpressionUtils::getDoubleValue( minAreaValue, parent );
+  }
 
 
   FEAT_FROM_CONTEXT( context, feat )
@@ -6730,6 +6742,13 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
 
     if ( ! relationFunction || ( geometry.*relationFunction )( feat2.geometry() ) ) // Calls the method provided as template argument for the function (e.g. QgsGeometry::intersects)
     {
+
+      // Check min area for intersection (if set)
+      if ( isIntersectsFunc && minArea != -1 && geometry.intersection( feat2.geometry() ).area() <= minArea )
+      {
+        continue;
+      }
+
       found = true;
       foundCount++;
 
@@ -6785,7 +6804,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
 
 static QVariant fcnGeomOverlayIntersects( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  return executeGeomOverlay( values, context, parent, &QgsGeometry::intersects );
+  return executeGeomOverlay( values, context, parent, &QgsGeometry::intersects, false, 0, false, true );
 }
 
 static QVariant fcnGeomOverlayContains( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -6815,7 +6834,7 @@ static QVariant fcnGeomOverlayWithin( const QVariantList &values, const QgsExpre
 
 static QVariant fcnGeomOverlayDisjoint( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  return executeGeomOverlay( values, context, parent, &QgsGeometry::intersects, true );
+  return executeGeomOverlay( values, context, parent, &QgsGeometry::intersects, true, 0, false, true );
 }
 
 static QVariant fcnGeomOverlayNearest( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -7228,7 +7247,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
           << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ), true, QVariant(), true )
           << QgsExpressionFunction::Parameter( QStringLiteral( "filter" ), true, QVariant(), true )
           << QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true, QVariant( -1 ), true )
-          << QgsExpressionFunction::Parameter( QStringLiteral( "cache" ), true, QVariant( false ), false ),
+          << QgsExpressionFunction::Parameter( QStringLiteral( "cache" ), true, QVariant( false ), false )
+          << QgsExpressionFunction::Parameter( QStringLiteral( "min_intersection_area" ), true, QVariant( -1 ), false ),
           i.value(), QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
 
       // The current feature is accessed for the geometry, so this should not be cached
