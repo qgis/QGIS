@@ -141,9 +141,24 @@ to ``toVertexIdx``.
 Returns number of graph vertices
 %End
 
-    const QgsGraphVertex &vertex( int idx ) const;
+
+    QgsGraphVertex vertex( int idx ) const;
 %Docstring
-Returns vertex at given index
+Returns the vertex at the given index.
+
+:raises IndexError: if the vertex is not found.
+%End
+%MethodCode
+    auto it = sipCpp->mGraphVertices.constFind( a0 );
+    if ( it != sipCpp->mGraphVertices.constEnd() )
+    {
+      return sipConvertFromNewType( new QgsGraphVertex( ( it ).value() ), sipType_QgsGraphVertex, Py_None );
+    }
+    else
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
 %End
 
     int edgeCount() const;
@@ -151,9 +166,24 @@ Returns vertex at given index
 Returns number of graph edges
 %End
 
-    const QgsGraphEdge &edge( int idx ) const;
+
+    QgsGraphEdge edge( int idx ) const;
 %Docstring
-Returns edge at given index
+Returns the edge at the given index.
+
+:raises IndexError: if the edge is not found.
+%End
+%MethodCode
+    auto it = sipCpp->mGraphEdges.constFind( a0 );
+    if ( it != sipCpp->mGraphEdges.constEnd() )
+    {
+      return sipConvertFromNewType( new QgsGraphEdge( ( it ).value() ), sipType_QgsGraphEdge, Py_None );
+    }
+    else
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
 %End
 
     int findVertex( const QgsPointXY &pt ) const;
@@ -162,6 +192,8 @@ Find vertex by associated point
 
 :return: vertex index
 %End
+
+  protected:
 
 };
 

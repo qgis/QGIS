@@ -11,22 +11,11 @@ __date__ = '08/11/2021'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.core import (
-    QgsGeocoderInterface,
-    QgsWkbTypes,
-    QgsGeocoderResult,
-    QgsGeometry,
-    QgsPointXY,
-    QgsCoordinateReferenceSystem,
-    QgsLocatorContext,
-    QgsFeedback,
-    QgsGeocoderContext,
-    QgsRectangle
-)
 from qgis.analysis import (
     QgsGraph
+)
+from qgis.core import (
+    QgsPointXY
 )
 from qgis.testing import start_app, unittest
 
@@ -45,6 +34,11 @@ class TestQgsGraph(unittest.TestCase):
 
         self.assertEqual(graph.findVertex(QgsPointXY(10, 11)), -1)
 
+        with self.assertRaises(IndexError):
+            graph.vertex(-1)
+        with self.assertRaises(IndexError):
+            graph.vertex(0)
+
         vertex_1 = graph.addVertex(QgsPointXY(1, 2))
         self.assertEqual(graph.vertexCount(), 1)
         self.assertEqual(graph.vertex(vertex_1).point(), QgsPointXY(1, 2))
@@ -53,6 +47,11 @@ class TestQgsGraph(unittest.TestCase):
 
         self.assertEqual(graph.findVertex(QgsPointXY(10, 11)), -1)
         self.assertEqual(graph.findVertex(QgsPointXY(1, 2)), vertex_1)
+
+        with self.assertRaises(IndexError):
+            graph.vertex(-1)
+        with self.assertRaises(IndexError):
+            graph.vertex(2)
 
         vertex_2 = graph.addVertex(QgsPointXY(3, 4))
         self.assertEqual(graph.vertexCount(), 2)
@@ -63,12 +62,20 @@ class TestQgsGraph(unittest.TestCase):
         self.assertFalse(graph.vertex(vertex_2).incomingEdges())
         self.assertFalse(graph.vertex(vertex_2).outgoingEdges())
 
+        with self.assertRaises(IndexError):
+            graph.vertex(-1)
+        with self.assertRaises(IndexError):
+            graph.vertex(3)
+
         self.assertEqual(graph.findVertex(QgsPointXY(10, 11)), -1)
         self.assertEqual(graph.findVertex(QgsPointXY(1, 2)), vertex_1)
         self.assertEqual(graph.findVertex(QgsPointXY(3, 4)), vertex_2)
 
     def test_graph_edges(self):
         graph = QgsGraph()
+        with self.assertRaises(IndexError):
+            graph.edge(0)
+
         vertex_1 = graph.addVertex(QgsPointXY(1, 2))
         vertex_2 = graph.addVertex(QgsPointXY(3, 4))
         vertex_3 = graph.addVertex(QgsPointXY(5, 6))
@@ -81,6 +88,11 @@ class TestQgsGraph(unittest.TestCase):
         self.assertEqual(graph.edge(edge_1).fromVertex(), vertex_1)
         self.assertEqual(graph.edge(edge_1).toVertex(), vertex_2)
 
+        with self.assertRaises(IndexError):
+            graph.edge(-1)
+        with self.assertRaises(IndexError):
+            graph.edge(1)
+
         edge_2 = graph.addEdge(vertex_2, vertex_1, [1, 2])
         self.assertEqual(graph.edgeCount(), 2)
         self.assertEqual(graph.edge(edge_1).fromVertex(), vertex_1)
@@ -90,6 +102,9 @@ class TestQgsGraph(unittest.TestCase):
         self.assertEqual(graph.edge(edge_2).strategies(), [1, 2])
         self.assertEqual(graph.edge(edge_2).fromVertex(), vertex_2)
         self.assertEqual(graph.edge(edge_2).toVertex(), vertex_1)
+
+        with self.assertRaises(IndexError):
+            graph.edge(2)
 
         edge_3 = graph.addEdge(vertex_3, vertex_1, [11, 12])
         self.assertEqual(graph.edgeCount(), 3)
@@ -102,6 +117,9 @@ class TestQgsGraph(unittest.TestCase):
         self.assertEqual(graph.edge(edge_3).strategies(), [11, 12])
         self.assertEqual(graph.edge(edge_3).fromVertex(), vertex_3)
         self.assertEqual(graph.edge(edge_3).toVertex(), vertex_1)
+
+        with self.assertRaises(IndexError):
+            graph.edge(3)
 
 
 if __name__ == '__main__':

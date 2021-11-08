@@ -165,20 +165,66 @@ class ANALYSIS_EXPORT QgsGraph
      */
     int vertexCount() const;
 
+#ifndef SIP_RUN
+
     /**
-     * Returns vertex at given index
+     * Returns the vertex at the given index.
      */
     const QgsGraphVertex &vertex( int idx ) const;
+#else
+
+    /**
+     * Returns the vertex at the given index.
+     *
+     * \throws IndexError if the vertex is not found.
+     */
+    QgsGraphVertex vertex( int idx ) const;
+    % MethodCode
+    auto it = sipCpp->mGraphVertices.constFind( a0 );
+    if ( it != sipCpp->mGraphVertices.constEnd() )
+    {
+      return sipConvertFromNewType( new QgsGraphVertex( ( it ).value() ), sipType_QgsGraphVertex, Py_None );
+    }
+    else
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    % End
+#endif
 
     /**
       * Returns number of graph edges
       */
     int edgeCount() const;
 
+#ifndef SIP_RUN
+
     /**
-     * Returns edge at given index
+     * Returns the edge at the given index.
      */
     const QgsGraphEdge &edge( int idx ) const;
+#else
+
+    /**
+     * Returns the edge at the given index.
+     *
+     * \throws IndexError if the edge is not found.
+     */
+    QgsGraphEdge edge( int idx ) const;
+    % MethodCode
+    auto it = sipCpp->mGraphEdges.constFind( a0 );
+    if ( it != sipCpp->mGraphEdges.constEnd() )
+    {
+      return sipConvertFromNewType( new QgsGraphEdge( ( it ).value() ), sipType_QgsGraphEdge, Py_None );
+    }
+    else
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    % End
+#endif
 
     /**
      * Find vertex by associated point
