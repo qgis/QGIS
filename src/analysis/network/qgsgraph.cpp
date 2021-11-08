@@ -50,7 +50,9 @@ const QgsGraphVertex &QgsGraph::vertex( int idx ) const
   if ( it != mGraphVertices.constEnd() )
     return ( it ).value();
   Q_ASSERT_X( false, "QgsGraph::vertex()", "Invalid vertex ID" );
-  BUILTIN_UNREACHABLE
+
+  // unreachable...
+  return ( *const_cast< QHash<int, QgsGraphVertex>* >( &mGraphVertices ) )[ idx ];
 }
 
 void QgsGraph::removeVertex( int index )
@@ -77,7 +79,10 @@ const QgsGraphEdge &QgsGraph::edge( int idx ) const
   if ( it != mGraphEdges.constEnd() )
     return ( it ).value();
   Q_ASSERT_X( false, "QgsGraph::edge()", "Invalid edge ID" );
-  BUILTIN_UNREACHABLE
+
+  // unreachable...
+  return ( *const_cast< QHash<int, QgsGraphEdge>* >( &mGraphEdges ) )[ idx ];
+
 }
 
 void QgsGraph::removeEdge( int index )
