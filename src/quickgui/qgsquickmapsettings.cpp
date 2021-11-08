@@ -147,6 +147,11 @@ QgsPoint QgsQuickMapSettings::screenToCoordinate( const QPointF &point ) const
   return QgsPoint( pp );
 }
 
+void QgsQuickMapSettings::setTransformContext( const QgsCoordinateTransformContext &ctx )
+{
+  mMapSettings.setTransformContext( ctx );
+}
+
 QgsMapSettings QgsQuickMapSettings::mapSettings() const
 {
   return mMapSettings;
