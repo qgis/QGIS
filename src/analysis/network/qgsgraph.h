@@ -193,6 +193,41 @@ class ANALYSIS_EXPORT QgsGraph
     % End
 #endif
 
+#ifndef SIP_RUN
+
+    /**
+     * Removes the vertex at specified \a index.
+     *
+     * All edges which are incoming or outgoing edges for the vertex will also be removed.
+     *
+     * \since QGIS 3.24
+     */
+    void removeVertex( int index );
+#else
+
+    /**
+     * Removes the vertex at specified \a index.
+     *
+     * All edges which are incoming or outgoing edges for the vertex will also be removed.
+     *
+     * \throws IndexError if the vertex is not found.
+     * \since QGIS 3.24
+     */
+    void removeVertex( int index ) const;
+    % MethodCode
+    auto it = sipCpp->mGraphVertices.constFind( a0 );
+    if ( it != sipCpp->mGraphVertices.constEnd() )
+    {
+      sipCpp->removeVertex( a0 );
+    }
+    else
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    % End
+#endif
+
     /**
       * Returns number of graph edges
       */
@@ -225,6 +260,45 @@ class ANALYSIS_EXPORT QgsGraph
     }
     % End
 #endif
+
+
+#ifndef SIP_RUN
+
+    /**
+     * Removes the edge at specified \a index.
+     *
+     * The incoming and outgoing edges for all graph vertices will be updated accordingly. Vertices which
+     * no longer have any incoming or outgoing edges as a result will be removed from the graph automatically.
+     *
+     * \since QGIS 3.24
+     */
+    void removeEdge( int index );
+#else
+
+    /**
+     * Removes the edge at specified \a index.
+     *
+     * The incoming and outgoing edges for all graph vertices will be updated accordingly. Vertices which
+     * no longer have any incoming or outgoing edges as a result will be removed from the graph automatically.
+     *
+     * \throws IndexError if the vertex is not found.
+     * \since QGIS 3.24
+     */
+    void removeEdge( int index ) const;
+    % MethodCode
+    auto it = sipCpp->mGraphEdges.constFind( a0 );
+    if ( it != sipCpp->mGraphEdges.constEnd() )
+    {
+      sipCpp->removeEdge( a0 );
+    }
+    else
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    % End
+#endif
+
 
     /**
      * Find vertex by associated point
