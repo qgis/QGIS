@@ -19,6 +19,7 @@
  */
 
 #include "qgsgraph.h"
+#include <QSet>
 
 int QgsGraph::addVertex( const QgsPointXY &pt )
 {
@@ -51,12 +52,58 @@ const QgsGraphVertex &QgsGraph::vertex( int idx ) const
   Q_ASSERT_X( false, "QgsGraph::vertex()", "Invalid vertex ID" );
 }
 
+void QgsGraph::removeVertex( int index )
+{
+  auto it = mGraphVertices.constFind( index );
+  if ( it != mGraphVertices.constEnd() )
+  {
+    QSet< int > affectedEdges = qgis::listToSet( it->incomingEdges() );
+    affectedEdges.unite( qgis::listToSet( it->outgoingEdges() ) );
+
+    mGraphVertices.erase( it );
+
+    // remove affected edges
+    for ( int edgeId : std::as_const( affectedEdges ) )
+    {
+      mGraphEdges.remove( edgeId );
+    }
+  }
+}
+
 const QgsGraphEdge &QgsGraph::edge( int idx ) const
 {
   auto it = mGraphEdges.constFind( idx );
   if ( it != mGraphEdges.constEnd() )
     return ( it ).value();
   Q_ASSERT_X( false, "QgsGraph::edge()", "Invalid edge ID" );
+}
+
+void QgsGraph::removeEdge( int index )
+{
+  auto it = mGraphEdges.constFind( index );
+  if ( it != mGraphEdges.constEnd() )
+  {
+    const int fromVertex = it->fromVertex();
+    const int toVertex = it->toVertex();
+    mGraphEdges.erase( it );
+
+    // clean up affected vertices
+    auto vertexIt = mGraphVertices.find( fromVertex );
+    if ( vertexIt != mGraphVertices.end() )
+    {
+      vertexIt->mOutgoingEdges.removeAll( index );
+      if ( vertexIt->mOutgoingEdges.empty() && vertexIt->mIncomingEdges.empty() )
+        mGraphVertices.erase( vertexIt );
+    }
+
+    vertexIt = mGraphVertices.find( toVertex );
+    if ( vertexIt != mGraphVertices.end() )
+    {
+      vertexIt->mIncomingEdges.removeAll( index );
+      if ( vertexIt->mOutgoingEdges.empty() && vertexIt->mIncomingEdges.empty() )
+        mGraphVertices.erase( vertexIt );
+    }
+  }
 }
 
 int QgsGraph::vertexCount() const

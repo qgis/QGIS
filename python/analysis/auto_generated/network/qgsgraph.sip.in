@@ -161,6 +161,30 @@ Returns the vertex at the given index.
     }
 %End
 
+
+    void removeVertex( int index ) const;
+%Docstring
+Removes the vertex at specified ``index``.
+
+All edges which are incoming or outgoing edges for the vertex will also be removed.
+
+:raises IndexError: if the vertex is not found.
+
+.. versionadded:: 3.24
+%End
+%MethodCode
+    auto it = sipCpp->mGraphVertices.constFind( a0 );
+    if ( it != sipCpp->mGraphVertices.constEnd() )
+    {
+      sipCpp->removeVertex( a0 );
+    }
+    else
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+%End
+
     int edgeCount() const;
 %Docstring
 Returns number of graph edges
@@ -185,6 +209,33 @@ Returns the edge at the given index.
       sipIsErr = 1;
     }
 %End
+
+
+
+    void removeEdge( int index ) const;
+%Docstring
+Removes the edge at specified ``index``.
+
+The incoming and outgoing edges for all graph vertices will be updated accordingly. Vertices which
+no longer have any incoming or outgoing edges as a result will be removed from the graph automatically.
+
+:raises IndexError: if the vertex is not found.
+
+.. versionadded:: 3.24
+%End
+%MethodCode
+    auto it = sipCpp->mGraphEdges.constFind( a0 );
+    if ( it != sipCpp->mGraphEdges.constEnd() )
+    {
+      sipCpp->removeEdge( a0 );
+    }
+    else
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+%End
+
 
     int findVertex( const QgsPointXY &pt ) const;
 %Docstring

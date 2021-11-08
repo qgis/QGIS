@@ -121,6 +121,191 @@ class TestQgsGraph(unittest.TestCase):
         with self.assertRaises(IndexError):
             graph.edge(3)
 
+    def test_remove_vertex(self):
+        graph = QgsGraph()
+
+        with self.assertRaises(IndexError):
+            graph.removeVertex(0)
+        with self.assertRaises(IndexError):
+            graph.removeVertex(-1)
+
+        v1 = graph.addVertex(QgsPointXY(1, 1))
+        v2 = graph.addVertex(QgsPointXY(2, 2))
+        v3 = graph.addVertex(QgsPointXY(3, 3))
+        v4 = graph.addVertex(QgsPointXY(4, 4))
+        edge_1 = graph.addEdge(v1, v2, [1])
+        edge_2 = graph.addEdge(v2, v1, [1])
+        edge_3 = graph.addEdge(v2, v3, [1])
+        edge_4 = graph.addEdge(v2, v4, [1])
+        edge_5 = graph.addEdge(v3, v4, [1])
+
+        self.assertEqual(graph.vertexCount(), 4)
+        self.assertEqual(graph.edgeCount(), 5)
+
+        with self.assertRaises(IndexError):
+            graph.removeVertex(5)
+
+        # remove a vertex
+        graph.removeVertex(v3)
+        self.assertEqual(graph.vertexCount(), 3)
+        with self.assertRaises(IndexError):
+            graph.vertex(v3)
+        self.assertEqual(graph.edgeCount(), 3)
+        self.assertEqual(graph.edge(edge_1).fromVertex(), v1)
+        self.assertEqual(graph.edge(edge_2).fromVertex(), v2)
+        self.assertEqual(graph.edge(edge_4).fromVertex(), v2)
+
+        # edges 3 and 5 must be removed
+        with self.assertRaises(IndexError):
+            graph.edge(edge_3)
+        with self.assertRaises(IndexError):
+            graph.edge(edge_5)
+
+        with self.assertRaises(IndexError):
+            graph.removeVertex(v3)
+
+        # remove another vertex
+        graph.removeVertex(v1)
+        self.assertEqual(graph.vertexCount(), 2)
+        with self.assertRaises(IndexError):
+            graph.vertex(v1)
+        self.assertEqual(graph.edgeCount(), 1)
+        self.assertEqual(graph.edge(edge_4).fromVertex(), v2)
+        with self.assertRaises(IndexError):
+            graph.edge(edge_1)
+        with self.assertRaises(IndexError):
+            graph.edge(edge_2)
+        with self.assertRaises(IndexError):
+            graph.edge(edge_3)
+        with self.assertRaises(IndexError):
+            graph.edge(edge_5)
+
+        with self.assertRaises(IndexError):
+            graph.removeVertex(v1)
+
+        # remove another vertex
+        graph.removeVertex(v4)
+        self.assertEqual(graph.vertexCount(), 1)
+        with self.assertRaises(IndexError):
+            graph.vertex(v4)
+        self.assertEqual(graph.edgeCount(), 0)
+        with self.assertRaises(IndexError):
+            graph.edge(edge_1)
+        with self.assertRaises(IndexError):
+            graph.edge(edge_2)
+        with self.assertRaises(IndexError):
+            graph.edge(edge_3)
+        with self.assertRaises(IndexError):
+            graph.edge(edge_4)
+        with self.assertRaises(IndexError):
+            graph.edge(edge_5)
+
+        with self.assertRaises(IndexError):
+            graph.removeVertex(v4)
+
+        # remove last vertex
+        graph.removeVertex(v2)
+        self.assertEqual(graph.vertexCount(), 0)
+        self.assertEqual(graph.edgeCount(), 0)
+        with self.assertRaises(IndexError):
+            graph.vertex(v2)
+
+        with self.assertRaises(IndexError):
+            graph.removeVertex(v2)
+
+    def test_remove_edge(self):
+        graph = QgsGraph()
+
+        with self.assertRaises(IndexError):
+            graph.removeEdge(0)
+        with self.assertRaises(IndexError):
+            graph.removeEdge(-1)
+
+        v1 = graph.addVertex(QgsPointXY(1, 1))
+        v2 = graph.addVertex(QgsPointXY(2, 2))
+        v3 = graph.addVertex(QgsPointXY(3, 3))
+        v4 = graph.addVertex(QgsPointXY(4, 4))
+        edge_1 = graph.addEdge(v1, v2, [1])
+        edge_2 = graph.addEdge(v2, v1, [1])
+        edge_3 = graph.addEdge(v2, v3, [1])
+        edge_4 = graph.addEdge(v2, v4, [1])
+        edge_5 = graph.addEdge(v3, v4, [1])
+
+        self.assertEqual(graph.vertexCount(), 4)
+        self.assertEqual(graph.edgeCount(), 5)
+
+        graph.removeEdge(edge_1)
+        self.assertEqual(graph.vertexCount(), 4)
+        self.assertEqual(graph.edgeCount(), 4)
+        with self.assertRaises(IndexError):
+            graph.edge(edge_1)
+
+        # make sure vertices are updated accordingly
+        self.assertEqual(graph.vertex(v1).incomingEdges(), [edge_2])
+        self.assertFalse(graph.vertex(v1).outgoingEdges())
+        self.assertFalse(graph.vertex(v2).incomingEdges())
+        self.assertCountEqual(graph.vertex(v2).outgoingEdges(), [edge_2, edge_3, edge_4])
+
+        with self.assertRaises(IndexError):
+            graph.removeEdge(edge_1)
+
+        # remove another edge
+        graph.removeEdge(edge_2)
+        self.assertEqual(graph.vertexCount(), 3)
+        self.assertEqual(graph.edgeCount(), 3)
+        with self.assertRaises(IndexError):
+            graph.edge(edge_2)
+
+        # make sure vertices are updated accordingly
+        # vertex 1 should be removed -- no incoming or outgoing edges remain
+        with self.assertRaises(IndexError):
+            graph.vertex(v1)
+        self.assertFalse(graph.vertex(v2).incomingEdges())
+        self.assertCountEqual(graph.vertex(v2).outgoingEdges(), [edge_3, edge_4])
+
+        with self.assertRaises(IndexError):
+            graph.removeEdge(edge_2)
+
+        graph.removeEdge(edge_4)
+        self.assertEqual(graph.vertexCount(), 3)
+        self.assertEqual(graph.edgeCount(), 2)
+        with self.assertRaises(IndexError):
+            graph.edge(edge_4)
+        self.assertFalse(graph.vertex(v2).incomingEdges())
+        self.assertEqual(graph.vertex(v2).outgoingEdges(), [edge_3])
+        self.assertEqual(graph.vertex(v4).incomingEdges(), [edge_5])
+        self.assertFalse(graph.vertex(v4).outgoingEdges())
+
+        with self.assertRaises(IndexError):
+            graph.removeEdge(edge_4)
+
+        graph.removeEdge(edge_3)
+        self.assertEqual(graph.vertexCount(), 2)
+        self.assertEqual(graph.edgeCount(), 1)
+        with self.assertRaises(IndexError):
+            graph.edge(edge_3)
+        # v2 should be removed
+        with self.assertRaises(IndexError):
+            graph.vertex(v2)
+        self.assertFalse(graph.vertex(v3).incomingEdges())
+        self.assertEqual(graph.vertex(v3).outgoingEdges(), [edge_5])
+
+        with self.assertRaises(IndexError):
+            graph.removeEdge(edge_3)
+
+        graph.removeEdge(edge_5)
+        self.assertEqual(graph.vertexCount(), 0)
+        self.assertEqual(graph.edgeCount(), 0)
+        with self.assertRaises(IndexError):
+            graph.edge(edge_5)
+        with self.assertRaises(IndexError):
+            graph.vertex(v3)
+        with self.assertRaises(IndexError):
+            graph.vertex(v4)
+
+        with self.assertRaises(IndexError):
+            graph.removeEdge(edge_5)
+
 
 if __name__ == '__main__':
     unittest.main()
