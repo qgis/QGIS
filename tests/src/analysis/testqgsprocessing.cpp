@@ -3999,7 +3999,7 @@ void TestQgsProcessing::parameterMatrix()
   QgsProcessingContext context;
 
   // not optional!
-  std::unique_ptr< QgsProcessingParameterMatrix > def( new QgsProcessingParameterMatrix( "non_optional", QString(), 3, false, QStringList(), QString(), false ) );
+  std::unique_ptr< QgsProcessingParameterMatrix > def( new QgsProcessingParameterMatrix( "non_optional", QString(), 3, false, QStringList(), QVariant(), false ) );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( def->checkValueIsAcceptable( 5 ) );
@@ -4021,7 +4021,7 @@ void TestQgsProcessing::parameterMatrix()
 
   QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
   QCOMPARE( def->valueAsPythonString( 5, context ), QStringLiteral( "[5]" ) );
-  QCOMPARE( def->valueAsPythonString( QVariantList() << 1 << 2 << 3, context ), QStringLiteral( "[1,2,3]" ) );
+  QCOMPARE( def->valueAsPythonString( QVariantList() << 1 << 2.5 << 3, context ), QStringLiteral( "[1,2.5,3]" ) );
   QCOMPARE( def->valueAsPythonString( QVariantList() << ( QVariantList() << 1 << 2 << 3 ) << ( QVariantList() << 1 << 2 << 3 ), context ), QStringLiteral( "[1,2,3,1,2,3]" ) );
   QCOMPARE( def->valueAsPythonString( QVariantList() << ( QVariantList() << 1 << QStringLiteral( "value" ) << 3 ) << ( QVariantList() << 1 << 2 << QStringLiteral( "it's a value" ) ), context ), QStringLiteral( "[1,'value',3,1,2,\"it's a value\"]" ) );
   QCOMPARE( def->valueAsPythonString( QVariantList() << ( QVariantList() << 1 << QVariant() << 3 ) << ( QVariantList() << QVariant() << 2 << 3 ), context ), QStringLiteral( "[1,None,3,None,2,3]" ) );
@@ -4030,7 +4030,7 @@ void TestQgsProcessing::parameterMatrix()
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
 
   QString pythonCode = def->asPythonString();
-  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMatrix('non_optional', '', numberRows=3, hasFixedNumberRows=False, headers=[], defaultValue=[None])" ) );
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMatrix('non_optional', '', numberRows=3, hasFixedNumberRows=False, headers=[], defaultValue=None)" ) );
 
   QString code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##non_optional=matrix" ) );
