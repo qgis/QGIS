@@ -306,6 +306,30 @@ class TestQgsGraph(unittest.TestCase):
         with self.assertRaises(IndexError):
             graph.removeEdge(edge_5)
 
+    def test_find_opposite_edge(self):
+        graph = QgsGraph()
+
+        with self.assertRaises(IndexError):
+            graph.findOppositeEdge(0)
+        with self.assertRaises(IndexError):
+            graph.findOppositeEdge(-1)
+
+        v1 = graph.addVertex(QgsPointXY(1, 1))
+        v2 = graph.addVertex(QgsPointXY(2, 2))
+        v3 = graph.addVertex(QgsPointXY(3, 3))
+        v4 = graph.addVertex(QgsPointXY(4, 4))
+        edge_1 = graph.addEdge(v1, v2, [1])
+        edge_2 = graph.addEdge(v2, v1, [1])
+        edge_3 = graph.addEdge(v2, v3, [1])
+        edge_4 = graph.addEdge(v2, v4, [1])
+        edge_5 = graph.addEdge(v3, v4, [1])
+
+        self.assertEqual(graph.findOppositeEdge(edge_1), edge_2)
+        self.assertEqual(graph.findOppositeEdge(edge_2), edge_1)
+        self.assertEqual(graph.findOppositeEdge(edge_3), -1)
+        self.assertEqual(graph.findOppositeEdge(edge_4), -1)
+        self.assertEqual(graph.findOppositeEdge(edge_5), -1)
+
 
 if __name__ == '__main__':
     unittest.main()

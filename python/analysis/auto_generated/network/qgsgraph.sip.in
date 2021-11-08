@@ -236,7 +236,6 @@ no longer have any incoming or outgoing edges as a result will be removed from t
     }
 %End
 
-
     int findVertex( const QgsPointXY &pt ) const;
 %Docstring
 Find vertex by associated point
@@ -244,7 +243,36 @@ Find vertex by associated point
 :return: vertex index
 %End
 
+
+    int findOppositeEdge( int index ) const;
+%Docstring
+Finds the first edge which is the opposite of the edge with the specified index.
+
+This represents the edge which has the same vertices as the specified edge, but
+the opposite direction in the graph.(I.e. the edge which starts at the "from" vertex
+of the specified edge and ends at the "to" vertex.)
+
+Returns -1 if no opposite edge exists.
+
+:raises IndexError: if the edge with the specified ``index`` is not found.
+
+.. versionadded:: 3.24
+%End
+%MethodCode
+    auto it = sipCpp->mGraphEdges.constFind( a0 );
+    if ( it != sipCpp->mGraphEdges.constEnd() )
+    {
+      sipRes = sipCpp->findOppositeEdge( a0 );
+    }
+    else
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+%End
+
   protected:
+
 
 };
 
