@@ -325,7 +325,16 @@ QVariantMap QgsGdalProviderBase::decodeGdalUri( const QString &uri )
 {
   QString path = uri;
   QString layerName;
+  QString authcfg;
   QStringList openOptions;
+
+  const QRegularExpression authcfgRegex( " authcfg='([^']+)'" );
+  QRegularExpressionMatch match;
+  if ( path.contains( authcfgRegex, &match ) )
+  {
+    path = path.remove( match.capturedStart( 0 ), match.capturedLength( 0 ) );
+    authcfg = match.captured( 1 );
+  }
 
   QString vsiPrefix = qgsVsiPrefix( path );
   QString vsiSuffix;
@@ -389,6 +398,8 @@ QVariantMap QgsGdalProviderBase::decodeGdalUri( const QString &uri )
     uriComponents.insert( QStringLiteral( "vsiPrefix" ), vsiPrefix );
   if ( !vsiSuffix.isEmpty() )
     uriComponents.insert( QStringLiteral( "vsiSuffix" ), vsiSuffix );
+  if ( !authcfg.isEmpty() )
+    uriComponents.insert( QStringLiteral( "authcfg" ), authcfg );
   return uriComponents;
 }
 
@@ -398,6 +409,7 @@ QString QgsGdalProviderBase::encodeGdalUri( const QVariantMap &parts )
   const QString vsiSuffix = parts.value( QStringLiteral( "vsiSuffix" ) ).toString();
   const QString path = parts.value( QStringLiteral( "path" ) ).toString();
   const QString layerName = parts.value( QStringLiteral( "layerName" ) ).toString();
+  const QString authcfg = parts.value( QStringLiteral( "authcfg" ) ).toString();
 
   QString uri = vsiPrefix + path + vsiSuffix;
   if ( !layerName.isEmpty() && uri.endsWith( QLatin1String( "gpkg" ) ) )
@@ -412,6 +424,9 @@ QString QgsGdalProviderBase::encodeGdalUri( const QVariantMap &parts )
     uri += QLatin1String( "|option:" );
     uri += openOption;
   }
+
+  if ( !authcfg.isEmpty() )
+    uri += QStringLiteral( " authcfg='%1'" ).arg( authcfg );
 
   return uri;
 }
