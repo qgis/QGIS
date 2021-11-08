@@ -135,36 +135,36 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( const QVariantMap &config, QWi
   // duplicate feature
   mDuplicateFeatureButton = new QToolButton( this );
   mDuplicateFeatureButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateFeature.svg" ) ) );
-  mDuplicateFeatureButton->setText( tr( "Duplicate Child Feature" ) );
-  mDuplicateFeatureButton->setToolTip( tr( "Duplicate selected child feature" ) );
+  mDuplicateFeatureButton->setText( tr( "Duplicate Child Feature(s)" ) );
+  mDuplicateFeatureButton->setToolTip( tr( "Duplicate selected child feature(s)" ) );
   mDuplicateFeatureButton->setObjectName( QStringLiteral( "mDuplicateFeatureButton" ) );
   buttonLayout->addWidget( mDuplicateFeatureButton );
   // delete feature
   mDeleteFeatureButton = new QToolButton( this );
   mDeleteFeatureButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelectedFeatures.svg" ) ) );
-  mDeleteFeatureButton->setText( tr( "Delete Child Feature" ) );
-  mDeleteFeatureButton->setToolTip( tr( "Delete selected child feature" ) );
+  mDeleteFeatureButton->setText( tr( "Delete Child Feature(s)" ) );
+  mDeleteFeatureButton->setToolTip( tr( "Delete selected child feature(s)" ) );
   mDeleteFeatureButton->setObjectName( QStringLiteral( "mDeleteFeatureButton" ) );
   buttonLayout->addWidget( mDeleteFeatureButton );
   // link feature
   mLinkFeatureButton = new QToolButton( this );
   mLinkFeatureButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionLink.svg" ) ) );
-  mLinkFeatureButton->setText( tr( "Link Existing Features" ) );
-  mLinkFeatureButton->setToolTip( tr( "Link existing child features" ) );
+  mLinkFeatureButton->setText( tr( "Link Existing Feature(s)" ) );
+  mLinkFeatureButton->setToolTip( tr( "Link existing child feature(s)" ) );
   mLinkFeatureButton->setObjectName( QStringLiteral( "mLinkFeatureButton" ) );
   buttonLayout->addWidget( mLinkFeatureButton );
   // unlink feature
   mUnlinkFeatureButton = new QToolButton( this );
   mUnlinkFeatureButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionUnlink.svg" ) ) );
-  mUnlinkFeatureButton->setText( tr( "Unlink Feature" ) );
-  mUnlinkFeatureButton->setToolTip( tr( "Unlink selected child feature" ) );
+  mUnlinkFeatureButton->setText( tr( "Unlink Feature(s)" ) );
+  mUnlinkFeatureButton->setToolTip( tr( "Unlink selected child feature(s)" ) );
   mUnlinkFeatureButton->setObjectName( QStringLiteral( "mUnlinkFeatureButton" ) );
   buttonLayout->addWidget( mUnlinkFeatureButton );
   // zoom to linked feature
   mZoomToFeatureButton = new QToolButton( this );
   mZoomToFeatureButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToSelected.svg" ) ) );
-  mZoomToFeatureButton->setText( tr( "Zoom To Feature" ) );
-  mZoomToFeatureButton->setToolTip( tr( "Zoom to selected child feature" ) );
+  mZoomToFeatureButton->setText( tr( "Zoom To Feature(s)" ) );
+  mZoomToFeatureButton->setToolTip( tr( "Zoom to selected child feature(s)" ) );
   mZoomToFeatureButton->setObjectName( QStringLiteral( "mZoomToFeatureButton" ) );
   buttonLayout->addWidget( mZoomToFeatureButton );
   // spacer
