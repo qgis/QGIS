@@ -162,7 +162,7 @@ Returns the vertex at the given index.
 %End
 
 
-    void removeVertex( int index ) const;
+    void removeVertex( int index );
 %Docstring
 Removes the vertex at specified ``index``.
 
@@ -212,7 +212,7 @@ Returns the edge at the given index.
 
 
 
-    void removeEdge( int index ) const;
+    void removeEdge( int index );
 %Docstring
 Removes the edge at specified ``index``.
 
