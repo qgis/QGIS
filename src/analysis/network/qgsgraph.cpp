@@ -22,8 +22,8 @@
 
 int QgsGraph::addVertex( const QgsPointXY &pt )
 {
-  mGraphVertices.append( QgsGraphVertex( pt ) );
-  return mGraphVertices.size() - 1;
+  mGraphVertices[ mNextVertexId ] = QgsGraphVertex( pt );
+  return mNextVertexId++;
 }
 
 int QgsGraph::addEdge( int fromVertexIdx, int toVertexIdx, const QVector< QVariant > &strategies )
@@ -33,23 +33,30 @@ int QgsGraph::addEdge( int fromVertexIdx, int toVertexIdx, const QVector< QVaria
   e.mStrategies = strategies;
   e.mToIdx = toVertexIdx;
   e.mFromIdx  = fromVertexIdx;
-  mGraphEdges.push_back( e );
+
+  mGraphEdges[ mNextEdgeId ] = e;
   const int edgeIdx = mGraphEdges.size() - 1;
 
   mGraphVertices[ toVertexIdx ].mIncomingEdges.push_back( edgeIdx );
   mGraphVertices[ fromVertexIdx ].mOutgoingEdges.push_back( edgeIdx );
 
-  return mGraphEdges.size() - 1;
+  return mNextEdgeId++;
 }
 
 const QgsGraphVertex &QgsGraph::vertex( int idx ) const
 {
-  return mGraphVertices[ idx ];
+  auto it = mGraphVertices.constFind( idx );
+  if ( it != mGraphVertices.constEnd() )
+    return ( it ).value();
+  Q_ASSERT_X( false, "QgsGraph::vertex()", "Invalid vertex ID" );
 }
 
 const QgsGraphEdge &QgsGraph::edge( int idx ) const
 {
-  return mGraphEdges[ idx ];
+  auto it = mGraphEdges.constFind( idx );
+  if ( it != mGraphEdges.constEnd() )
+    return ( it ).value();
+  Q_ASSERT_X( false, "QgsGraph::edge()", "Invalid edge ID" );
 }
 
 int QgsGraph::vertexCount() const
