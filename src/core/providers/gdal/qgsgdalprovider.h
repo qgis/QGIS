@@ -125,6 +125,12 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
      */
     static QString helpCreationOptionsFormat( QString format );
 
+    /**
+     * Replaces the authcfg part of the string with authentication information
+     * \since QGIS 3.22
+     */
+    static QString expandAuthConfig( const QString &dsName );
+
     QString description() const override;
     QgsRasterDataProvider::ProviderCapabilities providerCapabilities() const override;
     QgsCoordinateReferenceSystem crs() const override;

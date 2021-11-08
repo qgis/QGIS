@@ -279,27 +279,32 @@ QString QgsGdalProvider::dataSourceUri( bool expandAuthConfig ) const
 {
   if ( expandAuthConfig && QgsDataProvider::dataSourceUri( ).contains( QLatin1String( "authcfg" ) ) )
   {
-    QString uri( QgsDataProvider::dataSourceUri() );
-    // Check for authcfg
-    QRegularExpression authcfgRe( R"raw(authcfg='?([^'\s]+)'?)raw" );
-    QRegularExpressionMatch match;
-    if ( uri.contains( authcfgRe, &match ) )
-    {
-      uri = uri.replace( match.captured( 0 ), QString() );
-      QString configId( match.captured( 1 ) );
-      QStringList connectionItems;
-      connectionItems << uri;
-      if ( QgsApplication::authManager()->updateDataSourceUriItems( connectionItems, configId, QStringLiteral( "gdal" ) ) )
-      {
-        uri = connectionItems.first( );
-      }
-    }
-    return uri;
+    return QgsGdalProvider::expandAuthConfig( QgsDataProvider::dataSourceUri() );
   }
   else
   {
     return QgsDataProvider::dataSourceUri();
   }
+}
+
+QString QgsGdalProvider::expandAuthConfig( const QString &dsName )
+{
+  QString uri( dsName );
+  // Check for authcfg
+  QRegularExpression authcfgRe( " authcfg='([^']+)'" );
+  QRegularExpressionMatch match;
+  if ( uri.contains( authcfgRe, &match ) )
+  {
+    uri = uri.replace( match.captured( 0 ), QString() );
+    QString configId( match.captured( 1 ) );
+    QStringList connectionItems;
+    connectionItems << uri;
+    if ( QgsApplication::authManager()->updateDataSourceUriItems( connectionItems, configId, QStringLiteral( "ogr" ) ) )
+    {
+      uri = connectionItems.first( );
+    }
+  }
+  return uri;
 }
 
 QgsGdalProvider *QgsGdalProvider::clone() const
@@ -2645,7 +2650,7 @@ bool QgsGdalProvider::isValidRasterFileName( QString const &fileNameQString, QSt
 
   CPLErrorReset();
 
-  QString fileName = fileNameQString;
+  QString fileName = QgsGdalProvider::expandAuthConfig( fileNameQString );
 
   // Try to open using VSIFileHandler (see qgsogrprovider.cpp)
   // TODO suppress error messages and report in debug, like in OGR provider
@@ -3617,7 +3622,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
 
   QgsGdalProviderBase::registerGdalDrivers();
 
-  QString gdalUri = uri;
+  QString gdalUri = QgsGdalProvider::expandAuthConfig( uri );
 
   QVariantMap uriParts = decodeUri( gdalUri );
 
