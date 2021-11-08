@@ -391,13 +391,15 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
               mOgrGeometryTypeFilter,
               mOpenOptions );
 
-  if ( mFilePath.contains( QLatin1String( "authcfg" ) ) )
+  if ( uri.contains( QLatin1String( "authcfg" ) ) )
   {
     QRegularExpression authcfgRe( QStringLiteral( " authcfg='([^']+)'" ) );
     QRegularExpressionMatch match;
-    if ( mFilePath.contains( authcfgRe, &match ) )
+    if ( uri.contains( authcfgRe, &match ) )
     {
       mAuthCfg = match.captured( 1 );
+      // momentarily re-add authcfg since it was stripped off in analyzeURI
+      mFilePath = QgsOgrProviderUtils::expandAuthConfig( QStringLiteral( "%1 authcfg='%2'" ).arg( mFilePath, mAuthCfg ) );
     }
   }
   QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
@@ -3429,8 +3431,8 @@ void QgsOgrProvider::open( OpenMode mode )
 
   // Try to open using VSIFileHandler
   //   see http://trac.osgeo.org/gdal/wiki/UserDocs/ReadInZip
-  QString vsiPrefix = QgsZipItem::vsiPrefix( dataSourceUri() );
-  if ( !vsiPrefix.isEmpty() )
+  QString vsiPrefix = QgsZipItem::vsiPrefix( dataSourceUri( true ) );
+  if ( !vsiPrefix.isEmpty() || mFilePath.startsWith( QStringLiteral( "/vsicurl/" ) ) )
   {
     // GDAL>=1.8.0 has write support for zip, but read and write operations
     // cannot be interleaved, so for now just use read-only.
