@@ -186,10 +186,19 @@ class ANALYSIS_EXPORT QgsGraph
      */
     int findVertex( const QgsPointXY &pt ) const;
 
-  private:
-    QVector<QgsGraphVertex> mGraphVertices;
+  protected:
+#ifndef SIP_RUN
+    //! Graph vertices
+    QHash<int, QgsGraphVertex> mGraphVertices;
 
-    QVector<QgsGraphEdge> mGraphEdges;
+    //! Graph edges
+    QHash<int, QgsGraphEdge> mGraphEdges;
+#endif
+
+  private:
+
+    int mNextVertexId = 0;
+    int mNextEdgeId = 0;
 };
 
 #endif // QGSGRAPH_H
