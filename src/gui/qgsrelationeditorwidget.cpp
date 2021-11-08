@@ -191,6 +191,9 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( const QVariantMap &config, QWi
   mViewModeButtonGroup = new QButtonGroup( this );
   mViewModeButtonGroup->addButton( mFormViewButton, QgsDualView::AttributeEditor );
   mViewModeButtonGroup->addButton( mTableViewButton, QgsDualView::AttributeTable );
+  // multiedit info label
+  mMultiEditInfoLabel = new QLabel( this );
+  buttonLayout->addWidget( mMultiEditInfoLabel );
 
   // add buttons layout
   rootLayout->addLayout( buttonLayout );
@@ -404,6 +407,7 @@ void QgsRelationEditorWidget::addFeature()
   }
   mMultiEditTreeWidget->blockSignals( false );
 
+  updateUi();
   updateButtons();
 }
 
@@ -514,6 +518,7 @@ void QgsRelationEditorWidget::updateUi()
 
   mFormViewButton->setVisible( !multiEditModeActive() );
   mTableViewButton->setVisible( !multiEditModeActive() );
+  mMultiEditInfoLabel->setVisible( multiEditModeActive() );
 
   if ( !multiEditModeActive() )
   {
@@ -546,6 +551,9 @@ void QgsRelationEditorWidget::updateUi()
   else
   {
     mStackedWidget->setCurrentWidget( mMultiEditStackedWidgetPage ) ;
+
+    QgsFeatureIds featureIdsChildren;
+    QMultiMap<QTreeWidgetItem *, QgsFeatureId> multimapChildFeatures;
 
     mMultiEditTreeWidget->clear();
     for ( const QgsFeature &feature : std::as_const( mFeatureList ) )
@@ -583,6 +591,9 @@ void QgsRelationEditorWidget::updateUi()
               treeWidgetItem->setFlags( Qt::ItemIsEnabled );
 
             treeWidgetItem->addChild( treeWidgetItemChild );
+
+            featureIdsChildren.insert( featureChildChild.id() );
+            multimapChildFeatures.insert( treeWidgetItem, featureChildChild.id() );
           }
         }
         else
@@ -593,11 +604,68 @@ void QgsRelationEditorWidget::updateUi()
           treeWidgetItemChild->setText( 0, QgsVectorLayerUtils::getFeatureDisplayString( mRelation.referencingLayer(), featureChild ) );
           treeWidgetItemChild->setIcon( 0, QgsIconUtils::iconForLayer( mRelation.referencingLayer() ) );
           treeWidgetItem->addChild( treeWidgetItemChild );
+
+          featureIdsChildren.insert( featureChild.id() );
         }
       }
 
       treeWidgetItem->setExpanded( true );
       mMultiEditTreeWidget->addTopLevelItem( treeWidgetItem );
+    }
+
+    // Check for mixed values
+    bool mixedValues = false;
+    if ( mNmRelation.isValid() )
+    {
+      QgsFeatureIds featureIdsNotMixed;
+      for ( const QgsFeatureId &featureId : featureIdsChildren )
+      {
+        for ( QTreeWidgetItem *key : multimapChildFeatures.keys() )
+        {
+          if ( ! multimapChildFeatures.values( key ).contains( featureId ) )
+          {
+            mixedValues = true;
+            break;
+          }
+        }
+        if ( mixedValues )
+          break;
+
+        featureIdsNotMixed.insert( featureId );
+      }
+      if ( featureIdsChildren != featureIdsNotMixed )
+        mixedValues = true;
+    }
+    else
+    {
+      for ( const QgsFeatureId &featureIdJustAdded : std::as_const( mMultiEdit1NJustAddedIds ) )
+      {
+        if ( ! featureIdsChildren.contains( featureIdJustAdded ) )
+        {
+          mixedValues = true;
+          break;
+        }
+        featureIdsChildren.remove( featureIdJustAdded );
+      }
+
+      if ( ! featureIdsChildren.isEmpty() )
+        mixedValues = true;
+    }
+
+    // Set multiedit info label
+    if ( ! mixedValues )
+    {
+      QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "/multieditSameValues.svg" ) );
+      mMultiEditInfoLabel->setPixmap( icon.pixmap( mMultiEditInfoLabel->height(),
+                                      mMultiEditInfoLabel->height() ) );
+      mMultiEditInfoLabel->setToolTip( tr( "All features in selection have equal relations" ) );
+    }
+    else
+    {
+      QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "/multieditMixedValues.svg" ) );
+      mMultiEditInfoLabel->setPixmap( icon.pixmap( mMultiEditInfoLabel->height(),
+                                      mMultiEditInfoLabel->height() ) );
+      mMultiEditInfoLabel->setToolTip( tr( "Some features in selection have different relations" ) );
     }
   }
 }

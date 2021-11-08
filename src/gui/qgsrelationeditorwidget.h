@@ -245,6 +245,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     QToolButton *mFormViewButton = nullptr;
     QToolButton *mTableViewButton = nullptr;
     QToolButton *mAddFeatureGeometryButton = nullptr;
+    QLabel *mMultiEditInfoLabel = nullptr;
     QStackedWidget *mStackedWidget = nullptr;
     QWidget *mMultiEditStackedWidgetPage = nullptr;
     QTreeWidget *mMultiEditTreeWidget = nullptr;
