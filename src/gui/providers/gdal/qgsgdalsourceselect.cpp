@@ -55,7 +55,6 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
     if ( radioSrcProtocol->isChecked() )
     {
       emit enableButtons( !text.isEmpty() );
-      fillOpenOptions();
     }
   } );
   connect( mBucket, &QLineEdit::textChanged, this, [ = ]( const QString & text )
