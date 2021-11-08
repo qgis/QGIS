@@ -129,6 +129,25 @@ int QgsGraph::findVertex( const QgsPointXY &pt ) const
   return -1;
 }
 
+int QgsGraph::findOppositeEdge( int index ) const
+{
+  auto it = mGraphEdges.constFind( index );
+  if ( it != mGraphEdges.constEnd() )
+  {
+    const int fromVertex = it->fromVertex();
+    const int toVertex = it->toVertex();
+
+    // look for edges which start at toVertex
+    const QgsGraphEdgeIds candidates = mGraphVertices.value( toVertex ).outgoingEdges();
+    for ( int candidate : candidates )
+    {
+      if ( mGraphEdges.value( candidate ).toVertex() == fromVertex )
+        return candidate;
+    }
+  }
+  return -1;
+}
+
 QVariant QgsGraphEdge::cost( int i ) const
 {
   return mStrategies[ i ];

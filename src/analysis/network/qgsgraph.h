@@ -299,14 +299,58 @@ class ANALYSIS_EXPORT QgsGraph
     % End
 #endif
 
-
     /**
      * Find vertex by associated point
      * \returns vertex index
      */
     int findVertex( const QgsPointXY &pt ) const;
 
+#ifndef SIP_RUN
+
+    /**
+     * Finds the first edge which is the opposite of the edge with the specified index.
+     *
+     * This represents the edge which has the same vertices as the specified edge, but
+     * the opposite direction in the graph.(I.e. the edge which starts at the "from" vertex
+     * of the specified edge and ends at the "to" vertex.)
+     *
+     * Returns -1 if no opposite edge exists.
+     *
+     * \since QGIS 3.24
+    */
+    int findOppositeEdge( int index ) const;
+#else
+
+    /**
+     * Finds the first edge which is the opposite of the edge with the specified index.
+     *
+     * This represents the edge which has the same vertices as the specified edge, but
+     * the opposite direction in the graph.(I.e. the edge which starts at the "from" vertex
+     * of the specified edge and ends at the "to" vertex.)
+     *
+     * Returns -1 if no opposite edge exists.
+     *
+     * \throws IndexError if the edge with the specified \a index is not found.
+     *
+     * \since QGIS 3.24
+    */
+    int findOppositeEdge( int index ) const;
+    % MethodCode
+    auto it = sipCpp->mGraphEdges.constFind( a0 );
+    if ( it != sipCpp->mGraphEdges.constEnd() )
+    {
+      sipRes = sipCpp->findOppositeEdge( a0 );
+    }
+    else
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    % End
+#endif
+
   protected:
+
 #ifndef SIP_RUN
     //! Graph vertices
     QHash<int, QgsGraphVertex> mGraphVertices;
