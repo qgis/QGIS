@@ -213,7 +213,7 @@ class ANALYSIS_EXPORT QgsGraph
      * \throws IndexError if the vertex is not found.
      * \since QGIS 3.24
      */
-    void removeVertex( int index ) const;
+    void removeVertex( int index );
     % MethodCode
     auto it = sipCpp->mGraphVertices.constFind( a0 );
     if ( it != sipCpp->mGraphVertices.constEnd() )
@@ -284,7 +284,7 @@ class ANALYSIS_EXPORT QgsGraph
      * \throws IndexError if the vertex is not found.
      * \since QGIS 3.24
      */
-    void removeEdge( int index ) const;
+    void removeEdge( int index );
     % MethodCode
     auto it = sipCpp->mGraphEdges.constFind( a0 );
     if ( it != sipCpp->mGraphEdges.constEnd() )
