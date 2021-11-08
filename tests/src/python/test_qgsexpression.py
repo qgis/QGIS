@@ -271,6 +271,20 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         res = '"my\'field" = TRUE'
         self.assertEqual(e.createFieldEqualityExpression(field, value), res)
 
+        # test with field type
+        field = "myfield"
+        value = 1
+        type = QVariant.String
+        res = '"myfield" = \'1\''
+        self.assertEqual(e.createFieldEqualityExpression(field, value, type), res)
+
+        # test with field type
+        field = "myfield"
+        value = "1"
+        type = QVariant.Int
+        res = '"myfield" = 1'
+        self.assertEqual(e.createFieldEqualityExpression(field, value, type), res)
+
     def testReferencedAttributeIndexesNonExistingField(self):
         e = QgsExpression()
         e.setExpression("foo = 1")
