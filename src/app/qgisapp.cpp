@@ -16060,6 +16060,18 @@ bool QgisApp::addRasterLayers( QStringList const &files, bool guiWarning )
         continue;
     }
 
+    const bool isVsiCurl { src.startsWith( QLatin1String( "/vsicurl" ), Qt::CaseInsensitive ) };
+    const auto scheme { QUrl( src ).scheme() };
+    const bool isRemoteUrl { src.startsWith( QLatin1String( "http" ) ) || src == QLatin1String( "ftp" ) };
+
+    std::unique_ptr< QgsTemporaryCursorOverride > cursorOverride;
+    if ( isVsiCurl || isRemoteUrl )
+    {
+      cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+      visibleMessageBar()->pushInfo( tr( "Remote layer" ), tr( "loading %1, please wait …" ).arg( src ) );
+      qApp->processEvents();
+    }
+
     if ( QgsRasterLayer::isValidRasterFileName( src, errMsg ) )
     {
       QFileInfo myFileInfo( src );
@@ -16077,6 +16089,7 @@ bool QgisApp::addRasterLayers( QStringList const &files, bool guiWarning )
       }
 
       // try to create the layer
+      cursorOverride.reset();
       QgsRasterLayer *layer = addLayerPrivate< QgsRasterLayer >( QgsMapLayerType::RasterLayer, src, layerName, QStringLiteral( "gdal" ), guiWarning );
 
       if ( layer && layer->isValid() )
