@@ -24,6 +24,7 @@
 #include "qgssymbollayer.h"
 #include "qgsogcutils.h"
 #include "qgscolorramp.h"
+#include "qgscolorrampimpl.h"
 #include "qgsrendercontext.h"
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"

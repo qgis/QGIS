@@ -27,6 +27,7 @@
 #include "qgssvgcache.h"
 #include "qgslogger.h"
 #include "qgscolorramp.h"
+#include "qgscolorrampimpl.h"
 #include "qgsunittypes.h"
 #include "qgsmessagelog.h"
 #include "qgsapplication.h"

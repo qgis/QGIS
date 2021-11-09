@@ -63,6 +63,7 @@
 #include "qgsalgorithmgpsbabeltools.h"
 #include "qgsannotationlayer.h"
 #include "qgsannotationmarkeritem.h"
+#include "qgscolorrampimpl.h"
 
 class TestQgsProcessingAlgs: public QObject
 {

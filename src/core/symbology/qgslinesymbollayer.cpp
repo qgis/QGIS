@@ -32,6 +32,7 @@
 #include "qgsimagecache.h"
 #include "qgsfeedback.h"
 #include "qgsimageoperation.h"
+#include "qgscolorrampimpl.h"
 
 #include <algorithm>
 #include <QPainter>
@@ -3625,6 +3626,11 @@ QgsMapUnitScale QgsLineburstSymbolLayer::mapUnitScale() const
 double QgsLineburstSymbolLayer::estimateMaxBleed( const QgsRenderContext & ) const
 {
   return ( mWidth / 2.0 ) + mOffset;
+}
+
+QgsColorRamp *QgsLineburstSymbolLayer::colorRamp()
+{
+  return mGradientRamp.get();
 }
 
 void QgsLineburstSymbolLayer::setColorRamp( QgsColorRamp *ramp )

@@ -24,7 +24,7 @@ originally part of the larger QgsRasterLayer class
 
 #include "qgslogger.h"
 #include "qgis.h"
-#include "qgscolorramp.h"
+#include "qgscolorrampimpl.h"
 #include "qgscolorrampshader.h"
 #include "qgsrasterinterface.h"
 #include "qgsrasterminmaxorigin.h"

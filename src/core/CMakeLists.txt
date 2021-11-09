@@ -322,6 +322,7 @@ set(QGIS_CORE_SRCS
   qgscadutils.cpp
   qgsclipper.cpp
   qgscolorramp.cpp
+  qgscolorrampimpl.cpp
   qgscolorscheme.cpp
   qgscolorschemeregistry.cpp
   qgscommandlineutils.cpp
@@ -947,6 +948,7 @@ set(QGIS_CORE_HDRS
   qgsclipper.h
   qgscommandlineutils.h
   qgscolorramp.h
+  qgscolorrampimpl.h
   qgscolorscheme.h
   qgscolorschemeregistry.h
   qgsconditionalstyle.h

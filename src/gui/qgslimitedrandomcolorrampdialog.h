@@ -19,7 +19,7 @@
 #include <QDialog>
 #include "qgis_sip.h"
 #include "qgspanelwidget.h"
-#include "qgscolorramp.h"
+#include "qgscolorrampimpl.h"
 #include "ui_qgslimitedrandomcolorrampwidgetbase.h"
 #include "qgis_gui.h"
 

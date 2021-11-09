@@ -28,7 +28,7 @@
 #include "qgsgloweffect.h"
 #include "qgstransformeffect.h"
 #include "qgspainteffectregistry.h"
-#include "qgscolorramp.h"
+#include "qgscolorrampimpl.h"
 #include "qgssymbollayerutils.h"
 #include "qgsmapsettings.h"
 #include "qgsvectorlayer.h"

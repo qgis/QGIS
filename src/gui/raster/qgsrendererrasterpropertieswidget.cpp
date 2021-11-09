@@ -30,6 +30,7 @@
 #include "qgsmultibandcolorrenderer.h"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgsapplication.h"
+#include "qgscolorrampimpl.h"
 
 
 #include "qgsmessagelog.h"

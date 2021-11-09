@@ -19,7 +19,6 @@
 #include "qgis_sip.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
-#include "qgscolorramp.h"
 
 #include <QVariant>
 #include <QHash>

@@ -61,6 +61,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsunittypes.h"
 #include "qgsspatialindex.h"
+#include "qgscolorrampimpl.h"
 
 #include <QMimeDatabase>
 #include <QProcessEnvironment>

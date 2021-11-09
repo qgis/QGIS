@@ -27,6 +27,7 @@ class QgsExpression;
 class QgsMarkerSymbol;
 class QgsLineSymbol;
 class QgsPathResolver;
+class QgsColorRamp;
 
 #define DEFAULT_SIMPLELINE_COLOR     QColor(35,35,35)
 #define DEFAULT_SIMPLELINE_WIDTH     DEFAULT_LINE_WIDTH
@@ -1268,7 +1269,7 @@ class CORE_EXPORT QgsLineburstSymbolLayer : public QgsAbstractBrushedLineSymbolL
      * \see setColorRamp()
      * \see gradientColorType()
      */
-    QgsColorRamp *colorRamp() { return mGradientRamp.get(); }
+    QgsColorRamp *colorRamp();
 
     /**
      * Sets the color ramp used for the gradient line. This is only

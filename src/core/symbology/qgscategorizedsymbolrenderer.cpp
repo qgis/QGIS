@@ -20,6 +20,7 @@
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
+#include "qgscolorrampimpl.h"
 #include "qgsgraduatedsymbolrenderer.h"
 #include "qgspointdisplacementrenderer.h"
 #include "qgsinvertedpolygonrenderer.h"

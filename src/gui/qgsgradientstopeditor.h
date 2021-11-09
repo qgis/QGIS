@@ -16,7 +16,7 @@
 #ifndef QGSGRADIENTSTOPEDITOR_H
 #define QGSGRADIENTSTOPEDITOR_H
 
-#include "qgscolorramp.h"
+#include "qgscolorrampimpl.h"
 #include "qgis_sip.h"
 #include <QWidget>
 #include "qgis_gui.h"

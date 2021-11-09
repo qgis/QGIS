@@ -45,13 +45,7 @@ class QgsPalettedRendererClassGatherer: public QThread
     Q_OBJECT
 
   public:
-    QgsPalettedRendererClassGatherer( QgsRasterLayer *layer, int bandNumber, const QgsPalettedRasterRenderer::ClassData &existingClasses, QgsColorRamp *ramp = nullptr )
-      : mLayer( layer )
-      , mBandNumber( bandNumber )
-      , mRamp( ramp )
-      , mClasses( existingClasses )
-      , mWasCanceled( false )
-    {}
+    QgsPalettedRendererClassGatherer( QgsRasterLayer *layer, int bandNumber, const QgsPalettedRasterRenderer::ClassData &existingClasses, QgsColorRamp *ramp = nullptr );
 
     void run() override;
 

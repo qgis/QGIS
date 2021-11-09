@@ -30,7 +30,7 @@
 #include <qgssymbol.h>
 #include <qgssinglesymbolrenderer.h>
 #include <qgsfillsymbollayer.h>
-#include <qgscolorramp.h>
+#include "qgscolorrampimpl.h"
 //qgis test includes
 #include "qgsrenderchecker.h"
 #include "qgsfillsymbol.h"
