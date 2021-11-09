@@ -17,23 +17,67 @@
 
 #include "qgsdbfilterproxymodel.h"
 
+#include <QStandardItemModel>
+
 QgsDatabaseFilterProxyModel::QgsDatabaseFilterProxyModel( QObject *parent ): QSortFilterProxyModel( parent )
 {
 
 }
 
-bool QgsDatabaseFilterProxyModel::filterAcceptsRow( int row, const QModelIndex &source_parent ) const
+bool QgsDatabaseFilterProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
-  //if parent is valid, we have a toplevel item that should be always shown
-  if ( !source_parent.isValid() )
+  if ( filterAcceptsRowItself( source_row, source_parent ) )
+    return true;
+
+//accept if any of the parents is accepted on it's own merits
+  QModelIndex parent = source_parent;
+  while ( parent.isValid() )
+  {
+    if ( filterAcceptsRowItself( parent.row(), parent.parent() ) )
+      return true;
+    parent = parent.parent();
+  }
+
+  //accept if any of the children is accepted on it's own merits
+  if ( hasAcceptedChildren( source_row, source_parent ) )
   {
     return true;
   }
 
-  //else we have a row that describes a table and that
-  //should be tested using the given wildcard/regexp
-  return QSortFilterProxyModel::filterAcceptsRow( row, source_parent );
+  return false;
 }
+
+bool QgsDatabaseFilterProxyModel::filterAcceptsRowItself( int source_row, const QModelIndex &source_parent ) const
+{
+  return QSortFilterProxyModel::filterAcceptsRow( source_row, source_parent );
+}
+
+bool QgsDatabaseFilterProxyModel::hasAcceptedChildren( int source_row, const QModelIndex &source_parent ) const
+{
+  QModelIndex item = sourceModel()->index( source_row, 0, source_parent );
+  if ( !item.isValid() )
+  {
+    return false;
+  }
+
+//check if there are children
+  int childCount = item.model()->rowCount( item );
+  if ( childCount == 0 )
+    return false;
+
+  for ( int i = 0; i < childCount; ++i )
+  {
+    if ( filterAcceptsRowItself( i, item ) )
+      return true;
+    if ( hasAcceptedChildren( i, item ) )
+      return true;
+  }
+
+  return false;
+}
+
+
+
 
 void QgsDatabaseFilterProxyModel::_setFilterWildcard( const QString &pattern )
 {

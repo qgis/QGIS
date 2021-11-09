@@ -49,6 +49,10 @@ class CORE_EXPORT QgsDatabaseFilterProxyModel: public QSortFilterProxyModel
 
   protected:
     bool filterAcceptsRow( int row, const QModelIndex &source_parent ) const override;
+
+  private:
+    bool filterAcceptsRowItself( int source_row, const QModelIndex &source_parent ) const;
+    bool hasAcceptedChildren( int source_row, const QModelIndex &source_parent ) const;
 };
 
 #endif
