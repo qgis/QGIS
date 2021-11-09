@@ -17,14 +17,12 @@
 #ifndef QGSPGSOURCESELECT_H
 #define QGSPGSOURCESELECT_H
 
-#include "ui_qgsdbsourceselectbase.h"
 #include "qgsguiutils.h"
 #include "qgsdatasourceuri.h"
-#include "qgsdbfilterproxymodel.h"
-#include "qgspgtablemodel.h"
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
-#include "qgsabstractdatasourcewidget.h"
+#include "qgsdbsourceselectbase.h"
+#include "qgspostgresconn.h"
 
 #include <QMap>
 #include <QPair>
@@ -36,6 +34,7 @@ class QgsGeomColumnTypeThread;
 class QgisApp;
 class QgsPgSourceSelect;
 class QgsProxyProgressTask;
+class QgsPgTableModel;
 
 class QgsPgSourceSelectDelegate : public QItemDelegate
 {
@@ -60,7 +59,7 @@ class QgsPgSourceSelectDelegate : public QItemDelegate
  * for PostGIS enabled PostgreSQL databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsPgSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDbSourceSelectBase
+class QgsPgSourceSelect : public QgsDbSourceSelectBase
 {
     Q_OBJECT
 
@@ -105,10 +104,6 @@ class QgsPgSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDbS
     void btnSave_clicked();
     //! Loads the selected connections from file
     void btnLoad_clicked();
-    void mSearchGroupBox_toggled( bool );
-    void mSearchTableEdit_textChanged( const QString &text );
-    void mSearchColumnComboBox_currentIndexChanged( const QString &text );
-    void mSearchModeComboBox_currentIndexChanged( const QString &text );
     void cmbConnections_currentIndexChanged( const QString &text );
     void setSql( const QModelIndex &index );
     //! Store the selected database
@@ -149,8 +144,7 @@ class QgsPgSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDbS
     QMap<QString, QPair<QString, QIcon> > mLayerIcons;
 
     //! Model that acts as datasource for mTableTreeWidget
-    QgsPgTableModel mTableModel;
-    QgsDatabaseFilterProxyModel mProxyModel;
+    QgsPgTableModel *mTableModel = nullptr;
 
     QPushButton *mBuildQueryButton = nullptr;
 
