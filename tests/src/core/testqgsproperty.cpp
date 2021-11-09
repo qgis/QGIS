@@ -20,7 +20,7 @@
 #include "qgspropertycollection.h"
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
-#include "qgscolorramp.h"
+#include "qgscolorrampimpl.h"
 #include "qgssymbollayerutils.h"
 #include "qgspropertytransformer.h"
 #include <QObject>

@@ -20,7 +20,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgis.h"
-#include "qgscolorramp.h"
+#include "qgscolorrampimpl.h"
 
 #include <QAbstractItemModel>
 #include <QIcon>

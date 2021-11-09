@@ -23,6 +23,7 @@
 #include "qgsbrightnesscontrastfilter.h"
 #include "qgscontrastenhancement.h"
 #include "qgscoordinatetransform.h"
+#include "qgscolorrampimpl.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"

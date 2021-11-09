@@ -22,7 +22,7 @@
 #include "qgsdatadefinedsizelegendwidget.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
-#include "qgscolorramp.h"
+#include "qgscolorrampimpl.h"
 #include "qgscolorrampbutton.h"
 #include "qgsstyle.h"
 #include "qgslogger.h"

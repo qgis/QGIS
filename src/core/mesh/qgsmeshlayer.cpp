@@ -21,7 +21,7 @@
 #include <QUuid>
 #include <QUrl>
 
-#include "qgscolorramp.h"
+#include "qgscolorrampimpl.h"
 #include "qgslogger.h"
 #include "qgsmaplayerlegend.h"
 #include "qgsmaplayerfactory.h"

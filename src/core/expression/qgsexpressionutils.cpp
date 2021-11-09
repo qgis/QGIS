@@ -16,6 +16,7 @@
 #include "qgsexpressionutils.h"
 #include "qgsexpressionnode.h"
 #include "qgsvectorlayer.h"
+#include "qgscolorrampimpl.h"
 
 ///@cond PRIVATE
 
@@ -36,6 +37,18 @@ QgsExpressionUtils::TVL QgsExpressionUtils::OR[3][3] =
 QgsExpressionUtils::TVL QgsExpressionUtils::NOT[3] = { True, False, Unknown };
 
 ///@endcond
+
+QgsGradientColorRamp QgsExpressionUtils::getRamp( const QVariant &value, QgsExpression *parent, bool report_error )
+{
+  if ( value.canConvert<QgsGradientColorRamp>() )
+    return value.value<QgsGradientColorRamp>();
+
+  // If we get here then we can't convert so we just error and return invalid.
+  if ( report_error )
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to gradient ramp" ).arg( value.toString() ) );
+
+  return QgsGradientColorRamp();
+}
 
 std::tuple<QVariant::Type, int> QgsExpressionUtils::determineResultType( const QString &expression, const QgsVectorLayer *layer, QgsFeatureRequest request, QgsExpressionContext context, bool *foundFeatures )
 {

@@ -21,6 +21,7 @@
 #include "qgsproperty.h"
 #include <QVariantMap>
 #include <memory>
+#include <QImage>
 
 class QgsVectorTileRenderer;
 class QgsVectorTileLabeling;

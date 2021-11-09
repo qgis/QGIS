@@ -89,6 +89,7 @@
 #include "qgsjsonutils.h"
 #include "qgsjsoneditwidget.h"
 #include "qgspointcloudlayer.h"
+#include "qgscolorrampimpl.h"
 
 #include <nlohmann/json.hpp>
 
