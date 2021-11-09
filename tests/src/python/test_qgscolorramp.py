@@ -191,7 +191,7 @@ class PyQgsColorRamp(unittest.TestCase):
         self.assertAlmostEqual(r.color(0.5).lightnessF(), 0.1, 3)
         self.assertAlmostEqual(r.color(0.5).alphaF(), 0.9, 3)
         self.assertEqual(r.color(0.5).red(), 22)
-        self.assertEqual(r.color(0.5).green(), 31)
+        self.assertAlmostEqual(r.color(0.5).green(), 31, -1)
         self.assertEqual(r.color(0.5).blue(), 20)
         self.assertEqual(r.color(0.7).red(), 41)
         self.assertEqual(r.color(0.7).green(), 65)
