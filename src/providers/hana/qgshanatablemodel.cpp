@@ -22,19 +22,50 @@
 #include "qgshanautils.h"
 #include "qgslogger.h"
 
-QgsHanaTableModel::QgsHanaTableModel()
+QgsHanaTableModel::QgsHanaTableModel( QObject *parent )
+  : QgsAbstractDbTableModel( parent )
+
 {
-  QStringList headerLabels;
-  headerLabels << tr( "Schema" );
-  headerLabels << tr( "Table" );
-  headerLabels << tr( "Comment" );
-  headerLabels << tr( "Column" );
-  headerLabels << tr( "Type" );
-  headerLabels << tr( "SRID" );
-  headerLabels << tr( "Feature id" );
-  headerLabels << tr( "Select at id" );
-  headerLabels << tr( "Sql" );
-  setHorizontalHeaderLabels( headerLabels );
+  mColumns << tr( "Schema" )
+           << tr( "Table" )
+           << tr( "Comment" )
+           << tr( "Column" )
+           << tr( "Type" )
+           << tr( "SRID" )
+           << tr( "Feature id" )
+           << tr( "Select at id" )
+           << tr( "Sql" );
+  setHorizontalHeaderLabels( mColumns );
+}
+
+QStringList QgsHanaTableModel::columns() const
+{
+  return mColumns;
+}
+
+int QgsHanaTableModel::defaultSearchColumn() const
+{
+  return static_cast<int>( DbtmTable );
+}
+
+bool QgsHanaTableModel::searchableColumn( int column ) const
+{
+  Columns col = static_cast<Columns>( column );
+  switch ( col )
+  {
+    case DbtmSchema:
+    case DbtmTable:
+    case DbtmComment:
+    case DbtmGeomCol:
+    case DbtmSrid:
+    case DbtmSql:
+      return true;
+
+    case DbtmGeomType:
+    case DbtmPkCol:
+    case DbtmSelectAtId:
+      return false;
+  }
 }
 
 void QgsHanaTableModel::addTableEntry( const QString &connName, const QgsHanaLayerProperty &layerProperty )
@@ -267,7 +298,7 @@ bool QgsHanaTableModel::setData( const QModelIndex &idx, const QVariant &value, 
         tip = tr( "Select columns in the '%1' column that uniquely identify features of this layer" ).arg( tr( "Feature id" ) );
     }
 
-    for ( int i = 0; i < DbtmColumns; i++ )
+    for ( int i = 0; i < columnCount(); i++ )
     {
       QStandardItem *item = itemFromIndex( idx.sibling( idx.row(), i ) );
       if ( tip.isEmpty() )
