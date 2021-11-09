@@ -106,23 +106,19 @@ bool QgsExportToPostgresqlAlgorithm::prepareAlgorithm( const QVariantMap &parame
   mEncoding = parameterAsString( parameters, QStringLiteral( "ENCODING" ), context );
   mOverwrite = parameterAsBoolean( parameters, QStringLiteral( "OVERWRITE" ), context );
 
-  mTable = parameterAsDatabaseTableName( parameters, QStringLiteral( "TABLENAME" ), context );
+  mTable = parameterAsDatabaseTableName( parameters, QStringLiteral( "TABLENAME" ), context ).trimmed();
   if ( !mTable.isEmpty() )
   {
-    mTable = mTable.trimmed();
-  }
-  else
-  {
     mTable = mSource->sourceName();
-    mTable = mTable.replace( QStringLiteral( "." ), QStringLiteral( "_" ) );
+    mTable = mTable.replace( '.', '_' );
   }
-  mTable = mTable.replace( QStringLiteral( " " ), QString() ).right( 63 );
+  mTable = mTable.replace( ' ', QString() ).right( 63 );
 
   mGeomColumn = parameterAsString( parameters, QStringLiteral( "GEOMETRY_COLUMN" ), context );
-  if ( mTable.isEmpty() )
+  if ( mGeomColumn.isEmpty() )
     mGeomColumn = QStringLiteral( "geom" );
   if ( mSource->wkbType() == QgsWkbTypes::NoGeometry )
-    mGeomColumn = QString(); //port note: equivalent to initializing with python None
+    mGeomColumn.clear();
 
   mCreateIndex = parameterAsBoolean( parameters, QStringLiteral( "CREATEINDEX" ), context );
 
@@ -130,6 +126,7 @@ bool QgsExportToPostgresqlAlgorithm::prepareAlgorithm( const QVariantMap &parame
     mOptions[QStringLiteral( "overwrite" )] = true;
   if ( parameterAsBoolean( parameters, QStringLiteral( "LOWERCASE_NAMES" ), context ) )
     mOptions[QStringLiteral( "lowercaseFieldNames" )] = true;
+    mGeomColumn = mGeomColumn.toLower();
   if ( parameterAsBoolean( parameters, QStringLiteral( "DROP_STRING_LENGTH" ), context ) )
     mOptions[QStringLiteral( "dropStringConstraints" )] = true;
   if ( parameterAsBoolean( parameters, QStringLiteral( "FORCE_SINGLEPART" ), context ) )
@@ -151,14 +148,14 @@ QVariantMap QgsExportToPostgresqlAlgorithm::processAlgorithm( const QVariantMap 
   uri.setKeyColumn( mPrimaryKeyField );
   uri.setGeometryColumn( mGeomColumn );
 
-  mExporter.reset( new QgsVectorLayerExporter( uri.uri(), mProviderName, mSource->fields(), mSource->wkbType(), mSource->sourceCrs(), mOverwrite, mOptions ) );
+  std::unique_ptr< QgsVectorLayerExporter > exporter = std::make_unique< QgsVectorLayerExporter >( uri.uri(), mProviderName, mSource->fields(), mSource->wkbType(), mSource->sourceCrs(), mOverwrite, mOptions );
 
-  if ( mExporter->errorCode() != Qgis::VectorExportResult::Success )
-    throw QgsProcessingException( QObject::tr( "Error importing into PostGIS\n%1" ).arg( mExporter->errorMessage() ) );
+  if ( exporter->errorCode() != Qgis::VectorExportResult::Success )
+    throw QgsProcessingException( QObject::tr( "Error exporting to PostGIS\n%1" ).arg( exporter->errorMessage() ) );
 
   QgsFeatureIterator featureIterator = mSource->getFeatures();
 
-  double total = ( mSource->featureCount() ) ? 100.0 / mSource->featureCount() : 0.0;
+  const double progressStep = ( mSource->featureCount() ) ? 100.0 / mSource->featureCount() : 0.0;
 
   qgssize i = 0;
   QgsFeature f;
@@ -167,16 +164,18 @@ QVariantMap QgsExportToPostgresqlAlgorithm::processAlgorithm( const QVariantMap 
     if ( feedback->isCanceled() )
       break;
 
-    if ( !mExporter->addFeature( f, QgsFeatureSink::FastInsert ) )
-      feedback->reportError( mExporter->errorMessage() );
+    if ( !exporter->addFeature( f, QgsFeatureSink::FastInsert ) )
+      feedback->reportError( exporter->errorMessage() );
 
-    feedback->setProgress( i * total );
+    feedback->setProgress( i * progressStep );
     i++;
   }
-  mExporter->flushBuffer();
+  exporter->flushBuffer();
 
-  if ( mExporter->errorCode() != Qgis::VectorExportResult::Success )
-    throw QgsProcessingException( QObject::tr( "Error importing into PostGIS\n%1" ).arg( mExporter->errorMessage() ) );
+  if ( exporter->errorCode() != Qgis::VectorExportResult::Success )
+    throw QgsProcessingException( QObject::tr( "Error exporting to PostGIS\n%1" ).arg( exporter->errorMessage() ) );
+
+  exporter.reset();
 
   if ( !mGeomColumn.isEmpty() && mCreateIndex )
   {

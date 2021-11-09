@@ -64,7 +64,6 @@ class QgsExportToPostgresqlAlgorithm : public QgsProcessingAlgorithm
     bool mCreateIndex = true;
     bool mOverwrite = true;
     QMap< QString, QVariant > mOptions;
-    std::unique_ptr<QgsVectorLayerExporter> mExporter;
 
 };
 
