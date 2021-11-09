@@ -17,13 +17,13 @@
 #ifndef QGSMSSQLSOURCESELECT_H
 #define QGSMSSQLSOURCESELECT_H
 
-#include "ui_qgsdbsourceselectbase.h"
 #include "qgsguiutils.h"
-#include "qgsdbfilterproxymodel.h"
-#include "qgsmssqltablemodel.h"
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
 #include "qgsabstractdatasourcewidget.h"
+#include "qgsdbsourceselectbase.h"
+#include "qgsmssqltablemodel.h"
+
 
 #include <QMap>
 #include <QPair>
@@ -58,7 +58,7 @@ class QgsMssqlSourceSelectDelegate : public QItemDelegate
  * for MSSQL databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsMssqlSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDbSourceSelectBase
+class QgsMssqlSourceSelect : public QgsDbSourceSelectBase
 {
     Q_OBJECT
 
@@ -108,10 +108,6 @@ class QgsMssqlSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qgs
     void btnSave_clicked();
     //! Loads the selected connections from file
     void btnLoad_clicked();
-    void mSearchGroupBox_toggled( bool );
-    void mSearchTableEdit_textChanged( const QString &text );
-    void mSearchColumnComboBox_currentIndexChanged( const QString &text );
-    void mSearchModeComboBox_currentIndexChanged( const QString &text );
     void setSql( const QModelIndex &index );
     //! Store the selected database
     void cmbConnections_activated( int );
@@ -149,8 +145,7 @@ class QgsMssqlSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qgs
     QMap<QString, QPair<QString, QIcon> > mLayerIcons;
 
     //! Model that acts as datasource for mTableTreeWidget
-    QgsMssqlTableModel mTableModel;
-    QgsDatabaseFilterProxyModel mProxyModel;
+    QgsMssqlTableModel *mTableModel = nullptr;
 
     QPushButton *mBuildQueryButton = nullptr;
 
