@@ -33,6 +33,7 @@ email                : jef at norbit dot de
 #include "qgsgui.h"
 #include "qgsiconutils.h"
 #include "qgsoracletablemodel.h"
+#include "qgsdbfilterproxymodel.h"
 
 
 #include <QFileDialog>
@@ -172,7 +173,7 @@ void QgsOracleSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItem
 }
 
 QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
-  : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
+  : QgsDbSourceSelectBase( parent, fl, theWidgetMode )
 {
   QgsGui::instance()->enableAutoGeometryRestore( this );
   setupButtons( buttonBox );

@@ -20,6 +20,7 @@
 #include "qgsiconutils.h"
 
 QgsSpatiaLiteTableModel::QgsSpatiaLiteTableModel( QObject *parent )
+  : QgsAbstractDbTableModel( parent )
 {
   mColumns << tr( "Table" )
            << tr( "Type" )

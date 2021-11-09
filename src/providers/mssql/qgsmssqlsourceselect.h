@@ -20,7 +20,6 @@
 #include "qgsguiutils.h"
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
-#include "qgsabstractdatasourcewidget.h"
 #include "qgsdbsourceselectbase.h"
 #include "qgsmssqltablemodel.h"
 

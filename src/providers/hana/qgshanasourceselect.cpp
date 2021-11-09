@@ -29,6 +29,8 @@
 #include "qgsquerybuilder.h"
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
+#include "qgsdbfilterproxymodel.h"
+
 
 #include <QComboBox>
 #include <QFileDialog>
@@ -198,9 +200,8 @@ QgsHanaSourceSelect::QgsHanaSourceSelect(
   QWidget *parent,
   Qt::WindowFlags fl,
   QgsProviderRegistry::WidgetMode theWidgetMode )
-  : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
+  : QgsDbSourceSelectBase( parent, fl, theWidgetMode )
 {
-  setupUi( this );
   QgsGui::instance()->enableAutoGeometryRestore( this );
 
   connect( btnConnect, &QPushButton::clicked, this, &QgsHanaSourceSelect::btnConnect_clicked );
@@ -249,10 +250,6 @@ QgsHanaSourceSelect::QgsHanaSourceSelect(
   mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "qgis/addHanaDC" ), false ).toBool() ?
                                      QAbstractItemView::ExtendedSelection : QAbstractItemView::MultiSelection );
 
-  //for Qt < 4.3.2, passing -1 to include all model columns
-  //in search does not seem to work
-  mSearchColumnComboBox->setCurrentIndex( 2 );
-
   restoreGeometry( settings.value( QStringLiteral( "Windows/HanaSourceSelect/geometry" ) ).toByteArray() );
   mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "Windows/HanaSourceSelect/HoldDialogOpen" ), false ).toBool() );
 
@@ -261,16 +258,6 @@ QgsHanaSourceSelect::QgsHanaSourceSelect(
     mTablesTreeView->setColumnWidth( i, settings.value( QStringLiteral( "Windows/HanaSourceSelect/columnWidths/%1" )
                                      .arg( i ), mTablesTreeView->columnWidth( i ) ).toInt() );
   }
-
-  //hide the search options by default
-  //they will be shown when the user ticks
-  //the search options group box
-  mSearchLabel->setVisible( false );
-  mSearchColumnComboBox->setVisible( false );
-  mSearchColumnsLabel->setVisible( false );
-  mSearchModeComboBox->setVisible( false );
-  mSearchModeLabel->setVisible( false );
-  mSearchTableEdit->setVisible( false );
 
   cbxAllowGeometrylessTables->setDisabled( true );
 }
@@ -437,7 +424,7 @@ void QgsHanaSourceSelect::addButtonClicked()
     if ( idx.column() != QgsHanaTableModel::DbtmTable )
       continue;
 
-    const QString uri = mTableModel->layerURI( mProxyModel->mapToSource( idx ), mConnectionName, mConnectionInfo );
+    const QString uri = mTableModel->layerURI( proxyModel()->mapToSource( idx ), mConnectionName, mConnectionInfo );
     if ( uri.isNull() )
       continue;
 
@@ -546,7 +533,7 @@ void QgsHanaSourceSelect::setSql( const QModelIndex &index )
     return;
   }
 
-  const QModelIndex idx = mProxyModel->mapToSource( index );
+  const QModelIndex idx = proxyModel()->mapToSource( index );
   const QString uri = mTableModel->layerURI( idx, mConnectionName, mConnectionInfo );
   if ( uri.isNull() )
   {
@@ -562,7 +549,7 @@ void QgsHanaSourceSelect::setSql( const QModelIndex &index )
 
   QgsQueryBuilder gb( &vlayer, this );
   if ( gb.exec() )
-    mTableModel->setSql( mProxyModel->mapToSource( index ), gb.sql() );
+    mTableModel->setSql( proxyModel()->mapToSource( index ), gb.sql() );
 }
 
 QString QgsHanaSourceSelect::fullDescription(
