@@ -2916,13 +2916,13 @@ void TestQgsLineString::orientation()
                 << QgsPoint( 0, 1 ) << QgsPoint( 1, 1 )
                 << QgsPoint( 1, 0 ) << QgsPoint( 0, 0 ) );
 
-  QCOMPARE( ls.orientation(), QgsCurve::Clockwise );
+  QCOMPARE( ls.orientation(), Qgis::AngularDirection::Clockwise );
 
   ls.setPoints( QgsPointSequence() << QgsPoint( 0, 0 )
                 << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 )
                 << QgsPoint( 0, 1 ) << QgsPoint( 0, 0 ) );
 
-  QCOMPARE( ls.orientation(), QgsCurve::CounterClockwise );
+  QCOMPARE( ls.orientation(), Qgis::AngularDirection::CounterClockwise );
 }
 
 void TestQgsLineString::boundingBoxIntersects()
