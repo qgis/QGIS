@@ -659,10 +659,11 @@ class CORE_EXPORT QgsExpression
      *  value. The value may be null.
      * \param fieldName the name of the field
      * \param value the value of the field
+     * \param fieldType the type of the field on the left side used to quote the value. If not given, the value type is used instead
      * \returns the expression to evaluate field equality
      * \since QGIS 3.0
      */
-    static QString createFieldEqualityExpression( const QString &fieldName, const QVariant &value );
+    static QString createFieldEqualityExpression( const QString &fieldName, const QVariant &value, QVariant::Type fieldType = QVariant::Type::Invalid );
 
     /**
      * Returns TRUE if the given \a expression is a simple "field=value" type expression.

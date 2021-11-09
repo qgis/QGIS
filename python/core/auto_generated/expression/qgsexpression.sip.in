@@ -673,13 +673,14 @@ length, and presents text representations of non numeric/text types (e.g., geome
 .. versionadded:: 2.14
 %End
 
-    static QString createFieldEqualityExpression( const QString &fieldName, const QVariant &value );
+    static QString createFieldEqualityExpression( const QString &fieldName, const QVariant &value, QVariant::Type fieldType = QVariant::Type::Invalid );
 %Docstring
 Create an expression allowing to evaluate if a field is equal to a
 value. The value may be null.
 
 :param fieldName: the name of the field
 :param value: the value of the field
+:param fieldType: the type of the field on the left side used to quote the value. If not given, the value type is used instead
 
 :return: the expression to evaluate field equality
 
