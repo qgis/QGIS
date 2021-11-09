@@ -18,10 +18,11 @@
 #ifndef QGSDB2TABLEMODEL_H
 #define QGSDB2TABLEMODEL_H
 
-#include <QStandardItemModel>
 #include <QString>
 #include <QObject>
 #include "qgswkbtypes.h"
+#include "qgsabstractdbtablemodel.h"
+
 
 //! Layer Property structure
 struct QgsDb2LayerProperty
@@ -47,11 +48,15 @@ class QIcon;
  *
  * The tables have the following columns: Type, Schema, Tablename, Geometry Column, Sql
 */
-class QgsDb2TableModel : public QStandardItemModel
+class QgsDb2TableModel : public QgsAbstractDbTableModel
 {
     Q_OBJECT
   public:
-    QgsDb2TableModel();
+    QgsDb2TableModel( QObject *parent = nullptr );
+
+    QStringList columns() const override;
+    int defaultSearchColumn() const override;
+    bool searchableColumn( int column ) const override;
 
     //! Adds entry for one database table to the model
     void addTableEntry( const QgsDb2LayerProperty &property );
@@ -78,7 +83,6 @@ class QgsDb2TableModel : public QStandardItemModel
       DbtmPkCol,
       DbtmSelectAtId,
       DbtmSql,
-      DbtmColumns
     };
 
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
@@ -90,5 +94,6 @@ class QgsDb2TableModel : public QStandardItemModel
   private:
     //! Number of tables in the model
     int mTableCount = 0;
+    QStringList mColumns;
 };
 #endif
