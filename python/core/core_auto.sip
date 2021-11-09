@@ -528,6 +528,7 @@
 %Include auto_generated/project/qgsprojectutils.sip
 %Include auto_generated/project/qgsprojectversion.sip
 %Include auto_generated/project/qgsprojectviewsettings.sip
+%Include auto_generated/providers/qgsabstractdbtablemodel.sip
 %Include auto_generated/providers/qgsabstractdatabaseproviderconnection.sip
 %Include auto_generated/providers/qgsabstractproviderconnection.sip
 %Include auto_generated/providers/qgsdataprovider.sip

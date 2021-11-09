@@ -1,0 +1,49 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/providers/qgsdbsourceselectbase.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsDbSourceSelectBase : QgsAbstractDataSourceWidget, protected Ui::QgsDbSourceSelectBase
+{
+%Docstring(signature="appended")
+The :py:class:`QgsDbSourceSelectBase` class is a base class for database source widget selector
+
+.. versionadded:: 3.24
+%End
+
+%TypeHeaderCode
+#include "qgsdbsourceselectbase.h"
+%End
+  public:
+    QgsDbSourceSelectBase( QWidget *parent = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+%Docstring
+Constructor
+%End
+
+  protected:
+    void setSourceModel( QgsAbstractDbTableModel *model );
+%Docstring
+Sets the source model for the widget
+%End
+
+    QgsDatabaseFilterProxyModel *proxyModel();
+%Docstring
+Returns the proxy model used to filter the results
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/providers/qgsdbsourceselectbase.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
