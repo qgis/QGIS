@@ -63,30 +63,37 @@ static QColor _interpolateHsv( const QColor &c1, const QColor &c2, const double 
   qreal hue1 = c1.hsvHueF();
   qreal hue2 = c2.hsvHueF();
   qreal hue;
-  switch ( direction )
+  if ( hue1 == -1 )
+    hue = hue2;
+  else if ( hue2 == -1 )
+    hue = hue1;
+  else
   {
-    case Qgis::AngularDirection::Clockwise:
+    switch ( direction )
     {
-      if ( hue1 < hue2 )
-        hue1 += 1;
+      case Qgis::AngularDirection::Clockwise:
+      {
+        if ( hue1 < hue2 )
+          hue1 += 1;
 
-      hue = hue1 - value * ( hue1 - hue2 );
-      if ( hue < 0 )
-        hue += 1;
-      if ( hue > 1 )
-        hue -= 1;
-      break;
-    }
+        hue = hue1 - value * ( hue1 - hue2 );
+        if ( hue < 0 )
+          hue += 1;
+        if ( hue > 1 )
+          hue -= 1;
+        break;
+      }
 
-    case Qgis::AngularDirection::CounterClockwise:
-    {
-      if ( hue2 < hue1 )
-        hue2 += 1;
+      case Qgis::AngularDirection::CounterClockwise:
+      {
+        if ( hue2 < hue1 )
+          hue2 += 1;
 
-      hue = hue1 + value * ( hue2 - hue1 );
-      if ( hue > 1 )
-        hue -= 1;
-      break;
+        hue = hue1 + value * ( hue2 - hue1 );
+        if ( hue > 1 )
+          hue -= 1;
+        break;
+      }
     }
   }
 
@@ -113,30 +120,37 @@ static QColor _interpolateHsl( const QColor &c1, const QColor &c2, const double 
   qreal hue1 = c1.hslHueF();
   qreal hue2 = c2.hslHueF();
   qreal hue;
-  switch ( direction )
+  if ( hue1 == -1 )
+    hue = hue2;
+  else if ( hue2 == -1 )
+    hue = hue1;
+  else
   {
-    case Qgis::AngularDirection::Clockwise:
+    switch ( direction )
     {
-      if ( hue1 < hue2 )
-        hue1 += 1;
+      case Qgis::AngularDirection::Clockwise:
+      {
+        if ( hue1 < hue2 )
+          hue1 += 1;
 
-      hue = hue1 - value * ( hue1 - hue2 );
-      if ( hue < 0 )
-        hue += 1;
-      if ( hue > 1 )
-        hue -= 1;
-      break;
-    }
+        hue = hue1 - value * ( hue1 - hue2 );
+        if ( hue < 0 )
+          hue += 1;
+        if ( hue > 1 )
+          hue -= 1;
+        break;
+      }
 
-    case Qgis::AngularDirection::CounterClockwise:
-    {
-      if ( hue2 < hue1 )
-        hue2 += 1;
+      case Qgis::AngularDirection::CounterClockwise:
+      {
+        if ( hue2 < hue1 )
+          hue2 += 1;
 
-      hue = hue1 + value * ( hue2 - hue1 );
-      if ( hue > 1 )
-        hue -= 1;
-      break;
+        hue = hue1 + value * ( hue2 - hue1 );
+        if ( hue > 1 )
+          hue -= 1;
+        break;
+      }
     }
   }
 
