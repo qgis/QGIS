@@ -30,19 +30,162 @@
 
 //////////////
 
-static QColor _interpolate( const QColor &c1, const QColor &c2, const double value )
+
+static QColor _interpolateRgb( const QColor &c1, const QColor &c2, const double value, const Qgis::AngularDirection )
 {
-  if ( std::isnan( value ) ) return c2;
+  if ( std::isnan( value ) )
+    return c2;
 
-  qreal r = ( c1.redF() + value * ( c2.redF() - c1.redF() ) );
-  qreal g = ( c1.greenF() + value * ( c2.greenF() - c1.greenF() ) );
-  qreal b = ( c1.blueF() + value * ( c2.blueF() - c1.blueF() ) );
-  qreal a = ( c1.alphaF() + value * ( c2.alphaF() - c1.alphaF() ) );
+  const qreal red1 = c1.redF();
+  const qreal red2 = c2.redF();
+  const qreal red = ( red1 + value * ( red2 - red1 ) );
 
-  return QColor::fromRgbF( r, g, b, a );
+  const qreal green1 = c1.greenF();
+  const qreal green2 = c2.greenF();
+  const qreal green = ( green1 + value * ( green2 - green1 ) );
+
+  const qreal blue1 = c1.blueF();
+  const qreal blue2 = c2.blueF();
+  const qreal blue = ( blue1 + value * ( blue2 - blue1 ) );
+
+  const qreal alpha1 = c1.alphaF();
+  const qreal alpha2 = c2.alphaF();
+  const qreal alpha = ( alpha1 + value * ( alpha2 - alpha1 ) );
+
+  return QColor::fromRgbF( red, green, blue, alpha );
+}
+
+static QColor _interpolateHsv( const QColor &c1, const QColor &c2, const double value, const Qgis::AngularDirection direction )
+{
+  if ( std::isnan( value ) )
+    return c2;
+
+  qreal hue1 = c1.hsvHueF();
+  qreal hue2 = c2.hsvHueF();
+  qreal hue;
+  switch ( direction )
+  {
+    case Qgis::AngularDirection::Clockwise:
+    {
+      if ( hue1 < hue2 )
+        hue1 += 1;
+
+      hue = hue1 - value * ( hue1 - hue2 );
+      if ( hue < 0 )
+        hue += 1;
+      if ( hue > 1 )
+        hue -= 1;
+      break;
+    }
+
+    case Qgis::AngularDirection::CounterClockwise:
+    {
+      if ( hue2 < hue1 )
+        hue2 += 1;
+
+      hue = hue1 + value * ( hue2 - hue1 );
+      if ( hue > 1 )
+        hue -= 1;
+      break;
+    }
+  }
+
+  const qreal saturation1 = c1.hsvSaturationF();
+  const qreal saturation2 = c2.hsvSaturationF();
+  const qreal saturation = ( saturation1 + value * ( saturation2 - saturation1 ) );
+
+  const qreal value1 = c1.valueF();
+  const qreal value2 = c2.valueF();
+  const qreal valueOut = ( value1 + value * ( value2 - value1 ) );
+
+  const qreal alpha1 = c1.alphaF();
+  const qreal alpha2 = c2.alphaF();
+  const qreal alpha = ( alpha1 + value * ( alpha2 - alpha1 ) );
+
+  return QColor::fromHsvF( hue > 1 ? hue - 1 : hue, saturation, valueOut, alpha );
+}
+
+static QColor _interpolateHsl( const QColor &c1, const QColor &c2, const double value, const Qgis::AngularDirection direction )
+{
+  if ( std::isnan( value ) )
+    return c2;
+
+  qreal hue1 = c1.hslHueF();
+  qreal hue2 = c2.hslHueF();
+  qreal hue;
+  switch ( direction )
+  {
+    case Qgis::AngularDirection::Clockwise:
+    {
+      if ( hue1 < hue2 )
+        hue1 += 1;
+
+      hue = hue1 - value * ( hue1 - hue2 );
+      if ( hue < 0 )
+        hue += 1;
+      if ( hue > 1 )
+        hue -= 1;
+      break;
+    }
+
+    case Qgis::AngularDirection::CounterClockwise:
+    {
+      if ( hue2 < hue1 )
+        hue2 += 1;
+
+      hue = hue1 + value * ( hue2 - hue1 );
+      if ( hue > 1 )
+        hue -= 1;
+      break;
+    }
+  }
+
+  const qreal saturation1 = c1.hslSaturationF();
+  const qreal saturation2 = c2.hslSaturationF();
+  const qreal saturation = ( saturation1 + value * ( saturation2 - saturation1 ) );
+
+  const qreal lightness1 = c1.lightnessF();
+  const qreal lightness2 = c2.lightnessF();
+  const qreal lightness = ( lightness1 + value * ( lightness2 - lightness1 ) );
+
+  const qreal alpha1 = c1.alphaF();
+  const qreal alpha2 = c2.alphaF();
+  const qreal alpha = ( alpha1 + value * ( alpha2 - alpha1 ) );
+
+  return QColor::fromHslF( hue > 1 ? hue - 1 : hue, saturation, lightness, alpha );
 }
 
 //////////////
+
+
+QgsGradientStop::QgsGradientStop( double offset, const QColor &color )
+  : offset( offset )
+  , color( color )
+  , mFunc( _interpolateRgb )
+{
+
+}
+
+void QgsGradientStop::setColorSpec( QColor::Spec spec )
+{
+  mColorSpec = spec;
+
+  switch ( mColorSpec )
+  {
+    case QColor::Rgb:
+    case QColor::Invalid:
+    case QColor::ExtendedRgb:
+    case QColor::Cmyk:
+      mFunc = _interpolateRgb;
+      break;
+    case QColor::Hsv:
+      mFunc = _interpolateHsv;
+      break;
+    case QColor::Hsl:
+      mFunc = _interpolateHsl;
+      break;
+  }
+}
 
 QgsGradientColorRamp::QgsGradientColorRamp( const QColor &color1, const QColor &color2,
     bool discrete, const QgsGradientStopsList &stops )
@@ -50,6 +193,7 @@ QgsGradientColorRamp::QgsGradientColorRamp( const QColor &color1, const QColor &
   , mColor2( color2 )
   , mDiscrete( discrete )
   , mStops( stops )
+  , mFunc( _interpolateRgb )
 {
 }
 
@@ -67,19 +211,30 @@ QgsColorRamp *QgsGradientColorRamp::create( const QVariantMap &props )
   QgsGradientStopsList stops;
   if ( props.contains( QStringLiteral( "stops" ) ) )
   {
-    const auto constSplit = props["stops"].toString().split( ':' );
+    const auto constSplit = props[QStringLiteral( "stops" )].toString().split( ':' );
     for ( const QString &stop : constSplit )
     {
-      int i = stop.indexOf( ';' );
-      if ( i == -1 )
+      const QStringList parts = stop.split( ';' );
+      if ( parts.size() != 2 && parts.size() != 4 )
         continue;
 
-      QColor c = QgsSymbolLayerUtils::decodeColor( stop.mid( i + 1 ) );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
-      stops.append( QgsGradientStop( stop.leftRef( i ).toDouble(), c ) );
-#else
-      stops.append( QgsGradientStop( QStringView {stop}.left( i ).toDouble(), c ) );
-#endif
+      QColor c = QgsSymbolLayerUtils::decodeColor( parts.at( 1 ) );
+      stops.append( QgsGradientStop( parts.at( 0 ).toDouble(), c ) );
+
+      if ( parts.size() == 4 )
+      {
+        if ( parts.at( 2 ).compare( QLatin1String( "rgb" ) ) == 0 )
+          stops.last().setColorSpec( QColor::Spec::Rgb );
+        else if ( parts.at( 2 ).compare( QLatin1String( "hsv" ) ) == 0 )
+          stops.last().setColorSpec( QColor::Spec::Hsv );
+        else if ( parts.at( 2 ).compare( QLatin1String( "hsl" ) ) == 0 )
+          stops.last().setColorSpec( QColor::Spec::Hsl );
+
+        if ( parts.at( 3 ).compare( QLatin1String( "cw" ) ) == 0 )
+          stops.last().setDirection( Qgis::AngularDirection::Clockwise );
+        else if ( parts.at( 3 ).compare( QLatin1String( "ccw" ) ) == 0 )
+          stops.last().setDirection( Qgis::AngularDirection::CounterClockwise );
+      }
     }
   }
 
@@ -102,6 +257,27 @@ QgsColorRamp *QgsGradientColorRamp::create( const QVariantMap &props )
 
   QgsGradientColorRamp *r = new QgsGradientColorRamp( color1, color2, discrete, stops );
   r->setInfo( info );
+
+  if ( props.contains( QStringLiteral( "spec" ) ) )
+  {
+    const QString spec = props.value( QStringLiteral( "spec" ) ).toString().trimmed();
+    if ( spec.compare( QLatin1String( "rgb" ) ) == 0 )
+      r->setColorSpec( QColor::Spec::Rgb );
+    else if ( spec.compare( QLatin1String( "hsv" ) ) == 0 )
+      r->setColorSpec( QColor::Spec::Hsv );
+    else if ( spec.compare( QLatin1String( "hsl" ) ) == 0 )
+      r->setColorSpec( QColor::Spec::Hsl );
+  }
+
+  if ( props.contains( QStringLiteral( "direction" ) ) )
+  {
+    const QString direction = props.value( QStringLiteral( "direction" ) ).toString().trimmed();
+    if ( direction.compare( QLatin1String( "ccw" ) ) == 0 )
+      r->setDirection( Qgis::AngularDirection::CounterClockwise );
+    else if ( direction.compare( QLatin1String( "cw" ) ) == 0 )
+      r->setDirection( Qgis::AngularDirection::Clockwise );
+  }
+
   return r;
 }
 
@@ -136,7 +312,7 @@ QColor QgsGradientColorRamp::color( double value ) const
     if ( mDiscrete )
       return mColor1;
 
-    return _interpolate( mColor1, mColor2, value );
+    return mFunc( mColor1, mColor2, value, mDirection );
   }
   else
   {
@@ -152,7 +328,7 @@ QColor QgsGradientColorRamp::color( double value ) const
         upper = it->offset;
         c2 = it->color;
 
-        return qgsDoubleNear( upper, lower ) ? c1 : _interpolate( c1, c2, ( value - lower ) / ( upper - lower ) );
+        return qgsDoubleNear( upper, lower ) ? c1 : it->mFunc( c1, c2, ( value - lower ) / ( upper - lower ), it->mDirection );
       }
       lower = it->offset;
       c1 = it->color;
@@ -163,7 +339,7 @@ QColor QgsGradientColorRamp::color( double value ) const
 
     upper = 1;
     c2 = mColor2;
-    return qgsDoubleNear( upper, lower ) ? c1 : _interpolate( c1, c2, ( value - lower ) / ( upper - lower ) );
+    return qgsDoubleNear( upper, lower ) ? c1 : mFunc( c1, c2, ( value - lower ) / ( upper - lower ), mDirection );
   }
 }
 
@@ -204,6 +380,8 @@ QgsGradientColorRamp *QgsGradientColorRamp::clone() const
   QgsGradientColorRamp *r = new QgsGradientColorRamp( mColor1, mColor2,
       mDiscrete, mStops );
   r->setInfo( mInfo );
+  r->setColorSpec( mColorSpec );
+  r->setDirection( mDirection );
   return r;
 }
 
@@ -215,9 +393,14 @@ QVariantMap QgsGradientColorRamp::properties() const
   if ( !mStops.isEmpty() )
   {
     QStringList lst;
-    for ( QgsGradientStopsList::const_iterator it = mStops.begin(); it != mStops.end(); ++it )
+    lst.reserve( mStops.size() );
+    for ( const QgsGradientStop &stop : mStops )
     {
-      lst.append( QStringLiteral( "%1;%2" ).arg( it->offset ).arg( QgsSymbolLayerUtils::encodeColor( it->color ) ) );
+      lst.append( QStringLiteral( "%1;%2;%3;%4" ).arg( stop.offset ).arg( QgsSymbolLayerUtils::encodeColor( stop.color ),
+                  stop.colorSpec() == QColor::Rgb ? QStringLiteral( "rgb" )
+                  : stop.colorSpec() == QColor::Hsv ? QStringLiteral( "hsv" )
+                  : stop.colorSpec() == QColor::Hsl ? QStringLiteral( "hsl" ) : QString(),
+                  stop.direction() == Qgis::AngularDirection::CounterClockwise ? QStringLiteral( "ccw" ) : QStringLiteral( "cw" ) ) );
     }
     map[QStringLiteral( "stops" )] = lst.join( QLatin1Char( ':' ) );
   }
@@ -228,6 +411,33 @@ QVariantMap QgsGradientColorRamp::properties() const
         it != mInfo.constEnd(); ++it )
   {
     map["info_" + it.key()] = it.value();
+  }
+
+  switch ( mColorSpec )
+  {
+    case QColor::Rgb:
+      map[QStringLiteral( "spec" ) ] = QStringLiteral( "rgb" );
+      break;
+    case QColor::Hsv:
+      map[QStringLiteral( "spec" ) ] = QStringLiteral( "hsv" );
+      break;
+    case QColor::Hsl:
+      map[QStringLiteral( "spec" ) ] = QStringLiteral( "hsl" );
+      break;
+    case QColor::Cmyk:
+    case QColor::Invalid:
+    case QColor::ExtendedRgb:
+      break;
+  }
+
+  switch ( mDirection )
+  {
+    case Qgis::AngularDirection::Clockwise:
+      map[QStringLiteral( "direction" ) ] = QStringLiteral( "cw" );
+      break;
+    case Qgis::AngularDirection::CounterClockwise:
+      map[QStringLiteral( "direction" ) ] = QStringLiteral( "ccw" );
+      break;
   }
 
   map[QStringLiteral( "rampType" )] = type();
@@ -310,6 +520,26 @@ void QgsGradientColorRamp::addStopsToGradient( QGradient *gradient, double opaci
       rampColor.setAlpha( rampColor.alpha() * opacity );
     }
     gradient->setColorAt( it->offset, rampColor );
+  }
+}
+
+void QgsGradientColorRamp::setColorSpec( QColor::Spec spec )
+{
+  mColorSpec = spec;
+  switch ( mColorSpec )
+  {
+    case QColor::Rgb:
+    case QColor::Invalid:
+    case QColor::ExtendedRgb:
+    case QColor::Cmyk:
+      mFunc = _interpolateRgb;
+      break;
+    case QColor::Hsv:
+      mFunc = _interpolateHsv;
+      break;
+    case QColor::Hsl:
+      mFunc = _interpolateHsl;
+      break;
   }
 }
 
@@ -950,4 +1180,3 @@ QgsNamedColorList QgsPresetSchemeColorRamp::fetchColors( const QString &, const 
 {
   return mColors;
 }
-
