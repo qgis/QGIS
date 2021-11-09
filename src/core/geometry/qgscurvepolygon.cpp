@@ -817,7 +817,7 @@ void QgsCurvePolygon::forceRHR()
 
 void QgsCurvePolygon::forceClockwise()
 {
-  if ( mExteriorRing && mExteriorRing->orientation() != QgsCurve::Clockwise )
+  if ( mExteriorRing && mExteriorRing->orientation() != Qgis::AngularDirection::Clockwise )
   {
     // flip exterior ring orientation
     std::unique_ptr< QgsCurve > flipped( mExteriorRing->reversed() );
@@ -827,7 +827,7 @@ void QgsCurvePolygon::forceClockwise()
   QVector<QgsCurve *> validRings;
   for ( QgsCurve *curve : std::as_const( mInteriorRings ) )
   {
-    if ( curve && curve->orientation() != QgsCurve::CounterClockwise )
+    if ( curve && curve->orientation() != Qgis::AngularDirection::CounterClockwise )
     {
       // flip interior ring orientation
       QgsCurve *flipped = curve->reversed();
@@ -844,7 +844,7 @@ void QgsCurvePolygon::forceClockwise()
 
 void QgsCurvePolygon::forceCounterClockwise()
 {
-  if ( mExteriorRing && mExteriorRing->orientation() != QgsCurve::CounterClockwise )
+  if ( mExteriorRing && mExteriorRing->orientation() != Qgis::AngularDirection::CounterClockwise )
   {
     // flip exterior ring orientation
     mExteriorRing.reset( mExteriorRing->reversed() );
@@ -853,7 +853,7 @@ void QgsCurvePolygon::forceCounterClockwise()
   QVector<QgsCurve *> validRings;
   for ( QgsCurve *curve : std::as_const( mInteriorRings ) )
   {
-    if ( curve && curve->orientation() != QgsCurve::Clockwise )
+    if ( curve && curve->orientation() != Qgis::AngularDirection::Clockwise )
     {
       // flip interior ring orientation
       QgsCurve *flipped = curve->reversed();

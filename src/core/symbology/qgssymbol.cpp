@@ -154,9 +154,9 @@ QPolygonF QgsSymbol::_getPolygonRing( QgsRenderContext &context, const QgsCurve 
   if ( correctRingOrientation )
   {
     // ensure consistent polygon ring orientation
-    if ( isExteriorRing && curve.orientation() != QgsCurve::Clockwise )
+    if ( isExteriorRing && curve.orientation() != Qgis::AngularDirection::Clockwise )
       std::reverse( poly.begin(), poly.end() );
-    else if ( !isExteriorRing && curve.orientation() != QgsCurve::CounterClockwise )
+    else if ( !isExteriorRing && curve.orientation() != Qgis::AngularDirection::CounterClockwise )
       std::reverse( poly.begin(), poly.end() );
   }
 

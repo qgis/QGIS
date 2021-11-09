@@ -2125,7 +2125,7 @@ QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, Qgis::JoinS
     mLastError.clear();
 
     // GEOS can flip the curve orientation in some circumstances. So record previous orientation and correct if required
-    const QgsCurve::Orientation prevOrientation = qgsgeometry_cast< const QgsCurve * >( d->geometry.get() )->orientation();
+    const Qgis::AngularDirection prevOrientation = qgsgeometry_cast< const QgsCurve * >( d->geometry.get() )->orientation();
 
     std::unique_ptr< QgsAbstractGeometry > offsetGeom( geos.offsetCurve( distance, segments, joinStyle, miterLimit, &mLastError ) );
     if ( !offsetGeom )
@@ -2137,7 +2137,7 @@ QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, Qgis::JoinS
 
     if ( const QgsCurve *offsetCurve = qgsgeometry_cast< const QgsCurve * >( offsetGeom.get() ) )
     {
-      const QgsCurve::Orientation newOrientation = offsetCurve->orientation();
+      const Qgis::AngularDirection newOrientation = offsetCurve->orientation();
       if ( newOrientation != prevOrientation )
       {
         // GEOS has flipped line orientation, flip it back

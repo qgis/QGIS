@@ -1161,3 +1161,14 @@ QgsStringUtils.AllSmallCaps.__doc__ = "Force all characters to small caps (since
 Qgis.Capitalization.__doc__ = 'String capitalization options.\n\n.. note::\n\n   Prior to QGIS 3.24 this was available as :py:class:`QgsStringUtils`.Capitalization\n\n.. versionadded:: 3.24\n\n' + '* ``MixedCase``: ' + Qgis.Capitalization.MixedCase.__doc__ + '\n' + '* ``AllUppercase``: ' + Qgis.Capitalization.AllUppercase.__doc__ + '\n' + '* ``AllLowercase``: ' + Qgis.Capitalization.AllLowercase.__doc__ + '\n' + '* ``ForceFirstLetterToCapital``: ' + Qgis.Capitalization.ForceFirstLetterToCapital.__doc__ + '\n' + '* ``SmallCaps``: ' + Qgis.Capitalization.SmallCaps.__doc__ + '\n' + '* ``TitleCase``: ' + Qgis.Capitalization.TitleCase.__doc__ + '\n' + '* ``UpperCamelCase``: ' + Qgis.Capitalization.UpperCamelCase.__doc__ + '\n' + '* ``AllSmallCaps``: ' + Qgis.Capitalization.AllSmallCaps.__doc__
 # --
 Qgis.Capitalization.baseClass = Qgis
+QgsCurve.Orientation = Qgis.AngularDirection
+# monkey patching scoped based enum
+QgsCurve.Clockwise = Qgis.AngularDirection.Clockwise
+QgsCurve.Clockwise.is_monkey_patched = True
+QgsCurve.Clockwise.__doc__ = "Clockwise direction"
+QgsCurve.CounterClockwise = Qgis.AngularDirection.CounterClockwise
+QgsCurve.CounterClockwise.is_monkey_patched = True
+QgsCurve.CounterClockwise.__doc__ = "Counter-clockwise direction"
+Qgis.AngularDirection.__doc__ = 'Angular directions.\n\n.. versionadded:: 3.24\n\n' + '* ``Clockwise``: ' + Qgis.AngularDirection.Clockwise.__doc__ + '\n' + '* ``CounterClockwise``: ' + Qgis.AngularDirection.CounterClockwise.__doc__
+# --
+Qgis.AngularDirection.baseClass = Qgis

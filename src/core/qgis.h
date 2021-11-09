@@ -1219,6 +1219,19 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( Capitalization )
 
+
+    /**
+     * Angular directions.
+     *
+     * \since QGIS 3.24
+     */
+    enum class AngularDirection SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsCurve, Orientation ) : int
+      {
+      Clockwise, //!< Clockwise direction
+      CounterClockwise, //!< Counter-clockwise direction
+    };
+    Q_ENUM( AngularDirection )
+
     /**
      * Identify search radius in mm
      * \since QGIS 2.3

@@ -746,6 +746,13 @@ The development version
       AllSmallCaps,
     };
 
+
+    enum class AngularDirection
+      {
+      Clockwise,
+      CounterClockwise,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

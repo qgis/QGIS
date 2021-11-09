@@ -2253,11 +2253,11 @@ void TestQgsCircularString::orientation()
 
   cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 1 )
                 << QgsPoint( 1, 1 ) << QgsPoint( 1, 0 ) << QgsPoint( 0, 0 ) );
-  QCOMPARE( cs.orientation(), QgsCurve::Clockwise );
+  QCOMPARE( cs.orientation(), Qgis::AngularDirection::Clockwise );
 
   cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 )
                 << QgsPoint( 1, 1 ) << QgsPoint( 0, 1 ) << QgsPoint( 0, 0 ) );
-  QCOMPARE( cs.orientation(), QgsCurve::CounterClockwise );
+  QCOMPARE( cs.orientation(), Qgis::AngularDirection::CounterClockwise );
 }
 
 void TestQgsCircularString::constructorFromArray()
