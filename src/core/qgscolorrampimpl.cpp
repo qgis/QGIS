@@ -516,7 +516,7 @@ void QgsGradientColorRamp::setStops( const QgsGradientStopsList &stops )
   std::sort( mStops.begin(), mStops.end(), stopLessThan );
 }
 
-void QgsGradientColorRamp::addStopsToGradient( QGradient *gradient, double opacity )
+void QgsGradientColorRamp::addStopsToGradient( QGradient *gradient, double opacity ) const
 {
   //copy color ramp stops to a QGradient
   QColor color1 = mColor1;
@@ -529,15 +529,45 @@ void QgsGradientColorRamp::addStopsToGradient( QGradient *gradient, double opaci
   gradient->setColorAt( 0, color1 );
   gradient->setColorAt( 1, color2 );
 
-  for ( QgsGradientStopsList::const_iterator it = mStops.constBegin();
-        it != mStops.constEnd(); ++it )
+  double lastOffset = 0;
+  for ( const QgsGradientStop &stop : mStops )
   {
-    QColor rampColor = it->color;
+
+    QColor rampColor = stop.color;
     if ( opacity < 1 )
     {
       rampColor.setAlpha( rampColor.alpha() * opacity );
     }
-    gradient->setColorAt( it->offset, rampColor );
+    gradient->setColorAt( stop.offset, rampColor );
+
+    if ( stop.colorSpec() != QColor::Rgb )
+    {
+      // QGradient only supports RGB interpolation. For other color specs we have
+      // to "fake" things by populating the gradient with additional stops
+      for ( double offset = lastOffset + 0.05; offset < stop.offset; offset += 0.05 )
+      {
+        QColor midColor = color( offset );
+        if ( opacity < 1 )
+        {
+          midColor.setAlpha( midColor.alpha() * opacity );
+        }
+        gradient->setColorAt( offset, midColor );
+      }
+    }
+    lastOffset = stop.offset;
+  }
+
+  if ( mColorSpec != QColor::Rgb )
+  {
+    for ( double offset = lastOffset + 0.05; offset < 1; offset += 0.05 )
+    {
+      QColor midColor = color( offset );
+      if ( opacity < 1 )
+      {
+        midColor.setAlpha( midColor.alpha() * opacity );
+      }
+      gradient->setColorAt( offset, midColor );
+    }
   }
 }
 
