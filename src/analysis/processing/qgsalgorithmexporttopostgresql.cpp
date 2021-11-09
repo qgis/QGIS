@@ -126,7 +126,7 @@ bool QgsExportToPostgresqlAlgorithm::prepareAlgorithm( const QVariantMap &parame
     mOptions[QStringLiteral( "overwrite" )] = true;
   if ( parameterAsBoolean( parameters, QStringLiteral( "LOWERCASE_NAMES" ), context ) )
     mOptions[QStringLiteral( "lowercaseFieldNames" )] = true;
-    mGeomColumn = mGeomColumn.toLower();
+  mGeomColumn = mGeomColumn.toLower();
   if ( parameterAsBoolean( parameters, QStringLiteral( "DROP_STRING_LENGTH" ), context ) )
     mOptions[QStringLiteral( "dropStringConstraints" )] = true;
   if ( parameterAsBoolean( parameters, QStringLiteral( "FORCE_SINGLEPART" ), context ) )
