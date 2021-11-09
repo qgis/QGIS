@@ -8,6 +8,7 @@
 
 
 
+
 class QgsGradientStop
 {
 %Docstring(signature="appended")
@@ -33,6 +34,61 @@ Constructor for QgsGradientStop
     QColor color;
 
     bool operator==( const QgsGradientStop &other ) const;
+
+    bool operator!=( const QgsGradientStop &other ) const;
+
+    QColor::Spec colorSpec() const;
+%Docstring
+Returns the color specification in which the color component interpolation will occur.
+
+For multi-stop gradients this color spec will be used for the portion of the color ramp
+leading into the current stop.
+
+.. seealso:: :py:func:`setColorSpec`
+
+.. versionadded:: 3.24
+%End
+
+    void setColorSpec( QColor::Spec spec );
+%Docstring
+Sets the color specification in which the color component interpolation will occur.
+
+Only QColor.Spec.Rgb, QColor.Spec.Hsv and QColor.Spec.Hsl are currently supported.
+
+For multi-stop gradients this color spec will be used for the portion of the color ramp
+leading into the current stop.
+
+.. seealso:: :py:func:`colorSpec`
+
+.. versionadded:: 3.24
+%End
+
+    Qgis::AngularDirection direction() const;
+%Docstring
+Returns the direction to traverse the color wheel using when interpolating hue-based color
+specifications.
+
+For multi-stop gradients this direction will be used for the portion of the color ramp
+leading into the current stop.
+
+.. seealso:: :py:func:`setDirection`
+
+.. versionadded:: 3.24
+%End
+
+    void setDirection( Qgis::AngularDirection direction );
+%Docstring
+Sets the ``direction`` to traverse the color wheel using when interpolating hue-based color
+specifications.
+
+For multi-stop gradients this direction will be used for the portion of the color ramp
+leading into the current stop.
+
+.. seealso:: :py:func:`direction`
+
+.. versionadded:: 3.24
+%End
+
 };
 
 typedef QList<QgsGradientStop> QgsGradientStopsList;
@@ -209,7 +265,60 @@ Copy color ramp stops to a QGradient
 .. versionadded:: 2.1
 %End
 
+    QColor::Spec colorSpec() const;
+%Docstring
+Returns the color specification in which the color component interpolation will occur.
+
+For multi-stop gradients this color spec will be used for the portion of the color ramp
+leading into the final stop (i.e. :py:func:`~QgsGradientColorRamp.color2`).
+
+.. seealso:: :py:func:`setColorSpec`
+
+.. versionadded:: 3.24
+%End
+
+    void setColorSpec( QColor::Spec spec );
+%Docstring
+Sets the color specification in which the color component interpolation will occur.
+
+Only QColor.Spec.Rgb, QColor.Spec.Hsv and QColor.Spec.Hsl are currently supported.
+
+For multi-stop gradients this color spec will be used for the portion of the color ramp
+leading into the final stop (i.e. :py:func:`~QgsGradientColorRamp.color2`).
+
+.. seealso:: :py:func:`colorSpec`
+
+.. versionadded:: 3.24
+%End
+
+    Qgis::AngularDirection direction() const;
+%Docstring
+Returns the direction to traverse the color wheel using when interpolating hue-based color
+specifications.
+
+For multi-stop gradients this direction will be used for the portion of the color ramp
+leading into the final stop (i.e. :py:func:`~QgsGradientColorRamp.color2`).
+
+.. seealso:: :py:func:`setDirection`
+
+.. versionadded:: 3.24
+%End
+
+    void setDirection( Qgis::AngularDirection direction );
+%Docstring
+Sets the ``direction`` to traverse the color wheel using when interpolating hue-based color
+specifications.
+
+For multi-stop gradients this direction will be used for the portion of the color ramp
+leading into the final stop (i.e. :py:func:`~QgsGradientColorRamp.color2`).
+
+.. seealso:: :py:func:`direction`
+
+.. versionadded:: 3.24
+%End
+
   protected:
+
 };
 
 

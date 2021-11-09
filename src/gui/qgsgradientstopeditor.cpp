@@ -172,7 +172,10 @@ QgsGradientStop QgsGradientStopEditor::selectedStop() const
   }
   else
   {
-    return QgsGradientStop( 1.0, mGradient.color2() );
+    QgsGradientStop stop( 1.0, mGradient.color2() );
+    stop.setColorSpec( mGradient.colorSpec() );
+    stop.setDirection( mGradient.direction() );
+    return stop;
   }
 }
 
@@ -201,6 +204,40 @@ void QgsGradientStopEditor::setSelectedStopOffset( double offset )
   {
     mStops[ mSelectedStop - 1 ].offset = offset;
     mGradient.setStops( mStops );
+    update();
+    emit changed();
+  }
+}
+
+void QgsGradientStopEditor::setSelectedStopColorSpec( QColor::Spec spec )
+{
+  if ( mSelectedStop > 0 && mSelectedStop < mGradient.count() - 1 )
+  {
+    mStops[ mSelectedStop - 1 ].setColorSpec( spec );
+    mGradient.setStops( mStops );
+    update();
+    emit changed();
+  }
+  else if ( mSelectedStop == mGradient.count() - 1 )
+  {
+    mGradient.setColorSpec( spec );
+    update();
+    emit changed();
+  }
+}
+
+void QgsGradientStopEditor::setSelectedStopDirection( Qgis::AngularDirection direction )
+{
+  if ( mSelectedStop > 0 && mSelectedStop < mGradient.count() - 1 )
+  {
+    mStops[ mSelectedStop - 1 ].setDirection( direction );
+    mGradient.setStops( mStops );
+    update();
+    emit changed();
+  }
+  else if ( mSelectedStop == mGradient.count() - 1 )
+  {
+    mGradient.setDirection( direction );
     update();
     emit changed();
   }

@@ -94,6 +94,20 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
     void setSelectedStopOffset( double offset );
 
     /**
+     * Sets the color \a spec for the current selected stop.
+     *
+     * \since QGIS 3.24
+     */
+    void setSelectedStopColorSpec( QColor::Spec spec );
+
+    /**
+     * Sets the hue angular direction for the current selected stop.
+     *
+     * \since QGIS 3.24
+     */
+    void setSelectedStopDirection( Qgis::AngularDirection direction );
+
+    /**
      * Sets the color and offset for the current selected stop.
      * \param color new stop color
      * \param offset new stop offset
