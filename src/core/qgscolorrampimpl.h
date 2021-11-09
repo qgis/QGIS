@@ -259,7 +259,7 @@ class CORE_EXPORT QgsGradientColorRamp : public QgsColorRamp
      * by this factor before adding to the gradient.
      * \since QGIS 2.1
      */
-    void addStopsToGradient( QGradient *gradient, double opacity = 1 );
+    void addStopsToGradient( QGradient *gradient, double opacity = 1 ) const;
 
     /**
      * Returns the color specification in which the color component interpolation will occur.

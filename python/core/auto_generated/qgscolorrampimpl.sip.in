@@ -254,7 +254,7 @@ Sets additional info to attach to the gradient ramp (e.g., authorship notes)
 .. seealso:: :py:func:`info`
 %End
 
-    void addStopsToGradient( QGradient *gradient, double opacity = 1 );
+    void addStopsToGradient( QGradient *gradient, double opacity = 1 ) const;
 %Docstring
 Copy color ramp stops to a QGradient
 
