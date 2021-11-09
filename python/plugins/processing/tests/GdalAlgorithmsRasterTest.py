@@ -27,6 +27,7 @@ import shutil
 import tempfile
 
 from qgis.core import (QgsProcessingContext,
+                       QgsProcessingException,
                        QgsProcessingFeedback,
                        QgsRectangle,
                        QgsRasterLayer,
@@ -1205,6 +1206,18 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                  'hillshade ' +
                  source + ' ' +
                  outdir + '/check.tif -of GTiff -b 1 -z 1.0 -s 1.0 -az 315.0 -alt 45.0 -q'])
+
+            # multidirectional and combined are mutually exclusive
+            self.assertRaises(
+                QgsProcessingException,
+                lambda: alg.getConsoleCommands({'INPUT': source,
+                                                'BAND': 1,
+                                                'Z_FACTOR': 5,
+                                                'SCALE': 2,
+                                                'AZIMUTH': 90,
+                                                'COMBINED': True,
+                                                'MULTIDIRECTIONAL': True,
+                                                'OUTPUT': outdir + '/check.tif'}, context, feedback))
 
     def testAspect(self):
         context = QgsProcessingContext()
