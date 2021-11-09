@@ -43,6 +43,7 @@ class QgsExportToPostgresqlAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsExportToPostgresqlAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
