@@ -295,7 +295,7 @@ QString QgsGdalProvider::expandAuthConfig( const QString &dsName )
   QRegularExpressionMatch match;
   if ( uri.contains( authcfgRe, &match ) )
   {
-    uri = uri.replace( match.captured( 0 ), QString() );
+    uri = uri.remove( match.captured( 0 ) );
     QString configId( match.captured( 1 ) );
     QStringList connectionItems;
     connectionItems << uri;
