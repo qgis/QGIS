@@ -20,18 +20,47 @@
 #include "qgsapplication.h"
 #include "qgsiconutils.h"
 
-QgsOracleTableModel::QgsOracleTableModel()
+QgsOracleTableModel::QgsOracleTableModel( QObject *parent )
+  : QgsAbstractDbTableModel( parent )
 {
-  QStringList headerLabels;
-  headerLabels << tr( "Owner" );
-  headerLabels << tr( "Table" );
-  headerLabels << tr( "Type" );
-  headerLabels << tr( "Geometry column" );
-  headerLabels << tr( "SRID" );
-  headerLabels << tr( "Primary key column" );
-  headerLabels << tr( "Select at id" );
-  headerLabels << tr( "Sql" );
-  setHorizontalHeaderLabels( headerLabels );
+  mColumns << tr( "Owner" )
+           << tr( "Table" )
+           << tr( "Type" )
+           << tr( "Geometry column" )
+           << tr( "SRID" )
+           << tr( "Primary key column" )
+           << tr( "Select at id" )
+           << tr( "Sql" );
+  setHorizontalHeaderLabels( mColumns );
+}
+
+QStringList QgsOracleTableModel::columns() const
+{
+  return mColumns;
+}
+
+int QgsOracleTableModel::defaultSearchColumn() const
+{
+  return static_cast<int>( DbtmTable );
+}
+
+bool QgsOracleTableModel::searchableColumn( int column ) const
+{
+  Columns col = static_cast<Columns>( column );
+  switch ( col )
+  {
+    case DbtmOwner:
+    case DbtmTable:
+    case DbtmGeomCol:
+    case DbtmType:
+    case DbtmSrid:
+    case DbtmSql:
+      return true;
+
+    case DbtmPkCol:
+    case DbtmSelectAtId:
+      return false;
+  }
 }
 
 void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProperty )
@@ -251,7 +280,7 @@ bool QgsOracleTableModel::setData( const QModelIndex &idx, const QVariant &value
         tip = tr( "Select a primary key" );
     }
 
-    for ( int i = 0; i < DbtmColumns; i++ )
+    for ( int i = 0; i < columnCount(); i++ )
     {
       QStandardItem *item = itemFromIndex( idx.sibling( idx.row(), i ) );
       if ( tip.isEmpty() )
