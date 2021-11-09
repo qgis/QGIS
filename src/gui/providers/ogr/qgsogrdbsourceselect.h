@@ -86,10 +86,6 @@ class QgsOgrDbSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsD
     void btnNew_clicked();
     //! Deletes the selected connection
     void btnDelete_clicked();
-    void mSearchGroupBox_toggled( bool );
-    void mSearchTableEdit_textChanged( const QString &text );
-    void mSearchColumnComboBox_currentIndexChanged( const QString &text );
-    void mSearchModeComboBox_currentIndexChanged( const QString &text );
     void cbxAllowGeometrylessTables_stateChanged( int );
     void setSql( const QModelIndex &index );
     void cmbConnections_activated( int );
