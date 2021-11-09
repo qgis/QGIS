@@ -82,7 +82,6 @@ const QgsGraphEdge &QgsGraph::edge( int idx ) const
 
   // unreachable...
   return ( *const_cast< QHash<int, QgsGraphEdge>* >( &mGraphEdges ) )[ idx ];
-
 }
 
 void QgsGraph::removeEdge( int index )
