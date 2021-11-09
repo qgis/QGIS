@@ -1968,7 +1968,7 @@ dammage:damage
 Dardenelles:Dardanelles
 databse:database
 daugher:daughter
-deactive:deactivate
+deactive:deactivate:*
 deafault:default
 deafult:default
 deamon:daemon
