@@ -36,7 +36,6 @@ QgsExpressionUtils::TVL QgsExpressionUtils::OR[3][3] =
 
 QgsExpressionUtils::TVL QgsExpressionUtils::NOT[3] = { True, False, Unknown };
 
-///@endcond
 
 QgsGradientColorRamp QgsExpressionUtils::getRamp( const QVariant &value, QgsExpression *parent, bool report_error )
 {
@@ -49,6 +48,8 @@ QgsGradientColorRamp QgsExpressionUtils::getRamp( const QVariant &value, QgsExpr
 
   return QgsGradientColorRamp();
 }
+
+///@endcond
 
 std::tuple<QVariant::Type, int> QgsExpressionUtils::determineResultType( const QString &expression, const QgsVectorLayer *layer, QgsFeatureRequest request, QgsExpressionContext context, bool *foundFeatures )
 {
