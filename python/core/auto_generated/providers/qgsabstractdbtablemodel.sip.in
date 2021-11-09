@@ -33,7 +33,7 @@ Returns the list of columns in the table
 
     virtual int defaultSearchColumn() const = 0;
 %Docstring
-Returns the index of the column used by default to filter the results (probaly the table name column if it exists)
+Returns the index of the column used by default to filter the results (probably the table name column if it exists)
 %End
 
     virtual bool searchableColumn( int column ) const;

@@ -37,7 +37,7 @@ class CORE_EXPORT QgsAbstractDbTableModel : public QStandardItemModel
     //! Returns the list of columns in the table
     virtual QStringList columns() const = 0;
 
-    //! Returns the index of the column used by default to filter the results (probaly the table name column if it exists)
+    //! Returns the index of the column used by default to filter the results (probably the table name column if it exists)
     virtual int defaultSearchColumn() const = 0;
 
     //! Returns if the column should be searchable at the given index
