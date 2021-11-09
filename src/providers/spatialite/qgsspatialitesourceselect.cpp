@@ -30,6 +30,8 @@ email                : a.furieri@lqt.it
 #include "qgsgui.h"
 #include "qgsprovidermetadata.h"
 #include "qgsspatialiteproviderconnection.h"
+#include "qgsspatialitetablemodel.h"
+#include "qgsdbfilterproxymodel.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
@@ -44,18 +46,13 @@ email                : a.furieri@lqt.it
 #endif
 
 QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode ):
-  QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
+  QgsDbSourceSelectBase( parent, fl, theWidgetMode )
 {
-  setupUi( this );
   QgsGui::instance()->enableAutoGeometryRestore( this );
 
   connect( btnConnect, &QPushButton::clicked, this, &QgsSpatiaLiteSourceSelect::btnConnect_clicked );
   connect( btnNew, &QPushButton::clicked, this, &QgsSpatiaLiteSourceSelect::btnNew_clicked );
   connect( btnDelete, &QPushButton::clicked, this, &QgsSpatiaLiteSourceSelect::btnDelete_clicked );
-  connect( mSearchGroupBox, &QGroupBox::toggled, this, &QgsSpatiaLiteSourceSelect::mSearchGroupBox_toggled );
-  connect( mSearchTableEdit, &QLineEdit::textChanged, this, &QgsSpatiaLiteSourceSelect::mSearchTableEdit_textChanged );
-  connect( mSearchColumnComboBox, &QComboBox::currentTextChanged, this, &QgsSpatiaLiteSourceSelect::mSearchColumnComboBox_currentIndexChanged );
-  connect( mSearchModeComboBox, &QComboBox::currentTextChanged, this, &QgsSpatiaLiteSourceSelect::mSearchModeComboBox_currentIndexChanged );
   connect( cbxAllowGeometrylessTables, &QCheckBox::stateChanged, this, &QgsSpatiaLiteSourceSelect::cbxAllowGeometrylessTables_stateChanged );
   connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsSpatiaLiteSourceSelect::cmbConnections_activated );
   connect( mTablesTreeView, &QTreeView::clicked, this, &QgsSpatiaLiteSourceSelect::mTablesTreeView_clicked );
@@ -90,38 +87,13 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
 
   populateConnectionList();
 
-  mSearchModeComboBox->addItem( tr( "Wildcard" ) );
-  mSearchModeComboBox->addItem( tr( "RegExp" ) );
+  mTableModel = new QgsSpatiaLiteTableModel( this );
+  setSourceModel( mTableModel );
 
-  mSearchColumnComboBox->addItem( tr( "All" ) );
-  mSearchColumnComboBox->addItem( tr( "Table" ) );
-  mSearchColumnComboBox->addItem( tr( "Type" ) );
-  mSearchColumnComboBox->addItem( tr( "Geometry column" ) );
-  mSearchColumnComboBox->addItem( tr( "Sql" ) );
-
-  mProxyModel.setParent( this );
-  mProxyModel.setFilterKeyColumn( -1 );
-  mProxyModel.setFilterCaseSensitivity( Qt::CaseInsensitive );
-  mProxyModel.setDynamicSortFilter( true );
-  mProxyModel.setSourceModel( &mTableModel );
-  mTablesTreeView->setModel( &mProxyModel );
+  mTablesTreeView->setModel( proxyModel() );
   mTablesTreeView->setSortingEnabled( true );
 
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsSpatiaLiteSourceSelect::treeWidgetSelectionChanged );
-
-  //for Qt < 4.3.2, passing -1 to include all model columns
-  //in search does not seem to work
-  mSearchColumnComboBox->setCurrentIndex( 1 );
-
-  //hide the search options by default
-  //they will be shown when the user ticks
-  //the search options group box
-  mSearchLabel->setVisible( false );
-  mSearchColumnComboBox->setVisible( false );
-  mSearchColumnsLabel->setVisible( false );
-  mSearchModeComboBox->setVisible( false );
-  mSearchModeLabel->setVisible( false );
-  mSearchTableEdit->setVisible( false );
 
   cbxAllowGeometrylessTables->setDisabled( true );
 }
@@ -188,59 +160,9 @@ void QgsSpatiaLiteSourceSelect::mTablesTreeView_doubleClicked( const QModelIndex
   setSql( index );
 }
 
-void QgsSpatiaLiteSourceSelect::mSearchGroupBox_toggled( bool checked )
-{
-  if ( mSearchTableEdit->text().isEmpty() )
-    return;
-
-  mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : QString() );
-}
-
-void QgsSpatiaLiteSourceSelect::mSearchTableEdit_textChanged( const QString &text )
-{
-  if ( mSearchModeComboBox->currentText() == tr( "Wildcard" ) )
-  {
-    mProxyModel._setFilterWildcard( text );
-  }
-  else if ( mSearchModeComboBox->currentText() == tr( "RegExp" ) )
-  {
-    mProxyModel._setFilterRegExp( text );
-  }
-}
-
-void QgsSpatiaLiteSourceSelect::mSearchColumnComboBox_currentIndexChanged( const QString &text )
-{
-  if ( text == tr( "All" ) )
-  {
-    mProxyModel.setFilterKeyColumn( -1 );
-  }
-  else if ( text == tr( "Table" ) )
-  {
-    mProxyModel.setFilterKeyColumn( 0 );
-  }
-  else if ( text == tr( "Type" ) )
-  {
-    mProxyModel.setFilterKeyColumn( 1 );
-  }
-  else if ( text == tr( "Geometry column" ) )
-  {
-    mProxyModel.setFilterKeyColumn( 2 );
-  }
-  else if ( text == tr( "Sql" ) )
-  {
-    mProxyModel.setFilterKeyColumn( 3 );
-  }
-}
-
-void QgsSpatiaLiteSourceSelect::mSearchModeComboBox_currentIndexChanged( const QString &text )
-{
-  Q_UNUSED( text )
-  mSearchTableEdit_textChanged( mSearchTableEdit->text() );
-}
-
 void QgsSpatiaLiteSourceSelect::setLayerType( const QString &table, const QString &column, const QString &type )
 {
-  mTableModel.setGeometryTypesForTable( table, column, type );
+  mTableModel->setGeometryTypesForTable( table, column, type );
   mTablesTreeView->sortByColumn( 0, Qt::AscendingOrder );
 }
 
@@ -324,9 +246,9 @@ bool QgsSpatiaLiteSourceSelect::newConnection( QWidget *parent )
 
 QString QgsSpatiaLiteSourceSelect::layerURI( const QModelIndex &index )
 {
-  const QString tableName = mTableModel.itemFromIndex( index.sibling( index.row(), 0 ) )->text();
-  QString geomColumnName = mTableModel.itemFromIndex( index.sibling( index.row(), 2 ) )->text();
-  QString sql = mTableModel.itemFromIndex( index.sibling( index.row(), 3 ) )->text();
+  const QString tableName = mTableModel->itemFromIndex( index.sibling( index.row(), 0 ) )->text();
+  QString geomColumnName = mTableModel->itemFromIndex( index.sibling( index.row(), 2 ) )->text();
+  QString sql = mTableModel->itemFromIndex( index.sibling( index.row(), 3 ) )->text();
 
   if ( geomColumnName.contains( QLatin1String( " AS " ) ) )
   {
@@ -404,7 +326,7 @@ void QgsSpatiaLiteSourceSelect::addButtonClicked()
       //top level items only contain the schema names
       continue;
     }
-    currentItem = mTableModel.itemFromIndex( mProxyModel.mapToSource( *selected_it ) );
+    currentItem = mTableModel->itemFromIndex( proxyModel()->mapToSource( *selected_it ) );
     if ( !currentItem )
     {
       continue;
@@ -416,7 +338,7 @@ void QgsSpatiaLiteSourceSelect::addButtonClicked()
     if ( !dbInfo[currentSchemaName].contains( currentRow ) )
     {
       dbInfo[currentSchemaName][currentRow] = true;
-      m_selectedTables << layerURI( mProxyModel.mapToSource( *selected_it ) );
+      m_selectedTables << layerURI( proxyModel()->mapToSource( *selected_it ) );
     }
   }
 
@@ -483,19 +405,19 @@ void QgsSpatiaLiteSourceSelect::btnConnect_clicked()
     return;
   }
 
-  const QModelIndex rootItemIndex = mTableModel.indexFromItem( mTableModel.invisibleRootItem() );
-  mTableModel.removeRows( 0, mTableModel.rowCount( rootItemIndex ), rootItemIndex );
+  const QModelIndex rootItemIndex = mTableModel->indexFromItem( mTableModel->invisibleRootItem() );
+  mTableModel->removeRows( 0, mTableModel->rowCount( rootItemIndex ), rootItemIndex );
 
   // populate the table list
   // get the list of suitable tables and columns and populate the UI
 
-  mTableModel.setSqliteDb( subKey );
+  mTableModel->setSqliteDb( subKey );
 
   const QList<QgsSpatiaLiteConnection::TableEntry> tables = conn.tables();
   const auto constTables = tables;
   for ( const QgsSpatiaLiteConnection::TableEntry &table : constTables )
   {
-    mTableModel.addTableEntry( table.type, table.tableName, table.column, QString() );
+    mTableModel->addTableEntry( table.type, table.tableName, table.column, QString() );
   }
 
   if ( cmbConnections->count() > 0 )
@@ -506,10 +428,10 @@ void QgsSpatiaLiteSourceSelect::btnConnect_clicked()
   mTablesTreeView->sortByColumn( 0, Qt::AscendingOrder );
 
   //expand all the toplevel items
-  const int numTopLevelItems = mTableModel.invisibleRootItem()->rowCount();
+  const int numTopLevelItems = mTableModel->invisibleRootItem()->rowCount();
   for ( int i = 0; i < numTopLevelItems; ++i )
   {
-    mTablesTreeView->expand( mProxyModel.mapFromSource( mTableModel.indexFromItem( mTableModel.invisibleRootItem()->child( i ) ) ) );
+    mTablesTreeView->expand( proxyModel()->mapFromSource( mTableModel->indexFromItem( mTableModel->invisibleRootItem()->child( i ) ) ) );
   }
   mTablesTreeView->resizeColumnToContents( 0 );
   mTablesTreeView->resizeColumnToContents( 1 );
@@ -529,8 +451,8 @@ QString QgsSpatiaLiteSourceSelect::connectionInfo()
 
 void QgsSpatiaLiteSourceSelect::setSql( const QModelIndex &index )
 {
-  const QModelIndex idx = mProxyModel.mapToSource( index );
-  const auto item { mTableModel.itemFromIndex( idx.sibling( idx.row(), 0 ) ) };
+  const QModelIndex idx = proxyModel()->mapToSource( index );
+  const auto item { mTableModel->itemFromIndex( idx.sibling( idx.row(), 0 ) ) };
   if ( !item )
   {
     return;
@@ -551,7 +473,7 @@ void QgsSpatiaLiteSourceSelect::setSql( const QModelIndex &index )
   QgsQueryBuilder *gb = new QgsQueryBuilder( vlayer, this );
   if ( gb->exec() )
   {
-    mTableModel.setSql( mProxyModel.mapToSource( index ), gb->sql() );
+    mTableModel->setSql( proxyModel()->mapToSource( index ), gb->sql() );
   }
 
   delete gb;
