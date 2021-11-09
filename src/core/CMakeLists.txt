@@ -1563,6 +1563,7 @@ set(QGIS_CORE_HDRS
   project/qgsprojectversion.h
   project/qgsprojectviewsettings.h
 
+  providers/qgsabstractdbtablemodel.h
   providers/qgsabstractdatabaseproviderconnection.h
   providers/qgsabstractproviderconnection.h
   providers/qgsdataprovider.h
