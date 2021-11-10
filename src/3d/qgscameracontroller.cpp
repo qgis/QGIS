@@ -392,7 +392,6 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     QVector3D newCenter = mCamera->position() + distanceToCenter * viewVector;
     mCameraPose.setCenterPoint( newCenter );
     mCameraPose.setDistanceFromCenterPoint( distanceToCenter );
-
     updateCameraFromPose();
   }
   else if ( hasLeftButton && hasCtrl && !hasShift )
@@ -401,7 +400,6 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     const float diffPitch = 0.2f * dy;
     const float diffYaw = - 0.2f * dx;
     rotateCamera( diffPitch, diffYaw );
-    updateCameraFromPose();
   }
   else if ( hasLeftButton && !hasShift && !hasCtrl )
   {

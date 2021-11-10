@@ -163,6 +163,8 @@ class CORE_EXPORT QgsVector3D
 
     /**
      * Converts the current object to QVector3D
+     * \since QGIS 3.24
+     * \warning the conversion may decrease the accuracy (double to float values conversion)
      */
     QVector3D toVector3D() const { return QVector3D( mX, mY, mZ ); }
 

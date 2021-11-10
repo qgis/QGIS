@@ -183,7 +183,7 @@ class _3D_EXPORT Qgs3DUtils
 
     /**
      * Converts the clicked mouse position to the corresponding 3D world coordinates
-     * \since QGIS 3.22
+     * \since QGIS 3.24
      */
     static QVector3D mouseToWorldPos( const QVector3D &mousePos, const QRect &viewPort, Qt3DRender::QCamera *camera );
 
@@ -201,7 +201,7 @@ class _3D_EXPORT Qgs3DUtils
      *        \ | /
      *         \|/
      *        camera
-     * \since QGIS 3.22
+     * \since QGIS 3.24
      */
     static QVector3D mouseToWorldLookAtPoint( double mouseX, double mouseY, double d, const QRect &viewPort, Qt3DRender::QCamera *camera );
 };
