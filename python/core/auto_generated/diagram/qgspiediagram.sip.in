@@ -9,7 +9,7 @@
 
 
 
-class QgsPieDiagram: QgsDiagram /NoDefaultCtors/
+class QgsPieDiagram /NoDefaultCtors/ : QgsDiagram
 {
 %Docstring(signature="appended")
 A pie chart diagram.

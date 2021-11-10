@@ -10,7 +10,7 @@
 
 
 
-class QgsCurve: QgsAbstractGeometry /Abstract/
+class QgsCurve /Abstract/ : QgsAbstractGeometry
 {
 %Docstring(signature="appended")
 Abstract base class for curved geometry type

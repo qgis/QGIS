@@ -12,7 +12,7 @@
 
 
 
-class QgsRunProcess: QObject /NoDefaultCtors/
+class QgsRunProcess /NoDefaultCtors/ : QObject
 {
 %Docstring(signature="appended")
 A class that executes an external program/script.

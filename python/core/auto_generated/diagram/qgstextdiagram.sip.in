@@ -9,7 +9,7 @@
 
 
 
-class QgsTextDiagram: QgsDiagram /NoDefaultCtors/
+class QgsTextDiagram /NoDefaultCtors/ : QgsDiagram
 {
 %Docstring(signature="appended")
 A text based diagram.
