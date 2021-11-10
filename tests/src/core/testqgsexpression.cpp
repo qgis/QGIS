@@ -1980,6 +1980,10 @@ class TestQgsExpression: public QObject
       QTest::newRow( "exif bad file path" ) << QStringLiteral( "exif('bad path','Exif.Image.DateTime')" ) << false << QVariant();
       QTest::newRow( "exif_geotag" ) << QStringLiteral( "geom_to_wkt(exif_geotag('%1photos/0997.JPG'))" ).arg( testDataDir ) << false << QVariant( "PointZ (149.27516667 -37.2305 422.19101124)" );
       QTest::newRow( "exif_geotag bad file path" ) << QStringLiteral( "geom_to_wkt(exif_geotag('bad path'))" ).arg( testDataDir ) << false << QVariant( "Point EMPTY" );
+
+      // Form encoding tests
+      QTest::newRow( "url_encode" ) << QStringLiteral( "url_encode(map())" ).arg( testDataDir ) << false << QVariant( "" );
+      QTest::newRow( "url_encode" ) << QStringLiteral( "url_encode(map('a b', 'a b', 'c &% d', 'c &% d'))" ).arg( testDataDir ) << false << QVariant( "a%20b=a%20b&c%20%26%25%20d=c%20%26%25%20d" );
     }
 
     void run_evaluation_test( QgsExpression &exp, bool evalError, QVariant &expected )

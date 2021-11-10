@@ -32,6 +32,7 @@ bool QgsAction::runable() const
   return mType == Generic ||
          mType == GenericPython ||
          mType == OpenUrl ||
+         mType == SubmitUrl ||
 #if defined(Q_OS_WIN)
          mType == Windows
 #elif defined(Q_OS_MAC)
@@ -73,6 +74,10 @@ void QgsAction::run( const QgsExpressionContext &expressionContext ) const
       QDesktopServices::openUrl( QUrl::fromLocalFile( expandedAction ) );
     else
       QDesktopServices::openUrl( QUrl( expandedAction, QUrl::TolerantMode ) );
+  }
+  else if ( mType == QgsAction::SubmitUrl )
+  {
+    // TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   }
   else if ( mType == QgsAction::GenericPython )
   {
@@ -198,6 +203,11 @@ QString QgsAction::html() const
     case OpenUrl:
     {
       typeText = QObject::tr( "Open URL" );
+      break;
+    }
+    case SubmitUrl:
+    {
+      typeText = QObject::tr( "Submit URL" );
       break;
     }
   }
