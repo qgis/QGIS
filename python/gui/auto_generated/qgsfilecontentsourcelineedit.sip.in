@@ -9,7 +9,7 @@
 
 
 
-class QgsAbstractFileContentSourceLineEdit : QWidget /Abstract/
+class QgsAbstractFileContentSourceLineEdit /Abstract/ : QWidget
 {
 %Docstring(signature="appended")
 Abstract base class for a widgets which allows users to select content from a file, embedding a file, etc.

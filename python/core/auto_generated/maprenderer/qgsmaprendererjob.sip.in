@@ -13,7 +13,7 @@
 
 
 
-class QgsMapRendererJob : QObject /Abstract/
+class QgsMapRendererJob /Abstract/ : QObject
 {
 %Docstring(signature="appended")
 Abstract base class for map rendering implementations.
@@ -221,7 +221,7 @@ emitted when asynchronous rendering is finished (or canceled).
 };
 
 
-class QgsMapRendererQImageJob : QgsMapRendererJob /Abstract/
+class QgsMapRendererQImageJob /Abstract/ : QgsMapRendererJob
 {
 %Docstring(signature="appended")
 Intermediate base class adding functionality that allows client to query the rendered image.

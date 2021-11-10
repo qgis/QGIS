@@ -9,7 +9,7 @@
 
 
 
-class QgsEffectStack : QgsPaintEffect /NoDefaultCtors/
+class QgsEffectStack /NoDefaultCtors/ : QgsPaintEffect
 {
 %Docstring(signature="appended")
 A paint effect which consists of a stack of other chained paint effects

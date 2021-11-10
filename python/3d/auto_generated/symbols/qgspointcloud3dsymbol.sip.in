@@ -10,7 +10,7 @@
 
 
 
-class QgsPointCloud3DSymbol : QgsAbstract3DSymbol /Abstract/
+class QgsPointCloud3DSymbol /Abstract/ : QgsAbstract3DSymbol
 {
 %Docstring(signature="appended")
 3D symbol that draws point cloud geometries as 3D objects.

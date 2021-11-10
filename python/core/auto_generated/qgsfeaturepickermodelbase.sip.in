@@ -8,7 +8,7 @@
 
 
 
-class QgsFeaturePickerModelBase : QAbstractItemModel /Abstract/
+class QgsFeaturePickerModelBase /Abstract/ : QAbstractItemModel
 {
 %Docstring(signature="appended")
 Provides a list of features based on filter conditions.

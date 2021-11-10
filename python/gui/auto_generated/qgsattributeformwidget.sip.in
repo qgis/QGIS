@@ -9,7 +9,7 @@
 
 
 
-class QgsAttributeFormWidget : QWidget /Abstract/
+class QgsAttributeFormWidget /Abstract/ : QWidget
 {
 %Docstring(signature="appended")
 

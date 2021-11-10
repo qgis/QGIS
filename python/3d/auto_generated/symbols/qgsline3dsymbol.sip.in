@@ -10,7 +10,7 @@
 
 
 
-class QgsLine3DSymbol : QgsAbstract3DSymbol /NoDefaultCtors/
+class QgsLine3DSymbol /NoDefaultCtors/ : QgsAbstract3DSymbol
 {
 %Docstring(signature="appended")
 3D symbol that draws linestring geometries as planar polygons (created from lines using a buffer with given thickness).

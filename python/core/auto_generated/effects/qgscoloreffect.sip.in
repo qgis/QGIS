@@ -9,7 +9,7 @@
 
 
 
-class QgsColorEffect : QgsPaintEffect /NoDefaultCtors/
+class QgsColorEffect /NoDefaultCtors/ : QgsPaintEffect
 {
 %Docstring(signature="appended")
 A paint effect which alters the colors (e.g., brightness, contrast) in a

@@ -10,7 +10,7 @@
 
 
 
-class QgsShadowEffect : QgsPaintEffect /NoDefaultCtors/
+class QgsShadowEffect /NoDefaultCtors/ : QgsPaintEffect
 {
 %Docstring(signature="appended")
 Base class for paint effects which offset, blurred shadows
@@ -296,7 +296,7 @@ the picture.
 };
 
 
-class QgsDropShadowEffect : QgsShadowEffect /NoDefaultCtors/
+class QgsDropShadowEffect /NoDefaultCtors/ : QgsShadowEffect
 {
 %Docstring(signature="appended")
 A paint effect which draws an offset and optionally blurred drop shadow
@@ -332,7 +332,7 @@ Creates a new QgsDropShadowEffect effect from a properties string map.
 
 };
 
-class QgsInnerShadowEffect : QgsShadowEffect /NoDefaultCtors/
+class QgsInnerShadowEffect /NoDefaultCtors/ : QgsShadowEffect
 {
 %Docstring(signature="appended")
 A paint effect which draws an offset and optionally blurred drop shadow

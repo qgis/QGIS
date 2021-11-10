@@ -9,7 +9,7 @@
 
 
 
-class QgsMapRendererAbstractCustomPainterJob : QgsMapRendererJob /Abstract/
+class QgsMapRendererAbstractCustomPainterJob /Abstract/ : QgsMapRendererJob
 {
 %Docstring(signature="appended")
 Abstract base class for map renderer jobs which use custom painters.

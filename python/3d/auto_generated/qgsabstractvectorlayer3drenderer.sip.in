@@ -62,7 +62,7 @@ Reads content of the object from XML
 };
 
 
-class QgsAbstractVectorLayer3DRenderer : QgsAbstract3DRenderer /Abstract/
+class QgsAbstractVectorLayer3DRenderer /Abstract/ : QgsAbstract3DRenderer
 {
 %Docstring(signature="appended")
 Base class for 3D renderers that are based on vector layers.

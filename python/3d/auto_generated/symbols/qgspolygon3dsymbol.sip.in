@@ -11,7 +11,7 @@
 
 
 
-class QgsPolygon3DSymbol : QgsAbstract3DSymbol /NoDefaultCtors/
+class QgsPolygon3DSymbol /NoDefaultCtors/ : QgsAbstract3DSymbol
 {
 %Docstring(signature="appended")
 3D symbol that draws polygon geometries as planar polygons, optionally extruded (with added walls).

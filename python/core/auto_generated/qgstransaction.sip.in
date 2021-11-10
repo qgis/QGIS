@@ -12,7 +12,7 @@
 
 
 
-class QgsTransaction : QObject /Abstract/
+class QgsTransaction /Abstract/ : QObject
 {
 %Docstring(signature="appended")
 This class allows including a set of layers in a database-side transaction,

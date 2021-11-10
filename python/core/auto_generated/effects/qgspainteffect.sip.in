@@ -319,7 +319,7 @@ to rendering results onto a painter.
 };
 
 
-class QgsDrawSourceEffect : QgsPaintEffect /NoDefaultCtors/
+class QgsDrawSourceEffect /NoDefaultCtors/ : QgsPaintEffect
 {
 %Docstring(signature="appended")
 A paint effect which draws the source picture with minor or no alterations

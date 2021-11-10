@@ -9,7 +9,7 @@
 
 
 
-class QgsMeshAdvancedEditing : protected QgsTopologicalMesh::Changes /Abstract/
+class QgsMeshAdvancedEditing /Abstract/ : protected QgsTopologicalMesh::Changes
 {
 %Docstring(signature="appended")
 
