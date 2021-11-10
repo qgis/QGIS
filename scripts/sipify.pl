@@ -881,8 +881,8 @@ while ($LINE_IDX < $LINE_COUNT){
     }
 
     # class declaration started
-    # https://regex101.com/r/6FWntP/16
-    if ( $LINE =~ m/^(\s*(class))\s+([A-Z0-9_]+_EXPORT\s+)?(Q_DECL_DEPRECATED\s+)?(?<classname>\w+)(?<domain>\s*\:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*\/?\/?\s*SIP_\w+)?\s*?(\/\/.*|(?!;))$/ ){
+    # https://regex101.com/r/L1LOOZ/1
+    if ( $LINE =~ m/^(\s*(class))\s+([A-Z0-9_]+_EXPORT\s+)?(Q_DECL_DEPRECATED\s+)?(?<classname>\w+)(?<annot>\s*\/?\/?\s*SIP_\w+)?(?<domain>\s*\:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*)*)?\s*?(\/\/.*|(?!;))$/ ){
         dbg_info("class definition started");
         push @ACCESS, PUBLIC;
         push @EXPORTED, 0;
@@ -905,6 +905,11 @@ while ($LINE_IDX < $LINE_COUNT){
             }
         };
         $LINE = "$1 $+{classname}";
+        if (defined $+{annot})
+        {
+            $LINE .= "$+{annot}";
+            $LINE = fix_annotations($LINE);
+        }
         # Inheritance
         if (defined $+{domain}){
             my $m = $+{domain};
@@ -922,11 +927,6 @@ while ($LINE_IDX < $LINE_COUNT){
             $m =~ s/([:,])\s*,/$1/g;
             $m =~ s/(\s*[:,])?\s*$//;
             $LINE .= $m;
-        }
-        if (defined $+{annot})
-        {
-            $LINE .= "$+{annot}";
-            $LINE = fix_annotations($LINE);
         }
 
         $LINE .= "\n{\n";
