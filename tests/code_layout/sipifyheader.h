@@ -443,7 +443,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
  * \ingroup core
  * Documentation goes here
  */
-class CORE_EXPORT ClassWithPrivateInheritanceOnly : private QgsBaseClass SIP_ABSTRACT
+class CORE_EXPORT ClassWithPrivateInheritanceOnly SIP_ABSTRACT : private QgsBaseClass
 {
   public:
     //! A constructor with definition in header on several lines
