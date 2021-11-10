@@ -80,7 +80,7 @@ void QgsDbSourceSelectBase::setSourceModel( QgsAbstractDbTableModel *model )
   mSearchSettingsMenu->addAction( wildcardAction );
   modeActionGroup->addAction( wildcardAction );
   // mode: regexp
-  mSearchModeRegexAction = new QAction( tr( "Regular expression" ), mSearchSettingsMenu );
+  mSearchModeRegexAction = new QAction( tr( "Regular Expression" ), mSearchSettingsMenu );
   mSearchModeRegexAction->setCheckable( true );
   mSearchModeRegexAction->setChecked( false );
   mSearchSettingsMenu->addAction( mSearchModeRegexAction );
@@ -109,6 +109,7 @@ void QgsDbSourceSelectBase::filterResults()
       if ( mSearchColumnActions.at( i )->isChecked() )
       {
         mProxyModel->setFilterKeyColumn( i );
+        break;
       }
     }
   }
