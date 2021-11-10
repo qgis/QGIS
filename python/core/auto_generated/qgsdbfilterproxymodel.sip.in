@@ -10,23 +10,22 @@
 
 
 
-class QgsDatabaseFilterProxyModel: QSortFilterProxyModel
-{
-%Docstring(signature="appended")
+class QgsDatabaseFilterProxyModel /Deprecated/ : public QSortFilterProxyModel
+%Docstring
 A class that implements a custom filter and can be used
 as a proxy for :py:class:`QgsDbTableModel`
 
+.. deprecated:: QGIS 3.24
+
 .. versionadded:: 3.0
 %End
+{
 
-%TypeHeaderCode
-#include "qgsdbfilterproxymodel.h"
-%End
   public:
 
     QgsDatabaseFilterProxyModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsDatabaseFilterProxyModel.
+Constructor for :py:class:`QgsDatabaseFilterProxyModel`.
 %End
 
     void _setFilterWildcard( const QString &pattern );
@@ -41,7 +40,6 @@ Calls QSortFilterProxyModel.setFilterRegExp and triggers update
 
   protected:
     virtual bool filterAcceptsRow( int row, const QModelIndex &source_parent ) const;
-
 
 };
 
