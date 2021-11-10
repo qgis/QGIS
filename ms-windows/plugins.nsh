@@ -8,7 +8,7 @@
 ################################################################################
 
 WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "grassplugin" "true"
-WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "offlineeditingplugin" "true"
-WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "topolplugin" "true"
+WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "plugin_offlineediting" "true"
+WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "plugin_topology" "true"
 
 ###############################  reg2nsis end  #################################

@@ -382,9 +382,9 @@ if not exist %ARCH%\release\qgis\%PACKAGENAME% mkdir %ARCH%\release\qgis\%PACKAG
 	"apps/%PACKAGENAME%/i18n/" ^
 	"apps/%PACKAGENAME%/icons/" ^
 	"apps/%PACKAGENAME%/images/" ^
-	"apps/%PACKAGENAME%/plugins/offlineeditingplugin.dll" ^
-	"apps/%PACKAGENAME%/plugins/topolplugin.dll" ^
-	"apps/%PACKAGENAME%/plugins/geometrycheckerplugin.dll" ^
+	"apps/%PACKAGENAME%/plugins/plugin_offlineediting.dll" ^
+	"apps/%PACKAGENAME%/plugins/plugin_topology.dll" ^
+	"apps/%PACKAGENAME%/plugins/plugin_geometrychecker.dll" ^
 	"apps/%PACKAGENAME%/qtplugins/sqldrivers/qsqlspatialite.dll" ^
 	"apps/%PACKAGENAME%/qtplugins/designer/" ^
 	"apps/%PACKAGENAME%/python/" ^
