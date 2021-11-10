@@ -21,11 +21,10 @@
 
 #include "ui_qgsdbsourceselectbase.h"
 #include "qgsguiutils.h"
-#include "qgsdbfilterproxymodel.h"
 #include "qgsdb2tablemodel.h"
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
-#include "qgsabstractdatasourcewidget.h"
+#include "qgsdbsourceselectbase.h"
 
 #include <QMap>
 #include <QPair>
@@ -89,7 +88,7 @@ class QgsDb2GeomColumnTypeThread : public QThread
  * for Db2 databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsDb2SourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDbSourceSelectBase
+class QgsDb2SourceSelect : public QgsDbSourceSelectBase
 {
     Q_OBJECT
 
@@ -135,10 +134,6 @@ class QgsDb2SourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDb
     void btnSave_clicked();
     //! Loads the selected connections from file
     void btnLoad_clicked();
-    void mSearchGroupBox_toggled( bool );
-    void mSearchTableEdit_textChanged( const QString &text );
-    void mSearchColumnComboBox_currentIndexChanged( const QString &text );
-    void mSearchModeComboBox_currentIndexChanged( const QString &text );
     void setSql( const QModelIndex &index );
     //! Store the selected database
     void cmbConnections_activated( int );
@@ -175,8 +170,7 @@ class QgsDb2SourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDb
     QMap<QString, QPair<QString, QIcon> > mLayerIcons;
 
     //! Model that acts as datasource for mTableTreeWidget
-    QgsDb2TableModel mTableModel;
-    QgsDatabaseFilterProxyModel mProxyModel;
+    QgsDb2TableModel *mTableModel = nullptr;
 
     QPushButton *mBuildQueryButton = nullptr;
 

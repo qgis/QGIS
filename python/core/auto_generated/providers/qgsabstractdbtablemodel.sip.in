@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsdbfilterproxymodel.h                                     *
+ * src/core/providers/qgsabstractdbtablemodel.h                         *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -9,47 +9,43 @@
 
 
 
-
-class QgsDatabaseFilterProxyModel : QSortFilterProxyModel /Deprecated/
+class QgsAbstractDbTableModel : QStandardItemModel
 {
 %Docstring(signature="appended")
-A class that implements a custom filter and can be used
-as a proxy for :py:class:`QgsDbTableModel`
+The :py:class:`QgsAbstractDbTableModel` class is a pure virtual model class for results in a database source widget selector
 
-.. deprecated:: QGIS 3.24
-
-.. versionadded:: 3.0
+.. versionadded:: 3.24
 %End
 
 %TypeHeaderCode
-#include "qgsdbfilterproxymodel.h"
+#include "qgsabstractdbtablemodel.h"
 %End
   public:
-
-    QgsDatabaseFilterProxyModel( QObject *parent /TransferThis/ = 0 );
+    explicit QgsAbstractDbTableModel( QObject *parent = 0 );
 %Docstring
-Constructor for QgsDatabaseFilterProxyModel.
+Constructor
 %End
 
-    void _setFilterWildcard( const QString &pattern );
+    virtual QStringList columns() const = 0;
 %Docstring
-Calls QSortFilterProxyModel.setFilterWildcard and triggers update
+Returns the list of columns in the table
 %End
 
-    void _setFilterRegExp( const QString &pattern );
+    virtual int defaultSearchColumn() const = 0;
 %Docstring
-Calls QSortFilterProxyModel.setFilterRegExp and triggers update
+Returns the index of the column used by default to filter the results (probably the table name column if it exists)
 %End
 
-  protected:
-    virtual bool filterAcceptsRow( int row, const QModelIndex &source_parent ) const;
-
+    virtual bool searchableColumn( int column ) const;
+%Docstring
+Returns if the column should be searchable at the given index
+%End
 };
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsdbfilterproxymodel.h                                     *
+ * src/core/providers/qgsabstractdbtablemodel.h                         *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

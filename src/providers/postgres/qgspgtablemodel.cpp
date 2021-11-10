@@ -24,23 +24,55 @@
 #include <QRegularExpression>
 #include <climits>
 
-QgsPgTableModel::QgsPgTableModel()
+QgsPgTableModel::QgsPgTableModel( QObject *parent )
+  : QgsAbstractDbTableModel( parent )
 {
-  QStringList headerLabels;
-  headerLabels << tr( "Schema" );
-  headerLabels << tr( "Table" );
-  headerLabels << tr( "Comment" );
-  headerLabels << tr( "Column" );
-  headerLabels << tr( "Data Type" );
-  headerLabels << tr( "Spatial Type" );
-  headerLabels << tr( "SRID" );
-  headerLabels << tr( "Feature id" );
-  headerLabels << tr( "Select at id" );
-  headerLabels << tr( "Check PK unicity" );
-  headerLabels << tr( "Sql" );
-  setHorizontalHeaderLabels( headerLabels );
+  mColumns << tr( "Schema" )
+           << tr( "Table" )
+           << tr( "Comment" )
+           << tr( "Column" )
+           << tr( "Data Type" )
+           << tr( "Spatial Type" )
+           << tr( "SRID" )
+           << tr( "Feature id" )
+           << tr( "Select at id" )
+           << tr( "Check PK unicity" )
+           << tr( "SQL" );
+  setHorizontalHeaderLabels( mColumns );
   setHeaderData( Columns::DbtmSelectAtId, Qt::Orientation::Horizontal, tr( "Disable 'Fast Access to Features at ID' capability to force keeping the attribute table in memory (e.g. in case of expensive views)." ), Qt::ToolTipRole );
   setHeaderData( Columns::DbtmCheckPkUnicity, Qt::Orientation::Horizontal, tr( "Enable check for primary key unicity when loading views and materialized views. This option can make loading of large datasets significantly slower." ), Qt::ToolTipRole );
+}
+
+QStringList QgsPgTableModel::columns() const
+{
+  return mColumns;
+}
+
+int QgsPgTableModel::defaultSearchColumn() const
+{
+  return static_cast<int>( DbtmTable );
+}
+
+bool QgsPgTableModel::searchableColumn( int column ) const
+{
+  Columns col = static_cast<Columns>( column );
+  switch ( col )
+  {
+    case DbtmSchema:
+    case DbtmTable:
+    case DbtmComment:
+    case DbtmGeomCol:
+    case DbtmType:
+    case DbtmSrid:
+    case DbtmSql:
+      return true;
+
+    case DbtmGeomType:
+    case DbtmPkCol:
+    case DbtmSelectAtId:
+    case DbtmCheckPkUnicity:
+      return false;
+  }
 }
 
 void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProperty )
@@ -342,7 +374,7 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
         tip = tr( "Select columns in the '%1' column that uniquely identify features of this layer" ).arg( tr( "Feature id" ) );
     }
 
-    for ( int i = 0; i < DbtmColumns; i++ )
+    for ( int i = 0; i < columnCount(); i++ )
     {
       QStandardItem *item = itemFromIndex( idx.sibling( idx.row(), i ) );
       if ( tip.isEmpty() )
@@ -466,3 +498,4 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
   QgsDebugMsg( QStringLiteral( "returning uri %1" ).arg( uri.uri( false ) ) );
   return uri.uri( false );
 }
+

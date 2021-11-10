@@ -22,18 +22,47 @@
 #include "qgsapplication.h"
 #include "qgsiconutils.h"
 
-QgsDb2TableModel::QgsDb2TableModel()
+QgsDb2TableModel::QgsDb2TableModel( QObject *parent )
+  : QgsAbstractDbTableModel( parent )
 {
-  QStringList headerLabels;
-  headerLabels << tr( "Schema" );
-  headerLabels << tr( "Table" );
-  headerLabels << tr( "Type" );
-  headerLabels << tr( "Geometry column" );
-  headerLabels << tr( "SRID" );
-  headerLabels << tr( "Primary key column" );
-  headerLabels << tr( "Select at id" );
-  headerLabels << tr( "Sql" );
-  setHorizontalHeaderLabels( headerLabels );
+  mColumns << tr( "Schema" )
+           << tr( "Table" )
+           << tr( "Type" )
+           << tr( "Geometry column" )
+           << tr( "SRID" )
+           << tr( "Primary key column" )
+           << tr( "Select at id" )
+           << tr( "SQL" );
+  setHorizontalHeaderLabels( mColumns );
+}
+
+QStringList QgsDb2TableModel::columns() const
+{
+  return mColumns;
+}
+
+int QgsDb2TableModel::defaultSearchColumn() const
+{
+  return static_cast<int>( DbtmTable );
+}
+
+bool QgsDb2TableModel::searchableColumn( int column ) const
+{
+  Columns col = static_cast<Columns>( column );
+  switch ( col )
+  {
+    case DbtmSchema:
+    case DbtmTable:
+    case DbtmGeomCol:
+    case DbtmType:
+    case DbtmSrid:
+    case DbtmSql:
+      return true;
+
+    case DbtmPkCol:
+    case DbtmSelectAtId:
+      return false;
+  }
 }
 
 void QgsDb2TableModel::addTableEntry( const QgsDb2LayerProperty &layerProperty )
@@ -242,8 +271,8 @@ void QgsDb2TableModel::setGeometryTypesForTable( QgsDb2LayerProperty layerProper
 
     QList<QStandardItem *> row;
 
-    row.reserve( DbtmColumns );
-    for ( int j = 0; j < DbtmColumns; j++ )
+    row.reserve( columnCount() );
+    for ( int j = 0; j < columnCount(); j++ )
     {
       row << itemFromIndex( currentChildIndex.sibling( i, j ) );
     }
@@ -315,7 +344,7 @@ bool QgsDb2TableModel::setData( const QModelIndex &idx, const QVariant &value, i
     if ( ok && pkCols.size() > 0 )
       ok = pkCols.contains( idx.sibling( idx.row(), DbtmPkCol ).data().toString() );
 
-    for ( int i = 0; i < DbtmColumns; i++ )
+    for ( int i = 0; i < columnCount(); i++ )
     {
       QStandardItem *item = itemFromIndex( idx.sibling( idx.row(), i ) );
       if ( ok )

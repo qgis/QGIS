@@ -17,14 +17,11 @@
 #ifndef QGSORACLESOURCESELECT_H
 #define QGSORACLESOURCESELECT_H
 
-#include "ui_qgsdbsourceselectbase.h"
 #include "qgsguiutils.h"
-#include "qgsdbfilterproxymodel.h"
-#include "qgsoracletablemodel.h"
 #include "qgshelp.h"
 #include "qgsoracleconnpool.h"
 #include "qgsproviderregistry.h"
-#include "qgsabstractdatasourcewidget.h"
+#include "qgsdbsourceselectbase.h"
 
 #include <QMap>
 #include <QPair>
@@ -32,10 +29,10 @@
 #include <QItemDelegate>
 
 class QPushButton;
-class QStringList;
 class QgsOracleColumnTypeTask;
 class QgisApp;
 class QgsOracleSourceSelect;
+class QgsOracleTableModel;
 
 class QgsOracleSourceSelectDelegate : public QItemDelegate
 {
@@ -82,7 +79,7 @@ class QgsOracleSourceSelectDelegate : public QItemDelegate
  * for Oracle databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsOracleSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDbSourceSelectBase
+class QgsOracleSourceSelect : public QgsDbSourceSelectBase
 {
     Q_OBJECT
 
@@ -117,10 +114,6 @@ class QgsOracleSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qg
     void on_btnSave_clicked();
     //! Loads the selected connections from file
     void on_btnLoad_clicked();
-    void on_mSearchGroupBox_toggled( bool );
-    void on_mSearchTableEdit_textChanged( const QString &text );
-    void on_mSearchColumnComboBox_currentIndexChanged( const QString &text );
-    void on_mSearchModeComboBox_currentIndexChanged( const QString &text );
     void on_cmbConnections_currentIndexChanged( const QString &text );
     void setSql( const QModelIndex &index );
     //! Store the selected database
@@ -159,8 +152,7 @@ class QgsOracleSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qg
     QMap<QString, QPair<QString, QIcon> > mLayerIcons;
 
     //! Model that acts as datasource for mTableTreeWidget
-    QgsOracleTableModel mTableModel;
-    QgsDatabaseFilterProxyModel mProxyModel;
+    QgsOracleTableModel *mTableModel = nullptr;
     QgsOracleSourceSelectDelegate *mTablesTreeDelegate = nullptr;
 
     QPushButton *mBuildQueryButton = nullptr;

@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsdbfilterproxymodel.h                                     *
+ * src/gui/providers/qgsdbsourceselectbase.h                            *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -10,46 +10,40 @@
 
 
 
-class QgsDatabaseFilterProxyModel : QSortFilterProxyModel /Deprecated/
+class QgsDbSourceSelectBase : QgsAbstractDataSourceWidget, protected Ui::QgsDbSourceSelectBase
 {
 %Docstring(signature="appended")
-A class that implements a custom filter and can be used
-as a proxy for :py:class:`QgsDbTableModel`
+The :py:class:`QgsDbSourceSelectBase` class is a base class for database source widget selector
 
-.. deprecated:: QGIS 3.24
-
-.. versionadded:: 3.0
+.. versionadded:: 3.24
 %End
 
 %TypeHeaderCode
-#include "qgsdbfilterproxymodel.h"
+#include "qgsdbsourceselectbase.h"
 %End
   public:
-
-    QgsDatabaseFilterProxyModel( QObject *parent /TransferThis/ = 0 );
+    QgsDbSourceSelectBase( QWidget *parent = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 %Docstring
-Constructor for QgsDatabaseFilterProxyModel.
-%End
-
-    void _setFilterWildcard( const QString &pattern );
-%Docstring
-Calls QSortFilterProxyModel.setFilterWildcard and triggers update
-%End
-
-    void _setFilterRegExp( const QString &pattern );
-%Docstring
-Calls QSortFilterProxyModel.setFilterRegExp and triggers update
+Constructor
 %End
 
   protected:
-    virtual bool filterAcceptsRow( int row, const QModelIndex &source_parent ) const;
+    void setSourceModel( QgsAbstractDbTableModel *model );
+%Docstring
+Sets the source model for the widget
+%End
+
+    QSortFilterProxyModel *proxyModel();
+%Docstring
+Returns the proxy model used to filter the results
+%End
 
 };
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsdbfilterproxymodel.h                                     *
+ * src/gui/providers/qgsdbsourceselectbase.h                            *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

@@ -17,15 +17,13 @@
 #ifndef QGSHANASOURCESELECT_H
 #define QGSHANASOURCESELECT_H
 
-#include "qgsabstractdatasourcewidget.h"
 #include "qgsdatasourceuri.h"
-#include "qgsdbfilterproxymodel.h"
-#include "qgshanatablemodel.h"
 #include "qgshanacolumntypethread.h"
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
 #include "qgsguiutils.h"
-#include "ui_qgsdbsourceselectbase.h"
+#include "qgsdbsourceselectbase.h"
+
 
 #include <QMap>
 #include <QPair>
@@ -66,7 +64,7 @@ class QgsHanaSourceSelectDelegate : public QItemDelegate
  * for SAP HANA databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsHanaSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDbSourceSelectBase
+class QgsHanaSourceSelect : public QgsDbSourceSelectBase
 {
     Q_OBJECT
 
@@ -114,10 +112,6 @@ class QgsHanaSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsD
     void btnSave_clicked();
     //! Loads the selected connections from file
     void btnLoad_clicked();
-    void mSearchGroupBox_toggled( bool );
-    void mSearchTableEdit_textChanged( const QString &text );
-    void mSearchColumnComboBox_currentTextChanged( const QString &text );
-    void mSearchModeComboBox_currentTextChanged( const QString &text );
     void setSql( const QModelIndex &index );
     //! Store the selected database
     void cmbConnections_activated( int );
@@ -151,8 +145,7 @@ class QgsHanaSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsD
     std::unique_ptr<QgsProxyProgressTask> mColumnTypeTask;
     QStringList mSelectedTables;
     //! Model that acts as datasource for mTableTreeWidget
-    QgsHanaTableModel mTableModel;
-    QgsDatabaseFilterProxyModel mProxyModel;
+    QgsHanaTableModel *mTableModel = nullptr;
 
     QPushButton *mBuildQueryButton = nullptr;
 };

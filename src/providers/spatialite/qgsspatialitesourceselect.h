@@ -17,14 +17,10 @@
 #ifndef QGSSPATIALITESOURCESELECT_H
 #define QGSSPATIALITESOURCESELECT_H
 
-#include "ui_qgsdbsourceselectbase.h"
-
 #include "qgsguiutils.h"
-#include "qgsdbfilterproxymodel.h"
-#include "qgsspatialitetablemodel.h"
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
-#include "qgsabstractdatasourcewidget.h"
+#include "qgsdbsourceselectbase.h"
 
 #include <QThread>
 #include <QMap>
@@ -33,6 +29,7 @@
 #include <QIcon>
 #include <QFileDialog>
 
+class QgsSpatiaLiteTableModel;
 class QStringList;
 class QTableWidgetItem;
 class QPushButton;
@@ -45,7 +42,7 @@ class QPushButton;
  * for SpatiaLite/SQLite databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsSpatiaLiteSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsDbSourceSelectBase
+class QgsSpatiaLiteSourceSelect:  public QgsDbSourceSelectBase
 {
     Q_OBJECT
 
@@ -84,10 +81,6 @@ class QgsSpatiaLiteSourceSelect: public QgsAbstractDataSourceWidget, private Ui:
     void btnNew_clicked();
     //! Deletes the selected connection
     void btnDelete_clicked();
-    void mSearchGroupBox_toggled( bool );
-    void mSearchTableEdit_textChanged( const QString &text );
-    void mSearchColumnComboBox_currentIndexChanged( const QString &text );
-    void mSearchModeComboBox_currentIndexChanged( const QString &text );
     void cbxAllowGeometrylessTables_stateChanged( int );
     void setSql( const QModelIndex &index );
     void cmbConnections_activated( int );
@@ -125,8 +118,7 @@ class QgsSpatiaLiteSourceSelect: public QgsAbstractDataSourceWidget, private Ui:
     // Storage for the range of layer type icons
     QMap < QString, QPair < QString, QIcon > >mLayerIcons;
     //! Model that acts as datasource for mTableTreeWidget
-    QgsSpatiaLiteTableModel mTableModel;
-    QgsDatabaseFilterProxyModel mProxyModel;
+    QgsSpatiaLiteTableModel *mTableModel;
 
     QString layerURI( const QModelIndex &index );
     QPushButton *mBuildQueryButton = nullptr;

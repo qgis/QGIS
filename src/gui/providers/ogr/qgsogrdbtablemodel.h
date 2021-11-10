@@ -18,22 +18,26 @@
 
 #include "qgis.h"
 
-#include <QObject>
-#include <QStandardItemModel>
 #include <type_traits>
 #include "qgslayeritem.h"
 #include "qgis_sip.h"
+#include "qgsabstractdbtablemodel.h"
+
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
-class QgsOgrDbTableModel : public QStandardItemModel
+class QgsOgrDbTableModel : public QgsAbstractDbTableModel
 {
     Q_OBJECT
 
   public:
 
-    QgsOgrDbTableModel();
+    QgsOgrDbTableModel( QObject *parent = nullptr );
+
+    QStringList columns() const override;
+    int defaultSearchColumn() const override;
+    bool searchableColumn( int column ) const override;
 
     //! Sets the geometry type for the table
     void setGeometryTypesForTable( const QString &table, const QString &attribute, const QString &type );
@@ -60,6 +64,7 @@ class QgsOgrDbTableModel : public QStandardItemModel
     //! Number of tables in the model
     int mTableCount = 0;
     QString mPath;
+    QStringList mColumns;
 
     QIcon iconForType( QgsWkbTypes::Type type ) const;
     QString displayStringForType( QgsWkbTypes::Type type ) const;
