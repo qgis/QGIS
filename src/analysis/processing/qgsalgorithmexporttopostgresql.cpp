@@ -107,7 +107,7 @@ bool QgsExportToPostgresqlAlgorithm::prepareAlgorithm( const QVariantMap &parame
   mOverwrite = parameterAsBoolean( parameters, QStringLiteral( "OVERWRITE" ), context );
 
   mTable = parameterAsDatabaseTableName( parameters, QStringLiteral( "TABLENAME" ), context ).trimmed();
-  if ( !mTable.isEmpty() )
+  if ( mTable.isEmpty() )
   {
     mTable = mSource->sourceName();
     mTable = mTable.replace( '.', '_' );
