@@ -21,6 +21,8 @@
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
 
+///@cond PRIVATE
+
 QgsPointCloudSourceSelect::QgsPointCloudSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ):
   QgsAbstractDataSourceWidget( parent, fl, widgetMode )
 {
@@ -164,3 +166,4 @@ void QgsPointCloudSourceSelect::setProtocolWidgetsVisibility()
   mAuthWarning->hide();
 }
 
+///@endcond

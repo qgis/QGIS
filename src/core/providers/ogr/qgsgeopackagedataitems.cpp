@@ -431,8 +431,6 @@ bool QgsGeoPackageVectorLayerItem::executeDeleteLayer( QString &errCause )
   return true;
 }
 
-///@endcond
-
 
 bool QgsGeoPackageCollectionItem::layerCollection() const
 {
@@ -457,3 +455,5 @@ QgsMimeDataUtils::UriList QgsGeoPackageCollectionItem::mimeUris() const
 
   return { collectionUri };
 }
+
+///@endcond

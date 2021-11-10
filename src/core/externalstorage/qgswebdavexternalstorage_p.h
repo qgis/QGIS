@@ -139,5 +139,5 @@ class QgsWebDAVExternalStorageStoreTask : public QgsTask
 };
 
 
-
+///@endcond
 #endif // QGSWEBDAVEXTERNALSTORAGE_H
