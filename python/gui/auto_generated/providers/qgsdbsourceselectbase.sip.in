@@ -33,7 +33,7 @@ Constructor
 Sets the source model for the widget
 %End
 
-    QgsDatabaseFilterProxyModel *proxyModel();
+    QSortFilterProxyModel *proxyModel();
 %Docstring
 Returns the proxy model used to filter the results
 %End
