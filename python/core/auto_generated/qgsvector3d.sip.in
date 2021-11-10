@@ -108,6 +108,12 @@ Members will be truncated to the specified ``precision``.
     QVector3D toVector3D() const;
 %Docstring
 Converts the current object to QVector3D
+
+.. warning::
+
+   the conversion may decrease the accuracy (double to float values conversion)
+
+.. versionadded:: 3.24
 %End
 
     SIP_PYOBJECT __repr__();
