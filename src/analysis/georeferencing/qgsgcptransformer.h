@@ -145,7 +145,7 @@ class ANALYSIS_EXPORT QgsGcpTransformerInterface SIP_ABSTRACT
  * \note Not available in Python bindings
  * \since QGIS 3.20
  */
-class ANALYSIS_EXPORT QgsLinearGeorefTransform : public QgsGcpTransformerInterface SIP_SKIP
+class ANALYSIS_EXPORT QgsLinearGeorefTransform SIP_SKIP : public QgsGcpTransformerInterface
 {
   public:
 
@@ -184,7 +184,7 @@ class ANALYSIS_EXPORT QgsLinearGeorefTransform : public QgsGcpTransformerInterfa
  * \note Not available in Python bindings
  * \since QGIS 3.20
  */
-class ANALYSIS_EXPORT QgsHelmertGeorefTransform : public QgsGcpTransformerInterface SIP_SKIP
+class ANALYSIS_EXPORT QgsHelmertGeorefTransform SIP_SKIP : public QgsGcpTransformerInterface
 {
   public:
 
@@ -225,7 +225,7 @@ class ANALYSIS_EXPORT QgsHelmertGeorefTransform : public QgsGcpTransformerInterf
  * \note Not available in Python bindings
  * \since QGIS 3.20
  */
-class ANALYSIS_EXPORT QgsGDALGeorefTransform : public QgsGcpTransformerInterface SIP_SKIP
+class ANALYSIS_EXPORT QgsGDALGeorefTransform SIP_SKIP : public QgsGcpTransformerInterface
 {
   public:
 
@@ -263,7 +263,7 @@ class ANALYSIS_EXPORT QgsGDALGeorefTransform : public QgsGcpTransformerInterface
  * \note Not available in Python bindings
  * \since QGIS 3.20
  */
-class ANALYSIS_EXPORT QgsProjectiveGeorefTransform : public QgsGcpTransformerInterface SIP_SKIP
+class ANALYSIS_EXPORT QgsProjectiveGeorefTransform SIP_SKIP : public QgsGcpTransformerInterface
 {
   public:
 

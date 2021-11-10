@@ -34,7 +34,7 @@
  * \since QGIS 2.9
  */
 
-class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
+class CORE_EXPORT QgsBlurEffect SIP_NODEFAULTCTORS : public QgsPaintEffect
 {
 
   public:

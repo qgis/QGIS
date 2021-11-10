@@ -36,7 +36,7 @@ class QgsGeocoderResult;
  *
  * \since QGIS 3.18
 */
-class CORE_EXPORT QgsAbstractGeocoderLocatorFilter : public QgsLocatorFilter SIP_ABSTRACT
+class CORE_EXPORT QgsAbstractGeocoderLocatorFilter SIP_ABSTRACT : public QgsLocatorFilter
 {
     Q_OBJECT
 

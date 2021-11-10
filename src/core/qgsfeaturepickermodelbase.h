@@ -29,7 +29,7 @@
  *
  * \since QGIS 3.14
  */
-class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABSTRACT
+class CORE_EXPORT QgsFeaturePickerModelBase SIP_ABSTRACT : public QAbstractItemModel
 {
     Q_OBJECT
 

@@ -32,7 +32,7 @@
  * \since QGIS 2.9
  */
 
-class CORE_EXPORT QgsColorEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
+class CORE_EXPORT QgsColorEffect SIP_NODEFAULTCTORS : public QgsPaintEffect
 {
 
   public:

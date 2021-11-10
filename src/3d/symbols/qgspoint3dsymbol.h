@@ -35,7 +35,7 @@ class QgsMarkerSymbol;
  *
  * \since QGIS 3.0
  */
-class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTORS
+class _3D_EXPORT QgsPoint3DSymbol SIP_NODEFAULTCTORS : public QgsAbstract3DSymbol
 {
   public:
     //! Constructor for QgsPoint3DSymbol with default QgsMarkerSymbol as the billboardSymbol

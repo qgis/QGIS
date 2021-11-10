@@ -324,7 +324,7 @@ class CORE_EXPORT QgsPaintEffect SIP_NODEFAULTCTORS
  * \since QGIS 2.9
  */
 
-class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
+class CORE_EXPORT QgsDrawSourceEffect SIP_NODEFAULTCTORS : public QgsPaintEffect
 {
   public:
 

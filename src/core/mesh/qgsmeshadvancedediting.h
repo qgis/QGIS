@@ -35,7 +35,7 @@ class QgsExpressionContext;
  *
  * \since QGIS 3.22
  */
-class CORE_EXPORT QgsMeshAdvancedEditing : protected QgsTopologicalMesh::Changes SIP_ABSTRACT
+class CORE_EXPORT QgsMeshAdvancedEditing SIP_ABSTRACT : protected QgsTopologicalMesh::Changes
 {
   public:
 

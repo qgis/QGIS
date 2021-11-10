@@ -35,7 +35,7 @@ class QgsSearchWidgetToolButton;
  *
  * \since QGIS 3.0
  */
-class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
+class GUI_EXPORT QgsAttributeFormWidget SIP_ABSTRACT : public QWidget
 {
     Q_OBJECT
 

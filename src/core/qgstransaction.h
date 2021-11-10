@@ -53,7 +53,7 @@ class QgsVectorLayer;
  * Edits on features can get rejected if another conflicting transaction is active.
  */
 
-class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
+class CORE_EXPORT QgsTransaction SIP_ABSTRACT : public QObject
 {
     Q_OBJECT
 

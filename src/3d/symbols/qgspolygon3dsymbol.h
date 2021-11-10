@@ -34,7 +34,7 @@ class QgsAbstractMaterialSettings;
  *
  * \since QGIS 3.0
  */
-class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTORS
+class _3D_EXPORT QgsPolygon3DSymbol SIP_NODEFAULTCTORS : public QgsAbstract3DSymbol
 {
   public:
     //! Constructor for QgsPolygon3DSymbol

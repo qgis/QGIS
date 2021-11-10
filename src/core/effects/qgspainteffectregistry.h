@@ -95,7 +95,7 @@ typedef QgsPaintEffectWidget *( *QgsPaintEffectWidgetFunc )() SIP_SKIP;
  * \note not available in Python bindings
  * \since QGIS 2.9
  */
-class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata SIP_SKIP
+class CORE_EXPORT QgsPaintEffectMetadata SIP_SKIP : public QgsPaintEffectAbstractMetadata
 {
 
   public:

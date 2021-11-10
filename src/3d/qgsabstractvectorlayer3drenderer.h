@@ -74,7 +74,7 @@ class _3D_EXPORT QgsVectorLayer3DTilingSettings
  *
  * \since QGIS 3.12
  */
-class _3D_EXPORT QgsAbstractVectorLayer3DRenderer : public QgsAbstract3DRenderer SIP_ABSTRACT
+class _3D_EXPORT QgsAbstractVectorLayer3DRenderer SIP_ABSTRACT : public QgsAbstract3DRenderer
 {
   public:
     QgsAbstractVectorLayer3DRenderer();

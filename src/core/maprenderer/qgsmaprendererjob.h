@@ -244,7 +244,7 @@ struct LabelRenderJob
  *
  * \since QGIS 2.4
  */
-class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
+class CORE_EXPORT QgsMapRendererJob SIP_ABSTRACT : public QObject
 {
     Q_OBJECT
   public:
@@ -570,7 +570,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
  *
  * \since QGIS 2.4
  */
-class CORE_EXPORT QgsMapRendererQImageJob : public QgsMapRendererJob SIP_ABSTRACT
+class CORE_EXPORT QgsMapRendererQImageJob SIP_ABSTRACT : public QgsMapRendererJob
 {
     Q_OBJECT
 

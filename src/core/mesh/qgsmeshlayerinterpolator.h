@@ -51,7 +51,7 @@ class QgsRenderContext;
  * \note not available in Python bindings
  * \since QGIS 3.2
  */
-class QgsMeshLayerInterpolator : public QgsRasterInterface SIP_SKIP
+class QgsMeshLayerInterpolator SIP_SKIP : public QgsRasterInterface
 {
   public:
     //! Ctor

@@ -37,7 +37,7 @@ class QgsPropertyOverrideButton;
  *
  * \since QGIS 3.6
  */
-class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTRACT
+class GUI_EXPORT QgsAbstractFileContentSourceLineEdit SIP_ABSTRACT : public QWidget
 {
     Q_OBJECT
     Q_PROPERTY( QString source READ source WRITE setSource NOTIFY sourceChanged )

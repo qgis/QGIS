@@ -35,7 +35,7 @@
  *
  * \since QGIS 3.18
  */
-class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
+class _3D_EXPORT QgsPointCloud3DSymbol SIP_ABSTRACT : public QgsAbstract3DSymbol
 {
   public:
 

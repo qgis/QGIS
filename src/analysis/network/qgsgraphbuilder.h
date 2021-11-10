@@ -32,7 +32,7 @@ class QgsGraph;
 * \brief This class used for making the QgsGraph object
 */
 
-class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface SIP_NODEFAULTCTORS
+class ANALYSIS_EXPORT QgsGraphBuilder SIP_NODEFAULTCTORS : public QgsGraphBuilderInterface
 {
   public:
 

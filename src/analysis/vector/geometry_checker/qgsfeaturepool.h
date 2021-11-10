@@ -34,7 +34,7 @@
  * \note This class is a technology preview and unstable API.
  * \since QGIS 3.4
  */
-class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
+class ANALYSIS_EXPORT QgsFeaturePool SIP_ABSTRACT : public QgsFeatureSink
 {
 
   public:
