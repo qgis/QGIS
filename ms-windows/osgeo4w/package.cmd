@@ -441,7 +441,7 @@ for %%g IN (%GRASS_VERSIONS%) do (
 		"apps/%PACKAGENAME%/grass/modules/qgis.g.info!v!.exe" ^
 		"apps/%PACKAGENAME%/grass/modules/qgis.r.in!v!.exe" ^
 		"apps/%PACKAGENAME%/grass/modules/qgis.v.in!v!.exe" ^
-		"apps/%PACKAGENAME%/plugins/grassplugin!v!.dll" ^
+		"apps/%PACKAGENAME%/plugins/plugin_grass!v!.dll" ^
 		"apps/%PACKAGENAME%/plugins/provider_grass!v!.dll" ^
 		"apps/%PACKAGENAME%/plugins/provider_grassraster!v!.dll" ^
 		"bin/%PACKAGENAME%-grass!v!.bat.tmpl" ^
