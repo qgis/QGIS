@@ -256,6 +256,8 @@ QString QgsAttributeActionDialog::textForType( QgsAction::ActionType type )
       return tr( "Unix" );
     case QgsAction::OpenUrl:
       return tr( "Open URL" );
+    case QgsAction::SubmitUrl:
+      return tr( "Submit URL" );
   }
   return QString();
 }

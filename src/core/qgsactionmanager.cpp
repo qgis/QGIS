@@ -31,6 +31,8 @@
 #include "qgsexpression.h"
 #include "qgsdataprovider.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgswebview.h"
+#include "qgsnetworkaccessmanager.h"
 
 #include <QList>
 #include <QStringList>
@@ -41,7 +43,10 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QRegularExpression>
-
+#include <QDialog>
+#include <QLayout>
+#include <QNetworkRequest>
+#include <QMimeDatabase>
 
 QUuid QgsActionManager::addAction( QgsAction::ActionType type, const QString &name, const QString &command, bool capture )
 {
@@ -196,6 +201,113 @@ void QgsActionManager::runAction( const QgsAction &action )
       QDesktopServices::openUrl( QUrl::fromLocalFile( action.command() ) );
     else
       QDesktopServices::openUrl( QUrl( action.command(), QUrl::TolerantMode ) );
+  }
+  else if ( action.type() == QgsAction::SubmitUrl )
+  {
+    QUrl url{ action.command() };
+    // Remove payload
+    QString payload { url.query() };
+    url.setQuery( QString( ) );
+    QDialog d;
+    d.setWindowTitle( tr( "Form Submit Action" ) );
+    d.setLayout( new QHBoxLayout( &d ) );
+    QgsWebView *wv = new QgsWebView( &d );
+    wv->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
+#ifdef QGISDEBUG
+    wv->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
+#endif
+#ifdef WITH_QTWEBKIT
+    wv->page()->setForwardUnsupportedContent( true );
+#endif
+    wv->page()->settings()->setAttribute( QWebSettings::JavascriptEnabled, true );
+    wv->page()->settings()->setAttribute( QWebSettings::LocalStorageEnabled, true );
+    wv->page()->settings()->setAttribute( QWebSettings::LocalContentCanAccessRemoteUrls, true );
+    wv->page()->settings()->setAttribute( QWebSettings::JavascriptCanOpenWindows, true );
+    wv->page()->settings()->setAttribute( QWebSettings::PluginsEnabled, true );
+
+
+    connect( wv->page(), &QWebPage::unsupportedContent, this, [ &d ]( QNetworkReply * reply )
+    {
+
+      QString filename { "unknown.bin" };
+      if ( const auto header = reply->header( QNetworkRequest::KnownHeaders::ContentDispositionHeader ).toString().toStdString(); ! header.empty() )
+      {
+
+        std::string ascii;
+        const std::string q1 { R"(filename=")" };
+        if ( const auto pos = header.find( q1 ); pos != std::string::npos )
+        {
+          const auto len = pos + q1.size();
+
+          const std::string q2 { R"(")" };
+          if ( auto pos = header.find( q2, len ); pos != std::string::npos )
+          {
+            bool escaped = false;
+            while ( pos != std::string::npos && header[pos - 1] == '\\' )
+            {
+              std::cout << pos << std::endl;
+              pos = header.find( q2, pos + 1 );
+              escaped = true;
+            }
+            ascii = header.substr( len, pos - len );
+            if ( escaped )
+            {
+              std::string cleaned;
+              for ( size_t i = 0; i < ascii.size(); ++i )
+              {
+                if ( ascii[i] == '\\' )
+                {
+                  if ( i > 0 && ascii[i - 1] == '\\' )
+                  {
+                    cleaned.push_back( ascii[i] );
+                  }
+                }
+                else
+                {
+                  cleaned.push_back( ascii[i] );
+                }
+              }
+              ascii = cleaned;
+            }
+          }
+        }
+
+        std::string utf8;
+
+        const std::string u { R"(UTF-8'')" };
+        if ( const auto pos = header.find( u ); pos != std::string::npos )
+        {
+          utf8 = header.substr( pos + u.size() );
+        }
+
+        // Prefer ascii over utf8
+        if ( ascii.empty() )
+        {
+          filename = QString::fromStdString( utf8 );
+        }
+        else
+        {
+          filename = QString::fromStdString( ascii );
+        }
+      }
+
+      QTemporaryDir tempDir;
+      tempDir.setAutoRemove( false );
+      tempDir.path();
+      const QString tempFilePath{ tempDir.path() + QDir::separator() + filename };
+      QFile tempFile{tempFilePath};
+      tempFile.open( QIODevice::WriteOnly );
+      tempFile.write( reply->readAll() );
+      tempFile.close();
+      d.close();
+      QDesktopServices::openUrl( QUrl::fromLocalFile( tempFilePath ) );
+    } );
+
+    d.layout()->addWidget( wv );
+    QNetworkRequest req { url };
+    // TODO: guess content type req.setHeader();
+    wv->load( req, QNetworkAccessManager::Operation::PostOperation, payload.toUtf8() );
+    d.exec();
   }
   else if ( action.type() == QgsAction::GenericPython )
   {

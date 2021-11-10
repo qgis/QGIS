@@ -42,6 +42,7 @@ class CORE_EXPORT QgsAction
       Windows,
       Unix,
       OpenUrl,
+      SubmitUrl,
     };
 
     /**
