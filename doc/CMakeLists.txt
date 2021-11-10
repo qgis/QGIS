@@ -58,33 +58,41 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/classification
       ${CMAKE_SOURCE_DIR}/src/core/diagram
       ${CMAKE_SOURCE_DIR}/src/core/dxf
+      ${CMAKE_SOURCE_DIR}/src/core/editform
       ${CMAKE_SOURCE_DIR}/src/core/effects
       ${CMAKE_SOURCE_DIR}/src/core/expression
+      ${CMAKE_SOURCE_DIR}/src/core/externalstorage
       ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
-      ${CMAKE_SOURCE_DIR}/src/core/geometry
       ${CMAKE_SOURCE_DIR}/src/core/geocms
       ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
       ${CMAKE_SOURCE_DIR}/src/core/geocoding
+      ${CMAKE_SOURCE_DIR}/src/core/geometry
       ${CMAKE_SOURCE_DIR}/src/core/gps
       ${CMAKE_SOURCE_DIR}/src/core/labeling
       ${CMAKE_SOURCE_DIR}/src/core/layertree
       ${CMAKE_SOURCE_DIR}/src/core/layout
       ${CMAKE_SOURCE_DIR}/src/core/locator
       ${CMAKE_SOURCE_DIR}/src/core/maprenderer
-      ${CMAKE_SOURCE_DIR}/src/core/metadata
       ${CMAKE_SOURCE_DIR}/src/core/mesh
+      ${CMAKE_SOURCE_DIR}/src/core/metadata
       ${CMAKE_SOURCE_DIR}/src/core/network
       ${CMAKE_SOURCE_DIR}/src/core/numericformats
       ${CMAKE_SOURCE_DIR}/src/core/pal
-      ${CMAKE_SOURCE_DIR}/src/core/processing
-      ${CMAKE_SOURCE_DIR}/src/core/proj
       ${CMAKE_SOURCE_DIR}/src/core/pointcloud
+      ${CMAKE_SOURCE_DIR}/src/core/processing
+      ${CMAKE_SOURCE_DIR}/src/core/processing/models
+      ${CMAKE_SOURCE_DIR}/src/core/proj
       ${CMAKE_SOURCE_DIR}/src/core/project
       ${CMAKE_SOURCE_DIR}/src/core/providers
       ${CMAKE_SOURCE_DIR}/src/core/providers/arcgis
+      ${CMAKE_SOURCE_DIR}/src/core/providers/ept
+      ${CMAKE_SOURCE_DIR}/src/core/providers/gdal
       ${CMAKE_SOURCE_DIR}/src/core/providers/memory
+      ${CMAKE_SOURCE_DIR}/src/core/providers/meshmemory
+      ${CMAKE_SOURCE_DIR}/src/core/providers/ogr
       ${CMAKE_SOURCE_DIR}/src/core/raster
       ${CMAKE_SOURCE_DIR}/src/core/scalebar
+      ${CMAKE_SOURCE_DIR}/src/core/simplify
       ${CMAKE_SOURCE_DIR}/src/core/symbology
       ${CMAKE_SOURCE_DIR}/src/core/textrenderer
       ${CMAKE_SOURCE_DIR}/src/core/validity
@@ -92,8 +100,8 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/vectortile
       ${CMAKE_SOURCE_DIR}/src/gui
       ${CMAKE_SOURCE_DIR}/src/gui/annotations
-      ${CMAKE_SOURCE_DIR}/src/gui/auth
       ${CMAKE_SOURCE_DIR}/src/gui/attributetable
+      ${CMAKE_SOURCE_DIR}/src/gui/auth
       ${CMAKE_SOURCE_DIR}/src/gui/callouts
       ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
       ${CMAKE_SOURCE_DIR}/src/gui/devtools
@@ -104,18 +112,26 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/gui/layertree
       ${CMAKE_SOURCE_DIR}/src/gui/layout
       ${CMAKE_SOURCE_DIR}/src/gui/locator
+      ${CMAKE_SOURCE_DIR}/src/gui/mesh
       ${CMAKE_SOURCE_DIR}/src/gui/numericformats
       ${CMAKE_SOURCE_DIR}/src/gui/ogr
       ${CMAKE_SOURCE_DIR}/src/gui/pointcloud
       ${CMAKE_SOURCE_DIR}/src/gui/processing
       ${CMAKE_SOURCE_DIR}/src/gui/processing/models
+      ${CMAKE_SOURCE_DIR}/src/gui/providers
+      ${CMAKE_SOURCE_DIR}/src/gui/providers/ept
+      ${CMAKE_SOURCE_DIR}/src/gui/providers/gdal
+      ${CMAKE_SOURCE_DIR}/src/gui/providers/ogr
       ${CMAKE_SOURCE_DIR}/src/gui/raster
+      ${CMAKE_SOURCE_DIR}/src/gui/settings
       ${CMAKE_SOURCE_DIR}/src/gui/symbology
+      ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
+      ${CMAKE_SOURCE_DIR}/src/gui/vector
       ${CMAKE_SOURCE_DIR}/src/gui/vectortile
       ${CMAKE_SOURCE_DIR}/src/analysis
-      ${CMAKE_SOURCE_DIR}/src/analysis/mesh
       ${CMAKE_SOURCE_DIR}/src/analysis/georeferencing
       ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
+      ${CMAKE_SOURCE_DIR}/src/analysis/mesh
       ${CMAKE_SOURCE_DIR}/src/analysis/network
       ${CMAKE_SOURCE_DIR}/src/analysis/processing
       ${CMAKE_SOURCE_DIR}/src/analysis/raster
@@ -124,6 +140,9 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/3d
       ${CMAKE_SOURCE_DIR}/src/3d/chunks
       ${CMAKE_SOURCE_DIR}/src/3d/materials
+      ${CMAKE_SOURCE_DIR}/src/3d/processing
+      ${CMAKE_SOURCE_DIR}/src/3d/shaders
+      ${CMAKE_SOURCE_DIR}/src/3d/shaders/mesh
       ${CMAKE_SOURCE_DIR}/src/3d/symbols
       ${CMAKE_SOURCE_DIR}/src/3d/terrain
       ${CMAKE_SOURCE_DIR}/src/plugins
@@ -134,11 +153,13 @@ if(WITH_APIDOC)
     if(WITH_SERVER)
       set(DOXYGEN_INPUT
         ${DOXYGEN_INPUT}
-        ${CMAKE_SOURCE_DIR}/src/server/
-        ${CMAKE_SOURCE_DIR}/src/server/services/
-        ${CMAKE_SOURCE_DIR}/src/server/services/wms
-        ${CMAKE_SOURCE_DIR}/src/server/services/wfs
+        ${CMAKE_SOURCE_DIR}/src/server
+        ${CMAKE_SOURCE_DIR}/src/server/services
         ${CMAKE_SOURCE_DIR}/src/server/services/wcs
+        ${CMAKE_SOURCE_DIR}/src/server/services/wfs
+        ${CMAKE_SOURCE_DIR}/src/server/services/wfs3
+        ${CMAKE_SOURCE_DIR}/src/server/services/wms
+        ${CMAKE_SOURCE_DIR}/src/server/services/wmts
       )
     endif()
 
