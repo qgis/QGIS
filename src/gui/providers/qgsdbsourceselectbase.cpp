@@ -49,7 +49,7 @@ void QgsDbSourceSelectBase::setSourceModel( QgsAbstractDbTableModel *model )
   mSearchSettingsMenu = new QMenu( this );
   // columns
   QActionGroup *columnActionGroup = new QActionGroup( this );
-  mSearchColumnAllAction = new QAction( tr( "All" ) );
+  mSearchColumnAllAction = new QAction( tr( "All" ), mSearchSettingsMenu );
   mSearchColumnAllAction->setCheckable( true );
   mSearchSettingsMenu->addAction( mSearchColumnAllAction );
   columnActionGroup->addAction( mSearchColumnAllAction );
@@ -59,7 +59,7 @@ void QgsDbSourceSelectBase::setSourceModel( QgsAbstractDbTableModel *model )
   {
     if ( !model->searchableColumn( i ) )
       continue;
-    QAction *action = new QAction( columns.at( i ) );
+    QAction *action = new QAction( columns.at( i ), mSearchSettingsMenu );
     action->setCheckable( true );
     if ( model->defaultSearchColumn() == i )
     {
@@ -74,13 +74,13 @@ void QgsDbSourceSelectBase::setSourceModel( QgsAbstractDbTableModel *model )
   mSearchSettingsMenu->addSeparator();
   QActionGroup *modeActionGroup = new QActionGroup( this );
   // mode: wildcard
-  QAction *wildcardAction = new QAction( tr( "Wildcard" ) );
+  QAction *wildcardAction = new QAction( tr( "Wildcard" ), mSearchSettingsMenu );
   wildcardAction->setCheckable( true );
   wildcardAction->setChecked( true );
   mSearchSettingsMenu->addAction( wildcardAction );
   modeActionGroup->addAction( wildcardAction );
   // mode: regexp
-  mSearchModeRegexAction = new QAction( tr( "Regular expression" ) );
+  mSearchModeRegexAction = new QAction( tr( "Regular expression" ), mSearchSettingsMenu );
   mSearchModeRegexAction->setCheckable( true );
   mSearchModeRegexAction->setChecked( false );
   mSearchSettingsMenu->addAction( mSearchModeRegexAction );
