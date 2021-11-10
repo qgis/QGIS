@@ -25,7 +25,7 @@ QgsSpatiaLiteTableModel::QgsSpatiaLiteTableModel( QObject *parent )
   mColumns << tr( "Table" )
            << tr( "Type" )
            << tr( "Geometry column" )
-           << tr( "Sql" );
+           << tr( "SQL" );
   setHorizontalHeaderLabels( mColumns );
 }
 

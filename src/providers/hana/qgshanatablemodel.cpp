@@ -34,7 +34,7 @@ QgsHanaTableModel::QgsHanaTableModel( QObject *parent )
            << tr( "SRID" )
            << tr( "Feature id" )
            << tr( "Select at id" )
-           << tr( "Sql" );
+           << tr( "SQL" );
   setHorizontalHeaderLabels( mColumns );
 }
 

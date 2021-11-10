@@ -37,7 +37,7 @@ QgsPgTableModel::QgsPgTableModel( QObject *parent )
            << tr( "Feature id" )
            << tr( "Select at id" )
            << tr( "Check PK unicity" )
-           << tr( "Sql" );
+           << tr( "SQL" );
   setHorizontalHeaderLabels( mColumns );
   setHeaderData( Columns::DbtmSelectAtId, Qt::Orientation::Horizontal, tr( "Disable 'Fast Access to Features at ID' capability to force keeping the attribute table in memory (e.g. in case of expensive views)." ), Qt::ToolTipRole );
   setHeaderData( Columns::DbtmCheckPkUnicity, Qt::Orientation::Horizontal, tr( "Enable check for primary key unicity when loading views and materialized views. This option can make loading of large datasets significantly slower." ), Qt::ToolTipRole );

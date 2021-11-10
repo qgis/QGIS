@@ -30,7 +30,7 @@ QgsOracleTableModel::QgsOracleTableModel( QObject *parent )
            << tr( "SRID" )
            << tr( "Primary key column" )
            << tr( "Select at id" )
-           << tr( "Sql" );
+           << tr( "SQL" );
   setHorizontalHeaderLabels( mColumns );
 }
 
