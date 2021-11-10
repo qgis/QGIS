@@ -27,17 +27,18 @@
 #include "qgsogrproviderutils.h"
 #include "qgsprovidermetadata.h"
 #include "qgsprovidersublayerdetails.h"
+#include "qgsogrdbtablemodel.h"
+
 
 #include <QMessageBox>
 
 QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const QString &theName,
     const QString &theExtensions, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
-  : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
+  : QgsDbSourceSelectBase( parent, fl, theWidgetMode )
   , mOgrDriverName( theSettingsKey )
   , mName( theName )
   , mExtension( theExtensions )
 {
-  setupUi( this );
   QgsGui::instance()->enableAutoGeometryRestore( this );
 
   connect( btnConnect, &QPushButton::clicked, this, &QgsOgrDbSourceSelect::btnConnect_clicked );
@@ -71,12 +72,10 @@ QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const
 
   populateConnectionList();
 
-  mProxyModel.setParent( this );
-  mProxyModel.setFilterKeyColumn( -1 );
-  mProxyModel.setFilterCaseSensitivity( Qt::CaseInsensitive );
-  mProxyModel.setDynamicSortFilter( true );
-  mProxyModel.setSourceModel( &mTableModel );
-  mTablesTreeView->setModel( &mProxyModel );
+  mTableModel = new QgsOgrDbTableModel( this );
+  setSourceModel( mTableModel );
+
+  mTablesTreeView->setModel( proxyModel() );
   mTablesTreeView->setSortingEnabled( true );
 
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsOgrDbSourceSelect::treeWidgetSelectionChanged );
@@ -148,9 +147,9 @@ void QgsOgrDbSourceSelect::btnNew_clicked()
 
 QString QgsOgrDbSourceSelect::layerURI( const QModelIndex &index )
 {
-  QStandardItem *item = mTableModel.itemFromIndex( index );
+  QStandardItem *item = mTableModel->itemFromIndex( index );
   QString uri( item->data().toString() );
-  QString sql = mTableModel.itemFromIndex( index.sibling( index.row(), 3 ) )->text();
+  QString sql = mTableModel->itemFromIndex( index.sibling( index.row(), 3 ) )->text();
   if ( ! sql.isEmpty() )
   {
     uri += QStringLiteral( "|subset=%1" ).arg( sql );
@@ -200,7 +199,7 @@ void QgsOgrDbSourceSelect::addButtonClicked()
       //top level items only contain the schema names
       continue;
     }
-    currentItem = mTableModel.itemFromIndex( mProxyModel.mapToSource( *selected_it ) );
+    currentItem = mTableModel->itemFromIndex( proxyModel()->mapToSource( *selected_it ) );
     if ( !currentItem )
     {
       continue;
@@ -214,11 +213,11 @@ void QgsOgrDbSourceSelect::addButtonClicked()
       dbInfo[currentSchemaName][currentRow] = true;
       if ( currentItem->data( Qt::UserRole + 2 ).toString().contains( QStringLiteral( "Raster" ), Qt::CaseInsensitive ) )
       {
-        selectedRasters << LayerInfo( layerURI( mProxyModel.mapToSource( *selected_it ) ), currentItem->data( Qt::DisplayRole ).toString() );
+        selectedRasters << LayerInfo( layerURI( proxyModel()->mapToSource( *selected_it ) ), currentItem->data( Qt::DisplayRole ).toString() );
       }
       else
       {
-        selectedVectors << LayerInfo( layerURI( mProxyModel.mapToSource( *selected_it ) ), currentItem->data( Qt::DisplayRole ).toString() );
+        selectedVectors << LayerInfo( layerURI( proxyModel()->mapToSource( *selected_it ) ), currentItem->data( Qt::DisplayRole ).toString() );
       }
     }
   }
@@ -260,13 +259,13 @@ void QgsOgrDbSourceSelect::btnConnect_clicked()
 
   const QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->querySublayers( mPath );
 
-  QModelIndex rootItemIndex = mTableModel.indexFromItem( mTableModel.invisibleRootItem() );
-  mTableModel.removeRows( 0, mTableModel.rowCount( rootItemIndex ), rootItemIndex );
+  QModelIndex rootItemIndex = mTableModel->indexFromItem( mTableModel->invisibleRootItem() );
+  mTableModel->removeRows( 0, mTableModel->rowCount( rootItemIndex ), rootItemIndex );
 
   // populate the table list
   // get the list of suitable tables and columns and populate the UI
 
-  mTableModel.setPath( mPath );
+  mTableModel->setPath( mPath );
 
 
   for ( const QgsProviderSublayerDetails &layer : sublayers )
@@ -298,17 +297,17 @@ void QgsOgrDbSourceSelect::btnConnect_clicked()
           break;
       }
 
-      mTableModel.addTableEntry( layerType, layer.name(), layer.uri(), layer.geometryColumnName(), QgsWkbTypes::displayString( layer.wkbType() ), QString() );
+      mTableModel->addTableEntry( layerType, layer.name(), layer.uri(), layer.geometryColumnName(), QgsWkbTypes::displayString( layer.wkbType() ), QString() );
     }
   }
 
   mTablesTreeView->sortByColumn( 0, Qt::AscendingOrder );
 
   //expand all the toplevel items
-  int numTopLevelItems = mTableModel.invisibleRootItem()->rowCount();
+  int numTopLevelItems = mTableModel->invisibleRootItem()->rowCount();
   for ( int i = 0; i < numTopLevelItems; ++i )
   {
-    mTablesTreeView->expand( mProxyModel.mapFromSource( mTableModel.indexFromItem( mTableModel.invisibleRootItem()->child( i ) ) ) );
+    mTablesTreeView->expand( proxyModel()->mapFromSource( mTableModel->indexFromItem( mTableModel->invisibleRootItem()->child( i ) ) ) );
   }
   mTablesTreeView->resizeColumnToContents( 0 );
   mTablesTreeView->resizeColumnToContents( 1 );
@@ -322,8 +321,8 @@ void QgsOgrDbSourceSelect::btnConnect_clicked()
 
 void QgsOgrDbSourceSelect::setSql( const QModelIndex &index )
 {
-  QModelIndex idx = mProxyModel.mapToSource( index );
-  QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), 0 ) )->text();
+  QModelIndex idx = proxyModel()->mapToSource( index );
+  QString tableName = mTableModel->itemFromIndex( idx.sibling( idx.row(), 0 ) )->text();
 
   QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
   std::unique_ptr<QgsVectorLayer> vlayer = std::make_unique<QgsVectorLayer>( layerURI( idx ), tableName, QStringLiteral( "ogr" ), options );
@@ -338,7 +337,7 @@ void QgsOgrDbSourceSelect::setSql( const QModelIndex &index )
 
   if ( gb->exec() )
   {
-    mTableModel.setSql( mProxyModel.mapToSource( index ), gb->sql() );
+    mTableModel->setSql( proxyModel()->mapToSource( index ), gb->sql() );
   }
 }
 
