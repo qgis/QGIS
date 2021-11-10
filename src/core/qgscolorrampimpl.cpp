@@ -367,6 +367,7 @@ QString QgsGradientColorRamp::type() const
 void QgsGradientColorRamp::invert()
 {
   QgsGradientStopsList newStops;
+  newStops.reserve( mStops.size() );
 
   if ( mDiscrete )
   {
@@ -388,6 +389,26 @@ void QgsGradientColorRamp::invert()
       newStops << QgsGradientStop( 1 - mStops.at( k ).offset, mStops.at( k ).color );
     }
   }
+
+  // transfer color spec, invert directions
+  if ( mStops.empty() )
+  {
+    // reverse direction
+    mDirection = mDirection == Qgis::AngularDirection::Clockwise ? Qgis::AngularDirection::CounterClockwise : Qgis::AngularDirection::Clockwise;
+  }
+  else
+  {
+    newStops[0].setColorSpec( mColorSpec );
+    newStops[0].setDirection( mDirection == Qgis::AngularDirection::Clockwise ? Qgis::AngularDirection::CounterClockwise : Qgis::AngularDirection::Clockwise );
+    for ( int i = 1, j = mStops.size() - 1; i < mStops.size(); ++i, --j )
+    {
+      newStops[i].setColorSpec( mStops.at( j ).colorSpec() );
+      newStops[i].setDirection( mStops.at( j ).direction() == Qgis::AngularDirection::Clockwise ? Qgis::AngularDirection::CounterClockwise : Qgis::AngularDirection::Clockwise );
+    }
+    mColorSpec = mStops.at( 0 ).colorSpec();
+    mDirection = mStops.at( 0 ).direction() == Qgis::AngularDirection::Clockwise ? Qgis::AngularDirection::CounterClockwise : Qgis::AngularDirection::Clockwise;
+  }
+
   mStops = newStops;
 }
 
