@@ -21,7 +21,7 @@
 #include "ui_qgsdbsourceselectbase.h"
 #include "qgsabstractdatasourcewidget.h"
 
-class QgsDatabaseFilterProxyModel;
+class QSortFilterProxyModel;
 class QgsAbstractDbTableModel;
 
 /**
@@ -41,12 +41,12 @@ class GUI_EXPORT QgsDbSourceSelectBase : public QgsAbstractDataSourceWidget, pro
     void setSourceModel( QgsAbstractDbTableModel *model );
 
     //! Returns the proxy model used to filter the results
-    QgsDatabaseFilterProxyModel *proxyModel() {return mProxyModel;}
+    QSortFilterProxyModel *proxyModel() {return mProxyModel;}
 
   private:
     void filterResults();
 
-    QgsDatabaseFilterProxyModel *mProxyModel = nullptr;
+    QSortFilterProxyModel *mProxyModel = nullptr;
     QMenu *mSearchSettingsMenu = nullptr;
 
     QAction *mSearchColumnAllAction = nullptr;

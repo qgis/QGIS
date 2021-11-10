@@ -15,20 +15,20 @@
 
 #include "qgsabstractdbtablemodel.h"
 #include "qgsdbsourceselectbase.h"
-#include "qgsdbfilterproxymodel.h"
 
 #include <QMenu>
-
+#include <QSortFilterProxyModel>
 
 QgsDbSourceSelectBase::QgsDbSourceSelectBase( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
 {
   setupUi( this );
 
-  mProxyModel = new QgsDatabaseFilterProxyModel( this );
+  mProxyModel = new QSortFilterProxyModel( this );
   mProxyModel->setParent( this );
   mProxyModel->setFilterKeyColumn( -1 );
   mProxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
+  mProxyModel->setRecursiveFilteringEnabled( true );
 
   // Do not do dynamic sorting - otherwise whenever user selects geometry type / srid / pk columns,
   // that item suddenly jumps to the end of the list (because the item gets changed) which is very annoying.
@@ -115,11 +115,15 @@ void QgsDbSourceSelectBase::filterResults()
 
   if ( regex )
   {
-    mProxyModel->_setFilterRegExp( searchText );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    mProxyModel->setFilterRegExp( searchText );
+#else
+    mProxyModel->setFilterRegularExpression( searchText );
+#endif
   }
   else
   {
-    mProxyModel->_setFilterWildcard( searchText );
+    mProxyModel->setFilterWildcard( searchText );
   }
 }
 
