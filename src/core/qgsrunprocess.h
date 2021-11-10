@@ -44,7 +44,7 @@ class QgsMessageOutput;
  * On some platforms (e.g. iOS) , the process execution is skipped
  * https://lists.qt-project.org/pipermail/development/2015-July/022205.html
  */
-class CORE_EXPORT QgsRunProcess: public QObject SIP_NODEFAULTCTORS
+class CORE_EXPORT QgsRunProcess SIP_NODEFAULTCTORS : public QObject
 {
     Q_OBJECT
 
