@@ -92,6 +92,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/providers/ogr
       ${CMAKE_SOURCE_DIR}/src/core/raster
       ${CMAKE_SOURCE_DIR}/src/core/scalebar
+      ${CMAKE_SOURCE_DIR}/src/core/settings
       ${CMAKE_SOURCE_DIR}/src/core/simplify
       ${CMAKE_SOURCE_DIR}/src/core/symbology
       ${CMAKE_SOURCE_DIR}/src/core/textrenderer
@@ -100,6 +101,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/vectortile
       ${CMAKE_SOURCE_DIR}/src/gui
       ${CMAKE_SOURCE_DIR}/src/gui/annotations
+      ${CMAKE_SOURCE_DIR}/src/gui/attributeformconfig
       ${CMAKE_SOURCE_DIR}/src/gui/attributetable
       ${CMAKE_SOURCE_DIR}/src/gui/auth
       ${CMAKE_SOURCE_DIR}/src/gui/callouts
