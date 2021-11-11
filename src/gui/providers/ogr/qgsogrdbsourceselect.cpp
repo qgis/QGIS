@@ -73,7 +73,7 @@ QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const
   populateConnectionList();
 
   mTableModel = new QgsOgrDbTableModel( this );
-  setSourceModel( mTableModel );
+  init( mTableModel );
 
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsOgrDbSourceSelect::treeWidgetSelectionChanged );
 

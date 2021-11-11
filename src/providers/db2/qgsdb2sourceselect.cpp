@@ -160,7 +160,7 @@ QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   populateConnectionList();
 
   mTableModel = new QgsDb2TableModel( this );
-  setSourceModel( mTableModel, new QgsDb2SourceSelectDelegate( this ) );
+  init( mTableModel, new QgsDb2SourceSelectDelegate( this ) );
 
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsDb2SourceSelect::treeWidgetSelectionChanged );
 

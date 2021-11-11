@@ -202,7 +202,7 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags f
 
 
   mTableModel = new QgsOracleTableModel( this );
-  setSourceModel( mTableModel, mTablesTreeDelegate );
+  init( mTableModel, mTablesTreeDelegate );
 
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsOracleSourceSelect::treeWidgetSelectionChanged );
 

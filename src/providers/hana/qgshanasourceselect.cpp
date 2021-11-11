@@ -236,7 +236,7 @@ QgsHanaSourceSelect::QgsHanaSourceSelect(
   populateConnectionList();
 
   mTableModel = new QgsHanaTableModel( this );
-  setSourceModel( mTableModel, new QgsHanaSourceSelectDelegate( this ) );
+  init( mTableModel, new QgsHanaSourceSelectDelegate( this ) );
 
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged,
            this, &QgsHanaSourceSelect::treeWidgetSelectionChanged );

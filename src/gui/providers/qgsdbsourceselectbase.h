@@ -39,7 +39,7 @@ class GUI_EXPORT QgsDbSourceSelectBase : public QgsAbstractDataSourceWidget, pro
 
   protected:
     //! Sets the source model for the table and optionally a delegate
-    void setSourceModel( QgsAbstractDbTableModel *model, QItemDelegate *delegate = nullptr );
+    void init( QgsAbstractDbTableModel *model, QItemDelegate *delegate = nullptr );
 
     //! Returns the proxy model used to filter the results
     QSortFilterProxyModel *proxyModel() {return mProxyModel;}

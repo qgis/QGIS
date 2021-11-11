@@ -255,7 +255,7 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsPr
 
 
   mTableModel = new QgsPgTableModel( this );
-  setSourceModel( mTableModel, new QgsPgSourceSelectDelegate( this ) );
+  init( mTableModel, new QgsPgSourceSelectDelegate( this ) );
 
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsPgSourceSelect::treeWidgetSelectionChanged );
 
