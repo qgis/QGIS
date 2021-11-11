@@ -1570,9 +1570,9 @@ void QgsTemplatedLineSymbolLayerBase::setCommonProperties( QgsTemplatedLineSymbo
     else
       destLayer->setPlacements( Qgis::MarkerLinePlacement::Interval );
   }
-  else
+  else if ( properties.contains( QStringLiteral( "placements" ) ) )
   {
-    Qgis::MarkerLinePlacements placements = qgsFlagKeysToValue( properties.value( QStringLiteral( "placements" ) ).toString(), Qgis::MarkerLinePlacement::Interval );
+    Qgis::MarkerLinePlacements placements = qgsFlagKeysToValue( properties.value( QStringLiteral( "placements" ) ).toString(), Qgis::MarkerLinePlacements() );
     destLayer->setPlacements( placements );
   }
 
