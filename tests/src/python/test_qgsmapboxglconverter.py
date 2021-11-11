@@ -67,7 +67,7 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
                                                                                     },
                                                                                    conversion_context)
         self.assertEqual(props.expressionString(),
-                         'CASE WHEN @vector_tile_zoom >= 0 AND @vector_tile_zoom < 150 THEN color_hsla(scale_linear(@vector_tile_zoom,0,150,59,352), scale_linear(@vector_tile_zoom,0,150,81,59), scale_linear(@vector_tile_zoom,0,150,70,44), 255) WHEN @vector_tile_zoom >= 150 AND @vector_tile_zoom < 250 THEN color_hsla(scale_linear(@vector_tile_zoom,150,250,352,0), scale_linear(@vector_tile_zoom,150,250,59,72), scale_linear(@vector_tile_zoom,150,250,44,63), 255) WHEN @vector_tile_zoom >= 250 THEN color_hsla(0, 72, 63, 255) ELSE color_hsla(0, 72, 63, 255) END')
+                         'CASE WHEN @vector_tile_zoom < 0 THEN color_hsla(59, 81, 70, 255) WHEN @vector_tile_zoom >= 0 AND @vector_tile_zoom < 150 THEN color_hsla(scale_linear(@vector_tile_zoom,0,150,59,352), scale_linear(@vector_tile_zoom,0,150,81,59), scale_linear(@vector_tile_zoom,0,150,70,44), 255) WHEN @vector_tile_zoom >= 150 AND @vector_tile_zoom < 250 THEN color_hsla(scale_linear(@vector_tile_zoom,150,250,352,0), scale_linear(@vector_tile_zoom,150,250,59,72), scale_linear(@vector_tile_zoom,150,250,44,63), 255) WHEN @vector_tile_zoom >= 250 THEN color_hsla(0, 72, 63, 255) ELSE color_hsla(0, 72, 63, 255) END')
         self.assertEqual(default_col.name(), '#f1f075')
         props, default_col = QgsMapBoxGlStyleConverter.parseInterpolateColorByZoom({'base': 2,
                                                                                     'stops': [[0, '#f1f075'],
@@ -76,7 +76,7 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
                                                                                     },
                                                                                    conversion_context)
         self.assertEqual(props.expressionString(),
-                         'CASE WHEN @vector_tile_zoom >= 0 AND @vector_tile_zoom < 150 THEN color_hsla(scale_exp(@vector_tile_zoom,0,150,59,352,2), scale_exp(@vector_tile_zoom,0,150,81,59,2), scale_exp(@vector_tile_zoom,0,150,70,44,2), 255) WHEN @vector_tile_zoom >= 150 AND @vector_tile_zoom < 250 THEN color_hsla(scale_exp(@vector_tile_zoom,150,250,352,0,2), scale_exp(@vector_tile_zoom,150,250,59,72,2), scale_exp(@vector_tile_zoom,150,250,44,63,2), 255) WHEN @vector_tile_zoom >= 250 THEN color_hsla(0, 72, 63, 255) ELSE color_hsla(0, 72, 63, 255) END')
+                         'CASE WHEN @vector_tile_zoom < 0 THEN color_hsla(59, 81, 70, 255) WHEN @vector_tile_zoom >= 0 AND @vector_tile_zoom < 150 THEN color_hsla(scale_exp(@vector_tile_zoom,0,150,59,352,2), scale_exp(@vector_tile_zoom,0,150,81,59,2), scale_exp(@vector_tile_zoom,0,150,70,44,2), 255) WHEN @vector_tile_zoom >= 150 AND @vector_tile_zoom < 250 THEN color_hsla(scale_exp(@vector_tile_zoom,150,250,352,0,2), scale_exp(@vector_tile_zoom,150,250,59,72,2), scale_exp(@vector_tile_zoom,150,250,44,63,2), 255) WHEN @vector_tile_zoom >= 250 THEN color_hsla(0, 72, 63, 255) ELSE color_hsla(0, 72, 63, 255) END')
         self.assertEqual(default_col.name(), '#f1f075')
 
         props, default_col = QgsMapBoxGlStyleConverter.parseInterpolateColorByZoom({'base': 1,
