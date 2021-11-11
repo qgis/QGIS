@@ -1041,7 +1041,7 @@ Qgis.MarkerLinePlacement.__doc__ = 'Defines how/where the symbols should be plac
 # --
 Qgis.MarkerLinePlacement.baseClass = Qgis
 Qgis.MarkerLinePlacements.baseClass = Qgis
-MarkerLinePlacements = Qgis  # dirty hack since SIP seems to introduce the flags in module 
+MarkerLinePlacements = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsGradientFillSymbolLayer.GradientColorType = Qgis.GradientColorSource
 # monkey patching scoped based enum
 QgsGradientFillSymbolLayer.SimpleTwoColor = Qgis.GradientColorSource.SimpleTwoColor
