@@ -1959,9 +1959,12 @@ void QgsMarkerLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   spinOffset->blockSignals( false );
 
   whileBlocking( mCheckInterval )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::Interval );
-  whileBlocking( mCheckVertex )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::Vertex );
-  whileBlocking( mCheckVertexFirst )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::FirstVertex );
-  whileBlocking( mCheckVertexLast )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::LastVertex );
+  whileBlocking( mCheckVertex )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::InnerVertices
+      || mLayer->placements() & Qgis::MarkerLinePlacement::Vertex );
+  whileBlocking( mCheckVertexFirst )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::FirstVertex
+      || mLayer->placements() & Qgis::MarkerLinePlacement::Vertex );
+  whileBlocking( mCheckVertexLast )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::LastVertex
+      || mLayer->placements() & Qgis::MarkerLinePlacement::Vertex );
   whileBlocking( mCheckCentralPoint )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::CentralPoint );
   whileBlocking( mCheckCurvePoint )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::CurvePoint );
   whileBlocking( mCheckSegmentCentralPoint )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::SegmentCenter );
@@ -2059,7 +2062,7 @@ void QgsMarkerLineSymbolLayerWidget::setPlacement()
   if ( mCheckInterval->isChecked() )
     placements |= Qgis::MarkerLinePlacement::Interval;
   if ( mCheckVertex->isChecked() )
-    placements |= Qgis::MarkerLinePlacement::Vertex;
+    placements |= Qgis::MarkerLinePlacement::InnerVertices;
   if ( mCheckVertexLast->isChecked() )
     placements |= Qgis::MarkerLinePlacement::LastVertex;
   if ( mCheckVertexFirst->isChecked() )
@@ -2208,9 +2211,12 @@ void QgsHashedLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   spinOffset->blockSignals( false );
 
   whileBlocking( mCheckInterval )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::Interval );
-  whileBlocking( mCheckVertex )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::Vertex );
-  whileBlocking( mCheckVertexFirst )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::FirstVertex );
-  whileBlocking( mCheckVertexLast )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::LastVertex );
+  whileBlocking( mCheckVertex )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::InnerVertices
+      || mLayer->placements() & Qgis::MarkerLinePlacement::Vertex );
+  whileBlocking( mCheckVertexFirst )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::FirstVertex
+      || mLayer->placements() & Qgis::MarkerLinePlacement::Vertex );
+  whileBlocking( mCheckVertexLast )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::LastVertex
+      || mLayer->placements() & Qgis::MarkerLinePlacement::Vertex );
   whileBlocking( mCheckCentralPoint )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::CentralPoint );
   whileBlocking( mCheckCurvePoint )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::CurvePoint );
   whileBlocking( mCheckSegmentCentralPoint )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::SegmentCenter );
@@ -2323,7 +2329,7 @@ void QgsHashedLineSymbolLayerWidget::setPlacement()
   if ( mCheckInterval->isChecked() )
     placements |= Qgis::MarkerLinePlacement::Interval;
   if ( mCheckVertex->isChecked() )
-    placements |= Qgis::MarkerLinePlacement::Vertex;
+    placements |= Qgis::MarkerLinePlacement::InnerVertices;
   if ( mCheckVertexLast->isChecked() )
     placements |= Qgis::MarkerLinePlacement::LastVertex;
   if ( mCheckVertexFirst->isChecked() )
