@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>371</width>
-    <height>380</height>
+    <width>385</width>
+    <height>502</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -44,7 +44,7 @@
      <item row="3" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
-        <widget class="QRadioButton" name="radInterval">
+        <widget class="QCheckBox" name="mCheckInterval">
          <property name="text">
           <string>with interval</string>
          </property>
@@ -93,20 +93,6 @@
        </item>
       </layout>
      </item>
-     <item row="4" column="1">
-      <widget class="QRadioButton" name="radVertex">
-       <property name="text">
-        <string>on every vertex</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QRadioButton" name="radVertexLast">
-       <property name="text">
-        <string>on last vertex only</string>
-       </property>
-      </widget>
-     </item>
      <item row="6" column="0">
       <spacer name="horizontalSpacer_2">
        <property name="orientation">
@@ -123,20 +109,6 @@
        </property>
       </spacer>
      </item>
-     <item row="6" column="1">
-      <widget class="QRadioButton" name="radVertexFirst">
-       <property name="text">
-        <string>on first vertex only</string>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="1">
-      <widget class="QRadioButton" name="radCurvePoint">
-       <property name="text">
-        <string>on every curve point</string>
-       </property>
-      </widget>
-     </item>
      <item row="3" column="2">
       <widget class="QgsPropertyOverrideButton" name="mIntervalDDBtn">
        <property name="text">
@@ -144,17 +116,45 @@
        </property>
       </widget>
      </item>
+     <item row="4" column="1">
+      <widget class="QCheckBox" name="mCheckVertex">
+       <property name="text">
+        <string>on every vertex</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QCheckBox" name="mCheckVertexLast">
+       <property name="text">
+        <string>on last vertex only</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QCheckBox" name="mCheckVertexFirst">
+       <property name="text">
+        <string>on first vertex only</string>
+       </property>
+      </widget>
+     </item>
      <item row="7" column="1">
-      <widget class="QRadioButton" name="radCentralPoint">
+      <widget class="QCheckBox" name="mCheckCentralPoint">
        <property name="text">
         <string>on central point</string>
        </property>
       </widget>
      </item>
      <item row="8" column="1">
-      <widget class="QRadioButton" name="radSegmentCentralPoint">
+      <widget class="QCheckBox" name="mCheckSegmentCentralPoint">
        <property name="text">
         <string>on central point of segments</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="1">
+      <widget class="QCheckBox" name="mCheckCurvePoint">
+       <property name="text">
+        <string>on every curve point</string>
        </property>
       </widget>
      </item>
@@ -493,16 +493,16 @@
  </customwidgets>
  <tabstops>
   <tabstop>mPlacementDDBtn</tabstop>
-  <tabstop>radInterval</tabstop>
+  <tabstop>mCheckInterval</tabstop>
   <tabstop>spinInterval</tabstop>
   <tabstop>mIntervalUnitWidget</tabstop>
   <tabstop>mIntervalDDBtn</tabstop>
-  <tabstop>radVertex</tabstop>
-  <tabstop>radVertexLast</tabstop>
-  <tabstop>radVertexFirst</tabstop>
-  <tabstop>radCentralPoint</tabstop>
-  <tabstop>radSegmentCentralPoint</tabstop>
-  <tabstop>radCurvePoint</tabstop>
+  <tabstop>mCheckVertex</tabstop>
+  <tabstop>mCheckVertexLast</tabstop>
+  <tabstop>mCheckVertexFirst</tabstop>
+  <tabstop>mCheckCentralPoint</tabstop>
+  <tabstop>mCheckSegmentCentralPoint</tabstop>
+  <tabstop>mCheckCurvePoint</tabstop>
   <tabstop>mSpinOffsetAlongLine</tabstop>
   <tabstop>mOffsetAlongLineUnitWidget</tabstop>
   <tabstop>mOffsetAlongLineDDBtn</tabstop>

@@ -1783,7 +1783,7 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
     if ( spacing < 1 )
     {
       // if spacing isn't specified, it's a central point marker only
-      lineSymbol->setPlacement( Qgis::MarkerLinePlacement::CentralPoint );
+      lineSymbol->setPlacements( Qgis::MarkerLinePlacement::CentralPoint );
     }
 
     QgsRasterMarkerSymbolLayer *markerLayer = new QgsRasterMarkerSymbolLayer( );

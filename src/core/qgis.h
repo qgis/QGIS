@@ -1058,15 +1058,17 @@ class CORE_EXPORT Qgis
      */
     enum class MarkerLinePlacement SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTemplatedLineSymbolLayerBase, Placement ) : int
       {
-      Interval, //!< Place symbols at regular intervals
-      Vertex, //!< Place symbols on every vertex in the line
-      LastVertex, //!< Place symbols on the last vertex in the line
-      FirstVertex, //!< Place symbols on the first vertex in the line
-      CentralPoint, //!< Place symbols at the mid point of the line
-      CurvePoint, //!< Place symbols at every virtual curve point in the line (used when rendering curved geometry types only)
-      SegmentCenter, //!< Place symbols at the center of every line segment
+      Interval = 1 << 0, //!< Place symbols at regular intervals
+      Vertex = 1 << 1, //!< Place symbols on every vertex in the line
+      LastVertex = 1 << 2, //!< Place symbols on the last vertex in the line
+      FirstVertex = 1 << 3, //!< Place symbols on the first vertex in the line
+      CentralPoint = 1 << 4, //!< Place symbols at the mid point of the line
+      CurvePoint = 1 << 5, //!< Place symbols at every virtual curve point in the line (used when rendering curved geometry types only)
+      SegmentCenter = 1 << 6, //!< Place symbols at the center of every line segment
     };
     Q_ENUM( MarkerLinePlacement )
+    Q_DECLARE_FLAGS( MarkerLinePlacements, MarkerLinePlacement )
+    Q_FLAG( MarkerLinePlacements )
 
     /**
      * Gradient color sources.
@@ -1362,6 +1364,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AnnotationItemGuiFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapSettingsFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RenderContextFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorLayerTypeFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MarkerLinePlacements )
 
 
 // hack to workaround warnings when casting void pointers

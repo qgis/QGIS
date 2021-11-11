@@ -179,7 +179,7 @@ void TestQgsSymbol::testCanvasClip()
   ms.setLayers( QList<QgsMapLayer *>() << mpLinesLayer );
 
   QgsMarkerLineSymbolLayer *markerLine = new QgsMarkerLineSymbolLayer();
-  markerLine->setPlacement( Qgis::MarkerLinePlacement::CentralPoint );
+  markerLine->setPlacements( Qgis::MarkerLinePlacement::CentralPoint );
   static_cast< QgsSimpleMarkerSymbolLayer *>( markerLine->subSymbol()->symbolLayer( 0 ) )->setStrokeColor( Qt::black );
   QgsLineSymbol *lineSymbol = new QgsLineSymbol();
   lineSymbol->changeSymbolLayer( 0, markerLine );
