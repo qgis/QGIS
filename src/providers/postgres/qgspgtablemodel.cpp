@@ -73,6 +73,8 @@ bool QgsPgTableModel::searchableColumn( int column ) const
     case DbtmCheckPkUnicity:
       return false;
   }
+
+  BUILTIN_UNREACHABLE
 }
 
 void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProperty )

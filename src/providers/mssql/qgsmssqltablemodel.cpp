@@ -65,6 +65,8 @@ bool QgsMssqlTableModel::searchableColumn( int column ) const
     case DbtmView:
       return false;
   }
+
+  BUILTIN_UNREACHABLE
 }
 
 void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProperty )
