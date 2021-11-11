@@ -1495,6 +1495,7 @@ void QgsAttributeForm::init()
     int column = 0;
     int columnCount = 1;
     bool hasRootFields = false;
+    bool addSpacer = true;
 
     const QList<QgsAttributeEditorElement *> tabs = mLayer->editFormConfig().tabs();
 
@@ -1574,6 +1575,9 @@ void QgsAttributeForm::init()
 
         label->setBuddy( widgetInfo.widget );
 
+        if ( widgetInfo.widget->sizePolicy().verticalPolicy() != QSizePolicy::Fixed )
+          addSpacer = false;
+
         if ( !widgetInfo.showLabel )
         {
           QVBoxLayout *c = new QVBoxLayout();
@@ -1624,7 +1628,7 @@ void QgsAttributeForm::init()
       }
     }
 
-    if ( hasRootFields )
+    if ( hasRootFields && addSpacer )
     {
       QSpacerItem *spacerItem = new QSpacerItem( 20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding );
       layout->addItem( spacerItem, row, 0 );

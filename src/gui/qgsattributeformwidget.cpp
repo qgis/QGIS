@@ -60,6 +60,9 @@ QgsAttributeFormWidget::QgsAttributeFormWidget( QgsWidgetWrapper *widget, QgsAtt
 
   mEditPage->layout()->addWidget( mWidget->widget() );
 
+  // Respect size policy of embedded widget
+  setSizePolicy( mWidget->widget()->sizePolicy() );
+
   updateWidgets();
 }
 
