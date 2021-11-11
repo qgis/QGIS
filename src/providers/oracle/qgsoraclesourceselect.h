@@ -96,7 +96,6 @@ class QgsOracleSourceSelect : public QgsDbSourceSelectBase
   public slots:
     //! Determines the tables the user selected and closes the dialog
     void addButtonClicked() override;
-    void buildQuery();
 
     /**
      * Connects to the database using the stored connection parameters.
@@ -115,7 +114,6 @@ class QgsOracleSourceSelect : public QgsDbSourceSelectBase
     //! Loads the selected connections from file
     void on_btnLoad_clicked();
     void on_cmbConnections_currentIndexChanged( const QString &text );
-    void setSql( const QModelIndex &index );
     //! Store the selected database
     void setLayerType( const QgsOracleLayerProperty &layerProperty );
     void on_mTablesTreeView_doubleClicked( const QModelIndex &index );
@@ -124,6 +122,9 @@ class QgsOracleSourceSelect : public QgsDbSourceSelectBase
     void setSearchExpression( const QString &regexp );
 
     void columnTaskFinished();
+
+  protected slots:
+    void setSql( const QModelIndex &index ) override;
 
   private:
     typedef QPair<QString, QString> geomPair;

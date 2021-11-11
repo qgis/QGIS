@@ -150,17 +150,6 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
     setWindowTitle( tr( "Add MSSQL Table(s)" ) );
   }
 
-  mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
-  mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
-  mBuildQueryButton->setDisabled( true );
-
-  if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
-  {
-
-    buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
-    connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsMssqlSourceSelect::buildQuery );
-  }
-
   populateConnectionList();
 
   mTableModel = new QgsMssqlTableModel( this );
@@ -265,11 +254,6 @@ void QgsMssqlSourceSelect::cmbConnections_activated( int )
 void QgsMssqlSourceSelect::cbxAllowGeometrylessTables_stateChanged( int )
 {
   btnConnect_clicked();
-}
-
-void QgsMssqlSourceSelect::buildQuery()
-{
-  setSql( mTablesTreeView->currentIndex() );
 }
 
 void QgsMssqlSourceSelect::mTablesTreeView_doubleClicked( const QModelIndex & )

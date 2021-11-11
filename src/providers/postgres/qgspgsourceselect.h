@@ -86,7 +86,6 @@ class QgsPgSourceSelect : public QgsDbSourceSelectBase
     void refresh() override;
     //! Determines the tables the user selected and closes the dialog
     void addButtonClicked() override;
-    void buildQuery();
 
     /**
      * Connects to the database using the stored connection parameters.
@@ -105,7 +104,6 @@ class QgsPgSourceSelect : public QgsDbSourceSelectBase
     //! Loads the selected connections from file
     void btnLoad_clicked();
     void cmbConnections_currentIndexChanged( const QString &text );
-    void setSql( const QModelIndex &index );
     //! Store the selected database
     void setLayerType( const QgsPostgresLayerProperty &layerProperty );
     void mTablesTreeView_doubleClicked( const QModelIndex &index );
@@ -116,6 +114,9 @@ class QgsPgSourceSelect : public QgsDbSourceSelectBase
     void columnThreadFinished();
 
     void reset() override;
+
+  protected slots:
+    void setSql( const QModelIndex &index ) override;
 
   private:
     typedef QPair<QString, QString> geomPair;

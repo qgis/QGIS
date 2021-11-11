@@ -82,13 +82,11 @@ class QgsOgrDbSourceSelect: public QgsDbSourceSelectBase
      * Once connected, available layers are displayed.
      */
     void btnConnect_clicked();
-    void buildQuery();
     //! Opens the create connection dialog to build a new connection
     void btnNew_clicked();
     //! Deletes the selected connection
     void btnDelete_clicked();
     void cbxAllowGeometrylessTables_stateChanged( int );
-    void setSql( const QModelIndex &index );
     void cmbConnections_activated( int );
     void mTablesTreeView_doubleClicked( const QModelIndex &index );
     void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
@@ -97,9 +95,9 @@ class QgsOgrDbSourceSelect: public QgsDbSourceSelectBase
 
     void showHelp();
 
-  private slots:
+  protected slots:
     void treeviewClicked( const QModelIndex &index ) override;
-
+    void setSql( const QModelIndex &index ) override;
 
   private:
     void setConnectionListPosition();

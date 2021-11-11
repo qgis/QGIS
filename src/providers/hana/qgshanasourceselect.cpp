@@ -222,16 +222,6 @@ QgsHanaSourceSelect::QgsHanaSourceSelect(
   else
     setWindowTitle( tr( "Add SAP HANA Table(s)" ) );
 
-  mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
-  mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
-  mBuildQueryButton->setDisabled( true );
-
-  if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
-  {
-    buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
-    connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsHanaSourceSelect::buildQuery );
-  }
-
   populateConnectionList();
 
   mTableModel = new QgsHanaTableModel( this );
@@ -336,11 +326,6 @@ void QgsHanaSourceSelect::cmbConnections_activated( int )
 void QgsHanaSourceSelect::cbxAllowGeometrylessTables_stateChanged( int )
 {
   btnConnect_clicked();
-}
-
-void QgsHanaSourceSelect::buildQuery()
-{
-  setSql( mTablesTreeView->currentIndex() );
 }
 
 void QgsHanaSourceSelect::mTablesTreeView_doubleClicked( const QModelIndex &index )

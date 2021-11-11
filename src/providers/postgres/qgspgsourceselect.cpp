@@ -240,16 +240,6 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsPr
     setWindowTitle( tr( "Add PostGIS Table(s)" ) );
   }
 
-  mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
-  mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
-  mBuildQueryButton->setDisabled( true );
-
-  if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
-  {
-    buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
-    connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsPgSourceSelect::buildQuery );
-  }
-
   populateConnectionList();
 
 
@@ -345,11 +335,6 @@ void QgsPgSourceSelect::cmbConnections_currentIndexChanged( const QString &text 
 void QgsPgSourceSelect::cbxAllowGeometrylessTables_stateChanged( int )
 {
   btnConnect_clicked();
-}
-
-void QgsPgSourceSelect::buildQuery()
-{
-  setSql( mTablesTreeView->currentIndex() );
 }
 
 void QgsPgSourceSelect::mTablesTreeView_doubleClicked( const QModelIndex & )

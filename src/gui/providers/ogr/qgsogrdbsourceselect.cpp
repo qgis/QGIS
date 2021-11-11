@@ -58,16 +58,10 @@ QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const
   btnSave->hide();
   btnLoad->hide();
 
-  mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
-  connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsOgrDbSourceSelect::buildQuery );
-  mBuildQueryButton->setEnabled( false );
-
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
     mHoldDialogOpen->hide();
   }
-
-  buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
 
   populateConnectionList();
 
@@ -90,11 +84,6 @@ QgsOgrDbSourceSelect::~QgsOgrDbSourceSelect()
 void QgsOgrDbSourceSelect::cmbConnections_activated( int )
 {
   dbChanged();
-}
-
-void QgsOgrDbSourceSelect::buildQuery()
-{
-  setSql( mTablesTreeView->currentIndex() );
 }
 
 

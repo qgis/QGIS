@@ -188,16 +188,6 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags f
     setWindowTitle( tr( "Add Oracle Table(s)" ) );
   }
 
-  mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
-  mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
-  mBuildQueryButton->setDisabled( true );
-
-  if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
-  {
-    buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
-    connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsOracleSourceSelect::buildQuery );
-  }
-
   mTablesTreeDelegate = new QgsOracleSourceSelectDelegate( this );
 
 
@@ -306,11 +296,6 @@ void QgsOracleSourceSelect::on_cbxAllowGeometrylessTables_stateChanged( int )
 {
   if ( mIsConnected )
     on_btnConnect_clicked();
-}
-
-void QgsOracleSourceSelect::buildQuery()
-{
-  setSql( mTablesTreeView->currentIndex() );
 }
 
 void QgsOracleSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex & )

@@ -74,7 +74,6 @@ class QgsSpatiaLiteSourceSelect:  public QgsDbSourceSelectBase
      * Once connected, available layers are displayed.
      */
     void btnConnect_clicked();
-    void buildQuery();
     void addButtonClicked() override;
     void updateStatistics();
     //! Opens the create connection dialog to build a new connection
@@ -82,7 +81,6 @@ class QgsSpatiaLiteSourceSelect:  public QgsDbSourceSelectBase
     //! Deletes the selected connection
     void btnDelete_clicked();
     void cbxAllowGeometrylessTables_stateChanged( int );
-    void setSql( const QModelIndex &index );
     void cmbConnections_activated( int );
     void setLayerType( const QString &table, const QString &column, const QString &type );
     void mTablesTreeView_doubleClicked( const QModelIndex &index );
@@ -91,6 +89,9 @@ class QgsSpatiaLiteSourceSelect:  public QgsDbSourceSelectBase
     void setSearchExpression( const QString &regexp );
 
     void showHelp();
+
+  protected slots:
+    void setSql( const QModelIndex &index ) override;
 
   private:
     enum Columns

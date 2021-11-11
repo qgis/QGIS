@@ -71,17 +71,11 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
   connect( mStatsButton, &QAbstractButton::clicked, this, &QgsSpatiaLiteSourceSelect::updateStatistics );
   mStatsButton->setEnabled( false );
 
-
-  mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
-  connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsSpatiaLiteSourceSelect::buildQuery );
-  mBuildQueryButton->setEnabled( false );
-
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
     mHoldDialogOpen->hide();
   }
 
-  buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
   buttonBox->addButton( mStatsButton, QDialogButtonBox::ActionRole );
 
   populateConnectionList();
@@ -107,10 +101,6 @@ void QgsSpatiaLiteSourceSelect::cmbConnections_activated( int )
   dbChanged();
 }
 
-void QgsSpatiaLiteSourceSelect::buildQuery()
-{
-  setSql( mTablesTreeView->currentIndex() );
-}
 
 void QgsSpatiaLiteSourceSelect::updateStatistics()
 {

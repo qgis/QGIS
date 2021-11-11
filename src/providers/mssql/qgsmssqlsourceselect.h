@@ -89,7 +89,6 @@ class QgsMssqlSourceSelect : public QgsDbSourceSelectBase
 
     //! Determines the tables the user selected and closes the dialog
     void addButtonClicked() override;
-    void buildQuery();
 
     /**
      * Connects to the database using the stored connection parameters.
@@ -107,7 +106,6 @@ class QgsMssqlSourceSelect : public QgsDbSourceSelectBase
     void btnSave_clicked();
     //! Loads the selected connections from file
     void btnLoad_clicked();
-    void setSql( const QModelIndex &index );
     //! Store the selected database
     void cmbConnections_activated( int );
     void setLayerType( const QgsMssqlLayerProperty &layerProperty );
@@ -117,6 +115,9 @@ class QgsMssqlSourceSelect : public QgsDbSourceSelectBase
     void setSearchExpression( const QString &regexp );
 
     void columnThreadFinished();
+
+  protected slots:
+    void setSql( const QModelIndex &index ) override;
 
 
   private:

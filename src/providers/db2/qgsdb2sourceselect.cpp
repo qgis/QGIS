@@ -146,16 +146,6 @@ QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
     mHoldDialogOpen->hide();
   }
 
-  mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
-  mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
-  mBuildQueryButton->setDisabled( true );
-
-  if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
-  {
-    buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
-    connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsDb2SourceSelect::buildQuery );
-  }
-
   populateConnectionList();
 
   mTableModel = new QgsDb2TableModel( this );
@@ -262,11 +252,6 @@ void QgsDb2SourceSelect::cmbConnections_activated( int )
 void QgsDb2SourceSelect::cbxAllowGeometrylessTables_stateChanged( int )
 {
   btnConnect_clicked();
-}
-
-void QgsDb2SourceSelect::buildQuery()
-{
-  setSql( mTablesTreeView->currentIndex() );
 }
 
 void QgsDb2SourceSelect::refresh()

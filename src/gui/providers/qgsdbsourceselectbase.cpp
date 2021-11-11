@@ -39,6 +39,12 @@ QgsDbSourceSelectBase::QgsDbSourceSelectBase( QWidget *parent, Qt::WindowFlags f
   mTablesTreeView->setSortingEnabled( true );
   mTablesTreeView->setUniformRowHeights( true );
   mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
+
+  mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
+  mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
+  mBuildQueryButton->setDisabled( true );
+  buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
+  connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsDbSourceSelectBase::buildQuery );
 }
 
 void QgsDbSourceSelectBase::init( QgsAbstractDbTableModel *model, QItemDelegate *delegate )
@@ -100,7 +106,11 @@ void QgsDbSourceSelectBase::init( QgsAbstractDbTableModel *model, QItemDelegate 
 void QgsDbSourceSelectBase::treeviewClicked( const QModelIndex &index )
 {
   mBuildQueryButton->setEnabled( index.parent().isValid() );
+}
 
+void QgsDbSourceSelectBase::buildQuery()
+{
+  setSql( mTablesTreeView->currentIndex() );
 }
 
 

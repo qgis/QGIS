@@ -44,8 +44,10 @@ class GUI_EXPORT QgsDbSourceSelectBase : public QgsAbstractDataSourceWidget, pro
     //! Returns the proxy model used to filter the results
     QSortFilterProxyModel *proxyModel() {return mProxyModel;}
 
-  private slots:
+  protected slots:
     virtual void treeviewClicked( const QModelIndex &index );
+    virtual void setSql( const QModelIndex &index ) = 0;
+    void buildQuery();
 
   private:
     void filterResults();
@@ -58,6 +60,7 @@ class GUI_EXPORT QgsDbSourceSelectBase : public QgsAbstractDataSourceWidget, pro
     QAction *mSearchModeWildCardAction = nullptr;
     QAction *mSearchModeRegexAction = nullptr;
 
+    QPushButton *mBuildQueryButton = nullptr;
 };
 
 #endif // QGSDBSOURCESELECTBASE_H
