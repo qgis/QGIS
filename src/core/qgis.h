@@ -1065,6 +1065,7 @@ class CORE_EXPORT Qgis
       CentralPoint = 1 << 4, //!< Place symbols at the mid point of the line
       CurvePoint = 1 << 5, //!< Place symbols at every virtual curve point in the line (used when rendering curved geometry types only)
       SegmentCenter = 1 << 6, //!< Place symbols at the center of every line segment
+      InnerVertices = 1 << 7, //!< Inner vertices (i.e. all vertices except the first and last vertex)
     };
     Q_ENUM( MarkerLinePlacement )
     Q_DECLARE_FLAGS( MarkerLinePlacements, MarkerLinePlacement )

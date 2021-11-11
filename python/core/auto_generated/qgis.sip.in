@@ -667,6 +667,7 @@ The development version
       CentralPoint,
       CurvePoint,
       SegmentCenter,
+      InnerVertices,
     };
     typedef QFlags<Qgis::MarkerLinePlacement> MarkerLinePlacements;
 

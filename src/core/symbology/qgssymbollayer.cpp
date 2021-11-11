@@ -92,7 +92,7 @@ void QgsSymbolLayer::initPropertyDefinitions()
     { QgsSymbolLayer::PropertyOpacity, QgsPropertyDefinition( "alpha", QObject::tr( "Opacity" ), QgsPropertyDefinition::Opacity, origin )},
     { QgsSymbolLayer::PropertyCustomDash, QgsPropertyDefinition( "customDash", QgsPropertyDefinition::DataTypeString, QObject::tr( "Custom dash pattern" ), QObject::tr( "[<b><dash>;<space></b>] e.g. '8;2;1;2'" ), origin )},
     { QgsSymbolLayer::PropertyCapStyle, QgsPropertyDefinition( "capStyle", QObject::tr( "Line cap style" ), QgsPropertyDefinition::CapStyle, origin )},
-    { QgsSymbolLayer::PropertyPlacement, QgsPropertyDefinition( "placement", QgsPropertyDefinition::DataTypeString, QObject::tr( "Marker placement" ), QObject::tr( "string " ) + "[<b>interval</b>|<b>vertex</b>|<b>lastvertex</b>|<b>firstvertex</b>|<b>centerpoint</b>|<b>curvepoint</b>|<b>segmentcenter</b>]", origin )},
+    { QgsSymbolLayer::PropertyPlacement, QgsPropertyDefinition( "placement", QgsPropertyDefinition::DataTypeString, QObject::tr( "Marker placement" ), QObject::tr( "string " ) + "[<b>interval</b>|<b>innervertices</b>|<b>vertex</b>|<b>lastvertex</b>|<b>firstvertex</b>|<b>centerpoint</b>|<b>curvepoint</b>|<b>segmentcenter</b>]", origin )},
     { QgsSymbolLayer::PropertyInterval, QgsPropertyDefinition( "interval", QObject::tr( "Marker interval" ), QgsPropertyDefinition::DoublePositive, origin )},
     { QgsSymbolLayer::PropertyOffsetAlongLine, QgsPropertyDefinition( "offsetAlongLine", QObject::tr( "Offset along line" ), QgsPropertyDefinition::DoublePositive, origin )},
     { QgsSymbolLayer::PropertyAverageAngleLength, QgsPropertyDefinition( "averageAngleLength", QObject::tr( "Average line angles over" ), QgsPropertyDefinition::DoublePositive, origin )},

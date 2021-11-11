@@ -1284,6 +1284,10 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, Q
       {
         placements = Qgis::MarkerLinePlacement::Vertex;
       }
+      else if ( placementString.compare( QLatin1String( "innervertices" ), Qt::CaseInsensitive ) == 0 )
+      {
+        placements = Qgis::MarkerLinePlacement::InnerVertices;
+      }
       else if ( placementString.compare( QLatin1String( "lastvertex" ), Qt::CaseInsensitive ) == 0 )
       {
         placements = Qgis::MarkerLinePlacement::LastVertex;
@@ -1329,6 +1333,8 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, Q
       renderPolylineCentral( points, context, averageOver );
     if ( placements & Qgis::MarkerLinePlacement::Vertex )
       renderPolylineVertex( points, context, Qgis::MarkerLinePlacement::Vertex );
+    if ( placements & Qgis::MarkerLinePlacement::InnerVertices )
+      renderPolylineVertex( points, context, Qgis::MarkerLinePlacement::InnerVertices );
     if ( placements & Qgis::MarkerLinePlacement::LastVertex )
       renderPolylineVertex( points, context, Qgis::MarkerLinePlacement::LastVertex );
     if ( placements & Qgis::MarkerLinePlacement::FirstVertex )
@@ -1353,6 +1359,8 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, Q
         renderPolylineCentral( points2, context, averageOver );
       if ( placements & Qgis::MarkerLinePlacement::Vertex )
         renderPolylineVertex( points2, context, Qgis::MarkerLinePlacement::Vertex );
+      if ( placements & Qgis::MarkerLinePlacement::InnerVertices )
+        renderPolylineVertex( points2, context, Qgis::MarkerLinePlacement::InnerVertices );
       if ( placements & Qgis::MarkerLinePlacement::LastVertex )
         renderPolylineVertex( points2, context, Qgis::MarkerLinePlacement::LastVertex );
       if ( placements & Qgis::MarkerLinePlacement::FirstVertex )
@@ -1556,7 +1564,7 @@ void QgsTemplatedLineSymbolLayerBase::setCommonProperties( QgsTemplatedLineSymbo
   if ( properties.contains( QStringLiteral( "placement" ) ) )
   {
     if ( properties[QStringLiteral( "placement" )] == QLatin1String( "vertex" ) )
-      destLayer->setPlacements( Qgis::MarkerLinePlacement::Vertex );
+      destLayer->setPlacements( Qgis::MarkerLinePlacement::InnerVertices | Qgis::MarkerLinePlacement::FirstVertex | Qgis::MarkerLinePlacement::LastVertex );
     else if ( properties[QStringLiteral( "placement" )] == QLatin1String( "lastvertex" ) )
       destLayer->setPlacements( Qgis::MarkerLinePlacement::LastVertex );
     else if ( properties[QStringLiteral( "placement" )] == QLatin1String( "firstvertex" ) )
@@ -1778,7 +1786,9 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
   }
 
   if ( qgsDoubleNear( offsetAlongLine, 0.0 ) && context.renderContext().geometry()
-       && context.renderContext().geometry()->hasCurvedSegments() && ( placement == Qgis::MarkerLinePlacement::Vertex || placement == Qgis::MarkerLinePlacement::CurvePoint ) )
+       && context.renderContext().geometry()->hasCurvedSegments() && ( placement == Qgis::MarkerLinePlacement::Vertex
+           || placement == Qgis::MarkerLinePlacement::InnerVertices
+           || placement == Qgis::MarkerLinePlacement::CurvePoint ) )
   {
     QgsCoordinateTransform ct = context.renderContext().coordinateTransform();
     const QgsMapToPixel &mtp = context.renderContext().mapToPixel();
@@ -1788,6 +1798,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
     double x, y, z;
     QPointF mapPoint;
     int pointNum = 0;
+    const int numPoints = context.renderContext().geometry()->nCoordinates();
     while ( context.renderContext().geometry()->nextVertex( vId, vPoint ) )
     {
       if ( context.renderContext().renderingStopped() )
@@ -1795,7 +1806,13 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
 
       scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum, true ) );
 
-      if ( ( placement == Qgis::MarkerLinePlacement::Vertex && vId.type == Qgis::VertexType::Segment )
+      if ( pointNum == 1 && placement == Qgis::MarkerLinePlacement::InnerVertices )
+        continue;
+
+      if ( pointNum == numPoints && placement == Qgis::MarkerLinePlacement::InnerVertices )
+        continue;
+
+      if ( ( ( placement == Qgis::MarkerLinePlacement::Vertex || placement == Qgis::MarkerLinePlacement::InnerVertices ) && vId.type == Qgis::VertexType::Segment )
            || ( placement == Qgis::MarkerLinePlacement::CurvePoint && vId.type == Qgis::VertexType::Curve ) )
       {
         //transform
@@ -1834,6 +1851,13 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
     {
       i = points.count() - 1;
       maxCount = points.count();
+      break;
+    }
+
+    case Qgis::MarkerLinePlacement::InnerVertices:
+    {
+      i = 1;
+      maxCount = points.count() - 1;
       break;
     }
 

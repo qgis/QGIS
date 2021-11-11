@@ -69,7 +69,7 @@
        <item>
         <widget class="QCheckBox" name="mCheckInterval">
          <property name="text">
-          <string>with interval</string>
+          <string>With interval</string>
          </property>
          <property name="checked">
           <bool>true</bool>
@@ -118,43 +118,46 @@
      </item>
      <item row="4" column="1">
       <widget class="QCheckBox" name="mCheckVertex">
+       <property name="toolTip">
+        <string>Shows symbols on inner vertices, i.e. all vertices except the first or last</string>
+       </property>
        <property name="text">
-        <string>on every vertex</string>
+        <string>On inner vertices</string>
        </property>
       </widget>
      </item>
      <item row="5" column="1">
       <widget class="QCheckBox" name="mCheckVertexLast">
        <property name="text">
-        <string>on last vertex only</string>
+        <string>On last vertex</string>
        </property>
       </widget>
      </item>
      <item row="6" column="1">
       <widget class="QCheckBox" name="mCheckVertexFirst">
        <property name="text">
-        <string>on first vertex only</string>
+        <string>On first vertex</string>
        </property>
       </widget>
      </item>
      <item row="7" column="1">
       <widget class="QCheckBox" name="mCheckCentralPoint">
        <property name="text">
-        <string>on central point</string>
+        <string>On central point</string>
        </property>
       </widget>
      </item>
      <item row="8" column="1">
       <widget class="QCheckBox" name="mCheckSegmentCentralPoint">
        <property name="text">
-        <string>on central point of segments</string>
+        <string>On central point of segments</string>
        </property>
       </widget>
      </item>
      <item row="9" column="1">
       <widget class="QCheckBox" name="mCheckCurvePoint">
        <property name="text">
-        <string>on every curve point</string>
+        <string>On every curve point</string>
        </property>
       </widget>
      </item>
