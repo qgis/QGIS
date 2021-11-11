@@ -135,7 +135,6 @@ class QgsDb2SourceSelect : public QgsDbSourceSelectBase
     //! Store the selected database
     void cmbConnections_activated( int );
     void setLayerType( const QgsDb2LayerProperty &layerProperty );
-    void mTablesTreeView_doubleClicked( const QModelIndex &index );
     void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString &regexp );
