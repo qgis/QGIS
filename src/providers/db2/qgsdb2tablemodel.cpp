@@ -63,6 +63,8 @@ bool QgsDb2TableModel::searchableColumn( int column ) const
     case DbtmSelectAtId:
       return false;
   }
+
+  BUILTIN_UNREACHABLE
 }
 
 void QgsDb2TableModel::addTableEntry( const QgsDb2LayerProperty &layerProperty )
