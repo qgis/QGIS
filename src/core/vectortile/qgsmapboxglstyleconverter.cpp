@@ -2018,6 +2018,17 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateColorByZoom( const QVaria
     const QColor bottomColor = parseColor( bcVariant.toString(), context );
     const QColor topColor = parseColor( tcVariant.toString(), context );
 
+    if ( i == 0 && bottomColor.isValid() )
+    {
+      int bcHue;
+      int bcSat;
+      int bcLight;
+      int bcAlpha;
+      colorAsHslaComponents( bottomColor, bcHue, bcSat, bcLight, bcAlpha );
+      caseString += QStringLiteral( "WHEN @vector_tile_zoom < %1 THEN color_hsla(%2, %3, %4, %5) " )
+                    .arg( bz ).arg( bcHue ).arg( bcSat ).arg( bcLight ).arg( bcAlpha );
+    }
+
     if ( bottomColor.isValid() && topColor.isValid() )
     {
       int bcHue;
