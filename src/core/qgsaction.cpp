@@ -24,6 +24,7 @@
 #include <QTemporaryDir>
 #include <QDialog>
 #include <QLayout>
+#include <QScreen>
 #include <QNetworkRequest>
 #include <QJsonDocument>
 #include <QCryptographicHash>
@@ -36,7 +37,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgswebview.h"
 #include "qgsnetworkaccessmanager.h"
-
+#include "qgsapplication.h"
 
 
 bool QgsAction::runable() const
@@ -102,6 +103,8 @@ void QgsAction::run( const QgsExpressionContext &expressionContext ) const
     d.setWindowTitle( QObject::tr( "Form Submit Action" ) );
     d.setLayout( new QHBoxLayout( &d ) );
     QgsWebView *wv = new QgsWebView( &d );
+    const double horizontalDpi { QgsApplication::primaryScreen()->logicalDotsPerInchX() };
+    wv->setZoomFactor( horizontalDpi / 96.0 );
     wv->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
 #ifdef QGISDEBUG
     wv->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
