@@ -18,6 +18,7 @@ email                : morb at ozemail dot com dot au
 #include <cstdio>
 #include <cmath>
 #include <nlohmann/json.hpp>
+#include <QCache>
 
 #include "qgis.h"
 #include "qgsgeometry.h"
@@ -53,6 +54,7 @@ email                : morb at ozemail dot com dot au
 #include "qgslinestring.h"
 #include "qgscircle.h"
 #include "qgscurve.h"
+#include "qgsreadwritelocker.h"
 
 struct QgsGeometryPrivate
 {
@@ -159,12 +161,18 @@ bool QgsGeometry::isNull() const
 
 QgsGeometry QgsGeometry::fromWkt( const QString &wkt )
 {
-  std::unique_ptr< QgsAbstractGeometry > geom = QgsGeometryFactory::geomFromWkt( wkt );
-  if ( !geom )
-  {
-    return QgsGeometry();
-  }
-  return QgsGeometry( std::move( geom ) );
+  static QCache< QString, QgsGeometry > sWktCache( 2000 ); // store up to 2000 geometries
+  static QReadWriteLock sCacheLock;
+
+  QgsReadWriteLocker lock( sCacheLock, QgsReadWriteLocker::Read );
+  if ( const QgsGeometry *cached = sWktCache.object( wkt ) )
+    return *cached;
+  lock.unlock();
+
+  const QgsGeometry result( QgsGeometryFactory::geomFromWkt( wkt ) );
+  lock.changeMode( QgsReadWriteLocker::Write );
+  sWktCache.insert( wkt, new QgsGeometry( result ), 1 );
+  return result;
 }
 
 QgsGeometry QgsGeometry::fromPointXY( const QgsPointXY &point )
