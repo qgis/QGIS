@@ -42,7 +42,8 @@ class CORE_EXPORT QgsAction
       Windows,
       Unix,
       OpenUrl,
-      SubmitUrl,
+      SubmitUrl, //<! POST data to an URL, using "application/x-www-form-urlencoded" or "application/json" if the body is valid JSON
+      SubmitUrlMultipart, //<! POST data to an URL using "multipart/form-data"
     };
 
     /**

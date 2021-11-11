@@ -257,7 +257,9 @@ QString QgsAttributeActionDialog::textForType( QgsAction::ActionType type )
     case QgsAction::OpenUrl:
       return tr( "Open URL" );
     case QgsAction::SubmitUrl:
-      return tr( "Submit URL" );
+      return tr( "Submit URL (urlencoded or JSON)" );
+    case QgsAction::SubmitUrlMultipart:
+      return tr( "Submit URL (multipart)" );
   }
   return QString();
 }

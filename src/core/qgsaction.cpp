@@ -19,6 +19,14 @@
 #include <QDesktopServices>
 #include <QFileInfo>
 #include <QUrl>
+#include <QUrlQuery>
+#include <QDir>
+#include <QTemporaryDir>
+#include <QDialog>
+#include <QLayout>
+#include <QNetworkRequest>
+#include <QJsonDocument>
+#include <QCryptographicHash>
 
 #include "qgspythonrunner.h"
 #include "qgsrunprocess.h"
@@ -26,6 +34,10 @@
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgswebview.h"
+#include "qgsnetworkaccessmanager.h"
+
+
 
 bool QgsAction::runable() const
 {
@@ -33,6 +45,7 @@ bool QgsAction::runable() const
          mType == GenericPython ||
          mType == OpenUrl ||
          mType == SubmitUrl ||
+         mType == SubmitUrlMultipart ||
 #if defined(Q_OS_WIN)
          mType == Windows
 #elif defined(Q_OS_MAC)
@@ -75,9 +88,151 @@ void QgsAction::run( const QgsExpressionContext &expressionContext ) const
     else
       QDesktopServices::openUrl( QUrl( expandedAction, QUrl::TolerantMode ) );
   }
-  else if ( mType == QgsAction::SubmitUrl )
+  else if ( mType == QgsAction::SubmitUrl || mType == QgsAction::SubmitUrlMultipart )
   {
-    // TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    const bool isMultiPart { mType == QgsAction::SubmitUrlMultipart };
+
+    QUrl url{ command() };
+    const QUrlQuery queryString { url.query( QUrl::ComponentFormattingOption::FullyDecoded ) };
+    // Remove query
+    QString payload { url.query() };
+    url.setQuery( QString( ) );
+    QDialog d;
+    d.setWindowTitle( QObject::tr( "Form Submit Action" ) );
+    d.setLayout( new QHBoxLayout( &d ) );
+    QgsWebView *wv = new QgsWebView( &d );
+    wv->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
+#ifdef QGISDEBUG
+    wv->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
+#endif
+#ifdef WITH_QTWEBKIT
+    wv->page()->setForwardUnsupportedContent( true );
+#endif
+    wv->page()->settings()->setAttribute( QWebSettings::JavascriptEnabled, true );
+    wv->page()->settings()->setAttribute( QWebSettings::LocalStorageEnabled, true );
+    wv->page()->settings()->setAttribute( QWebSettings::LocalContentCanAccessRemoteUrls, true );
+    wv->page()->settings()->setAttribute( QWebSettings::JavascriptCanOpenWindows, true );
+    wv->page()->settings()->setAttribute( QWebSettings::PluginsEnabled, true );
+
+    QObject::connect( wv->page(), &QWebPage::unsupportedContent, &d, [ &d ]( QNetworkReply * reply )
+    {
+
+      QString filename { "unknown.bin" };
+      if ( const auto header = reply->header( QNetworkRequest::KnownHeaders::ContentDispositionHeader ).toString().toStdString(); ! header.empty() )
+      {
+
+        std::string ascii;
+        const std::string q1 { R"(filename=")" };
+        if ( const auto pos = header.find( q1 ); pos != std::string::npos )
+        {
+          const auto len = pos + q1.size();
+
+          const std::string q2 { R"(")" };
+          if ( auto pos = header.find( q2, len ); pos != std::string::npos )
+          {
+            bool escaped = false;
+            while ( pos != std::string::npos && header[pos - 1] == '\\' )
+            {
+              std::cout << pos << std::endl;
+              pos = header.find( q2, pos + 1 );
+              escaped = true;
+            }
+            ascii = header.substr( len, pos - len );
+            if ( escaped )
+            {
+              std::string cleaned;
+              for ( size_t i = 0; i < ascii.size(); ++i )
+              {
+                if ( ascii[i] == '\\' )
+                {
+                  if ( i > 0 && ascii[i - 1] == '\\' )
+                  {
+                    cleaned.push_back( ascii[i] );
+                  }
+                }
+                else
+                {
+                  cleaned.push_back( ascii[i] );
+                }
+              }
+              ascii = cleaned;
+            }
+          }
+        }
+
+        std::string utf8;
+
+        const std::string u { R"(UTF-8'')" };
+        if ( const auto pos = header.find( u ); pos != std::string::npos )
+        {
+          utf8 = header.substr( pos + u.size() );
+        }
+
+        // Prefer ascii over utf8
+        if ( ascii.empty() )
+        {
+          filename = QString::fromStdString( utf8 );
+        }
+        else
+        {
+          filename = QString::fromStdString( ascii );
+        }
+      }
+
+      QTemporaryDir tempDir;
+      tempDir.setAutoRemove( false );
+      tempDir.path();
+      const QString tempFilePath{ tempDir.path() + QDir::separator() + filename };
+      QFile tempFile{tempFilePath};
+      tempFile.open( QIODevice::WriteOnly );
+      tempFile.write( reply->readAll() );
+      tempFile.close();
+      d.close();
+      QDesktopServices::openUrl( QUrl::fromLocalFile( tempFilePath ) );
+    } );
+
+    d.layout()->addWidget( wv );
+    QNetworkRequest req { url };
+
+    // guess content type
+
+    // check for json
+    if ( ! isMultiPart )
+    {
+      QString contentType { QStringLiteral( "application/x-www-form-urlencoded" ) };
+      QJsonParseError jsonError;
+      QJsonDocument::fromJson( payload.toUtf8(), &jsonError );
+      if ( jsonError.error == QJsonParseError::ParseError::NoError )
+      {
+        contentType = QStringLiteral( "application/json" );
+      }
+      req.setHeader( QNetworkRequest::KnownHeaders::ContentTypeHeader, contentType );
+    }
+    // for multipart create parts and headers
+    else
+    {
+      QString newPayload;
+      const auto queryItems { queryString.queryItems( QUrl::ComponentFormattingOption::FullyDecoded ) };
+      QCryptographicHash hash{ QCryptographicHash::Algorithm::Md5 };
+      hash.addData( QTime().toString( Qt::DateFormat::ISODateWithMs ).toUtf8() );
+      const QString boundary{ hash.result().toHex() };
+      const QString boundaryLine{ QStringLiteral( "-----------------------------%1\r\n" ).arg( boundary ) };
+      req.setHeader( QNetworkRequest::KnownHeaders::ContentTypeHeader, QStringLiteral( "multipart/form-data; boundary=%1" ).arg( boundary ) );
+      for ( const auto &queryItem : std::as_const( queryItems ) )
+      {
+        newPayload.push_back( boundaryLine );
+        newPayload.push_back( QStringLiteral( "Content-Disposition: form-data; name=\"%1\"\r\n\r\n" )
+                              .arg( QString( queryItem.first ).replace( '"', QStringLiteral( R"(\")" ) ) ) );
+        newPayload.push_back( QStringLiteral( "%1\r\n" ).arg( queryItem.second ) );
+      }
+      newPayload.push_back( boundaryLine );
+      payload = newPayload;
+      req.setHeader( QNetworkRequest::KnownHeaders::ContentLengthHeader, newPayload.size() );
+    }
+
+    wv->load( req, QNetworkAccessManager::Operation::PostOperation, payload.toUtf8() );
+    d.exec();
   }
   else if ( mType == QgsAction::GenericPython )
   {
@@ -207,7 +362,12 @@ QString QgsAction::html() const
     }
     case SubmitUrl:
     {
-      typeText = QObject::tr( "Submit URL" );
+      typeText = QObject::tr( "Submit URL (urlencoded or JSON)" );
+      break;
+    }
+    case SubmitUrlMultipart:
+    {
+      typeText = QObject::tr( "Submit URL (multipart)" );
       break;
     }
   }
