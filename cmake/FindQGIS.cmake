@@ -36,7 +36,7 @@ IF(WIN32)
   #MESSAGE("Searching for QGIS in $ENV{PROGRAMFILES}/QGIS")
   IF (MINGW)
     FIND_PATH(QGIS_PLUGIN_DIR
-      NAMES libofflineeditingplugin.dll
+      NAMES libplugin_offlineediting.dll
       PATHS
         "$ENV{PROGRAMFILES}/QGIS/plugins"
     )
@@ -59,7 +59,7 @@ IF(WIN32)
 
   IF (MSVC)
     FIND_PATH(QGIS_PLUGIN_DIR
-      NAMES offlineeditingplugin.dll
+      NAMES plugin_offlineediting.dll
       PATHS
         "$ENV{OSGEO4W_ROOT}/apps/${OSGEO4W_QGIS_SUBDIR}/plugins"
         "$ENV{PROGRAMFILES}/QGIS/plugins"
@@ -105,7 +105,7 @@ ELSE(WIN32)
   IF(UNIX)
     #MESSAGE("Searching for QGIS in /usr/bin; /usr/local/bin")
     FIND_PATH(QGIS_PLUGIN_DIR
-      NAMES libofflineeditingplugin.so
+      NAMES libplugin_offlineediting.so
       PATHS
         ${QGIS_BUILD_PATH}/PlugIns/qgis
         ${QGIS_MAC_PATH}/PlugIns/qgis
