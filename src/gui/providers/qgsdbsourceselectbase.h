@@ -44,6 +44,9 @@ class GUI_EXPORT QgsDbSourceSelectBase : public QgsAbstractDataSourceWidget, pro
     //! Returns the proxy model used to filter the results
     QSortFilterProxyModel *proxyModel() {return mProxyModel;}
 
+  private slots:
+    virtual void treeviewClicked( const QModelIndex &index );
+
   private:
     void filterResults();
 

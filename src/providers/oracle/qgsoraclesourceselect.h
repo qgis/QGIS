@@ -118,7 +118,6 @@ class QgsOracleSourceSelect : public QgsDbSourceSelectBase
     void setSql( const QModelIndex &index );
     //! Store the selected database
     void setLayerType( const QgsOracleLayerProperty &layerProperty );
-    void on_mTablesTreeView_clicked( const QModelIndex &index );
     void on_mTablesTreeView_doubleClicked( const QModelIndex &index );
     void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     //!Sets a new regular expression to the model

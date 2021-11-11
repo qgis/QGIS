@@ -97,6 +97,12 @@ void QgsDbSourceSelectBase::init( QgsAbstractDbTableModel *model, QItemDelegate 
   connect( mSearchTableEdit, &QLineEdit::textChanged, this, [ = ]() {filterResults();} );
 }
 
+void QgsDbSourceSelectBase::treeviewClicked( const QModelIndex &index )
+{
+  mBuildQueryButton->setEnabled( index.parent().isValid() );
+
+}
+
 
 void QgsDbSourceSelectBase::filterResults()
 {

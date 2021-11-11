@@ -313,11 +313,6 @@ void QgsOracleSourceSelect::buildQuery()
   setSql( mTablesTreeView->currentIndex() );
 }
 
-void QgsOracleSourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index )
-{
-  mBuildQueryButton->setEnabled( index.parent().isValid() );
-}
-
 void QgsOracleSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex & )
 {
   addButtonClicked();

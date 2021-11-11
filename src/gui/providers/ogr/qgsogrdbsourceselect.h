@@ -90,13 +90,16 @@ class QgsOgrDbSourceSelect: public QgsDbSourceSelectBase
     void cbxAllowGeometrylessTables_stateChanged( int );
     void setSql( const QModelIndex &index );
     void cmbConnections_activated( int );
-    void mTablesTreeView_clicked( const QModelIndex &index );
     void mTablesTreeView_doubleClicked( const QModelIndex &index );
     void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString &regexp );
 
     void showHelp();
+
+  private slots:
+    void treeviewClicked( const QModelIndex &index ) override;
+
 
   private:
     void setConnectionListPosition();
