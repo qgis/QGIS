@@ -1927,13 +1927,13 @@ QgsMarkerLineSymbolLayerWidget::QgsMarkerLineSymbolLayerWidget( QgsVectorLayer *
   connect( chkRotateMarker, &QAbstractButton::clicked, this, &QgsMarkerLineSymbolLayerWidget::setRotate );
   connect( spinOffset, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsMarkerLineSymbolLayerWidget::setOffset );
   connect( mSpinAverageAngleLength, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsMarkerLineSymbolLayerWidget::setAverageAngle );
-  connect( radInterval, &QAbstractButton::clicked, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
-  connect( radVertex, &QAbstractButton::clicked, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
-  connect( radVertexLast, &QAbstractButton::clicked, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
-  connect( radVertexFirst, &QAbstractButton::clicked, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
-  connect( radCentralPoint, &QAbstractButton::clicked, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
-  connect( radCurvePoint, &QAbstractButton::clicked, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
-  connect( radSegmentCentralPoint, &QAbstractButton::clicked, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
+  connect( mCheckInterval, &QCheckBox::toggled, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
+  connect( mCheckVertex, &QCheckBox::toggled, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
+  connect( mCheckVertexLast, &QCheckBox::toggled, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
+  connect( mCheckVertexFirst, &QCheckBox::toggled, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
+  connect( mCheckCentralPoint, &QCheckBox::toggled, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
+  connect( mCheckCurvePoint, &QCheckBox::toggled, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
+  connect( mCheckSegmentCentralPoint, &QCheckBox::toggled, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
 }
 
 void QgsMarkerLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
@@ -1957,20 +1957,14 @@ void QgsMarkerLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   spinOffset->blockSignals( true );
   spinOffset->setValue( mLayer->offset() );
   spinOffset->blockSignals( false );
-  if ( mLayer->placement() == Qgis::MarkerLinePlacement::Interval )
-    radInterval->setChecked( true );
-  else if ( mLayer->placement() == Qgis::MarkerLinePlacement::Vertex )
-    radVertex->setChecked( true );
-  else if ( mLayer->placement() == Qgis::MarkerLinePlacement::LastVertex )
-    radVertexLast->setChecked( true );
-  else if ( mLayer->placement() == Qgis::MarkerLinePlacement::CentralPoint )
-    radCentralPoint->setChecked( true );
-  else if ( mLayer->placement() == Qgis::MarkerLinePlacement::CurvePoint )
-    radCurvePoint->setChecked( true );
-  else if ( mLayer->placement() == Qgis::MarkerLinePlacement::SegmentCenter )
-    radSegmentCentralPoint->setChecked( true );
-  else
-    radVertexFirst->setChecked( true );
+
+  whileBlocking( mCheckInterval )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::Interval );
+  whileBlocking( mCheckVertex )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::Vertex );
+  whileBlocking( mCheckVertexFirst )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::FirstVertex );
+  whileBlocking( mCheckVertexLast )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::LastVertex );
+  whileBlocking( mCheckCentralPoint )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::CentralPoint );
+  whileBlocking( mCheckCurvePoint )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::CurvePoint );
+  whileBlocking( mCheckSegmentCentralPoint )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::SegmentCenter );
 
   // set units
   mIntervalUnitWidget->blockSignals( true );
@@ -2039,7 +2033,7 @@ void QgsMarkerLineSymbolLayerWidget::setOffsetAlongLine( double val )
 
 void QgsMarkerLineSymbolLayerWidget::setRotate()
 {
-  mSpinAverageAngleLength->setEnabled( chkRotateMarker->isChecked() && ( radInterval->isChecked() || radCentralPoint->isChecked() ) );
+  mSpinAverageAngleLength->setEnabled( chkRotateMarker->isChecked() && ( mCheckInterval->isChecked() || mCheckCentralPoint->isChecked() ) );
   mAverageAngleUnit->setEnabled( mSpinAverageAngleLength->isEnabled() );
 
   mLayer->setRotateSymbols( chkRotateMarker->isChecked() );
@@ -2054,27 +2048,29 @@ void QgsMarkerLineSymbolLayerWidget::setOffset()
 
 void QgsMarkerLineSymbolLayerWidget::setPlacement()
 {
-  const bool interval = radInterval->isChecked();
+  const bool interval = mCheckInterval->isChecked();
   spinInterval->setEnabled( interval );
-  mSpinOffsetAlongLine->setEnabled( radInterval->isChecked() || radVertexLast->isChecked() || radVertexFirst->isChecked() );
+  mSpinOffsetAlongLine->setEnabled( mCheckInterval->isChecked() || mCheckVertexLast->isChecked() || mCheckVertexFirst->isChecked() );
   mOffsetAlongLineUnitWidget->setEnabled( mSpinOffsetAlongLine->isEnabled() );
-  mSpinAverageAngleLength->setEnabled( chkRotateMarker->isChecked() && ( radInterval->isChecked() || radCentralPoint->isChecked() ) );
+  mSpinAverageAngleLength->setEnabled( chkRotateMarker->isChecked() && ( mCheckInterval->isChecked() || mCheckCentralPoint->isChecked() ) );
   mAverageAngleUnit->setEnabled( mSpinAverageAngleLength->isEnabled() );
-  //mLayer->setPlacement( interval ? QgsMarkerLineSymbolLayer::Interval : QgsMarkerLineSymbolLayer::Vertex );
-  if ( radInterval->isChecked() )
-    mLayer->setPlacement( Qgis::MarkerLinePlacement::Interval );
-  else if ( radVertex->isChecked() )
-    mLayer->setPlacement( Qgis::MarkerLinePlacement::Vertex );
-  else if ( radVertexLast->isChecked() )
-    mLayer->setPlacement( Qgis::MarkerLinePlacement::LastVertex );
-  else if ( radVertexFirst->isChecked() )
-    mLayer->setPlacement( Qgis::MarkerLinePlacement::FirstVertex );
-  else if ( radCurvePoint->isChecked() )
-    mLayer->setPlacement( Qgis::MarkerLinePlacement::CurvePoint );
-  else if ( radSegmentCentralPoint->isChecked() )
-    mLayer->setPlacement( Qgis::MarkerLinePlacement::SegmentCenter );
-  else
-    mLayer->setPlacement( Qgis::MarkerLinePlacement::CentralPoint );
+
+  Qgis::MarkerLinePlacements placements;
+  if ( mCheckInterval->isChecked() )
+    placements |= Qgis::MarkerLinePlacement::Interval;
+  if ( mCheckVertex->isChecked() )
+    placements |= Qgis::MarkerLinePlacement::Vertex;
+  if ( mCheckVertexLast->isChecked() )
+    placements |= Qgis::MarkerLinePlacement::LastVertex;
+  if ( mCheckVertexFirst->isChecked() )
+    placements |= Qgis::MarkerLinePlacement::FirstVertex;
+  if ( mCheckCurvePoint->isChecked() )
+    placements |= Qgis::MarkerLinePlacement::CurvePoint;
+  if ( mCheckSegmentCentralPoint->isChecked() )
+    placements |= Qgis::MarkerLinePlacement::SegmentCenter;
+  if ( mCheckCentralPoint->isChecked() )
+    placements |= Qgis::MarkerLinePlacement::CentralPoint;
+  mLayer->setPlacements( placements );
 
   emit changed();
 }
@@ -2177,13 +2173,14 @@ QgsHashedLineSymbolLayerWidget::QgsHashedLineSymbolLayerWidget( QgsVectorLayer *
   connect( chkRotateMarker, &QAbstractButton::clicked, this, &QgsHashedLineSymbolLayerWidget::setRotate );
   connect( spinOffset, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsHashedLineSymbolLayerWidget::setOffset );
   connect( mSpinAverageAngleLength, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsHashedLineSymbolLayerWidget::setAverageAngle );
-  connect( radInterval, &QAbstractButton::clicked, this, &QgsHashedLineSymbolLayerWidget::setPlacement );
-  connect( radVertex, &QAbstractButton::clicked, this, &QgsHashedLineSymbolLayerWidget::setPlacement );
-  connect( radVertexLast, &QAbstractButton::clicked, this, &QgsHashedLineSymbolLayerWidget::setPlacement );
-  connect( radVertexFirst, &QAbstractButton::clicked, this, &QgsHashedLineSymbolLayerWidget::setPlacement );
-  connect( radCentralPoint, &QAbstractButton::clicked, this, &QgsHashedLineSymbolLayerWidget::setPlacement );
-  connect( radCurvePoint, &QAbstractButton::clicked, this, &QgsHashedLineSymbolLayerWidget::setPlacement );
-  connect( radSegmentCentralPoint, &QAbstractButton::clicked, this, &QgsHashedLineSymbolLayerWidget::setPlacement );
+
+  connect( mCheckInterval, &QCheckBox::toggled, this, &QgsHashedLineSymbolLayerWidget::setPlacement );
+  connect( mCheckVertex, &QCheckBox::toggled, this, &QgsHashedLineSymbolLayerWidget::setPlacement );
+  connect( mCheckVertexLast, &QCheckBox::toggled, this, &QgsHashedLineSymbolLayerWidget::setPlacement );
+  connect( mCheckVertexFirst, &QCheckBox::toggled, this, &QgsHashedLineSymbolLayerWidget::setPlacement );
+  connect( mCheckCentralPoint, &QCheckBox::toggled, this, &QgsHashedLineSymbolLayerWidget::setPlacement );
+  connect( mCheckCurvePoint, &QCheckBox::toggled, this, &QgsHashedLineSymbolLayerWidget::setPlacement );
+  connect( mCheckSegmentCentralPoint, &QCheckBox::toggled, this, &QgsHashedLineSymbolLayerWidget::setPlacement );
 }
 
 void QgsHashedLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
@@ -2209,20 +2206,14 @@ void QgsHashedLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   spinOffset->blockSignals( true );
   spinOffset->setValue( mLayer->offset() );
   spinOffset->blockSignals( false );
-  if ( mLayer->placement() == Qgis::MarkerLinePlacement::Interval )
-    radInterval->setChecked( true );
-  else if ( mLayer->placement() == Qgis::MarkerLinePlacement::Vertex )
-    radVertex->setChecked( true );
-  else if ( mLayer->placement() == Qgis::MarkerLinePlacement::LastVertex )
-    radVertexLast->setChecked( true );
-  else if ( mLayer->placement() == Qgis::MarkerLinePlacement::CentralPoint )
-    radCentralPoint->setChecked( true );
-  else if ( mLayer->placement() == Qgis::MarkerLinePlacement::CurvePoint )
-    radCurvePoint->setChecked( true );
-  else if ( mLayer->placement() == Qgis::MarkerLinePlacement::SegmentCenter )
-    radSegmentCentralPoint->setChecked( true );
-  else
-    radVertexFirst->setChecked( true );
+
+  whileBlocking( mCheckInterval )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::Interval );
+  whileBlocking( mCheckVertex )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::Vertex );
+  whileBlocking( mCheckVertexFirst )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::FirstVertex );
+  whileBlocking( mCheckVertexLast )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::LastVertex );
+  whileBlocking( mCheckCentralPoint )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::CentralPoint );
+  whileBlocking( mCheckCurvePoint )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::CurvePoint );
+  whileBlocking( mCheckSegmentCentralPoint )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::SegmentCenter );
 
   // set units
   mIntervalUnitWidget->blockSignals( true );
@@ -2306,7 +2297,7 @@ void QgsHashedLineSymbolLayerWidget::setHashAngle( double val )
 
 void QgsHashedLineSymbolLayerWidget::setRotate()
 {
-  mSpinAverageAngleLength->setEnabled( chkRotateMarker->isChecked() && ( radInterval->isChecked() || radCentralPoint->isChecked() ) );
+  mSpinAverageAngleLength->setEnabled( chkRotateMarker->isChecked() && ( mCheckInterval->isChecked() || mCheckCentralPoint->isChecked() ) );
   mAverageAngleUnit->setEnabled( mSpinAverageAngleLength->isEnabled() );
 
   mLayer->setRotateSymbols( chkRotateMarker->isChecked() );
@@ -2321,27 +2312,29 @@ void QgsHashedLineSymbolLayerWidget::setOffset()
 
 void QgsHashedLineSymbolLayerWidget::setPlacement()
 {
-  const bool interval = radInterval->isChecked();
+  const bool interval = mCheckInterval->isChecked();
   spinInterval->setEnabled( interval );
-  mSpinOffsetAlongLine->setEnabled( radInterval->isChecked() || radVertexLast->isChecked() || radVertexFirst->isChecked() );
+  mSpinOffsetAlongLine->setEnabled( mCheckInterval->isChecked() || mCheckVertexLast->isChecked() || mCheckVertexFirst->isChecked() );
   mOffsetAlongLineUnitWidget->setEnabled( mSpinOffsetAlongLine->isEnabled() );
-  mSpinAverageAngleLength->setEnabled( chkRotateMarker->isChecked() && ( radInterval->isChecked() || radCentralPoint->isChecked() ) );
+  mSpinAverageAngleLength->setEnabled( chkRotateMarker->isChecked() && ( mCheckInterval->isChecked() || mCheckCentralPoint->isChecked() ) );
   mAverageAngleUnit->setEnabled( mSpinAverageAngleLength->isEnabled() );
-  //mLayer->setPlacement( interval ? QgsMarkerLineSymbolLayer::Interval : QgsMarkerLineSymbolLayer::Vertex );
-  if ( radInterval->isChecked() )
-    mLayer->setPlacement( Qgis::MarkerLinePlacement::Interval );
-  else if ( radVertex->isChecked() )
-    mLayer->setPlacement( Qgis::MarkerLinePlacement::Vertex );
-  else if ( radVertexLast->isChecked() )
-    mLayer->setPlacement( Qgis::MarkerLinePlacement::LastVertex );
-  else if ( radVertexFirst->isChecked() )
-    mLayer->setPlacement( Qgis::MarkerLinePlacement::FirstVertex );
-  else if ( radCurvePoint->isChecked() )
-    mLayer->setPlacement( Qgis::MarkerLinePlacement::CurvePoint );
-  else if ( radSegmentCentralPoint->isChecked() )
-    mLayer->setPlacement( Qgis::MarkerLinePlacement::SegmentCenter );
-  else
-    mLayer->setPlacement( Qgis::MarkerLinePlacement::CentralPoint );
+
+  Qgis::MarkerLinePlacements placements;
+  if ( mCheckInterval->isChecked() )
+    placements |= Qgis::MarkerLinePlacement::Interval;
+  if ( mCheckVertex->isChecked() )
+    placements |= Qgis::MarkerLinePlacement::Vertex;
+  if ( mCheckVertexLast->isChecked() )
+    placements |= Qgis::MarkerLinePlacement::LastVertex;
+  if ( mCheckVertexFirst->isChecked() )
+    placements |= Qgis::MarkerLinePlacement::FirstVertex;
+  if ( mCheckCurvePoint->isChecked() )
+    placements |= Qgis::MarkerLinePlacement::CurvePoint;
+  if ( mCheckSegmentCentralPoint->isChecked() )
+    placements |= Qgis::MarkerLinePlacement::SegmentCenter;
+  if ( mCheckCentralPoint->isChecked() )
+    placements |= Qgis::MarkerLinePlacement::CentralPoint;
+  mLayer->setPlacements( placements );
 
   emit changed();
 }

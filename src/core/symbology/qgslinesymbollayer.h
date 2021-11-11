@@ -626,14 +626,30 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     /**
      * Returns the placement of the symbols.
      * \see setPlacement()
+     * \deprecated use placements() instead
      */
-    Qgis::MarkerLinePlacement placement() const { return mPlacement; }
+    Q_DECL_DEPRECATED Qgis::MarkerLinePlacement placement() const SIP_DEPRECATED;
 
     /**
      * Sets the \a placement of the symbols.
      * \see placement()
+     * \deprecated use setPlacements() instead
      */
-    void setPlacement( Qgis::MarkerLinePlacement placement ) { mPlacement = placement; }
+    Q_DECL_DEPRECATED void setPlacement( Qgis::MarkerLinePlacement placement ) SIP_DEPRECATED;
+
+    /**
+     * Returns the placement of the symbols.
+     * \see setPlacements()
+     * \since QGIS 3.24
+     */
+    Qgis::MarkerLinePlacements placements() const { return mPlacements; }
+
+    /**
+     * Sets the \a placement of the symbols.
+     * \see placements()
+     * \since QGIS 3.24
+     */
+    void setPlacements( Qgis::MarkerLinePlacements placements ) { mPlacements = placements; }
 
     /**
      * Returns the offset along the line for the symbol placement. For Interval placements, this is the distance
@@ -834,7 +850,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     double mInterval = 3;
     QgsUnitTypes::RenderUnit mIntervalUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mIntervalMapUnitScale;
-    Qgis::MarkerLinePlacement mPlacement = Qgis::MarkerLinePlacement::Interval;
+    Qgis::MarkerLinePlacements mPlacements = Qgis::MarkerLinePlacement::Interval;
     double mOffsetAlongLine = 0; //distance to offset along line before marker is drawn
     QgsUnitTypes::RenderUnit mOffsetAlongLineUnit = QgsUnitTypes::RenderMillimeters; //unit for offset along line
     QgsMapUnitScale mOffsetAlongLineMapUnitScale;

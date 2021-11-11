@@ -668,6 +668,8 @@ The development version
       CurvePoint,
       SegmentCenter,
     };
+    typedef QFlags<Qgis::MarkerLinePlacement> MarkerLinePlacements;
+
 
     enum class GradientColorSource
       {
@@ -851,6 +853,8 @@ QFlags<Qgis::MapSettingsFlag> operator|(Qgis::MapSettingsFlag f1, QFlags<Qgis::M
 QFlags<Qgis::RenderContextFlag> operator|(Qgis::RenderContextFlag f1, QFlags<Qgis::RenderContextFlag> f2);
 
 QFlags<Qgis::VectorLayerTypeFlag> operator|(Qgis::VectorLayerTypeFlag f1, QFlags<Qgis::VectorLayerTypeFlag> f2);
+
+QFlags<Qgis::MarkerLinePlacement> operator|(Qgis::MarkerLinePlacement f1, QFlags<Qgis::MarkerLinePlacement> f2);
 
 
 

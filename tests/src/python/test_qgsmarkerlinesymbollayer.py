@@ -30,7 +30,8 @@ from qgis.PyQt.QtCore import QDir, Qt, QSize
 from qgis.PyQt.QtGui import QImage, QColor, QPainter
 from qgis.PyQt.QtXml import QDomDocument
 
-from qgis.core import (QgsGeometry,
+from qgis.core import (Qgis,
+                       QgsGeometry,
                        QgsFillSymbol,
                        QgsRenderContext,
                        QgsFeature,
@@ -104,6 +105,24 @@ class TestQgsMarkerLineSymbolLayer(unittest.TestCase):
         marker_line.subSymbol().setSizeUnit(QgsUnitTypes.RenderPixels)
         self.assertAlmostEqual(marker_line.width(context), 10.0, 3)
         self.assertAlmostEqual(marker_line.width(context2), 10.0, 3)
+
+    def testMultiplePlacements(self):
+        line_symbol = QgsLineSymbol()
+        line_symbol.deleteSymbolLayer(0)
+        line_symbol.appendSymbolLayer(
+            QgsMarkerLineSymbolLayer())
+        line_symbol[0].setPlacements(Qgis.MarkerLinePlacements(Qgis.MarkerLinePlacement.FirstVertex | Qgis.MarkerLinePlacement.LastVertex))
+
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        line_symbol[0].setSubSymbol(marker_symbol)
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
+        rendered_image = self.renderGeometry(line_symbol, g)
+        assert self.imageCheck('markerline_multiple_placement', 'markerline_multiple_placement', rendered_image)
 
     def testRingFilter(self):
         # test filtering rings during rendering
