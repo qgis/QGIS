@@ -1471,7 +1471,7 @@ QVariantMap QgsTemplatedLineSymbolLayerBase::properties() const
   map[QStringLiteral( "average_angle_unit" )] = QgsUnitTypes::encodeUnit( mAverageAngleLengthUnit );
   map[QStringLiteral( "average_angle_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mAverageAngleLengthMapUnitScale );
 
-map[QStringLiteral( "placements" )] = qgsFlagValueToKeys( mPlacements );
+  map[QStringLiteral( "placements" )] = qgsFlagValueToKeys( mPlacements );
 
   map[QStringLiteral( "ring_filter" )] = QString::number( static_cast< int >( mRingFilter ) );
   return map;
