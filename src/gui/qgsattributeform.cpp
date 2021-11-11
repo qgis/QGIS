@@ -482,14 +482,18 @@ bool QgsAttributeForm::saveEdits( QString *error )
   return success;
 }
 
-bool QgsAttributeForm::updateDefaultValues( const int originIdx )
+void QgsAttributeForm::updateValuesDependencies( const int originIdx )
 {
+  updateFieldDependencies();
 
-  // Synchronize
-  updateDefaultValueDependencies();
+  updateValuesDependenciesDefaultValues( originIdx );
+  updateValuesDependenciesVirtualFields( originIdx );
+}
 
+void QgsAttributeForm::updateValuesDependenciesDefaultValues( const int originIdx )
+{
   if ( !mDefaultValueDependencies.contains( originIdx ) )
-    return false;
+    return;
 
   // create updated Feature
   QgsFeature updatedFeature = QgsFeature( mFeature );
@@ -552,7 +556,69 @@ bool QgsAttributeForm::updateDefaultValues( const int originIdx )
       }
     }
   }
-  return true;
+}
+
+void QgsAttributeForm::updateValuesDependenciesVirtualFields( const int originIdx )
+{
+  if ( !mVirtualFieldsDependencies.contains( originIdx ) )
+    return;
+
+  if ( !mFeature.isValid() )
+    return;
+
+  // create updated Feature
+  QgsFeature updatedFeature = QgsFeature( mFeature );
+
+  QgsAttributes featureAttributes = mFeature.attributes();
+  for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
+  {
+    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+    if ( !eww )
+      continue;
+
+    QVariantList dstVars = QVariantList() << featureAttributes.at( eww->fieldIdx() );
+    QVariantList srcVars = QVariantList() << eww->value();
+    QList<int> fieldIndexes = QList<int>() << eww->fieldIdx();
+
+    // append additional fields
+    const QStringList additionalFields = eww->additionalFields();
+    for ( const QString &fieldName : additionalFields )
+    {
+      int idx = eww->layer()->fields().lookupField( fieldName );
+      fieldIndexes << idx;
+      dstVars << featureAttributes.at( idx );
+    }
+    srcVars.append( eww->additionalFieldValues() );
+
+    Q_ASSERT( dstVars.count() == srcVars.count() );
+
+    for ( int i = 0; i < dstVars.count(); i++ )
+    {
+      if ( !qgsVariantEqual( dstVars[i], srcVars[i] ) && srcVars[i].isValid() )
+        featureAttributes[fieldIndexes[i]] = srcVars[i];
+    }
+  }
+  updatedFeature.setAttributes( featureAttributes );
+
+  // go through depending fields and update the virtual field with its expression
+  QList<QgsWidgetWrapper *> relevantWidgets = mVirtualFieldsDependencies.values( originIdx );
+  for ( QgsWidgetWrapper *ww : std::as_const( relevantWidgets ) )
+  {
+    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+    if ( !eww )
+      return;
+
+    //do not update when this widget is already updating (avoid recursions)
+    if ( mAlreadyUpdatedFields.contains( eww->fieldIdx() ) )
+      continue;
+
+    // Update value
+    QgsExpressionContext context = createExpressionContext( updatedFeature );
+    QgsExpression exp( mLayer->expressionField( eww->fieldIdx() ) );
+    QVariant value = exp.evaluate( &context );
+    updatedFeature.setAttribute( eww->fieldIdx(), value );
+    eww->setValue( value );
+  }
 }
 
 void QgsAttributeForm::resetMultiEdit( bool promptToSave )
@@ -960,7 +1026,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariant
 
   //append field index here, so it's not updated recursive
   mAlreadyUpdatedFields.append( eww->fieldIdx() );
-  updateDefaultValues( eww->fieldIdx() );
+  updateValuesDependencies( eww->fieldIdx() );
   mAlreadyUpdatedFields.removeAll( eww->fieldIdx() );
 
   // Updates expression controlled labels
@@ -1768,7 +1834,7 @@ void QgsAttributeForm::init()
     }
   }
 
-  updateDefaultValueDependencies();
+  updateFieldDependencies();
 
   if ( !mButtonBox )
   {
@@ -2634,33 +2700,67 @@ bool QgsAttributeForm::fieldIsEditable( int fieldIndex ) const
   return QgsVectorLayerUtils::fieldIsEditable( mLayer, fieldIndex, mFeature );
 }
 
-void QgsAttributeForm::updateDefaultValueDependencies()
+void QgsAttributeForm::updateFieldDependencies()
 {
   mDefaultValueDependencies.clear();
+  mVirtualFieldsDependencies.clear();
+
   //create defaultValueDependencies
   for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
-    if ( eww )
-    {
-      QgsExpression exp( eww->field().defaultValueDefinition().expression() );
-      const QSet<QString> referencedColumns = exp.referencedColumns();
-      for ( const QString &referencedColumn : referencedColumns )
-      {
-        if ( referencedColumn == QgsFeatureRequest::ALL_ATTRIBUTES )
-        {
-          const QList<int> allAttributeIds( mLayer->fields().allAttributesList() );
+    if ( ! eww )
+      continue;
 
-          for ( const int id : allAttributeIds )
-          {
-            mDefaultValueDependencies.insertMulti( id, eww );
-          }
-        }
-        else
-        {
-          mDefaultValueDependencies.insertMulti( mLayer->fields().lookupField( referencedColumn ), eww );
-        }
+    updateFieldDependenciesDefaultValue( eww );
+
+    updateFieldDependenciesVirtualFields( eww );
+  }
+}
+
+void QgsAttributeForm::updateFieldDependenciesDefaultValue( QgsEditorWidgetWrapper *eww )
+{
+  QgsExpression exp( eww->field().defaultValueDefinition().expression() );
+  const QSet<QString> referencedColumns = exp.referencedColumns();
+  for ( const QString &referencedColumn : referencedColumns )
+  {
+    if ( referencedColumn == QgsFeatureRequest::ALL_ATTRIBUTES )
+    {
+      const QList<int> allAttributeIds( mLayer->fields().allAttributesList() );
+
+      for ( const int id : allAttributeIds )
+      {
+        mDefaultValueDependencies.insertMulti( id, eww );
       }
+    }
+    else
+    {
+      mDefaultValueDependencies.insertMulti( mLayer->fields().lookupField( referencedColumn ), eww );
+    }
+  }
+}
+
+void QgsAttributeForm::updateFieldDependenciesVirtualFields( QgsEditorWidgetWrapper *eww )
+{
+  QString expressionField = eww->layer()->expressionField( eww->fieldIdx() );
+  if ( expressionField.isEmpty() )
+    return;
+
+  QgsExpression exp( expressionField );
+  const QSet<QString> referencedColumns = exp.referencedColumns();
+  for ( const QString &referencedColumn : referencedColumns )
+  {
+    if ( referencedColumn == QgsFeatureRequest::ALL_ATTRIBUTES )
+    {
+      const QList<int> allAttributeIds( mLayer->fields().allAttributesList() );
+      for ( const int id : allAttributeIds )
+      {
+        mVirtualFieldsDependencies.insertMulti( id, eww );
+      }
+    }
+    else
+    {
+      mVirtualFieldsDependencies.insertMulti( mLayer->fields().lookupField( referencedColumn ), eww );
     }
   }
 }
