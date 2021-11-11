@@ -90,9 +90,6 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
   mTableModel = new QgsSpatiaLiteTableModel( this );
   setSourceModel( mTableModel );
 
-  mTablesTreeView->setModel( proxyModel() );
-  mTablesTreeView->setSortingEnabled( true );
-
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsSpatiaLiteSourceSelect::treeWidgetSelectionChanged );
 
   cbxAllowGeometrylessTables->setDisabled( true );

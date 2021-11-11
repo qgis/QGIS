@@ -236,12 +236,7 @@ QgsHanaSourceSelect::QgsHanaSourceSelect(
   populateConnectionList();
 
   mTableModel = new QgsHanaTableModel( this );
-  setSourceModel( mTableModel );
-
-  mTablesTreeView->setModel( proxyModel() );
-  mTablesTreeView->setSortingEnabled( true );
-  mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
-  mTablesTreeView->setItemDelegate( new QgsHanaSourceSelectDelegate( this ) );
+  setSourceModel( mTableModel, new QgsHanaSourceSelectDelegate( this ) );
 
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged,
            this, &QgsHanaSourceSelect::treeWidgetSelectionChanged );

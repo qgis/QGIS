@@ -23,6 +23,7 @@
 
 class QSortFilterProxyModel;
 class QgsAbstractDbTableModel;
+class QItemDelegate;
 
 /**
  * \ingroup gui
@@ -37,8 +38,8 @@ class GUI_EXPORT QgsDbSourceSelectBase : public QgsAbstractDataSourceWidget, pro
     QgsDbSourceSelectBase( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
   protected:
-    //! Sets the source model for the widget
-    void setSourceModel( QgsAbstractDbTableModel *model );
+    //! Sets the source model for the table and optionally a delegate
+    void setSourceModel( QgsAbstractDbTableModel *model, QItemDelegate *delegate = nullptr );
 
     //! Returns the proxy model used to filter the results
     QSortFilterProxyModel *proxyModel() {return mProxyModel;}

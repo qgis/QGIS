@@ -28,9 +28,9 @@ Constructor
 %End
 
   protected:
-    void setSourceModel( QgsAbstractDbTableModel *model );
+    void setSourceModel( QgsAbstractDbTableModel *model, QItemDelegate *delegate = 0 );
 %Docstring
-Sets the source model for the widget
+Sets the source model for the table and optionally a delegate
 %End
 
     QSortFilterProxyModel *proxyModel();

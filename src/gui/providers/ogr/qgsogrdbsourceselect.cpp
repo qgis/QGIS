@@ -75,9 +75,6 @@ QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const
   mTableModel = new QgsOgrDbTableModel( this );
   setSourceModel( mTableModel );
 
-  mTablesTreeView->setModel( proxyModel() );
-  mTablesTreeView->setSortingEnabled( true );
-
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsOgrDbSourceSelect::treeWidgetSelectionChanged );
 
   cbxAllowGeometrylessTables->setDisabled( true );

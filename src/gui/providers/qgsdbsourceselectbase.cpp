@@ -18,6 +18,7 @@
 
 #include <QMenu>
 #include <QSortFilterProxyModel>
+#include <QItemDelegate>
 
 QgsDbSourceSelectBase::QgsDbSourceSelectBase( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
@@ -35,11 +36,18 @@ QgsDbSourceSelectBase::QgsDbSourceSelectBase( QWidget *parent, Qt::WindowFlags f
   // The list gets sorted in finishList() method when the listing of tables and views has finished.
   mProxyModel->setDynamicSortFilter( false );
 
+
+  mTablesTreeView->setSortingEnabled( true );
+  mTablesTreeView->setUniformRowHeights( true );
+  mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
 }
 
-void QgsDbSourceSelectBase::setSourceModel( QgsAbstractDbTableModel *model )
+void QgsDbSourceSelectBase::setSourceModel( QgsAbstractDbTableModel *model, QItemDelegate *delegate )
 {
   mProxyModel->setSourceModel( model );
+  mTablesTreeView->setModel( mProxyModel );
+  mTablesTreeView->setItemDelegate( delegate );
+
 
   // setting the search coluns in search settings menu using the model header data
 

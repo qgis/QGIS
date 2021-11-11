@@ -165,12 +165,7 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
   populateConnectionList();
 
   mTableModel = new QgsMssqlTableModel( this );
-  setSourceModel( mTableModel );
-
-  mTablesTreeView->setModel( proxyModel() );
-  mTablesTreeView->setSortingEnabled( true );
-  mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
-  mTablesTreeView->setItemDelegate( new QgsMssqlSourceSelectDelegate( this ) );
+  setSourceModel( mTableModel, new QgsMssqlSourceSelectDelegate( this ) );
 
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsMssqlSourceSelect::treeWidgetSelectionChanged );
 

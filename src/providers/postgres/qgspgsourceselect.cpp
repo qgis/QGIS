@@ -255,13 +255,7 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsPr
 
 
   mTableModel = new QgsPgTableModel( this );
-  setSourceModel( mTableModel );
-
-  mTablesTreeView->setModel( proxyModel() );
-  mTablesTreeView->setSortingEnabled( true );
-  mTablesTreeView->setUniformRowHeights( true );
-  mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
-  mTablesTreeView->setItemDelegate( new QgsPgSourceSelectDelegate( this ) );
+  setSourceModel( mTableModel, new QgsPgSourceSelectDelegate( this ) );
 
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsPgSourceSelect::treeWidgetSelectionChanged );
 
