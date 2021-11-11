@@ -1068,6 +1068,7 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( MarkerLinePlacement )
     Q_DECLARE_FLAGS( MarkerLinePlacements, MarkerLinePlacement )
+    Q_FLAG( MarkerLinePlacements )
 
     /**
      * Gradient color sources.
