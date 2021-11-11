@@ -1471,13 +1471,7 @@ QVariantMap QgsTemplatedLineSymbolLayerBase::properties() const
   map[QStringLiteral( "average_angle_unit" )] = QgsUnitTypes::encodeUnit( mAverageAngleLengthUnit );
   map[QStringLiteral( "average_angle_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mAverageAngleLengthMapUnitScale );
 
-  map[QStringLiteral( "placement_vertex" )] = static_cast< bool >( mPlacements & Qgis::MarkerLinePlacement::Vertex );
-  map[QStringLiteral( "placement_last_vertex" )] = static_cast< bool >( mPlacements & Qgis::MarkerLinePlacement::LastVertex );
-  map[QStringLiteral( "placement_first_vertex" )] = static_cast< bool >( mPlacements & Qgis::MarkerLinePlacement::FirstVertex );
-  map[QStringLiteral( "placement_central_point" )] = static_cast< bool >( mPlacements & Qgis::MarkerLinePlacement::CentralPoint );
-  map[QStringLiteral( "placement_curve_point" )] = static_cast< bool >( mPlacements & Qgis::MarkerLinePlacement::CurvePoint );
-  map[QStringLiteral( "placement_interval" )] = static_cast< bool >( mPlacements & Qgis::MarkerLinePlacement::Interval );
-  map[QStringLiteral( "placement_segment_center" )] = static_cast< bool >( mPlacements & Qgis::MarkerLinePlacement::SegmentCenter );
+map[QStringLiteral( "placements" )] = qgsFlagValueToKeys<Qgis::MarkerLinePlacements>( mPlacements );
 
   map[QStringLiteral( "ring_filter" )] = QString::number( static_cast< int >( mRingFilter ) );
   return map;
@@ -1578,21 +1572,7 @@ void QgsTemplatedLineSymbolLayerBase::setCommonProperties( QgsTemplatedLineSymbo
   }
   else
   {
-    Qgis::MarkerLinePlacements placements;
-    if ( properties.value( QStringLiteral( "placement_vertex" ) ).toBool() )
-      placements |= Qgis::MarkerLinePlacement::Vertex;
-    if ( properties.value( QStringLiteral( "placement_last_vertex" ) ).toBool() )
-      placements |= Qgis::MarkerLinePlacement::LastVertex;
-    if ( properties.value( QStringLiteral( "placement_first_vertex" ) ).toBool() )
-      placements |= Qgis::MarkerLinePlacement::FirstVertex;
-    if ( properties.value( QStringLiteral( "placement_central_point" ) ).toBool() )
-      placements |= Qgis::MarkerLinePlacement::CentralPoint;
-    if ( properties.value( QStringLiteral( "placement_curve_point" ) ).toBool() )
-      placements |= Qgis::MarkerLinePlacement::CurvePoint;
-    if ( properties.value( QStringLiteral( "placement_interval" ) ).toBool() )
-      placements |= Qgis::MarkerLinePlacement::Interval;
-    if ( properties.value( QStringLiteral( "placement_segment_center" ) ).toBool() )
-      placements |= Qgis::MarkerLinePlacement::SegmentCenter;
+    Qgis::MarkerLinePlacements placements = qgsFlagKeysToValue<Qgis::MarkerLinePlacements>( properties.value( QStringLiteral( "placements" ) ).toString() );
     destLayer->setPlacements( placements );
   }
 
