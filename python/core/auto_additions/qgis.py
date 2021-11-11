@@ -1040,6 +1040,8 @@ QgsTemplatedLineSymbolLayerBase.SegmentCenter.__doc__ = "Place symbols at the ce
 Qgis.MarkerLinePlacement.__doc__ = 'Defines how/where the symbols should be placed on a line.\n\n.. note::\n\n   Prior to QGIS 3.24 this was available as :py:class:`QgsTemplatedLineSymbolLayerBase`.Placement\n\n.. versionadded:: 3.24\n\n' + '* ``Interval``: ' + Qgis.MarkerLinePlacement.Interval.__doc__ + '\n' + '* ``Vertex``: ' + Qgis.MarkerLinePlacement.Vertex.__doc__ + '\n' + '* ``LastVertex``: ' + Qgis.MarkerLinePlacement.LastVertex.__doc__ + '\n' + '* ``FirstVertex``: ' + Qgis.MarkerLinePlacement.FirstVertex.__doc__ + '\n' + '* ``CentralPoint``: ' + Qgis.MarkerLinePlacement.CentralPoint.__doc__ + '\n' + '* ``CurvePoint``: ' + Qgis.MarkerLinePlacement.CurvePoint.__doc__ + '\n' + '* ``SegmentCenter``: ' + Qgis.MarkerLinePlacement.SegmentCenter.__doc__
 # --
 Qgis.MarkerLinePlacement.baseClass = Qgis
+Qgis.MarkerLinePlacements.baseClass = Qgis
+MarkerLinePlacements = Qgis  # dirty hack since SIP seems to introduce the flags in module 
 QgsGradientFillSymbolLayer.GradientColorType = Qgis.GradientColorSource
 # monkey patching scoped based enum
 QgsGradientFillSymbolLayer.SimpleTwoColor = Qgis.GradientColorSource.SimpleTwoColor
