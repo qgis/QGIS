@@ -46,7 +46,6 @@ QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const
   connect( btnDelete, &QPushButton::clicked, this, &QgsOgrDbSourceSelect::btnDelete_clicked );
   connect( cbxAllowGeometrylessTables, &QCheckBox::stateChanged, this, &QgsOgrDbSourceSelect::cbxAllowGeometrylessTables_stateChanged );
   connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsOgrDbSourceSelect::cmbConnections_activated );
-  connect( mTablesTreeView, &QTreeView::doubleClicked, this, &QgsOgrDbSourceSelect::mTablesTreeView_doubleClicked );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOgrDbSourceSelect::showHelp );
 
@@ -97,7 +96,7 @@ void QgsOgrDbSourceSelect::treeviewClicked( const QModelIndex &index )
   mBuildQueryButton->setEnabled( index.parent().isValid() && mTablesTreeView->currentIndex().data( Qt::UserRole + 2 ) != QLatin1String( "Raster" ) );
 }
 
-void QgsOgrDbSourceSelect::mTablesTreeView_doubleClicked( const QModelIndex &index )
+void QgsOgrDbSourceSelect::treeviewDoubleClicked( const QModelIndex &index )
 {
   setSql( index );
 }

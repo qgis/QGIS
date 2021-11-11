@@ -88,7 +88,6 @@ class QgsOgrDbSourceSelect: public QgsDbSourceSelectBase
     void btnDelete_clicked();
     void cbxAllowGeometrylessTables_stateChanged( int );
     void cmbConnections_activated( int );
-    void mTablesTreeView_doubleClicked( const QModelIndex &index );
     void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString &regexp );
@@ -98,6 +97,7 @@ class QgsOgrDbSourceSelect: public QgsDbSourceSelectBase
   protected slots:
     void treeviewClicked( const QModelIndex &index ) override;
     void setSql( const QModelIndex &index ) override;
+    void treeviewDoubleClicked( const QModelIndex &index ) override;
 
   private:
     void setConnectionListPosition();

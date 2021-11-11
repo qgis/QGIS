@@ -46,6 +46,7 @@ class GUI_EXPORT QgsDbSourceSelectBase : public QgsAbstractDataSourceWidget, pro
 
   protected slots:
     virtual void treeviewClicked( const QModelIndex &index );
+    virtual void treeviewDoubleClicked( const QModelIndex &index );
     virtual void setSql( const QModelIndex &index ) = 0;
     void buildQuery();
 

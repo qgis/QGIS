@@ -113,7 +113,6 @@ class QgsHanaSourceSelect : public QgsDbSourceSelectBase
     //! Store the selected database
     void cmbConnections_activated( int );
     void setLayerType( const QgsHanaLayerProperty &layerProperty );
-    void mTablesTreeView_doubleClicked( const QModelIndex &index );
     void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString &regexp );
@@ -122,6 +121,7 @@ class QgsHanaSourceSelect : public QgsDbSourceSelectBase
 
   protected slots:
     void setSql( const QModelIndex &index ) override;
+    void treeviewDoubleClicked( const QModelIndex &index ) override;
 
   private:
     // Set the position of the database connection list to the last

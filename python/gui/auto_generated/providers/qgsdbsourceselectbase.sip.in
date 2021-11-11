@@ -40,6 +40,7 @@ Returns the proxy model used to filter the results
 
   protected slots:
     virtual void treeviewClicked( const QModelIndex &index );
+    virtual void treeviewDoubleClicked( const QModelIndex &index );
     virtual void setSql( const QModelIndex &index ) = 0;
     void buildQuery();
 

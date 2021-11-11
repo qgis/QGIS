@@ -135,7 +135,6 @@ QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   connect( btnSave, &QPushButton::clicked, this, &QgsDb2SourceSelect::btnSave_clicked );
   connect( btnLoad, &QPushButton::clicked, this, &QgsDb2SourceSelect::btnLoad_clicked );
   connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsDb2SourceSelect::cmbConnections_activated );
-  connect( mTablesTreeView, &QTreeView::doubleClicked, this, &QgsDb2SourceSelect::mTablesTreeView_doubleClicked );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDb2SourceSelect::showHelp );
 
@@ -257,11 +256,6 @@ void QgsDb2SourceSelect::cbxAllowGeometrylessTables_stateChanged( int )
 void QgsDb2SourceSelect::refresh()
 {
   populateConnectionList();
-}
-
-void QgsDb2SourceSelect::mTablesTreeView_doubleClicked( const QModelIndex & )
-{
-  addButtonClicked();
 }
 
 void QgsDb2SourceSelect::setLayerType( const QgsDb2LayerProperty &layerProperty )

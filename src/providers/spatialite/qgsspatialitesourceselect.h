@@ -92,6 +92,7 @@ class QgsSpatiaLiteSourceSelect:  public QgsDbSourceSelectBase
 
   protected slots:
     void setSql( const QModelIndex &index ) override;
+    void treeviewDoubleClicked( const QModelIndex &index ) override;
 
   private:
     enum Columns

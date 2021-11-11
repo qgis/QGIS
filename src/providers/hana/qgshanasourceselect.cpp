@@ -213,7 +213,6 @@ QgsHanaSourceSelect::QgsHanaSourceSelect(
   connect( btnLoad, &QPushButton::clicked, this, &QgsHanaSourceSelect::btnLoad_clicked );
   connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ),
            this, &QgsHanaSourceSelect::cmbConnections_activated );
-  connect( mTablesTreeView, &QTreeView::doubleClicked, this, &QgsHanaSourceSelect::mTablesTreeView_doubleClicked );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsHanaSourceSelect::showHelp );
 
@@ -328,7 +327,7 @@ void QgsHanaSourceSelect::cbxAllowGeometrylessTables_stateChanged( int )
   btnConnect_clicked();
 }
 
-void QgsHanaSourceSelect::mTablesTreeView_doubleClicked( const QModelIndex &index )
+void QgsHanaSourceSelect::treeviewDoubleClicked( const QModelIndex &index )
 {
   const QgsSettings settings;
   if ( settings.value( QStringLiteral( "qgis/addHANADC" ), false ).toBool() )

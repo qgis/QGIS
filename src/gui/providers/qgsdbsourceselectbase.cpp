@@ -44,6 +44,10 @@ QgsDbSourceSelectBase::QgsDbSourceSelectBase( QWidget *parent, Qt::WindowFlags f
   mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
   mBuildQueryButton->setDisabled( true );
   buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
+
+  connect( mTablesTreeView, &QTreeView::clicked, this, &QgsDbSourceSelectBase::treeviewClicked );
+  connect( mTablesTreeView, &QTreeView::doubleClicked, this, &QgsDbSourceSelectBase::treeviewDoubleClicked );
+
   connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsDbSourceSelectBase::buildQuery );
 }
 
@@ -106,6 +110,12 @@ void QgsDbSourceSelectBase::init( QgsAbstractDbTableModel *model, QItemDelegate 
 void QgsDbSourceSelectBase::treeviewClicked( const QModelIndex &index )
 {
   mBuildQueryButton->setEnabled( index.parent().isValid() );
+}
+
+void QgsDbSourceSelectBase::treeviewDoubleClicked( const QModelIndex &index )
+{
+  Q_UNUSED( index )
+  addButtonClicked();
 }
 
 void QgsDbSourceSelectBase::buildQuery()

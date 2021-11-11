@@ -298,11 +298,6 @@ void QgsOracleSourceSelect::on_cbxAllowGeometrylessTables_stateChanged( int )
     on_btnConnect_clicked();
 }
 
-void QgsOracleSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex & )
-{
-  addButtonClicked();
-}
-
 void QgsOracleSourceSelect::setLayerType( const QgsOracleLayerProperty &layerProperty )
 {
   mTableModel->addTableEntry( layerProperty );
