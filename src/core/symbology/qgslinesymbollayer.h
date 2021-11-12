@@ -652,36 +652,36 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     void setPlacements( Qgis::MarkerLinePlacements placements ) { mPlacements = placements; }
 
     /**
-     * Returns TRUE if the placement respects multi-part feature geometries.
+     * Returns TRUE if the placement applies for every part of multi-part feature geometries.
      *
-     * The default is FALSE, which means that Qgis::MarkerLinePlacement::FirstVertex or
+     * The default is TRUE, which means that Qgis::MarkerLinePlacement::FirstVertex or
      * Qgis::MarkerLinePlacement::LastVertex placements will result in a symbol on
      * the first/last vertex of EVERY part of a multipart feature.
      *
-     * If TRUE, then Qgis::MarkerLinePlacement::FirstVertex or
+     * If FALSE, then Qgis::MarkerLinePlacement::FirstVertex or
      * Qgis::MarkerLinePlacement::LastVertex placements will result in a symbol on
      * the first/last vertex of the overall multipart geometry only.
      *
-     * \see setRespectMultipart()
+     * \see setPlaceOnEveryPart()
      * \since QGIS 3.24
      */
-    bool respectMultipart() const { return mRespectMultipart; }
+    bool placeOnEveryPart() const { return mPlaceOnEveryPart; }
 
     /**
-     * Sets whether the placement respects multi-part feature geometries.
+     * Sets whether the placement applies for every part of multi-part feature geometries.
      *
-     * The default is FALSE, which means that Qgis::MarkerLinePlacement::FirstVertex or
+     * The default is TRUE, which means that Qgis::MarkerLinePlacement::FirstVertex or
      * Qgis::MarkerLinePlacement::LastVertex placements will result in a symbol on
      * the first/last vertex of EVERY part of a multipart feature.
      *
-     * If TRUE, then Qgis::MarkerLinePlacement::FirstVertex or
+     * If FALSE, then Qgis::MarkerLinePlacement::FirstVertex or
      * Qgis::MarkerLinePlacement::LastVertex placements will result in a symbol on
      * the first/last vertex of the overall multipart geometry only.
      *
-     * \see respectMultipart()
+     * \see placeOnEveryPart()
      * \since QGIS 3.24
      */
-    void setRespectMultipart( bool respect ) { mRespectMultipart = respect; }
+    void setPlaceOnEveryPart( bool respect ) { mPlaceOnEveryPart = respect; }
 
     /**
      * Returns the offset along the line for the symbol placement. For Interval placements, this is the distance
@@ -894,7 +894,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     double mAverageAngleLength = 4;
     QgsUnitTypes::RenderUnit mAverageAngleLengthUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mAverageAngleLengthMapUnitScale;
-    bool mRespectMultipart = false;
+    bool mPlaceOnEveryPart = true;
 
     bool mRenderingFeature = false;
     bool mHasRenderedFirstPart = false;
