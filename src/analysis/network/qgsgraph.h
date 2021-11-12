@@ -34,6 +34,7 @@
 
 class QgsGraphVertex;
 
+
 /**
  * \ingroup analysis
  * \class QgsGraphEdge
@@ -180,10 +181,9 @@ class ANALYSIS_EXPORT QgsGraph
      */
     QgsGraphVertex vertex( int idx ) const;
     % MethodCode
-    auto it = sipCpp->mGraphVertices.constFind( a0 );
-    if ( it != sipCpp->mGraphVertices.constEnd() )
+    if ( sipCpp->hasVertex( a0 ) )
     {
-      return sipConvertFromNewType( new QgsGraphVertex( ( it ).value() ), sipType_QgsGraphVertex, Py_None );
+      return sipConvertFromNewType( new QgsGraphVertex( sipCpp->vertex( a0 ) ), sipType_QgsGraphVertex, Py_None );
     }
     else
     {
@@ -215,8 +215,7 @@ class ANALYSIS_EXPORT QgsGraph
      */
     void removeVertex( int index );
     % MethodCode
-    auto it = sipCpp->mGraphVertices.constFind( a0 );
-    if ( it != sipCpp->mGraphVertices.constEnd() )
+    if ( sipCpp->hasVertex( a0 ) )
     {
       sipCpp->removeVertex( a0 );
     }
@@ -248,10 +247,9 @@ class ANALYSIS_EXPORT QgsGraph
      */
     QgsGraphEdge edge( int idx ) const;
     % MethodCode
-    auto it = sipCpp->mGraphEdges.constFind( a0 );
-    if ( it != sipCpp->mGraphEdges.constEnd() )
+    if ( sipCpp->hasEdge( a0 ) )
     {
-      return sipConvertFromNewType( new QgsGraphEdge( ( it ).value() ), sipType_QgsGraphEdge, Py_None );
+      return sipConvertFromNewType( new QgsGraphEdge( sipCpp->edge( a0 ) ), sipType_QgsGraphEdge, Py_None );
     }
     else
     {
@@ -286,8 +284,7 @@ class ANALYSIS_EXPORT QgsGraph
      */
     void removeEdge( int index );
     % MethodCode
-    auto it = sipCpp->mGraphEdges.constFind( a0 );
-    if ( it != sipCpp->mGraphEdges.constEnd() )
+    if ( sipCpp->hasEdge( a0 ) )
     {
       sipCpp->removeEdge( a0 );
     }
@@ -336,8 +333,7 @@ class ANALYSIS_EXPORT QgsGraph
     */
     int findOppositeEdge( int index ) const;
     % MethodCode
-    auto it = sipCpp->mGraphEdges.constFind( a0 );
-    if ( it != sipCpp->mGraphEdges.constEnd() )
+    if ( sipCpp->hasEdge( a0 ) )
     {
       sipRes = sipCpp->findOppositeEdge( a0 );
     }
@@ -349,6 +345,20 @@ class ANALYSIS_EXPORT QgsGraph
     % End
 #endif
 
+    /**
+     * Returns whether the edge of the given index exists.
+     *
+     * \since QGIS 3.24
+     */
+    bool hasEdge( int index ) const;
+
+    /**
+     * Returns whether the vertex of the given index exists.
+     *
+     * \since QGIS 3.24
+     */
+    bool hasVertex( int index ) const;
+
   protected:
 
 #ifndef SIP_RUN
@@ -358,6 +368,7 @@ class ANALYSIS_EXPORT QgsGraph
     //! Graph edges
     QHash<int, QgsGraphEdge> mGraphEdges;
 #endif
+
 
   private:
 
