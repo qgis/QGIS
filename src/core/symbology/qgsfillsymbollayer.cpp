@@ -4397,9 +4397,6 @@ QColor QgsCentroidFillSymbolLayer::color() const
 void QgsCentroidFillSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   mMarker->startRender( context.renderContext(), context.fields() );
-
-  mCurrentFeatureId = -1;
-  mBiggestPartIndex = 0;
 }
 
 void QgsCentroidFillSymbolLayer::stopRender( QgsSymbolRenderContext &context )

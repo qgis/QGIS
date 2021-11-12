@@ -652,6 +652,38 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     void setPlacements( Qgis::MarkerLinePlacements placements ) { mPlacements = placements; }
 
     /**
+     * Returns TRUE if the placement respects multi-part feature geometries.
+     *
+     * The default is FALSE, which means that Qgis::MarkerLinePlacement::FirstVertex or
+     * Qgis::MarkerLinePlacement::LastVertex placements will result in a symbol on
+     * the first/last vertex of EVERY part of a multipart feature.
+     *
+     * If TRUE, then Qgis::MarkerLinePlacement::FirstVertex or
+     * Qgis::MarkerLinePlacement::LastVertex placements will result in a symbol on
+     * the first/last vertex of the overall multipart geometry only.
+     *
+     * \see setRespectMultipart()
+     * \since QGIS 3.24
+     */
+    bool respectMultipart() const { return mRespectMultipart; }
+
+    /**
+     * Sets whether the placement respects multi-part feature geometries.
+     *
+     * The default is FALSE, which means that Qgis::MarkerLinePlacement::FirstVertex or
+     * Qgis::MarkerLinePlacement::LastVertex placements will result in a symbol on
+     * the first/last vertex of EVERY part of a multipart feature.
+     *
+     * If TRUE, then Qgis::MarkerLinePlacement::FirstVertex or
+     * Qgis::MarkerLinePlacement::LastVertex placements will result in a symbol on
+     * the first/last vertex of the overall multipart geometry only.
+     *
+     * \see respectMultipart()
+     * \since QGIS 3.24
+     */
+    void setRespectMultipart( bool respect ) { mRespectMultipart = respect; }
+
+    /**
      * Returns the offset along the line for the symbol placement. For Interval placements, this is the distance
      * between the start of the line and the first symbol. For FirstVertex and LastVertex placements, this is the
      * distance between the symbol and the start of the line or the end of the line respectively.
@@ -776,6 +808,9 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     QVariantMap properties() const override;
     bool canCauseArtifactsBetweenAdjacentTiles() const override;
 
+    void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
+    void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
+
   protected:
 
     /**
@@ -836,10 +871,12 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      * moving forward along the line. If distance is negative, offset is calculated moving backward
      * along the line's vertices.
      * \param context render context
+     * \param placement marker placement
      * \see setoffsetAlongLine
      * \see setOffsetAlongLineUnit
      */
-    void renderOffsetVertexAlongLine( const QPolygonF &points, int vertex, double distance, QgsSymbolRenderContext &context );
+    void renderOffsetVertexAlongLine( const QPolygonF &points, int vertex, double distance, QgsSymbolRenderContext &context,
+                                      Qgis::MarkerLinePlacement placement );
 
 
     static void collectOffsetPoints( const QVector< QPointF> &points,
@@ -857,6 +894,13 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     double mAverageAngleLength = 4;
     QgsUnitTypes::RenderUnit mAverageAngleLengthUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mAverageAngleLengthMapUnitScale;
+    bool mRespectMultipart = false;
+
+    bool mRenderingFeature = false;
+    bool mHasRenderedFirstPart = false;
+    QPointF mFinalVertex;
+    bool mCurrentFeatureIsSelected = false;
+    double mFeatureSymbolOpacity = 1;
 
     friend class TestQgsMarkerLineSymbol;
 

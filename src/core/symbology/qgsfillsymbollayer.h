@@ -2522,9 +2522,6 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
     bool mRenderingFeature = false;
     double mFeatureSymbolOpacity = 1;
 
-    QgsFeatureId mCurrentFeatureId = -1;
-    int mBiggestPartIndex = -1;
-
   private:
 #ifdef SIP_RUN
     QgsCentroidFillSymbolLayer( const QgsCentroidFillSymbolLayer &other );

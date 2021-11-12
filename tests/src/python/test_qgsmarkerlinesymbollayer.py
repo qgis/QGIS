@@ -124,6 +124,120 @@ class TestQgsMarkerLineSymbolLayer(unittest.TestCase):
         rendered_image = self.renderGeometry(line_symbol, g)
         assert self.imageCheck('markerline_multiple_placement', 'markerline_multiple_placement', rendered_image)
 
+    def testFirstVertexNoRespectMultipart(self):
+        line_symbol = QgsLineSymbol()
+        line_symbol.deleteSymbolLayer(0)
+        line_symbol.appendSymbolLayer(
+            QgsMarkerLineSymbolLayer())
+        line_symbol[0].setPlacements(Qgis.MarkerLinePlacements(Qgis.MarkerLinePlacement.FirstVertex))
+
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        line_symbol[0].setSubSymbol(marker_symbol)
+        line_symbol[0].setRespectMultipart(False)
+
+        g = QgsGeometry.fromWkt('MultiLineString((0 0, 10 0, 10 10, 0 10),(3 3, 7 3, 7 7, 3 7))')
+        rendered_image = self.renderGeometry(line_symbol, g)
+        assert self.imageCheck('markerline_first_no_respect_multipart', 'markerline_first_no_respect_multipart', rendered_image)
+
+    def testFirstVertexRespectMultipart(self):
+        line_symbol = QgsLineSymbol()
+        line_symbol.deleteSymbolLayer(0)
+        line_symbol.appendSymbolLayer(
+            QgsMarkerLineSymbolLayer())
+        line_symbol[0].setPlacements(Qgis.MarkerLinePlacements(Qgis.MarkerLinePlacement.FirstVertex))
+
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        line_symbol[0].setSubSymbol(marker_symbol)
+        line_symbol[0].setRespectMultipart(True)
+
+        g = QgsGeometry.fromWkt('MultiLineString((0 0, 10 0, 10 10, 0 10),(3 3, 7 3, 7 7, 3 7))')
+        rendered_image = self.renderGeometry(line_symbol, g)
+        assert self.imageCheck('markerline_first_respect_multipart', 'markerline_first_respect_multipart', rendered_image)
+
+    def testLastVertexNoRespectMultipart(self):
+        line_symbol = QgsLineSymbol()
+        line_symbol.deleteSymbolLayer(0)
+        line_symbol.appendSymbolLayer(
+            QgsMarkerLineSymbolLayer())
+        line_symbol[0].setPlacements(Qgis.MarkerLinePlacements(Qgis.MarkerLinePlacement.LastVertex))
+
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        line_symbol[0].setSubSymbol(marker_symbol)
+        line_symbol[0].setRespectMultipart(False)
+
+        g = QgsGeometry.fromWkt('MultiLineString((0 0, 10 0, 10 10, 0 10),(3 3, 7 3, 7 7, 3 7))')
+        rendered_image = self.renderGeometry(line_symbol, g)
+        assert self.imageCheck('markerline_last_no_respect_multipart', 'markerline_last_no_respect_multipart', rendered_image)
+
+    def testLastVertexRespectMultipart(self):
+        line_symbol = QgsLineSymbol()
+        line_symbol.deleteSymbolLayer(0)
+        line_symbol.appendSymbolLayer(
+            QgsMarkerLineSymbolLayer())
+        line_symbol[0].setPlacements(Qgis.MarkerLinePlacements(Qgis.MarkerLinePlacement.LastVertex))
+
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        line_symbol[0].setSubSymbol(marker_symbol)
+        line_symbol[0].setRespectMultipart(True)
+
+        g = QgsGeometry.fromWkt('MultiLineString((0 0, 10 0, 10 10, 0 10),(3 3, 7 3, 7 7, 3 7))')
+        rendered_image = self.renderGeometry(line_symbol, g)
+        assert self.imageCheck('markerline_last_respect_multipart', 'markerline_last_respect_multipart', rendered_image)
+
+    def testFirstLastVertexNoRespectMultipart(self):
+        line_symbol = QgsLineSymbol()
+        line_symbol.deleteSymbolLayer(0)
+        line_symbol.appendSymbolLayer(
+            QgsMarkerLineSymbolLayer())
+        line_symbol[0].setPlacements(Qgis.MarkerLinePlacements(Qgis.MarkerLinePlacement.FirstVertex | Qgis.MarkerLinePlacement.LastVertex))
+
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        line_symbol[0].setSubSymbol(marker_symbol)
+        line_symbol[0].setRespectMultipart(False)
+
+        g = QgsGeometry.fromWkt('MultiLineString((0 0, 10 0, 10 10, 0 10),(3 3, 7 3, 7 7, 3 7))')
+        rendered_image = self.renderGeometry(line_symbol, g)
+        assert self.imageCheck('markerline_first_last_no_respect_multipart', 'markerline_first_last_no_respect_multipart', rendered_image)
+
+    def testFirstLastVertexRespectMultipart(self):
+        line_symbol = QgsLineSymbol()
+        line_symbol.deleteSymbolLayer(0)
+        line_symbol.appendSymbolLayer(
+            QgsMarkerLineSymbolLayer())
+        line_symbol[0].setPlacements(Qgis.MarkerLinePlacements(Qgis.MarkerLinePlacement.FirstVertex | Qgis.MarkerLinePlacement.LastVertex))
+
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        line_symbol[0].setSubSymbol(marker_symbol)
+        line_symbol[0].setRespectMultipart(True)
+
+        g = QgsGeometry.fromWkt('MultiLineString((0 0, 10 0, 10 10, 0 10),(3 3, 7 3, 7 7, 3 7))')
+        rendered_image = self.renderGeometry(line_symbol, g)
+        assert self.imageCheck('markerline_first_last_respect_multipart', 'markerline_first_last_respect_multipart', rendered_image)
+
     def testInnerVerticesLine(self):
         line_symbol = QgsLineSymbol()
         line_symbol.deleteSymbolLayer(0)

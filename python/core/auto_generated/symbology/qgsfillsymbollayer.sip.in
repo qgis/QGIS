@@ -2796,7 +2796,6 @@ Sets whether point markers should be ``clipped`` to the current part boundary on
 
 
 
-
   private:
     QgsCentroidFillSymbolLayer( const QgsCentroidFillSymbolLayer &other );
 };

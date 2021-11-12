@@ -714,6 +714,40 @@ Sets the ``placement`` of the symbols.
 .. versionadded:: 3.24
 %End
 
+    bool respectMultipart() const;
+%Docstring
+Returns ``True`` if the placement respects multi-part feature geometries.
+
+The default is ``False``, which means that Qgis.MarkerLinePlacement.FirstVertex or
+Qgis.MarkerLinePlacement.LastVertex placements will result in a symbol on
+the first/last vertex of EVERY part of a multipart feature.
+
+If ``True``, then Qgis.MarkerLinePlacement.FirstVertex or
+Qgis.MarkerLinePlacement.LastVertex placements will result in a symbol on
+the first/last vertex of the overall multipart geometry only.
+
+.. seealso:: :py:func:`setRespectMultipart`
+
+.. versionadded:: 3.24
+%End
+
+    void setRespectMultipart( bool respect );
+%Docstring
+Sets whether the placement respects multi-part feature geometries.
+
+The default is ``False``, which means that Qgis.MarkerLinePlacement.FirstVertex or
+Qgis.MarkerLinePlacement.LastVertex placements will result in a symbol on
+the first/last vertex of EVERY part of a multipart feature.
+
+If ``True``, then Qgis.MarkerLinePlacement.FirstVertex or
+Qgis.MarkerLinePlacement.LastVertex placements will result in a symbol on
+the first/last vertex of the overall multipart geometry only.
+
+.. seealso:: :py:func:`respectMultipart`
+
+.. versionadded:: 3.24
+%End
+
     double offsetAlongLine() const;
 %Docstring
 Returns the offset along the line for the symbol placement. For Interval placements, this is the distance
@@ -872,6 +906,11 @@ calculating individual symbol angles.
     virtual QVariantMap properties() const;
 
     virtual bool canCauseArtifactsBetweenAdjacentTiles() const;
+
+
+    virtual void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
+    virtual void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
 
 
   protected:
