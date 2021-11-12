@@ -22,12 +22,10 @@
 #include <QUrlQuery>
 #include <QDir>
 #include <QTemporaryDir>
-#include <QDialog>
-#include <QLayout>
-#include <QScreen>
 #include <QNetworkRequest>
 #include <QJsonDocument>
-#include <QCryptographicHash>
+#include <QHttpMultiPart>
+#include <QMimeDatabase>
 
 #include "qgspythonrunner.h"
 #include "qgsrunprocess.h"
@@ -37,7 +35,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgswebview.h"
 #include "qgsnetworkaccessmanager.h"
-#include "qgsapplication.h"
+#include "qgsmessagelog.h"
 
 
 bool QgsAction::runable() const
@@ -97,104 +95,9 @@ void QgsAction::run( const QgsExpressionContext &expressionContext ) const
     // Remove query
     QString payload { url.query() };
     url.setQuery( QString( ) );
-    QDialog d;
-    d.setWindowTitle( QObject::tr( "Form Submit Action" ) );
-    d.setLayout( new QHBoxLayout( &d ) );
-    QgsWebView *wv = new QgsWebView( &d );
-    const double horizontalDpi { QgsApplication::primaryScreen()->logicalDotsPerInchX() };
-    wv->setZoomFactor( horizontalDpi / 96.0 );
-    wv->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
-#ifdef QGISDEBUG
-    wv->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
-#endif
-#ifdef WITH_QTWEBKIT
-    wv->page()->setForwardUnsupportedContent( true );
-#endif
-    wv->page()->settings()->setAttribute( QWebSettings::JavascriptEnabled, true );
-    wv->page()->settings()->setAttribute( QWebSettings::LocalStorageEnabled, true );
-    wv->page()->settings()->setAttribute( QWebSettings::LocalContentCanAccessRemoteUrls, true );
-    wv->page()->settings()->setAttribute( QWebSettings::JavascriptCanOpenWindows, true );
-    wv->page()->settings()->setAttribute( QWebSettings::PluginsEnabled, true );
 
-    QObject::connect( wv->page(), &QWebPage::unsupportedContent, &d, [ &d ]( QNetworkReply * reply )
-    {
-
-      QString filename { "unknown.bin" };
-      if ( const auto header = reply->header( QNetworkRequest::KnownHeaders::ContentDispositionHeader ).toString().toStdString(); ! header.empty() )
-      {
-
-        std::string ascii;
-        const std::string q1 { R"(filename=")" };
-        if ( const auto pos = header.find( q1 ); pos != std::string::npos )
-        {
-          const auto len = pos + q1.size();
-
-          const std::string q2 { R"(")" };
-          if ( auto pos = header.find( q2, len ); pos != std::string::npos )
-          {
-            bool escaped = false;
-            while ( pos != std::string::npos && header[pos - 1] == '\\' )
-            {
-              std::cout << pos << std::endl;
-              pos = header.find( q2, pos + 1 );
-              escaped = true;
-            }
-            ascii = header.substr( len, pos - len );
-            if ( escaped )
-            {
-              std::string cleaned;
-              for ( size_t i = 0; i < ascii.size(); ++i )
-              {
-                if ( ascii[i] == '\\' )
-                {
-                  if ( i > 0 && ascii[i - 1] == '\\' )
-                  {
-                    cleaned.push_back( ascii[i] );
-                  }
-                }
-                else
-                {
-                  cleaned.push_back( ascii[i] );
-                }
-              }
-              ascii = cleaned;
-            }
-          }
-        }
-
-        std::string utf8;
-
-        const std::string u { R"(UTF-8'')" };
-        if ( const auto pos = header.find( u ); pos != std::string::npos )
-        {
-          utf8 = header.substr( pos + u.size() );
-        }
-
-        // Prefer ascii over utf8
-        if ( ascii.empty() )
-        {
-          filename = QString::fromStdString( utf8 );
-        }
-        else
-        {
-          filename = QString::fromStdString( ascii );
-        }
-      }
-
-      QTemporaryDir tempDir;
-      tempDir.setAutoRemove( false );
-      tempDir.path();
-      const QString tempFilePath{ tempDir.path() + QDir::separator() + filename };
-      QFile tempFile{tempFilePath};
-      tempFile.open( QIODevice::WriteOnly );
-      tempFile.write( reply->readAll() );
-      tempFile.close();
-      d.close();
-      QDesktopServices::openUrl( QUrl::fromLocalFile( tempFilePath ) );
-    } );
-
-    d.layout()->addWidget( wv );
     QNetworkRequest req { url };
+    QNetworkReply *reply = nullptr;
 
     // guess content type
 
@@ -209,31 +112,147 @@ void QgsAction::run( const QgsExpressionContext &expressionContext ) const
         contentType = QStringLiteral( "application/json" );
       }
       req.setHeader( QNetworkRequest::KnownHeaders::ContentTypeHeader, contentType );
+      reply = QgsNetworkAccessManager::instance()->post( req, payload.toUtf8() );
     }
     // for multipart create parts and headers
     else
     {
-      QString newPayload;
+      QHttpMultiPart *multiPart = new QHttpMultiPart( QHttpMultiPart::FormDataType );
       const auto queryItems { queryString.queryItems( QUrl::ComponentFormattingOption::FullyDecoded ) };
-      QCryptographicHash hash{ QCryptographicHash::Algorithm::Md5 };
-      hash.addData( QTime().toString( Qt::DateFormat::ISODateWithMs ).toUtf8() );
-      const QString boundary{ hash.result().toHex() };
-      const QString boundaryLine{ QStringLiteral( "-----------------------------%1\r\n" ).arg( boundary ) };
-      req.setHeader( QNetworkRequest::KnownHeaders::ContentTypeHeader, QStringLiteral( "multipart/form-data; boundary=%1" ).arg( boundary ) );
       for ( const auto &queryItem : std::as_const( queryItems ) )
       {
-        newPayload.push_back( boundaryLine );
-        newPayload.push_back( QStringLiteral( "Content-Disposition: form-data; name=\"%1\"\r\n\r\n" )
-                              .arg( QString( queryItem.first ).replace( '"', QStringLiteral( R"(\")" ) ) ) );
-        newPayload.push_back( QStringLiteral( "%1\r\n" ).arg( queryItem.second ) );
+        QHttpPart part;
+        part.setHeader( QNetworkRequest::ContentDispositionHeader,
+                        QStringLiteral( "Content-Disposition: form-data; name=\"%1\"\r\n\r\n" )
+                        .arg( QString( queryItem.first ).replace( '"', QStringLiteral( R"(\")" ) ) ) );
+        part.setBody( QStringLiteral( "%1\r\n" ).arg( queryItem.second ).toUtf8() );
       }
-      newPayload.push_back( boundaryLine );
-      payload = newPayload;
-      req.setHeader( QNetworkRequest::KnownHeaders::ContentLengthHeader, newPayload.size() );
+      reply = QgsNetworkAccessManager::instance()->post( req, multiPart );
+      multiPart->setParent( reply );
     }
 
-    wv->load( req, QNetworkAccessManager::Operation::PostOperation, payload.toUtf8() );
-    d.exec();
+    QObject::connect( reply, &QNetworkReply::finished, reply, [ reply ]
+    {
+      if ( reply->error() == QNetworkReply::NoError )
+      {
+
+        if ( reply->attribute( QNetworkRequest::RedirectionTargetAttribute ).isNull() )
+        {
+          const QByteArray replyData = reply->readAll();
+
+          QString filename { "download.bin" };
+          if ( const auto header = reply->header( QNetworkRequest::KnownHeaders::ContentDispositionHeader ).toString().toStdString(); ! header.empty() )
+          {
+
+            std::string ascii;
+            const std::string q1 { R"(filename=")" };
+            if ( const auto pos = header.find( q1 ); pos != std::string::npos )
+            {
+              const auto len = pos + q1.size();
+
+              const std::string q2 { R"(")" };
+              if ( auto pos = header.find( q2, len ); pos != std::string::npos )
+              {
+                bool escaped = false;
+                while ( pos != std::string::npos && header[pos - 1] == '\\' )
+                {
+                  std::cout << pos << std::endl;
+                  pos = header.find( q2, pos + 1 );
+                  escaped = true;
+                }
+                ascii = header.substr( len, pos - len );
+                if ( escaped )
+                {
+                  std::string cleaned;
+                  for ( size_t i = 0; i < ascii.size(); ++i )
+                  {
+                    if ( ascii[i] == '\\' )
+                    {
+                      if ( i > 0 && ascii[i - 1] == '\\' )
+                      {
+                        cleaned.push_back( ascii[i] );
+                      }
+                    }
+                    else
+                    {
+                      cleaned.push_back( ascii[i] );
+                    }
+                  }
+                  ascii = cleaned;
+                }
+              }
+            }
+            else if ( !reply->header( QNetworkRequest::KnownHeaders::ContentTypeHeader ).isNull() )
+            {
+              QString contentTypeHeader { reply->header( QNetworkRequest::KnownHeaders::ContentTypeHeader ).toString() };
+              // Strip charset if any
+              if ( contentTypeHeader.contains( ';' ) )
+              {
+                contentTypeHeader = contentTypeHeader.left( contentTypeHeader.indexOf( ';' ) );
+              }
+
+              QMimeType mimeType { QMimeDatabase().mimeTypeForName( contentTypeHeader ) };
+              if ( mimeType.isValid() )
+              {
+                filename = QStringLiteral( "download.%1" ).arg( mimeType.preferredSuffix() );
+              }
+            }
+
+            std::string utf8;
+
+            const std::string u { R"(UTF-8'')" };
+            if ( const auto pos = header.find( u ); pos != std::string::npos )
+            {
+              utf8 = header.substr( pos + u.size() );
+            }
+
+            // Prefer ascii over utf8
+            if ( ascii.empty() )
+            {
+              if ( ! utf8.empty( ) )
+              {
+                filename = QString::fromStdString( utf8 );
+              }
+            }
+            else
+            {
+              filename = QString::fromStdString( ascii );
+            }
+          }
+
+          QTemporaryDir tempDir;
+          tempDir.setAutoRemove( false );
+          tempDir.path();
+          const QString tempFilePath{ tempDir.path() + QDir::separator() + filename };
+          QFile tempFile{tempFilePath};
+          tempFile.open( QIODevice::WriteOnly );
+          tempFile.write( replyData );
+          tempFile.close();
+          QDesktopServices::openUrl( QUrl::fromLocalFile( tempFilePath ) );
+        }
+        else
+        {
+          QgsMessageLog::logMessage( QObject::tr( "Redirect is not supported!" ), QStringLiteral( "Form Submit Action" ), Qgis::MessageLevel::Critical );
+        }
+      }
+      else
+      {
+        QgsMessageLog::logMessage( reply->errorString(), QStringLiteral( "Form Submit Action" ), Qgis::MessageLevel::Critical );
+      }
+      reply->deleteLater();
+    } );
+
+#if 0  // Not sure we need this: error is checked in finished() anyway
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+    QObject::connect( reply, qOverload<QNetworkReply::NetworkError>( QNetworkReply::error error ), reply, [ reply ] {} );
+#else
+    QObject::connect( reply, &QNetworkReply::errorOccurred, reply, [ reply ]( QNetworkReply::NetworkError )
+    {
+      QgsMessageLog::logMessage( reply->errorString(), QStringLiteral( "Form Submit Action" ), Qgis::MessageLevel::Critical );
+    } );
+#endif
+#endif
+
   }
   else if ( mType == QgsAction::GenericPython )
   {
