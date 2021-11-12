@@ -45,10 +45,11 @@ class GUI_EXPORT QgsDbSourceSelectBase : public QgsAbstractDataSourceWidget, pro
     QSortFilterProxyModel *proxyModel() {return mProxyModel;}
 
   protected slots:
+    //! This is called to define the SQL query and must be re-implemented. The implementation should call QgsAbstractDbTableModel::setSql
+    virtual void setSql( const QModelIndex &index ) = 0;
+
     virtual void treeviewClicked( const QModelIndex &index );
     virtual void treeviewDoubleClicked( const QModelIndex &index );
-    virtual void setSql( const QModelIndex &index ) = 0;
-    void buildQuery();
 
   private:
     void filterResults();

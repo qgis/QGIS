@@ -39,10 +39,13 @@ Returns the proxy model used to filter the results
 %End
 
   protected slots:
+    virtual void setSql( const QModelIndex &index ) = 0;
+%Docstring
+This is called to define the SQL query and must be re-implemented. The implementation should call :py:class:`QgsAbstractDbTableModel`.setSql
+%End
+
     virtual void treeviewClicked( const QModelIndex &index );
     virtual void treeviewDoubleClicked( const QModelIndex &index );
-    virtual void setSql( const QModelIndex &index ) = 0;
-    void buildQuery();
 
 };
 

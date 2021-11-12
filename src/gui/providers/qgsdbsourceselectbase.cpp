@@ -48,7 +48,7 @@ QgsDbSourceSelectBase::QgsDbSourceSelectBase( QWidget *parent, Qt::WindowFlags f
   connect( mTablesTreeView, &QTreeView::clicked, this, &QgsDbSourceSelectBase::treeviewClicked );
   connect( mTablesTreeView, &QTreeView::doubleClicked, this, &QgsDbSourceSelectBase::treeviewDoubleClicked );
 
-  connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsDbSourceSelectBase::buildQuery );
+  connect( mBuildQueryButton, &QAbstractButton::clicked, this, [ = ]() {setSql( mTablesTreeView->currentIndex() );} );
 }
 
 void QgsDbSourceSelectBase::init( QgsAbstractDbTableModel *model, QItemDelegate *delegate )
@@ -117,12 +117,6 @@ void QgsDbSourceSelectBase::treeviewDoubleClicked( const QModelIndex &index )
   Q_UNUSED( index )
   addButtonClicked();
 }
-
-void QgsDbSourceSelectBase::buildQuery()
-{
-  setSql( mTablesTreeView->currentIndex() );
-}
-
 
 void QgsDbSourceSelectBase::filterResults()
 {
