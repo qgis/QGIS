@@ -123,9 +123,10 @@ void QgsAction::run( const QgsExpressionContext &expressionContext ) const
       {
         QHttpPart part;
         part.setHeader( QNetworkRequest::ContentDispositionHeader,
-                        QStringLiteral( "Content-Disposition: form-data; name=\"%1\"" )
+                        QStringLiteral( "form-data; name=\"%1\"" )
                         .arg( QString( queryItem.first ).replace( '"', QStringLiteral( R"(\")" ) ) ) );
         part.setBody( queryItem.second.toUtf8() );
+        multiPart->append( part );
       }
       reply = QgsNetworkAccessManager::instance()->post( req, multiPart );
       multiPart->setParent( reply );
