@@ -195,7 +195,7 @@ void QgsActionManager::runAction( const QgsAction &action )
     else
       QDesktopServices::openUrl( QUrl( action.command(), QUrl::TolerantMode ) );
   }
-  else if ( action.type() == QgsAction::SubmitUrl || action.type() == QgsAction::SubmitUrlMultipart )
+  else if ( action.type() == QgsAction::SubmitUrlEncoded || action.type() == QgsAction::SubmitUrlMultipart )
   {
     action.run( QgsExpressionContext() );
   }
