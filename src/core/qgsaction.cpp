@@ -45,7 +45,7 @@ bool QgsAction::runable() const
   return mType == Generic ||
          mType == GenericPython ||
          mType == OpenUrl ||
-         mType == SubmitUrl ||
+         mType == SubmitUrlEncoded ||
          mType == SubmitUrlMultipart ||
 #if defined(Q_OS_WIN)
          mType == Windows
@@ -89,7 +89,7 @@ void QgsAction::run( const QgsExpressionContext &expressionContext ) const
     else
       QDesktopServices::openUrl( QUrl( expandedAction, QUrl::TolerantMode ) );
   }
-  else if ( mType == QgsAction::SubmitUrl || mType == QgsAction::SubmitUrlMultipart )
+  else if ( mType == QgsAction::SubmitUrlEncoded || mType == QgsAction::SubmitUrlMultipart )
   {
 
     QUrl url{ command() };
@@ -361,7 +361,7 @@ QString QgsAction::html() const
       typeText = QObject::tr( "Open URL" );
       break;
     }
-    case SubmitUrl:
+    case SubmitUrlEncoded:
     {
       typeText = QObject::tr( "Submit URL (urlencoded or JSON)" );
       break;
