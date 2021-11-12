@@ -521,7 +521,8 @@ and from OSGeo4W (select *Advanced Install*):
     **not** to install the msinttypes package. It installs a stdint.h file in
     OSGeo4W[64]\include, that conflicts with Visual Studio own stdint.h, which for
     example breaks the build of the virtual layer provider.
-  * Be sure tu use OSGEO4W V2 as V1 will install older versions of packages. In particular, QGIS 3.22 requires QT5.12 or above (5.15.2.3 available at the time of writing). 
+  * Be sure to use OSGEO4W V2 as V1 will install older versions of packages.
+    In particular, QGIS 3.22 requires QT 5.12 or above (5.15.2.3 available at the time of writing). 
 
 Earlier versions of this document also covered how to build all above
 dependencies.  If you're interested in that, check the history of this page in the Wiki
