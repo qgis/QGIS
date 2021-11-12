@@ -92,8 +92,6 @@ void QgsAction::run( const QgsExpressionContext &expressionContext ) const
   else if ( mType == QgsAction::SubmitUrl || mType == QgsAction::SubmitUrlMultipart )
   {
 
-    const bool isMultiPart { mType == QgsAction::SubmitUrlMultipart };
-
     QUrl url{ command() };
     const QUrlQuery queryString { url.query( QUrl::ComponentFormattingOption::FullyDecoded ) };
     // Remove query
@@ -201,7 +199,7 @@ void QgsAction::run( const QgsExpressionContext &expressionContext ) const
     // guess content type
 
     // check for json
-    if ( ! isMultiPart )
+    if ( mType != QgsAction::SubmitUrlMultipart )
     {
       QString contentType { QStringLiteral( "application/x-www-form-urlencoded" ) };
       QJsonParseError jsonError;
