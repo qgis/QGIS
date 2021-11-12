@@ -361,7 +361,7 @@ set(QGIS_GUI_SRCS
   processing/models/qgsmodelviewtooltemporarymousepan.cpp
   processing/models/qgsmodelviewtoolzoom.cpp
 
-  providers/qgsdbsourceselectbase.cpp
+  providers/qgsabstractdbsourceselect.cpp
   providers/qgspointcloudproviderguimetadata.cpp
   providers/qgspointcloudsourceselect.cpp
 
@@ -1181,7 +1181,7 @@ set(QGIS_GUI_HDRS
   processing/models/qgsmodelviewtooltemporarymousepan.h
   processing/models/qgsmodelviewtoolzoom.h
 
-  providers/qgsdbsourceselectbase.h
+  providers/qgsabstractdbsourceselect.h
   providers/qgspointcloudsourceselect.h
   providers/qgspointcloudproviderguimetadata.h
 

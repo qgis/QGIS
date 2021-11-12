@@ -1,5 +1,5 @@
 /***************************************************************************
-   qgsdbsourceselectbase.h
+   qgsabstractdbsourceselect.h
     --------------------------------------
    Date                 : 08.11.2021
    Copyright            : (C) 2021 Denis Rouzaud
@@ -13,8 +13,8 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef QGSDBSOURCESELECTBASE_H
-#define QGSDBSOURCESELECTBASE_H
+#ifndef QGSABSTRACTDBSOURCESELECT_H
+#define QGSABSTRACTDBSOURCESELECT_H
 
 
 #include "qgis_gui.h"
@@ -27,15 +27,15 @@ class QItemDelegate;
 
 /**
  * \ingroup gui
- * \brief The QgsDbSourceSelectBase class is a base class for database source widget selector
+ * \brief The QgsAbstractDbSourceSelect class is a base class for database source widget selector
  * \since QGIS 3.24
  */
-class GUI_EXPORT QgsDbSourceSelectBase : public QgsAbstractDataSourceWidget, protected Ui::QgsDbSourceSelectBase
+class GUI_EXPORT QgsAbstractDbSourceSelect : public QgsAbstractDataSourceWidget, protected Ui::QgsAbstractDbSourceSelect
 {
     Q_OBJECT
   public:
     //! Constructor
-    QgsDbSourceSelectBase( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsAbstractDbSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
   protected:
     //! Sets the source model for the table and optionally a delegate
@@ -65,4 +65,4 @@ class GUI_EXPORT QgsDbSourceSelectBase : public QgsAbstractDataSourceWidget, pro
     QPushButton *mBuildQueryButton = nullptr;
 };
 
-#endif // QGSDBSOURCESELECTBASE_H
+#endif // QGSABSTRACTDBSOURCESELECT_H

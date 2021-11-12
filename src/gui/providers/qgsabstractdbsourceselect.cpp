@@ -1,5 +1,5 @@
 /***************************************************************************
-   qgsdbsourceselectbase.h
+   qgsabstractdbsourceselect.h
     --------------------------------------
    Date                 : 08.11.2021
    Copyright            : (C) 2021 Denis Rouzaud
@@ -14,13 +14,13 @@
 ***************************************************************************/
 
 #include "qgsabstractdbtablemodel.h"
-#include "qgsdbsourceselectbase.h"
+#include "qgsabstractdbsourceselect.h"
 
 #include <QMenu>
 #include <QSortFilterProxyModel>
 #include <QItemDelegate>
 
-QgsDbSourceSelectBase::QgsDbSourceSelectBase( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
+QgsAbstractDbSourceSelect::QgsAbstractDbSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
 {
   setupUi( this );
@@ -45,13 +45,13 @@ QgsDbSourceSelectBase::QgsDbSourceSelectBase( QWidget *parent, Qt::WindowFlags f
   mBuildQueryButton->setDisabled( true );
   buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
 
-  connect( mTablesTreeView, &QTreeView::clicked, this, &QgsDbSourceSelectBase::treeviewClicked );
-  connect( mTablesTreeView, &QTreeView::doubleClicked, this, &QgsDbSourceSelectBase::treeviewDoubleClicked );
+  connect( mTablesTreeView, &QTreeView::clicked, this, &QgsAbstractDbSourceSelect::treeviewClicked );
+  connect( mTablesTreeView, &QTreeView::doubleClicked, this, &QgsAbstractDbSourceSelect::treeviewDoubleClicked );
 
   connect( mBuildQueryButton, &QAbstractButton::clicked, this, [ = ]() {setSql( mTablesTreeView->currentIndex() );} );
 }
 
-void QgsDbSourceSelectBase::init( QgsAbstractDbTableModel *model, QItemDelegate *delegate )
+void QgsAbstractDbSourceSelect::init( QgsAbstractDbTableModel *model, QItemDelegate *delegate )
 {
   mProxyModel->setSourceModel( model );
   mTablesTreeView->setModel( mProxyModel );
@@ -107,18 +107,18 @@ void QgsDbSourceSelectBase::init( QgsAbstractDbTableModel *model, QItemDelegate 
   connect( mSearchTableEdit, &QLineEdit::textChanged, this, [ = ]() {filterResults();} );
 }
 
-void QgsDbSourceSelectBase::treeviewClicked( const QModelIndex &index )
+void QgsAbstractDbSourceSelect::treeviewClicked( const QModelIndex &index )
 {
   mBuildQueryButton->setEnabled( index.parent().isValid() );
 }
 
-void QgsDbSourceSelectBase::treeviewDoubleClicked( const QModelIndex &index )
+void QgsAbstractDbSourceSelect::treeviewDoubleClicked( const QModelIndex &index )
 {
   Q_UNUSED( index )
   addButtonClicked();
 }
 
-void QgsDbSourceSelectBase::filterResults()
+void QgsAbstractDbSourceSelect::filterResults()
 {
   QString searchText = mSearchTableEdit->text();
   bool regex = mSearchModeRegexAction->isChecked();

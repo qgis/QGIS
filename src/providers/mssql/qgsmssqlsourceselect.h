@@ -20,7 +20,7 @@
 #include "qgsguiutils.h"
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
-#include "qgsdbsourceselectbase.h"
+#include "qgsabstractdbsourceselect.h"
 #include "qgsmssqltablemodel.h"
 
 
@@ -57,7 +57,7 @@ class QgsMssqlSourceSelectDelegate : public QItemDelegate
  * for MSSQL databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsMssqlSourceSelect : public QgsDbSourceSelectBase
+class QgsMssqlSourceSelect : public QgsAbstractDbSourceSelect
 {
     Q_OBJECT
 

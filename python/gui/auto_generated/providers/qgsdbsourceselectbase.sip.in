@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/providers/qgsdbsourceselectbase.h                            *
+ * src/gui/providers/qgsabstractdbsourceselect.h                            *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -10,19 +10,19 @@
 
 
 
-class QgsDbSourceSelectBase : QgsAbstractDataSourceWidget, protected Ui::QgsDbSourceSelectBase
+class QgsAbstractDbSourceSelect : QgsAbstractDataSourceWidget, protected Ui::QgsAbstractDbSourceSelect
 {
 %Docstring(signature="appended")
-The :py:class:`QgsDbSourceSelectBase` class is a base class for database source widget selector
+The :py:class:`QgsAbstractDbSourceSelect` class is a base class for database source widget selector
 
 .. versionadded:: 3.24
 %End
 
 %TypeHeaderCode
-#include "qgsdbsourceselectbase.h"
+#include "qgsabstractdbsourceselect.h"
 %End
   public:
-    QgsDbSourceSelectBase( QWidget *parent = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsAbstractDbSourceSelect( QWidget *parent = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 %Docstring
 Constructor
 %End
@@ -52,7 +52,7 @@ This is called to define the SQL query and must be re-implemented. The implement
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/providers/qgsdbsourceselectbase.h                            *
+ * src/gui/providers/qgsabstractdbsourceselect.h                            *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

@@ -20,7 +20,7 @@
 
 #include "qgsguiutils.h"
 #include "qgshelp.h"
-#include "qgsdbsourceselectbase.h"
+#include "qgsabstractdbsourceselect.h"
 #include "qgsproviderregistry.h"
 #include "qgis_sip.h"
 
@@ -35,7 +35,7 @@ class QgsOgrDbTableModel;
  * source selects.
  *
  */
-class QgsOgrDbSourceSelect: public QgsDbSourceSelectBase
+class QgsOgrDbSourceSelect: public QgsAbstractDbSourceSelect
 {
     Q_OBJECT
 

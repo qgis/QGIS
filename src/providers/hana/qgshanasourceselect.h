@@ -22,7 +22,7 @@
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
 #include "qgsguiutils.h"
-#include "qgsdbsourceselectbase.h"
+#include "qgsabstractdbsourceselect.h"
 
 
 #include <QMap>
@@ -63,7 +63,7 @@ class QgsHanaSourceSelectDelegate : public QItemDelegate
  * for SAP HANA databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsHanaSourceSelect : public QgsDbSourceSelectBase
+class QgsHanaSourceSelect : public QgsAbstractDbSourceSelect
 {
     Q_OBJECT
 

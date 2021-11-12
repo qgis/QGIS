@@ -20,7 +20,7 @@
 #include "qgsguiutils.h"
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
-#include "qgsdbsourceselectbase.h"
+#include "qgsabstractdbsourceselect.h"
 
 #include <QThread>
 #include <QMap>
@@ -42,7 +42,7 @@ class QPushButton;
  * for SpatiaLite/SQLite databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsSpatiaLiteSourceSelect:  public QgsDbSourceSelectBase
+class QgsSpatiaLiteSourceSelect:  public QgsAbstractDbSourceSelect
 {
     Q_OBJECT
 
