@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/providers/qgsabstractdbsourceselect.h                            *
+ * src/gui/providers/qgsabstractdbsourceselect.h                        *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -10,7 +10,7 @@
 
 
 
-class QgsAbstractDbSourceSelect : QgsAbstractDataSourceWidget, protected Ui::QgsAbstractDbSourceSelect
+class QgsAbstractDbSourceSelect : QgsAbstractDataSourceWidget, protected Ui::QgsDbSourceSelectBase
 {
 %Docstring(signature="appended")
 The :py:class:`QgsAbstractDbSourceSelect` class is a base class for database source widget selector
@@ -52,7 +52,7 @@ This is called to define the SQL query and must be re-implemented. The implement
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/providers/qgsabstractdbsourceselect.h                            *
+ * src/gui/providers/qgsabstractdbsourceselect.h                        *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

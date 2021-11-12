@@ -19,7 +19,6 @@
 #ifndef QGSDB2SOURCESELECT_H
 #define QGSDB2SOURCESELECT_H
 
-#include "ui_qgsabstractdbsourceselect.h"
 #include "qgsguiutils.h"
 #include "qgsdb2tablemodel.h"
 #include "qgshelp.h"

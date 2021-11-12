@@ -378,7 +378,7 @@
 %Include auto_generated/processing/models/qgsmodelgraphicitem.sip
 %Include auto_generated/processing/models/qgsmodelgraphicsscene.sip
 %Include auto_generated/processing/models/qgsmodelgraphicsview.sip
-%Include auto_generated/providers/qgsdbsourceselectbase.sip
+%Include auto_generated/providers/qgsabstractdbsourceselect.sip
 %Include auto_generated/raster/qgscolorrampshaderwidget.sip
 %Include auto_generated/raster/qgshillshaderendererwidget.sip
 %Include auto_generated/raster/qgsmultibandcolorrendererwidget.sip
