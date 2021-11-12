@@ -26,7 +26,7 @@ if (WITH_GUI)
     raster/qgspostgresrastertemporalsettingswidget.cpp
   )
 
-  set(PG_UIS qgspostgresrastertemporalsettingswidgetbase.ui)
+  set(PG_UIS ${CMAKE_SOURCE_DIR}/src/ui/qgspostgresrastertemporalsettingswidgetbase.ui)
 endif()
 
 set(PG_HDRS

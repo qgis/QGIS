@@ -6,6 +6,7 @@ set (AFS_SRCS
   qgsafsshareddata.cpp
   qgsarcgisrestdataitems.cpp
 )
+
 if (WITH_GUI)
   set(AFS_GUI_SRCS
     qgsarcgisrestdataitemguiprovider.cpp
@@ -16,9 +17,9 @@ if (WITH_GUI)
   )
   
   set(AFS_UIS
-    qgsarcgisrestsourcewidgetbase.ui
-    qgsarcgisservicesourceselectbase.ui
-    qgsnewarcgisrestconnectionbase.ui
+    ${CMAKE_SOURCE_DIR}/src/ui/qgsarcgisrestsourcewidgetbase.ui
+    ${CMAKE_SOURCE_DIR}/src/ui/qgsarcgisservicesourceselectbase.ui
+    ${CMAKE_SOURCE_DIR}/src/ui/qgsnewarcgisrestconnectionbase.ui
   )
 endif()
 
@@ -36,12 +37,14 @@ target_link_libraries (provider_arcgisfeatureserver_a
   ${QCA_LIBRARY}
 )
 
+
 if (WITH_GUI)
   if (WITH_QT6)
     QT6_WRAP_UI(AFS_UIS_H ${AFS_UIS})
   else()
     QT5_WRAP_UI(AFS_UIS_H ${AFS_UIS})
   endif()
+  
   
   add_library(provider_arcgisfeatureserver_gui_a STATIC ${AFS_GUI_SRCS} ${AFS_UIS_H})
 
