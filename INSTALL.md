@@ -565,7 +565,7 @@ git config core.filemode false
 SDKs move on.  `ms-windows/osgeo4w/package-nightly.cmd` is used for the
 nightly builds and constantly updated and hence might contain necessary
 updates that are not yet reflected here.
-Review ms-windows\osgeo4w\msvc-env.bat file. In particular ckeck that setup API version match the one installed on yout computer. 
+Review ms-windows\osgeo4w\msvc-env.bat file. In particular, ckeck that setup API version matches the one installed on your computer. 
 
 ```cmd
 if "%VCSDK%"=="" set VCSDK=10.0.19041.0 -> Must be the version you have!
