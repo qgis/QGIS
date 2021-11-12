@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmtinmeshcreation.h"
+#include "qgsfileutils.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 #include "qgsprocessingparametertininputlayers.h"
@@ -176,11 +177,13 @@ QVariantMap QgsTinMeshCreationAlgorithm::processAlgorithm( const QVariantMap &pa
 
   const QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "mdal" ) );
 
-  QFileInfo fileInfo( fileName );
-  QString suffix = fileInfo.suffix();
+//  QFileInfo fileInfo( fileName );
+//  QString suffix = fileInfo.suffix();
 
-  if ( suffix.isEmpty() )
-    fileName.append( QStringLiteral( ".%1" ).arg( mDriverSuffix.value( driver ) ) );
+//  if ( suffix.isEmpty() )
+//    fileName.append( QStringLiteral( ".%1" ).arg( mDriverSuffix.value( driver ) ) );
+
+  fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, QStringList() << mDriverSuffix.value( driver ) );
 
   if ( feedback )
     feedback->setProgressText( QObject::tr( "Saving mesh to file" ) );
