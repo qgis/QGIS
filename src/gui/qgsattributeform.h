@@ -377,7 +377,9 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     bool fieldIsEditable( const QgsVectorLayer &layer, int fieldIndex, QgsFeatureId fid ) const;
 
-    void updateDefaultValueDependencies();
+    void updateFieldDependencies();
+    void updateFieldDependenciesDefaultValue( QgsEditorWidgetWrapper *eww );
+    void updateFieldDependenciesVirtualFields( QgsEditorWidgetWrapper *eww );
 
     struct WidgetInfo
     {
@@ -406,11 +408,10 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     //! Save single feature or add feature edits
     bool saveEdits( QString *error );
 
-    //! fill up dependency map for default values
-    void createDefaultValueDependencies();
-
-    //! update the default values in the fields after a referenced field changed
-    bool updateDefaultValues( const int originIdx );
+    //! update the default values and virtual fields in the fields after a referenced field changed
+    void updateValuesDependencies( const int originIdx );
+    void updateValuesDependenciesDefaultValues( const int originIdx );
+    void updateValuesDependenciesVirtualFields( const int originIdx );
 
     void clearMultiEditMessages();
     void pushSelectedFeaturesMessage();
@@ -517,6 +518,12 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * Attribute indexes will be added multiple times if more than one widget depends on them.
      */
     QMap<int, QgsWidgetWrapper *> mDefaultValueDependencies;
+
+    /**
+     * Dependency map for values from virtual fields. Attribute index -> widget wrapper.
+     * Attribute indexes will be added multiple times if more than one widget depends on them.
+     */
+    QMap<int, QgsWidgetWrapper *> mVirtualFieldsDependencies;
 
     //! List of updated fields to avoid recursion on the setting of defaultValues
     QList<int> mAlreadyUpdatedFields;
