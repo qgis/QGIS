@@ -113,6 +113,7 @@ typedef SInt32 SRefCon;
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
+#include "qgsdatetimefieldformatter.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -1028,6 +1029,9 @@ int main( int argc, char *argv[] )
       currentLocale.setNumberOptions( currentLocale.numberOptions() |= QLocale::NumberOption::OmitGroupSeparator );
     }
     QLocale::setDefault( currentLocale );
+
+    // Date time settings
+    QgsDateTimeFieldFormatter::applyLocaleChange();
 
     QgsApplication::setTranslation( translationCode );
   }
