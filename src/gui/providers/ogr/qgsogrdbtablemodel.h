@@ -46,7 +46,7 @@ class QgsOgrDbTableModel : public QgsAbstractDbTableModel
     void addTableEntry( const Qgis::BrowserLayerType &layerType, const QString &tableName, const QString &uri, const QString &geometryColName, const QString &geometryType, const QString &sql );
 
     //! Sets an sql statement that belongs to a cell specified by a model index
-    void setSql( const QModelIndex &index, const QString &sql );
+    void setSql( const QModelIndex &index, const QString &sql ) override;
 
     //! Returns the number of tables in the model
     int tableCount() const

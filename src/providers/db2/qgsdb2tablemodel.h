@@ -62,7 +62,7 @@ class QgsDb2TableModel : public QgsAbstractDbTableModel
     void addTableEntry( const QgsDb2LayerProperty &property );
 
     //! Sets an sql statement that belongs to a cell specified by a model index
-    void setSql( const QModelIndex &index, const QString &sql );
+    void setSql( const QModelIndex &index, const QString &sql ) override;
 
     /**
      * Sets one or more geometry types to a row. In case of several types, additional rows are inserted.

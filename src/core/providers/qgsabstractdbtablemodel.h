@@ -42,6 +42,9 @@ class CORE_EXPORT QgsAbstractDbTableModel : public QStandardItemModel
 
     //! Returns if the column should be searchable at the given index
     virtual bool searchableColumn( int column ) const {Q_UNUSED( column ) return true;}
+
+    //! Sets an sql statement that belongs to a cell specified by a model index
+    virtual void setSql( const QModelIndex &index, const QString &sql ) = 0;
 };
 
 #endif // QGSABSTRACTDBTABLEMODEL_H
