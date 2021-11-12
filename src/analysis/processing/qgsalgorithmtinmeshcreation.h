@@ -46,6 +46,7 @@ class QgsTinMeshCreationAlgorithm: public QgsProcessingAlgorithm
 
   private:
     QStringList mAvailableFormat;
+    QMap<QString, QString> mDriverSuffix;
 
     struct Layer
     {
