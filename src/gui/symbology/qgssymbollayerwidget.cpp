@@ -1934,11 +1934,11 @@ QgsMarkerLineSymbolLayerWidget::QgsMarkerLineSymbolLayerWidget( QgsVectorLayer *
   connect( mCheckCentralPoint, &QCheckBox::toggled, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
   connect( mCheckCurvePoint, &QCheckBox::toggled, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
   connect( mCheckSegmentCentralPoint, &QCheckBox::toggled, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
-  connect( mCheckRespectMultipart, &QCheckBox::toggled, this, [ = ]
+  connect( mCheckPlaceOnEveryPart, &QCheckBox::toggled, this, [ = ]
   {
     if ( mLayer )
     {
-      mLayer->setRespectMultipart( mCheckRespectMultipart->isChecked() );
+      mLayer->setPlaceOnEveryPart( mCheckPlaceOnEveryPart->isChecked() );
       emit changed();
     }
   } );
@@ -1976,7 +1976,7 @@ void QgsMarkerLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   whileBlocking( mCheckCentralPoint )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::CentralPoint );
   whileBlocking( mCheckCurvePoint )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::CurvePoint );
   whileBlocking( mCheckSegmentCentralPoint )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::SegmentCenter );
-  whileBlocking( mCheckRespectMultipart )->setChecked( mLayer->respectMultipart() );
+  whileBlocking( mCheckPlaceOnEveryPart )->setChecked( mLayer->placeOnEveryPart() );
 
   // set units
   mIntervalUnitWidget->blockSignals( true );
@@ -2194,11 +2194,11 @@ QgsHashedLineSymbolLayerWidget::QgsHashedLineSymbolLayerWidget( QgsVectorLayer *
   connect( mCheckCurvePoint, &QCheckBox::toggled, this, &QgsHashedLineSymbolLayerWidget::setPlacement );
   connect( mCheckSegmentCentralPoint, &QCheckBox::toggled, this, &QgsHashedLineSymbolLayerWidget::setPlacement );
 
-  connect( mCheckRespectMultipart, &QCheckBox::toggled, this, [ = ]
+  connect( mCheckPlaceOnEveryPart, &QCheckBox::toggled, this, [ = ]
   {
     if ( mLayer )
     {
-      mLayer->setRespectMultipart( mCheckRespectMultipart->isChecked() );
+      mLayer->setPlaceOnEveryPart( mCheckPlaceOnEveryPart->isChecked() );
       emit changed();
     }
   } );
@@ -2238,7 +2238,7 @@ void QgsHashedLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   whileBlocking( mCheckCentralPoint )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::CentralPoint );
   whileBlocking( mCheckCurvePoint )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::CurvePoint );
   whileBlocking( mCheckSegmentCentralPoint )->setChecked( mLayer->placements() & Qgis::MarkerLinePlacement::SegmentCenter );
-  whileBlocking( mCheckRespectMultipart )->setChecked( mLayer->respectMultipart() );
+  whileBlocking( mCheckPlaceOnEveryPart )->setChecked( mLayer->placeOnEveryPart() );
 
   // set units
   mIntervalUnitWidget->blockSignals( true );

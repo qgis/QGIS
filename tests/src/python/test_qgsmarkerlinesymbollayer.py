@@ -137,7 +137,7 @@ class TestQgsMarkerLineSymbolLayer(unittest.TestCase):
         marker_symbol = QgsMarkerSymbol()
         marker_symbol.changeSymbolLayer(0, marker)
         line_symbol[0].setSubSymbol(marker_symbol)
-        line_symbol[0].setRespectMultipart(False)
+        line_symbol[0].setPlaceOnEveryPart(True)
 
         g = QgsGeometry.fromWkt('MultiLineString((0 0, 10 0, 10 10, 0 10),(3 3, 7 3, 7 7, 3 7))')
         rendered_image = self.renderGeometry(line_symbol, g)
@@ -156,7 +156,7 @@ class TestQgsMarkerLineSymbolLayer(unittest.TestCase):
         marker_symbol = QgsMarkerSymbol()
         marker_symbol.changeSymbolLayer(0, marker)
         line_symbol[0].setSubSymbol(marker_symbol)
-        line_symbol[0].setRespectMultipart(True)
+        line_symbol[0].setPlaceOnEveryPart(False)
 
         g = QgsGeometry.fromWkt('MultiLineString((0 0, 10 0, 10 10, 0 10),(3 3, 7 3, 7 7, 3 7))')
         rendered_image = self.renderGeometry(line_symbol, g)
@@ -175,7 +175,7 @@ class TestQgsMarkerLineSymbolLayer(unittest.TestCase):
         marker_symbol = QgsMarkerSymbol()
         marker_symbol.changeSymbolLayer(0, marker)
         line_symbol[0].setSubSymbol(marker_symbol)
-        line_symbol[0].setRespectMultipart(False)
+        line_symbol[0].setPlaceOnEveryPart(True)
 
         g = QgsGeometry.fromWkt('MultiLineString((0 0, 10 0, 10 10, 0 10),(3 3, 7 3, 7 7, 3 7))')
         rendered_image = self.renderGeometry(line_symbol, g)
@@ -194,7 +194,7 @@ class TestQgsMarkerLineSymbolLayer(unittest.TestCase):
         marker_symbol = QgsMarkerSymbol()
         marker_symbol.changeSymbolLayer(0, marker)
         line_symbol[0].setSubSymbol(marker_symbol)
-        line_symbol[0].setRespectMultipart(True)
+        line_symbol[0].setPlaceOnEveryPart(False)
 
         g = QgsGeometry.fromWkt('MultiLineString((0 0, 10 0, 10 10, 0 10),(3 3, 7 3, 7 7, 3 7))')
         rendered_image = self.renderGeometry(line_symbol, g)
@@ -213,7 +213,7 @@ class TestQgsMarkerLineSymbolLayer(unittest.TestCase):
         marker_symbol = QgsMarkerSymbol()
         marker_symbol.changeSymbolLayer(0, marker)
         line_symbol[0].setSubSymbol(marker_symbol)
-        line_symbol[0].setRespectMultipart(False)
+        line_symbol[0].setPlaceOnEveryPart(True)
 
         g = QgsGeometry.fromWkt('MultiLineString((0 0, 10 0, 10 10, 0 10),(3 3, 7 3, 7 7, 3 7))')
         rendered_image = self.renderGeometry(line_symbol, g)
@@ -232,7 +232,7 @@ class TestQgsMarkerLineSymbolLayer(unittest.TestCase):
         marker_symbol = QgsMarkerSymbol()
         marker_symbol.changeSymbolLayer(0, marker)
         line_symbol[0].setSubSymbol(marker_symbol)
-        line_symbol[0].setRespectMultipart(True)
+        line_symbol[0].setPlaceOnEveryPart(False)
 
         g = QgsGeometry.fromWkt('MultiLineString((0 0, 10 0, 10 10, 0 10),(3 3, 7 3, 7 7, 3 7))')
         rendered_image = self.renderGeometry(line_symbol, g)

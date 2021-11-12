@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>385</width>
-    <height>434</height>
+    <height>465</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -382,12 +382,12 @@
       <widget class="QComboBox" name="mRingFilterComboBox"/>
      </item>
      <item row="2" column="0" colspan="5">
-      <widget class="QCheckBox" name="mCheckRespectMultipart">
+      <widget class="QCheckBox" name="mCheckPlaceOnEveryPart">
        <property name="toolTip">
-        <string>If checked, the &quot;first vertex&quot; or &quot;last vertex&quot; placements will only be rendered once for each multipart geometry</string>
+        <string>If checked, the &quot;first vertex&quot; or &quot;last vertex&quot; placements will rendered at the first and last vertex for every part of multipart geometries</string>
        </property>
        <property name="text">
-        <string>Respect multipart geometries</string>
+        <string>Place on every part</string>
        </property>
       </widget>
      </item>
@@ -429,7 +429,7 @@
   <tabstop>mOffsetAlongLineUnitWidget</tabstop>
   <tabstop>mOffsetAlongLineDDBtn</tabstop>
   <tabstop>chkRotateMarker</tabstop>
-  <tabstop>mCheckRespectMultipart</tabstop>
+  <tabstop>mCheckPlaceOnEveryPart</tabstop>
   <tabstop>mSpinAverageAngleLength</tabstop>
   <tabstop>mAverageAngleUnit</tabstop>
   <tabstop>mAverageAngleDDBtn</tabstop>
