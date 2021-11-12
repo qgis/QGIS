@@ -20,7 +20,7 @@
 #include "qgsguiutils.h"
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
-#include "qgsdbsourceselectbase.h"
+#include "qgsabstractdbsourceselect.h"
 
 #include <QThread>
 #include <QMap>
@@ -42,7 +42,7 @@ class QPushButton;
  * for SpatiaLite/SQLite databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsSpatiaLiteSourceSelect:  public QgsDbSourceSelectBase
+class QgsSpatiaLiteSourceSelect:  public QgsAbstractDbSourceSelect
 {
     Q_OBJECT
 
@@ -74,7 +74,6 @@ class QgsSpatiaLiteSourceSelect:  public QgsDbSourceSelectBase
      * Once connected, available layers are displayed.
      */
     void btnConnect_clicked();
-    void buildQuery();
     void addButtonClicked() override;
     void updateStatistics();
     //! Opens the create connection dialog to build a new connection
@@ -82,16 +81,17 @@ class QgsSpatiaLiteSourceSelect:  public QgsDbSourceSelectBase
     //! Deletes the selected connection
     void btnDelete_clicked();
     void cbxAllowGeometrylessTables_stateChanged( int );
-    void setSql( const QModelIndex &index );
     void cmbConnections_activated( int );
     void setLayerType( const QString &table, const QString &column, const QString &type );
-    void mTablesTreeView_clicked( const QModelIndex &index );
-    void mTablesTreeView_doubleClicked( const QModelIndex &index );
     void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString &regexp );
 
     void showHelp();
+
+  protected slots:
+    void setSql( const QModelIndex &index ) override;
+    void treeviewDoubleClicked( const QModelIndex &index ) override;
 
   private:
     enum Columns

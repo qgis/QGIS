@@ -40,6 +40,11 @@ Returns the index of the column used by default to filter the results (probably 
 %Docstring
 Returns if the column should be searchable at the given index
 %End
+
+    virtual void setSql( const QModelIndex &index, const QString &sql ) = 0;
+%Docstring
+Sets an sql statement that belongs to a cell specified by a model index
+%End
 };
 
 /************************************************************************

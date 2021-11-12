@@ -19,12 +19,11 @@
 #ifndef QGSDB2SOURCESELECT_H
 #define QGSDB2SOURCESELECT_H
 
-#include "ui_qgsdbsourceselectbase.h"
 #include "qgsguiutils.h"
 #include "qgsdb2tablemodel.h"
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
-#include "qgsdbsourceselectbase.h"
+#include "qgsabstractdbsourceselect.h"
 
 #include <QMap>
 #include <QPair>
@@ -32,7 +31,6 @@
 #include <QItemDelegate>
 #include <QThread>
 
-class QPushButton;
 class QStringList;
 class QgisApp;
 
@@ -88,7 +86,7 @@ class QgsDb2GeomColumnTypeThread : public QThread
  * for Db2 databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsDb2SourceSelect : public QgsDbSourceSelectBase
+class QgsDb2SourceSelect : public QgsAbstractDbSourceSelect
 {
     Q_OBJECT
 
@@ -114,7 +112,6 @@ class QgsDb2SourceSelect : public QgsDbSourceSelectBase
   public slots:
     //! Determines the tables the user selected and closes the dialog
     void addButtonClicked() override;
-    void buildQuery();
     //! Triggered when the provider's connections need to be refreshed
     void refresh() override;
 
@@ -134,17 +131,17 @@ class QgsDb2SourceSelect : public QgsDbSourceSelectBase
     void btnSave_clicked();
     //! Loads the selected connections from file
     void btnLoad_clicked();
-    void setSql( const QModelIndex &index );
     //! Store the selected database
     void cmbConnections_activated( int );
     void setLayerType( const QgsDb2LayerProperty &layerProperty );
-    void mTablesTreeView_clicked( const QModelIndex &index );
-    void mTablesTreeView_doubleClicked( const QModelIndex &index );
     void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString &regexp );
 
     void columnThreadFinished();
+
+  protected slots:
+    void setSql( const QModelIndex &index ) override;
 
   private:
     typedef QPair<QString, QString> geomPair;
@@ -171,8 +168,6 @@ class QgsDb2SourceSelect : public QgsDbSourceSelectBase
 
     //! Model that acts as datasource for mTableTreeWidget
     QgsDb2TableModel *mTableModel = nullptr;
-
-    QPushButton *mBuildQueryButton = nullptr;
 
     void finishList();
 

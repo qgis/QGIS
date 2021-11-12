@@ -125,7 +125,7 @@ void QgsMssqlSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemM
 }
 
 QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
-  : QgsDbSourceSelectBase( parent, fl, theWidgetMode )
+  : QgsAbstractDbSourceSelect( parent, fl, theWidgetMode )
 {
   QgsGui::instance()->enableAutoGeometryRestore( this );
 
@@ -137,8 +137,6 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
   connect( btnSave, &QPushButton::clicked, this, &QgsMssqlSourceSelect::btnSave_clicked );
   connect( btnLoad, &QPushButton::clicked, this, &QgsMssqlSourceSelect::btnLoad_clicked );
   connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsMssqlSourceSelect::cmbConnections_activated );
-  connect( mTablesTreeView, &QTreeView::clicked, this, &QgsMssqlSourceSelect::mTablesTreeView_clicked );
-  connect( mTablesTreeView, &QTreeView::doubleClicked, this, &QgsMssqlSourceSelect::mTablesTreeView_doubleClicked );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMssqlSourceSelect::showHelp );
 
@@ -151,26 +149,10 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
     setWindowTitle( tr( "Add MSSQL Table(s)" ) );
   }
 
-  mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
-  mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
-  mBuildQueryButton->setDisabled( true );
-
-  if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
-  {
-
-    buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
-    connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsMssqlSourceSelect::buildQuery );
-  }
-
   populateConnectionList();
 
   mTableModel = new QgsMssqlTableModel( this );
-  setSourceModel( mTableModel );
-
-  mTablesTreeView->setModel( proxyModel() );
-  mTablesTreeView->setSortingEnabled( true );
-  mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
-  mTablesTreeView->setItemDelegate( new QgsMssqlSourceSelectDelegate( this ) );
+  init( mTableModel, new QgsMssqlSourceSelectDelegate( this ) );
 
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsMssqlSourceSelect::treeWidgetSelectionChanged );
 
@@ -271,21 +253,6 @@ void QgsMssqlSourceSelect::cmbConnections_activated( int )
 void QgsMssqlSourceSelect::cbxAllowGeometrylessTables_stateChanged( int )
 {
   btnConnect_clicked();
-}
-
-void QgsMssqlSourceSelect::buildQuery()
-{
-  setSql( mTablesTreeView->currentIndex() );
-}
-
-void QgsMssqlSourceSelect::mTablesTreeView_clicked( const QModelIndex &index )
-{
-  mBuildQueryButton->setEnabled( index.parent().isValid() );
-}
-
-void QgsMssqlSourceSelect::mTablesTreeView_doubleClicked( const QModelIndex & )
-{
-  addButtonClicked();
 }
 
 void QgsMssqlSourceSelect::setLayerType( const QgsMssqlLayerProperty &layerProperty )

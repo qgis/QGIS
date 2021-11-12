@@ -215,7 +215,7 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
 }
 
 QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
-  : QgsDbSourceSelectBase( parent, fl, theWidgetMode )
+  : QgsAbstractDbSourceSelect( parent, fl, theWidgetMode )
 {
   QgsGui::instance()->enableAutoGeometryRestore( this );
 
@@ -227,8 +227,6 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsPr
   connect( btnSave, &QPushButton::clicked, this, &QgsPgSourceSelect::btnSave_clicked );
   connect( btnLoad, &QPushButton::clicked, this, &QgsPgSourceSelect::btnLoad_clicked );
   connect( cmbConnections, &QComboBox::currentTextChanged, this, &QgsPgSourceSelect::cmbConnections_currentIndexChanged );
-  connect( mTablesTreeView, &QTreeView::clicked, this, &QgsPgSourceSelect::mTablesTreeView_clicked );
-  connect( mTablesTreeView, &QTreeView::doubleClicked, this, &QgsPgSourceSelect::mTablesTreeView_doubleClicked );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPgSourceSelect::showHelp );
 
@@ -241,27 +239,11 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsPr
     setWindowTitle( tr( "Add PostGIS Table(s)" ) );
   }
 
-  mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
-  mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
-  mBuildQueryButton->setDisabled( true );
-
-  if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
-  {
-    buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
-    connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsPgSourceSelect::buildQuery );
-  }
-
   populateConnectionList();
 
 
   mTableModel = new QgsPgTableModel( this );
-  setSourceModel( mTableModel );
-
-  mTablesTreeView->setModel( proxyModel() );
-  mTablesTreeView->setSortingEnabled( true );
-  mTablesTreeView->setUniformRowHeights( true );
-  mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
-  mTablesTreeView->setItemDelegate( new QgsPgSourceSelectDelegate( this ) );
+  init( mTableModel, new QgsPgSourceSelectDelegate( this ) );
 
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsPgSourceSelect::treeWidgetSelectionChanged );
 
@@ -352,21 +334,6 @@ void QgsPgSourceSelect::cmbConnections_currentIndexChanged( const QString &text 
 void QgsPgSourceSelect::cbxAllowGeometrylessTables_stateChanged( int )
 {
   btnConnect_clicked();
-}
-
-void QgsPgSourceSelect::buildQuery()
-{
-  setSql( mTablesTreeView->currentIndex() );
-}
-
-void QgsPgSourceSelect::mTablesTreeView_clicked( const QModelIndex &index )
-{
-  mBuildQueryButton->setEnabled( index.parent().isValid() );
-}
-
-void QgsPgSourceSelect::mTablesTreeView_doubleClicked( const QModelIndex & )
-{
-  addButtonClicked();
 }
 
 void QgsPgSourceSelect::setLayerType( const QgsPostgresLayerProperty &layerProperty )

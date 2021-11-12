@@ -1,5 +1,5 @@
 /***************************************************************************
-   qgsdbsourceselectbase.h
+   qgsabstractdbsourceselect.h
     --------------------------------------
    Date                 : 08.11.2021
    Copyright            : (C) 2021 Denis Rouzaud
@@ -14,12 +14,13 @@
 ***************************************************************************/
 
 #include "qgsabstractdbtablemodel.h"
-#include "qgsdbsourceselectbase.h"
+#include "qgsabstractdbsourceselect.h"
 
 #include <QMenu>
 #include <QSortFilterProxyModel>
+#include <QItemDelegate>
 
-QgsDbSourceSelectBase::QgsDbSourceSelectBase( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
+QgsAbstractDbSourceSelect::QgsAbstractDbSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
 {
   setupUi( this );
@@ -35,14 +36,28 @@ QgsDbSourceSelectBase::QgsDbSourceSelectBase( QWidget *parent, Qt::WindowFlags f
   // The list gets sorted in finishList() method when the listing of tables and views has finished.
   mProxyModel->setDynamicSortFilter( false );
 
+  mTablesTreeView->setSortingEnabled( true );
+  mTablesTreeView->setUniformRowHeights( true );
+  mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
+
+  mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
+  mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
+  mBuildQueryButton->setDisabled( true );
+  buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
+
+  connect( mTablesTreeView, &QTreeView::clicked, this, &QgsAbstractDbSourceSelect::treeviewClicked );
+  connect( mTablesTreeView, &QTreeView::doubleClicked, this, &QgsAbstractDbSourceSelect::treeviewDoubleClicked );
+
+  connect( mBuildQueryButton, &QAbstractButton::clicked, this, [ = ]() {setSql( mTablesTreeView->currentIndex() );} );
 }
 
-void QgsDbSourceSelectBase::setSourceModel( QgsAbstractDbTableModel *model )
+void QgsAbstractDbSourceSelect::init( QgsAbstractDbTableModel *model, QItemDelegate *delegate )
 {
   mProxyModel->setSourceModel( model );
+  mTablesTreeView->setModel( mProxyModel );
+  mTablesTreeView->setItemDelegate( delegate );
 
   // setting the search coluns in search settings menu using the model header data
-
   if ( mSearchSettingsMenu )
     mSearchSettingsMenu->deleteLater();
   mSearchColumnActions.clear();
@@ -92,8 +107,18 @@ void QgsDbSourceSelectBase::setSourceModel( QgsAbstractDbTableModel *model )
   connect( mSearchTableEdit, &QLineEdit::textChanged, this, [ = ]() {filterResults();} );
 }
 
+void QgsAbstractDbSourceSelect::treeviewClicked( const QModelIndex &index )
+{
+  mBuildQueryButton->setEnabled( index.parent().isValid() );
+}
 
-void QgsDbSourceSelectBase::filterResults()
+void QgsAbstractDbSourceSelect::treeviewDoubleClicked( const QModelIndex &index )
+{
+  Q_UNUSED( index )
+  addButtonClicked();
+}
+
+void QgsAbstractDbSourceSelect::filterResults()
 {
   QString searchText = mSearchTableEdit->text();
   bool regex = mSearchModeRegexAction->isChecked();

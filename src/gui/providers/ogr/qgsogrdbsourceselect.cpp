@@ -34,7 +34,7 @@
 
 QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const QString &theName,
     const QString &theExtensions, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
-  : QgsDbSourceSelectBase( parent, fl, theWidgetMode )
+  : QgsAbstractDbSourceSelect( parent, fl, theWidgetMode )
   , mOgrDriverName( theSettingsKey )
   , mName( theName )
   , mExtension( theExtensions )
@@ -46,8 +46,6 @@ QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const
   connect( btnDelete, &QPushButton::clicked, this, &QgsOgrDbSourceSelect::btnDelete_clicked );
   connect( cbxAllowGeometrylessTables, &QCheckBox::stateChanged, this, &QgsOgrDbSourceSelect::cbxAllowGeometrylessTables_stateChanged );
   connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsOgrDbSourceSelect::cmbConnections_activated );
-  connect( mTablesTreeView, &QTreeView::clicked, this, &QgsOgrDbSourceSelect::mTablesTreeView_clicked );
-  connect( mTablesTreeView, &QTreeView::doubleClicked, this, &QgsOgrDbSourceSelect::mTablesTreeView_doubleClicked );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOgrDbSourceSelect::showHelp );
 
@@ -59,24 +57,15 @@ QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const
   btnSave->hide();
   btnLoad->hide();
 
-  mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
-  connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsOgrDbSourceSelect::buildQuery );
-  mBuildQueryButton->setEnabled( false );
-
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
     mHoldDialogOpen->hide();
   }
 
-  buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
-
   populateConnectionList();
 
   mTableModel = new QgsOgrDbTableModel( this );
-  setSourceModel( mTableModel );
-
-  mTablesTreeView->setModel( proxyModel() );
-  mTablesTreeView->setSortingEnabled( true );
+  init( mTableModel );
 
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsOgrDbSourceSelect::treeWidgetSelectionChanged );
 
@@ -96,23 +85,18 @@ void QgsOgrDbSourceSelect::cmbConnections_activated( int )
   dbChanged();
 }
 
-void QgsOgrDbSourceSelect::buildQuery()
-{
-  setSql( mTablesTreeView->currentIndex() );
-}
-
 
 void QgsOgrDbSourceSelect::cbxAllowGeometrylessTables_stateChanged( int )
 {
   btnConnect_clicked();
 }
 
-void QgsOgrDbSourceSelect::mTablesTreeView_clicked( const QModelIndex &index )
+void QgsOgrDbSourceSelect::treeviewClicked( const QModelIndex &index )
 {
   mBuildQueryButton->setEnabled( index.parent().isValid() && mTablesTreeView->currentIndex().data( Qt::UserRole + 2 ) != QLatin1String( "Raster" ) );
 }
 
-void QgsOgrDbSourceSelect::mTablesTreeView_doubleClicked( const QModelIndex &index )
+void QgsOgrDbSourceSelect::treeviewDoubleClicked( const QModelIndex &index )
 {
   setSql( index );
 }

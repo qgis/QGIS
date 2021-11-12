@@ -39,7 +39,7 @@ class QgsPgTableModel : public QgsAbstractDbTableModel
     void addTableEntry( const QgsPostgresLayerProperty &property );
 
     //! Sets an sql statement that belongs to a cell specified by a model index
-    void setSql( const QModelIndex &index, const QString &sql );
+    void setSql( const QModelIndex &index, const QString &sql ) override;
 
     //! Returns the number of tables in the model
     int tableCount() const { return mTableCount; }

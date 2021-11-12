@@ -46,7 +46,7 @@ email                : a.furieri@lqt.it
 #endif
 
 QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode ):
-  QgsDbSourceSelectBase( parent, fl, theWidgetMode )
+  QgsAbstractDbSourceSelect( parent, fl, theWidgetMode )
 {
   QgsGui::instance()->enableAutoGeometryRestore( this );
 
@@ -55,8 +55,6 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
   connect( btnDelete, &QPushButton::clicked, this, &QgsSpatiaLiteSourceSelect::btnDelete_clicked );
   connect( cbxAllowGeometrylessTables, &QCheckBox::stateChanged, this, &QgsSpatiaLiteSourceSelect::cbxAllowGeometrylessTables_stateChanged );
   connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsSpatiaLiteSourceSelect::cmbConnections_activated );
-  connect( mTablesTreeView, &QTreeView::clicked, this, &QgsSpatiaLiteSourceSelect::mTablesTreeView_clicked );
-  connect( mTablesTreeView, &QTreeView::doubleClicked, this, &QgsSpatiaLiteSourceSelect::mTablesTreeView_doubleClicked );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsSpatiaLiteSourceSelect::showHelp );
 
@@ -72,26 +70,17 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
   connect( mStatsButton, &QAbstractButton::clicked, this, &QgsSpatiaLiteSourceSelect::updateStatistics );
   mStatsButton->setEnabled( false );
 
-
-  mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
-  connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsSpatiaLiteSourceSelect::buildQuery );
-  mBuildQueryButton->setEnabled( false );
-
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
     mHoldDialogOpen->hide();
   }
 
-  buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
   buttonBox->addButton( mStatsButton, QDialogButtonBox::ActionRole );
 
   populateConnectionList();
 
   mTableModel = new QgsSpatiaLiteTableModel( this );
-  setSourceModel( mTableModel );
-
-  mTablesTreeView->setModel( proxyModel() );
-  mTablesTreeView->setSortingEnabled( true );
+  init( mTableModel );
 
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsSpatiaLiteSourceSelect::treeWidgetSelectionChanged );
 
@@ -111,10 +100,6 @@ void QgsSpatiaLiteSourceSelect::cmbConnections_activated( int )
   dbChanged();
 }
 
-void QgsSpatiaLiteSourceSelect::buildQuery()
-{
-  setSql( mTablesTreeView->currentIndex() );
-}
 
 void QgsSpatiaLiteSourceSelect::updateStatistics()
 {
@@ -150,12 +135,7 @@ void QgsSpatiaLiteSourceSelect::cbxAllowGeometrylessTables_stateChanged( int )
   btnConnect_clicked();
 }
 
-void QgsSpatiaLiteSourceSelect::mTablesTreeView_clicked( const QModelIndex &index )
-{
-  mBuildQueryButton->setEnabled( index.parent().isValid() );
-}
-
-void QgsSpatiaLiteSourceSelect::mTablesTreeView_doubleClicked( const QModelIndex &index )
+void QgsSpatiaLiteSourceSelect::treeviewDoubleClicked( const QModelIndex &index )
 {
   setSql( index );
 }

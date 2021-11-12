@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/providers/qgsdbsourceselectbase.h                            *
+ * src/gui/providers/qgsabstractdbsourceselect.h                        *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -10,27 +10,27 @@
 
 
 
-class QgsDbSourceSelectBase : QgsAbstractDataSourceWidget, protected Ui::QgsDbSourceSelectBase
+class QgsAbstractDbSourceSelect : QgsAbstractDataSourceWidget, protected Ui::QgsDbSourceSelectBase
 {
 %Docstring(signature="appended")
-The :py:class:`QgsDbSourceSelectBase` class is a base class for database source widget selector
+The :py:class:`QgsAbstractDbSourceSelect` class is a base class for database source widget selector
 
 .. versionadded:: 3.24
 %End
 
 %TypeHeaderCode
-#include "qgsdbsourceselectbase.h"
+#include "qgsabstractdbsourceselect.h"
 %End
   public:
-    QgsDbSourceSelectBase( QWidget *parent = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsAbstractDbSourceSelect( QWidget *parent = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 %Docstring
 Constructor
 %End
 
   protected:
-    void setSourceModel( QgsAbstractDbTableModel *model );
+    void init( QgsAbstractDbTableModel *model, QItemDelegate *delegate = 0 );
 %Docstring
-Sets the source model for the widget
+Sets the source model for the table and optionally a delegate
 %End
 
     QSortFilterProxyModel *proxyModel();
@@ -38,12 +38,21 @@ Sets the source model for the widget
 Returns the proxy model used to filter the results
 %End
 
+  protected slots:
+    virtual void setSql( const QModelIndex &index ) = 0;
+%Docstring
+This is called to define the SQL query and must be re-implemented. The implementation should call :py:class:`QgsAbstractDbTableModel`.setSql
+%End
+
+    virtual void treeviewClicked( const QModelIndex &index );
+    virtual void treeviewDoubleClicked( const QModelIndex &index );
+
 };
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/providers/qgsdbsourceselectbase.h                            *
+ * src/gui/providers/qgsabstractdbsourceselect.h                        *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

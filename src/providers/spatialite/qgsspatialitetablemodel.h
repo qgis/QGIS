@@ -43,7 +43,7 @@ class QgsSpatiaLiteTableModel: public QgsAbstractDbTableModel
     //! Adds entry for one database table to the model
     void addTableEntry( const QString &type, const QString &tableName, const QString &geometryColName, const QString &sql );
     //! Sets an sql statement that belongs to a cell specified by a model index
-    void setSql( const QModelIndex &index, const QString &sql );
+    void setSql( const QModelIndex &index, const QString &sql ) override;
 
     /**
      * Sets one or more geometry types to a row. In case of several types, additional rows are inserted.

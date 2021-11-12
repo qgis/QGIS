@@ -200,7 +200,7 @@ QgsHanaSourceSelect::QgsHanaSourceSelect(
   QWidget *parent,
   Qt::WindowFlags fl,
   QgsProviderRegistry::WidgetMode theWidgetMode )
-  : QgsDbSourceSelectBase( parent, fl, theWidgetMode )
+  : QgsAbstractDbSourceSelect( parent, fl, theWidgetMode )
 {
   QgsGui::instance()->enableAutoGeometryRestore( this );
 
@@ -213,8 +213,6 @@ QgsHanaSourceSelect::QgsHanaSourceSelect(
   connect( btnLoad, &QPushButton::clicked, this, &QgsHanaSourceSelect::btnLoad_clicked );
   connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ),
            this, &QgsHanaSourceSelect::cmbConnections_activated );
-  connect( mTablesTreeView, &QTreeView::clicked, this, &QgsHanaSourceSelect::mTablesTreeView_clicked );
-  connect( mTablesTreeView, &QTreeView::doubleClicked, this, &QgsHanaSourceSelect::mTablesTreeView_doubleClicked );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsHanaSourceSelect::showHelp );
 
@@ -223,25 +221,10 @@ QgsHanaSourceSelect::QgsHanaSourceSelect(
   else
     setWindowTitle( tr( "Add SAP HANA Table(s)" ) );
 
-  mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
-  mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
-  mBuildQueryButton->setDisabled( true );
-
-  if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
-  {
-    buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
-    connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsHanaSourceSelect::buildQuery );
-  }
-
   populateConnectionList();
 
   mTableModel = new QgsHanaTableModel( this );
-  setSourceModel( mTableModel );
-
-  mTablesTreeView->setModel( proxyModel() );
-  mTablesTreeView->setSortingEnabled( true );
-  mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
-  mTablesTreeView->setItemDelegate( new QgsHanaSourceSelectDelegate( this ) );
+  init( mTableModel, new QgsHanaSourceSelectDelegate( this ) );
 
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged,
            this, &QgsHanaSourceSelect::treeWidgetSelectionChanged );
@@ -344,17 +327,7 @@ void QgsHanaSourceSelect::cbxAllowGeometrylessTables_stateChanged( int )
   btnConnect_clicked();
 }
 
-void QgsHanaSourceSelect::buildQuery()
-{
-  setSql( mTablesTreeView->currentIndex() );
-}
-
-void QgsHanaSourceSelect::mTablesTreeView_clicked( const QModelIndex &index )
-{
-  mBuildQueryButton->setEnabled( index.parent().isValid() );
-}
-
-void QgsHanaSourceSelect::mTablesTreeView_doubleClicked( const QModelIndex &index )
+void QgsHanaSourceSelect::treeviewDoubleClicked( const QModelIndex &index )
 {
   const QgsSettings settings;
   if ( settings.value( QStringLiteral( "qgis/addHANADC" ), false ).toBool() )

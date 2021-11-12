@@ -21,7 +21,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
-#include "qgsdbsourceselectbase.h"
+#include "qgsabstractdbsourceselect.h"
 #include "qgspostgresconn.h"
 
 #include <QMap>
@@ -59,7 +59,7 @@ class QgsPgSourceSelectDelegate : public QItemDelegate
  * for PostGIS enabled PostgreSQL databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsPgSourceSelect : public QgsDbSourceSelectBase
+class QgsPgSourceSelect : public QgsAbstractDbSourceSelect
 {
     Q_OBJECT
 
@@ -86,7 +86,6 @@ class QgsPgSourceSelect : public QgsDbSourceSelectBase
     void refresh() override;
     //! Determines the tables the user selected and closes the dialog
     void addButtonClicked() override;
-    void buildQuery();
 
     /**
      * Connects to the database using the stored connection parameters.
@@ -105,11 +104,8 @@ class QgsPgSourceSelect : public QgsDbSourceSelectBase
     //! Loads the selected connections from file
     void btnLoad_clicked();
     void cmbConnections_currentIndexChanged( const QString &text );
-    void setSql( const QModelIndex &index );
     //! Store the selected database
     void setLayerType( const QgsPostgresLayerProperty &layerProperty );
-    void mTablesTreeView_clicked( const QModelIndex &index );
-    void mTablesTreeView_doubleClicked( const QModelIndex &index );
     void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString &regexp );
@@ -117,6 +113,9 @@ class QgsPgSourceSelect : public QgsDbSourceSelectBase
     void columnThreadFinished();
 
     void reset() override;
+
+  protected slots:
+    void setSql( const QModelIndex &index ) override;
 
   private:
     typedef QPair<QString, QString> geomPair;

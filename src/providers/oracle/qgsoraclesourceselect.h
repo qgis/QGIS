@@ -21,7 +21,7 @@
 #include "qgshelp.h"
 #include "qgsoracleconnpool.h"
 #include "qgsproviderregistry.h"
-#include "qgsdbsourceselectbase.h"
+#include "qgsabstractdbsourceselect.h"
 
 #include <QMap>
 #include <QPair>
@@ -79,7 +79,7 @@ class QgsOracleSourceSelectDelegate : public QItemDelegate
  * for Oracle databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsOracleSourceSelect : public QgsDbSourceSelectBase
+class QgsOracleSourceSelect : public QgsAbstractDbSourceSelect
 {
     Q_OBJECT
 
@@ -96,7 +96,6 @@ class QgsOracleSourceSelect : public QgsDbSourceSelectBase
   public slots:
     //! Determines the tables the user selected and closes the dialog
     void addButtonClicked() override;
-    void buildQuery();
 
     /**
      * Connects to the database using the stored connection parameters.
@@ -115,16 +114,16 @@ class QgsOracleSourceSelect : public QgsDbSourceSelectBase
     //! Loads the selected connections from file
     void on_btnLoad_clicked();
     void on_cmbConnections_currentIndexChanged( const QString &text );
-    void setSql( const QModelIndex &index );
     //! Store the selected database
     void setLayerType( const QgsOracleLayerProperty &layerProperty );
-    void on_mTablesTreeView_clicked( const QModelIndex &index );
-    void on_mTablesTreeView_doubleClicked( const QModelIndex &index );
     void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString &regexp );
 
     void columnTaskFinished();
+
+  protected slots:
+    void setSql( const QModelIndex &index ) override;
 
   private:
     typedef QPair<QString, QString> geomPair;

@@ -123,7 +123,7 @@ void QgsDb2SourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMod
 }
 
 QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
-  : QgsDbSourceSelectBase( parent, fl, theWidgetMode )
+  : QgsAbstractDbSourceSelect( parent, fl, theWidgetMode )
 {
   QgsGui::instance()->enableAutoGeometryRestore( this );
 
@@ -135,8 +135,6 @@ QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   connect( btnSave, &QPushButton::clicked, this, &QgsDb2SourceSelect::btnSave_clicked );
   connect( btnLoad, &QPushButton::clicked, this, &QgsDb2SourceSelect::btnLoad_clicked );
   connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsDb2SourceSelect::cmbConnections_activated );
-  connect( mTablesTreeView, &QTreeView::clicked, this, &QgsDb2SourceSelect::mTablesTreeView_clicked );
-  connect( mTablesTreeView, &QTreeView::doubleClicked, this, &QgsDb2SourceSelect::mTablesTreeView_doubleClicked );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDb2SourceSelect::showHelp );
 
@@ -147,25 +145,10 @@ QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
     mHoldDialogOpen->hide();
   }
 
-  mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
-  mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
-  mBuildQueryButton->setDisabled( true );
-
-  if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
-  {
-    buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
-    connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsDb2SourceSelect::buildQuery );
-  }
-
   populateConnectionList();
 
   mTableModel = new QgsDb2TableModel( this );
-  setSourceModel( mTableModel );
-
-  mTablesTreeView->setModel( proxyModel() );
-  mTablesTreeView->setSortingEnabled( true );
-  mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
-  mTablesTreeView->setItemDelegate( new QgsDb2SourceSelectDelegate( this ) );
+  init( mTableModel, new QgsDb2SourceSelectDelegate( this ) );
 
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsDb2SourceSelect::treeWidgetSelectionChanged );
 
@@ -270,24 +253,9 @@ void QgsDb2SourceSelect::cbxAllowGeometrylessTables_stateChanged( int )
   btnConnect_clicked();
 }
 
-void QgsDb2SourceSelect::buildQuery()
-{
-  setSql( mTablesTreeView->currentIndex() );
-}
-
 void QgsDb2SourceSelect::refresh()
 {
   populateConnectionList();
-}
-
-void QgsDb2SourceSelect::mTablesTreeView_clicked( const QModelIndex &index )
-{
-  mBuildQueryButton->setEnabled( index.parent().isValid() );
-}
-
-void QgsDb2SourceSelect::mTablesTreeView_doubleClicked( const QModelIndex & )
-{
-  addButtonClicked();
 }
 
 void QgsDb2SourceSelect::setLayerType( const QgsDb2LayerProperty &layerProperty )
