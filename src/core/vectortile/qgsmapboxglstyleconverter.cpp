@@ -79,13 +79,26 @@ void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers, QgsMapB
   QList<QgsVectorTileBasicRendererStyle> rendererStyles;
   QList<QgsVectorTileBasicLabelingStyle> labelingStyles;
 
+  QgsVectorTileBasicRendererStyle rendererBackgroundStyle;
+  bool hasRendererBackgroundStyle = false;
+
   for ( const QVariant &layer : layers )
   {
     const QVariantMap jsonLayer = layer.toMap();
 
     const QString layerType = jsonLayer.value( QStringLiteral( "type" ) ).toString();
     if ( layerType == QLatin1String( "background" ) )
+    {
+      hasRendererBackgroundStyle = parseFillLayer( jsonLayer, rendererBackgroundStyle, *context, true );
+      if ( hasRendererBackgroundStyle )
+      {
+        rendererBackgroundStyle.setStyleName( layerType );
+        rendererBackgroundStyle.setLayerName( layerType );
+        rendererBackgroundStyle.setFilterExpression( QString() );
+        rendererBackgroundStyle.setEnabled( true );
+      }
       continue;
+    }
 
     const QString styleId = jsonLayer.value( QStringLiteral( "id" ) ).toString();
     context->setLayerId( styleId );
@@ -156,6 +169,9 @@ void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers, QgsMapB
     context->clearWarnings();
   }
 
+  if ( hasRendererBackgroundStyle )
+    rendererStyles.prepend( rendererBackgroundStyle );
+
   mRenderer = std::make_unique< QgsVectorTileBasicRenderer >();
   QgsVectorTileBasicRenderer *renderer = dynamic_cast< QgsVectorTileBasicRenderer *>( mRenderer.get() );
   renderer->setStyles( rendererStyles );
@@ -165,7 +181,7 @@ void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers, QgsMapB
   labeling->setStyles( labelingStyles );
 }
 
-bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style, QgsMapBoxGlStyleConversionContext &context )
+bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style, QgsMapBoxGlStyleConversionContext &context, bool isBackgroundStyle )
 {
   if ( !jsonLayer.contains( QStringLiteral( "paint" ) ) )
   {
@@ -180,9 +196,9 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
 
   // fill color
   QColor fillColor;
-  if ( jsonPaint.contains( QStringLiteral( "fill-color" ) ) )
+  if ( jsonPaint.contains( isBackgroundStyle ? QStringLiteral( "background-color" ) : QStringLiteral( "fill-color" ) ) )
   {
-    const QVariant jsonFillColor = jsonPaint.value( QStringLiteral( "fill-color" ) );
+    const QVariant jsonFillColor = jsonPaint.value( isBackgroundStyle ? QStringLiteral( "background-color" ) : QStringLiteral( "fill-color" ) );
     switch ( jsonFillColor.type() )
     {
       case QVariant::Map:
@@ -212,7 +228,7 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
   }
 
   QColor fillOutlineColor;
-  if ( !jsonPaint.contains( QStringLiteral( "fill-outline-color" ) ) )
+  if ( !isBackgroundStyle && !jsonPaint.contains( QStringLiteral( "fill-outline-color" ) ) )
   {
     // fill-outline-color
     if ( fillColor.isValid() )
@@ -250,9 +266,9 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
 
   double fillOpacity = -1.0;
   double rasterOpacity = -1.0;
-  if ( jsonPaint.contains( QStringLiteral( "fill-opacity" ) ) )
+  if ( jsonPaint.contains( isBackgroundStyle ? QStringLiteral( "background-opacity" ) : QStringLiteral( "fill-opacity" ) ) )
   {
-    const QVariant jsonFillOpacity = jsonPaint.value( QStringLiteral( "fill-opacity" ) );
+    const QVariant jsonFillOpacity = jsonPaint.value( isBackgroundStyle ? QStringLiteral( "background-opacity" ) : QStringLiteral( "fill-opacity" ) );
     switch ( jsonFillOpacity.type() )
     {
       case QVariant::Int:
@@ -332,11 +348,11 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
   }
   fillSymbol->setOffsetUnit( context.targetUnit() );
 
-  if ( jsonPaint.contains( QStringLiteral( "fill-pattern" ) ) )
+  if ( jsonPaint.contains( isBackgroundStyle ? QStringLiteral( "background-pattern" ) : QStringLiteral( "fill-pattern" ) ) )
   {
     // get fill-pattern to set sprite
 
-    const QVariant fillPatternJson = jsonPaint.value( QStringLiteral( "fill-pattern" ) );
+    const QVariant fillPatternJson = jsonPaint.value( isBackgroundStyle ? QStringLiteral( "background-pattern" ) : QStringLiteral( "fill-pattern" ) );
 
     // fill-pattern disabled dillcolor
     fillColor = QColor();
