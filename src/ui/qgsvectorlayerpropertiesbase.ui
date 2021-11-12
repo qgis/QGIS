@@ -363,7 +363,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>12</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -2258,7 +2258,7 @@
                   <item row="6" column="0">
                    <widget class="QLabel" name="mLayerDataUrlLabel">
                     <property name="text">
-                     <string>DataUrl</string>
+                     <string>Data URL</string>
                     </property>
                    </widget>
                   </item>
@@ -2294,7 +2294,7 @@
                   <item row="2" column="0">
                    <widget class="QLabel" name="mLayerAttributionUrlLabel">
                     <property name="text">
-                     <string>Url</string>
+                     <string>URL</string>
                     </property>
                    </widget>
                   </item>
@@ -2365,7 +2365,7 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="mMetaLegendGrpBx">
                  <property name="title">
-                  <string>LegendUrl</string>
+                  <string>Legend URL</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_2">
                   <item row="0" column="0">
@@ -2373,7 +2373,7 @@
                     <item>
                      <widget class="QLabel" name="mLayerLegendUrlLabel">
                       <property name="text">
-                       <string>Url</string>
+                       <string>URL</string>
                       </property>
                      </widget>
                     </item>
