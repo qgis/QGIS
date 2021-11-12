@@ -14,11 +14,12 @@ REM *   (at your option) any later version.                                   *
 REM *                                                                         *
 REM ***************************************************************************
 
+
 set ARCH=%1
 if "%ARCH%"=="x86" (
-	set CMAKEGEN=Visual Studio 14 2015
+	set CMAKEGEN=-G "Visual Studio 16 2019" -A Win32
 ) else (
-	set CMAKEGEN=Visual Studio 14 2015 Win64
+	set CMAKEGEN=-G "Visual Studio 16 2019" -A x64
 	set ARCH=x86_64
 )
 
