@@ -1,0 +1,8 @@
+{
+  "name": "map_prefix_keys",
+  "type": "function",
+  "groups": ["Maps"],
+  "description": "Returns a map with all keys prefixed by prefix.",
+  "arguments": [ {"arg":"map","description":"a map"}, {"arg":"prefix","description":"the prefix"}],
+  "examples": [ { "expression":"map_prefix_keys(map('1','one','2','two'), 'prefix-')", "returns":"{ 'prefix-1': 'one', 'prefix-2': 'two' }"}]
+}
