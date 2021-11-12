@@ -123,9 +123,9 @@ void QgsAction::run( const QgsExpressionContext &expressionContext ) const
       {
         QHttpPart part;
         part.setHeader( QNetworkRequest::ContentDispositionHeader,
-                        QStringLiteral( "Content-Disposition: form-data; name=\"%1\"\r\n\r\n" )
+                        QStringLiteral( "Content-Disposition: form-data; name=\"%1\"" )
                         .arg( QString( queryItem.first ).replace( '"', QStringLiteral( R"(\")" ) ) ) );
-        part.setBody( QStringLiteral( "%1\r\n" ).arg( queryItem.second ).toUtf8() );
+        part.setBody( queryItem.second.toUtf8() );
       }
       reply = QgsNetworkAccessManager::instance()->post( req, multiPart );
       multiPart->setParent( reply );
@@ -138,6 +138,7 @@ void QgsAction::run( const QgsExpressionContext &expressionContext ) const
 
         if ( reply->attribute( QNetworkRequest::RedirectionTargetAttribute ).isNull() )
         {
+
           const QByteArray replyData = reply->readAll();
 
           QString filename { "download.bin" };
@@ -156,7 +157,6 @@ void QgsAction::run( const QgsExpressionContext &expressionContext ) const
                 bool escaped = false;
                 while ( pos != std::string::npos && header[pos - 1] == '\\' )
                 {
-                  std::cout << pos << std::endl;
                   pos = header.find( q2, pos + 1 );
                   escaped = true;
                 }
@@ -182,21 +182,6 @@ void QgsAction::run( const QgsExpressionContext &expressionContext ) const
                 }
               }
             }
-            else if ( !reply->header( QNetworkRequest::KnownHeaders::ContentTypeHeader ).isNull() )
-            {
-              QString contentTypeHeader { reply->header( QNetworkRequest::KnownHeaders::ContentTypeHeader ).toString() };
-              // Strip charset if any
-              if ( contentTypeHeader.contains( ';' ) )
-              {
-                contentTypeHeader = contentTypeHeader.left( contentTypeHeader.indexOf( ';' ) );
-              }
-
-              QMimeType mimeType { QMimeDatabase().mimeTypeForName( contentTypeHeader ) };
-              if ( mimeType.isValid() )
-              {
-                filename = QStringLiteral( "download.%1" ).arg( mimeType.preferredSuffix() );
-              }
-            }
 
             std::string utf8;
 
@@ -219,12 +204,27 @@ void QgsAction::run( const QgsExpressionContext &expressionContext ) const
               filename = QString::fromStdString( ascii );
             }
           }
+          else if ( !reply->header( QNetworkRequest::KnownHeaders::ContentTypeHeader ).isNull() )
+          {
+            QString contentTypeHeader { reply->header( QNetworkRequest::KnownHeaders::ContentTypeHeader ).toString() };
+            // Strip charset if any
+            if ( contentTypeHeader.contains( ';' ) )
+            {
+              contentTypeHeader = contentTypeHeader.left( contentTypeHeader.indexOf( ';' ) );
+            }
+
+            QMimeType mimeType { QMimeDatabase().mimeTypeForName( contentTypeHeader ) };
+            if ( mimeType.isValid() )
+            {
+              filename = QStringLiteral( "download.%1" ).arg( mimeType.preferredSuffix() );
+            }
+          }
 
           QTemporaryDir tempDir;
           tempDir.setAutoRemove( false );
           tempDir.path();
           const QString tempFilePath{ tempDir.path() + QDir::separator() + filename };
-          QFile tempFile{tempFilePath};
+          QFile tempFile{ tempFilePath };
           tempFile.open( QIODevice::WriteOnly );
           tempFile.write( replyData );
           tempFile.close();
