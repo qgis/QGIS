@@ -177,12 +177,6 @@ QVariantMap QgsTinMeshCreationAlgorithm::processAlgorithm( const QVariantMap &pa
 
   const QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "mdal" ) );
 
-//  QFileInfo fileInfo( fileName );
-//  QString suffix = fileInfo.suffix();
-
-//  if ( suffix.isEmpty() )
-//    fileName.append( QStringLiteral( ".%1" ).arg( mDriverSuffix.value( driver ) ) );
-
   fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, QStringList() << mDriverSuffix.value( driver ) );
 
   if ( feedback )
