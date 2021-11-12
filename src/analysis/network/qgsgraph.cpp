@@ -135,6 +135,18 @@ int QgsGraph::findVertex( const QgsPointXY &pt ) const
   return -1;
 }
 
+bool QgsGraph::hasVertex( int index ) const
+{
+  auto it = mGraphVertices.constFind( index );
+  return it != mGraphVertices.constEnd();
+}
+
+bool QgsGraph::hasEdge( int index ) const
+{
+  auto it = mGraphEdges.constFind( index );
+  return it != mGraphEdges.constEnd();
+}
+
 int QgsGraph::findOppositeEdge( int index ) const
 {
   auto it = mGraphEdges.constFind( index );
