@@ -503,7 +503,7 @@ Download and install following packages:
 * [CMake](https://github.com/Kitware/CMake/releases/download/v3.22.0-rc2/cmake-3.22.0-rc2-windows-x86_64.msi)
 * GNU flex, GNU bison and GIT with cygwin [32bit](https://cygwin.com/setup-x86.exe) or [64bit](https://cygwin.com/setup-x86_64.exe)
 * OSGeo4W V2 [64bit](http://download.osgeo.org/osgeo4w/v2/osgeo4w-setup.exe)
-* Optionnal : [ninja](https://github.com/ninja-build/ninja/releases/download/v1.7.2/ninja-win.zip): Copy the `ninja.exe` to `C:\OSGeo4W64\bin\`
+* Optional: [ninja](https://github.com/ninja-build/ninja/releases/download/v1.7.2/ninja-win.zip): Copy the `ninja.exe` to `C:\OSGeo4W64\bin\`
 
 For the QGIS build you need to install following packages from cygwin:
 
