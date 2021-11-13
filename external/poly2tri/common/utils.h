@@ -33,9 +33,7 @@
 #define UTILS_H
 
 // Otherwise #defines like M_PI are undeclared under Visual Studio
-#ifndef _USE_MATH_DEFINES
 #define _USE_MATH_DEFINES
-#endif
 
 #include "shapes.h"
 
