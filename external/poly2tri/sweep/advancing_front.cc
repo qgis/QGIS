@@ -46,21 +46,21 @@ Node* AdvancingFront::LocateNode(double x)
   Node* node = search_node_;
 
   if (x < node->value) {
-    while ((node = node->prev) != NULL) {
+    while ((node = node->prev) != nullptr) {
       if (x >= node->value) {
         search_node_ = node;
         return node;
       }
     }
   } else {
-    while ((node = node->next) != NULL) {
+    while ((node = node->next) != nullptr) {
       if (x < node->value) {
         search_node_ = node->prev;
         return node->prev;
       }
     }
   }
-  return NULL;
+  return nullptr;
 }
 
 Node* AdvancingFront::FindSearchNode(double x)
@@ -88,13 +88,13 @@ Node* AdvancingFront::LocatePoint(const Point* point)
       }
     }
   } else if (px < nx) {
-    while ((node = node->prev) != NULL) {
+    while ((node = node->prev) != nullptr) {
       if (point == node->point) {
         break;
       }
     }
   } else {
-    while ((node = node->next) != NULL) {
+    while ((node = node->next) != nullptr) {
       if (point == node->point)
         break;
     }
