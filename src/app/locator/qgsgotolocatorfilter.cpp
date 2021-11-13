@@ -48,7 +48,7 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
   bool posIsDms = false;
   const QLocale locale;
 
-  // Coordinates such as 106.8468,-6.3804
+  // Coordinates such as 106.8468,-6.3804 or 200.000,450.000 using locale group- and decimal separators
   QRegularExpression separatorRx( QStringLiteral( "^([0-9\\-\\%1\\%2]*)[\\s%3]*([0-9\\-\\%1\\%2]*)$" ).arg( locale.decimalPoint(),
                                   locale.groupSeparator(),
                                   locale.decimalPoint() != ',' && locale.groupSeparator() != ',' ? QStringLiteral( "\\," ) : QString() ) );
@@ -61,7 +61,9 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
 
   if ( !match.hasMatch() || !okX || !okY )
   {
-    // Digit detection using user locale failed, use default C decimal separators
+    // Digit detection using user locale failed, use default C decimal separators,
+    // no group separators, with or without comma between x,y
+    // E.g. 20.1 40.1 or 20.1,40.1
     separatorRx = QRegularExpression( QStringLiteral( "^([0-9\\-\\.]*)[\\s\\,]*([0-9\\-\\.]*)$" ) );
     match = separatorRx.match( string.trimmed() );
     if ( match.hasMatch() )
@@ -73,7 +75,8 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
 
   if ( !match.hasMatch() )
   {
-    // Check if the string is a pair of degree minute second
+    // Check if the string is a set of degree minute seconds (dms)
+    // E.g. 48°51'29.5"N 2°17'40.2"E or 2°17'40.2"E 48°51'29.5"N
     separatorRx = QRegularExpression( QStringLiteral( "^((?:([-+nsew])\\s*)?\\d{1,3}(?:[^0-9.]+[0-5]?\\d)?[^0-9.]+[0-5]?\\d(?:\\.\\d+)?[^0-9.,]*[-+nsew]?)[,\\s]+((?:([-+nsew])\\s*)?\\d{1,3}(?:[^0-9.]+[0-5]?\\d)?[^0-9.]+[0-5]?\\d(?:\\.\\d+)?[^0-9.,]*[-+nsew]?)$" ) );
     match = separatorRx.match( string.trimmed() );
     if ( match.hasMatch() )
@@ -87,7 +90,7 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
     }
   }
 
-  if ( okX && okY )
+  if ( okX && okY )  // Ok found a valid looking x,y coordinate pair, check against Map-crs and Wgs84crs
   {
     QVariantMap data;
     const QgsPointXY point( posX, posY );
@@ -132,6 +135,9 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
     return;
   }
 
+  // Going to check for url patterns of (google/osm) tiling services
+
+  // Scales for EPSG:3857 tiling services
   QMap<int, double> scales;
   scales[0] = 739571909;
   scales[1] = 369785954;
@@ -167,7 +173,8 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
     posY = 0.0;
     if ( url.hasFragment() )
     {
-      // Check for OSM/Leaflet/OpenLayers pattern (e.g. http://www.openstreetmap.org/#map=6/46.423/4.746)
+      // Check for OSM/Leaflet/OpenLayers url/link pattern e.g. Eiffel tower Paris at zoom 18:
+      // http://www.openstreetmap.org/#map=18/48.8582/2.2945
       const QStringList fragments = url.fragment().split( '&' );
       for ( const QString &fragment : fragments )
       {
@@ -188,8 +195,12 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
       }
     }
 
-    if ( !okX && !okY )
+    if ( !okX && !okY )  // No valid x,y coordinate pair found yet
     {
+      // Check for Google maps url/link pattern e.g. Eiffel tower Paris:
+      // https://www.google.com/maps/place/48%C2%B051'29.5%22N+2%C2%B017'40.2%22E/@48.8582035,2.2923113,17z/data=
+      // Same but streetview:
+      // https://www.google.com/maps/place/48%C2%B051'29.5%22N+2%C2%B017'40.2%22E/@48.8582035,2.2923113,916m/data=
       const QRegularExpression locationRx( QStringLiteral( "google.*\\/@([0-9\\-\\.\\,]*)(z|m|a)" ) );
       match = locationRx.match( string );
       if ( match.hasMatch() )
@@ -221,7 +232,7 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
       }
     }
 
-    if ( okX && okY )
+    if ( okX && okY )  // so X,Y from some kind of tiling service url, check for scale/z part
     {
       QVariantMap data;
       const QgsPointXY point( posX, posY );
