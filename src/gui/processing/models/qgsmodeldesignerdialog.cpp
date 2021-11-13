@@ -531,7 +531,7 @@ bool QgsModelDesignerDialog::validateSave()
 {
   if ( mNameEdit->text().trimmed().isEmpty() )
   {
-    mMessageBar->pushWarning( QString(), tr( "Please a enter model name before saving" ) );
+    mMessageBar->pushWarning( QString(), tr( "Please enter a model name before saving" ) );
     return false;
   }
 
@@ -832,6 +832,9 @@ void QgsModelDesignerDialog::populateZoomToMenu()
       QAction *zoomAction = new QAction( box.description(), mGroupMenu );
       connect( zoomAction, &QAction::triggered, this, [ = ]
       {
+        QRectF groupRect = item->boundingRect();
+        groupRect.adjust( -10, -10, 10, 10 );
+        mView->fitInView( groupRect, Qt::KeepAspectRatio );
         mView->centerOn( item );
       } );
       mGroupMenu->addAction( zoomAction );
