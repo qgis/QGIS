@@ -21,6 +21,7 @@
 #include "qgsfeature.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
+#include "qgsexpressionnodeimpl.h"
 
 #include <QRegularExpression>
 
@@ -290,6 +291,38 @@ QgsProperty::Type QgsProperty::propertyType() const
 bool QgsProperty::isActive() const
 {
   return d->type != InvalidProperty && d->active;
+}
+
+bool QgsProperty::isStaticValueInContext( const QgsExpressionContext &context, QVariant &staticValue ) const
+{
+  staticValue = QVariant();
+  switch ( d->type )
+  {
+    case InvalidProperty:
+      return true;
+
+    case StaticProperty:
+      staticValue = d->staticValue;
+      return true;
+
+    case FieldBasedProperty:
+      return false;
+
+    case ExpressionBasedProperty:
+    {
+      QgsExpression exp = d->expression;
+      if ( exp.prepare( &context ) && exp.rootNode() )
+      {
+        if ( exp.rootNode()->hasCachedStaticValue() )
+        {
+          staticValue = exp.rootNode()->cachedStaticValue();
+          return true;
+        }
+      }
+      return false;
+    }
+  }
+  return false;
 }
 
 void QgsProperty::setActive( bool active )

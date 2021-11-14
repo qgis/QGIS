@@ -80,6 +80,7 @@ class TestQgsProperty : public QObject
     void fieldBasedProperty(); //test for QgsFieldBasedProperty
     void expressionBasedProperty(); //test for QgsExpressionBasedProperty
     void equality();
+    void isStaticValueInContext();
     void propertyTransformer(); //test for QgsPropertyTransformer
     void propertyTransformerFromExpression(); // text converting expression into QgsPropertyTransformer
     void genericNumericTransformer();
@@ -684,6 +685,52 @@ void TestQgsProperty::equality()
   dd2.setTransformer( new QgsGenericNumericTransformer( 1, 2, 3, 4 ) );
   QVERIFY( dd1 == dd2 );
   QVERIFY( !( dd1 != dd2 ) );
+}
+
+void TestQgsProperty::isStaticValueInContext()
+{
+  // test the QgsProperty::isStaticValueInContext logic
+  QgsExpressionContext context;
+  QgsProperty p;
+  QVariant v;
+  v = 5; // set an initial value so we can be sure it's cleared
+  // an invalid property is static -- its value won't change
+  QVERIFY( p.isStaticValueInContext( context, v ) );
+  QVERIFY( !v.isValid() );
+
+  // a static value IS static (duh)
+  p = QgsProperty::fromValue( 55 );
+  QVERIFY( p.isStaticValueInContext( context, v ) );
+  QCOMPARE( v.toInt(), 55 );
+
+  // a field based property is NOT static
+  p = QgsProperty::fromField( QStringLiteral( "xxx" ) );
+  QVERIFY( !p.isStaticValueInContext( context, v ) );
+  QVERIFY( !v.isValid() );
+
+  // an expression based property may or may not be static
+  // start with a non-static expression
+  p = QgsProperty::fromExpression( QStringLiteral( "\"xxx\"" ) );
+  v = 5;
+  QVERIFY( !p.isStaticValueInContext( context, v ) );
+  QVERIFY( !v.isValid() );
+
+  // should still be non-static, even with valid fields
+  QgsFields fields;
+  fields.append( QgsField( QStringLiteral( "xxx" ), QVariant::Int ) );
+  context.setFields( fields );
+  v = 5;
+  QVERIFY( !p.isStaticValueInContext( context, v ) );
+  QVERIFY( !v.isValid() );
+
+  // an expression which IS static
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "my_var" ), 123, true, true ) );
+  context.appendScope( scope );
+  p = QgsProperty::fromExpression( QStringLiteral( "@my_var * 2" ) );
+  v = 5;
+  QVERIFY( p.isStaticValueInContext( context, v ) );
+  QCOMPARE( v.toInt(), 246 );
 }
 
 void TestQgsProperty::propertyTransformer()
