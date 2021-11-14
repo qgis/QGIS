@@ -362,19 +362,17 @@ void TestQgsAppLocatorFilters::testGoto()
 
   // simple goto
   QList< QgsLocatorResult > results = gatherResults( &filter, QStringLiteral( "4 5" ), QgsLocatorContext() );
-  QCOMPARE( results.count(), 2 );
-  QCOMPARE( results.at( 0 ).displayString, QObject::tr( "Go to 4 5 (Map CRS, )" ) );
-  QCOMPARE( results.at( 0 ).userData.toMap()[QStringLiteral( "point" )].value<QgsPointXY>(), QgsPointXY( 4, 5 ) );
-  QCOMPARE( results.at( 1 ).displayString, QObject::tr( "Go to 4° 5° (EPSG:4326 - WGS 84)" ) );
-  QCOMPARE( results.at( 1 ).userData.toMap()[QStringLiteral( "point" )].value<QgsPointXY>(), QgsPointXY( 4, 5 ) );
-
-  // locale-specific goto
-  results = gatherResults( &filter, QStringLiteral( "1,234.56 789.012" ), QgsLocatorContext() );
   QCOMPARE( results.count(), 1 );
-  QCOMPARE( results.at( 0 ).displayString, QObject::tr( "Go to 1,234.56 789.012 (Map CRS, )" ) );
-  QCOMPARE( results.at( 0 ).userData.toMap()[QStringLiteral( "point" )].value<QgsPointXY>(), QgsPointXY( 1234.56, 789.012 ) );
+  QCOMPARE( results.at( 0 ).displayString, QObject::tr( "Go to 4° 5° (EPSG:4326 - WGS 84)" ) );
+  QCOMPARE( results.at( 0 ).userData.toMap()[QStringLiteral( "point" )].value<QgsPointXY>(), QgsPointXY( 4, 5 ) );
 
-  // degree/minuste/second coordinates goto
+  // locale-specific goto (RD: actually not, this tested "1,234.56 789.012" against a project without crs, which now does not have a result anymore (as not a valid WGS84 coordinate)
+  results = gatherResults( &filter, QStringLiteral( "1.23456 7.89012" ), QgsLocatorContext() );
+  QCOMPARE( results.count(), 1 );
+  QCOMPARE( results.at( 0 ).displayString, QObject::tr( "Go to 1.23456° 7.89012° (EPSG:4326 - WGS 84)" ) );
+  QCOMPARE( results.at( 0 ).userData.toMap()[QStringLiteral( "point" )].value<QgsPointXY>(), QgsPointXY( 1.23456, 7.89012 ) );
+
+  // degree/minutes/second coordinates goto
   // easting northing
   results = gatherResults( &filter, QStringLiteral( "40deg 1' 0\" E 11deg  55' 0\" S" ), QgsLocatorContext() );
   QCOMPARE( results.count(), 1 );
@@ -387,7 +385,7 @@ void TestQgsAppLocatorFilters::testGoto()
   QCOMPARE( results.at( 0 ).displayString, QObject::tr( "Go to 1.8125° 14.83° (EPSG:4326 - WGS 84)" ) );
   QCOMPARE( results.at( 0 ).userData.toMap()[QStringLiteral( "point" )].value<QgsPointXY>(), QgsPointXY( 1.8125, 14.83 ) );
 
-  // northing, esting (comma separated)
+  // northing, easting (comma separated)
   results = gatherResults( &filter, QStringLiteral( "14°49′48″N, 01°48′45″E" ), QgsLocatorContext() );
   QCOMPARE( results.count(), 1 );
   QCOMPARE( results.at( 0 ).displayString, QObject::tr( "Go to 1.8125° 14.83° (EPSG:4326 - WGS 84)" ) );

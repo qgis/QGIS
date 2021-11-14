@@ -169,13 +169,13 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
           catch ( const QgsException &e )
           {
             Q_UNUSED( e )
-            //result.displayString = tr( "Transform exception: NOT Going to %1 %2 (Layer CRS, %3)" ).arg( locale.toString( point.x(), 'g', 10 ), locale.toString( point.y(), 'g', 10 ), crs.userFriendlyIdentifier() );
+            //result.displayString = tr( "Transform exception: NOT Going to %1 %2 (%3)" ).arg( locale.toString( point.x(), 'g', 10 ), locale.toString( point.y(), 'g', 10 ), crs.userFriendlyIdentifier() );
             continue;
           }
           if ( crs == wgs84Crs )
-            result.displayString = tr( "Go to %1° %2° (Layer CRS, %3)" ).arg( locale.toString( point.x(), 'g', 10 ), locale.toString( point.y(), 'g', 10 ), crs.userFriendlyIdentifier() );
+            result.displayString = tr( "Go to %1° %2° (%3)" ).arg( locale.toString( point.x(), 'g', 10 ), locale.toString( point.y(), 'g', 10 ), crs.userFriendlyIdentifier() );
           else
-            result.displayString = tr( "Go to %1 %2 (Layer CRS, %3)" ).arg( locale.toString( point.x(), 'g', 10 ), locale.toString( point.y(), 'g', 10 ), crs.userFriendlyIdentifier() );
+            result.displayString = tr( "Go to %1 %2 (%3)" ).arg( locale.toString( point.x(), 'g', 10 ), locale.toString( point.y(), 'g', 10 ), crs.userFriendlyIdentifier() );
           result.score = 0.85;
           data[QStringLiteral( "point" )] = transformedPoint;
         }
