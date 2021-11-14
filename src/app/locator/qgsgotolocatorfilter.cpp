@@ -45,7 +45,6 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
   bool okY = false;
   double posX = 0.0;
   double posY = 0.0;
-  bool posIsDms = false;
   const QLocale locale;
 
   // Coordinates such as 106.8468,-6.3804 or 200.000,450.000 using locale group- and decimal separators
@@ -81,7 +80,6 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
     match = separatorRx.match( string.trimmed() );
     if ( match.hasMatch() )
     {
-      posIsDms = true;
       bool isEasting = false;
       posX = QgsCoordinateUtils::dmsToDecimal( match.captured( 1 ), &okX, &isEasting );
       posY = QgsCoordinateUtils::dmsToDecimal( match.captured( 3 ), &okY );
@@ -90,52 +88,112 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
     }
   }
 
-  if ( okX && okY )  // Ok found a valid looking x,y coordinate pair, check against Map-crs and Wgs84crs
+  if ( okX && okY )  // Ok found a valid looking x,y coordinate pair, check against Wgs84crs, MapCanvas-crs AND layer-crs's
   {
-    QVariantMap data;
-    const QgsPointXY point( posX, posY );
-    data.insert( QStringLiteral( "point" ), point );
-
-    const bool withinWgs84 = wgs84Crs.bounds().contains( point );
-    if ( !posIsDms && currentCrs != wgs84Crs )
+    // collect all crs's from all layers (plus MapCanvas crs and wgs84)
+    QList<QString> crsList;  // TODO make this a list
+    crsList.append( wgs84Crs.authid() );
+    if ( currentCrs != wgs84Crs )
+      crsList.append( currentCrs.authid() );
+    for ( const QgsMapLayer *layer : QgsProject::instance()->mapLayers() )
     {
+      if ( !crsList.contains( layer->crs().authid() ) )
+      {
+        crsList.append( layer->crs().authid() );
+      }
+    }
+    // Now go over all crs's and check if the coordinate COULD be use in that crs
+    for ( const QString &authid : crsList )
+    {
+
+      QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( authid );
+
+      QVariantMap data;
+      const QgsPointXY point( posX, posY );
+      data.insert( QStringLiteral( "point" ), point );
+
       QgsLocatorResult result;
       result.filter = this;
-      result.displayString = tr( "Go to %1 %2 (Map CRS, %3)" ).arg( locale.toString( point.x(), 'g', 10 ), locale.toString( point.y(), 'g', 10 ), currentCrs.userFriendlyIdentifier() );
-      result.userData = data;
-      result.score = 0.9;
-      emit resultFetched( result );
-    }
 
-    if ( withinWgs84 )
-    {
-      if ( currentCrs != wgs84Crs )
+      const bool withinWgs84 = wgs84Crs.bounds().contains( point );
+      if ( crs == wgs84Crs && crs == currentCrs && withinWgs84 )
       {
-        const QgsCoordinateTransform transform( wgs84Crs, currentCrs, QgsProject::instance()->transformContext() );
-        QgsPointXY transformedPoint;
-        try
-        {
-          transformedPoint = transform.transform( point );
-        }
-        catch ( const QgsException &e )
-        {
-          Q_UNUSED( e )
-          return;
-        }
-        data[QStringLiteral( "point" )] = transformedPoint;
+        result.displayString = tr( "Go to %1° %2° (%3)" ).arg( locale.toString( point.x(), 'g', 10 ), locale.toString( point.y(), 'g', 10 ), wgs84Crs.userFriendlyIdentifier() );
+        result.score = 1.0;
+        result.userData = data;
+        emit resultFetched( result );
+        continue;
       }
 
-      QgsLocatorResult result;
-      result.filter = this;
-      result.displayString = tr( "Go to %1° %2° (%3)" ).arg( locale.toString( point.x(), 'g', 10 ), locale.toString( point.y(), 'g', 10 ), wgs84Crs.userFriendlyIdentifier() );
+      // non wgs84 project, create a transform to be able to check point against bounds
+      const QgsCoordinateTransform transform2wgs84( crs, wgs84Crs, QgsProject::instance()->transformContext() );
+      QgsPointXY wgs84Point;
+      try
+      {
+        wgs84Point = transform2wgs84.transform( point );
+      }
+      catch ( const QgsException &e )
+      {
+        Q_UNUSED( e )
+        // for testing purposes: show when a potential crs coordinate is skipped: show the resultstring
+        //result.displayString = tr( "Transform exception: NOT Going to %1 %2 (Map CRS, %3)" ).arg( locale.toString( point.x(), 'g', 10 ), locale.toString( point.y(), 'g', 10 ), crs.userFriendlyIdentifier() );
+        //emit resultFetched( result );
+        continue;
+      }
+
+      if ( crs == currentCrs )
+      {
+        if ( crs.bounds().contains( wgs84Point ) )
+        {
+          // data.point is already set to this crs
+          result.displayString = tr( "Go to %1 %2 (Map CRS, %3)" ).arg( locale.toString( point.x(), 'g', 10 ), locale.toString( point.y(), 'g', 10 ), crs.userFriendlyIdentifier() );
+          result.score = 0.9;
+        }
+        else   // (potential) currentCrs coordinate is tested outside bounds of currentCrs
+        {
+          // for testing purposes: show when a potential crs coordinate is skipped: show the resultstring
+          //result.displayString = tr( "NOT Going to %1 %2 (Map CRS, %3)" ).arg( locale.toString( point.x(), 'g', 10 ), locale.toString( point.y(), 'g', 10 ), crs.userFriendlyIdentifier() );
+          continue;
+        }
+      }
+      else    // crs != currentCrs ==> transform, BUT only if within crs bounds
+      {
+        if ( crs.bounds().contains( wgs84Point ) )
+        {
+          const QgsCoordinateTransform transform2mapcanvas( crs, currentCrs, QgsProject::instance()->transformContext() );
+          QgsPointXY transformedPoint;
+          try
+          {
+            transformedPoint = transform2mapcanvas.transform( point );
+          }
+          catch ( const QgsException &e )
+          {
+            Q_UNUSED( e )
+            //result.displayString = tr( "Transform exception: NOT Going to %1 %2 (Layer CRS, %3)" ).arg( locale.toString( point.x(), 'g', 10 ), locale.toString( point.y(), 'g', 10 ), crs.userFriendlyIdentifier() );
+            continue;
+          }
+          if ( crs == wgs84Crs )
+            result.displayString = tr( "Go to %1° %2° (Layer CRS, %3)" ).arg( locale.toString( point.x(), 'g', 10 ), locale.toString( point.y(), 'g', 10 ), crs.userFriendlyIdentifier() );
+          else
+            result.displayString = tr( "Go to %1 %2 (Layer CRS, %3)" ).arg( locale.toString( point.x(), 'g', 10 ), locale.toString( point.y(), 'g', 10 ), crs.userFriendlyIdentifier() );
+          result.score = 0.85;
+          data[QStringLiteral( "point" )] = transformedPoint;
+        }
+        else
+        {
+          // for testing purposes: show when a potential crs coordinate is skipped: show the resultstring
+          //result.displayString = tr( "NOT Going to %1 %2 (Layer CRS, %3)" ).arg( locale.toString( point.x(), 'g', 10 ), locale.toString( point.y(), 'g', 10 ), crs.userFriendlyIdentifier() );
+          continue;
+        }
+      }
       result.userData = data;
-      result.score = 1.0;
       emit resultFetched( result );
+
     }
     return;
   }
 
-  // Going to check for url patterns of (google/osm) tiling services
+  // No valid looking coordinate pair found, going to check for url patterns of (google/osm) tiling services
 
   // Scales for EPSG:3857 tiling services
   QMap<int, double> scales;
