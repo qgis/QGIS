@@ -788,12 +788,18 @@ Get settings default value.
 
     bool setValue( const T &value, const QString &dynamicKeyPart = QString() ) const;
 %Docstring
-\copydoc :py:class:`QgsSettingsEntryBase`.setValue
+Set settings value.
+
+The ``value`` to set.
+The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
 %End
 
     bool setValue( const T &value, const QStringList &dynamicKeyPartList ) const;
 %Docstring
-\copydoc :py:class:`QgsSettingsEntryBase`.setValue
+Set settings value.
+
+The ``value`` to set.
+The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
 %End
 
     virtual QgsSettingsEntryBase::SettingsType settingsType() const;
