@@ -562,7 +562,9 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   {
     d->opacity = ( textStyleElem.attribute( QStringLiteral( "textOpacity" ) ).toDouble() );
   }
+#ifdef HAS_KDE_QT5_FONT_STRETCH_FIX
   d->textFont.setStretch( textStyleElem.attribute( QStringLiteral( "stretchFactor" ), QStringLiteral( "100" ) ).toInt() );
+#endif
   d->orientation = QgsTextRendererUtils::decodeTextOrientation( textStyleElem.attribute( QStringLiteral( "textOrientation" ) ) );
   d->previewBackgroundColor = QgsSymbolLayerUtils::decodeColor( textStyleElem.attribute( QStringLiteral( "previewBkgrdColor" ), QgsSymbolLayerUtils::encodeColor( Qt::white ) ) );
 
@@ -667,7 +669,9 @@ QDomElement QgsTextFormat::writeXml( QDomDocument &doc, const QgsReadWriteContex
   textStyleElem.setAttribute( QStringLiteral( "fontWordSpacing" ), d->textFont.wordSpacing() );
   textStyleElem.setAttribute( QStringLiteral( "fontKerning" ), d->textFont.kerning() );
   textStyleElem.setAttribute( QStringLiteral( "textOpacity" ), d->opacity );
+#ifdef HAS_KDE_QT5_FONT_STRETCH_FIX
   textStyleElem.setAttribute( QStringLiteral( "stretchFactor" ), d->textFont.stretch() );
+#endif
   textStyleElem.setAttribute( QStringLiteral( "textOrientation" ), QgsTextRendererUtils::encodeTextOrientation( d->orientation ) );
   textStyleElem.setAttribute( QStringLiteral( "blendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
   textStyleElem.setAttribute( QStringLiteral( "multilineHeight" ), d->multilineHeight );
@@ -977,6 +981,7 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
     }
   }
 
+#ifdef HAS_KDE_QT5_FONT_STRETCH_FIX
   if ( d->mDataDefinedProperties.isActive( QgsPalLayerSettings::FontStretchFactor ) )
   {
     context.expressionContext().setOriginalValueVariable( d->textFont.stretch() );
@@ -986,6 +991,7 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
       d->textFont.setStretch( val.toInt() );
     }
   }
+#endif
 
   if ( d->mDataDefinedProperties.isActive( QgsPalLayerSettings::TextOrientation ) )
   {
