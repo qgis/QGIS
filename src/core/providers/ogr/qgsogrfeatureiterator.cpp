@@ -129,7 +129,6 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
       }
     }
   }
-  //QMutexLocker locker( mSharedDS ? &mSharedDS->mutex() : nullptr );
 
   if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
   {
@@ -378,7 +377,6 @@ void QgsOgrFeatureIterator::setInterruptionChecker( QgsFeedback *interruptionChe
 
 bool QgsOgrFeatureIterator::fetchFeature( QgsFeature &feature )
 {
-  //QMutexLocker locker( mSharedDS ? &mSharedDS->mutex() : nullptr );
   QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg, mInterruptionChecker );
   QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrFeatureIterator" ) )
 
@@ -474,7 +472,6 @@ void QgsOgrFeatureIterator::resetReading()
 
 bool QgsOgrFeatureIterator::rewind()
 {
-  //QMutexLocker locker( mSharedDS ? &mSharedDS->mutex() : nullptr );
   if ( mClosed || !mOgrLayer )
     return false;
 
@@ -491,10 +488,6 @@ bool QgsOgrFeatureIterator::close()
   if ( mSharedDS )
   {
     iteratorClosed();
-    /*if ( mSharedDS )
-    {
-      mSharedDS->sharedDSMutex().unlock();
-    }*/
     mOgrLayer = nullptr;
     mSharedDS.reset();
 
