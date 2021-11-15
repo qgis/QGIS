@@ -2360,8 +2360,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'OUTPUT': outsource}, context, feedback),
                 ['gdal_polygonize.py',
                  source + ' ' +
-                 outsource + ' ' +
-                 '-b 1 -f "ESRI Shapefile" check DN'
+                 '-b 1 -f "ESRI Shapefile"' + ' ' + outsource + ' ' + 'check DN'
                  ])
 
             self.assertEqual(
@@ -2372,8 +2371,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'OUTPUT': outsource}, context, feedback),
                 ['gdal_polygonize.py',
                  source + ' ' +
-                 outsource + ' ' +
-                 '-b 1 -f "ESRI Shapefile" check VAL'
+                 '-b 1 -f "ESRI Shapefile"' + ' ' + outsource + ' ' + 'check VAL'
                  ])
 
             # 8 connectedness
@@ -2384,9 +2382,8 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'EIGHT_CONNECTEDNESS': True,
                                         'OUTPUT': outsource}, context, feedback),
                 ['gdal_polygonize.py',
-                 source + ' ' +
-                 outsource + ' ' +
-                 '-8 -b 1 -f "ESRI Shapefile" check DN'
+                 '-8' + ' ' + source + ' ' +
+                 '-b 1 -f "ESRI Shapefile"' + ' ' + outsource + ' ' + 'check DN'
                  ])
 
             # custom output format
@@ -2399,8 +2396,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'OUTPUT': outsource}, context, feedback),
                 ['gdal_polygonize.py',
                  source + ' ' +
-                 outsource + ' ' +
-                 '-b 1 -f "GPKG" check DN'
+                 '-b 1 -f "GPKG"' + ' ' + outsource + ' ' + 'check DN'
                  ])
 
             # additional parameters
@@ -2411,9 +2407,8 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'EXTRA': '-nomask -q',
                                         'OUTPUT': outsource}, context, feedback),
                 ['gdal_polygonize.py',
-                 source + ' ' +
-                 outsource + ' ' +
-                 '-b 1 -f "GPKG" -nomask -q check DN'
+                 '-nomask -q' + ' ' + source + ' ' +
+                 '-b 1 -f "GPKG"' + ' ' + outsource + ' ' + 'check DN'
                  ])
 
     def testGdalPansharpen(self):
