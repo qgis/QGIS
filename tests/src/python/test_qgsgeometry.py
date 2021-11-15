@@ -2858,7 +2858,7 @@ class TestQgsGeometry(unittest.TestCase):
 
         # circular string
         geom = QgsGeometry.fromWkt('CircularString (1 5, 6 2, 7 3)')
-        assert geom.constGet().addZValue(2)
+        assert geom.get().addZValue(2)
         self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.CircularStringZ)
         expWkt = 'CircularStringZ (1 5 2, 6 2 2, 7 3 2)'
         wkt = geom.asWkt()
@@ -2868,7 +2868,7 @@ class TestQgsGeometry(unittest.TestCase):
         # compound curve
         geom = QgsGeometry.fromWkt(
             'CompoundCurve ((5 3, 5 13),CircularString (5 13, 7 15, 9 13),(9 13, 9 3),CircularString (9 3, 7 1, 5 3))')
-        assert geom.constGet().addZValue(2)
+        assert geom.get().addZValue(2)
         self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.CompoundCurveZ)
         expWkt = 'CompoundCurveZ ((5 3 2, 5 13 2),CircularStringZ (5 13 2, 7 15 2, 9 13 2),(9 13 2, 9 3 2),CircularStringZ (9 3 2, 7 1 2, 5 3 2))'
         wkt = geom.asWkt()
@@ -2877,7 +2877,7 @@ class TestQgsGeometry(unittest.TestCase):
 
         # curve polygon
         geom = QgsGeometry.fromWkt('Polygon ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))')
-        assert geom.constGet().addZValue(3)
+        assert geom.get().addZValue(3)
         self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.PolygonZ)
         self.assertEqual(geom.wkbType(), QgsWkbTypes.PolygonZ)
         expWkt = 'PolygonZ ((0 0 3, 1 0 3, 1 1 3, 2 1 3, 2 2 3, 0 2 3, 0 0 3))'
@@ -2887,7 +2887,7 @@ class TestQgsGeometry(unittest.TestCase):
 
         # geometry collection
         geom = QgsGeometry.fromWkt('MultiPoint ((1 2),(2 3))')
-        assert geom.constGet().addZValue(4)
+        assert geom.get().addZValue(4)
         self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.MultiPointZ)
         self.assertEqual(geom.wkbType(), QgsWkbTypes.MultiPointZ)
         expWkt = 'MultiPointZ ((1 2 4),(2 3 4))'
@@ -2897,7 +2897,7 @@ class TestQgsGeometry(unittest.TestCase):
 
         # LineString
         geom = QgsGeometry.fromWkt('LineString (1 2, 2 3)')
-        assert geom.constGet().addZValue(4)
+        assert geom.get().addZValue(4)
         self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.LineStringZ)
         self.assertEqual(geom.wkbType(), QgsWkbTypes.LineStringZ)
         expWkt = 'LineStringZ (1 2 4, 2 3 4)'
@@ -2907,7 +2907,7 @@ class TestQgsGeometry(unittest.TestCase):
 
         # Point
         geom = QgsGeometry.fromWkt('Point (1 2)')
-        assert geom.constGet().addZValue(4)
+        assert geom.get().addZValue(4)
         self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.PointZ)
         self.assertEqual(geom.wkbType(), QgsWkbTypes.PointZ)
         expWkt = 'PointZ (1 2 4)'
@@ -2919,7 +2919,7 @@ class TestQgsGeometry(unittest.TestCase):
 
         # circular string
         geom = QgsGeometry.fromWkt('CircularString (1 5, 6 2, 7 3)')
-        assert geom.constGet().addMValue(2)
+        assert geom.get().addMValue(2)
         self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.CircularStringM)
         expWkt = 'CircularStringM (1 5 2, 6 2 2, 7 3 2)'
         wkt = geom.asWkt()
@@ -2929,7 +2929,7 @@ class TestQgsGeometry(unittest.TestCase):
         # compound curve
         geom = QgsGeometry.fromWkt(
             'CompoundCurve ((5 3, 5 13),CircularString (5 13, 7 15, 9 13),(9 13, 9 3),CircularString (9 3, 7 1, 5 3))')
-        assert geom.constGet().addMValue(2)
+        assert geom.get().addMValue(2)
         self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.CompoundCurveM)
         expWkt = 'CompoundCurveM ((5 3 2, 5 13 2),CircularStringM (5 13 2, 7 15 2, 9 13 2),(9 13 2, 9 3 2),CircularStringM (9 3 2, 7 1 2, 5 3 2))'
         wkt = geom.asWkt()
@@ -2938,7 +2938,7 @@ class TestQgsGeometry(unittest.TestCase):
 
         # curve polygon
         geom = QgsGeometry.fromWkt('Polygon ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))')
-        assert geom.constGet().addMValue(3)
+        assert geom.get().addMValue(3)
         self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.PolygonM)
         expWkt = 'PolygonM ((0 0 3, 1 0 3, 1 1 3, 2 1 3, 2 2 3, 0 2 3, 0 0 3))'
         wkt = geom.asWkt()
@@ -2947,7 +2947,7 @@ class TestQgsGeometry(unittest.TestCase):
 
         # geometry collection
         geom = QgsGeometry.fromWkt('MultiPoint ((1 2),(2 3))')
-        assert geom.constGet().addMValue(4)
+        assert geom.get().addMValue(4)
         self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.MultiPointM)
         expWkt = 'MultiPointM ((1 2 4),(2 3 4))'
         wkt = geom.asWkt()
@@ -2956,7 +2956,7 @@ class TestQgsGeometry(unittest.TestCase):
 
         # LineString
         geom = QgsGeometry.fromWkt('LineString (1 2, 2 3)')
-        assert geom.constGet().addMValue(4)
+        assert geom.get().addMValue(4)
         self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.LineStringM)
         expWkt = 'LineStringM (1 2 4, 2 3 4)'
         wkt = geom.asWkt()
@@ -2965,7 +2965,7 @@ class TestQgsGeometry(unittest.TestCase):
 
         # Point
         geom = QgsGeometry.fromWkt('Point (1 2)')
-        assert geom.constGet().addMValue(4)
+        assert geom.get().addMValue(4)
         self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.PointM)
         expWkt = 'PointM (1 2 4)'
         wkt = geom.asWkt()
