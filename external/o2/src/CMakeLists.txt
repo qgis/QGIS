@@ -193,7 +193,7 @@ endif(BUILD_SHARED_LIBS AND APPLE AND POLICY CMP0042)
 add_library( o2 ${o2_SRCS} ${o2_HDRS} )
 
 if(BUILD_SHARED_LIBS)
-￼    add_definitions( -DO2_SHARED_LIB )
+    add_definitions( -DO2_SHARED_LIB )
 endif(BUILD_SHARED_LIBS)
 
 if(o2_WITH_QT5)
