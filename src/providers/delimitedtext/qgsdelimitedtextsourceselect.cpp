@@ -21,6 +21,7 @@
 #include "qgssettings.h"
 #include "qgsproviderregistry.h"
 #include "qgsgui.h"
+#include "qgsapplication.h"
 
 #include <QButtonGroup>
 #include <QFile>
@@ -138,86 +139,15 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
   }
 
   //Build the delimited text URI from the user provided information
+  const QString datasourceUrl { url( )};
 
-  QUrl url = mFile->url();
-  QUrlQuery query( url );
-
-  query.addQueryItem( QStringLiteral( "detectTypes" ), cbxDetectTypes->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
-
-  if ( cbxPointIsComma->isChecked() )
-  {
-    query.addQueryItem( QStringLiteral( "decimalPoint" ), QStringLiteral( "," ) );
-  }
-  if ( cbxXyDms->isChecked() )
-  {
-    query.addQueryItem( QStringLiteral( "xyDms" ), QStringLiteral( "yes" ) );
-  }
-
-  bool haveGeom = true;
-  if ( geomTypeXY->isChecked() )
-  {
-    QString field;
-    if ( !cmbXField->currentText().isEmpty() && !cmbYField->currentText().isEmpty() )
-    {
-      field = cmbXField->currentText();
-      query.addQueryItem( QStringLiteral( "xField" ), field );
-      field = cmbYField->currentText();
-      query.addQueryItem( QStringLiteral( "yField" ), field );
-    }
-    if ( !cmbZField->currentText().isEmpty() )
-    {
-      field = cmbZField->currentText();
-      query.addQueryItem( QStringLiteral( "zField" ), field );
-    }
-    if ( !cmbMField->currentText().isEmpty() )
-    {
-      field = cmbMField->currentText();
-      query.addQueryItem( QStringLiteral( "mField" ), field );
-    }
-  }
-  else if ( geomTypeWKT->isChecked() )
-  {
-    if ( ! cmbWktField->currentText().isEmpty() )
-    {
-      const QString field = cmbWktField->currentText();
-      query.addQueryItem( QStringLiteral( "wktField" ), field );
-    }
-    if ( cmbGeometryType->currentIndex() > 0 )
-    {
-      query.addQueryItem( QStringLiteral( "geomType" ), cmbGeometryType->currentText() );
-    }
-  }
-  else
-  {
-    haveGeom = false;
-    query.addQueryItem( QStringLiteral( "geomType" ), QStringLiteral( "none" ) );
-  }
-  if ( haveGeom )
-  {
-    const QgsCoordinateReferenceSystem crs = crsGeometry->crs();
-    if ( crs.isValid() )
-    {
-      query.addQueryItem( QStringLiteral( "crs" ), crs.authid() );
-    }
-
-  }
-
-  if ( ! geomTypeNone->isChecked() )
-  {
-    query.addQueryItem( QStringLiteral( "spatialIndex" ), cbxSpatialIndex->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
-  }
-
-  query.addQueryItem( QStringLiteral( "subsetIndex" ), cbxSubsetIndex->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
-  query.addQueryItem( QStringLiteral( "watchFile" ), cbxWatchFile->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
-
-  url.setQuery( query );
   // store the settings
   saveSettings();
   saveSettingsForFile( mFileWidget->filePath() );
 
 
   // add the layer to the map
-  emit addVectorLayer( QString::fromLatin1( url.toEncoded() ), txtLayerName->text() );
+  emit addVectorLayer( datasourceUrl, txtLayerName->text() );
 
   // clear the file and layer name show something has happened, ready for another file
 
@@ -462,6 +392,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     if ( status != QgsDelimitedTextFile::RecordOk ) { mBadRowCount++; continue; }
     counter++;
 
+
     // Look at count of non-blank fields
 
     int nv = values.size();
@@ -524,6 +455,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     }
   }
 
+
   QStringList fieldList = mFile->fieldNames();
 
   if ( isEmpty.size() < fieldList.size() )
@@ -535,6 +467,46 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
       isValidWkt.append( false );
     }
     tblSample->setColumnCount( fieldList.size() );
+  }
+
+  tblSample->insertRow( 0 );
+  QStringList verticalHeaderLabels;
+  verticalHeaderLabels.push_back( QString( ) );
+
+  for ( int i = 1; i <= tblSample->rowCount(); i++ )
+  {
+    verticalHeaderLabels.push_back( QString::number( i ) );
+  }
+
+  tblSample->setVerticalHeaderLabels( verticalHeaderLabels );
+
+  // This may be slow on huge files, maybe we need a separate thread
+  mFields = QgsDelimitedTextProvider(
+              url(),
+              QgsDataProvider::ProviderOptions(),
+              QgsDataProvider::ReadFlag::SkipFeatureCount | QgsDataProvider::ReadFlag::SkipGetExtent )
+            .fields();
+
+  for ( int i = 0; i < tblSample->columnCount(); i++ )
+  {
+    QComboBox *typeCombo = new QComboBox( tblSample );
+    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) ), tr( "Text" ), "string" );
+    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole Number" ), "integer" );
+    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) ), tr( "Decimal Number" ), "double" );
+    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBool.svg" ) ), tr( "Boolean" ), "bool" );
+    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDate.svg" ) ), tr( "Date" ), "date" );
+    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldTime.svg" ) ), tr( "Time" ), "time" );
+    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDateTime.svg" ) ), tr( "Date and Time" ), "datetime" );
+    if ( mFields.lookupField( fieldList[ i ] ) >= 0 )
+    {
+      const QString typeName { mFields.field( fieldList[ i ] ).typeName() };
+      const int idx {typeCombo->findData( typeName )};
+      if ( idx >= 0 )
+      {
+        typeCombo->setCurrentIndex( idx );
+      }
+    }
+    tblSample->setCellWidget( 0, i, typeCombo );
   }
 
   tblSample->setHorizontalHeaderLabels( fieldList );
@@ -791,4 +763,100 @@ void QgsDelimitedTextSourceSelect::showCrsWidget()
 {
   crsGeometry->setVisible( !geomTypeNone->isChecked() );
   textLabelCrs->setVisible( !geomTypeNone->isChecked() );
+}
+
+QString QgsDelimitedTextSourceSelect::url()
+{
+  if ( ! validate() )
+  {
+    return QString();
+  }
+  QUrl url = mFile->url();
+  QUrlQuery query( url );
+
+  query.addQueryItem( QStringLiteral( "detectTypes" ), cbxDetectTypes->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
+
+  if ( cbxPointIsComma->isChecked() )
+  {
+    query.addQueryItem( QStringLiteral( "decimalPoint" ), QStringLiteral( "," ) );
+  }
+  if ( cbxXyDms->isChecked() )
+  {
+    query.addQueryItem( QStringLiteral( "xyDms" ), QStringLiteral( "yes" ) );
+  }
+
+  bool haveGeom = true;
+  if ( geomTypeXY->isChecked() )
+  {
+    QString field;
+    if ( !cmbXField->currentText().isEmpty() && !cmbYField->currentText().isEmpty() )
+    {
+      field = cmbXField->currentText();
+      query.addQueryItem( QStringLiteral( "xField" ), field );
+      field = cmbYField->currentText();
+      query.addQueryItem( QStringLiteral( "yField" ), field );
+    }
+    if ( !cmbZField->currentText().isEmpty() )
+    {
+      field = cmbZField->currentText();
+      query.addQueryItem( QStringLiteral( "zField" ), field );
+    }
+    if ( !cmbMField->currentText().isEmpty() )
+    {
+      field = cmbMField->currentText();
+      query.addQueryItem( QStringLiteral( "mField" ), field );
+    }
+  }
+  else if ( geomTypeWKT->isChecked() )
+  {
+    if ( ! cmbWktField->currentText().isEmpty() )
+    {
+      const QString field = cmbWktField->currentText();
+      query.addQueryItem( QStringLiteral( "wktField" ), field );
+    }
+    if ( cmbGeometryType->currentIndex() > 0 )
+    {
+      query.addQueryItem( QStringLiteral( "geomType" ), cmbGeometryType->currentText() );
+    }
+  }
+  else
+  {
+    haveGeom = false;
+    query.addQueryItem( QStringLiteral( "geomType" ), QStringLiteral( "none" ) );
+  }
+  if ( haveGeom )
+  {
+    const QgsCoordinateReferenceSystem crs = crsGeometry->crs();
+    if ( crs.isValid() )
+    {
+      query.addQueryItem( QStringLiteral( "crs" ), crs.authid() );
+    }
+
+  }
+
+  if ( ! geomTypeNone->isChecked() )
+  {
+    query.addQueryItem( QStringLiteral( "spatialIndex" ), cbxSpatialIndex->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
+  }
+
+  query.addQueryItem( QStringLiteral( "subsetIndex" ), cbxSubsetIndex->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
+  query.addQueryItem( QStringLiteral( "watchFile" ), cbxWatchFile->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
+
+  // Set field types if overridden
+  for ( int column = 0; column < tblSample->columnCount(); column++ )
+  {
+    const QString fieldName { tblSample->horizontalHeaderItem( column )->text() };
+    const int fieldIdx { mFields.lookupField( fieldName ) };
+    if ( fieldIdx >= 0 )
+    {
+      QComboBox *typeCombo { qobject_cast<QComboBox *>( tblSample->cellWidget( 0, column ) ) };
+      if ( typeCombo && typeCombo->currentData().toString() != mFields.field( fieldName ).typeName() )
+      {
+        query.addQueryItem( QStringLiteral( "field" ), QString( fieldName ).replace( ':', QStringLiteral( "\\:" ) ) + ':' +  mFields.field( fieldName ).typeName() );
+      }
+    }
+  }
+
+  url.setQuery( query );
+  return QString::fromLatin1( url.toEncoded() );
 }

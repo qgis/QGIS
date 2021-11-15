@@ -18,6 +18,7 @@
 #include <QTextStream>
 #include "qgshelp.h"
 #include "qgsguiutils.h"
+#include "qgsfields.h"
 #include "qgsproviderregistry.h"
 #include "qgsabstractdatasourcewidget.h"
 #include "qgsdelimitedtextfile.h"
@@ -50,6 +51,7 @@ class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private
     std::unique_ptr<QgsDelimitedTextFile> mFile;
     int mExampleRowCount = 20;
     int mBadRowCount = 0;
+    QgsFields mFields; // Stores the fields as returned by the provider to determine if their types were overridden
     static constexpr int DEFAULT_MAX_FIELDS = 10000;
     int mMaxFields = DEFAULT_MAX_FIELDS; // to avoid Denial Of Service (at least in source select). Configurable through /max_fields settings sub-key.
     QString mSettingsKey;
@@ -58,6 +60,7 @@ class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private
     QButtonGroup *bgGeomType = nullptr;
     void showHelp();
     void showCrsWidget();
+    QString url();
 
   public slots:
     void addButtonClicked() override;
