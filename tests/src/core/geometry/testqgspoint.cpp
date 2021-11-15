@@ -80,16 +80,19 @@ class TestQgsPoint: public QObject
 void TestQgsPoint::constructorv2()
 {
   QgsPoint pt;
+  QString error;
 
   QVERIFY( pt.isEmpty() );
   QCOMPARE( pt.wkbType(), QgsWkbTypes::Point );
   QCOMPARE( pt.asWkt(), QStringLiteral( "Point EMPTY" ) );
+  QVERIFY( pt.isValid( error ) );
 
   pt.setX( 1.0 );
 
   QVERIFY( pt.isEmpty() );
   QCOMPARE( pt.wkbType(), QgsWkbTypes::Point );
   QCOMPARE( pt.asWkt(), QStringLiteral( "Point EMPTY" ) );
+  QVERIFY( pt.isValid( error ) );
 
   pt.setY( 2.0 );
 
@@ -110,37 +113,47 @@ void TestQgsPoint::constructor()
   QCOMPARE( pt1.wkbType(), QgsWkbTypes::Point );
   QCOMPARE( pt1.wktTypeStr(), QString( "Point" ) );
 
-  QgsPoint pt2( QgsPointXY( 3.0, 4.0 ) );
+  QgsPointXY ptXY;
+  QgsPoint pt2( ptXY );
 
-  QCOMPARE( pt2.x(), 3.0 );
-  QCOMPARE( pt2.y(), 4.0 );
-  QVERIFY( !pt2.isEmpty() );
+  QVERIFY( std::isnan( pt2.x() ) );
+  QVERIFY( std::isnan( pt2.y() ) );
+  QVERIFY( pt2.isEmpty() );
   QVERIFY( !pt2.is3D() );
   QVERIFY( !pt2.isMeasure() );
   QCOMPARE( pt2.wkbType(), QgsWkbTypes::Point );
 
-  QgsPoint pt3( QPointF( 7.0, 9.0 ) );
+  QgsPoint pt3( QgsPointXY( 3.0, 4.0 ) );
 
-  QCOMPARE( pt3.x(), 7.0 );
-  QCOMPARE( pt3.y(), 9.0 );
+  QCOMPARE( pt3.x(), 3.0 );
+  QCOMPARE( pt3.y(), 4.0 );
   QVERIFY( !pt3.isEmpty() );
   QVERIFY( !pt3.is3D() );
   QVERIFY( !pt3.isMeasure() );
   QCOMPARE( pt3.wkbType(), QgsWkbTypes::Point );
 
-  QgsPoint pt4( QgsWkbTypes::Point, 11.0, 13.0 );
+  QgsPoint pt4( QPointF( 7.0, 9.0 ) );
 
-  QCOMPARE( pt4.x(), 11.0 );
-  QCOMPARE( pt4.y(), 13.0 );
+  QCOMPARE( pt4.x(), 7.0 );
+  QCOMPARE( pt4.y(), 9.0 );
   QVERIFY( !pt4.isEmpty() );
   QVERIFY( !pt4.is3D() );
   QVERIFY( !pt4.isMeasure() );
   QCOMPARE( pt4.wkbType(), QgsWkbTypes::Point );
 
-  QgsPoint pt5( QgsWkbTypes::Point );
+  QgsPoint pt5( QgsWkbTypes::Point, 11.0, 13.0 );
 
+  QCOMPARE( pt5.x(), 11.0 );
+  QCOMPARE( pt5.y(), 13.0 );
+  QVERIFY( !pt5.isEmpty() );
   QVERIFY( !pt5.is3D() );
   QVERIFY( !pt5.isMeasure() );
+  QCOMPARE( pt5.wkbType(), QgsWkbTypes::Point );
+
+  QgsPoint pt6( QgsWkbTypes::Point );
+
+  QVERIFY( !pt6.is3D() );
+  QVERIFY( !pt6.isMeasure() );
 }
 
 void TestQgsPoint::constructorZ()
@@ -285,6 +298,43 @@ void TestQgsPoint::equality()
   QVERIFY( !pt2.isEmpty() );
   QVERIFY( pt2 == pt1 );
 
+  // Test when X/Y/Z/M dimensions set at NaN
+
+  // Y
+  pt1.setY( std::numeric_limits<double>::quiet_NaN() );
+
+  QVERIFY( pt1.isEmpty() );
+  QVERIFY( !pt2.isEmpty() );
+  QVERIFY( pt2 != pt1 );
+
+  pt2.setY( std::numeric_limits<double>::quiet_NaN() );
+
+  QVERIFY( pt1.isEmpty() );
+  QVERIFY( pt2.isEmpty() );
+  QVERIFY( pt2 == pt1 );
+
+  pt1.setY( 1 );
+  pt2.setY( 1 );
+
+  // Z
+  pt1.addZValue( std::numeric_limits<double>::quiet_NaN() );
+  pt2.addZValue( 1 );
+
+  QVERIFY( !pt1.isEmpty() );
+  QVERIFY( !pt2.isEmpty() );
+  QVERIFY( pt2 != pt1 );
+
+  pt2.setZ( std::numeric_limits<double>::quiet_NaN() );
+  QVERIFY( pt2 == pt1 );
+
+  // M
+  pt1.addMValue( std::numeric_limits<double>::quiet_NaN() );
+  pt2.addMValue( 1 );
+  QVERIFY( pt2 != pt1 );
+
+  pt2.setM( std::numeric_limits<double>::quiet_NaN() );
+  QVERIFY( pt2 == pt1 );
+
 
   QVERIFY( QgsPoint( QgsWkbTypes::Point, 2 / 3.0, 1 / 3.0 ) ==
            QgsPoint( QgsWkbTypes::Point, 2 / 3.0, 1 / 3.0 ) );
@@ -417,44 +467,53 @@ void TestQgsPoint::swapXy()
 
 void TestQgsPoint::settersGetters()
 {
-  QgsPoint pt( QgsWkbTypes::PointZM );
+  QgsPoint ptZM( QgsWkbTypes::PointZM );
+  QgsPoint pt;
 
   //x
-  pt.setX( 5.0 );
-  QCOMPARE( pt.x(), 5.0 );
-  QCOMPARE( pt.rx(), 5.0 );
+  ptZM.setX( 5.0 );
+  QCOMPARE( ptZM.x(), 5.0 );
+  QCOMPARE( ptZM.rx(), 5.0 );
 
-  pt.rx() = 9.0;
-  QCOMPARE( pt.x(), 9.0 );
+  ptZM.rx() = 9.0;
+  QCOMPARE( ptZM.x(), 9.0 );
 
   //y
-  pt.setY( 7.0 );
-  QCOMPARE( pt.y(), 7.0 );
-  QCOMPARE( pt.ry(), 7.0 );
+  ptZM.setY( 7.0 );
+  QCOMPARE( ptZM.y(), 7.0 );
+  QCOMPARE( ptZM.ry(), 7.0 );
 
-  pt.ry() = 3.0;
-  QCOMPARE( pt.y(), 3.0 );
+  ptZM.ry() = 3.0;
+  QCOMPARE( ptZM.y(), 3.0 );
 
   //z
-  pt.setZ( 17.0 );
-  QCOMPARE( pt.is3D(), true );
-  QCOMPARE( pt.z(), 17.0 );
-  QCOMPARE( pt.rz(), 17.0 );
+  ptZM.setZ( 17.0 );
+  QCOMPARE( ptZM.is3D(), true );
+  QCOMPARE( ptZM.z(), 17.0 );
+  QCOMPARE( ptZM.rz(), 17.0 );
 
-  pt.rz() = 13.0;
-  QCOMPARE( pt.z(), 13.0 );
+  ptZM.rz() = 13.0;
+  QCOMPARE( ptZM.z(), 13.0 );
+
+  pt.setZ( 5.0 );
+  QCOMPARE( pt.wkbType(), QgsWkbTypes::Point );
+  QVERIFY( std::isnan( pt.z() ) );
 
   //m
-  pt.setM( 27.0 );
-  QCOMPARE( pt.m(), 27.0 );
-  QCOMPARE( pt.rm(), 27.0 );
+  ptZM.setM( 27.0 );
+  QCOMPARE( ptZM.m(), 27.0 );
+  QCOMPARE( ptZM.rm(), 27.0 );
 
-  pt.rm() = 23.0;
-  QCOMPARE( pt.m(), 23.0 );
+  ptZM.rm() = 23.0;
+  QCOMPARE( ptZM.m(), 23.0 );
+
+  pt.setM( 9.0 );
+  QCOMPARE( pt.wkbType(), QgsWkbTypes::Point );
+  QVERIFY( std::isnan( pt.m() ) );
 
   //other checks
-  QCOMPARE( pt.geometryType(), QString( "Point" ) );
-  QCOMPARE( pt.dimension(), 0 );
+  QCOMPARE( ptZM.geometryType(), QString( "Point" ) );
+  QCOMPARE( ptZM.dimension(), 0 );
 }
 
 void TestQgsPoint::nextVertex()
@@ -684,9 +743,11 @@ void TestQgsPoint::closestSegment()
   QgsPoint pt( 3.0, 4.0 );
   QgsPoint closest;
   QgsVertexId after;
+  int leftOf;
 
   // return error - points have no segments
-  QVERIFY( pt.closestSegment( QgsPoint( 4.0, 6.0 ), closest, after ) < 0 );
+  QVERIFY( pt.closestSegment( QgsPoint( 4.0, 6.0 ), closest, after, &leftOf ) < 0 );
+  QCOMPARE( leftOf, 0 );
 }
 
 void TestQgsPoint::counts()
@@ -696,6 +757,7 @@ void TestQgsPoint::counts()
   QCOMPARE( pt.vertexCount(), 1 );
   QCOMPARE( pt.ringCount(), 1 );
   QCOMPARE( pt.partCount(), 1 );
+  QCOMPARE( pt.nCoordinates(), 1 );
 }
 
 void TestQgsPoint::measures()
@@ -911,6 +973,9 @@ void TestQgsPoint::transformVertices()
 void TestQgsPoint::transformWithClass()
 {
   QgsPoint pt( 1.1, 2.2, 3.3, 4.4, QgsWkbTypes::PointZM );
+
+  QVERIFY( !pt.transform( nullptr ) );
+
   TestTransformer transformer;
 
   QVERIFY( pt.transform( &transformer ) );
@@ -1062,6 +1127,12 @@ void TestQgsPoint::toFromWkt()
   QVERIFY( pt2.fromWkt( wkt ) );
   QVERIFY( pt2 == pt1 );
 
+  QVERIFY( pt2.fromWkt( QStringLiteral( "Point(1 2 3)" ) ) );
+  QVERIFY( pt2 == QgsPoint( QgsWkbTypes::PointZ, 1.0, 2.0, 3.0 ) );
+
+  QVERIFY( pt2.fromWkt( QStringLiteral( "Point(1 2 3 4)" ) ) );
+  QVERIFY( pt2 == QgsPoint( QgsWkbTypes::PointZM, 1.0, 2.0, 3.0, 4.0 ) );
+
   //bad WKT
   QVERIFY( !pt2.fromWkt( "Polygon()" ) );
   QVERIFY( !pt2.fromWkt( "Point(1 )" ) );
@@ -1117,8 +1188,8 @@ void TestQgsPoint::exportImport()
 
 
   //asJSON
-  QString expectedJson( QStringLiteral( "{\"coordinates\":[1.0,2.0],\"type\":\"Point\"}" ) );
-  QCOMPARE( exportPoint.asJson(), expectedJson );
+  QString expectedJson( QStringLiteral( "{\"coordinates\":[1.0,2.0,3.0],\"type\":\"Point\"}" ) );
+  QCOMPARE( exportPointZ.asJson(), expectedJson );
 
   QString expectedJsonPrec3( QStringLiteral( "{\"coordinates\":[0.333,0.667],\"type\":\"Point\"}" ) );
   QCOMPARE( exportPointFloat.asJson( 3 ), expectedJsonPrec3 );
