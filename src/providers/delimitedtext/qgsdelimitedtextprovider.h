@@ -133,7 +133,7 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
      * \param message  Pointer to a string to receive a status message
      * \returns A list of field type strings, empty if not found or not valid
      */
-    QStringList readCsvtFieldTypes( const QString &filename, QString *message = nullptr );
+    static QStringList readCsvtFieldTypes( const QString &filename, QString *message = nullptr );
 
     static QString providerKey();
 
