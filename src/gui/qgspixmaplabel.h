@@ -59,6 +59,8 @@ class GUI_EXPORT QgsPixmapLabel : public QLabel
 
   private:
 
+    static const int PIXMAP_MINIMUM_HEIGHT = 20;
+
     QPixmap mPixmap;
 };
 
