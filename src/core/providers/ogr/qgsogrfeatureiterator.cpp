@@ -53,6 +53,11 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   , mSymbolType( QgsSymbol::symbolTypeForGeometryType( QgsWkbTypes::geometryType( source->mWkbType ) ) )
 {
 
+  if ( mSharedDS )
+  {
+    mTransactionDSLocker = new QMutexLocker( &mSharedDS->sharedDSMutex() );
+  }
+
   /* When inside a transaction for GPKG/SQLite and fetching fid(s) we might be nested inside an outer fetching loop,
    * (see GH #39178) so we need to skip all calls that might reset the reading (rewind) to avoid an endless loop in the
    * outer fetching iterator that uses the same connection.
@@ -124,7 +129,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
       }
     }
   }
-  QMutexLocker locker( mSharedDS ? &mSharedDS->mutex() : nullptr );
+  //QMutexLocker locker( mSharedDS ? &mSharedDS->mutex() : nullptr );
 
   if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
   {
@@ -280,6 +285,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
 QgsOgrFeatureIterator::~QgsOgrFeatureIterator()
 {
   close();
+  delete mTransactionDSLocker;
 }
 
 bool QgsOgrFeatureIterator::nextFeatureFilterExpression( QgsFeature &f )
@@ -372,8 +378,7 @@ void QgsOgrFeatureIterator::setInterruptionChecker( QgsFeedback *interruptionChe
 
 bool QgsOgrFeatureIterator::fetchFeature( QgsFeature &feature )
 {
-  QMutexLocker locker( mSharedDS ? &mSharedDS->mutex() : nullptr );
-
+  //QMutexLocker locker( mSharedDS ? &mSharedDS->mutex() : nullptr );
   QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg, mInterruptionChecker );
   QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrFeatureIterator" ) )
 
@@ -469,8 +474,7 @@ void QgsOgrFeatureIterator::resetReading()
 
 bool QgsOgrFeatureIterator::rewind()
 {
-  QMutexLocker locker( mSharedDS ? &mSharedDS->mutex() : nullptr );
-
+  //QMutexLocker locker( mSharedDS ? &mSharedDS->mutex() : nullptr );
   if ( mClosed || !mOgrLayer )
     return false;
 
@@ -487,9 +491,13 @@ bool QgsOgrFeatureIterator::close()
   if ( mSharedDS )
   {
     iteratorClosed();
-
+    /*if ( mSharedDS )
+    {
+      mSharedDS->sharedDSMutex().unlock();
+    }*/
     mOgrLayer = nullptr;
     mSharedDS.reset();
+
     mClosed = true;
     return true;
   }
@@ -525,6 +533,9 @@ bool QgsOgrFeatureIterator::close()
   mOgrLayer = nullptr;
 
   mClosed = true;
+
+
+
   return true;
 }
 

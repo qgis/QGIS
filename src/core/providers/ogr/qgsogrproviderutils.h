@@ -95,6 +95,7 @@ class CORE_EXPORT QgsOgrProviderUtils
 #else
         QRecursiveMutex mutex;
 #endif
+        QMutex sharedDSMutex;
         GDALDatasetH    hDS = nullptr;
         QMap<QString, QgsOgrLayer *>  setLayers;
         int            refCount = 0;
@@ -102,7 +103,7 @@ class CORE_EXPORT QgsOgrProviderUtils
 
         DatasetWithLayers()
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-          : mutex( QMutex::Recursive )
+          : mutex( QMutex::Recursive ), sharedDSMutex( QMutex::Recursive )
 #endif
         {}
     };
@@ -303,6 +304,8 @@ class QgsOgrDataset
 #else
     QRecursiveMutex &mutex() { return mDs->mutex; }
 #endif
+
+    QMutex &sharedDSMutex() { return mDs->sharedDSMutex; }
 
     bool executeSQLNoReturn( const QString &sql );
 
