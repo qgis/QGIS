@@ -1723,10 +1723,10 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].layerNumber(), 0)
         self.assertEqual(res[0].name(), "multipatch")
         self.assertEqual(res[0].description(), '')
-        self.assertEqual(res[0].uri(), TEST_DATA_DIR + "/multipatch.shp|geometrytype=Polygon")
+        self.assertEqual(res[0].uri(), TEST_DATA_DIR + "/multipatch.shp|geometrytype=Polygon25D")
         self.assertEqual(res[0].providerKey(), "ogr")
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
-        self.assertEqual(res[0].wkbType(), QgsWkbTypes.Polygon)
+        self.assertEqual(res[0].wkbType(), QgsWkbTypes.PolygonZ)
         self.assertEqual(res[0].geometryColumnName(), '')
         self.assertEqual(res[0].driverName(), 'ESRI Shapefile')
 
