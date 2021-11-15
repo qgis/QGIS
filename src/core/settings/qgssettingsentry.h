@@ -969,7 +969,12 @@ class CORE_EXPORT QgsSettingsEntryEnumFlag : public QgsSettingsEntryBase
       return defaultValue;
     }
 
-    //! \copydoc QgsSettingsEntryBase::setValue
+    /**
+     * Set settings value.
+     *
+     * The \a value to set.
+     * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
+     */
     bool setValue( const T &value, const QString &dynamicKeyPart = QString() ) const
     {
       QStringList dynamicKeyPartList;
@@ -979,7 +984,12 @@ class CORE_EXPORT QgsSettingsEntryEnumFlag : public QgsSettingsEntryBase
       return setValue( value, dynamicKeyPartList );
     }
 
-    //! \copydoc QgsSettingsEntryBase::setValue
+    /**
+     * Set settings value.
+     *
+     * The \a value to set.
+     * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
+     */
     bool setValue( const T &value, const QStringList &dynamicKeyPartList ) const
     {
       if ( !mMetaEnum.isValid() )
