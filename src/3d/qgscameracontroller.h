@@ -22,6 +22,8 @@
 #include <QRect>
 #include <Qt3DCore/QEntity>
 #include <Qt3DInput/QMouseEvent>
+#include <QImage>
+#include <QMutex>
 
 namespace Qt3DInput
 {
@@ -206,6 +208,8 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
      */
     bool willHandleKeyEvent( QKeyEvent *event );
 
+    void setDepthBufferImage( const QImage &depthImage );
+
   public slots:
 
     /**
@@ -237,6 +241,8 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
      * on the map viewport.
      */
     void setCursorPosition( QPoint point );
+
+    void requestDepthBufferCapture();
 
   private slots:
     void onPositionChanged( Qt3DInput::QMouseEvent *mouse );
@@ -273,6 +279,13 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     QPoint mMousePos;
     bool mMousePressed = false;
     Qt3DInput::QMouseEvent::Buttons mPressedButton = Qt3DInput::QMouseEvent::Buttons::NoButton;
+
+    QImage mDepthBufferImage;
+    QPoint mMiddleButtonClickPos;
+    bool mRotationInProgress = false;
+    bool mDepthBufferIsReady = false;
+    double mRotationOriginalPitch = 0;
+    double mRotationOriginalYaw = 0;
 
     //! Delegates mouse events to the attached MouseHandler objects
     Qt3DInput::QMouseDevice *mMouseDevice = nullptr;

@@ -90,6 +90,10 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     //! Returns the render capture object used to take an image of the scene
     Qt3DRender::QRenderCapture *renderCapture() { return mRenderCapture; }
 
+    //! Returns the render capture object used to take an image of the depth buffer of the scene
+    Qt3DRender::QRenderCapture *depthRenderCapture() { return mDepthRenderCapture; }
+
+
     //! Returns whether frustum culling is enabled
     bool frustumCullingEnabled() const { return mFrustumCullingEnabled; }
     //! Sets whether frustum culling is enabled
@@ -171,8 +175,16 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     Qt3DRender::QCameraSelector *mLightCameraSelector = nullptr;
 
     Qt3DRender::QRenderTargetSelector *mRenderCaptureTargetSelector = nullptr;
+    Qt3DRender::QRenderTargetSelector *mDepthRenderCaptureTargetSelector = nullptr;
     Qt3DRender::QTexture2D *mRenderCaptureColorTexture = nullptr;
     Qt3DRender::QTexture2D *mRenderCaptureDepthTexture = nullptr;
+    Qt3DRender::QClearBuffers *mPostProcessingClearBuffers = nullptr;
+
+    Qt3DRender::QLayerFilter *mDepthRenderLayerFilter = nullptr;
+    Qt3DRender::QTexture2D *mDepthRenderCaptureDepthTexture = nullptr;
+    Qt3DRender::QCameraSelector *mSecondMainCameraSelector = nullptr;
+    Qt3DRender::QRenderStateSet *DepthRenderStateSet = nullptr;;
+    Qt3DRender::QTexture2D *mDepthRenderCaptureColorTexture = nullptr;
 
     bool mShadowRenderingEnabled = false;
     float mShadowBias = 0.00001f;
@@ -187,12 +199,15 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     QgsPreviewQuad *mDebugShadowMapPreviewQuad = nullptr;
     QgsPreviewQuad *mDebugDepthMapPreviewQuad = nullptr;
 
+    QgsPreviewQuad *mDepthRenderQuad = nullptr;
+
     Qt3DRender::QLayerFilter *mShadowSceneEntitiesFilter = nullptr;
     Qt3DRender::QRenderStateSet *mShadowRenderStateSet = nullptr;
     Qt3DRender::QCullFace *mShadowCullFace = nullptr;
     Qt3DRender::QDepthTest *mShadowDepthTest = nullptr;
 
     Qt3DRender::QRenderCapture *mRenderCapture = nullptr;
+    Qt3DRender::QRenderCapture *mDepthRenderCapture = nullptr;
 
     QVector3D mLightDirection = QVector3D( 0.0, -1.0f, 0.0f );
 
@@ -202,6 +217,7 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     Qt3DRender::QLayer *mPreviewLayer = nullptr;
     Qt3DRender::QLayer *mForwardRenderLayer = nullptr;
     Qt3DRender::QLayer *mCastShadowsLayer = nullptr;
+    Qt3DRender::QLayer *mDepthRenderPassLayer = nullptr;
 
     QgsPostprocessingEntity *mPostprocessingEntity = nullptr;
 

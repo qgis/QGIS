@@ -52,6 +52,14 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
     emit savedAsImage( mCaptureFileName );
   } );
 
+  connect( mEngine, &QgsAbstract3DEngine::depthBufferCaptured, [ = ]( const QImage & image )
+  {
+    qDebug() << "Elapsed time: " << mEngine->mTimer.elapsed();
+    mDepthBufferImage = image;
+    cameraController()->setDepthBufferImage( image );
+  } );
+
+
   mSplitter = new QSplitter( this );
 
   mContainer = QWidget::createWindowContainer( mEngine->window() );
@@ -150,6 +158,7 @@ void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
   connect( cameraController(), &QgsCameraController::cameraMovementSpeedChanged, mMap, &Qgs3DMapSettings::setCameraMovementSpeed );
   connect( cameraController(), &QgsCameraController::cameraMovementSpeedChanged, this, &Qgs3DMapCanvas::cameraNavigationSpeedChanged );
   connect( cameraController(), &QgsCameraController::navigationModeHotKeyPressed, this, &Qgs3DMapCanvas::onNavigationModeHotKeyPressed );
+  connect( cameraController(), &QgsCameraController::requestDepthBufferCapture, this, &Qgs3DMapCanvas::captureDepthBuffer );
 
   emit mapSettingsChanged();
 }
@@ -233,6 +242,22 @@ void Qgs3DMapCanvas::saveAsImage( const QString fileName, const QString fileForm
       screenCaptureFrameAction->deleteLater();
     } );
   }
+}
+
+void Qgs3DMapCanvas::captureDepthBuffer()
+{
+  qDebug() << __PRETTY_FUNCTION__;
+  // Setup a frame action that is used to wait until next frame
+  Qt3DLogic::QFrameAction *screenCaptureFrameAction = new Qt3DLogic::QFrameAction;
+  mScene->addComponent( screenCaptureFrameAction );
+  // Wait to have the render capture enabled in the next frame
+  connect( screenCaptureFrameAction, &Qt3DLogic::QFrameAction::triggered, [ = ]( float )
+  {
+    mEngine->requestDepthBufferCapture();
+    qDebug() << "requestDepthBufferCapture duration: " << mEngine->mTimer.elapsed();
+    mScene->removeComponent( screenCaptureFrameAction );
+    screenCaptureFrameAction->deleteLater();
+  } );
 }
 
 void Qgs3DMapCanvas::setMapTool( Qgs3DMapTool *tool )

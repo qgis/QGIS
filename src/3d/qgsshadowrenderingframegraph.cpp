@@ -76,8 +76,9 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRende
   mForwardRenderTargetSelector->setTarget( mForwardRenderTarget );
 
   mForwardClearBuffers = new Qt3DRender::QClearBuffers( mForwardRenderTargetSelector );
-  mForwardClearBuffers->setClearColor( QColor::fromRgbF( 0.0, 1.0, 0.0, 1.0 ) );
+  mForwardClearBuffers->setClearColor( QColor::fromRgbF( 0.0, 0.0, 1.0, 1.0 ) );
   mForwardClearBuffers->setBuffers( Qt3DRender::QClearBuffers::ColorDepthBuffer );
+  mForwardClearBuffers->setClearDepthValue( 1.0f );
 
   mFrustumCulling = new Qt3DRender::QFrustumCulling( mForwardClearBuffers );
 
@@ -109,7 +110,8 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructShadowRender
   mShadowRenderTargetSelector->setTarget( mShadowRenderTarget );
 
   mShadowClearBuffers = new Qt3DRender::QClearBuffers( mShadowRenderTargetSelector );
-  mShadowClearBuffers ->setBuffers( Qt3DRender::QClearBuffers::BufferType::ColorDepthBuffer );
+  mShadowClearBuffers->setBuffers( Qt3DRender::QClearBuffers::BufferType::ColorDepthBuffer );
+  mShadowClearBuffers->setClearColor( QColor::fromRgbF( 0.0f, 1.0f, 0.0f ) );
 
   mShadowRenderStateSet = new Qt3DRender::QRenderStateSet( mShadowClearBuffers );
   mShadowDepthTest = new Qt3DRender::QDepthTest;
@@ -128,7 +130,7 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructPostprocessi
   mPostprocessPassLayerFilter->addLayer( mPostprocessPassLayer );
 
   mPostprocessClearBuffers = new Qt3DRender::QClearBuffers( mPostprocessPassLayerFilter );
-  mPostprocessClearBuffers->setClearColor( QColor::fromRgbF( 0.0f, 0.0f, 0.0f ) );
+//  mPostprocessClearBuffers->setClearColor( QColor::fromRgbF( 0.0f, 0.0f, 0.0f ) );
 
   mRenderCaptureTargetSelector = new Qt3DRender::QRenderTargetSelector( mPostprocessPassLayerFilter );
 
@@ -144,7 +146,7 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructPostprocessi
   // Create a texture to render into.
   mRenderCaptureColorTexture = new Qt3DRender::QTexture2D( colorOutput );
   mRenderCaptureColorTexture->setSize( mSize.width(), mSize.height() );
-  mRenderCaptureColorTexture->setFormat( Qt3DRender::QAbstractTexture::RGB8_UNorm );
+  mRenderCaptureColorTexture->setFormat( Qt3DRender::QAbstractTexture::RGBA8_UNorm );
   mRenderCaptureColorTexture->setMinificationFilter( Qt3DRender::QAbstractTexture::Linear );
   mRenderCaptureColorTexture->setMagnificationFilter( Qt3DRender::QAbstractTexture::Linear );
 
@@ -185,11 +187,14 @@ QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QSurface *surface, Q
   mPreviewLayer = new Qt3DRender::QLayer;
   mCastShadowsLayer = new Qt3DRender::QLayer;
   mForwardRenderLayer = new Qt3DRender::QLayer;
+  mDepthRenderPassLayer = new Qt3DRender::QLayer;
+
 
   mPostprocessPassLayer->setRecursive( true );
   mPreviewLayer->setRecursive( true );
   mCastShadowsLayer->setRecursive( true );
   mForwardRenderLayer->setRecursive( true );
+  mDepthRenderPassLayer->setRecursive( true );
 
   mRenderSurfaceSelector = new Qt3DRender::QRenderSurfaceSelector;
 
@@ -220,18 +225,84 @@ QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QSurface *surface, Q
   Qt3DRender::QFrameGraphNode *postprocessingPass = constructPostprocessingPass();
   postprocessingPass->setParent( mLightCameraSelector );
 
+  mSecondMainCameraSelector = new Qt3DRender::QCameraSelector( mLightCameraSelector );
+  mSecondMainCameraSelector->setCamera( mMainCamera );
+
+  DepthRenderStateSet = new Qt3DRender::QRenderStateSet( mSecondMainCameraSelector );
+  auto *DepthRenderDepthTest = new Qt3DRender::QDepthTest;
+  DepthRenderDepthTest->setDepthFunction( Qt3DRender::QDepthTest::Always );
+  DepthRenderStateSet->addRenderState( DepthRenderDepthTest );
+  auto *DepthRenderCullFace = new Qt3DRender::QCullFace;
+  DepthRenderCullFace->setMode( Qt3DRender::QCullFace::NoCulling );
+  DepthRenderStateSet->addRenderState( DepthRenderCullFace );
+
+  mDepthRenderLayerFilter = new Qt3DRender::QLayerFilter( DepthRenderStateSet );
+  mDepthRenderLayerFilter->addLayer( mDepthRenderPassLayer );
+
+  mDepthRenderCaptureTargetSelector = new Qt3DRender::QRenderTargetSelector( mDepthRenderLayerFilter );
+  Qt3DRender::QRenderTarget *depthRenderTarget = new Qt3DRender::QRenderTarget( mDepthRenderCaptureTargetSelector );
+
+  // The lifetime of the objects created here is managed
+  // automatically, as they become children of this object.
+
+  // Create a render target output for rendering color.
+  Qt3DRender::QRenderTargetOutput *colorOutput = new Qt3DRender::QRenderTargetOutput( depthRenderTarget );
+  colorOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::Color0 );
+
+  // Create a texture to render into.
+  mDepthRenderCaptureColorTexture = new Qt3DRender::QTexture2D( colorOutput );
+  mDepthRenderCaptureColorTexture->setSize( mSize.width(), mSize.height() );
+  mDepthRenderCaptureColorTexture->setFormat( Qt3DRender::QAbstractTexture::RGBA8_UNorm );
+  mDepthRenderCaptureColorTexture->setMinificationFilter( Qt3DRender::QAbstractTexture::Linear );
+  mDepthRenderCaptureColorTexture->setMagnificationFilter( Qt3DRender::QAbstractTexture::Linear );
+
+  // Hook the texture up to our output, and the output up to this object.
+  colorOutput->setTexture( mDepthRenderCaptureColorTexture );
+  depthRenderTarget->addOutput( colorOutput );
+
+  Qt3DRender::QRenderTargetOutput *depthOutput = new Qt3DRender::QRenderTargetOutput( depthRenderTarget );
+
+  depthOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::Depth );
+  mDepthRenderCaptureDepthTexture = new Qt3DRender::QTexture2D( depthOutput );
+  mDepthRenderCaptureDepthTexture->setSize( mSize.width(), mSize.height() );
+  mDepthRenderCaptureDepthTexture->setFormat( Qt3DRender::QAbstractTexture::DepthFormat );
+  mDepthRenderCaptureDepthTexture->setMinificationFilter( Qt3DRender::QAbstractTexture::Linear );
+  mDepthRenderCaptureDepthTexture->setMagnificationFilter( Qt3DRender::QAbstractTexture::Linear );
+  mDepthRenderCaptureDepthTexture->setComparisonFunction( Qt3DRender::QAbstractTexture::CompareLessEqual );
+  mDepthRenderCaptureDepthTexture->setComparisonMode( Qt3DRender::QAbstractTexture::CompareRefToTexture );
+
+  depthOutput->setTexture( mDepthRenderCaptureDepthTexture );
+  depthRenderTarget->addOutput( depthOutput );
+
+  mDepthRenderCaptureTargetSelector->setTarget( depthRenderTarget );
+
+  Qt3DRender::QClearBuffers *clearBuffers = new Qt3DRender::QClearBuffers( mDepthRenderCaptureTargetSelector );
+  clearBuffers->setClearColor( QColor::fromRgbF( 0.0, 0.0, 1.0, 1.0 ) );
+  clearBuffers->setBuffers( Qt3DRender::QClearBuffers::ColorDepthBuffer );
+
+  mDepthRenderCapture = new Qt3DRender::QRenderCapture( mDepthRenderCaptureTargetSelector );
+
   mPostprocessingEntity = new QgsPostprocessingEntity( this, mRootEntity );
   mPostprocessingEntity->addComponent( mPostprocessPassLayer );
 
   // textures preview pass
   Qt3DRender::QFrameGraphNode *previewPass = constructTexturesPreviewPass();
-  previewPass->setParent( mRenderSurfaceSelector );
+  previewPass->setParent( mSecondMainCameraSelector );
 
+  Qt3DRender::QParameter *depthMapIsDepthParam = new Qt3DRender::QParameter( "isDepth", true );
+  Qt3DRender::QParameter *shadowMapIsDepthParam = new Qt3DRender::QParameter( "isDepth", false );
 
-  mDebugDepthMapPreviewQuad = this->addTexturePreviewOverlay( mForwardDepthTexture, QPointF( 0.8f, 0.8f ), QSizeF( 0.2f, 0.2f ) );
-  mDebugShadowMapPreviewQuad = this->addTexturePreviewOverlay( mShadowMapTexture, QPointF( -0.8f, -0.8f ), QSizeF( 0.2f, 0.2f ) );
+  mDebugDepthMapPreviewQuad = this->addTexturePreviewOverlay( mForwardDepthTexture, QPointF( 0.8f, 0.8f ), QSizeF( 0.2f, 0.2f ), QVector<Qt3DRender::QParameter *> { depthMapIsDepthParam } );
+  mDebugShadowMapPreviewQuad = this->addTexturePreviewOverlay( mShadowMapTexture, QPointF( -0.8f, -0.8f ), QSizeF( 0.2f, 0.2f ), QVector<Qt3DRender::QParameter *> { shadowMapIsDepthParam } );
   mDebugDepthMapPreviewQuad->setEnabled( false );
   mDebugShadowMapPreviewQuad->setEnabled( false );
+
+  // Custom preview quad, used as a way to render the depth buffer to a color texture
+  Qt3DRender::QParameter *isDepthParam = new Qt3DRender::QParameter( "isDepth", true );
+  mDepthRenderQuad = new QgsPreviewQuad( mForwardDepthTexture, QPointF( 0.0f, 0.0f ), QSizeF( 1.0f, 1.0f ), QVector<Qt3DRender::QParameter *> { isDepthParam } );
+  mDepthRenderQuad->addComponent( mDepthRenderPassLayer );
+  mDepthRenderQuad->setParent( mRootEntity );
+  mPreviewQuads.push_back( mDepthRenderQuad );
 }
 
 QgsPreviewQuad *QgsShadowRenderingFrameGraph::addTexturePreviewOverlay( Qt3DRender::QTexture2D *texture, const QPointF &centerNDC, const QSizeF &size, QVector<Qt3DRender::QParameter *> additionalShaderParameters )
@@ -448,6 +519,8 @@ void QgsShadowRenderingFrameGraph::setSize( QSize s )
   mForwardDepthTexture->setSize( mSize.width(), mSize.height() );
   mRenderCaptureColorTexture->setSize( mSize.width(), mSize.height() );
   mRenderCaptureDepthTexture->setSize( mSize.width(), mSize.height() );
+  mDepthRenderCaptureDepthTexture->setSize( mSize.width(), mSize.height() );
+  mDepthRenderCaptureColorTexture->setSize( mSize.width(), mSize.height() );
   mRenderSurfaceSelector->setExternalRenderTargetSize( mSize );
 }
 

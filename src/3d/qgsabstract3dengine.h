@@ -19,6 +19,7 @@
 #include "qgis_3d.h"
 
 #include <QObject>
+#include <QElapsedTimer>
 
 #define SIP_NO_FILE
 
@@ -66,6 +67,8 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
      */
     QgsAbstract3DEngine( QObject *parent = nullptr );
 
+    QElapsedTimer mTimer;
+
     //! Sets background color of the scene
     virtual void setClearColor( const QColor &color ) = 0;
     //! Sets whether frustum culling is enabled (this should make rendering faster by not rendering entities outside of camera's view)
@@ -81,6 +84,13 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
     virtual QSize size() const = 0;
     //! Sets the size of the rendering area (in pixels)
     virtual void setSize( QSize s ) = 0;
+
+    /**
+     * Starts a request for an image containing the depth buffer data of the engine.
+     * The function does not block - when the depth buffer image is captured, it is returned in depthBufferCaptured() signal.
+     * Only one image request can be active at a time.
+     */
+    void requestDepthBufferCapture();
 
     /**
      * Starts a request for an image rendered by the engine.
@@ -121,6 +131,8 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
     //! Emitted after a call to requestCaptureImage() to return the captured image.
     void imageCaptured( const QImage &image );
 
+    //! Emitted after a call to requestDepthBufferCapture() to return the captured depth buffer.
+    void depthBufferCaptured( const QImage &image );
   protected:
     QgsShadowRenderingFrameGraph *mFrameGraph = nullptr;
 };

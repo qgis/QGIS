@@ -86,6 +86,51 @@ QImage Qgs3DUtils::captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene
   return resImage;
 }
 
+QImage Qgs3DUtils::captureSceneDepthBuffer( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene )
+{
+  QImage resImage;
+  QEventLoop evLoop;
+
+  // We need to change render policy to RenderPolicy::Always, since otherwise render capture node won't work
+  engine.renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::Always );
+
+  auto requestImageFcn = [&engine, scene]
+  {
+    if ( scene->sceneState() == Qgs3DMapScene::Ready )
+    {
+      engine.requestCaptureImage();
+    }
+  };
+
+  auto saveImageFcn = [&evLoop, &resImage]( const QImage & img )
+  {
+    resImage = img;
+    evLoop.quit();
+  };
+
+  QMetaObject::Connection conn1 = QObject::connect( &engine, &QgsAbstract3DEngine::imageCaptured, saveImageFcn );
+  QMetaObject::Connection conn2;
+
+  if ( scene->sceneState() == Qgs3DMapScene::Ready )
+  {
+    requestImageFcn();
+  }
+  else
+  {
+    // first wait until scene is loaded
+    conn2 = QObject::connect( scene, &Qgs3DMapScene::sceneStateChanged, requestImageFcn );
+  }
+
+  evLoop.exec();
+
+  QObject::disconnect( conn1 );
+  if ( conn2 )
+    QObject::disconnect( conn2 );
+
+  engine.renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::OnDemand );
+  return resImage;
+}
+
 bool Qgs3DUtils::exportAnimation( const Qgs3DAnimationSettings &animationSettings,
                                   const Qgs3DMapSettings &mapSettings,
                                   int framesPerSecond,
@@ -636,4 +681,12 @@ QVector3D Qgs3DUtils::mouseToWorldLookAtPoint( double mouseX, double mouseY, dou
 
   QVector3D pos = camera->viewCenter() + dy * ( bottomWorld - camera->viewCenter() ) + dx * ( rightWorld - camera->viewCenter() );
   return pos;
+}
+
+void Qgs3DUtils::pitchAndYawFromVector( QVector3D vect, double &pitch, double &yaw )
+{
+  vect.normalize();
+
+  pitch = qRadiansToDegrees( qAcos( vect.y() ) );
+  yaw = qRadiansToDegrees( qAtan2( -vect.z(), vect.x() ) ) + 90;
 }

@@ -307,6 +307,7 @@ double QgsCameraController::cameraCenterElevation()
 
 void QgsCameraController::updateCameraFromPose()
 {
+  // Some changes to be inserted
   if ( std::isnan( mCameraPose.centerPoint().x() ) || std::isnan( mCameraPose.centerPoint().y() ) || std::isnan( mCameraPose.centerPoint().z() ) )
   {
     // something went horribly wrong but we need to at least try to fix it somehow
@@ -379,20 +380,70 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
   if ( ( hasLeftButton && hasShift && !hasCtrl ) || ( hasMiddleButton && !hasShift && !hasCtrl ) )
   {
     // rotate/tilt using mouse (camera moves as it rotates around its view center)
-    float pitch = mCameraPose.pitchAngle();
-    float yaw = mCameraPose.headingAngle();
-    pitch += 0.2f * dy;
-    yaw -= 0.2f * dx;
-    mCameraPose.setPitchAngle( pitch );
-    mCameraPose.setHeadingAngle( yaw );
 
-    QVector3D viewVector = mCamera->viewVector().normalized();
-    double elevation = cameraCenterElevation();
-    double distanceToCenter = ( elevation - mCamera->position().y() ) / viewVector.y();
-    QVector3D newCenter = mCamera->position() + distanceToCenter * viewVector;
-    mCameraPose.setCenterPoint( newCenter );
-    mCameraPose.setDistanceFromCenterPoint( distanceToCenter );
-    updateCameraFromPose();
+    double scale = qMax( mViewport.width(), mViewport.height() );
+    float pitchDiff = 180 * ( mouse->y() - mMiddleButtonClickPos.y() ) / scale;
+    float yawDiff = 180 * ( mouse->x() - mMiddleButtonClickPos.x() ) / scale;
+
+    double distanceFromCenter = mCameraPose.distanceFromCenterPoint();
+
+    if ( mDepthBufferIsReady )
+    {
+      QRgb pixel = mDepthBufferImage.pixel( mMiddleButtonClickPos.x(), mMiddleButtonClickPos.y() );
+      double depth = qRed( pixel ) + qGreen( pixel ) * 256.0 + qBlue( pixel ) * 256.0 * 256.0;
+      depth /= 256.0 * 256.0 * 256;
+      depth = 1 - depth;
+
+      if ( !qFuzzyCompare( depth, 1 ) )
+        distanceFromCenter = depth * ( mCamera->farPlane() - mCamera->nearPlane() ) + mCamera->nearPlane();
+    }
+
+
+    // First transformation : Shift camera position and view center and rotate the camera
+    {
+      QVector3D originalViewCenterWorld = camera()->viewCenter();
+      QVector3D originalCameraPosition = camera()->position();
+
+      QVector3D clickedPositionWorld = Qgs3DUtils::mouseToWorldLookAtPoint(
+                                         mMiddleButtonClickPos.x(), mMiddleButtonClickPos.y(),
+                                         distanceFromCenter,
+                                         mViewport, mCamera );
+      clickedPositionWorld = originalCameraPosition + distanceFromCenter * ( clickedPositionWorld - originalCameraPosition ).normalized();
+
+      QVector3D shiftVector = clickedPositionWorld - originalViewCenterWorld;
+
+      QVector3D newViewCenterWorld = camera()->viewCenter() + shiftVector;
+      QVector3D newCameraPosition = camera()->position() + shiftVector;
+
+      mCameraPose.setDistanceFromCenterPoint( ( newViewCenterWorld - newCameraPosition ).length() );
+      mCameraPose.setCenterPoint( newViewCenterWorld );
+      mCameraPose.setPitchAngle( mRotationOriginalPitch + pitchDiff );
+      mCameraPose.setHeadingAngle( mRotationOriginalYaw + yawDiff );
+      updateCameraFromPose();
+    }
+
+    // Second transformation : Shift camera position back
+    {
+      QVector2D texCoords( double( mMiddleButtonClickPos.x() ) / mViewport.width() * 2.0 - 1.0, double( mMiddleButtonClickPos.y() ) / mViewport.height() * -2.0 + 1 );
+      QVector3D originalViewCenterWorld = camera()->viewCenter();
+      QVector3D originalCameraPosition = camera()->position();
+
+      QVector3D clickedPositionWorld = Qgs3DUtils::mouseToWorldLookAtPoint(
+                                         mMiddleButtonClickPos.x(), mMiddleButtonClickPos.y(),
+                                         distanceFromCenter,
+                                         mViewport, mCamera );
+
+      clickedPositionWorld = originalCameraPosition + distanceFromCenter * ( clickedPositionWorld - originalCameraPosition ).normalized();
+
+      QVector3D shiftVector = clickedPositionWorld - originalViewCenterWorld;
+
+      QVector3D newViewCenterWorld = camera()->viewCenter() - shiftVector;
+      QVector3D newCameraPosition = camera()->position() - shiftVector;
+
+      mCameraPose.setDistanceFromCenterPoint( ( newViewCenterWorld - newCameraPosition ).length() );
+      mCameraPose.setCenterPoint( newViewCenterWorld );
+      updateCameraFromPose();
+    }
   }
   else if ( hasLeftButton && hasCtrl && !hasShift )
   {
@@ -474,7 +525,7 @@ void QgsCameraController::onMousePressed( Qt3DInput::QMouseEvent *mouse )
 {
   Q_UNUSED( mouse )
   mKeyboardHandler->setFocus( true );
-  if ( mouse->button() == Qt3DInput::QMouseEvent::LeftButton || mouse->button() == Qt3DInput::QMouseEvent::RightButton || mouse->button() == Qt3DInput::QMouseEvent::MiddleButton )
+  if ( mouse->button() == Qt3DInput::QMouseEvent::LeftButton || mouse->button() == Qt3DInput::QMouseEvent::RightButton )
   {
     mMousePos = QPoint( mouse->x(), mouse->y() );
     mPressedButton = mouse->button();
@@ -482,11 +533,28 @@ void QgsCameraController::onMousePressed( Qt3DInput::QMouseEvent *mouse )
     if ( mCaptureFpsMouseMovements )
       mIgnoreNextMouseMove = true;
   }
+
+  if ( mouse->button() == Qt3DInput::QMouseEvent::MiddleButton )
+  {
+    mMousePos = QPoint( mouse->x(), mouse->y() );
+    mMiddleButtonClickPos = QPoint( mouse->x(), mouse->y() );
+    mRotationInProgress = true;
+    mPressedButton = mouse->button();
+    mMousePressed = true;
+    if ( mCaptureFpsMouseMovements )
+      mIgnoreNextMouseMove = true;
+    mDepthBufferIsReady = false;
+    mRotationOriginalPitch = mCameraPose.pitchAngle();
+    mRotationOriginalYaw = mCameraPose.headingAngle();
+    emit requestDepthBufferCapture();
+  }
 }
 
 void QgsCameraController::onMouseReleased( Qt3DInput::QMouseEvent *mouse )
 {
   Q_UNUSED( mouse )
+  if ( mRotationInProgress )
+    mRotationInProgress = false;
   mPressedButton = Qt3DInput::QMouseEvent::NoButton;
   mMousePressed = false;
 }
@@ -876,4 +944,10 @@ bool QgsCameraController::willHandleKeyEvent( QKeyEvent *event )
     }
   }
   return false;
+}
+
+void QgsCameraController::setDepthBufferImage( const QImage &depthImage )
+{
+  mDepthBufferImage = depthImage;
+  mDepthBufferIsReady = true;
 }

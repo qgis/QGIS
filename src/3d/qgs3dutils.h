@@ -61,6 +61,13 @@ class _3D_EXPORT Qgs3DUtils
     static QImage captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene );
 
     /**
+     * Captures the depth buffer of the current 3D scene of a 3D engine. The function waits
+     * until the scene is not fully loaded/updated before capturing the image.
+     * \since QGIS 3.22
+     */
+    static QImage captureSceneDepthBuffer( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene );
+
+    /**
      * Captures 3D animation frames to the selected folder
      *
      * \param animationSettings Settings for keyframes and camera
@@ -204,6 +211,12 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.24
      */
     static QVector3D mouseToWorldLookAtPoint( double mouseX, double mouseY, double d, const QRect &viewPort, Qt3DRender::QCamera *camera );
+
+    /**
+     * Function used to extract the pitch and yaw (also known as heading) angles from the view vector of the camera [cameraViewCenter - cameraPosition]
+     * \since QGIS 3.24
+     */
+    static void pitchAndYawFromVector( QVector3D vect, double &pitch, double &yaw );
 };
 
 #endif // QGS3DUTILS_H
