@@ -275,9 +275,9 @@ void TestQgsScaleComboBox::testLocale()
 
   QLocale::setDefault( QLocale::German );
   QCOMPARE( s->toString( 1e8 ), QString( "1:100.000.000" ) );
-  const QLocale customGerman( QLocale::German );
-  customFrench.setNumberOptions( QLocale::NumberOption::OmitGroupSeparator );
-  QLocale::setDefault( customFrench );
+  QLocale customGerman( QLocale::German );
+  customGerman.setNumberOptions( QLocale::NumberOption::OmitGroupSeparator );
+  QLocale::setDefault( customGerman );
   QCOMPARE( s->toString( 1e8 ), QString( "1:100000000" ) );
 }
 
