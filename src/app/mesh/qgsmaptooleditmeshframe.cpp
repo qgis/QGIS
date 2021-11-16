@@ -2050,8 +2050,6 @@ void QgsMapToolEditMeshFrame::prepareSelection()
   }
 
   mConcernedFaceBySelection.clear();
-  QMap<int, SelectedVertexData> movingVertices;
-
 
   double xMin = std::numeric_limits<double>::max();
   double xMax = -std::numeric_limits<double>::max();

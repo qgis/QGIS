@@ -5425,7 +5425,6 @@ void QgisApp::about()
     versionString += QLatin1String( "</tr><tr>" );
 
     // Python version
-    const QString pythonVersion{ PYTHON_VERSION };
     versionString += QStringLiteral( "<td>%1</td><td colspan=\"3\">%2</td>" ).arg( tr( "Python version" ), PYTHON_VERSION );
     versionString += QLatin1String( "</tr><tr>" );
 
@@ -16061,7 +16060,6 @@ bool QgisApp::addRasterLayers( QStringList const &files, bool guiWarning )
     }
 
     const bool isVsiCurl { src.startsWith( QLatin1String( "/vsicurl" ), Qt::CaseInsensitive ) };
-    const auto scheme { QUrl( src ).scheme() };
     const bool isRemoteUrl { src.startsWith( QLatin1String( "http" ) ) || src == QLatin1String( "ftp" ) };
 
     std::unique_ptr< QgsTemporaryCursorOverride > cursorOverride;

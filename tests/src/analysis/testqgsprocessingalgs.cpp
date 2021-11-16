@@ -404,7 +404,6 @@ void TestQgsProcessingAlgs::packageAlg()
   if ( QFile::exists( outputGpkg ) )
     QFile::remove( outputGpkg );
 
-  const QVariantMap parameters;
   const QStringList layers = QStringList() << mPointsLayer->id() << mPolygonLayer->id();
   bool ok = false;
   const QVariantMap results = pkgAlg( layers, outputGpkg, true, false, false, &ok );

@@ -179,7 +179,6 @@ void QgsProcessingVectorTileWriterLayersPanelWidget::copyLayer()
   }
 
   QStandardItem *item = mModel->itemFromIndex( selection[0] );
-  const QVariant value = item->data( Qt::UserRole );
   mModel->insertRow( selection[0].row() + 1, item->clone() );
 }
 

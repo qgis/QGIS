@@ -2125,7 +2125,6 @@ void getOperationAndEllipsoidFromProjString( const QString &proj, QString &opera
   }
   operation = projMatch.captured( 1 );
 
-  thread_local const QRegularExpression ellipseRegExp( QStringLiteral( "\\+(?:ellps|datum)=(\\S+)" ) );
   const QRegularExpressionMatch ellipseMatch = projRegExp.match( proj );
   if ( ellipseMatch.hasMatch() )
   {
@@ -2186,8 +2185,6 @@ bool QgsCoordinateReferenceSystem::loadFromAuthCode( const QString &auth, const 
   d->setPj( std::move( crs ) );
 
   const QString dbVals = sAuthIdToQgisSrsIdMap.value( QStringLiteral( "%1:%2" ).arg( auth, code ).toUpper() );
-  QString srsId;
-  QString srId;
   if ( !dbVals.isEmpty() )
   {
     const QStringList parts = dbVals.split( ',' );

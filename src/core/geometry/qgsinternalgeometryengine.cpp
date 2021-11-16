@@ -1591,7 +1591,6 @@ QgsGeometry QgsInternalGeometryEngine::orientedMinimumBoundingBox( double &area,
     return QgsGeometry();
 
   std::unique_ptr< QgsGeometryEngine >engine( QgsGeometry::createGeometryEngine( mGeometry ) );
-  QString error;
   std::unique_ptr< QgsAbstractGeometry > hull( engine->convexHull( &mLastError ) );
   if ( !hull )
     return QgsGeometry();

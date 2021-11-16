@@ -118,7 +118,6 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
              ! topologyTestPoints.isEmpty() )
         {
           //check if we need to add topological points to other layers
-          const QList<QgsVectorLayer *> editableLayers;
           const auto layers = canvas()->layers();
           for ( QgsMapLayer *layer : layers )
           {

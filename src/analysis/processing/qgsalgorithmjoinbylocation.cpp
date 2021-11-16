@@ -427,7 +427,6 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromJoinSource( QgsFeature &joinF
   std::unique_ptr< QgsGeometryEngine > engine;
   QgsFeatureRequest req = QgsFeatureRequest().setFilterRect( featGeom.boundingBox() );
   QgsFeatureIterator it = mBaseSource->getFeatures( req );
-  QList<QgsFeature> filtered;
   QgsFeature baseFeature;
   bool ok = false;
   QgsAttributes joinAttributes;
@@ -516,7 +515,6 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromInputSource( QgsFeature &base
   QgsFeatureRequest req = QgsFeatureRequest().setDestinationCrs( mBaseSource->sourceCrs(), context.transformContext() ).setFilterRect( featGeom.boundingBox() ).setSubsetOfAttributes( mJoinedFieldIndices );
 
   QgsFeatureIterator it = mJoinSource->getFeatures( req );
-  QList<QgsFeature> filtered;
   QgsFeature joinFeature;
   bool ok = false;
 
