@@ -578,7 +578,7 @@ void QgsRelationEditorWidget::updateUi()
       {
         if ( mNmRelation.isValid() )
         {
-          QgsFeatureRequest requestFinalChild = mNmRelation.getReferencedFeatureRequest( featureChild );
+          const QgsFeatureRequest requestFinalChild = mNmRelation.getReferencedFeatureRequest( featureChild );
           QgsFeatureIterator featureIteratorFinalChild = mNmRelation.referencedLayer()->getFeatures( requestFinalChild );
           QgsFeature featureChildChild;
           while ( featureIteratorFinalChild.nextFeature( featureChildChild ) )
