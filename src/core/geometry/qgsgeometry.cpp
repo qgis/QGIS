@@ -159,19 +159,17 @@ bool QgsGeometry::isNull() const
   return !d->geometry;
 }
 
+typedef QCache< QString, QgsGeometry > WktCache;
+Q_GLOBAL_STATIC_WITH_ARGS( WktCache, sWktCache, ( 2000 ) )  // store up to 2000 geometries
+Q_GLOBAL_STATIC( QMutex, sWktMutex )
+
 QgsGeometry QgsGeometry::fromWkt( const QString &wkt )
 {
-  static QCache< QString, QgsGeometry > sWktCache( 2000 ); // store up to 2000 geometries
-  static QReadWriteLock sCacheLock;
-
-  QgsReadWriteLocker lock( sCacheLock, QgsReadWriteLocker::Read );
-  if ( const QgsGeometry *cached = sWktCache.object( wkt ) )
+  QMutexLocker lock( sWktMutex() );
+  if ( const QgsGeometry *cached = sWktCache()->object( wkt ) )
     return *cached;
-  lock.unlock();
-
   const QgsGeometry result( QgsGeometryFactory::geomFromWkt( wkt ) );
-  lock.changeMode( QgsReadWriteLocker::Write );
-  sWktCache.insert( wkt, new QgsGeometry( result ), 1 );
+  sWktCache()->insert( wkt, new QgsGeometry( result ), 1 );
   return result;
 }
 
