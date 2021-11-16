@@ -101,3 +101,7 @@ class ogr2ogr(GdalAlgorithm):
             arguments.append(layerName)
 
         return ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
+
+    def shortHelpString(self):
+        return self.tr("The algorithm converts simple features data between file formats.\n\n"
+                       "Use convert all layers to convert a whole dataset.")
