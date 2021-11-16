@@ -1187,7 +1187,6 @@ void QgsFieldsItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *me
       {
         QAction *addColumnAction = new QAction( tr( "Add New Field…" ), menu );
         QPointer<QgsDataItem>itemPtr { item };
-        const QString itemName { item->name() };
 
         connect( addColumnAction, &QAction::triggered, fieldsItem, [ md, fieldsItem, context, itemPtr, menu ]
         {

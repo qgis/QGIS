@@ -3678,7 +3678,6 @@ QgsAuxiliaryStorage *QgsProject::auxiliaryStorage()
 
 QString QgsProject::createAttachedFile( const QString &nameTemplate )
 {
-  const QString fileName = nameTemplate;
   const QDir archiveDir( mArchive->dir() );
   QTemporaryFile tmpFile( archiveDir.filePath( "XXXXXX_" + nameTemplate ), this );
   tmpFile.setAutoRemove( false );

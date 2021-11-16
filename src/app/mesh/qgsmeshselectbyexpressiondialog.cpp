@@ -31,7 +31,6 @@ QgsMeshSelectByExpressionDialog::QgsMeshSelectByExpressionDialog( QWidget *paren
 
   setWindowTitle( tr( "Select Mesh Elements by Expression" ) );
 
-  QString elementText = tr( "Vertices" );
   mActionSelect = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpressionSelect.svg" ) ),  tr( "Select" ), this );
   mActionAddToSelection = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelectAdd.svg" ) ), tr( "Add to current selection" ), this );
   mActionRemoveFromSelection = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelectRemove.svg" ) ), tr( "Remove from current selection" ), this );

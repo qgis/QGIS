@@ -210,7 +210,6 @@ void QgsVectorTileLayerProperties::loadStyle()
 {
   const QgsSettings settings;  // where we keep last used filter in persistent state
 
-  const QString errorMsg;
   QStringList ids, names, descriptions;
 
   QgsMapLayerLoadStyleDialog dlg( mLayer );

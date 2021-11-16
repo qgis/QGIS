@@ -274,8 +274,6 @@ void TestQgsLayoutManualTable::setContents()
 
 void TestQgsLayoutManualTable::scopeForCell()
 {
-  const QVector<QStringList> expectedRows;
-
   QgsPrintLayout l( QgsProject::instance() );
   l.initializeDefaults();
   l.setName( QStringLiteral( "my layout" ) );

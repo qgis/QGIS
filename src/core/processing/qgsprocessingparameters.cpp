@@ -7581,8 +7581,6 @@ bool QgsProcessingParameterMapTheme::fromVariantMap( const QVariantMap &map )
 
 QgsProcessingParameterMapTheme *QgsProcessingParameterMapTheme::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
-  const QString parent;
-
   QString def = definition;
   if ( def.startsWith( '"' ) || def.startsWith( '\'' ) )
     def = def.mid( 1 );
@@ -7902,8 +7900,6 @@ bool QgsProcessingParameterProviderConnection::fromVariantMap( const QVariantMap
 
 QgsProcessingParameterProviderConnection *QgsProcessingParameterProviderConnection::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
-  const QString parent;
-
   QString def = definition;
   QString provider;
   if ( def.contains( ' ' ) )

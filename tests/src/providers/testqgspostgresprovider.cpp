@@ -304,7 +304,6 @@ void TestQgsPostgresProvider::testWhereClauseFids()
 
   QgsFields fields;
   QList<int> pkAttrs;
-  const QString clause;
 
   const std::shared_ptr< QgsPostgresSharedData > sdata( new QgsPostgresSharedData() );
 

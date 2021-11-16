@@ -3262,8 +3262,6 @@ bool QgsDualEdgeTriangulation::saveTriangulation( QgsFeatureSink *sink, QgsFeedb
 
 QgsMesh QgsDualEdgeTriangulation::triangulationToMesh( QgsFeedback *feedback ) const
 {
-  const QVector<bool> alreadyVisitedEdges( mHalfEdge.count(), false );
-
   if ( feedback )
     feedback->setProgress( 0 );
 

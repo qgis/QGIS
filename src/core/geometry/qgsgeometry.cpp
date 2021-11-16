@@ -1548,7 +1548,6 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const QgsWkbTypes::Type type ) c
   if ( ! QgsWkbTypes::isMultiType( type ) && newGeom.isMultipart( ) )
   {
     const QgsGeometryCollection *parts( static_cast< const QgsGeometryCollection * >( newGeom.constGet() ) );
-    QgsAttributeMap attrMap;
     res.reserve( parts->partCount() );
     for ( int i = 0; i < parts->partCount( ); i++ )
     {
