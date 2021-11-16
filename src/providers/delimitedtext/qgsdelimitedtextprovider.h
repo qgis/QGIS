@@ -34,6 +34,7 @@ class QgsGeometry;
 class QgsPointXY;
 class QFile;
 class QTextStream;
+class QgsFeedback;
 
 class QgsDelimitedTextFeatureIterator;
 class QgsExpression;
@@ -137,13 +138,20 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
 
     static QString providerKey();
 
+    /**
+     * \brief scanFile scans the file to determine field types and other information about the data
+     * \param buildIndexes build spatial indexes
+     * \param forceFullScan force a full scan even if the  read flag SkipFullScan is set (when this flag is set the scan will exit after the first record).
+     * \param feedback optional feedback to report scan progress and cancel.
+     */
+    void scanFile( bool buildIndexes, bool forceFullScan = false, QgsFeedback *feedback = nullptr );
+
   private slots:
 
     void onFileUpdated();
 
   private:
 
-    void scanFile( bool buildIndexes );
 
     //some of these methods const, as they need to be called from const methods such as extent()
     void rescanFile() const;
@@ -231,6 +239,9 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
     mutable bool mUseSpatialIndex;
     mutable bool mCachedUseSpatialIndex;
     mutable std::unique_ptr< QgsSpatialIndex > mSpatialIndex;
+
+    // Store user-defined column types (i.e. types that are not automatically determined)
+    QgsStringMap mUserDefinedFieldTypes;
 
     friend class QgsDelimitedTextFeatureIterator;
     friend class QgsDelimitedTextFeatureSource;

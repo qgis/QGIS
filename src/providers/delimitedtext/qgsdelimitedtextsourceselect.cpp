@@ -16,8 +16,6 @@
 #include "qgisinterface.h"
 #include "qgslogger.h"
 #include "qgsvectordataprovider.h"
-#include "qgsdelimitedtextprovider.h"
-#include "qgsdelimitedtextfile.h"
 #include "qgssettings.h"
 #include "qgsproviderregistry.h"
 #include "qgsgui.h"
@@ -102,6 +100,8 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
   mFileWidget->setSelectedFilter( settings.value( mSettingsKey + QStringLiteral( "/file_filter" ), QString() ).toString() );
   mMaxFields = settings.value( mSettingsKey + QStringLiteral( "/max_fields" ), DEFAULT_MAX_FIELDS ).toInt();
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, &QgsDelimitedTextSourceSelect::updateFileName );
+
+  mScanWidget->hide( );
 }
 
 void QgsDelimitedTextSourceSelect::addButtonClicked()
@@ -480,38 +480,63 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
 
   tblSample->setVerticalHeaderLabels( verticalHeaderLabels );
 
-  // This may be slow on huge files, maybe we need a separate thread
-  mFields = QgsDelimitedTextProvider(
-              url(),
-              QgsDataProvider::ProviderOptions(),
-              QgsDataProvider::ReadFlag::SkipFeatureCount | QgsDataProvider::ReadFlag::SkipGetExtent )
-            .fields();
 
-  for ( int i = 0; i < tblSample->columnCount(); i++ )
+  for ( int column = 0; column < tblSample->columnCount(); column++ )
   {
     QComboBox *typeCombo = new QComboBox( tblSample );
     typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) ), tr( "Text" ), "string" );
     typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole Number" ), "integer" );
     typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) ), tr( "Decimal Number" ), "double" );
-    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBool.svg" ) ), tr( "Boolean" ), "bool" );
+    // Not supported by the provider
+    // typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBool.svg" ) ), tr( "Boolean" ), "bool" );
     typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDate.svg" ) ), tr( "Date" ), "date" );
     typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldTime.svg" ) ), tr( "Time" ), "time" );
     typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDateTime.svg" ) ), tr( "Date and Time" ), "datetime" );
-    if ( mFields.lookupField( fieldList[ i ] ) >= 0 )
+    connect( typeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
     {
-      const QString typeName { mFields.field( fieldList[ i ] ).typeName() };
-      const int idx {typeCombo->findData( typeName )};
-      if ( idx >= 0 )
-      {
-        typeCombo->setCurrentIndex( idx );
-      }
-    }
-    tblSample->setCellWidget( 0, i, typeCombo );
+      mOverriddenFields.insert( column );
+    } );
+    tblSample->setCellWidget( 0, column, typeCombo );
   }
 
   tblSample->setHorizontalHeaderLabels( fieldList );
   tblSample->resizeColumnsToContents();
   tblSample->resizeRowsToContents();
+
+  // Run the scan in a separate thread
+
+  // This will cancel the existing thread (if any)
+  if ( mScanThread )
+  {
+    QMetaObject::invokeMethod( mScanThread, "cancel", Qt::ConnectionType::QueuedConnection );
+    mScanThread->wait();
+  }
+
+  mScanThread = new QgsDelimitedTextFileScanThread( url( /* skip overriden types */ true ) );
+  mCancelButton->show();
+  connect( mScanThread, &QgsDelimitedTextFileScanThread::scanCompleted, this, [ = ]( const QgsFields & fields )
+  {
+    updateFieldTypes( fields );
+    mScanWidget->hide( );
+  } );
+  connect( mScanThread, &QgsDelimitedTextFileScanThread::scanStarted, this, [ = ]( const QgsFields & fields )
+  {
+    updateFieldTypes( fields );
+  } );
+  connect( mScanThread, &QgsDelimitedTextFileScanThread::finished, this, [ = ]
+  {
+    mScanThread->deleteLater();
+    mScanThread = nullptr;
+  } );
+
+  connect( mCancelButton, &QPushButton::clicked, this, [ = ] { mScanThread->cancel(); } );
+  connect( mScanThread, &QgsDelimitedTextFileScanThread::recordsScanned, this, [ = ]( unsigned long recordsScanned )
+  {
+    mScanWidget->show();
+    mProgressLabel->setText( tr( "Scanning file to determine data types, scanned records: " ) + QLocale().toString( recordsScanned ) );
+  } );
+
+  mScanThread->start();
 
   // We don't know anything about a text based field other
   // than its name. All fields are assumed to be text
@@ -748,6 +773,31 @@ bool QgsDelimitedTextSourceSelect::validate()
   return enabled;
 }
 
+void QgsDelimitedTextSourceSelect::updateFieldTypes( const QgsFields &fields )
+{
+  {
+    QMutexLocker lock{ &mFieldsMutex };
+    mFields = fields;
+  }
+
+  for ( int column = 0; column < tblSample->columnCount(); column++ )
+  {
+    if ( ! mOverriddenFields.contains( column ) )
+    {
+      const QString fieldName { tblSample->horizontalHeaderItem( column )->text() };
+      const int fieldIdx { mFields.lookupField( fieldName ) };
+      if ( fieldIdx >= 0 )
+      {
+        QComboBox *typeCombo { qobject_cast<QComboBox *>( tblSample->cellWidget( 0, column ) ) };
+        const QString fieldTypeName { mFields.field( fieldIdx ).typeName() };
+        if ( typeCombo && typeCombo->findData( fieldTypeName ) >= 0 )
+        {
+          QgsSignalBlocker( typeCombo )->setCurrentIndex( typeCombo->findData( fieldTypeName ) );
+        }
+      }
+    }
+  }
+}
 
 void QgsDelimitedTextSourceSelect::enableAccept()
 {
@@ -765,7 +815,7 @@ void QgsDelimitedTextSourceSelect::showCrsWidget()
   textLabelCrs->setVisible( !geomTypeNone->isChecked() );
 }
 
-QString QgsDelimitedTextSourceSelect::url()
+QString QgsDelimitedTextSourceSelect::url( bool skipOverriddenTypes )
 {
   if ( ! validate() )
   {
@@ -842,21 +892,56 @@ QString QgsDelimitedTextSourceSelect::url()
   query.addQueryItem( QStringLiteral( "subsetIndex" ), cbxSubsetIndex->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
   query.addQueryItem( QStringLiteral( "watchFile" ), cbxWatchFile->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
 
-  // Set field types if overridden
-  for ( int column = 0; column < tblSample->columnCount(); column++ )
+  if ( ! skipOverriddenTypes )
   {
-    const QString fieldName { tblSample->horizontalHeaderItem( column )->text() };
-    const int fieldIdx { mFields.lookupField( fieldName ) };
-    if ( fieldIdx >= 0 )
+    // Set field types if overridden
+    QMutexLocker lock{ &mFieldsMutex };
+    for ( int column = 0; column < tblSample->columnCount(); column++ )
     {
-      QComboBox *typeCombo { qobject_cast<QComboBox *>( tblSample->cellWidget( 0, column ) ) };
-      if ( typeCombo && typeCombo->currentData().toString() != mFields.field( fieldName ).typeName() )
+      const QString fieldName { tblSample->horizontalHeaderItem( column )->text() };
+      const int fieldIdx { mFields.lookupField( fieldName ) };
+      if ( fieldIdx >= 0 )
       {
-        query.addQueryItem( QStringLiteral( "field" ), QString( fieldName ).replace( ':', QStringLiteral( "\\:" ) ) + ':' +  mFields.field( fieldName ).typeName() );
+        QComboBox *typeCombo { qobject_cast<QComboBox *>( tblSample->cellWidget( 0, column ) ) };
+        const QString fieldTypeName { mFields.field( fieldName ).typeName() };
+        if ( typeCombo && typeCombo->currentData().toString() != fieldTypeName )
+        {
+          query.addQueryItem( QStringLiteral( "field" ),
+                              QString( fieldName ).replace( ':', QStringLiteral( "%3A" ) ) + ':' +  fieldTypeName );
+        }
       }
     }
   }
 
   url.setQuery( query );
   return QString::fromLatin1( url.toEncoded() );
+}
+
+void QgsDelimitedTextFileScanThread::run()
+{
+  QgsDelimitedTextProvider provider(
+    mDataSource,
+    QgsDataProvider::ProviderOptions(),
+    QgsDataProvider::ReadFlag::SkipFeatureCount | QgsDataProvider::ReadFlag::SkipGetExtent | QgsDataProvider::ReadFlag::SkipFullScan );
+
+  connect( &mFeedback, &QgsFeedback::progressChanged, this, [ = ]( double progress )
+  {
+    emit recordsScanned( static_cast<unsigned long>( progress ) );
+  } );
+
+  if ( provider.isValid() )
+  {
+    emit scanStarted( provider.fields() );
+    provider.scanFile( false, true, &mFeedback );
+    emit scanCompleted( provider.fields() );
+  }
+  else
+  {
+    emit scanCompleted( QgsFields() );
+  }
+}
+
+void QgsDelimitedTextFileScanThread::cancel()
+{
+  mFeedback.cancel();
 }

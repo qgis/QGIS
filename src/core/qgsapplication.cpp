@@ -263,6 +263,7 @@ void QgsApplication::init( QString profileFolder )
     qRegisterMetaType<QgsProcessingOutputLayerDefinition>( "QgsProcessingOutputLayerDefinition" );
     qRegisterMetaType<QgsUnitTypes::LayoutUnit>( "QgsUnitTypes::LayoutUnit" );
     qRegisterMetaType<QgsFeatureId>( "QgsFeatureId" );
+    qRegisterMetaType<QgsFields>( "QgsFields" );
     qRegisterMetaType<QgsFeatureIds>( "QgsFeatureIds" );
     qRegisterMetaType<QgsProperty>( "QgsProperty" );
     qRegisterMetaType<QgsFeatureStoreList>( "QgsFeatureStoreList" );
