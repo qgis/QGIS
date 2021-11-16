@@ -104,7 +104,7 @@ class QgsOgrFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<Q
     QgsRectangle mFilterRect;
     QgsCoordinateTransform mTransform;
     QgsOgrDatasetSharedPtr mSharedDS = nullptr;
-    QMutexLocker *mTransactionDSLocker = nullptr;
+    std::unique_ptr<QMutexLocker> mTransactionDSLocker = nullptr;
 
     bool mFirstFieldIsFid = false;
     QgsFields mFieldsWithoutFid;
