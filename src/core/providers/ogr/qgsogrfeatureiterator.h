@@ -33,6 +33,7 @@
 class QgsOgrFeatureIterator;
 class QgsOgrProvider;
 class QgsOgrDataset;
+class QMutexLocker;
 using QgsOgrDatasetSharedPtr = std::shared_ptr< QgsOgrDataset>;
 
 class QgsOgrFeatureSource final: public QgsAbstractFeatureSource
