@@ -6734,7 +6734,7 @@ class TestQgsGeometry(unittest.TestCase):
             geom = QgsGeometry.fromWkt(test['wkt'])
             self.assertTrue(geom and not geom.isNull(), 'Could not create geometry {}'.format(test['wkt']))
             rendered_image = self.renderGeometry(geom, test['use_pen'])
-            assert self.imageCheck(test['name'], test['reference_image'], rendered_image)
+            self.assertTrue(self.imageCheck(test['name'], test['reference_image'], rendered_image), test['name'])
 
             if hasattr(geom.constGet(), 'addToPainterPath'):
                 # also check using painter path
@@ -6743,11 +6743,10 @@ class TestQgsGeometry(unittest.TestCase):
 
             if 'as_polygon_reference_image' in test:
                 rendered_image = self.renderGeometry(geom, False, True)
-                assert self.imageCheck(test['name'] + '_aspolygon', test['as_polygon_reference_image'], rendered_image)
+                self.assertTrue(self.imageCheck(test['name'] + '_aspolygon', test['as_polygon_reference_image'], rendered_image), test['name'] + '_aspolygon')
 
     def testGeometryAsQPainterPath(self):
         '''Tests conversion of different geometries to QPainterPath, including bad/odd geometries.'''
-
         empty_multipolygon = QgsMultiPolygon()
         empty_multipolygon.addGeometry(QgsPolygon())
         empty_polygon = QgsPolygon()
