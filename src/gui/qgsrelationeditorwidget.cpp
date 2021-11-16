@@ -571,7 +571,7 @@ void QgsRelationEditorWidget::updateUi()
       parentTreeWidgetItems.append( treeWidgetItem );
 
       // Get child features
-      QgsFeatureRequest request = relation().getRelatedFeaturesRequest( feature );
+      const QgsFeatureRequest request = relation().getRelatedFeaturesRequest( feature );
       QgsFeatureIterator featureIterator = mRelation.referencingLayer()->getFeatures( request );
       QgsFeature featureChild;
       while ( featureIterator.nextFeature( featureChild ) )
