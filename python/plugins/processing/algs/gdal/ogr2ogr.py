@@ -36,7 +36,7 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 
 class ogr2ogr(GdalAlgorithm):
     INPUT = 'INPUT'
-    IGNORE_LAYERNAME = 'IGNORE_LAYERNAME'
+    CONVERT_ALL_LAYERS = 'CONVERT_ALL_LAYERS'
     OPTIONS = 'OPTIONS'
     OUTPUT = 'OUTPUT'
 
@@ -48,8 +48,8 @@ class ogr2ogr(GdalAlgorithm):
                                                               self.tr('Input layer'),
                                                               types=[QgsProcessing.TypeVector]))
 
-        self.addParameter(QgsProcessingParameterBoolean(self.IGNORE_LAYERNAME,
-                                                        self.tr('Ignore layer name'), defaultValue=False))
+        self.addParameter(QgsProcessingParameterBoolean(self.CONVERT_ALL_LAYERS,
+                                                        self.tr('Convert all layers from dataset'), defaultValue=False))
 
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation options'),
@@ -78,7 +78,7 @@ class ogr2ogr(GdalAlgorithm):
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
-        ignoreLayerName = self.parameterAsBoolean(parameters, self.IGNORE_LAYERNAME, context)
+        convertAllLayers = self.parameterAsBoolean(parameters, self.CONVERT_ALL_LAYERS, context)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, outFile)
@@ -97,7 +97,7 @@ class ogr2ogr(GdalAlgorithm):
 
         arguments.append(output)
         arguments.append(ogrLayer)
-        if not ignoreLayerName:
+        if not convertAllLayers:
             arguments.append(layerName)
 
         return ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
