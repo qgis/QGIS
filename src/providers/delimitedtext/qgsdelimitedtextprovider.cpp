@@ -35,6 +35,7 @@
 #include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
+#include "qgsfeedback.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsmessageoutput.h"
@@ -157,12 +158,25 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
 
   if ( query.hasQueryItem( QStringLiteral( "quiet" ) ) ) mShowInvalidLines = false;
 
+  // Parse and store user-defined field types
+  const auto queryItems { query.queryItems( QUrl::ComponentFormattingOption::FullyDecoded ) };
+  for ( const auto &queryItem : std::as_const( queryItems ) )
+  {
+    if ( queryItem.first == QStringLiteral( "field" ) )
+    {
+      const QStringList parts { queryItem.second.split( ':' ) };
+      if ( parts.count() == 2 )
+      {
+        mUserDefinedFieldTypes.insert( parts[0], parts [1] );
+      }
+    }
+  }
+
   // Do an initial scan of the file to determine field names, types,
   // geometry type (for Wkt), extents, etc.  Parameter value subset.isEmpty()
   // avoid redundant building indexes if we will be building a subset string,
   // in which case indexes will be rebuilt.
-
-  scanFile( subset.isEmpty() && ! flags.testFlag( QgsDataProvider::ReadFlag::SkipGetExtent ) );
+  scanFile( subset.isEmpty() && ! flags.testFlag( QgsDataProvider::ReadFlag::SkipGetExtent ), /* force full scan */ false );
 
   if ( ! subset.isEmpty() )
   {
@@ -306,7 +320,7 @@ QgsFeatureSource::SpatialIndexPresence QgsDelimitedTextProvider::hasSpatialIndex
 // immediately rescanning (when the file is loaded and then the subset expression is
 // set)
 
-void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
+void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, QgsFeedback *feedback )
 {
   QStringList messages;
 
@@ -414,7 +428,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 
   bool foundFirstGeometry = false;
 
-  while ( true )
+  while ( true && ( ! feedback || ! feedback->isCanceled() ) )
   {
     const QgsDelimitedTextFile::Status status = mFile->nextRecord( parts );
     if ( status == QgsDelimitedTextFile::RecordEOF )
@@ -565,6 +579,13 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
       mNumberFeatures++;
     }
 
+    if ( feedback )
+    {
+      // We don't really know the progress because the number of records is not known
+      // but we need to signal to the caller that the scan is progressing
+      feedback->setProgress( mNumberFeatures );
+    }
+
     if ( !geomValid )
       continue;
 
@@ -697,6 +718,12 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 #endif
       }
     }
+
+    // In case of fast scan we exit after the first record
+    if ( ! forceFullScan && mReadFlags.testFlag( ReadFlag::SkipFullScan ) )
+    {
+      break;
+    }
   }
 
   // Now create the attribute fields.  Field types are determined by prioritizing
@@ -720,35 +747,44 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
     attributeColumns.append( i );
     QVariant::Type fieldType = QVariant::String;
     QString typeName = QStringLiteral( "text" );
-    if ( i < csvtTypes.size() )
+
+    // User-defined types take precedence over all
+    if ( ! mUserDefinedFieldTypes.value( fieldNames[ i ] ).isEmpty() )
     {
-      typeName = csvtTypes[i];
+      typeName = mUserDefinedFieldTypes.value( fieldNames[ i ] );
     }
-    else if ( mDetectTypes && i < couldBeInt.size() )
+    else
     {
-      if ( couldBeInt[i] )
+      if ( i < csvtTypes.size() )
       {
-        typeName = QStringLiteral( "integer" );
+        typeName = csvtTypes[i];
       }
-      else if ( couldBeLongLong[i] )
+      else if ( mDetectTypes && i < couldBeInt.size() )
       {
-        typeName = QStringLiteral( "longlong" );
-      }
-      else if ( couldBeDouble[i] )
-      {
-        typeName = QStringLiteral( "double" );
-      }
-      else if ( couldBeDateTime[i] )
-      {
-        typeName = QStringLiteral( "datetime" );
-      }
-      else if ( couldBeDate[i] )
-      {
-        typeName = QStringLiteral( "date" );
-      }
-      else if ( couldBeTime[i] )
-      {
-        typeName = QStringLiteral( "time" );
+        if ( couldBeInt[i] )
+        {
+          typeName = QStringLiteral( "integer" );
+        }
+        else if ( couldBeLongLong[i] )
+        {
+          typeName = QStringLiteral( "longlong" );
+        }
+        else if ( couldBeDouble[i] )
+        {
+          typeName = QStringLiteral( "double" );
+        }
+        else if ( couldBeDateTime[i] )
+        {
+          typeName = QStringLiteral( "datetime" );
+        }
+        else if ( couldBeDate[i] )
+        {
+          typeName = QStringLiteral( "date" );
+        }
+        else if ( couldBeTime[i] )
+        {
+          typeName = QStringLiteral( "time" );
+        }
       }
     }
 
