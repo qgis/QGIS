@@ -402,6 +402,15 @@ to interpolate point/offset values.
    This is private API only, and may change in future QGIS versions
 %End
 
+    static QString parseArrayStops( const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1 );
+%Docstring
+Takes numerical arrays from stops.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+%End
+
     static QString parseStops( double base, const QVariantList &stops, double multiplier, QgsMapBoxGlStyleConversionContext &context );
 %Docstring
 Parses a list of interpolation stops
