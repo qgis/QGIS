@@ -27,13 +27,14 @@
 #include <set>
 #include "qgis_sip.h"
 
+#include <QMutexLocker>
+
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
 class QgsOgrFeatureIterator;
 class QgsOgrProvider;
 class QgsOgrDataset;
-class QMutexLocker;
 using QgsOgrDatasetSharedPtr = std::shared_ptr< QgsOgrDataset>;
 
 class QgsOgrFeatureSource final: public QgsAbstractFeatureSource
