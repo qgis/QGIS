@@ -589,7 +589,7 @@ void QgsRelationEditorWidget::updateUi()
             treeWidgetItemChild->setText( 0, QgsVectorLayerUtils::getFeatureDisplayString( mNmRelation.referencedLayer(), featureChildChild ) );
             treeWidgetItemChild->setIcon( 0, QgsIconUtils::iconForLayer( mNmRelation.referencedLayer() ) );
 
-            // For nm relations deleting/unlinking ist not supported now, so selection
+            // For nm relations deleting/unlinking is not supported now, so selection
             // is also not possible
             if ( nmRelation().isValid() )
               treeWidgetItem->setFlags( Qt::ItemIsEnabled );
