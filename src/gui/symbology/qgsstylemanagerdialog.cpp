@@ -672,7 +672,7 @@ void QgsStyleManagerDialog::copyItem()
 
 void QgsStyleManagerDialog::pasteItem()
 {
-  const QString defaultTag = groupTree->currentIndex().isValid() ? groupTree->currentIndex().data().toString() : QString();
+  const QString defaultTag = groupTree->currentIndex().isValid() ? groupTree->currentIndex().data( GroupModelRoles::TagName ).toString() : QString();
   std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
   if ( tempSymbol )
   {
@@ -1139,6 +1139,8 @@ bool QgsStyleManagerDialog::addTextFormat()
   format = formatDlg.format();
 
   QgsStyleSaveDialog saveDlg( this, QgsStyle::TextFormatEntity );
+  const QString defaultTag = groupTree->currentIndex().isValid() ? groupTree->currentIndex().data( GroupModelRoles::TagName ).toString() : QString();
+  saveDlg.setDefaultTags( defaultTag );
   if ( !saveDlg.exec() )
     return false;
   QString name = saveDlg.name();
@@ -1323,6 +1325,8 @@ bool QgsStyleManagerDialog::addSymbol( int symbolType )
   }
 
   QgsStyleSaveDialog saveDlg( this );
+  const QString defaultTag = groupTree->currentIndex().isValid() ? groupTree->currentIndex().data( GroupModelRoles::TagName ).toString() : QString();
+  saveDlg.setDefaultTags( defaultTag );
   if ( !saveDlg.exec() )
   {
     delete symbol;
@@ -1761,6 +1765,8 @@ bool QgsStyleManagerDialog::addLabelSettings( QgsWkbTypes::GeometryType type )
   settings.layerType = type;
 
   QgsStyleSaveDialog saveDlg( this, QgsStyle::LabelSettingsEntity );
+  const QString defaultTag = groupTree->currentIndex().isValid() ? groupTree->currentIndex().data( GroupModelRoles::TagName ).toString() : QString();
+  saveDlg.setDefaultTags( defaultTag );
   if ( !saveDlg.exec() )
     return false;
   QString name = saveDlg.name();
@@ -1853,6 +1859,8 @@ bool QgsStyleManagerDialog::addLegendPatchShape( Qgis::SymbolType type )
   shape = dialog.shape();
 
   QgsStyleSaveDialog saveDlg( this, QgsStyle::LegendPatchShapeEntity );
+  const QString defaultTag = groupTree->currentIndex().isValid() ? groupTree->currentIndex().data( GroupModelRoles::TagName ).toString() : QString();
+  saveDlg.setDefaultTags( defaultTag );
   if ( !saveDlg.exec() )
     return false;
   QString name = saveDlg.name();
@@ -1950,6 +1958,8 @@ bool QgsStyleManagerDialog::addSymbol3D( const QString &type )
     return false;
 
   QgsStyleSaveDialog saveDlg( this, QgsStyle::Symbol3DEntity );
+  const QString defaultTag = groupTree->currentIndex().isValid() ? groupTree->currentIndex().data( GroupModelRoles::TagName ).toString() : QString();
+  saveDlg.setDefaultTags( defaultTag );
   if ( !saveDlg.exec() )
     return false;
   QString name = saveDlg.name();
@@ -2212,6 +2222,7 @@ void QgsStyleManagerDialog::populateGroups()
   {
     QStandardItem *item = new QStandardItem( tag );
     item->setData( mStyle->tagId( tag ) );
+    item->setData( tag, GroupModelRoles::TagName );
     item->setEditable( !mReadOnly );
     taggroup->appendRow( item );
   }
@@ -2376,6 +2387,7 @@ int QgsStyleManagerDialog::addTag()
   QStandardItem *parentItem = model->itemFromIndex( index );
   QStandardItem *childItem = new QStandardItem( itemName );
   childItem->setData( id );
+  childItem->setData( itemName, GroupModelRoles::TagName );
   parentItem->appendRow( childItem );
 
   return id;

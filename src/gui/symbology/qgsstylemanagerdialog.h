@@ -362,6 +362,12 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
       QString name;
     };
 
+    enum GroupModelRoles
+    {
+      Name = Qt::UserRole + 1,
+      TagName
+    };
+
     QList< ItemDetails > selectedItems();
 
     /**
