@@ -217,6 +217,8 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     void setMapTool( QgsMapTool *mapTool );
     void unsetMapTool();
     QgsFeatureIds selectedChildFeatureIds() const;
+    void updateUiSingleEdit();
+    void updateUiMultiEdit();
 
     enum class MultiEditFeatureType : int
     {

@@ -516,167 +516,10 @@ void QgsRelationEditorWidget::updateUi()
   if ( !isVisible() )
     return;
 
-  mFormViewButton->setVisible( !multiEditModeActive() );
-  mTableViewButton->setVisible( !multiEditModeActive() );
-  mMultiEditInfoLabel->setVisible( multiEditModeActive() );
-
-  if ( !multiEditModeActive() )
-  {
-    mStackedWidget->setCurrentWidget( mDualView );
-
-    const QgsFeatureRequest request = mRelation.getRelatedFeaturesRequest( mFeatureList.first() );
-
-    if ( mNmRelation.isValid() )
-    {
-      QgsFeatureIterator it = mRelation.referencingLayer()->getFeatures( request );
-      QgsFeature fet;
-      QStringList filters;
-
-      while ( it.nextFeature( fet ) )
-      {
-        QString filter = mNmRelation.getReferencedFeatureRequest( fet ).filterExpression()->expression();
-        filters << filter.prepend( '(' ).append( ')' );
-      }
-
-      QgsFeatureRequest nmRequest;
-      nmRequest.setFilterExpression( filters.join( QLatin1String( " OR " ) ) );
-
-      initDualView( mNmRelation.referencedLayer(), nmRequest );
-    }
-    else if ( mRelation.referencingLayer() )
-    {
-      initDualView( mRelation.referencingLayer(), request );
-    }
-  }
+  if ( multiEditModeActive() )
+    updateUiMultiEdit();
   else
-  {
-    mStackedWidget->setCurrentWidget( mMultiEditStackedWidgetPage ) ;
-
-    QList<QTreeWidgetItem *> parentTreeWidgetItems;
-
-    QgsFeatureIds featureIdsMixedValues;
-    QMultiMap<QTreeWidgetItem *, QgsFeatureId> multimapChildFeatures;
-
-    mMultiEditTreeWidget->clear();
-    for ( const QgsFeature &feature : std::as_const( mFeatureList ) )
-    {
-      QTreeWidgetItem *treeWidgetItem = new QTreeWidgetItem( mMultiEditTreeWidget );
-      treeWidgetItem->setData( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureType ), static_cast<int>( MultiEditFeatureType::Parent ) );
-      treeWidgetItem->setText( 0, QgsVectorLayerUtils::getFeatureDisplayString( mRelation.referencedLayer(), feature ) );
-      treeWidgetItem->setIcon( 0, QgsIconUtils::iconForLayer( mRelation.referencedLayer() ) );
-
-      // Parent feature items are not selectable
-      treeWidgetItem->setFlags( Qt::ItemIsEnabled );
-
-      parentTreeWidgetItems.append( treeWidgetItem );
-
-      // Get child features
-      const QgsFeatureRequest request = relation().getRelatedFeaturesRequest( feature );
-      QgsFeatureIterator featureIterator = mRelation.referencingLayer()->getFeatures( request );
-      QgsFeature featureChild;
-      while ( featureIterator.nextFeature( featureChild ) )
-      {
-        if ( mNmRelation.isValid() )
-        {
-          const QgsFeatureRequest requestFinalChild = mNmRelation.getReferencedFeatureRequest( featureChild );
-          QgsFeatureIterator featureIteratorFinalChild = mNmRelation.referencedLayer()->getFeatures( requestFinalChild );
-          QgsFeature featureChildChild;
-          while ( featureIteratorFinalChild.nextFeature( featureChildChild ) )
-          {
-            QTreeWidgetItem *treeWidgetItemChild = new QTreeWidgetItem( treeWidgetItem );
-            treeWidgetItemChild->setData( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureType ), static_cast<int>( MultiEditFeatureType::Child ) );
-            treeWidgetItemChild->setData( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureId ), featureChildChild.id() );
-            treeWidgetItemChild->setText( 0, QgsVectorLayerUtils::getFeatureDisplayString( mNmRelation.referencedLayer(), featureChildChild ) );
-            treeWidgetItemChild->setIcon( 0, QgsIconUtils::iconForLayer( mNmRelation.referencedLayer() ) );
-
-            // For nm relations deleting/unlinking is not supported now, so selection
-            // is also not possible
-            if ( nmRelation().isValid() )
-              treeWidgetItem->setFlags( Qt::ItemIsEnabled );
-
-            treeWidgetItem->addChild( treeWidgetItemChild );
-
-            featureIdsMixedValues.insert( featureChildChild.id() );
-            multimapChildFeatures.insert( treeWidgetItem, featureChildChild.id() );
-          }
-        }
-        else
-        {
-          QTreeWidgetItem *treeWidgetItemChild = new QTreeWidgetItem( treeWidgetItem );
-          treeWidgetItemChild->setData( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureType ), static_cast<int>( MultiEditFeatureType::Child ) );
-          treeWidgetItemChild->setData( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureId ), featureChild.id() );
-          treeWidgetItemChild->setText( 0, QgsVectorLayerUtils::getFeatureDisplayString( mRelation.referencingLayer(), featureChild ) );
-          treeWidgetItemChild->setIcon( 0, QgsIconUtils::iconForLayer( mRelation.referencingLayer() ) );
-          treeWidgetItem->addChild( treeWidgetItemChild );
-
-          featureIdsMixedValues.insert( featureChild.id() );
-        }
-      }
-
-      treeWidgetItem->setExpanded( true );
-      mMultiEditTreeWidget->addTopLevelItem( treeWidgetItem );
-    }
-
-    // Check for mixed values
-    if ( mNmRelation.isValid() )
-    {
-      QgsFeatureIds featureIdsNotMixed;
-      for ( const QgsFeatureId &featureId : featureIdsMixedValues )
-      {
-        bool mixedValues = false;
-        for ( QTreeWidgetItem *parentTreeWidgetItem : parentTreeWidgetItems )
-        {
-          if ( ! multimapChildFeatures.values( parentTreeWidgetItem ).contains( featureId ) )
-          {
-            mixedValues = true;
-            break;
-          }
-        }
-
-        if ( !mixedValues )
-          featureIdsNotMixed.insert( featureId );
-
-
-      }
-
-      featureIdsMixedValues -= featureIdsNotMixed;
-    }
-    else
-    {
-      for ( const QgsFeatureId &featureIdJustAdded : std::as_const( mMultiEdit1NJustAddedIds ) )
-        featureIdsMixedValues.remove( featureIdJustAdded );
-    }
-
-    // Set multiedit info label
-    if ( featureIdsMixedValues.isEmpty() )
-    {
-      QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "/multieditSameValues.svg" ) );
-      mMultiEditInfoLabel->setPixmap( icon.pixmap( mMultiEditInfoLabel->height(),
-                                      mMultiEditInfoLabel->height() ) );
-      mMultiEditInfoLabel->setToolTip( tr( "All features in selection have equal relations" ) );
-    }
-    else
-    {
-      QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "/multieditMixedValues.svg" ) );
-      mMultiEditInfoLabel->setPixmap( icon.pixmap( mMultiEditInfoLabel->height(),
-                                      mMultiEditInfoLabel->height() ) );
-      mMultiEditInfoLabel->setToolTip( tr( "Some features in selection have different relations" ) );
-
-      // Set italic font for mixed values
-      QFont fontItalic = mMultiEditTreeWidget->font();
-      fontItalic.setItalic( true );
-      for ( QTreeWidgetItem *parentTreeWidgetItem : parentTreeWidgetItems )
-      {
-        for ( int childIndex = 0; childIndex < parentTreeWidgetItem->childCount(); ++childIndex )
-        {
-          QTreeWidgetItem *childItem = parentTreeWidgetItem->child( childIndex );
-          const QgsFeatureId featureIdCurrentItem = childItem->data( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureId ) ).toInt();
-          if ( featureIdsMixedValues.contains( featureIdCurrentItem ) )
-            childItem->setFont( 0, fontItalic );
-        }
-      }
-    }
-  }
+    updateUiSingleEdit();
 }
 
 void QgsRelationEditorWidget::setVisibleButtons( const Buttons &buttons )
@@ -762,6 +605,168 @@ QgsFeatureIds QgsRelationEditorWidget::selectedChildFeatureIds() const
   }
   else
     return mFeatureSelectionMgr->selectedFeatureIds();
+}
+
+void QgsRelationEditorWidget::updateUiSingleEdit()
+{
+  mFormViewButton->setVisible( true );
+  mTableViewButton->setVisible( true );
+  mMultiEditInfoLabel->setVisible( false );
+
+  mStackedWidget->setCurrentWidget( mDualView );
+
+  const QgsFeatureRequest request = mRelation.getRelatedFeaturesRequest( mFeatureList.first() );
+
+  if ( mNmRelation.isValid() )
+  {
+    QgsFeatureIterator it = mRelation.referencingLayer()->getFeatures( request );
+    QgsFeature fet;
+    QStringList filters;
+
+    while ( it.nextFeature( fet ) )
+    {
+      QString filter = mNmRelation.getReferencedFeatureRequest( fet ).filterExpression()->expression();
+      filters << filter.prepend( '(' ).append( ')' );
+    }
+
+    QgsFeatureRequest nmRequest;
+    nmRequest.setFilterExpression( filters.join( QLatin1String( " OR " ) ) );
+
+    initDualView( mNmRelation.referencedLayer(), nmRequest );
+  }
+  else if ( mRelation.referencingLayer() )
+  {
+    initDualView( mRelation.referencingLayer(), request );
+  }
+}
+
+void QgsRelationEditorWidget::updateUiMultiEdit()
+{
+  mFormViewButton->setVisible( false );
+  mTableViewButton->setVisible( false );
+  mMultiEditInfoLabel->setVisible( true );
+
+  mStackedWidget->setCurrentWidget( mMultiEditStackedWidgetPage ) ;
+
+  QList<QTreeWidgetItem *> parentTreeWidgetItems;
+
+  QgsFeatureIds featureIdsMixedValues;
+  QMultiMap<QTreeWidgetItem *, QgsFeatureId> multimapChildFeatures;
+
+  mMultiEditTreeWidget->clear();
+  for ( const QgsFeature &feature : std::as_const( mFeatureList ) )
+  {
+    QTreeWidgetItem *treeWidgetItem = new QTreeWidgetItem( mMultiEditTreeWidget );
+    treeWidgetItem->setData( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureType ), static_cast<int>( MultiEditFeatureType::Parent ) );
+    treeWidgetItem->setText( 0, QgsVectorLayerUtils::getFeatureDisplayString( mRelation.referencedLayer(), feature ) );
+    treeWidgetItem->setIcon( 0, QgsIconUtils::iconForLayer( mRelation.referencedLayer() ) );
+
+    // Parent feature items are not selectable
+    treeWidgetItem->setFlags( Qt::ItemIsEnabled );
+
+    parentTreeWidgetItems.append( treeWidgetItem );
+
+    // Get child features
+    const QgsFeatureRequest request = relation().getRelatedFeaturesRequest( feature );
+    QgsFeatureIterator featureIterator = mRelation.referencingLayer()->getFeatures( request );
+    QgsFeature featureChild;
+    while ( featureIterator.nextFeature( featureChild ) )
+    {
+      if ( mNmRelation.isValid() )
+      {
+        const QgsFeatureRequest requestFinalChild = mNmRelation.getReferencedFeatureRequest( featureChild );
+        QgsFeatureIterator featureIteratorFinalChild = mNmRelation.referencedLayer()->getFeatures( requestFinalChild );
+        QgsFeature featureChildChild;
+        while ( featureIteratorFinalChild.nextFeature( featureChildChild ) )
+        {
+          QTreeWidgetItem *treeWidgetItemChild = new QTreeWidgetItem( treeWidgetItem );
+          treeWidgetItemChild->setData( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureType ), static_cast<int>( MultiEditFeatureType::Child ) );
+          treeWidgetItemChild->setData( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureId ), featureChildChild.id() );
+          treeWidgetItemChild->setText( 0, QgsVectorLayerUtils::getFeatureDisplayString( mNmRelation.referencedLayer(), featureChildChild ) );
+          treeWidgetItemChild->setIcon( 0, QgsIconUtils::iconForLayer( mNmRelation.referencedLayer() ) );
+
+          treeWidgetItem->addChild( treeWidgetItemChild );
+
+          featureIdsMixedValues.insert( featureChildChild.id() );
+          multimapChildFeatures.insert( treeWidgetItem, featureChildChild.id() );
+        }
+      }
+      else
+      {
+        QTreeWidgetItem *treeWidgetItemChild = new QTreeWidgetItem( treeWidgetItem );
+        treeWidgetItemChild->setData( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureType ), static_cast<int>( MultiEditFeatureType::Child ) );
+        treeWidgetItemChild->setData( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureId ), featureChild.id() );
+        treeWidgetItemChild->setText( 0, QgsVectorLayerUtils::getFeatureDisplayString( mRelation.referencingLayer(), featureChild ) );
+        treeWidgetItemChild->setIcon( 0, QgsIconUtils::iconForLayer( mRelation.referencingLayer() ) );
+        treeWidgetItem->addChild( treeWidgetItemChild );
+
+        featureIdsMixedValues.insert( featureChild.id() );
+      }
+    }
+
+    treeWidgetItem->setExpanded( true );
+    mMultiEditTreeWidget->addTopLevelItem( treeWidgetItem );
+  }
+
+  // Check for mixed values
+  if ( mNmRelation.isValid() )
+  {
+    QgsFeatureIds featureIdsNotMixed;
+    for ( const QgsFeatureId &featureId : featureIdsMixedValues )
+    {
+      bool mixedValues = false;
+      for ( QTreeWidgetItem *parentTreeWidgetItem : parentTreeWidgetItems )
+      {
+        if ( ! multimapChildFeatures.values( parentTreeWidgetItem ).contains( featureId ) )
+        {
+          mixedValues = true;
+          break;
+        }
+      }
+
+      if ( !mixedValues )
+        featureIdsNotMixed.insert( featureId );
+
+
+    }
+
+    featureIdsMixedValues -= featureIdsNotMixed;
+  }
+  else
+  {
+    for ( const QgsFeatureId &featureIdJustAdded : std::as_const( mMultiEdit1NJustAddedIds ) )
+      featureIdsMixedValues.remove( featureIdJustAdded );
+  }
+
+  // Set multiedit info label
+  if ( featureIdsMixedValues.isEmpty() )
+  {
+    QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "/multieditSameValues.svg" ) );
+    mMultiEditInfoLabel->setPixmap( icon.pixmap( mMultiEditInfoLabel->height(),
+                                    mMultiEditInfoLabel->height() ) );
+    mMultiEditInfoLabel->setToolTip( tr( "All features in selection have equal relations" ) );
+  }
+  else
+  {
+    QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "/multieditMixedValues.svg" ) );
+    mMultiEditInfoLabel->setPixmap( icon.pixmap( mMultiEditInfoLabel->height(),
+                                    mMultiEditInfoLabel->height() ) );
+    mMultiEditInfoLabel->setToolTip( tr( "Some features in selection have different relations" ) );
+
+    // Set italic font for mixed values
+    QFont fontItalic = mMultiEditTreeWidget->font();
+    fontItalic.setItalic( true );
+    for ( QTreeWidgetItem *parentTreeWidgetItem : parentTreeWidgetItems )
+    {
+      for ( int childIndex = 0; childIndex < parentTreeWidgetItem->childCount(); ++childIndex )
+      {
+        QTreeWidgetItem *childItem = parentTreeWidgetItem->child( childIndex );
+        const QgsFeatureId featureIdCurrentItem = childItem->data( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureId ) ).toInt();
+        if ( featureIdsMixedValues.contains( featureIdCurrentItem ) )
+          childItem->setFont( 0, fontItalic );
+      }
+    }
+  }
 }
 
 void QgsRelationEditorWidget::onKeyPressed( QKeyEvent *e )
