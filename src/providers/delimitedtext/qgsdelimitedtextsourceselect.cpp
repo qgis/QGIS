@@ -484,8 +484,9 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   for ( int column = 0; column < tblSample->columnCount(); column++ )
   {
     QComboBox *typeCombo = new QComboBox( tblSample );
-    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) ), tr( "Text" ), "string" );
-    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole Number" ), "integer" );
+    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) ), tr( "Text" ), "text" );
+    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole Number (integer)" ), "integer" );
+    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole Number (integer - 64 bit)" ), "integer64" );
     typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) ), tr( "Decimal Number" ), "double" );
     // Not supported by the provider
     // typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBool.svg" ) ), tr( "Boolean" ), "bool" );
@@ -921,7 +922,7 @@ QString QgsDelimitedTextSourceSelect::url( bool skipOverriddenTypes )
         if ( typeCombo && typeCombo->currentData().toString() != fieldTypeName )
         {
           query.addQueryItem( QStringLiteral( "field" ),
-                              QString( fieldName ).replace( ':', QStringLiteral( "%3A" ) ) + ':' +  fieldTypeName );
+                              QString( fieldName ).replace( ':', QStringLiteral( "%3A" ) ) + ':' +  typeCombo->currentData().toString() );
         }
       }
     }
