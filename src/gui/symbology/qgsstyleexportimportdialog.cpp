@@ -263,14 +263,27 @@ void QgsStyleExportImportDialog::clearSelection()
 
 void QgsStyleExportImportDialog::selectFavorites()
 {
-  const QStringList symbolNames = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );
-  selectSymbols( symbolNames );
+  for ( int row = 0; row < listItems->model()->rowCount(); ++row )
+  {
+    const QModelIndex index = listItems->model()->index( row, 0 );
+    if ( index.data( QgsStyleModel::IsFavoriteRole ).toBool() )
+    {
+      listItems->selectionModel()->select( index, QItemSelectionModel::Select );
+    }
+  }
 }
 
 void QgsStyleExportImportDialog::deselectFavorites()
 {
-  const QStringList symbolNames = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );
-  deselectSymbols( symbolNames );
+  for ( int row = 0; row < listItems->model()->rowCount(); ++row )
+  {
+    const QModelIndex index = listItems->model()->index( row, 0 );
+    if ( index.data( QgsStyleModel::IsFavoriteRole ).toBool() )
+    {
+      const QItemSelection deselection( index, index );
+      listItems->selectionModel()->select( deselection, QItemSelectionModel::Deselect );
+    }
+  }
 }
 
 void QgsStyleExportImportDialog::selectSymbols( const QStringList &symbolNames )
@@ -304,14 +317,27 @@ void QgsStyleExportImportDialog::deselectSymbols( const QStringList &symbolNames
 
 void QgsStyleExportImportDialog::selectTag( const QString &tagName )
 {
-  const QStringList symbolNames = mStyle->symbolsWithTag( QgsStyle::SymbolEntity, mStyle->tagId( tagName ) );
-  selectSymbols( symbolNames );
+  for ( int row = 0; row < listItems->model()->rowCount(); ++row )
+  {
+    const QModelIndex index = listItems->model()->index( row, 0 );
+    if ( index.data( QgsStyleModel::TagRole ).toStringList().contains( tagName, Qt::CaseInsensitive ) )
+    {
+      listItems->selectionModel()->select( index, QItemSelectionModel::Select );
+    }
+  }
 }
 
 void QgsStyleExportImportDialog::deselectTag( const QString &tagName )
 {
-  const QStringList symbolNames = mStyle->symbolsWithTag( QgsStyle::SymbolEntity, mStyle->tagId( tagName ) );
-  deselectSymbols( symbolNames );
+  for ( int row = 0; row < listItems->model()->rowCount(); ++row )
+  {
+    const QModelIndex index = listItems->model()->index( row, 0 );
+    if ( index.data( QgsStyleModel::TagRole ).toStringList().contains( tagName, Qt::CaseInsensitive ) )
+    {
+      const QItemSelection deselection( index, index );
+      listItems->selectionModel()->select( deselection, QItemSelectionModel::Deselect );
+    }
+  }
 }
 
 void QgsStyleExportImportDialog::selectSmartgroup( const QString &groupName )
