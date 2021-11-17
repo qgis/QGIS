@@ -23,6 +23,7 @@
 #include "qgsguiutils.h"
 #include "qgsfeedback.h"
 #include "qgsfields.h"
+#include "qgstaskmanager.h"
 #include "qgsproviderregistry.h"
 #include "qgsabstractdatasourcewidget.h"
 #include "qgsdelimitedtextfile.h"
@@ -35,32 +36,32 @@ class QgisInterface;
 /**
  * \brief The QgsDelimitedTextFileScan class scans a CSV file to identify field types.
  */
-class QgsDelimitedTextFileScanThread: public QThread
+class QgsDelimitedTextFileScanTask: public QgsTask
 {
 
     Q_OBJECT
 
   public:
 
-    QgsDelimitedTextFileScanThread( const QString &dataSource, QObject *parent = nullptr )
-      : QThread( parent )
+    QgsDelimitedTextFileScanTask( const QString &dataSource )
+      : QgsTask( QStringLiteral( "delimited text scan %1" ).arg( dataSource ) )
       , mDataSource( dataSource )
     {
       qDebug() << this << "thread started";
     };
 
-    ~QgsDelimitedTextFileScanThread()
+    ~QgsDelimitedTextFileScanTask()
     {
       qDebug() << this << "thread deleted";
     }
 
     // QThread interface
   protected:
-    void run() override;
+    bool run() override;
 
   public slots:
 
-    void cancel();
+    void cancel() override;
 
   signals:
 
@@ -75,10 +76,6 @@ class QgsDelimitedTextFileScanThread: public QThread
      */
     void scanStarted( const QgsFields &field );
 
-    /**
-     * \brief recordsScanned is emitted when new records have been scanned.
-     */
-    void recordsScanned( unsigned long numRecords );
 
   private:
 
@@ -118,7 +115,7 @@ class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private
     int mMaxFields = DEFAULT_MAX_FIELDS; //!< To avoid Denial Of Service (at least in source select). Configurable through /max_fields settings sub-key.
     QString mSettingsKey;
     QString mLastFileType;
-    QgsDelimitedTextFileScanThread *mScanThread = nullptr;
+    long mScanTaskId = -1;
     QButtonGroup *bgFileFormat = nullptr;
     QButtonGroup *bgGeomType = nullptr;
     QMutex mFieldsMutex;

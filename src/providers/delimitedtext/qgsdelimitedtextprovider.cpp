@@ -428,8 +428,13 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
 
   bool foundFirstGeometry = false;
 
-  while ( true && ( ! feedback || ! feedback->isCanceled() ) )
+  while ( true )
   {
+    if ( feedback && feedback->isCanceled() )
+    {
+      qDebug() << "Task was canceled";
+      break;
+    }
     const QgsDelimitedTextFile::Status status = mFile->nextRecord( parts );
     if ( status == QgsDelimitedTextFile::RecordEOF )
       break;
@@ -579,7 +584,8 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
       mNumberFeatures++;
     }
 
-    if ( feedback )
+    // Progress changed every 100 features
+    if ( feedback && mNumberFeatures % 100 == 0 )
     {
       // We don't really know the progress because the number of records is not known
       // but we need to signal to the caller that the scan is progressing
@@ -724,6 +730,12 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
     {
       break;
     }
+  }
+
+  // Final progress changed
+  if ( feedback )
+  {
+    feedback->setProgress( mNumberFeatures );
   }
 
   // Now create the attribute fields.  Field types are determined by prioritizing
