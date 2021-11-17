@@ -40,7 +40,7 @@ set(PG_HDRS
 # static library
 add_library (provider_postgres_a STATIC ${PG_SRCS} ${PG_HDRS})
 
-target_include_directories(provider_postgres_a SYSTEM PRIVATE
+target_include_directories(provider_postgres_a SYSTEM PUBLIC
   ${POSTGRES_INCLUDE_DIR}
 )
 
