@@ -1880,6 +1880,8 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
     return;
   }
 
+  int pointNum = 0;
+
   switch ( placement )
   {
     case Qgis::MarkerLinePlacement::FirstVertex:
@@ -1892,6 +1894,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
     case Qgis::MarkerLinePlacement::LastVertex:
     {
       i = points.count() - 1;
+      pointNum = i;
       maxCount = points.count();
       break;
     }
@@ -1899,6 +1902,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
     case Qgis::MarkerLinePlacement::InnerVertices:
     {
       i = 1;
+      pointNum = 1;
       maxCount = points.count() - 1;
       break;
     }
@@ -1930,7 +1934,6 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
     return;
   }
 
-  int pointNum = 0;
   QPointF prevPoint;
   if ( placement == Qgis::MarkerLinePlacement::SegmentCenter && !points.empty() )
     prevPoint = points.at( 0 );
