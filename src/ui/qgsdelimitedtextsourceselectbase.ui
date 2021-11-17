@@ -166,7 +166,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-47</y>
+        <y>0</y>
         <width>703</width>
         <height>579</height>
        </rect>
@@ -1392,6 +1392,9 @@
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Column data type is determined automatically scanning the file but it is possible to override the type through the type combo boxes.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="title">
           <string>Sample Data</string>
