@@ -7286,6 +7286,7 @@ bool QgisApp::fileSave()
 void QgisApp::fileSaveAs()
 {
   QString defaultPath;
+  QgsSettings settings;
   // First priority is to default to same path as existing file
   const QString currentPath = QgsProject::instance()->absoluteFilePath();
   if ( !currentPath.isEmpty() )
@@ -7295,18 +7296,28 @@ void QgisApp::fileSaveAs()
   else
   {
     // Retrieve last used project dir from persistent settings
-    QgsSettings settings;
     defaultPath = settings.value( QStringLiteral( "UI/lastProjectDir" ), QDir::homePath() ).toString();
     defaultPath += QString( '/' + QgsProject::instance()->title() );
   }
 
   const QString qgsExt = tr( "QGIS files" ) + " (*.qgs *.QGS)";
   const QString zipExt = tr( "QGZ files" ) + " (*.qgz)";
+
+  QString exts;
+  QgsProject::FileFormat defaultProjectFileFormat = settings.enumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), QgsProject::FileFormat::Qgz );
+  if ( defaultProjectFileFormat == QgsProject::FileFormat::Qgs )
+  {
+    exts = qgsExt + QStringLiteral( ";;" ) + zipExt;
+  }
+  else
+  {
+    exts = zipExt + QStringLiteral( ";;" ) + qgsExt;
+  }
   QString filter;
   QString path = QFileDialog::getSaveFileName( this,
                  tr( "Save Project As" ),
                  defaultPath,
-                 zipExt + ";;" + qgsExt, &filter );
+                 exts, &filter );
   if ( path.isEmpty() )
     return;
 
