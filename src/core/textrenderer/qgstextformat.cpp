@@ -292,7 +292,7 @@ void QgsTextFormat::setOpacity( double opacity )
 
 int QgsTextFormat::stretchFactor() const
 {
-  return d->textFont.stretch();
+  return d->textFont.stretch() > 0 ? d->textFont.stretch() : 100;
 }
 
 void QgsTextFormat::setStretchFactor( int factor )
@@ -670,7 +670,8 @@ QDomElement QgsTextFormat::writeXml( QDomDocument &doc, const QgsReadWriteContex
   textStyleElem.setAttribute( QStringLiteral( "fontKerning" ), d->textFont.kerning() );
   textStyleElem.setAttribute( QStringLiteral( "textOpacity" ), d->opacity );
 #ifdef HAS_KDE_QT5_FONT_STRETCH_FIX
-  textStyleElem.setAttribute( QStringLiteral( "stretchFactor" ), d->textFont.stretch() );
+  if ( d->textFont.stretch() > 0 )
+    textStyleElem.setAttribute( QStringLiteral( "stretchFactor" ), d->textFont.stretch() );
 #endif
   textStyleElem.setAttribute( QStringLiteral( "textOrientation" ), QgsTextRendererUtils::encodeTextOrientation( d->orientation ) );
   textStyleElem.setAttribute( QStringLiteral( "blendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
