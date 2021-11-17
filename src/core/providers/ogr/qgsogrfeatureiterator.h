@@ -27,8 +27,6 @@
 #include <set>
 #include "qgis_sip.h"
 
-#include <QMutexLocker>
-
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
@@ -106,7 +104,6 @@ class QgsOgrFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<Q
     QgsRectangle mFilterRect;
     QgsCoordinateTransform mTransform;
     QgsOgrDatasetSharedPtr mSharedDS = nullptr;
-    std::unique_ptr<QMutexLocker> mTransactionDSLocker = nullptr;
 
     bool mFirstFieldIsFid = false;
     QgsFields mFieldsWithoutFid;

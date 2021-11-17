@@ -55,7 +55,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
 
   if ( mSharedDS )
   {
-    mTransactionDSLocker.reset( new QMutexLocker( &mSharedDS->mutex() ) );
+    mSharedDS->mutex().lock();
   }
 
   /* When inside a transaction for GPKG/SQLite and fetching fid(s) we might be nested inside an outer fetching loop,
@@ -488,9 +488,9 @@ bool QgsOgrFeatureIterator::close()
   {
     iteratorClosed();
     mOgrLayer = nullptr;
-    mSharedDS.reset();
-
     mClosed = true;
+    mSharedDS->mutex().unlock();
+    mSharedDS.reset();
     return true;
   }
 
