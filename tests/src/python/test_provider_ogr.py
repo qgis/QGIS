@@ -2502,5 +2502,6 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(feature.geometry().vertexAt(1).asWkt(),
                          'PointZ (635660.11699699994642287 1768910.93880999996326864 3.33884099999999995)')
 
+
 if __name__ == '__main__':
     unittest.main()
