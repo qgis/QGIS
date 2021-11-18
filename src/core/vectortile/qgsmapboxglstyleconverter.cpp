@@ -472,6 +472,7 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
 
 
   double lineWidth = 1.0;
+  QgsProperty lineWidthProperty;
   if ( jsonPaint.contains( QStringLiteral( "line-width" ) ) )
   {
     const QVariant jsonLineWidth = jsonPaint.value( QStringLiteral( "line-width" ) );
@@ -484,12 +485,14 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
 
       case QVariant::Map:
         lineWidth = -1;
-        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeWidth, parseInterpolateByZoom( jsonLineWidth.toMap(), context, context.pixelSizeConversionFactor(), &lineWidth ) );
+        lineWidthProperty = parseInterpolateByZoom( jsonLineWidth.toMap(), context, context.pixelSizeConversionFactor(), &lineWidth );
+        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeWidth, lineWidthProperty );
         break;
 
       case QVariant::List:
       case QVariant::StringList:
-        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeWidth, parseValueList( jsonLineWidth.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), 255, nullptr, &lineWidth ) );
+        lineWidthProperty = parseValueList( jsonLineWidth.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), 255, nullptr, &lineWidth );
+        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeWidth, lineWidthProperty );
         break;
 
       default:
@@ -573,11 +576,23 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
     {
       case QVariant::Map:
       {
-        //TODO improve parsing (use PropertyCustomDash?)
-        const QVariantList dashSource = jsonLineDashArray.toMap().value( QStringLiteral( "stops" ) ).toList().last().toList().value( 1 ).toList();
+        QString arrayExpression;
+        if ( !lineWidthProperty.asExpression().isEmpty() )
+        {
+          arrayExpression = QStringLiteral( "array_to_string(array_foreach(%1,@element * (%2)), ';')" ) // skip-keyword-check
+                            .arg( parseArrayStops( jsonLineDashArray.toMap().value( QStringLiteral( "stops" ) ).toList(), context, 1 ),
+                                  lineWidthProperty.asExpression() );
+        }
+        else
+        {
+          arrayExpression = QStringLiteral( "array_to_string(%1, ';')" ).arg( parseArrayStops( jsonLineDashArray.toMap().value( QStringLiteral( "stops" ) ).toList(), context, lineWidth ) );
+        }
+        ddProperties.setProperty( QgsSymbolLayer::PropertyCustomDash, QgsProperty::fromExpression( arrayExpression ) );
+
+        const QVariantList dashSource = jsonLineDashArray.toMap().value( QStringLiteral( "stops" ) ).toList().first().toList().value( 1 ).toList();
         for ( const QVariant &v : dashSource )
         {
-          dashVector << v.toDouble() * context.pixelSizeConversionFactor();
+          dashVector << v.toDouble() * lineWidth;
         }
         break;
       }
@@ -585,10 +600,17 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
       case QVariant::List:
       case QVariant::StringList:
       {
+        if ( ( !lineWidthProperty.asExpression().isEmpty() ) )
+        {
+          QString arrayExpression = QStringLiteral( "array_to_string(array_foreach(array(%1),@element * (%2)), ';')" ) // skip-keyword-check
+                                    .arg( jsonLineDashArray.toStringList().join( ',' ),
+                                          lineWidthProperty.asExpression() );
+          ddProperties.setProperty( QgsSymbolLayer::PropertyCustomDash, QgsProperty::fromExpression( arrayExpression ) );
+        }
         const QVariantList dashSource = jsonLineDashArray.toList();
         for ( const QVariant &v : dashSource )
         {
-          dashVector << v.toDouble() * context.pixelSizeConversionFactor();
+          dashVector << v.toDouble() * lineWidth;
         }
         break;
       }
@@ -2272,6 +2294,51 @@ QString QgsMapBoxGlStyleConverter::parsePointStops( double base, const QVariantL
                                       interpolateExpression( bz.toDouble(), tz.toDouble(), bv.toList().value( 0 ), tv.toList().value( 0 ), base, multiplier, &context ),
                                       interpolateExpression( bz.toDouble(), tz.toDouble(), bv.toList().value( 1 ), tv.toList().value( 1 ), base, multiplier, &context ) );
   }
+  caseString += QLatin1String( "END" );
+  return caseString;
+}
+
+QString QgsMapBoxGlStyleConverter::parseArrayStops( const QVariantList &stops, QgsMapBoxGlStyleConversionContext &, double multiplier )
+{
+  if ( stops.length() < 2 )
+    return QString();
+
+  QString caseString = QStringLiteral( "CASE " );
+
+  for ( int i = 0; i < stops.length() - 1; ++i )
+  {
+    // bottom zoom and value
+    const QVariant bz = stops.value( i ).toList().value( 0 );
+    const QList<QVariant> bv = stops.value( i ).toList().value( 1 ).toList();
+    QStringList bl;
+    bool ok = false;
+    for ( const QVariant &value : bv )
+    {
+      const double number = value.toDouble( &ok );
+      if ( ok )
+        bl << QString::number( number * multiplier );
+    }
+
+    // top zoom and value
+    const QVariant tz = stops.value( i + 1 ).toList().value( 0 );
+    caseString += QStringLiteral( "WHEN @vector_tile_zoom > %1 AND @vector_tile_zoom <= %2 "
+                                  "THEN array(%3) " ).arg( bz.toString(),
+                                      tz.toString(),
+                                      bl.join( ',' ) );
+  }
+  const QVariant lz = stops.value( stops.length() - 1 ).toList().value( 0 );
+  const QList<QVariant> lv = stops.value( stops.length() - 1 ).toList().value( 1 ).toList();
+  QStringList ll;
+  bool ok = false;
+  for ( const QVariant &value : lv )
+  {
+    const double number = value.toDouble( &ok );
+    if ( ok )
+      ll << QString::number( number * multiplier );
+  }
+  caseString += QStringLiteral( "WHEN @vector_tile_zoom > %1 "
+                                "THEN array(%2) " ).arg( lz.toString(),
+                                    ll.join( ',' ) );
   caseString += QLatin1String( "END" );
   return caseString;
 }
