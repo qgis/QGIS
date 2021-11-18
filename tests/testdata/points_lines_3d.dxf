@@ -1,0 +1,1576 @@
+  0
+SECTION
+  2
+HEADER
+  9
+$ACADVER
+  1
+AC1009
+  9
+$DWGCODEPAGE
+  3
+ansi_1252
+  9
+$INSBASE
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+  9
+$EXTMIN
+ 10
+635656.506212
+ 20
+1768908.827516
+ 30
+3.319551
+  9
+$EXTMAX
+ 10
+635661.323818
+ 20
+1768913.009374
+ 30
+3.58
+  9
+$LIMMIN
+ 10
+0.0
+ 20
+0.0
+  9
+$LIMMAX
+ 10
+12.0
+ 20
+9.0
+  9
+$ORTHOMODE
+ 70
+     0
+  9
+$REGENMODE
+ 70
+     1
+  9
+$FILLMODE
+ 70
+     1
+  9
+$QTEXTMODE
+ 70
+     0
+  9
+$MIRRTEXT
+ 70
+     1
+  9
+$DRAGMODE
+ 70
+     2
+  9
+$LTSCALE
+ 40
+1.0
+  9
+$OSMODE
+ 70
+    37
+  9
+$ATTMODE
+ 70
+     2
+  9
+$TEXTSIZE
+ 40
+0.2
+  9
+$TRACEWID
+ 40
+0.05
+  9
+$TEXTSTYLE
+  7
+STANDARD
+  9
+$CLAYER
+  8
+TERRAIN_-_LIGNES_D_ARÊTES
+  9
+$CELTYPE
+  6
+CONTINUOUS
+  9
+$CECOLOR
+ 62
+   256
+  9
+$DIMSCALE
+ 40
+1.0
+  9
+$DIMASZ
+ 40
+0.18
+  9
+$DIMEXO
+ 40
+0.0625
+  9
+$DIMDLI
+ 40
+0.38
+  9
+$DIMRND
+ 40
+0.0
+  9
+$DIMDLE
+ 40
+0.0
+  9
+$DIMEXE
+ 40
+0.18
+  9
+$DIMTP
+ 40
+0.0
+  9
+$DIMTM
+ 40
+0.0
+  9
+$DIMTXT
+ 40
+0.18
+  9
+$DIMCEN
+ 40
+0.09
+  9
+$DIMTSZ
+ 40
+0.0
+  9
+$DIMTOL
+ 70
+     0
+  9
+$DIMLIM
+ 70
+     0
+  9
+$DIMTIH
+ 70
+     1
+  9
+$DIMTOH
+ 70
+     1
+  9
+$DIMSE1
+ 70
+     0
+  9
+$DIMSE2
+ 70
+     0
+  9
+$DIMTAD
+ 70
+     0
+  9
+$DIMZIN
+ 70
+     0
+  9
+$DIMBLK
+  1
+
+  9
+$DIMASO
+ 70
+     1
+  9
+$DIMSHO
+ 70
+     1
+  9
+$DIMPOST
+  1
+
+  9
+$DIMAPOST
+  1
+
+  9
+$DIMALT
+ 70
+     0
+  9
+$DIMALTD
+ 70
+     2
+  9
+$DIMALTF
+ 40
+25.4
+  9
+$DIMLFAC
+ 40
+1.0
+  9
+$DIMTOFL
+ 70
+     0
+  9
+$DIMTVP
+ 40
+0.0
+  9
+$DIMTIX
+ 70
+     0
+  9
+$DIMSOXD
+ 70
+     0
+  9
+$DIMSAH
+ 70
+     0
+  9
+$DIMBLK1
+  1
+
+  9
+$DIMBLK2
+  1
+
+  9
+$DIMSTYLE
+  2
+STANDARD
+  9
+$DIMCLRD
+ 70
+     0
+  9
+$DIMCLRE
+ 70
+     0
+  9
+$DIMCLRT
+ 70
+     0
+  9
+$DIMTFAC
+ 40
+1.0
+  9
+$DIMGAP
+ 40
+0.09
+  9
+$LUNITS
+ 70
+     2
+  9
+$LUPREC
+ 70
+     4
+  9
+$SKETCHINC
+ 40
+0.1
+  9
+$FILLETRAD
+ 40
+0.5
+  9
+$AUNITS
+ 70
+     0
+  9
+$AUPREC
+ 70
+     0
+  9
+$MENU
+  1
+.
+  9
+$ELEVATION
+ 40
+0.0
+  9
+$PELEVATION
+ 40
+0.0
+  9
+$THICKNESS
+ 40
+0.0
+  9
+$LIMCHECK
+ 70
+     0
+  9
+$CHAMFERA
+ 40
+0.5
+  9
+$CHAMFERB
+ 40
+0.5
+  9
+$SKPOLY
+ 70
+     0
+  9
+$TDCREATE
+ 40
+2456322.2190625
+  9
+$TDUPDATE
+ 40
+2459537.067057164
+  9
+$TDINDWG
+ 40
+0.0108678241
+  9
+$TDUSRTIMER
+ 40
+0.0108676505
+  9
+$USRTIMER
+ 70
+     1
+  9
+$ANGBASE
+ 50
+0.0
+  9
+$ANGDIR
+ 70
+     0
+  9
+$PDMODE
+ 70
+     0
+  9
+$PDSIZE
+ 40
+-0.8
+  9
+$PLINEWID
+ 40
+0.0
+  9
+$COORDS
+ 70
+     1
+  9
+$SPLFRAME
+ 70
+     0
+  9
+$SPLINETYPE
+ 70
+     6
+  9
+$SPLINESEGS
+ 70
+     8
+  9
+$ATTDIA
+ 70
+     0
+  9
+$ATTREQ
+ 70
+     1
+  9
+$HANDLING
+ 70
+     1
+  9
+$HANDSEED
+  5
+4D24
+  9
+$SURFTAB1
+ 70
+     6
+  9
+$SURFTAB2
+ 70
+     6
+  9
+$SURFTYPE
+ 70
+     6
+  9
+$SURFU
+ 70
+     6
+  9
+$SURFV
+ 70
+     6
+  9
+$UCSNAME
+  2
+
+  9
+$UCSORG
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+  9
+$UCSXDIR
+ 10
+1.0
+ 20
+0.0
+ 30
+0.0
+  9
+$UCSYDIR
+ 10
+0.0
+ 20
+1.0
+ 30
+0.0
+  9
+$PUCSNAME
+  2
+
+  9
+$PUCSORG
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+  9
+$PUCSXDIR
+ 10
+1.0
+ 20
+0.0
+ 30
+0.0
+  9
+$PUCSYDIR
+ 10
+0.0
+ 20
+1.0
+ 30
+0.0
+  9
+$USERI1
+ 70
+     0
+  9
+$USERI2
+ 70
+     0
+  9
+$USERI3
+ 70
+     0
+  9
+$USERI4
+ 70
+     0
+  9
+$USERI5
+ 70
+     0
+  9
+$USERR1
+ 40
+0.0
+  9
+$USERR2
+ 40
+0.0
+  9
+$USERR3
+ 40
+0.0
+  9
+$USERR4
+ 40
+0.0
+  9
+$USERR5
+ 40
+0.0
+  9
+$WORLDVIEW
+ 70
+     1
+  9
+$SHADEDGE
+ 70
+     3
+  9
+$SHADEDIF
+ 70
+    70
+  9
+$TILEMODE
+ 70
+     1
+  9
+$MAXACTVP
+ 70
+    64
+  9
+$PLIMCHECK
+ 70
+     0
+  9
+$PEXTMIN
+ 10
+1.000000E+20
+ 20
+1.000000E+20
+ 30
+1.000000E+20
+  9
+$PEXTMAX
+ 10
+-1.000000E+20
+ 20
+-1.000000E+20
+ 30
+-1.000000E+20
+  9
+$PLIMMIN
+ 10
+-0.25
+ 20
+-0.25
+  9
+$PLIMMAX
+ 10
+10.75
+ 20
+8.25
+  9
+$UNITMODE
+ 70
+     0
+  9
+$VISRETAIN
+ 70
+     1
+  9
+$PLINEGEN
+ 70
+     0
+  9
+$PSLTSCALE
+ 70
+     0
+  0
+ENDSEC
+  0
+SECTION
+  2
+TABLES
+  0
+TABLE
+  2
+VPORT
+ 70
+     1
+  0
+VPORT
+  2
+*ACTIVE
+ 70
+     0
+ 10
+0.0
+ 20
+0.0
+ 11
+1.0
+ 21
+1.0
+ 12
+635660.539109
+ 22
+1768912.528683
+ 13
+0.0
+ 23
+0.0
+ 14
+0.5
+ 24
+0.5
+ 15
+0.5
+ 25
+0.5
+ 16
+0.0
+ 26
+0.0
+ 36
+1.0
+ 17
+0.0
+ 27
+0.0
+ 37
+0.0
+ 40
+2.694202
+ 41
+2.339196
+ 42
+50.0
+ 43
+0.0
+ 44
+0.0
+ 50
+0.0
+ 51
+0.0
+ 71
+    16
+ 72
+   100
+ 73
+     1
+ 74
+     3
+ 75
+     0
+ 76
+     0
+ 77
+     0
+ 78
+     0
+  0
+ENDTAB
+  0
+TABLE
+  2
+LTYPE
+ 70
+     1
+  0
+LTYPE
+  2
+CONTINUOUS
+ 70
+     0
+  3
+Solid line
+ 72
+    65
+ 73
+     0
+ 40
+0.0
+  0
+ENDTAB
+  0
+TABLE
+  2
+LAYER
+ 70
+     3
+  0
+LAYER
+  2
+0
+ 70
+     0
+ 62
+     7
+  6
+CONTINUOUS
+  0
+LAYER
+  2
+TERRAIN_-_POINTS
+ 70
+     0
+ 62
+    56
+  6
+CONTINUOUS
+  0
+LAYER
+  2
+TERRAIN_-_LIGNES_D_ARÊTES
+ 70
+     0
+ 62
+    15
+  6
+CONTINUOUS
+  0
+ENDTAB
+  0
+TABLE
+  2
+STYLE
+ 70
+     1
+  0
+STYLE
+  2
+STANDARD
+ 70
+     0
+ 40
+0.0
+ 41
+1.0
+ 50
+0.0
+ 71
+     0
+ 42
+0.2
+  3
+txt
+  4
+
+  0
+ENDTAB
+  0
+TABLE
+  2
+VIEW
+ 70
+     0
+  0
+ENDTAB
+  0
+TABLE
+  2
+UCS
+ 70
+     0
+  0
+ENDTAB
+  0
+TABLE
+  2
+APPID
+ 70
+    29
+  0
+APPID
+  2
+ACAD
+ 70
+     0
+  0
+APPID
+  2
+MENSURA
+ 70
+     0
+  0
+APPID
+  2
+MENSURACURVE
+ 70
+     0
+  0
+APPID
+  2
+MENSURAOBJ
+ 70
+     0
+  0
+APPID
+  2
+MENSURADH
+ 70
+     0
+  0
+APPID
+  2
+MENSURABLOCK
+ 70
+     0
+  0
+APPID
+  2
+MENSURABD3D
+ 70
+     0
+  0
+APPID
+  2
+MENSURAPIPE
+ 70
+     0
+  0
+APPID
+  2
+MENSURABLSURF
+ 70
+     0
+  0
+APPID
+  2
+MENSURAHATCHDEF
+ 70
+     0
+  0
+APPID
+  2
+MENSURALT
+ 70
+     0
+  0
+APPID
+  2
+MENSURATS
+ 70
+     0
+  0
+APPID
+  2
+MENSURADS
+ 70
+     0
+  0
+APPID
+  2
+MENSURA0LAYER
+ 70
+     0
+  0
+APPID
+  2
+MENSURALAYERCT
+ 70
+     0
+  0
+APPID
+  2
+MENSURALAYEROPT
+ 70
+     0
+  0
+APPID
+  2
+MENSURARM
+ 70
+     0
+  0
+APPID
+  2
+MENSURAOBJ_08
+ 70
+     0
+  0
+APPID
+  2
+ACAD_PSEXT
+ 70
+     0
+  0
+APPID
+  2
+MENSURATRAJECTORY
+ 70
+     0
+  0
+APPID
+  2
+MENSURAOBJECTATTRIBUTES
+ 70
+     0
+  0
+APPID
+  2
+MENSURAPOINTCONTAINER
+ 70
+     0
+  0
+APPID
+  2
+ACAD_NAV_VCDISPLAY
+ 70
+     0
+  0
+APPID
+  2
+ACAD_MLEADERVER
+ 70
+     0
+  0
+APPID
+  2
+MCS_DIM1
+ 70
+     0
+  0
+APPID
+  2
+MCSXDATA5
+ 70
+     0
+  0
+APPID
+  2
+MCS_DOCUMENT_ID
+ 70
+     0
+  0
+APPID
+  2
+MCS_PARAMS_DATA
+ 70
+     0
+  0
+APPID
+  2
+MC_VERSION_DATA
+ 70
+     0
+  0
+ENDTAB
+  0
+TABLE
+  2
+DIMSTYLE
+ 70
+     1
+  0
+DIMSTYLE
+  2
+STANDARD
+ 70
+     0
+  3
+
+  4
+
+  5
+
+  6
+
+  7
+
+ 40
+1.0
+ 41
+0.18
+ 42
+0.0625
+ 43
+0.38
+ 44
+0.18
+ 45
+0.0
+ 46
+0.0
+ 47
+0.0
+ 48
+0.0
+140
+0.18
+141
+0.09
+142
+0.0
+143
+25.4
+144
+1.0
+145
+0.0
+146
+1.0
+147
+0.09
+ 71
+     0
+ 72
+     0
+ 73
+     1
+ 74
+     1
+ 75
+     0
+ 76
+     0
+ 77
+     0
+ 78
+     0
+170
+     0
+171
+     2
+172
+     0
+173
+     0
+174
+     0
+175
+     0
+176
+     0
+177
+     0
+178
+     0
+  0
+ENDTAB
+  0
+ENDSEC
+  0
+SECTION
+  2
+BLOCKS
+  0
+BLOCK
+  8
+0
+  2
+$MODEL_SPACE
+ 70
+     0
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+  3
+$MODEL_SPACE
+  1
+
+  0
+ENDBLK
+  5
+21
+  8
+0
+  0
+BLOCK
+ 67
+     1
+  8
+0
+  2
+$PAPER_SPACE
+ 70
+     0
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+  3
+$PAPER_SPACE
+  1
+
+  0
+ENDBLK
+  5
+1D
+ 67
+     1
+  8
+0
+  0
+ENDSEC
+  0
+SECTION
+  2
+ENTITIES
+  0
+POINT
+  5
+1CF5
+  8
+TERRAIN_-_POINTS
+ 10
+635660.107471
+ 20
+1768912.797598
+ 30
+3.369808
+1001
+MENSURAOBJ_08
+1070
+     1
+1000
+
+1000
+
+1070
+     0
+  0
+POINT
+  5
+1CF6
+  8
+TERRAIN_-_POINTS
+ 10
+635660.20189
+ 20
+1768912.842141
+ 30
+3.366717
+1001
+MENSURAOBJ_08
+1070
+     1
+1000
+
+1000
+
+1070
+     0
+  0
+POINT
+  5
+1CF7
+  8
+TERRAIN_-_POINTS
+ 10
+635660.30646
+ 20
+1768912.873637
+ 30
+3.363625
+1001
+MENSURAOBJ_08
+1070
+     1
+1000
+
+1000
+
+1070
+     0
+  0
+POINT
+  5
+1CF8
+  8
+TERRAIN_-_POINTS
+ 10
+635660.414535
+ 20
+1768912.88934
+ 30
+3.360534
+1001
+MENSURAOBJ_08
+1070
+     1
+1000
+
+1000
+
+1070
+     0
+  0
+POINT
+  5
+1CF9
+  8
+TERRAIN_-_POINTS
+ 10
+635660.523744
+ 20
+1768912.888906
+ 30
+3.357442
+1001
+MENSURAOBJ_08
+1070
+     1
+1000
+
+1000
+
+1070
+     0
+  0
+POINT
+  5
+1D27
+  8
+TERRAIN_-_POINTS
+ 10
+635660.043859
+ 20
+1768912.900271
+ 30
+3.369808
+1001
+MENSURAOBJ_08
+1070
+     1
+1000
+
+1000
+
+1070
+     0
+  0
+POINT
+  5
+1D28
+  8
+TERRAIN_-_POINTS
+ 10
+635660.158749
+ 20
+1768912.954473
+ 30
+3.366717
+1001
+MENSURAOBJ_08
+1070
+     1
+1000
+
+1000
+
+1070
+     0
+  0
+POINT
+  5
+1D29
+  8
+TERRAIN_-_POINTS
+ 10
+635660.280386
+ 20
+1768912.991108
+ 30
+3.363625
+1001
+MENSURAOBJ_08
+1070
+     1
+1000
+
+1000
+
+1070
+     0
+  0
+POINT
+  5
+1D2A
+  8
+TERRAIN_-_POINTS
+ 10
+635660.406099
+ 20
+1768913.009374
+ 30
+3.360534
+1001
+MENSURAOBJ_08
+1070
+     1
+1000
+
+1000
+
+1070
+     0
+  0
+POINT
+  5
+1D2B
+  8
+TERRAIN_-_POINTS
+ 10
+635660.533132
+ 20
+1768913.00887
+ 30
+3.357442
+1001
+MENSURAOBJ_08
+1070
+     1
+1000
+
+1000
+
+1070
+     0
+  0
+POINT
+  5
+1EE5
+  8
+TERRAIN_-_POINTS
+ 10
+635660.179224
+ 20
+1768912.578903
+ 30
+3.5
+1001
+MENSURAOBJ_08
+1070
+     1
+1000
+
+1000
+
+1070
+     0
+  0
+POLYLINE
+  5
+4A24
+  8
+TERRAIN_-_LIGNES_D_ARÊTES
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+ 66
+     1
+ 70
+     8
+1001
+MENSURAOBJ_08
+1070
+     1
+1000
+
+1000
+
+1070
+     0
+  0
+VERTEX
+  5
+4A26
+  8
+TERRAIN_-_LIGNES_D_ARÊTES
+ 10
+635660.928557
+ 20
+1768911.5792
+ 30
+3.319551
+ 70
+    32
+  0
+VERTEX
+  5
+4A27
+  8
+TERRAIN_-_LIGNES_D_ARÊTES
+ 10
+635660.116997
+ 20
+1768910.93881
+ 30
+3.338841
+ 70
+    32
+  0
+SEQEND
+  5
+4A25
+  8
+TERRAIN_-_LIGNES_D_ARÊTES
+  0
+POLYLINE
+  5
+4C4E
+  8
+TERRAIN_-_LIGNES_D_ARÊTES
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+ 66
+     1
+ 70
+     8
+  0
+VERTEX
+  5
+4C4F
+  8
+TERRAIN_-_LIGNES_D_ARÊTES
+ 10
+635658.852773
+ 20
+1768911.806525
+ 30
+3.392664
+ 70
+    32
+  0
+VERTEX
+  5
+4C50
+  8
+TERRAIN_-_LIGNES_D_ARÊTES
+ 10
+635659.989982
+ 20
+1768912.704795
+ 30
+3.371948
+ 70
+    32
+  0
+SEQEND
+  5
+4C6B
+  8
+TERRAIN_-_LIGNES_D_ARÊTES
+  0
+VIEWPORT
+  5
+4D17
+ 67
+     1
+  8
+0
+  6
+CONTINUOUS
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+ 40
+21.036389
+ 41
+8.993
+ 68
+     1
+ 69
+     1
+1001
+ACAD
+1000
+MVIEW
+1002
+{
+1070
+    16
+1010
+0.0
+1020
+0.0
+1030
+0.0
+1020
+0.0
+1030
+0.0
+1010
+0.0
+1020
+0.0
+1030
+1.0
+1020
+0.0
+1030
+1.0
+1040
+0.0
+1040
+8.993
+1040
+5.25
+1040
+4.0
+1040
+50.0
+1040
+0.0
+1040
+0.0
+1070
+    16
+1070
+   100
+1070
+     0
+1070
+     3
+1070
+     0
+1070
+     0
+1070
+     0
+1070
+     0
+1040
+0.0
+1040
+0.0
+1040
+0.0
+1040
+0.5
+1040
+0.5
+1040
+0.5
+1040
+0.5
+1070
+     0
+1002
+{
+1002
+}
+1002
+}
+  0
+ENDSEC
+  0
+EOF
