@@ -2322,7 +2322,7 @@ QString QgsMapBoxGlStyleConverter::parseArrayStops( const QVariantList &stops, Q
     // top zoom and value
     const QVariant tz = stops.value( i + 1 ).toList().value( 0 );
     caseString += QStringLiteral( "WHEN @vector_tile_zoom > %1 AND @vector_tile_zoom <= %2 "
-                                  "THEN array(%3)" ).arg( bz.toString(),
+                                  "THEN array(%3) " ).arg( bz.toString(),
                                       tz.toString(),
                                       bl.join( ',' ) );
   }
@@ -2337,7 +2337,7 @@ QString QgsMapBoxGlStyleConverter::parseArrayStops( const QVariantList &stops, Q
       ll << QString::number( number * multiplier );
   }
   caseString += QStringLiteral( "WHEN @vector_tile_zoom > %1 "
-                                "THEN array(%2)" ).arg( lz.toString(),
+                                "THEN array(%2) " ).arg( lz.toString(),
                                     ll.join( ',' ) );
   caseString += QLatin1String( "END" );
   return caseString;

@@ -653,6 +653,47 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
             'vertical_anchor_point': '1'}
         self.assertEqual(properties, expected_properties)
 
+    def testParseArrayStops(self):
+        conversion_context = QgsMapBoxGlStyleConversionContext()
+        exp = QgsMapBoxGlStyleConverter.parseArrayStops({}, conversion_context, 1)
+        self.assertEqual(exp, '')
+
+        exp = QgsMapBoxGlStyleConverter.parseArrayStops([[0, [0, 1]], [2, [3, 4]]], conversion_context, 1)
+        self.assertEqual(exp, 'CASE WHEN @vector_tile_zoom > 0 AND @vector_tile_zoom <= 2 THEN array(0,1) WHEN @vector_tile_zoom > 2 THEN array(3,4) END')
+
+        exp = QgsMapBoxGlStyleConverter.parseArrayStops([[0, [0, 1]], [2, [3, 4]]], conversion_context, 2)
+        self.assertEqual(exp, 'CASE WHEN @vector_tile_zoom > 0 AND @vector_tile_zoom <= 2 THEN array(0,2) WHEN @vector_tile_zoom > 2 THEN array(6,8) END')
+
+    def testParseLineDashArray(self):
+        conversion_context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "id": "water line (intermittent)/river",
+            "type": "line",
+            "source": "esri",
+            "source-layer": "water line (intermittent)",
+            "filter": ["==", "_symbol", 3],
+            "minzoom": 10,
+            "layout": {
+                "line-join": "round"
+            },
+            "paint": {
+                "line-color": "#aad3df",
+                "line-dasharray": {
+                    "stops": [[10, [1, 1]], [17, [0.3, 0.2]]]
+                },
+                "line-width": {
+                    "base": 1.2,
+                    "stops": [[10, 1.5], [11, 2], [12, 3], [13, 5], [14, 6], [16, 10], [17, 12]]
+                }
+            }
+        }
+        has_renderer, rendererStyle = QgsMapBoxGlStyleConverter.parseLineLayer(style, conversion_context)
+        self.assertTrue(has_renderer)
+        self.assertEqual(rendererStyle.geometryType(), QgsWkbTypes.LineGeometry)
+        dd_properties = rendererStyle.symbol().symbolLayers()[0].dataDefinedProperties()
+        self.assertEqual(dd_properties.property(QgsSymbolLayer.PropertyStrokeWidth).asExpression(), 'CASE WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 11 THEN scale_exp(@vector_tile_zoom,10,11,1.5,2,1.2) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN scale_exp(@vector_tile_zoom,11,12,2,3,1.2) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN scale_exp(@vector_tile_zoom,12,13,3,5,1.2) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN scale_exp(@vector_tile_zoom,13,14,5,6,1.2) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN scale_exp(@vector_tile_zoom,14,16,6,10,1.2) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN scale_exp(@vector_tile_zoom,16,17,10,12,1.2) WHEN @vector_tile_zoom > 17 THEN 12 END')
+        self.assertEqual(dd_properties.property(QgsSymbolLayer.PropertyCustomDash).asExpression(), 'array_to_string(array_foreach(CASE WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 17 THEN array(1,1) WHEN @vector_tile_zoom > 17 THEN array(0.3,0.2) END,@element * (CASE WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 11 THEN scale_exp(@vector_tile_zoom,10,11,1.5,2,1.2) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN scale_exp(@vector_tile_zoom,11,12,2,3,1.2) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN scale_exp(@vector_tile_zoom,12,13,3,5,1.2) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN scale_exp(@vector_tile_zoom,13,14,5,6,1.2) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN scale_exp(@vector_tile_zoom,14,16,6,10,1.2) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN scale_exp(@vector_tile_zoom,16,17,10,12,1.2) WHEN @vector_tile_zoom > 17 THEN 12 END)), \';\')')
+
 
 if __name__ == '__main__':
     unittest.main()
