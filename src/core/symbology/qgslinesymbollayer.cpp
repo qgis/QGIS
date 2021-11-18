@@ -1237,6 +1237,10 @@ Qgis::MarkerLinePlacement QgsTemplatedLineSymbolLayerBase::placement() const
     return Qgis::MarkerLinePlacement::Interval;
   else if ( mPlacements & Qgis::MarkerLinePlacement::Vertex )
     return Qgis::MarkerLinePlacement::Vertex;
+  else if ( ( mPlacements & Qgis::MarkerLinePlacement::FirstVertex )
+            && ( mPlacements & Qgis::MarkerLinePlacement::InnerVertices )
+            && ( mPlacements & Qgis::MarkerLinePlacement::LastVertex ) )
+    return Qgis::MarkerLinePlacement::Vertex; // retain round trip for deprecated old API
   else if ( mPlacements & Qgis::MarkerLinePlacement::LastVertex )
     return Qgis::MarkerLinePlacement::LastVertex;
   else if ( mPlacements & Qgis::MarkerLinePlacement::FirstVertex )
