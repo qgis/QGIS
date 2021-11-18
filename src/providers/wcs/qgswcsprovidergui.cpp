@@ -19,7 +19,11 @@
 #include "qgswcssourceselect.h"
 #include "qgssourceselectprovider.h"
 #include "qgsproviderguimetadata.h"
+#include "qgsprovidersourcewidgetprovider.h"
+#include "qgsowssourcewidget.h"
 #include "qgswcsdataitemguiprovider.h"
+
+#include "qgsmaplayer.h"
 
 
 //! Provider for WCS layers source select
@@ -34,6 +38,33 @@ class QgsWcsSourceSelectProvider : public QgsSourceSelectProvider
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsWCSSourceSelect( parent, fl, widgetMode );
+    }
+};
+
+
+class QgsWcsSourceWidgetProvider : public QgsProviderSourceWidgetProvider
+{
+  public:
+    QgsWcsSourceWidgetProvider() : QgsProviderSourceWidgetProvider() {}
+    QString providerKey() const override
+    {
+      return QStringLiteral( "wcs" );
+    }
+    bool canHandleLayer( QgsMapLayer *layer ) const override
+    {
+      if ( layer->providerType() != QLatin1String( "wcs" ) )
+        return false;
+
+      return true;
+    }
+    QgsProviderSourceWidget *createWidget( QgsMapLayer *layer, QWidget *parent = nullptr ) override
+    {
+     if ( layer->providerType() != QLatin1String( "wcs" ) )
+       return nullptr;
+
+     QgsOWSSourceWidget *sourceWidget = new QgsOWSSourceWidget( QLatin1String( "wcs" ),  parent );
+
+     return sourceWidget;
     }
 };
 

@@ -1,0 +1,97 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsowssourcewidget.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsOWSSourceWidget : QgsProviderSourceWidget
+{
+%Docstring(signature="appended")
+*************************************************************************
+
+This program is free software; you can redistribute it and/or modify  *
+it under the terms of the GNU General Public License as published by  *
+the Free Software Foundation; either version 2 of the License, or     *
+(at your option) any later version.                                   *
+
+**************************************************************************
+%End
+
+%TypeHeaderCode
+#include "qgsowssourcewidget.h"
+%End
+  public:
+    QgsOWSSourceWidget( const QString &providerKey, QWidget *parent = 0 );
+
+    virtual void setSourceUri( const QString &uri );
+
+    virtual QString sourceUri() const;
+
+
+    void setTimes( const QStringList &times );
+    QStringList times() const;
+
+    void setFormats( const QStringList &formats );
+    QStringList formats() const;
+
+    void setCacheProperties( const QStringList &cacheProperties );
+    QStringList cacheProperties() const;
+
+    void setSpatialExtent( const QgsRectangle &extent );
+    QgsRectangle spatialExtent() const;
+
+    void setLayerName( const QString &name );
+    QString layerName() const;
+
+    void setFeatureInfoLimit( int featureInfoLimit );
+    int featureInfoLimit() const;
+
+    void setTileWidth( int width );
+    int tileWidth() const;
+
+    void setTileHeight( int height );
+    int tileHeight() const;
+
+    void hideInputWidgets();
+
+    void prepareExtent( QgsMapCanvas *mapCanvas );
+    bool extentChecked();
+    QgsRectangle outputExtent();
+
+    void clearFormats();
+
+    void clearCrs();
+
+    void populateTimes();
+    void clearTimes();
+    QString selectedTimeText();
+
+    void setCRSLabel( const QString &label );
+    void setSelectedCRSLabel( const QString &label );
+
+    void setChangeCRSButtonEnabled( bool enabled );
+
+    void insertItemFormat( int index, const QString &label );
+    void setFormatCurrentIndex( int index );
+    void setFormatEnabled( bool enabled );
+    int formatCurrentIndex();
+
+    QVariant cacheData();
+
+  signals:
+
+    void changeCRSButtonClicked();
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsowssourcewidget.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
