@@ -36,6 +36,7 @@ class QButtonGroup;
 class QgsTreeWidgetItem;
 class QDomDocument;
 class QDomElement;
+class QgsOWSSourceWidget;
 
 
 /**
@@ -136,6 +137,10 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
      */
     void prepareExtent();
 
+    bool extentChecked();
+
+    QgsRectangle outputExtent();
+
     //! Service name
     QString mService;
 
@@ -190,6 +195,9 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
 
     //! URI for selected connection
     QgsDataSourceUri mUri;
+
+    //! Layer specific settings widget
+    QgsOWSSourceWidget *mSourceWidget;
 
   private slots:
 
