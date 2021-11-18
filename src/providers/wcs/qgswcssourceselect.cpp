@@ -34,9 +34,6 @@ QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   : QgsOWSSourceSelect( QStringLiteral( "WCS" ), parent, fl, widgetMode )
 {
 
-  // Hide irrelevant widgets
-  mWMSGroupBox->hide();
-  mLayersTab->layout()->removeWidget( mWMSGroupBox );
   mTabWidget->removeTab( mTabWidget->indexOf( mLayerOrderTab ) );
   mTabWidget->removeTab( mTabWidget->indexOf( mTilesetsTab ) );
   mAddDefaultButton->hide();
@@ -145,9 +142,9 @@ void QgsWCSSourceSelect::addButtonClicked()
     uri.setParam( QStringLiteral( "time" ), selectedTime() );
   }
 
-  if ( mSpatialExtentBox->isChecked() )
+  if ( extentChecked() )
   {
-    const QgsRectangle spatialExtent = mSpatialExtentBox->outputExtent();
+    const QgsRectangle spatialExtent = outputExtent();
     bool inverted = uri.hasParam( QStringLiteral( "InvertAxisOrientation" ) );
     QString bbox = QString( inverted ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
                    .arg( qgsDoubleToString( spatialExtent.xMinimum() ),
@@ -188,15 +185,7 @@ void QgsWCSSourceSelect::mLayersTreeWidget_itemSelectionChanged()
 
 void QgsWCSSourceSelect::populateExtent()
 {
-  QgsCoordinateReferenceSystem crs;
-  if ( !selectedCrs().isEmpty() )
-    crs = QgsCoordinateReferenceSystem( selectedCrs() );
-  else
-    crs = QgsCoordinateReferenceSystem( "EPSG:4326" );
-
-  mSpatialExtentBox->setOutputCrs( crs );
-  mSpatialExtentBox->setCurrentExtent( crs.bounds(), crs );
-  mSpatialExtentBox->setOutputExtentFromCurrent();
+  QgsOWSSourceSelect::prepareExtent();
 }
 
 void QgsWCSSourceSelect::updateButtons()

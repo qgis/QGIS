@@ -147,6 +147,10 @@ canvas if it is available.
 .. versionadded:: 3.24
 %End
 
+    bool extentChecked();
+
+    QgsRectangle outputExtent();
+
 
     virtual void populateLayerList();
 %Docstring
@@ -187,6 +191,7 @@ Returns currently selected time
 %Docstring
 Returns currently selected cache load control
 %End
+
 
 
 
