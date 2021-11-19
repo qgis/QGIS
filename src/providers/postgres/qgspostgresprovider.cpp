@@ -354,12 +354,6 @@ void QgsPostgresProvider::setTransaction( QgsTransaction *transaction )
   mTransaction = static_cast<QgsPostgresTransaction *>( transaction );
 }
 
-struct Ewkt
-{
-  int srid = -1;
-  QString wkt;
-};
-
 QgsReferencedGeometry QgsPostgresProvider::fromEwkt( const QString &ewkt, QgsPostgresConn *conn )
 {
   thread_local const QRegularExpression regularExpressionSRID( "^SRID=(\\d+);" );
@@ -368,13 +362,12 @@ QgsReferencedGeometry QgsPostgresProvider::fromEwkt( const QString &ewkt, QgsPos
   if ( !regularExpressionMatch.hasMatch() )
     return QgsReferencedGeometry();
 
-  Ewkt ewktInfo;
-  ewktInfo.wkt = ewkt.mid( regularExpressionMatch.captured( 0 ).size() );
-  ewktInfo.srid = regularExpressionMatch.captured( 1 ).toInt();
+  QString wkt = ewkt.mid( regularExpressionMatch.captured( 0 ).size() );
+  int srid = regularExpressionMatch.captured( 1 ).toInt();
 
 
-  QgsGeometry geom = QgsGeometry::fromWkt( ewktInfo.wkt );
-  return QgsReferencedGeometry( geom, sridToCrs( ewktInfo.srid, conn ) );
+  QgsGeometry geom = QgsGeometry::fromWkt( wkt );
+  return QgsReferencedGeometry( geom, sridToCrs( srid, conn ) );
 }
 
 QString QgsPostgresProvider::toEwkt( const QgsReferencedGeometry &geom, QgsPostgresConn *conn )
