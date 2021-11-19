@@ -2206,7 +2206,7 @@ namespace QgsWms
           continue;
         }
         // The string ends with double single quote in group that start with single quote
-        if (groupString.compare( QLatin1String( "'" ) ) == 0 && str.endsWith( QStringLiteral( "''" ) ) )
+        if ( groupString.compare( QLatin1String( "'" ) ) == 0 && str.endsWith( QStringLiteral( "''" ) ) )
         {
           // The string is not only single quote do not end here
           if ( str.length() != str.count( QLatin1String( "'" ) ) )
