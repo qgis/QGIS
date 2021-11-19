@@ -379,7 +379,10 @@ QgsReferencedGeometry QgsPostgresProvider::fromEwkt( const QString &ewkt, QgsPos
 
 QString QgsPostgresProvider::toEwkt( const QgsReferencedGeometry &geom, QgsPostgresConn *conn )
 {
-  return QStringLiteral( "SRID=%1;%2" ).arg( QString::number( crsToSrid( geom.crs(), conn ) ), geom.asWkt() );
+  if ( !geom.isNull() )
+    return QStringLiteral( "SRID=%1;%2" ).arg( QString::number( crsToSrid( geom.crs(), conn ) ), geom.asWkt() );
+  else
+    return QString();
 }
 
 QString QgsPostgresProvider::geomAttrToString( const QVariant &attr, QgsPostgresConn *conn )
