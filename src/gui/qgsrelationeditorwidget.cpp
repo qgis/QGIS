@@ -657,9 +657,10 @@ void QgsRelationEditorWidget::updateUiMultiEdit()
   for ( const QgsFeature &feature : std::as_const( mFeatureList ) )
   {
     QTreeWidgetItem *treeWidgetItem = new QTreeWidgetItem( mMultiEditTreeWidget );
-    treeWidgetItem->setData( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureType ), static_cast<int>( MultiEditFeatureType::Parent ) );
-    treeWidgetItem->setText( 0, QgsVectorLayerUtils::getFeatureDisplayString( mRelation.referencedLayer(), feature ) );
-    treeWidgetItem->setIcon( 0, QgsIconUtils::iconForLayer( mRelation.referencedLayer() ) );
+    initializeMultiEditTreeWidgetItem( treeWidgetItem,
+                                       QgsVectorLayerUtils::getFeatureDisplayString( mRelation.referencedLayer(), feature ),
+                                       QgsIconUtils::iconForLayer( mRelation.referencedLayer() ),
+                                       MultiEditFeatureType::Parent );
 
     // Parent feature items are not selectable
     treeWidgetItem->setFlags( Qt::ItemIsEnabled );
@@ -680,10 +681,11 @@ void QgsRelationEditorWidget::updateUiMultiEdit()
         while ( featureIteratorFinalChild.nextFeature( featureChildChild ) )
         {
           QTreeWidgetItem *treeWidgetItemChild = new QTreeWidgetItem( treeWidgetItem );
-          treeWidgetItemChild->setData( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureType ), static_cast<int>( MultiEditFeatureType::Child ) );
-          treeWidgetItemChild->setData( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureId ), featureChildChild.id() );
-          treeWidgetItemChild->setText( 0, QgsVectorLayerUtils::getFeatureDisplayString( mNmRelation.referencedLayer(), featureChildChild ) );
-          treeWidgetItemChild->setIcon( 0, QgsIconUtils::iconForLayer( mNmRelation.referencedLayer() ) );
+          initializeMultiEditTreeWidgetItem( treeWidgetItemChild,
+                                             QgsVectorLayerUtils::getFeatureDisplayString( mNmRelation.referencedLayer(), featureChildChild ),
+                                             QgsIconUtils::iconForLayer( mNmRelation.referencedLayer() ),
+                                             MultiEditFeatureType::Child,
+                                             featureChildChild.id() );
 
           treeWidgetItem->addChild( treeWidgetItemChild );
 
@@ -694,10 +696,11 @@ void QgsRelationEditorWidget::updateUiMultiEdit()
       else
       {
         QTreeWidgetItem *treeWidgetItemChild = new QTreeWidgetItem( treeWidgetItem );
-        treeWidgetItemChild->setData( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureType ), static_cast<int>( MultiEditFeatureType::Child ) );
-        treeWidgetItemChild->setData( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureId ), featureChild.id() );
-        treeWidgetItemChild->setText( 0, QgsVectorLayerUtils::getFeatureDisplayString( mRelation.referencingLayer(), featureChild ) );
-        treeWidgetItemChild->setIcon( 0, QgsIconUtils::iconForLayer( mRelation.referencingLayer() ) );
+        initializeMultiEditTreeWidgetItem( treeWidgetItemChild,
+                                           QgsVectorLayerUtils::getFeatureDisplayString( mRelation.referencingLayer(), featureChild ),
+                                           QgsIconUtils::iconForLayer( mRelation.referencingLayer() ),
+                                           MultiEditFeatureType::Child,
+                                           featureChild.id() );
         treeWidgetItem->addChild( treeWidgetItemChild );
 
         featureIdsMixedValues.insert( featureChild.id() );
@@ -708,16 +711,26 @@ void QgsRelationEditorWidget::updateUiMultiEdit()
     mMultiEditTreeWidget->addTopLevelItem( treeWidgetItem );
   }
 
-  // Check for mixed values
+  // Set mixed values indicator (Green or Orange)
+  //
+  // Green:
+  //     n:m and 1:n: 0 child features available
+  //     n:m with no mixed values
+  // Orange:
+  //     n:m with mixed values
+  //     1:n always, including when we pseudo know that feature are related (just added feature)
+  //
+  // See https://github.com/qgis/QGIS/pull/45703
+  //
   if ( mNmRelation.isValid() )
   {
-    QgsFeatureIds featureIdsNotMixed;
-    for ( const QgsFeatureId &featureId : featureIdsMixedValues )
+    QgsFeatureIds::iterator iterator = featureIdsMixedValues.begin();
+    while ( iterator != featureIdsMixedValues.end() )
     {
       bool mixedValues = false;
       for ( QTreeWidgetItem *parentTreeWidgetItem : parentTreeWidgetItems )
       {
-        if ( ! multimapChildFeatures.values( parentTreeWidgetItem ).contains( featureId ) )
+        if ( ! multimapChildFeatures.values( parentTreeWidgetItem ).contains( *iterator ) )
         {
           mixedValues = true;
           break;
@@ -725,17 +738,13 @@ void QgsRelationEditorWidget::updateUiMultiEdit()
       }
 
       if ( !mixedValues )
-        featureIdsNotMixed.insert( featureId );
+      {
+        iterator = featureIdsMixedValues.erase( iterator );
+        continue;
+      }
 
-
+      ++iterator;
     }
-
-    featureIdsMixedValues -= featureIdsNotMixed;
-  }
-  else
-  {
-    for ( const QgsFeatureId &featureIdJustAdded : std::as_const( mMultiEdit1NJustAddedIds ) )
-      featureIdsMixedValues.remove( featureIdJustAdded );
   }
 
   // Set multiedit info label
@@ -767,6 +776,18 @@ void QgsRelationEditorWidget::updateUiMultiEdit()
       }
     }
   }
+}
+
+void QgsRelationEditorWidget::initializeMultiEditTreeWidgetItem( QTreeWidgetItem *treeWidgetItem,
+    const QString &text,
+    const QIcon &icon,
+    MultiEditFeatureType type,
+    const QVariant &featureId )
+{
+  treeWidgetItem->setText( 0, text );
+  treeWidgetItem->setIcon( 0, icon );
+  treeWidgetItem->setData( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureType ), static_cast<int>( type ) );
+  treeWidgetItem->setData( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureId ), featureId );
 }
 
 void QgsRelationEditorWidget::onKeyPressed( QKeyEvent *e )

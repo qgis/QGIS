@@ -213,12 +213,6 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     void multiEditItemSelectionChanged();
 
   private:
-    void initDualView( QgsVectorLayer *layer, const QgsFeatureRequest &request );
-    void setMapTool( QgsMapTool *mapTool );
-    void unsetMapTool();
-    QgsFeatureIds selectedChildFeatureIds() const;
-    void updateUiSingleEdit();
-    void updateUiMultiEdit();
 
     enum class MultiEditFeatureType : int
     {
@@ -231,6 +225,18 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
       FeatureType = Qt::UserRole + 1,
       FeatureId = Qt::UserRole + 2
     };
+
+    void initDualView( QgsVectorLayer *layer, const QgsFeatureRequest &request );
+    void setMapTool( QgsMapTool *mapTool );
+    void unsetMapTool();
+    QgsFeatureIds selectedChildFeatureIds() const;
+    void updateUiSingleEdit();
+    void updateUiMultiEdit();
+    void initializeMultiEditTreeWidgetItem( QTreeWidgetItem *treeWidgetItem,
+                                            const QString &text,
+                                            const QIcon &icon,
+                                            MultiEditFeatureType type,
+                                            const QVariant &featureId = QVariant() );
 
     QgsDualView *mDualView = nullptr;
     QPointer<QgsMessageBarItem> mMessageBarItem;
@@ -260,6 +266,8 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
 
     QList<QTreeWidgetItem *> mMultiEditPreviousSelectedItems;
     QgsFeatureIds mMultiEdit1NJustAddedIds;
+
+    friend class TestQgsRelationEditorWidget;
 };
 
 

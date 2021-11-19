@@ -177,6 +177,12 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
      */
     virtual void setConfig( const QVariantMap &config ) = 0;
 
+    /**
+     * Returns true if editing multiple features at a time
+     * \since QGIS 3.24
+     */
+    bool multiEditModeActive() const;
+
   public slots:
 
     /**
@@ -231,12 +237,6 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
      * Duplicates features
      */
     void duplicateFeatures( const QgsFeatureIds &fids );
-
-    /**
-     * Returns true if editing multiple features at a time
-     * \since QGIS 3.24
-     */
-    bool multiEditModeActive() const;
 
   protected:
 

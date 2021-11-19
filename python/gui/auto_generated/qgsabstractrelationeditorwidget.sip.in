@@ -167,6 +167,13 @@ Returns the widget configuration
 Defines the widget configuration
 %End
 
+    bool multiEditModeActive() const;
+%Docstring
+Returns true if editing multiple features at a time
+
+.. versionadded:: 3.24
+%End
+
   public slots:
 
     virtual void parentFormValueChanged( const QString &attribute, const QVariant &newValue ) = 0;
@@ -221,13 +228,6 @@ Duplicates a feature
     void duplicateFeatures( const QgsFeatureIds &fids );
 %Docstring
 Duplicates features
-%End
-
-    bool multiEditModeActive() const;
-%Docstring
-Returns true if editing multiple features at a time
-
-.. versionadded:: 3.24
 %End
 
   protected:

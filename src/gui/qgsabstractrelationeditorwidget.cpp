@@ -174,6 +174,11 @@ void QgsAbstractRelationEditorWidget::updateTitle()
 {
 }
 
+bool QgsAbstractRelationEditorWidget::multiEditModeActive() const
+{
+  return mFeatureList.size() > 1;
+}
+
 QgsFeature QgsAbstractRelationEditorWidget::feature() const
 {
   if ( !mFeatureList.isEmpty() )
@@ -693,11 +698,6 @@ void QgsAbstractRelationEditorWidget::duplicateFeatures( const QgsFeatureIds &fi
     QgsVectorLayerUtils::QgsDuplicateFeatureContext duplicatedFeatureContext;
     QgsVectorLayerUtils::duplicateFeature( layer, f, QgsProject::instance(), duplicatedFeatureContext );
   }
-}
-
-bool QgsAbstractRelationEditorWidget::multiEditModeActive() const
-{
-  return mFeatureList.size() > 1;
 }
 
 void QgsAbstractRelationEditorWidget::showEvent( QShowEvent * )
