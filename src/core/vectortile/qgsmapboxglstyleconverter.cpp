@@ -228,39 +228,42 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
   }
 
   QColor fillOutlineColor;
-  if ( !isBackgroundStyle && !jsonPaint.contains( QStringLiteral( "fill-outline-color" ) ) )
+  if ( !isBackgroundStyle )
   {
-    // fill-outline-color
-    if ( fillColor.isValid() )
-      fillOutlineColor = fillColor;
+    if ( !jsonPaint.contains( QStringLiteral( "fill-outline-color" ) ) )
+    {
+      // fill-outline-color
+      if ( fillColor.isValid() )
+        fillOutlineColor = fillColor;
+      else
+      {
+        // use fill color data defined property
+        if ( ddProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
+          ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor,  ddProperties.property( QgsSymbolLayer::PropertyFillColor ) );
+      }
+    }
     else
     {
-      // use fill color data defined property
-      if ( ddProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
-        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor,  ddProperties.property( QgsSymbolLayer::PropertyFillColor ) );
-    }
-  }
-  else
-  {
-    const QVariant jsonFillOutlineColor = jsonPaint.value( QStringLiteral( "fill-outline-color" ) );
-    switch ( jsonFillOutlineColor.type() )
-    {
-      case QVariant::Map:
-        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseInterpolateColorByZoom( jsonFillOutlineColor.toMap(), context, &fillOutlineColor ) );
-        break;
+      const QVariant jsonFillOutlineColor = jsonPaint.value( QStringLiteral( "fill-outline-color" ) );
+      switch ( jsonFillOutlineColor.type() )
+      {
+        case QVariant::Map:
+          ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseInterpolateColorByZoom( jsonFillOutlineColor.toMap(), context, &fillOutlineColor ) );
+          break;
 
-      case QVariant::List:
-      case QVariant::StringList:
-        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseValueList( jsonFillOutlineColor.toList(), PropertyType::Color, context, 1, 255, &fillOutlineColor ) );
-        break;
+        case QVariant::List:
+        case QVariant::StringList:
+          ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseValueList( jsonFillOutlineColor.toList(), PropertyType::Color, context, 1, 255, &fillOutlineColor ) );
+          break;
 
-      case QVariant::String:
-        fillOutlineColor = parseColor( jsonFillOutlineColor.toString(), context );
-        break;
+        case QVariant::String:
+          fillOutlineColor = parseColor( jsonFillOutlineColor.toString(), context );
+          break;
 
-      default:
-        context.pushWarning( QObject::tr( "%1: Skipping unsupported fill-outline-color type (%2)" ).arg( context.layerId(), QMetaType::typeName( jsonFillOutlineColor.type() ) ) );
-        break;
+        default:
+          context.pushWarning( QObject::tr( "%1: Skipping unsupported fill-outline-color type (%2)" ).arg( context.layerId(), QMetaType::typeName( jsonFillOutlineColor.type() ) ) );
+          break;
+      }
     }
   }
 
