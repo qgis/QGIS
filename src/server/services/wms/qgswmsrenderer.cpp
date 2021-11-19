@@ -2182,7 +2182,7 @@ namespace QgsWms
     for ( int i = 0; i < list.size(); ++i )
     {
       QString &str = list[i];
-      if ( str.startsWith( groupString ) )
+      if ( str.startsWith( groupString ) && startGroup == -1 )
       {
         startGroup = i;
         groupActive = true;
@@ -2200,6 +2200,20 @@ namespace QgsWms
 
       if ( str.endsWith( groupString ) )
       {
+        // The first string of the group is a single groupString do not end here
+        if ( i == startGroup && str.length() == 1 )
+        {
+          continue;
+        }
+        // The string ends with double single quote in group that start with single quote
+        if (groupString.compare( QLatin1String( "'" ) ) == 0 && str.endsWith( QStringLiteral( "''" ) ) )
+        {
+          // The string is not only single quote do not end here
+          if ( str.length() != str.count( QLatin1String( "'" ) ) )
+          {
+            continue;
+          }
+        }
         int endGroup = i;
         groupActive = false;
 
