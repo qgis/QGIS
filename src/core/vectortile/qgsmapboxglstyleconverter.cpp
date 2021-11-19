@@ -232,15 +232,12 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
   {
     if ( !jsonPaint.contains( QStringLiteral( "fill-outline-color" ) ) )
     {
-      // fill-outline-color
       if ( fillColor.isValid() )
         fillOutlineColor = fillColor;
-      else
-      {
-        // use fill color data defined property
-        if ( ddProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
-          ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor,  ddProperties.property( QgsSymbolLayer::PropertyFillColor ) );
-      }
+
+      // match fill color data defined property when active
+      if ( ddProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
+        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor,  ddProperties.property( QgsSymbolLayer::PropertyFillColor ) );
     }
     else
     {
