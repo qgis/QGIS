@@ -428,14 +428,38 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
     return false;
   }
 
+  QgsPropertyCollection ddProperties;
+  QString rasterLineSprite;
+
   const QVariantMap jsonPaint = jsonLayer.value( QStringLiteral( "paint" ) ).toMap();
   if ( jsonPaint.contains( QStringLiteral( "line-pattern" ) ) )
   {
-    context.pushWarning( QObject::tr( "%1: Skipping unsupported line-pattern property" ).arg( context.layerId() ) );
-    return false;
-  }
+    const QVariant jsonLinePattern = jsonPaint.value( QStringLiteral( "line-pattern" ) );
+    switch ( jsonLinePattern.type() )
+    {
+      case QVariant::Map:
+      case QVariant::String:
+      {
+        QSize spriteSize;
+        QString spriteProperty, spriteSizeProperty;
+        rasterLineSprite = retrieveSpriteAsBase64( jsonLinePattern, context, spriteSize, spriteProperty, spriteSizeProperty );
+        ddProperties.setProperty( QgsSymbolLayer::PropertyFile, QgsProperty::fromExpression( spriteProperty ) );
+        break;
+      }
 
-  QgsPropertyCollection ddProperties;
+      case QVariant::List:
+      case QVariant::StringList:
+      default:
+        break;
+    }
+
+    if ( rasterLineSprite.isEmpty() )
+    {
+      // unsupported line-pattern definition, moving on
+      context.pushWarning( QObject::tr( "%1: Skipping unsupported line-pattern property" ).arg( context.layerId() ) );
+      return false;
+    }
+  }
 
   // line color
   QColor lineColor;
@@ -637,34 +661,58 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
   }
 
   std::unique_ptr< QgsSymbol > symbol( std::make_unique< QgsLineSymbol >() );
-  QgsSimpleLineSymbolLayer *lineSymbol = dynamic_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) );
-  Q_ASSERT( lineSymbol ); // should not fail since QgsLineSymbol() constructor instantiates a QgsSimpleLineSymbolLayer
-
-  // set render units
   symbol->setOutputUnit( context.targetUnit() );
-  lineSymbol->setOutputUnit( context.targetUnit() );
-  lineSymbol->setPenCapStyle( penCapStyle );
-  lineSymbol->setPenJoinStyle( penJoinStyle );
-  lineSymbol->setDataDefinedProperties( ddProperties );
-  lineSymbol->setOffset( lineOffset );
-  lineSymbol->setOffsetUnit( context.targetUnit() );
 
-  if ( lineOpacity != -1 )
+  if ( !rasterLineSprite.isEmpty() )
   {
-    symbol->setOpacity( lineOpacity );
+    QgsRasterLineSymbolLayer *lineSymbol = new QgsRasterLineSymbolLayer( rasterLineSprite );
+    lineSymbol->setOutputUnit( context.targetUnit() );
+    lineSymbol->setPenCapStyle( penCapStyle );
+    lineSymbol->setPenJoinStyle( penJoinStyle );
+    lineSymbol->setDataDefinedProperties( ddProperties );
+    lineSymbol->setOffset( lineOffset );
+    lineSymbol->setOffsetUnit( context.targetUnit() );
+
+    if ( lineOpacity != -1 )
+    {
+      symbol->setOpacity( lineOpacity );
+    }
+    if ( lineWidth != -1 )
+    {
+      lineSymbol->setWidth( lineWidth );
+    }
+    symbol->changeSymbolLayer( 0, lineSymbol );
   }
-  if ( lineColor.isValid() )
+  else
   {
-    lineSymbol->setColor( lineColor );
-  }
-  if ( lineWidth != -1 )
-  {
-    lineSymbol->setWidth( lineWidth );
-  }
-  if ( !dashVector.empty() )
-  {
-    lineSymbol->setUseCustomDashPattern( true );
-    lineSymbol->setCustomDashVector( dashVector );
+    QgsSimpleLineSymbolLayer *lineSymbol = dynamic_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) );
+    Q_ASSERT( lineSymbol ); // should not fail since QgsLineSymbol() constructor instantiates a QgsSimpleLineSymbolLayer
+
+    // set render units
+    lineSymbol->setOutputUnit( context.targetUnit() );
+    lineSymbol->setPenCapStyle( penCapStyle );
+    lineSymbol->setPenJoinStyle( penJoinStyle );
+    lineSymbol->setDataDefinedProperties( ddProperties );
+    lineSymbol->setOffset( lineOffset );
+    lineSymbol->setOffsetUnit( context.targetUnit() );
+
+    if ( lineOpacity != -1 )
+    {
+      symbol->setOpacity( lineOpacity );
+    }
+    if ( lineColor.isValid() )
+    {
+      lineSymbol->setColor( lineColor );
+    }
+    if ( lineWidth != -1 )
+    {
+      lineSymbol->setWidth( lineWidth );
+    }
+    if ( !dashVector.empty() )
+    {
+      lineSymbol->setUseCustomDashPattern( true );
+      lineSymbol->setCustomDashVector( dashVector );
+    }
   }
 
   style.setGeometryType( QgsWkbTypes::LineGeometry );

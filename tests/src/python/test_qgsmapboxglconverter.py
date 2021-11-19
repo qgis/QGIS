@@ -694,6 +694,35 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         self.assertEqual(dd_properties.property(QgsSymbolLayer.PropertyStrokeWidth).asExpression(), 'CASE WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 11 THEN scale_exp(@vector_tile_zoom,10,11,1.5,2,1.2) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN scale_exp(@vector_tile_zoom,11,12,2,3,1.2) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN scale_exp(@vector_tile_zoom,12,13,3,5,1.2) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN scale_exp(@vector_tile_zoom,13,14,5,6,1.2) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN scale_exp(@vector_tile_zoom,14,16,6,10,1.2) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN scale_exp(@vector_tile_zoom,16,17,10,12,1.2) WHEN @vector_tile_zoom > 17 THEN 12 END')
         self.assertEqual(dd_properties.property(QgsSymbolLayer.PropertyCustomDash).asExpression(), 'array_to_string(array_foreach(CASE WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 17 THEN array(1,1) WHEN @vector_tile_zoom > 17 THEN array(0.3,0.2) END,@element * (CASE WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 11 THEN scale_exp(@vector_tile_zoom,10,11,1.5,2,1.2) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN scale_exp(@vector_tile_zoom,11,12,2,3,1.2) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN scale_exp(@vector_tile_zoom,12,13,3,5,1.2) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN scale_exp(@vector_tile_zoom,13,14,5,6,1.2) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN scale_exp(@vector_tile_zoom,14,16,6,10,1.2) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN scale_exp(@vector_tile_zoom,16,17,10,12,1.2) WHEN @vector_tile_zoom > 17 THEN 12 END)), \';\')')
 
+    def testLinePattern(self):
+        """ Test line-pattern property """
+        context = QgsMapBoxGlStyleConversionContext()
+
+        image = QImage(QSize(1, 1), QImage.Format_ARGB32)
+        context.setSprites(image, {"foo": {"x": 0, "y": 0, "width": 1, "height": 1, "pixelRatio": 1}})
+        style = {
+            "id": "mountain range/ridge",
+            "type": "line",
+            "source": "esri",
+            "source-layer": "mountain range",
+            "filter": ["==", "_symbol", 1],
+            "minzoom": 13,
+            "layout": {
+                "line-join": "round"
+            },
+            "paint": {
+                "line-pattern": {"stops": [[13, "foo"], [15, "foo"]]},
+                "line-width": {"stops": [[14, 20], [15, 40]]}
+            }
+        }
+        has_renderer, rendererStyle = QgsMapBoxGlStyleConverter.parseLineLayer(style, context)
+        self.assertTrue(has_renderer)
+        self.assertEqual(rendererStyle.geometryType(), QgsWkbTypes.LineGeometry)
+        self.assertEqual(rendererStyle.symbol().symbolLayers()[0].layerType(), 'RasterLine')
+        dd_props = rendererStyle.symbol().symbolLayers()[0].dataDefinedProperties()
+        prop = dd_props.property(QgsSymbolLayer.PropertyFile)
+        self.assertTrue(prop.isActive())
+
 
 if __name__ == '__main__':
     unittest.main()
