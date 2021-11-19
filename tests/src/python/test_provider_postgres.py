@@ -3537,6 +3537,18 @@ class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCas
         feature['geom'] = 'SRID=4326;Point (71 78)'
         self.assertTrue(vl.updateFeature(feature))
 
+        # addFeature
+        feature['pk'] = 8
+        self.assertTrue(vl.addFeature(feature))
+
+        # changeAttributeValue
+        geom = QgsReferencedGeometry(QgsGeometry.fromWkt('POINT(3 3)'), QgsCoordinateReferenceSystem.fromEpsgId(4326))
+
+        feature['pk'] = 8
+        self.assertTrue(vl.changeAttributeValue(8, 8, geom))
+        self.assertEqual(vl.getFeature(8)['geom'].asWkt(), geom.asWkt())
+        self.assertEqual(vl.getFeature(8)['geom'].crs(), geom.crs())
+
 
 if __name__ == '__main__':
     unittest.main()
