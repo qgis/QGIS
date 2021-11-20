@@ -107,6 +107,7 @@ Qgis::BrowserLayerType QgsProviderSublayerItem::layerTypeFromSublayer( const Qgs
       return Qgis::BrowserLayerType::PointCloud;
 
     case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::GroupLayer:
       break;
   }
   return Qgis::BrowserLayerType::NoType;

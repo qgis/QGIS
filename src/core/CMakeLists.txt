@@ -373,6 +373,7 @@ set(QGIS_CORE_SRCS
   qgsgeometryoptions.cpp
   qgsgml.cpp
   qgsgmlschema.cpp
+  qgsgrouplayer.cpp
   qgshistogram.cpp
   qgshstoreutils.cpp
   qgshtmlutils.cpp
@@ -1008,6 +1009,7 @@ set(QGIS_CORE_HDRS
   qgsgeometryvalidator.h
   qgsgml.h
   qgsgmlschema.h
+  qgsgrouplayer.h
   qgshistogram.h
   qgshstoreutils.h
   qgshtmlutils.h

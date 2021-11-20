@@ -45,13 +45,14 @@ int QgisEvent = QEvent::User + 1;
  */
 enum class QgsMapLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayer, LayerType ) : int
   {
-  VectorLayer,
-  RasterLayer,
-  PluginLayer,
-  MeshLayer,      //!< Added in 3.2
-  VectorTileLayer, //!< Added in 3.14
+  VectorLayer, //!< Vector layer
+  RasterLayer, //!< Raster layer
+  PluginLayer, //!< Plugin based layer
+  MeshLayer,      //!< Mesh layer. Added in QGIS 3.2
+  VectorTileLayer, //!< Vector tile layer. Added in QGIS 3.14
   AnnotationLayer, //!< Contains freeform, georeferenced annotations. Added in QGIS 3.16
-  PointCloudLayer, //!< Added in 3.18
+  PointCloudLayer, //!< Point cloud layer. Added in QGIS 3.18
+  GroupLayer, //!< Composite group layer. Added in QGIS 3.24
 };
 
 

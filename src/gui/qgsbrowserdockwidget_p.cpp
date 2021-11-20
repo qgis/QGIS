@@ -231,6 +231,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
 
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::GroupLayer:
     {
       // TODO: support display of properties for plugin layers
       return;

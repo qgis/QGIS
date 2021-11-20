@@ -28,6 +28,7 @@ enum class QgsMapLayerType
   VectorTileLayer,
   AnnotationLayer,
   PointCloudLayer,
+  GroupLayer,
 };
 
 

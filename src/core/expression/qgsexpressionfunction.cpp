@@ -5661,6 +5661,8 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
         return QCoreApplication::translate( "expressions", "Annotation" );
       case QgsMapLayerType::PointCloudLayer:
         return QCoreApplication::translate( "expressions", "Point Cloud" );
+      case QgsMapLayerType::GroupLayer:
+        return QCoreApplication::translate( "expressions", "Group" );
     }
   }
   else

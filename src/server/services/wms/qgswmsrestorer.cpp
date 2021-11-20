@@ -63,6 +63,7 @@ QgsLayerRestorer::QgsLayerRestorer( const QList<QgsMapLayer *> &layers )
       case QgsMapLayerType::PluginLayer:
       case QgsMapLayerType::AnnotationLayer:
       case QgsMapLayerType::PointCloudLayer:
+      case QgsMapLayerType::GroupLayer:
         break;
     }
 
@@ -117,6 +118,7 @@ QgsLayerRestorer::~QgsLayerRestorer()
       case QgsMapLayerType::PluginLayer:
       case QgsMapLayerType::AnnotationLayer:
       case QgsMapLayerType::PointCloudLayer:
+      case QgsMapLayerType::GroupLayer:
         break;
     }
   }

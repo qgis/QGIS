@@ -262,6 +262,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
     case QgsMapLayerType::PointCloudLayer:
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::GroupLayer:
       break;
   }
 
@@ -673,6 +674,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
 
       case QgsMapLayerType::PointCloudLayer:
       case QgsMapLayerType::AnnotationLayer:
+      case QgsMapLayerType::GroupLayer:
       {
         break;
       }
@@ -828,6 +830,7 @@ bool QgsLayerStyleManagerWidgetFactory::supportsLayer( QgsMapLayer *layer ) cons
     case QgsMapLayerType::PointCloudLayer:
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::GroupLayer:
       return false;
   }
   return false; // no warnings
