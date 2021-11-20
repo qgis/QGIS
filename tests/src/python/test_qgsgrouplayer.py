@@ -17,7 +17,12 @@ import os
 import gc
 from qgis.PyQt.QtCore import (
     QCoreApplication,
-    QEvent
+    QEvent,
+    QSize,
+    QDir
+)
+from qgis.PyQt.QtGui import (
+    QPainter
 )
 from tempfile import TemporaryDirectory
 
@@ -28,7 +33,9 @@ from qgis.core import (
     QgsCoordinateTransformContext,
     QgsGroupLayer,
     QgsGeometry,
-    QgsPointXY
+    QgsPointXY,
+    QgsMapSettings,
+    QgsMultiRenderChecker
 )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -39,6 +46,16 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsGroupLayer(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.report = "<h1>Python QgsGroupLayer Tests</h1>\n"
+
+    @classmethod
+    def tearDownClass(cls):
+        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        with open(report_file_path, 'a') as report_file:
+            report_file.write(cls.report)
 
     def test_children(self):
         options = QgsGroupLayer.LayerOptions(QgsCoordinateTransformContext())
@@ -95,7 +112,7 @@ class TestQgsGroupLayer(unittest.TestCase):
         self.assertTrue(group_layer.isValid())
         layer1 = QgsVectorLayer('Point?crs=epsg:3111', 'Point', 'memory')
         f = QgsFeature()
-        f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(2478778,2487236)))
+        f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(2478778, 2487236)))
         layer1.startEditing()
         layer1.addFeature(f)
         layer1.commitChanges()
@@ -108,7 +125,7 @@ class TestQgsGroupLayer(unittest.TestCase):
         self.assertEqual(extent.yMaximum(), 2487236)
 
         layer2 = QgsVectorLayer('Point?crs=epsg:4326', 'Point', 'memory')
-        f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(142.178,-35.943)))
+        f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(142.178, -35.943)))
         layer2.startEditing()
         layer2.addFeature(f)
         layer2.commitChanges()
@@ -160,6 +177,67 @@ class TestQgsGroupLayer(unittest.TestCase):
 
             self.assertEqual(restored_group_1.childLayers(), [restored_layer1, restored_layer2, restored_layer3])
             self.assertEqual(restored_group_2.childLayers(), [restored_layer3, restored_layer1])
+
+    def test_render_group_opacity(self):
+        """
+        Test rendering layers as a group with opacity
+        """
+        vl1 = QgsVectorLayer(TEST_DATA_DIR + '/lines.shp')
+        self.assertTrue(vl1.isValid())
+        vl2 = QgsVectorLayer(TEST_DATA_DIR + '/points.shp')
+        self.assertTrue(vl2.isValid())
+        vl3 = QgsVectorLayer(TEST_DATA_DIR + '/polys.shp')
+        self.assertTrue(vl3.isValid())
+
+        options = QgsGroupLayer.LayerOptions(QgsCoordinateTransformContext())
+        group_layer = QgsGroupLayer('group', options)
+        group_layer.setChildLayers([vl1, vl2, vl3])
+        # render group with 50% opacity
+        group_layer.setOpacity(0.5)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(600, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(group_layer.crs())
+        mapsettings.setExtent(group_layer.extent())
+        mapsettings.setLayers([group_layer])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('group_layer')
+        renderchecker.setControlName('expected_group_opacity')
+        result = renderchecker.runTest('expected_group_opacity')
+        TestQgsGroupLayer.report += renderchecker.report()
+        self.assertTrue(result)
+
+    def test_render_group_blend_mode(self):
+        """
+        Test rendering layers as a group limits child layer blend mode scope
+        """
+        vl1 = QgsVectorLayer(TEST_DATA_DIR + '/lines.shp')
+        self.assertTrue(vl1.isValid())
+        vl2 = QgsVectorLayer(TEST_DATA_DIR + '/points.shp')
+        self.assertTrue(vl2.isValid())
+
+        options = QgsGroupLayer.LayerOptions(QgsCoordinateTransformContext())
+        group_layer = QgsGroupLayer('group', options)
+        group_layer.setChildLayers([vl2, vl1])
+        vl1.setBlendMode(QPainter.CompositionMode_DestinationIn)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(600, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(group_layer.crs())
+        mapsettings.setExtent(group_layer.extent())
+        mapsettings.setLayers([group_layer])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('group_layer')
+        renderchecker.setControlName('expected_group_child_blend_mode')
+        result = renderchecker.runTest('expected_group_child_blend_mode')
+        TestQgsGroupLayer.report += renderchecker.report()
+        self.assertTrue(result)
 
 
 if __name__ == '__main__':

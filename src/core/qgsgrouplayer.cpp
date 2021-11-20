@@ -19,6 +19,7 @@
 #include "qgsmaplayerfactory.h"
 #include "qgspainting.h"
 #include "qgsmaplayerlistutils.h"
+#include "qgsgrouplayerrenderer.h"
 #include "qgsmaplayerref.h"
 #include "qgsvectorlayer.h"
 #include "qgscoordinatetransform.h"
@@ -53,8 +54,7 @@ QgsGroupLayer *QgsGroupLayer::clone() const
 
 QgsMapLayerRenderer *QgsGroupLayer::createMapRenderer( QgsRenderContext &context )
 {
-  Q_UNUSED( context )
-  return nullptr;
+  return new QgsGroupLayerRenderer( this, context );
 }
 
 QgsRectangle QgsGroupLayer::extent() const
