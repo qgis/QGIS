@@ -222,6 +222,7 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString &filenam
   // This is a slightly generous regular expression in that it allows spaces and unquoted field types
   // not allowed in OGR CSVT files.  Also doesn't care if int and string fields have
 
+  strTypeList = strTypeList.toLower();
   const QRegularExpression reTypeList( QRegularExpression::anchoredPattern( QStringLiteral( "^(?:\\s*(\\\"?)(?:integer|real|double|long|longlong|int8|string|date|datetime|time)(?:\\(\\d+(?:\\.\\d+)?\\))?\\1\\s*(?:,|$))+" ) ) );
   const QRegularExpressionMatch match = reTypeList.match( strTypeList );
   if ( !match.hasMatch() )
@@ -236,7 +237,7 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString &filenam
   QgsDebugMsgLevel( QStringLiteral( "Field type string: %1" ).arg( strTypeList ), 2 );
 
   int pos = 0;
-  const QRegularExpression reType( QStringLiteral( "(integer|real|double|string|date|datetime|time)" ) );
+  const QRegularExpression reType( QStringLiteral( "(integer|real|double|string|datetime|date|time)" ) );
   QRegularExpressionMatch typeMatch = reType.match( strTypeList, pos );
   while ( typeMatch.hasMatch() )
   {
