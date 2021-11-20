@@ -990,6 +990,14 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
       }
       break;
     }
+    case QVariant::UserType:
+    {
+      if (fld.type() == qVariantFromValue(QgsInterval()).type())
+      {
+        v = ::PQgetvalue(queryResult.result(), row, col);
+      }
+      break;
+    }
     default:
     {
       v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), queryResult.PQgetvalue( row, col ), fld.typeName() );
