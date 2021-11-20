@@ -374,6 +374,7 @@ set(QGIS_CORE_SRCS
   qgsgml.cpp
   qgsgmlschema.cpp
   qgsgrouplayer.cpp
+  qgsgrouplayerrenderer.cpp
   qgshistogram.cpp
   qgshstoreutils.cpp
   qgshtmlutils.cpp
@@ -1010,6 +1011,7 @@ set(QGIS_CORE_HDRS
   qgsgml.h
   qgsgmlschema.h
   qgsgrouplayer.h
+  qgsgrouplayerrenderer.h
   qgshistogram.h
   qgshstoreutils.h
   qgshtmlutils.h
