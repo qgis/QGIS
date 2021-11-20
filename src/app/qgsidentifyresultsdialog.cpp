@@ -521,7 +521,7 @@ void QgsIdentifyResultsDialog::addFeature( const QgsMapToolIdentify::IdentifyRes
       break;
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::AnnotationLayer:
-
+    case QgsMapLayerType::GroupLayer:
       break;
   }
 }
@@ -2115,6 +2115,7 @@ void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::MeshLayer:
     case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::GroupLayer:
       return; // not supported
   }
 

@@ -229,6 +229,7 @@ bool QgsMapRendererJob::prepareLabelCache() const
       case QgsMapLayerType::PluginLayer:
       case QgsMapLayerType::MeshLayer:
       case QgsMapLayerType::PointCloudLayer:
+      case QgsMapLayerType::GroupLayer:
         break;
     }
 

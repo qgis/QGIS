@@ -112,6 +112,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
         case QgsMapLayerType::PointCloudLayer:
           sipType = sipType_QgsPointCloudLayer;
           break;
+        case QgsMapLayerType::GroupLayer:
+          sipType = sipType_QgsGroupLayer;
+          break;
         default:
           sipType = nullptr;
           break;

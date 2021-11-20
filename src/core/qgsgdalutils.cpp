@@ -652,6 +652,7 @@ bool QgsGdalUtils::vrtMatchesLayerType( const QString &vrtPath, QgsMapLayerType 
     case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::AnnotationLayer:
     case QgsMapLayerType::PointCloudLayer:
+    case QgsMapLayerType::GroupLayer:
       break;
   }
 

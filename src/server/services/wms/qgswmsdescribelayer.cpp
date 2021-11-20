@@ -198,6 +198,7 @@ namespace QgsWms
         case QgsMapLayerType::PluginLayer:
         case QgsMapLayerType::AnnotationLayer:
         case QgsMapLayerType::PointCloudLayer:
+        case QgsMapLayerType::GroupLayer:
           break;
       }
       layerNode.appendChild( typeNode );

@@ -5945,6 +5945,7 @@ void QgisApp::postProcessAddedLayer( QgsMapLayer *layer )
     }
 
     case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::GroupLayer:
       break;
 
     case QgsMapLayerType::PointCloudLayer:
@@ -7597,6 +7598,7 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
       case QgsMapLayerType::AnnotationLayer:
       case QgsMapLayerType::PluginLayer:
       case QgsMapLayerType::VectorTileLayer:
+      case QgsMapLayerType::GroupLayer:
         // not supported here yet!
         break;
 
@@ -9040,6 +9042,7 @@ QString QgisApp::saveAsFile( QgsMapLayer *layer, const bool onlySelected, const 
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::AnnotationLayer:
     case QgsMapLayerType::PointCloudLayer:
+    case QgsMapLayerType::GroupLayer:
       return QString();
   }
   return QString();
@@ -9208,6 +9211,7 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
 
     case QgsMapLayerType::AnnotationLayer:
     case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::GroupLayer:
       break;
 
   }
@@ -11259,6 +11263,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
     case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::AnnotationLayer:
     case QgsMapLayerType::PointCloudLayer:
+    case QgsMapLayerType::GroupLayer:
       break;
   }
   return false;
@@ -11561,6 +11566,7 @@ void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRep
     case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::AnnotationLayer:
     case QgsMapLayerType::PointCloudLayer:
+    case QgsMapLayerType::GroupLayer:
       break;
   }
 }
@@ -11625,6 +11631,7 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerR
     case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::AnnotationLayer:
     case QgsMapLayerType::PointCloudLayer:
+    case QgsMapLayerType::GroupLayer:
       break;
   }
 }
@@ -11842,6 +11849,7 @@ void QgisApp::updateLayerModifiedActions()
       case QgsMapLayerType::VectorTileLayer:
       case QgsMapLayerType::AnnotationLayer:
       case QgsMapLayerType::PointCloudLayer:
+      case QgsMapLayerType::GroupLayer:
         break;
     }
   }
@@ -12276,6 +12284,10 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
     {
       case QgsMapLayerType::PluginLayer:
         unSppType = tr( "Plugin layer" );
+        break;
+
+      case QgsMapLayerType::GroupLayer:
+        unSppType = tr( "Group layer" );
         break;
 
       case QgsMapLayerType::VectorLayer:
@@ -15911,6 +15923,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       break;
 
     case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::GroupLayer:
       break;
 
     case QgsMapLayerType::AnnotationLayer:
@@ -16853,6 +16866,8 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
       break;
     }
 
+    case QgsMapLayerType::GroupLayer:
+      break;
   }
 }
 

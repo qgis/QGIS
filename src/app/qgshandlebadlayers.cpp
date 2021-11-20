@@ -298,6 +298,7 @@ void QgsHandleBadLayers::browseClicked()
 
       case QgsMapLayerType::AnnotationLayer:
       case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::GroupLayer:
         break;
     }
 

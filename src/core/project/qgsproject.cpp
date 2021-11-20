@@ -65,6 +65,7 @@
 #include "qgsannotationlayer.h"
 #include "qgspointcloudlayer.h"
 #include "qgsattributeeditorcontainer.h"
+#include "qgsgrouplayer.h"
 
 
 #include <algorithm>
@@ -1218,6 +1219,13 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
     {
       const QgsAnnotationLayer::LayerOptions options( mTransformContext );
       mapLayer = std::make_unique<QgsAnnotationLayer>( QString(), options );
+      break;
+    }
+
+    case QgsMapLayerType::GroupLayer:
+    {
+      const QgsGroupLayer::LayerOptions options( mTransformContext );
+      mapLayer = std::make_unique<QgsGroupLayer>( QString(), options );
       break;
     }
   }

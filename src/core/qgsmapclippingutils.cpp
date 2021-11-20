@@ -152,6 +152,7 @@ QPainterPath QgsMapClippingUtils::calculatePainterClipRegion( const QList<QgsMap
       case QgsMapLayerType::PluginLayer:
       case QgsMapLayerType::PointCloudLayer:
       case QgsMapLayerType::AnnotationLayer:
+      case QgsMapLayerType::GroupLayer:
         // for these layer types, we ignore the region's featureClip behavior.
         break;
 

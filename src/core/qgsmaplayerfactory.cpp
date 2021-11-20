@@ -22,6 +22,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgsvectortilelayer.h"
 #include "qgsannotationlayer.h"
+#include "qgsgrouplayer.h"
 
 QgsMapLayerType QgsMapLayerFactory::typeFromString( const QString &string, bool &ok )
 {
@@ -40,6 +41,8 @@ QgsMapLayerType QgsMapLayerFactory::typeFromString( const QString &string, bool 
     return QgsMapLayerType::PluginLayer;
   else if ( string.compare( QLatin1String( "annotation" ), Qt::CaseInsensitive ) == 0 )
     return QgsMapLayerType::AnnotationLayer;
+  else if ( string.compare( QLatin1String( "group" ), Qt::CaseInsensitive ) == 0 )
+    return QgsMapLayerType::GroupLayer;
 
   ok = false;
   return QgsMapLayerType::VectorLayer;
@@ -63,6 +66,8 @@ QString QgsMapLayerFactory::typeToString( QgsMapLayerType type )
       return QStringLiteral( "annotation" );
     case QgsMapLayerType::PointCloudLayer:
       return QStringLiteral( "point-cloud" );
+    case QgsMapLayerType::GroupLayer:
+      return QStringLiteral( "group" );
   }
   return QString();
 }
@@ -105,6 +110,12 @@ QgsMapLayer *QgsMapLayerFactory::createLayer( const QString &uri, const QString 
     {
       const QgsAnnotationLayer::LayerOptions annotationOptions( options.transformContext );
       return new QgsAnnotationLayer( name, annotationOptions );
+    }
+
+    case QgsMapLayerType::GroupLayer:
+    {
+      const QgsGroupLayer::LayerOptions groupOptions( options.transformContext );
+      return new QgsGroupLayer( name, groupOptions );
     }
 
     case QgsMapLayerType::PointCloudLayer:
