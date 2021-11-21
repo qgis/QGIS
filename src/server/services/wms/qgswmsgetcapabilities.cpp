@@ -1403,9 +1403,6 @@ namespace QgsWms
           appendCrsElementToLayer( doc, layerElement, CRSPrecedingElement, crs );
         }
       }
-
-      //Support for CRS:84 is mandatory (equals EPSG:4326 with reversed axis)
-      appendCrsElementToLayer( doc, layerElement, CRSPrecedingElement, QString( "CRS:84" ) );
     }
 
     void appendCrsElementToLayer( QDomDocument &doc, QDomElement &layerElement, const QDomElement &precedingElement,
