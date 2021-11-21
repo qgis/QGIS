@@ -2182,11 +2182,15 @@ namespace QgsWms
     for ( int i = 0; i < list.size(); ++i )
     {
       QString &str = list[i];
-      if ( str.startsWith( groupString ) && startGroup == -1 )
+      if ( str.startsWith( groupString ) )
       {
-        startGroup = i;
-        groupActive = true;
-        concatString.clear();
+        if ( ( str.length() == 1 && startGroup == -1 ) ||
+             ( str.length() != 1 ) )
+        {
+          startGroup = i;
+          groupActive = true;
+          concatString.clear();
+        }
       }
 
       if ( groupActive )
