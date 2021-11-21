@@ -1066,9 +1066,9 @@ bool QgsPostgresProvider::loadFields()
         fieldType = QVariant::Time;
         fieldSize = -1;
       }
-      else if (fieldTypeName == QLatin1String("interval"))
+      else if ( fieldTypeName == QLatin1String( "interval" ) )
       {
-        fieldType = qVariantFromValue(QgsInterval()).type();
+        fieldType = qVariantFromValue( QgsInterval() ).type();
         fieldSize = -1;
       }
       else if ( fieldTypeName == QLatin1String( "timestamp" ) || fieldTypeName == QLatin1String( "timestamptz" ) )
@@ -4262,9 +4262,9 @@ bool QgsPostgresProvider::convertField( QgsField &field, const QMap<QString, QVa
       break;
 
     case QVariant::UserType:
-      if (field.type() == qVariantFromValue(QgsInterval()).type())
+      if ( field.type() == qVariantFromValue( QgsInterval() ).type() )
       {
-        fieldType = QStringLiteral("interval");
+        fieldType = QStringLiteral( "interval" );
         fieldPrec = 0;
       }
       break;

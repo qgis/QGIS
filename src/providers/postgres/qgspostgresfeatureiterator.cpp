@@ -992,9 +992,9 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
     }
     case QVariant::UserType:
     {
-      if (fld.type() == qVariantFromValue(QgsInterval()).type())
+      if ( fld.type() == qVariantFromValue( QgsInterval() ).type() )
       {
-        v = ::PQgetvalue(queryResult.result(), row, col);
+        v = ::PQgetvalue( queryResult.result(), row, col );
       }
       break;
     }
