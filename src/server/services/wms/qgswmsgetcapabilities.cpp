@@ -1375,6 +1375,8 @@ namespace QgsWms
         return;
       }
 
+      QString version = doc.documentElement().attribute( QStringLiteral( "version" ) );
+
       //insert the CRS elements after the title element to be in accordance with the WMS 1.3 specification
       QDomElement titleElement = layerElement.firstChildElement( QStringLiteral( "Title" ) );
       QDomElement abstractElement = layerElement.firstChildElement( QStringLiteral( "Abstract" ) );
@@ -1402,6 +1404,13 @@ namespace QgsWms
         {
           appendCrsElementToLayer( doc, layerElement, CRSPrecedingElement, crs );
         }
+      }
+
+      // Support for CRS:84 is mandatory (equals EPSG:4326 with reversed axis)
+      // https://github.com/opengeospatial/ets-wms13/blob/47155399c09b200cb21382874fdb21d5fae4ab6e/src/site/markdown/index.md
+      if ( version == QLatin1String( "1.3.0" ) )
+      {
+        appendCrsElementToLayer( doc, layerElement, CRSPrecedingElement, QString( "CRS:84" ) );
       }
     }
 
