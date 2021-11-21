@@ -2587,3 +2587,32 @@ def test_042_no_detect_types_csvt():
     wanted['log'] = [
     ]
     return wanted
+
+
+def test_048_csvt_file():
+    wanted = {}
+    wanted['uri'] = 'file://testcsvt5.csv?geomType=none&type=csv'
+    wanted['fieldTypes'] = ['text', 'text', 'double', 'double', 'double']
+    wanted['geometryType'] = 4
+    wanted['data'] = {
+        2: {
+            'id': '01',
+            'description': 'Test csvt 1',
+            'f1': '0.3',
+            'f2': '0.8',
+            'f3': '1.4',
+            '#fid': 2,
+            '#geometry': 'None',
+        },
+        3: {
+            'id': '12',
+            'description': 'Test csvt 2',
+            'f1': '0.2',
+            'f2': '78.0',
+            'f3': '13.4',
+            '#fid': 3,
+            '#geometry': 'None',
+        },
+    }
+    wanted['log'] = []
+    return wanted
