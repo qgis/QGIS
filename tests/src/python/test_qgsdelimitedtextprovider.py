@@ -933,6 +933,13 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
         assert vl.fields().at(6).type() == QVariant.Time
         assert vl.fields().at(9).type() == QVariant.String
 
+    def test_048_csvt_file(self):
+        # CSVT field types non lowercase
+        filename = 'testcsvt5.csv'
+        params = {'geomType': 'none', 'type': 'csv'}
+        requests = None
+        self.runTest(filename, requests, **params)
+
     def testSpatialIndex(self):
         srcpath = os.path.join(TEST_DATA_DIR, 'provider')
         basetestfile = os.path.join(srcpath, 'delimited_xyzm.csv')
