@@ -168,7 +168,7 @@
         <x>0</x>
         <y>0</y>
         <width>703</width>
-        <height>579</height>
+        <height>608</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -673,7 +673,7 @@
          <property name="collapsed" stdset="0">
           <bool>true</bool>
          </property>
-         <layout class="QGridLayout" name="gridLayout_7">
+         <layout class="QGridLayout" name="gridLayout_4">
           <item row="0" column="0">
            <layout class="QHBoxLayout" name="horizontalLayout_4">
             <property name="rightMargin">
@@ -731,6 +731,25 @@
             </item>
            </layout>
           </item>
+          <item row="0" column="1">
+           <widget class="QCheckBox" name="cbxPointIsComma">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="toolTip">
+             <string>Number fields use comma for a decimal separator</string>
+            </property>
+            <property name="statusTip">
+             <string>Number fields use comma for a decimal separator</string>
+            </property>
+            <property name="whatsThis">
+             <string>Number fields use comma for a decimal separator</string>
+            </property>
+            <property name="text">
+             <string>Decimal separator is comma</string>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="0">
            <widget class="QCheckBox" name="cbxUseHeader">
             <property name="toolTip">
@@ -766,22 +785,13 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QCheckBox" name="cbxPointIsComma">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="toolTip">
-             <string>Number fields use comma for a decimal separator</string>
-            </property>
-            <property name="statusTip">
-             <string>Number fields use comma for a decimal separator</string>
-            </property>
-            <property name="whatsThis">
-             <string>Number fields use comma for a decimal separator</string>
-            </property>
+          <item row="2" column="0">
+           <widget class="QCheckBox" name="cbxDetectTypes">
             <property name="text">
-             <string>Decimal separator is comma</string>
+             <string>Detect field types</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -801,15 +811,39 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QCheckBox" name="cbxDetectTypes">
-            <property name="text">
-             <string>Detect field types</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
+          <item row="3" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_8">
+            <item>
+             <widget class="QLabel" name="mBoolTrueLabel">
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Columns filled with '0/1', 'true/false', 't/f', and 'yes/no' (case insensitive) are automatically detected as boolean fields. An additional value for &lt;span style=&quot; font-weight:600;&quot;&gt;true&lt;/span&gt; can be specified here.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="text">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Boolean &lt;span style=&quot; font-weight:600;&quot;&gt;true&lt;/span&gt; custom value&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="mBooleanTrue"/>
+            </item>
+           </layout>
+          </item>
+          <item row="3" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_9">
+            <item>
+             <widget class="QLabel" name="mBooleanFalseLabel">
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Columns filled with '0/1', 'true/false', 't/f', and 'yes/no' (case insensitive) are automatically detected as boolean fields. An additional value for &lt;span style=&quot; font-weight:600;&quot;&gt;false&lt;/span&gt; can be specified here.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="text">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Boolean &lt;span style=&quot; font-weight:600;&quot;&gt;false&lt;/span&gt; custom value&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="mBooleanFalse"/>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
