@@ -92,7 +92,7 @@ bool QgsGroupLayerRenderer::render()
     QImage image;
     QPainter *prevPainter = context.painter();
     std::unique_ptr< QPainter > imagePainter;
-    if ( renderer->forceRasterRender() || true )
+    if ( renderer->forceRasterRender() )
     {
       image = QImage( context.deviceOutputSize(), context.imageFormat() );
       image.setDevicePixelRatio( static_cast<qreal>( context.devicePixelRatio() ) );
