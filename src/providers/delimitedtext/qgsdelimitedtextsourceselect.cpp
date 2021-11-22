@@ -138,6 +138,8 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
     return;
   }
 
+  cancelScanTask();
+
   //Build the delimited text URI from the user provided information
   const QString datasourceUrl { url( )};
 
@@ -506,16 +508,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
 
   // Run the scan in a separate thread
 
-  // This will cancel the existing task (if any)
-  if ( mScanTaskId > 0 )
-  {
-    QgsDelimitedTextFileScanTask *task { qobject_cast<QgsDelimitedTextFileScanTask *>( QgsApplication::taskManager()->task( mScanTaskId ) ) };
-    if ( task )
-    {
-      task->cancel();
-    }
-    mScanTaskId = -1;
-  }
+  cancelScanTask();
 
   QgsDelimitedTextFileScanTask *newTask { new QgsDelimitedTextFileScanTask( url( /* skip overriden types */ true ) ) };
   mCancelButton->show();
@@ -930,6 +923,20 @@ QString QgsDelimitedTextSourceSelect::url( bool skipOverriddenTypes )
 
   url.setQuery( query );
   return QString::fromLatin1( url.toEncoded() );
+}
+
+void QgsDelimitedTextSourceSelect::cancelScanTask()
+{
+  // This will cancel the existing task (if any)
+  if ( mScanTaskId > 0 )
+  {
+    QgsDelimitedTextFileScanTask *task { qobject_cast<QgsDelimitedTextFileScanTask *>( QgsApplication::taskManager()->task( mScanTaskId ) ) };
+    if ( task )
+    {
+      task->cancel();
+    }
+    mScanTaskId = -1;
+  }
 }
 
 bool QgsDelimitedTextFileScanTask::run()

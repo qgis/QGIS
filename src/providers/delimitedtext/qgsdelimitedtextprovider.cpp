@@ -69,6 +69,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
                   << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), QStringLiteral( "integer" ), QVariant::Int, 0, 10 )
                   << QgsVectorDataProvider::NativeType( tr( "Whole number (integer - 64 bit)" ), QStringLiteral( "integer64" ), QVariant::LongLong )
                   << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), QStringLiteral( "double" ), QVariant::Double, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool, -1, -1, -1, -1 )
                   << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QVariant::String, -1, -1, -1, -1 )
 
                   // date type
@@ -158,7 +159,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
 
   if ( query.hasQueryItem( QStringLiteral( "quiet" ) ) ) mShowInvalidLines = false;
 
-  // Parse and store user-defined field types
+  // Parse and store user-defined field types and boolean literals
   const auto queryItems { query.queryItems( QUrl::ComponentFormattingOption::FullyDecoded ) };
   for ( const auto &queryItem : std::as_const( queryItems ) )
   {
@@ -170,6 +171,14 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
         mUserDefinedFieldTypes.insert( parts[0], parts [1] );
       }
     }
+  }
+
+  // Parse and store custom boolean literals
+  if ( query.hasQueryItem( QStringLiteral( "booleanTrue" ) ) && query.hasQueryItem( QStringLiteral( "booleanFalse" ) ) )
+  {
+    mUserDefinedBooleanLiterals = qMakePair<QString, QString>(
+                                    query.queryItemValue( QStringLiteral( "booleanTrue" ), QUrl::ComponentFormattingOption::FullyDecoded ),
+                                    query.queryItemValue( QStringLiteral( "booleanFalse" ), QUrl::ComponentFormattingOption::FullyDecoded ) );
   }
 
   // Do an initial scan of the file to determine field names, types,
@@ -425,14 +434,16 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
   QList<bool> couldBeDateTime;
   QList<bool> couldBeDate;
   QList<bool> couldBeTime;
+  QList<bool> couldBeBool;
 
   bool foundFirstGeometry = false;
+  QMap<int, QPair<QString, QString>> boolCandidates;
+  const QList<QPair<QString, QString>> boolLiterals { booleanLiterals() };
 
   while ( true )
   {
     if ( feedback && feedback->isCanceled() )
     {
-      qDebug() << "Task was canceled";
       break;
     }
     const QgsDelimitedTextFile::Status status = mFile->nextRecord( parts );
@@ -621,9 +632,10 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
         couldBeDateTime.append( false );
         couldBeDate.append( false );
         couldBeTime.append( false );
+        couldBeBool.append( false );
       }
 
-      // If this column has been empty so far then initiallize it
+      // If this column has been empty so far then initialize it
       // for possible types
 
       if ( isEmpty[i] )
@@ -635,6 +647,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
         couldBeDateTime[i] = true;
         couldBeDate[i] = true;
         couldBeTime[i] = true;
+        couldBeBool[i] = true;
       }
 
       if ( ! mDetectTypes )
@@ -644,6 +657,31 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
 
       // Now test for still valid possible types for the field
       // Types are possible until first record which cannot be parsed
+
+      if ( couldBeBool[i] )
+      {
+        couldBeBool[i] = false;
+        if ( ! boolCandidates.contains( i ) )
+        {
+          boolCandidates[ i ] = QPair<QString, QString>();
+        }
+        if ( ! boolCandidates[i].first.isEmpty() )
+        {
+          couldBeBool[i] = value.compare( boolCandidates[i].first, Qt::CaseSensitivity::CaseInsensitive ) == 0 || value.compare( boolCandidates[i].second, Qt::CaseSensitivity::CaseInsensitive ) == 0;
+        }
+        else
+        {
+          for ( const auto &bc : std::as_const( boolLiterals ) )
+          {
+            if ( value.compare( bc.first, Qt::CaseSensitivity::CaseInsensitive ) == 0 || value.compare( bc.second, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+            {
+              boolCandidates[i] = bc;
+              couldBeBool[i] = true;
+              break;
+            }
+          }
+        }
+      }
 
       if ( couldBeInt[i] )
       {
@@ -725,8 +763,8 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
       }
     }
 
-    // In case of fast scan we exit after the first record
-    if ( ! forceFullScan && mReadFlags.testFlag( ReadFlag::SkipFullScan ) )
+    // In case of fast scan we exit after the third record (to avoid detecting booleans)
+    if ( ! forceFullScan && mReadFlags.testFlag( ReadFlag::SkipFullScan ) && mNumberFeatures > 2 )
     {
       break;
     }
@@ -749,63 +787,72 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
   QgsDebugMsgLevel( QStringLiteral( "Reading CSVT: %1" ).arg( mFile->fileName() ), 2 );
   QStringList csvtTypes = readCsvtFieldTypes( mFile->fileName(), &csvtMessage );
 
-  for ( int i = 0; i < fieldNames.size(); i++ )
+  for ( int fieldIdx = 0; fieldIdx < fieldNames.size(); fieldIdx++ )
   {
     // Skip over WKT field ... don't want to display in attribute table
-    if ( i == mWktFieldIndex )
+    if ( fieldIdx == mWktFieldIndex )
       continue;
 
     // Add the field index lookup for the column
-    attributeColumns.append( i );
+    attributeColumns.append( fieldIdx );
     QVariant::Type fieldType = QVariant::String;
     QString typeName = QStringLiteral( "text" );
 
     // User-defined types take precedence over all
-    if ( ! mUserDefinedFieldTypes.value( fieldNames[ i ] ).isEmpty() )
+    if ( ! mUserDefinedFieldTypes.value( fieldNames[ fieldIdx ] ).isEmpty() )
     {
-      typeName = mUserDefinedFieldTypes.value( fieldNames[ i ] );
+      typeName = mUserDefinedFieldTypes.value( fieldNames[ fieldIdx ] );
     }
     else
     {
-      if ( i < csvtTypes.size() )
+      if ( fieldIdx < csvtTypes.size() )
       {
-        typeName = csvtTypes[i];
+        typeName = csvtTypes[fieldIdx];
       }
-      else if ( mDetectTypes && i < couldBeInt.size() )
+      else if ( mDetectTypes && fieldIdx < couldBeInt.size() )
       {
-        if ( couldBeInt[i] )
+        if ( couldBeBool[fieldIdx] )
+        {
+          typeName = QStringLiteral( "bool" );
+        }
+        else if ( couldBeInt[fieldIdx] )
         {
           typeName = QStringLiteral( "integer" );
         }
-        else if ( couldBeLongLong[i] )
+        else if ( couldBeLongLong[fieldIdx] )
         {
           typeName = QStringLiteral( "integer64" );
         }
-        else if ( couldBeDouble[i] )
+        else if ( couldBeDouble[fieldIdx] )
         {
           typeName = QStringLiteral( "double" );
         }
-        else if ( couldBeDateTime[i] )
+        else if ( couldBeDateTime[fieldIdx] )
         {
           typeName = QStringLiteral( "datetime" );
         }
-        else if ( couldBeDate[i] )
+        else if ( couldBeDate[fieldIdx] )
         {
           typeName = QStringLiteral( "date" );
         }
-        else if ( couldBeTime[i] )
+        else if ( couldBeTime[fieldIdx] )
         {
           typeName = QStringLiteral( "time" );
         }
       }
     }
 
-    if ( typeName == QLatin1String( "integer" ) || typeName == QLatin1String( "int8" ) )
+    if ( typeName == QLatin1String( "bool" ) )
+    {
+      fieldType = QVariant::Bool;
+      mFieldBooleanLiterals.insert( fieldIdx, boolCandidates[fieldIdx] );
+    }
+    else if ( typeName == QLatin1String( "integer" ) || typeName == QLatin1String( "int8" ) )
     {
       typeName = QLatin1String( "integer" );
       fieldType = QVariant::Int;
     }
-    else if ( typeName == QLatin1String( "longlong" ) || typeName == QLatin1String( "long" ) )
+    else if ( typeName == QLatin1String( "integer64" ) || typeName == QLatin1String( "longlong" ) || typeName == QLatin1String( "long" ) )
     {
       typeName = QLatin1String( "longlong" );
       fieldType = QVariant::LongLong;
@@ -832,7 +879,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
       typeName = QStringLiteral( "text" );
     }
 
-    attributeFields.append( QgsField( fieldNames[i], fieldType, typeName ) );
+    attributeFields.append( QgsField( fieldNames[fieldIdx], fieldType, typeName ) );
   }
 
   QgsDebugMsgLevel( "Field count for the delimited text file is " + QString::number( attributeFields.size() ), 2 );
@@ -1017,6 +1064,22 @@ void QgsDelimitedTextProvider::appendZM( QString &sZ, QString &sM, QgsPoint &poi
     if ( mOk )
       point.addMValue( m );
   }
+}
+
+QList<QPair<QString, QString> > QgsDelimitedTextProvider::booleanLiterals() const
+{
+  QList<QPair<QString, QString> > booleans
+  {
+    { QStringLiteral( "true" ), QStringLiteral( "false" ) },
+    { QStringLiteral( "t" ), QStringLiteral( "f" ) },
+    { QStringLiteral( "yes" ), QStringLiteral( "no" ) },
+    { QStringLiteral( "1" ), QStringLiteral( "0" ) },
+  };
+  if ( ! mUserDefinedBooleanLiterals.first.isEmpty() )
+  {
+    booleans.append( mUserDefinedBooleanLiterals );
+  }
+  return booleans;
 }
 
 bool QgsDelimitedTextProvider::pointFromXY( QString &sX, QString &sY, QgsPoint &pt, const QString &decimalPoint, bool xyDms )

@@ -122,6 +122,7 @@ class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private
     void showHelp();
     void showCrsWidget();
     QString url( bool skipOverriddenTypes = false );
+    void cancelScanTask();
 
   public slots:
     void addButtonClicked() override;
