@@ -237,7 +237,7 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString &filenam
   QgsDebugMsgLevel( QStringLiteral( "Field type string: %1" ).arg( strTypeList ), 2 );
 
   int pos = 0;
-  const QRegularExpression reType( QStringLiteral( "(integer|real|double|string|datetime|date|time)" ) );
+  const QRegularExpression reType( QStringLiteral( "(integer|longlong|real|double|string|date|datetime|time)" ) );
   QRegularExpressionMatch typeMatch = reType.match( strTypeList, pos );
   while ( typeMatch.hasMatch() )
   {
