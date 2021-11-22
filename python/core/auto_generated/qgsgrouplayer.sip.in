@@ -94,6 +94,22 @@ Returns the child layers contained by the group.
 .. seealso:: :py:func:`setChildLayers`
 %End
 
+    QgsPaintEffect *paintEffect() const;
+%Docstring
+Returns the current paint effect for the group layer.
+
+.. seealso:: :py:func:`setPaintEffect`
+%End
+
+    void setPaintEffect( QgsPaintEffect *effect /Transfer/ );
+%Docstring
+Sets the current paint ``effect`` for the renderer.
+
+Ownership is transferred to the renderer.
+
+.. seealso:: :py:func:`paintEffect`
+%End
+
 };
 
 

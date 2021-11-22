@@ -22,7 +22,8 @@ from qgis.PyQt.QtCore import (
     QDir
 )
 from qgis.PyQt.QtGui import (
-    QPainter
+    QPainter,
+    QColor
 )
 from tempfile import TemporaryDirectory
 
@@ -35,7 +36,10 @@ from qgis.core import (
     QgsGeometry,
     QgsPointXY,
     QgsMapSettings,
-    QgsMultiRenderChecker
+    QgsMultiRenderChecker,
+    QgsDropShadowEffect,
+    QgsEffectStack,
+    QgsDrawSourceEffect
 )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -157,6 +161,9 @@ class TestQgsGroupLayer(unittest.TestCase):
         group_layer2 = QgsGroupLayer('group 2', options)
         group_layer2.setChildLayers([layer3, layer1])
 
+        drop_shadow = QgsDropShadowEffect()
+        group_layer2.setPaintEffect(drop_shadow)
+
         p.addMapLayer(group_layer1, False)
         p.addMapLayer(group_layer2, False)
 
@@ -177,6 +184,8 @@ class TestQgsGroupLayer(unittest.TestCase):
 
             self.assertEqual(restored_group_1.childLayers(), [restored_layer1, restored_layer2, restored_layer3])
             self.assertEqual(restored_group_2.childLayers(), [restored_layer3, restored_layer1])
+
+            self.assertIsInstance(restored_group_2.paintEffect(), QgsDropShadowEffect)
 
     def test_render_group_opacity(self):
         """
@@ -236,6 +245,45 @@ class TestQgsGroupLayer(unittest.TestCase):
         renderchecker.setControlPathPrefix('group_layer')
         renderchecker.setControlName('expected_group_child_blend_mode')
         result = renderchecker.runTest('expected_group_child_blend_mode')
+        TestQgsGroupLayer.report += renderchecker.report()
+        self.assertTrue(result)
+
+    def test_render_paint_effect(self):
+        """
+        Test rendering layers as a group with paint effect
+        """
+        vl1 = QgsVectorLayer(TEST_DATA_DIR + '/lines.shp')
+        self.assertTrue(vl1.isValid())
+        vl2 = QgsVectorLayer(TEST_DATA_DIR + '/points.shp')
+        self.assertTrue(vl2.isValid())
+
+        options = QgsGroupLayer.LayerOptions(QgsCoordinateTransformContext())
+        group_layer = QgsGroupLayer('group', options)
+        group_layer.setChildLayers([vl2, vl1])
+
+        drop_shadow = QgsDropShadowEffect()
+        drop_shadow.setBlurLevel(0)
+        drop_shadow.setOpacity(1)
+        drop_shadow.setColor(QColor(255, 0, 255))
+        drop_shadow.setOffsetDistance(3)
+
+        effect_stack = QgsEffectStack()
+        effect_stack.appendEffect(drop_shadow)
+        effect_stack.appendEffect(QgsDrawSourceEffect())
+        group_layer.setPaintEffect(effect_stack)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(600, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(group_layer.crs())
+        mapsettings.setExtent(group_layer.extent())
+        mapsettings.setLayers([group_layer])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('group_layer')
+        renderchecker.setControlName('expected_group_paint_effect')
+        result = renderchecker.runTest('expected_group_paint_effect')
         TestQgsGroupLayer.report += renderchecker.report()
         self.assertTrue(result)
 
