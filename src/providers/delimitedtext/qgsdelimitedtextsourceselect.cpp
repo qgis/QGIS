@@ -64,6 +64,7 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
   cmbEncoding->setCurrentIndex( cmbEncoding->findText( QStringLiteral( "UTF-8" ) ) );
 
   loadSettings();
+  mBooleanFalse->setEnabled( ! mBooleanTrue->text().isEmpty() );
   updateFieldsAndEnable();
 
   connect( txtLayerName, &QLineEdit::textChanged, this, &QgsDelimitedTextSourceSelect::enableAccept );
@@ -93,6 +94,17 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
   connect( cbxXyDms, &QAbstractButton::toggled, this, &QgsDelimitedTextSourceSelect::updateFieldsAndEnable );
 
   connect( crsGeometry, &QgsProjectionSelectionWidget::crsChanged, this, &QgsDelimitedTextSourceSelect::updateFieldsAndEnable );
+
+  connect( mBooleanTrue, &QLineEdit::textChanged, mBooleanFalse, [ = ]
+  {
+    mBooleanFalse->setEnabled( ! mBooleanTrue->text().isEmpty() );
+    updateFieldsAndEnable();
+  } );
+
+  connect( mBooleanFalse, &QLineEdit::textChanged, mBooleanFalse, [ = ]
+  {
+    updateFieldsAndEnable();
+  } );
 
   const QgsSettings settings;
   mFileWidget->setDialogTitle( tr( "Choose a Delimited Text File to Open" ) );
@@ -238,6 +250,8 @@ void QgsDelimitedTextSourceSelect::loadSettings( const QString &subkey, bool loa
   cbxSubsetIndex->setChecked( settings.value( key + "/subsetIndex", "false" ) == "true" );
   cbxSpatialIndex->setChecked( settings.value( key + "/spatialIndex", "false" ) == "true" );
   cbxWatchFile->setChecked( settings.value( key + "/watchFile", "false" ) == "true" );
+  mBooleanFalse->setText( settings.value( key + "/booleanFalse", "" ).toString() );
+  mBooleanTrue->setText( settings.value( key + "/booleanTrue", "" ).toString() );
 
   if ( loadGeomSettings )
   {
@@ -284,6 +298,8 @@ void QgsDelimitedTextSourceSelect::saveSettings( const QString &subkey, bool sav
   settings.setValue( key + "/subsetIndex", cbxSubsetIndex->isChecked() ? "true" : "false" );
   settings.setValue( key + "/spatialIndex", cbxSpatialIndex->isChecked() ? "true" : "false" );
   settings.setValue( key + "/watchFile", cbxWatchFile->isChecked() ? "true" : "false" );
+  settings.setValue( key + "/booleanFalse", mBooleanFalse->text() );
+  settings.setValue( key + "/booleanTrue", mBooleanTrue->text() );
   if ( saveGeomSettings )
   {
     QString geomColumnType = QStringLiteral( "none" );
@@ -777,6 +793,12 @@ bool QgsDelimitedTextSourceSelect::validate()
     }
 
   }
+
+  if ( mBooleanTrue->text().isEmpty() != mBooleanFalse->text().isEmpty() )
+  {
+    message = tr( "Custom boolean values for \"true\" or \"false\" is missing." );
+  }
+
   lblStatus->setText( message );
   return enabled;
 }
@@ -841,6 +863,12 @@ QString QgsDelimitedTextSourceSelect::url( bool skipOverriddenTypes )
   if ( cbxXyDms->isChecked() )
   {
     query.addQueryItem( QStringLiteral( "xyDms" ), QStringLiteral( "yes" ) );
+  }
+
+  if ( ! mBooleanFalse->text().isEmpty() && ! mBooleanTrue->text().isEmpty() )
+  {
+    query.addQueryItem( QStringLiteral( "booleanFalse" ), mBooleanFalse->text() );
+    query.addQueryItem( QStringLiteral( "booleanTrue" ), mBooleanTrue->text() );
   }
 
   bool haveGeom = true;
