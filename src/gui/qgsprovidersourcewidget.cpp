@@ -23,3 +23,13 @@ QgsProviderSourceWidget::QgsProviderSourceWidget( QWidget *parent )
 {
 
 }
+
+void QgsProviderSourceWidget::setMapCanvas( QgsMapCanvas *canvas )
+{
+  mMapCanvas = canvas;
+}
+
+QgsMapCanvas *QgsProviderSourceWidget::mapCanvas()
+{
+  return mMapCanvas;
+}
