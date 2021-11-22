@@ -559,14 +559,8 @@ void QgsAttributeForm::updateValuesDependenciesDefaultValues( const int originId
   }
 }
 
-void QgsAttributeForm::updateValuesDependenciesVirtualFields( const int originIdx )
+QgsFeature QgsAttributeForm::getUpdatedFeature() const
 {
-  if ( !mVirtualFieldsDependencies.contains( originIdx ) )
-    return;
-
-  if ( !mFeature.isValid() )
-    return;
-
   // create updated Feature
   QgsFeature updatedFeature = QgsFeature( mFeature );
 
@@ -601,9 +595,67 @@ void QgsAttributeForm::updateValuesDependenciesVirtualFields( const int originId
   }
   updatedFeature.setAttributes( featureAttributes );
 
-  // go through depending fields and update the virtual field with its expression
-  QList<QgsWidgetWrapper *> relevantWidgets = mVirtualFieldsDependencies.values( originIdx );
+  return updatedFeature;
+}
+
+void QgsAttributeForm::updateValuesDependencies( const int originIdx )
+{
+  updateFieldDependencies();
+
+  updateValuesDependenciesDefaultValues( originIdx );
+  updateValuesDependenciesVirtualFields( originIdx );
+}
+
+void QgsAttributeForm::updateValuesDependenciesDefaultValues( const int originIdx )
+{
+  if ( !mDefaultValueDependencies.contains( originIdx ) )
+    return;
+
+  if ( !mFeature.isValid()
+       && mMode != QgsAttributeEditorContext::AddFeatureMode )
+    return;
+
+  // create updated Feature
+  QgsFeature updatedFeature = getUpdatedFeature();
+
+  // go through depending fields and update the fields with defaultexpression
+  QList<QgsWidgetWrapper *> relevantWidgets = mDefaultValueDependencies.values( originIdx );
   for ( QgsWidgetWrapper *ww : std::as_const( relevantWidgets ) )
+  {
+    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+    if ( eww )
+    {
+      //do not update when when mMode is not AddFeatureMode and it's not applyOnUpdate
+      if ( mMode != QgsAttributeEditorContext::AddFeatureMode && !eww->field().defaultValueDefinition().applyOnUpdate() )
+      {
+        continue;
+      }
+
+      //do not update when this widget is already updating (avoid recursions)
+      if ( mAlreadyUpdatedFields.contains( eww->fieldIdx() ) )
+        continue;
+
+      QgsExpressionContext context = createExpressionContext( updatedFeature );
+      QString value = mLayer->defaultValue( eww->fieldIdx(), updatedFeature, &context ).toString();
+      eww->setValue( value );
+    }
+  }
+}
+
+void QgsAttributeForm::updateValuesDependenciesVirtualFields( const int originIdx )
+{
+  if ( !mVirtualFieldsDependencies.contains( originIdx ) )
+    return;
+
+  if ( !mFeature.isValid() )
+    return;
+
+  // create updated Feature
+  QgsFeature updatedFeature = getUpdatedFeature();
+
+  // go through depending fields and update the virtual field with its expression
+  const QList<QgsWidgetWrapper *> relevantWidgets = mVirtualFieldsDependencies.values( originIdx );
+  for ( QgsWidgetWrapper *ww : relevantWidgets )
   {
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( !eww )
@@ -625,14 +677,7 @@ void QgsAttributeForm::updateValuesDependenciesVirtualFields( const int originId
 void QgsAttributeForm::updateRelatedLayerFields()
 {
   // Synchronize dependencies
-  for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
-  {
-    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
-    if ( ! eww )
-      continue;
-
-    updateRelatedLayerFieldsDependencies( eww );
-  }
+  updateRelatedLayerFieldsDependencies();
 
   if ( mRelatedLayerFieldsDependencies.isEmpty() )
     return;
@@ -640,55 +685,21 @@ void QgsAttributeForm::updateRelatedLayerFields()
   if ( !mFeature.isValid() )
     return;
 
-  QgsAttributes featureAttributes = mFeature.attributes();
-  for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
-  {
-    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
-    if ( !eww )
-      continue;
-
-    QVariantList dstVars = QVariantList() << featureAttributes.at( eww->fieldIdx() );
-    QVariantList srcVars = QVariantList() << eww->value();
-    QList<int> fieldIndexes = QList<int>() << eww->fieldIdx();
-
-    // append additional fields
-    const QStringList additionalFields = eww->additionalFields();
-    for ( const QString &fieldName : additionalFields )
-    {
-      int idx = eww->layer()->fields().lookupField( fieldName );
-      fieldIndexes << idx;
-      dstVars << featureAttributes.at( idx );
-    }
-    srcVars.append( eww->additionalFieldValues() );
-
-    Q_ASSERT( dstVars.count() == srcVars.count() );
-
-    for ( int i = 0; i < dstVars.count(); i++ )
-    {
-      if ( !qgsVariantEqual( dstVars[i], srcVars[i] ) && srcVars[i].isValid() && fieldIsEditable( fieldIndexes[i] ) )
-        featureAttributes[fieldIndexes[i]] = srcVars[i];
-    }
-  }
+  // create updated Feature
+  QgsFeature updatedFeature = getUpdatedFeature();
 
   // go through depending fields and update the fields with virtual field
-  for ( QgsWidgetWrapper *ww : std::as_const( mRelatedLayerFieldsDependencies ) )
+  const QSet<QgsEditorWidgetWrapper *> relevantWidgets = mRelatedLayerFieldsDependencies;
+  for ( QgsEditorWidgetWrapper *eww : relevantWidgets )
   {
-    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
-    if ( !eww )
-      continue;
-
     //do not update when this widget is already updating (avoid recursions)
     if ( mAlreadyUpdatedFields.contains( eww->fieldIdx() ) )
       continue;
 
-    // create updated Feature
-    QgsFeature updatedFeature = QgsFeature( mFeature );
-    updatedFeature.setAttributes( featureAttributes );
+    // Update value
     QgsExpressionContext context = createExpressionContext( updatedFeature );
-
     QgsExpression exp( mLayer->expressionField( eww->fieldIdx() ) );
     QVariant value = exp.evaluate( &context );
-
     eww->setValue( value );
   }
 }
@@ -2511,7 +2522,7 @@ void QgsAttributeForm::afterWidgetInit()
       QgsRelationWidgetWrapper *relationWidgetWrapper = qobject_cast<QgsRelationWidgetWrapper *>( ww );
       if ( relationWidgetWrapper )
       {
-        connect( relationWidgetWrapper, &QgsRelationWidgetWrapper::relatedFeaturesChanged, this, &QgsAttributeForm::onRelatedFeaturesChanged );
+        connect( relationWidgetWrapper, &QgsRelationWidgetWrapper::relatedFeaturesChanged, this, &QgsAttributeForm::onRelatedFeaturesChanged, Qt::QueuedConnection );
       }
     }
   }
@@ -2807,9 +2818,7 @@ void QgsAttributeForm::updateFieldDependencies()
       continue;
 
     updateFieldDependenciesDefaultValue( eww );
-
     updateFieldDependenciesVirtualFields( eww );
-
     updateRelatedLayerFieldsDependencies( eww );
   }
 }
@@ -2863,16 +2872,25 @@ void QgsAttributeForm::updateFieldDependenciesVirtualFields( QgsEditorWidgetWrap
 
 void QgsAttributeForm::updateRelatedLayerFieldsDependencies( QgsEditorWidgetWrapper *eww )
 {
-  for ( QgsAttributeFormWidget *formWidget : mFormWidgets )
+  if ( eww )
   {
-    QgsAttributeFormRelationEditorWidget *relationEditorWidget = dynamic_cast<QgsAttributeFormRelationEditorWidget *>( formWidget );
-    if ( !relationEditorWidget )
-      continue;
-
     QString expressionField = eww->layer()->expressionField( eww->fieldIdx() );
     if ( expressionField.contains( QStringLiteral( "relation_aggregate" ) )
          || expressionField.contains( QStringLiteral( "get_features" ) ) )
       mRelatedLayerFieldsDependencies.insert( eww );
+  }
+  else
+  {
+    mRelatedLayerFieldsDependencies.clear();
+    //create defaultValueDependencies
+    for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
+    {
+      QgsEditorWidgetWrapper *editorWidgetWrapper = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+      if ( ! editorWidgetWrapper )
+        continue;
+
+      updateRelatedLayerFieldsDependencies( editorWidgetWrapper );
+    }
   }
 }
 

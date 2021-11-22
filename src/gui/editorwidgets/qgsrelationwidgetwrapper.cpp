@@ -109,7 +109,6 @@ void QgsRelationWidgetWrapper::widgetValueChanged( const QString &attribute, con
 {
   if ( mWidget && attributeChanged )
   {
-    // Maybe from here the other bug? jump to first feature?
     QgsFeature feature { mWidget->feature() };
     if ( feature.attribute( attribute ) != newValue )
     {
