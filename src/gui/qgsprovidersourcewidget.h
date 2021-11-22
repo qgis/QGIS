@@ -21,6 +21,8 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
+class QgsMapCanvas;
+
 /**
  * Base class for widgets which allow customization of a provider's source URI.
  *
@@ -52,6 +54,18 @@ class GUI_EXPORT QgsProviderSourceWidget : public QWidget
      */
     virtual QString sourceUri() const = 0;
 
+    /**
+     * Sets a map \a canvas associated with the widget.
+     *
+     * \since QGIS 3.24
+     */
+    void setMapCanvas( QgsMapCanvas *canvas );
+
+    /**
+     * Returns a map canvas associated with the widget.
+     */
+    QgsMapCanvas *mapCanvas();
+
   signals:
 
     /**
@@ -61,6 +75,9 @@ class GUI_EXPORT QgsProviderSourceWidget : public QWidget
      * being accepted.
      */
     void validChanged( bool isValid );
+
+  private:
+    QgsMapCanvas *mMapCanvas = nullptr;
 
 };
 #endif //QGSPROVIDERSOURCEWIDGET_H
