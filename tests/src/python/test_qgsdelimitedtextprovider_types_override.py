@@ -18,6 +18,7 @@ from qgis.PyQt.QtCore import QCoreApplication, QVariant, QUrl, QObject, QTempora
 
 from qgis.core import (
     QgsVectorLayer,
+    NULL,
 )
 
 from qgis.testing import start_app, unittest
@@ -38,7 +39,7 @@ class TestQgsDelimitedTextProviderTypesOverride(unittest.TestCase):
 
         try:
             self.__text_index += 1
-        except:
+        except Exception:
             self.__text_index = 1
 
         basename = 'test_type_detection_{}'.format(self.__text_index)
@@ -62,24 +63,29 @@ class TestQgsDelimitedTextProviderTypesOverride(unittest.TestCase):
     def test_type_override(self):
         """Test type overrides"""
 
-        vl = self._run_test('\n'.join((
-            "integer,bool,long,real,text",
-            "1,true,9189304972279762602,1.234,text",
-            "2,false,,5.678,another text",
-        )))
-        self.assertTrue(vl.isValid())
-        fields = {f.name(): (f.type(), f.typeName()) for f in vl.fields()}
-        self.assertEqual(fields, {
-            'integer': (QVariant.Int, 'integer'),
-            'bool': (QVariant.Bool, 'bool'),
-            'long': (QVariant.LongLong, 'longlong'),
-            'real': (QVariant.Double, 'double'),
-            'text': (QVariant.String, 'text')})
+        if False:
+            vl = self._run_test('\n'.join((
+                "integer,bool,long,real,text",
+                "1,0,9189304972279762602,1.234,text",
+                "2,1,,5.678,another text",
+            )))
+            self.assertTrue(vl.isValid())
+            fields = {f.name(): (f.type(), f.typeName()) for f in vl.fields()}
+            self.assertEqual(fields, {
+                'integer': (QVariant.Int, 'integer'),
+                'bool': (QVariant.Bool, 'bool'),
+                'long': (QVariant.LongLong, 'longlong'),
+                'real': (QVariant.Double, 'double'),
+                'text': (QVariant.String, 'text')})
+
+            attrs = [f.attributes() for f in vl.getFeatures()]
+            self.assertEqual(attrs, [[1, False, '9189304972279762602', 1.234, 'text'],
+                                     [2, True, NULL, 5.678, 'another text']])
 
         vl = self._run_test('\n'.join((
             "integer,bool,long,real,text",
-            "1,true,9189304972279762602,1.234,text",
-            "2,false,,5.678,another text",
+            "1,0,9189304972279762602,1.234,text",
+            "2,1,,5.678,another text",
         )), uri_options='field=bool:integer&field=integer:double&field=long:double&field=real:text')
         self.assertTrue(vl.isValid())
         fields = {f.name(): (f.type(), f.typeName()) for f in vl.fields()}
@@ -89,6 +95,10 @@ class TestQgsDelimitedTextProviderTypesOverride(unittest.TestCase):
             'long': (QVariant.Double, 'double'),
             'real': (QVariant.String, 'text'),
             'text': (QVariant.String, 'text')})
+
+        attrs = [f.attributes() for f in vl.getFeatures()]
+        self.assertEqual(attrs, [[1.0, 0, 9.189304972279763e+18, '1.234', 'text'],
+                                 [2.0, 1, NULL, '5.678', 'another text']])
 
 
 if __name__ == '__main__':
