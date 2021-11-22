@@ -53,6 +53,8 @@ QgsGroupLayerRenderer::QgsGroupLayerRenderer( QgsGroupLayer *layer, QgsRenderCon
     mRendererOpacity.emplace_back( childLayer->type() != QgsMapLayerType::RasterLayer ? childLayer->opacity() : 1.0 );
     mTransforms.emplace_back( layerToDestTransform );
   }
+
+  mPaintEffect.reset( layer->paintEffect() ? layer->paintEffect()->clone() : nullptr );
 }
 
 QgsGroupLayerRenderer::~QgsGroupLayerRenderer() = default;

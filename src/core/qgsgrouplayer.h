@@ -25,6 +25,7 @@
 #include "qgsmaplayerref.h"
 
 class QgsGroupLayerDataProvider;
+class QgsPaintEffect;
 
 /**
  * \ingroup core
@@ -110,12 +111,28 @@ class CORE_EXPORT QgsGroupLayer : public QgsMapLayer
      */
     QList< QgsMapLayer * > childLayers();
 
+    /**
+     * Returns the current paint effect for the group layer.
+     * \see setPaintEffect()
+     */
+    QgsPaintEffect *paintEffect() const;
+
+    /**
+     * Sets the current paint \a effect for the renderer.
+     *
+     * Ownership is transferred to the renderer.
+     *
+     * \see paintEffect()
+     */
+    void setPaintEffect( QgsPaintEffect *effect SIP_TRANSFER );
+
   private:
 
     QgsGroupLayerDataProvider *mDataProvider = nullptr;
     QgsCoordinateTransformContext mTransformContext;
 
     QList< QgsMapLayerRef > mChildren;
+    std::unique_ptr< QgsPaintEffect > mPaintEffect;
 
 };
 

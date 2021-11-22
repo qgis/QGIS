@@ -23,7 +23,10 @@
 #include "qgsmaplayerref.h"
 #include "qgsvectorlayer.h"
 #include "qgscoordinatetransform.h"
+#include "qgspainteffect.h"
 #include "qgsmessagelog.h"
+#include "qgspainteffectregistry.h"
+#include "qgsapplication.h"
 
 QgsGroupLayer::QgsGroupLayer( const QString &name, const LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::GroupLayer, name )
@@ -49,6 +52,7 @@ QgsGroupLayer *QgsGroupLayer::clone() const
   std::unique_ptr< QgsGroupLayer > layer = std::make_unique< QgsGroupLayer >( name(), options );
   QgsMapLayer::clone( layer.get() );
   layer->setChildLayers( _qgis_listRefToRaw( mChildren ) );
+  layer->setPaintEffect( mPaintEffect ? mPaintEffect->clone() : nullptr );
   return layer.release();
 }
 
@@ -179,6 +183,13 @@ bool QgsGroupLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &
     const QDomText layerOpacityText = doc.createTextNode( QString::number( opacity() ) );
     layerOpacityElem.appendChild( layerOpacityText );
     node.appendChild( layerOpacityElem );
+
+    if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect.get() ) )
+    {
+      QDomElement paintEffectElement = doc.createElement( QStringLiteral( "paintEffect" ) );
+      mPaintEffect->saveProperties( doc, paintEffectElement );
+      node.appendChild( paintEffectElement );
+    }
   }
 
   if ( categories.testFlag( Symbology ) )
@@ -202,6 +213,18 @@ bool QgsGroupLayer::readSymbology( const QDomNode &node, QString &, QgsReadWrite
     {
       const QDomElement e = layerOpacityNode.toElement();
       setOpacity( e.text().toDouble() );
+    }
+
+    //restore layer effect
+    const QDomElement effectElem = node.namedItem( QStringLiteral( "paintEffect" ) ).toElement();
+    if ( !effectElem.isNull() )
+    {
+      const QDomElement effectPropertiesElem = effectElem.firstChildElement( QStringLiteral( "effect" ) ).toElement();
+      mPaintEffect.reset( QgsApplication::paintEffectRegistry()->createEffect( effectPropertiesElem ) );
+    }
+    else
+    {
+      mPaintEffect.reset();
     }
   }
 
@@ -301,6 +324,16 @@ void QgsGroupLayer::setChildLayers( const QList< QgsMapLayer * > &layers )
 QList< QgsMapLayer * > QgsGroupLayer::childLayers()
 {
   return _qgis_listRefToRaw( mChildren );
+}
+
+QgsPaintEffect *QgsGroupLayer::paintEffect() const
+{
+  return mPaintEffect.get();
+}
+
+void QgsGroupLayer::setPaintEffect( QgsPaintEffect *effect )
+{
+  mPaintEffect.reset( effect );
 }
 
 //
