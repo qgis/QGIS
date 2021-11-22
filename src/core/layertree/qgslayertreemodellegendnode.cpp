@@ -1248,9 +1248,22 @@ QSizeF QgsWmsLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemCont
 {
   Q_UNUSED( itemHeight )
 
+  const QImage image = getLegendGraphic();
+
+  QSize targetSize = image.size();
+  if ( settings.wmsLegendSize().width() < image.width() )
+  {
+    double targetHeight = image.height() * settings.wmsLegendSize().width() / image.width();
+    targetSize = QSize(settings.wmsLegendSize().width(), targetHeight);
+  }
+  else if ( settings.wmsLegendSize().height() < image.height() )
+  {
+    double targetWidth = image.width() * settings.wmsLegendSize().height() / image.height();
+    targetSize = QSize(targetWidth, settings.wmsLegendSize().height());
+  }
+
   if ( ctx && ctx->painter )
   {
-    const QImage image = getLegendGraphic();
 
     switch ( settings.symbolAlignment() )
     {
@@ -1258,8 +1271,8 @@ QSizeF QgsWmsLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemCont
       default:
         ctx->painter->drawImage( QRectF( ctx->columnLeft,
                                          ctx->top,
-                                         settings.wmsLegendSize().width(),
-                                         settings.wmsLegendSize().height() ),
+                                         targetSize.width(),
+                                         targetSize.height() ),
                                  image,
                                  QRectF( QPointF( 0, 0 ), image.size() ) );
         break;
@@ -1267,14 +1280,14 @@ QSizeF QgsWmsLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemCont
       case Qt::AlignRight:
         ctx->painter->drawImage( QRectF( ctx->columnRight - settings.wmsLegendSize().width(),
                                          ctx->top,
-                                         settings.wmsLegendSize().width(),
-                                         settings.wmsLegendSize().height() ),
+                                         targetSize.width(),
+                                         targetSize.height() ),
                                  image,
                                  QRectF( QPointF( 0, 0 ), image.size() ) );
         break;
     }
   }
-  return settings.wmsLegendSize();
+  return targetSize;
 }
 
 QJsonObject QgsWmsLegendNode::exportSymbolToJson( const QgsLegendSettings &, const QgsRenderContext & ) const
