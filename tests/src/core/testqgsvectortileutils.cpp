@@ -33,7 +33,6 @@ class TestQgsVectorTileUtils : public QObject
     TestQgsVectorTileUtils() = default;
 
   private:
-    QString mReport;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -50,21 +49,10 @@ void TestQgsVectorTileUtils::initTestCase()
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
-  QgsApplication::showSettings();
-  mReport += QLatin1String( "<h1>Vector Tile Utils Tests</h1>\n" );
 }
 
 void TestQgsVectorTileUtils::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   QgsApplication::exitQgis();
 }
 
