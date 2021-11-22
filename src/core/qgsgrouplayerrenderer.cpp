@@ -131,5 +131,17 @@ bool QgsGroupLayerRenderer::render()
 
 bool QgsGroupLayerRenderer::forceRasterRender() const
 {
-  return renderContext()->testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) && ( !qgsDoubleNear( mLayerOpacity, 1.0 ) );
+  if ( !renderContext()->testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) )
+    return false;
+
+  if ( !qgsDoubleNear( mLayerOpacity, 1.0 ) )
+    return true;
+
+  for ( QPainter::CompositionMode mode : mRendererCompositionModes )
+  {
+    if ( mode != QPainter::CompositionMode_SourceOver )
+      return true;
+  }
+
+  return false;
 }
