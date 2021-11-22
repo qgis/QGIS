@@ -44,7 +44,8 @@ from qgis.core import (
     QgsApplication,
     QgsFeature,
     QgsWkbTypes,
-    QgsFeatureSource)
+    QgsFeatureSource,
+    NULL)
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath, compareWkt, compareUrl
@@ -1061,7 +1062,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
     def test_type_detection_csvt(self):
         """Type detection from CSVT"""
 
-        vl = self._run_test("f1,f2,f3,f4,f5\n1,1,1,\"1\",1\n", "Integer,Longlong,Real,String,Real\n")
+        vl = self._run_test("f1,f2,f3,f4,f5\n1,1,1,\"1\",3\n", "Integer,Longlong,Real,String,Real\n")
         self.assertTrue(vl.isValid())
         fields = {f.name(): (f.type(), f.typeName()) for f in vl.fields()}
         self.assertEqual(fields, {
@@ -1072,7 +1073,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             'f5': (QVariant.Double, 'double')})
 
         # Missing last field in CSVT
-        vl = self._run_test("f1,f2,f3,f4,f5\n1,1,1,\"1\",1\n", "Integer,Long,Real,String\n")
+        vl = self._run_test("f1,f2,f3,f4,f5\n1,1,1,\"1\",3\n", "Integer,Long,Real,String\n")
         self.assertTrue(vl.isValid())
         fields = {f.name(): (f.type(), f.typeName()) for f in vl.fields()}
         self.assertEqual(fields, {
@@ -1083,7 +1084,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             'f5': (QVariant.Int, 'integer')})
 
         # No CSVT and detectTypes=no
-        vl = self._run_test("f1,f2,f3,f4,f5\n1,1,1,\"1\",1\n", uri_options='detectTypes=no')
+        vl = self._run_test("f1,f2,f3,f4,f5\n1,1,1,\"1\",3\n", uri_options='detectTypes=no')
         self.assertTrue(vl.isValid())
         fields = {f.name(): (f.type(), f.typeName()) for f in vl.fields()}
         self.assertEqual(fields, {
@@ -1092,6 +1093,69 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             'f3': (QVariant.String, 'text'),
             'f4': (QVariant.String, 'text'),
             'f5': (QVariant.String, 'text')})
+
+    def test_booleans(self):
+        """Test bool detection with user defined literals"""
+
+        vl = self._run_test('\n'.join((
+            "id,bool_true_false,bool_0_1,bool_t_f,invalid_bool",
+            "2,true,1,t,nope",
+            "3,false,0,f,dope",
+            "4,TRUE,1,T,NOPE",
+        )))
+
+        fields = {f.name(): (f.type(), f.typeName()) for f in vl.fields()}
+        self.assertEqual(fields, {
+            'id': (2, 'integer'),
+            'bool_true_false': (QVariant.Bool, 'bool'),
+            'bool_0_1': (QVariant.Bool, 'bool'),
+            'bool_t_f': (QVariant.Bool, 'bool'),
+            'invalid_bool': (QVariant.String, 'text')},
+        )
+
+        attrs = [f.attributes() for f in vl.getFeatures()]
+        self.assertEqual(attrs, [
+            [2, True, True, True, 'nope'],
+            [3, False, False, False, 'dope'],
+            [4, True, True, True, 'NOPE'],
+        ])
+
+        vl = self._run_test('\n'.join((
+            "id,bool_true_false,bool_0_1,bool_t_f,invalid_bool",
+            "2,true,1,t,nope",
+            "3,false,0,f,dope",
+            "4,TRUE,1,T,NOPE",
+        )), uri_options='booleanTrue=DOPE&booleanFalse=NoPe')
+
+        fields = {f.name(): (f.type(), f.typeName()) for f in vl.fields()}
+        self.assertEqual(fields, {
+            'id': (2, 'integer'),
+            'bool_true_false': (QVariant.Bool, 'bool'),
+            'bool_0_1': (QVariant.Bool, 'bool'),
+            'bool_t_f': (QVariant.Bool, 'bool'),
+            'invalid_bool': (QVariant.Bool, 'bool')},
+        )
+
+        attrs = [f.attributes() for f in vl.getFeatures()]
+        self.assertEqual(attrs, [
+            [2, True, True, True, False],
+            [3, False, False, False, True],
+            [4, True, True, True, False],
+        ])
+
+        vl = self._run_test('\n'.join((
+            "id,bool_true_false,bool_0_1,bool_t_f,invalid_bool",
+            "2,true,1,t,nope",
+            "3,false,0,f,dope",
+            "4,TRUE,1,T,",
+        )), uri_options='booleanTrue=DOPE&booleanFalse=NoPe')
+
+        attrs = [f.attributes() for f in vl.getFeatures()]
+        self.assertEqual(attrs, [
+            [2, True, True, True, False],
+            [3, False, False, False, True],
+            [4, True, True, True, NULL],
+        ])
 
 
 if __name__ == '__main__':

@@ -168,6 +168,8 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
     static bool pointFromXY( QString &sX, QString &sY, QgsPoint &point, const QString &decimalPoint, bool xyDms );
     static void appendZM( QString &sZ, QString &sM, QgsPoint &point, const QString &decimalPoint );
 
+    QList<QPair<QString, QString>> booleanLiterals() const;
+
     // mLayerValid defines whether the layer has been loaded as a valid layer
     bool mLayerValid = false;
     // mValid defines whether the layer is currently valid (may differ from
@@ -242,6 +244,9 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
 
     // Store user-defined column types (i.e. types that are not automatically determined)
     QgsStringMap mUserDefinedFieldTypes;
+
+    QPair<QString, QString> mUserDefinedBooleanLiterals;
+    QMap<int, QPair<QString, QString>> mFieldBooleanLiterals;
 
     friend class QgsDelimitedTextFeatureIterator;
     friend class QgsDelimitedTextFeatureSource;
