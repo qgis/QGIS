@@ -668,7 +668,8 @@ void QgsRasterLayerProperties::sync()
   }
 
   if ( mSourceWidget )
-    mSourceWidget->setSourceUri( mRasterLayer->source() );
+    mSourceWidget->setMapCanvas( mMapCanvas );
+  mSourceWidget->setSourceUri( mRasterLayer->source() );
 
   const QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
   if ( !provider )

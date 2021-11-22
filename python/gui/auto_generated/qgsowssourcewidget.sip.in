@@ -35,27 +35,6 @@ the Free Software Foundation; either version 2 of the License, or     *
     void setTimes( const QStringList &times );
     QStringList times() const;
 
-    void setFormats( const QStringList &formats );
-    QStringList formats() const;
-
-    void setCacheProperties( const QStringList &cacheProperties );
-    QStringList cacheProperties() const;
-
-    void setSpatialExtent( const QgsRectangle &extent );
-    QgsRectangle spatialExtent() const;
-
-    void setLayerName( const QString &name );
-    QString layerName() const;
-
-    void setFeatureInfoLimit( int featureInfoLimit );
-    int featureInfoLimit() const;
-
-    void setTileWidth( int width );
-    int tileWidth() const;
-
-    void setTileHeight( int height );
-    int tileHeight() const;
-
     void hideInputWidgets();
 
     void prepareExtent( QgsMapCanvas *mapCanvas );

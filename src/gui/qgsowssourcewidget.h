@@ -35,27 +35,6 @@ class GUI_EXPORT QgsOWSSourceWidget : public QgsProviderSourceWidget, private Ui
     void setTimes( const QStringList &times );
     QStringList times() const;
 
-    void setFormats( const QStringList &formats );
-    QStringList formats() const;
-
-    void setCacheProperties( const QStringList &cacheProperties );
-    QStringList cacheProperties() const;
-
-    void setSpatialExtent( const QgsRectangle &extent );
-    QgsRectangle spatialExtent() const;
-
-    void setLayerName( const QString &name );
-    QString layerName() const;
-
-    void setFeatureInfoLimit( int featureInfoLimit );
-    int featureInfoLimit() const;
-
-    void setTileWidth( int width );
-    int tileWidth() const;
-
-    void setTileHeight( int height );
-    int tileHeight() const;
-
     void hideInputWidgets();
 
     void prepareExtent( QgsMapCanvas *mapCanvas );
@@ -82,10 +61,6 @@ class GUI_EXPORT QgsOWSSourceWidget : public QgsProviderSourceWidget, private Ui
 
     QVariant cacheData();
 
-    QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context );
-
-    bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
-
   signals:
 
     void changeCRSButtonClicked();
@@ -101,6 +76,7 @@ class GUI_EXPORT QgsOWSSourceWidget : public QgsProviderSourceWidget, private Ui
     QVariantMap mSourceParts;
     const QString mProviderKey;
     QStringList mTimes;
+    QgsMapCanvas *mMapCanvas = nullptr;
 };
 
 #endif // QGSOWSSOURCEWIDGET_H

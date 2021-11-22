@@ -157,6 +157,7 @@
 %Include auto_generated/qgsoptionswidgetfactory.sip
 %Include auto_generated/qgsorderbydialog.sip
 %Include auto_generated/qgsowssourceselect.sip
+%Include auto_generated/qgsowssourcewidget.sip
 %Include auto_generated/qgspanelwidget.sip
 %Include auto_generated/qgspanelwidgetstack.sip
 %Include auto_generated/qgspasswordlineedit.sip
