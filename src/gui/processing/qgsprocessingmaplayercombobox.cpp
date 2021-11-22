@@ -147,6 +147,10 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   {
     filters = QgsMapLayerProxyModel::MeshLayer;
   }
+  else if ( mParameter->type() == QgsProcessingParameterPointCloudLayer::typeName() )
+  {
+    filters = QgsMapLayerProxyModel::PointCloudLayer;
+  }
   else if ( mParameter->type() == QgsProcessingParameterMapLayer::typeName() )
   {
     QList<int> dataTypes;
@@ -164,6 +168,8 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
       filters |= QgsMapLayerProxyModel::RasterLayer;
     if ( dataTypes.contains( QgsProcessing::TypeMesh ) )
       filters |= QgsMapLayerProxyModel::MeshLayer;
+    if ( dataTypes.contains( QgsProcessing::TypePointCloud ) )
+      filters |= QgsMapLayerProxyModel::PointCloudLayer;
     if ( !filters )
       filters = QgsMapLayerProxyModel::All;
   }
