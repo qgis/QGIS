@@ -2110,9 +2110,14 @@ def test_033_reset_subset_string():
 
 
 def test_034_csvt_file():
+    """In the test file we have two rows with 11 and 12 fields, the CSV lists only 11 headers:
+    id,description,fint,freal,fstr,fstr,fdatetime,fdate,ftime,flong,flonglong
+    The CSVT contains 11 field types (note "long" which is not supported but interpreted as an alias for "longlong"):
+    integer,string,integer,real,string,string,string,string,string,long,longlong
+    """
     wanted = {}
     wanted['uri'] = 'file://testcsvt.csv?geomType=none&type=csv'
-    wanted['fieldTypes'] = ['integer', 'text', 'integer', 'double', 'text', 'text', 'text', 'text', 'text', 'text', 'longlong', 'longlong']
+    wanted['fieldTypes'] = ['integer', 'text', 'integer', 'double', 'text', 'text', 'text', 'text', 'text', 'longlong', 'longlong', 'longlong']
     wanted['geometryType'] = 4
     wanted['data'] = {
         2: {
@@ -2546,9 +2551,12 @@ def test_041_no_detect_type():
 
 
 def test_042_no_detect_types_csvt():
+    """detectTypes is no, the types are taken from the CSVT except the last one (which is not in the CSVT
+    and it is not detected)"""
+
     wanted = {}
     wanted['uri'] = 'file://testcsvt.csv?geomType=none&type=csv&detectTypes=no'
-    wanted['fieldTypes'] = ['integer', 'text', 'integer', 'double', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text']
+    wanted['fieldTypes'] = ['integer', 'text', 'integer', 'double', 'text', 'text', 'text', 'text', 'text', 'longlong', 'longlong', 'text']
     wanted['geometryType'] = 4
     wanted['data'] = {
         2: {

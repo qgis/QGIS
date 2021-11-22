@@ -223,7 +223,7 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString &filenam
   // not allowed in OGR CSVT files.  Also doesn't care if int and string fields have
 
   strTypeList = strTypeList.toLower();
-  const QRegularExpression reTypeList( QRegularExpression::anchoredPattern( QStringLiteral( "^(?:\\s*(\\\"?)(?:integer|real|double|long|longlong|int8|string|date|datetime|time)(?:\\(\\d+(?:\\.\\d+)?\\))?\\1\\s*(?:,|$))+" ) ) );
+  const QRegularExpression reTypeList( QRegularExpression::anchoredPattern( QStringLiteral( "^(?:\\s*(\\\"?)(?:integer|real|double|longlong|long|int8|string|date|datetime|time)(?:\\(\\d+(?:\\.\\d+)?\\))?\\1\\s*(?:,|$))+" ) ) );
   const QRegularExpressionMatch match = reTypeList.match( strTypeList );
   if ( !match.hasMatch() )
   {
@@ -237,7 +237,7 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString &filenam
   QgsDebugMsgLevel( QStringLiteral( "Field type string: %1" ).arg( strTypeList ), 2 );
 
   int pos = 0;
-  const QRegularExpression reType( QStringLiteral( "(integer|longlong|real|double|string|date|datetime|time)" ) );
+  const QRegularExpression reType( QStringLiteral( R"re((int8|integer|longlong|\blong\b|real|double|string|\bdate\b|datetime|\btime\b))re" ) );
   QRegularExpressionMatch typeMatch = reType.match( strTypeList, pos );
   while ( typeMatch.hasMatch() )
   {
@@ -707,6 +707,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
   attributeFields.clear();
 
   QString csvtMessage;
+  QgsDebugMsgLevel( QStringLiteral( "Reading CSVT: %1" ).arg( mFile->fileName() ), 2 );
   QStringList csvtTypes = readCsvtFieldTypes( mFile->fileName(), &csvtMessage );
 
   for ( int i = 0; i < fieldNames.size(); i++ )
@@ -751,12 +752,14 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
       }
     }
 
-    if ( typeName == QLatin1String( "integer" ) )
+    if ( typeName == QLatin1String( "integer" ) || typeName == QLatin1String( "int8" ) )
     {
+      typeName = QLatin1String( "integer" );
       fieldType = QVariant::Int;
     }
-    else if ( typeName == QLatin1String( "longlong" ) )
+    else if ( typeName == QLatin1String( "longlong" ) || typeName == QLatin1String( "long" ) )
     {
+      typeName = QLatin1String( "longlong" );
       fieldType = QVariant::LongLong;
     }
     else if ( typeName == QLatin1String( "real" ) || typeName == QLatin1String( "double" ) )

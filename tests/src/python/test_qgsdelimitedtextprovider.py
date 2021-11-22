@@ -34,7 +34,7 @@ from collections.abc import Callable
 
 rebuildTests = 'REBUILD_DELIMITED_TEXT_TESTS' in os.environ
 
-from qgis.PyQt.QtCore import QCoreApplication, QVariant, QUrl, QObject
+from qgis.PyQt.QtCore import QCoreApplication, QVariant, QUrl, QObject, QTemporaryDir
 
 from qgis.core import (
     QgsProviderRegistry,
@@ -222,6 +222,8 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
         """Run before all tests"""
         # toggle full ctest output to debug flaky CI test
         print('CTEST_FULL_OUTPUT')
+        cls.tmp_dir = QTemporaryDir()
+        cls.tmp_path = cls.tmp_dir.path()
 
     def layerData(self, layer, request={}, offset=0):
         # Retrieve the data for a layer
@@ -1030,6 +1032,66 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
 
         finally:
             del os.environ['QGIS_DELIMITED_TEXT_FILE_BUFFER_SIZE']
+
+    def _run_test(self, csv_content, csvt_content='', uri_options=''):
+
+        try:
+            self.__text_index += 1
+        except:
+            self.__text_index = 1
+
+        basename = 'test_type_detection_{}'.format(self.__text_index)
+
+        csv_file = os.path.join(self.tmp_path, basename + '.csv')
+        with open(csv_file, 'w+') as f:
+            f.write(csv_content)
+
+        if csvt_content:
+            csvt_file = os.path.join(self.tmp_path, basename + '.csvt')
+            with open(csvt_file, 'w+') as f:
+                f.write(csvt_content)
+
+        uri = 'file:///{}'.format(csv_file)
+        if uri_options:
+            uri += '?{}'.format(uri_options)
+
+        vl = QgsVectorLayer(uri, 'test_{}'.format(basename), 'delimitedtext')
+        return vl
+
+    def test_type_detection_csvt(self):
+        """Type detection from CSVT"""
+
+        vl = self._run_test("f1,f2,f3,f4,f5\n1,1,1,\"1\",1\n", "Integer,Longlong,Real,String,Real\n")
+        self.assertTrue(vl.isValid())
+        fields = {f.name(): (f.type(), f.typeName()) for f in vl.fields()}
+        self.assertEqual(fields, {
+            'f1': (QVariant.Int, 'integer'),
+            'f2': (QVariant.LongLong, 'longlong'),
+            'f3': (QVariant.Double, 'double'),
+            'f4': (QVariant.String, 'text'),
+            'f5': (QVariant.Double, 'double')})
+
+        # Missing last field in CSVT
+        vl = self._run_test("f1,f2,f3,f4,f5\n1,1,1,\"1\",1\n", "Integer,Long,Real,String\n")
+        self.assertTrue(vl.isValid())
+        fields = {f.name(): (f.type(), f.typeName()) for f in vl.fields()}
+        self.assertEqual(fields, {
+            'f1': (QVariant.Int, 'integer'),
+            'f2': (QVariant.LongLong, 'longlong'),
+            'f3': (QVariant.Double, 'double'),
+            'f4': (QVariant.String, 'text'),
+            'f5': (QVariant.Int, 'integer')})
+
+        # No CSVT and detectTypes=no
+        vl = self._run_test("f1,f2,f3,f4,f5\n1,1,1,\"1\",1\n", uri_options='detectTypes=no')
+        self.assertTrue(vl.isValid())
+        fields = {f.name(): (f.type(), f.typeName()) for f in vl.fields()}
+        self.assertEqual(fields, {
+            'f1': (QVariant.String, 'text'),
+            'f2': (QVariant.String, 'text'),
+            'f3': (QVariant.String, 'text'),
+            'f4': (QVariant.String, 'text'),
+            'f5': (QVariant.String, 'text')})
 
 
 if __name__ == '__main__':
