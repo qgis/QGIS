@@ -381,7 +381,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void updateFieldDependencies();
     void updateFieldDependenciesDefaultValue( QgsEditorWidgetWrapper *eww );
     void updateFieldDependenciesVirtualFields( QgsEditorWidgetWrapper *eww );
-    void updateRelatedLayerFieldsDependencies( QgsEditorWidgetWrapper *eww );
+    void updateRelatedLayerFieldsDependencies( QgsEditorWidgetWrapper *eww = nullptr );
 
     void setMultiEditFeatureIdsRelations( const QgsFeatureIds &fids );
 
@@ -413,10 +413,10 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     bool saveEdits( QString *error );
 
     //! update the default values and virtual fields in the fields after a referenced field changed
+    QgsFeature getUpdatedFeature() const;
     void updateValuesDependencies( const int originIdx );
     void updateValuesDependenciesDefaultValues( const int originIdx );
     void updateValuesDependenciesVirtualFields( const int originIdx );
-
     void updateRelatedLayerFields();
 
     void clearMultiEditMessages();
@@ -534,7 +534,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     /**
      * Dependency list for values depending on related layers.
      */
-    QSet<QgsWidgetWrapper *> mRelatedLayerFieldsDependencies;
+    QSet<QgsEditorWidgetWrapper *> mRelatedLayerFieldsDependencies;
 
     //! List of updated fields to avoid recursion on the setting of defaultValues
     QList<int> mAlreadyUpdatedFields;
