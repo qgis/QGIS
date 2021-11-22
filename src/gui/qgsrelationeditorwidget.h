@@ -232,11 +232,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     QgsFeatureIds selectedChildFeatureIds() const;
     void updateUiSingleEdit();
     void updateUiMultiEdit();
-    void initializeMultiEditTreeWidgetItem( QTreeWidgetItem *treeWidgetItem,
-                                            const QString &text,
-                                            const QIcon &icon,
-                                            MultiEditFeatureType type,
-                                            const QVariant &featureId = QVariant() );
+    QTreeWidgetItem *createMultiEditTreeWidgetItem( const QgsFeature &feature, QgsVectorLayer *layer, MultiEditFeatureType type );
 
     QgsDualView *mDualView = nullptr;
     QPointer<QgsMessageBarItem> mMessageBarItem;

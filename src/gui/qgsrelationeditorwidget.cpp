@@ -654,13 +654,9 @@ void QgsRelationEditorWidget::updateUiMultiEdit()
   QMultiMap<QTreeWidgetItem *, QgsFeatureId> multimapChildFeatures;
 
   mMultiEditTreeWidget->clear();
-  for ( const QgsFeature &feature : std::as_const( mFeatureList ) )
+  for ( const QgsFeature &featureParent : std::as_const( mFeatureList ) )
   {
-    QTreeWidgetItem *treeWidgetItem = new QTreeWidgetItem( mMultiEditTreeWidget );
-    initializeMultiEditTreeWidgetItem( treeWidgetItem,
-                                       QgsVectorLayerUtils::getFeatureDisplayString( mRelation.referencedLayer(), feature ),
-                                       QgsIconUtils::iconForLayer( mRelation.referencedLayer() ),
-                                       MultiEditFeatureType::Parent );
+    QTreeWidgetItem *treeWidgetItem = createMultiEditTreeWidgetItem( featureParent, mRelation.referencedLayer(), MultiEditFeatureType::Parent );
 
     // Parent feature items are not selectable
     treeWidgetItem->setFlags( Qt::ItemIsEnabled );
@@ -668,7 +664,7 @@ void QgsRelationEditorWidget::updateUiMultiEdit()
     parentTreeWidgetItems.append( treeWidgetItem );
 
     // Get child features
-    const QgsFeatureRequest request = relation().getRelatedFeaturesRequest( feature );
+    const QgsFeatureRequest request = relation().getRelatedFeaturesRequest( featureParent );
     QgsFeatureIterator featureIterator = mRelation.referencingLayer()->getFeatures( request );
     QgsFeature featureChild;
     while ( featureIterator.nextFeature( featureChild ) )
@@ -680,12 +676,7 @@ void QgsRelationEditorWidget::updateUiMultiEdit()
         QgsFeature featureChildChild;
         while ( featureIteratorFinalChild.nextFeature( featureChildChild ) )
         {
-          QTreeWidgetItem *treeWidgetItemChild = new QTreeWidgetItem( treeWidgetItem );
-          initializeMultiEditTreeWidgetItem( treeWidgetItemChild,
-                                             QgsVectorLayerUtils::getFeatureDisplayString( mNmRelation.referencedLayer(), featureChildChild ),
-                                             QgsIconUtils::iconForLayer( mNmRelation.referencedLayer() ),
-                                             MultiEditFeatureType::Child,
-                                             featureChildChild.id() );
+          QTreeWidgetItem *treeWidgetItemChild = createMultiEditTreeWidgetItem( featureChildChild, mNmRelation.referencedLayer(), MultiEditFeatureType::Child );
 
           treeWidgetItem->addChild( treeWidgetItemChild );
 
@@ -695,20 +686,15 @@ void QgsRelationEditorWidget::updateUiMultiEdit()
       }
       else
       {
-        QTreeWidgetItem *treeWidgetItemChild = new QTreeWidgetItem( treeWidgetItem );
-        initializeMultiEditTreeWidgetItem( treeWidgetItemChild,
-                                           QgsVectorLayerUtils::getFeatureDisplayString( mRelation.referencingLayer(), featureChild ),
-                                           QgsIconUtils::iconForLayer( mRelation.referencingLayer() ),
-                                           MultiEditFeatureType::Child,
-                                           featureChild.id() );
+        QTreeWidgetItem *treeWidgetItemChild = createMultiEditTreeWidgetItem( featureChild, mRelation.referencingLayer(), MultiEditFeatureType::Child );
         treeWidgetItem->addChild( treeWidgetItemChild );
 
         featureIdsMixedValues.insert( featureChild.id() );
       }
     }
 
-    treeWidgetItem->setExpanded( true );
     mMultiEditTreeWidget->addTopLevelItem( treeWidgetItem );
+    treeWidgetItem->setExpanded( true );
   }
 
   // Set mixed values indicator (Green or Orange)
@@ -778,16 +764,14 @@ void QgsRelationEditorWidget::updateUiMultiEdit()
   }
 }
 
-void QgsRelationEditorWidget::initializeMultiEditTreeWidgetItem( QTreeWidgetItem *treeWidgetItem,
-    const QString &text,
-    const QIcon &icon,
-    MultiEditFeatureType type,
-    const QVariant &featureId )
+QTreeWidgetItem *QgsRelationEditorWidget::createMultiEditTreeWidgetItem( const QgsFeature &feature, QgsVectorLayer *layer, MultiEditFeatureType type )
 {
-  treeWidgetItem->setText( 0, text );
-  treeWidgetItem->setIcon( 0, icon );
+  QTreeWidgetItem *treeWidgetItem = new QTreeWidgetItem();
+  treeWidgetItem->setText( 0, QgsVectorLayerUtils::getFeatureDisplayString( layer, feature ) );
+  treeWidgetItem->setIcon( 0, QgsIconUtils::iconForLayer( layer ) );
   treeWidgetItem->setData( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureType ), static_cast<int>( type ) );
-  treeWidgetItem->setData( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureId ), featureId );
+  treeWidgetItem->setData( 0, static_cast<int>( MultiEditTreeWidgetRole::FeatureId ), feature.id() );
+  return treeWidgetItem;
 }
 
 void QgsRelationEditorWidget::onKeyPressed( QKeyEvent *e )
