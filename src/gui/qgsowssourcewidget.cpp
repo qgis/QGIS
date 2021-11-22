@@ -156,12 +156,13 @@ QgsRectangle QgsOWSSourceWidget::outputExtent()
 void QgsOWSSourceWidget::setSourceUri( const QString &uri )
 {
   mSourceParts = QgsProviderRegistry::instance()->decodeUri( mProviderKey, uri );
+  prepareExtent( QgsProviderSourceWidget::mapCanvas() );
 
 }
 
 QString QgsOWSSourceWidget::sourceUri() const
 {
-  return QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "wms" ), mSourceParts );
+  return QgsProviderRegistry::instance()->encodeUri( mProviderKey, mSourceParts );
 }
 
 void QgsOWSSourceWidget::setTimes( const QStringList &times )

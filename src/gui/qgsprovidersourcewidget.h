@@ -62,7 +62,9 @@ class GUI_EXPORT QgsProviderSourceWidget : public QWidget
     void setMapCanvas( QgsMapCanvas *canvas );
 
     /**
-     * Returns a map canvas associated with the widget.
+     * Returns the map canvas associated with the widget.
+     *
+     * \since QGIS 3.24
      */
     QgsMapCanvas *mapCanvas();
 

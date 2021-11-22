@@ -50,7 +50,9 @@ Sets a map ``canvas`` associated with the widget.
 
     QgsMapCanvas *mapCanvas();
 %Docstring
-Returns a map canvas associated with the widget.
+Returns the map canvas associated with the widget.
+
+.. versionadded:: 3.24
 %End
 
   signals:
