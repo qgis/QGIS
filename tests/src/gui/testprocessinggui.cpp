@@ -6019,6 +6019,9 @@ void TestProcessingGui::mapLayerComboBox()
   QgsProject::instance()->addMapLayer( mesh );
   QgsRasterLayer *raster = new QgsRasterLayer( QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif", QStringLiteral( "band1_byte" ) );
   QgsProject::instance()->addMapLayer( raster );
+  QgsPointCloudLayer *pointCloud = new QgsPointCloudLayer( QStringLiteral( TEST_DATA_DIR ) + "/point_clouds/ept/sunshine-coast/ept.json", QStringLiteral( "Point cloud" ), QStringLiteral( "ept" ) );
+  QVERIFY( pointCloud->isValid() );
+  QgsProject::instance()->addMapLayer( pointCloud );
 
   // map layer param, all types are acceptable
   param = std::make_unique< QgsProcessingParameterMapLayer> ( QStringLiteral( "param" ), QString() );
@@ -6035,6 +6038,8 @@ void TestProcessingGui::mapLayerComboBox()
   QCOMPARE( combo->currentLayer(), mesh );
   combo->setLayer( raster );
   QCOMPARE( combo->currentLayer(), raster );
+  combo->setLayer( pointCloud );
+  QCOMPARE( combo->currentLayer(), pointCloud );
   combo.reset();
   param.reset();
 
@@ -6053,6 +6058,8 @@ void TestProcessingGui::mapLayerComboBox()
   QVERIFY( !combo->currentLayer() );
   combo->setLayer( raster );
   QCOMPARE( combo->currentLayer(), raster );
+  combo->setLayer( pointCloud );
+  QVERIFY( !combo->currentLayer() );
   combo.reset();
   param.reset();
 
@@ -6071,6 +6078,8 @@ void TestProcessingGui::mapLayerComboBox()
   QVERIFY( !combo->currentLayer() );
   combo->setLayer( raster );
   QCOMPARE( combo->currentLayer(), raster );
+  combo->setLayer( pointCloud );
+  QVERIFY( !combo->currentLayer() );
   combo.reset();
   param.reset();
 
@@ -6089,6 +6098,28 @@ void TestProcessingGui::mapLayerComboBox()
   QCOMPARE( combo->currentLayer(), mesh );
   combo->setLayer( raster );
   QVERIFY( !combo->currentLayer() );
+  combo->setLayer( pointCloud );
+  QVERIFY( !combo->currentLayer() );
+  combo.reset();
+  param.reset();
+
+  // point cloud layer parm, only point cloud types are acceptable
+  param = std::make_unique< QgsProcessingParameterPointCloudLayer> ( QStringLiteral( "param" ), QString() );
+  combo = std::make_unique< QgsProcessingMapLayerComboBox >( param.get() );
+  combo->setLayer( point );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( line );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( polygon );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( noGeom );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( mesh );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( raster );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( pointCloud );
+  QCOMPARE( combo->currentLayer(), pointCloud );
   combo.reset();
   param.reset();
 
@@ -6121,6 +6152,10 @@ void TestProcessingGui::mapLayerComboBox()
   combo->setLayer( raster );
   QVERIFY( !combo->currentLayer() );
   combo2->setLayer( raster );
+  QVERIFY( !combo2->currentLayer() );
+  combo->setLayer( pointCloud );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( pointCloud );
   QVERIFY( !combo2->currentLayer() );
   combo2.reset();
   param2.reset();
@@ -6156,6 +6191,10 @@ void TestProcessingGui::mapLayerComboBox()
   QVERIFY( !combo->currentLayer() );
   combo2->setLayer( raster );
   QVERIFY( !combo2->currentLayer() );
+  combo->setLayer( pointCloud );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( pointCloud );
+  QVERIFY( !combo2->currentLayer() );
   combo2.reset();
   param2.reset();
   combo.reset();
@@ -6189,6 +6228,10 @@ void TestProcessingGui::mapLayerComboBox()
   combo->setLayer( raster );
   QVERIFY( !combo->currentLayer() );
   combo2->setLayer( raster );
+  QVERIFY( !combo2->currentLayer() );
+  combo->setLayer( pointCloud );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( pointCloud );
   QVERIFY( !combo2->currentLayer() );
   combo2.reset();
   param2.reset();
@@ -6224,6 +6267,10 @@ void TestProcessingGui::mapLayerComboBox()
   QVERIFY( !combo->currentLayer() );
   combo2->setLayer( raster );
   QVERIFY( !combo2->currentLayer() );
+  combo->setLayer( pointCloud );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( pointCloud );
+  QVERIFY( !combo2->currentLayer() );
   combo2.reset();
   param2.reset();
   combo.reset();
@@ -6257,6 +6304,10 @@ void TestProcessingGui::mapLayerComboBox()
   combo->setLayer( raster );
   QVERIFY( !combo->currentLayer() );
   combo2->setLayer( raster );
+  QVERIFY( !combo2->currentLayer() );
+  combo->setLayer( pointCloud );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( pointCloud );
   QVERIFY( !combo2->currentLayer() );
   combo2.reset();
   param2.reset();
@@ -6292,6 +6343,10 @@ void TestProcessingGui::mapLayerComboBox()
   QVERIFY( !combo->currentLayer() );
   combo2->setLayer( raster );
   QVERIFY( !combo2->currentLayer() );
+  combo->setLayer( pointCloud );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( pointCloud );
+  QVERIFY( !combo2->currentLayer() );
   combo2.reset();
   param2.reset();
   combo.reset();
@@ -6325,6 +6380,10 @@ void TestProcessingGui::mapLayerComboBox()
   combo->setLayer( raster );
   QVERIFY( !combo->currentLayer() );
   combo2->setLayer( raster );
+  QVERIFY( !combo2->currentLayer() );
+  combo->setLayer( pointCloud );
+  QVERIFY( !combo->currentLayer() );
+  combo2->setLayer( pointCloud );
   QVERIFY( !combo2->currentLayer() );
   combo2.reset();
   param2.reset();
