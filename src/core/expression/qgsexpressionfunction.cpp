@@ -23,6 +23,7 @@
 #include "qgsexpressionnodeimpl.h"
 #include "qgsexiftools.h"
 #include "qgsfeaturerequest.h"
+#include "qgsgeos.h"
 #include "qgsstringutils.h"
 #include "qgsmultipoint.h"
 #include "qgsgeometryutils.h"
@@ -6610,15 +6611,22 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   bool cacheEnabled = cacheValue.toBool();
 
   // Sixth parameter (for intersects only) is the min area
+  // Seventh parameter (for intersects only) is the min inscribed circle radius
   double minArea { -1 };
+  double minInscribedCircleRadius { -1 };
   if ( isIntersectsFunc )
   {
-    // Fourth parameter is the limit
+
     node = QgsExpressionUtils::getNode( values.at( 5 ), parent ); //in expressions overlay functions throw the exception: Eval Error: Cannot convert '' to int
     ENSURE_NO_EVAL_ERROR
     const QVariant minAreaValue = node->eval( parent, context );
     ENSURE_NO_EVAL_ERROR
     minArea = QgsExpressionUtils::getDoubleValue( minAreaValue, parent );
+    node = QgsExpressionUtils::getNode( values.at( 6 ), parent ); //in expressions overlay functions throw the exception: Eval Error: Cannot convert '' to int
+    ENSURE_NO_EVAL_ERROR
+    const QVariant minInscribedCircleRadiusValue = node->eval( parent, context );
+    ENSURE_NO_EVAL_ERROR
+    minInscribedCircleRadius = QgsExpressionUtils::getDoubleValue( minInscribedCircleRadiusValue, parent );
   }
 
 
@@ -6743,10 +6751,30 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
     if ( ! relationFunction || ( geometry.*relationFunction )( feat2.geometry() ) ) // Calls the method provided as template argument for the function (e.g. QgsGeometry::intersects)
     {
 
-      // Check min area for intersection (if set)
-      if ( isIntersectsFunc && minArea != -1 && geometry.intersection( feat2.geometry() ).area() <= minArea )
+      if ( isIntersectsFunc && ( minArea != -1 || minInscribedCircleRadius != -1 ) )
       {
-        continue;
+        const QgsGeometry intersection { geometry.intersection( feat2.geometry() ) };
+        // Check min area for intersection (if set)
+        // qDebug() << feat2.id() << intersection.area();
+        if ( minArea != -1 && intersection.area() <= minArea )
+        {
+          continue;
+        }
+
+        // Check min inscribed circle radius for intersection (if set)
+        if ( minInscribedCircleRadius != -1 )
+        {
+          const QgsAbstractGeometry *geom { intersection.constGet() };
+          const QgsRectangle bbox = geom->boundingBox();
+          const double width = bbox.width();
+          const double height = bbox.height();
+          const double size = width > height ? width : height;
+          const double tolerance = size / 1000.0;
+          if ( QgsGeos( geom ).maximumInscribedCircle( tolerance )->length() / 2 < minInscribedCircleRadius )
+          {
+            continue;
+          }
+        }
       }
 
       found = true;
@@ -7248,7 +7276,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
           << QgsExpressionFunction::Parameter( QStringLiteral( "filter" ), true, QVariant(), true )
           << QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true, QVariant( -1 ), true )
           << QgsExpressionFunction::Parameter( QStringLiteral( "cache" ), true, QVariant( false ), false )
-          << QgsExpressionFunction::Parameter( QStringLiteral( "min_intersection_area" ), true, QVariant( -1 ), false ),
+          << QgsExpressionFunction::Parameter( QStringLiteral( "min_area" ), true, QVariant( -1 ), false )
+          << QgsExpressionFunction::Parameter( QStringLiteral( "min_inscribed_circle_radius" ), true, QVariant( -1 ), false ),
           i.value(), QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
 
       // The current feature is accessed for the geometry, so this should not be cached

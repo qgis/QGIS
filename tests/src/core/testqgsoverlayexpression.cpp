@@ -43,6 +43,8 @@ class TestQgsOverlayExpression: public QObject
   public:
 
     TestQgsOverlayExpression() = default;
+    void testOverlayExpression();
+    void testOverlayExpression_data();
 
   private:
     QgsVectorLayer *mRectanglesLayer = nullptr;
@@ -57,8 +59,6 @@ class TestQgsOverlayExpression: public QObject
     void testOverlay();
     void testOverlay_data();
 
-    void testOverlayExpression();
-    void testOverlayExpression_data();
 
     void testOverlaySelf();
 };
@@ -116,6 +116,7 @@ void TestQgsOverlayExpression::testOverlay_data()
   QTest::addColumn<QString>( "geometry" );
   QTest::addColumn<bool>( "expectedResult" );
 
+  /*
   QTest::newRow( "intersects" ) << "overlay_intersects('rectangles')" << "POLYGON((-120 30, -105 30, -105 20, -120 20, -120 30))" << true;
   QTest::newRow( "intersects [cached]" ) << "overlay_intersects('rectangles',cache:=true)" << "POLYGON((-120 30, -105 30, -105 20, -120 20, -120 30))" << true;
 
@@ -154,6 +155,13 @@ void TestQgsOverlayExpression::testOverlay_data()
 
   QTest::newRow( "disjoint no match" ) << "overlay_disjoint('rectangles')" << "LINESTRING(-155 15, -122 32, -84 4)" << false;
   QTest::newRow( "disjoint no match [cached]" ) << "overlay_disjoint('rectangles',cache:=true)" << "LINESTRING(-155 15, -122 32, -84 4)" << false;
+  */
+
+  QTest::newRow( "intersects min_area no match" ) << "overlay_intersects('polys', min_area:=1.3)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << false;
+  QTest::newRow( "intersects min_area match" ) << "overlay_intersects('polys', min_area:=1.28)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << true;
+
+  QTest::newRow( "intersects min_inscribed_circle_radius no match" ) << "overlay_intersects('polys', min_inscribed_circle_radius:=1.0)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << false;
+  QTest::newRow( "intersects min_inscribed_circle_radius match" ) << "overlay_intersects('polys', min_area:=0.457)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << true;
 }
 
 void TestQgsOverlayExpression::testOverlayExpression()
