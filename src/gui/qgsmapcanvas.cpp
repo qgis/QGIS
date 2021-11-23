@@ -2430,12 +2430,11 @@ QColor QgsMapCanvas::selectionColor() const
 int QgsMapCanvas::layerCount() const
 {
   return mapSettings().layers().size();
-} // layerCount
+}
 
-
-QList<QgsMapLayer *> QgsMapCanvas::layers() const
+QList<QgsMapLayer *> QgsMapCanvas::layers( bool expandGroupLayers ) const
 {
-  return mapSettings().layers();
+  return mapSettings().layers( expandGroupLayers );
 }
 
 void QgsMapCanvas::layerStateChange()
