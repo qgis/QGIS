@@ -985,6 +985,8 @@ QString QgsProcessingParameters::parameterAsOutputLayer( const QgsProcessingPara
       layerTypeHint = QgsProcessingUtils::LayerHint::Vector;
     else if ( definition && definition->type() == QgsProcessingParameterRasterDestination::typeName() )
       layerTypeHint = QgsProcessingUtils::LayerHint::Raster;
+    else if ( definition && definition->type() == QgsProcessingParameterPointCloudDestination::typeName() )
+      layerTypeHint = QgsProcessingUtils::LayerHint::PointCloud;
 
     context.addLayerToLoadOnCompletion( dest, QgsProcessingContext::LayerDetails( destName, destinationProject, outputName, layerTypeHint ) );
   }
@@ -2234,6 +2236,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantM
     def.reset( new QgsProcessingParameterVectorDestination( name ) );
   else if ( type == QgsProcessingParameterRasterDestination::typeName() )
     def.reset( new QgsProcessingParameterRasterDestination( name ) );
+  else if ( type == QgsProcessingParameterPointCloudDestination::typeName() )
+    def.reset( new QgsProcessingParameterPointCloudDestination( name ) );
   else if ( type == QgsProcessingParameterFileDestination::typeName() )
     def.reset( new QgsProcessingParameterFileDestination( name ) );
   else if ( type == QgsProcessingParameterFolderDestination::typeName() )
@@ -2338,6 +2342,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromScriptCo
     return QgsProcessingParameterVectorDestination::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QLatin1String( "rasterdestination" ) )
     return QgsProcessingParameterRasterDestination::fromScriptCode( name, description, isOptional, definition );
+  else if ( type == QLatin1String( "pointclouddestination" ) )
+    return QgsProcessingParameterPointCloudDestination::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QLatin1String( "filedestination" ) )
     return QgsProcessingParameterFileDestination::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QLatin1String( "folderdestination" ) )
@@ -8375,3 +8381,124 @@ QgsProcessingParameterAnnotationLayer *QgsProcessingParameterAnnotationLayer::fr
   return new QgsProcessingParameterAnnotationLayer( name, description,  definition.isEmpty() ? QVariant() : definition, isOptional );
 }
 
+QgsProcessingParameterPointCloudDestination::QgsProcessingParameterPointCloudDestination( const QString &name, const QString &description, const QVariant &defaultValue, bool optional, bool createByDefault )
+  : QgsProcessingDestinationParameter( name, description, defaultValue, optional, createByDefault )
+{
+}
+
+QgsProcessingParameterDefinition *QgsProcessingParameterPointCloudDestination::clone() const
+{
+  return new QgsProcessingParameterPointCloudDestination( *this );
+}
+
+bool QgsProcessingParameterPointCloudDestination::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  QVariant var = input;
+  if ( !var.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( var.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    const QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( var );
+    var = fromVar.sink;
+  }
+
+  if ( var.canConvert<QgsProperty>() )
+  {
+    const QgsProperty p = var.value< QgsProperty >();
+    if ( p.propertyType() == QgsProperty::StaticProperty )
+    {
+      var = p.staticValue();
+    }
+    else
+    {
+      return true;
+    }
+  }
+
+  if ( var.type() != QVariant::String )
+    return false;
+
+  if ( var.toString().isEmpty() )
+    return mFlags & FlagOptional;
+
+  return true;
+}
+
+QString QgsProcessingParameterPointCloudDestination::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+{
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  if ( value.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    const QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
+    if ( fromVar.sink.propertyType() == QgsProperty::StaticProperty )
+    {
+      return QgsProcessingUtils::stringToPythonLiteral( fromVar.sink.staticValue().toString() );
+    }
+    else
+    {
+      return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( fromVar.sink.asExpression() );
+    }
+  }
+
+  return QgsProcessingUtils::stringToPythonLiteral( value.toString() );
+}
+
+QgsProcessingOutputDefinition *QgsProcessingParameterPointCloudDestination::toOutputDefinition() const
+{
+  return new QgsProcessingOutputPointCloudLayer( name(), description() );
+}
+
+QString QgsProcessingParameterPointCloudDestination::defaultFileExtension() const
+{
+  if ( auto *lOriginalProvider = originalProvider() )
+  {
+    return lOriginalProvider->defaultPointCloudFileExtension();
+  }
+  else if ( QgsProcessingProvider *p = provider() )
+  {
+    return p->defaultPointCloudFileExtension();
+  }
+  else
+  {
+    return QgsProcessingUtils::defaultPointCloudExtension();
+  }
+}
+
+QString QgsProcessingParameterPointCloudDestination::createFileFilter() const
+{
+  const QStringList exts = supportedOutputPointCloudLayerExtensions();
+  QStringList filters;
+  for ( const QString &ext : exts )
+  {
+    filters << QObject::tr( "%1 files (*.%2)" ).arg( ext.toUpper(), ext.toLower() );
+  }
+  return filters.join( QLatin1String( ";;" ) ) + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" );
+}
+
+QStringList QgsProcessingParameterPointCloudDestination::supportedOutputPointCloudLayerExtensions() const
+{
+  if ( auto *lOriginalProvider = originalProvider() )
+  {
+    return lOriginalProvider->supportedOutputPointCloudLayerExtensions();
+  }
+  else if ( QgsProcessingProvider *p = provider() )
+  {
+    return p->supportedOutputPointCloudLayerExtensions();
+  }
+  else
+  {
+    QString ext = QgsProcessingUtils::defaultPointCloudExtension();
+    return QStringList() << QObject::tr( "%1 files (*.%2)" ).arg( ext.toUpper(), ext.toLower() );
+  }
+}
+
+QgsProcessingParameterPointCloudDestination *QgsProcessingParameterPointCloudDestination::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+{
+  return new QgsProcessingParameterPointCloudDestination( name, description, definition.isEmpty() ? QVariant() : definition, isOptional );
+}

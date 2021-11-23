@@ -285,6 +285,8 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterVectorDestination;
     else if ( sipCpp->type() == QgsProcessingParameterRasterDestination::typeName() )
       sipType = sipType_QgsProcessingParameterRasterDestination;
+    else if ( sipCpp->type() == QgsProcessingParameterPointCloudDestination::typeName() )
+      sipType = sipType_QgsProcessingParameterPointCloudDestination;
     else if ( sipCpp->type() == QgsProcessingParameterFileDestination::typeName() )
       sipType = sipType_QgsProcessingParameterFileDestination;
     else if ( sipCpp->type() == QgsProcessingParameterFolderDestination::typeName() )
@@ -4576,6 +4578,62 @@ Returns the type name for the parameter class.
 
 
     static QgsProcessingParameterAnnotationLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
+%End
+};
+
+class QgsProcessingParameterPointCloudDestination : QgsProcessingDestinationParameter
+{
+%Docstring(signature="appended")
+A point cloud layer destination parameter, for specifying the destination path for a point cloud layer
+created by the algorithm.
+
+.. versionadded:: 3.24
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterPointCloudDestination( const QString &name, const QString &description = QString(),
+        const QVariant &defaultValue = QVariant(),
+        bool optional = false,
+        bool createByDefault = true );
+%Docstring
+Constructor for QgsProcessingParameterPointCloudDestination.
+
+If ``createByDefault`` is ``False`` and the parameter is ``optional``, then this destination
+output will not be created by default.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
+    virtual QString type() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QgsProcessingOutputDefinition *toOutputDefinition() const /Factory/;
+
+    virtual QString defaultFileExtension() const;
+
+    virtual QString createFileFilter() const;
+
+
+    virtual QStringList supportedOutputPointCloudLayerExtensions() const;
+%Docstring
+Returns a list of the point cloud format file extensions supported for this parameter.
+
+.. seealso:: :py:func:`defaultFileExtension`
+%End
+
+    static QgsProcessingParameterPointCloudDestination *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
 %End

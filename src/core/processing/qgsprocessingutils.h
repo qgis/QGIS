@@ -464,6 +464,7 @@ class CORE_EXPORT QgsProcessingUtils
      * a fallback value of "gpkg".
      *
      * \see defaultRasterExtension()
+     * \see defaultPointCloudExtension()
      * \since QGIS 3.10
      */
     static QString defaultVectorExtension();
@@ -476,9 +477,23 @@ class CORE_EXPORT QgsProcessingUtils
      * a fallback value of "tif".
      *
      * \see defaultVectorExtension()
+     * \see defaultPointCloudExtension()
      * \since QGIS 3.10
      */
     static QString defaultRasterExtension();
+
+    /**
+     * Returns the default point cloud extension to use, in the absence of all other constraints (e.g.
+     * provider based support for extensions).
+     *
+     * This method returns a fallback value of "las".
+     *
+     * \see defaultVectorExtension()
+     * \see defaultRasterExtension()
+     * \since QGIS 3.24
+     */
+    static QString defaultPointCloudExtension();
+
 
   private:
     static bool canUseLayer( const QgsRasterLayer *layer );
