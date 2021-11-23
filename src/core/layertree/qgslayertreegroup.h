@@ -145,6 +145,15 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      */
     QList<QgsLayerTreeLayer *> findLayers() const;
 
+
+    /**
+     * Returns an ordered list of map layers in the group, ignoring any layers which are child layers of QgsGroupLayers. Searches recursively the whole sub-tree.
+     *
+     * \since QGIS 3.24
+     * \note Not available in Python bindings
+     */
+    QList<QgsMapLayer *> layerOrderRespectingGroupLayers() const SIP_SKIP;
+
     /**
      * Find layer IDs used in all layer nodes. Searches recursively the whole sub-tree.
      */
