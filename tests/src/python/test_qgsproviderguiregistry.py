@@ -10,6 +10,7 @@ __author__ = 'Mathieu Pellerin'
 __date__ = '23/11/2021'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
+import sys
 import qgis  # NOQA
 
 from qgis.gui import (
@@ -30,7 +31,6 @@ class TestQgsProviderGuiRegistry(unittest.TestCase):
         """
         Test provider list
         """
-
         providers = QgsGui.providerGuiRegistry().providerList()
         self.assertIn('ogr', providers)
         self.assertIn('gdal', providers)
@@ -39,10 +39,11 @@ class TestQgsProviderGuiRegistry(unittest.TestCase):
         self.assertIn('wcs', providers)
         self.assertIn('delimitedtext', providers)
         self.assertIn('arcgisfeatureserver', providers)
-        self.assertIn('spatialite', providers)
-        self.assertIn('WFS', providers)
-        self.assertIn('virtual', providers)
+        if 'WITH_SPATIALITE=TRUE' in sys.argv:
+            self.assertIn('spatialite', providers)
+            self.assertIn('WFS', providers)
+            self.assertIn('virtual', providers)
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(argv=['WITH_SPATIALITE'], exit=False)
