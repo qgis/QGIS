@@ -709,7 +709,7 @@ static QList<QgsMapToolIdentify::IdentifyResult> searchFeatureOnMap( QgsMapMouse
   double x = mapPoint.x(), y = mapPoint.y();
   const double sr = QgsMapTool::searchRadiusMU( canvas );
 
-  const QList<QgsMapLayer *> layers = canvas->layers();
+  const QList<QgsMapLayer *> layers = canvas->layers( true );
   for ( QgsMapLayer *layer : layers )
   {
     if ( layer->type() == QgsMapLayerType::VectorLayer )

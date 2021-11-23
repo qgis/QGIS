@@ -255,7 +255,7 @@ void QgsMapToolSelectionHandler::selectPolygonPressEvent( QgsMapMouseEvent *e )
     double x = mapPoint.x(), y = mapPoint.y();
     const double sr = QgsMapTool::searchRadiusMU( mCanvas );
 
-    const QList<QgsMapLayer *> layers = mCanvas->layers();
+    const QList<QgsMapLayer *> layers = mCanvas->layers( true );
     for ( auto layer : layers )
     {
       if ( layer->type() == QgsMapLayerType::VectorLayer )
