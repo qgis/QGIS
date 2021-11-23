@@ -504,7 +504,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     QComboBox *typeCombo = new QComboBox( tblSample );
     typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) ), tr( "Text" ), "text" );
     typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole Number (integer)" ), "integer" );
-    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole Number (integer - 64 bit)" ), "integer64" );
+    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole Number (integer - 64 bit)" ), "longlong" );
     typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) ), tr( "Decimal Number" ), "double" );
     typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBool.svg" ) ), tr( "Boolean" ), "bool" );
     typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDate.svg" ) ), tr( "Date" ), "date" );
@@ -809,9 +809,8 @@ bool QgsDelimitedTextSourceSelect::validate()
 
 void QgsDelimitedTextSourceSelect::updateFieldTypes( const QgsFields &fields )
 {
-  {
-    mFields = fields;
-  }
+
+  mFields = fields;
 
   for ( int column = 0; column < tblSample->columnCount(); column++ )
   {
@@ -823,9 +822,9 @@ void QgsDelimitedTextSourceSelect::updateFieldTypes( const QgsFields &fields )
       {
         QComboBox *typeCombo { qobject_cast<QComboBox *>( tblSample->cellWidget( 0, column ) ) };
         const QString fieldTypeName { mFields.field( fieldIdx ).typeName() };
-        if ( typeCombo && typeCombo->findData( fieldTypeName ) >= 0 )
+        if ( typeCombo && typeCombo->currentData( ) != fieldTypeName && typeCombo->findData( fieldTypeName ) >= 0 )
         {
-          QgsDebugMsgLevel( QStringLiteral( "Setting field type %1 from %2 to %3" ).arg( fieldName, fieldTypeName, typeCombo->currentData().toString() ), 2 );
+          QgsDebugMsgLevel( QStringLiteral( "Setting field type %1 from %2 to %3" ).arg( fieldName, typeCombo->currentData().toString(), fieldTypeName ), 2 );
           QgsSignalBlocker( typeCombo )->setCurrentIndex( typeCombo->findData( fieldTypeName ) );
         }
       }
