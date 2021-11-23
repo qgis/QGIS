@@ -158,8 +158,9 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     if ( mAdvancedDigitizingDockWidget->constraintAngle()->isLocked() )
     {
       painter->setPen( mLockedPen );
-      painter->drawLine( prevPointPix - canvasMaxDimension * QPointF( std::cos( a ), std::sin( a ) ),
-                         prevPointPix + canvasMaxDimension * QPointF( std::cos( a ), std::sin( a ) ) );
+      const double canvasPadding = QLineF( prevPointPix, curPointPix ).length();
+      painter->drawLine( prevPointPix + ( canvasPadding - canvasMaxDimension ) * QPointF( std::cos( a ), std::sin( a ) ),
+                         prevPointPix + ( canvasPadding + canvasMaxDimension ) * QPointF( std::cos( a ), std::sin( a ) ) );
     }
   }
 
