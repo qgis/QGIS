@@ -545,6 +545,28 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature &feature, int f
         val = QVariant( mSource->mFields.at( fieldIdx ).type() );
       break;
     }
+    case QVariant::LongLong:
+    {
+      if ( ! value.isEmpty() )
+      {
+        // Use std library because QString( "9189304972279762602").toLongLong( &ok )
+        // sets ok to true and returns 1836535466
+        // I'm not sure if this is a QT 5.15.2 specific bug.
+        try
+        {
+          val = QVariant( std::stoll( value.toStdString() ) );
+        }
+        catch ( const std::invalid_argument & )
+        {
+          val = QVariant( mSource->mFields.at( fieldIdx ).type() );
+        }
+      }
+      else
+      {
+        val = QVariant( mSource->mFields.at( fieldIdx ).type() );
+      }
+      break;
+    }
     case QVariant::Double:
     {
       double dvalue = 0.0;

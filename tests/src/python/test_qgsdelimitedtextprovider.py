@@ -34,7 +34,7 @@ from collections.abc import Callable
 
 rebuildTests = 'REBUILD_DELIMITED_TEXT_TESTS' in os.environ
 
-from qgis.PyQt.QtCore import QCoreApplication, QVariant, QUrl, QObject, QTemporaryDir
+from qgis.PyQt.QtCore import QCoreApplication, QVariant, QUrl, QObject, QTemporaryDir, QDate
 
 from qgis.core import (
     QgsProviderRegistry,
@@ -225,6 +225,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
         print('CTEST_FULL_OUTPUT')
         cls.tmp_dir = QTemporaryDir()
         cls.tmp_path = cls.tmp_dir.path()
+        cls._text_index = 0
 
     def layerData(self, layer, request={}, offset=0):
         # Retrieve the data for a layer
@@ -1034,14 +1035,12 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
         finally:
             del os.environ['QGIS_DELIMITED_TEXT_FILE_BUFFER_SIZE']
 
-    def _run_test(self, csv_content, csvt_content='', uri_options=''):
+    def _make_test_file(self, csv_content, csvt_content='', uri_options=''):
 
-        try:
-            self.__text_index += 1
-        except:
-            self.__text_index = 1
+        TestQgsDelimitedTextProviderOther._text_index += 1
 
-        basename = 'test_type_detection_{}'.format(self.__text_index)
+        basename = 'test_type_detection_{}'.format(self._text_index)
+        print('Testfile: ' + basename)
 
         csv_file = os.path.join(self.tmp_path, basename + '.csv')
         with open(csv_file, 'w+') as f:
@@ -1062,7 +1061,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
     def test_type_detection_csvt(self):
         """Type detection from CSVT"""
 
-        vl = self._run_test("f1,f2,f3,f4,f5\n1,1,1,\"1\",3\n", "Integer,Longlong,Real,String,Real\n")
+        vl = self._make_test_file("f1,f2,f3,f4,f5\n1,1,1,\"1\",3\n", "Integer,Longlong,Real,String,Real\n")
         self.assertTrue(vl.isValid())
         fields = {f.name(): (f.type(), f.typeName()) for f in vl.fields()}
         self.assertEqual(fields, {
@@ -1073,7 +1072,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             'f5': (QVariant.Double, 'double')})
 
         # Missing last field in CSVT
-        vl = self._run_test("f1,f2,f3,f4,f5\n1,1,1,\"1\",3\n", "Integer,Long,Real,String\n")
+        vl = self._make_test_file("f1,f2,f3,f4,f5\n1,1,1,\"1\",3\n", "Integer,Long,Real,String\n")
         self.assertTrue(vl.isValid())
         fields = {f.name(): (f.type(), f.typeName()) for f in vl.fields()}
         self.assertEqual(fields, {
@@ -1084,7 +1083,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             'f5': (QVariant.Int, 'integer')})
 
         # No CSVT and detectTypes=no
-        vl = self._run_test("f1,f2,f3,f4,f5\n1,1,1,\"1\",3\n", uri_options='detectTypes=no')
+        vl = self._make_test_file("f1,f2,f3,f4,f5\n1,1,1,\"1\",3\n", uri_options='detectTypes=no')
         self.assertTrue(vl.isValid())
         fields = {f.name(): (f.type(), f.typeName()) for f in vl.fields()}
         self.assertEqual(fields, {
@@ -1094,10 +1093,156 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             'f4': (QVariant.String, 'text'),
             'f5': (QVariant.String, 'text')})
 
+        # Test OGR generated CSVT, exported from QGIS
+        vl = self._make_test_file('\n'.join((
+            "fid,freal,ftext,fint,flong,fdate,fbool",
+            '"1",1.234567,a text,"2000000000","4000000000",2021/11/12,true',
+            '"2",3.4567889,another text,"2147483646","4000000000",2021/11/12,false',
+            '"3",6.789,text,"2000000000","4000000000",2021/11/13,false',
+        )), "Integer64(20),Real,String,Integer(10),Integer64(20),Date,String")
+        self.assertTrue(vl.isValid())
+        fields = {f.name(): (f.type(), f.typeName()) for f in vl.fields()}
+        self.assertEqual(fields, {
+            'fid': (4, 'longlong'),
+            'freal': (6, 'double'),
+            'ftext': (10, 'text'),
+            'fint': (2, 'integer'),
+            'flong': (4, 'longlong'),
+            'fdate': (14, 'date'),
+            'fbool': (10, 'text')})
+
+        attrs = [f.attributes() for f in vl.getFeatures()]
+        self.assertEqual(attrs, [
+            [1,
+             1.234567,
+             'a text',
+             2000000000,
+             4000000000,
+             QDate(2021, 11, 12),
+             'true'],
+            [2,
+             3.4567889,
+             'another text',
+             2147483646,
+             4000000000,
+             QDate(2021, 11, 12),
+             'false'],
+            [3,
+             6.789,
+             'text',
+             2000000000,
+             4000000000,
+             QDate(2021, 11, 13),
+             'false']
+        ])
+
+        # Try bool Integer(Boolean)
+        vl = self._make_test_file('\n'.join((
+            "fid,freal,ftext,fint,flong,fdate,fbool",
+            '"1",1.234567,a text,"2000000000","4000000000",2021/11/12,true',
+            '"2",3.4567889,another text,"2147483646","4000000000",2021/11/12,false',
+            '"3",6.789,text,"2000000000","4000000000",2021/11/13,false',
+        )), "Integer64(20),Real,String,Integer(10),Integer64(20),Date,Integer(Boolean)")
+
+        self.assertTrue(vl.isValid())
+        fields = {f.name(): (f.type(), f.typeName()) for f in vl.fields()}
+        self.assertEqual(fields, {
+            'fid': (4, 'longlong'),
+            'freal': (6, 'double'),
+            'ftext': (10, 'text'),
+            'fint': (2, 'integer'),
+            'flong': (4, 'longlong'),
+            'fdate': (14, 'date'),
+            'fbool': (1, 'bool')})
+
+        attrs = [f.attributes() for f in vl.getFeatures()]
+        self.assertEqual(attrs, [
+            [1,
+             1.234567,
+             'a text',
+             2000000000,
+             4000000000,
+             QDate(2021, 11, 12),
+             True],
+            [2,
+             3.4567889,
+             'another text',
+             2147483646,
+             4000000000,
+             QDate(2021, 11, 12),
+             False],
+            [3,
+             6.789,
+             'text',
+             2000000000,
+             4000000000,
+             QDate(2021, 11, 13),
+             False]
+        ])
+
+        # XY no args
+        vl = self._make_test_file('\n'.join((
+            "X,Y,fid,freal,ftext,fint,flong,fdate,fbool",
+            '-106.13127068692,36.0554327720544,"4",1.234567,a text,"2000000000","4000000000",2021/11/12,true',
+            '-105.781333374658,35.7216962612865,"5",3.4567889,another text,"2147483646","4000000000",2021/11/12,false',
+            '-106.108589564828,35.407400712311,"6",6.789,text,"2000000000","4000000000",2021/11/13,false',
+        )), "CoordX,CoordY,Integer64(20),Real,String,Integer(10),Integer64(20),Date,Integer(Boolean)")
+
+        self.assertTrue(vl.isValid())
+        fields = {f.name(): (f.type(), f.typeName()) for f in vl.fields()}
+        self.assertEqual(fields, {
+            'X': (6, 'double'),
+            'Y': (6, 'double'),
+            'fid': (4, 'longlong'),
+            'freal': (6, 'double'),
+            'ftext': (10, 'text'),
+            'fint': (2, 'integer'),
+            'flong': (4, 'longlong'),
+            'fdate': (14, 'date'),
+            'fbool': (1, 'bool')})
+
+        attrs = [f.attributes() for f in vl.getFeatures()]
+        self.assertEqual(attrs, [
+            [-106.13127068692,
+             36.0554327720544,
+             4,
+             1.234567,
+             'a text',
+             2000000000,
+             4000000000,
+             QDate(2021, 11, 12),
+             True],
+            [-105.781333374658,
+             35.7216962612865,
+             5,
+             3.4567889,
+             'another text',
+             2147483646,
+             4000000000,
+             QDate(2021, 11, 12),
+             False],
+            [-106.108589564828,
+             35.407400712311,
+             6,
+             6.789,
+             'text',
+             2000000000,
+             4000000000,
+             QDate(2021, 11, 13),
+             False]])
+
+        vl = self._make_test_file('\n'.join((
+            "X,Y,fid,freal,ftext,fint,flong,fdate,fbool",
+            '-106.13127068692,36.0554327720544,"1",1.234567,a text,"2000000000","4000000000",2021/11/12,true',
+            '-105.781333374658,35.7216962612865,"2",3.4567889,another text,"2147483646","4000000000",2021/11/12,false',
+            '-106.108589564828,35.407400712311,"3",6.789,text,"2000000000","4000000000",2021/11/13,false',
+        )), "CoordX,CoordY,Integer64(20),Real,String,Integer(10),Integer64(20),Date,Integer(Boolean)", uri_options='xField=X&yField=Y')
+        self.assertTrue(vl.isSpatial())
+
     def test_booleans(self):
         """Test bool detection with user defined literals"""
 
-        vl = self._run_test('\n'.join((
+        vl = self._make_test_file('\n'.join((
             "id,bool_true_false,bool_0_1,bool_t_f,invalid_bool",
             "2,true,1,t,nope",
             "3,false,0,f,dope",
@@ -1120,7 +1265,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             [4, True, True, True, 'NOPE'],
         ])
 
-        vl = self._run_test('\n'.join((
+        vl = self._make_test_file('\n'.join((
             "id,bool_true_false,bool_0_1,bool_t_f,invalid_bool",
             "2,true,1,t,nope",
             "3,false,0,f,dope",
@@ -1143,7 +1288,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             [4, True, True, True, False],
         ])
 
-        vl = self._run_test('\n'.join((
+        vl = self._make_test_file('\n'.join((
             "id,bool_true_false,bool_0_1,bool_t_f,invalid_bool",
             "2,true,1,t,nope",
             "3,false,0,f,dope",
@@ -1156,6 +1301,45 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             [3, False, False, False, True],
             [4, True, True, True, NULL],
         ])
+
+    def test_type_override(self):
+        """Test type overrides"""
+
+        vl = self._make_test_file('\n'.join((
+            "integer,bool,long,real,text",
+            "1,0,9189304972279762602,1.234,text",
+            "2,1,,5.678,another text",
+        )))
+        self.assertTrue(vl.isValid())
+        fields = {f.name(): (f.type(), f.typeName()) for f in vl.fields()}
+        self.assertEqual(fields, {
+            'integer': (QVariant.Int, 'integer'),
+            'bool': (QVariant.Bool, 'bool'),
+            'long': (QVariant.LongLong, 'longlong'),
+            'real': (QVariant.Double, 'double'),
+            'text': (QVariant.String, 'text')})
+
+        attrs = [f.attributes() for f in vl.getFeatures()]
+        self.assertEqual(attrs, [[1, False, 9189304972279762602, 1.234, 'text'],
+                                 [2, True, NULL, 5.678, 'another text']])
+
+        vl = self._make_test_file('\n'.join((
+            "integer,bool,long,real,text",
+            "1,0,9189304972279762602,1.234,text",
+            "2,1,,5.678,another text",
+        )), uri_options='field=bool:integer&field=integer:double&field=long:double&field=real:text')
+        self.assertTrue(vl.isValid())
+        fields = {f.name(): (f.type(), f.typeName()) for f in vl.fields()}
+        self.assertEqual(fields, {
+            'integer': (QVariant.Double, 'double'),
+            'bool': (QVariant.Int, 'integer'),
+            'long': (QVariant.Double, 'double'),
+            'real': (QVariant.String, 'text'),
+            'text': (QVariant.String, 'text')})
+
+        attrs = [f.attributes() for f in vl.getFeatures()]
+        self.assertEqual(attrs, [[1.0, 0, 9.189304972279763e+18, '1.234', 'text'],
+                                 [2.0, 1, NULL, '5.678', 'another text']])
 
 
 if __name__ == '__main__':
