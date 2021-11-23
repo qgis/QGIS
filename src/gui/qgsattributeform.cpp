@@ -551,7 +551,7 @@ void QgsAttributeForm::updateValuesDependenciesDefaultValues( const int originId
           continue;
 
         QgsExpressionContext context = createExpressionContext( updatedFeature );
-        QString value = mLayer->defaultValue( eww->fieldIdx(), updatedFeature, &context ).toString();
+        const QVariant value = mLayer->defaultValue( eww->fieldIdx(), updatedFeature, &context );
         eww->setValue( value );
       }
     }
