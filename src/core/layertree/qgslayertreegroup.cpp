@@ -259,6 +259,34 @@ QList<QgsLayerTreeLayer *> QgsLayerTreeGroup::findLayers() const
   return list;
 }
 
+QList<QgsMapLayer *> QgsLayerTreeGroup::layerOrderRespectingGroupLayers() const
+{
+  QList<QgsMapLayer *> list;
+  for ( QgsLayerTreeNode *child : std::as_const( mChildren ) )
+  {
+    if ( QgsLayerTree::isLayer( child ) )
+    {
+      QgsMapLayer *layer = QgsLayerTree::toLayer( child )->layer();
+      if ( !layer || !layer->isSpatial() )
+        continue;
+      list << layer;
+    }
+    else if ( QgsLayerTree::isGroup( child ) )
+    {
+      QgsLayerTreeGroup *group = QgsLayerTree::toGroup( child );
+      if ( group->groupLayer() )
+      {
+        list << group->groupLayer();
+      }
+      else
+      {
+        list << group->layerOrderRespectingGroupLayers();
+      }
+    }
+  }
+  return list;
+}
+
 QgsLayerTreeGroup *QgsLayerTreeGroup::findGroup( const QString &name )
 {
   for ( QgsLayerTreeNode *child : std::as_const( mChildren ) )

@@ -128,6 +128,8 @@ Find layer node representing the map layer specified by its ID. Searches recursi
 Find all layer nodes. Searches recursively the whole sub-tree.
 %End
 
+
+
     QStringList findLayerIds() const;
 %Docstring
 Find layer IDs used in all layer nodes. Searches recursively the whole sub-tree.

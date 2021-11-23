@@ -246,21 +246,21 @@ class TestQgsLayerTree(unittest.TestCase):
         self.assertEqual(group_layer.childLayers(), [layer])
 
         layer2 = QgsVectorLayer("Point?field=fldtxt:string",
-                               "layer2", "memory")
+                                "layer2", "memory")
         group_node.insertLayer(0, layer2)
         self.assertEqual(group_layer.childLayers(), [layer, layer2])
 
         layer3 = QgsVectorLayer("Point?field=fldtxt:string",
-                               "layer3", "memory")
+                                "layer3", "memory")
         layer4 = QgsVectorLayer("Point?field=fldtxt:string",
-                               "layer4", "memory")
+                                "layer4", "memory")
         layer3_node = QgsLayerTreeLayer(layer3)
         layer4_node = QgsLayerTreeLayer(layer4)
         group_node.insertChildNodes(1, [layer3_node, layer4_node])
         self.assertEqual(group_layer.childLayers(), [layer, layer4, layer3, layer2])
 
         layer5 = QgsVectorLayer("Point?field=fldtxt:string",
-                               "layer5", "memory")
+                                "layer5", "memory")
         layer5_node = QgsLayerTreeLayer(layer5)
         group_node.addChildNode(layer5_node)
         self.assertEqual(group_layer.childLayers(), [layer5, layer, layer4, layer3, layer2])
@@ -271,7 +271,7 @@ class TestQgsLayerTree(unittest.TestCase):
         group_node.removeLayer(layer)
         self.assertEqual(group_layer.childLayers(), [layer5, layer4, layer2])
 
-        group_node.removeChildren(0,2)
+        group_node.removeChildren(0, 2)
         self.assertEqual(group_layer.childLayers(), [layer5])
 
         group_node.removeAllChildren()
@@ -290,10 +290,10 @@ class TestQgsLayerTree(unittest.TestCase):
                                "layer1", "memory")
         group_node.addLayer(layer)
         layer2 = QgsVectorLayer("Point?field=fldtxt:string",
-                               "layer2", "memory")
+                                "layer2", "memory")
         layer2_node = group_node.addLayer(layer2)
         layer3 = QgsVectorLayer("Point?field=fldtxt:string",
-                               "layer3", "memory")
+                                "layer3", "memory")
         group_node.addLayer(layer3)
         self.assertEqual(group_layer.childLayers(), [layer3, layer2, layer])
 
@@ -317,21 +317,21 @@ class TestQgsLayerTree(unittest.TestCase):
         group_node.addLayer(layer)
         group2 = group_node.addGroup('child group 1')
         layer2 = QgsVectorLayer("Point?field=fldtxt:string",
-                               "layer2", "memory")
+                                "layer2", "memory")
         group_node.addLayer(layer2)
 
         layer3 = QgsVectorLayer("Point?field=fldtxt:string",
-                               "layer3", "memory")
+                                "layer3", "memory")
         layer3_node = group2.addLayer(layer3)
 
         group3 = group2.addGroup('grand child group 1')
         group4 = group2.addGroup('grand child group 2')
 
         layer4 = QgsVectorLayer("Point?field=fldtxt:string",
-                               "layer4", "memory")
+                                "layer4", "memory")
         layer4_node = group3.addLayer(layer4)
         layer5 = QgsVectorLayer("Point?field=fldtxt:string",
-                               "layer5", "memory")
+                                "layer5", "memory")
         layer5_node = group4.addLayer(layer5)
 
         self.assertEqual(group_layer.childLayers(), [layer2, layer5, layer4, layer3, layer])
@@ -343,6 +343,38 @@ class TestQgsLayerTree(unittest.TestCase):
         self.assertEqual(group_layer.childLayers(), [layer2, layer])
         group2.setItemVisibilityCheckedRecursive(True)
         self.assertEqual(group_layer.childLayers(), [layer2, layer5, layer4, layer3, layer])
+
+    def test_layer_order_with_group_layer(self):
+        """
+        Test retrieving layer order with group layers present
+        """
+        p = QgsProject()
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer1", "memory")
+        p.addMapLayer(layer, False)
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer2", "memory")
+        p.addMapLayer(layer2, False)
+        layer3 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer3", "memory")
+        p.addMapLayer(layer3, False)
+        layer4 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer4", "memory")
+        p.addMapLayer(layer4, False)
+
+        p.layerTreeRoot().addLayer(layer)
+        group_node = p.layerTreeRoot().addGroup('my group')
+        group_node.addLayer(layer2)
+        group_node.addLayer(layer3)
+        p.layerTreeRoot().addLayer(layer4)
+
+        self.assertEqual(p.layerTreeRoot().layerOrder(), [layer, layer2, layer3, layer4])
+
+        options = QgsGroupLayer.LayerOptions(QgsCoordinateTransformContext())
+        group_layer = group_node.convertToGroupLayer(options)
+        p.addMapLayer(group_layer, False)
+        self.assertEqual(p.layerTreeRoot().layerOrder(), [layer, group_layer, layer4])
+        self.assertEqual(group_layer.childLayers(), [layer3, layer2])
 
 
 if __name__ == '__main__':

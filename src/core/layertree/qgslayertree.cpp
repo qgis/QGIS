@@ -80,18 +80,7 @@ QList<QgsMapLayer *> QgsLayerTree::layerOrder() const
   }
   else
   {
-    QList<QgsMapLayer *> layers;
-    const QList< QgsLayerTreeLayer * > foundLayers = findLayers();
-    for ( const auto &treeLayer : foundLayers )
-    {
-      QgsMapLayer *layer = treeLayer->layer();
-      if ( !layer || !layer->isSpatial() )
-      {
-        continue;
-      }
-      layers.append( layer );
-    }
-    return layers;
+    return layerOrderRespectingGroupLayers();
   }
 }
 
