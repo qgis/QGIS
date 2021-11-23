@@ -301,6 +301,7 @@ class TestProcessingGui : public QObject
     void testOutputDefinitionWidget();
     void testOutputDefinitionWidgetVectorOut();
     void testOutputDefinitionWidgetRasterOut();
+    void testOutputDefinitionWidgetPointCloudOut();
     void testOutputDefinitionWidgetFolder();
     void testOutputDefinitionWidgetFileOut();
     void testFeatureSourceOptionsWidget();
@@ -8958,6 +8959,119 @@ void TestProcessingGui::testOutputDefinitionWidgetRasterOut()
 
   raster.setCreateByDefault( false );
   QgsProcessingLayerOutputDestinationWidget panel3( &raster, false );
+
+  QSignalSpy skipSpy3( &panel3, &QgsProcessingLayerOutputDestinationWidget::skipOutputChanged );
+  QSignalSpy changedSpy3( &panel3, &QgsProcessingLayerOutputDestinationWidget::destinationChanged );
+
+  v = panel3.value();
+  QVERIFY( !v.isValid() );
+  QVERIFY( panel3.outputIsSkipped() );
+
+  panel3.setValue( QgsProcessing::TEMPORARY_OUTPUT );
+  v = panel3.value();
+  QVERIFY( v.canConvert< QgsProcessingOutputLayerDefinition>() );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
+  QVERIFY( !panel3.outputIsSkipped() );
+  QCOMPARE( skipSpy3.count(), 1 );
+  QCOMPARE( changedSpy3.count(), 1 );
+  panel3.setValue( QgsProcessing::TEMPORARY_OUTPUT );
+  QCOMPARE( skipSpy3.count(), 1 );
+  QCOMPARE( changedSpy3.count(), 1 );
+
+  panel3.setValue( QVariant() );
+  v = panel3.value();
+  QVERIFY( !v.isValid() );
+  QVERIFY( panel3.outputIsSkipped() );
+  QCOMPARE( skipSpy3.count(), 2 );
+  QCOMPARE( changedSpy3.count(), 2 );
+  panel3.setValue( QgsProcessing::TEMPORARY_OUTPUT );
+  QCOMPARE( skipSpy3.count(), 3 );
+  QCOMPARE( changedSpy3.count(), 3 );
+}
+
+void TestProcessingGui::testOutputDefinitionWidgetPointCloudOut()
+{
+  QgsProcessingParameterPointCloudDestination pointCloud( QStringLiteral( "test" ) );
+  QgsProcessingLayerOutputDestinationWidget panel( &pointCloud, false );
+
+  QSignalSpy skipSpy( &panel, &QgsProcessingLayerOutputDestinationWidget::skipOutputChanged );
+  QSignalSpy changedSpy( &panel, &QgsProcessingLayerOutputDestinationWidget::destinationChanged );
+
+  QVariant v = panel.value();
+  QVERIFY( v.canConvert< QgsProcessingOutputLayerDefinition>() );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
+  QVERIFY( !panel.outputIsSkipped() );
+
+  panel.setValue( QgsProcessing::TEMPORARY_OUTPUT );
+  v = panel.value();
+  QVERIFY( v.canConvert< QgsProcessingOutputLayerDefinition>() );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
+  QVERIFY( !panel.outputIsSkipped() );
+  QCOMPARE( skipSpy.count(), 0 );
+  QCOMPARE( changedSpy.count(), 0 );
+  panel.setValue( QgsProcessing::TEMPORARY_OUTPUT );
+  QCOMPARE( skipSpy.count(), 0 );
+  QCOMPARE( changedSpy.count(), 0 );
+
+  panel.setValue( QStringLiteral( "/home/me/test.las" ) );
+  QCOMPARE( skipSpy.count(), 0 );
+  QCOMPARE( changedSpy.count(), 1 );
+  v = panel.value();
+  QVERIFY( v.canConvert< QgsProcessingOutputLayerDefinition>() );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QStringLiteral( "/home/me/test.las" ) );
+  QVERIFY( !panel.outputIsSkipped() );
+  panel.setValue( QStringLiteral( "/home/me/test.las" ) );
+  QCOMPARE( skipSpy.count(), 0 );
+  QCOMPARE( changedSpy.count(), 1 );
+
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "/Processing/Configuration/OUTPUTS_FOLDER" ), TEST_DATA_DIR );
+  panel.setValue( QStringLiteral( "test.las" ) );
+  v = panel.value();
+  QVERIFY( v.canConvert< QgsProcessingOutputLayerDefinition>() );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QString( TEST_DATA_DIR + QStringLiteral( "/test.las" ) ) );
+
+  // optional, test skipping
+  pointCloud.setFlags( pointCloud.flags() | QgsProcessingParameterDefinition::FlagOptional );
+  pointCloud.setCreateByDefault( true );
+  QgsProcessingLayerOutputDestinationWidget panel2( &pointCloud, false );
+
+  QSignalSpy skipSpy2( &panel2, &QgsProcessingLayerOutputDestinationWidget::skipOutputChanged );
+  QSignalSpy changedSpy2( &panel2, &QgsProcessingLayerOutputDestinationWidget::destinationChanged );
+
+  v = panel2.value();
+  QVERIFY( v.canConvert< QgsProcessingOutputLayerDefinition>() );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
+  QVERIFY( !panel2.outputIsSkipped() );
+
+  panel2.setValue( QgsProcessing::TEMPORARY_OUTPUT );
+  v = panel2.value();
+  QVERIFY( v.canConvert< QgsProcessingOutputLayerDefinition>() );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
+  QVERIFY( !panel2.outputIsSkipped() );
+  QCOMPARE( skipSpy2.count(), 0 );
+  QCOMPARE( changedSpy2.count(), 0 );
+  panel2.setValue( QgsProcessing::TEMPORARY_OUTPUT );
+  QCOMPARE( skipSpy2.count(), 0 );
+  QCOMPARE( changedSpy2.count(), 0 );
+
+  panel2.setValue( QVariant() );
+  v = panel2.value();
+  QVERIFY( !v.isValid() );
+  QVERIFY( panel2.outputIsSkipped() );
+  QCOMPARE( skipSpy2.count(), 1 );
+  QCOMPARE( changedSpy2.count(), 1 );
+  panel2.setValue( QgsProcessing::TEMPORARY_OUTPUT );
+  QCOMPARE( skipSpy2.count(), 2 );
+  QCOMPARE( changedSpy2.count(), 2 );
+
+  pointCloud.setCreateByDefault( false );
+  QgsProcessingLayerOutputDestinationWidget panel3( &pointCloud, false );
 
   QSignalSpy skipSpy3( &panel3, &QgsProcessingLayerOutputDestinationWidget::skipOutputChanged );
   QSignalSpy changedSpy3( &panel3, &QgsProcessingLayerOutputDestinationWidget::destinationChanged );
