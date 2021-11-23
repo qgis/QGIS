@@ -162,8 +162,21 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * \see defaultVectorFileExtension()
      * \see supportedOutputRasterLayerExtensions()
      * \see supportsNonFileBasedOutput()
+     * \see supportedOutputPointCloudLayerExtensions()
      */
     virtual QStringList supportedOutputVectorLayerExtensions() const;
+
+    /**
+     * Returns a list of the point cloud format file extensions supported by this provider.
+     * \see supportedOutputVectorLayerExtensions()
+     * \see supportedOutputRasterLayerExtensions()
+     * \see supportedOutputTableExtensions()
+     * \see defaultVectorFileExtension()
+     * \see supportsNonFileBasedOutput()
+     *
+     * \since QGIS 3.24
+     */
+    virtual QStringList supportedOutputPointCloudLayerExtensions() const;
 
     /**
      * Returns a list of the table (geometry-less vector layers) file extensions supported by this provider.
@@ -175,6 +188,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * \see defaultVectorFileExtension()
      * \see supportedOutputRasterLayerExtensions()
      * \see supportsNonFileBasedOutput()
+     * \see supportedOutputPointCloudLayerExtensions()
      *
      * \since QGIS 3.4.3
      */
@@ -202,6 +216,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      *
      * \see supportedOutputVectorLayerExtensions()
      * \see defaultRasterFileExtension()
+     * \see defaultPointCloudFileExtension()
      */
     virtual QString defaultVectorFileExtension( bool hasGeometry = true ) const;
 
@@ -215,8 +230,25 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      *
      * \see supportedOutputRasterLayerExtensions()
      * \see defaultVectorFileExtension()
+     * \see defaultPointCloudFileExtension()
      */
     virtual QString defaultRasterFileExtension() const;
+
+    /**
+     * Returns the default file extension to use for point cloud outputs created by the
+     * provider.
+     *
+     * The default implementation returns the user's default Processing point cloud output format
+     * setting, if it's supported by the provider (see supportedOutputPointCloudLayerExtensions()).
+     * Otherwise the first reported supported point cloud format will be used.
+     *
+     * \see supportedOutputPointCloudLayerExtensions()
+     * \see defaultVectorFileExtension()
+     * \see defaultRasterFileExtension()
+     *
+     * \since QGIS 3.24
+     */
+    virtual QString defaultPointCloudFileExtension() const;
 
     /**
      * Returns TRUE if the provider supports non-file based outputs (such as memory layers

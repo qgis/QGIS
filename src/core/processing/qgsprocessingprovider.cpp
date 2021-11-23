@@ -66,6 +66,11 @@ QStringList QgsProcessingProvider::supportedOutputRasterLayerExtensions() const
   return QgsRasterFileWriter::supportedFormatExtensions();
 }
 
+QStringList QgsProcessingProvider::supportedOutputPointCloudLayerExtensions() const
+{
+  return QStringList();
+}
+
 void QgsProcessingProvider::refreshAlgorithms()
 {
   qDeleteAll( mAlgorithms );
@@ -231,6 +236,27 @@ QString QgsProcessingProvider::defaultRasterFileExtension() const
   {
     // who knows? provider says it has no file support at all...
     return QStringLiteral( "tif" );
+  }
+}
+
+QString QgsProcessingProvider::defaultPointCloudFileExtension() const
+{
+  const QString userDefault = QgsProcessingUtils::defaultPointCloudExtension();
+
+  const QStringList supportedExtensions = supportedOutputPointCloudLayerExtensions();
+  if ( supportedExtensions.contains( userDefault, Qt::CaseInsensitive ) )
+  {
+    // user set default is supported by provider, use that
+    return userDefault;
+  }
+  else if ( !supportedExtensions.empty() )
+  {
+    return supportedExtensions.at( 0 );
+  }
+  else
+  {
+    // who knows? provider says it has no file support at all...
+    return QStringLiteral( "las" );
   }
 }
 
