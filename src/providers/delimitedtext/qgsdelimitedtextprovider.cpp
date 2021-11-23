@@ -67,7 +67,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
   // Add supported types to enable creating expression fields in field calculator
   setNativeTypes( QList< NativeType >()
                   << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), QStringLiteral( "integer" ), QVariant::Int, 0, 10 )
-                  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer - 64 bit)" ), QStringLiteral( "integer64" ), QVariant::LongLong )
+                  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer - 64 bit)" ), QStringLiteral( "longlong" ), QVariant::LongLong )
                   << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), QStringLiteral( "double" ), QVariant::Double, -1, -1, -1, -1 )
                   << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool, -1, -1, -1, -1 )
                   << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QVariant::String, -1, -1, -1, -1 )
@@ -810,8 +810,20 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
       if ( fieldIdx < csvtTypes.size() )
       {
         typeName = csvtTypes[fieldIdx];
-        // Map XY geometries types to actual values
+        // Map CSVT types to provider types
         if ( typeName == QStringLiteral( "coordx" ) || typeName == QStringLiteral( "coordy" ) || typeName == QStringLiteral( "point(x)" ) || typeName == QStringLiteral( "point(y)" ) )
+        {
+          typeName = QStringLiteral( "double" );
+        }
+        else if ( typeName == QStringLiteral( "long" ) || typeName == QStringLiteral( "integer64" ) )
+        {
+          typeName = QStringLiteral( "longlong" );
+        }
+        else if ( typeName == QStringLiteral( "int8" ) )
+        {
+          typeName = QStringLiteral( "integer" );
+        }
+        else if ( typeName == QStringLiteral( "real" ) )
         {
           typeName = QStringLiteral( "double" );
         }
@@ -828,7 +840,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
         }
         else if ( couldBeLongLong[fieldIdx] )
         {
-          typeName = QStringLiteral( "integer64" );
+          typeName = QStringLiteral( "longlong" );
         }
         else if ( couldBeDouble[fieldIdx] )
         {
@@ -854,19 +866,16 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
       fieldType = QVariant::Bool;
       mFieldBooleanLiterals.insert( fieldIdx, boolCandidates[fieldIdx] );
     }
-    else if ( typeName == QLatin1String( "integer" ) || typeName == QLatin1String( "int8" ) )
+    else if ( typeName == QLatin1String( "integer" ) )
     {
-      typeName = QLatin1String( "integer" );
       fieldType = QVariant::Int;
     }
-    else if ( typeName == QLatin1String( "integer64" ) || typeName == QLatin1String( "longlong" ) || typeName == QLatin1String( "long" ) )
+    else if ( typeName == QLatin1String( "longlong" ) )
     {
-      typeName = QLatin1String( "longlong" );
       fieldType = QVariant::LongLong;
     }
-    else if ( typeName == QLatin1String( "real" ) || typeName == QLatin1String( "double" ) )
+    else if ( typeName == QLatin1String( "double" ) )
     {
-      typeName = QStringLiteral( "double" );
       fieldType = QVariant::Double;
     }
     else if ( typeName == QLatin1String( "datetime" ) )
