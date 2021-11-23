@@ -39,6 +39,7 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterFolderDestination,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterVectorDestination,
+                       QgsProcessingParameterPointCloudDestination,
                        QgsProcessingParameterBand,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterCrs,
@@ -79,6 +80,7 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingOutputNumber,
                        QgsProcessingOutputRasterLayer,
                        QgsProcessingOutputVectorLayer,
+                       QgsProcessingOutputPointCloudLayer,
                        QgsMessageLog,
                        QgsApplication)
 
@@ -410,6 +412,7 @@ class ProcessingAlgFactory():
             alg.MULTILAYER:  QgsProcessingOutputMultipleLayers
             alg.RASTER_LAYER: QgsProcessingOutputRasterLayer
             alg.VECTOR_LAYER: QgsProcessingOutputVectorLayer
+            alg.POINTCLOUD_LAYER: QgsProcessingOutputPointCloudLayer
             alg.BOOL: QgsProcessingOutputBoolean
 
         :param type: The type of the input. This should be a type define on `alg` like alg.STRING, alg.DISTANCE
@@ -460,6 +463,7 @@ class ProcessingAlgFactory():
             alg.RASTER_LAYER: QgsProcessingParameterRasterLayer
             alg.RASTER_LAYER_DEST: QgsProcessingParameterRasterDestination
             alg.VECTOR_LAYER_DEST: QgsProcessingParameterVectorDestination
+            alg.POINTCLOUD_LAYER_DEST: QgsProcessingParameterPointCloudDestination
             alg.BAND: QgsProcessingParameterBand
             alg.BOOL: QgsProcessingParameterBoolean
             alg.CRS: QgsProcessingParameterCrs
@@ -520,6 +524,7 @@ input_type_mapping = {
     ProcessingAlgFactory.RASTER_LAYER: QgsProcessingParameterRasterLayer,
     ProcessingAlgFactory.RASTER_LAYER_DEST: QgsProcessingParameterRasterDestination,
     ProcessingAlgFactory.VECTOR_LAYER_DEST: QgsProcessingParameterVectorDestination,
+    ProcessingAlgFactory.POINTCLOUD_LAYER_DEST: QgsProcessingParameterPointCloudDestination,
     ProcessingAlgFactory.BAND: QgsProcessingParameterBand,
     ProcessingAlgFactory.BOOL: QgsProcessingParameterBoolean,
     ProcessingAlgFactory.CRS: QgsProcessingParameterCrs,
@@ -567,5 +572,6 @@ output_type_mapping = {
     ProcessingAlgFactory.MULTILAYER: partial(_make_output, cls=QgsProcessingOutputMultipleLayers),
     ProcessingAlgFactory.RASTER_LAYER: partial(_make_output, cls=QgsProcessingOutputRasterLayer),
     ProcessingAlgFactory.VECTOR_LAYER: partial(_make_output, cls=QgsProcessingOutputVectorLayer),
+    ProcessingAlgFactory.POINTCLOUD_LAYER: partial(_make_output, cls=QgsProcessingOutputPointCloudLayer),
     ProcessingAlgFactory.BOOL: partial(_make_output, cls=QgsProcessingOutputBoolean),
 }
