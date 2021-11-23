@@ -166,9 +166,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-115</y>
         <width>703</width>
-        <height>608</height>
+        <height>647</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -674,6 +674,22 @@
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_4">
+          <item row="1" column="1">
+           <widget class="QCheckBox" name="cbxTrimFields">
+            <property name="toolTip">
+             <string>Trim leading and trailing spaces from fields</string>
+            </property>
+            <property name="statusTip">
+             <string>Trim leading and trailing spaces from fields</string>
+            </property>
+            <property name="whatsThis">
+             <string>Trim leading and trailing spaces from fields</string>
+            </property>
+            <property name="text">
+             <string>Trim fields</string>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="0">
            <layout class="QHBoxLayout" name="horizontalLayout_4">
             <property name="rightMargin">
@@ -731,6 +747,32 @@
             </item>
            </layout>
           </item>
+          <item row="2" column="1">
+           <widget class="QCheckBox" name="cbxSkipEmptyFields">
+            <property name="toolTip">
+             <string>Discard empty fields in each record</string>
+            </property>
+            <property name="statusTip">
+             <string>Discard empty fields in each record</string>
+            </property>
+            <property name="whatsThis">
+             <string>Discard empty fields in each record</string>
+            </property>
+            <property name="text">
+             <string>Discard empty fields</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QCheckBox" name="cbxDetectTypes">
+            <property name="text">
+             <string>Detect field types</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="1">
            <widget class="QCheckBox" name="cbxPointIsComma">
             <property name="enabled">
@@ -769,81 +811,53 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QCheckBox" name="cbxTrimFields">
+          <item row="3" column="0" colspan="2">
+           <widget class="QGroupBox" name="groupBox">
             <property name="toolTip">
-             <string>Trim leading and trailing spaces from fields</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Columns filled with '0/1', 'true/false', 't/f', and 'yes/no' (case insensitive) are automatically detected as boolean fields. Additional values for TRUE and FALSE can be entered here.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
-            <property name="statusTip">
-             <string>Trim leading and trailing spaces from fields</string>
+            <property name="title">
+             <string>Custom boolean literals</string>
             </property>
-            <property name="whatsThis">
-             <string>Trim leading and trailing spaces from fields</string>
-            </property>
-            <property name="text">
-             <string>Trim fields</string>
-            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_10">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_9">
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_8">
+                 <item>
+                  <widget class="QLabel" name="mBoolTrueLabel">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;True&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="mBooleanTrue">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Additional custom value that will be interpreted as TRUE&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="QLabel" name="mBooleanFalseLabel">
+                 <property name="text">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;False&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="mBooleanFalse">
+                 <property name="toolTip">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Additional custom value that will be interpreted as FALSE&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
            </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QCheckBox" name="cbxDetectTypes">
-            <property name="text">
-             <string>Detect field types</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QCheckBox" name="cbxSkipEmptyFields">
-            <property name="toolTip">
-             <string>Discard empty fields in each record</string>
-            </property>
-            <property name="statusTip">
-             <string>Discard empty fields in each record</string>
-            </property>
-            <property name="whatsThis">
-             <string>Discard empty fields in each record</string>
-            </property>
-            <property name="text">
-             <string>Discard empty fields</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout_8">
-            <item>
-             <widget class="QLabel" name="mBoolTrueLabel">
-              <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Columns filled with '0/1', 'true/false', 't/f', and 'yes/no' (case insensitive) are automatically detected as boolean fields. An additional value for &lt;span style=&quot; font-weight:600;&quot;&gt;true&lt;/span&gt; can be specified here.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-              <property name="text">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Boolean &lt;span style=&quot; font-weight:600;&quot;&gt;true&lt;/span&gt; custom value&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="mBooleanTrue"/>
-            </item>
-           </layout>
-          </item>
-          <item row="3" column="1">
-           <layout class="QHBoxLayout" name="horizontalLayout_9">
-            <item>
-             <widget class="QLabel" name="mBooleanFalseLabel">
-              <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Columns filled with '0/1', 'true/false', 't/f', and 'yes/no' (case insensitive) are automatically detected as boolean fields. An additional value for &lt;span style=&quot; font-weight:600;&quot;&gt;false&lt;/span&gt; can be specified here.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-              <property name="text">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Boolean &lt;span style=&quot; font-weight:600;&quot;&gt;false&lt;/span&gt; custom value&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="mBooleanFalse"/>
-            </item>
-           </layout>
           </item>
          </layout>
         </widget>
@@ -866,6 +880,70 @@
           <property name="horizontalSpacing">
            <number>12</number>
           </property>
+          <item row="0" column="0">
+           <layout class="QVBoxLayout" name="verticalLayout_16">
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QRadioButton" name="geomTypeXY">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="toolTip">
+               <string>Geometry is a point defined by X and Y coordinate fields</string>
+              </property>
+              <property name="statusTip">
+               <string>Geometry is a point defined by X and Y coordinate fields</string>
+              </property>
+              <property name="whatsThis">
+               <string>Geometry is a point defined by X and Y coordinate fields</string>
+              </property>
+              <property name="text">
+               <string>Point coordinates</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="geomTypeWKT">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="toolTip">
+               <string>Geometry is read as a well known text string from the selected fields</string>
+              </property>
+              <property name="statusTip">
+               <string>Geometry is read as a well known text string from the selected fields</string>
+              </property>
+              <property name="whatsThis">
+               <string>Geometry is read as a well known text string from the selected fields</string>
+              </property>
+              <property name="text">
+               <string>Well known text (WKT)</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="geomTypeNone">
+              <property name="toolTip">
+               <string>The file contains only attribute information - it will not be displayed on the map</string>
+              </property>
+              <property name="statusTip">
+               <string>The file contains only attribute information - it will not be displayed on the map</string>
+              </property>
+              <property name="whatsThis">
+               <string>The file contains only attribute information - it will not be displayed on the map</string>
+              </property>
+              <property name="text">
+               <string>No geometry (attribute only table)</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
           <item row="0" column="1">
            <layout class="QVBoxLayout" name="verticalLayout_5">
             <property name="spacing">
@@ -1279,70 +1357,6 @@
             </item>
            </layout>
           </item>
-          <item row="0" column="0">
-           <layout class="QVBoxLayout" name="verticalLayout_16">
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="QRadioButton" name="geomTypeXY">
-              <property name="enabled">
-               <bool>true</bool>
-              </property>
-              <property name="toolTip">
-               <string>Geometry is a point defined by X and Y coordinate fields</string>
-              </property>
-              <property name="statusTip">
-               <string>Geometry is a point defined by X and Y coordinate fields</string>
-              </property>
-              <property name="whatsThis">
-               <string>Geometry is a point defined by X and Y coordinate fields</string>
-              </property>
-              <property name="text">
-               <string>Point coordinates</string>
-              </property>
-              <property name="checked">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="geomTypeWKT">
-              <property name="enabled">
-               <bool>true</bool>
-              </property>
-              <property name="toolTip">
-               <string>Geometry is read as a well known text string from the selected fields</string>
-              </property>
-              <property name="statusTip">
-               <string>Geometry is read as a well known text string from the selected fields</string>
-              </property>
-              <property name="whatsThis">
-               <string>Geometry is read as a well known text string from the selected fields</string>
-              </property>
-              <property name="text">
-               <string>Well known text (WKT)</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="geomTypeNone">
-              <property name="toolTip">
-               <string>The file contains only attribute information - it will not be displayed on the map</string>
-              </property>
-              <property name="statusTip">
-               <string>The file contains only attribute information - it will not be displayed on the map</string>
-              </property>
-              <property name="whatsThis">
-               <string>The file contains only attribute information - it will not be displayed on the map</string>
-              </property>
-              <property name="text">
-               <string>No geometry (attribute only table)</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
          </layout>
         </widget>
        </item>
@@ -1428,7 +1442,7 @@
           </sizepolicy>
          </property>
          <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Column data type is determined automatically scanning the file but it is possible to override the type through the type combo boxes.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Column data type is determined automatically scanning the file but it is possible to override the types through the type combo boxes.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="title">
           <string>Sample Data</string>

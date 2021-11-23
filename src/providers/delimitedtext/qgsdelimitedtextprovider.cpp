@@ -246,7 +246,8 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString &filenam
   // not allowed in OGR CSVT files.  Also doesn't care if int and string fields have
 
   strTypeList = strTypeList.toLower();
-  const QRegularExpression reTypeList( QRegularExpression::anchoredPattern( QStringLiteral( "^(?:\\s*(\\\"?)(?:integer|real|double|longlong|long|int8|string|date|datetime|time)(?:\\(\\d+(?:\\.\\d+)?\\))?\\1\\s*(?:,|$))+" ) ) );
+  // https://regex101.com/r/BcVPcF/1
+  const QRegularExpression reTypeList( QRegularExpression::anchoredPattern( QStringLiteral( R"re(^(?:\s*("?)(?:coordx|coordy|point\(x\)|point\(y\)|wkt|integer64|integer|integer\(boolean\)|real|double|longlong|long|int8|string|date|datetime|time)(?:\(\d+(?:\.\d+)?\))?\1\s*(?:,|$))+)re" ) ) );
   const QRegularExpressionMatch match = reTypeList.match( strTypeList );
   if ( !match.hasMatch() )
   {
@@ -260,13 +261,14 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString &filenam
   QgsDebugMsgLevel( QStringLiteral( "Field type string: %1" ).arg( strTypeList ), 2 );
 
   int pos = 0;
-  const QRegularExpression reType( QStringLiteral( R"re((int8|integer|longlong|\blong\b|real|double|string|\bdate\b|datetime|\btime\b))re" ) );
+  // https://regex101.com/r/QwxaSe/1/
+  const QRegularExpression reType( QStringLiteral( R"re((coordx|coordy|point\(x\)|point\(y\)|wkt|int8|\binteger\b(?=[^\(])|(?<=integer\()bool(?=ean)|integer64|\binteger\b(?=\(\d+\))|integer64|longlong|\blong\b|real|double|string|\bdate\b|datetime|\btime\b))re" ) );
   QRegularExpressionMatch typeMatch = reType.match( strTypeList, pos );
   while ( typeMatch.hasMatch() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Found type: %1" ).arg( typeMatch.captured( 1 ) ), 2 );
     types << typeMatch.captured( 1 );
     pos = typeMatch.capturedEnd();
+    QgsDebugMsgLevel( QStringLiteral( "Found type: %1 at pos %2" ).arg( typeMatch.captured( 1 ) ).arg( pos ), 2 );
 
     typeMatch = reType.match( strTypeList, pos );
   }
@@ -808,6 +810,11 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
       if ( fieldIdx < csvtTypes.size() )
       {
         typeName = csvtTypes[fieldIdx];
+        // Map XY geometries types to actual values
+        if ( typeName == QStringLiteral( "coordx" ) || typeName == QStringLiteral( "coordy" ) || typeName == QStringLiteral( "point(x)" ) || typeName == QStringLiteral( "point(y)" ) )
+        {
+          typeName = QStringLiteral( "double" );
+        }
       }
       else if ( mDetectTypes && fieldIdx < couldBeInt.size() )
       {

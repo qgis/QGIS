@@ -506,8 +506,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole Number (integer)" ), "integer" );
     typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole Number (integer - 64 bit)" ), "integer64" );
     typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) ), tr( "Decimal Number" ), "double" );
-    // Not supported by the provider
-    // typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBool.svg" ) ), tr( "Boolean" ), "bool" );
+    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBool.svg" ) ), tr( "Boolean" ), "bool" );
     typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDate.svg" ) ), tr( "Date" ), "date" );
     typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldTime.svg" ) ), tr( "Time" ), "time" );
     typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDateTime.svg" ) ), tr( "Date and Time" ), "datetime" );
@@ -799,6 +798,11 @@ bool QgsDelimitedTextSourceSelect::validate()
     message = tr( "Custom boolean values for \"true\" or \"false\" is missing." );
   }
 
+  if ( ! message.isEmpty() )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Validation error: %1" ).arg( message ), 2 );
+  }
+
   lblStatus->setText( message );
   return enabled;
 }
@@ -806,7 +810,6 @@ bool QgsDelimitedTextSourceSelect::validate()
 void QgsDelimitedTextSourceSelect::updateFieldTypes( const QgsFields &fields )
 {
   {
-    QMutexLocker lock{ &mFieldsMutex };
     mFields = fields;
   }
 
@@ -822,6 +825,7 @@ void QgsDelimitedTextSourceSelect::updateFieldTypes( const QgsFields &fields )
         const QString fieldTypeName { mFields.field( fieldIdx ).typeName() };
         if ( typeCombo && typeCombo->findData( fieldTypeName ) >= 0 )
         {
+          QgsDebugMsgLevel( QStringLiteral( "Setting field type %1 from %2 to %3" ).arg( fieldName, fieldTypeName, typeCombo->currentData().toString() ), 2 );
           QgsSignalBlocker( typeCombo )->setCurrentIndex( typeCombo->findData( fieldTypeName ) );
         }
       }
@@ -847,10 +851,7 @@ void QgsDelimitedTextSourceSelect::showCrsWidget()
 
 QString QgsDelimitedTextSourceSelect::url( bool skipOverriddenTypes )
 {
-  if ( ! validate() )
-  {
-    return QString();
-  }
+
   QUrl url = mFile->url();
   QUrlQuery query( url );
 
@@ -931,7 +932,6 @@ QString QgsDelimitedTextSourceSelect::url( bool skipOverriddenTypes )
   if ( ! skipOverriddenTypes )
   {
     // Set field types if overridden
-    QMutexLocker lock{ &mFieldsMutex };
     for ( int column = 0; column < tblSample->columnCount(); column++ )
     {
       const QString fieldName { tblSample->horizontalHeaderItem( column )->text() };
@@ -942,6 +942,7 @@ QString QgsDelimitedTextSourceSelect::url( bool skipOverriddenTypes )
         const QString fieldTypeName { mFields.field( fieldName ).typeName() };
         if ( typeCombo && typeCombo->currentData().toString() != fieldTypeName )
         {
+          QgsDebugMsgLevel( QStringLiteral( "Overriding field %1 from %2 to %3" ).arg( fieldName, fieldTypeName, typeCombo->currentData().toString() ), 2 );
           query.addQueryItem( QStringLiteral( "field" ),
                               QString( fieldName ).replace( ':', QStringLiteral( "%3A" ) ) + ':' +  typeCombo->currentData().toString() );
         }

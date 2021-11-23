@@ -17,7 +17,6 @@
 
 #include <QTextStream>
 #include <QThread>
-#include <QMutex>
 
 #include "qgshelp.h"
 #include "qgsguiutils.h"
@@ -47,12 +46,10 @@ class QgsDelimitedTextFileScanTask: public QgsTask
       : QgsTask( QStringLiteral( "delimited text scan %1" ).arg( dataSource ) )
       , mDataSource( dataSource )
     {
-      qDebug() << this << "thread started";
     };
 
     ~QgsDelimitedTextFileScanTask()
     {
-      qDebug() << this << "thread deleted";
     }
 
     // QThread interface
@@ -118,7 +115,6 @@ class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private
     long mScanTaskId = -1;
     QButtonGroup *bgFileFormat = nullptr;
     QButtonGroup *bgGeomType = nullptr;
-    QMutex mFieldsMutex;
     void showHelp();
     void showCrsWidget();
     QString url( bool skipOverriddenTypes = false );
