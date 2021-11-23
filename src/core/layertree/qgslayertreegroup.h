@@ -147,7 +147,8 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 
 
     /**
-     * Returns an ordered list of map layers in the group, ignoring any layers which are child layers of QgsGroupLayers. Searches recursively the whole sub-tree.
+     * Returns an ordered list of map layers in the group, ignoring any layers which
+     * are child layers of QgsGroupLayers. Searches recursively the whole sub-tree.
      *
      * \note Not available in Python bindings
      * \since QGIS 3.24
