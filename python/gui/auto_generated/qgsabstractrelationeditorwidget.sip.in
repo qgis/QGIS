@@ -167,13 +167,13 @@ Returns the widget configuration
 Defines the widget configuration
 %End
 
-<<<<<<< HEAD
     bool multiEditModeActive() const;
 %Docstring
 Returns true if editing multiple features at a time
 
 .. versionadded:: 3.24
-=======
+%End
+
   signals:
 
     void relatedFeaturesChanged();
@@ -185,7 +185,6 @@ linked or unlinked.
 :param vectorLayer: The modified layer
 
 .. versionadded:: 3.22
->>>>>>> 65130bccde (Fix #43901 No update of virtual fields considering layer dependencies)
 %End
 
   public slots:
