@@ -59,6 +59,7 @@ set(TESTS
   testqgslayoutview.cpp
   testqgsvaluemapwidgetwrapper.cpp
   testqgsvaluerelationwidgetwrapper.cpp
+  testqgsrelationeditorwidget.cpp
   testqgsrelationreferencewidget.cpp
   testqgsfeaturelistcombobox.cpp
   testqgstexteditwrapper.cpp

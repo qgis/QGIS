@@ -212,7 +212,7 @@ void QgsAttributeForm::setMode( QgsAttributeEditorContext::Mode mode )
     w->setContext( newContext );
   }
 
-  bool relationWidgetsVisible = ( mMode != QgsAttributeEditorContext::MultiEditMode && mMode != QgsAttributeEditorContext::AggregateSearchMode );
+  bool relationWidgetsVisible = ( mMode != QgsAttributeEditorContext::AggregateSearchMode );
   for ( QgsAttributeFormRelationEditorWidget *w : findChildren<  QgsAttributeFormRelationEditorWidget * >() )
   {
     w->setVisible( relationWidgetsVisible );
@@ -2585,6 +2585,9 @@ void QgsAttributeForm::setMultiEditFeatureIds( const QgsFeatureIds &fids )
       }
     }
   }
+
+  setMultiEditFeatureIdsRelations( fids );
+
   mIsSettingMultiEditFeatures = false;
 }
 
@@ -2769,6 +2772,18 @@ void QgsAttributeForm::updateFieldDependenciesVirtualFields( QgsEditorWidgetWrap
     {
       mVirtualFieldsDependencies.insertMulti( mLayer->fields().lookupField( referencedColumn ), eww );
     }
+  }
+}
+
+void QgsAttributeForm::setMultiEditFeatureIdsRelations( const QgsFeatureIds &fids )
+{
+  for ( QgsAttributeFormWidget *formWidget : mFormWidgets )
+  {
+    QgsAttributeFormRelationEditorWidget *relationEditorWidget = dynamic_cast<QgsAttributeFormRelationEditorWidget *>( formWidget );
+    if ( !relationEditorWidget )
+      continue;
+
+    relationEditorWidget->setMultiEditFeatureIds( fids );
   }
 }
 

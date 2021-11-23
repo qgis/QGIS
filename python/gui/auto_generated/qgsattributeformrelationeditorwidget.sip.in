@@ -34,6 +34,15 @@ Constructor
     virtual QString currentFilterExpression() const;
 
 
+    void setMultiEditFeatureIds( const QgsFeatureIds &fids );
+%Docstring
+Set multiple feature to edit simultaneously.
+
+:param fids: Multiple Id of features to edit
+
+.. versionadded:: 3.24
+%End
+
 };
 
 /************************************************************************

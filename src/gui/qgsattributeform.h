@@ -381,6 +381,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void updateFieldDependenciesDefaultValue( QgsEditorWidgetWrapper *eww );
     void updateFieldDependenciesVirtualFields( QgsEditorWidgetWrapper *eww );
 
+    void setMultiEditFeatureIdsRelations( const QgsFeatureIds &fids );
+
     struct WidgetInfo
     {
       QWidget *widget = nullptr;
