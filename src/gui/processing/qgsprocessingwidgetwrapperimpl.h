@@ -2222,6 +2222,24 @@ class GUI_EXPORT QgsProcessingRasterDestinationWidgetWrapper : public QgsProcess
 
 };
 
+class GUI_EXPORT QgsProcessingPointCloudDestinationWidgetWrapper : public QgsProcessingOutputWidgetWrapper
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProcessingPointCloudDestinationWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
+        QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
+
+    // QgsProcessingParameterWidgetFactoryInterface
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
+
+  protected:
+    QString modelerExpressionFormatString() const override;
+
+};
+
 class GUI_EXPORT QgsProcessingFileDestinationWidgetWrapper : public QgsProcessingOutputWidgetWrapper
 {
     Q_OBJECT
