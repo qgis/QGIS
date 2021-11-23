@@ -553,6 +553,7 @@ void QgsAttributeForm::updateValuesDependenciesDefaultValues( const int originId
         QgsExpressionContext context = createExpressionContext( updatedFeature );
         const QVariant value = mLayer->defaultValue( eww->fieldIdx(), updatedFeature, &context );
         eww->setValue( value );
+        mCurrentFormFeature.setAttribute( eww->field().name(), value );
       }
     }
   }
