@@ -35,24 +35,46 @@ class GUI_EXPORT QgsBlendModeComboBox : public QComboBox
     //! Constructor for QgsBlendModeComboBox
     QgsBlendModeComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    //! Function to read the selected blend mode as QPainter::CompositionMode
+    /**
+     * Returns the selected blend mode.
+     * \see setBlendMode()
+     */
     QPainter::CompositionMode blendMode();
-    //! Function to set the selected blend mode from QPainter::CompositionMode
-    void setBlendMode( QPainter::CompositionMode blendMode );
-  private:
 
     /**
-     * Returns a QStringList of the translated blend modes
-    * "-" is used to indicate the position of a separator in the list
-    * This list is designed to emulate GIMP's layer modes, where
-    * blending modes are grouped by their effect (lightening, darkening, etc)
-    */
-    QStringList blendModesList() const;
+     * Sets the selected blend mode.
+     * \see blendMode()
+     */
+    void setBlendMode( QPainter::CompositionMode blendMode );
 
-    //! Used to map blend modes across to their corresponding
-    //  index within the combo box
-    std::vector<int> mBlendModeToListIndex;
-    std::vector<int> mListIndexToBlendMode;
+    /**
+     * Sets whether composition modes which cause clipping are shown in the combo box.
+     *
+     * By default, these composition modes (such as QPainter::CompositionMode::CompositionMode_DestinationIn )
+     * are not shown in the combo box, as they can only be used with predictable results in a limited
+     * set of circumstances. By setting \a show to TRUE these additional composition modes
+     * will be shown in the combo box.
+     *
+     * \see showClippingModes()
+     * \since QGIS 3.24
+     */
+    void setShowClippingModes( bool show );
+
+    /**
+     * Returns TRUE if composition modes which cause clipping are shown in the combo box.
+     *
+     * By default, these composition modes (such as QPainter::CompositionMode::CompositionMode_DestinationIn )
+     * are not shown in the combo box, as they can only be used with predictable results in a limited
+     * set of circumstances.
+     *
+     * \see setShowClippingModes()
+     * \since QGIS 3.24
+     */
+    bool showClippingModes() const;
+
+  private:
+
+    bool mShowClipModes = false;
 
   public slots:
 
