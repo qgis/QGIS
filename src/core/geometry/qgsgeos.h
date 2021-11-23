@@ -297,7 +297,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
         QString *errorMsg = nullptr ) const;
 
     /**
-     * Returns the maximum inscribed circle.
+     * Returns the maximum inscribed circle radius.
      *
      * Constructs the Maximum Inscribed Circle for a  polygonal geometry, up to a specified tolerance.
      * The Maximum Inscribed Circle is determined by a point in the interior of the area

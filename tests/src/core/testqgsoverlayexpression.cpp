@@ -116,7 +116,6 @@ void TestQgsOverlayExpression::testOverlay_data()
   QTest::addColumn<QString>( "geometry" );
   QTest::addColumn<bool>( "expectedResult" );
 
-  /*
   QTest::newRow( "intersects" ) << "overlay_intersects('rectangles')" << "POLYGON((-120 30, -105 30, -105 20, -120 20, -120 30))" << true;
   QTest::newRow( "intersects [cached]" ) << "overlay_intersects('rectangles',cache:=true)" << "POLYGON((-120 30, -105 30, -105 20, -120 20, -120 30))" << true;
 
@@ -155,13 +154,38 @@ void TestQgsOverlayExpression::testOverlay_data()
 
   QTest::newRow( "disjoint no match" ) << "overlay_disjoint('rectangles')" << "LINESTRING(-155 15, -122 32, -84 4)" << false;
   QTest::newRow( "disjoint no match [cached]" ) << "overlay_disjoint('rectangles',cache:=true)" << "LINESTRING(-155 15, -122 32, -84 4)" << false;
-  */
 
-  QTest::newRow( "intersects min_area no match" ) << "overlay_intersects('polys', min_area:=1.3)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << false;
-  QTest::newRow( "intersects min_area match" ) << "overlay_intersects('polys', min_area:=1.28)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << true;
+  // Multi part intersection
+  QTest::newRow( "intersects min_area multi no match" ) << "overlay_intersects('polys', min_area:=1.5)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << false;
+  QTest::newRow( "intersects min_area multi match" ) << "overlay_intersects('polys', min_area:=1.34)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << true;
 
-  QTest::newRow( "intersects min_inscribed_circle_radius no match" ) << "overlay_intersects('polys', min_inscribed_circle_radius:=1.0)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << false;
-  QTest::newRow( "intersects min_inscribed_circle_radius match" ) << "overlay_intersects('polys', min_area:=0.457)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << true;
+  QTest::newRow( "intersects min_inscribed_circle_radius multi no match" ) << "overlay_intersects('polys', min_inscribed_circle_radius:=1.0)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << false;
+  QTest::newRow( "intersects min_inscribed_circle_radius multi match" ) << "overlay_intersects('polys', min_inscribed_circle_radius:=0.5)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << true;
+
+  // Single part intersection
+  QTest::newRow( "intersects min_area no match" ) << "overlay_intersects('polys', min_area:=1.5)" << "POLYGON((-105 33.75, -102.76 33.75, -102.76 35.2, -105 35.2, -105 33.75))" << false;
+  QTest::newRow( "intersects min_area match" ) << "overlay_intersects('polys', min_area:=1.34)" << "POLYGON((-105 33.75, -102.76 33.75, -102.76 35.2, -105 35.2, -105 33.75))" << true;
+
+  QTest::newRow( "intersects min_inscribed_circle_radius no match" ) << "overlay_intersects('polys', min_inscribed_circle_radius:=1.0)" << "POLYGON((-105 33.75, -102.76 33.75, -102.76 35.2, -105 35.2, -105 33.75))" << false;
+  QTest::newRow( "intersects min_inscribed_circle_radius match" ) << "overlay_intersects('polys', min_inscribed_circle_radius:=0.5)" << "POLYGON((-105 33.75, -102.76 33.75, -102.76 35.2, -105 35.2, -105 33.75))" << true;
+
+  // Test both checks combined: they must all pass
+  // Multi part intersection
+  QTest::newRow( "intersects multi combined no match 1" ) << "overlay_intersects('polys', min_area:=1.5, min_inscribed_circle_radius:=1.0)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << false;
+  QTest::newRow( "intersects multi combined no match 2" ) << "overlay_intersects('polys', min_area:=1.5, min_inscribed_circle_radius:=0.5)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << false;
+
+  QTest::newRow( "intersects multi combined no match 3" ) << "overlay_intersects('polys', min_area:=1.34, min_inscribed_circle_radius:=1.0)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << false;
+  QTest::newRow( "intersects multi combined match" ) << "overlay_intersects('polys', min_area:=1.34, min_inscribed_circle_radius:=0.5)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << true;
+
+  // Single part intersection
+  QTest::newRow( "intersects combined no match 1" ) << "overlay_intersects('polys', min_area:=1.5, min_inscribed_circle_radius:=1.0)" << "POLYGON((-105 33.75, -102.76 33.75, -102.76 35.2, -105 35.2, -105 33.75))" << false;
+  QTest::newRow( "intersects combined no match 2" ) << "overlay_intersects('polys', min_area:=1.34, min_inscribed_circle_radius:=1.0)" << "POLYGON((-105 33.75, -102.76 33.75, -102.76 35.2, -105 35.2, -105 33.75))" << false;
+  QTest::newRow( "intersects combined no match 3" ) << "overlay_intersects('polys', min_area:=1.5, min_inscribed_circle_radius:=0.5)" << "POLYGON((-105 33.75, -102.76 33.75, -102.76 35.2, -105 35.2, -105 33.75))" << false;
+
+  QTest::newRow( "intersects combined match" ) << "overlay_intersects('polys', min_area:=1.34, min_inscribed_circle_radius:=0.5)" << "POLYGON((-105 33.75, -102.76 33.75, -102.76 35.2, -105 35.2, -105 33.75))" << true;
+
+  // Check wrong args
+  QTest::newRow( "intersects wrong args" ) << "overlay_intersects('polys', min_area:=1.5, min_inscribed_circle_radius:=0.5)" << "LINESTRING(-105 33.75, -102.76 33.75)" << false;
 }
 
 void TestQgsOverlayExpression::testOverlayExpression()

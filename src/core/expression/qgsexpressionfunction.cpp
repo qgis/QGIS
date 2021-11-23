@@ -6756,25 +6756,73 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
       if ( isIntersectsFunc && ( minArea != -1 || minInscribedCircleRadius != -1 ) )
       {
         const QgsGeometry intersection { geometry.intersection( feat2.geometry() ) };
-        // Check min area for intersection (if set)
-        // qDebug() << feat2.id() << intersection.area();
-        if ( minArea != -1 && intersection.area() <= minArea )
+
+        // Skip id not polygon
+        if ( intersection.type() != QgsWkbTypes::GeometryType::PolygonGeometry )
         {
           continue;
         }
 
-        // Check min inscribed circle radius for intersection (if set)
-        if ( minInscribedCircleRadius != -1 )
+        // Check min area for intersection (if set)
+        if ( intersection.isMultipart() )
         {
-          const QgsAbstractGeometry *geom { intersection.constGet() };
-          const QgsRectangle bbox = geom->boundingBox();
-          const double width = bbox.width();
-          const double height = bbox.height();
-          const double size = width > height ? width : height;
-          const double tolerance = size / 1000.0;
-          if ( QgsGeos( geom ).maximumInscribedCircle( tolerance )->length() / 2 < minInscribedCircleRadius )
+          bool testResult { false };
+          for ( auto it = intersection.const_parts_begin(); ! testResult && it != intersection.const_parts_end(); ++it )
+          {
+            const QgsPolygon *geom = qgsgeometry_cast< const QgsPolygon * >( *it );
+            // qDebug() << "Area" << feat2.id() << geom->area();
+            if ( minArea != -1 )
+            {
+              if ( geom->area() >= minArea )
+              {
+                testResult = true;
+              }
+              else
+              {
+                continue;
+              }
+            }
+
+            // Check min inscribed circle radius for intersection (if set)
+            if ( minInscribedCircleRadius != -1 )
+            {
+              const QgsRectangle bbox = geom->boundingBox();
+              const double width = bbox.width();
+              const double height = bbox.height();
+              const double size = width > height ? width : height;
+              const double tolerance = size / 1000.0;
+              //qDebug() << "Inscribed circle radius" << feat2.id() << QgsGeos( geom ).maximumInscribedCircle( tolerance )->length();
+              testResult = QgsGeos( geom ).maximumInscribedCircle( tolerance )->length() >= minInscribedCircleRadius;
+            }
+          }
+
+          if ( ! testResult )
           {
             continue;
+          }
+
+        }
+        else
+        {
+          if ( minArea != -1 && intersection.area() < minArea )
+          {
+            continue;
+          }
+
+          // Check min inscribed circle radius for intersection (if set)
+          if ( minInscribedCircleRadius != -1 )
+          {
+            const QgsAbstractGeometry *geom { intersection.constGet() };
+            const QgsRectangle bbox = geom->boundingBox();
+            const double width = bbox.width();
+            const double height = bbox.height();
+            const double size = width > height ? width : height;
+            const double tolerance = size / 1000.0;
+            // qDebug() << "Inscribed circle radius" << feat2.id() << QgsGeos( geom ).maximumInscribedCircle( tolerance )->length();
+            if ( QgsGeos( geom ).maximumInscribedCircle( tolerance )->length() < minInscribedCircleRadius )
+            {
+              continue;
+            }
           }
         }
       }

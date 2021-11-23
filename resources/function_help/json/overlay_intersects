@@ -28,6 +28,18 @@
       "description": "set this to true to build a local spatial index (most of the time, this is unwanted, unless you are working with a particularly slow data provider)",
       "optional": true,
       "default": "false"
+    },
+    {
+      "arg": "min_area",
+      "description": "an optional minimum area in current feature squared units for the intersection (if the intersection results in multiple polygons the intersection will be returned if at least one of the polygons has an area greater or equal to the value)",
+      "optional": true,
+      "default": "false"
+    },
+    {
+      "arg": "min_inscribed_circle_radius",
+      "description": "an optional minimum radius for the maximum inscribed circle of the intersection (if the intersection results in multiple polygons the intersection will be returned if at least one of the polygons has a radius for the maximum inscribed circle greater or equal to the value)",
+      "optional": true,
+      "default": "false"
     }
   ],
   "examples": [
@@ -53,7 +65,15 @@
     },
     {
       "expression": "overlay_intersects(layer:='regions', expression:= geom_to_wkt($geometry), limit:=2)",
-      "returns": "an array of geometries (in WKT), for up to two regions intersected by the current feature"
+      "returns": "an array of geometries (in WKT), for up to two regions intersected by the current feature"    
+    },
+    {
+      "expression": "overlay_intersects(layer:='regions', min_area:=0.54)",
+      "returns": "true if the current feature spatially intersects a region and the intersection area (of at least on of the part in case of multipolygons) is greater or equal to the value"
+    },
+    {
+      "expression": "overlay_intersects(layer:='regions', min_inscribed_circle_radius:=0.54)",
+      "returns": "true if the current feature spatially intersects a region and the intersection area maximum inscribed circle's radius (of at least on of the part in case of multipolygons) is greater or equal to the value"
     }
   ]
 }
