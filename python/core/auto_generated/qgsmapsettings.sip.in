@@ -234,22 +234,28 @@ Returns the magnification factor.
 .. versionadded:: 2.16
 %End
 
-    QStringList layerIds() const;
+    QStringList layerIds( bool expandGroupLayers = false ) const;
 %Docstring
 Returns the list of layer IDs which will be rendered in the map.
 
 The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top).
+
+Since QGIS 3.24, if the ``expandGroupLayers`` option is ``True`` then group layers will be converted to
+all their child layers.
 
 .. seealso:: :py:func:`layers`
 
 .. seealso:: :py:func:`setLayers`
 %End
 
-    QList<QgsMapLayer *> layers() const;
+    QList<QgsMapLayer *> layers( bool expandGroupLayers = false ) const;
 %Docstring
 Returns the list of layers which will be rendered in the map.
 
 The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
+
+Since QGIS 3.24, if the ``expandGroupLayers`` option is ``True`` then group layers will be converted to
+all their child layers.
 
 .. seealso:: :py:func:`setLayers`
 
