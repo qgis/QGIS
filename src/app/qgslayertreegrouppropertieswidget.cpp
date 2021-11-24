@@ -20,6 +20,7 @@
 #include "qgsgui.h"
 #include "qgspainteffect.h"
 #include "qgsmapcanvas.h"
+#include "qgspainteffectregistry.h"
 
 #include <QStackedWidget>
 #include <QHBoxLayout>
@@ -32,7 +33,7 @@ QgsLayerTreeGroupPropertiesWidget::QgsLayerTreeGroupPropertiesWidget( QgsMapCanv
 
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsLayerTreeGroupPropertiesWidget::onLayerPropertyChanged );
   connect( mBlendModeComboBox, qOverload< int >( &QgsBlendModeComboBox::currentIndexChanged ), this, &QgsLayerTreeGroupPropertiesWidget::onLayerPropertyChanged );
-// connect( mEffectWidget, &QgsEffectStackCompactWidget::changed, this, &QgsLayerTreeGroupPropertiesWidget::onLayerPropertyChanged );
+  connect( mEffectWidget, &QgsEffectStackCompactWidget::changed, this, &QgsLayerTreeGroupPropertiesWidget::onLayerPropertyChanged );
   connect( mRenderAsGroupCheckBox, &QGroupBox::toggled, this, &QgsLayerTreeGroupPropertiesWidget::onLayerPropertyChanged );
 
   setDockMode( true );
@@ -58,7 +59,7 @@ void QgsLayerTreeGroupPropertiesWidget::setMapLayerConfigWidgetContext( const Qg
     if ( groupLayer->paintEffect() )
     {
       mPaintEffect.reset( groupLayer->paintEffect()->clone() );
-      //mEffectWidget->setPaintEffect( mPaintEffect.get() );
+      mEffectWidget->setPaintEffect( mPaintEffect.get() );
     }
   }
   else
@@ -97,8 +98,8 @@ void QgsLayerTreeGroupPropertiesWidget::apply()
     // set the blend mode and opacity for the layer
     groupLayer->setBlendMode( mBlendModeComboBox->blendMode() );
     groupLayer->setOpacity( mOpacityWidget->opacity() );
-    if ( mPaintEffect )
-      groupLayer->setPaintEffect( mPaintEffect->clone() );
+    groupLayer->setPaintEffect( mPaintEffect->clone() );
+
     groupLayer->triggerRepaint();
   }
   else if ( mMapLayerConfigWidgetContext.mapCanvas() )

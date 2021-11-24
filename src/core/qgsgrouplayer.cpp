@@ -35,6 +35,9 @@ QgsGroupLayer::QgsGroupLayer( const QString &name, const LayerOptions &options )
   mShouldValidateCrs = false;
   mValid = true;
 
+  mPaintEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+  mPaintEffect->setEnabled( false );
+
   QgsDataProvider::ProviderOptions providerOptions;
   providerOptions.transformContext = options.transformContext;
   mDataProvider = new QgsGroupLayerDataProvider( providerOptions, QgsDataProvider::ReadFlags() );
@@ -224,7 +227,8 @@ bool QgsGroupLayer::readSymbology( const QDomNode &node, QString &, QgsReadWrite
     }
     else
     {
-      mPaintEffect.reset();
+      mPaintEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+      mPaintEffect->setEnabled( false );
     }
   }
 

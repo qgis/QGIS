@@ -35,6 +35,16 @@
       <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <item row="1" column="2">
+       <widget class="QgsBlendModeComboBox" name="mBlendModeComboBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <horstretch>4</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="lblTransparency">
         <property name="text">
@@ -49,18 +59,21 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="2">
-       <widget class="QgsBlendModeComboBox" name="mBlendModeComboBox">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-          <horstretch>4</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+      <item row="0" column="2">
+       <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true">
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
-       <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true">
+      <item row="2" column="0" colspan="3">
+       <widget class="QgsEffectStackCompactWidget" name="mEffectWidget" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
+        </property>
         <property name="focusPolicy">
          <enum>Qt::StrongFocus</enum>
         </property>
@@ -89,6 +102,12 @@
    <class>QgsBlendModeComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsblendmodecombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsEffectStackCompactWidget</class>
+   <extends>QWidget</extends>
+   <header>qgseffectstackpropertieswidget.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsOpacityWidget</class>
