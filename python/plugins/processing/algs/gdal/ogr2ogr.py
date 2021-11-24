@@ -104,4 +104,8 @@ class ogr2ogr(GdalAlgorithm):
 
     def shortHelpString(self):
         return self.tr("The algorithm converts simple features data between file formats.\n\n"
-                       "Use convert all layers to convert a whole dataset.")
+                       "Use convert all layers to convert a whole dataset.\n"
+                       "Supported output formats for this option are :\n"
+                       "- GPKG\n"
+                       "- GML"
+                       )
