@@ -36,7 +36,7 @@
     },
     {
       "arg": "min_inscribed_circle_radius",
-      "description": "an optional minimum radius in current feature units for the maximum inscribed circle of the intersection (if the intersection results in multiple polygons the intersection will be returned if at least one of the polygons has a radius for the maximum inscribed circle greater or equal to the value)",
+      "description": "an optional minimum radius in current feature units for the maximum inscribed circle of the intersection (if the intersection results in multiple polygons the intersection will be returned if at least one of the polygons has a radius for the maximum inscribed circle greater or equal to the value).<br>Read more on the underlying GEOS predicate, as described in PostGIS <a href='https://postgis.net/docs/ST_MaximumInscribedCircle.html'>ST_MaximumInscribedCircle</a> function.",
       "optional": true
     }
   ],
