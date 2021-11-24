@@ -50,7 +50,7 @@ QWidget *QgsRelationWidgetWrapper::createWidget( QWidget *parent )
     relationEditorWidget = QgsGui::instance()->relationWidgetRegistry()->create( QStringLiteral( "relation_editor" ), widgetConfig(), parent );
   }
 
-  connect( relationEditorWidget, &QgsAbstractRelationEditorWidget::relatedFeaturesChanged, this, &QgsRelationWidgetWrapper::onRelatedFeaturesChanged );
+  connect( relationEditorWidget, &QgsAbstractRelationEditorWidget::relatedFeaturesChanged, this, &QgsRelationWidgetWrapper::relatedFeaturesChanged );
 
   return relationEditorWidget;
 }
@@ -65,11 +65,6 @@ void QgsRelationWidgetWrapper::setVisible( bool visible )
 {
   if ( mWidget )
     mWidget->setVisible( visible );
-}
-
-void QgsRelationWidgetWrapper::onRelatedFeaturesChanged()
-{
-  emit relatedFeaturesChanged();
 }
 
 void QgsRelationWidgetWrapper::aboutToSave()

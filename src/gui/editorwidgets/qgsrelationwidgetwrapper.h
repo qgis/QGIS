@@ -231,10 +231,6 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
      */
     void setVisible( bool visible );
 
-  private slots:
-
-    void onRelatedFeaturesChanged();
-
   private:
     void aboutToSave() override;
     QgsRelation mRelation;

@@ -410,8 +410,9 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     //! Save single feature or add feature edits
     bool saveEdits( QString *error );
 
-    //! update the default values and virtual fields in the fields after a referenced field changed
     QgsFeature getUpdatedFeature() const;
+
+    //! update the default values and virtual fields in the fields after a referenced field changed
     void updateValuesDependencies( const int originIdx );
     void updateValuesDependenciesDefaultValues( const int originIdx );
     void updateValuesDependenciesVirtualFields( const int originIdx );
