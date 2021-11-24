@@ -15019,6 +15019,21 @@ void QgisApp::legendLayerSelectionChanged()
 {
   const QList<QgsLayerTreeLayer *> selectedLayers = mLayerTreeView ? mLayerTreeView->selectedLayerNodes() : QList<QgsLayerTreeLayer *>();
 
+  if ( selectedLayers.empty() && mLayerTreeView )
+  {
+    // check if a group node alone is selected
+    const QList<QgsLayerTreeNode *> selectedNodes = mLayerTreeView->selectedNodes();
+    if ( selectedNodes.size() == 1 && QgsLayerTree::isGroup( selectedNodes.at( 0 ) ) )
+    {
+      QgsLayerTreeGroup *groupNode = QgsLayerTree::toGroup( selectedNodes.at( 0 ) );
+      mMapStyleWidget->setEnabled( true );
+      if ( mMapStylingDock->isVisible() )
+      {
+        mMapStyleWidget->setLayerTreeGroup( groupNode );
+      }
+    }
+  }
+
   mActionDuplicateLayer->setEnabled( !selectedLayers.isEmpty() );
   mActionSetLayerScaleVisibility->setEnabled( !selectedLayers.isEmpty() );
   mActionSetLayerCRS->setEnabled( !selectedLayers.isEmpty() );

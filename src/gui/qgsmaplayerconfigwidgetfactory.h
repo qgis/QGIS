@@ -23,6 +23,7 @@
 class QgsMapLayer;
 class QgsMapLayerConfigWidget;
 class QgsMapCanvas;
+class QgsLayerTreeGroup;
 
 /**
  * \ingroup gui
@@ -126,6 +127,13 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
      * \returns TRUE if this layer is supported for this widget
      */
     virtual bool supportsLayer( QgsMapLayer *layer ) const;
+
+    /**
+     * \brief Check if a layer tree group is supported for this widget.
+     * \returns TRUE if the group is supported for this widget
+     * \since QGIS 3.24
+     */
+    virtual bool supportsLayerTreeGroup( QgsLayerTreeGroup *group ) const;
 
     /**
      * Returns the associated parent page, for factories which create sub-components of a standard page.
