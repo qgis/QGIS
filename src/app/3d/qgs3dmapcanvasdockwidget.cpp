@@ -402,7 +402,7 @@ void Qgs3DMapCanvasDockWidget::exportScene()
 
 void Qgs3DMapCanvasDockWidget::onMainCanvasLayersChanged()
 {
-  mCanvas->map()->setLayers( mMainCanvas->layers() );
+  mCanvas->map()->setLayers( mMainCanvas->layers( true ) );
 }
 
 void Qgs3DMapCanvasDockWidget::onMainCanvasColorChanged()

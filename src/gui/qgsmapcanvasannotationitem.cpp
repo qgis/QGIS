@@ -141,7 +141,7 @@ void QgsMapCanvasAnnotationItem::onCanvasLayersChanged()
   }
   else
   {
-    setVisible( mMapCanvas->mapSettings().layers().contains( mAnnotation->mapLayer() ) );
+    setVisible( mMapCanvas->mapSettings().layers( true ).contains( mAnnotation->mapLayer() ) );
   }
 }
 

@@ -27,12 +27,45 @@ Constructor for QgsBlendModeComboBox
 
     QPainter::CompositionMode blendMode();
 %Docstring
-Function to read the selected blend mode as QPainter.CompositionMode
+Returns the selected blend mode.
+
+.. seealso:: :py:func:`setBlendMode`
 %End
+
     void setBlendMode( QPainter::CompositionMode blendMode );
 %Docstring
-Function to set the selected blend mode from QPainter.CompositionMode
+Sets the selected blend mode.
+
+.. seealso:: :py:func:`blendMode`
 %End
+
+    void setShowClippingModes( bool show );
+%Docstring
+Sets whether composition modes which cause clipping are shown in the combo box.
+
+By default, these composition modes (such as QPainter.CompositionMode.CompositionMode_DestinationIn )
+are not shown in the combo box, as they can only be used with predictable results in a limited
+set of circumstances. By setting ``show`` to ``True`` these additional composition modes
+will be shown in the combo box.
+
+.. seealso:: :py:func:`showClippingModes`
+
+.. versionadded:: 3.24
+%End
+
+    bool showClippingModes() const;
+%Docstring
+Returns ``True`` if composition modes which cause clipping are shown in the combo box.
+
+By default, these composition modes (such as QPainter.CompositionMode.CompositionMode_DestinationIn )
+are not shown in the combo box, as they can only be used with predictable results in a limited
+set of circumstances.
+
+.. seealso:: :py:func:`setShowClippingModes`
+
+.. versionadded:: 3.24
+%End
+
   public slots:
 
     void updateModes();

@@ -27,6 +27,7 @@
 #include "qgsxmlutils.h"
 #include "qgsexception.h"
 #include "qgsgeometry.h"
+#include "qgsgrouplayer.h"
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 
@@ -285,15 +286,42 @@ void QgsMapSettings::setDpiTarget( double dpi )
   mDpiTarget = dpi;
 }
 
-QStringList QgsMapSettings::layerIds() const
+QStringList QgsMapSettings::layerIds( bool expandGroupLayers ) const
 {
-  return _qgis_listQPointerToIDs( mLayers );
+  const QList<QgsMapLayer * > mapLayers = layers( expandGroupLayers );
+  QStringList res;
+  res.reserve( mapLayers.size() );
+  for ( const QgsMapLayer *layer : mapLayers )
+    res << layer->id();
+  return res;
 }
 
-
-QList<QgsMapLayer *> QgsMapSettings::layers() const
+QList<QgsMapLayer *> QgsMapSettings::layers( bool expandGroupLayers ) const
 {
-  return _qgis_listQPointerToRaw( mLayers );
+  const QList<QgsMapLayer *> actualLayers = _qgis_listQPointerToRaw( mLayers );
+  if ( !expandGroupLayers )
+    return actualLayers;
+
+  QList< QgsMapLayer * > result;
+
+  std::function< void( const QList< QgsMapLayer * >& layers ) > expandLayers;
+  expandLayers = [&result, &expandLayers]( const QList< QgsMapLayer * > &layers )
+  {
+    for ( QgsMapLayer *layer : layers )
+    {
+      if ( QgsGroupLayer *groupLayer = qobject_cast< QgsGroupLayer * >( layer ) )
+      {
+        expandLayers( groupLayer->childLayers() );
+      }
+      else
+      {
+        result << layer;
+      }
+    }
+  };
+
+  expandLayers( actualLayers );
+  return result;
 }
 
 void QgsMapSettings::setLayers( const QList<QgsMapLayer *> &layers )

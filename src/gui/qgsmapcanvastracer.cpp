@@ -105,7 +105,7 @@ void QgsMapCanvasTracer::configure()
   setExtent( mCanvas->extent() );
 
   QList<QgsVectorLayer *> layers;
-  const QList<QgsMapLayer *> visibleLayers = mCanvas->mapSettings().layers();
+  const QList<QgsMapLayer *> visibleLayers = mCanvas->mapSettings().layers( true );
 
   switch ( mCanvas->snappingUtils()->config().mode() )
   {
