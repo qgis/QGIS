@@ -41,6 +41,7 @@ from qgis.core import (
     QgsTransactionGroup,
     QgsReadWriteContext,
     QgsRectangle,
+    QgsReferencedGeometry,
     QgsDefaultValue,
     QgsCoordinateReferenceSystem,
     QgsProject,
@@ -3508,6 +3509,45 @@ class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCas
         self.assertEqual(table.primaryKeyColumns(), ['id'])
 
         self.assertEqual(exported_layer.fields().names(), ['id', 'name', 'author'])
+
+    def testEwkt(self):
+        vl = QgsVectorLayer(f'{self.dbconn} table="qgis_test"."someData" sql=', "someData", "postgres")
+        tg = QgsTransactionGroup()
+        tg.addLayer(vl)
+
+        feature = next(vl.getFeatures())
+        # make sure we get a QgsReferenceGeometry and not "just" a string
+        self.assertEqual(feature['geom'].crs().authid(), 'EPSG:4326')
+
+        vl.startEditing()
+
+        # Layer accepts a referenced geometry
+        feature['geom'] = QgsReferencedGeometry(QgsGeometry.fromWkt('POINT(70 70)'), QgsCoordinateReferenceSystem.fromEpsgId(4326))
+        self.assertTrue(vl.updateFeature(feature))
+
+        # Layer will accept null geometry
+        feature['geom'] = QgsReferencedGeometry()
+        self.assertTrue(vl.updateFeature(feature))
+
+        # Layer will not accept invalid crs
+        feature['geom'] = QgsReferencedGeometry(QgsGeometry.fromWkt('POINT(1 1)'), QgsCoordinateReferenceSystem())
+        self.assertFalse(vl.updateFeature(feature))
+
+        # EWKT strings are accepted too
+        feature['geom'] = 'SRID=4326;Point (71 78)'
+        self.assertTrue(vl.updateFeature(feature))
+
+        # addFeature
+        feature['pk'] = 8
+        self.assertTrue(vl.addFeature(feature))
+
+        # changeAttributeValue
+        geom = QgsReferencedGeometry(QgsGeometry.fromWkt('POINT(3 3)'), QgsCoordinateReferenceSystem.fromEpsgId(4326))
+
+        feature['pk'] = 8
+        self.assertTrue(vl.changeAttributeValue(8, 8, geom))
+        self.assertEqual(vl.getFeature(8)['geom'].asWkt(), geom.asWkt())
+        self.assertEqual(vl.getFeature(8)['geom'].crs(), geom.crs())
 
 
 if __name__ == '__main__':
