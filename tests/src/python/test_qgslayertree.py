@@ -405,6 +405,7 @@ class TestQgsLayerTree(unittest.TestCase):
         layer4_node = grandchild_group.addLayer(layer4)
 
         self.assertEqual(p.layerTreeRoot().layerOrder(), [layer, layer2, layer3, layer4])
+        self.assertEqual(p.layerTreeRoot().checkedLayers(), [layer, layer2, layer3, layer4])
 
         spy = QSignalSpy(p.layerTreeRoot().layerOrderChanged)
 
@@ -412,12 +413,14 @@ class TestQgsLayerTree(unittest.TestCase):
         group_layer = group_node.convertToGroupLayer(options)
         p.addMapLayer(group_layer, False)
         self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(p.layerTreeRoot().checkedLayers(), [group_layer])
         self.assertEqual(group_layer.childLayers(), [layer4, layer3, layer2, layer])
         spy_count = len(spy)
         self.assertEqual(spy_count, 1)
 
         grandchild_group_layer = grandchild_group.convertToGroupLayer(options)
         self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(p.layerTreeRoot().checkedLayers(), [group_layer])
         self.assertEqual(group_layer.childLayers(), [grandchild_group_layer, layer3, layer2, layer])
         self.assertEqual(grandchild_group_layer.childLayers(), [layer4])
         self.assertGreater(len(spy), spy_count)
@@ -425,6 +428,7 @@ class TestQgsLayerTree(unittest.TestCase):
 
         layer4_node.setItemVisibilityChecked(False)
         self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(p.layerTreeRoot().checkedLayers(), [group_layer])
         self.assertEqual(group_layer.childLayers(), [grandchild_group_layer, layer3, layer2, layer])
         self.assertEqual(grandchild_group_layer.childLayers(), [])
         self.assertGreater(len(spy), spy_count)
@@ -432,6 +436,7 @@ class TestQgsLayerTree(unittest.TestCase):
 
         layer4_node.setItemVisibilityChecked(True)
         self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(p.layerTreeRoot().checkedLayers(), [group_layer])
         self.assertEqual(group_layer.childLayers(), [grandchild_group_layer, layer3, layer2, layer])
         self.assertEqual(grandchild_group_layer.childLayers(), [layer4])
         self.assertGreater(len(spy), spy_count)
@@ -439,12 +444,14 @@ class TestQgsLayerTree(unittest.TestCase):
 
         grandchild_group.setItemVisibilityChecked(False)
         self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(p.layerTreeRoot().checkedLayers(), [group_layer])
         self.assertEqual(group_layer.childLayers(), [layer3, layer2, layer])
         self.assertGreater(len(spy), spy_count)
         spy_count = len(spy)
 
         grandchild_group.setItemVisibilityChecked(True)
         self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(p.layerTreeRoot().checkedLayers(), [group_layer])
         self.assertEqual(group_layer.childLayers(), [grandchild_group_layer, layer3, layer2, layer])
         self.assertEqual(grandchild_group_layer.childLayers(), [layer4])
         self.assertGreater(len(spy), spy_count)
@@ -452,6 +459,7 @@ class TestQgsLayerTree(unittest.TestCase):
 
         child_group_layer = child_group.convertToGroupLayer(options)
         self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(p.layerTreeRoot().checkedLayers(), [group_layer])
         self.assertEqual(group_layer.childLayers(), [child_group_layer, layer2, layer])
         self.assertEqual(child_group_layer.childLayers(), [grandchild_group_layer, layer3])
         self.assertEqual(grandchild_group_layer.childLayers(), [layer4])
@@ -460,6 +468,7 @@ class TestQgsLayerTree(unittest.TestCase):
 
         layer4_node.setItemVisibilityChecked(False)
         self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(p.layerTreeRoot().checkedLayers(), [group_layer])
         self.assertEqual(group_layer.childLayers(), [child_group_layer, layer2, layer])
         self.assertEqual(child_group_layer.childLayers(), [grandchild_group_layer, layer3])
         self.assertEqual(grandchild_group_layer.childLayers(), [])
@@ -468,6 +477,7 @@ class TestQgsLayerTree(unittest.TestCase):
 
         layer4_node.setItemVisibilityChecked(True)
         self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(p.layerTreeRoot().checkedLayers(), [group_layer])
         self.assertEqual(group_layer.childLayers(), [child_group_layer, layer2, layer])
         self.assertEqual(child_group_layer.childLayers(), [grandchild_group_layer, layer3])
         self.assertEqual(grandchild_group_layer.childLayers(), [layer4])
@@ -476,6 +486,7 @@ class TestQgsLayerTree(unittest.TestCase):
 
         grandchild_group.setItemVisibilityChecked(False)
         self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(p.layerTreeRoot().checkedLayers(), [group_layer])
         self.assertEqual(group_layer.childLayers(), [child_group_layer, layer2, layer])
         self.assertEqual(child_group_layer.childLayers(), [layer3])
         self.assertGreater(len(spy), spy_count)
@@ -483,6 +494,7 @@ class TestQgsLayerTree(unittest.TestCase):
 
         grandchild_group.setItemVisibilityChecked(True)
         self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(p.layerTreeRoot().checkedLayers(), [group_layer])
         self.assertEqual(group_layer.childLayers(), [child_group_layer, layer2, layer])
         self.assertEqual(child_group_layer.childLayers(), [grandchild_group_layer, layer3])
         self.assertEqual(grandchild_group_layer.childLayers(), [layer4])
@@ -491,6 +503,7 @@ class TestQgsLayerTree(unittest.TestCase):
 
         layer3_node.setItemVisibilityChecked(False)
         self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(p.layerTreeRoot().checkedLayers(), [group_layer])
         self.assertEqual(group_layer.childLayers(), [child_group_layer, layer2, layer])
         self.assertEqual(child_group_layer.childLayers(), [grandchild_group_layer])
         self.assertEqual(grandchild_group_layer.childLayers(), [layer4])
@@ -499,6 +512,7 @@ class TestQgsLayerTree(unittest.TestCase):
 
         layer3_node.setItemVisibilityChecked(True)
         self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(p.layerTreeRoot().checkedLayers(), [group_layer])
         self.assertEqual(group_layer.childLayers(), [child_group_layer, layer2, layer])
         self.assertEqual(child_group_layer.childLayers(), [grandchild_group_layer, layer3])
         self.assertEqual(grandchild_group_layer.childLayers(), [layer4])
@@ -507,6 +521,7 @@ class TestQgsLayerTree(unittest.TestCase):
 
         grandchild_group.setGroupLayer(None)
         self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(p.layerTreeRoot().checkedLayers(), [group_layer])
         self.assertEqual(group_layer.childLayers(), [child_group_layer, layer2, layer])
         self.assertEqual(child_group_layer.childLayers(), [layer4, layer3])
         self.assertGreater(len(spy), spy_count)
@@ -514,12 +529,14 @@ class TestQgsLayerTree(unittest.TestCase):
 
         child_group.setGroupLayer(None)
         self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(p.layerTreeRoot().checkedLayers(), [group_layer])
         self.assertEqual(group_layer.childLayers(), [layer4, layer3, layer2, layer])
         self.assertGreater(len(spy), spy_count)
         spy_count = len(spy)
 
         group_node.setGroupLayer(None)
         self.assertEqual(p.layerTreeRoot().layerOrder(), [layer, layer2, layer3, layer4])
+        self.assertEqual(p.layerTreeRoot().checkedLayers(), [layer, layer2, layer3, layer4])
         self.assertGreater(len(spy), spy_count)
 
 

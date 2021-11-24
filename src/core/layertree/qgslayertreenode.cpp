@@ -162,7 +162,18 @@ void fetchCheckedLayers( const QgsLayerTreeNode *node, QList<QgsMapLayer *> &lay
 
   const auto constChildren = node->children();
   for ( QgsLayerTreeNode *child : constChildren )
+  {
+    if ( QgsLayerTreeGroup *group = qobject_cast< QgsLayerTreeGroup * >( child ) )
+    {
+      if ( QgsGroupLayer *groupLayer = group->groupLayer() )
+      {
+        layers << groupLayer;
+        continue;
+      }
+    }
+
     fetchCheckedLayers( child, layers );
+  }
 }
 
 QList<QgsMapLayer *> QgsLayerTreeNode::checkedLayers() const
