@@ -309,6 +309,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 
     void init();
     void updateGroupLayers();
+    void refreshParentGroupLayerMembers();
 
     QgsMapLayerRef mGroupLayer;
 };

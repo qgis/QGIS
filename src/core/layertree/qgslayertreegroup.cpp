@@ -466,6 +466,7 @@ QgsGroupLayer *QgsLayerTreeGroup::groupLayer()
 void QgsLayerTreeGroup::setGroupLayer( QgsGroupLayer *layer )
 {
   mGroupLayer.setLayer( layer );
+  refreshParentGroupLayerMembers();
 }
 
 QgsGroupLayer *QgsLayerTreeGroup::convertToGroupLayer( const QgsGroupLayer::LayerOptions &options )
@@ -479,6 +480,19 @@ QgsGroupLayer *QgsLayerTreeGroup::convertToGroupLayer( const QgsGroupLayer::Laye
   updateGroupLayers();
 
   return res.release();
+}
+
+void QgsLayerTreeGroup::refreshParentGroupLayerMembers()
+{
+  QgsLayerTreeGroup *parentGroup = qobject_cast< QgsLayerTreeGroup * >( parent() );
+  while ( parentGroup )
+  {
+    if ( QgsLayerTree *layerTree = qobject_cast< QgsLayerTree * >( parentGroup ) )
+      layerTree->emit layerOrderChanged();
+
+    parentGroup->updateGroupLayers();
+    parentGroup = qobject_cast< QgsLayerTreeGroup * >( parentGroup->parent() );
+  }
 }
 
 QStringList QgsLayerTreeGroup::findLayerIds() const
@@ -498,7 +512,10 @@ void QgsLayerTreeGroup::nodeVisibilityChanged( QgsLayerTreeNode *node )
 {
   int childIndex = mChildren.indexOf( node );
   if ( childIndex == -1 )
+  {
+    updateGroupLayers();
     return; // not a direct child - ignore
+  }
 
   if ( mMutuallyExclusive )
   {
@@ -561,13 +578,19 @@ void QgsLayerTreeGroup::updateGroupLayers()
       else if ( QgsLayerTreeGroup *childGroup = qobject_cast< QgsLayerTreeGroup * >( *it ) )
       {
         if ( childGroup->isVisible() )
-          findGroupLayerChildren( childGroup );
+        {
+          if ( QgsGroupLayer *groupLayer = childGroup->groupLayer() )
+            layers << groupLayer;
+          else
+            findGroupLayerChildren( childGroup );
+        }
       }
     }
   };
   findGroupLayerChildren( this );
 
   groupLayer->setChildLayers( layers );
+  refreshParentGroupLayerMembers();
 }
 
 void QgsLayerTreeGroup::setItemVisibilityCheckedRecursive( bool checked )
