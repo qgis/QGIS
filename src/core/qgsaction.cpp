@@ -100,6 +100,14 @@ void QgsAction::run( const QgsExpressionContext &expressionContext ) const
     url.setQuery( QString( ) );
 
     QNetworkRequest req { url };
+
+    // Specific code for testing, produces an invalid POST but we can still listen to
+    // signals and examine the request
+    if ( url.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
+    {
+      req.setUrl( QStringLiteral( "file://%1" ).arg( url.path() ) );
+    }
+
     QNetworkReply *reply = nullptr;
 
     if ( mType != QgsAction::SubmitUrlMultipart )
