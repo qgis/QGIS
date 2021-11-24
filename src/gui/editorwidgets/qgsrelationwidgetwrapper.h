@@ -217,7 +217,6 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
      * This happens for example when related features are added, removed,
      * linked or unlinked.
      *
-     * \param vectorLayer The modified layer
      * \since QGIS 3.22
      */
     void relatedFeaturesChanged();

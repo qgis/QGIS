@@ -250,8 +250,6 @@ Emit this signal, whenever the related features changed.
 This happens for example when related features are added, removed,
 linked or unlinked.
 
-:param vectorLayer: The modified layer
-
 .. versionadded:: 3.22
 %End
 
