@@ -27,6 +27,7 @@
 #include "qgsmessagelog.h"
 #include "qgspainteffectregistry.h"
 #include "qgsapplication.h"
+#include "qgsmaplayerutils.h"
 
 QgsGroupLayer::QgsGroupLayer( const QString &name, const LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::GroupLayer, name )
@@ -66,47 +67,7 @@ QgsMapLayerRenderer *QgsGroupLayer::createMapRenderer( QgsRenderContext &context
 
 QgsRectangle QgsGroupLayer::extent() const
 {
-  QgsRectangle rect;
-  rect.setMinimal();
-
-  const QList< QgsMapLayer * > currentLayers = _qgis_listRefToRaw( mChildren );
-  for ( const QgsMapLayer *layer : currentLayers )
-  {
-    if ( !layer->isSpatial() )
-      continue;
-
-    QgsRectangle layerExtent = layer->extent();
-    if ( const QgsVectorLayer *vLayer = qobject_cast<const QgsVectorLayer *>( layer ) )
-    {
-      if ( layerExtent.isEmpty() )
-      {
-        const_cast< QgsVectorLayer * >( vLayer )->updateExtents();
-        layerExtent = vLayer->extent();
-      }
-    }
-
-    if ( layerExtent.isNull() )
-      continue;
-
-    //transform extent
-    try
-    {
-      QgsCoordinateTransform ct = QgsCoordinateTransform( layer->crs(), crs(), mTransformContext );
-      if ( ct.isValid() )
-      {
-        ct.setBallparkTransformsAreAppropriate( true );
-        layerExtent = ct.transformBoundingBox( layerExtent );
-      }
-    }
-    catch ( QgsCsException &cse )
-    {
-      QgsMessageLog::logMessage( QObject::tr( "Transform error caught: %1" ).arg( cse.what() ), QObject::tr( "CRS" ) );
-    }
-
-    rect.combineExtentWith( layerExtent );
-  }
-
-  return rect;
+  return QgsMapLayerUtils::combinedExtent( childLayers(), crs(), mTransformContext );
 }
 
 void QgsGroupLayer::setTransformContext( const QgsCoordinateTransformContext &context )
@@ -325,7 +286,7 @@ void QgsGroupLayer::setChildLayers( const QList< QgsMapLayer * > &layers )
   triggerRepaint();
 }
 
-QList< QgsMapLayer * > QgsGroupLayer::childLayers()
+QList< QgsMapLayer * > QgsGroupLayer::childLayers() const
 {
   return _qgis_listRefToRaw( mChildren );
 }

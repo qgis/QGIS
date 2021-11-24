@@ -87,7 +87,7 @@ the parent :py:class:`QgsProject` wherever appropriate.
 .. seealso:: :py:func:`childLayers`
 %End
 
-    QList< QgsMapLayer * > childLayers();
+    QList< QgsMapLayer * > childLayers() const;
 %Docstring
 Returns the child layers contained by the group.
 

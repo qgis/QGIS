@@ -109,7 +109,7 @@ class CORE_EXPORT QgsGroupLayer : public QgsMapLayer
      *
      * \see setChildLayers()
      */
-    QList< QgsMapLayer * > childLayers();
+    QList< QgsMapLayer * > childLayers() const;
 
     /**
      * Returns the current paint effect for the group layer.
