@@ -54,7 +54,7 @@ QgsGroupLayerRenderer::QgsGroupLayerRenderer( QgsGroupLayer *layer, QgsRenderCon
     mTransforms.emplace_back( layerToDestTransform );
   }
 
-  mPaintEffect.reset( layer->paintEffect() ? layer->paintEffect()->clone() : nullptr );
+  mPaintEffect.reset( layer->paintEffect() && layer->paintEffect()->enabled() ? layer->paintEffect()->clone() : nullptr );
 
   mForceRasterRender = layer->blendMode() != QPainter::CompositionMode_SourceOver;
 }
