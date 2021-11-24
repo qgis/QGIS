@@ -69,7 +69,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     return;
 
   const double canvasRotationRad = mMapCanvas->rotation() * M_PI / 180;
-  const double canvasMaxDimension = std::max( canvasWidth / mupp, canvasHeight / mupp );
+  const double canvasDiagonalDimension = std::sqrt( std::pow( canvasWidth, 2 ) + std::pow( canvasHeight, 2 ) ) / mupp ;
 
   QPointF curPointPix, prevPointPix, penulPointPix, snapSegmentPix1, snapSegmentPix2;
 
@@ -159,8 +159,8 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     {
       painter->setPen( mLockedPen );
       const double canvasPadding = QLineF( prevPointPix, curPointPix ).length();
-      painter->drawLine( prevPointPix + ( canvasPadding - canvasMaxDimension ) * QPointF( std::cos( a ), std::sin( a ) ),
-                         prevPointPix + ( canvasPadding + canvasMaxDimension ) * QPointF( std::cos( a ), std::sin( a ) ) );
+      painter->drawLine( prevPointPix + ( canvasPadding - canvasDiagonalDimension ) * QPointF( std::cos( a ), std::sin( a ) ),
+                         prevPointPix + ( canvasPadding + canvasDiagonalDimension ) * QPointF( std::cos( a ), std::sin( a ) ) );
     }
   }
 
@@ -195,8 +195,8 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     }
     if ( draw )
     {
-      painter->drawLine( toCanvasCoordinates( QgsPointXY( x, mapPoly[0].y() ) ) - canvasMaxDimension * QPointF( std::sin( -canvasRotationRad ), std::cos( -canvasRotationRad ) ),
-                         toCanvasCoordinates( QgsPointXY( x, mapPoly[0].y() ) ) + canvasMaxDimension * QPointF( std::sin( -canvasRotationRad ), std::cos( -canvasRotationRad ) ) );
+      painter->drawLine( toCanvasCoordinates( QgsPointXY( x, mapPoly[0].y() ) ) - canvasDiagonalDimension * QPointF( std::sin( -canvasRotationRad ), std::cos( -canvasRotationRad ) ),
+                         toCanvasCoordinates( QgsPointXY( x, mapPoly[0].y() ) ) + canvasDiagonalDimension * QPointF( std::sin( -canvasRotationRad ), std::cos( -canvasRotationRad ) ) );
     }
   }
 
@@ -223,8 +223,8 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     }
     if ( draw )
     {
-      painter->drawLine( toCanvasCoordinates( QgsPointXY( mapPoly[0].x(), y ) ) - canvasMaxDimension * QPointF( std::cos( -canvasRotationRad ), -std::sin( -canvasRotationRad ) ),
-                         toCanvasCoordinates( QgsPointXY( mapPoly[0].x(), y ) ) + canvasMaxDimension * QPointF( std::cos( -canvasRotationRad ), -std::sin( -canvasRotationRad ) ) );
+      painter->drawLine( toCanvasCoordinates( QgsPointXY( mapPoly[0].x(), y ) ) - canvasDiagonalDimension * QPointF( std::cos( -canvasRotationRad ), -std::sin( -canvasRotationRad ) ),
+                         toCanvasCoordinates( QgsPointXY( mapPoly[0].x(), y ) ) + canvasDiagonalDimension * QPointF( std::cos( -canvasRotationRad ), -std::sin( -canvasRotationRad ) ) );
 
     }
   }
