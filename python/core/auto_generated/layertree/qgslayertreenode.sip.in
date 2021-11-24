@@ -313,7 +313,7 @@ Read common XML elements.
 Write common XML elements.
 %End
 
-    void insertChildrenPrivate( int index, QList<QgsLayerTreeNode *> nodes );
+    void insertChildrenPrivate( int index, const QList<QgsLayerTreeNode *> &nodes );
 %Docstring
 Low-level insertion of children to the node. The children must not have any parent yet!
 %End
