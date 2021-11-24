@@ -233,13 +233,12 @@ void QgsLayerTreeNode::writeCommonXml( QDomElement &element )
   mProperties.writeXml( element, doc );
 }
 
-void QgsLayerTreeNode::insertChildrenPrivate( int index, QList<QgsLayerTreeNode *> nodes )
+void QgsLayerTreeNode::insertChildrenPrivate( int index, const QList<QgsLayerTreeNode *> &nodes )
 {
   if ( nodes.isEmpty() )
     return;
 
-  const auto constNodes = nodes;
-  for ( QgsLayerTreeNode *node : constNodes )
+  for ( QgsLayerTreeNode *node : nodes )
   {
     Q_ASSERT( !node->mParent );
     node->mParent = this;
