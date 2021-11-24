@@ -376,6 +376,152 @@ class TestQgsLayerTree(unittest.TestCase):
         self.assertEqual(p.layerTreeRoot().layerOrder(), [layer, group_layer, layer4])
         self.assertEqual(group_layer.childLayers(), [layer3, layer2])
 
+    def test_nested_groups(self):
+        """
+        Test logic relating to nested groups with group layers
+        """
+        p = QgsProject()
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer1", "memory")
+        p.addMapLayer(layer, False)
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer2", "memory")
+        p.addMapLayer(layer2, False)
+        layer3 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer3", "memory")
+        p.addMapLayer(layer3, False)
+        layer4 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer4", "memory")
+        p.addMapLayer(layer4, False)
+
+        group_node = p.layerTreeRoot().addGroup('my group')
+        group_node.addLayer(layer)
+        group_node.addLayer(layer2)
+
+        child_group = group_node.addGroup('child')
+        layer3_node = child_group.addLayer(layer3)
+
+        grandchild_group = child_group.addGroup('grandchild')
+        layer4_node = grandchild_group.addLayer(layer4)
+
+        self.assertEqual(p.layerTreeRoot().layerOrder(), [layer, layer2, layer3, layer4])
+
+        spy = QSignalSpy(p.layerTreeRoot().layerOrderChanged)
+
+        options = QgsGroupLayer.LayerOptions(QgsCoordinateTransformContext())
+        group_layer = group_node.convertToGroupLayer(options)
+        p.addMapLayer(group_layer, False)
+        self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(group_layer.childLayers(), [layer4, layer3, layer2, layer])
+        spy_count = len(spy)
+        self.assertEqual(spy_count, 1)
+
+        grandchild_group_layer = grandchild_group.convertToGroupLayer(options)
+        self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(group_layer.childLayers(), [grandchild_group_layer, layer3, layer2, layer])
+        self.assertEqual(grandchild_group_layer.childLayers(), [layer4])
+        self.assertGreater(len(spy), spy_count)
+        spy_count = len(spy)
+
+        layer4_node.setItemVisibilityChecked(False)
+        self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(group_layer.childLayers(), [grandchild_group_layer, layer3, layer2, layer])
+        self.assertEqual(grandchild_group_layer.childLayers(), [])
+        self.assertGreater(len(spy), spy_count)
+        spy_count = len(spy)
+
+        layer4_node.setItemVisibilityChecked(True)
+        self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(group_layer.childLayers(), [grandchild_group_layer, layer3, layer2, layer])
+        self.assertEqual(grandchild_group_layer.childLayers(), [layer4])
+        self.assertGreater(len(spy), spy_count)
+        spy_count = len(spy)
+
+        grandchild_group.setItemVisibilityChecked(False)
+        self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(group_layer.childLayers(), [layer3, layer2, layer])
+        self.assertGreater(len(spy), spy_count)
+        spy_count = len(spy)
+
+        grandchild_group.setItemVisibilityChecked(True)
+        self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(group_layer.childLayers(), [grandchild_group_layer, layer3, layer2, layer])
+        self.assertEqual(grandchild_group_layer.childLayers(), [layer4])
+        self.assertGreater(len(spy), spy_count)
+        spy_count = len(spy)
+
+        child_group_layer = child_group.convertToGroupLayer(options)
+        self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(group_layer.childLayers(), [child_group_layer, layer2, layer])
+        self.assertEqual(child_group_layer.childLayers(), [grandchild_group_layer, layer3])
+        self.assertEqual(grandchild_group_layer.childLayers(), [layer4])
+        self.assertGreater(len(spy), spy_count)
+        spy_count = len(spy)
+
+        layer4_node.setItemVisibilityChecked(False)
+        self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(group_layer.childLayers(), [child_group_layer, layer2, layer])
+        self.assertEqual(child_group_layer.childLayers(), [grandchild_group_layer, layer3])
+        self.assertEqual(grandchild_group_layer.childLayers(), [])
+        self.assertGreater(len(spy), spy_count)
+        spy_count = len(spy)
+
+        layer4_node.setItemVisibilityChecked(True)
+        self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(group_layer.childLayers(), [child_group_layer, layer2, layer])
+        self.assertEqual(child_group_layer.childLayers(), [grandchild_group_layer, layer3])
+        self.assertEqual(grandchild_group_layer.childLayers(), [layer4])
+        self.assertGreater(len(spy), spy_count)
+        spy_count = len(spy)
+
+        grandchild_group.setItemVisibilityChecked(False)
+        self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(group_layer.childLayers(), [child_group_layer, layer2, layer])
+        self.assertEqual(child_group_layer.childLayers(), [layer3])
+        self.assertGreater(len(spy), spy_count)
+        spy_count = len(spy)
+
+        grandchild_group.setItemVisibilityChecked(True)
+        self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(group_layer.childLayers(), [child_group_layer, layer2, layer])
+        self.assertEqual(child_group_layer.childLayers(), [grandchild_group_layer, layer3])
+        self.assertEqual(grandchild_group_layer.childLayers(), [layer4])
+        self.assertGreater(len(spy), spy_count)
+        spy_count = len(spy)
+
+        layer3_node.setItemVisibilityChecked(False)
+        self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(group_layer.childLayers(), [child_group_layer, layer2, layer])
+        self.assertEqual(child_group_layer.childLayers(), [grandchild_group_layer])
+        self.assertEqual(grandchild_group_layer.childLayers(), [layer4])
+        self.assertGreater(len(spy), spy_count)
+        spy_count = len(spy)
+
+        layer3_node.setItemVisibilityChecked(True)
+        self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(group_layer.childLayers(), [child_group_layer, layer2, layer])
+        self.assertEqual(child_group_layer.childLayers(), [grandchild_group_layer, layer3])
+        self.assertEqual(grandchild_group_layer.childLayers(), [layer4])
+        self.assertGreater(len(spy), spy_count)
+        spy_count = len(spy)
+
+        grandchild_group.setGroupLayer(None)
+        self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(group_layer.childLayers(), [child_group_layer, layer2, layer])
+        self.assertEqual(child_group_layer.childLayers(), [layer4, layer3])
+        self.assertGreater(len(spy), spy_count)
+        spy_count = len(spy)
+
+        child_group.setGroupLayer(None)
+        self.assertEqual(p.layerTreeRoot().layerOrder(), [group_layer])
+        self.assertEqual(group_layer.childLayers(), [layer4, layer3, layer2, layer])
+        self.assertGreater(len(spy), spy_count)
+        spy_count = len(spy)
+
+        group_node.setGroupLayer(None)
+        self.assertEqual(p.layerTreeRoot().layerOrder(), [layer, layer2, layer3, layer4])
+        self.assertGreater(len(spy), spy_count)
+
 
 if __name__ == '__main__':
     unittest.main()
