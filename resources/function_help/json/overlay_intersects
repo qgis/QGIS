@@ -67,11 +67,11 @@
     },
     {
       "expression": "overlay_intersects(layer:='regions', min_area:=0.54)",
-      "returns": "true if the current feature spatially intersects a region and the intersection area (of at least on of the parts in case of multipolygons) is greater or equal to 0.54"
+      "returns": "true if the current feature spatially intersects a region and the intersection area (of at least one of the parts in case of multipolygons) is greater or equal to 0.54"
     },
     {
       "expression": "overlay_intersects(layer:='regions', min_inscribed_circle_radius:=0.54)",
-      "returns": "true if the current feature spatially intersects a region and the intersection area maximum inscribed circle's radius (of at least on of the parts in case of multipolygons) is greater or equal to the 0.54"
+      "returns": "true if the current feature spatially intersects a region and the intersection area maximum inscribed circle's radius (of at least one of the parts in case of multipolygons) is greater or equal to the 0.54"
     }
   ]
 }
