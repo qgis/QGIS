@@ -86,7 +86,7 @@ if (FORCE_STATIC_LIBS)
     install (TARGETS provider_virtuallayer_gui_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
   endif()
 else()
-  add_library(provider_virtuallayer MODULE ${VLAYER_PROVIDER_SRCS} ${VLAYER_PROVIDER_HDRS} ${VLAYER_PROVIDER_UIS_H} ${VLAYER_SQL_FUNCTIONS_RCCS})
+  add_library(provider_virtuallayer MODULE ${VLAYER_PROVIDER_SRCS} ${VLAYER_PROVIDER_HDRS} ${VLAYER_PROVIDER_GUI_SRCS} ${VLAYER_PROVIDER_GUI_HDRS} ${VLAYER_PROVIDER_UIS_H} ${VLAYER_SQL_FUNCTIONS_RCCS})
 
   # require c++17
   target_compile_features(provider_virtuallayer PRIVATE cxx_std_17)

@@ -385,6 +385,10 @@ if (NOT WIN32)
   endif()
 endif()
 
+if (WITH_GUI)
+  ADD_PYTHON_TEST(PyQgsProviderGuiRegistry test_qgsproviderguiregistry.py WITH_SPATIALITE=${WITH_SPATIALITE})
+endif()
+
 if (WITH_DESKTOP)
   ADD_PYTHON_TEST(PyQgsAppStartup test_qgsappstartup.py)
 endif()
