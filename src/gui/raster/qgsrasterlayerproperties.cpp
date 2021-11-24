@@ -67,6 +67,7 @@
 #include "qgsrasterlayertemporalproperties.h"
 #include "qgsdoublevalidator.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
+#include "qgsprojectutils.h"
 
 #include "qgsrasterlayertemporalpropertieswidget.h"
 #include "qgsprojecttimesettings.h"
@@ -385,6 +386,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   }
 
   //blend mode
+  mBlendModeComboBox->setShowClippingModes( QgsProjectUtils::layerIsContainedInGroupLayer( QgsProject::instance(), mRasterLayer ) );
   mBlendModeComboBox->setBlendMode( mRasterLayer->blendMode() );
 
   //transparency band
