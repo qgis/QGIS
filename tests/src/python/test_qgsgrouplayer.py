@@ -123,10 +123,10 @@ class TestQgsGroupLayer(unittest.TestCase):
 
         group_layer.setChildLayers([layer1])
         extent = group_layer.extent()
-        self.assertEqual(extent.xMinimum(), 2478778)
-        self.assertEqual(extent.xMaximum(), 2478778)
-        self.assertEqual(extent.yMinimum(), 2487236)
-        self.assertEqual(extent.yMaximum(), 2487236)
+        self.assertAlmostEqual(extent.xMinimum(), 2478778, -2)
+        self.assertAlmostEqual(extent.xMaximum(), 2478778, -2)
+        self.assertAlmostEqual(extent.yMinimum(), 2487236, -2)
+        self.assertAlmostEqual(extent.yMaximum(), 2487236, -2)
 
         layer2 = QgsVectorLayer('Point?crs=epsg:4326', 'Point', 'memory')
         f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(142.178, -35.943)))
