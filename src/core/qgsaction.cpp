@@ -90,21 +90,22 @@ void QgsAction::run( const QgsExpressionContext &expressionContext ) const
   else if ( mType == QgsAction::SubmitUrlEncoded || mType == QgsAction::SubmitUrlMultipart )
   {
 
-    QUrl url{ command() };
-    const QUrlQuery queryString { url.query( QUrl::ComponentFormattingOption::FullyDecoded ) };
-    // Remove query
-    QString payload { url.query() };
+    QUrl url{ expandedAction };
+
+    // Encode '+' (fully encoded doesn't encode it)
+    const QString payload { url.query( QUrl::ComponentFormattingOption::FullyEncoded ).replace( QChar( '+' ), QStringLiteral( "%2B" ) ) };
+
+    // Remove query string from URL
+    const QUrlQuery queryString { url.query( ) };
     url.setQuery( QString( ) );
 
     QNetworkRequest req { url };
     QNetworkReply *reply = nullptr;
 
-    // guess content type
-
-    // check for json
     if ( mType != QgsAction::SubmitUrlMultipart )
     {
       QString contentType { QStringLiteral( "application/x-www-form-urlencoded" ) };
+      // check for json
       QJsonParseError jsonError;
       QJsonDocument::fromJson( payload.toUtf8(), &jsonError );
       if ( jsonError.error == QJsonParseError::ParseError::NoError )
