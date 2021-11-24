@@ -592,7 +592,7 @@ void QgsAttributeForm::updateValuesDependenciesVirtualFields( const int originId
     // Update value
     QgsExpressionContext context = createExpressionContext( updatedFeature );
     QgsExpression exp( mLayer->expressionField( eww->fieldIdx() ) );
-    QVariant value = exp.evaluate( &context );
+    const QVariant value = exp.evaluate( &context );
     updatedFeature.setAttribute( eww->fieldIdx(), value );
     eww->setValue( value );
   }
