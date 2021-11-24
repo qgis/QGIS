@@ -55,6 +55,7 @@ class CORE_EXPORT QgsGroupLayerRenderer : public QgsMapLayerRenderer
 
   private:
     std::unique_ptr< QgsFeedback > mFeedback;
+    bool mForceRasterRender = false;
     std::vector< std::unique_ptr< QgsMapLayerRenderer > > mChildRenderers;
     std::vector< QPainter::CompositionMode > mRendererCompositionModes;
     std::vector< double > mRendererOpacity;
