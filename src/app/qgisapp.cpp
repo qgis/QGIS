@@ -12180,7 +12180,7 @@ void QgisApp::removeLayer()
     return;
   }
 
-  QList<QgsLayerTreeNode *> selectedNodes = mLayerTreeView->selectedNodes( true );
+  const QList<QgsLayerTreeNode *> selectedNodes = mLayerTreeView->selectedNodes( true );
 
   //validate selection
   if ( selectedNodes.isEmpty() )
@@ -12221,7 +12221,7 @@ void QgisApp::removeLayer()
     }
   };
 
-  for ( const auto &n : std::as_const( selectedNodes ) )
+  for ( const QgsLayerTreeNode *n : selectedNodes )
   {
     harvest( n );
   }
@@ -12243,9 +12243,15 @@ void QgisApp::removeLayer()
     return;
   }
 
-  const auto constSelectedNodes = selectedNodes;
-  for ( QgsLayerTreeNode *node : constSelectedNodes )
+  for ( QgsLayerTreeNode *node : selectedNodes )
   {
+    if ( QgsLayerTreeGroup *group = qobject_cast< QgsLayerTreeGroup * >( node ) )
+    {
+      if ( QgsGroupLayer *groupLayer = group->groupLayer() )
+      {
+        QgsProject::instance()->removeMapLayer( groupLayer );
+      }
+    }
     QgsLayerTreeGroup *parentGroup = qobject_cast<QgsLayerTreeGroup *>( node->parent() );
     if ( parentGroup )
       parentGroup->removeChildNode( node );
