@@ -948,7 +948,6 @@ QString QgsExpression::group( const QString &name )
     sGroups()->insert( QStringLiteral( "Date and Time" ), tr( "Date and Time" ) );
     sGroups()->insert( QStringLiteral( "Fields and Values" ), tr( "Fields and Values" ) );
     sGroups()->insert( QStringLiteral( "Files and Paths" ), tr( "Files and Paths" ) );
-    sGroups()->insert( QStringLiteral( "Form Encoding" ), tr( "Form Encoding" ) );
     sGroups()->insert( QStringLiteral( "Fuzzy Matching" ), tr( "Fuzzy Matching" ) );
     sGroups()->insert( QStringLiteral( "General" ), tr( "General" ) );
     sGroups()->insert( QStringLiteral( "GeometryGroup" ), tr( "Geometry" ) );
