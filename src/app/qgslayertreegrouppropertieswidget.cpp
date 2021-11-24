@@ -21,6 +21,8 @@
 #include "qgspainteffect.h"
 #include "qgsmapcanvas.h"
 #include "qgspainteffectregistry.h"
+#include "qgsproject.h"
+#include "qgsprojectutils.h"
 
 #include <QStackedWidget>
 #include <QHBoxLayout>
@@ -54,6 +56,7 @@ void QgsLayerTreeGroupPropertiesWidget::setMapLayerConfigWidgetContext( const Qg
   if ( QgsGroupLayer *groupLayer = mLayerTreeGroup->groupLayer() )
   {
     mRenderAsGroupCheckBox->setChecked( true );
+    mBlendModeComboBox->setShowClippingModes( QgsProjectUtils::layerIsContainedInGroupLayer( QgsProject::instance(), groupLayer ) );
     mBlendModeComboBox->setBlendMode( groupLayer->blendMode() );
     mOpacityWidget->setOpacity( groupLayer->opacity() );
     if ( groupLayer->paintEffect() )

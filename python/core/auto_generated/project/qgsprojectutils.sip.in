@@ -38,6 +38,14 @@ with sources which point to ``newPath``.
 Returns ``True`` if any layers were updated as a result.
 %End
 
+    static bool layerIsContainedInGroupLayer( QgsProject *project, QgsMapLayer *layer );
+%Docstring
+Returns ``True`` if the specified ``layer`` is a child layer from any :py:class:`QgsGroupLayer` in the given ``project``.
+
+.. versionadded:: 3.24
+%End
+
+
 };
 
 
