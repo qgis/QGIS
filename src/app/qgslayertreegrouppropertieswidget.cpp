@@ -33,6 +33,9 @@ QgsLayerTreeGroupPropertiesWidget::QgsLayerTreeGroupPropertiesWidget( QgsMapCanv
 {
   setupUi( this );
 
+  mPaintEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+  mPaintEffect->setEnabled( false );
+
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsLayerTreeGroupPropertiesWidget::onLayerPropertyChanged );
   connect( mBlendModeComboBox, qOverload< int >( &QgsBlendModeComboBox::currentIndexChanged ), this, &QgsLayerTreeGroupPropertiesWidget::onLayerPropertyChanged );
   connect( mEffectWidget, &QgsEffectStackCompactWidget::changed, this, &QgsLayerTreeGroupPropertiesWidget::onLayerPropertyChanged );
