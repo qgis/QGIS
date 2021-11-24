@@ -55,6 +55,8 @@ QgsGroupLayerRenderer::QgsGroupLayerRenderer( QgsGroupLayer *layer, QgsRenderCon
   }
 
   mPaintEffect.reset( layer->paintEffect() ? layer->paintEffect()->clone() : nullptr );
+
+  mForceRasterRender = layer->blendMode() != QPainter::CompositionMode_SourceOver;
 }
 
 QgsGroupLayerRenderer::~QgsGroupLayerRenderer() = default;
@@ -92,6 +94,9 @@ bool QgsGroupLayerRenderer::render()
     context.setExtent( extentInChildLayerCrs );
 
     QImage image;
+    if ( context.useAdvancedEffects() )
+      context.painter()->setCompositionMode( mRendererCompositionModes[i] );
+
     QPainter *prevPainter = context.painter();
     std::unique_ptr< QPainter > imagePainter;
     if ( renderer->forceRasterRender() )
@@ -110,14 +115,12 @@ bool QgsGroupLayerRenderer::render()
     {
       imagePainter->end();
       context.setPainter( prevPainter );
-      if ( context.useAdvancedEffects() )
-        context.painter()->setCompositionMode( mRendererCompositionModes[i] );
 
       context.painter()->setOpacity( mRendererOpacity[i] );
       context.painter()->drawImage( 0, 0, image );
       context.painter()->setOpacity( 1.0 );
-      context.painter()->setCompositionMode( QPainter::CompositionMode_SourceOver );
     }
+    context.painter()->setCompositionMode( QPainter::CompositionMode_SourceOver );
     i++;
   }
 
@@ -136,7 +139,7 @@ bool QgsGroupLayerRenderer::forceRasterRender() const
   if ( !renderContext()->testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) )
     return false;
 
-  if ( !qgsDoubleNear( mLayerOpacity, 1.0 ) )
+  if ( mForceRasterRender || !qgsDoubleNear( mLayerOpacity, 1.0 ) )
     return true;
 
   for ( QPainter::CompositionMode mode : mRendererCompositionModes )
