@@ -19,14 +19,18 @@
 
 QgsLayerTree::QgsLayerTree()
 {
-  connect( this, &QgsLayerTree::addedChildren, this, &QgsLayerTree::nodeAddedChildren );
-  connect( this, &QgsLayerTree::removedChildren, this, &QgsLayerTree::nodeRemovedChildren );
+  init();
 }
 
 QgsLayerTree::QgsLayerTree( const QgsLayerTree &other )
   : QgsLayerTreeGroup( other )
   , mCustomLayerOrder( other.mCustomLayerOrder )
   , mHasCustomLayerOrder( other.mHasCustomLayerOrder )
+{
+  init();
+}
+
+void QgsLayerTree::init()
 {
   connect( this, &QgsLayerTree::addedChildren, this, &QgsLayerTree::nodeAddedChildren );
   connect( this, &QgsLayerTree::removedChildren, this, &QgsLayerTree::nodeRemovedChildren );
