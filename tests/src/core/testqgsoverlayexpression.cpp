@@ -36,6 +36,8 @@
 #include "qgsvectorlayerutils.h"
 #include "qgsexpressioncontextutils.h"
 
+#include "geos_c.h"
+
 class TestQgsOverlayExpression: public QObject
 {
     Q_OBJECT
@@ -159,13 +161,16 @@ void TestQgsOverlayExpression::testOverlay_data()
   QTest::newRow( "intersects min_area multi no match" ) << "overlay_intersects('polys', min_area:=1.5)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << false;
   QTest::newRow( "intersects min_area multi match" ) << "overlay_intersects('polys', min_area:=1.34)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << true;
 
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
   QTest::newRow( "intersects min_inscribed_circle_radius multi no match" ) << "overlay_intersects('polys', min_inscribed_circle_radius:=1.0)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << false;
   QTest::newRow( "intersects min_inscribed_circle_radius multi match" ) << "overlay_intersects('polys', min_inscribed_circle_radius:=0.5)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << true;
+#endif
 
   // Single part intersection
   QTest::newRow( "intersects min_area no match" ) << "overlay_intersects('polys', min_area:=1.5)" << "POLYGON((-105 33.75, -102.76 33.75, -102.76 35.2, -105 35.2, -105 33.75))" << false;
   QTest::newRow( "intersects min_area match" ) << "overlay_intersects('polys', min_area:=1.34)" << "POLYGON((-105 33.75, -102.76 33.75, -102.76 35.2, -105 35.2, -105 33.75))" << true;
 
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
   QTest::newRow( "intersects min_inscribed_circle_radius no match" ) << "overlay_intersects('polys', min_inscribed_circle_radius:=1.0)" << "POLYGON((-105 33.75, -102.76 33.75, -102.76 35.2, -105 35.2, -105 33.75))" << false;
   QTest::newRow( "intersects min_inscribed_circle_radius match" ) << "overlay_intersects('polys', min_inscribed_circle_radius:=0.5)" << "POLYGON((-105 33.75, -102.76 33.75, -102.76 35.2, -105 35.2, -105 33.75))" << true;
 
@@ -186,6 +191,7 @@ void TestQgsOverlayExpression::testOverlay_data()
 
   // Check wrong args
   QTest::newRow( "intersects wrong args" ) << "overlay_intersects('polys', min_area:=1.5, min_inscribed_circle_radius:=0.5)" << "LINESTRING(-105 33.75, -102.76 33.75)" << false;
+#endif
 }
 
 void TestQgsOverlayExpression::testOverlayExpression()
