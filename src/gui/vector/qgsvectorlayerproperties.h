@@ -35,7 +35,6 @@
 class QgsMapLayer;
 
 class QgsAttributeActionDialog;
-class QgsApplyDialog;
 class QgsVectorLayer;
 class QgsLabelingWidget;
 class QgsDiagramProperties;
