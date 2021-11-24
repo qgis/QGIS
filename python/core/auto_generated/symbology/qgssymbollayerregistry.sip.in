@@ -132,7 +132,14 @@ Returns metadata for specified symbol layer. Returns ``None`` if not found
 
     bool addSymbolLayerType( QgsSymbolLayerAbstractMetadata *metadata /Transfer/ );
 %Docstring
-register a new symbol layer type. Takes ownership of the metadata instance.
+Registers a new symbol layer type. Takes ownership of the metadata instance.
+%End
+
+    bool removeSymbolLayerType( QgsSymbolLayerAbstractMetadata *metadata );
+%Docstring
+Removes a symbol layer type
+
+.. versionadded:: 3.22.2
 %End
 
     QgsSymbolLayer *createSymbolLayer( const QString &name, const QVariantMap &properties = QVariantMap() ) const /Factory/;

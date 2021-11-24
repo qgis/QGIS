@@ -93,6 +93,16 @@ bool QgsSymbolLayerRegistry::addSymbolLayerType( QgsSymbolLayerAbstractMetadata 
   return true;
 }
 
+bool QgsSymbolLayerRegistry::removeSymbolLayerType( QgsSymbolLayerAbstractMetadata *metadata )
+{
+  if ( !metadata || !mMetadata.contains( metadata->name() ) )
+    return false;
+
+  metadata = mMetadata.take( metadata->name() );
+  delete metadata;
+  return true;
+}
+
 
 QgsSymbolLayerAbstractMetadata *QgsSymbolLayerRegistry::symbolLayerMetadata( const QString &name ) const
 {

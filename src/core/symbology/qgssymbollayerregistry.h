@@ -195,8 +195,14 @@ class CORE_EXPORT QgsSymbolLayerRegistry
     //! Returns metadata for specified symbol layer. Returns NULLPTR if not found
     QgsSymbolLayerAbstractMetadata *symbolLayerMetadata( const QString &name ) const;
 
-    //! register a new symbol layer type. Takes ownership of the metadata instance.
+    //! Registers a new symbol layer type. Takes ownership of the metadata instance.
     bool addSymbolLayerType( QgsSymbolLayerAbstractMetadata *metadata SIP_TRANSFER );
+
+    /**
+     * Removes a symbol layer type
+     * \since QGIS 3.22.2
+     */
+    bool removeSymbolLayerType( QgsSymbolLayerAbstractMetadata *metadata );
 
     //! create a new instance of symbol layer given symbol layer name and properties
     QgsSymbolLayer *createSymbolLayer( const QString &name, const QVariantMap &properties = QVariantMap() ) const SIP_FACTORY;
