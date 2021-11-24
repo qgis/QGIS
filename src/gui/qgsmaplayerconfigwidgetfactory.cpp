@@ -32,6 +32,11 @@ bool QgsMapLayerConfigWidgetFactory::supportsLayer( QgsMapLayer *layer ) const
   return true;
 }
 
+bool QgsMapLayerConfigWidgetFactory::supportsLayerTreeGroup( QgsLayerTreeGroup * ) const
+{
+  return false;
+}
+
 QgsMapLayerConfigWidgetFactory::ParentPage QgsMapLayerConfigWidgetFactory::parentPage() const
 {
   return ParentPage::NoParent;
