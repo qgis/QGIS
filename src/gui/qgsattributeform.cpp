@@ -583,7 +583,7 @@ void QgsAttributeForm::updateValuesDependenciesVirtualFields( const int originId
   {
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( !eww )
-      return;
+      continue;
 
     //do not update when this widget is already updating (avoid recursions)
     if ( mAlreadyUpdatedFields.contains( eww->fieldIdx() ) )
