@@ -41,14 +41,6 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
   QPolygonF mapPoly = mMapCanvas->mapSettings().visiblePolygon();
   const double canvasWidth = QLineF( mapPoly[0], mapPoly[1] ).length();
   const double canvasHeight = QLineF( mapPoly[0], mapPoly[3] ).length();
-  const QgsRectangle mapRect = QgsRectangle( mapPoly[0],
-                               QgsPointXY(
-                                 mapPoly[0].x() + canvasWidth,
-                                 mapPoly[0].y() - canvasHeight
-                               )
-                                           );
-  if ( rect() != mapRect )
-    setRect( mapRect );
 
   const int nPoints = mAdvancedDigitizingDockWidget->pointsCount();
   if ( !nPoints )
@@ -253,4 +245,20 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     painter->drawLine( curPointPix + QPointF( -5, +5 ),
                        curPointPix + QPointF( +5, -5 ) );
   }
+}
+
+void QgsAdvancedDigitizingCanvasItem::updatePosition()
+{
+  // Use visible polygon rather than extent to properly handle rotated maps
+  QPolygonF mapPoly = mMapCanvas->mapSettings().visiblePolygon();
+  const double canvasWidth = QLineF( mapPoly[0], mapPoly[1] ).length();
+  const double canvasHeight = QLineF( mapPoly[0], mapPoly[3] ).length();
+  const QgsRectangle mapRect = QgsRectangle( mapPoly[0],
+                               QgsPointXY(
+                                 mapPoly[0].x() + canvasWidth,
+                                 mapPoly[0].y() - canvasHeight
+                               )
+                                           );
+  if ( rect() != mapRect )
+    setRect( mapRect );
 }
