@@ -322,10 +322,12 @@ class ProcessingAlgFactory():
     RASTER_LAYER = "RASTER_LAYER",
     VECTOR_LAYER = "VECTOR_LAYER",
     MESH_LAYER = "MESH_LAYER",
+    POINT_CLOUD_LAYER = "MESH_LAYER",
     FILE_DEST = "FILE_DEST",
     FOLDER_DEST = "FOLDER_DEST",
     RASTER_LAYER_DEST = "RASTER_LAYER_DEST",
     VECTOR_LAYER_DEST = "VECTOR_LAYER_DEST",
+    POINTCLOUD_LAYER_DEST = "VECTOR_LAYER_DEST",
     BAND = "BAND",
     BOOL = "BOOL",
     CRS = "CRS",
@@ -348,7 +350,7 @@ class ProcessingAlgFactory():
     DATABASE_SCHEMA = "DATABASE_SCHEMA"
     DATABASE_TABLE = "DATABASE_TABLE"
     COORDINATE_OPERATION = "COORDINATE_OPERATION"
-    POINT_CLOUD_LAYER = "POINT_CLOUD_LAYER"
+    POINTCLOUD_LAYER = "POINTCLOUD_LAYER"
     ANNOTATION_LAYER = "ANNOTATION_LAYER"
 
     def __init__(self):
@@ -412,7 +414,7 @@ class ProcessingAlgFactory():
             alg.MULTILAYER:  QgsProcessingOutputMultipleLayers
             alg.RASTER_LAYER: QgsProcessingOutputRasterLayer
             alg.VECTOR_LAYER: QgsProcessingOutputVectorLayer
-            alg.POINTCLOUD_LAYER: QgsProcessingOutputPointCloudLayer
+            alg.POINT_CLOUD_LAYER: QgsProcessingOutputPointCloudLayer
             alg.BOOL: QgsProcessingOutputBoolean
 
         :param type: The type of the input. This should be a type define on `alg` like alg.STRING, alg.DISTANCE
@@ -552,7 +554,7 @@ input_type_mapping = {
     ProcessingAlgFactory.DATABASE_SCHEMA: QgsProcessingParameterDatabaseSchema,
     ProcessingAlgFactory.DATABASE_TABLE: QgsProcessingParameterDatabaseTable,
     ProcessingAlgFactory.COORDINATE_OPERATION: QgsProcessingParameterCoordinateOperation,
-    ProcessingAlgFactory.POINT_CLOUD_LAYER: QgsProcessingParameterPointCloudLayer,
+    ProcessingAlgFactory.POINTCLOUD_LAYER: QgsProcessingParameterPointCloudLayer,
     ProcessingAlgFactory.ANNOTATION_LAYER: QgsProcessingParameterAnnotationLayer
 }
 

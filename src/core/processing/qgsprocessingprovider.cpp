@@ -190,6 +190,18 @@ bool QgsProcessingProvider::isSupportedOutputValue( const QVariant &outputValue,
     }
     return true;
   }
+  else if ( parameter->type() == QgsProcessingParameterPointCloudDestination::typeName() )
+  {
+    const QFileInfo fi( outputPath );
+    const QString extension = fi.completeSuffix();
+    qDebug() << supportedOutputPointCloudLayerExtensions();
+    if ( !supportedOutputPointCloudLayerExtensions().contains( extension, Qt::CaseInsensitive ) )
+    {
+      error = tr( "“.%1” files are not supported as outputs for this algorithm" ).arg( extension );
+      return false;
+    }
+    return true;
+  }
   else
   {
     return true;

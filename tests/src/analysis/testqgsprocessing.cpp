@@ -473,6 +473,11 @@ class DummyProvider3 : public QgsProcessingProvider // clazy:exclude=missing-qob
       return QStringList() << QStringLiteral( "mig" ) << QStringLiteral( "sdat" );
     }
 
+    QStringList supportedOutputPointCloudLayerExtensions() const override
+    {
+      return QStringList() << QStringLiteral( "las" ) << QStringLiteral( "ept.json" );
+    }
+
     void loadAlgorithms() override
     {
       QVERIFY( addAlgorithm( new DummyAlgorithm2( "alg1" ) ) );
@@ -7088,7 +7093,7 @@ void TestQgsProcessing::parameterPointCloudOut()
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
 
   // optional
-  def.reset( new QgsProcessingParameterPointCloudDestination( "optional", QString(), QString( "default.las" ), true ) );
+  def.reset( new QgsProcessingParameterPointCloudDestination( "optional", QString(), QString( "default.laz" ), true ) );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -7099,12 +7104,12 @@ void TestQgsProcessing::parameterPointCloudOut()
   QVERIFY( def->checkValueIsAcceptable( QgsProcessingOutputLayerDefinition( "layer1231123" ) ) );
 
   params.insert( "optional", QVariant() );
-  QCOMPARE( QgsProcessingParameters::parameterAsOutputLayer( def.get(), params, context ), QStringLiteral( "default.las" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsOutputLayer( def.get(), params, context ), QStringLiteral( "default.laz" ) );
 
   pythonCode = def->asPythonString();
-  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterPointCloudDestination('optional', '', optional=True, createByDefault=True, defaultValue='default.las')" ) );
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterPointCloudDestination('optional', '', optional=True, createByDefault=True, defaultValue='default.laz')" ) );
   code = def->asScriptCode();
-  QCOMPARE( code, QStringLiteral( "##optional=optional pointCloudDestination default.las" ) );
+  QCOMPARE( code, QStringLiteral( "##optional=optional pointCloudDestination default.laz" ) );
   fromCode.reset( dynamic_cast< QgsProcessingParameterPointCloudDestination * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
   QVERIFY( fromCode.get() );
   QCOMPARE( fromCode->name(), def->name() );
@@ -7116,12 +7121,12 @@ void TestQgsProcessing::parameterPointCloudOut()
   QString error;
   QVERIFY( !provider.isSupportedOutputValue( QVariant(), def.get(), context, error ) );
   QVERIFY( !provider.isSupportedOutputValue( QString(), def.get(), context, error ) );
-  QVERIFY( !provider.isSupportedOutputValue( "d:/test.las", def.get(), context, error ) );
-  QVERIFY( !provider.isSupportedOutputValue( "d:/test.LAS", def.get(), context, error ) );
-  QVERIFY( !provider.isSupportedOutputValue( QgsProcessingOutputLayerDefinition( "d:/test.las" ), def.get(), context, error ) );
-  QVERIFY( provider.isSupportedOutputValue( "d:/test.mig", def.get(), context, error ) );
-  QVERIFY( provider.isSupportedOutputValue( "d:/test.MIG", def.get(), context, error ) );
-  QVERIFY( provider.isSupportedOutputValue( QgsProcessingOutputLayerDefinition( "d:/test.MIG" ), def.get(), context, error ) );
+  QVERIFY( !provider.isSupportedOutputValue( "d:/test.laz", def.get(), context, error ) );
+  QVERIFY( !provider.isSupportedOutputValue( "d:/test.LAZ", def.get(), context, error ) );
+  QVERIFY( !provider.isSupportedOutputValue( QgsProcessingOutputLayerDefinition( "d:/test.laz" ), def.get(), context, error ) );
+  QVERIFY( provider.isSupportedOutputValue( "d:/test.las", def.get(), context, error ) );
+  QVERIFY( provider.isSupportedOutputValue( "d:/test.LAS", def.get(), context, error ) );
+  QVERIFY( provider.isSupportedOutputValue( QgsProcessingOutputLayerDefinition( "d:/test.LAS" ), def.get(), context, error ) );
 
   // test layers to load on completion
   def.reset( new QgsProcessingParameterPointCloudDestination( "x", QStringLiteral( "desc" ), QStringLiteral( "default.las" ), true ) );
