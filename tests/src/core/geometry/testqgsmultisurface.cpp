@@ -39,6 +39,7 @@ class TestQgsMultiSurface: public QObject
     void addGeometryM();
     void addGeometryZM();
     void insertGeometry();
+    void surfaceN();
     void assignment();
     void clone();
     void copy();
@@ -461,6 +462,29 @@ void TestQgsMultiSurface::insertGeometry()
   ms.insertGeometry( part.clone(), 0 );
   QVERIFY( !ms.isEmpty() );
   QCOMPARE( ms.numGeometries(), 1 );
+}
+
+void TestQgsMultiSurface::surfaceN()
+{
+  QgsMultiSurface ms;
+  QgsCurvePolygon part;
+  QgsCircularString ring;
+
+  ring.setPoints( QgsPointSequence() << QgsPoint( 1, 10 )
+                  << QgsPoint( 2, 11 ) << QgsPoint( 1, 10 ) );
+  part.setExteriorRing( ring.clone() );
+  ms.addGeometry( part.clone() );
+
+  part.clear();
+  ring.setPoints( QgsPointSequence() << QgsPoint( 9, 12 )
+                  << QgsPoint( 3, 13 )  << QgsPoint( 9, 12 ) );
+  part.setExteriorRing( ring.clone() );
+  ms.addGeometry( part.clone() );
+
+  QCOMPARE( *ms.geometryN( 0 ), *ms.surfaceN( 0 ) );
+  QCOMPARE( *ms.geometryN( 0 ), *std::as_const( ms ).surfaceN( 0 ) );
+  QCOMPARE( *ms.geometryN( 1 ), *ms.surfaceN( 1 ) );
+  QCOMPARE( *ms.geometryN( 1 ), *std::as_const( ms ).surfaceN( 1 ) );
 }
 
 void TestQgsMultiSurface::assignment()
