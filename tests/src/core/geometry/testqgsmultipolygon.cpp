@@ -53,7 +53,7 @@ class TestQgsMultiPolygon: public QObject
     void exportImport();
 };
 
-//
+
 void TestQgsMultiPolygon::constructor()
 {
   QgsMultiPolygon mp;
@@ -276,12 +276,17 @@ void TestQgsMultiPolygon::addGeometry()
 
   const QgsPolygon *ls = static_cast< const QgsPolygon * >( mp.geometryN( 0 ) );
 
+  // test polygonN by the same occasion
+  QCOMPARE( *ls, *static_cast< const QgsPolygon * >( mp.polygonN( 0 ) ) );
+
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 0 ), QgsPoint( 9, 12 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 1 ), QgsPoint( 3, 13 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 2 ), QgsPoint( 4, 17 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 3 ), QgsPoint( 9, 12 ) );
 
   ls = static_cast< const QgsPolygon * >( mp.geometryN( 1 ) );
+
+  QCOMPARE( *ls, *static_cast< const QgsPolygon * >( mp.polygonN( 1 ) ) );
 
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 0 ), QgsPoint( 1, 10 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 1 ), QgsPoint( 2, 11 ) );
@@ -651,6 +656,9 @@ void TestQgsMultiPolygon::boundary()
   ring.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 )
                   << QgsPoint( 1, 1 )  << QgsPoint( 0, 0 ) );
   part.setExteriorRing( ring.clone() );
+  mp.addGeometry( part.clone() );
+
+  part.clear();
   mp.addGeometry( part.clone() );
 
   std::unique_ptr< QgsAbstractGeometry > boundary( mp.boundary() );
