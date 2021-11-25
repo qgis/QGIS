@@ -1727,6 +1727,51 @@ static QVariant fcnAttributes( const QVariantList &values, const QgsExpressionCo
   return result;
 }
 
+static QVariant fcnFormattedAttributes( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsVectorLayer *vl = nullptr;
+  QgsFeature feature;
+  if ( values.size() == 0 || values.at( 0 ).isNull() )
+  {
+    feature = context->feature();
+    // first step - find current layer
+    vl = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), parent );
+  }
+  else if ( values.size() == 2 && ! values.at( 1 ).isNull() )
+  {
+    feature = QgsExpressionUtils::getFeature( values.at( 0 ), parent );
+    vl = QgsExpressionUtils::getVectorLayer( values.at( 1 ), parent );
+  }
+  else
+  {
+    parent->setEvalErrorString( QObject::tr( "Layer is not set" ) );
+    return QVariant();
+  }
+
+  if ( !vl )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot use formatted attributes function in this context" ) );
+    return QVariant();
+  }
+
+  const QgsFields fields = feature.fields();
+  QVariantMap result;
+  for ( int idx = 0; idx < fields.count(); ++idx )
+  {
+    QVariant attributeVal { feature.attribute( idx ) };
+    const QgsEditorWidgetSetup setup = vl->editorWidgetSetup( idx );
+    QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+    QString value( fieldFormatter->representValue( vl, idx, setup.config(), QVariant(), attributeVal ) );
+
+    if ( setup.config().value( QStringLiteral( "AllowMulti" ) ).toBool() && value.startsWith( QLatin1Char( '{' ) ) && value.endsWith( QLatin1Char( '}' ) ) )
+    {
+      value = value.mid( 1, value.size() - 2 );
+    }
+    result.insert( fields.at( idx ).name(), value );
+  }
+  return result;
+}
+
 static QVariant fcnCoreFeatureMaptipDisplay( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const bool isMaptip )
 {
   QgsVectorLayer *layer = nullptr;
@@ -7663,6 +7708,10 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         fcnAttributes, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
     attributesFunc->setIsStatic( false );
     functions << attributesFunc;
+    QgsStaticExpressionFunction *formattedAttributesFunc = new QgsStaticExpressionFunction( QStringLiteral( "formatted_attributes" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "feature" ), true ) << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ), true ),
+        fcnFormattedAttributes, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
+    formattedAttributesFunc->setIsStatic( false );
+    functions << formattedAttributesFunc;
 
     QgsStaticExpressionFunction *maptipFunc = new QgsStaticExpressionFunction(
       QStringLiteral( "maptip" ),
