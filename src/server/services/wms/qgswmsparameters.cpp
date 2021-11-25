@@ -34,6 +34,7 @@ namespace QgsWms
     : QgsServerParameterDefinition( type, defaultValue )
     , mName( name )
   {
+    std::cout << "updated" << std::endl;
   }
 
   bool QgsWmsParameter::isValid() const

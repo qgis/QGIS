@@ -103,6 +103,7 @@ namespace QgsWms
   QgsRenderer::QgsRenderer( const QgsWmsRenderContext &context )
     : mContext( context )
   {
+    std::cout << "TEST 2" << std::endl;
     mProject = mContext.project();
 
     mWmsParameters = mContext.parameters();
