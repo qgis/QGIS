@@ -110,17 +110,17 @@ void TestQgsPolygon::constructor()
 
 void TestQgsPolygon::altConstructor()
 {
-  QgsLineString *ext = new QgsLineString( QVector<QgsPoint>() << QgsPoint( 0, 0 )
-                                          << QgsPoint( 0, 10 ) << QgsPoint( 10, 10 )
-                                          << QgsPoint( 10, 0 ) << QgsPoint( 0, 0 ) );
-  QgsLineString *ring1 = new QgsLineString( QVector< QgsPoint >() << QgsPoint( 1, 1 )
-      << QgsPoint( 2, 1 ) << QgsPoint( 2, 2 )
-      << QgsPoint( 1, 2 ) << QgsPoint( 1, 1 ) );
-  QgsLineString *ring2 = new QgsLineString( QVector< QgsPoint >() << QgsPoint( 3, 1 )
-      << QgsPoint( 4, 1 ) << QgsPoint( 4, 2 )
-      << QgsPoint( 3, 2 ) << QgsPoint( 3, 1 ) );
+  QgsLineString ext( QVector<QgsPoint>() << QgsPoint( 0, 0 )
+                     << QgsPoint( 0, 10 ) << QgsPoint( 10, 10 )
+                     << QgsPoint( 10, 0 ) << QgsPoint( 0, 0 ) );
+  QgsLineString ring1( QVector< QgsPoint >() << QgsPoint( 1, 1 )
+                       << QgsPoint( 2, 1 ) << QgsPoint( 2, 2 )
+                       << QgsPoint( 1, 2 ) << QgsPoint( 1, 1 ) );
+  QgsLineString ring2( QVector< QgsPoint >() << QgsPoint( 3, 1 )
+                       << QgsPoint( 4, 1 ) << QgsPoint( 4, 2 )
+                       << QgsPoint( 3, 2 ) << QgsPoint( 3, 1 ) );
 
-  QgsPolygon pl( ext, QList< QgsLineString *>() << ring1 << ring2 );
+  QgsPolygon pl( ext.clone(), QList< QgsLineString *>() << ring1.clone() << ring2.clone() );
 
   QCOMPARE( pl.asWkt(), QStringLiteral( "Polygon ((0 0, 0 10, 10 10, 10 0, 0 0),(1 1, 2 1, 2 2, 1 2, 1 1),(3 1, 4 1, 4 2, 3 2, 3 1))" ) );
 }
@@ -354,8 +354,10 @@ void TestQgsPolygon::copy()
 
   QgsLineString *ring = new QgsLineString();
   ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 2 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 1, 9, 2, 3 ) << QgsPoint( QgsWkbTypes::PointZM, 9, 9, 3, 6 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 ) << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 7 ) );
+                   << QgsPoint( QgsWkbTypes::PointZM, 1, 9, 2, 3 )
+                   << QgsPoint( QgsWkbTypes::PointZM, 9, 9, 3, 6 )
+                   << QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 )
+                   << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 7 ) );
   pl1.addInteriorRing( ring );
 
   pl2 = QgsPolygon( pl1 );
@@ -427,7 +429,9 @@ void TestQgsPolygon::setBadExteriorRing()
                   << QgsPoint( 10, 10 ) << QgsPoint( 10, 0 ) );
 
   QVERIFY( !ext->isClosed() );
+
   pl.setExteriorRing( ext );
+
   QVERIFY( !pl.isEmpty() );
   QVERIFY( pl.exteriorRing()->isClosed() );
   QCOMPARE( pl.nCoordinates(), 5 );
@@ -437,7 +441,6 @@ void TestQgsPolygon::setExteriorRing()
 {
   QgsPolygon pl;
 
-  //valid exterior ring
   QgsLineString *ext = new QgsLineString();
   ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 )
                   << QgsPoint( 0, 10 ) << QgsPoint( 10, 10 )
@@ -565,15 +568,19 @@ void TestQgsPolygon::setExteriorRingChangesInteriorRings()
   QVector< QgsCurve * > rings;
 
   QgsPointSequence pts;
-  pts << QgsPoint( QgsWkbTypes::PointZ, 0.1, 0.1, 1 ) << QgsPoint( QgsWkbTypes::PointZ, 0.1, 0.2, 2 )
-      << QgsPoint( QgsWkbTypes::PointZ, 0.2, 0.2, 3 ) << QgsPoint( QgsWkbTypes::PointZ, 0.2, 0.1, 4 )
+  pts << QgsPoint( QgsWkbTypes::PointZ, 0.1, 0.1, 1 )
+      << QgsPoint( QgsWkbTypes::PointZ, 0.1, 0.2, 2 )
+      << QgsPoint( QgsWkbTypes::PointZ, 0.2, 0.2, 3 )
+      << QgsPoint( QgsWkbTypes::PointZ, 0.2, 0.1, 4 )
       << QgsPoint( QgsWkbTypes::PointZ, 0.1, 0.1, 1 );
   rings << new QgsLineString();
   static_cast< QgsLineString *>( rings[0] )->setPoints( pts );
 
   pts = QgsPointSequence();
-  pts << QgsPoint( QgsWkbTypes::PointZ, 0.3, 0.3, 1 ) << QgsPoint( QgsWkbTypes::PointZ, 0.3, 0.4, 2 )
-      << QgsPoint( QgsWkbTypes::PointZ, 0.4, 0.4, 3 ) << QgsPoint( QgsWkbTypes::PointZ, 0.4, 0.3, 4 )
+  pts << QgsPoint( QgsWkbTypes::PointZ, 0.3, 0.3, 1 )
+      << QgsPoint( QgsWkbTypes::PointZ, 0.3, 0.4, 2 )
+      << QgsPoint( QgsWkbTypes::PointZ, 0.4, 0.4, 3 )
+      << QgsPoint( QgsWkbTypes::PointZ, 0.4, 0.3, 4 )
       << QgsPoint( QgsWkbTypes::PointZ, 0.3, 0.3,  1 );
   rings << new QgsLineString();
   static_cast< QgsLineString *>( rings[1] )->setPoints( pts );
@@ -637,13 +644,13 @@ void TestQgsPolygon::deleteExteriorRing()
 {
   QgsPolygon pl;
 
-  QgsLineString l38;
-  l38.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
-                 << QgsPoint( 5, 2 ) << QgsPoint( 6, 2 )
-                 << QgsPoint( 7, 2 ) << QgsPoint( 11, 12 )
-                 << QgsPoint( 21, 22 ) << QgsPoint( 1, 2 ) );
-  pl.setExteriorRing( l38.clone() );
-  pl.addInteriorRing( l38.clone() );
+  QgsLineString ls;
+  ls.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
+                << QgsPoint( 5, 2 ) << QgsPoint( 6, 2 )
+                << QgsPoint( 7, 2 ) << QgsPoint( 11, 12 )
+                << QgsPoint( 21, 22 ) << QgsPoint( 1, 2 ) );
+  pl.setExteriorRing( ls.clone() );
+  pl.addInteriorRing( ls.clone() );
 
   // test that interior ring is "promoted" when exterior is removed
   QVERIFY( pl.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
@@ -834,15 +841,19 @@ void TestQgsPolygon::setInteriorRings()
   QVector< QgsCurve * > rings;
 
   QgsPointSequence pts;
-  pts << QgsPoint( QgsWkbTypes::PointZ, 0.1, 0.1, 1 ) << QgsPoint( QgsWkbTypes::PointZ, 0.1, 0.2, 2 )
-      << QgsPoint( QgsWkbTypes::PointZ, 0.2, 0.2, 3 ) << QgsPoint( QgsWkbTypes::PointZ, 0.2, 0.1, 4 )
+  pts << QgsPoint( QgsWkbTypes::PointZ, 0.1, 0.1, 1 )
+      << QgsPoint( QgsWkbTypes::PointZ, 0.1, 0.2, 2 )
+      << QgsPoint( QgsWkbTypes::PointZ, 0.2, 0.2, 3 )
+      << QgsPoint( QgsWkbTypes::PointZ, 0.2, 0.1, 4 )
       << QgsPoint( QgsWkbTypes::PointZ, 0.1, 0.1, 1 );
   rings << new QgsLineString();
   static_cast< QgsLineString *>( rings[0] )->setPoints( pts );
 
   pts = QgsPointSequence();
-  pts << QgsPoint( QgsWkbTypes::PointM, 0.3, 0.3, 0, 1 ) << QgsPoint( QgsWkbTypes::PointM, 0.3, 0.4, 0, 2 )
-      << QgsPoint( QgsWkbTypes::PointM, 0.4, 0.4, 0, 3 ) << QgsPoint( QgsWkbTypes::PointM, 0.4, 0.3, 0, 4 )
+  pts << QgsPoint( QgsWkbTypes::PointM, 0.3, 0.3, 0, 1 )
+      << QgsPoint( QgsWkbTypes::PointM, 0.3, 0.4, 0, 2 )
+      << QgsPoint( QgsWkbTypes::PointM, 0.4, 0.4, 0, 3 )
+      << QgsPoint( QgsWkbTypes::PointM, 0.4, 0.3, 0, 4 )
       << QgsPoint( QgsWkbTypes::PointM, 0.3, 0.3, 0, 1 );
   rings << new QgsLineString();
   static_cast< QgsLineString *>( rings[1] )->setPoints( pts );
@@ -1045,11 +1056,13 @@ void TestQgsPolygon::insertVertex()
                 << QgsPoint( 0, 2 ) << QgsPoint( 0, 0 ) );
   pl.setExteriorRing( ls.clone() );
 
+  auto ext = static_cast< const QgsLineString * >( pl.exteriorRing() );
+
   QVERIFY( pl.insertVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( 0.3, 0 ) ) );
   QCOMPARE( pl.nCoordinates(), 8 );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 0 ), QgsPoint( 0, 0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 1 ), QgsPoint( 0.3, 0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 2 ), QgsPoint( 0.5, 0 ) );
+  QCOMPARE( ext->pointN( 0 ), QgsPoint( 0, 0 ) );
+  QCOMPARE( ext->pointN( 1 ), QgsPoint( 0.3, 0 ) );
+  QCOMPARE( ext->pointN( 2 ), QgsPoint( 0.5, 0 ) );
 
   QVERIFY( !pl.insertVertex( QgsVertexId( 0, 0, -1 ), QgsPoint( 6.0, 7.0 ) ) );
   QVERIFY( !pl.insertVertex( QgsVertexId( 0, 0, 100 ), QgsPoint( 6.0, 7.0 ) ) );
@@ -1059,35 +1072,37 @@ void TestQgsPolygon::insertVertex()
   QVERIFY( pl.insertVertex( QgsVertexId( 0, 0, 0 ), QgsPoint( 0, 0.1 ) ) );
 
   QCOMPARE( pl.nCoordinates(), 9 );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 0 ), QgsPoint( 0, 0.1 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 1 ), QgsPoint( 0, 0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 2 ), QgsPoint( 0.3, 0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 3 ), QgsPoint( 0.5, 0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 7 ), QgsPoint( 0, 2 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 8 ), QgsPoint( 0, 0.1 ) );
+  QCOMPARE( ext->pointN( 0 ), QgsPoint( 0, 0.1 ) );
+  QCOMPARE( ext->pointN( 1 ), QgsPoint( 0, 0 ) );
+  QCOMPARE( ext->pointN( 2 ), QgsPoint( 0.3, 0 ) );
+  QCOMPARE( ext->pointN( 3 ), QgsPoint( 0.5, 0 ) );
+  QCOMPARE( ext->pointN( 7 ), QgsPoint( 0, 2 ) );
+  QCOMPARE( ext->pointN( 8 ), QgsPoint( 0, 0.1 ) );
 
   // last vertex
   QVERIFY( pl.insertVertex( QgsVertexId( 0, 0, 9 ), QgsPoint( 0.1, 0.1 ) ) );
 
   QCOMPARE( pl.nCoordinates(), 10 );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 0 ), QgsPoint( 0.1, 0.1 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 1 ), QgsPoint( 0, 0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 2 ), QgsPoint( 0.3, 0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 3 ), QgsPoint( 0.5, 0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 8 ), QgsPoint( 0, 0.1 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 9 ), QgsPoint( 0.1, 0.1 ) );
+  QCOMPARE( ext->pointN( 0 ), QgsPoint( 0.1, 0.1 ) );
+  QCOMPARE( ext->pointN( 1 ), QgsPoint( 0, 0 ) );
+  QCOMPARE( ext->pointN( 2 ), QgsPoint( 0.3, 0 ) );
+  QCOMPARE( ext->pointN( 3 ), QgsPoint( 0.5, 0 ) );
+  QCOMPARE( ext->pointN( 8 ), QgsPoint( 0, 0.1 ) );
+  QCOMPARE( ext->pointN( 9 ), QgsPoint( 0.1, 0.1 ) );
 
   // with interior ring
   pl.addInteriorRing( ls.clone() );
+
+  auto ring = static_cast< const QgsLineString * >( pl.interiorRing( 0 ) );
 
   QCOMPARE( pl.nCoordinates(), 17 );
 
   QVERIFY( pl.insertVertex( QgsVertexId( 0, 1, 1 ), QgsPoint( 0.3, 0 ) ) );
 
   QCOMPARE( pl.nCoordinates(), 18 );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 0 ), QgsPoint( 0, 0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 1 ), QgsPoint( 0.3, 0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 2 ), QgsPoint( 0.5, 0 ) );
+  QCOMPARE( ring->pointN( 0 ), QgsPoint( 0, 0 ) );
+  QCOMPARE( ring->pointN( 1 ), QgsPoint( 0.3, 0 ) );
+  QCOMPARE( ring->pointN( 2 ), QgsPoint( 0.5, 0 ) );
 
   QVERIFY( !pl.insertVertex( QgsVertexId( 0, 1, -1 ), QgsPoint( 6.0, 7.0 ) ) );
   QVERIFY( !pl.insertVertex( QgsVertexId( 0, 1, 100 ), QgsPoint( 6.0, 7.0 ) ) );
@@ -1097,23 +1112,23 @@ void TestQgsPolygon::insertVertex()
   QVERIFY( pl.insertVertex( QgsVertexId( 0, 1, 0 ), QgsPoint( 0, 0.1 ) ) );
 
   QCOMPARE( pl.nCoordinates(), 19 );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 0 ), QgsPoint( 0, 0.1 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 1 ), QgsPoint( 0, 0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 2 ), QgsPoint( 0.3, 0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 3 ), QgsPoint( 0.5, 0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 7 ), QgsPoint( 0, 2 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 8 ), QgsPoint( 0, 0.1 ) );
+  QCOMPARE( ring->pointN( 0 ), QgsPoint( 0, 0.1 ) );
+  QCOMPARE( ring->pointN( 1 ), QgsPoint( 0, 0 ) );
+  QCOMPARE( ring->pointN( 2 ), QgsPoint( 0.3, 0 ) );
+  QCOMPARE( ring->pointN( 3 ), QgsPoint( 0.5, 0 ) );
+  QCOMPARE( ring->pointN( 7 ), QgsPoint( 0, 2 ) );
+  QCOMPARE( ring->pointN( 8 ), QgsPoint( 0, 0.1 ) );
 
   // last vertex in interior ring
   QVERIFY( pl.insertVertex( QgsVertexId( 0, 1, 9 ), QgsPoint( 0.1, 0.1 ) ) );
 
   QCOMPARE( pl.nCoordinates(), 20 );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 0 ), QgsPoint( 0.1, 0.1 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 1 ), QgsPoint( 0, 0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 2 ), QgsPoint( 0.3, 0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 3 ), QgsPoint( 0.5, 0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 8 ), QgsPoint( 0, 0.1 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 9 ), QgsPoint( 0.1, 0.1 ) );
+  QCOMPARE( ring->pointN( 0 ), QgsPoint( 0.1, 0.1 ) );
+  QCOMPARE( ring->pointN( 1 ), QgsPoint( 0, 0 ) );
+  QCOMPARE( ring->pointN( 2 ), QgsPoint( 0.3, 0 ) );
+  QCOMPARE( ring->pointN( 3 ), QgsPoint( 0.5, 0 ) );
+  QCOMPARE( ring->pointN( 8 ), QgsPoint( 0, 0.1 ) );
+  QCOMPARE( ring->pointN( 9 ), QgsPoint( 0.1, 0.1 ) );
 }
 
 void TestQgsPolygon::moveVertex()
@@ -1130,36 +1145,40 @@ void TestQgsPolygon::moveVertex()
                 << QgsPoint( 21, 22 ) << QgsPoint( 1, 2 ) );
   pl.setExteriorRing( ls.clone() );
 
+  auto ext = static_cast< const QgsLineString * >( pl.exteriorRing() );
+
   QVERIFY( pl.moveVertex( QgsVertexId( 0, 0, 0 ), QgsPoint( 6.0, 7.0 ) ) );
   QVERIFY( pl.moveVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( 16.0, 17.0 ) ) );
   QVERIFY( pl.moveVertex( QgsVertexId( 0, 0, 2 ), QgsPoint( 26.0, 27.0 ) ) );
 
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 0 ), QgsPoint( 6.0, 7.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 1 ), QgsPoint( 16.0, 17.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 2 ), QgsPoint( 26.0, 27.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 3 ), QgsPoint( 6.0, 7.0 ) );
+  QCOMPARE( ext->pointN( 0 ), QgsPoint( 6.0, 7.0 ) );
+  QCOMPARE( ext->pointN( 1 ), QgsPoint( 16.0, 17.0 ) );
+  QCOMPARE( ext->pointN( 2 ), QgsPoint( 26.0, 27.0 ) );
+  QCOMPARE( ext->pointN( 3 ), QgsPoint( 6.0, 7.0 ) );
 
   //out of range
   QVERIFY( !pl.moveVertex( QgsVertexId( 0, 0, -1 ), QgsPoint( 3.0, 4.0 ) ) );
   QVERIFY( !pl.moveVertex( QgsVertexId( 0, 0, 10 ), QgsPoint( 3.0, 4.0 ) ) );
   QVERIFY( !pl.moveVertex( QgsVertexId( 0, 1, 0 ), QgsPoint( 3.0, 4.0 ) ) );
 
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 0 ), QgsPoint( 6.0, 7.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 1 ), QgsPoint( 16.0, 17.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 2 ), QgsPoint( 26.0, 27.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 3 ), QgsPoint( 6.0, 7.0 ) );
+  QCOMPARE( ext->pointN( 0 ), QgsPoint( 6.0, 7.0 ) );
+  QCOMPARE( ext->pointN( 1 ), QgsPoint( 16.0, 17.0 ) );
+  QCOMPARE( ext->pointN( 2 ), QgsPoint( 26.0, 27.0 ) );
+  QCOMPARE( ext->pointN( 3 ), QgsPoint( 6.0, 7.0 ) );
 
   // with interior ring
   pl.addInteriorRing( ls.clone() );
+
+  auto ring = static_cast< const QgsLineString * >( pl.interiorRing( 0 ) );
 
   QVERIFY( pl.moveVertex( QgsVertexId( 0, 1, 0 ), QgsPoint( 6.0, 7.0 ) ) );
   QVERIFY( pl.moveVertex( QgsVertexId( 0, 1, 1 ), QgsPoint( 16.0, 17.0 ) ) );
   QVERIFY( pl.moveVertex( QgsVertexId( 0, 1, 2 ), QgsPoint( 26.0, 27.0 ) ) );
 
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 0 ), QgsPoint( 6.0, 7.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 1 ), QgsPoint( 16.0, 17.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 2 ), QgsPoint( 26.0, 27.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 3 ), QgsPoint( 6.0, 7.0 ) );
+  QCOMPARE( ring->pointN( 0 ), QgsPoint( 6.0, 7.0 ) );
+  QCOMPARE( ring->pointN( 1 ), QgsPoint( 16.0, 17.0 ) );
+  QCOMPARE( ring->pointN( 2 ), QgsPoint( 26.0, 27.0 ) );
+  QCOMPARE( ring->pointN( 3 ), QgsPoint( 6.0, 7.0 ) );
 
   QVERIFY( !pl.moveVertex( QgsVertexId( 0, 1, -1 ), QgsPoint( 3.0, 4.0 ) ) );
   QVERIFY( !pl.moveVertex( QgsVertexId( 0, 1, 10 ), QgsPoint( 3.0, 4.0 ) ) );
@@ -1176,12 +1195,14 @@ void TestQgsPolygon::deleteVertex()
   QVERIFY( pl.isEmpty() );
 
   //valid polygon
-  QgsLineString l38;
-  l38.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
-                 << QgsPoint( 5, 2 ) << QgsPoint( 6, 2 )
-                 << QgsPoint( 7, 2 ) << QgsPoint( 11, 12 )
-                 << QgsPoint( 21, 22 ) << QgsPoint( 1, 2 ) );
-  pl.setExteriorRing( l38.clone() );
+  QgsLineString ls;
+  ls.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
+                << QgsPoint( 5, 2 ) << QgsPoint( 6, 2 )
+                << QgsPoint( 7, 2 ) << QgsPoint( 11, 12 )
+                << QgsPoint( 21, 22 ) << QgsPoint( 1, 2 ) );
+  pl.setExteriorRing( ls.clone() );
+
+  auto ext = static_cast< const QgsLineString * >( pl.exteriorRing() );
 
   //out of range vertices
   QVERIFY( !pl.deleteVertex( QgsVertexId( 0, 0, -1 ) ) );
@@ -1191,36 +1212,38 @@ void TestQgsPolygon::deleteVertex()
   //valid vertices
   QVERIFY( pl.deleteVertex( QgsVertexId( 0, 0, 1 ) ) );
 
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 0 ), QgsPoint( 1.0, 2.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 1 ), QgsPoint( 6.0, 2.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 2 ), QgsPoint( 7.0, 2.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 3 ), QgsPoint( 11.0, 12.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 5 ), QgsPoint( 1.0, 2.0 ) );
+  QCOMPARE( ext->pointN( 0 ), QgsPoint( 1.0, 2.0 ) );
+  QCOMPARE( ext->pointN( 1 ), QgsPoint( 6.0, 2.0 ) );
+  QCOMPARE( ext->pointN( 2 ), QgsPoint( 7.0, 2.0 ) );
+  QCOMPARE( ext->pointN( 3 ), QgsPoint( 11.0, 12.0 ) );
+  QCOMPARE( ext->pointN( 5 ), QgsPoint( 1.0, 2.0 ) );
 
   // delete first vertex
   QVERIFY( pl.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
 
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 0 ), QgsPoint( 6.0, 2.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 1 ), QgsPoint( 7.0, 2.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 2 ), QgsPoint( 11.0, 12.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 3 ), QgsPoint( 21.0, 22.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 4 ), QgsPoint( 6.0, 2.0 ) );
+  QCOMPARE( ext->pointN( 0 ), QgsPoint( 6.0, 2.0 ) );
+  QCOMPARE( ext->pointN( 1 ), QgsPoint( 7.0, 2.0 ) );
+  QCOMPARE( ext->pointN( 2 ), QgsPoint( 11.0, 12.0 ) );
+  QCOMPARE( ext->pointN( 3 ), QgsPoint( 21.0, 22.0 ) );
+  QCOMPARE( ext->pointN( 4 ), QgsPoint( 6.0, 2.0 ) );
 
   // delete last vertex
   QVERIFY( pl.deleteVertex( QgsVertexId( 0, 0, 4 ) ) );
 
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 0 ), QgsPoint( 21.0, 22.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 1 ), QgsPoint( 7.0, 2.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 2 ), QgsPoint( 11.0, 12.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.exteriorRing() )->pointN( 3 ), QgsPoint( 21.0, 22.0 ) );
+  QCOMPARE( ext->pointN( 0 ), QgsPoint( 21.0, 22.0 ) );
+  QCOMPARE( ext->pointN( 1 ), QgsPoint( 7.0, 2.0 ) );
+  QCOMPARE( ext->pointN( 2 ), QgsPoint( 11.0, 12.0 ) );
+  QCOMPARE( ext->pointN( 3 ), QgsPoint( 21.0, 22.0 ) );
 
   // delete another vertex - should remove ring
   QVERIFY( pl.deleteVertex( QgsVertexId( 0, 0, 1 ) ) );
   QVERIFY( !pl.exteriorRing() );
 
   // with interior ring
-  pl.setExteriorRing( l38.clone() );
-  pl.addInteriorRing( l38.clone() );
+  pl.setExteriorRing( ls.clone() );
+  pl.addInteriorRing( ls.clone() );
+
+  auto ring = static_cast< const QgsLineString * >( pl.interiorRing( 0 ) );
 
   //out of range vertices
   QVERIFY( !pl.deleteVertex( QgsVertexId( 0, 1, -1 ) ) );
@@ -1230,28 +1253,28 @@ void TestQgsPolygon::deleteVertex()
   //valid vertices
   QVERIFY( pl.deleteVertex( QgsVertexId( 0, 1, 1 ) ) );
 
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 0 ), QgsPoint( 1.0, 2.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 1 ), QgsPoint( 6.0, 2.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 2 ), QgsPoint( 7.0, 2.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 3 ), QgsPoint( 11.0, 12.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 5 ), QgsPoint( 1.0, 2.0 ) );
+  QCOMPARE( ring->pointN( 0 ), QgsPoint( 1.0, 2.0 ) );
+  QCOMPARE( ring->pointN( 1 ), QgsPoint( 6.0, 2.0 ) );
+  QCOMPARE( ring->pointN( 2 ), QgsPoint( 7.0, 2.0 ) );
+  QCOMPARE( ring->pointN( 3 ), QgsPoint( 11.0, 12.0 ) );
+  QCOMPARE( ring->pointN( 5 ), QgsPoint( 1.0, 2.0 ) );
 
   // delete first vertex
   QVERIFY( pl.deleteVertex( QgsVertexId( 0, 1, 0 ) ) );
 
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 0 ), QgsPoint( 6.0, 2.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 1 ), QgsPoint( 7.0, 2.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 2 ), QgsPoint( 11.0, 12.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 3 ), QgsPoint( 21.0, 22.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 4 ), QgsPoint( 6.0, 2.0 ) );
+  QCOMPARE( ring->pointN( 0 ), QgsPoint( 6.0, 2.0 ) );
+  QCOMPARE( ring->pointN( 1 ), QgsPoint( 7.0, 2.0 ) );
+  QCOMPARE( ring->pointN( 2 ), QgsPoint( 11.0, 12.0 ) );
+  QCOMPARE( ring->pointN( 3 ), QgsPoint( 21.0, 22.0 ) );
+  QCOMPARE( ring->pointN( 4 ), QgsPoint( 6.0, 2.0 ) );
 
   // delete last vertex
   QVERIFY( pl.deleteVertex( QgsVertexId( 0, 1, 4 ) ) );
 
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 0 ), QgsPoint( 21.0, 22.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 1 ), QgsPoint( 7.0, 2.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 2 ), QgsPoint( 11.0, 12.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( pl.interiorRing( 0 ) )->pointN( 3 ), QgsPoint( 21.0, 22.0 ) );
+  QCOMPARE( ring->pointN( 0 ), QgsPoint( 21.0, 22.0 ) );
+  QCOMPARE( ring->pointN( 1 ), QgsPoint( 7.0, 2.0 ) );
+  QCOMPARE( ring->pointN( 2 ), QgsPoint( 11.0, 12.0 ) );
+  QCOMPARE( ring->pointN( 3 ), QgsPoint( 21.0, 22.0 ) );
 
   // delete another vertex - should remove ring
   QVERIFY( pl.deleteVertex( QgsVertexId( 0, 1, 1 ) ) );
@@ -1366,6 +1389,7 @@ void TestQgsPolygon::nextVertex()
 void TestQgsPolygon::vertexNumberFromVertexId()
 {
   QgsLineString ls;
+
   QCOMPARE( ls.vertexNumberFromVertexId( QgsVertexId( -1, 0, 0 ) ), -1 );
 
   QgsPolygon pl;
@@ -1762,33 +1786,39 @@ void TestQgsPolygon::boundary()
 
   QVERIFY( multiLineBoundary );
   QCOMPARE( multiLineBoundary->numGeometries(), 3 );
-  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->numPoints(), 4 );
-  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 0 ), 0.0 );
-  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 1 ), 1.0 );
-  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 2 ), 1.0 );
-  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 3 ), 0.0 );
-  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 0 ), 0.0 );
-  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 1 ), 0.0 );
-  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 2 ), 1.0 );
-  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 3 ), 0.0 );
-  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->numPoints(), 4 );
-  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 0 ), 0.1 );
-  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 1 ), 0.2 );
-  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 2 ), 0.2 );
-  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 3 ), 0.1 );
-  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 0 ), 0.1 );
-  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 1 ), 0.1 );
-  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 2 ), 0.2 );
-  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 3 ), 0.1 );
-  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->numPoints(), 4 );
-  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 0 ), 0.8 );
-  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 1 ), 0.9 );
-  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 2 ), 0.9 );
-  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 3 ), 0.8 );
-  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 0 ), 0.8 );
-  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 1 ), 0.8 );
-  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 2 ), 0.9 );
-  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 3 ), 0.8 );
+
+  lineBoundary = qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) );
+  QCOMPARE( lineBoundary->numPoints(), 4 );
+  QCOMPARE( lineBoundary->xAt( 0 ), 0.0 );
+  QCOMPARE( lineBoundary->xAt( 1 ), 1.0 );
+  QCOMPARE( lineBoundary->xAt( 2 ), 1.0 );
+  QCOMPARE( lineBoundary->xAt( 3 ), 0.0 );
+  QCOMPARE( lineBoundary->yAt( 0 ), 0.0 );
+  QCOMPARE( lineBoundary->yAt( 1 ), 0.0 );
+  QCOMPARE( lineBoundary->yAt( 2 ), 1.0 );
+  QCOMPARE( lineBoundary->yAt( 3 ), 0.0 );
+
+  lineBoundary = qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) );
+  QCOMPARE( lineBoundary->numPoints(), 4 );
+  QCOMPARE( lineBoundary->xAt( 0 ), 0.1 );
+  QCOMPARE( lineBoundary->xAt( 1 ), 0.2 );
+  QCOMPARE( lineBoundary->xAt( 2 ), 0.2 );
+  QCOMPARE( lineBoundary->xAt( 3 ), 0.1 );
+  QCOMPARE( lineBoundary->yAt( 0 ), 0.1 );
+  QCOMPARE( lineBoundary->yAt( 1 ), 0.1 );
+  QCOMPARE( lineBoundary->yAt( 2 ), 0.2 );
+  QCOMPARE( lineBoundary->yAt( 3 ), 0.1 );
+
+  lineBoundary = qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) );
+  QCOMPARE( lineBoundary->numPoints(), 4 );
+  QCOMPARE( lineBoundary->xAt( 0 ), 0.8 );
+  QCOMPARE( lineBoundary->xAt( 1 ), 0.9 );
+  QCOMPARE( lineBoundary->xAt( 2 ), 0.9 );
+  QCOMPARE( lineBoundary->xAt( 3 ), 0.8 );
+  QCOMPARE( lineBoundary->yAt( 0 ), 0.8 );
+  QCOMPARE( lineBoundary->yAt( 1 ), 0.8 );
+  QCOMPARE( lineBoundary->yAt( 2 ), 0.9 );
+  QCOMPARE( lineBoundary->yAt( 3 ), 0.8 );
 
   pl.setInteriorRings( QVector< QgsCurve * >() );
   delete boundary;
@@ -2001,27 +2031,22 @@ void TestQgsPolygon::forceRHR()
 
   pl.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4))" ) );
   pl.forceRHR();
-
   QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4))" ) );
 
   pl.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 100 0 13 14, 100 100 23 24, 0 100 23 24, 0 0 3 4))" ) );
   pl.forceRHR();
-
   QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 23 24, 100 100 23 24, 100 0 13 14, 0 0 3 4))" ) );
 
   pl.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))" ) );
   pl.forceRHR();
-
   QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 10 20 6 8, 10 10 1 2))" ) );
 
   pl.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 100 0 13 14, 100 100 13 14, 0 100 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))" ) );
   pl.forceRHR();
-
   QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 23 24, 100 100 13 14, 100 0 13 14, 0 0 3 4),(10 10 1 2, 20 10 3 4, 10 20 6 8, 10 10 1 2))" ) );
 
   pl.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 10 20 3 4, 20 10 6 8, 10 10 1 2))" ) );
   pl.forceRHR();
-
   QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 6 8, 10 20 3 4, 10 10 1 2))" ) );
 
   // force cw (same as force RHR)
@@ -2599,30 +2624,23 @@ void TestQgsPolygon::toCurveType()
 
   QCOMPARE( curveType->wkbType(), QgsWkbTypes::CurvePolygonZM );
 
-  QCOMPARE( curveType->exteriorRing()->numPoints(), 5 );
-  QCOMPARE( curveType->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 0 ) ),
-            QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 ) );
-  QCOMPARE( curveType->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 1 ) ),
-            QgsPoint( QgsWkbTypes::PointZM, 0, 10, 2, 6 ) );
-  QCOMPARE( curveType->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 2 ) ),
-            QgsPoint( QgsWkbTypes::PointZM, 10, 10, 3, 7 ) );
-  QCOMPARE( curveType->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 3 ) ),
-            QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
-  QCOMPARE( curveType->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 4 ) ),
-            QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 9 ) );
+  const QgsLineString *exteriorRing = static_cast< const QgsLineString * >( curveType->exteriorRing() );
+  QCOMPARE( exteriorRing->numPoints(), 5 );
+  QCOMPARE( exteriorRing->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 ) );
+  QCOMPARE( exteriorRing->vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( QgsWkbTypes::PointZM, 0, 10, 2, 6 ) );
+  QCOMPARE( exteriorRing->vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( QgsWkbTypes::PointZM, 10, 10, 3, 7 ) );
+  QCOMPARE( exteriorRing->vertexAt( QgsVertexId( 0, 0, 3 ) ), QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
+  QCOMPARE( exteriorRing->vertexAt( QgsVertexId( 0, 0, 4 ) ), QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 9 ) );
 
   QCOMPARE( curveType->numInteriorRings(), 1 );
-  QCOMPARE( curveType->interiorRing( 0 )->numPoints(), 5 );
-  QCOMPARE( curveType->interiorRing( 0 )->vertexAt( QgsVertexId( 0, 0, 0 ) ),
-            QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 2 ) );
-  QCOMPARE( curveType->interiorRing( 0 )->vertexAt( QgsVertexId( 0, 0, 1 ) ),
-            QgsPoint( QgsWkbTypes::PointZM, 1, 9, 2, 3 ) );
-  QCOMPARE( curveType->interiorRing( 0 )->vertexAt( QgsVertexId( 0, 0, 2 ) ),
-            QgsPoint( QgsWkbTypes::PointZM, 9, 9, 3, 6 ) );
-  QCOMPARE( curveType->interiorRing( 0 )->vertexAt( QgsVertexId( 0, 0, 3 ) ),
-            QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 ) );
-  QCOMPARE( curveType->interiorRing( 0 )->vertexAt( QgsVertexId( 0, 0, 4 ) ),
-            QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 7 ) );
+
+  const QgsLineString *interiorRing = static_cast< const QgsLineString * >( curveType->interiorRing( 0 ) );
+  QCOMPARE( interiorRing->numPoints(), 5 );
+  QCOMPARE( interiorRing->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 2 ) );
+  QCOMPARE( interiorRing->vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 9, 2, 3 ) );
+  QCOMPARE( interiorRing->vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( QgsWkbTypes::PointZM, 9, 9, 3, 6 ) );
+  QCOMPARE( interiorRing->vertexAt( QgsVertexId( 0, 0, 3 ) ), QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 ) );
+  QCOMPARE( interiorRing->vertexAt( QgsVertexId( 0, 0, 4 ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 7 ) );
 }
 
 void TestQgsPolygon::toFromWkb()
