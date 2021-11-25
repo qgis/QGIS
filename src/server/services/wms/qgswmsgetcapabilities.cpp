@@ -1375,6 +1375,8 @@ namespace QgsWms
         return;
       }
 
+      const QString version = doc.documentElement().attribute( QStringLiteral( "version" ) );
+
       //insert the CRS elements after the title element to be in accordance with the WMS 1.3 specification
       QDomElement titleElement = layerElement.firstChildElement( QStringLiteral( "Title" ) );
       QDomElement abstractElement = layerElement.firstChildElement( QStringLiteral( "Abstract" ) );
@@ -1404,8 +1406,12 @@ namespace QgsWms
         }
       }
 
-      //Support for CRS:84 is mandatory (equals EPSG:4326 with reversed axis)
-      appendCrsElementToLayer( doc, layerElement, CRSPrecedingElement, QString( "CRS:84" ) );
+      // Support for CRS:84 is mandatory (equals EPSG:4326 with reversed axis)
+      // https://github.com/opengeospatial/ets-wms13/blob/47155399c09b200cb21382874fdb21d5fae4ab6e/src/site/markdown/index.md
+      if ( version == QLatin1String( "1.3.0" ) )
+      {
+        appendCrsElementToLayer( doc, layerElement, CRSPrecedingElement, QString( "CRS:84" ) );
+      }
     }
 
     void appendCrsElementToLayer( QDomDocument &doc, QDomElement &layerElement, const QDomElement &precedingElement,
@@ -1413,7 +1419,7 @@ namespace QgsWms
     {
       if ( crsText.isEmpty() )
         return;
-      QString version = doc.documentElement().attribute( QStringLiteral( "version" ) );
+      const QString version = doc.documentElement().attribute( QStringLiteral( "version" ) );
       QDomElement crsElement = doc.createElement( version == QLatin1String( "1.1.1" ) ? "SRS" : "CRS" );
       QDomText crsTextNode = doc.createTextNode( crsText );
       crsElement.appendChild( crsTextNode );
@@ -1542,7 +1548,7 @@ namespace QgsWms
         return;
       }
 
-      QString version = doc.documentElement().attribute( QStringLiteral( "version" ) );
+      const QString version = doc.documentElement().attribute( QStringLiteral( "version" ) );
 
       QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsText );
 
@@ -1649,7 +1655,7 @@ namespace QgsWms
       }
 
 
-      QString version = doc.documentElement().attribute( QStringLiteral( "version" ) );
+      const QString version = doc.documentElement().attribute( QStringLiteral( "version" ) );
 
       //create layer crs
       QgsCoordinateReferenceSystem layerCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( boundingBoxElem.attribute( version == QLatin1String( "1.1.1" ) ? "SRS" : "CRS" ) );
