@@ -205,9 +205,16 @@ void TestQgsMultiLineString::addGeometryInitialDimension()
   QCOMPARE( ls->pointN( 0 ), QgsPoint( 9, 12 ) );
   QCOMPARE( ls->pointN( 1 ), QgsPoint( 3, 13 ) );
 
-  ls = static_cast< const QgsLineString * >( mls.geometryN( 1 ) );
+  // test lineStringN by the same occasion
+  QCOMPARE( static_cast< const QgsLineString * >( mls.lineStringN( 0 ) ),
+            static_cast< const QgsLineString * >( mls.geometryN( 0 ) ) );
+
+  ls = static_cast< const QgsLineString * >( mls.lineStringN( 1 ) );
   QCOMPARE( ls->pointN( 0 ), QgsPoint( 1, 10 ) );
   QCOMPARE( ls->pointN( 1 ), QgsPoint( 2, 11 ) );
+
+  QCOMPARE( static_cast< const QgsLineString * >( mls.lineStringN( 1 ) ),
+            static_cast< const QgsLineString * >( mls.geometryN( 1 ) ) );
 
   part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 21, 30, 0, 2 )
                   << QgsPoint( QgsWkbTypes::PointM, 32, 41, 0, 3 ) ) ;
