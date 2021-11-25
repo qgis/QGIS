@@ -29,6 +29,7 @@ from functools import partial
 from qgis.core import (QgsApplication,
                        QgsProcessingUtils,
                        QgsProcessingModelAlgorithm,
+                       QgsProcessingAlgorithm,
                        QgsDataItemProvider,
                        QgsDataProvider,
                        QgsDataItem,
@@ -36,7 +37,7 @@ from qgis.core import (QgsApplication,
                        QgsMimeDataUtils)
 from qgis.gui import (QgsOptionsWidgetFactory,
                       QgsCustomDropHandler)
-from qgis.PyQt.QtCore import Qt, QCoreApplication, QDir, QFileInfo
+from qgis.PyQt.QtCore import Qt, QItemSelectionModel, QCoreApplication, QDir, QFileInfo
 from qgis.PyQt.QtWidgets import QMenu, QAction
 from qgis.PyQt.QtGui import QIcon, QKeySequence
 from qgis.utils import iface
@@ -282,6 +283,57 @@ class ProcessingPlugin:
         self.iface.actionToggleEditing().triggered.connect(partial(self.sync_in_place_button_state, None))
         self.sync_in_place_button_state()
 
+        self.projectProvider = QgsApplication.instance().processingRegistry().providerById("project")
+        self.projectProvider.algorithmsLoaded.connect(self.updateProjectModelMenu)
+        self.projectModelsMenu = None
+        self.projectMenuAction = None
+        self.projectMenuSeparator = None
+
+    def executeProjectModel(self, model, as_batch=False):
+        """Executes a project model"""
+
+        m = self.toolbox.algorithmTree.model()
+
+        # Search for model
+        modelItem = None
+        for r in range(m.rowCount()):
+            i = m.index(r, 0)
+            if m.data(i) == self.projectProvider.name():
+                for rr in range(m.rowCount(i)):
+                    ii = m.index(rr, 0, i)
+                    for rrr in range(m.rowCount(ii)):
+                        modelItem = m.index(rrr, 0, ii)
+                        break
+
+        if modelItem is not None:
+            sm = self.toolbox.algorithmTree.selectionModel()
+            sm.clear()
+            sm.select(modelItem, QItemSelectionModel.Select)
+            if as_batch:
+                self.toolbox.executeAlgorithmAsBatchProcess()
+            else:
+                self.toolbox.executeAlgorithm()
+
+    def updateProjectModelMenu(self):
+        """Add projects models to menu"""
+
+        if self.projectMenuAction is not None:
+            self.iface.projectMenu().removeAction(self.projectMenuAction)
+            self.projectMenuAction = None
+        if self.projectMenuSeparator is not None:
+            self.iface.projectMenu().removeAction(self.projectMenuSeparator)
+            self.projectMenuSeparator = None
+
+        if len(self.projectProvider.algorithms()):
+            self.projectModelsMenu = QMenu(self.tr("Models"))
+            self.projectMenuAction = self.iface.projectMenu().insertMenu(self.iface.projectMenu().children()[-1], self.projectModelsMenu)
+            self.iface.projectMenu().insertSeparator(self.projectMenuAction)
+            for model in self.projectProvider.algorithms():
+                modelSubMenu = self.projectModelsMenu.addMenu(model.name())
+                modelSubMenu.addAction(self.tr("Execute…"), partial(self.executeProjectModel, model))
+                if model.flags() & QgsProcessingAlgorithm.FlagSupportsBatch:
+                    modelSubMenu.addAction(self.tr("Execute as Batch Process…"), partial(self.executeProjectModel, model, True))
+
     def sync_in_place_button_state(self, layer=None):
         """Synchronise the button state with layer state"""
 
@@ -328,6 +380,14 @@ class ProcessingPlugin:
 
         removeButtons()
         removeMenus()
+
+        if self.projectMenuAction is not None:
+            self.iface.projectMenu().removeAction(self.projectMenuAction)
+            self.projectMenuAction = None
+        if self.projectMenuSeparator is not None:
+            self.iface.projectMenu().removeAction(self.projectMenuSeparator)
+            self.projectMenuSeparator = None
+
         Processing.deinitialize()
 
     def openToolbox(self, show):
