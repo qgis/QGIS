@@ -6612,18 +6612,18 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   ENSURE_NO_EVAL_ERROR
   bool cacheEnabled = cacheValue.toBool();
 
-  // Sixth parameter (for intersects only) is the min area
+  // Sixth parameter (for intersects only) is the min overlap (area or length)
   // Seventh parameter (for intersects only) is the min inscribed circle radius
-  double minArea { -1 };
+  double minOverlap { -1 };
   double minInscribedCircleRadius { -1 };
   if ( isIntersectsFunc )
   {
 
     node = QgsExpressionUtils::getNode( values.at( 5 ), parent ); //in expressions overlay functions throw the exception: Eval Error: Cannot convert '' to int
     ENSURE_NO_EVAL_ERROR
-    const QVariant minAreaValue = node->eval( parent, context );
+    const QVariant minOverlapValue = node->eval( parent, context );
     ENSURE_NO_EVAL_ERROR
-    minArea = QgsExpressionUtils::getDoubleValue( minAreaValue, parent );
+    minOverlap = QgsExpressionUtils::getDoubleValue( minOverlapValue, parent );
     node = QgsExpressionUtils::getNode( values.at( 6 ), parent ); //in expressions overlay functions throw the exception: Eval Error: Cannot convert '' to int
     ENSURE_NO_EVAL_ERROR
     const QVariant minInscribedCircleRadiusValue = node->eval( parent, context );
@@ -6753,76 +6753,121 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
     if ( ! relationFunction || ( geometry.*relationFunction )( feat2.geometry() ) ) // Calls the method provided as template argument for the function (e.g. QgsGeometry::intersects)
     {
 
-      if ( isIntersectsFunc && ( minArea != -1 || minInscribedCircleRadius != -1 ) )
+      if ( isIntersectsFunc && ( minOverlap != -1 || minInscribedCircleRadius != -1 ) )
       {
         const QgsGeometry intersection { geometry.intersection( feat2.geometry() ) };
 
-        // Skip id not polygon
-        if ( intersection.type() != QgsWkbTypes::GeometryType::PolygonGeometry )
+        switch ( intersection.type() )
         {
-          continue;
-        }
-
-        // Check min area for intersection (if set)
-        if ( intersection.isMultipart() )
-        {
-          bool testResult { false };
-          for ( auto it = intersection.const_parts_begin(); ! testResult && it != intersection.const_parts_end(); ++it )
+          case QgsWkbTypes::GeometryType::PolygonGeometry:
           {
-            const QgsPolygon *geom = qgsgeometry_cast< const QgsPolygon * >( *it );
-            // qDebug() << "Area" << feat2.id() << geom->area();
-            if ( minArea != -1 )
+            // Check min overlap for intersection (if set)
+            if ( intersection.isMultipart() )
             {
-              if ( geom->area() >= minArea )
+              bool testResult { false };
+              for ( auto it = intersection.const_parts_begin(); ! testResult && it != intersection.const_parts_end(); ++it )
               {
-                testResult = true;
+                const QgsPolygon *geom = qgsgeometry_cast< const QgsPolygon * >( *it );
+                // qDebug() << "Area" << feat2.id() << geom->area();
+                if ( minOverlap != -1 )
+                {
+                  if ( geom->area() >= minOverlap )
+                  {
+                    testResult = true;
+                  }
+                  else
+                  {
+                    continue;
+                  }
+                }
+
+                // Check min inscribed circle radius for intersection (if set)
+                if ( minInscribedCircleRadius != -1 )
+                {
+                  const QgsRectangle bbox = geom->boundingBox();
+                  const double width = bbox.width();
+                  const double height = bbox.height();
+                  const double size = width > height ? width : height;
+                  const double tolerance = size / 1000.0;
+                  //qDebug() << "Inscribed circle radius" << feat2.id() << QgsGeos( geom ).maximumInscribedCircle( tolerance )->length();
+                  testResult = QgsGeos( geom ).maximumInscribedCircle( tolerance )->length() >= minInscribedCircleRadius;
+                }
               }
-              else
+
+              if ( ! testResult )
+              {
+                continue;
+              }
+
+            }
+            else
+            {
+              if ( minOverlap != -1 && intersection.area() < minOverlap )
+              {
+                continue;
+              }
+
+              // Check min inscribed circle radius for intersection (if set)
+              if ( minInscribedCircleRadius != -1 )
+              {
+                const QgsAbstractGeometry *geom { intersection.constGet() };
+                const QgsRectangle bbox = geom->boundingBox();
+                const double width = bbox.width();
+                const double height = bbox.height();
+                const double size = width > height ? width : height;
+                const double tolerance = size / 1000.0;
+                // qDebug() << "Inscribed circle radius" << feat2.id() << QgsGeos( geom ).maximumInscribedCircle( tolerance )->length();
+                if ( QgsGeos( geom ).maximumInscribedCircle( tolerance )->length() < minInscribedCircleRadius )
+                {
+                  continue;
+                }
+              }
+            }
+            break;
+          }
+          case QgsWkbTypes::GeometryType::LineGeometry:
+          {
+            // Check min overlap for intersection (if set)
+            if ( intersection.isMultipart() )
+            {
+              bool testResult { false };
+              for ( auto it = intersection.const_parts_begin(); ! testResult && it != intersection.const_parts_end(); ++it )
+              {
+                const QgsLineString *geom = qgsgeometry_cast< const QgsLineString * >( *it );
+                // qDebug() << "Length" << feat2.id() << geom->length();
+                if ( minOverlap != -1 )
+                {
+                  if ( geom->length() >= minOverlap )
+                  {
+                    testResult = true;
+                  }
+                  else
+                  {
+                    continue;
+                  }
+                }
+              }
+
+              if ( ! testResult )
+              {
+                continue;
+              }
+
+            }
+            else
+            {
+              if ( minOverlap != -1 && intersection.length() < minOverlap )
               {
                 continue;
               }
             }
-
-            // Check min inscribed circle radius for intersection (if set)
-            if ( minInscribedCircleRadius != -1 )
-            {
-              const QgsRectangle bbox = geom->boundingBox();
-              const double width = bbox.width();
-              const double height = bbox.height();
-              const double size = width > height ? width : height;
-              const double tolerance = size / 1000.0;
-              //qDebug() << "Inscribed circle radius" << feat2.id() << QgsGeos( geom ).maximumInscribedCircle( tolerance )->length();
-              testResult = QgsGeos( geom ).maximumInscribedCircle( tolerance )->length() >= minInscribedCircleRadius;
-            }
+            break;
           }
-
-          if ( ! testResult )
+          case QgsWkbTypes::GeometryType::PointGeometry:
+          case QgsWkbTypes::GeometryType::NullGeometry:
+          case QgsWkbTypes::GeometryType::UnknownGeometry:
           {
-            continue;
-          }
-
-        }
-        else
-        {
-          if ( minArea != -1 && intersection.area() < minArea )
-          {
-            continue;
-          }
-
-          // Check min inscribed circle radius for intersection (if set)
-          if ( minInscribedCircleRadius != -1 )
-          {
-            const QgsAbstractGeometry *geom { intersection.constGet() };
-            const QgsRectangle bbox = geom->boundingBox();
-            const double width = bbox.width();
-            const double height = bbox.height();
-            const double size = width > height ? width : height;
-            const double tolerance = size / 1000.0;
-            // qDebug() << "Inscribed circle radius" << feat2.id() << QgsGeos( geom ).maximumInscribedCircle( tolerance )->length();
-            if ( QgsGeos( geom ).maximumInscribedCircle( tolerance )->length() < minInscribedCircleRadius )
-            {
-              continue;
-            }
+            break;
           }
         }
       }
@@ -7326,7 +7371,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
           << QgsExpressionFunction::Parameter( QStringLiteral( "filter" ), true, QVariant(), true )
           << QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true, QVariant( -1 ), true )
           << QgsExpressionFunction::Parameter( QStringLiteral( "cache" ), true, QVariant( false ), false )
-          << QgsExpressionFunction::Parameter( QStringLiteral( "min_area" ), true, QVariant( -1 ), false )
+          << QgsExpressionFunction::Parameter( QStringLiteral( "min_overlap" ), true, QVariant( -1 ), false )
           << QgsExpressionFunction::Parameter( QStringLiteral( "min_inscribed_circle_radius" ), true, QVariant( -1 ), false ),
           i.value(), QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
 
