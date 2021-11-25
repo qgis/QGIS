@@ -56,13 +56,9 @@ bool QgsProjectUtils::updateLayerPath( QgsProject *project, const QString &oldPa
 
 bool QgsProjectUtils::layerIsContainedInGroupLayer( QgsProject *project, QgsMapLayer *layer )
 {
-  const QMap<QString, QgsMapLayer *> mapLayers( project->mapLayers() );
-  for ( QgsMapLayer *l : mapLayers )
+  const QVector< QgsGroupLayer * > groupLayers = project->layers< QgsGroupLayer * >();
+  for ( QgsGroupLayer *groupLayer : groupLayers )
   {
-    if ( l->type() != QgsMapLayerType::GroupLayer )
-      continue;
-
-    QgsGroupLayer *groupLayer = qobject_cast< QgsGroupLayer * >( l );
     if ( groupLayer->childLayers().contains( layer ) )
       return true;
   }
