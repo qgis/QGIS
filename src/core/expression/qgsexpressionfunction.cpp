@@ -6765,8 +6765,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
               bool testResult { false };
               for ( auto it = intersection.const_parts_begin(); ! testResult && it != intersection.const_parts_end(); ++it )
               {
-                const QgsPolygon *geom = qgsgeometry_cast< const QgsPolygon * >( *it );
-                // qDebug() << "Area" << feat2.id() << geom->area();
+                const QgsCurvePolygon *geom = qgsgeometry_cast< const QgsCurvePolygon * >( *it );
                 if ( minOverlap != -1 )
                 {
                   if ( geom->area() >= minOverlap )
@@ -6787,7 +6786,6 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
                   const double height = bbox.height();
                   const double size = width > height ? width : height;
                   const double tolerance = size / 1000.0;
-                  //qDebug() << "Inscribed circle radius" << feat2.id() << QgsGeos( geom ).maximumInscribedCircle( tolerance )->length();
                   testResult = QgsGeos( geom ).maximumInscribedCircle( tolerance )->length() >= minInscribedCircleRadius;
                 }
               }
@@ -6831,8 +6829,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
               bool testResult { false };
               for ( auto it = intersection.const_parts_begin(); ! testResult && it != intersection.const_parts_end(); ++it )
               {
-                const QgsLineString *geom = qgsgeometry_cast< const QgsLineString * >( *it );
-                // qDebug() << "Length" << feat2.id() << geom->length();
+                const QgsCurve *geom = qgsgeometry_cast< const QgsCurve * >( *it );
                 if ( minOverlap != -1 )
                 {
                   if ( geom->length() >= minOverlap )
