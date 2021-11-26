@@ -194,7 +194,6 @@ bool QgsProcessingProvider::isSupportedOutputValue( const QVariant &outputValue,
   {
     const QFileInfo fi( outputPath );
     const QString extension = fi.completeSuffix();
-    qDebug() << supportedOutputPointCloudLayerExtensions();
     if ( !supportedOutputPointCloudLayerExtensions().contains( extension, Qt::CaseInsensitive ) )
     {
       error = tr( "“.%1” files are not supported as outputs for this algorithm" ).arg( extension );
