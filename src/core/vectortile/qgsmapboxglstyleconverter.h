@@ -550,7 +550,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * Checks if value is a color before calling parseValue
      */
     static QString parseValueCheckColor( const QVariant &value, QgsMapBoxGlStyleConversionContext &context );
-    static QString parseKey( const QVariant &value );
+    static QString parseKey( const QVariant &value, QgsMapBoxGlStyleConversionContext &context );
 
     /**
      * Checks if interpolation bottom/top values are numeric values
