@@ -524,7 +524,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   // Run the scan in a separate thread
   cancelScanTask();
 
-  QgsDelimitedTextFileScanTask *newTask { new QgsDelimitedTextFileScanTask( url( /* skip overriden types */ true ) ) };
+  QgsDelimitedTextFileScanTask *newTask { new QgsDelimitedTextFileScanTask( url( /* skip overridden types */ true ) ) };
   mCancelButton->show();
   connect( newTask, &QgsDelimitedTextFileScanTask::scanCompleted, this, [ = ]( const QgsFields & fields )
   {
