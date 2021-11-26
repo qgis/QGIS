@@ -2712,6 +2712,14 @@ Qt::PenJoinStyle QgsMapBoxGlStyleConverter::parseJoinStyle( const QString &style
 QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expression, QgsMapBoxGlStyleConversionContext &context, bool colorExpected )
 {
   QString op = expression.value( 0 ).toString();
+  if ( op == QLatin1String( "%" ) && expression.size() >= 3 )
+  {
+    return QStringLiteral( "%1 %2 %3" ).arg( parseValue( expression.value( 1 ), context ) ).arg( op ).arg( parseValue( expression.value( 2 ), context ) );
+  }
+  else if ( op == QLatin1String( "to-number" ) )
+  {
+    return QStringLiteral( "to_real(%1)" ).arg( parseValue( expression.value( 1 ), context ) );
+  }
   if ( op == QLatin1String( "literal" ) )
   {
     return expression.value( 1 ).toString();
@@ -2749,7 +2757,7 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
     QVariantList contraJsonExpr = expression.value( 1 ).toList();
     contraJsonExpr[0] = QString( op + contraJsonExpr[0].toString() );
     // ['!', ['has', 'level']] -> ['!has', 'level']
-    return parseKey( contraJsonExpr );
+    return parseKey( contraJsonExpr, context );
   }
   else if ( op == QLatin1String( "==" )
             || op == QLatin1String( "!=" )
@@ -2763,20 +2771,20 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
       op = QStringLiteral( "IS" );
     else if ( op == QLatin1String( "!=" ) )
       op = QStringLiteral( "IS NOT" );
-    return QStringLiteral( "%1 %2 %3" ).arg( parseKey( expression.value( 1 ) ),
+    return QStringLiteral( "%1 %2 %3" ).arg( parseKey( expression.value( 1 ), context ),
            op, parseValue( expression.value( 2 ), context ) );
   }
   else if ( op == QLatin1String( "has" ) )
   {
-    return parseKey( expression.value( 1 ) ) + QStringLiteral( " IS NOT NULL" );
+    return parseKey( expression.value( 1 ), context ) + QStringLiteral( " IS NOT NULL" );
   }
   else if ( op == QLatin1String( "!has" ) )
   {
-    return parseKey( expression.value( 1 ) ) + QStringLiteral( " IS NULL" );
+    return parseKey( expression.value( 1 ), context ) + QStringLiteral( " IS NULL" );
   }
   else if ( op == QLatin1String( "in" ) || op == QLatin1String( "!in" ) )
   {
-    const QString key = parseKey( expression.value( 1 ) );
+    const QString key = parseKey( expression.value( 1 ), context );
     QStringList parts;
     for ( int i = 2; i < expression.size(); ++i )
     {
@@ -2795,7 +2803,7 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   }
   else if ( op == QLatin1String( "get" ) )
   {
-    return parseKey( expression.value( 1 ) );
+    return parseKey( expression.value( 1 ), context );
   }
   else if ( op == QLatin1String( "match" ) )
   {
@@ -3125,11 +3133,17 @@ QString QgsMapBoxGlStyleConverter::parseValueCheckColor( const QVariant &value, 
   return parseValue( value, context );
 }
 
-QString QgsMapBoxGlStyleConverter::parseKey( const QVariant &value )
+QString QgsMapBoxGlStyleConverter::parseKey( const QVariant &value, QgsMapBoxGlStyleConversionContext &context )
 {
   if ( value.toString() == QLatin1String( "$type" ) )
+  {
     return QStringLiteral( "_geom_type" );
-  else if ( value.type() == QVariant::List || value.type() == QVariant::StringList )
+  }
+  if ( value.toString() == QLatin1String( "level" ) )
+  {
+    return QStringLiteral( "level" );
+  }
+  else if ( ( value.type() == QVariant::List && value.toList().size() == 1 ) || value.type() == QVariant::StringList )
   {
     if ( value.toList().size() > 1 )
       return value.toList().at( 1 ).toString();
@@ -3142,6 +3156,10 @@ QString QgsMapBoxGlStyleConverter::parseKey( const QVariant &value )
       }
       return valueString;
     }
+  }
+  else if ( value.type() == QVariant::List && value.toList().size() > 1 )
+  {
+    return parseExpression( value.toList(), context );
   }
   return QgsExpression::quotedColumnRef( value.toString() );
 }
