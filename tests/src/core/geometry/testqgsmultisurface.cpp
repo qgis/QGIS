@@ -110,6 +110,7 @@ void TestQgsMultiSurface::addGeometry()
 
   //add another part
   ms.clear();
+
   part.clear();
   ring.setPoints( QgsPointSequence() << QgsPoint( 1, 10 )
                   << QgsPoint( 2, 11 ) << QgsPoint( 1, 10 ) );
@@ -156,15 +157,17 @@ void TestQgsMultiSurface::addGeometry()
   QCOMPARE( ms.partCount(), 2 );
   QVERIFY( !ms.is3D() );
 
-  auto ls = static_cast< const QgsCurvePolygon * >( ms.geometryN( 0 ) ); // ls ? but QgsCurvePolygon ???
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 0 ), QgsPoint( 9, 12 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 1 ), QgsPoint( 3, 13 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 2 ), QgsPoint( 9, 12 ) );
+  auto cp = static_cast< const QgsCurvePolygon * >( ms.geometryN( 0 ) );
+  auto ext = static_cast< const QgsCircularString *>( cp->exteriorRing() );
+  QCOMPARE( ext->pointN( 0 ), QgsPoint( 9, 12 ) );
+  QCOMPARE( ext->pointN( 1 ), QgsPoint( 3, 13 ) );
+  QCOMPARE( ext->pointN( 2 ), QgsPoint( 9, 12 ) );
 
-  ls = static_cast< const QgsCurvePolygon * >( ms.geometryN( 1 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 0 ), QgsPoint( 1, 10 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 1 ), QgsPoint( 2, 11 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 2 ), QgsPoint( 1, 10 ) );
+  cp = static_cast< const QgsCurvePolygon * >( ms.geometryN( 1 ) );
+  ext = static_cast< const QgsCircularString *>( cp->exteriorRing() );
+  QCOMPARE( ext->pointN( 0 ), QgsPoint( 1, 10 ) );
+  QCOMPARE( ext->pointN( 1 ), QgsPoint( 2, 11 ) );
+  QCOMPARE( ext->pointN( 2 ), QgsPoint( 1, 10 ) );
 
   part.clear();
   ring.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 21, 30, 0, 2 )
@@ -183,10 +186,11 @@ void TestQgsMultiSurface::addGeometry()
   QVERIFY( !ms.is3D() );
   QVERIFY( !ms.isMeasure() );
 
-  ls = static_cast< const QgsCurvePolygon * >( ms.geometryN( 2 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 0 ), QgsPoint( 21, 30 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 1 ), QgsPoint( 32, 41 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 2 ), QgsPoint( 21, 30 ) );
+  cp = static_cast< const QgsCurvePolygon * >( ms.geometryN( 2 ) );
+  ext = static_cast< const QgsCircularString *>( cp->exteriorRing() );
+  QCOMPARE( ext->pointN( 0 ), QgsPoint( 21, 30 ) );
+  QCOMPARE( ext->pointN( 1 ), QgsPoint( 32, 41 ) );
+  QCOMPARE( ext->pointN( 2 ), QgsPoint( 21, 30 ) );
 }
 
 void TestQgsMultiSurface::addBadGeometry()
@@ -195,6 +199,7 @@ void TestQgsMultiSurface::addBadGeometry()
 
   //try with nullptr
   ms.addGeometry( nullptr );
+
   QVERIFY( ms.isEmpty() );
   QCOMPARE( ms.nCoordinates(), 0 );
   QCOMPARE( ms.ringCount(), 0 );
@@ -236,6 +241,7 @@ void TestQgsMultiSurface::addGeometryInitialDimension()
   QCOMPARE( *( static_cast< const QgsCurvePolygon * >( ms.geometryN( 0 ) ) ), part );
 
   ms.clear();
+
   part.clear();
   ring.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 10, 11, 0, 1 )
                   << QgsPoint( QgsWkbTypes::PointM, 20, 21, 0, 2 )
@@ -250,6 +256,7 @@ void TestQgsMultiSurface::addGeometryInitialDimension()
   QCOMPARE( *( static_cast< const QgsCurvePolygon * >( ms.geometryN( 0 ) ) ), part );
 
   ms.clear();
+
   part.clear();
   ring.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 10, 11, 2, 1 )
                   << QgsPoint( QgsWkbTypes::PointZM, 20, 21, 3, 2 )
@@ -286,15 +293,17 @@ void TestQgsMultiSurface::addGeometryZ()
   QCOMPARE( ms.wkbType(), QgsWkbTypes::MultiSurfaceZ );
   QVERIFY( ms.is3D() );
 
-  auto ls = static_cast< const QgsCurvePolygon * >( ms.geometryN( 0 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 0 ), QgsPoint( 1, 10, 2 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 1 ), QgsPoint( 2, 11, 3 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 2 ), QgsPoint( 1, 10, 2 ) );
+  auto cp = static_cast< const QgsCurvePolygon * >( ms.geometryN( 0 ) );
+  auto ext = static_cast< const QgsCircularString *>( cp->exteriorRing() );
+  QCOMPARE( ext->pointN( 0 ), QgsPoint( 1, 10, 2 ) );
+  QCOMPARE( ext->pointN( 1 ), QgsPoint( 2, 11, 3 ) );
+  QCOMPARE( ext->pointN( 2 ), QgsPoint( 1, 10, 2 ) );
 
-  ls = static_cast< const QgsCurvePolygon * >( ms.geometryN( 1 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 0 ), QgsPoint( 2, 20, 0 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 1 ), QgsPoint( 3, 31, 0 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 2 ), QgsPoint( 2, 20, 0 ) );
+  cp = static_cast< const QgsCurvePolygon * >( ms.geometryN( 1 ) );
+  ext = static_cast< const QgsCircularString *>( cp->exteriorRing() );
+  QCOMPARE( ext->pointN( 0 ), QgsPoint( 2, 20, 0 ) );
+  QCOMPARE( ext->pointN( 1 ), QgsPoint( 3, 31, 0 ) );
+  QCOMPARE( ext->pointN( 2 ), QgsPoint( 2, 20, 0 ) );
 
   part.clear();
   ring.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 5, 50, 0, 4 )
@@ -307,10 +316,11 @@ void TestQgsMultiSurface::addGeometryZ()
   QVERIFY( ms.is3D() );
   QVERIFY( !ms.isMeasure() );
 
-  ls = static_cast< const QgsCurvePolygon * >( ms.geometryN( 2 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 0 ), QgsPoint( 5, 50, 0 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 1 ), QgsPoint( 6, 61, 0 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 2 ), QgsPoint( 5, 50, 0 ) );
+  cp = static_cast< const QgsCurvePolygon * >( ms.geometryN( 2 ) );
+  ext = static_cast< const QgsCircularString *>( cp->exteriorRing() );
+  QCOMPARE( ext->pointN( 0 ), QgsPoint( 5, 50, 0 ) );
+  QCOMPARE( ext->pointN( 1 ), QgsPoint( 6, 61, 0 ) );
+  QCOMPARE( ext->pointN( 2 ), QgsPoint( 5, 50, 0 ) );
 }
 
 void TestQgsMultiSurface::addGeometryM()
@@ -338,15 +348,17 @@ void TestQgsMultiSurface::addGeometryM()
   QCOMPARE( ms.wkbType(), QgsWkbTypes::MultiSurfaceM );
   QVERIFY( ms.isMeasure() );
 
-  auto ls = static_cast< const QgsCurvePolygon * >( ms.geometryN( 0 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 0 ), QgsPoint( QgsWkbTypes::PointM, 5, 50, 0, 4 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 1 ), QgsPoint( QgsWkbTypes::PointM, 6, 61, 0, 5 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 2 ), QgsPoint( QgsWkbTypes::PointM, 5, 50, 0, 4 ) );
+  auto cp = static_cast< const QgsCurvePolygon * >( ms.geometryN( 0 ) );
+  auto ext = static_cast< const QgsCircularString *>( cp->exteriorRing() );
+  QCOMPARE( ext->pointN( 0 ), QgsPoint( QgsWkbTypes::PointM, 5, 50, 0, 4 ) );
+  QCOMPARE( ext->pointN( 1 ), QgsPoint( QgsWkbTypes::PointM, 6, 61, 0, 5 ) );
+  QCOMPARE( ext->pointN( 2 ), QgsPoint( QgsWkbTypes::PointM, 5, 50, 0, 4 ) );
 
-  ls = static_cast< const QgsCurvePolygon * >( ms.geometryN( 1 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 0 ), QgsPoint( QgsWkbTypes::PointM, 2, 20, 0, 0 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 1 ), QgsPoint( QgsWkbTypes::PointM, 3, 31, 0, 0 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 2 ), QgsPoint( QgsWkbTypes::PointM, 2, 20, 0, 0 ) );
+  cp = static_cast< const QgsCurvePolygon * >( ms.geometryN( 1 ) );
+  ext = static_cast< const QgsCircularString *>( cp->exteriorRing() );
+  QCOMPARE( ext->pointN( 0 ), QgsPoint( QgsWkbTypes::PointM, 2, 20, 0, 0 ) );
+  QCOMPARE( ext->pointN( 1 ), QgsPoint( QgsWkbTypes::PointM, 3, 31, 0, 0 ) );
+  QCOMPARE( ext->pointN( 2 ), QgsPoint( QgsWkbTypes::PointM, 2, 20, 0, 0 ) );
 
   part.clear();
   ring.setPoints( QgsPointSequence() << QgsPoint( 11, 12, 13 )
@@ -358,10 +370,11 @@ void TestQgsMultiSurface::addGeometryM()
   QVERIFY( !ms.is3D() );
   QVERIFY( ms.isMeasure() );
 
-  ls = static_cast< const QgsCurvePolygon * >( ms.geometryN( 2 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 0 ), QgsPoint( QgsWkbTypes::PointM, 11, 12, 0, 0 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 1 ), QgsPoint( QgsWkbTypes::PointM, 14, 15, 0, 0 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 2 ), QgsPoint( QgsWkbTypes::PointM, 11, 12, 0, 0 ) );
+  cp = static_cast< const QgsCurvePolygon * >( ms.geometryN( 2 ) );
+  ext = static_cast< const QgsCircularString *>( cp->exteriorRing() );
+  QCOMPARE( ext->pointN( 0 ), QgsPoint( QgsWkbTypes::PointM, 11, 12, 0, 0 ) );
+  QCOMPARE( ext->pointN( 1 ), QgsPoint( QgsWkbTypes::PointM, 14, 15, 0, 0 ) );
+  QCOMPARE( ext->pointN( 2 ), QgsPoint( QgsWkbTypes::PointM, 11, 12, 0, 0 ) );
 }
 
 void TestQgsMultiSurface::addGeometryZM()
@@ -389,15 +402,17 @@ void TestQgsMultiSurface::addGeometryZM()
   QVERIFY( ms.isMeasure() );
   QVERIFY( ms.is3D() );
 
-  auto ls = static_cast< const QgsCurvePolygon * >( ms.geometryN( 0 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 5, 50, 1, 4 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 6, 61, 3, 5 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 2 ), QgsPoint( QgsWkbTypes::PointZM, 5, 50, 1, 4 ) );
+  auto cp = static_cast< const QgsCurvePolygon * >( ms.geometryN( 0 ) );
+  auto ext = static_cast< const QgsCircularString *>( cp->exteriorRing() );
+  QCOMPARE( ext->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 5, 50, 1, 4 ) );
+  QCOMPARE( ext->pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 6, 61, 3, 5 ) );
+  QCOMPARE( ext->pointN( 2 ), QgsPoint( QgsWkbTypes::PointZM, 5, 50, 1, 4 ) );
 
-  ls = static_cast< const QgsCurvePolygon * >( ms.geometryN( 1 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 7, 17, 0, 0 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 3, 13, 0, 0 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 2 ), QgsPoint( QgsWkbTypes::PointZM, 7, 17, 0, 0 ) );
+  cp = static_cast< const QgsCurvePolygon * >( ms.geometryN( 1 ) );
+  ext = static_cast< const QgsCircularString *>( cp->exteriorRing() );
+  QCOMPARE( ext->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 7, 17, 0, 0 ) );
+  QCOMPARE( ext->pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 3, 13, 0, 0 ) );
+  QCOMPARE( ext->pointN( 2 ), QgsPoint( QgsWkbTypes::PointZM, 7, 17, 0, 0 ) );
 
   part.clear();
   ring.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 77, 87, 7 )
@@ -410,10 +425,11 @@ void TestQgsMultiSurface::addGeometryZM()
   QVERIFY( ms.is3D() );
   QVERIFY( ms.isMeasure() );
 
-  ls = static_cast< const QgsCurvePolygon * >( ms.geometryN( 2 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 77, 87, 7, 0 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 83, 83, 8, 0 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 2 ), QgsPoint( QgsWkbTypes::PointZM, 77, 87, 7, 0 ) );
+  cp = static_cast< const QgsCurvePolygon * >( ms.geometryN( 2 ) );
+  ext = static_cast< const QgsCircularString *>( cp->exteriorRing() );
+  QCOMPARE( ext->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 77, 87, 7, 0 ) );
+  QCOMPARE( ext->pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 83, 83, 8, 0 ) );
+  QCOMPARE( ext->pointN( 2 ), QgsPoint( QgsWkbTypes::PointZM, 77, 87, 7, 0 ) );
 
   part.clear();
   ring.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 177, 187, 0, 9 )
@@ -426,10 +442,11 @@ void TestQgsMultiSurface::addGeometryZM()
   QVERIFY( ms.is3D() );
   QVERIFY( ms.isMeasure() );
 
-  ls = static_cast< const QgsCurvePolygon * >( ms.geometryN( 3 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 177, 187, 0, 9 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 183, 183, 0, 11 ) );
-  QCOMPARE( static_cast< const QgsCircularString *>( ls->exteriorRing() )->pointN( 2 ), QgsPoint( QgsWkbTypes::PointZM, 177, 187, 0, 9 ) );
+  cp = static_cast< const QgsCurvePolygon * >( ms.geometryN( 3 ) );
+  ext = static_cast< const QgsCircularString *>( cp->exteriorRing() );
+  QCOMPARE( ext->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 177, 187, 0, 9 ) );
+  QCOMPARE( ext->pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 183, 183, 0, 11 ) );
+  QCOMPARE( ext->pointN( 2 ), QgsPoint( QgsWkbTypes::PointZM, 177, 187, 0, 9 ) );
 }
 
 void TestQgsMultiSurface::insertGeometry()
@@ -490,10 +507,9 @@ void TestQgsMultiSurface::surfaceN()
 void TestQgsMultiSurface::assignment()
 {
   QgsMultiSurface ms1;
-
   QgsMultiSurface ms2;
-  ms1 = ms2;
 
+  ms1 = ms2;
   QCOMPARE( ms1.numGeometries(), 0 );
 
   QgsMultiSurface ms3;
@@ -629,6 +645,7 @@ void TestQgsMultiSurface::boundary()
 
   //boundary with z
   ms.clear();
+
   part1.clear();
   part2.clear();
 
