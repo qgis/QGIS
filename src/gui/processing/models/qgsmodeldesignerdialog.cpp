@@ -832,7 +832,7 @@ void QgsModelDesignerDialog::populateZoomToMenu()
       QAction *zoomAction = new QAction( box.description(), mGroupMenu );
       connect( zoomAction, &QAction::triggered, this, [ = ]
       {
-        QRectF groupRect = item->boundingRect();
+        QRectF groupRect = item->mapToScene( item->boundingRect() ).boundingRect();
         groupRect.adjust( -10, -10, 10, 10 );
         mView->fitInView( groupRect, Qt::KeepAspectRatio );
         mView->centerOn( item );
