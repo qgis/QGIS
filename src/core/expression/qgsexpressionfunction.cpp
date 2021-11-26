@@ -6629,6 +6629,13 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
     const QVariant minInscribedCircleRadiusValue = node->eval( parent, context );
     ENSURE_NO_EVAL_ERROR
     minInscribedCircleRadius = QgsExpressionUtils::getDoubleValue( minInscribedCircleRadiusValue, parent );
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<9
+    if ( minInscribedCircleRadiusValue != -1 )
+    {
+      parent->setEvalErrorString( QObject::tr( "'min_inscribed_circle_radius' is only available when QGIS is built with GEOS >= 3.9." ) );
+      return QVariant();
+    }
+#endif
   }
 
 
