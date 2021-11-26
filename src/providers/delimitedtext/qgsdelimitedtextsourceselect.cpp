@@ -522,7 +522,6 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   tblSample->resizeRowsToContents();
 
   // Run the scan in a separate thread
-
   cancelScanTask();
 
   QgsDelimitedTextFileScanTask *newTask { new QgsDelimitedTextFileScanTask( url( /* skip overriden types */ true ) ) };
@@ -538,14 +537,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     updateFieldTypes( fields );
   } );
 
-  connect( mCancelButton, &QPushButton::clicked, this, [ = ]
-  {
-    QgsDelimitedTextFileScanTask *task { qobject_cast<QgsDelimitedTextFileScanTask *>( QgsApplication::taskManager()->task( mScanTaskId ) ) };
-    if ( task )
-    {
-      task->cancel();
-    }
-  } );
+  connect( mCancelButton, &QPushButton::clicked, this, &QgsDelimitedTextSourceSelect::cancelScanTask );
 
   connect( newTask, &QgsDelimitedTextFileScanTask::progressChanged, this, [ = ]( double recordsScanned )
   {
