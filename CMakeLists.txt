@@ -155,6 +155,14 @@ if(WITH_CORE)
 
   set (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
 
+  if (IOS OR ANDROID)
+      set (WITH_CRSSYNC_DEFAULT FALSE)
+  else()
+      set (WITH_CRSSYNC_DEFAULT TRUE)
+  endif()
+
+  set (WITH_CRSSYNC WITH_CRSSYNC_DEFAULT CACHE BOOL "Determines whether the standalone \"crssync\" tool should be built")
+
   # try to configure and build python bindings by default
   set (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
   if (WITH_BINDINGS)

@@ -15,7 +15,7 @@ if (WITH_GUI)
 endif()
 
 add_subdirectory(providers)
-if (NOT IOS AND NOT ANDROID)
+if (WITH_CRSSYNC)
   add_subdirectory(crssync)
 endif()
 
