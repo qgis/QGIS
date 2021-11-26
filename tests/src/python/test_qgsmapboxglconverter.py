@@ -349,6 +349,12 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression(["to-string", ["get", "name"]],
                                                                    conversion_context),
                          '''to_string("name")''')
+        self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression(["to-number", ["get", "elevation"]],
+                                                                   conversion_context),
+                         '''to_real("elevation")''')
+        self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression(["%", 100, 20],
+                                                                   conversion_context),
+                         '''100 % 20''')
 
     def testConvertLabels(self):
         context = QgsMapBoxGlStyleConversionContext()
