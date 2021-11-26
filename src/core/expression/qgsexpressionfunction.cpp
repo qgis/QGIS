@@ -6755,106 +6755,71 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
       {
         const QgsGeometry intersection { geometry.intersection( feat2.geometry() ) };
 
+        // overlap and inscribed circle tests must be checked both (if the valuea are != -1)
         switch ( intersection.type() )
         {
           case QgsWkbTypes::GeometryType::PolygonGeometry:
           {
-            // Check min overlap for intersection (if set)
-            if ( intersection.isMultipart() )
+
+            bool testResult { false };
+            for ( auto it = intersection.const_parts_begin(); ! testResult && it != intersection.const_parts_end(); ++it )
             {
-              bool testResult { false };
-              for ( auto it = intersection.const_parts_begin(); ! testResult && it != intersection.const_parts_end(); ++it )
+              const QgsCurvePolygon *geom = qgsgeometry_cast< const QgsCurvePolygon * >( *it );
+              // Check min overlap for intersection (if set)
+              if ( minOverlap != -1 )
               {
-                const QgsCurvePolygon *geom = qgsgeometry_cast< const QgsCurvePolygon * >( *it );
-                if ( minOverlap != -1 )
+                if ( geom->area() >= minOverlap )
                 {
-                  if ( geom->area() >= minOverlap )
-                  {
-                    testResult = true;
-                  }
-                  else
-                  {
-                    continue;
-                  }
+                  testResult = true;
                 }
-
-                // Check min inscribed circle radius for intersection (if set)
-                if ( minInscribedCircleRadius != -1 )
+                else
                 {
-                  const QgsRectangle bbox = geom->boundingBox();
-                  const double width = bbox.width();
-                  const double height = bbox.height();
-                  const double size = width > height ? width : height;
-                  const double tolerance = size / 1000.0;
-                  testResult = QgsGeos( geom ).maximumInscribedCircle( tolerance )->length() >= minInscribedCircleRadius;
+                  continue;
                 }
-              }
-
-              if ( ! testResult )
-              {
-                continue;
-              }
-
-            }
-            else
-            {
-              if ( minOverlap != -1 && intersection.area() < minOverlap )
-              {
-                continue;
               }
 
               // Check min inscribed circle radius for intersection (if set)
               if ( minInscribedCircleRadius != -1 )
               {
-                const QgsAbstractGeometry *geom { intersection.constGet() };
                 const QgsRectangle bbox = geom->boundingBox();
                 const double width = bbox.width();
                 const double height = bbox.height();
                 const double size = width > height ? width : height;
                 const double tolerance = size / 1000.0;
-                // qDebug() << "Inscribed circle radius" << feat2.id() << QgsGeos( geom ).maximumInscribedCircle( tolerance )->length();
-                if ( QgsGeos( geom ).maximumInscribedCircle( tolerance )->length() < minInscribedCircleRadius )
+                testResult = QgsGeos( geom ).maximumInscribedCircle( tolerance )->length() >= minInscribedCircleRadius;
+              }
+            }
+
+            if ( ! testResult )
+            {
+              continue;
+            }
+
+            break;
+          }
+          case QgsWkbTypes::GeometryType::LineGeometry:
+          {
+            bool testResult { false };
+            for ( auto it = intersection.const_parts_begin(); ! testResult && it != intersection.const_parts_end(); ++it )
+            {
+              const QgsCurve *geom = qgsgeometry_cast< const QgsCurve * >( *it );
+              // Check min overlap for intersection (if set)
+              if ( minOverlap != -1 )
+              {
+                if ( geom->length() >= minOverlap )
+                {
+                  testResult = true;
+                }
+                else
                 {
                   continue;
                 }
               }
             }
-            break;
-          }
-          case QgsWkbTypes::GeometryType::LineGeometry:
-          {
-            // Check min overlap for intersection (if set)
-            if ( intersection.isMultipart() )
-            {
-              bool testResult { false };
-              for ( auto it = intersection.const_parts_begin(); ! testResult && it != intersection.const_parts_end(); ++it )
-              {
-                const QgsCurve *geom = qgsgeometry_cast< const QgsCurve * >( *it );
-                if ( minOverlap != -1 )
-                {
-                  if ( geom->length() >= minOverlap )
-                  {
-                    testResult = true;
-                  }
-                  else
-                  {
-                    continue;
-                  }
-                }
-              }
 
-              if ( ! testResult )
-              {
-                continue;
-              }
-
-            }
-            else
+            if ( ! testResult )
             {
-              if ( minOverlap != -1 && intersection.length() < minOverlap )
-              {
-                continue;
-              }
+              continue;
             }
             break;
           }
