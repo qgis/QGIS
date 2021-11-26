@@ -141,7 +141,7 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
     /**
      * \brief scanFile scans the file to determine field types and other information about the data
      * \param buildIndexes build spatial indexes
-     * \param forceFullScan force a full scan even if the  read flag SkipFullScan is set (when this flag is set the scan will exit after the first record).
+     * \param forceFullScan force a full scan even if the  read flag SkipFullScan is set (when this flag is set the scan will exit after the third record to avoid false boolean detection).
      * \param feedback optional feedback to report scan progress and cancel.
      */
     void scanFile( bool buildIndexes, bool forceFullScan = false, QgsFeedback *feedback = nullptr );
