@@ -40,6 +40,17 @@ class TestQgsFeedback(unittest.TestCase):
         self.assertEqual(len(progress_spy), 1)
         self.assertEqual(progress_spy[0][0], 25.0)
 
+    def testProcessedCount(self):
+        f = QgsFeedback()
+        self.assertEqual(f.processedCount(), 0)
+
+        processed_spy = QSignalSpy(f.processedCountChanged)
+
+        f.setProcessedCount(25)
+        self.assertEqual(f.processedCount(), 25)
+        self.assertEqual(len(processed_spy), 1)
+        self.assertEqual(processed_spy[0][0], 25)
+
 
 if __name__ == '__main__':
     unittest.main()
