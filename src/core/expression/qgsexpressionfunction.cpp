@@ -6618,7 +6618,6 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   {
 
     minOverlap = QgsExpressionUtils::getDoubleValue( values.at( 5 ), parent );
-    node = QgsExpressionUtils::getNode( values.at( 6 ), parent ); //in expressions overlay functions throw the exception: Eval Error: Cannot convert '' to int
     minInscribedCircleRadius = QgsExpressionUtils::getDoubleValue( values.at( 6 ), parent );
 #if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<9
     if ( minInscribedCircleRadius != -1 )
