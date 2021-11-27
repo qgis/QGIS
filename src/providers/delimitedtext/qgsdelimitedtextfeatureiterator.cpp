@@ -551,7 +551,7 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature &feature, int f
       {
         // Use std library because QString( "9189304972279762602").toLongLong( &ok )
         // sets ok to true and returns 1836535466
-        // I'm not sure if this is a QT 5.15.2 specific bug.
+        // See: https://bugreports.qt.io/browse/QTBUG-98725
         try
         {
           val = QVariant( std::stoll( value.toStdString() ) );
