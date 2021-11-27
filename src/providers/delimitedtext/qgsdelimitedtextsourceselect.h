@@ -73,6 +73,10 @@ class QgsDelimitedTextFileScanTask: public QgsTask
      */
     void scanStarted( const QgsFields &field );
 
+    /**
+     * \brief processedCountChanged is emitted when the file scan reports a change in the number of scanned rows.
+     */
+    void processedCountChanged( unsigned long long processedCount );
 
   private:
 
@@ -112,7 +116,7 @@ class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private
     int mMaxFields = DEFAULT_MAX_FIELDS; //!< To avoid Denial Of Service (at least in source select). Configurable through /max_fields settings sub-key.
     QString mSettingsKey;
     QString mLastFileType;
-    long mScanTaskId = -1;
+    QPointer<QgsDelimitedTextFileScanTask> mScanTask;
     QButtonGroup *bgFileFormat = nullptr;
     QButtonGroup *bgGeomType = nullptr;
     void showHelp();

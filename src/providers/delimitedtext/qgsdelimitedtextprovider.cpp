@@ -160,10 +160,10 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
   if ( query.hasQueryItem( QStringLiteral( "quiet" ) ) ) mShowInvalidLines = false;
 
   // Parse and store user-defined field types and boolean literals
-  const auto queryItems { query.queryItems( QUrl::ComponentFormattingOption::FullyDecoded ) };
-  for ( const auto &queryItem : std::as_const( queryItems ) )
+  const QList<QPair<QString, QString> > queryItems { query.queryItems( QUrl::ComponentFormattingOption::FullyDecoded ) };
+  for ( const QPair<QString, QString> &queryItem : std::as_const( queryItems ) )
   {
-    if ( queryItem.first == QStringLiteral( "field" ) )
+    if ( queryItem.first.compare( QStringLiteral( "field" ), Qt::CaseSensitivity::CaseInsensitive ) == 0 )
     {
       const QStringList parts { queryItem.second.split( ':' ) };
       if ( parts.count() == 2 )
@@ -600,9 +600,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
     // Progress changed every 100 features
     if ( feedback && mNumberFeatures % 100 == 0 )
     {
-      // We don't really know the progress because the number of records is not known
-      // but we need to signal to the caller that the scan is progressing
-      feedback->setProgress( mNumberFeatures );
+      feedback->setProcessedCount( mNumberFeatures );
     }
 
     if ( !geomValid )

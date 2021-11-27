@@ -524,34 +524,34 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   // Run the scan in a separate thread
   cancelScanTask();
 
-  QgsDelimitedTextFileScanTask *newTask { new QgsDelimitedTextFileScanTask( url( /* skip overridden types */ true ) ) };
+  mScanTask = new QgsDelimitedTextFileScanTask( url( /* skip overridden types */ true ) );
   mCancelButton->show();
-  connect( newTask, &QgsDelimitedTextFileScanTask::scanCompleted, this, [ = ]( const QgsFields & fields )
+  connect( mScanTask, &QgsDelimitedTextFileScanTask::scanCompleted, this, [ = ]( const QgsFields & fields )
   {
     updateFieldTypes( fields );
     mScanWidget->hide( );
   } );
 
-  connect( newTask, &QgsDelimitedTextFileScanTask::scanStarted, this, [ = ]( const QgsFields & fields )
+  connect( mScanTask, &QgsDelimitedTextFileScanTask::scanStarted, this, [ = ]( const QgsFields & fields )
   {
     updateFieldTypes( fields );
   } );
 
   connect( mCancelButton, &QPushButton::clicked, this, &QgsDelimitedTextSourceSelect::cancelScanTask );
 
-  connect( newTask, &QgsDelimitedTextFileScanTask::progressChanged, this, [ = ]( double recordsScanned )
+  connect( mScanTask, &QgsDelimitedTextFileScanTask::processedCountChanged, this, [ = ]( unsigned long long recordsScanned )
   {
     mScanWidget->show();
-    mProgressLabel->setText( tr( "Column types detection in progress: %L1 records read" ).arg( static_cast<unsigned long>( recordsScanned ) ) );
+    mProgressLabel->setText( tr( "Column types detection in progress: %L1 records read" ).arg( static_cast<unsigned long long>( recordsScanned ) ) );
   } );
 
   // This is required because QgsTask emits a progress changed 100 when done
-  connect( newTask, &QgsDelimitedTextFileScanTask::taskCompleted, this, [ = ]
+  connect( mScanTask, &QgsDelimitedTextFileScanTask::taskCompleted, this, [ = ]
   {
     mScanWidget->hide( );
   } );
 
-  mScanTaskId = QgsApplication::taskManager()->addTask( newTask, 100 );
+  QgsApplication::taskManager()->addTask( mScanTask, 100 );
 
   // We don't know anything about a text based field other
   // than its name. All fields are assumed to be text
@@ -948,14 +948,10 @@ QString QgsDelimitedTextSourceSelect::url( bool skipOverriddenTypes )
 void QgsDelimitedTextSourceSelect::cancelScanTask()
 {
   // This will cancel the existing task (if any)
-  if ( mScanTaskId > 0 )
+  if ( mScanTask )
   {
-    QgsDelimitedTextFileScanTask *task { qobject_cast<QgsDelimitedTextFileScanTask *>( QgsApplication::taskManager()->task( mScanTaskId ) ) };
-    if ( task )
-    {
-      task->cancel();
-    }
-    mScanTaskId = -1;
+    mScanTask->cancel();
+    mScanTask = nullptr;
   }
 }
 
@@ -966,10 +962,7 @@ bool QgsDelimitedTextFileScanTask::run()
     QgsDataProvider::ProviderOptions(),
     QgsDataProvider::ReadFlag::SkipFeatureCount | QgsDataProvider::ReadFlag::SkipGetExtent | QgsDataProvider::ReadFlag::SkipFullScan );
 
-  connect( &mFeedback, &QgsFeedback::progressChanged, this, [ = ]( double progress )
-  {
-    setProgress( progress );
-  } );
+  connect( &mFeedback, &QgsFeedback::processedCountChanged, this, &QgsDelimitedTextFileScanTask::processedCountChanged );
 
   if ( provider.isValid() )
   {
