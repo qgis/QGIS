@@ -84,7 +84,7 @@ class CORE_EXPORT QgsFeedback : public QObject
      * feedback object is used processed count reporting may not be supported. The returned value
      * is an unsigned long integer and starts from 0.
      * \see setProcessedCount()
-     * \see progressCountChanged()
+     * \see processedCountChanged()
      * \since QGIS 3.24
      */
     unsigned long long processedCount() const SIP_HOLDGIL { return mProcessedCount; }
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsFeedback : public QObject
      * Sets the current processed objects count for the feedback object. The \a processedCount
      * argument is an unsigned long integer and starts from 0.
      * \see processedCount()
-     * \see progressCountChanged()
+     * \see processedCountChanged()
      * \since QGIS 3.24
      */
     void setProcessedCount( unsigned long long processedCount )

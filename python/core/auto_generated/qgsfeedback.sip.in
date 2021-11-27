@@ -78,7 +78,7 @@ is an unsigned long integer and starts from 0.
 
 .. seealso:: :py:func:`setProcessedCount`
 
-.. seealso:: :py:func:`progressCountChanged`
+.. seealso:: :py:func:`processedCountChanged`
 
 .. versionadded:: 3.24
 %End
@@ -90,7 +90,7 @@ argument is an unsigned long integer and starts from 0.
 
 .. seealso:: :py:func:`processedCount`
 
-.. seealso:: :py:func:`progressCountChanged`
+.. seealso:: :py:func:`processedCountChanged`
 
 .. versionadded:: 3.24
 %End
