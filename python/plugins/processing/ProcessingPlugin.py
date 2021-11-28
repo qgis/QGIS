@@ -44,12 +44,15 @@ from qgis.utils import iface
 
 from processing.core.Processing import Processing
 from processing.gui.AlgorithmDialog import AlgorithmDialog
+from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.ProcessingToolbox import ProcessingToolbox
 from processing.gui.HistoryDialog import HistoryDialog
 from processing.gui.ConfigDialog import ConfigOptionsPage
 from processing.gui.ResultsDock import ResultsDock
+from processing.gui.MessageDialog import MessageDialog
+from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.AlgorithmLocatorFilter import (AlgorithmLocatorFilter,
-                                                   InPlaceAlgorithmLocatorFilter)
+                                                   InPlaceAlgorithmLocatorFilter, execute_in_place)
 from processing.modeler.ModelerDialog import ModelerDialog
 from processing.tools.system import tempHelpFolder
 from processing.gui.menus import removeMenus, initializeMenus, createMenus, createButtons, removeButtons
@@ -289,50 +292,81 @@ class ProcessingPlugin:
         self.projectMenuAction = None
         self.projectMenuSeparator = None
 
-    def executeProjectModel(self, model, as_batch=False):
+    def executeProjectModel(self, alg_id, as_batch=False):
         """Executes a project model"""
 
-        m = self.toolbox.algorithmTree.model()
+        alg = QgsApplication.instance().processingRegistry().createAlgorithmById(alg_id)
 
-        # Search for model
-        modelItem = None
-        for r in range(m.rowCount()):
-            i = m.index(r, 0)
-            if m.data(i) == self.projectProvider.name():
-                for rr in range(m.rowCount(i)):
-                    ii = m.index(rr, 0, i)
-                    for rrr in range(m.rowCount(ii)):
-                        modelItem = m.index(rrr, 0, ii)
-                        break
+        if alg is not None:
 
-        if modelItem is not None:
-            sm = self.toolbox.algorithmTree.selectionModel()
-            sm.clear()
-            sm.select(modelItem, QItemSelectionModel.Select)
+            ok, message = alg.canExecute()
+            if not ok:
+                dlg = MessageDialog()
+                dlg.setTitle(self.tr('Error executing algorithm'))
+                dlg.setMessage(
+                    self.tr('<h3>This algorithm cannot '
+                            'be run :-( </h3>\n{0}').format(message))
+                dlg.exec_()
+                return
+
             if as_batch:
-                self.toolbox.executeAlgorithmAsBatchProcess()
+                dlg = BatchAlgorithmDialog(alg, self.iface.mainWindow())
+                dlg.setAttribute(Qt.WA_DeleteOnClose)
+                dlg.show()
+                dlg.exec_()
             else:
-                self.toolbox.executeAlgorithm()
+                in_place_input_parameter_name = 'INPUT'
+                if hasattr(alg, 'inputParameterName'):
+                    in_place_input_parameter_name = alg.inputParameterName()
+
+                if self.toolbox.in_place_mode and not [d for d in alg.parameterDefinitions() if d.name() not in (in_place_input_parameter_name, 'OUTPUT')]:
+                    parameters = {}
+                    feedback = MessageBarProgress(algname=alg.displayName())
+                    ok, results = execute_in_place(alg, parameters, feedback=feedback)
+                    if ok:
+                        self.iface.messageBar().pushSuccess('', self.tr('{algname} completed. %n feature(s) processed.', n=results['__count']).format(algname=alg.displayName()))
+                    feedback.close()
+                    # MessageBarProgress handles errors
+                    return
+
+                if alg.countVisibleParameters() > 0:
+                    dlg = alg.createCustomParametersWidget(self.toolbox)
+
+                    if not dlg:
+                        dlg = AlgorithmDialog(alg, self.toolbox.in_place_mode, self.iface.mainWindow())
+                    canvas = self.iface.mapCanvas()
+                    prevMapTool = canvas.mapTool()
+                    dlg.show()
+                    dlg.exec_()
+                    if canvas.mapTool() != prevMapTool:
+                        try:
+                            canvas.mapTool().reset()
+                        except:
+                            pass
+                        canvas.setMapTool(prevMapTool)
+                else:
+                    feedback = MessageBarProgress(algname=alg.displayName())
+                    context = dataobjects.createContext(feedback)
+                    parameters = {}
+                    ret, results = execute(alg, parameters, context, feedback)
+                    handleAlgorithmResults(alg, context, feedback)
+                    feedback.close()
 
     def updateProjectModelMenu(self):
         """Add projects models to menu"""
 
-        if self.projectMenuAction is not None:
-            self.iface.projectMenu().removeAction(self.projectMenuAction)
-            self.projectMenuAction = None
-        if self.projectMenuSeparator is not None:
-            self.iface.projectMenu().removeAction(self.projectMenuSeparator)
-            self.projectMenuSeparator = None
-
-        if len(self.projectProvider.algorithms()):
+        if self.projectMenuAction is None:
             self.projectModelsMenu = QMenu(self.tr("Models"))
             self.projectMenuAction = self.iface.projectMenu().insertMenu(self.iface.projectMenu().children()[-1], self.projectModelsMenu)
             self.iface.projectMenu().insertSeparator(self.projectMenuAction)
-            for model in self.projectProvider.algorithms():
-                modelSubMenu = self.projectModelsMenu.addMenu(model.name())
-                modelSubMenu.addAction(self.tr("Execute…"), partial(self.executeProjectModel, model))
-                if model.flags() & QgsProcessingAlgorithm.FlagSupportsBatch:
-                    modelSubMenu.addAction(self.tr("Execute as Batch Process…"), partial(self.executeProjectModel, model, True))
+
+        self.projectModelsMenu.clear()
+
+        for model in self.projectProvider.algorithms():
+            modelSubMenu = self.projectModelsMenu.addMenu(model.name())
+            modelSubMenu.addAction(self.tr("Execute…"), partial(self.executeProjectModel, model.id()))
+            if model.flags() & QgsProcessingAlgorithm.FlagSupportsBatch:
+                modelSubMenu.addAction(self.tr("Execute as Batch Process…"), partial(self.executeProjectModel, model.id(), True))
 
     def sync_in_place_button_state(self, layer=None):
         """Synchronise the button state with layer state"""
