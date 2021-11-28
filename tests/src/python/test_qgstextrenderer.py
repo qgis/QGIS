@@ -1437,7 +1437,8 @@ class PyQgsTextRenderer(unittest.TestCase):
     def checkRender(self, format, name, part=None, angle=0, alignment=QgsTextRenderer.AlignLeft,
                     text=['test'],
                     rect=QRectF(100, 100, 50, 250),
-                    vAlignment=QgsTextRenderer.AlignTop):
+                    vAlignment=QgsTextRenderer.AlignTop,
+                    flags=Qgis.TextRendererFlags()):
 
         image = QImage(400, 400, QImage.Format_RGB32)
 
@@ -1473,7 +1474,7 @@ class PyQgsTextRenderer(unittest.TestCase):
                                      alignment,
                                      text,
                                      context,
-                                     format, vAlignment=vAlignment)
+                                     format, vAlignment=vAlignment, flags=flags)
 
         painter.setFont(format.scaledFont(context))
         painter.setPen(QPen(QColor(255, 0, 255, 200)))
@@ -2740,6 +2741,84 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         assert self.checkRender(format, 'text_rect_justify_aligned', text=['test'],
                                 alignment=QgsTextRenderer.AlignJustify, rect=QRectF(100, 100, 200, 100))
+
+    def testDrawTextRectMultilineJustifyAlign(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(4)
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'text_rect_multiline_justify_aligned',
+                                text=['a t est', 'off', 'justification', 'align'],
+                                alignment=QgsTextRenderer.AlignJustify, rect=QRectF(100, 100, 200, 100))
+
+    def testDrawTextRectWordWrapSingleLine(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
+
+        self.assertTrue(QgsTextRenderer.textRequiresWrapping(context, 'a test of word wrap', 100, format))
+        self.assertTrue(QgsTextRenderer.textRequiresWrapping(context, 'a test of word wrap', 200, format))
+        self.assertTrue(QgsTextRenderer.textRequiresWrapping(context, 'a test of word wrap', 400, format))
+        self.assertFalse(QgsTextRenderer.textRequiresWrapping(context, 'a test of word wrap', 500, format))
+
+        self.assertEqual(QgsTextRenderer.wrappedText(context, 'a test of word wrap', 50, format), ['a', 'test', 'of', 'word', 'wrap'])
+        self.assertEqual(QgsTextRenderer.wrappedText(context, 'a test of word wrap', 200, format), ['a test of', 'word', 'wrap'])
+        self.assertEqual(QgsTextRenderer.wrappedText(context, 'a test of word wrap', 400, format), ['a test of word', 'wrap'])
+        self.assertEqual(QgsTextRenderer.wrappedText(context, 'a test of word wrap', 500, format),
+                         ['a test of word wrap'])
+
+        # text height should account for wrapping
+        self.assertGreater(QgsTextRenderer.textHeight(
+            context, format, ['a test of word wrap'],
+            mode=QgsTextRenderer.Rect, flags=Qgis.TextRendererFlag.WrapLines, maxLineWidth=200),
+            QgsTextRenderer.textHeight(context, format, ['a test of word wrap'], mode=QgsTextRenderer.Rect) * 2.75)
+
+        assert self.checkRender(format, 'text_rect_word_wrap_single_line', text=['a test of word wrap'],
+                                alignment=QgsTextRenderer.AlignLeft, rect=QRectF(100, 100, 200, 100),
+                                flags=Qgis.TextRendererFlag.WrapLines)
+
+    def testDrawTextRectWordWrapMultiLine(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
+
+        # text height should account for wrapping
+        self.assertGreater(QgsTextRenderer.textHeight(
+            context, format, ['a test of word wrap', 'with bit more'],
+            mode=QgsTextRenderer.Rect, flags=Qgis.TextRendererFlag.WrapLines, maxLineWidth=200),
+            QgsTextRenderer.textHeight(context, format, ['a test of word wrap with with bit more'], mode=QgsTextRenderer.Rect) * 4.75)
+
+        assert self.checkRender(format, 'text_rect_word_wrap_multi_line', text=['a test of word wrap', 'with bit more'],
+                                alignment=QgsTextRenderer.AlignLeft, rect=QRectF(100, 100, 200, 100),
+                                flags=Qgis.TextRendererFlag.WrapLines)
+
+    def testDrawTextRectWordWrapWithJustify(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        assert self.checkRender(format, 'text_rect_word_wrap_justify', text=['a test of word wrap'],
+                                alignment=QgsTextRenderer.AlignJustify, rect=QRectF(100, 100, 200, 100),
+                                flags=Qgis.TextRendererFlag.WrapLines)
 
     def testDrawTextRectMultilineBottomAlign(self):
         format = QgsTextFormat()
