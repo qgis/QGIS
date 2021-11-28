@@ -549,14 +549,9 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature &feature, int f
     {
       if ( ! value.isEmpty() )
       {
-        // Use std library because QString( "9189304972279762602").toLongLong( &ok )
-        // sets ok to true and returns 1836535466
-        // See: https://bugreports.qt.io/browse/QTBUG-98725
-        try
-        {
-          val = QVariant( std::stoll( value.toStdString() ) );
-        }
-        catch ( const std::invalid_argument & )
+        bool ok;
+        val = value.toLongLong( &ok );
+        if ( ! ok )
         {
           val = QVariant( mSource->mFields.at( fieldIdx ).type() );
         }
