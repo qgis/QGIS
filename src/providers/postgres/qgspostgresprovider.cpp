@@ -5070,7 +5070,7 @@ QList<QgsVectorLayer *> QgsPostgresProvider::searchLayers( const QList<QgsVector
   return result;
 }
 
-QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const
+QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const
 {
   QList<QgsRelation> result;
 
@@ -5161,7 +5161,7 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
       {
         QgsRelation relation;
         relation.setName( name );
-        relation.setReferencingLayer( self->id() );
+        relation.setReferencingLayer( target->id() );
         relation.setReferencedLayer( foundLayer->id() );
         relation.addFieldPair( fkColumn, refColumn );
         relation.generateId();
