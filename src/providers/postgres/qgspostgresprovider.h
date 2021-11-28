@@ -221,7 +221,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
      */
     static QVariant convertValue( QVariant::Type type, QVariant::Type subType, const QString &value, const QString &typeName );
 
-    QList<QgsRelation> discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const override;
+    QList<QgsRelation> discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const override;
     QgsAttrPalIndexNameHash palAttributeIndexNames() const override;
 
     /**

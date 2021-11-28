@@ -145,7 +145,7 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
     QString description() const override;
     QgsAttributeList pkAttributeIndexes() const override;
     void invalidateConnections( const QString &connection ) override;
-    QList<QgsRelation> discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const override;
+    QList<QgsRelation> discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const override;
 
     // static functions
     static void convertToGeosWKB( const unsigned char *blob, int blob_size,
