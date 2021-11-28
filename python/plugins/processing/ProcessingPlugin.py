@@ -53,8 +53,11 @@ from processing.gui.MessageDialog import MessageDialog
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.AlgorithmLocatorFilter import (AlgorithmLocatorFilter,
                                                    InPlaceAlgorithmLocatorFilter, execute_in_place)
+from processing.gui.AlgorithmExecutor import execute
+from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.modeler.ModelerDialog import ModelerDialog
 from processing.tools.system import tempHelpFolder
+from processing.tools import dataobjects
 from processing.gui.menus import removeMenus, initializeMenus, createMenus, createButtons, removeButtons
 from processing.core.ProcessingResults import resultsList
 
@@ -341,7 +344,7 @@ class ProcessingPlugin:
                     if canvas.mapTool() != prevMapTool:
                         try:
                             canvas.mapTool().reset()
-                        except:
+                        except Exception:
                             pass
                         canvas.setMapTool(prevMapTool)
                 else:
