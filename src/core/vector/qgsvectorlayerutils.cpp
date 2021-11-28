@@ -1157,8 +1157,9 @@ QString QgsVectorLayerUtils::guessFriendlyIdentifierField( const QgsFields &fiel
                                       QStringLiteral( "class" ),
                                       QStringLiteral( "cat" )
                                     };
-
+  int currentBestCandidateNameScore = std::numeric_limits<int>::max();
   QString bestCandidateName;
+  int currentBestCandidateNameWithAntiCandidateScore = std::numeric_limits<int>::max();
   QString bestCandidateNameWithAntiCandidate;
 
   for ( const QString &candidate : sCandidates )
@@ -1168,6 +1169,8 @@ QString QgsVectorLayerUtils::guessFriendlyIdentifierField( const QgsFields &fiel
       const QString fldName = field.name();
       if ( fldName.contains( candidate, Qt::CaseInsensitive ) )
       {
+        // lower score is better, where score = number of extra characters
+        const int score = field.name().length() - candidate.length();
         bool isAntiCandidate = false;
         for ( const QString &antiCandidate : sAntiCandidates )
         {
@@ -1182,13 +1185,20 @@ QString QgsVectorLayerUtils::guessFriendlyIdentifierField( const QgsFields &fiel
         {
           if ( bestCandidateNameWithAntiCandidate.isEmpty() )
           {
-            bestCandidateNameWithAntiCandidate = fldName;
+            if ( score < currentBestCandidateNameWithAntiCandidateScore )
+            {
+              bestCandidateNameWithAntiCandidate = fldName;
+              currentBestCandidateNameWithAntiCandidateScore = score;
+            }
           }
         }
         else
         {
-          bestCandidateName = fldName;
-          break;
+          if ( score < currentBestCandidateNameScore )
+          {
+            bestCandidateName = fldName;
+            currentBestCandidateNameScore = score;
+          }
         }
       }
     }

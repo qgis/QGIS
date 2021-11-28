@@ -836,6 +836,28 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         fields.append(QgsField('org', QVariant.String))
         self.assertEqual(QgsVectorLayerUtils.guessFriendlyIdentifierField(fields), 'station')
 
+        # when multiple field names match desirable identifiers, the one which is closest should be picked
+        fields = QgsFields()
+        fields.append(QgsField('id', QVariant.Int))
+        fields.append(QgsField('carnival_name', QVariant.String))
+        fields.append(QgsField('name', QVariant.String))
+        self.assertEqual(QgsVectorLayerUtils.guessFriendlyIdentifierField(fields), 'name')
+
+        fields = QgsFields()
+        fields.append(QgsField('id', QVariant.Int))
+        fields.append(QgsField('name:highway', QVariant.String))
+        fields.append(QgsField('name', QVariant.String))
+        self.assertEqual(QgsVectorLayerUtils.guessFriendlyIdentifierField(fields), 'name')
+
+        fields = QgsFields()
+        fields.append(QgsField('id', QVariant.Int))
+        fields.append(QgsField('name:highway', QVariant.String))
+        fields.append(QgsField('name:road', QVariant.String))
+        fields.append(QgsField('name:carnival', QVariant.String))
+        fields.append(QgsField('name', QVariant.String))
+        fields.append(QgsField('name_2', QVariant.String))
+        self.assertEqual(QgsVectorLayerUtils.guessFriendlyIdentifierField(fields), 'name')
+
 
 if __name__ == '__main__':
     unittest.main()
