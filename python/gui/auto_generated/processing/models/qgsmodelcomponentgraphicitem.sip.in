@@ -36,6 +36,8 @@ Base class for graphic items representing model components in the model designer
 
     enum Flag
     {
+      // For future API flexibility only and to avoid sip issues, remove when real entries are added to flags.
+      Unused,
     };
     typedef QFlags<QgsModelComponentGraphicItem::Flag> Flags;
 

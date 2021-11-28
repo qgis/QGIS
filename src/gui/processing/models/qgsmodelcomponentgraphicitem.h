@@ -60,6 +60,8 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     //! Available flags
     enum Flag
     {
+      // For future API flexibility only and to avoid sip issues, remove when real entries are added to flags.
+      Unused = 1 << 0, //!< Temporary unused entry
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
