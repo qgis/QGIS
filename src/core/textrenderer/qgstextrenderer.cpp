@@ -77,12 +77,25 @@ int QgsTextRenderer::sizeToPixel( double size, const QgsRenderContext &c, QgsUni
   return static_cast< int >( c.convertToPainterUnits( size, unit, mapUnitScale ) + 0.5 ); //NOLINT
 }
 
-void QgsTextRenderer::drawText( const QRectF &rect, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, bool, VAlignment vAlignment )
+void QgsTextRenderer::drawText( const QRectF &rect, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &text, QgsRenderContext &context, const QgsTextFormat &format, bool, VAlignment vAlignment, Qgis::TextRendererFlags flags )
 {
   QgsTextFormat tmpFormat = format;
   if ( format.dataDefinedProperties().hasActiveProperties() ) // note, we use format instead of tmpFormat here, it's const and potentially avoids a detach
     tmpFormat.updateDataDefinedProperties( context );
   tmpFormat = updateShadowPosition( tmpFormat );
+
+  QStringList textLines;
+  for ( const QString &line : text )
+  {
+    if ( flags & Qgis::TextRendererFlag::WrapLines && textRequiresWrapping( context, line, rect.width(), format ) )
+    {
+      textLines.append( wrappedText( context, line, rect.width(), format ) );
+    }
+    else
+    {
+      textLines.append( line );
+    }
+  }
 
   QgsTextDocument document = format.allowHtmlFormatting() ? QgsTextDocument::fromHtml( textLines ) : QgsTextDocument::fromPlainText( textLines );
   document.applyCapitalization( format.capitalization() );
@@ -599,15 +612,28 @@ double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTex
   return width / scaleFactor;
 }
 
-double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, DrawMode mode, QFontMetricsF * )
+double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, DrawMode mode, QFontMetricsF *, Qgis::TextRendererFlags flags, double maxLineWidth )
 {
+  QStringList lines;
+  for ( const QString &line : textLines )
+  {
+    if ( flags & Qgis::TextRendererFlag::WrapLines && maxLineWidth > 0 && textRequiresWrapping( context, line, maxLineWidth, format ) )
+    {
+      lines.append( wrappedText( context, line, maxLineWidth, format ) );
+    }
+    else
+    {
+      lines.append( line );
+    }
+  }
+
   if ( !format.allowHtmlFormatting() )
   {
-    return textHeight( context, format, QgsTextDocument::fromPlainText( textLines ), mode );
+    return textHeight( context, format, QgsTextDocument::fromPlainText( lines ), mode );
   }
   else
   {
-    return textHeight( context, format, QgsTextDocument::fromHtml( textLines ), mode );
+    return textHeight( context, format, QgsTextDocument::fromHtml( lines ), mode );
   }
 }
 
@@ -646,6 +672,80 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
   }
 
   return height + maxExtension;
+}
+
+bool QgsTextRenderer::textRequiresWrapping( const QgsRenderContext &context, const QString &text, double width, const QgsTextFormat &format )
+{
+  if ( qgsDoubleNear( width, 0.0 ) )
+    return false;
+
+  const QStringList multiLineSplit = text.split( '\n' );
+  const double currentTextWidth = QgsTextRenderer::textWidth( context, format, multiLineSplit );
+  return currentTextWidth > width;
+}
+
+QStringList QgsTextRenderer::wrappedText( const QgsRenderContext &context, const QString &text, double width, const QgsTextFormat &format )
+{
+  const QStringList lines = text.split( '\n' );
+  QStringList outLines;
+  for ( const QString &line : lines )
+  {
+    if ( textRequiresWrapping( context, line, width, format ) )
+    {
+      //first step is to identify words which must be on their own line (too long to fit)
+      const QStringList words = line.split( ' ' );
+      QStringList linesToProcess;
+      QString wordsInCurrentLine;
+      for ( const QString &word : words )
+      {
+        if ( textRequiresWrapping( context, word, width, format ) )
+        {
+          //too long to fit
+          if ( !wordsInCurrentLine.isEmpty() )
+            linesToProcess << wordsInCurrentLine;
+          wordsInCurrentLine.clear();
+          linesToProcess << word;
+        }
+        else
+        {
+          if ( !wordsInCurrentLine.isEmpty() )
+            wordsInCurrentLine.append( ' ' );
+          wordsInCurrentLine.append( word );
+        }
+      }
+      if ( !wordsInCurrentLine.isEmpty() )
+        linesToProcess << wordsInCurrentLine;
+
+      for ( const QString &line : std::as_const( linesToProcess ) )
+      {
+        QString remainingText = line;
+        int lastPos = remainingText.lastIndexOf( ' ' );
+        while ( lastPos > -1 )
+        {
+          //check if remaining text is short enough to go in one line
+          if ( !textRequiresWrapping( context, remainingText, width, format ) )
+          {
+            break;
+          }
+
+          if ( !textRequiresWrapping( context, remainingText.left( lastPos ), width, format ) )
+          {
+            outLines << remainingText.left( lastPos );
+            remainingText = remainingText.mid( lastPos + 1 );
+            lastPos = 0;
+          }
+          lastPos = remainingText.lastIndexOf( ' ', lastPos - 1 );
+        }
+        outLines << remainingText;
+      }
+    }
+    else
+    {
+      outLines << line;
+    }
+  }
+
+  return outLines;
 }
 
 double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &doc, DrawMode mode )

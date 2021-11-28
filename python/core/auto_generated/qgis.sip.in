@@ -750,6 +750,12 @@ The development version
       AllSmallCaps,
     };
 
+    enum class TextRendererFlag
+    {
+      WrapLines,
+    };
+    typedef QFlags<Qgis::TextRendererFlag> TextRendererFlags;
+
 
     enum class AngularDirection
       {
@@ -857,6 +863,8 @@ QFlags<Qgis::RenderContextFlag> operator|(Qgis::RenderContextFlag f1, QFlags<Qgi
 QFlags<Qgis::VectorLayerTypeFlag> operator|(Qgis::VectorLayerTypeFlag f1, QFlags<Qgis::VectorLayerTypeFlag> f2);
 
 QFlags<Qgis::MarkerLinePlacement> operator|(Qgis::MarkerLinePlacement f1, QFlags<Qgis::MarkerLinePlacement> f2);
+
+QFlags<Qgis::TextRendererFlag> operator|(Qgis::TextRendererFlag f1, QFlags<Qgis::TextRendererFlag> f2);
 
 
 

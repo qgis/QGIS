@@ -1223,6 +1223,18 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( Capitalization )
 
+    /**
+     * Flags which control the behavior of rendering text.
+     *
+     * \since QGIS 3.24
+     */
+    enum class TextRendererFlag : int
+    {
+      WrapLines = 1 << 0, //!< Automatically wrap long lines of text
+    };
+    Q_ENUM( TextRendererFlag )
+    Q_DECLARE_FLAGS( TextRendererFlags, TextRendererFlag )
+    Q_FLAG( TextRendererFlags )
 
     /**
      * Angular directions.
@@ -1367,6 +1379,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapSettingsFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RenderContextFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorLayerTypeFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MarkerLinePlacements )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TextRendererFlags )
 
 
 // hack to workaround warnings when casting void pointers
