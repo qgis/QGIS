@@ -858,6 +858,14 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         fields.append(QgsField('name_2', QVariant.String))
         self.assertEqual(QgsVectorLayerUtils.guessFriendlyIdentifierField(fields), 'name')
 
+        # two candidates with equal distance, pick first
+        fields = QgsFields()
+        fields.append(QgsField('id', QVariant.Int))
+        fields.append(QgsField('name:highway', QVariant.String))
+        fields.append(QgsField('name:road', QVariant.String))
+        fields.append(QgsField('name:town', QVariant.String))
+        self.assertEqual(QgsVectorLayerUtils.guessFriendlyIdentifierField(fields), 'name:road')
+
 
 if __name__ == '__main__':
     unittest.main()
