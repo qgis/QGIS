@@ -174,6 +174,7 @@ class TestQgsProcessingAlgs: public QObject
     void exportLayoutPdf();
     void exportLayoutPng();
     void exportAtlasLayoutPdf();
+    void exportAtlasLayoutPdfMultiple();
     void exportAtlasLayoutPng();
 #endif
 
@@ -5905,6 +5906,53 @@ void TestQgsProcessingAlgs::exportAtlasLayoutPdf()
   QVERIFY( ok );
 
   QVERIFY( QFile::exists( outputPdf ) );
+}
+
+void TestQgsProcessingAlgs::exportAtlasLayoutPdfMultiple()
+{
+  QgsMapLayer *polygonLayer = mPolygonLayer->clone();
+  QgsProject p;
+  p.addMapLayers( QList<QgsMapLayer *>() << polygonLayer );
+
+  QgsPrintLayout *layout = new QgsPrintLayout( &p );
+  layout->initializeDefaults();
+  layout->setName( QStringLiteral( "my layout" ) );
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( layout );
+  map->setBackgroundEnabled( false );
+  map->setFrameEnabled( false );
+  map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
+  layout->addLayoutItem( map );
+  map->setExtent( polygonLayer->extent() );
+
+  p.layoutManager()->addLayout( layout );
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:atlaslayouttomultiplepdf" ) ) );
+  QVERIFY( alg != nullptr );
+
+  const QString outputPdfDir = QDir::tempPath() + "/atlas_pdf";
+  if ( QFile::exists( outputPdfDir ) )
+    QDir().rmdir( outputPdfDir );
+
+  QDir().mkdir( outputPdfDir );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "LAYOUT" ), QStringLiteral( "my layout" ) );
+  parameters.insert( QStringLiteral( "COVERAGE_LAYER" ), QVariant::fromValue( polygonLayer ) );
+  parameters.insert( QStringLiteral( "OUTPUT_FOLDER" ), outputPdfDir );
+  parameters.insert( QStringLiteral( "DPI" ), 96 );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  context->setProject( &p );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( QFile::exists( outputPdfDir + "/output_1.pdf" ) );
+  QVERIFY( QFile::exists( outputPdfDir + "/output_2.pdf" ) );
+  QVERIFY( QFile::exists( outputPdfDir + "/output_3.pdf" ) );
 }
 
 void TestQgsProcessingAlgs::exportAtlasLayoutPng()
