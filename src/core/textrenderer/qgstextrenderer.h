@@ -259,40 +259,6 @@ class CORE_EXPORT QgsTextRenderer
      */
     static constexpr double FONT_WORKAROUND_SCALE = 10;
 
-    /**
-     * Returns the number of lines needed to fully display the text
-     * \param text text to be used
-     * \param space space available to display the text
-     * \param context renderer context
-     * \param format text formatting
-     *
-     * \since QGIS 3.20
-     */
-    static bool requiresWrapping( const QString &text, double space, const QgsRenderContext &context, const QgsTextFormat &format );
-
-    /**
-     * Returns the number of lines needed to fully display the text
-     * \param text text to be used
-     * \param space space available to display the text
-     * \param context renderer context
-     * \param format text formatting parameters
-     * \param autoSize skip space validation when the box is set to resize
-     *
-     * \since QGIS 3.20
-     */
-    static QStringList wrapText( const QString &text, double space, const QgsRenderContext &context, const QgsTextFormat &format, const bool autoSize = false );
-
-    /**
-     * Justifies the text to fully occupy the given space, used in wrapText
-     * \param text text to be used
-     * \param space space available to display the text
-     * \param context renderer context
-     * \param format text formatting parameters
-     *
-     * \since QGIS 3.20
-     */
-    static QString justify( const QString &text, const int space, const QgsRenderContext &context, const QgsTextFormat &format );
-
   private:
 
     struct Component
@@ -325,8 +291,6 @@ class CORE_EXPORT QgsTextRenderer
       double dpiRatio = 1.0;
       //! Horizontal alignment
       HAlignment hAlign = AlignLeft;
-
-      VAlignment vAlign = AlignTop;
 
       //! Any additional word spacing to apply while rendering component
       double extraWordSpacing = 0;
@@ -373,7 +337,6 @@ class CORE_EXPORT QgsTextRenderer
     static void drawPart( QPointF origin, double rotation, HAlignment alignment, const QgsTextDocument &document,
                           QgsRenderContext &context, const QgsTextFormat &format,
                           TextPart part );
-
 
     static double drawBuffer( QgsRenderContext &context,
                               const Component &component,
