@@ -48,8 +48,11 @@ class ogr2ogr(GdalAlgorithm):
                                                               self.tr('Input layer'),
                                                               types=[QgsProcessing.TypeVector]))
 
-        self.addParameter(QgsProcessingParameterBoolean(self.CONVERT_ALL_LAYERS,
-                                                        self.tr('Convert all layers from dataset'), defaultValue=False))
+        convert_all_layers_param = QgsProcessingParameterBoolean(self.CONVERT_ALL_LAYERS,
+                                                                 self.tr('Convert all layers from dataset'), defaultValue=False)
+        convert_all_layers_param.setHelp("Use convert all layers to convert a whole dataset. "
+                                         "Supported output formats for this option are GPKG and GML.")
+        self.addParameter(convert_all_layers_param)
 
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation options'),
@@ -105,7 +108,7 @@ class ogr2ogr(GdalAlgorithm):
     def shortHelpString(self):
         return self.tr("The algorithm converts simple features data between file formats.\n\n"
                        "Use convert all layers to convert a whole dataset.\n"
-                       "Supported output formats for this option are :\n"
+                       "Supported output formats for this option are:\n"
                        "- GPKG\n"
                        "- GML"
                        )
