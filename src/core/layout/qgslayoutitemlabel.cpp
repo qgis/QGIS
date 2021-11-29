@@ -130,9 +130,9 @@ void QgsLayoutItemLabel::draw( QgsLayoutItemRenderContext &context )
   const double xPenAdjust = mMarginX < 0 ? -penWidth : penWidth;
   const double yPenAdjust = mMarginY < 0 ? -penWidth : penWidth;
   const QRectF painterRect( xPenAdjust + mMarginX,
-                      yPenAdjust + mMarginY,
-                      scale * ( rect().width() - 2 * xPenAdjust - 2 * mMarginX ),
-                      scale * ( rect().height() - 2 * yPenAdjust - 2 * mMarginY ) );
+                            yPenAdjust + mMarginY,
+                            scale * ( rect().width() - 2 * xPenAdjust - 2 * mMarginX ),
+                            scale * ( rect().height() - 2 * yPenAdjust - 2 * mMarginY ) );
 
   switch ( mMode )
   {
@@ -157,9 +157,9 @@ void QgsLayoutItemLabel::draw( QgsLayoutItemRenderContext &context )
     case ModeFont:
     {
       painter->setFont( mFormat.font() );
-      QStringList texts = QgsTextRenderer::wrapText( currentText(), (
-                          mFormat.orientation() == QgsTextFormat::HorizontalOrientation ? painterRect.width() : painterRect.height() ) / context.viewScaleFactor() ,
-                          context.renderContext(), mFormat );
+      QStringList texts = QgsTextRenderer::wrappedText( context.renderContext(), currentText(), (
+                            mFormat.orientation() == QgsTextFormat::HorizontalOrientation ? painterRect.width() : painterRect.height() ) / context.viewScaleFactor() ,
+                           mFormat );
       QgsTextRenderer::drawText( painterRect, 0, QgsTextRenderer::convertQtHAlignment( mHAlignment ), texts, context.renderContext(), mFormat, true, QgsTextRenderer::convertQtVAlignment( mVAlignment ) );
       break;
     }
