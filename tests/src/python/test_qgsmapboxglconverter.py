@@ -355,6 +355,7 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression(["%", 100, 20],
                                                                    conversion_context),
                          '''100 % 20''')
+        self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression(["match", ["get", "subclass"], "funicular", "rgba(243,243,246,0)", "rgb(243,243,246)"], conversion_context, True), '''CASE WHEN ("subclass" = 'funicular') THEN color_rgba(243,243,246,0) ELSE color_rgba(243,243,246,255) END''')
 
     def testConvertLabels(self):
         context = QgsMapBoxGlStyleConversionContext()
