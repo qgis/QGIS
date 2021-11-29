@@ -2655,7 +2655,7 @@ QString QgsMapBoxGlStyleConverter::parseColorExpression( const QVariant &colorEx
   {
     return parseExpression( colorExpression.toList(), context, true );
   }
-  return parseValue( colorExpression, context );
+  return parseValue( colorExpression, context, true );
 }
 
 QColor QgsMapBoxGlStyleConverter::parseColor( const QVariant &color, QgsMapBoxGlStyleConversionContext &context )
@@ -2910,9 +2910,9 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
           caseString += QStringLiteral( "WHEN (%1) " ).arg( QgsExpression::createFieldEqualityExpression( attribute, expression.at( i ) ) );
         }
 
-        caseString += QStringLiteral( "THEN %1 " ).arg( colorExpected ? parseValueCheckColor( expression.at( i + 1 ), context ) : parseValue( expression.at( i + 1 ), context ) );
+        caseString += QStringLiteral( "THEN %1 " ).arg( parseValue( expression.at( i + 1 ), context, colorExpected ) );
       }
-      caseString += QStringLiteral( "ELSE %1 END" ).arg( colorExpected ? parseValueCheckColor( expression.last(), context ) : parseValue( expression.last(), context ) );
+      caseString += QStringLiteral( "ELSE %1 END" ).arg( parseValue( expression.last(), context, colorExpected ) );
       return caseString;
     }
   }
@@ -3143,17 +3143,25 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64( const QVariant &value
   return spritePath;
 }
 
-QString QgsMapBoxGlStyleConverter::parseValue( const QVariant &value, QgsMapBoxGlStyleConversionContext &context )
+QString QgsMapBoxGlStyleConverter::parseValue( const QVariant &value, QgsMapBoxGlStyleConversionContext &context, bool colorExpected )
 {
   QColor c;
   switch ( value.type() )
   {
     case QVariant::List:
     case QVariant::StringList:
-      return parseExpression( value.toList(), context );
+      return parseExpression( value.toList(), context, colorExpected );
 
     case QVariant::Bool:
     case QVariant::String:
+      if ( colorExpected )
+      {
+        QColor c = parseColor( value, context );
+        if ( c.isValid() )
+        {
+          return parseValue( c, context );
+        }
+      }
       return QgsExpression::quotedValue( value );
 
     case QVariant::Int:
@@ -3169,16 +3177,6 @@ QString QgsMapBoxGlStyleConverter::parseValue( const QVariant &value, QgsMapBoxG
       break;
   }
   return QString();
-}
-
-QString QgsMapBoxGlStyleConverter::parseValueCheckColor( const QVariant &value, QgsMapBoxGlStyleConversionContext &context )
-{
-  QColor c = parseColor( value, context );
-  if ( c.isValid() )
-  {
-    return parseValue( c, context );
-  }
-  return parseValue( value, context );
 }
 
 QString QgsMapBoxGlStyleConverter::parseKey( const QVariant &value, QgsMapBoxGlStyleConversionContext &context )
