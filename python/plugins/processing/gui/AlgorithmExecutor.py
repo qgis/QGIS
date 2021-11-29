@@ -24,6 +24,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 import sys
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (Qgis,
+                       QgsApplication,
                        QgsFeatureSink,
                        QgsProcessingFeedback,
                        QgsProcessingUtils,

@@ -37,14 +37,12 @@ from qgis.core import (QgsApplication,
                        QgsMimeDataUtils)
 from qgis.gui import (QgsOptionsWidgetFactory,
                       QgsCustomDropHandler)
-from qgis.PyQt.QtCore import Qt, QItemSelectionModel, QCoreApplication, QDir, QFileInfo
-from qgis.PyQt.QtWidgets import QMenu, QAction
+from qgis.PyQt.QtCore import QObject, Qt, QItemSelectionModel, QCoreApplication, QDir, QFileInfo, pyqtSlot
+from qgis.PyQt.QtWidgets import QWidget, QMenu, QAction
 from qgis.PyQt.QtGui import QIcon, QKeySequence
 from qgis.utils import iface
 
 from processing.core.Processing import Processing
-from processing.gui.AlgorithmDialog import AlgorithmDialog
-from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.ProcessingToolbox import ProcessingToolbox
 from processing.gui.HistoryDialog import HistoryDialog
 from processing.gui.ConfigDialog import ConfigOptionsPage
@@ -53,8 +51,9 @@ from processing.gui.MessageDialog import MessageDialog
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.AlgorithmLocatorFilter import (AlgorithmLocatorFilter,
                                                    InPlaceAlgorithmLocatorFilter, execute_in_place)
-from processing.gui.AlgorithmExecutor import execute
 from processing.gui.Postprocessing import handleAlgorithmResults
+from processing.gui.AlgorithmDialog import AlgorithmDialog
+from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.modeler.ModelerDialog import ModelerDialog
 from processing.tools.system import tempHelpFolder
 from processing.tools import dataobjects
@@ -165,9 +164,10 @@ class ProcessingDataItemProvider(QgsDataItemProvider):
         return None
 
 
-class ProcessingPlugin:
+class ProcessingPlugin(QObject):
 
     def __init__(self, iface):
+        super().__init__()
         self.iface = iface
         self.options_factory = None
         self.drop_handler = None
@@ -201,6 +201,8 @@ class ProcessingPlugin:
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.toolbox)
         self.toolbox.hide()
         self.toolbox.visibilityChanged.connect(self.toolboxVisibilityChanged)
+
+        self.toolbox.executeWithGui.connect(self.executeProjectModel)
 
         self.resultsDock = ResultsDock()
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.resultsDock)
@@ -289,16 +291,55 @@ class ProcessingPlugin:
         self.iface.actionToggleEditing().triggered.connect(partial(self.sync_in_place_button_state, None))
         self.sync_in_place_button_state()
 
-        self.projectProvider = QgsApplication.instance().processingRegistry().providerById("project")
-        self.projectProvider.algorithmsLoaded.connect(self.updateProjectModelMenu)
+        # Sync project models
         self.projectModelsMenu = None
         self.projectMenuAction = None
         self.projectMenuSeparator = None
 
-    def executeProjectModel(self, alg_id, as_batch=False):
-        """Executes a project model"""
+        self.projectProvider = QgsApplication.instance().processingRegistry().providerById("project")
+        self.projectProvider.algorithmsLoaded.connect(self.updateProjectModelMenu)
 
-        alg = QgsApplication.instance().processingRegistry().createAlgorithmById(alg_id)
+    def updateProjectModelMenu(self):
+        """Add projects models to menu"""
+
+        if self.projectMenuAction is None:
+            self.projectModelsMenu = QMenu(self.tr("Models"))
+            self.projectMenuAction = self.iface.projectMenu().insertMenu(self.iface.projectMenu().children()[-1], self.projectModelsMenu)
+            self.projectMenuAction.setParent(self.projectModelsMenu)
+            self.iface.projectMenu().insertSeparator(self.projectMenuAction)
+
+        self.projectModelsMenu.clear()
+
+        for model in self.projectProvider.algorithms():
+            modelSubMenu = self.projectModelsMenu.addMenu(model.name())
+            modelSubMenu.setParent(self.projectModelsMenu)
+            action = QAction(self.tr("Execute…"), modelSubMenu)
+            action.triggered.connect(partial(self.executeProjectModel, model.id(), self.projectModelsMenu, self.toolbox.in_place_mode))
+            modelSubMenu.addAction(action)
+            if model.flags() & QgsProcessingAlgorithm.FlagSupportsBatch:
+                action = QAction(self.tr("Execute as Batch Process…"), modelSubMenu)
+                modelSubMenu.addAction(action)
+                action.triggered.connect(partial(self.executeProjectModel, model.id(), self.projectModelsMenu, self.toolbox.in_place_mode, True))
+
+    @pyqtSlot(str, QWidget, bool, bool)
+    def executeProjectModel(self, alg_id, parent, in_place=False, as_batch=False):
+        """Executes a project model with GUI interaction if needed.
+
+        :param alg_id: algorithm id
+        :type alg_id: string
+        :param parent: parent widget
+        :type parent: QWidget
+        :param in_place: in place flag, defaults to False
+        :type in_place: bool, optional
+        :param as_batch: execute as batch flag, defaults to False
+        :type as_batch: bool, optional
+        """
+
+        config = {}
+        if in_place:
+            config['IN_PLACE'] = True
+
+        alg = QgsApplication.instance().processingRegistry().createAlgorithmById(alg_id, config)
 
         if alg is not None:
 
@@ -313,7 +354,7 @@ class ProcessingPlugin:
                 return
 
             if as_batch:
-                dlg = BatchAlgorithmDialog(alg, self.iface.mainWindow())
+                dlg = BatchAlgorithmDialog(alg, iface.mainWindow())
                 dlg.setAttribute(Qt.WA_DeleteOnClose)
                 dlg.show()
                 dlg.exec_()
@@ -322,22 +363,22 @@ class ProcessingPlugin:
                 if hasattr(alg, 'inputParameterName'):
                     in_place_input_parameter_name = alg.inputParameterName()
 
-                if self.toolbox.in_place_mode and not [d for d in alg.parameterDefinitions() if d.name() not in (in_place_input_parameter_name, 'OUTPUT')]:
+                if in_place and not [d for d in alg.parameterDefinitions() if d.name() not in (in_place_input_parameter_name, 'OUTPUT')]:
                     parameters = {}
                     feedback = MessageBarProgress(algname=alg.displayName())
                     ok, results = execute_in_place(alg, parameters, feedback=feedback)
                     if ok:
-                        self.iface.messageBar().pushSuccess('', self.tr('{algname} completed. %n feature(s) processed.', n=results['__count']).format(algname=alg.displayName()))
+                        iface.messageBar().pushSuccess('', self.tr('{algname} completed. %n feature(s) processed.', n=results['__count']).format(algname=alg.displayName()))
                     feedback.close()
                     # MessageBarProgress handles errors
                     return
 
                 if alg.countVisibleParameters() > 0:
-                    dlg = alg.createCustomParametersWidget(self.toolbox)
+                    dlg = alg.createCustomParametersWidget(parent)
 
                     if not dlg:
-                        dlg = AlgorithmDialog(alg, self.toolbox.in_place_mode, self.iface.mainWindow())
-                    canvas = self.iface.mapCanvas()
+                        dlg = AlgorithmDialog(alg, in_place, iface.mainWindow())
+                    canvas = iface.mapCanvas()
                     prevMapTool = canvas.mapTool()
                     dlg.show()
                     dlg.exec_()
@@ -354,22 +395,6 @@ class ProcessingPlugin:
                     ret, results = execute(alg, parameters, context, feedback)
                     handleAlgorithmResults(alg, context, feedback)
                     feedback.close()
-
-    def updateProjectModelMenu(self):
-        """Add projects models to menu"""
-
-        if self.projectMenuAction is None:
-            self.projectModelsMenu = QMenu(self.tr("Models"))
-            self.projectMenuAction = self.iface.projectMenu().insertMenu(self.iface.projectMenu().children()[-1], self.projectModelsMenu)
-            self.iface.projectMenu().insertSeparator(self.projectMenuAction)
-
-        self.projectModelsMenu.clear()
-
-        for model in self.projectProvider.algorithms():
-            modelSubMenu = self.projectModelsMenu.addMenu(model.name())
-            modelSubMenu.addAction(self.tr("Execute…"), partial(self.executeProjectModel, model.id()))
-            if model.flags() & QgsProcessingAlgorithm.FlagSupportsBatch:
-                modelSubMenu.addAction(self.tr("Execute as Batch Process…"), partial(self.executeProjectModel, model.id(), True))
 
     def sync_in_place_button_state(self, layer=None):
         """Synchronise the button state with layer state"""
