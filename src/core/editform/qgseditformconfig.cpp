@@ -553,7 +553,7 @@ void QgsEditFormConfig::writeXml( QDomNode &node, const QgsReadWriteContext &con
   node.appendChild( efField );
 
   QDomElement efiField  = doc.createElement( QStringLiteral( "editforminit" ) );
-  if ( !initFunction().isEmpty() )
+  if ( !initFunction().isEmpty() && initCodeSource() == PythonInitCodeSource::CodeSourceDialog )
     efiField.appendChild( doc.createTextNode( initFunction() ) );
   node.appendChild( efiField );
 
@@ -562,7 +562,8 @@ void QgsEditFormConfig::writeXml( QDomNode &node, const QgsReadWriteContext &con
   node.appendChild( eficsField );
 
   QDomElement efifpField  = doc.createElement( QStringLiteral( "editforminitfilepath" ) );
-  efifpField.appendChild( doc.createTextNode( context.pathResolver().writePath( initFilePath() ) ) );
+  if ( initCodeSource() == PythonInitCodeSource::CodeSourceFile )
+    efifpField.appendChild( doc.createTextNode( context.pathResolver().writePath( initFilePath() ) ) );
   node.appendChild( efifpField );
 
   QDomElement eficField  = doc.createElement( QStringLiteral( "editforminitcode" ) );
