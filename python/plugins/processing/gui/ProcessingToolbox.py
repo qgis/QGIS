@@ -45,7 +45,6 @@ from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.ProviderActions import (ProviderActions,
                                             ProviderContextMenuActions)
 from processing.tools import dataobjects
-from processing.gui.AlgorithmExecutor import execute_in_place
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 

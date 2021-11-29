@@ -50,8 +50,9 @@ from processing.gui.ResultsDock import ResultsDock
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.AlgorithmLocatorFilter import (AlgorithmLocatorFilter,
-                                                   InPlaceAlgorithmLocatorFilter, execute_in_place)
+                                                   InPlaceAlgorithmLocatorFilter)
 from processing.gui.Postprocessing import handleAlgorithmResults
+from processing.gui.AlgorithmExecutor import execute, execute_in_place
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.modeler.ModelerDialog import ModelerDialog
