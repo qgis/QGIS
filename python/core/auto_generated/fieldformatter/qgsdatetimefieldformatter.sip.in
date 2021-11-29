@@ -22,9 +22,9 @@ the field configuration.
 #include "qgsdatetimefieldformatter.h"
 %End
   public:
-    static QString DATE_FORMAT;
+    static const QString DATE_FORMAT;
     static const QString TIME_FORMAT;
-    static QString DATETIME_FORMAT;
+    static const QString DATETIME_FORMAT;
     static const QString QT_ISO_FORMAT;
     static const QString DISPLAY_FOR_ISO_FORMAT;
 
@@ -38,11 +38,6 @@ Default constructor of field formatter for a date time field.
 
     virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
 
-
-    static void applyLocaleChange();
-%Docstring
-Adjusts the date time formats according to locale.
-%End
 
     static QString defaultFormat( QVariant::Type type );
 %Docstring
