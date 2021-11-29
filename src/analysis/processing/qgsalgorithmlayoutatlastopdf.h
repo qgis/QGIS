@@ -48,17 +48,14 @@ class QgsLayoutAtlasToPdfAlgorithmBase : public QgsProcessingAlgorithm
     QgsLayoutExporter::PdfExportSettings settings();
     QString error();
 
-
-
   protected:
 
-    bool prepareAlgorithm( const QVariantMap &parameters,
-                           QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-  private:
-    QgsLayoutAtlas *mAtlas;
-    QgsLayoutExporter mExporter = QgsLayoutExporter( nullptr );
-    QgsLayoutExporter::PdfExportSettings mSettings;
-    QString mError;
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+    virtual QVariantMap exportAtlas( QgsLayoutAtlas *atlas, const QgsLayoutExporter &exporter, const QgsLayoutExporter::PdfExportSettings &settings,
+                                     const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0;
+
 };
 
 
@@ -79,10 +76,8 @@ class QgsLayoutAtlasToPdfAlgorithm : public QgsLayoutAtlasToPdfAlgorithmBase
     QgsLayoutAtlasToPdfAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
+    QVariantMap exportAtlas( QgsLayoutAtlas *atlas, const QgsLayoutExporter &exporter, const QgsLayoutExporter::PdfExportSettings &settings,
+                             const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 };
 
@@ -103,10 +98,8 @@ class QgsLayoutAtlasToMultiplePdfAlgorithm : public QgsLayoutAtlasToPdfAlgorithm
     QgsLayoutAtlasToMultiplePdfAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
+    QVariantMap exportAtlas( QgsLayoutAtlas *atlas, const QgsLayoutExporter &exporter, const QgsLayoutExporter::PdfExportSettings &settings,
+                             const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 };
 
