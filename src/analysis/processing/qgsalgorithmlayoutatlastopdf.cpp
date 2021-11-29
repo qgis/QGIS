@@ -96,7 +96,7 @@ void QgsLayoutAtlasToPdfAlgorithmBase::initAlgorithm( const QVariantMap & )
   addParameter( textFormat.release() );
 }
 
-bool QgsLayoutAtlasToPdfAlgorithmBase::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QVariantMap QgsLayoutAtlasToPdfAlgorithmBase::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   // this needs to be done in main thread, layouts are not thread safe
   QgsPrintLayout *l = parameterAsLayout( parameters, QStringLiteral( "LAYOUT" ), context );
@@ -137,7 +137,7 @@ bool QgsLayoutAtlasToPdfAlgorithmBase::prepareAlgorithm( const QVariantMap &para
   }
   else if ( !atlas->enabled() )
   {
-    throw QgsProcessingException( QObject::tr( "Layout being export doesn't have an enabled atlas" ) );
+    throw QgsProcessingException( QObject::tr( "Selected layout does not have atlas functionality enabled" ) );
   }
 
   const QgsLayoutExporter exporter( layout.get() );
@@ -151,7 +151,7 @@ bool QgsLayoutAtlasToPdfAlgorithmBase::prepareAlgorithm( const QVariantMap &para
   settings.appendGeoreference = parameterAsBool( parameters, QStringLiteral( "GEOREFERENCE" ), context );
   settings.exportMetadata = parameterAsBool( parameters, QStringLiteral( "INCLUDE_METADATA" ), context );
   settings.simplifyGeometries = parameterAsBool( parameters, QStringLiteral( "SIMPLIFY" ), context );
-  settings.textRenderFormat = parameterAsEnum( parameters, QStringLiteral( "TEXT_FORMAT" ), context ) == 0 ? QgsRenderContext::TextFormatAlwaysOutlines : QgsRenderContext::TextFormatAlwaysText;
+  settings.textRenderFormat = parameterAsEnum( parameters, QStringLiteral( "TEXT_FORMAT" ), context ) == 0 ? Qgis::TextRenderFormat::AlwaysOutlines : Qgis::TextRenderFormat::AlwaysText;
 
   if ( parameterAsBool( parameters, QStringLiteral( "DISABLE_TILED" ), context ) )
     settings.flags = settings.flags | QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
@@ -176,37 +176,12 @@ bool QgsLayoutAtlasToPdfAlgorithmBase::prepareAlgorithm( const QVariantMap &para
     }
   }
 
-  mAtlas = atlas;
-  mExporter = exporter;
-  mSettings = settings;
-  mError = error;
-
-  return true;
+  return exportAtlas( atlas, exporter, settings, parameters, context, feedback );
 }
 
-QgsLayoutAtlas *QgsLayoutAtlasToPdfAlgorithmBase::atlas()
-{
-  return mAtlas;
-}
-
-QgsLayoutExporter QgsLayoutAtlasToPdfAlgorithmBase::exporter()
-{
-  return mExporter;
-}
-
-QgsLayoutExporter::PdfExportSettings QgsLayoutAtlasToPdfAlgorithmBase::settings()
-{
-  return mSettings;
-}
-
-QString QgsLayoutAtlasToPdfAlgorithmBase::error()
-{
-  return mError;
-}
-
-
-
+//
 // QgsLayoutAtlasToPdfAlgorithm
+//
 
 QString QgsLayoutAtlasToPdfAlgorithm::name() const
 {
@@ -242,16 +217,12 @@ QgsLayoutAtlasToPdfAlgorithm *QgsLayoutAtlasToPdfAlgorithm::createInstance() con
   return new QgsLayoutAtlasToPdfAlgorithm();
 }
 
-QVariantMap QgsLayoutAtlasToPdfAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QVariantMap QgsLayoutAtlasToPdfAlgorithm::exportAtlas( QgsLayoutAtlas *atlas, const QgsLayoutExporter &exporter, const QgsLayoutExporter::PdfExportSettings &settings,
+    const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QgsLayoutAtlasToPdfAlgorithmBase::prepareAlgorithm( parameters, context, feedback );
-
-  QgsLayoutAtlas *atlas = QgsLayoutAtlasToPdfAlgorithmBase::atlas();
-  QgsLayoutExporter exporter = QgsLayoutAtlasToPdfAlgorithmBase::exporter();
-  QgsLayoutExporter::PdfExportSettings settings = QgsLayoutAtlasToPdfAlgorithmBase::settings();
-  QString error = QgsLayoutAtlasToPdfAlgorithmBase::error();
-
   const QString dest = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
+
+  QString error;
   if ( atlas->updateFeatures() )
   {
     feedback->pushInfo( QObject::tr( "Exporting %n atlas feature(s)", "", atlas->count() ) );
@@ -259,7 +230,7 @@ QVariantMap QgsLayoutAtlasToPdfAlgorithm::processAlgorithm( const QVariantMap &p
     {
       case QgsLayoutExporter::Success:
       {
-        feedback->pushInfo( QObject::tr( "Successfully exported layout to %1" ).arg( QDir::toNativeSeparators( dest ) ) );
+        feedback->pushInfo( QObject::tr( "Successfully exported atlas to %1" ).arg( QDir::toNativeSeparators( dest ) ) );
         break;
       }
 
@@ -279,7 +250,7 @@ QVariantMap QgsLayoutAtlasToPdfAlgorithm::processAlgorithm( const QVariantMap &p
 
       case QgsLayoutExporter::SvgLayerError:
       case QgsLayoutExporter::Canceled:
-        // no meaning for imageexports, will not be encountered
+        // no meaning for PDF exports, will not be encountered
         break;
     }
   }
@@ -295,7 +266,9 @@ QVariantMap QgsLayoutAtlasToPdfAlgorithm::processAlgorithm( const QVariantMap &p
   return outputs;
 }
 
+//
 // QgsLayoutAtlasToMultiplePdfAlgorithm
+//
 
 QString QgsLayoutAtlasToMultiplePdfAlgorithm::name() const
 {
@@ -324,41 +297,41 @@ QString QgsLayoutAtlasToMultiplePdfAlgorithm::shortHelpString() const
 void QgsLayoutAtlasToMultiplePdfAlgorithm::initAlgorithm( const QVariantMap & )
 {
   QgsLayoutAtlasToPdfAlgorithmBase::initAlgorithm();
-  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "OUTPUT_FILENAME" ), QObject::tr( "Output filename" ), QString( "'output_'||@atlas_featurenumber" ), QString(), false ) );
+  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "OUTPUT_FILENAME" ), QObject::tr( "Output filename" ), QString(), QStringLiteral( "COVERAGE_LAYER" ), true ) );
   addParameter( new QgsProcessingParameterFile( QStringLiteral( "OUTPUT_FOLDER" ), QObject::tr( "Output folder" ), QgsProcessingParameterFile::Folder ) );
 }
-
 
 QgsLayoutAtlasToMultiplePdfAlgorithm *QgsLayoutAtlasToMultiplePdfAlgorithm::createInstance() const
 {
   return new QgsLayoutAtlasToMultiplePdfAlgorithm();
 }
 
-
-QVariantMap QgsLayoutAtlasToMultiplePdfAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QVariantMap QgsLayoutAtlasToMultiplePdfAlgorithm::exportAtlas( QgsLayoutAtlas *atlas, const QgsLayoutExporter &exporter, const QgsLayoutExporter::PdfExportSettings &settings,
+    const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QgsLayoutAtlasToPdfAlgorithmBase::prepareAlgorithm( parameters, context, feedback );
-
-  QgsLayoutAtlas *atlas = QgsLayoutAtlasToPdfAlgorithmBase::atlas();
-  QgsLayoutExporter exporter = QgsLayoutAtlasToPdfAlgorithmBase::exporter();
-  QgsLayoutExporter::PdfExportSettings settings = QgsLayoutAtlasToPdfAlgorithmBase::settings();
-  QString error = QgsLayoutAtlasToPdfAlgorithmBase::error();
+  QString error;
 
   const QString filename = parameterAsString( parameters, QStringLiteral( "OUTPUT_FILENAME" ), context );
-
   const QString destFolder = parameterAsFile( parameters, QStringLiteral( "OUTPUT_FOLDER" ), context );
 
-  const QString dest = QStringLiteral( "%1/%2.pdf" ).arg( destFolder, filename );
+  // the "atlas.pdf" part will be overridden, only the folder is important
+  const QString dest = QStringLiteral( "%1/atlas.pdf" ).arg( destFolder );
 
   if ( atlas->updateFeatures() )
   {
     feedback->pushInfo( QObject::tr( "Exporting %n atlas feature(s)", "", atlas->count() ) );
 
     QgsLayoutExporter::ExportResult result;
-    if ( !atlas->setFilenameExpression( filename, error ) )
+    if ( atlas->filenameExpression().isEmpty() && filename.isEmpty() )
     {
-      throw QgsProcessingException( QObject::tr( "Output filename could not be set to create filenames for the files, \n"
-                                    "use a correct QGIS expression" ) );
+      atlas->setFilenameExpression( QStringLiteral( "'output_'||@atlas_featurenumber" ), error );
+    }
+    else if ( !filename.isEmpty() )
+    {
+      if ( !atlas->setFilenameExpression( filename, error ) )
+      {
+        throw QgsProcessingException( QObject::tr( "Output file name expression is not valid: %1" ).arg( error ) );
+      }
     }
 
     result = exporter.exportToPdfs( atlas, dest, settings, error, feedback );
@@ -367,7 +340,7 @@ QVariantMap QgsLayoutAtlasToMultiplePdfAlgorithm::processAlgorithm( const QVaria
     {
       case QgsLayoutExporter::Success:
       {
-        feedback->pushInfo( QObject::tr( "Successfully exported layout to %1" ).arg( QDir::toNativeSeparators( destFolder ) ) );
+        feedback->pushInfo( QObject::tr( "Successfully exported atlas to %1" ).arg( QDir::toNativeSeparators( destFolder ) ) );
         break;
       }
 
@@ -387,7 +360,7 @@ QVariantMap QgsLayoutAtlasToMultiplePdfAlgorithm::processAlgorithm( const QVaria
 
       case QgsLayoutExporter::SvgLayerError:
       case QgsLayoutExporter::Canceled:
-        // no meaning for imageexports, will not be encountered
+        // no meaning for PDF exports, will not be encountered
         break;
     }
   }
