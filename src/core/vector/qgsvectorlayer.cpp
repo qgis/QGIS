@@ -3896,6 +3896,9 @@ void QgsVectorLayer::removeExpressionField( int index )
 
 QString QgsVectorLayer::expressionField( int index ) const
 {
+  if ( mFields.fieldOrigin( index ) != QgsFields::OriginExpression )
+    return QString();
+
   int oi = mFields.fieldOriginIndex( index );
   if ( oi < 0 || oi >= mExpressionFieldBuffer->expressions().size() )
     return QString();
