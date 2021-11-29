@@ -27,6 +27,7 @@
 
 QgsBlendModeComboBox::QgsBlendModeComboBox( QWidget *parent ) : QComboBox( parent )
 {
+  setSizeAdjustPolicy( QComboBox::AdjustToMinimumContentsLengthWithIcon );
   updateModes();
 }
 
