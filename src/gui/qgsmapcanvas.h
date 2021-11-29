@@ -72,6 +72,7 @@ class QgsRubberBand;
 class QgsMapCanvasAnnotationItem;
 class QgsReferencedRectangle;
 class QgsRenderedItemResults;
+class QgsTemporaryCursorOverride;
 
 class QgsTemporalController;
 
@@ -1412,6 +1413,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     int mBlockItemPositionUpdates = 0;
 
     QMetaObject::Connection mScreenDpiChangedConnection;
+
+    std::unique_ptr< QgsTemporaryCursorOverride > mTemporaryCursorOverride;
 
     /**
      * Returns the last cursor position on the canvas in geographical coordinates
