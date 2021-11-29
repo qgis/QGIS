@@ -30,7 +30,7 @@
 import xml.etree.ElementTree as etree
 
 from qgis.core import QgsSettings
-from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QFileDialog, QListWidgetItem, QMessageBox
+from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QFileDialog, QListWidgetItem, QMessageBox  # noqa
 
 from MetaSearch.util import (get_connections_from_file, get_ui_class,
                              prettify_xml)
@@ -76,8 +76,8 @@ class ManageConnectionsDialog(QDialog, BASE_CLASS):
                                                                 '.', label)
         else:
             slabel = self.tr('Load Connections')
-            self.filename, selected_filter = QFileDialog.getOpenFileName(self, slabel,
-                                                                         '.', label)
+            self.filename, selected_filter = QFileDialog.getOpenFileName(
+                self, slabel, '.', label)
 
         if not self.filename:
             return
@@ -154,7 +154,8 @@ class ManageConnectionsDialog(QDialog, BASE_CLASS):
 
             # check for duplicates
             if conn_name in keys:
-                label = self.tr('File {0} exists. Overwrite?').format(conn_name)
+                label = self.tr('File {0} exists. Overwrite?').format(
+                    conn_name)
                 res = QMessageBox.warning(self, self.tr('Loading Connections'),
                                           label,
                                           QMessageBox.Yes | QMessageBox.No)
