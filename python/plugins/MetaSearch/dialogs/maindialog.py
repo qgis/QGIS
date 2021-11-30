@@ -166,7 +166,6 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             int(self.disable_ssl_verification) * 2)
         self.disableSSLVerification.stateChanged.connect(_on_ssl_state_change)
 
-
         key = '/MetaSearch/%s' % self.cmbConnectionsSearch.currentText()
         self.catalog_url = self.settings.value('%s/url' % key)
         self.catalog_username = self.settings.value('%s/username' % key)
@@ -453,7 +452,6 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         # clear all fields and disable buttons
         self.clear_results()
-
 
         # set current catalog
         current_text = self.cmbConnectionsSearch.currentText()
