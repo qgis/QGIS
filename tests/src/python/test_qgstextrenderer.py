@@ -17,7 +17,8 @@ from PyQt5.QtSvg import QSvgGenerator
 from qgis.PyQt.QtCore import (Qt, QSizeF, QPointF, QRectF, QDir, QSize)
 from qgis.PyQt.QtGui import (QColor, QPainter, QFont, QImage, QBrush, QPen)
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.core import (QgsTextBufferSettings,
+from qgis.core import (Qgis,
+                       QgsTextBufferSettings,
                        QgsTextMaskSettings,
                        QgsTextBackgroundSettings,
                        QgsTextShadowSettings,
@@ -1408,9 +1409,10 @@ class PyQgsTextRenderer(unittest.TestCase):
     def checkRender(self, format, name, part=None, angle=0, alignment=QgsTextRenderer.AlignLeft,
                     text=['test'],
                     rect=QRectF(100, 100, 50, 250),
-                    vAlignment=QgsTextRenderer.AlignTop):
+                    vAlignment=QgsTextRenderer.AlignTop,
+                    image_size=400):
 
-        image = QImage(400, 400, QImage.Format_RGB32)
+        image = QImage(image_size, image_size, QImage.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()
@@ -1462,8 +1464,9 @@ class PyQgsTextRenderer(unittest.TestCase):
 
     def checkRenderPoint(self, format, name, part=None, angle=0, alignment=QgsTextRenderer.AlignLeft,
                          text=['test'],
-                         point=QPointF(100, 200)):
-        image = QImage(400, 400, QImage.Format_RGB32)
+                         point=QPointF(100, 200),
+                         image_size=400):
+        image = QImage(image_size, image_size, QImage.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()
@@ -1505,6 +1508,18 @@ class PyQgsTextRenderer(unittest.TestCase):
 
         painter.end()
         return self.imageCheck(name, name, image)
+
+    def testDrawMassiveFont(self):
+        """
+        Test that we aren't bitten by https://bugreports.qt.io/browse/QTBUG-98778
+
+        This test should pass when there's a correct WORD space between the 'a' and 't' characters, or fail when
+        the spacing between these characters is nill or close to a letter spacing
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(1100)
+        assert self.checkRender(format, 'massive_font', rect=QRectF(-800, -600, 1000, 1000), text=['a t'], image_size=800)
 
     def testDrawBackgroundDisabled(self):
         format = QgsTextFormat()

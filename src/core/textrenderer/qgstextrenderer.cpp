@@ -294,7 +294,7 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
 
   const double penSize = context.convertToPainterUnits( buffer.size(), buffer.sizeUnit(), buffer.sizeMapUnitScale() );
 
-  const double scaleFactor = ( context.flags() & Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
+  const double scaleFactor = calculateScaleFactorForFormat( context, format );
 
   std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;
   if ( mode == Label )
@@ -451,7 +451,7 @@ void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer
   QPainterPath path;
   path.setFillRule( Qt::WindingFill );
 
-  const double scaleFactor = ( context.flags() & Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
+  const double scaleFactor = calculateScaleFactorForFormat( context, format );
 
   // TODO: vertical text mode was ignored when masking feature was added.
   // Hopefully Oslandia come back and fix this? Hint hint...
@@ -542,7 +542,7 @@ double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTex
 double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &document )
 {
   //calculate max width of text lines
-  const double scaleFactor = ( context.flags() & Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
+  const double scaleFactor = calculateScaleFactorForFormat( context, format );
 
   bool isNullSize = false;
   const QFont baseFont = format.scaledFont( context, scaleFactor, &isNullSize );
@@ -613,7 +613,7 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
 
 double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, QChar character, bool includeEffects )
 {
-  const double scaleFactor = ( context.flags() & Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
+  const double scaleFactor = calculateScaleFactorForFormat( context, format );
   bool isNullSize = false;
   const QFont baseFont = format.scaledFont( context, scaleFactor, &isNullSize );
   if ( isNullSize )
@@ -654,7 +654,7 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
   document.applyCapitalization( format.capitalization() );
 
   //calculate max height of text lines
-  const double scaleFactor = ( context.flags() & Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
+  const double scaleFactor = calculateScaleFactorForFormat( context, format );
 
   bool isNullSize = false;
   const QFont baseFont = format.scaledFont( context, scaleFactor, &isNullSize );
@@ -781,7 +781,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
     component.rotationOffset = background.rotation();
   }
 
-  const double scaleFactor = ( context.flags() & Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1;
+  const double scaleFactor = calculateScaleFactorForFormat( context, format );
 
   if ( mode != Label )
   {
@@ -1307,7 +1307,7 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
   std::unique_ptr< QFontMetricsF > tmpMetrics;
   if ( !fontMetrics )
   {
-    fontScale = ( context.flags() & Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
+    fontScale = calculateScaleFactorForFormat( context, format );
 
     std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;
     if ( mode == Label )
@@ -1967,5 +1967,25 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
       maskPainter->restore();
     i++;
   }
+}
+
+double QgsTextRenderer::calculateScaleFactorForFormat( const QgsRenderContext &context, const QgsTextFormat &format )
+{
+  if ( !( context.flags() & Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering ) )
+    return 1.0;
+
+  const double pixelSize = context.convertToPainterUnits( format.size(), format.sizeUnit(), format.sizeMapUnitScale() );
+
+  // THESE THRESHOLD MAY NEED TWEAKING!
+
+  // for small font sizes we need to apply a growth scaling workaround designed to stablise the rendering of small font sizes
+  if ( pixelSize < 50 )
+    return FONT_WORKAROUND_SCALE;
+  //... but for font sizes we might run into https://bugreports.qt.io/browse/QTBUG-98778, which messes up the spacing between words for large fonts!
+  // so instead we scale down the painter so that we render the text at 200 pixel size and let painter scaling handle making it the correct size
+  else if ( pixelSize > 200 )
+    return 200 / pixelSize;
+  else
+    return 1.0;
 }
 
