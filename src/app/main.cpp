@@ -1036,7 +1036,7 @@ int main( int argc, char *argv[] )
     QgsApplication::setTranslation( translationCode );
   }
 
-  QgsApplication myApp( argc, argv, myUseGuiFlag );
+  QgsApplication myApp( argc, argv, myUseGuiFlag, QString(), QStringLiteral( "desktop" ) );
 
   //write the log messages written before creating QgsApplication
   for ( const QString &preApplicationLogMessage : std::as_const( preApplicationLogMessages ) )

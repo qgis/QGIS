@@ -86,6 +86,12 @@ class TestPyQgsAppStartup(unittest.TestCase):
             if s > timeOut:
                 raise Exception('Timed out waiting for application start, Call: "{}", Env: {}'.format(' '.join(call), env))
 
+        with open(myTestFile, 'rt', encoding='utf-8') as res_file:
+            lines = res_file.readlines()
+
+        # platform should be "Desktop"
+        self.assertEqual(lines, ['Platform: desktop'])
+
         try:
             p.terminate()
         except OSError as e:
@@ -98,8 +104,9 @@ class TestPyQgsAppStartup(unittest.TestCase):
         testfile = 'pyqgis_startup.txt'
         testfilepath = os.path.join(self.TMP_DIR, testfile).replace('\\', '/')
         testcode = [
+            "from qgis.core import QgsApplication\n"
             "f = open('{0}', 'w')\n".format(testfilepath),
-            "f.write('This is a test')\n",
+            "f.write('Platform: ' + QgsApplication.platform())\n",
             "f.close()\n"
         ]
         testmod = os.path.join(self.TMP_DIR, 'pyqgis_startup.py').replace('\\', '/')

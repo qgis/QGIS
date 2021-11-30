@@ -420,7 +420,7 @@ Returns a string name of the operating system QGIS is running on.
 
     static QString platform();
 %Docstring
-Returns the QGIS platform name, e.g., "desktop" or "server".
+Returns the QGIS platform name, e.g., "desktop", "server", "qgis_process" or "external" (for external CLI scripts).
 
 .. seealso:: :py:func:`osName`
 

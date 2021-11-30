@@ -160,7 +160,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static const char *QGIS_ORGANIZATION_DOMAIN;
     static const char *QGIS_APPLICATION_NAME;
 #ifndef SIP_RUN
-    QgsApplication( int &argc, char **argv, bool GUIenabled, const QString &profileFolder = QString(), const QString &platformName = "desktop" );
+    QgsApplication( int &argc, char **argv, bool GUIenabled, const QString &profileFolder = QString(), const QString &platformName = "external" );
 #else
     QgsApplication( SIP_PYLIST argv, bool GUIenabled, QString profileFolder = QString(), QString platformName = "desktop" ) / PostHook = __pyQtQAppHook__ / [( int &argc, char **argv, bool GUIenabled, const QString &profileFolder = QString(), const QString &platformName = "desktop" )];
     % MethodCode
@@ -437,7 +437,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString osName();
 
     /**
-     * Returns the QGIS platform name, e.g., "desktop" or "server".
+     * Returns the QGIS platform name, e.g., "desktop", "server", "qgis_process" or "external" (for external CLI scripts).
      * \see osName()
      * \since QGIS 2.14
      */
