@@ -1585,7 +1585,8 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
   {
     const QgsTextBlock block = document.at( i );
 
-    const bool isFinalLine = i == document.size() - 1;
+    const bool isFinalLineInParagraph = ( i == document.size() - 1 )
+                                        || document.at( i + 1 ).toPlainText().trimmed().isEmpty();
 
     QgsScopedQPainterState painterState( context.painter() );
     context.setPainterFlagsUsingContext();
@@ -1621,7 +1622,7 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
           break;
 
         case AlignJustify:
-          if ( !isFinalLine && labelWidest > labelWidth )
+          if ( !isFinalLineInParagraph && labelWidest > labelWidth )
           {
             calculateExtraSpacingForLineJustification( labelWidest - labelWidth, block, extraWordSpace, extraLetterSpace );
           }
