@@ -1523,6 +1523,7 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
           if ( !isFinalLineInParagraph && labelWidest > labelWidth )
           {
             calculateExtraSpacingForLineJustification( labelWidest - labelWidth, block, extraWordSpace, extraLetterSpace );
+            labelWidth = labelWidest;
           }
           break;
 
