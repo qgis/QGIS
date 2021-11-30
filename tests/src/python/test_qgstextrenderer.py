@@ -2459,6 +2459,21 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.shadow().setOffsetUnit(QgsUnitTypes.RenderMillimeters)
         assert self.checkRender(format, 'shadow_color', QgsTextRenderer.Text, text=['test'])
 
+    def testDrawShadowWithJustifyAlign(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.shadow().setEnabled(True)
+        format.shadow().setShadowPlacement(QgsTextShadowSettings.ShadowText)
+        format.shadow().setOpacity(0.5)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'text_justify_aligned_with_shadow',
+                                text=['a t est', 'off', 'justification', 'align'],
+                                alignment=QgsTextRenderer.AlignJustify, rect=QRectF(100, 100, 200, 100))
+
     def testDrawShadowScale(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
