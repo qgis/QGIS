@@ -89,8 +89,8 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         # form inputs
         self.startfrom = 1
         self.constraints = []
-        self.maxrecords = self.settings.value('/MetaSearch/returnRecords', 10)
-        self.timeout = self.settings.value('/MetaSearch/timeout', 10)
+        self.maxrecords = int(self.settings.value('/MetaSearch/returnRecords', 10))
+        self.timeout = int(self.settings.value('/MetaSearch/timeout', 10))
         # QgsSettings.value returns 'false' not False(!)
         self.disable_ssl_verification = self.settings.value(
             '/MetaSearch/disableSSL', 'false') != 'false'
