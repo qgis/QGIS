@@ -203,7 +203,7 @@ class ProcessingPlugin(QObject):
         self.toolbox.hide()
         self.toolbox.visibilityChanged.connect(self.toolboxVisibilityChanged)
 
-        self.toolbox.executeWithGui.connect(self.executeProjectModel)
+        self.toolbox.executeWithGui.connect(self.executeAlgorithm)
 
         self.resultsDock = ResultsDock()
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.resultsDock)
@@ -315,15 +315,15 @@ class ProcessingPlugin(QObject):
             modelSubMenu = self.projectModelsMenu.addMenu(model.name())
             modelSubMenu.setParent(self.projectModelsMenu)
             action = QAction(self.tr("Execute…"), modelSubMenu)
-            action.triggered.connect(partial(self.executeProjectModel, model.id(), self.projectModelsMenu, self.toolbox.in_place_mode))
+            action.triggered.connect(partial(self.executeAlgorithm, model.id(), self.projectModelsMenu, self.toolbox.in_place_mode))
             modelSubMenu.addAction(action)
             if model.flags() & QgsProcessingAlgorithm.FlagSupportsBatch:
                 action = QAction(self.tr("Execute as Batch Process…"), modelSubMenu)
                 modelSubMenu.addAction(action)
-                action.triggered.connect(partial(self.executeProjectModel, model.id(), self.projectModelsMenu, self.toolbox.in_place_mode, True))
+                action.triggered.connect(partial(self.executeAlgorithm, model.id(), self.projectModelsMenu, self.toolbox.in_place_mode, True))
 
     @pyqtSlot(str, QWidget, bool, bool)
-    def executeProjectModel(self, alg_id, parent, in_place=False, as_batch=False):
+    def executeAlgorithm(self, alg_id, parent, in_place=False, as_batch=False):
         """Executes a project model with GUI interaction if needed.
 
         :param alg_id: algorithm id
