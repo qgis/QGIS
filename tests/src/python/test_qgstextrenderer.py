@@ -1438,9 +1438,10 @@ class PyQgsTextRenderer(unittest.TestCase):
                     text=['test'],
                     rect=QRectF(100, 100, 50, 250),
                     vAlignment=QgsTextRenderer.AlignTop,
-                    flags=Qgis.TextRendererFlags()):
+                    flags=Qgis.TextRendererFlags(),
+                    image_size=400):
 
-        image = QImage(400, 400, QImage.Format_RGB32)
+        image = QImage(image_size, image_size, QImage.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()
@@ -1492,8 +1493,9 @@ class PyQgsTextRenderer(unittest.TestCase):
 
     def checkRenderPoint(self, format, name, part=None, angle=0, alignment=QgsTextRenderer.AlignLeft,
                          text=['test'],
-                         point=QPointF(100, 200)):
-        image = QImage(400, 400, QImage.Format_RGB32)
+                         point=QPointF(100, 200),
+                         image_size=400):
+        image = QImage(image_size, image_size, QImage.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()
@@ -1535,6 +1537,18 @@ class PyQgsTextRenderer(unittest.TestCase):
 
         painter.end()
         return self.imageCheck(name, name, image)
+
+    def testDrawMassiveFont(self):
+        """
+        Test that we aren't bitten by https://bugreports.qt.io/browse/QTBUG-98778
+
+        This test should pass when there's a correct WORD space between the 'a' and 't' characters, or fail when
+        the spacing between these characters is nill or close to a letter spacing
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(1100)
+        assert self.checkRender(format, 'massive_font', rect=QRectF(-800, -600, 1000, 1000), text=['a t'], image_size=800)
 
     @unittest.skipIf(int(QT_VERSION_STR.split('.')[0]) < 6 or (int(QT_VERSION_STR.split('.')[0]) == 6 and int(QT_VERSION_STR.split('.')[1]) < 3), 'Too old Qt')
     def testDrawSmallCaps(self):
