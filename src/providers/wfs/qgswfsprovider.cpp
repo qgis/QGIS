@@ -1636,6 +1636,11 @@ QString QgsWFSProvider::name() const
   return WFS_PROVIDER_KEY;
 }
 
+QString QgsWFSProvider::providerKey()
+{
+  return WFS_PROVIDER_KEY;
+}
+
 QString QgsWFSProvider::description() const
 {
   return WFS_PROVIDER_DESCRIPTION;
@@ -1839,9 +1844,9 @@ bool QgsWFSProvider::getCapabilities()
 
     const QgsWfsCapabilities::Capabilities caps = getCapabilities.capabilities();
     mShared->mCaps = caps;
-    mShared->mURI.setGetEndpoints( caps.operationGetEndpoints );
-    mShared->mURI.setPostEndpoints( caps.operationPostEndpoints );
   }
+  mShared->mURI.setGetEndpoints( mShared->mCaps.operationGetEndpoints );
+  mShared->mURI.setPostEndpoints( mShared->mCaps.operationPostEndpoints );
 
   mShared->mWFSVersion = mShared->mCaps.version;
   if ( mShared->mURI.maxNumFeatures() > 0 && mShared->mCaps.maxFeatures > 0 && !( mShared->mCaps.supportsPaging && mShared->mURI.pagingEnabled() ) )
@@ -1912,7 +1917,7 @@ bool QgsWFSProvider::getCapabilities()
           QgsDebugMsgLevel( "src:" + src.authid(), 4 );
           QgsDebugMsgLevel( "dst:" + mShared->mSourceCrs.authid(), 4 );
 
-          mShared->mCapabilityExtent = ct.transformBoundingBox( r, QgsCoordinateTransform::ForwardTransform );
+          mShared->mCapabilityExtent = ct.transformBoundingBox( r, Qgis::TransformDirection::Forward );
         }
         else
         {
@@ -2034,7 +2039,10 @@ QList<QgsDataItemProvider *> QgsWfsProviderMetadata::dataItemProviders() const
 QgsWfsProviderMetadata::QgsWfsProviderMetadata():
   QgsProviderMetadata( QgsWFSProvider::WFS_PROVIDER_KEY, QgsWFSProvider::WFS_PROVIDER_DESCRIPTION ) {}
 
+
+#ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN void *multipleProviderMetadataFactory()
 {
   return new std::vector<QgsProviderMetadata *> { new QgsWfsProviderMetadata(), new QgsOapifProviderMetadata() };
 }
+#endif

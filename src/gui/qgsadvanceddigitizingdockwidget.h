@@ -61,6 +61,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
       AbsoluteAngle = 1, //!< Azimuth
       RelativeAngle = 2, //!< Also for parallel and perpendicular
       RelativeCoordinates = 4, //!< This corresponds to distance and relative coordinates
+      Distance = 8, //!< Distance
     };
     Q_DECLARE_FLAGS( CadCapacities, CadCapacity )
     Q_FLAG( CadCapacities )
@@ -194,6 +195,22 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
          */
         void toggleRelative();
 
+        /**
+         * Returns the numeric precision (decimal places) to show in the associated widget.
+         *
+         * \see setPrecision()
+         * \since QGIS 3.22
+         */
+        int precision() const { return mPrecision; }
+
+        /**
+         * Sets the numeric precision (decimal places) to show in the associated widget.
+         *
+         * \see precision()
+         * \since QGIS 3.22
+         */
+        void setPrecision( int precision );
+
       private:
         QLineEdit *mLineEdit = nullptr;
         QToolButton *mLockerButton = nullptr;
@@ -203,6 +220,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
         bool mRepeatingLock;
         bool mRelative;
         double mValue;
+        int mPrecision = 6;
     };
 
     /**
@@ -255,6 +273,18 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * \since QGIS 3.22
      */
     void switchZM( );
+
+    /**
+     * Sets whether Z is enabled
+     * \since QGIS 3.22
+     */
+    void setEnabledZ( bool enable );
+
+    /**
+     * Sets whether M is enabled
+     * \since QGIS 3.22
+     */
+    void setEnabledM( bool enable );
 
     //! construction mode is used to draw intermediate points. These points won't be given any further (i.e. to the map tools)
     bool constructionMode() const { return mConstructionMode; }
@@ -324,8 +354,17 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * The last point.
      * Helper for the CAD point list. The CAD point list is the list of points
      * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
+     *
+     * \since QGIS 3.22
      */
     QgsPoint currentPointV2( bool *exists  = nullptr ) const;
+
+    /**
+     * Returns the last CAD point, in a map \a layer's coordinates.
+     *
+     * \since QGIS 3.22
+     */
+    QgsPoint currentPointLayerCoordinates( QgsMapLayer *layer ) const;
 
     /**
      * The last point.
@@ -818,6 +857,12 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void settingsButtonTriggered( QAction *action );
 
   private:
+
+    /**
+     * Returns the layer currently associated with the map tool using the dock widget.
+     */
+    QgsMapLayer *targetLayer();
+
     //! updates the UI depending on activation of the tools and clear points / release locks.
     void setCadEnabled( bool enabled );
 

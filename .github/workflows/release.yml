@@ -11,18 +11,32 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Prepare release names
+      - name: Set env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+      - name: Version URL
         run: |
-          VERSION_CHANGELOG=$(echo ${{ github.ref }} | cut -d '-' -f 2 | cut -d '_' -f1,2 | sed 's/_/\./g')
-          echo "version_url=https://changelog.qgis.org/en/qgis/version/${VERSION_CHANGELOG}" >> $GITHUB_ENV
-          VERSION_NAME=$(echo ${{ github.ref }} | cut -d '-' -f 2 | sed 's/_/\./g')
+          VERSION=$(echo ${RELEASE_VERSION} | cut -d '-' -f 2 )
+
+          if [ ${VERSION: -1} = "0" ]
+          then
+            VERSION=$(echo ${VERSION} | cut -d '_' -f1,2 | sed 's/_/\./g')
+            echo "version_url=https://changelog.qgis.org/en/qgis/version/${VERSION}" >> $GITHUB_ENV
+          else
+            PREVIOUS=$(echo ${VERSION}  | sed 's/_/\./g' | awk -F. -v OFS=. 'NF==1{print ++$NF}; NF>1{if(length($NF+1)>length($NF))$(NF-1)++; $NF=sprintf("%0*d", length($NF), ($NF-1)%(10^length($NF))); print}' | sed 's/\./_/g')
+            echo "version_url=https://github.com/qgis/QGIS/compare/final-${PREVIOUS}%5E...final-${VERSION}" >> $GITHUB_ENV
+          fi
+
+      - name: Version name
+        run: |
+          VERSION_NAME=$(echo ${{ env.RELEASE_VERSION }} | cut -d '-' -f 2 | sed 's/_/\./g')
           echo "version_name=${VERSION_NAME}" >> $GITHUB_ENV
 
       - name: Create release
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_BOT }}
         with:
           tag_name: ${{ github.ref }}
           release_name: ${{ env.version_name }}

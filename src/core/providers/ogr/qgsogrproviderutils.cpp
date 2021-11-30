@@ -25,6 +25,7 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsproviderregistry.h"
 #include "qgsgeopackageproviderconnection.h"
 #include "qgsogrdbconnection.h"
+#include "qgsfileutils.h"
 
 #include <ogr_srs_api.h>
 #include <cpl_port.h>
@@ -956,7 +957,17 @@ QString QgsOgrProviderUtils::connectionPoolId( const QString &dataSourceURI, boo
     QString filePath = dataSourceURI.left( dataSourceURI.indexOf( QLatin1Char( '|' ) ) );
     QFileInfo fi( filePath );
     if ( fi.isFile() )
-      return filePath;
+    {
+      // Preserve open options so pooled connections always carry those on
+      QString openOptions;
+      static thread_local QRegularExpression openOptionsRegex( QStringLiteral( "((?:\\|option:(?:[^|]*))+)" ) );
+      QRegularExpressionMatch match = openOptionsRegex.match( dataSourceURI );
+      if ( match.hasMatch() )
+      {
+        openOptions = match.captured( 1 );
+      }
+      return filePath + openOptions;
+    }
   }
   return dataSourceURI;
 }
@@ -964,6 +975,23 @@ QString QgsOgrProviderUtils::connectionPoolId( const QString &dataSourceURI, boo
 GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUpdate, char **papszOpenOptionsIn, GDALDriverH *phDriver )
 {
   CPLErrorReset();
+
+  // Avoid getting too close to the limit of files allowed in the process,
+  // to avoid potential crashes such as in https://github.com/qgis/QGIS/issues/43620
+  // This heuristics is not perfect because during rendering, files will be opened again
+  // Typically for a GPKG file we need 6 file descriptors: 3 for the .gpkg,
+  // .gpkg-wal, .gpkg-shm for the provider, and 2 for the .gpkg + for the .gpkg-wal
+  // used by feature iterator for rendering
+  // So if we hit the limit, some layers will not be displayable.
+  if ( QgsFileUtils::isCloseToLimitOfOpenedFiles() )
+  {
+#ifdef Q_OS_UNIX
+    QgsMessageLog::logMessage( QObject::tr( "Too many files opened (%1). Cannot open %2. You may raise the limit with the 'ulimit -n number_of_files' command before starting QGIS." ).arg( QgsFileUtils::openedFileCount() ).arg( QString( pszPath ) ), QObject::tr( "OGR" ) );
+#else
+    QgsMessageLog::logMessage( QObject::tr( "Too many files opened (%1). Cannot open %2" ).arg( QgsFileUtils::openedFileCount() ).arg( QString( pszPath ) ), QObject::tr( "OGR" ) );
+#endif
+    return nullptr;
+  }
 
   char **papszOpenOptions = CSLDuplicate( papszOpenOptionsIn );
 
@@ -1272,6 +1300,32 @@ QString QgsOgrProviderUtils::quotedValue( const QVariant &value )
 
 OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds, QTextCodec *encoding, const QString &subsetString )
 {
+  // Remove any comments
+  QStringList lines {subsetString.split( QChar( '\n' ) )};
+  lines.erase( std::remove_if( lines.begin(), lines.end(), []( const QString & line )
+  {
+    return line.startsWith( QStringLiteral( "--" ) );
+  } ), lines.end() );
+  for ( auto &line : lines )
+  {
+    bool inLiteral {false};
+    QChar literalChar { ' ' };
+    for ( int i = 0; i < line.length(); ++i )
+    {
+      if ( ( ( line[i] == QChar( '\'' ) || line[i] == QChar( '"' ) ) && ( i == 0 || line[i - 1] != QChar( '\\' ) ) ) && ( line[i] != literalChar ) )
+      {
+        inLiteral = !inLiteral;
+        literalChar = inLiteral ? line[i] : QChar( ' ' );
+      }
+      if ( !inLiteral && line.mid( i ).startsWith( QStringLiteral( "--" ) ) )
+      {
+        line = line.left( i );
+        break;
+      }
+    }
+  }
+  const QString cleanedSubsetString {lines.join( QChar( ' ' ) ).trimmed() };
+
   QByteArray layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( layer ) );
   GDALDriverH driver = GDALGetDatasetDriver( ds );
   QString driverName = GDALGetDriverShortName( driver );
@@ -1287,16 +1341,16 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
     }
   }
   OGRLayerH subsetLayer = nullptr;
-  if ( subsetString.startsWith( QLatin1String( "SELECT " ), Qt::CaseInsensitive ) )
+  if ( cleanedSubsetString.startsWith( QLatin1String( "SELECT " ), Qt::CaseInsensitive ) )
   {
-    QByteArray sql = encoding->fromUnicode( subsetString );
+    QByteArray sql = encoding->fromUnicode( cleanedSubsetString );
 
     QgsDebugMsgLevel( QStringLiteral( "SQL: %1" ).arg( encoding->toUnicode( sql ) ), 2 );
     subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
   }
   else
   {
-    if ( OGR_L_SetAttributeFilter( layer, encoding->fromUnicode( subsetString ).constData() ) != OGRERR_NONE )
+    if ( OGR_L_SetAttributeFilter( layer, encoding->fromUnicode( cleanedSubsetString ).constData() ) != OGRERR_NONE )
     {
       return nullptr;
     }
@@ -2054,7 +2108,7 @@ QString QgsOgrProviderUtils::expandAuthConfig( const QString &dsName )
   QRegularExpressionMatch match;
   if ( uri.contains( authcfgRe, &match ) )
   {
-    uri = uri.replace( match.captured( 0 ), QString() );
+    uri = uri.remove( match.captured( 0 ) );
     QString configId( match.captured( 1 ) );
     QStringList connectionItems;
     connectionItems << uri;
@@ -2392,7 +2446,14 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
     {
       if ( parts.value( QStringLiteral( "layerName" ) ).toString().isEmpty() )
         parts.insert( QStringLiteral( "layerName" ), layerName );
-      details.setName( parts.value( QStringLiteral( "vsiSuffix" ) ).toString().mid( 1 ) );
+      if ( hasSingleLayerOnly )
+      {
+        details.setName( parts.value( QStringLiteral( "vsiSuffix" ) ).toString().mid( 1 ) );
+      }
+      else
+      {
+        details.setName( layerName );
+      }
     }
     details.setFeatureCount( layerFeatureCount );
     details.setWkbType( QgsOgrUtils::ogrGeometryTypeToQgsWkbType( layerGeomType ) );
@@ -2413,16 +2474,21 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
     // Add virtual sublayers for supported geometry types if layer type is unknown
     // Count features for geometry types
     QMap<OGRwkbGeometryType, int> fCount;
+    QSet<OGRwkbGeometryType> fHasZ;
     // TODO: avoid reading attributes, setRelevantFields cannot be called here because it is not constant
 
     layer->ResetReading();
     gdal::ogr_feature_unique_ptr fet;
     while ( fet.reset( layer->GetNextFeature() ), fet )
     {
-      const OGRwkbGeometryType gType = QgsOgrProviderUtils::ogrWkbSingleFlatten( resolveGeometryTypeForFeature( fet.get(), driverName ) );
+      OGRwkbGeometryType gType =  resolveGeometryTypeForFeature( fet.get(), driverName );
       if ( gType != wkbNone )
       {
+        bool hasZ = wkbHasZ( gType );
+        gType = QgsOgrProviderUtils::ogrWkbSingleFlatten( gType );
         fCount[gType] = fCount.value( gType ) + 1;
+        if ( hasZ )
+          fHasZ.insert( gType );
       }
 
       if ( feedback && feedback->isCanceled() )
@@ -2483,10 +2549,17 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
       {
         if ( parts.value( QStringLiteral( "layerName" ) ).toString().isEmpty() )
           parts.insert( QStringLiteral( "layerName" ), layerName );
-        details.setName( parts.value( QStringLiteral( "vsiSuffix" ) ).toString().mid( 1 ) );
+        if ( hasSingleLayerOnly )
+        {
+          details.setName( parts.value( QStringLiteral( "vsiSuffix" ) ).toString().mid( 1 ) );
+        }
+        else
+        {
+          details.setName( layerName );
+        }
       }
       details.setFeatureCount( fCount.value( countIt.key() ) );
-      details.setWkbType( QgsOgrUtils::ogrGeometryTypeToQgsWkbType( ( bIs25D ) ? wkbSetZ( countIt.key() ) : countIt.key() ) );
+      details.setWkbType( QgsOgrUtils::ogrGeometryTypeToQgsWkbType( ( bIs25D || fHasZ.contains( countIt.key() ) ) ? wkbSetZ( countIt.key() ) : countIt.key() ) );
       details.setGeometryColumnName( geometryColumnName );
       details.setDescription( longDescription );
       details.setProviderKey( QStringLiteral( "ogr" ) );
@@ -2497,7 +2570,8 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
       // in the uri for the sublayers (otherwise we'll be forced to re-do this iteration whenever
       // the uri from the sublayer is used to construct an actual vector layer)
       if ( details.wkbType() != QgsWkbTypes::Unknown )
-        parts.insert( QStringLiteral( "geometryType" ), ogrWkbGeometryTypeName( countIt.key() ) );
+        parts.insert( QStringLiteral( "geometryType" ),
+                      ogrWkbGeometryTypeName( ( bIs25D || fHasZ.contains( countIt.key() ) ) ? wkbSetZ( countIt.key() ) : countIt.key() ) );
       else
         parts.remove( QStringLiteral( "geometryType" ) );
 

@@ -512,7 +512,7 @@ double QgsLayoutUtils::mmToPoints( const double mmSize )
 
 QVector< double > QgsLayoutUtils::predefinedScales( const QgsLayout *layout )
 {
-  QgsProject *lProject = layout->project();
+  QgsProject *lProject = layout ? layout->project() : nullptr;
   QVector< double > mapScales;
   if ( lProject )
     mapScales = lProject->viewSettings()->mapScales();

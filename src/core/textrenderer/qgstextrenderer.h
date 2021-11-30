@@ -19,12 +19,12 @@
 #include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgstextblock.h"
-#include "qgsrendercontext.h"
 #include "qgstextformat.h"
 
 #include <QPicture>
 
 class QgsTextDocument;
+class QgsRenderContext;
 
 /**
  * \class QgsTextRenderer
@@ -115,10 +115,12 @@ class CORE_EXPORT QgsTextRenderer
      * rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
      * as of QGIS 3.4.3 and the text format should be set using QgsRenderContext::setTextRenderFormat() instead.
      * \param vAlignment vertical alignment (since QGIS 3.16)
+     * \param flags text rendering flags (since QGIS 3.24)
      */
     static void drawText( const QRectF &rect, double rotation, HAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
-                          bool drawAsOutlines = true, VAlignment vAlignment = AlignTop );
+                          bool drawAsOutlines = true, VAlignment vAlignment = AlignTop,
+                          Qgis::TextRendererFlags flags = Qgis::TextRendererFlags() );
 
     /**
      * Draws text at a point origin using the specified settings.
@@ -212,9 +214,11 @@ class CORE_EXPORT QgsTextRenderer
      * \param textLines list of lines of text to calculate width from
      * \param mode draw mode
      * \param fontMetrics font metrics
+     * \param flags text renderer flags (since QGIS 3.24)
+     * \param maxLineWidth maximum line width, in painter units. Used when the Qgis::TextRendererFlag::WrapLines flag is used (since QGIS 3.24)
      */
     static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, DrawMode mode = Point,
-                              QFontMetricsF *fontMetrics = nullptr );
+                              QFontMetricsF *fontMetrics = nullptr, Qgis::TextRendererFlags flags = Qgis::TextRendererFlags(), double maxLineWidth = 0 );
 
     /**
      * Returns the height of a character when rendered with the specified text \a format.
@@ -228,6 +232,22 @@ class CORE_EXPORT QgsTextRenderer
      * \since QGIS 3.16
      */
     static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, QChar character, bool includeEffects = false );
+
+    /**
+     * Returns TRUE if the specified \a text requires line wrapping in order to fit within the specified \a width (in painter units).
+     *
+     * \see wrappedText()
+     * \since QGIS 3.24
+     */
+    static bool textRequiresWrapping( const QgsRenderContext &context, const QString &text, double width, const QgsTextFormat &format );
+
+    /**
+     * Wraps a \a text string to multiple lines, such that each individual line will fit within the specified \a width (in painter units).
+     *
+     * \see textRequiresWrapping()
+     * \since QGIS 3.24
+     */
+    static QStringList wrappedText( const QgsRenderContext &context, const QString &text, double width, const QgsTextFormat &format );
 
     /**
      * Scale factor for upscaling font sizes and downscaling destination painter devices.

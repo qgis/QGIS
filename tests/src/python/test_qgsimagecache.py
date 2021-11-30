@@ -72,7 +72,7 @@ class TestQgsImageCache(unittest.TestCase):
     def testRemoteImage(self):
         """Test fetching remote image."""
         url = 'http://localhost:{}/qgis_local_server/sample_image.png'.format(str(TestQgsImageCache.port))
-        image, in_cache = QgsApplication.imageCache().pathAsImage(url, QSize(100, 100), 1.0, True)
+        image, in_cache = QgsApplication.imageCache().pathAsImage(url, QSize(100, 100), True, 1.0)
 
         # first should be waiting image
         self.assertTrue(self.imageCheck('Remote Image', 'waiting_image', image))
@@ -80,7 +80,7 @@ class TestQgsImageCache(unittest.TestCase):
         self.waitForFetch()
 
         # second should be correct image
-        image, in_cache = QgsApplication.imageCache().pathAsImage(url, QSize(100, 100), 1.0, True)
+        image, in_cache = QgsApplication.imageCache().pathAsImage(url, QSize(100, 100), True, 1.0)
 
         self.assertTrue(self.imageCheck('Remote Image', 'remote_image', image))
         self.assertEqual(QgsApplication.imageCache().originalSize(url), QSize(511, 800), 1.0)
@@ -96,20 +96,20 @@ class TestQgsImageCache(unittest.TestCase):
         """Test fetching remote image."""
         # remote not yet requested so not in cache
         url = 'http://localhost:{}/qgis_local_server/logo_2017.png'.format(str(TestQgsImageCache.port))
-        image, in_cache = QgsApplication.imageCache().pathAsImage(url, QSize(100, 100), 1.0, True, blocking=1)
+        image, in_cache = QgsApplication.imageCache().pathAsImage(url, QSize(100, 100), True, 1.0, blocking=1)
 
         # first should be correct image
         self.assertTrue(self.imageCheck('Remote image sync', 'remote_image_blocking', image))
 
         # remote probably in cache
         url = 'http://localhost:{}/qgis_local_server/sample_image.png'.format(str(TestQgsImageCache.port))
-        image, in_cache = QgsApplication.imageCache().pathAsImage(url, QSize(100, 100), 1.0, True, blocking=1)
+        image, in_cache = QgsApplication.imageCache().pathAsImage(url, QSize(100, 100), True, 1.0, blocking=1)
 
         self.assertTrue(self.imageCheck('Remote Image', 'remote_image', image))
 
         # remote probably in cache
         url = 'http://localhost:{}/qgis_local_server/xxx.png'.format(str(TestQgsImageCache.port))  # oooo naughty
-        image, in_cache = QgsApplication.imageCache().pathAsImage(url, QSize(100, 100), 1.0, True, blocking=1)
+        image, in_cache = QgsApplication.imageCache().pathAsImage(url, QSize(100, 100), True, 1.0, blocking=1)
 
         self.assertTrue(self.imageCheck('Remote image missing', 'waiting_image', image))
 

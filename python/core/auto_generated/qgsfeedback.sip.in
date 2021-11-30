@@ -70,6 +70,31 @@ is in percentage and ranges from 0-100.
 .. versionadded:: 3.0
 %End
 
+    unsigned long long processedCount() const /HoldGIL/;
+%Docstring
+Returns the current processed objects count reported by the feedback object. Depending on how the
+feedback object is used processed count reporting may not be supported. The returned value
+is an unsigned long integer and starts from 0.
+
+.. seealso:: :py:func:`setProcessedCount`
+
+.. seealso:: :py:func:`processedCountChanged`
+
+.. versionadded:: 3.24
+%End
+
+    void setProcessedCount( unsigned long long processedCount );
+%Docstring
+Sets the current processed objects count for the feedback object. The ``processedCount``
+argument is an unsigned long integer and starts from 0.
+
+.. seealso:: :py:func:`processedCount`
+
+.. seealso:: :py:func:`processedCountChanged`
+
+.. versionadded:: 3.24
+%End
+
   public slots:
 
     void cancel();
@@ -96,7 +121,21 @@ argument is in percentage and ranges from 0-100.
 .. versionadded:: 3.0
 %End
 
+    void processedCountChanged( unsigned long long processedCount );
+%Docstring
+Emitted when the feedback object reports a change in the number of processed objects.
+Depending on how the feedback object is used processed count reporting may not be supported. The ``processedCount``
+argument is an unsigned long integer and starts from 0.
+
+.. seealso:: :py:func:`setProgress`
+
+.. seealso:: :py:func:`progress`
+
+.. versionadded:: 3.24
+%End
+
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

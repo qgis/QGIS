@@ -108,7 +108,8 @@ Registers an OGC API ``handler``, ownership of the handler is transferred to the
 
     static QUrl sanitizeUrl( const QUrl &url );
 %Docstring
-Returns a sanitized ``url`` with extra slashes removed
+Returns a sanitized ``url`` with extra slashes removed and the path URL component that
+always starts with a slash.
 %End
 
     static std::string relToString( const QgsServerOgcApi::Rel &rel );

@@ -23,6 +23,8 @@
 #include "mdal_logger.hpp"
 #include "mdal_data_model.hpp"
 #include "mdal_memory_data_model.hpp"
+#include "libplyxx.h"
+#include "mdal_driver_manager.hpp"
 
 #define DRIVER_NAME "PLY"
 
@@ -30,7 +32,12 @@ MDAL::DriverPly::DriverPly() :
   Driver( DRIVER_NAME,
           "Stanford PLY Ascii Mesh File",
           "*.ply",
-          Capability::ReadMesh
+          Capability::ReadMesh |
+          Capability::SaveMesh |
+          Capability::WriteDatasetsOnVertices |
+          Capability::WriteDatasetsOnFaces |
+          Capability::WriteDatasetsOnEdges |
+          Capability::WriteDatasetsOnVolumes
         )
 {
 }
@@ -42,9 +49,11 @@ MDAL::DriverPly *MDAL::DriverPly::create()
 
 MDAL::DriverPly::~DriverPly() = default;
 
-size_t MDAL::DriverPly::getIndex( std::vector<std::string> v, std::string in )
+size_t getIndex( std::vector<std::pair<std::string, bool>> v, std::string in )
 {
-  std::vector<std::string>::iterator it = std::find( v.begin(), v.end(), in );
+  auto is_equal = [ in ]( std::pair<std::string, bool> s ) { return  s.first == in; };
+
+  auto it = std::find_if( v.begin(), v.end(), is_equal );
   return ( size_t )std::distance( v.begin(), it );
 }
 
@@ -60,273 +69,236 @@ bool MDAL::DriverPly::canReadMesh( const std::string &uri )
   return true;
 }
 
+std::string MDAL::DriverPly::saveMeshOnFileSuffix() const
+{
+  return "ply";
+}
+
 std::unique_ptr<MDAL::Mesh> MDAL::DriverPly::load( const std::string &meshFile, const std::string & )
 {
   MDAL::Log::resetLastStatus();
-
-  std::ifstream in( meshFile, std::ifstream::in );
-  std::string line;
-
-  // Read header
-  size_t vertexCount = 0;
-  size_t faceCount = 0;
-  size_t edgeCount = 0;
-  std::vector<std::string> chunks;
-  std::vector<MDAL::DriverPly::element> elements; // we will decant the element specifications into here
-  std::string proj = "";
-
-  if ( !std::getline( in, line ) )
-  {
-    MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, name(), meshFile + " Header is corrupt" );
-    return nullptr;
-  }
-
-  /*
-  * The header is a format definition and a series of element definitions and/or comment lines
-  * cycle through these until end-header
-  */
-  do
-  {
-    /*
-    * iterate through all of the  element blocks in the header and enumerate the number of members and the properties
-    */
-    if ( startsWith( line, "element" ) )
-    {
-      chunks = split( line, ' ' );
-      if ( ( chunks.size() != 3 ) )
-      {
-        MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, name(), meshFile + " invalid number of vertexes" );
-        return nullptr;
-      }
-      MDAL::DriverPly::element element;
-      element.name = chunks[1];
-      element.size = MDAL::toSizeT( chunks[2] );
-      do
-      {
-        if ( !std::getline( in, line ) )
-        {
-          MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, name(), meshFile + " Header is corrupt" );
-          return nullptr;
-        }
-        if ( startsWith( line, "property" ) )
-        {
-          chunks = split( line, ' ' );
-          switch ( chunks.size() )
-          {
-            case 3:
-              element.properties.push_back( chunks[2] );
-              element.types.push_back( chunks[1] );
-              element.list.push_back( false );
-              break;
-            case 5:
-              element.properties.push_back( chunks[4] );
-              element.types.push_back( chunks[3] );
-              element.list.push_back( true );
-              break;
-            default:
-              MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, name(), meshFile + " invalid element line" + line );
-              return nullptr;
-          }
-        }
-        else
-        {
-          break;
-        }
-      }
-      while ( true );
-      elements.push_back( element );
-    }
-
-    // if end - stop looping
-    else if ( startsWith( line, "end_header" ) )
-    {
-      break;
-    }
-
-    //if binary - give up
-
-    else if ( startsWith( line, "binary" ) )
-    {
-      MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, name(), meshFile + " only ASCII format PLY files are supported" );
-      return nullptr;
-    }
-
-    // if "comment crs" assume that the rest is the crs data
-    else if ( startsWith( line, "comment crs " ) )
-    {
-      line.erase( 0, 12 );
-      proj = line;
-      if ( !std::getline( in, line ) )
-      {
-        MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, name(), meshFile + " Header is corrupt" );
-        return nullptr;
-      }
-    }
-
-    // probably a comment line
-    else
-    {
-      if ( !std::getline( in, line ) )
-      {
-        MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, name(), meshFile + " Header is corrupt" );
-        return nullptr;
-      }
-    }
-  }
-  while ( true );
-
   Vertices vertices( 0 );
   Faces faces( 0 );
   Edges edges( 0 );
   size_t maxSizeFace = 0;
-  size_t faceSize = 0;
 
-  //datastructures that will contain all of the datasets, categorised by vertex, face and edge datasets
-  std::vector<std::vector<double>> vertexDatasets; // conatins the data
-  std::vector<std::string> vProp2Ds; // contains the dataset names
+  size_t vertexCount = 0;
+  size_t faceCount = 0;
+  size_t edgeCount = 0;
+
+  //data structures that will contain all of the datasets, categorised by vertex, face and edge datasets
+  std::vector<std::vector<double>> vertexDatasets; // contains the data
+  std::vector<std::pair<std::string, bool>> vProp2Ds; // contains the dataset name and a flag for scalar / vector
   std::vector<std::vector<double>> faceDatasets;
-  std::vector<std::string> fProp2Ds;
+  std::vector<std::pair<std::string, bool>> fProp2Ds;
   std::vector<std::vector<double>> edgeDatasets;
-  std::vector<std::string> eProp2Ds;
+  std::vector<std::pair<std::string, bool>> eProp2Ds;
+  std::unordered_map<std::string, std::pair<std::vector<double>, std::vector<int>>> listProps; // contains the list datasets as vector of values and vector indices for each face into the vector of values
 
-  /*
-  * load the elements in order
-  */
-  if ( !std::getline( in, line ) )
+  libply::File file( meshFile );
+  if ( MDAL::Log::getLastStatus() != MDAL_Status::None ) { return nullptr; }
+  const libply::ElementsDefinition &definitions = file.definitions();
+  const libply::Metadata &metadata = file.metadata();
+  for ( const libply::Element &element : definitions )
   {
-    MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, name(), meshFile + " does not contain any definitions" );
-    return nullptr;
-  }
-  chunks = split( line, ' ' );
-
-  // configure the vectors to hold the data
-
-  for ( size_t elid = 0; elid < elements.size(); ++elid )
-  {
-    MDAL::DriverPly::element element = elements[elid];
     if ( element.name == "vertex" )
     {
       vertexCount = element.size;
-      vertices.resize( vertexCount );
-      for ( size_t i = 0; i < element.properties.size(); ++i )
-      {
-        if ( element.properties[i] != "x" &&
-             element.properties[i] != "y" &&
-             element.properties[i] != "z" &&
-             !element.list[i] )
-        {
-          vertexDatasets.push_back( * new std::vector<double> );
-          vProp2Ds.push_back( element.properties[i] );
-        }
-      }
     }
     else if ( element.name == "face" )
     {
       faceCount = element.size;
-      faces.resize( faceCount );
-      for ( size_t i = 0; i < element.properties.size(); ++i )
-      {
-        if ( element.properties[i] != "vertex_indices" &&
-             !element.list[i] )
-        {
-          faceDatasets.push_back( * new std::vector<double> );
-          fProp2Ds.push_back( element.properties[i] );
-        }
-      }
     }
     else if ( element.name == "edge" )
     {
       edgeCount = element.size;
-      edges.resize( edgeCount );
-      for ( size_t i = 0; i < element.properties.size(); ++i )
-      {
-        if ( element.properties[i] != "vertex1" &&
-             element.properties[i] != "vertex2" &&
-             !element.list[i] )
-        {
-          edgeDatasets.push_back( * new std::vector<double> );
-          eProp2Ds.push_back( element.properties[i] );
-        }
-      }
     }
-
-    // load the data
-    for ( size_t i = 0; i < element.size; ++i )
+    for ( const libply::Property &property : element.properties )
     {
-      /*
-      * set the line size - we will only deal with one list at the begining of the line
-      */
-      size_t nChunks = element.properties.size();
-      if ( element.list[0] ) nChunks += MDAL::toSizeT( chunks[0] );
-      if ( chunks.size() != nChunks )
+      if ( element.name == "vertex" &&
+           property.name != "X" &&
+           property.name != "x" &&
+           property.name != "Y" &&
+           property.name != "y" &&
+           property.name != "Z" &&
+           property.name != "z"
+         )
       {
-        MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, name(), meshFile + " contains invalid line : " + line );
-        return nullptr;
+        vProp2Ds.emplace_back( property.name, property.isList );
+        vertexDatasets.push_back( std::vector<double>() );
+        if ( property.isList ) listProps.emplace( property.name, std::make_pair( std::vector<double>(), std::vector<int>() ) );
       }
-
-      /*
-      * Load the vertexes
-      */
-      if ( element.name == "vertex" )
+      else if ( element.name == "face" &&
+                property.name != "vertex_indices"
+              )
       {
-        Vertex &vertex = vertices[i];
-        vertex.x = MDAL::toDouble( chunks[MDAL::DriverPly::getIndex( element.properties, "x" )] );
-        vertex.y = MDAL::toDouble( chunks[MDAL::DriverPly::getIndex( element.properties, "y" )] );
-        vertex.z = MDAL::toDouble( chunks[MDAL::DriverPly::getIndex( element.properties, "z" )] );
-        for ( size_t j = 0; j < vProp2Ds.size(); ++j )
-        {
-          double value = MDAL::toDouble( chunks[MDAL::DriverPly::getIndex( element.properties, vProp2Ds[j] )] );
-          vertexDatasets[j].push_back( value );
-        }
+        fProp2Ds.emplace_back( property.name, property.isList );
+        faceDatasets.push_back( std::vector<double>() );
+        if ( property.isList ) listProps.emplace( property.name, std::make_pair( std::vector<double>(), std::vector<int>() ) );
       }
-
-      /*
-      *load the faces
-      */
-      else if ( element.name == "face" )
+      else if ( element.name == "edge" &&
+                property.name != "vertex1" &&
+                property.name != "vertex2"
+              )
       {
-        faceSize = MDAL::toSizeT( chunks[0] );
-        Face &face = faces[i];
-        face.resize( faceSize );
-        for ( size_t j = 0; j < faceSize; ++j )
-        {
-          face[j] = MDAL::toSizeT( chunks[j + 1] );
-        }
-        if ( faceSize > maxSizeFace ) maxSizeFace = faceSize;
-        for ( size_t j = 0; j < fProp2Ds.size(); ++j )
-        {
-          double value = MDAL::toDouble( chunks[MDAL::DriverPly::getIndex( element.properties, fProp2Ds[j] ) + faceSize] );
-          faceDatasets[j].push_back( value );
-        }
+        eProp2Ds.emplace_back( property.name, property.isList );
+        edgeDatasets.push_back( std::vector<double>() );
+        if ( property.isList ) listProps.emplace( property.name, std::make_pair( std::vector<double>(), std::vector<int>() ) );
       }
-
-      /*
-      load the edges
-      */
-      else if ( element.name == "edge" )
-      {
-        Edge &edge = edges[i];
-        edge.startVertex = MDAL::toSizeT( chunks[MDAL::DriverPly::getIndex( element.properties, "vertex1" )] );
-        edge.endVertex = MDAL::toSizeT( chunks[MDAL::DriverPly::getIndex( element.properties, "vertex2" )] );
-        for ( size_t j = 0; j < eProp2Ds.size(); ++j )
-        {
-          double value = MDAL::toDouble( chunks[MDAL::DriverPly::getIndex( element.properties, eProp2Ds[j] )] );
-          edgeDatasets[j].push_back( value );
-        }
-      }
-
-      // any other element ignore and move to the next line
-      if ( !std::getline( in, line ) )
-      {
-        // if it is supposed to be the last line - don't look further
-        if ( elid != ( elements.size() - 1 ) && i != ( element.size - 1 ) )
-        {
-          MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, name(), meshFile + " does not contain enough definitions of type " + element.name );
-          return nullptr;
-        }
-      }
-      chunks = split( line, ' ' );
     }
+  }
+
+
+
+  for ( const libply::Element &el : definitions )
+  {
+    if ( el.name == "vertex" )
+    {
+      libply::ElementReadCallback vertexCallback = [&vertices, &el, &vProp2Ds, &vertexDatasets, &listProps]( libply::ElementBuffer & e )
+      {
+        Vertex vertex;
+        for ( size_t i = 0; i < el.properties.size(); i++ )
+        {
+          libply::Property p = el.properties[i];
+          if ( p.name == "X" || p.name == "x" )
+          {
+            vertex.x = e[i];
+          }
+          else if ( p.name == "Y" || p.name == "y" )
+          {
+            vertex.y = e[i];
+          }
+          else if ( p.name == "Z" || p.name == "z" )
+          {
+            vertex.z = e[i];
+          }
+          else
+          {
+            int dsIdx = getIndex( vProp2Ds, p.name );
+            if ( vProp2Ds[ dsIdx ].second )
+            {
+              const std::string name = vProp2Ds[ dsIdx ].first;
+              auto &vals = listProps.at( name );
+              libply::ListProperty *lp = dynamic_cast<libply::ListProperty *>( &e[i] );
+              vals.second.push_back( lp->size() );
+              for ( size_t j = 0; j < lp->size(); j++ )
+              {
+                vals.first.push_back( lp->value( j ) );
+              }
+            }
+            else
+            {
+              std::vector<double> &ds = vertexDatasets[dsIdx];
+              ds.push_back( e[i] );
+            }
+          }
+        }
+        vertices.push_back( vertex );
+      };
+      file.setElementReadCallback( "vertex", vertexCallback );
+    }
+    else if ( el.name == "face" )
+    {
+      libply::ElementReadCallback faceCallback = [&faces, &el, &maxSizeFace, &fProp2Ds, &faceDatasets, &listProps]( libply::ElementBuffer & e )
+      {
+        Face face;
+        for ( size_t i = 0; i < el.properties.size(); i++ )
+        {
+          libply::Property p = el.properties[i];
+          if ( p.name == "vertex_indices" )
+          {
+            if ( !p.isList )
+            {
+              MDAL::Log::error( MDAL_Status::Err_InvalidData, "PLY: the triangles are not a list" );
+            }
+            else
+            {
+              libply::ListProperty *lp = dynamic_cast<libply::ListProperty *>( &e[i] );
+              if ( maxSizeFace < lp->size() ) maxSizeFace = lp->size();
+              face.resize( lp->size() );
+              for ( size_t j = 0; j < lp->size(); j++ )
+              {
+                face[j] = int( lp->value( j ) );
+              }
+            }
+          }
+          else
+          {
+            int dsIdx = getIndex( fProp2Ds, p.name );
+            if ( fProp2Ds[ dsIdx ].second )
+            {
+              const std::string name = fProp2Ds[ dsIdx ].first;
+              auto &vals = listProps.at( name );
+              libply::ListProperty *lp = dynamic_cast<libply::ListProperty *>( &e[i] );
+              vals.second.push_back( lp->size() );
+              for ( size_t j = 0; j < lp->size(); j++ )
+              {
+                vals.first.push_back( lp->value( j ) );
+              }
+            }
+            else
+            {
+              std::vector<double> &ds = faceDatasets[dsIdx];
+              ds.push_back( e[i] );
+            }
+          }
+        }
+        faces.push_back( face );
+      };
+      file.setElementReadCallback( "face", faceCallback );
+    }
+    else if ( el.name == "edge" )
+    {
+      libply::ElementReadCallback edgeCallback = [&edges, &el, &eProp2Ds, &edgeDatasets, &listProps]( libply::ElementBuffer & e )
+      {
+        Edge edge;
+        for ( size_t i = 0; i < el.properties.size(); i++ )
+        {
+          libply::Property p = el.properties[i];
+          if ( p.name == "vertex1" )
+          {
+            edge.startVertex = int( e[i] );
+          }
+          else if ( p.name == "vertex2" )
+          {
+            edge.endVertex = int( e[i] );
+          }
+          else
+          {
+            int dsIdx = getIndex( eProp2Ds, p.name );
+            if ( eProp2Ds[ dsIdx ].second )
+            {
+              const std::string name = eProp2Ds[ dsIdx ].first;
+              auto &vals = listProps.at( name );
+              libply::ListProperty *lp = dynamic_cast<libply::ListProperty *>( &e[i] );
+              vals.second.push_back( lp->size() );
+              for ( size_t j = 0; j < lp->size(); j++ )
+              {
+                vals.first.push_back( lp->value( j ) );
+              }
+            }
+            else
+            {
+              std::vector<double> &ds = edgeDatasets[dsIdx];
+              ds.push_back( e[i] );
+            }
+          }
+        }
+        edges.push_back( edge );
+      };
+      file.setElementReadCallback( "edge", edgeCallback );
+    }
+  }
+
+  file.read();
+  if ( MDAL::Log::getLastStatus() != MDAL_Status::None ) { return nullptr; }
+  if ( vertices.size() != vertexCount ||
+       faces.size() != faceCount ||
+       edges.size() != edgeCount
+     )
+  {
+    MDAL_SetStatus( MDAL_LogLevel::Error, MDAL_Status::Err_InvalidData, "Incomplete Mesh" );
+    return nullptr;
   }
 
   std::unique_ptr< MemoryMesh > mesh(
@@ -339,27 +311,96 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverPly::load( const std::string &meshFile, 
   mesh->setFaces( std::move( faces ) );
   mesh->setVertices( std::move( vertices ) );
   mesh->setEdges( std::move( edges ) );
-  mesh->setSourceCrs( proj );
+  if ( metadata.find( "crs" ) != metadata.end() )
+  {
+    mesh->setSourceCrs( metadata.at( "crs" ) );
+  }
+
 
   // Add Bed Elevation
   MDAL::addBedElevationDatasetGroup( mesh.get(), mesh->vertices() );
 
+  // Add Vertex Datasets
   for ( size_t i = 0; i < vertexDatasets.size(); ++i )
   {
-    std::shared_ptr<DatasetGroup> group = addDatasetGroup( mesh.get(), vProp2Ds[i], DataOnVertices, true );
-    addDataset( group.get(), vertexDatasets[i] );
+    if ( vProp2Ds[i].second )
+    {
+      auto &vals = listProps.at( vProp2Ds[i].first );
+      vertexDatasets[i].clear();
+      auto it = vals.second.begin();
+      size_t idx = 0;
+      while ( idx < vals.first.size() )
+      {
+        vertexDatasets[i].push_back( vals.first[idx] );
+        vertexDatasets[i].push_back( vals.first[idx + 1] );
+        idx += *it;
+        it = std::next( it, 1 );
+      }
+      listProps.erase( vProp2Ds[i].first );
+    }
+    std::shared_ptr<DatasetGroup> group = addDatasetGroup( mesh.get(), vProp2Ds[i].first, DataOnVertices, !vProp2Ds[i].second );
+    addDataset2D( group.get(), vertexDatasets[i] );
   }
 
+  //Add face datasets and volume datasets
   for ( size_t i = 0; i < faceDatasets.size(); ++i )
   {
-    std::shared_ptr<DatasetGroup> group = addDatasetGroup( mesh.get(), fProp2Ds[i], DataOnFaces, true );
-    addDataset( group.get(), faceDatasets[i] );
+    if ( fProp2Ds[i].second )
+    {
+      std::string name = fProp2Ds[i].first;
+      if ( name.find( "__vols" ) != std::string::npos ) break;
+      auto &vals = listProps.at( name );
+      faceDatasets[i].clear();
+      auto it = vals.second.begin();
+      size_t idx = 0;
+      if ( listProps.find( name + "__vols" ) == listProps.end() )
+      {
+        while ( idx < vals.first.size() )
+        {
+          faceDatasets[i].push_back( vals.first[idx] );
+          faceDatasets[i].push_back( vals.first[idx + 1] );
+          idx += *it;
+          it = std::next( it, 1 );
+        }
+        std::shared_ptr<DatasetGroup> group = addDatasetGroup( mesh.get(), name, DataOnFaces, false );
+        addDataset2D( group.get(), faceDatasets[i] );
+      }
+      else
+      {
+        auto levels = listProps.at( name + "__vols" );
+        std::shared_ptr<DatasetGroup> group = addDatasetGroup( mesh.get(), name, DataOnVolumes, true );
+        addDataset3D( group.get(), vals.first, vals.second, levels.first, levels.second );
+        listProps.erase( name + "__vols" );
+      }
+      listProps.erase( name );
+    }
+    else
+    {
+      std::shared_ptr<DatasetGroup> group = addDatasetGroup( mesh.get(), fProp2Ds[i].first, DataOnFaces, true );
+      addDataset2D( group.get(), faceDatasets[i] );
+    }
   }
 
+  // Add Edge Datasets
   for ( size_t i = 0; i < edgeDatasets.size(); ++i )
   {
-    std::shared_ptr<DatasetGroup> group = addDatasetGroup( mesh.get(), eProp2Ds[i], DataOnEdges, true );
-    addDataset( group.get(), edgeDatasets[i] );
+    if ( eProp2Ds[i].second )
+    {
+      auto vals = listProps.at( eProp2Ds[i].first );
+      edgeDatasets[i].clear();
+      auto it = vals.second.begin();
+      size_t idx = 0;
+      while ( idx < vals.first.size() )
+      {
+        edgeDatasets[i].push_back( vals.first[idx] );
+        edgeDatasets[i].push_back( vals.first[idx + 1] );
+        idx += *it;
+        it = std::next( it, 1 );
+      }
+      listProps.erase( eProp2Ds[i].first );
+    }
+    std::shared_ptr<DatasetGroup> group = addDatasetGroup( mesh.get(), eProp2Ds[i].first, DataOnEdges, !eProp2Ds[i].second );
+    addDataset2D( group.get(), edgeDatasets[i] );
   }
 
   /*
@@ -403,10 +444,13 @@ std::shared_ptr< MDAL::DatasetGroup> MDAL::DriverPly::addDatasetGroup( MDAL::Mes
   return group;
 }
 
-void MDAL::DriverPly::addDataset( MDAL::DatasetGroup *group, const std::vector<double> &values )
+void MDAL::DriverPly::addDataset2D( MDAL::DatasetGroup *group, const std::vector<double> &values )
 {
   if ( !group )
     return;
+
+  size_t mult = 1;
+  if ( !group->isScalar() ) mult = 2;
 
   MDAL::Mesh *mesh = group->mesh();
 
@@ -418,19 +462,31 @@ void MDAL::DriverPly::addDataset( MDAL::DatasetGroup *group, const std::vector<d
 
   if ( group->dataLocation() == DataOnVertices )
   {
-    assert( values.size() == mesh->verticesCount() );
+    if ( values.size() != mesh->verticesCount()*mult )
+    {
+      MDAL_SetStatus( MDAL_LogLevel::Error, MDAL_Status::Err_InvalidData, "PLY: Invalid Number of Data Values" );
+      return;
+    }
   }
 
   if ( group->dataLocation() == DataOnFaces )
   {
-    assert( values.size() == mesh->facesCount() );
+    if ( values.size() != mesh->facesCount()*mult )
+    {
+      MDAL_SetStatus( MDAL_LogLevel::Error, MDAL_Status::Err_InvalidData, "PLY: Invalid Number of Data Values" );
+      return;
+    }
     if ( mesh->facesCount() == 0 )
       return;
   }
 
   if ( group->dataLocation() == DataOnEdges )
   {
-    assert( values.size() == mesh->edgesCount() );
+    if ( values.size() != mesh->edgesCount()*mult )
+    {
+      MDAL_SetStatus( MDAL_LogLevel::Error, MDAL_Status::Err_InvalidData, "PLY: Invalid Number of Data Values" );
+      return;
+    }
     if ( mesh->edgesCount() == 0 )
       return;
   }
@@ -441,4 +497,287 @@ void MDAL::DriverPly::addDataset( MDAL::DatasetGroup *group, const std::vector<d
   dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
   group->datasets.push_back( dataset );
   group->setStatistics( MDAL::calculateStatistics( group ) );
+}
+
+void MDAL::DriverPly::addDataset3D( MDAL::DatasetGroup *group,
+                                    const std::vector<double> &values,
+                                    const std::vector<int> &valueIndexes,
+                                    const std::vector<double> &levels,
+                                    const std::vector<int> &levelIndexes )
+{
+  if ( !group )
+    return;
+
+
+  MDAL::Mesh *mesh = group->mesh();
+
+  if ( values.empty() )
+    return;
+
+  if ( 0 == mesh->facesCount() )
+    return;
+
+  if ( valueIndexes.size() != mesh->facesCount() ||
+       levelIndexes.size() != mesh->facesCount() ||
+       levels.size() != values.size() + mesh->facesCount()
+     )
+  {
+    MDAL_SetStatus( MDAL_LogLevel::Error, MDAL_Status::Err_InvalidData, "Incomplete Volume Dataset" );
+    return;
+  }
+
+  int maxVerticalLevelCount = * std::max_element( valueIndexes.begin(), valueIndexes.end() );
+
+  std::shared_ptr< MDAL::MemoryDataset3D > dataset = std::make_shared< MemoryDataset3D >( group, values.size(), maxVerticalLevelCount, valueIndexes.data(), levels.data() );
+  dataset->setTime( 0.0 );
+  memcpy( dataset->values(), values.data(), sizeof( double ) * values.size() );
+  dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
+  group->datasets.push_back( dataset );
+  group->setStatistics( MDAL::calculateStatistics( group ) );
+}
+
+void MDAL::DriverPly::save( const std::string &fileName, const std::string &meshName, Mesh *mesh )
+{
+  MDAL_UNUSED( meshName );
+
+  MDAL::Log::resetLastStatus();
+
+  DatasetGroups groups = mesh->datasetGroups;
+
+  // vectors to hold the different types of group
+  DatasetGroups vgroups;
+  DatasetGroups fgroups;
+  DatasetGroups egroups;
+  DatasetGroups volGroups;
+
+  for ( std::shared_ptr<DatasetGroup> group : groups )
+  {
+    if ( group->dataLocation() == MDAL_DataLocation::DataOnVertices )
+    {
+      if ( group->name() != "Bed Elevation" ) vgroups.push_back( group );
+    }
+    else if ( group->dataLocation() == MDAL_DataLocation::DataOnFaces )
+    {
+      fgroups.push_back( group );
+    }
+    else if ( group->dataLocation() == MDAL_DataLocation::DataOnEdges )
+    {
+      egroups.push_back( group );
+    }
+    else if ( group->dataLocation() == MDAL_DataLocation::DataOnVolumes )
+    {
+      if ( group->isScalar() )
+      {
+        volGroups.push_back( group );
+      }
+      else
+      {
+        MDAL_SetStatus( MDAL_LogLevel::Warn, MDAL_Status::Err_IncompatibleDatasetGroup, "PLY: Vector Datasets on Volumes are not supported" );
+      }
+    }
+  }
+
+
+  libply::FileOut file( fileName, libply::File::Format::ASCII );
+  if ( MDAL::Log::getLastStatus() != MDAL_Status::None ) return;
+
+  libply::ElementsDefinition definitions;
+  std::vector<libply::Property> vproperties;
+  vproperties.emplace_back( "X", libply::Type::COORDINATE, false );
+  vproperties.emplace_back( "Y", libply::Type::COORDINATE, false );
+  vproperties.emplace_back( "Z", libply::Type::COORDINATE, false );
+  for ( std::shared_ptr<DatasetGroup> group : vgroups )
+  {
+    vproperties.emplace_back( group->name(), libply::Type::FLOAT64, ! group->isScalar() );
+  }
+
+  definitions.emplace_back( "vertex", mesh->verticesCount(), vproperties );
+  if ( mesh->facesCount() > 0 )
+  {
+    std::vector<libply::Property> fproperties;
+    fproperties.emplace_back( "vertex_indices", libply::Type::UINT32, true );
+    for ( std::shared_ptr<DatasetGroup> group : fgroups )
+    {
+      fproperties.emplace_back( group->name(), libply::Type::FLOAT64, ! group->isScalar() );
+    }
+    for ( std::shared_ptr<DatasetGroup> group : volGroups )
+    {
+      fproperties.emplace_back( group->name(), libply::Type::FLOAT64, true );
+      fproperties.emplace_back( group->name() + "__vols", libply::Type::FLOAT64, true );
+    }
+    definitions.emplace_back( "face", mesh->facesCount(), fproperties );
+  }
+
+  if ( mesh->edgesCount() > 0 )
+  {
+    std::vector<libply::Property> eproperties;
+    eproperties.emplace_back( "vertex1", libply::Type::UINT32, false );
+    eproperties.emplace_back( "vertex2", libply::Type::UINT32, false );
+    for ( std::shared_ptr<DatasetGroup> group : egroups )
+    {
+      eproperties.emplace_back( group->name(), libply::Type::FLOAT64, ! group->isScalar() );
+    }
+    definitions.emplace_back( "edge", mesh->edgesCount(), eproperties );
+  }
+  file.setElementsDefinition( definitions );
+
+  // write vertices
+  std::unique_ptr<MDAL::MeshVertexIterator> vertices = mesh->readVertices();
+
+
+  libply::ElementWriteCallback vertexCallback = [&vertices, &vgroups]( libply::ElementBuffer & e, size_t index )
+  {
+    double vertex[3];
+    vertices->next( 1, vertex );
+    e[0] = vertex[0];
+    e[1] = vertex[1];
+    e[2] = vertex[2];
+    for ( size_t i = 0; i < vgroups.size(); i++ )
+    {
+      if ( vgroups[i]->isScalar() )
+      {
+        double val[1];
+        vgroups[i]->datasets[0]->scalarData( index, 1, &val[0] );
+        e[i + 3] = val[0];
+      }
+      else
+      {
+        double val[2];
+        vgroups[i]->datasets[0]->vectorData( index, 1, &val[0] );
+        libply::ListProperty *lp = dynamic_cast<libply::ListProperty *>( &e[i + 3] );
+        lp->define( libply::Type::FLOAT64, 2 );
+        lp->value( 0 ) = val[0];
+        lp->value( 1 ) = val[1];
+      };
+    }
+  };
+
+
+  // write faces
+  std::vector<int> vertexIndices( mesh->faceVerticesMaximumCount() );
+  std::unique_ptr<MDAL::MeshFaceIterator> faces = mesh->readFaces();
+
+  libply::ElementWriteCallback faceCallback = [&faces, &fgroups, &vertexIndices, &volGroups]( libply::ElementBuffer & e, size_t index )
+  {
+    int idx = 0;
+    int faceOffsets[1];
+    faces->next( 1, faceOffsets, vertexIndices.size(), vertexIndices.data() );
+    libply::ListProperty *lp = dynamic_cast<libply::ListProperty *>( &e[idx] );
+    lp->define( libply::Type::UINT32, faceOffsets[0] );
+    for ( int j = 0; j < faceOffsets[0]; ++j )
+    {
+      lp->value( j ) = vertexIndices[j];
+    };
+    idx++;
+    for ( size_t i = 0; i < fgroups.size(); i++ )
+    {
+      if ( fgroups[i]->isScalar() )
+      {
+        double val[1];
+        fgroups[i]->datasets[0]->scalarData( index, 1, &val[0] );
+        e[idx] = val[0];
+      }
+      else
+      {
+        double val[2];
+        fgroups[i]->datasets[0]->vectorData( index, 1, &val[0] );
+        libply::ListProperty *lp = dynamic_cast<libply::ListProperty *>( &e[idx] );
+        lp->define( libply::Type::FLOAT64, 2 );
+        lp->value( 0 ) = val[0];
+        lp->value( 1 ) = val[1];
+      };
+      idx++;
+    }
+    int vCount[1];
+    int f2v[1];
+    for ( size_t i = 0; i < volGroups.size(); i++ )
+    {
+      std::shared_ptr<MDAL::MemoryDataset3D> ds = std::dynamic_pointer_cast<MDAL::MemoryDataset3D>( volGroups[i]->datasets[0] );
+      ds->verticalLevelCountData( index, 1, &vCount[0] );
+      const int count = vCount[0];
+      ds->faceToVolumeData( index, 1, &f2v[0] );
+      const int vindex = f2v[0];
+      std::vector<double> val( count, 0 );
+      ds->scalarVolumesData( vindex, count, val.data() );
+      libply::ListProperty *lp = dynamic_cast<libply::ListProperty *>( &e[idx] );
+      lp->define( libply::Type::FLOAT64, count );
+
+      for ( int j = 0; j < count; ++j )
+      {
+        lp->value( j ) = val[j];
+      };
+      idx++;
+      std::vector<double> ex( count + 1, 0 );
+      ds->verticalLevelData( vindex + index, count + 1, ex.data() );
+      libply::ListProperty *lp1 = dynamic_cast<libply::ListProperty *>( &e[idx] );
+      lp1->define( libply::Type::FLOAT64, count + 1 );
+      for ( int j = 0; j < count + 1; ++j )
+      {
+        lp1->value( j ) = ex[j];
+      };
+      idx++;
+    }
+  };
+
+  // write edges
+
+  std::unique_ptr<MDAL::MeshEdgeIterator> edges = mesh->readEdges();
+
+  libply::ElementWriteCallback edgeCallback = [&edges, &egroups]( libply::ElementBuffer & e, size_t index )
+  {
+    int startIndex;
+    int endIndex;
+    edges->next( 1, &startIndex, &endIndex );
+    e[0] = startIndex;
+    e[1] = endIndex;
+    for ( size_t i = 0; i < egroups.size(); i++ )
+    {
+      if ( egroups[i]->isScalar() )
+      {
+        double val[1];
+        egroups[i]->datasets[0]->scalarData( index, 1, &val[0] );
+        e[i + 2] = val[0];
+      }
+      else
+      {
+        double val[2];
+        egroups[i]->datasets[0]->vectorData( index, 1, &val[0] );
+        libply::ListProperty *lp = dynamic_cast<libply::ListProperty *>( &e[i + 2] );
+        lp->define( libply::Type::FLOAT64, 2 );
+        lp->value( 0 ) = val[0];
+        lp->value( 1 ) = val[1];
+      };
+    }
+  };
+
+  file.setElementWriteCallback( "vertex", vertexCallback );
+  if ( mesh->facesCount() > 0 ) file.setElementWriteCallback( "face", faceCallback );
+  if ( mesh->edgesCount() > 0 ) file.setElementWriteCallback( "edge", edgeCallback );
+
+  file.write();
+
+
+  /*
+  * Clean up
+  */
+  for ( size_t i = 0; i < vgroups.size(); ++i )
+  {
+    vgroups.pop_back();
+  };
+
+  for ( size_t i = 0; i < fgroups.size(); ++i )
+  {
+    fgroups.pop_back();
+  };
+
+  for ( size_t i = 0; i < egroups.size(); ++i )
+  {
+    egroups.pop_back();
+  };
+}
+
+bool MDAL::DriverPly::persist( DatasetGroup *group )
+{
+  save( group->uri(), "", group->mesh() );
+  return false;
 }

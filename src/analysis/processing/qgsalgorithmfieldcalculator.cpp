@@ -142,8 +142,6 @@ bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameter
     feedback->pushWarning( QObject::tr( "Field name %1 already exists and will be replaced" ).arg( field.name() ) );
   }
 
-  const QString dest;
-
   mFieldIdx = mFields.lookupField( field.name() );
 
   // prepare expression

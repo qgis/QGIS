@@ -31,7 +31,7 @@ const double D_TRUE = 1.0;
 const double D_FALSE = 0.0;
 const double D_NODATA = std::numeric_limits<double>::quiet_NaN();
 
-std::shared_ptr<QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::createMemoryDatasetGroup( const QString &datasetGroupName, const QgsInterval &relativeTime ) const
+std::shared_ptr<QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::createMemoryDatasetGroup( const QString &datasetGroupName, const QgsInterval &relativeTime, const QgsInterval &startTime, const QgsInterval &endTime ) const
 {
   std::shared_ptr<QgsMeshMemoryDatasetGroup> grp;
   const QList<int> &indexes = mMeshLayer->datasetGroupsIndexes();
@@ -52,18 +52,27 @@ std::shared_ptr<QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::createMemoryDataset
       grp->setMinimumMaximum( meta.minimum(), meta.maximum() );
       grp->setName( meta.name() );
 
-      if ( !relativeTime.isValid() )
+      if ( !relativeTime.isValid()  && ( !endTime.isValid() || !startTime.isValid() ) )
       {
         for ( int index = 0; index < mMeshLayer->datasetCount( groupIndex ); ++index )
           grp->addDataset( createMemoryDataset( QgsMeshDatasetIndex( groupIndex, index ) ) );
       }
-      else
+      else if ( relativeTime.isValid() )
       {
         const QgsMeshDatasetIndex datasetIndex = mMeshLayer->datasetIndexAtRelativeTime( relativeTime, groupIndex );
         if ( datasetIndex.isValid() )
           grp->addDataset( createMemoryDataset( datasetIndex ) );
       }
+      else //only start time and end time are valid
+      {
+        QList<QgsMeshDatasetIndex> datasetIndexes = mMeshLayer->datasetIndexInRelativeTimeInterval( startTime, endTime, groupIndex );
 
+        if ( datasetIndexes.isEmpty() ) // if empty, at least one dataset corresponding to startTime
+          datasetIndexes.append( mMeshLayer->datasetIndexAtRelativeTime( startTime, groupIndex ) );
+
+        for ( const QgsMeshDatasetIndex &index : datasetIndexes )
+          grp->addDataset( createMemoryDataset( index ) );
+      }
 
       break;
     }
@@ -333,6 +342,62 @@ QgsMeshCalcUtils::QgsMeshCalcUtils( QgsMeshLayer *layer, const QStringList &used
   mIsValid = true;
 }
 
+QgsMeshCalcUtils::QgsMeshCalcUtils( QgsMeshLayer *layer,
+                                    const QStringList &usedGroupNames,
+                                    const QStringList &usedGroupNamesForAggregate,
+                                    const QgsInterval &relativeTime,
+                                    const QgsInterval &startTime,
+                                    const QgsInterval &endTime )
+  : mMeshLayer( layer )
+  , mIsValid( false )
+{
+  // Layer must be valid
+  if ( !mMeshLayer || !mMeshLayer->dataProvider() )
+    return;
+
+  // Resolve output type of the calculation
+
+  mOutputType = determineResultDataType( layer, usedGroupNames + usedGroupNamesForAggregate );
+
+  // Data on edges are not implemented
+  if ( mOutputType == QgsMeshDatasetGroupMetadata::DataOnEdges )
+    return;
+
+  // Support for meshes with edges are not implemented
+  if ( mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) )
+    return;
+
+  for ( const QString &groupName : usedGroupNamesForAggregate )
+  {
+    const std::shared_ptr<QgsMeshMemoryDatasetGroup> dsg = createMemoryDatasetGroup( groupName, QgsInterval(), startTime, endTime );
+    if ( !dsg )
+      return;
+
+    mDatasetGroupMapForAggregate.insert( groupName, dsg );
+  }
+
+  for ( const QString &groupName : usedGroupNames )
+  {
+    const std::shared_ptr<QgsMeshMemoryDatasetGroup> ds = createMemoryDatasetGroup( groupName, relativeTime );
+    if ( ( !ds || ds->memoryDatasets.isEmpty() ) )
+    {
+      if ( mDatasetGroupMapForAggregate.contains( groupName ) )
+        continue;
+      else
+        return;
+    }
+    mDatasetGroupMap.insert( groupName, ds );
+  }
+
+  QgsInterval usedInterval = relativeTime;
+  if ( !usedInterval.isValid() )
+    usedInterval = QgsInterval( 0 );
+  mTimes.append( usedInterval.hours() );
+
+  mIsValid = true;
+  mIgnoreTime = true;
+}
+
 bool  QgsMeshCalcUtils::isValid() const
 {
   return mIsValid;
@@ -341,6 +406,14 @@ bool  QgsMeshCalcUtils::isValid() const
 const QgsMeshLayer *QgsMeshCalcUtils::layer() const
 {
   return mMeshLayer;
+}
+
+std::shared_ptr<const QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::group( const QString &datasetName, bool isAggregate ) const
+{
+  if ( isAggregate )
+    return mDatasetGroupMapForAggregate.value( datasetName );
+  else
+    return mDatasetGroupMap.value( datasetName );
 }
 
 std::shared_ptr<const QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::group( const QString &datasetName ) const
@@ -494,11 +567,11 @@ std::shared_ptr<QgsMeshMemoryDataset>  QgsMeshCalcUtils::copy(
   return output;
 }
 
-void QgsMeshCalcUtils::copy( QgsMeshMemoryDatasetGroup &group1, const QString &groupName ) const
+void QgsMeshCalcUtils::copy( QgsMeshMemoryDatasetGroup &group1, const QString &groupName, bool isAggregate ) const
 {
   Q_ASSERT( isValid() );
 
-  const std::shared_ptr<const QgsMeshMemoryDatasetGroup> group2 = group( groupName );
+  const std::shared_ptr<const QgsMeshMemoryDatasetGroup> group2 = group( groupName, isAggregate );
   Q_ASSERT( group2 );
 
   if ( group2->datasetCount() == 1 )
@@ -513,7 +586,8 @@ void QgsMeshCalcUtils::copy( QgsMeshMemoryDatasetGroup &group1, const QString &g
     for ( int output_index = 0; output_index < group2->datasetCount(); ++output_index )
     {
       const std::shared_ptr<const QgsMeshMemoryDataset> o0 = group2->constDataset( output_index );
-      if ( qgsDoubleNear( o0->time, mTimes.first() ) ||
+      if ( mIgnoreTime ||
+           qgsDoubleNear( o0->time, mTimes.first() ) ||
            qgsDoubleNear( o0->time, mTimes.last() ) ||
            ( ( o0->time >= mTimes.first() ) && ( o0->time <= mTimes.last() ) )
          )
@@ -552,7 +626,12 @@ void QgsMeshCalcUtils::expand( QgsMeshMemoryDatasetGroup &group1, const QgsMeshM
       for ( int i = 1; i < group2.datasetCount(); ++i )
       {
         const std::shared_ptr<QgsMeshMemoryDataset> o = copy( o0 );
-        o->time = mTimes[i];
+
+        if ( mIgnoreTime )
+          o->time = mTimes[0];
+        else
+          o->time = mTimes[i];
+
         group1.addDataset( o );
       }
     }
@@ -604,7 +683,10 @@ int  QgsMeshCalcUtils::datasetCount(
 
   if ( ( group1.datasetCount() > 1 ) || ( group2.datasetCount() > 1 ) )
   {
-    return mTimes.size();
+    if ( mIgnoreTime )
+      return std::max( group1.datasetCount(), group2.datasetCount() );
+    else
+      return mTimes.size();
   }
   else
   {

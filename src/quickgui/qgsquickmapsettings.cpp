@@ -147,6 +147,11 @@ QgsPoint QgsQuickMapSettings::screenToCoordinate( const QPointF &point ) const
   return QgsPoint( pp );
 }
 
+void QgsQuickMapSettings::setTransformContext( const QgsCoordinateTransformContext &ctx )
+{
+  mMapSettings.setTransformContext( ctx );
+}
+
 QgsMapSettings QgsQuickMapSettings::mapSettings() const
 {
   return mMapSettings;
@@ -230,7 +235,7 @@ void QgsQuickMapSettings::onReadProject( const QDomDocument &doc )
     QDomNode node = nodes.item( 0 );
     QDomElement element = node.toElement();
 
-    if ( element.hasAttribute( QStringLiteral( "name" ) ) && element.attribute( QStringLiteral( "name" ) ) == QStringLiteral( "theMapCanvas" ) )
+    if ( element.hasAttribute( QStringLiteral( "name" ) ) && element.attribute( QStringLiteral( "name" ) ) == QLatin1String( "theMapCanvas" ) )
     {
       foundTheMapCanvas = true;
       mMapSettings.readXml( node );

@@ -308,7 +308,7 @@ class GPKGRasterTable(GPKGTable, RasterTable):
         uri = u"raster:gdal:%s:%s" % (self.name, self.uri().database())
         return uri
 
-    def toMapLayer(self):
+    def toMapLayer(self, geometryType=None, crs=None):
         from qgis.core import QgsRasterLayer, QgsContrastEnhancement
 
         # QGIS has no provider to load rasters, let's use GDAL

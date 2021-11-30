@@ -22,34 +22,84 @@
 
 #include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
+#include "qgslayoutexporter.h"
+
+class QgsLayoutAtlas;
 
 ///@cond PRIVATE
 
 /**
- * Native export layout to image algorithm.
+ * Base class for atlas layout to pdf algorithms
  */
-class QgsLayoutAtlasToPdfAlgorithm : public QgsProcessingAlgorithm
+class QgsLayoutAtlasToPdfAlgorithmBase : public QgsProcessingAlgorithm
 {
 
   public:
 
-    QgsLayoutAtlasToPdfAlgorithm() = default;
+    QgsLayoutAtlasToPdfAlgorithmBase() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     Flags flags() const override;
-    QString name() const override;
-    QString displayName() const override;
     QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
-    QString shortDescription() const override;
-    QString shortHelpString() const override;
-    QgsLayoutAtlasToPdfAlgorithm *createInstance() const override SIP_FACTORY;
+
+    QgsLayoutAtlas *atlas();
+    QgsLayoutExporter exporter();
+    QgsLayoutExporter::PdfExportSettings settings();
+    QString error();
 
   protected:
 
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
+    virtual QVariantMap exportAtlas( QgsLayoutAtlas *atlas, const QgsLayoutExporter &exporter, const QgsLayoutExporter::PdfExportSettings &settings,
+                                     const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0;
+
+};
+
+
+/**
+ * Export atlas layout to single pdf file algorithm.
+ */
+class QgsLayoutAtlasToPdfAlgorithm : public QgsLayoutAtlasToPdfAlgorithmBase
+{
+
+  public:
+
+    QgsLayoutAtlasToPdfAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QString name() const override;
+    QString displayName() const override;
+    QString shortDescription() const override;
+    QString shortHelpString() const override;
+    QgsLayoutAtlasToPdfAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+    QVariantMap exportAtlas( QgsLayoutAtlas *atlas, const QgsLayoutExporter &exporter, const QgsLayoutExporter::PdfExportSettings &settings,
+                             const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+};
+
+/**
+ * Export atlas layout to multiple pdf files algorithm.
+ */
+class QgsLayoutAtlasToMultiplePdfAlgorithm : public QgsLayoutAtlasToPdfAlgorithmBase
+{
+
+  public:
+
+    QgsLayoutAtlasToMultiplePdfAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QString name() const override;
+    QString displayName() const override;
+    QString shortDescription() const override;
+    QString shortHelpString() const override;
+    QgsLayoutAtlasToMultiplePdfAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+    QVariantMap exportAtlas( QgsLayoutAtlas *atlas, const QgsLayoutExporter &exporter, const QgsLayoutExporter::PdfExportSettings &settings,
+                             const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 };
 

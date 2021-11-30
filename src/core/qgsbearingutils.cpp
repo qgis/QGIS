@@ -43,7 +43,7 @@ double QgsBearingUtils::bearingTrueNorth( const QgsCoordinateReferenceSystem &cr
   p2.setY( p2.y() + 0.000001 );
 
   //transform back
-  const QgsPointXY p3 = transform.transform( p2, QgsCoordinateTransform::ReverseTransform );
+  const QgsPointXY p3 = transform.transform( p2, Qgis::TransformDirection::Reverse );
 
   // find bearing from point to p3
   return point.azimuth( p3 );

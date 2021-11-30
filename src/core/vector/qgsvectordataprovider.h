@@ -165,6 +165,25 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     virtual bool empty() const;
 
     /**
+     * Returns TRUE if the layer is a query (SQL) layer.
+     *
+     * \note this is simply a shortcut to check if the SqlQuery flag
+     *       is set.
+     *
+     *\see vectorLayerTypeFlags()
+     * \since QGIS 3.24
+     */
+    virtual bool isSqlQuery() const;
+
+    /**
+     * Returns the vector layer type flags.
+     *
+     * \see isSqlQuery()
+     * \since QGIS 3.24
+     */
+    virtual Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const;
+
+    /**
      * Will always return FeatureAvailability::FeaturesAvailable or
      * FeatureAvailability::NoFeaturesAvailable.
      *
@@ -566,12 +585,12 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
 
     /**
      * Discover the available relations with the given layers.
-     * \param self the layer using this data provider.
+     * \param target the layer using this data provider.
      * \param layers the other layers.
      * \returns the list of N-1 relations from this provider.
      * \since QGIS 3.0
      */
-    virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const;
+    virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const;
 
     /**
      * Gets metadata, dependent on the provider type, that will be display in the metadata tab of the layer properties.

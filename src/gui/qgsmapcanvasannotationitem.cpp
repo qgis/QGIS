@@ -141,7 +141,7 @@ void QgsMapCanvasAnnotationItem::onCanvasLayersChanged()
   }
   else
   {
-    setVisible( mMapCanvas->mapSettings().layers().contains( mAnnotation->mapLayer() ) );
+    setVisible( mMapCanvas->mapSettings().layers( true ).contains( mAnnotation->mapLayer() ) );
   }
 }
 
@@ -314,7 +314,7 @@ void QgsMapCanvasAnnotationItem::paint( QPainter *painter )
     return;
 
   QgsRenderContext rc = QgsRenderContext::fromQPainter( painter );
-  rc.setFlag( QgsRenderContext::Antialiasing, true );
+  rc.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
 
   if ( mAnnotation )
     mAnnotation->render( rc );

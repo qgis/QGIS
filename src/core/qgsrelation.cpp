@@ -221,7 +221,16 @@ QString QgsRelation::getRelatedFeaturesFilter( const QgsFeature &feature ) const
   for ( const FieldPair &pair : std::as_const( d->mFieldPairs ) )
   {
     QVariant val( feature.attribute( pair.referencedField() ) );
-    conditions << QgsExpression::createFieldEqualityExpression( pair.referencingField(), val );
+    int referencingIdx = referencingLayer()->fields().lookupField( pair.referencingField() );
+    if ( referencingIdx >= 0 )
+    {
+      QVariant::Type fieldType = referencingLayer()->fields().at( referencingIdx ).type();
+      conditions << QgsExpression::createFieldEqualityExpression( pair.referencingField(), val, fieldType );
+    }
+    else
+    {
+      conditions << QgsExpression::createFieldEqualityExpression( pair.referencingField(), val );
+    }
   }
 
   return conditions.join( QLatin1String( " AND " ) );
@@ -233,8 +242,17 @@ QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsAttributes 
 
   for ( const FieldPair &pair : std::as_const( d->mFieldPairs ) )
   {
+    int referencedIdx = referencedLayer()->fields().lookupField( pair.referencedField() );
     int referencingIdx = referencingLayer()->fields().lookupField( pair.referencingField() );
-    conditions << QgsExpression::createFieldEqualityExpression( pair.referencedField(), attributes.at( referencingIdx ) );
+    if ( referencedIdx >= 0 )
+    {
+      QVariant::Type fieldType = referencedLayer()->fields().at( referencedIdx ).type();
+      conditions << QgsExpression::createFieldEqualityExpression( pair.referencedField(), attributes.at( referencingIdx ), fieldType );
+    }
+    else
+    {
+      conditions << QgsExpression::createFieldEqualityExpression( pair.referencedField(), attributes.at( referencingIdx ) );
+    }
   }
 
   QgsFeatureRequest myRequest;

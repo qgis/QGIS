@@ -108,7 +108,6 @@ Content-Type: text/xml; charset=utf-8
    <KeywordList>
     <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
    </KeywordList>
-   <SRS>CRS:84</SRS>
    <SRS>EPSG:4326</SRS>
    <SRS>EPSG:3857</SRS>
    <LatLonBoundingBox maxy="44.901599" maxx="8.204165" miny="44.901236" minx="8.203154"/>
@@ -118,7 +117,6 @@ Content-Type: text/xml; charset=utf-8
     <Name>layer_with_short_name</Name>
     <Title>A Layer with a short name</Title>
     <Abstract>A Layer with an abstract</Abstract>
-    <SRS>CRS:84</SRS>
     <SRS>EPSG:4326</SRS>
     <SRS>EPSG:3857</SRS>
     <LatLonBoundingBox maxy="44.901483" maxx="8.203547" miny="44.901394" minx="8.203459"/>
@@ -132,11 +130,18 @@ Content-Type: text/xml; charset=utf-8
       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project.qgs&amp;SERVICE=WMS&amp;VERSION=1.1.1&amp;REQUEST=GetLegendGraphic&amp;LAYER=layer_with_short_name&amp;FORMAT=image/png&amp;STYLE=default" xmlns:xlink="http://www.w3.org/1999/xlink"/>
      </LegendURL>
     </Style>
+    <MetadataURL type="FGDC">
+     <Format>text/plain</Format>
+     <OnlineResource xlink:type="simple" xlink:href="https://my.other.url" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+    </MetadataURL>
+    <MetadataURL type="TC211">
+     <Format>text/xml</Format>
+     <OnlineResource xlink:type="simple" xlink:href="https://some.data.com" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+    </MetadataURL>
    </Layer>
    <Layer queryable="1">
     <Name>landsat</Name>
     <Title>landsat</Title>
-    <SRS>CRS:84</SRS>
     <SRS>EPSG:4326</SRS>
     <SRS>EPSG:3857</SRS>
     <LatLonBoundingBox maxy="30.257289" maxx="18.045658" miny="30.151856" minx="17.924273"/>
@@ -155,7 +160,6 @@ Content-Type: text/xml; charset=utf-8
     <Name>testlayer èé</Name>
     <Title>A test vector layer</Title>
     <Abstract>A test vector layer with unicode òà</Abstract>
-    <SRS>CRS:84</SRS>
     <SRS>EPSG:4326</SRS>
     <SRS>EPSG:3857</SRS>
     <LatLonBoundingBox maxy="44.901483" maxx="8.203547" miny="44.901394" minx="8.203459"/>
@@ -174,7 +178,6 @@ Content-Type: text/xml; charset=utf-8
     <Name>fields_alias</Name>
     <Title>A test vector layer</Title>
     <Abstract>A test vector layer with unicode òà</Abstract>
-    <SRS>CRS:84</SRS>
     <SRS>EPSG:4326</SRS>
     <SRS>EPSG:3857</SRS>
     <LatLonBoundingBox maxy="44.901483" maxx="8.203547" miny="44.901394" minx="8.203459"/>
@@ -193,7 +196,6 @@ Content-Type: text/xml; charset=utf-8
     <Name>exclude_attribute</Name>
     <Title>A test vector layer</Title>
     <Abstract>A test vector layer with unicode òà</Abstract>
-    <SRS>CRS:84</SRS>
     <SRS>EPSG:4326</SRS>
     <SRS>EPSG:3857</SRS>
     <LatLonBoundingBox maxy="44.901483" maxx="8.203547" miny="44.901394" minx="8.203459"/>
@@ -212,7 +214,6 @@ Content-Type: text/xml; charset=utf-8
     <Name>group_name</Name>
     <Title>Group title</Title>
     <Abstract>Group abstract</Abstract>
-    <SRS>CRS:84</SRS>
     <SRS>EPSG:4326</SRS>
     <SRS>EPSG:3857</SRS>
     <LatLonBoundingBox maxy="44.901483" maxx="8.203548" miny="44.901394" minx="8.203459"/>
@@ -221,7 +222,6 @@ Content-Type: text/xml; charset=utf-8
     <Layer queryable="1">
      <Name>testlayer2</Name>
      <Title>testlayer2</Title>
-     <SRS>CRS:84</SRS>
      <SRS>EPSG:4326</SRS>
      <SRS>EPSG:3857</SRS>
      <LatLonBoundingBox maxy="44.901483" maxx="8.203547" miny="44.901394" minx="8.203459"/>
@@ -240,7 +240,6 @@ Content-Type: text/xml; charset=utf-8
    <Layer queryable="0">
     <Name>groupwithoutshortname</Name>
     <Title>groupwithoutshortname</Title>
-    <SRS>CRS:84</SRS>
     <SRS>EPSG:4326</SRS>
     <SRS>EPSG:3857</SRS>
     <LatLonBoundingBox maxy="44.901483" maxx="8.203548" miny="44.901394" minx="8.203459"/>
@@ -249,7 +248,6 @@ Content-Type: text/xml; charset=utf-8
     <Layer queryable="0">
      <Name>testlayer3</Name>
      <Title>testlayer3</Title>
-     <SRS>CRS:84</SRS>
      <SRS>EPSG:4326</SRS>
      <SRS>EPSG:3857</SRS>
      <LatLonBoundingBox maxy="44.901483" maxx="8.203547" miny="44.901394" minx="8.203459"/>

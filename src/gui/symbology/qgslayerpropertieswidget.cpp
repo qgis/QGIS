@@ -43,6 +43,11 @@
 #include "qgsmasksymbollayerwidget.h"
 #include "qgstemporalcontroller.h"
 #include "qgssymbollayerutils.h"
+#include "qgsgeometrygeneratorsymbollayer.h"
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
+#include "qgsfillsymbol.h"
+#include "qgsmarkersymbollayer.h"
 
 static bool _initWidgetFunction( const QString &name, QgsSymbolLayerWidgetFunc f )
 {
@@ -75,6 +80,8 @@ static void _initWidgetFunctions()
   _initWidgetFunction( QStringLiteral( "HashLine" ), QgsHashedLineSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "ArrowLine" ), QgsArrowSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "InterpolatedLine" ), QgsInterpolatedLineSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "RasterLine" ), QgsRasterLineSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "Lineburst" ), QgsLineburstSymbolLayerWidget::create );
 
   _initWidgetFunction( QStringLiteral( "SimpleMarker" ), QgsSimpleMarkerSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "FilledMarker" ), QgsFilledMarkerSymbolLayerWidget::create );
@@ -326,9 +333,104 @@ void QgsLayerPropertiesWidget::layerTypeChanged()
 
   // change layer to a new (with different type)
   // base new layer on existing layer's properties
-  QgsSymbolLayer *newLayer = am->createSymbolLayer( layer->properties() );
+  QVariantMap properties = layer->properties();
+
+  // if the old symbol layer was a "geometry generator" layer then
+  // we instead get the properties from the generator
+  if ( QgsGeometryGeneratorSymbolLayer *generator = dynamic_cast< QgsGeometryGeneratorSymbolLayer * >( layer ) )
+  {
+    if ( generator->subSymbol() && generator->subSymbol()->symbolLayerCount() > 0 )
+      properties = generator->subSymbol()->symbolLayer( 0 )->properties();
+  }
+
+  QgsSymbolLayer *newLayer = am->createSymbolLayer( properties );
   if ( !newLayer )
     return;
+
+  // if a symbol layer is changed to a "geometry generator" layer, then we move the old symbol layer into the
+  // geometry generator's subsymbol.
+  if ( QgsGeometryGeneratorSymbolLayer *generator = dynamic_cast< QgsGeometryGeneratorSymbolLayer * >( newLayer ) )
+  {
+    if ( mSymbol )
+    {
+      switch ( mSymbol->type() )
+      {
+        case Qgis::SymbolType::Marker:
+        {
+          std::unique_ptr< QgsMarkerSymbol > markerSymbol = std::make_unique< QgsMarkerSymbol >( QgsSymbolLayerList( {layer->clone() } ) );
+          generator->setSymbolType( Qgis::SymbolType::Marker );
+          generator->setSubSymbol( markerSymbol.release() );
+          break;
+        }
+        case Qgis::SymbolType::Line:
+        {
+          std::unique_ptr< QgsLineSymbol > lineSymbol = std::make_unique< QgsLineSymbol >( QgsSymbolLayerList( {layer->clone() } ) );
+          generator->setSymbolType( Qgis::SymbolType::Line );
+          generator->setSubSymbol( lineSymbol.release() );
+          break;
+        }
+        case Qgis::SymbolType::Fill:
+        {
+          std::unique_ptr< QgsFillSymbol > fillSymbol = std::make_unique< QgsFillSymbol >( QgsSymbolLayerList( {layer->clone() } ) );
+          generator->setSymbolType( Qgis::SymbolType::Fill );
+          generator->setSubSymbol( fillSymbol.release() );
+          break;
+        }
+        case Qgis::SymbolType::Hybrid:
+          break;
+      }
+    }
+  }
+  else
+  {
+    // try to copy the subsymbol, if its the same type as the new symbol layer's subsymbol
+    if ( newLayer->subSymbol() && layer->subSymbol() && newLayer->subSymbol()->type() == layer->subSymbol()->type() )
+    {
+      newLayer->setSubSymbol( layer->subSymbol()->clone() );
+    }
+  }
+
+  // special logic for when NEW symbol layers are created from GUI only...
+  // TODO: find a nicer generic way to handle this!
+  if ( QgsFontMarkerSymbolLayer *fontMarker = dynamic_cast< QgsFontMarkerSymbolLayer * >( newLayer ) )
+  {
+    const QString defaultFont = fontMarker->fontFamily();
+    const QFontDatabase fontDb;
+    if ( !fontDb.hasFamily( defaultFont ) )
+    {
+      // default font marker font choice doesn't exist on system, so just use first available symbol font
+      const QStringList candidates = fontDb.families( QFontDatabase::WritingSystem::Symbol );
+      bool foundGoodCandidate = false;
+      for ( const QString &candidate : candidates )
+      {
+        if ( fontDb.writingSystems( candidate ).size() == 1 )
+        {
+          // family ONLY offers symbol writing systems, so it's a good candidate!
+          fontMarker->setFontFamily( candidate );
+          foundGoodCandidate = true;
+          break;
+        }
+      }
+      if ( !foundGoodCandidate && !candidates.empty() )
+      {
+        // fallback to first available family which advertises symbol writing system
+        QString candidate = candidates.at( 0 );
+        fontMarker->setFontFamily( candidate );
+      }
+    }
+
+    // search (briefly!!) for a unicode character which actually exists in the font
+    const QFontMetrics fontMetrics( fontMarker->fontFamily() );
+    ushort character = fontMarker->character().at( 0 ).unicode();
+    for ( ; character < 1000; ++character )
+    {
+      if ( fontMetrics.inFont( QChar( character ) ) )
+      {
+        fontMarker->setCharacter( QChar( character ) );
+        break;
+      }
+    }
+  }
 
   updateSymbolLayerWidget( newLayer );
   emit changeLayer( newLayer );
@@ -345,7 +447,7 @@ void QgsLayerPropertiesWidget::emitSignalChanged()
     mLayer->paintEffect()->setEnabled( false );
     paintEffectToggled = true;
   }
-  mEffectWidget->setPreviewPicture( QgsSymbolLayerUtils::symbolLayerPreviewPicture( mLayer, QgsUnitTypes::RenderMillimeters, QSize( 60, 60 ) ) );
+  mEffectWidget->setPreviewPicture( QgsSymbolLayerUtils::symbolLayerPreviewPicture( mLayer, QgsUnitTypes::RenderMillimeters, QSize( 60, 60 ), QgsMapUnitScale(), mSymbol ? mSymbol->type() : Qgis::SymbolType::Hybrid ) );
   if ( paintEffectToggled )
   {
     mLayer->paintEffect()->setEnabled( true );

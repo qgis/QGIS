@@ -771,10 +771,6 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
     //! Initializes cell style map
     void initStyles();
 
-    bool textRequiresWrapping( QgsRenderContext &context, const QString &text, double columnWidth, const QgsTextFormat &format ) const;
-
-    QStringList wrappedText( QgsRenderContext &context, const QString &value, double columnWidth, const QgsTextFormat &format ) const;
-
     /**
      * Returns the calculated background color for a row and column combination.
      * \param row row number, where -1 is the header row, and 0 is the first body row

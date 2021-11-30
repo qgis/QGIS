@@ -87,7 +87,6 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
      * Checks if labels in a layer can be rotated
      * \param rotationCol out: attribute column for data defined label rotation
     */
-    bool layerIsRotatable( QgsVectorLayer *layer, int &rotationCol ) const;
     bool labelIsRotatable( QgsVectorLayer *layer, const QgsPalLayerSettings &settings, int &rotationCol ) const;
 
   protected:
@@ -101,7 +100,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     struct APP_EXPORT LabelDetails
     {
       LabelDetails() = default;
-      explicit LabelDetails( const QgsLabelPosition &p );
+      explicit LabelDetails( const QgsLabelPosition &p, QgsMapCanvas *canvas );
       bool valid = false;
       QgsLabelPosition pos;
       QgsVectorLayer *layer = nullptr;
@@ -138,7 +137,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
      * \param ignoreUpsideDown treat label as right-side-up
      * \returns TRUE in case of success
     */
-    bool currentLabelRotationPoint( QgsPointXY &pos, bool ignoreUpsideDown = false, bool rotatingUnpinned = false );
+    bool currentLabelRotationPoint( QgsPointXY &pos, bool ignoreUpsideDown = false );
 
     //! Creates label / feature / fixpoint rubber bands for the current label position
     void createRubberBands();

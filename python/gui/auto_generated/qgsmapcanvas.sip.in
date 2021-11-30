@@ -100,7 +100,7 @@ Sets destination coordinate reference system
 .. versionadded:: 2.4
 %End
 
-    void setMapSettingsFlags( QgsMapSettings::Flags flags );
+    void setMapSettingsFlags( Qgis::MapSettingsFlags flags );
 %Docstring
 Resets the ``flags`` for the canvas' map settings.
 
@@ -148,6 +148,7 @@ Make sure to remove any rendered images from cache (does nothing if cache is not
 
 .. versionadded:: 2.4
 %End
+
 
     void waitWhileRendering();
 %Docstring
@@ -445,14 +446,29 @@ Emits signal scaleChanged to update scale in main window
 Returns the map layer at position index in the layer stack
 %End
 
-    int layerCount() const;
+    QgsMapLayer *layer( const QString &id );
 %Docstring
-Returns number of layers on the map
+Returns the map layer with the matching ID, or ``None`` if no layers could be found.
+
+This method searches both layers associated with the map canvas (see :py:func:`~QgsMapCanvas.layers`)
+and layers from the :py:class:`QgsProject` associated with the canvas
+(which is current the :py:func:`QgsProject.instance()`). It can be used to resolve layer IDs to
+layers which may be visible in the canvas, but not associated with a :py:class:`QgsProject`.
+
+.. versionadded:: 3.22
 %End
 
-    QList<QgsMapLayer *> layers() const;
+    int layerCount() const;
+%Docstring
+Returns number of layers on the map.
+%End
+
+    QList<QgsMapLayer *> layers( bool expandGroupLayers = false ) const;
 %Docstring
 Returns the list of layers shown within the map canvas.
+
+Since QGIS 3.24, if the ``expandGroupLayers`` option is ``True`` then group layers will be converted to
+all their child layers.
 
 .. seealso:: :py:func:`setLayers`
 %End

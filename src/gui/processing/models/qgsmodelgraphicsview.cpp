@@ -610,7 +610,6 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
   if ( !modelScene() )
     return;
 
-  QList< QgsModelComponentGraphicItem * > pastedItems;
   QDomDocument doc;
   QClipboard *clipboard = QApplication::clipboard();
   if ( doc.setContent( clipboard->mimeData()->data( QStringLiteral( "text/xml" ) ) ) )

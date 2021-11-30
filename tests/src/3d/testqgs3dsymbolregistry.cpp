@@ -85,7 +85,6 @@ void TestQgs3DSymbolRegistry::metadata()
   QCOMPARE( metadata.visibleName(), QString( "display name" ) );
 
   //test creating symbol from metadata
-  const QVariantMap map;
   const std::unique_ptr< QgsAbstract3DSymbol > symbol( metadata.create() );
   QVERIFY( symbol );
   Dummy3DSymbol *dummySymbol = dynamic_cast<Dummy3DSymbol *>( symbol.get() );

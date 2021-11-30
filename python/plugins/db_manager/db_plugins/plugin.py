@@ -776,6 +776,9 @@ class Table(DbItemObject):
             return QgsRasterLayer(uri, self.name, provider)
         return QgsVectorLayer(uri, self.name, provider)
 
+    def geometryType(self):
+        pass
+
     def getValidQgisUniqueFields(self, onlyOne=False):
         """ list of fields valid to load the table as layer in QGIS canvas.
                 QGIS automatically search for a valid unique field, so it's

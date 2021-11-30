@@ -144,8 +144,8 @@ class TestLayoutBase(TestQgsPalLabeling):
         image = QImage(QSize(width, height),
                        self._TestMapSettings.outputImageFormat())
         image.fill(QColor(152, 219, 249).rgb())
-        image.setDotsPerMeterX(dpi / 25.4 * 1000)
-        image.setDotsPerMeterY(dpi / 25.4 * 1000)
+        image.setDotsPerMeterX(int(dpi / 25.4 * 1000))
+        image.setDotsPerMeterY(int(dpi / 25.4 * 1000))
 
         p = QPainter(image)
         p.setRenderHint(
@@ -180,7 +180,7 @@ class TestLayoutBase(TestQgsPalLabeling):
         svg_g.setFileName(svgpath)
         svg_g.setSize(QSize(width, height))
         svg_g.setViewBox(QRect(0, 0, width, height))
-        svg_g.setResolution(dpi)
+        svg_g.setResolution(int(dpi))
 
         sp = QPainter(svg_g)
         exporter = QgsLayoutExporter(self._c)
@@ -192,8 +192,8 @@ class TestLayoutBase(TestQgsPalLabeling):
 
         image = QImage(width, height, self._TestMapSettings.outputImageFormat())
         image.fill(QColor(152, 219, 249).rgb())
-        image.setDotsPerMeterX(dpi / 25.4 * 1000)
-        image.setDotsPerMeterY(dpi / 25.4 * 1000)
+        image.setDotsPerMeterX(int(dpi / 25.4 * 1000))
+        image.setDotsPerMeterY(int(dpi / 25.4 * 1000))
 
         svgr = QSvgRenderer(svgpath)
         p = QPainter(image)
@@ -225,7 +225,7 @@ class TestLayoutBase(TestQgsPalLabeling):
                        QPrinter.Millimeter)
         p.setFullPage(True)
         p.setColorMode(QPrinter.Color)
-        p.setResolution(self._c.renderContext().dpi())
+        p.setResolution(int(self._c.renderContext().dpi()))
 
         pdf_p = QPainter(p)
         # page_mm = p.pageRect(QPrinter.Millimeter)

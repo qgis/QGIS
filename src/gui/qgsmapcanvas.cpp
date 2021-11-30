@@ -160,9 +160,9 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
 
   {
     QgsScopedRuntimeProfile profile( "Map settings initialization" );
-    mSettings.setFlag( QgsMapSettings::DrawEditingInfo );
-    mSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
-    mSettings.setFlag( QgsMapSettings::RenderPartialOutput );
+    mSettings.setFlag( Qgis::MapSettingsFlag::DrawEditingInfo );
+    mSettings.setFlag( Qgis::MapSettingsFlag::UseRenderingOptimization );
+    mSettings.setFlag( Qgis::MapSettingsFlag::RenderPartialOutput );
     mSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
     connect( QgsProject::instance(), &QgsProject::ellipsoidChanged,
              this, [ = ]
@@ -254,12 +254,29 @@ QgsMapCanvas::~QgsMapCanvas()
   }
   mLastNonZoomMapTool = nullptr;
 
+  cancelJobs();
+
+  // delete canvas items prior to deleting the canvas
+  // because they might try to update canvas when it's
+  // already being destructed, ends with segfault
+  qDeleteAll( mScene->items() );
+
+  mScene->deleteLater();  // crashes in python tests on windows
+
+  delete mCache;
+}
+
+
+void QgsMapCanvas::cancelJobs()
+{
+
   // rendering job may still end up writing into canvas map item
   // so kill it before deleting canvas items
   if ( mJob )
   {
     whileBlocking( mJob )->cancel();
     delete mJob;
+    mJob = nullptr;
   }
 
   QList< QgsMapRendererQImageJob * >::const_iterator previewJob = mPreviewJobs.constBegin();
@@ -271,16 +288,8 @@ QgsMapCanvas::~QgsMapCanvas()
       delete *previewJob;
     }
   }
-
-  // delete canvas items prior to deleting the canvas
-  // because they might try to update canvas when it's
-  // already being destructed, ends with segfault
-  qDeleteAll( mScene->items() );
-
-  mScene->deleteLater();  // crashes in python tests on windows
-
-  delete mCache;
 }
+
 
 void QgsMapCanvas::setMagnificationFactor( double factor, const QgsPointXY *center )
 {
@@ -305,12 +314,18 @@ double QgsMapCanvas::magnificationFactor() const
 
 void QgsMapCanvas::enableAntiAliasing( bool flag )
 {
-  mSettings.setFlag( QgsMapSettings::Antialiasing, flag );
-} // anti aliasing
+  mSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, flag );
+  mSettings.setFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms, flag );
+}
+
+bool QgsMapCanvas::antiAliasingEnabled() const
+{
+  return mSettings.testFlag( Qgis::MapSettingsFlag::Antialiasing );
+}
 
 void QgsMapCanvas::enableMapTileRendering( bool flag )
 {
-  mSettings.setFlag( QgsMapSettings::RenderMapTile, flag );
+  mSettings.setFlag( Qgis::MapSettingsFlag::RenderMapTile, flag );
 }
 
 QgsMapLayer *QgsMapCanvas::layer( int index )
@@ -320,6 +335,21 @@ QgsMapLayer *QgsMapCanvas::layer( int index )
     return layers[index];
   else
     return nullptr;
+}
+
+QgsMapLayer *QgsMapCanvas::layer( const QString &id )
+{
+  // first check for layers from canvas map settings
+  const QList<QgsMapLayer *> layers = mapSettings().layers();
+  for ( QgsMapLayer *layer : layers )
+  {
+    if ( layer && layer->id() == id )
+      return layer;
+  }
+
+  // else fallback to searching project layers
+  // TODO: allow a specific project to be associated with a canvas!
+  return QgsProject::instance()->mapLayer( id );
 }
 
 void QgsMapCanvas::setCurrentLayer( QgsMapLayer *layer )
@@ -459,7 +489,7 @@ const QgsTemporalController *QgsMapCanvas::temporalController() const
   return mController;
 }
 
-void QgsMapCanvas::setMapSettingsFlags( QgsMapSettings::Flags flags )
+void QgsMapCanvas::setMapSettingsFlags( Qgis::MapSettingsFlags flags )
 {
   mSettings.setFlags( flags );
   clearCache();
@@ -1235,7 +1265,10 @@ void QgsMapCanvas::setExtent( const QgsRectangle &r, bool magnified )
     mLastExtent.removeAt( i );
   }
 
-  mLastExtent.append( extent() );
+  if ( !mLastExtent.isEmpty() && mLastExtent.last() != extent() )
+  {
+    mLastExtent.append( extent() );
+  }
 
   // adjust history to no more than 100
   if ( mLastExtent.size() > 100 )
@@ -1837,7 +1870,7 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent *e )
         //mCanvasProperties->dragging = true;
         if ( ! e->isAutoRepeat() )
         {
-          QApplication::setOverrideCursor( Qt::ClosedHandCursor );
+          mTemporaryCursorOverride.reset( new QgsTemporaryCursorOverride( Qt::ClosedHandCursor ) );
           mCanvasProperties->panSelectorDown = true;
           panActionStart( mCanvasProperties->mouseLastXY );
         }
@@ -1888,7 +1921,7 @@ void QgsMapCanvas::keyReleaseEvent( QKeyEvent *e )
       if ( !e->isAutoRepeat() && mCanvasProperties->panSelectorDown )
       {
         QgsDebugMsgLevel( QStringLiteral( "Releasing pan selector" ), 2 );
-        QApplication::restoreOverrideCursor();
+        mTemporaryCursorOverride.reset();
         mCanvasProperties->panSelectorDown = false;
         panActionEnd( mCanvasProperties->mouseLastXY );
       }
@@ -1924,7 +1957,7 @@ void QgsMapCanvas::mouseDoubleClickEvent( QMouseEvent *e )
 void QgsMapCanvas::beginZoomRect( QPoint pos )
 {
   mZoomRect.setRect( 0, 0, 0, 0 );
-  QApplication::setOverrideCursor( mZoomCursor );
+  mTemporaryCursorOverride.reset( new QgsTemporaryCursorOverride( mZoomCursor ) );
   mZoomDragging = true;
   mZoomRubberBand.reset( new QgsRubberBand( this, QgsWkbTypes::PolygonGeometry ) );
   QColor color( Qt::blue );
@@ -1937,20 +1970,20 @@ void QgsMapCanvas::endZoomRect( QPoint pos )
 {
   mZoomDragging = false;
   mZoomRubberBand.reset( nullptr );
-  QApplication::restoreOverrideCursor();
+  mTemporaryCursorOverride.reset();
 
   // store the rectangle
   mZoomRect.setRight( pos.x() );
   mZoomRect.setBottom( pos.y() );
+
+  //account for bottom right -> top left dragging
+  mZoomRect = mZoomRect.normalized();
 
   if ( mZoomRect.width() < 5 && mZoomRect.height() < 5 )
   {
     //probably a mistake - would result in huge zoom!
     return;
   }
-
-  //account for bottom right -> top left dragging
-  mZoomRect = mZoomRect.normalized();
 
   // set center and zoom
   const QSize &zoomRectSize = mZoomRect.size();
@@ -1977,8 +2010,12 @@ void QgsMapCanvas::mousePressEvent( QMouseEvent *e )
   //use middle mouse button for panning, map tools won't receive any events in that case
   else if ( e->button() == Qt::MiddleButton )
   {
-    mCanvasProperties->panSelectorDown = true;
-    panActionStart( mCanvasProperties->mouseLastXY );
+    if ( !mCanvasProperties->panSelectorDown )
+    {
+      mCanvasProperties->panSelectorDown = true;
+      mTemporaryCursorOverride.reset( new QgsTemporaryCursorOverride( Qt::ClosedHandCursor ) );
+      panActionStart( mCanvasProperties->mouseLastXY );
+    }
   }
   else
   {
@@ -2026,8 +2063,12 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent *e )
   //use middle mouse button for panning, map tools won't receive any events in that case
   else if ( e->button() == Qt::MiddleButton )
   {
-    mCanvasProperties->panSelectorDown = false;
-    panActionEnd( mCanvasProperties->mouseLastXY );
+    if ( mCanvasProperties->panSelectorDown )
+    {
+      mCanvasProperties->panSelectorDown = false;
+      mTemporaryCursorOverride.reset();
+      panActionEnd( mCanvasProperties->mouseLastXY );
+    }
   }
   else if ( e->button() == Qt::BackButton )
   {
@@ -2397,12 +2438,11 @@ QColor QgsMapCanvas::selectionColor() const
 int QgsMapCanvas::layerCount() const
 {
   return mapSettings().layers().size();
-} // layerCount
+}
 
-
-QList<QgsMapLayer *> QgsMapCanvas::layers() const
+QList<QgsMapLayer *> QgsMapCanvas::layers( bool expandGroupLayers ) const
 {
-  return mapSettings().layers();
+  return mapSettings().layers( expandGroupLayers );
 }
 
 void QgsMapCanvas::layerStateChange()
@@ -2747,7 +2787,7 @@ void QgsMapCanvas::readProject( const QDomDocument &doc )
     }
     setExtent( tmpSettings.extent() );
     setRotation( tmpSettings.rotation() );
-    enableMapTileRendering( tmpSettings.testFlag( QgsMapSettings::RenderMapTile ) );
+    enableMapTileRendering( tmpSettings.testFlag( Qgis::MapSettingsFlag::RenderMapTile ) );
 
     clearExtentHistory(); // clear the extent history on project load
 
@@ -3031,8 +3071,8 @@ void QgsMapCanvas::startPreviewJob( int number )
   jobExtent.setYMinimum( jobExtent.yMinimum() + dy );
 
   jobSettings.setExtent( jobExtent );
-  jobSettings.setFlag( QgsMapSettings::DrawLabeling, false );
-  jobSettings.setFlag( QgsMapSettings::RenderPreviewJob, true );
+  jobSettings.setFlag( Qgis::MapSettingsFlag::DrawLabeling, false );
+  jobSettings.setFlag( Qgis::MapSettingsFlag::RenderPreviewJob, true );
 
   // truncate preview layers to fast layers
   const QList<QgsMapLayer *> layers = jobSettings.layers();

@@ -488,8 +488,12 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
   QgsVectorLayer *sourceLayer = match.layer();
   if ( mCadDockWidget && mCadDockWidget->cadEnabled() )
   {
-    layerPoint = mCadDockWidget->currentPointV2();
+    layerPoint = mCadDockWidget->currentPointLayerCoordinates( layer() );
     return 0;
+  }
+  else if ( !vlayer )
+  {
+    return 1;
   }
   else
   {
@@ -566,11 +570,10 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
   if ( mCapturing && mStreamingEnabled && !mAllowAddingStreamingPoints )
     return 0;
 
-  int res = 0;
   QgsPoint layerPoint;
-  if ( layer() && layer()->type() == QgsMapLayerType::VectorLayer )
+  if ( layer() )
   {
-    res = fetchLayerPoint( match, layerPoint );
+    int res = fetchLayerPoint( match, layerPoint );
     if ( res != 0 )
     {
       res = nextPoint( QgsPoint( point ), layerPoint );
@@ -579,10 +582,6 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
         return res;
       }
     }
-  }
-  else
-  {
-    layerPoint = QgsPoint( point );
   }
   const QgsPoint mapPoint = toMapCoordinates( layer(), layerPoint );
 
@@ -697,7 +696,7 @@ int QgsMapToolCapture::addCurve( QgsCurve *c )
   const QgsCoordinateTransform ct = mCanvas->mapSettings().layerTransform( layer() );
   if ( ct.isValid() )
   {
-    c->transform( ct, QgsCoordinateTransform::ReverseTransform );
+    c->transform( ct, Qgis::TransformDirection::Reverse );
   }
   const int countBefore = mCaptureCurve.vertexCount();
   //if there is only one point, this the first digitized point that are in the this first curve added --> remove the point
@@ -872,11 +871,6 @@ void QgsMapToolCapture::closePolygon()
 {
   mCaptureCurve.close();
   updateExtraSnapLayer();
-}
-
-QgsMapLayer *QgsMapToolCapture::layer() const
-{
-  return canvas()->currentLayer();
 }
 
 void QgsMapToolCapture::validateGeometry()

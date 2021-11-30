@@ -339,15 +339,20 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
       case QVariant::DateTime:
       case QVariant::Time:
       {
-        int year, month, day, hour, minute, second, tzf;
+        int year, month, day, hour, minute, tzf;
+        float second;
+        float secondsPart = 0;
 
-        OGR_F_GetFieldAsDateTime( ogrFet, attIndex, &year, &month, &day, &hour, &minute, &second, &tzf );
+        OGR_F_GetFieldAsDateTimeEx( ogrFet, attIndex, &year, &month, &day, &hour, &minute, &second, &tzf );
+        float millisecondPart = std::modf( second, &secondsPart );
+
         if ( field.type() == QVariant::Date )
           value = QDate( year, month, day );
         else if ( field.type() == QVariant::Time )
-          value = QTime( hour, minute, second );
+          value = QTime( hour, minute, static_cast< int >( secondsPart ), static_cast< int >( 1000 * millisecondPart ) );
         else
-          value = QDateTime( QDate( year, month, day ), QTime( hour, minute, second ) );
+          value = QDateTime( QDate( year, month, day ),
+                             QTime( hour, minute, static_cast< int >( secondsPart ), static_cast< int >( 1000 * millisecondPart ) ) );
       }
       break;
 
@@ -1556,7 +1561,7 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
       const thread_local QRegularExpression sOgrId = QRegularExpression( QStringLiteral( "ogr-sym-(\\d+)" ) );
       const QRegularExpressionMatch ogrMatch = sOgrId.match( id );
 
-      QgsSimpleMarkerSymbolLayerBase::Shape shape;
+      Qgis::MarkerShape shape;
       bool isFilled = true;
       if ( ogrMatch.hasMatch() )
       {
@@ -1564,63 +1569,63 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
         switch ( symId )
         {
           case 0:
-            shape = QgsSimpleMarkerSymbolLayer::Shape::Cross;
+            shape = Qgis::MarkerShape::Cross;
             break;
 
           case 1:
-            shape = QgsSimpleMarkerSymbolLayer::Shape::Cross2;
+            shape = Qgis::MarkerShape::Cross2;
             break;
 
           case 2:
             isFilled = false;
-            shape = QgsSimpleMarkerSymbolLayer::Shape::Circle;
+            shape = Qgis::MarkerShape::Circle;
             break;
 
           case 3:
-            shape = QgsSimpleMarkerSymbolLayer::Shape::Circle;
+            shape = Qgis::MarkerShape::Circle;
             break;
 
           case 4:
             isFilled = false;
-            shape = QgsSimpleMarkerSymbolLayer::Shape::Square;
+            shape = Qgis::MarkerShape::Square;
             break;
 
           case 5:
-            shape = QgsSimpleMarkerSymbolLayer::Shape::Square;
+            shape = Qgis::MarkerShape::Square;
             break;
 
           case 6:
             isFilled = false;
-            shape = QgsSimpleMarkerSymbolLayer::Shape::Triangle;
+            shape = Qgis::MarkerShape::Triangle;
             break;
 
           case 7:
-            shape = QgsSimpleMarkerSymbolLayer::Shape::Triangle;
+            shape = Qgis::MarkerShape::Triangle;
             break;
 
           case 8:
             isFilled = false;
-            shape = QgsSimpleMarkerSymbolLayer::Shape::Star;
+            shape = Qgis::MarkerShape::Star;
             break;
 
           case 9:
-            shape = QgsSimpleMarkerSymbolLayer::Shape::Star;
+            shape = Qgis::MarkerShape::Star;
             break;
 
           case 10:
-            shape = QgsSimpleMarkerSymbolLayer::Shape::Line;
+            shape = Qgis::MarkerShape::Line;
             break;
 
           default:
             isFilled = false;
-            shape = QgsSimpleMarkerSymbolLayer::Shape::Square; // to initialize the variable
+            shape = Qgis::MarkerShape::Square; // to initialize the variable
             break;
         }
       }
       else
       {
         isFilled = false;
-        shape = QgsSimpleMarkerSymbolLayer::Shape::Square; // to initialize the variable
+        shape = Qgis::MarkerShape::Square; // to initialize the variable
       }
 
       std::unique_ptr< QgsSimpleMarkerSymbolLayer > simpleMarker = std::make_unique< QgsSimpleMarkerSymbolLayer >( shape, symbolSize, -angle );

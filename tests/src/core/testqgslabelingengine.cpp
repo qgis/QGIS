@@ -163,10 +163,10 @@ void TestQgsLabelingEngine::testEngineSettings()
   // default for new projects should be placement engine v2
   QCOMPARE( settings.placementVersion(), QgsLabelingEngineSettings::PlacementEngineVersion2 );
 
-  settings.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
-  QCOMPARE( settings.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
-  settings.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysOutlines );
-  QCOMPARE( settings.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
+  settings.setDefaultTextRenderFormat( Qgis::TextRenderFormat::AlwaysText );
+  QCOMPARE( settings.defaultTextRenderFormat(), Qgis::TextRenderFormat::AlwaysText );
+  settings.setDefaultTextRenderFormat( Qgis::TextRenderFormat::AlwaysOutlines );
+  QCOMPARE( settings.defaultTextRenderFormat(), Qgis::TextRenderFormat::AlwaysOutlines );
 
   settings.setPlacementVersion( QgsLabelingEngineSettings::PlacementEngineVersion1 );
   QCOMPARE( settings.placementVersion(), QgsLabelingEngineSettings::PlacementEngineVersion1 );
@@ -181,22 +181,22 @@ void TestQgsLabelingEngine::testEngineSettings()
 
   // reading from project
   QgsProject p;
-  settings.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
+  settings.setDefaultTextRenderFormat( Qgis::TextRenderFormat::AlwaysText );
   settings.setFlag( QgsLabelingEngineSettings::DrawUnplacedLabels, true );
   settings.setUnplacedLabelColor( QColor( 0, 255, 0 ) );
   settings.setPlacementVersion( QgsLabelingEngineSettings::PlacementEngineVersion1 );
   settings.writeSettingsToProject( &p );
   QgsLabelingEngineSettings settings2;
   settings2.readSettingsFromProject( &p );
-  QCOMPARE( settings2.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
+  QCOMPARE( settings2.defaultTextRenderFormat(), Qgis::TextRenderFormat::AlwaysText );
   QVERIFY( settings2.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) );
   QCOMPARE( settings2.unplacedLabelColor().name(), QStringLiteral( "#00ff00" ) );
 
-  settings.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysOutlines );
+  settings.setDefaultTextRenderFormat( Qgis::TextRenderFormat::AlwaysOutlines );
   settings.setFlag( QgsLabelingEngineSettings::DrawUnplacedLabels, false );
   settings.writeSettingsToProject( &p );
   settings2.readSettingsFromProject( &p );
-  QCOMPARE( settings2.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
+  QCOMPARE( settings2.defaultTextRenderFormat(), Qgis::TextRenderFormat::AlwaysOutlines );
   QVERIFY( !settings2.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) );
   QCOMPARE( settings2.placementVersion(), QgsLabelingEngineSettings::PlacementEngineVersion1 );
 
@@ -205,11 +205,11 @@ void TestQgsLabelingEngine::testEngineSettings()
   QgsLabelingEngineSettings settings3;
   p2.writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), false );
   settings3.readSettingsFromProject( &p2 );
-  QCOMPARE( settings3.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
+  QCOMPARE( settings3.defaultTextRenderFormat(), Qgis::TextRenderFormat::AlwaysText );
 
   p2.writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), true );
   settings3.readSettingsFromProject( &p2 );
-  QCOMPARE( settings3.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
+  QCOMPARE( settings3.defaultTextRenderFormat(), Qgis::TextRenderFormat::AlwaysOutlines );
 
   // when opening an older project, labeling engine version should be 1
   p2.removeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/PlacementEngineVersion" ) );
@@ -695,7 +695,7 @@ void TestQgsLabelingEngine::testCapitalization()
   QCOMPARE( provider2->mLabels.at( 0 )->labelText(), QString( "A TEST LABEL" ) );
 
   font.setCapitalization( QFont::MixedCase );
-  format.setCapitalization( QgsStringUtils::AllUppercase );
+  format.setCapitalization( Qgis::Capitalization::AllUppercase );
   format.setFont( font );
   settings.setFormat( format );
   QgsVectorLayerLabelProvider *provider2b = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test2" ), true, &settings );
@@ -706,7 +706,7 @@ void TestQgsLabelingEngine::testCapitalization()
 
   //lowercase
   font.setCapitalization( QFont::AllLowercase );
-  format.setCapitalization( QgsStringUtils::MixedCase );
+  format.setCapitalization( Qgis::Capitalization::MixedCase );
   format.setFont( font );
   settings.setFormat( format );
   QgsVectorLayerLabelProvider *provider3 = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test3" ), true, &settings );
@@ -716,7 +716,7 @@ void TestQgsLabelingEngine::testCapitalization()
   QCOMPARE( provider3->mLabels.at( 0 )->labelText(), QString( "a test label" ) );
 
   font.setCapitalization( QFont::MixedCase );
-  format.setCapitalization( QgsStringUtils::AllLowercase );
+  format.setCapitalization( Qgis::Capitalization::AllLowercase );
   format.setFont( font );
   settings.setFormat( format );
   QgsVectorLayerLabelProvider *provider3b = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test3" ), true, &settings );
@@ -727,7 +727,7 @@ void TestQgsLabelingEngine::testCapitalization()
 
   //first letter uppercase
   font.setCapitalization( QFont::Capitalize );
-  format.setCapitalization( QgsStringUtils::MixedCase );
+  format.setCapitalization( Qgis::Capitalization::MixedCase );
   format.setFont( font );
   settings.setFormat( format );
   QgsVectorLayerLabelProvider *provider4 = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test4" ), true, &settings );
@@ -737,7 +737,7 @@ void TestQgsLabelingEngine::testCapitalization()
   QCOMPARE( provider4->mLabels.at( 0 )->labelText(), QString( "A TeSt LABEL" ) );
 
   font.setCapitalization( QFont::MixedCase );
-  format.setCapitalization( QgsStringUtils::ForceFirstLetterToCapital );
+  format.setCapitalization( Qgis::Capitalization::ForceFirstLetterToCapital );
   format.setFont( font );
   settings.setFormat( format );
   QgsVectorLayerLabelProvider *provider4b = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test4" ), true, &settings );
@@ -747,7 +747,7 @@ void TestQgsLabelingEngine::testCapitalization()
   QCOMPARE( provider4b->mLabels.at( 0 )->labelText(), QString( "A TeSt LABEL" ) );
 
   settings.fieldName = QStringLiteral( "'A TEST LABEL'" );
-  format.setCapitalization( QgsStringUtils::TitleCase );
+  format.setCapitalization( Qgis::Capitalization::TitleCase );
   format.setFont( font );
   settings.setFormat( format );
   QgsVectorLayerLabelProvider *provider5 = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test4" ), true, &settings );
@@ -1347,7 +1347,7 @@ void TestQgsLabelingEngine::testCurvedLabelsWithTinySegments()
   mapSettings.setExtent( g.boundingBox() );
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
   mapSettings.setOutputDpi( 96 );
-  mapSettings.setFlag( QgsMapSettings::UseRenderingOptimization, false );
+  mapSettings.setFlag( Qgis::MapSettingsFlag::UseRenderingOptimization, false );
 
   QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
   engineSettings.setFlag( QgsLabelingEngineSettings::UsePartialCandidates, false );

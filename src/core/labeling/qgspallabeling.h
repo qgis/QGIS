@@ -43,6 +43,7 @@
 #include "qgslabellinesettings.h"
 #include "qgslabeling.h"
 #include "qgslabelposition.h"
+#include "qgscoordinatetransform.h"
 
 class QgsTextDocument;
 
@@ -237,6 +238,7 @@ class CORE_EXPORT QgsPalLayerSettings
       FontLetterSpacing = 28, //!< Letter spacing
       FontWordSpacing = 29, //!< Word spacing
       FontBlendMode = 30, //!< Text blend mode
+      FontStretchFactor = 113, //!< Font stretch factor, since QGIS 3.24
 
       // text formatting
       MultiLineWrapChar = 31,

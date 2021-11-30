@@ -64,7 +64,7 @@ Returns ``True`` if the block is empty.
 Returns the number of fragments in the block.
 %End
 
-    void applyCapitalization( QgsStringUtils::Capitalization capitalization );
+    void applyCapitalization( Qgis::Capitalization capitalization );
 %Docstring
 Applies a ``capitalization`` style to the block's text.
 

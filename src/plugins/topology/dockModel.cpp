@@ -70,9 +70,9 @@ QVariant DockModel::data( const QModelIndex &index, int role ) const
   if ( role == Qt::TextAlignmentRole )
   {
     if ( column )
-      return QVariant( Qt::AlignRight );
+      return static_cast<Qt::Alignment::Int>( Qt::AlignRight );
     else
-      return QVariant( Qt::AlignLeft );
+      return static_cast<Qt::Alignment::Int>( Qt::AlignLeft );
   }
 
   QVariant val;

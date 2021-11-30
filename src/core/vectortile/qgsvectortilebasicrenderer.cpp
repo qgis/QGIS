@@ -182,7 +182,13 @@ void QgsVectorTileBasicRenderer::renderTile( const QgsVectorTileRendererData &ti
 
     QgsSymbol *sym = layerStyle.symbol();
     sym->startRender( context, QgsFields() );
-    if ( layerStyle.layerName().isEmpty() )
+    if ( layerStyle.layerName() == QLatin1String( "background" ) )
+    {
+      QgsFillSymbol *fillSym = dynamic_cast<QgsFillSymbol *>( sym );
+      if ( fillSym )
+        fillSym->renderPolygon( tile.tilePolygon(), nullptr, nullptr, context );
+    }
+    else if ( layerStyle.layerName().isEmpty() )
     {
       // matching all layers
       for ( QString layerName : tileData.keys() )

@@ -17,8 +17,10 @@
 
 #include <QWidget>
 #include <QIcon>
+#include <QPointer>
 
 #include "qgspanelwidget.h"
+#include "qgslayertreegroup.h"
 #include "qgis_gui.h"
 
 class QgsMapCanvas;
@@ -78,11 +80,28 @@ class GUI_EXPORT QgsMapLayerConfigWidgetContext
      */
     QgsMessageBar *messageBar() const { return mMessageBar; }
 
+    /**
+     * Sets the layer tree \a group associated with the widget.
+     *
+     * \see layerTreeGroup()
+     * \since QGIS 3.24
+     */
+    void setLayerTreeGroup( QgsLayerTreeGroup *group );
+
+    /**
+     * Returns the layer tree group associated with the widget.
+     *
+     * \see setLayerTreeGroup()
+     * \since QGIS 3.24
+     */
+    QgsLayerTreeGroup *layerTreeGroup() const;
+
   private:
 
     QString mAnnotationId;
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
+    QPointer< QgsLayerTreeGroup > mLayerTreeGroup = nullptr;
 
 };
 

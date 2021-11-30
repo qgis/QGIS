@@ -240,9 +240,9 @@ void TestQgsEllipseMarkerSymbol::bounds()
   mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty::fromExpression( QStringLiteral( "min(\"importance\" * 2, 6)" ) ) );
   mEllipseMarkerLayer->setStrokeWidth( 0.5 );
 
-  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, true );
+  mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, true );
   const bool result = imageCheck( QStringLiteral( "ellipsemarker_bounds" ) );
-  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, false );
+  mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, false );
   QVERIFY( result );
 }
 

@@ -234,22 +234,28 @@ Returns the magnification factor.
 .. versionadded:: 2.16
 %End
 
-    QStringList layerIds() const;
+    QStringList layerIds( bool expandGroupLayers = false ) const;
 %Docstring
 Returns the list of layer IDs which will be rendered in the map.
 
 The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top).
+
+Since QGIS 3.24, if the ``expandGroupLayers`` option is ``True`` then group layers will be converted to
+all their child layers.
 
 .. seealso:: :py:func:`layers`
 
 .. seealso:: :py:func:`setLayers`
 %End
 
-    QList<QgsMapLayer *> layers() const;
+    QList<QgsMapLayer *> layers( bool expandGroupLayers = false ) const;
 %Docstring
 Returns the list of layers which will be rendered in the map.
 
 The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
+
+Since QGIS 3.24, if the ``expandGroupLayers`` option is ``True`` then group layers will be converted to
+all their child layers.
 
 .. seealso:: :py:func:`setLayers`
 
@@ -421,45 +427,24 @@ Returns the color that is used for drawing of selected vector features.
 .. seealso:: :py:func:`setSelectionColor`
 %End
 
-    enum Flag
-    {
-      Antialiasing,
-      DrawEditingInfo,
-      ForceVectorOutput,
-      UseAdvancedEffects,
-      DrawLabeling,
-      UseRenderingOptimization,
-      DrawSelection,
-      DrawSymbolBounds,
-      RenderMapTile,
-      RenderPartialOutput,
-      RenderPreviewJob,
-      RenderBlocking,
-      LosslessImageRendering,
-      Render3DMap,
-      // TODO: ignore scale-based visibility (overview)
-    };
-    typedef QFlags<QgsMapSettings::Flag> Flags;
-
-
-    void setFlags( QgsMapSettings::Flags flags );
+    void setFlags( Qgis::MapSettingsFlags flags );
 %Docstring
 Sets combination of flags that will be used for rendering
 %End
-    void setFlag( Flag flag, bool on = true );
+    void setFlag( Qgis::MapSettingsFlag flag, bool on = true );
 %Docstring
 Enable or disable a particular flag (other flags are not affected)
 %End
-    Flags flags() const;
+    Qgis::MapSettingsFlags flags() const;
 %Docstring
 Returns combination of flags used for rendering
 %End
-    bool testFlag( Flag flag ) const;
+    bool testFlag( Qgis::MapSettingsFlag flag ) const;
 %Docstring
 Check whether a particular flag is enabled
 %End
 
-    QgsRenderContext::TextRenderFormat textRenderFormat() const;
+    Qgis::TextRenderFormat textRenderFormat() const;
 %Docstring
 Returns the text render format, which dictates how text is rendered (e.g. as paths or real text objects).
 
@@ -468,7 +453,7 @@ Returns the text render format, which dictates how text is rendered (e.g. as pat
 .. versionadded:: 3.4.3
 %End
 
-    void setTextRenderFormat( QgsRenderContext::TextRenderFormat format );
+    void setTextRenderFormat( Qgis::TextRenderFormat format );
 %Docstring
 Sets the text render ``format``, which dictates how text is rendered (e.g. as paths or real text objects).
 
@@ -950,10 +935,6 @@ Sets the ``range`` of z-values which will be visible in the map.
     void updateDerived();
 
 };
-
-QFlags<QgsMapSettings::Flag> operator|(QgsMapSettings::Flag f1, QFlags<QgsMapSettings::Flag> f2);
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

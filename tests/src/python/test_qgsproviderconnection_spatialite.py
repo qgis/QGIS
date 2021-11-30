@@ -18,6 +18,7 @@ import shutil
 import tempfile
 from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
 from qgis.core import (
+    Qgis,
     QgsWkbTypes,
     QgsAbstractDatabaseProviderConnection,
     QgsProviderConnectionException,
@@ -148,6 +149,7 @@ class TestPyQgsProviderConnectionSpatialite(unittest.TestCase, TestPyQgsProvider
         options.geometryColumn = 'geom'
         vl = conn.createSqlVectorLayer(options)
         self.assertTrue(vl.isValid())
+        self.assertTrue(vl.isSqlQuery())
         self.assertEqual(vl.geometryType(), QgsWkbTypes.PolygonGeometry)
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 2)
@@ -156,6 +158,9 @@ class TestPyQgsProviderConnectionSpatialite(unittest.TestCase, TestPyQgsProvider
         options.filter = 'name == \'Sülfeld\''
         vl = conn.createSqlVectorLayer(options)
         self.assertTrue(vl.isValid())
+        self.assertTrue(vl.isSqlQuery())
+        # Test flags
+        self.assertTrue(vl.vectorLayerTypeFlags() & Qgis.VectorLayerTypeFlag.SqlQuery)
         self.assertEqual(vl.geometryType(), QgsWkbTypes.PolygonGeometry)
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 1)

@@ -23,6 +23,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkcontentfetchertask.h"
+#include "qgssettings.h"
 
 #include <QApplication>
 #include <QCoreApplication>
@@ -42,11 +43,12 @@
 
 ///@cond PRIVATE
 
-QgsImageCacheEntry::QgsImageCacheEntry( const QString &path, QSize size, const bool keepAspectRatio, const double opacity )
+QgsImageCacheEntry::QgsImageCacheEntry( const QString &path, QSize size, const bool keepAspectRatio, const double opacity, double dpi )
   : QgsAbstractContentCacheEntry( path )
   , size( size )
   , keepAspectRatio( keepAspectRatio )
   , opacity( opacity )
+  , targetDpi( dpi )
 {
 }
 
@@ -54,7 +56,7 @@ bool QgsImageCacheEntry::isEqual( const QgsAbstractContentCacheEntry *other ) co
 {
   const QgsImageCacheEntry *otherImage = dynamic_cast< const QgsImageCacheEntry * >( other );
   // cheapest checks first!
-  if ( !otherImage || otherImage->keepAspectRatio != keepAspectRatio || otherImage->size != size || otherImage->path != path || otherImage->opacity != opacity )
+  if ( !otherImage || otherImage->keepAspectRatio != keepAspectRatio || otherImage->size != size || ( !size.isValid() && otherImage->targetDpi != targetDpi ) || otherImage->opacity != opacity || otherImage->path != path )
     return false;
 
   return true;
@@ -65,7 +67,7 @@ int QgsImageCacheEntry::dataSize() const
   int size = 0;
   if ( !image.isNull() )
   {
-    size += ( image.width() * image.height() * 32 );
+    size += image.sizeInBytes();
   }
   return size;
 }
@@ -77,10 +79,17 @@ void QgsImageCacheEntry::dump() const
 
 ///@endcond
 
+static const int DEFAULT_IMAGE_CACHE_MAX_BYTES = 104857600;
 
 QgsImageCache::QgsImageCache( QObject *parent )
-  : QgsAbstractContentCache< QgsImageCacheEntry >( parent, QObject::tr( "Image" ) )
+  : QgsAbstractContentCache< QgsImageCacheEntry >( parent, QObject::tr( "Image" ),  DEFAULT_IMAGE_CACHE_MAX_BYTES )
 {
+  int bytes = QgsSettings().value( QStringLiteral( "/qgis/maxImageCacheSize" ), 0 ).toInt();
+  if ( bytes > 0 )
+  {
+    mMaxCacheSize = bytes;
+  }
+
   mMissingSvg = QStringLiteral( "<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>?</text></svg>" ).toLatin1();
 
   const QString downloadingSvgPath = QgsApplication::defaultThemePath() + QStringLiteral( "downloading_svg.svg" );
@@ -101,7 +110,7 @@ QgsImageCache::QgsImageCache( QObject *parent )
   connect( this, &QgsAbstractContentCacheBase::remoteContentFetched, this, &QgsImageCache::remoteImageFetched );
 }
 
-QImage QgsImageCache::pathAsImage( const QString &f, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache, bool blocking, bool *isMissing )
+QImage QgsImageCache::pathAsImage( const QString &f, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache, bool blocking, double targetDpi, bool *isMissing )
 {
   const QString file = f.trimmed();
   if ( isMissing )
@@ -114,7 +123,7 @@ QImage QgsImageCache::pathAsImage( const QString &f, const QSize size, const boo
 
   fitsInCache = true;
 
-  QgsImageCacheEntry *currentEntry = findExistingEntry( new QgsImageCacheEntry( file, size, keepAspectRatio, opacity ) );
+  QgsImageCacheEntry *currentEntry = findExistingEntry( new QgsImageCacheEntry( file, size, keepAspectRatio, opacity, targetDpi ) );
 
   QImage result;
 
@@ -125,8 +134,8 @@ QImage QgsImageCache::pathAsImage( const QString &f, const QSize size, const boo
   {
     long cachedDataSize = 0;
     bool isBroken = false;
-    result = renderImage( file, size, keepAspectRatio, opacity, isBroken, blocking );
-    cachedDataSize += result.width() * result.height() * 32;
+    result = renderImage( file, size, keepAspectRatio, opacity, targetDpi, isBroken, blocking );
+    cachedDataSize += result.sizeInBytes();
     if ( cachedDataSize > mMaxCacheSize / 2 )
     {
       fitsInCache = false;
@@ -134,7 +143,7 @@ QImage QgsImageCache::pathAsImage( const QString &f, const QSize size, const boo
     }
     else
     {
-      mTotalSize += ( result.width() * result.height() * 32 );
+      mTotalSize += result.sizeInBytes();
       currentEntry->image = result;
     }
 
@@ -190,7 +199,7 @@ QSize QgsImageCache::originalSize( const QString &path, bool blocking ) const
   return QSize();
 }
 
-QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool keepAspectRatio, const double opacity, bool &isBroken, bool blocking ) const
+QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool keepAspectRatio, const double opacity, double targetDpi, bool &isBroken, bool blocking ) const
 {
   QImage im;
   isBroken = false;
@@ -198,7 +207,30 @@ QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool k
   // direct read if path is a file -- maybe more efficient than going the bytearray route? (untested!)
   if ( !path.startsWith( QLatin1String( "base64:" ) ) && QFile::exists( path ) )
   {
-    im = QImage( path );
+    QImageReader reader( path );
+    reader.setAutoTransform( true );
+
+    if ( reader.format() == "pdf" )
+    {
+      if ( !size.isEmpty() )
+      {
+        // special handling for this format -- we need to pass the desired target size onto the image reader
+        // so that it can correctly render the (vector) pdf content at the desired dpi. Otherwise it returns
+        // a very low resolution image (the driver assumes points == pixels!)
+        // For other image formats, we read the original image size only and defer resampling to later in this
+        // function. That gives us more control over the resampling method used.
+        reader.setScaledSize( size );
+      }
+      else
+      {
+        // driver assumes points == pixels, so driver image size is reported assuming 72 dpi.
+        const QSize sizeAt72Dpi = reader.size();
+        const QSize sizeAtTargetDpi = sizeAt72Dpi * targetDpi / 72;
+        reader.setScaledSize( sizeAtTargetDpi );
+      }
+    }
+
+    im = reader.read();
   }
   else
   {
@@ -255,6 +287,28 @@ QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool k
       buffer.open( QIODevice::ReadOnly );
 
       QImageReader reader( &buffer );
+      reader.setAutoTransform( true );
+
+      if ( reader.format() == "pdf" )
+      {
+        if ( !size.isEmpty() )
+        {
+          // special handling for this format -- we need to pass the desired target size onto the image reader
+          // so that it can correctly render the (vector) pdf content at the desired dpi. Otherwise it returns
+          // a very low resolution image (the driver assumes points == pixels!)
+          // For other image formats, we read the original image size only and defer resampling to later in this
+          // function. That gives us more control over the resampling method used.
+          reader.setScaledSize( size );
+        }
+        else
+        {
+          // driver assumes points == pixels, so driver image size is reported assuming 72 dpi.
+          const QSize sizeAt72Dpi = reader.size();
+          const QSize sizeAtTargetDpi = sizeAt72Dpi * targetDpi / 72;
+          reader.setScaledSize( sizeAtTargetDpi );
+        }
+      }
+
       im = reader.read();
     }
   }

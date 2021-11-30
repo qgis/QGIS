@@ -67,9 +67,12 @@ int _fmode = _O_BINARY;
 #if MAC_OS_X_VERSION_MAX_ALLOWED < 1050
 typedef SInt32 SRefCon;
 #endif
-// For setting the maximum open files limit higher
+#endif
+
+#ifdef Q_OS_UNIX
+// For getrlimit() / setrlimit()
 #include <sys/resource.h>
-#include <limits.h>
+#include <sys/time.h>
 #endif
 
 #if defined(__GLIBC__) || defined(__FreeBSD__)
@@ -110,6 +113,7 @@ typedef SInt32 SRefCon;
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
+#include "qgsdatetimefieldformatter.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -169,8 +173,8 @@ void usage( const QString &appName )
       << QStringLiteral( "\t[--help]\t\tthis text\n" )
       << QStringLiteral( "\t[--]\t\ttreat all following arguments as FILEs\n\n" )
       << QStringLiteral( "  FILE:\n" )
-      << QStringLiteral( "    Files specified on the command line can include rasters,\n" )
-      << QStringLiteral( "    vectors, and QGIS project files (.qgs and .qgz): \n" )
+      << QStringLiteral( "    Files specified on the command line can include rasters, vectors,\n" )
+      << QStringLiteral( "    QGIS layer definition files (.qlr) and QGIS project files (.qgs and .qgz): \n" )
       << QStringLiteral( "     1. Rasters - supported formats include GeoTiff, DEM \n" )
       << QStringLiteral( "        and others supported by GDAL\n" )
       << QStringLiteral( "     2. Vectors - supported formats include ESRI Shapefiles\n" )
@@ -473,7 +477,7 @@ int main( int argc, char *argv[] )
   //log messages written before creating QgsApplication
   QStringList preApplicationLogMessages;
 
-#ifdef Q_OS_MACX
+#ifdef Q_OS_UNIX
   // Increase file resource limits (i.e., number of allowed open files)
   // (from code provided by Larry Biehl, Purdue University, USA, from 'MultiSpec' project)
   // This is generally 256 for the soft limit on Mac
@@ -483,29 +487,28 @@ int main( int argc, char *argv[] )
   struct rlimit rescLimit;
   if ( getrlimit( RLIMIT_NOFILE, &rescLimit ) == 0 )
   {
-    rlim_t oldSoft( rescLimit.rlim_cur );
-    rlim_t oldHard( rescLimit.rlim_max );
+    const rlim_t oldSoft( rescLimit.rlim_cur );
 #ifdef OPEN_MAX
     rlim_t newSoft( OPEN_MAX );
-    rlim_t newHard( std::min( oldHard, newSoft ) );
 #else
     rlim_t newSoft( 4096 );
-    rlim_t newHard( std::min( ( rlim_t )8192, oldHard ) );
 #endif
-    if ( rescLimit.rlim_cur < newSoft )
+    const char *qgisMaxFileCount = getenv( "QGIS_MAX_FILE_COUNT" );
+    if ( qgisMaxFileCount )
+      newSoft = static_cast<rlim_t>( atoi( qgisMaxFileCount ) );
+    if ( rescLimit.rlim_cur < newSoft || qgisMaxFileCount )
     {
-      rescLimit.rlim_cur = newSoft;
-      rescLimit.rlim_max = newHard;
+      rescLimit.rlim_cur = std::min( newSoft, rescLimit.rlim_max );
 
       if ( setrlimit( RLIMIT_NOFILE, &rescLimit ) == 0 )
       {
-        QgsDebugMsg( QStringLiteral( "Mac RLIMIT_NOFILE Soft/Hard NEW: %1 / %2" )
+        QgsDebugMsg( QStringLiteral( "RLIMIT_NOFILE Soft NEW: %1 / %2" )
                      .arg( rescLimit.rlim_cur ).arg( rescLimit.rlim_max ) );
       }
     }
     Q_UNUSED( oldSoft ) //avoid warnings
-    QgsDebugMsg( QStringLiteral( "Mac RLIMIT_NOFILE Soft/Hard ORIG: %1 / %2" )
-                 .arg( oldSoft ).arg( oldHard ) );
+    QgsDebugMsg( QStringLiteral( "RLIMIT_NOFILE Soft/Hard ORIG: %1 / %2" )
+                 .arg( oldSoft ).arg( rescLimit.rlim_max ) );
   }
 #endif
 
@@ -1027,6 +1030,9 @@ int main( int argc, char *argv[] )
     }
     QLocale::setDefault( currentLocale );
 
+    // Date time settings
+    QgsDateTimeFieldFormatter::applyLocaleChange();
+
     QgsApplication::setTranslation( translationCode );
   }
 
@@ -1401,9 +1407,17 @@ int main( int argc, char *argv[] )
   {
     QgsDebugMsg( QStringLiteral( "Trying to load file : %1" ).arg( layerName ) );
     // don't load anything with a .qgs extension - these are project files
-    if ( !layerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) &&
-         !layerName.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) &&
-         !QgsZipUtils::isZipFile( layerName ) )
+    if ( layerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) ||
+         layerName.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) ||
+         QgsZipUtils::isZipFile( layerName ) )
+    {
+      continue;
+    }
+    else if ( layerName.endsWith( QLatin1String( ".qlr" ), Qt::CaseInsensitive ) )
+    {
+      qgis->openLayerDefinition( layerName );
+    }
+    else
     {
       qgis->openLayer( layerName );
     }

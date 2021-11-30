@@ -24,6 +24,7 @@
 #include "qgsattributes.h"
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgscolorramp.h"
+#include "qgscolorrampimpl.h"
 #include "qgsdatadefinedsizelegend.h"
 #include "qgsexpression.h"
 #include "qgsfeature.h"

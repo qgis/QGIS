@@ -122,7 +122,6 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
         if ( vl && vl->isValid() )
         {
-          const QString origLayerId = vl->id();
           convertToOfflineLayer( vl, database.get(), dbPath, onlySelected, containerType, layerNameSuffix );
         }
       }

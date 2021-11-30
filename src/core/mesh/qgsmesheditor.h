@@ -26,8 +26,11 @@
 #include "qgstriangularmesh.h"
 #include "qgstopologicalmesh.h"
 
-
 class QgsMeshAdvancedEditing;
+
+#if defined(_MSC_VER)
+template CORE_EXPORT QVector<QVector<int>> SIP_SKIP;
+#endif
 
 /**
  * \ingroup core
@@ -46,9 +49,9 @@ class CORE_EXPORT QgsMeshEditingError
     //! Constructor with eht error \a type and the index of the element \a elementIndex
     QgsMeshEditingError( Qgis::MeshEditingErrorType type, int elementIndex );
 
-    Qgis::MeshEditingErrorType errorType;
+    Qgis::MeshEditingErrorType errorType = Qgis::MeshEditingErrorType::NoError;
 
-    int elementIndex;
+    int elementIndex = -1;
 
     bool operator==( const QgsMeshEditingError &other ) const {return ( other.errorType == errorType && other.elementIndex == elementIndex );}
     bool operator!=( const QgsMeshEditingError &other ) const {return !operator==( other );}
@@ -72,6 +75,12 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     //! Constructor with a specific mesh \a nativeMesh and an associatd triangular mesh \a triangularMesh
     QgsMeshEditor( QgsMesh *nativeMesh, QgsTriangularMesh *triangularMesh, QObject *parent = nullptr ); SIP_SKIP
     ~QgsMeshEditor();
+
+    /**
+     * Creates and returns a scalar dataset group with value on vertex that is can be used to access the Z value of the edited mesh.
+     * The caller takes ownership.
+     */
+    QgsMeshDatasetGroup *createZValueDatasetGroup() SIP_TRANSFERBACK;
 
     //! Initialize the mesh editor and return errors if the internal native mesh have topologic errors
     QgsMeshEditingError initialize();
@@ -123,32 +132,40 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     int splitFaces( const QList<int> &faceIndexes );
 
     /**
-     *  Adds vertices in triangular mesh coordinate in the mesh. Vertex is effectivly added if the transform
-     *  from triangular coordinate to layer coordinate succeeds or if any vertices are next the added vertex (under \a tolerance distance).
-     *  The method returns the number of vertices effectivly added.
+     * Adds vertices in triangular mesh coordinate in the mesh. Vertex is effectivly added if the transform
+     * from triangular coordinate to layer coordinate succeeds or if any vertices are next the added vertex (under \a tolerance distance).
+     * The method returns the number of vertices effectivly added.
      *
-     *  \note this operation remove including face if exists and replace it by new faces surrounding the vertex
-     *  if the mesh hasn't topological error before this operation, the toological operation always succeed.
+     * \note this operation remove including face if exists and replace it by new faces surrounding the vertex
+     * if the mesh hasn't topological error before this operation, the toological operation always succeed.
      */
     int addVertices( const QVector<QgsMeshVertex> &vertices, double tolerance ); SIP_SKIP
 
     /**
-     *  Adds points as vertices in triangular mesh coordinate in the mesh. Vertex is effectivly added if the transform
-     *  from triangular coordinate to layer coordinate succeeds or if any vertices are next the added vertex (under \a tolerance distance).
-     *  The method returns the number of vertices effectivly added.
+     * Adds points as vertices in triangular mesh coordinate in the mesh. Vertex is effectivly added if the transform
+     * from triangular coordinate to layer coordinate succeeds or if any vertices are next the added vertex (under \a tolerance distance).
+     * The method returns the number of vertices effectivly added.
      *
-     *  \note this operation remove including face if exists and replace it by new faces surrounding the vertex
-     *  if the mesh hasn't topological error before this operation, the toological operation always succeed
+     * \note this operation remove including face if exists and replace it by new faces surrounding the vertex
+     * if the mesh hasn't topological error before this operation, the toological operation always succeed
      */
     int addPointsAsVertices( const QVector<QgsPoint> &point, double tolerance );
 
     /**
-     *  Removes vertices with indexes in the list \a verticesToRemoveIndexes in the mesh
-     *  if \a fillHoles is set to TRUE, this operation will fill holes created in the mesh, if not remove the surrounding faces
+     * Removes vertices with indexes in the list \a verticesToRemoveIndexes in the mesh removing the surrounding faces without filling the freed space.
      *
-     *  If removing these vertices leads to a topological errors, the method will return the corresponding error and the operatio is canceled
+     * If removing these vertices leads to a topological errors, the method will return the corresponding error and the operation is canceled
      */
-    QgsMeshEditingError removeVertices( const QList<int> &verticesToRemoveIndexes, bool fillHoles = false );
+    QgsMeshEditingError removeVerticesWithoutFillHoles( const QList<int> &verticesToRemoveIndexes );
+
+    /**
+     * Removes vertices with indexes in the list \a verticesToRemoveIndexes in the mesh the surrounding faces AND fills the freed space.
+     *
+     * This operation fills holes by a Delaunay triangulation using the surrounding vertices.
+     * Some vertices could no be deleted to avoid topological error even with hole filling (can not be detected before execution).
+     * A list of the remaining vertex indexes is returned.
+     */
+    QList<int> removeVerticesFillHoles( const QList<int> &verticesToRemoveIndexes );
 
     /**
      * Changes the Z values of the vertices with indexes in \a vertices indexes with the values in \a newValues
@@ -157,22 +174,30 @@ class CORE_EXPORT QgsMeshEditor : public QObject
 
     /**
      * Returns TRUE if faces with index in \a transformedFaces can be transformed without obtaining topologic or geometrical errors
-     * condidering the transform function \a transformFunction
+     * considering the transform function \a transformFunction
      *
      * The transform function takes a vertex index in parameter and return a QgsMeshVertex object with transformed coordinates.
      * This transformation is done in layer coordinates
      *
-     * \note Even only the faces with indexes in \a transformdFaces are checked to avoid testing all the mesh,
+     * \note Even only the faces with indexes in \a facesToCheck are checked to avoid testing all the mesh,
      * all the mesh are supposed to path through this transform function (but it is possible that transform function is not able to transform all vertices).
-     * Moving free vertices of the mesh are also checked.
+     * Moving free vertices of the mesh is also checked.
      */
     bool canBeTransformed( const QList<int> &facesToCheck, const std::function<const QgsMeshVertex( int )> &transformFunction ) const; SIP_SKIP
 
     /**
-     * Changes the (X,Y) coordinates values of the vertices with indexes in \a vertices indexes with the values in \a newValues.
-     * The caller has the responsibility to check if changing the vertices coordinates does not lead to topological errors
+     * Changes the (X,Y) coordinates values of the vertices with indexes in \a verticesIndexes with the values in \a newValues.
+     * The caller has the responsibility to check if changing the vertices coordinates does not lead to topological errors.
+     * New values are in layer CRS.
      */
     void changeXYValues( const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues );
+
+    /**
+     * Changes the (X,Y,Z) coordinates values of the vertices with indexes in \a vertices indexes with the values in \a newValues.
+     * The caller has the responsibility to check if changing the vertices coordinates does not lead to topological errors
+     * New coordinates are in layer CRS.
+     */
+    void changeCoordinates( const QList<int> &verticesIndexes, const QList<QgsPoint> &newCoordinates );
 
     /**
      * Applies an advance editing on the edited mesh, see QgsMeshAdvancedEditing
@@ -224,13 +249,22 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     QgsTriangularMesh *triangularMesh(); SIP_SKIP
 
     //! Return TRUE if the edited mesh is consistent
-    bool checkConsistency() const;
+    bool checkConsistency( QgsMeshEditingError &error ) const;
 
     /**
      * Returns TRUE if an edge of face is closest than the tolerance from the \a point in triangular mesh coordinate
      * Returns also the face index and the edge position in \a faceIndex and \a edgePosition
      */
     bool edgeIsClose( QgsPointXY point, double tolerance, int &faceIndex, int &edgePosition );
+
+    //! Returns the count of valid faces, that is non void faces in the mesh
+    int validFacesCount() const;
+
+    //! Returns the count of valid vertices, that is non void vertices in the mesh
+    int validVerticesCount() const;
+
+    //! Returns the maximum count of vertices per face that the mesh can support
+    int maximumVerticesPerFace() const;
 
   signals:
     //! Emitted when the mesh is edited
@@ -241,6 +275,9 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     QgsTopologicalMesh mTopologicalMesh;
     QgsTriangularMesh *mTriangularMesh = nullptr;
     int mMaximumVerticesPerFace = 0;
+    QgsMeshDatasetGroup *mZValueDatasetGroup = nullptr;
+    int mValidVerticesCount = 0;
+    int mValidFacesCount = 0;
 
     QVector<QgsMeshFace> prepareFaces( const QVector<QgsMeshFace> &faces, QgsMeshEditingError &error );
 
@@ -256,7 +293,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     void reverseEdit( Edit &edit );
 
     void applyAddVertex( Edit &edit, const QgsMeshVertex &vertex, double tolerance );
-    void applyRemoveVertexFillHole( Edit &edit, int vertexIndex );
+    bool applyRemoveVertexFillHole( Edit &edit, int vertexIndex );
     void applyRemoveVerticesWithoutFillHole( QgsMeshEditor::Edit &edit, const QList<int> &verticesIndexes );
     void applyAddFaces( Edit &edit, const QgsTopologicalMesh::TopologicalFaces &faces );
     void applyRemoveFaces( Edit &edit, const QList<int> &faceToRemoveIndex );
@@ -269,15 +306,19 @@ class CORE_EXPORT QgsMeshEditor : public QObject
 
     void applyEditOnTriangularMesh( Edit &edit, const QgsTopologicalMesh::Changes &topologicChanges );
 
+    void updateElementsCount( const QgsTopologicalMesh::Changes &changes, bool apply = true );
+
     friend class TestQgsMeshEditor;
     friend class QgsMeshLayerUndoCommandMeshEdit;
     friend class QgsMeshLayerUndoCommandAddVertices;
-    friend class QgsMeshLayerUndoCommandRemoveVertices;
+    friend class QgsMeshLayerUndoCommandRemoveVerticesWithoutFillHoles;
+    friend class QgsMeshLayerUndoCommandRemoveVerticesFillHoles;
     friend class QgsMeshLayerUndoCommandAddFaces;
     friend class QgsMeshLayerUndoCommandRemoveFaces;
     friend class QgsMeshLayerUndoCommandSetZValue;
     friend class QgsMeshLayerUndoCommandChangeZValue;
     friend class QgsMeshLayerUndoCommandChangeXYValue;
+    friend class QgsMeshLayerUndoCommandChangeCoordinates;
     friend class QgsMeshLayerUndoCommandFlipEdge;
     friend class QgsMeshLayerUndoCommandMerge;
     friend class QgsMeshLayerUndoCommandSplitFaces;
@@ -332,20 +373,49 @@ class QgsMeshLayerUndoCommandAddVertices : public QgsMeshLayerUndoCommandMeshEdi
 /**
  * \ingroup core
  *
- * \brief  Class for undo/redo command for removing vertices in mesh
+ * \brief  Class for undo/redo command for removing vertices in mesh without filling holes created by removed faces
  *
  * \since QGIS 3.22
  */
-class QgsMeshLayerUndoCommandRemoveVertices : public QgsMeshLayerUndoCommandMeshEdit
+class QgsMeshLayerUndoCommandRemoveVerticesWithoutFillHoles : public QgsMeshLayerUndoCommandMeshEdit
 {
   public:
-    //! Constructor with the associated \a meshEditor and \a vertices that will be removed and the flag \a fillHole
-    QgsMeshLayerUndoCommandRemoveVertices( QgsMeshEditor *meshEditor, const QList<int> &verticesToRemoveIndexes, bool fillHole );
+
+    /**
+     * Constructor with the associated \a meshEditor and \a vertices that will be removed
+     */
+    QgsMeshLayerUndoCommandRemoveVerticesWithoutFillHoles( QgsMeshEditor *meshEditor, const QList<int> &verticesToRemoveIndexes );
     void redo() override;
 
   private:
     QList<int> mVerticesToRemoveIndexes;
-    bool mFillHole = false;
+};
+
+/**
+ * \ingroup core
+ *
+ * \brief  Class for undo/redo command for removing vertices in mesh filling holes created by removed faces
+ *
+ * \since QGIS 3.22
+ */
+class QgsMeshLayerUndoCommandRemoveVerticesFillHoles : public QgsMeshLayerUndoCommandMeshEdit
+{
+  public:
+
+    /**
+     * Constructor with the associated \a meshEditor and \a vertices that will be removed
+     *
+     * The pointer \a remainingVertex is used to know the remaining vertex that have not been removed by the operation
+     * after the command was pushed in the undo/redo stack. The list pointed by \a remainingVertexPointer must not be
+     * destructed until the command is pushed to an undo/redo stack or the redo() method is called.
+     *
+     */
+    QgsMeshLayerUndoCommandRemoveVerticesFillHoles( QgsMeshEditor *meshEditor, const QList<int> &verticesToRemoveIndexes, QList<int> *remainingVerticesPointer = nullptr );
+    void redo() override;
+
+  private:
+    QList<int> mVerticesToRemoveIndexes;
+    QList<int> *mRemainingVerticesPointer = nullptr;
 };
 
 /**
@@ -430,6 +500,29 @@ class QgsMeshLayerUndoCommandChangeXYValue : public QgsMeshLayerUndoCommandMeshE
   private:
     QList<int> mVerticesIndexes;
     QList<QgsPointXY> mNewValues;
+};
+
+/**
+ * \ingroup core
+ *
+ * \brief  Class for undo/redo command for changing coordinate (X,Y,Z) values of vertices
+ *
+ * \since QGIS 3.22
+ */
+class QgsMeshLayerUndoCommandChangeCoordinates : public QgsMeshLayerUndoCommandMeshEdit
+{
+  public:
+
+    /**
+     * Constructor with the associated \a meshEditor and indexes \a verticesIndexes of the vertices that will have
+     * the coordinate (X,Y,Z) values changed with \a newCoordinates
+     */
+    QgsMeshLayerUndoCommandChangeCoordinates( QgsMeshEditor *meshEditor, const QList<int> &verticesIndexes, const QList<QgsPoint> &newCoordinates );
+    void redo() override;
+
+  private:
+    QList<int> mVerticesIndexes;
+    QList<QgsPoint> mNewCoordinates;
 };
 
 /**

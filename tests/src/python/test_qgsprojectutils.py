@@ -16,7 +16,7 @@ import qgis  # NOQA
 from qgis.testing import unittest
 from qgis.core import (
     QgsProjectUtils,
-    QgsCoordinateReferenceSystem,
+    QgsGroupLayer,
     QgsCoordinateTransformContext,
     QgsVectorLayer,
     QgsRasterLayer,
@@ -118,6 +118,36 @@ class TestQgsProjectUtils(unittest.TestCase):
         # should return false if we call again, no more matching paths
         self.assertFalse(QgsProjectUtils.updateLayerPath(p, unitTestDataPath() + '/mixed_layers.gpkg',
                                                          unitTestDataPath() + '/mixed_layers22.gpkg'))
+
+    def test_layer_is_contained_in_group_layer(self):
+        p = QgsProject()
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer1", "memory")
+        p.addMapLayer(layer)
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer2", "memory")
+        p.addMapLayer(layer2)
+        layer3 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer3", "memory")
+        p.addMapLayer(layer3)
+        layer4 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer4", "memory")
+        p.addMapLayer(layer4)
+
+        options = QgsGroupLayer.LayerOptions(QgsCoordinateTransformContext())
+        group_layer = QgsGroupLayer('group', options)
+        group_layer.setChildLayers([layer, layer4])
+        p.addMapLayer(group_layer)
+
+        options = QgsGroupLayer.LayerOptions(QgsCoordinateTransformContext())
+        group_layer2 = QgsGroupLayer('group2', options)
+        group_layer2.setChildLayers([group_layer, layer3])
+        p.addMapLayer(group_layer2)
+
+        self.assertTrue(QgsProjectUtils.layerIsContainedInGroupLayer(p, layer))
+        self.assertFalse(QgsProjectUtils.layerIsContainedInGroupLayer(p, layer2))
+        self.assertTrue(QgsProjectUtils.layerIsContainedInGroupLayer(p, layer3))
+        self.assertTrue(QgsProjectUtils.layerIsContainedInGroupLayer(p, layer4))
 
 
 if __name__ == '__main__':

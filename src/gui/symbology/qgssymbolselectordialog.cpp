@@ -125,9 +125,9 @@ void DataDefinedRestorer::restore()
 class SymbolLayerItem : public QStandardItem
 {
   public:
-    explicit SymbolLayerItem( QgsSymbolLayer *layer )
+    explicit SymbolLayerItem( QgsSymbolLayer *layer, Qgis::SymbolType symbolType )
     {
-      setLayer( layer );
+      setLayer( layer, symbolType );
     }
 
     explicit SymbolLayerItem( QgsSymbol *symbol )
@@ -135,11 +135,12 @@ class SymbolLayerItem : public QStandardItem
       setSymbol( symbol );
     }
 
-    void setLayer( QgsSymbolLayer *layer )
+    void setLayer( QgsSymbolLayer *layer, Qgis::SymbolType symbolType )
     {
       mLayer = layer;
       mIsLayer = true;
       mSymbol = nullptr;
+      mSymbolType = symbolType;
       updatePreview();
     }
 
@@ -160,7 +161,7 @@ class SymbolLayerItem : public QStandardItem
       }
       QIcon icon;
       if ( mIsLayer )
-        icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( mLayer, QgsUnitTypes::RenderMillimeters, mSize ); //todo: make unit a parameter
+        icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( mLayer, QgsUnitTypes::RenderMillimeters, mSize, QgsMapUnitScale(), mSymbol ? mSymbol->type() : mSymbolType ); //todo: make unit a parameter
       else
         icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSymbol, mSize );
       setIcon( icon );
@@ -188,7 +189,13 @@ class SymbolLayerItem : public QStandardItem
       if ( role == Qt::DisplayRole || role == Qt::EditRole )
       {
         if ( mIsLayer )
-          return QgsApplication::symbolLayerRegistry()->symbolLayerMetadata( mLayer->layerType() )->visibleName();
+        {
+          QgsSymbolLayerAbstractMetadata *m = QgsApplication::symbolLayerRegistry()->symbolLayerMetadata( mLayer->layerType() );
+          if ( m )
+            return m->visibleName();
+          else
+            return QString();
+        }
         else
         {
           switch ( mSymbol->type() )
@@ -226,6 +233,7 @@ class SymbolLayerItem : public QStandardItem
     QgsSymbol *mSymbol = nullptr;
     bool mIsLayer;
     QSize mSize;
+    Qgis::SymbolType mSymbolType = Qgis::SymbolType::Hybrid;
 };
 
 ///@endcond
@@ -388,7 +396,7 @@ void QgsSymbolSelectorWidget::loadSymbol( QgsSymbol *symbol, SymbolLayerItem *pa
   const int count = symbol->symbolLayerCount();
   for ( int i = count - 1; i >= 0; i-- )
   {
-    SymbolLayerItem *layerItem = new SymbolLayerItem( symbol->symbolLayer( i ) );
+    SymbolLayerItem *layerItem = new SymbolLayerItem( symbol->symbolLayer( i ), symbol->type() );
     layerItem->setEditable( false );
     symbolItem->appendRow( layerItem );
     if ( symbol->symbolLayer( i )->subSymbol() )
@@ -615,7 +623,7 @@ void QgsSymbolSelectorWidget::addLayer()
   if ( ddWidth )
     static_cast<QgsLineSymbol *>( parentSymbol )->setDataDefinedWidth( ddWidth );
 
-  SymbolLayerItem *newLayerItem = new SymbolLayerItem( newLayer );
+  SymbolLayerItem *newLayerItem = new SymbolLayerItem( newLayer, parentSymbol->type() );
   item->insertRow( insertIdx == -1 ? 0 : insertIdx, newLayerItem );
   item->updatePreview();
 
@@ -714,7 +722,7 @@ void QgsSymbolSelectorWidget::duplicateLayer()
   else
     parentSymbol->insertSymbolLayer( item->rowCount() - insertIdx, newLayer );
 
-  SymbolLayerItem *newLayerItem = new SymbolLayerItem( newLayer );
+  SymbolLayerItem *newLayerItem = new SymbolLayerItem( newLayer, parentSymbol->type() );
   item->insertRow( insertIdx == -1 ? 0 : insertIdx, newLayerItem );
   if ( newLayer->subSymbol() )
   {
@@ -737,8 +745,10 @@ void QgsSymbolSelectorWidget::changeLayer( QgsSymbolLayer *newLayer )
   {
     item->removeRow( 0 );
   }
+  QgsSymbol *symbol = static_cast<SymbolLayerItem *>( item->parent() )->symbol();
+
   // update symbol layer item
-  item->setLayer( newLayer );
+  item->setLayer( newLayer, symbol->type() );
   // When it is a marker symbol
   if ( newLayer->subSymbol() )
   {
@@ -747,7 +757,6 @@ void QgsSymbolSelectorWidget::changeLayer( QgsSymbolLayer *newLayer )
   }
 
   // Change the symbol at last to avoid deleting item's layer
-  QgsSymbol *symbol = static_cast<SymbolLayerItem *>( item->parent() )->symbol();
   const int layerIdx = item->parent()->rowCount() - item->row() - 1;
   symbol->changeSymbolLayer( layerIdx, newLayer );
 

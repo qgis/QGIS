@@ -24,6 +24,7 @@
 #include "qgsgeometry.h"
 #include "qgsmapsettings.h"
 #include "qgslabelsink.h"
+#include "qgsrendercontext.h"
 
 #include <QColor>
 #include <QList>

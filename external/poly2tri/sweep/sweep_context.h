@@ -66,7 +66,7 @@ Point* tail() const;
 
 size_t point_count() const;
 
-Node& LocateNode(const Point& point);
+Node* LocateNode(const Point& point);
 
 void RemoveNode(Node* node);
 

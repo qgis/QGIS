@@ -31,7 +31,13 @@ void QgsShadowEffect::draw( QgsRenderContext &context )
   if ( !source() || !enabled() || !context.painter() )
     return;
 
+  if ( context.feedback() && context.feedback()->isCanceled() )
+    return;
+
   QImage colorisedIm = sourceAsImage( context )->copy();
+
+  if ( context.feedback() && context.feedback()->isCanceled() )
+    return;
 
   QPainter *painter = context.painter();
   const QgsScopedQPainterState painterState( painter );
@@ -46,15 +52,16 @@ void QgsShadowEffect::draw( QgsRenderContext &context )
 
   QgsImageOperation::overlayColor( colorisedIm, mColor );
 
-  const int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
+  const int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale, Qgis::RenderSubcomponentProperty::BlurSize ) );
   if ( blurLevel <= 16 )
   {
-    QgsImageOperation::stackBlur( colorisedIm, blurLevel );
+    QgsImageOperation::stackBlur( colorisedIm, blurLevel, false, context.feedback() );
   }
   else
   {
-    QImage *imb = QgsImageOperation::gaussianBlur( colorisedIm, blurLevel );
-    colorisedIm = QImage( *imb );
+    QImage *imb = QgsImageOperation::gaussianBlur( colorisedIm, blurLevel, context.feedback() );
+    if ( !imb->isNull() )
+      colorisedIm = QImage( *imb );
     delete imb;
   }
 
@@ -65,7 +72,7 @@ void QgsShadowEffect::draw( QgsRenderContext &context )
                          -offsetDist * std::sin( angleRad + M_PI_2 ) );
 
   //transparency, scale
-  QgsImageOperation::multiplyOpacity( colorisedIm, mOpacity );
+  QgsImageOperation::multiplyOpacity( colorisedIm, mOpacity, context.feedback() );
 
   if ( !exteriorShadow() )
   {
@@ -167,8 +174,11 @@ void QgsShadowEffect::readProperties( const QVariantMap &props )
 QRectF QgsShadowEffect::boundingRect( const QRectF &rect, const QgsRenderContext &context ) const
 {
   //blur radius and offset distance
-  const int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
-  double spread = context.convertToPainterUnits( mOffsetDist, mOffsetUnit, mOffsetMapUnitScale );
+  const int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale, Qgis::RenderSubcomponentProperty::BlurSize ) );
+
+  // spread is initially the shadow offset size
+  double spread = context.convertToPainterUnits( mOffsetDist, mOffsetUnit, mOffsetMapUnitScale, Qgis::RenderSubcomponentProperty::ShadowOffset );
+
   //plus possible extension due to blur, with a couple of extra pixels thrown in for safety
   spread += blurLevel * 2 + 10;
   return rect.adjusted( -spread, -spread, spread, spread );

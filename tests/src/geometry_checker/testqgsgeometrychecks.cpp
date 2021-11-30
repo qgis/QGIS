@@ -83,6 +83,7 @@ class TestQgsGeometryChecks: public QObject
     void testDegeneratePolygonCheck();
     void testDuplicateCheck();
     void testDuplicateNodesCheck();
+    void testDuplicateNodesCheckTolerance();
     void testFollowBoundariesCheck();
     void testGapCheck();
     void testAllowedGaps();
@@ -490,6 +491,27 @@ void TestQgsGeometryChecks::testDuplicateNodesCheck()
   cleanupTestContext( testContext );
 }
 
+void TestQgsGeometryChecks::testDuplicateNodesCheckTolerance()
+{
+  QTemporaryDir dir;
+  QMap<QString, QString> layers;
+  layers.insert( "line_layer.shp", "" );
+  auto testContext = createTestContext( dir, layers, QgsCoordinateReferenceSystem( "EPSG:4326" ), 3 );
+
+  QList<QgsGeometryCheckError *> checkErrors;
+  QStringList messages;
+  QgsFeedback feedback;
+
+  const QgsGeometryDuplicateNodesCheck check( testContext.first, QVariantMap() );
+  check.collectErrors( testContext.second, checkErrors, messages, &feedback );
+  listErrors( checkErrors, messages );
+
+  int nErrors = checkErrors.size();
+  QCOMPARE( nErrors, 3 );
+
+  cleanupTestContext( testContext );
+}
+
 void TestQgsGeometryChecks::testFollowBoundariesCheck()
 {
   QTemporaryDir dir;
@@ -612,7 +634,9 @@ void TestQgsGeometryChecks::testAllowedGaps()
   }
   else
   {
-    QCOMPARE( f.geometry().asWkt( 4 ), QgsGeometry::fromWkt( "Polygon ((0.246 -0.8659, 0.3939 -0.77, 0.26 -0.8839, 0.27 -0.9998, 0.246 -0.8659))" ).asWkt( 4 ) );
+    QgsGeometry res = f.geometry();
+    res.normalize();
+    QCOMPARE( res.asWkt( 4 ), QgsGeometry::fromWkt( "Polygon ((0.246 -0.8659, 0.3939 -0.77, 0.26 -0.8839, 0.27 -0.9998, 0.246 -0.8659))" ).asWkt( 4 ) );
   }
 
   // Run check again after adding the gap geometry to the allowed gaps layer: one less error
@@ -1202,7 +1226,7 @@ void TestQgsGeometryChecks::testGapCheckPointInPoly()
   QgsFeature f;
   testContext.second[layers["gap_layer_point_in_poly.shp"]]->getFeature( 1, f );
   const double areaOld = f.geometry().area();
-  QCOMPARE( areaOld, 19913.135772452362 );
+  QGSCOMPARENEAR( areaOld, 19913.135772452362, 0.0001 );
 
   QgsGeometryCheck::Changes changes;
   const QMap<QString, int> mergeAttrs;
@@ -1257,7 +1281,7 @@ void TestQgsGeometryChecks::testOverlapCheckToleranceBug()
   const QgsPoint pointOld_2 = f.geometry().vertexAt( 2 );
 
   // Just making sure we've got the right feature/point
-  QCOMPARE( areaOld, 10442.710061549426 );
+  QGSCOMPARENEAR( areaOld, 10442.710061549426, 0.0002 );
   QGSCOMPARENEARPOINT( pointOld_1, QgsPoint( 2537221.53079314017668366, 1152360.02460834058001637 ), 0.00001 );
   QGSCOMPARENEARPOINT( pointOld_2, QgsPoint( 2537366.84566075634211302, 1152360.28978145681321621 ), 0.00001 );
 

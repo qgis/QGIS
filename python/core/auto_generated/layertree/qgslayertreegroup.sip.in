@@ -16,6 +16,9 @@ Layer tree group node serves as a container for layers and further groups.
 
 Group names do not need to be unique within one tree nor within one parent.
 
+While a layer tree group is typically used for hierarchical organisation of a :py:class:`QgsProject`,
+they can optionally be associated with a :py:class:`QgsGroupLayer` for map rendering purposes.
+
 .. versionadded:: 2.4
 %End
 
@@ -125,6 +128,8 @@ Find layer node representing the map layer specified by its ID. Searches recursi
 Find all layer nodes. Searches recursively the whole sub-tree.
 %End
 
+
+
     QStringList findLayerIds() const;
 %Docstring
 Find layer IDs used in all layer nodes. Searches recursively the whole sub-tree.
@@ -206,6 +211,51 @@ The initial child index determines which child should be initially checked. The 
 of -1 will determine automatically (either first one currently checked or none)
 
 .. versionadded:: 2.12
+%End
+
+    QgsGroupLayer *groupLayer();
+%Docstring
+Returns a reference to the associated group layer, if the layer tree group will be treated
+as group layer during map rendering.
+
+.. seealso:: :py:func:`setGroupLayer`
+
+.. seealso:: :py:func:`convertToGroupLayer`
+
+.. versionadded:: 3.24
+%End
+
+    void setGroupLayer( QgsGroupLayer *layer );
+%Docstring
+Sets the associated group ``layer``, if the layer tree group will be treated
+as group layer during map rendering.
+
+This method does not take ownership of the group layer, and only a weak reference
+to the layer is stored.
+
+.. seealso:: :py:func:`groupLayer`
+
+.. seealso:: :py:func:`convertToGroupLayer`
+
+.. versionadded:: 3.24
+%End
+
+    QgsGroupLayer *convertToGroupLayer( const QgsGroupLayer::LayerOptions &options ) /Factory/;
+%Docstring
+Converts the group to a :py:class:`QgsGroupLayer`.
+
+This method will convert the layer tree group to an equivalent :py:class:`QgsGroupLayer`, and
+return the result. The caller takes ownership of the returned layer, and it is the
+caller's responsibility to add the layer to the associated :py:class:`QgsProject`.
+
+If the group is already associated with a group layer (see :py:func:`~QgsLayerTreeGroup.groupLayer`), ``None``
+will be returned.
+
+.. seealso:: :py:func:`groupLayer`
+
+.. seealso:: :py:func:`setGroupLayer`
+
+.. versionadded:: 3.24
 %End
 
   protected slots:

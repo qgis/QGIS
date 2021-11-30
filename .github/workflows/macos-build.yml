@@ -14,7 +14,8 @@ on:
 
 env:
   QT_VERSION: 5.15.2
-  QGIS_DEPS_VERSION: 0.8.0
+  QGIS_DEPS_VERSION: 0.9
+  QGIS_DEPS_PATCH_VERSION: 0
   CCACHE_DIR: /Users/runner/work/ccache
   BUILD_DIR: /Users/runner/work/QGIS/build-QGIS
   # apparently we cannot cache /opt directory as it fails to restore
@@ -57,10 +58,10 @@ jobs:
       # Qt caching
       - name: Cache Qt
         id: cache-qt
-        uses: pat-s/always-upload-cache@v2.1.5
+        uses: actions/cache@v2.1.6
         with:
           path: ${{ env.DEPS_CACHE_DIR }}/Qt/${{ env.QT_VERSION }}
-          key: mac-qt-v4-${{ env.QT_VERSION }}
+          key: mac-qt-${{ env.QT_VERSION }}
 
       - name: Restore Qt
         if: steps.cache-qt.outputs.cache-hit == 'true'
@@ -80,22 +81,22 @@ jobs:
       # QGIS-deps caching
       - name: Cache qgis-deps
         id: cache-deps
-        uses: pat-s/always-upload-cache@v2.1.5
+        uses: actions/cache@v2.1.6
         with:
-          path: ${{ env.DEPS_CACHE_DIR }}/QGIS/qgis-deps-${{ env.QGIS_DEPS_VERSION }}
-          key: mac-qgis-deps-v4-${{ env.QGIS_DEPS_VERSION }}
+          path: ${{ env.DEPS_CACHE_DIR }}/QGIS/qgis-deps-${{ env.QGIS_DEPS_VERSION }}.${{ env.QGIS_DEPS_PATCH_VERSION }}
+          key: mac-qgis-deps-${{ env.QGIS_DEPS_VERSION }}.${{ env.QGIS_DEPS_PATCH_VERSION }}
 
       - name: Restore qgis-deps
         if: steps.cache-deps.outputs.cache-hit == 'true'
         run: |
           sudo mkdir -p /opt
           sudo mkdir -p /opt/QGIS
-          sudo cp -r ${DEPS_CACHE_DIR}/QGIS/qgis-deps-${QGIS_DEPS_VERSION} /opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}
+          sudo cp -r ${DEPS_CACHE_DIR}/QGIS/qgis-deps-${QGIS_DEPS_VERSION}.${QGIS_DEPS_PATCH_VERSION} /opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}
 
       - name: Download qgis-deps
         if: steps.cache-deps.outputs.cache-hit != 'true'
         run: |
-          wget https://qgis.org/downloads/macos/deps/qgis-deps-${QGIS_DEPS_VERSION}.tar.gz
+          wget https://qgis.org/downloads/macos/deps/qgis-deps-${QGIS_DEPS_VERSION}.${QGIS_DEPS_PATCH_VERSION}.tar.gz
           mkdir -p ${DEPS_CACHE_DIR}
           mkdir -p ${DEPS_CACHE_DIR}/QGIS
 
@@ -106,13 +107,13 @@ jobs:
           QT_ALREADY_CACHED: ${{ steps.cache-qt.outputs.cache-hit }}
           QGIS_DEPS_ALREADY_CACHED: ${{ steps.cache-deps.outputs.cache-hit }}
         run: |
-          wget https://qgis.org/downloads/macos/deps/install_qgis_deps-${QGIS_DEPS_VERSION}.bash
-          chmod +x ./install_qgis_deps-${QGIS_DEPS_VERSION}.bash
+          wget https://qgis.org/downloads/macos/deps/install_qgis_deps-${QGIS_DEPS_VERSION}.${QGIS_DEPS_PATCH_VERSION}.bash
+          chmod +x ./install_qgis_deps-${QGIS_DEPS_VERSION}.${QGIS_DEPS_PATCH_VERSION}.bash
           echo ::group::Install deps
-          sudo ./install_qgis_deps-${QGIS_DEPS_VERSION}.bash
+          sudo ./install_qgis_deps-${QGIS_DEPS_VERSION}.${QGIS_DEPS_PATCH_VERSION}.bash
           echo ::endgroup::
           [[ ${QT_ALREADY_CACHED} != "true" ]] && cp -r /opt/Qt/${QT_VERSION} ${DEPS_CACHE_DIR}/Qt/${QT_VERSION} || true
-          [[ ${QGIS_DEPS_ALREADY_CACHED} != "true" ]] && cp -r /opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION} ${DEPS_CACHE_DIR}/QGIS/qgis-deps-${QGIS_DEPS_VERSION} || true
+          [[ ${QGIS_DEPS_ALREADY_CACHED} != "true" ]] && cp -r /opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION} ${DEPS_CACHE_DIR}/QGIS/qgis-deps-${QGIS_DEPS_VERSION}.${QGIS_DEPS_PATCH_VERSION} || true
 
       - name: Install ccache
         run: |

@@ -157,23 +157,18 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( const Qg
   {
     QApplication::setOverrideCursor( Qt::WaitCursor );
 
-    int layerCount;
+    QList< QgsMapLayer * > targetLayers;
     if ( layerList.isEmpty() )
-      layerCount = mCanvas->layerCount();
+      targetLayers = mCanvas->layers( true );
     else
-      layerCount = layerList.count();
+      targetLayers = layerList;
 
-
+    const int layerCount = targetLayers.size();
     for ( int i = 0; i < layerCount; i++ )
     {
+      QgsMapLayer *layer = targetLayers.value( i );
 
-      QgsMapLayer *layer = nullptr;
-      if ( layerList.isEmpty() )
-        layer = mCanvas->layer( i );
-      else
-        layer = layerList.value( i );
-
-      emit identifyProgress( i, mCanvas->layerCount() );
+      emit identifyProgress( i, layerCount );
       emit identifyMessage( tr( "Identifying on %1…" ).arg( layer->name() ) );
 
       if ( !layer->flags().testFlag( QgsMapLayer::Identifiable ) )
@@ -186,7 +181,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( const Qg
       }
     }
 
-    emit identifyProgress( mCanvas->layerCount(), mCanvas->layerCount() );
+    emit identifyProgress( layerCount, layerCount );
     emit identifyMessage( tr( "Identifying done." ) );
   }
 
@@ -453,7 +448,7 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
     }
 
     int tileZoom = QgsVectorTileUtils::scaleToZoomLevel( mCanvas->scale(), layer->sourceMinZoom(), layer->sourceMaxZoom() );
-    QgsTileMatrix tileMatrix = QgsTileMatrix::fromWebMercator( tileZoom );
+    const QgsTileMatrix tileMatrix = QgsTileMatrix::fromWebMercator( tileZoom );
     QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( r );
 
     for ( int row = tileRange.startRow(); row <= tileRange.endRow(); ++row )
@@ -709,7 +704,7 @@ void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometry &geo
     derivedAttributes.insert( tr( "Closest vertex M" ), str );
   }
 
-  if ( vId.type == QgsVertexId::CurveVertex )
+  if ( vId.type == Qgis::VertexType::Curve )
   {
     double radius, centerX, centerY;
     QgsVertexId vIdBefore = vId;

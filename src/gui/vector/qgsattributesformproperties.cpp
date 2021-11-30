@@ -589,6 +589,8 @@ void QgsAttributesFormProperties::loadAttributeSpecificEditor( QgsAttributesDnDT
       case DnDTreeItemData::Action:
       {
         receiver->selectFirstMatchingItem( itemData );
+        const QgsAction action {mLayer->actions()->action( itemData.name() )};
+        loadInfoWidget( action.html() );
         break;
       }
       case DnDTreeItemData::QmlWidget:

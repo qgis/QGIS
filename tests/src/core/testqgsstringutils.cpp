@@ -192,16 +192,16 @@ void TestQgsStringUtils::titleCase()
 {
   QFETCH( QString, input );
   QFETCH( QString, expected );
-  QCOMPARE( QgsStringUtils::capitalize( input, QgsStringUtils::TitleCase ), expected );
+  QCOMPARE( QgsStringUtils::capitalize( input, Qgis::Capitalization::TitleCase ), expected );
 }
 
 void TestQgsStringUtils::camelCase()
 {
-  QCOMPARE( QgsStringUtils::capitalize( QString(), QgsStringUtils::UpperCamelCase ), QString() );
-  QCOMPARE( QgsStringUtils::capitalize( QString( " abc def" ), QgsStringUtils::UpperCamelCase ), QString( "AbcDef" ) );
-  QCOMPARE( QgsStringUtils::capitalize( QString( "ABC DEF" ), QgsStringUtils::UpperCamelCase ), QString( "AbcDef" ) );
-  QCOMPARE( QgsStringUtils::capitalize( QString( "àbc def" ), QgsStringUtils::UpperCamelCase ), QString( "ÀbcDef" ) );
-  QCOMPARE( QgsStringUtils::capitalize( QString( "àbc dÉf" ), QgsStringUtils::UpperCamelCase ), QString( "ÀbcDéf" ) );
+  QCOMPARE( QgsStringUtils::capitalize( QString(), Qgis::Capitalization::UpperCamelCase ), QString() );
+  QCOMPARE( QgsStringUtils::capitalize( QString( " abc def" ), Qgis::Capitalization::UpperCamelCase ), QString( "AbcDef" ) );
+  QCOMPARE( QgsStringUtils::capitalize( QString( "ABC DEF" ), Qgis::Capitalization::UpperCamelCase ), QString( "AbcDef" ) );
+  QCOMPARE( QgsStringUtils::capitalize( QString( "àbc def" ), Qgis::Capitalization::UpperCamelCase ), QString( "ÀbcDef" ) );
+  QCOMPARE( QgsStringUtils::capitalize( QString( "àbc dÉf" ), Qgis::Capitalization::UpperCamelCase ), QString( "ÀbcDéf" ) );
 }
 
 void TestQgsStringUtils::htmlToMarkdown()
@@ -239,6 +239,8 @@ void TestQgsStringUtils::wordWrap_data()
   QTest::addColumn<QString>( "expected" );
 
   QTest::newRow( "wordwrap" ) << "university of qgis" << 13 << true << QString() << "university of\nqgis";
+  QTest::newRow( "wordwrap not possible" ) << "universityofqgis" << 13 << true << QString() << "universityofqgis";
+  QTest::newRow( "wordwrap not required" ) << "uni of qgis" << 13 << true << QString() << "uni of qgis";
   QTest::newRow( "optional parameters unspecified" ) << "test string" << 5 << true << QString() << "test\nstring";
   QTest::newRow( "wordwrap with delim" ) << "university of qgis" << 13 << true << QStringLiteral( " " ) << "university of\nqgis";
   QTest::newRow( "wordwrap min" ) << "university of qgis" << 3 << false << QStringLiteral( " " ) << "university\nof qgis";

@@ -1,5 +1,95 @@
 Change history for the QGIS Project
 
+# What's new in Version 3.22 'Białowieża'?
+
+This release has following new features:
+
+- Annotations: Annotation layer properties and effects
+- Annotations: Edit nodes in an annotation item
+- Annotations: Move selected annotation with cursor keys
+- Annotations: Create line/ polygon annotation item tools
+- Annotations: New point text tool
+- Annotations: Annotations toolbar
+- Map Tools: Add a "measure bearing" map tool
+- User Interface: Toggle editing on multiple selected layers
+- User Interface: Identify layer groups and all selected layers
+- User Interface: Add a 'Show in Files' action for all file items in browser
+- Symbology: Custom units for geometry generator symbol layers
+- Symbology: Symbology reference scale for vector layers
+- Symbology: Invert colors filter option for raster rendering
+- Labelling: Specify unit for data defined label rotation
+- Mesh: Create new mesh layer
+- Mesh: Mesh frame editing
+- Mesh: Mesh frame editing lifecycle
+- Mesh: Edit mesh map tool
+- Mesh: Advanced mesh editing enhancements
+- Mesh: Select editable mesh elements by polygon
+- Mesh: Select mesh elements by existing geometries
+- Mesh: Select mesh elements by expression
+- Mesh: Transform single vertex
+- Mesh: Reindex/ renumber mesh layer
+- Mesh: Force mesh by polylines
+- Mesh: Mesh transform by expression
+- Rendering: Allow using physical DPI for map canvas
+- Rendering: Data defined raster layer opacity
+- Print Layouts: Predefined scale support for point-driven atlases
+- Print Layouts: Indentation of legend groups and subgroups
+- Expressions: Mesh expression functions for vertex_as_point and vertex_z
+- Expressions: Expression function for $z
+- Expressions: Affine transform expression
+- Expressions: Straight distance2d expression
+- Expressions: Add sinuosity expression
+- Expressions: New exif() and exif_geotag() functions
+- Digitising: Geometry snapper algorithm optimization
+- Digitising: Convert to curve with vertex tool
+- Digitising: Add Z/M support to Advanced Digitizing
+- Data Management: Drag and Drop support for external storage file widget
+- Data Management: File-based dataset size and last modified date in the layer properties dialog
+- Data Management: Rename files in QGIS Browser
+- Data Management: Move GPS tools "add gpx layer" functionality to Data Source Manager
+- Data Management: Load projects from GPKG using drag and drop
+- Data Management: External Storage support
+- Forms and Widgets: Drag & Drop designer form actions
+- Layer Legend: Use placeholder icon in legend for raster layers
+- Analysis Tools: Add if() function to raster calculator
+- Analysis Tools: Virtual raster support in raster calculator
+- Processing: Annotation layer parameter type for processing
+- Processing: Add a POST option to the FileDownloader processing algorithm
+- Processing: Add new "Select within distance" and "Extract within distance" algorithms
+- Processing: Point cloud parameter for Processing
+- Processing: Remove the GPS importer plugin
+- Processing: Convert GPX feature type processing algorithm
+- Processing: Add incremental field with modulo option
+- Processing: Duration parameter
+- Processing: Spatiotemporal ST-DBSCAN clustering algorithm
+- Processing: Move non-native processing providers into independent plugins
+- Application and Project Options: Export all keyboard shortcuts to XML or PDF
+- Application and Project Options: Move GPS Tools GPSbabel device configuration widget to global settings
+- Application and Project Options: Set default path structure for new projects
+- Browser: Improved delete action for browser files
+- Browser: Connections API result widget
+- Data Providers: Transactions in MSSQL provider
+- Data Providers: Show system and internal tables in sublayer selection
+- Data Providers: Automatically read and convert metadata from ESRI Personal Geodatabases
+- Data Providers: Create a generic data item provider for all file based datasources
+- QGIS Server: Enable multiple MetadataUrls
+- QGIS Server: Add version to QGIS Server CLI tools
+- Programmability: Expose scriptable vector tile encoder
+- Programmability: Encode and write vector tiles in different CRS than EPSG:3857
+- Programmability: DistanceWithin filter for QgsFeatureRequest
+- Programmability: API for preset combobox values
+- Programmability: QgsExifTools class support for fetching tag values
+- Notable Fixes: Bug fixes by Even Rouault
+- Notable Fixes: Bug fixes by Alessandro Pasotti
+- Notable Fixes: Bug fixes by Peter Petrik
+- Notable Fixes: Bug fixes by Sandro Santilli
+- Notable Fixes: Bug fixes by Loïc Bartoletti
+- Notable Fixes: Bug fixes by Denis Rouzaud
+- Notable Fixes: Bug fixes by Julien Cabieces
+- Notable Fixes: Bug fixes by Nyall Dawson
+-
+
+
 # What's new in Version 3.20 'Odense'?
 
 This release has following new features:

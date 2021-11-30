@@ -22,6 +22,7 @@
 #include "qgspainting.h"
 #include "qgstextrendererutils.h"
 #include "qgspallabeling.h"
+#include "qgsconfig.h"
 #include <QFontDatabase>
 #include <QMimeData>
 #include <QWidget>
@@ -194,6 +195,10 @@ QFont QgsTextFormat::scaledFont( const QgsRenderContext &context, double scaleFa
   font.setLetterSpacing( QFont::AbsoluteSpacing, context.convertToPainterUnits( d->textFont.letterSpacing(), d->fontSizeUnits, d->fontSizeMapUnitScale ) * scaleFactor );
   font.setWordSpacing( context.convertToPainterUnits( d->textFont.wordSpacing(), d->fontSizeUnits, d->fontSizeMapUnitScale ) * scaleFactor  * scaleFactor );
 
+  if ( d->capitalization == Qgis::Capitalization::SmallCaps
+       || d->capitalization == Qgis::Capitalization::AllSmallCaps )
+    font.setCapitalization( QFont::SmallCaps );
+
   return font;
 }
 
@@ -285,6 +290,17 @@ void QgsTextFormat::setOpacity( double opacity )
   d->opacity = opacity;
 }
 
+int QgsTextFormat::stretchFactor() const
+{
+  return d->textFont.stretch() > 0 ? d->textFont.stretch() : 100;
+}
+
+void QgsTextFormat::setStretchFactor( int factor )
+{
+  d->isValid = true;
+  d->textFont.setStretch( factor );
+}
+
 QPainter::CompositionMode QgsTextFormat::blendMode() const
 {
   return d->blendMode;
@@ -318,17 +334,23 @@ void QgsTextFormat::setOrientation( TextOrientation orientation )
   d->orientation = orientation;
 }
 
-QgsStringUtils::Capitalization QgsTextFormat::capitalization() const
+Qgis::Capitalization QgsTextFormat::capitalization() const
 {
   // bit of complexity here to maintain API..
-  return d->capitalization == QgsStringUtils::MixedCase && d->textFont.capitalization() != QFont::MixedCase ? static_cast< QgsStringUtils::Capitalization >( d->textFont.capitalization() ) : d->capitalization ;
+  return d->capitalization == Qgis::Capitalization::MixedCase && d->textFont.capitalization() != QFont::MixedCase
+         ? static_cast< Qgis::Capitalization >( d->textFont.capitalization() )
+         : d->capitalization ;
 }
 
-void QgsTextFormat::setCapitalization( QgsStringUtils::Capitalization capitalization )
+void QgsTextFormat::setCapitalization( Qgis::Capitalization capitalization )
 {
   d->isValid = true;
   d->capitalization = capitalization;
+#if defined(HAS_KDE_QT5_SMALL_CAPS_FIX) || QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
+  d->textFont.setCapitalization( capitalization == Qgis::Capitalization::SmallCaps || capitalization == Qgis::Capitalization::AllSmallCaps ? QFont::SmallCaps : QFont::MixedCase );
+#else
   d->textFont.setCapitalization( QFont::MixedCase );
+#endif
 }
 
 bool QgsTextFormat::allowHtmlFormatting() const
@@ -413,7 +435,7 @@ void QgsTextFormat::readFromLayer( QgsVectorLayer *layer )
   d->textFont = QFont( fontFamily, d->fontSize, fontWeight, fontItalic );
   d->textNamedStyle = QgsFontUtils::translateNamedStyle( layer->customProperty( QStringLiteral( "labeling/namedStyle" ), QVariant( "" ) ).toString() );
   QgsFontUtils::updateFontViaStyle( d->textFont, d->textNamedStyle ); // must come after textFont.setPointSizeF()
-  d->capitalization = static_cast< QgsStringUtils::Capitalization >( layer->customProperty( QStringLiteral( "labeling/fontCapitals" ), QVariant( 0 ) ).toUInt() );
+  d->capitalization = static_cast< Qgis::Capitalization >( layer->customProperty( QStringLiteral( "labeling/fontCapitals" ), QVariant( 0 ) ).toUInt() );
   d->textFont.setUnderline( layer->customProperty( QStringLiteral( "labeling/fontUnderline" ) ).toBool() );
   d->textFont.setStrikeOut( layer->customProperty( QStringLiteral( "labeling/fontStrikeout" ) ).toBool() );
   d->textFont.setLetterSpacing( QFont::AbsoluteSpacing, layer->customProperty( QStringLiteral( "labeling/fontLetterSpacing" ), QVariant( 0.0 ) ).toDouble() );
@@ -540,6 +562,9 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   {
     d->opacity = ( textStyleElem.attribute( QStringLiteral( "textOpacity" ) ).toDouble() );
   }
+#ifdef HAS_KDE_QT5_FONT_STRETCH_FIX
+  d->textFont.setStretch( textStyleElem.attribute( QStringLiteral( "stretchFactor" ), QStringLiteral( "100" ) ).toInt() );
+#endif
   d->orientation = QgsTextRendererUtils::decodeTextOrientation( textStyleElem.attribute( QStringLiteral( "textOrientation" ) ) );
   d->previewBackgroundColor = QgsSymbolLayerUtils::decodeColor( textStyleElem.attribute( QStringLiteral( "previewBkgrdColor" ), QgsSymbolLayerUtils::encodeColor( Qt::white ) ) );
 
@@ -557,9 +582,12 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   }
 
   if ( textStyleElem.hasAttribute( QStringLiteral( "capitalization" ) ) )
-    d->capitalization = static_cast< QgsStringUtils::Capitalization >( textStyleElem.attribute( QStringLiteral( "capitalization" ), QString::number( QgsStringUtils::MixedCase ) ).toInt() );
+    d->capitalization = static_cast< Qgis::Capitalization >( textStyleElem.attribute( QStringLiteral( "capitalization" ), QString::number( static_cast< int >( Qgis::Capitalization::MixedCase ) ) ).toInt() );
   else
-    d->capitalization = static_cast< QgsStringUtils::Capitalization >( textStyleElem.attribute( QStringLiteral( "fontCapitals" ), QStringLiteral( "0" ) ).toUInt() );
+    d->capitalization = static_cast< Qgis::Capitalization >( textStyleElem.attribute( QStringLiteral( "fontCapitals" ), QStringLiteral( "0" ) ).toUInt() );
+
+  if ( d->capitalization == Qgis::Capitalization::SmallCaps || d->capitalization == Qgis::Capitalization::AllSmallCaps )
+    d->textFont.setCapitalization( QFont::SmallCaps );
 
   d->allowHtmlFormatting = textStyleElem.attribute( QStringLiteral( "allowHtml" ), QStringLiteral( "0" ) ).toInt();
 
@@ -641,6 +669,10 @@ QDomElement QgsTextFormat::writeXml( QDomDocument &doc, const QgsReadWriteContex
   textStyleElem.setAttribute( QStringLiteral( "fontWordSpacing" ), d->textFont.wordSpacing() );
   textStyleElem.setAttribute( QStringLiteral( "fontKerning" ), d->textFont.kerning() );
   textStyleElem.setAttribute( QStringLiteral( "textOpacity" ), d->opacity );
+#ifdef HAS_KDE_QT5_FONT_STRETCH_FIX
+  if ( d->textFont.stretch() > 0 )
+    textStyleElem.setAttribute( QStringLiteral( "stretchFactor" ), d->textFont.stretch() );
+#endif
   textStyleElem.setAttribute( QStringLiteral( "textOrientation" ), QgsTextRendererUtils::encodeTextOrientation( d->orientation ) );
   textStyleElem.setAttribute( QStringLiteral( "blendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
   textStyleElem.setAttribute( QStringLiteral( "multilineHeight" ), d->multilineHeight );
@@ -950,6 +982,18 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
     }
   }
 
+#ifdef HAS_KDE_QT5_FONT_STRETCH_FIX
+  if ( d->mDataDefinedProperties.isActive( QgsPalLayerSettings::FontStretchFactor ) )
+  {
+    context.expressionContext().setOriginalValueVariable( d->textFont.stretch() );
+    const QVariant val = d->mDataDefinedProperties.value( QgsPalLayerSettings::FontStretchFactor, context.expressionContext(), d->textFont.stretch() );
+    if ( !val.isNull() )
+    {
+      d->textFont.setStretch( val.toInt() );
+    }
+  }
+#endif
+
   if ( d->mDataDefinedProperties.isActive( QgsPalLayerSettings::TextOrientation ) )
   {
     const QString encoded = QgsTextRendererUtils::encodeTextOrientation( d->orientation );
@@ -1046,9 +1090,9 @@ QPixmap QgsTextFormat::textFormatPreviewPixmap( const QgsTextFormat &format, QSi
   context.setScaleFactor( logicalDpiX / 25.4 );
 
   context.setUseAdvancedEffects( true );
-  context.setFlag( QgsRenderContext::Antialiasing, true );
+  context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
   context.setPainter( &painter );
-  context.setFlag( QgsRenderContext::Antialiasing, true );
+  context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
 
   // slightly inset text to account for buffer/background
   double xtrans = 0;

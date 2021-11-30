@@ -18,6 +18,7 @@
 #include "qgsdemterraintileloader_p.h"
 
 #include "qgsrasterlayer.h"
+#include "qgscoordinatetransform.h"
 
 QgsDemTerrainGenerator::~QgsDemTerrainGenerator()
 {

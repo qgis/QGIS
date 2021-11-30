@@ -20,6 +20,7 @@
 
 #include "qgsfields.h"
 #include "qgsfeatureiterator.h"
+#include "qgscoordinatetransform.h"
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>

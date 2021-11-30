@@ -14,10 +14,12 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 import qgis  # NOQA
 
 from qgis.testing import unittest
-from qgis.PyQt.QtCore import QDir
+from qgis.PyQt.QtCore import (QDir,
+                              QPointF)
 from qgis.PyQt.QtGui import (QImage,
                              QPainter,
-                             QColor)
+                             QColor,
+                             QPolygonF)
 from qgis.core import (QgsRenderChecker,
                        QgsInterpolatedLineSymbolLayer,
                        QgsInterpolatedLineWidth,
@@ -28,7 +30,9 @@ from qgis.core import (QgsRenderChecker,
                        QgsLineSymbol,
                        QgsGeometry,
                        QgsFeature,
-                       QgsRenderContext)
+                       QgsRenderContext,
+                       QgsSymbolLayer,
+                       QgsProperty)
 
 
 class TestQgsLineSymbolLayers(unittest.TestCase):
@@ -58,8 +62,10 @@ class TestQgsLineSymbolLayers(unittest.TestCase):
 
     def renderImage(self, interpolated_width, interpolated_color, image_name):
         layer = QgsInterpolatedLineSymbolLayer()
-        layer.setExpressionsStringForWidth('5', '1')
-        layer.setExpressionsStringForColor('2', '6')
+        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLineStartWidthValue, QgsProperty.fromExpression('5'))
+        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLineEndWidthValue, QgsProperty.fromExpression('1'))
+        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLineStartColorValue, QgsProperty.fromExpression('2'))
+        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLineEndColorValue, QgsProperty.fromExpression('6'))
         layer.setInterpolatedWidth(interpolated_width)
         layer.setInterpolatedColor(interpolated_color)
 
@@ -106,6 +112,43 @@ class TestQgsLineSymbolLayers(unittest.TestCase):
         interpolated_color.setColoringMethod(QgsInterpolatedLineColor.SingleColor)
 
         self.renderImage(interpolated_width, interpolated_color, 'interpolatedlinesymbollayer_1')
+
+    def testRenderNoFeature(self):
+        """ test that rendering a interpolated line outside of a map render works"""
+
+        interpolated_width = QgsInterpolatedLineWidth()
+        interpolated_color = QgsInterpolatedLineColor()
+
+        interpolated_width.setIsVariableWidth(False)
+        interpolated_width.setFixedStrokeWidth(5)
+        interpolated_color.setColor(QColor(255, 0, 0))
+        interpolated_color.setColoringMethod(QgsInterpolatedLineColor.SingleColor)
+
+        layer = QgsInterpolatedLineSymbolLayer()
+        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLineStartWidthValue, QgsProperty.fromExpression('5'))
+        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLineEndWidthValue, QgsProperty.fromExpression('1'))
+        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLineStartColorValue, QgsProperty.fromExpression('2'))
+        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLineEndColorValue, QgsProperty.fromExpression('6'))
+        layer.setInterpolatedWidth(interpolated_width)
+        layer.setInterpolatedColor(interpolated_color)
+
+        symbol = QgsLineSymbol()
+        symbol.changeSymbolLayer(0, layer)
+
+        image = QImage(200, 200, QImage.Format_RGB32)
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+
+        context = QgsRenderContext.fromQPainter(painter)
+
+        symbol.startRender(context)
+
+        symbol.renderPolyline(QPolygonF([QPointF(30, 50), QPointF(100, 70), QPointF(150, 30)]), None, context)
+
+        symbol.stopRender(context)
+        painter.end()
+
+        self.assertTrue(self.imageCheck('interpolatedlinesymbollayer_no_feature', 'interpolatedlinesymbollayer_no_feature', image))
 
     def testVaryingColorFixedWidth(self):
         """ test that rendering a interpolated line with fixed width and varying color"""

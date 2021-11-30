@@ -34,6 +34,7 @@
 
 class QgsGraphVertex;
 
+
 /**
  * \ingroup analysis
  * \class QgsGraphEdge
@@ -165,20 +166,135 @@ class ANALYSIS_EXPORT QgsGraph
      */
     int vertexCount() const;
 
+#ifndef SIP_RUN
+
     /**
-     * Returns vertex at given index
+     * Returns the vertex at the given index.
      */
     const QgsGraphVertex &vertex( int idx ) const;
+#else
+
+    /**
+     * Returns the vertex at the given index.
+     *
+     * \throws IndexError if the vertex is not found.
+     */
+    QgsGraphVertex vertex( int idx ) const;
+    % MethodCode
+    if ( sipCpp->hasVertex( a0 ) )
+    {
+      return sipConvertFromNewType( new QgsGraphVertex( sipCpp->vertex( a0 ) ), sipType_QgsGraphVertex, Py_None );
+    }
+    else
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    % End
+#endif
+
+#ifndef SIP_RUN
+
+    /**
+     * Removes the vertex at specified \a index.
+     *
+     * All edges which are incoming or outgoing edges for the vertex will also be removed.
+     *
+     * \since QGIS 3.24
+     */
+    void removeVertex( int index );
+#else
+
+    /**
+     * Removes the vertex at specified \a index.
+     *
+     * All edges which are incoming or outgoing edges for the vertex will also be removed.
+     *
+     * \throws IndexError if the vertex is not found.
+     * \since QGIS 3.24
+     */
+    void removeVertex( int index );
+    % MethodCode
+    if ( sipCpp->hasVertex( a0 ) )
+    {
+      sipCpp->removeVertex( a0 );
+    }
+    else
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    % End
+#endif
 
     /**
       * Returns number of graph edges
       */
     int edgeCount() const;
 
+#ifndef SIP_RUN
+
     /**
-     * Returns edge at given index
+     * Returns the edge at the given index.
      */
     const QgsGraphEdge &edge( int idx ) const;
+#else
+
+    /**
+     * Returns the edge at the given index.
+     *
+     * \throws IndexError if the edge is not found.
+     */
+    QgsGraphEdge edge( int idx ) const;
+    % MethodCode
+    if ( sipCpp->hasEdge( a0 ) )
+    {
+      return sipConvertFromNewType( new QgsGraphEdge( sipCpp->edge( a0 ) ), sipType_QgsGraphEdge, Py_None );
+    }
+    else
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    % End
+#endif
+
+
+#ifndef SIP_RUN
+
+    /**
+     * Removes the edge at specified \a index.
+     *
+     * The incoming and outgoing edges for all graph vertices will be updated accordingly. Vertices which
+     * no longer have any incoming or outgoing edges as a result will be removed from the graph automatically.
+     *
+     * \since QGIS 3.24
+     */
+    void removeEdge( int index );
+#else
+
+    /**
+     * Removes the edge at specified \a index.
+     *
+     * The incoming and outgoing edges for all graph vertices will be updated accordingly. Vertices which
+     * no longer have any incoming or outgoing edges as a result will be removed from the graph automatically.
+     *
+     * \throws IndexError if the vertex is not found.
+     * \since QGIS 3.24
+     */
+    void removeEdge( int index );
+    % MethodCode
+    if ( sipCpp->hasEdge( a0 ) )
+    {
+      sipCpp->removeEdge( a0 );
+    }
+    else
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    % End
+#endif
 
     /**
      * Find vertex by associated point
@@ -186,10 +302,78 @@ class ANALYSIS_EXPORT QgsGraph
      */
     int findVertex( const QgsPointXY &pt ) const;
 
-  private:
-    QVector<QgsGraphVertex> mGraphVertices;
+#ifndef SIP_RUN
 
-    QVector<QgsGraphEdge> mGraphEdges;
+    /**
+     * Finds the first edge which is the opposite of the edge with the specified index.
+     *
+     * This represents the edge which has the same vertices as the specified edge, but
+     * the opposite direction in the graph.(I.e. the edge which starts at the "from" vertex
+     * of the specified edge and ends at the "to" vertex.)
+     *
+     * Returns -1 if no opposite edge exists.
+     *
+     * \since QGIS 3.24
+    */
+    int findOppositeEdge( int index ) const;
+#else
+
+    /**
+     * Finds the first edge which is the opposite of the edge with the specified index.
+     *
+     * This represents the edge which has the same vertices as the specified edge, but
+     * the opposite direction in the graph.(I.e. the edge which starts at the "from" vertex
+     * of the specified edge and ends at the "to" vertex.)
+     *
+     * Returns -1 if no opposite edge exists.
+     *
+     * \throws IndexError if the edge with the specified \a index is not found.
+     *
+     * \since QGIS 3.24
+    */
+    int findOppositeEdge( int index ) const;
+    % MethodCode
+    if ( sipCpp->hasEdge( a0 ) )
+    {
+      sipRes = sipCpp->findOppositeEdge( a0 );
+    }
+    else
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    % End
+#endif
+
+    /**
+     * Returns whether the edge of the given index exists.
+     *
+     * \since QGIS 3.24
+     */
+    bool hasEdge( int index ) const;
+
+    /**
+     * Returns whether the vertex of the given index exists.
+     *
+     * \since QGIS 3.24
+     */
+    bool hasVertex( int index ) const;
+
+  protected:
+
+#ifndef SIP_RUN
+    //! Graph vertices
+    QHash<int, QgsGraphVertex> mGraphVertices;
+
+    //! Graph edges
+    QHash<int, QgsGraphEdge> mGraphEdges;
+#endif
+
+
+  private:
+
+    int mNextVertexId = 0;
+    int mNextEdgeId = 0;
 };
 
 #endif // QGSGRAPH_H

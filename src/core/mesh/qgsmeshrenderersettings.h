@@ -673,6 +673,13 @@ class CORE_EXPORT QgsMeshRendererSettings
      */
     void setActiveVectorDatasetGroup( int activeVectorDatasetGroup );
 
+    /**
+    * Returns whether the group with \a index has render settings (scalar or vector)
+    *
+    * \since QGIS 3.22
+    */
+    bool hasSettings( int datasetGroupIndex ) const;
+
   private:
     QgsMeshRendererMeshSettings mRendererNativeMeshSettings;
     QgsMeshRendererMeshSettings mRendererTriangularMeshSettings;

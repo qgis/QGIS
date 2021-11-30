@@ -224,6 +224,24 @@ map scale from the canvas.
 .. versionadded:: 2.12
 %End
 
+    bool showMapScaleButton() const;
+%Docstring
+Returns ``True`` if the widget can show the map scale button when the Map Units option is selected.
+
+.. seealso:: :py:func:`setShowMapScaleButton`
+
+.. versionadded:: 3.22
+%End
+
+    void setShowMapScaleButton( bool show );
+%Docstring
+Sets whether the widget can show the map scale button when the Map Units option is selected.
+
+.. seealso:: :py:func:`showMapScaleButton`
+
+.. versionadded:: 3.22
+%End
+
   signals:
     void changed();
 

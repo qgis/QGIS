@@ -31,6 +31,7 @@ by implementing filters called from :py:class:`QgsMapToolAdvancedDigitizing`.
       AbsoluteAngle,
       RelativeAngle,
       RelativeCoordinates,
+      Distance,
     };
     typedef QFlags<QgsAdvancedDigitizingDockWidget::CadCapacity> CadCapacities;
 
@@ -158,6 +159,24 @@ Toggle lock mode
 Toggle relative mode
 %End
 
+        int precision() const;
+%Docstring
+Returns the numeric precision (decimal places) to show in the associated widget.
+
+.. seealso:: :py:func:`setPrecision`
+
+.. versionadded:: 3.22
+%End
+
+        void setPrecision( int precision );
+%Docstring
+Sets the numeric precision (decimal places) to show in the associated widget.
+
+.. seealso:: :py:func:`precision`
+
+.. versionadded:: 3.22
+%End
+
     };
 
     explicit QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent = 0 );
@@ -217,6 +236,20 @@ determines if CAD tools are enabled or if map tools behaves "nomally"
     void switchZM( );
 %Docstring
 Determines if Z or M will be enabled.
+
+.. versionadded:: 3.22
+%End
+
+    void setEnabledZ( bool enable );
+%Docstring
+Sets whether Z is enabled
+
+.. versionadded:: 3.22
+%End
+
+    void setEnabledM( bool enable );
+%Docstring
+Sets whether M is enabled
 
 .. versionadded:: 3.22
 %End
@@ -309,6 +342,15 @@ automatically populated when user clicks with left mouse button on map canvas.
 The last point.
 Helper for the CAD point list. The CAD point list is the list of points
 currently digitized. It contains both  "normal" points and intermediate points (construction mode).
+
+.. versionadded:: 3.22
+%End
+
+    QgsPoint currentPointLayerCoordinates( QgsMapLayer *layer ) const;
+%Docstring
+Returns the last CAD point, in a map ``layer``'s coordinates.
+
+.. versionadded:: 3.22
 %End
 
  QgsPointXY currentPoint( bool *exists  = 0 ) const /Deprecated/;

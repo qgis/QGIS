@@ -11,6 +11,7 @@
 
 
 
+
 class QgsGraphEdge
 {
 %Docstring(signature="appended")
@@ -141,9 +142,46 @@ to ``toVertexIdx``.
 Returns number of graph vertices
 %End
 
-    const QgsGraphVertex &vertex( int idx ) const;
+
+    QgsGraphVertex vertex( int idx ) const;
 %Docstring
-Returns vertex at given index
+Returns the vertex at the given index.
+
+:raises IndexError: if the vertex is not found.
+%End
+%MethodCode
+    if ( sipCpp->hasVertex( a0 ) )
+    {
+      return sipConvertFromNewType( new QgsGraphVertex( sipCpp->vertex( a0 ) ), sipType_QgsGraphVertex, Py_None );
+    }
+    else
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+%End
+
+
+    void removeVertex( int index );
+%Docstring
+Removes the vertex at specified ``index``.
+
+All edges which are incoming or outgoing edges for the vertex will also be removed.
+
+:raises IndexError: if the vertex is not found.
+
+.. versionadded:: 3.24
+%End
+%MethodCode
+    if ( sipCpp->hasVertex( a0 ) )
+    {
+      sipCpp->removeVertex( a0 );
+    }
+    else
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
 %End
 
     int edgeCount() const;
@@ -151,9 +189,48 @@ Returns vertex at given index
 Returns number of graph edges
 %End
 
-    const QgsGraphEdge &edge( int idx ) const;
+
+    QgsGraphEdge edge( int idx ) const;
 %Docstring
-Returns edge at given index
+Returns the edge at the given index.
+
+:raises IndexError: if the edge is not found.
+%End
+%MethodCode
+    if ( sipCpp->hasEdge( a0 ) )
+    {
+      return sipConvertFromNewType( new QgsGraphEdge( sipCpp->edge( a0 ) ), sipType_QgsGraphEdge, Py_None );
+    }
+    else
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+%End
+
+
+
+    void removeEdge( int index );
+%Docstring
+Removes the edge at specified ``index``.
+
+The incoming and outgoing edges for all graph vertices will be updated accordingly. Vertices which
+no longer have any incoming or outgoing edges as a result will be removed from the graph automatically.
+
+:raises IndexError: if the vertex is not found.
+
+.. versionadded:: 3.24
+%End
+%MethodCode
+    if ( sipCpp->hasEdge( a0 ) )
+    {
+      sipCpp->removeEdge( a0 );
+    }
+    else
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
 %End
 
     int findVertex( const QgsPointXY &pt ) const;
@@ -162,6 +239,51 @@ Find vertex by associated point
 
 :return: vertex index
 %End
+
+
+    int findOppositeEdge( int index ) const;
+%Docstring
+Finds the first edge which is the opposite of the edge with the specified index.
+
+This represents the edge which has the same vertices as the specified edge, but
+the opposite direction in the graph.(I.e. the edge which starts at the "from" vertex
+of the specified edge and ends at the "to" vertex.)
+
+Returns -1 if no opposite edge exists.
+
+:raises IndexError: if the edge with the specified ``index`` is not found.
+
+.. versionadded:: 3.24
+%End
+%MethodCode
+    if ( sipCpp->hasEdge( a0 ) )
+    {
+      sipRes = sipCpp->findOppositeEdge( a0 );
+    }
+    else
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+%End
+
+    bool hasEdge( int index ) const;
+%Docstring
+Returns whether the edge of the given index exists.
+
+.. versionadded:: 3.24
+%End
+
+    bool hasVertex( int index ) const;
+%Docstring
+Returns whether the vertex of the given index exists.
+
+.. versionadded:: 3.24
+%End
+
+  protected:
+
+
 
 };
 

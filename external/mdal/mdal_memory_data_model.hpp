@@ -320,6 +320,7 @@ namespace MDAL
       BBox extent() const override;
       void addVertices( size_t vertexCount, double *coordinates ) override;
       void addFaces( size_t faceCount, size_t driverMaxVerticesPerFace, int *faceSizes, int *vertexIndices ) override;
+      void addEdges( size_t edgeCount, int *startVertexIndices, int *endVertexIndices ) override;
 
       bool isEditable() const override {return true;}
 

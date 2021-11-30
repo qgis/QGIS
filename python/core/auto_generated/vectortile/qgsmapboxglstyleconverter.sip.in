@@ -243,7 +243,7 @@ Parse list of ``layers`` from JSON.
    This is private API only, and may change in future QGIS versions
 %End
 
-    static bool parseFillLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style /Out/, QgsMapBoxGlStyleConversionContext &context );
+    static bool parseFillLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style /Out/, QgsMapBoxGlStyleConversionContext &context, bool isBackgroundStyle = false );
 %Docstring
 Parses a fill layer.
 
@@ -253,6 +253,7 @@ Parses a fill layer.
 
 :param jsonLayer: fill layer to parse
 :param context: conversion context
+:param isBackgroundStyle: set to ``True`` if the layer should be parsed as background layer
 
 :return: - ``True`` if the layer was successfully parsed.
          - style: generated QGIS vector tile style
@@ -347,7 +348,7 @@ Parses a numeric value which is interpolated by zoom range.
          - defaultNumber: storage for a reasonable "default" number representing the overall property.
 %End
 
-    static QgsProperty parseInterpolateOpacityByZoom( const QVariantMap &json, int maxOpacity );
+    static QgsProperty parseInterpolateOpacityByZoom( const QVariantMap &json, int maxOpacity, QgsMapBoxGlStyleConversionContext *contextPtr = 0 );
 %Docstring
 Interpolates opacity with either :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or :py:func:`~QgsMapBoxGlStyleConverter.scale_exp` (depending on base value).
 For ``json`` with intermediate stops it uses :py:func:`~QgsMapBoxGlStyleConverter.parseOpacityStops` function.
@@ -358,7 +359,7 @@ It uses QGIS :py:func:`~QgsMapBoxGlStyleConverter.set_color_part` function to se
    This is private API only, and may change in future QGIS versions
 %End
 
-    static QString parseOpacityStops( double base, const QVariantList &stops, int maxOpacity );
+    static QString parseOpacityStops( double base, const QVariantList &stops, int maxOpacity, QgsMapBoxGlStyleConversionContext &context );
 %Docstring
 Takes values from stops and uses either :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or :py:func:`~QgsMapBoxGlStyleConverter.scale_exp` functions
 to interpolate alpha component of color.
@@ -395,6 +396,15 @@ For ``json`` with intermediate stops it uses :py:func:`~QgsMapBoxGlStyleConverte
 %Docstring
 Takes values from stops and uses either :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or :py:func:`~QgsMapBoxGlStyleConverter.scale_exp` functions
 to interpolate point/offset values.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+%End
+
+    static QString parseArrayStops( const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1 );
+%Docstring
+Takes numerical arrays from stops.
 
 .. warning::
 
@@ -457,6 +467,17 @@ Interpolates a list which starts with the interpolate function.
    This is private API only, and may change in future QGIS versions
 %End
 
+    static QString parseColorExpression( const QVariant &colorExpression, QgsMapBoxGlStyleConversionContext &context );
+%Docstring
+Converts an expression representing a color to a string (can be color string or an expression where a color is expected)
+
+:param colorExpression: the color expression
+:param context: the style conversion context
+
+:return: the QGIS expression string
+         since QGIS 3.22
+%End
+
     static QColor parseColor( const QVariant &color, QgsMapBoxGlStyleConversionContext &context );
 %Docstring
 Parses a ``color`` in one of these supported formats:
@@ -487,7 +508,7 @@ Takes a QColor object and returns HSLA components in required format for QGIS :p
    This is private API only, and may change in future QGIS versions
 %End
 
-    static QString interpolateExpression( double zoomMin, double zoomMax, double valueMin, double valueMax, double base, double multiplier = 1 );
+    static QString interpolateExpression( double zoomMin, double zoomMax, QVariant valueMin, QVariant valueMax, double base, double multiplier = 1, QgsMapBoxGlStyleConversionContext *contextPtr = 0 );
 %Docstring
 Generates an interpolation for values between ``valueMin`` and ``valueMax``, scaled between the
 ranges ``zoomMin`` to ``zoomMax``.
@@ -515,7 +536,7 @@ Converts a value to Qt.PenJoinStyle enum from JSON value.
    This is private API only, and may change in future QGIS versions
 %End
 
-    static QString parseExpression( const QVariantList &expression, QgsMapBoxGlStyleConversionContext &context );
+    static QString parseExpression( const QVariantList &expression, QgsMapBoxGlStyleConversionContext &context, bool colorExpected = false );
 %Docstring
 Converts a MapBox GL expression to a QGIS expression.
 

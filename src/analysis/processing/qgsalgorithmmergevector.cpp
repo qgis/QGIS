@@ -164,6 +164,7 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
             destField.setType( QVariant::String );
             destField.setSubType( QVariant::Invalid );
             destField.setLength( 0 );
+            destField.setPrecision( 0 );
           }
           break;
         }

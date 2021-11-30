@@ -168,11 +168,13 @@ class hillshade(GdalAlgorithm):
             arguments.append('-alg')
             arguments.append('ZevenbergenThorne')
 
-        if self.parameterAsBoolean(parameters, self.COMBINED, context):
+        combined = self.parameterAsBoolean(parameters, self.COMBINED, context)
+        if combined and not multidirectional:
             arguments.append('-combined')
-
-        if multidirectional:
+        elif multidirectional and not combined:
             arguments.append('-multidirectional')
+        elif multidirectional and combined:
+            raise QgsProcessingException(self.tr('Options -multirectional and -combined are mutually exclusive.'))
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:

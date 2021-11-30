@@ -20,9 +20,9 @@
 #include "qgis_sip.h"
 #include "qgis.h"
 #include "qgsrectangle.h"
-#include "qgsrendercontext.h"
 #include "qgsfields.h"
 #include "qgsfeaturerequest.h"
+#include "qgsconfig.h"
 
 #include <QList>
 #include <QString>
@@ -37,6 +37,7 @@ class QgsVectorLayer;
 class QgsPaintEffect;
 class QgsReadWriteContext;
 class QgsStyleEntityVisitorInterface;
+class QgsRenderContext;
 
 typedef QMap<QString, QString> QgsStringMap SIP_SKIP;
 

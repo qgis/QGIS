@@ -216,6 +216,13 @@ Returns an expression context scope used for running the action.
 .. versionadded:: 3.0
 %End
 
+    QString html( ) const;
+%Docstring
+Returns an HTML table with the basic information about this action.
+
+.. versionadded:: 3.24
+%End
+
 };
 
 

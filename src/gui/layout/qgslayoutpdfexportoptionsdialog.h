@@ -23,9 +23,8 @@
 
 #include <QDialog>
 #include "qgis_gui.h"
+#include "qgis.h"
 #include "ui_qgspdfexportoptions.h"
-
-#include "qgsrendercontext.h"
 
 class QgsGeoPdfLayerTreeModel;
 class QgsGeoPdfLayerFilteredTreeModel;
@@ -59,9 +58,9 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::Qg
                                      Qt::WindowFlags flags = Qt::WindowFlags() );
 
     //! Sets the text render format
-    void setTextRenderFormat( QgsRenderContext::TextRenderFormat format );
+    void setTextRenderFormat( Qgis::TextRenderFormat format );
     //! Returns the current text render format
-    QgsRenderContext::TextRenderFormat textRenderFormat() const;
+    Qgis::TextRenderFormat textRenderFormat() const;
     //! Set whether to force vector output
     void setForceVector( bool force );
     //! Returns whether vector output is being forced

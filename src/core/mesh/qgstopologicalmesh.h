@@ -20,6 +20,12 @@
 
 #include "qgsmeshdataprovider.h"
 
+#if defined(_MSC_VER)
+template CORE_EXPORT QVector<int> SIP_SKIP;
+template CORE_EXPORT QList<int> SIP_SKIP;
+template CORE_EXPORT QVector<QVector<int>> SIP_SKIP;
+#endif
+
 SIP_NO_FILE
 
 class QgsMeshEditingError;
@@ -53,7 +59,7 @@ class CORE_EXPORT QgsTopologicalMesh
      *
      * \since QGIS 3.22
      */
-    class TopologicalFaces
+    class CORE_EXPORT TopologicalFaces
     {
       public:
 
@@ -87,7 +93,7 @@ class CORE_EXPORT QgsTopologicalMesh
      *
      * \since QGIS 3.22
      */
-    class Changes
+    class CORE_EXPORT Changes
     {
       public:
 
@@ -120,6 +126,9 @@ class CORE_EXPORT QgsTopologicalMesh
 
         //! Returns a list of the native face indexes that have a geometry changed
         QList<int> nativeFacesIndexesGeometryChanged() const;
+
+        //! Returns whether changes are empty, that there is nothing to change
+        bool isEmpty() const;
 
       protected:
         int mAddedFacesFirstIndex = 0;
@@ -192,7 +201,7 @@ class CORE_EXPORT QgsTopologicalMesh
     //----------- editing methods
 
     //! Returns whether the faces can be added to the mesh
-    QgsMeshEditingError canFacesBeAdded( const TopologicalFaces &topologicalFaces ) const;
+    QgsMeshEditingError facesCanBeAdded( const TopologicalFaces &topologicalFaces ) const;
 
     /**
      * Adds faces \a topologicFaces to the topologic mesh.
@@ -204,7 +213,7 @@ class CORE_EXPORT QgsTopologicalMesh
      * Returns whether faces with index in \a faceIndexes can be removed/
      * The method an error object with type QgsMeshEditingError::NoError if the faces can be removed, otherwise returns the corresponding error
      */
-    QgsMeshEditingError canFacesBeRemoved( const QList<int> facesIndexes );
+    QgsMeshEditingError facesCanBeRemoved( const QList<int> facesIndexes );
 
     /**
      * Removes faces with index in \a faceIndexes.
@@ -237,7 +246,7 @@ class CORE_EXPORT QgsTopologicalMesh
     /**
      * Returns TRUE if face with index \a faceIndex can be split
      */
-    bool faceCanBeSplit( int faceIndex ) const;
+    bool canBeSplit( int faceIndex ) const;
 
     /**
      * Splits face with index \a faceIndex
@@ -310,6 +319,9 @@ class CORE_EXPORT QgsTopologicalMesh
 
     //! Checks the consistency of the topological mesh and return FALSE if there is a consistency issue
     QgsMeshEditingError checkConsistency() const;
+
+    //! Checks the topology of the mesh \a mesh, if error occurs, this mesh can't be edited
+    static QgsMeshEditingError checkTopology( const QgsMesh &mesh, int maxVerticesPerFace );
 
   private:
 

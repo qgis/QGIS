@@ -21,7 +21,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgspoint.h"
-#include "qgsabstractgeometry.h"
+#include "qgsvertexid.h"
 #include "qgsgeometry.h"
 #include "qgsvector3d.h"
 
@@ -169,8 +169,8 @@ class CORE_EXPORT QgsGeometryUtils
      *
      * \since QGIS 3.2
      */
-    static int circleCircleIntersections( QgsPointXY center1, double radius1,
-                                          QgsPointXY center2, double radius2,
+    static int circleCircleIntersections( const QgsPointXY &center1, double radius1,
+                                          const QgsPointXY &center2, double radius2,
                                           QgsPointXY &intersection1 SIP_OUT, QgsPointXY &intersection2 SIP_OUT ) SIP_HOLDGIL;
 
     /**

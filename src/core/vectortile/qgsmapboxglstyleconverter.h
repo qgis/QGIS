@@ -21,6 +21,7 @@
 #include "qgsproperty.h"
 #include <QVariantMap>
 #include <memory>
+#include <QImage>
 
 class QgsVectorTileRenderer;
 class QgsVectorTileLabeling;
@@ -273,9 +274,10 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \param jsonLayer fill layer to parse
      * \param style generated QGIS vector tile style
      * \param context conversion context
+     * \param isBackgroundStyle set to TRUE if the layer should be parsed as background layer
      * \returns TRUE if the layer was successfully parsed.
      */
-    static bool parseFillLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style SIP_OUT, QgsMapBoxGlStyleConversionContext &context );
+    static bool parseFillLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style SIP_OUT, QgsMapBoxGlStyleConversionContext &context, bool isBackgroundStyle = false );
 
     /**
      * Parses a line layer.
@@ -363,7 +365,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \warning This is private API only, and may change in future QGIS versions
      */
-    static QgsProperty parseInterpolateOpacityByZoom( const QVariantMap &json, int maxOpacity );
+    static QgsProperty parseInterpolateOpacityByZoom( const QVariantMap &json, int maxOpacity, QgsMapBoxGlStyleConversionContext *contextPtr = 0 );
 
     /**
      * Takes values from stops and uses either scale_linear() or scale_exp() functions
@@ -371,7 +373,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \warning This is private API only, and may change in future QGIS versions
      */
-    static QString parseOpacityStops( double base, const QVariantList &stops, int maxOpacity );
+    static QString parseOpacityStops( double base, const QVariantList &stops, int maxOpacity, QgsMapBoxGlStyleConversionContext &context );
 
     /**
      * Interpolates a point/offset with either scale_linear() or scale_exp() (depending on base value).
@@ -399,6 +401,13 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \warning This is private API only, and may change in future QGIS versions
      */
     static QString parsePointStops( double base, const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1 );
+
+    /**
+     * Takes numerical arrays from stops.
+     *
+     * \warning This is private API only, and may change in future QGIS versions
+     */
+    static QString parseArrayStops( const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1 );
 
     /**
      * Parses a list of interpolation stops
@@ -451,6 +460,15 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
         int maxOpacity = 255, QColor *defaultColor SIP_OUT = nullptr, double *defaultNumber SIP_OUT = nullptr );
 
     /**
+     * Converts an expression representing a color to a string (can be color string or an expression where a color is expected)
+     * \param colorExpression the color expression
+     * \param context the style conversion context
+     * \returns the QGIS expression string
+     * since QGIS 3.22
+     */
+    static QString parseColorExpression( const QVariant &colorExpression, QgsMapBoxGlStyleConversionContext &context );
+
+    /**
      * Parses a \a color in one of these supported formats:
      *
      * - \c \#fff or \c \#ffffff
@@ -481,7 +499,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \warning This is private API only, and may change in future QGIS versions
      */
-    static QString interpolateExpression( double zoomMin, double zoomMax, double valueMin, double valueMax, double base, double multiplier = 1 );
+    static QString interpolateExpression( double zoomMin, double zoomMax, QVariant valueMin, QVariant valueMax, double base, double multiplier = 1, QgsMapBoxGlStyleConversionContext *contextPtr = 0 );
 
     /**
      * Converts a value to Qt::PenCapStyle enum from JSON value.
@@ -502,7 +520,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \warning This is private API only, and may change in future QGIS versions
      */
-    static QString parseExpression( const QVariantList &expression, QgsMapBoxGlStyleConversionContext &context );
+    static QString parseExpression( const QVariantList &expression, QgsMapBoxGlStyleConversionContext &context, bool colorExpected = false );
 
     /**
      * Retrieves the sprite image with the specified \a name, taken from the specified \a context.
@@ -527,7 +545,22 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
 #endif
 
     static QString parseValue( const QVariant &value, QgsMapBoxGlStyleConversionContext &context );
+
+    /**
+     * Checks if value is a color before calling parseValue
+     */
+    static QString parseValueCheckColor( const QVariant &value, QgsMapBoxGlStyleConversionContext &context );
     static QString parseKey( const QVariant &value );
+
+    /**
+     * Checks if interpolation bottom/top values are numeric values
+     * \param bottomVariant bottom value
+     * \param topVariant top value
+     * \param bottom out: bottom value converted to double
+     * \param top out: top value converted to double
+     * \return true if both bottom and top value are numeric. False else (e.g. if one of the values is an expression)
+     */
+    static bool numericArgumentsOnly( const QVariant &bottomVariant, const QVariant &topVariant, double &bottom, double &top );
 
     QString mError;
     QStringList mWarnings;

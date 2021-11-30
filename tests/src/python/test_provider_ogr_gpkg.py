@@ -23,7 +23,8 @@ import time
 import qgis  # NOQA
 from osgeo import gdal, ogr
 from providertestbase import ProviderTestCase
-from qgis.core import (QgsFeature,
+from qgis.core import (Qgis,
+                       QgsFeature,
                        QgsCoordinateReferenceSystem,
                        QgsFeatureRequest,
                        QgsFeatureSink,
@@ -43,7 +44,7 @@ from qgis.core import (QgsFeature,
                        QgsVectorDataProvider,
                        QgsLayerMetadata,
                        NULL)
-from qgis.PyQt.QtCore import QCoreApplication, QVariant, QDate, QTime, QDateTime, Qt
+from qgis.PyQt.QtCore import QCoreApplication, QVariant, QDate, QTime, QDateTime, Qt, QTemporaryDir
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.testing import start_app, unittest
 from qgis.utils import spatialite_connect
@@ -2336,6 +2337,72 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
 
         g = [f.geometry() for f in vl.getFeatures()][0]
         self.assertEqual(g.asWkt(), 'Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))')
+
+    def testSubsetComments(self):
+        """Test issue GH #45754"""
+
+        tmp_dir = QTemporaryDir()
+        tmpfile = os.path.join(tmp_dir.path(), 'testSubsetComments.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('my--test', geom_type=ogr.wkbPoint)
+        lyr.CreateField(ogr.FieldDefn('text_field', ogr.OFTString))
+        lyr.CreateField(ogr.FieldDefn('my--thing\'s', ogr.OFTString))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(0 0)'))
+        f['text_field'] = 'one'
+        f['my--thing\'s'] = 'one'
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f['text_field'] = 'two'
+        f['my--thing\'s'] = 'my "things -- all'
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(1 1)'))
+        lyr.CreateFeature(f)
+        del (lyr)
+
+        def _test(subset_string):
+            vl1 = QgsVectorLayer(f'{tmpfile}|subset={subset_string}'.format(tmpfile, subset_string), 'test', 'ogr')
+            self.assertTrue(vl1.isValid())
+            self.assertEqual(vl1.featureCount(), 1)
+
+        _test('-- comment\n SELECT * --comment\nFROM "my--test" WHERE text_field=\'one\'')
+        _test('\n SELECT * --comment\nFROM "my--test" WHERE\n-- comment \ntext_field=\'one\'')
+        _test(' SELECT * --comment\nFROM "my--test" WHERE\ntext_field=\'one\' AND \ntext_field != \'--embedded comment\'')
+        _test('SELECT * FROM "my--test" WHERE text_field=\'one\' AND text_field != \' \\\'--embedded comment\'')
+        _test('select "my--thing\'s" from "my--test" where "my--thing\'s" = \'my "things -- all\'')
+
+    def testIsSqlQuery(self):
+        """Test that isQuery returns what it should in case of simple filters"""
+
+        tmp_dir = QTemporaryDir()
+        tmpfile = os.path.join(tmp_dir.path(), 'testQueryLayers.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
+        lyr.CreateField(ogr.FieldDefn('text_field', ogr.OFTString))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(0 0)'))
+        f['text_field'] = 'one'
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f['text_field'] = 'two'
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(1 1)'))
+        lyr.CreateFeature(f)
+        del (lyr)
+
+        vl1 = QgsVectorLayer(f'{tmpfile}|subset=SELECT * FROM test WHERE "text_field"=\'one\''.format(tmpfile), 'test', 'ogr')
+        self.assertTrue(vl1.isValid())
+        self.assertTrue(vl1.isSqlQuery())
+        self.assertEqual(vl1.featureCount(), 1)
+
+        # Test flags
+        self.assertTrue(vl1.vectorLayerTypeFlags() & Qgis.VectorLayerTypeFlag.SqlQuery)
+
+        vl2 = QgsVectorLayer(f'{tmpfile}|subset="text_field"=\'one\''.format(tmpfile), 'test', 'ogr')
+        self.assertTrue(vl2.isValid())
+        self.assertFalse(vl2.isSqlQuery())
+        self.assertEqual(vl2.featureCount(), 1)
+
+        # Test flags
+        self.assertFalse(vl2.vectorLayerTypeFlags() & Qgis.VectorLayerTypeFlag.SqlQuery)
 
 
 if __name__ == '__main__':

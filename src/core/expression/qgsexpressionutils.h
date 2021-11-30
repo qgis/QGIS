@@ -21,7 +21,6 @@
 
 #include "qgsfeature.h"
 #include "qgsexpression.h"
-#include "qgscolorramp.h"
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsrasterlayer.h"
 #include "qgsproject.h"
@@ -31,6 +30,8 @@
 
 #include <QThread>
 #include <QLocale>
+
+class QgsGradientColorRamp;
 
 #define ENSURE_NO_EVAL_ERROR   {  if ( parent->hasEvalError() ) return QVariant(); }
 #define SET_EVAL_ERROR(x)   { parent->setEvalErrorString( x ); return QVariant(); }
@@ -322,17 +323,7 @@ class CORE_EXPORT QgsExpressionUtils
       return QgsInterval();
     }
 
-    static QgsGradientColorRamp getRamp( const QVariant &value, QgsExpression *parent, bool report_error = false )
-    {
-      if ( value.canConvert<QgsGradientColorRamp>() )
-        return value.value<QgsGradientColorRamp>();
-
-      // If we get here then we can't convert so we just error and return invalid.
-      if ( report_error )
-        parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to gradient ramp" ).arg( value.toString() ) );
-
-      return QgsGradientColorRamp();
-    }
+    static QgsGradientColorRamp getRamp( const QVariant &value, QgsExpression *parent, bool report_error = false );
 
     static QgsGeometry getGeometry( const QVariant &value, QgsExpression *parent )
     {

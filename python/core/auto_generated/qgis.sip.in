@@ -28,6 +28,7 @@ enum class QgsMapLayerType
   VectorTileLayer,
   AnnotationLayer,
   PointCloudLayer,
+  GroupLayer,
 };
 
 
@@ -103,6 +104,13 @@ The development version
       ARGB32_Premultiplied
     };
 
+    enum class VectorLayerTypeFlag
+    {
+      SqlQuery
+    };
+    typedef QFlags<Qgis::VectorLayerTypeFlag> VectorLayerTypeFlags;
+
+
     enum class PythonMacroMode
       {
       Never,
@@ -139,6 +147,7 @@ The development version
     typedef QFlags<Qgis::SymbolRenderHint> SymbolRenderHints;
 
 
+
     enum class SymbolFlag
     {
       RendererShouldUseSymbolLevels,
@@ -151,6 +160,13 @@ The development version
       FlagIncludeCrosshairsForMarkerSymbols,
     };
     typedef QFlags<Qgis::SymbolPreviewFlag> SymbolPreviewFlags;
+
+
+    enum class SymbolLayerFlag
+    {
+      DisableFeatureClipping,
+    };
+    typedef QFlags<Qgis::SymbolLayerFlag> SymbolLayerFlags;
 
 
     enum class BrowserItemType
@@ -538,10 +554,213 @@ The development version
       FindClosestMatchToEndOfRange
     };
 
-    enum class CoordinateType
+    enum class TransformDirection
+      {
+      Forward,
+      Reverse
+    };
+
+    enum class MapSettingsFlag
+      {
+      Antialiasing,
+      DrawEditingInfo,
+      ForceVectorOutput,
+      UseAdvancedEffects,
+      DrawLabeling,
+      UseRenderingOptimization,
+      DrawSelection,
+      DrawSymbolBounds,
+      RenderMapTile,
+      RenderPartialOutput,
+      RenderPreviewJob,
+      RenderBlocking,
+      LosslessImageRendering,
+      Render3DMap,
+      HighQualityImageTransforms,
+    };
+    typedef QFlags<Qgis::MapSettingsFlag> MapSettingsFlags;
+
+
+    enum class RenderContextFlag
+      {
+      DrawEditingInfo,
+      ForceVectorOutput,
+      UseAdvancedEffects,
+      UseRenderingOptimization,
+      DrawSelection,
+      DrawSymbolBounds,
+      RenderMapTile,
+      Antialiasing,
+      RenderPartialOutput,
+      RenderPreviewJob,
+      RenderBlocking,
+      RenderSymbolPreview,
+      LosslessImageRendering,
+      ApplyScalingWorkaroundForTextRendering,
+      Render3DMap,
+      ApplyClipAfterReprojection,
+      RenderingSubSymbol,
+      HighQualityImageTransforms,
+    };
+    typedef QFlags<Qgis::RenderContextFlag> RenderContextFlags;
+
+
+
+    enum class TextRenderFormat
+      {
+      AlwaysOutlines,
+      AlwaysText,
+    };
+
+    enum class RenderSubcomponentProperty
     {
-      XY,
-      Point
+      Generic,
+      ShadowOffset,
+      BlurSize,
+      GlowSpread,
+    };
+
+    enum class VertexType
+      {
+      Segment,
+      Curve,
+    };
+
+    enum class MarkerShape
+      {
+      Square,
+      Diamond,
+      Pentagon,
+      Hexagon,
+      Triangle,
+      EquilateralTriangle,
+      Star,
+      Arrow,
+      Circle,
+      Cross,
+      CrossFill,
+      Cross2,
+      Line,
+      ArrowHead,
+      ArrowHeadFilled,
+      SemiCircle,
+      ThirdCircle,
+      QuarterCircle,
+      QuarterSquare,
+      HalfSquare,
+      DiagonalHalfSquare,
+      RightHalfTriangle,
+      LeftHalfTriangle,
+      Octagon,
+      SquareWithCorners,
+      AsteriskFill,
+      HalfArc,
+      ThirdArc,
+      QuarterArc,
+    };
+
+    enum class MarkerLinePlacement
+      {
+      Interval,
+      Vertex,
+      LastVertex,
+      FirstVertex,
+      CentralPoint,
+      CurvePoint,
+      SegmentCenter,
+      InnerVertices,
+    };
+    typedef QFlags<Qgis::MarkerLinePlacement> MarkerLinePlacements;
+
+
+    enum class GradientColorSource
+      {
+      SimpleTwoColor,
+      ColorRamp,
+    };
+
+    enum class GradientType
+      {
+      Linear,
+      Radial,
+      Conical,
+    };
+
+    enum class SymbolCoordinateReference
+      {
+      Feature,
+      Viewport,
+    };
+
+    enum class GradientSpread
+      {
+      Pad,
+      Reflect,
+      Repeat,
+    };
+
+    enum class PointCountMethod
+      {
+      Absolute,
+      DensityBased,
+    };
+
+    enum class MarkerClipMode
+    {
+      NoClipping,
+      Shape,
+      CentroidWithin,
+      CompletelyWithin,
+    };
+
+    enum class LineClipMode
+    {
+      ClipPainterOnly,
+      ClipToIntersection,
+      NoClipping,
+    };
+
+    enum class DashPatternLineEndingRule
+    {
+      NoRule,
+      FullDash,
+      HalfDash,
+      FullGap,
+      HalfGap,
+    };
+
+    enum class DashPatternSizeAdjustment
+    {
+      ScaleBothDashAndGap,
+      ScaleDashOnly,
+      ScaleGapOnly,
+    };
+
+
+
+    enum class Capitalization
+      {
+      MixedCase,
+      AllUppercase,
+      AllLowercase,
+      ForceFirstLetterToCapital,
+      SmallCaps,
+      TitleCase,
+      UpperCamelCase,
+      AllSmallCaps,
+    };
+
+    enum class TextRendererFlag
+    {
+      WrapLines,
+    };
+    typedef QFlags<Qgis::TextRendererFlag> TextRendererFlags;
+
+
+    enum class AngularDirection
+      {
+      Clockwise,
+      CounterClockwise,
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -615,6 +834,8 @@ QFlags<Qgis::SymbolFlag> operator|(Qgis::SymbolFlag f1, QFlags<Qgis::SymbolFlag>
 
 QFlags<Qgis::SymbolPreviewFlag> operator|(Qgis::SymbolPreviewFlag f1, QFlags<Qgis::SymbolPreviewFlag> f2);
 
+QFlags<Qgis::SymbolLayerFlag> operator|(Qgis::SymbolLayerFlag f1, QFlags<Qgis::SymbolLayerFlag> f2);
+
 QFlags<Qgis::BrowserItemCapability> operator|(Qgis::BrowserItemCapability f1, QFlags<Qgis::BrowserItemCapability> f2);
 
 QFlags<Qgis::SublayerQueryFlag> operator|(Qgis::SublayerQueryFlag f1, QFlags<Qgis::SublayerQueryFlag> f2);
@@ -634,6 +855,17 @@ QFlags<Qgis::FileOperationFlag> operator|(Qgis::FileOperationFlag f1, QFlags<Qgi
 QFlags<Qgis::AnnotationItemFlag> operator|(Qgis::AnnotationItemFlag f1, QFlags<Qgis::AnnotationItemFlag> f2);
 
 QFlags<Qgis::AnnotationItemGuiFlag> operator|(Qgis::AnnotationItemGuiFlag f1, QFlags<Qgis::AnnotationItemGuiFlag> f2);
+
+QFlags<Qgis::MapSettingsFlag> operator|(Qgis::MapSettingsFlag f1, QFlags<Qgis::MapSettingsFlag> f2);
+
+QFlags<Qgis::RenderContextFlag> operator|(Qgis::RenderContextFlag f1, QFlags<Qgis::RenderContextFlag> f2);
+
+QFlags<Qgis::VectorLayerTypeFlag> operator|(Qgis::VectorLayerTypeFlag f1, QFlags<Qgis::VectorLayerTypeFlag> f2);
+
+QFlags<Qgis::MarkerLinePlacement> operator|(Qgis::MarkerLinePlacement f1, QFlags<Qgis::MarkerLinePlacement> f2);
+
+QFlags<Qgis::TextRendererFlag> operator|(Qgis::TextRendererFlag f1, QFlags<Qgis::TextRendererFlag> f2);
+
 
 
 

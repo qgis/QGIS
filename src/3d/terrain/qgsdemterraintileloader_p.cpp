@@ -27,6 +27,7 @@
 #include "qgsterraingenerator.h"
 
 #include <Qt3DRender/QGeometryRenderer>
+#include <Qt3DCore/QTransform>
 #include <QMutexLocker>
 
 ///@cond PRIVATE
@@ -228,16 +229,16 @@ int QgsDemHeightMapGenerator::render( const QgsChunkNodeId &nodeId )
   jd.tileId = nodeId;
   jd.extent = extent;
   jd.timer.start();
+  QFutureWatcher<QByteArray> *fw = new QFutureWatcher<QByteArray>( nullptr );
+  connect( fw, &QFutureWatcher<QByteArray>::finished, this, &QgsDemHeightMapGenerator::onFutureFinished );
+  connect( fw, &QFutureWatcher<QByteArray>::finished, fw, &QObject::deleteLater );
   // make a clone of the data provider so it is safe to use in worker thread
   if ( mDtm )
     jd.future = QtConcurrent::run( _readDtmData, mClonedProvider, extent, mResolution, mTilingScheme.crs() );
   else
     jd.future = QtConcurrent::run( _readOnlineDtm, mDownloader.get(), extent, mResolution, mTilingScheme.crs(), mTransformContext );
 
-  QFutureWatcher<QByteArray> *fw = new QFutureWatcher<QByteArray>( nullptr );
   fw->setFuture( jd.future );
-  connect( fw, &QFutureWatcher<QByteArray>::finished, this, &QgsDemHeightMapGenerator::onFutureFinished );
-  connect( fw, &QFutureWatcher<QByteArray>::finished, fw, &QObject::deleteLater );
 
   mJobs.insert( fw, jd );
 

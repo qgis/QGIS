@@ -77,12 +77,25 @@ int QgsTextRenderer::sizeToPixel( double size, const QgsRenderContext &c, QgsUni
   return static_cast< int >( c.convertToPainterUnits( size, unit, mapUnitScale ) + 0.5 ); //NOLINT
 }
 
-void QgsTextRenderer::drawText( const QRectF &rect, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, bool, VAlignment vAlignment )
+void QgsTextRenderer::drawText( const QRectF &rect, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &text, QgsRenderContext &context, const QgsTextFormat &format, bool, VAlignment vAlignment, Qgis::TextRendererFlags flags )
 {
   QgsTextFormat tmpFormat = format;
   if ( format.dataDefinedProperties().hasActiveProperties() ) // note, we use format instead of tmpFormat here, it's const and potentially avoids a detach
     tmpFormat.updateDataDefinedProperties( context );
   tmpFormat = updateShadowPosition( tmpFormat );
+
+  QStringList textLines;
+  for ( const QString &line : text )
+  {
+    if ( flags & Qgis::TextRendererFlag::WrapLines && textRequiresWrapping( context, line, rect.width(), format ) )
+    {
+      textLines.append( wrappedText( context, line, rect.width(), format ) );
+    }
+    else
+    {
+      textLines.append( line );
+    }
+  }
 
   QgsTextDocument document = format.allowHtmlFormatting() ? QgsTextDocument::fromHtml( textLines ) : QgsTextDocument::fromPlainText( textLines );
   document.applyCapitalization( format.capitalization() );
@@ -294,7 +307,7 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
 
   const double penSize = context.convertToPainterUnits( buffer.size(), buffer.sizeUnit(), buffer.sizeMapUnitScale() );
 
-  const double scaleFactor = ( context.flags() & QgsRenderContext::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
+  const double scaleFactor = ( context.flags() & Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
 
   std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;
   if ( mode == Label )
@@ -451,7 +464,7 @@ void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer
   QPainterPath path;
   path.setFillRule( Qt::WindingFill );
 
-  const double scaleFactor = ( context.flags() & QgsRenderContext::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
+  const double scaleFactor = ( context.flags() & Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
 
   // TODO: vertical text mode was ignored when masking feature was added.
   // Hopefully Oslandia come back and fix this? Hint hint...
@@ -542,7 +555,7 @@ double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTex
 double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &document )
 {
   //calculate max width of text lines
-  const double scaleFactor = ( context.flags() & QgsRenderContext::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
+  const double scaleFactor = ( context.flags() & Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
 
   bool isNullSize = false;
   const QFont baseFont = format.scaledFont( context, scaleFactor, &isNullSize );
@@ -599,21 +612,34 @@ double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTex
   return width / scaleFactor;
 }
 
-double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, DrawMode mode, QFontMetricsF * )
+double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, DrawMode mode, QFontMetricsF *, Qgis::TextRendererFlags flags, double maxLineWidth )
 {
+  QStringList lines;
+  for ( const QString &line : textLines )
+  {
+    if ( flags & Qgis::TextRendererFlag::WrapLines && maxLineWidth > 0 && textRequiresWrapping( context, line, maxLineWidth, format ) )
+    {
+      lines.append( wrappedText( context, line, maxLineWidth, format ) );
+    }
+    else
+    {
+      lines.append( line );
+    }
+  }
+
   if ( !format.allowHtmlFormatting() )
   {
-    return textHeight( context, format, QgsTextDocument::fromPlainText( textLines ), mode );
+    return textHeight( context, format, QgsTextDocument::fromPlainText( lines ), mode );
   }
   else
   {
-    return textHeight( context, format, QgsTextDocument::fromHtml( textLines ), mode );
+    return textHeight( context, format, QgsTextDocument::fromHtml( lines ), mode );
   }
 }
 
 double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, QChar character, bool includeEffects )
 {
-  const double scaleFactor = ( context.flags() & QgsRenderContext::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
+  const double scaleFactor = ( context.flags() & Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
   bool isNullSize = false;
   const QFont baseFont = format.scaledFont( context, scaleFactor, &isNullSize );
   if ( isNullSize )
@@ -648,13 +674,87 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
   return height + maxExtension;
 }
 
+bool QgsTextRenderer::textRequiresWrapping( const QgsRenderContext &context, const QString &text, double width, const QgsTextFormat &format )
+{
+  if ( qgsDoubleNear( width, 0.0 ) )
+    return false;
+
+  const QStringList multiLineSplit = text.split( '\n' );
+  const double currentTextWidth = QgsTextRenderer::textWidth( context, format, multiLineSplit );
+  return currentTextWidth > width;
+}
+
+QStringList QgsTextRenderer::wrappedText( const QgsRenderContext &context, const QString &text, double width, const QgsTextFormat &format )
+{
+  const QStringList lines = text.split( '\n' );
+  QStringList outLines;
+  for ( const QString &line : lines )
+  {
+    if ( textRequiresWrapping( context, line, width, format ) )
+    {
+      //first step is to identify words which must be on their own line (too long to fit)
+      const QStringList words = line.split( ' ' );
+      QStringList linesToProcess;
+      QString wordsInCurrentLine;
+      for ( const QString &word : words )
+      {
+        if ( textRequiresWrapping( context, word, width, format ) )
+        {
+          //too long to fit
+          if ( !wordsInCurrentLine.isEmpty() )
+            linesToProcess << wordsInCurrentLine;
+          wordsInCurrentLine.clear();
+          linesToProcess << word;
+        }
+        else
+        {
+          if ( !wordsInCurrentLine.isEmpty() )
+            wordsInCurrentLine.append( ' ' );
+          wordsInCurrentLine.append( word );
+        }
+      }
+      if ( !wordsInCurrentLine.isEmpty() )
+        linesToProcess << wordsInCurrentLine;
+
+      for ( const QString &line : std::as_const( linesToProcess ) )
+      {
+        QString remainingText = line;
+        int lastPos = remainingText.lastIndexOf( ' ' );
+        while ( lastPos > -1 )
+        {
+          //check if remaining text is short enough to go in one line
+          if ( !textRequiresWrapping( context, remainingText, width, format ) )
+          {
+            break;
+          }
+
+          if ( !textRequiresWrapping( context, remainingText.left( lastPos ), width, format ) )
+          {
+            outLines << remainingText.left( lastPos );
+            remainingText = remainingText.mid( lastPos + 1 );
+            lastPos = 0;
+          }
+          lastPos = remainingText.lastIndexOf( ' ', lastPos - 1 );
+        }
+        outLines << remainingText;
+      }
+    }
+    else
+    {
+      outLines << line;
+    }
+  }
+
+  return outLines;
+}
+
 double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &doc, DrawMode mode )
 {
   QgsTextDocument document = doc;
   document.applyCapitalization( format.capitalization() );
 
   //calculate max height of text lines
-  const double scaleFactor = ( context.flags() & QgsRenderContext::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
+  const double scaleFactor = ( context.flags() & Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
 
   bool isNullSize = false;
   const QFont baseFont = format.scaledFont( context, scaleFactor, &isNullSize );
@@ -768,6 +868,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
   // shared calculations between shapes and SVG
 
   // configure angles, set component rotation and rotationOffset
+  const double originAdjustRotationRadians = -component.rotation;
   if ( background.rotationType() != QgsTextBackgroundSettings::RotationFixed )
   {
     component.rotation = -( component.rotation * 180 / M_PI ); // RotationSync
@@ -780,7 +881,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
     component.rotationOffset = background.rotation();
   }
 
-  const double scaleFactor = ( context.flags() & QgsRenderContext::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1;
+  const double scaleFactor = ( context.flags() & Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1;
 
   if ( mode != Label )
   {
@@ -833,6 +934,15 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
             component.center = QPointF( component.origin.x() - width / 2.0,
                                         component.origin.y() - height / 2.0 + originAdjust );
             break;
+        }
+
+        // apply rotation to center point
+        if ( !qgsDoubleNear( originAdjustRotationRadians, 0 ) )
+        {
+          const double dx = component.center.x() - component.origin.x();
+          const double dy = component.center.y() - component.origin.y();
+          component.center.setX( component.origin.x() + ( std::cos( originAdjustRotationRadians ) * dx - std::sin( originAdjustRotationRadians ) * dy ) );
+          component.center.setY( component.origin.y() + ( std::sin( originAdjustRotationRadians ) * dx + std::cos( originAdjustRotationRadians ) * dy ) );
         }
         break;
       }
@@ -1223,8 +1333,10 @@ void QgsTextRenderer::drawShadow( QgsRenderContext &context, const QgsTextRender
                    -offsetDist * std::sin( angleRad + M_PI_2 ) );
 
   p->save();
-  p->setRenderHint( QPainter::SmoothPixmapTransform );
   context.setPainterFlagsUsingContext( p );
+  // this was historically ALWAYS set for text renderer. We may want to consider getting it to respect the
+  // corresponding flag in the render context instead...
+  p->setRenderHint( QPainter::SmoothPixmapTransform );
   if ( context.useAdvancedEffects() )
   {
     p->setCompositionMode( shadow.blendMode() );
@@ -1297,7 +1409,7 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
   std::unique_ptr< QFontMetricsF > tmpMetrics;
   if ( !fontMetrics )
   {
-    fontScale = ( context.flags() & QgsRenderContext::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
+    fontScale = ( context.flags() & Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
 
     std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;
     if ( mode == Label )
@@ -1473,7 +1585,8 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
   {
     const QgsTextBlock block = document.at( i );
 
-    const bool isFinalLine = i == document.size() - 1;
+    const bool isFinalLineInParagraph = ( i == document.size() - 1 )
+                                        || document.at( i + 1 ).toPlainText().trimmed().isEmpty();
 
     QgsScopedQPainterState painterState( context.painter() );
     context.setPainterFlagsUsingContext();
@@ -1509,9 +1622,10 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
           break;
 
         case AlignJustify:
-          if ( !isFinalLine && labelWidest > labelWidth )
+          if ( !isFinalLineInParagraph && labelWidest > labelWidth )
           {
             calculateExtraSpacingForLineJustification( labelWidest - labelWidth, block, extraWordSpace, extraLetterSpace );
+            labelWidth = labelWidest;
           }
           break;
 
@@ -1660,7 +1774,7 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
 
       switch ( context.textRenderFormat() )
       {
-        case QgsRenderContext::TextFormatAlwaysOutlines:
+        case Qgis::TextRenderFormat::AlwaysOutlines:
         {
           // draw outlined text
           _fixQPictureDPI( context.painter() );
@@ -1668,7 +1782,7 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
           break;
         }
 
-        case QgsRenderContext::TextFormatAlwaysText:
+        case Qgis::TextRenderFormat::AlwaysText:
         {
           double xOffset = 0;
           for ( const QgsTextFragment &fragment : block )
@@ -1921,7 +2035,7 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
 
         switch ( context.textRenderFormat() )
         {
-          case QgsRenderContext::TextFormatAlwaysOutlines:
+          case Qgis::TextRenderFormat::AlwaysOutlines:
           {
             // draw outlined text
             _fixQPictureDPI( context.painter() );
@@ -1930,7 +2044,7 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
             break;
           }
 
-          case QgsRenderContext::TextFormatAlwaysText:
+          case Qgis::TextRenderFormat::AlwaysText:
           {
             context.painter()->setFont( fragmentFont );
             context.painter()->setPen( textColor );

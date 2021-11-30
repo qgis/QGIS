@@ -141,7 +141,7 @@ void TestQgsRasterFill::init()
   mRasterFill->setImageFilePath( mTestDataDir + QStringLiteral( "sample_image.png" ) );
   mRasterFill->setWidth( 30.0 );
   mRasterFill->setWidthUnit( QgsUnitTypes::RenderPixels );
-  mRasterFill->setCoordinateMode( QgsRasterFillSymbolLayer::Feature );
+  mRasterFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Feature );
   mRasterFill->setOpacity( 1.0 );
   mRasterFill->setOffset( QPointF( 0, 0 ) );
 }
@@ -161,7 +161,7 @@ void TestQgsRasterFill::rasterFillSymbol()
 void TestQgsRasterFill::coordinateMode()
 {
   mReport += QLatin1String( "<h2>Raster fill viewport mode</h2>\n" );
-  mRasterFill->setCoordinateMode( QgsRasterFillSymbolLayer::Viewport );
+  mRasterFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Viewport );
   const bool result = imageCheck( QStringLiteral( "rasterfill_viewport" ) );
   QVERIFY( result );
 }
@@ -205,7 +205,7 @@ void TestQgsRasterFill::percentageCoordinateMode()
   mReport += QLatin1String( "<h2>Raster fill percentage viewport mode</h2>\n" );
   mRasterFill->setWidthUnit( QgsUnitTypes::RenderPercentage );
   mRasterFill->setWidth( 6.3 );
-  mRasterFill->setCoordinateMode( QgsRasterFillSymbolLayer::Viewport );
+  mRasterFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Viewport );
   const bool result = imageCheck( QStringLiteral( "rasterfill_viewport_percentage" ) );
   QVERIFY( result );
 }

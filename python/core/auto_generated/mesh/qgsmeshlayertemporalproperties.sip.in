@@ -91,6 +91,22 @@ Sets the method used to match dataset from temporal capabilities
 :param matchingMethod: the matching method
 %End
 
+    bool isValid() const;
+%Docstring
+Returns whether the instance is valid
+
+.. versionadded:: 3.22
+%End
+
+    void setIsValid( bool isValid );
+%Docstring
+Sets whether the instance is valid
+
+:param isValid: whether the instance is valid
+
+.. versionadded:: 3.22
+%End
+
 };
 
 /************************************************************************

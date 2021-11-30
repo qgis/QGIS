@@ -24,6 +24,7 @@
 #include <QPointer>
 #include <QSize>
 #include <QRectF>
+#include <QVector>
 #include <functional>
 
 #ifndef QT_NO_PRINTER
@@ -301,7 +302,7 @@ class CORE_EXPORT QgsLayoutExporter
        *
        * \since QGIS 3.4.3
        */
-      QgsRenderContext::TextRenderFormat textRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
+      Qgis::TextRenderFormat textRenderFormat = Qgis::TextRenderFormat::AlwaysOutlines;
 
       /**
        * Indicates whether vector geometries should be simplified to avoid redundant extraneous detail,
@@ -546,7 +547,7 @@ class CORE_EXPORT QgsLayoutExporter
        *
        * \since QGIS 3.4.3
        */
-      QgsRenderContext::TextRenderFormat textRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
+      Qgis::TextRenderFormat textRenderFormat = Qgis::TextRenderFormat::AlwaysOutlines;
 
       /**
        * Indicates whether vector geometries should be simplified to avoid redundant extraneous detail,

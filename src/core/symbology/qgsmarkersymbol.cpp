@@ -413,7 +413,8 @@ void QgsMarkerSymbol::renderPointUsingLayer( QgsMarkerSymbolLayer *layer, QPoint
 
 void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRenderContext &context, int layerIdx, bool selected )
 {
-  const double opacity = dataDefinedProperties().valueAsDouble( QgsSymbol::PropertyOpacity, context.expressionContext(), mOpacity * 100 ) * 0.01;
+  const double opacity = dataDefinedProperties().hasActiveProperties() ? dataDefinedProperties().valueAsDouble( QgsSymbol::PropertyOpacity, context.expressionContext(), mOpacity * 100 ) * 0.01
+                         : mOpacity;
 
   QgsSymbolRenderContext symbolContext( context, QgsUnitTypes::RenderUnknownUnit, opacity, selected, mRenderHints, f );
   symbolContext.setGeometryPartCount( symbolRenderContext()->geometryPartCount() );
@@ -430,7 +431,11 @@ void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRender
         renderPointUsingLayer( markerLayer, point, symbolContext );
       }
       else
-        renderUsingLayer( symbolLayer, symbolContext );
+      {
+        QPolygonF points;
+        points.append( point );
+        renderUsingLayer( symbolLayer, symbolContext, QgsWkbTypes::PointGeometry, &points );
+      }
     }
     return;
   }
@@ -450,7 +455,11 @@ void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRender
       renderPointUsingLayer( markerLayer, point, symbolContext );
     }
     else
-      renderUsingLayer( symbolLayer, symbolContext );
+    {
+      QPolygonF points;
+      points.append( point );
+      renderUsingLayer( symbolLayer, symbolContext, QgsWkbTypes::PointGeometry, &points );
+    }
   }
 }
 

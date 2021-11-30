@@ -22,7 +22,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include <QString>
 
 #include "qgis_core.h"
-#include "qgscoordinatetransform.h"
+#include "qgis.h"
 #include "qgswkbtypes.h"
 #include "qgswkbptr.h"
 
@@ -47,6 +47,9 @@ class QgsConstWkbPtr;
 class QPainterPath;
 class QgsAbstractGeometryTransformer;
 class QgsFeedback;
+class QgsCoordinateTransform;
+class QgsPoint;
+class QgsRectangle;
 
 typedef QVector< QgsPoint > QgsPointSequence;
 #ifndef SIP_RUN
@@ -373,7 +376,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * units (generally meters). If FALSE, then z coordinates will not be changed by the
      * transform.
      */
-    virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) SIP_THROW( QgsCsException ) = 0;
+    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false ) SIP_THROW( QgsCsException ) = 0;
 
     /**
      * Transforms the x and y components of the geometry using a QTransform object \a t.
@@ -1134,106 +1137,6 @@ class CORE_EXPORT QgsAbstractGeometry
     friend class TestQgsGeometry;
 };
 
-
-/**
- * \ingroup core
- * \class QgsVertexId
- * \brief Utility class for identifying a unique vertex within a geometry.
- * \since QGIS 2.10
- */
-struct CORE_EXPORT QgsVertexId
-{
-
-  /**
-   * Type of vertex
-   */
-  enum VertexType
-  {
-    SegmentVertex = 1, //!< The actual start or end point of a segment
-    CurveVertex, //!< An intermediate point on a segment defining the curvature of the segment
-  };
-
-  /**
-   * Constructor for QgsVertexId.
-   */
-  explicit QgsVertexId( int _part = -1, int _ring = -1, int _vertex = -1, VertexType _type = SegmentVertex ) SIP_HOLDGIL
-: part( _part )
-  , ring( _ring )
-  , vertex( _vertex )
-  , type( _type )
-  {}
-
-  /**
-   * Returns TRUE if the vertex id is valid
-   */
-  bool isValid() const  SIP_HOLDGIL { return part >= 0 && ring >= 0 && vertex >= 0; }
-
-  bool operator==( QgsVertexId other ) const SIP_HOLDGIL
-  {
-    return part == other.part && ring == other.ring && vertex == other.vertex;
-  }
-  bool operator!=( QgsVertexId other ) const SIP_HOLDGIL
-  {
-    return part != other.part || ring != other.ring || vertex != other.vertex;
-  }
-
-  /**
-   * Returns TRUE if this vertex ID belongs to the same part as another vertex ID.
-   */
-  bool partEqual( QgsVertexId o ) const SIP_HOLDGIL
-  {
-    return part >= 0 && o.part == part;
-  }
-
-  /**
-   * Returns TRUE if this vertex ID belongs to the same ring as another vertex ID (i.e. the part
-   * and ring number are equal).
-   */
-  bool ringEqual( QgsVertexId o ) const SIP_HOLDGIL
-  {
-    return partEqual( o ) && ( ring >= 0 && o.ring == ring );
-  }
-
-  /**
-   * Returns TRUE if this vertex ID corresponds to the same vertex as another vertex ID (i.e. the part,
-   * ring number and vertex number are equal).
-   */
-  bool vertexEqual( QgsVertexId o ) const SIP_HOLDGIL
-  {
-    return ringEqual( o ) && ( vertex >= 0 && o.ring == ring );
-  }
-
-  /**
-   * Returns TRUE if this vertex ID is valid for the specified \a geom.
-   */
-  bool isValid( const QgsAbstractGeometry *geom ) const SIP_HOLDGIL
-  {
-    return ( part >= 0 && part < geom->partCount() ) &&
-           ( ring < geom->ringCount( part ) ) &&
-           ( vertex < 0 || vertex < geom->vertexCount( part, ring ) );
-  }
-
-  //! Part number
-  int part = -1;
-
-  //! Ring number
-  int ring = -1;
-
-  //! Vertex number
-  int vertex = -1;
-
-  //! Vertex type
-  VertexType type = SegmentVertex;
-
-#ifdef SIP_RUN
-  SIP_PYOBJECT __repr__();
-  % MethodCode
-  QString str = QStringLiteral( "<QgsVertexId: %1,%2,%3%4>" ).arg( sipCpp->part ).arg( sipCpp->ring ).arg( sipCpp->vertex ).arg( sipCpp->type == QgsVertexId::CurveVertex ? QStringLiteral( " CurveVertex" ) : QString() );
-  sipRes = PyUnicode_FromString( str.toUtf8().data() );
-  % End
-#endif
-
-};
 
 #ifndef SIP_RUN
 

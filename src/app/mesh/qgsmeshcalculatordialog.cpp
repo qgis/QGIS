@@ -28,6 +28,7 @@
 #include "qgswkbtypes.h"
 #include "qgsfeatureiterator.h"
 #include "qgsmeshdatasetgrouptreeview.h"
+#include "qgshelp.h"
 
 #include "cpl_string.h"
 #include "gdal.h"
@@ -63,9 +64,9 @@ QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer, QWidg
   connect( mAllTimesButton, &QPushButton::clicked, this, &QgsMeshCalculatorDialog::mAllTimesButton_clicked );
   connect( mExpressionTextEdit, &QTextEdit::textChanged, this, &QgsMeshCalculatorDialog::updateInfoMessage );
 
-  connect( useMaskCb, &QCheckBox::stateChanged, this, &QgsMeshCalculatorDialog::toggleExtendMask );
-  connect( useExtentCb, &QCheckBox::stateChanged, this, &QgsMeshCalculatorDialog::toggleExtendMask );
+  connect( useMaskCb, &QRadioButton::toggled, this, &QgsMeshCalculatorDialog::toggleExtendMask );
   maskBox->setVisible( false );
+  useMaskCb->setEnabled( cboLayerMask->count() );
 
   mXMaxSpinBox->setShowClearButton( false );
   mXMinSpinBox->setShowClearButton( false );
@@ -103,16 +104,20 @@ QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer, QWidg
   useFullLayerExtent();
   repopulateTimeCombos();
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [ = ]
+  {
+    QgsHelp::openHelp( QStringLiteral( "working_with_mesh/mesh_properties.html#mesh-calculator" ) );
+  } );
 
   const QgsSettings settings;
   mOutputDatasetFileWidget->setStorageMode( QgsFileWidget::SaveFile );
-  mOutputDatasetFileWidget->setDialogTitle( tr( "Enter mesh dataset file" ) );
+  mOutputDatasetFileWidget->setDialogTitle( tr( "Enter Mesh Dataset File" ) );
   mOutputDatasetFileWidget->setDefaultRoot( settings.value( QStringLiteral( "/MeshCalculator/lastOutputDir" ), QDir::homePath() ).toString() );
   onOutputFormatChange();
   connect( mOutputDatasetFileWidget, &QgsFileWidget::fileChanged, this, &QgsMeshCalculatorDialog::updateInfoMessage );
 
-  connect( mOutputOnFileRadioButton, &QRadioButton::toggled, this, &QgsMeshCalculatorDialog::onOutputRadioButtonChange );
-  onOutputRadioButtonChange();
+  connect( mUseVirtualProviderCheckBox, &QCheckBox::clicked, this, &QgsMeshCalculatorDialog::onVirtualCheckboxChange );
+  onVirtualCheckboxChange();
 }
 
 QgsMeshCalculatorDialog::~QgsMeshCalculatorDialog() = default;
@@ -199,7 +204,7 @@ std::unique_ptr<QgsMeshCalculator> QgsMeshCalculatorDialog::calculator() const
   std::unique_ptr<QgsMeshCalculator> calc;
   QgsMeshDatasetGroup::Type destination = QgsMeshDatasetGroup::Persistent;
 
-  if ( mOutputVirtualRadioButton->isChecked() )
+  if ( mUseVirtualProviderCheckBox->isChecked() )
     destination = QgsMeshDatasetGroup::Virtual;
 
   switch ( destination )
@@ -279,19 +284,11 @@ void QgsMeshCalculatorDialog::datasetGroupEntry( const QModelIndex &index )
   mExpressionTextEdit->insertPlainText( QStringLiteral( " %1 " ).arg( group ) );
 }
 
-void QgsMeshCalculatorDialog::toggleExtendMask( int state )
+void QgsMeshCalculatorDialog::toggleExtendMask()
 {
-  Q_UNUSED( state )
-  if ( useMaskCb->checkState() == Qt::Checked )
-  {
-    extendBox->setVisible( false );
-    maskBox->setVisible( true );
-  }
-  else
-  {
-    extendBox->setVisible( true );
-    maskBox->setVisible( false );
-  }
+  bool visible = useMaskCb->isChecked();
+  extendBox->setVisible( !visible );
+  maskBox->setVisible( visible );
 }
 
 void QgsMeshCalculatorDialog::updateInfoMessage()
@@ -307,7 +304,7 @@ void QgsMeshCalculatorDialog::updateInfoMessage()
   const bool expressionValid = result == QgsMeshCalculator::Success;
 
   // selected driver is appropriate
-  const bool notInFile = !mOutputOnFileRadioButton->isChecked();
+  const bool notInFile = mUseVirtualProviderCheckBox->isChecked();
   bool driverValid = false;
   if ( expressionValid )
   {
@@ -357,10 +354,12 @@ void QgsMeshCalculatorDialog::updateInfoMessage()
   }
 }
 
-void QgsMeshCalculatorDialog::onOutputRadioButtonChange()
+void QgsMeshCalculatorDialog::onVirtualCheckboxChange()
 {
-  mOutputDatasetFileWidget->setEnabled( mOutputOnFileRadioButton->isChecked() );
-  mOutputFormatComboBox->setEnabled( mOutputOnFileRadioButton->isChecked() );
+  mOutputDatasetFileWidget->setVisible( !mUseVirtualProviderCheckBox->isChecked() );
+  mOutputDatasetFileLabel->setVisible( !mUseVirtualProviderCheckBox->isChecked() );
+  mOutputFormatComboBox->setVisible( !mUseVirtualProviderCheckBox->isChecked() );
+  mOutputFormatLabel->setVisible( !mUseVirtualProviderCheckBox->isChecked() );
   updateInfoMessage();
 }
 

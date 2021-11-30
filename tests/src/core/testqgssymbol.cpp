@@ -172,14 +172,14 @@ void TestQgsSymbol::testCanvasClip()
   QgsMapSettings ms;
   QgsRectangle extent( -110.0, 25.0, -90, 40.0 );
   ms.setExtent( extent );
-  ms.setFlag( QgsMapSettings::ForceVectorOutput );
+  ms.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
 
   //line
   mReport += QLatin1String( "<h2>Line canvas clip</h2>\n" );
   ms.setLayers( QList<QgsMapLayer *>() << mpLinesLayer );
 
   QgsMarkerLineSymbolLayer *markerLine = new QgsMarkerLineSymbolLayer();
-  markerLine->setPlacement( QgsTemplatedLineSymbolLayerBase::CentralPoint );
+  markerLine->setPlacements( Qgis::MarkerLinePlacement::CentralPoint );
   static_cast< QgsSimpleMarkerSymbolLayer *>( markerLine->subSymbol()->symbolLayer( 0 ) )->setStrokeColor( Qt::black );
   QgsLineSymbol *lineSymbol = new QgsLineSymbol();
   lineSymbol->changeSymbolLayer( 0, markerLine );

@@ -54,7 +54,11 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
     //! Returns list of layers visible in the overview
     QList<QgsMapLayer *> layers() const;
 
-    void enableAntiAliasing( bool flag ) { mSettings.setFlag( QgsMapSettings::Antialiasing, flag ); }
+    void enableAntiAliasing( bool flag )
+    {
+      mSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, flag );
+      mSettings.setFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms, flag );
+    }
 
     void updateFullExtent();
 

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmtinmeshcreation.h"
+#include "qgsfileutils.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 #include "qgsprocessingparametertininputlayers.h"
@@ -35,9 +36,14 @@ QString QgsTinMeshCreationAlgorithm::groupId() const
   return QStringLiteral( "mesh" );
 }
 
+QString QgsTinMeshCreationAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a TIN mesh layer from vector layers" );
+}
+
 QString QgsTinMeshCreationAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "TIN mesh creation from vector layers" );
+  return QObject::tr( "This algorithm creates a TIN mesh layer from vector layers." );
 }
 
 QString QgsTinMeshCreationAlgorithm::name() const
@@ -66,13 +72,17 @@ void QgsTinMeshCreationAlgorithm::initAlgorithm( const QVariantMap &configuratio
   if ( meta )
     driverList = meta->meshDriversMetadata();
 
-  for ( const QgsMeshDriverMetadata &driverMeta : driverList )
+  for ( const QgsMeshDriverMetadata &driverMeta : std::as_const( driverList ) )
     if ( driverMeta.capabilities() & QgsMeshDriverMetadata::CanWriteMeshData )
-      mAvailableFormat.append( driverMeta.name() );
+    {
+      const QString name = driverMeta.name();
+      mDriverSuffix[name] = driverMeta.writeMeshFrameOnFileSuffix();
+      mAvailableFormat.append( name );
+    }
 
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "MESH_FORMAT" ), QObject::tr( "Output format" ), mAvailableFormat, false, 0 ) );
-  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS_OUTPUT" ), QObject::tr( "Output Coordinate System" ), QVariant(), true ) );
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT_MESH" ), QObject::tr( "Output File" ) ) );
+  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS_OUTPUT" ), QObject::tr( "Output coordinate system" ), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT_MESH" ), QObject::tr( "Output file" ) ) );
 }
 
 bool QgsTinMeshCreationAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -155,7 +165,7 @@ QVariantMap QgsTinMeshCreationAlgorithm::processAlgorithm( const QVariantMap &pa
   if ( feedback && feedback->isCanceled() )
     return QVariantMap();
 
-  const QString fileName = parameterAsFile( parameters, QStringLiteral( "OUTPUT_MESH" ), context );
+  QString fileName = parameterAsFile( parameters, QStringLiteral( "OUTPUT_MESH" ), context );
   const int driverIndex = parameterAsEnum( parameters, QStringLiteral( "MESH_FORMAT" ), context );
   const QString driver = mAvailableFormat.at( driverIndex );
   if ( feedback )
@@ -166,6 +176,8 @@ QVariantMap QgsTinMeshCreationAlgorithm::processAlgorithm( const QVariantMap &pa
     return QVariantMap();
 
   const QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "mdal" ) );
+
+  fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, QStringList() << mDriverSuffix.value( driver ) );
 
   if ( feedback )
     feedback->setProgressText( QObject::tr( "Saving mesh to file" ) );

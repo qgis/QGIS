@@ -59,18 +59,21 @@ bool QgsLayoutRenderContext::testFlag( const QgsLayoutRenderContext::Flag flag )
   return mFlags.testFlag( flag );
 }
 
-QgsRenderContext::Flags QgsLayoutRenderContext::renderContextFlags() const
+Qgis::RenderContextFlags QgsLayoutRenderContext::renderContextFlags() const
 {
-  QgsRenderContext::Flags flags = QgsRenderContext::Flags();
+  Qgis::RenderContextFlags flags = Qgis::RenderContextFlags();
   if ( mFlags & FlagAntialiasing )
-    flags = flags | QgsRenderContext::Antialiasing;
+  {
+    flags = flags | Qgis::RenderContextFlag::Antialiasing;
+    flags = flags | Qgis::RenderContextFlag::HighQualityImageTransforms;
+  }
   if ( mFlags & FlagUseAdvancedEffects )
-    flags = flags | QgsRenderContext::UseAdvancedEffects;
+    flags = flags | Qgis::RenderContextFlag::UseAdvancedEffects;
   if ( mFlags & FlagLosslessImageRendering )
-    flags = flags | QgsRenderContext::LosslessImageRendering;
+    flags = flags | Qgis::RenderContextFlag::LosslessImageRendering;
 
   // TODO - expose as layout context flag?
-  flags |= QgsRenderContext::ForceVectorOutput;
+  flags |= Qgis::RenderContextFlag::ForceVectorOutput;
   return flags;
 }
 

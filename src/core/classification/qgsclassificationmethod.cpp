@@ -343,5 +343,5 @@ QString QgsClassificationMethod::labelForRange( const double lowerValue, const d
   const QString lowerLabel = valueToLabel( lowerValue );
   const QString upperLabel = valueToLabel( upperValue );
 
-  return labelFormat().arg( lowerLabel ).arg( upperLabel );
+  return labelFormat().arg( lowerLabel, upperLabel );
 }

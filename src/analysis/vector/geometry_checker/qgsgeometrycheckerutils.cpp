@@ -239,7 +239,7 @@ QgsGeometryCheckerUtils::LayerFeatures::LayerFeatures( const QMap<QString, QgsFe
     if ( geometryTypes.contains( featurePool->geometryType() ) )
     {
       const QgsCoordinateTransform ct( featurePool->crs(), context->mapCrs, context->transformContext );
-      mFeatureIds.insert( layerId, featurePool->getIntersects( ct.transform( extent, QgsCoordinateTransform::ReverseTransform ) ) );
+      mFeatureIds.insert( layerId, featurePool->getIntersects( ct.transform( extent, Qgis::TransformDirection::Reverse ) ) );
     }
     else
     {

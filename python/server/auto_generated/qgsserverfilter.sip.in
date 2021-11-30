@@ -44,20 +44,32 @@ and must be passed to QgsServerFilter instances.
 Returns the :py:class:`QgsServerInterface` instance
 %End
 
-    virtual void requestReady();
+ virtual void requestReady() /Deprecated/;
 %Docstring
 Method called when the :py:class:`QgsRequestHandler` is ready and populated with
 parameters, just before entering the main switch for core services.
+
+This method is considered as deprecated and :py:func:`onRequestReady` should
+be used instead.
+
+.. deprecated::
+   Will be removed in QGIS 4.0
 %End
 
-    virtual void responseComplete();
+ virtual void responseComplete() /Deprecated/;
 %Docstring
 Method called when the :py:class:`QgsRequestHandler` processing has done and
 the response is ready, just after the main switch for core services
-and before final sending response to FCGI stdout.
+and before final sending response.
+
+This method is considered as deprecated and :py:func:`onResponseComplete` should
+be used instead.
+
+.. deprecated::
+   Will be removed in QGIS 4.0
 %End
 
-    virtual void sendResponse();
+ virtual void sendResponse() /Deprecated/;
 %Docstring
 Method called when the :py:class:`QgsRequestHandler` sends its data to FCGI stdout.
 This normally occurs at the end of core services processing just after
@@ -65,7 +77,50 @@ the :py:func:`~QgsServerFilter.responseComplete` plugin hook. For streaming serv
 getFeature requests, :py:func:`~QgsServerFilter.sendResponse` might have been called several times
 before the response is complete: in this particular case, :py:func:`~QgsServerFilter.sendResponse`
 is called once for each feature before hitting :py:func:`~QgsServerFilter.responseComplete`
+
+This method is considered as deprecated and :py:func:`onSendResponse` should
+be used instead.
+
+.. deprecated::
+   Will be removed in QGIS 4.0
 %End
+
+    virtual bool onRequestReady();
+%Docstring
+Method called when the :py:class:`QgsRequestHandler` is ready and populated with
+parameters, just before entering the main switch for core services.
+
+:return: true if the call must propagate to the subsequent filters, false otherwise
+
+.. versionadded:: 3.24
+%End
+
+    virtual bool onResponseComplete();
+%Docstring
+Method called when the :py:class:`QgsRequestHandler` processing has done and
+the response is ready, just after the main switch for core services
+and before final sending response to FCGI stdout.
+
+:return: true if the call must propagate to the subsequent filters, false otherwise
+
+.. versionadded:: 3.24
+%End
+
+    virtual bool onSendResponse();
+%Docstring
+Method called when the :py:class:`QgsRequestHandler` sends its data to FCGI stdout.
+This normally occurs at the end of core services processing just after
+the :py:func:`~QgsServerFilter.responseComplete` plugin hook. For streaming services (like WFS on
+getFeature requests, :py:func:`~QgsServerFilter.sendResponse` might have been called several times
+before the response is complete: in this particular case, :py:func:`~QgsServerFilter.sendResponse`
+is called once for each feature before hitting :py:func:`~QgsServerFilter.responseComplete`
+
+:return: true if the call must propagate to the subsequent filters, false otherwise
+
+.. versionadded:: 3.22
+%End
+
+
 
 };
 

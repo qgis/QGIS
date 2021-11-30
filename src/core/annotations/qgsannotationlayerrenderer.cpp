@@ -19,6 +19,7 @@
 #include "qgsfeedback.h"
 #include "qgsrenderedannotationitemdetails.h"
 #include "qgspainteffect.h"
+#include "qgsrendercontext.h"
 #include <optional>
 
 QgsAnnotationLayerRenderer::QgsAnnotationLayerRenderer( QgsAnnotationLayer *layer, QgsRenderContext &context )
@@ -109,5 +110,5 @@ bool QgsAnnotationLayerRenderer::render()
 
 bool QgsAnnotationLayerRenderer::forceRasterRender() const
 {
-  return renderContext()->testFlag( QgsRenderContext::UseAdvancedEffects ) && ( !qgsDoubleNear( mLayerOpacity, 1.0 ) );
+  return renderContext()->testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) && ( !qgsDoubleNear( mLayerOpacity, 1.0 ) );
 }

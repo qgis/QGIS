@@ -167,6 +167,70 @@ tests:
           fields:
             fid: skip
 
+  - algorithm: grass7:v.net.alloc
+    name: v.net.alloc (to centers)
+    params:
+      -g: false
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_EXPORT_NOCAT: false
+      GRASS_VECTOR_LCO: ''
+      arc_backward_column: costback
+      arc_column: cost
+      arc_type:
+      - 0
+      - 1
+      center_cats: 1-100000
+      input:
+        name: network.shp
+        type: vector
+      method: 1
+      points:
+        name: network_points.shp
+        type: vector
+      threshold: 50.0
+    results:
+      output:
+        name: expected/v_net_alloc_to_centers.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: grass7:v.net.alloc
+    name: v.net.alloc (from centers)
+    params:
+      -g: false
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_EXPORT_NOCAT: false
+      GRASS_VECTOR_LCO: ''
+      arc_backward_column: costback
+      arc_column: cost
+      arc_type:
+      - 0
+      - 1
+      center_cats: 1-100000
+      input:
+        name: network.shp
+        type: vector
+      method: 0
+      points:
+        name: network_points.shp
+        type: vector
+      threshold: 50.0
+    results:
+      output:
+        name: expected/v_net_alloc_from_centers.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+
   - algorithm: grass7:v.net.allpairs
     name: v.net.allpairs
     params:
@@ -523,6 +587,64 @@ tests:
         compare:
           fields:
             fid: skip
+
+  - algorithm: grass7:v.rectify
+    name: v.rectify - Use text file
+    params:
+      '-3': false
+      -b: false
+      -o: false
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_EXPORT_NOCAT: false
+      GRASS_VECTOR_LCO: ''
+      inline_points: ''
+      input:
+        name: v_rectify.gml
+        type: vector
+      order: 1
+      points:
+        name: v_rectify_local_utm37n.txt
+        type: file
+      separator: pipe
+    results:
+      output:
+        name: expected/v_rectify.gml
+        type: vector
+
+  - algorithm: grass7:v.rectify
+    name: v.rectify - Use inline_points
+    params:
+      '-3': false
+      -b: false
+      -o: false
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_EXPORT_NOCAT: false
+      GRASS_VECTOR_LCO: ''
+      inline_points: '-637.240 580.860 432843.854 3823560.989 1
+      
+      -962.079 1086.419 432522.788 3824068.656 1
+      
+      -1369.031 837.071 432114.226 3823822.337 1
+      
+      -1877.673 775.273 431605.364 3823764.216 1'
+      input:
+        name: v_rectify.gml
+        type: vector
+      order: 1
+      points:
+        name: ''
+        type: file
+      separator: pipe
+    results:
+      output:
+        name: expected/v_rectify.gml
+        type: vector
 
   - algorithm: grass7:v.report
     name: v.report - Reports geometry statistics for vector maps

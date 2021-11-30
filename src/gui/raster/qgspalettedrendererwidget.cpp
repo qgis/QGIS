@@ -23,6 +23,7 @@
 #include "qgssettings.h"
 #include "qgsproject.h"
 #include "qgscolorrampshaderwidget.h"
+#include "qgscolorrampimpl.h"
 #include "qgslocaleawarenumericlineeditdelegate.h"
 
 #include <QColorDialog>
@@ -833,6 +834,18 @@ void QgsPalettedRendererModel::deleteAll()
   endResetModel();
   emit classesChanged();
 }
+
+//
+// QgsPalettedRendererClassGatherer
+//
+
+QgsPalettedRendererClassGatherer::QgsPalettedRendererClassGatherer( QgsRasterLayer *layer, int bandNumber, const QgsPalettedRasterRenderer::ClassData &existingClasses, QgsColorRamp *ramp )
+  : mLayer( layer )
+  , mBandNumber( bandNumber )
+  , mRamp( ramp )
+  , mClasses( existingClasses )
+  , mWasCanceled( false )
+{}
 
 void QgsPalettedRendererClassGatherer::run()
 {

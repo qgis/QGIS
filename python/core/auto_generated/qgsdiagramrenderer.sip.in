@@ -843,6 +843,11 @@ class QgsLinearlyInterpolatedDiagramRenderer : QgsDiagramRenderer
   public:
     QgsLinearlyInterpolatedDiagramRenderer();
     ~QgsLinearlyInterpolatedDiagramRenderer();
+    QgsLinearlyInterpolatedDiagramRenderer( const QgsLinearlyInterpolatedDiagramRenderer &other );
+%Docstring
+Copy constructor
+%End
+
 
     virtual QgsLinearlyInterpolatedDiagramRenderer *clone() const /Factory/;
 
@@ -927,11 +932,6 @@ Returns configuration of appearance of legend. Will return ``None`` if no config
 
     virtual QSizeF diagramSize( const QgsFeature &, const QgsRenderContext &c ) const;
 
-
-    QgsLinearlyInterpolatedDiagramRenderer( const QgsLinearlyInterpolatedDiagramRenderer &other );
-%Docstring
-Copy constructor
-%End
 
 };
 

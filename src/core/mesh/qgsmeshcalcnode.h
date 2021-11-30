@@ -132,10 +132,16 @@ class CORE_EXPORT QgsMeshCalcNode
      * \param result destination dataset group for calculation results
      * \returns TRUE on success, FALSE on failure
      */
-    bool calculate( const QgsMeshCalcUtils &dsu, QgsMeshMemoryDatasetGroup &result ) const;
+    bool calculate( const QgsMeshCalcUtils &dsu, QgsMeshMemoryDatasetGroup &result, bool isAggregate = false ) const;
 
     //! Returns all dataset group names used in formula
     QStringList usedDatasetGroupNames() const;
+
+    //! Returns dataset group names used in formula involved in aggregate function
+    QStringList aggregatedUsedDatasetGroupNames() const;
+
+    //! Returns dataset group names used in formula not involved in aggregate function
+    QStringList notAggregatedUsedDatasetGroupNames() const;
 
     /**
      * Parses string to calculation node. Caller takes responsibility to delete the node

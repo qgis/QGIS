@@ -171,7 +171,12 @@ QString QgsExportMeshOnElement::groupId() const
 
 QString QgsExportMeshVerticesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Exports mesh layer's vertices to a point vector layer, with the dataset values on vertices as attribute values" );
+  return QObject::tr( "This algorithm exports a mesh layer's vertices to a point vector layer, with the dataset values on vertices as attribute values." );
+}
+
+QString QgsExportMeshVerticesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Exports mesh vertices to a point vector layer" );
 }
 
 QString QgsExportMeshVerticesAlgorithm::name() const
@@ -257,6 +262,9 @@ bool QgsExportMeshOnElement::prepareAlgorithm( const QVariantMap &parameters, Qg
 
   if ( !meshLayer || !meshLayer->isValid() )
     return false;
+
+  if ( meshLayer->isEditable() )
+    throw QgsProcessingException( QObject::tr( "Input mesh layer in edit mode is not supported" ) );
 
   QgsCoordinateReferenceSystem outputCrs = parameterAsCrs( parameters, QStringLiteral( "CRS_OUTPUT" ), context );
   if ( !outputCrs.isValid() )
@@ -392,7 +400,12 @@ QVariantMap QgsExportMeshOnElement::processAlgorithm( const QVariantMap &paramet
 
 QString QgsExportMeshFacesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Exports mesh layer's faces to a polygon vector layer, with the dataset values on faces as attribute values" );
+  return QObject::tr( "This algorithm exports a mesh layer's faces to a polygon vector layer, with the dataset values on faces as attribute values." );
+}
+
+QString QgsExportMeshFacesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Exports mesh faces to a polygon vector layer" );
 }
 
 QString QgsExportMeshFacesAlgorithm::name() const
@@ -423,7 +436,12 @@ QgsGeometry QgsExportMeshFacesAlgorithm::meshElement( int index ) const
 
 QString QgsExportMeshEdgesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Exports mesh layer's edges to a line vector layer, with the dataset values on edges as attribute values" );
+  return QObject::tr( "This algorithm exports a mesh layer's edges to a line vector layer, with the dataset values on edges as attribute values." );
+}
+
+QString QgsExportMeshEdgesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Exports mesh edges to a line vector layer" );
 }
 
 QString QgsExportMeshEdgesAlgorithm::name() const
@@ -461,9 +479,14 @@ QString QgsExportMeshOnGridAlgorithm::groupId() const {return QStringLiteral( "m
 
 QString QgsExportMeshOnGridAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Exports mesh layer's dataset values to a gridded point vector layer, with the dataset values on this point as attribute values.\n"
+  return QObject::tr( "This algorithm exports a mesh layer's dataset values to a gridded point vector layer, with the dataset values on each point as attribute values.\n"
                       "For data on volume (3D stacked dataset values), the exported dataset values are averaged on faces using the method defined in the mesh layer properties (default is Multi level averaging method).\n"
                       "1D meshes are not supported." );
+}
+
+QString QgsExportMeshOnGridAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Exports mesh dataset values to a gridded point vector layer" );
 }
 
 QgsProcessingAlgorithm *QgsExportMeshOnGridAlgorithm::createInstance() const
@@ -475,7 +498,7 @@ void QgsExportMeshOnGridAlgorithm::initAlgorithm( const QVariantMap &configurati
 {
   Q_UNUSED( configuration );
 
-  addParameter( new QgsProcessingParameterMeshLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input Mesh Layer" ) ) );
+  addParameter( new QgsProcessingParameterMeshLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input mesh layer" ) ) );
 
   addParameter( new QgsProcessingParameterMeshDatasetGroups(
                   QStringLiteral( "DATASET_GROUPS" ),
@@ -505,7 +528,6 @@ void QgsExportMeshOnGridAlgorithm::initAlgorithm( const QVariantMap &configurati
 
 static void extractDatasetValues( const QList<int> &datasetGroups,
                                   QgsMeshLayer *meshLayer,
-                                  const QgsTriangularMesh &triangularMesh,
                                   const QgsMesh &nativeMesh,
                                   const QgsInterval &relativeTime,
                                   const QSet<int> supportedDataType,
@@ -522,7 +544,7 @@ static void extractDatasetValues( const QList<int> &datasetGroups,
     if ( supportedDataType.contains( dataGroup.metadata.dataType() ) )
     {
       int valueCount = dataGroup.metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices ?
-                       triangularMesh.vertices().count() : nativeMesh.faceCount();
+                       nativeMesh.vertices.count() : nativeMesh.faceCount();
       dataGroup.datasetValues = meshLayer->datasetValues( datasetIndex, 0, valueCount );
       dataGroup.activeFaces = meshLayer->areFacesActive( datasetIndex, 0, nativeMesh.faceCount() );
       if ( dataGroup.metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVolumes )
@@ -550,7 +572,6 @@ bool QgsExportMeshOnGridAlgorithm::prepareAlgorithm( const QVariantMap &paramete
   if ( !meshLayer->nativeMesh() )
     meshLayer->updateTriangularMesh( mTransform ); //necessary to load the native mesh
 
-  mTriangularMesh = *meshLayer->triangularMesh();
   const QgsMesh &nativeMesh = *meshLayer->nativeMesh();
 
   QList<int> datasetGroups =
@@ -565,7 +586,8 @@ bool QgsExportMeshOnGridAlgorithm::prepareAlgorithm( const QVariantMap &paramete
   QVariant parameterTimeVariant = parameters.value( QStringLiteral( "DATASET_TIME" ) );
   QgsInterval relativeTime = datasetRelativetime( parameterTimeVariant, meshLayer, context );
 
-  extractDatasetValues( datasetGroups, meshLayer, mTriangularMesh, nativeMesh, relativeTime, supportedDataType(), mDataPerGroup, feedback );
+  extractDatasetValues( datasetGroups, meshLayer, nativeMesh, relativeTime, supportedDataType(), mDataPerGroup, feedback );
+  mTriangularMesh.update( meshLayer->nativeMesh(), mTransform );
 
   mExportVectorOption = parameterAsInt( parameters, QStringLiteral( "VECTOR_OPTION" ), context );
 
@@ -718,9 +740,14 @@ QString QgsMeshRasterizeAlgorithm::groupId() const
 
 QString QgsMeshRasterizeAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Create a raster layer from a mesh dataset.\n"
+  return QObject::tr( "This algorithm creates a raster layer from a mesh dataset.\n"
                       "For data on volume (3D stacked dataset values), the exported dataset values are averaged on faces using the method defined in the mesh layer properties (default is Multi level averaging method).\n"
                       "1D meshes are not supported." );
+}
+
+QString QgsMeshRasterizeAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a raster layer from a mesh dataset" );
 }
 
 QgsProcessingAlgorithm *QgsMeshRasterizeAlgorithm::createInstance() const
@@ -732,7 +759,7 @@ void QgsMeshRasterizeAlgorithm::initAlgorithm( const QVariantMap &configuration 
 {
   Q_UNUSED( configuration );
 
-  addParameter( new QgsProcessingParameterMeshLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input Mesh Layer" ) ) );
+  addParameter( new QgsProcessingParameterMeshLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input mesh layer" ) ) );
 
   addParameter( new QgsProcessingParameterMeshDatasetGroups(
                   QStringLiteral( "DATASET_GROUPS" ),
@@ -770,7 +797,7 @@ bool QgsMeshRasterizeAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
   if ( !meshLayer->nativeMesh() )
     meshLayer->updateTriangularMesh( mTransform ); //necessary to load the native mesh
 
-  mTriangularMesh = *meshLayer->triangularMesh();
+  mTriangularMesh.update( meshLayer->nativeMesh(), mTransform );
 
   QList<int> datasetGroups =
     QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( parameters.value( QStringLiteral( "DATASET_GROUPS" ) ) );
@@ -784,7 +811,7 @@ bool QgsMeshRasterizeAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
   QVariant parameterTimeVariant = parameters.value( QStringLiteral( "DATASET_TIME" ) );
   QgsInterval relativeTime = datasetRelativetime( parameterTimeVariant, meshLayer, context );
 
-  extractDatasetValues( datasetGroups, meshLayer, mTriangularMesh, *meshLayer->nativeMesh(), relativeTime, supportedDataType(), mDataPerGroup, feedback );
+  extractDatasetValues( datasetGroups, meshLayer, *meshLayer->nativeMesh(), relativeTime, supportedDataType(), mDataPerGroup, feedback );
 
   mLayerRendererSettings = meshLayer->rendererSettings();
 
@@ -838,17 +865,17 @@ QVariantMap QgsMeshRasterizeAlgorithm::processAlgorithm( const QVariantMap &para
 
     if ( dataGroup.datasetValues.isValid() )
     {
-      QgsRasterBlock *block = QgsMeshUtils::exportRasterBlock(
-                                mTriangularMesh,
-                                dataGroup.datasetValues,
-                                dataGroup.activeFaces,
-                                dataGroup.metadata.dataType(),
-                                mTransform,
-                                pixelSize,
-                                extent,
-                                &rasterBlockFeedBack );
+      std::unique_ptr<QgsRasterBlock> block( QgsMeshUtils::exportRasterBlock(
+          mTriangularMesh,
+          dataGroup.datasetValues,
+          dataGroup.activeFaces,
+          dataGroup.metadata.dataType(),
+          mTransform,
+          pixelSize,
+          extent,
+          &rasterBlockFeedBack ) );
 
-      rasterDataProvider->writeBlock( block, i + 1 );
+      rasterDataProvider->writeBlock( block.get(), i + 1 );
       rasterDataProvider->setNoDataValue( i + 1, block->noDataValue() );
     }
     else
@@ -904,6 +931,11 @@ QString QgsMeshContoursAlgorithm::groupId() const
 
 QString QgsMeshContoursAlgorithm::shortHelpString() const
 {
+  return QObject::tr( "This algorithm creates contours as a vector layer from a mesh scalar dataset." );
+}
+
+QString QgsMeshContoursAlgorithm::shortDescription() const
+{
   return QObject::tr( "Creates contours as vector layer from mesh scalar dataset" );
 }
 
@@ -916,7 +948,7 @@ void QgsMeshContoursAlgorithm::initAlgorithm( const QVariantMap &configuration )
 {
   Q_UNUSED( configuration );
 
-  addParameter( new QgsProcessingParameterMeshLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input Mesh Layer" ) ) );
+  addParameter( new QgsProcessingParameterMeshLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input mesh layer" ) ) );
 
   addParameter( new QgsProcessingParameterMeshDatasetGroups(
                   QStringLiteral( "DATASET_GROUPS" ),
@@ -962,7 +994,7 @@ bool QgsMeshContoursAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   if ( !meshLayer->nativeMesh() )
     meshLayer->updateTriangularMesh( mTransform ); //necessary to load the native mesh
 
-  mTriangularMesh = *meshLayer->triangularMesh();
+  mTriangularMesh.update( meshLayer->nativeMesh(), mTransform );
   mNativeMesh = *meshLayer->nativeMesh();
 
   // Prepare levels
@@ -1029,7 +1061,7 @@ bool QgsMeshContoursAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
 
   mDateTimeString = meshLayer->formatTime( relativeTime.hours() );
 
-  extractDatasetValues( datasetGroups, meshLayer, mTriangularMesh, mNativeMesh, relativeTime, supportedDataType(), mDataPerGroup, feedback );
+  extractDatasetValues( datasetGroups, meshLayer, mNativeMesh, relativeTime, supportedDataType(), mDataPerGroup, feedback );
 
   mLayerRendererSettings = meshLayer->rendererSettings();
 
@@ -1188,6 +1220,11 @@ QString QgsMeshExportCrossSection::shortHelpString() const
                       "Each line is discretized with a resolution distance parameter for extraction of values on its vertices." );
 }
 
+QString QgsMeshExportCrossSection::shortDescription() const
+{
+  return QObject::tr( "Extracts a mesh dataset's values from lines contained in a vector layer" );
+}
+
 QgsProcessingAlgorithm *QgsMeshExportCrossSection::createInstance() const
 {
   return new QgsMeshExportCrossSection();
@@ -1197,7 +1234,7 @@ void QgsMeshExportCrossSection::initAlgorithm( const QVariantMap &configuration 
 {
   Q_UNUSED( configuration );
 
-  addParameter( new QgsProcessingParameterMeshLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input Mesh Layer" ) ) );
+  addParameter( new QgsProcessingParameterMeshLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input mesh layer" ) ) );
 
   addParameter( new QgsProcessingParameterMeshDatasetGroups(
                   QStringLiteral( "DATASET_GROUPS" ),
@@ -1237,8 +1274,7 @@ bool QgsMeshExportCrossSection::prepareAlgorithm( const QVariantMap &parameters,
     return false;
 
   mMeshLayerCrs = meshLayer->crs();
-  mTriangularMesh = *meshLayer->triangularMesh();
-
+  mTriangularMesh.update( meshLayer->nativeMesh() );
   QList<int> datasetGroups =
     QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( parameters.value( QStringLiteral( "DATASET_GROUPS" ) ) );
 
@@ -1251,7 +1287,7 @@ bool QgsMeshExportCrossSection::prepareAlgorithm( const QVariantMap &parameters,
   QVariant parameterTimeVariant = parameters.value( QStringLiteral( "DATASET_TIME" ) );
   QgsInterval relativeTime = datasetRelativetime( parameterTimeVariant, meshLayer, context );
 
-  extractDatasetValues( datasetGroups, meshLayer, mTriangularMesh, *meshLayer->nativeMesh(), relativeTime, supportedDataType(), mDataPerGroup, feedback );
+  extractDatasetValues( datasetGroups, meshLayer, *meshLayer->nativeMesh(), relativeTime, supportedDataType(), mDataPerGroup, feedback );
 
   mLayerRendererSettings = meshLayer->rendererSettings();
 
@@ -1282,7 +1318,7 @@ QVariantMap QgsMeshExportCrossSection::processAlgorithm( const QVariantMap &para
   QString outputFileName = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
   QFile file( outputFileName );
   if ( ! file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
-    throw QgsProcessingException( QObject::tr( "Unable to create the outputfile" ) );
+    throw QgsProcessingException( QObject::tr( "Unable to create the output file" ) );
 
   QTextStream textStream( &file );
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -1397,7 +1433,12 @@ QString QgsMeshExportTimeSeries::groupId() const
 QString QgsMeshExportTimeSeries::shortHelpString() const
 {
   return QObject::tr( "This algorithm extracts mesh's dataset time series values from points contained in a vector layer.\n"
-                      "If the time step is kept to its default value (0 hours), the time step used is the one of the two first datasets of the first selected dataset group" );
+                      "If the time step is kept to its default value (0 hours), the time step used is the one of the two first datasets of the first selected dataset group." );
+}
+
+QString QgsMeshExportTimeSeries::shortDescription() const
+{
+  return QObject::tr( "Extracts a mesh dataset's time series values from points contained in a vector layer" );
 }
 
 QgsProcessingAlgorithm *QgsMeshExportTimeSeries::createInstance() const
@@ -1409,7 +1450,7 @@ void QgsMeshExportTimeSeries::initAlgorithm( const QVariantMap &configuration )
 {
   Q_UNUSED( configuration );
 
-  addParameter( new QgsProcessingParameterMeshLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input Mesh Layer" ) ) );
+  addParameter( new QgsProcessingParameterMeshLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input mesh layer" ) ) );
 
   addParameter( new QgsProcessingParameterMeshDatasetGroups(
                   QStringLiteral( "DATASET_GROUPS" ),
@@ -1455,7 +1496,7 @@ bool QgsMeshExportTimeSeries::prepareAlgorithm( const QVariantMap &parameters, Q
     return false;
 
   mMeshLayerCrs = meshLayer->crs();
-  mTriangularMesh = *meshLayer->triangularMesh();
+  mTriangularMesh.update( meshLayer->nativeMesh() );
 
   QList<int> datasetGroups =
     QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( parameters.value( QStringLiteral( "DATASET_GROUPS" ) ) );
@@ -1597,7 +1638,7 @@ QVariantMap QgsMeshExportTimeSeries::processAlgorithm( const QVariantMap &parame
   QString outputFileName = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
   QFile file( outputFileName );
   if ( ! file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
-    throw QgsProcessingException( QObject::tr( "Unable to create the outputfile" ) );
+    throw QgsProcessingException( QObject::tr( "Unable to create the output file" ) );
 
   QTextStream textStream( &file );
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)

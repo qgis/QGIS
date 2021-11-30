@@ -135,6 +135,7 @@ Contains settings for how a map layer will be labeled.
       FontLetterSpacing,
       FontWordSpacing,
       FontBlendMode,
+      FontStretchFactor,
 
       // text formatting
       MultiLineWrapChar,

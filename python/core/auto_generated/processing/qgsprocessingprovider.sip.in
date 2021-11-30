@@ -158,6 +158,25 @@ Returns a list of the vector format file extensions supported by this provider.
 .. seealso:: :py:func:`supportedOutputRasterLayerExtensions`
 
 .. seealso:: :py:func:`supportsNonFileBasedOutput`
+
+.. seealso:: :py:func:`supportedOutputPointCloudLayerExtensions`
+%End
+
+    virtual QStringList supportedOutputPointCloudLayerExtensions() const;
+%Docstring
+Returns a list of the point cloud format file extensions supported by this provider.
+
+.. seealso:: :py:func:`supportedOutputVectorLayerExtensions`
+
+.. seealso:: :py:func:`supportedOutputRasterLayerExtensions`
+
+.. seealso:: :py:func:`supportedOutputTableExtensions`
+
+.. seealso:: :py:func:`defaultVectorFileExtension`
+
+.. seealso:: :py:func:`supportsNonFileBasedOutput`
+
+.. versionadded:: 3.24
 %End
 
     virtual QStringList supportedOutputTableExtensions() const;
@@ -174,6 +193,8 @@ formats for geometry-less layers can override this method to return a different 
 .. seealso:: :py:func:`supportedOutputRasterLayerExtensions`
 
 .. seealso:: :py:func:`supportsNonFileBasedOutput`
+
+.. seealso:: :py:func:`supportedOutputPointCloudLayerExtensions`
 
 .. versionadded:: 3.4.3
 %End
@@ -202,6 +223,8 @@ Otherwise the first reported supported vector format will be used.
 .. seealso:: :py:func:`supportedOutputVectorLayerExtensions`
 
 .. seealso:: :py:func:`defaultRasterFileExtension`
+
+.. seealso:: :py:func:`defaultPointCloudFileExtension`
 %End
 
     virtual QString defaultRasterFileExtension() const;
@@ -216,6 +239,26 @@ Otherwise the first reported supported raster format will be used.
 .. seealso:: :py:func:`supportedOutputRasterLayerExtensions`
 
 .. seealso:: :py:func:`defaultVectorFileExtension`
+
+.. seealso:: :py:func:`defaultPointCloudFileExtension`
+%End
+
+    virtual QString defaultPointCloudFileExtension() const;
+%Docstring
+Returns the default file extension to use for point cloud outputs created by the
+provider.
+
+The default implementation returns the user's default Processing point cloud output format
+setting, if it's supported by the provider (see :py:func:`~QgsProcessingProvider.supportedOutputPointCloudLayerExtensions`).
+Otherwise the first reported supported point cloud format will be used.
+
+.. seealso:: :py:func:`supportedOutputPointCloudLayerExtensions`
+
+.. seealso:: :py:func:`defaultVectorFileExtension`
+
+.. seealso:: :py:func:`defaultRasterFileExtension`
+
+.. versionadded:: 3.24
 %End
 
     virtual bool supportsNonFileBasedOutput() const;

@@ -31,9 +31,9 @@
 class CORE_EXPORT QgsDateTimeFieldFormatter : public QgsFieldFormatter
 {
   public:
-    static const QString DATE_FORMAT;
+    static QString DATE_FORMAT;
     static const QString TIME_FORMAT;
-    static const QString DATETIME_FORMAT;
+    static QString DATETIME_FORMAT;
     static const QString QT_ISO_FORMAT;
     static const QString DISPLAY_FOR_ISO_FORMAT;
 
@@ -45,6 +45,9 @@ class CORE_EXPORT QgsDateTimeFieldFormatter : public QgsFieldFormatter
     QString id() const override;
 
     QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;
+
+    //! Adjusts the date time formats according to locale.
+    static void applyLocaleChange();
 
     /**
      * Gets the default format in function of the type.

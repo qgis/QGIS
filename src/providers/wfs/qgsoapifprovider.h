@@ -68,6 +68,8 @@ class QgsOapifProvider final: public QgsVectorDataProvider
     QString name() const override;
     QString description() const override;
 
+    static QString providerKey();
+
     QgsVectorDataProvider::Capabilities capabilities() const override;
 
     QgsLayerMetadata layerMetadata() const override { return mLayerMetadata; }

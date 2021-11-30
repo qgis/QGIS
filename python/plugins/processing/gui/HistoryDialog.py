@@ -79,6 +79,7 @@ class HistoryDialog(BASE, WIDGET):
         self.tree.doubleClicked.connect(self.executeAlgorithm)
         self.tree.currentItemChanged.connect(self.changeText)
         shorcut = QShortcut(Qt.Key_Return, self.tree, context=Qt.WidgetShortcut, activated=self.executeAlgorithm)
+        shorcut = QShortcut(Qt.Key_Enter, self.tree, context=Qt.WidgetShortcut, activated=self.executeAlgorithm)
 
         self.clearButton.clicked.connect(self.clearLog)
         self.saveButton.clicked.connect(self.saveLog)

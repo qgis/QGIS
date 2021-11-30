@@ -257,6 +257,23 @@ Returns whether the property is currently active.
 .. seealso:: :py:func:`setActive`
 %End
 
+    bool isStaticValueInContext( const QgsExpressionContext &context, QVariant &staticValue /Out/ ) const;
+%Docstring
+Returns ``True`` if the property is effectively a static value
+in the specified ``context``.
+
+I.e. if the property type is QgsProperty.ExpressionBasedProperty with
+a fixed value expression ('some static value'), this method will return
+``True``.
+
+:param context: expression context
+
+:return: - ``True`` if property is a static value
+         - staticValue: will be set to evaluated static value if property is effectively a static value
+
+.. versionadded:: 3.24
+%End
+
     void setActive( bool active );
 %Docstring
 Sets whether the property is currently active.

@@ -19,6 +19,7 @@
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
+#include "qgsreferencedgeometry.h"
 
 #include <QDataStream>
 #include <QIcon>
@@ -258,6 +259,23 @@ QString QgsField::displayString( const QVariant &v ) const
     return QgsApplication::nullRepresentation();
   }
 
+  if ( v.userType() == QMetaType::type( "QgsReferencedGeometry" ) )
+  {
+    QgsReferencedGeometry geom = qvariant_cast<QgsReferencedGeometry>( v );
+    if ( geom.isNull() )
+      return QgsApplication::nullRepresentation();
+    else
+    {
+      QString wkt = geom.asWkt();
+      if ( wkt.length() >= 1050 )
+      {
+        wkt = wkt.left( 999 ) + QChar( 0x2026 );
+      }
+      QString formattedText = QStringLiteral( "%1 [%2]" ).arg( wkt, geom.crs().userFriendlyIdentifier() );
+      return formattedText;
+    }
+  }
+
   // Special treatment for numeric types if group separator is set or decimalPoint is not a dot
   if ( d->type == QVariant::Double )
   {
@@ -342,6 +360,19 @@ QString QgsField::displayString( const QVariant &v ) const
   {
     return QObject::tr( "BLOB" );
   }
+  else if ( d->type == QVariant::StringList || d->type == QVariant::List )
+  {
+    QString result;
+    const QVariantList list = v.toList();
+    for ( const QVariant &var : list )
+    {
+      if ( !result.isEmpty() )
+        result.append( QStringLiteral( ", " ) );
+      result.append( var.toString() );
+    }
+    return result;
+  }
+
   // Fallback if special rules do not apply
   return v.toString();
 }

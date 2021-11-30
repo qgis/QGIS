@@ -1074,7 +1074,7 @@ bool TestQgsDiagram::imageCheck( const QString &testType )
 
   const QgsRectangle extent( -126, 23, -70, 47 );
   mMapSettings->setExtent( extent );
-  mMapSettings->setFlag( QgsMapSettings::ForceVectorOutput );
+  mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
   mMapSettings->setOutputDpi( 96 );
   QgsMultiRenderChecker checker;
   checker.setControlPathPrefix( QStringLiteral( "diagrams" ) );

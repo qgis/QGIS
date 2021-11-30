@@ -33,6 +33,7 @@ email                : tim@linfiniti.com
 #include "qgsproject.h"
 #include "qgssymbollayerutils.h"
 #include "qgssvgcache.h"
+#include "qgsmapsettings.h"
 
 // qt includes
 #include <QPainter>

@@ -65,6 +65,7 @@
 #include "qgsannotationlayer.h"
 #include "qgspointcloudlayer.h"
 #include "qgsattributeeditorcontainer.h"
+#include "qgsgrouplayer.h"
 
 
 #include <algorithm>
@@ -751,6 +752,12 @@ void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEll
     mCrs = crs;
     writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), crs.isValid() ? 1 : 0 );
     mProjectScope.reset();
+
+    // if annotation layer doesn't have a crs (i.e. in a newly created project), it should
+    // initially inherit the project CRS
+    if ( !mMainAnnotationLayer->crs().isValid() )
+      mMainAnnotationLayer->setCrs( crs );
+
     setDirty( true );
     emit crsChanged();
   }
@@ -1212,6 +1219,13 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
     {
       const QgsAnnotationLayer::LayerOptions options( mTransformContext );
       mapLayer = std::make_unique<QgsAnnotationLayer>( QString(), options );
+      break;
+    }
+
+    case QgsMapLayerType::GroupLayer:
+    {
+      const QgsGroupLayer::LayerOptions options( mTransformContext );
+      mapLayer = std::make_unique<QgsGroupLayer>( QString(), options );
       break;
     }
   }
@@ -3672,7 +3686,6 @@ QgsAuxiliaryStorage *QgsProject::auxiliaryStorage()
 
 QString QgsProject::createAttachedFile( const QString &nameTemplate )
 {
-  const QString fileName = nameTemplate;
   const QDir archiveDir( mArchive->dir() );
   QTemporaryFile tmpFile( archiveDir.filePath( "XXXXXX_" + nameTemplate ), this );
   tmpFile.setAutoRemove( false );

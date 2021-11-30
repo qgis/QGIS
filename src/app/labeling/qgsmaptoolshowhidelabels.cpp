@@ -316,7 +316,7 @@ bool QgsMapToolShowHideLabels::selectedLabelFeatures( QgsVectorLayer *vlayer,
 
 bool QgsMapToolShowHideLabels::showHide( const QgsLabelPosition &pos, bool show )
 {
-  LabelDetails details = LabelDetails( pos );
+  LabelDetails details = LabelDetails( pos, canvas() );
 
   if ( !details.valid )
     return false;

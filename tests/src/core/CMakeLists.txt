@@ -192,6 +192,7 @@ set(TESTS
  testqgsvectorlayerjoinbuffer.cpp
  testqgsvectorlayerutils.cpp
  testqgsvectortilelayer.cpp
+ testqgsvectortileutils.cpp
  testqgsvectortilewriter.cpp
  testqgstiles.cpp
  testqgsweakrelation.cpp

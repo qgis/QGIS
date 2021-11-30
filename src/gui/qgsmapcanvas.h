@@ -29,6 +29,7 @@
 #include "qgstemporalrangeobject.h"
 #include "qgsmapcanvasinteractionblocker.h"
 #include "qgsproject.h"
+#include "qgsdistancearea.h"
 
 #include <QDomDocument>
 #include <QGraphicsView>
@@ -71,6 +72,7 @@ class QgsRubberBand;
 class QgsMapCanvasAnnotationItem;
 class QgsReferencedRectangle;
 class QgsRenderedItemResults;
+class QgsTemporaryCursorOverride;
 
 class QgsTemporalController;
 
@@ -159,7 +161,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * Resets the \a flags for the canvas' map settings.
      * \since QGIS 3.0
      */
-    void setMapSettingsFlags( QgsMapSettings::Flags flags );
+    void setMapSettingsFlags( Qgis::MapSettingsFlags flags );
 
     /**
      * Gets access to the labeling results (may be NULLPTR).
@@ -199,6 +201,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * \since QGIS 2.4
      */
     void clearCache();
+
+    /**
+     * Cancel any rendering job, in a blocking way. Used for application closing.
+     * \note not available in Python bindings
+     */
+    void cancelJobs() SIP_SKIP;
 
     /**
      * Blocks until the rendering job has finished.
@@ -452,14 +460,32 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     //! Returns the map layer at position index in the layer stack
     QgsMapLayer *layer( int index );
 
-    //! Returns number of layers on the map
+    /**
+     * Returns the map layer with the matching ID, or NULLPTR if no layers could be found.
+     *
+     * This method searches both layers associated with the map canvas (see layers())
+     * and layers from the QgsProject associated with the canvas
+     * (which is current the QgsProject::instance()). It can be used to resolve layer IDs to
+     * layers which may be visible in the canvas, but not associated with a QgsProject.
+     *
+     * \since QGIS 3.22
+     */
+    QgsMapLayer *layer( const QString &id );
+
+    /**
+     * Returns number of layers on the map.
+     */
     int layerCount() const;
 
     /**
      * Returns the list of layers shown within the map canvas.
+     *
+     * Since QGIS 3.24, if the \a expandGroupLayers option is TRUE then group layers will be converted to
+     * all their child layers.
+     *
      * \see setLayers()
      */
-    QList<QgsMapLayer *> layers() const;
+    QList<QgsMapLayer *> layers( bool expandGroupLayers = false ) const;
 
     /**
      * Freeze/thaw the map canvas. This is used to prevent the canvas from
@@ -594,7 +620,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     void enableAntiAliasing( bool flag );
 
     //! TRUE if antialiasing is enabled
-    bool antiAliasingEnabled() const { return mSettings.testFlag( QgsMapSettings::Antialiasing ); }
+    bool antiAliasingEnabled() const;
 
     //! sets map tile rendering flag
     void enableMapTileRendering( bool flag );
@@ -1393,6 +1419,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     int mBlockItemPositionUpdates = 0;
 
     QMetaObject::Connection mScreenDpiChangedConnection;
+
+    std::unique_ptr< QgsTemporaryCursorOverride > mTemporaryCursorOverride;
 
     /**
      * Returns the last cursor position on the canvas in geographical coordinates

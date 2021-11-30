@@ -109,6 +109,8 @@ QgsLegendPatchShapeDialog::QgsLegendPatchShapeDialog( const QgsLegendPatchShape 
   QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsLegendPatchShapeWidget( nullptr, shape );
   vLayout->addWidget( mWidget );
+  connect( mWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
+
   mButtonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Ok, Qt::Horizontal );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );

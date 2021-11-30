@@ -602,7 +602,7 @@ void QgsGpsInformationWidget::recenter()
 {
   try
   {
-    const QgsPointXY center = mCanvasToWgs84Transform.transform( mLastGpsPosition, QgsCoordinateTransform::ReverseTransform );
+    const QgsPointXY center = mCanvasToWgs84Transform.transform( mLastGpsPosition, Qgis::TransformDirection::Reverse );
     mMapCanvas->setCenter( center );
     mMapCanvas->refresh();
   }
@@ -989,7 +989,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     {
       try
       {
-        const QgsPointXY myPoint = mCanvasToWgs84Transform.transform( myNewCenter, QgsCoordinateTransform::ReverseTransform );
+        const QgsPointXY myPoint = mCanvasToWgs84Transform.transform( myNewCenter, Qgis::TransformDirection::Reverse );
         //keep the extent the same just center the map canvas in the display so our feature is in the middle
         const QgsRectangle myRect( myPoint, myPoint );  // empty rect can be used to set new extent that is centered on the point used to construct the rect
 
@@ -1154,7 +1154,7 @@ void QgsGpsInformationWidget::addVertex()
   QgsPointXY myPoint;
   if ( mMapCanvas )
   {
-    myPoint = mCanvasToWgs84Transform.transform( mLastGpsPosition, QgsCoordinateTransform::ReverseTransform );
+    myPoint = mCanvasToWgs84Transform.transform( mLastGpsPosition, Qgis::TransformDirection::Reverse );
   }
   else
   {

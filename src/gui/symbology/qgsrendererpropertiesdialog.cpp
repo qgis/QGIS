@@ -32,6 +32,8 @@
 #include "qgsembeddedsymbolrendererwidget.h"
 #include "qgspanelwidget.h"
 #include "qgspainteffect.h"
+#include "qgsproject.h"
+#include "qgsprojectutils.h"
 
 #include "qgsorderbydialog.h"
 #include "qgsapplication.h"
@@ -344,6 +346,9 @@ void QgsRendererPropertiesDialog::openPanel( QgsPanelWidget *panel )
 
 void QgsRendererPropertiesDialog::syncToLayer()
 {
+  mBlendModeComboBox->setShowClippingModes( QgsProjectUtils::layerIsContainedInGroupLayer( QgsProject::instance(), mLayer ) );
+  mFeatureBlendComboBox->setShowClippingModes( mBlendModeComboBox->showClippingModes() );
+
   // Blend mode
   mBlendModeComboBox->setBlendMode( mLayer->blendMode() );
 

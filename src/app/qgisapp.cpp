@@ -252,6 +252,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsdiagramproperties.h"
 #include "qgslayerdefinition.h"
 #include "qgslayertree.h"
+#include "qgslayertreegrouppropertieswidget.h"
 #include "qgslayertreemapcanvasbridge.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
@@ -941,7 +942,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   sInstance = this;
   QgsRuntimeProfiler *profiler = QgsApplication::profiler();
 
-  QColor splashTextColor = Qgis::releaseName() == QStringLiteral( "Master" ) ? QColor( 93, 153, 51 ) : Qt::black;
+  QColor splashTextColor = Qgis::releaseName() == QLatin1String( "Master" ) ? QColor( 93, 153, 51 ) : Qt::black;
 
   startProfile( tr( "Create user profile manager" ) );
   mUserProfileManager = new QgsUserProfileManager( QString(), this );
@@ -1428,6 +1429,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 #endif
   registerMapLayerPropertiesFactory( new QgsPointCloudElevationPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsAnnotationItemPropertiesWidgetFactory( this ) );
+  registerMapLayerPropertiesFactory( new QgsLayerTreeGroupPropertiesWidgetFactory( this ) );
 
   activateDeactivateLayerRelatedActions( nullptr ); // after members were created
 
@@ -1616,7 +1618,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   // do main window customization - after window state has been restored, before the window is shown
   startProfile( tr( "Update customization on main window" ) );
-  QgsCustomization::instance()->updateMainWindow( mToolbarMenu );
+  QgsCustomization::instance()->updateMainWindow( mToolbarMenu, mPanelMenu );
   endProfile();
 
   mSplash->showMessage( tr( "Populate saved styles" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );
@@ -1862,6 +1864,10 @@ QgisApp::~QgisApp()
     mMapCanvas->unsetMapTool( tool );
   mMapTools.reset();
 
+  // must come after deleting map tools
+  delete mAdvancedDigitizingDockWidget;
+  mAdvancedDigitizingDockWidget = nullptr;
+
   delete mpMaptip;
 
   delete mpGpsWidget;
@@ -1914,6 +1920,8 @@ QgisApp::~QgisApp()
   mSnappingUtils = nullptr;
   delete mUserInputDockWidget;
   mUserInputDockWidget = nullptr;
+  delete mMapStylingDock;
+  mMapStylingDock = nullptr;
 
   QgsGui::instance()->nativePlatformInterface()->cleanup();
 
@@ -2153,7 +2161,8 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
     {
       QgsTemporaryCursorOverride busyCursor( Qt::WaitCursor );
 
-      QgsVectorTileLayer *layer = new QgsVectorTileLayer( uri, u.name );
+      const QgsVectorTileLayer::LayerOptions options( QgsProject::instance()->transformContext() );
+      QgsVectorTileLayer *layer = new QgsVectorTileLayer( uri, u.name, options );
       bool ok = false;
       layer->loadDefaultMetadata( ok );
 
@@ -3355,8 +3364,9 @@ void QgisApp::createToolBars()
                       << mDatabaseToolBar
                       << mWebToolBar
                       << mLabelToolBar
-                      << mSnappingToolBar;
-
+                      << mSnappingToolBar
+                      << mMeshToolBar
+                      << mAnnotationsToolBar;
 
   mSnappingWidget = new QgsSnappingWidget( QgsProject::instance(), mMapCanvas, mSnappingToolBar );
   mSnappingWidget->setObjectName( QStringLiteral( "mSnappingWidget" ) );
@@ -3372,7 +3382,7 @@ void QgisApp::createToolBars()
 
   mDigitizeModeToolButton = new QToolButton();
   mDigitizeModeToolButton->setPopupMode( QToolButton::MenuButtonPopup );
-  QMenu *digitizeMenu = new QMenu();
+  QMenu *digitizeMenu = new QMenu( mDigitizeModeToolButton );
   digitizeMenu->addAction( mActionDigitizeWithCurve );
   digitizeMenu->addAction( mActionStreamDigitize );
   digitizeMenu->addSeparator();
@@ -3854,7 +3864,7 @@ void QgisApp::createToolBars()
 
     QToolButton *meshForceByLinesToolButton = new QToolButton();
     meshForceByLinesToolButton->setPopupMode( QToolButton::MenuButtonPopup );
-    QMenu *meshForceByLineMenu = new QMenu();
+    QMenu *meshForceByLineMenu = new QMenu( meshForceByLinesToolButton );
 
     //meshForceByLineMenu->addActions( editMeshMapTool->forceByLinesActions() );
     meshForceByLinesToolButton->setDefaultAction( editMeshMapTool->defaultForceAction() );
@@ -3869,11 +3879,13 @@ void QgisApp::createToolBars()
     mDigitizeModeToolButton->setMenu( digitizeMenu );
     for ( QAction *mapToolAction : editMeshMapTool->mapToolActions() )
       mMapToolGroup->addAction( mapToolAction );
+
+    mMeshMenu->addAction( editMeshMapTool->reindexAction() );
   }
 
   QToolButton *annotationLayerToolButton = new QToolButton();
   annotationLayerToolButton->setPopupMode( QToolButton::MenuButtonPopup );
-  QMenu *annotationLayerMenu = new QMenu();
+  QMenu *annotationLayerMenu = new QMenu( annotationLayerToolButton );
   annotationLayerMenu->addAction( mActionCreateAnnotationLayer );
   annotationLayerMenu->addAction( mMainAnnotationLayerProperties );
   annotationLayerToolButton->setMenu( annotationLayerMenu );
@@ -4878,7 +4890,7 @@ void QgisApp::initLayerTreeView()
   // filter legend actions
   mFilterLegendToolButton = new QToolButton( this );
   mFilterLegendToolButton->setAutoRaise( true );
-  mFilterLegendToolButton->setToolTip( tr( "Filter Legend by Map Content" ) );
+  mFilterLegendToolButton->setToolTip( tr( "Filter Legend" ) );
   mFilterLegendToolButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFilter2.svg" ) ) );
   mFilterLegendToolButton->setPopupMode( QToolButton::InstantPopup );
   QMenu *filterLegendMenu = new QMenu( this );
@@ -5415,7 +5427,6 @@ void QgisApp::about()
     versionString += QLatin1String( "</tr><tr>" );
 
     // Python version
-    const QString pythonVersion{ PYTHON_VERSION };
     versionString += QStringLiteral( "<td>%1</td><td colspan=\"3\">%2</td>" ).arg( tr( "Python version" ), PYTHON_VERSION );
     versionString += QLatin1String( "</tr><tr>" );
 
@@ -5542,8 +5553,13 @@ void QgisApp::about()
 #ifdef WITH_BINDINGS
     if ( mPythonUtils && mPythonUtils->isEnabled() )
     {
+      versionString += QStringLiteral( "</tr><tr><td colspan=\"4\">%1</td>" ).arg( tr( "Active Python plugins" ) );
       const QStringList activePlugins = mPythonUtils->listActivePlugins();
-      versionString += QStringLiteral( "</tr><tr><td>%1</td><td colspan=\"3\">%2</td>" ).arg( tr( "Active Python plugins" ), activePlugins.join( "<br />" ) );
+      for ( const QString &plugin : activePlugins )
+      {
+        const QString version = mPythonUtils->getPluginMetadata( plugin, QStringLiteral( "version" ) );
+        versionString += QStringLiteral( "</tr><tr><td>%1</td><td colspan=\"3\">%2</td>" ).arg( plugin, version );
+      }
     }
 #endif
 
@@ -5931,6 +5947,7 @@ void QgisApp::postProcessAddedLayer( QgsMapLayer *layer )
     }
 
     case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::GroupLayer:
       break;
 
     case QgsMapLayerType::PointCloudLayer:
@@ -5996,7 +6013,8 @@ QgsVectorTileLayer *QgisApp::addVectorTileLayerPrivate( const QString &url, cons
   QgsDebugMsgLevel( "completeBaseName: " + base, 2 );
 
   // create the layer
-  std::unique_ptr<QgsVectorTileLayer> layer( new QgsVectorTileLayer( url, base ) );
+  const QgsVectorTileLayer::LayerOptions options( QgsProject::instance()->transformContext() );
+  std::unique_ptr<QgsVectorTileLayer> layer( new QgsVectorTileLayer( url, base, options ) );
 
   if ( !layer || !layer->isValid() )
   {
@@ -6839,7 +6857,13 @@ void QgisApp::showRasterCalculator()
 
 void QgisApp::showMeshCalculator()
 {
-  QgsMeshCalculatorDialog d( qobject_cast<QgsMeshLayer *>( activeLayer() ), this );
+  QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( activeLayer() );
+  if ( meshLayer && meshLayer->isEditable() )
+  {
+    QMessageBox::information( this, tr( "Mesh Calculator" ), tr( "Mesh calculator with mesh layer in edit mode is not supported." ) );
+    return;
+  }
+  QgsMeshCalculatorDialog d( meshLayer, this );
   if ( d.exec() == QDialog::Accepted )
   {
     //invoke analysis library
@@ -7264,6 +7288,7 @@ bool QgisApp::fileSave()
 void QgisApp::fileSaveAs()
 {
   QString defaultPath;
+  QgsSettings settings;
   // First priority is to default to same path as existing file
   const QString currentPath = QgsProject::instance()->absoluteFilePath();
   if ( !currentPath.isEmpty() )
@@ -7273,18 +7298,28 @@ void QgisApp::fileSaveAs()
   else
   {
     // Retrieve last used project dir from persistent settings
-    QgsSettings settings;
     defaultPath = settings.value( QStringLiteral( "UI/lastProjectDir" ), QDir::homePath() ).toString();
     defaultPath += QString( '/' + QgsProject::instance()->title() );
   }
 
   const QString qgsExt = tr( "QGIS files" ) + " (*.qgs *.QGS)";
   const QString zipExt = tr( "QGZ files" ) + " (*.qgz)";
+
+  QString exts;
+  QgsProject::FileFormat defaultProjectFileFormat = settings.enumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), QgsProject::FileFormat::Qgz );
+  if ( defaultProjectFileFormat == QgsProject::FileFormat::Qgs )
+  {
+    exts = qgsExt + QStringLiteral( ";;" ) + zipExt;
+  }
+  else
+  {
+    exts = zipExt + QStringLiteral( ";;" ) + qgsExt;
+  }
   QString filter;
   QString path = QFileDialog::getSaveFileName( this,
                  tr( "Save Project As" ),
                  defaultPath,
-                 zipExt + ";;" + qgsExt, &filter );
+                 exts, &filter );
   if ( path.isEmpty() )
     return;
 
@@ -7565,6 +7600,7 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
       case QgsMapLayerType::AnnotationLayer:
       case QgsMapLayerType::PluginLayer:
       case QgsMapLayerType::VectorTileLayer:
+      case QgsMapLayerType::GroupLayer:
         // not supported here yet!
         break;
 
@@ -7601,7 +7637,8 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
         QUrlQuery uq;
         uq.addQueryItem( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
         uq.addQueryItem( QStringLiteral( "url" ), fileName );
-        std::unique_ptr<QgsVectorTileLayer> vtLayer( new QgsVectorTileLayer( uq.toString(), fileInfo.completeBaseName() ) );
+        const QgsVectorTileLayer::LayerOptions options( QgsProject::instance()->transformContext() );
+        std::unique_ptr<QgsVectorTileLayer> vtLayer( new QgsVectorTileLayer( uq.toString(), fileInfo.completeBaseName(), options ) );
         if ( vtLayer->isValid() )
         {
           QgsProject::instance()->addMapLayer( vtLayer.release() );
@@ -8769,8 +8806,18 @@ void QgisApp::diagramProperties()
 
 void QgisApp::createAnnotationLayer()
 {
+  // pick a unique name for the layer
+  QString name = tr( "Annotations" );
+  int id = 1;
+  while ( !QgsProject::instance()->mapLayersByName( name ).isEmpty() )
+  {
+    name = tr( "Annotations (%1)" ).arg( id );
+    id++;
+  }
+
   QgsAnnotationLayer::LayerOptions options( QgsProject::instance()->transformContext() );
-  QgsAnnotationLayer *layer = new QgsAnnotationLayer( tr( "Annotations" ), options );
+  QgsAnnotationLayer *layer = new QgsAnnotationLayer( name, options );
+  layer->setCrs( QgsProject::instance()->crs() );
 
   // layer should be created at top of layer tree
   QgsProject::instance()->addMapLayer( layer, false );
@@ -8997,6 +9044,7 @@ QString QgisApp::saveAsFile( QgsMapLayer *layer, const bool onlySelected, const 
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::AnnotationLayer:
     case QgsMapLayerType::PointCloudLayer:
+    case QgsMapLayerType::GroupLayer:
       return QString();
   }
   return QString();
@@ -9165,6 +9213,7 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
 
     case QgsMapLayerType::AnnotationLayer:
     case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::GroupLayer:
       break;
 
   }
@@ -9627,7 +9676,7 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
     layoutNames << l->name();
   }
 
-  const QString windowTitle = tr( "Create %1" ).arg( QgsGui::higFlags() & QgsGui::HigDialogTitleIsTitleCase ? QgsStringUtils::capitalize( typeString, QgsStringUtils::TitleCase )
+  const QString windowTitle = tr( "Create %1" ).arg( QgsGui::higFlags() & QgsGui::HigDialogTitleIsTitleCase ? QgsStringUtils::capitalize( typeString, Qgis::Capitalization::TitleCase )
                               : typeString );
 
   while ( !titleValid )
@@ -11216,6 +11265,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
     case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::AnnotationLayer:
     case QgsMapLayerType::PointCloudLayer:
+    case QgsMapLayerType::GroupLayer:
       break;
   }
   return false;
@@ -11383,7 +11433,7 @@ bool QgisApp::toggleEditingMeshLayer( QgsMeshLayer *mlayer, bool allowCancel )
     return false;
 
   if ( !mlayer->supportsEditing() )
-    return false; //TODO: when adapted widget will be ready, ask the user if he want to create a new one based on this one
+    return false;
 
   bool res = false;
 
@@ -11391,11 +11441,43 @@ bool QgisApp::toggleEditingMeshLayer( QgsMeshLayer *mlayer, bool allowCancel )
 
   if ( !mlayer->isEditable() )
   {
+    QMessageBox *messageBox = new QMessageBox( QMessageBox::NoIcon, tr( "Start Mesh Frame Edit" ),
+        tr( "Starting editing the frame of this mesh layer will remove all dataset groups.\n"
+            "Alternatively, you can create a new mesh layer from that one." ), QMessageBox::Cancel );
+
+    messageBox->addButton( tr( "Edit Current Mesh" ), QMessageBox::NoRole );
+    QPushButton *editCopyButton = messageBox->addButton( tr( "Edit a Copy" ), QMessageBox::NoRole );
+    messageBox->setDefaultButton( QMessageBox::Cancel );
+
+    messageBox->exec();
+
+    if ( messageBox->clickedButton() == messageBox->button( QMessageBox::Cancel ) )
+    {
+      mActionToggleEditing->setChecked( false );
+      return false;
+    }
+    else if ( messageBox->clickedButton() == editCopyButton )
+    {
+      QgsNewMeshLayerDialog *newMeshDialog = new QgsNewMeshLayerDialog( this );
+      newMeshDialog->setSourceMeshLayer( mlayer, true );
+      if ( newMeshDialog->exec() )
+        mlayer = newMeshDialog->newLayer();
+      else
+      {
+        mActionToggleEditing->setChecked( false );
+        return false;
+      }
+    }
+
     res = mlayer->startFrameEditing( transform );
     mActionToggleEditing->setChecked( res );
 
     if ( !res )
-      QgsMessageLog::logMessage( tr( "Unable to start mesh editing for layer \"%1\"" ).arg( mlayer->name() ) );
+    {
+      visibleMessageBar()->pushWarning(
+        tr( "Mesh editing" ),
+        tr( "Unable to start mesh editing for layer \"%1\"" ).arg( mlayer->name() ) );
+    }
   }
   else if ( mlayer->isModified() )
   {
@@ -11417,6 +11499,9 @@ bool QgisApp::toggleEditingMeshLayer( QgsMeshLayer *mlayer, bool allowCancel )
         QgsCanvasRefreshBlocker refreshBlocker;
         if ( !mlayer->commitFrameEditing( transform, false ) )
         {
+          visibleMessageBar()->pushWarning(
+            tr( "Mesh editing" ),
+            tr( "Unable to save editing for layer \"%1\"" ).arg( mlayer->name() ) );
           res = false;
         }
 
@@ -11483,6 +11568,7 @@ void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRep
     case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::AnnotationLayer:
     case QgsMapLayerType::PointCloudLayer:
+    case QgsMapLayerType::GroupLayer:
       break;
   }
 }
@@ -11519,7 +11605,11 @@ void QgisApp::saveMeshLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool t
 
   QgsCanvasRefreshBlocker refreshBlocker;
   QgsCoordinateTransform transform( mlayer->crs(), mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
-  mlayer->commitFrameEditing( transform, leaveEditable );
+
+  if ( !mlayer->commitFrameEditing( transform, leaveEditable ) )
+    visibleMessageBar()->pushWarning(
+      tr( "Mesh editing" ),
+      tr( "Unable to save editing for layer \"%1\"" ).arg( mlayer->name() ) );
 
   if ( triggerRepaint )
   {
@@ -11543,6 +11633,7 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerR
     case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::AnnotationLayer:
     case QgsMapLayerType::PointCloudLayer:
+    case QgsMapLayerType::GroupLayer:
       break;
   }
 }
@@ -11760,6 +11851,7 @@ void QgisApp::updateLayerModifiedActions()
       case QgsMapLayerType::VectorTileLayer:
       case QgsMapLayerType::AnnotationLayer:
       case QgsMapLayerType::PointCloudLayer:
+      case QgsMapLayerType::GroupLayer:
         break;
     }
   }
@@ -12088,7 +12180,7 @@ void QgisApp::removeLayer()
     return;
   }
 
-  QList<QgsLayerTreeNode *> selectedNodes = mLayerTreeView->selectedNodes( true );
+  const QList<QgsLayerTreeNode *> selectedNodes = mLayerTreeView->selectedNodes( true );
 
   //validate selection
   if ( selectedNodes.isEmpty() )
@@ -12129,7 +12221,7 @@ void QgisApp::removeLayer()
     }
   };
 
-  for ( const auto &n : std::as_const( selectedNodes ) )
+  for ( const QgsLayerTreeNode *n : selectedNodes )
   {
     harvest( n );
   }
@@ -12151,9 +12243,15 @@ void QgisApp::removeLayer()
     return;
   }
 
-  const auto constSelectedNodes = selectedNodes;
-  for ( QgsLayerTreeNode *node : constSelectedNodes )
+  for ( QgsLayerTreeNode *node : selectedNodes )
   {
+    if ( QgsLayerTreeGroup *group = qobject_cast< QgsLayerTreeGroup * >( node ) )
+    {
+      if ( QgsGroupLayer *groupLayer = group->groupLayer() )
+      {
+        QgsProject::instance()->removeMapLayer( groupLayer );
+      }
+    }
     QgsLayerTreeGroup *parentGroup = qobject_cast<QgsLayerTreeGroup *>( node->parent() );
     if ( parentGroup )
       parentGroup->removeChildNode( node );
@@ -12194,6 +12292,10 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
     {
       case QgsMapLayerType::PluginLayer:
         unSppType = tr( "Plugin layer" );
+        break;
+
+      case QgsMapLayerType::GroupLayer:
+        unSppType = tr( "Group layer" );
         break;
 
       case QgsMapLayerType::VectorLayer:
@@ -13689,7 +13791,7 @@ void QgisApp::new3DMapCanvas()
     map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
     map->setSelectionColor( mMapCanvas->selectionColor() );
     map->setBackgroundColor( mMapCanvas->canvasColor() );
-    map->setLayers( mMapCanvas->layers() );
+    map->setLayers( mMapCanvas->layers( true ) );
 //    map->setTerrainLayers( mMapCanvas->layers() );
     map->setTemporalRange( mMapCanvas->temporalRange() );
 
@@ -13986,6 +14088,7 @@ void QgisApp::closeProject()
   // clear out any stuff from project
   mMapCanvas->setLayers( QList<QgsMapLayer *>() );
   mMapCanvas->clearCache();
+  mMapCanvas->cancelJobs();
   mOverviewCanvas->setLayers( QList<QgsMapLayer *>() );
 
   // Avoid unnecessary layer changed handling for each layer removed - instead,
@@ -14924,6 +15027,21 @@ void QgisApp::legendLayerSelectionChanged()
 {
   const QList<QgsLayerTreeLayer *> selectedLayers = mLayerTreeView ? mLayerTreeView->selectedLayerNodes() : QList<QgsLayerTreeLayer *>();
 
+  if ( selectedLayers.empty() && mLayerTreeView )
+  {
+    // check if a group node alone is selected
+    const QList<QgsLayerTreeNode *> selectedNodes = mLayerTreeView->selectedNodes();
+    if ( selectedNodes.size() == 1 && QgsLayerTree::isGroup( selectedNodes.at( 0 ) ) )
+    {
+      QgsLayerTreeGroup *groupNode = QgsLayerTree::toGroup( selectedNodes.at( 0 ) );
+      mMapStyleWidget->setEnabled( true );
+      if ( mMapStylingDock->isVisible() )
+      {
+        mMapStyleWidget->setLayerTreeGroup( groupNode );
+      }
+    }
+  }
+
   mActionDuplicateLayer->setEnabled( !selectedLayers.isEmpty() );
   mActionSetLayerScaleVisibility->setEnabled( !selectedLayers.isEmpty() );
   mActionSetLayerCRS->setEnabled( !selectedLayers.isEmpty() );
@@ -15641,7 +15759,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionSelectByForm->setEnabled( false );
       mActionOpenFieldCalc->setEnabled( false );
       mActionSaveLayerEdits->setEnabled( false );
-      mUndoDock->widget()->setEnabled( false );
       mActionSaveLayerDefinition->setEnabled( true );
       mActionLayerSaveAs->setEnabled( false );
       mActionAddFeature->setEnabled( false );
@@ -15678,7 +15795,9 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       bool isEditable = mlayer->isEditable();
       mActionToggleEditing->setEnabled( canSupportEditing );
       mActionToggleEditing->setChecked( canSupportEditing && isEditable );
+      mActionSaveLayerEdits->setEnabled( canSupportEditing && isEditable && mlayer->isModified() );
       enableMeshEditingTools( isEditable );
+      mUndoDock->widget()->setEnabled( canSupportEditing && isEditable );
       mActionUndo->setEnabled( canSupportEditing && isEditable );
       mActionRedo->setEnabled( canSupportEditing && isEditable );
       updateUndoActions();
@@ -15827,6 +15946,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       break;
 
     case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::GroupLayer:
       break;
 
     case QgsMapLayerType::AnnotationLayer:
@@ -15986,6 +16106,17 @@ bool QgisApp::addRasterLayers( QStringList const &files, bool guiWarning )
         continue;
     }
 
+    const bool isVsiCurl { src.startsWith( QLatin1String( "/vsicurl" ), Qt::CaseInsensitive ) };
+    const bool isRemoteUrl { src.startsWith( QLatin1String( "http" ) ) || src == QLatin1String( "ftp" ) };
+
+    std::unique_ptr< QgsTemporaryCursorOverride > cursorOverride;
+    if ( isVsiCurl || isRemoteUrl )
+    {
+      cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+      visibleMessageBar()->pushInfo( tr( "Remote layer" ), tr( "loading %1, please wait …" ).arg( src ) );
+      qApp->processEvents();
+    }
+
     if ( QgsRasterLayer::isValidRasterFileName( src, errMsg ) )
     {
       QFileInfo myFileInfo( src );
@@ -16003,6 +16134,7 @@ bool QgisApp::addRasterLayers( QStringList const &files, bool guiWarning )
       }
 
       // try to create the layer
+      cursorOverride.reset();
       QgsRasterLayer *layer = addLayerPrivate< QgsRasterLayer >( QgsMapLayerType::RasterLayer, src, layerName, QStringLiteral( "gdal" ), guiWarning );
 
       if ( layer && layer->isValid() )
@@ -16757,6 +16889,8 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
       break;
     }
 
+    case QgsMapLayerType::GroupLayer:
+      break;
   }
 }
 

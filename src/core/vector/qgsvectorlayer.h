@@ -35,7 +35,6 @@
 #include "qgsfields.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorsimplifymethod.h"
-#include "qgsvectorlayerserverproperties.h"
 #include "qgseditformconfig.h"
 #include "qgsattributetableconfig.h"
 #include "qgsaggregatecalculator.h"
@@ -571,6 +570,27 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     QString capabilitiesString() const;
 
+
+    /**
+     * Returns TRUE if the layer is a query (SQL) layer.
+     *
+     * \note this is simply a shortcut to check if the SqlQuery flag
+     *       is set.
+     *
+     * \see vectorLayerTypeFlags()
+     * \since QGIS 3.24
+     */
+    bool isSqlQuery() const;
+
+    /**
+     * Returns the vector layer type flags.
+     *
+     * \see isSqlQuery()
+     * \since QGIS 3.24
+     */
+    Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const;
+
+
     /**
      * Returns a description for this layer as defined in the data provider.
      */
@@ -728,12 +748,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * The pointer which is returned is const.
      */
     const QgsActionManager *actions() const SIP_SKIP { return mActions; }
-
-    /**
-     * Returns QGIS Server Properties of the vector layer
-     * \since QGIS 3.10
-     */
-    QgsVectorLayerServerProperties *serverProperties() const { return mServerProperties.get(); }
 
     /**
      * Returns the number of features that are selected in this layer.
@@ -2930,9 +2944,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //stores information about joined layers
     QgsVectorLayerJoinBuffer *mJoinBuffer = nullptr;
 
-    //!stores information about server properties
-    std::unique_ptr< QgsVectorLayerServerProperties > mServerProperties;
-
     //! stores information about expression fields on this layer
     QgsExpressionFieldBuffer *mExpressionFieldBuffer = nullptr;
 
@@ -2960,6 +2971,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! True while an undo command is active
     bool mEditCommandActive = false;
+
+    //! True while a commit is active
+    bool mCommitChangesActive = false;
 
     bool mReadExtentFromXml;
     QgsRectangle mXmlExtent;

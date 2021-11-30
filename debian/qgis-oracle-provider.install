@@ -1,2 +1,2 @@
-usr/lib/qgis/plugins/liboracleprovider.so
+usr/lib/qgis/plugins/libprovider_oracle.so
 usr/lib/*/qt?/plugins/sqldrivers/libqsqlocispatial.so

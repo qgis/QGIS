@@ -385,6 +385,25 @@ class TestQgsServerWMSDimension(TestQgsServerWMSTestBase):
         # same as ELEVATION=1000
         self._img_diff_error(r, h, "WMS_GetMap_Dimension_Elevation_Value")
 
+    def test_wms_getprint_dimension(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetPrint",
+            "TEMPLATE": "layoutA4",
+            "FORMAT": "png",
+            "map0:EXTENT": "-1219081,4281848,172260,5673189",
+            "map0:LAYERS": "dem,Datetime_dim",
+            "map0:SCALE": "10013037",
+            "CRS": "EPSG:3857",
+            "HEIGHT": "500",
+            "DIM_DATE": "2021-05-31,2021-06-30"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetPrint_Dimension", max_size_diff=QSize(1, 1))
+
 
 if __name__ == "__main__":
     unittest.main()

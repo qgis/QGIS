@@ -17,7 +17,7 @@
 #include "qgsexpressionfunction.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgsfeaturerequest.h"
-#include "qgscolorramp.h"
+#include "qgscolorrampimpl.h"
 #include "qgslogger.h"
 #include "qgsexpressioncontext.h"
 #include "qgsgeometry.h"
@@ -900,6 +900,17 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "form_mode" ), QCoreApplication::translate( "form_mode", "What the form is used for, like AddFeatureMode, SingleEditMode, MultiEditMode, SearchMode, AggregateSearchMode or IdentifyMode as string." ) );
 }
 
+
+bool QgsExpression::addVariableHelpText( const QString name, const QString &description )
+{
+  if ( sVariableHelpTexts()->contains( name ) )
+  {
+    return false;
+  }
+  sVariableHelpTexts()->insert( name, description );
+  return true;
+}
+
 QString QgsExpression::variableHelpText( const QString &variableName )
 {
   QgsExpression::initVariableHelp();
@@ -1101,14 +1112,16 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   }
 }
 
-QString QgsExpression::createFieldEqualityExpression( const QString &fieldName, const QVariant &value )
+QString QgsExpression::createFieldEqualityExpression( const QString &fieldName, const QVariant &value, QVariant::Type fieldType )
 {
   QString expr;
 
   if ( value.isNull() )
     expr = QStringLiteral( "%1 IS NULL" ).arg( quotedColumnRef( fieldName ) );
-  else
+  else if ( fieldType == QVariant::Type::Invalid )
     expr = QStringLiteral( "%1 = %2" ).arg( quotedColumnRef( fieldName ), quotedValue( value ) );
+  else
+    expr = QStringLiteral( "%1 = %2" ).arg( quotedColumnRef( fieldName ), quotedValue( value, fieldType ) );
 
   return expr;
 }
@@ -1324,7 +1337,7 @@ bool QgsExpression::attemptReduceToInClause( const QStringList &expressions, QSt
       }
     }
   }
-  result = QStringLiteral( "%1 IN (%2)" ).arg( inField, values.join( ',' ) );
+  result = QStringLiteral( "%1 IN (%2)" ).arg( quotedColumnRef( inField ), values.join( ',' ) );
   return true;
 }
 

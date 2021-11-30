@@ -451,6 +451,31 @@ This is obtained from the data provider and does not follow any standard.
 Capabilities for this layer, comma separated and translated.
 %End
 
+
+    bool isSqlQuery() const;
+%Docstring
+Returns ``True`` if the layer is a query (SQL) layer.
+
+.. note::
+
+   this is simply a shortcut to check if the SqlQuery flag
+   is set.
+
+.. seealso:: :py:func:`vectorLayerTypeFlags`
+
+.. versionadded:: 3.24
+%End
+
+    Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const;
+%Docstring
+Returns the vector layer type flags.
+
+.. seealso:: :py:func:`isSqlQuery`
+
+.. versionadded:: 3.24
+%End
+
+
     QString dataComment() const;
 %Docstring
 Returns a description for this layer as defined in the data provider.
@@ -615,13 +640,6 @@ The pointer which is returned directly points to the actions object
 which is used by the layer, so any changes are immediately applied.
 %End
 
-
-    QgsVectorLayerServerProperties *serverProperties() const;
-%Docstring
-Returns QGIS Server Properties of the vector layer
-
-.. versionadded:: 3.10
-%End
 
     int selectedFeatureCount() const;
 %Docstring

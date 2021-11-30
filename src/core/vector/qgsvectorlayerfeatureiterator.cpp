@@ -151,7 +151,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
       if ( !mRequest.referenceGeometry().isEmpty() )
       {
         mDistanceWithinGeom = mRequest.referenceGeometry();
-        mDistanceWithinEngine.reset( QgsGeometry::createGeometryEngine( mDistanceWithinGeom.constGet() ) );
+        mDistanceWithinEngine = mRequest.referenceGeometryEngine();
         mDistanceWithinEngine->prepareGeometry();
         mDistanceWithin = mRequest.distanceWithin();
       }
@@ -903,7 +903,7 @@ bool QgsVectorLayerFeatureIterator::postProcessFeature( QgsFeature &feature )
 
   if ( result && mDistanceWithinEngine && feature.hasGeometry() )
   {
-    result = mDistanceWithinEngine->distance( feature.geometry().constGet() ) <= mDistanceWithin;
+    result = mDistanceWithinEngine->distanceWithin( feature.geometry().constGet(), mDistanceWithin );
   }
 
   return result;

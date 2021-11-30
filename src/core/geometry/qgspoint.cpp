@@ -177,7 +177,7 @@ bool QgsPoint::fromWkt( const QString &wkt )
        secondWithoutParentheses.isEmpty() )
     return true;
 
-  const QRegularExpression rx( QStringLiteral( "\\s" ) );
+  const thread_local QRegularExpression rx( QStringLiteral( "\\s" ) );
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList coordinates = parts.second.split( rx, QString::SkipEmptyParts );
 #else
@@ -195,7 +195,7 @@ bool QgsPoint::fromWkt( const QString &wkt )
   // True
   // p.asWkt()
   // 'Point (0 -1.43209999999999993)'
-  const QRegularExpression rxIsNumber( QStringLiteral( "^[+-]?(\\d\\.?\\d*[Ee][+\\-]?\\d+|(\\d+\\.\\d*|\\d*\\.\\d+)|\\d+)$" ) );
+  const thread_local QRegularExpression rxIsNumber( QStringLiteral( "^[+-]?(\\d\\.?\\d*[Ee][+\\-]?\\d+|(\\d+\\.\\d*|\\d*\\.\\d+)|\\d+)$" ) );
   if ( coordinates.filter( rxIsNumber ).size() != coordinates.size() )
     return false;
 
@@ -379,7 +379,7 @@ void QgsPoint::clear()
  * See details in QEP #17
  ****************************************************************************/
 
-void QgsPoint::transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
+void QgsPoint::transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d, bool transformZ )
 {
   clearCache();
   if ( transformZ )

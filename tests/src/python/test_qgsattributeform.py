@@ -22,13 +22,17 @@ from qgis.core import (
     QgsEditorWidgetSetup,
     QgsEditFormConfig,
     QgsAttributeEditorElement,
+    QgsDefaultValue,
+    QgsField
 )
 from qgis.gui import (
     QgsAttributeForm,
     QgsGui,
     QgsEditorWidgetWrapper,
-    QgsMapCanvas
+    QgsMapCanvas,
+    QgsAttributeEditorContext
 )
+from qgis.PyQt.QtCore import QVariant
 
 QGISAPP = start_app()
 
@@ -114,6 +118,28 @@ class TestQgsAttributeForm(unittest.TestCase):
 
         for field_type, value in field_types.items():
             self.checkForm(field_type, value)
+
+    def test_on_update(self):
+        """Test live update"""
+
+        layer = QgsVectorLayer("Point?field=age:int", "vl", "memory")
+        # set default value for numbers to [1, {age}], it will depend on the field age and should update
+        field = QgsField('numbers', QVariant.List, 'array')
+        field.setEditorWidgetSetup(QgsEditorWidgetSetup('List', {}))
+        layer.dataProvider().addAttributes([field])
+        layer.updateFields()
+        layer.setDefaultValueDefinition(1, QgsDefaultValue('array(1, age)', True))
+        layer.setEditorWidgetSetup(1, QgsEditorWidgetSetup('List', {}))
+        layer.startEditing()
+        form = QgsAttributeForm(layer)
+        feature = QgsFeature(layer.fields())
+        form.setFeature(feature)
+        form.setMode(QgsAttributeEditorContext.AddFeatureMode)
+        form.changeAttribute('numbers', [12])
+        form.changeAttribute('age', 1)
+        self.assertEqual(form.currentFormFeature()['numbers'], [1, 1])
+        form.changeAttribute('age', 7)
+        self.assertEqual(form.currentFormFeature()['numbers'], [1, 7])
 
 
 if __name__ == '__main__':

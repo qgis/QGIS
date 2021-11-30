@@ -448,6 +448,12 @@ void TestQgsField::displayString()
   const QString testBAString( QStringLiteral( "test string" ) );
   const QByteArray testBA( testBAString.toLocal8Bit() );
   QCOMPARE( binaryField.displayString( testBA ), QStringLiteral( "BLOB" ) );
+
+  // array field
+  const QgsField stringArrayField( QStringLiteral( "stringArray" ), QVariant::StringList, QStringLiteral( "StringArray" ) );
+  QCOMPARE( stringArrayField.displayString( QStringList() << "A" << "B" << "C" ), QStringLiteral( "A, B, C" ) );
+  const QgsField intArrayField( QStringLiteral( "intArray" ), QVariant::List, QStringLiteral( "IntArray" ) );
+  QCOMPARE( intArrayField.displayString( QVariantList() << 1 << 2 << 3 ), QStringLiteral( "1, 2, 3" ) );
 }
 
 void TestQgsField::convertCompatible()

@@ -386,6 +386,11 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
     lastExtPath = QStringLiteral( "/Processing/LastRasterOutputExt" );
     lastExt = settings.value( lastExtPath, QStringLiteral( ".%1" ).arg( mParameter->defaultFileExtension() ) ).toString();
   }
+  else if ( mParameter->type() == QgsProcessingParameterPointCloudDestination::typeName() )
+  {
+    lastExtPath = QStringLiteral( "/Processing/LastPointCloudOutputExt" );
+    lastExt = settings.value( lastExtPath, QStringLiteral( ".%1" ).arg( mParameter->defaultFileExtension() ) ).toString();
+  }
 
   // get default filter
   const QStringList filters = fileFilter.split( QStringLiteral( ";;" ) );
@@ -624,7 +629,15 @@ QString QgsProcessingLayerOutputDestinationWidget::mimeDataToPath( const QMimeDa
     else if ( ( mParameter->type() == QgsProcessingParameterRasterDestination::typeName()
                 || mParameter->type() == QgsProcessingParameterFileDestination::typeName() )
               && u.layerType == QLatin1String( "raster" ) && u.providerKey == QLatin1String( "gdal" ) )
+    {
       return u.uri;
+    }
+    else if ( ( mParameter->type() == QgsProcessingParameterPointCloudDestination::typeName()
+                || mParameter->type() == QgsProcessingParameterFileDestination::typeName() )
+              && u.layerType == QLatin1String( "pointcloud" ) && ( u.providerKey == QLatin1String( "ept" ) || u.providerKey == QLatin1String( "pdal" ) ) )
+    {
+      return u.uri;
+    }
 #if 0
     else if ( ( mParameter->type() == QgsProcessingParameterMeshDestination::typeName()
                 || mParameter->type() == QgsProcessingParameterFileDestination::typeName() )
@@ -664,7 +677,8 @@ QString QgsProcessingLayerOutputDestinationWidget::mimeDataToPath( const QMimeDa
                             || mParameter->type() == QgsProcessingParameterVectorDestination::typeName()
                             || mParameter->type() == QgsProcessingParameterRasterDestination::typeName()
                             || mParameter->type() == QgsProcessingParameterVectorDestination::typeName()
-                            || mParameter->type() == QgsProcessingParameterFileDestination::typeName() ) )
+                            || mParameter->type() == QgsProcessingParameterFileDestination::typeName()
+                            || mParameter->type() == QgsProcessingParameterPointCloudDestination::typeName() ) )
     {
       // TODO - we should check to see if it's a valid extension for the parameter, but that's non-trivial
       return path;

@@ -27,6 +27,7 @@
 #include "qgsxmlutils.h"
 #include "qgsexception.h"
 #include "qgsgeometry.h"
+#include "qgsgrouplayer.h"
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 
@@ -36,7 +37,7 @@ QgsMapSettings::QgsMapSettings()
   , mSize( QSize( 0, 0 ) )
   , mBackgroundColor( Qt::white )
   , mSelectionColor( Qt::yellow )
-  , mFlags( Antialiasing | UseAdvancedEffects | DrawLabeling | DrawSelection )
+  , mFlags( Qgis::MapSettingsFlag::Antialiasing | Qgis::MapSettingsFlag::UseAdvancedEffects | Qgis::MapSettingsFlag::DrawLabeling | Qgis::MapSettingsFlag::DrawSelection )
   , mSegmentationTolerance( M_PI_2 / 90 )
 {
   mScaleCalculator.setMapUnits( QgsUnitTypes::DistanceUnknownUnit );
@@ -285,15 +286,42 @@ void QgsMapSettings::setDpiTarget( double dpi )
   mDpiTarget = dpi;
 }
 
-QStringList QgsMapSettings::layerIds() const
+QStringList QgsMapSettings::layerIds( bool expandGroupLayers ) const
 {
-  return _qgis_listQPointerToIDs( mLayers );
+  const QList<QgsMapLayer * > mapLayers = layers( expandGroupLayers );
+  QStringList res;
+  res.reserve( mapLayers.size() );
+  for ( const QgsMapLayer *layer : mapLayers )
+    res << layer->id();
+  return res;
 }
 
-
-QList<QgsMapLayer *> QgsMapSettings::layers() const
+QList<QgsMapLayer *> QgsMapSettings::layers( bool expandGroupLayers ) const
 {
-  return _qgis_listQPointerToRaw( mLayers );
+  const QList<QgsMapLayer *> actualLayers = _qgis_listQPointerToRaw( mLayers );
+  if ( !expandGroupLayers )
+    return actualLayers;
+
+  QList< QgsMapLayer * > result;
+
+  std::function< void( const QList< QgsMapLayer * >& layers ) > expandLayers;
+  expandLayers = [&result, &expandLayers]( const QList< QgsMapLayer * > &layers )
+  {
+    for ( QgsMapLayer *layer : layers )
+    {
+      if ( QgsGroupLayer *groupLayer = qobject_cast< QgsGroupLayer * >( layer ) )
+      {
+        expandLayers( groupLayer->childLayers() );
+      }
+      else
+      {
+        result << layer;
+      }
+    }
+  };
+
+  expandLayers( actualLayers );
+  return result;
 }
 
 void QgsMapSettings::setLayers( const QList<QgsMapLayer *> &layers )
@@ -346,25 +374,25 @@ bool QgsMapSettings::setEllipsoid( const QString &ellipsoid )
   }
 }
 
-void QgsMapSettings::setFlags( QgsMapSettings::Flags flags )
+void QgsMapSettings::setFlags( Qgis::MapSettingsFlags flags )
 {
   mFlags = flags;
 }
 
-void QgsMapSettings::setFlag( QgsMapSettings::Flag flag, bool on )
+void QgsMapSettings::setFlag( Qgis::MapSettingsFlag flag, bool on )
 {
   if ( on )
     mFlags |= flag;
   else
-    mFlags &= ~flag;
+    mFlags &= ~( static_cast< int >( flag ) );
 }
 
-QgsMapSettings::Flags QgsMapSettings::flags() const
+Qgis::MapSettingsFlags QgsMapSettings::flags() const
 {
   return mFlags;
 }
 
-bool QgsMapSettings::testFlag( QgsMapSettings::Flag flag ) const
+bool QgsMapSettings::testFlag( Qgis::MapSettingsFlag flag ) const
 {
   return mFlags.testFlag( flag );
 }
@@ -533,7 +561,7 @@ QgsRectangle QgsMapSettings::outputExtentToLayerExtent( const QgsMapLayer *layer
       QgsDebugMsgLevel( QStringLiteral( "sourceCrs = %1" ).arg( ct.sourceCrs().authid() ), 3 );
       QgsDebugMsgLevel( QStringLiteral( "destCRS = %1" ).arg( ct.destinationCrs().authid() ), 3 );
       QgsDebugMsgLevel( QStringLiteral( "extent = %1" ).arg( extent.toString() ), 3 );
-      extent = ct.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+      extent = ct.transformBoundingBox( extent, Qgis::TransformDirection::Reverse );
     }
   }
   catch ( QgsCsException &cse )
@@ -553,7 +581,7 @@ QgsPointXY QgsMapSettings::layerToMapCoordinates( const QgsMapLayer *layer, QgsP
   {
     const QgsCoordinateTransform ct = layerTransform( layer );
     if ( ct.isValid() )
-      point = ct.transform( point, QgsCoordinateTransform::ForwardTransform );
+      point = ct.transform( point, Qgis::TransformDirection::Forward );
   }
   catch ( QgsCsException &cse )
   {
@@ -574,7 +602,7 @@ QgsPoint QgsMapSettings::layerToMapCoordinates( const QgsMapLayer *layer, const 
   {
     const QgsCoordinateTransform ct = layerTransform( layer );
     if ( ct.isValid() )
-      ct.transformInPlace( x, y, z, QgsCoordinateTransform::ForwardTransform );
+      ct.transformInPlace( x, y, z, Qgis::TransformDirection::Forward );
   }
   catch ( QgsCsException &cse )
   {
@@ -591,7 +619,7 @@ QgsRectangle QgsMapSettings::layerToMapCoordinates( const QgsMapLayer *layer, Qg
   {
     const QgsCoordinateTransform ct = layerTransform( layer );
     if ( ct.isValid() )
-      rect = ct.transform( rect, QgsCoordinateTransform::ForwardTransform );
+      rect = ct.transform( rect, Qgis::TransformDirection::Forward );
   }
   catch ( QgsCsException &cse )
   {
@@ -608,7 +636,7 @@ QgsPointXY QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer *layer, QgsP
   {
     const QgsCoordinateTransform ct = layerTransform( layer );
     if ( ct.isValid() )
-      point = ct.transform( point, QgsCoordinateTransform::ReverseTransform );
+      point = ct.transform( point, Qgis::TransformDirection::Reverse );
   }
   catch ( QgsCsException &cse )
   {
@@ -629,7 +657,7 @@ QgsPoint QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer *layer, const 
   {
     const QgsCoordinateTransform ct = layerTransform( layer );
     if ( ct.isValid() )
-      ct.transformInPlace( x, y, z, QgsCoordinateTransform::ReverseTransform );
+      ct.transformInPlace( x, y, z, Qgis::TransformDirection::Reverse );
   }
   catch ( QgsCsException &cse )
   {
@@ -646,7 +674,7 @@ QgsRectangle QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer *layer, Qg
   {
     const QgsCoordinateTransform ct = layerTransform( layer );
     if ( ct.isValid() )
-      rect = ct.transform( rect, QgsCoordinateTransform::ReverseTransform );
+      rect = ct.transform( rect, Qgis::TransformDirection::Reverse );
   }
   catch ( QgsCsException &cse )
   {
@@ -746,7 +774,7 @@ void QgsMapSettings::readXml( QDomNode &node )
   const QDomElement renderMapTileElem = node.firstChildElement( QStringLiteral( "rendermaptile" ) );
   if ( !renderMapTileElem.isNull() )
   {
-    setFlag( QgsMapSettings::RenderMapTile, renderMapTileElem.text() == QLatin1String( "1" ) );
+    setFlag( Qgis::MapSettingsFlag::RenderMapTile, renderMapTileElem.text() == QLatin1String( "1" ) );
   }
 }
 
@@ -777,7 +805,7 @@ void QgsMapSettings::writeXml( QDomNode &node, QDomDocument &doc )
 
   //render map tile
   QDomElement renderMapTileElem = doc.createElement( QStringLiteral( "rendermaptile" ) );
-  const QDomText renderMapTileText = doc.createTextNode( testFlag( QgsMapSettings::RenderMapTile ) ? "1" : "0" );
+  const QDomText renderMapTileText = doc.createTextNode( testFlag( Qgis::MapSettingsFlag::RenderMapTile ) ? "1" : "0" );
   renderMapTileElem.appendChild( renderMapTileText );
   node.appendChild( renderMapTileElem );
 }

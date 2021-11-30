@@ -66,9 +66,10 @@ class CORE_EXPORT QgsMeshVirtualDatasetGroup: public QgsMeshDatasetGroup
     QString mFormula;
     std::unique_ptr<QgsMeshCalcNode> mCalcNode;
     QgsMeshLayer *mLayer = nullptr;
-    qint64 mStartTime = 0.0;
-    qint64 mEndTime = 0.0;
+    qint64 mStartTime = 0;
+    qint64 mEndTime = 0;
     QStringList mDatasetGroupNameUsed;
+    QStringList mDatasetGroupNameUsedForAggregate;
     QList<qint64> mDatasetTimes;
 
     mutable std::shared_ptr<QgsMeshMemoryDataset> mCacheDataset;

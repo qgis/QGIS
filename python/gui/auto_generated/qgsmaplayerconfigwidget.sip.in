@@ -68,6 +68,24 @@ Returns the message bar associated with the widget.
 .. seealso:: :py:func:`setMessageBar`
 %End
 
+    void setLayerTreeGroup( QgsLayerTreeGroup *group );
+%Docstring
+Sets the layer tree ``group`` associated with the widget.
+
+.. seealso:: :py:func:`layerTreeGroup`
+
+.. versionadded:: 3.24
+%End
+
+    QgsLayerTreeGroup *layerTreeGroup() const;
+%Docstring
+Returns the layer tree group associated with the widget.
+
+.. seealso:: :py:func:`setLayerTreeGroup`
+
+.. versionadded:: 3.24
+%End
+
 };
 
 

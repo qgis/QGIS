@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>912</width>
-    <height>864</height>
+    <height>902</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Mesh calculator</string>
+   <string>Mesh Calculator</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
@@ -40,243 +40,342 @@
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
          <layout class="QGridLayout" name="gridLayout_5">
+          <item row="0" column="0" colspan="3">
+           <widget class="QCheckBox" name="mUseVirtualProviderCheckBox">
+            <property name="layoutDirection">
+             <enum>Qt::LeftToRight</enum>
+            </property>
+            <property name="text">
+             <string>Create on-the-fly dataset group instead of writing layer to disk</string>
+            </property>
+            <property name="tristate">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
           <item row="3" column="0">
            <widget class="QLabel" name="mOutputFormatLabel_2">
             <property name="text">
-             <string>Group Name</string>
+             <string>Group name</string>
             </property>
            </widget>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="mOutputFormatLabel">
             <property name="text">
-             <string>Output Format</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QRadioButton" name="mOutputOnFileRadioButton">
-            <property name="text">
-             <string>On File</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
+             <string>Output format</string>
             </property>
            </widget>
           </item>
           <item row="1" column="1" colspan="2">
            <widget class="QgsFileWidget" name="mOutputDatasetFileWidget" native="true"/>
           </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="mOutputDatasetLabel">
-            <property name="text">
-             <string>Output Dataset</string>
-            </property>
-           </widget>
-          </item>
           <item row="2" column="1" colspan="2">
            <widget class="QComboBox" name="mOutputFormatComboBox"/>
-          </item>
-          <item row="0" column="2">
-           <widget class="QRadioButton" name="mOutputVirtualRadioButton">
-            <property name="text">
-             <string>Virtual</string>
-            </property>
-           </widget>
           </item>
           <item row="3" column="1" colspan="2">
            <widget class="QLineEdit" name="mOutputGroupNameLineEdit"/>
           </item>
           <item row="1" column="0">
-           <widget class="QLabel" name="label_4">
+           <widget class="QLabel" name="mOutputDatasetFileLabel">
             <property name="text">
-             <string>Output File</string>
+             <string>Output file</string>
             </property>
            </widget>
           </item>
          </layout>
         </item>
         <item>
-         <widget class="QWidget" name="horizontalWidget" native="true">
-          <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <widget class="QGroupBox" name="groupBox_3">
+          <property name="title">
+           <string>Spatial Extent</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_5">
            <item>
-            <widget class="QCheckBox" name="useExtentCb">
-             <property name="text">
-              <string>Current Extent</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-             <attribute name="buttonGroup">
-              <string notr="true">buttonGroup</string>
-             </attribute>
+            <widget class="QWidget" name="horizontalWidget" native="true">
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QRadioButton" name="useExtentCb">
+                <property name="text">
+                 <string>Custom extent</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+                <attribute name="buttonGroup">
+                 <string notr="true">buttonGroup</string>
+                </attribute>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="useMaskCb">
+                <property name="toolTip">
+                 <string>Clips the datasets using features from vector polygon layer.</string>
+                </property>
+                <property name="text">
+                 <string>Mask layer</string>
+                </property>
+                <attribute name="buttonGroup">
+                 <string notr="true">buttonGroup</string>
+                </attribute>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </item>
            <item>
-            <widget class="QCheckBox" name="useMaskCb">
-             <property name="text">
-              <string>Mask Layer</string>
-             </property>
-             <attribute name="buttonGroup">
-              <string notr="true">buttonGroup</string>
-             </attribute>
+            <widget class="QWidget" name="maskBox" native="true">
+             <layout class="QHBoxLayout" name="maskBoxLayout" stretch="0,0">
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="label_3">
+                <property name="minimumSize">
+                 <size>
+                  <width>206</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Mask layer</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QgsMapLayerComboBox" name="cboLayerMask">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="editable">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
-         <widget class="QWidget" name="maskBox" native="true">
-          <layout class="QHBoxLayout" name="maskBoxLayout" stretch="0,0">
-           <property name="spacing">
-            <number>6</number>
-           </property>
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
            <item>
-            <widget class="QLabel" name="label_3">
-             <property name="minimumSize">
-              <size>
-               <width>206</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>Mask Layer       </string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QgsMapLayerComboBox" name="cboLayerMask">
+            <widget class="QWidget" name="extendBox" native="true">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="editable">
-              <bool>false</bool>
-             </property>
+             <layout class="QGridLayout" name="gridLayout_3">
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item row="2" column="4">
+               <widget class="QgsDoubleSpinBox" name="mXMaxSpinBox">
+                <property name="decimals">
+                 <number>5</number>
+                </property>
+                <property name="minimum">
+                 <double>-999999999.000000000000000</double>
+                </property>
+                <property name="maximum">
+                 <double>999999999.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="mYMinLabel">
+                <property name="text">
+                 <string>Y min</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="3">
+               <widget class="QLabel" name="mXMaxLabel">
+                <property name="text">
+                 <string>X max</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QgsDoubleSpinBox" name="mYMinSpinBox">
+                <property name="decimals">
+                 <number>5</number>
+                </property>
+                <property name="minimum">
+                 <double>-999999999.000000000000000</double>
+                </property>
+                <property name="maximum">
+                 <double>999999999.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="3">
+               <widget class="QLabel" name="mYMaxLabel">
+                <property name="text">
+                 <string>Y max</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QgsDoubleSpinBox" name="mXMinSpinBox">
+                <property name="decimals">
+                 <number>5</number>
+                </property>
+                <property name="minimum">
+                 <double>-999999999.000000000000000</double>
+                </property>
+                <property name="maximum">
+                 <double>999999999.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="4">
+               <widget class="QgsDoubleSpinBox" name="mYMaxSpinBox">
+                <property name="decimals">
+                 <number>5</number>
+                </property>
+                <property name="minimum">
+                 <double>-999999999.000000000000000</double>
+                </property>
+                <property name="maximum">
+                 <double>999999999.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="mXMinLabel">
+                <property name="text">
+                 <string>X min</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0" colspan="5">
+               <layout class="QHBoxLayout" name="horizontalLayout">
+                <item>
+                 <widget class="QPushButton" name="mCurrentLayerExtentButton">
+                  <property name="text">
+                   <string>Use Selected Layer Extent</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_3">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item row="2" column="2">
+               <spacer name="horizontalSpacer_4">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
             </widget>
            </item>
           </layout>
          </widget>
         </item>
         <item>
-         <widget class="QWidget" name="extendBox" native="true">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
+         <widget class="QGroupBox" name="groupBox_2">
+          <property name="title">
+           <string>Temporal Extent</string>
           </property>
-          <layout class="QGridLayout" name="gridLayout_3">
-           <item row="1" column="0">
-            <widget class="QLabel" name="mXMinLabel">
-             <property name="text">
-              <string>X min</string>
+          <layout class="QGridLayout" name="gridLayout_6">
+           <item row="1" column="2">
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
              </property>
-            </widget>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>10</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
            </item>
            <item row="1" column="3">
-            <widget class="QgsDoubleSpinBox" name="mXMaxSpinBox">
-             <property name="decimals">
-              <number>5</number>
-             </property>
-             <property name="minimum">
-              <double>-999999999.000000000000000</double>
-             </property>
-             <property name="maximum">
-              <double>999999999.000000000000000</double>
+            <widget class="QLabel" name="label_2">
+             <property name="text">
+              <string>End time</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="2">
-            <widget class="QLabel" name="mXMaxLabel">
+           <item row="1" column="0">
+            <widget class="QLabel" name="label">
              <property name="text">
-              <string>X max</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="2">
-            <widget class="QLabel" name="mYMaxLabel">
-             <property name="text">
-              <string>Y max</string>
+              <string>Start time</string>
              </property>
             </widget>
            </item>
            <item row="1" column="1">
-            <widget class="QgsDoubleSpinBox" name="mXMinSpinBox">
-             <property name="decimals">
-              <number>5</number>
-             </property>
-             <property name="minimum">
-              <double>-999999999.000000000000000</double>
-             </property>
-             <property name="maximum">
-              <double>999999999.000000000000000</double>
-             </property>
-            </widget>
+            <widget class="QComboBox" name="mStartTimeComboBox"/>
            </item>
-           <item row="2" column="3">
-            <widget class="QgsDoubleSpinBox" name="mYMaxSpinBox">
-             <property name="decimals">
-              <number>5</number>
-             </property>
-             <property name="minimum">
-              <double>-999999999.000000000000000</double>
-             </property>
-             <property name="maximum">
-              <double>999999999.000000000000000</double>
-             </property>
-            </widget>
+           <item row="1" column="4">
+            <widget class="QComboBox" name="mEndTimeComboBox"/>
            </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="mYMinLabel">
-             <property name="text">
-              <string>Y min</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="QgsDoubleSpinBox" name="mYMinSpinBox">
-             <property name="decimals">
-              <number>5</number>
-             </property>
-             <property name="minimum">
-              <double>-999999999.000000000000000</double>
-             </property>
-             <property name="maximum">
-              <double>999999999.000000000000000</double>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0" colspan="2">
-            <widget class="QPushButton" name="mCurrentLayerExtentButton">
-             <property name="text">
-              <string>Selected Layer Extent</string>
-             </property>
-            </widget>
+           <item row="0" column="0" colspan="5">
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <widget class="QPushButton" name="mAllTimesButton">
+               <property name="text">
+                <string>Use all Selected Dataset Times</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
            </item>
           </layout>
          </widget>
-        </item>
-        <item>
-         <spacer name="verticalSpacer_3">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
         </item>
         <item>
          <spacer name="verticalSpacer">
@@ -291,17 +390,70 @@
           </property>
          </spacer>
         </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <item>
-           <widget class="QPushButton" name="mAllTimesButton">
+       </layout>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="verticalLayoutWidget">
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QgsCollapsibleGroupBox" name="mOperatorsGroupBox">
+         <property name="title">
+          <string>Operators</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QPushButton" name="mPlusPushButton">
             <property name="text">
-             <string>All Selected Dataset Times </string>
+             <string>+</string>
             </property>
            </widget>
           </item>
-          <item>
-           <spacer name="horizontalSpacer_4">
+          <item row="0" column="1">
+           <widget class="QPushButton" name="mMultiplyPushButton">
+            <property name="text">
+             <string>*</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QPushButton" name="mOpenBracketPushButton">
+            <property name="text">
+             <string>(</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QPushButton" name="mMinButton">
+            <property name="text">
+             <string>min</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="4">
+           <widget class="QPushButton" name="mIfButton">
+            <property name="text">
+             <string>IF</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="5">
+           <widget class="QPushButton" name="mSumAggrButton">
+            <property name="text">
+             <string>sum (aggr)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="6">
+           <spacer name="horizontalSpacer_1">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -313,66 +465,142 @@
             </property>
            </spacer>
           </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QGridLayout" name="gridLayout_4">
-          <item row="2" column="4">
-           <widget class="QComboBox" name="mEndTimeComboBox"/>
-          </item>
-          <item row="2" column="3">
-           <widget class="QLabel" name="label_2">
+          <item row="1" column="0">
+           <widget class="QPushButton" name="mMinusPushButton">
             <property name="text">
-             <string>End time</string>
+             <string>-</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QPushButton" name="mDividePushButton">
+            <property name="text">
+             <string>/</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QPushButton" name="mCloseBracketPushButton">
+            <property name="text">
+             <string>)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QPushButton" name="mMaxButton">
+            <property name="text">
+             <string>max</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="4">
+           <widget class="QPushButton" name="mAndButton">
+            <property name="text">
+             <string>AND</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="5">
+           <widget class="QPushButton" name="mMaxAggrButton">
+            <property name="text">
+             <string>max (aggr)</string>
             </property>
            </widget>
           </item>
           <item row="2" column="0">
-           <widget class="QLabel" name="label">
+           <widget class="QPushButton" name="mLessButton">
             <property name="text">
-             <string>Start time</string>
+             <string>&lt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QPushButton" name="mGreaterButton">
+            <property name="text">
+             <string>&gt;</string>
             </property>
            </widget>
           </item>
           <item row="2" column="2">
-           <spacer name="horizontalSpacer">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+           <widget class="QPushButton" name="mEqualButton">
+            <property name="text">
+             <string>=</string>
             </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>10</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
+           </widget>
           </item>
-          <item row="2" column="1">
-           <widget class="QComboBox" name="mStartTimeComboBox"/>
+          <item row="2" column="3">
+           <widget class="QPushButton" name="mAbsButton">
+            <property name="text">
+             <string>abs</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="4">
+           <widget class="QPushButton" name="mOrButton">
+            <property name="text">
+             <string>OR</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="5">
+           <widget class="QPushButton" name="mMinAggrButton">
+            <property name="text">
+             <string>min (aggr)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QPushButton" name="mLesserEqualButton">
+            <property name="text">
+             <string>&lt;=</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QPushButton" name="mGreaterEqualButton">
+            <property name="text">
+             <string>&gt;=</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2">
+           <widget class="QPushButton" name="mNotEqualButton">
+            <property name="text">
+             <string>!=</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="3">
+           <widget class="QPushButton" name="mPowButton">
+            <property name="text">
+             <string>^</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="4">
+           <widget class="QPushButton" name="mNotButton">
+            <property name="text">
+             <string>NOT</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="5">
+           <widget class="QPushButton" name="mAverageAggrButton">
+            <property name="text">
+             <string>average (aggr)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0" colspan="6">
+           <widget class="QPushButton" name="mNoDataButton">
+            <property name="text">
+             <string>NODATA</string>
+            </property>
+           </widget>
           </item>
          </layout>
-        </item>
-        <item>
-         <spacer name="verticalSpacer_2">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
-       <zorder>maskBox</zorder>
-       <zorder>extendBox</zorder>
-       <zorder>horizontalWidget</zorder>
-      </widget>
-     </widget>
-     <widget class="QWidget" name="verticalLayoutWidget">
-      <layout class="QVBoxLayout" name="verticalLayout">
+        </widget>
+       </item>
        <item>
         <widget class="QGroupBox" name="groupBox">
          <property name="title">
@@ -388,199 +616,6 @@
           <property name="bottomMargin">
            <number>0</number>
           </property>
-          <item>
-           <widget class="QgsCollapsibleGroupBox" name="mOperatorsGroupBox">
-            <property name="title">
-             <string>Operators</string>
-            </property>
-            <layout class="QGridLayout" name="gridLayout">
-             <property name="leftMargin">
-              <number>0</number>
-             </property>
-             <property name="rightMargin">
-              <number>0</number>
-             </property>
-             <property name="bottomMargin">
-              <number>0</number>
-             </property>
-             <item row="3" column="0">
-              <widget class="QPushButton" name="mLesserEqualButton">
-               <property name="text">
-                <string>&lt;=</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="1">
-              <widget class="QPushButton" name="mGreaterEqualButton">
-               <property name="text">
-                <string>&gt;=</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QPushButton" name="mDividePushButton">
-               <property name="text">
-                <string>/</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QPushButton" name="mMultiplyPushButton">
-               <property name="text">
-                <string>*</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QPushButton" name="mPlusPushButton">
-               <property name="text">
-                <string>+</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="5">
-              <widget class="QPushButton" name="mMaxButton">
-               <property name="text">
-                <string>max</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="4">
-              <widget class="QPushButton" name="mEqualButton">
-               <property name="text">
-                <string>=</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QPushButton" name="mGreaterButton">
-               <property name="text">
-                <string>&gt;</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QPushButton" name="mLessButton">
-               <property name="text">
-                <string>&lt;</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="5">
-              <widget class="QPushButton" name="mAbsButton">
-               <property name="text">
-                <string>abs</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="4">
-              <widget class="QPushButton" name="mNotEqualButton">
-               <property name="text">
-                <string>!=</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="5">
-              <widget class="QPushButton" name="mMinButton">
-               <property name="text">
-                <string>min</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="4">
-              <widget class="QPushButton" name="mOpenBracketPushButton">
-               <property name="text">
-                <string>(</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="4">
-              <widget class="QPushButton" name="mCloseBracketPushButton">
-               <property name="text">
-                <string>)</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="6">
-              <widget class="QPushButton" name="mIfButton">
-               <property name="text">
-                <string>IF</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="6">
-              <widget class="QPushButton" name="mAndButton">
-               <property name="text">
-                <string>AND</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="6">
-              <widget class="QPushButton" name="mOrButton">
-               <property name="text">
-                <string>OR</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="6">
-              <widget class="QPushButton" name="mNotButton">
-               <property name="text">
-                <string>NOT</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="5">
-              <widget class="QPushButton" name="mPowButton">
-               <property name="text">
-                <string>^</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="13">
-              <widget class="QPushButton" name="mSumAggrButton">
-               <property name="text">
-                <string>sum (aggr)</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="13">
-              <widget class="QPushButton" name="mMaxAggrButton">
-               <property name="text">
-                <string>max (aggr)</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="13">
-              <widget class="QPushButton" name="mMinAggrButton">
-               <property name="text">
-                <string>min (aggr)</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="13">
-              <widget class="QPushButton" name="mAverageAggrButton">
-               <property name="text">
-                <string>average (aggr)</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QPushButton" name="mMinusPushButton">
-               <property name="text">
-                <string>-</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="mNoDataButton">
-            <property name="text">
-             <string>NODATA</string>
-            </property>
-           </widget>
-          </item>
           <item>
            <widget class="QTextEdit" name="mExpressionTextEdit"/>
           </item>
@@ -604,7 +639,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -639,8 +674,7 @@
  </customwidgets>
  <tabstops>
   <tabstop>mDatasetsListWidget</tabstop>
-  <tabstop>mOutputOnFileRadioButton</tabstop>
-  <tabstop>mOutputVirtualRadioButton</tabstop>
+  <tabstop>mUseVirtualProviderCheckBox</tabstop>
   <tabstop>mOutputFormatComboBox</tabstop>
   <tabstop>mOutputGroupNameLineEdit</tabstop>
   <tabstop>useExtentCb</tabstop>
@@ -680,6 +714,7 @@
   <tabstop>mAverageAggrButton</tabstop>
   <tabstop>mNoDataButton</tabstop>
   <tabstop>mExpressionTextEdit</tabstop>
+  <tabstop>mButtonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

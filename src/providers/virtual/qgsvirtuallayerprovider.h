@@ -1,5 +1,5 @@
 /***************************************************************************
-           qgsvirtuallayerprovider.cpp Virtual layer data provider
+           qgsvirtuallayerprovider.h Virtual layer data provider
 begin                : Jan, 2015
 copyright            : (C) 2015 Hugo Mercier, Oslandia
 email                : hugo dot mercier at oslandia dot com
@@ -18,15 +18,13 @@ email                : hugo dot mercier at oslandia dot com
 #define QGSVIRTUAL_LAYER_PROVIDER_H
 
 #include "qgsvectordataprovider.h"
+#include "qgsconfig.h"
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvirtuallayerdefinition.h"
 #include "qgsvirtuallayersqlitehelper.h"
 
 #include "qgsprovidermetadata.h"
-#ifdef HAVE_GUI
-#include "qgsproviderguimetadata.h"
-#endif
 
 class QgsVirtualLayerFeatureIterator;
 
@@ -34,6 +32,10 @@ class QgsVirtualLayerProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
   public:
+
+    static const QString VIRTUAL_LAYER_KEY;
+    static const QString VIRTUAL_LAYER_DESCRIPTION;
+    static const QString VIRTUAL_LAYER_QUERY_VIEW;
 
     /**
      * Constructor of the vector provider
@@ -60,6 +62,8 @@ class QgsVirtualLayerProvider final: public QgsVectorDataProvider
     QgsAttributeList pkAttributeIndexes() const override;
     QSet<QgsMapLayerDependency> dependencies() const override;
     bool cancelReload() override;
+
+    static QString providerKey();
 
   private:
 
@@ -135,15 +139,6 @@ class QgsVirtualLayerProviderMetadata final: public QgsProviderMetadata
     QgsVirtualLayerProviderMetadata();
     QgsVirtualLayerProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
 };
-
-#ifdef HAVE_GUI
-class QgsVirtualLayerProviderGuiMetadata final: public QgsProviderGuiMetadata
-{
-  public:
-    QgsVirtualLayerProviderGuiMetadata();
-    QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
-};
-#endif
 
 // clazy:excludeall=qstring-allocations
 

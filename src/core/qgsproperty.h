@@ -19,7 +19,6 @@
 #include "qgis_sip.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
-#include "qgscolorramp.h"
 
 #include <QVariant>
 #include <QHash>
@@ -301,6 +300,22 @@ class CORE_EXPORT QgsProperty
      * \see setActive()
      */
     bool isActive() const;
+
+    /**
+     * Returns TRUE if the property is effectively a static value
+     * in the specified \a context.
+     *
+     * I.e. if the property type is QgsProperty::ExpressionBasedProperty with
+     * a fixed value expression ('some static value'), this method will return
+     * TRUE.
+     *
+     * \param context expression context
+     * \param staticValue will be set to evaluated static value if property is effectively a static value
+     * \returns TRUE if property is a static value
+     *
+     * \since QGIS 3.24
+     */
+    bool isStaticValueInContext( const QgsExpressionContext &context, QVariant &staticValue SIP_OUT ) const;
 
     /**
      * Sets whether the property is currently active.

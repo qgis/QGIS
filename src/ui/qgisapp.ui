@@ -784,6 +784,9 @@
    <property name="windowTitle">
     <string>Mesh Digitizing Toolbar</string>
    </property>
+   <property name="toolTip">
+    <string>Mesh Digitizing Toolbar</string>
+   </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
@@ -793,6 +796,9 @@
   </widget>
   <widget class="QToolBar" name="mAnnotationsToolBar">
    <property name="windowTitle">
+    <string>Annotations Toolbar</string>
+   </property>
+   <property name="toolTip">
     <string>Annotations Toolbar</string>
    </property>
    <attribute name="toolBarArea">
@@ -2320,7 +2326,7 @@ Acts on all layers.</string>
     <string>Grid</string>
    </property>
    <property name="whatsThis">
-    <string>Creates a scale bar that is displayed on the map canvas</string>
+    <string>Creates a grid that is displayed on the map canvas</string>
    </property>
   </action>
   <action name="mActionPinLabels">

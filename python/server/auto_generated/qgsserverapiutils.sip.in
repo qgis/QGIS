@@ -35,7 +35,7 @@ Parses a comma separated ``bbox`` into a (possibly empty) :py:class:`QgsRectangl
    Z values (i.e. a 6 elements bbox) are silently discarded
 %End
 
-    static QList< QgsVectorLayerServerProperties::WmsDimensionInfo > temporalDimensions( const QgsVectorLayer *layer );
+    static QList< QgsServerWmsDimensionProperties::WmsDimensionInfo > temporalDimensions( const QgsVectorLayer *layer );
 %Docstring
 Returns a list of temporal dimensions information for the given ``layer`` (either configured in wmsDimensions or the first date/datetime field)
 

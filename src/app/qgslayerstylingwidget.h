@@ -49,6 +49,7 @@ class QgsMessageBar;
 class QgsVectorTileBasicRendererWidget;
 class QgsVectorTileBasicLabelingWidget;
 class QgsAnnotationLayer;
+class QgsLayerTreeGroup;
 
 class APP_EXPORT QgsLayerStyleManagerWidgetFactory : public QgsMapLayerConfigWidgetFactory
 {
@@ -134,6 +135,11 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
      * Sets an annotation item to show in the widget.
      */
     void setAnnotationItem( QgsAnnotationLayer *layer, const QString &itemId );
+
+    /**
+     * Sets a layer tree group to show in the widget.
+     */
+    void setLayerTreeGroup( QgsLayerTreeGroup *group );
 
     /**
      * Focuses the default widget for the current page.

@@ -26,6 +26,7 @@
 #include "qgslayertree.h"
 #include "qgsvectorlayer.h"
 #include "nlohmann/json.hpp"
+#include "qgscoordinatetransform.h"
 
 #include <mutex>
 #include <QCryptographicHash>
@@ -293,10 +294,6 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
     QString title { p->metadata().title() };
     if ( title.isEmpty() )
       title = QgsServerProjectUtils::owsServiceTitle( *p );
-    if ( title.isEmpty() )
-      title = p->title();
-    if ( title.isEmpty() )
-      title = p->baseName();
     info["title"] = title.toStdString();
     // Description
     QString description { p->metadata().abstract() };

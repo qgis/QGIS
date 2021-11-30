@@ -416,7 +416,7 @@ void TestQgsGeometry::asVariant()
   QCOMPARE( fromVar.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
 
   //also check copying variant
-  QVariant var2 = var;
+  const QVariant &var2 = var;
   QVERIFY( var2.isValid() );
   QgsGeometry fromVar2 = qvariant_cast<QgsGeometry>( var2 );
   QCOMPARE( fromVar2.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
@@ -1014,7 +1014,7 @@ namespace
     type = type.right( type.count() - 3 );
     QStringList extensionZM;
     extensionZM << QString() << QString( "Z" ) << QString( "M" ) << QString( "ZM" );
-    for ( QString ext : extensionZM )
+    for ( const QString &ext : extensionZM )
     {
       QString wkt = type + ext;
       QString result = wkt + QLatin1String( " EMPTY" );
@@ -1797,12 +1797,12 @@ void TestQgsGeometry::dumpPolygon( QgsPolygonXY &polygon )
 {
   for ( int j = 0; j < polygon.size(); j++ )
   {
-    QgsPolylineXY myPolyline = polygon.at( j ); //rings of polygon
+    const QgsPolylineXY &myPolyline = polygon.at( j ); //rings of polygon
     qDebug( "\t\tRing in polygon: %d", j );
 
     for ( int k = 0; k < myPolyline.size(); k++ )
     {
-      QgsPointXY myPoint = myPolyline.at( k );
+      const QgsPointXY &myPoint = myPolyline.at( k );
       qDebug( "\t\t\tPoint in ring %d : %s", k, myPoint.toString().toLocal8Bit().constData() );
     }
   }
@@ -1813,10 +1813,10 @@ void TestQgsGeometry::paintPolygon( QgsPolygonXY &polygon )
   QVector<QPointF> myPoints;
   for ( int j = 0; j < polygon.size(); j++ )
   {
-    QgsPolylineXY myPolyline = polygon.at( j ); //rings of polygon
+    const QgsPolylineXY &myPolyline = polygon.at( j ); //rings of polygon
     for ( int k = 0; k < myPolyline.size(); k++ )
     {
-      QgsPointXY myPoint = myPolyline.at( k );
+      const QgsPointXY &myPoint = myPolyline.at( k );
       myPoints << QPointF( myPoint.x(), myPoint.y() );
     }
   }
@@ -1829,7 +1829,7 @@ void TestQgsGeometry::dumpPolyline( QgsPolylineXY &polyline )
 //  QgsPolyline myPolyline = polyline.at( j ); //rings of polygon
   for ( int j = 0; j < polyline.size(); j++ )
   {
-    QgsPointXY myPoint = polyline.at( j );
+    const QgsPointXY &myPoint = polyline.at( j );
 //    QgsPolyline myPolyline = polygon.at( j ); //rings of polygon
     myPoints << QPointF( myPoint.x(), myPoint.y() );
     qDebug( "\t\tPoint in line: %d", j );

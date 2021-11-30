@@ -59,16 +59,26 @@ class SERVER_EXPORT QgsServerFilter
 
     /**
      * Method called when the QgsRequestHandler is ready and populated with
-    * parameters, just before entering the main switch for core services.
-    */
-    virtual void requestReady();
+     * parameters, just before entering the main switch for core services.
+     *
+     * This method is considered as deprecated and \see onRequestReady should
+     * be used instead.
+     *
+     * \deprecated Will be removed in QGIS 4.0
+     */
+    Q_DECL_DEPRECATED virtual void requestReady() SIP_DEPRECATED;
 
     /**
      * Method called when the QgsRequestHandler processing has done and
      * the response is ready, just after the main switch for core services
-     * and before final sending response to FCGI stdout.
+     * and before final sending response.
+     *
+     * This method is considered as deprecated and \see onResponseComplete should
+     * be used instead.
+     *
+     * \deprecated Will be removed in QGIS 4.0
      */
-    virtual void responseComplete();
+    Q_DECL_DEPRECATED virtual void responseComplete() SIP_DEPRECATED;
 
     /**
      * Method called when the QgsRequestHandler sends its data to FCGI stdout.
@@ -77,11 +87,52 @@ class SERVER_EXPORT QgsServerFilter
      * getFeature requests, sendResponse() might have been called several times
      * before the response is complete: in this particular case, sendResponse()
      * is called once for each feature before hitting responseComplete()
+     *
+     * This method is considered as deprecated and \see onSendResponse should
+     * be used instead.
+     *
+     * \deprecated Will be removed in QGIS 4.0
      */
-    virtual void sendResponse();
+    Q_DECL_DEPRECATED virtual void sendResponse() SIP_DEPRECATED;
+
+    /**
+     * Method called when the QgsRequestHandler is ready and populated with
+     * parameters, just before entering the main switch for core services.
+     *
+     * \return true if the call must propagate to the subsequent filters, false otherwise
+     *
+     * \since QGIS 3.24
+     */
+    virtual bool onRequestReady();
+
+    /**
+     * Method called when the QgsRequestHandler processing has done and
+     * the response is ready, just after the main switch for core services
+     * and before final sending response to FCGI stdout.
+     *
+     * \return true if the call must propagate to the subsequent filters, false otherwise
+     *
+     * \since QGIS 3.24
+     */
+    virtual bool onResponseComplete();
+
+    /**
+     * Method called when the QgsRequestHandler sends its data to FCGI stdout.
+     * This normally occurs at the end of core services processing just after
+     * the responseComplete() plugin hook. For streaming services (like WFS on
+     * getFeature requests, sendResponse() might have been called several times
+     * before the response is complete: in this particular case, sendResponse()
+     * is called once for each feature before hitting responseComplete()
+     *
+     * \return true if the call must propagate to the subsequent filters, false otherwise
+     *
+     * \since QGIS 3.22
+     */
+    virtual bool onSendResponse();
+
+
 
   private:
-
     QgsServerInterface *mServerInterface = nullptr;
 
 };

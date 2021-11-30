@@ -164,6 +164,14 @@ Content-Type: text/xml; charset=utf-8
       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
      </LegendURL>
     </Style>
+    <MetadataURL type="FGDC:1998">
+     <Format>text/plain</Format>
+     <OnlineResource xlink:type="simple" xlink:href="https://my.other.url" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+    </MetadataURL>
+    <MetadataURL type="ISO19115:2003">
+     <Format>text/xml</Format>
+     <OnlineResource xlink:type="simple" xlink:href="https://some.data.com" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+    </MetadataURL>
     <TreeName>testlayer</TreeName>
     <Attributes>
      <Attribute precision="0" type="qlonglong" editType="TextEdit" typeName="Integer64" name="id" comment="" length="10"/>

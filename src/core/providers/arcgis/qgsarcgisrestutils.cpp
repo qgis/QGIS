@@ -512,22 +512,22 @@ std::unique_ptr<QgsFillSymbol> QgsArcGisRestUtils::parseEsriPictureFillSymbolJso
   return symbol;
 }
 
-QgsSimpleMarkerSymbolLayerBase::Shape QgsArcGisRestUtils::parseEsriMarkerShape( const QString &style )
+Qgis::MarkerShape QgsArcGisRestUtils::parseEsriMarkerShape( const QString &style )
 {
   if ( style == QLatin1String( "esriSMSCircle" ) )
-    return QgsSimpleMarkerSymbolLayerBase::Circle;
+    return Qgis::MarkerShape::Circle;
   else if ( style == QLatin1String( "esriSMSCross" ) )
-    return QgsSimpleMarkerSymbolLayerBase::Cross;
+    return Qgis::MarkerShape::Cross;
   else if ( style == QLatin1String( "esriSMSDiamond" ) )
-    return QgsSimpleMarkerSymbolLayerBase::Diamond;
+    return Qgis::MarkerShape::Diamond;
   else if ( style == QLatin1String( "esriSMSSquare" ) )
-    return QgsSimpleMarkerSymbolLayerBase::Square;
+    return Qgis::MarkerShape::Square;
   else if ( style == QLatin1String( "esriSMSX" ) )
-    return QgsSimpleMarkerSymbolLayerBase::Cross2;
+    return Qgis::MarkerShape::Cross2;
   else if ( style == QLatin1String( "esriSMSTriangle" ) )
-    return QgsSimpleMarkerSymbolLayerBase::Triangle;
+    return Qgis::MarkerShape::Triangle;
   else
-    return QgsSimpleMarkerSymbolLayerBase::Circle;
+    return Qgis::MarkerShape::Circle;
 }
 
 std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriMarkerSymbolJson( const QVariantMap &symbolData )
@@ -542,7 +542,7 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriMarkerSymbolJson( 
   if ( ok )
     angleCW = -angleCCW;
 
-  QgsSimpleMarkerSymbolLayerBase::Shape shape = parseEsriMarkerShape( symbolData.value( QStringLiteral( "style" ) ).toString() );
+  Qgis::MarkerShape shape = parseEsriMarkerShape( symbolData.value( QStringLiteral( "style" ) ).toString() );
 
   const double xOffset = symbolData.value( QStringLiteral( "xoffset" ) ).toDouble();
   const double yOffset = symbolData.value( QStringLiteral( "yoffset" ) ).toDouble();

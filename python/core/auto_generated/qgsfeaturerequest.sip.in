@@ -9,7 +9,6 @@
 
 
 
-
 class QgsFeatureRequest
 {
 %Docstring(signature="appended")
@@ -405,6 +404,7 @@ will use the same CRS as the source layer/provider.
 
 .. versionadded:: 3.22
 %End
+
 
     double distanceWithin() const;
 %Docstring

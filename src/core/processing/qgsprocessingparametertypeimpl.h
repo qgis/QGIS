@@ -896,7 +896,6 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorDestination : public QgsProces
     {
       return QStringList() << QObject::tr( "Path for new vector layer" );
     }
-
 };
 
 /**
@@ -956,7 +955,6 @@ class CORE_EXPORT QgsProcessingParameterTypeFileDestination : public QgsProcessi
     {
       return QStringList() << QObject::tr( "Path for new file" );
     }
-
 };
 
 /**
@@ -1017,7 +1015,6 @@ class CORE_EXPORT QgsProcessingParameterTypeFolderDestination : public QgsProces
     {
       return QStringList() << QObject::tr( "Path for an existing or new folder" );
     }
-
 };
 
 /**
@@ -1078,7 +1075,6 @@ class CORE_EXPORT QgsProcessingParameterTypeRasterDestination : public QgsProces
     {
       return QStringList() << QObject::tr( "Path for new raster layer" );
     }
-
 };
 
 /**
@@ -1130,7 +1126,6 @@ class CORE_EXPORT QgsProcessingParameterTypeString : public QgsProcessingParamet
     {
       return QStringList() << QObject::tr( "String value" );
     }
-
 };
 
 /**
@@ -1181,7 +1176,6 @@ class CORE_EXPORT QgsProcessingParameterTypeAuthConfig : public QgsProcessingPar
     {
       return QStringList() << QObject::tr( "An existing QGIS authentication ID string" );
     }
-
 };
 
 /**
@@ -1286,7 +1280,6 @@ class CORE_EXPORT QgsProcessingParameterTypeFeatureSource : public QgsProcessing
     {
       return QStringList() << QObject::tr( "Path to a vector layer" );
     }
-
 };
 
 /**
@@ -1339,7 +1332,6 @@ class CORE_EXPORT QgsProcessingParameterTypeNumber : public QgsProcessingParamet
     {
       return QStringList() << QObject::tr( "A numeric value" );
     }
-
 };
 
 /**
@@ -1392,10 +1384,7 @@ class CORE_EXPORT QgsProcessingParameterTypeDistance : public QgsProcessingParam
     {
       return QStringList() << QObject::tr( "A numeric value" );
     }
-
-
 };
-
 
 /**
  * \brief A duration parameter for processing algorithms.
@@ -1449,7 +1438,6 @@ class CORE_EXPORT QgsProcessingParameterTypeDuration : public QgsProcessingParam
     }
 };
 
-
 /**
  * \brief A scale parameter for processing algorithms.
  *
@@ -1500,8 +1488,6 @@ class CORE_EXPORT QgsProcessingParameterTypeScale : public QgsProcessingParamete
     {
       return QStringList() << QObject::tr( "A numeric value representing the scale denominator" );
     }
-
-
 };
 
 /**
@@ -1553,8 +1539,6 @@ class CORE_EXPORT QgsProcessingParameterTypeBand : public QgsProcessingParameter
     {
       return QStringList() << QObject::tr( "Integer value representing an existing raster band number" );
     }
-
-
 };
 
 /**
@@ -1616,10 +1600,7 @@ class CORE_EXPORT QgsProcessingParameterTypeFeatureSink : public QgsProcessingPa
     {
       return QStringList() << QObject::tr( "Path for new vector layer" );
     }
-
-
 };
-
 
 /**
  * \brief A print layout parameter for Processing algorithms.
@@ -1670,11 +1651,7 @@ class CORE_EXPORT QgsProcessingParameterTypeLayout : public QgsProcessingParamet
     {
       return QStringList() << QObject::tr( "Name of print layout in current project" );
     }
-
-
 };
-
-
 
 /**
  * \brief A print layout item parameter for Processing algorithms.
@@ -1726,10 +1703,7 @@ class CORE_EXPORT QgsProcessingParameterTypeLayoutItem : public QgsProcessingPar
     {
       return QStringList() << QObject::tr( "UUID or item id of layout item" );
     }
-
-
 };
-
 
 /**
  * \brief A color parameter for Processing algorithms.
@@ -1781,8 +1755,6 @@ class CORE_EXPORT QgsProcessingParameterTypeColor : public QgsProcessingParamete
     {
       return QStringList() << QObject::tr( "String representation of color, e.g #ff0000 or rgba(200,100,50,0.8)" );
     }
-
-
 };
 
 /**
@@ -1833,10 +1805,7 @@ class CORE_EXPORT QgsProcessingParameterTypeCoordinateOperation : public QgsProc
     {
       return QStringList() << QObject::tr( "String representation of Proj coordinate operation" );
     }
-
-
 };
-
 
 /**
  * \brief A map theme parameter for Processing algorithms.
@@ -1887,7 +1856,6 @@ class CORE_EXPORT QgsProcessingParameterTypeMapTheme: public QgsProcessingParame
     {
       return QStringList() << QObject::tr( "Name of an existing map theme" );
     }
-
 };
 
 /**
@@ -1942,9 +1910,7 @@ class CORE_EXPORT QgsProcessingParameterTypeDateTime : public QgsProcessingParam
     {
       return QStringList() << QObject::tr( "A datetime value in ISO format" );
     }
-
 };
-
 
 /**
  * \brief A provider connection name parameter for processing algorithms.
@@ -1995,7 +1961,6 @@ class CORE_EXPORT QgsProcessingParameterTypeProviderConnection : public QgsProce
     {
       return QStringList() << QObject::tr( "Name of registered database connection" );
     }
-
 };
 
 /**
@@ -2047,9 +2012,7 @@ class CORE_EXPORT QgsProcessingParameterTypeDatabaseSchema : public QgsProcessin
     {
       return QStringList() << QObject::tr( "Name of existing database schema" );
     }
-
 };
-
 
 /**
  * \brief A database table name parameter for processing algorithms.
@@ -2100,9 +2063,7 @@ class CORE_EXPORT QgsProcessingParameterTypeDatabaseTable: public QgsProcessingP
     {
       return QStringList() << QObject::tr( "Name of existing database table" );
     }
-
 };
-
 
 /**
  * \brief A point cloud layer parameter for processing algorithms.
@@ -2157,7 +2118,6 @@ class CORE_EXPORT QgsProcessingParameterTypePointCloudLayer : public QgsProcessi
     }
 };
 
-
 /**
  * \brief An annotation layer parameter for processing algorithms.
  *
@@ -2208,6 +2168,66 @@ class CORE_EXPORT QgsProcessingParameterTypeAnnotationLayer : public QgsProcessi
     QStringList acceptedStringValues() const override
     {
       return QStringList() << QObject::tr( "Layer ID for an annotation layer, or \"main\" for the main annotation layer in a project." );
+    }
+};
+
+/**
+ * \brief A pointcloud layer destination parameter, for specifying the destination path for a point cloud layer
+ * created by the algorithm.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('pointCloudDestination')
+ * \since QGIS 3.2
+ */
+class CORE_EXPORT QgsProcessingParameterTypePointCloudDestination : public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterPointCloudDestination( name );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A point cloud layer destination parameter." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Point Cloud Destination" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "pointCloudDestination" );
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterPointCloudDestination" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterPointCloudDestination" );
+    }
+
+    ParameterFlags flags() const override
+    {
+      ParameterFlags flags = QgsProcessingParameterType::flags();
+      flags.setFlag( ParameterFlag::ExposeToModeler, false );
+      return flags;
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "str" )
+             << QStringLiteral( "QgsProperty" )
+             << QStringLiteral( "QgsProcessingOutputLayerDefinition" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Path for new point cloud layer" );
     }
 };
 

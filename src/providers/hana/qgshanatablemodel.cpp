@@ -16,24 +16,56 @@
  ***************************************************************************/
 #include "qgsapplication.h"
 #include "qgsdatasourceuri.h"
+#include "qgshanaprimarykeys.h"
 #include "qgshanatablemodel.h"
 #include "qgshanasettings.h"
 #include "qgshanautils.h"
 #include "qgslogger.h"
 
-QgsHanaTableModel::QgsHanaTableModel()
+QgsHanaTableModel::QgsHanaTableModel( QObject *parent )
+  : QgsAbstractDbTableModel( parent )
+
 {
-  QStringList headerLabels;
-  headerLabels << tr( "Schema" );
-  headerLabels << tr( "Table" );
-  headerLabels << tr( "Comment" );
-  headerLabels << tr( "Column" );
-  headerLabels << tr( "Type" );
-  headerLabels << tr( "SRID" );
-  headerLabels << tr( "Feature id" );
-  headerLabels << tr( "Select at id" );
-  headerLabels << tr( "Sql" );
-  setHorizontalHeaderLabels( headerLabels );
+  mColumns << tr( "Schema" )
+           << tr( "Table" )
+           << tr( "Comment" )
+           << tr( "Column" )
+           << tr( "Type" )
+           << tr( "SRID" )
+           << tr( "Feature id" )
+           << tr( "Select at id" )
+           << tr( "SQL" );
+  setHorizontalHeaderLabels( mColumns );
+}
+
+QStringList QgsHanaTableModel::columns() const
+{
+  return mColumns;
+}
+
+int QgsHanaTableModel::defaultSearchColumn() const
+{
+  return static_cast<int>( DbtmTable );
+}
+
+bool QgsHanaTableModel::searchableColumn( int column ) const
+{
+  Columns col = static_cast<Columns>( column );
+  switch ( col )
+  {
+    case DbtmSchema:
+    case DbtmTable:
+    case DbtmComment:
+    case DbtmGeomCol:
+    case DbtmSrid:
+    case DbtmSql:
+      return true;
+
+    case DbtmGeomType:
+    case DbtmPkCol:
+    case DbtmSelectAtId:
+      return false;
+  }
 }
 
 void QgsHanaTableModel::addTableEntry( const QString &connName, const QgsHanaLayerProperty &layerProperty )
@@ -266,7 +298,7 @@ bool QgsHanaTableModel::setData( const QModelIndex &idx, const QVariant &value, 
         tip = tr( "Select columns in the '%1' column that uniquely identify features of this layer" ).arg( tr( "Feature id" ) );
     }
 
-    for ( int i = 0; i < DbtmColumns; i++ )
+    for ( int i = 0; i < columnCount(); i++ )
     {
       QStandardItem *item = itemFromIndex( idx.sibling( idx.row(), i ) );
       if ( tip.isEmpty() )
@@ -320,14 +352,11 @@ QString QgsHanaTableModel::layerURI( const QModelIndex &index, const QString &co
   QString schemaName = index.sibling( index.row(), DbtmSchema ).data( Qt::DisplayRole ).toString();
   QString tableName = index.sibling( index.row(), DbtmTable ).data( Qt::DisplayRole ).toString();
 
-  QgsHanaSettings settings( connName, true );
-  settings.setKeyColumns( schemaName, tableName, qgis::setToList( pkColumnsSelected ) );
-  settings.save();
+  QStringList pkColumns = qgis::setToList( pkColumnsSelected );
 
-  QStringList pkColumns;
-  pkColumns.reserve( pkColumnsSelected.size() );
-  for ( const QString &column : pkColumnsSelected )
-    pkColumns <<  QgsHanaUtils::quotedIdentifier( column );
+  QgsHanaSettings settings( connName, true );
+  settings.setKeyColumns( schemaName, tableName, pkColumns );
+  settings.save();
 
   QString geomColumnName;
   QString srid;
@@ -346,7 +375,7 @@ QString QgsHanaTableModel::layerURI( const QModelIndex &index, const QString &co
   QString sql = index.sibling( index.row(), DbtmSql ).data( Qt::DisplayRole ).toString();
 
   QgsDataSourceUri uri( connInfo );
-  uri.setDataSource( schemaName, tableName, geomColumnName, sql,  pkColumns.join( ',' ) );
+  uri.setDataSource( schemaName, tableName, geomColumnName, sql,  QgsHanaPrimaryKeyUtils::buildUriKey( pkColumns ) );
   uri.setWkbType( wkbType );
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );

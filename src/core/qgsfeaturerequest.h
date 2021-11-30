@@ -27,7 +27,8 @@
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
 #include "qgssimplifymethod.h"
-
+#include "qgscoordinatetransformcontext.h"
+#include "qgscoordinatereferencesystem.h"
 
 
 /**
@@ -405,6 +406,16 @@ class CORE_EXPORT QgsFeatureRequest
      * \since QGIS 3.22
      */
     QgsGeometry referenceGeometry() const { return mReferenceGeometry; }
+
+    /**
+     * Returns the reference geometry engine used for spatial filtering of features.
+     *
+     * This is to avoid re-creating the engine.
+     *
+     * \see referenceGeometry()
+     * \since QGIS 3.22
+     */
+    std::shared_ptr< QgsGeometryEngine > referenceGeometryEngine() const SIP_SKIP { return mReferenceGeometryEngine; }
 
     /**
      * Returns the maximum distance from the referenceGeometry() of fetched
@@ -946,7 +957,7 @@ class CORE_EXPORT QgsFeatureRequest
     /**
      * Prepared geometry engine for mReferenceGeometry.
      */
-    std::unique_ptr< QgsGeometryEngine > mReferenceGeometryEngine;
+    std::shared_ptr< QgsGeometryEngine > mReferenceGeometryEngine;
 
     /**
      * Maximum distance from reference geometry.

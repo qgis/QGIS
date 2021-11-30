@@ -391,13 +391,15 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
               mOgrGeometryTypeFilter,
               mOpenOptions );
 
-  if ( mFilePath.contains( QLatin1String( "authcfg" ) ) )
+  if ( uri.contains( QLatin1String( "authcfg" ) ) )
   {
     QRegularExpression authcfgRe( QStringLiteral( " authcfg='([^']+)'" ) );
     QRegularExpressionMatch match;
-    if ( mFilePath.contains( authcfgRe, &match ) )
+    if ( uri.contains( authcfgRe, &match ) )
     {
       mAuthCfg = match.captured( 1 );
+      // momentarily re-add authcfg since it was stripped off in analyzeURI
+      mFilePath = QgsOgrProviderUtils::expandAuthConfig( QStringLiteral( "%1 authcfg='%2'" ).arg( mFilePath, mAuthCfg ) );
     }
   }
   QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
@@ -2009,6 +2011,7 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
       mAttributeFields[ idx ].setType( it->type() );
       mAttributeFields[ idx ].setLength( it->length() );
       mAttributeFields[ idx ].setPrecision( it->precision() );
+      mAttributeFields[ idx ].setEditorWidgetSetup( it->editorWidgetSetup() );
     }
   }
 
@@ -3173,6 +3176,16 @@ QgsFeatureSource::SpatialIndexPresence QgsOgrProvider::hasSpatialIndex() const
     return QgsFeatureSource::SpatialIndexUnknown;
 }
 
+Qgis::VectorLayerTypeFlags QgsOgrProvider::vectorLayerTypeFlags() const
+{
+  Qgis::VectorLayerTypeFlags flags;
+  if ( mValid && mSubsetString.trimmed().startsWith( QStringLiteral( "SELECT" ), Qt::CaseSensitivity::CaseInsensitive ) )
+  {
+    flags.setFlag( Qgis::VectorLayerTypeFlag::SqlQuery );
+  }
+  return flags;
+}
+
 QVariant QgsOgrProvider::minimumValue( int index ) const
 {
   if ( !mValid || index < 0 || index >= mAttributeFields.count() )
@@ -3418,8 +3431,8 @@ void QgsOgrProvider::open( OpenMode mode )
 
   // Try to open using VSIFileHandler
   //   see http://trac.osgeo.org/gdal/wiki/UserDocs/ReadInZip
-  QString vsiPrefix = QgsZipItem::vsiPrefix( dataSourceUri() );
-  if ( !vsiPrefix.isEmpty() )
+  QString vsiPrefix = QgsZipItem::vsiPrefix( dataSourceUri( true ) );
+  if ( !vsiPrefix.isEmpty() || mFilePath.startsWith( QStringLiteral( "/vsicurl/" ) ) )
   {
     // GDAL>=1.8.0 has write support for zip, but read and write operations
     // cannot be interleaved, so for now just use read-only.
@@ -3720,7 +3733,7 @@ bool QgsOgrProvider::leaveUpdateMode()
     {
       // Backup fields since if we created new fields, but didn't populate it
       // with any feature yet, it will disappear.
-      QgsFields oldFields = mAttributeFields;
+      const QgsFields oldFields = mAttributeFields;
       reloadData();
       if ( mValid )
       {
@@ -3734,9 +3747,9 @@ bool QgsOgrProvider::leaveUpdateMode()
           {
             bool ignoreErrorOut = false;
             addAttributeOGRLevel( field, ignoreErrorOut );
+            mAttributeFields.append( field );
           }
         }
-        mAttributeFields = oldFields;
       }
     }
     return true;

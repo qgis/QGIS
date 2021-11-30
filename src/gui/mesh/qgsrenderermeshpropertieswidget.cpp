@@ -23,6 +23,8 @@
 #include "qgsmeshdatasetgrouptreeview.h"
 #include "qgsmeshrendereractivedatasetwidget.h"
 #include "qgsmeshlayerutils.h"
+#include "qgsproject.h"
+#include "qgsprojectutils.h"
 
 QgsRendererMeshPropertiesWidget::QgsRendererMeshPropertiesWidget( QgsMeshLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -36,7 +38,7 @@ QgsRendererMeshPropertiesWidget::QgsRendererMeshPropertiesWidget( QgsMeshLayer *
   connect( mMeshLayer,
            &QgsMeshLayer::dataChanged,
            this,
-           &QgsRendererMeshPropertiesWidget::syncToLayer );
+           &QgsRendererMeshPropertiesWidget::syncToLayerPrivate );
 
   mMeshRendererActiveDatasetWidget->setLayer( mMeshLayer );
   mMeshRendererScalarSettingsWidget->setLayer( mMeshLayer );
@@ -45,9 +47,10 @@ QgsRendererMeshPropertiesWidget::QgsRendererMeshPropertiesWidget( QgsMeshLayer *
   mEdgeMeshSettingsWidget->setLayer( mMeshLayer, QgsMeshRendererMeshSettingsWidget::MeshType::Edge );
   mMeshRendererVectorSettingsWidget->setLayer( mMeshLayer );
   m3dAveragingSettingsWidget->setLayer( mMeshLayer );
-  syncToLayer();
+  syncToLayer( mMeshLayer );
 
   //blend mode
+  mBlendModeComboBox->setShowClippingModes( QgsProjectUtils::layerIsContainedInGroupLayer( QgsProject::instance(), mMeshLayer ) );
   mBlendModeComboBox->setBlendMode( mMeshLayer->blendMode() );
   connect( mBlendModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
 
@@ -133,7 +136,25 @@ void QgsRendererMeshPropertiesWidget::apply()
   windowsSettings.setValue( QStringLiteral( "/Windows/RendererMeshProperties/tab" ), mStyleOptionsTab->currentIndex() );
 }
 
-void QgsRendererMeshPropertiesWidget::syncToLayer()
+void QgsRendererMeshPropertiesWidget::syncToLayer( QgsMapLayer *mapLayer )
+{
+  QgsMeshLayer *ml = qobject_cast<QgsMeshLayer *>( mapLayer );
+  if ( ml )
+  {
+    mLayer = ml;
+    mMeshRendererActiveDatasetWidget->setLayer( ml );
+    mNativeMeshSettingsWidget->setLayer( ml, QgsMeshRendererMeshSettingsWidget::Native );
+    mTriangularMeshSettingsWidget->setLayer( ml, QgsMeshRendererMeshSettingsWidget::Triangular );
+    mEdgeMeshSettingsWidget->setLayer( ml, QgsMeshRendererMeshSettingsWidget::Edge );
+    m3dAveragingSettingsWidget->setLayer( ml );
+  }
+  else
+    return;
+
+  syncToLayerPrivate();
+}
+
+void QgsRendererMeshPropertiesWidget::syncToLayerPrivate()
 {
   mMeshRendererActiveDatasetWidget->syncToLayer();
   mNativeMeshSettingsWidget->syncToLayer();

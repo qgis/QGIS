@@ -308,6 +308,24 @@ class PGVectorTable(PGTable, VectorTable):
             return True
         return VectorTable.runAction(self, action)
 
+    def geometryType(self):
+        """ Returns the proper WKT type.
+        PostGIS records type like this:
+        | WKT Type     | geomType    | geomDim |
+        |--------------|-------------|---------|
+        | LineString   | LineString  | 2       |
+        | LineStringZ  | LineString  | 3       |
+        | LineStringM  | LineStringM | 3       |
+        | LineStringZM | LineString  | 4       |
+        """
+        geometryType = self.geomType
+        if self.geomDim == 3 and self.geomType[-1] != "M":
+            geometryType += "Z"
+        elif self.geomDim == 4:
+            geometryType += "ZM"
+
+        return geometryType
+
 
 class PGRasterTable(PGTable, RasterTable):
 
@@ -360,7 +378,7 @@ class PGRasterTable(PGTable, RasterTable):
         uri = u"raster:postgresraster:{}:{}".format(self.name, re.sub(":", r"\:", self.uri()))
         return uri
 
-    def toMapLayer(self):
+    def toMapLayer(self, geometryType=None, crs=None):
         from qgis.core import QgsRasterLayer, QgsContrastEnhancement, QgsDataSourceUri, QgsCredentials
 
         rl = QgsRasterLayer(self.uri(), self.name, "postgresraster")

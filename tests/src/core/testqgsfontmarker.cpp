@@ -195,9 +195,9 @@ void TestQgsFontMarkerSymbol::bounds()
   mFontMarkerLayer->setStrokeWidth( 0 );
   mFontMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty::fromExpression( QStringLiteral( "min(\"importance\" * 4.47214, 7.07106)" ) ) );
 
-  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, true );
+  mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, true );
   const bool result = imageCheck( QStringLiteral( "fontmarker_bounds" ) );
-  mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, false );
+  mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, false );
   QVERIFY( result );
 }
 
