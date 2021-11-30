@@ -157,10 +157,7 @@ void QgsLayoutItemLabel::draw( QgsLayoutItemRenderContext &context )
     case ModeFont:
     {
       painter->setFont( mFormat.font() );
-      QStringList texts = QgsTextRenderer::wrappedText( context.renderContext(), currentText(), (
-                            mFormat.orientation() == QgsTextFormat::HorizontalOrientation ? painterRect.width() : painterRect.height() ) / context.viewScaleFactor() ,
-                           mFormat );
-      QgsTextRenderer::drawText( painterRect, 0, QgsTextRenderer::convertQtHAlignment( mHAlignment ), texts, context.renderContext(), mFormat, true, QgsTextRenderer::convertQtVAlignment( mVAlignment ) );
+      QgsTextRenderer::drawText( painterRect, 0, QgsTextRenderer::convertQtHAlignment( mHAlignment ), currentText(), context.renderContext(), mFormat, true, QgsTextRenderer::convertQtVAlignment( mVAlignment ) );
       break;
     }
   }
