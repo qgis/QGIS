@@ -100,6 +100,21 @@ class CORE_EXPORT Qgis
     //
 
     /**
+     * Application environment.
+     *
+     * \since QGIS 3.22.2
+     */
+    enum class Environment : int
+    {
+      Desktop, //!< QGIS desktop application
+      Server, //!< QGIS server
+      Mobile, //!< Mobile application (e.g. QField/Input)
+      QgisProcess, //!< Qgis_process CLI application
+      External, //!< External script, such as a PyQGIS application run outside of the QGIS desktop application
+    };
+    Q_ENUM( Environment )
+
+    /**
      * \brief Level for messages
      * This will be used both for message log and message bar in application.
      */
@@ -1359,6 +1374,17 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.20
      */
     static QString geosVersion();
+
+    /**
+     * Returns the application environment.
+     *
+     * \since QGIS 3.22.2
+     */
+    static Environment environment();
+
+#ifndef SIP_RUN
+    static Environment sEnvironment;
+#endif
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolRenderHints )

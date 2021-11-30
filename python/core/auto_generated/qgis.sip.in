@@ -77,6 +77,15 @@ The development version
 %End
 
 
+    enum class Environment
+    {
+      Desktop,
+      Server,
+      Mobile,
+      QgisProcess,
+      External,
+    };
+
     enum MessageLevel
     {
       Info,
@@ -826,6 +835,14 @@ GEOS string version linked
 
 .. versionadded:: 3.20
 %End
+
+    static Environment environment();
+%Docstring
+Returns the application environment.
+
+.. versionadded:: 3.22.2
+%End
+
 };
 
 QFlags<Qgis::SymbolRenderHint> operator|(Qgis::SymbolRenderHint f1, QFlags<Qgis::SymbolRenderHint> f2);

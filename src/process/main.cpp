@@ -86,6 +86,8 @@ int main( int argc, char *argv[] )
 #endif  // _MSC_VER
 #endif  // Q_OS_WIN
 
+  Qgis::sEnvironment = Qgis::Environment::QgisProcess;
+
   QgsApplication app( argc, argv, false );
   QString myPrefixPath;
   if ( myPrefixPath.isEmpty() )

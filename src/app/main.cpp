@@ -892,6 +892,8 @@ int main( int argc, char *argv[] )
   QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus, false );
   QCoreApplication::setAttribute( Qt::AA_DisableWindowContextHelpButton, true );
 
+  Qgis::sEnvironment = Qgis::Environment::Desktop;
+
   // Set up an OpenGL Context to be shared between threads beforehand
   // for plugins that depend on Qt WebEngine module.
   // As suggested by Qt documentation at:

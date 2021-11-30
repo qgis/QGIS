@@ -11,7 +11,7 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 
 import qgis  # NOQA
 from qgis.testing import start_app, unittest
-
+from qgis.core import Qgis
 
 QGISAPP = start_app()
 
@@ -26,6 +26,9 @@ class TestPyQgsApplication(unittest.TestCase):
         myMessage = ('Expected:\n%s\nGot:\n%s\n' %
                      (myExpectedResult, myResult))
         assert myExpectedResult == myResult, myMessage
+
+    def test_environment(self):
+        self.assertEqual(Qgis.environment(), Qgis.Environment.External)
 
 
 if __name__ == '__main__':

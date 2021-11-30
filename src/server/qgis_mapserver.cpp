@@ -517,6 +517,8 @@ int main( int argc, char *argv[] )
     qputenv( "QT_QPA_PLATFORM", "offscreen" );
   }
 
+  Qgis::sEnvironment = Qgis::Environment::Server;
+
   // since version 3.0 QgsServer now needs a qApp so initialize QgsApplication
   const QgsApplication app( argc, argv, withDisplay, QString(), QStringLiteral( "QGIS Development Server" ) );
 

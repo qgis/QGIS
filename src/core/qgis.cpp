@@ -335,6 +335,13 @@ int Qgis::geosVersionPatch()
   return version;
 }
 
+Qgis::Environment Qgis::sEnvironment = Qgis::Environment::External;
+
+Qgis::Environment Qgis::environment()
+{
+  return sEnvironment;
+}
+
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 template<>
 bool qMapLessThanKey<QVariantList>( const QVariantList &key1, const QVariantList &key2 )
