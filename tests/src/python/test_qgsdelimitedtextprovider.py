@@ -37,6 +37,7 @@ rebuildTests = 'REBUILD_DELIMITED_TEXT_TESTS' in os.environ
 from qgis.PyQt.QtCore import QCoreApplication, QVariant, QUrl, QObject, QTemporaryDir, QDate
 
 from qgis.core import (
+    QgsGeometry,
     QgsProviderRegistry,
     QgsVectorLayer,
     QgsFeatureRequest,
@@ -1040,7 +1041,6 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
         TestQgsDelimitedTextProviderOther._text_index += 1
 
         basename = 'test_type_detection_{}'.format(self._text_index)
-        print('Testfile: ' + basename)
 
         csv_file = os.path.join(self.tmp_path, basename + '.csv')
         with open(csv_file, 'w+') as f:
@@ -1238,6 +1238,30 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             '-106.108589564828,35.407400712311,"3",6.789,text,"2000000000","4000000000",2021/11/13,false',
         )), "CoordX,CoordY,Integer64(20),Real,String,Integer(10),Integer64(20),Date,Integer(Boolean)", uri_options='xField=X&yField=Y')
         self.assertTrue(vl.isSpatial())
+
+        # Test Z
+        vl = self._make_test_file('\n'.join((
+            "X,Y,Z,fid,freal,ftext,fint,flong,fdate,fbool",
+            '-106.13127068692,36.0554327720544,1,"1",1.234567,a text,"2000000000","4000000000",2021/11/12,true',
+            '-105.781333374658,35.7216962612865,123,"2",3.4567889,another text,"2147483646","4000000000",2021/11/12,false',
+            '-106.108589564828,35.407400712311,"456","3",6.789,text,"2000000000","4000000000",2021/11/13,false',
+        )), "Point(x),CoordY,Point(z),Integer64(20),Real(float32),String,Integer(10),Integer64(20),Date,Integer(Boolean)", uri_options='xField=X&yField=Y&zField=Z')
+
+        fields = {f.name(): (f.type(), f.typeName()) for f in vl.fields()}
+        self.assertEqual(fields, {
+            'X': (6, 'double'),
+            'Y': (6, 'double'),
+            'Z': (6, 'double'),
+            'fid': (4, 'longlong'),
+            'freal': (6, 'double'),
+            'ftext': (10, 'text'),
+            'fint': (2, 'integer'),
+            'flong': (4, 'longlong'),
+            'fdate': (14, 'date'),
+            'fbool': (1, 'bool')})
+
+        geometries = [f.geometry() for f in vl.getFeatures()]
+        self.assertGeometriesEqual(geometries[-1], QgsGeometry.fromWkt('PointZ (-106.10858956482799442 35.40740071231100217 456)'))
 
     def test_booleans(self):
         """Test bool detection with user defined literals"""
