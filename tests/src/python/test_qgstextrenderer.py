@@ -2680,6 +2680,18 @@ class PyQgsTextRenderer(unittest.TestCase):
         assert self.checkRender(format, 'text_rect_justify_aligned', text=['test'],
                                 alignment=QgsTextRenderer.AlignJustify, rect=QRectF(100, 100, 200, 100))
 
+    def testDrawTextRectMultiparagraphJustifyAlign(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(4)
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'text_rect_multiparagraph_justify_aligned',
+                                text=['a t est', 'of justify', '', 'with two', 'pgraphs'],
+                                alignment=QgsTextRenderer.AlignJustify, rect=QRectF(50, 100, 250, 100))
+
     def testDrawTextRectMultilineBottomAlign(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
