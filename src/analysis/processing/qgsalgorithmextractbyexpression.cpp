@@ -61,7 +61,8 @@ QString QgsExtractByExpressionAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm creates a new vector layer that only contains matching features from an input layer. "
                       "The criteria for adding features to the resulting layer is based on a QGIS expression.\n\n"
-                      "For more information about expressions see the <a href =\"{qgisdocs}/user_manual/working_with_vector/expression.html\">user manual</a>" );
+                      "For help with QGIS expression functions, see the inbuilt help for specific functions "
+                      "which is available in the expression builder." );
 }
 
 QgsExtractByExpressionAlgorithm *QgsExtractByExpressionAlgorithm::createInstance() const
