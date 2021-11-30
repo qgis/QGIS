@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>XMLDialog</class>
- <widget class="QDialog" name="XMLDialog">
+ <class>APIRequestResponseDialog</class>
+ <widget class="QDialog" name="APIRequestResponseDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,28 +11,28 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>XML Request / Response</string>
+   <string>API Request / Response</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="lblXMLRequest">
+    <widget class="QLabel" name="lblAPIRequest">
      <property name="text">
       <string>Request</string>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QTextBrowser" name="txtbrXMLRequest"/>
+    <widget class="QTextBrowser" name="txtbrAPIRequest"/>
    </item>
    <item>
-    <widget class="QLabel" name="lblXMLResponse">
+    <widget class="QLabel" name="lblAPIResponse">
      <property name="text">
       <string>Response</string>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QTextBrowser" name="txtbrXMLResponse">
+    <widget class="QTextBrowser" name="txtbrAPIResponse">
      <property name="lineWrapMode">
       <enum>QTextEdit::NoWrap</enum>
      </property>
@@ -58,7 +58,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>XMLDialog</receiver>
+   <receiver>APIRequestResponseDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -74,7 +74,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>XMLDialog</receiver>
+   <receiver>APIRequestResponseDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
