@@ -34,13 +34,14 @@
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutLabelWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutLabelWidgetBase
+class GUI_EXPORT QgsLayoutLabelWidget: public QgsLayoutItemBaseWidget, public QgsExpressionContextGenerator, private Ui::QgsLayoutLabelWidgetBase
 {
     Q_OBJECT
   public:
     //! constructor
     explicit QgsLayoutLabelWidget( QgsLayoutItemLabel *label );
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
+    QgsExpressionContext createExpressionContext() const override;
 
     /**
      * Populates the specified \a menu with actions reflecting dynamic text expressions applicable for a \a layout.
