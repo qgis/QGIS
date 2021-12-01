@@ -476,22 +476,22 @@ bool QgsLayoutItemLabel::readPropertiesFromElement( const QDomElement &itemElem,
       mFormat.setSize( f.pixelSize() );
       mFormat.setSizeUnit( QgsUnitTypes::RenderPixels );
     }
-  }
 
-  //font color
-  const QDomNodeList fontColorList = itemElem.elementsByTagName( QStringLiteral( "FontColor" ) );
-  if ( !fontColorList.isEmpty() )
-  {
-    const QDomElement fontColorElem = fontColorList.at( 0 ).toElement();
-    const int red = fontColorElem.attribute( QStringLiteral( "red" ), QStringLiteral( "0" ) ).toInt();
-    const int green = fontColorElem.attribute( QStringLiteral( "green" ), QStringLiteral( "0" ) ).toInt();
-    const int blue = fontColorElem.attribute( QStringLiteral( "blue" ), QStringLiteral( "0" ) ).toInt();
-    const int alpha = fontColorElem.attribute( QStringLiteral( "alpha" ), QStringLiteral( "255" ) ).toInt();
-    mFormat.setColor( QColor( red, green, blue, alpha ) );
-  }
-  else if ( textFormatNodeList.isEmpty() )
-  {
-    mFormat.setColor( QColor( 0, 0, 0 ) );
+    //font color
+    const QDomNodeList fontColorList = itemElem.elementsByTagName( QStringLiteral( "FontColor" ) );
+    if ( !fontColorList.isEmpty() )
+    {
+      const QDomElement fontColorElem = fontColorList.at( 0 ).toElement();
+      const int red = fontColorElem.attribute( QStringLiteral( "red" ), QStringLiteral( "0" ) ).toInt();
+      const int green = fontColorElem.attribute( QStringLiteral( "green" ), QStringLiteral( "0" ) ).toInt();
+      const int blue = fontColorElem.attribute( QStringLiteral( "blue" ), QStringLiteral( "0" ) ).toInt();
+      const int alpha = fontColorElem.attribute( QStringLiteral( "alpha" ), QStringLiteral( "255" ) ).toInt();
+      mFormat.setColor( QColor( red, green, blue, alpha ) );
+    }
+    else if ( textFormatNodeList.isEmpty() )
+    {
+      mFormat.setColor( QColor( 0, 0, 0 ) );
+    }
   }
 
   return true;
