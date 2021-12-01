@@ -1621,8 +1621,12 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
   layout.pageCollection()->addPage( page2.release() );
 
   QFont titleFont;
-  titleFont.setPointSize( 9 );
   titleFont.setBold( true );
+  QgsTextFormat titleFormat;
+  titleFormat.setFont( titleFont );
+  titleFormat.setSize( 9 );
+  titleFormat.setSizeUnit( QgsUnitTypes::RenderPoints );
+
   QFont tableHeaderFont;
   tableHeaderFont.setPointSize( 9 );
   tableHeaderFont.setBold( true );
@@ -1639,7 +1643,7 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
   //title
   QFileInfo rasterFi( mRasterFileName );
   QgsLayoutItemLabel *titleLabel = new QgsLayoutItemLabel( &layout );
-  titleLabel->setFont( titleFont );
+  titleLabel->setTextFormat( titleFormat );
   titleLabel->setText( rasterFi.fileName() );
   layout.addLayoutItem( titleLabel );
   titleLabel->attemptSetSceneRect( QRectF( leftMargin, 5, contentWidth, 8 ) );
@@ -1698,7 +1702,7 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
   {
     QString parameterTitle = tr( "Transformation parameters" ) + QStringLiteral( " (" ) + QgsGcpTransformerInterface::methodToString( transform.transformParametrisation() ) + QStringLiteral( ")" );
     parameterLabel = new QgsLayoutItemLabel( &layout );
-    parameterLabel->setFont( titleFont );
+    parameterLabel->setTextFormat( titleFormat );
     parameterLabel->setText( parameterTitle );
     parameterLabel->adjustSizeToText();
     layout.addLayoutItem( parameterLabel );
@@ -1736,7 +1740,7 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
   }
 
   QgsLayoutItemLabel *residualLabel = new QgsLayoutItemLabel( &layout );
-  residualLabel->setFont( titleFont );
+  residualLabel->setTextFormat( titleFormat );
   residualLabel->setText( tr( "Residuals" ) );
   layout.addLayoutItem( residualLabel );
   residualLabel->attemptSetSceneRect( QRectF( leftMargin, previousItem->rect().bottom() + previousItem->pos().y() + 5, contentWidth, 6 ) );

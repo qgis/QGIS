@@ -68,7 +68,6 @@ class GUI_EXPORT QgsLayoutLabelWidget: public QgsLayoutItemBaseWidget, private U
     void mInsertExpressionButton_clicked();
     void mMarginXDoubleSpinBox_valueChanged( double d );
     void mMarginYDoubleSpinBox_valueChanged( double d );
-    void mFontColorButton_colorChanged( const QColor &newLabelColor );
     void mCenterRadioButton_clicked();
     void mLeftRadioButton_clicked();
     void mRightRadioButton_clicked();
