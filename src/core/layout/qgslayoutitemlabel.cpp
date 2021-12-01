@@ -668,7 +668,29 @@ QUrl QgsLayoutItemLabel::createStylesheetUrl() const
 {
   QString stylesheet;
   stylesheet += QStringLiteral( "body { margin: %1 %2;" ).arg( std::max( mMarginY * mHtmlUnitsToLayoutUnits, 0.0 ) ).arg( std::max( mMarginX * mHtmlUnitsToLayoutUnits, 0.0 ) );
-  stylesheet += QgsFontUtils::asCSS( mFormat.font(), 0.352778 * mHtmlUnitsToLayoutUnits );
+  QFont f = mFormat.font();
+  switch ( mFormat.sizeUnit() )
+  {
+    case QgsUnitTypes::RenderMillimeters:
+      f.setPointSizeF( mFormat.size() / 0.352778 );
+      break;
+    case QgsUnitTypes::RenderPixels:
+      f.setPixelSize( mFormat.size() );
+      break;
+    case QgsUnitTypes::RenderPoints:
+      f.setPointSizeF( mFormat.size() );
+      break;
+    case QgsUnitTypes::RenderInches:
+      f.setPointSizeF( mFormat.size() * 72 );
+      break;
+    case QgsUnitTypes::RenderUnknownUnit:
+    case QgsUnitTypes::RenderPercentage:
+    case QgsUnitTypes::RenderMetersInMapUnits:
+    case QgsUnitTypes::RenderMapUnits:
+      break;
+  }
+
+  stylesheet += QgsFontUtils::asCSS( f, 0.352778 * mHtmlUnitsToLayoutUnits );
   stylesheet += QStringLiteral( "color: rgba(%1,%2,%3,%4);" ).arg( mFormat.color().red() ).arg( mFormat.color().green() ).arg( mFormat.color().blue() ).arg( QString::number( mFormat.color().alphaF(), 'f', 4 ) );
   stylesheet += QStringLiteral( "text-align: %1; }" ).arg( mHAlignment == Qt::AlignLeft ? QStringLiteral( "left" ) : mHAlignment == Qt::AlignRight ? QStringLiteral( "right" ) : mHAlignment == Qt::AlignHCenter ? QStringLiteral( "center" ) : QStringLiteral( "justify" ) );
 
