@@ -305,7 +305,9 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
 
   QgsTextBufferSettings buffer = format.buffer();
 
-  const double penSize = context.convertToPainterUnits( buffer.size(), buffer.sizeUnit(), buffer.sizeMapUnitScale() );
+  const double penSize =  buffer.sizeUnit() == QgsUnitTypes::RenderPercentage
+                          ? context.convertToPainterUnits( format.size(), format.sizeUnit(), format.sizeMapUnitScale() ) * buffer.size() / 100
+                          : context.convertToPainterUnits( buffer.size(), buffer.sizeUnit(), buffer.sizeMapUnitScale() );
 
   const double scaleFactor = calculateScaleFactorForFormat( context, format );
 
@@ -458,7 +460,9 @@ void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer
   if ( ! p )
     return;
 
-  double penSize = context.convertToPainterUnits( mask.size(), mask.sizeUnit(), mask.sizeMapUnitScale() );
+  double penSize = mask.sizeUnit() == QgsUnitTypes::RenderPercentage
+                   ? context.convertToPainterUnits( format.size(), format.sizeUnit(), format.sizeMapUnitScale() ) * mask.size() / 100
+                   : context.convertToPainterUnits( mask.size(), mask.sizeUnit(), mask.sizeMapUnitScale() );
 
   // buffer: draw the text with a big pen
   QPainterPath path;
@@ -652,14 +656,23 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
     return height;
 
   double maxExtension = 0;
+  const double fontSize = context.convertToPainterUnits( format.size(), format.sizeUnit(), format.sizeMapUnitScale() );
   if ( format.buffer().enabled() )
   {
-    maxExtension += context.convertToPainterUnits( format.buffer().size(), format.buffer().sizeUnit(), format.buffer().sizeMapUnitScale() );
+    maxExtension += format.buffer().sizeUnit() == QgsUnitTypes::RenderPercentage
+                    ? fontSize * format.buffer().size() / 100
+                    : context.convertToPainterUnits( format.buffer().size(), format.buffer().sizeUnit(), format.buffer().sizeMapUnitScale() );
   }
   if ( format.shadow().enabled() )
   {
-    maxExtension += context.convertToPainterUnits( format.shadow().offsetDistance(), format.shadow().offsetUnit(), format.shadow().offsetMapUnitScale() )
-                    + context.convertToPainterUnits( format.shadow().blurRadius(), format.shadow().blurRadiusUnit(), format.shadow().blurRadiusMapUnitScale() );
+    maxExtension += ( format.shadow().offsetUnit() == QgsUnitTypes::RenderPercentage
+                      ? fontSize * format.shadow().offsetDistance() / 100
+                      : context.convertToPainterUnits( format.shadow().offsetDistance(), format.shadow().offsetUnit(), format.shadow().offsetMapUnitScale() )
+                    )
+                    + ( format.shadow().blurRadiusUnit() == QgsUnitTypes::RenderPercentage
+                        ? fontSize * format.shadow().blurRadius() / 100
+                        : context.convertToPainterUnits( format.shadow().blurRadius(), format.shadow().blurRadiusUnit(), format.shadow().blurRadiusMapUnitScale() )
+                      );
   }
   if ( format.background().enabled() )
   {
@@ -1257,7 +1270,11 @@ void QgsTextRenderer::drawShadow( QgsRenderContext &context, const QgsTextRender
 
   // generate pixmap representation of label component drawing
   bool mapUnits = shadow.blurRadiusUnit() == QgsUnitTypes::RenderMapUnits;
-  double radius = context.convertToPainterUnits( shadow.blurRadius(), shadow.blurRadiusUnit(), shadow.blurRadiusMapUnitScale() );
+
+  const double fontSize = context.convertToPainterUnits( format.size(), format.sizeUnit(), format.sizeMapUnitScale() );
+  double radius = shadow.blurRadiusUnit() == QgsUnitTypes::RenderPercentage
+                  ? fontSize * shadow.blurRadius() / 100
+                  : context.convertToPainterUnits( shadow.blurRadius(), shadow.blurRadiusUnit(), shadow.blurRadiusMapUnitScale() );
   radius /= ( mapUnits ? context.scaleFactor() / component.dpiRatio : 1 );
   radius = static_cast< int >( radius + 0.5 ); //NOLINT
 
@@ -1317,7 +1334,9 @@ void QgsTextRenderer::drawShadow( QgsRenderContext &context, const QgsTextRender
   picti.end();
 #endif
 
-  double offsetDist = context.convertToPainterUnits( shadow.offsetDistance(), shadow.offsetUnit(), shadow.offsetMapUnitScale() );
+  const double offsetDist = shadow.offsetUnit() == QgsUnitTypes::RenderPercentage
+                            ? fontSize * shadow.offsetDistance() / 100
+                            : context.convertToPainterUnits( shadow.offsetDistance(), shadow.offsetUnit(), shadow.offsetMapUnitScale() );
   double angleRad = shadow.offsetAngle() * M_PI / 180; // to radians
   if ( shadow.offsetGlobal() )
   {

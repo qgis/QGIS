@@ -2299,6 +2299,16 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.buffer().setSizeUnit(QgsUnitTypes.RenderPixels)
         assert self.checkRender(format, 'text_buffer_pixels', QgsTextRenderer.Buffer, text=['test'])
 
+    def testDrawBufferSizePercentage(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(10)
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderPercentage)
+        assert self.checkRender(format, 'text_buffer_percentage', QgsTextRenderer.Buffer, text=['test'])
+
     def testDrawBufferColor(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
@@ -2400,6 +2410,20 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.shadow().setOffsetUnit(QgsUnitTypes.RenderPixels)
         assert self.checkRender(format, 'shadow_offset_pixels', QgsTextRenderer.Text, text=['test'])
 
+    def testDrawShadowOffsetPercentage(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(255, 255, 255))
+        format.shadow().setEnabled(True)
+        format.shadow().setShadowPlacement(QgsTextShadowSettings.ShadowText)
+        format.shadow().setOpacity(1.0)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setOffsetDistance(10)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderPercentage)
+        assert self.checkRender(format, 'shadow_offset_percentage', QgsTextRenderer.Text, text=['test'])
+
     def testDrawShadowBlurRadiusMM(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
@@ -2444,6 +2468,21 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.shadow().setBlurRadius(3)
         format.shadow().setBlurRadiusUnit(QgsUnitTypes.RenderPixels)
         assert self.checkRender(format, 'shadow_radius_pixels', QgsTextRenderer.Text, text=['test'])
+
+    def testDrawShadowBlurRadiusPercentage(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(255, 255, 255))
+        format.shadow().setEnabled(True)
+        format.shadow().setShadowPlacement(QgsTextShadowSettings.ShadowText)
+        format.shadow().setOpacity(1.0)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderMillimeters)
+        format.shadow().setBlurRadius(5)
+        format.shadow().setBlurRadiusUnit(QgsUnitTypes.RenderPercentage)
+        assert self.checkRender(format, 'shadow_radius_percentage', QgsTextRenderer.Text, text=['test'])
 
     def testDrawShadowOpacity(self):
         format = QgsTextFormat()
