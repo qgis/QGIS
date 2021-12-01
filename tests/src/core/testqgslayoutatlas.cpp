@@ -167,7 +167,11 @@ void TestQgsLayoutAtlas::init()
   mLabel1 = new QgsLayoutItemLabel( mLayout );
   mLayout->addLayoutItem( mLabel1 );
   mLabel1->setText( QStringLiteral( "[% \"NAME_1\" %] area" ) );
-  mLabel1->setFont( QgsFontUtils::getStandardTestFont() );
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont() );
+  format.setSize( 12 );
+  format.setSizeUnit( QgsUnitTypes::RenderPoints );
+  mLabel1->setTextFormat( format );
   mLabel1->setMarginX( 1 );
   mLabel1->setMarginY( 1 );
   //need to explicitly set width, since expression hasn't been evaluated against
@@ -178,14 +182,14 @@ void TestQgsLayoutAtlas::init()
   mLabel2 = new QgsLayoutItemLabel( mLayout );
   mLayout->addLayoutItem( mLabel2 );
   mLabel2->setText( QStringLiteral( "# [%@atlas_featurenumber || ' / ' || @atlas_totalfeatures%]" ) );
-  mLabel2->setFont( QgsFontUtils::getStandardTestFont() );
+  mLabel2->setTextFormat( format );
   mLabel2->attemptSetSceneRect( QRectF( 150, 200, 60, 15 ) );
   mLabel2->setMarginX( 1 );
   mLabel2->setMarginY( 1 );
 
 
-  qDebug() << "header label font: " << mLabel1->font().toString() << " exactMatch:" << mLabel1->font().exactMatch();
-  qDebug() << "feature number label font: " << mLabel2->font().toString() << " exactMatch:" << mLabel2->font().exactMatch();
+  qDebug() << "header label font: " << mLabel1->textFormat().font().toString() << " exactMatch:" << mLabel1->textFormat().font().exactMatch();
+  qDebug() << "feature number label font: " << mLabel2->textFormat().font().toString() << " exactMatch:" << mLabel2->textFormat().font().exactMatch();
 }
 
 void TestQgsLayoutAtlas::cleanup()

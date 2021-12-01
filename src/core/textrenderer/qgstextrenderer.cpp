@@ -27,6 +27,7 @@
 #include "qgsfillsymbol.h"
 
 #include <optional>
+
 #include <QTextBoundaryFinder>
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
