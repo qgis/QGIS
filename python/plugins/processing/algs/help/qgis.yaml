@@ -304,7 +304,7 @@ qgis:selectbyattribute: >
 qgis:selectbyexpression: >
   This algorithm creates a selection in a vector layer. The criteria for selecting features is based on a QGIS expression.
 
-  For more information about expressions see the <a href ="{qgisdocs}/user_manual/working_with_vector/expression.html">user manual</a>
+  For help with QGIS expression functions, see the inbuilt help for specific functions which is available in the expression builder.
 
 qgis:setstyleforrasterlayer: >
   This algorithm sets the style of a raster layer. The style must be defined in a QML file.
