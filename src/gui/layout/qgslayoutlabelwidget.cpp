@@ -51,6 +51,8 @@ QgsLayoutLabelWidget::QgsLayoutLabelWidget( QgsLayoutItemLabel *label )
   setPanelTitle( tr( "Label Properties" ) );
 
   mFontButton->setMode( QgsFontButton::ModeTextRenderer );
+  mFontButton->setDialogTitle( tr( "Label Font" ) );
+  mFontButton->registerExpressionContextGenerator( this );
 
   //add widget for general composer item properties
   mItemPropertiesWidget = new QgsLayoutItemPropertiesWidget( this, label );
@@ -88,12 +90,23 @@ QgsLayoutLabelWidget::QgsLayoutLabelWidget( QgsLayoutItemLabel *label )
   expressionMenu->addAction( convertToStaticAction );
   connect( convertToStaticAction, &QAction::triggered, mLabel, &QgsLayoutItemLabel::convertToStaticText );
   mInsertExpressionButton->setMenu( expressionMenu );
+
+  mFontButton->setLayer( coverageLayer() );
+  if ( mLabel->layout() )
+  {
+    connect( &mLabel->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mFontButton, &QgsFontButton::setLayer );
+  }
 }
 
 void QgsLayoutLabelWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout )
 {
   if ( mItemPropertiesWidget )
     mItemPropertiesWidget->setMasterLayout( masterLayout );
+}
+
+QgsExpressionContext QgsLayoutLabelWidget::createExpressionContext() const
+{
+  return mLabel->createExpressionContext();
 }
 
 void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu *menu, const std::function<void ( const QString & )> &callback )
