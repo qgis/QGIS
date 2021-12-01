@@ -120,7 +120,7 @@ class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private
     QButtonGroup *bgFileFormat = nullptr;
     QButtonGroup *bgGeomType = nullptr;
     void showHelp();
-    void showCrsWidget();
+    void updateCrsWidgetVisibility();
     QString url( bool skipOverriddenTypes = false );
 
   public slots:
