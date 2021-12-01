@@ -90,6 +90,11 @@ bool QgsDelimitedTextFile::open()
     if ( mFile )
     {
       mCodec = QTextCodec::codecForName( !mEncoding.isEmpty() ? mEncoding.toLatin1() : "UTF-8" );
+      if ( ! mCodec )
+      {
+        QgsDebugMsgLevel( "Data file " + mFileName + " could not be opened: wrong codec.", 2 );
+        return false;
+      }
       if ( mUseWatcher )
       {
         mWatcher = new QFileSystemWatcher();
