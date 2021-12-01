@@ -94,8 +94,8 @@ void TestQgsApplication::osName()
 
 void TestQgsApplication::platformName()
 {
-  // test will always be run under desktop platform
-  QCOMPARE( QgsApplication::platform(), QString( "desktop" ) );
+  // test will always be run under external platform
+  QCOMPARE( QgsApplication::platform(), QString( "external" ) );
 }
 
 void TestQgsApplication::themeIcon()
