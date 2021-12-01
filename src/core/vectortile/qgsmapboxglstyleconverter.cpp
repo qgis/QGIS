@@ -194,6 +194,8 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
   QgsPropertyCollection ddProperties;
   QgsPropertyCollection ddRasterProperties;
 
+  std::unique_ptr< QgsSymbol > symbol( std::make_unique< QgsFillSymbol >() );
+
   // fill color
   QColor fillColor;
   if ( jsonPaint.contains( isBackgroundStyle ? QStringLiteral( "background-color" ) : QStringLiteral( "fill-color" ) ) )
@@ -281,6 +283,7 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
         if ( ddProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
         {
           context.pushWarning( QObject::tr( "%1: Could not set opacity of layer, opacity already defined in fill color" ).arg( context.layerId() ) );
+          symbol->setDataDefinedProperty( QgsSymbol::PropertyOpacity, parseInterpolateOpacityByZoom( jsonFillOpacity.toMap(), 255, &context ) );
         }
         else
         {
@@ -295,6 +298,7 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
         if ( ddProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
         {
           context.pushWarning( QObject::tr( "%1: Could not set opacity of layer, opacity already defined in fill color" ).arg( context.layerId() ) );
+          symbol->setDataDefinedProperty( QgsSymbol::PropertyOpacity, parseValueList( jsonFillOpacity.toList(), PropertyType::Numeric, context, 100, 100 ) );
         }
         else
         {
@@ -334,7 +338,6 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
     }
   }
 
-  std::unique_ptr< QgsSymbol > symbol( std::make_unique< QgsFillSymbol >() );
   QgsSimpleFillSymbolLayer *fillSymbol = dynamic_cast< QgsSimpleFillSymbolLayer * >( symbol->symbolLayer( 0 ) );
   Q_ASSERT( fillSymbol ); // should not fail since QgsFillSymbol() constructor instantiates a QgsSimpleFillSymbolLayer
 
@@ -2429,8 +2432,19 @@ QString QgsMapBoxGlStyleConverter::parseStops( double base, const QVariantList &
 
   const QVariant z = stops.last().toList().value( 0 );
   const QVariant v = stops.last().toList().value( 1 );
-  caseString += QStringLiteral( "WHEN @vector_tile_zoom > %1 "
-                                "THEN %2 END" ).arg( z.toString() ).arg( v.toDouble() * multiplier );
+  QString vStr = v.toString();
+  if ( ( QMetaType::Type )v.type() == QMetaType::QVariantList )
+  {
+    vStr = parseExpression( v.toList(), context );
+    caseString += QStringLiteral( "WHEN @vector_tile_zoom > %1 "
+                                  "THEN ( %2 * %3 ) END" ).arg( z.toString() ).arg( vStr ).arg( multiplier );
+  }
+  else
+  {
+    caseString += QStringLiteral( "WHEN @vector_tile_zoom > %1 "
+                                  "THEN %2 END" ).arg( z.toString() ).arg( v.toDouble() * multiplier );
+  }
+
   return caseString;
 }
 
