@@ -6,11 +6,12 @@ Is should be renamed to `startup.py` and placed into
 ~/.qgis3/python/startup.py
 
 """
+from qgis.core import Qgis
 from qgis import utils
 import traceback
 
 
-def _showException(type, value, tb, msg, messagebar=False):
+def _showException(type, value, tb, msg, messagebar=False, level=Qgis.Warning):
     print(msg)
     logmessage = ''
     for s in traceback.format_exception(type, value, tb):

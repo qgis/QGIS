@@ -401,6 +401,8 @@ class CORE_EXPORT QgsTextRenderer
                                           VAlignment vAlignment,
                                           double rotation );
 
+    static double calculateScaleFactorForFormat( const QgsRenderContext &context, const QgsTextFormat &format );
+
     friend class QgsVectorLayerLabelProvider;
     friend class QgsLabelPreview;
 

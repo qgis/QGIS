@@ -1643,7 +1643,8 @@ void QgsAttributeForm::init()
         label->setBuddy( widgetInfo.widget );
 
         // If at least one expanding widget is present do not add a spacer
-        if ( widgetInfo.widget->sizePolicy().verticalPolicy() != QSizePolicy::Fixed
+        if ( widgetInfo.widget
+             && widgetInfo.widget->sizePolicy().verticalPolicy() != QSizePolicy::Fixed
              && widgetInfo.widget->sizePolicy().verticalPolicy() != QSizePolicy::Maximum
              && widgetInfo.widget->sizePolicy().verticalPolicy() != QSizePolicy::Preferred )
           addSpacer = false;
