@@ -484,15 +484,16 @@ QPixmap QgsFontButton::createDragIcon( QSize size, const QgsTextFormat *tempForm
       context.setPainter( &p );
 
       // slightly inset text to account for buffer/background
+      const double fontSize = context.convertToPainterUnits( tempFormat->size(), tempFormat->sizeUnit(), tempFormat->sizeMapUnitScale() );
       double xtrans = 0;
       if ( tempFormat->buffer().enabled() )
-        xtrans = context.convertToPainterUnits( tempFormat->buffer().size(), tempFormat->buffer().sizeUnit(), tempFormat->buffer().sizeMapUnitScale() );
+        xtrans = tempFormat->buffer().sizeUnit() == QgsUnitTypes::RenderPercentage ? fontSize * tempFormat->buffer().size() / 100 : context.convertToPainterUnits( tempFormat->buffer().size(), tempFormat->buffer().sizeUnit(), tempFormat->buffer().sizeMapUnitScale() );
       if ( tempFormat->background().enabled() && tempFormat->background().sizeType() != QgsTextBackgroundSettings::SizeFixed )
         xtrans = std::max( xtrans, context.convertToPainterUnits( tempFormat->background().size().width(), tempFormat->background().sizeUnit(), tempFormat->background().sizeMapUnitScale() ) );
 
       double ytrans = 0.0;
       if ( tempFormat->buffer().enabled() )
-        ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat->buffer().size(), tempFormat->buffer().sizeUnit(), tempFormat->buffer().sizeMapUnitScale() ) );
+        ytrans = std::max( ytrans, tempFormat->buffer().sizeUnit() == QgsUnitTypes::RenderPercentage ? fontSize * tempFormat->buffer().size() / 100 : context.convertToPainterUnits( tempFormat->buffer().size(), tempFormat->buffer().sizeUnit(), tempFormat->buffer().sizeMapUnitScale() ) );
       if ( tempFormat->background().enabled() )
         ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat->background().size().height(), tempFormat->background().sizeUnit(), tempFormat->background().sizeMapUnitScale() ) );
 
@@ -902,15 +903,16 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
       context.setPainter( &p );
 
       // slightly inset text to account for buffer/background
+      const double fontSize = context.convertToPainterUnits( tempFormat.size(), tempFormat.sizeUnit(), tempFormat.sizeMapUnitScale() );
       double xtrans = 0;
       if ( tempFormat.buffer().enabled() )
-        xtrans = context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() );
+        xtrans = tempFormat.buffer().sizeUnit() == QgsUnitTypes::RenderPercentage ? fontSize * tempFormat.buffer().size() / 100 : context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() );
       if ( tempFormat.background().enabled() && tempFormat.background().sizeType() != QgsTextBackgroundSettings::SizeFixed )
         xtrans = std::max( xtrans, context.convertToPainterUnits( tempFormat.background().size().width(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
 
       double ytrans = 0.0;
       if ( tempFormat.buffer().enabled() )
-        ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() ) );
+        ytrans = std::max( ytrans, tempFormat.buffer().sizeUnit() == QgsUnitTypes::RenderPercentage ? fontSize * tempFormat.buffer().size() / 100 : context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() ) );
       if ( tempFormat.background().enabled() )
         ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat.background().size().height(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
 
