@@ -28,23 +28,6 @@ QgsWindow3DEngine::QgsWindow3DEngine( QObject *parent )
 {
   mWindow3D = new Qt3DExtras::Qt3DWindow;
 
-  QSurfaceFormat format = QSurfaceFormat::defaultFormat();
-#if QT_CONFIG(opengles2)
-  format.setRenderableType( QSurfaceFormat::OpenGLES );
-#else
-  if ( QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL )
-  {
-    format.setVersion( 4, 3 );
-    format.setProfile( QSurfaceFormat::CoreProfile );
-  }
-#endif
-  format.setDepthBufferSize( 32 );
-  format.setSamples( 1 );
-  format.setStencilBufferSize( 8 );
-  QSurfaceFormat::setDefaultFormat( format );
-
-  mWindow3D->setFormat( format );
-
   mRoot = new Qt3DCore::QEntity;
   mWindow3D->setRootEntity( mRoot );
 

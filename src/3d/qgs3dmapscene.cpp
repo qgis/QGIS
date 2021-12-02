@@ -396,7 +396,7 @@ void Qgs3DMapScene::updateScene()
   updateSceneState();
 }
 
-static void _updateNearFarPlane( const QList<QgsChunkNode *> &activeNodes, const QMatrix4x4 &viewMatrix, const QMatrix4x4 &projectionMatrix, float &fnear, float &ffar )
+static void _updateNearFarPlane( const QList<QgsChunkNode *> &activeNodes, const QMatrix4x4 &viewMatrix, float &fnear, float &ffar )
 {
   for ( QgsChunkNode *node : activeNodes )
   {
@@ -411,12 +411,6 @@ static void _updateNearFarPlane( const QList<QgsChunkNode *> &activeNodes, const
 
       QVector4D pc = viewMatrix * p;
 
-      // skip points that are not rendered on the screen
-      QVector4D screenCoords = projectionMatrix * pc;
-      screenCoords /= screenCoords.w();
-
-      if ( pc.z() > 0 || screenCoords.x() < -1.1 || screenCoords.x() > 1.1 || screenCoords.y() < -1.1 || screenCoords.y() > 1.1 )
-        continue;
 
       float dst = -pc.z();  // in camera coordinates, x grows right, y grows down, z grows to the back
       fnear = std::min( fnear, dst );
@@ -441,7 +435,6 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
 
   Qt3DRender::QCamera *camera = cameraController()->camera();
   QMatrix4x4 viewMatrix = camera->viewMatrix();
-  QMatrix4x4 projectionMatrix = camera->projectionMatrix();
   float fnear = 1e9;
   float ffar = 0;
   QList<QgsChunkNode *> activeNodes;
@@ -454,7 +447,7 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
   if ( mTerrain && activeNodes.isEmpty() )
     activeNodes << mTerrain->rootNode();
 
-  _updateNearFarPlane( activeNodes, viewMatrix, projectionMatrix, fnear, ffar );
+  _updateNearFarPlane( activeNodes, viewMatrix, fnear, ffar );
 
   // Also involve all the other chunked entities to make sure that they will not get
   // clipped by the near or far plane
@@ -465,7 +458,7 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
       QList<QgsChunkNode *> activeEntityNodes = e->activeNodes();
       if ( activeEntityNodes.empty() )
         activeEntityNodes << e->rootNode();
-      _updateNearFarPlane( activeEntityNodes, viewMatrix, projectionMatrix, fnear, ffar );
+      _updateNearFarPlane( activeEntityNodes, viewMatrix, fnear, ffar );
     }
   }
 
