@@ -332,6 +332,18 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool showCameraViewCenter() const { return mShowCameraViewCenter; }
 
     /**
+     * Sets whether to show camera's rotation center as a sphere (for debugging)
+     * \since QGIS 3.22
+     */
+    void setShowCameraRotationCenter( bool enabled );
+
+    /**
+     * Returns whether to show camera's rotation center as a sphere (for debugging)
+     * \since QGIS 3.22
+     */
+    bool showCameraRotationCenter() const { return mShowCameraRotationCenter; }
+
+    /**
      * Sets whether to show light source origins as a sphere (for debugging)
      * \since QGIS 3.16
      */
@@ -618,6 +630,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void showCameraViewCenterChanged();
 
     /**
+     * Emitted when the flag whether camera's rotation center is shown has changed
+     * \since QGIS 3.22
+     */
+    void showCameraRotationCenterChanged();
+
+    /**
      * Emitted when the flag whether light source origins are shown has changed.
      * \since QGIS 3.15
      */
@@ -733,6 +751,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool mShowTerrainBoundingBoxes = false;  //!< Whether to show bounding boxes of entities - useful for debugging
     bool mShowTerrainTileInfo = false;  //!< Whether to draw extra information about terrain tiles to the textures - useful for debugging
     bool mShowCameraViewCenter = false;  //!< Whether to show camera view center as a sphere - useful for debugging
+    bool mShowCameraRotationCenter = false; //!< Whether to show camera rotation center as a sphere - useful for debugging
     bool mShowLightSources = false; //!< Whether to show the origin of light sources
     bool mShowLabels = false; //!< Whether to display labels on terrain tiles
     QList<QgsPointLightSettings> mPointLights;  //!< List of point lights defined for the scene

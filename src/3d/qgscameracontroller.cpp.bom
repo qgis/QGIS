@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
   qgscameracontroller.cpp
   --------------------------------------
   Date                 : July 2017
@@ -386,7 +386,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     float yawDiff = 180 * ( mouse->x() - mMiddleButtonClickPos.x() ) / scale;
 
     if ( !mDepthBufferIsReady )
-      return;
+        return;
 
     QColor depthPixel = mDepthBufferImage.pixelColor( mMiddleButtonClickPos.x(), mMiddleButtonClickPos.y() );
     double depth = depthPixel.redF() / 255.0 / 255.0 + depthPixel.greenF() / 255.0 + depthPixel.blueF();
@@ -533,7 +533,7 @@ void QgsCameraController::onMousePressed( Qt3DInput::QMouseEvent *mouse )
     mRotationOriginalPitch = mCameraPose.pitchAngle();
     mRotationOriginalYaw = mCameraPose.headingAngle();
     if ( !mCameraBeforeRotation )
-      mCameraBeforeRotation = new Qt3DRender::QCamera;
+        mCameraBeforeRotation = new Qt3DRender::QCamera;
 
     mCameraPose.updateCamera( mCameraBeforeRotation );
 

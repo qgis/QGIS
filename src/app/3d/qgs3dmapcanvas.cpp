@@ -54,7 +54,6 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
 
   connect( mEngine, &QgsAbstract3DEngine::depthBufferCaptured, [ = ]( const QImage & image )
   {
-    qDebug() << "Elapsed time: " << mEngine->mTimer.elapsed();
     mDepthBufferImage = image;
     cameraController()->setDepthBufferImage( image );
   } );
@@ -246,7 +245,6 @@ void Qgs3DMapCanvas::saveAsImage( const QString fileName, const QString fileForm
 
 void Qgs3DMapCanvas::captureDepthBuffer()
 {
-  qDebug() << __PRETTY_FUNCTION__;
   // Setup a frame action that is used to wait until next frame
   Qt3DLogic::QFrameAction *screenCaptureFrameAction = new Qt3DLogic::QFrameAction;
   mScene->addComponent( screenCaptureFrameAction );
@@ -254,7 +252,6 @@ void Qgs3DMapCanvas::captureDepthBuffer()
   connect( screenCaptureFrameAction, &Qt3DLogic::QFrameAction::triggered, [ = ]( float )
   {
     mEngine->requestDepthBufferCapture();
-    qDebug() << "requestDepthBufferCapture duration: " << mEngine->mTimer.elapsed();
     mScene->removeComponent( screenCaptureFrameAction );
     screenCaptureFrameAction->deleteLater();
   } );

@@ -166,6 +166,7 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     Qt3DRender::QCullFace *mPreviewCullFace = nullptr;
 
     // shadow rendering pass
+    Qt3DRender::QCameraSelector *mLightCameraSelectorShadowPass = nullptr;
     Qt3DRender::QRenderTargetSelector *mShadowRenderTargetSelector = nullptr;
     Qt3DRender::QRenderTarget *mShadowRenderTarget = nullptr;
     Qt3DRender::QRenderTargetOutput *mShadowRenderTargetOutput = nullptr;
@@ -227,6 +228,7 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     Qt3DRender::QFrameGraphNode *constructForwardRenderPass();
     Qt3DRender::QFrameGraphNode *constructTexturesPreviewPass();
     Qt3DRender::QFrameGraphNode *constructPostprocessingPass();
+    Qt3DRender::QFrameGraphNode *constructDepthBufferProcessingPass();
 
     bool mRenderCaptureEnabled = true;
 

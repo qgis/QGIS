@@ -7,45 +7,32 @@ uniform mat4 inverseProjectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 inverseViewMatrix;
 uniform vec3 eyePosition;
-
+uniform float nearPlane;
+uniform float farPlane;
 
 in vec3 position;
 in vec2 texCoord;
 
 out vec4 fragColor;
 
-// this is supposed to get the world position from the depth buffer
-vec3 WorldPosFromDepth(float depth) {
-    float z = depth * 2.0 - 1.0;
-
-    vec4 clipSpacePosition = vec4(texCoord * 2.0 - 1.0, z, 1.0);
-    vec4 viewSpacePosition = inverseProjectionMatrix * clipSpacePosition;
-
-    // Perspective division
-    viewSpacePosition /= viewSpacePosition.w;
-
-    vec4 worldSpacePosition = inverseViewMatrix * viewSpacePosition;
-
-    return worldSpacePosition.xyz;
+float linearizeDepth(float depth)
+{
+  float ndc = depth * 2.0 - 1.0;
+  return (2.0 * nearPlane * farPlane) / (farPlane + nearPlane - ndc * (farPlane - nearPlane));
 }
-
-
 
 void main()
 {
   if (isDepth)
   {
-      float m22 = -projectionMatrix[2][2];
-      float m32 = -projectionMatrix[2][3];
-
-      float zNear = (2.0f * m32) / (2.0f * m22 - 2.0f);
-      float zFar = ( (m22 - 1.0f) * zNear) / (m22 + 1.0);
-
-      vec3 pos = WorldPosFromDepth( texture2D(previewTexture, texCoord).r );
-      float dist = length(pos - eyePosition.xyz);
-      float zLinearized = (dist - zNear) / (zFar - zNear);
-      int zLinearizedMultiplied = int( 256 * 256 * 256 * zLinearized );
-      fragColor = vec4( float(zLinearizedMultiplied % 256) / 256.0, float(zLinearizedMultiplied / 256 % 256) / 256.0, float( zLinearizedMultiplied / 256 / 256 % 256 ) / 256.0, 1 );
+      float z = texture2D(previewTexture, texCoord).r;
+      fragColor.b = float( int(z * 255) ) / 255.0;
+      z = z * 255.0 - fragColor.b * 255.0;
+      fragColor.g = float( int(z * 255) ) / 255.0;
+      z = z * 255.0 - fragColor.g * 255.0;
+      fragColor.r = float( int(z * 255) ) / 255.0;
+      z = z * 255.0 - fragColor.r * 255.0;
+      fragColor.a = 1;
   }
   else
     fragColor = vec4(texture(previewTexture, texCoord).rgb, 1.0f);

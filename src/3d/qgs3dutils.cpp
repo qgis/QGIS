@@ -643,44 +643,15 @@ QgsRay3D Qgs3DUtils::rayFromScreenPoint( const QPoint &point, const QSize &windo
   return QgsRay3D( QVector3D( rayOriginWorld ), rayDirWorld );
 }
 
-QVector3D Qgs3DUtils::mouseToWorldPos( const QVector3D &mousePos, const QRect &viewPort, Qt3DRender::QCamera *camera )
+QVector3D Qgs3DUtils::mouseToWorldPos( double screenX, double screenY, double depth, const QSize &screenSize, Qt3DRender::QCamera *camera )
 {
-  QMatrix4x4 persMatrix = camera->projectionMatrix();
-  QMatrix4x4 invPersMatrix = persMatrix.inverted();
-  QVector3D ndcPos;
-  ndcPos.setX( 2.0 * mousePos.x() / viewPort.width() - 1 );
-  ndcPos.setY( 2.0 * mousePos.y() / viewPort.height() - 1 );
-  ndcPos.setZ( 2.0 * mousePos.z() - 1.0 );
+  double distance = Qgs3DUtils::distanceFromCamera( depth, camera );
 
-  QVector4D clipPos;
+  QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( QPoint( screenX, screenY ), screenSize, camera );
+  double dot = QVector3D::dotProduct( ray.direction(), camera->viewVector().normalized() );
+  distance /= dot;
 
-  clipPos.setW( persMatrix.row( 3 ).z() / ( ndcPos.z() - ( persMatrix.row( 2 ).z() / persMatrix.row( 2 ).w() ) ) );
-  clipPos.setX( ndcPos.x() * clipPos.w() );
-  clipPos.setY( ndcPos.y() * clipPos.w() );
-  clipPos.setZ( ndcPos.z() * clipPos.w() );
-
-  QVector4D eyePos = invPersMatrix * clipPos;
-  eyePos = camera->viewMatrix().inverted() * eyePos;
-  eyePos /= eyePos.w();
-  return eyePos.toVector3D();
-}
-
-QVector3D Qgs3DUtils::mouseToWorldLookAtPoint( double mouseX, double mouseY, double distance, const QRect &viewPort, Qt3DRender::QCamera *camera )
-{
-  QVector3D right = Qgs3DUtils::mouseToWorldPos( QVector3D( viewPort.width(), viewPort.height() / 2.0f, 0 ), viewPort, camera );
-  QVector3D bottom = Qgs3DUtils::mouseToWorldPos( QVector3D( viewPort.width() / 2.0f, viewPort.height(), 0 ), viewPort, camera );
-
-  float verticalFov = qDegreesToRadians( camera->fieldOfView() );
-  float horizontalFov = 2 * qAtan( camera->aspectRatio() * qTan( verticalFov / 2.0 ) );
-
-  QVector3D rightWorld = camera->position() + distance / qCos( horizontalFov / 2.0 ) * ( right - camera->position() ).normalized();
-  QVector3D bottomWorld = camera->position() + distance / qCos( verticalFov / 2.0 ) * ( bottom - camera->position() ).normalized();
-
-  double dx = mouseX / viewPort.width() * 2.0 - 1.0;
-  double dy = -( mouseY / viewPort.height() * 2.0 - 1.0 );
-
-  QVector3D pos = camera->viewCenter() + dy * ( bottomWorld - camera->viewCenter() ) + dx * ( rightWorld - camera->viewCenter() );
-  return pos;
+  return ray.origin() + distance * ray.direction();
 }
 
 void Qgs3DUtils::pitchAndYawFromVector( QVector3D vect, double &pitch, double &yaw )
@@ -689,4 +660,36 @@ void Qgs3DUtils::pitchAndYawFromVector( QVector3D vect, double &pitch, double &y
 
   pitch = qRadiansToDegrees( qAcos( vect.y() ) );
   yaw = qRadiansToDegrees( qAtan2( -vect.z(), vect.x() ) ) + 90;
+}
+
+QVector3D Qgs3DUtils::worldPosFromDepth( QMatrix4x4 projMatrixInv, QMatrix4x4 viewMatrixInv, float texCoordX, float texCoordY, float depth )
+{
+  const float z = depth * 2.0 - 1.0;
+
+  const QVector4D clipSpacePosition( texCoordX * 2.0 - 1.0, texCoordY * 2.0 - 1.0, z, 1.0 );
+  QVector4D viewSpacePosition = projMatrixInv * clipSpacePosition;
+
+  // Perspective division
+  viewSpacePosition /= viewSpacePosition.w();
+  QVector4D worldSpacePosition =  viewMatrixInv * viewSpacePosition;
+  worldSpacePosition /= worldSpacePosition.w();
+
+  return QVector3D( worldSpacePosition.x(), worldSpacePosition.y(), worldSpacePosition.z() );
+}
+
+QVector2D Qgs3DUtils::fromScreenToTextureCoordinates( QVector2D screenXY, QSize winSize )
+{
+  return QVector2D( screenXY.x() / winSize.width(), 1 - screenXY.y() / winSize.width() );
+}
+
+QVector2D Qgs3DUtils::fromTextureToScreenCoordinates( QVector2D textureXY, QSize winSize )
+{
+  return QVector2D( textureXY.x() * winSize.width(), ( 1 - textureXY.y() ) * winSize.height() );
+}
+
+double Qgs3DUtils::distanceFromCamera( double depth, Qt3DRender::QCamera *camera )
+{
+  double near = camera->nearPlane();
+  double far = camera->farPlane();
+  return ( 2.0 * near * far ) / ( far + near - ( depth * 2 - 1 ) * ( far - near ) );
 }

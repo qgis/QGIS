@@ -244,6 +244,8 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 
     void requestDepthBufferCapture();
 
+    void cameraRotationCenterChanged( QVector3D position );
+
   private slots:
     void onPositionChanged( Qt3DInput::QMouseEvent *mouse );
     void onWheel( Qt3DInput::QWheelEvent *wheel );
@@ -286,6 +288,7 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     bool mDepthBufferIsReady = false;
     double mRotationOriginalPitch = 0;
     double mRotationOriginalYaw = 0;
+    Qt3DRender::QCamera *mCameraBeforeRotation = nullptr;
 
     //! Delegates mouse events to the attached MouseHandler objects
     Qt3DInput::QMouseDevice *mMouseDevice = nullptr;
@@ -301,6 +304,8 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     bool mCaptureFpsMouseMovements = false;
     bool mIgnoreNextMouseMove = false;
     QTimer *mFpsNavTimer = nullptr;
+
+    double mZoomInDistScaling;
 };
 
 #endif // QGSCAMERACONTROLLER_H

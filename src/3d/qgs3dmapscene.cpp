@@ -118,6 +118,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   mCameraController->resetView( 1000 );
 
   addCameraViewCenterEntity( mEngine->camera() );
+  addCameraRotationCenterEntity( mCameraController );
   updateLights();
 
   // create terrain entity
@@ -395,7 +396,7 @@ void Qgs3DMapScene::updateScene()
   updateSceneState();
 }
 
-static void _updateNearFarPlane( const QList<QgsChunkNode *> &activeNodes, const QMatrix4x4 &viewMatrix, float &fnear, float &ffar )
+static void _updateNearFarPlane( const QList<QgsChunkNode *> &activeNodes, const QMatrix4x4 &viewMatrix, const QMatrix4x4 &projectionMatrix, float &fnear, float &ffar )
 {
   for ( QgsChunkNode *node : activeNodes )
   {
@@ -409,6 +410,13 @@ static void _updateNearFarPlane( const QList<QgsChunkNode *> &activeNodes, const
                    ( ( i >> 2 ) & 1 ) ? bbox.zMin : bbox.zMax, 1 );
 
       QVector4D pc = viewMatrix * p;
+
+      // skip points that are not rendered on the screen
+      QVector4D screenCoords = projectionMatrix * pc;
+      screenCoords /= screenCoords.w();
+
+      if ( pc.z() > 0 || screenCoords.x() < -1.1 || screenCoords.x() > 1.1 || screenCoords.y() < -1.1 || screenCoords.y() > 1.1 )
+        continue;
 
       float dst = -pc.z();  // in camera coordinates, x grows right, y grows down, z grows to the back
       fnear = std::min( fnear, dst );
@@ -433,6 +441,7 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
 
   Qt3DRender::QCamera *camera = cameraController()->camera();
   QMatrix4x4 viewMatrix = camera->viewMatrix();
+  QMatrix4x4 projectionMatrix = camera->projectionMatrix();
   float fnear = 1e9;
   float ffar = 0;
   QList<QgsChunkNode *> activeNodes;
@@ -445,7 +454,7 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
   if ( mTerrain && activeNodes.isEmpty() )
     activeNodes << mTerrain->rootNode();
 
-  _updateNearFarPlane( activeNodes, viewMatrix, fnear, ffar );
+  _updateNearFarPlane( activeNodes, viewMatrix, projectionMatrix, fnear, ffar );
 
   // Also involve all the other chunked entities to make sure that they will not get
   // clipped by the near or far plane
@@ -456,7 +465,7 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
       QList<QgsChunkNode *> activeEntityNodes = e->activeNodes();
       if ( activeEntityNodes.empty() )
         activeEntityNodes << e->rootNode();
-      _updateNearFarPlane( activeEntityNodes, viewMatrix, fnear, ffar );
+      _updateNearFarPlane( activeEntityNodes, viewMatrix, projectionMatrix, fnear, ffar );
     }
   }
 
@@ -1142,4 +1151,32 @@ QgsRectangle Qgs3DMapScene::sceneExtent()
   }
 
   return extent;
+}
+
+void Qgs3DMapScene::addCameraRotationCenterEntity( QgsCameraController *controller )
+{
+  mEntityRotationCenter = new Qt3DCore::QEntity;
+
+  Qt3DCore::QTransform *trCameraViewCenter = new Qt3DCore::QTransform;
+  mEntityRotationCenter->addComponent( trCameraViewCenter );
+  Qt3DExtras::QPhongMaterial *materialCameraViewCenter = new Qt3DExtras::QPhongMaterial;
+  materialCameraViewCenter->setAmbient( Qt::blue );
+  mEntityRotationCenter->addComponent( materialCameraViewCenter );
+  Qt3DExtras::QSphereMesh *rendererCameraViewCenter = new Qt3DExtras::QSphereMesh;
+  rendererCameraViewCenter->setRadius( 10 );
+  mEntityRotationCenter->addComponent( rendererCameraViewCenter );
+  mEntityRotationCenter->setEnabled( true );
+  mEntityRotationCenter->setParent( this );
+
+  connect( controller, &QgsCameraController::cameraRotationCenterChanged, this, [trCameraViewCenter]( QVector3D center )
+  {
+    trCameraViewCenter->setTranslation( center );
+  } );
+
+  mEntityRotationCenter->setEnabled( mMap.showCameraRotationCenter() );
+
+  connect( &mMap, &Qgs3DMapSettings::showCameraRotationCenterChanged, this, [this]
+  {
+    mEntityRotationCenter->setEnabled( mMap.showCameraRotationCenter() );
+  } );
 }
