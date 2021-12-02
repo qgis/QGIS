@@ -47,12 +47,12 @@ void TestQgsRegularPolygon::constructors()
 
 
   QgsRegularPolygon rp2;
-  QgsRegularPolygon( QgsPoint( 0, 0 ), 5, 0, 2,
-                     QgsRegularPolygon::InscribedCircle ); // should be rp2 = ??
+  rp2 = QgsRegularPolygon( QgsPoint( 0, 0 ), 5, 0, 2,
+                           QgsRegularPolygon::InscribedCircle );
   QVERIFY( rp2.isEmpty() );
 
-  QgsRegularPolygon( QgsPoint( 0, 0 ), 5, 0, 5,
-                     static_cast< QgsRegularPolygon::ConstructionOption >( 4 ) ); // should be rp2 = ??
+  rp2 = QgsRegularPolygon( QgsPoint( 0, 0 ), 5, 0, 5,
+                           static_cast< QgsRegularPolygon::ConstructionOption >( 4 ) );
   QVERIFY( rp2.isEmpty() );
 
   rp2 = QgsRegularPolygon( QgsPoint( 0, 0 ), 5, 0, 5,
