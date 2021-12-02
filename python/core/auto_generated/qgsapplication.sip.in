@@ -84,7 +84,16 @@ to change due to centralization.
     static const char *QGIS_ORGANIZATION_NAME;
     static const char *QGIS_ORGANIZATION_DOMAIN;
     static const char *QGIS_APPLICATION_NAME;
+
     QgsApplication( SIP_PYLIST argv, bool GUIenabled, QString profileFolder = QString(), QString platformName = "desktop" ) / PostHook = __pyQtQAppHook__ / [( int &argc, char **argv, bool GUIenabled, const QString &profileFolder = QString(), const QString &platformName = "desktop" )];
+%Docstring
+Constructor for QgsApplication.
+
+:param argv: command line arguments
+:param GUIenabled: set to ``True`` if a GUI application is required, or ``False`` for a console only application
+:param profileFolder: optional string representing the profile to load at startup
+:param platformName: the QGIS platform name, e.g., "desktop", "server", "qgis_process" or "external" (for external CLI scripts)
+%End
 %MethodCode
     // The Python interface is a list of argument strings that is modified.
 
@@ -420,7 +429,7 @@ Returns a string name of the operating system QGIS is running on.
 
     static QString platform();
 %Docstring
-Returns the QGIS platform name, e.g., "desktop" or "server".
+Returns the QGIS platform name, e.g., "desktop", "server", "qgis_process" or "external" (for external CLI scripts).
 
 .. seealso:: :py:func:`osName`
 
