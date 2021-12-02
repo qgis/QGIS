@@ -10623,6 +10623,19 @@ void QgisApp::selectByForm()
   dlg->setMessageBar( messageBar() );
   dlg->setMapCanvas( mapCanvas() );
   dlg->setAttribute( Qt::WA_DeleteOnClose );
+  connect( dlg, &QgsSelectByFormDialog::showFilteredFeaturesAttributeTable, [ = ]( const QString & filter )
+  {
+    if ( !vlayer || !vlayer->dataProvider() )
+    {
+      return;
+    }
+
+    QgsAttributeTableDialog *dialog = new QgsAttributeTableDialog( vlayer, QgsAttributeTableFilterModel::FilterMode::ShowFilteredList );
+    dialog->setFilterExpression( filter );
+    dialog->setView( QgsDualView::ViewMode::AttributeEditor );
+    dialog->show();
+
+  } );
   dlg->show();
 }
 

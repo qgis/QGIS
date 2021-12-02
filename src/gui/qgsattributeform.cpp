@@ -1872,6 +1872,16 @@ void QgsAttributeForm::init()
     connect( flashButton, &QToolButton::clicked, this, &QgsAttributeForm::searchFlash );
     boxLayout->addWidget( flashButton );
 
+    QPushButton *openAttributeTableButton = new QPushButton();
+    openAttributeTableButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
+    openAttributeTableButton->setText( tr( "&Open Attribute Table" ) );
+    openAttributeTableButton->setToolTip( tr( "Open attribute table editor with filtered features" ) );
+    connect( openAttributeTableButton, &QToolButton::clicked, this, [ = ]
+    {
+      emit openFilteredFeaturesAttributeTable( createFilterExpression() );
+    } );
+    boxLayout->addWidget( openAttributeTableButton );
+
     QPushButton *zoomButton = new QPushButton();
     zoomButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
     zoomButton->setText( tr( "&Zoom to Features" ) );

@@ -254,6 +254,14 @@ Emitted when the user chooses to flash a filtered set of features.
 .. versionadded:: 3.0
 %End
 
+    void openFilteredFeaturesAttributeTable( const QString &filter );
+%Docstring
+Emitted when the user chooses to open the attribute table dialog with a filtered set of features.
+
+.. versionadded:: 3.24
+%End
+
+
   public slots:
 
     void changeAttribute( const QString &field, const QVariant &value, const QString &hintText = QString() );

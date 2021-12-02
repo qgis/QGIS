@@ -268,6 +268,13 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void flashFeatures( const QString &filter );
 
+    /**
+     * Emitted when the user chooses to open the attribute table dialog with a filtered set of features.
+     * \since QGIS 3.24
+     */
+    void openFilteredFeaturesAttributeTable( const QString &filter );
+
+
   public slots:
 
     /**
