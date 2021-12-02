@@ -381,7 +381,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
   {
     // rotate/tilt using mouse (camera moves as it rotates around its view center)
 
-    double scale = qMax( mViewport.width(), mViewport.height() );
+    double scale = std::max( mViewport.width(), mViewport.height() );
     float pitchDiff = 180 * ( mouse->y() - mMiddleButtonClickPos.y() ) / scale;
     float yawDiff = 180 * ( mouse->x() - mMiddleButtonClickPos.x() ) / scale;
 
@@ -410,8 +410,8 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
 
       mCameraPose.setDistanceFromCenterPoint( ( newViewCenterWorld - newCameraPosition ).length() );
       mCameraPose.setCenterPoint( newViewCenterWorld );
-      mCameraPose.setPitchAngle( mRotationOriginalPitch + pitchDiff );
-      mCameraPose.setHeadingAngle( mRotationOriginalYaw + yawDiff );
+      mCameraPose.setPitchAngle( mRotationPitch + pitchDiff );
+      mCameraPose.setHeadingAngle( mRotationYaw + yawDiff );
       updateCameraFromPose();
     }
 
@@ -530,8 +530,8 @@ void QgsCameraController::onMousePressed( Qt3DInput::QMouseEvent *mouse )
     if ( mCaptureFpsMouseMovements )
       mIgnoreNextMouseMove = true;
     mDepthBufferIsReady = false;
-    mRotationOriginalPitch = mCameraPose.pitchAngle();
-    mRotationOriginalYaw = mCameraPose.headingAngle();
+    mRotationPitch = mCameraPose.pitchAngle();
+    mRotationYaw = mCameraPose.headingAngle();
     if ( !mCameraBeforeRotation )
       mCameraBeforeRotation = new Qt3DRender::QCamera;
 

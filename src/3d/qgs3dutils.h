@@ -63,7 +63,7 @@ class _3D_EXPORT Qgs3DUtils
     /**
      * Captures the depth buffer of the current 3D scene of a 3D engine. The function waits
      * until the scene is not fully loaded/updated before capturing the image.
-     * \since QGIS 3.22
+     * \since QGIS 3.24
      */
     static QImage captureSceneDepthBuffer( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene );
 
@@ -199,9 +199,49 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.24
      */
     static void pitchAndYawFromVector( QVector3D vect, double &pitch, double &yaw );
+
+    /**
+     * Converts from view port space to world space
+     * \since QGIS 3.24
+     */
     static QVector3D worldPosFromDepth( QMatrix4x4 projMatrixInv, QMatrix4x4 viewMatrixInv, float texCoordX, float texCoordY, float depth );
+
+    /**
+     * Converts from screen coordinates to texture coordinates
+     * \since QGIS 3.24
+     * \see fromTextureToScreenCoordinates()
+     */
     static QVector2D fromScreenToTextureCoordinates( QVector2D screenXY, QSize winSize );
+
+    /**
+     * Converts from texture coordinates coordinates to screen coordinates
+     * \see fromScreenToTextureCoordinates()
+     * \since QGIS 3.24
+     */
     static QVector2D fromTextureToScreenCoordinates( QVector2D textureXY, QSize winSize );
+
+    /**
+     * Calculates the distance from the point that has a depth value of \a depth and the camera plane as illustrated here:
+     *
+     *  ________o________x             o : Camera view center
+     *  \       |       /|
+     *   \      |      / |
+     *    \     |     /  |             d : the distance returned by this function
+     *     \    |    /   | d
+     *      \   |   /d2  |             x : the point that has depth value of \a depth
+     *       \  |  /     |
+     *        \ | /      |
+     *         \|/       |
+     * ---------c---------
+     *        camera
+     *
+     * \note to calculate the distance from the the point x to the camera center c, you need to devide the returned distance d2
+     * by the dot product between the view vector of the camera and the ray direction coming from the camera center to the desired
+     * point (Make sure both vectors are normalized).
+     *
+     * \see rayFromScreenPoint()
+     * \since QGIS 3.24
+     */
     static double distanceFromCamera( double depth, Qt3DRender::QCamera *camera );
 };
 

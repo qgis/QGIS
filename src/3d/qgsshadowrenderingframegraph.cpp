@@ -22,8 +22,6 @@
 #include "qgspreviewquad.h"
 #include "qgs3dutils.h"
 
-#include <Qt3DRender/QDebugOverlay>
-
 Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructTexturesPreviewPass()
 {
   mPreviewLayerFilter = new Qt3DRender::QLayerFilter;
@@ -238,10 +236,6 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructDepthBufferP
 
   mDepthRenderCaptureTargetSelector->setTarget( depthRenderTarget );
 
-  Qt3DRender::QClearBuffers *clearBuffers = new Qt3DRender::QClearBuffers( mDepthRenderCaptureTargetSelector );
-  clearBuffers->setClearColor( QColor::fromRgbF( 0.0, 0.0, 1.0, 1.0 ) );
-  clearBuffers->setBuffers( Qt3DRender::QClearBuffers::ColorDepthBuffer );
-
   mDepthRenderCapture = new Qt3DRender::QRenderCapture( mDepthRenderCaptureTargetSelector );
 
   return mSecondMainCameraSelector;
@@ -299,10 +293,6 @@ QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QSurface *surface, Q
   // textures preview pass
   Qt3DRender::QFrameGraphNode *previewPass = constructTexturesPreviewPass();
   previewPass->setParent( mMainViewPort );
-
-  Qt3DRender::QDebugOverlay *debugOverlay = new Qt3DRender::QDebugOverlay;
-  debugOverlay->setParent( mMainViewPort );
-  debugOverlay->setEnabled( false );
 
   mPostprocessingEntity = new QgsPostprocessingEntity( this, mRootEntity );
   mPostprocessingEntity->addComponent( mPostprocessPassLayer );
