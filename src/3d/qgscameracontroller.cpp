@@ -487,13 +487,15 @@ void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
     {
       const float scaling = ( ( wheel->modifiers() & Qt::ControlModifier ) ? 0.1f : 1.0f ) / 1000.f;
       float dist = mCameraPose.distanceFromCenterPoint();
-      dist -= dist * scaling * wheel->angleDelta().y();
+      dist -= dist * scaling * -wheel->angleDelta().y();
+
+      double origDist = mCameraPose.distanceFromCenterPoint();
 
       QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( QPoint( mMousePos.x(), mMousePos.y() ), mViewport.size(), mCamera );
       QVector3D lookAtPos = ray.origin() + mCameraPose.distanceFromCenterPoint() * ray.direction();
 
-      mCameraPose.setDistanceFromCenterPoint( dist );
-      mCameraPose.setCenterPoint( lookAtPos );
+      mCameraPose.setDistanceFromCenterPoint( origDist );
+      mCameraPose.setCenterPoint( mCamera->position() + dist * ( lookAtPos - mCamera->position() ).normalized() );
       updateCameraFromPose();
 
       QgsRay3D ray2 = Qgs3DUtils::rayFromScreenPoint( QPoint( mViewport.width() - mMousePos.x(), mViewport.height() - mMousePos.y() ), mViewport.size(), mCamera );

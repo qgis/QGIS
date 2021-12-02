@@ -56,7 +56,6 @@ void QgsAbstract3DEngine::requestDepthBufferCapture()
   } );
 }
 
-
 void QgsAbstract3DEngine::setRenderCaptureEnabled( bool enabled )
 {
   mFrameGraph->setRenderCaptureEnabled( enabled );
