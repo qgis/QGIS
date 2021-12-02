@@ -27,26 +27,37 @@ class TestQgsRegularPolygon: public QObject
 {
     Q_OBJECT
   private slots:
-    void regularPolygon();
+    void constructors();
+    void settersGetters();
+    void measures();
+    void points();
+    void toString();
+    void conversions();
 };
 
-void TestQgsRegularPolygon::regularPolygon()
+void TestQgsRegularPolygon::constructors()
 {
-  // constructors
-  QgsRegularPolygon rp1 = QgsRegularPolygon();
+  QgsRegularPolygon rp1;
+
   QVERIFY( rp1.center().isEmpty() );
   QVERIFY( rp1.firstVertex().isEmpty() );
   QCOMPARE( rp1.numberSides(), static_cast< unsigned int >( 0 ) );
   QCOMPARE( rp1.radius(), 0.0 );
   QVERIFY( rp1.isEmpty() );
 
+
   QgsRegularPolygon rp2;
-  QgsRegularPolygon( QgsPoint( 0, 0 ), 5, 0, 2, QgsRegularPolygon::InscribedCircle );
-  QVERIFY( rp2.isEmpty() );
-  QgsRegularPolygon( QgsPoint( 0, 0 ), 5, 0, 5, static_cast< QgsRegularPolygon::ConstructionOption >( 4 ) );
+  rp2 = QgsRegularPolygon( QgsPoint( 0, 0 ), 5, 0, 2,
+                           QgsRegularPolygon::InscribedCircle );
   QVERIFY( rp2.isEmpty() );
 
-  rp2 = QgsRegularPolygon( QgsPoint( 0, 0 ), 5, 0, 5, QgsRegularPolygon::InscribedCircle );
+  rp2 = QgsRegularPolygon( QgsPoint( 0, 0 ), 5, 0, 5,
+                           static_cast< QgsRegularPolygon::ConstructionOption >( 4 ) );
+  QVERIFY( rp2.isEmpty() );
+
+  rp2 = QgsRegularPolygon( QgsPoint( 0, 0 ), 5, 0, 5,
+                           QgsRegularPolygon::InscribedCircle );
+
   QVERIFY( !rp2.isEmpty() );
   QCOMPARE( rp2.center(), QgsPoint( 0, 0 ) );
   QCOMPARE( rp2.firstVertex(), QgsPoint( 0, 5 ) );
@@ -55,7 +66,10 @@ void TestQgsRegularPolygon::regularPolygon()
   QGSCOMPARENEAR( rp2.apothem(), 4.0451, 10E-4 );
   QVERIFY( rp2 ==  QgsRegularPolygon( QgsPoint( 0, 0 ), -5, 0, 5, QgsRegularPolygon::InscribedCircle ) );
 
-  QgsRegularPolygon rp3 = QgsRegularPolygon( QgsPoint( 0, 0 ), rp2.apothem(), 36.0, 5, QgsRegularPolygon::CircumscribedCircle );
+  QgsRegularPolygon rp3;
+  rp3 = QgsRegularPolygon( QgsPoint( 0, 0 ), rp2.apothem(), 36.0, 5,
+                           QgsRegularPolygon::CircumscribedCircle );
+
   QVERIFY( rp2 == rp3 );
   QVERIFY( rp2 == QgsRegularPolygon( QgsPoint( 0, 0 ), -rp2.apothem(), 36.0, 5, QgsRegularPolygon::CircumscribedCircle ) );
   QVERIFY( rp1 != rp3 );
@@ -65,116 +79,172 @@ void TestQgsRegularPolygon::regularPolygon()
 
   QgsRegularPolygon rp4 = QgsRegularPolygon( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), 2, QgsRegularPolygon::InscribedCircle );
   QVERIFY( rp4.isEmpty() );
-  rp4 = QgsRegularPolygon( QgsPoint(), QgsPoint( 0, 5 ), 5, static_cast< QgsRegularPolygon::ConstructionOption >( 4 ) );
+
+  rp4 = QgsRegularPolygon( QgsPoint(), QgsPoint( 0, 5 ), 5,
+                           static_cast< QgsRegularPolygon::ConstructionOption >( 4 ) );
   QVERIFY( rp4.isEmpty() );
-  rp4 = QgsRegularPolygon( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), 5, QgsRegularPolygon::InscribedCircle );
+
+  rp4 = QgsRegularPolygon( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), 5,
+                           QgsRegularPolygon::InscribedCircle );
   QVERIFY( rp4 == rp2 );
 
-  QgsRegularPolygon rp5 = QgsRegularPolygon( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ).project( rp2.apothem(), 36.0 ), 2, QgsRegularPolygon::CircumscribedCircle );
+  QgsRegularPolygon rp5 = QgsRegularPolygon( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ).project( rp2.apothem(), 36.0 ), 2,
+                          QgsRegularPolygon::CircumscribedCircle );
   QVERIFY( rp5.isEmpty() );
-  rp5 = QgsRegularPolygon( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ).project( rp2.apothem(), 36.0 ), 5, static_cast< QgsRegularPolygon::ConstructionOption >( 4 ) );
+
+  rp5 = QgsRegularPolygon( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ).project( rp2.apothem(), 36.0 ), 5,
+                           static_cast< QgsRegularPolygon::ConstructionOption >( 4 ) );
   QVERIFY( rp5.isEmpty() );
-  rp5 = QgsRegularPolygon( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ).project( rp2.apothem(), 36.0 ), 5, QgsRegularPolygon::CircumscribedCircle );
+
+  rp5 = QgsRegularPolygon( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ).project( rp2.apothem(), 36.0 ), 5,
+                           QgsRegularPolygon::CircumscribedCircle );
   QVERIFY( rp5 == rp2 );
 
   QgsRegularPolygon rp6 = QgsRegularPolygon( QgsPoint( 0, 5 ), QgsPoint( 0, 0 ).project( 5.0, 72 ), 5 );
   QVERIFY( rp6 == rp2 );
+}
 
+void TestQgsRegularPolygon::settersGetters()
+{
+  QgsRegularPolygon rp;
 
-  // setters and getters
-  QgsRegularPolygon rp7 = QgsRegularPolygon();
+  rp.setCenter( QgsPoint( 5, 5 ) );
+  QVERIFY( rp.isEmpty() );
+  QCOMPARE( rp.center(), QgsPoint( 5, 5 ) );
 
-  rp7.setCenter( QgsPoint( 5, 5 ) );
-  QVERIFY( rp7.isEmpty() );
-  QCOMPARE( rp7.center(), QgsPoint( 5, 5 ) );
+  rp.setNumberSides( 2 );
+  QVERIFY( rp.isEmpty() );
+  QCOMPARE( rp.numberSides(), static_cast< unsigned int >( 0 ) );
 
-  rp7.setNumberSides( 2 );
-  QVERIFY( rp7.isEmpty() );
-  QCOMPARE( rp7.numberSides(), static_cast< unsigned int >( 0 ) );
-  rp7.setNumberSides( 5 );
-  QVERIFY( rp7.isEmpty() );
-  QCOMPARE( rp7.numberSides(), static_cast< unsigned int >( 5 ) );
-  rp7.setNumberSides( 2 );
-  QVERIFY( rp7.isEmpty() );
-  QCOMPARE( rp7.numberSides(), static_cast< unsigned int >( 5 ) );
-  rp7.setNumberSides( 3 );
-  QVERIFY( rp7.isEmpty() );
-  QCOMPARE( rp7.numberSides(), static_cast< unsigned int >( 3 ) );
+  rp.setNumberSides( 5 );
+  QVERIFY( rp.isEmpty() );
+  QCOMPARE( rp.numberSides(), static_cast< unsigned int >( 5 ) );
 
-  rp7.setRadius( -6 );
-  QVERIFY( !rp7.isEmpty() );
-  QCOMPARE( rp7.radius(), 6.0 );
-  QCOMPARE( rp7.firstVertex(), rp7.center().project( 6, 0 ) );
+  rp.setNumberSides( 2 );
+  QVERIFY( rp.isEmpty() );
+  QCOMPARE( rp.numberSides(), static_cast< unsigned int >( 5 ) );
 
-  rp7.setFirstVertex( QgsPoint( 4, 4 ) );
-  QCOMPARE( rp7.firstVertex(), QgsPoint( 4, 4 ) );
-  QCOMPARE( rp7.radius(), rp7.center().distance3D( QgsPoint( 4, 4 ) ) );
+  rp.setNumberSides( 3 );
+  QVERIFY( rp.isEmpty() );
+  QCOMPARE( rp.numberSides(), static_cast< unsigned int >( 3 ) );
 
-  rp7 = QgsRegularPolygon( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), 5, QgsRegularPolygon::InscribedCircle );
-  rp7.setCenter( QgsPoint( 5, 5 ) );
-  QCOMPARE( rp7.radius(), 5.0 );
-  QCOMPARE( rp7.firstVertex(), QgsPoint( 5, 10 ) );
-  rp7.setNumberSides( 3 );
-  QCOMPARE( rp7.radius(), 5.0 );
-  QCOMPARE( rp7.firstVertex(), QgsPoint( 5, 10 ) );
-  rp7.setNumberSides( 2 );
-  QCOMPARE( rp7.radius(), 5.0 );
-  QCOMPARE( rp7.firstVertex(), QgsPoint( 5, 10 ) );
+  rp.setRadius( -6 );
+  QVERIFY( !rp.isEmpty() );
+  QCOMPARE( rp.radius(), 6.0 );
+  QCOMPARE( rp.firstVertex(), rp.center().project( 6, 0 ) );
 
-  // measures
+  rp.setFirstVertex( QgsPoint( 4, 4 ) );
+  QCOMPARE( rp.firstVertex(), QgsPoint( 4, 4 ) );
+  QCOMPARE( rp.radius(), rp.center().distance3D( QgsPoint( 4, 4 ) ) );
+
+  rp = QgsRegularPolygon( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), 5, QgsRegularPolygon::InscribedCircle );
+
+  rp.setCenter( QgsPoint( 5, 5 ) );
+  QCOMPARE( rp.radius(), 5.0 );
+  QCOMPARE( rp.firstVertex(), QgsPoint( 5, 10 ) );
+
+  rp.setNumberSides( 3 );
+  QCOMPARE( rp.radius(), 5.0 );
+  QCOMPARE( rp.firstVertex(), QgsPoint( 5, 10 ) );
+
+  rp.setNumberSides( 2 );
+  QCOMPARE( rp.radius(), 5.0 );
+  QCOMPARE( rp.firstVertex(), QgsPoint( 5, 10 ) );
+}
+
+void TestQgsRegularPolygon::measures()
+{
+  QgsRegularPolygon rp1;
+
   QGSCOMPARENEAR( rp1.length(), 0.0, 10e-4 );
   QGSCOMPARENEAR( rp1.area(), 0.0, 10e-4 );
   QGSCOMPARENEAR( rp1.perimeter(), 0.0, 10e-4 );
+
+  QgsRegularPolygon rp2;
+  rp2 = QgsRegularPolygon( QgsPoint( 0, 0 ), 5, 0, 5,
+                           QgsRegularPolygon::InscribedCircle );
+
   QGSCOMPARENEAR( rp2.length(), 5.8779, 10e-4 );
   QGSCOMPARENEAR( rp2.area(), 59.4410, 10e-4 );
   QGSCOMPARENEAR( rp2.perimeter(), 29.3893, 10e-4 );
   QCOMPARE( rp2.interiorAngle(), 108.0 );
   QCOMPARE( rp2.centralAngle(), 72.0 );
-  QgsRegularPolygon rp8 = QgsRegularPolygon( QgsPoint( 0, 0 ), QgsPoint( 5, 0 ), 5 );
-  QGSCOMPARENEAR( rp8.area(), 43.0119, 10e-4 );
-  QCOMPARE( rp8.perimeter(), 25.0 );
-  QCOMPARE( rp8.length(), 5.0 );
-  QCOMPARE( rp8.interiorAngle(), 108.0 );
-  QCOMPARE( rp8.centralAngle(), 72.0 );
-  rp8.setNumberSides( 4 );
-  QCOMPARE( rp8.interiorAngle(), 90.0 );
-  QCOMPARE( rp8.centralAngle(), 90.0 );
-  rp8.setNumberSides( 3 );
-  QCOMPARE( rp8.interiorAngle(), 60.0 );
-  QCOMPARE( rp8.centralAngle(), 120.0 );
 
-  //points
-  rp8 = QgsRegularPolygon(); // empty
-  QgsPointSequence points = rp8.points();
+  QgsRegularPolygon rp3 = QgsRegularPolygon( QgsPoint( 0, 0 ), QgsPoint( 5, 0 ), 5 );
+
+  QGSCOMPARENEAR( rp3.area(), 43.0119, 10e-4 );
+  QCOMPARE( rp3.perimeter(), 25.0 );
+  QCOMPARE( rp3.length(), 5.0 );
+  QCOMPARE( rp3.interiorAngle(), 108.0 );
+  QCOMPARE( rp3.centralAngle(), 72.0 );
+
+  rp3.setNumberSides( 4 );
+  QCOMPARE( rp3.interiorAngle(), 90.0 );
+  QCOMPARE( rp3.centralAngle(), 90.0 );
+
+  rp3.setNumberSides( 3 );
+  QCOMPARE( rp3.interiorAngle(), 60.0 );
+  QCOMPARE( rp3.centralAngle(), 120.0 );
+}
+
+void TestQgsRegularPolygon::points()
+{
+  QgsRegularPolygon rp; // empty
+
+  QgsPointSequence points = rp.points();
   QVERIFY( points.isEmpty() );
-  rp8 = QgsRegularPolygon( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), 3, QgsRegularPolygon::InscribedCircle );
-  points = rp8.points();
+
+  rp = QgsRegularPolygon( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), 3,
+                          QgsRegularPolygon::InscribedCircle );
+  points = rp.points();
+
   QCOMPARE( points.count(), 3 );
   QCOMPARE( points.at( 0 ), QgsPoint( 0, 5 ) );
   QGSCOMPARENEAR( points.at( 1 ).x(), 4.33, 0.01 );
   QGSCOMPARENEAR( points.at( 1 ).y(), -2.4999, 0.01 );
   QGSCOMPARENEAR( points.at( 2 ).x(), -4.33, 0.01 );
   QGSCOMPARENEAR( points.at( 2 ).y(), -2.4999, 0.01 );
+}
 
-  //test conversions
+void TestQgsRegularPolygon::toString()
+{
+  QgsRegularPolygon rp;
+  QCOMPARE( rp.toString(), QString( "Empty" ) );
+
+  rp = QgsRegularPolygon( QgsPoint( 0, 0 ), 5, 0, 5, QgsRegularPolygon::InscribedCircle );
+  QCOMPARE( rp.toString(), QString( "RegularPolygon (Center: Point (0 0), First Vertex: Point (0 5), Radius: 5, Azimuth: 0)" ) );
+
+}
+
+void TestQgsRegularPolygon::conversions()
+{
+  QgsRegularPolygon rp;
+  rp = QgsRegularPolygon( QgsPoint( 0, 0 ), 5, 0, 5,
+                          QgsRegularPolygon::InscribedCircle );
+
   // circle
-  QVERIFY( QgsCircle( QgsPoint( 0, 0 ), 5 ) == rp2.circumscribedCircle() );
-  QVERIFY( rp2.inscribedCircle() == QgsRegularPolygon( QgsPoint( 0, 0 ), rp2.apothem(), 36.0, 5, QgsRegularPolygon::InscribedCircle ).circumscribedCircle() );
+  QVERIFY( QgsCircle( QgsPoint( 0, 0 ), 5 ) == rp.circumscribedCircle() );
+
+  QgsCircle circleExpected;
+  circleExpected = QgsRegularPolygon( QgsPoint( 0, 0 ), rp.apothem(), 36.0, 5,
+                                      QgsRegularPolygon::InscribedCircle ).circumscribedCircle();
+  QVERIFY( rp.inscribedCircle() ==  circleExpected );
 
   // triangle
-  QCOMPARE( QgsTriangle(), rp2.toTriangle() );
+  QCOMPARE( QgsTriangle(), rp.toTriangle() );
   QCOMPARE( QgsTriangle(), QgsRegularPolygon().toTriangle() );
-  QgsRegularPolygon rp9 = QgsRegularPolygon( QgsPoint( 0, 0 ), 5, 0, 3, QgsRegularPolygon::InscribedCircle );
 
-  QVERIFY( QgsCircle( QgsPoint( 0, 0 ), 5 ) == rp9.toTriangle().circumscribedCircle() );
+  rp = QgsRegularPolygon( QgsPoint( 0, 0 ), 5, 0, 3, QgsRegularPolygon::InscribedCircle );
+  QVERIFY( QgsCircle( QgsPoint( 0, 0 ), 5 ) == rp.toTriangle().circumscribedCircle() );
 
-  QgsRegularPolygon rp10 = QgsRegularPolygon( QgsPoint( 0, 0 ), QgsPoint( 0, 4 ), 4 );
-  QVector<QgsTriangle> rp10_tri = rp10.triangulate();
-  QCOMPARE( rp10_tri.length(), static_cast< int >( rp10.numberSides() ) );
-  QVERIFY( rp10_tri.at( 0 ) == QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 4 ), rp10.center() ) );
-  QVERIFY( rp10_tri.at( 1 ) == QgsTriangle( QgsPoint( 0, 4 ), QgsPoint( 4, 4 ), rp10.center() ) );
-  QVERIFY( rp10_tri.at( 2 ) == QgsTriangle( QgsPoint( 4, 4 ), QgsPoint( 4, 0 ), rp10.center() ) );
-  QVERIFY( rp10_tri.at( 3 ) == QgsTriangle( QgsPoint( 4, 0 ), QgsPoint( 0, 0 ), rp10.center() ) );
+  rp = QgsRegularPolygon( QgsPoint( 0, 0 ), QgsPoint( 0, 4 ), 4 );
+  QVector<QgsTriangle> rp_tri = rp.triangulate();
+
+  QCOMPARE( rp_tri.length(), static_cast< int >( rp.numberSides() ) );
+  QVERIFY( rp_tri.at( 0 ) == QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 4 ), rp.center() ) );
+  QVERIFY( rp_tri.at( 1 ) == QgsTriangle( QgsPoint( 0, 4 ), QgsPoint( 4, 4 ), rp.center() ) );
+  QVERIFY( rp_tri.at( 2 ) == QgsTriangle( QgsPoint( 4, 4 ), QgsPoint( 4, 0 ), rp.center() ) );
+  QVERIFY( rp_tri.at( 3 ) == QgsTriangle( QgsPoint( 4, 0 ), QgsPoint( 0, 0 ), rp.center() ) );
 
   QVERIFY( QgsRegularPolygon().triangulate().isEmpty() );
 
@@ -184,35 +254,40 @@ void TestQgsRegularPolygon::regularPolygon()
 
   QgsPointSequence ptsPol;
   std::unique_ptr< QgsPolygon > pol( new QgsPolygon() );
-  pol.reset( rp10.toPolygon() );
+  pol.reset( rp.toPolygon() );
+
   QCOMPARE( pol->numInteriorRings(), 0 );
   QCOMPARE( pol->exteriorRing()->numPoints(), 5 );
 
   pol->exteriorRing()->points( ptsPol );
+
   QCOMPARE( ptsPol.length(), 5 );
   QVERIFY( ptsPol.at( 0 ) == QgsPoint( 0, 0 ) );
   QVERIFY( ptsPol.at( 1 ) == QgsPoint( 0, 4 ) );
   QVERIFY( ptsPol.at( 2 ) == QgsPoint( 4, 4 ) );
   QVERIFY( ptsPol.at( 3 ) == QgsPoint( 4, 0 ) );
   QVERIFY( ptsPol.at( 4 ) == QgsPoint( 0, 0 ) );
+
   ptsPol.pop_back();
 
-  std::unique_ptr< QgsLineString > l( QgsRegularPolygon( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), 1, QgsRegularPolygon::InscribedCircle ).toLineString() );
-  QVERIFY( l->isEmpty() );
-  l.reset( rp10.toLineString( ) );
-  QCOMPARE( l->numPoints(), 5 );
-  QCOMPARE( l->pointN( 0 ), l->pointN( 4 ) );
-  QgsPointSequence pts_l;
-  l->points( pts_l );
-  pts_l.pop_back();
-  QCOMPARE( ptsPol, pts_l );
+  QgsRegularPolygon rp2;
+  rp2 = QgsRegularPolygon( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), 1,
+                           QgsRegularPolygon::InscribedCircle );
 
-  //test toString
-  QCOMPARE( rp1.toString(), QString( "Empty" ) );
-  QCOMPARE( rp2.toString(), QString( "RegularPolygon (Center: Point (0 0), First Vertex: Point (0 5), Radius: 5, Azimuth: 0)" ) );
+  std::unique_ptr< QgsLineString > ls( rp2.toLineString() );
+  QVERIFY( ls->isEmpty() );
 
+  ls.reset( rp.toLineString( ) );
+
+  QCOMPARE( ls->numPoints(), 5 );
+  QCOMPARE( ls->pointN( 0 ), ls->pointN( 4 ) );
+
+  QgsPointSequence pts_ls;
+  ls->points( pts_ls );
+  pts_ls.pop_back();
+
+  QCOMPARE( ptsPol, pts_ls );
 }
-
 
 QGSTEST_MAIN( TestQgsRegularPolygon )
 #include "testqgsregularpolygon.moc"
