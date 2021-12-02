@@ -1731,7 +1731,7 @@ QList<QgsVectorDataProvider::NativeType> QgsPostgresConn::nativeTypes()
       << QgsVectorDataProvider::NativeType( tr( "Date" ), QStringLiteral( "date" ), QVariant::Date, -1, -1, -1, -1 )
       << QgsVectorDataProvider::NativeType( tr( "Time" ), QStringLiteral( "time" ), QVariant::Time, -1, -1, -1, -1 )
       << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), QStringLiteral( "timestamp without time zone" ), QVariant::DateTime, -1, -1, -1, -1 )
-      << QgsVectorDataProvider::NativeType( tr( "Interval" ), QStringLiteral( "interval" ), qVariantFromValue( QgsInterval() ).type(), -1, -1, -1, -1 )
+      << QgsVectorDataProvider::NativeType( tr( "Interval" ), QStringLiteral( "interval" ), QVariant::fromValue( QgsInterval() ).type(), -1, -1, -1, -1 )
       // complex types
       << QgsVectorDataProvider::NativeType( tr( "Map (hstore)" ), QStringLiteral( "hstore" ), QVariant::Map, -1, -1, -1, -1, QVariant::String )
       << QgsVectorDataProvider::NativeType( tr( "Array of number (integer - 32bit)" ), QStringLiteral( "int4[]" ), QVariant::List, -1, -1, -1, -1, QVariant::Int )

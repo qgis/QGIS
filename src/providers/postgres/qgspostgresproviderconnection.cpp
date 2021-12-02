@@ -356,7 +356,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
           }
           else if ( typName.startsWith( QLatin1String( "interval" ) ) )
           {
-            vType = qVariantFromValue( QgsInterval() ).type();
+            vType = QVariant::fromValue( QgsInterval() ).type();
           }
           else if ( typName == QLatin1String( "time" ) )
           {
