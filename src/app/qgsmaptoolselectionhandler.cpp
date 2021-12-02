@@ -263,9 +263,20 @@ void QgsMapToolSelectionHandler::selectPolygonPressEvent( QgsMapMouseEvent *e )
         auto vectorLayer = static_cast<QgsVectorLayer *>( layer );
         if ( vectorLayer->geometryType() == QgsWkbTypes::PolygonGeometry )
         {
+          QgsRectangle rect( x - sr, y - sr, x + sr, y + sr );
+          QgsCoordinateTransform transform = mCanvas->mapSettings().layerTransform( vectorLayer );
+
+          try
+          {
+            rect = transform.transformBoundingBox( rect, Qgis::TransformDirection::Reverse );
+          }
+          catch ( QgsCsException & )
+          {
+            QgsDebugMsg( QStringLiteral( "Could not transform geometry to layer CRS" ) );
+          }
+
           QgsFeatureIterator fit = vectorLayer->getFeatures( QgsFeatureRequest()
-                                   .setDestinationCrs( mCanvas->mapSettings().destinationCrs(), mCanvas->mapSettings().transformContext() )
-                                   .setFilterRect( QgsRectangle( x - sr, y - sr, x + sr, y + sr ) )
+                                   .setFilterRect( rect )
                                    .setFlags( QgsFeatureRequest::ExactIntersect ) );
           QgsFeature f;
           while ( fit.nextFeature( f ) )
@@ -279,7 +290,20 @@ void QgsMapToolSelectionHandler::selectPolygonPressEvent( QgsMapMouseEvent *e )
     const QPoint globalPos = mCanvas->mapToGlobal( QPoint( e->pos().x() + 5, e->pos().y() + 5 ) );
     const QList<QgsMapToolIdentify::IdentifyResult> selectedFeatures = mIdentifyMenu->exec( results, globalPos );
     if ( !selectedFeatures.empty() && selectedFeatures[0].mFeature.hasGeometry() )
-      setSelectedGeometry( selectedFeatures[0].mFeature.geometry(), e->modifiers() );
+    {
+      QgsCoordinateTransform transform = mCanvas->mapSettings().layerTransform( selectedFeatures.at( 0 ).mLayer );
+      QgsGeometry geom = selectedFeatures[0].mFeature.geometry();
+      try
+      {
+        geom.transform( transform );
+      }
+      catch ( QgsCsException & )
+      {
+        QgsDebugMsg( QStringLiteral( "Could not transform geometry to map CRS" ) );
+      }
+
+      setSelectedGeometry( geom, e->modifiers() );
+    }
 
     return;
   }
