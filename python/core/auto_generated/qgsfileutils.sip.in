@@ -193,7 +193,7 @@ class QgsFileSearchTask: QgsTask
 %Docstring(signature="appended")
 Background thread handler for findFile.
 
-.. versionadded:: 3.18
+.. versionadded:: 3.24
 %End
 
 %TypeHeaderCode
@@ -211,14 +211,14 @@ Background task handler for findFile.
 :param searchCeiling: limits where in the folder hierarchy the search can be performed, 1 = root/drive, 2 = first folder level, 3 = sub folders ( Unix: /usr/bin, Win: C:/Users/Admin ), etc.
 :param currentDir: alternative default directory to override the actual current directory during the search
 
-.. versionadded:: 3.18
+.. versionadded:: 3.24
 %End
 
     QStringList results();
 %Docstring
 Returns the result of the process.
 
-.. versionadded:: 3.18
+.. versionadded:: 3.24
 %End
 
   protected:

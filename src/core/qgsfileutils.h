@@ -225,7 +225,7 @@ class CORE_EXPORT QgsFileUtils
  * \ingroup core
  * \class QgsFileSearchTask
  * \brief Background thread handler for findFile.
- * \since QGIS 3.18
+ * \since QGIS 3.24
  */
 class CORE_EXPORT QgsFileSearchTask: public QgsTask
 {
@@ -239,13 +239,13 @@ class CORE_EXPORT QgsFileSearchTask: public QgsTask
      * \param maxClimbs limit the number of time the search can move up from the basepath
      * \param searchCeiling limits where in the folder hierarchy the search can be performed, 1 = root/drive, 2 = first folder level, 3 = sub folders ( Unix: /usr/bin, Win: C:/Users/Admin ), etc.
      * \param currentDir alternative default directory to override the actual current directory during the search
-     * \since QGIS 3.18
+     * \since QGIS 3.24
      */
     QgsFileSearchTask( const QString file, const QString basePath, int maxClimbs, int searchCeiling, const QString currentDir );
 
     /**
      * Returns the result of the process.
-     * \since QGIS 3.18
+     * \since QGIS 3.24
      */
     QStringList results();
 
