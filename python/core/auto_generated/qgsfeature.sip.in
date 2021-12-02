@@ -198,7 +198,47 @@ its attributes:
 
 .. seealso:: :py:func:`setAttributes`
 
+.. seealso:: :py:func:`attributeMap`
+
 .. versionadded:: 2.9
+%End
+
+
+    SIP_PYOBJECT attributeMap() const /TypeHint="Dict[str, Optional[object]]"/;
+%Docstring
+Returns the feature's attributes as a map of field name to value.
+
+.. note::
+
+   The fields definition must be associated with the feature using :py:func:`~QgsFeature.setFields` before this method can be used.
+
+:raises ValueError: if the field definition is unset or the size of the fields does not match the size of the feature's attributes()
+
+
+.. seealso:: :py:func:`attributes`
+
+.. seealso:: :py:func:`setAttributes`
+
+.. versionadded:: 3.22.2
+%End
+%MethodCode
+    const int fieldSize = sipCpp->fields().size();
+    const int attributeSize = sipCpp->attributes().size();
+    if ( fieldSize == 0 && attributeSize != 0 )
+    {
+      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Field definition has not been set for feature" ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else if ( fieldSize != attributeSize )
+    {
+      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Feature attribute size (%1) does not match number of fields (%2)" ).arg( attributeSize ).arg( fieldSize ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      QVariantMap *v = new QVariantMap( sipCpp->attributeMap() );
+      sipRes = sipConvertFromNewType( v, sipType_QVariantMap, Py_None );
+    }
 %End
 
     int attributeCount() const;
