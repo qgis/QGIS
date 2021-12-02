@@ -208,6 +208,10 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
      */
     bool willHandleKeyEvent( QKeyEvent *event );
 
+    /**
+     * Sets the depth buffer image used by the camera controller to calculate world position from a pixel's coordinates and depth
+     * \since QGIS 3.24
+     */
     void setDepthBufferImage( const QImage &depthImage );
 
   public slots:
@@ -242,8 +246,16 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
      */
     void setCursorPosition( QPoint point );
 
+    /**
+     * Emited to ask for the depth buffer image
+     * \since QGIS 3.24
+     */
     void requestDepthBufferCapture();
 
+    /**
+     * Emitted when the camera rotation center changes
+     * \since QGIS 3.24
+     */
     void cameraRotationCenterChanged( QVector3D position );
 
   private slots:
