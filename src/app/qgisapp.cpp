@@ -10625,7 +10625,7 @@ void QgisApp::selectByForm()
   dlg->setAttribute( Qt::WA_DeleteOnClose );
   connect( dlg, &QgsSelectByFormDialog::showFilteredFeaturesAttributeTable, [ = ]( const QString & filter )
   {
-    if ( !vlayer || !vlayer->dataProvider() )
+    if ( !vlayer->dataProvider() )
     {
       return;
     }
