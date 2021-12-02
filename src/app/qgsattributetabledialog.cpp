@@ -962,6 +962,11 @@ void QgsAttributeTableDialog::setFilterExpression( const QString &filterString, 
   mFeatureFilterWidget->setFilterExpression( filterString, type, alwaysShowFilter );
 }
 
+void QgsAttributeTableDialog::setView( QgsDualView::ViewMode mode )
+{
+  mMainView->setView( mode );
+}
+
 void QgsAttributeTableDialog::deleteFeature( const QgsFeatureId fid )
 {
   QgsDebugMsg( QStringLiteral( "Delete %1" ).arg( fid ) );
