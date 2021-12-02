@@ -50,8 +50,8 @@ class ogr2ogr(GdalAlgorithm):
 
         convert_all_layers_param = QgsProcessingParameterBoolean(self.CONVERT_ALL_LAYERS,
                                                                  self.tr('Convert all layers from dataset'), defaultValue=False)
-        convert_all_layers_param.setHelp("Use convert all layers to convert a whole dataset. "
-                                         "Supported output formats for this option are GPKG and GML.")
+        convert_all_layers_param.setHelp( self.tr( "Use convert all layers to convert a whole dataset. "
+                                         "Supported output formats for this option are GPKG and GML.") )
         self.addParameter(convert_all_layers_param)
 
         options_param = QgsProcessingParameterString(self.OPTIONS,
