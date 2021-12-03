@@ -19,7 +19,6 @@
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DRender/QRenderSettings>
-#include <QOpenGLContext>
 
 #include "qgspreviewquad.h"
 

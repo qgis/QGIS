@@ -49,7 +49,7 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRende
   mForwardColorTexture = new Qt3DRender::QTexture2D;
   mForwardColorTexture->setWidth( mSize.width() );
   mForwardColorTexture->setHeight( mSize.height() );
-  mForwardColorTexture->setFormat( Qt3DRender::QAbstractTexture::RGBA32F );
+  mForwardColorTexture->setFormat( Qt3DRender::QAbstractTexture::RGB8_UNorm );
   mForwardColorTexture->setGenerateMipMaps( false );
   mForwardColorTexture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
   mForwardColorTexture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
@@ -59,7 +59,7 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRende
   mForwardDepthTexture = new Qt3DRender::QTexture2D;
   mForwardDepthTexture->setWidth( mSize.width() );
   mForwardDepthTexture->setHeight( mSize.height() );
-  mForwardDepthTexture->setFormat( Qt3DRender::QTexture2D::TextureFormat::D32F );
+  mForwardDepthTexture->setFormat( Qt3DRender::QTexture2D::TextureFormat::DepthFormat );
   mForwardDepthTexture->setGenerateMipMaps( false );
   mForwardDepthTexture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
   mForwardDepthTexture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
@@ -100,7 +100,7 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructShadowRender
   mShadowMapTexture = new Qt3DRender::QTexture2D;
   mShadowMapTexture->setWidth( mShadowMapResolution );
   mShadowMapTexture->setHeight( mShadowMapResolution );
-  mShadowMapTexture->setFormat( Qt3DRender::QTexture2D::TextureFormat::D32F );
+  mShadowMapTexture->setFormat( Qt3DRender::QTexture2D::TextureFormat::DepthFormat );
   mShadowMapTexture->setGenerateMipMaps( false );
   mShadowMapTexture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
   mShadowMapTexture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
@@ -153,7 +153,7 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructPostprocessi
   // Create a texture to render into.
   mRenderCaptureColorTexture = new Qt3DRender::QTexture2D( colorOutput );
   mRenderCaptureColorTexture->setSize( mSize.width(), mSize.height() );
-  mRenderCaptureColorTexture->setFormat( Qt3DRender::QAbstractTexture::RGBA32F );
+  mRenderCaptureColorTexture->setFormat( Qt3DRender::QAbstractTexture::RGB8_UNorm );
   mRenderCaptureColorTexture->setMinificationFilter( Qt3DRender::QAbstractTexture::Linear );
   mRenderCaptureColorTexture->setMagnificationFilter( Qt3DRender::QAbstractTexture::Linear );
 
@@ -166,7 +166,7 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructPostprocessi
   depthOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::Depth );
   mRenderCaptureDepthTexture = new Qt3DRender::QTexture2D( depthOutput );
   mRenderCaptureDepthTexture->setSize( mSize.width(), mSize.height() );
-  mRenderCaptureDepthTexture->setFormat( Qt3DRender::QAbstractTexture::D32F );
+  mRenderCaptureDepthTexture->setFormat( Qt3DRender::QAbstractTexture::DepthFormat );
   mRenderCaptureDepthTexture->setMinificationFilter( Qt3DRender::QAbstractTexture::Linear );
   mRenderCaptureDepthTexture->setMagnificationFilter( Qt3DRender::QAbstractTexture::Linear );
   mRenderCaptureDepthTexture->setComparisonFunction( Qt3DRender::QAbstractTexture::CompareLessEqual );
@@ -212,7 +212,7 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructDepthBufferP
   // Create a texture to render into.
   mDepthRenderCaptureColorTexture = new Qt3DRender::QTexture2D( colorOutput );
   mDepthRenderCaptureColorTexture->setSize( mSize.width(), mSize.height() );
-  mDepthRenderCaptureColorTexture->setFormat( Qt3DRender::QAbstractTexture::RGBA32F );
+  mDepthRenderCaptureColorTexture->setFormat( Qt3DRender::QAbstractTexture::RGB8_UNorm );
   mDepthRenderCaptureColorTexture->setMinificationFilter( Qt3DRender::QAbstractTexture::Linear );
   mDepthRenderCaptureColorTexture->setMagnificationFilter( Qt3DRender::QAbstractTexture::Linear );
 
@@ -225,7 +225,7 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructDepthBufferP
   depthOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::Depth );
   mDepthRenderCaptureDepthTexture = new Qt3DRender::QTexture2D( depthOutput );
   mDepthRenderCaptureDepthTexture->setSize( mSize.width(), mSize.height() );
-  mDepthRenderCaptureDepthTexture->setFormat( Qt3DRender::QAbstractTexture::D32F );
+  mDepthRenderCaptureDepthTexture->setFormat( Qt3DRender::QAbstractTexture::DepthFormat );
   mDepthRenderCaptureDepthTexture->setMinificationFilter( Qt3DRender::QAbstractTexture::Linear );
   mDepthRenderCaptureDepthTexture->setMagnificationFilter( Qt3DRender::QAbstractTexture::Linear );
   mDepthRenderCaptureDepthTexture->setComparisonFunction( Qt3DRender::QAbstractTexture::CompareLessEqual );
