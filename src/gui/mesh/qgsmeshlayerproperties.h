@@ -49,6 +49,9 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
     /**
      * \brief Constructor
      * \param lyr Mesh map layer for which properties will be displayed
+     * \param canvas
+     * \param parent
+     * \param fl
      */
     QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
