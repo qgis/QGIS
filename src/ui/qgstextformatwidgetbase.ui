@@ -109,7 +109,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>492</width>
+               <width>499</width>
                <height>300</height>
               </rect>
              </property>
@@ -625,7 +625,7 @@
               <item>
                <widget class="QStackedWidget" name="mLabelStackedWidget">
                 <property name="currentIndex">
-                 <number>7</number>
+                 <number>0</number>
                 </property>
                 <widget class="QWidget" name="mLabelPage_Text">
                  <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -654,8 +654,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>488</width>
-                       <height>404</height>
+                       <width>485</width>
+                       <height>429</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
@@ -1217,8 +1217,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>467</width>
-                       <height>866</height>
+                       <width>471</width>
+                       <height>742</height>
                       </rect>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_42">
@@ -2131,8 +2131,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>488</width>
-                       <height>404</height>
+                       <width>299</width>
+                       <height>308</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2477,8 +2477,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>488</width>
-                       <height>404</height>
+                       <width>296</width>
+                       <height>291</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_121">
@@ -2755,8 +2755,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>467</width>
-                       <height>898</height>
+                       <width>438</width>
+                       <height>753</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -3506,8 +3506,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>467</width>
-                       <height>522</height>
+                       <width>324</width>
+                       <height>457</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -4083,9 +4083,9 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>-1272</y>
-                       <width>467</width>
-                       <height>1830</height>
+                       <y>0</y>
+                       <width>472</width>
+                       <height>1690</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -5814,8 +5814,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>385</width>
-                       <height>753</height>
+                       <width>430</width>
+                       <height>708</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_8">

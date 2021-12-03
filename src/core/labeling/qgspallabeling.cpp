@@ -2406,6 +2406,10 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
       {
         point = QgsPoint( pointAsVariant.value<QgsReferencedGeometry>().asPoint() );
       }
+      else if ( pointAsVariant.canConvert<QgsGeometry>() )
+      {
+        point = QgsPoint( pointAsVariant.value<QgsGeometry>().asPoint() );
+      }
       else if ( !pointAsVariant.toString().isEmpty() )
       {
         point.fromWkt( pointAsVariant.toString() );
