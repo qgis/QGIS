@@ -921,7 +921,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   if ( ( ( mSnapMatch.hasVertex() || mSnapMatch.hasLineEndpoint() ) && ( point == mSnapMatch.point() ) ) || ( mSnapMatch.hasEdge() && QgsProject::instance()->topologicalEditing() ) )
   {
     e->snapPoint();
-    point = mSnapMatch.interpolatedPoint();
+    point = mSnapMatch.interpolatedPoint( mMapCanvas->mapSettings().destinationCrs() );
   }
 
   /*
