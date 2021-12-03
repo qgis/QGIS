@@ -262,9 +262,6 @@ Get settings default value.
 %End
 
     virtual SettingsType settingsType() const;
-%Docstring
-\copydoc :py:class:`QgsSettingsEntryBase`.settingsType
-%End
 };
 
 
@@ -336,9 +333,6 @@ Get settings default value.
 %End
 
     virtual SettingsType settingsType() const;
-%Docstring
-\copydoc :py:class:`QgsSettingsEntryBase`.settingsType
-%End
 
     void setMinLength( int minLength );
 %Docstring
@@ -435,9 +429,6 @@ Get settings default value.
 %End
 
     virtual SettingsType settingsType() const;
-%Docstring
-\copydoc :py:class:`QgsSettingsEntryBase`.settingsType
-%End
 
 };
 
@@ -510,9 +501,6 @@ Get settings default value.
 %End
 
     virtual SettingsType settingsType() const;
-%Docstring
-\copydoc :py:class:`QgsSettingsEntryBase`.settingsType
-%End
 };
 
 
@@ -585,9 +573,6 @@ Get settings default value.
 %End
 
     virtual SettingsType settingsType() const;
-%Docstring
-\copydoc :py:class:`QgsSettingsEntryBase`.settingsType
-%End
 
     void setMinValue( qlonglong minValue );
 %Docstring
@@ -684,9 +669,6 @@ Get settings default value.
 %End
 
     virtual SettingsType settingsType() const;
-%Docstring
-\copydoc :py:class:`QgsSettingsEntryBase`.settingsType
-%End
 
     void setMinValue( double minValue );
 %Docstring
@@ -803,9 +785,6 @@ The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the sett
 %End
 
     virtual QgsSettingsEntryBase::SettingsType settingsType() const;
-%Docstring
-\copydoc :py:class:`QgsSettingsEntryBase`.settingsType
-%End
 
 };
 
@@ -878,9 +857,6 @@ Get settings default value.
 %End
 
     virtual SettingsType settingsType() const;
-%Docstring
-\copydoc :py:class:`QgsSettingsEntryBase`.settingsType
-%End
 
 };
 

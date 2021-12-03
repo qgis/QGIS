@@ -318,7 +318,6 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryBase
      */
     QVariant defaultValue() const;
 
-    //! \copydoc QgsSettingsEntryBase::settingsType
     virtual SettingsType settingsType() const override;
 };
 
@@ -408,7 +407,6 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryBase
      */
     QString defaultValue() const;
 
-    //! \copydoc QgsSettingsEntryBase::settingsType
     virtual SettingsType settingsType() const override;
 
     /**
@@ -523,7 +521,6 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntryBase
      */
     QStringList defaultValue() const;
 
-    //! \copydoc QgsSettingsEntryBase::settingsType
     virtual SettingsType settingsType() const override;
 
 };
@@ -609,7 +606,6 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryBase
      */
     bool defaultValue() const;
 
-    //! \copydoc QgsSettingsEntryBase::settingsType
     virtual SettingsType settingsType() const override;
 };
 
@@ -699,7 +695,6 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryBase
      */
     qlonglong defaultValue() const;
 
-    //! \copydoc QgsSettingsEntryBase::settingsType
     virtual SettingsType settingsType() const override;
 
     /**
@@ -821,7 +816,6 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryBase
      */
     double defaultValue() const;
 
-    //! \copydoc QgsSettingsEntryBase::settingsType
     virtual SettingsType settingsType() const override;
 
     /**
@@ -1021,7 +1015,6 @@ class CORE_EXPORT QgsSettingsEntryEnumFlag : public QgsSettingsEntryBase
       }
     }
 
-    //! \copydoc QgsSettingsEntryBase::settingsType
     virtual QgsSettingsEntryBase::SettingsType settingsType() const override
     {
       return QgsSettingsEntryBase::SettingsType::EnumFlag;
@@ -1114,7 +1107,6 @@ class CORE_EXPORT QgsSettingsEntryColor : public QgsSettingsEntryBase
      */
     QColor defaultValue() const;
 
-    //! \copydoc QgsSettingsEntryBase::settingsType
     virtual SettingsType settingsType() const override;
 
 };

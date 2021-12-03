@@ -29,6 +29,9 @@ Contains information, source and style tabs
 Constructor
 
 :param lyr: Mesh map layer for which properties will be displayed
+:param canvas:
+:param parent:
+:param fl:
 %End
 
     void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
