@@ -53,11 +53,9 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     // TODO QGIS 4: remove
     // this could not be tagged with Q_DECL_DEPRECATED due to Doxygen warning
 
-    Q_NOWARN_DEPRECATED_PUSH
     Q_ENUM( Button )
     Q_DECLARE_FLAGS( Buttons, Button )
     Q_FLAG( Buttons )
-    Q_NOWARN_DEPRECATED_POP
 
     /**
      * \deprecated since QGIS 3.0.2. The name parameter is not used for anything and overwritten by the relationId internally.
