@@ -92,8 +92,9 @@ bool QgsDelimitedTextFile::open()
       mCodec = QTextCodec::codecForName( !mEncoding.isEmpty() ? mEncoding.toLatin1() : "UTF-8" );
       if ( ! mCodec )
       {
-        QgsDebugMsgLevel( "Data file " + mFileName + " could not be opened: wrong codec.", 2 );
-        return false;
+        QgsDebugMsgLevel( QStringLiteral( "Wrong codec '%1' for %2, falling back to locale default." ).arg( mEncoding, mFileName ), 2 );
+        mCodec = QTextCodec::codecForLocale( );
+        mEncoding = mCodec->name();
       }
       if ( mUseWatcher )
       {
