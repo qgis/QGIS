@@ -93,7 +93,6 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/raster
       ${CMAKE_SOURCE_DIR}/src/core/scalebar
       ${CMAKE_SOURCE_DIR}/src/core/settings
-      ${CMAKE_SOURCE_DIR}/src/core/simplify
       ${CMAKE_SOURCE_DIR}/src/core/symbology
       ${CMAKE_SOURCE_DIR}/src/core/textrenderer
       ${CMAKE_SOURCE_DIR}/src/core/validity
@@ -101,7 +100,6 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/vectortile
       ${CMAKE_SOURCE_DIR}/src/gui
       ${CMAKE_SOURCE_DIR}/src/gui/annotations
-      ${CMAKE_SOURCE_DIR}/src/gui/attributeformconfig
       ${CMAKE_SOURCE_DIR}/src/gui/attributetable
       ${CMAKE_SOURCE_DIR}/src/gui/auth
       ${CMAKE_SOURCE_DIR}/src/gui/callouts
@@ -120,10 +118,6 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/gui/pointcloud
       ${CMAKE_SOURCE_DIR}/src/gui/processing
       ${CMAKE_SOURCE_DIR}/src/gui/processing/models
-      ${CMAKE_SOURCE_DIR}/src/gui/providers
-      ${CMAKE_SOURCE_DIR}/src/gui/providers/ept
-      ${CMAKE_SOURCE_DIR}/src/gui/providers/gdal
-      ${CMAKE_SOURCE_DIR}/src/gui/providers/ogr
       ${CMAKE_SOURCE_DIR}/src/gui/raster
       ${CMAKE_SOURCE_DIR}/src/gui/settings
       ${CMAKE_SOURCE_DIR}/src/gui/symbology
@@ -143,8 +137,6 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/3d/chunks
       ${CMAKE_SOURCE_DIR}/src/3d/materials
       ${CMAKE_SOURCE_DIR}/src/3d/processing
-      ${CMAKE_SOURCE_DIR}/src/3d/shaders
-      ${CMAKE_SOURCE_DIR}/src/3d/shaders/mesh
       ${CMAKE_SOURCE_DIR}/src/3d/symbols
       ${CMAKE_SOURCE_DIR}/src/3d/terrain
       ${CMAKE_SOURCE_DIR}/src/plugins
@@ -159,9 +151,7 @@ if(WITH_APIDOC)
         ${CMAKE_SOURCE_DIR}/src/server/services
         ${CMAKE_SOURCE_DIR}/src/server/services/wcs
         ${CMAKE_SOURCE_DIR}/src/server/services/wfs
-        ${CMAKE_SOURCE_DIR}/src/server/services/wfs3
         ${CMAKE_SOURCE_DIR}/src/server/services/wms
-        ${CMAKE_SOURCE_DIR}/src/server/services/wmts
       )
     endif()
 
