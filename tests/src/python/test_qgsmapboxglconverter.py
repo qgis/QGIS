@@ -694,6 +694,74 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         self.assertEqual(dd_properties.property(QgsSymbolLayer.PropertyStrokeWidth).asExpression(), 'CASE WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 11 THEN scale_exp(@vector_tile_zoom,10,11,1.5,2,1.2) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN scale_exp(@vector_tile_zoom,11,12,2,3,1.2) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN scale_exp(@vector_tile_zoom,12,13,3,5,1.2) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN scale_exp(@vector_tile_zoom,13,14,5,6,1.2) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN scale_exp(@vector_tile_zoom,14,16,6,10,1.2) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN scale_exp(@vector_tile_zoom,16,17,10,12,1.2) WHEN @vector_tile_zoom > 17 THEN 12 END')
         self.assertEqual(dd_properties.property(QgsSymbolLayer.PropertyCustomDash).asExpression(), 'array_to_string(array_foreach(CASE WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 17 THEN array(1,1) WHEN @vector_tile_zoom > 17 THEN array(0.3,0.2) END,@element * (CASE WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 11 THEN scale_exp(@vector_tile_zoom,10,11,1.5,2,1.2) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN scale_exp(@vector_tile_zoom,11,12,2,3,1.2) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN scale_exp(@vector_tile_zoom,12,13,3,5,1.2) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN scale_exp(@vector_tile_zoom,13,14,5,6,1.2) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN scale_exp(@vector_tile_zoom,14,16,6,10,1.2) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN scale_exp(@vector_tile_zoom,16,17,10,12,1.2) WHEN @vector_tile_zoom > 17 THEN 12 END)), \';\')')
 
+    def testLabelWithLiteral(self):
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "layout": {
+                "visibility": "visible",
+                "text-field": "Quarry {substance}",
+            },
+            "paint": {
+                "text-color": "rgba(47, 47, 47, 1)",
+            },
+            "type": "symbol"
+        }
+        rendererStyle, has_renderer, labeling_style, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        self.assertTrue(has_labeling)
+        self.assertTrue(labeling_style.labelSettings().isExpression)
+        self.assertEqual(labeling_style.labelSettings().fieldName, 'concat(\'Quarry \',"substance")')
+
+    def testLabelWithLiteral2(self):
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "layout": {
+                "visibility": "visible",
+                "text-field": "{substance} Quarry",
+            },
+            "paint": {
+                "text-color": "rgba(47, 47, 47, 1)",
+            },
+            "type": "symbol"
+        }
+        rendererStyle, has_renderer, labeling_style, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        self.assertTrue(has_labeling)
+        self.assertTrue(labeling_style.labelSettings().isExpression)
+        self.assertEqual(labeling_style.labelSettings().fieldName, 'concat("substance",\' Quarry\')')
+
+    def testLabelWithLiteral3(self):
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "layout": {
+                "visibility": "visible",
+                "text-field": "A {substance} Quarry",
+            },
+            "paint": {
+                "text-color": "rgba(47, 47, 47, 1)",
+            },
+            "type": "symbol"
+        }
+        rendererStyle, has_renderer, labeling_style, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        self.assertTrue(has_labeling)
+        self.assertTrue(labeling_style.labelSettings().isExpression)
+        self.assertEqual(labeling_style.labelSettings().fieldName, 'concat(\'A \',"substance",\' Quarry\')')
+
+    def testLabelWithField(self):
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "layout": {
+                "visibility": "visible",
+                "text-field": "{substance}",
+            },
+            "paint": {
+                "text-color": "rgba(47, 47, 47, 1)",
+            },
+            "type": "symbol"
+        }
+        rendererStyle, has_renderer, labeling_style, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        self.assertTrue(has_labeling)
+        self.assertFalse(labeling_style.labelSettings().isExpression)
+        self.assertEqual(labeling_style.labelSettings().fieldName, 'substance')
+
 
 if __name__ == '__main__':
     unittest.main()
