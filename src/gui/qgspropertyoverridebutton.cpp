@@ -953,6 +953,7 @@ void QgsPropertyOverrideButton::setActive( bool active )
   if ( mProperty.isActive() != active )
   {
     mProperty.setActive( active );
+    updateGui();
     emit changed();
     emit activated( mProperty.isActive() );
   }

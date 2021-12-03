@@ -420,24 +420,6 @@ Set unit for rotation of labels.
 
     int priority;
 
-    Qgis::CoordinateType placementCoordinateType() const;
-%Docstring
-Coordinates type for data defined placement.
-
-.. seealso:: :py:func:`setPlacementCoordinateType`
-
-.. versionadded:: 3.22
-%End
-
-    void setPlacementCoordinateType( Qgis::CoordinateType placementCoordinateType );
-%Docstring
-Set coordinates type for data defined placement.
-
-.. seealso:: :py:func:`placementCoordinateType`
-
-.. versionadded:: 3.22
-%End
-
 
     bool scaleVisibility;
 

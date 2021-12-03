@@ -2888,7 +2888,6 @@ void TestQgsLabelingEngine::testDataDefinedPlacementPositionPoint()
   settings.fieldName = QStringLiteral( "Class" );
   setDefaultLabelParams( settings );
 
-  settings.setPlacementCoordinateType( Qgis::CoordinateType::Point );
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionPoint, QgsProperty::fromExpression( QStringLiteral( "translate($geometry, 1, 0.5)" ) ) );
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!

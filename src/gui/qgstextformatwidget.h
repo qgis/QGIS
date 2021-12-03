@@ -283,9 +283,11 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void mBufferUnitWidget_changed();
     void mMaskBufferUnitWidget_changed();
     void mCoordXDDBtn_changed();
+    void mCoordXDDBtn_activated( bool isActive );
     void mCoordYDDBtn_changed();
+    void mCoordYDDBtn_activated( bool isActive );
     void mCoordPointDDBtn_changed();
-    void mCoordTypeComboBox_currentIndexChanged( int index );
+    void mCoordPointDDBtn_activated( bool isActive );
     void mShapeTypeCmbBx_currentIndexChanged( int index );
     void mShapeRotationCmbBx_currentIndexChanged( int index );
     void mShapeSVGParamsBtn_clicked();

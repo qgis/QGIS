@@ -87,9 +87,11 @@ void QgsTextFormatWidget::initWidget()
   connect( mBufferUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsTextFormatWidget::mBufferUnitWidget_changed );
   connect( mMaskBufferUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsTextFormatWidget::mMaskBufferUnitWidget_changed );
   connect( mCoordXDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsTextFormatWidget::mCoordXDDBtn_changed );
+  connect( mCoordXDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::mCoordXDDBtn_activated );
   connect( mCoordYDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsTextFormatWidget::mCoordYDDBtn_changed );
+  connect( mCoordYDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::mCoordYDDBtn_activated );
   connect( mCoordPointDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsTextFormatWidget::mCoordPointDDBtn_changed );
-  connect( mCoordTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsTextFormatWidget::mCoordTypeComboBox_currentIndexChanged );
+  connect( mCoordPointDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::mCoordPointDDBtn_activated );
   connect( mShapeTypeCmbBx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsTextFormatWidget::mShapeTypeCmbBx_currentIndexChanged );
   connect( mShapeRotationCmbBx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsTextFormatWidget::mShapeRotationCmbBx_currentIndexChanged );
   connect( mShapeSVGParamsBtn, &QPushButton::clicked, this, &QgsTextFormatWidget::mShapeSVGParamsBtn_clicked );
@@ -360,7 +362,6 @@ void QgsTextFormatWidget::initWidget()
           << mCentroidInsideCheckBox
           << mChkNoObstacle
           << mCoordRotationUnitComboBox
-          << mCoordTypeComboBox
           << mDirectSymbChkBx
           << mDirectSymbLeftLineEdit
           << mDirectSymbRevChkBx
@@ -1581,9 +1582,25 @@ void QgsTextFormatWidget::mCoordXDDBtn_changed()
   updateDataDefinedAlignment();
 }
 
+void QgsTextFormatWidget::mCoordXDDBtn_activated( bool isActive )
+{
+  if ( !isActive )
+    return;
+
+  mCoordPointDDBtn->setActive( false );
+}
+
 void QgsTextFormatWidget::mCoordYDDBtn_changed()
 {
   updateDataDefinedAlignment();
+}
+
+void QgsTextFormatWidget::mCoordYDDBtn_activated( bool isActive )
+{
+  if ( !isActive )
+    return;
+
+  mCoordPointDDBtn->setActive( false );
 }
 
 void QgsTextFormatWidget::mCoordPointDDBtn_changed()
@@ -1591,19 +1608,13 @@ void QgsTextFormatWidget::mCoordPointDDBtn_changed()
   updateDataDefinedAlignment();
 }
 
-void QgsTextFormatWidget::mCoordTypeComboBox_currentIndexChanged( int index )
+void QgsTextFormatWidget::mCoordPointDDBtn_activated( bool isActive )
 {
-  switch ( static_cast<Qgis::CoordinateType>( index ) )
-  {
-    case Qgis::CoordinateType::XY:
-      mCoordPositionStackWidget->setCurrentWidget( mCoordPositionXYStackWidgetPage );
-      break;
-    case Qgis::CoordinateType::Point:
-      mCoordPositionStackWidget->setCurrentWidget( mCoordPositionPointStackWidgetPage );
-      break;
-  }
+  if ( !isActive )
+    return;
 
-  updateDataDefinedAlignment();
+  mCoordXDDBtn->setActive( false );
+  mCoordYDDBtn->setActive( false );
 }
 
 void QgsTextFormatWidget::mShapeTypeCmbBx_currentIndexChanged( int )
@@ -2048,15 +2059,8 @@ void QgsTextFormatWidget::showBackgroundRadius( bool show )
 void QgsTextFormatWidget::updateDataDefinedAlignment()
 {
   // no data defined alignment without data defined position
-  switch ( static_cast<Qgis::CoordinateType>( mCoordTypeComboBox->currentData().toInt() ) )
-  {
-    case Qgis::CoordinateType::XY:
-      mCoordAlignmentFrame->setEnabled( mCoordXDDBtn->isActive() && mCoordYDDBtn->isActive() );
-      break;
-    case Qgis::CoordinateType::Point:
-      mCoordAlignmentFrame->setEnabled( mCoordPointDDBtn->isActive() );
-      break;
-  }
+  mCoordAlignmentFrame->setEnabled( ( mCoordXDDBtn->isActive() && mCoordYDDBtn->isActive() )
+                                    || mCoordPointDDBtn->isActive() );
 }
 
 QgsExpressionContext QgsTextFormatWidget::createExpressionContext() const

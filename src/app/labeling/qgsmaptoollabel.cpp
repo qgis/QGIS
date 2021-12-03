@@ -712,48 +712,44 @@ bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess
   if ( !mCurrentLabel.pos.isUnplaced )
   {
     QgsAttributes attributes = f.attributes();
-    switch ( mCurrentLabel.settings.placementCoordinateType() )
-    {
-      case Qgis::CoordinateType::XY:
-      {
-        if ( !attributes.at( xCol ).isNull() )
-          x = attributes.at( xCol ).toDouble( &xSuccess );
-        if ( !attributes.at( yCol ).isNull() )
-          y = attributes.at( yCol ).toDouble( &ySuccess );
-      }
-      break;
-      case Qgis::CoordinateType::Point:
-      {
-        if ( !attributes.at( pointCol ).isNull() )
-        {
-          QVariant pointAsVariant = attributes.at( pointCol );
-          if ( pointAsVariant.canConvert<QgsGeometry>() )
-          {
-            QgsGeometry geometryPoint = pointAsVariant.value<QgsGeometry>();
-            const QgsPoint *point  = qgsgeometry_cast<QgsPoint *>( geometryPoint.constGet() );
 
-            x = point->x();
-            y = point->y();
+    if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionPoint ) )
+    {
+      if ( !attributes.at( pointCol ).isNull() )
+      {
+        QVariant pointAsVariant = attributes.at( pointCol );
+        if ( pointAsVariant.canConvert<QgsGeometry>() )
+        {
+          QgsGeometry geometryPoint = pointAsVariant.value<QgsGeometry>();
+          const QgsPoint *point  = qgsgeometry_cast<QgsPoint *>( geometryPoint.constGet() );
+
+          x = point->x();
+          y = point->y();
+
+          xSuccess = true;
+          ySuccess = true;
+        }
+        else if ( !pointAsVariant.toByteArray().isEmpty() )
+        {
+          QgsPoint point;
+          QgsConstWkbPtr wkbPtr( pointAsVariant.toByteArray() );
+          if ( point.fromWkb( wkbPtr ) )
+          {
+            x = point.x();
+            y = point.y();
 
             xSuccess = true;
             ySuccess = true;
           }
-          else if ( !pointAsVariant.toByteArray().isEmpty() )
-          {
-            QgsPoint point;
-            QgsConstWkbPtr wkbPtr( pointAsVariant.toByteArray() );
-            if ( point.fromWkb( wkbPtr ) )
-            {
-              x = point.x();
-              y = point.y();
-
-              xSuccess = true;
-              ySuccess = true;
-            }
-          }
         }
       }
-      break;
+    }
+    else
+    {
+      if ( !attributes.at( xCol ).isNull() )
+        x = attributes.at( xCol ).toDouble( &xSuccess );
+      if ( !attributes.at( yCol ).isNull() )
+        y = attributes.at( yCol ).toDouble( &ySuccess );
     }
   }
 
@@ -807,29 +803,24 @@ bool QgsMapToolLabel::currentLabelDataDefinedRotation( double &rotation, bool &r
 
 bool QgsMapToolLabel::changeCurrentLabelDataDefinedPosition( const QVariant &x, const QVariant &y )
 {
-  switch ( mCurrentLabel.settings.placementCoordinateType() )
+  if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionPoint ) )
   {
-    case Qgis::CoordinateType::XY:
-    {
-      QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, mCurrentLabel.settings, mCurrentLabel.layer );
-      QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, mCurrentLabel.settings, mCurrentLabel.layer );
-      int xCol = mCurrentLabel.layer->fields().lookupField( xColName );
-      int yCol = mCurrentLabel.layer->fields().lookupField( yColName );
+    QString pointColName = dataDefinedColumnName( QgsPalLayerSettings::PositionPoint, mCurrentLabel.settings, mCurrentLabel.layer );
+    int pointCol = mCurrentLabel.layer->fields().lookupField( pointColName );
 
-      if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, xCol, x )
-           || !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, yCol, y ) )
-        return false;
-    }
-    break;
-    case Qgis::CoordinateType::Point:
-    {
-      QString pointColName = dataDefinedColumnName( QgsPalLayerSettings::PositionPoint, mCurrentLabel.settings, mCurrentLabel.layer );
-      int pointCol = mCurrentLabel.layer->fields().lookupField( pointColName );
+    if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, pointCol, QgsPoint( x.toDouble(), y.toDouble() ).asWkt() ) )
+      return false;
+  }
+  else
+  {
+    QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, mCurrentLabel.settings, mCurrentLabel.layer );
+    QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, mCurrentLabel.settings, mCurrentLabel.layer );
+    int xCol = mCurrentLabel.layer->fields().lookupField( xColName );
+    int yCol = mCurrentLabel.layer->fields().lookupField( yColName );
 
-      if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, pointCol, QgsPoint( x.toDouble(), y.toDouble() ).asWkt() ) )
-        return false;
-    }
-    break;
+    if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, xCol, x )
+         || !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, yCol, y ) )
+      return false;
   }
 
   return true;
@@ -977,29 +968,26 @@ bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSe
   yCol = -1;
   pointCol = -1;
 
-  switch ( mCurrentLabel.settings.placementCoordinateType() )
+  if ( settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionPoint ) )
   {
-    case Qgis::CoordinateType::XY:
-    {
-      QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, settings, vlayer );
-      QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, settings, vlayer );
-      xCol = vlayer->fields().lookupField( xColName );
-      yCol = vlayer->fields().lookupField( yColName );
-      if ( xCol <= 0 && yCol <= 0 )
-        return false;
-    }
-    break;
-    case Qgis::CoordinateType::Point:
-    {
-      QString pointColName = dataDefinedColumnName( QgsPalLayerSettings::PositionPoint, settings, vlayer );
-      pointCol = vlayer->fields().lookupField( pointColName );
-      if ( pointCol <= 0 )
-        return false;
-    }
-    break;
+    QString pointColName = dataDefinedColumnName( QgsPalLayerSettings::PositionPoint, settings, vlayer );
+    pointCol = vlayer->fields().lookupField( pointColName );
+    if ( pointCol > 0 )
+      return true;
   }
 
-  return true;
+  if ( settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionX )
+       && settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionY ) )
+  {
+    QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, settings, vlayer );
+    QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, settings, vlayer );
+    xCol = vlayer->fields().lookupField( xColName );
+    yCol = vlayer->fields().lookupField( yColName );
+    if ( xCol > 0 || yCol > 0 )
+      return true;
+  }
+
+  return false;
 }
 
 bool QgsMapToolLabel::diagramCanShowHide( QgsVectorLayer *vlayer, int &showCol ) const
@@ -1046,12 +1034,12 @@ QgsMapToolLabel::LabelDetails::LabelDetails( const QgsLabelPosition &p, QgsMapCa
   }
 }
 
-bool QgsMapToolLabel::createAuxiliaryFields( QgsPalIndexes &indexes )
+bool QgsMapToolLabel::createAuxiliaryFields( QgsPalIndexes &indexes, bool overwriteExpression )
 {
-  return createAuxiliaryFields( mCurrentLabel, indexes );
+  return createAuxiliaryFields( mCurrentLabel, indexes, overwriteExpression );
 }
 
-bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexes &indexes ) const
+bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexes &indexes, bool overwriteExpression ) const
 {
   bool newAuxiliaryLayer = false;
   QgsVectorLayer *vlayer = details.layer;
@@ -1082,9 +1070,9 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexe
     {
       index = vlayer->fields().lookupField( prop.field() );
     }
-    else
+    else if ( prop.propertyType() != QgsProperty::ExpressionBasedProperty || overwriteExpression )
     {
-      index = QgsAuxiliaryLayer::createProperty( p, vlayer, false );
+      index = QgsAuxiliaryLayer::createProperty( p, vlayer );
       changed = true;
     }
 
@@ -1098,12 +1086,12 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexe
   return newAuxiliaryLayer;
 }
 
-bool QgsMapToolLabel::createAuxiliaryFields( QgsDiagramIndexes &indexes )
+bool QgsMapToolLabel::createAuxiliaryFields( QgsDiagramIndexes &indexes, bool overwriteExpression )
 {
-  return createAuxiliaryFields( mCurrentLabel, indexes );
+  return createAuxiliaryFields( mCurrentLabel, indexes, overwriteExpression );
 }
 
-bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIndexes &indexes )
+bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIndexes &indexes, bool overwriteExpression )
 {
   bool newAuxiliaryLayer = false;
   QgsVectorLayer *vlayer = details.layer;
@@ -1133,9 +1121,9 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIn
     {
       index = vlayer->fields().lookupField( prop.field() );
     }
-    else
+    else if ( prop.propertyType() != QgsProperty::ExpressionBasedProperty || overwriteExpression )
     {
-      index = QgsAuxiliaryLayer::createProperty( p, vlayer, false );
+      index = QgsAuxiliaryLayer::createProperty( p, vlayer );
       changed = true;
     }
 
@@ -1147,12 +1135,12 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIn
   return newAuxiliaryLayer;
 }
 
-bool QgsMapToolLabel::createAuxiliaryFields( QgsCalloutIndexes &calloutIndexes )
+bool QgsMapToolLabel::createAuxiliaryFields( QgsCalloutIndexes &calloutIndexes, bool overwriteExpression )
 {
-  return createAuxiliaryFields( mCurrentCallout, calloutIndexes );
+  return createAuxiliaryFields( mCurrentCallout, calloutIndexes, overwriteExpression );
 }
 
-bool QgsMapToolLabel::createAuxiliaryFields( QgsCalloutPosition &details, QgsCalloutIndexes &calloutIndexes )
+bool QgsMapToolLabel::createAuxiliaryFields( QgsCalloutPosition &details, QgsCalloutIndexes &calloutIndexes, bool overwriteExpression )
 {
   bool newAuxiliaryLayer = false;
   QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer * >( QgsMapTool::layer( details.layerID ) );
@@ -1183,9 +1171,9 @@ bool QgsMapToolLabel::createAuxiliaryFields( QgsCalloutPosition &details, QgsCal
     {
       index = vlayer->fields().lookupField( prop.field() );
     }
-    else
+    else if ( prop.propertyType() != QgsProperty::ExpressionBasedProperty || overwriteExpression )
     {
-      index = QgsAuxiliaryLayer::createProperty( p, vlayer, false );
+      index = QgsAuxiliaryLayer::createProperty( p, vlayer );
       changed = true;
     }
     calloutIndexes[p] = index;

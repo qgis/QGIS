@@ -902,17 +902,6 @@ class CORE_EXPORT Qgis
     Q_ENUM( TemporalIntervalMatchMethod )
 
     /**
-     * Types of coordinate definitions
-     *
-     * \since QGIS 3.22
-     */
-    enum class CoordinateType : int
-    {
-      XY, //!< Coordinate defined by X and Y values
-      Point //!< Coordinate defined by a point
-    };
-    Q_ENUM( CoordinateType )
-
     /**
      * Flags which adjust the way maps are rendered.
      *

@@ -63,6 +63,7 @@
 #include "qgsvectorlayerdiagramprovider.h"
 #include "qgsvectorlayerlabelprovider.h"
 #include "qgsgeometry.h"
+#include "qgsreferencedgeometry.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgspainting.h"
 #include "qgsproject.h"
@@ -341,7 +342,6 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   repeatDistance = s.repeatDistance;
   repeatDistanceUnit = s.repeatDistanceUnit;
   repeatDistanceMapUnitScale = s.repeatDistanceMapUnitScale;
-  mPlacementCoordinateType = s.mPlacementCoordinateType;
 
   // rendering
   scaleVisibility = s.scaleVisibility;
@@ -620,16 +620,6 @@ void QgsPalLayerSettings::setRotationUnit( QgsUnitTypes::AngleUnit angleUnit )
   mRotationUnit = angleUnit;
 }
 
-Qgis::CoordinateType QgsPalLayerSettings::placementCoordinateType() const
-{
-  return mPlacementCoordinateType;
-}
-
-void QgsPalLayerSettings::setPlacementCoordinateType( Qgis::CoordinateType placementCoordinateType )
-{
-  mPlacementCoordinateType = placementCoordinateType;
-}
-
 QString updateDataDefinedString( const QString &value )
 {
   // TODO: update or remove this when project settings for labeling are migrated to better XML layout
@@ -853,7 +843,6 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   {
     repeatDistanceMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( QStringLiteral( "labeling/repeatDistanceMapUnitScale" ) ).toString() );
   }
-  mPlacementCoordinateType = layer->customEnumProperty( QStringLiteral( "labeling/placementCoordinateType" ), Qgis::CoordinateType::XY );
 
   // rendering
   double scalemn = layer->customProperty( QStringLiteral( "labeling/scaleMin" ), QVariant( 0 ) ).toDouble();
@@ -1104,8 +1093,6 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
 
   layerType = qgsEnumKeyToValue( placementElem.attribute( QStringLiteral( "layerType" ) ), QgsWkbTypes::UnknownGeometry );
 
-  mPlacementCoordinateType = qgsEnumKeyToValue( placementElem.attribute( QStringLiteral( "coordinateType" ), qgsEnumValueToKey( Qgis::CoordinateType::XY ) ), Qgis::CoordinateType::XY );
-
   // rendering
   QDomElement renderingElem = elem.firstChildElement( QStringLiteral( "rendering" ) );
 
@@ -1262,8 +1249,6 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   placementElem.setAttribute( QStringLiteral( "geometryGeneratorType" ), metaEnum.valueToKey( geometryGeneratorType ) );
 
   placementElem.setAttribute( QStringLiteral( "layerType" ), metaEnum.valueToKey( layerType ) );
-
-  placementElem.setAttribute( QStringLiteral( "coordinateType" ), qgsEnumValueToKey( mPlacementCoordinateType ) );
 
   // rendering
   QDomElement renderingElem = doc.createElement( QStringLiteral( "rendering" ) );
@@ -2396,54 +2381,45 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   bool hasDataDefinedPosition = false;
   {
     bool ddPosition = false;
-    switch ( mPlacementCoordinateType )
+
+    if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::PositionX )
+         && mDataDefinedProperties.isActive( QgsPalLayerSettings::PositionY )
+         && !mDataDefinedProperties.value( QgsPalLayerSettings::PositionX, context.expressionContext() ).isNull()
+         && !mDataDefinedProperties.value( QgsPalLayerSettings::PositionY, context.expressionContext() ).isNull() )
     {
-      case Qgis::CoordinateType::XY:
-      {
-        if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::PositionX )
-             && mDataDefinedProperties.isActive( QgsPalLayerSettings::PositionY )
-             && !mDataDefinedProperties.value( QgsPalLayerSettings::PositionX, context.expressionContext() ).isNull()
-             && !mDataDefinedProperties.value( QgsPalLayerSettings::PositionY, context.expressionContext() ).isNull() )
-        {
-          ddPosition = true;
+      ddPosition = true;
 
-          bool ddXPos = false, ddYPos = false;
-          xPos = mDataDefinedProperties.value( QgsPalLayerSettings::PositionX, context.expressionContext() ).toDouble( &ddXPos );
-          yPos = mDataDefinedProperties.value( QgsPalLayerSettings::PositionY, context.expressionContext() ).toDouble( &ddYPos );
-          if ( ddXPos && ddYPos )
-            hasDataDefinedPosition = true;
-        }
-      }
-      break;
-      case Qgis::CoordinateType::Point:
-      {
-        if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::PositionPoint )
-             && !mDataDefinedProperties.value( QgsPalLayerSettings::PositionPoint, context.expressionContext() ).isNull() )
-        {
-          ddPosition = true;
-
-          QVariant pointAsVariant = mDataDefinedProperties.value( QgsPalLayerSettings::PositionPoint, context.expressionContext() );
-          QgsPoint point;
-          if ( pointAsVariant.canConvert<QgsGeometry>() )
-          {
-            point = QgsPoint( pointAsVariant.value<QgsGeometry>().asPoint() );
-          }
-          else if ( !pointAsVariant.toString().isEmpty() )
-          {
-            point.fromWkt( pointAsVariant.toString() );
-          }
-
-          if ( !point.isEmpty() )
-          {
-            hasDataDefinedPosition = true;
-
-            xPos = point.x();
-            yPos = point.y();
-          }
-        }
-      }
-      break;
+      bool ddXPos = false, ddYPos = false;
+      xPos = mDataDefinedProperties.value( QgsPalLayerSettings::PositionX, context.expressionContext() ).toDouble( &ddXPos );
+      yPos = mDataDefinedProperties.value( QgsPalLayerSettings::PositionY, context.expressionContext() ).toDouble( &ddYPos );
+      if ( ddXPos && ddYPos )
+        hasDataDefinedPosition = true;
     }
+    else if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::PositionPoint )
+              && !mDataDefinedProperties.value( QgsPalLayerSettings::PositionPoint, context.expressionContext() ).isNull() )
+    {
+      ddPosition = true;
+
+      QVariant pointAsVariant = mDataDefinedProperties.value( QgsPalLayerSettings::PositionPoint, context.expressionContext() );
+      QgsPoint point;
+      if ( pointAsVariant.canConvert<QgsReferencedGeometry>() )
+      {
+        point = QgsPoint( pointAsVariant.value<QgsReferencedGeometry>().asPoint() );
+      }
+      else if ( !pointAsVariant.toString().isEmpty() )
+      {
+        point.fromWkt( pointAsVariant.toString() );
+      }
+
+      if ( !point.isEmpty() )
+      {
+        hasDataDefinedPosition = true;
+
+        xPos = point.x();
+        yPos = point.y();
+      }
+    }
+
 
     if ( ddPosition )
     {
