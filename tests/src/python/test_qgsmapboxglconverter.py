@@ -548,6 +548,74 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         self.assertEqual(labeling.labelSettings().fieldName, '''lower(concat(concat("name_en",' - ',"name_fr"),"bar"))''')
         self.assertTrue(labeling.labelSettings().isExpression)
 
+    def testLabelWithLiteral(self):
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "layout": {
+                "visibility": "visible",
+                "text-field": "Quarry {substance}",
+            },
+            "paint": {
+                "text-color": "rgba(47, 47, 47, 1)",
+            },
+            "type": "symbol"
+        }
+        rendererStyle, has_renderer, labeling_style, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        self.assertTrue(has_labeling)
+        self.assertTrue(labeling_style.labelSettings().isExpression)
+        self.assertEqual(labeling_style.labelSettings().fieldName, 'concat(\'Quarry \',"substance")')
+
+    def testLabelWithLiteral2(self):
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "layout": {
+                "visibility": "visible",
+                "text-field": "{substance} Quarry",
+            },
+            "paint": {
+                "text-color": "rgba(47, 47, 47, 1)",
+            },
+            "type": "symbol"
+        }
+        rendererStyle, has_renderer, labeling_style, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        self.assertTrue(has_labeling)
+        self.assertTrue(labeling_style.labelSettings().isExpression)
+        self.assertEqual(labeling_style.labelSettings().fieldName, 'concat("substance",\' Quarry\')')
+
+    def testLabelWithLiteral3(self):
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "layout": {
+                "visibility": "visible",
+                "text-field": "A {substance} Quarry",
+            },
+            "paint": {
+                "text-color": "rgba(47, 47, 47, 1)",
+            },
+            "type": "symbol"
+        }
+        rendererStyle, has_renderer, labeling_style, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        self.assertTrue(has_labeling)
+        self.assertTrue(labeling_style.labelSettings().isExpression)
+        self.assertEqual(labeling_style.labelSettings().fieldName, 'concat(\'A \',"substance",\' Quarry\')')
+
+    def testLabelWithField(self):
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "layout": {
+                "visibility": "visible",
+                "text-field": "{substance}",
+            },
+            "paint": {
+                "text-color": "rgba(47, 47, 47, 1)",
+            },
+            "type": "symbol"
+        }
+        rendererStyle, has_renderer, labeling_style, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        self.assertTrue(has_labeling)
+        self.assertFalse(labeling_style.labelSettings().isExpression)
+        self.assertEqual(labeling_style.labelSettings().fieldName, 'substance')
+
 
 if __name__ == '__main__':
     unittest.main()
