@@ -1874,8 +1874,8 @@ void QgsAttributeForm::init()
 
     QPushButton *openAttributeTableButton = new QPushButton();
     openAttributeTableButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-    openAttributeTableButton->setText( tr( "&Open Attribute Table" ) );
-    openAttributeTableButton->setToolTip( tr( "Open attribute table editor with filtered features" ) );
+    openAttributeTableButton->setText( tr( "Show in &Table" ) );
+    openAttributeTableButton->setToolTip( tr( "Open the attribute table editor with the filtered features" ) );
     connect( openAttributeTableButton, &QToolButton::clicked, this, [ = ]
     {
       emit openFilteredFeaturesAttributeTable( createFilterExpression() );
