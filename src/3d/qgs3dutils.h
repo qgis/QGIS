@@ -208,8 +208,8 @@ class _3D_EXPORT Qgs3DUtils
 
     /**
      * Converts from screen coordinates to texture coordinates
-     * \since QGIS 3.24
      * \see fromTextureToScreenCoordinates()
+     * \since QGIS 3.24
      */
     static QVector2D fromScreenToTextureCoordinates( QVector2D screenXY, QSize winSize );
 
@@ -235,7 +235,7 @@ class _3D_EXPORT Qgs3DUtils
      * ---------c---------
      *        camera
      *
-     * \note to calculate the distance from the the point x to the camera center c, you need to devide the returned distance d2
+     * \note to calculate the distance from the the point x to the camera center c, you need to divide the returned distance d2
      * by the dot product between the view vector of the camera and the ray direction coming from the camera center to the desired
      * point (Make sure both vectors are normalized).
      *

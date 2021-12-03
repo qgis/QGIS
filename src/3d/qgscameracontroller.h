@@ -247,7 +247,7 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     void setCursorPosition( QPoint point );
 
     /**
-     * Emited to ask for the depth buffer image
+     * Emitted to ask for the depth buffer image
      * \since QGIS 3.24
      */
     void requestDepthBufferCapture();
