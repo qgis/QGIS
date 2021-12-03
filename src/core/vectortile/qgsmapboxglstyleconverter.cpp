@@ -1424,6 +1424,12 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
         if ( part.isEmpty() )
           continue;
 
+        if ( !part.contains( '{' ) )
+        {
+          res << QgsExpression::quotedValue( part );
+          continue;
+        }
+
         // part will start at a {field} reference
         const QStringList split = part.split( '}' );
         res << QgsExpression::quotedColumnRef( split.at( 0 ).mid( 1 ) );
