@@ -173,7 +173,6 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     Qt3DRender::QTexture2D *mShadowMapTexture = nullptr;
     Qt3DRender::QClearBuffers *mShadowClearBuffers = nullptr;
     Qt3DRender::QCamera *mLightCamera = nullptr;
-    Qt3DRender::QCameraSelector *mLightCameraSelector = nullptr;
 
     Qt3DRender::QRenderTargetSelector *mRenderCaptureTargetSelector = nullptr;
     Qt3DRender::QRenderTargetSelector *mDepthRenderCaptureTargetSelector = nullptr;
