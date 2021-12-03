@@ -135,9 +135,10 @@ QVariantMap QgsFeature::attributeMap() const
   if ( fieldSize != attributeSize )
   {
     QgsDebugMsg( QStringLiteral( "Attribute size (%1) does not match number of fields (%2)" ).arg( attributeSize ).arg( fieldSize ) );
+    return QVariantMap();
   }
 
-  for ( int i = 0; i < attributeSize && i < fieldSize; ++i )
+  for ( int i = 0; i < attributeSize; ++i )
   {
     res[d->fields.at( i ).name()] = d->attributes.at( i );
   }
