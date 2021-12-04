@@ -64,7 +64,7 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
   // field defined as the label field in the layer configuration file/database
 
   // Do not render map tips if the layer is not visible
-  if ( !pMapCanvas->layers().contains( pLayer ) )
+  if ( !pMapCanvas->layers( true ).contains( pLayer ) )
   {
     return;
   }

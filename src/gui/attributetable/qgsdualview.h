@@ -96,12 +96,13 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * \param context    The context in which this view is shown
      * \param loadFeatures whether to initially load all features into the view. If set to
      *                   FALSE, limited features can later be loaded using setFilterMode()
+     * \param showFirstFeature whether to initially show the first feature form upon initializing the dual view
      */
     void init( QgsVectorLayer *layer,
                QgsMapCanvas *mapCanvas,
                const QgsFeatureRequest &request = QgsFeatureRequest(),
                const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
-               bool loadFeatures = true );
+               bool loadFeatures = true, bool showFirstFeature = true );
 
     /**
      * Change the current view mode.

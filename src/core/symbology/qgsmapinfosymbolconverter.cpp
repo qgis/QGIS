@@ -827,7 +827,7 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
       }
     }
 
-    marker->setPlacement( placement );
+    marker->setPlacements( placement );
     marker->setInterval( spacing * size );
     marker->setIntervalUnit( sizeUnit );
 
@@ -869,14 +869,14 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
     else if ( identifier == 61 )
     {
       std::unique_ptr< QgsMarkerLineSymbolLayer > marker2( marker->clone() );
-      marker2->setPlacement( Qgis::MarkerLinePlacement::FirstVertex );
+      marker2->setPlacements( Qgis::MarkerLinePlacement::FirstVertex );
       qgis::down_cast< QgsMarkerSymbol * >( marker2->subSymbol() )->setAngle( 180 );
       symbol->appendSymbolLayer( marker2.release() );
     }
     else if ( identifier == 80 || identifier == 88 || identifier == 96 || identifier == 104 )
     {
       std::unique_ptr< QgsMarkerLineSymbolLayer > marker2( marker->clone() );
-      marker2->setPlacement( Qgis::MarkerLinePlacement::LastVertex );
+      marker2->setPlacements( Qgis::MarkerLinePlacement::LastVertex );
       qgis::down_cast< QgsMarkerSymbol * >( marker2->subSymbol() )->setAngle( 180 );
       symbol->appendSymbolLayer( marker2.release() );
     }
@@ -951,7 +951,7 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
   else if ( identifier == 62 )
   {
     std::unique_ptr< QgsMarkerLineSymbolLayer > markerLine = std::make_unique< QgsMarkerLineSymbolLayer >();
-    markerLine->setPlacement( Qgis::MarkerLinePlacement::FirstVertex );
+    markerLine->setPlacements( Qgis::MarkerLinePlacement::FirstVertex );
     markerLine->setOffsetAlongLine( 2 * size );
     markerLine->setOffsetAlongLineUnit( sizeUnit );
 

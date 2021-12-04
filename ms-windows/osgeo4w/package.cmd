@@ -382,9 +382,9 @@ if not exist %ARCH%\release\qgis\%PACKAGENAME% mkdir %ARCH%\release\qgis\%PACKAG
 	"apps/%PACKAGENAME%/i18n/" ^
 	"apps/%PACKAGENAME%/icons/" ^
 	"apps/%PACKAGENAME%/images/" ^
-	"apps/%PACKAGENAME%/plugins/offlineeditingplugin.dll" ^
-	"apps/%PACKAGENAME%/plugins/topolplugin.dll" ^
-	"apps/%PACKAGENAME%/plugins/geometrycheckerplugin.dll" ^
+	"apps/%PACKAGENAME%/plugins/plugin_offlineediting.dll" ^
+	"apps/%PACKAGENAME%/plugins/plugin_topology.dll" ^
+	"apps/%PACKAGENAME%/plugins/plugin_geometrychecker.dll" ^
 	"apps/%PACKAGENAME%/qtplugins/sqldrivers/qsqlspatialite.dll" ^
 	"apps/%PACKAGENAME%/qtplugins/designer/" ^
 	"apps/%PACKAGENAME%/python/" ^
@@ -441,7 +441,7 @@ for %%g IN (%GRASS_VERSIONS%) do (
 		"apps/%PACKAGENAME%/grass/modules/qgis.g.info!v!.exe" ^
 		"apps/%PACKAGENAME%/grass/modules/qgis.r.in!v!.exe" ^
 		"apps/%PACKAGENAME%/grass/modules/qgis.v.in!v!.exe" ^
-		"apps/%PACKAGENAME%/plugins/grassplugin!v!.dll" ^
+		"apps/%PACKAGENAME%/plugins/plugin_grass!v!.dll" ^
 		"apps/%PACKAGENAME%/plugins/provider_grass!v!.dll" ^
 		"apps/%PACKAGENAME%/plugins/provider_grassraster!v!.dll" ^
 		"bin/%PACKAGENAME%-grass!v!.bat.tmpl" ^

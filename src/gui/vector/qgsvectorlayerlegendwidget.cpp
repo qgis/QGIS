@@ -287,7 +287,6 @@ void QgsVectorLayerLegendWidget::applyLabelLegend()
     QTreeWidgetItem *item = mLabelLegendTreeWidget->topLevelItem( i );
     if ( item )
     {
-      const QString id = item->data( 0, Qt::UserRole ).toString();
       const QString legendText = item->text( 1 );
 
       QgsPalLayerSettings *s = new QgsPalLayerSettings( labeling->settings( ids.at( i ) ) );

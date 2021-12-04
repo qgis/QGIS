@@ -37,7 +37,7 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
   setupUi( this );
 
   if ( !( flags & FlagShowHttpSettings ) )
-    mHttpGroupBox->hide();
+    mHttpHeaders->hide();
 
   QgsGui::enableAutoGeometryRestore( this );
 
@@ -95,7 +95,7 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
     const QString credentialsKey = "qgis/" + mCredentialsBaseKey + '/' + connectionName;
     txtName->setText( connectionName );
     txtUrl->setText( settings.value( key + "/url" ).toString() );
-    mRefererLineEdit->setText( settings.value( key + "/referer" ).toString() );
+    mHttpHeaders->setFromSettings( settings, key );
 
     updateServiceSpecificSettings();
 
@@ -337,7 +337,7 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
   // Enable/disable these items per WFS versions
   wfsVersionCurrentIndexChanged( versionIdx );
 
-  mRefererLineEdit->setText( settings.value( wmsKey + "/referer" ).toString() );
+  mHttpHeaders->setFromSettings( settings, wmsKey );
   txtMaxNumFeatures->setText( settings.value( wfsKey + "/maxnumfeatures" ).toString() );
 
   // Only default to paging enabled if WFS 2.0.0 or higher
@@ -435,7 +435,7 @@ void QgsNewHttpConnection::accept()
 
     settings.setValue( wmsKey + "/dpiMode", dpiMode );
 
-    settings.setValue( wmsKey + "/referer", mRefererLineEdit->text() );
+    mHttpHeaders->updateSettings( settings, wmsKey );
   }
   if ( mTypes & ConnectionWms )
   {
@@ -475,8 +475,8 @@ void QgsNewHttpConnection::accept()
 
   settings.setValue( credentialsKey + "/authcfg", mAuthSettings->configId() );
 
-  if ( mHttpGroupBox->isVisible() )
-    settings.setValue( key + "/referer", mRefererLineEdit->text() );
+  if ( mHttpHeaders->isVisible() )
+    mHttpHeaders->updateSettings( settings, key );
 
   settings.setValue( mBaseKey + "/selected", txtName->text() );
 

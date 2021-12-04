@@ -27,6 +27,8 @@
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgspainteffect.h"
+#include "qgsproject.h"
+#include "qgsprojectutils.h"
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
@@ -114,6 +116,7 @@ void QgsAnnotationLayerProperties::apply()
   mLayer->setMinimumScale( mScaleRangeWidget->minimumScale() );
 
   // set the blend mode and opacity for the layer
+  mBlendModeComboBox->setShowClippingModes( QgsProjectUtils::layerIsContainedInGroupLayer( QgsProject::instance(), mLayer ) );
   mLayer->setBlendMode( mBlendModeComboBox->blendMode() );
   mLayer->setOpacity( mOpacityWidget->opacity() );
 

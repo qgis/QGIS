@@ -372,6 +372,16 @@ QString QgsVectorLayer::capabilitiesString() const
   return QString();
 }
 
+bool QgsVectorLayer::isSqlQuery() const
+{
+  return mDataProvider && mDataProvider->isSqlQuery();
+}
+
+Qgis::VectorLayerTypeFlags QgsVectorLayer::vectorLayerTypeFlags() const
+{
+  return mDataProvider ? mDataProvider->vectorLayerTypeFlags() : Qgis::VectorLayerTypeFlags();
+}
+
 QString QgsVectorLayer::dataComment() const
 {
   if ( mDataProvider )
@@ -3904,6 +3914,9 @@ void QgsVectorLayer::removeExpressionField( int index )
 
 QString QgsVectorLayer::expressionField( int index ) const
 {
+  if ( mFields.fieldOrigin( index ) != QgsFields::OriginExpression )
+    return QString();
+
   int oi = mFields.fieldOriginIndex( index );
   if ( oi < 0 || oi >= mExpressionFieldBuffer->expressions().size() )
     return QString();

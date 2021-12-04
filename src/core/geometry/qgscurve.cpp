@@ -283,11 +283,11 @@ double QgsCurve::sinuosity() const
   return length() / d;
 }
 
-QgsCurve::Orientation QgsCurve::orientation() const
+Qgis::AngularDirection QgsCurve::orientation() const
 {
   double a = 0;
   sumUpArea( a );
-  return a < 0 ? Clockwise : CounterClockwise;
+  return a < 0 ? Qgis::AngularDirection::Clockwise : Qgis::AngularDirection::CounterClockwise;
 }
 
 void QgsCurve::clearCache() const

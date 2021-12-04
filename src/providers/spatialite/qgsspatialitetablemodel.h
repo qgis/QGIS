@@ -18,9 +18,11 @@
 #ifndef QGSSPATIALITETABLEMODEL_H
 #define QGSSPATIALITETABLEMODEL_H
 
-#include <QStandardItemModel>
-class QIcon;
 #include "qgswkbtypes.h"
+#include "qgsabstractdbtablemodel.h"
+
+class QIcon;
+
 
 /**
  * A model that holds the tables of a database in a hierarchy where the
@@ -28,15 +30,20 @@ class QIcon;
  *
  * The tables have the following columns: Type, Tablename, Geometry Column
 */
-class QgsSpatiaLiteTableModel: public QStandardItemModel
+class QgsSpatiaLiteTableModel: public QgsAbstractDbTableModel
 {
   Q_OBJECT public:
 
-    QgsSpatiaLiteTableModel();
+    QgsSpatiaLiteTableModel( QObject *parent = nullptr );
+
+    QStringList columns() const override;
+    int defaultSearchColumn() const override;
+    bool searchableColumn( int column ) const override;
+
     //! Adds entry for one database table to the model
     void addTableEntry( const QString &type, const QString &tableName, const QString &geometryColName, const QString &sql );
     //! Sets an sql statement that belongs to a cell specified by a model index
-    void setSql( const QModelIndex &index, const QString &sql );
+    void setSql( const QModelIndex &index, const QString &sql ) override;
 
     /**
      * Sets one or more geometry types to a row. In case of several types, additional rows are inserted.
@@ -58,6 +65,7 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
     //! Number of tables in the model
     int mTableCount = 0;
     QString mSqliteDb;
+    QStringList mColumns;
 
     QIcon iconForType( QgsWkbTypes::Type type ) const;
     QString displayStringForType( QgsWkbTypes::Type type ) const;

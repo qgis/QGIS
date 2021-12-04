@@ -45,6 +45,7 @@ set(QGIS_APP_SRCS
   qgsfeatureaction.cpp
   qgslayercapabilitiesmodel.cpp
   qgslayernotesmanager.cpp
+  qgslayertreegrouppropertieswidget.cpp
   qgslayertreeviewindicatorprovider.cpp
   qgslayertreeviewembeddedindicator.cpp
   qgslayertreeviewfilterindicator.cpp

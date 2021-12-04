@@ -16,14 +16,74 @@
 #include "ui_qgsdelimitedtextsourceselectbase.h"
 
 #include <QTextStream>
+#include <QThread>
+
 #include "qgshelp.h"
 #include "qgsguiutils.h"
+#include "qgsfeedback.h"
+#include "qgsfields.h"
+#include "qgstaskmanager.h"
 #include "qgsproviderregistry.h"
 #include "qgsabstractdatasourcewidget.h"
 #include "qgsdelimitedtextfile.h"
+#include "qgsdelimitedtextprovider.h"
 
 class QButtonGroup;
 class QgisInterface;
+
+
+/**
+ * \brief The QgsDelimitedTextFileScan class scans a CSV file to identify field types.
+ */
+class QgsDelimitedTextFileScanTask: public QgsTask
+{
+
+    Q_OBJECT
+
+  public:
+
+    QgsDelimitedTextFileScanTask( const QString &dataSource )
+      : QgsTask( QStringLiteral( "delimited text scan %1" ).arg( dataSource ) )
+      , mDataSource( dataSource )
+    {
+    };
+
+    ~QgsDelimitedTextFileScanTask()
+    {
+    }
+
+    // QThread interface
+  protected:
+    bool run() override;
+
+  public slots:
+
+    void cancel() override;
+
+  signals:
+
+    /**
+     * \brief scanCompleted is always emitted, even if the \a fields could not be determined.
+     */
+    void scanCompleted( const QgsFields &field );
+
+    /**
+     * \brief scanStarted is emitted only on valid layers when the first row is scanned,
+     *        this allows for quicker update of the GUI if the scan is performed on large files.
+     */
+    void scanStarted( const QgsFields &field );
+
+    /**
+     * \brief processedCountChanged is emitted when the file scan reports a change in the number of scanned rows.
+     */
+    void processedCountChanged( unsigned long long processedCount );
+
+  private:
+
+    QString mDataSource;
+    QgsFeedback mFeedback;
+
+};
 
 /**
  * \class QgsDelimitedTextSourceSelect
@@ -50,14 +110,18 @@ class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private
     std::unique_ptr<QgsDelimitedTextFile> mFile;
     int mExampleRowCount = 20;
     int mBadRowCount = 0;
+    QgsFields mFields; //!< Stores the fields as returned by the provider to determine if their types were overridden
+    QSet<int> mOverriddenFields; //!< Stores user-overridden fields
     static constexpr int DEFAULT_MAX_FIELDS = 10000;
-    int mMaxFields = DEFAULT_MAX_FIELDS; // to avoid Denial Of Service (at least in source select). Configurable through /max_fields settings sub-key.
+    int mMaxFields = DEFAULT_MAX_FIELDS; //!< To avoid Denial Of Service (at least in source select). Configurable through /max_fields settings sub-key.
     QString mSettingsKey;
     QString mLastFileType;
+    QPointer<QgsDelimitedTextFileScanTask> mScanTask;
     QButtonGroup *bgFileFormat = nullptr;
     QButtonGroup *bgGeomType = nullptr;
     void showHelp();
-    void showCrsWidget();
+    void updateCrsWidgetVisibility();
+    QString url( bool skipOverriddenTypes = false );
 
   public slots:
     void addButtonClicked() override;
@@ -65,6 +129,9 @@ class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private
     void updateFieldsAndEnable();
     void enableAccept();
     bool validate();
+    void cancelScanTask();
+    void updateFieldTypes( const QgsFields &fields );
 };
+
 
 #endif // QGSDELIMITEDTEXTSOURCESELECT_H

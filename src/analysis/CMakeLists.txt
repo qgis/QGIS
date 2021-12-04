@@ -80,6 +80,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmexplodehstore.cpp
   processing/qgsalgorithmexportlayersinformation.cpp
   processing/qgsalgorithmexportmesh.cpp
+  processing/qgsalgorithmexporttopostgresql.cpp
   processing/qgsalgorithmexporttospreadsheet.cpp
   processing/qgsalgorithmextendlines.cpp
   processing/qgsalgorithmextentfromlayer.cpp
@@ -173,6 +174,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrescaleraster.cpp
   processing/qgsalgorithmreverselinedirection.cpp
   processing/qgsalgorithmrotate.cpp
+  processing/qgsalgorithmroundness.cpp
   processing/qgsalgorithmroundrastervalues.cpp
   processing/qgsalgorithmruggedness.cpp
   processing/qgsalgorithmsavefeatures.cpp

@@ -222,11 +222,11 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       }
 
       // No raster support in createSqlVectorLayer (yet)
-      if ( vlayer )
+      if ( vlayer && vlayer->isSqlQuery() )
       {
         const std::unique_ptr< QgsAbstractDatabaseProviderConnection> conn { QgsMapLayerUtils::databaseConnection( layer ) };
         if ( conn )
-          menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/dbmanager.svg" ) ), tr( "Update SQL Layer…" ), menu, [ layer ]
+          menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/dbmanager.svg" ) ), tr( "Update SQL Layer…" ), menu, [ layer, this ]
         {
           std::unique_ptr< QgsAbstractDatabaseProviderConnection> conn2 { QgsMapLayerUtils::databaseConnection( layer ) };
           if ( conn2 )
@@ -244,8 +244,9 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
             queryResultWidget->layout()->setMargin( 0 );
             dialog.layout()->addWidget( queryResultWidget );
 
-            connect( queryResultWidget, &QgsQueryResultWidget::createSqlVectorLayer, queryResultWidget, [queryResultWidget, layer ]( const QString &, const QString &, const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions & options )
+            connect( queryResultWidget, &QgsQueryResultWidget::createSqlVectorLayer, queryResultWidget, [queryResultWidget, layer, this ]( const QString &, const QString &, const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions & options )
             {
+              ( void )this;
               std::unique_ptr< QgsAbstractDatabaseProviderConnection> conn3 { QgsMapLayerUtils::databaseConnection( layer ) };
               if ( conn3 )
               {
@@ -570,6 +571,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           break;
 
           case QgsMapLayerType::AnnotationLayer:
+          case QgsMapLayerType::GroupLayer:
             break;
 
           case QgsMapLayerType::PluginLayer:

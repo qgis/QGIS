@@ -676,18 +676,76 @@ Returns the map unit scale for the interval between symbols.
 .. seealso:: :py:func:`interval`
 %End
 
-    Qgis::MarkerLinePlacement placement() const;
+ Qgis::MarkerLinePlacement placement() const /Deprecated/;
 %Docstring
 Returns the placement of the symbols.
 
 .. seealso:: :py:func:`setPlacement`
+
+.. deprecated::
+   use :py:func:`~QgsTemplatedLineSymbolLayerBase.placements` instead
 %End
 
-    void setPlacement( Qgis::MarkerLinePlacement placement );
+ void setPlacement( Qgis::MarkerLinePlacement placement ) /Deprecated/;
 %Docstring
 Sets the ``placement`` of the symbols.
 
 .. seealso:: :py:func:`placement`
+
+.. deprecated::
+   use :py:func:`~QgsTemplatedLineSymbolLayerBase.setPlacements` instead
+%End
+
+    Qgis::MarkerLinePlacements placements() const;
+%Docstring
+Returns the placement of the symbols.
+
+.. seealso:: :py:func:`setPlacements`
+
+.. versionadded:: 3.24
+%End
+
+    void setPlacements( Qgis::MarkerLinePlacements placements );
+%Docstring
+Sets the ``placement`` of the symbols.
+
+.. seealso:: :py:func:`placements`
+
+.. versionadded:: 3.24
+%End
+
+    bool placeOnEveryPart() const;
+%Docstring
+Returns ``True`` if the placement applies for every part of multi-part feature geometries.
+
+The default is ``True``, which means that Qgis.MarkerLinePlacement.FirstVertex or
+Qgis.MarkerLinePlacement.LastVertex placements will result in a symbol on
+the first/last vertex of EVERY part of a multipart feature.
+
+If ``False``, then Qgis.MarkerLinePlacement.FirstVertex or
+Qgis.MarkerLinePlacement.LastVertex placements will result in a symbol on
+the first/last vertex of the overall multipart geometry only.
+
+.. seealso:: :py:func:`setPlaceOnEveryPart`
+
+.. versionadded:: 3.24
+%End
+
+    void setPlaceOnEveryPart( bool respect );
+%Docstring
+Sets whether the placement applies for every part of multi-part feature geometries.
+
+The default is ``True``, which means that Qgis.MarkerLinePlacement.FirstVertex or
+Qgis.MarkerLinePlacement.LastVertex placements will result in a symbol on
+the first/last vertex of EVERY part of a multipart feature.
+
+If ``False``, then Qgis.MarkerLinePlacement.FirstVertex or
+Qgis.MarkerLinePlacement.LastVertex placements will result in a symbol on
+the first/last vertex of the overall multipart geometry only.
+
+.. seealso:: :py:func:`placeOnEveryPart`
+
+.. versionadded:: 3.24
 %End
 
     double offsetAlongLine() const;
@@ -848,6 +906,11 @@ calculating individual symbol angles.
     virtual QVariantMap properties() const;
 
     virtual bool canCauseArtifactsBetweenAdjacentTiles() const;
+
+
+    virtual void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
+    virtual void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
 
 
   protected:

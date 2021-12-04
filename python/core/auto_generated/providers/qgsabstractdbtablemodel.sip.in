@@ -1,0 +1,56 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/qgsabstractdbtablemodel.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsAbstractDbTableModel : QStandardItemModel
+{
+%Docstring(signature="appended")
+The :py:class:`QgsAbstractDbTableModel` class is a pure virtual model class for results in a database source widget selector
+
+.. versionadded:: 3.24
+%End
+
+%TypeHeaderCode
+#include "qgsabstractdbtablemodel.h"
+%End
+  public:
+    explicit QgsAbstractDbTableModel( QObject *parent = 0 );
+%Docstring
+Constructor
+%End
+
+    virtual QStringList columns() const = 0;
+%Docstring
+Returns the list of columns in the table
+%End
+
+    virtual int defaultSearchColumn() const = 0;
+%Docstring
+Returns the index of the column used by default to filter the results (probably the table name column if it exists)
+%End
+
+    virtual bool searchableColumn( int column ) const;
+%Docstring
+Returns if the column should be searchable at the given index
+%End
+
+    virtual void setSql( const QModelIndex &index, const QString &sql ) = 0;
+%Docstring
+Sets an sql statement that belongs to a cell specified by a model index
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/qgsabstractdbtablemodel.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

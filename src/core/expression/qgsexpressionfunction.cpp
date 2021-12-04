@@ -23,6 +23,7 @@
 #include "qgsexpressionnodeimpl.h"
 #include "qgsexiftools.h"
 #include "qgsfeaturerequest.h"
+#include "qgsgeos.h"
 #include "qgsstringutils.h"
 #include "qgsmultipoint.h"
 #include "qgsgeometryutils.h"
@@ -61,6 +62,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsunittypes.h"
 #include "qgsspatialindex.h"
+#include "qgscolorrampimpl.h"
 
 #include <QMimeDatabase>
 #include <QProcessEnvironment>
@@ -3041,6 +3043,36 @@ static QVariant fcnApplyDashPattern( const QVariantList &values, const QgsExpres
   return result;
 }
 
+static QVariant fcnDensifyByCount( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isNull() )
+    return QVariant();
+
+  const long long count = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
+  const QgsGeometry densified = geom.densifyByCount( static_cast< int >( count ) );
+  if ( densified.isNull() )
+    return QVariant();
+
+  return densified;
+}
+
+static QVariant fcnDensifyByDistance( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isNull() )
+    return QVariant();
+
+  const double distance = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
+  const QgsGeometry densified = geom.densifyByDistance( distance );
+  if ( densified.isNull() )
+    return QVariant();
+
+  return densified;
+}
+
 static QVariant fcnCollectGeometries( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QVariantList list;
@@ -3859,6 +3891,20 @@ static QVariant fcnStraightDistance2d( const QVariantList &values, const QgsExpr
   }
 
   return QVariant( curve->straightDistance2d() );
+}
+
+static QVariant fcnRoundness( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  const QgsCurvePolygon *poly = geom.constGet() ? qgsgeometry_cast< const QgsCurvePolygon * >( geom.constGet()->simplifiedTypeRef() ) : nullptr;
+
+  if ( !poly )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `roundness` requires a polygon geometry or a multi polygon geometry with a single part." ) );
+    return QVariant();
+  }
+
+  return QVariant( poly->roundness() );
 }
 
 
@@ -5616,6 +5662,8 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
         return QCoreApplication::translate( "expressions", "Annotation" );
       case QgsMapLayerType::PointCloudLayer:
         return QCoreApplication::translate( "expressions", "Point Cloud" );
+      case QgsMapLayerType::GroupLayer:
+        return QCoreApplication::translate( "expressions", "Group" );
     }
   }
   else
@@ -6280,6 +6328,20 @@ static QVariant fcnMap( const QVariantList &values, const QgsExpressionContext *
   return result;
 }
 
+static QVariant fcnMapPrefixKeys( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QVariantMap map = QgsExpressionUtils::getMapValue( values.at( 0 ), parent );
+  const QString prefix = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
+  QVariantMap resultMap;
+
+  for ( auto it = map.cbegin(); it != map.cend(); it++ )
+  {
+    resultMap.insert( QString( it.key() ).prepend( prefix ), it.value() );
+  }
+
+  return resultMap;
+}
+
 static QVariant fcnMapGet( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   return QgsExpressionUtils::getMapValue( values.at( 0 ), parent ).value( values.at( 1 ).toString() );
@@ -6484,7 +6546,7 @@ static QVariant fcnFromBase64( const QVariantList &values, const QgsExpressionCo
 
 typedef bool ( QgsGeometry::*RelationFunction )( const QgsGeometry &geometry ) const;
 
-static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const RelationFunction &relationFunction, bool invert = false, double bboxGrow = 0, bool isNearestFunc = false )
+static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const RelationFunction &relationFunction, bool invert = false, double bboxGrow = 0, bool isNearestFunc = false, bool isIntersectsFunc = false )
 {
 
   const QVariant sourceLayerRef = context->variable( QStringLiteral( "layer" ) ); //used to detect if sourceLayer and targetLayer are the same
@@ -6549,6 +6611,32 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   QVariant cacheValue = node->eval( parent, context );
   ENSURE_NO_EVAL_ERROR
   bool cacheEnabled = cacheValue.toBool();
+
+  // Sixth parameter (for intersects only) is the min overlap (area or length)
+  // Seventh parameter (for intersects only) is the min inscribed circle radius
+  double minOverlap { -1 };
+  double minInscribedCircleRadius { -1 };
+  if ( isIntersectsFunc )
+  {
+
+    node = QgsExpressionUtils::getNode( values.at( 5 ), parent ); //in expressions overlay functions throw the exception: Eval Error: Cannot convert '' to int
+    ENSURE_NO_EVAL_ERROR
+    const QVariant minOverlapValue = node->eval( parent, context );
+    ENSURE_NO_EVAL_ERROR
+    minOverlap = QgsExpressionUtils::getDoubleValue( minOverlapValue, parent );
+    node = QgsExpressionUtils::getNode( values.at( 6 ), parent ); //in expressions overlay functions throw the exception: Eval Error: Cannot convert '' to int
+    ENSURE_NO_EVAL_ERROR
+    const QVariant minInscribedCircleRadiusValue = node->eval( parent, context );
+    ENSURE_NO_EVAL_ERROR
+    minInscribedCircleRadius = QgsExpressionUtils::getDoubleValue( minInscribedCircleRadiusValue, parent );
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<9
+    if ( minInscribedCircleRadiusValue != -1 )
+    {
+      parent->setEvalErrorString( QObject::tr( "'min_inscribed_circle_radius' is only available when QGIS is built with GEOS >= 3.9." ) );
+      return QVariant();
+    }
+#endif
+  }
 
 
   FEAT_FROM_CONTEXT( context, feat )
@@ -6671,6 +6759,88 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
 
     if ( ! relationFunction || ( geometry.*relationFunction )( feat2.geometry() ) ) // Calls the method provided as template argument for the function (e.g. QgsGeometry::intersects)
     {
+
+      if ( isIntersectsFunc && ( minOverlap != -1 || minInscribedCircleRadius != -1 ) )
+      {
+        const QgsGeometry intersection { geometry.intersection( feat2.geometry() ) };
+
+        // overlap and inscribed circle tests must be checked both (if the valuea are != -1)
+        switch ( intersection.type() )
+        {
+          case QgsWkbTypes::GeometryType::PolygonGeometry:
+          {
+
+            bool testResult { false };
+            for ( auto it = intersection.const_parts_begin(); ! testResult && it != intersection.const_parts_end(); ++it )
+            {
+              const QgsCurvePolygon *geom = qgsgeometry_cast< const QgsCurvePolygon * >( *it );
+              // Check min overlap for intersection (if set)
+              if ( minOverlap != -1 )
+              {
+                if ( geom->area() >= minOverlap )
+                {
+                  testResult = true;
+                }
+                else
+                {
+                  continue;
+                }
+              }
+
+              // Check min inscribed circle radius for intersection (if set)
+              if ( minInscribedCircleRadius != -1 )
+              {
+                const QgsRectangle bbox = geom->boundingBox();
+                const double width = bbox.width();
+                const double height = bbox.height();
+                const double size = width > height ? width : height;
+                const double tolerance = size / 100.0;
+                testResult = QgsGeos( geom ).maximumInscribedCircle( tolerance )->length() >= minInscribedCircleRadius;
+              }
+            }
+
+            if ( ! testResult )
+            {
+              continue;
+            }
+
+            break;
+          }
+          case QgsWkbTypes::GeometryType::LineGeometry:
+          {
+            bool testResult { false };
+            for ( auto it = intersection.const_parts_begin(); ! testResult && it != intersection.const_parts_end(); ++it )
+            {
+              const QgsCurve *geom = qgsgeometry_cast< const QgsCurve * >( *it );
+              // Check min overlap for intersection (if set)
+              if ( minOverlap != -1 )
+              {
+                if ( geom->length() >= minOverlap )
+                {
+                  testResult = true;
+                }
+                else
+                {
+                  continue;
+                }
+              }
+            }
+
+            if ( ! testResult )
+            {
+              continue;
+            }
+            break;
+          }
+          case QgsWkbTypes::GeometryType::PointGeometry:
+          case QgsWkbTypes::GeometryType::NullGeometry:
+          case QgsWkbTypes::GeometryType::UnknownGeometry:
+          {
+            break;
+          }
+        }
+      }
+
       found = true;
       foundCount++;
 
@@ -6726,7 +6896,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
 
 static QVariant fcnGeomOverlayIntersects( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  return executeGeomOverlay( values, context, parent, &QgsGeometry::intersects );
+  return executeGeomOverlay( values, context, parent, &QgsGeometry::intersects, false, 0, false, true );
 }
 
 static QVariant fcnGeomOverlayContains( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -6756,7 +6926,7 @@ static QVariant fcnGeomOverlayWithin( const QVariantList &values, const QgsExpre
 
 static QVariant fcnGeomOverlayDisjoint( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  return executeGeomOverlay( values, context, parent, &QgsGeometry::intersects, true );
+  return executeGeomOverlay( values, context, parent, &QgsGeometry::intersects, true, 0, false, true );
 }
 
 static QVariant fcnGeomOverlayNearest( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -6798,8 +6968,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "sqrt" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnSqrt, QStringLiteral( "Math" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "radians" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "degrees" ) ), fcnRadians, QStringLiteral( "Math" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "degrees" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "radians" ) ), fcnDegrees, QStringLiteral( "Math" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "azimuth" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "point_a" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "point_b" ) ), fcnAzimuth, QStringList() << QStringLiteral( "Math" ) << QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "inclination" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "point_a" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "point_b" ) ), fcnInclination, QStringList() << QStringLiteral( "Math" ) << QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "azimuth" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "point_a" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "point_b" ) ), fcnAzimuth, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "inclination" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "point_a" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "point_b" ) ), fcnInclination, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "project" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "point" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "azimuth" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "elevation" ), true, M_PI_2 ), fcnProject, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "abs" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnAbs, QStringLiteral( "Math" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "cos" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "angle" ) ), fcnCos, QStringLiteral( "Math" ) )
@@ -7134,6 +7304,10 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 
     functions << new QgsStaticExpressionFunction( QStringLiteral( "perimeter" ),  QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnPerimeter, QStringLiteral( "GeometryGroup" ) );
 
+    functions << new QgsStaticExpressionFunction( QStringLiteral( "roundness" ),
+              QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+              fcnRoundness, QStringLiteral( "GeometryGroup" ) );
+
     QgsStaticExpressionFunction *xFunc = new QgsStaticExpressionFunction( QStringLiteral( "$x" ), 0, fcnX, QStringLiteral( "GeometryGroup" ), QString(), true );
     xFunc->setIsStatic( false );
     functions << xFunc;
@@ -7165,7 +7339,9 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
           << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ), true, QVariant(), true )
           << QgsExpressionFunction::Parameter( QStringLiteral( "filter" ), true, QVariant(), true )
           << QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true, QVariant( -1 ), true )
-          << QgsExpressionFunction::Parameter( QStringLiteral( "cache" ), true, QVariant( false ), false ),
+          << QgsExpressionFunction::Parameter( QStringLiteral( "cache" ), true, QVariant( false ), false )
+          << QgsExpressionFunction::Parameter( QStringLiteral( "min_overlap" ), true, QVariant( -1 ), false )
+          << QgsExpressionFunction::Parameter( QStringLiteral( "min_inscribed_circle_radius" ), true, QVariant( -1 ), false ),
           i.value(), QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
 
       // The current feature is accessed for the geometry, so this should not be cached
@@ -7423,6 +7599,16 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       QgsExpressionFunction::Parameter( QStringLiteral( "adjustment" ), true, QStringLiteral( "both" ) ),
       QgsExpressionFunction::Parameter( QStringLiteral( "pattern_offset" ), true, 0 ),
     }, fcnApplyDashPattern, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "densify_by_count" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "vertices" ) )
+    }, fcnDensifyByCount, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "densify_by_distance" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) )
+    }, fcnDensifyByDistance, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "num_points" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnGeomNumPoints, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "num_interior_rings" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnGeomNumInteriorRings, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "num_rings" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnGeomNumRings, QStringLiteral( "GeometryGroup" ) )
@@ -7831,6 +8017,10 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "map_concat" ), -1, fcnMapConcat, QStringLiteral( "Maps" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "map_akeys" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "map" ) ), fcnMapAKeys, QStringLiteral( "Maps" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "map_avals" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "map" ) ), fcnMapAVals, QStringLiteral( "Maps" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "map_prefix_keys" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "map" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "prefix" ) ),
+                                            fcnMapPrefixKeys, QStringLiteral( "Maps" ) )
+
         ;
 
     QgsExpressionContextUtils::registerContextFunctions();

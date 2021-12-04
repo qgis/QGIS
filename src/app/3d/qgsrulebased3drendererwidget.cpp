@@ -265,7 +265,7 @@ QVariant QgsRuleBased3DRendererModel::data( const QModelIndex &index, int role )
   }
   else if ( role == Qt::TextAlignmentRole )
   {
-    return Qt::AlignLeft;
+    return static_cast<Qt::Alignment::Int>( Qt::AlignLeft );
   }
   else if ( role == Qt::FontRole && index.column() == 1 )
   {

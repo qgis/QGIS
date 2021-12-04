@@ -727,8 +727,13 @@ void QgsCompoundCurve::transform( const QTransform &t, double zTranslate, double
 void QgsCompoundCurve::addToPainterPath( QPainterPath &path ) const
 {
   QPainterPath pp;
+
   for ( const QgsCurve *curve : mCurves )
   {
+    if ( curve != mCurves.at( 0 ) && pp.currentPosition() != curve->startPoint().toQPointF() )
+    {
+      pp.lineTo( curve->startPoint().toQPointF() );
+    }
     curve->addToPainterPath( pp );
   }
   path.addPath( pp );
@@ -739,6 +744,10 @@ void QgsCompoundCurve::drawAsPolygon( QPainter &p ) const
   QPainterPath pp;
   for ( const QgsCurve *curve : mCurves )
   {
+    if ( curve != mCurves.at( 0 ) && pp.currentPosition() != curve->startPoint().toQPointF() )
+    {
+      pp.lineTo( curve->startPoint().toQPointF() );
+    }
     curve->addToPainterPath( pp );
   }
   p.drawPath( pp );

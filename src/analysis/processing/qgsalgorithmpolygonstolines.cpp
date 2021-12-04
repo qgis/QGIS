@@ -40,7 +40,7 @@ QStringList QgsPolygonsToLinesAlgorithm::tags() const
 
 QString QgsPolygonsToLinesAlgorithm::group() const
 {
-  return QObject::tr( "Vector creation" );
+  return QObject::tr( "Vector geometry" );
 }
 
 QString QgsPolygonsToLinesAlgorithm::groupId() const

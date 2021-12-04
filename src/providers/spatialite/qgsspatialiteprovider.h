@@ -144,7 +144,7 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
     QString description() const override;
     QgsAttributeList pkAttributeIndexes() const override;
     void invalidateConnections( const QString &connection ) override;
-    QList<QgsRelation> discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const override;
+    QList<QgsRelation> discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const override;
 
     static QString providerKey();
 
@@ -414,6 +414,9 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
     // QgsVectorDataProvider interface
   public:
     virtual QString defaultValueClause( int fieldIndex ) const override;
+
+    Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const override;
+
 };
 
 class QgsSpatiaLiteProviderMetadata final: public QgsProviderMetadata

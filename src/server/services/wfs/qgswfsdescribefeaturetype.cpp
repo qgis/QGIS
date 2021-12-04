@@ -72,7 +72,6 @@ namespace QgsWfs
 
     QDomDocument doc;
 
-    const QgsServerRequest::Parameters parameters = request.parameters();
     const QgsWfsParameters wfsParameters( QUrlQuery( request.url() ) );
     const QgsWfsParameters::Format oFormat = wfsParameters.outputFormat();
 

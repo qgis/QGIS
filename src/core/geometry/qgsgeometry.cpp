@@ -18,6 +18,7 @@ email                : morb at ozemail dot com dot au
 #include <cstdio>
 #include <cmath>
 #include <nlohmann/json.hpp>
+#include <QCache>
 
 #include "qgis.h"
 #include "qgsgeometry.h"
@@ -53,6 +54,7 @@ email                : morb at ozemail dot com dot au
 #include "qgslinestring.h"
 #include "qgscircle.h"
 #include "qgscurve.h"
+#include "qgsreadwritelocker.h"
 
 struct QgsGeometryPrivate
 {
@@ -157,14 +159,18 @@ bool QgsGeometry::isNull() const
   return !d->geometry;
 }
 
+typedef QCache< QString, QgsGeometry > WktCache;
+Q_GLOBAL_STATIC_WITH_ARGS( WktCache, sWktCache, ( 2000 ) )  // store up to 2000 geometries
+Q_GLOBAL_STATIC( QMutex, sWktMutex )
+
 QgsGeometry QgsGeometry::fromWkt( const QString &wkt )
 {
-  std::unique_ptr< QgsAbstractGeometry > geom = QgsGeometryFactory::geomFromWkt( wkt );
-  if ( !geom )
-  {
-    return QgsGeometry();
-  }
-  return QgsGeometry( std::move( geom ) );
+  QMutexLocker lock( sWktMutex() );
+  if ( const QgsGeometry *cached = sWktCache()->object( wkt ) )
+    return *cached;
+  const QgsGeometry result( QgsGeometryFactory::geomFromWkt( wkt ) );
+  sWktCache()->insert( wkt, new QgsGeometry( result ), 1 );
+  return result;
 }
 
 QgsGeometry QgsGeometry::fromPointXY( const QgsPointXY &point )
@@ -1542,7 +1548,6 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const QgsWkbTypes::Type type ) c
   if ( ! QgsWkbTypes::isMultiType( type ) && newGeom.isMultipart( ) )
   {
     const QgsGeometryCollection *parts( static_cast< const QgsGeometryCollection * >( newGeom.constGet() ) );
-    QgsAttributeMap attrMap;
     res.reserve( parts->partCount() );
     for ( int i = 0; i < parts->partCount( ); i++ )
     {
@@ -1889,21 +1894,8 @@ double QgsGeometry::area() const
   {
     return -1.0;
   }
-  QgsGeos g( d->geometry.get() );
 
-#if 0
-  //debug: compare geos area with calculation in QGIS
-  double geosArea = g.area();
-  double qgisArea = 0;
-  QgsSurface *surface = qgsgeometry_cast<QgsSurface *>( d->geometry );
-  if ( surface )
-  {
-    qgisArea = surface->area();
-  }
-#endif
-
-  mLastError.clear();
-  return g.area( &mLastError );
+  return d->geometry->area();
 }
 
 double QgsGeometry::length() const
@@ -2138,7 +2130,7 @@ QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, Qgis::JoinS
     mLastError.clear();
 
     // GEOS can flip the curve orientation in some circumstances. So record previous orientation and correct if required
-    const QgsCurve::Orientation prevOrientation = qgsgeometry_cast< const QgsCurve * >( d->geometry.get() )->orientation();
+    const Qgis::AngularDirection prevOrientation = qgsgeometry_cast< const QgsCurve * >( d->geometry.get() )->orientation();
 
     std::unique_ptr< QgsAbstractGeometry > offsetGeom( geos.offsetCurve( distance, segments, joinStyle, miterLimit, &mLastError ) );
     if ( !offsetGeom )
@@ -2150,7 +2142,7 @@ QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, Qgis::JoinS
 
     if ( const QgsCurve *offsetCurve = qgsgeometry_cast< const QgsCurve * >( offsetGeom.get() ) )
     {
-      const QgsCurve::Orientation newOrientation = offsetCurve->orientation();
+      const Qgis::AngularDirection newOrientation = offsetCurve->orientation();
       if ( newOrientation != prevOrientation )
       {
         // GEOS has flipped line orientation, flip it back

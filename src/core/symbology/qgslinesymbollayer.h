@@ -27,6 +27,7 @@ class QgsExpression;
 class QgsMarkerSymbol;
 class QgsLineSymbol;
 class QgsPathResolver;
+class QgsColorRamp;
 
 #define DEFAULT_SIMPLELINE_COLOR     QColor(35,35,35)
 #define DEFAULT_SIMPLELINE_WIDTH     DEFAULT_LINE_WIDTH
@@ -625,14 +626,62 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     /**
      * Returns the placement of the symbols.
      * \see setPlacement()
+     * \deprecated use placements() instead
      */
-    Qgis::MarkerLinePlacement placement() const { return mPlacement; }
+    Q_DECL_DEPRECATED Qgis::MarkerLinePlacement placement() const SIP_DEPRECATED;
 
     /**
      * Sets the \a placement of the symbols.
      * \see placement()
+     * \deprecated use setPlacements() instead
      */
-    void setPlacement( Qgis::MarkerLinePlacement placement ) { mPlacement = placement; }
+    Q_DECL_DEPRECATED void setPlacement( Qgis::MarkerLinePlacement placement ) SIP_DEPRECATED;
+
+    /**
+     * Returns the placement of the symbols.
+     * \see setPlacements()
+     * \since QGIS 3.24
+     */
+    Qgis::MarkerLinePlacements placements() const { return mPlacements; }
+
+    /**
+     * Sets the \a placement of the symbols.
+     * \see placements()
+     * \since QGIS 3.24
+     */
+    void setPlacements( Qgis::MarkerLinePlacements placements ) { mPlacements = placements; }
+
+    /**
+     * Returns TRUE if the placement applies for every part of multi-part feature geometries.
+     *
+     * The default is TRUE, which means that Qgis::MarkerLinePlacement::FirstVertex or
+     * Qgis::MarkerLinePlacement::LastVertex placements will result in a symbol on
+     * the first/last vertex of EVERY part of a multipart feature.
+     *
+     * If FALSE, then Qgis::MarkerLinePlacement::FirstVertex or
+     * Qgis::MarkerLinePlacement::LastVertex placements will result in a symbol on
+     * the first/last vertex of the overall multipart geometry only.
+     *
+     * \see setPlaceOnEveryPart()
+     * \since QGIS 3.24
+     */
+    bool placeOnEveryPart() const { return mPlaceOnEveryPart; }
+
+    /**
+     * Sets whether the placement applies for every part of multi-part feature geometries.
+     *
+     * The default is TRUE, which means that Qgis::MarkerLinePlacement::FirstVertex or
+     * Qgis::MarkerLinePlacement::LastVertex placements will result in a symbol on
+     * the first/last vertex of EVERY part of a multipart feature.
+     *
+     * If FALSE, then Qgis::MarkerLinePlacement::FirstVertex or
+     * Qgis::MarkerLinePlacement::LastVertex placements will result in a symbol on
+     * the first/last vertex of the overall multipart geometry only.
+     *
+     * \see placeOnEveryPart()
+     * \since QGIS 3.24
+     */
+    void setPlaceOnEveryPart( bool respect ) { mPlaceOnEveryPart = respect; }
 
     /**
      * Returns the offset along the line for the symbol placement. For Interval placements, this is the distance
@@ -759,6 +808,9 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     QVariantMap properties() const override;
     bool canCauseArtifactsBetweenAdjacentTiles() const override;
 
+    void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
+    void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
+
   protected:
 
     /**
@@ -819,10 +871,12 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      * moving forward along the line. If distance is negative, offset is calculated moving backward
      * along the line's vertices.
      * \param context render context
+     * \param placement marker placement
      * \see setoffsetAlongLine
      * \see setOffsetAlongLineUnit
      */
-    void renderOffsetVertexAlongLine( const QPolygonF &points, int vertex, double distance, QgsSymbolRenderContext &context );
+    void renderOffsetVertexAlongLine( const QPolygonF &points, int vertex, double distance, QgsSymbolRenderContext &context,
+                                      Qgis::MarkerLinePlacement placement );
 
 
     static void collectOffsetPoints( const QVector< QPointF> &points,
@@ -833,13 +887,20 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     double mInterval = 3;
     QgsUnitTypes::RenderUnit mIntervalUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mIntervalMapUnitScale;
-    Qgis::MarkerLinePlacement mPlacement = Qgis::MarkerLinePlacement::Interval;
+    Qgis::MarkerLinePlacements mPlacements = Qgis::MarkerLinePlacement::Interval;
     double mOffsetAlongLine = 0; //distance to offset along line before marker is drawn
     QgsUnitTypes::RenderUnit mOffsetAlongLineUnit = QgsUnitTypes::RenderMillimeters; //unit for offset along line
     QgsMapUnitScale mOffsetAlongLineMapUnitScale;
     double mAverageAngleLength = 4;
     QgsUnitTypes::RenderUnit mAverageAngleLengthUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mAverageAngleLengthMapUnitScale;
+    bool mPlaceOnEveryPart = true;
+
+    bool mRenderingFeature = false;
+    bool mHasRenderedFirstPart = false;
+    QPointF mFinalVertex;
+    bool mCurrentFeatureIsSelected = false;
+    double mFeatureSymbolOpacity = 1;
 
     friend class TestQgsMarkerLineSymbol;
 
@@ -1268,7 +1329,7 @@ class CORE_EXPORT QgsLineburstSymbolLayer : public QgsAbstractBrushedLineSymbolL
      * \see setColorRamp()
      * \see gradientColorType()
      */
-    QgsColorRamp *colorRamp() { return mGradientRamp.get(); }
+    QgsColorRamp *colorRamp();
 
     /**
      * Sets the color ramp used for the gradient line. This is only

@@ -160,8 +160,27 @@ class CORE_EXPORT QgsApplication : public QApplication
     static const char *QGIS_ORGANIZATION_DOMAIN;
     static const char *QGIS_APPLICATION_NAME;
 #ifndef SIP_RUN
-    QgsApplication( int &argc, char **argv, bool GUIenabled, const QString &profileFolder = QString(), const QString &platformName = "desktop" );
+
+    /**
+     * Constructor for QgsApplication.
+     *
+     * \param argc command line argument count
+     * \param argv command line arguments
+     * \param GUIenabled set to TRUE if a GUI application is required, or FALSE for a console only application
+     * \param profileFolder optional string representing the profile to load at startup
+     * \param platformName the QGIS platform name, e.g., "desktop", "server", "qgis_process" or "external" (for external CLI scripts)
+     */
+    QgsApplication( int &argc, char **argv, bool GUIenabled, const QString &profileFolder = QString(), const QString &platformName = "external" );
 #else
+
+    /**
+     * Constructor for QgsApplication.
+     *
+     * \param argv command line arguments
+     * \param GUIenabled set to TRUE if a GUI application is required, or FALSE for a console only application
+     * \param profileFolder optional string representing the profile to load at startup
+     * \param platformName the QGIS platform name, e.g., "desktop", "server", "qgis_process" or "external" (for external CLI scripts)
+     */
     QgsApplication( SIP_PYLIST argv, bool GUIenabled, QString profileFolder = QString(), QString platformName = "desktop" ) / PostHook = __pyQtQAppHook__ / [( int &argc, char **argv, bool GUIenabled, const QString &profileFolder = QString(), const QString &platformName = "desktop" )];
     % MethodCode
     // The Python interface is a list of argument strings that is modified.
@@ -437,7 +456,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString osName();
 
     /**
-     * Returns the QGIS platform name, e.g., "desktop" or "server".
+     * Returns the QGIS platform name, e.g., "desktop", "server", "qgis_process" or "external" (for external CLI scripts).
      * \see osName()
      * \since QGIS 2.14
      */

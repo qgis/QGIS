@@ -46,7 +46,7 @@ QgsAttributeFormEditorWidget::QgsAttributeFormEditorWidget( QgsEditorWidgetWrapp
 
   mMultiEditButton->setField( mEditorWidget->field() );
   mAggregateButton = new QgsAggregateToolButton();
-  mAggregateButton->setType( editorWidget->field().type() );
+  mAggregateButton->setType( mEditorWidget->field().type() );
   connect( mAggregateButton, &QgsAggregateToolButton::aggregateChanged, this, &QgsAttributeFormEditorWidget::onAggregateChanged );
 
   if ( mEditorWidget->widget() )

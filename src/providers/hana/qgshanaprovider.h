@@ -102,6 +102,8 @@ class QgsHanaProvider final : public QgsVectorDataProvider
       const QMap<QString, QVariant> *options = nullptr
     );
 
+    Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const override;
+
   private:
     QgsHanaConnectionRef createConnection() const;
     QString buildQuery( const QString &columns, const QString &where, const QString &orderBy, int limit ) const;

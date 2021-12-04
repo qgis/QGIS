@@ -5962,12 +5962,22 @@ void QgsSpatiaLiteProvider::setTransaction( QgsTransaction *transaction )
   mTransaction = static_cast<QgsSpatiaLiteTransaction *>( transaction );
 }
 
+Qgis::VectorLayerTypeFlags QgsSpatiaLiteProvider::vectorLayerTypeFlags() const
+{
+  Qgis::VectorLayerTypeFlags flags;
+  if ( mValid && mIsQuery )
+  {
+    flags.setFlag( Qgis::VectorLayerTypeFlag::SqlQuery );
+  }
+  return flags;
+}
+
 QgsTransaction *QgsSpatiaLiteProvider::transaction( ) const
 {
   return static_cast<QgsTransaction *>( mTransaction );
 }
 
-QList<QgsRelation> QgsSpatiaLiteProvider::discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const
+QList<QgsRelation> QgsSpatiaLiteProvider::discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const
 {
   QList<QgsRelation> output;
   const QString sql = QStringLiteral( "PRAGMA foreign_key_list(%1)" ).arg( QgsSqliteUtils::quotedIdentifier( mTableName ) );
@@ -5994,7 +6004,7 @@ QList<QgsRelation> QgsSpatiaLiteProvider::discoverRelations( const QgsVectorLaye
         {
           QgsRelation relation;
           relation.setName( name );
-          relation.setReferencingLayer( self->id() );
+          relation.setReferencingLayer( target->id() );
           relation.setReferencedLayer( foundLayer->id() );
           relation.addFieldPair( fkColumn, refColumn );
           relation.generateId();

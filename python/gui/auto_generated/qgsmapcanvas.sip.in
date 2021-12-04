@@ -460,12 +460,15 @@ layers which may be visible in the canvas, but not associated with a :py:class:`
 
     int layerCount() const;
 %Docstring
-Returns number of layers on the map
+Returns number of layers on the map.
 %End
 
-    QList<QgsMapLayer *> layers() const;
+    QList<QgsMapLayer *> layers( bool expandGroupLayers = false ) const;
 %Docstring
 Returns the list of layers shown within the map canvas.
+
+Since QGIS 3.24, if the ``expandGroupLayers`` option is ``True`` then group layers will be converted to
+all their child layers.
 
 .. seealso:: :py:func:`setLayers`
 %End

@@ -28,6 +28,7 @@
 #include "qgslayermetadata.h"
 
 #include "qgsprovidermetadata.h"
+#include "qgshttpheaders.h"
 
 /**
  * \brief A provider reading features from a ArcGIS Feature Service
@@ -89,7 +90,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     QgsLayerMetadata mLayerMetadata;
     QVariantMap mRendererDataMap;
     QVariantList mLabelingDataList;
-    QgsStringMap mRequestHeaders;
+    QgsHttpHeaders mRequestHeaders;
 
     /**
      * Clears cache

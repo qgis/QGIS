@@ -397,19 +397,14 @@ void QgsRasterDataProvider::setUserNoDataValue( int bandNo, const QgsRasterRange
   if ( mUserNoDataValue[bandNo - 1] != noData )
   {
     // Clear statistics
-    int i = 0;
-    while ( i < mStatistics.size() )
+    mStatistics.erase( std::remove_if( mStatistics.begin(), mStatistics.end(), [bandNo]( const QgsRasterBandStats & stats )
     {
-      if ( mStatistics.value( i ).bandNumber == bandNo )
-      {
-        mStatistics.removeAt( i );
-        mHistograms.removeAt( i );
-      }
-      else
-      {
-        i++;
-      }
-    }
+      return stats.bandNumber == bandNo;
+    } ), mStatistics.end() );
+    mHistograms.erase( std::remove_if( mHistograms.begin(), mHistograms.end(), [bandNo]( const QgsRasterHistogram & histogram )
+    {
+      return histogram.bandNumber == bandNo;
+    } ), mHistograms.end() );
     mUserNoDataValue[bandNo - 1] = noData;
   }
 }

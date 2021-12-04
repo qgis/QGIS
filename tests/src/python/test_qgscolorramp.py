@@ -11,15 +11,15 @@ __date__ = '2015-08'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (QgsGradientColorRamp,
+from qgis.PyQt.QtGui import QColor, QGradient
+from qgis.core import (Qgis,
+                       QgsGradientColorRamp,
                        QgsGradientStop,
                        QgsLimitedRandomColorRamp,
                        QgsRandomColorRamp,
                        QgsColorBrewerColorRamp,
                        QgsCptCityColorRamp,
                        QgsPresetSchemeColorRamp)
-from qgis.PyQt.QtGui import QColor, QGradient
 from qgis.testing import unittest
 
 
@@ -33,6 +33,16 @@ class PyQgsColorRamp(unittest.TestCase):
         self.assertEqual(QgsGradientStop(0.1, QColor(180, 20, 30)), QgsGradientStop(0.1, QColor(180, 20, 30)))
         self.assertNotEqual(QgsGradientStop(0.1, QColor(180, 20, 30)), QgsGradientStop(0.2, QColor(180, 20, 30)))
         self.assertNotEqual(QgsGradientStop(0.1, QColor(180, 20, 30)), QgsGradientStop(0.1, QColor(180, 40, 30)))
+
+        stop2 = QgsGradientStop(stop)
+        stop2.setColorSpec(QColor.Hsv)
+        self.assertNotEqual(stop2, stop)
+        self.assertEqual(stop2.colorSpec(), QColor.Hsv)
+
+        stop2 = QgsGradientStop(stop)
+        stop2.setDirection(Qgis.AngularDirection.Clockwise)
+        self.assertNotEqual(stop2, stop)
+        self.assertEqual(stop2.direction(), Qgis.AngularDirection.Clockwise)
 
         # test gradient with only start/end color
         r = QgsGradientColorRamp(QColor(200, 0, 0, 100), QColor(0, 200, 0, 200))
@@ -48,9 +58,89 @@ class PyQgsColorRamp(unittest.TestCase):
         self.assertEqual(r.color(1), QColor(0, 200, 0, 200))
         self.assertEqual(r.color(0.5), QColor(100, 100, 0, 150))
 
+        r.setColorSpec(QColor.Hsv)
+        self.assertEqual(r.colorSpec(), QColor.Hsv)
+        r.setColor1(QColor.fromHsvF(0.1, 0.2, 0.4, 0.5))
+        r.setColor2(QColor.fromHsvF(0.3, 0.4, 0.6, 0.7))
+        self.assertAlmostEqual(r.color(0).hsvHueF(), 0.1, 3)
+        self.assertAlmostEqual(r.color(0).hsvSaturationF(), 0.2, 3)
+        self.assertAlmostEqual(r.color(0).valueF(), 0.4, 3)
+        self.assertAlmostEqual(r.color(0).alphaF(), 0.5, 3)
+
+        self.assertAlmostEqual(r.color(1).hsvHueF(), 0.3, 3)
+        self.assertAlmostEqual(r.color(1).hsvSaturationF(), 0.4, 3)
+        self.assertAlmostEqual(r.color(1).valueF(), 0.6, 3)
+        self.assertAlmostEqual(r.color(1).alphaF(), 0.7, 3)
+
+        self.assertAlmostEqual(r.color(0.5).hsvHueF(), 0.2, 3)
+        self.assertAlmostEqual(r.color(0.5).hsvSaturationF(), 0.3, 3)
+        self.assertAlmostEqual(r.color(0.5).valueF(), 0.5, 3)
+        self.assertAlmostEqual(r.color(0.5).alphaF(), 0.6, 3)
+
+        r.setDirection(Qgis.AngularDirection.Clockwise)
+        self.assertAlmostEqual(r.color(0.5).hsvHueF(), 0.7, 3)
+        self.assertAlmostEqual(r.color(0.5).hsvSaturationF(), 0.3, 3)
+        self.assertAlmostEqual(r.color(0.5).valueF(), 0.5, 3)
+        self.assertAlmostEqual(r.color(0.5).alphaF(), 0.6, 3)
+
+        r.setDirection(Qgis.AngularDirection.CounterClockwise)
+        r.setColor1(QColor.fromHsvF(0.1, 0.2, 0.4, 0.5))
+        r.setColor2(QColor.fromHsvF(0.3, 0.4, 0.6, 0.7))
+        self.assertAlmostEqual(r.color(0.5).hsvHueF(), 0.2, 3)
+        self.assertAlmostEqual(r.color(0.5).hsvSaturationF(), 0.3, 3)
+        self.assertAlmostEqual(r.color(0.5).valueF(), 0.5, 3)
+        self.assertAlmostEqual(r.color(0.5).alphaF(), 0.6, 3)
+
+        r.setDirection(Qgis.AngularDirection.Clockwise)
+        self.assertAlmostEqual(r.color(0.5).hsvHueF(), 0.7, 3)
+        self.assertAlmostEqual(r.color(0.5).hsvSaturationF(), 0.3, 3)
+        self.assertAlmostEqual(r.color(0.5).valueF(), 0.5, 3)
+        self.assertAlmostEqual(r.color(0.5).alphaF(), 0.6, 3)
+
+        r.setColorSpec(QColor.Hsl)
+        r.setDirection(Qgis.AngularDirection.CounterClockwise)
+        self.assertEqual(r.colorSpec(), QColor.Hsl)
+        r.setColor1(QColor.fromHslF(0.1, 0.2, 0.4, 0.5))
+        r.setColor2(QColor.fromHslF(0.3, 0.4, 0.6, 0.7))
+        self.assertAlmostEqual(r.color(0).hslHueF(), 0.1, 3)
+        self.assertAlmostEqual(r.color(0).hslSaturationF(), 0.2, 3)
+        self.assertAlmostEqual(r.color(0).lightnessF(), 0.4, 3)
+        self.assertAlmostEqual(r.color(0).alphaF(), 0.5, 3)
+
+        self.assertAlmostEqual(r.color(1).hslHueF(), 0.3, 3)
+        self.assertAlmostEqual(r.color(1).hslSaturationF(), 0.4, 3)
+        self.assertAlmostEqual(r.color(1).lightnessF(), 0.6, 3)
+        self.assertAlmostEqual(r.color(1).alphaF(), 0.7, 3)
+
+        self.assertAlmostEqual(r.color(0.5).hslHueF(), 0.2, 3)
+        self.assertAlmostEqual(r.color(0.5).hslSaturationF(), 0.3, 3)
+        self.assertAlmostEqual(r.color(0.5).lightnessF(), 0.5, 3)
+        self.assertAlmostEqual(r.color(0.5).alphaF(), 0.6, 3)
+
+        r.setDirection(Qgis.AngularDirection.Clockwise)
+        self.assertAlmostEqual(r.color(0.5).hslHueF(), 0.7, 3)
+        self.assertAlmostEqual(r.color(0.5).hslSaturationF(), 0.3, 3)
+        self.assertAlmostEqual(r.color(0.5).lightnessF(), 0.5, 3)
+        self.assertAlmostEqual(r.color(0.5).alphaF(), 0.6, 3)
+
+        r.setDirection(Qgis.AngularDirection.CounterClockwise)
+        r.setColor1(QColor.fromHslF(0.1, 0.2, 0.4, 0.5))
+        r.setColor2(QColor.fromHslF(0.3, 0.4, 0.6, 0.7))
+        self.assertAlmostEqual(r.color(0.5).hslHueF(), 0.2, 3)
+        self.assertAlmostEqual(r.color(0.5).hslSaturationF(), 0.3, 3)
+        self.assertAlmostEqual(r.color(0.5).lightnessF(), 0.5, 3)
+        self.assertAlmostEqual(r.color(0.5).alphaF(), 0.6, 3)
+
+        r.setDirection(Qgis.AngularDirection.Clockwise)
+        self.assertAlmostEqual(r.color(0.5).hslHueF(), 0.7, 3)
+        self.assertAlmostEqual(r.color(0.5).hslSaturationF(), 0.3, 3)
+        self.assertAlmostEqual(r.color(0.5).lightnessF(), 0.5, 3)
+        self.assertAlmostEqual(r.color(0.5).alphaF(), 0.6, 3)
+
         # test gradient with stops
-        r = QgsGradientColorRamp(QColor(200, 0, 0), QColor(0, 200, 0), False, [QgsGradientStop(0.1, QColor(180, 20, 40)),
-                                                                               QgsGradientStop(0.9, QColor(40, 60, 100))])
+        r = QgsGradientColorRamp(QColor(200, 0, 0), QColor(0, 200, 0), False,
+                                 [QgsGradientStop(0.1, QColor(180, 20, 40)),
+                                  QgsGradientStop(0.9, QColor(40, 60, 100))])
         self.assertEqual(r.color1(), QColor(200, 0, 0))
         self.assertEqual(r.color2(), QColor(0, 200, 0))
         self.assertEqual(r.isDiscrete(), False)
@@ -68,6 +158,91 @@ class PyQgsColorRamp(unittest.TestCase):
         self.assertEqual(r.color(0.95), QColor(20, 130, 50))
         self.assertEqual(r.color(1), QColor(0, 200, 0))
 
+        # with color models
+        r = QgsGradientColorRamp(QColor.fromHsvF(0.2, 0.4, 0.6, 0.3), QColor(0, 200, 0))
+        stop1 = QgsGradientStop(0.1, QColor.fromHsvF(0.4, 0.6, 0.8, 0.1))
+        stop1.setColorSpec(QColor.Hsv)
+        stop2 = QgsGradientStop(0.5, QColor.fromHslF(0.3, 0.2, 0.1, 0.9))
+        stop2.setColorSpec(QColor.Hsl)
+        stop3 = QgsGradientStop(0.9, QColor(60, 100, 120))
+        stop3.setColorSpec(QColor.Rgb)
+        r.setStops([stop1, stop2, stop3])
+        self.assertAlmostEqual(r.color(0).hsvHueF(), 0.2, 3)
+        self.assertAlmostEqual(r.color(0).hsvSaturationF(), 0.4, 3)
+        self.assertAlmostEqual(r.color(0).valueF(), 0.6, 3)
+        self.assertAlmostEqual(r.color(0).alphaF(), 0.3, 3)
+        self.assertAlmostEqual(r.color(0.05).hsvHueF(), 0.3, 3)
+        self.assertAlmostEqual(r.color(0.05).hsvSaturationF(), 0.5, 3)
+        self.assertAlmostEqual(r.color(0.05).valueF(), 0.7, 3)
+        self.assertAlmostEqual(r.color(0.05).alphaF(), 0.2, 3)
+        self.assertAlmostEqual(r.color(0.1).hsvHueF(), 0.4, 3)
+        self.assertAlmostEqual(r.color(0.1).hsvSaturationF(), 0.6, 3)
+        self.assertAlmostEqual(r.color(0.1).valueF(), 0.8, 3)
+        self.assertAlmostEqual(r.color(0.1).alphaF(), 0.1, 3)
+        self.assertAlmostEqual(r.color(0.1).hslHueF(), 0.4, 3)
+        self.assertAlmostEqual(r.color(0.1).hslSaturationF(), 0.5454, 3)
+        self.assertAlmostEqual(r.color(0.1).lightnessF(), 0.56, 3)
+        self.assertAlmostEqual(r.color(0.3).hslHueF(), 0.85, 3)
+        self.assertAlmostEqual(r.color(0.3).hslSaturationF(), 0.3727, 3)
+        self.assertAlmostEqual(r.color(0.3).lightnessF(), 0.330, 3)
+        self.assertAlmostEqual(r.color(0.3).alphaF(), 0.5, 3)
+        self.assertAlmostEqual(r.color(0.5).hslHueF(), 0.3, 3)
+        self.assertAlmostEqual(r.color(0.5).hslSaturationF(), 0.2, 3)
+        self.assertAlmostEqual(r.color(0.5).lightnessF(), 0.1, 3)
+        self.assertAlmostEqual(r.color(0.5).alphaF(), 0.9, 3)
+        self.assertEqual(r.color(0.5).red(), 22)
+        self.assertAlmostEqual(r.color(0.5).green(), 31, -1)
+        self.assertEqual(r.color(0.5).blue(), 20)
+        self.assertEqual(r.color(0.7).red(), 41)
+        self.assertEqual(r.color(0.7).green(), 65)
+        self.assertEqual(r.color(0.7).blue(), 70)
+        self.assertAlmostEqual(r.color(0.7).alphaF(), 0.95, 3)
+        self.assertEqual(r.color(0.9), QColor(60, 100, 120))
+        self.assertEqual(r.color(0.95), QColor(30, 150, 60))
+        self.assertEqual(r.color(1), QColor(0, 200, 0))
+
+        # HSV based interpolation, invalid hues
+        rr = QgsGradientColorRamp(QColor.fromHsvF(-1, 0, 0.6, 1), QColor.fromHsvF(0.2, 0.7, 0.8, .5))
+        rr.setColorSpec(QColor.Hsv)
+        self.assertAlmostEqual(rr.color(0.5).hsvHueF(), 0.2, 3)  # should take either avialable hue
+        self.assertAlmostEqual(rr.color(0.5).hsvSaturationF(), 0.350, 3)
+        self.assertAlmostEqual(rr.color(0.5).valueF(), 0.7, 3)
+        self.assertAlmostEqual(rr.color(0.5).alphaF(), 0.75, 3)
+        rr = QgsGradientColorRamp(QColor.fromHsvF(0.2, 0.7, 0.8, .5), QColor.fromHsvF(-1, 0, 0.6, 1))
+        rr.setColorSpec(QColor.Hsv)
+        self.assertAlmostEqual(rr.color(0.5).hsvHueF(), 0.2, 3)  # should take either avialable hue
+        self.assertAlmostEqual(rr.color(0.5).hsvSaturationF(), 0.350, 3)
+        self.assertAlmostEqual(rr.color(0.5).valueF(), 0.7, 3)
+        self.assertAlmostEqual(rr.color(0.5).alphaF(), 0.75, 3)
+        # both invalid hue
+        rr = QgsGradientColorRamp(QColor.fromHsvF(-1, 0.7, 0.8, .5), QColor.fromHsvF(-1, 0, 0.6, 1))
+        rr.setColorSpec(QColor.Hsv)
+        self.assertEqual(rr.color(0.5).hsvHueF(), -1)
+        self.assertAlmostEqual(rr.color(0.5).hsvSaturationF(), 0.350, 3)
+        self.assertAlmostEqual(rr.color(0.5).valueF(), 0.7, 3)
+        self.assertAlmostEqual(rr.color(0.5).alphaF(), 0.75, 3)
+
+        # HSL based interpolation, invalid hues
+        rr = QgsGradientColorRamp(QColor.fromHslF(-1, 0, 0.6, 1), QColor.fromHslF(0.2, 0.7, 0.8, .5))
+        rr.setColorSpec(QColor.Hsl)
+        self.assertAlmostEqual(rr.color(0.5).hslHueF(), 0.2, 3)  # should take either avialable hue
+        self.assertAlmostEqual(rr.color(0.5).hslSaturationF(), 0.350, 3)
+        self.assertAlmostEqual(rr.color(0.5).lightnessF(), 0.7, 3)
+        self.assertAlmostEqual(rr.color(0.5).alphaF(), 0.75, 3)
+        rr = QgsGradientColorRamp(QColor.fromHslF(0.2, 0.7, 0.8, .5), QColor.fromHslF(-1, 0, 0.6, 1))
+        rr.setColorSpec(QColor.Hsl)
+        self.assertAlmostEqual(rr.color(0.5).hslHueF(), 0.2, 3)  # should take either avialable hue
+        self.assertAlmostEqual(rr.color(0.5).hslSaturationF(), 0.350, 3)
+        self.assertAlmostEqual(rr.color(0.5).lightnessF(), 0.7, 3)
+        self.assertAlmostEqual(rr.color(0.5).alphaF(), 0.75, 3)
+        # both invalid hue
+        rr = QgsGradientColorRamp(QColor.fromHslF(-1, 0.7, 0.8, .5), QColor.fromHslF(-1, 0, 0.6, 1))
+        rr.setColorSpec(QColor.Hsl)
+        self.assertEqual(rr.color(0.5).hslHueF(), -1)
+        self.assertAlmostEqual(rr.color(0.5).hslSaturationF(), 0.350, 3)
+        self.assertAlmostEqual(rr.color(0.5).lightnessF(), 0.7, 3)
+        self.assertAlmostEqual(rr.color(0.5).alphaF(), 0.75, 3)
+
         # test setters
         r.setColor1(QColor(0, 0, 200))
         self.assertEqual(r.color1(), QColor(0, 0, 200))
@@ -75,7 +250,10 @@ class PyQgsColorRamp(unittest.TestCase):
         r.setColor2(QColor(0, 0, 100))
         self.assertEqual(r.color2(), QColor(0, 0, 100))
         self.assertEqual(r.color(1.0), QColor(0, 0, 100))
-        r.setStops([QgsGradientStop(0.4, QColor(100, 100, 40))])
+        stop = QgsGradientStop(0.4, QColor(100, 100, 40))
+        stop.setColorSpec(QColor.Hsv)
+        stop.setDirection(Qgis.AngularDirection.Clockwise)
+        r.setStops([stop])
         s = r.stops()
         self.assertEqual(len(s), 1)
         self.assertEqual(s[0].offset, 0.4)
@@ -87,6 +265,8 @@ class PyQgsColorRamp(unittest.TestCase):
         self.assertEqual(r.info()['key2'], 'val2')
 
         # test creating from properties
+        r.setColorSpec(QColor.Hsv)
+        r.setDirection(Qgis.AngularDirection.Clockwise)
         props = r.properties()
         fromProps = QgsGradientColorRamp.create(props)
         self.assertEqual(fromProps.color1(), QColor(0, 0, 200))
@@ -94,11 +274,15 @@ class PyQgsColorRamp(unittest.TestCase):
         s = fromProps.stops()
         self.assertEqual(len(s), 1)
         self.assertEqual(s[0].offset, 0.4)
+        self.assertEqual(s[0].colorSpec(), QColor.Hsv)
+        self.assertEqual(s[0].direction(), Qgis.AngularDirection.Clockwise)
         c = QColor(s[0].color)
         self.assertEqual(c, QColor(100, 100, 40))
         self.assertEqual(fromProps.info()['key1'], 'val1')
         self.assertEqual(fromProps.info()['key2'], 'val2')
         self.assertEqual(fromProps.isDiscrete(), False)
+        self.assertEqual(fromProps.colorSpec(), QColor.Hsv)
+        self.assertEqual(fromProps.direction(), Qgis.AngularDirection.Clockwise)
 
         # test cloning ramp
         cloned = r.clone()
@@ -107,11 +291,15 @@ class PyQgsColorRamp(unittest.TestCase):
         s = cloned.stops()
         self.assertEqual(len(s), 1)
         self.assertEqual(s[0].offset, 0.4)
+        self.assertEqual(s[0].colorSpec(), QColor.Hsv)
+        self.assertEqual(s[0].direction(), Qgis.AngularDirection.Clockwise)
         c = QColor(s[0].color)
         self.assertEqual(c, QColor(100, 100, 40))
         self.assertEqual(cloned.info()['key1'], 'val1')
         self.assertEqual(cloned.info()['key2'], 'val2')
         self.assertEqual(cloned.isDiscrete(), False)
+        self.assertEqual(cloned.colorSpec(), QColor.Hsv)
+        self.assertEqual(cloned.direction(), Qgis.AngularDirection.Clockwise)
 
         # test discrete ramps
         # first with no stops
@@ -122,7 +310,8 @@ class PyQgsColorRamp(unittest.TestCase):
         self.assertEqual(d.color(1), QColor(0, 200, 0))
         # then with stops
         d = QgsGradientColorRamp(QColor(200, 0, 0), QColor(0, 200, 0), True, [QgsGradientStop(0.1, QColor(180, 20, 40)),
-                                                                              QgsGradientStop(0.9, QColor(40, 60, 100))])
+                                                                              QgsGradientStop(0.9,
+                                                                                              QColor(40, 60, 100))])
         self.assertEqual(d.isDiscrete(), True)
         self.assertEqual(d.color(0), QColor(200, 0, 0))
         self.assertEqual(d.color(0.05), QColor(200, 0, 0))
@@ -134,14 +323,74 @@ class PyQgsColorRamp(unittest.TestCase):
 
         # to gradient
         g = QGradient()
-        r = QgsGradientColorRamp(QColor(200, 0, 0), QColor(0, 200, 0), False, [QgsGradientStop(0.1, QColor(180, 20, 40)),
-                                                                               QgsGradientStop(0.9, QColor(40, 60, 100))])
+        r = QgsGradientColorRamp(QColor(200, 0, 0), QColor(0, 200, 0), False,
+                                 [QgsGradientStop(0.1, QColor(180, 20, 40)),
+                                  QgsGradientStop(0.9, QColor(40, 60, 100))])
         r.addStopsToGradient(g, 0.5)
         self.assertEqual(len(g.stops()), 4)
         self.assertEqual(g.stops()[0], (0.0, QColor(200, 0, 0, 127)))
         self.assertEqual(g.stops()[1], (0.1, QColor(180, 20, 40, 127)))
         self.assertEqual(g.stops()[2], (0.9, QColor(40, 60, 100, 127)))
         self.assertEqual(g.stops()[3], (1.0, QColor(0, 200, 0, 127)))
+
+        # add to gradient, non-RGB color model
+        g = QGradient()
+        rr = QgsGradientColorRamp(QColor.fromHsvF(0.2, 0.3, 0.4), QColor.fromHsvF(0.8, 1.0, 0.6))
+        rr.setColorSpec(QColor.Hsv)
+        rr.addStopsToGradient(g, 0.5)
+        res = [(round(stop[0], 2), round(stop[1].hsvHueF(), 2), round(stop[1].hsvSaturationF(), 2),
+                round(stop[1].valueF(), 2), round(stop[1].alphaF(), 2)) for stop in g.stops()]
+        self.assertEqual(res, [(0.0, 0.2, 0.3, 0.4, 0.5),
+                               (0.05, 0.23, 0.34, 0.41, 0.5),
+                               (0.1, 0.26, 0.37, 0.42, 0.5),
+                               (0.15, 0.29, 0.41, 0.43, 0.5),
+                               (0.2, 0.32, 0.44, 0.44, 0.5),
+                               (0.25, 0.35, 0.48, 0.45, 0.5),
+                               (0.3, 0.38, 0.51, 0.46, 0.5),
+                               (0.35, 0.41, 0.55, 0.47, 0.5),
+                               (0.4, 0.44, 0.58, 0.48, 0.5),
+                               (0.45, 0.47, 0.61, 0.49, 0.5),
+                               (0.5, 0.5, 0.65, 0.5, 0.5),
+                               (0.55, 0.53, 0.69, 0.51, 0.5),
+                               (0.6, 0.56, 0.72, 0.52, 0.5),
+                               (0.65, 0.59, 0.76, 0.53, 0.5),
+                               (0.7, 0.62, 0.79, 0.54, 0.5),
+                               (0.75, 0.65, 0.83, 0.55, 0.5),
+                               (0.8, 0.68, 0.86, 0.56, 0.5),
+                               (0.85, 0.71, 0.9, 0.57, 0.5),
+                               (0.9, 0.74, 0.93, 0.58, 0.5),
+                               (0.95, 0.77, 0.96, 0.59, 0.5),
+                               (1.0, 0.8, 1.0, 0.6, 0.5)])
+        # with stops
+        stop = QgsGradientStop(0.6, QColor.fromHsvF(0.1, 0.7, 0.3, 0.4))
+        stop.setColorSpec(QColor.Hsl)
+        stop.setDirection(Qgis.AngularDirection.Clockwise)
+        rr.setStops([stop])
+        g = QGradient()
+        rr.addStopsToGradient(g, 0.5)
+        res = [(round(stop[0], 2), round(stop[1].hsvHueF(), 2), round(stop[1].hsvSaturationF(), 2),
+                round(stop[1].valueF(), 2), round(stop[1].alphaF(), 2)) for stop in g.stops()]
+        self.assertEqual(res, [(0.0, 0.2, 0.3, 0.4, 0.5),
+                               (0.05, 0.19, 0.34, 0.4, 0.47),
+                               (0.1, 0.18, 0.38, 0.39, 0.45),
+                               (0.15, 0.17, 0.42, 0.38, 0.42),
+                               (0.2, 0.17, 0.46, 0.38, 0.4),
+                               (0.25, 0.16, 0.49, 0.37, 0.37),
+                               (0.3, 0.15, 0.53, 0.36, 0.35),
+                               (0.35, 0.14, 0.56, 0.35, 0.33),
+                               (0.4, 0.13, 0.59, 0.35, 0.3),
+                               (0.45, 0.12, 0.62, 0.33, 0.27),
+                               (0.5, 0.12, 0.65, 0.32, 0.25),
+                               (0.55, 0.11, 0.67, 0.31, 0.22),
+                               (0.6, 0.1, 0.7, 0.3, 0.2),
+                               (0.65, 0.19, 0.74, 0.34, 0.24),
+                               (0.7, 0.28, 0.78, 0.38, 0.27),
+                               (0.75, 0.36, 0.81, 0.41, 0.31),
+                               (0.8, 0.45, 0.85, 0.45, 0.35),
+                               (0.85, 0.54, 0.89, 0.49, 0.39),
+                               (0.9, 0.62, 0.93, 0.53, 0.42),
+                               (0.95, 0.71, 0.96, 0.56, 0.46),
+                               (1.0, 0.8, 1.0, 0.6, 0.5)])
 
         # test that stops are ordered when setting them
         # first add some out-of-order stops
@@ -167,8 +416,9 @@ class PyQgsColorRamp(unittest.TestCase):
         self.assertEqual(r.color(0.2), QColor(50, 20, 10))
 
         # test discrete invert function
-        r = QgsGradientColorRamp(QColor(255, 255, 255), QColor(0, 0, 0), True, [QgsGradientStop(0.33, QColor(128, 128, 128)),
-                                                                                QgsGradientStop(0.66, QColor(0, 0, 0))])
+        r = QgsGradientColorRamp(QColor(255, 255, 255), QColor(0, 0, 0), True,
+                                 [QgsGradientStop(0.33, QColor(128, 128, 128)),
+                                  QgsGradientStop(0.66, QColor(0, 0, 0))])
         self.assertEqual(r.color(0.2), QColor(255, 255, 255))
         self.assertEqual(r.color(0.5), QColor(128, 128, 128))
         self.assertEqual(r.color(0.8), QColor(0, 0, 0))
@@ -312,7 +562,8 @@ class PyQgsColorRamp(unittest.TestCase):
         self.assertEqual(r.fetchColors(), [(QColor(255, 0, 0), '1'), (QColor(0, 255, 0), '2')])
 
         # test value
-        r = QgsPresetSchemeColorRamp([QColor(255, 0, 0), QColor(0, 255, 0), QColor(0, 0, 255), QColor(0, 0, 0), QColor(255, 255, 255)])
+        r = QgsPresetSchemeColorRamp(
+            [QColor(255, 0, 0), QColor(0, 255, 0), QColor(0, 0, 255), QColor(0, 0, 0), QColor(255, 255, 255)])
         self.assertEqual(r.value(0), 0)
         self.assertEqual(r.value(1), 0.25)
         self.assertEqual(r.value(2), 0.5)

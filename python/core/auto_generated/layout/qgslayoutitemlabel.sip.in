@@ -100,18 +100,24 @@ to switch between font based and HTML based rendering.
 .. seealso:: :py:func:`mode`
 %End
 
-    QFont font() const;
+ QFont font() const /Deprecated/;
 %Docstring
 Returns the label's current font.
 
 .. seealso:: :py:func:`setFont`
+
+.. deprecated::
+   use :py:func:`~QgsLayoutItemLabel.textFormat` instead (since QGIS 3.24)
 %End
 
-    void setFont( const QFont &font );
+ void setFont( const QFont &font ) /Deprecated/;
 %Docstring
 Sets the label's current ``font``.
 
 .. seealso:: :py:func:`font`
+
+.. deprecated::
+   use :py:func:`~QgsLayoutItemLabel.setTextFormat` instead (since QGIS 3.24)
 %End
 
     Qt::AlignmentFlag vAlign() const;
@@ -204,18 +210,24 @@ contents, in layout units.
 .. seealso:: :py:func:`setMarginX`
 %End
 
-    void setFontColor( const QColor &color );
+ void setFontColor( const QColor &color ) /Deprecated/;
 %Docstring
 Sets the label font ``color``.
 
 .. seealso:: :py:func:`fontColor`
+
+.. deprecated::
+   Use :py:func:`~QgsLayoutItemLabel.setTextFormat` instead (since QGIS 3.24)
 %End
 
-    QColor fontColor() const;
+ QColor fontColor() const /Deprecated/;
 %Docstring
 Returns the label font color.
 
 .. seealso:: :py:func:`setFontColor`
+
+.. deprecated::
+   use :py:func:`~QgsLayoutItemLabel.textFormat` instead (since QGIS 3.24)
 %End
 
     virtual QRectF boundingRect() const;
@@ -226,6 +238,25 @@ Returns the label font color.
 
     virtual void setFrameStrokeWidth( QgsLayoutMeasurement strokeWidth );
 
+
+
+    QgsTextFormat textFormat() const;
+%Docstring
+Returns the text format used for drawing text in the label.
+
+.. seealso:: :py:func:`setTextFormat`
+
+.. versionadded:: 3.24
+%End
+
+    void setTextFormat( const QgsTextFormat &format );
+%Docstring
+Sets the text ``format`` used for drawing text in the label.
+
+.. seealso:: :py:func:`textFormat`
+
+.. versionadded:: 3.24
+%End
 
   public slots:
 

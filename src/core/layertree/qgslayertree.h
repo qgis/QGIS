@@ -234,6 +234,9 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
   private:
     //! Copy constructor \see clone()
     QgsLayerTree( const QgsLayerTree &other );
+
+    void init();
+
     void addMissingLayers();
     QgsWeakMapLayerPointerList mCustomLayerOrder;
     bool mHasCustomLayerOrder = false;

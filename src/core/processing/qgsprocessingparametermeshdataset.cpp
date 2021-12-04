@@ -308,8 +308,6 @@ bool QgsProcessingParameterMeshDatasetTime::valueIsAcceptable( const QVariant &i
   if ( !input.isValid() )
     return allowEmpty;
 
-  const QDateTime timeDate = input.toDateTime();
-
   if ( input.toDateTime().isValid() )
     return true;
 

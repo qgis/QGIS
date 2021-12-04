@@ -21,23 +21,25 @@
 #include <QRegularExpression>
 #include <cstdlib> // for std::abs
 
-QString QgsStringUtils::capitalize( const QString &string, QgsStringUtils::Capitalization capitalization )
+QString QgsStringUtils::capitalize( const QString &string, Qgis::Capitalization capitalization )
 {
   if ( string.isEmpty() )
     return QString();
 
   switch ( capitalization )
   {
-    case MixedCase:
+    case Qgis::Capitalization::MixedCase:
+    case Qgis::Capitalization::SmallCaps:
       return string;
 
-    case AllUppercase:
+    case Qgis::Capitalization::AllUppercase:
       return string.toUpper();
 
-    case AllLowercase:
+    case Qgis::Capitalization::AllLowercase:
+    case Qgis::Capitalization::AllSmallCaps:
       return string.toLower();
 
-    case ForceFirstLetterToCapital:
+    case Qgis::Capitalization::ForceFirstLetterToCapital:
     {
       QString temp = string;
 
@@ -58,7 +60,7 @@ QString QgsStringUtils::capitalize( const QString &string, QgsStringUtils::Capit
       return temp;
     }
 
-    case TitleCase:
+    case Qgis::Capitalization::TitleCase:
     {
       // yes, this is MASSIVELY simplifying the problem!!
 
@@ -103,8 +105,8 @@ QString QgsStringUtils::capitalize( const QString &string, QgsStringUtils::Capit
       return result;
     }
 
-    case UpperCamelCase:
-      QString result = QgsStringUtils::capitalize( string.toLower(), QgsStringUtils::ForceFirstLetterToCapital ).simplified();
+    case Qgis::Capitalization::UpperCamelCase:
+      QString result = QgsStringUtils::capitalize( string.toLower(), Qgis::Capitalization::ForceFirstLetterToCapital ).simplified();
       result.remove( ' ' );
       return result;
   }
@@ -669,7 +671,7 @@ QString QgsStringUtils::wordWrap( const QString &string, const int length, const
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
         newstr.append( line.midRef( strCurrent ) );
 #else
-        newstr.append( QStringView {line}.mid( strCurrent ) );
+        newstr.append( QStringView {line} .mid( strCurrent ) );
 #endif
         strCurrent = strLength;
       }

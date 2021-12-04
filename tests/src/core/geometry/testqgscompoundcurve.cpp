@@ -1919,10 +1919,10 @@ void TestQgsCompoundCurve::orientation()
   ( void )cc.orientation(); // no crash
 
   cc.fromWkt( QStringLiteral( "CompoundCurve( ( 0 0, 0 1), CircularString (0 1, 1 1, 1 0), (1 0, 0 0))" ) );
-  QCOMPARE( cc.orientation(), QgsCurve::Clockwise );
+  QCOMPARE( cc.orientation(), Qgis::AngularDirection::Clockwise );
 
   cc.fromWkt( QStringLiteral( "CompoundCurve( ( 0 0, 1 0), CircularString (1 0, 1 1, 0 1), (0 1, 0 0))" ) );
-  QCOMPARE( cc.orientation(), QgsCurve::CounterClockwise );
+  QCOMPARE( cc.orientation(), Qgis::AngularDirection::CounterClockwise );
 }
 
 void TestQgsCompoundCurve::length()

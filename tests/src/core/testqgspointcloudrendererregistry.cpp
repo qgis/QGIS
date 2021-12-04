@@ -83,7 +83,6 @@ void TestQgsPointCloudRendererRegistry::metadata()
   QCOMPARE( metadata.visibleName(), QString( "display name" ) );
 
   //test creating renderer from metadata
-  const QVariantMap map;
   QDomElement elem;
   const std::unique_ptr< QgsPointCloudRenderer > renderer( metadata.createRenderer( elem, QgsReadWriteContext() ) );
   QVERIFY( renderer );

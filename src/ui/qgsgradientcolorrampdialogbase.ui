@@ -148,7 +148,7 @@
         <x>0</x>
         <y>0</y>
         <width>850</width>
-        <height>498</height>
+        <height>494</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
@@ -180,6 +180,20 @@
             </property>
            </widget>
           </item>
+          <item row="0" column="5">
+           <widget class="QPushButton" name="mDeleteStopButton">
+            <property name="text">
+             <string>&amp;Delete Stop</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="5">
+           <widget class="QgsCompoundColorWidget" name="mColorWidget" native="true">
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="1">
            <widget class="QgsDoubleSpinBox" name="mPositionSpinBox">
             <property name="suffix">
@@ -190,14 +204,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="2">
-           <widget class="QPushButton" name="mDeleteStopButton">
-            <property name="text">
-             <string>&amp;Delete Stop</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="3">
+          <item row="0" column="4">
            <spacer name="horizontalSpacer">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -210,12 +217,11 @@
             </property>
            </spacer>
           </item>
-          <item row="1" column="0" colspan="4">
-           <widget class="QgsCompoundColorWidget" name="mColorWidget" native="true">
-            <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
-            </property>
-           </widget>
+          <item row="0" column="2">
+           <widget class="QComboBox" name="mStopColorSpec"/>
+          </item>
+          <item row="0" column="3">
+           <widget class="QComboBox" name="mStopDirection"/>
           </item>
          </layout>
         </widget>
@@ -331,9 +337,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QwtPlot</class>
-   <extends>QFrame</extends>
-   <header>qwt_plot.h</header>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -348,15 +354,15 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QwtPlot</class>
+   <extends>QFrame</extends>
+   <header>qwt_plot.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -379,6 +385,8 @@
   <tabstop>mStopEditor</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>mPositionSpinBox</tabstop>
+  <tabstop>mStopColorSpec</tabstop>
+  <tabstop>mStopDirection</tabstop>
   <tabstop>mDeleteStopButton</tabstop>
   <tabstop>mColorWidget</tabstop>
   <tabstop>mPlotHueCheckbox</tabstop>

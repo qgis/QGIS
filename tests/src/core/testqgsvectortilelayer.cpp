@@ -28,6 +28,8 @@
 #include "qgsfontutils.h"
 #include "qgslinesymbollayer.h"
 #include "qgslinesymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgsfillsymbol.h"
 
 /**
  * \ingroup UnitTests
@@ -259,8 +261,6 @@ void TestQgsVectorTileLayer::test_polygonWithLineStyle()
   const QColor lineStrokeColor = Qt::blue;
   const double lineStrokeWidth = DEFAULT_LINE_WIDTH * 2;
 
-  QgsVectorTileBasicRenderer *rend = new QgsVectorTileBasicRenderer;
-
   QgsSimpleLineSymbolLayer *lineSymbolLayer = new QgsSimpleLineSymbolLayer;
   lineSymbolLayer->setColor( lineStrokeColor );
   lineSymbolLayer->setWidth( lineStrokeWidth );
@@ -269,7 +269,16 @@ void TestQgsVectorTileLayer::test_polygonWithLineStyle()
   QgsVectorTileBasicRendererStyle st( QStringLiteral( "Polygons" ), QString(), QgsWkbTypes::LineGeometry );
   st.setSymbol( lineSymbol );
 
-  rend->setStyles( QList<QgsVectorTileBasicRendererStyle>() << st );
+  QgsSimpleFillSymbolLayer *fillSymbolLayer = new QgsSimpleFillSymbolLayer;
+  fillSymbolLayer->setColor( Qt::white );
+  fillSymbolLayer->setStrokeStyle( Qt::NoPen );
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol( QgsSymbolLayerList() << fillSymbolLayer );
+
+  QgsVectorTileBasicRendererStyle bgst( QStringLiteral( "background" ), QStringLiteral( "background" ), QgsWkbTypes::PolygonGeometry );
+  bgst.setSymbol( fillSymbol );
+
+  QgsVectorTileBasicRenderer *rend = new QgsVectorTileBasicRenderer;
+  rend->setStyles( QList<QgsVectorTileBasicRendererStyle>() << bgst << st );
   layer->setRenderer( rend );  // takes ownership
 
   QVERIFY( imageCheck( "render_test_polygon_with_line_style", layer.get(), layer->extent() ) );

@@ -84,7 +84,7 @@ class CORE_EXPORT QgsTextBlock
      *
      * \since QGIS 3.16
      */
-    void applyCapitalization( QgsStringUtils::Capitalization capitalization );
+    void applyCapitalization( Qgis::Capitalization capitalization );
 
 #ifdef SIP_RUN
     int __len__() const;

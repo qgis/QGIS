@@ -709,7 +709,7 @@ static QList<QgsMapToolIdentify::IdentifyResult> searchFeatureOnMap( QgsMapMouse
   double x = mapPoint.x(), y = mapPoint.y();
   const double sr = QgsMapTool::searchRadiusMU( canvas );
 
-  const QList<QgsMapLayer *> layers = canvas->layers();
+  const QList<QgsMapLayer *> layers = canvas->layers( true );
   for ( QgsMapLayer *layer : layers )
   {
     if ( layer->type() == QgsMapLayerType::VectorLayer )
@@ -732,7 +732,7 @@ static QList<QgsMapToolIdentify::IdentifyResult> searchFeatureOnMap( QgsMapMouse
         {
           rect = transform.transformBoundingBox( rect, Qgis::TransformDirection::Reverse );
         }
-        catch ( QgsCsException &exception )
+        catch ( QgsCsException & )
         {
           QgsDebugMsg( QStringLiteral( "Could not transform geometry to layer CRS" ) );
         }
@@ -772,7 +772,7 @@ void QgsMapToolEditMeshFrame::forceByLineBySelectedFeature( QgsMapMouseEvent *e 
     {
       geom.transform( transform );
     }
-    catch ( QgsCsException &exception )
+    catch ( QgsCsException & )
     {
       QgsDebugMsg( QStringLiteral( "Could not transform geometry to layer CRS" ) );
     }
@@ -2050,8 +2050,6 @@ void QgsMapToolEditMeshFrame::prepareSelection()
   }
 
   mConcernedFaceBySelection.clear();
-  QMap<int, SelectedVertexData> movingVertices;
-
 
   double xMin = std::numeric_limits<double>::max();
   double xMax = -std::numeric_limits<double>::max();

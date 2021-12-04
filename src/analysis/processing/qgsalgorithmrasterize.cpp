@@ -101,7 +101,6 @@ void QgsRasterizeAlgorithm::initAlgorithm( const QVariantMap & )
                   QObject::tr( "Map theme to render" ),
                   QVariant(), true ) );
 
-  QList<QgsMapLayer *> projectLayers { QgsProject::instance()->mapLayers().values() };
   addParameter( new QgsProcessingParameterMultipleLayers(
                   QStringLiteral( "LAYERS" ),
                   QObject::tr( "Layers to render" ),
@@ -197,6 +196,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
   mapSettings.setOutputImageFormat( QImage::Format_ARGB32 );
   mapSettings.setDestinationCrs( context.project()->crs() );
   mapSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, true );
+  mapSettings.setFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms, true );
   mapSettings.setFlag( Qgis::MapSettingsFlag::RenderMapTile, true );
   mapSettings.setFlag( Qgis::MapSettingsFlag::UseAdvancedEffects, true );
   mapSettings.setTransformContext( context.transformContext() );
@@ -215,7 +215,6 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
   // Start rendering
   const double extentRatio { mapUnitsPerPixel * tileSize };
   const int numTiles { xTileCount * yTileCount };
-  const QString fileExtension { QFileInfo( outputLayerFileName ).suffix() };
 
   // Custom deleter for CPL allocation
   struct CPLDelete

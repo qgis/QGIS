@@ -39,6 +39,7 @@
 #include "qgsfillsymbol.h"
 #include "qgsiconutils.h"
 #include "qgssymbollayerreference.h"
+#include "qgsconfig.h"
 
 #include <QButtonGroup>
 #include <QMessageBox>
@@ -143,10 +144,11 @@ void QgsTextFormatWidget::initWidget()
   mFontSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits
                                  << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderInches );
   mBufferUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches << QgsUnitTypes::RenderPercentage );
   mMaskBufferUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                   << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );  mShapeSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                       << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+                                   << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches  << QgsUnitTypes::RenderPercentage );
+  mShapeSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mShapeOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mShapeRadiusUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits
@@ -155,9 +157,9 @@ void QgsTextFormatWidget::initWidget()
   mShapeStrokeWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                          << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mShadowOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches << QgsUnitTypes::RenderPercentage );
   mShadowRadiusUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches  << QgsUnitTypes::RenderPercentage );
   mPointOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mLineDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
@@ -177,6 +179,7 @@ void QgsTextFormatWidget::initWidget()
   mFontWordSpacingSpinBox->setClearValue( 0.0 );
   mZIndexSpinBox->setClearValue( 0.0 );
   mLineDistanceSpnBx->setClearValue( 0.0 );
+  mSpinStretch->setClearValue( 100 );
 
   mOffsetTypeComboBox->addItem( tr( "From Point" ), QgsPalLayerSettings::FromPoint );
   mOffsetTypeComboBox->addItem( tr( "From Symbol Bounds" ), QgsPalLayerSettings::FromSymbolBounds );
@@ -328,6 +331,12 @@ void QgsTextFormatWidget::initWidget()
   connect( mBackgroundEffectWidget, &QgsEffectStackCompactWidget::changed, this, &QgsTextFormatWidget::updatePreview );
   mBackgroundEffectWidget->setPaintEffect( mBackgroundEffect.get() );
 
+#ifndef HAS_KDE_QT5_FONT_STRETCH_FIX
+  mLabelStretch->hide();
+  mSpinStretch->hide();
+  mFontStretchDDBtn->hide();
+#endif
+
   setDockMode( false );
 
   QList<QWidget *> widgets;
@@ -365,6 +374,7 @@ void QgsTextFormatWidget::initWidget()
           << mFontStyleComboBox
           << mTextOrientationComboBox
           << mTextOpacityWidget
+          << mSpinStretch
           << mFontWordSpacingSpinBox
           << mFormatNumChkBx
           << mFormatNumDecimalsSpnBx
@@ -581,6 +591,10 @@ void QgsTextFormatWidget::toggleDDButtons( bool visible )
   const auto buttons = findChildren< QgsPropertyOverrideButton * >();
   for ( QgsPropertyOverrideButton *button : buttons )
   {
+#ifndef HAS_KDE_QT5_FONT_STRETCH_FIX
+    if ( button == mFontStretchDDBtn )
+      continue; // always hidden
+#endif
     button->setVisible( visible );
   }
 }
@@ -692,6 +706,7 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
   registerDataDefinedButton( mFontLetterSpacingDDBtn, QgsPalLayerSettings::FontLetterSpacing );
   registerDataDefinedButton( mFontWordSpacingDDBtn, QgsPalLayerSettings::FontWordSpacing );
   registerDataDefinedButton( mFontBlendModeDDBtn, QgsPalLayerSettings::FontBlendMode );
+  registerDataDefinedButton( mFontStretchDDBtn, QgsPalLayerSettings::FontStretchFactor );
 
   // text formatting
   registerDataDefinedButton( mWrapCharDDBtn, QgsPalLayerSettings::MultiLineWrapChar );
@@ -886,6 +901,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   mRefFont = format.font();
   mFontSizeSpinBox->setValue( format.size() );
   btnTextColor->setColor( format.color() );
+  whileBlocking( mSpinStretch )->setValue( format.stretchFactor() );
   mTextOpacityWidget->setOpacity( format.opacity() );
   comboBlendMode->setBlendMode( format.blendMode() );
   mTextOrientationComboBox->setCurrentIndex( mTextOrientationComboBox->findData( format.orientation() ) );
@@ -895,7 +911,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   mFontLetterSpacingSpinBox->setValue( format.font().letterSpacing() );
   whileBlocking( mKerningCheckBox )->setChecked( format.font().kerning() );
 
-  whileBlocking( mFontCapitalsComboBox )->setCurrentIndex( mFontCapitalsComboBox->findData( format.capitalization() ) );
+  whileBlocking( mFontCapitalsComboBox )->setCurrentIndex( mFontCapitalsComboBox->findData( static_cast< int >( format.capitalization() ) ) );
   QgsFontUtils::updateFontViaStyle( mRefFont, format.namedStyle() );
   updateFont( mRefFont );
 
@@ -1024,6 +1040,7 @@ QgsTextFormat QgsTextFormatWidget::format( bool includeDataDefinedProperties ) c
   format.setSize( mFontSizeSpinBox->value() );
   format.setNamedStyle( mFontStyleComboBox->currentText() );
   format.setOpacity( mTextOpacityWidget->opacity() );
+  format.setStretchFactor( mSpinStretch->value() );
   format.setBlendMode( comboBlendMode->blendMode() );
   format.setSizeUnit( mFontSizeUnitWidget->unit() );
   format.setSizeMapUnitScale( mFontSizeUnitWidget->getMapUnitScale() );
@@ -1031,7 +1048,7 @@ QgsTextFormat QgsTextFormatWidget::format( bool includeDataDefinedProperties ) c
   format.setPreviewBackgroundColor( mPreviewBackgroundColor );
   format.setOrientation( static_cast< QgsTextFormat::TextOrientation >( mTextOrientationComboBox->currentData().toInt() ) );
   format.setAllowHtmlFormatting( mHtmlFormattingCheckBox->isChecked( ) );
-  format.setCapitalization( static_cast< QgsStringUtils::Capitalization >( mFontCapitalsComboBox->currentData().toInt() ) );
+  format.setCapitalization( static_cast< Qgis::Capitalization >( mFontCapitalsComboBox->currentData().toInt() ) );
 
   // buffer
   QgsTextBufferSettings buffer;
@@ -1422,14 +1439,17 @@ void QgsTextFormatWidget::updatePlacementWidgets()
 
 void QgsTextFormatWidget::populateFontCapitalsComboBox()
 {
-  mFontCapitalsComboBox->addItem( tr( "No Change" ), QgsStringUtils::MixedCase );
-  mFontCapitalsComboBox->addItem( tr( "All Uppercase" ), QgsStringUtils::AllUppercase );
-  mFontCapitalsComboBox->addItem( tr( "All Lowercase" ), QgsStringUtils::AllLowercase );
-  // Small caps doesn't work right with QPainterPath::addText()
+  mFontCapitalsComboBox->addItem( tr( "No Change" ), static_cast< int >( Qgis::Capitalization::MixedCase ) );
+  mFontCapitalsComboBox->addItem( tr( "All Uppercase" ), static_cast< int >( Qgis::Capitalization::AllUppercase ) );
+  mFontCapitalsComboBox->addItem( tr( "All Lowercase" ), static_cast< int >( Qgis::Capitalization::AllLowercase ) );
+#if defined(HAS_KDE_QT5_SMALL_CAPS_FIX) || QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
+  // Requires new enough build due to
   // https://bugreports.qt.io/browse/QTBUG-13965
-//  mFontCapitalsComboBox->addItem( tr( "Small Caps" ), QVariant( 3 ) );
-  mFontCapitalsComboBox->addItem( tr( "Title Case" ), QgsStringUtils::TitleCase );
-  mFontCapitalsComboBox->addItem( tr( "Force First Letter to Capital" ), QgsStringUtils::ForceFirstLetterToCapital );
+  mFontCapitalsComboBox->addItem( tr( "Small Caps" ), static_cast< int >( Qgis::Capitalization::SmallCaps ) );
+  mFontCapitalsComboBox->addItem( tr( "All Small Caps" ), static_cast< int >( Qgis::Capitalization::AllSmallCaps ) );
+#endif
+  mFontCapitalsComboBox->addItem( tr( "Title Case" ), static_cast< int >( Qgis::Capitalization::TitleCase ) );
+  mFontCapitalsComboBox->addItem( tr( "Force First Letter to Capital" ), static_cast< int >( Qgis::Capitalization::ForceFirstLetterToCapital ) );
 }
 
 void QgsTextFormatWidget::populateFontStyleComboBox()

@@ -66,6 +66,11 @@ class APP_EXPORT QgsSelectByFormDialog : public QDialog
 
     void zoomToFeatures( const QString &filter );
     void flashFeatures( const QString &filter );
+    void openFeaturesAttributeTable( const QString &filter );
+
+  signals:
+
+    void showFilteredFeaturesAttributeTable( const QString &filter );
 
   private:
 

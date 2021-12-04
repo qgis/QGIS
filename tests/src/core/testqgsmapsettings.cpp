@@ -31,6 +31,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsrenderedfeaturehandlerinterface.h"
 #include "qgsrendercontext.h"
+#include "qgsgrouplayer.h"
 
 class TestHandler : public QgsRenderedFeatureHandlerInterface
 {
@@ -66,6 +67,7 @@ class TestQgsMapSettings: public QObject
     void testClippingRegions();
     void testComputeExtentForScale();
     void testComputeScaleForExtent();
+    void testLayersWithGroupLayers();
 
   private:
     QString toString( const QPolygonF &p, int decimalPlaces = 2 ) const;
@@ -683,6 +685,41 @@ void TestQgsMapSettings::testComputeScaleForExtent()
   const double widthInches = 1000 * QgsUnitTypes::fromUnitToUnitFactor( settings.mapUnits(), QgsUnitTypes::DistanceFeet ) * 12;
   const double testScale = widthInches * settings.outputDpi() / double( settings.outputSize().width() );
   QGSCOMPARENEAR( scale, testScale, 0.001 );
+}
+
+void TestQgsMapSettings::testLayersWithGroupLayers()
+{
+  // test retrieving layers from map settings when a QgsGroupLayer is present
+  QgsMapSettings settings;
+
+  std::unique_ptr< QgsVectorLayer > vlA = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point" ), QStringLiteral( "a" ), QStringLiteral( "memory" ) );
+  std::unique_ptr< QgsVectorLayer > vlB = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point" ), QStringLiteral( "b" ), QStringLiteral( "memory" ) );
+  std::unique_ptr< QgsVectorLayer > vlC = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point" ), QStringLiteral( "c" ), QStringLiteral( "memory" ) );
+
+  QgsGroupLayer::LayerOptions options( ( QgsCoordinateTransformContext() ) );
+  QgsGroupLayer groupLayer( QStringLiteral( "group" ), options );
+  groupLayer.setChildLayers( { vlB.get(), vlC.get() } );
+  settings.setLayers( { vlA.get(), &groupLayer } );
+
+  // without expanding groups
+  QCOMPARE( settings.layers().size(), 2 );
+  QCOMPARE( settings.layers().at( 0 ), vlA.get() );
+  QCOMPARE( settings.layers().at( 1 ), &groupLayer );
+
+  QCOMPARE( settings.layerIds().size(), 2 );
+  QCOMPARE( settings.layerIds().at( 0 ), vlA->id() );
+  QCOMPARE( settings.layerIds().at( 1 ), groupLayer.id() );
+
+  // with expanding groups
+  QCOMPARE( settings.layers( true ).size(), 3 );
+  QCOMPARE( settings.layers( true ).at( 0 ), vlA.get() );
+  QCOMPARE( settings.layers( true ).at( 1 ), vlB.get() );
+  QCOMPARE( settings.layers( true ).at( 2 ), vlC.get() );
+
+  QCOMPARE( settings.layerIds( true ).size(), 3 );
+  QCOMPARE( settings.layerIds( true ).at( 0 ), vlA->id() );
+  QCOMPARE( settings.layerIds( true ).at( 1 ), vlB->id() );
+  QCOMPARE( settings.layerIds( true ).at( 2 ), vlC->id() );
 }
 
 QGSTEST_MAIN( TestQgsMapSettings )

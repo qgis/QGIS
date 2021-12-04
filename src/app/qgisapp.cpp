@@ -148,8 +148,6 @@
 #include "qgsopenclutils.h"
 #endif
 
-#include "ui_defaults.h"
-
 #include <QNetworkReply>
 #include <QNetworkProxy>
 #include <QAuthenticator>
@@ -254,6 +252,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsdiagramproperties.h"
 #include "qgslayerdefinition.h"
 #include "qgslayertree.h"
+#include "qgslayertreegrouppropertieswidget.h"
 #include "qgslayertreemapcanvasbridge.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
@@ -1430,6 +1429,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 #endif
   registerMapLayerPropertiesFactory( new QgsPointCloudElevationPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsAnnotationItemPropertiesWidgetFactory( this ) );
+  registerMapLayerPropertiesFactory( new QgsLayerTreeGroupPropertiesWidgetFactory( this ) );
 
   activateDeactivateLayerRelatedActions( nullptr ); // after members were created
 
@@ -2215,45 +2215,9 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
   onActiveLayerChanged( activeLayer() );
 }
 
-void QgisApp::resizeEvent( QResizeEvent *resizeEvent )
-{
-  QMainWindow::resizeEvent( resizeEvent );
-  if ( mRestoreStateOnResize )
-  {
-    QgsSettings settings;
-    restoreState( settings.value( QStringLiteral( "UI/state" ), QByteArray::fromRawData( reinterpret_cast< const char * >( defaultUIstate ), sizeof defaultUIstate ) ).toByteArray() );
-  }
-}
-
 bool QgisApp::event( QEvent *event )
 {
   bool done = false;
-
-  if ( mRestoreStateOnResize )
-  {
-    switch ( event->type() )
-    {
-      case QEvent::Enter:
-      case QEvent::DragEnter:
-      case QEvent::DragLeave:
-      case QEvent::DragMove:
-      case QEvent::Drop:
-      case QEvent::KeyPress:
-      case QEvent::KeyRelease:
-      case QEvent::MouseButtonDblClick:
-      case QEvent::MouseButtonPress:
-      case QEvent::MouseButtonRelease:
-      case QEvent::MouseMove:
-      case QEvent::NativeGesture:
-        // The user did something, end state restores
-        mRestoreStateOnResize = false;
-        break;
-
-      default:
-        break;
-    }
-  }
-
   if ( event->type() == QEvent::FileOpen )
   {
     // handle FileOpen event (double clicking a file icon in Mac OS X Finder)
@@ -5376,14 +5340,21 @@ void QgisApp::saveWindowState()
   QgsPluginRegistry::instance()->unloadAll();
 }
 
+#include "ui_defaults.h"
+
 void QgisApp::restoreWindowState()
 {
   // restore the toolbar and dock widgets positions using Qt4 settings API
   QgsSettings settings;
+#if 0
+  // because of Qt regression: https://bugreports.qt.io/browse/QTBUG-89034
+  // we have to wait till dialog is first shown to try to restore dock geometry or it's not correctly restored
+  // so this code was moved to showEvent for now...
   if ( !restoreState( settings.value( QStringLiteral( "UI/state" ), QByteArray::fromRawData( reinterpret_cast< const char * >( defaultUIstate ), sizeof defaultUIstate ) ).toByteArray() ) )
   {
     QgsDebugMsg( QStringLiteral( "restore of UI state failed" ) );
   }
+#endif
 
   if ( settings.value( QStringLiteral( "UI/hidebrowser" ), false ).toBool() )
   {
@@ -5402,8 +5373,6 @@ void QgisApp::restoreWindowState()
     move( pos.width(), pos.height() );
   }
 
-  // restore state on resize need to work around Qt regression: https://bugreports.qt.io/browse/QTBUG-89034
-  mRestoreStateOnResize = true;
 }
 ///////////// END OF GUI SETUP ROUTINES ///////////////
 void QgisApp::sponsors()
@@ -5458,7 +5427,6 @@ void QgisApp::about()
     versionString += QLatin1String( "</tr><tr>" );
 
     // Python version
-    const QString pythonVersion{ PYTHON_VERSION };
     versionString += QStringLiteral( "<td>%1</td><td colspan=\"3\">%2</td>" ).arg( tr( "Python version" ), PYTHON_VERSION );
     versionString += QLatin1String( "</tr><tr>" );
 
@@ -5979,6 +5947,7 @@ void QgisApp::postProcessAddedLayer( QgsMapLayer *layer )
     }
 
     case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::GroupLayer:
       break;
 
     case QgsMapLayerType::PointCloudLayer:
@@ -7319,6 +7288,7 @@ bool QgisApp::fileSave()
 void QgisApp::fileSaveAs()
 {
   QString defaultPath;
+  QgsSettings settings;
   // First priority is to default to same path as existing file
   const QString currentPath = QgsProject::instance()->absoluteFilePath();
   if ( !currentPath.isEmpty() )
@@ -7328,18 +7298,28 @@ void QgisApp::fileSaveAs()
   else
   {
     // Retrieve last used project dir from persistent settings
-    QgsSettings settings;
     defaultPath = settings.value( QStringLiteral( "UI/lastProjectDir" ), QDir::homePath() ).toString();
     defaultPath += QString( '/' + QgsProject::instance()->title() );
   }
 
   const QString qgsExt = tr( "QGIS files" ) + " (*.qgs *.QGS)";
   const QString zipExt = tr( "QGZ files" ) + " (*.qgz)";
+
+  QString exts;
+  QgsProject::FileFormat defaultProjectFileFormat = settings.enumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), QgsProject::FileFormat::Qgz );
+  if ( defaultProjectFileFormat == QgsProject::FileFormat::Qgs )
+  {
+    exts = qgsExt + QStringLiteral( ";;" ) + zipExt;
+  }
+  else
+  {
+    exts = zipExt + QStringLiteral( ";;" ) + qgsExt;
+  }
   QString filter;
   QString path = QFileDialog::getSaveFileName( this,
                  tr( "Save Project As" ),
                  defaultPath,
-                 zipExt + ";;" + qgsExt, &filter );
+                 exts, &filter );
   if ( path.isEmpty() )
     return;
 
@@ -7620,6 +7600,7 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
       case QgsMapLayerType::AnnotationLayer:
       case QgsMapLayerType::PluginLayer:
       case QgsMapLayerType::VectorTileLayer:
+      case QgsMapLayerType::GroupLayer:
         // not supported here yet!
         break;
 
@@ -9063,6 +9044,7 @@ QString QgisApp::saveAsFile( QgsMapLayer *layer, const bool onlySelected, const 
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::AnnotationLayer:
     case QgsMapLayerType::PointCloudLayer:
+    case QgsMapLayerType::GroupLayer:
       return QString();
   }
   return QString();
@@ -9231,6 +9213,7 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
 
     case QgsMapLayerType::AnnotationLayer:
     case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::GroupLayer:
       break;
 
   }
@@ -9693,7 +9676,7 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
     layoutNames << l->name();
   }
 
-  const QString windowTitle = tr( "Create %1" ).arg( QgsGui::higFlags() & QgsGui::HigDialogTitleIsTitleCase ? QgsStringUtils::capitalize( typeString, QgsStringUtils::TitleCase )
+  const QString windowTitle = tr( "Create %1" ).arg( QgsGui::higFlags() & QgsGui::HigDialogTitleIsTitleCase ? QgsStringUtils::capitalize( typeString, Qgis::Capitalization::TitleCase )
                               : typeString );
 
   while ( !titleValid )
@@ -10640,6 +10623,19 @@ void QgisApp::selectByForm()
   dlg->setMessageBar( messageBar() );
   dlg->setMapCanvas( mapCanvas() );
   dlg->setAttribute( Qt::WA_DeleteOnClose );
+  connect( dlg, &QgsSelectByFormDialog::showFilteredFeaturesAttributeTable, [ = ]( const QString & filter )
+  {
+    if ( !vlayer->dataProvider() )
+    {
+      return;
+    }
+
+    QgsAttributeTableDialog *dialog = new QgsAttributeTableDialog( vlayer, QgsAttributeTableFilterModel::FilterMode::ShowFilteredList );
+    dialog->setFilterExpression( filter );
+    dialog->setView( QgsDualView::ViewMode::AttributeEditor );
+    dialog->show();
+
+  } );
   dlg->show();
 }
 
@@ -11282,6 +11278,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
     case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::AnnotationLayer:
     case QgsMapLayerType::PointCloudLayer:
+    case QgsMapLayerType::GroupLayer:
       break;
   }
   return false;
@@ -11584,6 +11581,7 @@ void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRep
     case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::AnnotationLayer:
     case QgsMapLayerType::PointCloudLayer:
+    case QgsMapLayerType::GroupLayer:
       break;
   }
 }
@@ -11648,6 +11646,7 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerR
     case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::AnnotationLayer:
     case QgsMapLayerType::PointCloudLayer:
+    case QgsMapLayerType::GroupLayer:
       break;
   }
 }
@@ -11865,6 +11864,7 @@ void QgisApp::updateLayerModifiedActions()
       case QgsMapLayerType::VectorTileLayer:
       case QgsMapLayerType::AnnotationLayer:
       case QgsMapLayerType::PointCloudLayer:
+      case QgsMapLayerType::GroupLayer:
         break;
     }
   }
@@ -12193,7 +12193,7 @@ void QgisApp::removeLayer()
     return;
   }
 
-  QList<QgsLayerTreeNode *> selectedNodes = mLayerTreeView->selectedNodes( true );
+  const QList<QgsLayerTreeNode *> selectedNodes = mLayerTreeView->selectedNodes( true );
 
   //validate selection
   if ( selectedNodes.isEmpty() )
@@ -12234,7 +12234,7 @@ void QgisApp::removeLayer()
     }
   };
 
-  for ( const auto &n : std::as_const( selectedNodes ) )
+  for ( const QgsLayerTreeNode *n : selectedNodes )
   {
     harvest( n );
   }
@@ -12256,9 +12256,15 @@ void QgisApp::removeLayer()
     return;
   }
 
-  const auto constSelectedNodes = selectedNodes;
-  for ( QgsLayerTreeNode *node : constSelectedNodes )
+  for ( QgsLayerTreeNode *node : selectedNodes )
   {
+    if ( QgsLayerTreeGroup *group = qobject_cast< QgsLayerTreeGroup * >( node ) )
+    {
+      if ( QgsGroupLayer *groupLayer = group->groupLayer() )
+      {
+        QgsProject::instance()->removeMapLayer( groupLayer );
+      }
+    }
     QgsLayerTreeGroup *parentGroup = qobject_cast<QgsLayerTreeGroup *>( node->parent() );
     if ( parentGroup )
       parentGroup->removeChildNode( node );
@@ -12299,6 +12305,10 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
     {
       case QgsMapLayerType::PluginLayer:
         unSppType = tr( "Plugin layer" );
+        break;
+
+      case QgsMapLayerType::GroupLayer:
+        unSppType = tr( "Group layer" );
         break;
 
       case QgsMapLayerType::VectorLayer:
@@ -13794,7 +13804,7 @@ void QgisApp::new3DMapCanvas()
     map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
     map->setSelectionColor( mMapCanvas->selectionColor() );
     map->setBackgroundColor( mMapCanvas->canvasColor() );
-    map->setLayers( mMapCanvas->layers() );
+    map->setLayers( mMapCanvas->layers( true ) );
 //    map->setTerrainLayers( mMapCanvas->layers() );
     map->setTemporalRange( mMapCanvas->temporalRange() );
 
@@ -15030,6 +15040,21 @@ void QgisApp::legendLayerSelectionChanged()
 {
   const QList<QgsLayerTreeLayer *> selectedLayers = mLayerTreeView ? mLayerTreeView->selectedLayerNodes() : QList<QgsLayerTreeLayer *>();
 
+  if ( selectedLayers.empty() && mLayerTreeView )
+  {
+    // check if a group node alone is selected
+    const QList<QgsLayerTreeNode *> selectedNodes = mLayerTreeView->selectedNodes();
+    if ( selectedNodes.size() == 1 && QgsLayerTree::isGroup( selectedNodes.at( 0 ) ) )
+    {
+      QgsLayerTreeGroup *groupNode = QgsLayerTree::toGroup( selectedNodes.at( 0 ) );
+      mMapStyleWidget->setEnabled( true );
+      if ( mMapStylingDock->isVisible() )
+      {
+        mMapStyleWidget->setLayerTreeGroup( groupNode );
+      }
+    }
+  }
+
   mActionDuplicateLayer->setEnabled( !selectedLayers.isEmpty() );
   mActionSetLayerScaleVisibility->setEnabled( !selectedLayers.isEmpty() );
   mActionSetLayerCRS->setEnabled( !selectedLayers.isEmpty() );
@@ -15934,6 +15959,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       break;
 
     case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::GroupLayer:
       break;
 
     case QgsMapLayerType::AnnotationLayer:
@@ -16093,6 +16119,17 @@ bool QgisApp::addRasterLayers( QStringList const &files, bool guiWarning )
         continue;
     }
 
+    const bool isVsiCurl { src.startsWith( QLatin1String( "/vsicurl" ), Qt::CaseInsensitive ) };
+    const bool isRemoteUrl { src.startsWith( QLatin1String( "http" ) ) || src == QLatin1String( "ftp" ) };
+
+    std::unique_ptr< QgsTemporaryCursorOverride > cursorOverride;
+    if ( isVsiCurl || isRemoteUrl )
+    {
+      cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+      visibleMessageBar()->pushInfo( tr( "Remote layer" ), tr( "loading %1, please wait …" ).arg( src ) );
+      qApp->processEvents();
+    }
+
     if ( QgsRasterLayer::isValidRasterFileName( src, errMsg ) )
     {
       QFileInfo myFileInfo( src );
@@ -16110,6 +16147,7 @@ bool QgisApp::addRasterLayers( QStringList const &files, bool guiWarning )
       }
 
       // try to create the layer
+      cursorOverride.reset();
       QgsRasterLayer *layer = addLayerPrivate< QgsRasterLayer >( QgsMapLayerType::RasterLayer, src, layerName, QStringLiteral( "gdal" ), guiWarning );
 
       if ( layer && layer->isValid() )
@@ -16864,6 +16902,8 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
       break;
     }
 
+    case QgsMapLayerType::GroupLayer:
+      break;
   }
 }
 
@@ -17621,4 +17661,20 @@ QgsAttributeEditorContext QgisApp::createAttributeEditorContext()
   context.setCadDockWidget( cadDockWidget() );
   context.setMainMessageBar( messageBar() );
   return context;
+}
+
+void QgisApp::showEvent( QShowEvent *event )
+{
+  QMainWindow::showEvent( event );
+  // because of Qt regression: https://bugreports.qt.io/browse/QTBUG-89034
+  // we have to wait till dialog is first shown to try to restore dock geometry or it's not correctly restored
+  static std::once_flag firstShow;
+  std::call_once( firstShow, [this]
+  {
+    QgsSettings settings;
+    if ( !restoreState( settings.value( QStringLiteral( "UI/state" ), QByteArray::fromRawData( reinterpret_cast< const char * >( defaultUIstate ), sizeof defaultUIstate ) ).toByteArray() ) )
+    {
+      QgsDebugMsg( QStringLiteral( "restore of UI state failed" ) );
+    }
+  } );
 }

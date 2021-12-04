@@ -22,6 +22,7 @@
 %Include auto_generated/qgsclipper.sip
 %Include auto_generated/qgscommandlineutils.sip
 %Include auto_generated/qgscolorramp.sip
+%Include auto_generated/qgscolorrampimpl.sip
 %Include auto_generated/qgscolorscheme.sip
 %Include auto_generated/qgscolorschemeregistry.sip
 %Include auto_generated/qgsconditionalstyle.sip
@@ -74,6 +75,7 @@
 %Include auto_generated/qgsgeometryvalidator.sip
 %Include auto_generated/qgsgml.sip
 %Include auto_generated/qgsgmlschema.sip
+%Include auto_generated/qgsgrouplayer.sip
 %Include auto_generated/qgshistogram.sip
 %Include auto_generated/qgshstoreutils.sip
 %Include auto_generated/qgshtmlutils.sip
@@ -480,6 +482,7 @@
 %Include auto_generated/network/qgsnetworkreply.sip
 %Include auto_generated/network/qgsnewsfeedmodel.sip
 %Include auto_generated/network/qgsnewsfeedparser.sip
+%Include auto_generated/network/qgshttpheaders.sip
 %Include auto_generated/numericformats/qgsbasicnumericformat.sip
 %Include auto_generated/numericformats/qgsbearingnumericformat.sip
 %Include auto_generated/numericformats/qgscurrencynumericformat.sip
@@ -528,6 +531,7 @@
 %Include auto_generated/project/qgsprojectutils.sip
 %Include auto_generated/project/qgsprojectversion.sip
 %Include auto_generated/project/qgsprojectviewsettings.sip
+%Include auto_generated/providers/qgsabstractdbtablemodel.sip
 %Include auto_generated/providers/qgsabstractdatabaseproviderconnection.sip
 %Include auto_generated/providers/qgsabstractproviderconnection.sip
 %Include auto_generated/providers/qgsdataprovider.sip

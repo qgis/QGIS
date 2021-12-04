@@ -36,10 +36,10 @@ else()
   QT5_WRAP_UI (geometrychecker_UIS_H  ${geometrychecker_UIS})
 endif()
 
-add_library (geometrycheckerplugin   MODULE ${geometrychecker_SRCS}  ${geometrychecker_RCCS} ${geometrychecker_UIS_H})
+add_library (plugin_geometrychecker   MODULE ${geometrychecker_SRCS}  ${geometrychecker_RCCS} ${geometrychecker_UIS_H})
 
 # require c++17
-target_compile_features(geometrycheckerplugin PRIVATE cxx_std_17)
+target_compile_features(plugin_geometrychecker PRIVATE cxx_std_17)
 
 include_directories(
   ${CMAKE_SOURCE_DIR}/src/plugins
@@ -53,7 +53,7 @@ include_directories(SYSTEM
   ${GDAL_INCLUDE_DIR}
 )
 
-target_link_libraries(geometrycheckerplugin
+target_link_libraries(plugin_geometrychecker
   qgis_core
   qgis_gui
   qgis_analysis
@@ -62,7 +62,7 @@ target_link_libraries(geometrycheckerplugin
 ########################################################
 # Install
 
-install(TARGETS geometrycheckerplugin
+install(TARGETS plugin_geometrychecker
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 

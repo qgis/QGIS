@@ -219,6 +219,16 @@ QString QgsOracleProvider::getWorkspace() const
   return mUri.param( "dbworkspace" );
 }
 
+Qgis::VectorLayerTypeFlags QgsOracleProvider::vectorLayerTypeFlags() const
+{
+  Qgis::VectorLayerTypeFlags flags;
+  if ( mValid && mIsQuery )
+  {
+    flags.setFlag( Qgis::VectorLayerTypeFlag::SqlQuery );
+  }
+  return flags;
+}
+
 void QgsOracleProvider::setWorkspace( const QString &workspace )
 {
   QgsDataSourceUri prevUri( mUri );
@@ -1972,8 +1982,8 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
             // Oracle polygons must have their exterior ring in counterclockwise
             // order, and the interior ring(s) in clockwise order.
             const bool reverseRing =
-              iRing == 0 ? poly->exteriorRing()->orientation() == QgsCurve::Orientation::Clockwise :
-              poly->interiorRing( iRing - 1 )->orientation() == QgsCurve::Orientation::CounterClockwise;
+              iRing == 0 ? poly->exteriorRing()->orientation() == Qgis::AngularDirection::Clockwise :
+              poly->interiorRing( iRing - 1 )->orientation() == Qgis::AngularDirection::CounterClockwise;
 
             const int n = *ptr.iPtr++;
             if ( reverseRing )
@@ -2146,8 +2156,8 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
             // Oracle polygons must have their exterior ring in counterclockwise
             // order, and the interior ring(s) in clockwise order.
             const bool reverseRing =
-              iRing == 0 ? ring->orientation() == QgsCurve::Orientation::Clockwise :
-              ring->orientation() == QgsCurve::Orientation::CounterClockwise;
+              iRing == 0 ? ring->orientation() == Qgis::AngularDirection::Clockwise :
+              ring->orientation() == Qgis::AngularDirection::CounterClockwise;
             std::unique_ptr<QgsCurve> reversedRing( reverseRing ? ring->reversed() : nullptr );
             const QgsCurve *correctedRing = reversedRing ? reversedRing.get() : ring;
             const QgsCompoundCurve *compound = dynamic_cast<const QgsCompoundCurve *>( correctedRing );
@@ -2813,6 +2823,7 @@ bool QgsOracleProvider::convertField( QgsField &field )
   field.setPrecision( fieldPrec );
   return true;
 }
+
 
 Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer(
   const QString &uri,

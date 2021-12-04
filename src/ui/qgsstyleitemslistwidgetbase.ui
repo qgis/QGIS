@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>386</width>
-    <height>619</height>
+    <width>563</width>
+    <height>633</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -266,7 +266,6 @@
   <tabstop>btnAdvanced</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

@@ -22,7 +22,7 @@ email                : sherman at mrcc.com
 #include "qgsfields_p.h" // for approximateMemoryUsage()
 
 #include "qgsmessagelog.h"
-
+#include "qgslogger.h"
 #include <QDataStream>
 
 /***************************************************************************
@@ -125,6 +125,24 @@ void QgsFeature::setId( QgsFeatureId id )
 QgsAttributes QgsFeature::attributes() const
 {
   return d->attributes;
+}
+
+QVariantMap QgsFeature::attributeMap() const
+{
+  QVariantMap res;
+  const int fieldSize = d->fields.size();
+  const int attributeSize = d->attributes.size();
+  if ( fieldSize != attributeSize )
+  {
+    QgsDebugMsg( QStringLiteral( "Attribute size (%1) does not match number of fields (%2)" ).arg( attributeSize ).arg( fieldSize ) );
+    return QVariantMap();
+  }
+
+  for ( int i = 0; i < attributeSize; ++i )
+  {
+    res[d->fields.at( i ).name()] = d->attributes.at( i );
+  }
+  return res;
 }
 
 int QgsFeature::attributeCount() const

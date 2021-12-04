@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgsimageoperation.h"
-#include "qgscolorramp.h"
+#include "qgscolorrampimpl.h"
 #include <QObject>
 #include "qgstest.h"
 #include "qgsrenderchecker.h"

@@ -4,10 +4,14 @@ QWidget
     background: transparent;
 }
 
-QWindow, QMainWindow, QMdiSubWindow, QDialog, QAbstractScrollArea, QFocusFrame, QWizardPage, QDockWidget, QTabWidget, QGroupBox
+QWindow, QMainWindow, QMdiSubWindow, QDialog, QAbstractScrollArea, QFocusFrame, QWizardPage, QDockWidget, QDockWidgetGroupWindow, QTabWidget, QGroupBox
 {
     color: @text;
     background-color: @background;
+}
+
+QDockWidget, QDockWidgetGroupWindow {
+  padding: 0.2em;
 }
 
 QWidget:item:hover

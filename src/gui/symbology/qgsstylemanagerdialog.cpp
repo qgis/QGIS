@@ -168,6 +168,8 @@ bool QgsCheckableStyleModel::setData( const QModelIndex &i, const QVariant &valu
 
 #include "qgsgui.h"
 
+QString QgsStyleManagerDialog::sPreviousTag;
+
 QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, Qt::WindowFlags flags, bool readOnly )
   : QDialog( parent, flags )
   , mStyle( style )
@@ -278,17 +280,12 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
   connect( exportAction, &QAction::triggered, this, &QgsStyleManagerDialog::exportItems );
   btnShare->setMenu( shareMenu );
 
-  double iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 10;
-  listItems->setIconSize( QSize( static_cast< int >( iconSize ), static_cast< int >( iconSize * 0.9 ) ) );  // ~100, 90 on low dpi
-  // set a grid size which allows sufficient vertical spacing to fit reasonably sized entity names
-  listItems->setGridSize( QSize( static_cast< int >( listItems->iconSize().width() * 1.4 ), static_cast< int >( listItems->iconSize().height() * 1.7 ) ) );
   listItems->setTextElideMode( Qt::TextElideMode::ElideRight );
   double treeIconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 2;
   mSymbolTreeView->setIconSize( QSize( static_cast< int >( treeIconSize ), static_cast< int >( treeIconSize ) ) );
 
   mModel = mStyle == QgsStyle::defaultStyle() ? new QgsCheckableStyleModel( QgsApplication::defaultStyleModel(), this, mReadOnly )
            : new QgsCheckableStyleModel( mStyle, this, mReadOnly );
-  mModel->addDesiredIconSize( listItems->iconSize() );
   mModel->addDesiredIconSize( mSymbolTreeView->iconSize() );
   listItems->setModel( mModel );
   mSymbolTreeView->setModel( mModel );
@@ -307,7 +304,9 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
   groupTree->setModel( groupModel );
   groupTree->setHeaderHidden( true );
   populateGroups();
-  groupTree->setCurrentIndex( groupTree->model()->index( 0, 0 ) );
+
+  const QModelIndexList prevIndex = groupTree->model()->match( groupTree->model()->index( 0, 0 ), Qt::UserRole + 1, sPreviousTag, 1, Qt::MatchFixedString | Qt::MatchCaseSensitive | Qt::MatchRecursive );
+  groupTree->setCurrentIndex( !prevIndex.empty() ? prevIndex.at( 0 ) : groupTree->model()->index( 0, 0 ) );
 
   connect( groupTree->selectionModel(), &QItemSelectionModel::currentChanged,
            this, &QgsStyleManagerDialog::groupChanged );
@@ -515,6 +514,11 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
     QgsSettings().setValue( QStringLiteral( "Windows/StyleV2Manager/treeState" ), mSymbolTreeView->header()->saveState(), QgsSettings::Gui );
   } );
 
+  const int thumbnailSize = settings.value( QStringLiteral( "Windows/StyleV2Manager/thumbnailSize" ), 0, QgsSettings::Gui ).toInt();
+  mSliderIconSize->setValue( thumbnailSize );
+  connect( mSliderIconSize, &QSlider::valueChanged, this, &QgsStyleManagerDialog::setThumbnailSize );
+  setThumbnailSize( thumbnailSize );
+
   // set initial disabled state for actions requiring a selection
   selectedSymbolsChanged( QItemSelection(), QItemSelection() );
 }
@@ -672,7 +676,7 @@ void QgsStyleManagerDialog::copyItem()
 
 void QgsStyleManagerDialog::pasteItem()
 {
-  const QString defaultTag = groupTree->currentIndex().isValid() ? groupTree->currentIndex().data().toString() : QString();
+  const QString defaultTag = groupTree->currentIndex().isValid() ? groupTree->currentIndex().data( GroupModelRoles::TagName ).toString() : QString();
   std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
   if ( tempSymbol )
   {
@@ -732,6 +736,21 @@ void QgsStyleManagerDialog::pasteItem()
     mStyle->saveTextFormat( saveDlg.name(), format, saveDlg.isFavorite(), symbolTags );
     return;
   }
+}
+
+void QgsStyleManagerDialog::setThumbnailSize( int value )
+{
+  // value ranges from 0-10
+  const double iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * ( value * 2.5 + 10 );
+  // set a grid size which allows sufficient vertical spacing to fit reasonably sized entity names
+  const double spacing = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * ( value * 2.2 + 14 );
+  const double verticalSpacing = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 7
+                                 + iconSize * 0.8;
+  listItems->setIconSize( QSize( static_cast< int >( iconSize ), static_cast< int >( iconSize * 0.9 ) ) );
+  listItems->setGridSize( QSize( static_cast< int >( spacing ), static_cast< int >( verticalSpacing ) ) );
+  mModel->addDesiredIconSize( listItems->iconSize() );
+
+  QgsSettings().setValue( QStringLiteral( "Windows/StyleV2Manager/thumbnailSize" ), value, QgsSettings::Gui );
 }
 
 int QgsStyleManagerDialog::selectedItemType()
@@ -1139,6 +1158,8 @@ bool QgsStyleManagerDialog::addTextFormat()
   format = formatDlg.format();
 
   QgsStyleSaveDialog saveDlg( this, QgsStyle::TextFormatEntity );
+  const QString defaultTag = groupTree->currentIndex().isValid() ? groupTree->currentIndex().data( GroupModelRoles::TagName ).toString() : QString();
+  saveDlg.setDefaultTags( defaultTag );
   if ( !saveDlg.exec() )
     return false;
   QString name = saveDlg.name();
@@ -1323,6 +1344,8 @@ bool QgsStyleManagerDialog::addSymbol( int symbolType )
   }
 
   QgsStyleSaveDialog saveDlg( this );
+  const QString defaultTag = groupTree->currentIndex().isValid() ? groupTree->currentIndex().data( GroupModelRoles::TagName ).toString() : QString();
+  saveDlg.setDefaultTags( defaultTag );
   if ( !saveDlg.exec() )
   {
     delete symbol;
@@ -1761,6 +1784,8 @@ bool QgsStyleManagerDialog::addLabelSettings( QgsWkbTypes::GeometryType type )
   settings.layerType = type;
 
   QgsStyleSaveDialog saveDlg( this, QgsStyle::LabelSettingsEntity );
+  const QString defaultTag = groupTree->currentIndex().isValid() ? groupTree->currentIndex().data( GroupModelRoles::TagName ).toString() : QString();
+  saveDlg.setDefaultTags( defaultTag );
   if ( !saveDlg.exec() )
     return false;
   QString name = saveDlg.name();
@@ -1853,6 +1878,8 @@ bool QgsStyleManagerDialog::addLegendPatchShape( Qgis::SymbolType type )
   shape = dialog.shape();
 
   QgsStyleSaveDialog saveDlg( this, QgsStyle::LegendPatchShapeEntity );
+  const QString defaultTag = groupTree->currentIndex().isValid() ? groupTree->currentIndex().data( GroupModelRoles::TagName ).toString() : QString();
+  saveDlg.setDefaultTags( defaultTag );
   if ( !saveDlg.exec() )
     return false;
   QString name = saveDlg.name();
@@ -1950,6 +1977,8 @@ bool QgsStyleManagerDialog::addSymbol3D( const QString &type )
     return false;
 
   QgsStyleSaveDialog saveDlg( this, QgsStyle::Symbol3DEntity );
+  const QString defaultTag = groupTree->currentIndex().isValid() ? groupTree->currentIndex().data( GroupModelRoles::TagName ).toString() : QString();
+  saveDlg.setDefaultTags( defaultTag );
   if ( !saveDlg.exec() )
     return false;
   QString name = saveDlg.name();
@@ -2212,6 +2241,7 @@ void QgsStyleManagerDialog::populateGroups()
   {
     QStandardItem *item = new QStandardItem( tag );
     item->setData( mStyle->tagId( tag ) );
+    item->setData( tag, GroupModelRoles::TagName );
     item->setEditable( !mReadOnly );
     taggroup->appendRow( item );
   }
@@ -2251,6 +2281,8 @@ void QgsStyleManagerDialog::groupChanged( const QModelIndex &index )
   QStringList groupSymbols;
 
   const QString category = index.data( Qt::UserRole + 1 ).toString();
+  sPreviousTag = category;
+
   if ( mGroupingMode )
   {
     mModel->setTagId( -1 );
@@ -2376,6 +2408,7 @@ int QgsStyleManagerDialog::addTag()
   QStandardItem *parentItem = model->itemFromIndex( index );
   QStandardItem *childItem = new QStandardItem( itemName );
   childItem->setData( id );
+  childItem->setData( itemName, GroupModelRoles::TagName );
   parentItem->appendRow( childItem );
 
   return id;

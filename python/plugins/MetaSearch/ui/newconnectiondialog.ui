@@ -14,15 +14,8 @@
    <string>Create a new Catalog connection</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Name</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QLineEdit" name="leName"/>
+   <item row="1" column="1">
+    <widget class="QLineEdit" name="leURL"/>
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="label_2">
@@ -31,10 +24,27 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
-    <widget class="QLineEdit" name="leURL"/>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Name</string>
+     </property>
+    </widget>
    </item>
-   <item row="2" column="0" colspan="2">
+   <item row="4" column="1">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLineEdit" name="leName"/>
+   </item>
+   <item row="3" column="0" colspan="2">
     <widget class="QGroupBox" name="authenticationGroupBox">
      <property name="title">
       <string>Authentication</string>
@@ -73,14 +83,34 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="1">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+   <item row="2" column="0" colspan="2">
+    <widget class="QGroupBox" name="optionsGroupBox">
+     <property name="title">
+      <string>Options</string>
      </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
+     <widget class="QLabel" name="leCatalogType">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>30</y>
+        <width>71</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Catalog Type</string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="cmbCatalogType">
+      <property name="geometry">
+       <rect>
+        <x>100</x>
+        <y>30</y>
+        <width>151</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
     </widget>
    </item>
   </layout>

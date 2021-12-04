@@ -75,7 +75,6 @@ void QgsHtmlAnnotationDialog::applySettingsToItem()
   if ( mItem && mItem->annotation() )
   {
     QgsHtmlAnnotation *annotation = static_cast< QgsHtmlAnnotation * >( mItem->annotation() );
-    const QString file = mFileLineEdit->text();
     if ( mFileRadioButton->isChecked() )
     {
       annotation->setSourceFile( mFileLineEdit->text() );

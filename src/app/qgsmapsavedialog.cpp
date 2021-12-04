@@ -319,10 +319,12 @@ void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
   {
     case Pdf:
       mapSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, true ); // hardcode antialiasing when saving as PDF
+      mapSettings.setFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms, true ); // hardcode antialiasing when saving as PDF
       break;
 
     case Image:
       mapSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, settings.value( QStringLiteral( "qgis/enable_anti_aliasing" ), true ).toBool() );
+      mapSettings.setFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms, settings.value( QStringLiteral( "qgis/enable_anti_aliasing" ), true ).toBool() );
       break;
   }
   mapSettings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, true ); // force vector output (no caching of marker images etc.)

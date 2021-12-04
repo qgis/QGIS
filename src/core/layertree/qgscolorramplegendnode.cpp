@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscolorramplegendnode.h"
+#include "qgscolorrampimpl.h"
 #include "qgslegendsettings.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreelayer.h"

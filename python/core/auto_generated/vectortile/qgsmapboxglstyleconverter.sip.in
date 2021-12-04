@@ -243,7 +243,7 @@ Parse list of ``layers`` from JSON.
    This is private API only, and may change in future QGIS versions
 %End
 
-    static bool parseFillLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style /Out/, QgsMapBoxGlStyleConversionContext &context );
+    static bool parseFillLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style /Out/, QgsMapBoxGlStyleConversionContext &context, bool isBackgroundStyle = false );
 %Docstring
 Parses a fill layer.
 
@@ -253,6 +253,7 @@ Parses a fill layer.
 
 :param jsonLayer: fill layer to parse
 :param context: conversion context
+:param isBackgroundStyle: set to ``True`` if the layer should be parsed as background layer
 
 :return: - ``True`` if the layer was successfully parsed.
          - style: generated QGIS vector tile style
@@ -395,6 +396,15 @@ For ``json`` with intermediate stops it uses :py:func:`~QgsMapBoxGlStyleConverte
 %Docstring
 Takes values from stops and uses either :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or :py:func:`~QgsMapBoxGlStyleConverter.scale_exp` functions
 to interpolate point/offset values.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+%End
+
+    static QString parseArrayStops( const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1 );
+%Docstring
+Takes numerical arrays from stops.
 
 .. warning::
 

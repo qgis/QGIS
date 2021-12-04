@@ -18,13 +18,14 @@
 #ifndef QGSGOGRDBSOURCESELECT_H
 #define QGSGOGRDBSOURCESELECT_H
 
-#include "ui_qgsdbsourceselectbase.h"
 #include "qgsguiutils.h"
-#include "qgsdbfilterproxymodel.h"
 #include "qgshelp.h"
-#include "qgsabstractdatasourcewidget.h"
-#include "qgsogrdbtablemodel.h"
+#include "qgsabstractdbsourceselect.h"
+#include "qgsproviderregistry.h"
 #include "qgis_sip.h"
+
+class QPushButton;
+class QgsOgrDbTableModel;
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -34,7 +35,7 @@
  * source selects.
  *
  */
-class QgsOgrDbSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsDbSourceSelectBase
+class QgsOgrDbSourceSelect: public QgsAbstractDbSourceSelect
 {
     Q_OBJECT
 
@@ -81,31 +82,27 @@ class QgsOgrDbSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsD
      * Once connected, available layers are displayed.
      */
     void btnConnect_clicked();
-    void buildQuery();
     //! Opens the create connection dialog to build a new connection
     void btnNew_clicked();
     //! Deletes the selected connection
     void btnDelete_clicked();
-    void mSearchGroupBox_toggled( bool );
-    void mSearchTableEdit_textChanged( const QString &text );
-    void mSearchColumnComboBox_currentIndexChanged( const QString &text );
-    void mSearchModeComboBox_currentIndexChanged( const QString &text );
     void cbxAllowGeometrylessTables_stateChanged( int );
-    void setSql( const QModelIndex &index );
     void cmbConnections_activated( int );
-    void mTablesTreeView_clicked( const QModelIndex &index );
-    void mTablesTreeView_doubleClicked( const QModelIndex &index );
     void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString &regexp );
 
     void showHelp();
 
+  protected slots:
+    void treeviewClicked( const QModelIndex &index ) override;
+    void setSql( const QModelIndex &index ) override;
+    void treeviewDoubleClicked( const QModelIndex &index ) override;
+
   private:
     void setConnectionListPosition();
     //! Model that acts as datasource for mTableTreeWidget
-    QgsOgrDbTableModel mTableModel;
-    QgsDatabaseFilterProxyModel mProxyModel;
+    QgsOgrDbTableModel *mTableModel = nullptr;
     QPushButton *mBuildQueryButton = nullptr;
     QString mPath;
     QString mOgrDriverName;

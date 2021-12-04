@@ -27,6 +27,7 @@
 #include "qgssvgcache.h"
 #include "qgslogger.h"
 #include "qgscolorramp.h"
+#include "qgscolorrampimpl.h"
 #include "qgsunittypes.h"
 #include "qgsmessagelog.h"
 #include "qgsapplication.h"
@@ -3711,10 +3712,6 @@ void QgsPointPatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext 
     pointRenderContext.setPainter( &p );
     pointRenderContext.setScaleFactor( context.renderContext().scaleFactor() );
 
-    if ( context.renderContext().flags() & Qgis::RenderContextFlag::Antialiasing )
-      pointRenderContext.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
-    pointRenderContext.setFlag( Qgis::RenderContextFlag::LosslessImageRendering, context.renderContext().flags() & Qgis::RenderContextFlag::LosslessImageRendering );
-
     context.renderContext().setPainterFlagsUsingContext( &p );
     QgsMapToPixel mtp( context.renderContext().mapToPixel().mapUnitsPerPixel() );
     pointRenderContext.setMapToPixel( mtp );
@@ -4400,9 +4397,6 @@ QColor QgsCentroidFillSymbolLayer::color() const
 void QgsCentroidFillSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   mMarker->startRender( context.renderContext(), context.fields() );
-
-  mCurrentFeatureId = -1;
-  mBiggestPartIndex = 0;
 }
 
 void QgsCentroidFillSymbolLayer::stopRender( QgsSymbolRenderContext &context )

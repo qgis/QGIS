@@ -258,8 +258,6 @@ QString QgsProviderSublayersDialog::groupName() const
   if ( !mCbxAddToGroup->isChecked() )
     return QString();
 
-  const QFileInfo fi( mFilePath );
-
   QString res = QgsProviderUtils::suggestLayerNameFromFilePath( mFilePath );
 
   const QgsSettings settings;

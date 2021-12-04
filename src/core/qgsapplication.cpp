@@ -173,7 +173,7 @@ Q_GLOBAL_STATIC( QString, sAuthDbDirPath )
 
 Q_GLOBAL_STATIC( QString, sUserName )
 Q_GLOBAL_STATIC( QString, sUserFullName )
-Q_GLOBAL_STATIC_WITH_ARGS( QString, sPlatformName, ( "desktop" ) )
+Q_GLOBAL_STATIC_WITH_ARGS( QString, sPlatformName, ( "external" ) )
 Q_GLOBAL_STATIC( QString, sTranslation )
 
 Q_GLOBAL_STATIC( QTemporaryDir, sIconCacheDir )
@@ -263,6 +263,7 @@ void QgsApplication::init( QString profileFolder )
     qRegisterMetaType<QgsProcessingOutputLayerDefinition>( "QgsProcessingOutputLayerDefinition" );
     qRegisterMetaType<QgsUnitTypes::LayoutUnit>( "QgsUnitTypes::LayoutUnit" );
     qRegisterMetaType<QgsFeatureId>( "QgsFeatureId" );
+    qRegisterMetaType<QgsFields>( "QgsFields" );
     qRegisterMetaType<QgsFeatureIds>( "QgsFeatureIds" );
     qRegisterMetaType<QgsProperty>( "QgsProperty" );
     qRegisterMetaType<QgsFeatureStoreList>( "QgsFeatureStoreList" );

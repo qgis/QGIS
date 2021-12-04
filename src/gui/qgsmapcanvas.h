@@ -72,6 +72,7 @@ class QgsRubberBand;
 class QgsMapCanvasAnnotationItem;
 class QgsReferencedRectangle;
 class QgsRenderedItemResults;
+class QgsTemporaryCursorOverride;
 
 class QgsTemporalController;
 
@@ -471,14 +472,20 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      */
     QgsMapLayer *layer( const QString &id );
 
-    //! Returns number of layers on the map
+    /**
+     * Returns number of layers on the map.
+     */
     int layerCount() const;
 
     /**
      * Returns the list of layers shown within the map canvas.
+     *
+     * Since QGIS 3.24, if the \a expandGroupLayers option is TRUE then group layers will be converted to
+     * all their child layers.
+     *
      * \see setLayers()
      */
-    QList<QgsMapLayer *> layers() const;
+    QList<QgsMapLayer *> layers( bool expandGroupLayers = false ) const;
 
     /**
      * Freeze/thaw the map canvas. This is used to prevent the canvas from
@@ -1412,6 +1419,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     int mBlockItemPositionUpdates = 0;
 
     QMetaObject::Connection mScreenDpiChangedConnection;
+
+    std::unique_ptr< QgsTemporaryCursorOverride > mTemporaryCursorOverride;
 
     /**
      * Returns the last cursor position on the canvas in geographical coordinates

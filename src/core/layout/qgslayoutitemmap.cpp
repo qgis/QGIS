@@ -1531,6 +1531,7 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   // layout-specific overrides of flags
   jobMapSettings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, true ); // force vector output (no caching of marker images etc.)
   jobMapSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagAntialiasing );
+  jobMapSettings.setFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagAntialiasing );
   jobMapSettings.setFlag( Qgis::MapSettingsFlag::LosslessImageRendering, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagLosslessImageRendering );
   jobMapSettings.setFlag( Qgis::MapSettingsFlag::DrawEditingInfo, false );
   jobMapSettings.setSelectionColor( mLayout->renderContext().selectionColor() );

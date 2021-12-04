@@ -30,12 +30,12 @@ class QgsPluginDependenciesDialog(QtWidgets.QDialog, Ui_QgsPluginDependenciesDia
 
         :param plugin_name: the name of the parent plugin
         :type plugin_name: str
-        :param to_install: list of plugin IDs that needs to be installed
-        :type to_install: list
-        :param to_upgrade: list of plugin IDs that needs to be upgraded
-        :type to_upgrade: list
-        :param not_found: list of plugin IDs that are not found (unavailable)
-        :type not_found: list
+        :param to_install: dict of plugins that need to be installed, keyed by plugin name
+        :type to_install: dict
+        :param to_upgrade: dict of plugins that need to be upgraded, keyed by plugin name
+        :type to_upgrade: dict
+        :param not_found: dict of plugins that were not found (unavailable), keyed by plugin name
+        :type not_found: dict
         :param parent: parent object, defaults to None
         :param parent: QWidget, optional
         """
@@ -60,7 +60,9 @@ class QgsPluginDependenciesDialog(QtWidgets.QDialog, Ui_QgsPluginDependenciesDia
             widget = QtWidgets.QLabel("<b>%s</b>" % name)
             widget.p_id = data['id']
             widget.action = data['action']
+            widget.use_stable_version = data['use_stable_version']
             self.pluginList.setCellWidget(i, 0, widget)
+            self.pluginList.resizeColumnToContents(0)
             widget = QtWidgets.QTableWidgetItem(_display(data['version_installed']))
             widget.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
             self.pluginList.setItem(i, 1, widget)
@@ -106,7 +108,9 @@ class QgsPluginDependenciesDialog(QtWidgets.QDialog, Ui_QgsPluginDependenciesDia
         for i in range(self.pluginList.rowCount()):
             try:
                 if self.pluginList.cellWidget(i, 4).isChecked():
-                    self.__actions[self.pluginList.cellWidget(i, 0).p_id] = self.pluginList.cellWidget(i, 0).action
+                    self.__actions[self.pluginList.cellWidget(i, 0).p_id] = {
+                        'action': self.pluginList.cellWidget(i, 0).action,
+                        'use_stable_version': self.pluginList.cellWidget(i, 0).use_stable_version}
             except:
                 pass
         super().accept()

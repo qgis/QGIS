@@ -113,6 +113,7 @@ QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWid
     case QgsMapLayerType::AnnotationLayer:
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::PointCloudLayer:
+    case QgsMapLayerType::GroupLayer:
       break;
 
   }

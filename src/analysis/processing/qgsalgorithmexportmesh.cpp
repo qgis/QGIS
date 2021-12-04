@@ -865,17 +865,17 @@ QVariantMap QgsMeshRasterizeAlgorithm::processAlgorithm( const QVariantMap &para
 
     if ( dataGroup.datasetValues.isValid() )
     {
-      QgsRasterBlock *block = QgsMeshUtils::exportRasterBlock(
-                                mTriangularMesh,
-                                dataGroup.datasetValues,
-                                dataGroup.activeFaces,
-                                dataGroup.metadata.dataType(),
-                                mTransform,
-                                pixelSize,
-                                extent,
-                                &rasterBlockFeedBack );
+      std::unique_ptr<QgsRasterBlock> block( QgsMeshUtils::exportRasterBlock(
+          mTriangularMesh,
+          dataGroup.datasetValues,
+          dataGroup.activeFaces,
+          dataGroup.metadata.dataType(),
+          mTransform,
+          pixelSize,
+          extent,
+          &rasterBlockFeedBack ) );
 
-      rasterDataProvider->writeBlock( block, i + 1 );
+      rasterDataProvider->writeBlock( block.get(), i + 1 );
       rasterDataProvider->setNoDataValue( i + 1, block->noDataValue() );
     }
     else

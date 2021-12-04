@@ -162,7 +162,18 @@ void fetchCheckedLayers( const QgsLayerTreeNode *node, QList<QgsMapLayer *> &lay
 
   const auto constChildren = node->children();
   for ( QgsLayerTreeNode *child : constChildren )
+  {
+    if ( QgsLayerTreeGroup *group = qobject_cast< QgsLayerTreeGroup * >( child ) )
+    {
+      if ( QgsGroupLayer *groupLayer = group->groupLayer() )
+      {
+        layers << groupLayer;
+        continue;
+      }
+    }
+
     fetchCheckedLayers( child, layers );
+  }
 }
 
 QList<QgsMapLayer *> QgsLayerTreeNode::checkedLayers() const
@@ -233,13 +244,12 @@ void QgsLayerTreeNode::writeCommonXml( QDomElement &element )
   mProperties.writeXml( element, doc );
 }
 
-void QgsLayerTreeNode::insertChildrenPrivate( int index, QList<QgsLayerTreeNode *> nodes )
+void QgsLayerTreeNode::insertChildrenPrivate( int index, const QList<QgsLayerTreeNode *> &nodes )
 {
   if ( nodes.isEmpty() )
     return;
 
-  const auto constNodes = nodes;
-  for ( QgsLayerTreeNode *node : constNodes )
+  for ( QgsLayerTreeNode *node : nodes )
   {
     Q_ASSERT( !node->mParent );
     node->mParent = this;

@@ -1404,6 +1404,16 @@ class TestQgsExpression: public QObject
       QTest::newRow( "apply_dash_pattern geometry adjust 2" ) << "geom_to_wkt(apply_dash_pattern(geom_from_wkt('LINESTRING(1 1, 10 1)'), array(3, 1), end_rule:='full_dash', adjustment:='dash'))" << false << QVariant( "MultiLineString ((1 1, 3.33333333 1),(4.33333333 1, 6.66666667 1),(7.66666667 1, 10 1))" );
       QTest::newRow( "apply_dash_pattern geometry adjust 3" ) << "geom_to_wkt(apply_dash_pattern(geom_from_wkt('LINESTRING(1 1, 10 1)'), array(3, 1), end_rule:='full_dash', adjustment:='gap'))" << false << QVariant( "MultiLineString ((1 1, 4 1),(4 1, 7 1),(7 1, 10 1),(10 1, 10 1, 10 1))" );
       QTest::newRow( "apply_dash_pattern geometry pattern offset" ) << "geom_to_wkt(apply_dash_pattern(geom_from_wkt('LINESTRING(1 1, 10 1)'), array(3, 1), pattern_offset:=3))" << false << QVariant( "MultiLineString ((2 1, 5 1),(6 1, 9 1),(10 1, 10 1, 10 1))" );
+      QTest::newRow( "densify_by_count not geom" ) << "densify_by_count('g', 3)" << true << QVariant();
+      QTest::newRow( "densify_by_count null" ) << "densify_by_count(NULL, 3)" << false << QVariant();
+      QTest::newRow( "densify_by_count point" ) << "geom_to_wkt(densify_by_count(make_point(1,2),3))" << false << QVariant( "Point (1 2)" );
+      QTest::newRow( "densify_by_count geometry" ) << "geom_to_wkt(densify_by_count(geom_from_wkt('LINESTRING(1 1, 10 1)'), 3))" << false << QVariant( "LineString (1 1, 3.25 1, 5.5 1, 7.75 1, 10 1)" );
+      QTest::newRow( "densify_by_count polygon" ) << "geom_to_wkt(densify_by_count(geom_from_wkt('POLYGON((1 1, 10 1, 10 10, 1 10, 1 1))'), 2))" << false << QVariant( "Polygon ((1 1, 4 1, 7 1, 10 1, 10 4, 10 7, 10 10, 7 10, 4 10, 1 10, 1 7, 1 4, 1 1))" );
+      QTest::newRow( "densify_by_distance not geom" ) << "densify_by_distance('g', 3)" << true << QVariant();
+      QTest::newRow( "densify_by_distance null" ) << "densify_by_distance(NULL, 3)" << false << QVariant();
+      QTest::newRow( "densify_by_distance point" ) << "geom_to_wkt(densify_by_distance(make_point(1,2),3))" << false << QVariant( "Point (1 2)" );
+      QTest::newRow( "densify_by_distance geometry" ) << "geom_to_wkt(densify_by_distance(geom_from_wkt('LINESTRING(1 1, 10 1)'), 4))" << false << QVariant( "LineString (1 1, 4 1, 7 1, 10 1)" );
+      QTest::newRow( "densify_by_distance polygon" ) << "geom_to_wkt(densify_by_distance(geom_from_wkt('POLYGON((1 1, 10 1, 10 10, 1 10, 1 1))'), 2))" << false << QVariant( "Polygon ((1 1, 2.8 1, 4.6 1, 6.4 1, 8.2 1, 10 1, 10 2.8, 10 4.6, 10 6.4, 10 8.2, 10 10, 8.2 10, 6.4 10, 4.6 10, 2.8 10, 1 10, 1 8.2, 1 6.4, 1 4.6, 1 2.8, 1 1))" );
       QTest::newRow( "is_multipart true" ) << "is_multipart(geom_from_wkt('MULTIPOINT ((0 0),(1 1),(2 2))'))" << false << QVariant( true );
       QTest::newRow( "is_multipart false" ) << "is_multipart(geom_from_wkt('POINT (0 0)'))" << false << QVariant( false );
       QTest::newRow( "is_multipart false empty geometry" ) << "is_multipart(geom_from_wkt('POINT EMPTY'))" << false << QVariant( false );
@@ -1457,6 +1467,14 @@ class TestQgsExpression: public QObject
       QTest::newRow( "straight_distance_2d linestring" ) << "round(straight_distance_2d(geom_from_wkt('LINESTRING(1 4, 3 5, 5 0)')), 3)" << false << QVariant( 5.657 );
       QTest::newRow( "straight_distance_2d closed linestring" ) << "straight_distance_2d(geom_from_wkt('LINESTRING(2 2, 3 6, 2 2)'))" << false << QVariant( 0.0 );
       QTest::newRow( "straight_distance_2d circularstring" ) << "round(straight_distance_2d(geom_from_wkt('CircularString (20 30, 50 30, 10 50)')), 3)" << false << QVariant( 22.361 );
+      QTest::newRow( "roundness not geom" ) << "roundness('r')" << true << QVariant();
+      QTest::newRow( "roundness null" ) << "roundness(NULL)" << false << QVariant();
+      QTest::newRow( "roundness not polygon" ) << "roundness(geom_from_wkt('POINT(1 2)'))" << true << QVariant();
+      QTest::newRow( "roundness polygon" ) << "round(roundness(geom_from_wkt('POLYGON(( 0 0, 0 1, 1 1, 1 0, 0 0))')), 3)" << false << QVariant( 0.785 );
+      QTest::newRow( "roundness single part multi polygon" ) << "round(roundness(geom_from_wkt('MULTIPOLYGON (((0 0, 0 1, 1 1, 1 0, 0 0)))')), 3)" << false << QVariant( 0.785 );
+      QTest::newRow( "roundness multi polygon" ) << "round(roundness(geom_from_wkt('MULTIPOLYGON( ((0 0, 0 1, 1 1, 1 0, 0 0)), ((5 2, 4 9, 5 9, 6 5, 5 2)) )')))" << true << QVariant();
+      QTest::newRow( "roundness thin polygon" ) << "roundness(geom_from_wkt('POLYGON(( 0 0, 0.5 0, 1 0, 0.6 0, 0 0))'))" << false << QVariant( 0.0 );
+      QTest::newRow( "roundness circle polygon" ) << "roundness(geom_from_wkt('CurvePolygon (CompoundCurve (CircularString (0 0, 0 1, 1 1, 1 0, 0 0)))'))" << false << QVariant( 1.0 );
 
       // string functions
       QTest::newRow( "format_number" ) << "format_number(1999.567,2)" << false << QVariant( "1,999.57" );
@@ -1966,6 +1984,8 @@ class TestQgsExpression: public QObject
 
     void run_evaluation_test( QgsExpression &exp, bool evalError, QVariant &expected )
     {
+      QLocale::setDefault( QLocale::c() );
+
       if ( exp.hasParserError() )
         qDebug() << exp.parserErrorString();
       QCOMPARE( exp.hasParserError(), false );
@@ -3874,6 +3894,11 @@ class TestQgsExpression: public QObject
       QCOMPARE( badMap.evaluate( &context ), QVariant() );
       QVERIFY( badMap.hasEvalError() );
       QCOMPARE( badMap.evalErrorString(), QString( "Cannot convert 'not a map' to map" ) );
+
+      QCOMPARE( QgsExpression( QStringLiteral( "map_prefix_keys(map('1', 'one', '2', 'two'), 'prefix-')" ) ).evaluate( &context ), QVariantMap( {{ "prefix-1", "one" }, { "prefix-2", "two" }} ) );
+      QCOMPARE( QgsExpression( QStringLiteral( "map_prefix_keys(map(), 'prefix-')" ) ).evaluate( &context ), QVariantMap() );
+      QCOMPARE( QgsExpression( QStringLiteral( "map_prefix_keys([], 'prefix-')" ) ).evaluate( &context ), QVariant() );
+
     }
 
     void expression_from_expression_data()
@@ -4164,7 +4189,7 @@ class TestQgsExpression: public QObject
       const QVariant t_float( 12345.001F );
       const QVariant t_double( 12345.001 );
 
-      QLocale().setDefault( QLocale::English );
+      QLocale::setDefault( QLocale::English );
 
       QCOMPARE( QgsExpression::formatPreviewString( t_int ), QStringLiteral( "12,345" ) );
       QCOMPARE( QgsExpression::formatPreviewString( t_uint ), QStringLiteral( "12,345" ) );
@@ -4173,7 +4198,7 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpression::formatPreviewString( t_float ), QStringLiteral( "12,345.0009765625" ) );
       QCOMPARE( QgsExpression::formatPreviewString( t_double ), QStringLiteral( "12,345.001" ) );
 
-      QLocale().setDefault( QLocale::Italian );
+      QLocale::setDefault( QLocale::Italian );
 
       QCOMPARE( QgsExpression::formatPreviewString( t_int ), QStringLiteral( "12.345" ) );
       QCOMPARE( QgsExpression::formatPreviewString( t_uint ), QStringLiteral( "12.345" ) );
@@ -4182,7 +4207,7 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpression::formatPreviewString( t_float ), QStringLiteral( "12.345,0009765625" ) );
       QCOMPARE( QgsExpression::formatPreviewString( t_double ), QStringLiteral( "12.345,001" ) );
 
-      QLocale().setDefault( QLocale::English );
+      QLocale::setDefault( QLocale::English );
 
     }
 
@@ -4684,7 +4709,7 @@ class TestQgsExpression: public QObject
       t_ulong = 12346;
       const QVariant t_double( 123456.801 );
 
-      QLocale().setDefault( QLocale::English );
+      QLocale::setDefault( QLocale::English );
 
       qDebug() << QVariant( 123456.801 ).toString();
 
@@ -4694,7 +4719,7 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpressionUtils::toLocalizedString( t_ulong ), QStringLiteral( "12,346" ) );
       QCOMPARE( QgsExpressionUtils::toLocalizedString( t_double ), QStringLiteral( "123,456.801" ) );
 
-      QLocale().setDefault( QLocale::Italian );
+      QLocale::setDefault( QLocale::Italian );
 
       QCOMPARE( QgsExpressionUtils::toLocalizedString( t_int ), QStringLiteral( "12.346" ) );
       QCOMPARE( QgsExpressionUtils::toLocalizedString( t_uint ), QStringLiteral( "12.346" ) );
@@ -4702,7 +4727,7 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpressionUtils::toLocalizedString( t_ulong ), QStringLiteral( "12.346" ) );
       QCOMPARE( QgsExpressionUtils::toLocalizedString( t_double ), QStringLiteral( "123.456,801" ) );
 
-      QLocale().setDefault( QLocale::English );
+      QLocale::setDefault( QLocale::English );
 
       QCOMPARE( QgsExpressionUtils::toLocalizedString( QString( "hello world" ) ), QStringLiteral( "hello world" ) );
     }

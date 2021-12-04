@@ -993,7 +993,6 @@ ACCEPTABLE_MISSING_ADDED_NOTE = [
     'QgsRuggednessFilter',
     'QgsDialog',
     'QgsExpression',
-    'QgsApplyDialog',
     'QgsGraduatedSymbolRenderer',
     'QgsColorWidgetWrapper',
     'QgsExpressionNodeCondition',

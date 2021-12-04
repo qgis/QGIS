@@ -31,6 +31,7 @@ from qgis.core import QgsSettings
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox
 
 from MetaSearch.util import get_ui_class
+from MetaSearch.search_backend import CATALOG_TYPES
 
 BASE_CLASS = get_ui_class('newconnectiondialog.ui')
 
@@ -49,6 +50,8 @@ class NewConnectionDialog(QDialog, BASE_CLASS):
         self.username = None
         self.password = None
 
+        self.cmbCatalogType.addItems(CATALOG_TYPES)
+
     def accept(self):
         """add CSW entry"""
 
@@ -56,6 +59,7 @@ class NewConnectionDialog(QDialog, BASE_CLASS):
         conn_url = self.leURL.text().strip()
         conn_username = self.leUsername.text().strip()
         conn_password = self.lePassword.text().strip()
+        conn_catalog_type = self.cmbCatalogType.currentText()
 
         if any([conn_name == '', conn_url == '']):
             QMessageBox.warning(self, self.tr('Save Connection'),
@@ -75,9 +79,10 @@ class NewConnectionDialog(QDialog, BASE_CLASS):
             # warn if entry was renamed to an existing connection
             if all([self.conn_name_orig != conn_name,
                     self.settings.contains(keyurl)]):
-                res = QMessageBox.warning(self, self.tr('Save Connection'),
-                                          self.tr('Overwrite {0}?').format(conn_name),
-                                          QMessageBox.Ok | QMessageBox.Cancel)
+                res = QMessageBox.warning(
+                    self, self.tr('Save Connection'),
+                    self.tr('Overwrite {0}?').format(conn_name),
+                    QMessageBox.Ok | QMessageBox.Cancel)
                 if res == QMessageBox.Cancel:
                     return
 
@@ -91,6 +96,8 @@ class NewConnectionDialog(QDialog, BASE_CLASS):
 
             self.settings.setValue('%s/username' % key, conn_username)
             self.settings.setValue('%s/password' % key, conn_password)
+
+            self.settings.setValue('%s/catalog-type' % key, conn_catalog_type)
 
             QDialog.accept(self)
 

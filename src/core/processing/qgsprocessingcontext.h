@@ -50,7 +50,8 @@ class CORE_EXPORT QgsProcessingContext
     //! Flags that affect how processing algorithms are run
     enum Flag
     {
-      // UseSelectionIfPresent = 1 << 0,
+      // For future API flexibility only and to avoid sip issues, remove when real entries are added to flags.
+      Unused = 1 << 0, //!< Temporary unused entry
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

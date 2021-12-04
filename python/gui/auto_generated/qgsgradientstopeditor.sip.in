@@ -98,6 +98,20 @@ first or last stop is selected, as they cannot be repositioned.
 .. seealso:: :py:func:`setSelectedStopDetails`
 %End
 
+    void setSelectedStopColorSpec( QColor::Spec spec );
+%Docstring
+Sets the color ``spec`` for the current selected stop.
+
+.. versionadded:: 3.24
+%End
+
+    void setSelectedStopDirection( Qgis::AngularDirection direction );
+%Docstring
+Sets the hue angular direction for the current selected stop.
+
+.. versionadded:: 3.24
+%End
+
     void setSelectedStopDetails( const QColor &color, double offset );
 %Docstring
 Sets the color and offset for the current selected stop.

@@ -140,7 +140,7 @@ double QgsDoubleValidator::toDouble( const QString &input, bool *ok )
     value = QLocale( QLocale::C ).toDouble( input, ok );
   }
   // Still non ok? Try without locale's group separator
-  if ( ! *ok && ! QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator )
+  if ( ! *ok && !( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator ) )
   {
     value = QLocale( ).toDouble( QString( input ).replace( QLocale().groupSeparator(), QString() ), ok );
   }

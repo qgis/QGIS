@@ -135,7 +135,8 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     { QgsPalLayerSettings::FontSizeUnit, QgsPropertyDefinition( "FontSizeUnit", QObject::tr( "Font size units" ), QgsPropertyDefinition::RenderUnits, origin ) },
     { QgsPalLayerSettings::FontTransp, QgsPropertyDefinition( "FontTransp", QObject::tr( "Text transparency" ), QgsPropertyDefinition::Opacity, origin ) },
     { QgsPalLayerSettings::FontOpacity, QgsPropertyDefinition( "FontOpacity", QObject::tr( "Text opacity" ), QgsPropertyDefinition::Opacity, origin ) },
-    { QgsPalLayerSettings::FontCase, QgsPropertyDefinition( "FontCase", QgsPropertyDefinition::DataTypeString, QObject::tr( "Font case" ), QObject::tr( "string " ) + QStringLiteral( "[<b>NoChange</b>|<b>Upper</b>|<br><b>Lower</b>|<b>Title</b>|<b>Capitalize</b>]" ), origin ) },
+    { QgsPalLayerSettings::FontStretchFactor, QgsPropertyDefinition( "FontStretchFactor", QObject::tr( "Font stretch factor" ), QgsPropertyDefinition::IntegerPositiveGreaterZero, origin ) },
+    { QgsPalLayerSettings::FontCase, QgsPropertyDefinition( "FontCase", QgsPropertyDefinition::DataTypeString, QObject::tr( "Font case" ), QObject::tr( "string " ) + QStringLiteral( "[<b>NoChange</b>|<b>Upper</b>|<br><b>Lower</b>|<b>Title</b>|<b>Capitalize</b>|<b>SmallCaps</b>|<b>AllSmallCaps</b>]" ), origin ) },
     { QgsPalLayerSettings::FontLetterSpacing, QgsPropertyDefinition( "FontLetterSpacing", QObject::tr( "Letter spacing" ), QgsPropertyDefinition::Double, origin ) },
     { QgsPalLayerSettings::FontWordSpacing, QgsPropertyDefinition( "FontWordSpacing", QObject::tr( "Word spacing" ), QgsPropertyDefinition::Double, origin ) },
     { QgsPalLayerSettings::FontBlendMode, QgsPropertyDefinition( "FontBlendMode", QObject::tr( "Text blend mode" ), QgsPropertyDefinition::BlendMode, origin ) },
@@ -1354,15 +1355,20 @@ QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettin
   context.setPainter( &painter );
 
   // slightly inset text to account for buffer/background
+  const double fontSize = context.convertToPainterUnits( tempFormat.size(), tempFormat.sizeUnit(), tempFormat.sizeMapUnitScale() );
   double xtrans = 0;
   if ( tempFormat.buffer().enabled() )
-    xtrans = context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() );
+    xtrans = tempFormat.buffer().sizeUnit() == QgsUnitTypes::RenderPercentage
+             ? fontSize * tempFormat.buffer().size() / 100
+             : context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() );
   if ( tempFormat.background().enabled() && tempFormat.background().sizeType() != QgsTextBackgroundSettings::SizeFixed )
     xtrans = std::max( xtrans, context.convertToPainterUnits( tempFormat.background().size().width(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
 
   double ytrans = 0.0;
   if ( tempFormat.buffer().enabled() )
-    ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() ) );
+    ytrans = std::max( ytrans, tempFormat.buffer().sizeUnit() == QgsUnitTypes::RenderPercentage
+                       ? fontSize * tempFormat.buffer().size() / 100
+                       : context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() ) );
   if ( tempFormat.background().enabled() )
     ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat.background().size().height(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
 
@@ -1897,11 +1903,11 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   }
 
   // apply capitalization
-  QgsStringUtils::Capitalization capitalization = mFormat.capitalization();
+  Qgis::Capitalization capitalization = mFormat.capitalization();
   // maintain API - capitalization may have been set in textFont
-  if ( capitalization == QgsStringUtils::MixedCase && mFormat.font().capitalization() != QFont::MixedCase )
+  if ( capitalization == Qgis::Capitalization::MixedCase && mFormat.font().capitalization() != QFont::MixedCase )
   {
-    capitalization = static_cast< QgsStringUtils::Capitalization >( mFormat.font().capitalization() );
+    capitalization = static_cast< Qgis::Capitalization >( mFormat.font().capitalization() );
   }
   // data defined font capitalization?
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::FontCase ) )
@@ -1916,24 +1922,34 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
       {
         if ( fcase.compare( QLatin1String( "NoChange" ), Qt::CaseInsensitive ) == 0 )
         {
-          capitalization = QgsStringUtils::MixedCase;
+          capitalization = Qgis::Capitalization::MixedCase;
         }
         else if ( fcase.compare( QLatin1String( "Upper" ), Qt::CaseInsensitive ) == 0 )
         {
-          capitalization = QgsStringUtils::AllUppercase;
+          capitalization = Qgis::Capitalization::AllUppercase;
         }
         else if ( fcase.compare( QLatin1String( "Lower" ), Qt::CaseInsensitive ) == 0 )
         {
-          capitalization = QgsStringUtils::AllLowercase;
+          capitalization = Qgis::Capitalization::AllLowercase;
         }
         else if ( fcase.compare( QLatin1String( "Capitalize" ), Qt::CaseInsensitive ) == 0 )
         {
-          capitalization = QgsStringUtils::ForceFirstLetterToCapital;
+          capitalization = Qgis::Capitalization::ForceFirstLetterToCapital;
         }
         else if ( fcase.compare( QLatin1String( "Title" ), Qt::CaseInsensitive ) == 0 )
         {
-          capitalization = QgsStringUtils::TitleCase;
+          capitalization = Qgis::Capitalization::TitleCase;
         }
+#if defined(HAS_KDE_QT5_SMALL_CAPS_FIX) || QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
+        else if ( fcase.compare( QLatin1String( "SmallCaps" ), Qt::CaseInsensitive ) == 0 )
+        {
+          capitalization = Qgis::Capitalization::SmallCaps;
+        }
+        else if ( fcase.compare( QLatin1String( "AllSmallCaps" ), Qt::CaseInsensitive ) == 0 )
+        {
+          capitalization = Qgis::Capitalization::AllSmallCaps;
+        }
+#endif
       }
     }
   }
@@ -3132,6 +3148,13 @@ void QgsPalLayerSettings::parseTextStyle( QFont &labelFont,
     labelFont.setStrikeOut( strikeout );
   }
 
+  // data defined stretch
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::FontStretchFactor ) )
+  {
+    context.expressionContext().setOriginalValueVariable( mFormat.stretchFactor() );
+    labelFont.setStretch( mDataDefinedProperties.valueAsInt( QgsPalLayerSettings::FontStretchFactor, context.expressionContext(),  mFormat.stretchFactor() ) );
+  }
+
   // data defined underline font style?
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Underline ) )
   {
@@ -3690,6 +3713,7 @@ bool QgsPalLabeling::staticWillUseLayer( const QgsMapLayer *layer )
     case QgsMapLayerType::MeshLayer:
     case QgsMapLayerType::PointCloudLayer:
     case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::GroupLayer:
       return false;
   }
   return false;

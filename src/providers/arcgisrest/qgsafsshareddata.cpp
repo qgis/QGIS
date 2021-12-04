@@ -60,7 +60,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
   QString errorTitle, errorMessage;
 
   const QString authcfg = mDataSource.authConfigId();
-  QgsStringMap headers;
+  QgsHttpHeaders headers;
   const QString referer = mDataSource.param( QStringLiteral( "referer" ) );
   if ( !referer.isEmpty() )
     headers[ QStringLiteral( "Referer" )] = referer;
@@ -151,7 +151,7 @@ QgsFeatureIds QgsAfsSharedData::getFeatureIdsInExtent( const QgsRectangle &exten
   QString errorText;
 
   const QString authcfg = mDataSource.authConfigId();
-  QgsStringMap headers;
+  QgsHttpHeaders headers;
   const QString referer = mDataSource.param( QStringLiteral( "referer" ) );
   if ( !referer.isEmpty() )
     headers[ QStringLiteral( "Referer" )] = referer;

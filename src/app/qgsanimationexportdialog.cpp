@@ -19,6 +19,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsdecorationitem.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgshelp.h"
 #include "qgstemporalnavigationobject.h"
 #include "qgsprojecttimesettings.h"
 #include "qgstemporalutils.h"
@@ -119,6 +120,11 @@ QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanva
   connect( mLockAspectRatio, &QgsRatioLockButton::lockChanged, this, &QgsAnimationExportDialog::lockChanged );
 
   connect( mSetToProjectTimeButton, &QPushButton::clicked, this, &QgsAnimationExportDialog::setToProjectTime );
+
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [ = ]
+  {
+    QgsHelp::openHelp( QStringLiteral( "introduction/qgis_gui.html#time-based-control-on-the-map-canvas" ) );
+  } );
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, [ = ]
   {
@@ -235,6 +241,7 @@ void QgsAnimationExportDialog::applyMapSettings( QgsMapSettings &mapSettings )
   const QgsSettings settings;
 
   mapSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, settings.value( QStringLiteral( "qgis/enable_anti_aliasing" ), true ).toBool() );
+  mapSettings.setFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms, settings.value( QStringLiteral( "qgis/enable_anti_aliasing" ), true ).toBool() );
   mapSettings.setFlag( Qgis::MapSettingsFlag::DrawEditingInfo, false );
   mapSettings.setFlag( Qgis::MapSettingsFlag::DrawSelection, false );
   mapSettings.setSelectionColor( mMapCanvas->mapSettings().selectionColor() );

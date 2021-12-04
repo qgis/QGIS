@@ -456,6 +456,8 @@ a fallback value of "gpkg".
 
 .. seealso:: :py:func:`defaultRasterExtension`
 
+.. seealso:: :py:func:`defaultPointCloudExtension`
+
 .. versionadded:: 3.10
 %End
 
@@ -469,8 +471,25 @@ a fallback value of "tif".
 
 .. seealso:: :py:func:`defaultVectorExtension`
 
+.. seealso:: :py:func:`defaultPointCloudExtension`
+
 .. versionadded:: 3.10
 %End
+
+    static QString defaultPointCloudExtension();
+%Docstring
+Returns the default point cloud extension to use, in the absence of all other constraints (e.g.
+provider based support for extensions).
+
+This method returns a fallback value of "las".
+
+.. seealso:: :py:func:`defaultVectorExtension`
+
+.. seealso:: :py:func:`defaultRasterExtension`
+
+.. versionadded:: 3.24
+%End
+
 
 };
 

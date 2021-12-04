@@ -357,11 +357,11 @@ void TestQgsLineFillSymbol::lineFillClipPainter()
   QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
   QgsMarkerLineSymbolLayer *markerLine = new QgsMarkerLineSymbolLayer();
   markerLine->setSubSymbol( pointSymbol->clone() );
-  markerLine->setPlacement( Qgis::MarkerLinePlacement::FirstVertex );
+  markerLine->setPlacements( Qgis::MarkerLinePlacement::FirstVertex );
   lineSymbol->appendSymbolLayer( markerLine );
   markerLine = new QgsMarkerLineSymbolLayer();
   markerLine->setSubSymbol( pointSymbol );
-  markerLine->setPlacement( Qgis::MarkerLinePlacement::LastVertex );
+  markerLine->setPlacements( Qgis::MarkerLinePlacement::LastVertex );
   lineSymbol->appendSymbolLayer( markerLine );
 
   lineFill->setSubSymbol( lineSymbol );
@@ -396,11 +396,11 @@ void TestQgsLineFillSymbol::lineFillClipIntersection()
   QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
   QgsMarkerLineSymbolLayer *markerLine = new QgsMarkerLineSymbolLayer();
   markerLine->setSubSymbol( pointSymbol->clone() );
-  markerLine->setPlacement( Qgis::MarkerLinePlacement::FirstVertex );
+  markerLine->setPlacements( Qgis::MarkerLinePlacement::FirstVertex );
   lineSymbol->appendSymbolLayer( markerLine );
   markerLine = new QgsMarkerLineSymbolLayer();
   markerLine->setSubSymbol( pointSymbol );
-  markerLine->setPlacement( Qgis::MarkerLinePlacement::LastVertex );
+  markerLine->setPlacements( Qgis::MarkerLinePlacement::LastVertex );
   lineSymbol->appendSymbolLayer( markerLine );
 
   lineFill->setSubSymbol( lineSymbol );
@@ -435,11 +435,11 @@ void TestQgsLineFillSymbol::lineFillNoClip()
   QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
   QgsMarkerLineSymbolLayer *markerLine = new QgsMarkerLineSymbolLayer();
   markerLine->setSubSymbol( pointSymbol->clone() );
-  markerLine->setPlacement( Qgis::MarkerLinePlacement::FirstVertex );
+  markerLine->setPlacements( Qgis::MarkerLinePlacement::FirstVertex );
   lineSymbol->appendSymbolLayer( markerLine );
   markerLine = new QgsMarkerLineSymbolLayer();
   markerLine->setSubSymbol( pointSymbol );
-  markerLine->setPlacement( Qgis::MarkerLinePlacement::LastVertex );
+  markerLine->setPlacements( Qgis::MarkerLinePlacement::LastVertex );
   lineSymbol->appendSymbolLayer( markerLine );
 
   lineFill->setSubSymbol( lineSymbol );
@@ -474,11 +474,11 @@ void TestQgsLineFillSymbol::lineFillDataDefinedClip()
   QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
   QgsMarkerLineSymbolLayer *markerLine = new QgsMarkerLineSymbolLayer();
   markerLine->setSubSymbol( pointSymbol->clone() );
-  markerLine->setPlacement( Qgis::MarkerLinePlacement::FirstVertex );
+  markerLine->setPlacements( Qgis::MarkerLinePlacement::FirstVertex );
   lineSymbol->appendSymbolLayer( markerLine );
   markerLine = new QgsMarkerLineSymbolLayer();
   markerLine->setSubSymbol( pointSymbol );
-  markerLine->setPlacement( Qgis::MarkerLinePlacement::LastVertex );
+  markerLine->setPlacements( Qgis::MarkerLinePlacement::LastVertex );
   lineSymbol->appendSymbolLayer( markerLine );
 
   lineFill->setSubSymbol( lineSymbol );

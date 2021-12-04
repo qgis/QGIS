@@ -47,6 +47,8 @@ class CORE_EXPORT QgsProcessingOutputDefinition
       sipType = sipType_QgsProcessingOutputVectorLayer;
     else if ( sipCpp->type() == QgsProcessingOutputRasterLayer::typeName() )
       sipType = sipType_QgsProcessingOutputRasterLayer;
+    else if ( sipCpp->type() == QgsProcessingOutputPointCloudLayer::typeName() )
+      sipType = sipType_QgsProcessingOutputPointCloudLayer;
     else if ( sipCpp->type() == QgsProcessingOutputMapLayer::typeName() )
       sipType = sipType_QgsProcessingOutputMapLayer;
     else if ( sipCpp->type() == QgsProcessingOutputMultipleLayers::typeName() )
@@ -136,7 +138,6 @@ class CORE_EXPORT QgsProcessingOutputDefinition
     QString mDescription;
 
     bool mAutoCreated = false;
-
 };
 
 //! List of processing parameters
@@ -167,7 +168,6 @@ class CORE_EXPORT QgsProcessingOutputMapLayer : public QgsProcessingOutputDefini
     static QString typeName() { return QStringLiteral( "outputLayer" ); }
 
     QString type() const override;
-
 };
 
 /**
@@ -228,8 +228,28 @@ class CORE_EXPORT QgsProcessingOutputRasterLayer : public QgsProcessingOutputDef
      */
     static QString typeName() { return QStringLiteral( "outputRaster" ); }
     QString type() const override { return typeName(); }
+};
 
+/**
+ * \class QgsProcessingOutputPointCloudLayer
+ * \ingroup core
+ * \brief A pointcloud layer output for processing algorithms.
+  * \since QGIS 3.24
+ */
+class CORE_EXPORT QgsProcessingOutputPointCloudLayer : public QgsProcessingOutputDefinition
+{
+  public:
 
+    /**
+     * Constructor for QgsProcessingOutputPointCloudLayer.
+     */
+    QgsProcessingOutputPointCloudLayer( const QString &name, const QString &description = QString() );
+
+    /**
+     * Returns the type name for the output class.
+     */
+    static QString typeName() { return QStringLiteral( "outputPointCloud" ); }
+    QString type() const override { return typeName(); }
 };
 
 /**
@@ -259,7 +279,6 @@ class CORE_EXPORT QgsProcessingOutputMultipleLayers : public QgsProcessingOutput
      */
     static QString typeName() { return QStringLiteral( "outputMultilayer" ); }
     QString type() const override;
-
 };
 
 /**
@@ -282,7 +301,6 @@ class CORE_EXPORT QgsProcessingOutputHtml : public QgsProcessingOutputDefinition
      */
     static QString typeName() { return QStringLiteral( "outputHtml" ); }
     QString type() const override { return typeName(); }
-
 };
 
 /**
@@ -327,7 +345,6 @@ class CORE_EXPORT QgsProcessingOutputString : public QgsProcessingOutputDefiniti
      */
     static QString typeName() { return QStringLiteral( "outputString" ); }
     QString type() const override { return typeName(); }
-
 };
 
 /**
@@ -373,7 +390,6 @@ class CORE_EXPORT QgsProcessingOutputFolder : public QgsProcessingOutputDefiniti
      */
     static QString typeName() { return QStringLiteral( "outputFolder" ); }
     QString type() const override { return typeName(); }
-
 };
 
 /**
@@ -396,7 +412,6 @@ class CORE_EXPORT QgsProcessingOutputFile : public QgsProcessingOutputDefinition
      */
     static QString typeName() { return QStringLiteral( "outputFile" ); }
     QString type() const override { return typeName(); }
-
 };
 
 /**
@@ -420,10 +435,6 @@ class CORE_EXPORT QgsProcessingOutputConditionalBranch : public QgsProcessingOut
      */
     static QString typeName() { return QStringLiteral( "outputBranch" ); }
     QString type() const override { return typeName(); }
-
 };
 
-
 #endif // QGSPROCESSINGOUTPUTS_H
-
-

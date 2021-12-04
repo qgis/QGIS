@@ -128,6 +128,29 @@ Returns ``True`` if the layer does not contain any feature.
 .. versionadded:: 3.4
 %End
 
+    virtual bool isSqlQuery() const;
+%Docstring
+Returns ``True`` if the layer is a query (SQL) layer.
+
+.. note::
+
+   this is simply a shortcut to check if the SqlQuery flag
+   is set.
+
+.. seealso:: :py:func:`vectorLayerTypeFlags`
+
+.. versionadded:: 3.24
+%End
+
+    virtual Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const;
+%Docstring
+Returns the vector layer type flags.
+
+.. seealso:: :py:func:`isSqlQuery`
+
+.. versionadded:: 3.24
+%End
+
     virtual QgsFeatureSource::FeatureAvailability hasFeatures() const;
 
 %Docstring
@@ -571,11 +594,11 @@ Returns the transaction this data provider is included in, if any.
 Gets the list of layer ids on which this layer depends. This in particular determines the order of layer loading.
 %End
 
-    virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const;
+    virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const;
 %Docstring
 Discover the available relations with the given layers.
 
-:param self: the layer using this data provider.
+:param target: the layer using this data provider.
 :param layers: the other layers.
 
 :return: the list of N-1 relations from this provider.

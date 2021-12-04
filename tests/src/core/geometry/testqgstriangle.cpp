@@ -43,8 +43,9 @@ class TestQgsTriangle: public QObject
     void conversion();
     void toCurveType();
     void cast();
-    void fromWkt();
-    void asWktfromWkt();
+    void toFromWkt();
+    void toFromWkb();
+    void exportImport();
     void vertexAt();
     void moveVertex();
     void deleteVertex();
@@ -484,7 +485,7 @@ void TestQgsTriangle::cast()
   QVERIFY( QgsPolygon().cast( &pCast2 ) );
 }
 
-void TestQgsTriangle::fromWkt()
+void TestQgsTriangle::toFromWkt()
 {
   QgsTriangle tr;
 
@@ -510,7 +511,7 @@ void TestQgsTriangle::fromWkt()
   QCOMPARE( trFromWkt.wkbType(), QgsWkbTypes::Triangle );
 }
 
-void TestQgsTriangle::asWktfromWkt()
+void TestQgsTriangle::toFromWkb()
 {
   // WKB
   QgsTriangle tResult, tWKB;
@@ -530,6 +531,19 @@ void TestQgsTriangle::asWktfromWkt()
   QCOMPARE( tWKB.wkbType(), QgsWkbTypes::Triangle );
   QCOMPARE( tWKB, tResult );
 
+  // as a polygon
+  tResult.clear();
+
+  wkb = tWKB.asWkb( QgsAbstractGeometry::FlagExportTrianglesAsPolygons );
+  QCOMPARE( wkb.size(), tWKB.wkbSize() );
+
+  QgsPolygon pResult;
+
+  QgsConstWkbPtr wkbPtr2( wkb );
+  pResult.fromWkb( wkbPtr2 );
+  QCOMPARE( pResult.asWkt(), "Polygon ((0 0, 0 10, 10 10, 0 0))" );
+  QCOMPARE( pResult.wkbType(), QgsWkbTypes::Polygon );
+
   // WKB Z
   tWKB = QgsTriangle( QgsPoint( 0, 0, 1 ), QgsPoint( 0, 10, 2 ),
                       QgsPoint( 10, 10, 3 ) );
@@ -543,6 +557,17 @@ void TestQgsTriangle::asWktfromWkt()
   QCOMPARE( tWKB.asWkt(), "TriangleZ ((0 0 1, 0 10 2, 10 10 3, 0 0 1))" );
   QCOMPARE( tWKB.wkbType(), QgsWkbTypes::TriangleZ );
   QCOMPARE( tWKB, tResult );
+
+  // as a polygon
+  tResult.clear();
+
+  wkb = tWKB.asWkb( QgsAbstractGeometry::FlagExportTrianglesAsPolygons );
+  QCOMPARE( wkb.size(), tWKB.wkbSize() );
+
+  QgsConstWkbPtr wkbPtrZ2( wkb );
+  pResult.fromWkb( wkbPtrZ2 );
+  QCOMPARE( pResult.asWkt(), "PolygonZ ((0 0 1, 0 10 2, 10 10 3, 0 0 1))" );
+  QCOMPARE( pResult.wkbType(), QgsWkbTypes::PolygonZ );
 
   // WKB M
   // tWKB=QgsTriangle (QgsPoint(0,0, 5), QgsPoint(0, 10, 6), QgsPoint(10, 10, 7)); will produce a TriangleZ
@@ -563,6 +588,17 @@ void TestQgsTriangle::asWktfromWkt()
   QCOMPARE( tWKB.wkbType(), QgsWkbTypes::TriangleM );
   QCOMPARE( tWKB, tResult );
 
+  // as a polygon
+  tResult.clear();
+
+  wkb = tWKB.asWkb( QgsAbstractGeometry::FlagExportTrianglesAsPolygons );
+  QCOMPARE( wkb.size(), tWKB.wkbSize() );
+
+  QgsConstWkbPtr wkbPtrM2( wkb );
+  pResult.fromWkb( wkbPtrM2 );
+  QCOMPARE( pResult.asWkt(), "PolygonM ((0 0 5, 0 10 6, 10 10 7, 0 0 5))" );
+  QCOMPARE( pResult.wkbType(), QgsWkbTypes::PolygonM );
+
   // WKB ZM
   tWKB = QgsTriangle( QgsPoint( 0, 0, 1, 5 ), QgsPoint( 0, 10, 2, 6 ),
                       QgsPoint( 10, 10, 3, 7 ) );
@@ -577,6 +613,17 @@ void TestQgsTriangle::asWktfromWkt()
   QCOMPARE( tWKB.wkbType(), QgsWkbTypes::TriangleZM );
   QCOMPARE( tWKB, tResult );
 
+  // as a polygon
+  tResult.clear();
+
+  wkb = tWKB.asWkb( QgsAbstractGeometry::FlagExportTrianglesAsPolygons );
+  QCOMPARE( wkb.size(), tWKB.wkbSize() );
+
+  QgsConstWkbPtr wkbPtrZM2( wkb );
+  pResult.fromWkb( wkbPtrZM2 );
+  QCOMPARE( pResult.asWkt(), "PolygonZM ((0 0 1 5, 0 10 2 6, 10 10 3 7, 0 0 1 5))" );
+  QCOMPARE( pResult.wkbType(), QgsWkbTypes::PolygonZM );
+
   //bad WKB - check for no crash
   QgsTriangle tr;
   QgsConstWkbPtr nullPtr( nullptr, 0 );
@@ -589,6 +636,24 @@ void TestQgsTriangle::asWktfromWkt()
   QVERIFY( !tr.fromWkb( wkbPointPtr ) );
   QCOMPARE( tr.wkbType(), QgsWkbTypes::Triangle );
 
+  // AsWkb should work for polygons
+  // even with FlagExportTrianglesAsPolygons
+  QgsPolygon poly;
+  QgsLineString ring;
+  ring.setPoints( QgsPointSequence() << QgsPoint( 0, 0 )
+                  << QgsPoint( 0, 10 ) << QgsPoint( 10, 10 )
+                  << QgsPoint( 10, 0 ) << QgsPoint( 0, 0 ) );
+  poly.setExteriorRing( ring.clone() );
+
+  wkb = poly.asWkb( QgsAbstractGeometry::FlagExportTrianglesAsPolygons );
+  QCOMPARE( wkb.size(), poly.wkbSize() );
+
+  QgsConstWkbPtr wkbPtrPl( wkb );
+  pResult.fromWkb( wkbPtrPl );
+  QCOMPARE( pResult.asWkt(), "Polygon ((0 0, 0 10, 10 10, 10 0, 0 0))" );
+  QCOMPARE( pResult.wkbType(), QgsWkbTypes::Polygon );
+
+
   // invalid multi ring
   // ba is equivalent to "Triangle((0 0, 0 5, 5 5, 0 0), (2 2, 2 4, 3 3, 2 2))"
   QByteArray ba = QByteArray::fromHex( "01110000000200000004000000000000000000000000000000000000000000000000000000000000000000144000000000000014400000000000001440000000000000000000000000000000000400000000000000000000400000000000000040000000000000004000000000000010400000000000000840000000000000084000000000000000400000000000000040" );
@@ -597,6 +662,11 @@ void TestQgsTriangle::asWktfromWkt()
   QVERIFY( !tInvalidWkb.fromWkb( wkbMultiRing ) );
   QCOMPARE( tInvalidWkb, QgsTriangle() );
 
+
+}
+
+void TestQgsTriangle::exportImport()
+{
   //asGML2
   QgsTriangle exportTriangle( QgsPoint( 1, 2 ),
                               QgsPoint( 3, 4 ),

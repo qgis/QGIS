@@ -97,6 +97,7 @@
 %Include auto_generated/qgshighlight.sip
 %Include auto_generated/qgshighlightablelineedit.sip
 %Include auto_generated/qgshistogramwidget.sip
+%Include auto_generated/qgshttpheaderwidget.sip
 %Include auto_generated/qgsidentifymenu.sip
 %Include auto_generated/qgskeyvaluewidget.sip
 %Include auto_generated/qgslegendfilterbutton.sip
@@ -378,6 +379,7 @@
 %Include auto_generated/processing/models/qgsmodelgraphicitem.sip
 %Include auto_generated/processing/models/qgsmodelgraphicsscene.sip
 %Include auto_generated/processing/models/qgsmodelgraphicsview.sip
+%Include auto_generated/providers/qgsabstractdbsourceselect.sip
 %Include auto_generated/raster/qgscolorrampshaderwidget.sip
 %Include auto_generated/raster/qgshillshaderendererwidget.sip
 %Include auto_generated/raster/qgsmultibandcolorrendererwidget.sip

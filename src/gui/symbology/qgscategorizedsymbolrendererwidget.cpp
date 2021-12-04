@@ -22,7 +22,7 @@
 #include "qgsdatadefinedsizelegendwidget.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
-#include "qgscolorramp.h"
+#include "qgscolorrampimpl.h"
 #include "qgscolorrampbutton.h"
 #include "qgsstyle.h"
 #include "qgslogger.h"
@@ -220,7 +220,7 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
 
     case Qt::TextAlignmentRole:
     {
-      return ( index.column() == 0 ) ? Qt::AlignHCenter : Qt::AlignLeft;
+      return ( index.column() == 0 ) ? static_cast<Qt::Alignment::Int>( Qt::AlignHCenter ) : static_cast<Qt::Alignment::Int>( Qt::AlignLeft );
     }
 
     case Qt::EditRole:

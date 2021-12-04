@@ -23,6 +23,7 @@
 #include "qgsmessagelog.h"
 #include "qgsrasteriterator.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgscolorrampimpl.h"
 
 #include <QColor>
 #include <QDomDocument>

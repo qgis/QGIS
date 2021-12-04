@@ -1781,7 +1781,6 @@ namespace QgsWms
 
     // external layers
     QStringList layers;
-    QList<QgsWmsParametersExternalLayer> eParams;
 
     for ( const auto &layer : std::as_const( allLayers ) )
     {

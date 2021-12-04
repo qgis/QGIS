@@ -14,10 +14,11 @@ import os
 
 import qgis  # NOQA
 from PyQt5.QtSvg import QSvgGenerator
-from qgis.PyQt.QtCore import (Qt, QSizeF, QPointF, QRectF, QDir, QSize)
+from qgis.PyQt.QtCore import (Qt, QT_VERSION_STR, QSizeF, QPointF, QRectF, QDir, QSize)
 from qgis.PyQt.QtGui import (QColor, QPainter, QFont, QImage, QBrush, QPen)
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.core import (QgsTextBufferSettings,
+from qgis.core import (Qgis,
+                       QgsTextBufferSettings,
                        QgsTextMaskSettings,
                        QgsTextBackgroundSettings,
                        QgsTextShadowSettings,
@@ -159,6 +160,10 @@ class PyQgsTextRenderer(unittest.TestCase):
 
         t = QgsTextFormat()
         t.setFamilies(['Arial', 'Comic Sans'])
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
+        t.setStretchFactor(110)
         self.assertTrue(t.isValid())
 
         t = QgsTextFormat()
@@ -706,6 +711,9 @@ class PyQgsTextRenderer(unittest.TestCase):
         s.setPreviewBackgroundColor(QColor(100, 150, 200))
         s.setOrientation(QgsTextFormat.VerticalOrientation)
         s.setAllowHtmlFormatting(True)
+
+        s.setStretchFactor(110)
+
         s.dataDefinedProperties().setProperty(QgsPalLayerSettings.Bold, QgsProperty.fromExpression('1>2'))
         return s
 
@@ -807,6 +815,10 @@ class PyQgsTextRenderer(unittest.TestCase):
         s.setFamilies(['Times New Roman'])
         self.assertNotEqual(s, s2)
 
+        s = self.createFormatSettings()
+        s.setStretchFactor(120)
+        self.assertNotEqual(s, s2)
+
     def checkTextFormat(self, s):
         """ test QgsTextFormat """
         self.assertTrue(s.buffer().enabled())
@@ -833,6 +845,10 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertEqual(s.capitalization(), QgsStringUtils.TitleCase)
         self.assertTrue(s.allowHtmlFormatting())
         self.assertEqual(s.dataDefinedProperties().property(QgsPalLayerSettings.Bold).expressionString(), '1>2')
+
+        if int(QT_VERSION_STR.split('.')[0]) > 6 or (
+                int(QT_VERSION_STR.split('.')[0]) == 6 and int(QT_VERSION_STR.split('.')[1]) >= 3):
+            self.assertEqual(s.stretchFactor(), 110)
 
     def testFormatGettersSetters(self):
         s = self.createFormatSettings()
@@ -1294,6 +1310,13 @@ class PyQgsTextRenderer(unittest.TestCase):
         f.updateDataDefinedProperties(context)
         self.assertEqual(f.blendMode(), QPainter.CompositionMode_ColorBurn)
 
+        if int(QT_VERSION_STR.split('.')[0]) > 6 or (
+                int(QT_VERSION_STR.split('.')[0]) == 6 and int(QT_VERSION_STR.split('.')[1]) >= 3):
+            # stretch
+            f.dataDefinedProperties().setProperty(QgsPalLayerSettings.FontStretchFactor, QgsProperty.fromExpression("135"))
+            f.updateDataDefinedProperties(context)
+            self.assertEqual(f.stretchFactor(), 135)
+
     def testFontFoundFromLayer(self):
         layer = createEmptyLayer()
         layer.setCustomProperty('labeling/fontFamily', 'asdasd')
@@ -1366,6 +1389,12 @@ class PyQgsTextRenderer(unittest.TestCase):
         qfont = s.toQFont()
         self.assertAlmostEqual(qfont.pointSizeF(), 360.0, 2)
 
+        if int(QT_VERSION_STR.split('.')[0]) > 6 or (
+                int(QT_VERSION_STR.split('.')[0]) == 6 and int(QT_VERSION_STR.split('.')[1]) >= 3):
+            s.setStretchFactor(115)
+            qfont = s.toQFont()
+            self.assertEqual(qfont.stretch(), 115)
+
     def testFontMetrics(self):
         """
         Test calculating font metrics from scaled text formats
@@ -1408,9 +1437,11 @@ class PyQgsTextRenderer(unittest.TestCase):
     def checkRender(self, format, name, part=None, angle=0, alignment=QgsTextRenderer.AlignLeft,
                     text=['test'],
                     rect=QRectF(100, 100, 50, 250),
-                    vAlignment=QgsTextRenderer.AlignTop):
+                    vAlignment=QgsTextRenderer.AlignTop,
+                    flags=Qgis.TextRendererFlags(),
+                    image_size=400):
 
-        image = QImage(400, 400, QImage.Format_RGB32)
+        image = QImage(image_size, image_size, QImage.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()
@@ -1444,7 +1475,7 @@ class PyQgsTextRenderer(unittest.TestCase):
                                      alignment,
                                      text,
                                      context,
-                                     format, vAlignment=vAlignment)
+                                     format, vAlignment=vAlignment, flags=flags)
 
         painter.setFont(format.scaledFont(context))
         painter.setPen(QPen(QColor(255, 0, 255, 200)))
@@ -1462,8 +1493,9 @@ class PyQgsTextRenderer(unittest.TestCase):
 
     def checkRenderPoint(self, format, name, part=None, angle=0, alignment=QgsTextRenderer.AlignLeft,
                          text=['test'],
-                         point=QPointF(100, 200)):
-        image = QImage(400, 400, QImage.Format_RGB32)
+                         point=QPointF(100, 200),
+                         image_size=400):
+        image = QImage(image_size, image_size, QImage.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()
@@ -1505,6 +1537,50 @@ class PyQgsTextRenderer(unittest.TestCase):
 
         painter.end()
         return self.imageCheck(name, name, image)
+
+    def testDrawMassiveFont(self):
+        """
+        Test that we aren't bitten by https://bugreports.qt.io/browse/QTBUG-98778
+
+        This test should pass when there's a correct WORD space between the 'a' and 't' characters, or fail when
+        the spacing between these characters is nill or close to a letter spacing
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(1100)
+        assert self.checkRender(format, 'massive_font', rect=QRectF(-800, -600, 1000, 1000), text=['a t'], image_size=800)
+
+    @unittest.skipIf(int(QT_VERSION_STR.split('.')[0]) < 6 or (int(QT_VERSION_STR.split('.')[0]) == 6 and int(QT_VERSION_STR.split('.')[1]) < 3), 'Too old Qt')
+    def testDrawSmallCaps(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setCapitalization(Qgis.Capitalization.SmallCaps)
+        format.setSize(30)
+        assert self.checkRender(format, 'mixed_small_caps', text=['Small Caps'])
+
+    @unittest.skipIf(int(QT_VERSION_STR.split('.')[0]) < 6 or (int(QT_VERSION_STR.split('.')[0]) == 6 and int(QT_VERSION_STR.split('.')[1]) < 3), 'Too old Qt')
+    def testDrawAllSmallCaps(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setCapitalization(Qgis.Capitalization.AllSmallCaps)
+        assert self.checkRender(format, 'all_small_caps', text=['Small Caps'])
+
+    @unittest.skipIf(int(QT_VERSION_STR.split('.')[0]) < 6 or (int(QT_VERSION_STR.split('.')[0]) == 6 and int(QT_VERSION_STR.split('.')[1]) < 3), 'Too old Qt')
+    def testDrawStretch(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setStretchFactor(150)
+        assert self.checkRender(format, 'stretch_expand')
+
+    @unittest.skipIf(int(QT_VERSION_STR.split('.')[0]) < 6 or (int(QT_VERSION_STR.split('.')[0]) == 6 and int(QT_VERSION_STR.split('.')[1]) < 3), 'Too old Qt')
+    def testDrawStretchCondense(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setStretchFactor(50)
+        assert self.checkRender(format, 'stretch_condense')
 
     def testDrawBackgroundDisabled(self):
         format = QgsTextFormat()
@@ -2223,6 +2299,16 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.buffer().setSizeUnit(QgsUnitTypes.RenderPixels)
         assert self.checkRender(format, 'text_buffer_pixels', QgsTextRenderer.Buffer, text=['test'])
 
+    def testDrawBufferSizePercentage(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(10)
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderPercentage)
+        assert self.checkRender(format, 'text_buffer_percentage', QgsTextRenderer.Buffer, text=['test'])
+
     def testDrawBufferColor(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
@@ -2324,6 +2410,20 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.shadow().setOffsetUnit(QgsUnitTypes.RenderPixels)
         assert self.checkRender(format, 'shadow_offset_pixels', QgsTextRenderer.Text, text=['test'])
 
+    def testDrawShadowOffsetPercentage(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(255, 255, 255))
+        format.shadow().setEnabled(True)
+        format.shadow().setShadowPlacement(QgsTextShadowSettings.ShadowText)
+        format.shadow().setOpacity(1.0)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setOffsetDistance(10)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderPercentage)
+        assert self.checkRender(format, 'shadow_offset_percentage', QgsTextRenderer.Text, text=['test'])
+
     def testDrawShadowBlurRadiusMM(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
@@ -2369,6 +2469,21 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.shadow().setBlurRadiusUnit(QgsUnitTypes.RenderPixels)
         assert self.checkRender(format, 'shadow_radius_pixels', QgsTextRenderer.Text, text=['test'])
 
+    def testDrawShadowBlurRadiusPercentage(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(255, 255, 255))
+        format.shadow().setEnabled(True)
+        format.shadow().setShadowPlacement(QgsTextShadowSettings.ShadowText)
+        format.shadow().setOpacity(1.0)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderMillimeters)
+        format.shadow().setBlurRadius(5)
+        format.shadow().setBlurRadiusUnit(QgsUnitTypes.RenderPercentage)
+        assert self.checkRender(format, 'shadow_radius_percentage', QgsTextRenderer.Text, text=['test'])
+
     def testDrawShadowOpacity(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
@@ -2396,6 +2511,21 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.shadow().setOffsetDistance(5)
         format.shadow().setOffsetUnit(QgsUnitTypes.RenderMillimeters)
         assert self.checkRender(format, 'shadow_color', QgsTextRenderer.Text, text=['test'])
+
+    def testDrawShadowWithJustifyAlign(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.shadow().setEnabled(True)
+        format.shadow().setShadowPlacement(QgsTextShadowSettings.ShadowText)
+        format.shadow().setOpacity(0.5)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'text_justify_aligned_with_shadow',
+                                text=['a t est', 'off', 'justification', 'align'],
+                                alignment=QgsTextRenderer.AlignJustify, rect=QRectF(100, 100, 200, 100))
 
     def testDrawShadowScale(self):
         format = QgsTextFormat()
@@ -2679,6 +2809,84 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         assert self.checkRender(format, 'text_rect_justify_aligned', text=['test'],
                                 alignment=QgsTextRenderer.AlignJustify, rect=QRectF(100, 100, 200, 100))
+
+    def testDrawTextRectMultiparagraphJustifyAlign(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(4)
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'text_rect_multiparagraph_justify_aligned',
+                                text=['a t est', 'of justify', '', 'with two', 'pgraphs'],
+                                alignment=QgsTextRenderer.AlignJustify, rect=QRectF(50, 100, 250, 100))
+
+    def testDrawTextRectWordWrapSingleLine(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
+
+        self.assertTrue(QgsTextRenderer.textRequiresWrapping(context, 'a test of word wrap', 100, format))
+        self.assertTrue(QgsTextRenderer.textRequiresWrapping(context, 'a test of word wrap', 200, format))
+        self.assertTrue(QgsTextRenderer.textRequiresWrapping(context, 'a test of word wrap', 400, format))
+        self.assertFalse(QgsTextRenderer.textRequiresWrapping(context, 'a test of word wrap', 500, format))
+
+        self.assertEqual(QgsTextRenderer.wrappedText(context, 'a test of word wrap', 50, format), ['a', 'test', 'of', 'word', 'wrap'])
+        self.assertEqual(QgsTextRenderer.wrappedText(context, 'a test of word wrap', 200, format), ['a test of', 'word', 'wrap'])
+        self.assertEqual(QgsTextRenderer.wrappedText(context, 'a test of word wrap', 400, format), ['a test of word', 'wrap'])
+        self.assertEqual(QgsTextRenderer.wrappedText(context, 'a test of word wrap', 500, format),
+                         ['a test of word wrap'])
+
+        # text height should account for wrapping
+        self.assertGreater(QgsTextRenderer.textHeight(
+            context, format, ['a test of word wrap'],
+            mode=QgsTextRenderer.Rect, flags=Qgis.TextRendererFlag.WrapLines, maxLineWidth=200),
+            QgsTextRenderer.textHeight(context, format, ['a test of word wrap'], mode=QgsTextRenderer.Rect) * 2.75)
+
+        assert self.checkRender(format, 'text_rect_word_wrap_single_line', text=['a test of word wrap'],
+                                alignment=QgsTextRenderer.AlignLeft, rect=QRectF(100, 100, 200, 100),
+                                flags=Qgis.TextRendererFlag.WrapLines)
+
+    def testDrawTextRectWordWrapMultiLine(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
+
+        # text height should account for wrapping
+        self.assertGreater(QgsTextRenderer.textHeight(
+            context, format, ['a test of word wrap', 'with bit more'],
+            mode=QgsTextRenderer.Rect, flags=Qgis.TextRendererFlag.WrapLines, maxLineWidth=200),
+            QgsTextRenderer.textHeight(context, format, ['a test of word wrap with with bit more'], mode=QgsTextRenderer.Rect) * 4.75)
+
+        assert self.checkRender(format, 'text_rect_word_wrap_multi_line', text=['a test of word wrap', 'with bit more'],
+                                alignment=QgsTextRenderer.AlignLeft, rect=QRectF(100, 100, 200, 100),
+                                flags=Qgis.TextRendererFlag.WrapLines)
+
+    def testDrawTextRectWordWrapWithJustify(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        assert self.checkRender(format, 'text_rect_word_wrap_justify', text=['a test of word wrap'],
+                                alignment=QgsTextRenderer.AlignJustify, rect=QRectF(100, 100, 200, 100),
+                                flags=Qgis.TextRendererFlag.WrapLines)
 
     def testDrawTextRectMultilineBottomAlign(self):
         format = QgsTextFormat()

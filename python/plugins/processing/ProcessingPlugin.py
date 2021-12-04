@@ -29,6 +29,7 @@ from functools import partial
 from qgis.core import (QgsApplication,
                        QgsProcessingUtils,
                        QgsProcessingModelAlgorithm,
+                       QgsProcessingAlgorithm,
                        QgsDataItemProvider,
                        QgsDataProvider,
                        QgsDataItem,
@@ -36,21 +37,27 @@ from qgis.core import (QgsApplication,
                        QgsMimeDataUtils)
 from qgis.gui import (QgsOptionsWidgetFactory,
                       QgsCustomDropHandler)
-from qgis.PyQt.QtCore import Qt, QCoreApplication, QDir, QFileInfo
-from qgis.PyQt.QtWidgets import QMenu, QAction
+from qgis.PyQt.QtCore import QObject, Qt, QItemSelectionModel, QCoreApplication, QDir, QFileInfo, pyqtSlot
+from qgis.PyQt.QtWidgets import QWidget, QMenu, QAction
 from qgis.PyQt.QtGui import QIcon, QKeySequence
 from qgis.utils import iface
 
 from processing.core.Processing import Processing
-from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.ProcessingToolbox import ProcessingToolbox
 from processing.gui.HistoryDialog import HistoryDialog
 from processing.gui.ConfigDialog import ConfigOptionsPage
 from processing.gui.ResultsDock import ResultsDock
+from processing.gui.MessageDialog import MessageDialog
+from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.AlgorithmLocatorFilter import (AlgorithmLocatorFilter,
                                                    InPlaceAlgorithmLocatorFilter)
+from processing.gui.Postprocessing import handleAlgorithmResults
+from processing.gui.AlgorithmExecutor import execute, execute_in_place
+from processing.gui.AlgorithmDialog import AlgorithmDialog
+from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.modeler.ModelerDialog import ModelerDialog
 from processing.tools.system import tempHelpFolder
+from processing.tools import dataobjects
 from processing.gui.menus import removeMenus, initializeMenus, createMenus, createButtons, removeButtons
 from processing.core.ProcessingResults import resultsList
 
@@ -158,9 +165,10 @@ class ProcessingDataItemProvider(QgsDataItemProvider):
         return None
 
 
-class ProcessingPlugin:
+class ProcessingPlugin(QObject):
 
     def __init__(self, iface):
+        super().__init__()
         self.iface = iface
         self.options_factory = None
         self.drop_handler = None
@@ -194,6 +202,8 @@ class ProcessingPlugin:
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.toolbox)
         self.toolbox.hide()
         self.toolbox.visibilityChanged.connect(self.toolboxVisibilityChanged)
+
+        self.toolbox.executeWithGui.connect(self.executeAlgorithm)
 
         self.resultsDock = ResultsDock()
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.resultsDock)
@@ -282,6 +292,111 @@ class ProcessingPlugin:
         self.iface.actionToggleEditing().triggered.connect(partial(self.sync_in_place_button_state, None))
         self.sync_in_place_button_state()
 
+        # Sync project models
+        self.projectModelsMenu = None
+        self.projectMenuAction = None
+        self.projectMenuSeparator = None
+
+        self.projectProvider = QgsApplication.instance().processingRegistry().providerById("project")
+        self.projectProvider.algorithmsLoaded.connect(self.updateProjectModelMenu)
+
+    def updateProjectModelMenu(self):
+        """Add projects models to menu"""
+
+        if self.projectMenuAction is None:
+            self.projectModelsMenu = QMenu(self.tr("Models"))
+            self.projectMenuAction = self.iface.projectMenu().insertMenu(self.iface.projectMenu().children()[-1], self.projectModelsMenu)
+            self.projectMenuAction.setParent(self.projectModelsMenu)
+            self.iface.projectMenu().insertSeparator(self.projectMenuAction)
+
+        self.projectModelsMenu.clear()
+
+        for model in self.projectProvider.algorithms():
+            modelSubMenu = self.projectModelsMenu.addMenu(model.name())
+            modelSubMenu.setParent(self.projectModelsMenu)
+            action = QAction(self.tr("Execute…"), modelSubMenu)
+            action.triggered.connect(partial(self.executeAlgorithm, model.id(), self.projectModelsMenu, self.toolbox.in_place_mode))
+            modelSubMenu.addAction(action)
+            if model.flags() & QgsProcessingAlgorithm.FlagSupportsBatch:
+                action = QAction(self.tr("Execute as Batch Process…"), modelSubMenu)
+                modelSubMenu.addAction(action)
+                action.triggered.connect(partial(self.executeAlgorithm, model.id(), self.projectModelsMenu, self.toolbox.in_place_mode, True))
+
+    @pyqtSlot(str, QWidget, bool, bool)
+    def executeAlgorithm(self, alg_id, parent, in_place=False, as_batch=False):
+        """Executes a project model with GUI interaction if needed.
+
+        :param alg_id: algorithm id
+        :type alg_id: string
+        :param parent: parent widget
+        :type parent: QWidget
+        :param in_place: in place flag, defaults to False
+        :type in_place: bool, optional
+        :param as_batch: execute as batch flag, defaults to False
+        :type as_batch: bool, optional
+        """
+
+        config = {}
+        if in_place:
+            config['IN_PLACE'] = True
+
+        alg = QgsApplication.instance().processingRegistry().createAlgorithmById(alg_id, config)
+
+        if alg is not None:
+
+            ok, message = alg.canExecute()
+            if not ok:
+                dlg = MessageDialog()
+                dlg.setTitle(self.tr('Error executing algorithm'))
+                dlg.setMessage(
+                    self.tr('<h3>This algorithm cannot '
+                            'be run :-( </h3>\n{0}').format(message))
+                dlg.exec_()
+                return
+
+            if as_batch:
+                dlg = BatchAlgorithmDialog(alg, iface.mainWindow())
+                dlg.setAttribute(Qt.WA_DeleteOnClose)
+                dlg.show()
+                dlg.exec_()
+            else:
+                in_place_input_parameter_name = 'INPUT'
+                if hasattr(alg, 'inputParameterName'):
+                    in_place_input_parameter_name = alg.inputParameterName()
+
+                if in_place and not [d for d in alg.parameterDefinitions() if d.name() not in (in_place_input_parameter_name, 'OUTPUT')]:
+                    parameters = {}
+                    feedback = MessageBarProgress(algname=alg.displayName())
+                    ok, results = execute_in_place(alg, parameters, feedback=feedback)
+                    if ok:
+                        iface.messageBar().pushSuccess('', self.tr('{algname} completed. %n feature(s) processed.', n=results['__count']).format(algname=alg.displayName()))
+                    feedback.close()
+                    # MessageBarProgress handles errors
+                    return
+
+                if alg.countVisibleParameters() > 0:
+                    dlg = alg.createCustomParametersWidget(parent)
+
+                    if not dlg:
+                        dlg = AlgorithmDialog(alg, in_place, iface.mainWindow())
+                    canvas = iface.mapCanvas()
+                    prevMapTool = canvas.mapTool()
+                    dlg.show()
+                    dlg.exec_()
+                    if canvas.mapTool() != prevMapTool:
+                        try:
+                            canvas.mapTool().reset()
+                        except Exception:
+                            pass
+                        canvas.setMapTool(prevMapTool)
+                else:
+                    feedback = MessageBarProgress(algname=alg.displayName())
+                    context = dataobjects.createContext(feedback)
+                    parameters = {}
+                    ret, results = execute(alg, parameters, context, feedback)
+                    handleAlgorithmResults(alg, context, feedback)
+                    feedback.close()
+
     def sync_in_place_button_state(self, layer=None):
         """Synchronise the button state with layer state"""
 
@@ -328,6 +443,14 @@ class ProcessingPlugin:
 
         removeButtons()
         removeMenus()
+
+        if self.projectMenuAction is not None:
+            self.iface.projectMenu().removeAction(self.projectMenuAction)
+            self.projectMenuAction = None
+        if self.projectMenuSeparator is not None:
+            self.iface.projectMenu().removeAction(self.projectMenuSeparator)
+            self.projectMenuSeparator = None
+
         Processing.deinitialize()
 
     def openToolbox(self, show):

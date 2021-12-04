@@ -21,6 +21,7 @@
 #include "qgsproperty.h"
 #include <QVariantMap>
 #include <memory>
+#include <QImage>
 
 class QgsVectorTileRenderer;
 class QgsVectorTileLabeling;
@@ -273,9 +274,10 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \param jsonLayer fill layer to parse
      * \param style generated QGIS vector tile style
      * \param context conversion context
+     * \param isBackgroundStyle set to TRUE if the layer should be parsed as background layer
      * \returns TRUE if the layer was successfully parsed.
      */
-    static bool parseFillLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style SIP_OUT, QgsMapBoxGlStyleConversionContext &context );
+    static bool parseFillLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style SIP_OUT, QgsMapBoxGlStyleConversionContext &context, bool isBackgroundStyle = false );
 
     /**
      * Parses a line layer.
@@ -399,6 +401,13 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \warning This is private API only, and may change in future QGIS versions
      */
     static QString parsePointStops( double base, const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1 );
+
+    /**
+     * Takes numerical arrays from stops.
+     *
+     * \warning This is private API only, and may change in future QGIS versions
+     */
+    static QString parseArrayStops( const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1 );
 
     /**
      * Parses a list of interpolation stops

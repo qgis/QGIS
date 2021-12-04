@@ -298,7 +298,7 @@ class QgsTextSettingsPrivate : public QSharedData
     QgsTextFormat::TextOrientation orientation = QgsTextFormat::HorizontalOrientation;
     QColor previewBackgroundColor = Qt::white;
     bool allowHtmlFormatting = false;
-    QgsStringUtils::Capitalization capitalization = QgsStringUtils::MixedCase;
+    Qgis::Capitalization capitalization = Qgis::Capitalization::MixedCase;
 
     //! Property collection for data defined settings
     QgsPropertyCollection mDataDefinedProperties;

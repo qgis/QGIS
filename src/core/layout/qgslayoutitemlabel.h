@@ -20,6 +20,7 @@
 #include "qgis_core.h"
 #include "qgslayoutitem.h"
 #include "qgswebpage.h"
+#include "qgstextformat.h"
 #include <QFont>
 #include <QUrl>
 
@@ -110,14 +111,16 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
     /**
      * Returns the label's current font.
      * \see setFont()
+     * \deprecated use textFormat() instead (since QGIS 3.24)
      */
-    QFont font() const;
+    Q_DECL_DEPRECATED QFont font() const SIP_DEPRECATED;
 
     /**
      * Sets the label's current \a font.
      * \see font()
+     * \deprecated use setTextFormat() instead (since QGIS 3.24)
      */
-    void setFont( const QFont &font );
+    Q_DECL_DEPRECATED void setFont( const QFont &font ) SIP_DEPRECATED;
 
     /**
      * Returns for the vertical alignment of the label.
@@ -195,14 +198,16 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
     /**
      * Sets the label font \a color.
      * \see fontColor()
+     * \deprecated Use setTextFormat() instead (since QGIS 3.24)
      */
-    void setFontColor( const QColor &color ) { mFontColor = color; }
+    Q_DECL_DEPRECATED void setFontColor( const QColor &color ) SIP_DEPRECATED { mFormat.setColor( color ); }
 
     /**
      * Returns the label font color.
      * \see setFontColor()
+     * \deprecated use textFormat() instead (since QGIS 3.24)
      */
-    QColor fontColor() const { return mFontColor; }
+    Q_DECL_DEPRECATED QColor fontColor() const SIP_DEPRECATED { return mFormat.color(); }
 
     // In case of negative margins, the bounding rect may be larger than the
     // label's frame
@@ -213,6 +218,21 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
 
     // Reimplemented to call prepareGeometryChange after changing stroke width
     void setFrameStrokeWidth( QgsLayoutMeasurement strokeWidth ) override;
+
+
+    /**
+     * Returns the text format used for drawing text in the label.
+     * \see setTextFormat()
+     * \since QGIS 3.24
+     */
+    QgsTextFormat textFormat() const;
+
+    /**
+     * Sets the text \a format used for drawing text in the label.
+     * \see textFormat()
+     * \since QGIS 3.24
+     */
+    void setTextFormat( const QgsTextFormat &format );
 
   public slots:
 
@@ -255,16 +275,12 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
     //! Called when the content is changed to handle HTML loading
     void contentChanged();
 
-    //! Font
-    QFont mFont;
+    QgsTextFormat mFormat;
 
     //! Horizontal margin between contents and frame (in mm)
     double mMarginX = 0.0;
     //! Vertical margin between contents and frame (in mm)
     double mMarginY = 0.0;
-
-    //! Font color
-    QColor mFontColor = QColor( 0, 0, 0 );
 
     //! Horizontal Alignment
     Qt::AlignmentFlag mHAlignment = Qt::AlignJustify;

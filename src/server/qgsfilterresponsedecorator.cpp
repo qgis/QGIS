@@ -19,7 +19,6 @@
 
 #include "qgsconfig.h"
 #include "qgsfilterresponsedecorator.h"
-#include "qgsserverexception.h"
 
 QgsFilterResponseDecorator::QgsFilterResponseDecorator( QgsServerFiltersMap filters, QgsServerResponse &response )
   : mFilters( filters )
@@ -33,32 +32,46 @@ void QgsFilterResponseDecorator::start()
   QgsServerFiltersMap::const_iterator filtersIterator;
   for ( filtersIterator = mFilters.constBegin(); filtersIterator != mFilters.constEnd(); ++filtersIterator )
   {
-    filtersIterator.value()->requestReady();
+    if ( ! filtersIterator.value()->onRequestReady() )
+    {
+      // stop propagation
+      return;
+    }
   }
 #endif
 }
 
 void QgsFilterResponseDecorator::finish()
 {
-
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   QgsServerFiltersMap::const_iterator filtersIterator;
   for ( filtersIterator = mFilters.constBegin(); filtersIterator != mFilters.constEnd(); ++filtersIterator )
   {
-    filtersIterator.value()->responseComplete();
+    if ( ! filtersIterator.value()->onResponseComplete() )
+    {
+      // stop propagation, 'finish' must be called on the wrapped
+      // response
+      break;
+    }
   }
 #endif
-  // Will call 'flush'
+  // Will call internal 'flush'
   mResponse.finish();
 }
+
 
 void QgsFilterResponseDecorator::flush()
 {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   QgsServerFiltersMap::const_iterator filtersIterator;
+
   for ( filtersIterator = mFilters.constBegin(); filtersIterator != mFilters.constEnd(); ++filtersIterator )
   {
-    filtersIterator.value()->sendResponse();
+    if ( ! filtersIterator.value()->onSendResponse() )
+    {
+      // Stop propagation
+      return;
+    }
   }
 #endif
   mResponse.flush();

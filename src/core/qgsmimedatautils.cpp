@@ -105,6 +105,7 @@ QgsMimeDataUtils::Uri::Uri( QgsMapLayer *layer )
     }
 
     case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::GroupLayer:
     case QgsMapLayerType::AnnotationLayer:
     {
       // plugin layers do not have a standard way of storing their URI...

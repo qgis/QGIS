@@ -301,14 +301,21 @@ void QgsExternalResourceWidget::clearContent()
   if ( mDocumentViewerContent == Image )
   {
     mPixmapLabel->clear();
-    updateDocumentViewer();
   }
+
+  updateDocumentViewer();
 }
 
 void QgsExternalResourceWidget::loadDocument( const QString &path )
 {
   if ( path.isEmpty() || path == QgsApplication::nullRepresentation() )
   {
+    if ( mFileWidget->externalStorage() && mContent )
+    {
+      mContent->cancel();
+      mContent.clear();
+    }
+
     clearContent();
   }
   else if ( mDocumentViewerContent != NoContent )

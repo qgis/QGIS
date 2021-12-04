@@ -29,20 +29,18 @@
 void QgsJoinByLocationAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
-                QObject::tr( "Base Layer" ), QList< int > () << QgsProcessing::QgsProcessing::TypeVectorAnyGeometry ) );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "JOIN" ),
-                QObject::tr( "Join Layer" ), QList< int > () << QgsProcessing::QgsProcessing::TypeVectorAnyGeometry ) );
+                QObject::tr( "Join to features in" ), QList< int > () << QgsProcessing::QgsProcessing::TypeVectorAnyGeometry ) );
 
   QStringList predicates;
-  predicates << QObject::tr( "intersects" )
-             << QObject::tr( "contains" )
-             << QObject::tr( "equals" )
-             << QObject::tr( "touches" )
-             << QObject::tr( "overlaps" )
-             << QObject::tr( "within" )
-             << QObject::tr( "crosses" );
+  predicates << QObject::tr( "intersect" )
+             << QObject::tr( "contain" )
+             << QObject::tr( "equal" )
+             << QObject::tr( "touch" )
+             << QObject::tr( "overlap" )
+             << QObject::tr( "are within" )
+             << QObject::tr( "cross" );
 
-  std::unique_ptr< QgsProcessingParameterEnum > predicateParam = std::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "PREDICATE" ), QObject::tr( "Geometric predicate" ), predicates, true, 0 );
+  std::unique_ptr< QgsProcessingParameterEnum > predicateParam = std::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "PREDICATE" ), QObject::tr( "Features they (geometric predicate)" ), predicates, true, 0 );
   QVariantMap predicateMetadata;
   QVariantMap widgetMetadata;
   widgetMetadata.insert( QStringLiteral( "useCheckBoxes" ), true );
@@ -50,6 +48,8 @@ void QgsJoinByLocationAlgorithm::initAlgorithm( const QVariantMap & )
   predicateMetadata.insert( QStringLiteral( "widget_wrapper" ), widgetMetadata );
   predicateParam->setMetadata( predicateMetadata );
   addParameter( predicateParam.release() );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "JOIN" ),
+                QObject::tr( "By comparing to" ), QList< int > () << QgsProcessing::QgsProcessing::TypeVectorAnyGeometry ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "JOIN_FIELDS" ),
                 QObject::tr( "Fields to add (leave empty to use all fields)" ),
                 QVariant(), QStringLiteral( "JOIN" ), QgsProcessingParameterField::Any, true, true ) );
@@ -427,7 +427,6 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromJoinSource( QgsFeature &joinF
   std::unique_ptr< QgsGeometryEngine > engine;
   QgsFeatureRequest req = QgsFeatureRequest().setFilterRect( featGeom.boundingBox() );
   QgsFeatureIterator it = mBaseSource->getFeatures( req );
-  QList<QgsFeature> filtered;
   QgsFeature baseFeature;
   bool ok = false;
   QgsAttributes joinAttributes;
@@ -516,7 +515,6 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromInputSource( QgsFeature &base
   QgsFeatureRequest req = QgsFeatureRequest().setDestinationCrs( mBaseSource->sourceCrs(), context.transformContext() ).setFilterRect( featGeom.boundingBox() ).setSubsetOfAttributes( mJoinedFieldIndices );
 
   QgsFeatureIterator it = mJoinSource->getFeatures( req );
-  QList<QgsFeature> filtered;
   QgsFeature joinFeature;
   bool ok = false;
 

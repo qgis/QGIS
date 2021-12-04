@@ -30,7 +30,9 @@
 #include "qgsmultibandcolorrenderer.h"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgsapplication.h"
-
+#include "qgscolorrampimpl.h"
+#include "qgsproject.h"
+#include "qgsprojectutils.h"
 
 #include "qgsmessagelog.h"
 
@@ -226,6 +228,7 @@ void QgsRendererRasterPropertiesWidget::syncToLayer( QgsRasterLayer *layer )
   }
 
   //blend mode
+  mBlendModeComboBox->setShowClippingModes( QgsProjectUtils::layerIsContainedInGroupLayer( QgsProject::instance(), mRasterLayer ) );
   mBlendModeComboBox->setBlendMode( mRasterLayer->blendMode() );
 
   //set combo boxes to current resampling types

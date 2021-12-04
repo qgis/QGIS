@@ -212,6 +212,7 @@ set(QGIS_CORE_SRCS
   network/qgsnetworkreplyparser.cpp
   network/qgsnewsfeedmodel.cpp
   network/qgsnewsfeedparser.cpp
+  network/qgshttpheaders.cpp
 
   processing/qgsprocessing.cpp
   processing/qgsprocessingalgorithm.cpp
@@ -322,6 +323,7 @@ set(QGIS_CORE_SRCS
   qgscadutils.cpp
   qgsclipper.cpp
   qgscolorramp.cpp
+  qgscolorrampimpl.cpp
   qgscolorscheme.cpp
   qgscolorschemeregistry.cpp
   qgscommandlineutils.cpp
@@ -372,6 +374,8 @@ set(QGIS_CORE_SRCS
   qgsgeometryoptions.cpp
   qgsgml.cpp
   qgsgmlschema.cpp
+  qgsgrouplayer.cpp
+  qgsgrouplayerrenderer.cpp
   qgshistogram.cpp
   qgshstoreutils.cpp
   qgshtmlutils.cpp
@@ -947,6 +951,7 @@ set(QGIS_CORE_HDRS
   qgsclipper.h
   qgscommandlineutils.h
   qgscolorramp.h
+  qgscolorrampimpl.h
   qgscolorscheme.h
   qgscolorschemeregistry.h
   qgsconditionalstyle.h
@@ -1006,6 +1011,8 @@ set(QGIS_CORE_HDRS
   qgsgeometryvalidator.h
   qgsgml.h
   qgsgmlschema.h
+  qgsgrouplayer.h
+  qgsgrouplayerrenderer.h
   qgshistogram.h
   qgshstoreutils.h
   qgshtmlutils.h
@@ -1510,6 +1517,7 @@ set(QGIS_CORE_HDRS
   network/qgsnetworkreplyparser.h
   network/qgsnewsfeedmodel.h
   network/qgsnewsfeedparser.h
+  network/qgshttpheaders.h
 
   numericformats/qgsbasicnumericformat.h
   numericformats/qgsbearingnumericformat.h
@@ -1563,6 +1571,7 @@ set(QGIS_CORE_HDRS
   project/qgsprojectversion.h
   project/qgsprojectviewsettings.h
 
+  providers/qgsabstractdbtablemodel.h
   providers/qgsabstractdatabaseproviderconnection.h
   providers/qgsabstractproviderconnection.h
   providers/qgsdataprovider.h

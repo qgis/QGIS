@@ -110,7 +110,6 @@ void TestQgsAnnotationItemRegistry::metadata()
   QCOMPARE( metadata.visibleName(), QString( "display name" ) );
 
   //test creating item from metadata
-  const QVariantMap map;
   const std::unique_ptr< QgsAnnotationItem > item( metadata.createItem() );
   QVERIFY( item );
   TestItem *dummyItem = dynamic_cast<TestItem *>( item.get() );

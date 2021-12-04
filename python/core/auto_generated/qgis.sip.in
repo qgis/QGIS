@@ -28,6 +28,7 @@ enum class QgsMapLayerType
   VectorTileLayer,
   AnnotationLayer,
   PointCloudLayer,
+  GroupLayer,
 };
 
 
@@ -102,6 +103,13 @@ The development version
       ARGB32,
       ARGB32_Premultiplied
     };
+
+    enum class VectorLayerTypeFlag
+    {
+      SqlQuery
+    };
+    typedef QFlags<Qgis::VectorLayerTypeFlag> VectorLayerTypeFlags;
+
 
     enum class PythonMacroMode
       {
@@ -568,6 +576,7 @@ The development version
       RenderBlocking,
       LosslessImageRendering,
       Render3DMap,
+      HighQualityImageTransforms,
     };
     typedef QFlags<Qgis::MapSettingsFlag> MapSettingsFlags;
 
@@ -591,6 +600,7 @@ The development version
       Render3DMap,
       ApplyClipAfterReprojection,
       RenderingSubSymbol,
+      HighQualityImageTransforms,
     };
     typedef QFlags<Qgis::RenderContextFlag> RenderContextFlags;
 
@@ -658,7 +668,10 @@ The development version
       CentralPoint,
       CurvePoint,
       SegmentCenter,
+      InnerVertices,
     };
+    typedef QFlags<Qgis::MarkerLinePlacement> MarkerLinePlacements;
+
 
     enum class GradientColorSource
       {
@@ -721,6 +734,33 @@ The development version
       ScaleBothDashAndGap,
       ScaleDashOnly,
       ScaleGapOnly,
+    };
+
+
+
+    enum class Capitalization
+      {
+      MixedCase,
+      AllUppercase,
+      AllLowercase,
+      ForceFirstLetterToCapital,
+      SmallCaps,
+      TitleCase,
+      UpperCamelCase,
+      AllSmallCaps,
+    };
+
+    enum class TextRendererFlag
+    {
+      WrapLines,
+    };
+    typedef QFlags<Qgis::TextRendererFlag> TextRendererFlags;
+
+
+    enum class AngularDirection
+      {
+      Clockwise,
+      CounterClockwise,
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -819,6 +859,12 @@ QFlags<Qgis::AnnotationItemGuiFlag> operator|(Qgis::AnnotationItemGuiFlag f1, QF
 QFlags<Qgis::MapSettingsFlag> operator|(Qgis::MapSettingsFlag f1, QFlags<Qgis::MapSettingsFlag> f2);
 
 QFlags<Qgis::RenderContextFlag> operator|(Qgis::RenderContextFlag f1, QFlags<Qgis::RenderContextFlag> f2);
+
+QFlags<Qgis::VectorLayerTypeFlag> operator|(Qgis::VectorLayerTypeFlag f1, QFlags<Qgis::VectorLayerTypeFlag> f2);
+
+QFlags<Qgis::MarkerLinePlacement> operator|(Qgis::MarkerLinePlacement f1, QFlags<Qgis::MarkerLinePlacement> f2);
+
+QFlags<Qgis::TextRendererFlag> operator|(Qgis::TextRendererFlag f1, QFlags<Qgis::TextRendererFlag> f2);
 
 
 

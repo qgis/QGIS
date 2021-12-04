@@ -19,6 +19,7 @@
 #include "qgssymbollayerregistry.h"
 #include "qgssymbol.h"
 #include "qgscolorramp.h"
+#include "qgscolorrampimpl.h"
 #include "qgsexpression.h"
 #include "qgsexpressionnode.h"
 #include "qgspainteffect.h"
@@ -880,7 +881,10 @@ QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap( const QgsSymbol *symbol, QSize
   if ( customContext )
     customContext->setPainterFlagsUsingContext( &painter );
   else
+  {
     painter.setRenderHint( QPainter::Antialiasing );
+    painter.setRenderHint( QPainter::SmoothPixmapTransform );
+  }
 
   if ( customContext )
   {
@@ -947,6 +951,10 @@ QPicture QgsSymbolLayerUtils::symbolLayerPreviewPicture( const QgsSymbolLayer *l
   QgsRenderContext renderContext = QgsRenderContext::fromQPainter( &painter );
   renderContext.setForceVectorOutput( true );
   renderContext.setFlag( Qgis::RenderContextFlag::RenderSymbolPreview, true );
+  renderContext.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
+  renderContext.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms, true );
+  renderContext.setPainterFlagsUsingContext( &painter );
+
   QgsSymbolRenderContext symbolContext( renderContext, units, 1.0, false, Qgis::SymbolRenderHints(), nullptr );
 
   switch ( parentSymbolType )
@@ -979,6 +987,7 @@ QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( const QgsSymbolLayer *layer, 
   painter.setRenderHint( QPainter::Antialiasing );
   QgsRenderContext renderContext = QgsRenderContext::fromQPainter( &painter );
   renderContext.setFlag( Qgis::RenderContextFlag::RenderSymbolPreview );
+  renderContext.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms );
   // build a minimal expression context
   QgsExpressionContext expContext;
   expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( nullptr ) );

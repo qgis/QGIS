@@ -727,19 +727,16 @@ bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer )
 
     if ( calcZ )
     {
+      double z = std::numeric_limits<double>::quiet_NaN();
       if ( zvar.isValid() )
       {
-        double z = zvar.toDouble( &ok );
-        if ( ok )
-        {
-          mNewZValues.append( z );
-          mOldZValues.append( vert.z() );
-        }
-        else
-          return false;
+        z = zvar.toDouble( &ok );
+        if ( !ok )
+          z = std::numeric_limits<double>::quiet_NaN();
       }
-      else
-        return false;
+
+      mNewZValues.append( z );
+      mOldZValues.append( vert.z() );
     }
   }
 
@@ -749,7 +746,7 @@ bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer )
   };
 
   mNativeFacesIndexesGeometryChanged = qgis::setToList( concernedFaces );
-  return layer->meshEditor()->canBeTransformed( mNativeFacesIndexesGeometryChanged, transformFunction );
+  return ( !calcX && !calcY ) || layer->meshEditor()->canBeTransformed( mNativeFacesIndexesGeometryChanged, transformFunction );
 }
 
 QString QgsMeshTransformVerticesByExpression::text() const

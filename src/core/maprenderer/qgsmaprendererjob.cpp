@@ -229,6 +229,7 @@ bool QgsMapRendererJob::prepareLabelCache() const
       case QgsMapLayerType::PluginLayer:
       case QgsMapLayerType::MeshLayer:
       case QgsMapLayerType::PointCloudLayer:
+      case QgsMapLayerType::GroupLayer:
         break;
     }
 
@@ -390,6 +391,7 @@ QPainter *QgsMapRendererJob::allocateImageAndPainter( QString layerId, QImage *&
   {
     painter = new QPainter( image );
     painter->setRenderHint( QPainter::Antialiasing, mSettings.testFlag( Qgis::MapSettingsFlag::Antialiasing ) );
+    painter->setRenderHint( QPainter::SmoothPixmapTransform, mSettings.testFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms ) );
 #if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
     painter->setRenderHint( QPainter::LosslessImageRendering, mSettings.testFlag( Qgis::MapSettingsFlag::LosslessImageRendering ) );
 #endif

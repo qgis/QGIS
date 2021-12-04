@@ -64,6 +64,7 @@
 #include "qgsalgorithmexplode.h"
 #include "qgsalgorithmexplodehstore.h"
 #include "qgsalgorithmexportlayersinformation.h"
+#include "qgsalgorithmexporttopostgresql.h"
 #include "qgsalgorithmextendlines.h"
 #include "qgsalgorithmextentfromlayer.h"
 #include "qgsalgorithmextenttolayer.h"
@@ -163,6 +164,7 @@
 #include "qgsalgorithmrescaleraster.h"
 #include "qgsalgorithmreverselinedirection.h"
 #include "qgsalgorithmrotate.h"
+#include "qgsalgorithmroundness.h"
 #include "qgsalgorithmroundrastervalues.h"
 #include "qgsalgorithmruggedness.h"
 #include "qgsalgorithmsavefeatures.h"
@@ -309,6 +311,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsExportMeshFacesAlgorithm );
   addAlgorithm( new QgsExportMeshEdgesAlgorithm );
   addAlgorithm( new QgsExportMeshOnGridAlgorithm );
+  addAlgorithm( new QgsExportToPostgresqlAlgorithm );
   addAlgorithm( new QgsExportToSpreadsheetAlgorithm() );
   addAlgorithm( new QgsExtendLinesAlgorithm() );
   addAlgorithm( new QgsExtentFromLayerAlgorithm() );
@@ -362,6 +365,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
 #ifndef QT_NO_PRINTER
   addAlgorithm( new QgsLayoutAtlasToImageAlgorithm() );
   addAlgorithm( new QgsLayoutAtlasToPdfAlgorithm() );
+  addAlgorithm( new QgsLayoutAtlasToMultiplePdfAlgorithm() );
   addAlgorithm( new QgsLayoutToImageAlgorithm() );
   addAlgorithm( new QgsLayoutToPdfAlgorithm() );
 #endif
@@ -442,6 +446,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRetainTableFieldsAlgorithm() );
   addAlgorithm( new QgsReverseLineDirectionAlgorithm() );
   addAlgorithm( new QgsRotateFeaturesAlgorithm() );
+  addAlgorithm( new QgsRoundnessAlgorithm() );
   addAlgorithm( new QgsRoundRasterValuesAlgorithm() );
   addAlgorithm( new QgsRuggednessAlgorithm() );
   addAlgorithm( new QgsSaveFeaturesAlgorithm() );

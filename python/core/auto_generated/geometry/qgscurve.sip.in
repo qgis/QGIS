@@ -281,13 +281,7 @@ If a curve :py:func:`~QgsCurve.isClosed`, it has infinite sinuosity and will ret
 .. versionadded:: 3.2
 %End
 
-    enum Orientation
-    {
-      Clockwise,
-      CounterClockwise,
-    };
-
-    Orientation orientation() const;
+    Qgis::AngularDirection orientation() const;
 %Docstring
 Returns the curve's orientation, e.g. clockwise or counter-clockwise.
 

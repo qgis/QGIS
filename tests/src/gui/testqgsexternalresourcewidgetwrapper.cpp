@@ -69,7 +69,8 @@ class TestQgsExternalResourceWidgetWrapper : public QObject
     void testChangeValueBeforeLoaded();
     void testChangeValueBeforeLoaded_data();
     void testBlankAfterValue();
-
+    void testChangeValueToNullBeforeLoaded();
+    void testChangeValueToNullBeforeLoaded_data();
 
   private:
     std::unique_ptr<QgsVectorLayer> vl;
@@ -119,7 +120,11 @@ class QgsTestExternalStorageFetchedContent
       emit errorOccurred( mErrorString );
     }
 
-    void cancel() override {}
+    void cancel() override
+    {
+      mStatus = Qgis::ContentStatus::Canceled;
+      emit canceled();
+    }
 
   private:
 
@@ -1102,8 +1107,7 @@ void TestQgsExternalResourceWidgetWrapper::testChangeValueBeforeLoaded()
   QVERIFY( !ww.mQgsWidget->mErrorLabel->isVisible() );
   QVERIFY( !messageBar->currentItem() );
 
-  firstFetchContent->emitFetched();
-
+  // first fetch has been canceled and should be detroyed
   connect( firstFetchContent, &QObject::destroyed, &loop, &QEventLoop::quit );
   loop.exec();
 
@@ -1187,6 +1191,123 @@ void TestQgsExternalResourceWidgetWrapper::testBlankAfterValue()
   QCOMPARE( ww.mQgsWidget->mWebView->url().toString(), QStringLiteral( "about:blank" ) );
 #endif
 }
+
+void TestQgsExternalResourceWidgetWrapper::testChangeValueToNullBeforeLoaded_data()
+{
+  QTest::addColumn<int>( "documentType" );
+
+  QTest::newRow( "image" ) << static_cast<int>( QgsExternalResourceWidget::Image );
+#ifdef WITH_QTWEBKIT
+  QTest::newRow( "webview" ) << static_cast<int>( QgsExternalResourceWidget::Web );
+#endif
+}
+
+void TestQgsExternalResourceWidgetWrapper::testChangeValueToNullBeforeLoaded()
+{
+  // test to change value to Null before loading of a previous value document has finished
+  QEventLoop loop;
+
+  QFETCH( int, documentType );
+
+  QgsMessageBar *messageBar = new QgsMessageBar;
+  QgsExternalResourceWidgetWrapper ww( vl.get(), 0, nullptr, messageBar, nullptr );
+
+  QWidget *widget = ww.createWidget( nullptr );
+  QVERIFY( widget );
+
+  QVariantMap config;
+  config.insert( QStringLiteral( "StorageType" ), QStringLiteral( "test" ) );
+  config.insert( QStringLiteral( "DocumentViewer" ), documentType );
+  ww.setConfig( config );
+
+  QgsFeature feat = vl->getFeature( 1 );
+  QVERIFY( feat.isValid() );
+  ww.setFeature( feat );
+
+  ww.initWidget( widget );
+  QVERIFY( ww.mQgsWidget );
+  QgsExternalStorageFileWidget *fileWidget = ww.mQgsWidget->fileWidget();
+  QVERIFY( fileWidget );
+  QCOMPARE( fileWidget->storageType(), QStringLiteral( "test" ) );
+
+  widget->show();
+  if ( documentType == QgsExternalResourceWidget::Image )
+  {
+    QVERIFY( ww.mQgsWidget->mPixmapLabel->isVisible() );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+    QVERIFY( !ww.mQgsWidget->mPixmapLabel->pixmap() );
+#else
+    QVERIFY( ww.mQgsWidget->mPixmapLabel->pixmap( Qt::ReturnByValue ).isNull() );
+#endif
+  }
+#ifdef WITH_QTWEBKIT
+  else if ( documentType == QgsExternalResourceWidget::Web )
+
+  {
+    QVERIFY( ww.mQgsWidget->mWebView->isVisible() );
+    QCOMPARE( ww.mQgsWidget->mWebView->url().toString(), QStringLiteral( "about:blank" ) );
+  }
+#endif
+
+  QVERIFY( !ww.mQgsWidget->mLoadingLabel->isVisible() );
+  QVERIFY( ww.mQgsWidget->mLoadingMovie->state() == QMovie::NotRunning );
+  QVERIFY( !ww.mQgsWidget->mErrorLabel->isVisible() );
+
+  // load url
+  ww.setValues( SAMPLE_IMAGE, QVariantList() );
+
+  // content still null, fetching in progress...
+  QVERIFY( !ww.mQgsWidget->mPixmapLabel->isVisible() );
+#ifdef WITH_QTWEBKIT
+  QVERIFY( !ww.mQgsWidget->mWebView->isVisible() );
+#endif
+  QVERIFY( ww.mQgsWidget->mLoadingLabel->isVisible() );
+  QVERIFY( ww.mQgsWidget->mLoadingMovie->state() == QMovie::Running );
+  QVERIFY( !ww.mQgsWidget->mErrorLabel->isVisible() );
+  QVERIFY( !messageBar->currentItem() );
+
+  QVERIFY( QgsTestExternalStorage::sFetchContent );
+
+  QPointer firstFetchContent = QgsTestExternalStorage::sFetchContent;
+
+  // first fetch is not over, load another file
+  ww.setValues( QString(), QVariantList() );
+
+  // content null fetching over
+  if ( documentType == QgsExternalResourceWidget::Image )
+  {
+    QVERIFY( ww.mQgsWidget->mPixmapLabel->isVisible() );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+    QVERIFY( !ww.mQgsWidget->mPixmapLabel->pixmap() );
+#else
+    QVERIFY( ww.mQgsWidget->mPixmapLabel->pixmap( Qt::ReturnByValue ).isNull() );
+#endif
+  }
+#ifdef WITH_QTWEBKIT
+  else if ( documentType == QgsExternalResourceWidget::Web )
+
+  {
+    QVERIFY( ww.mQgsWidget->mWebView->isVisible() );
+    QCOMPARE( ww.mQgsWidget->mWebView->url().toString(), QStringLiteral( "about:blank" ) );
+  }
+#endif
+
+  QVERIFY( !ww.mQgsWidget->mLoadingLabel->isVisible() );
+  QVERIFY( ww.mQgsWidget->mLoadingMovie->state() == QMovie::NotRunning );
+  QVERIFY( !ww.mQgsWidget->mErrorLabel->isVisible() );
+  QVERIFY( !messageBar->currentItem() );
+  QVERIFY( !ww.mQgsWidget->mContent );
+
+  connect( QgsTestExternalStorage::sFetchContent, &QObject::destroyed, &loop, &QEventLoop::quit );
+  loop.exec();
+
+  QVERIFY( !QgsTestExternalStorage::sFetchContent );
+
+  delete messageBar;
+  delete widget;
+}
+
+
 
 QGSTEST_MAIN( TestQgsExternalResourceWidgetWrapper )
 #include "testqgsexternalresourcewidgetwrapper.moc"

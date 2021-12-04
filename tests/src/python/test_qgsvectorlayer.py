@@ -23,7 +23,8 @@ from qgis.PyQt.QtCore import QDate, QDateTime, QVariant, Qt, QDateTime, QDate, Q
 from qgis.PyQt.QtGui import QPainter, QColor
 from qgis.PyQt.QtXml import QDomDocument
 
-from qgis.core import (QgsWkbTypes,
+from qgis.core import (Qgis,
+                       QgsWkbTypes,
                        QgsAction,
                        QgsAuxiliaryStorage,
                        QgsCoordinateTransformContext,
@@ -3660,31 +3661,31 @@ class TestQgsVectorLayerTransformContext(unittest.TestCase):
         self.assertEqual(layer.featureCount(), 0)
         self.assertEqual(layer.selectedFeatureIds(), [])
 
-        def testCommitChangesReportsDeletedFeatureIDs(self):
-            """
-            Tests if commitChanges emits "featuresDeleted" with all deleted feature IDs,
-            e.g. in case (negative) temporary FIDs are converted into (positive) persistent FIDs.
-            """
-            temp_fids = []
+    def testCommitChangesReportsDeletedFeatureIDs(self):
+        """
+        Tests if commitChanges emits "featuresDeleted" with all deleted feature IDs,
+        e.g. in case (negative) temporary FIDs are converted into (positive) persistent FIDs.
+        """
+        temp_fids = []
 
-            def onFeaturesDeleted(deleted_fids):
-                self.assertEqual(len(deleted_fids), len(temp_fids),
-                                 msg=f'featuresDeleted returned {len(deleted_fids)} instead of 2 deleted feature IDs: '
-                                     f'{deleted_fids}')
-                for d in deleted_fids:
-                    self.assertTrue(d in temp_fids)
+        def onFeaturesDeleted(deleted_fids):
+            self.assertEqual(len(deleted_fids), len(temp_fids),
+                             msg=f'featuresDeleted returned {len(deleted_fids)} instead of 2 deleted feature IDs: '
+                             f'{deleted_fids}')
+            for d in deleted_fids:
+                self.assertTrue(d in temp_fids)
 
-            layer = QgsVectorLayer("point?crs=epsg:4326&field=name:string", "Scratch point layer", "memory")
-            layer.featuresDeleted.connect(onFeaturesDeleted)
+        layer = QgsVectorLayer("point?crs=epsg:4326&field=name:string", "Scratch point layer", "memory")
+        layer.featuresDeleted.connect(onFeaturesDeleted)
 
-            layer.startEditing()
-            layer.beginEditCommand('add 2 features')
-            layer.addFeature(QgsFeature(layer.fields()))
-            layer.addFeature(QgsFeature(layer.fields()))
-            layer.endEditCommand()
-            temp_fids.extend(layer.allFeatureIds())
+        layer.startEditing()
+        layer.beginEditCommand('add 2 features')
+        layer.addFeature(QgsFeature(layer.fields()))
+        layer.addFeature(QgsFeature(layer.fields()))
+        layer.endEditCommand()
+        temp_fids.extend(layer.allFeatureIds())
 
-            layer.commitChanges()
+        layer.commitChanges()
 
     def testSubsetStringInvalidLayer(self):
         """
@@ -3708,6 +3709,12 @@ class TestQgsVectorLayerTransformContext(unittest.TestCase):
             'test', 'no')
         vl2.readXml(elem, QgsReadWriteContext())
         self.assertEqual(vl2.subsetString(), 'xxxxxxxxx')
+
+    def testLayerTypeFlags(self):
+        """Basic API test, DB providers that support query layers should test the flag individually"""
+
+        layer = QgsVectorLayer("point?crs=epsg:4326&field=name:string", "Scratch point layer", "memory")
+        self.assertEqual(layer.vectorLayerTypeFlags(), Qgis.VectorLayerTypeFlags())
 
     def testLayerWithoutProvider(self):
         """Test that we don't crash when invoking methods on a layer with a broken provider"""

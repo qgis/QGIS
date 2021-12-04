@@ -315,6 +315,7 @@ double QgsMapCanvas::magnificationFactor() const
 void QgsMapCanvas::enableAntiAliasing( bool flag )
 {
   mSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, flag );
+  mSettings.setFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms, flag );
 }
 
 bool QgsMapCanvas::antiAliasingEnabled() const
@@ -1869,7 +1870,7 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent *e )
         //mCanvasProperties->dragging = true;
         if ( ! e->isAutoRepeat() )
         {
-          QApplication::setOverrideCursor( Qt::ClosedHandCursor );
+          mTemporaryCursorOverride.reset( new QgsTemporaryCursorOverride( Qt::ClosedHandCursor ) );
           mCanvasProperties->panSelectorDown = true;
           panActionStart( mCanvasProperties->mouseLastXY );
         }
@@ -1920,7 +1921,7 @@ void QgsMapCanvas::keyReleaseEvent( QKeyEvent *e )
       if ( !e->isAutoRepeat() && mCanvasProperties->panSelectorDown )
       {
         QgsDebugMsgLevel( QStringLiteral( "Releasing pan selector" ), 2 );
-        QApplication::restoreOverrideCursor();
+        mTemporaryCursorOverride.reset();
         mCanvasProperties->panSelectorDown = false;
         panActionEnd( mCanvasProperties->mouseLastXY );
       }
@@ -1956,7 +1957,7 @@ void QgsMapCanvas::mouseDoubleClickEvent( QMouseEvent *e )
 void QgsMapCanvas::beginZoomRect( QPoint pos )
 {
   mZoomRect.setRect( 0, 0, 0, 0 );
-  QApplication::setOverrideCursor( mZoomCursor );
+  mTemporaryCursorOverride.reset( new QgsTemporaryCursorOverride( mZoomCursor ) );
   mZoomDragging = true;
   mZoomRubberBand.reset( new QgsRubberBand( this, QgsWkbTypes::PolygonGeometry ) );
   QColor color( Qt::blue );
@@ -1969,7 +1970,7 @@ void QgsMapCanvas::endZoomRect( QPoint pos )
 {
   mZoomDragging = false;
   mZoomRubberBand.reset( nullptr );
-  QApplication::restoreOverrideCursor();
+  mTemporaryCursorOverride.reset();
 
   // store the rectangle
   mZoomRect.setRight( pos.x() );
@@ -2009,8 +2010,12 @@ void QgsMapCanvas::mousePressEvent( QMouseEvent *e )
   //use middle mouse button for panning, map tools won't receive any events in that case
   else if ( e->button() == Qt::MiddleButton )
   {
-    mCanvasProperties->panSelectorDown = true;
-    panActionStart( mCanvasProperties->mouseLastXY );
+    if ( !mCanvasProperties->panSelectorDown )
+    {
+      mCanvasProperties->panSelectorDown = true;
+      mTemporaryCursorOverride.reset( new QgsTemporaryCursorOverride( Qt::ClosedHandCursor ) );
+      panActionStart( mCanvasProperties->mouseLastXY );
+    }
   }
   else
   {
@@ -2058,8 +2063,12 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent *e )
   //use middle mouse button for panning, map tools won't receive any events in that case
   else if ( e->button() == Qt::MiddleButton )
   {
-    mCanvasProperties->panSelectorDown = false;
-    panActionEnd( mCanvasProperties->mouseLastXY );
+    if ( mCanvasProperties->panSelectorDown )
+    {
+      mCanvasProperties->panSelectorDown = false;
+      mTemporaryCursorOverride.reset();
+      panActionEnd( mCanvasProperties->mouseLastXY );
+    }
   }
   else if ( e->button() == Qt::BackButton )
   {
@@ -2429,12 +2438,11 @@ QColor QgsMapCanvas::selectionColor() const
 int QgsMapCanvas::layerCount() const
 {
   return mapSettings().layers().size();
-} // layerCount
+}
 
-
-QList<QgsMapLayer *> QgsMapCanvas::layers() const
+QList<QgsMapLayer *> QgsMapCanvas::layers( bool expandGroupLayers ) const
 {
-  return mapSettings().layers();
+  return mapSettings().layers( expandGroupLayers );
 }
 
 void QgsMapCanvas::layerStateChange()

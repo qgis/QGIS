@@ -189,7 +189,13 @@ class SymbolLayerItem : public QStandardItem
       if ( role == Qt::DisplayRole || role == Qt::EditRole )
       {
         if ( mIsLayer )
-          return QgsApplication::symbolLayerRegistry()->symbolLayerMetadata( mLayer->layerType() )->visibleName();
+        {
+          QgsSymbolLayerAbstractMetadata *m = QgsApplication::symbolLayerRegistry()->symbolLayerMetadata( mLayer->layerType() );
+          if ( m )
+            return m->visibleName();
+          else
+            return QString();
+        }
         else
         {
           switch ( mSymbol->type() )

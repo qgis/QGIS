@@ -71,6 +71,12 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
                               QgsAttributeForm::FilterType type = QgsAttributeForm::ReplaceFilter,
                               bool alwaysShowFilter = false );
 
+    /**
+     * Set the view \a mode (e.g. attribute table or attribute editor).
+     * \since QGIS 3.24
+     */
+    void setView( QgsDualView::ViewMode mode );
+
   private slots:
 
     /**
