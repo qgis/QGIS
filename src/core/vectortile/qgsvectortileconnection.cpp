@@ -165,7 +165,7 @@ void QgsVectorTileProviderConnection::addConnection( const QString &name, QgsVec
   settings.setValue( QStringLiteral( "authcfg" ), conn.authCfg );
   settings.setValue( QStringLiteral( "username" ), conn.username );
   settings.setValue( QStringLiteral( "password" ), conn.password );
-  QgsHttpHeaders( ( QMap<QString, QVariant> ) { {QStringLiteral( "referer" ), conn.referer}} ).updateSettings( settings );
+  QgsHttpHeaders( QVariantMap( { {QStringLiteral( "referer" ), conn.referer}} ) ).updateSettings( settings );
   settings.setValue( QStringLiteral( "styleUrl" ), conn.styleUrl );
 
   switch ( conn.serviceType )
