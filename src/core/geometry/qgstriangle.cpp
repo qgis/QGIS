@@ -377,9 +377,9 @@ QVector<double> QgsTriangle::lengths() const
   if ( isEmpty() )
     return lengths;
 
-  lengths.append( vertexAt( 0 ).distance( vertexAt( 1 ) ) );
-  lengths.append( vertexAt( 1 ).distance( vertexAt( 2 ) ) );
-  lengths.append( vertexAt( 2 ).distance( vertexAt( 0 ) ) );
+  lengths.append( vertexAt( 1 ).distance( vertexAt( 2 ) ) ); // a = |BC|
+  lengths.append( vertexAt( 0 ).distance( vertexAt( 2 ) ) ); // b = |AC|
+  lengths.append( vertexAt( 0 ).distance( vertexAt( 1 ) ) ); // c = |AB|
 
   return lengths;
 }
@@ -389,22 +389,24 @@ QVector<double> QgsTriangle::angles() const
   QVector<double> angles;
   if ( isEmpty() )
     return angles;
-  double ax, ay, bx, by, cx, cy;
 
-  ax = vertexAt( 0 ).x();
-  ay = vertexAt( 0 ).y();
-  bx = vertexAt( 1 ).x();
-  by = vertexAt( 1 ).y();
-  cx = vertexAt( 2 ).x();
-  cy = vertexAt( 2 ).y();
+  QVector<double> l = lengths();
 
-  double a1 = std::fmod( QgsGeometryUtils::angleBetweenThreePoints( cx, cy, ax, ay, bx, by ), M_PI );
-  double a2 = std::fmod( QgsGeometryUtils::angleBetweenThreePoints( ax, ay, bx, by, cx, cy ), M_PI );
-  double a3 = std::fmod( QgsGeometryUtils::angleBetweenThreePoints( bx, by, cx, cy, ax, ay ), M_PI );
+  const double a = l[0];
+  const double b = l[1];
+  const double c = l[2];
 
-  angles.append( ( a1 > M_PI_2 ? a1 - M_PI_2 : a1 ) );
-  angles.append( ( a2 > M_PI_2 ? a2 - M_PI_2 : a2 ) );
-  angles.append( ( a3 > M_PI_2 ? a3 - M_PI_2 : a3 ) );
+  const double a2 = a * a;
+  const double b2 = b * b;
+  const double c2 = c * c;
+
+  const double alpha = acos( ( b2 + c2 - a2 ) / ( 2 * b * c ) );
+  const double beta = acos( ( a2 + c2 - b2 ) / ( 2 * a * c ) );
+  const double gamma = M_PI - alpha - beta; // acos((a2 + b2 - c2)/(2*a*b)); but ensure that alpha+beta+gamma = 180.0
+
+  angles.append( alpha );
+  angles.append( beta );
+  angles.append( gamma );
 
   return angles;
 }
