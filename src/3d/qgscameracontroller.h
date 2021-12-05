@@ -297,6 +297,9 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     QPoint mMiddleButtonClickPos;
     bool mRotationInProgress = false;
     bool mDepthBufferIsReady = false;
+    bool mRotationCenterCalculated = false;
+    QVector3D mRotationCenter;
+    double mRotationDistanceFromCenter;
     double mRotationPitch = 0;
     double mRotationYaw = 0;
     Qt3DRender::QCamera *mCameraBeforeRotation = nullptr;
@@ -304,6 +307,9 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     QPoint mDragButtonClickPos;
     Qt3DRender::QCamera *mCameraBeforeDrag = nullptr;
     bool mDragInProgress;
+    bool mDragPointCalculated = false;
+    QVector3D mDragPoint;
+    double mDragDepth;
 
     //! Delegates mouse events to the attached MouseHandler objects
     Qt3DInput::QMouseDevice *mMouseDevice = nullptr;
