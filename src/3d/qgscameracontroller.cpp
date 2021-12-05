@@ -445,13 +445,16 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     // i.e. find out x,z of the previous mouse point, find out x,z of the current mouse point
     // and use the difference
 
-    const float z = mLastPressedHeight;
-    const QPointF p1 = screen_point_to_point_on_plane( QPointF( mMousePos.x(), mMousePos.y() ), mViewport, mCamera, z );
-    const QPointF p2 = screen_point_to_point_on_plane( QPointF( mouse->x(), mouse->y() ), mViewport, mCamera, z );
+    if ( !mDepthBufferIsReady )
+      return;
 
-    QgsVector3D center = mCameraPose.centerPoint();
-    center.set( center.x() - ( p2.x() - p1.x() ), center.y(), center.z() - ( p2.y() - p1.y() ) );
-    mCameraPose.setCenterPoint( center );
+    QColor depthPixel = mDepthBufferImage.pixelColor( mDragButtonClickPos.x(), mDragButtonClickPos.y() );
+    double depth = depthPixel.redF() / 255.0 / 255.0 + depthPixel.greenF() / 255.0 + depthPixel.blueF();
+
+    QVector3D dragPosition = Qgs3DUtils::mouseToWorldPos( mDragButtonClickPos.x(), mDragButtonClickPos.y(), depth, mViewport.size(), mCameraBeforeDrag );
+    QVector3D moveToPosition = Qgs3DUtils::mouseToWorldPos( mMousePos.x(), mMousePos.y(), depth, mViewport.size(), mCameraBeforeDrag );
+
+    mCameraPose.setCenterPoint( mCameraBeforeDrag->viewCenter() - moveToPosition + dragPosition );
     updateCameraFromPose();
   }
   else if ( hasRightButton && !hasShift && !hasCtrl )
@@ -516,10 +519,29 @@ void QgsCameraController::onMousePressed( Qt3DInput::QMouseEvent *mouse )
   if ( mouse->button() == Qt3DInput::QMouseEvent::LeftButton || mouse->button() == Qt3DInput::QMouseEvent::RightButton )
   {
     mMousePos = QPoint( mouse->x(), mouse->y() );
+    mDragButtonClickPos = QPoint( mouse->x(), mouse->y() );
+    mDragInProgress = true;
     mPressedButton = mouse->button();
     mMousePressed = true;
+
     if ( mCaptureFpsMouseMovements )
       mIgnoreNextMouseMove = true;
+
+    if ( !mCameraBeforeDrag )
+      mCameraBeforeDrag = new Qt3DRender::QCamera;
+
+    mCameraPose.updateCamera( mCameraBeforeDrag );
+
+    mCameraBeforeDrag->setProjectionMatrix( mCamera->projectionMatrix() );
+    mCameraBeforeDrag->setNearPlane( mCamera->nearPlane() );
+    mCameraBeforeDrag->setFarPlane( mCamera->farPlane() );
+    mCameraBeforeDrag->setAspectRatio( mCamera->aspectRatio() );
+    mCameraBeforeDrag->setFieldOfView( mCamera->fieldOfView() );
+
+
+    mDepthBufferIsReady = false;
+
+    emit requestDepthBufferCapture();
   }
 
   if ( mouse->button() == Qt3DInput::QMouseEvent::MiddleButton )
@@ -532,8 +554,10 @@ void QgsCameraController::onMousePressed( Qt3DInput::QMouseEvent *mouse )
     if ( mCaptureFpsMouseMovements )
       mIgnoreNextMouseMove = true;
     mDepthBufferIsReady = false;
+
     mRotationPitch = mCameraPose.pitchAngle();
     mRotationYaw = mCameraPose.headingAngle();
+
     if ( !mCameraBeforeRotation )
       mCameraBeforeRotation = new Qt3DRender::QCamera;
 
@@ -554,6 +578,8 @@ void QgsCameraController::onMouseReleased( Qt3DInput::QMouseEvent *mouse )
   Q_UNUSED( mouse )
   if ( mRotationInProgress )
     mRotationInProgress = false;
+  if ( mDragInProgress )
+    mDragInProgress = false;
   mPressedButton = Qt3DInput::QMouseEvent::NoButton;
   mMousePressed = false;
 }

@@ -23,7 +23,6 @@
 #include <Qt3DCore/QEntity>
 #include <Qt3DInput/QMouseEvent>
 #include <QImage>
-#include <QMutex>
 
 namespace Qt3DInput
 {
@@ -301,6 +300,10 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     double mRotationPitch = 0;
     double mRotationYaw = 0;
     Qt3DRender::QCamera *mCameraBeforeRotation = nullptr;
+
+    QPoint mDragButtonClickPos;
+    Qt3DRender::QCamera *mCameraBeforeDrag = nullptr;
+    bool mDragInProgress;
 
     //! Delegates mouse events to the attached MouseHandler objects
     Qt3DInput::QMouseDevice *mMouseDevice = nullptr;

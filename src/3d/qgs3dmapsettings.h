@@ -333,13 +333,13 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 
     /**
      * Sets whether to show camera's rotation center as a sphere (for debugging)
-     * \since QGIS 3.22
+     * \since QGIS 3.24
      */
     void setShowCameraRotationCenter( bool enabled );
 
     /**
      * Returns whether to show camera's rotation center as a sphere (for debugging)
-     * \since QGIS 3.22
+     * \since QGIS 3.24
      */
     bool showCameraRotationCenter() const { return mShowCameraRotationCenter; }
 

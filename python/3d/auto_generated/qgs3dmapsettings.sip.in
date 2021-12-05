@@ -354,14 +354,14 @@ Returns whether to show camera's view center as a sphere (for debugging)
 %Docstring
 Sets whether to show camera's rotation center as a sphere (for debugging)
 
-.. versionadded:: 3.22
+.. versionadded:: 3.24
 %End
 
     bool showCameraRotationCenter() const;
 %Docstring
 Returns whether to show camera's rotation center as a sphere (for debugging)
 
-.. versionadded:: 3.22
+.. versionadded:: 3.24
 %End
 
     void setShowLightSourceOrigins( bool enabled );
