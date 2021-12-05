@@ -164,13 +164,13 @@ RUN curl -k https://www.orfeo-toolbox.org/packages/archives/OTB/OTB-7.1.0-Linux6
 ENV OTB_INSTALL_DIR=/opt/otb
 
 # Clazy
-RUN curl -k https://downloads.kdab.com/clazy/1.6/Clazy-x86_64-1.6.AppImage -o /tmp/Clazy.AppImage \
-  && chmod +x /tmp/Clazy.AppImage \
-  && mkdir /opt/clazy \
-  && cd /opt/clazy \
-  && /tmp/Clazy.AppImage --appimage-extract \
-  && ln -s /opt/clazy/squashfs-root/AppRun /usr/bin/clazy \
-  && ln -s ../../bin/ccache /usr/lib/ccache/clazy
+#RUN curl -k https://downloads.kdab.com/clazy/1.6/Clazy-x86_64-1.6.AppImage -o /tmp/Clazy.AppImage \
+#  && chmod +x /tmp/Clazy.AppImage \
+#  && mkdir /opt/clazy \
+#  && cd /opt/clazy \
+#  && /tmp/Clazy.AppImage --appimage-extract \
+#  && ln -s /opt/clazy/squashfs-root/AppRun /usr/bin/clazy \
+#  && ln -s ../../bin/ccache /usr/lib/ccache/clazy
 
 ENV PATH="/usr/local/bin:${PATH}"
 
