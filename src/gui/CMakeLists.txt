@@ -1445,6 +1445,7 @@ set(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssublayersdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgstablewidgetuibase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrendererpropsdialogbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterattributetablebase.ui
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgseffectstackpropertieswidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutnewpagedialog.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutguidewidgetbase.h

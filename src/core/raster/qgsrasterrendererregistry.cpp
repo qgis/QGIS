@@ -19,6 +19,7 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrastershader.h"
 #include "qgsrastertransparency.h"
+#include "qgsattributetablerenderer.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgspalettedrasterrenderer.h"
 #include "qgsrastercontourrenderer.h"
@@ -62,6 +63,8 @@ QgsRasterRendererRegistry::QgsRasterRendererRegistry()
                                           QgsHillshadeRenderer::create, nullptr ) );
   insert( QgsRasterRendererRegistryEntry( QStringLiteral( "contour" ), QObject::tr( "Contours" ),
                                           QgsRasterContourRenderer::create, nullptr ) );
+  insert( QgsRasterRendererRegistryEntry( QStringLiteral( "attributetable" ), QObject::tr( "Attribute table" ),
+                                          QgsAttributeTableRenderer::create, nullptr ) );
 }
 
 void QgsRasterRendererRegistry::insert( const QgsRasterRendererRegistryEntry &entry )

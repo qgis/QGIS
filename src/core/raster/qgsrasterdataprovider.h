@@ -34,6 +34,7 @@
 #include "qgscolorrampshader.h"
 #include "qgsdataprovider.h"
 #include "qgsraster.h"
+#include "qgsrasterattributetable.h"
 #include "qgsfields.h"
 #include "qgsrasterinterface.h"
 #include "qgsrasterpyramid.h"
@@ -739,6 +740,10 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
+    QgsRasterAttributeTable attributeTable( int bandNumber );
+    void setAttributeTable( int bandNumber, const QgsRasterAttributeTable &attributeTable );
+    void removeAttributeTable( int bandNumber );
+
   signals:
 
     /**
@@ -746,6 +751,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \since QGIS 2.14
      */
     void statusChanged( const QString & ) const;
+
 
   protected:
 
@@ -822,6 +828,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * Data provider temporal properties
      */
     std::unique_ptr< QgsRasterDataProviderTemporalCapabilities > mTemporalCapabilities;
+
+    QMap<int, QgsRasterAttributeTable> mAttributeTables;
 
 };
 
