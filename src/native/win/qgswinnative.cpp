@@ -42,7 +42,7 @@ struct LPITEMIDLISTDeleter
   }
 };
 
-using ITEMIDLIST_unique_ptr = std::unique_ptr< std::remove_pointer_t< LPITEMIDLIST >, ITEMIDLISTDeleter>;
+using ITEMIDLIST_unique_ptr = std::unique_ptr< std::remove_pointer_t< LPITEMIDLIST >, LPITEMIDLISTDeleter>;
 
 
 
