@@ -672,7 +672,7 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
   // Value from string (long, ulong, double and string)
   const auto valueFromString = []( const QString & value, const QString & valueType ) -> QVariant
   {
-    if ( valueType == QStringLiteral( "double" ) )
+    if ( valueType == QLatin1String( "double" ) )
     {
       bool ok;
       const auto val { value.toDouble( &ok ) };
@@ -681,7 +681,7 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
         return val;
       }
     }
-    else if ( valueType == QStringLiteral( "ulong" ) )
+    else if ( valueType == QLatin1String( "ulong" ) )
     {
       bool ok;
       const auto val { value.toULongLong( &ok ) };
@@ -690,7 +690,7 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
         return val;
       }
     }
-    else if ( valueType == QStringLiteral( "long" ) )
+    else if ( valueType == QLatin1String( "long" ) )
     {
       bool ok;
       const auto val { value.toLongLong( &ok ) };

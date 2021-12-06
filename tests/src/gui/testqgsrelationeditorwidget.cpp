@@ -208,10 +208,10 @@ void TestQgsRelationEditorWidget::testMultiEdit1N()
       QCOMPARE( childItem->data( 0, static_cast<int>( QgsRelationEditorWidget::MultiEditTreeWidgetRole::FeatureType ) ).toInt(),
                 static_cast<int>( QgsRelationEditorWidget::MultiEditFeatureType::Child ) );
 
-      if ( childItem->text( 0 ) == QStringLiteral( "Layer1-0" ) )
+      if ( childItem->text( 0 ) == QLatin1String( "Layer1-0" ) )
         QCOMPARE( parentItem->text( 0 ), QStringLiteral( "Layer2-10" ) );
 
-      if ( childItem->text( 0 ) == QStringLiteral( "Layer1-1" ) )
+      if ( childItem->text( 0 ) == QLatin1String( "Layer1-1" ) )
         QCOMPARE( parentItem->text( 0 ), QStringLiteral( "Layer2-11" ) );
     }
   }
@@ -260,10 +260,10 @@ void TestQgsRelationEditorWidget::testMultiEditNM()
       QCOMPARE( childItem->data( 0, static_cast<int>( QgsRelationEditorWidget::MultiEditTreeWidgetRole::FeatureType ) ).toInt(),
                 static_cast<int>( QgsRelationEditorWidget::MultiEditFeatureType::Child ) );
 
-      if ( childItem->text( 0 ) == QStringLiteral( "Layer2-10" ) )
+      if ( childItem->text( 0 ) == QLatin1String( "Layer2-10" ) )
         QCOMPARE( parentItem->text( 0 ), QStringLiteral( "Layer1-0" ) );
 
-      if ( childItem->text( 0 ) == QStringLiteral( "Layer2-11" ) )
+      if ( childItem->text( 0 ) == QLatin1String( "Layer2-11" ) )
       {
         QStringList possibleParents;
         possibleParents << QStringLiteral( "Layer1-0" )

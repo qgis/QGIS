@@ -1304,7 +1304,7 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
   QStringList lines {subsetString.split( QChar( '\n' ) )};
   lines.erase( std::remove_if( lines.begin(), lines.end(), []( const QString & line )
   {
-    return line.startsWith( QStringLiteral( "--" ) );
+    return line.startsWith( QLatin1String( "--" ) );
   } ), lines.end() );
   for ( auto &line : lines )
   {
@@ -1317,7 +1317,7 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
         inLiteral = !inLiteral;
         literalChar = inLiteral ? line[i] : QChar( ' ' );
       }
-      if ( !inLiteral && line.mid( i ).startsWith( QStringLiteral( "--" ) ) )
+      if ( !inLiteral && line.mid( i ).startsWith( QLatin1String( "--" ) ) )
       {
         line = line.left( i );
         break;
