@@ -835,6 +835,11 @@ void TestQgsTriangle::angles()
   QGSCOMPARENEAR( angles.at( 1 ), 0.9097531, 0.0001 );
   QGSCOMPARENEAR( angles.at( 2 ), 1.2490457, 0.0001 );
 
+  tr = QgsTriangle( QgsPoint( 78598.328125, 330538.375, 0 ), QgsPoint( 78606.3203125, 330544, 0 ), QgsPoint( 78601.46875, 330550.90625, 0 ) );
+  angles = tr.angles();
+  QGSCOMPARENEAR( angles.at( 0 ), 0.7119510, 0.0001 );
+  QGSCOMPARENEAR( angles.at( 1 ), 1.5716821, 0.0001 );
+  QGSCOMPARENEAR( angles.at( 2 ), 0.8579596, 0.0001 );
 }
 
 void TestQgsTriangle::lengths()
