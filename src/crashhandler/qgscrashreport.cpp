@@ -330,16 +330,19 @@ QString QgsCrashReport::htmlToMarkdown( const QString &html )
   converted.replace( QLatin1String( "<b>" ), QLatin1String( "**" ) );
   converted.replace( QLatin1String( "</b>" ), QLatin1String( "**" ) );
 
-  static QRegExp hrefRegEx( "<a\\s+href\\s*=\\s*([^<>]*)\\s*>([^<>]*)</a>" );
+  static thread_local QRegularExpression hrefRegEx( QStringLiteral( "<a\\s+href\\s*=\\s*([^<>]*)\\s*>([^<>]*)</a>" ) );
+
   int offset = 0;
-  while ( hrefRegEx.indexIn( converted, offset ) != -1 )
+  QRegularExpressionMatch match = hrefRegEx.match( converted );
+  while ( match.hasMatch() )
   {
-    QString url = hrefRegEx.cap( 1 ).replace( QLatin1String( "\"" ), QString() );
+    QString url = match.captured( 1 ).replace( QLatin1String( "\"" ), QString() );
     url.replace( '\'', QString() );
-    QString name = hrefRegEx.cap( 2 );
+    QString name = match.captured( 2 );
     QString anchor = QStringLiteral( "[%1](%2)" ).arg( name, url );
-    converted.replace( hrefRegEx, anchor );
-    offset = hrefRegEx.pos( 1 ) + anchor.length();
+    converted.replace( match.capturedStart(), match.capturedLength(), anchor );
+    offset = match.capturedStart() + anchor.length();
+    match = hrefRegEx.match( converted, offset );
   }
 
   return converted;
