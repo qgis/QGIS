@@ -818,7 +818,7 @@ void TestQgsTriangle::types()
   tr = QgsTriangle( QgsPoint( 7.2825, 4.2368 ), QgsPoint( 13.0058, 3.3218 ),
                     QgsPoint( 9.2145, 6.5242 ) );
   // angles in radians 58.8978;31.1036;89.9985
-  // length 4.96279;2.99413;5.79598
+  // length 5.79598;4.96279;2.99413
   QVERIFY( !tr.isDegenerate() );
   QVERIFY( tr.isRight() );
   QVERIFY( !tr.isIsocele() );
@@ -913,8 +913,8 @@ void TestQgsTriangle::lengths()
 
   QVector<double> l_tested, l_t7 = tr.lengths();
   l_tested.append( 5 );
-  l_tested.append( std::sqrt( 5 * 5 + 5 * 5 ) );
   l_tested.append( 5 );
+  l_tested.append( std::sqrt( 5 * 5 + 5 * 5 ) );
 
   QGSCOMPARENEAR( l_tested.at( 0 ), l_t7.at( 0 ), 0.0001 );
   QGSCOMPARENEAR( l_tested.at( 1 ), l_t7.at( 1 ), 0.0001 );
