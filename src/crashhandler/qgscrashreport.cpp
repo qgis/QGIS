@@ -329,6 +329,8 @@ QString QgsCrashReport::htmlToMarkdown( const QString &html )
   converted.replace( QLatin1String( "<br>" ), QLatin1String( "\n" ) );
   converted.replace( QLatin1String( "<b>" ), QLatin1String( "**" ) );
   converted.replace( QLatin1String( "</b>" ), QLatin1String( "**" ) );
+  converted.replace( QLatin1String( "<pre>" ), QLatin1String( "\n```\n" ) );
+  converted.replace( QLatin1String( "</pre>" ), QLatin1String( "```\n" ) );
 
   static thread_local QRegularExpression hrefRegEx( QStringLiteral( "<a\\s+href\\s*=\\s*([^<>]*)\\s*>([^<>]*)</a>" ) );
 

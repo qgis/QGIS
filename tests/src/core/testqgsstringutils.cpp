@@ -208,6 +208,9 @@ void TestQgsStringUtils::htmlToMarkdown()
 {
   QCOMPARE( QgsStringUtils::htmlToMarkdown( QStringLiteral( "<b>Visit</b> <a href=\"http://qgis.org\">!</a>" ) ), QStringLiteral( "**Visit** [!](http://qgis.org)" ) );
   QCOMPARE( QgsStringUtils::htmlToMarkdown( QStringLiteral( "<b>Visit</b><br><a href='http://qgis.org'>QGIS</a>" ) ), QStringLiteral( "**Visit**\n[QGIS](http://qgis.org)" ) );
+
+  // convert PRE
+  QCOMPARE( QgsStringUtils::htmlToMarkdown( QStringLiteral( "<b>My code</b><pre>a = 1\nb=2\nc=3</pre>" ) ), QStringLiteral( "**My code**\n```\na = 1\nb=2\nc=3```\n" ) );
 }
 
 void TestQgsStringUtils::ampersandEncode_data()
