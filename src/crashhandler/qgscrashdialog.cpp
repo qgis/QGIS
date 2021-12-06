@@ -61,6 +61,7 @@ void QgsCrashDialog::setPythonFault( const QgsCrashReport::PythonFault &fault )
   switch ( fault.cause )
   {
     case QgsCrashReport::LikelyPythonFaultCause::Unknown:
+    case QgsCrashReport::LikelyPythonFaultCause::NotPython:
       break;
 
     case QgsCrashReport::LikelyPythonFaultCause::ProcessingScript:
