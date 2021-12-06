@@ -24,6 +24,7 @@
 
 QgsCrashDialog::QgsCrashDialog( QWidget *parent )
   : QDialog( parent )
+  , mPythonFault( QgsCrashReport::PythonFault() )
 {
   setupUi( this );
   setWindowTitle( tr( "Uh-oh!" ) );
@@ -58,6 +59,7 @@ void QgsCrashDialog::setReloadArgs( const QString &reloadArgs )
 
 void QgsCrashDialog::setPythonFault( const QgsCrashReport::PythonFault &fault )
 {
+  mPythonFault = fault;
   switch ( fault.cause )
   {
     case QgsCrashReport::LikelyPythonFaultCause::Unknown:
@@ -70,6 +72,7 @@ void QgsCrashDialog::setPythonFault( const QgsCrashReport::PythonFault &fault )
                               + "<br><br>"
                               +  tr( "This is a third party custom script, and this issue should be reported to the author of that script." ) );
       splitter->setSizes( { 0, splitter->width() } );
+      mCopyReportButton->setEnabled( true );
       break;
 
     case QgsCrashReport::LikelyPythonFaultCause::Plugin:
@@ -78,12 +81,14 @@ void QgsCrashDialog::setPythonFault( const QgsCrashReport::PythonFault &fault )
                               + "<br><br>"
                               +  tr( "Please report this issue to the author of that plugin." ) );
       splitter->setSizes( { 0, splitter->width() } );
+      mCopyReportButton->setEnabled( true );
       break;
 
     case QgsCrashReport::LikelyPythonFaultCause::ConsoleCommand:
       mCrashHeaderMessage->setText( tr( "Command crashed QGIS" ).arg( fault.title ) );
       mCrashMessage->setText( tr( "A command entered in the Python console caused QGIS to crash." ) );
       splitter->setSizes( { 0, splitter->width() } );
+      mCopyReportButton->setEnabled( true );
       break;
   }
 }
@@ -94,7 +99,9 @@ void QgsCrashDialog::showReportWidget()
 
 void QgsCrashDialog::on_mUserFeedbackText_textChanged()
 {
-  mCopyReportButton->setEnabled( !mUserFeedbackText->toPlainText().isEmpty() );
+  mCopyReportButton->setEnabled( !mUserFeedbackText->toPlainText().isEmpty()
+                                 || ( mPythonFault.cause != QgsCrashReport::LikelyPythonFaultCause::NotPython
+                                      && mPythonFault.cause != QgsCrashReport::LikelyPythonFaultCause::Unknown ) );
 }
 
 QStringList QgsCrashDialog::splitCommand( const QString &command )
@@ -153,10 +160,14 @@ QStringList QgsCrashDialog::splitCommand( const QString &command )
 void QgsCrashDialog::createBugReport()
 {
   QClipboard *clipboard = QApplication::clipboard();
-  QString userText = "## User Feedback\n\n" + mUserFeedbackText->toPlainText();
-  QString details = "## Report Details\n\n" + mReportData;
-  QString finalText = userText + "\n\n" + details;
-  QString markdown = QgsCrashReport::htmlToMarkdown( finalText );
+
+  const QString userText = !mUserFeedbackText->toPlainText().isEmpty()
+                           ? ( "## User Feedback\n\n" + mUserFeedbackText->toPlainText() )
+                           : QString();
+  const QString details = "## Report Details\n\n" + mReportData;
+  const QString finalText = ( !userText.isEmpty() ? ( userText + "\n\n" ) : QString() )
+                            + details;
+  const QString markdown = QgsCrashReport::htmlToMarkdown( finalText );
   clipboard->setText( markdown );
 }
 

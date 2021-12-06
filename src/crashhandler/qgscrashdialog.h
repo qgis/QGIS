@@ -55,6 +55,7 @@ class QgsCrashDialog : public QDialog, private Ui::QgsCrashDialog
 
     QString mReportData;
     QString mReloadArgs;
+    QgsCrashReport::PythonFault mPythonFault;
 };
 
 #endif // QGSCRASHDIALOG_H
