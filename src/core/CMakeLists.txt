@@ -671,6 +671,7 @@ set(QGIS_CORE_SRCS
   project/qgsprojectviewsettings.cpp
   project/qgsmapviewsmanager.cpp
 
+  raster/qgsrasterattributetable.cpp
   raster/qgscliptominmaxenhancement.cpp
   raster/qgscolorrampshader.cpp
   raster/qgscontrastenhancement.cpp
@@ -1714,6 +1715,7 @@ set(QGIS_CORE_HDRS
   providers/ogr/qgsogrproviderutils.h
   providers/ogr/qgsogrtransaction.h
 
+  raster/qgsrasterattributetable.h
   raster/qgsbilinearrasterresampler.h
   raster/qgsbrightnesscontrastfilter.h
   raster/qgscliptominmaxenhancement.h
