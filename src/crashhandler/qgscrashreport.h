@@ -89,6 +89,11 @@ class QgsCrashReport
     void setVersionInfo( const QStringList &versionInfo ) { mVersionInfo = versionInfo; }
 
     /**
+     * Sets the \a path to the associated Python crash log.
+     */
+    void setPythonCrashLogFilePath( const QString &path ) { mPythonCrashLogFilePath = path; }
+
+    /**
      * convert htmlToMarkdown (copied from QgsStringUtils::htmlToMarkdown)
      * \param html text in html
      * \return the reformatted text in markdown
@@ -99,6 +104,7 @@ class QgsCrashReport
     Flags mFlags;
     QgsStackTrace *mStackTrace = nullptr;
     QStringList mVersionInfo;
+    QString mPythonCrashLogFilePath;
 
 };
 

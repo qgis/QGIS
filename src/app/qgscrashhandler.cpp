@@ -28,6 +28,8 @@
 #include <QStandardPaths>
 #include <QUuid>
 
+QString QgsCrashHandler::sPythonCrashLogFile;
+
 #ifdef _MSC_VER
 LONG WINAPI QgsCrashHandler::handle( LPEXCEPTION_POINTERS exception )
 {
@@ -104,6 +106,7 @@ void QgsCrashHandler::handleCrash( int processID, int threadID,
     stream << QString::number( threadID ) << endl;
     stream << ptrStr << endl;
     stream << symbolPath << endl;
+    stream << sPythonCrashLogFile << endl;
     stream << arguments.join( ' ' ) << endl;
     stream << reportData.join( '\n' ) << endl;
   }

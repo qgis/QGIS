@@ -49,6 +49,7 @@ int main( int argc, char *argv[] )
   QString threadIdString;
   QString exceptionPointersString;
   QString symbolPaths;
+  QString pythonCrashLogFile;
   QString reloadArgs;
   QStringList versionInfo;
 
@@ -58,6 +59,7 @@ int main( int argc, char *argv[] )
     threadIdString = file.readLine();
     exceptionPointersString = file.readLine();
     symbolPaths = file.readLine();
+    pythonCrashLogFile = file.readLine().trimmed();
     reloadArgs = file.readLine();
     // The version info is the last stuff to be in the file until the end
     // bit gross but :)
@@ -86,6 +88,7 @@ int main( int argc, char *argv[] )
 #ifdef MSVC
   report.setStackTrace( stackTrace.get() );
 #endif
+  report.setPythonCrashLogFilePath( pythonCrashLogFile );
   report.exportToCrashFolder();
 
   QgsCrashDialog dlg;
