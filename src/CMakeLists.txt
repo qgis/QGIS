@@ -19,7 +19,7 @@ if (NOT IOS)
   add_subdirectory(crssync)
 endif()
 
-if (NOT WITH_QT6 AND ((WIN32 AND NOT MINGW) OR (UNIX AND NOT APPLE AND NOT ANDROID)))
+if (NOT WITH_QT6 AND ((WIN32 AND NOT MINGW) OR (UNIX AND NOT APPLE AND NOT ANDROID AND NOT IOS)))
   add_subdirectory(crashhandler)
 endif()
 add_subdirectory(test)
