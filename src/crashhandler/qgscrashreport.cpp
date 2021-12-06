@@ -39,8 +39,9 @@ void QgsCrashReport::setFlags( QgsCrashReport::Flags flags )
 const QString QgsCrashReport::toHtml() const
 {
   QStringList reportData;
-  QString thisCrashID = crashID();
-  reportData.append( QStringLiteral( "<b>Crash ID</b>: <a href='https://github.com/qgis/QGIS/search?q=%1&type=Issues'>%1</a>" ).arg( thisCrashID ) );
+  const QString thisCrashID = crashID();
+  if ( !thisCrashID.isEmpty() )
+    reportData.append( QStringLiteral( "<b>Crash ID</b>: <a href='https://github.com/qgis/QGIS/search?q=%1&type=Issues'>%1</a><br>" ).arg( thisCrashID ) );
 
   if ( flags().testFlag( QgsCrashReport::Stack ) )
   {
@@ -61,8 +62,8 @@ const QString QgsCrashReport::toHtml() const
 
     if ( !pythonStack.isEmpty() )
     {
-      reportData.append( QStringLiteral( "<br>" ) );
       QString pythonStackString = QStringLiteral( "<b>Python Stack Trace</b><pre>" );
+
       for ( const QString &line : pythonStack )
       {
         const thread_local QRegularExpression pythonTraceRx( QStringLiteral( "\\s*File\\s+\"(.*)\",\\s+line\\s+(\\d+)" ) );
@@ -100,7 +101,7 @@ const QString QgsCrashReport::toHtml() const
       reportData.append( pythonStackString );
     }
 
-    reportData.append( QStringLiteral( "<b>Stack Trace</b>" ) );
+    reportData.append( QStringLiteral( "<br><b>Stack Trace</b>" ) );
     if ( !mStackTrace || mStackTrace->lines.isEmpty() )
     {
       reportData.append( QStringLiteral( "No stack trace is available." ) );
@@ -164,6 +165,9 @@ const QString QgsCrashReport::toHtml() const
 
 const QString QgsCrashReport::crashID() const
 {
+  if ( mPythonFault.cause != LikelyPythonFaultCause::NotPython )
+    return QString(); // don't report crash IDs for python crashes -- they won't be representative of the cause of the crash
+
   if ( !mStackTrace )
     return QStringLiteral( "Not available" );
 
@@ -278,6 +282,9 @@ void QgsCrashReport::setPythonCrashLogFilePath( const QString &path )
     while ( !inputStream.atEnd() )
     {
       line = inputStream.readLine();
+
+      if ( !line.trimmed().isEmpty() && mPythonFault.cause == LikelyPythonFaultCause::NotPython )
+        mPythonFault.cause = LikelyPythonFaultCause::Unknown;
 
       const thread_local QRegularExpression pythonTraceRx( QStringLiteral( "\\s*File\\s+\"(.*)\",\\s+line\\s+(\\d+)" ) );
 

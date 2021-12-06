@@ -48,6 +48,7 @@ class QgsCrashReport
 
     enum class LikelyPythonFaultCause
     {
+      NotPython,
       Unknown,
       ProcessingScript,
       Plugin,
@@ -103,7 +104,7 @@ class QgsCrashReport
 
     struct PythonFault
     {
-      LikelyPythonFaultCause cause = LikelyPythonFaultCause::Unknown;
+      LikelyPythonFaultCause cause = LikelyPythonFaultCause::NotPython;
       QString title;
       QString filePath;
     };
