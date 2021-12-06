@@ -1,0 +1,99 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterattributetable.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsRasterAttributeTable
+{
+%Docstring(signature="appended")
+*************************************************************************
+qgsrasterattributetable.h - :py:class:`QgsRasterAttributeTable`
+
+---------------------
+  begin                : 3.12.2021
+  copyright            : (C) 2021 by Alessandro Pasotti
+  email                : elpaso at itopen dot it
+  **************************************************************************
+
+This program is free software; you can redistribute it and/or modify  *
+it under the terms of the GNU General Public License as published by  *
+the Free Software Foundation; either version 2 of the License, or     *
+(at your option) any later version.                                   *
+
+**************************************************************************
+%End
+
+%TypeHeaderCode
+#include "qgsrasterattributetable.h"
+%End
+  public:
+
+
+    QgsRasterAttributeTable();
+
+    enum class FieldUsage
+    {
+      Generic,
+      PixelCount,
+      Name,
+      Min,
+      Max,
+      MinMax,
+      Red,
+      Green,
+      Blue,
+      Alpha,
+      RedMin,
+      GreenMin,
+      BlueMin,
+      AlphaMin,
+      RedMax,
+      GreenMax,
+      BlueMax,
+      AlphaMax,
+      MaxCount
+    };
+
+    enum class RatType
+    {
+      Thematic,
+      Athematic
+    };
+
+    const RatType &type() const;
+    void setType( const RatType &newType );
+    bool hasColor();
+    QgsFields fields();
+
+    const QList<FieldUsage> &fieldUsages() const;
+
+    bool isDirty() const;
+    void setIsDirty( bool newIsDirty );
+
+    bool insertField( const QString &name, FieldUsage usage, QVariant::Type type, int position = 0 );
+
+    bool appendField( const QString &name, FieldUsage usage, QVariant::Type type );
+
+    bool insertRow( const QVariantList data, int position = 0 );
+    bool appendRow( const QVariantList data );
+
+    bool isValid();
+
+  protected:
+
+    void setFieldUsages( const QList<FieldUsage> &newFieldUsages );
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterattributetable.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
