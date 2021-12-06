@@ -525,9 +525,9 @@ QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
 
   // http://alanstorm.com/url_regex_explained
   // note - there's more robust implementations available
-  static thread_local QRegularExpression urlRegEx( "(\\b(([\\w-]+://?|www[.])[^\\s()<>]+(?:\\([\\w\\d]+\\)|([^!\"#$%&'()*+,\\-./:;<=>?@[\\\\\\]^_`{|}~\\s]|/))))" );
-  static thread_local QRegularExpression protoRegEx( "^(?:f|ht)tps?://|file://" );
-  static thread_local QRegularExpression emailRegEx( "([\\w._%+-]+@[\\w.-]+\\.[A-Za-z]+)" );
+  static thread_local QRegularExpression urlRegEx( QStringLiteral( "(\\b(([\\w-]+://?|www[.])[^\\s()<>]+(?:\\([\\w\\d]+\\)|([^!\"#$%&'()*+,\\-./:;<=>?@[\\\\\\]^_`{|}~\\s]|/))))" ) );
+  static thread_local QRegularExpression protoRegEx( QStringLiteral( "^(?:f|ht)tps?://|file://" ) );
+  static thread_local QRegularExpression emailRegEx( QStringLiteral( "([\\w._%+-]+@[\\w.-]+\\.[A-Za-z]+)" ) );
 
   int offset = 0;
   bool found = false;
@@ -567,7 +567,7 @@ QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
 
 bool QgsStringUtils::isUrl( const QString &string )
 {
-  const thread_local QRegularExpression rxUrl( "^(http|https|ftp|file)://\\S+$" );
+  const thread_local QRegularExpression rxUrl( QStringLiteral( "^(http|https|ftp|file)://\\S+$" ) );
   return rxUrl.match( string ).hasMatch();
 }
 
@@ -579,7 +579,7 @@ QString QgsStringUtils::htmlToMarkdown( const QString &html )
   converted.replace( QLatin1String( "<b>" ), QLatin1String( "**" ) );
   converted.replace( QLatin1String( "</b>" ), QLatin1String( "**" ) );
 
-  static thread_local QRegularExpression hrefRegEx( "<a\\s+href\\s*=\\s*([^<>]*)\\s*>([^<>]*)</a>" );
+  static thread_local QRegularExpression hrefRegEx( QStringLiteral( "<a\\s+href\\s*=\\s*([^<>]*)\\s*>([^<>]*)</a>" ) );
 
   int offset = 0;
   QRegularExpressionMatch match = hrefRegEx.match( converted );
@@ -762,7 +762,7 @@ QgsStringReplacement::QgsStringReplacement( const QString &match, const QString 
 {
   if ( mWholeWordOnly )
   {
-    mRx.setPattern( QString( "\\b%1\\b" ).arg( mMatch ) );
+    mRx.setPattern( QStringLiteral( "\\b%1\\b" ).arg( mMatch ) );
     mRx.setPatternOptions( mCaseSensitive ? QRegularExpression::NoPatternOption : QRegularExpression::CaseInsensitiveOption );
   }
 }
@@ -785,8 +785,8 @@ QgsStringMap QgsStringReplacement::properties() const
   QgsStringMap map;
   map.insert( QStringLiteral( "match" ), mMatch );
   map.insert( QStringLiteral( "replace" ), mReplacement );
-  map.insert( QStringLiteral( "caseSensitive" ), mCaseSensitive ? "1" : "0" );
-  map.insert( QStringLiteral( "wholeWord" ), mWholeWordOnly ? "1" : "0" );
+  map.insert( QStringLiteral( "caseSensitive" ), mCaseSensitive ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  map.insert( QStringLiteral( "wholeWord" ), mWholeWordOnly ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   return map;
 }
 
@@ -801,8 +801,7 @@ QgsStringReplacement QgsStringReplacement::fromProperties( const QgsStringMap &p
 QString QgsStringReplacementCollection::process( const QString &input ) const
 {
   QString result = input;
-  const auto constMReplacements = mReplacements;
-  for ( const QgsStringReplacement &r : constMReplacements )
+  for ( const QgsStringReplacement &r : mReplacements )
   {
     result = r.process( result );
   }
@@ -811,8 +810,7 @@ QString QgsStringReplacementCollection::process( const QString &input ) const
 
 void QgsStringReplacementCollection::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
-  const auto constMReplacements = mReplacements;
-  for ( const QgsStringReplacement &r : constMReplacements )
+  for ( const QgsStringReplacement &r : mReplacements )
   {
     QgsStringMap props = r.properties();
     QDomElement propEl = doc.createElement( QStringLiteral( "replacement" ) );
