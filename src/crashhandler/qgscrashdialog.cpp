@@ -77,8 +77,11 @@ void QgsCrashDialog::createBugReport()
 
 void QgsCrashDialog::reloadQGIS()
 {
-  bool loaded = QProcess::startDetached( mReloadArgs );
-  if ( loaded )
+  const QStringList command = QProcess::splitCommand( mReloadArgs );
+  if ( command.isEmpty() )
+    return;
+
+  if ( QProcess::startDetached( command.at( 0 ), command.mid( 1 ) ) )
   {
     accept();
   }
