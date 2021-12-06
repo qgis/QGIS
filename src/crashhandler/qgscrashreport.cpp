@@ -44,28 +44,6 @@ const QString QgsCrashReport::toHtml() const
 
   if ( flags().testFlag( QgsCrashReport::Stack ) )
   {
-    reportData.append( QStringLiteral( "<br>" ) );
-    reportData.append( QStringLiteral( "<b>Stack Trace</b>" ) );
-    if ( !mStackTrace || mStackTrace->lines.isEmpty() )
-    {
-      reportData.append( QStringLiteral( "Stack trace could not be generated." ) );
-    }
-    else if ( !mStackTrace->symbolsLoaded )
-    {
-      reportData.append( QStringLiteral( "Stack trace could not be generated due to missing symbols." ) );
-    }
-    else
-    {
-      reportData.append( QStringLiteral( "<pre>" ) );
-      for ( const QgsStackTrace::StackLine &line : mStackTrace->lines )
-      {
-        QFileInfo fileInfo( line.fileName );
-        QString filename( fileInfo.fileName() );
-        reportData.append( QStringLiteral( "%2 %3:%4" ).arg( line.symbolName, filename, line.lineNumber ) );
-      }
-      reportData.append( QStringLiteral( "</pre>" ) );
-    }
-
     QStringList pythonStack;
     if ( !mPythonCrashLogFilePath.isEmpty() )
     {
@@ -120,6 +98,27 @@ const QString QgsCrashReport::toHtml() const
       }
       pythonStackString.append( QStringLiteral( "</pre>" ) );
       reportData.append( pythonStackString );
+    }
+
+    reportData.append( QStringLiteral( "<b>Stack Trace</b>" ) );
+    if ( !mStackTrace || mStackTrace->lines.isEmpty() )
+    {
+      reportData.append( QStringLiteral( "No stack trace is available." ) );
+    }
+    else if ( !mStackTrace->symbolsLoaded )
+    {
+      reportData.append( QStringLiteral( "Stack trace could not be generated due to missing symbols." ) );
+    }
+    else
+    {
+      reportData.append( QStringLiteral( "<pre>" ) );
+      for ( const QgsStackTrace::StackLine &line : mStackTrace->lines )
+      {
+        QFileInfo fileInfo( line.fileName );
+        QString filename( fileInfo.fileName() );
+        reportData.append( QStringLiteral( "%2 %3:%4" ).arg( line.symbolName, filename, line.lineNumber ) );
+      }
+      reportData.append( QStringLiteral( "</pre>" ) );
     }
   }
 
