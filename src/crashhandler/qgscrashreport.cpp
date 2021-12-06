@@ -44,7 +44,7 @@ const QString QgsCrashReport::toHtml() const
   {
     reportData.append( QStringLiteral( "<br>" ) );
     reportData.append( QStringLiteral( "<b>Stack Trace</b>" ) );
-    if ( mStackTrace->lines.isEmpty() )
+    if ( !mStackTrace || mStackTrace->lines.isEmpty() )
     {
       reportData.append( QStringLiteral( "Stack trace could not be generated." ) );
     }
@@ -107,6 +107,9 @@ const QString QgsCrashReport::toHtml() const
 
 const QString QgsCrashReport::crashID() const
 {
+  if ( !mStackTrace )
+    return QStringLiteral( "Not available" );
+
   if ( !mStackTrace->symbolsLoaded || mStackTrace->lines.isEmpty() )
     return QStringLiteral( "ID not generated due to missing information.<br><br> "
                            "Your version of QGIS install might not have debug information included or "
@@ -141,18 +144,23 @@ void QgsCrashReport::exportToCrashFolder()
     QDir().mkpath( folder );
   }
 
-  QString fileName = folder + "/stack.txt";
+  QString fileName;
+  QFile file;
 
-  QFile file( fileName );
-  if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
+  if ( mStackTrace )
   {
-    QTextStream stream( &file );
-    stream << mStackTrace->fullStack << endl;
+    fileName = folder + "/stack.txt";
+
+    file.setFileName( fileName );
+    if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
+    {
+      QTextStream stream( &file );
+      stream << mStackTrace->fullStack << endl;
+    }
+    file.close();
   }
-  file.close();
 
   fileName = folder + "/report.txt";
-
   file.setFileName( fileName );
   if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
   {

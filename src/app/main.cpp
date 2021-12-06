@@ -362,6 +362,8 @@ void qgisCrash( int signal )
     }
   }
 
+  QgsCrashHandler::handle( 0 );
+
   abort();
 }
 #endif
