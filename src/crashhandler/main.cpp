@@ -16,6 +16,7 @@
  ***************************************************************************/
 #include <memory>
 #include <iostream>
+#include <QFile>
 
 #define _NO_CVCONST_H
 #define _CRT_STDIO_ISO_WIDE_SPECIFIERS
