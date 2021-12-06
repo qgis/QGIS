@@ -23,6 +23,8 @@
 #include <QSysInfo>
 #include <QFileInfo>
 #include <QCryptographicHash>
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
 
 QgsCrashReport::QgsCrashReport()
 {
@@ -86,7 +88,36 @@ const QString QgsCrashReport::toHtml() const
       QString pythonStackString = QStringLiteral( "<b>Python Stack Trace</b><pre>" );
       for ( const QString &line : pythonStack )
       {
-        pythonStackString.append( line + '\n' );
+        const thread_local QRegularExpression pythonTraceRx( QStringLiteral( "\\s*File\\s+\"(.*)\",\\s+line\\s+(\\d+)" ) );
+
+        const QRegularExpressionMatch fileLineMatch = pythonTraceRx.match( line );
+        if ( fileLineMatch.hasMatch() )
+        {
+          const QString pythonFilePath = fileLineMatch.captured( 1 );
+          const int lineNumber = fileLineMatch.captured( 2 ).toInt();
+          QFile pythonFile( pythonFilePath );
+          if ( pythonFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
+          {
+            QTextStream inputStream( &pythonFile );
+            // read lines till we find target line
+            int currentLineNumber = 0;
+            QString pythonLine;
+            for ( ; currentLineNumber < lineNumber && !inputStream.atEnd(); ++currentLineNumber )
+            {
+              pythonLine = inputStream.readLine();
+            }
+
+            pythonStackString.append( line + '\n' );
+            if ( currentLineNumber == lineNumber )
+            {
+              pythonStackString.append( QStringLiteral( "    " ) + pythonLine.trimmed() + '\n' );
+            }
+          }
+        }
+        else
+        {
+          pythonStackString.append( line + '\n' );
+        }
       }
       pythonStackString.append( QStringLiteral( "</pre>" ) );
       reportData.append( pythonStackString );
