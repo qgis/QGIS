@@ -228,6 +228,9 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     //! Open mGdalDataset/mGdalBaseDataset if needed.
     bool initIfNeeded();
 
+    //! Load attribute tables
+    bool loadRat();
+
     // There are 2 cloning mechanisms.
     // * Either the cloned provider use the same GDAL handles as the main provider
     //   instance, in which case *mpRefCounter is used to count how many providers

@@ -697,6 +697,10 @@ Returns maximum oversampling factor for zoomed-out operations.
     virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
 
+    QgsRasterAttributeTable attributeTable( int bandNumber );
+    void setAttributeTable( int bandNumber, const QgsRasterAttributeTable &attributeTable );
+    void removeAttributeTable( int bandNumber );
+
   signals:
 
     void statusChanged( const QString & ) const;
@@ -705,6 +709,7 @@ Emit a message to be displayed on status bar, usually used by network providers 
 
 .. versionadded:: 2.14
 %End
+
 
   protected:
 

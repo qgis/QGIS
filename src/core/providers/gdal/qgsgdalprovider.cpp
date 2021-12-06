@@ -23,6 +23,7 @@
 #include "qgsgdalproviderbase.h"
 #include "qgsgdalprovider.h"
 #include "qgsconfig.h"
+#include "qgsrasterattributetable.h"
 
 #include "qgsgdalutils.h"
 #include "qgsapplication.h"
@@ -3038,6 +3039,7 @@ bool QgsGdalProvider::initIfNeeded()
   CPLErrorReset();
   mGdalBaseDataset = gdalOpen( gdalUri, mUpdate ? GDAL_OF_UPDATE : GDAL_OF_READONLY );
 
+
   if ( !mGdalBaseDataset )
   {
     QString msg = QStringLiteral( "Cannot open GDAL dataset %1:\n%2" ).arg( dataSourceUri(), QString::fromUtf8( CPLGetLastErrorMsg() ) );
@@ -3063,6 +3065,160 @@ void CPL_STDCALL showErrorsExceptTransformationAlreadyNorthUp( CPLErr, int errNo
     std::cerr << "GDAL ERROR " <<  errNo << ": " << msg << std::endl;
   }
 }
+
+bool QgsGdalProvider::loadRat()
+{
+  bool hasAtLeastOneValidRat { false };
+
+  if ( mGdalBaseDataset )
+  {
+    GDALRasterBandH hBand;
+    // Set attribute tables
+    for ( int bandNumber = 1; bandNumber <= GDALGetRasterCount( mGdalBaseDataset ); ++bandNumber )
+    {
+      hBand = GDALGetRasterBand( mGdalBaseDataset, bandNumber );
+      GDALRasterAttributeTableH hRat = GDALGetDefaultRAT( hBand );
+      if ( hRat )
+      {
+        QgsRasterAttributeTable rat;
+
+        // Fields
+        QgsFields fields;
+        QStringList lowerNames;
+        QList<QgsRasterAttributeTable::FieldUsage> usages;
+        for ( int columnNumber = 0; GDALRATGetColumnCount( hRat ); ++columnNumber )
+        {
+          QgsRasterAttributeTable::FieldUsage usage { static_cast<QgsRasterAttributeTable::FieldUsage>( GDALRATGetUsageOfCol( hRat, columnNumber ) ) };
+          QVariant::Type type;
+          switch ( GDALRATGetTypeOfCol( hRat, columnNumber ) )
+          {
+            case GFT_Integer:
+            {
+              type = QVariant::Int;
+              break;
+            }
+            case GFT_Real:
+            {
+              type = QVariant::Double;
+              break;
+            }
+            case GFT_String:
+            {
+              type = QVariant::String;
+              break;
+            }
+          }
+          const QString name { GDALRATGetNameOfCol( hRat, columnNumber ) };
+          lowerNames.append( name.toLower() );
+          fields.append( QgsField( name, type ) );
+          usages.append( usage );
+        }
+
+        QStringList cNames { fields.names( ) };
+        QStringList lNames;
+
+        // Try to identify fields in case of RAT with wrong usages
+        if ( ! usages.contains( QgsRasterAttributeTable::FieldUsage::MinMax ) ||
+             !( usages.contains( QgsRasterAttributeTable::FieldUsage::Min ) && usages.contains( QgsRasterAttributeTable::FieldUsage::Max ) ) )
+        {
+          if ( lowerNames.contains( QStringLiteral( "value" ) ) )
+          {
+            usages[ lowerNames.indexOf( QStringLiteral( "value" ) ) ] = QgsRasterAttributeTable::FieldUsage::MinMax;
+          }
+          else
+          {
+            const QStringList minValueNames { {
+                QStringLiteral( "min" ),
+                QStringLiteral( "min_value" ),
+                QStringLiteral( "min value" ),
+                QStringLiteral( "value min" ),
+                QStringLiteral( "value_min" ),
+              } };
+
+            for ( const QString &minName : std::as_const( minValueNames ) )
+            {
+              if ( lowerNames.contains( minName ) )
+              {
+                usages[ lowerNames.indexOf( minName ) ] = QgsRasterAttributeTable::FieldUsage::Min;
+                break;
+              }
+            }
+
+            const QStringList maxValueNames { {
+                QStringLiteral( "max" ),
+                QStringLiteral( "max_value" ),
+                QStringLiteral( "max value" ),
+                QStringLiteral( "value max" ),
+                QStringLiteral( "value_max" ),
+              } };
+
+            for ( const QString &maxName : std::as_const( minValueNames ) )
+            {
+              if ( lowerNames.contains( maxName ) )
+              {
+                usages[ lowerNames.indexOf( maxName ) ] = QgsRasterAttributeTable::FieldUsage::Max;
+                break;
+              }
+            }
+
+          }
+
+        }
+
+        if ( ! usages.contains( QgsRasterAttributeTable::FieldUsage::PixelCount ) )
+        {
+          if ( lowerNames.contains( QStringLiteral( "count" ) ) )
+          {
+            usages[ lowerNames.indexOf( QStringLiteral( "count" ) ) ] = QgsRasterAttributeTable::FieldUsage::PixelCount;
+          }
+        }
+
+        for ( int fieldIdx = 0; fieldIdx < fields.count(); ++fieldIdx )
+        {
+          const auto field { fields.at( fieldIdx ) };
+          rat.appendField( field.name(), usages[ fieldIdx ], field.type() );
+        }
+
+        // Data
+        for ( int rowNumber = 0; rowNumber <= GDALRATGetRowCount( hRat ); ++rowNumber )
+        {
+          QVariantList data;
+          for ( int columnNumber = 0; GDALRATGetColumnCount( hRat ); ++columnNumber )
+          {
+            switch ( static_cast<int>( usages[ columnNumber ] ) )
+            {
+              case GFT_Integer:
+              {
+                data.append( GDALRATGetValueAsInt( hRat, rowNumber, columnNumber ) );
+                break;
+              }
+              case GFT_Real:
+              {
+                data.append( GDALRATGetValueAsDouble( hRat, rowNumber, columnNumber ) );
+                break;
+              }
+              case GFT_String:
+              {
+                data.append( GDALRATGetValueAsString( hRat, rowNumber, columnNumber ) );
+                break;
+              }
+            }
+          }
+          rat.insertRow( data );
+        }
+
+        if ( rat.isValid( ) )
+        {
+          setAttributeTable( bandNumber, rat );
+          hasAtLeastOneValidRat = true;
+        }
+      }
+    }
+  }
+
+  return hasAtLeastOneValidRat;
+}
+
 
 void QgsGdalProvider::initBaseDataset()
 {

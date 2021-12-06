@@ -99,7 +99,7 @@ class CORE_EXPORT QgsRaster
       MultiBandSingleBandPseudoColor, // a layer containing 2 or more bands, but a single band drawn using a pseudocolor algorithm
       MultiBandColor,                 // a layer containing 2 or more bands, mapped to RGB color space. In the case of a multiband with only two bands, one band will be mapped to more than one color.
       SingleBandColorDataStyle,       // ARGB values rendered directly
-      AttributeTable                  //!< A singleband image drawn using the RAT settings \since QGIS 3.26
+      AttributeTable                  //!< A single band image drawn using the RAT settings \since QGIS 3.26
     };
 
     /**

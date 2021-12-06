@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsattributetablerendererwidget.h"
+#include "qgsattributetablerenderer.h"
 #include "qgsrasterdataprovider.h"
 
 QgsAttributeTableRendererWidget::QgsAttributeTableRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
@@ -33,5 +34,28 @@ QgsAttributeTableRendererWidget::QgsAttributeTableRendererWidget( QgsRasterLayer
     return;
   }
 
+  connect( mBandComboBox, &QgsRasterBandComboBox::bandChanged, [ = ]( int bandNumber )
+  {
+    if ( provider->attributeTable( bandNumber ).isValid() )
+    {
+      // TODO: show attr table
+      mNoRatMessage->hide();
+      mLoadRatButton->hide();
+    }
+    else
+    {
+      mNoRatMessage->show();
+      mLoadRatButton->show();
+    }
+  } );
 
+  mBandComboBox->setLayer( layer );
+
+}
+
+QgsRasterRenderer *QgsAttributeTableRendererWidget::renderer()
+{
+  const int bandNumber = mBandComboBox->currentBand();
+  QgsAttributeTableRenderer *renderer = new QgsAttributeTableRenderer( mRasterLayer->dataProvider(), bandNumber );
+  return renderer;
 }

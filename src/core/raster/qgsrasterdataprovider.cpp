@@ -642,6 +642,25 @@ void QgsRasterDataProvider::writeXml( QDomDocument &doc, QDomElement &parentElem
                                   QString::number( mMaxOversampling ) );
 }
 
+QgsRasterAttributeTable QgsRasterDataProvider::attributeTable( int bandNumber )
+{
+  if ( mAttributeTables.contains( bandNumber ) )
+  {
+    return mAttributeTables.value( bandNumber );
+  }
+  return QgsRasterAttributeTable();
+}
+
+void QgsRasterDataProvider::setAttributeTable( int bandNumber, const QgsRasterAttributeTable &attributeTable )
+{
+  mAttributeTables.insert( bandNumber, attributeTable );
+}
+
+void QgsRasterDataProvider::removeAttributeTable( int bandNumber )
+{
+  mAttributeTables.remove( bandNumber );
+}
+
 QString QgsRasterDataProvider::colorInterpretationName( int bandNo ) const
 {
   return colorName( colorInterpretation( bandNo ) );

@@ -703,6 +703,7 @@ set(QGIS_CORE_SRCS
   raster/qgsrastershaderfunction.cpp
   raster/qgsrastertransparency.cpp
 
+  raster/qgsattributetablerenderer.cpp
   raster/qgsbilinearrasterresampler.cpp
   raster/qgsbrightnesscontrastfilter.cpp
   raster/qgscubicrasterresampler.cpp
@@ -1715,6 +1716,7 @@ set(QGIS_CORE_HDRS
   providers/ogr/qgsogrproviderutils.h
   providers/ogr/qgsogrtransaction.h
 
+  raster/qgsattributetablerenderer.h
   raster/qgsrasterattributetable.h
   raster/qgsbilinearrasterresampler.h
   raster/qgsbrightnesscontrastfilter.h
