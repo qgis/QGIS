@@ -102,11 +102,13 @@ class QgsCrashReport
      */
     void setPythonCrashLogFilePath( const QString &path );
 
-    struct PythonFault
+    class PythonFault
     {
-      LikelyPythonFaultCause cause = LikelyPythonFaultCause::NotPython;
-      QString title;
-      QString filePath;
+      public:
+
+        LikelyPythonFaultCause cause = LikelyPythonFaultCause::NotPython;
+        QString title;
+        QString filePath;
     };
 
     PythonFault pythonFault() const { return mPythonFault; }
