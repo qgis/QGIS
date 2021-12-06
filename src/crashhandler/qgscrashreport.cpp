@@ -212,7 +212,11 @@ void QgsCrashReport::exportToCrashFolder()
     if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
     {
       QTextStream stream( &file );
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
       stream << mStackTrace->fullStack << endl;
+#else
+      stream << mStackTrace->fullStack << Qt::endl;
+#endif
     }
     file.close();
   }
@@ -222,7 +226,11 @@ void QgsCrashReport::exportToCrashFolder()
   if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
   {
     QTextStream stream( &file );
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     stream << htmlToMarkdown( toHtml() ) << endl;
+#else
+    stream << htmlToMarkdown( toHtml() ) << Qt::endl;
+#endif
   }
   file.close();
 
