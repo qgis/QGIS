@@ -224,7 +224,11 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         self.executeAlgorithm()
 
     def executeAlgorithmAsBatchProcess(self):
-        self.executeWithGui.emit(self.algorithmTree.selectedAlgorithm().id(), self, self.in_place_mode, True)
+        alg = self.algorithmTree.selectedAlgorithm()
+        if alg is not None:
+            self.executeWithGui.emit(alg.id(), self, self.in_place_mode, True)
 
     def executeAlgorithm(self):
-        self.executeWithGui.emit(self.algorithmTree.selectedAlgorithm().id(), self, self.in_place_mode, False)
+        alg = self.algorithmTree.selectedAlgorithm()
+        if alg is not None:
+            self.executeWithGui.emit(alg.id(), self, self.in_place_mode, False)
