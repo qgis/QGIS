@@ -94,6 +94,7 @@ int main( int argc, char *argv[] )
 
   QgsCrashDialog dlg;
   dlg.setReloadArgs( reloadArgs );
+  dlg.setPythonFault( report.pythonFault() );
   dlg.setBugReport( report.toHtml() );
   dlg.setModal( true );
   dlg.show();

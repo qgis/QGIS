@@ -73,7 +73,6 @@ const QString QgsCrashReport::toHtml() const
       if ( pythonLog.open( QIODevice::ReadOnly | QIODevice::Text ) )
       {
         QTextStream inputStream( &pythonLog );
-        QString line;
         while ( !inputStream.atEnd() )
         {
           pythonStack.append( inputStream.readLine() );
@@ -258,6 +257,54 @@ QString QgsCrashReport::crashReportFolder()
   return QStandardPaths::standardLocations( QStandardPaths::AppLocalDataLocation ).value( 0 ) +
          "/crashes/" +
          QUuid::createUuid().toString().replace( "{", "" ).replace( "}", "" );
+}
+
+void QgsCrashReport::setPythonCrashLogFilePath( const QString &path )
+{
+  mPythonCrashLogFilePath = path;
+
+  QFile pythonLog( mPythonCrashLogFilePath );
+  if ( pythonLog.open( QIODevice::ReadOnly | QIODevice::Text ) )
+  {
+    QTextStream inputStream( &pythonLog );
+    QString line;
+    while ( !inputStream.atEnd() )
+    {
+      line = inputStream.readLine();
+
+      const thread_local QRegularExpression pythonTraceRx( QStringLiteral( "\\s*File\\s+\"(.*)\",\\s+line\\s+(\\d+)" ) );
+
+      const QRegularExpressionMatch fileLineMatch = pythonTraceRx.match( line );
+      if ( fileLineMatch.hasMatch() )
+      {
+        const QString pythonFilePath = fileLineMatch.captured( 1 );
+        if ( pythonFilePath.contains( QLatin1String( "profiles" ), Qt::CaseInsensitive )
+             && pythonFilePath.contains( QLatin1String( "processing" ), Qt::CaseInsensitive )
+             && pythonFilePath.contains( QLatin1String( "scripts" ), Qt::CaseInsensitive ) )
+        {
+          mPythonFault.cause = LikelyPythonFaultCause::ProcessingScript;
+          const QFileInfo fi( pythonFilePath );
+          mPythonFault.title = fi.fileName();
+          mPythonFault.filePath = pythonFilePath;
+        }
+        else if ( mPythonFault.cause == LikelyPythonFaultCause::Unknown && pythonFilePath.contains( QLatin1String( "console.py" ), Qt::CaseInsensitive ) )
+        {
+          mPythonFault.cause = LikelyPythonFaultCause::ConsoleCommand;
+        }
+        else if ( mPythonFault.cause == LikelyPythonFaultCause::Unknown )
+        {
+          const thread_local QRegularExpression pluginRx( QStringLiteral( "python[/\\\\]plugins[/\\\\](.*?)[/\\\\]" ) );
+          const QRegularExpressionMatch pluginNameMatch = pluginRx.match( pythonFilePath );
+          if ( pluginNameMatch.hasMatch() )
+          {
+            mPythonFault.cause = LikelyPythonFaultCause::Plugin;
+            mPythonFault.title = pluginNameMatch.captured( 1 );
+            mPythonFault.filePath = pythonFilePath;
+          }
+        }
+      }
+    }
+  }
 }
 
 QString QgsCrashReport::htmlToMarkdown( const QString &html )

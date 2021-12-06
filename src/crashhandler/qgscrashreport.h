@@ -46,6 +46,14 @@ class QgsCrashReport
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
+    enum class LikelyPythonFaultCause
+    {
+      Unknown,
+      ProcessingScript,
+      Plugin,
+      ConsoleCommand
+    };
+
     /**
      * Sets the stack trace for the crash report.
      * \param value A string list for each line in the stack trace.
@@ -91,7 +99,16 @@ class QgsCrashReport
     /**
      * Sets the \a path to the associated Python crash log.
      */
-    void setPythonCrashLogFilePath( const QString &path ) { mPythonCrashLogFilePath = path; }
+    void setPythonCrashLogFilePath( const QString &path );
+
+    struct PythonFault
+    {
+      LikelyPythonFaultCause cause = LikelyPythonFaultCause::Unknown;
+      QString title;
+      QString filePath;
+    };
+
+    PythonFault pythonFault() const { return mPythonFault; }
 
     /**
      * convert htmlToMarkdown (copied from QgsStringUtils::htmlToMarkdown)
@@ -106,6 +123,7 @@ class QgsCrashReport
     QStringList mVersionInfo;
     QString mPythonCrashLogFilePath;
 
+    PythonFault mPythonFault;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsCrashReport::Flags )
