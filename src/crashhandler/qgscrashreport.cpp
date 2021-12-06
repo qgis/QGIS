@@ -27,6 +27,7 @@
 #include <QRegularExpressionMatch>
 
 QgsCrashReport::QgsCrashReport()
+  : mPythonFault( PythonFault() )
 {
   setFlags( QgsCrashReport::All );
 }
