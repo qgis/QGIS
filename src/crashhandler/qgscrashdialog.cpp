@@ -56,6 +56,37 @@ void QgsCrashDialog::setReloadArgs( const QString &reloadArgs )
   mReloadArgs = reloadArgs;
 }
 
+void QgsCrashDialog::setPythonFault( const QgsCrashReport::PythonFault &fault )
+{
+  switch ( fault.cause )
+  {
+    case QgsCrashReport::LikelyPythonFaultCause::Unknown:
+      break;
+
+    case QgsCrashReport::LikelyPythonFaultCause::ProcessingScript:
+      mCrashHeaderMessage->setText( tr( "User script crashed QGIS" ).arg( fault.title ) );
+      mCrashMessage->setText( tr( "The user script <b>%1</b> caused QGIS to crash." ).arg( fault.filePath )
+                              + "<br><br>"
+                              +  tr( "This is a third party custom script, and this issue should be reported to the author of that script." ) );
+      splitter->setSizes( { 0, splitter->width() } );
+      break;
+
+    case QgsCrashReport::LikelyPythonFaultCause::Plugin:
+      mCrashHeaderMessage->setText( tr( "Plugin %1 crashed QGIS" ).arg( fault.title ) );
+      mCrashMessage->setText( tr( "The plugin <b>%1</b> caused QGIS to crash." ).arg( fault.title )
+                              + "<br><br>"
+                              +  tr( "Please report this issue to the author of that plugin." ) );
+      splitter->setSizes( { 0, splitter->width() } );
+      break;
+
+    case QgsCrashReport::LikelyPythonFaultCause::ConsoleCommand:
+      mCrashHeaderMessage->setText( tr( "Command crashed QGIS" ).arg( fault.title ) );
+      mCrashMessage->setText( tr( "A command entered in the Python console caused QGIS to crash." ) );
+      splitter->setSizes( { 0, splitter->width() } );
+      break;
+  }
+}
+
 void QgsCrashDialog::showReportWidget()
 {
 }

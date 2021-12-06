@@ -22,6 +22,8 @@
 #include <QPlainTextEdit>
 #include <QPushButton>
 
+#include "qgscrashreport.h"
+
 #include "ui_qgscrashdialog.h"
 
 /**
@@ -39,6 +41,8 @@ class QgsCrashDialog : public QDialog, private Ui::QgsCrashDialog
 
     void setBugReport( const QString &reportData );
     void setReloadArgs( const QString &reloadArgs );
+
+    void setPythonFault( const QgsCrashReport::PythonFault &fault );
 
   private slots:
     void showReportWidget();
