@@ -316,6 +316,8 @@ void qgisCrash( int signal )
 {
   fprintf( stderr, "QGIS died on signal %d", signal );
 
+  QgsCrashHandler::handle( 0 );
+
   if ( access( "/usr/bin/gdb", X_OK ) == 0 )
   {
     // take full stacktrace using gdb
@@ -361,8 +363,6 @@ void qgisCrash( int signal )
       }
     }
   }
-
-  QgsCrashHandler::handle( 0 );
 
   abort();
 }
