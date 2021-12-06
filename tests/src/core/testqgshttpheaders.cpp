@@ -45,8 +45,8 @@ void TestQgsHttpheaders::initTestCase()
 void TestQgsHttpheaders::setFromSettings()
 {
   QgsSettings settings;
-  QString keyBase = "qgis/mytest1/";
-  QString outOfHeaderKey = "outofheader";
+  QString keyBase = QStringLiteral( "qgis/mytest1/" );
+  QString outOfHeaderKey = QStringLiteral( "outofheader" );
   settings.remove( keyBase ); // cleanup
 
   settings.setValue( keyBase + outOfHeaderKey, "value" );
@@ -54,29 +54,28 @@ void TestQgsHttpheaders::setFromSettings()
   settings.setValue( keyBase + QgsHttpHeaders::KEY_PREFIX + "referer", "valueR" );
   QgsHttpHeaders h( settings, keyBase );
   QVERIFY( ! h.keys().contains( outOfHeaderKey ) );
-  QVERIFY( h.keys().contains( "key1" ) );
-  QCOMPARE( h [ "key1" ].toString(), "value1" );
-  QVERIFY( h.keys().contains( "referer" ) );
-  QCOMPARE( h [ "referer" ].toString(), "valueR" );
+  QVERIFY( h.keys().contains( QStringLiteral( "key1" ) ) );
+  QCOMPARE( h [ QStringLiteral( "key1" ) ].toString(), QStringLiteral( "value1" ) );
+  QVERIFY( h.keys().contains( QStringLiteral( "referer" ) ) );
+  QCOMPARE( h [ QStringLiteral( "referer" ) ].toString(), QStringLiteral( "valueR" ) );
 
 }
 
 void TestQgsHttpheaders::updateSettings()
 {
   QgsSettings settings;
-  QString keyBase = "qgis/mytest2/";
+  QString keyBase = QStringLiteral( "qgis/mytest2/" );
   settings.remove( keyBase ); // cleanup
 
-  QgsHttpHeaders h( ( QMap<QString, QVariant> ) { {QStringLiteral( "key1" ), "value1"}} );
+  QgsHttpHeaders h( QVariantMap( { {QStringLiteral( "key1" ), "value1"}} ) );
   h.updateSettings( settings, keyBase );
   QVERIFY( settings.contains( keyBase + QgsHttpHeaders::KEY_PREFIX + "key1" ) );
   QCOMPARE( settings.value( keyBase + QgsHttpHeaders::KEY_PREFIX + "key1" ).toString(), "value1" );
 
-  QList<QString> keys = settings.allKeys();
   QVERIFY( ! settings.contains( keyBase + "referer" ) );
   QVERIFY( ! settings.contains( keyBase + QgsHttpHeaders::KEY_PREFIX + "referer" ) );
 
-  h [ "referer" ] = "http://gg.com";
+  h [ QStringLiteral( "referer" ) ] = QStringLiteral( "http://gg.com" );
 
   h.updateSettings( settings, keyBase );
   QVERIFY( settings.contains( keyBase + QgsHttpHeaders::KEY_PREFIX + "referer" ) );
