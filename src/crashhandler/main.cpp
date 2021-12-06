@@ -65,6 +65,7 @@ int main( int argc, char *argv[] )
     versionInfo = info.split( "\n" );
   }
 
+#ifdef MSVC
   DWORD processId;
   DWORD threadId;
   LPEXCEPTION_POINTERS exception;
@@ -78,10 +79,13 @@ int main( int argc, char *argv[] )
   std::cout << "Symbol Path :" << symbolPaths.toUtf8().constData() << std::endl;
 
   std::unique_ptr<QgsStackTrace> stackTrace( QgsStackTrace::trace( processId, threadId, exception, symbolPaths ) );
+#endif
 
   QgsCrashReport report;
   report.setVersionInfo( versionInfo );
+#ifdef MSVC
   report.setStackTrace( stackTrace.get() );
+#endif
   report.exportToCrashFolder();
 
   QgsCrashDialog dlg;
@@ -92,12 +96,14 @@ int main( int argc, char *argv[] )
   app.exec();
 
 
+#ifdef MSVC
   for ( HANDLE threadHandle : stackTrace->threads )
   {
     ResumeThread( threadHandle );
     CloseHandle( threadHandle );
   }
   CloseHandle( stackTrace->process );
+#endif
 
   return 0;
 }

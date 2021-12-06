@@ -16236,7 +16236,7 @@ void QgisApp::keyPressEvent( QKeyEvent *e )
 {
   emit keyPressed( e );
 
-#if 0 && defined(_MSC_VER) && defined(QGISDEBUG)
+#if 0 && defined(QGISDEBUG)
   if ( e->key() == Qt::Key_Backslash && e->modifiers() == Qt::ControlModifier )
   {
     QgsCrashHandler::handle( 0 );
