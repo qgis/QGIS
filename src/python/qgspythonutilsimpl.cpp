@@ -209,13 +209,23 @@ void QgsPythonUtilsImpl::doCustomImports()
   }
 }
 
-void QgsPythonUtilsImpl::initPython( QgisInterface *interface, const bool installErrorHook )
+void QgsPythonUtilsImpl::initPython( QgisInterface *interface, const bool installErrorHook, const QString &faultHandlerLogPath )
 {
   init();
   if ( !checkSystemImports() )
   {
     exitPython();
     return;
+  }
+
+  if ( !faultHandlerLogPath.isEmpty() )
+  {
+    runString( QStringLiteral( "import faulthandler" ) );
+    QString escapedPath = faultHandlerLogPath;
+    escapedPath.replace( '\\', QLatin1String( "\\\\" ) );
+    escapedPath.replace( '\'', QLatin1String( "\\'" ) );
+    runString( QStringLiteral( "fault_handler_file=open('%1', 'wt')" ).arg( escapedPath ) );
+    runString( QStringLiteral( "faulthandler.enable(file=fault_handler_file)" ) );
   }
 
   if ( interface )

@@ -45,6 +45,8 @@ class APP_EXPORT QgsCrashHandler
     static void handle( int );
 #endif
 
+    static QString sPythonCrashLogFile;
+
   private:
 
     static void handleCrash( int processId,

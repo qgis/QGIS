@@ -63,6 +63,34 @@ const QString QgsCrashReport::toHtml() const
       }
       reportData.append( QStringLiteral( "</pre>" ) );
     }
+
+    QStringList pythonStack;
+    if ( !mPythonCrashLogFilePath.isEmpty() )
+    {
+      QFile pythonLog( mPythonCrashLogFilePath );
+      if ( pythonLog.open( QIODevice::ReadOnly | QIODevice::Text ) )
+      {
+        QTextStream inputStream( &pythonLog );
+        QString line;
+        while ( !inputStream.atEnd() )
+        {
+          pythonStack.append( inputStream.readLine() );
+        }
+      }
+      pythonLog.close();
+    }
+
+    if ( !pythonStack.isEmpty() )
+    {
+      reportData.append( QStringLiteral( "<br>" ) );
+      QString pythonStackString = QStringLiteral( "<b>Python Stack Trace</b><pre>" );
+      for ( const QString &line : pythonStack )
+      {
+        pythonStackString.append( line + '\n' );
+      }
+      pythonStackString.append( QStringLiteral( "</pre>" ) );
+      reportData.append( pythonStackString );
+    }
   }
 
 #if 0
@@ -168,6 +196,30 @@ void QgsCrashReport::exportToCrashFolder()
     stream << htmlToMarkdown( toHtml() ) << endl;
   }
   file.close();
+
+  if ( !mPythonCrashLogFilePath.isEmpty() )
+  {
+    fileName = folder + "/python.txt";
+    QFile pythonLog( mPythonCrashLogFilePath );
+    if ( pythonLog.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    {
+      QTextStream inputStream( &pythonLog );
+      file.setFileName( fileName );
+      if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
+      {
+        QTextStream outputStream( &file );
+
+        QString line;
+        while ( !inputStream.atEnd() )
+        {
+          line = inputStream.readLine();
+          outputStream << line;
+        }
+      }
+      file.close();
+      pythonLog.close();
+    }
+  }
 }
 
 QString QgsCrashReport::crashReportFolder()
