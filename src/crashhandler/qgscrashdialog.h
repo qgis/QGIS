@@ -47,6 +47,8 @@ class QgsCrashDialog : public QDialog, private Ui::QgsCrashDialog
     void on_mUserFeedbackText_textChanged();
 
   private:
+    static QStringList splitCommand( const QString &command );
+
     QString mReportData;
     QString mReloadArgs;
 };
