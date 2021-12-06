@@ -377,9 +377,9 @@ QVector<double> QgsTriangle::lengths() const
   if ( isEmpty() )
     return lengths;
 
+  lengths.append( vertexAt( 0 ).distance( vertexAt( 1 ) ) ); // c = |AB|
   lengths.append( vertexAt( 1 ).distance( vertexAt( 2 ) ) ); // a = |BC|
   lengths.append( vertexAt( 0 ).distance( vertexAt( 2 ) ) ); // b = |AC|
-  lengths.append( vertexAt( 0 ).distance( vertexAt( 1 ) ) ); // c = |AB|
 
   return lengths;
 }
@@ -392,9 +392,9 @@ QVector<double> QgsTriangle::angles() const
 
   QVector<double> l = lengths();
 
-  const double a = l[0];
-  const double b = l[1];
-  const double c = l[2];
+  const double a = l[1];
+  const double b = l[2];
+  const double c = l[0];
 
   const double a2 = a * a;
   const double b2 = b * b;
@@ -582,13 +582,13 @@ QgsPoint QgsTriangle::inscribedCenter() const
   if ( isEmpty() )
     return QgsPoint();
 
-  QVector<double> l = lengths();
-  double x = ( l.at( 0 ) * vertexAt( 2 ).x() +
-               l.at( 1 ) * vertexAt( 0 ).x() +
-               l.at( 2 ) * vertexAt( 1 ).x() ) / perimeter();
-  double y = ( l.at( 0 ) * vertexAt( 2 ).y() +
-               l.at( 1 ) * vertexAt( 0 ).y() +
-               l.at( 2 ) * vertexAt( 1 ).y() ) / perimeter();
+  const QVector<double> l = lengths();
+  const double x = ( l.at( 0 ) * vertexAt( 2 ).x() +
+                     l.at( 1 ) * vertexAt( 0 ).x() +
+                     l.at( 2 ) * vertexAt( 1 ).x() ) / perimeter();
+  const double y = ( l.at( 0 ) * vertexAt( 2 ).y() +
+                     l.at( 1 ) * vertexAt( 0 ).y() +
+                     l.at( 2 ) * vertexAt( 1 ).y() ) / perimeter();
 
   QgsPoint center( x, y );
 
