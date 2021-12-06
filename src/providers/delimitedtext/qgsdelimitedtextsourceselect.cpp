@@ -936,7 +936,7 @@ QString QgsDelimitedTextSourceSelect::url( bool skipOverriddenTypes )
         {
           QgsDebugMsgLevel( QStringLiteral( "Overriding field %1 from %2 to %3" ).arg( fieldName, fieldTypeName, typeCombo->currentData().toString() ), 2 );
           query.addQueryItem( QStringLiteral( "field" ),
-                              QString( fieldName ).replace( ':', QStringLiteral( "%3A" ) ) + ':' +  typeCombo->currentData().toString() );
+                              QString( fieldName ).replace( ':', QLatin1String( "%3A" ) ) + ':' +  typeCombo->currentData().toString() );
         }
       }
     }

@@ -809,19 +809,19 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
       {
         typeName = csvtTypes[fieldIdx];
         // Map CSVT types to provider types
-        if ( typeName.startsWith( QStringLiteral( "coord" ) ) || typeName.startsWith( QStringLiteral( "point(" ) ) )
+        if ( typeName.startsWith( QLatin1String( "coord" ) ) || typeName.startsWith( QLatin1String( "point(" ) ) )
         {
           typeName = QStringLiteral( "double" );
         }
-        else if ( typeName == QStringLiteral( "long" ) || typeName == QStringLiteral( "integer64" ) )
+        else if ( typeName == QLatin1String( "long" ) || typeName == QLatin1String( "integer64" ) )
         {
           typeName = QStringLiteral( "longlong" );
         }
-        else if ( typeName == QStringLiteral( "int8" ) )
+        else if ( typeName == QLatin1String( "int8" ) )
         {
           typeName = QStringLiteral( "integer" );
         }
-        else if ( typeName == QStringLiteral( "real" ) )
+        else if ( typeName == QLatin1String( "real" ) )
         {
           typeName = QStringLiteral( "double" );
         }
