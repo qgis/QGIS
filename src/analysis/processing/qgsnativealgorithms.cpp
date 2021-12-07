@@ -116,6 +116,7 @@
 #include "qgsalgorithmmergelines.h"
 #include "qgsalgorithmmergevector.h"
 #include "qgsalgorithmminimumenclosingcircle.h"
+#include "qgsalgorithmmultidifference.h"
 #include "qgsalgorithmmultiparttosinglepart.h"
 #include "qgsalgorithmmultiringconstantbuffer.h"
 #include "qgsalgorithmnearestneighbouranalysis.h"
@@ -383,6 +384,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsMeshExportCrossSection );
   addAlgorithm( new QgsMeshExportTimeSeries );
   addAlgorithm( new QgsMinimumEnclosingCircleAlgorithm() );
+  addAlgorithm( new QgsMultiDifferenceAlgorithm() );
   addAlgorithm( new QgsMultipartToSinglepartAlgorithm() );
   addAlgorithm( new QgsMultiRingConstantBufferAlgorithm() );
   addAlgorithm( new QgsNearestNeighbourAnalysisAlgorithm() );
