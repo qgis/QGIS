@@ -341,6 +341,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         filename = os.path.join(self.context.ppath,
                                 'resources', 'connections-default.xml')
+
         doc = get_connections_from_file(self, filename)
         if doc is None:
             return
@@ -349,7 +350,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         keys = self.settings.childGroups()
         self.settings.endGroup()
 
-        for server in doc.findall('csw'):
+        for server in doc.findall('catalog'):
             name = server.attrib.get('name')
             # check for duplicates
             if name in keys:
@@ -363,6 +364,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             # no dups detected or overwrite is allowed
             key = '/MetaSearch/%s' % name
             self.settings.setValue('%s/url' % key, server.attrib.get('url'))
+            self.settings.setValue('%s/catalog-type' % key, server.attrib.get('catalog-type', 'OGC CSW 2.0.2'))
 
         self.populate_connection_list()
 
