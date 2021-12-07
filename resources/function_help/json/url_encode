@@ -2,7 +2,7 @@
   "name": "url_encode",
   "type": "function",
   "groups": ["Maps"],
-  "description": "Returns an URL encoded string from a map.<br>The underlying function uses <a href='https://doc.qt.io/qt-5/qurlquery.html#toString'>QUrlQuery::toString</a> with <a href='https://doc.qt.io/qt-5/qurl.html#ComponentFormattingOption-enum'>QUrl::FullyEncoded</a> flags.<br>Note that the plus sign '+' is not converted.",
+  "description": "Returns an URL encoded string from a map. Transforms all characters in their properly-encoded form producing a fully-compliant query string.<br>Note that the plus sign '+' is not converted.",
   "arguments": [
     {
       "arg": "map",
