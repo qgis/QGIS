@@ -61,7 +61,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     return;
 
   const double canvasRotationRad = mMapCanvas->rotation() * M_PI / 180;
-  const double canvasDiagonalDimension = std::sqrt( std::pow( canvasWidth, 2 ) + std::pow( canvasHeight, 2 ) ) / mupp ;
+  const double canvasDiagonalDimension = ( canvasWidth + canvasHeight ) / mupp ;
 
   QPointF curPointPix, prevPointPix, penulPointPix, snapSegmentPix1, snapSegmentPix2;
 
