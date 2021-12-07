@@ -130,10 +130,6 @@ void QgsRasterTransparencyWidget::syncToLayer()
 
     cboxTransparencyBand->setShowNotSetOption( true, tr( "None" ) );
     cboxTransparencyBand->setLayer( mRasterLayer );
-
-    mOpacityWidget->setOpacity( renderer->opacity() );
-
-    cboxTransparencyBand->setBand( renderer->alphaBand() );
   }
 
   if ( mRasterLayer->dataProvider()->sourceHasNoDataValue( 1 ) )
@@ -158,6 +154,10 @@ void QgsRasterTransparencyWidget::syncToLayer()
       mNodataColorButton->setColor( renderer->nodataColor() );
     else
       mNodataColorButton->setToNull();
+
+    mOpacityWidget->setOpacity( renderer->opacity() );
+
+    cboxTransparencyBand->setBand( renderer->alphaBand() );
   }
 
   const QgsRasterRangeList noDataRangeList = mRasterLayer->dataProvider()->userNoDataValues( 1 );
