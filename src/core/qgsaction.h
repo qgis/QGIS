@@ -257,6 +257,8 @@ class CORE_EXPORT QgsAction
     QString html( ) const;
 
   private:
+
+    void handleFormSubmitAction( const QString &expandedAction ) const;
     ActionType mType = Generic;
     QString mDescription;
     QString mShortTitle;
