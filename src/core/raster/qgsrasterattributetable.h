@@ -64,14 +64,14 @@ class CORE_EXPORT QgsRasterAttributeTable
     bool hasColor();
     QgsFields fields();
 
-    const QList<FieldUsage> &fieldUsages() const;
+    const QList<QgsRasterAttributeTable::FieldUsage> &fieldUsages() const;
 
     bool isDirty() const;
     void setIsDirty( bool newIsDirty );
 
-    bool insertField( const QString &name, FieldUsage usage, QVariant::Type type, int position = 0 );
+    bool insertField( const QString &name, QgsRasterAttributeTable::FieldUsage usage, QVariant::Type type, int position = 0 );
 
-    bool appendField( const QString &name, FieldUsage usage, QVariant::Type type );
+    bool appendField( const QString &name, QgsRasterAttributeTable::FieldUsage usage, QVariant::Type type );
 
     bool insertRow( const QVariantList data, int position = 0 );
     bool appendRow( const QVariantList data );
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsRasterAttributeTable
 
   protected:
 
-    void setFieldUsages( const QList<FieldUsage> &newFieldUsages );
+    void setFieldUsages( const QList<QgsRasterAttributeTable::FieldUsage> &newFieldUsages );
 
   private:
 
