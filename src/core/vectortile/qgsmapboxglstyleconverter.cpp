@@ -282,7 +282,6 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
       case QVariant::Map:
         if ( ddProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
         {
-          context.pushWarning( QObject::tr( "%1: Could not set opacity of layer, opacity already defined in fill color" ).arg( context.layerId() ) );
           symbol->setDataDefinedProperty( QgsSymbol::PropertyOpacity, parseInterpolateOpacityByZoom( jsonFillOpacity.toMap(), 255, &context ) );
         }
         else
@@ -297,7 +296,6 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
       case QVariant::StringList:
         if ( ddProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
         {
-          context.pushWarning( QObject::tr( "%1: Could not set opacity of layer, opacity already defined in fill color" ).arg( context.layerId() ) );
           symbol->setDataDefinedProperty( QgsSymbol::PropertyOpacity, parseValueList( jsonFillOpacity.toList(), PropertyType::Numeric, context, 100, 100 ) );
         }
         else
