@@ -527,14 +527,14 @@ void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
   {
     case QgsCameraController::WalkNavigation:
     {
-      const float scaling = ( ( wheel->modifiers() & Qt::ControlModifier ) ? 0.1f : 1.0f ) / 1000.f;
+      const float scaling = ( ( wheel->modifiers() & Qt::ControlModifier ) != 0 ? 0.1f : 1.0f ) / 1000.f;
       setCameraMovementSpeed( mCameraMovementSpeed + mCameraMovementSpeed * scaling * wheel->angleDelta().y() );
       break;
     }
 
     case TerrainBasedNavigation:
     {
-      const float scaling = ( ( wheel->modifiers() & Qt::ControlModifier ) ? 0.1f : 1.0f ) / 1000.f;
+      const float scaling = ( ( wheel->modifiers() & Qt::ControlModifier ) != 0 ? 0.1f : 1.0f ) / 1000.f;
       float dist = mCameraPose.distanceFromCenterPoint();
       dist -= dist * scaling * -wheel->angleDelta().y();
 
