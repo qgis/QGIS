@@ -93,7 +93,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.timeout = int(self.settings.value('/MetaSearch/timeout', 10))
         # QgsSettings.value returns 'false' not False(!)
         self.disable_ssl_verification = self.settings.value(
-            '/MetaSearch/disableSSL', 'false') != 'false'
+            '/MetaSearch/disableSSL', False, bool)
 
         # Services tab
         self.cmbConnectionsServices.activated.connect(self.save_connection)
@@ -162,8 +162,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.spnRecords.valueChanged.connect(_on_records_change)
         self.spnTimeout.setValue(self.timeout)
         self.spnTimeout.valueChanged.connect(_on_timeout_change)
-        self.disableSSLVerification.setCheckState(
-            int(self.disable_ssl_verification) * 2)
+        self.disableSSLVerification.setChecked(self.disable_ssl_verification)
         self.disableSSLVerification.stateChanged.connect(_on_ssl_state_change)
 
         key = '/MetaSearch/%s' % self.cmbConnectionsSearch.currentText()
