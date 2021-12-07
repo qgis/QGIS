@@ -27,8 +27,13 @@ class CORE_EXPORT QgsRasterAttributeTable
 
   public:
 
+    enum class Origin : int
+    {
+      Provider,
+      File
+    };
 
-    QgsRasterAttributeTable();
+    QgsRasterAttributeTable( QgsRasterAttributeTable::Origin origin = QgsRasterAttributeTable::Origin::Provider );
 
     enum class FieldUsage : int
     {
@@ -59,36 +64,47 @@ class CORE_EXPORT QgsRasterAttributeTable
       Athematic = GRTT_ATHEMATIC
     };
 
+    struct Field
+    {
+      QString name;
+      FieldUsage usage;
+      QVariant::Type type;
+    };
+
     const RatType &type() const;
     void setType( const RatType &newType );
     bool hasColor();
-    QgsFields fields();
-
-    const QList<QgsRasterAttributeTable::FieldUsage> &fieldUsages() const;
+    QList<QgsRasterAttributeTable::Field> fields() const;
 
     bool isDirty() const;
     void setIsDirty( bool newIsDirty );
 
+    bool insertField( const QgsRasterAttributeTable::Field field, int position = 0 );
     bool insertField( const QString &name, QgsRasterAttributeTable::FieldUsage usage, QVariant::Type type, int position = 0 );
 
     bool appendField( const QString &name, QgsRasterAttributeTable::FieldUsage usage, QVariant::Type type );
+    bool appendField( const QgsRasterAttributeTable::Field &field );
+
+    bool removeField( const QString &name );
 
     bool insertRow( const QVariantList data, int position = 0 );
     bool appendRow( const QVariantList data );
 
     bool isValid();
 
-  protected:
+    bool saveToFile( const QString &path );
+    bool loadFromFile( const QString &path );
 
-    void setFieldUsages( const QList<QgsRasterAttributeTable::FieldUsage> &newFieldUsages );
+
+    QgsRasterAttributeTable::Origin origin() const;
 
   private:
 
     RatType mType;
-    QgsFields mFields;
+    QList<Field> mFields;
     QVariantList mData;
-    QList<FieldUsage> mFieldUsages;
     bool mIsDirty;
+    Origin mOrigin;
 
 };
 

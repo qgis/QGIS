@@ -15,9 +15,9 @@
  ***************************************************************************/
 #include "qgsrasterattributetable.h"
 
-QgsRasterAttributeTable::QgsRasterAttributeTable()
+QgsRasterAttributeTable::QgsRasterAttributeTable( Origin origin )
+  : mOrigin( origin )
 {
-
 }
 
 const QgsRasterAttributeTable::RatType &QgsRasterAttributeTable::type() const
@@ -35,19 +35,9 @@ bool QgsRasterAttributeTable::hasColor()
   return true;
 }
 
-QgsFields QgsRasterAttributeTable::fields()
+QList<QgsRasterAttributeTable::Field> QgsRasterAttributeTable::fields() const
 {
   return mFields;
-}
-
-const QList<QgsRasterAttributeTable::FieldUsage> &QgsRasterAttributeTable::fieldUsages() const
-{
-  return mFieldUsages;
-}
-
-void QgsRasterAttributeTable::setFieldUsages( const QList<QgsRasterAttributeTable::FieldUsage> &newFieldUsages )
-{
-  mFieldUsages = newFieldUsages;
 }
 
 bool QgsRasterAttributeTable::isDirty() const
@@ -60,47 +50,61 @@ void QgsRasterAttributeTable::setIsDirty( bool newIsDirty )
   mIsDirty = newIsDirty;
 }
 
-bool QgsRasterAttributeTable::insertField( const QString &name, FieldUsage usage, QVariant::Type type, int position )
+bool QgsRasterAttributeTable::insertField( const Field field, int position )
 {
   if ( position < 0 )
   {
     return false;
   }
 
-  QgsFields fields;
-  QList<FieldUsage> usages;
   int realPos { std::min( mFields.count(), position ) };
-  int fieldIdx = 0;
-  for ( ; fieldIdx < realPos; ++fieldIdx )
-  {
-    fields.append( mFields.at( fieldIdx ) );
-    usages.append( mFieldUsages[ fieldIdx ] );
-  }
 
-  fields.append( QgsField( name, type ) );
-  usages.append( usage );
-  fieldIdx++;
-
-  for ( ; fieldIdx < mFields.count(); ++fieldIdx )
-  {
-    fields.append( mFields.at( fieldIdx ) );
-    usages.append( mFieldUsages[ fieldIdx ] );
-  }
-
-  mFields = fields;
-  mFieldUsages = usages;
+  mFields.insert( realPos, field );
 
   for ( auto it = mData.begin(); it != mData.end(); ++it )
   {
-    mData.insert( realPos, QVariant( type ) );
+    mData.insert( realPos, QVariant( field.type ) );
   }
 
+  setIsDirty( true );
+
   return true;
+}
+
+bool QgsRasterAttributeTable::insertField( const QString &name, FieldUsage usage, QVariant::Type type, int position )
+{
+  return insertField( { name, usage, type}, position );
 }
 
 bool QgsRasterAttributeTable::appendField( const QString &name, FieldUsage usage, QVariant::Type type )
 {
   return insertField( name, usage, type, mFields.count() );
+}
+
+bool QgsRasterAttributeTable::appendField( const Field &field )
+{
+  return insertField( field, mFields.count() );
+}
+
+bool QgsRasterAttributeTable::removeField( const QString &name )
+{
+  const auto toRemove { std::find_if( mFields.begin(), mFields.end(), [ &name ]( Field & f ) -> bool {
+      return f.name == name;
+    } )};
+
+  if ( toRemove != mFields.end() )
+  {
+    const auto idx { std::distance( mFields.begin(), toRemove ) };
+    mFields.erase( toRemove, mFields.end() );
+    for ( auto it = mData.begin(); it != mData.end(); ++it )
+    {
+      mData.removeAt( idx );
+    }
+    setIsDirty( true );
+    return true;
+  }
+
+  return false;
 }
 
 bool QgsRasterAttributeTable::insertRow( const QVariantList data, int position )
@@ -110,6 +114,7 @@ bool QgsRasterAttributeTable::insertRow( const QVariantList data, int position )
     return false;
   }
   mData.insert( position, data );
+  setIsDirty( true );
   return true;
 }
 
@@ -122,4 +127,9 @@ bool QgsRasterAttributeTable::isValid()
 {
   // TODO: check for mandatory fields
   return mFields.count() > 0 && mData.count( ) > 0;
+}
+
+QgsRasterAttributeTable::Origin QgsRasterAttributeTable::origin() const
+{
+  return mOrigin;
 }

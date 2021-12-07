@@ -1,5 +1,10 @@
 # The following has been generated automatically from src/core/raster/qgsrasterattributetable.h
 # monkey patching scoped based enum
+QgsRasterAttributeTable.Origin.Provider.__doc__ = ""
+QgsRasterAttributeTable.Origin.File.__doc__ = ""
+QgsRasterAttributeTable.Origin.__doc__ = '\n\n' + '* ``Provider``: ' + QgsRasterAttributeTable.Origin.Provider.__doc__ + '\n' + '* ``File``: ' + QgsRasterAttributeTable.Origin.File.__doc__
+# --
+# monkey patching scoped based enum
 QgsRasterAttributeTable.FieldUsage.Generic.__doc__ = "Field usage Generic"
 QgsRasterAttributeTable.FieldUsage.PixelCount.__doc__ = "Field usage PixelCount"
 QgsRasterAttributeTable.FieldUsage.Name.__doc__ = "Field usage Name"

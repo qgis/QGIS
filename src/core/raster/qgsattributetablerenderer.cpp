@@ -79,3 +79,8 @@ bool QgsAttributeTableRenderer::accept( QgsStyleEntityVisitorInterface *visitor 
 {
   return false;
 }
+
+void QgsAttributeTableRenderer::setBand( int bandNo )
+{
+  mBand = bandNo;
+}
