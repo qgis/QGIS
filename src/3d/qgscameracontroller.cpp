@@ -385,7 +385,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     float pitchDiff = 180 * ( mouse->y() - mMiddleButtonClickPos.y() ) / scale;
     float yawDiff = 180 * ( mouse->x() - mMiddleButtonClickPos.x() ) / scale;
 
-    if ( !mRotationInProgress || !mDepthBufferIsReady )
+    if ( !mDepthBufferIsReady )
       return;
 
     if ( !mRotationCenterCalculated )
@@ -447,7 +447,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
   {
     // translation works as if one grabbed a point on the 3D viewer and dragged it
 
-    if ( !mDepthBufferIsReady || !mDragInProgress )
+    if ( !mDepthBufferIsReady )
       return;
 
     if ( !mDragPointCalculated )
@@ -464,7 +464,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
   }
   else if ( hasRightButton && !hasShift && !hasCtrl )
   {
-    if ( !mDepthBufferIsReady || !mDragInProgress )
+    if ( !mDepthBufferIsReady )
       return;
 
     float dist = ( mCameraBeforeDrag->position() - mDragPoint ).length();
@@ -566,7 +566,6 @@ void QgsCameraController::onMousePressed( Qt3DInput::QMouseEvent *mouse )
   {
     mMousePos = QPoint( mouse->x(), mouse->y() );
     mDragButtonClickPos = QPoint( mouse->x(), mouse->y() );
-    mDragInProgress = true;
     mPressedButton = mouse->button();
     mMousePressed = true;
 
@@ -584,18 +583,16 @@ void QgsCameraController::onMousePressed( Qt3DInput::QMouseEvent *mouse )
     mCameraBeforeDrag->setAspectRatio( mCamera->aspectRatio() );
     mCameraBeforeDrag->setFieldOfView( mCamera->fieldOfView() );
 
-
     mDepthBufferIsReady = false;
     mDragPointCalculated = false;
 
     emit requestDepthBufferCapture();
   }
 
-  if ( mouse->button() == Qt3DInput::QMouseEvent::MiddleButton )
+  if ( mouse->button() == Qt3DInput::QMouseEvent::MiddleButton || ( ( mouse->modifiers() & Qt::ShiftModifier ) != 0 && mouse->button() == Qt3DInput::QMouseEvent::LeftButton ) )
   {
     mMousePos = QPoint( mouse->x(), mouse->y() );
     mMiddleButtonClickPos = QPoint( mouse->x(), mouse->y() );
-    mRotationInProgress = true;
     mPressedButton = mouse->button();
     mMousePressed = true;
     if ( mCaptureFpsMouseMovements )
@@ -624,10 +621,6 @@ void QgsCameraController::onMousePressed( Qt3DInput::QMouseEvent *mouse )
 void QgsCameraController::onMouseReleased( Qt3DInput::QMouseEvent *mouse )
 {
   Q_UNUSED( mouse )
-  if ( mRotationInProgress )
-    mRotationInProgress = false;
-  if ( mDragInProgress )
-    mDragInProgress = false;
   mPressedButton = Qt3DInput::QMouseEvent::NoButton;
   mMousePressed = false;
 
