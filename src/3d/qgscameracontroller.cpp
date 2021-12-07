@@ -481,6 +481,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     // First transformation : Shift camera position and view center and rotate the camera
     {
       QVector3D shiftVector = mDragPoint - mCamera->viewCenter();
+      shiftVector.setY( 0 );
 
       QVector3D newViewCenterWorld = camera()->viewCenter() + shiftVector;
 
@@ -493,10 +494,10 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     // Second transformation : Shift camera position back
     {
       QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( QPoint( mDragButtonClickPos.x(), mDragButtonClickPos.y() ), mViewport.size(), mCamera );
-
       QVector3D clickedPositionWorld = ray.origin() + dist * ray.direction();
 
       QVector3D shiftVector = clickedPositionWorld - mCamera->viewCenter();
+      shiftVector.setY( 0 );
 
       QVector3D newViewCenterWorld = camera()->viewCenter() - shiftVector;
       QVector3D newCameraPosition = camera()->position() - shiftVector;
