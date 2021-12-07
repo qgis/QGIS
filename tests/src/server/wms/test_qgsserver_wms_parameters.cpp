@@ -29,6 +29,8 @@ class TestQgsServerWmsParameters : public QObject
     void cleanupTestCase();
 
     void external_layers();
+
+    void percent_encoding();
 };
 
 void TestQgsServerWmsParameters::initTestCase()
@@ -73,6 +75,26 @@ void TestQgsServerWmsParameters::external_layers()
   QCOMPARE( layers_params[0].mOpacity, 255 );
   QCOMPARE( layers_params[1].mOpacity, 200 );
   QCOMPARE( layers_params[2].mOpacity, 125 );
+}
+
+void TestQgsServerWmsParameters::percent_encoding()
+{
+  // '+' in its encoded ('%2B') form is transformed in '+' sign and
+  // forwarded to parameters subclasses
+  QUrlQuery query;
+  query.addQueryItem( "MYPARAM", QString( "a%2Cb%2Cc%2C%C3%A4%C3%B6s+%2B+%25%26%23" ) );
+
+  QgsServerParameters params;
+  params.load( query );
+  QCOMPARE( params.value( "MYPARAM" ), QString( "a,b,c,äös + %&#" ) );
+
+  const QgsWms::QgsWmsParameters wmsParams( params );
+  QCOMPARE( wmsParams.value( "MYPARAM" ), QString( "a,b,c,äös + %&#" ) );
+
+  // back to urlQuery
+  QgsServerParameters params2;
+  params2.load( params.urlQuery() );
+  QCOMPARE( params2.value( "MYPARAM" ), QString( "a,b,c,äös + %&#" ) );
 }
 
 QGSTEST_MAIN( TestQgsServerWmsParameters )
