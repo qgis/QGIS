@@ -187,28 +187,34 @@ QList<QgsAction> QgsActionManager::actions( const QString &actionScope ) const
 
 void QgsActionManager::runAction( const QgsAction &action )
 {
-  if ( action.type() == QgsAction::OpenUrl )
+  switch ( action.type() )
   {
-    QFileInfo finfo( action.command() );
-    if ( finfo.exists() && finfo.isFile() )
-      QDesktopServices::openUrl( QUrl::fromLocalFile( action.command() ) );
-    else
-      QDesktopServices::openUrl( QUrl( action.command(), QUrl::TolerantMode ) );
-  }
-  else if ( action.type() == QgsAction::SubmitUrlEncoded || action.type() == QgsAction::SubmitUrlMultipart )
-  {
-    action.run( QgsExpressionContext() );
-  }
-  else if ( action.type() == QgsAction::GenericPython )
-  {
-    // TODO: capture output from QgsPythonRunner (like QgsRunProcess does)
-    QgsPythonRunner::run( action.command() );
-  }
-  else
-  {
-    // The QgsRunProcess instance created by this static function
-    // deletes itself when no longer needed.
-    QgsRunProcess::create( action.command(), action.capture() );
+    case QgsAction::OpenUrl:
+    {
+      QFileInfo finfo( action.command() );
+      if ( finfo.exists() && finfo.isFile() )
+        QDesktopServices::openUrl( QUrl::fromLocalFile( action.command() ) );
+      else
+        QDesktopServices::openUrl( QUrl( action.command(), QUrl::TolerantMode ) );
+      break;
+    }
+    case QgsAction::GenericPython:
+    case QgsAction::SubmitUrlEncoded:
+    case QgsAction::SubmitUrlMultipart:
+    {
+      action.run( QgsExpressionContext() );
+      break;
+    }
+    case QgsAction::Generic:
+    case QgsAction::Mac:
+    case QgsAction::Unix:
+    case QgsAction::Windows:
+    {
+      // The QgsRunProcess instance created by this static function
+      // deletes itself when no longer needed.
+      QgsRunProcess::create( action.command(), action.capture() );
+      break;
+    }
   }
 }
 
