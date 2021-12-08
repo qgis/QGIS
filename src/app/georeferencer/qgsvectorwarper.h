@@ -31,7 +31,7 @@ class QgsFeedback;
  * \param method QgsGcpTransofmer method, based on gdal transformation methods
  * \param points data points used in the georeferencer
  * \param destCrs destination projection of the vector layer
- * \since QGIS 3.20
+ * \since QGIS 3.24
  */
 class QgsVectorWarper
 {
@@ -45,7 +45,7 @@ class QgsVectorWarper
      * \param layer source vector layer
      * \param feedback optional qgsfeedback instance
      * \return True if operation finished properly, otherwise false.
-     * \since QGIS 3.20
+     * \since QGIS 3.24
      */
     bool executeTransformInplace( QgsVectorLayer *layer, QgsFeedback *feedback = nullptr );
 
@@ -54,7 +54,7 @@ class QgsVectorWarper
      * \param layer source vector layer
      * \param feedback optional qgsfeedback instance
      * \return True if operation finished properly, otherwise false.
-     * \since QGIS 3.20
+     * \since QGIS 3.24
      */
     bool executeTransform( const QgsVectorLayer *layer, const QString outputName, QgsFeedback *feedback = nullptr );
 
