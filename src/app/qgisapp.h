@@ -1558,7 +1558,16 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void showMeshCalculator();
     //! Open dialog to align raster layers
     void showAlignRasterTool();
+
+    /**
+     * Called whenever user wants to embed layers
+     */
     void embedLayers();
+
+    /**
+     * Embed \a groups and \a layerIds items from \a projectFile
+     */
+    void addEmbeddedItems( const QString &projectFile, const QStringList &groups, const QStringList &layerIds );
 
     //! Creates a new map canvas view
     void newMapCanvas();
@@ -2733,6 +2742,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     friend class QgsCanvasRefreshBlocker;
 
     friend class TestQgisAppPython;
+    friend class TestQgisApp;
     friend class QgisAppInterface;
     friend class QgsAppScreenShots;
 };
