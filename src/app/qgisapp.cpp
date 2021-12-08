@@ -13607,52 +13607,61 @@ void QgisApp::addMapLayer( QgsMapLayer *mapLayer )
   }
 }
 
+
 void QgisApp::embedLayers()
 {
   //dialog to select groups/layers from other project files
   QgsProjectLayerGroupDialog d( this );
   if ( d.exec() == QDialog::Accepted && d.isValid() )
   {
-    QgsCanvasRefreshBlocker refreshBlocker;
+    addEmbeddedItems( d.selectedProjectFile(), d.selectedGroups(), d.selectedLayerIds() );
+  }
+}
 
-    QString projectFile = d.selectedProjectFile();
+void QgisApp::addEmbeddedItems( const QString &projectFile, const QStringList &groups, const QStringList &layerIds )
+{
+  QgsCanvasRefreshBlocker refreshBlocker;
 
-    //groups
-    QStringList groups = d.selectedGroups();
-    QStringList::const_iterator groupIt = groups.constBegin();
-    for ( ; groupIt != groups.constEnd(); ++groupIt )
+  //groups
+  QStringList::const_iterator groupIt = groups.constBegin();
+  for ( ; groupIt != groups.constEnd(); ++groupIt )
+  {
+    QgsLayerTreeGroup *newGroup = QgsProject::instance()->createEmbeddedGroup( *groupIt, projectFile, QStringList() );
+
+    if ( newGroup )
+      QgsProject::instance()->layerTreeRoot()->addChildNode( newGroup );
+  }
+
+  //layer ids
+  QList<QDomNode> brokenNodes;
+
+  // resolve dependencies
+  QgsLayerDefinition::DependencySorter depSorter( projectFile );
+  QStringList sortedIds = depSorter.sortedLayerIds();
+  const auto constSortedIds = sortedIds;
+  for ( const QString &id : constSortedIds )
+  {
+    const auto constLayerIds = layerIds;
+    for ( const QString &selId : constLayerIds )
     {
-      QgsLayerTreeGroup *newGroup = QgsProject::instance()->createEmbeddedGroup( *groupIt, projectFile, QStringList() );
-
-      if ( newGroup )
-        QgsProject::instance()->layerTreeRoot()->addChildNode( newGroup );
+      if ( selId == id )
+        QgsProject::instance()->createEmbeddedLayer( selId, projectFile, brokenNodes );
     }
+  }
 
-    //layer ids
-    QList<QDomNode> brokenNodes;
+  // fix broken relations and dependencies
+  for ( const QString &id : constSortedIds )
+  {
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( id ) );
+    if ( vlayer )
+      vectorLayerStyleLoaded( vlayer, QgsMapLayer::AllStyleCategories );
+  }
 
-    // resolve dependencies
-    QgsLayerDefinition::DependencySorter depSorter( projectFile );
-    QStringList sortedIds = depSorter.sortedLayerIds();
-    QStringList layerIds = d.selectedLayerIds();
-    const auto constSortedIds = sortedIds;
-    for ( const QString &id : constSortedIds )
-    {
-      const auto constLayerIds = layerIds;
-      for ( const QString &selId : constLayerIds )
-      {
-        if ( selId == id )
-          QgsProject::instance()->createEmbeddedLayer( selId, projectFile, brokenNodes );
-      }
-    }
-
-    // fix broken relations and dependencies
-    for ( const QString &id : constSortedIds )
-    {
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( id ) );
-      if ( vlayer )
-        vectorLayerStyleLoaded( vlayer, QgsMapLayer::AllStyleCategories );
-    }
+  // Resolve references to other layers
+  QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
+  for ( QMap<QString, QgsMapLayer *>::iterator it = layers.begin(); it != layers.end(); ++it )
+  {
+    it.value()->resolveReferences( QgsProject::instance() );
   }
 }
 
