@@ -1896,7 +1896,7 @@ QString QgsGeoreferencerMainWindow::generateGDALtranslateCommand( bool generateT
 
   for ( QgsGeorefDataPoint *pt : std::as_const( mPoints ) )
   {
-    gdalCommand << QStringLiteral( "-gcp %1 %2 %3 %4" ).arg( pt->pixelCoords().x() ).arg( -pt->pixelCoords().y() )
+    gdalCommand << QStringLiteral( "-gcp %1 %2 %3 %4" ).arg( pt->pixelCoords().x() ).arg( pt->pixelCoords().y() )
                 .arg( pt->transCoords().x() ).arg( pt->transCoords().y() );
   }
 
