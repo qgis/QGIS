@@ -5489,8 +5489,7 @@ static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionCo
       {
         filterString.append( " AND " );
       }
-      filterString.append( QStringLiteral( "( %1 = %2 )" ).arg( QgsExpression::quotedColumnRef( i.key() ),
-                           QgsExpression::quotedString( i.value().toString() ) ) );
+      filterString.append( QgsExpression::createFieldEqualityExpression( i.key(), i.value() ) );
     }
     cacheValueKey = QStringLiteral( "getfeature:%1:%2" ).arg( featureSource->id(), filterString );
     if ( context && context->hasCachedValue( cacheValueKey ) )
@@ -5516,8 +5515,7 @@ static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionCo
       return context->cachedValue( cacheValueKey );
     }
 
-    req.setFilterExpression( QStringLiteral( "%1=%2" ).arg( QgsExpression::quotedColumnRef( attribute ),
-                             QgsExpression::quotedString( attVal.toString() ) ) );
+    req.setFilterExpression( QgsExpression::createFieldEqualityExpression( attribute, attVal ) );
   }
   req.setLimit( 1 );
   req.setTimeout( 10000 );
