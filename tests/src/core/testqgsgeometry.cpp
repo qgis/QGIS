@@ -7357,15 +7357,13 @@ void TestQgsGeometry::triangle()
   QGSCOMPARENEAR( angles.at( 2 ), 1.2490457, 0.0001 );
   QgsTriangle t7( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) );
 
-  QVector<double> a_tested, a_t7 = t7.angles();
+  QVector<double> a_t7 = t7.angles();
   a_tested.append( M_PI / 4.0 );
   a_tested.append( M_PI / 2.0 );
   a_tested.append( M_PI / 4.0 );
   QGSCOMPARENEAR( a_tested.at( 0 ), a_t7.at( 0 ), 0.0001 );
   QGSCOMPARENEAR( a_tested.at( 1 ), a_t7.at( 1 ), 0.0001 );
   QGSCOMPARENEAR( a_tested.at( 2 ), a_t7.at( 2 ), 0.0001 );
-  QVector<double> a_empty = QgsTriangle().angles();
-  QVERIFY( a_empty.isEmpty() );
 
   QVector<double> l_tested, l_t7 = t7.lengths();
   l_tested.append( 5 );
