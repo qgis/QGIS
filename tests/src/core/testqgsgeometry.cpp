@@ -7306,17 +7306,64 @@ void TestQgsGeometry::triangle()
 
 
   // lengths and angles
+  QgsTriangle tr( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) );
+
+  QVector<double> a_tested;
+  QVector<double> angles = tr.angles();
+  a_tested.append( M_PI / 4.0 );
+  a_tested.append( M_PI / 2.0 );
+  a_tested.append( M_PI / 4.0 );
+
+  QGSCOMPARENEAR( a_tested.at( 0 ), angles.at( 0 ), 0.0001 );
+  QGSCOMPARENEAR( a_tested.at( 1 ), angles.at( 1 ), 0.0001 );
+  QGSCOMPARENEAR( a_tested.at( 2 ), angles.at( 2 ), 0.0001 );
+
+  QVector<double> a_empty = QgsTriangle().angles();
+  QVERIFY( a_empty.isEmpty() );
+
+  // From issue #46370
+  tr = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 1, sqrt( 3 ) ), QgsPoint( 2, 0 ) );
+  angles = tr.angles();
+  QGSCOMPARENEAR( angles.at( 0 ), M_PI / 3.0, 0.0001 );
+  QGSCOMPARENEAR( angles.at( 1 ), M_PI / 3.0, 0.0001 );
+  QGSCOMPARENEAR( angles.at( 2 ), M_PI / 3.0, 0.0001 );
+
+  tr = QgsTriangle( QgsPoint( 2, 0 ), QgsPoint( 1, sqrt( 3 ) ), QgsPoint( 0, 0 ) );
+  angles = tr.angles();
+  QGSCOMPARENEAR( angles.at( 0 ), M_PI / 3.0, 0.0001 );
+  QGSCOMPARENEAR( angles.at( 1 ), M_PI / 3.0, 0.0001 );
+  QGSCOMPARENEAR( angles.at( 2 ), M_PI / 3.0, 0.0001 );
+
+  tr = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 3 ), QgsPoint( 4, 0 ) );
+  angles = tr.angles();
+  QGSCOMPARENEAR( angles.at( 0 ), M_PI / 2.0, 0.0001 );
+  QGSCOMPARENEAR( angles.at( 1 ), 0.9272952, 0.0001 );
+  QGSCOMPARENEAR( angles.at( 2 ), 0.6435011, 0.0001 );
+  tr = QgsTriangle( QgsPoint( 4, 0 ), QgsPoint( 0, 3 ), QgsPoint( 0, 0 ) );
+  angles = tr.angles();
+  QGSCOMPARENEAR( angles.at( 0 ), 0.6435011, 0.0001 );
+  QGSCOMPARENEAR( angles.at( 1 ), 0.9272952, 0.0001 );
+  QGSCOMPARENEAR( angles.at( 2 ), M_PI / 2.0, 0.0001 );
+
+  tr = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 1, 3 ), QgsPoint( 3, 0 ) );
+  angles = tr.angles();
+  QGSCOMPARENEAR( angles.at( 0 ), 1.2490457, 0.0001 );
+  QGSCOMPARENEAR( angles.at( 1 ), 0.9097531, 0.0001 );
+  QGSCOMPARENEAR( angles.at( 2 ), 0.9827937, 0.0001 );
+  tr = QgsTriangle( QgsPoint( 3, 0 ), QgsPoint( 1, 3 ), QgsPoint( 0, 0 ) );
+  angles = tr.angles();
+  QGSCOMPARENEAR( angles.at( 0 ), 0.9827937, 0.0001 );
+  QGSCOMPARENEAR( angles.at( 1 ), 0.9097531, 0.0001 );
+  QGSCOMPARENEAR( angles.at( 2 ), 1.2490457, 0.0001 );
   QgsTriangle t7( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) );
 
-  QVector<double> a_tested, a_t7 = t7.angles();
+  QVector<double> a_t7 = t7.angles();
   a_tested.append( M_PI / 4.0 );
   a_tested.append( M_PI / 2.0 );
   a_tested.append( M_PI / 4.0 );
   QGSCOMPARENEAR( a_tested.at( 0 ), a_t7.at( 0 ), 0.0001 );
   QGSCOMPARENEAR( a_tested.at( 1 ), a_t7.at( 1 ), 0.0001 );
   QGSCOMPARENEAR( a_tested.at( 2 ), a_t7.at( 2 ), 0.0001 );
-  QVector<double> a_empty = QgsTriangle().angles();
-  QVERIFY( a_empty.isEmpty() );
 
   QVector<double> l_tested, l_t7 = t7.lengths();
   l_tested.append( 5 );
