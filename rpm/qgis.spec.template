@@ -100,6 +100,7 @@ BuildRequires:  opencl-headers
 BuildRequires:  ocl-icd-devel
 
 # Python stuff
+BuildRequires:  python3-devel
 BuildRequires:  python3-future
 BuildRequires:  python3-jinja2
 BuildRequires:  python3-OWSLib
