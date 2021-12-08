@@ -15,6 +15,7 @@
 #include "qgstest.h"
 #include <QObject>
 #include <QString>
+#include <QDate>
 #include <QtConcurrentMap>
 
 #include <qgsapplication.h>
@@ -130,20 +131,24 @@ class TestQgsExpression: public QObject
       QgsProject::instance()->addMapLayer( mMeshLayer );
 
       // test memory layer for get_feature tests
-      mMemoryLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:string" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+      mMemoryLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:string&field=datef:date(0,0)" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
       QVERIFY( mMemoryLayer->isValid() );
       QgsFeature f1( mMemoryLayer->dataProvider()->fields(), 1 );
       f1.setAttribute( QStringLiteral( "col1" ), 10 );
       f1.setAttribute( QStringLiteral( "col2" ), "test1" );
+      f1.setAttribute( QStringLiteral( "datef" ), QDate::QDate( 2021, 09, 23 ) );
       QgsFeature f2( mMemoryLayer->dataProvider()->fields(), 2 );
       f2.setAttribute( QStringLiteral( "col1" ), 11 );
       f2.setAttribute( QStringLiteral( "col2" ), "test2" );
+      f2.setAttribute( QStringLiteral( "datef" ), QDate::QDate( 2022, 09, 23 ) );
       QgsFeature f3( mMemoryLayer->dataProvider()->fields(), 3 );
       f3.setAttribute( QStringLiteral( "col1" ), 3 );
       f3.setAttribute( QStringLiteral( "col2" ), "test3" );
+      f3.setAttribute( QStringLiteral( "datef" ), QDate::QDate( 2021, 09, 23 ) );
       QgsFeature f4( mMemoryLayer->dataProvider()->fields(), 4 );
       f4.setAttribute( QStringLiteral( "col1" ), 41 );
       f4.setAttribute( QStringLiteral( "col2" ), "test4" );
+      f4.setAttribute( QStringLiteral( "datef" ), QDate::QDate( 2022, 09, 23 ) );
       mMemoryLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 << f4 );
       QgsProject::instance()->addMapLayer( mMemoryLayer );
 
@@ -2249,11 +2254,13 @@ class TestQgsExpression: public QObject
 
       // multi-param
       QTest::newRow( "get_feature multi1" ) << "get_feature('test',map('col1','11','col2','test2'))" << true << 2;
-      QTest::newRow( "get_feature multi2" ) << "get_feature('test',map('col1','3','col2','test3'))" << true << 3;
+      QTest::newRow( "get_feature multi2" ) << "get_feature('test',map('col1',3,'col2','test3'))" << true << 3;
+      QTest::newRow( "get_feature multi2" ) << "get_feature('test',map('col1','41','datef',to_date('2022-09-23')))" << true << 4;
 
       // multi-param no match
       QTest::newRow( "get_feature no match-multi1" ) << "get_feature('test',map('col1','col2'),'no match!')" << false << -1;
       QTest::newRow( "get_feature no match-multi2" ) << "get_feature('test',map('col2','10','col4','test3'))" << false << -1;
+      QTest::newRow( "get_feature no match-multi2" ) << "get_feature('test',map('col1',10,'datef',to_date('2021-09-24')))" << false << -1;
 
     }
 
