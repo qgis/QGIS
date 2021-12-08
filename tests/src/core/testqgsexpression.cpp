@@ -15,7 +15,6 @@
 #include "qgstest.h"
 #include <QObject>
 #include <QString>
-#include <QDate>
 #include <QtConcurrentMap>
 
 #include <qgsapplication.h>
@@ -136,19 +135,19 @@ class TestQgsExpression: public QObject
       QgsFeature f1( mMemoryLayer->dataProvider()->fields(), 1 );
       f1.setAttribute( QStringLiteral( "col1" ), 10 );
       f1.setAttribute( QStringLiteral( "col2" ), "test1" );
-      f1.setAttribute( QStringLiteral( "datef" ), QDate::QDate( 2021, 09, 23 ) );
+      f1.setAttribute( QStringLiteral( "datef" ), Date( 2021, 9, 23 ) );
       QgsFeature f2( mMemoryLayer->dataProvider()->fields(), 2 );
       f2.setAttribute( QStringLiteral( "col1" ), 11 );
       f2.setAttribute( QStringLiteral( "col2" ), "test2" );
-      f2.setAttribute( QStringLiteral( "datef" ), QDate::QDate( 2022, 09, 23 ) );
+      f2.setAttribute( QStringLiteral( "datef" ), QDate( 2022, 9, 23 ) );
       QgsFeature f3( mMemoryLayer->dataProvider()->fields(), 3 );
       f3.setAttribute( QStringLiteral( "col1" ), 3 );
       f3.setAttribute( QStringLiteral( "col2" ), "test3" );
-      f3.setAttribute( QStringLiteral( "datef" ), QDate::QDate( 2021, 09, 23 ) );
+      f3.setAttribute( QStringLiteral( "datef" ), QDate( 2021, 9, 23 ) );
       QgsFeature f4( mMemoryLayer->dataProvider()->fields(), 4 );
       f4.setAttribute( QStringLiteral( "col1" ), 41 );
       f4.setAttribute( QStringLiteral( "col2" ), "test4" );
-      f4.setAttribute( QStringLiteral( "datef" ), QDate::QDate( 2022, 09, 23 ) );
+      f4.setAttribute( QStringLiteral( "datef" ), QDate( 2022, 9, 23 ) );
       mMemoryLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 << f4 );
       QgsProject::instance()->addMapLayer( mMemoryLayer );
 
