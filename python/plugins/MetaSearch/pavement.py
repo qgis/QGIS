@@ -203,7 +203,7 @@ def generate_csw_connections_file():
     if not filename:
         raise ValueError('path to file of CSW URLs required')
 
-    conns = etree.Element('qgsCatalogConnections')
+    conns = etree.Element('qgsCSWConnections')
     conns.attrib['version'] = '1.0'
 
     with open(filename) as connsfh:
