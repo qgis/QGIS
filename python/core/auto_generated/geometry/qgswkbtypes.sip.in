@@ -118,6 +118,8 @@ Returns the single type for a WKB type. For example, for MultiPolygon WKB types 
 %Docstring
 Returns the multi type for a WKB type. For example, for Polygon WKB types the multi type would be MultiPolygon.
 
+.. seealso:: :py:func:`promoteNonPointTypesToMulti`
+
 .. seealso:: :py:func:`isMultiType`
 
 .. seealso:: :py:func:`singleType`
@@ -127,6 +129,22 @@ Returns the multi type for a WKB type. For example, for Polygon WKB types the mu
 .. seealso:: :py:func:`flatType`
 %End
 
+
+    static Type promoteNonPointTypesToMulti( Type type ) /HoldGIL/;
+%Docstring
+Promotes a WKB geometry type to its multi-type equivalent, with the exception of point geometry types.
+
+Specifically, this method should be used to determine the most-permissive possible resultant WKB type which can result
+from subtracting parts of a geometry. A single-point geometry type can never become a multi-point geometry type as
+a result of a subtraction, but a single-line or single-polygon geometry CAN become a multipart geometry as a result of subtracting
+portions of the geometry.
+
+.. seealso:: :py:func:`multiType`
+
+.. seealso:: :py:func:`singleType`
+
+.. versionadded:: 3.24
+%End
 
     static Type curveType( Type type ) /HoldGIL/;
 %Docstring
