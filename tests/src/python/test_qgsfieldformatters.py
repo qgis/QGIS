@@ -24,6 +24,7 @@ from qgis.PyQt.QtCore import (
     Qt
 )
 from qgis.core import (
+    QgsApplication,
     QgsFeature,
     QgsProject,
     QgsRelation,
@@ -679,33 +680,65 @@ class TestQgsDateTimeFieldFormatter(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         """Reset locale"""
-        QLocale.setDefault(QLocale(QLocale.English))
+        QgsApplication.setLocale(QLocale(QLocale.English))
 
     def test_representValue(self):
-        layer = QgsVectorLayer("point?field=int:integer&field=datetime:datetime&field=long:long",
+        layer = QgsVectorLayer("point?field=datetime:datetime&field=date:date&field=time:time",
                                "layer", "memory")
         self.assertTrue(layer.isValid())
         QgsProject.instance().addMapLayers([layer])
 
         field_formatter = QgsDateTimeFieldFormatter()
 
-        # default configuration should show timezone information
-        config = {}
-        self.assertEqual(field_formatter.representValue(layer, 1, config, None,
-                                                        QDateTime(QDate(2020, 3, 4), QTime(12, 13, 14), Qt.UTC)),
-                         '2020-03-04 12:13:14 (UTC)')
-        self.assertEqual(field_formatter.representValue(layer, 1, config, None,
-                                                        QDateTime(QDate(2020, 3, 4), QTime(12, 13, 14), Qt.OffsetFromUTC, 3600)),
-                         '2020-03-04 12:13:14 (UTC+01:00)')
-
         # if specific display format is set then use that
         config = {"display_format": "dd/MM/yyyy HH:mm:ss"}
-        self.assertEqual(field_formatter.representValue(layer, 1, config, None,
+        self.assertEqual(field_formatter.representValue(layer, 0, config, None,
                                                         QDateTime(QDate(2020, 3, 4), QTime(12, 13, 14), Qt.UTC)),
                          '04/03/2020 12:13:14')
-        self.assertEqual(field_formatter.representValue(layer, 1, config, None,
+        self.assertEqual(field_formatter.representValue(layer, 0, config, None,
                                                         QDateTime(QDate(2020, 3, 4), QTime(12, 13, 14), Qt.OffsetFromUTC, 3600)),
                          '04/03/2020 12:13:14')
+
+        locale_assertions = {
+            QLocale(QLocale.English): {
+                "date_format": 'M/d/yy',
+                "time_format": 'HH:mm:ss',
+                "datetime_format": 'M/d/yy HH:mm:ss',
+                "datetime_utc": '3/4/20 12:13:14 (UTC)',
+                "datetime_utc+1": '3/4/20 12:13:14 (UTC+01:00)'
+            },
+            QLocale(QLocale.Finnish): {
+                "date_format": 'd.M.yyyy',
+                "time_format": 'HH:mm:ss',
+                "datetime_format": 'd.M.yyyy HH:mm:ss',
+                "datetime_utc": '4.3.2020 12:13:14 (UTC)',
+                "datetime_utc+1": '4.3.2020 12:13:14 (UTC+01:00)'
+            },
+        }
+
+        for locale, assertions in locale_assertions.items():
+            QgsApplication.setLocale(locale)
+            field_formatter = QgsDateTimeFieldFormatter()
+
+            self.assertEqual(field_formatter.defaultFormat(QVariant.Date), assertions["date_format"], locale.name())
+            self.assertEqual(field_formatter.defaultFormat(QVariant.Time), assertions["time_format"], locale.name())
+            self.assertEqual(field_formatter.defaultFormat(QVariant.DateTime), assertions["datetime_format"], locale.name())
+
+            # default configuration should show timezone information
+            config = {}
+            self.assertEqual(field_formatter.representValue(layer, 0, config, None,
+                                                            QDateTime(QDate(2020, 3, 4), QTime(12, 13, 14), Qt.UTC)),
+                             assertions["datetime_utc"], locale.name())
+            self.assertEqual(field_formatter.representValue(layer, 0, config, None,
+                                                            QDateTime(QDate(2020, 3, 4), QTime(12, 13, 14), Qt.OffsetFromUTC, 3600)),
+                             assertions["datetime_utc+1"], locale.name())
+            self.assertEqual(field_formatter.representValue(layer, 1, config, None,
+                                                            QDate(2020, 3, 4)),
+                             assertions["datetime_utc"].split(" ")[0], locale.name())
+            config = {"display_format": "HH:mm:s"}
+            self.assertEqual(field_formatter.representValue(layer, 2, config, None,
+                                                            QTime(12, 13, 14)),
+                             assertions["datetime_utc"].split(" ")[1], locale.name())
 
 
 if __name__ == '__main__':

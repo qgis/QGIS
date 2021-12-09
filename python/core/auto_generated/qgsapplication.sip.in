@@ -434,11 +434,12 @@ Returns the QGIS locale.
 .. versionadded:: 3.0
 %End
 
-    static void setLocale( QLocale locale );
+    static void setLocale( const QLocale &locale );
 %Docstring
-Sets the QGIS locale.
+Sets the QGIS locale - used mainly by 3rd party apps and tests.
+In QGIS this is internally triggered by the application in startup.
 
-.. versionadded:: 3.22
+.. versionadded:: 3.22.2
 %End
 
     static QString userThemesFolder();
@@ -1082,6 +1083,8 @@ In order to register translatable strings, connect to this signal and register t
     void localeChanged();
 %Docstring
 Emitted when project locale has been changed.
+
+.. versionadded:: 3.22.2
 %End
 
 

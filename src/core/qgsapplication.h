@@ -450,10 +450,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString locale();
 
     /**
-     * Sets the QGIS locale.
-     * \since QGIS 3.22
+     * Sets the QGIS locale - used mainly by 3rd party apps and tests.
+     * In QGIS this is internally triggered by the application in startup.
+     *
+     * \since QGIS 3.22.2
      */
-    static void setLocale( QLocale locale );
+    static void setLocale( const QLocale &locale );
 
     //! Returns the path to user's themes folder
     static QString userThemesFolder();
@@ -1033,6 +1035,8 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Emitted when project locale has been changed.
+     *
+     * \since QGIS 3.22.2
      */
     void localeChanged();
 
