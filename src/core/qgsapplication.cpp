@@ -85,6 +85,7 @@
 
 #include "layout/qgspagesizeregistry.h"
 #include "qgsrecentstylehandler.h"
+#include "qgsdatetimefieldformatter.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 #include <QDesktopWidget>
@@ -230,6 +231,8 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
   mApplicationMembers = new ApplicationMembers();
 
   *sProfilePath() = profileFolder;
+
+  connect( instance(), &QgsApplication::localeChanged, &QgsDateTimeFieldFormatter::applyLocaleChange );
 }
 
 void QgsApplication::init( QString profileFolder )
@@ -1310,7 +1313,7 @@ QString QgsApplication::locale()
   }
 }
 
-void QgsApplication::setLocale( QLocale locale )
+void QgsApplication::setLocale( const QLocale &locale )
 {
   QLocale::setDefault( locale );
   emit instance()->localeChanged();

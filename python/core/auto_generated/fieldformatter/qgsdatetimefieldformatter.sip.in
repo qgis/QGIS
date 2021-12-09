@@ -22,9 +22,9 @@ the field configuration.
 #include "qgsdatetimefieldformatter.h"
 %End
   public:
-    static const QString DATE_FORMAT;
+    static QString DATE_FORMAT;
     static const QString TIME_FORMAT;
-    static const QString DATETIME_FORMAT;
+    static QString DATETIME_FORMAT;
     static const QString QT_ISO_FORMAT;
     static const QString DISPLAY_FOR_ISO_FORMAT;
 
@@ -48,6 +48,7 @@ The type is expected to be one of
 - QVariant.Date
 - QVariant.Time
 %End
+
 };
 
 /************************************************************************
