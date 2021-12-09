@@ -250,8 +250,6 @@ void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
   updateUi();
 
   emit relatedFeaturesChanged();
-
-  return addedFeatureIds;
 }
 
 void QgsAbstractRelationEditorWidget::deleteFeature( const QgsFeatureId fid )

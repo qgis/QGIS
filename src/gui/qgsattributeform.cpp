@@ -482,83 +482,6 @@ bool QgsAttributeForm::saveEdits( QString *error )
   return success;
 }
 
-void QgsAttributeForm::updateValuesDependencies( const int originIdx )
-{
-  updateFieldDependencies();
-
-  updateValuesDependenciesDefaultValues( originIdx );
-  updateValuesDependenciesVirtualFields( originIdx );
-}
-
-void QgsAttributeForm::updateValuesDependenciesDefaultValues( const int originIdx )
-{
-  if ( !mDefaultValueDependencies.contains( originIdx ) )
-    return;
-
-  // create updated Feature
-  QgsFeature updatedFeature = QgsFeature( mFeature );
-  if ( mFeature.isValid() || mMode == QgsAttributeEditorContext::AddFeatureMode )
-  {
-    QgsAttributes dst = mFeature.attributes();
-    for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
-    {
-      QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
-      if ( eww )
-      {
-        QVariantList dstVars = QVariantList() << dst.at( eww->fieldIdx() );
-        QVariantList srcVars = QVariantList() << eww->value();
-        QList<int> fieldIndexes = QList<int>() << eww->fieldIdx();
-
-        // append additional fields
-        const QStringList additionalFields = eww->additionalFields();
-        for ( const QString &fieldName : additionalFields )
-        {
-          int idx = eww->layer()->fields().lookupField( fieldName );
-          fieldIndexes << idx;
-          dstVars << dst.at( idx );
-        }
-        srcVars.append( eww->additionalFieldValues() );
-
-        Q_ASSERT( dstVars.count() == srcVars.count() );
-
-        for ( int i = 0; i < dstVars.count(); i++ )
-        {
-
-          if ( !qgsVariantEqual( dstVars[i], srcVars[i] ) && srcVars[i].isValid() && fieldIsEditable( fieldIndexes[i] ) )
-          {
-            dst[fieldIndexes[i]] = srcVars[i];
-          }
-        }
-      }
-    }
-    updatedFeature.setAttributes( dst );
-
-    // go through depending fields and update the fields with defaultexpression
-    QList<QgsWidgetWrapper *> relevantWidgets = mDefaultValueDependencies.values( originIdx );
-    for ( QgsWidgetWrapper *ww : std::as_const( relevantWidgets ) )
-    {
-      QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
-      if ( eww )
-      {
-        //do not update when when mMode is not AddFeatureMode and it's not applyOnUpdate
-        if ( mMode != QgsAttributeEditorContext::AddFeatureMode && !eww->field().defaultValueDefinition().applyOnUpdate() )
-        {
-          continue;
-        }
-
-        //do not update when this widget is already updating (avoid recursions)
-        if ( mAlreadyUpdatedFields.contains( eww->fieldIdx() ) )
-          continue;
-
-        QgsExpressionContext context = createExpressionContext( updatedFeature );
-        const QVariant value = mLayer->defaultValue( eww->fieldIdx(), updatedFeature, &context );
-        eww->setValue( value );
-        mCurrentFormFeature.setAttribute( eww->field().name(), value );
-      }
-    }
-  }
-}
-
 QgsFeature QgsAttributeForm::getUpdatedFeature() const
 {
   // create updated Feature
@@ -636,8 +559,9 @@ void QgsAttributeForm::updateValuesDependenciesDefaultValues( const int originId
         continue;
 
       QgsExpressionContext context = createExpressionContext( updatedFeature );
-      QString value = mLayer->defaultValue( eww->fieldIdx(), updatedFeature, &context ).toString();
+      const QVariant value = mLayer->defaultValue( eww->fieldIdx(), updatedFeature, &context );
       eww->setValue( value );
+      mCurrentFormFeature.setAttribute( eww->field().name(), value );
     }
   }
 }
@@ -2891,18 +2815,6 @@ void QgsAttributeForm::updateRelatedLayerFieldsDependencies( QgsEditorWidgetWrap
 
       updateRelatedLayerFieldsDependencies( editorWidgetWrapper );
     }
-  }
-}
-
-void QgsAttributeForm::setMultiEditFeatureIdsRelations( const QgsFeatureIds &fids )
-{
-  for ( QgsAttributeFormWidget *formWidget : mFormWidgets )
-  {
-    QgsAttributeFormRelationEditorWidget *relationEditorWidget = dynamic_cast<QgsAttributeFormRelationEditorWidget *>( formWidget );
-    if ( !relationEditorWidget )
-      continue;
-
-    relationEditorWidget->setMultiEditFeatureIds( fids );
   }
 }
 

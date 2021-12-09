@@ -158,13 +158,6 @@ Returns the widget configuration
 Defines the widget configuration
 %End
 
-    bool multiEditModeActive() const;
-%Docstring
-Returns true if editing multiple features at a time
-
-.. versionadded:: 3.24
-%End
-
   signals:
 
     void relatedFeaturesChanged();
