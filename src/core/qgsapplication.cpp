@@ -1310,6 +1310,12 @@ QString QgsApplication::locale()
   }
 }
 
+void QgsApplication::setLocale( QLocale locale )
+{
+  QLocale::setDefault( locale );
+  emit instance()->localeChanged();
+}
+
 QString QgsApplication::userThemesFolder()
 {
   return qgisSettingsDirPath() + QStringLiteral( "/themes" );

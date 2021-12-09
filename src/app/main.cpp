@@ -1034,6 +1034,9 @@ int main( int argc, char *argv[] )
 
   QgsApplication myApp( argc, argv, myUseGuiFlag, QString(), QStringLiteral( "desktop" ) );
 
+  // Set locale to emit QgsApplication's localeChanged signal
+  myApp.setLocale( QLocale() );
+
   //write the log messages written before creating QgsApplication
   for ( const QString &preApplicationLogMessage : std::as_const( preApplicationLogMessages ) )
     QgsMessageLog::logMessage( preApplicationLogMessage );
