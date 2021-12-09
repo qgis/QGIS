@@ -268,9 +268,11 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     QgsFeatureRequest mChangedFeaturesRequest;
     QgsFeatureIterator mChangedFeaturesIterator;
 
+    // filter bounding box constraint, in SOURCE CRS
     QgsRectangle mFilterRect;
     QgsCoordinateTransform mTransform;
 
+    // distance within constraint reference geometry and distance IN DESTINATION CRS
     QgsGeometry mDistanceWithinGeom;
     std::shared_ptr< QgsGeometryEngine > mDistanceWithinEngine;
     double mDistanceWithin = 0;

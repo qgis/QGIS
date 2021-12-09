@@ -2928,12 +2928,12 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
                 '{} sslmode=disable key=id srid=0 type=LINESTRING table="{}"."target" (g) sql='
                 .format(self.dbconn, schema),
                 'target', 'postgres')
-            assert vl_target.isValid(), "Could not create a layer from the '{}.target' table using dbconn '{}'" .format(schema, self.dbconn)
+            self.assertTrue(vl_target.isValid(), "Could not create a layer from the '{}.target' table using dbconn '{}'" .format(schema, self.dbconn))
             vl_reference = QgsVectorLayer(
                 '{} sslmode=disable key=id srid=0 type=POINT table="{}"."reference" (g) sql='
                 .format(self.dbconn, schema),
                 'reference', 'postgres')
-            assert vl_target.isValid(), "Could not create a layer from the '{}.reference' table using dbconn '{}'" .format(schema, self.dbconn)
+            self.assertTrue(vl_target.isValid(), "Could not create a layer from the '{}.reference' table using dbconn '{}'" .format(schema, self.dbconn))
 
             # Create the ExtractWithinDistance algorithm
             # TODO: move registry initialization in class initialization ?
@@ -2973,7 +2973,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             self.assertTrue(vl_result.isValid())
 
             extracted_fids = [f['id'] for f in vl_result.getFeatures()]
-            self.assertEqual(set(extracted_fids), {1})
+            self.assertCountEqual(extracted_fids, [1])
 
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
