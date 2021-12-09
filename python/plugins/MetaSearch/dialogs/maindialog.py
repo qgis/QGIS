@@ -350,7 +350,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         keys = self.settings.childGroups()
         self.settings.endGroup()
 
-        for server in doc.findall('catalog'):
+        for server in doc.findall('csw'):
             name = server.attrib.get('name')
             # check for duplicates
             if name in keys:

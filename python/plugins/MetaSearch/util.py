@@ -82,7 +82,7 @@ def get_connections_from_file(parent, filename):
     error = 0
     try:
         doc = etree.parse(filename).getroot()
-        if doc.tag != 'qgsCatalogConnections':
+        if doc.tag != 'qgsCSWConnections':
             error = 1
             msg = parent.tr('Invalid Catalog connections XML.')
     except etree.ParseError as err:

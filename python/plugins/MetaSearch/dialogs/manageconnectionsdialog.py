@@ -112,21 +112,21 @@ class ManageConnectionsDialog(QDialog, BASE_CLASS):
                 self.listConnections.clear()
                 return
 
-            for catalog in doc.findall('catalog'):
+            for catalog in doc.findall('csw'):
                 item = QListWidgetItem(self.listConnections)
                 item.setText(catalog.attrib.get('name'))
 
     def save(self, connections):
         """save connections ops"""
 
-        doc = etree.Element('qgsCatalogConnections')
+        doc = etree.Element('qgsCSWConnections')
         doc.attrib['version'] = '1.0'
 
         for conn in connections:
             url = self.settings.value('/MetaSearch/%s/url' % conn)
             type_ = self.settings.value('/MetaSearch/%s/catalog-type' % conn)
             if url is not None:
-                connection = etree.SubElement(doc, 'catalog')
+                connection = etree.SubElement(doc, 'csw')
                 connection.attrib['name'] = conn
                 connection.attrib['type'] = type_ or 'OGC CSW 2.0.2'
                 connection.attrib['url'] = url
@@ -147,7 +147,7 @@ class ManageConnectionsDialog(QDialog, BASE_CLASS):
 
         exml = etree.parse(self.filename).getroot()
 
-        for catalog in exml.findall('catalog'):
+        for catalog in exml.findall('csw'):
             conn_name = catalog.attrib.get('name')
 
             # process only selected connections
