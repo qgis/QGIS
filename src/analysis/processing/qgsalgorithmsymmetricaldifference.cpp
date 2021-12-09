@@ -79,7 +79,7 @@ QVariantMap QgsSymmetricalDifferenceAlgorithm::processAlgorithm( const QVariantM
   if ( !sourceB )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "OVERLAY" ) ) );
 
-  const QgsWkbTypes::Type geomType = QgsWkbTypes::multiType( sourceA->wkbType() );
+  const QgsWkbTypes::Type geomType = QgsWkbTypes::promoteNonPointTypesToMulti( sourceA->wkbType() );
 
   const QString overlayFieldsPrefix = parameterAsString( parameters, QStringLiteral( "OVERLAY_FIELDS_PREFIX" ), context );
   const QgsFields fields = QgsProcessingUtils::combineFields( sourceA->fields(), sourceB->fields(), overlayFieldsPrefix );
