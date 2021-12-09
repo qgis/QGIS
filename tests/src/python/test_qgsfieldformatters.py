@@ -24,6 +24,7 @@ from qgis.PyQt.QtCore import (
     Qt
 )
 from qgis.core import (
+    QgsApplication,
     QgsFeature,
     QgsProject,
     QgsRelation,
@@ -679,7 +680,7 @@ class TestQgsDateTimeFieldFormatter(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         """Reset locale"""
-        QLocale.setDefault(QLocale(QLocale.English))
+        QgsApplication.setLocale(QLocale(QLocale.English))
 
     def test_representValue(self):
         layer = QgsVectorLayer("point?field=datetime:datetime&field=date:date&field=time:time",
@@ -716,8 +717,7 @@ class TestQgsDateTimeFieldFormatter(unittest.TestCase):
         }
 
         for locale, assertions in locale_assertions.items():
-            QLocale().setDefault(locale)
-            QgsDateTimeFieldFormatter.applyLocaleChange()
+            QgsApplication.setLocale(locale)
             field_formatter = QgsDateTimeFieldFormatter()
 
             self.assertEqual(field_formatter.defaultFormat(QVariant.Date), assertions["date_format"], locale.name())

@@ -113,7 +113,6 @@ typedef SInt32 SRefCon;
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
-#include "qgsdatetimefieldformatter.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -1032,13 +1031,13 @@ int main( int argc, char *argv[] )
     }
     QLocale::setDefault( currentLocale );
 
-    // Date time settings
-    QgsDateTimeFieldFormatter::applyLocaleChange();
-
     QgsApplication::setTranslation( translationCode );
   }
 
   QgsApplication myApp( argc, argv, myUseGuiFlag, QString(), QStringLiteral( "desktop" ) );
+
+  // Set locale to emit QgsApplication's localeChanged signal
+  myApp.setLocale( QLocale() );
 
   //write the log messages written before creating QgsApplication
   for ( const QString &preApplicationLogMessage : std::as_const( preApplicationLogMessages ) )

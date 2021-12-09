@@ -46,9 +46,6 @@ class CORE_EXPORT QgsDateTimeFieldFormatter : public QgsFieldFormatter
 
     QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;
 
-    //! Adjusts the date time formats according to locale.
-    static void applyLocaleChange();
-
     /**
      * Gets the default format in function of the type.
      * The type is expected to be one of
@@ -58,6 +55,13 @@ class CORE_EXPORT QgsDateTimeFieldFormatter : public QgsFieldFormatter
      * - QVariant::Time
      */
     static QString defaultFormat( QVariant::Type type );
+
+    /**
+     * Adjusts the date time formats according to locale.
+     *
+     * \since QGIS 3.22.2
+     */
+    static void applyLocaleChange(); SIP_SKIP;
 };
 
 #endif // QGSDATETIMEFIELDKIT_H
