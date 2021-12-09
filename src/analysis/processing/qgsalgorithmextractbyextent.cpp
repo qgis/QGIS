@@ -77,7 +77,7 @@ QVariantMap QgsExtractByExtentAlgorithm::processAlgorithm( const QVariantMap &pa
   const bool clip = parameterAsBoolean( parameters, QStringLiteral( "CLIP" ), context );
 
   // if clipping, we force multi output
-  const QgsWkbTypes::Type outType = clip ? QgsWkbTypes::multiType( featureSource->wkbType() ) : featureSource->wkbType();
+  const QgsWkbTypes::Type outType = clip ? QgsWkbTypes::promoteNonPointTypesToMulti( featureSource->wkbType() ) : featureSource->wkbType();
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, featureSource->fields(), outType, featureSource->sourceCrs() ) );
