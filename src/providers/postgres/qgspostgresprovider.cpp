@@ -433,20 +433,23 @@ QgsCoordinateReferenceSystem QgsPostgresProvider::sridToCrs( int srid, QgsPostgr
       QgsPostgresResult result( conn->PQexec( QStringLiteral( "SELECT auth_name, auth_srid, srtext, proj4text FROM spatial_ref_sys WHERE srid=%1" ).arg( srid ) ) );
       if ( result.PQresultStatus() == PGRES_TUPLES_OK )
       {
-        const QString authName = result.PQgetvalue( 0, 0 );
-        const QString authSRID = result.PQgetvalue( 0, 1 );
-        const QString srText = result.PQgetvalue( 0, 2 );
-        bool ok = false;
-        if ( authName == QLatin1String( "EPSG" ) || authName == QLatin1String( "ESRI" ) )
+        if ( result.PQntuples() > 0 )
         {
-          ok = crs.createFromUserInput( authName + ':' + authSRID );
+          const QString authName = result.PQgetvalue( 0, 0 );
+          const QString authSRID = result.PQgetvalue( 0, 1 );
+          const QString srText = result.PQgetvalue( 0, 2 );
+          bool ok = false;
+          if ( authName == QLatin1String( "EPSG" ) || authName == QLatin1String( "ESRI" ) )
+          {
+            ok = crs.createFromUserInput( authName + ':' + authSRID );
+          }
+          if ( !ok && !srText.isEmpty() )
+          {
+            ok = crs.createFromUserInput( srText );
+          }
+          if ( !ok )
+            crs = QgsCoordinateReferenceSystem::fromProj( result.PQgetvalue( 0, 3 ) );
         }
-        if ( !ok && !srText.isEmpty() )
-        {
-          ok = crs.createFromUserInput( srText );
-        }
-        if ( !ok )
-          crs = QgsCoordinateReferenceSystem::fromProj( result.PQgetvalue( 0, 3 ) );
         sCrsCache.insert( srid, crs );
       }
     }
