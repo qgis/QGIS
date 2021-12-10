@@ -129,6 +129,16 @@ bool QgsRasterAttributeTable::isValid()
   return mFields.count() > 0 && mData.count( ) > 0;
 }
 
+bool QgsRasterAttributeTable::saveToFile( const QString &path )
+{
+  return true;
+}
+
+bool QgsRasterAttributeTable::loadFromFile( const QString &path )
+{
+  return true;
+}
+
 QgsRasterAttributeTable::Origin QgsRasterAttributeTable::origin() const
 {
   return mOrigin;

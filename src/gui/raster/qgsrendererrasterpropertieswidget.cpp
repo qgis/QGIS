@@ -22,7 +22,6 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterrendererwidget.h"
 #include "qgsrasterrendererregistry.h"
-#include "qgsattributetablerendererwidget.h"
 #include "qgssinglebandgrayrendererwidget.h"
 #include "qgssinglebandpseudocolorrendererwidget.h"
 #include "qgsmultibandcolorrendererwidget.h"
@@ -49,7 +48,6 @@ static void _initRendererWidgetFunctions()
   QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "singlebandgray" ), QgsSingleBandGrayRendererWidget::create );
   QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "hillshade" ), QgsHillshadeRendererWidget::create );
   QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "contour" ), QgsRasterContourRendererWidget::create );
-  QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "attributetable" ), QgsAttributeTableRendererWidget::create );
 
   sInitialized = true;
 }
