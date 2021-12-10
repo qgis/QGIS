@@ -720,14 +720,15 @@ bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess
         QVariant pointAsVariant = attributes.at( pointCol );
         if ( pointAsVariant.canConvert<QgsGeometry>() )
         {
-          QgsGeometry geometryPoint = pointAsVariant.value<QgsGeometry>();
-          const QgsPoint *point  = qgsgeometry_cast<QgsPoint *>( geometryPoint.constGet() );
+         const  QgsGeometry geometry = pointAsVariant.value<QgsGeometry>();
+         if ( const QgsPoint *point  = ( geometry.constGet() ? qgsgeometry_cast<QgsPoint *>( geometry.constGet()->simplifiedTypeRef() ) : nullptr ) )
+         {
+            x = point->x();
+            y = point->y();
 
-          x = point->x();
-          y = point->y();
-
-          xSuccess = true;
-          ySuccess = true;
+            xSuccess = true;
+            ySuccess = true;
+          }
         }
         else if ( !pointAsVariant.toByteArray().isEmpty() )
         {
@@ -1121,7 +1122,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIn
     {
       index = vlayer->fields().lookupField( prop.field() );
     }
-    else if ( prop.propertyType() != QgsProperty::ExpressionBasedProperty )
+    else
     {
       index = QgsAuxiliaryLayer::createProperty( p, vlayer, false );
       changed = true;
@@ -1171,7 +1172,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( QgsCalloutPosition &details, QgsCal
     {
       index = vlayer->fields().lookupField( prop.field() );
     }
-    else if ( prop.propertyType() != QgsProperty::ExpressionBasedProperty )
+    else
     {
       index = QgsAuxiliaryLayer::createProperty( p, vlayer, false );
       changed = true;
