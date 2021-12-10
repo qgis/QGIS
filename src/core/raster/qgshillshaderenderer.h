@@ -128,11 +128,11 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
     void setMultiDirectional( bool isMultiDirectional ) { mMultiDirectional = isMultiDirectional; }
 
   private:
-    int mBand;
-    double mZFactor;
-    double mLightAngle;
-    double mLightAzimuth;
-    bool mMultiDirectional;
+    int mBand = 1;
+    double mZFactor = 1;
+    double mLightAngle = 45;
+    double mLightAzimuth = 315;
+    bool mMultiDirectional = false;
 
 };
 
