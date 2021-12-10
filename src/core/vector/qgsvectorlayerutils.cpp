@@ -431,9 +431,20 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer *layer, const 
 
     if ( !exempt )
     {
-      valid = valid && !value.isNull();
 
-      if ( value.isNull() )
+      const bool allowMulti { field.editorWidgetSetup().config().value( QStringLiteral( "AllowMulti" ), false ).toBool() };
+      bool multiViolated { false };
+      if ( allowMulti )
+      {
+        multiViolated = value == QStringLiteral( "{}" );
+        valid = valid && ( !value.isNull() && ! multiViolated );
+      }
+      else
+      {
+        valid = valid && !value.isNull();
+      }
+
+      if ( value.isNull() || multiViolated )
       {
         errors << QObject::tr( "value is NULL" );
         notNullConstraintViolated = true;
