@@ -134,11 +134,6 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
     double mLightAzimuth;
     bool mMultiDirectional;
 
-    //! Calculates the first order derivative in x-direction according to Horn (1981)
-    double calcFirstDerX( double x11, double x21, double x31, double x12, double x22, double x32, double x13, double x23, double x33, double cellsize );
-
-    //! Calculates the first order derivative in y-direction according to Horn (1981)
-    double calcFirstDerY( double x11, double x21, double x31, double x12, double x22, double x32, double x13, double x23, double x33, double cellsize );
 };
 
 #endif // QGSHILLSHADERENDERER_H

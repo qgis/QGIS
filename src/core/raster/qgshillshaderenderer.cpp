@@ -369,78 +369,90 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
 
 #endif
 
-    for ( qgssize i = 0; i < static_cast<qgssize>( height ); i++ )
+    for ( int row = 0; row < height; row++ )
     {
-
-      for ( qgssize j = 0; j < static_cast<qgssize>( width ); j++ )
+      for ( int col = 0; col < width; col++ )
       {
+        bool isNoData = false;
+        // This is center cell. Use this in place of nodata neighbors
+        double x22 = inputBlock->valueAndNoData( row, col, isNoData );
 
-        if ( inputBlock->isNoData( i,  j ) )
+        if ( isNoData )
         {
-          outputBlock->setColor( static_cast<int>( i ), static_cast<int>( j ), defaultNodataColor );
+          outputBlock->setColor( row, col, defaultNodataColor );
           continue;
         }
 
-        qgssize iUp, iDown, jLeft, jRight;
-        if ( i == 0 )
+        int iUp, iDown, jLeft, jRight;
+        if ( row == 0 )
         {
-          iUp = i;
-          iDown = i + 1;
+          iUp = row;
+          iDown = row + 1;
         }
-        else if ( i < static_cast<qgssize>( height ) - 1 )
+        else if ( row < height - 1 )
         {
-          iUp = i - 1;
-          iDown = i + 1;
-        }
-        else
-        {
-          iUp = i - 1;
-          iDown = i;
-        }
-
-        if ( j == 0 )
-        {
-          jLeft = j;
-          jRight = j + 1;
-        }
-        else if ( j <  static_cast<qgssize>( width ) - 1 )
-        {
-          jLeft = j - 1;
-          jRight = j + 1;
+          iUp = row - 1;
+          iDown = row + 1;
         }
         else
         {
-          jLeft = j - 1;
-          jRight = j;
+          iUp = row - 1;
+          iDown = row;
         }
 
-        double x11;
-        double x21;
-        double x31;
-        double x12;
-        double x22; // Working cell
-        double x32;
-        double x13;
-        double x23;
-        double x33;
+        if ( col == 0 )
+        {
+          jLeft = col;
+          jRight = col + 1;
+        }
+        else if ( col <  width - 1 )
+        {
+          jLeft = col - 1;
+          jRight = col + 1;
+        }
+        else
+        {
+          jLeft = col - 1;
+          jRight = col;
+        }
 
-        // This is center cell. It is not nodata. Use this in place of nodata neighbors
-        x22 = inputBlock->value( i, j );
+        double x11 = inputBlock->valueAndNoData( iUp, jLeft, isNoData );
+        if ( isNoData )
+          x11 = x22;
 
-        x11 = inputBlock->isNoData( iUp, jLeft )  ? x22 : inputBlock->value( iUp, jLeft );
-        x21 = inputBlock->isNoData( i, jLeft )     ? x22 : inputBlock->value( i, jLeft );
-        x31 = inputBlock->isNoData( iDown, jLeft ) ? x22 : inputBlock->value( iDown, jLeft );
+        double x21 = inputBlock->valueAndNoData( row, jLeft, isNoData );
+        if ( isNoData )
+          x21 = x22;
 
-        x12 = inputBlock->isNoData( iUp, j )       ? x22 : inputBlock->value( iUp, j );
+        double x31 = inputBlock->valueAndNoData( iDown, jLeft, isNoData );
+        if ( isNoData )
+          x31 = x22;
+
+        double x12 = inputBlock->valueAndNoData( iUp, col, isNoData );
+        if ( isNoData )
+          x12 = x22;
+
         // x22
-        x32 = inputBlock->isNoData( iDown, j )     ? x22 : inputBlock->value( iDown, j );
 
-        x13 = inputBlock->isNoData( iUp, jRight )   ? x22 : inputBlock->value( iUp, jRight );
-        x23 = inputBlock->isNoData( i, jRight )     ? x22 : inputBlock->value( i, jRight );
-        x33 = inputBlock->isNoData( iDown, jRight ) ? x22 : inputBlock->value( iDown, jRight );
+        double x32 = inputBlock->valueAndNoData( iDown, col, isNoData );
+        if ( isNoData )
+          x32 = x22;
 
-        double derX = calcFirstDerX( x11, x21, x31, x12, x22, x32, x13, x23, x33, cellXSize );
-        double derY = calcFirstDerY( x11, x21, x31, x12, x22, x32, x13, x23, x33, cellYSize );
+        double x13 = inputBlock->valueAndNoData( iUp, jRight, isNoData );
+        if ( isNoData )
+          x13 = x22;
+
+        double x23 = inputBlock->valueAndNoData( row, jRight, isNoData );
+        if ( isNoData )
+          x23 = x22;
+
+        double x33 = inputBlock->valueAndNoData( iDown, jRight, isNoData );
+        if ( isNoData )
+          x33 = x22;
+
+        // Calculates the first order derivative in x-direction according to Horn (1981)
+        const double derX = ( ( x13 + x23 + x23 + x33 ) - ( x11 + x21 + x21 + x31 ) ) / ( 8 * cellXSize );
+        const double derY = ( ( x31 + x32 + x32 + x33 ) - ( x11 + x12 + x12 + x13 ) ) / ( 8 * -cellYSize );
 
         // Fast formula
 
@@ -505,16 +517,16 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
         }
         if ( mAlphaBand > 0 )
         {
-          currentAlpha *= alphaBlock->value( i ) / 255.0;
+          currentAlpha *= alphaBlock->value( row ) / 255.0;
         }
 
         if ( qgsDoubleNear( currentAlpha, 1.0 ) )
         {
-          outputBlock->setColor( i, j, qRgba( grayValue, grayValue, grayValue, 255 ) );
+          outputBlock->setColor( row, col, qRgba( grayValue, grayValue, grayValue, 255 ) );
         }
         else
         {
-          outputBlock->setColor( i, j, qRgba( currentAlpha * grayValue, currentAlpha * grayValue, currentAlpha * grayValue, currentAlpha * 255 ) );
+          outputBlock->setColor( row, col, qRgba( currentAlpha * grayValue, currentAlpha * grayValue, currentAlpha * grayValue, currentAlpha * 255 ) );
         }
       }
     }
@@ -556,22 +568,6 @@ void QgsHillshadeRenderer::setBand( int bandNo )
     return;
   }
   mBand = bandNo;
-}
-
-double QgsHillshadeRenderer::calcFirstDerX( double x11, double x21, double x31, double x12, double x22, double x32, double x13, double x23, double x33, double cellsize )
-{
-  Q_UNUSED( x12 )
-  Q_UNUSED( x22 )
-  Q_UNUSED( x32 )
-  return ( ( x13 + x23 + x23 + x33 ) - ( x11 + x21 + x21 + x31 ) ) / ( 8 * cellsize );
-}
-
-double QgsHillshadeRenderer::calcFirstDerY( double x11, double x21, double x31, double x12, double x22, double x32, double x13, double x23, double x33, double cellsize )
-{
-  Q_UNUSED( x21 )
-  Q_UNUSED( x22 )
-  Q_UNUSED( x23 )
-  return ( ( x31 + x32 + x32 + x33 ) - ( x11 + x12 + x12 + x13 ) ) / ( 8 * -cellsize );
 }
 
 void QgsHillshadeRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
