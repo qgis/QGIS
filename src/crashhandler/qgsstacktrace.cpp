@@ -15,7 +15,7 @@
  ***************************************************************************/
 #include <iostream>
 
-#ifdef MSVC
+#ifdef _MSC_VER
 #define _NO_CVCONST_H
 #define _CRT_STDIO_ISO_WIDE_SPECIFIERS
 #endif
@@ -32,7 +32,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#ifdef MSVC
+#ifdef _MSC_VER
 #include <tlhelp32.h>
 
 #include <Windows.h>
