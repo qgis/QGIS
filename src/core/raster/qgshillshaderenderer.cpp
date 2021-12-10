@@ -37,10 +37,8 @@
 QgsHillshadeRenderer::QgsHillshadeRenderer( QgsRasterInterface *input, int band, double lightAzimuth, double lightAngle ):
   QgsRasterRenderer( input, QStringLiteral( "hillshade" ) )
   , mBand( band )
-  , mZFactor( 1 )
   , mLightAngle( lightAngle )
   , mLightAzimuth( lightAzimuth )
-  , mMultiDirectional( false )
 {
 
 }
@@ -131,6 +129,9 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
   {
     return outputBlock.release();
   }
+
+  if ( width == 0 || height == 0 )
+    return outputBlock.release();
 
   // Starting the computation
 
@@ -369,86 +370,88 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
 
 #endif
 
+    double pixelValues[9] {0, 0, 0, 0, 0, 0, 0, 0, 0};
+    bool isNoData[9] {false, false, false, false, false, false, false, false, false};
+
     for ( int row = 0; row < height; row++ )
     {
       for ( int col = 0; col < width; col++ )
       {
-        bool isNoData = false;
-        // This is center cell. Use this in place of nodata neighbors
-        double x22 = inputBlock->valueAndNoData( row, col, isNoData );
-
-        if ( isNoData )
-        {
-          outputBlock->setColor( row, col, defaultNodataColor );
-          continue;
-        }
-
-        int iUp, iDown, jLeft, jRight;
+        int iUp = row - 1;
+        int iDown = row + 1;
         if ( row == 0 )
         {
           iUp = row;
-          iDown = row + 1;
         }
-        else if ( row < height - 1 )
+        else if ( row == height - 1 )
         {
-          iUp = row - 1;
-          iDown = row + 1;
-        }
-        else
-        {
-          iUp = row - 1;
           iDown = row;
         }
 
         if ( col == 0 )
         {
-          jLeft = col;
-          jRight = col + 1;
-        }
-        else if ( col <  width - 1 )
-        {
-          jLeft = col - 1;
-          jRight = col + 1;
+          // seed the matrix with the values from the first column
+          pixelValues[ 0 ] = inputBlock->valueAndNoData( iUp, 0, isNoData[0] );
+          pixelValues[ 1 ] = pixelValues[0];
+          isNoData[1] = isNoData[0];
+          pixelValues[ 2 ] = pixelValues[0];
+          isNoData[2] = isNoData[0];
+
+          pixelValues[ 3 ] = inputBlock->valueAndNoData( row, 0, isNoData[3] );
+          pixelValues[ 4 ] = pixelValues[3];
+          isNoData[4] = isNoData[3];
+          pixelValues[ 5 ] = pixelValues[3];
+          isNoData[5] = isNoData[3];
+
+          pixelValues[ 6 ] = inputBlock->valueAndNoData( iDown, 0, isNoData[6] );
+          pixelValues[ 7 ] = pixelValues[6];
+          isNoData[7] = isNoData[6];
+          pixelValues[ 8 ] = pixelValues[6];
+          isNoData[8] = isNoData[6];
         }
         else
         {
-          jLeft = col - 1;
-          jRight = col;
+          // shift matrices left
+          pixelValues[ 0 ] = pixelValues[1];
+          pixelValues[ 1 ] = pixelValues[2];
+          pixelValues[ 3 ] = pixelValues[4];
+          pixelValues[ 4 ] = pixelValues[5];
+          pixelValues[ 6 ] = pixelValues[7];
+          pixelValues[ 7 ] = pixelValues[8];
+          isNoData[ 0 ] = isNoData[1];
+          isNoData[ 1 ] = isNoData[2];
+          isNoData[ 3 ] = isNoData[4];
+          isNoData[ 4 ] = isNoData[5];
+          isNoData[ 6 ] = isNoData[7];
+          isNoData[ 7 ] = isNoData[8];
         }
 
-        double x11 = inputBlock->valueAndNoData( iUp, jLeft, isNoData );
-        if ( isNoData )
-          x11 = x22;
+        // calculate new values
+        if ( col < width - 1 )
+        {
+          pixelValues[2] = inputBlock->valueAndNoData( iUp, col + 1, isNoData[2] );
+          pixelValues[5] = inputBlock->valueAndNoData( row, col + 1, isNoData[5] );
+          pixelValues[8] = inputBlock->valueAndNoData( iDown, col + 1, isNoData[8] );
+        }
 
-        double x21 = inputBlock->valueAndNoData( row, jLeft, isNoData );
-        if ( isNoData )
-          x21 = x22;
+        if ( isNoData[ 4 ] )
+        {
+          outputBlock->setColor( row, col, defaultNodataColor );
+          continue;
+        }
 
-        double x31 = inputBlock->valueAndNoData( iDown, jLeft, isNoData );
-        if ( isNoData )
-          x31 = x22;
+        // This is center cell. Use this in place of nodata neighbors
+        const double x22 = pixelValues[4];
 
-        double x12 = inputBlock->valueAndNoData( iUp, col, isNoData );
-        if ( isNoData )
-          x12 = x22;
-
+        const double x11 = isNoData[0] ? x22 : pixelValues[0];
+        const double x21 = isNoData[3] ? x22 : pixelValues[3];
+        const double x31 = isNoData[6] ? x22 : pixelValues[6];
+        const double x12 = isNoData[1] ? x22 : pixelValues[1];
         // x22
-
-        double x32 = inputBlock->valueAndNoData( iDown, col, isNoData );
-        if ( isNoData )
-          x32 = x22;
-
-        double x13 = inputBlock->valueAndNoData( iUp, jRight, isNoData );
-        if ( isNoData )
-          x13 = x22;
-
-        double x23 = inputBlock->valueAndNoData( row, jRight, isNoData );
-        if ( isNoData )
-          x23 = x22;
-
-        double x33 = inputBlock->valueAndNoData( iDown, jRight, isNoData );
-        if ( isNoData )
-          x33 = x22;
+        const double x32 = isNoData[7] ? x22 : pixelValues[7];
+        const double x13 = isNoData[2] ? x22 : pixelValues[2];
+        const double x23 = isNoData[5] ? x22 : pixelValues[5];
+        const double x33 = isNoData[8] ? x22 : pixelValues[8];
 
         // Calculates the first order derivative in x-direction according to Horn (1981)
         const double derX = ( ( x13 + x23 + x23 + x33 ) - ( x11 + x21 + x21 + x31 ) ) / ( 8 * cellXSize );
