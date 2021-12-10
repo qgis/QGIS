@@ -296,7 +296,7 @@ void TestQgsMapToolCircle::testCircle_data()
       rowStringName = coordinate + " " + mDrawFunctionUserNames[drawMethod];
       const QgsAbstractGeometry *ageom = f.geometry().constGet();
       Q_ASSERT( ageom != nullptr );
-      const QgsCompoundCurve *compoundCurveGeom = QgsCompoundCurve().cast( ageom );
+      const QgsCompoundCurve *compoundCurveGeom = QgsCompoundCurve::cast( ageom );
       Q_ASSERT( compoundCurveGeom != nullptr );
       const QgsCurve *curveGeom = compoundCurveGeom->curveAt( 0 );
       Q_ASSERT( curveGeom != nullptr );
