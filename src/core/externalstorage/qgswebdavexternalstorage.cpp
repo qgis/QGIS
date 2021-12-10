@@ -104,7 +104,7 @@ QgsWebDAVExternalStorageStoredContent::QgsWebDAVExternalStorageStoredContent( co
 void QgsWebDAVExternalStorageStoredContent::store()
 {
   mStatus = Qgis::ContentStatus::Running;
-  QgsApplication::instance()->taskManager()->addTask( mUploadTask );
+  QgsApplication::taskManager()->addTask( mUploadTask );
 }
 
 
@@ -195,7 +195,7 @@ QgsExternalStorageStoredContent *QgsWebDAVExternalStorage::doStore( const QStrin
 
 QgsExternalStorageFetchedContent *QgsWebDAVExternalStorage::doFetch( const QString &url, const QString &authConfig ) const
 {
-  QgsFetchedContent *fetchedContent = QgsApplication::instance()->networkContentFetcherRegistry()->fetch( url, Qgis::ActionStart::Deferred, authConfig );
+  QgsFetchedContent *fetchedContent = QgsApplication::networkContentFetcherRegistry()->fetch( url, Qgis::ActionStart::Deferred, authConfig );
 
   return new QgsWebDAVExternalStorageFetchedContent( fetchedContent );
 }

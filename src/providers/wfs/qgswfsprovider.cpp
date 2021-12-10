@@ -132,7 +132,7 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
     {
       auto processEvents = []()
       {
-        QApplication::instance()->processEvents();
+        QApplication::processEvents();
       };
       connect( downloader.get(), &QgsFeatureDownloader::resumeMainThread,
                this, processEvents );

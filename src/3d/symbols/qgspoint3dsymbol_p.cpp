@@ -425,7 +425,7 @@ void QgsModelPoint3DSymbolHandler::addSceneEntities( const Qgs3DMapSettings &map
   Q_UNUSED( map )
   for ( const QVector3D &position : positions )
   {
-    const QString source = QgsApplication::instance()->sourceCache()->localFilePath( symbol->shapeProperties()[QStringLiteral( "model" )].toString() );
+    const QString source = QgsApplication::sourceCache()->localFilePath( symbol->shapeProperties()[QStringLiteral( "model" )].toString() );
     // if the source is remote, the Qgs3DMapScene will take care of refreshing this 3D symbol when the source is fetched
     if ( !source.isEmpty() )
     {
@@ -460,7 +460,7 @@ void QgsModelPoint3DSymbolHandler::addMeshEntities( const Qgs3DMapSettings &map,
   // get nodes
   for ( const QVector3D &position : positions )
   {
-    const QString source = QgsApplication::instance()->sourceCache()->localFilePath( symbol->shapeProperties()[QStringLiteral( "model" )].toString() );
+    const QString source = QgsApplication::sourceCache()->localFilePath( symbol->shapeProperties()[QStringLiteral( "model" )].toString() );
     if ( !source.isEmpty() )
     {
       // build the entity

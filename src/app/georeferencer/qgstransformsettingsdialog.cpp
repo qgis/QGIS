@@ -35,7 +35,7 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
 {
   setupUi( this );
   QgsSettings settings;
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
 
   mOutputRaster->setStorageMode( QgsFileWidget::SaveFile );

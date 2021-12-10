@@ -243,7 +243,7 @@ bool QgsGeoPackageProjectStorage::writeProject( const QString &uri, QIODevice *d
   const QByteArray content = device->readAll();
   const QString metadataExpr = QStringLiteral( "{\"last_modified_time\": \"%1\", \"last_modified_user\": \"%2\" }" ).arg(
                                  QDateTime::currentDateTime().toString( Qt::DateFormat::ISODate ),
-                                 QgsApplication::instance()->userLoginName()
+                                 QgsApplication::userLoginName()
                                );
   QString sql;
   if ( listProjects( uri ).contains( projectUri.projectName ) )

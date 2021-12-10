@@ -231,7 +231,7 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
 
   QList<QgsGeometryCheck *> layerChecks;
 
-  QgsGeometryCheckRegistry *checkRegistry = QgsAnalysis::instance()->geometryCheckRegistry();
+  QgsGeometryCheckRegistry *checkRegistry = QgsAnalysis::geometryCheckRegistry();
 
   const QStringList activeChecks = layer->geometryOptions()->geometryChecks();
 

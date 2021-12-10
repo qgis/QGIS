@@ -118,7 +118,7 @@ void TestQObjectUniquePtr::testDeleteLater()
   obj2.reset();
 
   connect( o, &QObject::destroyed, QgsApplication::instance(), &QgsApplication::quit );
-  QgsApplication::instance()->exec();
+  QgsApplication::exec();
   QVERIFY( obj.isNull() );
   QVERIFY( obj2.isNull() );
 }
