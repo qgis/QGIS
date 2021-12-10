@@ -32,6 +32,7 @@ from qgis.core import (QgsProject,
                        QgsWkbTypes,
                        QgsCoordinateReferenceSystem,
                        QgsVectorLayerJoinInfo,
+                       QgsEditorWidgetSetup,
                        NULL
                        )
 from qgis.testing import start_app, unittest
@@ -266,7 +267,7 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         # field expression check
         layer.setConstraintExpression(1, 'fldint>5')
 
-        f = QgsFeature(2)
+        f = QgsFeature(layer.fields(), 2)
         f.setAttributes(["test123", 6])
         res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1)
         self.assertTrue(res)
@@ -275,7 +276,6 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1)
         self.assertFalse(res)
         self.assertEqual(len(errors), 1)
-        print(errors)
         # checking only for provider constraints
         res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1,
                                                             origin=QgsFieldConstraints.ConstraintOriginProvider)
@@ -287,7 +287,6 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1)
         self.assertFalse(res)
         self.assertEqual(len(errors), 1)
-        print(errors)
 
         layer.setConstraintExpression(1, None)
 
@@ -301,7 +300,6 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1)
         self.assertFalse(res)
         self.assertEqual(len(errors), 1)
-        print(errors)
 
         # checking only for provider constraints
         res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1,
@@ -319,7 +317,6 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1)
         self.assertFalse(res)
         self.assertEqual(len(errors), 1)
-        print(errors)
 
         # checking only for provider constraints
         res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1,
@@ -354,7 +351,19 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1)
         self.assertFalse(res)
         self.assertEqual(len(errors), 2)
-        print(errors)
+
+        # Test AllowMulti with no selected values, see GH #46366
+        setup = QgsEditorWidgetSetup('ValueRelation', {'AllowMulti': True})
+        layer.setEditorWidgetSetup(0, setup)
+        layer.setFieldConstraint(0, QgsFieldConstraints.ConstraintNotNull)
+        f.setAttribute(0, QVariant())
+        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 0)
+        self.assertFalse(res)
+        f.setAttribute(0, '{}')
+        self.assertEqual(len(errors), 1)
+        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 0)
+        self.assertFalse(res)
+        self.assertEqual(len(errors), 1)
 
     def testCreateUniqueValue(self):
         """ test creating a unique value """
