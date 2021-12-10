@@ -579,7 +579,6 @@
 %Include auto_generated/providers/arcgis/qgsarcgisportalutils.sip
 %Include auto_generated/providers/arcgis/qgsarcgisrestutils.sip
 %Include auto_generated/providers/memory/qgsmemoryproviderutils.sip
-%Include auto_generated/raster/qgsattributetablerenderer.sip
 %Include auto_generated/raster/qgsrasterattributetable.sip
 %Include auto_generated/raster/qgsbilinearrasterresampler.sip
 %Include auto_generated/raster/qgsbrightnesscontrastfilter.sip

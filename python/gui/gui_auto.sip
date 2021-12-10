@@ -415,7 +415,6 @@
 %Include auto_generated/raster/qgsrendererrasterpropertieswidget.sip
 %Include auto_generated/raster/qgssinglebandgrayrendererwidget.sip
 %Include auto_generated/raster/qgssinglebandpseudocolorrendererwidget.sip
-%Include auto_generated/raster/qgsattributetablerendererwidget.sip
 %Include auto_generated/raster/qgsrasterlayerproperties.sip
 %Include auto_generated/raster/qgsrasterlayertemporalpropertieswidget.sip
 %Include auto_generated/vector/qgsfieldcalculator.sip
