@@ -74,7 +74,7 @@ void QgsMapToolEllipseExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       {
         if ( qgsDoubleNear( mCanvas->rotation(), 0.0 ) )
         {
-          mEllipse = QgsEllipse().fromExtent( mPoints.at( 0 ), point );
+          mEllipse = QgsEllipse::fromExtent( mPoints.at( 0 ), point );
           mTempRubberBand->setGeometry( mEllipse.toPolygon( segments() ) );
         }
         else
@@ -82,7 +82,7 @@ void QgsMapToolEllipseExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e )
           const double dist = mPoints.at( 0 ).distance( point );
           const double angle = mPoints.at( 0 ).azimuth( point );
 
-          mEllipse = QgsEllipse().fromExtent( mPoints.at( 0 ), mPoints.at( 0 ).project( dist, angle ) );
+          mEllipse = QgsEllipse::fromExtent( mPoints.at( 0 ), mPoints.at( 0 ).project( dist, angle ) );
           mTempRubberBand->setGeometry( mEllipse.toPolygon( segments() ) );
         }
       }

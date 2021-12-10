@@ -273,7 +273,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
 
   bool createNewDb = false;
 
-  if ( QFile( fileName ).exists( fileName ) )
+  if ( QFile::exists( fileName ) )
   {
     bool overwrite = false;
 

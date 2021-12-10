@@ -218,7 +218,7 @@ bool QgsLayerMetadata::readMetadataXml( const QDomElement &metadataElement )
     for ( int i = 0; i < instantList.size(); i++ )
     {
       mnl = instantList.at( i );
-      const QDateTime d = QDateTime().fromString( mnl.toElement().text(), Qt::ISODate );
+      const QDateTime d = QDateTime::fromString( mnl.toElement().text(), Qt::ISODate );
       const QgsDateTimeRange date = QgsDateTimeRange( d, d );
       metadataDates << date;
     }
@@ -227,8 +227,8 @@ bool QgsLayerMetadata::readMetadataXml( const QDomElement &metadataElement )
     {
       const QDomNode begin = periodList.at( i ).namedItem( QStringLiteral( "start" ) );
       const QDomNode end = periodList.at( i ).namedItem( QStringLiteral( "end" ) );
-      const QDateTime beginDate = QDateTime().fromString( begin.toElement().text(), Qt::ISODate );
-      const QDateTime endDate = QDateTime().fromString( end.toElement().text(), Qt::ISODate );
+      const QDateTime beginDate = QDateTime::fromString( begin.toElement().text(), Qt::ISODate );
+      const QDateTime endDate = QDateTime::fromString( end.toElement().text(), Qt::ISODate );
       const QgsDateTimeRange date = QgsDateTimeRange( beginDate, endDate );
       metadataDates << date;
     }

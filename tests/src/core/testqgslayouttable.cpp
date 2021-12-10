@@ -253,17 +253,17 @@ void TestQgsLayoutTable::attributeTableRowsLocalized()
   table->setVectorLayer( &vl );
 
   //retrieve rows and check
-  QLocale().setDefault( QLocale::English );
+  QLocale::setDefault( QLocale::English );
   compareTable( table, expectedRows );
 
   expectedRows.clear();
   row.clear();
   row <<  QStringLiteral( "12.346" ) << QStringLiteral( "123.456,801" );
   expectedRows.append( row );
-  QLocale().setDefault( QLocale::Italian );
+  QLocale::setDefault( QLocale::Italian );
   compareTable( table, expectedRows );
 
-  QLocale().setDefault( QLocale::English );
+  QLocale::setDefault( QLocale::English );
 
 }
 
