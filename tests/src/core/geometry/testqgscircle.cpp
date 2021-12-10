@@ -120,7 +120,7 @@ void TestQgsCircle::fromCenterPoint()
 void TestQgsCircle::from3Tangents()
 {
   // Tangents from circle tri1( 0,0 ; 0,5 ), tri2( 0,0 ; 5,0 ), tri3( 5,0 ; 0,5 )
-  QgsCircle circ = QgsCircle().from3Tangents( QgsPoint( 0, 0 ), QgsPoint( 0, 1 ),
+  QgsCircle circ = QgsCircle::from3Tangents( QgsPoint( 0, 0 ), QgsPoint( 0, 1 ),
                    QgsPoint( 2, 0 ), QgsPoint( 3, 0 ),
                    QgsPoint( 5, 0 ), QgsPoint( 0, 5 ) );
   QGSCOMPARENEARPOINT( circ.center(), QgsPoint( 1.4645, 1.4645 ), 0.0001 );
@@ -130,40 +130,40 @@ void TestQgsCircle::from3Tangents()
 void TestQgsCircle::from3TangentsWithParallels()
 {
   // with parallels
-  QgsCircle circ = QgsCircle().from3Tangents( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ),
+  QgsCircle circ = QgsCircle::from3Tangents( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ),
                    QgsPoint( 1, 0 ), QgsPoint( 1, 5 ),
                    QgsPoint( 5, 0 ), QgsPoint( 0, 5 ) );
   QVERIFY( circ.isEmpty() );
 
-  circ = QgsCircle().from3Tangents( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ),
-                                    QgsPoint( 5, 0 ), QgsPoint( 0, 5 ),
-                                    QgsPoint( 1, 0 ), QgsPoint( 1, 5 ) );
+  circ = QgsCircle::from3Tangents( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ),
+                                   QgsPoint( 5, 0 ), QgsPoint( 0, 5 ),
+                                   QgsPoint( 1, 0 ), QgsPoint( 1, 5 ) );
   QVERIFY( circ.isEmpty() );
 
-  circ = QgsCircle().from3Tangents( QgsPoint( 5, 0 ), QgsPoint( 0, 5 ),
-                                    QgsPoint( 0, 0 ), QgsPoint( 0, 5 ),
-                                    QgsPoint( 1, 0 ), QgsPoint( 1, 5 ) );
+  circ = QgsCircle::from3Tangents( QgsPoint( 5, 0 ), QgsPoint( 0, 5 ),
+                                   QgsPoint( 0, 0 ), QgsPoint( 0, 5 ),
+                                   QgsPoint( 1, 0 ), QgsPoint( 1, 5 ) );
   QVERIFY( circ.isEmpty() );
 
   // with 2 parallels
   const double epsilon = 1e-8;
-  circ = QgsCircle().from3Tangents( QgsPoint( 0, 0 ), QgsPoint( 5, 0 ),
-                                    QgsPoint( 5, 5 ), QgsPoint( 10, 5 ),
-                                    QgsPoint( 2.5, 0 ), QgsPoint( 7.5, 5 ) );
+  circ = QgsCircle::from3Tangents( QgsPoint( 0, 0 ), QgsPoint( 5, 0 ),
+                                   QgsPoint( 5, 5 ), QgsPoint( 10, 5 ),
+                                   QgsPoint( 2.5, 0 ), QgsPoint( 7.5, 5 ) );
   QVERIFY( circ.isEmpty() );
 
-  circ = QgsCircle().from3Tangents( QgsPoint( 0, 0 ), QgsPoint( 5, 0 ),
-                                    QgsPoint( 5, 5 ), QgsPoint( 10, 5 ),
-                                    QgsPoint( 2.5, 0 ), QgsPoint( 7.5, 5 ),
-                                    epsilon, QgsPoint( 2, 0 ) );
+  circ = QgsCircle::from3Tangents( QgsPoint( 0, 0 ), QgsPoint( 5, 0 ),
+                                   QgsPoint( 5, 5 ), QgsPoint( 10, 5 ),
+                                   QgsPoint( 2.5, 0 ), QgsPoint( 7.5, 5 ),
+                                   epsilon, QgsPoint( 2, 0 ) );
 
   QGSCOMPARENEARPOINT( circ.center(), QgsPoint( 1.4645, 2.5000 ), 0.0001 );
   QGSCOMPARENEAR( circ.radius(), 2.5, 0.0001 );
 
-  circ = QgsCircle().from3Tangents( QgsPoint( 0, 0 ), QgsPoint( 5, 0 ),
-                                    QgsPoint( 5, 5 ), QgsPoint( 10, 5 ),
-                                    QgsPoint( 2.5, 0 ), QgsPoint( 7.5, 5 ),
-                                    epsilon, QgsPoint( 3, 0 ) );
+  circ = QgsCircle::from3Tangents( QgsPoint( 0, 0 ), QgsPoint( 5, 0 ),
+                                   QgsPoint( 5, 5 ), QgsPoint( 10, 5 ),
+                                   QgsPoint( 2.5, 0 ), QgsPoint( 7.5, 5 ),
+                                   epsilon, QgsPoint( 3, 0 ) );
 
   QGSCOMPARENEARPOINT( circ.center(), QgsPoint( 8.5355, 2.5000 ), 0.0001 );
   QGSCOMPARENEAR( circ.radius(), 2.5, 0.0001 );
@@ -176,7 +176,7 @@ void TestQgsCircle::from3tangentsMulti()
   QVector<QgsCircle> circles;
   QgsCircle circ;
 
-  circles = QgsCircle().from3TangentsMulti( QgsPoint( 0, 0 ), QgsPoint( 5, 0 ),
+  circles = QgsCircle::from3TangentsMulti( QgsPoint( 0, 0 ), QgsPoint( 5, 0 ),
             QgsPoint( 5, 5 ), QgsPoint( 10, 5 ),
             QgsPoint( 2.5, 0 ), QgsPoint( 7.5, 5 ) );
   QCOMPARE( circles.count(), 2 );
@@ -189,7 +189,7 @@ void TestQgsCircle::from3tangentsMulti()
   QGSCOMPARENEARPOINT( circ.center(), QgsPoint( 1.4645, 2.5000 ), 0.0001 );
   QGSCOMPARENEAR( circ.radius(), 2.5, 0.0001 );
 
-  circles = QgsCircle().from3TangentsMulti( QgsPoint( 0, 0 ), QgsPoint( 5, 0 ),
+  circles = QgsCircle::from3TangentsMulti( QgsPoint( 0, 0 ), QgsPoint( 5, 0 ),
             QgsPoint( 5, 5 ), QgsPoint( 10, 5 ),
             QgsPoint( 2.5, 0 ), QgsPoint( 7.5, 5 ),
             epsilon, QgsPoint( 2, 0 ) );
@@ -199,47 +199,47 @@ void TestQgsCircle::from3tangentsMulti()
   QGSCOMPARENEARPOINT( circ.center(), QgsPoint( 1.4645, 2.5000 ), 0.0001 );
   QGSCOMPARENEAR( circ.radius(), 2.5, 0.0001 );
 
-  circles = QgsCircle().from3TangentsMulti( QgsPoint( 0, 0 ), QgsPoint( 5, 0 ),
+  circles = QgsCircle::from3TangentsMulti( QgsPoint( 0, 0 ), QgsPoint( 5, 0 ),
             QgsPoint( 5, 5 ), QgsPoint( 10, 5 ),
             QgsPoint( 2.5, 0 ), QgsPoint( 7.5, 5 ),
             epsilon, QgsPoint( 3, 0 ) );
   QCOMPARE( circles.count(), 1 );
 
-  circles = QgsCircle().from3TangentsMulti( QgsPoint( 0, 0 ), QgsPoint( 5, 0 ),
+  circles = QgsCircle::from3TangentsMulti( QgsPoint( 0, 0 ), QgsPoint( 5, 0 ),
             QgsPoint( 5, 5 ), QgsPoint( 10, 5 ),
             QgsPoint( 15, 5 ), QgsPoint( 20, 5 ) );
   QVERIFY( circles.isEmpty() );
 
   // check that Z dimension is ignored in case of using tangents
-  circ = QgsCircle().from3Tangents( QgsPoint( 0, 0, 333 ), QgsPoint( 0, 1, 1 ),
-                                    QgsPoint( 2, 0, 2 ), QgsPoint( 3, 0, 3 ),
-                                    QgsPoint( 5, 0, 4 ), QgsPoint( 0, 5, 5 ) );
+  circ = QgsCircle::from3Tangents( QgsPoint( 0, 0, 333 ), QgsPoint( 0, 1, 1 ),
+                                   QgsPoint( 2, 0, 2 ), QgsPoint( 3, 0, 3 ),
+                                   QgsPoint( 5, 0, 4 ), QgsPoint( 0, 5, 5 ) );
   QCOMPARE( circ.center().is3D(), false );
 }
 
 void TestQgsCircle::minimalCircleFrom3points()
 {
   // equivalent to from2Points
-  QgsCircle circ = QgsCircle().minimalCircleFrom3Points( QgsPoint( 0, 5 ), QgsPoint( 0, -5 ), QgsPoint( 1, 2 ) );
+  QgsCircle circ = QgsCircle::minimalCircleFrom3Points( QgsPoint( 0, 5 ), QgsPoint( 0, -5 ), QgsPoint( 1, 2 ) );
+
+  QGSCOMPARENEARPOINT( circ.center(), QgsPoint( 0, 0 ), 0.0001 );
+  QGSCOMPARENEAR( circ.radius(), 5.0, 0.0001 );
+  QCOMPARE( circ,  QgsCircle::from2Points( QgsPoint( 0, 5 ), QgsPoint( 0, -5 ) ) );
+
+  circ = QgsCircle::minimalCircleFrom3Points( QgsPoint( 0, -5 ), QgsPoint( 1, 2 ), QgsPoint( 0, 5 ) );
 
   QGSCOMPARENEARPOINT( circ.center(), QgsPoint( 0, 0 ), 0.0001 );
   QGSCOMPARENEAR( circ.radius(), 5.0, 0.0001 );
   QCOMPARE( circ,  QgsCircle().from2Points( QgsPoint( 0, 5 ), QgsPoint( 0, -5 ) ) );
 
-  circ = QgsCircle().minimalCircleFrom3Points( QgsPoint( 0, -5 ), QgsPoint( 1, 2 ), QgsPoint( 0, 5 ) );
-
-  QGSCOMPARENEARPOINT( circ.center(), QgsPoint( 0, 0 ), 0.0001 );
-  QGSCOMPARENEAR( circ.radius(), 5.0, 0.0001 );
-  QCOMPARE( circ,  QgsCircle().from2Points( QgsPoint( 0, 5 ), QgsPoint( 0, -5 ) ) );
-
-  circ = QgsCircle().minimalCircleFrom3Points( QgsPoint( 1, 2 ), QgsPoint( 0, 5 ), QgsPoint( 0, -5 ) );
+  circ = QgsCircle::minimalCircleFrom3Points( QgsPoint( 1, 2 ), QgsPoint( 0, 5 ), QgsPoint( 0, -5 ) );
 
   QGSCOMPARENEARPOINT( circ.center(), QgsPoint( 0, 0 ), 0.0001 );
   QGSCOMPARENEAR( circ.radius(), 5.0, 0.0001 );
   QCOMPARE( circ,  QgsCircle().from2Points( QgsPoint( 0, 5 ), QgsPoint( 0, -5 ) ) );
 
   // equivalent to from3Points
-  circ = QgsCircle().minimalCircleFrom3Points( QgsPoint( 0, 5 ), QgsPoint( 5, 0 ), QgsPoint( -5, 0 ) );
+  circ = QgsCircle::minimalCircleFrom3Points( QgsPoint( 0, 5 ), QgsPoint( 5, 0 ), QgsPoint( -5, 0 ) );
 
   QGSCOMPARENEARPOINT( circ.center(), QgsPoint( 0, 0 ), 0.0001 );
   QGSCOMPARENEAR( circ.radius(), 5.0, 0.0001 );
