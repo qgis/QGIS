@@ -56,12 +56,12 @@ LONG WINAPI QgsCrashHandler::handle( LPEXCEPTION_POINTERS exception )
   handleCrash( processID, threadID, symbolPath, ptrStr );
   return TRUE;
 }
-#endif
-
+#else
 void QgsCrashHandler::handle( int )
 {
   handleCrash( QCoreApplication::applicationPid(), 0, QString(), QString() );
 }
+#endif
 
 void QgsCrashHandler::handleCrash( int processID, int threadID,
                                    const QString &symbolPath,
