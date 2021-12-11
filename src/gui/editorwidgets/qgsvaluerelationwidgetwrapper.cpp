@@ -76,6 +76,12 @@ QVariant QgsValueRelationWidgetWrapper::value() const
       }
     }
 
+    // If there is no selection and allow NULL is not checked return invalid.
+    if ( selection.isEmpty() && ! config( QStringLiteral( "AllowNull" ) ).toBool( ) )
+    {
+      return QVariant();
+    }
+
     QVariantList vl;
     //store as QVariantList because the field type supports data structure
     for ( const QString &s : qgis::as_const( selection ) )
