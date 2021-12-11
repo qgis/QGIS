@@ -22,6 +22,12 @@
 #include "qgspreviewquad.h"
 #include "qgs3dutils.h"
 
+#include <Qt3DRender/QAttribute>
+#include <Qt3DRender/QBuffer>
+#include <Qt3DRender/QTechnique>
+#include <Qt3DRender/QGraphicsApiFilter>
+
+
 Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructTexturesPreviewPass()
 {
   mPreviewLayerFilter = new Qt3DRender::QLayerFilter;
@@ -186,13 +192,14 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructPostprocessi
   return mPostProcessingCameraSelector;
 }
 
-Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructDepthBufferProcessingPass()
+Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructDepthRenderPass()
 {
   // depth buffer render to copy pass
-  mSecondMainCameraSelector = new Qt3DRender::QCameraSelector;
-  mSecondMainCameraSelector->setCamera( mMainCamera );
 
-  mDepthRenderStateSet = new Qt3DRender::QRenderStateSet( mSecondMainCameraSelector );
+  mDepthRenderCameraSelector = new Qt3DRender::QCameraSelector;
+  mDepthRenderCameraSelector->setCamera( mMainCamera );
+
+  mDepthRenderStateSet = new Qt3DRender::QRenderStateSet( mDepthRenderCameraSelector );
 
   Qt3DRender::QDepthTest *depthRenderDepthTest = new Qt3DRender::QDepthTest;
   depthRenderDepthTest->setDepthFunction( Qt3DRender::QDepthTest::Always );;
@@ -242,9 +249,79 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructDepthBufferP
 
   mDepthRenderCaptureTargetSelector->setTarget( depthRenderTarget );
 
+  // Note: We do not a clear buffers node since we are drawing a quad that will override the buffer's content anyway
   mDepthRenderCapture = new Qt3DRender::QRenderCapture( mDepthRenderCaptureTargetSelector );
 
-  return mSecondMainCameraSelector;
+  return mDepthRenderCameraSelector;
+}
+
+Qt3DCore::QEntity *QgsShadowRenderingFrameGraph::constructDepthRenderQuad()
+{
+  Qt3DCore::QEntity *quad = new Qt3DCore::QEntity;
+  quad->setObjectName( "depthRenderQuad" );
+
+  Qt3DRender::QGeometry *geom = new Qt3DRender::QGeometry;
+  Qt3DRender::QAttribute *positionAttribute = new Qt3DRender::QAttribute;
+  const QVector<float> vert = { -1.0f, -1.0f, 1.0f, /**/ 1.0f, -1.0f, 1.0f, /**/ -1.0f,  1.0f, 1.0f, /**/ -1.0f,  1.0f, 1.0f, /**/ 1.0f, -1.0f, 1.0f, /**/ 1.0f,  1.0f, 1.0f };
+
+  const QByteArray vertexArr( ( const char * ) vert.constData(), vert.size() * sizeof( float ) );
+  Qt3DRender::QBuffer *vertexBuffer = nullptr;
+  vertexBuffer = new Qt3DRender::QBuffer( this );
+  vertexBuffer->setData( vertexArr );
+
+  positionAttribute->setName( Qt3DRender::QAttribute::defaultPositionAttributeName() );
+  positionAttribute->setVertexBaseType( Qt3DRender::QAttribute::Float );
+  positionAttribute->setVertexSize( 3 );
+  positionAttribute->setAttributeType( Qt3DRender::QAttribute::VertexAttribute );
+  positionAttribute->setBuffer( vertexBuffer );
+  positionAttribute->setByteOffset( 0 );
+  positionAttribute->setByteStride( 3 * sizeof( float ) );
+  positionAttribute->setCount( 6 );
+
+  geom->addAttribute( positionAttribute );
+
+  Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
+  renderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::PrimitiveType::Triangles );
+  renderer->setGeometry( geom );
+
+  quad->addComponent( renderer );
+
+  QMatrix4x4 modelMatrix;
+  modelMatrix.setToIdentity();
+
+  // construct material
+
+  Qt3DRender::QMaterial *material = new Qt3DRender::QMaterial;
+  Qt3DRender::QParameter *textureParameter = new Qt3DRender::QParameter( "depthTexture", mForwardDepthTexture );
+  Qt3DRender::QParameter *textureTransformParameter = new Qt3DRender::QParameter( "modelMatrix", QVariant::fromValue( modelMatrix ) );
+  material->addParameter( textureParameter );
+  material->addParameter( textureTransformParameter );
+
+  Qt3DRender::QEffect *effect = new Qt3DRender::QEffect;
+
+  Qt3DRender::QTechnique *technique = new Qt3DRender::QTechnique;
+
+  Qt3DRender::QGraphicsApiFilter *graphicsApiFilter = technique->graphicsApiFilter();
+  graphicsApiFilter->setApi( Qt3DRender::QGraphicsApiFilter::Api::OpenGL );
+  graphicsApiFilter->setProfile( Qt3DRender::QGraphicsApiFilter::OpenGLProfile::CoreProfile );
+  graphicsApiFilter->setMajorVersion( 1 );
+  graphicsApiFilter->setMinorVersion( 5 );
+
+  Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass;
+
+  Qt3DRender::QShaderProgram *shader = new Qt3DRender::QShaderProgram;
+  shader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( "qrc:/shaders/depth_render.vert" ) ) );
+  shader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( "qrc:/shaders/depth_render.frag" ) ) );
+  renderPass->setShaderProgram( shader );
+
+  technique->addRenderPass( renderPass );
+
+  effect->addTechnique( technique );
+  material->setEffect( effect );
+
+  quad->addComponent( material );
+
+  return quad;
 }
 
 QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *mainCamera, Qt3DCore::QEntity *root )
@@ -289,7 +366,7 @@ QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QSurface *surface, Q
   shadowRenderPass->setParent( mMainViewPort );
 
   // depth buffer processing
-  Qt3DRender::QFrameGraphNode *depthBufferProcessingPass = constructDepthBufferProcessingPass();
+  Qt3DRender::QFrameGraphNode *depthBufferProcessingPass = constructDepthRenderPass();
   depthBufferProcessingPass->setParent( mMainViewPort );
 
   // post process
@@ -304,22 +381,16 @@ QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QSurface *surface, Q
   mPostprocessingEntity->addComponent( mPostprocessPassLayer );
 
   Qt3DRender::QParameter *depthMapIsDepthParam = new Qt3DRender::QParameter( "isDepth", true );
-  Qt3DRender::QParameter *shadowMapIsDepthParam = new Qt3DRender::QParameter( "isDepth", false );
-  Qt3DRender::QParameter *depthMapIsPreviewPassParam = new Qt3DRender::QParameter( "isPreviewPass", true );
-  Qt3DRender::QParameter *shadowMapIsPreviewPassParam = new Qt3DRender::QParameter( "isPreviewPass", true );
+  Qt3DRender::QParameter *shadowMapIsDepthParam = new Qt3DRender::QParameter( "isDepth", true );
 
-  mDebugDepthMapPreviewQuad = this->addTexturePreviewOverlay( mForwardDepthTexture, QPointF( 0.8f, 0.8f ), QSizeF( 0.2f, 0.2f ), QVector<Qt3DRender::QParameter *> { depthMapIsDepthParam, depthMapIsPreviewPassParam } );
-  mDebugShadowMapPreviewQuad = this->addTexturePreviewOverlay( mShadowMapTexture, QPointF( -0.8f, -0.8f ), QSizeF( 0.2f, 0.2f ), QVector<Qt3DRender::QParameter *> { shadowMapIsDepthParam, shadowMapIsPreviewPassParam } );
+  mDebugDepthMapPreviewQuad = this->addTexturePreviewOverlay( mForwardDepthTexture, QPointF( 0.8f, 0.8f ), QSizeF( 0.2f, 0.2f ), QVector<Qt3DRender::QParameter *> { depthMapIsDepthParam } );
+  mDebugShadowMapPreviewQuad = this->addTexturePreviewOverlay( mShadowMapTexture, QPointF( -0.8f, -0.8f ), QSizeF( 0.2f, 0.2f ), QVector<Qt3DRender::QParameter *> { shadowMapIsDepthParam } );
   mDebugDepthMapPreviewQuad->setEnabled( false );
   mDebugShadowMapPreviewQuad->setEnabled( false );
 
-  // Custom preview quad, used as a way to render the depth buffer to a color texture
-  Qt3DRender::QParameter *isDepthParam = new Qt3DRender::QParameter( "isDepth", true );
-  Qt3DRender::QParameter *isPreviewPass = new Qt3DRender::QParameter( "isPreviewPass", false );
-  mDepthRenderQuad = new QgsPreviewQuad( mForwardDepthTexture, QPointF( 0.0f, 0.0f ), QSizeF( 1.0f, 1.0f ), QVector<Qt3DRender::QParameter *> { isDepthParam, isPreviewPass } );
+  mDepthRenderQuad = constructDepthRenderQuad();
   mDepthRenderQuad->addComponent( mDepthRenderPassLayer );
   mDepthRenderQuad->setParent( mRootEntity );
-  mPreviewQuads.push_back( mDepthRenderQuad );
 }
 
 QgsPreviewQuad *QgsShadowRenderingFrameGraph::addTexturePreviewOverlay( Qt3DRender::QTexture2D *texture, const QPointF &centerNDC, const QSizeF &size, QVector<Qt3DRender::QParameter *> additionalShaderParameters )
@@ -475,16 +546,16 @@ void QgsShadowRenderingFrameGraph::setupShadowMapDebugging( bool enabled, Qt::Co
     switch ( corner )
     {
       case Qt::Corner::TopRightCorner:
-        mDebugShadowMapPreviewQuad->setViewPort( QPointF( 1.0f - size, 1.0f - size ), QSizeF( size, size ) );
+        mDebugShadowMapPreviewQuad->setViewPort( QPointF( 1.0f - size / 2, 0.0f + size / 2 ), 0.5 * QSizeF( size, size ) );
         break;
       case Qt::Corner::TopLeftCorner:
-        mDebugShadowMapPreviewQuad->setViewPort( QPointF( -1.0f + size, 1.0f - size ), QSizeF( size, size ) );
+        mDebugShadowMapPreviewQuad->setViewPort( QPointF( 0.0f + size / 2, 0.0f + size / 2 ), 0.5 * QSizeF( size, size ) );
         break;
       case Qt::Corner::BottomRightCorner:
-        mDebugShadowMapPreviewQuad->setViewPort( QPointF( 1.0f - size, -1.0f + size ), QSizeF( size, size ) );
+        mDebugShadowMapPreviewQuad->setViewPort( QPointF( 1.0f - size / 2, 1.0f - size / 2 ), 0.5 * QSizeF( size, size ) );
         break;
       case Qt::Corner::BottomLeftCorner:
-        mDebugShadowMapPreviewQuad->setViewPort( QPointF( -1.0f + size, -1.0f + size ), QSizeF( size, size ) );
+        mDebugShadowMapPreviewQuad->setViewPort( QPointF( 0.0f + size / 2, 1.0f - size / 2 ), 0.5 * QSizeF( size, size ) );
         break;
     }
   }
@@ -499,16 +570,16 @@ void QgsShadowRenderingFrameGraph::setupDepthMapDebugging( bool enabled, Qt::Cor
     switch ( corner )
     {
       case Qt::Corner::TopRightCorner:
-        mDebugDepthMapPreviewQuad->setViewPort( QPointF( 1.0f - size, 1.0f - size ), QSizeF( size, size ) );
+        mDebugDepthMapPreviewQuad->setViewPort( QPointF( 1.0f - size / 2, 0.0f + size / 2 ), 0.5 * QSizeF( size, size ) );
         break;
       case Qt::Corner::TopLeftCorner:
-        mDebugDepthMapPreviewQuad->setViewPort( QPointF( -1.0f + size, 1.0f - size ), QSizeF( size, size ) );
+        mDebugDepthMapPreviewQuad->setViewPort( QPointF( 0.0f + size / 2, 0.0f + size / 2 ), 0.5 * QSizeF( size, size ) );
         break;
       case Qt::Corner::BottomRightCorner:
-        mDebugDepthMapPreviewQuad->setViewPort( QPointF( 1.0f - size, -1.0f + size ), QSizeF( size, size ) );
+        mDebugDepthMapPreviewQuad->setViewPort( QPointF( 1.0f - size / 2, 1.0f - size / 2 ), 0.5 * QSizeF( size, size ) );
         break;
       case Qt::Corner::BottomLeftCorner:
-        mDebugDepthMapPreviewQuad->setViewPort( QPointF( -1.0f + size, -1.0f + size ), QSizeF( size, size ) );
+        mDebugDepthMapPreviewQuad->setViewPort( QPointF( 0.0f + size / 2, 1.0f - size / 2 ), 0.5 * QSizeF( size, size ) );
         break;
     }
   }
