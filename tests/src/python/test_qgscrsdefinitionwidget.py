@@ -11,14 +11,10 @@ __date__ = '12/12/2021'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
 import qgis  # NOQA
-
 from qgis.PyQt.QtTest import QSignalSpy
-from qgis.gui import (QgsProjectionSelectionWidget,
-                      QgsCrsDefinitionWidget,
-                      QgsProjectionSelectionDialog)
-from qgis.core import QgsCoordinateReferenceSystem, QgsProject, QgsProjUtils
+from qgis.core import QgsCoordinateReferenceSystem
+from qgis.gui import (QgsCrsDefinitionWidget)
 from qgis.testing import start_app, unittest
-
 
 start_app()
 
@@ -35,7 +31,7 @@ class TestQgsCrsDefinitionWidge(unittest.TestCase):
         self.assertEqual(w.format(), QgsCoordinateReferenceSystem.FormatWkt)
 
         spy = QSignalSpy(w.crsChanged)
-        c= QgsCoordinateReferenceSystem('EPSG:3111')
+        c = QgsCoordinateReferenceSystem('EPSG:3111')
 
         w.setCrs(c)
         self.assertEqual(w.crs(), c)
@@ -75,7 +71,7 @@ class TestQgsCrsDefinitionWidge(unittest.TestCase):
         w = QgsCrsDefinitionWidget()
 
         w.setFormat(QgsCoordinateReferenceSystem.FormatWkt)
-        c= QgsCoordinateReferenceSystem('EPSG:3111')
+        c = QgsCoordinateReferenceSystem('EPSG:3111')
         spy = QSignalSpy(w.crsChanged)
 
         w.setDefinitionString(c.toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED))
