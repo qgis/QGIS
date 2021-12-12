@@ -20,42 +20,76 @@
   <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <widget class="QSplitter" name="mSplitter">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
+    <widget class="QCheckBox" name="mCheckBoxNoProjection">
+     <property name="toolTip">
+      <string>Use this option to treat all coordinates as Cartesian coordinates in an unknown reference system.</string>
      </property>
-     <property name="childrenCollapsible">
-      <bool>false</bool>
+     <property name="text">
+      <string>No CRS (or unknown/non-Earth projection)</string>
      </property>
-     <widget class="QTextEdit" name="textEdit">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>160</height>
-       </size>
-      </property>
-      <property name="focusPolicy">
-       <enum>Qt::NoFocus</enum>
-      </property>
-      <property name="acceptDrops">
-       <bool>false</bool>
-      </property>
-      <property name="lineWidth">
-       <number>2</number>
-      </property>
-      <property name="readOnly">
-       <bool>true</bool>
-      </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="mTabDatabase">
+      <attribute name="title">
+       <string>CRS Database</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QSplitter" name="mSplitter">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="childrenCollapsible">
+          <bool>false</bool>
+         </property>
+         <widget class="QTextEdit" name="textEdit">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>160</height>
+           </size>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
+          <property name="acceptDrops">
+           <bool>false</bool>
+          </property>
+          <property name="lineWidth">
+           <number>2</number>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+         <widget class="QgsProjectionSelectionTreeWidget" name="projectionSelector" native="true"/>
+        </widget>
+       </item>
+      </layout>
      </widget>
-     <widget class="QgsProjectionSelectionTreeWidget" name="projectionSelector" native="true"/>
+     <widget class="QWidget" name="mTabCustom">
+      <attribute name="title">
+       <string>Custom CRS</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QgsCrsDefinitionWidget" name="mCrsDefinitionWidget" native="true"/>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
    <item>
@@ -72,6 +106,12 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
+  <customwidget>
+   <class>QgsCrsDefinitionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgscrsdefinitionwidget.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>QgsProjectionSelectionTreeWidget</class>
    <extends>QWidget</extends>

@@ -114,6 +114,13 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog, private Ui::QgsG
      */
     void setRequireValidSelection();
 
+    /**
+     * Returns TRUE if the dialog has a valid CRS defined.
+     *
+     * \since QGIS 3.24
+     */
+    bool hasValidSelection() const;
+
   public slots:
 
     /**
@@ -140,6 +147,10 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog, private Ui::QgsG
   private slots:
 
     void showHelp();
+
+  private:
+
+    bool mRequireValidSelection = false;
 };
 
 #endif // #ifndef QGSLAYERCRSSELECTOR_H
