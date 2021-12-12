@@ -644,12 +644,22 @@ bool QgsVectorLayerFeatureIterator::fetchNextChangedAttributeFeature( QgsFeature
   while ( mChangedFeaturesIterator.nextFeature( f ) )
   {
     if ( mFetchConsidered.contains( f.id() ) )
-      // skip deleted features and those already handled by the geometry
       continue;
 
     mFetchConsidered << f.id();
 
     updateChangedAttributes( f );
+
+    // also update geometry if needed
+    const auto changedGeometryIt = mSource->mChangedGeometries.constFind( f.id() );
+    if ( changedGeometryIt != mSource->mChangedGeometries.constEnd() )
+    {
+      if ( !mFilterRect.isNull() && !changedGeometryIt->intersects( mFilterRect ) )
+        // skip changed geometries not in rectangle and don't check again
+        continue;
+
+      f.setGeometry( *changedGeometryIt );
+    }
 
     if ( mHasVirtualAttributes )
       addVirtualAttributes( f );
