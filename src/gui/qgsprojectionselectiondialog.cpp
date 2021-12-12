@@ -35,6 +35,29 @@ QgsProjectionSelectionDialog::QgsProjectionSelectionDialog( QWidget *parent,
   //we will show this only when a message is set
   textEdit->hide();
 
+  tabWidget->setCurrentWidget( mTabDatabase );
+
+  mCheckBoxNoProjection->setHidden( true );
+  mCheckBoxNoProjection->setEnabled( false );
+  connect( mCheckBoxNoProjection, &QCheckBox::toggled, this, [ = ]
+  {
+#if 0
+    if ( !mBlockSignals )
+    {
+      emit crsSelected();
+      emit hasValidSelectionChanged( hasValidSelection() );
+    }
+#endif
+  } );
+  connect( mCheckBoxNoProjection, &QCheckBox::toggled, this, [ = ]( bool checked )
+  {
+    if ( mCheckBoxNoProjection->isEnabled() )
+    {
+      tabWidget->setDisabled( checked );
+    }
+  } );
+
+
   //apply selected projection upon double-click on item
   connect( projectionSelector, &QgsProjectionSelectionTreeWidget::projectionDoubleClicked, this, &QgsProjectionSelectionDialog::accept );
 
@@ -65,37 +88,94 @@ void QgsProjectionSelectionDialog::showNoCrsForLayerMessage()
 
 void QgsProjectionSelectionDialog::setShowNoProjection( bool show )
 {
-  projectionSelector->setShowNoProjection( show );
+  mCheckBoxNoProjection->setVisible( show );
+  mCheckBoxNoProjection->setEnabled( show );
+  if ( show )
+  {
+    tabWidget->setDisabled( mCheckBoxNoProjection->isChecked() );
+  }
+
+  if ( mRequireValidSelection )
+    mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( hasValidSelection() );
 }
 
 bool QgsProjectionSelectionDialog::showNoProjection() const
 {
-  return projectionSelector->showNoProjection();
+  return !mCheckBoxNoProjection->isHidden();
 }
 
 void QgsProjectionSelectionDialog::setNotSetText( const QString &text )
 {
-  projectionSelector->setNotSetText( text );
+  mCheckBoxNoProjection->setText( text );
 }
 
 void QgsProjectionSelectionDialog::setRequireValidSelection()
 {
-  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( projectionSelector->hasValidSelection() );
+  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( hasValidSelection() );
 
-  connect( projectionSelector, &QgsProjectionSelectionTreeWidget::hasValidSelectionChanged, this, [ = ]( bool isValid )
+  connect( projectionSelector, &QgsProjectionSelectionTreeWidget::hasValidSelectionChanged, this, [ = ]( bool )
   {
-    mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( isValid );
+    mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( hasValidSelection() );
   } );
+
+  connect( mCheckBoxNoProjection, &QCheckBox::toggled, this, [ = ]( bool )
+  {
+    mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( hasValidSelection() );
+  } );
+
+  connect( mCrsDefinitionWidget, &QgsCrsDefinitionWidget::crsChanged, this, [ = ]()
+  {
+    mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( hasValidSelection() );
+  } );
+
+  connect( tabWidget, &QTabWidget::currentChanged, this, [ = ]()
+  {
+    mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( hasValidSelection() );
+  } );
+}
+
+bool QgsProjectionSelectionDialog::hasValidSelection() const
+{
+  if ( mCheckBoxNoProjection->isChecked() )
+    return true;
+
+  if ( tabWidget->currentWidget() == mTabCustom )
+    return mCrsDefinitionWidget->crs().isValid();
+  else
+    return projectionSelector->hasValidSelection();
 }
 
 QgsCoordinateReferenceSystem QgsProjectionSelectionDialog::crs() const
 {
-  return projectionSelector->crs();
+  if ( mCheckBoxNoProjection->isEnabled() && mCheckBoxNoProjection->isChecked() )
+    return QgsCoordinateReferenceSystem();
+
+  if ( tabWidget->currentWidget() == mTabCustom )
+    return mCrsDefinitionWidget->crs();
+  else
+    return projectionSelector->crs();
 }
 
 void QgsProjectionSelectionDialog::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
-  projectionSelector->setCrs( crs );
+  if ( !crs.isValid() )
+  {
+    mCheckBoxNoProjection->setChecked( true );
+  }
+  else
+  {
+    mCheckBoxNoProjection->setChecked( false );
+
+    projectionSelector->setCrs( crs );
+    mCrsDefinitionWidget->setCrs( crs );
+    if ( crs.isValid() && crs.authid().isEmpty() )
+      tabWidget->setCurrentWidget( mTabCustom );
+    else
+      tabWidget->setCurrentWidget( mTabDatabase );
+  }
+
+  if ( mRequireValidSelection )
+    mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( hasValidSelection() );
 }
 
 void QgsProjectionSelectionDialog::setOgcWmsCrsFilter( const QSet<QString> &crsFilter )

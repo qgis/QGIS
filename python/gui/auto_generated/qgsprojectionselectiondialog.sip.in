@@ -107,6 +107,13 @@ dialog if no selection is present.
 .. versionadded:: 3.18
 %End
 
+    bool hasValidSelection() const;
+%Docstring
+Returns ``True`` if the dialog has a valid CRS defined.
+
+.. versionadded:: 3.24
+%End
+
   public slots:
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );
