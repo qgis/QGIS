@@ -37,19 +37,14 @@ class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCust
     QgsCustomProjectionDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
 
   public slots:
-    void pbnCalculate_clicked();
     void pbnAdd_clicked();
     void pbnRemove_clicked();
-    void pbnCopyCRS_clicked();
     void leNameList_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
     void buttonBox_accepted();
 
   private slots:
 
     void updateListFromCurrentItem();
-    void validateCurrent();
-    void formatChanged();
-
   private:
 
     //helper functions
@@ -83,6 +78,8 @@ class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCust
 
     //Columns in the tree widget
     enum Columns { QgisCrsNameColumn, QgisCrsIdColumn, QgisCrsParametersColumn };
+
+    int mBlockUpdates = 0;
 
 
 };
