@@ -130,6 +130,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmmultidifference.cpp
   processing/qgsalgorithmmultiparttosinglepart.cpp
   processing/qgsalgorithmmultiringconstantbuffer.cpp
+  processing/qgsalgorithmmultiunion.cpp
   processing/qgsalgorithmnearestneighbouranalysis.cpp
   processing/qgsalgorithmoffsetlines.cpp
   processing/qgsalgorithmorderbyexpression.cpp
