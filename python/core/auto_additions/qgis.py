@@ -1200,3 +1200,14 @@ Qgis.HistoryProviderBackend.__doc__ = 'History provider backends.\n\n.. versiona
 Qgis.HistoryProviderBackend.baseClass = Qgis
 Qgis.HistoryProviderBackends.baseClass = Qgis
 HistoryProviderBackends = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsCoordinateReferenceSystem.Format = Qgis.CrsDefinitionFormat
+# monkey patching scoped based enum
+QgsCoordinateReferenceSystem.FormatWkt = Qgis.CrsDefinitionFormat.Wkt
+QgsCoordinateReferenceSystem.FormatWkt.is_monkey_patched = True
+QgsCoordinateReferenceSystem.FormatWkt.__doc__ = "WKT format (always recommended over proj string format)"
+QgsCoordinateReferenceSystem.FormatProj = Qgis.CrsDefinitionFormat.Proj
+QgsCoordinateReferenceSystem.FormatProj.is_monkey_patched = True
+QgsCoordinateReferenceSystem.FormatProj.__doc__ = "Proj string format"
+Qgis.CrsDefinitionFormat.__doc__ = 'CRS definition formats.\n\n.. versionadded:: 3.24\n\n' + '* ``FormatWkt``: ' + Qgis.CrsDefinitionFormat.Wkt.__doc__ + '\n' + '* ``FormatProj``: ' + Qgis.CrsDefinitionFormat.Proj.__doc__
+# --
+Qgis.CrsDefinitionFormat.baseClass = Qgis

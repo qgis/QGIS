@@ -2047,7 +2047,7 @@ QString QgsCoordinateReferenceSystem::validationHint()
   return mValidationHint;
 }
 
-long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name, Format nativeFormat )
+long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name, Qgis::CrsDefinitionFormat nativeFormat )
 {
   return QgsApplication::coordinateReferenceSystemRegistry()->addUserCrs( *this, name, nativeFormat );
 }

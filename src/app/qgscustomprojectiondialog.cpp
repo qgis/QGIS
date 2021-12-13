@@ -71,16 +71,16 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
   mBlockUpdates++;
 
   QgsCoordinateReferenceSystem crs;
-  QgsCoordinateReferenceSystem::Format format;
+  Qgis::CrsDefinitionFormat format;
   if ( mDefinitions[0].wkt.isEmpty() )
   {
     crs.createFromProj( mDefinitions[0].proj );
-    format = QgsCoordinateReferenceSystem::FormatProj;
+    format = Qgis::CrsDefinitionFormat::Proj;
   }
   else
   {
     crs.createFromWkt( mDefinitions[0].wkt );
-    format = QgsCoordinateReferenceSystem::FormatWkt;
+    format = Qgis::CrsDefinitionFormat::Wkt;
   }
   mCrsDefinitionWidget->setCrs( crs, format );
 
@@ -136,7 +136,7 @@ void QgsCustomProjectionDialog::populateList()
   }
 }
 
-bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem crs, const QString &name, const QString &existingId, bool newEntry, QgsCoordinateReferenceSystem::Format format )
+bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem crs, const QString &name, const QString &existingId, bool newEntry, Qgis::CrsDefinitionFormat format )
 {
   QString id = existingId;
   if ( newEntry )
@@ -155,8 +155,8 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem crs, const
     }
   }
 
-  mExistingCRSwkt[id] = format == QgsCoordinateReferenceSystem::FormatWkt ? crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, false ) : QString();
-  mExistingCRSproj[id] = format == QgsCoordinateReferenceSystem::FormatProj ? crs.toProj() : QString();
+  mExistingCRSwkt[id] = format == Qgis::CrsDefinitionFormat::Wkt ? crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, false ) : QString();
+  mExistingCRSproj[id] = format == Qgis::CrsDefinitionFormat::Proj ? crs.toProj() : QString();
   mExistingCRSnames[id] = name;
 
   return true;
@@ -180,7 +180,7 @@ void QgsCustomProjectionDialog::pbnAdd_clicked()
   leName->selectAll();
   leName->setFocus();
 
-  mCrsDefinitionWidget->setFormat( QgsCoordinateReferenceSystem::FormatWkt );
+  mCrsDefinitionWidget->setFormat( Qgis::CrsDefinitionFormat::Wkt );
 }
 
 void QgsCustomProjectionDialog::pbnRemove_clicked()
@@ -229,12 +229,12 @@ void QgsCustomProjectionDialog::leNameList_currentItemChanged( QTreeWidgetItem *
     mDefinitions[previousIndex].name = leName->text();
     switch ( mCrsDefinitionWidget->format() )
     {
-      case QgsCoordinateReferenceSystem::FormatWkt:
+      case Qgis::CrsDefinitionFormat::Wkt:
         mDefinitions[previousIndex].wkt = mCrsDefinitionWidget->crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
         mDefinitions[previousIndex].proj.clear();
         break;
 
-      case QgsCoordinateReferenceSystem::FormatProj:
+      case Qgis::CrsDefinitionFormat::Proj:
         mDefinitions[previousIndex].proj = mCrsDefinitionWidget->crs().toProj();
         mDefinitions[previousIndex].wkt.clear();
         break;
@@ -252,7 +252,7 @@ void QgsCustomProjectionDialog::leNameList_currentItemChanged( QTreeWidgetItem *
 
     mBlockUpdates++;
     mCrsDefinitionWidget->setDefinitionString( !mDefinitions[currentIndex].wkt.isEmpty() ? current->data( 0, FormattedWktRole ).toString() : mDefinitions[currentIndex].proj );
-    mCrsDefinitionWidget->setFormat( mDefinitions[currentIndex].wkt.isEmpty() ? QgsCoordinateReferenceSystem::FormatProj : QgsCoordinateReferenceSystem::FormatWkt );
+    mCrsDefinitionWidget->setFormat( mDefinitions[currentIndex].wkt.isEmpty() ? Qgis::CrsDefinitionFormat::Proj : Qgis::CrsDefinitionFormat::Wkt );
     mBlockUpdates--;
   }
   else
@@ -261,7 +261,7 @@ void QgsCustomProjectionDialog::leNameList_currentItemChanged( QTreeWidgetItem *
     leName->clear();
     mBlockUpdates++;
     mCrsDefinitionWidget->setDefinitionString( QString() );
-    mCrsDefinitionWidget->setFormat( QgsCoordinateReferenceSystem::FormatWkt );
+    mCrsDefinitionWidget->setFormat( Qgis::CrsDefinitionFormat::Wkt );
     mBlockUpdates--;
     return;
   }
@@ -350,7 +350,7 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
     //Test if we just added this CRS (if it has no existing ID)
     if ( def.id.isEmpty() )
     {
-      saveSuccess &= saveCrs( crs, def.name, QString(), true, !def.wkt.isEmpty() ? QgsCoordinateReferenceSystem::FormatWkt : QgsCoordinateReferenceSystem::FormatProj );
+      saveSuccess &= saveCrs( crs, def.name, QString(), true, !def.wkt.isEmpty() ? Qgis::CrsDefinitionFormat::Wkt : Qgis::CrsDefinitionFormat::Proj );
     }
     else
     {
@@ -359,7 +359,7 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
            || ( !def.proj.isEmpty() && mExistingCRSproj[def.id] != def.proj )
          )
       {
-        saveSuccess &= saveCrs( crs, def.name, def.id, false, !def.wkt.isEmpty() ? QgsCoordinateReferenceSystem::FormatWkt : QgsCoordinateReferenceSystem::FormatProj );
+        saveSuccess &= saveCrs( crs, def.name, def.id, false, !def.wkt.isEmpty() ? Qgis::CrsDefinitionFormat::Wkt : Qgis::CrsDefinitionFormat::Proj );
       }
     }
     if ( ! saveSuccess )
@@ -395,12 +395,12 @@ void QgsCustomProjectionDialog::updateListFromCurrentItem()
   mDefinitions[currentIndex].name = leName->text();
   switch ( mCrsDefinitionWidget->format() )
   {
-    case QgsCoordinateReferenceSystem::FormatWkt:
+    case Qgis::CrsDefinitionFormat::Wkt:
       mDefinitions[currentIndex].wkt = mCrsDefinitionWidget->definitionString();
       mDefinitions[currentIndex].proj.clear();
       break;
 
-    case QgsCoordinateReferenceSystem::FormatProj:
+    case Qgis::CrsDefinitionFormat::Proj:
       mDefinitions[currentIndex].proj = mCrsDefinitionWidget->definitionString();
       mDefinitions[currentIndex].wkt.clear();
       break;

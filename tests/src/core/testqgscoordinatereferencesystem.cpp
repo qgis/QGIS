@@ -1641,7 +1641,7 @@ void TestQgsCoordinateReferenceSystem::customProjString()
   QVERIFY( crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2019 ).startsWith( QLatin1String( R"""(BOUNDCRS[SOURCECRS[)""" ) ) );
   QVERIFY( crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2019 ).contains( QLatin1String( R"""(METHOD["Oblique Stereographic",ID["EPSG",9809]])""" ) ) );
   QVERIFY( crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2019 ).contains( QLatin1String( R"""(PARAMETER["X-axis translation",595.75,ID["EPSG",8605]],PARAMETER["Y-axis translation",121.09,ID["EPSG",8606]],PARAMETER["Z-axis translation",515.5,ID["EPSG",8607]],PARAMETER["X-axis rotation",8.227,ID["EPSG",8608]],PARAMETER["Y-axis rotation",-1.5193,ID["EPSG",8609]],PARAMETER["Z-axis rotation",5.5971,ID["EPSG",8610]],PARAMETER["Scale difference",0.9999973271,ID["EPSG",8611]])""" ) ) );
-  const long id = crs.saveAsUserCrs( QStringLiteral( "custom proj crs" ), QgsCoordinateReferenceSystem::FormatProj );
+  const long id = crs.saveAsUserCrs( QStringLiteral( "custom proj crs" ), Qgis::CrsDefinitionFormat::Proj );
   QVERIFY( id );
 
   // try again and make sure it's matched to user crs

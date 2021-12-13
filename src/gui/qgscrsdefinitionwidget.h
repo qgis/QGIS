@@ -55,21 +55,21 @@ class GUI_EXPORT QgsCrsDefinitionWidget : public QWidget, private Ui::QgsCrsDefi
      *
      * \see crs()
      */
-    void setCrs( const QgsCoordinateReferenceSystem &crs, QgsCoordinateReferenceSystem::Format nativeFormat = QgsCoordinateReferenceSystem::Format::FormatWkt );
+    void setCrs( const QgsCoordinateReferenceSystem &crs, Qgis::CrsDefinitionFormat nativeFormat = Qgis::CrsDefinitionFormat::Wkt );
 
     /**
      * Returns the selected CRS format.
      *
      * \see setFormat()
      */
-    QgsCoordinateReferenceSystem::Format format() const;
+    Qgis::CrsDefinitionFormat format() const;
 
     /**
      * Sets the CRS \a format.
      *
      * \see format()
      */
-    void setFormat( QgsCoordinateReferenceSystem::Format format );
+    void setFormat( Qgis::CrsDefinitionFormat format );
 
     /**
      * Returns the current definition string.

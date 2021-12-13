@@ -189,12 +189,6 @@ both flavors.
       EpsgCrsId
     };
 
-    enum Format
-    {
-      FormatWkt,
-      FormatProj,
-    };
-
     QgsCoordinateReferenceSystem();
 %Docstring
 Constructs an invalid CRS object
@@ -982,7 +976,7 @@ Update proj.4 parameters in our database from proj.4
    This is used internally and should not be necessary to call in client code
 %End
 
-    long saveAsUserCrs( const QString &name, Format nativeFormat = FormatWkt );
+    long saveAsUserCrs( const QString &name, Qgis::CrsDefinitionFormat nativeFormat = Qgis::CrsDefinitionFormat::Wkt );
 %Docstring
 Saves the CRS as a new custom ("USER") CRS.
 
