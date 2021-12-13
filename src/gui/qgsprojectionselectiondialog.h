@@ -139,7 +139,7 @@ class GUI_EXPORT QgsCrsSelectionWidget : public QgsPanelWidget, private Ui::QgsG
 
     QString mNotSetText;
     bool mShowNoCrsOption = false;
-    bool mDeferedInvalidCrsSet = false;
+    bool mDeferredInvalidCrsSet = false;
     int mBlockSignals = 0;
 
 };
