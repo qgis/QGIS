@@ -41,7 +41,7 @@ template class CORE_EXPORT QgsSettingsEntryEnumFlag< class QFlags<enum QgsMapLay
 /**
  * \ingroup core
  * \class QgsSettingsRegistryCore
- * QgsSettingsRegistryCore is used for settings introspection and collects all
+ * \brief QgsSettingsRegistryCore is used for settings introspection and collects all
  * QgsSettingsEntry instances of core.
  *
  * \since QGIS 3.20

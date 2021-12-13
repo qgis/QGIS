@@ -197,6 +197,7 @@ Returns the settings entry description.
 class QgsSettingsEntryVariant : QgsSettingsEntryBase
 {
 %Docstring(signature="appended")
+
 A variant settings entry.
 
 .. versionadded:: 3.20
@@ -268,6 +269,7 @@ Returns settings default value.
 class QgsSettingsEntryString : QgsSettingsEntryBase
 {
 %Docstring(signature="appended")
+
 A string settings entry.
 
 .. versionadded:: 3.20
@@ -364,6 +366,7 @@ Returns the string maximum length. By -1 there is no limitation.
 class QgsSettingsEntryStringList : QgsSettingsEntryBase
 {
 %Docstring(signature="appended")
+
 A string list settings entry.
 
 .. versionadded:: 3.20
@@ -436,6 +439,7 @@ Returns settings default value.
 class QgsSettingsEntryBool : QgsSettingsEntryBase
 {
 %Docstring(signature="appended")
+
 A boolean settings entry.
 
 .. versionadded:: 3.20
@@ -507,6 +511,7 @@ Returns settings default value.
 class QgsSettingsEntryInteger : QgsSettingsEntryBase
 {
 %Docstring(signature="appended")
+
 An integer settings entry.
 
 .. versionadded:: 3.20
@@ -604,6 +609,7 @@ Returns the maximum value.
 class QgsSettingsEntryDouble : QgsSettingsEntryBase
 {
 %Docstring(signature="appended")
+
 A double settings entry.
 
 .. versionadded:: 3.20
@@ -713,6 +719,7 @@ template <T>
 class QgsSettingsEntryEnumFlag : QgsSettingsEntryBase
 {
 %Docstring(signature="appended")
+
 A template class for enum and flag settings entry.
 
 .. note::
@@ -792,6 +799,7 @@ The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the sett
 class QgsSettingsEntryColor : QgsSettingsEntryBase
 {
 %Docstring(signature="appended")
+
 A color settings entry.
 
 .. versionadded:: 3.20

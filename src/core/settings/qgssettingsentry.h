@@ -241,7 +241,8 @@ class CORE_EXPORT QgsSettingsEntryBase
 /**
  * \class QgsSettingsEntryVariant
  * \ingroup core
- * A variant settings entry.
+ *
+ * \brief A variant settings entry.
  * \since QGIS 3.20
  */
 class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryBase
@@ -325,7 +326,8 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryBase
 /**
  * \class QgsSettingsEntryString
  * \ingroup core
- * A string settings entry.
+ *
+ * \brief A string settings entry.
  * \since QGIS 3.20
  */
 class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryBase
@@ -444,8 +446,9 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryBase
 /**
  * \class QgsSettingsEntryStringList
  * \ingroup core
- * A string list settings entry.
-  * \since QGIS 3.20
+ *
+ * \brief A string list settings entry.
+ * \since QGIS 3.20
  */
 class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntryBase
 {
@@ -529,8 +532,9 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntryBase
 /**
  * \class QgsSettingsEntryBool
  * \ingroup core
- * A boolean settings entry.
-  * \since QGIS 3.20
+ *
+ * \brief A boolean settings entry.
+ * \since QGIS 3.20
  */
 class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryBase
 {
@@ -613,8 +617,9 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryBase
 /**
  * \class QgsSettingsEntryInteger
  * \ingroup core
- * An integer settings entry.
-  * \since QGIS 3.20
+ *
+ * \brief An integer settings entry.
+ * \since QGIS 3.20
  */
 class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryBase
 {
@@ -732,8 +737,9 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryBase
 /**
  * \class QgsSettingsEntryDouble
  * \ingroup core
- * A double settings entry.
-  * \since QGIS 3.20
+ *
+ * \brief A double settings entry.
+ * \since QGIS 3.20
  */
 class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryBase
 {
@@ -867,7 +873,8 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryBase
 /**
  * \class QgsSettingsEntryEnumFlag
  * \ingroup core
- * A template class for enum and flag settings entry.
+ *
+ * \brief A template class for enum and flag settings entry.
  *
  * \note This template class has a dedicated handling in sipify.pl
  * \since QGIS 3.20
@@ -1030,7 +1037,8 @@ class CORE_EXPORT QgsSettingsEntryEnumFlag : public QgsSettingsEntryBase
 /**
  * \class QgsSettingsEntryColor
  * \ingroup core
- * A color settings entry.
+ *
+ * \brief A color settings entry.
  * \since QGIS 3.20
  */
 class CORE_EXPORT QgsSettingsEntryColor : public QgsSettingsEntryBase
