@@ -172,10 +172,22 @@ The optional seed value can be used as a basis for generated values.
                                    QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthNotSet,
                                    QgsFieldConstraints::ConstraintOrigin origin = QgsFieldConstraints::ConstraintOriginNotSet );
 %Docstring
-Tests an attribute value to check whether it passes all constraints which are present on the corresponding field.
+Tests a feature attribute value to check whether it passes all constraints which are present on the corresponding field.
 Returns ``True`` if the attribute value is valid for the field. Any constraint failures will be reported in the errors argument.
 If the strength or origin parameter is set then only constraints with a matching strength/origin will be checked.
 %End
+
+    static bool validateAttributeValue( const QVariant &value, const QgsVectorLayer *layer, const QgsFeature &feature, int attributeIndex, QStringList &errors /Out/,
+                                        QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthNotSet,
+                                        QgsFieldConstraints::ConstraintOrigin origin = QgsFieldConstraints::ConstraintOriginNotSet );
+%Docstring
+Tests a value to check whether it passes all constraints which are present on the corresponding field.
+Returns ``True`` if the attribute value is valid for the field. Any constraint failures will be reported in the errors argument.
+If the strength or origin parameter is set then only constraints with a matching strength/origin will be checked.
+
+.. versionadded:: 3.24
+%End
+
 
     static QgsFeature createFeature( const QgsVectorLayer *layer,
                                      const QgsGeometry &geometry = QgsGeometry(),

@@ -1258,6 +1258,27 @@ bool QgsAttributeForm::currentFormValidConstraints( QStringList &invalidFields, 
   return valid;
 }
 
+bool QgsAttributeForm::currentFormValidHardConstraints( QStringList &invalidFields, QStringList &descriptions )
+{
+  bool valid( true );
+
+  for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
+  {
+    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+    if ( eww )
+    {
+      if ( eww->isBlockingCommit() )
+      {
+        invalidFields.append( eww->field().displayName() );
+        descriptions.append( eww->constraintFailureReason() );
+        valid = false; // continue to get all invalid fields
+      }
+    }
+  }
+
+  return valid;
+}
+
 void QgsAttributeForm::onAttributeAdded( int idx )
 {
   mPreventFeatureRefresh = false;
@@ -1454,7 +1475,7 @@ void QgsAttributeForm::synchronizeState()
   if ( mMode != QgsAttributeEditorContext::SearchMode )
   {
     QStringList invalidFields, descriptions;
-    mValidConstraints = currentFormValidConstraints( invalidFields, descriptions );
+    mValidConstraints = currentFormValidHardConstraints( invalidFields, descriptions );
 
     if ( isEditable && mContext.formMode() == QgsAttributeEditorContext::Embed )
     {
