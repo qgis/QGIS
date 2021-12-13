@@ -1030,7 +1030,7 @@ namespace
         {
           QString generatedWkt = spacesBefore + wkt + spacesMiddle + emptyStringList.at( j ) + spacesAfter;
 
-          QgsGeometry gWkt = QgsGeometry().fromWkt( generatedWkt );
+          QgsGeometry gWkt = QgsGeometry::fromWkt( generatedWkt );
           QVERIFY( gWkt.asWkt().compare( result, Qt::CaseInsensitive ) == 0 );
 
           QVERIFY( geom->fromWkt( generatedWkt ) );
