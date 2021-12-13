@@ -185,7 +185,7 @@ class QgsMeshDatasetGroupTreeItemDelagate: public QStyledItemDelegate
 {
     Q_OBJECT
   public:
-    QgsMeshDatasetGroupTreeItemDelagate( QObject *parent = Q_NULLPTR );
+    QgsMeshDatasetGroupTreeItemDelagate( QObject *parent = nullptr );
 
     void paint( QPainter *painter,
                 const QStyleOptionViewItem &option,
