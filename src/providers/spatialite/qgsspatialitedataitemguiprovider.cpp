@@ -47,9 +47,9 @@ void QgsSpatiaLiteDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
 
   if ( QgsSLConnectionItem *connItem = qobject_cast< QgsSLConnectionItem * >( item ) )
   {
-    QAction *actionDelete = new QAction( tr( "Delete" ), menu );
-    connect( actionDelete, &QAction::triggered, this, [connItem] { deleteConnection( connItem ); } );
-    menu->addAction( actionDelete );
+    QAction *actionDeleteConnection = new QAction( tr( "Remove Connection" ), menu );
+    connect( actionDeleteConnection, &QAction::triggered, this, [connItem] { deleteConnection( connItem ); } );
+    menu->addAction( actionDeleteConnection );
   }
 }
 
@@ -133,8 +133,8 @@ void QgsSpatiaLiteDataItemGuiProvider::createDatabase( QgsDataItem *item )
 
 void QgsSpatiaLiteDataItemGuiProvider::deleteConnection( QgsDataItem *item )
 {
-  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Connection" ),
-                              QObject::tr( "Are you sure you want to delete the connection to %1?" ).arg( item->name() ),
+  if ( QMessageBox::question( nullptr, QObject::tr( "Remove Connection" ),
+                              QObject::tr( "Are you sure you want to remove the connection to %1?" ).arg( item->name() ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 
