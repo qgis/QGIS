@@ -85,11 +85,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/project
       ${CMAKE_SOURCE_DIR}/src/core/providers
       ${CMAKE_SOURCE_DIR}/src/core/providers/arcgis
-      ${CMAKE_SOURCE_DIR}/src/core/providers/ept
-      ${CMAKE_SOURCE_DIR}/src/core/providers/gdal
       ${CMAKE_SOURCE_DIR}/src/core/providers/memory
-      ${CMAKE_SOURCE_DIR}/src/core/providers/meshmemory
-      ${CMAKE_SOURCE_DIR}/src/core/providers/ogr
       ${CMAKE_SOURCE_DIR}/src/core/raster
       ${CMAKE_SOURCE_DIR}/src/core/scalebar
       ${CMAKE_SOURCE_DIR}/src/core/settings
