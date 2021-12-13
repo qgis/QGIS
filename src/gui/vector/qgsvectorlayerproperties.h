@@ -53,6 +53,10 @@ class QgsMaskingWidget;
 class QgsVectorLayerTemporalPropertiesWidget;
 class QgsProviderSourceWidget;
 
+/**
+ * \ingroup gui
+ * \class QgsVectorLayerProperties
+ */
 class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVectorLayerPropertiesBase, private QgsExpressionContextGenerator
 {
     Q_OBJECT

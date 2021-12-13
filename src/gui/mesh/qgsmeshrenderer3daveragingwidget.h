@@ -30,7 +30,10 @@ class QgsMeshLayer;
 class QgsMesh3dAveragingMethod;
 
 /**
- * A widget for setup of the averaging method from 3d to 2d datasets on 3d stacked mesh.
+ * \ingroup gui
+ * \class QgsMeshRenderer3dAveragingWidget
+ *
+ * \brief A widget for setup of the averaging method from 3d to 2d datasets on 3d stacked mesh.
  * The mesh layer must be connected
  */
 class QgsMeshRenderer3dAveragingWidget : public QWidget, private Ui::QgsMeshRenderer3dAveragingWidgetBase

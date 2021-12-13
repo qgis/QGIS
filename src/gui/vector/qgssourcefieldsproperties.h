@@ -40,6 +40,10 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsfieldcalculator.h"
 
+/**
+ * \ingroup gui
+ * \class QgsSourceFieldsProperties
+ */
 class GUI_EXPORT QgsSourceFieldsProperties : public QWidget, private Ui_QgsSourceFieldsProperties
 {
     Q_OBJECT

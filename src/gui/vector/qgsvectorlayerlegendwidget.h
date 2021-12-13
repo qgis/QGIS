@@ -37,7 +37,10 @@ class QgsMapCanvas;
 class QgsVectorLayer;
 
 /**
- * A widget for configuration of options specific to vector layer's legend.
+ * \ingroup gui
+ * \class QgsVectorLayerLegendWidget
+ *
+ * \brief A widget for configuration of options specific to vector layer's legend.
  */
 class GUI_EXPORT QgsVectorLayerLegendWidget : public QWidget
 {
