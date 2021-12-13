@@ -124,7 +124,7 @@ void QgsCrsDefinitionWidget::validateCurrent()
     {
       PROJ_STRING_LIST warnings = nullptr;
       PROJ_STRING_LIST grammerErrors = nullptr;
-      crs.reset( proj_create_from_wkt( context, projDef.toLatin1().constData(), nullptr, &warnings, &grammerErrors ) );
+      crs.reset( proj_create_from_wkt( context, projDef.toUtf8().constData(), nullptr, &warnings, &grammerErrors ) );
       QStringList warningStrings;
       QStringList grammerStrings;
       for ( auto iter = warnings; iter && *iter; ++iter )
@@ -150,7 +150,7 @@ void QgsCrsDefinitionWidget::validateCurrent()
     case Qgis::CrsDefinitionFormat::Proj:
     {
       const QString projCrsString = projDef + ( projDef.contains( QStringLiteral( "+type=crs" ) ) ? QString() : QStringLiteral( " +type=crs" ) );
-      crs.reset( proj_create( context, projCrsString.toLatin1().constData() ) );
+      crs.reset( proj_create( context, projCrsString.toUtf8().constData() ) );
       if ( crs )
       {
         QMessageBox::information( this, tr( "Custom Coordinate Reference System" ),
@@ -191,7 +191,7 @@ void QgsCrsDefinitionWidget::formatChanged()
       QString proj = mTextEditParameters->toPlainText();
       proj.replace( QLatin1String( "+type=crs" ), QString() );
       proj += QLatin1String( " +type=crs" );
-      QgsProjUtils::proj_pj_unique_ptr crs( proj_create( QgsProjContext::get(), proj.toLatin1().constData() ) );
+      QgsProjUtils::proj_pj_unique_ptr crs( proj_create( QgsProjContext::get(), proj.toUtf8().constData() ) );
       if ( crs )
       {
         const QByteArray multiLineOption = QStringLiteral( "MULTILINE=YES" ).toLocal8Bit();
