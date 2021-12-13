@@ -115,7 +115,7 @@ void TestQgsCoordinateReferenceSystemRegistry::addUserCrs()
   QCOMPARE( registry->userCrsList().at( 0 ).crs, userCrs );
 
   // try adding again, should be assigned a new ID because we are calling the "add" method
-  res = registry->addUserCrs( userCrs, QStringLiteral( "test2" ), QgsCoordinateReferenceSystem::FormatProj );
+  res = registry->addUserCrs( userCrs, QStringLiteral( "test2" ), Qgis::CrsDefinitionFormat::Proj );
   QCOMPARE( res, 100001L );
   QCOMPARE( spyAdded.length(), 2 );
   QCOMPARE( spyAdded.at( 1 ).at( 0 ).toString(), QStringLiteral( "USER:100001" ) );
@@ -216,7 +216,7 @@ void TestQgsCoordinateReferenceSystemRegistry::changeUserCrs()
 
   // with proj native format
   QObject::disconnect( conn1 );
-  QVERIFY( registry->updateUserCrs( id, crs2, QStringLiteral( "test 2" ), QgsCoordinateReferenceSystem::FormatProj ) );
+  QVERIFY( registry->updateUserCrs( id, crs2, QStringLiteral( "test 2" ), Qgis::CrsDefinitionFormat::Proj ) );
 
   QCOMPARE( spyAdded.length(), 1 );
   QCOMPARE( spyChanged.length(), 2 );

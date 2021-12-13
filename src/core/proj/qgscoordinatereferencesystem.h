@@ -225,13 +225,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
       EpsgCrsId       //!< EPSG code
     };
 
-    //! Projection definition formats
-    enum Format
-    {
-      FormatWkt = 0, //!< WKT format (always recommended over proj string format)
-      FormatProj, //!< Proj string format
-    };
-
     //! Constructs an invalid CRS object
     QgsCoordinateReferenceSystem();
 
@@ -912,7 +905,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * \note Since QGIS 3.18, internally this calls QgsCoordinateReferenceSystemRegistry::addUserCrs().
      */
-    long saveAsUserCrs( const QString &name, Format nativeFormat = FormatWkt );
+    long saveAsUserCrs( const QString &name, Qgis::CrsDefinitionFormat nativeFormat = Qgis::CrsDefinitionFormat::Wkt );
 
     //! Returns auth id of related geographic CRS
     QString geographicCrsAuthId() const;

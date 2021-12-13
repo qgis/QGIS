@@ -96,7 +96,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
      * \see updateUserCrs()
      * \see userCrsAdded()
      */
-    long addUserCrs( const QgsCoordinateReferenceSystem &crs, const QString &name, QgsCoordinateReferenceSystem::Format nativeFormat = QgsCoordinateReferenceSystem::FormatWkt );
+    long addUserCrs( const QgsCoordinateReferenceSystem &crs, const QString &name, Qgis::CrsDefinitionFormat nativeFormat = Qgis::CrsDefinitionFormat::Wkt );
 
     /**
      * Updates the definition of the existing user CRS with matching \a id.
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
      * \see addUserCrs()
      * \see userCrsChanged()
      */
-    bool updateUserCrs( long id, const QgsCoordinateReferenceSystem &crs, const QString &name, QgsCoordinateReferenceSystem::Format nativeFormat = QgsCoordinateReferenceSystem::FormatWkt );
+    bool updateUserCrs( long id, const QgsCoordinateReferenceSystem &crs, const QString &name, Qgis::CrsDefinitionFormat nativeFormat = Qgis::CrsDefinitionFormat::Wkt );
 
     /**
      * Removes the existing user CRS with matching \a id.
