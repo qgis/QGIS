@@ -116,7 +116,7 @@ ACCEPTABLE_MISSING_DOCS = {
     "QgsFeatureListModel": ["displayExpression() const", "masterModel()", "Role", "featureByIndex(const QModelIndex &index, QgsFeature &feat)", "fidToIndexList(QgsFeatureId fid)", "mapSelectionToMaster(const QItemSelection &selection) const", "mapSelectionFromMaster(const QItemSelection &selection) const", "mapFromMaster(const QModelIndex &sourceIndex) const", "mapToMaster(const QModelIndex &proxyIndex) const", "setSourceModel(QgsAttributeTableFilterModel *sourceModel)"],
     "QgsCurvePolygon": ["QgsCurvePolygon(const QgsCurvePolygon &p)"],
     "QgsGeometry::Error": ["Error(const QString &m)", "Error(const QString &m, const QgsPointXY &p)"],
-    "QgsMeshDatasetGroupTreeItemDelagate": ["QgsMeshDatasetGroupTreeItemDelagate(QObject *parent=Q_\c nullptr)"],
+    "QgsMeshDatasetGroupTreeItemDelagate": ["QgsMeshDatasetGroupTreeItemDelagate(QObject *parent=nullptr)"],
     "QgsGeometryCollection": ["QgsGeometryCollection(const QgsGeometryCollection &c)"],
     "QgsCptCityBrowserModel": ["removeRootItems()", "connectItem(QgsCptCityDataItem *item)", "ViewType", "QgsCptCityBrowserModel(QObject *parent=nullptr, QgsCptCityArchive *archive=QgsCptCityArchive::defaultArchive(), ViewType Type=Authors)", "reload()", "refresh(const QModelIndex &index=QModelIndex())", "refresh(const QString &path)", "endRemoveItems()", "beginRemoveItems(QgsCptCityDataItem *parent, int first, int last)", "addRootItems()", "findItem(QgsCptCityDataItem *item, QgsCptCityDataItem *parent=nullptr) const", "beginInsertItems(QgsCptCityDataItem *parent, int first, int last)", "endInsertItems()"],
     "QgsVectorLayerSelectionManager": ["QgsVectorLayerSelectionManager(QgsVectorLayer *layer, QObject *parent=nullptr)"],
