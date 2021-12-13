@@ -516,6 +516,11 @@ class TestQgsExpression: public QObject
       QCOMPARE( exp.dump(), dump );
     }
 
+    void  represent_attributes()
+    {
+
+    };
+
     void represent_value()
     {
       QVariantMap config;

@@ -1,0 +1,14 @@
+{
+  "name": "represent_attributes",
+  "type": "function",
+  "groups": ["Record and Attributes"],
+  "description": "Returns a map with the attribute names as keys and the configured representation values as values. The representation value for the attributes depends on the configured widget type for each attribute. Often, this is useful for 'Value Map' widgets.",
+  "arguments": [
+    {"arg":"feature", "description": "The feature containing the attributes to be represented. (Optional)" },
+    {"arg":"layer", "description": "The vector layer the feature belongs to. (Optional)"}
+  ],
+  "examples": [
+    { "expression":"represent_attributes()", "returns":"The representation values for the current feature"},
+    { "expression":"represent_attributes(feature, layer)", "returns":"The representation values for the specified feature and layer"}
+  ]
+}
