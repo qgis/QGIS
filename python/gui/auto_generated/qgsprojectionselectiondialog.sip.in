@@ -23,12 +23,6 @@ A generic widget allowing users to pick a Coordinate Reference System (or define
 %End
   public:
 
-    enum class CrsType
-    {
-      Predefined,
-      Custom,
-    };
-
     QgsCrsSelectionWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsCrsSelectionWidget, with the specified ``parent`` widget.
