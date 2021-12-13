@@ -1234,7 +1234,7 @@ void QgsAttributeForm::registerContainerInformation( QgsAttributeForm::Container
   }
 }
 
-bool QgsAttributeForm::currentFormValidConstraints( QStringList &invalidFields, QStringList &descriptions )
+bool QgsAttributeForm::currentFormValidConstraints( QStringList &invalidFields, QStringList &descriptions ) const
 {
   bool valid( true );
 
@@ -1258,7 +1258,7 @@ bool QgsAttributeForm::currentFormValidConstraints( QStringList &invalidFields, 
   return valid;
 }
 
-bool QgsAttributeForm::currentFormValidHardConstraints( QStringList &invalidFields, QStringList &descriptions )
+bool QgsAttributeForm::currentFormValidHardConstraints( QStringList &invalidFields, QStringList &descriptions ) const
 {
   bool valid( true );
 

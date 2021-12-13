@@ -433,8 +433,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void updateConstraint( const QgsFeature &ft, QgsEditorWidgetWrapper *eww );
     void updateLabels();
     bool currentFormValuesFeature( QgsFeature &feature );
-    bool currentFormValidConstraints( QStringList &invalidFields, QStringList &descriptions );
-    bool currentFormValidHardConstraints( QStringList &invalidFields, QStringList &descriptions );
+    bool currentFormValidConstraints( QStringList &invalidFields, QStringList &descriptions ) const;
+    bool currentFormValidHardConstraints( QStringList &invalidFields, QStringList &descriptions ) const;
     QList<QgsEditorWidgetWrapper *> constraintDependencies( QgsEditorWidgetWrapper *w );
 
     Q_DECL_DEPRECATED QgsRelationWidgetWrapper *setupRelationWidgetWrapper( const QgsRelation &rel, const QgsAttributeEditorContext &context ) SIP_DEPRECATED;
