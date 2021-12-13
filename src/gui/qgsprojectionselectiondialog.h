@@ -42,15 +42,6 @@ class GUI_EXPORT QgsCrsSelectionWidget : public QgsPanelWidget, private Ui::QgsG
   public:
 
     /**
-     * CRS types
-     */
-    enum class CrsType
-    {
-      Predefined, //!< Predefined (from database )
-      Custom, //!< Custom CRS
-    };
-
-    /**
      * Constructor for QgsCrsSelectionWidget, with the specified \a parent widget.
      */
     QgsCrsSelectionWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
@@ -136,6 +127,15 @@ class GUI_EXPORT QgsCrsSelectionWidget : public QgsPanelWidget, private Ui::QgsG
     void hasValidSelectionChanged( bool isValid );
 
   private:
+
+    /**
+     * CRS types
+     */
+    enum class CrsType
+    {
+      Predefined, //!< Predefined (from database )
+      Custom, //!< Custom CRS
+    };
 
     QString mNotSetText;
     bool mShowNoCrsOption = false;

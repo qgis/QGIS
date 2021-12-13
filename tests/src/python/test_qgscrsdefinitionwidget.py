@@ -19,7 +19,7 @@ from qgis.testing import start_app, unittest
 start_app()
 
 
-class TestQgsCrsDefinitionWidge(unittest.TestCase):
+class TestQgsCrsDefinitionWidget(unittest.TestCase):
 
     def testWidget(self):
         """

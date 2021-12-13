@@ -137,6 +137,7 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item, QgsMapCanvas *ma
 
   mCrsSelector->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, true );
   mCrsSelector->setNotSetText( tr( "Use Project CRS" ) );
+  mCrsSelector->setDialogTitle( tr( "Map Item CRS" ) );
 
   mOverviewFrameStyleButton->setSymbolType( Qgis::SymbolType::Fill );
 

@@ -124,6 +124,7 @@ void QgsCrsSelectionWidget::setShowNoCrs( bool show )
   if ( mShowNoCrsOption == show )
     return;
 
+  mBlockSignals++;
   mShowNoCrsOption = show;
   if ( mShowNoCrsOption )
   {
@@ -138,6 +139,11 @@ void QgsCrsSelectionWidget::setShowNoCrs( bool show )
   {
     mComboCrsType->setCurrentIndex( 0 );
   }
+
+  mBlockSignals--;
+
+  if ( mDeferedInvalidCrsSet )
+    emit crsChanged();
 
   mDeferedInvalidCrsSet = false;
 
@@ -165,6 +171,8 @@ bool QgsCrsSelectionWidget::hasValidSelection() const
 {
   if ( !mComboCrsType->currentData().isValid() )
     return true;
+  else if ( mDeferedInvalidCrsSet )
+    return false;
   else
   {
     switch ( static_cast< CrsType >( mComboCrsType->currentData().toInt() ) )
@@ -197,6 +205,7 @@ QgsCoordinateReferenceSystem QgsCrsSelectionWidget::crs() const
 
 void QgsCrsSelectionWidget::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
+  mBlockSignals++;
   if ( !crs.isValid() )
   {
     if ( mShowNoCrsOption )
@@ -219,6 +228,7 @@ void QgsCrsSelectionWidget::setCrs( const QgsCoordinateReferenceSystem &crs )
       mStackedWidget->setCurrentWidget( mPageDatabase );
     }
   }
+  mBlockSignals--;
 
   emit crsChanged();
   emit hasValidSelectionChanged( hasValidSelection() );
