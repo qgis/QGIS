@@ -6,8 +6,10 @@
   "arguments": [ {"arg":"string1","description":"a string"},
   {"arg":"string2","description":"a string"}
   ],
-  "examples": [ { "expression":"hamming_distance('abc','xec')", "returns":"2"},
-{ "expression":"hamming_distance('abc','ABc')", "returns":"2"},
-{ "expression":"hamming_distance(upper('abc'),upper('ABC'))", "returns":"0"}
+  "examples": [
+    { "expression":"hamming_distance('abc','xec')", "returns":"2"},
+    { "expression":"hamming_distance('abc','ABc')", "returns":"2"},
+    { "expression":"hamming_distance(upper('abc'),upper('ABC'))", "returns":"0"},
+    { "expression":"hamming_distance('abc','abcd')", "returns":"NULL"}
   ]
 }
