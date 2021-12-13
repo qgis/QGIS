@@ -178,17 +178,6 @@ class CORE_EXPORT QgsVectorLayerUtils
                                    QgsFieldConstraints::ConstraintOrigin origin = QgsFieldConstraints::ConstraintOriginNotSet );
 
     /**
-     * Tests a value to check whether it passes all constraints which are present on the corresponding field.
-     * Returns TRUE if the attribute value is valid for the field. Any constraint failures will be reported in the errors argument.
-     * If the strength or origin parameter is set then only constraints with a matching strength/origin will be checked.
-     * \since QGIS 3.24
-     */
-    static bool validateAttributeValue( const QVariant &value, const QgsVectorLayer *layer, const QgsFeature &feature, int attributeIndex, QStringList &errors SIP_OUT,
-                                        QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthNotSet,
-                                        QgsFieldConstraints::ConstraintOrigin origin = QgsFieldConstraints::ConstraintOriginNotSet );
-
-
-    /**
      * Creates a new feature ready for insertion into a layer. Default values and constraints
      * (e.g., unique constraints) will automatically be handled. An optional attribute map can be
      * passed for the new feature to copy as many attribute values as possible from the map,

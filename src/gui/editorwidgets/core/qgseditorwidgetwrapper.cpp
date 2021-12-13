@@ -220,9 +220,9 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsVectorLayer *layer, int 
       toEmit = true;
     }
 
-    hardConstraintsOk = QgsVectorLayerUtils::validateAttributeValue( value(), layer, ft, index, errors, QgsFieldConstraints::ConstraintStrengthHard, constraintOrigin );
+    hardConstraintsOk = QgsVectorLayerUtils::validateAttribute( layer, ft, index, errors, QgsFieldConstraints::ConstraintStrengthHard, constraintOrigin );
 
-    softConstraintsOk = QgsVectorLayerUtils::validateAttributeValue( value(), layer, ft, index, softErrors, QgsFieldConstraints::ConstraintStrengthSoft, constraintOrigin );
+    softConstraintsOk = QgsVectorLayerUtils::validateAttribute( layer, ft, index, softErrors, QgsFieldConstraints::ConstraintStrengthSoft, constraintOrigin );
     errors << softErrors;
   }
   else // invalid feature

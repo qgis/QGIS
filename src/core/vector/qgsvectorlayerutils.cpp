@@ -376,12 +376,6 @@ QVariant QgsVectorLayerUtils::createUniqueValueFromCache( const QgsVectorLayer *
 bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer *layer, const QgsFeature &feature, int attributeIndex, QStringList &errors,
     QgsFieldConstraints::ConstraintStrength strength, QgsFieldConstraints::ConstraintOrigin origin )
 {
-  const QVariant value = feature.attribute( attributeIndex );
-  return QgsVectorLayerUtils::validateAttributeValue( value, layer, feature, attributeIndex, errors, strength, origin );
-}
-
-bool QgsVectorLayerUtils::validateAttributeValue( const QVariant &value, const QgsVectorLayer *layer, const QgsFeature &feature, int attributeIndex, QStringList &errors, QgsFieldConstraints::ConstraintStrength strength, QgsFieldConstraints::ConstraintOrigin origin )
-{
   if ( !layer )
     return false;
 
@@ -390,6 +384,7 @@ bool QgsVectorLayerUtils::validateAttributeValue( const QVariant &value, const Q
 
   QgsFields fields = layer->fields();
   QgsField field = fields.at( attributeIndex );
+  const QVariant value = feature.attribute( attributeIndex );
   bool valid = true;
   errors.clear();
 
