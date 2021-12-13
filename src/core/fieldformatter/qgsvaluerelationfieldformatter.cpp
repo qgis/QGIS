@@ -332,7 +332,7 @@ QSet<QString> QgsValueRelationFieldFormatter::expressionParentFormAttributes( co
     if ( formFunctions.contains( fd->name( ) ) )
     {
       const QList<QgsExpressionNode *> cExpressionNodes { f->args( )->list() };
-      for ( const auto &param : std::as_const( cExpressionNodes ) )
+      for ( const auto &param : qgis::as_const( cExpressionNodes ) )
       {
         attributes.insert( param->eval( &exp, &context ).toString() );
       }
@@ -357,7 +357,7 @@ QSet<QString> QgsValueRelationFieldFormatter::expressionFormAttributes( const QS
     if ( formFunctions.contains( fd->name( ) ) )
     {
       const QList<QgsExpressionNode *> cExpressionNodes { f->args( )->list() };
-      for ( const auto &param : std::as_const( cExpressionNodes ) )
+      for ( const auto &param : qgis::as_const( cExpressionNodes ) )
       {
         attributes.insert( param->eval( &exp, &context ).toString() );
       }
