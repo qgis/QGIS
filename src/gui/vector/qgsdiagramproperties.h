@@ -33,6 +33,10 @@
 class QgsVectorLayer;
 class QgsMapCanvas;
 
+/**
+ * \ingroup gui
+ * \class QgsDiagramProperties
+ */
 class GUI_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPropertiesBase, private QgsExpressionContextGenerator
 {
     Q_OBJECT

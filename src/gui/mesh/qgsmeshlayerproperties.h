@@ -35,7 +35,10 @@ class QgsMapLayerConfigWidgetFactory;
 class QgsMetadataWidget;
 
 /**
- * Property sheet for a mesh map layer.
+ * \ingroup gui
+ * \class QgsMeshLayerProperties
+ *
+ * \brief Property sheet for a mesh map layer.
  * Contains information, source and style tabs
  *
  * \since QGIS 3.16 in the GUI API
