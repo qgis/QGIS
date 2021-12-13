@@ -41,14 +41,6 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
   QPolygonF mapPoly = mMapCanvas->mapSettings().visiblePolygon();
   const double canvasWidth = QLineF( mapPoly[0], mapPoly[1] ).length();
   const double canvasHeight = QLineF( mapPoly[0], mapPoly[3] ).length();
-  const QgsRectangle mapRect = QgsRectangle( mapPoly[0],
-                               QgsPointXY(
-                                 mapPoly[0].x() + canvasWidth,
-                                 mapPoly[0].y() - canvasHeight
-                               )
-                                           );
-  if ( rect() != mapRect )
-    setRect( mapRect );
 
   const int nPoints = mAdvancedDigitizingDockWidget->pointsCount();
   if ( !nPoints )
@@ -69,7 +61,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     return;
 
   const double canvasRotationRad = mMapCanvas->rotation() * M_PI / 180;
-  const double canvasMaxDimension = std::max( canvasWidth / mupp, canvasHeight / mupp );
+  const double canvasDiagonalDimension = ( canvasWidth + canvasHeight ) / mupp ;
 
   QPointF curPointPix, prevPointPix, penulPointPix, snapSegmentPix1, snapSegmentPix2;
 
@@ -158,8 +150,9 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     if ( mAdvancedDigitizingDockWidget->constraintAngle()->isLocked() )
     {
       painter->setPen( mLockedPen );
-      painter->drawLine( prevPointPix - canvasMaxDimension * QPointF( std::cos( a ), std::sin( a ) ),
-                         prevPointPix + canvasMaxDimension * QPointF( std::cos( a ), std::sin( a ) ) );
+      const double canvasPadding = QLineF( prevPointPix, curPointPix ).length();
+      painter->drawLine( prevPointPix + ( canvasPadding - canvasDiagonalDimension ) * QPointF( std::cos( a ), std::sin( a ) ),
+                         prevPointPix + ( canvasPadding + canvasDiagonalDimension ) * QPointF( std::cos( a ), std::sin( a ) ) );
     }
   }
 
@@ -194,8 +187,8 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     }
     if ( draw )
     {
-      painter->drawLine( toCanvasCoordinates( QgsPointXY( x, mapPoly[0].y() ) ) - canvasMaxDimension * QPointF( std::sin( -canvasRotationRad ), std::cos( -canvasRotationRad ) ),
-                         toCanvasCoordinates( QgsPointXY( x, mapPoly[0].y() ) ) + canvasMaxDimension * QPointF( std::sin( -canvasRotationRad ), std::cos( -canvasRotationRad ) ) );
+      painter->drawLine( toCanvasCoordinates( QgsPointXY( x, mapPoly[0].y() ) ) - canvasDiagonalDimension * QPointF( std::sin( -canvasRotationRad ), std::cos( -canvasRotationRad ) ),
+                         toCanvasCoordinates( QgsPointXY( x, mapPoly[0].y() ) ) + canvasDiagonalDimension * QPointF( std::sin( -canvasRotationRad ), std::cos( -canvasRotationRad ) ) );
     }
   }
 
@@ -222,8 +215,8 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     }
     if ( draw )
     {
-      painter->drawLine( toCanvasCoordinates( QgsPointXY( mapPoly[0].x(), y ) ) - canvasMaxDimension * QPointF( std::cos( -canvasRotationRad ), -std::sin( -canvasRotationRad ) ),
-                         toCanvasCoordinates( QgsPointXY( mapPoly[0].x(), y ) ) + canvasMaxDimension * QPointF( std::cos( -canvasRotationRad ), -std::sin( -canvasRotationRad ) ) );
+      painter->drawLine( toCanvasCoordinates( QgsPointXY( mapPoly[0].x(), y ) ) - canvasDiagonalDimension * QPointF( std::cos( -canvasRotationRad ), -std::sin( -canvasRotationRad ) ),
+                         toCanvasCoordinates( QgsPointXY( mapPoly[0].x(), y ) ) + canvasDiagonalDimension * QPointF( std::cos( -canvasRotationRad ), -std::sin( -canvasRotationRad ) ) );
 
     }
   }
@@ -252,4 +245,20 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     painter->drawLine( curPointPix + QPointF( -5, +5 ),
                        curPointPix + QPointF( +5, -5 ) );
   }
+}
+
+void QgsAdvancedDigitizingCanvasItem::updatePosition()
+{
+  // Use visible polygon rather than extent to properly handle rotated maps
+  QPolygonF mapPoly = mMapCanvas->mapSettings().visiblePolygon();
+  const double canvasWidth = QLineF( mapPoly[0], mapPoly[1] ).length();
+  const double canvasHeight = QLineF( mapPoly[0], mapPoly[3] ).length();
+  const QgsRectangle mapRect = QgsRectangle( mapPoly[0],
+                               QgsPointXY(
+                                 mapPoly[0].x() + canvasWidth,
+                                 mapPoly[0].y() - canvasHeight
+                               )
+                                           );
+  if ( rect() != mapRect )
+    setRect( mapRect );
 }

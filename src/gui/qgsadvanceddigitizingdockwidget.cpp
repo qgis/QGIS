@@ -837,6 +837,7 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
 
   // update capacities
   mCapacities = newCapacities;
+  mCadPaintItem->updatePosition();
 }
 
 

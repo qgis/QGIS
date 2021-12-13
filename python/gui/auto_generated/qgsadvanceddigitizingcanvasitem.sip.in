@@ -36,6 +36,8 @@ The QgsAdvancedDigitizingCanvasItem class draws the graphical elements of the CA
 
     virtual void paint( QPainter *painter );
 
+    virtual void updatePosition();
+
 
 };
 
