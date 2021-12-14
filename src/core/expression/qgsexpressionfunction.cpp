@@ -1731,26 +1731,43 @@ static QVariant fcnRepresentAttributes( const QVariantList &values, const QgsExp
 {
   QgsVectorLayer *layer = nullptr;
   QgsFeature feature;
-  if ( ( values.size() == 0 || values.at( 0 ).isNull() ) && context )
+
+  if ( values.size() == 2 )
   {
-    feature = context->feature();
-    // first step - find current layer
-    layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), parent );
+    if ( ! values.at( 0 ).isNull() )
+    {
+      feature = QgsExpressionUtils::getFeature( values.at( 0 ), parent );
+    }
+    else if ( context )
+    {
+      feature = context->feature();
+    }
+
+    if ( ! values.at( 1 ).isNull() )
+    {
+      layer = QgsExpressionUtils::getVectorLayer( values.at( 1 ), parent );
+    }
+    else if ( context )
+    {
+      layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), parent );
+    }
+    else
+    {
+      parent->setEvalErrorString( QObject::tr( "Cannot use represent attributes function: layer is not set" ) );
+      return QVariant();
+    }
   }
-  else if ( values.size() == 2 && ! values.at( 1 ).isNull() )
+
+  // Check if it's a default constructed feature possibly coming from the contex
+  if ( ! feature.isValid() && feature.attributeCount() == 0 && feature.id() == FID_NULL )
   {
-    feature = QgsExpressionUtils::getFeature( values.at( 0 ), parent );
-    layer = QgsExpressionUtils::getVectorLayer( values.at( 1 ), parent );
-  }
-  else
-  {
-    parent->setEvalErrorString( QObject::tr( "Layer is not set" ) );
+    parent->setEvalErrorString( QObject::tr( "Cannot use represent attributes function: feature is not set" ) );
     return QVariant();
   }
 
   if ( !layer )
   {
-    parent->setEvalErrorString( QObject::tr( "Cannot use represent attributes function in this context: layer coould not be resolved." ) );
+    parent->setEvalErrorString( QObject::tr( "Cannot use represent attributes function: layer could not be resolved." ) );
     return QVariant();
   }
 
@@ -7739,10 +7756,10 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         fcnAttributes, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
     attributesFunc->setIsStatic( false );
     functions << attributesFunc;
-    QgsStaticExpressionFunction *formattedAttributesFunc = new QgsStaticExpressionFunction( QStringLiteral( "represent_attributes" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "feature" ), true ) << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ), true ),
+    QgsStaticExpressionFunction *representAttributesFunc = new QgsStaticExpressionFunction( QStringLiteral( "represent_attributes" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "feature" ), true ) << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ), true ),
         fcnRepresentAttributes, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
-    formattedAttributesFunc->setIsStatic( false );
-    functions << formattedAttributesFunc;
+    representAttributesFunc->setIsStatic( false );
+    functions << representAttributesFunc;
 
     QgsStaticExpressionFunction *maptipFunc = new QgsStaticExpressionFunction(
       QStringLiteral( "maptip" ),
