@@ -1678,7 +1678,31 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
   if ( painterUnitInterval < 0 )
     return;
 
-  double painterUnitOffsetAlongLine = rc.convertToPainterUnits( offsetAlongLine, offsetAlongLineUnit(), offsetAlongLineMapUnitScale() );
+  double painterUnitOffsetAlongLine = 0;
+
+  // only calculated if we need it!
+  double totalLength = -1;
+
+  if ( !qgsDoubleNear( offsetAlongLine, 0 ) )
+  {
+    totalLength = QgsSymbolLayerUtils::polylineLength( points );
+    switch ( offsetAlongLineUnit() )
+    {
+      case QgsUnitTypes::RenderMillimeters:
+      case QgsUnitTypes::RenderMapUnits:
+      case QgsUnitTypes::RenderPixels:
+      case QgsUnitTypes::RenderPoints:
+      case QgsUnitTypes::RenderInches:
+      case QgsUnitTypes::RenderUnknownUnit:
+      case QgsUnitTypes::RenderMetersInMapUnits:
+        painterUnitOffsetAlongLine = rc.convertToPainterUnits( offsetAlongLine, offsetAlongLineUnit(), offsetAlongLineMapUnitScale() );
+        break;
+      case QgsUnitTypes::RenderPercentage:
+        painterUnitOffsetAlongLine = offsetAlongLine / 100 * totalLength;
+        break;
+    }
+  }
+
   if ( offsetAlongLineUnit() == QgsUnitTypes::RenderMetersInMapUnits && rc.flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
   {
     // rendering for symbol previews -- an offset in meters in map units can't be calculated, so treat the size as millimeters
@@ -1825,10 +1849,29 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
     context.setOriginalValueVariable( mOffsetAlongLine );
     offsetAlongLine = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOffsetAlongLine, context.renderContext().expressionContext(), mOffsetAlongLine );
   }
+
+  // only calculated if we need it!!
+  double totalLength = -1;
   if ( !qgsDoubleNear( offsetAlongLine, 0.0 ) )
   {
+    totalLength = QgsSymbolLayerUtils::polylineLength( points );
+
     //scale offset along line
-    offsetAlongLine = rc.convertToPainterUnits( offsetAlongLine, offsetAlongLineUnit(), offsetAlongLineMapUnitScale() );
+    switch ( offsetAlongLineUnit() )
+    {
+      case QgsUnitTypes::RenderMillimeters:
+      case QgsUnitTypes::RenderMapUnits:
+      case QgsUnitTypes::RenderPixels:
+      case QgsUnitTypes::RenderPoints:
+      case QgsUnitTypes::RenderInches:
+      case QgsUnitTypes::RenderUnknownUnit:
+      case QgsUnitTypes::RenderMetersInMapUnits:
+        offsetAlongLine = rc.convertToPainterUnits( offsetAlongLine, offsetAlongLineUnit(), offsetAlongLineMapUnitScale() );
+        break;
+      case QgsUnitTypes::RenderPercentage:
+        offsetAlongLine = offsetAlongLine / 100 * totalLength;
+        break;
+    }
   }
 
   if ( qgsDoubleNear( offsetAlongLine, 0.0 ) && context.renderContext().geometry()

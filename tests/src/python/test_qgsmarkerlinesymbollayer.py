@@ -680,6 +680,53 @@ class TestQgsMarkerLineSymbolLayer(unittest.TestCase):
         rendered_image = self.renderGeometry(s, g)
         assert self.imageCheck('markerline_none', 'markerline_none', rendered_image)
 
+    def testFirstVertexOffsetPercentage(self):
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        marker_line = QgsMarkerLineSymbolLayer(True)
+        marker_line.setPlacements(Qgis.MarkerLinePlacement.FirstVertex)
+        marker_line.setOffsetAlongLine(10)
+        marker_line.setOffsetAlongLineUnit(QgsUnitTypes.RenderPercentage)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 4)
+        marker.setColor(QColor(255, 0, 0, 100))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_line.setSubSymbol(marker_symbol)
+        line_symbol = QgsLineSymbol()
+        line_symbol.changeSymbolLayer(0, marker_line)
+
+        s.appendSymbolLayer(marker_line.clone())
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 0 10, 10 10)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('markerline_first_offset_percent', 'markerline_first_offset_percent', rendered_image)
+
+    def testIntervalOffsetPercentage(self):
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        marker_line = QgsMarkerLineSymbolLayer(True)
+        marker_line.setPlacements(Qgis.MarkerLinePlacement.Interval)
+        marker_line.setInterval(6)
+        marker_line.setOffsetAlongLine(50)
+        marker_line.setOffsetAlongLineUnit(QgsUnitTypes.RenderPercentage)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 4)
+        marker.setColor(QColor(255, 0, 0, 100))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_line.setSubSymbol(marker_symbol)
+        line_symbol = QgsLineSymbol()
+        line_symbol.changeSymbolLayer(0, marker_line)
+
+        s.appendSymbolLayer(marker_line.clone())
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 0 10, 10 10)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('markerline_interval_offset_percent', 'markerline_interval_offset_percent', rendered_image)
+
     def testCenterSegment(self):
         s = QgsLineSymbol()
         s.deleteSymbolLayer(0)
