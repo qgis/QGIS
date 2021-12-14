@@ -248,11 +248,15 @@ void QgsAbstractRelationEditorWidget::addFeature( const QgsGeometry &geometry )
   }
 
   updateUi();
+
+  emit relatedFeaturesChanged();
 }
 
 void QgsAbstractRelationEditorWidget::deleteFeature( const QgsFeatureId fid )
 {
   deleteFeatures( QgsFeatureIds() << fid );
+
+  emit relatedFeaturesChanged();
 }
 
 void QgsAbstractRelationEditorWidget::deleteFeatures( const QgsFeatureIds &fids )
@@ -369,6 +373,8 @@ void QgsAbstractRelationEditorWidget::deleteFeatures( const QgsFeatureIds &fids 
     }
 
     updateUi();
+
+    emit relatedFeaturesChanged();
   }
 }
 
@@ -493,6 +499,8 @@ void QgsAbstractRelationEditorWidget::onLinkFeatureDlgAccepted()
   }
 
   updateUi();
+
+  emit relatedFeaturesChanged();
 }
 
 void QgsAbstractRelationEditorWidget::unlinkFeature( const QgsFeatureId fid )
@@ -580,6 +588,8 @@ void QgsAbstractRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &fids 
   }
 
   updateUi();
+
+  emit relatedFeaturesChanged();
 }
 
 void QgsAbstractRelationEditorWidget::updateUi()
@@ -611,6 +621,8 @@ void QgsAbstractRelationEditorWidget::afterSetRelations()
 void QgsAbstractRelationEditorWidget::duplicateFeature( const QgsFeatureId &fid )
 {
   duplicateFeatures( QgsFeatureIds() << fid );
+
+  emit relatedFeaturesChanged();
 }
 
 void QgsAbstractRelationEditorWidget::duplicateFeatures( const QgsFeatureIds &fids )
@@ -624,6 +636,8 @@ void QgsAbstractRelationEditorWidget::duplicateFeatures( const QgsFeatureIds &fi
     QgsVectorLayerUtils::QgsDuplicateFeatureContext duplicatedFeatureContext;
     QgsVectorLayerUtils::duplicateFeature( layer, f, QgsProject::instance(), duplicatedFeatureContext );
   }
+
+  emit relatedFeaturesChanged();
 }
 
 void QgsAbstractRelationEditorWidget::showEvent( QShowEvent * )

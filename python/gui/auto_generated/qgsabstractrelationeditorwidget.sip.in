@@ -158,6 +158,17 @@ Returns the widget configuration
 Defines the widget configuration
 %End
 
+  signals:
+
+    void relatedFeaturesChanged();
+%Docstring
+Emit this signal, whenever the related features changed.
+This happens for example when related features are added, removed,
+linked or unlinked.
+
+.. versionadded:: 3.22
+%End
+
   public slots:
 
     virtual void parentFormValueChanged( const QString &attribute, const QVariant &newValue ) = 0;
