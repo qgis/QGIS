@@ -21,6 +21,8 @@
 #include "qgsmapcanvas.h"
 #include "qgscoordinateutils.h"
 
+#include "qgsprojectionselectionwidget.h"
+
 #include <QUrl>
 
 
@@ -40,6 +42,15 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
 
   const QgsCoordinateReferenceSystem currentCrs = QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs();
   const QgsCoordinateReferenceSystem wgs84Crs( QStringLiteral( "EPSG:4326" ) );
+  QgsCoordinateReferenceSystem extraCrs( QStringLiteral( "EPSG:4326" ) );
+
+  QgsSettings settings;
+  QString extraCrsAuthId = extraCrs.authid();
+  if ( settings.value( QStringLiteral( "locator_filters/go_to_coordinate/extra_crs" ), QStringLiteral( "EPSG:4326" ), QgsSettings::App ) != QStringLiteral( "EPSG:4326" ) )
+  {
+    extraCrsAuthId = settings.value( QStringLiteral( "locator_filters/go_to_coordinate/extra_crs" ), QStringLiteral( "EPSG:4326" ), QgsSettings::App ).toString();
+    extraCrs = QgsCoordinateReferenceSystem( extraCrsAuthId );
+  }
 
   bool okX = false;
   bool okY = false;
@@ -95,6 +106,10 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
     crsList.append( wgs84Crs );
     if ( currentCrs != wgs84Crs )
       crsList.append( currentCrs );
+    // append optional extra crs (added via config)
+    if ( extraCrs != wgs84Crs )
+      crsList.append( extraCrs );
+    // append crs's used by mapLayers
     for ( const QgsMapLayer *layer : QgsProject::instance()->mapLayers() )
     {
       if ( !crsList.contains( layer->crs() ) )
@@ -349,4 +364,42 @@ void QgsGotoLocatorFilter::triggerResult( const QgsLocatorResult &result )
   }
 
   mapCanvas->flashGeometries( QList< QgsGeometry >() << QgsGeometry::fromPointXY( point ) );
+}
+
+
+void QgsGotoLocatorFilter::openConfigWidget( QWidget *parent )
+{
+  QString key = "locator_filters/go_to_coordinate";
+  QgsSettings settings;
+  std::unique_ptr<QDialog> dlg( new QDialog( parent ) );
+  dlg->restoreGeometry( settings.value( QStringLiteral( "Windows/%1/geometry" ).arg( key ) ).toByteArray() );
+  dlg->setWindowTitle( tr( "Go To Coordinate Locator" ) );
+  QFormLayout *formLayout = new QFormLayout;
+
+  QgsProjectionSelectionWidget *crsSelection = new QgsProjectionSelectionWidget( dlg.get() );
+  if ( settings.value( QStringLiteral( "%1/extra_crs" ).arg( key ), QVariant( false ), QgsSettings::App ) == QVariant( false ) )
+  {
+    crsSelection->setNotSetText( tr( "Not set. Please select one..." ) );
+    crsSelection->setOptionVisible( QgsProjectionSelectionWidget::CrsOption::CrsNotSet, true );
+  }
+  else
+  {
+    crsSelection->setCrs( QgsCoordinateReferenceSystem( settings.value( QStringLiteral( "%1/extra_crs" ).arg( key ), QStringLiteral( "EPSG:4326" ), QgsSettings::App ).toString() ) );
+  }
+  crsSelection->setMinimumSize( 350, 5 );
+
+  formLayout->addRow( new QLabel( tr( "Using Project and Layer Crs's" ) ) );
+  formLayout->addRow( tr( "&Select Extra Crs:" ), crsSelection );
+
+  QDialogButtonBox *buttonbBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, dlg.get() );
+  formLayout->addRow( buttonbBox );
+  dlg->setLayout( formLayout );
+  connect( buttonbBox, &QDialogButtonBox::accepted, [&]()
+  {
+    settings.setValue( QStringLiteral( "%1/extra_crs" ).arg( key ), crsSelection->crs().authid(), QgsSettings::App );
+    dlg->accept();
+  } );
+  connect( buttonbBox, &QDialogButtonBox::rejected, dlg.get(), &QDialog::reject );
+
+  dlg->exec();
 }
