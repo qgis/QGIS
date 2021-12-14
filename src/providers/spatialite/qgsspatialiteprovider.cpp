@@ -933,7 +933,7 @@ void QgsSpatiaLiteProvider::fetchConstraints()
 
     QString sqlDef = QString::fromUtf8( results[ 1 ] );
     // extract definition
-    QRegularExpression re( QStringLiteral( R"raw(\((.*)\))raw" ) );
+    QRegularExpression re( QStringLiteral( R"raw(\((.+)\))raw" ) );
     QRegularExpressionMatch match = re.match( sqlDef );
     if ( match.hasMatch() )
     {

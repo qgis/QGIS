@@ -10,16 +10,16 @@ __author__ = 'Vincent Mora'
 __date__ = '09/07/2013'
 __copyright__ = 'Copyright 2013, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 import re
-import sys
 import shutil
+import sys
 import tempfile
-from osgeo import ogr
 from datetime import datetime
 
+import qgis  # NOQA
+from osgeo import ogr
+from qgis.PyQt.QtCore import QVariant, QByteArray
 from qgis.core import (QgsProviderRegistry,
                        QgsDataSourceUri,
                        QgsVectorLayer,
@@ -36,13 +36,11 @@ from qgis.core import (QgsProviderRegistry,
                        QgsRectangle,
                        QgsVectorLayerExporter,
                        QgsWkbTypes)
-
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
-from providertestbase import ProviderTestCase
-from qgis.PyQt.QtCore import QObject, QVariant, QByteArray
-
 from qgis.utils import spatialite_connect
+
+from providertestbase import ProviderTestCase
+from utilities import unitTestDataPath
 
 # Pass no_exit=True: for some reason this crashes sometimes on exit on Travis
 start_app(True)
@@ -452,6 +450,14 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(layer.splitFeatures(
             [QgsPointXY(-0.5, 0.5), QgsPointXY(1.5, 0.5)], 0), 0)
         self.assertTrue(layer.commitChanges())
+
+    def test_crash_on_constraint_detection(self):
+        """
+        Test that constraint detection does not crash
+        """
+        # should be no crash!
+        QgsVectorLayer("dbname={} table=KNN".format(TEST_DATA_DIR + '/views_test.sqlite'), "KNN",
+                       "spatialite")
 
     def test_queries(self):
         """Test loading of query-based layers"""
