@@ -449,7 +449,7 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
            <widget class="QComboBox" name="mLimitsComboBox"/>
           </item>
           <item row="1" column="0">
-           <widget class="QLabel" name="label_15">
+           <widget class="QLabel" name="mLimitsLabel">
             <property name="text">
              <string>Limits</string>
             </property>
