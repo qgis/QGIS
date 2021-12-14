@@ -1236,7 +1236,7 @@ void QgsAttributeForm::registerContainerInformation( QgsAttributeForm::Container
 
 bool QgsAttributeForm::currentFormValidConstraints( QStringList &invalidFields, QStringList &descriptions ) const
 {
-  bool valid( true );
+  bool valid{ true };
 
   for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
@@ -1260,7 +1260,7 @@ bool QgsAttributeForm::currentFormValidConstraints( QStringList &invalidFields, 
 
 bool QgsAttributeForm::currentFormValidHardConstraints( QStringList &invalidFields, QStringList &descriptions ) const
 {
-  bool valid( true );
+  bool valid{ true };
 
   for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
