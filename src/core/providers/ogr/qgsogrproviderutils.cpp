@@ -2579,9 +2579,9 @@ bool QgsOgrProviderUtils::saveConnection( const QString &path, const QString &og
     if ( ok && ! connName.isEmpty() )
     {
       QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
-      QgsGeoPackageProviderConnection *providerConnection =  static_cast<QgsGeoPackageProviderConnection *>( providerMetadata->createConnection( connName ) );
+      std::unique_ptr< QgsGeoPackageProviderConnection > providerConnection( qgis::down_cast<QgsGeoPackageProviderConnection *>( providerMetadata->createConnection( connName ) ) );
       providerConnection->setUri( path );
-      providerMetadata->saveConnection( providerConnection, connName );
+      providerMetadata->saveConnection( providerConnection.get(), connName );
       return true;
     }
   }

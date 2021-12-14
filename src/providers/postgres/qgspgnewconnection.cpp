@@ -189,10 +189,10 @@ void QgsPgNewConnection::accept()
   configuration.insert( "projectsInDatabase", cb_projectsInDatabase->isChecked() );
 
   QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) );
-  QgsPostgresProviderConnection *providerConnection =  static_cast<QgsPostgresProviderConnection *>( providerMetadata->createConnection( txtName->text() ) );
+  std::unique_ptr< QgsPostgresProviderConnection > providerConnection( qgis::down_cast<QgsPostgresProviderConnection *>( providerMetadata->createConnection( txtName->text() ) ) );
   providerConnection->setUri( QgsPostgresConn::connUri( txtName->text() ).uri( false ) );
   providerConnection->setConfiguration( configuration );
-  providerMetadata->saveConnection( providerConnection, txtName->text() );
+  providerMetadata->saveConnection( providerConnection.get(), txtName->text() );
 
   QDialog::accept();
 }
