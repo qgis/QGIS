@@ -1328,6 +1328,13 @@ Qgis.FieldDomainType.__doc__ = 'Types of field domain\n\n.. versionadded:: 3.26\
 # --
 Qgis.FieldDomainType.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.TransactionMode.None.__doc__ = ""
+Qgis.TransactionMode.AutomaticGroups.__doc__ = ""
+Qgis.TransactionMode.BufferedGroups.__doc__ = ""
+Qgis.TransactionMode.__doc__ = 'BufferedGroups = 2, /*!< Buffered transactional editing means that all editable layers in the\nbuffered transaction group are toggled synchronously and all edits are\nsaved in a local edit buffer. Saving changes is executed within a single\ntransaction on all layers (per provider). *\n\n' + '* ``None``: ' + Qgis.TransactionMode.None.__doc__ + '\n' + '* ``AutomaticGroups``: ' + Qgis.TransactionMode.AutomaticGroups.__doc__ + '\n' + '* ``BufferedGroups``: ' + Qgis.TransactionMode.BufferedGroups.__doc__
+# --
+Qgis.TransactionMode.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.AltitudeClamping.Absolute.__doc__ = "Elevation is taken directly from feature and is independent of terrain height (final elevation = feature elevation)"
 Qgis.AltitudeClamping.Relative.__doc__ = "Elevation is relative to terrain height (final elevation = terrain elevation + feature elevation)"
 Qgis.AltitudeClamping.Terrain.__doc__ = "Elevation is clamped to terrain (final elevation = terrain elevation)"

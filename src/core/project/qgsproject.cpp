@@ -820,7 +820,7 @@ void QgsProject::clear()
   mSaveVersion = QgsProjectVersion();
   mHomePath.clear();
   mCachedHomePath.clear();
-  mAutoTransaction = false;
+  mTransactionMode = Qgis::TransactionMode::None;
   mEvaluateDefaultValues = false;
   mDirty = false;
   mTrustLayerMetadata = false;
@@ -1586,11 +1586,20 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   }
   emit metadataChanged();
 
-  element = doc->documentElement().firstChildElement( QStringLiteral( "autotransaction" ) );
-  if ( ! element.isNull() )
+  // Transaction mode
+  element = doc->documentElement().firstChildElement( QStringLiteral( "transaction-mode" ) );
+  if ( !element.isNull() )
   {
-    if ( element.attribute( QStringLiteral( "active" ), QStringLiteral( "0" ) ).toInt() == 1 )
-      mAutoTransaction = true;
+    mTransactionMode = static_cast<Qgis::TransactionMode>( element.attribute( QStringLiteral( "active" ), QStringLiteral( "0" ) ).toInt() );
+  }
+  else
+  {
+    // maybe older project => try read autotransaction
+    element = doc->documentElement().firstChildElement( QStringLiteral( "autotransaction" ) );
+    if ( ! element.isNull() )
+    {
+      mTransactionMode = static_cast<Qgis::TransactionMode>( element.attribute( QStringLiteral( "active" ), QStringLiteral( "0" ) ).toInt() );
+    }
   }
 
   element = doc->documentElement().firstChildElement( QStringLiteral( "evaluateDefaultValues" ) );
@@ -2068,7 +2077,7 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer *> &layers )
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( vlayer )
       {
-        if ( autoTransaction() )
+        if ( transactionMode() == Qgis::TransactionMode::AutomaticGroups )
         {
           if ( QgsTransaction::supportsTransaction( vlayer ) )
           {
@@ -2310,8 +2319,8 @@ bool QgsProject::writeProjectFile( const QString &filename )
   QDomElement titleNode = doc->createElement( QStringLiteral( "title" ) );
   qgisNode.appendChild( titleNode );
 
-  QDomElement transactionNode = doc->createElement( QStringLiteral( "autotransaction" ) );
-  transactionNode.setAttribute( QStringLiteral( "active" ), mAutoTransaction ? 1 : 0 );
+  QDomElement transactionNode = doc->createElement( QStringLiteral( "transaction-mode" ) );
+  transactionNode.setAttribute( QStringLiteral( "active" ), QString::number( static_cast<int>( mTransactionMode ) ) );
   qgisNode.appendChild( transactionNode );
 
   QDomElement evaluateDefaultValuesNode = doc->createElement( QStringLiteral( "evaluateDefaultValues" ) );
@@ -3302,20 +3311,47 @@ QStringList QgsProject::nonIdentifiableLayers() const
 
 bool QgsProject::autoTransaction() const
 {
-  return mAutoTransaction;
+  return mTransactionMode == Qgis::TransactionMode::AutomaticGroups;
 }
 
 void QgsProject::setAutoTransaction( bool autoTransaction )
 {
-  if ( autoTransaction != mAutoTransaction )
-  {
-    mAutoTransaction = autoTransaction;
+  if ( autoTransaction
+       && mTransactionMode == Qgis::TransactionMode::AutomaticGroups )
+    return;
 
-    if ( autoTransaction )
-      onMapLayersAdded( mapLayers().values() );
-    else
-      cleanTransactionGroups( true );
+  if ( ! autoTransaction
+       && mTransactionMode == Qgis::TransactionMode::None )
+    return;
+
+  if ( autoTransaction )
+  {
+    mTransactionMode = Qgis::TransactionMode::AutomaticGroups;
+    onMapLayersAdded( mapLayers().values() );
   }
+  else
+  {
+    mTransactionMode = Qgis::TransactionMode::None;
+    cleanTransactionGroups( true );
+  }
+}
+
+Qgis::TransactionMode QgsProject::transactionMode() const
+{
+  return mTransactionMode;
+}
+
+void QgsProject::setTransactionMode( Qgis::TransactionMode transactionMode )
+{
+  if ( transactionMode == mTransactionMode )
+    return;
+
+  mTransactionMode = transactionMode;
+
+  if ( mTransactionMode == Qgis::TransactionMode::AutomaticGroups )
+    onMapLayersAdded( mapLayers().values() );
+  else
+    cleanTransactionGroups( true );
 }
 
 QMap<QPair<QString, QString>, QgsTransactionGroup *> QgsProject::transactionGroups()

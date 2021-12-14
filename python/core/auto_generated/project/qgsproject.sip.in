@@ -847,16 +847,19 @@ Gets the list of layers which currently should not be taken into account on map 
    use :py:func:`QgsMapLayer.setFlags()` instead
 %End
 
-    bool autoTransaction() const;
+ bool autoTransaction() const /Deprecated/;
 %Docstring
 Transactional editing means that on supported datasources (postgres databases) the edit state of
 all tables that originate from the same database are synchronized and executed in a server side
 transaction.
 
 .. versionadded:: 2.16
+
+.. deprecated::
+   QGIS 3.24 use transactionMode instead
 %End
 
-    void setAutoTransaction( bool autoTransaction );
+ void setAutoTransaction( bool autoTransaction ) /Deprecated/;
 %Docstring
 Transactional editing means that on supported datasources (postgres databases) the edit state of
 all tables that originate from the same database are synchronized and executed in a server side
@@ -865,6 +868,29 @@ transaction.
 Make sure that this is only called when all layers are not in edit mode.
 
 .. versionadded:: 2.16
+
+.. deprecated::
+   QGIS 3.24 use setTransactionMode instead
+%End
+
+    Qgis::TransactionMode transactionMode() const;
+%Docstring
+Returns the transaction mode
+
+.. seealso:: Qgis.TransactionMode
+
+.. versionadded:: 3.24
+%End
+
+    void setTransactionMode( Qgis::TransactionMode transactionMode );
+%Docstring
+Set transaction mode
+
+Make sure that this is only called when all layers are not in edit mode.
+
+.. seealso:: Qgis.TransactionMode
+
+.. versionadded:: 3.24
 %End
 
 
