@@ -1277,6 +1277,26 @@ class CORE_EXPORT Qgis
     Q_ENUM( CrsDefinitionFormat )
 
     /**
+     * Transaction mode.
+     *
+     * \since QGIS 3.24
+     */
+    enum class TransactionMode : int
+    {
+      None = 0, /*!< Edits are buffered locally and sent to the provider when toggling
+                 * layer editing mode. */
+      AutomaticGroups = 1, /*!< Automatic transactional editing means that on supported datasources
+                            * (postgres databases) the edit state of all tables that originate from
+                            * the same database are synchronized and executed in a server side
+                            * transaction. */
+      BufferedGroups = 2, /*!< Buffered transactional editing means that all editable layers in the
+                           * buffered transaction group are toggled synchronously and all edits are
+                           * saved in a local edit buffer. Saving changes is executed within a single
+                           * transaction on all layers (per provider). */
+    };
+    Q_ENUM( TransactionMode )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

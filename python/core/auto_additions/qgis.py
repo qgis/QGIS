@@ -1211,3 +1211,10 @@ QgsCoordinateReferenceSystem.FormatProj.__doc__ = "Proj string format"
 Qgis.CrsDefinitionFormat.__doc__ = 'CRS definition formats.\n\n.. versionadded:: 3.24\n\n' + '* ``FormatWkt``: ' + Qgis.CrsDefinitionFormat.Wkt.__doc__ + '\n' + '* ``FormatProj``: ' + Qgis.CrsDefinitionFormat.Proj.__doc__
 # --
 Qgis.CrsDefinitionFormat.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.TransactionMode.None.__doc__ = ""
+Qgis.TransactionMode.AutomaticGroups.__doc__ = ""
+Qgis.TransactionMode.BufferedGroups.__doc__ = ""
+Qgis.TransactionMode.__doc__ = 'BufferedGroups = 2, /*!< Buffered transactional editing means that all editable layers in the\nbuffered transaction group are toggled synchronously and all edits are\nsaved in a local edit buffer. Saving changes is executed within a single\ntransaction on all layers (per provider). *\n\n' + '* ``None``: ' + Qgis.TransactionMode.None.__doc__ + '\n' + '* ``AutomaticGroups``: ' + Qgis.TransactionMode.AutomaticGroups.__doc__ + '\n' + '* ``BufferedGroups``: ' + Qgis.TransactionMode.BufferedGroups.__doc__
+# --
+Qgis.TransactionMode.baseClass = Qgis

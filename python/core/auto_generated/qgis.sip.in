@@ -779,6 +779,13 @@ The development version
       Proj,
     };
 
+    enum class TransactionMode
+    {
+      None,
+      AutomaticGroups,
+      BufferedGroups,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

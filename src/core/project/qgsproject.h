@@ -890,8 +890,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * transaction.
      *
      * \since QGIS 2.16
+     * \deprecated QGIS 3.24 use transactionMode instead
      */
-    bool autoTransaction() const;
+    Q_DECL_DEPRECATED bool autoTransaction() const SIP_DEPRECATED;
 
     /**
      * Transactional editing means that on supported datasources (postgres databases) the edit state of
@@ -901,8 +902,27 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Make sure that this is only called when all layers are not in edit mode.
      *
      * \since QGIS 2.16
+     * \deprecated QGIS 3.24 use setTransactionMode instead
      */
-    void setAutoTransaction( bool autoTransaction );
+    Q_DECL_DEPRECATED void setAutoTransaction( bool autoTransaction ) SIP_DEPRECATED;
+
+    /**
+     * Returns the transaction mode
+     *
+     * \see Qgis::TransactionMode
+     * \since QGIS 3.24
+     */
+    Qgis::TransactionMode transactionMode() const;
+
+    /**
+     * Set transaction mode
+     *
+     * Make sure that this is only called when all layers are not in edit mode.
+     *
+     * \see Qgis::TransactionMode
+     * \since QGIS 3.24
+     */
+    void setTransactionMode( Qgis::TransactionMode transactionMode );
 
     /**
      * Map of transaction groups
@@ -2107,7 +2127,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QColor mSelectionColor;
 
     mutable QgsProjectPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable
-    bool mAutoTransaction = false;       // transaction grouped editing
+    Qgis::TransactionMode mTransactionMode = Qgis::TransactionMode::None; // transaction grouped editing
     bool mEvaluateDefaultValues = false; // evaluate default values immediately
     QgsCoordinateReferenceSystem mCrs;
     bool mDirty = false;                 // project has been modified since it has been read or saved

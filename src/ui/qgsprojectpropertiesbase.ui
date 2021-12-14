@@ -1472,18 +1472,8 @@
           </layout>
          </widget>
          <widget class="QWidget" name="mTab_DataSources">
-          <layout class="QFormLayout" name="formLayout">
-           <item row="0" column="0" colspan="2">
-            <widget class="QCheckBox" name="mAutoTransaction">
-             <property name="toolTip">
-              <string>When enabled, layers from the same database connection will be put into a transaction group. Their edit state will be synchronized and changes to these layers will be sent to the provider immediately. Only supported for postgres, GPKG, spatialite and oracle.</string>
-             </property>
-             <property name="text">
-              <string>Automatically create transaction groups where possible</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0" colspan="2">
+          <layout class="QGridLayout" name="gridLayout_2">
+           <item row="1" column="0" colspan="3">
             <widget class="QCheckBox" name="mEvaluateDefaultValues">
              <property name="toolTip">
               <string>When enabled, default values will be evaluated as early as possible. This will fill default values in the add feature form already and not only create them on commit. Only supported for postgres, GPKG, spatialite and oracle.</string>
@@ -1493,7 +1483,14 @@
              </property>
             </widget>
            </item>
-           <item row="3" column="0">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_37">
+             <property name="text">
+              <string>Transaction mode</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0" colspan="3">
             <widget class="QCheckBox" name="mTrustProjectCheckBox">
              <property name="toolTip">
               <string>Speed up project loading by skipping data checks in PostgreSQL layers. Useful in QGIS server context or project with huge database views or materialized views.</string>
@@ -1503,7 +1500,10 @@
              </property>
             </widget>
            </item>
-           <item row="4" column="0" colspan="2">
+           <item row="0" column="1">
+            <widget class="QComboBox" name="mTransactionModeComboBox"/>
+           </item>
+           <item row="3" column="0" colspan="3">
             <widget class="QgsCollapsibleGroupBox" name="groupBox_5">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -1569,6 +1569,19 @@
               </item>
              </layout>
             </widget>
+           </item>
+           <item row="0" column="2">
+            <spacer name="horizontalSpacer_9">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>
@@ -3332,7 +3345,6 @@
   <tabstop>mButtonPasteColors</tabstop>
   <tabstop>mButtonImportColors</tabstop>
   <tabstop>mButtonExportColors</tabstop>
-  <tabstop>mAutoTransaction</tabstop>
   <tabstop>mEvaluateDefaultValues</tabstop>
   <tabstop>mTrustProjectCheckBox</tabstop>
   <tabstop>mLayerCapabilitiesTree</tabstop>
