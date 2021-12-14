@@ -1701,6 +1701,14 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
         painterUnitOffsetAlongLine = offsetAlongLine / 100 * totalLength;
         break;
     }
+
+    if ( points.isClosed() )
+    {
+      if ( painterUnitOffsetAlongLine > 0 )
+      {
+        painterUnitOffsetAlongLine = std::fmod( painterUnitOffsetAlongLine, totalLength );
+      }
+    }
   }
 
   if ( offsetAlongLineUnit() == QgsUnitTypes::RenderMetersInMapUnits && rc.flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
@@ -1871,6 +1879,13 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
       case QgsUnitTypes::RenderPercentage:
         offsetAlongLine = offsetAlongLine / 100 * totalLength;
         break;
+    }
+    if ( points.isClosed() )
+    {
+      if ( offsetAlongLine > 0 )
+      {
+        offsetAlongLine = std::fmod( offsetAlongLine, totalLength );
+      }
     }
   }
 
