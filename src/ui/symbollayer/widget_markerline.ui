@@ -283,6 +283,9 @@
        <property name="decimals">
         <number>6</number>
        </property>
+       <property name="minimum">
+        <double>-10000000.000000000000000</double>
+       </property>
        <property name="maximum">
         <double>10000000.000000000000000</double>
        </property>
@@ -397,14 +400,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>
