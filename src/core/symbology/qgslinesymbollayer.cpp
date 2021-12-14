@@ -1685,7 +1685,6 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
 
   if ( !qgsDoubleNear( offsetAlongLine, 0 ) )
   {
-    totalLength = QgsSymbolLayerUtils::polylineLength( points );
     switch ( offsetAlongLineUnit() )
     {
       case QgsUnitTypes::RenderMillimeters:
@@ -1698,6 +1697,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
         painterUnitOffsetAlongLine = rc.convertToPainterUnits( offsetAlongLine, offsetAlongLineUnit(), offsetAlongLineMapUnitScale() );
         break;
       case QgsUnitTypes::RenderPercentage:
+        totalLength = QgsSymbolLayerUtils::polylineLength( points );
         painterUnitOffsetAlongLine = offsetAlongLine / 100 * totalLength;
         break;
     }
@@ -1706,10 +1706,14 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
     {
       if ( painterUnitOffsetAlongLine > 0 )
       {
+        if ( totalLength < 0 )
+          totalLength = QgsSymbolLayerUtils::polylineLength( points );
         painterUnitOffsetAlongLine = std::fmod( painterUnitOffsetAlongLine, totalLength );
       }
       else if ( painterUnitOffsetAlongLine < 0 )
       {
+        if ( totalLength < 0 )
+          totalLength = QgsSymbolLayerUtils::polylineLength( points );
         painterUnitOffsetAlongLine = totalLength - std::fmod( -painterUnitOffsetAlongLine, totalLength );
       }
     }
@@ -1866,8 +1870,6 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
   double totalLength = -1;
   if ( !qgsDoubleNear( offsetAlongLine, 0.0 ) )
   {
-    totalLength = QgsSymbolLayerUtils::polylineLength( points );
-
     //scale offset along line
     switch ( offsetAlongLineUnit() )
     {
@@ -1881,6 +1883,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
         offsetAlongLine = rc.convertToPainterUnits( offsetAlongLine, offsetAlongLineUnit(), offsetAlongLineMapUnitScale() );
         break;
       case QgsUnitTypes::RenderPercentage:
+        totalLength = QgsSymbolLayerUtils::polylineLength( points );
         offsetAlongLine = offsetAlongLine / 100 * totalLength;
         break;
     }
@@ -1888,10 +1891,14 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
     {
       if ( offsetAlongLine > 0 )
       {
+        if ( totalLength < 0 )
+          totalLength = QgsSymbolLayerUtils::polylineLength( points );
         offsetAlongLine = std::fmod( offsetAlongLine, totalLength );
       }
       else if ( offsetAlongLine < 0 )
       {
+        if ( totalLength < 0 )
+          totalLength = QgsSymbolLayerUtils::polylineLength( points );
         offsetAlongLine = totalLength - std::fmod( -offsetAlongLine, totalLength );
       }
     }
