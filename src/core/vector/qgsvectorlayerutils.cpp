@@ -384,7 +384,7 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer *layer, const 
 
   QgsFields fields = layer->fields();
   QgsField field = fields.at( attributeIndex );
-  QVariant value = feature.attribute( attributeIndex );
+  const QVariant value = feature.attribute( attributeIndex );
   bool valid = true;
   errors.clear();
 

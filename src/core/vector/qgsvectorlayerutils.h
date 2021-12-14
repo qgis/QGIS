@@ -169,7 +169,7 @@ class CORE_EXPORT QgsVectorLayerUtils
     static QVariant createUniqueValueFromCache( const QgsVectorLayer *layer, int fieldIndex, const QSet<QVariant> &existingValues, const QVariant &seed = QVariant() );
 
     /**
-     * Tests an attribute value to check whether it passes all constraints which are present on the corresponding field.
+     * Tests a feature attribute value to check whether it passes all constraints which are present on the corresponding field.
      * Returns TRUE if the attribute value is valid for the field. Any constraint failures will be reported in the errors argument.
      * If the strength or origin parameter is set then only constraints with a matching strength/origin will be checked.
      */
