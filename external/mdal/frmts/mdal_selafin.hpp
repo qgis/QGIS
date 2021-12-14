@@ -49,8 +49,8 @@ namespace MDAL
       //! Populates the mesh with dataset from the file
       static void populateDataset( Mesh *mesh, const std::string &fileName );
 
-      //! Read the header of the file and return the project name
-      std::string readHeader();
+      //! Extracts data related to the mesh frame for the file
+      void parseMeshFrame();
 
       //! Add the dataset group to the file (persist), replace dataset in the new group by Selafindataset with lazy loading
       bool addDatasetGroup( DatasetGroup *datasetGroup );
@@ -60,7 +60,10 @@ namespace MDAL
       //! Initializes and open the file file with the \a fileName
       void initialize();
 
-      //! Extracts data from files
+      //! Reads the header of the file and return the project name
+      std::string readHeader();
+
+      //! Extracts data from the file
       void parseFile();
 
       //! Returns the vertices count in the mesh stored in the file
