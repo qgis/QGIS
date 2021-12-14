@@ -1708,6 +1708,10 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
       {
         painterUnitOffsetAlongLine = std::fmod( painterUnitOffsetAlongLine, totalLength );
       }
+      else if ( painterUnitOffsetAlongLine < 0 )
+      {
+        painterUnitOffsetAlongLine = totalLength - std::fmod( -painterUnitOffsetAlongLine, totalLength );
+      }
     }
   }
 
@@ -1885,6 +1889,10 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
       if ( offsetAlongLine > 0 )
       {
         offsetAlongLine = std::fmod( offsetAlongLine, totalLength );
+      }
+      else if ( offsetAlongLine < 0 )
+      {
+        offsetAlongLine = totalLength - std::fmod( -offsetAlongLine, totalLength );
       }
     }
   }
