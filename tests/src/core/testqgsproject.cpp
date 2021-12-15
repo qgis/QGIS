@@ -812,6 +812,13 @@ void TestQgsProject::testAttachmentsQgs()
     QVERIFY( p2.attachedFiles().size() == 1 );
     QVERIFY( p2.mapLayers().size() == 1 );
     QVERIFY( p2.mapLayer( p2.mapLayers().firstKey() )->source() == p2.attachedFiles().first() );
+
+    // Verify that attachment file is removed when layer is deleted
+    QgsMapLayer *p2layer = p2.mapLayer( p2.mapLayers().firstKey() );
+    QString path = p2layer->source();
+    QVERIFY( QFile( path ).exists() );
+    p2.removeMapLayer( p2layer->id() );
+    QVERIFY( !QFile( path ).exists() );
   }
 
 }
@@ -882,6 +889,13 @@ void TestQgsProject::testAttachmentsQgz()
     QVERIFY( p2.attachedFiles().size() == 1 );
     QVERIFY( p2.mapLayers().size() == 1 );
     QVERIFY( p2.mapLayer( p2.mapLayers().firstKey() )->source() == p2.attachedFiles().first() );
+
+    // Verify that attachment file is removed when layer is deleted
+    QgsMapLayer *p2layer = p2.mapLayer( p2.mapLayers().firstKey() );
+    QString path = p2layer->source();
+    QVERIFY( QFile( path ).exists() );
+    p2.removeMapLayer( p2layer->id() );
+    QVERIFY( !QFile( path ).exists() );
   }
 
 }
