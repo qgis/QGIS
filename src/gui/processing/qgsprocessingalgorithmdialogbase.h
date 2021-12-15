@@ -81,7 +81,7 @@ class QgsProcessingAlgorithmDialogFeedback : public QgsProcessingFeedback
  * \note This is not considered stable API and may change in future QGIS versions.
  * \since QGIS 3.0
  */
-class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsProcessingParametersGenerator, private Ui::QgsProcessingDialogBase
+class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsProcessingParametersGenerator, public QgsProcessingContextGenerator, private Ui::QgsProcessingDialogBase
 {
     Q_OBJECT
 

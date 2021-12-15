@@ -11,7 +11,7 @@
 
 
 
-class QgsProcessingAlgorithmDialogBase : QDialog, QgsProcessingParametersGenerator
+class QgsProcessingAlgorithmDialogBase : QDialog, QgsProcessingParametersGenerator, QgsProcessingContextGenerator
 {
 %Docstring(signature="appended")
 Base class for processing algorithm dialogs.

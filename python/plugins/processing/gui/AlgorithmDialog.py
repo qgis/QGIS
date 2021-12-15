@@ -38,7 +38,8 @@ from qgis.core import (Qgis,
                        QgsProcessingFeatureSourceDefinition)
 from qgis.gui import (QgsGui,
                       QgsProcessingAlgorithmDialogBase,
-                      QgsProcessingParametersGenerator)
+                      QgsProcessingParametersGenerator,
+                      QgsProcessingContextGenerator)
 from qgis.utils import iface
 
 from processing.core.ProcessingLog import ProcessingLog
@@ -154,6 +155,13 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         except AlgorithmDialogBase.InvalidOutputExtension as e:
             self.flag_invalid_output_extension(e.message, e.widget)
         return {}
+
+    def processingContext(self):
+        if self.context is None:
+            self.feedback = self.createFeedback()
+            self.context = dataobjects.createContext(self.feedback)
+            self.context.setLogLevel(self.logLevel())
+        return self.context
 
     def runAlgorithm(self):
         self.feedback = self.createFeedback()
