@@ -865,7 +865,9 @@ Transactional editing means that on supported datasources (postgres databases) t
 all tables that originate from the same database are synchronized and executed in a server side
 transaction.
 
-Make sure that this is only called when all layers are not in edit mode.
+.. warning::
+
+   Make sure that this is only called when all layers are not in edit mode.
 
 .. versionadded:: 2.16
 
@@ -886,7 +888,9 @@ Returns the transaction mode
 %Docstring
 Set transaction mode
 
-Make sure that this is only called when all layers are not in edit mode.
+.. warning::
+
+   Make sure that this is only called when all layers are not in edit mode.
 
 .. seealso:: Qgis.TransactionMode
 

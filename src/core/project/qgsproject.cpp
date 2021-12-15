@@ -819,7 +819,7 @@ void QgsProject::clear()
   mSaveVersion = QgsProjectVersion();
   mHomePath.clear();
   mCachedHomePath.clear();
-  mTransactionMode = Qgis::TransactionMode::None;
+  mTransactionMode = Qgis::TransactionMode::Disabled;
   mEvaluateDefaultValues = false;
   mDirty = false;
   mTrustLayerMetadata = false;
@@ -1578,10 +1578,10 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   emit metadataChanged();
 
   // Transaction mode
-  element = doc->documentElement().firstChildElement( QStringLiteral( "transaction-mode" ) );
+  element = doc->documentElement().firstChildElement( QStringLiteral( "transaction" ) );
   if ( !element.isNull() )
   {
-    mTransactionMode = static_cast<Qgis::TransactionMode>( element.attribute( QStringLiteral( "active" ), QStringLiteral( "0" ) ).toInt() );
+    mTransactionMode = qgsEnumKeyToValue( element.attribute( QStringLiteral( "mode" ) ), Qgis::TransactionMode::Disabled );
   }
   else
   {
@@ -2310,8 +2310,8 @@ bool QgsProject::writeProjectFile( const QString &filename )
   QDomElement titleNode = doc->createElement( QStringLiteral( "title" ) );
   qgisNode.appendChild( titleNode );
 
-  QDomElement transactionNode = doc->createElement( QStringLiteral( "transaction-mode" ) );
-  transactionNode.setAttribute( QStringLiteral( "active" ), QString::number( static_cast<int>( mTransactionMode ) ) );
+  QDomElement transactionNode = doc->createElement( QStringLiteral( "transaction" ) );
+  transactionNode.setAttribute( QStringLiteral( "mode" ), qgsEnumValueToKey( mTransactionMode ) );
   qgisNode.appendChild( transactionNode );
 
   QDomElement evaluateDefaultValuesNode = doc->createElement( QStringLiteral( "evaluateDefaultValues" ) );
@@ -3312,7 +3312,7 @@ void QgsProject::setAutoTransaction( bool autoTransaction )
     return;
 
   if ( ! autoTransaction
-       && mTransactionMode == Qgis::TransactionMode::None )
+       && mTransactionMode == Qgis::TransactionMode::Disabled )
     return;
 
   if ( autoTransaction )
@@ -3322,7 +3322,7 @@ void QgsProject::setAutoTransaction( bool autoTransaction )
   }
   else
   {
-    mTransactionMode = Qgis::TransactionMode::None;
+    mTransactionMode = Qgis::TransactionMode::Disabled;
     cleanTransactionGroups( true );
   }
 }
@@ -3339,10 +3339,16 @@ void QgsProject::setTransactionMode( Qgis::TransactionMode transactionMode )
 
   mTransactionMode = transactionMode;
 
-  if ( mTransactionMode == Qgis::TransactionMode::AutomaticGroups )
-    onMapLayersAdded( mapLayers().values() );
-  else
-    cleanTransactionGroups( true );
+  switch ( mTransactionMode )
+  {
+    case Qgis::TransactionMode::Disabled:
+    case Qgis::TransactionMode::BufferedGroups:
+      cleanTransactionGroups( true );
+      break;
+    case Qgis::TransactionMode::AutomaticGroups:
+      onMapLayersAdded( mapLayers().values() );
+      break;
+  }
 }
 
 QMap<QPair<QString, QString>, QgsTransactionGroup *> QgsProject::transactionGroups()
