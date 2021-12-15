@@ -1738,9 +1738,14 @@ static QVariant fcnRepresentAttributes( const QVariantList &values, const QgsExp
     {
       feature = QgsExpressionUtils::getFeature( values.at( 0 ), parent );
     }
-    else if ( context )
+    else if ( context && context->hasFeature() )
     {
       feature = context->feature();
+    }
+    else
+    {
+      parent->setEvalErrorString( QObject::tr( "Cannot use represent attributes function in this context: feature is not set" ) );
+      return QVariant();
     }
 
     if ( ! values.at( 1 ).isNull() )
@@ -1756,13 +1761,6 @@ static QVariant fcnRepresentAttributes( const QVariantList &values, const QgsExp
       parent->setEvalErrorString( QObject::tr( "Cannot use represent attributes function: layer is not set" ) );
       return QVariant();
     }
-  }
-
-  // Check if it's a default constructed feature possibly coming from the contex
-  if ( ! feature.isValid() && feature.attributeCount() == 0 && feature.id() == FID_NULL )
-  {
-    parent->setEvalErrorString( QObject::tr( "Cannot use represent attributes function: feature is not set" ) );
-    return QVariant();
   }
 
   if ( !layer )

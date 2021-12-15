@@ -579,13 +579,9 @@ class TestQgsExpression: public QObject
       QCOMPARE( context3.cachedValue( QStringLiteral( "repvalfcnval:%1:%2:%3" ).arg( layer.id(), QStringLiteral( "col1" ), QStringLiteral( "2" ) ) ).toString(),  QStringLiteral( "two" ) );
 
       // Test errors
+      QgsProject::instance()->removeMapLayer( layer.id() );
       expression = QgsExpression( "represent_attributes($currentfeature, 'test_represent_attributes')" );
       QgsExpressionContext context4;
-      result = expression.evaluate( &context4 ).toMap();
-      QVERIFY( expression.hasEvalError() );
-
-      context4.setFeature( f2 );
-      QgsProject::instance()->removeMapLayer( layer.id() );
       result = expression.evaluate( &context4 ).toMap();
       QVERIFY( expression.hasEvalError() );
 
