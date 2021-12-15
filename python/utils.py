@@ -912,30 +912,63 @@ if not os.environ.get('QGIS_NO_OVERRIDE_IMPORT'):
         __builtin__.__import__ = _import
 
 
-def run_script_from_file(filepath: str):
+def processing_algorithm_from_script(filepath: str):
     """
-    Runs a Python script from a given file. Supports loading processing scripts.
-    :param filepath: The .py file to load.
+    Tries to import a Python processing algorithm from given file, and returns an instance
+    of the algorithm
     """
     import sys
     import inspect
     from qgis.processing import alg
     try:
         from qgis.core import QgsApplication, QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm
-        from qgis.processing import execAlgorithmDialog
         _locals = {}
-        exec(open(filepath.replace("\\\\", "/").encode(sys.getfilesystemencoding())).read(), _locals)
-        alginstance = None
+        with open(filepath.replace("\\\\", "/").encode(sys.getfilesystemencoding())) as input_file:
+            exec(input_file.read(), _locals)
+        alg_instance = None
         try:
-            alginstance = alg.instances.pop().createInstance()
+            alg_instance = alg.instances.pop().createInstance()
         except IndexError:
             for name, attr in _locals.items():
                 if inspect.isclass(attr) and issubclass(attr, (QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm)) and attr.__name__ not in ("QgsProcessingAlgorithm", "QgsProcessingFeatureBasedAlgorithm"):
-                    alginstance = attr()
+                    alg_instance = attr()
                     break
-        if alginstance:
-            alginstance.setProvider(QgsApplication.processingRegistry().providerById("script"))
-            alginstance.initAlgorithm()
-            execAlgorithmDialog(alginstance)
+        if alg_instance:
+            script_provider = QgsApplication.processingRegistry().providerById("script")
+            alg_instance.setProvider(script_provider)
+            alg_instance.initAlgorithm()
+            return alg_instance
     except ImportError:
         pass
+
+    return None
+
+
+def import_script_algorithm(filepath: str) -> Optional[str]:
+    """
+    Imports a script algorithm from given file to the processing script provider, and returns the
+    ID of the imported algorithm
+    """
+    alg_instance = processing_algorithm_from_script(filepath)
+    if alg_instance:
+        from qgis.core import QgsApplication
+        script_provider = QgsApplication.processingRegistry().providerById("script")
+        script_provider.add_algorithm_class(type(alg_instance))
+        return alg_instance.id()
+
+    return None
+
+
+def run_script_from_file(filepath: str):
+    """
+    Runs a Python script from a given file. Supports loading processing scripts.
+    :param filepath: The .py file to load.
+    """
+    try:
+        from qgis.processing import execAlgorithmDialog
+    except ImportError:
+        return
+
+    alg_instance = processing_algorithm_from_script(filepath)
+    if alg_instance:
+        execAlgorithmDialog(alg_instance)
