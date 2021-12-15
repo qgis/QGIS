@@ -347,14 +347,14 @@ int QgsProcessingExec::run( const QStringList &constArgs )
     if ( args.size() == 4 && args.at( 3 ) == '-' )
     {
       // read arguments as JSON value from stdin
-      std::string stdin;
+      std::string stdinJson;
       for ( std::string line; std::getline( std::cin, line ); )
       {
-        stdin.append( line + '\n' );
+        stdinJson.append( line + '\n' );
       }
 
       QString error;
-      const QVariantMap json = QgsJsonUtils::parseJson( stdin, error ).toMap();
+      const QVariantMap json = QgsJsonUtils::parseJson( stdinJson, error ).toMap();
       if ( !error.isEmpty() )
       {
         std::cerr << QStringLiteral( "Could not parse JSON parameters: %1" ).arg( error ).toLocal8Bit().constData() << std::endl;
