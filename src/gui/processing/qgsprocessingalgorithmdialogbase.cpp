@@ -86,8 +86,9 @@ void QgsProcessingAlgorithmDialogFeedback::pushConsoleInfo( const QString &info 
 // QgsProcessingAlgorithmDialogBase
 //
 
-QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *parent, Qt::WindowFlags flags )
+QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *parent, Qt::WindowFlags flags, DialogMode mode )
   : QDialog( parent, flags )
+  , mMode( mode )
 {
   setupUi( this );
 

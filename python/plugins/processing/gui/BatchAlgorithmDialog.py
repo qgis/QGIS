@@ -65,7 +65,7 @@ class BatchFeedback(QgsProcessingMultiStepFeedback):
 class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
     def __init__(self, alg, parent=None):
-        super().__init__(parent)
+        super().__init__(parent, mode=QgsProcessingAlgorithmDialogBase.DialogMode.Batch)
 
         self.setAlgorithm(alg)
 
