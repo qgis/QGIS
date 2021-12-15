@@ -352,6 +352,21 @@ void QgsExpressionBuilderWidget::runPythonCode( const QString &code )
   mExpressionTreeView->refresh();
 }
 
+QgsVectorLayer *QgsExpressionBuilderWidget::contextLayer( const QgsExpressionItem *item ) const
+{
+  QgsVectorLayer *layer = nullptr;
+  if ( ! item->data( QgsExpressionItem::LAYER_ID_ROLE ).isNull() )
+  {
+    layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( item->data( QgsExpressionItem::LAYER_ID_ROLE ).toString() ) );
+  }
+  else
+  {
+    layer = mLayer;
+  }
+  return layer;
+}
+
+
 void QgsExpressionBuilderWidget::saveFunctionFile( QString fileName )
 {
   QDir myDir( mFunctionsPath );
@@ -850,19 +865,18 @@ void QgsExpressionBuilderWidget::operatorButtonClicked()
 void QgsExpressionBuilderWidget::loadSampleValues()
 {
   QgsExpressionItem *item = mExpressionTreeView->currentItem();
+  if ( ! item )
+  {
+    return;
+  }
+
+  QgsVectorLayer *layer { contextLayer( item ) };
   // TODO We should really return a error the user of the widget that
   // the there is no layer set.
-  QgsVectorLayer *layer = nullptr;
-  if ( ! item->data( QgsExpressionItem::LAYER_ID_ROLE ).isNull() )
+  if ( !layer )
   {
-    layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( item->data( QgsExpressionItem::LAYER_ID_ROLE ).toString() ) );
-  }
-  else
-  {
-    layer = mLayer;
-  }
-  if ( !layer || !item )
     return;
+  }
 
   mValueGroupBox->show();
   fillFieldValues( item->data( QgsExpressionItem::ITEM_NAME_ROLE ).toString(), layer, 10 );
@@ -871,19 +885,18 @@ void QgsExpressionBuilderWidget::loadSampleValues()
 void QgsExpressionBuilderWidget::loadAllValues()
 {
   QgsExpressionItem *item = mExpressionTreeView->currentItem();
+  if ( ! item )
+  {
+    return;
+  }
+
+  QgsVectorLayer *layer { contextLayer( item ) };
   // TODO We should really return a error the user of the widget that
   // the there is no layer set.
-  QgsVectorLayer *layer = nullptr;
-  if ( ! item->data( QgsExpressionItem::LAYER_ID_ROLE ).isNull() )
+  if ( !layer )
   {
-    layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( item->data( QgsExpressionItem::LAYER_ID_ROLE ).toString() ) );
-  }
-  else
-  {
-    layer = mLayer;
-  }
-  if ( !layer || !item )
     return;
+  }
 
   mValueGroupBox->show();
   fillFieldValues( item->data( QgsExpressionItem::ITEM_NAME_ROLE ).toString(), layer, -1 );
@@ -892,19 +905,18 @@ void QgsExpressionBuilderWidget::loadAllValues()
 void QgsExpressionBuilderWidget::loadSampleUsedValues()
 {
   QgsExpressionItem *item = mExpressionTreeView->currentItem();
+  if ( ! item )
+  {
+    return;
+  }
+
+  QgsVectorLayer *layer { contextLayer( item ) };
   // TODO We should really return a error the user of the widget that
   // the there is no layer set.
-  QgsVectorLayer *layer = nullptr;
-  if ( ! item->data( QgsExpressionItem::LAYER_ID_ROLE ).isNull() )
+  if ( !layer )
   {
-    layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( item->data( QgsExpressionItem::LAYER_ID_ROLE ).toString() ) );
-  }
-  else
-  {
-    layer = mLayer;
-  }
-  if ( !layer || !item )
     return;
+  }
 
   mValueGroupBox->show();
   fillFieldValues( item->data( QgsExpressionItem::ITEM_NAME_ROLE ).toString(), layer, 10, true );
@@ -913,19 +925,18 @@ void QgsExpressionBuilderWidget::loadSampleUsedValues()
 void QgsExpressionBuilderWidget::loadAllUsedValues()
 {
   QgsExpressionItem *item = mExpressionTreeView->currentItem();
+  if ( ! item )
+  {
+    return;
+  }
+
+  QgsVectorLayer *layer { contextLayer( item ) };
   // TODO We should really return a error the user of the widget that
   // the there is no layer set.
-  QgsVectorLayer *layer = nullptr;
-  if ( ! item->data( QgsExpressionItem::LAYER_ID_ROLE ).isNull() )
+  if ( !layer )
   {
-    layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( item->data( QgsExpressionItem::LAYER_ID_ROLE ).toString() ) );
-  }
-  else
-  {
-    layer = mLayer;
-  }
-  if ( !layer || !item )
     return;
+  }
 
   mValueGroupBox->show();
   fillFieldValues( item->data( QgsExpressionItem::ITEM_NAME_ROLE ).toString(), layer, -1, true );
