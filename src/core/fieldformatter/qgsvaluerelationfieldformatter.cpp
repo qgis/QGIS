@@ -331,8 +331,7 @@ QSet<QString> QgsValueRelationFieldFormatter::expressionParentFormAttributes( co
     QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
     if ( formFunctions.contains( fd->name( ) ) )
     {
-      const QList<QgsExpressionNode *> cExpressionNodes { f->args( )->list() };
-      for ( const auto &param : qgis::as_const( cExpressionNodes ) )
+      for ( const auto &param : f->args( )->list() )
       {
         attributes.insert( param->eval( &exp, &context ).toString() );
       }
@@ -356,8 +355,7 @@ QSet<QString> QgsValueRelationFieldFormatter::expressionFormAttributes( const QS
     QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
     if ( formFunctions.contains( fd->name( ) ) )
     {
-      const QList<QgsExpressionNode *> cExpressionNodes { f->args( )->list() };
-      for ( const auto &param : qgis::as_const( cExpressionNodes ) )
+      for ( const auto &param : f->args( )->list() )
       {
         attributes.insert( param->eval( &exp, &context ).toString() );
       }
@@ -373,7 +371,7 @@ bool QgsValueRelationFieldFormatter::expressionIsUsable( const QString &expressi
   const QSet<QString> attrs = expressionFormAttributes( expression );
   for ( auto it = attrs.constBegin() ; it != attrs.constEnd(); it++ )
   {
-    if ( feature.fieldNameIndex( *it ) < 0 )
+    if ( ! feature.attribute( *it ).isValid() )
       return false;
   }
 
