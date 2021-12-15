@@ -232,6 +232,88 @@ class TestQgsProcessExecutable(unittest.TestCase):
         self.assertTrue(os.path.exists(output_file))
         self.assertEqual(rc, 0)
 
+    def testAlgorithmRunStdInExtraSettings(self):
+        output_file = self.TMP_DIR + '/polygon_centroid_json.shp'
+
+        params = {
+            'inputs': {
+                'INPUT': TEST_DATA_DIR + '/polys.shp',
+                'OUTPUT': output_file
+            },
+            'ellipsoid': 'EPSG:7019',
+            'distance_units': 'feet',
+            'area_units': 'ha',
+            'project_path': TEST_DATA_DIR + '/joins.qgs'
+        }
+
+        rc, output, err = self.run_process_stdin(['run', 'native:centroids', '-'], json.dumps(params))
+
+        res = json.loads(output)
+
+        self.assertIn('gdal_version', res)
+        self.assertIn('geos_version', res)
+        self.assertIn('proj_version', res)
+        self.assertIn('python_version', res)
+        self.assertIn('qt_version', res)
+        self.assertIn('qgis_version', res)
+
+        self.assertEqual(res['algorithm_details']['name'], 'Centroids')
+        self.assertEqual(res['ellipsoid'], 'EPSG:7019')
+        self.assertEqual(res['distance_unit'], 'feet')
+        self.assertEqual(res['area_unit'], 'hectares')
+        self.assertEqual(res['project_path'], TEST_DATA_DIR + '/joins.qgs')
+        self.assertEqual(res['inputs']['INPUT'], TEST_DATA_DIR + '/polys.shp')
+        self.assertEqual(res['inputs']['OUTPUT'], output_file)
+        self.assertEqual(res['results']['OUTPUT'], output_file)
+
+        self.assertTrue(os.path.exists(output_file))
+        self.assertEqual(rc, 0)
+
+    def testAlgorithmRunStdInExtraSettingsBadDistanceUnit(self):
+        output_file = self.TMP_DIR + '/polygon_centroid_json.shp'
+
+        params = {
+            'inputs': {
+                'INPUT': TEST_DATA_DIR + '/polys.shp',
+                'OUTPUT': output_file
+            },
+            'distance_units': 'xxx',
+        }
+
+        rc, output, err = self.run_process_stdin(['run', 'native:centroids', '-'], json.dumps(params))
+        self.assertEqual(rc, 1)
+        self.assertIn('xxx is not a valid distance unit value', err)
+
+    def testAlgorithmRunStdInExtraSettingsBadAreaUnit(self):
+        output_file = self.TMP_DIR + '/polygon_centroid_json.shp'
+
+        params = {
+            'inputs': {
+                'INPUT': TEST_DATA_DIR + '/polys.shp',
+                'OUTPUT': output_file
+            },
+            'area_units': 'xxx',
+        }
+
+        rc, output, err = self.run_process_stdin(['run', 'native:centroids', '-'], json.dumps(params))
+        self.assertEqual(rc, 1)
+        self.assertIn('xxx is not a valid area unit value', err)
+
+    def testAlgorithmRunStdInExtraSettingsBadProjectPath(self):
+        output_file = self.TMP_DIR + '/polygon_centroid_json.shp'
+
+        params = {
+            'inputs': {
+                'INPUT': TEST_DATA_DIR + '/polys.shp',
+                'OUTPUT': output_file
+            },
+            'project_path': 'xxx',
+        }
+
+        rc, output, err = self.run_process_stdin(['run', 'native:centroids', '-'], json.dumps(params))
+        self.assertEqual(rc, 1)
+        self.assertIn('Could not load the QGIS project "xxx"', err)
+
     def testAlgorithmRunStdInMissingInputKey(self):
         output_file = self.TMP_DIR + '/polygon_centroid_json.shp'
 

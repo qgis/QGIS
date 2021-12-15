@@ -369,6 +369,32 @@ int QgsProcessingExec::run( const QStringList &constArgs )
 
       // JSON format for input parameters implies JSON output format
       useJson = true;
+
+      ellipsoid = json.value( QStringLiteral( "ellipsoid" ) ).toString();
+      projectPath = json.value( QStringLiteral( "project_path" ) ).toString();
+      if ( json.contains( "distance_units" ) )
+      {
+        bool ok = false;
+        const QString distanceUnitsString = json.value( QStringLiteral( "distance_units" ) ).toString();
+        distanceUnit = QgsUnitTypes::decodeDistanceUnit( distanceUnitsString, &ok );
+        if ( !ok )
+        {
+          std::cerr << QStringLiteral( "%1 is not a valid distance unit value." ).arg( distanceUnitsString ).toLocal8Bit().constData() << std::endl;
+          return 1;
+        }
+      }
+
+      if ( json.contains( "area_units" ) )
+      {
+        bool ok = false;
+        const QString areaUnitsString = json.value( QStringLiteral( "area_units" ) ).toString();
+        areaUnit = QgsUnitTypes::decodeAreaUnit( areaUnitsString, &ok );
+        if ( !ok )
+        {
+          std::cerr << QStringLiteral( "%1 is not a valid area unit value." ).arg( areaUnitsString ).toLocal8Bit().constData() << std::endl;
+          return 1;
+        }
+      }
     }
     else
     {
@@ -1007,6 +1033,7 @@ int QgsProcessingExec::execute( const QString &inputId, const QVariantMap &param
       return 1;
     }
     QgsProject::setInstance( project.get() );
+    json.insert( QStringLiteral( "project_path" ), projectPath );
   }
 
   if ( !useJson )
@@ -1049,6 +1076,7 @@ int QgsProcessingExec::execute( const QString &inputId, const QVariantMap &param
     else
       json.insert( QStringLiteral( "area_unit" ), QgsUnitTypes::toString( areaUnit ) );
   }
+
 
   QgsProcessingContext context;
   context.setEllipsoid( ellipsoid );
