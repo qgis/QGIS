@@ -36,6 +36,7 @@
 #endif
 
 #include <iostream>
+#include <string>
 #include <QObject>
 #include <QLibrary>
 
