@@ -419,7 +419,8 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void clearFunctionMarkers();
     void clearErrors();
     void runPythonCode( const QString &code );
-    void fillFieldValues( const QString &fieldName, int countLimit, bool forceUsedValues = false );
+    QgsVectorLayer *contextLayer( const QgsExpressionItem *item ) const;
+    void fillFieldValues( const QString &fieldName, QgsVectorLayer *layer, int countLimit, bool forceUsedValues = false );
     QString getFunctionHelp( QgsExpressionFunction *function );
     QString loadFunctionHelp( QgsExpressionItem *functionName );
     QString helpStylesheet() const;

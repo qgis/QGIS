@@ -352,6 +352,21 @@ void QgsExpressionBuilderWidget::runPythonCode( const QString &code )
   mExpressionTreeView->refresh();
 }
 
+QgsVectorLayer *QgsExpressionBuilderWidget::contextLayer( const QgsExpressionItem *item ) const
+{
+  QgsVectorLayer *layer = nullptr;
+  if ( ! item->data( QgsExpressionItem::LAYER_ID_ROLE ).isNull() )
+  {
+    layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( item->data( QgsExpressionItem::LAYER_ID_ROLE ).toString() ) );
+  }
+  else
+  {
+    layer = mLayer;
+  }
+  return layer;
+}
+
+
 void QgsExpressionBuilderWidget::saveFunctionFile( QString fileName )
 {
   QDir myDir( mFunctionsPath );
@@ -507,16 +522,16 @@ void QgsExpressionBuilderWidget::loadFieldsAndValues( const QMap<QString, QStrin
   // This is not maintained and setLayer() should be used instead.
 }
 
-void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int countLimit, bool forceUsedValues )
+void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, QgsVectorLayer *layer, int countLimit, bool forceUsedValues )
 {
   // TODO We should really return a error the user of the widget that
   // the there is no layer set.
-  if ( !mLayer )
+  if ( !layer )
     return;
 
   // TODO We should thread this so that we don't hold the user up if the layer is massive.
 
-  const QgsFields fields = mLayer->fields();
+  const QgsFields fields = layer->fields();
   int fieldIndex = fields.lookupField( fieldName );
 
   if ( fieldIndex < 0 )
@@ -534,7 +549,7 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int 
   }
   else
   {
-    values = qgis::setToList( mLayer->uniqueValues( fieldIndex, countLimit ) );
+    values = qgis::setToList( layer->uniqueValues( fieldIndex, countLimit ) );
   }
   std::sort( values.begin(), values.end() );
 
@@ -564,7 +579,7 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int 
     else
       strValue = '\'' + value.toString().replace( '\'', QLatin1String( "''" ) ) + '\'';
 
-    QString representedValue = formatter->representValue( mLayer, fieldIndex, setup.config(), QVariant(), value );
+    QString representedValue = formatter->representValue( layer, fieldIndex, setup.config(), QVariant(), value );
     if ( forceRepresentedValue || representedValue != value.toString() )
       representedValue = representedValue + QStringLiteral( " [" ) + strValue + ']';
 
@@ -850,49 +865,81 @@ void QgsExpressionBuilderWidget::operatorButtonClicked()
 void QgsExpressionBuilderWidget::loadSampleValues()
 {
   QgsExpressionItem *item = mExpressionTreeView->currentItem();
+  if ( ! item )
+  {
+    return;
+  }
+
+  QgsVectorLayer *layer { contextLayer( item ) };
   // TODO We should really return a error the user of the widget that
   // the there is no layer set.
-  if ( !mLayer || !item )
+  if ( !layer )
+  {
     return;
+  }
 
   mValueGroupBox->show();
-  fillFieldValues( item->data( QgsExpressionItem::ITEM_NAME_ROLE ).toString(), 10 );
+  fillFieldValues( item->data( QgsExpressionItem::ITEM_NAME_ROLE ).toString(), layer, 10 );
 }
 
 void QgsExpressionBuilderWidget::loadAllValues()
 {
   QgsExpressionItem *item = mExpressionTreeView->currentItem();
+  if ( ! item )
+  {
+    return;
+  }
+
+  QgsVectorLayer *layer { contextLayer( item ) };
   // TODO We should really return a error the user of the widget that
   // the there is no layer set.
-  if ( !mLayer || !item )
+  if ( !layer )
+  {
     return;
+  }
 
   mValueGroupBox->show();
-  fillFieldValues( item->data( QgsExpressionItem::ITEM_NAME_ROLE ).toString(), -1 );
+  fillFieldValues( item->data( QgsExpressionItem::ITEM_NAME_ROLE ).toString(), layer, -1 );
 }
 
 void QgsExpressionBuilderWidget::loadSampleUsedValues()
 {
   QgsExpressionItem *item = mExpressionTreeView->currentItem();
+  if ( ! item )
+  {
+    return;
+  }
+
+  QgsVectorLayer *layer { contextLayer( item ) };
   // TODO We should really return a error the user of the widget that
   // the there is no layer set.
-  if ( !mLayer || !item )
+  if ( !layer )
+  {
     return;
+  }
 
   mValueGroupBox->show();
-  fillFieldValues( item->data( QgsExpressionItem::ITEM_NAME_ROLE ).toString(), 10, true );
+  fillFieldValues( item->data( QgsExpressionItem::ITEM_NAME_ROLE ).toString(), layer, 10, true );
 }
 
 void QgsExpressionBuilderWidget::loadAllUsedValues()
 {
   QgsExpressionItem *item = mExpressionTreeView->currentItem();
+  if ( ! item )
+  {
+    return;
+  }
+
+  QgsVectorLayer *layer { contextLayer( item ) };
   // TODO We should really return a error the user of the widget that
   // the there is no layer set.
-  if ( !mLayer || !item )
+  if ( !layer )
+  {
     return;
+  }
 
   mValueGroupBox->show();
-  fillFieldValues( item->data( QgsExpressionItem::ITEM_NAME_ROLE ).toString(), -1, true );
+  fillFieldValues( item->data( QgsExpressionItem::ITEM_NAME_ROLE ).toString(), layer, -1, true );
 }
 
 void QgsExpressionBuilderWidget::txtPython_textChanged()
