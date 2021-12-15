@@ -61,7 +61,7 @@ An interface for objects which can create sets of parameter values for processin
 This method needs to be reimplemented in all classes which implement this interface
 and return a algorithm parameters.
 
-Since QGIS 3.24 the optional ``flags`` argument can be used to control the behaviour
+Since QGIS 3.24 the optional ``flags`` argument can be used to control the behavior
 of the parameter generation.
 %End
 
