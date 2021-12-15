@@ -696,6 +696,7 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId, bool useJson )
 
     alg = model.get();
   }
+#ifdef WITH_BINDINGS
   else if ( mPythonUtils && QFile::exists( id ) && QFileInfo( id ).suffix() == QLatin1String( "py" ) )
   {
     QString res;
@@ -707,6 +708,7 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId, bool useJson )
 
     id = res;
   }
+#endif
 
   if ( !alg )
   {
@@ -898,6 +900,7 @@ int QgsProcessingExec::execute( const QString &inputId, const QVariantMap &param
 
     alg = model.get();
   }
+#ifdef WITH_BINDINGS
   else if ( mPythonUtils && QFile::exists( id ) && QFileInfo( id ).suffix() == QLatin1String( "py" ) )
   {
     QString res;
@@ -909,6 +912,7 @@ int QgsProcessingExec::execute( const QString &inputId, const QVariantMap &param
 
     id = res;
   }
+#endif
 
   if ( !alg )
   {
