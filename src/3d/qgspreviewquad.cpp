@@ -27,7 +27,7 @@
 #include <QVector2D>
 
 QgsPreviewQuad::QgsPreviewQuad( Qt3DRender::QAbstractTexture *texture,
-                                const QPointF &centerNDC, const QSizeF &size,
+                                const QPointF &centerTexCoords, const QSizeF &sizeTexCoords,
                                 QVector<Qt3DRender::QParameter *> additionalShaderParameters,
                                 Qt3DCore::QEntity *parent )
   : Qt3DCore::QEntity( parent )
@@ -62,6 +62,8 @@ QgsPreviewQuad::QgsPreviewQuad( Qt3DRender::QAbstractTexture *texture,
   mMaterial = new QgsPreviewQuadMaterial( texture, additionalShaderParameters );
 
   addComponent( mMaterial );
+
+  setViewPort( centerTexCoords, sizeTexCoords );
 }
 
 void QgsPreviewQuad::setViewPort( const QPointF &centerTexCoords, const QSizeF &sizeTexCoords )
