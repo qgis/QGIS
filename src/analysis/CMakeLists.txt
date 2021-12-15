@@ -128,6 +128,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmmergevector.cpp
   processing/qgsalgorithmminimumenclosingcircle.cpp
   processing/qgsalgorithmmultidifference.cpp
+  processing/qgsalgorithmmultiintersection.cpp
   processing/qgsalgorithmmultiparttosinglepart.cpp
   processing/qgsalgorithmmultiringconstantbuffer.cpp
   processing/qgsalgorithmmultiunion.cpp
