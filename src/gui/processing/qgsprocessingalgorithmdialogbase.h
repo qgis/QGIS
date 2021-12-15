@@ -419,6 +419,8 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     QByteArray mSplitterState;
     QToolButton *mButtonCollapse = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
+    QPushButton *mAdvancedButton = nullptr;
+    QMenu *mAdvancedMenu = nullptr;
 
     bool mExecuted = false;
     bool mExecutedAnyResult = false;

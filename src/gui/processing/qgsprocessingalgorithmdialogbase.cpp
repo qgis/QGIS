@@ -32,6 +32,7 @@
 #include <QClipboard>
 #include <QFileDialog>
 #include <QMimeData>
+#include <QMenu>
 
 
 ///@cond NOT_STABLE
@@ -124,6 +125,47 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
 
   buttonCancel->setEnabled( false );
   mButtonClose = mButtonBox->button( QDialogButtonBox::Close );
+
+  switch ( mMode )
+  {
+    case DialogMode::Single:
+    {
+      mAdvancedButton = new QPushButton( tr( "Advanced" ) );
+      mAdvancedMenu = new QMenu( this );
+      mAdvancedButton->setMenu( mAdvancedMenu );
+
+      QAction *copyAsPythonCommand = new QAction( tr( "Copy as Python Command" ), mAdvancedMenu );
+      copyAsPythonCommand->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconPythonFile.svg" ) ) );
+
+      mAdvancedMenu->addAction( copyAsPythonCommand );
+      connect( copyAsPythonCommand, &QAction::triggered, this, [this]
+      {
+        if ( const QgsProcessingAlgorithm *alg = algorithm() )
+        {
+          QgsProcessingContext *context = processingContext();
+          if ( !context )
+            return;
+
+          const QString command = alg->asPythonCommand( createProcessingParameters(), *context );
+          QMimeData *m = new QMimeData();
+          m->setText( command );
+          QClipboard *cb = QApplication::clipboard();
+
+#ifdef Q_OS_LINUX
+          cb->setMimeData( m, QClipboard::Selection );
+#endif
+          cb->setMimeData( m, QClipboard::Clipboard );
+        }
+      } );
+
+      mButtonBox->addButton( mAdvancedButton, QDialogButtonBox::ResetRole );
+      break;
+    }
+
+    case DialogMode::Batch:
+      break;
+
+  }
 
   connect( mButtonRun, &QPushButton::clicked, this, &QgsProcessingAlgorithmDialogBase::runAlgorithm );
   connect( mButtonChangeParameters, &QPushButton::clicked, this, &QgsProcessingAlgorithmDialogBase::showParameters );
