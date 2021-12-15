@@ -56,6 +56,19 @@ class TestQgsProcessExecutable(unittest.TestCase):
 
         return rc, output.decode(), err.decode()
 
+    def run_process_stdin(self, arguments, stdin_string: str):
+        call = [QGIS_PROCESS_BIN] + arguments
+        print(' '.join(call))
+
+        myenv = os.environ.copy()
+        myenv["QGIS_DEBUG"] = '0'
+
+        p = subprocess.Popen(call, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, env=myenv)
+        output, err = p.communicate(input=stdin_string.encode())
+        rc = p.returncode
+
+        return rc, output.decode(), err.decode()
+
     def testNoArgs(self):
         rc, output, err = self.run_process([])
         self.assertIn('Available commands', output)
@@ -187,6 +200,60 @@ class TestQgsProcessExecutable(unittest.TestCase):
         self.assertTrue(os.path.exists(output_file))
         self.assertEqual(rc, 0)
 
+    def testAlgorithmRunStdIn(self):
+        output_file = self.TMP_DIR + '/polygon_centroid_json.shp'
+
+        params = {
+            'inputs': {
+                'INPUT': TEST_DATA_DIR + '/polys.shp',
+                'OUTPUT': output_file
+            }
+        }
+
+        rc, output, err = self.run_process_stdin(['run', 'native:centroids', '-'], json.dumps(params))
+        if os.environ.get('TRAVIS', '') != 'true':
+            # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
+            self.assertFalse(err)
+
+        res = json.loads(output)
+
+        self.assertIn('gdal_version', res)
+        self.assertIn('geos_version', res)
+        self.assertIn('proj_version', res)
+        self.assertIn('python_version', res)
+        self.assertIn('qt_version', res)
+        self.assertIn('qgis_version', res)
+
+        self.assertEqual(res['algorithm_details']['name'], 'Centroids')
+        self.assertEqual(res['inputs']['INPUT'], TEST_DATA_DIR + '/polys.shp')
+        self.assertEqual(res['inputs']['OUTPUT'], output_file)
+        self.assertEqual(res['results']['OUTPUT'], output_file)
+
+        self.assertTrue(os.path.exists(output_file))
+        self.assertEqual(rc, 0)
+
+    def testAlgorithmRunStdInMissingInputKey(self):
+        output_file = self.TMP_DIR + '/polygon_centroid_json.shp'
+
+        params = {
+            'INPUT': TEST_DATA_DIR + '/polys.shp',
+            'OUTPUT': output_file
+        }
+
+        rc, output, err = self.run_process_stdin(['run', 'native:centroids', '-'], json.dumps(params))
+        self.assertEqual(rc, 1)
+        self.assertIn('JSON parameters object must contain an "inputs" key.', err)
+
+    def testAlgorithmRunStdInNoInput(self):
+        rc, output, err = self.run_process_stdin(['run', 'native:centroids', '-'], '')
+        self.assertEqual(rc, 1)
+        self.assertIn('Could not parse JSON parameters', err)
+
+    def testAlgorithmRunStdInBadInput(self):
+        rc, output, err = self.run_process_stdin(['run', 'native:centroids', '-'], '{"not valid json"}')
+        self.assertEqual(rc, 1)
+        self.assertIn('Could not parse JSON parameters', err)
+
     def testAlgorithmRunJson(self):
         output_file = self.TMP_DIR + '/polygon_centroid2.shp'
         rc, output, err = self.run_process(['run', '--json', 'native:centroids', '--', 'INPUT={}'.format(TEST_DATA_DIR + '/polys.shp'), 'OUTPUT={}'.format(output_file)])
@@ -254,6 +321,32 @@ class TestQgsProcessExecutable(unittest.TestCase):
         self.assertIn('results', output.lower())
         self.assertTrue(os.path.exists(output_file))
 
+    def testModelRunStdIn(self):
+        output_file = self.TMP_DIR + '/model_output_stdin.shp'
+
+        params = {
+            'inputs': {
+                'FEATS': TEST_DATA_DIR + '/polys.shp',
+                'native:centroids_1:CENTROIDS': output_file
+            }
+        }
+
+        rc, output, err = self.run_process_stdin(['run', TEST_DATA_DIR + '/test_model.model3', '-'], json.dumps(params))
+        if os.environ.get('TRAVIS', '') != 'true':
+            # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
+            self.assertFalse(err)
+        self.assertEqual(rc, 0)
+
+        res = json.loads(output)
+        self.assertIn('gdal_version', res)
+        self.assertIn('geos_version', res)
+        self.assertIn('proj_version', res)
+        self.assertIn('python_version', res)
+        self.assertIn('qt_version', res)
+        self.assertIn('qgis_version', res)
+        self.assertEqual(res['algorithm_details']['id'], 'Test model')
+        self.assertTrue(os.path.exists(output_file))
+
     def testModelRunJson(self):
         output_file = self.TMP_DIR + '/model_output2.shp'
         rc, output, err = self.run_process(['run', TEST_DATA_DIR + '/test_model.model3', '--json', '--', 'FEATS={}'.format(TEST_DATA_DIR + '/polys.shp'), 'native:centroids_1:CENTROIDS={}'.format(output_file)])
@@ -319,6 +412,33 @@ class TestQgsProcessExecutable(unittest.TestCase):
         self.assertIn('qgis_version', res)
         self.assertEqual(res['algorithm_details']['id'], 'script:converttouppercase')
         self.assertEqual(res['results']['OUTPUT'], 'ABC')
+
+    def testScriptRunStdIn(self):
+        output_file = self.TMP_DIR + '/model_output_stdin.shp'
+
+        params = {
+            'inputs':
+                {
+                    'INPUT': 'abc def'
+                }
+        }
+
+        rc, output, err = self.run_process_stdin(['run', TEST_DATA_DIR + '/convert_to_upper.py', '-'], json.dumps(params))
+        if os.environ.get('TRAVIS', '') != 'true':
+            # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
+            self.assertFalse(err)
+
+        self.assertEqual(rc, 0)
+
+        res = json.loads(output)
+        self.assertIn('gdal_version', res)
+        self.assertIn('geos_version', res)
+        self.assertIn('proj_version', res)
+        self.assertIn('python_version', res)
+        self.assertIn('qt_version', res)
+        self.assertIn('qgis_version', res)
+        self.assertEqual(res['algorithm_details']['id'], 'script:converttouppercase')
+        self.assertEqual(res['results']['OUTPUT'], 'ABC DEF')
 
     def testPythonScriptRunNotAlgorithm(self):
         rc, output, err = self.run_process(['run', TEST_DATA_DIR + '/not_a_processing_script.py'])

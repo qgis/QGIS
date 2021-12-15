@@ -342,42 +342,112 @@ int QgsProcessingExec::run( const QStringList &constArgs )
     QgsUnitTypes::AreaUnit areaUnit = QgsUnitTypes::AreaUnknownUnit;
     QString projectPath;
     QVariantMap params;
-    int i = 3;
-    for ( ; i < args.count(); i++ )
-    {
-      QString arg = args.at( i );
 
-      if ( arg == QLatin1String( "--" ) )
+    if ( args.size() == 4 && args.at( 3 ) == '-' )
+    {
+      // read arguments as JSON value from stdin
+      std::string stdin;
+      for ( std::string line; std::getline( std::cin, line ); )
       {
-        break;
+        stdin.append( line + '\n' );
       }
 
-      if ( arg.startsWith( QLatin1String( "--" ) ) )
-        arg = arg.mid( 2 );
-
-      const QStringList parts = arg.split( '=' );
-      if ( parts.count() >= 2 )
+      QString error;
+      const QVariantMap json = QgsJsonUtils::parseJson( stdin, error ).toMap();
+      if ( !error.isEmpty() )
       {
-        const QString name = parts.at( 0 );
+        std::cerr << QStringLiteral( "Could not parse JSON parameters: %1" ).arg( error ).toLocal8Bit().constData() << std::endl;
+        return 1;
+      }
+      if ( !json.contains( QStringLiteral( "inputs" ) ) )
+      {
+        std::cerr << QStringLiteral( "JSON parameters object must contain an \"inputs\" key." ).toLocal8Bit().constData() << std::endl;
+        return 1;
+      }
 
-        if ( name.compare( QLatin1String( "ellipsoid" ), Qt::CaseInsensitive ) == 0 )
+      params = json.value( QStringLiteral( "inputs" ) ).toMap();
+
+      // JSON format for input parameters implies JSON output format
+      useJson = true;
+    }
+    else
+    {
+      int i = 3;
+      for ( ; i < args.count(); i++ )
+      {
+        QString arg = args.at( i );
+
+        if ( arg == QLatin1String( "--" ) )
         {
-          ellipsoid = parts.mid( 1 ).join( '=' );
+          break;
         }
-        else if ( name.compare( QLatin1String( "distance_units" ), Qt::CaseInsensitive ) == 0 )
+
+        if ( arg.startsWith( QLatin1String( "--" ) ) )
+          arg = arg.mid( 2 );
+
+        const QStringList parts = arg.split( '=' );
+        if ( parts.count() >= 2 )
         {
-          distanceUnit = QgsUnitTypes::decodeDistanceUnit( parts.mid( 1 ).join( '=' ) );
-        }
-        else if ( name.compare( QLatin1String( "area_units" ), Qt::CaseInsensitive ) == 0 )
-        {
-          areaUnit = QgsUnitTypes::decodeAreaUnit( parts.mid( 1 ).join( '=' ) );
-        }
-        else if ( name.compare( QLatin1String( "project_path" ), Qt::CaseInsensitive ) == 0 )
-        {
-          projectPath = parts.mid( 1 ).join( '=' );
+          const QString name = parts.at( 0 );
+
+          if ( name.compare( QLatin1String( "ellipsoid" ), Qt::CaseInsensitive ) == 0 )
+          {
+            ellipsoid = parts.mid( 1 ).join( '=' );
+          }
+          else if ( name.compare( QLatin1String( "distance_units" ), Qt::CaseInsensitive ) == 0 )
+          {
+            distanceUnit = QgsUnitTypes::decodeDistanceUnit( parts.mid( 1 ).join( '=' ) );
+          }
+          else if ( name.compare( QLatin1String( "area_units" ), Qt::CaseInsensitive ) == 0 )
+          {
+            areaUnit = QgsUnitTypes::decodeAreaUnit( parts.mid( 1 ).join( '=' ) );
+          }
+          else if ( name.compare( QLatin1String( "project_path" ), Qt::CaseInsensitive ) == 0 )
+          {
+            projectPath = parts.mid( 1 ).join( '=' );
+          }
+          else
+          {
+            const QString value = parts.mid( 1 ).join( '=' );
+            if ( params.contains( name ) )
+            {
+              // parameter specified multiple times, store all of them in a list...
+              if ( params.value( name ).type() == QVariant::StringList )
+              {
+                // append to existing list
+                QStringList listValue = params.value( name ).toStringList();
+                listValue << value;
+                params.insert( name, listValue );
+              }
+              else
+              {
+                // upgrade previous value to list
+                QStringList listValue = QStringList() << params.value( name ).toString()
+                                        << value;
+                params.insert( name, listValue );
+              }
+            }
+            else
+            {
+              params.insert( name, value );
+            }
+          }
         }
         else
         {
+          std::cerr << QStringLiteral( "Invalid parameter value %1. Parameter values must be entered after \"--\" e.g.\n  Example:\n    qgis_process run algorithm_name -- PARAM1=VALUE PARAM2=42\"\n" ).arg( arg ).toLocal8Bit().constData();
+          return 1;
+        }
+      }
+
+      // After '--' we only have params
+      for ( ; i < args.count(); i++ )
+      {
+        const QString arg = args.at( i );
+        const QStringList parts = arg.split( '=' );
+        if ( parts.count() >= 2 )
+        {
+          const QString name = parts.first();
           const QString value = parts.mid( 1 ).join( '=' );
           if ( params.contains( name ) )
           {
@@ -401,45 +471,6 @@ int QgsProcessingExec::run( const QStringList &constArgs )
           {
             params.insert( name, value );
           }
-        }
-      }
-      else
-      {
-        std::cerr << QStringLiteral( "Invalid parameter value %1. Parameter values must be entered after \"--\" e.g.\n  Example:\n    qgis_process run algorithm_name -- PARAM1=VALUE PARAM2=42\"\n" ).arg( arg ).toLocal8Bit().constData();
-        return 1;
-      }
-    }
-
-    // After '--' we only have params
-    for ( ; i < args.count(); i++ )
-    {
-      const QString arg = args.at( i );
-      const QStringList parts = arg.split( '=' );
-      if ( parts.count() >= 2 )
-      {
-        const QString name = parts.first();
-        const QString value = parts.mid( 1 ).join( '=' );
-        if ( params.contains( name ) )
-        {
-          // parameter specified multiple times, store all of them in a list...
-          if ( params.value( name ).type() == QVariant::StringList )
-          {
-            // append to existing list
-            QStringList listValue = params.value( name ).toStringList();
-            listValue << value;
-            params.insert( name, listValue );
-          }
-          else
-          {
-            // upgrade previous value to list
-            QStringList listValue = QStringList() << params.value( name ).toString()
-                                    << value;
-            params.insert( name, listValue );
-          }
-        }
-        else
-        {
-          params.insert( name, value );
         }
       }
     }
@@ -473,6 +504,7 @@ void QgsProcessingExec::showUsage( const QString &appName )
       << "\tlist\t\tlist all available processing algorithms\n"
       << "\thelp\t\tshow help for an algorithm. The algorithm id or a path to a model file must be specified.\n"
       << "\trun\t\truns an algorithm. The algorithm id or a path to a model file and parameter values must be specified. Parameter values are specified after -- with PARAMETER=VALUE syntax. Ordered list values for a parameter can be created by specifying the parameter multiple times, e.g. --LAYERS=layer1.shp --LAYERS=layer2.shp\n"
+      << "\t\t\tAlternatively, a '-' character in place of the parameters argument indicates that the parameters should be read from STDIN as a JSON object. The JSON should be structured as a map containing at least the \"inputs\" key specifying a map of input parameter values. This implies the --json option for output as a JSON object.\n"
       << "\t\t\tIf required, the ellipsoid to use for distance and area calculations can be specified via the \"--ELLIPSOID=name\" argument.\n"
       << "\t\t\tIf required, an existing QGIS project to use during the algorithm execution can be specified via the \"--PROJECT_PATH=path\" argument.\n";
 
