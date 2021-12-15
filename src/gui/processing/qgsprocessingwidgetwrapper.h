@@ -91,7 +91,7 @@ class GUI_EXPORT QgsProcessingParametersGenerator
      * This method needs to be reimplemented in all classes which implement this interface
      * and return a algorithm parameters.
      *
-     * Since QGIS 3.24 the optional \a flags argument can be used to control the behaviour
+     * Since QGIS 3.24 the optional \a flags argument can be used to control the behavior
      * of the parameter generation.
      */
     virtual QVariantMap createProcessingParameters( QgsProcessingParametersGenerator::Flags flags = QgsProcessingParametersGenerator::Flags() ) = 0;
