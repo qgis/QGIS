@@ -37,7 +37,8 @@ from qgis.core import (Qgis,
                        QgsProxyProgressTask,
                        QgsProcessingFeatureSourceDefinition)
 from qgis.gui import (QgsGui,
-                      QgsProcessingAlgorithmDialogBase)
+                      QgsProcessingAlgorithmDialogBase,
+                      QgsProcessingParametersGenerator)
 from qgis.utils import iface
 
 from processing.core.ProcessingLog import ProcessingLog
@@ -109,11 +110,11 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
     def setParameters(self, parameters):
         self.mainWidget().setParameters(parameters)
 
-    def createProcessingParameters(self, include_default=True):
+    def createProcessingParameters(self, flags=QgsProcessingParametersGenerator.Flags()):
         if self.mainWidget() is None:
             return {}
-        else:
-            return self.mainWidget().createProcessingParameters(include_default)
+
+        return self.mainWidget().createProcessingParameters(flags)
 
     def runAlgorithm(self):
         self.feedback = self.createFeedback()

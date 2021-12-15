@@ -47,7 +47,8 @@ from qgis.gui import (QgsProcessingParameterDefinitionDialog,
                       QgsProcessingParameterWidgetContext,
                       QgsModelGraphicsScene,
                       QgsModelDesignerDialog,
-                      QgsProcessingContextGenerator)
+                      QgsProcessingContextGenerator,
+                      QgsProcessingParametersGenerator)
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
@@ -159,7 +160,7 @@ class ModelerDialog(QgsModelDesignerDialog):
         dlg.exec_()
 
         if dlg.wasExecuted():
-            self.model().setDesignerParameterValues(dlg.createProcessingParameters(include_default=False))
+            self.model().setDesignerParameterValues(dlg.createProcessingParameters(flags=QgsProcessingParametersGenerator.Flags(QgsProcessingParametersGenerator.Flag.SkipDefaultValueParameters)))
 
     def saveInProject(self):
         if not self.validateSave():
