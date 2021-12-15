@@ -49,7 +49,7 @@ class ScriptAlgorithmProvider(QgsProcessingProvider):
     def __init__(self):
         super().__init__()
         self.algs = []
-        self.folder_algorithms = []
+        self.additional_algorithm_classes = []
         self.actions = [CreateNewScriptAction(),
                         AddScriptFromTemplateAction(),
                         OpenScriptFromFileAction(),
@@ -100,6 +100,13 @@ class ScriptAlgorithmProvider(QgsProcessingProvider):
         # they'll get an error if they use them with incompatible outputs...
         return True
 
+    def add_algorithm_class(self, algorithm_class):
+        """
+        Adds an algorithm class to the provider
+        """
+        self.additional_algorithm_classes.append(algorithm_class)
+        self.refreshAlgorithms()
+
     def loadAlgorithms(self):
         self.algs = []
         folders = ScriptUtils.scriptsFolders()
@@ -121,6 +128,9 @@ class ScriptAlgorithmProvider(QgsProcessingProvider):
                         alg = ScriptUtils.loadAlgorithm(moduleName, filePath)
                         if alg is not None:
                             self.algs.append(alg)
+
+        for alg_class in self.additional_algorithm_classes:
+            self.algs.append(alg_class())
 
         for a in self.algs:
             self.addAlgorithm(a)

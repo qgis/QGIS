@@ -460,7 +460,7 @@ void QgsProcessingExec::showUsage( const QString &appName )
 
   msg << "QGIS Processing Executor - " << VERSION << " '" << RELEASE_NAME << "' ("
       << Qgis::version() << ")\n"
-      << "Usage: " << appName <<  " [--help] [--version] [--json] [--verbose] [command] [algorithm id or path to model file] [parameters]\n"
+      << "Usage: " << appName <<  " [--help] [--version] [--json] [--verbose] [command] [algorithm id, path to model file, or path to Python script] [parameters]\n"
       << "\nOptions:\n"
       << "\t--help or -h\t\tOutput the help\n"
       << "\t--version or -v\t\tOutput all versions related to QGIS Process\n"
@@ -679,8 +679,10 @@ int QgsProcessingExec::enablePlugin( const QString &name, bool enabled )
 #endif
 }
 
-int QgsProcessingExec::showAlgorithmHelp( const QString &id, bool useJson )
+int QgsProcessingExec::showAlgorithmHelp( const QString &inputId, bool useJson )
 {
+  QString id = inputId;
+
   std::unique_ptr< QgsProcessingModelAlgorithm > model;
   const QgsProcessingAlgorithm *alg = nullptr;
   if ( QFile::exists( id ) && QFileInfo( id ).suffix() == QLatin1String( "model3" ) )
@@ -694,7 +696,19 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &id, bool useJson )
 
     alg = model.get();
   }
-  else
+  else if ( mPythonUtils && QFile::exists( id ) && QFileInfo( id ).suffix() == QLatin1String( "py" ) )
+  {
+    QString res;
+    if ( !mPythonUtils->evalString( QStringLiteral( "qgis.utils.import_script_algorithm(\"%1\")" ).arg( id ), res ) || res.isEmpty() )
+    {
+      std::cerr << QStringLiteral( "File %1 is not a valid Processing script!\n" ).arg( id ).toLocal8Bit().constData();
+      return 1;
+    }
+
+    id = res;
+  }
+
+  if ( !alg )
   {
     alg = QgsApplication::processingRegistry()->algorithmById( id );
     if ( ! alg )
@@ -861,13 +875,15 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &id, bool useJson )
   return 0;
 }
 
-int QgsProcessingExec::execute( const QString &id, const QVariantMap &params, const QString &ellipsoid, QgsUnitTypes::DistanceUnit distanceUnit, QgsUnitTypes::AreaUnit areaUnit, QgsProcessingContext::LogLevel logLevel, bool useJson, const QString &projectPath )
+int QgsProcessingExec::execute( const QString &inputId, const QVariantMap &params, const QString &ellipsoid, QgsUnitTypes::DistanceUnit distanceUnit, QgsUnitTypes::AreaUnit areaUnit, QgsProcessingContext::LogLevel logLevel, bool useJson, const QString &projectPath )
 {
   QVariantMap json;
   if ( useJson )
   {
     addVersionInformation( json );
   }
+
+  QString id = inputId;
 
   std::unique_ptr< QgsProcessingModelAlgorithm > model;
   const QgsProcessingAlgorithm *alg = nullptr;
@@ -882,7 +898,19 @@ int QgsProcessingExec::execute( const QString &id, const QVariantMap &params, co
 
     alg = model.get();
   }
-  else
+  else if ( mPythonUtils && QFile::exists( id ) && QFileInfo( id ).suffix() == QLatin1String( "py" ) )
+  {
+    QString res;
+    if ( !mPythonUtils->evalString( QStringLiteral( "qgis.utils.import_script_algorithm(\"%1\")" ).arg( id ), res ) || res.isEmpty() )
+    {
+      std::cerr << QStringLiteral( "File %1 is not a valid Processing script!\n" ).arg( id ).toLocal8Bit().constData();
+      return 1;
+    }
+
+    id = res;
+  }
+
+  if ( !alg )
   {
     alg = QgsApplication::processingRegistry()->algorithmById( id );
     if ( ! alg )

@@ -286,6 +286,60 @@ class TestQgsProcessExecutable(unittest.TestCase):
 
         self.assertIn('Test logged message', lines)
 
+    def testPythonScriptHelp(self):
+        rc, output, err = self.run_process(['help', TEST_DATA_DIR + '/convert_to_upper.py'])
+        if os.environ.get('TRAVIS', '') != 'true':
+            # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
+            self.assertFalse(err)
+        self.assertEqual(rc, 0)
+        self.assertIn('converts a string to upper case', output.lower())
+
+    def testPythonScriptRun(self):
+        rc, output, err = self.run_process(['run', TEST_DATA_DIR + '/convert_to_upper.py', '--', 'INPUT=abc'])
+        if os.environ.get('TRAVIS', '') != 'true':
+            # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
+            self.assertFalse(err)
+        self.assertEqual(rc, 0)
+        self.assertIn('Converted abc to ABC', output)
+        self.assertIn('OUTPUT:\tABC', output)
+
+    def testPythonScriptRunJson(self):
+        rc, output, err = self.run_process(['run', TEST_DATA_DIR + '/convert_to_upper.py', '--json', '--', 'INPUT=abc'])
+        if os.environ.get('TRAVIS', '') != 'true':
+            # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
+            self.assertFalse(err)
+        self.assertEqual(rc, 0)
+
+        res = json.loads(output)
+        self.assertIn('gdal_version', res)
+        self.assertIn('geos_version', res)
+        self.assertIn('proj_version', res)
+        self.assertIn('python_version', res)
+        self.assertIn('qt_version', res)
+        self.assertIn('qgis_version', res)
+        self.assertEqual(res['algorithm_details']['id'], 'script:converttouppercase')
+        self.assertEqual(res['results']['OUTPUT'], 'ABC')
+
+    def testPythonScriptRunNotAlgorithm(self):
+        rc, output, err = self.run_process(['run', TEST_DATA_DIR + '/not_a_processing_script.py'])
+        self.assertEqual(rc, 1)
+        self.assertIn('is not a valid Processing script', err)
+
+    def testPythonScriptHelpNotAlgorithm(self):
+        rc, output, err = self.run_process(['help', TEST_DATA_DIR + '/not_a_processing_script.py'])
+        self.assertEqual(rc, 1)
+        self.assertIn('is not a valid Processing script', err)
+
+    def testPythonScriptRunError(self):
+        rc, output, err = self.run_process(['run', TEST_DATA_DIR + '/script_with_error.py'])
+        self.assertEqual(rc, 1)
+        self.assertIn('is not a valid Processing script', err)
+
+    def testPythonScriptHelpError(self):
+        rc, output, err = self.run_process(['help', TEST_DATA_DIR + '/script_with_error.py'])
+        self.assertEqual(rc, 1)
+        self.assertIn('is not a valid Processing script', err)
+
 
 if __name__ == '__main__':
     # look for qgis bin path
