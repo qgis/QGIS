@@ -110,11 +110,50 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
     def setParameters(self, parameters):
         self.mainWidget().setParameters(parameters)
 
+    def flag_invalid_parameter_value(self, message: str, widget):
+        """
+        Highlights a parameter with an invalid value
+        """
+        try:
+            self.buttonBox().accepted.connect(lambda w=widget:
+                                              w.setPalette(QPalette()))
+            palette = widget.palette()
+            palette.setColor(QPalette.Base, QColor(255, 255, 0))
+            widget.setPalette(palette)
+        except:
+            pass
+        self.messageBar().clearWidgets()
+        self.messageBar().pushMessage("", self.tr("Wrong or missing parameter value: {0}").format(
+            message),
+            level=Qgis.Warning, duration=5)
+
+    def flag_invalid_output_extension(self, message: str, widget):
+        """
+        Highlights a parameter with an invalid output extension
+        """
+        try:
+            self.buttonBox().accepted.connect(lambda w=widget:
+                                              w.setPalette(QPalette()))
+            palette = widget.palette()
+            palette.setColor(QPalette.Base, QColor(255, 255, 0))
+            widget.setPalette(palette)
+        except:
+            pass
+        self.messageBar().clearWidgets()
+        self.messageBar().pushMessage("", message,
+                                      level=Qgis.Warning, duration=5)
+
     def createProcessingParameters(self, flags=QgsProcessingParametersGenerator.Flags()):
         if self.mainWidget() is None:
             return {}
 
-        return self.mainWidget().createProcessingParameters(flags)
+        try:
+            return self.mainWidget().createProcessingParameters(flags)
+        except AlgorithmDialogBase.InvalidParameterValue as e:
+            self.flag_invalid_parameter_value(e.parameter.description(), e.widget)
+        except AlgorithmDialogBase.InvalidOutputExtension as e:
+            self.flag_invalid_output_extension(e.message, e.widget)
+        return {}
 
     def runAlgorithm(self):
         self.feedback = self.createFeedback()
@@ -123,7 +162,10 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
         checkCRS = ProcessingConfig.getSetting(ProcessingConfig.WARN_UNMATCHING_CRS)
         try:
-            parameters = self.createProcessingParameters()
+            # messy as all heck, but we don't want to call the dialog's implementation of
+            # createProcessingParameters as we want to catch the exceptions raised by the
+            # parameter panel instead...
+            parameters = {} if self.mainWidget() is None else self.mainWidget().createProcessingParameters()
 
             if checkCRS and not self.algorithm().validateInputCrs(parameters, self.context):
                 reply = QMessageBox.question(self, self.tr("Unmatching CRS's"),
@@ -273,30 +315,9 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     on_complete(ok, results)
 
         except AlgorithmDialogBase.InvalidParameterValue as e:
-            try:
-                self.buttonBox().accepted.connect(lambda e=e:
-                                                  e.widget.setPalette(QPalette()))
-                palette = e.widget.palette()
-                palette.setColor(QPalette.Base, QColor(255, 255, 0))
-                e.widget.setPalette(palette)
-            except:
-                pass
-            self.messageBar().clearWidgets()
-            self.messageBar().pushMessage("", self.tr("Wrong or missing parameter value: {0}").format(
-                e.parameter.description()),
-                level=Qgis.Warning, duration=5)
+            self.flag_invalid_parameter_value(e.parameter.description(), e.widget)
         except AlgorithmDialogBase.InvalidOutputExtension as e:
-            try:
-                self.buttonBox().accepted.connect(lambda e=e:
-                                                  e.widget.setPalette(QPalette()))
-                palette = e.widget.palette()
-                palette.setColor(QPalette.Base, QColor(255, 255, 0))
-                e.widget.setPalette(palette)
-            except:
-                pass
-            self.messageBar().clearWidgets()
-            self.messageBar().pushMessage("", e.message,
-                                          level=Qgis.Warning, duration=5)
+            self.flag_invalid_output_extension(e.message, e.widget)
 
     def finish(self, successful, result, context, feedback, in_place=False):
         keepOpen = not successful or ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
