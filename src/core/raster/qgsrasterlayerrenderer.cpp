@@ -203,10 +203,11 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   mRasterViewPort->mHeight = static_cast<qgssize>( std::abs( mRasterViewPort->mBottomRightPoint.y() - mRasterViewPort->mTopLeftPoint.y() ) );
 
 
+  const double dpi = 25.4 * rendererContext.scaleFactor();
   if ( mProviderCapabilities & QgsRasterDataProvider::DpiDependentData
        && rendererContext.dpiTarget() >= 0.0 )
   {
-    const double dpiScaleFactor = rendererContext.dpiTarget() / rendererContext.painter()->device()->logicalDpiX();
+    const double dpiScaleFactor = rendererContext.dpiTarget() / dpi;
     mRasterViewPort->mWidth *= dpiScaleFactor;
     mRasterViewPort->mHeight *= dpiScaleFactor;
   }
@@ -240,8 +241,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   // TODO R->mLastViewPort = *mRasterViewPort;
 
   // TODO: is it necessary? Probably WMS only?
-  layer->dataProvider()->setDpi( 25.4 * rendererContext.scaleFactor() );
-
+  layer->dataProvider()->setDpi( dpi );
 
   // copy the whole raster pipe!
   mPipe = new QgsRasterPipe( *layer->pipe() );
@@ -372,4 +372,3 @@ bool QgsRasterLayerRenderer::forceRasterRender() const
   // preview of intermediate raster rendering results requires a temporary output image
   return renderContext()->testFlag( Qgis::RenderContextFlag::RenderPartialOutput );
 }
-
