@@ -77,6 +77,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         self.btnRunSingle.clicked.connect(self.runAsSingle)
         self.buttonBox().addButton(self.btnRunSingle, QDialogButtonBox.ResetRole)  # reset role to ensure left alignment
 
+        self.context = None
         self.updateRunButtonVisibility()
 
     def runAsSingle(self):
@@ -92,6 +93,13 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
     def blockAdditionalControlsWhileRunning(self):
         self.btnRunSingle.setEnabled(False)
+
+    def processingContext(self):
+        if self.context is None:
+            self.feedback = self.createFeedback()
+            self.context = dataobjects.createContext(self.feedback)
+            self.context.setLogLevel(self.logLevel())
+        return self.context
 
     def runAlgorithm(self):
         alg_parameters = []
