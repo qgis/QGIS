@@ -1775,7 +1775,7 @@ static QVariant fcnRepresentAttributes( const QVariantList &values, const QgsExp
   {
     const QString fieldName { fields.at( fieldIndex ).name() };
     QVariant attributeVal { feature.attribute( fieldIndex ) };
-    const QString cacheValueKey = QStringLiteral( "repvalfcnval:%1:%2:%3" ).arg( layer ? layer->id() : QStringLiteral( "[None]" ), fieldName, attributeVal.toString() );
+    const QString cacheValueKey = QStringLiteral( "repvalfcnval:%1:%2:%3" ).arg( layer->id(), fieldName, attributeVal.toString() );
     if ( context && context->hasCachedValue( cacheValueKey ) )
     {
       result.insert( fieldName, context->cachedValue( cacheValueKey ) );
@@ -1787,7 +1787,7 @@ static QVariant fcnRepresentAttributes( const QVariantList &values, const QgsExp
       QVariant cache;
       if ( context )
       {
-        const QString cacheKey = QStringLiteral( "repvalfcn:%1:%2" ).arg( layer ? layer->id() : QStringLiteral( "[None]" ), fieldName );
+        const QString cacheKey = QStringLiteral( "repvalfcn:%1:%2" ).arg( layer->id() , fieldName );
 
         if ( !context->hasCachedValue( cacheKey ) )
         {
