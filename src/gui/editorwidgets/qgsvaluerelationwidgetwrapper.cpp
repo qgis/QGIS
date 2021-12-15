@@ -77,10 +77,10 @@ QVariant QgsValueRelationWidgetWrapper::value() const
       }
     }
 
-    // If there is no selection and allow NULL is not checked return invalid.
+    // If there is no selection and allow NULL is not checked return NULL.
     if ( selection.isEmpty() && ! config( QStringLiteral( "AllowNull" ) ).toBool( ) )
     {
-      return QVariant();
+      return QVariant( QVariant::Type::List );
     }
 
     QVariantList vl;
