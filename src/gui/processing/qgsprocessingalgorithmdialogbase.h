@@ -98,9 +98,21 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     };
 
     /**
+     * Dialog modes.
+     *
+     * \since QGIS 3.24
+     */
+    enum class DialogMode : int
+    {
+      Single, //!< Single algorithm execution mode
+      Batch, //!< Batch processing mode
+    };
+    Q_ENUM( QgsProcessingAlgorithmDialogBase::DialogMode )
+
+    /**
      * Constructor for QgsProcessingAlgorithmDialogBase.
      */
-    QgsProcessingAlgorithmDialogBase( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
+    QgsProcessingAlgorithmDialogBase( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags(), QgsProcessingAlgorithmDialogBase::DialogMode mode = QgsProcessingAlgorithmDialogBase::DialogMode::Single );
     ~QgsProcessingAlgorithmDialogBase() override;
 
     /**
@@ -398,6 +410,8 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     void closeClicked();
 
   private:
+
+    DialogMode mMode = DialogMode::Single;
 
     QPushButton *mButtonRun = nullptr;
     QPushButton *mButtonClose = nullptr;

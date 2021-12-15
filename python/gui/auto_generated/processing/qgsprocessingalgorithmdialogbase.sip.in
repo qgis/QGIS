@@ -34,7 +34,13 @@ Base class for processing algorithm dialogs.
       FormatHtml,
     };
 
-    QgsProcessingAlgorithmDialogBase( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
+    enum class DialogMode
+    {
+      Single,
+      Batch,
+    };
+
+    QgsProcessingAlgorithmDialogBase( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags(), QgsProcessingAlgorithmDialogBase::DialogMode mode = QgsProcessingAlgorithmDialogBase::DialogMode::Single );
 %Docstring
 Constructor for QgsProcessingAlgorithmDialogBase.
 %End
