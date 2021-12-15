@@ -899,7 +899,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * all tables that originate from the same database are synchronized and executed in a server side
      * transaction.
      *
-     * Make sure that this is only called when all layers are not in edit mode.
+     * \warning Make sure that this is only called when all layers are not in edit mode.
      *
      * \since QGIS 2.16
      * \deprecated QGIS 3.24 use setTransactionMode instead
@@ -917,7 +917,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Set transaction mode
      *
-     * Make sure that this is only called when all layers are not in edit mode.
+     * \warning Make sure that this is only called when all layers are not in edit mode.
      *
      * \see Qgis::TransactionMode
      * \since QGIS 3.24
@@ -2127,7 +2127,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QColor mSelectionColor;
 
     mutable QgsProjectPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable
-    Qgis::TransactionMode mTransactionMode = Qgis::TransactionMode::None; // transaction grouped editing
+    Qgis::TransactionMode mTransactionMode = Qgis::TransactionMode::Disabled; // transaction grouped editing
     bool mEvaluateDefaultValues = false; // evaluate default values immediately
     QgsCoordinateReferenceSystem mCrs;
     bool mDirty = false;                 // project has been modified since it has been read or saved

@@ -858,7 +858,7 @@ The development version
 
     enum class TransactionMode
     {
-      None,
+      Disabled,
       AutomaticGroups,
       BufferedGroups,
     };
