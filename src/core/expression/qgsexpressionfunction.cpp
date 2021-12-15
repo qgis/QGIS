@@ -1774,7 +1774,7 @@ static QVariant fcnRepresentAttributes( const QVariantList &values, const QgsExp
   for ( int fieldIndex = 0; fieldIndex < fields.count(); ++fieldIndex )
   {
     const QString fieldName { fields.at( fieldIndex ).name() };
-    QVariant attributeVal { feature.attribute( fieldIndex ) };
+    const QVariant attributeVal = feature.attribute( fieldIndex );
     const QString cacheValueKey = QStringLiteral( "repvalfcnval:%1:%2:%3" ).arg( layer->id(), fieldName, attributeVal.toString() );
     if ( context && context->hasCachedValue( cacheValueKey ) )
     {
