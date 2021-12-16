@@ -13,7 +13,7 @@ if(MSVC AND NOT USING_NMAKE)
     COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/crssync.exe
     DEPENDS crssync
   )
-elseif()
+elseif(CMAKE_CROSSCOMPILING AND NOT MXE)
   set(NATIVE_CRSSYNC_BIN CACHE PATH "Path to a natively compiled synccrsdb binary")
   if(NOT NATIVE_CRSSYNC_BIN)
     message(FATAL_ERROR "NATIVE_CRSSYNC_BIN needs to be defined when cross-compiling")
