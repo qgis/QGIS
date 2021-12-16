@@ -587,6 +587,13 @@ Sets the logging ``level`` for algorithms to use when pushing feedback messages 
 .. versionadded:: 3.20
 %End
 
+    QVariantMap exportToMap() const;
+%Docstring
+Exports the context's settings to a variant map.
+
+.. versionadded:: 3.24
+%End
+
     enum class ProcessArgumentFlag
     {
       IncludeProjectPath,

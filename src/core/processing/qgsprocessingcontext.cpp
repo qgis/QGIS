@@ -139,6 +139,21 @@ void QgsProcessingContext::setLogLevel( LogLevel level )
   mLogLevel = level;
 }
 
+QVariantMap QgsProcessingContext::exportToMap() const
+{
+  QVariantMap res;
+  if ( mDistanceUnit != QgsUnitTypes::DistanceUnknownUnit )
+    res.insert( QStringLiteral( "distance_units" ), QgsUnitTypes::encodeUnit( mDistanceUnit ) );
+  if ( mAreaUnit != QgsUnitTypes::AreaUnknownUnit )
+    res.insert( QStringLiteral( "area_units" ), QgsUnitTypes::encodeUnit( mAreaUnit ) );
+  if ( !mEllipsoid.isEmpty() )
+    res.insert( QStringLiteral( "ellipsoid" ), mEllipsoid );
+  if ( mProject )
+    res.insert( QStringLiteral( "project_path" ), mProject->fileName() );
+
+  return res;
+}
+
 QStringList QgsProcessingContext::asQgisProcessArguments( QgsProcessingContext::ProcessArgumentFlags flags ) const
 {
   QStringList res;
