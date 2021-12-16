@@ -493,15 +493,30 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     if ( !mDepthBufferIsReady )
       return;
 
-    float dist = ( mCameraBeforeDrag->position() - mDragPoint ).length();
-    dist -= dist * 0.01 * ( mMousePos.y() - mDragButtonClickPos.y() );
-
     if ( !mDragPointCalculated )
     {
       QColor depthPixel = mDepthBufferImage.pixelColor( mDragButtonClickPos.x(), mDragButtonClickPos.y() );
       mDragDepth = depthPixel.redF() / 255.0 / 255.0 + depthPixel.greenF() / 255.0 + depthPixel.blueF();
       mDragPoint = Qgs3DUtils::mouseToWorldPos( mDragButtonClickPos.x(), mDragButtonClickPos.y(), mDragDepth, mViewport.size(), mCameraBeforeDrag );
       mDragPointCalculated = true;
+    }
+
+    float dist = ( mCameraBeforeDrag->position() - mDragPoint ).length();
+
+    // Applies smoothing
+    if ( mMousePos.y() > mDragButtonClickPos.y() ) // zoom in
+    {
+      double f = ( double )( mMousePos.y() - mDragButtonClickPos.y() ) / ( double )( mViewport.height() - mDragButtonClickPos.y() );
+      f = std::max( 0.0, std::min( 1.0, f ) );
+      f = 1 - ( std::exp( -2 * f ) - 1 ) / ( std::exp( -2 ) - 1 );
+      dist = dist * f;
+    }
+    else // zoom out
+    {
+      double f = 1 - ( double )( mMousePos.y() ) / ( double )( mDragButtonClickPos.y() );
+      f = std::max( 0.0, std::min( 1.0, f ) );
+      f = ( std::exp( 2 * f ) - 1 ) / ( std::exp( 2 ) - 1 );
+      dist = dist + 2 * dist * f;
     }
 
     // First transformation : Shift camera position and view center and rotate the camera
