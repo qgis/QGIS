@@ -2629,6 +2629,18 @@ void TestQgsProcessing::parameterBoolean()
   QCOMPARE( def->valueAsJsonObject( "true", context ), QVariant( QStringLiteral( "true" ) ) );
   QCOMPARE( def->valueAsJsonObject( QVariant(), context ), QVariant() );
 
+  bool ok = false;
+  QCOMPARE( def->valueAsString( false, context, ok ), QStringLiteral( "false" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( true, context, ok ), QStringLiteral( "true" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "false", context, ok ), QStringLiteral( "false" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "true", context, ok ), QStringLiteral( "true" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+
   QString code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##non_optional_default_false=boolean false" ) );
   std::unique_ptr< QgsProcessingParameterBoolean > fromCode( dynamic_cast< QgsProcessingParameterBoolean * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
@@ -2879,6 +2891,26 @@ void TestQgsProcessing::parameterCrs()
   QCOMPARE( def->valueAsJsonObject( r1->id(), context ), QVariant( QString( testDataDir + QStringLiteral( "landsat_4326.tif" ) ) ) );
   QCOMPARE( def->valueAsJsonObject( "uri='complex' username=\"complex\"", context ), QVariant( QStringLiteral( "uri='complex' username=\"complex\"" ) ) );
 
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QgsCoordinateReferenceSystem( "EPSG:3111" ), context, ok ), QStringLiteral( "EPSG:3111" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QgsCoordinateReferenceSystem(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "EPSG:12003", context, ok ), QStringLiteral( "EPSG:12003" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "ProjectCrs", context, ok ), QStringLiteral( "ProjectCrs" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context, ok ), QStringLiteral( "c:\\test\\new data\\test.dat" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( raster1, context, ok ), QString( testDataDir + QStringLiteral( "landsat_4326.tif" ) ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( r1->id(), context, ok ), QString( testDataDir + QStringLiteral( "landsat_4326.tif" ) ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "uri='complex' username=\"complex\"", context, ok ), QStringLiteral( "uri='complex' username=\"complex\"" ) );
+  QVERIFY( ok );
+
   const QVariantMap map = def->toVariantMap();
   QgsProcessingParameterCrs fromMap( "x" );
   QVERIFY( fromMap.fromVariantMap( map ) );
@@ -3008,6 +3040,18 @@ void TestQgsProcessing::parameterMapLayer()
   QCOMPARE( def->valueAsJsonObject( r1->id(), context ), QVariant( testDataDir + QStringLiteral( "tenbytenraster.asc" ) ) );
   QCOMPARE( def->valueAsJsonObject( QVariant::fromValue( r1 ), context ), QVariant( testDataDir + QStringLiteral( "tenbytenraster.asc" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QVariant( QStringLiteral( "c:\\test\\new data\\test.dat" ) ) );
+
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( raster1, context, ok ), testDataDir + QStringLiteral( "tenbytenraster.asc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( r1->id(), context, ok ), testDataDir + QStringLiteral( "tenbytenraster.asc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( r1 ), context, ok ), testDataDir + QStringLiteral( "tenbytenraster.asc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context, ok ), QStringLiteral( "c:\\test\\new data\\test.dat" ) );
+  QVERIFY( ok );
 
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMapLayer('non_optional', '', defaultValue='')" ) );
@@ -3409,6 +3453,30 @@ void TestQgsProcessing::parameterExtent()
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QVariant( QStringLiteral( "c:\\test\\new data\\test.dat" ) ) );
   QCOMPARE( def->valueAsJsonObject( QgsGeometry::fromWkt( QStringLiteral( "LineString( 10 10, 20 20)" ) ), context ), QVariant( QStringLiteral( "LineString (10 10, 20 20)" ) ) );
 
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "1,2,3,4", context, ok ), QStringLiteral( "1,2,3,4" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( r1->id(), context, ok ), testDataDir + QStringLiteral( "landsat_4326.tif" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( r1 ), context, ok ), testDataDir + QStringLiteral( "landsat_4326.tif" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( raster2, context, ok ), testDataDir + QStringLiteral( "landsat.tif" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QgsRectangle( 11, 12, 13, 14 ), context, ok ), QStringLiteral( "11, 13, 12, 14" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QgsReferencedRectangle( QgsRectangle( 11, 12, 13, 14 ), QgsCoordinateReferenceSystem( "epsg:4326" ) ), context, ok ), QStringLiteral( "11, 13, 12, 14 [EPSG:4326]" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "1,2,3,4 [EPSG:4326]", context, ok ), QStringLiteral( "1,2,3,4 [EPSG:4326]" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "uri='complex' username=\"complex\"", context, ok ), QStringLiteral( "uri='complex' username=\"complex\"" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context, ok ), QStringLiteral( "c:\\test\\new data\\test.dat" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QgsGeometry::fromWkt( QStringLiteral( "LineString( 10 10, 20 20)" ) ), context, ok ), QStringLiteral( "LineString (10 10, 20 20)" ) );
+  QVERIFY( ok );
+
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterExtent('non_optional', '', defaultValue='1,2,3,4')" ) );
 
@@ -3602,6 +3670,20 @@ void TestQgsProcessing::parameterPoint()
   QCOMPARE( def->valueAsJsonObject( QgsReferencedPointXY( QgsPointXY( 11, 12 ), QgsCoordinateReferenceSystem( "epsg:4326" ) ), context ), QVariant( QStringLiteral( "11,12 [EPSG:4326]" ) ) );
   QCOMPARE( def->valueAsJsonObject( QgsGeometry::fromWkt( QStringLiteral( "LineString( 10 10, 20 20)" ) ), context ), QVariant( QStringLiteral( "LineString (10 10, 20 20)" ) ) );
 
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "1,2", context, ok ), QStringLiteral( "1,2" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "1,2 [EPSG:4326]", context, ok ), QStringLiteral( "1,2 [EPSG:4326]" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QgsPointXY( 11, 12 ), context, ok ), QStringLiteral( "11,12" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QgsReferencedPointXY( QgsPointXY( 11, 12 ), QgsCoordinateReferenceSystem( "epsg:4326" ) ), context, ok ), QStringLiteral( "11,12 [EPSG:4326]" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QgsGeometry::fromWkt( QStringLiteral( "LineString( 10 10, 20 20)" ) ), context, ok ), QStringLiteral( "LineString (10 10, 20 20)" ) );
+  QVERIFY( ok );
+
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterPoint('non_optional', '', defaultValue='1,2')" ) );
 
@@ -3780,6 +3862,18 @@ void TestQgsProcessing::parameterGeometry()
                                     QgsCoordinateReferenceSystem( "EPSG:4326" ) ), context ),
             QVariant( QStringLiteral( "CRS=EPSG:4326;LineString (10 10, 20 20)" ) ) );
 
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "LineString( 10 10, 20 20)", context, ok ), QStringLiteral( "LineString( 10 10, 20 20)" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QgsGeometry::fromWkt( QStringLiteral( "LineString( 10 10, 20 20)" ) ), context, ok ), QStringLiteral( "LineString (10 10, 20 20)" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QgsReferencedGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString( 10 10, 20 20)" ) ),
+                                QgsCoordinateReferenceSystem( "EPSG:4326" ) ), context, ok ),
+            QStringLiteral( "CRS=EPSG:4326;LineString (10 10, 20 20)" ) );
+  QVERIFY( ok );
+
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterGeometry('non_optional', '', defaultValue='Point(1 2)')" ) );
 
@@ -3928,6 +4022,16 @@ void TestQgsProcessing::parameterFile()
   QCOMPARE( def->valueAsJsonObject( "uri='complex' username=\"complex\"", context ), QVariant( QStringLiteral( "uri='complex' username=\"complex\"" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QVariant( QStringLiteral( "c:\\test\\new data\\test.dat" ) ) );
 
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "bricks.bmp", context, ok ), QStringLiteral( "bricks.bmp" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "uri='complex' username=\"complex\"", context, ok ), QStringLiteral( "uri='complex' username=\"complex\"" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context, ok ), QStringLiteral( "c:\\test\\new data\\test.dat" ) );
+  QVERIFY( ok );
+
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterFile('non_optional', '', behavior=QgsProcessingParameterFile.File, extension='.bmp', defaultValue='abc.bmp')" ) );
 
@@ -3972,6 +4076,16 @@ void TestQgsProcessing::parameterFile()
   QCOMPARE( def->valueAsJsonObject( "bricks.png", context ), QVariant( QStringLiteral( "bricks.png" ) ) );
   QCOMPARE( def->valueAsJsonObject( "uri='complex' username=\"complex\"", context ), QVariant( QStringLiteral( "uri='complex' username=\"complex\"" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QVariant( QStringLiteral( "c:\\test\\new data\\test.dat" ) ) );
+
+  ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "bricks.png", context, ok ), QStringLiteral( "bricks.png" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "uri='complex' username=\"complex\"", context, ok ), QStringLiteral( "uri='complex' username=\"complex\"" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context, ok ), QStringLiteral( "c:\\test\\new data\\test.dat" ) );
+  QVERIFY( ok );
 
   pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterFile('non_optional', '', behavior=QgsProcessingParameterFile.File, fileFilter='PNG Files (*.png *.PNG)', defaultValue='abc.bmp')" ) );
@@ -4103,6 +4217,24 @@ void TestQgsProcessing::parameterMatrix()
   QCOMPARE( def->valueAsJsonObject( QVariantList() << ( QVariantList() << 1 << QVariant() << 3 ) << ( QVariantList() << QVariant() << 2 << 3 ), context ), QVariant( QVariantList( {1, QVariant(), 3, QVariant(), 2, 3} ) ) );
   QCOMPARE( def->valueAsJsonObject( QVariantList() << ( QVariantList() << 1 << QString( "" ) << 3 ) << ( QVariantList() << 1 << 2 << QString( "" ) ), context ), QVariant( QVariantList( {1, QString(), 3, 1, 2, QString()} ) ) );
   QCOMPARE( def->valueAsJsonObject( "1,2,3", context ), QVariant( QStringLiteral( "1,2,3" ) ) );
+
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( 5, context, ok ), QStringLiteral( "5" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariantList() << 1 << 2.5 << 3, context, ok ), QString() );
+  QVERIFY( !ok );
+  QCOMPARE( def->valueAsString( QVariantList() << ( QVariantList() << 1 << 2 << 3 ) << ( QVariantList() << 1 << 2 << 3 ), context, ok ), QString() );
+  QVERIFY( !ok );
+  QCOMPARE( def->valueAsString( QVariantList() << ( QVariantList() << 1 << QStringLiteral( "value" ) << 3 ) << ( QVariantList() << 1 << 2 << QStringLiteral( "it's a value" ) ), context, ok ), QString() );
+  QVERIFY( !ok );
+  QCOMPARE( def->valueAsString( QVariantList() << ( QVariantList() << 1 << QVariant() << 3 ) << ( QVariantList() << QVariant() << 2 << 3 ), context, ok ), QString() );
+  QVERIFY( !ok );
+  QCOMPARE( def->valueAsString( QVariantList() << ( QVariantList() << 1 << QString( "" ) << 3 ) << ( QVariantList() << 1 << 2 << QString( "" ) ), context, ok ), QString() );
+  QVERIFY( !ok );
+  QCOMPARE( def->valueAsString( "1,2,3", context, ok ), QVariant( QStringLiteral( "1,2,3" ) ) );
+  QVERIFY( ok );
 
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMatrix('non_optional', '', numberRows=3, hasFixedNumberRows=False, headers=[], defaultValue=None)" ) );
@@ -4294,6 +4426,20 @@ void TestQgsProcessing::parameterLayerList()
   QCOMPARE( def->valueAsJsonObject( r1->id(), context ), QVariant( testDataDir + QStringLiteral( "tenbytenraster.asc" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringList() << r1->id() << raster2, context ), QVariant( QVariantList( { QString( testDataDir + QStringLiteral( "tenbytenraster.asc" ) ), QString( testDataDir + QStringLiteral( "landsat.tif" ) ) } ) ) );
   QCOMPARE( def->valueAsJsonObject( "uri='complex' username=\"complex\"", context ), QVariant( QStringLiteral( "uri='complex' username=\"complex\"" ) ) );
+
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "layer12312312", context, ok ),  QStringLiteral( "layer12312312" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( r1 ), context, ok ), testDataDir + QStringLiteral( "tenbytenraster.asc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( r1->id(), context, ok ), testDataDir + QStringLiteral( "tenbytenraster.asc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringList() << r1->id() << raster2, context, ok ), QString() );
+  QVERIFY( !ok );
+  QCOMPARE( def->valueAsString( "uri='complex' username=\"complex\"", context, ok ), QStringLiteral( "uri='complex' username=\"complex\"" ) );
+  QVERIFY( ok );
 
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMultipleLayers('non_optional', '', layerType=QgsProcessing.TypeMapLayer, defaultValue='')" ) );
@@ -4491,6 +4637,16 @@ void TestQgsProcessing::parameterLayerList()
   QCOMPARE( def->valueAsJsonObject( "layer12312312", context ), QVariant( QStringLiteral( "layer12312312" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringList() << "a" << "B", context ), QVariant( QVariantList( { QStringLiteral( "a" ), QStringLiteral( "B" ) } ) ) );
   QCOMPARE( def->valueAsJsonObject( QVariantList() << "c" << "d", context ), QVariant( QVariantList( { QStringLiteral( "c" ), QStringLiteral( "d" ) } ) ) );
+
+  ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "layer12312312", context, ok ), QStringLiteral( "layer12312312" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringList() << "a" << "B", context, ok ), QString() );
+  QVERIFY( !ok );
+  QCOMPARE( def->valueAsString( QVariantList() << "c" << "d", context, ok ), QString() );
+  QVERIFY( !ok );
 }
 
 void TestQgsProcessing::parameterDistance()
@@ -4557,6 +4713,14 @@ void TestQgsProcessing::parameterDistance()
   QCOMPARE( def->valueAsJsonObject( QVariant(), context ), QVariant() );
   QCOMPARE( def->valueAsJsonObject( 5, context ), QVariant( 5 ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "1.1" ), context ), QVariant( QStringLiteral( "1.1" ) ) );
+
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( 5, context, ok ), QStringLiteral( "5" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "1.1" ), context, ok ), QStringLiteral( "1.1" ) );
+  QVERIFY( ok );
 
   const QVariantMap map = def->toVariantMap();
   QgsProcessingParameterDistance fromMap( "x" );
@@ -4662,6 +4826,14 @@ void TestQgsProcessing::parameterDuration()
   QCOMPARE( def->valueAsJsonObject( 5, context ), QVariant( 5 ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "1.1" ), context ), QVariant( QStringLiteral( "1.1" ) ) );
 
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( 5, context, ok ), QStringLiteral( "5" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "1.1" ), context, ok ), QStringLiteral( "1.1" ) );
+  QVERIFY( ok );
+
   const QVariantMap map = def->toVariantMap();
   QgsProcessingParameterDuration fromMap( "x" );
   QVERIFY( fromMap.fromVariantMap( map ) );
@@ -4756,6 +4928,14 @@ void TestQgsProcessing::parameterScale()
   QCOMPARE( def->valueAsJsonObject( QVariant(), context ), QVariant() );
   QCOMPARE( def->valueAsJsonObject( 5, context ), QVariant( "5" ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "1.1" ), context ), QVariant( QStringLiteral( "1.1" ) ) );
+
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( 5, context, ok ), QStringLiteral( "5" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "1.1" ), context, ok ), QStringLiteral( "1.1" ) );
+  QVERIFY( ok );
 
   const QVariantMap map = def->toVariantMap();
   QgsProcessingParameterScale fromMap( "x" );
@@ -4867,6 +5047,14 @@ void TestQgsProcessing::parameterNumber()
   QCOMPARE( def->valueAsJsonObject( QVariant(), context ), QVariant() );
   QCOMPARE( def->valueAsJsonObject( 5, context ), QVariant( "5" ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "1.1" ), context ), QVariant( QStringLiteral( "1.1" ) ) );
+
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( 5, context, ok ), QStringLiteral( "5" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "1.1" ), context, ok ), QStringLiteral( "1.1" ) );
+  QVERIFY( ok );
 
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterNumber('non_optional', '', type=QgsProcessingParameterNumber.Double, minValue=11, maxValue=21, defaultValue=5)" ) );
@@ -4996,6 +5184,14 @@ void TestQgsProcessing::parameterRange()
   QCOMPARE( def->valueAsJsonObject( QVariant(), context ), QVariant() );
   QCOMPARE( def->valueAsJsonObject( "1.1,2", context ), QVariant( QStringLiteral( "1.1,2" ) ) );
   QCOMPARE( def->valueAsJsonObject( QVariantList() << 1.1 << 2, context ), QVariant( QVariantList( { QVariant( 1.1 ), QVariant( 2 )} ) ) );
+
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "1.1,2", context, ok ), QStringLiteral( "1.1,2" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariantList() << 1.1 << 2, context, ok ), QString() );
+  QVERIFY( !ok );
 
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterRange('non_optional', '', type=QgsProcessingParameterNumber.Double, defaultValue=[5,6])" ) );
@@ -5169,6 +5365,18 @@ void TestQgsProcessing::parameterRasterLayer()
   QCOMPARE( def->valueAsJsonObject( QVariant::fromValue( r1 ), context ), QVariant( testDataDir + QStringLiteral( "tenbytenraster.asc" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QVariant( QStringLiteral( "c:\\test\\new data\\test.dat" ) ) );
 
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( raster1, context, ok ), testDataDir + QStringLiteral( "tenbytenraster.asc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( r1->id(), context, ok ), testDataDir + QStringLiteral( "tenbytenraster.asc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( r1 ), context, ok ), testDataDir + QStringLiteral( "tenbytenraster.asc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context, ok ), QStringLiteral( "c:\\test\\new data\\test.dat" ) );
+  QVERIFY( ok );
+
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterRasterLayer('non_optional', '', defaultValue=None)" ) );
 
@@ -5290,6 +5498,14 @@ void TestQgsProcessing::parameterEnum()
   QCOMPARE( def->valueAsJsonObject( 5, context ), QVariant( 5 ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "1.1" ), context ), QVariant( QStringLiteral( "1.1" ) ) );
 
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( 5, context, ok ), QStringLiteral( "5" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "1.1" ), context, ok ), QStringLiteral( "1.1" ) );
+  QVERIFY( ok );
+
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterEnum('non_optional', '', options=['A','B','C'], allowMultiple=False, usesStaticStrings=False, defaultValue=2)" ) );
 
@@ -5356,6 +5572,13 @@ void TestQgsProcessing::parameterEnum()
   QCOMPARE( def->valueAsJsonObject( QVariant(), context ), QVariant() );
   QCOMPARE( def->valueAsJsonObject( QVariantList() << 1 << 2, context ), QVariant( QVariantList( {1, 2} ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "1,2" ), context ), QVariant( QStringLiteral( "1,2" ) ) );
+
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariantList() << 1 << 2, context, ok ), QString() );
+  QVERIFY( !ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "1,2" ), context, ok ), QStringLiteral( "1,2" ) );
+  QVERIFY( ok );
 
   QCOMPARE( def->valueAsPythonComment( QVariant(), context ), QString() );
   QCOMPARE( def->valueAsPythonComment( 2, context ), QStringLiteral( "C" ) );
@@ -5620,6 +5843,20 @@ void TestQgsProcessing::parameterString()
   QCOMPARE( def->valueAsJsonObject( "uri='complex' username=\"complex\"", context ), QVariant( QStringLiteral( "uri='complex' username=\"complex\"" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QVariant( QStringLiteral( "c:\\test\\new data\\test.dat" ) ) );
 
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( 5, context, ok ), QStringLiteral( "5" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "abc" ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "abc\ndef" ), context, ok ), QStringLiteral( "abc\ndef" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "uri='complex' username=\"complex\"", context, ok ), QStringLiteral( "uri='complex' username=\"complex\"" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context, ok ), QStringLiteral( "c:\\test\\new data\\test.dat" ) );
+  QVERIFY( ok );
+
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterString('non_optional', '', multiLine=False, defaultValue=None)" ) );
 
@@ -5781,6 +6018,20 @@ void TestQgsProcessing::parameterAuthConfig()
   QCOMPARE( def->valueAsJsonObject( "uri='complex' username=\"complex\"", context ), QVariant( QStringLiteral( "uri='complex' username=\"complex\"" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QVariant( QStringLiteral( "c:\\test\\new data\\test.dat" ) ) );
 
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( 5, context, ok ), QStringLiteral( "5" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "abc" ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "abc\ndef" ), context, ok ), QStringLiteral( "abc\ndef" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "uri='complex' username=\"complex\"", context, ok ), QStringLiteral( "uri='complex' username=\"complex\"" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context, ok ), QStringLiteral( "c:\\test\\new data\\test.dat" ) );
+  QVERIFY( ok );
+
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterAuthConfig('non_optional', '', defaultValue='')" ) );
 
@@ -5901,6 +6152,16 @@ void TestQgsProcessing::parameterExpression()
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "abc" ), context ), QVariant( QStringLiteral( "abc" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "abc\ndef" ), context ), QVariant( QStringLiteral( "abc\ndef" ) ) );
 
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( 5, context, ok ), QStringLiteral( "5" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "abc" ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "abc\ndef" ), context, ok ), QStringLiteral( "abc\ndef" ) );
+  QVERIFY( ok );
+
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterExpression('non_optional', '', parentLayerParameterName='', defaultValue='1+1')" ) );
 
@@ -5992,6 +6253,16 @@ void TestQgsProcessing::parameterField()
   QCOMPARE( def->valueAsJsonObject( QVariant(), context ), QVariant() );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "abc" ), context ), QVariant( QStringLiteral( "abc" ) ) );
   QCOMPARE( def->valueAsJsonObject( "probably\'invalid\"field", context ), QVariant( QStringLiteral( "probably\'invalid\"field" ) ) );
+
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( 5, context, ok ), QStringLiteral( "5" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "abc" ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "probably\'invalid\"field" ), context, ok ), QStringLiteral( "probably\'invalid\"field" ) );
+  QVERIFY( ok );
 
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterField('non_optional', '', type=QgsProcessingParameterField.Any, parentLayerParameterName='', allowMultiple=False, defaultValue=None)" ) );
@@ -6096,6 +6367,11 @@ void TestQgsProcessing::parameterField()
 
   QCOMPARE( def->valueAsJsonObject( QVariant(), context ), QVariant() );
   QCOMPARE( def->valueAsJsonObject( QStringList() << "a" << "b", context ), QVariant( QVariantList( {QStringLiteral( "a" ), QStringLiteral( "b" ) } ) ) );
+
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringList() << "a" << "b", context, ok ), QString() );
+  QVERIFY( !ok );
 
   QVariantMap map = def->toVariantMap();
   QgsProcessingParameterField fromMap( "x" );
@@ -6296,6 +6572,18 @@ void TestQgsProcessing::parameterVectorLayer()
   QCOMPARE( def->valueAsJsonObject( QVariant::fromValue( v1 ), context ), QVariant( testDataDir + QStringLiteral( "multipoint.shp" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QVariant( QStringLiteral( "c:\\test\\new data\\test.dat" ) ) );
 
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( vector1, context, ok ), testDataDir + QStringLiteral( "multipoint.shp" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( v1->id(), context, ok ), testDataDir + QStringLiteral( "multipoint.shp" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( v1 ), context, ok ), testDataDir + QStringLiteral( "multipoint.shp" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context, ok ), QStringLiteral( "c:\\test\\new data\\test.dat" ) );
+  QVERIFY( ok );
+
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterVectorLayer('non_optional', '', defaultValue='somelayer')" ) );
 
@@ -6430,6 +6718,18 @@ void TestQgsProcessing::parameterMeshLayer()
   QCOMPARE( def->valueAsJsonObject( m1->id(), context ), QVariant( testDataDir + QStringLiteral( "mesh/quad_and_triangle.2dm" ) ) );
   QCOMPARE( def->valueAsJsonObject( QVariant::fromValue( m1 ), context ), QVariant( testDataDir + QStringLiteral( "mesh/quad_and_triangle.2dm" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "c:\\test\\new data\\test.2dm" ), context ), QVariant( QStringLiteral( "c:\\test\\new data\\test.2dm" ) ) );
+
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( mesh, context, ok ), testDataDir + QStringLiteral( "mesh/quad_and_triangle.2dm" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( m1->id(), context, ok ), testDataDir + QStringLiteral( "mesh/quad_and_triangle.2dm" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( m1 ), context, ok ), testDataDir + QStringLiteral( "mesh/quad_and_triangle.2dm" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "c:\\test\\new data\\test.2dm" ), context, ok ), QStringLiteral( "c:\\test\\new data\\test.2dm" ) );
+  QVERIFY( ok );
 
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMeshLayer('non_optional', '', defaultValue='somelayer')" ) );
@@ -6597,6 +6897,43 @@ void TestQgsProcessing::parameterFeatureSource()
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QVariant( QStringLiteral( "c:\\test\\new data\\test.dat" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "postgres://uri='complex' username=\"complex\"" ), context ), QVariant( QStringLiteral( "postgres://uri='complex' username=\"complex\"" ) ) );
 
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant( "abc" ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( "abc" ) ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( "abc'def" ) ), context, ok ), QStringLiteral( "abc'def" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( v2->id() ) ), context, ok ), vector2 );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( v2->id(), context, ok ), vector2 );
+  QVERIFY( ok );
+  // currently limits, flags, etc from feature source definitions cannot be serialized to string
+  QCOMPARE( def->valueAsString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( QgsProperty::fromValue( "abc" ), true ) ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( QgsProperty::fromValue( "dbname='mydb' host=localhost port=5432 sslmode=disable key='id'" ), true ) ), context, ok ), QStringLiteral( "dbname='mydb' host=localhost port=5432 sslmode=disable key='id'" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( QgsProperty::fromValue( "abc" ), false, 11 ) ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( QgsProperty::fromValue( "abc" ), false, -1 ) ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( QgsProperty::fromValue( "abc" ), false, -1, QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck, QgsFeatureRequest::GeometrySkipInvalid ) ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( QgsProperty::fromValue( "abc" ), false, -1, QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature, QgsFeatureRequest::GeometrySkipInvalid ) ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( QgsProperty::fromValue( "abc" ), false, -1, QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck | QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature, QgsFeatureRequest::GeometrySkipInvalid ) ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( v2 ), context, ok ),  vector2 );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "uri='complex' username=\"complex\"", context, ok ), QStringLiteral( "uri='complex' username=\"complex\"" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context, ok ), QStringLiteral( "c:\\test\\new data\\test.dat" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "postgres://uri='complex' username=\"complex\"" ), context, ok ), QStringLiteral( "postgres://uri='complex' username=\"complex\"" ) );
+  QVERIFY( ok );
+
   const QVariantMap map = def->toVariantMap();
   QgsProcessingParameterFeatureSource fromMap( "x" );
   QVERIFY( fromMap.fromVariantMap( map ) );
@@ -6731,6 +7068,20 @@ void TestQgsProcessing::parameterFeatureSink()
   QCOMPARE( def->valueAsJsonObject( QVariant::fromValue( QgsProcessingOutputLayerDefinition( QgsProperty::fromValue( "abc" ) ) ), context ), QVariant( QStringLiteral( "abc" ) ) );
   QCOMPARE( def->valueAsJsonObject( "uri='complex' username=\"complex\"", context ), QVariant( QStringLiteral( "uri='complex' username=\"complex\"" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QVariant( QStringLiteral( "c:\\test\\new data\\test.dat" ) ) );
+
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "abc" ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( QgsProcessingOutputLayerDefinition( "abc" ) ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( QgsProcessingOutputLayerDefinition( QgsProperty::fromValue( "abc" ) ) ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "uri='complex' username=\"complex\"", context, ok ), QStringLiteral( "uri='complex' username=\"complex\"" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context, ok ), QStringLiteral( "c:\\test\\new data\\test.dat" ) );
+  QVERIFY( ok );
 
   QCOMPARE( def->defaultFileExtension(), QStringLiteral( "gpkg" ) );
   QCOMPARE( def->generateTemporaryDestination(), QStringLiteral( "memory:" ) );
@@ -6909,6 +7260,20 @@ void TestQgsProcessing::parameterVectorOut()
   QCOMPARE( def->valueAsJsonObject( QVariant::fromValue( QgsProcessingOutputLayerDefinition( QgsProperty::fromValue( "abc" ) ) ), context ), QVariant( QStringLiteral( "abc" ) ) );
   QCOMPARE( def->valueAsJsonObject( "uri='complex' username=\"complex\"", context ), QVariant( QStringLiteral( "uri='complex' username=\"complex\"" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QVariant( QStringLiteral( "c:\\test\\new data\\test.dat" ) ) );
+
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "abc" ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( QgsProcessingOutputLayerDefinition( "abc" ) ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( QgsProcessingOutputLayerDefinition( QgsProperty::fromValue( "abc" ) ) ), context, ok ),  QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "uri='complex' username=\"complex\"", context, ok ), QStringLiteral( "uri='complex' username=\"complex\"" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context, ok ), QStringLiteral( "c:\\test\\new data\\test.dat" ) );
+  QVERIFY( ok );
 
   QCOMPARE( def->defaultFileExtension(), QStringLiteral( "gpkg" ) );
   QVERIFY( def->generateTemporaryDestination().endsWith( QLatin1String( ".gpkg" ) ) );
@@ -7128,6 +7493,18 @@ void TestQgsProcessing::parameterRasterOut()
   QCOMPARE( def->valueAsJsonObject( "uri='complex' username=\"complex\"", context ), QVariant( QStringLiteral( "uri='complex' username=\"complex\"" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QVariant( QStringLiteral( "c:\\test\\new data\\test.dat" ) ) );
 
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QStringLiteral( "abc" ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( QgsProcessingOutputLayerDefinition( "abc" ) ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( QgsProcessingOutputLayerDefinition( QgsProperty::fromValue( "abc" ) ) ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "uri='complex' username=\"complex\"", context, ok ), QStringLiteral( "uri='complex' username=\"complex\"" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context, ok ), QStringLiteral( "c:\\test\\new data\\test.dat" ) );
+  QVERIFY( ok );
+
   const QVariantMap map = def->toVariantMap();
   QgsProcessingParameterRasterDestination fromMap( "x" );
   QVERIFY( fromMap.fromVariantMap( map ) );
@@ -7240,6 +7617,9 @@ void TestQgsProcessing::parameterPointCloudOut()
 
   QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
   QCOMPARE( def->valueAsJsonObject( QVariant(), context ), QVariant() );
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
   QCOMPARE( def->defaultFileExtension(), QStringLiteral( "las" ) );
   QVERIFY( def->generateTemporaryDestination().endsWith( QLatin1String( ".las" ) ) );
   QVERIFY( def->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
@@ -7268,6 +7648,17 @@ void TestQgsProcessing::parameterPointCloudOut()
   QCOMPARE( def->valueAsJsonObject( QVariant::fromValue( QgsProcessingOutputLayerDefinition( QgsProperty::fromValue( "abc" ) ) ), context ), QVariant( QStringLiteral( "abc" ) ) );
   QCOMPARE( def->valueAsJsonObject( "uri='complex' username=\"complex\"", context ), QVariant( QStringLiteral( "uri='complex' username=\"complex\"" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QVariant( QStringLiteral( "c:\\test\\new data\\test.dat" ) ) );
+
+  QCOMPARE( def->valueAsString( QStringLiteral( "abc" ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( QgsProcessingOutputLayerDefinition( "abc" ) ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( QgsProcessingOutputLayerDefinition( QgsProperty::fromValue( "abc" ) ) ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "uri='complex' username=\"complex\"", context, ok ), QStringLiteral( "uri='complex' username=\"complex\"" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context, ok ), QStringLiteral( "c:\\test\\new data\\test.dat" ) );
+  QVERIFY( ok );
 
   const QVariantMap map = def->toVariantMap();
   QgsProcessingParameterPointCloudDestination fromMap( "x" );
@@ -7429,6 +7820,20 @@ void TestQgsProcessing::parameterFileOut()
   QCOMPARE( def->valueAsJsonObject( "uri='complex' username=\"complex\"", context ), QVariant( QStringLiteral( "uri='complex' username=\"complex\"" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QVariant( QStringLiteral( "c:\\test\\new data\\test.dat" ) ) );
 
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "abc" ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( QgsProcessingOutputLayerDefinition( "abc" ) ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( QgsProcessingOutputLayerDefinition( QgsProperty::fromValue( "abc" ) ) ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "uri='complex' username=\"complex\"", context, ok ), QStringLiteral( "uri='complex' username=\"complex\"" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context, ok ), QStringLiteral( "c:\\test\\new data\\test.dat" ) );
+  QVERIFY( ok );
+
   const QVariantMap map = def->toVariantMap();
   QgsProcessingParameterFileDestination fromMap( "x" );
   QVERIFY( fromMap.fromVariantMap( map ) );
@@ -7534,6 +7939,16 @@ void TestQgsProcessing::parameterFolderOut()
   QCOMPARE( def->valueAsJsonObject( "uri='complex' username=\"complex\"", context ), QVariant( QStringLiteral( "uri='complex' username=\"complex\"" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "c:\\test\\new data\\" ), context ), QVariant( QStringLiteral( "c:\\test\\new data\\" ) ) );
 
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "abc" ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "uri='complex' username=\"complex\"", context, ok ), QStringLiteral( "uri='complex' username=\"complex\"" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "c:\\test\\new data\\" ), context, ok ), QStringLiteral( "c:\\test\\new data\\" ) );
+  QVERIFY( ok );
+
   const QVariantMap map = def->toVariantMap();
   QgsProcessingParameterFolderDestination fromMap( "x" );
   QVERIFY( fromMap.fromVariantMap( map ) );
@@ -7608,6 +8023,12 @@ void TestQgsProcessing::parameterBand()
   QCOMPARE( def->valueAsJsonObject( QVariant(), context ), QVariant() );
   QCOMPARE( def->valueAsJsonObject( 5, context ), QVariant( 5 ) );
 
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( 5, context, ok ), QStringLiteral( "5" ) );
+  QVERIFY( ok );
+
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterBand('non_optional', '', parentLayerParameterName='', allowMultiple=False, defaultValue=None)" ) );
   QString code = def->asScriptCode();
@@ -7658,6 +8079,13 @@ void TestQgsProcessing::parameterBand()
   QCOMPARE( def->valueAsJsonObject( QVariant(), context ), QVariant() );
   QCOMPARE( def->valueAsJsonObject( QStringList() << "1" << "2", context ), QVariant( QVariantList( { "1", "2" } ) ) );
   QCOMPARE( def->valueAsJsonObject( QVariantList() << 1 << 2, context ), QVariant( QVariantList( { 1, 2} ) ) );
+
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringList() << "1" << "2", context, ok ), QString() );
+  QVERIFY( !ok );
+  QCOMPARE( def->valueAsString( QVariantList() << 1 << 2, context, ok ), QString() );
+  QVERIFY( !ok );
 
   const QVariantMap map = def->toVariantMap();
   QgsProcessingParameterBand fromMap( "x" );
@@ -7758,6 +8186,20 @@ void TestQgsProcessing::parameterLayout()
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "abc\ndef" ), context ), QVariant( QStringLiteral( "abc\ndef" ) ) );
   QCOMPARE( def->valueAsJsonObject( "uri='complex' username=\"complex\"", context ), QVariant( QStringLiteral( "uri='complex' username=\"complex\"" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QVariant( QStringLiteral( "c:\\test\\new data\\test.dat" ) ) );
+
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( 5, context, ok ), QStringLiteral( "5" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "abc" ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "abc\ndef" ), context, ok ), QStringLiteral( "abc\ndef" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "uri='complex' username=\"complex\"", context, ok ), QStringLiteral( "uri='complex' username=\"complex\"" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context, ok ), QStringLiteral( "c:\\test\\new data\\test.dat" ) );
+  QVERIFY( ok );
 
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterLayout('non_optional', '', defaultValue=None)" ) );
@@ -7915,6 +8357,14 @@ void TestQgsProcessing::parameterLayoutItem()
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "abc" ), context ), QVariant( QStringLiteral( "abc" ) ) );
   QCOMPARE( def->valueAsJsonObject( "probably\'invalid\"item", context ), QVariant( QStringLiteral( "probably\'invalid\"item" ) ) );
 
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "abc" ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "probably\'invalid\"item", context, ok ), QStringLiteral( "probably\'invalid\"item" ) );
+  QVERIFY( ok );
+
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterLayoutItem('non_optional', '', parentLayoutParameterName='', defaultValue=None)" ) );
 
@@ -8046,6 +8496,18 @@ void TestQgsProcessing::parameterColor()
   QCOMPARE( def->valueAsJsonObject( QColor(), context ), QVariant( QString() ) );
   QCOMPARE( def->valueAsJsonObject( QColor( 255, 0, 0 ), context ), QVariant( QStringLiteral( "rgba( 255, 0, 0, 1.00 )" ) ) );
   QCOMPARE( def->valueAsJsonObject( QColor( 255, 0, 0, 100 ), context ), QVariant( QStringLiteral( "rgba( 255, 0, 0, 0.39 )" ) ) );
+
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "#ff0000" ), context, ok ), QStringLiteral( "#ff0000" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QColor(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QColor( 255, 0, 0 ), context, ok ), QStringLiteral( "rgba( 255, 0, 0, 1.00 )" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QColor( 255, 0, 0, 100 ), context, ok ), QStringLiteral( "rgba( 255, 0, 0, 0.39 )" ) );
+  QVERIFY( ok );
 
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterColor('non_optional', '', opacityEnabled=True, defaultValue=None)" ) );
@@ -8201,6 +8663,18 @@ void TestQgsProcessing::parameterCoordinateOperation()
   QCOMPARE( def->valueAsJsonObject( "uri='complex' username=\"complex\"", context ), QVariant( QStringLiteral( "uri='complex' username=\"complex\"" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QVariant( QStringLiteral( "c:\\test\\new data\\test.dat" ) ) );
 
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "abc" ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "abc\ndef" ), context, ok ),  QStringLiteral( "abc\ndef" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "uri='complex' username=\"complex\"", context, ok ), QStringLiteral( "uri='complex' username=\"complex\"" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context, ok ), QStringLiteral( "c:\\test\\new data\\test.dat" ) );
+  QVERIFY( ok );
+
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterCoordinateOperation('non_optional', '', sourceCrsParameterName='src', destinationCrsParameterName='dest', staticSourceCrs=QgsCoordinateReferenceSystem('EPSG:7855'), staticDestinationCrs=QgsCoordinateReferenceSystem('EPSG:28355'), defaultValue=None)" ) );
 
@@ -8329,6 +8803,18 @@ void TestQgsProcessing::parameterMapTheme()
   QCOMPARE( def->valueAsJsonObject( "uri='complex' username=\"complex\"", context ), QVariant( QStringLiteral( "uri='complex' username=\"complex\"" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QVariant( QStringLiteral( "c:\\test\\new data\\test.dat" ) ) );
 
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "abc" ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "abc\ndef" ), context, ok ),  QStringLiteral( "abc\ndef" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "uri='complex' username=\"complex\"", context, ok ), QStringLiteral( "uri='complex' username=\"complex\"" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context, ok ), QStringLiteral( "c:\\test\\new data\\test.dat" ) );
+  QVERIFY( ok );
+
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMapTheme('non_optional', '', defaultValue=None)" ) );
 
@@ -8456,6 +8942,18 @@ void TestQgsProcessing::parameterProviderConnection()
   QCOMPARE( def->valueAsJsonObject( "uri='complex' username=\"complex\"", context ), QVariant( QStringLiteral( "uri='complex' username=\"complex\"" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QVariant( QStringLiteral( "c:\\test\\new data\\test.dat" ) ) );
 
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "abc" ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "abc\ndef" ), context, ok ),  QStringLiteral( "abc\ndef" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "uri='complex' username=\"complex\"", context, ok ), QStringLiteral( "uri='complex' username=\"complex\"" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context, ok ), QStringLiteral( "c:\\test\\new data\\test.dat" ) );
+  QVERIFY( ok );
+
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterProviderConnection('non_optional', '', 'postgres', defaultValue=None)" ) );
 
@@ -8582,6 +9080,14 @@ void TestQgsProcessing::parameterDatabaseSchema()
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "abc" ), context ), QVariant( QStringLiteral( "abc" ) ) );
   QCOMPARE( def->valueAsJsonObject( "probably\'invalid\"schema", context ), QVariant( QStringLiteral( "probably\'invalid\"schema" ) ) );
 
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "abc" ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "probably\'invalid\"schema", context, ok ), QStringLiteral( "probably\'invalid\"schema" ) );
+  QVERIFY( ok );
+
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterDatabaseSchema('non_optional', '', connectionParameterName='', defaultValue=None)" ) );
 
@@ -8663,6 +9169,14 @@ void TestQgsProcessing::parameterDatabaseTable()
   QCOMPARE( def->valueAsJsonObject( QVariant(), context ), QVariant() );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "abc" ), context ), QVariant( QStringLiteral( "abc" ) ) );
   QCOMPARE( def->valueAsJsonObject( "probably\'invalid\"schema", context ), QVariant( QStringLiteral( "probably\'invalid\"schema" ) ) );
+
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "abc" ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "probably\'invalid\"schema", context, ok ), QStringLiteral( "probably\'invalid\"schema" ) );
+  QVERIFY( ok );
 
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterDatabaseTable('non_optional', '', connectionParameterName='', schemaParameterName='', defaultValue=None)" ) );
@@ -8847,6 +9361,18 @@ void TestQgsProcessing::parameterAggregate()
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "abc\ndef" ), context ), QStringLiteral( "abc\ndef" ) );
   QCOMPARE( def->valueAsJsonObject( QVariant( QVariantList() << map << map2 ), context ), QVariant( QVariantList() << map << map2 ) );
 
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( 5, context, ok ), QStringLiteral( "5" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "abc" ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "abc\ndef" ), context, ok ), QStringLiteral( "abc\ndef" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant( QVariantList() << map << map2 ), context, ok ), QString() );
+  QVERIFY( !ok );
+
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterAggregate('non_optional', '', parentLayerParameterName='parent')" ) );
 
@@ -8920,6 +9446,10 @@ void TestQgsProcessing::parameterTinInputLayers()
   QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( def->valueAsJsonObject( layerList, context ) ).dump() ),
             QStringLiteral( "[{\"attributeIndex\":-1,\"source\":\"%1\",\"type\":0}]" ).arg( vectorLayer->source() ) );
 
+  bool ok = false;
+  QCOMPARE( def->valueAsString( layerList, context, ok ), QString() );
+  QVERIFY( !ok );
+
   const QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterTinInputLayers('tin input layer', '')" ) );
 }
@@ -8969,6 +9499,10 @@ void TestQgsProcessing::parameterMeshDatasetGroups()
 
   QCOMPARE( def->valueAsJsonObject( groupsList, context ), QVariant( QVariantList( {0, 5 } ) ) );
 
+  bool ok = false;
+  QCOMPARE( def->valueAsString( groupsList, context, ok ), QString() );
+  QVERIFY( !ok );
+
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMeshDatasetGroups('dataset groups', 'groups', dataType=[QgsMeshDatasetGroupMetadata.DataOnVertices])" ) );
 
@@ -9000,6 +9534,9 @@ void TestQgsProcessing::parameterMeshDatasetGroups()
   QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( groupsList ), QList<int>() << 2 << 6 );
 
   QCOMPARE( def->valueAsJsonObject( groupsList, context ), QVariant( QVariantList( {2, 6 } ) ) );
+
+  QCOMPARE( def->valueAsString( groupsList, context, ok ), QString() );
+  QVERIFY( !ok );
 
   QVERIFY( !def->dependsOnOtherParameters().isEmpty() );
   QCOMPARE( def->meshLayerParameterName(), QStringLiteral( "layer parameter" ) );
@@ -9036,6 +9573,10 @@ void TestQgsProcessing::parameterMeshDatasetTime()
 
   QCOMPARE( def->valueAsJsonObject( QDateTime( QDate( 2020, 01, 01 ), QTime( 10, 0, 0 ) ), context ), QVariant( QStringLiteral( "2020-01-01T10:00:00" ) ) );
 
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QDateTime( QDate( 2020, 01, 01 ), QTime( 10, 0, 0 ) ), context, ok ), QStringLiteral( "2020-01-01T10:00:00" ) );
+  QVERIFY( ok );
+
   QVariantMap value;
   QVERIFY( !def->checkValueIsAcceptable( value ) );
   value[QStringLiteral( "test" )] = QStringLiteral( "test" );
@@ -9049,6 +9590,9 @@ void TestQgsProcessing::parameterMeshDatasetTime()
   QVERIFY( def->checkValueIsAcceptable( value ) );
   QCOMPARE( def->valueAsPythonString( value, context ), QStringLiteral( "{'type': 'static'}" ) );
 
+  QCOMPARE( def->valueAsString( value, context, ok ), QString() );
+  QVERIFY( !ok );
+
   QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( value ), QStringLiteral( "static" ) );
 
   value[QStringLiteral( "type" )] = QStringLiteral( "current-context-time" );
@@ -9056,6 +9600,9 @@ void TestQgsProcessing::parameterMeshDatasetTime()
   QCOMPARE( def->valueAsPythonString( value, context ), QStringLiteral( "{'type': 'current-context-time'}" ) );
   QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( def->valueAsJsonObject( value, context ) ).dump() ),
             QStringLiteral( "{\"type\":\"current-context-time\"}" ) );
+
+  QCOMPARE( def->valueAsString( value, context, ok ), QString() );
+  QVERIFY( !ok );
 
   QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( value ), QStringLiteral( "current-context-time" ) );
 
@@ -9066,6 +9613,10 @@ void TestQgsProcessing::parameterMeshDatasetTime()
   QCOMPARE( def->valueAsPythonString( value, context ), QStringLiteral( "{'type': 'defined-date-time','value': QDateTime(QDate(2123, 1, 2), QTime(1, 2, 3))}" ) );
   QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( def->valueAsJsonObject( value, context ) ).dump() ),
             QStringLiteral( "{\"type\":\"defined-date-time\",\"value\":\"2123-01-02T01:02:03\"}" ) );
+
+  QCOMPARE( def->valueAsString( value, context, ok ), QString() );
+  QVERIFY( !ok );
+
   QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( value ), QStringLiteral( "defined-date-time" ) );
   QCOMPARE( QgsProcessingParameterMeshDatasetTime::timeValueAsDefinedDateTime( value ), QDateTime( QDate( 2123, 1, 2 ), QTime( 1, 2, 3 ) ) );
   QVERIFY( !QgsProcessingParameterMeshDatasetTime::timeValueAsDatasetIndex( value ).isValid() );
@@ -9078,6 +9629,10 @@ void TestQgsProcessing::parameterMeshDatasetTime()
   QCOMPARE( def->valueAsPythonString( value, context ), QStringLiteral( "{'type': 'dataset-time-step','value': [1,5]}" ) );
   QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( def->valueAsJsonObject( value, context ) ).dump() ),
             QStringLiteral( "{\"type\":\"dataset-time-step\",\"value\":[1,5]}" ) );
+
+  QCOMPARE( def->valueAsString( value, context, ok ), QString() );
+  QVERIFY( !ok );
+
   QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( value ), QStringLiteral( "dataset-time-step" ) );
   QVERIFY( !QgsProcessingParameterMeshDatasetTime::timeValueAsDefinedDateTime( value ).isValid() );
   QVERIFY( QgsProcessingParameterMeshDatasetTime::timeValueAsDatasetIndex( value ) == QgsMeshDatasetIndex( 1, 5 ) );
@@ -9165,6 +9720,16 @@ void TestQgsProcessing::parameterDateTime()
   QCOMPARE( def->valueAsJsonObject( QDateTime( QDate( 2014, 12, 31 ), QTime( 0, 0, 0 ) ), context ), QVariant( QStringLiteral( "2014-12-31T00:00:00" ) ) );
   QCOMPARE( def->valueAsJsonObject( QDateTime( QDate( 2014, 12, 31 ), QTime( 12, 11, 10 ) ), context ), QVariant( QStringLiteral( "2014-12-31T12:11:10" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "2015-12-31" ), context ), QVariant( QStringLiteral( "2015-12-31" ) ) );
+
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QDateTime( QDate( 2014, 12, 31 ), QTime( 0, 0, 0 ) ), context, ok ), QStringLiteral( "2014-12-31T00:00:00" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QDateTime( QDate( 2014, 12, 31 ), QTime( 12, 11, 10 ) ), context, ok ), QStringLiteral( "2014-12-31T12:11:10" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "2015-12-31" ), context, ok ), QStringLiteral( "2015-12-31" ) );
+  QVERIFY( ok );
 
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterDateTime('non_optional', '', type=QgsProcessingParameterDateTime.DateTime, minValue=QDateTime(QDate(2015, 1, 1), QTime(0, 0, 0)), maxValue=QDateTime(QDate(2015, 12, 31), QTime(0, 0, 0)), defaultValue=QDateTime(QDate(2010, 4, 3), QTime(12, 11, 10)))" ) );
@@ -9301,6 +9866,8 @@ void TestQgsProcessing::parameterDateTime()
 
   QCOMPARE( def->valueAsPythonString( QDate( 2014, 12, 31 ), context ), QStringLiteral( "QDate(2014, 12, 31)" ) );
   QCOMPARE( def->valueAsJsonObject( QDate( 2014, 12, 31 ), context ), QVariant( QStringLiteral( "2014-12-31" ) ) );
+  QCOMPARE( def->valueAsString( QDate( 2014, 12, 31 ), context, ok ), QStringLiteral( "2014-12-31" ) );
+  QVERIFY( ok );
 
   pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterDateTime('non_optional', '', type=QgsProcessingParameterDateTime.Date, minValue=QDateTime(QDate(2015, 1, 1), QTime(0, 0, 0)), maxValue=QDateTime(QDate(2015, 12, 31), QTime(0, 0, 0)), defaultValue=QDate(2010, 4, 3))" ) );
@@ -9406,6 +9973,8 @@ void TestQgsProcessing::parameterDateTime()
 
   QCOMPARE( def->valueAsPythonString( QTime( 13, 14, 15 ), context ), QStringLiteral( "QTime(13, 14, 15)" ) );
   QCOMPARE( def->valueAsJsonObject( QTime( 13, 14, 15 ), context ), QVariant( QStringLiteral( "13:14:15" ) ) );
+  QCOMPARE( def->valueAsString( QTime( 13, 14, 15 ), context, ok ), QStringLiteral( "13:14:15" ) );
+  QVERIFY( ok );
 
   pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterDateTime('non_optional', '', type=QgsProcessingParameterDateTime.Time, minValue=QDateTime(QDate(1, 1, 1), QTime(10, 0, 0)), maxValue=QDateTime(QDate(1, 1, 1), QTime(11, 0, 0)), defaultValue=QTime(12, 11, 13))" ) );
@@ -9505,6 +10074,9 @@ void TestQgsProcessing::parameterDxfLayers()
   QCOMPARE( valueAsPythonString, QStringLiteral( "[{'layer': '%1','attributeIndex': -1}]" ).arg( vectorLayer->source() ) );
   QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( def->valueAsJsonObject( layerList, context ) ).dump() ),
             QStringLiteral( "[{\"attributeIndex\":-1,\"layer\":\"%1\"}]" ).arg( vectorLayer->source() ) );
+  bool ok = false;
+  QCOMPARE( def->valueAsString( layerList, context, ok ), QString() );
+  QVERIFY( !ok );
 
   const QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterDxfLayers('dxf input layer', '')" ) );
@@ -9600,6 +10172,16 @@ void TestQgsProcessing::parameterAnnotationLayer()
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "main" ), context ), QVariant( QStringLiteral( "main" ) ) );
   QCOMPARE( def->valueAsJsonObject( al->id(), context ), QVariant( al->id() ) );
   QCOMPARE( def->valueAsJsonObject( QVariant::fromValue( al ), context ), QVariant( al->id() ) );
+
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "main" ), context, ok ), QStringLiteral( "main" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( al->id(), context, ok ),  al->id() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( al ), context, ok ), al->id() );
+  QVERIFY( ok );
 
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterAnnotationLayer('non_optional', '', defaultValue='somelayer')" ) );
@@ -9738,6 +10320,18 @@ void TestQgsProcessing::parameterPointCloudLayer()
   QCOMPARE( def->valueAsJsonObject( pc1->id(), context ), QVariant( testDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ) ) );
   QCOMPARE( def->valueAsJsonObject( QVariant::fromValue( pc1 ), context ), QVariant( testDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "c:\\test\\new data\\test.las" ), context ), QVariant( QStringLiteral( "c:\\test\\new data\\test.las" ) ) );
+
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( pointCloud, context, ok ), testDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( pc1->id(), context, ok ), testDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( pc1 ), context, ok ), testDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QStringLiteral( "c:\\test\\new data\\test.las" ), context, ok ), QStringLiteral( "c:\\test\\new data\\test.las" ) );
+  QVERIFY( ok );
 
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterPointCloudLayer('non_optional', '', defaultValue='somelayer')" ) );

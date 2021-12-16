@@ -613,6 +613,7 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      * parameter value when running an algorithm directly from a Python command.
      *
      * \see valueAsJsonObject()
+     * \see valueAsString()
      */
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
@@ -624,9 +625,24 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      * converted to a simple string or numeric value equivalent.
      *
      * \see valueAsPythonString()
+     * \see valueAsString()
      * \since QGIS 3.24
      */
     virtual QVariant valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const;
+
+    /**
+     * Returns a string version of the parameter input \a value (if possible).
+     *
+     * \param value value to convert
+     * \param context processing context
+     * \param ok will be set to TRUE if value could be represented as a string
+     * \returns value converted to string
+     *
+     * \see valueAsJsonObject()
+     * \see valueAsPythonString()
+     * \since QGIS 3.24
+     */
+    virtual QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const;
 
     /**
      * Returns a Python comment explaining a parameter \a value, or an empty string if no comment is required.
