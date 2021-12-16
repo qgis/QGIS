@@ -389,6 +389,43 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QVERIFY( !ok );
     }
 
+    void runAsAsJsonMapChecks()
+    {
+      addParameter( new QgsProcessingParameterString( "p1" ) );
+      addParameter( new QgsProcessingParameterEnum( "p2", QString(), QStringList( {"a", "b"} ), true ) );
+      QgsProcessingParameterString *hidden = new QgsProcessingParameterString( "p3" );
+      hidden->setFlags( QgsProcessingParameterDefinition::FlagHidden );
+      addParameter( hidden );
+
+      QVariantMap params;
+      QgsProcessingContext context;
+
+      QString res;
+      QCOMPARE( asMap( params, context ), QVariantMap( { {QStringLiteral( "inputs" ), QVariantMap()}} ) );
+      params.insert( QStringLiteral( "p1" ), "a" );
+      res = QString::fromStdString( QgsJsonUtils::jsonFromVariant( asMap( params, context ) ).dump() );
+      QCOMPARE( res, QStringLiteral( "{\"inputs\":{\"p1\":\"a\"}}" ) );
+      params.insert( QStringLiteral( "p2" ), QVariant() );
+      res = QString::fromStdString( QgsJsonUtils::jsonFromVariant( asMap( params, context ) ).dump() );
+      QCOMPARE( res, QStringLiteral( "{\"inputs\":{\"p1\":\"a\",\"p2\":null}}" ) );
+      params.insert( "p2", "b" );
+      res = QString::fromStdString( QgsJsonUtils::jsonFromVariant( asMap( params, context ) ).dump() );
+      QCOMPARE( res, QStringLiteral( "{\"inputs\":{\"p1\":\"a\",\"p2\":\"b\"}}" ) );
+
+      params.insert( "p2", QStringList( {"b", "c"} ) );
+      res = QString::fromStdString( QgsJsonUtils::jsonFromVariant( asMap( params, context ) ).dump() );
+      QCOMPARE( res, QStringLiteral( "{\"inputs\":{\"p1\":\"a\",\"p2\":[\"b\",\"c\"]}}" ) );
+
+      // hidden, shouldn't be shown
+      params.insert( "p3", "b" );
+      res = QString::fromStdString( QgsJsonUtils::jsonFromVariant( asMap( params, context ) ).dump() );
+      QCOMPARE( res, QStringLiteral( "{\"inputs\":{\"p1\":\"a\",\"p2\":[\"b\",\"c\"]}}" ) );
+
+      // test inclusion of a context setting
+      context.setDistanceUnit( QgsUnitTypes::DistanceMeters );
+      res = QString::fromStdString( QgsJsonUtils::jsonFromVariant( asMap( params, context ) ).dump() );
+      QCOMPARE( res, QStringLiteral( "{\"distance_units\":\"meters\",\"inputs\":{\"p1\":\"a\",\"p2\":[\"b\",\"c\"]}}" ) );
+    }
 
     void addDestParams()
     {
@@ -733,6 +770,7 @@ class TestQgsProcessing: public QObject
     void generateIteratingDestination();
     void asPythonCommand();
     void asQgisProcessCommand();
+    void asJsonMap();
     void modelerAlgorithm();
     void modelExecution();
     void modelBranchPruning();
@@ -10920,6 +10958,14 @@ void TestQgsProcessing::asQgisProcessCommand()
 
   DummyAlgorithm alg( "test" );
   alg.runAsQgisProcessCommandChecks();
+}
+
+void TestQgsProcessing::asJsonMap()
+{
+  // test converting an algorithm to a json serializable map
+
+  DummyAlgorithm alg( "test" );
+  alg.runAsAsJsonMapChecks();
 }
 
 void TestQgsProcessing::modelerAlgorithm()

@@ -462,7 +462,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
     virtual QString asPythonCommand( const QVariantMap &parameters, QgsProcessingContext &context ) const;
 
     /**
-     * Returns a command string which will execut the algorithm using the specified \a parameters
+     * Returns a command string which will execute the algorithm using the specified \a parameters
      * via the command line qgis_process tool.
      *
      * Note that some combinations of parameter types and values cannot be represented as a qgis_process string.
@@ -472,8 +472,17 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \param ok will be set to TRUE if the command was successfully generated
      *
      * \returns equivalent qgis_process command
+     *
+     * \since QGIS 3.24
      */
     virtual QString asQgisProcessCommand( const QVariantMap &parameters, QgsProcessingContext &context, bool &ok SIP_OUT ) const;
+
+    /**
+     * Returns a JSON serializable variant map containing the specified \a parameters and \a context settings.
+     *
+     * \since QGIS 3.24
+     */
+    virtual QVariantMap asMap( const QVariantMap &parameters, QgsProcessingContext &context ) const;
 
     /**
      * Associates this algorithm with its provider. No transfer of ownership is involved.
