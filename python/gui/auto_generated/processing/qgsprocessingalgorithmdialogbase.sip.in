@@ -133,6 +133,13 @@ Sets the logging ``level`` to use when running algorithms from the dialog.
 .. versionadded:: 3.20
 %End
 
+    virtual void setParameters( const QVariantMap &values );
+%Docstring
+Sets the parameter ``values`` to show in the dialog.
+
+.. versionadded:: 3.24
+%End
+
   public slots:
 
     void reportError( const QString &error, bool fatalError );

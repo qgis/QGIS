@@ -25,6 +25,7 @@
 #include "qgsstringutils.h"
 #include "qgsapplication.h"
 #include "qgspanelwidget.h"
+#include "qgsjsonutils.h"
 #include <QToolButton>
 #include <QDesktopServices>
 #include <QScrollBar>
@@ -33,6 +34,7 @@
 #include <QFileDialog>
 #include <QMimeData>
 #include <QMenu>
+#include <nlohmann/json.hpp>
 
 
 ///@cond NOT_STABLE
@@ -160,8 +162,8 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
 
       mCopyAsQgisProcessCommand = new QAction( tr( "Copy as qgis_process Command" ), mAdvancedMenu );
       mCopyAsQgisProcessCommand->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionTerminal.svg" ) ) );
-
       mAdvancedMenu->addAction( mCopyAsQgisProcessCommand );
+
       connect( mCopyAsQgisProcessCommand, &QAction::triggered, this, [this]
       {
         if ( const QgsProcessingAlgorithm *alg = algorithm() )
@@ -190,6 +192,51 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
         }
       } );
 
+      mAdvancedMenu->addSeparator();
+
+      QAction *copyAsJson = new QAction( tr( "Copy as JSON" ), mAdvancedMenu );
+      copyAsJson->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditCopy.svg" ) ) );
+
+      mAdvancedMenu->addAction( copyAsJson );
+      connect( copyAsJson, &QAction::triggered, this, [this]
+      {
+        if ( const QgsProcessingAlgorithm *alg = algorithm() )
+        {
+          QgsProcessingContext *context = processingContext();
+          if ( !context )
+            return;
+
+          const QVariantMap properties = alg->asMap( createProcessingParameters(), *context );
+          const QString json = QString::fromStdString( QgsJsonUtils::jsonFromVariant( properties ).dump( 2 ) );
+
+          QMimeData *m = new QMimeData();
+          m->setText( json );
+          QClipboard *cb = QApplication::clipboard();
+
+#ifdef Q_OS_LINUX
+          cb->setMimeData( m, QClipboard::Selection );
+#endif
+          cb->setMimeData( m, QClipboard::Clipboard );
+        }
+      } );
+
+      mPasteJsonAction = new QAction( tr( "Paste Settings" ), mAdvancedMenu );
+      mPasteJsonAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditPaste.svg" ) ) );
+
+      mAdvancedMenu->addAction( mPasteJsonAction );
+      connect( mPasteJsonAction, &QAction::triggered, this, [this]
+      {
+        const QString text = QApplication::clipboard()->text();
+        if ( text.isEmpty() )
+          return;
+
+        const QVariantMap parameterValues = QgsJsonUtils::parseJson( text ).toMap().value( QStringLiteral( "inputs" ) ).toMap();
+        if ( parameterValues.isEmpty() )
+          return;
+
+        setParameters( parameterValues );
+      } );
+
       mButtonBox->addButton( mAdvancedButton, QDialogButtonBox::ResetRole );
       break;
     }
@@ -200,7 +247,8 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
 
   connect( mAdvancedMenu, &QMenu::aboutToShow, this, [ = ]
   {
-    mCopyAsQgisProcessCommand->setEnabled( algorithm()&& !( algorithm()->flags() & QgsProcessingAlgorithm::FlagNotAvailableInStandaloneTool ) );
+    mCopyAsQgisProcessCommand->setEnabled( algorithm() && !( algorithm()->flags() & QgsProcessingAlgorithm::FlagNotAvailableInStandaloneTool ) );
+    mPasteJsonAction->setEnabled( !QApplication::clipboard()->text().isEmpty() );
   } );
 
   connect( mButtonRun, &QPushButton::clicked, this, &QgsProcessingAlgorithmDialogBase::runAlgorithm );
@@ -224,6 +272,9 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
 }
 
 QgsProcessingAlgorithmDialogBase::~QgsProcessingAlgorithmDialogBase() = default;
+
+void QgsProcessingAlgorithmDialogBase::setParameters( const QVariantMap & )
+{}
 
 void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *algorithm )
 {
