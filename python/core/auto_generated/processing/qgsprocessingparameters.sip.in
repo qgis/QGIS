@@ -526,7 +526,7 @@ parameter value when running an algorithm directly from a Python command.
 Returns a version of the parameter input ``value``, which is suitable for use in a JSON object.
 
 This method must return only simple values which can be losslessly encapsulated in a serialized
-JSON map. For instance, and QGIS class values (such as :py:class:`QgsCoordinateReferenceSystem`) must be
+JSON map. For instance, any QGIS class values (such as :py:class:`QgsCoordinateReferenceSystem`) must be
 converted to a simple string or numeric value equivalent.
 
 .. seealso:: :py:func:`valueAsPythonString`

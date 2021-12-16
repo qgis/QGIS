@@ -2480,7 +2480,7 @@ QVariant QgsProcessingParameterDefinition::valueAsJsonObject( const QVariant &va
   {
     switch ( value.userType() )
     {
-      // simple types which can be directly represented in JSON -- not that strings are NOT handled here yet!
+      // simple types which can be directly represented in JSON -- note that strings are NOT handled here yet!
       case QMetaType::Bool:
       case QMetaType::Char:
       case QMetaType::Int:
@@ -2658,7 +2658,7 @@ QString QgsProcessingParameterDefinition::valueAsString( const QVariant &value, 
 
   switch ( value.userType() )
   {
-    // simple types which can be directly represented in JSON -- not that strings are NOT handled here yet!
+    // simple types which can be directly represented in JSON -- note that strings are NOT handled here yet!
     case QMetaType::Bool:
     case QMetaType::Char:
     case QMetaType::Int:
