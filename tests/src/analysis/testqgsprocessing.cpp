@@ -608,6 +608,7 @@ class TestQgsProcessing: public QObject
     void encodeDecodeUriProvider();
     void normalizeLayerSource();
     void context();
+    void contextToProcessArguments();
     void feedback();
     void mapLayers();
     void mapLayerFromStore();
@@ -1259,6 +1260,36 @@ void TestQgsProcessing::context()
   id = v2->id();
   delete v2;
   QVERIFY( !context2.temporaryLayerStore()->mapLayer( id ) );
+}
+
+void TestQgsProcessing::contextToProcessArguments()
+{
+  // test converting QgsProcessingContext settings to qgis_process arguments
+  QgsProcessingContext context;
+
+  QCOMPARE( context.asQgisProcessArguments(), QStringList() );
+  context.setDistanceUnit( QgsUnitTypes::DistanceKilometers );
+  QCOMPARE( context.asQgisProcessArguments(), QStringList( {QStringLiteral( "--distance_units=km" )} ) );
+
+  context.setAreaUnit( QgsUnitTypes::AreaHectares );
+  QCOMPARE( context.asQgisProcessArguments(), QStringList( {QStringLiteral( "--distance_units=km" ), QStringLiteral( "--area_units=ha" )} ) );
+
+  context.setEllipsoid( QStringLiteral( "EPSG:7019" ) );
+  QCOMPARE( context.asQgisProcessArguments(), QStringList( {QStringLiteral( "--distance_units=km" ), QStringLiteral( "--area_units=ha" ), QStringLiteral( "--ellipsoid=EPSG:7019" )} ) );
+
+  QgsProject p;
+  QgsProcessingContext context2;
+  QVERIFY( p.read( TEST_DATA_DIR + QStringLiteral( "/projects/custom_crs.qgs" ) ) );
+  context2.setProject( &p );
+
+  // by default we don't include the project path argument
+  QCOMPARE( context2.asQgisProcessArguments(), QStringList( {QStringLiteral( "--distance_units=meters" ), QStringLiteral( "--area_units=m2" ), QStringLiteral( "--ellipsoid=NONE" )} ) );
+
+  QCOMPARE( context2.asQgisProcessArguments( QgsProcessingContext::ProcessArgumentFlag::IncludeProjectPath ), QStringList(
+  {
+    QStringLiteral( "--distance_units=meters" ), QStringLiteral( "--area_units=m2" ), QStringLiteral( "--ellipsoid=NONE" ),
+    QStringLiteral( "--project_path=%1" ).arg( TEST_DATA_DIR + QStringLiteral( "/projects/custom_crs.qgs" ) )
+  } ) );
 }
 
 void TestQgsProcessing::feedback()

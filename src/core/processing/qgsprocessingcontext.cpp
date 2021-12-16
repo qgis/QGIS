@@ -139,6 +139,24 @@ void QgsProcessingContext::setLogLevel( LogLevel level )
   mLogLevel = level;
 }
 
+QStringList QgsProcessingContext::asQgisProcessArguments( QgsProcessingContext::ProcessArgumentFlags flags ) const
+{
+  QStringList res;
+  if ( mDistanceUnit != QgsUnitTypes::DistanceUnknownUnit )
+    res << QStringLiteral( "--distance_units=%1" ).arg( QgsUnitTypes::encodeUnit( mDistanceUnit ) );
+  if ( mAreaUnit != QgsUnitTypes::AreaUnknownUnit )
+    res << QStringLiteral( "--area_units=%1" ).arg( QgsUnitTypes::encodeUnit( mAreaUnit ) );
+  if ( !mEllipsoid.isEmpty() )
+    res << QStringLiteral( "--ellipsoid=%1" ).arg( mEllipsoid );
+
+  if ( mProject && flags & ProcessArgumentFlag::IncludeProjectPath )
+  {
+    res << QStringLiteral( "--project_path=%1" ).arg( mProject->fileName() );
+  }
+
+  return res;
+}
+
 QgsDateTimeRange QgsProcessingContext::currentTimeRange() const
 {
   return mCurrentTimeRange;
