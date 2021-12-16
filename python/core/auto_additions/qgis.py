@@ -1187,3 +1187,10 @@ QgsCurve.CounterClockwise.__doc__ = "Counter-clockwise direction"
 Qgis.AngularDirection.__doc__ = 'Angular directions.\n\n.. versionadded:: 3.24\n\n' + '* ``Clockwise``: ' + Qgis.AngularDirection.Clockwise.__doc__ + '\n' + '* ``CounterClockwise``: ' + Qgis.AngularDirection.CounterClockwise.__doc__
 # --
 Qgis.AngularDirection.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.HistoryProviderBackend.LocalProfile.__doc__ = "Local profile"
+Qgis.HistoryProviderBackend.__doc__ = 'History provider backends.\n\n.. versionadded:: 3.24\n\n' + '* ``LocalProfile``: ' + Qgis.HistoryProviderBackend.LocalProfile.__doc__
+# --
+Qgis.HistoryProviderBackend.baseClass = Qgis
+Qgis.HistoryProviderBackends.baseClass = Qgis
+HistoryProviderBackends = Qgis  # dirty hack since SIP seems to introduce the flags in module

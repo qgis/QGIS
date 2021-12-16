@@ -63,6 +63,7 @@
 #include "qgsprovidersourcewidgetproviderregistry.h"
 #include "qgsrelationwidgetregistry.h"
 #include "qgssettingsregistrygui.h"
+#include "qgshistoryproviderregistry.h"
 
 QgsGui *QgsGui::instance()
 {
@@ -165,6 +166,11 @@ QgsProviderGuiRegistry *QgsGui::providerGuiRegistry()
   return instance()->mProviderGuiRegistry;
 }
 
+QgsHistoryProviderRegistry *QgsGui::historyProviderRegistry()
+{
+  return instance()->mHistoryProviderRegistry;
+}
+
 void QgsGui::enableAutoGeometryRestore( QWidget *widget, const QString &key )
 {
   if ( widget->objectName().isEmpty() )
@@ -207,6 +213,7 @@ QgsGui::~QgsGui()
   delete mEditorWidgetRegistry;
   delete mMapLayerActionRegistry;
   delete mSourceSelectProviderRegistry;
+  delete mHistoryProviderRegistry;
   delete mShortcutsManager;
   delete mNative;
   delete mNumericFormatGuiRegistry;
@@ -268,6 +275,7 @@ QgsGui::QgsGui()
   mCodeEditorColorSchemeRegistry = new QgsCodeEditorColorSchemeRegistry();
 
   // provider gui registry initialize QgsProviderRegistry too
+  mHistoryProviderRegistry = new QgsHistoryProviderRegistry();
   mProviderGuiRegistry = new QgsProviderGuiRegistry( QgsApplication::pluginPath() );
   mProjectStorageGuiRegistry = new QgsProjectStorageGuiRegistry();
   mDataItemGuiProviderRegistry = new QgsDataItemGuiProviderRegistry();

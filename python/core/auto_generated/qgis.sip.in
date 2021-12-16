@@ -763,6 +763,14 @@ The development version
       CounterClockwise,
     };
 
+    enum class HistoryProviderBackend
+    {
+      LocalProfile,
+//      Project = 1 << 1, //!< QGIS Project  (not yet implemented)
+    };
+    typedef QFlags<Qgis::HistoryProviderBackend> HistoryProviderBackends;
+
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -865,6 +873,8 @@ QFlags<Qgis::VectorLayerTypeFlag> operator|(Qgis::VectorLayerTypeFlag f1, QFlags
 QFlags<Qgis::MarkerLinePlacement> operator|(Qgis::MarkerLinePlacement f1, QFlags<Qgis::MarkerLinePlacement> f2);
 
 QFlags<Qgis::TextRendererFlag> operator|(Qgis::TextRendererFlag f1, QFlags<Qgis::TextRendererFlag> f2);
+
+QFlags<Qgis::HistoryProviderBackend> operator|(Qgis::HistoryProviderBackend f1, QFlags<Qgis::HistoryProviderBackend> f2);
 
 
 

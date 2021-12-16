@@ -1249,6 +1249,20 @@ class CORE_EXPORT Qgis
     Q_ENUM( AngularDirection )
 
     /**
+     * History provider backends.
+     *
+     * \since QGIS 3.24
+     */
+    enum class HistoryProviderBackend : int
+    {
+      LocalProfile = 1 << 0, //!< Local profile
+//      Project = 1 << 1, //!< QGIS Project  (not yet implemented)
+    };
+    Q_ENUM( HistoryProviderBackend )
+    Q_DECLARE_FLAGS( HistoryProviderBackends, HistoryProviderBackend )
+    Q_FLAG( HistoryProviderBackends )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */
@@ -1380,6 +1394,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RenderContextFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorLayerTypeFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MarkerLinePlacements )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TextRendererFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::HistoryProviderBackends )
 
 
 // hack to workaround warnings when casting void pointers

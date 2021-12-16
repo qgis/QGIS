@@ -153,6 +153,14 @@ Returns the global relation widget registry, used for managing all known relatio
 .. versionadded:: 3.18
 %End
 
+
+    static QgsHistoryProviderRegistry *historyProviderRegistry() /KeepReference/;
+%Docstring
+Returns the global history provider registry, used for tracking history providers.
+
+.. versionadded:: 3.24
+%End
+
     static void enableAutoGeometryRestore( QWidget *widget, const QString &key = QString() );
 %Docstring
 Register the widget to allow its position to be automatically saved and restored when open and closed.
