@@ -158,14 +158,50 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
         }
       } );
 
+      mCopyAsQgisProcessCommand = new QAction( tr( "Copy as qgis_process Command" ), mAdvancedMenu );
+      mCopyAsQgisProcessCommand->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionTerminal.svg" ) ) );
+
+      mAdvancedMenu->addAction( mCopyAsQgisProcessCommand );
+      connect( mCopyAsQgisProcessCommand, &QAction::triggered, this, [this]
+      {
+        if ( const QgsProcessingAlgorithm *alg = algorithm() )
+        {
+          QgsProcessingContext *context = processingContext();
+          if ( !context )
+            return;
+
+          bool ok = false;
+          const QString command = alg->asQgisProcessCommand( createProcessingParameters(), *context, ok );
+          if ( ! ok )
+          {
+            mMessageBar->pushMessage( tr( "Current settings are not compatible with qgis_process" ), Qgis::MessageLevel::Warning );
+          }
+          else
+          {
+            QMimeData *m = new QMimeData();
+            m->setText( command );
+            QClipboard *cb = QApplication::clipboard();
+
+#ifdef Q_OS_LINUX
+            cb->setMimeData( m, QClipboard::Selection );
+#endif
+            cb->setMimeData( m, QClipboard::Clipboard );
+          }
+        }
+      } );
+
       mButtonBox->addButton( mAdvancedButton, QDialogButtonBox::ResetRole );
       break;
     }
 
     case DialogMode::Batch:
       break;
-
   }
+
+  connect( mAdvancedMenu, &QMenu::aboutToShow, this, [ = ]
+  {
+    mCopyAsQgisProcessCommand->setEnabled( algorithm()&& !( algorithm()->flags() & QgsProcessingAlgorithm::FlagNotAvailableInStandaloneTool ) );
+  } );
 
   connect( mButtonRun, &QPushButton::clicked, this, &QgsProcessingAlgorithmDialogBase::runAlgorithm );
   connect( mButtonChangeParameters, &QPushButton::clicked, this, &QgsProcessingAlgorithmDialogBase::showParameters );
