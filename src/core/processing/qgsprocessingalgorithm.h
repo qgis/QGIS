@@ -462,6 +462,20 @@ class CORE_EXPORT QgsProcessingAlgorithm
     virtual QString asPythonCommand( const QVariantMap &parameters, QgsProcessingContext &context ) const;
 
     /**
+     * Returns a command string which will execut the algorithm using the specified \a parameters
+     * via the command line qgis_process tool.
+     *
+     * Note that some combinations of parameter types and values cannot be represented as a qgis_process string.
+     *
+     * \param parameters algorithm parameters
+     * \param context processing context
+     * \param ok will be set to TRUE if the command was successfully generated
+     *
+     * \returns equivalent qgis_process command
+     */
+    virtual QString asQgisProcessCommand( const QVariantMap &parameters, QgsProcessingContext &context, bool &ok SIP_OUT ) const;
+
+    /**
      * Associates this algorithm with its provider. No transfer of ownership is involved.
      */
     void setProvider( QgsProcessingProvider *provider );

@@ -345,6 +345,51 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QCOMPARE( asPythonCommand( params, context ), QStringLiteral( "processing.run(\"test\", {'p1':'a','p2':'b'})" ) );
     }
 
+    void runAsQgisProcessCommandChecks()
+    {
+      addParameter( new QgsProcessingParameterString( "p1" ) );
+      addParameter( new QgsProcessingParameterEnum( "p2", QString(), QStringList( {"a", "b"} ), true ) );
+      QgsProcessingParameterString *hidden = new QgsProcessingParameterString( "p3" );
+      hidden->setFlags( QgsProcessingParameterDefinition::FlagHidden );
+      addParameter( hidden );
+
+      QVariantMap params;
+      QgsProcessingContext context;
+
+      bool ok = false;
+      QCOMPARE( asQgisProcessCommand( params, context, ok ), QStringLiteral( "qgis_process run test" ) );
+      QVERIFY( ok );
+      params.insert( QStringLiteral( "p1" ), "a" );
+      QCOMPARE( asQgisProcessCommand( params, context, ok ), QStringLiteral( "qgis_process run test --p1=a" ) );
+      QVERIFY( ok );
+      params.insert( QStringLiteral( "p2" ), QVariant() );
+      QCOMPARE( asQgisProcessCommand( params, context, ok ), QStringLiteral( "qgis_process run test --p1=a" ) );
+      QVERIFY( ok );
+      params.insert( "p2", "b" );
+      QCOMPARE( asQgisProcessCommand( params, context, ok ), QStringLiteral( "qgis_process run test --p1=a --p2=b" ) );
+      QVERIFY( ok );
+
+      params.insert( "p2", QStringList( {"b", "c"} ) );
+      QCOMPARE( asQgisProcessCommand( params, context, ok ), QStringLiteral( "qgis_process run test --p1=a --p2=b --p2=c" ) );
+      QVERIFY( ok );
+
+      // hidden, shouldn't be shown
+      params.insert( "p3", "b" );
+      QCOMPARE( asQgisProcessCommand( params, context, ok ), QStringLiteral( "qgis_process run test --p1=a --p2=b --p2=c" ) );
+      QVERIFY( ok );
+
+      // test inclusion of a context setting
+      context.setDistanceUnit( QgsUnitTypes::DistanceMeters );
+      QCOMPARE( asQgisProcessCommand( params, context, ok ), QStringLiteral( "qgis_process run test --distance_units=meters --p1=a --p2=b --p2=c" ) );
+      QVERIFY( ok );
+
+      // test non-convertible parameter value
+      params.insert( "p2", QVariant::fromValue( QRectF( 0, 1, 2, 3 ) ) );
+      QCOMPARE( asQgisProcessCommand( params, context, ok ), QString() );
+      QVERIFY( !ok );
+    }
+
+
     void addDestParams()
     {
       QgsProcessingParameterFeatureSink *sinkParam1 = new QgsProcessingParameterFeatureSink( "supports" );
@@ -686,6 +731,7 @@ class TestQgsProcessing: public QObject
     void validateInputCrs();
     void generateIteratingDestination();
     void asPythonCommand();
+    void asQgisProcessCommand();
     void modelerAlgorithm();
     void modelExecution();
     void modelBranchPruning();
@@ -10826,6 +10872,14 @@ void TestQgsProcessing::asPythonCommand()
 {
   DummyAlgorithm alg( "test" );
   alg.runAsPythonCommandChecks();
+}
+
+void TestQgsProcessing::asQgisProcessCommand()
+{
+  // test converting an algorithm to a qgis_process command
+
+  DummyAlgorithm alg( "test" );
+  alg.runAsQgisProcessCommandChecks();
 }
 
 void TestQgsProcessing::modelerAlgorithm()
