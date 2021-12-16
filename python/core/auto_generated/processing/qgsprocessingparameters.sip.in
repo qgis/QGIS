@@ -544,7 +544,28 @@ Returns a string version of the parameter input ``value`` (if possible).
 :param context: processing context
 
 :return: - value converted to string
-         - ok: will be set to ``True`` if value could be represented as a string
+         - ok: will be set to ``True`` if value could be represented as a string.
+
+.. seealso:: :py:func:`valueAsStringList`
+
+.. seealso:: :py:func:`valueAsJsonObject`
+
+.. seealso:: :py:func:`valueAsPythonString`
+
+.. versionadded:: 3.24
+%End
+
+    virtual QStringList valueAsStringList( const QVariant &value, QgsProcessingContext &context, bool &ok /Out/ ) const;
+%Docstring
+Returns a string list version of the parameter input ``value`` (if possible).
+
+:param value: value to convert
+:param context: processing context
+
+:return: - value converted to string list
+         - ok: will be set to ``True`` if value could be represented as a string list
+
+.. seealso:: :py:func:`valueAsString`
 
 .. seealso:: :py:func:`valueAsJsonObject`
 

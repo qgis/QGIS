@@ -2672,6 +2672,17 @@ void TestQgsProcessing::parameterBoolean()
   QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
   QVERIFY( ok );
 
+  QCOMPARE( def->valueAsStringList( false, context, ok ), QStringList( {QStringLiteral( "false" )} ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsStringList( true, context, ok ), QStringList( {QStringLiteral( "true" )} ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsStringList( "false", context, ok ), QStringList( {QStringLiteral( "false" )} ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsStringList( "true", context, ok ), QStringList( {QStringLiteral( "true" )} ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsStringList( QVariant(), context, ok ), QStringList() );
+  QVERIFY( ok );
+
   QString code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##non_optional_default_false=boolean false" ) );
   std::unique_ptr< QgsProcessingParameterBoolean > fromCode( dynamic_cast< QgsProcessingParameterBoolean * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
@@ -4267,6 +4278,17 @@ void TestQgsProcessing::parameterMatrix()
   QCOMPARE( def->valueAsString( "1,2,3", context, ok ), QVariant( QStringLiteral( "1,2,3" ) ) );
   QVERIFY( ok );
 
+  QCOMPARE( def->valueAsStringList( QVariantList() << 1 << 2.5 << 3, context, ok ), QStringList( {QStringLiteral( "1" ), QStringLiteral( "2.5" ), QStringLiteral( "3" )} ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsStringList( QVariantList() << ( QVariantList() << 1 << 2 << 3 ) << ( QVariantList() << 1 << 2 << 3 ), context, ok ), QStringList( {QStringLiteral( "1" ), QStringLiteral( "2" ), QStringLiteral( "3" ), QStringLiteral( "1" ), QStringLiteral( "2" ), QStringLiteral( "3" )} ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsStringList( QVariantList() << ( QVariantList() << 1 << QStringLiteral( "value" ) << 3 ) << ( QVariantList() << 1 << 2 << QStringLiteral( "it's a value" ) ), context, ok ), QStringList( {"1", "value", "3", "1", "2",  "it's a value" } ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsStringList( QVariantList() << ( QVariantList() << 1 << QVariant() << 3 ) << ( QVariantList() << QVariant() << 2 << 3 ), context, ok ), QStringList( {"1", "3", "2", "3"} ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsStringList( QVariantList() << ( QVariantList() << 1 << QString( "" ) << 3 ) << ( QVariantList() << 1 << 2 << QString( "" ) ), context, ok ), QStringList( {"1", "", "3", "1", "2", "" } ) );
+  QVERIFY( ok );
+
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMatrix('non_optional', '', numberRows=3, hasFixedNumberRows=False, headers=[], defaultValue=None)" ) );
 
@@ -4470,6 +4492,9 @@ void TestQgsProcessing::parameterLayerList()
   QCOMPARE( def->valueAsString( QStringList() << r1->id() << raster2, context, ok ), QString() );
   QVERIFY( !ok );
   QCOMPARE( def->valueAsString( "uri='complex' username=\"complex\"", context, ok ), QStringLiteral( "uri='complex' username=\"complex\"" ) );
+  QVERIFY( ok );
+
+  QCOMPARE( def->valueAsStringList( QStringList() << r1->id() << raster2, context, ok ), QStringList( { QString( testDataDir + QStringLiteral( "tenbytenraster.asc" ) ), QString( testDataDir + QStringLiteral( "landsat.tif" ) ) } ) );
   QVERIFY( ok );
 
   QString pythonCode = def->asPythonString();
@@ -4678,6 +4703,11 @@ void TestQgsProcessing::parameterLayerList()
   QVERIFY( !ok );
   QCOMPARE( def->valueAsString( QVariantList() << "c" << "d", context, ok ), QString() );
   QVERIFY( !ok );
+
+  QCOMPARE( def->valueAsStringList( QStringList() << "a" << "B", context, ok ), QStringList( {"a", "B"} ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsStringList( QVariantList() << "c" << "d", context, ok ), QStringList( {"c", "d"} ) );
+  QVERIFY( ok );
 }
 
 void TestQgsProcessing::parameterDistance()
@@ -5224,6 +5254,9 @@ void TestQgsProcessing::parameterRange()
   QCOMPARE( def->valueAsString( QVariantList() << 1.1 << 2, context, ok ), QString() );
   QVERIFY( !ok );
 
+  QCOMPARE( def->valueAsStringList( QVariantList() << 1.1 << 2, context, ok ), QStringList( {"1.1", "2"} ) );
+  QVERIFY( ok );
+
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterRange('non_optional', '', type=QgsProcessingParameterNumber.Double, defaultValue=[5,6])" ) );
 
@@ -5609,6 +5642,9 @@ void TestQgsProcessing::parameterEnum()
   QCOMPARE( def->valueAsString( QVariantList() << 1 << 2, context, ok ), QString() );
   QVERIFY( !ok );
   QCOMPARE( def->valueAsString( QStringLiteral( "1,2" ), context, ok ), QStringLiteral( "1,2" ) );
+  QVERIFY( ok );
+
+  QCOMPARE( def->valueAsStringList( QVariantList() << 1 << 2, context, ok ), QStringList( {"1", "2"} ) );
   QVERIFY( ok );
 
   QCOMPARE( def->valueAsPythonComment( QVariant(), context ), QString() );
@@ -6403,6 +6439,9 @@ void TestQgsProcessing::parameterField()
   QVERIFY( ok );
   QCOMPARE( def->valueAsString( QStringList() << "a" << "b", context, ok ), QString() );
   QVERIFY( !ok );
+
+  QCOMPARE( def->valueAsStringList( QStringList() << "a" << "b", context, ok ), QStringList( {"a", "b"} ) );
+  QVERIFY( ok );
 
   QVariantMap map = def->toVariantMap();
   QgsProcessingParameterField fromMap( "x" );
@@ -8118,6 +8157,11 @@ void TestQgsProcessing::parameterBand()
   QCOMPARE( def->valueAsString( QVariantList() << 1 << 2, context, ok ), QString() );
   QVERIFY( !ok );
 
+  QCOMPARE( def->valueAsStringList( QStringList() << "1" << "2", context, ok ), QStringList( {"1", "2"} ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsStringList( QVariantList() << 1 << 2, context, ok ), QStringList( {"1", "2"} ) );
+  QVERIFY( ok );
+
   const QVariantMap map = def->toVariantMap();
   QgsProcessingParameterBand fromMap( "x" );
   QVERIFY( fromMap.fromVariantMap( map ) );
@@ -9404,6 +9448,9 @@ void TestQgsProcessing::parameterAggregate()
   QCOMPARE( def->valueAsString( QVariant( QVariantList() << map << map2 ), context, ok ), QString() );
   QVERIFY( !ok );
 
+  QCOMPARE( def->valueAsStringList( QVariant( QVariantList() << map << map2 ), context, ok ), QStringList() );
+  QVERIFY( !ok );
+
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterAggregate('non_optional', '', parentLayerParameterName='parent')" ) );
 
@@ -9481,6 +9528,9 @@ void TestQgsProcessing::parameterTinInputLayers()
   QCOMPARE( def->valueAsString( layerList, context, ok ), QString() );
   QVERIFY( !ok );
 
+  QCOMPARE( def->valueAsStringList( layerList, context, ok ), QStringList() );
+  QVERIFY( !ok );
+
   const QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterTinInputLayers('tin input layer', '')" ) );
 }
@@ -9534,6 +9584,9 @@ void TestQgsProcessing::parameterMeshDatasetGroups()
   QCOMPARE( def->valueAsString( groupsList, context, ok ), QString() );
   QVERIFY( !ok );
 
+  QCOMPARE( def->valueAsStringList( groupsList, context, ok ), QStringList( {"0", "5"} ) );
+  QVERIFY( ok );
+
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMeshDatasetGroups('dataset groups', 'groups', dataType=[QgsMeshDatasetGroupMetadata.DataOnVertices])" ) );
 
@@ -9568,6 +9621,9 @@ void TestQgsProcessing::parameterMeshDatasetGroups()
 
   QCOMPARE( def->valueAsString( groupsList, context, ok ), QString() );
   QVERIFY( !ok );
+
+  QCOMPARE( def->valueAsStringList( groupsList, context, ok ), QStringList( {"2", "6"} ) );
+  QVERIFY( ok );
 
   QVERIFY( !def->dependsOnOtherParameters().isEmpty() );
   QCOMPARE( def->meshLayerParameterName(), QStringLiteral( "layer parameter" ) );
@@ -9622,6 +9678,9 @@ void TestQgsProcessing::parameterMeshDatasetTime()
   QCOMPARE( def->valueAsPythonString( value, context ), QStringLiteral( "{'type': 'static'}" ) );
 
   QCOMPARE( def->valueAsString( value, context, ok ), QString() );
+  QVERIFY( !ok );
+
+  QCOMPARE( def->valueAsStringList( value, context, ok ), QStringList() );
   QVERIFY( !ok );
 
   QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( value ), QStringLiteral( "static" ) );
@@ -10107,6 +10166,9 @@ void TestQgsProcessing::parameterDxfLayers()
             QStringLiteral( "[{\"attributeIndex\":-1,\"layer\":\"%1\"}]" ).arg( vectorLayer->source() ) );
   bool ok = false;
   QCOMPARE( def->valueAsString( layerList, context, ok ), QString() );
+  QVERIFY( !ok );
+
+  QCOMPARE( def->valueAsStringList( layerList, context, ok ), QStringList() );
   QVERIFY( !ok );
 
   const QString pythonCode = def->asPythonString();
