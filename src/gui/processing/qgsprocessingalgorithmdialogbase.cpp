@@ -247,7 +247,8 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
 
   connect( mAdvancedMenu, &QMenu::aboutToShow, this, [ = ]
   {
-    mCopyAsQgisProcessCommand->setEnabled( algorithm() && !( algorithm()->flags() & QgsProcessingAlgorithm::FlagNotAvailableInStandaloneTool ) );
+    mCopyAsQgisProcessCommand->setEnabled( algorithm()
+                                           && !( algorithm()->flags() & QgsProcessingAlgorithm::FlagNotAvailableInStandaloneTool ) );
     mPasteJsonAction->setEnabled( !QApplication::clipboard()->text().isEmpty() );
   } );
 
