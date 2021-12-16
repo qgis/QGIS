@@ -105,9 +105,10 @@ CTEST_TEST
 CTEST_UPDATE
 CTEST_UPLOAD
 EOF
+ELSEIF
 )
 
 echo $CMAKE_CMDS
 
 find . -iname CMakeLists.txt | xargs \
-gsed -i -r "s/\b((${CMAKE_CMDS}) *\()/\L\1/g; s/(ELSE|ENDIF|ELSEIF) *\(.*\)/\L\1()/"
+gsed -i -r "s/\b((${CMAKE_CMDS}) *\()/\L\1/g; s/(ELSE|ENDIF) *\(.*\)/\L\1()/"
