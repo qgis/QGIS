@@ -621,7 +621,7 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      * Returns a version of the parameter input \a value, which is suitable for use in a JSON object.
      *
      * This method must return only simple values which can be losslessly encapsulated in a serialized
-     * JSON map. For instance, and QGIS class values (such as QgsCoordinateReferenceSystem) must be
+     * JSON map. For instance, any QGIS class values (such as QgsCoordinateReferenceSystem) must be
      * converted to a simple string or numeric value equivalent.
      *
      * \see valueAsPythonString()
