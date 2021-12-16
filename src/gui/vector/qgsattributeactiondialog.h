@@ -35,6 +35,10 @@ back to QgsVectorLayer.
 class QgsActionManager;
 class QgsVectorLayer;
 
+/**
+ * \ingroup gui
+ * \class QgsAttributeActionDialog
+ */
 class GUI_EXPORT QgsAttributeActionDialog: public QWidget, private Ui::QgsAttributeActionDialogBase
 {
     Q_OBJECT

@@ -25,6 +25,8 @@
 #include <QPointer>
 #include <QFileInfo>
 
+///@cond PRIVATE
+
 QgsWebDAVExternalStorageStoreTask::QgsWebDAVExternalStorageStoreTask( const QUrl &url, const QString &filePath, const QString &authCfg )
   : QgsTask( tr( "Storing %1" ).arg( QFileInfo( filePath ).baseName() ) )
   , mUrl( url )
@@ -199,3 +201,5 @@ QgsExternalStorageFetchedContent *QgsWebDAVExternalStorage::doFetch( const QStri
 
   return new QgsWebDAVExternalStorageFetchedContent( fetchedContent );
 }
+
+///@endcond

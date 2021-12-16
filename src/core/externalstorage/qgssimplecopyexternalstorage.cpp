@@ -20,6 +20,8 @@
 
 #include <QFileInfo>
 
+///@cond PRIVATE
+
 QgsSimpleCopyExternalStorageStoredContent::QgsSimpleCopyExternalStorageStoredContent( const QString &filePath, const QString &url, const QString &authcfg )
 {
   Q_UNUSED( authcfg );
@@ -116,3 +118,5 @@ QgsExternalStorageFetchedContent *QgsSimpleCopyExternalStorage::doFetch( const Q
 
   return new QgsSimpleCopyExternalStorageFetchedContent( url );
 }
+
+///@endcond
