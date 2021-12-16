@@ -445,6 +445,20 @@ Algorithms which cannot be run from a Python command should return an empty
 string.
 %End
 
+    virtual QString asQgisProcessCommand( const QVariantMap &parameters, QgsProcessingContext &context, bool &ok /Out/ ) const;
+%Docstring
+Returns a command string which will execut the algorithm using the specified ``parameters``
+via the command line qgis_process tool.
+
+Note that some combinations of parameter types and values cannot be represented as a qgis_process string.
+
+:param parameters: algorithm parameters
+:param context: processing context
+
+:return: - equivalent qgis_process command
+         - ok: will be set to ``True`` if the command was successfully generated
+%End
+
     void setProvider( QgsProcessingProvider *provider );
 %Docstring
 Associates this algorithm with its provider. No transfer of ownership is involved.
