@@ -515,6 +515,21 @@ layers and other factors within the context.
 %Docstring
 Returns a string version of the parameter input ``value``, which is suitable for use as an input
 parameter value when running an algorithm directly from a Python command.
+
+.. seealso:: :py:func:`valueAsJsonObject`
+%End
+
+    virtual QVariant valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const;
+%Docstring
+Returns a version of the parameter input ``value``, which is suitable for use in a JSON object.
+
+This method must return only simple values which can be losslessly encapsulated in a serialized
+JSON map. For instance, and QGIS class values (such as :py:class:`QgsCoordinateReferenceSystem`) must be
+converted to a simple string or numeric value equivalent.
+
+.. seealso:: :py:func:`valueAsPythonString`
+
+.. versionadded:: 3.24
 %End
 
     virtual QString valueAsPythonComment( const QVariant &value, QgsProcessingContext &context ) const;
