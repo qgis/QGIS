@@ -611,8 +611,22 @@ class CORE_EXPORT QgsProcessingParameterDefinition
     /**
      * Returns a string version of the parameter input \a value, which is suitable for use as an input
      * parameter value when running an algorithm directly from a Python command.
+     *
+     * \see valueAsJsonObject()
      */
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    /**
+     * Returns a version of the parameter input \a value, which is suitable for use in a JSON object.
+     *
+     * This method must return only simple values which can be losslessly encapsulated in a serialized
+     * JSON map. For instance, and QGIS class values (such as QgsCoordinateReferenceSystem) must be
+     * converted to a simple string or numeric value equivalent.
+     *
+     * \see valueAsPythonString()
+     * \since QGIS 3.24
+     */
+    virtual QVariant valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const;
 
     /**
      * Returns a Python comment explaining a parameter \a value, or an empty string if no comment is required.
