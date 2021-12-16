@@ -635,14 +635,30 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      *
      * \param value value to convert
      * \param context processing context
-     * \param ok will be set to TRUE if value could be represented as a string
+     * \param ok will be set to TRUE if value could be represented as a string.
      * \returns value converted to string
      *
+     * \see valueAsStringList()
      * \see valueAsJsonObject()
      * \see valueAsPythonString()
      * \since QGIS 3.24
      */
     virtual QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const;
+
+    /**
+     * Returns a string list version of the parameter input \a value (if possible).
+     *
+     * \param value value to convert
+     * \param context processing context
+     * \param ok will be set to TRUE if value could be represented as a string list
+     * \returns value converted to string list
+     *
+     * \see valueAsString()
+     * \see valueAsJsonObject()
+     * \see valueAsPythonString()
+     * \since QGIS 3.24
+     */
+    virtual QStringList valueAsStringList( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const;
 
     /**
      * Returns a Python comment explaining a parameter \a value, or an empty string if no comment is required.
