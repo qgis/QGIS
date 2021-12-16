@@ -191,6 +191,13 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
      */
     void setLogLevel( QgsProcessingContext::LogLevel level );
 
+    /**
+     * Sets the parameter \a values to show in the dialog.
+     *
+     * \since QGIS 3.24
+     */
+    virtual void setParameters( const QVariantMap &values );
+
   public slots:
 
     /**
@@ -422,6 +429,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     QPushButton *mAdvancedButton = nullptr;
     QMenu *mAdvancedMenu = nullptr;
     QAction *mCopyAsQgisProcessCommand = nullptr;
+    QAction *mPasteJsonAction = nullptr;
 
     bool mExecuted = false;
     bool mExecutedAnyResult = false;
