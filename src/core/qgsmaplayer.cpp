@@ -98,6 +98,11 @@ QgsMapLayer::QgsMapLayer( QgsMapLayerType type,
 
 QgsMapLayer::~QgsMapLayer()
 {
+  if ( project() && project()->pathResolver().writePath( mDataSource ).startsWith( "attachment:" ) )
+  {
+    project()->removeAttachedFile( mDataSource );
+  }
+
   delete m3DRenderer;
   delete mLegend;
   delete mStyleManager;
