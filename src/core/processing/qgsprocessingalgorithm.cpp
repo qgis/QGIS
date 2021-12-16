@@ -340,6 +340,30 @@ QString QgsProcessingAlgorithm::asQgisProcessCommand( const QVariantMap &paramet
   return parts.join( ' ' );
 }
 
+QVariantMap QgsProcessingAlgorithm::asMap( const QVariantMap &parameters, QgsProcessingContext &context ) const
+{
+  QVariantMap properties = context.exportToMap();
+
+  // we only include the project path argument if a project is actually required by the algorithm
+  if ( !( flags() & FlagRequiresProject ) )
+    properties.remove( QStringLiteral( "project_path" ) );
+
+  QVariantMap paramValues;
+  for ( const QgsProcessingParameterDefinition *def : mParameters )
+  {
+    if ( def->flags() & QgsProcessingParameterDefinition::FlagHidden )
+      continue;
+
+    if ( !parameters.contains( def->name() ) )
+      continue;
+
+    paramValues.insert( def->name(), def->valueAsJsonObject( parameters.value( def->name() ), context ) );
+  }
+
+  properties.insert( QStringLiteral( "inputs" ), paramValues );
+  return properties;
+}
+
 bool QgsProcessingAlgorithm::addParameter( QgsProcessingParameterDefinition *definition, bool createOutput )
 {
   if ( !definition )
