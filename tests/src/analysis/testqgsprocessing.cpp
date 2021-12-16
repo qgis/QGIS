@@ -654,6 +654,7 @@ class TestQgsProcessing: public QObject
     void normalizeLayerSource();
     void context();
     void contextToProcessArguments();
+    void contextToMap();
     void feedback();
     void mapLayers();
     void mapLayerFromStore();
@@ -1335,6 +1336,45 @@ void TestQgsProcessing::contextToProcessArguments()
   {
     QStringLiteral( "--distance_units=meters" ), QStringLiteral( "--area_units=m2" ), QStringLiteral( "--ellipsoid=NONE" ),
     QStringLiteral( "--project_path=%1" ).arg( TEST_DATA_DIR + QStringLiteral( "/projects/custom_crs.qgs" ) )
+  } ) );
+}
+
+void TestQgsProcessing::contextToMap()
+{
+  // test converting QgsProcessingContext settings to a json map
+  QgsProcessingContext context;
+
+  QCOMPARE( context.exportToMap(), QVariantMap() );
+  context.setDistanceUnit( QgsUnitTypes::DistanceKilometers );
+  QCOMPARE( context.exportToMap(), QVariantMap( {{
+      QStringLiteral( "distance_units" ), QStringLiteral( "km" )
+    }} ) );
+
+  context.setAreaUnit( QgsUnitTypes::AreaHectares );
+  QCOMPARE( context.exportToMap(), QVariantMap(
+  {
+    {QStringLiteral( "distance_units" ), QStringLiteral( "km" )},
+    {QStringLiteral( "area_units" ), QStringLiteral( "ha" )}
+  } ) );
+
+  context.setEllipsoid( QStringLiteral( "EPSG:7019" ) );
+  QCOMPARE( context.exportToMap(), QVariantMap(
+  {
+    {QStringLiteral( "distance_units" ), QStringLiteral( "km" )},
+    {QStringLiteral( "area_units" ), QStringLiteral( "ha" )},
+    {QStringLiteral( "ellipsoid" ), QStringLiteral( "EPSG:7019" )},
+  } ) );
+
+  QgsProject p;
+  QgsProcessingContext context2;
+  QVERIFY( p.read( TEST_DATA_DIR + QStringLiteral( "/projects/custom_crs.qgs" ) ) );
+  context2.setProject( &p );
+  QCOMPARE( context2.exportToMap(), QVariantMap(
+  {
+    {QStringLiteral( "distance_units" ), QStringLiteral( "meters" )},
+    {QStringLiteral( "area_units" ), QStringLiteral( "m2" )},
+    {QStringLiteral( "ellipsoid" ), QStringLiteral( "NONE" )},
+    {QStringLiteral( "project_path" ), QString( TEST_DATA_DIR + QStringLiteral( "/projects/custom_crs.qgs" ) )}
   } ) );
 }
 

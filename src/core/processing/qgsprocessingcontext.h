@@ -658,6 +658,13 @@ class CORE_EXPORT QgsProcessingContext
     void setLogLevel( LogLevel level );
 
     /**
+     * Exports the context's settings to a variant map.
+     *
+     * \since QGIS 3.24
+     */
+    QVariantMap exportToMap() const;
+
+    /**
      * Flags controlling the results given by asQgisProcessArguments().
      *
      * \since QGIS 3.24
