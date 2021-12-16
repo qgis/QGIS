@@ -423,8 +423,11 @@ void QgsExpressionTreeView::loadLayers()
 
 void QgsExpressionTreeView::loadLayerFields( QgsVectorLayer *layer, QgsExpressionItem *parentItem )
 {
-  const QgsFields fields { layer->fields() };
-  for ( int fieldIdx = 0; fieldIdx < layer->fields().count(); ++fieldIdx )
+  if ( !layer )
+    return;
+
+  const QgsFields fields = layer->fields();
+  for ( int fieldIdx = 0; fieldIdx < fields.count(); ++fieldIdx )
   {
     const QgsField field = fields.at( fieldIdx );
     QIcon icon = fields.iconForField( fieldIdx );
