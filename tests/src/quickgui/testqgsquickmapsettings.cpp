@@ -1,5 +1,5 @@
 /***************************************************************************
-     testqgsquickutils.cpp
+     testqgsquickmapsettings.cpp
      --------------------------------------
   Date                 : Nov 2017
   Copyright            : (C) 2017 by Peter Petrik
@@ -17,33 +17,28 @@
 #include <QDesktopWidget>
 
 #include "qgsapplication.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgscoordinatetransformcontext.h"
-#include "qgspoint.h"
-#include "qgspointxy.h"
 #include "qgstest.h"
 #include "qgis.h"
 #include "qgsunittypes.h"
 
-#include "qgsquickutils.h"
+#include "qgsquickmapsettings.h"
 
-class TestQgsQuickUtils: public QObject
+class TestQgsQuickSettings: public QObject
 {
     Q_OBJECT
   private slots:
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
 
-    void screen_density();
-  private:
-    QgsQuickUtils utils;
+    void test_project_existency();
 };
 
-void TestQgsQuickUtils::screen_density()
+void TestQgsQuickMapSettings::test_project_existency()
 {
-  qreal dp = utils.screenDensity();
-  QVERIFY( ( dp > 0 ) && ( dp < 1000 ) );
+  QgsQuickMapSettings *settings = new QgsQuickMapSettings();
+  QVERIFY( !settings->project() );
+  delete settings;
 }
 
-QGSTEST_MAIN( TestQgsQuickUtils )
-#include "testqgsquickutils.moc"
+QGSTEST_MAIN( TestQgsQuickMapSettings )
+#include "testqgsquickmapsettings.moc"

@@ -35,14 +35,6 @@
 #include "qgsquickmapsettings.h"
 #include "qgsquickmaptransform.h"
 #include "qgsquickplugin.h"
-#include "qgsquickutils.h"
-
-static QObject *_utilsProvider( QQmlEngine *engine, QJSEngine *scriptEngine )
-{
-  Q_UNUSED( engine )
-  Q_UNUSED( scriptEngine )
-  return new QgsQuickUtils();  // the object will be owned by QML engine and destroyed by the engine on exit
-}
 
 void QgsQuickPlugin::registerTypes( const char *uri )
 {
@@ -66,7 +58,4 @@ void QgsQuickPlugin::registerTypes( const char *uri )
   qmlRegisterType< QgsQuickMapSettings >( uri, 0, 1, "MapSettings" );
   qmlRegisterType< QgsQuickMapTransform >( uri, 0, 1, "MapTransform" );
   qmlRegisterType< QgsVectorLayer >( uri, 0, 1, "VectorLayer" );
-
-  qmlRegisterSingletonType< QgsQuickUtils >( uri, 0, 1, "Utils", _utilsProvider );
 }
-
