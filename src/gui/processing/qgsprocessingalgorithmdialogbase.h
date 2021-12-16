@@ -421,6 +421,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     QgsMessageBar *mMessageBar = nullptr;
     QPushButton *mAdvancedButton = nullptr;
     QMenu *mAdvancedMenu = nullptr;
+    QAction *mCopyAsQgisProcessCommand = nullptr;
 
     bool mExecuted = false;
     bool mExecutedAnyResult = false;
