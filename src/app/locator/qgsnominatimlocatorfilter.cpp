@@ -40,7 +40,7 @@ void QgsNominatimLocatorFilter::triggerResult( const QgsLocatorResult &result )
   {
     settings.setValue( "locator_filters/nominatim_geocoder/attribution_shown", true, QgsSettings::App );
 
-    QgsMessageBarItem *messageWidget = QgisApp::instance()->messageBar()->createMessage( tr( "The Nominatim geocoder data is made available by OpenStreetMap Foundation and contributors." ) );
+    QgsMessageBarItem *messageWidget = QgsMessageBar::createMessage( tr( "The Nominatim geocoder data is made available by OpenStreetMap Foundation and contributors." ) );
     QPushButton *learnMoreButton = new QPushButton( tr( "Learn more" ) );
     connect( learnMoreButton, &QPushButton::clicked, learnMoreButton, [ = ]
     {

@@ -439,7 +439,7 @@ void TestProcessingGui::testModelUndo()
 
 void TestProcessingGui::testSetGetConfig()
 {
-  const QList< const QgsProcessingAlgorithm * > algorithms = QgsApplication::instance()->processingRegistry()->algorithms();
+  const QList< const QgsProcessingAlgorithm * > algorithms = QgsApplication::processingRegistry()->algorithms();
 
   // Find all defined widgets for native algorithms
   // and get the default configuration (that is, we create a widget
@@ -447,7 +447,7 @@ void TestProcessingGui::testSetGetConfig()
   // We then set and get this configuration and validate that it matches the original one.
   for ( const QgsProcessingAlgorithm *algorithm : algorithms )
   {
-    std::unique_ptr<QgsProcessingAlgorithmConfigurationWidget> configWidget( QgsGui::instance()->processingGuiRegistry()->algorithmConfigurationWidget( algorithm ) );
+    std::unique_ptr<QgsProcessingAlgorithmConfigurationWidget> configWidget( QgsGui::processingGuiRegistry()->algorithmConfigurationWidget( algorithm ) );
     if ( configWidget )
     {
       QCOMPARE( configWidget->algorithm(), algorithm );
@@ -465,8 +465,8 @@ void TestProcessingGui::testSetGetConfig()
 
 void TestProcessingGui::testFilterAlgorithmConfig()
 {
-  const QgsProcessingAlgorithm *algorithm = QgsApplication::instance()->processingRegistry()->algorithmById( QStringLiteral( "native:filter" ) );
-  std::unique_ptr<QgsProcessingAlgorithmConfigurationWidget> configWidget( QgsGui::instance()->processingGuiRegistry()->algorithmConfigurationWidget( algorithm ) );
+  const QgsProcessingAlgorithm *algorithm = QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:filter" ) );
+  std::unique_ptr<QgsProcessingAlgorithmConfigurationWidget> configWidget( QgsGui::processingGuiRegistry()->algorithmConfigurationWidget( algorithm ) );
 
   QVariantMap config;
   QVariantList outputs;

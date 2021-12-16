@@ -61,7 +61,7 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
 
 {
   setupUi( this );
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
   connect( mNewButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mNewButton_clicked );
   connect( mEditButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mEditButton_clicked );
   connect( mDeleteButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mDeleteButton_clicked );

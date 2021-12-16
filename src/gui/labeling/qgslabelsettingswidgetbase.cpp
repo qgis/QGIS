@@ -169,7 +169,7 @@ QgsLabelSettingsWidgetDialog::QgsLabelSettingsWidgetDialog( QgsLabelSettingsWidg
   setLayout( vLayout );
 
   setObjectName( QStringLiteral( "QgsLabelSettingsWidgetDialog" ) );
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
 }
 
 QDialogButtonBox *QgsLabelSettingsWidgetDialog::buttonBox()

@@ -56,7 +56,7 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
 {
   setupUi( this );
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
   mDatabaseFileWidget->setStorageMode( QgsFileWidget::SaveFile );
   mDatabaseFileWidget->setConfirmOverwrite( false );
 

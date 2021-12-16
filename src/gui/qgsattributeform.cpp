@@ -1563,7 +1563,7 @@ void QgsAttributeForm::init()
   {
     QgsDebugMsg( QStringLiteral( "loading form: %1" ).arg( mLayer->editFormConfig().uiForm() ) );
     const QString path = mLayer->editFormConfig().uiForm();
-    QFile *file = QgsApplication::instance()->networkContentFetcherRegistry()->localFile( path );
+    QFile *file = QgsApplication::networkContentFetcherRegistry()->localFile( path );
     if ( file && file->open( QFile::ReadOnly ) )
     {
       QUiLoader loader;
@@ -2032,7 +2032,7 @@ void QgsAttributeForm::initPython()
       case QgsEditFormConfig::CodeSourceFile:
         if ( !initFilePath.isEmpty() )
         {
-          QFile *inputFile = QgsApplication::instance()->networkContentFetcherRegistry()->localFile( initFilePath );
+          QFile *inputFile = QgsApplication::networkContentFetcherRegistry()->localFile( initFilePath );
 
           if ( inputFile && inputFile->open( QFile::ReadOnly ) )
           {

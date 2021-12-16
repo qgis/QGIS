@@ -791,7 +791,7 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Ru
   scrollArea->setWidget( mPropsWidget );
   layout->addWidget( buttonBox );
   this->setWindowTitle( "Edit Rule" );
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsRendererRulePropsDialog::accept );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );

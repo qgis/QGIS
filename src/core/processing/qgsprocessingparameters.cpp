@@ -2260,7 +2260,7 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantM
     def.reset( new QgsProcessingParameterAnnotationLayer( name ) );
   else
   {
-    QgsProcessingParameterType *paramType = QgsApplication::instance()->processingRegistry()->parameterType( type );
+    QgsProcessingParameterType *paramType = QgsApplication::processingRegistry()->parameterType( type );
     if ( paramType )
       def.reset( paramType->create( name ) );
   }

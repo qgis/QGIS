@@ -51,7 +51,7 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
   , mCurrentPlotMarkerIndex( 0 )
 {
   setupUi( this );
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   mStopColorSpec->addItem( tr( "RGB" ), static_cast< int >( QColor::Spec::Rgb ) );
   mStopColorSpec->addItem( tr( "HSV" ), static_cast< int >( QColor::Spec::Hsv ) );

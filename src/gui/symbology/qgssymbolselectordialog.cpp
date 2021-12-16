@@ -785,7 +785,7 @@ QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *s
 
   mSelectorWidget->setMinimumSize( 460, 560 );
   setObjectName( QStringLiteral( "SymbolSelectorDialog" ) );
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   // Can be embedded in renderer properties dialog
   if ( embedded )

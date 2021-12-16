@@ -48,7 +48,7 @@ email                : a.furieri@lqt.it
 QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode ):
   QgsAbstractDbSourceSelect( parent, fl, theWidgetMode )
 {
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   connect( btnConnect, &QPushButton::clicked, this, &QgsSpatiaLiteSourceSelect::btnConnect_clicked );
   connect( btnNew, &QPushButton::clicked, this, &QgsSpatiaLiteSourceSelect::btnNew_clicked );

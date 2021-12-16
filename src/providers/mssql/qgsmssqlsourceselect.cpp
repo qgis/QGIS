@@ -127,7 +127,7 @@ void QgsMssqlSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemM
 QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDbSourceSelect( parent, fl, theWidgetMode )
 {
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   connect( btnConnect, &QPushButton::clicked, this, &QgsMssqlSourceSelect::btnConnect_clicked );
   connect( cbxAllowGeometrylessTables, &QCheckBox::stateChanged, this, &QgsMssqlSourceSelect::cbxAllowGeometrylessTables_stateChanged );

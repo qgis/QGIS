@@ -237,7 +237,7 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
       {
         waitConditionMutex.unlock();
 
-        QApplication::instance()->processEvents();
+        QApplication::processEvents();
         // we don't need to wake up the worker thread - it will automatically be woken when
         // the auth request has been dealt with by QgsNetworkAccessManager
       }

@@ -133,7 +133,7 @@ void QgsFetchedContent::download( bool redownload )
     connect( mFetchingTask, &QgsNetworkContentFetcherTask::taskCompleted, this, &QgsFetchedContent::taskCompleted );
     connect( mFetchingTask, &QgsNetworkContentFetcherTask::taskTerminated, this, &QgsFetchedContent::taskCompleted );
     connect( mFetchingTask, &QgsNetworkContentFetcherTask::errorOccurred, this, &QgsFetchedContent::errorOccurred );
-    QgsApplication::instance()->taskManager()->addTask( mFetchingTask );
+    QgsApplication::taskManager()->addTask( mFetchingTask );
     mStatus = QgsFetchedContent::Downloading;
   }
 

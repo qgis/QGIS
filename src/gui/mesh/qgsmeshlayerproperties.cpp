@@ -481,7 +481,7 @@ void QgsMeshLayerProperties::urlClicked( const QUrl &url )
 {
   QFileInfo file( url.toLocalFile() );
   if ( file.exists() && !file.isDir() )
-    QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
+    QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
   else
     QDesktopServices::openUrl( url );
 }
