@@ -148,6 +148,18 @@ class TestQgsHistoryProviderRegistry(unittest.TestCase):
         self.assertTrue(reg.clearHistory(Qgis.HistoryProviderBackend.LocalProfile))
         self.assertFalse(reg.queryEntries())
 
+        # bulk add entries
+        self.assertTrue(reg.addEntries([
+            QgsHistoryEntry('my provider 4', QDateTime(2021, 1, 2, 3, 4, 5), {'var': 7}),
+            QgsHistoryEntry('my provider 5', QDateTime(2021, 1, 2, 3, 4, 5), {'var': 8})
+        ]))
+        self.assertEqual(len(reg.queryEntries()), 2)
+        self.assertEqual(reg.queryEntries()[0].providerId, 'my provider 4')
+        self.assertEqual(reg.queryEntries()[0].entry, {'var': 7})
+
+        self.assertEqual(reg.queryEntries()[1].providerId, 'my provider 5')
+        self.assertEqual(reg.queryEntries()[1].entry, {'var': 8})
+
 
 if __name__ == '__main__':
     unittest.main()

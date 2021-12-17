@@ -139,6 +139,11 @@ Entry options are specified via the ``options`` argument.
 Adds an ``entry`` to the history logs.
 %End
 
+    bool addEntries( const QList< QgsHistoryEntry > &entries, QgsHistoryProviderRegistry::HistoryEntryOptions options = QgsHistoryProviderRegistry::HistoryEntryOptions() );
+%Docstring
+Adds a list of ``entries`` to the history logs.
+%End
+
     QList< QgsHistoryEntry > queryEntries( const QDateTime &start = QDateTime(), const QDateTime &end = QDateTime(),
                                            const QString &providerId = QString(), Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile ) const;
 %Docstring
