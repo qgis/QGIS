@@ -270,7 +270,6 @@ tasks.
 %End
 
     virtual int type() const;
-
 %Docstring
 Returns a unique graphics item type identifier.
 

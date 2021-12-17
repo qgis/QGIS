@@ -294,6 +294,24 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
                          "CASE WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 15 THEN scale_linear(@vector_tile_zoom,10,15,0.1,0.3) * 2 WHEN @vector_tile_zoom > 15 AND @vector_tile_zoom <= 18 THEN scale_linear(@vector_tile_zoom,15,18,0.3,0.6) * 2 WHEN @vector_tile_zoom > 18 THEN 1.2 END")
         self.assertEqual(default_val, 0.2)
 
+        prop, default_color, default_val = QgsMapBoxGlStyleConverter.parseInterpolateListByZoom([
+            "interpolate",
+            ["exponential", 1.5],
+            ["zoom"],
+            5,
+            0,
+            6,
+            ["match", ["get", "class"], ["ice", "glacier"], 0.3, 0],
+            10,
+            ["match", ["get", "class"], ["ice", "glacier"], 0.2, 0],
+            11,
+            ["match", ["get", "class"], ["ice", "glacier"], 0.2, 0.3],
+            14,
+            ["match", ["get", "class"], ["ice", "glacier"], 0, 0.3]
+        ], QgsMapBoxGlStyleConverter.Numeric, conversion_context, 2)
+        self.assertEqual(prop.expressionString(),
+                         "CASE WHEN @vector_tile_zoom > 5 AND @vector_tile_zoom <= 6 THEN scale_exp(@vector_tile_zoom,5,6,0,CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0.3 ELSE 0 END,1.5) * 2 WHEN @vector_tile_zoom > 6 AND @vector_tile_zoom <= 10 THEN scale_exp(@vector_tile_zoom,6,10,CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0.3 ELSE 0 END,CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0.2 ELSE 0 END,1.5) * 2 WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 11 THEN scale_exp(@vector_tile_zoom,10,11,CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0.2 ELSE 0 END,CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0.2 ELSE 0.3 END,1.5) * 2 WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 14 THEN scale_exp(@vector_tile_zoom,11,14,CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0.2 ELSE 0.3 END,CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0 ELSE 0.3 END,1.5) * 2 WHEN @vector_tile_zoom > 14 THEN ( ( CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0 ELSE 0.3 END ) * 2 ) END")
+
     def testParseExpression(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
         self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression([
