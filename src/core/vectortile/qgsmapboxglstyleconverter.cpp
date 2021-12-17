@@ -2387,7 +2387,7 @@ QString QgsMapBoxGlStyleConverter::parseStops( double base, const QVariantList &
   {
     vStr = parseExpression( v.toList(), context );
     caseString += QStringLiteral( "WHEN @vector_tile_zoom > %1 "
-                                  "THEN ( %2 * %3 ) END" ).arg( z.toString() ).arg( vStr ).arg( multiplier );
+                                  "THEN ( ( %2 ) * %3 ) END" ).arg( z.toString() ).arg( vStr ).arg( multiplier );
   }
   else
   {
