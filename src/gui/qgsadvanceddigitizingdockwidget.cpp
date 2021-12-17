@@ -490,7 +490,7 @@ void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction *action )
   }
 }
 
-QgsMapLayer *QgsAdvancedDigitizingDockWidget::targetLayer()
+QgsMapLayer *QgsAdvancedDigitizingDockWidget::targetLayer() const
 {
   if ( QgsMapToolAdvancedDigitizing *advancedTool = qobject_cast< QgsMapToolAdvancedDigitizing * >( mMapCanvas->mapTool() ) )
   {

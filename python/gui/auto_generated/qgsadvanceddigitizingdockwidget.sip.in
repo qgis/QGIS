@@ -538,6 +538,7 @@ Convenient method to get the M value from the line edit wiget
 .. versionadded:: 3.22
 %End
 
+    CadCapacities getCapacities() const;
   signals:
 
     void pushWarning( const QString &message );

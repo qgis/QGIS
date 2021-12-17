@@ -513,6 +513,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      */
     double getLineM( ) const;
 
+    CadCapacities getCapacities() const { return mCapacities; };
+
   signals:
 
     /**
@@ -861,7 +863,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     /**
      * Returns the layer currently associated with the map tool using the dock widget.
      */
-    QgsMapLayer *targetLayer();
+    QgsMapLayer *targetLayer() const;
 
     //! updates the UI depending on activation of the tools and clear points / release locks.
     void setCadEnabled( bool enabled );
