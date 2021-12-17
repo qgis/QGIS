@@ -62,7 +62,7 @@ class GUI_EXPORT QgsHistoryEntry
     /**
      * Entry details.
      *
-     * Entries details are stored as a free-form map. Interpretation of this map is the responsiblity of the
+     * Entries details are stored as a free-form map. Interpretation of this map is the responsibility of the
      * associated history provider.
      */
     QVariantMap entry;
