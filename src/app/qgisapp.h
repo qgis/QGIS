@@ -2074,7 +2074,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
   private:
     //Flag to allow user to bypass badlayer checks.
-    bool skipBadLayers;
+    bool mSkipBadLayers;
     void createPreviewImage( const QString &path, const QIcon &overlayIcon = QIcon() );
     void startProfile( const QString &name );
     void endProfile();
