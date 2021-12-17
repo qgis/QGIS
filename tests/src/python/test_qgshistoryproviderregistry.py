@@ -11,12 +11,14 @@ __date__ = '18/10/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA switch sip api
+import qgis.core
 
 from qgis.PyQt import sip
 from qgis.PyQt.QtCore import (
     QDateTime,
     QDate
 )
+from qgis.core import Qgis
 from qgis.gui import (
     QgsHistoryEntry,
     QgsHistoryProviderRegistry,
@@ -142,6 +144,9 @@ class TestQgsHistoryProviderRegistry(unittest.TestCase):
         entries = reg.queryEntries(end=QDateTime(2021, 3, 2, 3, 4, 5))
         self.assertEqual(len(entries), 1)
         self.assertEqual(entries[0].providerId, 'my provider 3')
+
+        self.assertTrue(reg.clearHistory(Qgis.HistoryProviderBackend.LocalProfile))
+        self.assertFalse(reg.queryEntries())
 
 
 if __name__ == '__main__':

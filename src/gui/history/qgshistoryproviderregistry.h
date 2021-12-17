@@ -177,6 +177,11 @@ class GUI_EXPORT QgsHistoryProviderRegistry : public QObject
      */
     static QString userHistoryDbPath();
 
+    /**
+     * Clears the history for the specified \a backend.
+     */
+    bool clearHistory( Qgis::HistoryProviderBackend backend );
+
   private:
 
     /**

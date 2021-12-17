@@ -188,6 +188,17 @@ QString QgsHistoryProviderRegistry::userHistoryDbPath()
   return QgsApplication::qgisSettingsDirPath() + QStringLiteral( "user-history.db" );
 }
 
+bool QgsHistoryProviderRegistry::clearHistory( Qgis::HistoryProviderBackend backend )
+{
+  switch ( backend )
+  {
+    case Qgis::HistoryProviderBackend::LocalProfile:
+      runEmptyQuery( QStringLiteral( "DELETE from history;" ) );
+      break;
+  }
+  return true;
+}
+
 bool QgsHistoryProviderRegistry::createDatabase( const QString &filename, QString &error )
 {
   error.clear();
