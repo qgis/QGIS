@@ -4372,7 +4372,7 @@ void QgsRasterFillSymbolLayerWidget::mWidthUnitWidget_changed()
     return;
   }
   mLayer->setWidthUnit( mWidthUnitWidget->unit() );
-  mLayer->setWidthMapUnitScale( mOffsetUnitWidget->getMapUnitScale() );
+  mLayer->setWidthMapUnitScale( mWidthUnitWidget->getMapUnitScale() );
   emit changed();
 }
 
