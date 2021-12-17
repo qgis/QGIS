@@ -148,6 +148,7 @@ void usage( const QString &appName )
       << QStringLiteral( "\t[--nologo]\thide splash screen\n" )
       << QStringLiteral( "\t[--noversioncheck]\tdon't check for new version of QGIS at startup\n" )
       << QStringLiteral( "\t[--noplugins]\tdon't restore plugins on startup\n" )
+      << QStringLiteral( "\t[--skipbadlayers]\tdon't prompt for missing layers\n" )
       << QStringLiteral( "\t[--nocustomization]\tdon't apply GUI customization\n" )
       << QStringLiteral( "\t[--customizationfile path]\tuse the given ini file as GUI customization\n" )
       << QStringLiteral( "\t[--globalsettingsfile path]\tuse the given ini file as Global Settings (defaults)\n" )
@@ -575,6 +576,7 @@ int main( int argc, char *argv[] )
 
   bool myRestoreDefaultWindowState = false;
   bool myRestorePlugins = true;
+  bool mySkipBadLayers = false;
   bool myCustomization = true;
 
   QString dxfOutputFile;
@@ -662,6 +664,11 @@ int main( int argc, char *argv[] )
         else if ( arg == QLatin1String( "--noplugins" ) || arg == QLatin1String( "-P" ) )
         {
           myRestorePlugins = false;
+        }
+        else if ( arg == QLatin1String( "--skipbadlayers" ) || arg == QLatin1String( "-B" ) )
+        {
+          QgsDebugMsg( QStringLiteral( "Skipping bad layers" ) );
+          mySkipBadLayers = true;
         }
         else if ( arg == QLatin1String( "--nocustomization" ) || arg == QLatin1String( "-C" ) )
         {
@@ -1381,7 +1388,7 @@ int main( int argc, char *argv[] )
   // this should be done in QgsApplication::init() but it doesn't know the settings dir.
   QgsApplication::setMaxThreads( settings.value( QStringLiteral( "qgis/max_threads" ), -1 ).toInt() );
 
-  QgisApp *qgis = new QgisApp( mypSplash, myRestorePlugins, mySkipVersionCheck, rootProfileFolder, profileName ); // "QgisApp" used to find canonical instance
+  QgisApp *qgis = new QgisApp( mypSplash, myRestorePlugins, mySkipBadLayers, mySkipVersionCheck, rootProfileFolder, profileName ); // "QgisApp" used to find canonical instance
   qgis->setObjectName( QStringLiteral( "QgisApp" ) );
 
   myApp.connect(
