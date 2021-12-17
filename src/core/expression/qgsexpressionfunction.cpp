@@ -1732,40 +1732,36 @@ static QVariant fcnRepresentAttributes( const QVariantList &values, const QgsExp
   QgsVectorLayer *layer = nullptr;
   QgsFeature feature;
 
-  if ( values.size() == 2 )
+  if ( values.isEmpty() )
   {
-    if ( ! values.at( 0 ).isNull() )
-    {
-      feature = QgsExpressionUtils::getFeature( values.at( 0 ), parent );
-    }
-    else if ( context && context->hasFeature() )
-    {
-      feature = context->feature();
-    }
-    else
-    {
-      parent->setEvalErrorString( QObject::tr( "Cannot use represent attributes function in this context: feature is not set" ) );
-      return QVariant();
-    }
-
-    if ( ! values.at( 1 ).isNull() )
-    {
-      layer = QgsExpressionUtils::getVectorLayer( values.at( 1 ), parent );
-    }
-    else if ( context )
-    {
-      layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), parent );
-    }
-    else
-    {
-      parent->setEvalErrorString( QObject::tr( "Cannot use represent attributes function: layer is not set" ) );
-      return QVariant();
-    }
+    feature = context->feature();
+    layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), parent );
+  }
+  else if ( values.size() == 1 )
+  {
+    layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), parent );
+    feature = QgsExpressionUtils::getFeature( values.at( 0 ), parent );
+  }
+  else if ( values.size() == 2 )
+  {
+    layer = QgsExpressionUtils::getVectorLayer( values.at( 0 ), parent );
+    feature = QgsExpressionUtils::getFeature( values.at( 1 ), parent );
+  }
+  else
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `represent_attributes` requires no more than two parameters. %1 given." ).arg( values.length() ) );
+    return QVariant();
   }
 
   if ( !layer )
   {
     parent->setEvalErrorString( QObject::tr( "Cannot use represent attributes function: layer could not be resolved." ) );
+    return QVariant();
+  }
+
+  if ( !feature.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot use represent attributes function: feature could not be resolved." ) );
     return QVariant();
   }
 
@@ -7754,7 +7750,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         fcnAttributes, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
     attributesFunc->setIsStatic( false );
     functions << attributesFunc;
-    QgsStaticExpressionFunction *representAttributesFunc = new QgsStaticExpressionFunction( QStringLiteral( "represent_attributes" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "feature" ), true ) << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ), true ),
+    QgsStaticExpressionFunction *representAttributesFunc = new QgsStaticExpressionFunction( QStringLiteral( "represent_attributes" ), -1,
         fcnRepresentAttributes, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
     representAttributesFunc->setIsStatic( false );
     functions << representAttributesFunc;

@@ -566,7 +566,7 @@ class TestQgsExpression: public QObject
       QgsProject::instance()->addMapLayer( &layer, false, false );
       QgsExpressionContext context3;
       context3.setFeature( f2 );
-      expression = QgsExpression( "represent_attributes($currentfeature, 'test_represent_attributes')" );
+      expression = QgsExpression( "represent_attributes('test_represent_attributes', $currentfeature)" );
 
       result = expression.evaluate( &context3 ).toMap();
 
@@ -580,7 +580,7 @@ class TestQgsExpression: public QObject
 
       // Test errors
       QgsProject::instance()->removeMapLayer( layer.id() );
-      expression = QgsExpression( "represent_attributes($currentfeature, 'test_represent_attributes')" );
+      expression = QgsExpression( "represent_attributes('test_represent_attributes', $currentfeature)" );
       QgsExpressionContext context4;
       result = expression.evaluate( &context4 ).toMap();
       QVERIFY( expression.hasEvalError() );
