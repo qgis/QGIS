@@ -365,6 +365,7 @@
 %Include auto_generated/processing/qgsprocessingalgorithmdialogbase.sip
 %Include auto_generated/processing/qgsprocessinggui.sip
 %Include auto_generated/processing/qgsprocessingguiregistry.sip
+%Include auto_generated/processing/qgsprocessinghistoryprovider.sip
 %Include auto_generated/processing/qgsprocessingmaplayercombobox.sip
 %Include auto_generated/processing/qgsprocessingmodelerparameterwidget.sip
 %Include auto_generated/processing/qgsprocessingmultipleselectiondialog.sip

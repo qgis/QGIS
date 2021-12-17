@@ -325,6 +325,7 @@ set(QGIS_GUI_SRCS
   processing/qgsprocessingfeaturesourceoptionswidget.cpp
   processing/qgsprocessingfieldmapwidgetwrapper.cpp
   processing/qgsprocessingguiregistry.cpp
+  processing/qgsprocessinghistoryprovider.cpp
   processing/qgsprocessingmaplayercombobox.cpp
   processing/qgsprocessingmatrixmodelerwidget.cpp
   processing/qgsprocessingmatrixparameterdialog.cpp
@@ -1150,6 +1151,7 @@ set(QGIS_GUI_HDRS
   processing/qgsprocessingfieldmapwidgetwrapper.h
   processing/qgsprocessinggui.h
   processing/qgsprocessingguiregistry.h
+  processing/qgsprocessinghistoryprovider.h
   processing/qgsprocessingmaplayercombobox.h
   processing/qgsprocessingmatrixmodelerwidget.h
   processing/qgsprocessingmatrixparameterdialog.h

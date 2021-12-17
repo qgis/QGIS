@@ -20,6 +20,7 @@
 #include "qgsruntimeprofiler.h"
 #include "qgslogger.h"
 #include "qgsxmlutils.h"
+#include "qgsprocessinghistoryprovider.h"
 
 #include <QFile>
 #include <sqlite3.h>
@@ -75,6 +76,11 @@ QgsHistoryProviderRegistry::QgsHistoryProviderRegistry( QObject *parent, bool us
 QgsHistoryProviderRegistry::~QgsHistoryProviderRegistry()
 {
   qDeleteAll( mProviders );
+}
+
+void QgsHistoryProviderRegistry::addDefaultProviders()
+{
+  addProvider( new QgsProcessingHistoryProvider() );
 }
 
 bool QgsHistoryProviderRegistry::addProvider( QgsAbstractHistoryProvider *provider )

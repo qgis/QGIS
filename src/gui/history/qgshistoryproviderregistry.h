@@ -103,6 +103,12 @@ class GUI_EXPORT QgsHistoryProviderRegistry : public QObject
     ~QgsHistoryProviderRegistry() override;
 
     /**
+     * Adds the default history providers to the registry.
+     * \note Not available through Python bindings.
+     */
+    void addDefaultProviders() SIP_SKIP;
+
+    /**
      * Adds a \a provider to the registry. Ownership of the provider is
      * transferred to the registry.
      *
