@@ -75,6 +75,7 @@ QgsHistoryProviderRegistry is not usually directly created, but rather accessed 
 
     ~QgsHistoryProviderRegistry();
 
+
     bool addProvider( QgsAbstractHistoryProvider *provider /Transfer/ );
 %Docstring
 Adds a ``provider`` to the registry. Ownership of the provider is

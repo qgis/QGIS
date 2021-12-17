@@ -34,8 +34,10 @@ from qgis.core import (QgsApplication,
                        QgsDataProvider,
                        QgsDataItem,
                        QgsMapLayerType,
-                       QgsMimeDataUtils)
-from qgis.gui import (QgsOptionsWidgetFactory,
+                       QgsMimeDataUtils,
+                       QgsSettings)
+from qgis.gui import (QgsGui,
+                      QgsOptionsWidgetFactory,
                       QgsCustomDropHandler)
 from qgis.PyQt.QtCore import QObject, Qt, QItemSelectionModel, QCoreApplication, QDir, QFileInfo, pyqtSlot
 from qgis.PyQt.QtWidgets import QWidget, QMenu, QAction
@@ -184,6 +186,14 @@ class ProcessingPlugin(QObject):
             Processing.initialize()
 
     def initGui(self):
+        # port old log, ONCE ONLY!
+        settings = QgsSettings()
+        if not settings.value("/Processing/hasPortedOldLog", False, bool):
+            processing_history_provider = QgsGui.historyProviderRegistry().providerById('processing')
+            if processing_history_provider:
+                processing_history_provider.portOldLog()
+                settings.setValue("/Processing/hasPortedOldLog", True)
+
         self.options_factory = ProcessingOptionsFactory()
         self.options_factory.setTitle(self.tr('Processing'))
         iface.registerOptionsWidgetFactory(self.options_factory)

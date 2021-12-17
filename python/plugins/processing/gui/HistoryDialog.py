@@ -26,16 +26,15 @@ import warnings
 import re
 from datetime import datetime
 
-from qgis.core import QgsApplication
-from qgis.gui import QgsGui, QgsHelp
+from qgis.core import QgsApplication, Qgis
+from qgis.gui import QgsGui, QgsHelp, QgsHistoryEntry
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt, QCoreApplication, QDate
+from qgis.PyQt.QtCore import Qt, QCoreApplication, QDate, QDateTime
 from qgis.PyQt.QtWidgets import QAction, QPushButton, QDialogButtonBox, QStyle, QMessageBox, QFileDialog, QMenu, QTreeWidgetItem, QShortcut
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.Qsci import QsciScintilla
 
 from processing.gui import TestTools
-from processing.core.ProcessingLog import ProcessingLog, LOG_SEPARATOR
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -46,6 +45,7 @@ with warnings.catch_warnings():
 
 
 class HistoryDialog(BASE, WIDGET):
+    LOG_SEPARATOR = '|~|'
 
     def __init__(self):
         super(HistoryDialog, self).__init__(None)
@@ -100,7 +100,7 @@ class HistoryDialog(BASE, WIDGET):
                                      QMessageBox.No
                                      )
         if reply == QMessageBox.Yes:
-            ProcessingLog.clearLog()
+            QgsGui.historyProviderRegistry().clearHistory(Qgis.HistoryProviderBackend.LocalProfile)
             self.fillTree()
 
     def saveLog(self):
@@ -113,30 +113,36 @@ class HistoryDialog(BASE, WIDGET):
         if not fileName.lower().endswith('.log'):
             fileName += '.log'
 
-        ProcessingLog.saveLog(fileName)
+        entries = QgsGui.historyProviderRegistry().queryEntries(providerId='processing')
+        with open(fileName, 'w', encoding='utf-8') as f:
+            for entry in entries:
+                f.write('ALGORITHM{}{}{}{}\n'.format(HistoryDialog.LOG_SEPARATOR,
+                                                     entry.timestamp.toString("YYYY-mm-dd HH:MM:SS"),
+                                                     HistoryDialog.LOG_SEPARATOR,
+                                                     entry.entry.get('python_command')))
 
     def openHelp(self):
         QgsHelp.openHelp("processing/history.html")
 
-    def contextDateString(self, date):
+    def contextDateString(self, date: QDateTime):
         if date in self.contextDateStrings:
             return self.contextDateStrings[date]
 
-        if date == datetime.today().strftime('%Y-%m-%d'):
+        if date.date() == QDateTime.currentDateTime().date():
             self.contextDateStrings[date] = self.tr('Today')
         else:
-            interval_days = (datetime.today() - datetime.strptime(date, '%Y-%m-%d')).days
+            interval_days = date.date().daysTo(QDateTime.currentDateTime().date())
             if interval_days == 1:
                 self.contextDateStrings[date] = self.tr('Yesterday')
             elif interval_days < 8:
                 self.contextDateStrings[date] = self.tr('Last 7 days')
             else:
-                self.contextDateStrings[date] = QDate.fromString(date, 'yyyy-MM-dd').toString('MMMM yyyy')
+                self.contextDateStrings[date] = date.toString('MMMM yyyy')
         return self.contextDateString(date)
 
     def fillTree(self):
         self.tree.clear()
-        entries = ProcessingLog.getLogEntries()
+        entries = QgsGui.historyProviderRegistry().queryEntries(providerId='processing')
 
         if not entries:
             return
@@ -147,7 +153,7 @@ class HistoryDialog(BASE, WIDGET):
         current_group_item = -1
         current_date = ''
         for entry in entries:
-            date = self.contextDateString(entry.date[0:10])
+            date = self.contextDateString(entry.timestamp)
             if date != current_date:
                 current_date = date
                 current_group_item += 1
@@ -156,9 +162,8 @@ class HistoryDialog(BASE, WIDGET):
                 group_items[current_group_item].setIcon(0, self.groupIcon)
             icon = self.keyIcon
             name = ''
-            match = re.search('processing.run\\("(.*?)"', entry.text)
-            if match.group:
-                algorithm_id = match.group(1)
+            algorithm_id = entry.entry.get('algorithm_id')
+            if algorithm_id:
                 if algorithm_id not in names:
                     algorithm = QgsApplication.processingRegistry().algorithmById(algorithm_id)
                     if algorithm:
@@ -185,7 +190,7 @@ class HistoryDialog(BASE, WIDGET):
                 script += 'from qgis.core import QgsProcessingOutputLayerDefinition, QgsProcessingFeatureSourceDefinition, QgsProperty, QgsCoordinateReferenceSystem, QgsFeatureRequest\n'
                 script += 'from qgis.PyQt.QtCore import QDate, QTime, QDateTime\n'
                 script += 'from qgis.PyQt.QtGui import QColor\n'
-                script += item.entry.text.replace('processing.run(', 'processing.execAlgorithmDialog(')
+                script += item.python_command.replace('processing.run(', 'processing.execAlgorithmDialog(')
                 self.close()
                 exec(script)
 
@@ -193,7 +198,7 @@ class HistoryDialog(BASE, WIDGET):
         item = self.tree.currentItem()
         if isinstance(item, TreeLogEntryItem):
             self.text.setText('"""\n' + self.tr('Double-click on the history item or paste the command below to re-run the algorithm') + '\n"""\n\n' +
-                              item.entry.text.replace(LOG_SEPARATOR, '\n'))
+                              item.python_command)
         else:
             self.text.setText('')
 
@@ -201,7 +206,7 @@ class HistoryDialog(BASE, WIDGET):
         item = self.tree.currentItem()
         if isinstance(item, TreeLogEntryItem):
             if item.isAlg:
-                TestTools.createTest(item.entry.text)
+                TestTools.createTest(item.python_command)
 
     def showPopupMenu(self, point):
         item = self.tree.currentItem()
@@ -216,8 +221,9 @@ class HistoryDialog(BASE, WIDGET):
 
 class TreeLogEntryItem(QTreeWidgetItem):
 
-    def __init__(self, entry, isAlg, algName):
+    def __init__(self, entry: QgsHistoryEntry, isAlg, algName):
         QTreeWidgetItem.__init__(self)
         self.entry = entry
         self.isAlg = isAlg
-        self.setText(0, '[' + entry.date[:-3] + '] ' + algName + ' - ' + entry.text.split(LOG_SEPARATOR)[0])
+        self.python_command = entry.entry.get('python_command', '')
+        self.setText(0, '[' + entry.timestamp.toString('yyyy-MM-dd hh:mm') + '] ' + algName + ' - ' + self.python_command)

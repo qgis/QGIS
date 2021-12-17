@@ -36,6 +36,15 @@ class GUI_EXPORT QgsAbstractHistoryProvider
 {
   public:
 
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsProcessingHistoryProvider *>( sipCpp ) )
+      sipType = sipType_QgsProcessingHistoryProvider;
+    else
+      sipType = nullptr;
+    SIP_END
+#endif
+
     virtual ~QgsAbstractHistoryProvider();
 
     /**

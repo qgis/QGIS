@@ -276,6 +276,8 @@ QgsGui::QgsGui()
 
   // provider gui registry initialize QgsProviderRegistry too
   mHistoryProviderRegistry = new QgsHistoryProviderRegistry();
+  mHistoryProviderRegistry->addDefaultProviders();
+
   mProviderGuiRegistry = new QgsProviderGuiRegistry( QgsApplication::pluginPath() );
   mProjectStorageGuiRegistry = new QgsProjectStorageGuiRegistry();
   mDataItemGuiProviderRegistry = new QgsDataItemGuiProviderRegistry();

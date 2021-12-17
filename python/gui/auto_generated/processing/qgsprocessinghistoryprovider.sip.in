@@ -1,41 +1,36 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/history/qgshistoryprovider.h                                 *
+ * src/gui/processing/qgsprocessinghistoryprovider.h                    *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
 
 
 
-
-class QgsAbstractHistoryProvider
+class QgsProcessingHistoryProvider : QgsAbstractHistoryProvider
 {
 %Docstring(signature="appended")
-Abstract base class for objects which track user history (i.e. operations performed through the GUI).
-
-:py:class:`QgsAbstractHistoryProvider` subclasses are accessible through the :py:class:`QgsHistoryProviderRegistry` class.
+History provider for operations performed through the Processing framework.
 
 .. versionadded:: 3.24
 %End
 
 %TypeHeaderCode
-#include "qgshistoryprovider.h"
+#include "qgsprocessinghistoryprovider.h"
 %End
   public:
 
-%ConvertToSubClassCode
-    if ( dynamic_cast<QgsProcessingHistoryProvider *>( sipCpp ) )
-      sipType = sipType_QgsProcessingHistoryProvider;
-    else
-      sipType = nullptr;
-%End
+    QgsProcessingHistoryProvider();
 
-    virtual ~QgsAbstractHistoryProvider();
+    virtual QString id() const;
 
-    virtual QString id() const = 0;
+
+    void portOldLog();
 %Docstring
-Returns the provider's unique id, which is used to associate existing history entries with the provider.
+Ports the old text log to the history framework.
+
+This should only be called once -- calling multiple times will result in duplicate log entries
 %End
 
 };
@@ -46,7 +41,7 @@ Returns the provider's unique id, which is used to associate existing history en
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/history/qgshistoryprovider.h                                 *
+ * src/gui/processing/qgsprocessinghistoryprovider.h                    *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

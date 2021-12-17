@@ -42,7 +42,6 @@ from qgis.gui import (QgsGui,
                       QgsProcessingContextGenerator)
 from qgis.utils import iface
 
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingResults import resultsList
 from processing.gui.ParametersPanel import ParametersPanel
@@ -268,7 +267,10 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             else:
                 command = self.algorithm().asPythonCommand(parameters, self.context)
                 if command:
-                    ProcessingLog.addToLog(command)
+                    QgsGui.historyProviderRegistry().addEntry('processing', {
+                        'python_command': command,
+                        'algorithm_id': self.algorithm().id()
+                    })
                 QgsGui.instance().processingRecentAlgorithmLog().push(self.algorithm().id())
                 self.cancelButton().setEnabled(self.algorithm().flags() & QgsProcessingAlgorithm.FlagCanCancel)
 
