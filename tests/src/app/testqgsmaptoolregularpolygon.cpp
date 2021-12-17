@@ -80,7 +80,7 @@ void TestQgsMapToolRegularPolygon::initTestCase()
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayer );
   mCanvas->setCurrentLayer( mLayer );
 
-  mMapTool = new QgsMapToolAddFeature( mCanvas, QgsMapToolCapture::CaptureLine );
+  mMapTool = new QgsMapToolAddFeature( mCanvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine );
   mMapTool->setCurrentCaptureTechnique( QgsMapToolCapture::Shape );
   mCanvas->setMapTool( mMapTool );
 }

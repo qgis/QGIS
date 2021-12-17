@@ -37,8 +37,8 @@
 
 #include <QSettings>
 
-QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas *canvas, CaptureMode mode )
-  : QgsMapToolDigitizeFeature( canvas, QgisApp::instance()->cadDockWidget(), mode )
+QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )
+  : QgsMapToolDigitizeFeature( canvas, cadDockWidget, mode )
   , mCheckGeometryType( true )
 {
   setLayer( canvas->currentLayer() );

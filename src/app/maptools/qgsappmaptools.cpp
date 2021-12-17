@@ -77,7 +77,7 @@ QgsAppMapTools::QgsAppMapTools( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockW
   mTools.insert( Tool::HtmlAnnotation, new QgsMapToolHtmlAnnotation( canvas ) );
   mTools.insert( Tool::SvgAnnotation, new QgsMapToolSvgAnnotation( canvas ) );
   mTools.insert( Tool::Annotation, new QgsMapToolAnnotation( canvas ) );
-  mTools.insert( Tool::AddFeature, new QgsMapToolAddFeature( canvas, QgsMapToolCapture::CaptureNone ) );
+  mTools.insert( Tool::AddFeature, new QgsMapToolAddFeature( canvas, cadDock, QgsMapToolCapture::CaptureNone ) );
   mTools.insert( Tool::MoveFeature, new QgsMapToolMoveFeature( canvas, QgsMapToolMoveFeature::Move ) );
   mTools.insert( Tool::MoveFeatureCopy, new QgsMapToolMoveFeature( canvas, QgsMapToolMoveFeature::CopyMove ) );
   mTools.insert( Tool::RotateFeature, new QgsMapToolRotateFeature( canvas ) );
