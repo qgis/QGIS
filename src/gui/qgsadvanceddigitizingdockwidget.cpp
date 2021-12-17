@@ -363,7 +363,7 @@ void QgsAdvancedDigitizingDockWidget::setEnabledZ( bool enable )
   mZLabel->setEnabled( enable );
   mZLineEdit->setEnabled( enable );
   if ( mZLineEdit->isEnabled() )
-    mZLineEdit->setText( QLocale().toString( QgsMapToolEdit( mMapCanvas ).defaultZValue(), 'f', 6 ) );
+    mZLineEdit->setText( QLocale().toString( QgsMapToolEdit::defaultZValue(), 'f', 6 ) );
   else
     mZLineEdit->clear();
   mLockZButton->setEnabled( enable );
@@ -376,7 +376,7 @@ void QgsAdvancedDigitizingDockWidget::setEnabledM( bool enable )
   mMLabel->setEnabled( enable );
   mMLineEdit->setEnabled( enable );
   if ( mMLineEdit->isEnabled() )
-    mMLineEdit->setText( QLocale().toString( QgsMapToolEdit( mMapCanvas ).defaultMValue(), 'f', 6 ) );
+    mMLineEdit->setText( QLocale().toString( QgsMapToolEdit::defaultMValue(), 'f', 6 ) );
   else
     mMLineEdit->clear();
   mLockMButton->setEnabled( enable );
@@ -905,8 +905,8 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
    * Ensure that Z and M are passed
    * It will be dropped as needed later.
    */
-  point.setZ( QgsMapToolEdit( mMapCanvas ).defaultZValue() );
-  point.setM( QgsMapToolEdit( mMapCanvas ).defaultMValue() );
+  point.setZ( QgsMapToolEdit::defaultZValue() );
+  point.setM( QgsMapToolEdit::defaultMValue() );
 
   /*
    * Constraints are applied in 2D, they are always called when using the tool
