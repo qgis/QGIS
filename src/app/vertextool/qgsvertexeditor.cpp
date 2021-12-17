@@ -16,6 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsapplication.h"
 #include "qgsvertexeditor.h"
 #include "qgscoordinateutils.h"
 #include "qgsmapcanvas.h"
@@ -27,6 +28,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsdoublevalidator.h"
 
+#include <QClipboard>
 #include <QLabel>
 #include <QTableWidget>
 #include <QHeaderView>
@@ -456,6 +458,22 @@ void QgsVertexEditor::keyPressEvent( QKeyEvent *e )
 
     // Override default shortcut management in MapCanvas
     e->ignore();
+  }
+  else if ( e->matches( QKeySequence::Copy ) )
+  {
+    if ( !mTableView->selectionModel()->hasSelection() )
+      return;
+    QString text;
+    QItemSelectionRange range = mTableView->selectionModel()->selection().first();
+    for ( int i = range.top(); i <= range.bottom(); ++i )
+    {
+      QStringList rowContents;
+      for ( int j = range.left(); j <= range.right(); ++j )
+        rowContents << mVertexModel->index( i, j ).data().toString();
+      text += rowContents.join( '\t' );
+      text += '\n';
+    }
+    QApplication::clipboard()->setText( text );
   }
 }
 
