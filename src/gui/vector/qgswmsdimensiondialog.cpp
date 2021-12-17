@@ -33,6 +33,16 @@ QgsWmsDimensionDialog::QgsWmsDimensionDialog( QgsVectorLayer *layer, QStringList
     return;
   }
 
+  const QString nameToolTip = tr( "OAPIF supports \"Name\" and \"Date\" only, \"WMS\" supports \"Time\" and \"Elevation\" only." );
+  mNameLabel->setToolTip( nameToolTip );
+  mNameComboBox->setToolTip( nameToolTip );
+
+  const QString fieldToolTip = tr( "If a string is used, it must be formatted according to <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO8601</a>." );
+  mFieldLabel->setToolTip( fieldToolTip );
+  mEndFieldLabel->setToolTip( fieldToolTip );
+  mFieldComboBox->setToolTip( fieldToolTip );
+  mEndFieldComboBox->setToolTip( fieldToolTip );
+
   // Set field combobox
   mFieldComboBox->setLayer( mLayer );
   mEndFieldComboBox->setLayer( mLayer );
@@ -68,6 +78,8 @@ QgsWmsDimensionDialog::QgsWmsDimensionDialog( QgsVectorLayer *layer, QStringList
 
   mReferenceValueLabel->setEnabled( false );
   mReferenceValueComboBox->setEnabled( false );
+
+  fieldChanged();
 }
 
 void QgsWmsDimensionDialog::setInfo( const QgsMapLayerServerProperties::WmsDimensionInfo &info )
