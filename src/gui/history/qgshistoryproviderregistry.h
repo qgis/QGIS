@@ -165,6 +165,11 @@ class GUI_EXPORT QgsHistoryProviderRegistry : public QObject
     bool addEntry( const QgsHistoryEntry &entry, QgsHistoryProviderRegistry::HistoryEntryOptions options = QgsHistoryProviderRegistry::HistoryEntryOptions() );
 
     /**
+     * Adds a list of \a entries to the history logs.
+     */
+    bool addEntries( const QList< QgsHistoryEntry > &entries, QgsHistoryProviderRegistry::HistoryEntryOptions options = QgsHistoryProviderRegistry::HistoryEntryOptions() );
+
+    /**
      * Queries history entries which occurred between the specified \a start and \a end times.
      *
      * The optional \a providerId and \a backends arguments can be used to filter entries.

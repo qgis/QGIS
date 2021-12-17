@@ -131,6 +131,19 @@ bool QgsHistoryProviderRegistry::addEntry( const QgsHistoryEntry &entry, History
   return true;
 }
 
+bool QgsHistoryProviderRegistry::addEntries( const QList<QgsHistoryEntry> &entries, HistoryEntryOptions options )
+{
+  if ( options.storageBackends & Qgis::HistoryProviderBackend::LocalProfile )
+  {
+    runEmptyQuery( QStringLiteral( "BEGIN TRANSACTION;" ) );
+    for ( const QgsHistoryEntry &entry : entries )
+      addEntry( entry, options );
+    runEmptyQuery( QStringLiteral( "COMMIT TRANSACTION;" ) );
+  }
+
+  return true;
+}
+
 QList<QgsHistoryEntry> QgsHistoryProviderRegistry::queryEntries( const QDateTime &start, const QDateTime &end, const QString &providerId, Qgis::HistoryProviderBackends backends ) const
 {
   QList<QgsHistoryEntry> entries;
