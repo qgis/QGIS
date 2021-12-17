@@ -152,6 +152,11 @@ The optional ``providerId`` and ``backends`` arguments can be used to filter ent
 Returns the path to user's local history database.
 %End
 
+    bool clearHistory( Qgis::HistoryProviderBackend backend );
+%Docstring
+Clears the history for the specified ``backend``.
+%End
+
 };
 
 /************************************************************************
