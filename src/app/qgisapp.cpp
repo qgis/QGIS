@@ -10036,6 +10036,11 @@ QList<QgsMapCanvasAnnotationItem *> QgisApp::annotationItems()
   return itemList;
 }
 
+QList<Qgs3DMapCanvas *> QgisApp::mapCanvases3D()
+{
+  return findChildren< Qgs3DMapCanvas * >();
+}
+
 QList<QgsMapCanvas *> QgisApp::mapCanvases()
 {
   // filter out browser canvases -- they are children of app, but a different
@@ -13877,6 +13882,7 @@ Qgs3DMapCanvasDockWidget *QgisApp::createNew3DMapCanvasDock( const QString &name
   map3DWidget->mapCanvas3D()->setObjectName( name );
   map3DWidget->setMainCanvas( mMapCanvas );
   map3DWidget->mapCanvas3D()->setTemporalController( mTemporalControllerWidget->temporalController() );
+  connect( map3DWidget, &Qgs3DMapCanvasDockWidget::renameTriggered, this, &QgisApp::rename3dView );
   return map3DWidget;
 #else
   Q_UNUSED( name )
@@ -16059,6 +16065,48 @@ void QgisApp::refreshActionFeatureAction()
   mActionFeatureAction->setEnabled( layerHasActions );
 }
 
+void QgisApp::rename3dView()
+{
+  Qgs3DMapCanvasDockWidget *view = qobject_cast< Qgs3DMapCanvasDockWidget * >( sender() );
+  if ( !view )
+    return;
+
+  // calculate existing names
+  QStringList names;
+  const auto canvases3D = mapCanvases3D();
+  for ( Qgs3DMapCanvas *canvas3D : canvases3D )
+  {
+    if ( canvas3D == view->mapCanvas3D() )
+      continue;
+
+    names << canvas3D->objectName();
+  }
+  const auto canvases = mapCanvases();
+  for ( QgsMapCanvas *canvas : canvases )
+  {
+    names << canvas->objectName();
+  }
+
+  QString currentName = view->mapCanvas3D()->objectName();
+
+  QgsNewNameDialog renameDlg( currentName, currentName, QStringList(), names, Qt::CaseSensitive, this );
+  renameDlg.setWindowTitle( tr( "Map Views" ) );
+  renameDlg.setOverwriteEnabled( false );
+  renameDlg.setConflictingNameWarning( tr( "A view with this name already exists" ) );
+  renameDlg.buttonBox()->addButton( QDialogButtonBox::Help );
+  connect( renameDlg.buttonBox(), &QDialogButtonBox::helpRequested, this, [ = ]
+  {
+    QgsHelp::openHelp( QStringLiteral( "introduction/qgis_gui.html#d-map-view" ) );
+  } );
+
+  if ( renameDlg.exec() || renameDlg.name().isEmpty() )
+  {
+    QString newName = renameDlg.name();
+    view->setWindowTitle( newName );
+    view->mapCanvas3D()->setObjectName( newName );
+  }
+}
+
 void QgisApp::renameView()
 {
   QgsMapCanvasDockWidget *view = qobject_cast< QgsMapCanvasDockWidget * >( sender() );
@@ -16074,6 +16122,11 @@ void QgisApp::renameView()
       continue;
 
     names << canvas->objectName();
+  }
+  const auto canvases3D = mapCanvases3D();
+  for ( Qgs3DMapCanvas *canvas3D : canvases3D )
+  {
+    names << canvas3D->objectName();
   }
 
   QString currentName = view->mapCanvas()->objectName();

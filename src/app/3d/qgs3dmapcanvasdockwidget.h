@@ -89,7 +89,11 @@ class APP_EXPORT Qgs3DMapCanvasDockWidget : public QgsDockWidget
     QToolButton *mBtnMapThemes = nullptr;
     QAction *mActionEnableShadows = nullptr;
     QAction *mActionEnableEyeDome = nullptr;
+    QAction *mActionRename = nullptr;
     QToolButton *mBtnOptions = nullptr;
+
+  signals:
+    void renameTriggered();
 };
 
 #endif // QGS3DMAPCANVASDOCKWIDGET_H

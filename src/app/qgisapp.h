@@ -104,6 +104,7 @@ class QgsGeometryValidationDock;
 class QgsGeometryValidationModel;
 class QgsUserProfileManager;
 class QgsUserProfileManagerWidgetFactory;
+class Qgs3DMapCanvas;
 class Qgs3DMapCanvasDockWidget;
 class QgsHandleBadLayersHandler;
 class QgsNetworkAccessManager;
@@ -271,6 +272,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Returns a list of all map canvases open in the app.
      */
     QList< QgsMapCanvas * > mapCanvases();
+
+    /**
+     * Returns a list of all 3D map canvases open in the app.
+     */
+    QList< Qgs3DMapCanvas * > mapCanvases3D();
 
     /**
      * Create a new map canvas with the specified unique \a name.
@@ -1227,6 +1233,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *panelMenu() { return mPanelMenu; }
 
     void renameView();
+
+    void rename3dView();
 
     void showStatusMessage( const QString &message );
 

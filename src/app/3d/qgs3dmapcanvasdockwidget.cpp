@@ -158,6 +158,10 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   connect( configureAction, &QAction::triggered, this, &Qgs3DMapCanvasDockWidget::configure );
   mOptionsMenu->addAction( configureAction );
 
+  QAction *mActionRename = new QAction( tr( "Rename view..." ), this );
+  connect( mActionRename, &QAction::triggered, this, &Qgs3DMapCanvasDockWidget::renameTriggered );
+  mOptionsMenu->addAction( mActionRename );
+
   mCanvas = new Qgs3DMapCanvas( contentsWidget );
   mCanvas->setMinimumSize( QSize( 200, 200 ) );
   mCanvas->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
