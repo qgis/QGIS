@@ -251,6 +251,8 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QgsVectorLayerTemporalPropertiesWidget *mTemporalWidget = nullptr;
 
     QgsProviderSourceWidget *mSourceWidget = nullptr;
+    
+    QgsCoordinateReferenceSystem mBackupCrs;
 
   private slots:
     void openPanel( QgsPanelWidget *panel );
