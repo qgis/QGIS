@@ -162,18 +162,50 @@ class GUI_EXPORT QgsHistoryProviderRegistry : public QObject
      *
      * The \a providerId specifies the history provider responsible for this entry.
      * Entry options are specified via the \a options argument.
+     *
+     * \param providerId associated QgsAbstractHistoryProvider::id()
+     * \param entry entry to add
+     * \param ok will be set to TRUE if entry was successfully added
+     * \param options options
+     *
+     * \returns ID of newly added entry.
      */
-    bool addEntry( const QString &providerId, const QVariantMap &entry, QgsHistoryProviderRegistry::HistoryEntryOptions options = QgsHistoryProviderRegistry::HistoryEntryOptions() );
+    long long addEntry( const QString &providerId, const QVariantMap &entry, bool &ok SIP_OUT, QgsHistoryProviderRegistry::HistoryEntryOptions options = QgsHistoryProviderRegistry::HistoryEntryOptions() );
 
     /**
      * Adds an \a entry to the history logs.
+     *
+     * \param entry entry to add
+     * \param ok will be set to TRUE if entry was successfully added
+     * \param options options
+     *
+     * \returns ID of newly added entry.
      */
-    bool addEntry( const QgsHistoryEntry &entry, QgsHistoryProviderRegistry::HistoryEntryOptions options = QgsHistoryProviderRegistry::HistoryEntryOptions() );
+    long long addEntry( const QgsHistoryEntry &entry, bool &ok SIP_OUT, QgsHistoryProviderRegistry::HistoryEntryOptions options = QgsHistoryProviderRegistry::HistoryEntryOptions() );
 
     /**
      * Adds a list of \a entries to the history logs.
      */
     bool addEntries( const QList< QgsHistoryEntry > &entries, QgsHistoryProviderRegistry::HistoryEntryOptions options = QgsHistoryProviderRegistry::HistoryEntryOptions() );
+
+    /**
+     * Returns the entry with matching ID, from the specified \a backend.
+     *
+     * \param id ID of entry to find
+     * \param ok will be set to TRUE if entry was found
+     * \param backend associated backend
+     *
+     * \returns matching entry if found
+     */
+    QgsHistoryEntry entry( long long id, bool &ok, Qgis::HistoryProviderBackend backend = Qgis::HistoryProviderBackend::LocalProfile ) const;
+
+    /**
+     * Updates the existing entry with matching \a id.
+     *
+     * This method allows the content of an entry to be updated, e.g. to add additional properties
+     * to the content. (Such as recording the results of after a long-running operation completes).
+     */
+    bool updateEntry( long long id, const QVariantMap &entry, Qgis::HistoryProviderBackend backend = Qgis::HistoryProviderBackend::LocalProfile );
 
     /**
      * Queries history entries which occurred between the specified \a start and \a end times.
