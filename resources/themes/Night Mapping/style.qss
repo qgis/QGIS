@@ -564,14 +564,14 @@ QTabBar::tab:disabled {
     color: @itemdarkbackground;
 }
 
-QTabBar::tab:last
+QTabBar::tab:last, QTabBar::tab::only-one
 {
-    margin-right: 0; /* the last selected tab has nothing to overlap with on the right */
+    margin-right: 0;
 }
 
 QTabBar::tab:first:!selected
 {
-  margin-left: 0px; /* the last selected tab has nothing to overlap with on the right */
+    margin-left: 0px;
 }
 
 QTabBar::tab:bottom {
