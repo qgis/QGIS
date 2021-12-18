@@ -202,7 +202,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     Q_OBJECT
   public:
     //! Constructor
-    QgisApp( QSplashScreen *splash, bool restorePlugins = true,
+    QgisApp( QSplashScreen *splash, bool restorePlugins = true, bool skipBadLayers = false,
              bool skipVersionCheck = false, const QString &rootProfileLocation = QString(),
              const QString &activeProfile = QString(),
              QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Window );
@@ -213,6 +213,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgisApp( QgisApp const & ) = delete;
     QgisApp &operator=( QgisApp const & ) = delete;
+
 
     /**
      * Returns and adjusted uri for the layer based on current and available CRS as well as the last selected image format
@@ -2072,6 +2073,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void activeLayerChanged( QgsMapLayer *layer );
 
   private:
+    //Flag to allow user to bypass badlayer checks.
+    bool mSkipBadLayers;
     void createPreviewImage( const QString &path, const QIcon &overlayIcon = QIcon() );
     void startProfile( const QString &name );
     void endProfile();

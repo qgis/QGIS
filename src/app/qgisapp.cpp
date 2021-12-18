@@ -926,7 +926,7 @@ static bool cmpByText_( QAction *a, QAction *b )
 QgisApp *QgisApp::sInstance = nullptr;
 
 // constructor starts here
-QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCheck, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
+QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers, bool skipVersionCheck, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
   : QMainWindow( parent, fl )
   , mSplash( splash )
 {
@@ -938,7 +938,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
       tr( "Multiple instances of QGIS application object detected.\nPlease contact the developers.\n" ) );
     abort();
   }
-
+  mSkipBadLayers = skipBadLayers;
   sInstance = this;
   QgsRuntimeProfiler *profiler = QgsApplication::profiler();
 
@@ -1484,8 +1484,12 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsHtmlDataItemProvider() );
 
   // set handler for missing layers (will be owned by QgsProject)
-  mAppBadLayersHandler = new QgsHandleBadLayersHandler();
-  QgsProject::instance()->setBadLayerHandler( mAppBadLayersHandler );
+  if ( !mSkipBadLayers )
+  {
+    QgsDebugMsg( QStringLiteral( "NOT creating bad layers handler" ) );
+    mAppBadLayersHandler = new QgsHandleBadLayersHandler();
+    QgsProject::instance()->setBadLayerHandler( mAppBadLayersHandler );
+  }
 
   mSplash->showMessage( tr( "Starting Python" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );
   qApp->processEvents();
@@ -7020,8 +7024,13 @@ bool QgisApp::addProject( const QString &projectFile )
   bool returnCode = false;
   std::unique_ptr< QgsProjectDirtyBlocker > dirtyBlocker = std::make_unique< QgsProjectDirtyBlocker >( QgsProject::instance() );
   QObject connectionScope; // manually control scope of layersChanged lambda connection - we need the connection automatically destroyed when this function finishes
+
   bool badLayersHandled = false;
-  connect( mAppBadLayersHandler, &QgsHandleBadLayersHandler::layersChanged, &connectionScope, [&badLayersHandled] { badLayersHandled = true; } );
+  if ( !mSkipBadLayers )
+  {
+    QgsDebugMsg( QStringLiteral( "NOT Skipping bad layers" ) );
+    connect( mAppBadLayersHandler, &QgsHandleBadLayersHandler::layersChanged, &connectionScope, [&badLayersHandled] { badLayersHandled = true; } );
+  }
 
   // close the previous opened project if any
   closeProject();
