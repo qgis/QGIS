@@ -111,13 +111,15 @@ QStringList QgsHistoryProviderRegistry::providerIds() const
   return mProviders.keys();
 }
 
-bool QgsHistoryProviderRegistry::addEntry( const QString &providerId, const QVariantMap &entry, QgsHistoryProviderRegistry::HistoryEntryOptions options )
+long long QgsHistoryProviderRegistry::addEntry( const QString &providerId, const QVariantMap &entry, bool &ok, QgsHistoryProviderRegistry::HistoryEntryOptions options )
 {
-  return addEntry( QgsHistoryEntry( providerId, QDateTime::currentDateTime(), entry ), options );
+  return addEntry( QgsHistoryEntry( providerId, QDateTime::currentDateTime(), entry ), ok, options );
 }
 
-bool QgsHistoryProviderRegistry::addEntry( const QgsHistoryEntry &entry, HistoryEntryOptions options )
+long long QgsHistoryProviderRegistry::addEntry( const QgsHistoryEntry &entry, bool &ok, HistoryEntryOptions options )
 {
+  ok = true;
+  long long id = -1;
   if ( options.storageBackends & Qgis::HistoryProviderBackend::LocalProfile )
   {
     QDomDocument xmlDoc;
@@ -130,24 +132,92 @@ bool QgsHistoryProviderRegistry::addEntry( const QgsHistoryEntry &entry, History
     if ( !runEmptyQuery( query ) )
     {
       QgsDebugMsg( QStringLiteral( "Couldn't story history entry in database!" ) );
-      return false;
+      ok = false;
+      return -1;
     }
+    id = static_cast< int >( sqlite3_last_insert_rowid( mLocalDB.get() ) );
   }
 
-  return true;
+  return id;
 }
 
 bool QgsHistoryProviderRegistry::addEntries( const QList<QgsHistoryEntry> &entries, HistoryEntryOptions options )
 {
+  bool ok = true;
   if ( options.storageBackends & Qgis::HistoryProviderBackend::LocalProfile )
   {
     runEmptyQuery( QStringLiteral( "BEGIN TRANSACTION;" ) );
     for ( const QgsHistoryEntry &entry : entries )
-      addEntry( entry, options );
+      addEntry( entry, ok, options );
     runEmptyQuery( QStringLiteral( "COMMIT TRANSACTION;" ) );
   }
 
-  return true;
+  return ok;
+}
+
+QgsHistoryEntry QgsHistoryProviderRegistry::entry( long long id, bool &ok, Qgis::HistoryProviderBackend backend ) const
+{
+  ok = false;
+  switch ( backend )
+  {
+    case Qgis::HistoryProviderBackend::LocalProfile:
+    {
+      if ( !mLocalDB )
+      {
+        QgsDebugMsg( QStringLiteral( "Cannot open database to query history entries" ) );
+        return QgsHistoryEntry( QVariantMap() );
+      }
+
+      QString sql = QStringLiteral( "SELECT provider_id, xml, timestamp FROM history WHERE id=%1" ).arg( id );
+
+      int nErr;
+      sqlite3_statement_unique_ptr statement = mLocalDB.prepare( sql, nErr );
+
+      if ( nErr == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
+      {
+        QDomDocument doc;
+        if ( !doc.setContent( statement.columnAsText( 1 ) ) )
+        {
+          QgsDebugMsg( QStringLiteral( "Cannot read history entry" ) );
+          return QgsHistoryEntry( QVariantMap() );
+        }
+
+        ok = true;
+        return QgsHistoryEntry(
+                 statement.columnAsText( 0 ),
+                 QDateTime::fromString( statement.columnAsText( 2 ), QStringLiteral( "yyyy-MM-dd HH:mm:ss" ) ),
+                 QgsXmlUtils::readVariant( doc.documentElement() ).toMap()
+               );
+      }
+
+      QgsDebugMsg( QStringLiteral( "Cannot find history item with matching ID" ) );
+      return QgsHistoryEntry( QVariantMap() );
+    }
+  }
+  BUILTIN_UNREACHABLE
+}
+
+bool QgsHistoryProviderRegistry::updateEntry( long long id, const QVariantMap &entry, Qgis::HistoryProviderBackend backend )
+{
+  switch ( backend )
+  {
+    case Qgis::HistoryProviderBackend::LocalProfile:
+    {
+      QDomDocument xmlDoc;
+      xmlDoc.appendChild( QgsXmlUtils::writeVariant( entry, xmlDoc ) );
+      const QString entryXml = xmlDoc.toString();
+
+      QString query = qgs_sqlite3_mprintf( "UPDATE history SET xml='%q' WHERE id = %d;",
+                                           entryXml.toUtf8().constData(), id );
+      if ( !runEmptyQuery( query ) )
+      {
+        QgsDebugMsg( QStringLiteral( "Couldn't update history entry in database!" ) );
+        return false;
+      }
+      return true;
+    }
+  }
+  BUILTIN_UNREACHABLE
 }
 
 QList<QgsHistoryEntry> QgsHistoryProviderRegistry::queryEntries( const QDateTime &start, const QDateTime &end, const QString &providerId, Qgis::HistoryProviderBackends backends ) const
