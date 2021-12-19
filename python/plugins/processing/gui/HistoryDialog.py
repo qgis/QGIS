@@ -23,6 +23,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 import os
 import warnings
+from typing import Optional
 import re
 from datetime import datetime
 
@@ -174,7 +175,7 @@ class HistoryDialog(BASE, WIDGET):
                         icons[algorithm_id] = self.keyIcon
                 name = names[algorithm_id]
                 icon = icons[algorithm_id]
-            item = TreeLogEntryItem(entry, True, name)
+            item = TreeLogEntryItem(entry, name)
             item.setIcon(0, icon)
             group_items[current_group_item].insertChild(0, item)
 
@@ -184,13 +185,13 @@ class HistoryDialog(BASE, WIDGET):
     def executeAlgorithm(self):
         item = self.tree.currentItem()
         if isinstance(item, TreeLogEntryItem):
-            if item.isAlg:
+            if item.as_python_command():
                 script = 'import processing\n'
                 # adding to this list? Also update the BatchPanel.py imports!!
                 script += 'from qgis.core import QgsProcessingOutputLayerDefinition, QgsProcessingFeatureSourceDefinition, QgsProperty, QgsCoordinateReferenceSystem, QgsFeatureRequest\n'
                 script += 'from qgis.PyQt.QtCore import QDate, QTime, QDateTime\n'
                 script += 'from qgis.PyQt.QtGui import QColor\n'
-                script += item.python_command.replace('processing.run(', 'processing.execAlgorithmDialog(')
+                script += item.as_python_command().replace('processing.run(', 'processing.execAlgorithmDialog(')
                 self.close()
                 exec(script)
 
@@ -198,32 +199,46 @@ class HistoryDialog(BASE, WIDGET):
         item = self.tree.currentItem()
         if isinstance(item, TreeLogEntryItem):
             self.text.setText('"""\n' + self.tr('Double-click on the history item or paste the command below to re-run the algorithm') + '\n"""\n\n' +
-                              item.python_command)
+                              item.as_python_command())
         else:
             self.text.setText('')
 
     def createTest(self):
         item = self.tree.currentItem()
         if isinstance(item, TreeLogEntryItem):
-            if item.isAlg:
-                TestTools.createTest(item.python_command)
+            if item.as_python_command():
+                TestTools.createTest(item.as_python_command())
 
     def showPopupMenu(self, point):
         item = self.tree.currentItem()
         if isinstance(item, TreeLogEntryItem):
-            if item.isAlg:
-                popupmenu = QMenu()
+            popupmenu = QMenu()
+            if item.as_python_command():
                 createTestAction = QAction(QCoreApplication.translate('HistoryDialog', 'Create Test…'), self.tree)
                 createTestAction.triggered.connect(self.createTest)
                 popupmenu.addAction(createTestAction)
-                popupmenu.exec_(self.tree.mapToGlobal(point))
+            popupmenu.exec_(self.tree.mapToGlobal(point))
 
 
 class TreeLogEntryItem(QTreeWidgetItem):
 
-    def __init__(self, entry: QgsHistoryEntry, isAlg, algName):
+    def __init__(self, entry: QgsHistoryEntry, algName):
         QTreeWidgetItem.__init__(self)
         self.entry = entry
-        self.isAlg = isAlg
-        self.python_command = entry.entry.get('python_command', '')
-        self.setText(0, '[' + entry.timestamp.toString('yyyy-MM-dd hh:mm') + '] ' + algName + ' - ' + self.python_command)
+
+        parameters = entry.entry.get('parameters')
+        if isinstance(parameters, dict) and parameters.get('inputs'):
+            entry_description = str(parameters['inputs'])
+        else:
+            entry_description = entry.entry.get('python_command', '')
+
+        if len(entry_description) > 300:
+            entry_description = entry_description[:299] + '…'
+
+        self.setText(0, f'[{entry.timestamp.toString("yyyy-MM-dd hh:mm")}] {algName} - {entry_description}')
+
+    def as_python_command(self) -> Optional[str]:
+        """
+        Returns the entry as a python command, if possible
+        """
+        return self.entry.entry.get('python_command')
