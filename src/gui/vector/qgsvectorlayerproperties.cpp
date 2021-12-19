@@ -300,7 +300,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     }
   }
 
-  
   mCrsSelector->setCrs( mLayer->crs() );
 
   //insert existing join info
