@@ -4103,6 +4103,32 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpression::expressionToLayerFieldIndex( "  (  \"ANOTHER FIELD\"   )   ", layer.get() ), 1 );
     }
 
+    void test_quoteFieldExpression()
+    {
+      std::unique_ptr layer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+      layer->dataProvider()->addAttributes( { QgsField( QStringLiteral( "field1" ), QVariant::String ),
+                                              QgsField( QStringLiteral( "another FIELD" ), QVariant::String ) } );
+      layer->updateFields();
+
+      QCOMPARE( QgsExpression::quoteFieldExpression( "", layer.get() ), "" );
+      QCOMPARE( QgsExpression::quoteFieldExpression( "42", layer.get() ), "42" );
+      QCOMPARE( QgsExpression::quoteFieldExpression( "foo", layer.get() ), "foo" );
+      QCOMPARE( QgsExpression::quoteFieldExpression( "\"foo bar\"", layer.get() ), "\"foo bar\"" );
+      QCOMPARE( QgsExpression::quoteFieldExpression( "sqrt(foo)", layer.get() ), "sqrt(foo)" );
+      QCOMPARE( QgsExpression::quoteFieldExpression( "foo + bar", layer.get() ), "foo + bar" );
+      QCOMPARE( QgsExpression::quoteFieldExpression( "field1", layer.get() ), "\"field1\"" );
+      QCOMPARE( QgsExpression::quoteFieldExpression( "FIELD1", layer.get() ), "\"FIELD1\"" );
+      QCOMPARE( QgsExpression::quoteFieldExpression( "\"field1\"", layer.get() ), "\"field1\"" );
+      QCOMPARE( QgsExpression::quoteFieldExpression( "\"FIELD1\"", layer.get() ), "\"FIELD1\"" );
+      QCOMPARE( QgsExpression::quoteFieldExpression( "  (  \"field1\"   )   ", layer.get() ), "  (  \"field1\"   )   " );
+      QCOMPARE( QgsExpression::quoteFieldExpression( "another FIELD", layer.get() ), "\"another FIELD\"" );
+      QCOMPARE( QgsExpression::quoteFieldExpression( "ANOTHER field", layer.get() ), "\"ANOTHER field\"" );
+      QCOMPARE( QgsExpression::quoteFieldExpression( "  ANOTHER field  ", layer.get() ), "\"  ANOTHER field  \"" );
+      QCOMPARE( QgsExpression::quoteFieldExpression( "\"another field\"", layer.get() ), "\"another field\"" );
+      QCOMPARE( QgsExpression::quoteFieldExpression( "\"ANOTHER FIELD\"", layer.get() ), "\"ANOTHER FIELD\"" );
+      QCOMPARE( QgsExpression::quoteFieldExpression( "  (  \"ANOTHER FIELD\"   )   ", layer.get() ), "  (  \"ANOTHER FIELD\"   )   " );
+    }
+
     void test_implicitSharing()
     {
       QgsExpression *exp = new QgsExpression( QStringLiteral( "Pilots > 2" ) );

@@ -1371,6 +1371,13 @@ int QgsExpression::expressionToLayerFieldIndex( const QString &expression, const
   return -1;
 }
 
+QString QgsExpression::quoteFieldExpression( const QString &expression, const QgsVectorLayer *layer )
+{
+  if ( !expression.contains( '\"' ) && QgsExpression::expressionToLayerFieldIndex( expression, layer ) != -1 )
+    return QgsExpression::quotedColumnRef( expression );
+  return expression;
+}
+
 QList<const QgsExpressionNode *> QgsExpression::nodes() const
 {
   if ( !d->mRootNode )
