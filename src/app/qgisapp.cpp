@@ -1486,7 +1486,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   // set handler for missing layers (will be owned by QgsProject)
   if ( !mSkipBadLayers )
   {
-    QgsDebugMsg( QStringLiteral( "NOT creating bad layers handler" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Creating bad layers handler" ), 2 );
     mAppBadLayersHandler = new QgsHandleBadLayersHandler();
     QgsProject::instance()->setBadLayerHandler( mAppBadLayersHandler );
   }
