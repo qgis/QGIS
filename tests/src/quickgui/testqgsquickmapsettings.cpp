@@ -23,7 +23,7 @@
 
 #include "qgsquickmapsettings.h"
 
-class TestQgsQuickSettings: public QObject
+class TestQgsQuickMapSettings: public QObject
 {
     Q_OBJECT
   private slots:
