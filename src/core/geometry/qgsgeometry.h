@@ -1716,7 +1716,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \since QGIS 3.0
      */
-    QgsGeometry subdivide( int maxNodes = 256 ) const;
+    QgsGeometry subdivide( int maxNodes = 256, double gridSize = -1 ) const;
 
     /**
      * Returns an interpolated point on the geometry at the specified \a distance.
@@ -1767,7 +1767,7 @@ class CORE_EXPORT QgsGeometry
      * If an error was encountered while creating the result, more information can be retrieved
      * by calling lastError() on the returned geometry.
      */
-    QgsGeometry intersection( const QgsGeometry &geometry ) const;
+    QgsGeometry intersection( const QgsGeometry &geometry, double gridSize = -1 ) const;
 
     /**
      * Clips the geometry using the specified \a rectangle.
@@ -1789,7 +1789,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \note this operation is not called union since its a reserved word in C++.
      */
-    QgsGeometry combine( const QgsGeometry &geometry ) const;
+    QgsGeometry combine( const QgsGeometry &geometry, double gridSize = -1 ) const;
 
     /**
      * Merges any connected lines in a LineString/MultiLineString geometry and
@@ -1809,7 +1809,7 @@ class CORE_EXPORT QgsGeometry
      * If an error was encountered while creating the result, more information can be retrieved
      * by calling lastError() on the returned geometry.
      */
-    QgsGeometry difference( const QgsGeometry &geometry ) const;
+    QgsGeometry difference( const QgsGeometry &geometry, double gridSize = -1 ) const;
 
     /**
      * Returns a geometry representing the points making up this geometry that do not make up other.
@@ -1819,7 +1819,7 @@ class CORE_EXPORT QgsGeometry
      * If an error was encountered while creating the result, more information can be retrieved
      * by calling lastError() on the returned geometry.
      */
-    QgsGeometry symDifference( const QgsGeometry &geometry ) const;
+    QgsGeometry symDifference( const QgsGeometry &geometry, double gridSize = -1 ) const;
 
     //! Returns an extruded version of this geometry.
     QgsGeometry extrude( double x, double y );
