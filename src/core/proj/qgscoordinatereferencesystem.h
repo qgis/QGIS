@@ -932,6 +932,28 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \since QGIS 3.8
      */
     PJ *projObject() const;
+
+    /**
+     * Constructs a QgsCoordinateReferenceSystem from a PROJ PJ object.
+     *
+     * The \a object must correspond to a PROJ CRS object.
+     *
+     * Ownership of \a object is not transferred.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.24
+     */
+    static QgsCoordinateReferenceSystem fromProjObject( PJ *object );
+
+    /**
+     * Sets this CRS by passing it a PROJ PJ \a object, corresponding to a PROJ CRS object.
+     *
+     * Ownership of \a object is not transferred.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.24
+     */
+    bool createFromProjObject( PJ *object );
 #endif
 
     /**
