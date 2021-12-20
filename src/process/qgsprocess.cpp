@@ -255,6 +255,13 @@ int QgsProcessingExec::run( const QStringList &constArgs )
     args.removeAt( verboseIndex );
   }
 
+  const int noPythonIndex = args.indexOf( QLatin1String( "--no-python" ) );
+  if ( noPythonIndex >= 0 )
+  {
+    mSkipPython = true;
+    args.removeAt( noPythonIndex );
+  }
+
   if ( args.size() == 1 )
   {
     showUsage( args.at( 0 ) );
@@ -268,13 +275,15 @@ int QgsProcessingExec::run( const QStringList &constArgs )
 #endif
 
 #ifdef WITH_BINDINGS
-
-  // give Python plugins a chance to load providers
-  mPythonUtils = loadPythonSupport();
-  if ( !mPythonUtils )
+  if ( !mSkipPython )
   {
-    QCoreApplication::exit( 1 );
-    return 1;
+    // give Python plugins a chance to load providers
+    mPythonUtils = loadPythonSupport();
+    if ( !mPythonUtils )
+    {
+      QCoreApplication::exit( 1 );
+      return 1;
+    }
   }
 #endif
 
@@ -518,12 +527,13 @@ void QgsProcessingExec::showUsage( const QString &appName )
 
   msg << "QGIS Processing Executor - " << VERSION << " '" << RELEASE_NAME << "' ("
       << Qgis::version() << ")\n"
-      << "Usage: " << appName <<  " [--help] [--version] [--json] [--verbose] [command] [algorithm id, path to model file, or path to Python script] [parameters]\n"
+      << "Usage: " << appName <<  " [--help] [--version] [--json] [--verbose] [--no-python] [command] [algorithm id, path to model file, or path to Python script] [parameters]\n"
       << "\nOptions:\n"
       << "\t--help or -h\t\tOutput the help\n"
       << "\t--version or -v\t\tOutput all versions related to QGIS Process\n"
       << "\t--json\t\tOutput results as JSON objects\n"
       << "\t--verbose\tOutput verbose logs\n"
+      << "\t--no-python\tDisable Python support (results in faster startup)"
       << "\nAvailable commands:\n"
       << "\tplugins\t\tlist available and active plugins\n"
       << "\tplugins enable\tenables an installed plugin. The plugin name must be specified, e.g. \"plugins enable cartography_tools\"\n"
@@ -541,6 +551,9 @@ void QgsProcessingExec::showUsage( const QString &appName )
 void QgsProcessingExec::loadPlugins()
 {
 #ifdef WITH_BINDINGS
+  if ( !mPythonUtils )
+    return;
+
   QgsSettings settings;
   // load plugins
   const QStringList plugins = mPythonUtils->pluginList();
@@ -645,25 +658,28 @@ void QgsProcessingExec::listPlugins( bool useJson, bool showLoaded )
 
 #ifdef WITH_BINDINGS
   QVariantMap jsonPlugins;
-  const QStringList plugins = mPythonUtils->pluginList();
-  for ( const QString &plugin : plugins )
+  if ( mPythonUtils )
   {
-    if ( !mPythonUtils->pluginHasProcessingProvider( plugin ) )
-      continue;
+    const QStringList plugins = mPythonUtils->pluginList();
+    for ( const QString &plugin : plugins )
+    {
+      if ( !mPythonUtils->pluginHasProcessingProvider( plugin ) )
+        continue;
 
-    if ( !useJson )
-    {
-      if ( showLoaded ? mPythonUtils->isPluginLoaded( plugin ) : mPythonUtils->isPluginEnabled( plugin ) )
-        std::cout << "* ";
+      if ( !useJson )
+      {
+        if ( showLoaded ? mPythonUtils->isPluginLoaded( plugin ) : mPythonUtils->isPluginEnabled( plugin ) )
+          std::cout << "* ";
+        else
+          std::cout << "  ";
+        std::cout << plugin.toLocal8Bit().constData() << "\n";
+      }
       else
-        std::cout << "  ";
-      std::cout << plugin.toLocal8Bit().constData() << "\n";
-    }
-    else
-    {
-      QVariantMap jsonPlugin;
-      jsonPlugin.insert( QStringLiteral( "loaded" ), showLoaded ? mPythonUtils->isPluginLoaded( plugin ) : mPythonUtils->isPluginEnabled( plugin ) );
-      jsonPlugins.insert( plugin, jsonPlugin );
+      {
+        QVariantMap jsonPlugin;
+        jsonPlugin.insert( QStringLiteral( "loaded" ), showLoaded ? mPythonUtils->isPluginLoaded( plugin ) : mPythonUtils->isPluginEnabled( plugin ) );
+        jsonPlugins.insert( plugin, jsonPlugin );
+      }
     }
   }
 
@@ -683,6 +699,12 @@ int QgsProcessingExec::enablePlugin( const QString &name, bool enabled )
     std::cout << QStringLiteral( "Disabling plugin: \"%1\"\n" ).arg( name ).toLocal8Bit().constData();
 
 #ifdef WITH_BINDINGS
+  if ( !mPythonUtils )
+  {
+    std::cerr << "\nPython not available!";
+    return 1;
+  }
+
   const QStringList plugins = mPythonUtils->pluginList();
   if ( !plugins.contains( name ) )
   {
