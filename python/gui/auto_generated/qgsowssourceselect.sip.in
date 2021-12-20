@@ -146,15 +146,6 @@ Sets the server connection combo box to that stored in the config file.
 Add a few example servers to the list.
 %End
 
-    void prepareExtent();
-%Docstring
-Prepares the spatial extent box with the general settings
-including original crs, destination crs and the map
-canvas if it is available.
-
-.. versionadded:: 3.24
-%End
-
     bool extentChecked();
 
     QgsRectangle outputExtent();
