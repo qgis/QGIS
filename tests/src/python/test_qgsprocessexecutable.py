@@ -105,6 +105,17 @@ class TestQgsProcessExecutable(unittest.TestCase):
         rc, output, err = self.run_process(['list'])
         self.assertIn('available algorithms', output.lower())
         self.assertIn('native:reprojectlayer', output.lower())
+        self.assertIn('gdal:translate', output.lower())
+        if os.environ.get('TRAVIS', '') != 'true':
+            # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
+            self.assertFalse(err)
+        self.assertEqual(rc, 0)
+
+    def testAlgorithmListNoPython(self):
+        rc, output, err = self.run_process(['--no-python', 'list'])
+        self.assertIn('available algorithms', output.lower())
+        self.assertIn('native:reprojectlayer', output.lower())
+        self.assertNotIn('gdal:translate', output.lower())
         if os.environ.get('TRAVIS', '') != 'true':
             # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
             self.assertFalse(err)
