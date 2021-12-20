@@ -110,42 +110,42 @@ class CORE_EXPORT QgsGeometryEngine
      *
      * \since QGIS 3.0 \a geom is a pointer
      */
-    virtual QgsAbstractGeometry *intersection( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *intersection( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, double gridSize = -1 ) const = 0 SIP_FACTORY;
 
     /**
      * Calculate the difference of this and \a geom.
      *
      * \since QGIS 3.0 \a geom is a pointer
      */
-    virtual QgsAbstractGeometry *difference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *difference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, double gridSize = -1 ) const = 0 SIP_FACTORY;
 
     /**
      * Calculate the combination of this and \a geom.
      *
      * \since QGIS 3.0 \a geom is a pointer
      */
-    virtual QgsAbstractGeometry *combine( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *combine( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, double gridSize = -1 ) const = 0 SIP_FACTORY;
 
     /**
      * Calculate the combination of this and \a geometries.
      *
      * \since QGIS 3.0 \a geom is a pointer
      */
-    virtual QgsAbstractGeometry *combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg, double gridSize = -1 ) const = 0 SIP_FACTORY;
 
     /**
      * Calculate the combination of this and \a geometries.
      *
      * \since QGIS 3.0 \a geom is a pointer
      */
-    virtual QgsAbstractGeometry *combine( const QVector< QgsGeometry > &geometries, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *combine( const QVector< QgsGeometry > &geometries, QString *errorMsg = nullptr, double gridSize = -1 ) const = 0 SIP_FACTORY;
 
     /**
      * Calculate the symmetric difference of this and \a geom.
      *
      * \since QGIS 3.0 \a geom is a pointer
      */
-    virtual QgsAbstractGeometry *symDifference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *symDifference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, double gridSize = -1 ) const = 0 SIP_FACTORY;
     virtual QgsAbstractGeometry *buffer( double distance, int segments, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
 
     /**
@@ -358,4 +358,3 @@ class CORE_EXPORT QgsGeometryEngine
 };
 
 #endif // QGSGEOMETRYENGINE_H
-
