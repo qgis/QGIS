@@ -17567,12 +17567,14 @@ void QgisApp::saveProjectToProjectStorage( const QString &uri )
   }
 }
 
+#ifdef HAVE_CRASH_HANDLER
 void QgisApp::triggerCrashHandler()
 {
 #ifdef Q_OS_WIN
   RaiseException( 0x12345678, 0, 0, nullptr );
 #endif
 }
+#endif
 
 void QgisApp::addTabifiedDockWidget( Qt::DockWidgetArea area, QDockWidget *dockWidget, const QStringList &tabifyWith, bool raiseTab )
 {

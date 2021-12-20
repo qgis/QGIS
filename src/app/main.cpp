@@ -38,6 +38,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstdarg>
+#include "qgsconfig.h"
 
 #if !defined(Q_OS_WIN)
 #include "sigwatch.h"
@@ -75,6 +76,7 @@ typedef SInt32 SRefCon;
 #include <sys/time.h>
 #endif
 
+#ifdef HAVE_CRASH_HANDLER
 #if defined(__GLIBC__) || defined(__FreeBSD__)
 #define QGIS_CRASH
 #include <unistd.h>
@@ -82,6 +84,7 @@ typedef SInt32 SRefCon;
 #include <csignal>
 #include <sys/wait.h>
 #include <cerrno>
+#endif
 #endif
 
 #include "qgscustomization.h"
@@ -104,7 +107,9 @@ typedef SInt32 SRefCon;
 #include "qgsmapthemes.h"
 #include "qgsvectorlayer.h"
 #include "qgis_app.h"
+#ifdef HAVE_CRASH_HANDLER
 #include "qgscrashhandler.h"
+#endif
 #include "qgsziputils.h"
 #include "qgsversionmigration.h"
 #include "qgsfirstrundialog.h"

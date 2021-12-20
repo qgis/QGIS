@@ -1252,11 +1252,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void setMapTipsDelay( int timerInterval );
 
+#ifdef HAVE_CRASH_HANDLER
+
     /**
      * Abort application triggering the crash handler
      * \since QGIS 3.4
      */
     void triggerCrashHandler();
+#endif
 
     //! Create a new file from a template project
     bool fileNewFromTemplate( const QString &fileName );
