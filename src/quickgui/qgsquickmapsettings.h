@@ -282,6 +282,9 @@ class QUICK_EXPORT QgsQuickMapSettings : public QObject
     //! \copydoc QgsQuickMapSettings::layers
     void layersChanged();
 
+    //! \copydoc QgsQuickMapSettings::devicePixelRatio
+    void devicePixelRatioChanged();
+
   private slots:
 
     /**

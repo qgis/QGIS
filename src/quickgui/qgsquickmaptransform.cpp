@@ -48,7 +48,7 @@ void QgsQuickMapTransform::setMapSettings( QgsQuickMapSettings *mapSettings )
 void QgsQuickMapTransform::updateMatrix()
 {
   QMatrix4x4 matrix;
-  float scaleFactor = static_cast<float>( 1.0 / mMapSettings->mapUnitsPerPixel() );
+  float scaleFactor = static_cast<float>( ( 1.0 / mMapSettings->mapUnitsPerPixel() ) / mMapSettings->devicePixelRatio() );
 
   matrix.scale( scaleFactor, -scaleFactor );
   matrix.translate( static_cast<float>( -mMapSettings->visibleExtent().xMinimum( ) ),

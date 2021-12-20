@@ -295,4 +295,5 @@ qreal QgsQuickMapSettings::devicePixelRatio() const
 void QgsQuickMapSettings::setDevicePixelRatio( const qreal &devicePixelRatio )
 {
   mDevicePixelRatio = devicePixelRatio;
+  emit devicePixelRatioChanged();
 }
