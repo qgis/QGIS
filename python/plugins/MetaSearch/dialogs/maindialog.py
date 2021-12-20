@@ -88,10 +88,11 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         # form inputs
         self.startfrom = 1
-        self.maxrecords = 10
-        self.timeout = 10
-        self.disable_ssl_verification = False
         self.constraints = []
+        self.maxrecords = int(self.settings.value('/MetaSearch/returnRecords', 10))
+        self.timeout = int(self.settings.value('/MetaSearch/timeout', 10))
+        self.disable_ssl_verification = self.settings.value(
+            '/MetaSearch/disableSSL', False, bool)
 
         # Services tab
         self.cmbConnectionsServices.activated.connect(self.save_connection)
@@ -139,12 +140,29 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
     def manageGui(self):
         """open window"""
+        def _on_timeout_change(value):
+            self.settings.setValue('/MetaSearch/timeout', value)
+            self.timeout = value
+
+        def _on_records_change(value):
+            self.settings.setValue('/MetaSearch/returnRecords', value)
+            self.maxrecords = value
+
+        def _on_ssl_state_change(state):
+            self.settings.setValue('/MetaSearch/disableSSL', bool(state))
+            self.disable_ssl_verification = bool(state)
 
         self.tabWidget.setCurrentIndex(0)
         self.populate_connection_list()
         self.btnRawAPIResponse.setEnabled(False)
-        self.spnRecords.setValue(
-            int(self.settings.value('/MetaSearch/returnRecords', 10)))
+
+        # load settings
+        self.spnRecords.setValue(self.maxrecords)
+        self.spnRecords.valueChanged.connect(_on_records_change)
+        self.spnTimeout.setValue(self.timeout)
+        self.spnTimeout.valueChanged.connect(_on_timeout_change)
+        self.disableSSLVerification.setChecked(self.disable_ssl_verification)
+        self.disableSSLVerification.stateChanged.connect(_on_ssl_state_change)
 
         key = '/MetaSearch/%s' % self.cmbConnectionsSearch.currentText()
         self.catalog_url = self.settings.value('%s/url' % key)
@@ -435,10 +453,6 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         # clear all fields and disable buttons
         self.clear_results()
 
-        # save some settings
-        self.settings.setValue('/MetaSearch/returnRecords',
-                               self.spnRecords.cleanText())
-
         # set current catalog
         current_text = self.cmbConnectionsSearch.currentText()
         key = '/MetaSearch/%s' % current_text
@@ -449,10 +463,6 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         # start position and number of records to return
         self.startfrom = 1
-        self.maxrecords = self.spnRecords.value()
-
-        # set timeout
-        self.timeout = self.spnTimeout.value()
 
         # bbox
         # CRS is WGS84 with axis order longitude, latitude
@@ -840,7 +850,6 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         identifier = get_item_data(item, 'identifier')
 
-        self.disable_ssl_verification = self.disableSSLVerification.isChecked()
         auth = None
 
         if self.disable_ssl_verification:
@@ -935,7 +944,6 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
     def _get_catalog(self):
         """convenience function to init catalog wrapper"""
 
-        self.disable_ssl_verification = self.disableSSLVerification.isChecked()
         auth = None
 
         if self.disable_ssl_verification:
