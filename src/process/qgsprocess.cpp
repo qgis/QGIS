@@ -276,6 +276,7 @@ int QgsProcessingExec::run( const QStringList &constArgs )
     QCoreApplication::exit( 1 );
     return 1;
   }
+#endif
 
   const QString command = args.at( 1 );
   if ( command == QLatin1String( "plugins" ) )
@@ -508,7 +509,6 @@ int QgsProcessingExec::run( const QStringList &constArgs )
   {
     std::cerr << QStringLiteral( "Command %1 not known!\n" ).arg( command ).toLocal8Bit().constData();
   }
-#endif
   return 1;
 }
 
@@ -538,9 +538,9 @@ void QgsProcessingExec::showUsage( const QString &appName )
   std::cout << msg.join( QString() ).toLocal8Bit().constData();
 }
 
-#ifdef WITH_BINDINGS
 void QgsProcessingExec::loadPlugins()
 {
+#ifdef WITH_BINDINGS
   QgsSettings settings;
   // load plugins
   const QStringList plugins = mPythonUtils->pluginList();
@@ -558,8 +558,8 @@ void QgsProcessingExec::loadPlugins()
       }
     }
   }
-}
 #endif
+}
 
 void QgsProcessingExec::listAlgorithms( bool useJson )
 {
