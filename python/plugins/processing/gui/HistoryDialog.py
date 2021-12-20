@@ -22,18 +22,20 @@ __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
 import os
+import sys
 import warnings
+import json
+from functools import partial
 from typing import Optional
-import re
-from datetime import datetime
 
+from qgis.PyQt import uic
+from qgis.PyQt.Qsci import QsciScintilla
+from qgis.PyQt.QtCore import Qt, QCoreApplication, QDateTime, QMimeData
+from qgis.PyQt.QtGui import QClipboard
+from qgis.PyQt.QtWidgets import QAction, QPushButton, QDialogButtonBox, QStyle, QMessageBox, QFileDialog, QMenu, \
+    QTreeWidgetItem, QShortcut, QApplication
 from qgis.core import QgsApplication, Qgis
 from qgis.gui import QgsGui, QgsHelp, QgsHistoryEntry
-from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt, QCoreApplication, QDate, QDateTime
-from qgis.PyQt.QtWidgets import QAction, QPushButton, QDialogButtonBox, QStyle, QMessageBox, QFileDialog, QMenu, QTreeWidgetItem, QShortcut
-from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.Qsci import QsciScintilla
 
 from processing.gui import TestTools
 
@@ -198,8 +200,9 @@ class HistoryDialog(BASE, WIDGET):
     def changeText(self):
         item = self.tree.currentItem()
         if isinstance(item, TreeLogEntryItem):
-            self.text.setText('"""\n' + self.tr('Double-click on the history item or paste the command below to re-run the algorithm') + '\n"""\n\n' +
-                              item.as_python_command())
+            self.text.setText('"""\n' + self.tr(
+                'Double-click on the history item or paste the command below to re-run the algorithm') + '\n"""\n\n' +
+                item.as_python_command())
         else:
             self.text.setText('')
 
@@ -209,14 +212,47 @@ class HistoryDialog(BASE, WIDGET):
             if item.as_python_command():
                 TestTools.createTest(item.as_python_command())
 
+    def copy_text(self, text: str):
+        """
+        Copies a text string to clipboard
+        """
+        m = QMimeData()
+        m.setText(text)
+        cb = QApplication.clipboard()
+
+        if sys.platform in ("linux", "linux2"):
+            cb.setMimeData(m, QClipboard.Selection)
+        cb.setMimeData(m, QClipboard.Clipboard)
+
     def showPopupMenu(self, point):
         item = self.tree.currentItem()
         if isinstance(item, TreeLogEntryItem):
             popupmenu = QMenu()
+
+            qgis_process_command = item.as_qgis_process_command()
+            if qgis_process_command:
+                qgis_process_action = QAction(
+                    QCoreApplication.translate('HistoryDialog', 'Copy as qgis_process Command'), self.tree)
+                qgis_process_action.setIcon(QgsApplication.getThemeIcon("mActionTerminal.svg"))
+                qgis_process_action.triggered.connect(partial(self.copy_text, qgis_process_command))
+                popupmenu.addAction(qgis_process_action)
+
+            inputs_json = item.inputs_map()
+            if inputs_json:
+                as_json_action = QAction(
+                    QCoreApplication.translate('HistoryDialog', 'Copy as JSON'), self.tree)
+                as_json_action.setIcon(QgsApplication.getThemeIcon("mActionEditCopy.svg"))
+                as_json_action.triggered.connect(partial(self.copy_text, json.dumps(inputs_json)))
+                popupmenu.addAction(as_json_action)
+
+            if not popupmenu.isEmpty():
+                popupmenu.addSeparator()
+
             if item.as_python_command():
-                createTestAction = QAction(QCoreApplication.translate('HistoryDialog', 'Create Test…'), self.tree)
-                createTestAction.triggered.connect(self.createTest)
-                popupmenu.addAction(createTestAction)
+                create_test_action = QAction(QCoreApplication.translate('HistoryDialog', 'Create Test…'), self.tree)
+                create_test_action.triggered.connect(self.createTest)
+                popupmenu.addAction(create_test_action)
+
             popupmenu.exec_(self.tree.mapToGlobal(point))
 
 
@@ -242,3 +278,15 @@ class TreeLogEntryItem(QTreeWidgetItem):
         Returns the entry as a python command, if possible
         """
         return self.entry.entry.get('python_command')
+
+    def as_qgis_process_command(self) -> Optional[str]:
+        """
+        Returns the entry as a qgis_process command, if possible
+        """
+        return self.entry.entry.get('process_command')
+
+    def inputs_map(self) -> Optional[dict]:
+        """
+        Returns the entry inputs as a dict
+        """
+        return self.entry.entry.get('parameters')
