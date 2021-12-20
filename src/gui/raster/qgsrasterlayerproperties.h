@@ -295,6 +295,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
     friend class QgsAppScreenShots;
 
-	QgsCoordinateReferenceSystem mBackupCrs;
+    QgsCoordinateReferenceSystem mBackupCrs;
 };
 #endif
