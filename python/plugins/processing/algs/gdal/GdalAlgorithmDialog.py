@@ -120,7 +120,10 @@ class GdalParametersPanel(ParametersPanel):
         context = createContext()
         feedback = QgsProcessingFeedback()
         try:
-            parameters = self.dialog.createProcessingParameters()
+            # messy as all heck, but we don't want to call the dialog's implementation of
+            # createProcessingParameters as we want to catch the exceptions raised by the
+            # parameter panel instead...
+            parameters = {} if self.dialog.mainWidget() is None else self.dialog.mainWidget().createProcessingParameters()
             for output in self.algorithm().destinationParameterDefinitions():
                 if not output.name() in parameters or parameters[output.name()] is None:
                     if not output.flags() & QgsProcessingParameterDefinition.FlagOptional:
