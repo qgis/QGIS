@@ -250,7 +250,7 @@ class HistoryDialog(BASE, WIDGET):
                 as_json_action = QAction(
                     QCoreApplication.translate('HistoryDialog', 'Copy as JSON'), self.tree)
                 as_json_action.setIcon(QgsApplication.getThemeIcon("mActionEditCopy.svg"))
-                as_json_action.triggered.connect(partial(self.copy_text, json.dumps(inputs_json)))
+                as_json_action.triggered.connect(partial(self.copy_text, json.dumps(inputs_json, indent=2)))
                 popupmenu.addAction(as_json_action)
 
             if not popupmenu.isEmpty():
