@@ -2630,6 +2630,75 @@ PJ *QgsCoordinateReferenceSystem::projObject() const
   return d->threadLocalProjObject();
 }
 
+QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromProjObject( PJ *object )
+{
+  QgsCoordinateReferenceSystem crs;
+  crs.createFromProjObject( object );
+  return crs;
+}
+
+bool QgsCoordinateReferenceSystem::createFromProjObject( PJ *object )
+{
+  d.detach();
+  d->mIsValid = false;
+  d->mProj4.clear();
+  d->mWktPreferred.clear();
+
+  if ( !object )
+  {
+    return false;
+  }
+
+  switch ( proj_get_type( object ) )
+  {
+    case PJ_TYPE_VERTICAL_CRS:
+    case PJ_TYPE_PRIME_MERIDIAN:
+    case PJ_TYPE_ELLIPSOID:
+    case PJ_TYPE_GEODETIC_REFERENCE_FRAME:
+    case PJ_TYPE_DYNAMIC_GEODETIC_REFERENCE_FRAME:
+    case PJ_TYPE_VERTICAL_REFERENCE_FRAME:
+    case PJ_TYPE_DYNAMIC_VERTICAL_REFERENCE_FRAME:
+    case PJ_TYPE_DATUM_ENSEMBLE:
+    case PJ_TYPE_CONVERSION:
+    case PJ_TYPE_TRANSFORMATION:
+    case PJ_TYPE_CONCATENATED_OPERATION:
+    case PJ_TYPE_OTHER_COORDINATE_OPERATION:
+    case PJ_TYPE_TEMPORAL_DATUM:
+    case PJ_TYPE_ENGINEERING_DATUM:
+    case PJ_TYPE_PARAMETRIC_DATUM:
+      return false;
+
+    default:
+      break;
+  }
+
+  d->setPj( QgsProjUtils::crsToSingleCrs( object ) );
+
+  if ( !d->hasPj() )
+  {
+    return d->mIsValid;
+  }
+  else
+  {
+    // maybe we can directly grab the auth name and code from the crs
+    const QString authName( proj_get_id_auth_name( d->threadLocalProjObject(), 0 ) );
+    const QString authCode( proj_get_id_code( d->threadLocalProjObject(), 0 ) );
+    if ( !authName.isEmpty() && !authCode.isEmpty() && loadFromAuthCode( authName, authCode ) )
+    {
+      return d->mIsValid;
+    }
+    else
+    {
+      // Still a valid CRS, just not a known one
+      d->mIsValid = true;
+      d->mDescription = QString( proj_get_name( d->threadLocalProjObject() ) );
+      setMapUnits();
+    }
+  }
+
+  return d->mIsValid;
+}
+
 QStringList QgsCoordinateReferenceSystem::recentProjections()
 {
   QStringList projections;
