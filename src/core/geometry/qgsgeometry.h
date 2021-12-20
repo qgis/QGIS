@@ -2495,7 +2495,7 @@ class CORE_EXPORT QgsGeometry
      * The returned geometry will be fully noded, i.e. a node will be created at every common intersection of the
      * input geometries. An empty geometry will be returned in the case of errors.
      */
-    static QgsGeometry unaryUnion( const QVector<QgsGeometry> &geometries );
+    static QgsGeometry unaryUnion( const QVector<QgsGeometry> &geometries, double gridSize = -1 );
 
     /**
      * Creates a GeometryCollection geometry containing possible polygons formed from the constituent
