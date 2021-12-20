@@ -412,7 +412,7 @@ QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsAbstractGeometry *> &geo
       geomUnion.reset( GEOSUnaryUnion_r( geosinit()->ctxt, geomCollection.get() ) );
     }
 #else
-    (void)gridSize;
+    ( void )gridSize;
     geomUnion.reset( GEOSUnaryUnion_r( geosinit()->ctxt, geomCollection.get() ) );
 #endif
   }
@@ -449,7 +449,7 @@ QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsGeometry> &geomList, QSt
       geomUnion.reset( GEOSUnaryUnion_r( geosinit()->ctxt, geomCollection.get() ) );
     }
 #else
-    (void)gridSize;
+    ( void )gridSize;
     geomUnion.reset( GEOSUnaryUnion_r( geosinit()->ctxt, geomCollection.get() ) );
 #endif
 
@@ -1666,7 +1666,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
           opGeom.reset( GEOSIntersection_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
         }
 #else
-    (void)gridSize;
+        ( void )gridSize;
         opGeom.reset( GEOSIntersection_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
 #endif
         break;
@@ -1682,7 +1682,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
           opGeom.reset( GEOSDifference_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
         }
 #else
-    (void)gridSize;
+        ( void )gridSize;
         opGeom.reset( GEOSDifference_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
 #endif
         break;
@@ -1700,7 +1700,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
           unionGeometry.reset( GEOSUnion_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
         }
 #else
-    (void)gridSize;
+        ( void )gridSize;
         unionGeometry.reset( GEOSUnion_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
 #endif
 
@@ -1728,7 +1728,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
           opGeom.reset( GEOSSymDifference_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
         }
 #else
-    (void)gridSize;
+        ( void )gridSize;
         opGeom.reset( GEOSSymDifference_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
 #endif
         break;
