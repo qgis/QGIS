@@ -273,6 +273,8 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     void onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent *mouse );
     void onPositionChangedTerrainNavigation( Qt3DInput::QMouseEvent *mouse );
 
+    void handleTerrainNavigationWheelZoom();
+
     double cameraCenterElevation();
 
   private:
@@ -309,6 +311,11 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     bool mDragPointCalculated = false;
     QVector3D mDragPoint;
     double mDragDepth;
+
+    bool mIsInZoomInState = false;
+    Qt3DRender::QCamera *mCameraBeforeZoom = nullptr;
+    bool mZoomPointCalculated = false;
+    QVector3D mZoomPoint;
 
     //! Delegates mouse events to the attached MouseHandler objects
     Qt3DInput::QMouseDevice *mMouseDevice = nullptr;
