@@ -169,12 +169,15 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
   const QgsAttributeList fields2Fetch = fields2Indices;
 
   QgsFields outFields = QgsProcessingUtils::combineFields( input->fields(), outFields2 );
-  outFields.append( QgsField( QStringLiteral( "n" ), QVariant::Int ) );
-  outFields.append( QgsField( QStringLiteral( "distance" ), QVariant::Double ) );
-  outFields.append( QgsField( QStringLiteral( "feature_x" ), QVariant::Double ) );
-  outFields.append( QgsField( QStringLiteral( "feature_y" ), QVariant::Double ) );
-  outFields.append( QgsField( QStringLiteral( "nearest_x" ), QVariant::Double ) );
-  outFields.append( QgsField( QStringLiteral( "nearest_y" ), QVariant::Double ) );
+
+  QgsFields resultFields;
+  resultFields.append( QgsField( QStringLiteral( "n" ), QVariant::Int ) );
+  resultFields.append( QgsField( QStringLiteral( "distance" ), QVariant::Double ) );
+  resultFields.append( QgsField( QStringLiteral( "feature_x" ), QVariant::Double ) );
+  resultFields.append( QgsField( QStringLiteral( "feature_y" ), QVariant::Double ) );
+  resultFields.append( QgsField( QStringLiteral( "nearest_x" ), QVariant::Double ) );
+  resultFields.append( QgsField( QStringLiteral( "nearest_y" ), QVariant::Double ) );
+  outFields = QgsProcessingUtils::combineFields( outFields, resultFields );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outFields,
