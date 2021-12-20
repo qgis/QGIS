@@ -79,11 +79,19 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
     void prepareExtent() SIP_SKIP;
 
     /**
-     * Stores the provided map \a canvas to the widget.
-     *
+     * Sets the dialog map canvas
+     * \see mapCanvas()
      * \since QGIS 3.24
      */
     void setMapCanvas( QgsMapCanvas *mapCanvas ) override;
+
+    /**
+     * Returns the dialog map canvas
+     * \see setMapCanvas()
+     *
+     * \since QGIS 3.24
+     */
+    QgsMapCanvas *mapCanvas() override;
 
   protected slots:
     //! show whatever error is exposed.
