@@ -74,6 +74,9 @@ void QgsIntersectionAlgorithm::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Intersection" ) ) );
 
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "PRECISION" ), QObject::tr( "Precision" ),
+                QgsProcessingParameterNumber::Double, QVariant( - 1 ), true ) );
+
 }
 
 
@@ -111,8 +114,9 @@ QVariantMap QgsIntersectionAlgorithm::processAlgorithm( const QVariantMap &param
 
   long count = 0;
   const long total = sourceA->featureCount();
+  const double gridSize = parameterAsDouble( parameters, QStringLiteral( "PRECISION" ), context );
 
-  QgsOverlayUtils::intersection( *sourceA, *sourceB, *sink, context, feedback, count, total, fieldIndicesA, fieldIndicesB );
+  QgsOverlayUtils::intersection( *sourceA, *sourceB, *sink, context, feedback, count, total, fieldIndicesA, fieldIndicesB, gridSize );
 
   return outputs;
 }
