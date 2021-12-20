@@ -277,14 +277,14 @@ void QgsGeos::cacheGeos() const
   mGeos = asGeos( mGeometry, mPrecision );
 }
 
-QgsAbstractGeometry *QgsGeos::intersection( const QgsAbstractGeometry *geom, QString *errorMsg ) const
+QgsAbstractGeometry *QgsGeos::intersection( const QgsAbstractGeometry *geom, QString *errorMsg, double gridSize ) const
 {
-  return overlay( geom, OverlayIntersection, errorMsg ).release();
+  return overlay( geom, OverlayIntersection, errorMsg, gridSize ).release();
 }
 
-QgsAbstractGeometry *QgsGeos::difference( const QgsAbstractGeometry *geom, QString *errorMsg ) const
+QgsAbstractGeometry *QgsGeos::difference( const QgsAbstractGeometry *geom, QString *errorMsg, double gridSize ) const
 {
-  return overlay( geom, OverlayDifference, errorMsg ).release();
+  return overlay( geom, OverlayDifference, errorMsg, gridSize ).release();
 }
 
 std::unique_ptr<QgsAbstractGeometry> QgsGeos::clip( const QgsRectangle &rect, QString *errorMsg ) const
@@ -313,7 +313,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::clip( const QgsRectangle &rect, QS
 
 
 
-void QgsGeos::subdivideRecursive( const GEOSGeometry *currentPart, int maxNodes, int depth, QgsGeometryCollection *parts, const QgsRectangle &clipRect ) const
+void QgsGeos::subdivideRecursive( const GEOSGeometry *currentPart, int maxNodes, int depth, QgsGeometryCollection *parts, const QgsRectangle &clipRect, double gridSize ) const
 {
   int partType = GEOSGeomTypeId_r( geosinit()->ctxt, currentPart );
   if ( qgsDoubleNear( clipRect.width(), 0.0 ) && qgsDoubleNear( clipRect.height(), 0.0 ) )
@@ -334,7 +334,7 @@ void QgsGeos::subdivideRecursive( const GEOSGeometry *currentPart, int maxNodes,
     int partCount = GEOSGetNumGeometries_r( geosinit()->ctxt, currentPart );
     for ( int i = 0; i < partCount; ++i )
     {
-      subdivideRecursive( GEOSGetGeometryN_r( geosinit()->ctxt, currentPart, i ), maxNodes, depth, parts, clipRect );
+      subdivideRecursive( GEOSGetGeometryN_r( geosinit()->ctxt, currentPart, i ), maxNodes, depth, parts, clipRect, gridSize );
     }
     return;
   }
@@ -394,15 +394,15 @@ void QgsGeos::subdivideRecursive( const GEOSGeometry *currentPart, int maxNodes,
 
   if ( clipPart1 )
   {
-    subdivideRecursive( clipPart1.get(), maxNodes, depth, parts, halfClipRect1 );
+    subdivideRecursive( clipPart1.get(), maxNodes, depth, parts, halfClipRect1, gridSize );
   }
   if ( clipPart2 )
   {
-    subdivideRecursive( clipPart2.get(), maxNodes, depth, parts, halfClipRect2 );
+    subdivideRecursive( clipPart2.get(), maxNodes, depth, parts, halfClipRect2, gridSize );
   }
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeos::subdivide( int maxNodes, QString *errorMsg ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::subdivide( int maxNodes, QString *errorMsg, double gridSize ) const
 {
   if ( !mGeos )
   {
@@ -415,19 +415,19 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::subdivide( int maxNodes, QString *
   std::unique_ptr< QgsGeometryCollection > parts = QgsGeometryFactory::createCollectionOfType( mGeometry->wkbType() );
   try
   {
-    subdivideRecursive( mGeos.get(), maxNodes, 0, parts.get(), mGeometry->boundingBox() );
+    subdivideRecursive( mGeos.get(), maxNodes, 0, parts.get(), mGeometry->boundingBox(), gridSize );
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
 
   return std::move( parts );
 }
 
-QgsAbstractGeometry *QgsGeos::combine( const QgsAbstractGeometry *geom, QString *errorMsg ) const
+QgsAbstractGeometry *QgsGeos::combine( const QgsAbstractGeometry *geom, QString *errorMsg, double gridSize ) const
 {
-  return overlay( geom, OverlayUnion, errorMsg ).release();
+  return overlay( geom, OverlayUnion, errorMsg, gridSize ).release();
 }
 
-QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg ) const
+QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg, double gridSize ) const
 {
   QVector< GEOSGeometry * > geosGeometries;
   geosGeometries.reserve( geomList.size() );
@@ -443,7 +443,11 @@ QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsAbstractGeometry *> &geo
   try
   {
     geos::unique_ptr geomCollection = createGeosCollection( GEOS_GEOMETRYCOLLECTION, geosGeometries );
+#if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
+    geomUnion.reset( GEOSUnaryUnionPrec_r( geosinit()->ctxt, geomCollection.get(), gridSize ) );
+#else
     geomUnion.reset( GEOSUnaryUnion_r( geosinit()->ctxt, geomCollection.get() ) );
+#endif
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
 
@@ -451,7 +455,7 @@ QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsAbstractGeometry *> &geo
   return result.release();
 }
 
-QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsGeometry> &geomList, QString *errorMsg ) const
+QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsGeometry> &geomList, QString *errorMsg, double gridSize ) const
 {
   QVector< GEOSGeometry * > geosGeometries;
   geosGeometries.reserve( geomList.size() );
@@ -467,7 +471,13 @@ QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsGeometry> &geomList, QSt
   try
   {
     geos::unique_ptr geomCollection = createGeosCollection( GEOS_GEOMETRYCOLLECTION, geosGeometries );
+
+#if (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
+    geomUnion.reset( GEOSUnaryUnionPrec_r( geosinit()->ctxt, geomCollection.get(), gridSize ) );
+#else
     geomUnion.reset( GEOSUnaryUnion_r( geosinit()->ctxt, geomCollection.get() ) );
+#endif
+
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
 
@@ -475,9 +485,9 @@ QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsGeometry> &geomList, QSt
   return result.release();
 }
 
-QgsAbstractGeometry *QgsGeos::symDifference( const QgsAbstractGeometry *geom, QString *errorMsg ) const
+QgsAbstractGeometry *QgsGeos::symDifference( const QgsAbstractGeometry *geom, QString *errorMsg, double gridSize ) const
 {
-  return overlay( geom, OverlaySymDifference, errorMsg ).release();
+  return overlay( geom, OverlaySymDifference, errorMsg, gridSize ).release();
 }
 
 double QgsGeos::distance( const QgsAbstractGeometry *geom, QString *errorMsg ) const
@@ -1660,7 +1670,7 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
   return nullptr;
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry *geom, Overlay op, QString *errorMsg ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry *geom, Overlay op, QString *errorMsg, double gridSize ) const
 {
   if ( !mGeos || !geom )
   {
@@ -1679,16 +1689,28 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
     switch ( op )
     {
       case OverlayIntersection:
+#if (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
+        opGeom.reset( GEOSIntersectionPrec_r( geosinit()->ctxt, mGeos.get(), geosGeom.get(), gridSize ) );
+#else
         opGeom.reset( GEOSIntersection_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
+#endif
         break;
 
       case OverlayDifference:
+#if (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
+        opGeom.reset( GEOSDifferencePrec_r( geosinit()->ctxt, mGeos.get(), geosGeom.get(), gridSize ) );
+#else
         opGeom.reset( GEOSDifference_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
+#endif
         break;
 
       case OverlayUnion:
       {
+#if (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
+        geos::unique_ptr unionGeometry( GEOSUnionPrec_r( geosinit()->ctxt, mGeos.get(), geosGeom.get(), gridSize ) );
+#else
         geos::unique_ptr unionGeometry( GEOSUnion_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
+#endif
 
         if ( unionGeometry && GEOSGeomTypeId_r( geosinit()->ctxt, unionGeometry.get() ) == GEOS_MULTILINESTRING )
         {
@@ -1704,7 +1726,11 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
       break;
 
       case OverlaySymDifference:
+#if (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
+        opGeom.reset( GEOSSymDifferencePrec_r( geosinit()->ctxt, mGeos.get(), geosGeom.get(), gridSize ) );
+#else
         opGeom.reset( GEOSSymDifference_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
+#endif
         break;
     }
     return fromGeos( opGeom.get() );
