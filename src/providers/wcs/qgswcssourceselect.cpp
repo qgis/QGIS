@@ -43,6 +43,15 @@ QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsWCSSourceSelect::showHelp );
 }
 
+void QgsWCSSourceSelect::setMapCanvas(QgsMapCanvas *mapCanvas)
+{
+    mMapCanvas = mapCanvas;
+}
+
+QgsMapCanvas *QgsWCSSourceSelect::mapCanvas()
+{
+    return mMapCanvas;
+}
 
 void QgsWCSSourceSelect::populateLayerList()
 {

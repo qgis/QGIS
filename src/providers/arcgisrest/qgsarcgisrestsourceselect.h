@@ -66,6 +66,22 @@ class QgsArcGisRestSourceSelect : public QgsAbstractDataSourceWidget, protected 
     //! Destructor
     ~QgsArcGisRestSourceSelect() override;
 
+    /**
+     * Sets the dialog map canvas
+     * \see mapCanvas()
+     *
+     * \since QGIS 3.24
+     */
+      void setMapCanvas( QgsMapCanvas *mapCanvas ) override;
+
+    /**
+     * Returns the dialog map canvas
+     * \see setMapCanvas()
+     *
+     * \since QGIS 3.24
+     */
+    QgsMapCanvas *mapCanvas() override;
+
   protected:
 
     QgsBrowserGuiModel *mBrowserModel = nullptr;
@@ -109,6 +125,7 @@ class QgsArcGisRestSourceSelect : public QgsAbstractDataSourceWidget, protected 
   private:
 
     QString mConnectedService;
+    QgsMapCanvas *mMapCanvas = nullptr;
 };
 
 

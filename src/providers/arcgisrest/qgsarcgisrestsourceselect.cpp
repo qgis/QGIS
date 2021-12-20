@@ -109,6 +109,16 @@ QgsArcGisRestSourceSelect::~QgsArcGisRestSourceSelect()
 {
 }
 
+void QgsArcGisRestSourceSelect::setMapCanvas(QgsMapCanvas *mapCanvas)
+{
+    mMapCanvas = mapCanvas;
+}
+
+QgsMapCanvas *QgsArcGisRestSourceSelect::mapCanvas()
+{
+    return mMapCanvas;
+}
+
 void QgsArcGisRestSourceSelect::populateImageEncodings( const QString &formats )
 {
   const QStringList availableEncodings = formats.split( ',' );

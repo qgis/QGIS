@@ -50,6 +50,24 @@ class QgsGdalSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsG
     void radioSrcProtocol_toggled( bool checked );
     void cmbProtocolTypes_currentIndexChanged( const QString &text );
 
+  protected:
+
+    /**
+     * Sets the dialog map canvas
+     * \see mapCanvas()
+     *
+     * \since QGIS 3.24
+     */
+    void setMapCanvas( QgsMapCanvas *mapCanvas ) override;
+
+    /**
+     * Returns the dialog map canvas
+     * \see setMapCanvas()
+     *
+     * \since QGIS 3.24
+     */
+    QgsMapCanvas *mapCanvas() override;
+
   private:
 
     void computeDataSources();
@@ -59,6 +77,7 @@ class QgsGdalSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsG
 
     QString mRasterPath;
     QStringList mDataSources;
+    QgsMapCanvas *mMapCanvas = nullptr;
 
 };
 

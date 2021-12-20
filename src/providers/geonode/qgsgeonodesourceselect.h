@@ -47,6 +47,22 @@ class QgsGeoNodeSourceSelect: public QgsAbstractDataSourceWidget, private Ui::Qg
 
     void reset() override;
 
+    /**
+     * Sets the dialog map canvas
+     * \see mapCanvas()
+     *
+     * \since QGIS 3.24
+     */
+    void setMapCanvas( QgsMapCanvas *mapCanvas ) override;
+
+    /**
+     * Returns the dialog map canvas
+     * \see setMapCanvas()
+     *
+     * \since QGIS 3.24
+     */
+    QgsMapCanvas *mapCanvas() override;
+
   private:
 
     void addButtonClicked() override;
@@ -68,6 +84,7 @@ class QgsGeoNodeSourceSelect: public QgsAbstractDataSourceWidget, private Ui::Qg
     QStandardItemModel *mModel = nullptr;
     QSortFilterProxyModel *mModelProxy = nullptr;
     QModelIndex mSQLIndex;
+    QgsMapCanvas *mMapCanvas = nullptr;
 
     void updateButtonStateForAvailableConnections();
     QgsGeoNodeConnection currentConnection() const;

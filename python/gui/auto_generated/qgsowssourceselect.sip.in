@@ -47,6 +47,14 @@ Triggered when the provider's connections need to be refreshed
     virtual void reset();
 
 
+    virtual void setMapCanvas( QgsMapCanvas *mapCanvas );
+
+%Docstring
+Stores the provided map ``canvas`` to the widget.
+
+.. versionadded:: 3.24
+%End
+
   protected slots:
     void showError( const QString &title, const QString &format, const QString &error );
 %Docstring
@@ -191,6 +199,7 @@ Returns currently selected time
 %Docstring
 Returns currently selected cache load control
 %End
+
 
 
 

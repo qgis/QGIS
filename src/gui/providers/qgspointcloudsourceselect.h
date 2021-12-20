@@ -44,6 +44,22 @@ class QgsPointCloudSourceSelect : public QgsAbstractDataSourceWidget, private Ui
     //! Determines the tables the user selected and closes the dialog
     void addButtonClicked() override;
 
+    /**
+     * Sets the dialog map canvas
+     * \see mapCanvas()
+     *
+     * \since QGIS 3.24
+     */
+    void setMapCanvas( QgsMapCanvas *mapCanvas ) override;
+
+    /**
+     * Returns the dialog map canvas
+     * \see setMapCanvas()
+     *
+     * \since QGIS 3.24
+     */
+    QgsMapCanvas *mapCanvas() override;
+
   private slots:
     void radioSrcProtocol_toggled( bool checked );
     void radioSrcFile_toggled( bool checked );
@@ -54,6 +70,7 @@ class QgsPointCloudSourceSelect : public QgsAbstractDataSourceWidget, private Ui
   private:
     QString mPath;
     QString mDataSourceType;
+    QgsMapCanvas *mMapCanvas = nullptr;
 };
 
 ///@endcond
