@@ -208,9 +208,7 @@ void QgsCrsDefinitionWidget::formatChanged()
 void QgsCrsDefinitionWidget::pbnCalculate_clicked()
 {
   // We must check the prj def is valid!
-  PJ_CONTEXT *pContext = QgsProjContext::get();
   QString projDef = mTextEditParameters->toPlainText();
-  QgsDebugMsgLevel( QStringLiteral( "Proj: %1" ).arg( projDef ), 3 );
 
   // Get the WGS84 coordinates
   bool okN, okE;
@@ -226,10 +224,18 @@ void QgsCrsDefinitionWidget::pbnCalculate_clicked()
     return;
   }
 
+  QgsCoordinateReferenceSystem target;
   if ( static_cast< Qgis::CrsDefinitionFormat >( mFormatComboBox->currentData().toInt() ) == Qgis::CrsDefinitionFormat::Proj )
+  {
     projDef = projDef + ( projDef.contains( QStringLiteral( "+type=crs" ) ) ? QString() : QStringLiteral( " +type=crs" ) );
-  QgsProjUtils::proj_pj_unique_ptr res( proj_create_crs_to_crs( pContext, "EPSG:4326", projDef.toUtf8(), nullptr ) );
-  if ( !res )
+    target = QgsCoordinateReferenceSystem::fromProj( projDef );
+  }
+  else
+  {
+    target = QgsCoordinateReferenceSystem::fromWkt( projDef );
+  }
+
+  if ( !target.isValid() )
   {
     QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
                           tr( "This CRS projection definition is not valid." ) );
@@ -238,37 +244,20 @@ void QgsCrsDefinitionWidget::pbnCalculate_clicked()
     return;
   }
 
-  // careful -- proj 6 respects CRS axis, so we've got latitude/longitude flowing in, and ....?? coming out?
-  proj_trans_generic( res.get(), PJ_FWD,
-                      &latitude, sizeof( double ), 1,
-                      &longitude, sizeof( double ), 1,
-                      nullptr, sizeof( double ), 0,
-                      nullptr, sizeof( double ), 0 );
-  int projResult = proj_errno( res.get() );
-
-  if ( projResult != 0 )
+  const QgsCoordinateTransform transform( target.toGeodeticCrs(), target, QgsCoordinateTransformContext() );
+  try
+  {
+    const QgsPointXY res = transform.transform( QgsPointXY( longitude, latitude ) );
+    const int precision = target.isGeographic() ? 7 : 4;
+    mProjectedXLabel->setText( QLocale().toString( res.x(), 'f', precision ) );
+    mProjectedYLabel->setText( QLocale().toString( res.y(), 'f', precision ) );
+  }
+  catch ( QgsCsException &e )
   {
     mProjectedXLabel->setText( tr( "Error" ) );
     mProjectedYLabel->setText( tr( "Error" ) );
-    QgsDebugMsg( proj_errno_string( projResult ) );
-  }
-  else
-  {
-    QString tmp;
-
-    int precision = 4;
-    bool isLatLong = false;
-
-    isLatLong = QgsProjUtils::usesAngularUnit( projDef );
-    if ( isLatLong )
-    {
-      precision = 7;
-    }
-
-    tmp = QLocale().toString( longitude, 'f', precision );
-    mProjectedXLabel->setText( tmp );
-    tmp = QLocale().toString( latitude, 'f', precision );
-    mProjectedYLabel->setText( tmp );
+    QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
+                          e.what() );
   }
 }
 
