@@ -52,6 +52,8 @@ void QgsCalculateVectorOverlapsAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorPolygon ) );
   addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Overlay layers" ), QgsProcessing::TypeVectorPolygon ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Overlap" ) ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "PRECISION" ), QObject::tr( "Precision" ),
+                QgsProcessingParameterNumber::Double, QVariant( - 1 ), true ) );
 }
 
 QIcon QgsCalculateVectorOverlapsAlgorithm::icon() const
@@ -130,6 +132,8 @@ QVariantMap QgsCalculateVectorOverlapsAlgorithm::processAlgorithm( const QVarian
   da.setSourceCrs( mCrs, context.transformContext() );
   da.setEllipsoid( context.ellipsoid() );
 
+  const double gridSize = parameterAsDouble( parameters, QStringLiteral( "PRECISION" ), context );
+
   // loop through input
   const double step = mInputCount > 0 ? 100.0 / mInputCount : 0;
   long i = 0;
@@ -176,12 +180,12 @@ QVariantMap QgsCalculateVectorOverlapsAlgorithm::processAlgorithm( const QVarian
           break;
 
         // dissolve intersecting features, calculate total area of them within our buffer
-        const QgsGeometry overlayDissolved = QgsGeometry::unaryUnion( intersectingGeoms );
+        const QgsGeometry overlayDissolved = QgsGeometry::unaryUnion( intersectingGeoms, gridSize );
 
         if ( feedback->isCanceled() )
           break;
 
-        const QgsGeometry overlayIntersection = inputGeom.intersection( overlayDissolved );
+        const QgsGeometry overlayIntersection = inputGeom.intersection( overlayDissolved, gridSize );
 
         const double overlayArea = da.measureArea( overlayIntersection );
         outAttributes.append( overlayArea );
