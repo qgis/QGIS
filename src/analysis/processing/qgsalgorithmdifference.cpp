@@ -83,6 +83,8 @@ void QgsDifferenceAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "OVERLAY" ), QObject::tr( "Overlay layer" ) ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Difference" ) ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "PRECISION" ), QObject::tr( "Precision" ),
+                QgsProcessingParameterNumber::Double, QVariant( - 1 ), true ) );
 }
 
 
@@ -108,7 +110,8 @@ QVariantMap QgsDifferenceAlgorithm::processAlgorithm( const QVariantMap &paramet
 
   long count = 0;
   const long total = sourceA->featureCount();
-  QgsOverlayUtils::difference( *sourceA, *sourceB, *sink, context, feedback, count, total, QgsOverlayUtils::OutputA );
+  const double gridSize = parameterAsDouble( parameters, QStringLiteral( "PRECISION" ), context );
+  QgsOverlayUtils::difference( *sourceA, *sourceB, *sink, context, feedback, count, total, QgsOverlayUtils::OutputA, gridSize );
 
   return outputs;
 }
