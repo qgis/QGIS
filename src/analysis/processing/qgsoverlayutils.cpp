@@ -150,7 +150,7 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
 
       if ( !geometriesB.isEmpty() )
       {
-        const QgsGeometry geomB = QgsGeometry::unaryUnion( geometriesB );
+        const QgsGeometry geomB = QgsGeometry::unaryUnion( geometriesB, gridSize );
         if ( !geomB.lastError().isEmpty() )
         {
           // This may happen if input geometries from a layer do not line up well (for example polygons
@@ -160,7 +160,7 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
           // 2. fix geometries (removes polygons collapsed to lines etc.) using MakeValid
           throw QgsProcessingException( QStringLiteral( "%1\n\n%2" ).arg( QObject::tr( "GEOS geoprocessing error: unary union failed." ), geomB.lastError() ) );
         }
-        geom = geom.difference( geomB );
+        geom = geom.difference( geomB, gridSize );
       }
 
       if ( !geom.isNull() && !sanitizeDifferenceResult( geom, geometryType ) )
@@ -201,7 +201,7 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
 }
 
 
-void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, long &count, long totalCount, const QList<int> &fieldIndicesA, const QList<int> &fieldIndicesB )
+void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, int &count, int totalCount, const QList<int> &fieldIndicesA, const QList<int> &fieldIndicesB, double gridSize )
 {
   const QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::geometryType( QgsWkbTypes::multiType( sourceA.wkbType() ) );
   const int attrCount = fieldIndicesA.count() + fieldIndicesB.count();
@@ -260,7 +260,7 @@ void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFe
       if ( !engine->intersects( tmpGeom.constGet() ) )
         continue;
 
-      QgsGeometry intGeom = geom.intersection( tmpGeom );
+      QgsGeometry intGeom = geom.intersection( tmpGeom, gridSize );
       if ( !sanitizeIntersectionResult( intGeom, geometryType ) )
         continue;
 
@@ -279,7 +279,7 @@ void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFe
   }
 }
 
-void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatureSink &sink, QgsProcessingFeedback *feedback )
+void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatureSink &sink, QgsProcessingFeedback *feedback, double gridSize )
 {
   long count = 0;
   const long totalCount = source.featureCount();
@@ -349,7 +349,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
       if ( !g1engine->intersects( g2.constGet() ) )
         continue;
 
-      QgsGeometry geomIntersection = g1.intersection( g2 );
+      QgsGeometry geomIntersection = g1.intersection( g2, gridSize );
       if ( !sanitizeIntersectionResult( geomIntersection, geometryType ) )
         continue;
 
@@ -385,7 +385,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
       // update f1
       //
 
-      QgsGeometry g12 = g1.difference( g2 );
+      QgsGeometry g12 = g1.difference( g2, gridSize );
 
       index.deleteFeature( f );
       geometries.remove( fid1 );
@@ -403,7 +403,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
       // update f2
       //
 
-      QgsGeometry g21 = g2.difference( g1 );
+      QgsGeometry g21 = g2.difference( g1, gridSize );
 
       QgsFeature f2old( fid2 );
       f2old.setGeometry( g2 );
