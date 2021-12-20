@@ -3080,12 +3080,12 @@ bool QgsGeometry::isGeosEqual( const QgsGeometry &g ) const
   return geos.isEqual( g.d->geometry.get(), &mLastError );
 }
 
-QgsGeometry QgsGeometry::unaryUnion( const QVector<QgsGeometry> &geometries )
+QgsGeometry QgsGeometry::unaryUnion( const QVector<QgsGeometry> &geometries, double gridSize )
 {
   QgsGeos geos( nullptr );
 
   QString error;
-  std::unique_ptr< QgsAbstractGeometry > geom( geos.combine( geometries, &error ) );
+  std::unique_ptr< QgsAbstractGeometry > geom( geos.combine( geometries, &error, gridSize ) );
   QgsGeometry result( std::move( geom ) );
   result.mLastError = error;
   return result;

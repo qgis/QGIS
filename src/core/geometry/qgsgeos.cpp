@@ -1690,7 +1690,14 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
     {
       case OverlayIntersection:
 #if (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
-        opGeom.reset( GEOSIntersectionPrec_r( geosinit()->ctxt, mGeos.get(), geosGeom.get(), gridSize ) );
+        if ( gridSize > 0 )
+        {
+          opGeom.reset( GEOSIntersectionPrec_r( geosinit()->ctxt, mGeos.get(), geosGeom.get(), gridSize ) );
+        }
+        else
+        {
+          opGeom.reset( GEOSIntersection_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
+        }
 #else
         opGeom.reset( GEOSIntersection_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
 #endif
@@ -1698,7 +1705,14 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
 
       case OverlayDifference:
 #if (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
-        opGeom.reset( GEOSDifferencePrec_r( geosinit()->ctxt, mGeos.get(), geosGeom.get(), gridSize ) );
+        if ( gridSize > 0 )
+        {
+          opGeom.reset( GEOSDifferencePrec_r( geosinit()->ctxt, mGeos.get(), geosGeom.get(), gridSize ) );
+        }
+        else
+        {
+          opGeom.reset( GEOSDifference_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
+        }
 #else
         opGeom.reset( GEOSDifference_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
 #endif
@@ -1706,10 +1720,18 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
 
       case OverlayUnion:
       {
+        geos::unique_ptr unionGeometry;
 #if (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
-        geos::unique_ptr unionGeometry( GEOSUnionPrec_r( geosinit()->ctxt, mGeos.get(), geosGeom.get(), gridSize ) );
+        if ( gridSize > 0 )
+        {
+          unionGeometry.reset( GEOSUnionPrec_r( geosinit()->ctxt, mGeos.get(), geosGeom.get(), gridSize ) );
+        }
+        else
+        {
+          unionGeometry.reset( GEOSUnion_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
+        }
 #else
-        geos::unique_ptr unionGeometry( GEOSUnion_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
+        unionGeometry.reset( GEOSUnion_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
 #endif
 
         if ( unionGeometry && GEOSGeomTypeId_r( geosinit()->ctxt, unionGeometry.get() ) == GEOS_MULTILINESTRING )
@@ -1727,7 +1749,14 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
 
       case OverlaySymDifference:
 #if (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
-        opGeom.reset( GEOSSymDifferencePrec_r( geosinit()->ctxt, mGeos.get(), geosGeom.get(), gridSize ) );
+        if ( gridSize > 0 )
+        {
+          opGeom.reset( GEOSSymDifferencePrec_r( geosinit()->ctxt, mGeos.get(), geosGeom.get(), gridSize ) );
+        }
+        else
+        {
+          opGeom.reset( GEOSSymDifference_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
+        }
 #else
         opGeom.reset( GEOSSymDifference_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
 #endif

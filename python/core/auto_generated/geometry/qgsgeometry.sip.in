@@ -1718,7 +1718,7 @@ Returns a null geometry on exception.
 .. versionadded:: 3.20
 %End
 
-    QgsGeometry subdivide( int maxNodes = 256 ) const;
+    QgsGeometry subdivide( int maxNodes = 256, double gridSize = -1 ) const;
 %Docstring
 Subdivides the geometry. The returned geometry will be a collection containing subdivided parts
 from the original geometry, where no part has more then the specified maximum number of nodes (``maxNodes``).
@@ -1791,7 +1791,7 @@ of the node is returned.
 .. versionadded:: 3.0
 %End
 
-    QgsGeometry intersection( const QgsGeometry &geometry ) const;
+    QgsGeometry intersection( const QgsGeometry &geometry, double gridSize = -1 ) const;
 %Docstring
 Returns a geometry representing the points shared by this geometry and other.
 
@@ -1811,7 +1811,7 @@ a ``rectangle``. The returned geometry may be invalid.
 .. versionadded:: 3.0
 %End
 
-    QgsGeometry combine( const QgsGeometry &geometry ) const;
+    QgsGeometry combine( const QgsGeometry &geometry, double gridSize = -1 ) const;
 %Docstring
 Returns a geometry representing all the points in this geometry and other (a
 union geometry operation).
@@ -1838,7 +1838,7 @@ converts them to single line strings.
 .. versionadded:: 3.0
 %End
 
-    QgsGeometry difference( const QgsGeometry &geometry ) const;
+    QgsGeometry difference( const QgsGeometry &geometry, double gridSize = -1 ) const;
 %Docstring
 Returns a geometry representing the points making up this geometry that do not make up other.
 
@@ -1848,7 +1848,7 @@ If an error was encountered while creating the result, more information can be r
 by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
 %End
 
-    QgsGeometry symDifference( const QgsGeometry &geometry ) const;
+    QgsGeometry symDifference( const QgsGeometry &geometry, double gridSize = -1 ) const;
 %Docstring
 Returns a geometry representing the points making up this geometry that do not make up other.
 
@@ -2418,7 +2418,7 @@ resultant geometry will be geometrically equivalent to the original geometry.
 .. versionadded:: 3.20
 %End
 
-    static QgsGeometry unaryUnion( const QVector<QgsGeometry> &geometries );
+    static QgsGeometry unaryUnion( const QVector<QgsGeometry> &geometries, double gridSize = -1 );
 %Docstring
 Compute the unary union on a list of ``geometries``. May be faster than an iterative union on a set of geometries.
 The returned geometry will be fully noded, i.e. a node will be created at every common intersection of the
