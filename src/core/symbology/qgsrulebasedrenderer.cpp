@@ -1325,8 +1325,17 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
 
     QString attr = categorizedRenderer->classAttribute();
     // categorizedAttr could be either an attribute name or an expression.
-    // the only way to differentiate is to test it as an expression...
-    if ( QgsExpression::expressionToLayerFieldIndex( attr, layer ) != -1 && !attr.contains( '\"' ) )
+    bool isField = false;
+    if ( layer )
+    {
+      isField = QgsExpression::expressionToLayerFieldIndex( attr, layer ) != -1;
+    }
+    else
+    {
+      QgsExpression testExpr( attr );
+      isField = testExpr.hasParserError() || ( testExpr.isField() && !attr.startsWith( '\"' ) );
+    }
+    if ( isField )
     {
       //not an expression, so need to quote column name
       attr = QgsExpression::quotedColumnRef( attr );
@@ -1415,12 +1424,22 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
     QString attr = graduatedRenderer->classAttribute();
     // categorizedAttr could be either an attribute name or an expression.
     // the only way to differentiate is to test it as an expression...
-    if ( QgsExpression::expressionToLayerFieldIndex( attr, layer ) != -1 && !attr.contains( '\"' ) )
+    bool isField = false;
+    if ( layer )
+    {
+      isField = QgsExpression::expressionToLayerFieldIndex( attr, layer ) != -1;
+    }
+    else
+    {
+      QgsExpression testExpr( attr );
+      isField = testExpr.hasParserError() || ( testExpr.isField() && !attr.startsWith( '\"' ) );
+    }
+    if ( isField )
     {
       //not an expression, so need to quote column name
       attr = QgsExpression::quotedColumnRef( attr );
     }
-    else if ( !QgsExpression( attr ).isField() )
+    else
     {
       //otherwise wrap expression in brackets
       attr = QStringLiteral( "(%1)" ).arg( attr );
