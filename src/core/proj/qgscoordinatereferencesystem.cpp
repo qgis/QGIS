@@ -2608,6 +2608,35 @@ const QHash<long, QgsCoordinateReferenceSystem> &QgsCoordinateReferenceSystem::s
   return *sSrsIdCache();
 }
 
+QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::toGeodeticCrs() const
+{
+  if ( isGeographic() )
+  {
+    return *this;
+  }
+
+  if ( PJ *obj = d->threadLocalProjObject() )
+  {
+    PJ_CONTEXT *pjContext = QgsProjContext::get();
+    QgsProjUtils::proj_pj_unique_ptr geoCrs( proj_crs_get_geodetic_crs( pjContext, obj ) );
+    if ( !geoCrs )
+      return QgsCoordinateReferenceSystem();
+
+    if ( !testIsGeographic( geoCrs.get() ) )
+      return QgsCoordinateReferenceSystem();
+
+    QgsProjUtils::proj_pj_unique_ptr normalized( proj_normalize_for_visualization( pjContext, geoCrs.get() ) );
+    if ( !normalized )
+      return QgsCoordinateReferenceSystem();
+
+    return QgsCoordinateReferenceSystem::fromProjObject( normalized.get() );
+  }
+  else
+  {
+    return QgsCoordinateReferenceSystem();
+  }
+}
+
 QString QgsCoordinateReferenceSystem::geographicCrsAuthId() const
 {
   if ( isGeographic() )

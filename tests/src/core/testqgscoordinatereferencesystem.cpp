@@ -1693,9 +1693,13 @@ void TestQgsCoordinateReferenceSystem::geographicCrsAuthId()
   crs.createFromString( QStringLiteral( "EPSG:4326" ) );
   QCOMPARE( crs.authid(), QStringLiteral( "EPSG:4326" ) );
   QCOMPARE( crs.geographicCrsAuthId(), QStringLiteral( "EPSG:4326" ) );
+  QCOMPARE( crs.toGeodeticCrs(), crs );
+
   crs.createFromString( QStringLiteral( "EPSG:3825" ) );
   QCOMPARE( crs.authid(), QStringLiteral( "EPSG:3825" ) );
   QCOMPARE( crs.geographicCrsAuthId(), QStringLiteral( "EPSG:3824" ) );
+  QCOMPARE( crs.toGeodeticCrs().toProj().replace( QStringLiteral( "+towgs84=0,0,0,0,0,0,0 " ), QString() ).replace( QStringLiteral( " +type=crs" ), QString() ),
+            QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3824" ) ).toProj().replace( QStringLiteral( "+towgs84=0,0,0,0,0,0,0 " ), QString() ).replace( QStringLiteral( " +type=crs" ), QString() ) );
 }
 
 void TestQgsCoordinateReferenceSystem::noProj()
