@@ -122,7 +122,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
         self.assertEqual(rc, 0)
 
     def testAlgorithmsListJson(self):
-        rc, output, err = self.run_process(['list', '--json'])
+        rc, output, err = self.run_process(['list', '--no-python', '--json'])
         res = json.loads(output)
         self.assertIn('gdal_version', res)
         self.assertIn('geos_version', res)
@@ -140,13 +140,13 @@ class TestQgsProcessExecutable(unittest.TestCase):
         self.assertEqual(rc, 0)
 
     def testAlgorithmHelpNoAlg(self):
-        rc, output, err = self.run_process(['help'])
+        rc, output, err = self.run_process(['help', '--no-python'])
         self.assertEqual(rc, 1)
         self.assertIn('algorithm id or model file not specified', err.lower())
         self.assertFalse(output)
 
     def testAlgorithmHelp(self):
-        rc, output, err = self.run_process(['help', 'native:centroids'])
+        rc, output, err = self.run_process(['help', '--no-python', 'native:centroids'])
         self.assertIn('representing the centroid', output.lower())
         self.assertIn('argument type', output.lower())
         if os.environ.get('TRAVIS', '') != 'true':
@@ -155,7 +155,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
         self.assertEqual(rc, 0)
 
     def testAlgorithmHelpJson(self):
-        rc, output, err = self.run_process(['help', 'native:buffer', '--json'])
+        rc, output, err = self.run_process(['help', '--no-python', 'native:buffer', '--json'])
         res = json.loads(output)
 
         self.assertIn('gdal_version', res)
@@ -176,20 +176,20 @@ class TestQgsProcessExecutable(unittest.TestCase):
         self.assertEqual(rc, 0)
 
     def testAlgorithmRunNoAlg(self):
-        rc, output, err = self.run_process(['run'])
+        rc, output, err = self.run_process(['run', '--no-python'])
         self.assertIn('algorithm id or model file not specified', err.lower())
         self.assertFalse(output)
         self.assertEqual(rc, 1)
 
     def testAlgorithmRunNoArgs(self):
-        rc, output, err = self.run_process(['run', 'native:centroids'])
+        rc, output, err = self.run_process(['run', '--no-python', 'native:centroids'])
         self.assertIn('the following mandatory parameters were not specified', err.lower())
         self.assertIn('inputs', output.lower())
         self.assertEqual(rc, 1)
 
     def testAlgorithmRunLegacy(self):
         output_file = self.TMP_DIR + '/polygon_centroid.shp'
-        rc, output, err = self.run_process(['run', 'native:centroids', '--INPUT={}'.format(TEST_DATA_DIR + '/polys.shp'), '--OUTPUT={}'.format(output_file)])
+        rc, output, err = self.run_process(['run', '--no-python', 'native:centroids', '--INPUT={}'.format(TEST_DATA_DIR + '/polys.shp'), '--OUTPUT={}'.format(output_file)])
         if os.environ.get('TRAVIS', '') != 'true':
             # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
             self.assertFalse(err)
@@ -201,7 +201,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
 
     def testAlgorithmRun(self):
         output_file = self.TMP_DIR + '/polygon_centroid.shp'
-        rc, output, err = self.run_process(['run', 'native:centroids', '--', 'INPUT={}'.format(TEST_DATA_DIR + '/polys.shp'), 'OUTPUT={}'.format(output_file)])
+        rc, output, err = self.run_process(['run', '--no-python', 'native:centroids', '--', 'INPUT={}'.format(TEST_DATA_DIR + '/polys.shp'), 'OUTPUT={}'.format(output_file)])
         if os.environ.get('TRAVIS', '') != 'true':
             # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
             self.assertFalse(err)
@@ -221,7 +221,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
             }
         }
 
-        rc, output, err = self.run_process_stdin(['run', 'native:centroids', '-'], json.dumps(params))
+        rc, output, err = self.run_process_stdin(['run', '--no-python', 'native:centroids', '-'], json.dumps(params))
         if os.environ.get('TRAVIS', '') != 'true':
             # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
             self.assertFalse(err)
@@ -257,7 +257,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
             'project_path': TEST_DATA_DIR + '/joins.qgs'
         }
 
-        rc, output, err = self.run_process_stdin(['run', 'native:centroids', '-'], json.dumps(params))
+        rc, output, err = self.run_process_stdin(['run', '--no-python', 'native:centroids', '-'], json.dumps(params))
 
         res = json.loads(output)
 
@@ -291,7 +291,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
             'distance_units': 'xxx',
         }
 
-        rc, output, err = self.run_process_stdin(['run', 'native:centroids', '-'], json.dumps(params))
+        rc, output, err = self.run_process_stdin(['run', '--no-python', 'native:centroids', '-'], json.dumps(params))
         self.assertEqual(rc, 1)
         self.assertIn('xxx is not a valid distance unit value', err)
 
@@ -306,7 +306,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
             'area_units': 'xxx',
         }
 
-        rc, output, err = self.run_process_stdin(['run', 'native:centroids', '-'], json.dumps(params))
+        rc, output, err = self.run_process_stdin(['run', '--no-python', 'native:centroids', '-'], json.dumps(params))
         self.assertEqual(rc, 1)
         self.assertIn('xxx is not a valid area unit value', err)
 
@@ -321,7 +321,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
             'project_path': 'xxx',
         }
 
-        rc, output, err = self.run_process_stdin(['run', 'native:centroids', '-'], json.dumps(params))
+        rc, output, err = self.run_process_stdin(['run', '--no-python', 'native:centroids', '-'], json.dumps(params))
         self.assertEqual(rc, 1)
         self.assertIn('Could not load the QGIS project "xxx"', err)
 
@@ -333,23 +333,23 @@ class TestQgsProcessExecutable(unittest.TestCase):
             'OUTPUT': output_file
         }
 
-        rc, output, err = self.run_process_stdin(['run', 'native:centroids', '-'], json.dumps(params))
+        rc, output, err = self.run_process_stdin(['run', '--no-python', 'native:centroids', '-'], json.dumps(params))
         self.assertEqual(rc, 1)
         self.assertIn('JSON parameters object must contain an "inputs" key.', err)
 
     def testAlgorithmRunStdInNoInput(self):
-        rc, output, err = self.run_process_stdin(['run', 'native:centroids', '-'], '')
+        rc, output, err = self.run_process_stdin(['run', '--no-python', 'native:centroids', '-'], '')
         self.assertEqual(rc, 1)
         self.assertIn('Could not parse JSON parameters', err)
 
     def testAlgorithmRunStdInBadInput(self):
-        rc, output, err = self.run_process_stdin(['run', 'native:centroids', '-'], '{"not valid json"}')
+        rc, output, err = self.run_process_stdin(['run', '--no-python', 'native:centroids', '-'], '{"not valid json"}')
         self.assertEqual(rc, 1)
         self.assertIn('Could not parse JSON parameters', err)
 
     def testAlgorithmRunJson(self):
         output_file = self.TMP_DIR + '/polygon_centroid2.shp'
-        rc, output, err = self.run_process(['run', '--json', 'native:centroids', '--', 'INPUT={}'.format(TEST_DATA_DIR + '/polys.shp'), 'OUTPUT={}'.format(output_file)])
+        rc, output, err = self.run_process(['run', '--no-python', '--json', 'native:centroids', '--', 'INPUT={}'.format(TEST_DATA_DIR + '/polys.shp'), 'OUTPUT={}'.format(output_file)])
         res = json.loads(output)
 
         self.assertIn('gdal_version', res)
@@ -372,7 +372,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
         Test an algorithm which requires a list of layers as a parameter value
         """
         output_file = self.TMP_DIR + '/package.gpkg'
-        rc, output, err = self.run_process(['run', '--json', 'native:package', '--',
+        rc, output, err = self.run_process(['run', '--no-python', '--json', 'native:package', '--',
                                             'LAYERS={}'.format(TEST_DATA_DIR + '/polys.shp'),
                                             'LAYERS={}'.format(TEST_DATA_DIR + '/points.shp'),
                                             'LAYERS={}'.format(TEST_DATA_DIR + '/lines.shp'),
@@ -396,7 +396,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
         self.assertEqual(rc, 0)
 
     def testModelHelp(self):
-        rc, output, err = self.run_process(['help', TEST_DATA_DIR + '/test_model.model3'])
+        rc, output, err = self.run_process(['help', '--no-python', TEST_DATA_DIR + '/test_model.model3'])
         if os.environ.get('TRAVIS', '') != 'true':
             # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
             self.assertFalse(err)
@@ -405,7 +405,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
 
     def testModelRun(self):
         output_file = self.TMP_DIR + '/model_output.shp'
-        rc, output, err = self.run_process(['run', TEST_DATA_DIR + '/test_model.model3', '--', 'FEATS={}'.format(TEST_DATA_DIR + '/polys.shp'), 'native:centroids_1:CENTROIDS={}'.format(output_file)])
+        rc, output, err = self.run_process(['run', '--no-python', TEST_DATA_DIR + '/test_model.model3', '--', 'FEATS={}'.format(TEST_DATA_DIR + '/polys.shp'), 'native:centroids_1:CENTROIDS={}'.format(output_file)])
         if os.environ.get('TRAVIS', '') != 'true':
             # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
             self.assertFalse(err)
@@ -424,7 +424,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
             }
         }
 
-        rc, output, err = self.run_process_stdin(['run', TEST_DATA_DIR + '/test_model.model3', '-'], json.dumps(params))
+        rc, output, err = self.run_process_stdin(['run', '--no-python', TEST_DATA_DIR + '/test_model.model3', '-'], json.dumps(params))
         if os.environ.get('TRAVIS', '') != 'true':
             # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
             self.assertFalse(err)
@@ -442,7 +442,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
 
     def testModelRunJson(self):
         output_file = self.TMP_DIR + '/model_output2.shp'
-        rc, output, err = self.run_process(['run', TEST_DATA_DIR + '/test_model.model3', '--json', '--', 'FEATS={}'.format(TEST_DATA_DIR + '/polys.shp'), 'native:centroids_1:CENTROIDS={}'.format(output_file)])
+        rc, output, err = self.run_process(['run', TEST_DATA_DIR + '/test_model.model3', '--no-python', '--json', '--', 'FEATS={}'.format(TEST_DATA_DIR + '/polys.shp'), 'native:centroids_1:CENTROIDS={}'.format(output_file)])
         if os.environ.get('TRAVIS', '') != 'true':
             # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
             self.assertFalse(err)
@@ -460,7 +460,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
 
     def testModelRunWithLog(self):
         output_file = self.TMP_DIR + '/model_log.log'
-        rc, output, err = self.run_process(['run', TEST_DATA_DIR + '/test_logging_model.model3', '--', 'logfile={}'.format(output_file)])
+        rc, output, err = self.run_process(['run', '--no-python', TEST_DATA_DIR + '/test_logging_model.model3', '--', 'logfile={}'.format(output_file)])
         self.assertIn('Test logged message', err)
         self.assertEqual(rc, 0)
         self.assertIn('0...10...20...30...40...50...60...70...80...90', output.lower())
