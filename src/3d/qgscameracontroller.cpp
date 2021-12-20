@@ -347,6 +347,7 @@ void QgsCameraController::moveCameraPositionBy( const QVector3D &posDiff )
 
 void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
 {
+  mCumulatedWheelY = 0;
   switch ( mCameraNavigationMode )
   {
     case TerrainBasedNavigation:
@@ -530,7 +531,6 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
       updateCameraFromPose();
     }
 
-
     // Second transformation : Shift camera position back
     {
       QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( QPoint( mDragButtonClickPos.x(), mDragButtonClickPos.y() ), mViewport.size(), mCamera );
@@ -562,6 +562,10 @@ void QgsCameraController::zoom( float factor )
 
 void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
 {
+  // Apparently angleDelta needs to be accumulated
+  // see: https://doc.qt.io/qt-5/qwheelevent.html#angleDelta
+  mCumulatedWheelY += wheel->angleDelta().y();
+
   switch ( mCameraNavigationMode )
   {
     case QgsCameraController::WalkNavigation:
@@ -572,29 +576,33 @@ void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
     }
 
     case TerrainBasedNavigation:
-    {
-      const float scaling = ( ( wheel->modifiers() & Qt::ControlModifier ) != 0 ? 0.1f : 1.0f ) / 1000.f;
-      float dist = mCameraPose.distanceFromCenterPoint();
-      dist -= dist * scaling * -wheel->angleDelta().y();
+      if ( mCumulatedWheelY >= 120 || mCumulatedWheelY <= -120 )
+      {
 
-      double origDist = mCameraPose.distanceFromCenterPoint();
+        const float scaling = ( ( wheel->modifiers() & Qt::ControlModifier ) != 0 ? 0.1f : 1.0f ) / 1000.f;
+        float dist = mCameraPose.distanceFromCenterPoint();
+        dist -= dist * scaling * -mCumulatedWheelY;
 
-      QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( QPoint( mMousePos.x(), mMousePos.y() ), mViewport.size(), mCamera );
-      QVector3D lookAtPos = ray.origin() + mCameraPose.distanceFromCenterPoint() * ray.direction();
+        double origDist = mCameraPose.distanceFromCenterPoint();
 
-      mCameraPose.setDistanceFromCenterPoint( origDist );
-      mCameraPose.setCenterPoint( mCamera->position() + dist * ( lookAtPos - mCamera->position() ).normalized() );
-      updateCameraFromPose();
+        QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( QPoint( mMousePos.x(), mMousePos.y() ), mViewport.size(), mCamera );
+        QVector3D lookAtPos = ray.origin() + mCameraPose.distanceFromCenterPoint() * ray.direction();
 
-      QgsRay3D ray2 = Qgs3DUtils::rayFromScreenPoint( QPoint( mViewport.width() - mMousePos.x(), mViewport.height() - mMousePos.y() ), mViewport.size(), mCamera );
-      double d = mCameraPose.distanceFromCenterPoint() / QVector3D::dotProduct( ray.direction(), mCamera->viewVector().normalized() );
-      lookAtPos = ray2.origin() + d * ray2.direction();
+        mCameraPose.setDistanceFromCenterPoint( origDist );
+        mCameraPose.setCenterPoint( mCamera->position() + dist * ( lookAtPos - mCamera->position() ).normalized() );
+        updateCameraFromPose();
 
-      mCameraPose.setCenterPoint( lookAtPos );
-      updateCameraFromPose();
+        QgsRay3D ray2 = Qgs3DUtils::rayFromScreenPoint( QPoint( mViewport.width() - mMousePos.x(), mViewport.height() - mMousePos.y() ), mViewport.size(), mCamera );
+        double d = mCameraPose.distanceFromCenterPoint() / QVector3D::dotProduct( ray.direction(), mCamera->viewVector().normalized() );
+        lookAtPos = ray2.origin() + d * ray2.direction();
 
-      break;
-    }
+        mCameraPose.setCenterPoint( lookAtPos );
+        updateCameraFromPose();
+
+        mCumulatedWheelY += mCumulatedWheelY >= 120 ? -120 : 120;
+
+        break;
+      }
   }
 }
 
