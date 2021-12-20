@@ -2692,10 +2692,13 @@ bool QgsCoordinateReferenceSystem::createFromProjObject( PJ *object )
     case PJ_TYPE_TRANSFORMATION:
     case PJ_TYPE_CONCATENATED_OPERATION:
     case PJ_TYPE_OTHER_COORDINATE_OPERATION:
+
+#if PROJ_VERSION_MAJOR>=7
     case PJ_TYPE_TEMPORAL_DATUM:
     case PJ_TYPE_ENGINEERING_DATUM:
     case PJ_TYPE_PARAMETRIC_DATUM:
       return false;
+#endif
 
     default:
       break;
