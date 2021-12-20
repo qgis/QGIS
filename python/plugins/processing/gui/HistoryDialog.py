@@ -229,6 +229,14 @@ class HistoryDialog(BASE, WIDGET):
         if isinstance(item, TreeLogEntryItem):
             popupmenu = QMenu()
 
+            python_command = item.as_python_command()
+            if python_command:
+                python_action = QAction(
+                    QCoreApplication.translate('HistoryDialog', 'Copy as Python Command'), self.tree)
+                python_action.setIcon(QgsApplication.getThemeIcon("mIconPythonFile.svg"))
+                python_action.triggered.connect(partial(self.copy_text, python_command))
+                popupmenu.addAction(python_action)
+
             qgis_process_command = item.as_qgis_process_command()
             if qgis_process_command:
                 qgis_process_action = QAction(
@@ -248,7 +256,7 @@ class HistoryDialog(BASE, WIDGET):
             if not popupmenu.isEmpty():
                 popupmenu.addSeparator()
 
-            if item.as_python_command():
+            if python_command:
                 create_test_action = QAction(QCoreApplication.translate('HistoryDialog', 'Create Test…'), self.tree)
                 create_test_action.triggered.connect(self.createTest)
                 popupmenu.addAction(create_test_action)
