@@ -176,7 +176,7 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
           const QString command = alg->asQgisProcessCommand( createProcessingParameters(), *context, ok );
           if ( ! ok )
           {
-            mMessageBar->pushMessage( tr( "Current settings are not compatible with qgis_process" ), Qgis::MessageLevel::Warning );
+            mMessageBar->pushMessage( tr( "Current settings cannot be specified as arguments to qgis_process (Pipe parameters as JSON to qgis_process instead)" ), Qgis::MessageLevel::Warning );
           }
           else
           {
