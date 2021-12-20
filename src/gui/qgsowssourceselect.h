@@ -70,6 +70,15 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
     void reset() override;
 
     /**
+     * Prepares the spatial extent box with the general settings
+     * including original crs, destination crs and the map
+     * canvas if it is available.
+     *
+     * \since QGIS 3.24
+     */
+    void prepareExtent() SIP_SKIP;
+
+    /**
      * Stores the provided map \a canvas to the widget.
      *
      * \since QGIS 3.24
@@ -194,11 +203,6 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
     //! URI for selected connection
     QgsDataSourceUri mUri;
 
-    //! Layer specific settings widget
-    QgsOWSSourceWidget *mSourceWidget;
-
-    QgsMapCanvas *mMapCanvas;
-
   private slots:
 
     //! Opens the create connection dialog to build a new connection
@@ -233,15 +237,6 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
 
   private:
 
-    /**
-     * Prepares the spatial extent box with the general settings
-     * including original crs, destination crs and the map
-     * canvas if it is available.
-     *
-     * \since QGIS 3.24
-     */
-    void prepareExtent();
-
     //! Selected CRS
     QString mSelectedCRS;
 
@@ -253,6 +248,11 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
 
     //! Map mime type labels to supported formats
     QMap<QString, QString> mMimeLabelMap;
+
+    //! Layer specific settings widget
+    QgsOWSSourceWidget *mSourceWidget = nullptr;
+
+    QgsMapCanvas *mMapCanvas = nullptr;
 
   private slots:
     void mTilesetsTableWidget_itemClicked( QTableWidgetItem *item );
