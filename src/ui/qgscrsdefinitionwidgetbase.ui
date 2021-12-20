@@ -2,6 +2,14 @@
 <ui version="4.0">
  <class>QgsCrsDefinitionWidgetBase</class>
  <widget class="QWidget" name="QgsCrsDefinitionWidgetBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>499</width>
+    <height>540</height>
+   </rect>
+  </property>
   <property name="windowTitle">
    <string>Custom Coordinate Reference System Definition</string>
   </property>
@@ -104,7 +112,7 @@
       <item row="3" column="0">
        <widget class="QLabel" name="textLabel2_2_2">
         <property name="text">
-         <string>East</string>
+         <string>Longitude</string>
         </property>
         <property name="buddy">
          <cstring>mEastWGS84Edit</cstring>
@@ -138,7 +146,7 @@
       <item row="2" column="0">
        <widget class="QLabel" name="textLabel2_2">
         <property name="text">
-         <string>North</string>
+         <string>Latitude</string>
         </property>
         <property name="buddy">
          <cstring>mNorthWGS84Edit</cstring>
