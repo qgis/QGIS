@@ -1797,11 +1797,6 @@ static QVariant fcnRepresentAttributes( const QVariantList &values, const QgsExp
       }
       QString value( fieldFormatter->representValue( layer, fieldIndex, setup.config(), cache, attributeVal ) );
 
-      if ( setup.config().value( QStringLiteral( "AllowMulti" ), false ).toBool() && value.startsWith( QLatin1Char( '{' ) ) && value.endsWith( QLatin1Char( '}' ) ) )
-      {
-        value = value.mid( 1, value.size() - 2 );
-      }
-
       result.insert( fields.at( fieldIndex ).name(), value );
 
       if ( context )
