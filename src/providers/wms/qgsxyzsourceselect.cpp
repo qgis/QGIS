@@ -47,6 +47,16 @@ QgsXyzSourceSelect::QgsXyzSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   populateConnectionList();
 }
 
+void QgsXyzSourceSelect::setMapCanvas(QgsMapCanvas *mapCanvas)
+{
+    mMapCanvas = mapCanvas;
+}
+
+QgsMapCanvas *QgsXyzSourceSelect::mapCanvas()
+{
+    return mMapCanvas;
+}
+
 void QgsXyzSourceSelect::btnNew_clicked()
 {
   QgsXyzConnectionDialog nc( this );

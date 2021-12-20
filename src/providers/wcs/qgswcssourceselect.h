@@ -56,8 +56,25 @@ class QgsWCSSourceSelect : public QgsOWSSourceSelect
     //! Constructor
     QgsWCSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
+    /**
+     * Sets the dialog map canvas
+     * \see mapCanvas()
+     *
+     * \since QGIS 3.24
+     */
+    void setMapCanvas( QgsMapCanvas *mapCanvas ) override;
+
+    /**
+     * Returns the dialog map canvas
+     * \see setMapCanvas()
+     *
+     * \since QGIS 3.24
+     */
+    QgsMapCanvas *mapCanvas() override;
+
   private:
     QgsWcsCapabilities mCapabilities;
+    QgsMapCanvas *mMapCanvas = nullptr;
 
     QString selectedIdentifier();
     void populateExtent();

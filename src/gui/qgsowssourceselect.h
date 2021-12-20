@@ -69,6 +69,13 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
 
     void reset() override;
 
+    /**
+     * Stores the provided map \a canvas to the widget.
+     *
+     * \since QGIS 3.24
+     */
+    void setMapCanvas( QgsMapCanvas *mapCanvas ) override;
+
   protected slots:
     //! show whatever error is exposed.
     void showError( const QString &title, const QString &format, const QString &error );
@@ -198,6 +205,8 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
 
     //! Layer specific settings widget
     QgsOWSSourceWidget *mSourceWidget;
+
+    QgsMapCanvas *mMapCanvas;
 
   private slots:
 

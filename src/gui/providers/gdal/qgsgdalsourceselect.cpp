@@ -87,6 +87,18 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   mOpenOptionsGroupBox->setVisible( false );
 }
 
+void QgsGdalSourceSelect::setMapCanvas(QgsMapCanvas *mapCanvas)
+{
+    mMapCanvas = mapCanvas;
+
+}
+
+QgsMapCanvas *QgsGdalSourceSelect::mapCanvas()
+{
+    return mMapCanvas;
+}
+
+
 bool QgsGdalSourceSelect::isProtocolCloudType()
 {
   return ( cmbProtocolTypes->currentText() == QLatin1String( "AWS S3" ) ||

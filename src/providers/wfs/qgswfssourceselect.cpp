@@ -130,6 +130,16 @@ QgsWFSSourceSelect::~QgsWFSSourceSelect()
   delete mBuildQueryButton;
 }
 
+void QgsWFSSourceSelect::setMapCanvas(QgsMapCanvas *mapCanvas)
+{
+    mMapCanvas = mapCanvas;
+}
+
+QgsMapCanvas *QgsWFSSourceSelect::mapCanvas()
+{
+    return mMapCanvas;
+}
+
 void QgsWFSSourceSelect::reset()
 {
   treeView->clearSelection();

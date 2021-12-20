@@ -78,6 +78,17 @@ QgsGeoNodeSourceSelect::~QgsGeoNodeSourceSelect()
   emit abortRequests();
 }
 
+void QgsGeoNodeSourceSelect::setMapCanvas(QgsMapCanvas *mapCanvas)
+{
+    mMapCanvas = mapCanvas;
+
+}
+
+QgsMapCanvas *QgsGeoNodeSourceSelect::mapCanvas()
+{
+    return mMapCanvas;
+}
+
 void QgsGeoNodeSourceSelect::reset()
 {
   treeView->clearSelection();
