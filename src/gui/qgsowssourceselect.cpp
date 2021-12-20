@@ -121,6 +121,11 @@ void QgsOWSSourceSelect::reset()
   mLayersTreeWidget->clearSelection();
 }
 
+void QgsOWSSourceSelect::setMapCanvas( QgsMapCanvas *mapCanvas )
+{
+  mMapCanvas = mapCanvas;
+}
+
 bool QgsOWSSourceSelect::extentChecked()
 {
   return mSourceWidget->extentChecked();
@@ -128,7 +133,7 @@ bool QgsOWSSourceSelect::extentChecked()
 
 void QgsOWSSourceSelect::prepareExtent()
 {
-  mSourceWidget->prepareExtent( QgsAbstractDataSourceWidget::mapCanvas() );
+  mSourceWidget->prepareExtent( mapCanvas() );
 }
 
 QgsRectangle QgsOWSSourceSelect::outputExtent()

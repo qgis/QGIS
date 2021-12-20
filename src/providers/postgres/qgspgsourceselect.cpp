@@ -258,6 +258,17 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsPr
   }
 }
 
+void QgsPgSourceSelect::setMapCanvas(QgsMapCanvas *mapCanvas)
+{
+    mMapCanvas = mapCanvas;
+
+}
+
+QgsMapCanvas *QgsPgSourceSelect::mapCanvas()
+{
+    return mMapCanvas;
+}
+
 //! Autoconnected SLOTS
 // Slot for adding a new connection
 void QgsPgSourceSelect::btnNew_clicked()

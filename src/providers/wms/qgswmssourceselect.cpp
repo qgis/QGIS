@@ -154,6 +154,15 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 
 }
 
+void QgsWMSSourceSelect::setMapCanvas(QgsMapCanvas *mapCanvas)
+{
+    mMapCanvas = mapCanvas;
+}
+
+QgsMapCanvas *QgsWMSSourceSelect::mapCanvas()
+{
+    return mMapCanvas;
+}
 
 void QgsWMSSourceSelect::refresh()
 {

@@ -47,18 +47,16 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
   public:
 
     /**
-     * Store a pointer to the map canvas to retrieve extent and CRS
-     * Used to select an appropriate CRS and possibly to retrieve data only in the current extent
-     */
-    void setMapCanvas( QgsMapCanvas *mapCanvas );
-
-    /**
      * Sets a browser \a model to use with the widget.
      *
      * \see browserModel()
      * \since QGIS 3.18
      */
     void setBrowserModel( QgsBrowserModel *model );
+
+    virtual QgsMapCanvas *mapCanvas() = 0;
+
+    virtual void setMapCanvas( QgsMapCanvas *mapCanvas ) = 0;
 
   public slots:
 
@@ -169,9 +167,6 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
      */
     void pushMessage( const QString &title, const QString &message, const Qgis::MessageLevel level = Qgis::MessageLevel::Info );
 
-    //! Emitted when map canvas is updated
-    void mapCanvasChanged();
-
   protected:
 
     //! Constructor
@@ -179,9 +174,6 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
 
     //! Returns the widget mode
     QgsProviderRegistry::WidgetMode widgetMode() const;
-
-    //! Returns the map canvas (can be NULLPTR)
-    QgsMapCanvas *mapCanvas();
 
     /**
      * Returns the associated browser model (may be NULLPTR).
@@ -199,7 +191,6 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
   private:
     QPushButton *mAddButton  = nullptr;
     QgsProviderRegistry::WidgetMode mWidgetMode;
-    QgsMapCanvas *mMapCanvas = nullptr;
     QgsBrowserModel *mBrowserModel = nullptr;
 
 };

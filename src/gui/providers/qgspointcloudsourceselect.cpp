@@ -61,6 +61,17 @@ QgsPointCloudSourceSelect::QgsPointCloudSourceSelect( QWidget *parent, Qt::Windo
   }
 }
 
+void QgsPointCloudSourceSelect::setMapCanvas(QgsMapCanvas *mapCanvas)
+{
+    mMapCanvas = mapCanvas;
+
+}
+
+QgsMapCanvas *QgsPointCloudSourceSelect::mapCanvas()
+{
+    return mMapCanvas;
+}
+
 void QgsPointCloudSourceSelect::addButtonClicked()
 {
   if ( mDataSourceType == QLatin1String( "file" ) )

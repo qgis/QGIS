@@ -39,6 +39,22 @@ class QgsVirtualLayerSourceSelect : public QgsAbstractDataSourceWidget, private 
   public:
     QgsVirtualLayerSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
+    /**
+     * Sets the dialog map canvas
+     * \see mapCanvas()
+     *
+     * \since QGIS 3.24
+     */
+    void setMapCanvas( QgsMapCanvas *mapCanvas ) override;
+
+    /**
+     * Returns the dialog map canvas
+     * \see setMapCanvas()
+     *
+     * \since QGIS 3.24
+     */
+    QgsMapCanvas *mapCanvas() override;
+
   public slots:
     //! Triggered when the provider's connections need to be refreshed
     void refresh() override;
@@ -65,6 +81,8 @@ class QgsVirtualLayerSourceSelect : public QgsAbstractDataSourceWidget, private 
     void addEmbeddedLayer( const QString &name, const QString &provider, const QString &encoding, const QString &source );
     QgsLayerTreeView *mTreeView  = nullptr;
     bool preFlight();
+
+    QgsMapCanvas *mMapCanvas = nullptr;
 };
 
 #endif
