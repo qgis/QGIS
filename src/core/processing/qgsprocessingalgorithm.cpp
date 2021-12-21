@@ -329,7 +329,7 @@ QString QgsProcessingAlgorithm::asQgisProcessCommand( const QVariantMap &paramet
     if ( nonAlphaNumericRx.match( input ).hasMatch() )
     {
       QString escaped = input;
-      escaped.replace( '\'', QStringLiteral( "'\\''" ) );
+      escaped.replace( '\'', QLatin1String( "'\\''" ) );
       return QStringLiteral( "'%1'" ).arg( escaped );
     }
     else

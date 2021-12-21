@@ -111,7 +111,7 @@ void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
       QHttpPart part;
       part.setHeader( QNetworkRequest::ContentDispositionHeader,
                       QStringLiteral( "form-data; name=\"%1\"" )
-                      .arg( QString( queryItem.first ).replace( '"', QStringLiteral( R"(\")" ) ) ) );
+                      .arg( QString( queryItem.first ).replace( '"', QLatin1String( R"(\")" ) ) ) );
       part.setBody( queryItem.second.toUtf8() );
       multiPart->append( part );
     }

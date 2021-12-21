@@ -247,7 +247,7 @@ QList<QgsHistoryEntry> QgsHistoryProviderRegistry::queryEntries( const QDateTime
     }
 
     if ( !whereClauses.empty() )
-      sql += QStringLiteral( " WHERE (" ) + whereClauses.join( QStringLiteral( ") AND (" ) ) + ')';
+      sql += QStringLiteral( " WHERE (" ) + whereClauses.join( QLatin1String( ") AND (" ) ) + ')';
 
     int nErr;
     sqlite3_statement_unique_ptr statement = mLocalDB.prepare( sql, nErr );
