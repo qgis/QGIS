@@ -6986,7 +6986,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
         } );
       }
       // Resize
-      if ( limit > 0 &&  results.size() > limit )
+      if ( limit > 0 && results.size() > limit )
       {
         results.erase( results.begin() + limit );
       }
