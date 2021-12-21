@@ -261,3 +261,9 @@ void Qgs3DNavigationWidget::hideEvent( QHideEvent *ev )
   QWidget::hideEvent( ev );
   emit sizeChanged( QSize( 0, 0 ) );
 }
+
+void Qgs3DNavigationWidget::showEvent( QShowEvent *ev )
+{
+  QWidget::showEvent( ev );
+  emit sizeChanged( size() );
+}

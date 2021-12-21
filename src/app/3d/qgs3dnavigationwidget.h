@@ -47,6 +47,7 @@ class Qgs3DNavigationWidget : public QWidget
   protected:
     void resizeEvent( QResizeEvent *event ) override;
     void hideEvent( QHideEvent *event ) override;
+    void showEvent( QShowEvent *event ) override;
 
   private:
     Qgs3DMapCanvas *mParent3DMapCanvas = nullptr;
