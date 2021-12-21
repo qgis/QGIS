@@ -620,7 +620,7 @@ void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
     case TerrainBasedNavigation:
     {
 
-      const float scaling = ( ( wheel->modifiers() & Qt::ControlModifier ) != 0 ? 0.1f : 1.0f );
+      const float scaling = ( ( wheel->modifiers() & Qt::ControlModifier ) != 0 ? 0.5f : 5.f );
 
       // Apparently angleDelta needs to be accumulated
       // see: https://doc.qt.io/qt-5/qwheelevent.html#angleDelta
