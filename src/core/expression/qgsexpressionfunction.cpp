@@ -6649,8 +6649,8 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
 
   // Sixth parameter (for intersects only) is the min overlap (area or length)
   // Seventh parameter (for intersects only) is the min inscribed circle radius
-  // Eight parameter (for intersects only) is the return_measures
-  // Nineth parameter (for intersects only) is the sort_by_measure flag
+  // Eight parameter (for intersects only) is the return_measure
+  // Nineth parameter (for intersects only) is the sort_by_intersection_size flag
   double minOverlap { -1 };
   double minInscribedCircleRadius { -1 };
   bool returnMeasures = false;
@@ -7475,8 +7475,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
           << QgsExpressionFunction::Parameter( QStringLiteral( "cache" ), true, QVariant( false ), false )
           << QgsExpressionFunction::Parameter( QStringLiteral( "min_overlap" ), true, QVariant( -1 ), false )
           << QgsExpressionFunction::Parameter( QStringLiteral( "min_inscribed_circle_radius" ), true, QVariant( -1 ), false )
-          << QgsExpressionFunction::Parameter( QStringLiteral( "return_measures" ), true, false, false )
-          << QgsExpressionFunction::Parameter( QStringLiteral( "sort_by_measure" ), true, false, false ),
+          << QgsExpressionFunction::Parameter( QStringLiteral( "return_measure" ), true, false, false )
+          << QgsExpressionFunction::Parameter( QStringLiteral( "sort_by_intersection_size" ), true, false, false ),
           i.value(), QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
 
       // The current feature is accessed for the geometry, so this should not be cached
