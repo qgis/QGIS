@@ -994,7 +994,22 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
     {
       if ( fld.type() == QVariant::fromValue( QgsInterval() ).type() )
       {
-        v = ::PQgetvalue( queryResult.result(), row, col );
+        char *c = ::PQgetvalue( queryResult.result(), row, col );
+        QgsInterval i = QgsInterval::fromString( c );
+        v = i;
+        QgsInterval j = QgsInterval::fromString( "1 hour 1 minute" );
+        std::cout << "!!! j seconds from 1 hour 1 minute " << j.seconds() << std::endl;
+        QgsInterval k = QgsInterval::fromString( "01:01:00" );
+        std::cout << "!!! k seconds from 01:01:00 " << k.seconds() << std::endl;
+        QgsInterval l = QgsInterval::fromString( "1 year 1 month 1 week");
+        std::cout << "!!! l seconds from  1 year 1 month 1 week " << l.seconds() << std::endl;
+        QgsInterval m = QgsInterval::fromString( "1 year 1 month 1 week 1 hour 1 minute");
+        std::cout << "!!! m seconds from  1 year 1 month 1 week 1 hour 1 minute " << m.seconds() << std::endl;
+        QgsInterval n = QgsInterval::fromString( "1 year 1 month 1 week 01:01:00");
+        std::cout << "!!! n seconds from  1 year 1 month 1 week 01:01:00 " << n.seconds() << std::endl;
+        std::cout << "!!! k seconds from  1 year 1 month 1 week + l seconds from 01:01:00 " << k.seconds()  + l.seconds()<< std::endl;
+
+
       }
       break;
     }

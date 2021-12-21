@@ -523,6 +523,20 @@ INSERT INTO qgis_test.boolean_table VALUES
 (2, FALSE),
 (3, NULL);
 
+--------------------------------------
+-- Table for Interval
+--
+
+CREATE TABLE qgis_test.interval_table
+(
+  id int PRIMARY KEY,
+  fld1 INTERVAL
+);
+
+INSERT INTO qgis_test.interval_table VALUES
+(1, '1 Year 1 Month 1 Week'),
+(2, '101 Days'),
+(3, '0');
 
 --------------------------------------
 -- Table for citext

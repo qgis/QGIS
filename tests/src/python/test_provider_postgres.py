@@ -50,6 +50,7 @@ from qgis.core import (
     QgsVectorDataProvider,
     QgsDataSourceUri,
     QgsProviderConnectionException,
+    QgsInterval,
 )
 from qgis.gui import QgsGui, QgsAttributeForm
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir, QObject, QByteArray, QTemporaryDir
@@ -239,6 +240,28 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             3: NULL
         }
         self.assertEqual(values, expected)
+
+    def testIntervalType(self):
+        vl = QgsVectorLayer('{} table="qgis_test"."interval_table" sql='.format(
+            self.dbconn), "testinterval", "postgres")
+        self.assertTrue(vl.isValid())
+
+        fields = vl.dataProvider().fields()
+
+        values = [feat['fld1'] for feat in vl.getFeatures()]
+
+        i = values[0]
+        j = values[1]
+        k = values[2]
+
+        self.assertEqual(i.seconds(), 32162400)
+        self.assertEqual(j.seconds(), 101 * 24 * 60 * 60)
+        self.assertEqual(k.seconds(), 0)
+
+        self.assertTrue(i.isValid())
+        self.assertTrue(j.isValid())
+        #0 interval is not valid.
+        self.assertFalse(k.isValid())
 
     def testByteaType(self):
         vl = QgsVectorLayer('{} table="qgis_test"."byte_a_table" sql='.format(
