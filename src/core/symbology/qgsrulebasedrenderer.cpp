@@ -1333,9 +1333,9 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
     else
     {
       QgsExpression testExpr( attr );
-      isField = testExpr.hasParserError() || ( testExpr.isField() && !attr.startsWith( '\"' ) );
+      isField = testExpr.hasParserError() || testExpr.isField();
     }
-    if ( isField )
+    if ( isField && !attr.contains( '\"' ) )
     {
       //not an expression, so need to quote column name
       attr = QgsExpression::quotedColumnRef( attr );
@@ -1432,9 +1432,9 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
     else
     {
       QgsExpression testExpr( attr );
-      isField = testExpr.hasParserError() || ( testExpr.isField() && !attr.startsWith( '\"' ) );
+      isField = testExpr.hasParserError() || testExpr.isField();
     }
-    if ( isField )
+    if ( isField  && !attr.contains( '\"' ) )
     {
       //not an expression, so need to quote column name
       attr = QgsExpression::quotedColumnRef( attr );
