@@ -608,10 +608,6 @@ void QgsCameraController::handleTerrainNavigationWheelZoom()
 
 void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
 {
-  // Apparently angleDelta needs to be accumulated
-  // see: https://doc.qt.io/qt-5/qwheelevent.html#angleDelta
-  mCumulatedWheelY += wheel->angleDelta().y();
-
   switch ( mCameraNavigationMode )
   {
     case QgsCameraController::WalkNavigation:
@@ -623,6 +619,12 @@ void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
 
     case TerrainBasedNavigation:
     {
+
+      const float scaling = ( ( wheel->modifiers() & Qt::ControlModifier ) != 0 ? 0.1f : 1.0f );
+
+      // Apparently angleDelta needs to be accumulated
+      // see: https://doc.qt.io/qt-5/qwheelevent.html#angleDelta
+      mCumulatedWheelY += scaling * wheel->angleDelta().y();
 
       if ( !mIsInZoomInState )
       {

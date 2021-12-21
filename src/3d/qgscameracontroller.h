@@ -332,7 +332,7 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     bool mIgnoreNextMouseMove = false;
     QTimer *mFpsNavTimer = nullptr;
 
-    int mCumulatedWheelY = 0;
+    double mCumulatedWheelY = 0;
 
 };
 
