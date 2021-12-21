@@ -1090,6 +1090,8 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
   QFont textFont;
   bool foundFont = false;
   QString fontName;
+  QString fontStyleName;
+
   if ( jsonLayout.contains( QStringLiteral( "text-font" ) ) )
   {
     auto splitFontFamily = []( const QString & fontName, QString & family, QString & style ) -> bool
@@ -1141,7 +1143,6 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
           QString familyCaseString = QStringLiteral( "CASE " );
           QString styleCaseString = QStringLiteral( "CASE " );
           QString fontFamily;
-          QString fontStyle;
           const QVariantList stops = jsonTextFont.toMap().value( QStringLiteral( "stops" ) ).toList();
 
           bool error = false;
@@ -1166,7 +1167,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
               break;
             }
 
-            if ( splitFontFamily( bv, fontFamily, fontStyle ) )
+            if ( splitFontFamily( bv, fontFamily, fontStyleName ) )
             {
               familyCaseString += QStringLiteral( "WHEN @vector_tile_zoom > %1 AND @vector_tile_zoom <= %2 "
                                                   "THEN %3 " ).arg( bz.toString(),
@@ -1175,7 +1176,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
               styleCaseString += QStringLiteral( "WHEN @vector_tile_zoom > %1 AND @vector_tile_zoom <= %2 "
                                                  "THEN %3 " ).arg( bz.toString(),
                                                      tz.toString(),
-                                                     QgsExpression::quotedValue( fontStyle ) );
+                                                     QgsExpression::quotedValue( fontStyleName ) );
             }
             else
             {
@@ -1186,10 +1187,10 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
             break;
 
           const QString bv = stops.constLast().toList().value( 1 ).type() == QVariant::String ? stops.constLast().toList().value( 1 ).toString() : stops.constLast().toList().value( 1 ).toList().value( 0 ).toString();
-          if ( splitFontFamily( bv, fontFamily, fontStyle ) )
+          if ( splitFontFamily( bv, fontFamily, fontStyleName ) )
           {
             familyCaseString += QStringLiteral( "ELSE %1 END" ).arg( QgsExpression::quotedValue( fontFamily ) );
-            styleCaseString += QStringLiteral( "ELSE %1 END" ).arg( QgsExpression::quotedValue( fontStyle ) );
+            styleCaseString += QStringLiteral( "ELSE %1 END" ).arg( QgsExpression::quotedValue( fontStyleName ) );
           }
           else
           {
@@ -1210,12 +1211,11 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
       }
 
       QString fontFamily;
-      QString fontStyle;
-      if ( splitFontFamily( fontName, fontFamily, fontStyle ) )
+      if ( splitFontFamily( fontName, fontFamily, fontStyleName ) )
       {
         textFont = QFont( fontFamily );
-        if ( !fontStyle.isEmpty() )
-          textFont.setStyleName( fontStyle );
+        if ( !fontStyleName.isEmpty() )
+          textFont.setStyleName( fontStyleName );
         foundFont = true;
       }
     }
@@ -1228,6 +1228,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
       fontName = QStringLiteral( "Open Sans" );
       textFont = QFont( fontName );
       textFont.setStyleName( QStringLiteral( "Regular" ) );
+      fontStyleName = QStringLiteral( "Regular" );
       foundFont = true;
     }
     else if ( QgsFontUtils::fontFamilyHasStyle( QStringLiteral( "Arial Unicode MS" ), QStringLiteral( "Regular" ) ) )
@@ -1235,6 +1236,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
       fontName = QStringLiteral( "Arial Unicode MS" );
       textFont = QFont( fontName );
       textFont.setStyleName( QStringLiteral( "Regular" ) );
+      fontStyleName = QStringLiteral( "Regular" );
       foundFont = true;
     }
     else
@@ -1362,7 +1364,11 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
   if ( textSize >= 0 )
     format.setSize( textSize );
   if ( foundFont )
+  {
     format.setFont( textFont );
+    if ( !fontStyleName.isEmpty() )
+      format.setNamedStyle( fontStyleName );
+  }
   if ( textLetterSpacing > 0 )
   {
     QFont f = format.font();
