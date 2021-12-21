@@ -240,7 +240,8 @@ void QgsLayoutAtlasWidget::changesSortFeatureExpression( const QString &expressi
 
   mBlockUpdates = true;
   mLayout->undoStack()->beginCommand( mAtlas, tr( "Change Atlas Sort" ) );
-  if ( QgsExpression::expressionToLayerFieldIndex( expression, qobject_cast<QgsVectorLayer *>( mAtlasCoverageLayerComboBox->currentLayer() ) ) != -1 && !attr.startsWith( '\"' )  )
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mAtlasCoverageLayerComboBox->currentLayer() );
+  if ( QgsExpression::expressionToLayerFieldIndex( expression, vlayer ) != -1 && !expression.contains( '\"' ) )
     mAtlas->setSortExpression( QgsExpression::quotedColumnRef( expression ) );
   else
     mAtlas->setSortExpression( expression );
