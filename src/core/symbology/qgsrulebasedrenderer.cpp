@@ -1439,7 +1439,7 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
       //not an expression, so need to quote column name
       attr = QgsExpression::quotedColumnRef( attr );
     }
-    else
+    else if ( !isField )
     {
       //otherwise wrap expression in brackets
       attr = QStringLiteral( "(%1)" ).arg( attr );
