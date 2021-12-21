@@ -387,6 +387,19 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       params.insert( "p2", QVariant::fromValue( QRectF( 0, 1, 2, 3 ) ) );
       QCOMPARE( asQgisProcessCommand( params, context, ok ), QString() );
       QVERIFY( !ok );
+
+      // strings which require escaping
+      params.insert( "p2", QStringLiteral( "this is a test" ) );
+      QCOMPARE( asQgisProcessCommand( params, context, ok ), QStringLiteral( "qgis_process run test --distance_units=meters --p1=a --p2='this is a test'" ) );
+      QVERIFY( ok );
+
+      params.insert( "p2", QStringLiteral( "thisisa|test" ) );
+      QCOMPARE( asQgisProcessCommand( params, context, ok ), QStringLiteral( "qgis_process run test --distance_units=meters --p1=a --p2='thisisa|test'" ) );
+      QVERIFY( ok );
+
+      params.insert( "p2", QStringLiteral( "thisisa'test" ) );
+      QCOMPARE( asQgisProcessCommand( params, context, ok ), QStringLiteral( "qgis_process run test --distance_units=meters --p1=a --p2='thisisa'\\''test'" ) );
+      QVERIFY( ok );
     }
 
     void runAsAsJsonMapChecks()
