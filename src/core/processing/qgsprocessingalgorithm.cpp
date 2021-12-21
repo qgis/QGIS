@@ -30,7 +30,8 @@
 #include "qgsmeshlayer.h"
 #include "qgspointcloudlayer.h"
 #include "qgsexpressioncontextutils.h"
-
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
 
 QgsProcessingAlgorithm::~QgsProcessingAlgorithm()
 {
@@ -321,6 +322,22 @@ QString QgsProcessingAlgorithm::asQgisProcessCommand( const QVariantMap &paramet
 
   parts.append( context.asQgisProcessArguments( argumentFlags ) );
 
+  auto escapeIfNeeded = []( const QString & input ) -> QString
+  {
+    // play it safe and escape everything UNLESS it's purely alphanumeric characters (and a very select scattering of other common characters!)
+    const thread_local QRegularExpression nonAlphaNumericRx( QStringLiteral( "[^a-zA-Z0-9.\\-/_]" ) );
+    if ( nonAlphaNumericRx.match( input ).hasMatch() )
+    {
+      QString escaped = input;
+      escaped.replace( '\'', QStringLiteral( "'\\''" ) );
+      return QStringLiteral( "'%1'" ).arg( escaped );
+    }
+    else
+    {
+      return input;
+    }
+  };
+
   for ( const QgsProcessingParameterDefinition *def : mParameters )
   {
     if ( def->flags() & QgsProcessingParameterDefinition::FlagHidden )
@@ -334,7 +351,9 @@ QString QgsProcessingAlgorithm::asQgisProcessCommand( const QVariantMap &paramet
       return QString();
 
     for ( const QString &partValue : partValues )
-      parts << QStringLiteral( "--%1=%2" ).arg( def->name(), partValue );
+    {
+      parts << QStringLiteral( "--%1=%2" ).arg( def->name(), escapeIfNeeded( partValue ) );
+    }
   }
 
   return parts.join( ' ' );
