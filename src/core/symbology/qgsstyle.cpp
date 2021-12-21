@@ -2317,7 +2317,7 @@ int QgsStyle::addSmartgroup( const QString &name, const QString &op, const QStri
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Couldn't insert symbol into the database!" ) );
+    QgsDebugMsg( QStringLiteral( "Couldn't add the smart group into the database!" ) );
     return 0;
   }
 }
@@ -3204,7 +3204,7 @@ bool QgsStyle::updateSymbol( StyleEntity type, const QString &name )
 
   if ( !runEmptyQuery( query ) )
   {
-    QgsDebugMsg( QStringLiteral( "Couldn't insert symbol into the database!" ) );
+    QgsDebugMsg( QStringLiteral( "Couldn't update symbol into the database!" ) );
     return false;
   }
   else
