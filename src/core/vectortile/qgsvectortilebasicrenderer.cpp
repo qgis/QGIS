@@ -212,6 +212,15 @@ void QgsVectorTileBasicRenderer::renderTile( const QgsVectorTileRendererData &ti
             exterior.setGeometry( QgsGeometry( f.geometry().constGet()->boundary() ) );
             sym->renderFeature( exterior, context );
           }
+          else if ( featureType == QgsWkbTypes::PolygonGeometry && layerStyle.geometryType() == QgsWkbTypes::PointGeometry )
+          {
+            // be tolerant and permit rendering polygons with a point layer style, as some style definitions use this approach
+            // to render the polygon center
+            QgsFeature centroid = f;
+            const QgsRectangle boundingBox = f.geometry().boundingBox();
+            centroid.setGeometry( f.geometry().poleOfInaccessibility( std::min( boundingBox.width(), boundingBox.height() ) / 20 ) );
+            sym->renderFeature( centroid, context );
+          }
         }
       }
     }
@@ -236,6 +245,15 @@ void QgsVectorTileBasicRenderer::renderTile( const QgsVectorTileRendererData &ti
           QgsFeature exterior = f;
           exterior.setGeometry( QgsGeometry( f.geometry().constGet()->boundary() ) );
           sym->renderFeature( exterior, context );
+        }
+        else if ( featureType == QgsWkbTypes::PolygonGeometry && layerStyle.geometryType() == QgsWkbTypes::PointGeometry )
+        {
+          // be tolerant and permit rendering polygons with a point layer style, as some style definitions use this approach
+          // to render the polygon center
+          QgsFeature centroid = f;
+          const QgsRectangle boundingBox = f.geometry().boundingBox();
+          centroid.setGeometry( f.geometry().poleOfInaccessibility( std::min( boundingBox.width(), boundingBox.height() ) / 20 ) );
+          sym->renderFeature( centroid, context );
         }
       }
     }
