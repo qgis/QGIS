@@ -2680,6 +2680,7 @@ bool QgsCoordinateReferenceSystem::createFromProjObject( PJ *object )
 
   switch ( proj_get_type( object ) )
   {
+    case PJ_TYPE_UNKNOWN:
     case PJ_TYPE_VERTICAL_CRS:
     case PJ_TYPE_PRIME_MERIDIAN:
     case PJ_TYPE_ELLIPSOID:
