@@ -2680,29 +2680,22 @@ bool QgsCoordinateReferenceSystem::createFromProjObject( PJ *object )
 
   switch ( proj_get_type( object ) )
   {
-    case PJ_TYPE_UNKNOWN:
+    case PJ_TYPE_GEODETIC_CRS:
+    case PJ_TYPE_GEOCENTRIC_CRS:
+    case PJ_TYPE_GEOGRAPHIC_CRS:
+    case PJ_TYPE_GEOGRAPHIC_2D_CRS:
+    case PJ_TYPE_GEOGRAPHIC_3D_CRS:
     case PJ_TYPE_VERTICAL_CRS:
-    case PJ_TYPE_PRIME_MERIDIAN:
-    case PJ_TYPE_ELLIPSOID:
-    case PJ_TYPE_GEODETIC_REFERENCE_FRAME:
-    case PJ_TYPE_DYNAMIC_GEODETIC_REFERENCE_FRAME:
-    case PJ_TYPE_VERTICAL_REFERENCE_FRAME:
-    case PJ_TYPE_DYNAMIC_VERTICAL_REFERENCE_FRAME:
-    case PJ_TYPE_DATUM_ENSEMBLE:
-    case PJ_TYPE_CONVERSION:
-    case PJ_TYPE_TRANSFORMATION:
-    case PJ_TYPE_CONCATENATED_OPERATION:
-    case PJ_TYPE_OTHER_COORDINATE_OPERATION:
-
-#if PROJ_VERSION_MAJOR>=7
-    case PJ_TYPE_TEMPORAL_DATUM:
-    case PJ_TYPE_ENGINEERING_DATUM:
-    case PJ_TYPE_PARAMETRIC_DATUM:
-      return false;
-#endif
+    case PJ_TYPE_PROJECTED_CRS:
+    case PJ_TYPE_COMPOUND_CRS:
+    case PJ_TYPE_TEMPORAL_CRS:
+    case PJ_TYPE_ENGINEERING_CRS:
+    case PJ_TYPE_BOUND_CRS:
+    case PJ_TYPE_OTHER_CRS:
+      break;
 
     default:
-      break;
+      return false;
   }
 
   d->setPj( QgsProjUtils::crsToSingleCrs( object ) );
