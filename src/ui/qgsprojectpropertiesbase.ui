@@ -2825,26 +2825,41 @@
                      </property>
                     </column>
                     <column>
+                     <property name="toolTip">
+                      <string>Layer can be published</string>
+                     </property>
                      <property name="text">
                       <string>Published</string>
                      </property>
                     </column>
                     <column>
+                     <property name="toolTip">
+                      <string>Number of decimal places to consider for geometry precision</string>
+                     </property>
                      <property name="text">
                       <string>Geometry precision</string>
                      </property>
                     </column>
                     <column>
+                     <property name="toolTip">
+                      <string>Allow features to be edited</string>
+                     </property>
                      <property name="text">
                       <string>Update</string>
                      </property>
                     </column>
                     <column>
+                     <property name="toolTip">
+                      <string>Allow addition of new features</string>
+                     </property>
                      <property name="text">
                       <string>Insert</string>
                      </property>
                     </column>
                     <column>
+                     <property name="toolTip">
+                      <string>Allow features to be deleted</string>
+                     </property>
                      <property name="text">
                       <string>Delete</string>
                      </property>
@@ -2854,14 +2869,14 @@
                   <item row="1" column="1">
                    <widget class="QPushButton" name="pbnWFSLayersDeselectAll">
                     <property name="text">
-                     <string>Deselect All</string>
+                     <string>Unpublish All</string>
                     </property>
                    </widget>
                   </item>
                   <item row="1" column="0">
                    <widget class="QPushButton" name="pbnWFSLayersSelectAll">
                     <property name="text">
-                     <string>Select All</string>
+                     <string>Publish All</string>
                     </property>
                    </widget>
                   </item>
