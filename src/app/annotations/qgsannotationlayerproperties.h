@@ -78,6 +78,8 @@ class QgsAnnotationLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
 
     QList<QgsMapLayerConfigWidget *> mConfigWidgets;
 
+    QgsCoordinateReferenceSystem mBackupCrs;
+
 };
 
 #endif // QGSANNOTATIONLAYERPROPERTIES_H
