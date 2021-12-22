@@ -15,6 +15,7 @@ import qgis  # NOQA
 import os
 
 from qgis.core import (
+    Qgis,
     QgsSettings,
     QgsVectorLayer,
     QgsFeatureRequest,
@@ -693,7 +694,7 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
 
         # prepare a project with transactions enabled
         p = QgsProject()
-        p.setAutoTransaction(True)
+        p.setTransactionMode(Qgis.TransactionMode.AutomaticGroups)
         p.addMapLayers([vl])
         vl.startEditing()
 
@@ -717,7 +718,7 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
 
         # prepare a project with transactions enabled
         p = QgsProject()
-        p.setAutoTransaction(True)
+        p.setTransactionMode(Qgis.TransactionMode.AutomaticGroups)
         p.addMapLayers([vl])
         vl.startEditing()
 
@@ -768,7 +769,7 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
 
         # prepare a project with transactions enabled
         p = QgsProject()
-        p.setAutoTransaction(True)
+        p.setTransactionMode(Qgis.TransactionMode.AutomaticGroups)
         p.addMapLayers([vl])
         vl.startEditing()
 
