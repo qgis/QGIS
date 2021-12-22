@@ -1605,19 +1605,15 @@ QgsLineString QgsGeometryUtils::perpendicularSegment( const QgsPoint &p, const Q
   return line;
 }
 
-void QgsGeometryUtils::perpendicularCenterSegment( double pointx, double pointy, double segmentPoint1x, double segmentPoint1y, double segmentPoint2x, double segmentPoint2y, double &perpendicularSegmentPoint1x, double &perpendicularSegmentPoint1y, double &perpendicularSegmentPoint2x, double &perpendicularSegmentPoint2y, double *desiredSegmentLength )
+void QgsGeometryUtils::perpendicularCenterSegment( double pointx, double pointy, double segmentPoint1x, double segmentPoint1y, double segmentPoint2x, double segmentPoint2y, double &perpendicularSegmentPoint1x, double &perpendicularSegmentPoint1y, double &perpendicularSegmentPoint2x, double &perpendicularSegmentPoint2y, double desiredSegmentLength )
 {
   QgsVector segmentVector =  QgsVector( segmentPoint2x - segmentPoint1x, segmentPoint2y - segmentPoint1y );
   QgsVector perpendicularVector = segmentVector.perpVector();
   if ( desiredSegmentLength )
   {
-    if ( *desiredSegmentLength == 0 )
+    if ( desiredSegmentLength != 0 )
     {
-      perpendicularVector = perpendicularVector * 1;
-    }
-    else
-    {
-      perpendicularVector = perpendicularVector.normalized() * ( *desiredSegmentLength ) / 2;
+      perpendicularVector = perpendicularVector.normalized() * ( desiredSegmentLength ) / 2;
     }
   }
   perpendicularSegmentPoint1x = pointx - perpendicularVector.x();
