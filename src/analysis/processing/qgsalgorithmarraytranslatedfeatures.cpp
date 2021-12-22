@@ -211,9 +211,9 @@ QgsWkbTypes::Type QgsArrayTranslatedFeaturesAlgorithm::outputWkbType( QgsWkbType
 
 QgsFields QgsArrayTranslatedFeaturesAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
-  QgsFields output = inputFields;
+  QgsFields output;
   output.append( QgsField( QStringLiteral( "instance" ), QVariant::Int ) );
-  return output;
+  return QgsProcessingUtils::combineFields( inputFields, output );
 }
 
 QgsFeatureSink::SinkFlags QgsArrayTranslatedFeaturesAlgorithm::sinkFlags() const
