@@ -1156,6 +1156,19 @@ void QgsCircularString::transform( const QTransform &t, double zTranslate, doubl
   }
 }
 
+void arcTo( QPainterPath &path, QPointF pt1, QPointF pt2, QPointF pt3 )
+{
+  double centerX, centerY, radius;
+  QgsGeometryUtils::circleCenterRadius( QgsPoint( pt1.x(), pt1.y() ), QgsPoint( pt2.x(), pt2.y() ), QgsPoint( pt3.x(), pt3.y() ),
+                                        radius, centerX, centerY );
+
+  double p1Angle = QgsGeometryUtils::ccwAngle( pt1.y() - centerY, pt1.x() - centerX );
+  double sweepAngle = QgsGeometryUtils::sweepAngle( centerX, centerY, pt1.x(), pt1.y(), pt2.x(), pt2.y(), pt3.x(), pt3.y() );
+
+  double diameter = 2 * radius;
+  path.arcTo( centerX - radius, centerY - radius, diameter, diameter, -p1Angle, -sweepAngle );
+}
+
 void QgsCircularString::addToPainterPath( QPainterPath &path ) const
 {
   int nPoints = numPoints();
@@ -1171,15 +1184,7 @@ void QgsCircularString::addToPainterPath( QPainterPath &path ) const
 
   for ( int i = 0; i < ( nPoints - 2 ) ; i += 2 )
   {
-    QgsPointSequence pt;
-    QgsGeometryUtils::segmentizeArc( QgsPoint( mX[i], mY[i] ), QgsPoint( mX[i + 1], mY[i + 1] ), QgsPoint( mX[i + 2], mY[i + 2] ), pt );
-    for ( int j = 1; j < pt.size(); ++j )
-    {
-      path.lineTo( pt.at( j ).x(), pt.at( j ).y() );
-    }
-#if 0
-    //arcTo( path, QPointF( mX[i], mY[i] ), QPointF( mX[i + 1], mY[i + 1] ), QPointF( mX[i + 2], mY[i + 2] ) );
-#endif
+    arcTo( path, QPointF( mX[i], mY[i] ), QPointF( mX[i + 1], mY[i + 1] ), QPointF( mX[i + 2], mY[i + 2] ) );
   }
 
   //if number of points is even, connect to last point with straight line (even though the circular string is not valid)
@@ -1188,21 +1193,6 @@ void QgsCircularString::addToPainterPath( QPainterPath &path ) const
     path.lineTo( mX[ nPoints - 1 ], mY[ nPoints - 1 ] );
   }
 }
-
-#if 0
-void QgsCircularString::arcTo( QPainterPath &path, QPointF pt1, QPointF pt2, QPointF pt3 )
-{
-  double centerX, centerY, radius;
-  QgsGeometryUtils::circleCenterRadius( QgsPoint( pt1.x(), pt1.y() ), QgsPoint( pt2.x(), pt2.y() ), QgsPoint( pt3.x(), pt3.y() ),
-                                        radius, centerX, centerY );
-
-  double p1Angle = QgsGeometryUtils::ccwAngle( pt1.y() - centerY, pt1.x() - centerX );
-  double sweepAngle = QgsGeometryUtils::sweepAngle( centerX, centerY, pt1.x(), pt1.y(), pt2.x(), pt2.y(), pt3.x(), pt3.y() );
-
-  double diameter = 2 * radius;
-  path.arcTo( centerX - radius, centerY - radius, diameter, diameter, p1Angle, sweepAngle );
-}
-#endif
 
 void QgsCircularString::drawAsPolygon( QPainter &p ) const
 {
@@ -1344,14 +1334,14 @@ double QgsCircularString::closestSegment( const QgsPoint &pt, QgsPoint &segmentP
   return minDist;
 }
 
-bool QgsCircularString::pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const
+bool QgsCircularString::pointAt( int node, QgsPoint &point, Qgis::VertexType &type ) const
 {
   if ( node < 0 || node >= numPoints() )
   {
     return false;
   }
   point = pointN( node );
-  type = ( node % 2 == 0 ) ? QgsVertexId::SegmentVertex : QgsVertexId::CurveVertex;
+  type = ( node % 2 == 0 ) ? Qgis::VertexType::Segment : Qgis::VertexType::Curve;
   return true;
 }
 

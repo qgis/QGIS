@@ -54,6 +54,10 @@ class QgsAttributeFormContainerEdit;
 class QgsAttributeTypeDialog;
 class QgsAttributeWidgetEdit;
 
+/**
+ * \ingroup gui
+ * \class QgsAttributesFormProperties
+ */
 class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpressionContextGenerator, private Ui_QgsAttributesFormProperties
 {
     Q_OBJECT
@@ -88,6 +92,10 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
       QString htmlCode;
     };
 
+    /**
+     * \ingroup gui
+     * \class DnDTreeItemData
+     */
     class DnDTreeItemData : public QTreeWidgetItem
     {
       public:
@@ -261,14 +269,16 @@ QDataStream &operator>> ( QDataStream &stream, QgsAttributesFormProperties::DnDT
 
 
 /**
- * This class overrides mime type handling to be able to work with
+ * \ingroup gui
+ * \class QgsAttributesDnDTree
+ *
+ * \brief This class overrides mime type handling to be able to work with
  * the drag and drop attribute editor.
  *
  * The mime type is application/x-qgsattributetablefield
  *
  * Graphical representation for the attribute editor drag and drop editor
  */
-
 class GUI_EXPORT QgsAttributesDnDTree : public QTreeWidget
 {
     Q_OBJECT

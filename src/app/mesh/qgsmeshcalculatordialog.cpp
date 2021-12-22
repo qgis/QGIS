@@ -116,8 +116,8 @@ QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer, QWidg
   onOutputFormatChange();
   connect( mOutputDatasetFileWidget, &QgsFileWidget::fileChanged, this, &QgsMeshCalculatorDialog::updateInfoMessage );
 
-  connect( mOutputOnFileRadioButton, &QRadioButton::toggled, this, &QgsMeshCalculatorDialog::onOutputRadioButtonChange );
-  onOutputRadioButtonChange();
+  connect( mUseVirtualProviderCheckBox, &QCheckBox::clicked, this, &QgsMeshCalculatorDialog::onVirtualCheckboxChange );
+  onVirtualCheckboxChange();
 }
 
 QgsMeshCalculatorDialog::~QgsMeshCalculatorDialog() = default;
@@ -204,7 +204,7 @@ std::unique_ptr<QgsMeshCalculator> QgsMeshCalculatorDialog::calculator() const
   std::unique_ptr<QgsMeshCalculator> calc;
   QgsMeshDatasetGroup::Type destination = QgsMeshDatasetGroup::Persistent;
 
-  if ( mOutputVirtualRadioButton->isChecked() )
+  if ( mUseVirtualProviderCheckBox->isChecked() )
     destination = QgsMeshDatasetGroup::Virtual;
 
   switch ( destination )
@@ -304,7 +304,7 @@ void QgsMeshCalculatorDialog::updateInfoMessage()
   const bool expressionValid = result == QgsMeshCalculator::Success;
 
   // selected driver is appropriate
-  const bool notInFile = !mOutputOnFileRadioButton->isChecked();
+  const bool notInFile = mUseVirtualProviderCheckBox->isChecked();
   bool driverValid = false;
   if ( expressionValid )
   {
@@ -354,10 +354,12 @@ void QgsMeshCalculatorDialog::updateInfoMessage()
   }
 }
 
-void QgsMeshCalculatorDialog::onOutputRadioButtonChange()
+void QgsMeshCalculatorDialog::onVirtualCheckboxChange()
 {
-  mOutputDatasetFileWidget->setEnabled( mOutputOnFileRadioButton->isChecked() );
-  mOutputFormatComboBox->setEnabled( mOutputOnFileRadioButton->isChecked() );
+  mOutputDatasetFileWidget->setVisible( !mUseVirtualProviderCheckBox->isChecked() );
+  mOutputDatasetFileLabel->setVisible( !mUseVirtualProviderCheckBox->isChecked() );
+  mOutputFormatComboBox->setVisible( !mUseVirtualProviderCheckBox->isChecked() );
+  mOutputFormatLabel->setVisible( !mUseVirtualProviderCheckBox->isChecked() );
   updateInfoMessage();
 }
 

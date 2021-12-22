@@ -23,6 +23,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkcontentfetchertask.h"
+#include "qgssettings.h"
 
 #include <QApplication>
 #include <QCoreApplication>
@@ -66,7 +67,7 @@ int QgsImageCacheEntry::dataSize() const
   int size = 0;
   if ( !image.isNull() )
   {
-    size += ( image.width() * image.height() * 32 );
+    size += image.sizeInBytes();
   }
   return size;
 }
@@ -78,10 +79,17 @@ void QgsImageCacheEntry::dump() const
 
 ///@endcond
 
+static const int DEFAULT_IMAGE_CACHE_MAX_BYTES = 104857600;
 
 QgsImageCache::QgsImageCache( QObject *parent )
-  : QgsAbstractContentCache< QgsImageCacheEntry >( parent, QObject::tr( "Image" ) )
+  : QgsAbstractContentCache< QgsImageCacheEntry >( parent, QObject::tr( "Image" ),  DEFAULT_IMAGE_CACHE_MAX_BYTES )
 {
+  int bytes = QgsSettings().value( QStringLiteral( "/qgis/maxImageCacheSize" ), 0 ).toInt();
+  if ( bytes > 0 )
+  {
+    mMaxCacheSize = bytes;
+  }
+
   mMissingSvg = QStringLiteral( "<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>?</text></svg>" ).toLatin1();
 
   const QString downloadingSvgPath = QgsApplication::defaultThemePath() + QStringLiteral( "downloading_svg.svg" );
@@ -127,7 +135,7 @@ QImage QgsImageCache::pathAsImage( const QString &f, const QSize size, const boo
     long cachedDataSize = 0;
     bool isBroken = false;
     result = renderImage( file, size, keepAspectRatio, opacity, targetDpi, isBroken, blocking );
-    cachedDataSize += result.width() * result.height() * 32;
+    cachedDataSize += result.sizeInBytes();
     if ( cachedDataSize > mMaxCacheSize / 2 )
     {
       fitsInCache = false;
@@ -135,7 +143,7 @@ QImage QgsImageCache::pathAsImage( const QString &f, const QSize size, const boo
     }
     else
     {
-      mTotalSize += ( result.width() * result.height() * 32 );
+      mTotalSize += result.sizeInBytes();
       currentEntry->image = result;
     }
 

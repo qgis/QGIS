@@ -56,6 +56,31 @@ class QgsSymbolLayerUtils
     static QString encodeSldBrushStyle( Qt::BrushStyle style );
     static Qt::BrushStyle decodeSldBrushStyle( const QString &str );
 
+    static Qgis::SymbolCoordinateReference decodeCoordinateReference( const QString &string, bool *ok /Out/ = 0 );
+%Docstring
+Decodes a ``string`` representing a symbol coordinate reference mode.
+
+:param string: string to decode
+
+:return: - decoded marker clip mode
+         - ok: will be set to ``True`` if ``string`` was successfully decoded
+
+.. seealso:: :py:func:`encodeCoordinateReference`
+
+.. versionadded:: 3.24
+%End
+
+    static QString encodeCoordinateReference( Qgis::SymbolCoordinateReference coordinateReference );
+%Docstring
+Encodes a symbol coordinate reference mode to a string.
+
+:param coordinateReference: coordinate reference mode
+
+.. seealso:: :py:func:`decodeCoordinateReference`
+
+.. versionadded:: 3.24
+%End
+
     static QgsArrowSymbolLayer::HeadType decodeArrowHeadType( const QVariant &value, bool *ok /Out/ = 0 );
 %Docstring
 Decodes a ``value`` representing an arrow head type.
@@ -68,6 +93,52 @@ Decodes a ``value`` representing an arrow head type.
 Decodes a ``value`` representing an arrow type.
 
 .. versionadded:: 3.2
+%End
+
+    static Qgis::MarkerClipMode decodeMarkerClipMode( const QString &string, bool *ok /Out/ = 0 );
+%Docstring
+Decodes a ``string`` representing a marker clip mode.
+
+:param string: string to decode
+
+:return: - decoded marker clip mode
+         - ok: will be set to ``True`` if ``string`` was successfully decoded
+
+.. seealso:: :py:func:`encodeMarkerClipMode`
+
+.. versionadded:: 3.24
+%End
+
+    static QString encodeMarkerClipMode( Qgis::MarkerClipMode mode );
+%Docstring
+Encodes a marker clip ``mode`` to a string.
+
+.. seealso:: :py:func:`decodeMarkerClipMode`
+
+.. versionadded:: 3.24
+%End
+
+    static Qgis::LineClipMode decodeLineClipMode( const QString &string, bool *ok /Out/ = 0 );
+%Docstring
+Decodes a ``string`` representing a line clip mode.
+
+:param string: string to decode
+
+:return: - decoded line clip mode
+         - ok: will be set to ``True`` if ``string`` was successfully decoded
+
+.. seealso:: :py:func:`encodeLineClipMode`
+
+.. versionadded:: 3.24
+%End
+
+    static QString encodeLineClipMode( Qgis::LineClipMode mode );
+%Docstring
+Encodes a line clip ``mode`` to a string.
+
+.. seealso:: :py:func:`decodeLineClipMode`
+
+.. versionadded:: 3.24
 %End
 
     static QString encodePoint( QPointF point );
@@ -250,7 +321,7 @@ Returns a pixmap preview for a color ramp.
 .. seealso:: :py:func:`symbolPreviewIcon`
 %End
 
-    static QPicture symbolLayerPreviewPicture( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
+    static QPicture symbolLayerPreviewPicture( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid );
 %Docstring
 Draws a symbol layer preview to a QPicture
 
@@ -258,6 +329,7 @@ Draws a symbol layer preview to a QPicture
 :param units: size units
 :param size: target size of preview picture
 :param scale: map unit scale for preview
+:param parentSymbolType: since QGIS 3.22, can be used to specify the parent symbol type so that geometry generator preview icons are correctly calculated
 
 :return: QPicture containing symbol layer preview
 
@@ -266,7 +338,7 @@ Draws a symbol layer preview to a QPicture
 .. versionadded:: 2.9
 %End
 
-    static QIcon symbolLayerPreviewIcon( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
+    static QIcon symbolLayerPreviewIcon( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid );
 %Docstring
 Draws a symbol layer preview to an icon.
 
@@ -274,6 +346,7 @@ Draws a symbol layer preview to an icon.
 :param u: size units
 :param size: target size of preview icon
 :param scale: map unit scale for preview
+:param parentSymbolType: since QGIS 3.22, can be used to specify the parent symbol type so that geometry generator preview icons are correctly calculated
 
 :return: icon containing symbol layer preview
 

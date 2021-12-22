@@ -21,6 +21,7 @@ QgsMeshStaticDatasetWidget::QgsMeshStaticDatasetWidget( QWidget *parent ): QWidg
 {
   setupUi( this );
 
+  this->layout()->setContentsMargins( 0, 0, 0, 0 );
   mDatasetScalarModel = new QgsMeshDatasetListModel( this );
   mScalarDatasetComboBox->setModel( mDatasetScalarModel );
   mDatasetVectorModel = new QgsMeshDatasetListModel( this );

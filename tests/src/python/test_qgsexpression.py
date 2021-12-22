@@ -83,7 +83,8 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         args = function.params()
         self.assertEqual(args, 3)
 
-    def testHelp(self):
+    def testHelpPythonFunction(self):
+        """Test help about python function."""
         QgsExpression.registerFunction(self.help_with_variable)
         html = ('<h3>help_with_variable function</h3><br>'
                 'The help comes from a variable.')
@@ -93,6 +94,12 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         html = ('<h3>help_with_docstring function</h3><br>'
                 'The help comes from the python docstring.')
         self.assertEqual(self.help_with_docstring.helpText(), html)
+
+    def testHelpString(self):
+        """Test add custom help string."""
+        self.assertTrue(QgsExpression.addVariableHelpText("custom_variable_help", "custom help 1"))
+        self.assertFalse(QgsExpression.addVariableHelpText("custom_variable_help", "other help 2"))
+        self.assertEqual(QgsExpression.variableHelpText("custom_variable_help"), "custom help 1")
 
     def testAutoArgsAreExpanded(self):
         function = self.expandargs
@@ -263,6 +270,20 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         value = True
         res = '"my\'field" = TRUE'
         self.assertEqual(e.createFieldEqualityExpression(field, value), res)
+
+        # test with field type
+        field = "myfield"
+        value = 1
+        type = QVariant.String
+        res = '"myfield" = \'1\''
+        self.assertEqual(e.createFieldEqualityExpression(field, value, type), res)
+
+        # test with field type
+        field = "myfield"
+        value = "1"
+        type = QVariant.Int
+        res = '"myfield" = 1'
+        self.assertEqual(e.createFieldEqualityExpression(field, value, type), res)
 
     def testReferencedAttributeIndexesNonExistingField(self):
         e = QgsExpression()

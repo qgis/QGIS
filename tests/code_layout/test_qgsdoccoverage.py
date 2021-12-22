@@ -23,12 +23,12 @@ from doxygen_parser import DoxygenParser
 from acceptable_missing_doc import ACCEPTABLE_MISSING_DOCS, ACCEPTABLE_MISSING_ADDED_NOTE, ACCEPTABLE_MISSING_BRIEF
 
 # TO regenerate the list:
-# uncomment the lines under the `# GEN LIST`
+# uncomment the lines under the `# GEN LIST` in tests/code_layout/doxygen_parser.py
 # $ export PYTHONPATH=build/output/python
 # $ export QGIS_PREFIX_PATH=build/output
-# $ python tests/src/python/test_qgsdoccoverage.py
+# $ python tests/code_layout/test_qgsdoccoverage.py
 # copy the output to the file:
-# tests/src/python/acceptable_missing_doc.py
+# tests/code_layout/acceptable_missing_doc.py
 # in `ACCEPTABLE_MISSING_DOCS = { <past> }`.
 
 

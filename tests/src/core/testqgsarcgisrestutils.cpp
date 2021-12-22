@@ -215,7 +215,7 @@ void TestQgsArcGisRestUtils::testParseMarkerSymbol()
   QgsSimpleMarkerSymbolLayer *markerLayer = dynamic_cast< QgsSimpleMarkerSymbolLayer * >( marker->symbolLayer( 0 ) );
   QVERIFY( markerLayer );
   QCOMPARE( markerLayer->fillColor(), QColor( 76, 115, 10, 200 ) );
-  QCOMPARE( markerLayer->shape(), QgsSimpleMarkerSymbolLayerBase::Square );
+  QCOMPARE( markerLayer->shape(), Qgis::MarkerShape::Square );
   QCOMPARE( markerLayer->size(), 8.0 );
   QCOMPARE( markerLayer->sizeUnit(), QgsUnitTypes::RenderPoints );
   QCOMPARE( markerLayer->angle(), -10.0 ); // opposite direction to esri spec!

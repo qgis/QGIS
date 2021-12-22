@@ -35,6 +35,7 @@
 #include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
+#include "qgsfeedback.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsmessageoutput.h"
@@ -66,8 +67,9 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
   // Add supported types to enable creating expression fields in field calculator
   setNativeTypes( QList< NativeType >()
                   << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), QStringLiteral( "integer" ), QVariant::Int, 0, 10 )
-                  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer - 64 bit)" ), QStringLiteral( "int8" ), QVariant::LongLong )
-                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), QStringLiteral( "double precision" ), QVariant::Double, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer - 64 bit)" ), QStringLiteral( "longlong" ), QVariant::LongLong )
+                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), QStringLiteral( "double" ), QVariant::Double, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool, -1, -1, -1, -1 )
                   << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QVariant::String, -1, -1, -1, -1 )
 
                   // date type
@@ -157,12 +159,33 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
 
   if ( query.hasQueryItem( QStringLiteral( "quiet" ) ) ) mShowInvalidLines = false;
 
+  // Parse and store user-defined field types and boolean literals
+  const QList<QPair<QString, QString> > queryItems { query.queryItems( QUrl::ComponentFormattingOption::FullyDecoded ) };
+  for ( const QPair<QString, QString> &queryItem : std::as_const( queryItems ) )
+  {
+    if ( queryItem.first.compare( QStringLiteral( "field" ), Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+    {
+      const QStringList parts { queryItem.second.split( ':' ) };
+      if ( parts.count() == 2 )
+      {
+        mUserDefinedFieldTypes.insert( parts[0], parts [1] );
+      }
+    }
+  }
+
+  // Parse and store custom boolean literals
+  if ( query.hasQueryItem( QStringLiteral( "booleanTrue" ) ) && query.hasQueryItem( QStringLiteral( "booleanFalse" ) ) )
+  {
+    mUserDefinedBooleanLiterals = qMakePair<QString, QString>(
+                                    query.queryItemValue( QStringLiteral( "booleanTrue" ), QUrl::ComponentFormattingOption::FullyDecoded ),
+                                    query.queryItemValue( QStringLiteral( "booleanFalse" ), QUrl::ComponentFormattingOption::FullyDecoded ) );
+  }
+
   // Do an initial scan of the file to determine field names, types,
   // geometry type (for Wkt), extents, etc.  Parameter value subset.isEmpty()
   // avoid redundant building indexes if we will be building a subset string,
   // in which case indexes will be rebuilt.
-
-  scanFile( subset.isEmpty() );
+  scanFile( subset.isEmpty() && ! flags.testFlag( QgsDataProvider::ReadFlag::SkipGetExtent ), /* force full scan */ false );
 
   if ( ! subset.isEmpty() )
   {
@@ -222,7 +245,9 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString &filenam
   // This is a slightly generous regular expression in that it allows spaces and unquoted field types
   // not allowed in OGR CSVT files.  Also doesn't care if int and string fields have
 
-  const QRegularExpression reTypeList( QRegularExpression::anchoredPattern( QStringLiteral( "^(?:\\s*(\\\"?)(?:integer|real|double|long|longlong|int8|string|date|datetime|time)(?:\\(\\d+(?:\\.\\d+)?\\))?\\1\\s*(?:,|$))+" ) ) );
+  strTypeList = strTypeList.toLower();
+  // https://regex101.com/r/BcVPcF/1
+  const QRegularExpression reTypeList( QRegularExpression::anchoredPattern( QStringLiteral( R"re(^(?:\s*("?)(?:coord[xyz]|point\([xyz]\)|wkt|integer64|integer|integer\((?:boolean|int16)\)|real(?:\(float32\))?|double|longlong|long|int8|string|date|datetime|time)(?:\(\d+(?:\.\d+)?\))?\1\s*(?:,|$))+)re" ) ) );
   const QRegularExpressionMatch match = reTypeList.match( strTypeList );
   if ( !match.hasMatch() )
   {
@@ -236,13 +261,14 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString &filenam
   QgsDebugMsgLevel( QStringLiteral( "Field type string: %1" ).arg( strTypeList ), 2 );
 
   int pos = 0;
-  const QRegularExpression reType( QStringLiteral( "(integer|real|double|string|date|datetime|time)" ) );
+  // https://regex101.com/r/QwxaSe/1/
+  const QRegularExpression reType( QStringLiteral( R"re((coord[xyz]|point\([xyz]\)|wkt|int8|\binteger\b(?=[^\(])|(?<=integer\()bool(?=ean)|integer64|\binteger\b(?=\((?:\d+|int16)\))|integer64|longlong|\blong\b|real|double|string|\bdate\b|datetime|\btime\b))re" ) );
   QRegularExpressionMatch typeMatch = reType.match( strTypeList, pos );
   while ( typeMatch.hasMatch() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Found type: %1" ).arg( typeMatch.captured( 1 ) ), 2 );
     types << typeMatch.captured( 1 );
     pos = typeMatch.capturedEnd();
+    QgsDebugMsgLevel( QStringLiteral( "Found type: %1 at pos %2" ).arg( typeMatch.captured( 1 ) ).arg( pos ), 2 );
 
     typeMatch = reType.match( strTypeList, pos );
   }
@@ -305,7 +331,7 @@ QgsFeatureSource::SpatialIndexPresence QgsDelimitedTextProvider::hasSpatialIndex
 // immediately rescanning (when the file is loaded and then the subset expression is
 // set)
 
-void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
+void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, QgsFeedback *feedback )
 {
   QStringList messages;
 
@@ -410,11 +436,18 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
   QList<bool> couldBeDateTime;
   QList<bool> couldBeDate;
   QList<bool> couldBeTime;
+  QList<bool> couldBeBool;
 
   bool foundFirstGeometry = false;
+  QMap<int, QPair<QString, QString>> boolCandidates;
+  const QList<QPair<QString, QString>> boolLiterals { booleanLiterals() };
 
   while ( true )
   {
+    if ( feedback && feedback->isCanceled() )
+    {
+      break;
+    }
     const QgsDelimitedTextFile::Status status = mFile->nextRecord( parts );
     if ( status == QgsDelimitedTextFile::RecordEOF )
       break;
@@ -564,6 +597,12 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
       mNumberFeatures++;
     }
 
+    // Progress changed every 100 features
+    if ( feedback && mNumberFeatures % 100 == 0 )
+    {
+      feedback->setProcessedCount( mNumberFeatures );
+    }
+
     if ( !geomValid )
       continue;
 
@@ -593,9 +632,10 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
         couldBeDateTime.append( false );
         couldBeDate.append( false );
         couldBeTime.append( false );
+        couldBeBool.append( false );
       }
 
-      // If this column has been empty so far then initiallize it
+      // If this column has been empty so far then initialize it
       // for possible types
 
       if ( isEmpty[i] )
@@ -607,6 +647,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
         couldBeDateTime[i] = true;
         couldBeDate[i] = true;
         couldBeTime[i] = true;
+        couldBeBool[i] = true;
       }
 
       if ( ! mDetectTypes )
@@ -616,6 +657,31 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 
       // Now test for still valid possible types for the field
       // Types are possible until first record which cannot be parsed
+
+      if ( couldBeBool[i] )
+      {
+        couldBeBool[i] = false;
+        if ( ! boolCandidates.contains( i ) )
+        {
+          boolCandidates[ i ] = QPair<QString, QString>();
+        }
+        if ( ! boolCandidates[i].first.isEmpty() )
+        {
+          couldBeBool[i] = value.compare( boolCandidates[i].first, Qt::CaseSensitivity::CaseInsensitive ) == 0 || value.compare( boolCandidates[i].second, Qt::CaseSensitivity::CaseInsensitive ) == 0;
+        }
+        else
+        {
+          for ( const auto &bc : std::as_const( boolLiterals ) )
+          {
+            if ( value.compare( bc.first, Qt::CaseSensitivity::CaseInsensitive ) == 0 || value.compare( bc.second, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+            {
+              boolCandidates[i] = bc;
+              couldBeBool[i] = true;
+              break;
+            }
+          }
+        }
+      }
 
       if ( couldBeInt[i] )
       {
@@ -696,6 +762,18 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 #endif
       }
     }
+
+    // In case of fast scan we exit after the third record (to avoid detecting booleans)
+    if ( ! forceFullScan && mReadFlags.testFlag( ReadFlag::SkipFullScan ) && mNumberFeatures > 2 )
+    {
+      break;
+    }
+  }
+
+  // Final progress changed
+  if ( feedback )
+  {
+    feedback->setProgress( mNumberFeatures );
   }
 
   // Now create the attribute fields.  Field types are determined by prioritizing
@@ -706,51 +784,87 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
   attributeFields.clear();
 
   QString csvtMessage;
+  QgsDebugMsgLevel( QStringLiteral( "Reading CSVT: %1" ).arg( mFile->fileName() ), 2 );
   QStringList csvtTypes = readCsvtFieldTypes( mFile->fileName(), &csvtMessage );
 
-  for ( int i = 0; i < fieldNames.size(); i++ )
+  for ( int fieldIdx = 0; fieldIdx < fieldNames.size(); fieldIdx++ )
   {
     // Skip over WKT field ... don't want to display in attribute table
-    if ( i == mWktFieldIndex )
+    if ( fieldIdx == mWktFieldIndex )
       continue;
 
     // Add the field index lookup for the column
-    attributeColumns.append( i );
+    attributeColumns.append( fieldIdx );
     QVariant::Type fieldType = QVariant::String;
     QString typeName = QStringLiteral( "text" );
-    if ( i < csvtTypes.size() )
+
+    // User-defined types take precedence over all
+    if ( ! mUserDefinedFieldTypes.value( fieldNames[ fieldIdx ] ).isEmpty() )
     {
-      typeName = csvtTypes[i];
+      typeName = mUserDefinedFieldTypes.value( fieldNames[ fieldIdx ] );
     }
-    else if ( mDetectTypes && i < couldBeInt.size() )
+    else
     {
-      if ( couldBeInt[i] )
+      if ( fieldIdx < csvtTypes.size() )
       {
-        typeName = QStringLiteral( "integer" );
+        typeName = csvtTypes[fieldIdx];
+        // Map CSVT types to provider types
+        if ( typeName.startsWith( QLatin1String( "coord" ) ) || typeName.startsWith( QLatin1String( "point(" ) ) )
+        {
+          typeName = QStringLiteral( "double" );
+        }
+        else if ( typeName == QLatin1String( "long" ) || typeName == QLatin1String( "integer64" ) )
+        {
+          typeName = QStringLiteral( "longlong" );
+        }
+        else if ( typeName == QLatin1String( "int8" ) )
+        {
+          typeName = QStringLiteral( "integer" );
+        }
+        else if ( typeName == QLatin1String( "real" ) )
+        {
+          typeName = QStringLiteral( "double" );
+        }
       }
-      else if ( couldBeLongLong[i] )
+      else if ( mDetectTypes && fieldIdx < couldBeInt.size() )
       {
-        typeName = QStringLiteral( "longlong" );
-      }
-      else if ( couldBeDouble[i] )
-      {
-        typeName = QStringLiteral( "double" );
-      }
-      else if ( couldBeDateTime[i] )
-      {
-        typeName = QStringLiteral( "datetime" );
-      }
-      else if ( couldBeDate[i] )
-      {
-        typeName = QStringLiteral( "date" );
-      }
-      else if ( couldBeTime[i] )
-      {
-        typeName = QStringLiteral( "time" );
+        if ( couldBeBool[fieldIdx] )
+        {
+          typeName = QStringLiteral( "bool" );
+        }
+        else if ( couldBeInt[fieldIdx] )
+        {
+          typeName = QStringLiteral( "integer" );
+        }
+        else if ( couldBeLongLong[fieldIdx] )
+        {
+          typeName = QStringLiteral( "longlong" );
+        }
+        else if ( couldBeDouble[fieldIdx] )
+        {
+          typeName = QStringLiteral( "double" );
+        }
+        else if ( couldBeDateTime[fieldIdx] )
+        {
+          typeName = QStringLiteral( "datetime" );
+        }
+        else if ( couldBeDate[fieldIdx] )
+        {
+          typeName = QStringLiteral( "date" );
+        }
+        else if ( couldBeTime[fieldIdx] )
+        {
+          typeName = QStringLiteral( "time" );
+        }
       }
     }
 
-    if ( typeName == QLatin1String( "integer" ) )
+    if ( typeName == QLatin1String( "bool" ) )
+    {
+      fieldType = QVariant::Bool;
+      mFieldBooleanLiterals.insert( fieldIdx, boolCandidates[fieldIdx] );
+    }
+    else if ( typeName == QLatin1String( "integer" ) )
     {
       fieldType = QVariant::Int;
     }
@@ -758,9 +872,8 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
     {
       fieldType = QVariant::LongLong;
     }
-    else if ( typeName == QLatin1String( "real" ) || typeName == QLatin1String( "double" ) )
+    else if ( typeName == QLatin1String( "double" ) )
     {
-      typeName = QStringLiteral( "double" );
       fieldType = QVariant::Double;
     }
     else if ( typeName == QLatin1String( "datetime" ) )
@@ -780,7 +893,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
       typeName = QStringLiteral( "text" );
     }
 
-    attributeFields.append( QgsField( fieldNames[i], fieldType, typeName ) );
+    attributeFields.append( QgsField( fieldNames[fieldIdx], fieldType, typeName ) );
   }
 
   QgsDebugMsgLevel( "Field count for the delimited text file is " + QString::number( attributeFields.size() ), 2 );
@@ -965,6 +1078,22 @@ void QgsDelimitedTextProvider::appendZM( QString &sZ, QString &sM, QgsPoint &poi
     if ( mOk )
       point.addMValue( m );
   }
+}
+
+QList<QPair<QString, QString> > QgsDelimitedTextProvider::booleanLiterals() const
+{
+  QList<QPair<QString, QString> > booleans
+  {
+    { QStringLiteral( "true" ), QStringLiteral( "false" ) },
+    { QStringLiteral( "t" ), QStringLiteral( "f" ) },
+    { QStringLiteral( "yes" ), QStringLiteral( "no" ) },
+    { QStringLiteral( "1" ), QStringLiteral( "0" ) },
+  };
+  if ( ! mUserDefinedBooleanLiterals.first.isEmpty() )
+  {
+    booleans.append( mUserDefinedBooleanLiterals );
+  }
+  return booleans;
 }
 
 bool QgsDelimitedTextProvider::pointFromXY( QString &sX, QString &sY, QgsPoint &pt, const QString &decimalPoint, bool xyDms )
@@ -1257,6 +1386,11 @@ QString  QgsDelimitedTextProvider::name() const
   return TEXT_PROVIDER_KEY;
 }
 
+QString QgsDelimitedTextProvider::providerKey()
+{
+  return TEXT_PROVIDER_KEY;
+}
+
 QString  QgsDelimitedTextProvider::description() const
 {
   return TEXT_PROVIDER_DESCRIPTION;
@@ -1330,7 +1464,9 @@ QgsDelimitedTextProviderMetadata::QgsDelimitedTextProviderMetadata():
 {
 }
 
+#ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsDelimitedTextProviderMetadata();
 }
+#endif

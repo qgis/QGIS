@@ -19,9 +19,10 @@ if (NOT IOS)
   add_subdirectory(crssync)
 endif()
 
-if(WIN32 AND NOT MINGW)
+if (WITH_CRASH_HANDLER)
   add_subdirectory(crashhandler)
 endif()
+
 add_subdirectory(test)
 
 if (WITH_DESKTOP)

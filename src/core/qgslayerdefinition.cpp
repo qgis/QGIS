@@ -35,6 +35,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgsannotationlayer.h"
 #include "qgsfileutils.h"
+#include "qgsgrouplayer.h"
 
 bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage )
 {
@@ -184,10 +185,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *proj
   const auto constLayers = layers;
   for ( QgsMapLayer *layer : constLayers )
   {
-    if ( QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer * >( layer ) )
-    {
-      vlayer->resolveReferences( project );
-    }
+    layer->resolveReferences( project );
   }
 
   root->resolveReferences( project );
@@ -339,6 +337,10 @@ QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayersInternal( QDom
 
         case QgsMapLayerType::PointCloudLayer:
           layer = new QgsPointCloudLayer();
+          break;
+
+        case QgsMapLayerType::GroupLayer:
+          layer = new QgsGroupLayer( QString(), QgsGroupLayer::LayerOptions( QgsCoordinateTransformContext() ) );
           break;
 
         case QgsMapLayerType::AnnotationLayer:

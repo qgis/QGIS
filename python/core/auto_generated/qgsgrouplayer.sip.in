@@ -1,0 +1,122 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsgrouplayer.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsGroupLayer : QgsMapLayer
+{
+%Docstring(signature="appended")
+
+A map layer which consists of a set of child layers, where all component layers are rendered as a single
+flattened object during map renders.
+
+Child layers are never owned by :py:class:`QgsGroupLayer`. References to layers in a group are stored as weak
+references only, which wills be automatically cleaned up whenever the linked child layer is deleted.
+
+.. versionadded:: 3.24
+%End
+
+%TypeHeaderCode
+#include "qgsgrouplayer.h"
+%End
+  public:
+
+    struct LayerOptions
+    {
+
+      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext );
+%Docstring
+Constructor for LayerOptions.
+%End
+
+      QgsCoordinateTransformContext transformContext;
+
+    };
+
+    QgsGroupLayer( const QString &name, const QgsGroupLayer::LayerOptions &options );
+%Docstring
+Constructor for a new QgsGroupLayer with the specified layer ``name``.
+
+The ``options`` argument specifies load-time layer options.
+%End
+    ~QgsGroupLayer();
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsGroupLayer: '%1'>" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    virtual QgsGroupLayer *clone() const /Factory/;
+
+    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
+
+    virtual QgsRectangle extent() const;
+
+    virtual void setTransformContext( const QgsCoordinateTransformContext &context );
+
+    virtual bool readXml( const QDomNode &layerNode, QgsReadWriteContext &context );
+
+    virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &, StyleCategories categories = AllStyleCategories ) const;
+
+    virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
+
+    virtual QgsDataProvider *dataProvider();
+
+    virtual QString htmlMetadata() const;
+
+    virtual void resolveReferences( QgsProject *project );
+
+
+    void setChildLayers( const QList< QgsMapLayer * > &layers );
+%Docstring
+Sets the child ``layers`` contained by the group.
+
+This method does not take ownership of the layers, but rather assigns them to the group. Layers should be already added to
+the parent :py:class:`QgsProject` wherever appropriate.
+
+.. seealso:: :py:func:`childLayers`
+%End
+
+    QList< QgsMapLayer * > childLayers() const;
+%Docstring
+Returns the child layers contained by the group.
+
+.. seealso:: :py:func:`setChildLayers`
+%End
+
+    QgsPaintEffect *paintEffect() const;
+%Docstring
+Returns the current paint effect for the group layer.
+
+.. seealso:: :py:func:`setPaintEffect`
+%End
+
+    void setPaintEffect( QgsPaintEffect *effect /Transfer/ );
+%Docstring
+Sets the current paint ``effect`` for the renderer.
+
+Ownership is transferred to the renderer.
+
+.. seealso:: :py:func:`paintEffect`
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsgrouplayer.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

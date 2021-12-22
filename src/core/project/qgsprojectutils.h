@@ -51,6 +51,14 @@ class CORE_EXPORT QgsProjectUtils
      */
     static bool updateLayerPath( QgsProject *project, const QString &oldPath, const QString &newPath );
 
+    /**
+     * Returns TRUE if the specified \a layer is a child layer from any QgsGroupLayer in the given \a project.
+     *
+     * \since QGIS 3.24
+     */
+    static bool layerIsContainedInGroupLayer( QgsProject *project, QgsMapLayer *layer );
+
+
 };
 
 #endif // QGSPROJECTUTILS_H

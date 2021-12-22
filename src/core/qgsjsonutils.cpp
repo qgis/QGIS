@@ -455,6 +455,19 @@ json QgsJsonUtils::jsonFromVariant( const QVariant &val )
 
 QVariant QgsJsonUtils::parseJson( const std::string &jsonString )
 {
+  QString error;
+  const QVariant res = parseJson( jsonString, error );
+
+  if ( !error.isEmpty() )
+  {
+    QgsLogger::warning( QStringLiteral( "Cannot parse json (%1): %2" ).arg( error,
+                        QString::fromStdString( jsonString ) ) );
+  }
+  return res;
+}
+
+QVariant QgsJsonUtils::parseJson( const std::string &jsonString, QString &error )
+{
   // tracks whether entire json string is a primitive
   bool isPrimitive = true;
 
@@ -464,6 +477,7 @@ QVariant QgsJsonUtils::parseJson( const std::string &jsonString )
       {
         isPrimitive = false;
         QVariantList results;
+        results.reserve( jObj.size() );
         for ( const auto &item : jObj )
         {
           results.push_back( _parser( item ) );
@@ -521,6 +535,7 @@ QVariant QgsJsonUtils::parseJson( const std::string &jsonString )
     }
   };
 
+  error.clear();
   try
   {
     const json j = json::parse( jsonString );
@@ -528,8 +543,7 @@ QVariant QgsJsonUtils::parseJson( const std::string &jsonString )
   }
   catch ( json::parse_error &ex )
   {
-    QgsLogger::warning( QStringLiteral( "Cannot parse json (%1): %2" ).arg( QString::fromStdString( ex.what() ),
-                        QString::fromStdString( jsonString ) ) );
+    error = QString::fromStdString( ex.what() );
   }
   return QVariant();
 }

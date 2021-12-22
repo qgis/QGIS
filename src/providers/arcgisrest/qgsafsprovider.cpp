@@ -47,7 +47,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
 
   const QString referer = mSharedData->mDataSource.param( QStringLiteral( "referer" ) );
   if ( !referer.isEmpty() )
-    mRequestHeaders[ QStringLiteral( "Referer" )] = referer;
+    mRequestHeaders[ QStringLiteral( "referer" )] = referer;
 
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
@@ -353,6 +353,11 @@ QString QgsAfsProvider::name() const
   return AFS_PROVIDER_KEY;
 }
 
+QString QgsAfsProvider::providerKey()
+{
+  return AFS_PROVIDER_KEY;
+}
+
 QString QgsAfsProvider::description() const
 {
   return AFS_PROVIDER_DESCRIPTION;
@@ -469,7 +474,9 @@ QgsAfsProvider *QgsAfsProviderMetadata::createProvider( const QString &uri, cons
 }
 
 
+#ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsAfsProviderMetadata();
 }
+#endif

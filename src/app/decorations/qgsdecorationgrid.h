@@ -118,26 +118,24 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
 
     //! Sets symbol that is used to draw grid lines. Takes ownership
     void setLineSymbol( QgsLineSymbol *symbol );
-    const QgsLineSymbol *lineSymbol() const { return mLineSymbol; }
+    const QgsLineSymbol *lineSymbol() const { return mLineSymbol.get(); }
 
     //! Sets symbol that is used to draw markers. Takes ownership
     void setMarkerSymbol( QgsMarkerSymbol *symbol );
-    const QgsMarkerSymbol *markerSymbol() const { return mMarkerSymbol; }
+    const QgsMarkerSymbol *markerSymbol() const { return mMarkerSymbol.get(); }
 
     //! Sets map unit type
     void setMapUnits( QgsUnitTypes::DistanceUnit t ) { mMapUnits = t; }
-    QgsUnitTypes::DistanceUnit mapUnits() { return mMapUnits; }
+    QgsUnitTypes::DistanceUnit mapUnits() const { return mMapUnits; }
 
     //! Sets mapUnits value
     void setDirty( bool dirty = true );
     bool isDirty();
 
     //! Computes interval that is approx. 1/5 of canvas extent
-    bool getIntervalFromExtent( double *values, bool useXAxis = true );
+    bool getIntervalFromExtent( double *values, bool useXAxis = true ) const;
     //! Computes interval from current raster layer
-    bool getIntervalFromCurrentLayer( double *values );
-
-    double getDefaultInterval( bool useXAxis = true );
+    bool getIntervalFromCurrentLayer( double *values ) const;
 
   public slots:
     //! Sets values on the gui when a project is read or the gui first loaded
@@ -187,8 +185,8 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     //! Annotation can be horizontal / vertical or different for axes
     GridAnnotationDirection mGridAnnotationDirection;
 
-    QgsLineSymbol *mLineSymbol = nullptr;
-    QgsMarkerSymbol *mMarkerSymbol = nullptr;
+    std::unique_ptr< QgsLineSymbol > mLineSymbol;
+    std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
 
     QgsUnitTypes::DistanceUnit mMapUnits;
 
@@ -214,7 +212,7 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     int yGridLines( const QgsMapSettings &mapSettings, QList< QPair< qreal, QLineF > > &lines ) const;
 
     //! Returns the item border of a point (in item coordinates)
-    Border borderForLineCoord( QPointF point, QPainter *p ) const;
+    Border borderForLineCoord( QPointF point, const QPainter *p ) const;
 
     QgsTextFormat mTextFormat;
 };

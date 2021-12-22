@@ -17,6 +17,7 @@ add_subdirectory(esritoken)
 add_subdirectory(identcert)
 add_subdirectory(pkipaths)
 add_subdirectory(pkipkcs12)
+add_subdirectory(apiheader)
 
 if (WITH_OAUTH2_PLUGIN)
   add_subdirectory(oauth2)

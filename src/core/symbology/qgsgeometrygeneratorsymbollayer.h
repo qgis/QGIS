@@ -138,6 +138,17 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
     QgsGeometryGeneratorSymbolLayer( const QgsGeometryGeneratorSymbolLayer &copy );
 #endif
 
+    /**
+     * Input geometry must be in painter units!
+     */
+    QgsGeometry evaluateGeometryInPainterUnits( const QgsGeometry &input, const QgsFeature &feature, const QgsRenderContext &renderContext, QgsExpressionContext &expressionContext ) const;
+
+    /**
+     * Tries to coerce the geometry output by the generator expression into
+     * a type usable by the symbol.
+     */
+    QgsGeometry coerceToExpectedType( const QgsGeometry &geometry ) const;
+
     std::unique_ptr<QgsExpression> mExpression;
     std::unique_ptr<QgsFillSymbol> mFillSymbol;
     std::unique_ptr<QgsLineSymbol> mLineSymbol;

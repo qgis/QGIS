@@ -18,8 +18,7 @@
 #ifndef QGSMSSQLTABLEMODEL_H
 #define QGSMSSQLTABLEMODEL_H
 
-#include <QStandardItemModel>
-
+#include "qgsabstractdbtablemodel.h"
 #include "qgswkbtypes.h"
 
 //! Layer Property structure
@@ -46,17 +45,21 @@ class QIcon;
  *
  * The tables have the following columns: Type, Schema, Tablename, Geometry Column, Sql
 */
-class QgsMssqlTableModel : public QStandardItemModel
+class QgsMssqlTableModel : public QgsAbstractDbTableModel
 {
     Q_OBJECT
   public:
-    QgsMssqlTableModel();
+    QgsMssqlTableModel( QObject *parent = nullptr );
+
+    QStringList columns() const override;
+    int defaultSearchColumn() const override;
+    bool searchableColumn( int column ) const override;
 
     //! Adds entry for one database table to the model
     void addTableEntry( const QgsMssqlLayerProperty &property );
 
     //! Sets an sql statement that belongs to a cell specified by a model index
-    void setSql( const QModelIndex &index, const QString &sql );
+    void setSql( const QModelIndex &index, const QString &sql ) override;
 
     /**
      * Sets one or more geometry types to a row. In case of several types, additional rows are inserted.
@@ -77,8 +80,7 @@ class QgsMssqlTableModel : public QStandardItemModel
       DbtmPkCol,
       DbtmSelectAtId,
       DbtmSql,
-      DbtmView,
-      DbtmColumns
+      DbtmView
     };
 
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
@@ -93,6 +95,7 @@ class QgsMssqlTableModel : public QStandardItemModel
     //! Number of tables in the model
     int mTableCount = 0;
     QString mConnectionName;
+    QStringList mColumns;
 };
 
 #endif

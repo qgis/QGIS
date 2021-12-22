@@ -33,7 +33,7 @@ Creates new raster renderer widget
 Creates new raster renderer widget
 %End
 
-    virtual QgsRasterRenderer *renderer();
+    virtual QgsRasterRenderer *renderer() /Factory/;
 
     virtual void setMapCanvas( QgsMapCanvas *canvas );
 
@@ -49,7 +49,7 @@ Returns the current raster band number
 
     void setFromRenderer( const QgsRasterRenderer *r );
 %Docstring
-Set state of the widget from renderer settings
+Sets the widget state from the specified renderer.
 %End
 
   public slots:

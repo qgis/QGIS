@@ -18,7 +18,7 @@
 #include "qgsgloweffect.h"
 #include "qgssymbollayerutils.h"
 #include "qgsimageoperation.h"
-#include "qgscolorramp.h"
+#include "qgscolorrampimpl.h"
 #include "qgsunittypes.h"
 
 QgsGlowEffect::QgsGlowEffect()

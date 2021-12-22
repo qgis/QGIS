@@ -29,10 +29,12 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverEsriTin::load( const std::string &uri, c
 
     //read the total number of vertices (including superpoints and isolated vertices)
     int32_t totalIndexesCount32;
-    std::ifstream inDenv( denvFile( uri ), std::ifstream::in | std::ifstream::binary );
+
+    std::ifstream inDenv = MDAL::openInputFile( denvFile( uri ), std::ios_base::in | std::ios_base::binary );
+
     if ( !inDenv.is_open() )
     {
-      inDenv.open( denv9File( uri ), std::ifstream::in | std::ifstream::binary );
+      inDenv = MDAL::openInputFile( denv9File( uri ), std::ifstream::in | std::ifstream::binary );
       if ( !inDenv.is_open() )
         throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Could not open file " + uri + " as denv file" );
     }
@@ -46,9 +48,9 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverEsriTin::load( const std::string &uri, c
      * Unwanted vertices are associated with the totalIndexesCount value
      */
     std::vector<size_t> rawAndCorrectedIndexesMap( totalIndexesCount, totalIndexesCount );
-    std::ifstream inFaces( faceFile( uri ), std::ifstream::in | std::ifstream::binary );
-    std::ifstream inMsk( mskFile( uri ), std::ifstream::in | std::ifstream::binary );
-    std::ifstream inMsx( msxFile( uri ), std::ifstream::in | std::ifstream::binary );
+    std::ifstream inFaces = MDAL::openInputFile( faceFile( uri ), std::ifstream::in | std::ifstream::binary );
+    std::ifstream inMsk = MDAL::openInputFile( mskFile( uri ), std::ifstream::in | std::ifstream::binary );
+    std::ifstream inMsx = MDAL::openInputFile( msxFile( uri ), std::ifstream::in | std::ifstream::binary );
 
     if ( ! inFaces.is_open() )
       throw MDAL::Error( MDAL_Status::Err_FileNotFound, "Could not open file " + uri + " as faces file" );
@@ -132,8 +134,8 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverEsriTin::load( const std::string &uri, c
 
     //Round 3: populate vertices
     Vertices vertices( correctedIndexCount );
-    std::ifstream inXY( xyFile( uri ), std::ifstream::in | std::ifstream::binary );
-    std::ifstream inZ( zFile( uri ), std::ifstream::in | std::ifstream::binary );
+    std::ifstream inXY = MDAL::openInputFile( xyFile( uri ), std::ifstream::in | std::ifstream::binary );
+    std::ifstream inZ = MDAL::openInputFile( zFile( uri ), std::ifstream::in | std::ifstream::binary );
 
     if ( ! inXY.is_open() )
       throw MDAL::Error( MDAL_Status::Err_FileNotFound, "Could not open file " + uri + " as xyFile type" );
@@ -213,19 +215,19 @@ bool MDAL::DriverEsriTin::canReadMesh( const std::string &uri )
   std::string zFileName = zFile( uri );
   std::string faceFileName = faceFile( uri );
 
-  std::ifstream xyIn( xyFile( uri ), std::ifstream::in | std::ifstream::binary );
+  std::ifstream xyIn = MDAL::openInputFile( xyFile( uri ), std::ifstream::in | std::ifstream::binary );
   if ( ! xyIn.is_open() )
     return false;
 
-  std::ifstream zIn( zFile( uri ), std::ifstream::in | std::ifstream::binary );
+  std::ifstream zIn = MDAL::openInputFile( zFile( uri ), std::ifstream::in | std::ifstream::binary );
   if ( ! zIn.is_open() )
     return false;
 
-  std::ifstream faceIn( faceFile( uri ), std::ifstream::in | std::ifstream::binary );
+  std::ifstream faceIn = MDAL::openInputFile( faceFile( uri ), std::ifstream::in | std::ifstream::binary );
   if ( ! faceIn.is_open() )
     return false;
 
-  std::ifstream hullIn( hullFile( uri ), std::ifstream::in | std::ifstream::binary );
+  std::ifstream hullIn = MDAL::openInputFile( hullFile( uri ), std::ifstream::in | std::ifstream::binary );
   if ( ! hullIn.is_open() )
     return false;
 
@@ -313,7 +315,7 @@ std::string MDAL::DriverEsriTin::getTinName( const std::string &uri ) const
 
 std::string MDAL::DriverEsriTin::getCrsWkt( const std::string &uri ) const
 {
-  std::ifstream inCRS( crsFile( uri ), std::ifstream::in );
+  std::ifstream inCRS = MDAL::openInputFile( crsFile( uri ) );
   if ( ! inCRS.is_open() )
     return std::string();
 

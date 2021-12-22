@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>371</width>
-    <height>380</height>
+    <width>385</width>
+    <height>533</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -44,9 +44,9 @@
      <item row="3" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
-        <widget class="QRadioButton" name="radInterval">
+        <widget class="QCheckBox" name="mCheckInterval">
          <property name="text">
-          <string>with interval</string>
+          <string>With interval</string>
          </property>
          <property name="checked">
           <bool>true</bool>
@@ -93,20 +93,6 @@
        </item>
       </layout>
      </item>
-     <item row="4" column="1">
-      <widget class="QRadioButton" name="radVertex">
-       <property name="text">
-        <string>on every vertex</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QRadioButton" name="radVertexLast">
-       <property name="text">
-        <string>on last vertex only</string>
-       </property>
-      </widget>
-     </item>
      <item row="6" column="0">
       <spacer name="horizontalSpacer_2">
        <property name="orientation">
@@ -123,20 +109,6 @@
        </property>
       </spacer>
      </item>
-     <item row="6" column="1">
-      <widget class="QRadioButton" name="radVertexFirst">
-       <property name="text">
-        <string>on first vertex only</string>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="1">
-      <widget class="QRadioButton" name="radCurvePoint">
-       <property name="text">
-        <string>on every curve point</string>
-       </property>
-      </widget>
-     </item>
      <item row="3" column="2">
       <widget class="QgsPropertyOverrideButton" name="mIntervalDDBtn">
        <property name="text">
@@ -144,17 +116,48 @@
        </property>
       </widget>
      </item>
-     <item row="7" column="1">
-      <widget class="QRadioButton" name="radCentralPoint">
+     <item row="4" column="1">
+      <widget class="QCheckBox" name="mCheckVertex">
+       <property name="toolTip">
+        <string>Shows symbols on inner vertices, i.e. all vertices except the first or last</string>
+       </property>
        <property name="text">
-        <string>on central point</string>
+        <string>On inner vertices</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QCheckBox" name="mCheckVertexLast">
+       <property name="text">
+        <string>On last vertex</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QCheckBox" name="mCheckVertexFirst">
+       <property name="text">
+        <string>On first vertex</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="QCheckBox" name="mCheckCentralPoint">
+       <property name="text">
+        <string>On central point</string>
        </property>
       </widget>
      </item>
      <item row="8" column="1">
-      <widget class="QRadioButton" name="radSegmentCentralPoint">
+      <widget class="QCheckBox" name="mCheckSegmentCentralPoint">
        <property name="text">
-        <string>on central point of segments</string>
+        <string>On central point of segments</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="1">
+      <widget class="QCheckBox" name="mCheckCurvePoint">
+       <property name="text">
+        <string>On every curve point</string>
        </property>
       </widget>
      </item>
@@ -198,29 +201,67 @@
      <property name="topMargin">
       <number>0</number>
      </property>
-     <item row="2" column="4">
-      <widget class="QgsPropertyOverrideButton" name="mHashRotationDDBtn">
+     <item row="5" column="0">
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>10</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="1" column="0" colspan="2">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>Hash length</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0" colspan="2">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Hash rotation</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="2">
+      <widget class="QgsDoubleSpinBox" name="mSpinAverageAngleLength">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="maximum">
+        <double>10000000.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.200000000000000</double>
+       </property>
+       <property name="value">
+        <double>1.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="4">
+      <widget class="QgsPropertyOverrideButton" name="mHashLengthDDBtn">
        <property name="text">
         <string>…</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="4">
-      <widget class="QgsPropertyOverrideButton" name="mAverageAngleDDBtn">
-       <property name="text">
-        <string>…</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="4">
-      <widget class="QgsPropertyOverrideButton" name="mOffsetAlongLineDDBtn">
-       <property name="text">
-        <string>…</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="3">
-      <widget class="QgsUnitSelectionWidget" name="mAverageAngleUnit" native="true">
+     <item row="1" column="3">
+      <widget class="QgsUnitSelectionWidget" name="mHashLengthUnitWidget" native="true">
        <property name="minimumSize">
         <size>
          <width>20</width>
@@ -232,19 +273,69 @@
        </property>
       </widget>
      </item>
-     <item row="5" column="0" colspan="2">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>Line offset</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="4">
-      <widget class="QgsPropertyOverrideButton" name="mHashLengthDDBtn">
+     <item row="0" column="4">
+      <widget class="QgsPropertyOverrideButton" name="mOffsetAlongLineDDBtn">
        <property name="text">
         <string>…</string>
        </property>
       </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QgsDoubleSpinBox" name="mSpinOffsetAlongLine">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="minimum">
+        <double>-10000000.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>10000000.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.200000000000000</double>
+       </property>
+       <property name="value">
+        <double>1.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QgsDoubleSpinBox" name="mSpinHashLength">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="maximum">
+        <double>10000000.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.200000000000000</double>
+       </property>
+       <property name="value">
+        <double>1.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="4">
+      <widget class="QgsPropertyOverrideButton" name="mHashRotationDDBtn">
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="2" colspan="3">
+      <widget class="QComboBox" name="mRingFilterComboBox"/>
      </item>
      <item row="2" column="2">
       <widget class="QgsDoubleSpinBox" name="mHashRotationSpinBox">
@@ -274,14 +365,42 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="0" colspan="2">
-      <widget class="QLabel" name="label_4">
+     <item row="7" column="0" colspan="2">
+      <widget class="QLabel" name="mRingsLabel">
        <property name="text">
-        <string>Hash rotation</string>
+        <string>Rings</string>
        </property>
       </widget>
      </item>
-     <item row="5" column="3">
+     <item row="6" column="0" colspan="2">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Line offset</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0" colspan="5">
+      <widget class="QCheckBox" name="chkRotateMarker">
+       <property name="text">
+        <string>Rotate hash to follow line direction</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="4">
+      <widget class="QgsPropertyOverrideButton" name="mLineOffsetDDBtn">
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>Average angle over</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="3">
       <widget class="QgsUnitSelectionWidget" name="mOffsetUnitWidget" native="true">
        <property name="minimumSize">
         <size>
@@ -294,66 +413,14 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="0" colspan="2">
-      <widget class="QLabel" name="label">
+     <item row="5" column="4">
+      <widget class="QgsPropertyOverrideButton" name="mAverageAngleDDBtn">
        <property name="text">
-        <string>Offset along line</string>
+        <string>…</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="0" colspan="2">
-      <widget class="QLabel" name="label_5">
-       <property name="text">
-        <string>Hash length</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="2">
-      <widget class="QgsDoubleSpinBox" name="mSpinHashLength">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>1</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="decimals">
-        <number>6</number>
-       </property>
-       <property name="maximum">
-        <double>10000000.000000000000000</double>
-       </property>
-       <property name="singleStep">
-        <double>0.200000000000000</double>
-       </property>
-       <property name="value">
-        <double>1.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="2" colspan="3">
-      <widget class="QComboBox" name="mRingFilterComboBox"/>
-     </item>
-     <item row="0" column="3">
-      <widget class="QgsUnitSelectionWidget" name="mOffsetAlongLineUnitWidget" native="true">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="focusPolicy">
-        <enum>Qt::TabFocus</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0" colspan="2">
-      <widget class="QLabel" name="mRingsLabel">
-       <property name="text">
-        <string>Rings</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="2">
+     <item row="6" column="2">
       <widget class="QgsDoubleSpinBox" name="spinOffset">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -375,15 +442,28 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
-      <widget class="QLabel" name="label_6">
+     <item row="0" column="0" colspan="2">
+      <widget class="QLabel" name="label">
        <property name="text">
-        <string>Average angle over</string>
+        <string>Offset along line</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="3">
-      <widget class="QgsUnitSelectionWidget" name="mHashLengthUnitWidget" native="true">
+     <item row="0" column="3">
+      <widget class="QgsUnitSelectionWidget" name="mOffsetAlongLineUnitWidget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::TabFocus</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="3">
+      <widget class="QgsUnitSelectionWidget" name="mAverageAngleUnit" native="true">
        <property name="minimumSize">
         <size>
          <width>20</width>
@@ -395,77 +475,13 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="0">
-      <spacer name="horizontalSpacer_3">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+     <item row="4" column="0" colspan="5">
+      <widget class="QCheckBox" name="mCheckPlaceOnEveryPart">
+       <property name="toolTip">
+        <string>If checked, the &quot;first vertex&quot; or &quot;last vertex&quot; placements will rendered at the first and last vertex for every part of multipart geometries</string>
        </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Fixed</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>10</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="4" column="2">
-      <widget class="QgsDoubleSpinBox" name="mSpinAverageAngleLength">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>1</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="decimals">
-        <number>6</number>
-       </property>
-       <property name="maximum">
-        <double>10000000.000000000000000</double>
-       </property>
-       <property name="singleStep">
-        <double>0.200000000000000</double>
-       </property>
-       <property name="value">
-        <double>1.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="4">
-      <widget class="QgsPropertyOverrideButton" name="mLineOffsetDDBtn">
        <property name="text">
-        <string>…</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QgsDoubleSpinBox" name="mSpinOffsetAlongLine">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>1</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="decimals">
-        <number>6</number>
-       </property>
-       <property name="maximum">
-        <double>10000000.000000000000000</double>
-       </property>
-       <property name="singleStep">
-        <double>0.200000000000000</double>
-       </property>
-       <property name="value">
-        <double>1.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0" colspan="5">
-      <widget class="QCheckBox" name="chkRotateMarker">
-       <property name="text">
-        <string>Rotate hash to follow line direction</string>
+        <string>Place on every part</string>
        </property>
       </widget>
      </item>
@@ -475,14 +491,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>
@@ -493,16 +509,16 @@
  </customwidgets>
  <tabstops>
   <tabstop>mPlacementDDBtn</tabstop>
-  <tabstop>radInterval</tabstop>
+  <tabstop>mCheckInterval</tabstop>
   <tabstop>spinInterval</tabstop>
   <tabstop>mIntervalUnitWidget</tabstop>
   <tabstop>mIntervalDDBtn</tabstop>
-  <tabstop>radVertex</tabstop>
-  <tabstop>radVertexLast</tabstop>
-  <tabstop>radVertexFirst</tabstop>
-  <tabstop>radCentralPoint</tabstop>
-  <tabstop>radSegmentCentralPoint</tabstop>
-  <tabstop>radCurvePoint</tabstop>
+  <tabstop>mCheckVertex</tabstop>
+  <tabstop>mCheckVertexLast</tabstop>
+  <tabstop>mCheckVertexFirst</tabstop>
+  <tabstop>mCheckCentralPoint</tabstop>
+  <tabstop>mCheckSegmentCentralPoint</tabstop>
+  <tabstop>mCheckCurvePoint</tabstop>
   <tabstop>mSpinOffsetAlongLine</tabstop>
   <tabstop>mOffsetAlongLineUnitWidget</tabstop>
   <tabstop>mOffsetAlongLineDDBtn</tabstop>
@@ -512,6 +528,7 @@
   <tabstop>mHashRotationSpinBox</tabstop>
   <tabstop>mHashRotationDDBtn</tabstop>
   <tabstop>chkRotateMarker</tabstop>
+  <tabstop>mCheckPlaceOnEveryPart</tabstop>
   <tabstop>mSpinAverageAngleLength</tabstop>
   <tabstop>mAverageAngleUnit</tabstop>
   <tabstop>mAverageAngleDDBtn</tabstop>

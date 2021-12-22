@@ -88,6 +88,8 @@ before applying the edition with :py:func:`QgsMeshEditor.advancedEdit()`
 Constructor
 %End
 
+    virtual QString text() const;
+
     virtual bool isFinished() const;
 
 

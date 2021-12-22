@@ -101,6 +101,14 @@ class SERVER_EXPORT QgsServerApiContext
      */
     void setRequest( const QgsServerRequest *request );
 
+    /**
+     * Returns the handler component of the URL path, i.e. the part of the path that comes
+     * after the API path.
+     *
+     * \since QGIS 3.22
+     */
+    QString handlerPath( ) const;
+
   private:
 
     QString mApiRootPath;

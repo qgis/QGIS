@@ -469,7 +469,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::mapSettingsScope( const Qg
 
   QVariantList layersIds;
   QVariantList layers;
-  const QList<QgsMapLayer *> layersInMap = mapSettings.layers();
+  const QList<QgsMapLayer *> layersInMap = mapSettings.layers( true );
   layersIds.reserve( layersInMap.count() );
   layers.reserve( layersInMap.count() );
   for ( QgsMapLayer *layer : layersInMap )
@@ -487,7 +487,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::mapSettingsScope( const Qg
   // IMPORTANT: ANY CHANGES HERE ALSO NEED TO BE MADE TO QgsLayoutItemMap::createExpressionContext()
   // (rationale is described in QgsLayoutItemMap::createExpressionContext() )
 
-  scope->addFunction( QStringLiteral( "is_layer_visible" ), new GetLayerVisibility( mapSettings.layers(), mapSettings.scale() ) );
+  scope->addFunction( QStringLiteral( "is_layer_visible" ), new GetLayerVisibility( mapSettings.layers( true ), mapSettings.scale() ) );
 
   // IMPORTANT: ANY CHANGES HERE ALSO NEED TO BE MADE TO QgsLayoutItemMap::createExpressionContext()
   // (rationale is described in QgsLayoutItemMap::createExpressionContext() )

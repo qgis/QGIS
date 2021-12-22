@@ -224,16 +224,16 @@ std::unique_ptr<QgsMarkerSymbolLayer> backgroundToMarkerLayer( const QgsTextBack
     {
       QgsSimpleMarkerSymbolLayer *marker = new QgsSimpleMarkerSymbolLayer();
       // default value
-      QgsSimpleMarkerSymbolLayerBase::Shape shape = QgsSimpleMarkerSymbolLayerBase::Diamond;
+      Qgis::MarkerShape shape = Qgis::MarkerShape::Diamond;
       switch ( settings.type() )
       {
         case QgsTextBackgroundSettings::ShapeCircle:
         case QgsTextBackgroundSettings::ShapeEllipse:
-          shape = QgsSimpleMarkerSymbolLayerBase::Circle;
+          shape = Qgis::MarkerShape::Circle;
           break;
         case QgsTextBackgroundSettings::ShapeRectangle:
         case QgsTextBackgroundSettings::ShapeSquare:
-          shape = QgsSimpleMarkerSymbolLayerBase::Square;
+          shape = Qgis::MarkerShape::Square;
           break;
         case QgsTextBackgroundSettings::ShapeSVG:
         case QgsTextBackgroundSettings::ShapeMarkerSymbol:
@@ -294,18 +294,18 @@ void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
   }
   else
   {
-    QgsStringUtils::Capitalization capitalization = format.capitalization();
-    if ( capitalization == QgsStringUtils::MixedCase && font.capitalization() != QFont::MixedCase )
-      capitalization = static_cast< QgsStringUtils::Capitalization >( font.capitalization() );
-    if ( capitalization == QgsStringUtils::AllUppercase )
+    Qgis::Capitalization capitalization = format.capitalization();
+    if ( capitalization == Qgis::Capitalization::MixedCase && font.capitalization() != QFont::MixedCase )
+      capitalization = static_cast< Qgis::Capitalization >( font.capitalization() );
+    if ( capitalization == Qgis::Capitalization::AllUppercase )
     {
       appendSimpleFunction( doc, labelElement, QStringLiteral( "strToUpperCase" ), settings.fieldName );
     }
-    else if ( capitalization == QgsStringUtils::AllLowercase )
+    else if ( capitalization == Qgis::Capitalization::AllLowercase )
     {
       appendSimpleFunction( doc, labelElement, QStringLiteral( "strToLowerCase" ), settings.fieldName );
     }
-    else if ( capitalization == QgsStringUtils::ForceFirstLetterToCapital )
+    else if ( capitalization == Qgis::Capitalization::ForceFirstLetterToCapital )
     {
       appendSimpleFunction( doc, labelElement, QStringLiteral( "strCapitalize" ), settings.fieldName );
     }

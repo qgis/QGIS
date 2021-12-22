@@ -19,6 +19,10 @@
 #include "gdal.h"
 #include "qgsmessagelog.h"
 
+/**
+ * \ingroup core
+ * \class QgsCPLErrorHandler
+ */
 class QgsCPLErrorHandler
 {
     static void CPL_STDCALL showError( CPLErr errClass, int errNo, const char *msg )

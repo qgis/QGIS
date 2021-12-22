@@ -1,4 +1,4 @@
-file(GLOB PY_FILES __init__.py link_types.py plugin.py util.py)
+file(GLOB PY_FILES __init__.py link_types.py plugin.py search_backend.py util.py)
 PLUGIN_INSTALL(MetaSearch . ${PY_FILES} metadata.txt LICENSE.txt)
 
 foreach(dir ui dialogs images resources resources/templates)

@@ -49,14 +49,27 @@ An interface for objects which can create sets of parameter values for processin
 %End
   public:
 
-    virtual QVariantMap createProcessingParameters() = 0;
+    enum class Flag
+    {
+      SkipDefaultValueParameters,
+    };
+    typedef QFlags<QgsProcessingParametersGenerator::Flag> Flags;
+
+
+    virtual QVariantMap createProcessingParameters( QgsProcessingParametersGenerator::Flags flags = QgsProcessingParametersGenerator::Flags() ) = 0;
 %Docstring
 This method needs to be reimplemented in all classes which implement this interface
 and return a algorithm parameters.
+
+Since QGIS 3.24 the optional ``flags`` argument can be used to control the behavior
+of the parameter generation.
 %End
 
     virtual ~QgsProcessingParametersGenerator();
 };
+
+QFlags<QgsProcessingParametersGenerator::Flag> operator|(QgsProcessingParametersGenerator::Flag f1, QFlags<QgsProcessingParametersGenerator::Flag> f2);
+
 
 
 class QgsProcessingParameterWidgetContext

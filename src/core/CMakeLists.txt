@@ -212,6 +212,7 @@ set(QGIS_CORE_SRCS
   network/qgsnetworkreplyparser.cpp
   network/qgsnewsfeedmodel.cpp
   network/qgsnewsfeedparser.cpp
+  network/qgshttpheaders.cpp
 
   processing/qgsprocessing.cpp
   processing/qgsprocessingalgorithm.cpp
@@ -322,6 +323,7 @@ set(QGIS_CORE_SRCS
   qgscadutils.cpp
   qgsclipper.cpp
   qgscolorramp.cpp
+  qgscolorrampimpl.cpp
   qgscolorscheme.cpp
   qgscolorschemeregistry.cpp
   qgscommandlineutils.cpp
@@ -372,6 +374,8 @@ set(QGIS_CORE_SRCS
   qgsgeometryoptions.cpp
   qgsgml.cpp
   qgsgmlschema.cpp
+  qgsgrouplayer.cpp
+  qgsgrouplayerrenderer.cpp
   qgshistogram.cpp
   qgshstoreutils.cpp
   qgshtmlutils.cpp
@@ -765,6 +769,7 @@ set(QGIS_CORE_SRCS
   geometry/qgsregularpolygon.cpp
   geometry/qgssurface.cpp
   geometry/qgstriangle.cpp
+  geometry/qgsvertexid.cpp
   geometry/qgswkbptr.cpp
   geometry/qgswkbtypes.cpp
   geometry/qgsray3d.cpp
@@ -946,6 +951,7 @@ set(QGIS_CORE_HDRS
   qgsclipper.h
   qgscommandlineutils.h
   qgscolorramp.h
+  qgscolorrampimpl.h
   qgscolorscheme.h
   qgscolorschemeregistry.h
   qgsconditionalstyle.h
@@ -1005,6 +1011,8 @@ set(QGIS_CORE_HDRS
   qgsgeometryvalidator.h
   qgsgml.h
   qgsgmlschema.h
+  qgsgrouplayer.h
+  qgsgrouplayerrenderer.h
   qgshistogram.h
   qgshstoreutils.h
   qgshtmlutils.h
@@ -1300,6 +1308,7 @@ set(QGIS_CORE_HDRS
   geometry/qgsregularpolygon.h
   geometry/qgssurface.h
   geometry/qgstriangle.h
+  geometry/qgsvertexid.h
   geometry/qgswkbptr.h
   geometry/qgswkbtypes.h
   geometry/qgsray3d.h
@@ -1508,6 +1517,7 @@ set(QGIS_CORE_HDRS
   network/qgsnetworkreplyparser.h
   network/qgsnewsfeedmodel.h
   network/qgsnewsfeedparser.h
+  network/qgshttpheaders.h
 
   numericformats/qgsbasicnumericformat.h
   numericformats/qgsbearingnumericformat.h
@@ -1561,6 +1571,7 @@ set(QGIS_CORE_HDRS
   project/qgsprojectversion.h
   project/qgsprojectviewsettings.h
 
+  providers/qgsabstractdbtablemodel.h
   providers/qgsabstractdatabaseproviderconnection.h
   providers/qgsabstractproviderconnection.h
   providers/qgsdataprovider.h
@@ -2131,8 +2142,23 @@ endif()
 if (FORCE_STATIC_LIBS)
   target_link_libraries(qgis_core
     provider_wms_a
-    provider_postgres_a
+    provider_wcs_a
+    provider_delimitedtext_a
+    provider_arcgisfeatureserver_a
+    provider_arcgismapserver_a
   )
+  if (HAVE_SPATIALITE)
+    target_link_libraries(qgis_core
+      provider_spatialite_a
+      provider_wfs_a
+      provider_virtuallayer_a
+    )
+  endif()
+  if (HAVE_POSTGRESQL)
+    target_link_libraries(qgis_core
+      provider_postgres_a
+    )
+  endif()
 
   if (WITH_AUTH)
     target_link_libraries(qgis_core

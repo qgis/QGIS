@@ -25,30 +25,11 @@
 #include <QSettings>
 #include <QLineEdit>
 
-QgsBlendModeComboBox::QgsBlendModeComboBox( QWidget *parent ) : QComboBox( parent )
+QgsBlendModeComboBox::QgsBlendModeComboBox( QWidget *parent )
+  : QComboBox( parent )
 {
+  setSizeAdjustPolicy( QComboBox::AdjustToMinimumContentsLengthWithIcon );
   updateModes();
-}
-
-QStringList QgsBlendModeComboBox::blendModesList() const
-{
-  return QStringList() << tr( "Normal" )
-         << QStringLiteral( "-" )
-         << tr( "Lighten" )
-         << tr( "Screen" )
-         << tr( "Dodge" )
-         << tr( "Addition" )
-         << QStringLiteral( "-" )
-         << tr( "Darken" )
-         << tr( "Multiply" )
-         << tr( "Burn" )
-         << QStringLiteral( "-" )
-         << tr( "Overlay" )
-         << tr( "Soft light" )
-         << tr( "Hard light" )
-         << QStringLiteral( "-" )
-         << tr( "Difference" )
-         << tr( "Subtract" );
 }
 
 void QgsBlendModeComboBox::updateModes()
@@ -56,32 +37,36 @@ void QgsBlendModeComboBox::updateModes()
   blockSignals( true );
   clear();
 
-  const QStringList myBlendModesList = blendModesList();
-  QStringList::const_iterator blendModeIt = myBlendModesList.constBegin();
+  // This list is designed to emulate GIMP's layer modes, where
+  // blending modes are grouped by their effect (lightening, darkening, etc)
 
-  mBlendModeToListIndex.resize( myBlendModesList.count() );
-  mListIndexToBlendMode.resize( myBlendModesList.count() );
+  addItem( tr( "Normal" ), static_cast< int >( QgsPainting::BlendMode::BlendNormal ) );
+  insertSeparator( count() );
+  addItem( tr( "Lighten" ), static_cast< int >( QgsPainting::BlendMode::BlendLighten ) );
+  addItem( tr( "Screen" ), static_cast< int >( QgsPainting::BlendMode::BlendScreen ) );
+  addItem( tr( "Dodge" ), static_cast< int >( QgsPainting::BlendMode::BlendDodge ) );
+  addItem( tr( "Addition" ), static_cast< int >( QgsPainting::BlendMode::BlendAddition ) );
+  insertSeparator( count() );
+  addItem( tr( "Darken" ), static_cast< int >( QgsPainting::BlendMode::BlendDarken ) );
+  addItem( tr( "Multiply" ), static_cast< int >( QgsPainting::BlendMode::BlendMultiply ) );
+  addItem( tr( "Burn" ), static_cast< int >( QgsPainting::BlendMode::BlendBurn ) );
+  insertSeparator( count() );
+  addItem( tr( "Overlay" ), static_cast< int >( QgsPainting::BlendMode::BlendOverlay ) );
+  addItem( tr( "Soft Light" ), static_cast< int >( QgsPainting::BlendMode::BlendSoftLight ) );
+  addItem( tr( "Hard Light" ), static_cast< int >( QgsPainting::BlendMode::BlendHardLight ) );
+  insertSeparator( count() );
+  addItem( tr( "Difference" ), static_cast< int >( QgsPainting::BlendMode::BlendDifference ) );
+  addItem( tr( "Subtract" ), static_cast< int >( QgsPainting::BlendMode::BlendSubtract ) );
 
-  // Loop through blend modes
-  int index = 0;
-  int blendModeIndex = 0;
-  for ( ; blendModeIt != myBlendModesList.constEnd(); ++blendModeIt )
+  if ( mShowClipModes )
   {
-    if ( *blendModeIt == QLatin1String( "-" ) )
-    {
-      // Add separator
-      insertSeparator( index );
-    }
-    else
-    {
-      // Not a separator, so store indexes for translation
-      // between blend modes and combo box item index
-      addItem( *blendModeIt );
-      mListIndexToBlendMode[ index ] = blendModeIndex;
-      mBlendModeToListIndex[ blendModeIndex ] = index;
-      blendModeIndex++;
-    }
-    index++;
+    insertSeparator( count() );
+    addItem( tr( "Masked By Below" ), static_cast< int >( QgsPainting::BlendMode::BlendSourceIn ) );
+    addItem( tr( "Mask Below" ), static_cast< int >( QgsPainting::BlendMode::BlendDestinationIn ) );
+    addItem( tr( "Inverse Masked By Below" ), static_cast< int >( QgsPainting::BlendMode::BlendSourceOut ) );
+    addItem( tr( "Inverse Mask Below" ), static_cast< int >( QgsPainting::BlendMode::BlendDestinationOut ) );
+    addItem( tr( "Paint Inside Below" ), static_cast< int >( QgsPainting::BlendMode::BlendSourceAtop ) );
+    addItem( tr( "Paint Below Inside" ), static_cast< int >( QgsPainting::BlendMode::BlendDestinationAtop ) );
   }
 
   blockSignals( false );
@@ -89,11 +74,25 @@ void QgsBlendModeComboBox::updateModes()
 
 QPainter::CompositionMode QgsBlendModeComboBox::blendMode()
 {
-  return QgsPainting::getCompositionMode( ( QgsPainting::BlendMode ) mListIndexToBlendMode[ currentIndex()] );
+  return QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( currentData().toInt() ) );
 }
 
 void QgsBlendModeComboBox::setBlendMode( QPainter::CompositionMode blendMode )
 {
-  setCurrentIndex( mBlendModeToListIndex[( int ) QgsPainting::getBlendModeEnum( blendMode )] );
+  setCurrentIndex( findData( static_cast< int >( QgsPainting::getBlendModeEnum( blendMode ) ) ) );
+}
+
+void QgsBlendModeComboBox::setShowClippingModes( bool show )
+{
+  mShowClipModes = show;
+  const QPainter::CompositionMode mode = blendMode();
+  updateModes();
+
+  setBlendMode( mode );
+}
+
+bool QgsBlendModeComboBox::showClippingModes() const
+{
+  return mShowClipModes;
 }
 

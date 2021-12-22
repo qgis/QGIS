@@ -957,7 +957,17 @@ QString QgsOgrProviderUtils::connectionPoolId( const QString &dataSourceURI, boo
     QString filePath = dataSourceURI.left( dataSourceURI.indexOf( QLatin1Char( '|' ) ) );
     QFileInfo fi( filePath );
     if ( fi.isFile() )
-      return filePath;
+    {
+      // Preserve open options so pooled connections always carry those on
+      QString openOptions;
+      static thread_local QRegularExpression openOptionsRegex( QStringLiteral( "((?:\\|option:(?:[^|]*))+)" ) );
+      QRegularExpressionMatch match = openOptionsRegex.match( dataSourceURI );
+      if ( match.hasMatch() )
+      {
+        openOptions = match.captured( 1 );
+      }
+      return filePath + openOptions;
+    }
   }
   return dataSourceURI;
 }
@@ -1290,6 +1300,32 @@ QString QgsOgrProviderUtils::quotedValue( const QVariant &value )
 
 OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds, QTextCodec *encoding, const QString &subsetString )
 {
+  // Remove any comments
+  QStringList lines {subsetString.split( QChar( '\n' ) )};
+  lines.erase( std::remove_if( lines.begin(), lines.end(), []( const QString & line )
+  {
+    return line.startsWith( QLatin1String( "--" ) );
+  } ), lines.end() );
+  for ( auto &line : lines )
+  {
+    bool inLiteral {false};
+    QChar literalChar { ' ' };
+    for ( int i = 0; i < line.length(); ++i )
+    {
+      if ( ( ( line[i] == QChar( '\'' ) || line[i] == QChar( '"' ) ) && ( i == 0 || line[i - 1] != QChar( '\\' ) ) ) && ( line[i] != literalChar ) )
+      {
+        inLiteral = !inLiteral;
+        literalChar = inLiteral ? line[i] : QChar( ' ' );
+      }
+      if ( !inLiteral && line.mid( i ).startsWith( QLatin1String( "--" ) ) )
+      {
+        line = line.left( i );
+        break;
+      }
+    }
+  }
+  const QString cleanedSubsetString {lines.join( QChar( ' ' ) ).trimmed() };
+
   QByteArray layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( layer ) );
   GDALDriverH driver = GDALGetDatasetDriver( ds );
   QString driverName = GDALGetDriverShortName( driver );
@@ -1305,16 +1341,16 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
     }
   }
   OGRLayerH subsetLayer = nullptr;
-  if ( subsetString.startsWith( QLatin1String( "SELECT " ), Qt::CaseInsensitive ) )
+  if ( cleanedSubsetString.startsWith( QLatin1String( "SELECT " ), Qt::CaseInsensitive ) )
   {
-    QByteArray sql = encoding->fromUnicode( subsetString );
+    QByteArray sql = encoding->fromUnicode( cleanedSubsetString );
 
     QgsDebugMsgLevel( QStringLiteral( "SQL: %1" ).arg( encoding->toUnicode( sql ) ), 2 );
     subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
   }
   else
   {
-    if ( OGR_L_SetAttributeFilter( layer, encoding->fromUnicode( subsetString ).constData() ) != OGRERR_NONE )
+    if ( OGR_L_SetAttributeFilter( layer, encoding->fromUnicode( cleanedSubsetString ).constData() ) != OGRERR_NONE )
     {
       return nullptr;
     }
@@ -2072,7 +2108,7 @@ QString QgsOgrProviderUtils::expandAuthConfig( const QString &dsName )
   QRegularExpressionMatch match;
   if ( uri.contains( authcfgRe, &match ) )
   {
-    uri = uri.replace( match.captured( 0 ), QString() );
+    uri = uri.remove( match.captured( 0 ) );
     QString configId( match.captured( 1 ) );
     QStringList connectionItems;
     connectionItems << uri;
@@ -2301,7 +2337,7 @@ void QgsOgrProviderUtils::release( QgsOgrLayer *&layer )
 }
 
 
-void QgsOgrProviderUtils::releaseDataset( QgsOgrDataset *&ds )
+void QgsOgrProviderUtils::releaseDataset( QgsOgrDataset *ds )
 {
   if ( !ds )
     return;
@@ -2309,7 +2345,6 @@ void QgsOgrProviderUtils::releaseDataset( QgsOgrDataset *&ds )
   QMutexLocker locker( sGlobalMutex() );
   releaseInternal( ds->mIdent, ds->mDs, true );
   delete ds;
-  ds = nullptr;
 }
 
 bool QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( const QString &driverName )
@@ -2410,7 +2445,14 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
     {
       if ( parts.value( QStringLiteral( "layerName" ) ).toString().isEmpty() )
         parts.insert( QStringLiteral( "layerName" ), layerName );
-      details.setName( parts.value( QStringLiteral( "vsiSuffix" ) ).toString().mid( 1 ) );
+      if ( hasSingleLayerOnly )
+      {
+        details.setName( parts.value( QStringLiteral( "vsiSuffix" ) ).toString().mid( 1 ) );
+      }
+      else
+      {
+        details.setName( layerName );
+      }
     }
     details.setFeatureCount( layerFeatureCount );
     details.setWkbType( QgsOgrUtils::ogrGeometryTypeToQgsWkbType( layerGeomType ) );
@@ -2431,16 +2473,21 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
     // Add virtual sublayers for supported geometry types if layer type is unknown
     // Count features for geometry types
     QMap<OGRwkbGeometryType, int> fCount;
+    QSet<OGRwkbGeometryType> fHasZ;
     // TODO: avoid reading attributes, setRelevantFields cannot be called here because it is not constant
 
     layer->ResetReading();
     gdal::ogr_feature_unique_ptr fet;
     while ( fet.reset( layer->GetNextFeature() ), fet )
     {
-      const OGRwkbGeometryType gType = QgsOgrProviderUtils::ogrWkbSingleFlatten( resolveGeometryTypeForFeature( fet.get(), driverName ) );
+      OGRwkbGeometryType gType =  resolveGeometryTypeForFeature( fet.get(), driverName );
       if ( gType != wkbNone )
       {
+        bool hasZ = wkbHasZ( gType );
+        gType = QgsOgrProviderUtils::ogrWkbSingleFlatten( gType );
         fCount[gType] = fCount.value( gType ) + 1;
+        if ( hasZ )
+          fHasZ.insert( gType );
       }
 
       if ( feedback && feedback->isCanceled() )
@@ -2501,10 +2548,17 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
       {
         if ( parts.value( QStringLiteral( "layerName" ) ).toString().isEmpty() )
           parts.insert( QStringLiteral( "layerName" ), layerName );
-        details.setName( parts.value( QStringLiteral( "vsiSuffix" ) ).toString().mid( 1 ) );
+        if ( hasSingleLayerOnly )
+        {
+          details.setName( parts.value( QStringLiteral( "vsiSuffix" ) ).toString().mid( 1 ) );
+        }
+        else
+        {
+          details.setName( layerName );
+        }
       }
       details.setFeatureCount( fCount.value( countIt.key() ) );
-      details.setWkbType( QgsOgrUtils::ogrGeometryTypeToQgsWkbType( ( bIs25D ) ? wkbSetZ( countIt.key() ) : countIt.key() ) );
+      details.setWkbType( QgsOgrUtils::ogrGeometryTypeToQgsWkbType( ( bIs25D || fHasZ.contains( countIt.key() ) ) ? wkbSetZ( countIt.key() ) : countIt.key() ) );
       details.setGeometryColumnName( geometryColumnName );
       details.setDescription( longDescription );
       details.setProviderKey( QStringLiteral( "ogr" ) );
@@ -2515,7 +2569,8 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
       // in the uri for the sublayers (otherwise we'll be forced to re-do this iteration whenever
       // the uri from the sublayer is used to construct an actual vector layer)
       if ( details.wkbType() != QgsWkbTypes::Unknown )
-        parts.insert( QStringLiteral( "geometryType" ), ogrWkbGeometryTypeName( countIt.key() ) );
+        parts.insert( QStringLiteral( "geometryType" ),
+                      ogrWkbGeometryTypeName( ( bIs25D || fHasZ.contains( countIt.key() ) ) ? wkbSetZ( countIt.key() ) : countIt.key() ) );
       else
         parts.remove( QStringLiteral( "geometryType" ) );
 
@@ -2550,9 +2605,9 @@ bool QgsOgrProviderUtils::saveConnection( const QString &path, const QString &og
     if ( ok && ! connName.isEmpty() )
     {
       QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
-      QgsGeoPackageProviderConnection *providerConnection =  static_cast<QgsGeoPackageProviderConnection *>( providerMetadata->createConnection( connName ) );
+      std::unique_ptr< QgsGeoPackageProviderConnection > providerConnection( qgis::down_cast<QgsGeoPackageProviderConnection *>( providerMetadata->createConnection( connName ) ) );
       providerConnection->setUri( path );
-      providerMetadata->saveConnection( providerConnection, connName );
+      providerMetadata->saveConnection( providerConnection.get(), connName );
       return true;
     }
   }

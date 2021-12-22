@@ -132,7 +132,7 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
     {
       auto processEvents = []()
       {
-        QApplication::instance()->processEvents();
+        QApplication::processEvents();
       };
       connect( downloader.get(), &QgsFeatureDownloader::resumeMainThread,
                this, processEvents );
@@ -1636,6 +1636,11 @@ QString QgsWFSProvider::name() const
   return WFS_PROVIDER_KEY;
 }
 
+QString QgsWFSProvider::providerKey()
+{
+  return WFS_PROVIDER_KEY;
+}
+
 QString QgsWFSProvider::description() const
 {
   return WFS_PROVIDER_DESCRIPTION;
@@ -2034,7 +2039,10 @@ QList<QgsDataItemProvider *> QgsWfsProviderMetadata::dataItemProviders() const
 QgsWfsProviderMetadata::QgsWfsProviderMetadata():
   QgsProviderMetadata( QgsWFSProvider::WFS_PROVIDER_KEY, QgsWFSProvider::WFS_PROVIDER_DESCRIPTION ) {}
 
+
+#ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN void *multipleProviderMetadataFactory()
 {
   return new std::vector<QgsProviderMetadata *> { new QgsWfsProviderMetadata(), new QgsOapifProviderMetadata() };
 }
+#endif

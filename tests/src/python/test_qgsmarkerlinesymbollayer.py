@@ -30,7 +30,8 @@ from qgis.PyQt.QtCore import QDir, Qt, QSize
 from qgis.PyQt.QtGui import QImage, QColor, QPainter
 from qgis.PyQt.QtXml import QDomDocument
 
-from qgis.core import (QgsGeometry,
+from qgis.core import (Qgis,
+                       QgsGeometry,
                        QgsFillSymbol,
                        QgsRenderContext,
                        QgsFeature,
@@ -104,6 +105,174 @@ class TestQgsMarkerLineSymbolLayer(unittest.TestCase):
         marker_line.subSymbol().setSizeUnit(QgsUnitTypes.RenderPixels)
         self.assertAlmostEqual(marker_line.width(context), 10.0, 3)
         self.assertAlmostEqual(marker_line.width(context2), 10.0, 3)
+
+    def testMultiplePlacements(self):
+        line_symbol = QgsLineSymbol()
+        line_symbol.deleteSymbolLayer(0)
+        line_symbol.appendSymbolLayer(
+            QgsMarkerLineSymbolLayer())
+        line_symbol[0].setPlacements(Qgis.MarkerLinePlacements(Qgis.MarkerLinePlacement.FirstVertex | Qgis.MarkerLinePlacement.LastVertex))
+
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        line_symbol[0].setSubSymbol(marker_symbol)
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
+        rendered_image = self.renderGeometry(line_symbol, g)
+        assert self.imageCheck('markerline_multiple_placement', 'markerline_multiple_placement', rendered_image)
+
+    def testFirstVertexNoRespectMultipart(self):
+        line_symbol = QgsLineSymbol()
+        line_symbol.deleteSymbolLayer(0)
+        line_symbol.appendSymbolLayer(
+            QgsMarkerLineSymbolLayer())
+        line_symbol[0].setPlacements(Qgis.MarkerLinePlacements(Qgis.MarkerLinePlacement.FirstVertex))
+
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        line_symbol[0].setSubSymbol(marker_symbol)
+        line_symbol[0].setPlaceOnEveryPart(True)
+
+        g = QgsGeometry.fromWkt('MultiLineString((0 0, 10 0, 10 10, 0 10),(3 3, 7 3, 7 7, 3 7))')
+        rendered_image = self.renderGeometry(line_symbol, g)
+        assert self.imageCheck('markerline_first_no_respect_multipart', 'markerline_first_no_respect_multipart', rendered_image)
+
+    def testFirstVertexRespectMultipart(self):
+        line_symbol = QgsLineSymbol()
+        line_symbol.deleteSymbolLayer(0)
+        line_symbol.appendSymbolLayer(
+            QgsMarkerLineSymbolLayer())
+        line_symbol[0].setPlacements(Qgis.MarkerLinePlacements(Qgis.MarkerLinePlacement.FirstVertex))
+
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        line_symbol[0].setSubSymbol(marker_symbol)
+        line_symbol[0].setPlaceOnEveryPart(False)
+
+        g = QgsGeometry.fromWkt('MultiLineString((0 0, 10 0, 10 10, 0 10),(3 3, 7 3, 7 7, 3 7))')
+        rendered_image = self.renderGeometry(line_symbol, g)
+        assert self.imageCheck('markerline_first_respect_multipart', 'markerline_first_respect_multipart', rendered_image)
+
+    def testLastVertexNoRespectMultipart(self):
+        line_symbol = QgsLineSymbol()
+        line_symbol.deleteSymbolLayer(0)
+        line_symbol.appendSymbolLayer(
+            QgsMarkerLineSymbolLayer())
+        line_symbol[0].setPlacements(Qgis.MarkerLinePlacements(Qgis.MarkerLinePlacement.LastVertex))
+
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        line_symbol[0].setSubSymbol(marker_symbol)
+        line_symbol[0].setPlaceOnEveryPart(True)
+
+        g = QgsGeometry.fromWkt('MultiLineString((0 0, 10 0, 10 10, 0 10),(3 3, 7 3, 7 7, 3 7))')
+        rendered_image = self.renderGeometry(line_symbol, g)
+        assert self.imageCheck('markerline_last_no_respect_multipart', 'markerline_last_no_respect_multipart', rendered_image)
+
+    def testLastVertexRespectMultipart(self):
+        line_symbol = QgsLineSymbol()
+        line_symbol.deleteSymbolLayer(0)
+        line_symbol.appendSymbolLayer(
+            QgsMarkerLineSymbolLayer())
+        line_symbol[0].setPlacements(Qgis.MarkerLinePlacements(Qgis.MarkerLinePlacement.LastVertex))
+
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        line_symbol[0].setSubSymbol(marker_symbol)
+        line_symbol[0].setPlaceOnEveryPart(False)
+
+        g = QgsGeometry.fromWkt('MultiLineString((0 0, 10 0, 10 10, 0 10),(3 3, 7 3, 7 7, 3 7))')
+        rendered_image = self.renderGeometry(line_symbol, g)
+        assert self.imageCheck('markerline_last_respect_multipart', 'markerline_last_respect_multipart', rendered_image)
+
+    def testFirstLastVertexNoRespectMultipart(self):
+        line_symbol = QgsLineSymbol()
+        line_symbol.deleteSymbolLayer(0)
+        line_symbol.appendSymbolLayer(
+            QgsMarkerLineSymbolLayer())
+        line_symbol[0].setPlacements(Qgis.MarkerLinePlacements(Qgis.MarkerLinePlacement.FirstVertex | Qgis.MarkerLinePlacement.LastVertex))
+
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        line_symbol[0].setSubSymbol(marker_symbol)
+        line_symbol[0].setPlaceOnEveryPart(True)
+
+        g = QgsGeometry.fromWkt('MultiLineString((0 0, 10 0, 10 10, 0 10),(3 3, 7 3, 7 7, 3 7))')
+        rendered_image = self.renderGeometry(line_symbol, g)
+        assert self.imageCheck('markerline_first_last_no_respect_multipart', 'markerline_first_last_no_respect_multipart', rendered_image)
+
+    def testFirstLastVertexRespectMultipart(self):
+        line_symbol = QgsLineSymbol()
+        line_symbol.deleteSymbolLayer(0)
+        line_symbol.appendSymbolLayer(
+            QgsMarkerLineSymbolLayer())
+        line_symbol[0].setPlacements(Qgis.MarkerLinePlacements(Qgis.MarkerLinePlacement.FirstVertex | Qgis.MarkerLinePlacement.LastVertex))
+
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        line_symbol[0].setSubSymbol(marker_symbol)
+        line_symbol[0].setPlaceOnEveryPart(False)
+
+        g = QgsGeometry.fromWkt('MultiLineString((0 0, 10 0, 10 10, 0 10),(3 3, 7 3, 7 7, 3 7))')
+        rendered_image = self.renderGeometry(line_symbol, g)
+        assert self.imageCheck('markerline_first_last_respect_multipart', 'markerline_first_last_respect_multipart', rendered_image)
+
+    def testInnerVerticesLine(self):
+        line_symbol = QgsLineSymbol()
+        line_symbol.deleteSymbolLayer(0)
+        line_symbol.appendSymbolLayer(
+            QgsMarkerLineSymbolLayer())
+        line_symbol[0].setPlacements(Qgis.MarkerLinePlacements(Qgis.MarkerLinePlacement.InnerVertices))
+
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        line_symbol[0].setSubSymbol(marker_symbol)
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
+        rendered_image = self.renderGeometry(line_symbol, g)
+        assert self.imageCheck('markerline_inner_vertices_line', 'markerline_inner_vertices_line', rendered_image)
+
+    def testInnerVerticesPolygon(self):
+        fill_symbol = QgsFillSymbol()
+        fill_symbol.deleteSymbolLayer(0)
+        fill_symbol.appendSymbolLayer(
+            QgsMarkerLineSymbolLayer())
+        fill_symbol[0].setPlacements(Qgis.MarkerLinePlacements(Qgis.MarkerLinePlacement.InnerVertices))
+
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        fill_symbol[0].setSubSymbol(marker_symbol)
+
+        g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0))')
+        rendered_image = self.renderGeometry(fill_symbol, g)
+        assert self.imageCheck('markerline_inner_vertices_polygon', 'markerline_inner_vertices_polygon', rendered_image)
 
     def testRingFilter(self):
         # test filtering rings during rendering
@@ -252,6 +421,28 @@ class TestQgsMarkerLineSymbolLayer(unittest.TestCase):
         self.assertFalse(g.isNull())
         rendered_image = self.renderGeometry(s, g)
         self.assertTrue(self.imageCheck('markerline_compoundcurve', 'markerline_compoundcurve', rendered_image))
+
+    def testCompoundCurveInnerVertices(self):
+        # test rendering compound curve with markers at inner vertices and curve points
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        marker_line = QgsMarkerLineSymbolLayer(True)
+        marker_line.setPlacement(QgsMarkerLineSymbolLayer.InnerVertices)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_line.setSubSymbol(marker_symbol)
+
+        s.appendSymbolLayer(marker_line.clone())
+
+        # rendering test
+        g = QgsGeometry.fromWkt('CompoundCurve (CircularString (2606642.3863534671254456 1228883.61571401031687856, 2606656.45901552261784673 1228882.30281259422190487, 2606652.60236761253327131 1228873.80998155777342618, 2606643.65822671446949244 1228875.45110832806676626, 2606642.3863534671254456 1228883.65674217976629734))')
+        self.assertFalse(g.isNull())
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(self.imageCheck('markerline_compoundcurve_inner_vertices', 'markerline_compoundcurve_inner_vertices', rendered_image))
 
     def testMultiCurve(self):
         # test rendering multi curve with markers at vertices and curve points
@@ -488,6 +679,159 @@ class TestQgsMarkerLineSymbolLayer(unittest.TestCase):
         g = QgsGeometry.fromWkt('LineString(0 0, 0 10, 10 10)')
         rendered_image = self.renderGeometry(s, g)
         assert self.imageCheck('markerline_none', 'markerline_none', rendered_image)
+
+    def testFirstVertexOffsetPercentage(self):
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        marker_line = QgsMarkerLineSymbolLayer(True)
+        marker_line.setPlacements(Qgis.MarkerLinePlacement.FirstVertex)
+        marker_line.setOffsetAlongLine(10)
+        marker_line.setOffsetAlongLineUnit(QgsUnitTypes.RenderPercentage)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 4)
+        marker.setColor(QColor(255, 0, 0, 100))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_line.setSubSymbol(marker_symbol)
+        line_symbol = QgsLineSymbol()
+        line_symbol.changeSymbolLayer(0, marker_line)
+
+        s.appendSymbolLayer(marker_line.clone())
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 0 10, 10 10)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('markerline_first_offset_percent', 'markerline_first_offset_percent', rendered_image)
+
+    def testClosedRingFirstVertexOffsetLarge(self):
+        """
+        Test that an offset larger than the length of a closed line effectively "loops" around the ring
+        """
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        marker_line = QgsMarkerLineSymbolLayer(True)
+        marker_line.setPlacements(Qgis.MarkerLinePlacement.FirstVertex)
+        marker_line.setOffsetAlongLine(110)
+        marker_line.setOffsetAlongLineUnit(QgsUnitTypes.RenderPercentage)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 4)
+        marker.setColor(QColor(255, 0, 0, 100))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_line.setSubSymbol(marker_symbol)
+        line_symbol = QgsLineSymbol()
+        line_symbol.changeSymbolLayer(0, marker_line)
+
+        s.appendSymbolLayer(marker_line.clone())
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 0 10, 10 10, 0 0)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('markerline_first_large_offset', 'markerline_first_large_offset', rendered_image)
+
+    def testClosedRingFirstVertexOffsetNegative(self):
+        """
+        Test that a negative offset of a closed line effectively "loops" around the ring
+        """
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        marker_line = QgsMarkerLineSymbolLayer(True)
+        marker_line.setPlacements(Qgis.MarkerLinePlacement.FirstVertex)
+        marker_line.setOffsetAlongLine(-20)
+        marker_line.setOffsetAlongLineUnit(QgsUnitTypes.RenderPercentage)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 4)
+        marker.setColor(QColor(255, 0, 0, 100))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_line.setSubSymbol(marker_symbol)
+        line_symbol = QgsLineSymbol()
+        line_symbol.changeSymbolLayer(0, marker_line)
+
+        s.appendSymbolLayer(marker_line.clone())
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 0 10, 10 10, 0 0)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('markerline_first_negative_offset', 'markerline_first_negative_offset', rendered_image)
+
+    def testIntervalOffsetPercentage(self):
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        marker_line = QgsMarkerLineSymbolLayer(True)
+        marker_line.setPlacements(Qgis.MarkerLinePlacement.Interval)
+        marker_line.setInterval(6)
+        marker_line.setOffsetAlongLine(50)
+        marker_line.setOffsetAlongLineUnit(QgsUnitTypes.RenderPercentage)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 4)
+        marker.setColor(QColor(255, 0, 0, 100))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_line.setSubSymbol(marker_symbol)
+        line_symbol = QgsLineSymbol()
+        line_symbol.changeSymbolLayer(0, marker_line)
+
+        s.appendSymbolLayer(marker_line.clone())
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 0 10, 10 10)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('markerline_interval_offset_percent', 'markerline_interval_offset_percent', rendered_image)
+
+    def testClosedRingIntervalOffsetLarge(self):
+        """
+        Test that an offset larger than the length of a closed line effectively "loops" around the ring
+        """
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        marker_line = QgsMarkerLineSymbolLayer(True)
+        marker_line.setPlacements(Qgis.MarkerLinePlacement.Interval)
+        marker_line.setInterval(6)
+        marker_line.setOffsetAlongLine(150)
+        marker_line.setOffsetAlongLineUnit(QgsUnitTypes.RenderPercentage)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 4)
+        marker.setColor(QColor(255, 0, 0, 100))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_line.setSubSymbol(marker_symbol)
+        line_symbol = QgsLineSymbol()
+        line_symbol.changeSymbolLayer(0, marker_line)
+
+        s.appendSymbolLayer(marker_line.clone())
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 0 10, 10 10, 0 0)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('markerline_interval_large_offset', 'markerline_interval_large_offset', rendered_image)
+
+    def testClosedRingIntervalOffsetNegative(self):
+        """
+        Test that a negative offset for a closed line effectively "loops" around the ring
+        """
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        marker_line = QgsMarkerLineSymbolLayer(True)
+        marker_line.setPlacements(Qgis.MarkerLinePlacement.Interval)
+        marker_line.setInterval(6)
+        marker_line.setOffsetAlongLine(-50)
+        marker_line.setOffsetAlongLineUnit(QgsUnitTypes.RenderPercentage)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 4)
+        marker.setColor(QColor(255, 0, 0, 100))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_line.setSubSymbol(marker_symbol)
+        line_symbol = QgsLineSymbol()
+        line_symbol.changeSymbolLayer(0, marker_line)
+
+        s.appendSymbolLayer(marker_line.clone())
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 0 10, 10 10, 0 0)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('markerline_interval_large_offset', 'markerline_interval_large_offset', rendered_image)
 
     def testCenterSegment(self):
         s = QgsLineSymbol()

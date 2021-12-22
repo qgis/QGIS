@@ -607,6 +607,23 @@ Returns a string list of search tags for a specified function.
 .. versionadded:: 3.12
 %End
 
+    static bool addVariableHelpText( const QString name, const QString &description );
+%Docstring
+Adds a help string for a custom variable.
+
+The specified variable ``name`` should not have an existing help string set. If a help string is already present then
+``False`` will be returned and no changes will occur.
+
+:param name: variable name
+:param description: the help string to add. This is user visible, and should be a translated string.
+
+:return: ``True`` if the help string was successfully added
+
+.. seealso:: :py:func:`variableHelpText`
+
+.. versionadded:: 3.22
+%End
+
     static QString variableHelpText( const QString &variableName );
 %Docstring
 Returns the help text for a specified variable.
@@ -614,6 +631,8 @@ Returns the help text for a specified variable.
 :param variableName: name of variable
 
 .. seealso:: :py:func:`helpText`
+
+.. seealso:: :py:func:`addVariableHelpText`
 
 .. versionadded:: 2.12
 %End
@@ -654,13 +673,14 @@ length, and presents text representations of non numeric/text types (e.g., geome
 .. versionadded:: 2.14
 %End
 
-    static QString createFieldEqualityExpression( const QString &fieldName, const QVariant &value );
+    static QString createFieldEqualityExpression( const QString &fieldName, const QVariant &value, QVariant::Type fieldType = QVariant::Type::Invalid );
 %Docstring
 Create an expression allowing to evaluate if a field is equal to a
 value. The value may be null.
 
 :param fieldName: the name of the field
 :param value: the value of the field
+:param fieldType: the type of the field on the left side used to quote the value. If not given, the value type is used instead
 
 :return: the expression to evaluate field equality
 

@@ -491,20 +491,29 @@ bool QgsGeos::distanceWithin( const QgsAbstractGeometry *geom, double maxdist, Q
   // TODO: optimize implementation of this function to early-exit if
   // any part of othergeosGeom is found to be within the given
   // distance
-
   double distance;
+
+
   try
   {
 #if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
     if ( mGeosPrepared )
     {
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
+      return GEOSPreparedDistanceWithin_r( geosinit()->ctxt, mGeosPrepared.get(), otherGeosGeom.get(), maxdist );
+#else
       GEOSPreparedDistance_r( geosinit()->ctxt, mGeosPrepared.get(), otherGeosGeom.get(), &distance );
+#endif
     }
     else
     {
-      GEOSDistance_r( geosinit()->ctxt, mGeos.get(), otherGeosGeom.get(), &distance );
-    }
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
+      return GEOSDistanceWithin_r( geosinit()->ctxt, mGeos.get(), otherGeosGeom.get(), maxdist );
 #else
+      GEOSDistance_r( geosinit()->ctxt, mGeos.get(), otherGeosGeom.get(), &distance );
+#endif
+    }
+#else // GEOS < 3.3.9
     GEOSDistance_r( geosinit()->ctxt, mGeos.get(), otherGeosGeom.get(), &distance );
 #endif
   }
@@ -2501,7 +2510,7 @@ QgsGeometry QgsGeos::mergeLines( QString *errorMsg ) const
 
 QgsGeometry QgsGeos::closestPoint( const QgsGeometry &other, QString *errorMsg ) const
 {
-  if ( !mGeos || isEmpty() || other.isNull() )
+  if ( !mGeos || isEmpty() || other.isEmpty() )
   {
     return QgsGeometry();
   }

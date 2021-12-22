@@ -127,7 +127,7 @@ QString QgsCommandLineUtils::allVersions( )
   versionString += QStringLiteral( "OS %1\n" ).arg( QSysInfo::prettyProductName() );
 
 #ifdef QGISDEBUG
-  versionString += QStringLiteral( "This copy of QGIS writes debugging output.\n" );
+  versionString += QLatin1String( "This copy of QGIS writes debugging output.\n" );
 #endif
 
   return versionString;

@@ -4,10 +4,14 @@ QWidget
     background: transparent;
 }
 
-QWindow, QMainWindow, QMdiSubWindow, QDialog, QAbstractScrollArea, QFocusFrame, QWizardPage, QDockWidget, QTabWidget, QGroupBox
+QWindow, QMainWindow, QMdiSubWindow, QDialog, QAbstractScrollArea, QFocusFrame, QWizardPage, QDockWidget, QDockWidgetGroupWindow, QTabWidget, QGroupBox
 {
     color: @text;
     background-color: @background;
+}
+
+QDockWidget, QDockWidgetGroupWindow {
+  padding: 0.2em;
 }
 
 QWidget:item:hover
@@ -374,12 +378,14 @@ QScrollBar:horizontal {
     height: 0.5em;
     margin: 0px;
     padding: 0px;
+    border-radius: 0.15em;
 }
 
 QScrollBar::handle:horizontal {
     border: 1px solid @itemdarkbackground;
     background: @background;
     min-width: 0.8em;
+    border-radius: 0.15em;
 }
 
 QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal,
@@ -392,12 +398,14 @@ QScrollBar:vertical {
     background-color: @itemdarkbackground;
     width: 0.5em;
     margin: 0;
+    border-radius: 0.15em;
 }
 
 QScrollBar::handle:vertical {
     border: 1px solid @itemdarkbackground;
     background: @background;
     min-height: 0.8em;
+    border-radius: 0.15em;
 }
 
 QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical,
@@ -406,6 +414,10 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
     background: transparent;
 }
 
+QAbstractScrollArea::corner {
+    border: 0;
+    background: transparent;
+}
 
 QSizeGrip
 {
@@ -550,14 +562,14 @@ QTabBar::tab:disabled {
     color: @itemalternativebackground
 }
 
-QTabBar::tab:last
+QTabBar::tab:last, QTabBar::tab::only-one
 {
-    margin-right: 0; /* the last selected tab has nothing to overlap with on the right */
+    margin-right: 0;
 }
 
 QTabBar::tab:first:!selected
 {
-    margin-left: 0px; /* the last selected tab has nothing to overlap with on the right */
+    margin-left: 0px;
 }
 
 QTabBar::tab:bottom {

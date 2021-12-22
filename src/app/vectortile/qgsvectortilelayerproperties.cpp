@@ -210,7 +210,6 @@ void QgsVectorTileLayerProperties::loadStyle()
 {
   const QgsSettings settings;  // where we keep last used filter in persistent state
 
-  const QString errorMsg;
   QStringList ids, names, descriptions;
 
   QgsMapLayerLoadStyleDialog dlg( mLayer );
@@ -402,7 +401,7 @@ void QgsVectorTileLayerProperties::urlClicked( const QUrl &url )
 {
   const QFileInfo file( url.toLocalFile() );
   if ( file.exists() && !file.isDir() )
-    QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
+    QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
   else
     QDesktopServices::openUrl( url );
 }

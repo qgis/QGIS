@@ -66,12 +66,20 @@ QgsProviderMetadata = PyProviderMetadata
 
 # monkey patch deprecated enum values to maintain API
 # TODO - remove for QGIS 4.0
-QgsMarkerLineSymbolLayer.Interval = QgsTemplatedLineSymbolLayerBase.Interval
-QgsMarkerLineSymbolLayer.Vertex = QgsTemplatedLineSymbolLayerBase.Vertex
-QgsMarkerLineSymbolLayer.LastVertex = QgsTemplatedLineSymbolLayerBase.LastVertex
-QgsMarkerLineSymbolLayer.FirstVertex = QgsTemplatedLineSymbolLayerBase.FirstVertex
-QgsMarkerLineSymbolLayer.CentralPoint = QgsTemplatedLineSymbolLayerBase.CentralPoint
-QgsMarkerLineSymbolLayer.CurvePoint = QgsTemplatedLineSymbolLayerBase.CurvePoint
+QgsMarkerLineSymbolLayer.Interval = Qgis.MarkerLinePlacement.Interval
+QgsMarkerLineSymbolLayer.Vertex = Qgis.MarkerLinePlacement.Vertex
+QgsMarkerLineSymbolLayer.LastVertex = Qgis.MarkerLinePlacement.LastVertex
+QgsMarkerLineSymbolLayer.FirstVertex = Qgis.MarkerLinePlacement.FirstVertex
+QgsMarkerLineSymbolLayer.CentralPoint = Qgis.MarkerLinePlacement.CentralPoint
+QgsMarkerLineSymbolLayer.CurvePoint = Qgis.MarkerLinePlacement.CurvePoint
+
+QgsRasterFillSymbolLayer.FillCoordinateMode = Qgis.SymbolCoordinateReference
+QgsRasterFillSymbolLayer.Feature = Qgis.SymbolCoordinateReference.Feature
+QgsRasterFillSymbolLayer.Viewport = Qgis.SymbolCoordinateReference.Viewport
+
+QgsShapeburstFillSymbolLayer.ShapeburstColorType = Qgis.GradientColorSource
+QgsShapeburstFillSymbolLayer.SimpleTwoColor = Qgis.GradientColorSource.SimpleTwoColor
+QgsShapeburstFillSymbolLayer.ColorRamp = Qgis.GradientColorSource.ColorRamp
 
 QgsVectorLayer.VertexMarkerType = Qgis.VertexMarkerType
 QgsVectorLayer.SemiTransparentCircle = Qgis.VertexMarkerType.SemiTransparentCircle

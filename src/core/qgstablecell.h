@@ -225,7 +225,7 @@ typedef QVector<QgsTableRow> QgsTableContents;
  *
  * \since QGIS 3.12
  */
-typedef QVector<QVector<QgsTableRow>> QgsTableContents;
+typedef QVector<QVector<QgsTableCell>> QgsTableContents;
 #endif
 
 

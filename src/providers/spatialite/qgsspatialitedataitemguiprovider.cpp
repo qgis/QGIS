@@ -27,6 +27,7 @@
 #include "qgssettings.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerexporter.h"
+#include "qgsfileutils.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -47,9 +48,9 @@ void QgsSpatiaLiteDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
 
   if ( QgsSLConnectionItem *connItem = qobject_cast< QgsSLConnectionItem * >( item ) )
   {
-    QAction *actionDelete = new QAction( tr( "Delete" ), menu );
-    connect( actionDelete, &QAction::triggered, this, [connItem] { deleteConnection( connItem ); } );
-    menu->addAction( actionDelete );
+    QAction *actionDeleteConnection = new QAction( tr( "Remove Connection" ), menu );
+    connect( actionDeleteConnection, &QAction::triggered, this, [connItem] { deleteConnection( connItem ); } );
+    menu->addAction( actionDeleteConnection );
   }
 }
 
@@ -110,18 +111,25 @@ void QgsSpatiaLiteDataItemGuiProvider::createDatabase( QgsDataItem *item )
   const QgsSettings settings;
   const QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSpatiaLiteDir" ), QDir::homePath() ).toString();
 
-  const QString filename = QFileDialog::getSaveFileName( nullptr, tr( "New SpatiaLite Database File" ),
-                           lastUsedDir,
-                           tr( "SpatiaLite" ) + " (*.sqlite *.db *.sqlite3 *.db3 *.s3db)" );
+  QString filename = QFileDialog::getSaveFileName( nullptr, tr( "New SpatiaLite Database File" ),
+                     lastUsedDir,
+                     tr( "SpatiaLite" ) + " (*.sqlite *.db *.sqlite3 *.db3 *.s3db)" );
   if ( filename.isEmpty() )
     return;
+
+  filename = QgsFileUtils::ensureFileNameHasExtension( filename, QStringList() << QStringLiteral( "sqlite" ) << QStringLiteral( "db" ) << QStringLiteral( "sqlite3" )
+             << QStringLiteral( "db3" ) << QStringLiteral( "s3db" ) );
 
   QString errCause;
   if ( SpatiaLiteUtils::createDb( filename, errCause ) )
   {
     QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "spatialite" ) );
-    QgsSpatiaLiteProviderConnection *providerConnection =  static_cast<QgsSpatiaLiteProviderConnection *>( providerMetadata->createConnection( filename ) );
-    providerMetadata->saveConnection( providerConnection, filename );
+    std::unique_ptr< QgsSpatiaLiteProviderConnection > providerConnection( qgis::down_cast<QgsSpatiaLiteProviderConnection *>( providerMetadata->createConnection( QStringLiteral( "dbname='%1'" ).arg( filename ), QVariantMap() ) ) );
+    if ( providerConnection )
+    {
+      const QFileInfo fi( filename );
+      providerMetadata->saveConnection( providerConnection.get(), fi.fileName() );
+    }
 
     item->refresh();
   }
@@ -133,8 +141,8 @@ void QgsSpatiaLiteDataItemGuiProvider::createDatabase( QgsDataItem *item )
 
 void QgsSpatiaLiteDataItemGuiProvider::deleteConnection( QgsDataItem *item )
 {
-  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Connection" ),
-                              QObject::tr( "Are you sure you want to delete the connection to %1?" ).arg( item->name() ),
+  if ( QMessageBox::question( nullptr, QObject::tr( "Remove Connection" ),
+                              QObject::tr( "Are you sure you want to remove the connection to %1?" ).arg( item->name() ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 

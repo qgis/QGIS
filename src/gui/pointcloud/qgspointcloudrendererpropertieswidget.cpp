@@ -28,6 +28,8 @@
 
 #include "qgspointcloudrgbrenderer.h"
 #include "qgslogger.h"
+#include "qgsproject.h"
+#include "qgsprojectutils.h"
 
 static bool _initRenderer( const QString &name, QgsPointCloudRendererWidgetFunc f, const QString &iconName = QString() )
 {
@@ -127,6 +129,7 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
 
   mBlockChangedSignal = true;
   mOpacityWidget->setOpacity( mLayer->opacity() );
+  mBlendModeComboBox->setShowClippingModes( QgsProjectUtils::layerIsContainedInGroupLayer( QgsProject::instance(), mLayer ) );
   mBlendModeComboBox->setBlendMode( mLayer->blendMode() );
 
   if ( mLayer->renderer() )

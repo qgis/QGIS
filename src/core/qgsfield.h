@@ -80,8 +80,8 @@ class CORE_EXPORT QgsField
     {
       None = 0, //!< No flag is defined
       NotSearchable = 1 << 1, //!< Defines if the field is searchable (used in the locator search for instance)
-      HideFromWms = 1 << 2, //!< Fields is available if layer is served as WMS from QGIS server
-      HideFromWfs = 1 << 3, //!< Fields is available if layer is served as WFS from QGIS server
+      HideFromWms = 1 << 2, //!< Field is not available if layer is served as WMS from QGIS server
+      HideFromWfs = 1 << 3, //!< Field is not available if layer is served as WFS from QGIS server
     };
     Q_ENUM( ConfigurationFlag )
     Q_DECLARE_FLAGS( ConfigurationFlags, ConfigurationFlag )
@@ -323,7 +323,7 @@ class CORE_EXPORT QgsField
     QString displayString( const QVariant &v ) const;
 
     /**
-     * Returns the reabable and translated value of the configuration flag
+     * Returns the readable and translated value of the configuration flag
      * \since QGIS 3.16
      */
     static QString readableConfigurationFlag( QgsField::ConfigurationFlag flag ) SIP_SKIP;

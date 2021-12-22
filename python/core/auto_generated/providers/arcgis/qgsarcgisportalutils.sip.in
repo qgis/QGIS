@@ -32,7 +32,7 @@ Utility functions for working with ArcGIS REST services.
       ImageService,
     };
 
-    static QVariantMap retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QString > &requestHeaders = QMap< QString, QString >(), QgsFeedback *feedback = 0 );
+    static QVariantMap retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = 0 );
 %Docstring
 Retrieves JSON user info for the specified user name.
 
@@ -47,9 +47,31 @@ If ``user`` is blank then the user associated with the current logon details wil
 :return: - JSON user info
          - errorTitle: title summary of any encountered errors
          - errorText: error text of any encountered errors
+
+.. versionadded:: 3.24
 %End
 
-    static QVariantList retrieveUserGroups( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QString > &requestHeaders = QMap< QString, QString >(), QgsFeedback *feedback = 0 );
+ static QVariantMap retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = 0 ) /Deprecated/;
+%Docstring
+Retrieves JSON user info for the specified user name. Only to avoid API break.
+
+If ``user`` is blank then the user associated with the current logon details will be retrieved
+
+:param communityUrl: should be set to the Portal's community URL, e.g. https://mysite.com/portal/sharing/rest/community
+:param user: username to query, or an empty string to query the current user
+:param authcfg: authentication configuration ID
+:param requestHeaders: optional additional request headers
+:param feedback: optional feedback argument for cancellation support
+
+:return: - JSON user info
+         - errorTitle: title summary of any encountered errors
+         - errorText: error text of any encountered errors
+
+.. deprecated:: QGIS 3.24
+  use the version with :py:class:`QgsHttpHeaders` instead
+%End
+
+    static QVariantList retrieveUserGroups( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = 0 );
 %Docstring
 Retrieves JSON definitions for all groups which the specified user name is a member of.
 
@@ -64,9 +86,31 @@ If ``user`` is blank then the user associated with the current logon details wil
 :return: - a list of JSON group info
          - errorTitle: title summary of any encountered errors
          - errorText: error text of any encountered errors
+
+.. versionadded:: 3.24
 %End
 
-    static QVariantList retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QString > &requestHeaders = QMap< QString, QString >(), QgsFeedback *feedback = 0, int pageSize = 100 );
+ static QVariantList retrieveUserGroups( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = 0 ) /Deprecated/;
+%Docstring
+Retrieves JSON definitions for all groups which the specified user name is a member of. Only to avoid API break.
+
+If ``user`` is blank then the user associated with the current logon details will be retrieved
+
+:param communityUrl: should be set to the Portal's community URL, e.g. https://mysite.com/portal/sharing/rest/community
+:param user: username to query, or an empty string to query the current user
+:param authcfg: authentication configuration ID
+:param requestHeaders: optional additional request headers
+:param feedback: optional feedback argument for cancellation support
+
+:return: - a list of JSON group info
+         - errorTitle: title summary of any encountered errors
+         - errorText: error text of any encountered errors
+
+.. deprecated:: QGIS 3.24
+  use the version with :py:class:`QgsHttpHeaders` instead
+%End
+
+    static QVariantList retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = 0, int pageSize = 100 );
 %Docstring
 Retrieves JSON definitions for all items which belong the the specified ``groupId``.
 
@@ -80,11 +124,32 @@ Retrieves JSON definitions for all items which belong the the specified ``groupI
 :return: - a list of JSON item info for all items within the group
          - errorTitle: title summary of any encountered errors
          - errorText: error text of any encountered errors
+
+.. versionadded:: 3.24
+%End
+
+ static QVariantList retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = 0, int pageSize = 100 ) /Deprecated/;
+%Docstring
+Retrieves JSON definitions for all items which belong the the specified ``groupId``. Only to avoid API break.
+
+:param contentUrl: should be set to the Portal's content URL, e.g. https://mysite.com/portal/sharing/rest/content
+:param groupId: ID of group to query
+:param authcfg: authentication configuration ID
+:param requestHeaders: optional additional request headers
+:param feedback: optional feedback argument for cancellation support
+:param pageSize: number of results to retrieve for each request. Maximum value is 100.
+
+:return: - a list of JSON item info for all items within the group
+         - errorTitle: title summary of any encountered errors
+         - errorText: error text of any encountered errors
+
+.. deprecated:: QGIS 3.24
+  use the version with :py:class:`QgsHttpHeaders` instead
 %End
 
     static QVariantList retrieveGroupItemsOfType( const QString &contentUrl, const QString &groupId, const QString &authcfg,
         const QList< int > &itemTypes,
-        QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QString > &requestHeaders = QMap< QString, QString >(), QgsFeedback *feedback = 0, int pageSize = 100 );
+        QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = 0, int pageSize = 100 );
 %Docstring
 Retrieves JSON definitions for all items which belong the the specified ``groupId``.
 
@@ -99,8 +164,31 @@ Retrieves JSON definitions for all items which belong the the specified ``groupI
 :return: - a list of JSON item info for all items within the group
          - errorTitle: title summary of any encountered errors
          - errorText: error text of any encountered errors
+
+.. versionadded:: 3.24
 %End
 
+ static QVariantList retrieveGroupItemsOfType( const QString &contentUrl, const QString &groupId, const QString &authcfg,
+        const QList< int > &itemTypes,
+        QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = 0, int pageSize = 100 ) /Deprecated/;
+%Docstring
+Retrieves JSON definitions for all items which belong the the specified ``groupId``. Only to avoid API break.
+
+:param contentUrl: should be set to the Portal's content URL, e.g. https://mysite.com/portal/sharing/rest/content
+:param groupId: ID of group to query
+:param authcfg: authentication configuration ID
+:param itemTypes: list of desired item types (using QgsArcGisPortalUtils.ItemType values)
+:param requestHeaders: optional additional request headers
+:param feedback: optional feedback argument for cancellation support
+:param pageSize: number of results to retrieve for each request. Maximum value is 100.
+
+:return: - a list of JSON item info for all items within the group
+         - errorTitle: title summary of any encountered errors
+         - errorText: error text of any encountered errors
+
+.. deprecated:: QGIS 3.24
+  use the version with :py:class:`QgsHttpHeaders` instead
+%End
 
 };
 

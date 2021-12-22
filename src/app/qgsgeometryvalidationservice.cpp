@@ -231,7 +231,7 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
 
   QList<QgsGeometryCheck *> layerChecks;
 
-  QgsGeometryCheckRegistry *checkRegistry = QgsAnalysis::instance()->geometryCheckRegistry();
+  QgsGeometryCheckRegistry *checkRegistry = QgsAnalysis::geometryCheckRegistry();
 
   const QStringList activeChecks = layer->geometryOptions()->geometryChecks();
 
@@ -456,6 +456,36 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer,
 
   mLayerChecks[layer].topologyCheckFeedbacks = feedbacks.values();
 
+  QFutureWatcher<void> *futureWatcher = new QFutureWatcher<void>();
+  connect( futureWatcher, &QFutureWatcherBase::finished, this, [&allErrors, layer, feedbacks, futureWatcher, stopEditing, this]()
+  {
+    QgsReadWriteLocker errorLocker( mTopologyCheckLock, QgsReadWriteLocker::Read );
+    layer->setAllowCommit( allErrors.empty() && mLayerChecks[layer].singleFeatureCheckErrors.empty() );
+    errorLocker.unlock();
+    qDeleteAll( feedbacks );
+    futureWatcher->deleteLater();
+    if ( mLayerChecks[layer].topologyCheckFutureWatcher == futureWatcher )
+      mLayerChecks[layer].topologyCheckFutureWatcher = nullptr;
+
+    if ( !allErrors.empty() || !mLayerChecks[layer].singleFeatureCheckErrors.empty() )
+    {
+      if ( mLayerChecks[layer].commitPending )
+        showMessage( tr( "Geometry errors have been found. Please fix the errors before saving the layer." ) );
+      else
+        showMessage( tr( "Geometry errors have been found." ) );
+    }
+    if ( allErrors.empty() && mLayerChecks[layer].singleFeatureCheckErrors.empty() && mLayerChecks[layer].commitPending )
+    {
+      mBypassChecks = true;
+      layer->commitChanges( stopEditing );
+      mBypassChecks = false;
+      mMessageBar->popWidget( mMessageBarItem );
+      mMessageBarItem = nullptr;
+    }
+
+    mLayerChecks[layer].commitPending = false;
+  } );
+
   QFuture<void> future = QtConcurrent::map( checks, [&allErrors, layerFeatureIds, layer, layerId, feedbacks, affectedFeatureIds, this]( const QgsGeometryCheck * check )
   {
     // Watch out with the layer pointer in here. We are running in a thread, so we do not want to actually use it
@@ -501,37 +531,7 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer,
     errorLocker.unlock();
   } );
 
-  QFutureWatcher<void> *futureWatcher = new QFutureWatcher<void>();
   futureWatcher->setFuture( future );
-
-  connect( futureWatcher, &QFutureWatcherBase::finished, this, [&allErrors, layer, feedbacks, futureWatcher, stopEditing, this]()
-  {
-    QgsReadWriteLocker errorLocker( mTopologyCheckLock, QgsReadWriteLocker::Read );
-    layer->setAllowCommit( allErrors.empty() && mLayerChecks[layer].singleFeatureCheckErrors.empty() );
-    errorLocker.unlock();
-    qDeleteAll( feedbacks );
-    futureWatcher->deleteLater();
-    if ( mLayerChecks[layer].topologyCheckFutureWatcher == futureWatcher )
-      mLayerChecks[layer].topologyCheckFutureWatcher = nullptr;
-
-    if ( !allErrors.empty() || !mLayerChecks[layer].singleFeatureCheckErrors.empty() )
-    {
-      if ( mLayerChecks[layer].commitPending )
-        showMessage( tr( "Geometry errors have been found. Please fix the errors before saving the layer." ) );
-      else
-        showMessage( tr( "Geometry errors have been found." ) );
-    }
-    if ( allErrors.empty() && mLayerChecks[layer].singleFeatureCheckErrors.empty() && mLayerChecks[layer].commitPending )
-    {
-      mBypassChecks = true;
-      layer->commitChanges( stopEditing );
-      mBypassChecks = false;
-      mMessageBar->popWidget( mMessageBarItem );
-      mMessageBarItem = nullptr;
-    }
-
-    mLayerChecks[layer].commitPending = false;
-  } );
 
   mLayerChecks[layer].topologyCheckFutureWatcher = futureWatcher;
 }

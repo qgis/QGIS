@@ -132,7 +132,7 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
     const QUrl url( link );
     const QFileInfo file( url.toLocalFile() );
     if ( file.exists() && !file.isDir() )
-      QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
+      QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
     else
       QDesktopServices::openUrl( url );
   } );
@@ -258,8 +258,6 @@ QString QgsProviderSublayersDialog::groupName() const
   if ( !mCbxAddToGroup->isChecked() )
     return QString();
 
-  const QFileInfo fi( mFilePath );
-
   QString res = QgsProviderUtils::suggestLayerNameFromFilePath( mFilePath );
 
   const QgsSettings settings;
@@ -348,4 +346,5 @@ void QgsProviderSublayersDialog::selectAll()
                                              QItemSelectionModel::Select );
     }
   }
+  mButtonBox->button( QDialogButtonBox::Ok )->setFocus();
 }

@@ -20,7 +20,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgspointxy.h"
-#include "qgsabstractgeometry.h"
+#include "qgsvertexid.h"
 #include "qgis.h"
 
 /**

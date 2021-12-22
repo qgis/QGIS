@@ -94,6 +94,7 @@ class QgsProcessingExec
     void addProviderInformation( QVariantMap &json, QgsProcessingProvider *provider );
 
 
+    bool mSkipPython = false;
 #ifdef WITH_BINDINGS
     std::unique_ptr< QgsPythonUtils > mPythonUtils;
     std::unique_ptr<QgsPythonUtils> loadPythonSupport();

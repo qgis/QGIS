@@ -401,7 +401,7 @@ void QgsAttributeTableDialog::updateTitle()
   QWidget *w = mDock ? qobject_cast<QWidget *>( mDock )
                : mDialog ? qobject_cast<QWidget *>( mDialog )
                : qobject_cast<QWidget *>( this );
-  w->setWindowTitle( tr( " %1 — Features Total: %2, Filtered: %3, Selected: %4" )
+  w->setWindowTitle( tr( " %1 — Features Total: %L2, Filtered: %L3, Selected: %L4" )
                      .arg( mLayer->name() )
                      .arg( std::max( static_cast< long long >( mMainView->featureCount() ), mLayer->featureCount() ) ) // layer count may be estimated, so use larger of the two
                      .arg( mMainView->filteredFeatureCount() )
@@ -960,6 +960,11 @@ void QgsAttributeTableDialog::setFilterExpression( const QString &filterString, 
     bool alwaysShowFilter )
 {
   mFeatureFilterWidget->setFilterExpression( filterString, type, alwaysShowFilter );
+}
+
+void QgsAttributeTableDialog::setView( QgsDualView::ViewMode mode )
+{
+  mMainView->setView( mode );
 }
 
 void QgsAttributeTableDialog::deleteFeature( const QgsFeatureId fid )

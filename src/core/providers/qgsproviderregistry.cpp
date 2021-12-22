@@ -44,7 +44,19 @@
 
 #ifdef HAVE_STATIC_PROVIDERS
 #include "qgswmsprovider.h"
+#include "qgswcsprovider.h"
+#include "qgsdelimitedtextprovider.h"
+#include "qgsafsprovider.h"
+#include "qgsamsprovider.h"
+#ifdef HAVE_SPATIALITE
+#include "qgsspatialiteprovider.h"
+#include "qgswfsprovider.h"
+#include "qgsoapifprovider.h"
+#include "qgsvirtuallayerprovider.h"
+#endif
+#ifdef HAVE_POSTGRESQL
 #include "qgspostgresprovider.h"
+#endif
 #endif
 
 #include <QString>
@@ -190,7 +202,19 @@ void QgsProviderRegistry::init()
 
 #ifdef HAVE_STATIC_PROVIDERS
   mProviders[ QgsWmsProvider::providerKey() ] = new QgsWmsProviderMetadata();
+  mProviders[ QgsWcsProvider::providerKey() ] = new QgsWcsProviderMetadata();
+  mProviders[ QgsDelimitedTextProvider::providerKey() ] = new QgsDelimitedTextProviderMetadata();
+  mProviders[ QgsAfsProvider::providerKey() ] = new QgsAfsProviderMetadata();
+  mProviders[ QgsAmsProvider::providerKey() ] = new QgsAmsProviderMetadata();
+#ifdef HAVE_SPATIALITE
+  mProviders[ QgsSpatiaLiteProvider::providerKey() ] = new QgsSpatiaLiteProviderMetadata();
+  mProviders[ QgsWFSProvider::providerKey() ] = new QgsWfsProviderMetadata();
+  mProviders[ QgsOapifProvider::providerKey() ] = new QgsOapifProviderMetadata();
+  mProviders[ QgsVirtualLayerProvider::providerKey() ] = new QgsVirtualLayerProviderMetadata();
+#endif
+#ifdef HAVE_POSTGRESQL
   mProviders[ QgsPostgresProvider::providerKey() ] = new QgsPostgresProviderMetadata();
+#endif
 #endif
 
   // add dynamic providers

@@ -34,6 +34,7 @@ class QgsGeometry;
 class QgsPointXY;
 class QFile;
 class QTextStream;
+class QgsFeedback;
 
 class QgsDelimitedTextFeatureIterator;
 class QgsExpression;
@@ -133,7 +134,17 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
      * \param message  Pointer to a string to receive a status message
      * \returns A list of field type strings, empty if not found or not valid
      */
-    QStringList readCsvtFieldTypes( const QString &filename, QString *message = nullptr );
+    static QStringList readCsvtFieldTypes( const QString &filename, QString *message = nullptr );
+
+    static QString providerKey();
+
+    /**
+     * \brief scanFile scans the file to determine field types and other information about the data
+     * \param buildIndexes build spatial indexes
+     * \param forceFullScan force a full scan even if the  read flag SkipFullScan is set (when this flag is set the scan will exit after the third record to avoid false boolean detection).
+     * \param feedback optional feedback to report scan progress and cancel.
+     */
+    void scanFile( bool buildIndexes, bool forceFullScan = false, QgsFeedback *feedback = nullptr );
 
   private slots:
 
@@ -141,7 +152,6 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
 
   private:
 
-    void scanFile( bool buildIndexes );
 
     //some of these methods const, as they need to be called from const methods such as extent()
     void rescanFile() const;
@@ -157,6 +167,8 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
     static QgsGeometry geomFromWkt( QString &sWkt, bool wktHasPrefixRegexp );
     static bool pointFromXY( QString &sX, QString &sY, QgsPoint &point, const QString &decimalPoint, bool xyDms );
     static void appendZM( QString &sZ, QString &sM, QgsPoint &point, const QString &decimalPoint );
+
+    QList<QPair<QString, QString>> booleanLiterals() const;
 
     // mLayerValid defines whether the layer has been loaded as a valid layer
     bool mLayerValid = false;
@@ -229,6 +241,12 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
     mutable bool mUseSpatialIndex;
     mutable bool mCachedUseSpatialIndex;
     mutable std::unique_ptr< QgsSpatialIndex > mSpatialIndex;
+
+    // Store user-defined column types (i.e. types that are not automatically determined)
+    QgsStringMap mUserDefinedFieldTypes;
+
+    QPair<QString, QString> mUserDefinedBooleanLiterals;
+    QMap<int, QPair<QString, QString>> mFieldBooleanLiterals;
 
     friend class QgsDelimitedTextFeatureIterator;
     friend class QgsDelimitedTextFeatureSource;

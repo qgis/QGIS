@@ -32,7 +32,7 @@ include_directories(SYSTEM
 #############################################################
 # Tests:
 
-add_qgis_test(testqgsquickutils.cpp MODULE quick LINKEDLIBRARIES qgis_quick)
+add_qgis_test(testqgsquickmapsettings.cpp MODULE quick LINKEDLIBRARIES qgis_quick)
 
 #############################################################
 # Add also test application

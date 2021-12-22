@@ -100,6 +100,7 @@ BuildRequires:  opencl-headers
 BuildRequires:  ocl-icd-devel
 
 # Python stuff
+BuildRequires:  python3-devel
 BuildRequires:  python3-future
 BuildRequires:  python3-jinja2
 BuildRequires:  python3-OWSLib
@@ -109,7 +110,12 @@ BuildRequires:  python3-PyYAML
 BuildRequires:  python3-qscintilla-qt5
 BuildRequires:  python3-qscintilla-qt5-devel
 BuildRequires:  python3-qt5-devel
+%if 0%{?fedora} >= 35
+BuildRequires:  sip6
+BuildRequires:  PyQt-builder
+%else
 BuildRequires:  python3-sip-devel
+%endif
 
 # Qca stuff
 BuildRequires:  qca-qt5-devel
@@ -311,7 +317,7 @@ rm -f %{buildroot}%{_datadir}/%{name}/doc/INSTALL*
 %{_datadir}/%{name}/resources/
 %{_datadir}/%{name}/svg/
 %exclude %{_libdir}/libqgisgrass*.so.*
-%exclude %{_libdir}/%{name}/plugins/libgrassplugin*.so
+%exclude %{_libdir}/%{name}/plugins/libplugin_grass*.so
 %exclude %{_libdir}/%{name}/plugins/libprovider_grassraster*.so
 %exclude %{_libdir}/%{name}/plugins/libprovider_grass*.so
 %exclude %{_libdir}/%{name}/server/
@@ -325,7 +331,7 @@ rm -f %{buildroot}%{_datadir}/%{name}/doc/INSTALL*
 
 %files grass
 %{_libdir}/lib%{name}grass*.so.*
-%{_libdir}/%{name}/plugins/libgrassplugin*.so
+%{_libdir}/%{name}/plugins/libplugin_grass*.so
 %{_libdir}/%{name}/plugins/libprovider_grassraster*.so
 %{_libdir}/%{name}/plugins/libprovider_grass*.so
 %{_libdir}/%{name}/grass/

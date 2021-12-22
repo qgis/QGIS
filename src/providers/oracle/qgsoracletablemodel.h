@@ -16,10 +16,11 @@
  ***************************************************************************/
 #ifndef QGSORACLETABLEMODEL_H
 #define QGSORACLETABLEMODEL_H
-#include <QStandardItemModel>
 
 #include "qgis.h"
 #include "qgsoracleconn.h"
+#include "qgsabstractdbtablemodel.h"
+
 
 class QIcon;
 
@@ -29,17 +30,21 @@ class QIcon;
  *
  * The tables have the following columns: Type, Owner, Tablename, Geometry Column, Sql
 */
-class QgsOracleTableModel : public QStandardItemModel
+class QgsOracleTableModel : public QgsAbstractDbTableModel
 {
     Q_OBJECT
   public:
-    QgsOracleTableModel();
+    QgsOracleTableModel( QObject *parent = nullptr );
+
+    QStringList columns() const override;
+    int defaultSearchColumn() const override;
+    bool searchableColumn( int column ) const override;
 
     //! Adds entry for one database table to the model
     void addTableEntry( const QgsOracleLayerProperty &property );
 
     //! Sets an sql statement that belongs to a cell specified by a model index
-    void setSql( const QModelIndex &index, const QString &sql );
+    void setSql( const QModelIndex &index, const QString &sql ) override;
 
     //! Returns the number of tables in the model
     int tableCount() const { return mTableCount; }
@@ -53,8 +58,7 @@ class QgsOracleTableModel : public QStandardItemModel
       DbtmSrid,
       DbtmPkCol,
       DbtmSelectAtId,
-      DbtmSql,
-      DbtmColumns
+      DbtmSql
     };
 
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
@@ -64,6 +68,8 @@ class QgsOracleTableModel : public QStandardItemModel
   private:
     //! Number of tables in the model
     int mTableCount = 0;
+    QStringList mColumns;
+
 };
 
 #endif // QGSORACLETABLEMODEL_H

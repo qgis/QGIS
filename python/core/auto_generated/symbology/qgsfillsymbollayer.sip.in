@@ -201,39 +201,16 @@ class QgsGradientFillSymbolLayer : QgsFillSymbolLayer
 %End
   public:
 
-    enum GradientColorType
-    {
-      SimpleTwoColor,
-      ColorRamp
-    };
-
-    enum GradientType
-    {
-      Linear,
-      Radial,
-      Conical
-    };
-
-    enum GradientCoordinateMode
-    {
-      Feature,
-      Viewport
-    };
-
-    enum GradientSpread
-    {
-      Pad,
-      Reflect,
-      Repeat
-    };
-
     QgsGradientFillSymbolLayer( const QColor &color = DEFAULT_SIMPLEFILL_COLOR,
                                 const QColor &color2 = Qt::white,
-                                GradientColorType gradientColorType = SimpleTwoColor,
-                                GradientType gradientType = Linear,
-                                GradientCoordinateMode coordinateMode = Feature,
-                                GradientSpread gradientSpread = Pad
+                                Qgis::GradientColorSource gradientColorType = Qgis::GradientColorSource::SimpleTwoColor,
+                                Qgis::GradientType gradientType = Qgis::GradientType::Linear,
+                                Qgis::SymbolCoordinateReference coordinateMode = Qgis::SymbolCoordinateReference::Feature,
+                                Qgis::GradientSpread gradientSpread = Qgis::GradientSpread::Pad
                               );
+%Docstring
+Constructor for QgsGradientFillSymbolLayer.
+%End
 
     ~QgsGradientFillSymbolLayer();
 
@@ -263,17 +240,33 @@ Caller takes ownership of the returned symbol layer.
     virtual bool canCauseArtifactsBetweenAdjacentTiles() const;
 
 
-    GradientType gradientType() const;
+    Qgis::GradientType gradientType() const;
 %Docstring
-Type of gradient, e.g., linear or radial
-%End
-    void setGradientType( GradientType gradientType );
+Returns the type of gradient, e.g., linear or radial.
 
-    GradientColorType gradientColorType() const;
-%Docstring
-Gradient color mode, controls how gradient color stops are created
+.. seealso:: :py:func:`setGradientType`
 %End
-    void setGradientColorType( GradientColorType gradientColorType );
+
+    void setGradientType( Qgis::GradientType gradientType );
+%Docstring
+Sets the type of gradient, e.g., linear or radial.
+
+.. seealso:: :py:func:`gradientType`
+%End
+
+    Qgis::GradientColorSource gradientColorType() const;
+%Docstring
+Returns the gradient color mode, which controls how gradient color stops are created.
+
+.. seealso:: :py:func:`setGradientColorType`
+%End
+
+    void setGradientColorType( Qgis::GradientColorSource gradientColorType );
+%Docstring
+Sets the gradient color mode, which controls how gradient color stops are created.
+
+.. seealso:: :py:func:`gradientColorType`
+%End
 
     QgsColorRamp *colorRamp();
 %Docstring
@@ -299,45 +292,102 @@ used if the gradient color type is set to ColorRamp.
 
     QColor color2() const;
 %Docstring
-Color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor
+Returns the color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor.
+
+.. seealso:: :py:func:`setColor2`
 %End
+
     void setColor2( const QColor &color2 );
-
-    GradientCoordinateMode coordinateMode() const;
 %Docstring
-Coordinate mode for gradient. Controls how the gradient stops are positioned.
-%End
-    void setCoordinateMode( GradientCoordinateMode coordinateMode );
+Sets the color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor.
 
-    GradientSpread gradientSpread() const;
-%Docstring
-Gradient spread mode. Controls how the gradient behaves outside of the predefined stops
+.. seealso:: :py:func:`color2`
 %End
-    void setGradientSpread( GradientSpread gradientSpread );
+
+    Qgis::SymbolCoordinateReference coordinateMode() const;
+%Docstring
+Returns the coordinate mode for gradient, which controls how the gradient stops are positioned.
+
+.. seealso:: :py:func:`setCoordinateMode`
+%End
+
+    void setCoordinateMode( Qgis::SymbolCoordinateReference coordinateMode );
+%Docstring
+Sets the coordinate mode for gradient, which controls how the gradient stops are positioned.
+
+.. seealso:: :py:func:`coordinateMode`
+%End
+
+    Qgis::GradientSpread gradientSpread() const;
+%Docstring
+Returns the gradient spread mode, which controls how the gradient behaves outside of the predefined stops.
+
+.. seealso:: :py:func:`setGradientSpread`
+%End
+
+    void setGradientSpread( Qgis::GradientSpread gradientSpread );
+%Docstring
+Sets the gradient spread mode, which controls how the gradient behaves outside of the predefined stops.
+
+.. seealso:: :py:func:`gradientSpread`
+%End
 
     void setReferencePoint1( QPointF referencePoint );
 %Docstring
-Starting point of gradient fill, in the range [0,0] - [1,1]
+Sets the starting point of gradient fill, in the range [0,0] - [1,1].
+
+.. seealso:: :py:func:`referencePoint1`
 %End
+
     QPointF referencePoint1() const;
+%Docstring
+Returns the starting point of gradient fill, in the range [0,0] - [1,1].
+
+.. seealso:: :py:func:`setReferencePoint1`
+%End
 
     void setReferencePoint1IsCentroid( bool isCentroid );
 %Docstring
-Sets the starting point of the gradient to be the feature centroid
+Sets whether the starting point for the gradient is taken from the feature centroid.
+
+.. seealso:: :py:func:`referencePoint1IsCentroid`
 %End
+
     bool referencePoint1IsCentroid() const;
+%Docstring
+Returns whether the starting point for the gradient is taken from the feature centroid.
+
+.. seealso:: :py:func:`setReferencePoint1IsCentroid`
+%End
 
     void setReferencePoint2( QPointF referencePoint );
 %Docstring
-End point of gradient fill, in the range [0,0] - [1,1]
+Sets the end point of gradient fill, in the range [0,0] - [1,1].
+
+.. seealso:: :py:func:`referencePoint2`
 %End
+
     QPointF referencePoint2() const;
+%Docstring
+Returns the end point of gradient fill, in the range [0,0] - [1,1].
+
+.. seealso:: :py:func:`setReferencePoint2`
+%End
 
     void setReferencePoint2IsCentroid( bool isCentroid );
 %Docstring
-Sets the end point of the gradient to be the feature centroid
+Sets whether the end point for the gradient is taken from the feature centroid.
+
+.. seealso:: :py:func:`referencePoint2IsCentroid`
 %End
+
+
     bool referencePoint2IsCentroid() const;
+%Docstring
+Returns whether the end point for the gradient is taken from the feature centroid.
+
+.. seealso:: :py:func:`setReferencePoint2IsCentroid`
+%End
 
     void setOffset( QPointF offset );
 %Docstring
@@ -424,15 +474,12 @@ class QgsShapeburstFillSymbolLayer : QgsFillSymbolLayer
 %End
   public:
 
-    enum ShapeburstColorType
-    {
-      SimpleTwoColor,
-      ColorRamp
-    };
-
     QgsShapeburstFillSymbolLayer( const QColor &color = DEFAULT_SIMPLEFILL_COLOR, const QColor &color2 = Qt::white,
-                                  ShapeburstColorType colorType = SimpleTwoColor,
+                                  Qgis::GradientColorSource colorType = Qgis::GradientColorSource::SimpleTwoColor,
                                   int blurRadius = 0, bool useWholeShape = true, double maxDistance = 5 );
+%Docstring
+Constructor for QgsShapeburstFillSymbolLayer.
+%End
 
     ~QgsShapeburstFillSymbolLayer();
 
@@ -572,7 +619,7 @@ Returns the unit for the maximum distance to shade inside of the shape from the 
     void setDistanceMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &distanceMapUnitScale() const;
 
-    void setColorType( ShapeburstColorType colorType );
+    void setColorType( Qgis::GradientColorSource colorType );
 %Docstring
 Sets the color mode to use for the shapeburst fill. Shapeburst can either be drawn using a :py:class:`QgsColorRamp` color ramp
 or by simply specificing a start and end color. setColorType is used to specify which mode to use for the fill.
@@ -590,7 +637,7 @@ or by simply specificing a start and end color. setColorType is used to specify 
 .. versionadded:: 2.3
 %End
 
-    ShapeburstColorType colorType() const;
+    Qgis::GradientColorSource colorType() const;
 %Docstring
 Returns the color mode used for the shapeburst fill. Shapeburst can either be drawn using a :py:class:`QgsColorRamp` color ramp
 or by simply specificing a start and end color.
@@ -771,11 +818,6 @@ Base class for polygon renderers generating texture images
     virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
 
-    virtual QgsSymbol *subSymbol();
-
-    virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
-
-
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
 Sets the ``units`` fo the symbol's stroke width.
@@ -814,6 +856,30 @@ Returns the stroke width map unit scale.
 .. versionadded:: 2.16
 %End
 
+    void setCoordinateReference( Qgis::SymbolCoordinateReference coordinateReference );
+%Docstring
+Sets the coordinate reference mode for fill which controls how the top left corner of the image
+fill is positioned relative to the feature.
+
+:param coordinateReference: coordinate reference mode
+
+.. seealso:: :py:func:`coordinateReference`
+
+.. versionadded:: 3.24
+%End
+
+    Qgis::SymbolCoordinateReference coordinateReference() const;
+%Docstring
+Returns the coordinate reference mode for fill which controls how the top left corner of the image
+fill is positioned relative to the feature.
+
+:return: coordinate reference mode
+
+.. seealso:: :py:func:`setCoordinateReference`
+
+.. versionadded:: 3.24
+%End
+
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 
     virtual QgsUnitTypes::RenderUnit outputUnit() const;
@@ -822,29 +888,22 @@ Returns the stroke width map unit scale.
 
     virtual QgsMapUnitScale mapUnitScale() const;
 
-    virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
-
     virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
-
-    virtual QColor dxfColor( QgsSymbolRenderContext &context ) const;
 
     virtual Qt::PenStyle dxfPenStyle() const;
 
-    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
-
-    virtual bool hasDataDefinedProperties() const;
+    virtual QVariantMap properties() const;
 
 
   protected:
 
 
-
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context );
 %Docstring
-Custom stroke
+Applies data defined settings prior to generating the fill symbol brush.
 %End
 
-    virtual bool applyBrushTransformFromContext() const;
+    virtual bool applyBrushTransformFromContext( QgsSymbolRenderContext *context = 0 ) const;
 %Docstring
 Returns ``True`` if the image brush should be transformed using the render context's texture origin.
 
@@ -867,12 +926,6 @@ A class for filling symbols with a repeated raster image.
 #include "qgsfillsymbollayer.h"
 %End
   public:
-
-    enum FillCoordinateMode
-    {
-      Feature,
-      Viewport,
-    };
 
     QgsRasterFillSymbolLayer( const QString &imageFilePath = QString() );
 %Docstring
@@ -935,7 +988,7 @@ The path to the raster image used for the fill.
 .. seealso:: :py:func:`setImageFilePath`
 %End
 
-    void setCoordinateMode( FillCoordinateMode mode );
+    void setCoordinateMode( Qgis::SymbolCoordinateReference mode );
 %Docstring
 Set the coordinate mode for fill. Controls how the top left corner of the image
 fill is positioned relative to the feature.
@@ -945,7 +998,7 @@ fill is positioned relative to the feature.
 .. seealso:: :py:func:`coordinateMode`
 %End
 
-    FillCoordinateMode coordinateMode() const;
+    Qgis::SymbolCoordinateReference coordinateMode() const;
 %Docstring
 Coordinate mode for fill. Controls how the top left corner of the image
 fill is positioned relative to the feature.
@@ -1135,7 +1188,7 @@ Returns the map unit scale for the image's width.
 
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context );
 
-    virtual bool applyBrushTransformFromContext() const;
+    virtual bool applyBrushTransformFromContext( QgsSymbolRenderContext *context = 0 ) const;
 
 };
 
@@ -1189,6 +1242,8 @@ Used internally when reading/writing symbols.
 
     virtual void stopRender( QgsSymbolRenderContext &context );
 
+    virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
+
     virtual QVariantMap properties() const;
 
     virtual QgsSVGFillSymbolLayer *clone() const /Factory/;
@@ -1196,6 +1251,18 @@ Used internally when reading/writing symbols.
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
     virtual bool usesMapUnits() const;
+
+    virtual QgsSymbol *subSymbol();
+
+    virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
+
+    virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
+
+    virtual QColor dxfColor( QgsSymbolRenderContext &context ) const;
+
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
+    virtual bool hasDataDefinedProperties() const;
 
 
     void setSvgFilePath( const QString &svgPath );
@@ -1468,6 +1535,8 @@ ownership of the returned object.
 
     virtual void stopRender( QgsSymbolRenderContext &context );
 
+    virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
+
     virtual QVariantMap properties() const;
 
     virtual QgsLinePatternFillSymbolLayer *clone() const /Factory/;
@@ -1680,6 +1749,24 @@ Returns the map unit scale for the pattern's line offset.
 .. seealso:: :py:func:`offsetUnit`
 %End
 
+    Qgis::LineClipMode clipMode() const;
+%Docstring
+Returns the line clipping mode, which defines how lines are clipped at the edges of shapes.
+
+.. seealso:: :py:func:`setClipMode`
+
+.. versionadded:: 3.24
+%End
+
+    void setClipMode( Qgis::LineClipMode mode );
+%Docstring
+Sets the line clipping ``mode``, which defines how lines are clipped at the edges of shapes.
+
+.. seealso:: :py:func:`clipMode`
+
+.. versionadded:: 3.24
+%End
+
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 
     virtual QgsUnitTypes::RenderUnit outputUnit() const;
@@ -1698,6 +1785,10 @@ Returns the map unit scale for the pattern's line offset.
 
     virtual bool hasDataDefinedProperties() const;
 
+    virtual void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
+    virtual void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
 
   protected:
 
@@ -1710,6 +1801,9 @@ Returns the map unit scale for the pattern's line offset.
 
 class QgsPointPatternFillSymbolLayer: QgsImageFillSymbolLayer
 {
+%Docstring(signature="appended")
+A fill symbol layer which fills polygon shapes with repeating marker symbols.
+%End
 
 %TypeHeaderCode
 #include "qgsfillsymbollayer.h"
@@ -1728,37 +1822,302 @@ Caller takes ownership of the returned symbol layer.
 
     virtual QString layerType() const;
 
-
     virtual void startRender( QgsSymbolRenderContext &context );
 
     virtual void stopRender( QgsSymbolRenderContext &context );
 
-    virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    virtual void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
 
+    virtual void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
+    virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
     virtual QVariantMap properties() const;
 
-
     virtual QgsPointPatternFillSymbolLayer *clone() const /Factory/;
-
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
-
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
+
+    virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
+
+    virtual QgsSymbol *subSymbol();
+
+    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+
+    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+
+    virtual bool usesMapUnits() const;
+
+    virtual void setMapUnitScale( const QgsMapUnitScale &scale );
+
+    virtual QgsMapUnitScale mapUnitScale() const;
+
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
+    virtual bool hasDataDefinedProperties() const;
+
+    virtual void setColor( const QColor &c );
+
+    virtual QColor color() const;
 
 
     double distanceX() const;
+%Docstring
+Returns the horizontal distance between rendered markers in the fill.
+
+Units are retrieved via :py:func:`~QgsPointPatternFillSymbolLayer.distanceXUnit`.
+
+.. seealso:: :py:func:`setDistanceX`
+
+.. seealso:: :py:func:`distanceXUnit`
+
+.. seealso:: :py:func:`distanceXMapUnitScale`
+%End
+
     void setDistanceX( double d );
+%Docstring
+Sets the horizontal distance between rendered markers in the fill.
+
+Units are set via :py:func:`~QgsPointPatternFillSymbolLayer.setDistanceXUnit`.
+
+.. seealso:: :py:func:`distanceX`
+
+.. seealso:: :py:func:`setDistanceXUnit`
+
+.. seealso:: :py:func:`setDistanceXMapUnitScale`
+%End
+
+    void setDistanceXUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the horizontal distance between points in the pattern.
+
+:param unit: distance units
+
+.. seealso:: :py:func:`distanceXUnit`
+
+.. seealso:: :py:func:`setDistanceYUnit`
+%End
+
+    QgsUnitTypes::RenderUnit distanceXUnit() const;
+%Docstring
+Returns the units for the horizontal distance between points in the pattern.
+
+.. seealso:: :py:func:`setDistanceXUnit`
+
+.. seealso:: :py:func:`distanceYUnit`
+%End
+
+    void setDistanceXMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the horizontal distance between points in the pattern.
+
+.. seealso:: :py:func:`distanceXMapUnitScale`
+
+.. seealso:: :py:func:`setDistanceX`
+%End
+
+    const QgsMapUnitScale &distanceXMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the horizontal distance between points in the pattern.
+
+.. seealso:: :py:func:`setDistanceXMapUnitScale`
+
+.. seealso:: :py:func:`distanceX`
+%End
 
     double distanceY() const;
+%Docstring
+Returns the vertical distance between rendered markers in the fill.
+
+Units are retrieved via :py:func:`~QgsPointPatternFillSymbolLayer.distanceYUnit`.
+
+.. seealso:: :py:func:`setDistanceY`
+
+.. seealso:: :py:func:`distanceYUnit`
+
+.. seealso:: :py:func:`distanceYMapUnitScale`
+%End
+
     void setDistanceY( double d );
+%Docstring
+Sets the vertical distance between rendered markers in the fill.
+
+Units are set via :py:func:`~QgsPointPatternFillSymbolLayer.setDistanceYUnit`.
+
+.. seealso:: :py:func:`distanceY`
+
+.. seealso:: :py:func:`setDistanceYUnit`
+
+.. seealso:: :py:func:`setDistanceYMapUnitScale`
+%End
+
+    void setDistanceYUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the vertical distance between points in the pattern.
+
+:param unit: distance units
+
+.. seealso:: :py:func:`distanceYUnit`
+
+.. seealso:: :py:func:`setDistanceXUnit`
+%End
+
+    QgsUnitTypes::RenderUnit distanceYUnit() const;
+%Docstring
+Returns the units for the vertical distance between points in the pattern.
+
+.. seealso:: :py:func:`setDistanceYUnit`
+
+.. seealso:: :py:func:`distanceXUnit`
+%End
+
+    void setDistanceYMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the vertical distance between points in the pattern.
+
+.. seealso:: :py:func:`distanceYMapUnitScale`
+
+.. seealso:: :py:func:`setDistanceY`
+%End
+
+    const QgsMapUnitScale &distanceYMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the vertical distance between points in the pattern.
+
+.. seealso:: :py:func:`setDistanceYMapUnitScale`
+
+.. seealso:: :py:func:`distanceY`
+%End
 
     double displacementX() const;
+%Docstring
+Returns the horizontal displacement for odd numbered rows in the pattern.
+
+Units are retrieved via :py:func:`~QgsPointPatternFillSymbolLayer.displacementXUnit`.
+
+.. seealso:: :py:func:`setDisplacementX`
+
+.. seealso:: :py:func:`displacementXUnit`
+
+.. seealso:: :py:func:`displacementXMapUnitScale`
+%End
+
     void setDisplacementX( double d );
+%Docstring
+Sets the horizontal displacement for odd numbered rows in the pattern.
+
+Units are set via :py:func:`~QgsPointPatternFillSymbolLayer.setDisplacementXUnit`.
+
+.. seealso:: :py:func:`displacementX`
+
+.. seealso:: :py:func:`setDisplacementXUnit`
+
+.. seealso:: :py:func:`setDisplacementXMapUnitScale`
+%End
+
+    void setDisplacementXUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the units for the horizontal displacement between rows in the pattern.
+
+:param unit: displacement units
+
+.. seealso:: :py:func:`displacementXUnit`
+
+.. seealso:: :py:func:`setDisplacementYUnit`
+%End
+
+    QgsUnitTypes::RenderUnit displacementXUnit() const;
+%Docstring
+Returns the units for the horizontal displacement between rows in the pattern.
+
+.. seealso:: :py:func:`setDisplacementXUnit`
+
+.. seealso:: :py:func:`displacementYUnit`
+%End
+
+    void setDisplacementXMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the horizontal displacement between odd numbered rows in the pattern.
+
+.. seealso:: :py:func:`displacementXMapUnitScale`
+
+.. seealso:: :py:func:`setDisplacementX`
+%End
+
+    const QgsMapUnitScale &displacementXMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the horizontal displacement between odd numbered rows in the pattern.
+
+.. seealso:: :py:func:`setDisplacementXMapUnitScale`
+
+.. seealso:: :py:func:`displacementX`
+%End
 
     double displacementY() const;
+%Docstring
+Returns the vertical displacement for odd numbered columns in the pattern.
+
+Units are retrieved via :py:func:`~QgsPointPatternFillSymbolLayer.displacementYUnit`.
+
+.. seealso:: :py:func:`setDisplacementY`
+
+.. seealso:: :py:func:`displacementYUnit`
+
+.. seealso:: :py:func:`displacementYMapUnitScale`
+%End
+
     void setDisplacementY( double d );
+%Docstring
+Sets the vertical displacement for odd numbered columns in the pattern.
+
+Units are set via :py:func:`~QgsPointPatternFillSymbolLayer.setDisplacementYUnit`.
+
+.. seealso:: :py:func:`displacementY`
+
+.. seealso:: :py:func:`setDisplacementYUnit`
+
+.. seealso:: :py:func:`setDisplacementYMapUnitScale`
+%End
+
+    void setDisplacementYUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the units for the vertical displacement between rows in the pattern.
+
+:param unit: displacement units
+
+.. seealso:: :py:func:`displacementYUnit`
+
+.. seealso:: :py:func:`setDisplacementXUnit`
+%End
+
+    QgsUnitTypes::RenderUnit displacementYUnit() const;
+%Docstring
+Returns the units for the vertical displacement between rows in the pattern.
+
+.. seealso:: :py:func:`setDisplacementYUnit`
+
+.. seealso:: :py:func:`displacementXUnit`
+%End
+
+    void setDisplacementYMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the vertical displacement between odd numbered columns in the pattern.
+
+.. seealso:: :py:func:`displacementYMapUnitScale`
+
+.. seealso:: :py:func:`setDisplacementY`
+%End
+
+    const QgsMapUnitScale &displacementYMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the vertical displacement between odd numbered columns in the pattern.
+
+.. seealso:: :py:func:`setDisplacementYMapUnitScale`
+
+.. seealso:: :py:func:`displacementY`
+%End
 
     void setOffsetX( double offset );
 %Docstring
@@ -1807,103 +2166,6 @@ Returns the vertical offset values for points in the pattern.
 
 .. versionadded:: 3.8
 %End
-
-    virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
-
-    virtual QgsSymbol *subSymbol();
-
-
-    void setDistanceXUnit( QgsUnitTypes::RenderUnit unit );
-%Docstring
-Sets the units for the horizontal distance between points in the pattern.
-
-:param unit: distance units
-
-.. seealso:: :py:func:`distanceXUnit`
-
-.. seealso:: :py:func:`setDistanceYUnit`
-%End
-
-    QgsUnitTypes::RenderUnit distanceXUnit() const;
-%Docstring
-Returns the units for the horizontal distance between points in the pattern.
-
-.. seealso:: :py:func:`setDistanceXUnit`
-
-.. seealso:: :py:func:`distanceYUnit`
-%End
-
-    void setDistanceXMapUnitScale( const QgsMapUnitScale &scale );
-    const QgsMapUnitScale &distanceXMapUnitScale() const;
-
-    void setDistanceYUnit( QgsUnitTypes::RenderUnit unit );
-%Docstring
-Sets the units for the vertical distance between points in the pattern.
-
-:param unit: distance units
-
-.. seealso:: :py:func:`distanceYUnit`
-
-.. seealso:: :py:func:`setDistanceXUnit`
-%End
-
-    QgsUnitTypes::RenderUnit distanceYUnit() const;
-%Docstring
-Returns the units for the vertical distance between points in the pattern.
-
-.. seealso:: :py:func:`setDistanceYUnit`
-
-.. seealso:: :py:func:`distanceXUnit`
-%End
-
-    void setDistanceYMapUnitScale( const QgsMapUnitScale &scale );
-    const QgsMapUnitScale &distanceYMapUnitScale() const;
-
-    void setDisplacementXUnit( QgsUnitTypes::RenderUnit unit );
-%Docstring
-Sets the units for the horizontal displacement between rows in the pattern.
-
-:param unit: displacement units
-
-.. seealso:: :py:func:`displacementXUnit`
-
-.. seealso:: :py:func:`setDisplacementYUnit`
-%End
-
-    QgsUnitTypes::RenderUnit displacementXUnit() const;
-%Docstring
-Returns the units for the horizontal displacement between rows in the pattern.
-
-.. seealso:: :py:func:`setDisplacementXUnit`
-
-.. seealso:: :py:func:`displacementYUnit`
-%End
-
-    void setDisplacementXMapUnitScale( const QgsMapUnitScale &scale );
-    const QgsMapUnitScale &displacementXMapUnitScale() const;
-
-    void setDisplacementYUnit( QgsUnitTypes::RenderUnit unit );
-%Docstring
-Sets the units for the vertical displacement between rows in the pattern.
-
-:param unit: displacement units
-
-.. seealso:: :py:func:`displacementYUnit`
-
-.. seealso:: :py:func:`setDisplacementXUnit`
-%End
-
-    QgsUnitTypes::RenderUnit displacementYUnit() const;
-%Docstring
-Returns the units for the vertical displacement between rows in the pattern.
-
-.. seealso:: :py:func:`setDisplacementYUnit`
-
-.. seealso:: :py:func:`displacementXUnit`
-%End
-
-    void setDisplacementYMapUnitScale( const QgsMapUnitScale &scale );
-    const QgsMapUnitScale &displacementYMapUnitScale() const;
 
     void setOffsetXUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
@@ -2001,28 +2263,206 @@ Returns the unit scale for the vertical offset between rows in the pattern.
 .. versionadded:: 3.8
 %End
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    Qgis::MarkerClipMode clipMode() const;
+%Docstring
+Returns the marker clipping mode, which defines how markers are clipped at the edges of shapes.
 
-    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+.. seealso:: :py:func:`setClipMode`
 
-    virtual bool usesMapUnits() const;
+.. versionadded:: 3.24
+%End
 
+    void setClipMode( Qgis::MarkerClipMode mode );
+%Docstring
+Sets the marker clipping ``mode``, which defines how markers are clipped at the edges of shapes.
 
-    virtual void setMapUnitScale( const QgsMapUnitScale &scale );
+.. seealso:: :py:func:`clipMode`
 
-    virtual QgsMapUnitScale mapUnitScale() const;
+.. versionadded:: 3.24
+%End
 
+    void setMaximumRandomDeviationX( double deviation );
+%Docstring
+Sets the maximum horizontal random ``deviation`` of points in the pattern.
 
-    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+Units are set via :py:func:`~QgsPointPatternFillSymbolLayer.setMaximumRandomDeviationXUnit`.
 
-    virtual bool hasDataDefinedProperties() const;
+.. seealso:: :py:func:`maximumRandomDeviationX`
 
-    virtual void setColor( const QColor &c );
+.. seealso:: :py:func:`setMaximumRandomDeviationY`
 
-    virtual QColor color() const;
+.. versionadded:: 3.24
+%End
 
+    double maximumRandomDeviationX() const;
+%Docstring
+Returns the maximum horizontal random deviation of points in the pattern.
+
+Units are retrieved via :py:func:`~QgsPointPatternFillSymbolLayer.maximumRandomDeviationXUnit`.
+
+.. seealso:: :py:func:`setMaximumRandomDeviationX`
+
+.. seealso:: :py:func:`maximumRandomDeviationY`
+
+.. versionadded:: 3.24
+%End
+
+    void setMaximumRandomDeviationY( double deviation );
+%Docstring
+Sets the maximum vertical random ``deviation`` of points in the pattern.
+
+Units are set via :py:func:`~QgsPointPatternFillSymbolLayer.setMaximumRandomDeviationYUnit`.
+
+.. seealso:: :py:func:`maximumRandomDeviationY`
+
+.. seealso:: :py:func:`setMaximumRandomDeviationX`
+
+.. versionadded:: 3.24
+%End
+
+    double maximumRandomDeviationY() const;
+%Docstring
+Returns the maximum vertical random deviation of points in the pattern.
+
+Units are retrieved via :py:func:`~QgsPointPatternFillSymbolLayer.maximumRandomDeviationYUnit`.
+
+.. seealso:: :py:func:`setMaximumRandomDeviationY`
+
+.. seealso:: :py:func:`maximumRandomDeviationX`
+
+.. versionadded:: 3.24
+%End
+
+    void setRandomDeviationXUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the horizontal random deviation of points in the pattern.
+
+.. seealso:: :py:func:`randomDeviationXUnit`
+
+.. seealso:: :py:func:`setRandomDeviationYUnit`
+
+.. versionadded:: 3.24
+%End
+
+    QgsUnitTypes::RenderUnit randomDeviationXUnit() const;
+%Docstring
+Returns the units for the horizontal random deviation of points in the pattern.
+
+.. seealso:: :py:func:`setRandomDeviationXUnit`
+
+.. seealso:: :py:func:`randomDeviationYUnit`
+
+.. versionadded:: 3.24
+%End
+
+    void setRandomDeviationYUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the vertical random deviation of points in the pattern.
+
+.. seealso:: :py:func:`randomDeviationYUnit`
+
+.. seealso:: :py:func:`setRandomDeviationXUnit`
+
+.. versionadded:: 3.24
+%End
+
+    QgsUnitTypes::RenderUnit randomDeviationYUnit() const;
+%Docstring
+Returns the units for the vertical random deviation of points in the pattern.
+
+.. seealso:: :py:func:`setRandomDeviationYUnit`
+
+.. seealso:: :py:func:`randomDeviationXUnit`
+
+.. versionadded:: 3.24
+%End
+
+    const QgsMapUnitScale &randomDeviationXMapUnitScale() const;
+%Docstring
+Returns the unit scale for the horizontal random deviation of points in the pattern.
+
+.. seealso:: :py:func:`setRandomDeviationXMapUnitScale`
+
+.. seealso:: :py:func:`randomDeviationYMapUnitScale`
+
+.. versionadded:: 3.24
+%End
+
+    const QgsMapUnitScale &randomDeviationYMapUnitScale() const;
+%Docstring
+Returns the unit scale for the vertical random deviation of points in the pattern.
+
+.. seealso:: :py:func:`setRandomDeviationXMapUnitScale`
+
+.. seealso:: :py:func:`randomDeviationXMapUnitScale`
+
+.. versionadded:: 3.24
+%End
+
+    void setRandomDeviationXMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the unit ``scale`` for the horizontal random deviation of points in the pattern.
+
+.. seealso:: :py:func:`randomDeviationXMapUnitScale`
+
+.. seealso:: :py:func:`setRandomDeviationYMapUnitScale`
+
+.. versionadded:: 3.24
+%End
+
+    void setRandomDeviationYMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the unit ``scale`` for the vertical random deviation of points in the pattern.
+
+.. seealso:: :py:func:`randomDeviationYMapUnitScale`
+
+.. seealso:: :py:func:`setRandomDeviationXMapUnitScale`
+
+.. versionadded:: 3.24
+%End
+
+    unsigned long seed() const;
+%Docstring
+Returns the random number seed to use when randomly shifting points, or 0 if
+a truly random sequence will be used (causing points to appear in different locations with every map refresh).
+
+.. seealso:: :py:func:`setSeed`
+
+.. versionadded:: 3.24
+%End
+
+    void setSeed( unsigned long seed );
+%Docstring
+Sets the random number ``seed`` to use when randomly shifting points, or 0 if
+a truly random sequence will be used on every rendering (causing points to appear
+in different locations with every map refresh).
+
+.. seealso:: :py:func:`seed`
+
+.. versionadded:: 3.24
+%End
+
+    double angle() const;
+%Docstring
+Returns the rotation angle of the pattern, in degrees clockwise.
+
+.. seealso:: :py:func:`setAngle`
+
+.. versionadded:: 3.24
+%End
+
+    void setAngle( double angle );
+%Docstring
+Sets the rotation ``angle`` of the pattern, in degrees clockwise.
+
+.. seealso:: :py:func:`angle`
+
+.. versionadded:: 3.24
+%End
 
   protected:
+
+
 
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context );
 
@@ -2045,13 +2485,7 @@ A fill symbol layer which places markers at random locations within polygons.
 %End
   public:
 
-    enum CountMethod
-    {
-      AbsoluteCount,
-      DensityBasedCount,
-    };
-
-    QgsRandomMarkerFillSymbolLayer( int pointCount = 10, CountMethod method = AbsoluteCount, double densityArea = 250.0, unsigned long seed = 0 );
+    QgsRandomMarkerFillSymbolLayer( int pointCount = 10, Qgis::PointCountMethod method = Qgis::PointCountMethod::Absolute, double densityArea = 250.0, unsigned long seed = 0 );
 %Docstring
 Constructor for QgsRandomMarkerFillSymbolLayer, with the specified ``pointCount``.
 
@@ -2155,14 +2589,14 @@ Sets whether point markers should be ``clipped`` to the polygon boundary.
 .. seealso:: :py:func:`clipPoints`
 %End
 
-    CountMethod countMethod() const;
+    Qgis::PointCountMethod countMethod() const;
 %Docstring
 Returns the count method used to randomly fill the polygon.
 
 .. seealso:: :py:func:`setCountMethod`
 %End
 
-    void setCountMethod( CountMethod method );
+    void setCountMethod( Qgis::PointCountMethod method );
 %Docstring
 Sets the count ``method`` used to randomly fill the polygon.
 
@@ -2359,7 +2793,6 @@ Sets whether point markers should be ``clipped`` to the current part boundary on
 
 
   protected:
-
 
 
 

@@ -340,6 +340,11 @@ QString QgsOapifProvider::name() const
   return OAPIF_PROVIDER_KEY;
 }
 
+QString QgsOapifProvider::providerKey()
+{
+  return OAPIF_PROVIDER_KEY;
+}
+
 QString QgsOapifProvider::description() const
 {
   return OAPIF_PROVIDER_DESCRIPTION;

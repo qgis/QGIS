@@ -154,9 +154,9 @@ QPolygonF QgsSymbol::_getPolygonRing( QgsRenderContext &context, const QgsCurve 
   if ( correctRingOrientation )
   {
     // ensure consistent polygon ring orientation
-    if ( isExteriorRing && curve.orientation() != QgsCurve::Clockwise )
+    if ( isExteriorRing && curve.orientation() != Qgis::AngularDirection::Clockwise )
       std::reverse( poly.begin(), poly.end() );
-    else if ( !isExteriorRing && curve.orientation() != QgsCurve::CounterClockwise )
+    else if ( !isExteriorRing && curve.orientation() != Qgis::AngularDirection::CounterClockwise )
       std::reverse( poly.begin(), poly.end() );
   }
 
@@ -577,7 +577,22 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
 
   QgsSymbolRenderContext symbolContext( *context, QgsUnitTypes::RenderUnknownUnit, opacity, false, mRenderHints, nullptr );
   symbolContext.setSelected( selected );
-  symbolContext.setOriginalGeometryType( mType == Qgis::SymbolType::Fill ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::UnknownGeometry );
+  switch ( mType )
+  {
+    case Qgis::SymbolType::Marker:
+      symbolContext.setOriginalGeometryType( QgsWkbTypes::PointGeometry );
+      break;
+    case Qgis::SymbolType::Line:
+      symbolContext.setOriginalGeometryType( QgsWkbTypes::LineGeometry );
+      break;
+    case Qgis::SymbolType::Fill:
+      symbolContext.setOriginalGeometryType( QgsWkbTypes::PolygonGeometry );
+      break;
+    case Qgis::SymbolType::Hybrid:
+      symbolContext.setOriginalGeometryType( QgsWkbTypes::UnknownGeometry );
+      break;
+  }
+
   if ( patchShape )
     symbolContext.setPatchShape( *patchShape );
 
@@ -668,6 +683,7 @@ QImage QgsSymbol::asImage( QSize size, QgsRenderContext *customContext )
 
   QPainter p( &image );
   p.setRenderHint( QPainter::Antialiasing );
+  p.setRenderHint( QPainter::SmoothPixmapTransform );
 
   drawPreviewIcon( &p, size, customContext );
 
@@ -693,6 +709,9 @@ QImage QgsSymbol::bigSymbolPreviewImage( QgsExpressionContext *expressionContext
 
   QgsRenderContext context = QgsRenderContext::fromQPainter( &p );
   context.setFlag( Qgis::RenderContextFlag::RenderSymbolPreview );
+  context.setFlag( Qgis::RenderContextFlag::Antialiasing );
+  context.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms );
+  context.setPainterFlagsUsingContext( &p );
   if ( expressionContext )
     context.setExpressionContext( *expressionContext );
 

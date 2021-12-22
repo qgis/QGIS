@@ -32,6 +32,7 @@ class QgsTinMeshCreationAlgorithm: public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QString name() const override;
     QString displayName() const override;
     bool canExecute( QString *errorMessage ) const override;
@@ -45,6 +46,7 @@ class QgsTinMeshCreationAlgorithm: public QgsProcessingAlgorithm
 
   private:
     QStringList mAvailableFormat;
+    QMap<QString, QString> mDriverSuffix;
 
     struct Layer
     {

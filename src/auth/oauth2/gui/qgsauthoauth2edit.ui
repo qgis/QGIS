@@ -158,7 +158,7 @@
                </property>
                <property name="icon">
                 <iconset resource="oauth2_resources.qrc">
-                 <normaloff>:/oauth2method/oauth2_resources/export.svg</normaloff>:/oauth2method/oauth2_resources/export.svg</iconset>
+                 <normaloff>:/oauth2method/svg/export.svg</normaloff>:/oauth2method/svg/export.svg</iconset>
                </property>
                <property name="iconSize">
                 <size>
@@ -178,7 +178,7 @@
                </property>
                <property name="icon">
                 <iconset resource="oauth2_resources.qrc">
-                 <normaloff>:/oauth2method/oauth2_resources/import.svg</normaloff>:/oauth2method/oauth2_resources/import.svg</iconset>
+                 <normaloff>:/oauth2method/svg/import.svg</normaloff>:/oauth2method/svg/import.svg</iconset>
                </property>
               </widget>
              </item>
@@ -735,7 +735,7 @@
             </property>
             <property name="icon">
              <iconset resource="oauth2_resources.qrc">
-              <normaloff>:/oauth2method/oauth2_resources/fileopen.svg</normaloff>:/oauth2method/oauth2_resources/fileopen.svg</iconset>
+              <normaloff>:/oauth2method/svg/fileopen.svg</normaloff>:/oauth2method/svg/fileopen.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -783,7 +783,7 @@
             </property>
             <property name="icon">
              <iconset resource="oauth2_resources.qrc">
-              <normaloff>:/oauth2method/oauth2_resources/fileopen.svg</normaloff>:/oauth2method/oauth2_resources/fileopen.svg</iconset>
+              <normaloff>:/oauth2method/svg/fileopen.svg</normaloff>:/oauth2method/svg/fileopen.svg</iconset>
             </property>
            </widget>
           </item>

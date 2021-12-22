@@ -56,19 +56,19 @@
 #define QGSCOMPARENEARPOINT(point1,point2,epsilon) { \
     QGSCOMPARENEAR( point1.x(), point2.x(), epsilon ); \
     QGSCOMPARENEAR( point1.y(), point2.y(), epsilon ); \
-  }
+  }(void)(0)
 
 #define QGSCOMPARENEARRECTANGLE(rectangle1,rectangle2,epsilon) { \
     QGSCOMPARENEAR( rectangle1.xMinimum(), rectangle2.xMinimum(), epsilon ); \
     QGSCOMPARENEAR( rectangle1.xMaximum(), rectangle2.xMaximum(), epsilon ); \
     QGSCOMPARENEAR( rectangle1.yMinimum(), rectangle2.yMinimum(), epsilon ); \
     QGSCOMPARENEAR( rectangle1.yMaximum(), rectangle2.yMaximum(), epsilon ); \
-  }
+  }(void)(0)
 
 //sometimes GML attributes are in a different order - but that's ok
 #define QGSCOMPAREGML(result,expected) { \
     QCOMPARE( result.replace( QStringLiteral("ts=\" \" cs=\",\""), QStringLiteral("cs=\",\" ts=\" \"") ), expected ); \
-  }
+  }(void)(0)
 
 /**
  * QGIS unit test utilities.

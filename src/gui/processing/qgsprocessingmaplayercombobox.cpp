@@ -88,7 +88,7 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   mSelectButton->setToolTip( tr( "Select input" ) );
   layout->addWidget( mSelectButton );
   layout->setAlignment( mSelectButton, Qt::AlignTop );
-  if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() )
+  if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() || mParameter->type() == QgsProcessingParameterVectorLayer::typeName() )
   {
     mFeatureSourceMenu = new QMenu( this );
     QAction *selectFromFileAction = new QAction( tr( "Select File…" ), mFeatureSourceMenu );
@@ -147,6 +147,10 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   {
     filters = QgsMapLayerProxyModel::MeshLayer;
   }
+  else if ( mParameter->type() == QgsProcessingParameterPointCloudLayer::typeName() )
+  {
+    filters = QgsMapLayerProxyModel::PointCloudLayer;
+  }
   else if ( mParameter->type() == QgsProcessingParameterMapLayer::typeName() )
   {
     QList<int> dataTypes;
@@ -164,6 +168,8 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
       filters |= QgsMapLayerProxyModel::RasterLayer;
     if ( dataTypes.contains( QgsProcessing::TypeMesh ) )
       filters |= QgsMapLayerProxyModel::MeshLayer;
+    if ( dataTypes.contains( QgsProcessing::TypePointCloud ) )
+      filters |= QgsMapLayerProxyModel::PointCloudLayer;
     if ( !filters )
       filters = QgsMapLayerProxyModel::All;
   }

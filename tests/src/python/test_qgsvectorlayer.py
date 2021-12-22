@@ -23,7 +23,8 @@ from qgis.PyQt.QtCore import QDate, QDateTime, QVariant, Qt, QDateTime, QDate, Q
 from qgis.PyQt.QtGui import QPainter, QColor
 from qgis.PyQt.QtXml import QDomDocument
 
-from qgis.core import (QgsWkbTypes,
+from qgis.core import (Qgis,
+                       QgsWkbTypes,
                        QgsAction,
                        QgsAuxiliaryStorage,
                        QgsCoordinateTransformContext,
@@ -3467,6 +3468,126 @@ class TestQgsVectorLayerSourceChangedAttributesInBuffer(unittest.TestCase, Featu
         pass
 
 
+class TestQgsVectorLayerSourceChangedGeometriesAndAttributesInBuffer(unittest.TestCase, FeatureSourceTestCase):
+
+    @classmethod
+    def getSource(cls):
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&field=dt:datetime&field=date:date&field=time:time&key=pk',
+            'test', 'memory')
+        assert (vl.isValid())
+
+        f1 = QgsFeature()
+        f1.setAttributes([5, 200, 'a', 'b', 'c', QDateTime(2020, 4, 5, 1, 2, 3), QDate(2020, 4, 5), QTime(1, 2, 3)])
+
+        f2 = QgsFeature()
+        f2.setAttributes([3, -200, 'd', 'e', 'f', QDateTime(2020, 4, 5, 1, 2, 3), QDate(2020, 4, 5), QTime(1, 2, 3)])
+        f2.setGeometry(QgsGeometry.fromWkt('Point (-70.5 65.2)'))
+
+        f3 = QgsFeature()
+        f3.setAttributes([1, -100, 'g', 'h', 'i', QDateTime(2020, 4, 5, 1, 2, 3), QDate(2020, 4, 5), QTime(1, 2, 3)])
+
+        f4 = QgsFeature()
+        f4.setAttributes([2, -200, 'j', 'k', 'l', QDateTime(2020, 4, 5, 1, 2, 3), QDate(2020, 4, 5), QTime(1, 2, 3)])
+
+        f5 = QgsFeature()
+        f5.setAttributes([4, 400, 'm', 'n', 'o', QDateTime(2020, 4, 5, 1, 2, 3), QDate(2020, 4, 5), QTime(1, 2, 3)])
+
+        vl.dataProvider().addFeatures([f1, f2, f3, f4, f5])
+
+        ids = {f['pk']: f.id() for f in vl.getFeatures()}
+
+        # modify geometries in buffer
+        vl.startEditing()
+        vl.changeGeometry(ids[5], QgsGeometry.fromWkt('Point (-71.123 78.23)'))
+        vl.changeGeometry(ids[3], QgsGeometry())
+        vl.changeGeometry(ids[1], QgsGeometry.fromWkt('Point (-70.332 66.33)'))
+        vl.changeGeometry(ids[2], QgsGeometry.fromWkt('Point (-68.2 70.8)'))
+        vl.changeGeometry(ids[4], QgsGeometry.fromWkt('Point (-65.32 78.3)'))
+
+        # modify attributes in buffer
+        vl.changeAttributeValue(ids[5], 1, -200)
+        vl.changeAttributeValue(ids[5], 2, NULL)
+        vl.changeAttributeValue(ids[5], 3, 'NuLl')
+        vl.changeAttributeValue(ids[5], 4, '5')
+        vl.changeAttributeValue(ids[5], 5, QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)))
+        vl.changeAttributeValue(ids[5], 6, QDate(2020, 5, 2))
+        vl.changeAttributeValue(ids[5], 7, QTime(12, 13, 1))
+
+        vl.changeAttributeValue(ids[3], 1, 300)
+        vl.changeAttributeValue(ids[3], 2, 'Pear')
+        vl.changeAttributeValue(ids[3], 3, 'PEaR')
+        vl.changeAttributeValue(ids[3], 4, '3')
+        vl.changeAttributeValue(ids[3], 5, NULL)
+        vl.changeAttributeValue(ids[3], 6, NULL)
+        vl.changeAttributeValue(ids[3], 7, NULL)
+
+        vl.changeAttributeValue(ids[1], 1, 100)
+        vl.changeAttributeValue(ids[1], 2, 'Orange')
+        vl.changeAttributeValue(ids[1], 3, 'oranGe')
+        vl.changeAttributeValue(ids[1], 4, '1')
+        vl.changeAttributeValue(ids[1], 5, QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)))
+        vl.changeAttributeValue(ids[1], 6, QDate(2020, 5, 3))
+        vl.changeAttributeValue(ids[1], 7, QTime(12, 13, 14))
+
+        vl.changeAttributeValue(ids[2], 1, 200)
+        vl.changeAttributeValue(ids[2], 2, 'Apple')
+        vl.changeAttributeValue(ids[2], 3, 'Apple')
+        vl.changeAttributeValue(ids[2], 4, '2')
+        vl.changeAttributeValue(ids[2], 5, QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)))
+        vl.changeAttributeValue(ids[2], 6, QDate(2020, 5, 4))
+        vl.changeAttributeValue(ids[2], 7, QTime(12, 14, 14))
+
+        vl.changeAttributeValue(ids[4], 1, 400)
+        vl.changeAttributeValue(ids[4], 2, 'Honey')
+        vl.changeAttributeValue(ids[4], 3, 'Honey')
+        vl.changeAttributeValue(ids[4], 4, '4')
+        vl.changeAttributeValue(ids[4], 5, QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)))
+        vl.changeAttributeValue(ids[4], 6, QDate(2021, 5, 4))
+        vl.changeAttributeValue(ids[4], 7, QTime(13, 13, 14))
+
+        return vl
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        # Create test layer for FeatureSourceTestCase
+        cls.source = cls.getSource()
+
+    def testGetFeaturesSubsetAttributes2(self):
+        """ Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
+        its features as direct copies (due to implicit sharing of QgsFeature)
+        """
+        pass
+
+    def testGetFeaturesNoGeometry(self):
+        """ Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
+        its features as direct copies (due to implicit sharing of QgsFeature)
+        """
+        pass
+
+    def testOrderBy(self):
+        """ Skip order by tests - edited features are not sorted in iterators.
+        (Maybe they should be??)
+        """
+        pass
+
+    def testUniqueValues(self):
+        """ Skip unique values test - as noted in the docs this is unreliable when features are in the buffer
+        """
+        pass
+
+    def testMinimumValue(self):
+        """ Skip min values test - as noted in the docs this is unreliable when features are in the buffer
+        """
+        pass
+
+    def testMaximumValue(self):
+        """ Skip max values test - as noted in the docs this is unreliable when features are in the buffer
+        """
+        pass
+
+
 class TestQgsVectorLayerSourceDeletedFeaturesInBuffer(unittest.TestCase, FeatureSourceTestCase):
 
     @classmethod
@@ -3660,6 +3781,32 @@ class TestQgsVectorLayerTransformContext(unittest.TestCase):
         self.assertEqual(layer.featureCount(), 0)
         self.assertEqual(layer.selectedFeatureIds(), [])
 
+    def testCommitChangesReportsDeletedFeatureIDs(self):
+        """
+        Tests if commitChanges emits "featuresDeleted" with all deleted feature IDs,
+        e.g. in case (negative) temporary FIDs are converted into (positive) persistent FIDs.
+        """
+        temp_fids = []
+
+        def onFeaturesDeleted(deleted_fids):
+            self.assertEqual(len(deleted_fids), len(temp_fids),
+                             msg=f'featuresDeleted returned {len(deleted_fids)} instead of 2 deleted feature IDs: '
+                             f'{deleted_fids}')
+            for d in deleted_fids:
+                self.assertTrue(d in temp_fids)
+
+        layer = QgsVectorLayer("point?crs=epsg:4326&field=name:string", "Scratch point layer", "memory")
+        layer.featuresDeleted.connect(onFeaturesDeleted)
+
+        layer.startEditing()
+        layer.beginEditCommand('add 2 features')
+        layer.addFeature(QgsFeature(layer.fields()))
+        layer.addFeature(QgsFeature(layer.fields()))
+        layer.endEditCommand()
+        temp_fids.extend(layer.allFeatureIds())
+
+        layer.commitChanges()
+
     def testSubsetStringInvalidLayer(self):
         """
         Test that subset strings can be set on invalid layers, and retrieved later...
@@ -3682,6 +3829,12 @@ class TestQgsVectorLayerTransformContext(unittest.TestCase):
             'test', 'no')
         vl2.readXml(elem, QgsReadWriteContext())
         self.assertEqual(vl2.subsetString(), 'xxxxxxxxx')
+
+    def testLayerTypeFlags(self):
+        """Basic API test, DB providers that support query layers should test the flag individually"""
+
+        layer = QgsVectorLayer("point?crs=epsg:4326&field=name:string", "Scratch point layer", "memory")
+        self.assertEqual(layer.vectorLayerTypeFlags(), Qgis.VectorLayerTypeFlags())
 
     def testLayerWithoutProvider(self):
         """Test that we don't crash when invoking methods on a layer with a broken provider"""

@@ -172,7 +172,7 @@ The optional seed value can be used as a basis for generated values.
                                    QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthNotSet,
                                    QgsFieldConstraints::ConstraintOrigin origin = QgsFieldConstraints::ConstraintOriginNotSet );
 %Docstring
-Tests an attribute value to check whether it passes all constraints which are present on the corresponding field.
+Tests a feature attribute value to check whether it passes all constraints which are present on the corresponding field.
 Returns ``True`` if the attribute value is valid for the field. Any constraint failures will be reported in the errors argument.
 If the strength or origin parameter is set then only constraints with a matching strength/origin will be checked.
 %End
@@ -347,15 +347,45 @@ feature depending on the join's "upsert on edit" capabilities.
 .. versionadded:: 3.14
 %End
 
-    static QString guessFriendlyIdentifierField( const QgsFields &fields );
+
+    static QString guessFriendlyIdentifierField( const QgsFields &fields, bool *foundFriendly /Out/ = 0 ) /PyName=guessFriendlyIdentifierFieldV2/;
 %Docstring
-Given a set of ``fields``, attempts to pick the "most useful" field
+Given a set of fields, attempts to pick the "most useful" field
 for user-friendly identification of features.
 
 For instance, if a field called "name" is present, this will be returned.
 
 Assumes that the user has organized the data with the more "interesting" field
 names first. As such, "name" would be selected before "oldname", "othername", etc.
+
+If no friendly identifier is found, the function will fallback to the
+first available.
+
+:param fields: list of fields to pick a friendly identifier from
+
+:return: - field name
+         - foundFriendly: set to ``True`` if the returned field name is a friendly identifier
+
+.. versionadded:: 3.22
+%End
+
+
+    static QString guessFriendlyIdentifierField( const QgsFields &fields );
+%Docstring
+Given a set of fields, attempts to pick the "most useful" field
+for user-friendly identification of features.
+
+For instance, if a field called "name" is present, this will be returned.
+
+Assumes that the user has organized the data with the more "interesting" field
+names first. As such, "name" would be selected before "oldname", "othername", etc.
+
+If no friendly identifier is found, the function will fallback to the
+first available.
+
+:param fields: list of fields to pick a friendly identifier from
+
+:return: field name
 
 .. versionadded:: 3.18
 %End

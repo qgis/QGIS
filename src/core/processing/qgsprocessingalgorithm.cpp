@@ -30,7 +30,8 @@
 #include "qgsmeshlayer.h"
 #include "qgspointcloudlayer.h"
 #include "qgsexpressioncontextutils.h"
-
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
 
 QgsProcessingAlgorithm::~QgsProcessingAlgorithm()
 {
@@ -304,6 +305,82 @@ QString QgsProcessingAlgorithm::asPythonCommand( const QVariantMap &parameters, 
 
   s += QStringLiteral( " {%1})" ).arg( parts.join( ',' ) );
   return s;
+}
+
+QString QgsProcessingAlgorithm::asQgisProcessCommand( const QVariantMap &parameters, QgsProcessingContext &context, bool &ok ) const
+{
+  ok = true;
+  QStringList parts;
+  parts.append( QStringLiteral( "qgis_process" ) );
+  parts.append( QStringLiteral( "run" ) );
+  parts.append( id() );
+
+  QgsProcessingContext::ProcessArgumentFlags argumentFlags;
+  // we only include the project path argument if a project is actually required by the algorithm
+  if ( flags() & FlagRequiresProject )
+    argumentFlags |= QgsProcessingContext::ProcessArgumentFlag::IncludeProjectPath;
+
+  parts.append( context.asQgisProcessArguments( argumentFlags ) );
+
+  auto escapeIfNeeded = []( const QString & input ) -> QString
+  {
+    // play it safe and escape everything UNLESS it's purely alphanumeric characters (and a very select scattering of other common characters!)
+    const thread_local QRegularExpression nonAlphaNumericRx( QStringLiteral( "[^a-zA-Z0-9.\\-/_]" ) );
+    if ( nonAlphaNumericRx.match( input ).hasMatch() )
+    {
+      QString escaped = input;
+      escaped.replace( '\'', QLatin1String( "'\\''" ) );
+      return QStringLiteral( "'%1'" ).arg( escaped );
+    }
+    else
+    {
+      return input;
+    }
+  };
+
+  for ( const QgsProcessingParameterDefinition *def : mParameters )
+  {
+    if ( def->flags() & QgsProcessingParameterDefinition::FlagHidden )
+      continue;
+
+    if ( !parameters.contains( def->name() ) )
+      continue;
+
+    const QStringList partValues = def->valueAsStringList( parameters.value( def->name() ), context, ok );
+    if ( !ok )
+      return QString();
+
+    for ( const QString &partValue : partValues )
+    {
+      parts << QStringLiteral( "--%1=%2" ).arg( def->name(), escapeIfNeeded( partValue ) );
+    }
+  }
+
+  return parts.join( ' ' );
+}
+
+QVariantMap QgsProcessingAlgorithm::asMap( const QVariantMap &parameters, QgsProcessingContext &context ) const
+{
+  QVariantMap properties = context.exportToMap();
+
+  // we only include the project path argument if a project is actually required by the algorithm
+  if ( !( flags() & FlagRequiresProject ) )
+    properties.remove( QStringLiteral( "project_path" ) );
+
+  QVariantMap paramValues;
+  for ( const QgsProcessingParameterDefinition *def : mParameters )
+  {
+    if ( def->flags() & QgsProcessingParameterDefinition::FlagHidden )
+      continue;
+
+    if ( !parameters.contains( def->name() ) )
+      continue;
+
+    paramValues.insert( def->name(), def->valueAsJsonObject( parameters.value( def->name() ), context ) );
+  }
+
+  properties.insert( QStringLiteral( "inputs" ), paramValues );
+  return properties;
 }
 
 bool QgsProcessingAlgorithm::addParameter( QgsProcessingParameterDefinition *definition, bool createOutput )

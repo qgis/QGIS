@@ -31,17 +31,18 @@
 #include "wintoastlib.h"
 #include <Dbt.h>
 #include <memory>
+#include <type_traits>
 
 
-struct ITEMIDLISTDeleter
+struct LPITEMIDLISTDeleter
 {
-  void operator()( ITEMIDLIST *pidl )
+  void operator()( LPITEMIDLIST pidl )
   {
     ILFree( pidl );
   }
 };
 
-using ITEMIDLIST_unique_ptr = std::unique_ptr< ITEMIDLIST, ITEMIDLISTDeleter>;
+using ITEMIDLIST_unique_ptr = std::unique_ptr< std::remove_pointer_t< LPITEMIDLIST >, LPITEMIDLISTDeleter>;
 
 
 

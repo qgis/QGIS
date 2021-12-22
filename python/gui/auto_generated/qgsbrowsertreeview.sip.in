@@ -48,6 +48,11 @@ Returns the browser model
 
     void setSettingsSection( const QString &section );
 
+  protected:
+
+    virtual void keyPressEvent( QKeyEvent *event );
+
+
   protected slots:
     virtual void rowsInserted( const QModelIndex &parentIndex, int start, int end );
 

@@ -17,13 +17,12 @@
 #ifndef QGSMSSQLSOURCESELECT_H
 #define QGSMSSQLSOURCESELECT_H
 
-#include "ui_qgsdbsourceselectbase.h"
 #include "qgsguiutils.h"
-#include "qgsdbfilterproxymodel.h"
-#include "qgsmssqltablemodel.h"
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
-#include "qgsabstractdatasourcewidget.h"
+#include "qgsabstractdbsourceselect.h"
+#include "qgsmssqltablemodel.h"
+
 
 #include <QMap>
 #include <QPair>
@@ -58,7 +57,7 @@ class QgsMssqlSourceSelectDelegate : public QItemDelegate
  * for MSSQL databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsMssqlSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDbSourceSelectBase
+class QgsMssqlSourceSelect : public QgsAbstractDbSourceSelect
 {
     Q_OBJECT
 
@@ -90,7 +89,6 @@ class QgsMssqlSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qgs
 
     //! Determines the tables the user selected and closes the dialog
     void addButtonClicked() override;
-    void buildQuery();
 
     /**
      * Connects to the database using the stored connection parameters.
@@ -108,21 +106,17 @@ class QgsMssqlSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qgs
     void btnSave_clicked();
     //! Loads the selected connections from file
     void btnLoad_clicked();
-    void mSearchGroupBox_toggled( bool );
-    void mSearchTableEdit_textChanged( const QString &text );
-    void mSearchColumnComboBox_currentIndexChanged( const QString &text );
-    void mSearchModeComboBox_currentIndexChanged( const QString &text );
-    void setSql( const QModelIndex &index );
     //! Store the selected database
     void cmbConnections_activated( int );
     void setLayerType( const QgsMssqlLayerProperty &layerProperty );
-    void mTablesTreeView_clicked( const QModelIndex &index );
-    void mTablesTreeView_doubleClicked( const QModelIndex &index );
     void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString &regexp );
 
     void columnThreadFinished();
+
+  protected slots:
+    void setSql( const QModelIndex &index ) override;
 
 
   private:
@@ -149,8 +143,7 @@ class QgsMssqlSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qgs
     QMap<QString, QPair<QString, QIcon> > mLayerIcons;
 
     //! Model that acts as datasource for mTableTreeWidget
-    QgsMssqlTableModel mTableModel;
-    QgsDatabaseFilterProxyModel mProxyModel;
+    QgsMssqlTableModel *mTableModel = nullptr;
 
     QPushButton *mBuildQueryButton = nullptr;
 

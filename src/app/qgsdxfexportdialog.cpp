@@ -349,7 +349,7 @@ void QgsVectorLayerAndAttributeModel::applyVisibilityPreset( const QString &name
 
   if ( name.isEmpty() )
   {
-    const auto constLayers = QgisApp::instance()->mapCanvas()->layers();
+    const auto constLayers = QgisApp::instance()->mapCanvas()->layers( true );
     for ( const QgsMapLayer *ml : constLayers )
     {
       const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( ml );

@@ -323,7 +323,7 @@ void QgsExpressionTreeView::updateFunctionTree()
   loadExpressionContext();
 }
 
-void QgsExpressionTreeView::registerItem( const QString &group,
+QgsExpressionItem *QgsExpressionTreeView::registerItem( const QString &group,
     const QString &label,
     const QString &expressionText,
     const QString &helpText,
@@ -366,6 +366,7 @@ void QgsExpressionTreeView::registerItem( const QString &group,
     topLevelItem->setFont( font );
     mModel->appendRow( topLevelItem );
   }
+  return item;
 }
 
 void QgsExpressionTreeView::registerItemForAllGroups( const QStringList &groups, const QString &label, const QString &expressionText, const QString &helpText, QgsExpressionItem::ItemType type, bool highlightedItem, int sortOrder, const QStringList &tags )
@@ -414,7 +415,31 @@ void QgsExpressionTreeView::loadLayers()
   for ( ; layerIt != layers.constEnd(); ++layerIt )
   {
     QIcon icon = QgsIconUtils::iconForLayer( layerIt.value() );
-    registerItem( QStringLiteral( "Map Layers" ), layerIt.value()->name(), QStringLiteral( "'%1'" ).arg( layerIt.key() ), formatLayerHelp( layerIt.value() ), QgsExpressionItem::ExpressionNode, false, 99, icon );
+    QgsExpressionItem *parentItem = registerItem( QStringLiteral( "Map Layers" ), layerIt.value()->name(), QStringLiteral( "'%1'" ).arg( layerIt.key() ), formatLayerHelp( layerIt.value() ), QgsExpressionItem::ExpressionNode, false, 99, icon );
+    loadLayerFields( qobject_cast<QgsVectorLayer *>( layerIt.value() ), parentItem );
+  }
+
+}
+
+void QgsExpressionTreeView::loadLayerFields( QgsVectorLayer *layer, QgsExpressionItem *parentItem )
+{
+  if ( !layer )
+    return;
+
+  const QgsFields fields = layer->fields();
+  for ( int fieldIdx = 0; fieldIdx < fields.count(); ++fieldIdx )
+  {
+    const QgsField field = fields.at( fieldIdx );
+    QIcon icon = fields.iconForField( fieldIdx );
+    const QString label { field.displayNameWithAlias() };
+    QgsExpressionItem *item = new QgsExpressionItem( label, " '" + field.name() + "' ", QString(), QgsExpressionItem::Field );
+    item->setData( label, Qt::UserRole );
+    item->setData( 99, QgsExpressionItem::CUSTOM_SORT_ROLE );
+    item->setData( QStringList(), QgsExpressionItem::SEARCH_TAGS_ROLE );
+    item->setData( field.name(), QgsExpressionItem::ITEM_NAME_ROLE );
+    item->setData( layer->id(), QgsExpressionItem::LAYER_ID_ROLE );
+    item->setIcon( icon );
+    parentItem->appendRow( item );
   }
 }
 
@@ -743,7 +768,7 @@ void QgsExpressionTreeView::loadExpressionsFromJson( const QJsonDocument &expres
     QMessageBox::information( this,
                               tr( "Skipped Expression Imports" ),
                               QStringLiteral( "%1\n%2" ).arg( tr( "The following expressions have been skipped:" ),
-                                  skippedExpressionLabelsQuoted.join( QStringLiteral( ", " ) ) ) );
+                                  skippedExpressionLabelsQuoted.join( QLatin1String( ", " ) ) ) );
   }
 }
 

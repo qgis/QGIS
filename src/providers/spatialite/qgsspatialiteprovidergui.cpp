@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsspatialiteprovidergui.h"
+
 #include "qgsapplication.h"
 #include "qgsproviderguimetadata.h"
 #include "qgssourceselectprovider.h"
@@ -38,30 +40,28 @@ class QgsSpatialiteSourceSelectProvider : public QgsSourceSelectProvider
 };
 
 
-class QgsSpatiaLiteProviderGuiMetadata: public QgsProviderGuiMetadata
+
+QgsSpatiaLiteProviderGuiMetadata::QgsSpatiaLiteProviderGuiMetadata()
+  : QgsProviderGuiMetadata( QgsSpatiaLiteProvider::SPATIALITE_KEY )
 {
-  public:
-    QgsSpatiaLiteProviderGuiMetadata()
-      : QgsProviderGuiMetadata( QgsSpatiaLiteProvider::SPATIALITE_KEY )
-    {
-    }
+}
 
-    QList<QgsSourceSelectProvider *> sourceSelectProviders() override
-    {
-      QList<QgsSourceSelectProvider *> providers;
-      providers << new QgsSpatialiteSourceSelectProvider;
-      return providers;
-    }
+QList<QgsSourceSelectProvider *> QgsSpatiaLiteProviderGuiMetadata::sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> providers;
+  providers << new QgsSpatialiteSourceSelectProvider;
+  return providers;
+}
 
-    QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override
-    {
-      return QList<QgsDataItemGuiProvider *>()
-             << new QgsSpatiaLiteDataItemGuiProvider;
-    }
-};
+QList<QgsDataItemGuiProvider *> QgsSpatiaLiteProviderGuiMetadata::dataItemGuiProviders()
+{
+  return QList<QgsDataItemGuiProvider *>()
+         << new QgsSpatiaLiteDataItemGuiProvider;
+}
 
-
+#ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
 {
   return new QgsSpatiaLiteProviderGuiMetadata();
 }
+#endif

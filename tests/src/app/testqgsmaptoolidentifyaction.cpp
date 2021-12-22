@@ -63,7 +63,7 @@ class TestQgsMapToolIdentifyAction : public QObject
     void identifyMesh(); // test identification for mesh layer
     void identifyVectorTile();  // test identification for vector tile layer
     void identifyInvalidPolygons(); // test selecting invalid polygons
-    void clickxy(); // test if clicked_x and clicked_y variables are propagated
+    void clickxy(); // test if click_x and click_y variables are propagated
     void closestPoint();
 
   private:

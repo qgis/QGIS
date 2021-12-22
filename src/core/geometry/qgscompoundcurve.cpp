@@ -727,8 +727,13 @@ void QgsCompoundCurve::transform( const QTransform &t, double zTranslate, double
 void QgsCompoundCurve::addToPainterPath( QPainterPath &path ) const
 {
   QPainterPath pp;
+
   for ( const QgsCurve *curve : mCurves )
   {
+    if ( curve != mCurves.at( 0 ) && pp.currentPosition() != curve->startPoint().toQPointF() )
+    {
+      pp.lineTo( curve->startPoint().toQPointF() );
+    }
     curve->addToPainterPath( pp );
   }
   path.addPath( pp );
@@ -739,6 +744,10 @@ void QgsCompoundCurve::drawAsPolygon( QPainter &p ) const
   QPainterPath pp;
   for ( const QgsCurve *curve : mCurves )
   {
+    if ( curve != mCurves.at( 0 ) && pp.currentPosition() != curve->startPoint().toQPointF() )
+    {
+      pp.lineTo( curve->startPoint().toQPointF() );
+    }
     curve->addToPainterPath( pp );
   }
   p.drawPath( pp );
@@ -809,7 +818,7 @@ bool QgsCompoundCurve::deleteVertex( QgsVertexId position )
          mCurves.at( curveIds.at( 1 ).first )->numPoints() > 3 )
     {
       QgsPoint intermediatePoint;
-      QgsVertexId::VertexType type;
+      Qgis::VertexType type;
       mCurves.at( curveIds.at( 1 ).first ) ->pointAt( 2, intermediatePoint, type );
       mCurves.at( curveIds.at( 0 ).first )->moveVertex(
         QgsVertexId( 0, 0, mCurves.at( curveIds.at( 0 ).first )->numPoints() - 1 ), intermediatePoint );
@@ -1013,7 +1022,7 @@ double QgsCompoundCurve::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt
   return QgsGeometryUtils::closestSegmentFromComponents( mCurves, QgsGeometryUtils::Vertex, pt, segmentPt, vertexAfter, leftOf, epsilon );
 }
 
-bool QgsCompoundCurve::pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const
+bool QgsCompoundCurve::pointAt( int node, QgsPoint &point, Qgis::VertexType &type ) const
 {
   int currentVertexId = 0;
   for ( int j = 0; j < mCurves.size(); ++j )

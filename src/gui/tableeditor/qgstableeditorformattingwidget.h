@@ -71,7 +71,6 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, public 
      * Sets the cell background \a color to show in the widget.
      *
      * \see backgroundColorChanged()
-     * \see setForegroundColor()
      */
     void setBackgroundColor( const QColor &color );
 

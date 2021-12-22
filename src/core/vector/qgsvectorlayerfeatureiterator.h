@@ -272,7 +272,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     QgsCoordinateTransform mTransform;
 
     QgsGeometry mDistanceWithinGeom;
-    std::unique_ptr< QgsGeometryEngine > mDistanceWithinEngine;
+    std::shared_ptr< QgsGeometryEngine > mDistanceWithinEngine;
     double mDistanceWithin = 0;
 
     // only related to editing

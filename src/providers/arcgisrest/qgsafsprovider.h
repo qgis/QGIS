@@ -28,6 +28,7 @@
 #include "qgslayermetadata.h"
 
 #include "qgsprovidermetadata.h"
+#include "qgshttpheaders.h"
 
 /**
  * \brief A provider reading features from a ArcGIS Feature Service
@@ -78,6 +79,8 @@ class QgsAfsProvider : public QgsVectorDataProvider
     QgsAbstractVectorLayerLabeling *createLabeling( const QVariantMap &configuration = QVariantMap() ) const override;
     bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
 
+    static QString providerKey();
+
   private:
     bool mValid = false;
     std::shared_ptr<QgsAfsSharedData> mSharedData;
@@ -87,7 +90,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     QgsLayerMetadata mLayerMetadata;
     QVariantMap mRendererDataMap;
     QVariantList mLabelingDataList;
-    QgsStringMap mRequestHeaders;
+    QgsHttpHeaders mRequestHeaders;
 
     /**
      * Clears cache

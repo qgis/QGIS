@@ -18,6 +18,8 @@
 
 #include "qgis_app.h"
 
+#include <QString>
+
 #ifdef WIN32
 #include <windows.h>
 #include <dbghelp.h>
@@ -39,7 +41,19 @@ class APP_EXPORT QgsCrashHandler
 
 #ifdef _MSC_VER
     static LONG WINAPI handle( LPEXCEPTION_POINTERS ExceptionInfo );
+#else
+    static void handle( int );
 #endif
+
+    static QString sPythonCrashLogFile;
+
+  private:
+
+    static void handleCrash( int processId,
+                             int threadId,
+                             const QString &symbolPath,
+                             const QString &ptrStr
+                           );
 };
 
 

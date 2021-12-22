@@ -279,27 +279,32 @@ QString QgsGdalProvider::dataSourceUri( bool expandAuthConfig ) const
 {
   if ( expandAuthConfig && QgsDataProvider::dataSourceUri( ).contains( QLatin1String( "authcfg" ) ) )
   {
-    QString uri( QgsDataProvider::dataSourceUri() );
-    // Check for authcfg
-    QRegularExpression authcfgRe( R"raw(authcfg='?([^'\s]+)'?)raw" );
-    QRegularExpressionMatch match;
-    if ( uri.contains( authcfgRe, &match ) )
-    {
-      uri = uri.replace( match.captured( 0 ), QString() );
-      QString configId( match.captured( 1 ) );
-      QStringList connectionItems;
-      connectionItems << uri;
-      if ( QgsApplication::authManager()->updateDataSourceUriItems( connectionItems, configId, QStringLiteral( "gdal" ) ) )
-      {
-        uri = connectionItems.first( );
-      }
-    }
-    return uri;
+    return QgsGdalProvider::expandAuthConfig( QgsDataProvider::dataSourceUri() );
   }
   else
   {
     return QgsDataProvider::dataSourceUri();
   }
+}
+
+QString QgsGdalProvider::expandAuthConfig( const QString &dsName )
+{
+  QString uri( dsName );
+  // Check for authcfg
+  QRegularExpression authcfgRe( " authcfg='([^']+)'" );
+  QRegularExpressionMatch match;
+  if ( uri.contains( authcfgRe, &match ) )
+  {
+    uri = uri.remove( match.captured( 0 ) );
+    QString configId( match.captured( 1 ) );
+    QStringList connectionItems;
+    connectionItems << uri;
+    if ( QgsApplication::authManager()->updateDataSourceUriItems( connectionItems, configId, QStringLiteral( "ogr" ) ) )
+    {
+      uri = connectionItems.first( );
+    }
+  }
+  return uri;
 }
 
 QgsGdalProvider *QgsGdalProvider::clone() const
@@ -2645,7 +2650,7 @@ bool QgsGdalProvider::isValidRasterFileName( QString const &fileNameQString, QSt
 
   CPLErrorReset();
 
-  QString fileName = fileNameQString;
+  QString fileName = QgsGdalProvider::expandAuthConfig( fileNameQString );
 
   // Try to open using VSIFileHandler (see qgsogrprovider.cpp)
   // TODO suppress error messages and report in debug, like in OGR provider
@@ -3617,7 +3622,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
 
   QgsGdalProviderBase::registerGdalDrivers();
 
-  QString gdalUri = uri;
+  QString gdalUri = QgsGdalProvider::expandAuthConfig( uri );
 
   QVariantMap uriParts = decodeUri( gdalUri );
 
@@ -3650,7 +3655,9 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
       QgsDebugMsgLevel( QStringLiteral( "wildcards: " ) + sWildcards.join( ' ' ), 2 );
     } );
 
-    const QString suffix = pathInfo.suffix().toLower();
+    const QString suffix = uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty()
+                           ? pathInfo.suffix().toLower()
+                           : QFileInfo( uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString() ).suffix().toLower();
 
     if ( !sExtensions.contains( suffix ) )
     {
@@ -3692,7 +3699,9 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
     details.setType( QgsMapLayerType::RasterLayer );
     details.setProviderKey( QStringLiteral( "gdal" ) );
     details.setUri( uri );
-    details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( path ) );
+    details.setName( uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty()
+                     ? QgsProviderUtils::suggestLayerNameFromFilePath( path )
+                     : QFileInfo( uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString() ).fileName() );
     if ( QgsGdalUtils::multiLayerFileExtensions().contains( suffix ) )
     {
       // uri may contain sublayers, but query flags prevent us from examining them

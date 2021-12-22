@@ -39,8 +39,7 @@ void MDAL::SelafinFile::initialize()
   {
     throw MDAL::Error( MDAL_Status::Err_FileNotFound, "Did not find file " + mFileName );
   }
-
-  mIn = std::ifstream( mFileName, std::ifstream::in | std::ifstream::binary );
+  mIn = MDAL::openInputFile( mFileName, std::ios_base::in | std::ios_base::binary );
   if ( !mIn )
     throw MDAL::Error( MDAL_Status::Err_FileNotFound, "File " + mFileName + " could not be open" ); // Couldn't open the file
 
@@ -68,9 +67,8 @@ void MDAL::SelafinFile::initialize()
   mParsed = false;
 }
 
-void MDAL::SelafinFile::parseFile()
+void MDAL::SelafinFile::parseMeshFrame()
 {
-
   /* 1 record containing the title of the study (72 characters) and a 8 characters
   string indicating the type of format (SERAFIN or SERAFIND)
   */
@@ -116,7 +114,7 @@ void MDAL::SelafinFile::parseFile()
   mXOrigin = static_cast<double>( mParameters[2] );
   mYOrigin = static_cast<double>( mParameters[3] );
 
-  if ( mParameters[6] != 0 )
+  if ( mParameters[6] != 0 && mParameters[6] != 1 ) //some tools set this value to one for 2D mesh
   {
     // would need additional parsing
     throw MDAL::Error( MDAL_Status::Err_MissingDriver, "File " + mFileName + " would need additional parsing" );
@@ -160,10 +158,15 @@ void MDAL::SelafinFile::parseFile()
 
   /* 1 record containing table X (real array of dimension NPOIN containing the
      abscisse of the points)
+     AND here, we can know if float of this file is simple or double precision:
+     result of size of record divided by number of vertices gives the byte size of the float:
+     -> 4 : simple precision -> 8 : double precision
   */
   size = mVerticesCount;
-  if ( ! checkDoubleArraySize( size ) )
-    throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "File format problem while reading abscisse values" );
+  size_t recordSize = readSizeT();
+  mStreamInFloatPrecision = recordSize / size == 4;
+  if ( !mStreamInFloatPrecision && recordSize / size != 8 )
+    throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "File format problem: could not determine if simple or double precision" );
   mXStreamPosition = passThroughDoubleArray( size );
 
   /* 1 record containing table Y (real array of dimension NPOIN containing the
@@ -173,6 +176,11 @@ void MDAL::SelafinFile::parseFile()
   if ( ! checkDoubleArraySize( size ) )
     throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "File format problem while reading abscisse values" );
   mYStreamPosition = passThroughDoubleArray( size );
+}
+
+void MDAL::SelafinFile::parseFile()
+{
+  parseMeshFrame();
 
   /* Next, for each time step, the following are found:
      - 1 record containing time T (real),
@@ -205,20 +213,6 @@ std::string MDAL::SelafinFile::readHeader()
 
   std::string title = header.substr( 0, 72 );
   title = trim( title );
-
-  std::string varType = header.substr( 72, 8 );
-  varType = trim( varType );
-
-  if ( varType == "SERAFIN" )
-  {
-    mStreamInFloatPrecision = true;
-  }
-  else if ( varType == "SERAFIND" )
-  {
-    mStreamInFloatPrecision = false;
-  }
-  else
-    throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Not found stream precision" );
 
   if ( header.size() < 80 ) // IF "SERAFIN", the readString method remove the last character that is a space
     header.append( " " );
@@ -616,7 +610,7 @@ void MDAL::SelafinFile::ignoreArrayLength( )
 MDAL::DriverSelafin::DriverSelafin():
   Driver( "SELAFIN",
           "Selafin File",
-          "*.slf",
+          "*.slf;;*.ser;;*.geo;;*.res",
           Capability::ReadMesh | Capability::SaveMesh | Capability::WriteDatasetsOnVertices | Capability::ReadDatasets
         )
 {
@@ -636,7 +630,7 @@ bool MDAL::DriverSelafin::canReadMesh( const std::string &uri )
   try
   {
     SelafinFile file( uri );
-    file.readHeader();
+    file.parseMeshFrame();
     return true;
   }
   catch ( ... )
@@ -652,7 +646,7 @@ bool MDAL::DriverSelafin::canReadDatasets( const std::string &uri )
   try
   {
     SelafinFile file( uri );
-    file.readHeader();
+    file.parseMeshFrame();
     return true;
   }
   catch ( ... )
@@ -985,7 +979,7 @@ static void writeVertices( std::ofstream &file, MDAL::Mesh *mesh )
 
 void MDAL::DriverSelafin::save( const std::string &fileName, const std::string &, MDAL::Mesh *mesh )
 {
-  std::ofstream file( fileName.c_str(), std::ofstream::binary );
+  std::ofstream file = MDAL::openOutputFile( fileName.c_str(), std::ofstream::binary );
 
   std::string header( "Selafin file created by MDAL library" );
   std::string remainingStr( " ", 72 - header.size() );
@@ -1156,7 +1150,7 @@ bool MDAL::SelafinFile::addDatasetGroup( MDAL::DatasetGroup *datasetGroup )
   tempFileName.append( ".tmp" );
 
   mIn.seekg( 0, mIn.beg );
-  std::ofstream out( tempFileName, std::ios_base::binary );
+  std::ofstream out = MDAL::openOutputFile( tempFileName, std::ios_base::binary );
   if ( ! out.is_open() )
     throw MDAL::Error( MDAL_Status::Err_FailToWriteToDisk, "Unable to add dataset in file" );
 

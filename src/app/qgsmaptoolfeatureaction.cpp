@@ -63,7 +63,7 @@ void QgsMapToolFeatureAction::canvasReleaseEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  if ( !mCanvas->layers().contains( layer ) )
+  if ( !mCanvas->layers( true ).contains( layer ) )
   {
     // do not run actions on hidden layers
     return;

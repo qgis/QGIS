@@ -94,7 +94,7 @@ MDAL::DriverBinaryDat::~DriverBinaryDat() = default;
 
 bool MDAL::DriverBinaryDat::canReadDatasets( const std::string &uri )
 {
-  std::ifstream in( uri, std::ifstream::in | std::ifstream::binary );
+  std::ifstream in = MDAL::openInputFile( uri, std::ifstream::in | std::ifstream::binary );
   int version;
 
   if ( read( in, reinterpret_cast< char * >( &version ), 4 ) )
@@ -127,7 +127,7 @@ void MDAL::DriverBinaryDat::load( const std::string &datFile, MDAL::Mesh *mesh )
     return;
   }
 
-  std::ifstream in( mDatFile, std::ifstream::in | std::ifstream::binary );
+  std::ifstream in = MDAL::openInputFile( mDatFile, std::ifstream::in | std::ifstream::binary );
 
   // implementation based on information from:
   // http://www.xmswiki.com/wiki/SMS:Binary_Dataset_Files_*.dat
@@ -393,7 +393,7 @@ bool MDAL::DriverBinaryDat::persist( MDAL::DatasetGroup *group )
 {
   assert( group->dataLocation() == MDAL_DataLocation::DataOnVertices );
 
-  std::ofstream out( group->uri(), std::ofstream::out | std::ofstream::binary );
+  std::ofstream out = MDAL::openOutputFile( group->uri(), std::ofstream::out | std::ofstream::binary );
 
   // implementation based on information from:
   // http://www.xmswiki.com/wiki/SMS:Binary_Dataset_Files_*.dat

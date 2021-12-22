@@ -308,6 +308,7 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
 
   connect( mSelectionHandler.get(), &QgsMapToolSelectionHandler::geometryChanged, this, [this]( Qt::KeyboardModifiers modifiers )
   {
+    mIsSelectingPolygonInProgress = false;
     selectByGeometry( mSelectionHandler->selectedGeometry(), modifiers );
   } );
 
@@ -622,6 +623,7 @@ bool QgsMapToolEditMeshFrame::populateContextMenuWithEvent( QMenu *menu, QgsMapM
   switch ( mCurrentState )
   {
     case Digitizing:
+    case SelectingByPolygon:
     {
       QList<QAction * >  newActions;
       QList<QAction * >  lastActions;
@@ -634,7 +636,8 @@ bool QgsMapToolEditMeshFrame::populateContextMenuWithEvent( QMenu *menu, QgsMapM
         newActions << mActionRemoveVerticesFillingHole << mActionRemoveVerticesWithoutFillingHole;
       }
 
-      if ( !mSelectedFaces.isEmpty() || mCurrentFaceIndex != -1 )
+      if ( !mSelectedFaces.isEmpty() ||
+           ( mCurrentFaceIndex != -1 && mCurrentState == Digitizing ) )
       {
         newActions << mActionRemoveFaces;
         lastActions << mActionFacesRefinement;
@@ -670,7 +673,6 @@ bool QgsMapToolEditMeshFrame::populateContextMenuWithEvent( QMenu *menu, QgsMapM
     case AddingNewFace:
     case Selecting:
     case MovingSelection:
-    case SelectingByPolygon:
     case ForceByLines:
       return false;
   }
@@ -683,7 +685,7 @@ QgsMapTool::Flags QgsMapToolEditMeshFrame::flags() const
   switch ( mCurrentState )
   {
     case Digitizing:
-      if ( !mSelectedVertices.isEmpty() )
+      if ( !mCadDockWidget->cadEnabled() || !mSelectedVertices.isEmpty() || mCurrentFaceIndex != -1 )
         return QgsMapTool::Flags() | QgsMapTool::ShowContextMenu;
       FALLTHROUGH
     case AddingNewFace:
@@ -696,6 +698,88 @@ QgsMapTool::Flags QgsMapToolEditMeshFrame::flags() const
   }
 
   return QgsMapTool::Flags();
+}
+
+static QList<QgsMapToolIdentify::IdentifyResult> searchFeatureOnMap( QgsMapMouseEvent *e, QgsMapCanvas *canvas, const QList<QgsWkbTypes::GeometryType> &geomType )
+{
+  QList<QgsMapToolIdentify::IdentifyResult> results;
+  const QMap< QString, QString > derivedAttributes;
+
+  QgsPointXY mapPoint = e->mapPoint();
+  double x = mapPoint.x(), y = mapPoint.y();
+  const double sr = QgsMapTool::searchRadiusMU( canvas );
+
+  const QList<QgsMapLayer *> layers = canvas->layers( true );
+  for ( QgsMapLayer *layer : layers )
+  {
+    if ( layer->type() == QgsMapLayerType::VectorLayer )
+    {
+      QgsVectorLayer *vectorLayer = static_cast<QgsVectorLayer *>( layer );
+
+      bool typeIsSelectable = false;
+      for ( const QgsWkbTypes::GeometryType &type : geomType )
+        if ( vectorLayer->geometryType() == type )
+        {
+          typeIsSelectable = true;
+          break;
+        }
+      if ( typeIsSelectable )
+      {
+        QgsRectangle rect( x - sr, y - sr, x + sr, y + sr );
+        QgsCoordinateTransform transform = canvas->mapSettings().layerTransform( vectorLayer );
+
+        try
+        {
+          rect = transform.transformBoundingBox( rect, Qgis::TransformDirection::Reverse );
+        }
+        catch ( QgsCsException & )
+        {
+          QgsDebugMsg( QStringLiteral( "Could not transform geometry to layer CRS" ) );
+        }
+
+        QgsFeatureIterator fit = vectorLayer->getFeatures( QgsFeatureRequest()
+                                 .setFilterRect( rect )
+                                 .setFlags( QgsFeatureRequest::ExactIntersect ) );
+        QgsFeature f;
+        while ( fit.nextFeature( f ) )
+        {
+          results << QgsMapToolIdentify::IdentifyResult( vectorLayer, f, derivedAttributes );
+        }
+      }
+    }
+  }
+
+  return results;
+}
+
+void QgsMapToolEditMeshFrame::forceByLineBySelectedFeature( QgsMapMouseEvent *e )
+{
+  const QList<QgsMapToolIdentify::IdentifyResult> &results =
+    searchFeatureOnMap( e, mCanvas, QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PolygonGeometry << QgsWkbTypes::LineGeometry );
+
+  QgsIdentifyMenu *menu = new QgsIdentifyMenu( mCanvas );
+  menu->setExecWithSingleResult( true );
+  menu->setAllowMultipleReturn( false );
+  const QPoint globalPos = mCanvas->mapToGlobal( QPoint( e->pos().x() + 5, e->pos().y() + 5 ) );
+  const QList<QgsMapToolIdentify::IdentifyResult> selectedFeatures = menu->exec( results, globalPos );
+  menu->deleteLater();
+
+  if ( !selectedFeatures.empty() && selectedFeatures[0].mFeature.hasGeometry() )
+  {
+    QgsCoordinateTransform transform = mCanvas->mapSettings().layerTransform( selectedFeatures.at( 0 ).mLayer );
+    QgsGeometry geom = selectedFeatures[0].mFeature.geometry();
+    try
+    {
+      geom.transform( transform );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugMsg( QStringLiteral( "Could not transform geometry to layer CRS" ) );
+    }
+    forceByLine( geom );
+  }
+
+  return;
 }
 
 void QgsMapToolEditMeshFrame::cadCanvasPressEvent( QgsMapMouseEvent *e )
@@ -723,7 +807,37 @@ void QgsMapToolEditMeshFrame::cadCanvasPressEvent( QgsMapMouseEvent *e )
       break;
     case SelectingByPolygon:
       if ( mSelectionHandler )
-        mSelectionHandler->canvasPressEvent( e );
+      {
+        if ( e->button() == Qt::RightButton )
+        {
+          // here, quite tricky because 3 possibilities:
+          // - a polygon has started to be digitized for selection -> right click validate the selection
+          // - right click on an existing vector layer feature -> a menu is executed to choose a feature
+          // - other case -> context menu of mesh editing to apply an edit on selected element
+          // The last case is launched only if the other cases do not appears
+          // With the selection handler, if we can know if the selecting polygon change, that means the first case appears,
+          // we can't know if a feature is found or not (if the user do not choose a feature, nothing happen like if no feature was found).
+          // The workaround is to check if a feature exist under the mouse before sending the event to the selection handler.
+          // This is not ideal because that leads to a double search but no better idea for now to allow the editing context menu with selecting by polygon
+
+          bool hasSelectableFeature = !searchFeatureOnMap( e, mCanvas, QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PolygonGeometry ).isEmpty();
+
+          if ( hasSelectableFeature || mIsSelectingPolygonInProgress )
+            mSelectionHandler->canvasPressEvent( e );
+          else
+          {
+            QMenu menu;
+            populateContextMenuWithEvent( &menu, e );
+            menu.exec( e->globalPos() );
+          }
+        }
+        else
+        {
+          mIsSelectingPolygonInProgress = true;
+          mSelectionHandler->canvasPressEvent( e );
+        }
+      }
+
       break;
   }
 
@@ -787,8 +901,9 @@ void QgsMapToolEditMeshFrame::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       }
       else if ( matchPoint.isValid() && matchPoint.layer() && QgsWkbTypes::hasZ( matchPoint.layer()->wkbType() ) )
       {
+        mForceByLineRubberBand->movePoint( mapPoint );
         if ( mZValueWidget )
-          mZValueWidget->setZValue( e->mapPointMatch().interpolatedPoint().z() );
+          mZValueWidget->setZValue( e->mapPointMatch().interpolatedPoint( mCanvas->mapSettings().destinationCrs() ).z() );
       }
       else
       {
@@ -938,8 +1053,11 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           if ( e->mapPointMatch().isValid() &&
                QgsWkbTypes::hasZ( e->mapPointMatch().layer()->wkbType() ) )
           {
+            const QgsMeshVertex mapPointInMapCoordinate =
+              QgsMeshVertex( mapPoint.x(), mapPoint.y(), e->mapPointMatch().interpolatedPoint( mCanvas->mapSettings().destinationCrs() ).z() );
+
             const QgsMeshVertex &mapPointInNativeCoordinate =
-              mCurrentLayer->triangularMesh()->triangularToNativeCoordinates( QgsMeshVertex( mapPoint.x(), mapPoint.y(), e->mapPointMatch().interpolatedPoint().z() ) );
+              mCurrentLayer->triangularMesh()->triangularToNativeCoordinates( mapPointInMapCoordinate ) ;
             mCurrentEditor->changeCoordinates( verticesIndexes,
                                                QList<QgsPoint>()
                                                << mapPointInNativeCoordinate ) ;
@@ -1177,6 +1295,11 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
       break;
     case Selecting:
     case SelectingByPolygon:
+      if ( e->key() == Qt::Key_Escape )
+      {
+        clearSelection();
+        consumned = true;
+      }
       break;
   }
 
@@ -1591,12 +1714,27 @@ void QgsMapToolEditMeshFrame::setSelectedFaces( const QList<int> newSelectedFace
 
 void QgsMapToolEditMeshFrame::removeSelectedVerticesFromMesh( bool fillHole )
 {
-  QgsMeshEditingError error = mCurrentEditor->removeVertices( mSelectedVertices.keys(), fillHole );
-  if ( error != QgsMeshEditingError() )
+  if ( fillHole )
   {
-    QgisApp::instance()->messageBar()->pushWarning(
-      tr( "Mesh editing" ),
-      tr( "removing the vertex %1 leads to a topological error, operation canceled." ).arg( error.elementIndex ) );
+
+    QList<int> remainingVertex = mCurrentEditor->removeVerticesFillHoles( mSelectedVertices.keys() );
+
+    if ( !remainingVertex.isEmpty() )
+    {
+      QgisApp::instance()->messageBar()->pushWarning(
+        tr( "Mesh editing" ),
+        tr( "%n vertices were not removed", nullptr, remainingVertex.count() ) );
+    }
+  }
+  else
+  {
+    QgsMeshEditingError error = mCurrentEditor->removeVerticesWithoutFillHoles( mSelectedVertices.keys() );
+    if ( error != QgsMeshEditingError() )
+    {
+      QgisApp::instance()->messageBar()->pushWarning(
+        tr( "Mesh editing" ),
+        tr( "removing the vertex %1 leads to a topological error, operation canceled." ).arg( error.elementIndex ) );
+    }
   }
 }
 
@@ -1912,8 +2050,6 @@ void QgsMapToolEditMeshFrame::prepareSelection()
   }
 
   mConcernedFaceBySelection.clear();
-  QMap<int, SelectedVertexData> movingVertices;
-
 
   double xMin = std::numeric_limits<double>::max();
   double xMax = -std::numeric_limits<double>::max();
@@ -2151,6 +2287,8 @@ void QgsMapToolEditMeshFrame::forceByLineReleaseEvent( QgsMapMouseEvent *e )
 
   if ( e->button() == Qt::LeftButton )
   {
+    double zValue = currentZValue();
+
     if ( mCurrentVertexIndex != -1 )
     {
       const QgsPointXY currentPoint =   mapVertexXY( mCurrentVertexIndex );
@@ -2160,10 +2298,16 @@ void QgsMapToolEditMeshFrame::forceByLineReleaseEvent( QgsMapMouseEvent *e )
     }
     else
     {
+      if ( e->mapPointMatch().isValid() )
+      {
+        QgsPoint layerPoint =  e->mapPointMatch().interpolatedPoint( mCanvas->mapSettings().destinationCrs() );
+        zValue = layerPoint.z();
+      }
+
       mForceByLineRubberBand->addPoint( mapPoint );
     }
 
-    mForcingLineZValue.append( currentZValue() );
+    mForcingLineZValue.append( zValue );
   }
   else if ( e->button() == Qt::RightButton )
   {
@@ -2191,72 +2335,6 @@ void QgsMapToolEditMeshFrame::forceByLineReleaseEvent( QgsMapMouseEvent *e )
     mForceByLineRubberBand->reset( QgsWkbTypes::LineGeometry );
     mForcingLineZValue.clear();
   }
-}
-
-void QgsMapToolEditMeshFrame::forceByLineBySelectedFeature( QgsMapMouseEvent *e )
-{
-  QList<QgsMapToolIdentify::IdentifyResult> results;
-  const QMap< QString, QString > derivedAttributes;
-
-  QgsPointXY mapPoint = e->mapPoint();
-  double x = mapPoint.x(), y = mapPoint.y();
-  const double sr = QgsMapTool::searchRadiusMU( mCanvas );
-
-  const QList<QgsMapLayer *> layers = mCanvas->layers();
-  for ( QgsMapLayer *layer : layers )
-  {
-    if ( layer->type() == QgsMapLayerType::VectorLayer )
-    {
-      QgsVectorLayer *vectorLayer = static_cast<QgsVectorLayer *>( layer );
-      if ( vectorLayer->geometryType() == QgsWkbTypes::PolygonGeometry ||
-           vectorLayer->geometryType() == QgsWkbTypes::LineGeometry )
-      {
-        QgsRectangle rect( x - sr, y - sr, x + sr, y + sr );
-        QgsCoordinateTransform transform = mCanvas->mapSettings().layerTransform( vectorLayer );
-
-        try
-        {
-          rect = transform.transformBoundingBox( rect, Qgis::TransformDirection::Reverse );
-        }
-        catch ( QgsCsException &exception )
-        {
-          QgsDebugMsg( QStringLiteral( "Could not transform geometry to layer CRS" ) );
-        }
-
-        QgsFeatureIterator fit = vectorLayer->getFeatures( QgsFeatureRequest()
-                                 .setFilterRect( rect )
-                                 .setFlags( QgsFeatureRequest::ExactIntersect ) );
-        QgsFeature f;
-        while ( fit.nextFeature( f ) )
-        {
-          results << QgsMapToolIdentify::IdentifyResult( vectorLayer, f, derivedAttributes );
-        }
-      }
-    }
-  }
-
-  QgsIdentifyMenu *menu = new QgsIdentifyMenu( mCanvas );
-  menu->setExecWithSingleResult( true );
-  const QPoint globalPos = mCanvas->mapToGlobal( QPoint( e->pos().x() + 5, e->pos().y() + 5 ) );
-  const QList<QgsMapToolIdentify::IdentifyResult> selectedFeatures = menu->exec( results, globalPos );
-  menu->deleteLater();
-
-  if ( !selectedFeatures.empty() && selectedFeatures[0].mFeature.hasGeometry() )
-  {
-    QgsCoordinateTransform transform = mCanvas->mapSettings().layerTransform( selectedFeatures.at( 0 ).mLayer );
-    QgsGeometry geom = selectedFeatures[0].mFeature.geometry();
-    try
-    {
-      geom.transform( transform );
-    }
-    catch ( QgsCsException &exception )
-    {
-      QgsDebugMsg( QStringLiteral( "Could not transform geometry to layer CRS" ) );
-    }
-    forceByLine( geom );
-  }
-
-  return;
 }
 
 void QgsMapToolEditMeshFrame::forceByLine( const QgsGeometry &lineGeometry )

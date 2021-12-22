@@ -139,6 +139,9 @@ a Delaunay triangulation on provided existing vertex.
 Constructor
 %End
 
+    virtual QString text() const;
+
+
 };
 
 /************************************************************************

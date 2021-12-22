@@ -83,7 +83,7 @@ void QgsAuthOAuth2Edit::initGui()
   btnTokenClear->setMaximumHeight( 20 );
   btnTokenClear->setText( tr( "Tokens" ) );
   btnTokenClear->setToolTip( tr( "Remove cached tokens" ) );
-  btnTokenClear->setIcon( QIcon( QStringLiteral( ":/oauth2method/oauth2_resources/close.svg" ) ) );
+  btnTokenClear->setIcon( QIcon( QStringLiteral( ":/oauth2method/svg/close.svg" ) ) );
   btnTokenClear->setIconSize( QSize( 12, 12 ) );
   btnTokenClear->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
   btnTokenClear->setEnabled( hasTokenCacheFile() );

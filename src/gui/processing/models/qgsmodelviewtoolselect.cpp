@@ -75,8 +75,6 @@ void QgsModelViewToolSelect::modelPressEvent( QgsModelViewMouseEvent *event )
 
   QgsModelComponentGraphicItem *selectedItem = nullptr;
 
-  QList<QgsModelComponentGraphicItem *> selectedItems = scene()->selectedComponentItems();
-
   //select topmost item at position of event
   selectedItem = scene()->componentItemAt( event->modelPoint() );
 

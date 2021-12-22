@@ -16,6 +16,7 @@
  ***************************************************************************/
 #include "qgsnewarcgisrestconnection.h"
 #include "qgsauthsettingswidget.h"
+#include "qgshttpheaderwidget.h"
 #include "qgssettings.h"
 #include "qgshelp.h"
 #include "qgsgui.h"
@@ -62,7 +63,7 @@ QgsNewArcGisRestConnectionDialog::QgsNewArcGisRestConnectionDialog( QWidget *par
     const QString credentialsKey = "qgis/" + mCredentialsBaseKey + '/' + connectionName;
     txtName->setText( connectionName );
     txtUrl->setText( settings.value( key + "/url" ).toString() );
-    mRefererLineEdit->setText( settings.value( key + "/referer" ).toString() );
+    mHttpHeaders->setFromSettings( settings, key );
 
     // portal
     mContentEndPointLineEdit->setText( settings.value( key + "/content_endpoint" ).toString() );
@@ -193,8 +194,7 @@ void QgsNewArcGisRestConnectionDialog::accept()
 
   settings.setValue( credentialsKey + "/authcfg", mAuthSettings->configId() );
 
-  if ( mHttpGroupBox->isVisible() )
-    settings.setValue( key + "/referer", mRefererLineEdit->text() );
+  mHttpHeaders->updateSettings( settings, key );
 
   settings.setValue( mBaseKey + "/selected", txtName->text() );
 

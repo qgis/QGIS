@@ -13,8 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgswcsprovider.h"
+#include "qgswcsprovidergui.h"
 
+#include "qgswcsprovider.h"
 #include "qgswcssourceselect.h"
 #include "qgssourceselectprovider.h"
 #include "qgsproviderguimetadata.h"
@@ -37,30 +38,28 @@ class QgsWcsSourceSelectProvider : public QgsSourceSelectProvider
 };
 
 
-class QgsWcsProviderGuiMetadata: public QgsProviderGuiMetadata
+QgsWcsProviderGuiMetadata::QgsWcsProviderGuiMetadata()
+  : QgsProviderGuiMetadata( QgsWcsProvider::WCS_KEY )
 {
-  public:
-    QgsWcsProviderGuiMetadata()
-      : QgsProviderGuiMetadata( QgsWcsProvider::WCS_KEY )
-    {
-    }
+}
 
-    QList<QgsSourceSelectProvider *> sourceSelectProviders() override
-    {
-      QList<QgsSourceSelectProvider *> providers;
-      providers << new QgsWcsSourceSelectProvider;
-      return providers;
-    }
+QList<QgsSourceSelectProvider *> QgsWcsProviderGuiMetadata::sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> providers;
+  providers << new QgsWcsSourceSelectProvider;
+  return providers;
+}
 
-    QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override
-    {
-      return QList<QgsDataItemGuiProvider *>()
-             << new QgsWcsDataItemGuiProvider;
-    }
-};
+QList<QgsDataItemGuiProvider *> QgsWcsProviderGuiMetadata::dataItemGuiProviders()
+{
+  return QList<QgsDataItemGuiProvider *>()
+         << new QgsWcsDataItemGuiProvider;
+}
 
 
+#ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
 {
   return new QgsWcsProviderGuiMetadata();
 }
+#endif

@@ -10341,4 +10341,5 @@ const QMap< QString, QString > sAuthIdToQgisSrsIdMap
   {"NKG:ETRF14", "63557,520003557"},
   {"OGC:CRS27", "63558,520003558"},
   {"OGC:CRS83", "63559,520003559"},
+  {"EPSG:20904", "63560,520003560"},
 };

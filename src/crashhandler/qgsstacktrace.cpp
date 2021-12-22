@@ -15,8 +15,10 @@
  ***************************************************************************/
 #include <iostream>
 
+#ifdef _MSC_VER
 #define _NO_CVCONST_H
 #define _CRT_STDIO_ISO_WIDE_SPECIFIERS
+#endif
 
 #include "qgsstacktrace.h"
 
@@ -29,10 +31,14 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
+
+#ifdef _MSC_VER
 #include <tlhelp32.h>
 
 #include <Windows.h>
 #include <DbgHelp.h>
+#endif
+
 
 ///@cond PRIVATE
 

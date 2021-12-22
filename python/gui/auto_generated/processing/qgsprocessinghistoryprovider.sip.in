@@ -1,0 +1,47 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/qgsprocessinghistoryprovider.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsProcessingHistoryProvider : QgsAbstractHistoryProvider
+{
+%Docstring(signature="appended")
+History provider for operations performed through the Processing framework.
+
+.. versionadded:: 3.24
+%End
+
+%TypeHeaderCode
+#include "qgsprocessinghistoryprovider.h"
+%End
+  public:
+
+    QgsProcessingHistoryProvider();
+
+    virtual QString id() const;
+
+
+    void portOldLog();
+%Docstring
+Ports the old text log to the history framework.
+
+This should only be called once -- calling multiple times will result in duplicate log entries
+%End
+
+};
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/qgsprocessinghistoryprovider.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

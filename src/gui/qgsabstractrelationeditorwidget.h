@@ -98,6 +98,13 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     void setFeature( const QgsFeature &feature, bool update = true );
 
     /**
+     * Set multiple feature to edit simultaneously.
+     * \param fids Multiple Id of features to edit
+     * \since QGIS 3.24
+     */
+    void setMultiEditFeatureIds( const QgsFeatureIds &fids );
+
+    /**
      * Sets the editor \a context
      * \note if context cadDockWidget is null, it won't be possible to digitize
      * the geometry of a referencing feature from this widget
@@ -170,6 +177,23 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
      */
     virtual void setConfig( const QVariantMap &config ) = 0;
 
+    /**
+     * Returns true if editing multiple features at a time
+     * \since QGIS 3.24
+     */
+    bool multiEditModeActive() const;
+
+  signals:
+
+    /**
+     * Emit this signal, whenever the related features changed.
+     * This happens for example when related features are added, removed,
+     * linked or unlinked.
+     *
+     * \since QGIS 3.22
+     */
+    void relatedFeaturesChanged();
+
   public slots:
 
     /**
@@ -190,9 +214,10 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     void saveEdits();
 
     /**
-     * Adds a new feature with given \a geometry
+     * Adds new features with given \a geometry
+     * Returns the Id of added features \since QGIS 3.24
      */
-    void addFeature( const QgsGeometry &geometry = QgsGeometry() );
+    QgsFeatureIds addFeature( const QgsGeometry &geometry = QgsGeometry() );
 
     /**
      * Delete a feature with given \a fid
@@ -229,7 +254,7 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     QgsAttributeEditorContext mEditorContext;
     QgsRelation mRelation;
     QgsRelation mNmRelation;
-    QgsFeature mFeature;
+    QgsFeatureList mFeatureList;
 
     bool mLayerInSameTransactionGroup = false;
 

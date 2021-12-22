@@ -7344,7 +7344,8 @@ QWidget *QgsProcessingOutputWidgetWrapper::createWidget()
       if ( type() == QgsProcessingGui::Standard
            && ( destParam->type() == QgsProcessingParameterRasterDestination::typeName() ||
                 destParam->type() == QgsProcessingParameterFeatureSink::typeName() ||
-                destParam->type() == QgsProcessingParameterVectorDestination::typeName() ) )
+                destParam->type() == QgsProcessingParameterVectorDestination::typeName() ||
+                destParam->type() == QgsProcessingParameterPointCloudDestination::typeName() ) )
         mOutputWidget->addOpenAfterRunningOption();
 
       return mOutputWidget;
@@ -7449,7 +7450,7 @@ QString QgsProcessingVectorDestinationWidgetWrapper::modelerExpressionFormatStri
 }
 
 //
-// QgsProcessingFeatureSinkWidgetWrapper
+// QgsProcessingRasterDestinationWidgetWrapper
 //
 
 QgsProcessingRasterDestinationWidgetWrapper::QgsProcessingRasterDestinationWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
@@ -7469,6 +7470,31 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingRasterDestinationWidge
 }
 
 QString QgsProcessingRasterDestinationWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "path to layer destination" );
+}
+
+//
+// QgsProcessingPointCloudDestinationWidgetWrapper
+//
+
+QgsProcessingPointCloudDestinationWidgetWrapper::QgsProcessingPointCloudDestinationWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsProcessingOutputWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QString QgsProcessingPointCloudDestinationWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterPointCloudDestination::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingPointCloudDestinationWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingPointCloudDestinationWidgetWrapper( parameter, type );
+}
+
+QString QgsProcessingPointCloudDestinationWidgetWrapper::modelerExpressionFormatString() const
 {
   return tr( "path to layer destination" );
 }

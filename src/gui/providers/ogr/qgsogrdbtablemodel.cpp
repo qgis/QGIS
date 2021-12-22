@@ -20,14 +20,30 @@
 
 #include <QIcon>
 
-QgsOgrDbTableModel::QgsOgrDbTableModel()
+QgsOgrDbTableModel::QgsOgrDbTableModel( QObject *parent )
+  : QgsAbstractDbTableModel( parent )
 {
-  QStringList headerLabels;
-  headerLabels << tr( "Table" );
-  headerLabels << tr( "Type" );
-  headerLabels << tr( "Geometry column" );
-  headerLabels << tr( "Sql" );
-  setHorizontalHeaderLabels( headerLabels );
+  mColumns << tr( "Table" )
+           << tr( "Type" )
+           << tr( "Geometry column" )
+           << tr( "SQL" );
+  setHorizontalHeaderLabels( columns() );
+}
+
+QStringList QgsOgrDbTableModel::columns() const
+{
+  return mColumns;
+}
+
+int QgsOgrDbTableModel::defaultSearchColumn() const
+{
+  return 0;
+}
+
+bool QgsOgrDbTableModel::searchableColumn( int column ) const
+{
+  Q_UNUSED( column )
+  return true;
 }
 
 void QgsOgrDbTableModel::addTableEntry( const Qgis::BrowserLayerType &layerType, const QString &tableName, const QString &uri, const QString &geometryColName, const QString &geometryType, const QString &sql )

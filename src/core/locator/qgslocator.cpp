@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslocator.h"
+#include "qgsmessagelog.h"
 #include "qgssettings.h"
 #include <QtConcurrent>
 #include <functional>
@@ -183,6 +184,11 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
   {
     filter->clearPreviousResults();
     std::unique_ptr< QgsLocatorFilter > clone( filter->clone() );
+    if ( ! clone )
+    {
+      QgsMessageLog::logMessage( tr( "QgsLocatorFilter '%1' could not provide a valid clone" ).arg( filter->name() ), QString(), Qgis::MessageLevel::Critical );
+      continue;
+    }
     connect( clone.get(), &QgsLocatorFilter::resultFetched, clone.get(), [this, filter]( QgsLocatorResult result )
     {
       result.filter = filter;

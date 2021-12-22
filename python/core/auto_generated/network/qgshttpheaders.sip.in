@@ -1,0 +1,89 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/network/qgshttpheaders.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsHttpHeaders
+{
+%Docstring(signature="appended")
+This class implements simple http header management.
+
+.. versionadded:: 3.24
+%End
+
+%TypeHeaderCode
+#include "qgshttpheaders.h"
+%End
+  public:
+
+
+    QgsHttpHeaders( const QMap<QString, QVariant> &headers );
+%Docstring
+Constructor from map
+
+:param headers:
+%End
+
+    QgsHttpHeaders();
+%Docstring
+default constructor
+%End
+
+    QgsHttpHeaders( const QgsSettings &settings, const QString &key = QString() );
+%Docstring
+Constructor from :py:class:`QgsSettings` ``settings`` object
+
+:param settings:
+:param key:
+%End
+
+    virtual ~QgsHttpHeaders();
+
+    bool updateNetworkRequest( QNetworkRequest &request ) const;
+%Docstring
+Updates a ``request`` by adding all the HTTP headers
+
+:return: ``True`` if the update succeed
+%End
+
+    void updateSettings( QgsSettings &settings, const QString &key = QString() ) const;
+%Docstring
+Updates the ``settings`` by adding all the http headers in the path "key/KEY_PREFIX/"
+
+:param settings:
+:param key: sub group path
+%End
+
+    void setFromSettings( const QgsSettings &settings, const QString &key = QString() );
+%Docstring
+Loads headers from the ``settings``
+
+:param settings:
+:param key: sub group path
+%End
+
+    QVariant &operator[]( const QString &key );
+
+
+    QList<QString> keys() const;
+%Docstring
+
+:return: the list of all http header keys
+%End
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/network/qgshttpheaders.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

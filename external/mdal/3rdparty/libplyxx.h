@@ -67,7 +67,8 @@ namespace libply
     INT32,
     UINT32,
     FLOAT32,
-    FLOAT64
+    FLOAT64,
+    COORDINATE
   };
 
   class IProperty

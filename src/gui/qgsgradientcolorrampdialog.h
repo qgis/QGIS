@@ -117,6 +117,7 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
     QgsGradientPlotEventFilter *mPlotFilter = nullptr;
     int mCurrentPlotColorComponent;
     int mCurrentPlotMarkerIndex;
+    int mBlockChanges = 0;
 
     void updatePlot();
     void addPlotMarker( double x, double y, const QColor &color, bool isSelected = false );

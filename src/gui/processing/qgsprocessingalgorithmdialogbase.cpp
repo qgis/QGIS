@@ -25,6 +25,7 @@
 #include "qgsstringutils.h"
 #include "qgsapplication.h"
 #include "qgspanelwidget.h"
+#include "qgsjsonutils.h"
 #include <QToolButton>
 #include <QDesktopServices>
 #include <QScrollBar>
@@ -32,6 +33,8 @@
 #include <QClipboard>
 #include <QFileDialog>
 #include <QMimeData>
+#include <QMenu>
+#include <nlohmann/json.hpp>
 
 
 ///@cond NOT_STABLE
@@ -86,8 +89,9 @@ void QgsProcessingAlgorithmDialogFeedback::pushConsoleInfo( const QString &info 
 // QgsProcessingAlgorithmDialogBase
 //
 
-QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *parent, Qt::WindowFlags flags )
+QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *parent, Qt::WindowFlags flags, DialogMode mode )
   : QDialog( parent, flags )
+  , mMode( mode )
 {
   setupUi( this );
 
@@ -124,6 +128,130 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
   buttonCancel->setEnabled( false );
   mButtonClose = mButtonBox->button( QDialogButtonBox::Close );
 
+  switch ( mMode )
+  {
+    case DialogMode::Single:
+    {
+      mAdvancedButton = new QPushButton( tr( "Advanced" ) );
+      mAdvancedMenu = new QMenu( this );
+      mAdvancedButton->setMenu( mAdvancedMenu );
+
+      QAction *copyAsPythonCommand = new QAction( tr( "Copy as Python Command" ), mAdvancedMenu );
+      copyAsPythonCommand->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconPythonFile.svg" ) ) );
+
+      mAdvancedMenu->addAction( copyAsPythonCommand );
+      connect( copyAsPythonCommand, &QAction::triggered, this, [this]
+      {
+        if ( const QgsProcessingAlgorithm *alg = algorithm() )
+        {
+          QgsProcessingContext *context = processingContext();
+          if ( !context )
+            return;
+
+          const QString command = alg->asPythonCommand( createProcessingParameters(), *context );
+          QMimeData *m = new QMimeData();
+          m->setText( command );
+          QClipboard *cb = QApplication::clipboard();
+
+#ifdef Q_OS_LINUX
+          cb->setMimeData( m, QClipboard::Selection );
+#endif
+          cb->setMimeData( m, QClipboard::Clipboard );
+        }
+      } );
+
+      mCopyAsQgisProcessCommand = new QAction( tr( "Copy as qgis_process Command" ), mAdvancedMenu );
+      mCopyAsQgisProcessCommand->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionTerminal.svg" ) ) );
+      mAdvancedMenu->addAction( mCopyAsQgisProcessCommand );
+
+      connect( mCopyAsQgisProcessCommand, &QAction::triggered, this, [this]
+      {
+        if ( const QgsProcessingAlgorithm *alg = algorithm() )
+        {
+          QgsProcessingContext *context = processingContext();
+          if ( !context )
+            return;
+
+          bool ok = false;
+          const QString command = alg->asQgisProcessCommand( createProcessingParameters(), *context, ok );
+          if ( ! ok )
+          {
+            mMessageBar->pushMessage( tr( "Current settings cannot be specified as arguments to qgis_process (Pipe parameters as JSON to qgis_process instead)" ), Qgis::MessageLevel::Warning );
+          }
+          else
+          {
+            QMimeData *m = new QMimeData();
+            m->setText( command );
+            QClipboard *cb = QApplication::clipboard();
+
+#ifdef Q_OS_LINUX
+            cb->setMimeData( m, QClipboard::Selection );
+#endif
+            cb->setMimeData( m, QClipboard::Clipboard );
+          }
+        }
+      } );
+
+      mAdvancedMenu->addSeparator();
+
+      QAction *copyAsJson = new QAction( tr( "Copy as JSON" ), mAdvancedMenu );
+      copyAsJson->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditCopy.svg" ) ) );
+
+      mAdvancedMenu->addAction( copyAsJson );
+      connect( copyAsJson, &QAction::triggered, this, [this]
+      {
+        if ( const QgsProcessingAlgorithm *alg = algorithm() )
+        {
+          QgsProcessingContext *context = processingContext();
+          if ( !context )
+            return;
+
+          const QVariantMap properties = alg->asMap( createProcessingParameters(), *context );
+          const QString json = QString::fromStdString( QgsJsonUtils::jsonFromVariant( properties ).dump( 2 ) );
+
+          QMimeData *m = new QMimeData();
+          m->setText( json );
+          QClipboard *cb = QApplication::clipboard();
+
+#ifdef Q_OS_LINUX
+          cb->setMimeData( m, QClipboard::Selection );
+#endif
+          cb->setMimeData( m, QClipboard::Clipboard );
+        }
+      } );
+
+      mPasteJsonAction = new QAction( tr( "Paste Settings" ), mAdvancedMenu );
+      mPasteJsonAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditPaste.svg" ) ) );
+
+      mAdvancedMenu->addAction( mPasteJsonAction );
+      connect( mPasteJsonAction, &QAction::triggered, this, [this]
+      {
+        const QString text = QApplication::clipboard()->text();
+        if ( text.isEmpty() )
+          return;
+
+        const QVariantMap parameterValues = QgsJsonUtils::parseJson( text ).toMap().value( QStringLiteral( "inputs" ) ).toMap();
+        if ( parameterValues.isEmpty() )
+          return;
+
+        setParameters( parameterValues );
+      } );
+
+      mButtonBox->addButton( mAdvancedButton, QDialogButtonBox::ResetRole );
+      break;
+    }
+
+    case DialogMode::Batch:
+      break;
+  }
+
+  connect( mAdvancedMenu, &QMenu::aboutToShow, this, [ = ]
+  {
+    mCopyAsQgisProcessCommand->setEnabled( algorithm()
+                                           && !( algorithm()->flags() & QgsProcessingAlgorithm::FlagNotAvailableInStandaloneTool ) );
+    mPasteJsonAction->setEnabled( !QApplication::clipboard()->text().isEmpty() );
+  } );
+
   connect( mButtonRun, &QPushButton::clicked, this, &QgsProcessingAlgorithmDialogBase::runAlgorithm );
   connect( mButtonChangeParameters, &QPushButton::clicked, this, &QgsProcessingAlgorithmDialogBase::showParameters );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsProcessingAlgorithmDialogBase::closeClicked );
@@ -146,13 +274,16 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
 
 QgsProcessingAlgorithmDialogBase::~QgsProcessingAlgorithmDialogBase() = default;
 
+void QgsProcessingAlgorithmDialogBase::setParameters( const QVariantMap & )
+{}
+
 void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *algorithm )
 {
   mAlgorithm.reset( algorithm );
   QString title;
   if ( ( QgsGui::higFlags() & QgsGui::HigDialogTitleIsTitleCase ) && !( algorithm->flags() & QgsProcessingAlgorithm::FlagDisplayNameIsLiteral ) )
   {
-    title = QgsStringUtils::capitalize( mAlgorithm->displayName(), QgsStringUtils::TitleCase );
+    title = QgsStringUtils::capitalize( mAlgorithm->displayName(), Qgis::Capitalization::TitleCase );
   }
   else
   {

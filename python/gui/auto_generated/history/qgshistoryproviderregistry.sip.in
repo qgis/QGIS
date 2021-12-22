@@ -1,0 +1,206 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/history/qgshistoryproviderregistry.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsHistoryEntry
+{
+%Docstring(signature="appended")
+Encapsulates a history entry.
+
+.. versionadded:: 3.24
+%End
+
+%TypeHeaderCode
+#include "qgshistoryproviderregistry.h"
+%End
+  public:
+
+    QgsHistoryEntry( const QString &providerId, const QDateTime &timestamp, const QVariantMap &entry );
+%Docstring
+Constructor for QgsHistoryEntry ``entry``, with the specified ``providerId`` and ``timestamp``.
+%End
+
+    QgsHistoryEntry( const QVariantMap &entry );
+%Docstring
+Constructor for QgsHistoryEntry ``entry``.
+
+The entry timestamp will be automatically set to the current date/time.
+%End
+
+    QDateTime timestamp;
+
+    QString providerId;
+
+    QVariantMap entry;
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    const QString str = QStringLiteral( "<QgsHistoryEntry: %1 %2>" ).arg( sipCpp->providerId, sipCpp->timestamp.toString( Qt::ISODate ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+};
+
+class QgsHistoryProviderRegistry : QObject
+{
+%Docstring(signature="appended")
+The :py:class:`QgsHistoryProviderRegistry` is a registry for objects which track user history (i.e. operations performed through the GUI).
+
+:py:class:`QgsHistoryProviderRegistry` is not usually directly created, but rather accessed through
+:py:func:`QgsGui.historyProviderRegistry()`.
+
+.. versionadded:: 3.24
+%End
+
+%TypeHeaderCode
+#include "qgshistoryproviderregistry.h"
+%End
+  public:
+
+    QgsHistoryProviderRegistry( QObject *parent = 0, bool useMemoryDatabase = false );
+%Docstring
+Creates a new empty history provider registry.
+
+QgsHistoryProviderRegistry is not usually directly created, but rather accessed through
+:py:func:`QgsGui.historyProviderRegistry()`.
+%End
+
+    ~QgsHistoryProviderRegistry();
+
+
+    bool addProvider( QgsAbstractHistoryProvider *provider /Transfer/ );
+%Docstring
+Adds a ``provider`` to the registry. Ownership of the provider is
+transferred to the registry.
+
+Returns ``True`` if the provider was successfully added.
+%End
+
+    QgsAbstractHistoryProvider *providerById( const QString &id );
+%Docstring
+Returns the provider with matching ``id``, or ``None`` if no matching
+provider is registered.
+%End
+
+    bool removeProvider( const QString &id );
+%Docstring
+Removes the provider with matching ``id``.
+
+The provider will be deleted.
+
+Returns ``True`` if the provider was successfully removed.
+%End
+
+    QStringList providerIds() const;
+%Docstring
+Returns a list of the registered provider IDs.
+%End
+
+    class HistoryEntryOptions
+{
+%Docstring(signature="appended")
+Contains options for storing history entries.
+
+.. versionadded:: 3.24
+%End
+
+%TypeHeaderCode
+#include "qgshistoryproviderregistry.h"
+%End
+      public:
+
+        HistoryEntryOptions();
+%Docstring
+Constructor for HistoryEntryOptions.
+%End
+
+        Qgis::HistoryProviderBackends storageBackends;
+    };
+
+    long long addEntry( const QString &providerId, const QVariantMap &entry, bool &ok /Out/, QgsHistoryProviderRegistry::HistoryEntryOptions options = QgsHistoryProviderRegistry::HistoryEntryOptions() );
+%Docstring
+Adds an ``entry`` to the history logs.
+
+The entry will be tagged with the current date/time as the timestamp.
+
+The ``providerId`` specifies the history provider responsible for this entry.
+Entry options are specified via the ``options`` argument.
+
+:param providerId: associated :py:func:`QgsAbstractHistoryProvider.id()`
+:param entry: entry to add
+:param options: options
+
+:return: - ID of newly added entry.
+         - ok: will be set to ``True`` if entry was successfully added
+%End
+
+    long long addEntry( const QgsHistoryEntry &entry, bool &ok /Out/, QgsHistoryProviderRegistry::HistoryEntryOptions options = QgsHistoryProviderRegistry::HistoryEntryOptions() );
+%Docstring
+Adds an ``entry`` to the history logs.
+
+:param entry: entry to add
+:param options: options
+
+:return: - ID of newly added entry.
+         - ok: will be set to ``True`` if entry was successfully added
+%End
+
+    bool addEntries( const QList< QgsHistoryEntry > &entries, QgsHistoryProviderRegistry::HistoryEntryOptions options = QgsHistoryProviderRegistry::HistoryEntryOptions() );
+%Docstring
+Adds a list of ``entries`` to the history logs.
+%End
+
+    QgsHistoryEntry entry( long long id, bool &ok, Qgis::HistoryProviderBackend backend = Qgis::HistoryProviderBackend::LocalProfile ) const;
+%Docstring
+Returns the entry with matching ID, from the specified ``backend``.
+
+:param id: ID of entry to find
+:param ok: will be set to ``True`` if entry was found
+:param backend: associated backend
+
+:return: matching entry if found
+%End
+
+    bool updateEntry( long long id, const QVariantMap &entry, Qgis::HistoryProviderBackend backend = Qgis::HistoryProviderBackend::LocalProfile );
+%Docstring
+Updates the existing entry with matching ``id``.
+
+This method allows the content of an entry to be updated, e.g. to add additional properties
+to the content. (Such as recording the results of after a long-running operation completes).
+%End
+
+    QList< QgsHistoryEntry > queryEntries( const QDateTime &start = QDateTime(), const QDateTime &end = QDateTime(),
+                                           const QString &providerId = QString(), Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile ) const;
+%Docstring
+Queries history entries which occurred between the specified ``start`` and ``end`` times.
+
+The optional ``providerId`` and ``backends`` arguments can be used to filter entries.
+%End
+
+    static QString userHistoryDbPath();
+%Docstring
+Returns the path to user's local history database.
+%End
+
+    bool clearHistory( Qgis::HistoryProviderBackend backend );
+%Docstring
+Clears the history for the specified ``backend``.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/history/qgshistoryproviderregistry.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

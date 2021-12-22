@@ -174,6 +174,9 @@ Use this function to add extra logic to your forms.</string>
          <property name="text">
           <string>…</string>
          </property>
+         <property name="toolTip">
+          <string>Remove selected item(s) from the form layout</string>
+         </property>
          <property name="icon">
           <iconset resource="../../images/images.qrc">
            <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
@@ -184,6 +187,9 @@ Use this function to add extra logic to your forms.</string>
         <widget class="QToolButton" name="mAddTabOrGroupButton">
          <property name="text">
           <string>…</string>
+         </property>
+         <property name="toolTip">
+          <string>Add a new tab or group to the form layout</string>
          </property>
          <property name="icon">
           <iconset resource="../../images/images.qrc">

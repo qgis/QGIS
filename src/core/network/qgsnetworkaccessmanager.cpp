@@ -217,6 +217,7 @@ QgsNetworkAccessManager *QgsNetworkAccessManager::instance( Qt::ConnectionType c
 
 QgsNetworkAccessManager::QgsNetworkAccessManager( QObject *parent )
   : QNetworkAccessManager( parent )
+  , mAuthRequestHandlerSemaphore( 1 )
 {
   setProxyFactory( new QgsNetworkProxyFactory() );
   setCookieJar( new QgsNetworkCookieJar( this ) );
@@ -305,7 +306,7 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   QString userAgent = s.value( QStringLiteral( "/qgis/networkAndProxy/userAgent" ), "Mozilla/5.0" ).toString();
   if ( !userAgent.isEmpty() )
     userAgent += ' ';
-  userAgent += QStringLiteral( "QGIS/%1" ).arg( Qgis::versionInt() );
+  userAgent += QStringLiteral( "QGIS/%1/%2" ).arg( Qgis::versionInt() ).arg( QSysInfo::prettyProductName() );
   pReq->setRawHeader( "User-Agent", userAgent.toLatin1() );
 
 #ifndef QT_NO_SSL
@@ -351,6 +352,11 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   if ( QBuffer *buffer = qobject_cast<QBuffer *>( outgoingData ) )
   {
     content = buffer->buffer();
+  }
+  else if ( outgoingData )
+  {
+    content = outgoingData->readAll();
+    outgoingData->seek( 0 );
   }
 
   emit requestAboutToBeCreated( QgsNetworkRequestParameters( op, req, requestId, content ) );
@@ -466,23 +472,12 @@ void QgsNetworkAccessManager::afterSslErrorHandled( QNetworkReply *reply )
   }
 }
 
-void QgsNetworkAccessManager::unlockAfterAuthRequestHandled()
-{
-  Q_ASSERT( QThread::currentThread() == QApplication::instance()->thread() );
-  mAuthRequestWaitCondition.wakeOne();
-}
-
 void QgsNetworkAccessManager::afterAuthRequestHandled( QNetworkReply *reply )
 {
   if ( reply->manager() == this )
   {
     restartTimeout( reply );
     emit authRequestHandled( reply );
-  }
-  else if ( this == sMainNAM )
-  {
-    // notify other threads to allow them to handle the reply
-    qobject_cast< QgsNetworkAccessManager *>( reply->manager() )->unlockAfterAuthRequestHandled(); // safe to call directly - the other thread will be stuck waiting for us
   }
 }
 
@@ -534,6 +529,7 @@ void QgsNetworkAccessManager::onAuthRequired( QNetworkReply *reply, QAuthenticat
 
   emit requestRequiresAuth( getRequestId( reply ), auth->realm() );
 
+  mAuthRequestHandlerSemaphore.acquire();
   // in main thread this will trigger auth handler immediately and return once the request is satisfied,
   // while in worker thread the signal will be queued (and return immediately) -- hence the need to lock the thread in the next block
   emit authRequestOccurred( reply, auth );
@@ -542,9 +538,8 @@ void QgsNetworkAccessManager::onAuthRequired( QNetworkReply *reply, QAuthenticat
   {
     // lock thread and wait till error is handled. If we return from this slot now, then the reply will resume
     // without actually giving the main thread the chance to act on the ssl error and possibly ignore it.
-    mAuthRequestHandlerMutex.lock();
-    mAuthRequestWaitCondition.wait( &mAuthRequestHandlerMutex );
-    mAuthRequestHandlerMutex.unlock();
+    mAuthRequestHandlerSemaphore.acquire();
+    mAuthRequestHandlerSemaphore.release();
     afterAuthRequestHandled( reply );
   }
 }
@@ -587,6 +582,7 @@ void QgsNetworkAccessManager::handleAuthRequest( QNetworkReply *reply, QAuthenti
   emit requestAuthDetailsAdded( getRequestId( reply ), auth->realm(), auth->user(), auth->password() );
 
   afterAuthRequestHandled( reply );
+  qobject_cast<QgsNetworkAccessManager *>( reply->manager() )->mAuthRequestHandlerSemaphore.release();
 }
 
 QString QgsNetworkAccessManager::cacheLoadControlName( QNetworkRequest::CacheLoadControl control )

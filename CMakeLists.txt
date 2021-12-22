@@ -17,7 +17,7 @@ set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 #############################################################
 # Project and version
 set(CPACK_PACKAGE_VERSION_MAJOR "3")
-set(CPACK_PACKAGE_VERSION_MINOR "21")
+set(CPACK_PACKAGE_VERSION_MINOR "23")
 set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 set(RELEASE_NAME "Master")
@@ -148,6 +148,24 @@ if(WITH_CORE)
   set (WITH_ANALYSIS TRUE CACHE BOOL "Determines whether QGIS analysis library should be built")
 
   set (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
+
+  if(WITH_DESKTOP)
+      if((WIN32 AND NOT MINGW) OR (UNIX AND NOT APPLE AND NOT ANDROID AND NOT IOS))
+	set (CRASH_HANDLER_AVAILABLE TRUE)
+      else()
+	set (CRASH_HANDLER_AVAILABLE FALSE)
+      endif()
+
+      set (WITH_CRASH_HANDLER ${CRASH_HANDLER_AVAILABLE} CACHE BOOL "Determines whether the QGIS crash handler application should be built")
+      if(WITH_CRASH_HANDLER AND NOT CRASH_HANDLER_AVAILABLE)
+	message(FATAL_ERROR "Crash handler cannot be built on this environment. Set WITH_CRASH_HANDLER to false.")
+      endif()
+      if(WITH_CRASH_HANDLER)
+	set (HAVE_CRASH_HANDLER TRUE)    # used in qgsconfig.h
+      else()
+	set (HAVE_CRASH_HANDLER FALSE)    # used in qgsconfig.h
+      endif()
+  endif()
 
   set (WITH_3D FALSE CACHE BOOL "Determines whether QGIS 3D library should be built")
 
@@ -425,6 +443,9 @@ if(WITH_CORE)
   else()
     set(QT_MIN_VERSION 5.12.0)
     set(QT_VERSION_BASE "Qt5")
+    set(HAS_KDE_QT5_PDF_TRANSFORM_FIX FALSE CACHE BOOL "Using KDE's Qt 5.15 fork with the PDF brush transform fix")
+    set(HAS_KDE_QT5_SMALL_CAPS_FIX FALSE CACHE BOOL "Using KDE's Qt 5.15 fork with the QFont::SmallCaps fix")
+    set(HAS_KDE_QT5_FONT_STRETCH_FIX FALSE CACHE BOOL "Using KDE's Qt 5.15 fork with the QFont stretch fix")
   endif()
 
   # Use Qt5SerialPort optionally for GPS

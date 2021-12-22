@@ -26,6 +26,7 @@
 #include "qgslinestring.h"
 #include "qgspolygon.h"
 #include "qgsgeometrycollection.h"
+#include "qgsvertexid.h"
 
 QgsMapToPixelSimplifier::QgsMapToPixelSimplifier( int simplifyFlags, double tolerance, SimplifyAlgorithm simplifyAlgorithm )
   : mSimplifyFlags( simplifyFlags )

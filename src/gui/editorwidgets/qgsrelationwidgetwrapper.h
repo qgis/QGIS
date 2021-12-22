@@ -210,8 +210,26 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
     void initWidget( QWidget *editor ) override;
     bool valid() const override;
 
+  signals:
+
+    /**
+     * Emit this signal, whenever the related features changed.
+     * This happens for example when related features are added, removed,
+     * linked or unlinked.
+     *
+     * \since QGIS 3.22
+     */
+    void relatedFeaturesChanged();
+
   public slots:
     void setFeature( const QgsFeature &feature ) override;
+
+    /**
+     * Set multiple feature to edit simultaneously.
+     * \param fids Multiple Id of features to edit
+     * \since QGIS 3.24
+     */
+    void setMultiEditFeatureIds( const QgsFeatureIds &fids );
 
     /**
      * Sets the visibility of the wrapper's widget.

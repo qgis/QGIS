@@ -254,7 +254,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>3</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -1385,8 +1385,28 @@ p, li { white-space: pre-wrap; }
           </layout>
          </widget>
          <widget class="QWidget" name="mOptsPage_Legend">
-          <layout class="QGridLayout" name="gridLayout_15">
-           <item row="2" column="0">
+          <layout class="QVBoxLayout" name="verticalLayout_151">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_5">
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="mLegendPlaceholderLabel">
+               <property name="text">
+                <string>Legend placeholder image</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QgsImageSourceLineEdit" name="mLegendPlaceholderWidget" native="true"/>
+             </item>
+            </layout>
+           </item>
+           <item>
             <widget class="QGroupBox" name="groupBox">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -1398,20 +1418,22 @@ p, li { white-space: pre-wrap; }
               <string>Embedded Widgets in Legend</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_17">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
               <item>
                <widget class="QgsLayerTreeEmbeddedConfigWidget" name="mLegendConfigEmbeddedWidget" native="true"/>
               </item>
              </layout>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QgsImageSourceLineEdit" name="mLegendPlaceholderWidget" native="true"/>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="mLegendPlaceholderLabel">
-             <property name="text">
-              <string>Legend placeholder image</string>
-             </property>
             </widget>
            </item>
           </layout>
@@ -1479,7 +1501,7 @@ p, li { white-space: pre-wrap; }
                   <item row="6" column="0">
                    <widget class="QLabel" name="mLayerKeywordListLabel_3">
                     <property name="text">
-                     <string>Data Url</string>
+                     <string>Data URL</string>
                     </property>
                    </widget>
                   </item>
@@ -1625,7 +1647,7 @@ p, li { white-space: pre-wrap; }
                   <item row="2" column="0">
                    <widget class="QLabel" name="mLayerAttributionUrlLabel">
                     <property name="text">
-                     <string>Url</string>
+                     <string>URL</string>
                     </property>
                    </widget>
                   </item>
@@ -1645,7 +1667,7 @@ p, li { white-space: pre-wrap; }
                <item row="2" column="0">
                 <widget class="QgsCollapsibleGroupBox" name="mMetaMetaUrlGrpBx">
                  <property name="title">
-                  <string>MetadataUrl</string>
+                  <string>Metadata URL</string>
                  </property>
                  <property name="syncGroup" stdset="0">
                   <string notr="true">vectormeta</string>
@@ -1699,7 +1721,7 @@ p, li { white-space: pre-wrap; }
                <item row="3" column="0">
                 <widget class="QgsCollapsibleGroupBox" name="mMetaLegendGrpBx">
                  <property name="title">
-                  <string>LegendUrl</string>
+                  <string>Legend URL</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_10">
                   <item row="0" column="0">
@@ -1707,7 +1729,7 @@ p, li { white-space: pre-wrap; }
                     <item>
                      <widget class="QLabel" name="mLayerLegendUrlLabel">
                       <property name="text">
-                       <string>Url</string>
+                       <string>URL</string>
                       </property>
                      </widget>
                     </item>

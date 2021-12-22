@@ -66,6 +66,7 @@ void TestQgsDoubleValidator::validate_data()
   // QgsDoubleValidator doesn't expect group separator but it tolerates it,
   // so the result will be QValidator::Intermediate and not QValidator::Acceptable
   QTest::newRow( "locale group separator + locale decimal" ) << QString( "4lg444ld6" ) << int( QValidator::Intermediate );
+  QTest::newRow( "locale group separator misplaced + locale decimal" ) << QString( "44lg44ld6" ) << int( QValidator::Intermediate );
   QTest::newRow( "locale group separator + c decimal" ) << QString( "4lg444cd6" ) << int( QValidator::Invalid );
   QTest::newRow( "c group separator + locale decimal" ) << QString( "4cg444ld6" ) << int( QValidator::Invalid );
   QTest::newRow( "c group separator + c decimal" ) << QString( "4cg444cd6" ) << int( QValidator::Intermediate );
@@ -88,6 +89,7 @@ void TestQgsDoubleValidator::toDouble_data()
   // QgsDoubleValidator doesn't expect group separator but it tolerates it,
   // so the result will be QValidator::Intermediate and not QValidator::Acceptable
   QTest::newRow( "locale group separator + locale decimal" ) << QString( "4lg444ld6" ) << 4444.6;
+  QTest::newRow( "locale group separator misplaced + locale decimal" ) << QString( "4lg444ld6" ) << 4444.6;
   QTest::newRow( "locale group separator + c decimal" ) << QString( "4lg444cd6" ) << 0.0;
   QTest::newRow( "c group separator + locale decimal" ) << QString( "4cg444ld6" ) << 0.0;
   QTest::newRow( "c group separator + c decimal" ) << QString( "4cg444cd6" ) << 4444.6;
@@ -114,7 +116,7 @@ void TestQgsDoubleValidator::validate()
   for ( int i = 0; i < listLocale.count(); ++i )
   {
     loc = listLocale.at( i );
-    QLocale().setDefault( loc );
+    QLocale::setDefault( loc );
     validator->setLocale( loc );
     value = actualState;
     value = value.replace( "ld", QLocale().decimalPoint() )
@@ -137,6 +139,17 @@ void TestQgsDoubleValidator::validate()
            QLocale( QLocale::C ).decimalPoint() == QLocale().decimalPoint() )
          && value != "string" && expectedValue == 0 )
       expectedValue = 1;
+    // There is another corner case in the test where the group separator is equal
+    // to the C decimal point and there is no decimal point,
+    // in that case the value is valid, because the fall
+    // back check is to test after removing all group separators
+    if ( QLocale( ).groupSeparator() == QLocale( QLocale::C ).decimalPoint()
+         && ! value.contains( QLocale( ).decimalPoint() )
+         && value != "string" && expectedValue == 0 )
+    {
+      expectedValue = 1;
+    }
+    // qDebug() << value << loc << int( validator->validate( value ) ) << expectedValue;
     QCOMPARE( int( validator->validate( value ) ), expectedValue );
   }
 }
@@ -153,7 +166,7 @@ void TestQgsDoubleValidator::toDouble()
   for ( int i = 0; i < listLocale.count(); ++i )
   {
     loc = listLocale.at( i );
-    QLocale().setDefault( loc );
+    QLocale::setDefault( loc );
     value = actualValue;
     value = value.replace( "ld", QLocale().decimalPoint() )
             .replace( "cd", QLocale( QLocale::C ).decimalPoint() )
@@ -175,6 +188,16 @@ void TestQgsDoubleValidator::toDouble()
            QLocale( QLocale::C ).decimalPoint() == QLocale().decimalPoint() )
          && value != "string" && expectedValue == 0.0 )
       expectedValue = 4444.6;
+    // There is another corner case in the test where the group separator is equal
+    // to the C decimal point and there is no decimal point,
+    // in that case the value is valid, because the fall
+    // back check is to test after removing all group separators
+    if ( QLocale( ).groupSeparator() == QLocale( QLocale::C ).decimalPoint()
+         && ! value.contains( QLocale( ).decimalPoint() )
+         && value != "string" && expectedValue == 0 )
+    {
+      expectedValue = 44446;
+    }
 
     QCOMPARE( QgsDoubleValidator::toDouble( value ), expectedValue );
   }

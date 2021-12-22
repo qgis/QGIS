@@ -19,6 +19,13 @@
 #include <QDesktopServices>
 #include <QFileInfo>
 #include <QUrl>
+#include <QUrlQuery>
+#include <QDir>
+#include <QTemporaryDir>
+#include <QNetworkRequest>
+#include <QJsonDocument>
+#include <QHttpMultiPart>
+#include <QMimeDatabase>
 
 #include "qgspythonrunner.h"
 #include "qgsrunprocess.h"
@@ -26,12 +33,18 @@
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgswebview.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsmessagelog.h"
+
 
 bool QgsAction::runable() const
 {
   return mType == Generic ||
          mType == GenericPython ||
          mType == OpenUrl ||
+         mType == SubmitUrlEncoded ||
+         mType == SubmitUrlMultipart ||
 #if defined(Q_OS_WIN)
          mType == Windows
 #elif defined(Q_OS_MAC)
@@ -50,6 +63,173 @@ void QgsAction::run( QgsVectorLayer *layer, const QgsFeature &feature, const Qgs
   actionContext.setFeature( feature );
 
   run( actionContext );
+}
+
+void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
+{
+
+  QUrl url{ expandedAction };
+
+  // Encode '+' (fully encoded doesn't encode it)
+  const QString payload { url.query( QUrl::ComponentFormattingOption::FullyEncoded ).replace( QChar( '+' ), QStringLiteral( "%2B" ) ) };
+
+  // Remove query string from URL
+  const QUrlQuery queryString { url.query( ) };
+  url.setQuery( QString( ) );
+
+  QNetworkRequest req { url };
+
+  // Specific code for testing, produces an invalid POST but we can still listen to
+  // signals and examine the request
+  if ( url.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
+  {
+    req.setUrl( QStringLiteral( "file://%1" ).arg( url.path() ) );
+  }
+
+  QNetworkReply *reply = nullptr;
+
+  if ( mType != QgsAction::SubmitUrlMultipart )
+  {
+    QString contentType { QStringLiteral( "application/x-www-form-urlencoded" ) };
+    // check for json
+    QJsonParseError jsonError;
+    QJsonDocument::fromJson( payload.toUtf8(), &jsonError );
+    if ( jsonError.error == QJsonParseError::ParseError::NoError )
+    {
+      contentType = QStringLiteral( "application/json" );
+    }
+    req.setHeader( QNetworkRequest::KnownHeaders::ContentTypeHeader, contentType );
+    reply = QgsNetworkAccessManager::instance()->post( req, payload.toUtf8() );
+  }
+  // for multipart create parts and headers
+  else
+  {
+    QHttpMultiPart *multiPart = new QHttpMultiPart( QHttpMultiPart::FormDataType );
+    const QList<QPair<QString, QString>> queryItems { queryString.queryItems( QUrl::ComponentFormattingOption::FullyDecoded ) };
+    for ( const QPair<QString, QString> &queryItem : std::as_const( queryItems ) )
+    {
+      QHttpPart part;
+      part.setHeader( QNetworkRequest::ContentDispositionHeader,
+                      QStringLiteral( "form-data; name=\"%1\"" )
+                      .arg( QString( queryItem.first ).replace( '"', QLatin1String( R"(\")" ) ) ) );
+      part.setBody( queryItem.second.toUtf8() );
+      multiPart->append( part );
+    }
+    reply = QgsNetworkAccessManager::instance()->post( req, multiPart );
+    multiPart->setParent( reply );
+  }
+
+  QObject::connect( reply, &QNetworkReply::finished, reply, [ reply ]
+  {
+    if ( reply->error() == QNetworkReply::NoError )
+    {
+
+      if ( reply->attribute( QNetworkRequest::RedirectionTargetAttribute ).isNull() )
+      {
+
+        const QByteArray replyData = reply->readAll();
+
+        QString filename { "download.bin" };
+        if ( const std::string header = reply->header( QNetworkRequest::KnownHeaders::ContentDispositionHeader ).toString().toStdString(); ! header.empty() )
+        {
+
+          std::string ascii;
+          const std::string q1 { R"(filename=")" };
+          if ( const unsigned long pos = header.find( q1 ); pos != std::string::npos )
+          {
+            const unsigned long len = pos + q1.size();
+
+            const std::string q2 { R"(")" };
+            if ( unsigned long pos = header.find( q2, len ); pos != std::string::npos )
+            {
+              bool escaped = false;
+              while ( pos != std::string::npos && header[pos - 1] == '\\' )
+              {
+                pos = header.find( q2, pos + 1 );
+                escaped = true;
+              }
+              ascii = header.substr( len, pos - len );
+              if ( escaped )
+              {
+                std::string cleaned;
+                for ( size_t i = 0; i < ascii.size(); ++i )
+                {
+                  if ( ascii[i] == '\\' )
+                  {
+                    if ( i > 0 && ascii[i - 1] == '\\' )
+                    {
+                      cleaned.push_back( ascii[i] );
+                    }
+                  }
+                  else
+                  {
+                    cleaned.push_back( ascii[i] );
+                  }
+                }
+                ascii = cleaned;
+              }
+            }
+          }
+
+          std::string utf8;
+
+          const std::string u { R"(UTF-8'')" };
+          if ( const unsigned long pos = header.find( u ); pos != std::string::npos )
+          {
+            utf8 = header.substr( pos + u.size() );
+          }
+
+          // Prefer ascii over utf8
+          if ( ascii.empty() )
+          {
+            if ( ! utf8.empty( ) )
+            {
+              filename = QString::fromStdString( utf8 );
+            }
+          }
+          else
+          {
+            filename = QString::fromStdString( ascii );
+          }
+        }
+        else if ( !reply->header( QNetworkRequest::KnownHeaders::ContentTypeHeader ).isNull() )
+        {
+          QString contentTypeHeader { reply->header( QNetworkRequest::KnownHeaders::ContentTypeHeader ).toString() };
+          // Strip charset if any
+          if ( contentTypeHeader.contains( ';' ) )
+          {
+            contentTypeHeader = contentTypeHeader.left( contentTypeHeader.indexOf( ';' ) );
+          }
+
+          QMimeType mimeType { QMimeDatabase().mimeTypeForName( contentTypeHeader ) };
+          if ( mimeType.isValid() )
+          {
+            filename = QStringLiteral( "download.%1" ).arg( mimeType.preferredSuffix() );
+          }
+        }
+
+        QTemporaryDir tempDir;
+        tempDir.setAutoRemove( false );
+        tempDir.path();
+        const QString tempFilePath{ tempDir.path() + QDir::separator() + filename };
+        QFile tempFile{ tempFilePath };
+        tempFile.open( QIODevice::WriteOnly );
+        tempFile.write( replyData );
+        tempFile.close();
+        QDesktopServices::openUrl( QUrl::fromLocalFile( tempFilePath ) );
+      }
+      else
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Redirect is not supported!" ), QStringLiteral( "Form Submit Action" ), Qgis::MessageLevel::Critical );
+      }
+    }
+    else
+    {
+      QgsMessageLog::logMessage( reply->errorString(), QStringLiteral( "Form Submit Action" ), Qgis::MessageLevel::Critical );
+    }
+    reply->deleteLater();
+  } );
+
 }
 
 void QgsAction::run( const QgsExpressionContext &expressionContext ) const
@@ -73,6 +253,11 @@ void QgsAction::run( const QgsExpressionContext &expressionContext ) const
       QDesktopServices::openUrl( QUrl::fromLocalFile( expandedAction ) );
     else
       QDesktopServices::openUrl( QUrl( expandedAction, QUrl::TolerantMode ) );
+  }
+  else if ( mType == QgsAction::SubmitUrlEncoded || mType == QgsAction::SubmitUrlMultipart )
+  {
+    handleFormSubmitAction( expandedAction );
+
   }
   else if ( mType == QgsAction::GenericPython )
   {
@@ -163,4 +348,63 @@ void QgsAction::setExpressionContextScope( const QgsExpressionContextScope &scop
 QgsExpressionContextScope QgsAction::expressionContextScope() const
 {
   return mExpressionContextScope;
+}
+
+QString QgsAction::html() const
+{
+  QString typeText;
+  switch ( mType )
+  {
+    case Generic:
+    {
+      typeText = QObject::tr( "Generic" );
+      break;
+    }
+    case GenericPython:
+    {
+      typeText = QObject::tr( "Generic Python" );
+      break;
+    }
+    case Mac:
+    {
+      typeText = QObject::tr( "Mac" );
+      break;
+    }
+    case Windows:
+    {
+      typeText = QObject::tr( "Windows" );
+      break;
+    }
+    case Unix:
+    {
+      typeText = QObject::tr( "Unix" );
+      break;
+    }
+    case OpenUrl:
+    {
+      typeText = QObject::tr( "Open URL" );
+      break;
+    }
+    case SubmitUrlEncoded:
+    {
+      typeText = QObject::tr( "Submit URL (urlencoded or JSON)" );
+      break;
+    }
+    case SubmitUrlMultipart:
+    {
+      typeText = QObject::tr( "Submit URL (multipart)" );
+      break;
+    }
+  }
+  return { QObject::tr( R"html(
+<h2>Action Details</h2>
+<p>
+   <b>Description:</b> %1<br>
+   <b>Short title:</b> %2<br>
+   <b>Type:</b> %3<br>
+   <b>Scope:</b> %4<br>
+   <b>Action:</b><br>
+   <pre>%6</pre>
+</p>
+  )html" ).arg( mDescription, mShortTitle, typeText, actionScopes().values().join( QLatin1String( ", " ) ), mCommand )};
 };

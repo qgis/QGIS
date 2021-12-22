@@ -11,7 +11,7 @@
 
 
 
-class QgsProcessingAlgorithmDialogBase : QDialog, QgsProcessingParametersGenerator
+class QgsProcessingAlgorithmDialogBase : QDialog, QgsProcessingParametersGenerator, QgsProcessingContextGenerator
 {
 %Docstring(signature="appended")
 Base class for processing algorithm dialogs.
@@ -34,7 +34,13 @@ Base class for processing algorithm dialogs.
       FormatHtml,
     };
 
-    QgsProcessingAlgorithmDialogBase( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
+    enum class DialogMode
+    {
+      Single,
+      Batch,
+    };
+
+    QgsProcessingAlgorithmDialogBase( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags(), QgsProcessingAlgorithmDialogBase::DialogMode mode = QgsProcessingAlgorithmDialogBase::DialogMode::Single );
 %Docstring
 Constructor for QgsProcessingAlgorithmDialogBase.
 %End
@@ -125,6 +131,13 @@ Sets the logging ``level`` to use when running algorithms from the dialog.
 .. seealso:: :py:func:`logLevel`
 
 .. versionadded:: 3.20
+%End
+
+    virtual void setParameters( const QVariantMap &values );
+%Docstring
+Sets the parameter ``values`` to show in the dialog.
+
+.. versionadded:: 3.24
 %End
 
   public slots:

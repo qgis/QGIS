@@ -182,14 +182,14 @@ macro(ADD_GRASSPLUGIN GRASS_BUILD_VERSION)
       ${CMAKE_BINARY_DIR}/src/providers/grass/${GRASS_BUILD_VERSION}
     )
 
-    add_library (grassplugin${GRASS_BUILD_VERSION} MODULE
+    add_library (plugin_grass${GRASS_BUILD_VERSION} MODULE
       ${GRASS_PLUGIN_SRCS}
       ${GRASS_PLUGIN_MOC_SRCS}
       ${GRASS_PLUGIN_UIS_H}
       ${GRASS_PLUGIN_RCCS}
     )
 
-    set_target_properties(grassplugin${GRASS_BUILD_VERSION} PROPERTIES
+    set_target_properties(plugin_grass${GRASS_BUILD_VERSION} PROPERTIES
       COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\" ${GRASS_EXTRA_INCLUDE_DIRS${GRASS_BUILD_VERSION}}"
     )
 
@@ -197,7 +197,7 @@ macro(ADD_GRASSPLUGIN GRASS_BUILD_VERSION)
       set_source_files_properties(${GRASS_PLUGIN_SRCS} PROPERTIES COMPILE_FLAGS "-wd4611")
     endif()
 
-    target_link_libraries(grassplugin${GRASS_BUILD_VERSION}
+    target_link_libraries(plugin_grass${GRASS_BUILD_VERSION}
       qgisgrass${GRASS_BUILD_VERSION}
       qgis_app
       qgis_gui
@@ -205,7 +205,7 @@ macro(ADD_GRASSPLUGIN GRASS_BUILD_VERSION)
     )
 
     if (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
-      target_link_libraries(grassplugin${GRASS_BUILD_VERSION} ulog)
+      target_link_libraries(plugin_grass${GRASS_BUILD_VERSION} ulog)
     endif()
 
     # override default path where built files are put to allow running qgis without installing
@@ -228,7 +228,7 @@ macro(ADD_GRASSPLUGIN GRASS_BUILD_VERSION)
     ########################################################
     # Install
 
-    install(TARGETS grassplugin${GRASS_BUILD_VERSION}
+    install(TARGETS plugin_grass${GRASS_BUILD_VERSION}
       RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
       LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 

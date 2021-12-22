@@ -196,7 +196,7 @@ QVariant QgsLocatorFiltersModel::data( const QModelIndex &index, int role ) cons
 
     case Qt::TextAlignmentRole:
       if ( index.column() == Config )
-        return Qt::AlignCenter;
+        return static_cast<Qt::Alignment::Int>( Qt::AlignCenter );
       break;
 
   }

@@ -53,6 +53,7 @@ class QgsDelimitedTextFeatureSource final: public QgsAbstractFeatureSource
     bool mXyDms;
     QList<int> attributeColumns;
     QgsCoordinateReferenceSystem mCrs;
+    QMap<int, QPair<QString, QString>> mFieldBooleanLiterals;
 
     friend class QgsDelimitedTextFeatureIterator;
 };

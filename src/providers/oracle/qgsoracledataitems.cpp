@@ -285,7 +285,7 @@ QList<QAction *> QgsOracleConnectionItem::actions( QWidget *parent )
   connect( actionEdit, &QAction::triggered, this, &QgsOracleConnectionItem::editConnection );
   lst.append( actionEdit );
 
-  QAction *actionDelete = new QAction( tr( "Delete Connection" ), parent );
+  QAction *actionDelete = new QAction( tr( "Remove Connection" ), parent );
   connect( actionDelete, &QAction::triggered, this, &QgsOracleConnectionItem::deleteConnection );
   lst.append( actionDelete );
 
@@ -304,8 +304,8 @@ void QgsOracleConnectionItem::editConnection()
 
 void QgsOracleConnectionItem::deleteConnection()
 {
-  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Connection" ),
-                              QObject::tr( "Are you sure you want to delete the connection to %1?" ).arg( mName ),
+  if ( QMessageBox::question( nullptr, QObject::tr( "Remove Connection" ),
+                              QObject::tr( "Are you sure you want to remove the connection to %1?" ).arg( mName ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 

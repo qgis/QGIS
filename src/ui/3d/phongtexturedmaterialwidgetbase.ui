@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>394</width>
-    <height>197</height>
+    <height>252</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -39,6 +39,9 @@
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="lblSpecular">
+     <property name="toolTip">
+      <string>Color of light reflecting from smooth surfaces.</string>
+     </property>
      <property name="text">
       <string>Specular</string>
      </property>
@@ -88,6 +91,9 @@
    </item>
    <item row="0" column="0">
     <widget class="QLabel" name="lblAmbient">
+     <property name="toolTip">
+      <string>Color of light that is scattered around the entire scene.</string>
+     </property>
      <property name="text">
       <string>Ambient</string>
      </property>
@@ -118,6 +124,9 @@
    </item>
    <item row="2" column="0">
     <widget class="QLabel" name="lblShininess">
+     <property name="toolTip">
+      <string>How shiny smooth surfaces are.</string>
+     </property>
      <property name="text">
       <string>Shininess</string>
      </property>
@@ -137,12 +146,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsImageSourceLineEdit</class>
-   <extends>QWidget</extends>
-   <header>qgsfilecontentsourcelineedit.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
@@ -151,6 +154,12 @@
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsImageSourceLineEdit</class>
+   <extends>QWidget</extends>
+   <header>qgsfilecontentsourcelineedit.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

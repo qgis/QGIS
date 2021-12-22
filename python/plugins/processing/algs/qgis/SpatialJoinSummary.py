@@ -81,13 +81,13 @@ class SpatialJoinSummary(QgisAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.predicates = (
-            ('intersects', self.tr('intersects')),
-            ('contains', self.tr('contains')),
-            ('isEqual', self.tr('equals')),
-            ('touches', self.tr('touches')),
-            ('overlaps', self.tr('overlaps')),
-            ('within', self.tr('within')),
-            ('crosses', self.tr('crosses')))
+            ('intersects', self.tr('intersect')),
+            ('contains', self.tr('contain')),
+            ('isEqual', self.tr('equal')),
+            ('touches', self.tr('touch')),
+            ('overlaps', self.tr('overlap')),
+            ('within', self.tr('are within')),
+            ('crosses', self.tr('cross')))
 
         self.statistics = [
             ('count', self.tr('count')),
@@ -111,13 +111,10 @@ class SpatialJoinSummary(QgisAlgorithm):
             ('mean_length', self.tr('mean_length'))]
 
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer'),
-                                                              [QgsProcessing.TypeVectorAnyGeometry]))
-        self.addParameter(QgsProcessingParameterFeatureSource(self.JOIN,
-                                                              self.tr('Join layer'),
+                                                              self.tr('Join to features in'),
                                                               [QgsProcessing.TypeVectorAnyGeometry]))
         predicate = QgsProcessingParameterEnum(self.PREDICATE,
-                                               self.tr('Geometric predicate'),
+                                               self.tr('Where the features'),
                                                options=[p[1] for p in self.predicates],
                                                allowMultiple=True, defaultValue=[0])
         predicate.setMetadata({
@@ -125,6 +122,9 @@ class SpatialJoinSummary(QgisAlgorithm):
                 'useCheckBoxes': True,
                 'columns': 2}})
         self.addParameter(predicate)
+        self.addParameter(QgsProcessingParameterFeatureSource(self.JOIN,
+                                                              self.tr('By comparing to'),
+                                                              [QgsProcessing.TypeVectorAnyGeometry]))
         self.addParameter(QgsProcessingParameterField(self.JOIN_FIELDS,
                                                       self.tr('Fields to summarise (leave empty to use all fields)'),
                                                       parentLayerParameterName=self.JOIN,

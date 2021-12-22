@@ -199,6 +199,7 @@ void QgsImageOperation::convertToGrayscale( QImage &image, const GrayscaleMode m
     return;
   }
 
+  image.detach();
   GrayscalePixelOperation operation( mode );
   runPixelOperation( image, operation, feedback );
 }
@@ -254,6 +255,7 @@ void QgsImageOperation::grayscaleAverageOp( QRgb &rgb )
 
 void QgsImageOperation::adjustBrightnessContrast( QImage &image, const int brightness, const double contrast, QgsFeedback *feedback )
 {
+  image.detach();
   BrightnessContrastPixelOperation operation( brightness, contrast );
   runPixelOperation( image, operation, feedback );
 }
@@ -277,6 +279,7 @@ int QgsImageOperation::adjustColorComponent( int colorComponent, int brightness,
 
 void QgsImageOperation::adjustHueSaturation( QImage &image, const double saturation, const QColor &colorizeColor, const double colorizeStrength, QgsFeedback *feedback )
 {
+  image.detach();
   HueSaturationPixelOperation operation( saturation, colorizeColor.isValid() && colorizeStrength > 0.0,
                                          colorizeColor.hue(), colorizeColor.saturation(), colorizeStrength );
   runPixelOperation( image, operation, feedback );
@@ -341,6 +344,7 @@ void QgsImageOperation::multiplyOpacity( QImage &image, const double factor, Qgs
     //decreasing opacity - we can use the faster DestinationIn composition mode
     //to reduce the alpha channel
     QColor transparentFillColor = QColor( 0, 0, 0, 255 * factor );
+    image.detach();
     QPainter painter( &image );
     painter.setCompositionMode( QPainter::CompositionMode_DestinationIn );
     painter.fillRect( 0, 0, image.width(), image.height(), transparentFillColor );
@@ -349,6 +353,7 @@ void QgsImageOperation::multiplyOpacity( QImage &image, const double factor, Qgs
   else
   {
     //increasing opacity - run this as a pixel operation for multithreading
+    image.detach();
     MultiplyOpacityPixelOperation operation( factor );
     runPixelOperation( image, operation, feedback );
   }
@@ -370,6 +375,7 @@ void QgsImageOperation::overlayColor( QImage &image, const QColor &color )
 
   //use QPainter SourceIn composition mode to overlay color (fast)
   //this retains image's alpha channel but replaces color
+  image.detach();
   QPainter painter( &image );
   painter.setCompositionMode( QPainter::CompositionMode_SourceIn );
   painter.fillRect( 0, 0, image.width(), image.height(), opaqueColor );
@@ -391,6 +397,7 @@ void QgsImageOperation::distanceTransform( QImage &image, const DistanceTransfor
   if ( feedback && feedback->isCanceled() )
     return;
 
+  image.detach();
   ConvertToArrayPixelOperation convertToArray( image.width(), array.get(), properties.shadeExterior );
   runPixelOperation( image, convertToArray, feedback );
   if ( feedback && feedback->isCanceled() )
@@ -598,6 +605,10 @@ void QgsImageOperation::stackBlur( QImage &image, const int radius, const bool a
     convertedImage = std::make_unique< QImage >( image.convertToFormat( QImage::Format_ARGB32 ) );
     pImage = convertedImage.get();
   }
+  else
+  {
+    image.detach();
+  }
 
   if ( feedback && feedback->isCanceled() )
     return;
@@ -661,6 +672,10 @@ QImage *QgsImageOperation::gaussianBlur( QImage &image, const int radius, QgsFee
   {
     convertedImage = std::make_unique< QImage >( image.convertToFormat( QImage::Format_ARGB32_Premultiplied ) );
     pImage = convertedImage.get();
+  }
+  else
+  {
+    image.detach();
   }
   if ( feedback && feedback->isCanceled() )
     return new QImage();
@@ -827,6 +842,7 @@ double *QgsImageOperation::createGaussianKernel( const int radius )
 
 void QgsImageOperation::flipImage( QImage &image, QgsImageOperation::FlipType type )
 {
+  image.detach();
   FlipLineOperation flipOperation( type == QgsImageOperation::FlipHorizontal ? QgsImageOperation::ByRow : QgsImageOperation::ByColumn );
   runLineOperation( image, flipOperation );
 }

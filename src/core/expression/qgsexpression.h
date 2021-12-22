@@ -604,9 +604,24 @@ class CORE_EXPORT QgsExpression
     static QStringList tags( const QString &name );
 
     /**
+     * Adds a help string for a custom variable.
+     *
+     * The specified variable \a name should not have an existing help string set. If a help string is already present then
+     * FALSE will be returned and no changes will occur.
+     *
+     * \param name variable name
+     * \param description the help string to add. This is user visible, and should be a translated string.
+     * \returns TRUE if the help string was successfully added
+     * \see variableHelpText()
+     * \since QGIS 3.22
+     */
+    static bool addVariableHelpText( const QString name, const QString &description );
+
+    /**
      * Returns the help text for a specified variable.
      * \param variableName name of variable
      * \see helpText()
+     * \see addVariableHelpText()
      * \since QGIS 2.12
      */
     static QString variableHelpText( const QString &variableName );
@@ -644,10 +659,11 @@ class CORE_EXPORT QgsExpression
      *  value. The value may be null.
      * \param fieldName the name of the field
      * \param value the value of the field
+     * \param fieldType the type of the field on the left side used to quote the value. If not given, the value type is used instead
      * \returns the expression to evaluate field equality
      * \since QGIS 3.0
      */
-    static QString createFieldEqualityExpression( const QString &fieldName, const QVariant &value );
+    static QString createFieldEqualityExpression( const QString &fieldName, const QVariant &value, QVariant::Type fieldType = QVariant::Type::Invalid );
 
     /**
      * Returns TRUE if the given \a expression is a simple "field=value" type expression.

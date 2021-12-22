@@ -36,7 +36,7 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
 
     /* general purpose functions */
 
-    void initPython( QgisInterface *interface, bool installErrorHook ) override;
+    void initPython( QgisInterface *interface, bool installErrorHook, const QString &faultHandlerLogPath = QString() ) override;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     void initServerPython( QgsServerInterface *interface ) override;
     bool startServerPlugin( QString packageName ) override;

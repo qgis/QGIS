@@ -54,6 +54,7 @@ from qgis.core import (QgsRasterLayer,
                        QgsProcessingParameterFileDestination,
                        QgsProcessingParameterFolderDestination,
                        QgsProcessingParameterRasterDestination,
+                       QgsProcessingParameterPointCloudDestination,
                        QgsProcessingParameterString,
                        QgsProcessingParameterMapLayer,
                        QgsProcessingParameterMultipleLayers,
@@ -91,6 +92,7 @@ PARAMETER_VECTOR_DESTINATION = 'vectorDestination'
 PARAMETER_FILE_DESTINATION = 'fileDestination'
 PARAMETER_FOLDER_DESTINATION = 'folderDestination'
 PARAMETER_RASTER_DESTINATION = 'rasterDestination'
+PARAMETER_POINTCLOUD_DESTINATION = 'pointCloudDestination'
 
 
 def getParameterFromString(s, context=''):
@@ -263,6 +265,12 @@ def getParameterFromString(s, context=''):
                 if len(params) > 4:
                     params[4] = True if params[4].lower() == 'true' else False
             elif clazz == QgsProcessingParameterRasterDestination:
+                if len(params) > 3:
+                    params[3] = True if params[3].lower() == 'true' else False
+                if len(params) > 4:
+                    params[4] = True if params[4].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterPointCloudDestination:
+                print(params)
                 if len(params) > 3:
                     params[3] = True if params[3].lower() == 'true' else False
                 if len(params) > 4:

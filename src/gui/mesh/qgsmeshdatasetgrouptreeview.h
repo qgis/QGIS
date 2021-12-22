@@ -35,6 +35,10 @@ SIP_NO_FILE
 
 class QgsMeshLayer;
 
+/**
+ * \ingroup gui
+ * \class QgsMeshDatasetGroupSaveMenu
+ */
 class QgsMeshDatasetGroupSaveMenu: public QObject
 {
     Q_OBJECT
@@ -54,7 +58,10 @@ class QgsMeshDatasetGroupSaveMenu: public QObject
 };
 
 /**
- * Item Model for QgsMeshDatasetGroupTreeItem
+ * \ingroup gui
+ * \class QgsMeshDatasetGroupTreeModel
+ *
+ * \brief Item Model for QgsMeshDatasetGroupTreeItem
  */
 class QgsMeshDatasetGroupTreeModel : public QAbstractItemModel
 {
@@ -113,6 +120,10 @@ class QgsMeshDatasetGroupTreeModel : public QAbstractItemModel
 
 };
 
+/**
+ * \ingroup gui
+ * \class QgsMeshAvailableDatasetGroupTreeModel
+ */
 class QgsMeshAvailableDatasetGroupTreeModel: public QgsMeshDatasetGroupTreeModel
 {
   public:
@@ -129,6 +140,10 @@ class QgsMeshAvailableDatasetGroupTreeModel: public QgsMeshDatasetGroupTreeModel
     QColor backGroundColor( const QModelIndex &index ) const;
 };
 
+/**
+ * \ingroup gui
+ * \class QgsMeshDatasetGroupProxyModel
+ */
 class  QgsMeshDatasetGroupProxyModel: public QSortFilterProxyModel
 {
   public:
@@ -161,13 +176,16 @@ class  QgsMeshDatasetGroupProxyModel: public QSortFilterProxyModel
 };
 
 /**
- * Delegate to display tree item with a contours and vector selector
+ * \ingroup gui
+ * \class QgsMeshDatasetGroupTreeItemDelagate
+ *
+ * \brief Delegate to display tree item with a contours and vector selector
  */
 class QgsMeshDatasetGroupTreeItemDelagate: public QStyledItemDelegate
 {
     Q_OBJECT
   public:
-    QgsMeshDatasetGroupTreeItemDelagate( QObject *parent = Q_NULLPTR );
+    QgsMeshDatasetGroupTreeItemDelagate( QObject *parent = nullptr );
 
     void paint( QPainter *painter,
                 const QStyleOptionViewItem &option,
@@ -188,7 +206,10 @@ class QgsMeshDatasetGroupTreeItemDelagate: public QStyledItemDelegate
 };
 
 /**
- * Tree widget for display of the mesh dataset groups.
+ * \ingroup gui
+ * \class QgsMeshDatasetGroupTreeView
+ *
+ * \brief Tree widget for display of the mesh dataset groups.
  */
 class GUI_EXPORT QgsMeshDatasetGroupTreeView: public QTreeView
 {
@@ -224,7 +245,10 @@ class GUI_EXPORT QgsMeshDatasetGroupTreeView: public QTreeView
 };
 
 /**
- * Tree widget for display of the mesh dataset groups.
+ * \ingroup gui
+ * \class QgsMeshActiveDatasetGroupTreeView
+ *
+ * \brief Tree widget for display of the mesh dataset groups.
  *
  * One dataset group is selected (active)
  */
@@ -271,6 +295,10 @@ class GUI_EXPORT QgsMeshActiveDatasetGroupTreeView : public QTreeView
     QgsMeshLayer *mMeshLayer = nullptr; // not owned
 };
 
+/**
+ * \ingroup gui
+ * \class QgsMeshDatasetGroupListModel
+ */
 class GUI_EXPORT QgsMeshDatasetGroupListModel: public QAbstractListModel
 {
   public:

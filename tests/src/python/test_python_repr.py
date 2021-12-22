@@ -304,11 +304,11 @@ class TestPython__repr__(unittest.TestCase):
 
     def testQgsVertexId(self):
         v = QgsVertexId()
-        self.assertEqual(v.__repr__(), '<QgsVertexId: -1,-1,-1>')
+        self.assertEqual(v.__repr__(), '<QgsVertexId: -1,-1,-1 Segment>')
         v = QgsVertexId(1, 2, 3)
-        self.assertEqual(v.__repr__(), '<QgsVertexId: 1,2,3>')
+        self.assertEqual(v.__repr__(), '<QgsVertexId: 1,2,3 Segment>')
         v = QgsVertexId(1, 2, 3, _type=QgsVertexId.CurveVertex)
-        self.assertEqual(v.__repr__(), '<QgsVertexId: 1,2,3 CurveVertex>')
+        self.assertEqual(v.__repr__(), '<QgsVertexId: 1,2,3 Curve>')
 
     def testProviderMetadata(self):
         self.assertEqual(QgsProviderRegistry.instance().providerMetadata('ogr').__repr__(), '<QgsProviderMetadata: ogr>')

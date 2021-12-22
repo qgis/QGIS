@@ -325,6 +325,34 @@ class CORE_EXPORT QgsTextFormat
     void setOpacity( double opacity );
 
     /**
+     * Returns the text's stretch factor.
+     *
+     * The stretch factor matches a condensed or expanded version of the font or applies a stretch
+     * transform that changes the width of all characters in the font by factor percent.
+     *
+     * For example, a factor of 150 results in all characters in the font being 1.5 times
+     * (ie. 150%) wider. The minimum stretch factor is 1, and the maximum stretch factor is 4000.
+     *
+     * \see setStretchFactor()
+     * \since QGIS 3.24
+     */
+    int stretchFactor() const;
+
+    /**
+     * Sets the text's stretch \a factor.
+     *
+     * The stretch factor matches a condensed or expanded version of the font or applies a stretch
+     * transform that changes the width of all characters in the font by factor percent.
+     *
+     * For example, setting \a factor to 150 results in all characters in the font being 1.5 times
+     * (ie. 150%) wider. The minimum stretch factor is 1, and the maximum stretch factor is 4000.
+     *
+     * \see stretchFactor()
+     * \since QGIS 3.24
+     */
+    void setStretchFactor( int factor );
+
+    /**
      * Returns the blending mode used for drawing the text.
      * \see setBlendMode()
      */
@@ -374,7 +402,7 @@ class CORE_EXPORT QgsTextFormat
      * \see setCapitalization()
      * \since QGIS 3.16
      */
-    QgsStringUtils::Capitalization capitalization() const;
+    Qgis::Capitalization capitalization() const;
 
     /**
      * Sets the text \a capitalization style.
@@ -382,7 +410,7 @@ class CORE_EXPORT QgsTextFormat
      * \see capitalization()
      * \since QGIS 3.16
      */
-    void setCapitalization( QgsStringUtils::Capitalization capitalization );
+    void setCapitalization( Qgis::Capitalization capitalization );
 
     /**
      * Returns TRUE if text should be treated as a HTML document and HTML tags should be used for formatting

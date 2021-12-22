@@ -3,26 +3,29 @@ QgsMapLayer.LayerType = QgsMapLayerType
 # monkey patching scoped based enum
 QgsMapLayer.VectorLayer = QgsMapLayerType.VectorLayer
 QgsMapLayer.VectorLayer.is_monkey_patched = True
-QgsMapLayer.VectorLayer.__doc__ = ""
+QgsMapLayer.VectorLayer.__doc__ = "Vector layer"
 QgsMapLayer.RasterLayer = QgsMapLayerType.RasterLayer
 QgsMapLayer.RasterLayer.is_monkey_patched = True
-QgsMapLayer.RasterLayer.__doc__ = ""
+QgsMapLayer.RasterLayer.__doc__ = "Raster layer"
 QgsMapLayer.PluginLayer = QgsMapLayerType.PluginLayer
 QgsMapLayer.PluginLayer.is_monkey_patched = True
-QgsMapLayer.PluginLayer.__doc__ = ""
+QgsMapLayer.PluginLayer.__doc__ = "Plugin based layer"
 QgsMapLayer.MeshLayer = QgsMapLayerType.MeshLayer
 QgsMapLayer.MeshLayer.is_monkey_patched = True
-QgsMapLayer.MeshLayer.__doc__ = "Added in 3.2"
+QgsMapLayer.MeshLayer.__doc__ = "Mesh layer. Added in QGIS 3.2"
 QgsMapLayer.VectorTileLayer = QgsMapLayerType.VectorTileLayer
 QgsMapLayer.VectorTileLayer.is_monkey_patched = True
-QgsMapLayer.VectorTileLayer.__doc__ = "Added in 3.14"
+QgsMapLayer.VectorTileLayer.__doc__ = "Vector tile layer. Added in QGIS 3.14"
 QgsMapLayer.AnnotationLayer = QgsMapLayerType.AnnotationLayer
 QgsMapLayer.AnnotationLayer.is_monkey_patched = True
 QgsMapLayer.AnnotationLayer.__doc__ = "Contains freeform, georeferenced annotations. Added in QGIS 3.16"
 QgsMapLayer.PointCloudLayer = QgsMapLayerType.PointCloudLayer
 QgsMapLayer.PointCloudLayer.is_monkey_patched = True
-QgsMapLayer.PointCloudLayer.__doc__ = "Added in 3.18"
-QgsMapLayerType.__doc__ = 'Types of layers that can be added to a map\n\n.. versionadded:: 3.8\n\n' + '* ``VectorLayer``: ' + QgsMapLayerType.VectorLayer.__doc__ + '\n' + '* ``RasterLayer``: ' + QgsMapLayerType.RasterLayer.__doc__ + '\n' + '* ``PluginLayer``: ' + QgsMapLayerType.PluginLayer.__doc__ + '\n' + '* ``MeshLayer``: ' + QgsMapLayerType.MeshLayer.__doc__ + '\n' + '* ``VectorTileLayer``: ' + QgsMapLayerType.VectorTileLayer.__doc__ + '\n' + '* ``AnnotationLayer``: ' + QgsMapLayerType.AnnotationLayer.__doc__ + '\n' + '* ``PointCloudLayer``: ' + QgsMapLayerType.PointCloudLayer.__doc__
+QgsMapLayer.PointCloudLayer.__doc__ = "Point cloud layer. Added in QGIS 3.18"
+QgsMapLayer.GroupLayer = QgsMapLayerType.GroupLayer
+QgsMapLayer.GroupLayer.is_monkey_patched = True
+QgsMapLayer.GroupLayer.__doc__ = "Composite group layer. Added in QGIS 3.24"
+QgsMapLayerType.__doc__ = 'Types of layers that can be added to a map\n\n.. versionadded:: 3.8\n\n' + '* ``VectorLayer``: ' + QgsMapLayerType.VectorLayer.__doc__ + '\n' + '* ``RasterLayer``: ' + QgsMapLayerType.RasterLayer.__doc__ + '\n' + '* ``PluginLayer``: ' + QgsMapLayerType.PluginLayer.__doc__ + '\n' + '* ``MeshLayer``: ' + QgsMapLayerType.MeshLayer.__doc__ + '\n' + '* ``VectorTileLayer``: ' + QgsMapLayerType.VectorTileLayer.__doc__ + '\n' + '* ``AnnotationLayer``: ' + QgsMapLayerType.AnnotationLayer.__doc__ + '\n' + '* ``PointCloudLayer``: ' + QgsMapLayerType.PointCloudLayer.__doc__ + '\n' + '* ``GroupLayer``: ' + QgsMapLayerType.GroupLayer.__doc__
 # --
 Qgis.MessageLevel.baseClass = Qgis
 # monkey patching scoped based enum
@@ -71,6 +74,11 @@ Qgis.ARGB32_Premultiplied.__doc__ = "Color, alpha, red, green, blue, 4 bytes  th
 Qgis.DataType.__doc__ = 'Raster data types.\nThis is modified and extended copy of GDALDataType.\n\n' + '* ``UnknownDataType``: ' + Qgis.DataType.UnknownDataType.__doc__ + '\n' + '* ``Byte``: ' + Qgis.DataType.Byte.__doc__ + '\n' + '* ``UInt16``: ' + Qgis.DataType.UInt16.__doc__ + '\n' + '* ``Int16``: ' + Qgis.DataType.Int16.__doc__ + '\n' + '* ``UInt32``: ' + Qgis.DataType.UInt32.__doc__ + '\n' + '* ``Int32``: ' + Qgis.DataType.Int32.__doc__ + '\n' + '* ``Float32``: ' + Qgis.DataType.Float32.__doc__ + '\n' + '* ``Float64``: ' + Qgis.DataType.Float64.__doc__ + '\n' + '* ``CInt16``: ' + Qgis.DataType.CInt16.__doc__ + '\n' + '* ``CInt32``: ' + Qgis.DataType.CInt32.__doc__ + '\n' + '* ``CFloat32``: ' + Qgis.DataType.CFloat32.__doc__ + '\n' + '* ``CFloat64``: ' + Qgis.DataType.CFloat64.__doc__ + '\n' + '* ``ARGB32``: ' + Qgis.DataType.ARGB32.__doc__ + '\n' + '* ``ARGB32_Premultiplied``: ' + Qgis.DataType.ARGB32_Premultiplied.__doc__
 # --
 Qgis.DataType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.VectorLayerTypeFlag.SqlQuery.__doc__ = "SQL query layer"
+Qgis.VectorLayerTypeFlag.__doc__ = 'Vector layer type flags.\n\n.. versionadded:: 3.24\n\n' + '* ``SqlQuery``: ' + Qgis.VectorLayerTypeFlag.SqlQuery.__doc__
+# --
+Qgis.VectorLayerTypeFlag.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.Never = Qgis.PythonMacroMode.Never
 Qgis.Never.is_monkey_patched = True
@@ -820,7 +828,10 @@ QgsMapSettings.LosslessImageRendering.__doc__ = "Render images losslessly whenev
 QgsMapSettings.Render3DMap = Qgis.MapSettingsFlag.Render3DMap
 QgsMapSettings.Render3DMap.is_monkey_patched = True
 QgsMapSettings.Render3DMap.__doc__ = "Render is for a 3D map"
-Qgis.MapSettingsFlag.__doc__ = 'Flags which adjust the way maps are rendered.\n\n.. versionadded:: 3.22\n\n' + '* ``Antialiasing``: ' + Qgis.MapSettingsFlag.Antialiasing.__doc__ + '\n' + '* ``DrawEditingInfo``: ' + Qgis.MapSettingsFlag.DrawEditingInfo.__doc__ + '\n' + '* ``ForceVectorOutput``: ' + Qgis.MapSettingsFlag.ForceVectorOutput.__doc__ + '\n' + '* ``UseAdvancedEffects``: ' + Qgis.MapSettingsFlag.UseAdvancedEffects.__doc__ + '\n' + '* ``DrawLabeling``: ' + Qgis.MapSettingsFlag.DrawLabeling.__doc__ + '\n' + '* ``UseRenderingOptimization``: ' + Qgis.MapSettingsFlag.UseRenderingOptimization.__doc__ + '\n' + '* ``DrawSelection``: ' + Qgis.MapSettingsFlag.DrawSelection.__doc__ + '\n' + '* ``DrawSymbolBounds``: ' + Qgis.MapSettingsFlag.DrawSymbolBounds.__doc__ + '\n' + '* ``RenderMapTile``: ' + Qgis.MapSettingsFlag.RenderMapTile.__doc__ + '\n' + '* ``RenderPartialOutput``: ' + Qgis.MapSettingsFlag.RenderPartialOutput.__doc__ + '\n' + '* ``RenderPreviewJob``: ' + Qgis.MapSettingsFlag.RenderPreviewJob.__doc__ + '\n' + '* ``RenderBlocking``: ' + Qgis.MapSettingsFlag.RenderBlocking.__doc__ + '\n' + '* ``LosslessImageRendering``: ' + Qgis.MapSettingsFlag.LosslessImageRendering.__doc__ + '\n' + '* ``Render3DMap``: ' + Qgis.MapSettingsFlag.Render3DMap.__doc__
+QgsMapSettings.HighQualityImageTransforms = Qgis.MapSettingsFlag.HighQualityImageTransforms
+QgsMapSettings.HighQualityImageTransforms.is_monkey_patched = True
+QgsMapSettings.HighQualityImageTransforms.__doc__ = "Enable high quality image transformations, which results in better appearance of scaled or rotated raster components of a map (since QGIS 3.24)"
+Qgis.MapSettingsFlag.__doc__ = 'Flags which adjust the way maps are rendered.\n\n.. versionadded:: 3.22\n\n' + '* ``Antialiasing``: ' + Qgis.MapSettingsFlag.Antialiasing.__doc__ + '\n' + '* ``DrawEditingInfo``: ' + Qgis.MapSettingsFlag.DrawEditingInfo.__doc__ + '\n' + '* ``ForceVectorOutput``: ' + Qgis.MapSettingsFlag.ForceVectorOutput.__doc__ + '\n' + '* ``UseAdvancedEffects``: ' + Qgis.MapSettingsFlag.UseAdvancedEffects.__doc__ + '\n' + '* ``DrawLabeling``: ' + Qgis.MapSettingsFlag.DrawLabeling.__doc__ + '\n' + '* ``UseRenderingOptimization``: ' + Qgis.MapSettingsFlag.UseRenderingOptimization.__doc__ + '\n' + '* ``DrawSelection``: ' + Qgis.MapSettingsFlag.DrawSelection.__doc__ + '\n' + '* ``DrawSymbolBounds``: ' + Qgis.MapSettingsFlag.DrawSymbolBounds.__doc__ + '\n' + '* ``RenderMapTile``: ' + Qgis.MapSettingsFlag.RenderMapTile.__doc__ + '\n' + '* ``RenderPartialOutput``: ' + Qgis.MapSettingsFlag.RenderPartialOutput.__doc__ + '\n' + '* ``RenderPreviewJob``: ' + Qgis.MapSettingsFlag.RenderPreviewJob.__doc__ + '\n' + '* ``RenderBlocking``: ' + Qgis.MapSettingsFlag.RenderBlocking.__doc__ + '\n' + '* ``LosslessImageRendering``: ' + Qgis.MapSettingsFlag.LosslessImageRendering.__doc__ + '\n' + '* ``Render3DMap``: ' + Qgis.MapSettingsFlag.Render3DMap.__doc__ + '\n' + '* ``HighQualityImageTransforms``: ' + Qgis.MapSettingsFlag.HighQualityImageTransforms.__doc__
 # --
 QgsMapSettings.Flags = Qgis.MapSettingsFlags
 Qgis.MapSettingsFlag.baseClass = Qgis
@@ -874,7 +885,13 @@ QgsRenderContext.Render3DMap.__doc__ = "Render is for a 3D map"
 QgsRenderContext.ApplyClipAfterReprojection = Qgis.RenderContextFlag.ApplyClipAfterReprojection
 QgsRenderContext.ApplyClipAfterReprojection.is_monkey_patched = True
 QgsRenderContext.ApplyClipAfterReprojection.__doc__ = "Feature geometry clipping to mapExtent() must be performed after the geometries are transformed using coordinateTransform(). Usually feature geometry clipping occurs using the extent() in the layer's CRS prior to geometry transformation, but in some cases when extent() could not be accurately calculated it is necessary to clip geometries to mapExtent() AFTER transforming them using coordinateTransform()."
-Qgis.RenderContextFlag.__doc__ = 'Flags which affect rendering operations.\n\n.. versionadded:: 3.22\n\n' + '* ``DrawEditingInfo``: ' + Qgis.RenderContextFlag.DrawEditingInfo.__doc__ + '\n' + '* ``ForceVectorOutput``: ' + Qgis.RenderContextFlag.ForceVectorOutput.__doc__ + '\n' + '* ``UseAdvancedEffects``: ' + Qgis.RenderContextFlag.UseAdvancedEffects.__doc__ + '\n' + '* ``UseRenderingOptimization``: ' + Qgis.RenderContextFlag.UseRenderingOptimization.__doc__ + '\n' + '* ``DrawSelection``: ' + Qgis.RenderContextFlag.DrawSelection.__doc__ + '\n' + '* ``DrawSymbolBounds``: ' + Qgis.RenderContextFlag.DrawSymbolBounds.__doc__ + '\n' + '* ``RenderMapTile``: ' + Qgis.RenderContextFlag.RenderMapTile.__doc__ + '\n' + '* ``Antialiasing``: ' + Qgis.RenderContextFlag.Antialiasing.__doc__ + '\n' + '* ``RenderPartialOutput``: ' + Qgis.RenderContextFlag.RenderPartialOutput.__doc__ + '\n' + '* ``RenderPreviewJob``: ' + Qgis.RenderContextFlag.RenderPreviewJob.__doc__ + '\n' + '* ``RenderBlocking``: ' + Qgis.RenderContextFlag.RenderBlocking.__doc__ + '\n' + '* ``RenderSymbolPreview``: ' + Qgis.RenderContextFlag.RenderSymbolPreview.__doc__ + '\n' + '* ``LosslessImageRendering``: ' + Qgis.RenderContextFlag.LosslessImageRendering.__doc__ + '\n' + '* ``ApplyScalingWorkaroundForTextRendering``: ' + Qgis.RenderContextFlag.ApplyScalingWorkaroundForTextRendering.__doc__ + '\n' + '* ``Render3DMap``: ' + Qgis.RenderContextFlag.Render3DMap.__doc__ + '\n' + '* ``ApplyClipAfterReprojection``: ' + Qgis.RenderContextFlag.ApplyClipAfterReprojection.__doc__
+QgsRenderContext.RenderingSubSymbol = Qgis.RenderContextFlag.RenderingSubSymbol
+QgsRenderContext.RenderingSubSymbol.is_monkey_patched = True
+QgsRenderContext.RenderingSubSymbol.__doc__ = "Set whenever a sub-symbol of a parent symbol is currently being rendered. Can be used during symbol and symbol layer rendering to determine whether the symbol being rendered is a subsymbol. (Since QGIS 3.24)"
+QgsRenderContext.HighQualityImageTransforms = Qgis.RenderContextFlag.HighQualityImageTransforms
+QgsRenderContext.HighQualityImageTransforms.is_monkey_patched = True
+QgsRenderContext.HighQualityImageTransforms.__doc__ = "Enable high quality image transformations, which results in better appearance of scaled or rotated raster components of a map (since QGIS 3.24)"
+Qgis.RenderContextFlag.__doc__ = 'Flags which affect rendering operations.\n\n.. versionadded:: 3.22\n\n' + '* ``DrawEditingInfo``: ' + Qgis.RenderContextFlag.DrawEditingInfo.__doc__ + '\n' + '* ``ForceVectorOutput``: ' + Qgis.RenderContextFlag.ForceVectorOutput.__doc__ + '\n' + '* ``UseAdvancedEffects``: ' + Qgis.RenderContextFlag.UseAdvancedEffects.__doc__ + '\n' + '* ``UseRenderingOptimization``: ' + Qgis.RenderContextFlag.UseRenderingOptimization.__doc__ + '\n' + '* ``DrawSelection``: ' + Qgis.RenderContextFlag.DrawSelection.__doc__ + '\n' + '* ``DrawSymbolBounds``: ' + Qgis.RenderContextFlag.DrawSymbolBounds.__doc__ + '\n' + '* ``RenderMapTile``: ' + Qgis.RenderContextFlag.RenderMapTile.__doc__ + '\n' + '* ``Antialiasing``: ' + Qgis.RenderContextFlag.Antialiasing.__doc__ + '\n' + '* ``RenderPartialOutput``: ' + Qgis.RenderContextFlag.RenderPartialOutput.__doc__ + '\n' + '* ``RenderPreviewJob``: ' + Qgis.RenderContextFlag.RenderPreviewJob.__doc__ + '\n' + '* ``RenderBlocking``: ' + Qgis.RenderContextFlag.RenderBlocking.__doc__ + '\n' + '* ``RenderSymbolPreview``: ' + Qgis.RenderContextFlag.RenderSymbolPreview.__doc__ + '\n' + '* ``LosslessImageRendering``: ' + Qgis.RenderContextFlag.LosslessImageRendering.__doc__ + '\n' + '* ``ApplyScalingWorkaroundForTextRendering``: ' + Qgis.RenderContextFlag.ApplyScalingWorkaroundForTextRendering.__doc__ + '\n' + '* ``Render3DMap``: ' + Qgis.RenderContextFlag.Render3DMap.__doc__ + '\n' + '* ``ApplyClipAfterReprojection``: ' + Qgis.RenderContextFlag.ApplyClipAfterReprojection.__doc__ + '\n' + '* ``RenderingSubSymbol``: ' + Qgis.RenderContextFlag.RenderingSubSymbol.__doc__ + '\n' + '* ``HighQualityImageTransforms``: ' + Qgis.RenderContextFlag.HighQualityImageTransforms.__doc__
 # --
 QgsRenderContext.Flags = Qgis.RenderContextFlags
 Qgis.RenderContextFlag.baseClass = Qgis
@@ -897,3 +914,283 @@ Qgis.RenderSubcomponentProperty.GlowSpread.__doc__ = "Glow spread size"
 Qgis.RenderSubcomponentProperty.__doc__ = 'Rendering subcomponent properties.\n\n.. versionadded:: 3.22\n\n' + '* ``Generic``: ' + Qgis.RenderSubcomponentProperty.Generic.__doc__ + '\n' + '* ``ShadowOffset``: ' + Qgis.RenderSubcomponentProperty.ShadowOffset.__doc__ + '\n' + '* ``BlurSize``: ' + Qgis.RenderSubcomponentProperty.BlurSize.__doc__ + '\n' + '* ``GlowSpread``: ' + Qgis.RenderSubcomponentProperty.GlowSpread.__doc__
 # --
 Qgis.RenderSubcomponentProperty.baseClass = Qgis
+QgsVertexId.VertexType = Qgis.VertexType
+# monkey patching scoped based enum
+QgsVertexId.SegmentVertex = Qgis.VertexType.Segment
+QgsVertexId.SegmentVertex.is_monkey_patched = True
+QgsVertexId.SegmentVertex.__doc__ = "The actual start or end point of a segment"
+QgsVertexId.CurveVertex = Qgis.VertexType.Curve
+QgsVertexId.CurveVertex.is_monkey_patched = True
+QgsVertexId.CurveVertex.__doc__ = "An intermediate point on a segment defining the curvature of the segment"
+Qgis.VertexType.__doc__ = 'Types of vertex.\n\n.. versionadded:: 3.22\n\n' + '* ``SegmentVertex``: ' + Qgis.VertexType.Segment.__doc__ + '\n' + '* ``CurveVertex``: ' + Qgis.VertexType.Curve.__doc__
+# --
+Qgis.VertexType.baseClass = Qgis
+QgsSimpleMarkerSymbolLayerBase.Shape = Qgis.MarkerShape
+# monkey patching scoped based enum
+QgsSimpleMarkerSymbolLayerBase.Square = Qgis.MarkerShape.Square
+QgsSimpleMarkerSymbolLayerBase.Square.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.Square.__doc__ = "Square"
+QgsSimpleMarkerSymbolLayerBase.Diamond = Qgis.MarkerShape.Diamond
+QgsSimpleMarkerSymbolLayerBase.Diamond.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.Diamond.__doc__ = "Diamond"
+QgsSimpleMarkerSymbolLayerBase.Pentagon = Qgis.MarkerShape.Pentagon
+QgsSimpleMarkerSymbolLayerBase.Pentagon.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.Pentagon.__doc__ = "Pentagon"
+QgsSimpleMarkerSymbolLayerBase.Hexagon = Qgis.MarkerShape.Hexagon
+QgsSimpleMarkerSymbolLayerBase.Hexagon.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.Hexagon.__doc__ = "Hexagon"
+QgsSimpleMarkerSymbolLayerBase.Triangle = Qgis.MarkerShape.Triangle
+QgsSimpleMarkerSymbolLayerBase.Triangle.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.Triangle.__doc__ = "Triangle"
+QgsSimpleMarkerSymbolLayerBase.EquilateralTriangle = Qgis.MarkerShape.EquilateralTriangle
+QgsSimpleMarkerSymbolLayerBase.EquilateralTriangle.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.EquilateralTriangle.__doc__ = "Equilateral triangle"
+QgsSimpleMarkerSymbolLayerBase.Star = Qgis.MarkerShape.Star
+QgsSimpleMarkerSymbolLayerBase.Star.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.Star.__doc__ = "Star"
+QgsSimpleMarkerSymbolLayerBase.Arrow = Qgis.MarkerShape.Arrow
+QgsSimpleMarkerSymbolLayerBase.Arrow.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.Arrow.__doc__ = "Arrow"
+QgsSimpleMarkerSymbolLayerBase.Circle = Qgis.MarkerShape.Circle
+QgsSimpleMarkerSymbolLayerBase.Circle.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.Circle.__doc__ = "Circle"
+QgsSimpleMarkerSymbolLayerBase.Cross = Qgis.MarkerShape.Cross
+QgsSimpleMarkerSymbolLayerBase.Cross.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.Cross.__doc__ = "Cross (lines only)"
+QgsSimpleMarkerSymbolLayerBase.CrossFill = Qgis.MarkerShape.CrossFill
+QgsSimpleMarkerSymbolLayerBase.CrossFill.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.CrossFill.__doc__ = "Solid filled cross"
+QgsSimpleMarkerSymbolLayerBase.Cross2 = Qgis.MarkerShape.Cross2
+QgsSimpleMarkerSymbolLayerBase.Cross2.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.Cross2.__doc__ = "Rotated cross (lines only), 'x' shape"
+QgsSimpleMarkerSymbolLayerBase.Line = Qgis.MarkerShape.Line
+QgsSimpleMarkerSymbolLayerBase.Line.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.Line.__doc__ = "Vertical line"
+QgsSimpleMarkerSymbolLayerBase.ArrowHead = Qgis.MarkerShape.ArrowHead
+QgsSimpleMarkerSymbolLayerBase.ArrowHead.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.ArrowHead.__doc__ = "Right facing arrow head (unfilled, lines only)"
+QgsSimpleMarkerSymbolLayerBase.ArrowHeadFilled = Qgis.MarkerShape.ArrowHeadFilled
+QgsSimpleMarkerSymbolLayerBase.ArrowHeadFilled.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.ArrowHeadFilled.__doc__ = "Right facing filled arrow head"
+QgsSimpleMarkerSymbolLayerBase.SemiCircle = Qgis.MarkerShape.SemiCircle
+QgsSimpleMarkerSymbolLayerBase.SemiCircle.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.SemiCircle.__doc__ = "Semi circle (top half)"
+QgsSimpleMarkerSymbolLayerBase.ThirdCircle = Qgis.MarkerShape.ThirdCircle
+QgsSimpleMarkerSymbolLayerBase.ThirdCircle.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.ThirdCircle.__doc__ = "One third circle (top left third)"
+QgsSimpleMarkerSymbolLayerBase.QuarterCircle = Qgis.MarkerShape.QuarterCircle
+QgsSimpleMarkerSymbolLayerBase.QuarterCircle.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.QuarterCircle.__doc__ = "Quarter circle (top left quarter)"
+QgsSimpleMarkerSymbolLayerBase.QuarterSquare = Qgis.MarkerShape.QuarterSquare
+QgsSimpleMarkerSymbolLayerBase.QuarterSquare.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.QuarterSquare.__doc__ = "Quarter square (top left quarter)"
+QgsSimpleMarkerSymbolLayerBase.HalfSquare = Qgis.MarkerShape.HalfSquare
+QgsSimpleMarkerSymbolLayerBase.HalfSquare.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.HalfSquare.__doc__ = "Half square (left half)"
+QgsSimpleMarkerSymbolLayerBase.DiagonalHalfSquare = Qgis.MarkerShape.DiagonalHalfSquare
+QgsSimpleMarkerSymbolLayerBase.DiagonalHalfSquare.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.DiagonalHalfSquare.__doc__ = "Diagonal half square (bottom left half)"
+QgsSimpleMarkerSymbolLayerBase.RightHalfTriangle = Qgis.MarkerShape.RightHalfTriangle
+QgsSimpleMarkerSymbolLayerBase.RightHalfTriangle.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.RightHalfTriangle.__doc__ = "Right half of triangle"
+QgsSimpleMarkerSymbolLayerBase.LeftHalfTriangle = Qgis.MarkerShape.LeftHalfTriangle
+QgsSimpleMarkerSymbolLayerBase.LeftHalfTriangle.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.LeftHalfTriangle.__doc__ = "Left half of triangle"
+QgsSimpleMarkerSymbolLayerBase.Octagon = Qgis.MarkerShape.Octagon
+QgsSimpleMarkerSymbolLayerBase.Octagon.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.Octagon.__doc__ = "Octagon (since QGIS 3.18)"
+QgsSimpleMarkerSymbolLayerBase.SquareWithCorners = Qgis.MarkerShape.SquareWithCorners
+QgsSimpleMarkerSymbolLayerBase.SquareWithCorners.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.SquareWithCorners.__doc__ = "A square with diagonal corners (since QGIS 3.18)"
+QgsSimpleMarkerSymbolLayerBase.AsteriskFill = Qgis.MarkerShape.AsteriskFill
+QgsSimpleMarkerSymbolLayerBase.AsteriskFill.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.AsteriskFill.__doc__ = "A filled asterisk shape (since QGIS 3.18)"
+QgsSimpleMarkerSymbolLayerBase.HalfArc = Qgis.MarkerShape.HalfArc
+QgsSimpleMarkerSymbolLayerBase.HalfArc.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.HalfArc.__doc__ = "A line-only half arc (since QGIS 3.20)"
+QgsSimpleMarkerSymbolLayerBase.ThirdArc = Qgis.MarkerShape.ThirdArc
+QgsSimpleMarkerSymbolLayerBase.ThirdArc.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.ThirdArc.__doc__ = "A line-only one third arc (since QGIS 3.20)"
+QgsSimpleMarkerSymbolLayerBase.QuarterArc = Qgis.MarkerShape.QuarterArc
+QgsSimpleMarkerSymbolLayerBase.QuarterArc.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.QuarterArc.__doc__ = "A line-only one quarter arc (since QGIS 3.20)"
+Qgis.MarkerShape.__doc__ = 'Marker shapes.\n\n.. note::\n\n   Prior to QGIS 3.24 this was available as :py:class:`QgsSimpleMarkerSymbolLayerBase`.Shape\n\n.. versionadded:: 3.24\n\n' + '* ``Square``: ' + Qgis.MarkerShape.Square.__doc__ + '\n' + '* ``Diamond``: ' + Qgis.MarkerShape.Diamond.__doc__ + '\n' + '* ``Pentagon``: ' + Qgis.MarkerShape.Pentagon.__doc__ + '\n' + '* ``Hexagon``: ' + Qgis.MarkerShape.Hexagon.__doc__ + '\n' + '* ``Triangle``: ' + Qgis.MarkerShape.Triangle.__doc__ + '\n' + '* ``EquilateralTriangle``: ' + Qgis.MarkerShape.EquilateralTriangle.__doc__ + '\n' + '* ``Star``: ' + Qgis.MarkerShape.Star.__doc__ + '\n' + '* ``Arrow``: ' + Qgis.MarkerShape.Arrow.__doc__ + '\n' + '* ``Circle``: ' + Qgis.MarkerShape.Circle.__doc__ + '\n' + '* ``Cross``: ' + Qgis.MarkerShape.Cross.__doc__ + '\n' + '* ``CrossFill``: ' + Qgis.MarkerShape.CrossFill.__doc__ + '\n' + '* ``Cross2``: ' + Qgis.MarkerShape.Cross2.__doc__ + '\n' + '* ``Line``: ' + Qgis.MarkerShape.Line.__doc__ + '\n' + '* ``ArrowHead``: ' + Qgis.MarkerShape.ArrowHead.__doc__ + '\n' + '* ``ArrowHeadFilled``: ' + Qgis.MarkerShape.ArrowHeadFilled.__doc__ + '\n' + '* ``SemiCircle``: ' + Qgis.MarkerShape.SemiCircle.__doc__ + '\n' + '* ``ThirdCircle``: ' + Qgis.MarkerShape.ThirdCircle.__doc__ + '\n' + '* ``QuarterCircle``: ' + Qgis.MarkerShape.QuarterCircle.__doc__ + '\n' + '* ``QuarterSquare``: ' + Qgis.MarkerShape.QuarterSquare.__doc__ + '\n' + '* ``HalfSquare``: ' + Qgis.MarkerShape.HalfSquare.__doc__ + '\n' + '* ``DiagonalHalfSquare``: ' + Qgis.MarkerShape.DiagonalHalfSquare.__doc__ + '\n' + '* ``RightHalfTriangle``: ' + Qgis.MarkerShape.RightHalfTriangle.__doc__ + '\n' + '* ``LeftHalfTriangle``: ' + Qgis.MarkerShape.LeftHalfTriangle.__doc__ + '\n' + '* ``Octagon``: ' + Qgis.MarkerShape.Octagon.__doc__ + '\n' + '* ``SquareWithCorners``: ' + Qgis.MarkerShape.SquareWithCorners.__doc__ + '\n' + '* ``AsteriskFill``: ' + Qgis.MarkerShape.AsteriskFill.__doc__ + '\n' + '* ``HalfArc``: ' + Qgis.MarkerShape.HalfArc.__doc__ + '\n' + '* ``ThirdArc``: ' + Qgis.MarkerShape.ThirdArc.__doc__ + '\n' + '* ``QuarterArc``: ' + Qgis.MarkerShape.QuarterArc.__doc__
+# --
+Qgis.MarkerShape.baseClass = Qgis
+QgsTemplatedLineSymbolLayerBase.Placement = Qgis.MarkerLinePlacement
+# monkey patching scoped based enum
+QgsTemplatedLineSymbolLayerBase.Interval = Qgis.MarkerLinePlacement.Interval
+QgsTemplatedLineSymbolLayerBase.Interval.is_monkey_patched = True
+QgsTemplatedLineSymbolLayerBase.Interval.__doc__ = "Place symbols at regular intervals"
+QgsTemplatedLineSymbolLayerBase.Vertex = Qgis.MarkerLinePlacement.Vertex
+QgsTemplatedLineSymbolLayerBase.Vertex.is_monkey_patched = True
+QgsTemplatedLineSymbolLayerBase.Vertex.__doc__ = "Place symbols on every vertex in the line"
+QgsTemplatedLineSymbolLayerBase.LastVertex = Qgis.MarkerLinePlacement.LastVertex
+QgsTemplatedLineSymbolLayerBase.LastVertex.is_monkey_patched = True
+QgsTemplatedLineSymbolLayerBase.LastVertex.__doc__ = "Place symbols on the last vertex in the line"
+QgsTemplatedLineSymbolLayerBase.FirstVertex = Qgis.MarkerLinePlacement.FirstVertex
+QgsTemplatedLineSymbolLayerBase.FirstVertex.is_monkey_patched = True
+QgsTemplatedLineSymbolLayerBase.FirstVertex.__doc__ = "Place symbols on the first vertex in the line"
+QgsTemplatedLineSymbolLayerBase.CentralPoint = Qgis.MarkerLinePlacement.CentralPoint
+QgsTemplatedLineSymbolLayerBase.CentralPoint.is_monkey_patched = True
+QgsTemplatedLineSymbolLayerBase.CentralPoint.__doc__ = "Place symbols at the mid point of the line"
+QgsTemplatedLineSymbolLayerBase.CurvePoint = Qgis.MarkerLinePlacement.CurvePoint
+QgsTemplatedLineSymbolLayerBase.CurvePoint.is_monkey_patched = True
+QgsTemplatedLineSymbolLayerBase.CurvePoint.__doc__ = "Place symbols at every virtual curve point in the line (used when rendering curved geometry types only)"
+QgsTemplatedLineSymbolLayerBase.SegmentCenter = Qgis.MarkerLinePlacement.SegmentCenter
+QgsTemplatedLineSymbolLayerBase.SegmentCenter.is_monkey_patched = True
+QgsTemplatedLineSymbolLayerBase.SegmentCenter.__doc__ = "Place symbols at the center of every line segment"
+QgsTemplatedLineSymbolLayerBase.InnerVertices = Qgis.MarkerLinePlacement.InnerVertices
+QgsTemplatedLineSymbolLayerBase.InnerVertices.is_monkey_patched = True
+QgsTemplatedLineSymbolLayerBase.InnerVertices.__doc__ = "Inner vertices (i.e. all vertices except the first and last vertex) (since QGIS 3.24)"
+Qgis.MarkerLinePlacement.__doc__ = 'Defines how/where the symbols should be placed on a line.\n\n.. note::\n\n   Prior to QGIS 3.24 this was available as :py:class:`QgsTemplatedLineSymbolLayerBase`.Placement\n\n.. versionadded:: 3.24\n\n' + '* ``Interval``: ' + Qgis.MarkerLinePlacement.Interval.__doc__ + '\n' + '* ``Vertex``: ' + Qgis.MarkerLinePlacement.Vertex.__doc__ + '\n' + '* ``LastVertex``: ' + Qgis.MarkerLinePlacement.LastVertex.__doc__ + '\n' + '* ``FirstVertex``: ' + Qgis.MarkerLinePlacement.FirstVertex.__doc__ + '\n' + '* ``CentralPoint``: ' + Qgis.MarkerLinePlacement.CentralPoint.__doc__ + '\n' + '* ``CurvePoint``: ' + Qgis.MarkerLinePlacement.CurvePoint.__doc__ + '\n' + '* ``SegmentCenter``: ' + Qgis.MarkerLinePlacement.SegmentCenter.__doc__ + '\n' + '* ``InnerVertices``: ' + Qgis.MarkerLinePlacement.InnerVertices.__doc__
+# --
+Qgis.MarkerLinePlacement.baseClass = Qgis
+Qgis.MarkerLinePlacements.baseClass = Qgis
+MarkerLinePlacements = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsGradientFillSymbolLayer.GradientColorType = Qgis.GradientColorSource
+# monkey patching scoped based enum
+QgsGradientFillSymbolLayer.SimpleTwoColor = Qgis.GradientColorSource.SimpleTwoColor
+QgsGradientFillSymbolLayer.SimpleTwoColor.is_monkey_patched = True
+QgsGradientFillSymbolLayer.SimpleTwoColor.__doc__ = "Simple two color gradient"
+QgsGradientFillSymbolLayer.ColorRamp = Qgis.GradientColorSource.ColorRamp
+QgsGradientFillSymbolLayer.ColorRamp.is_monkey_patched = True
+QgsGradientFillSymbolLayer.ColorRamp.__doc__ = "Gradient color ramp"
+Qgis.GradientColorSource.__doc__ = 'Gradient color sources.\n\n.. note::\n\n   Prior to QGIS 3.24 this was available as :py:class:`QgsGradientFillSymbolLayer`.GradientColorType\n\n.. versionadded:: 3.24\n\n' + '* ``SimpleTwoColor``: ' + Qgis.GradientColorSource.SimpleTwoColor.__doc__ + '\n' + '* ``ColorRamp``: ' + Qgis.GradientColorSource.ColorRamp.__doc__
+# --
+Qgis.GradientColorSource.baseClass = Qgis
+QgsGradientFillSymbolLayer.GradientType = Qgis.GradientType
+# monkey patching scoped based enum
+QgsGradientFillSymbolLayer.Linear = Qgis.GradientType.Linear
+QgsGradientFillSymbolLayer.Linear.is_monkey_patched = True
+QgsGradientFillSymbolLayer.Linear.__doc__ = "Linear gradient"
+QgsGradientFillSymbolLayer.Radial = Qgis.GradientType.Radial
+QgsGradientFillSymbolLayer.Radial.is_monkey_patched = True
+QgsGradientFillSymbolLayer.Radial.__doc__ = "Radial (circular) gradient"
+QgsGradientFillSymbolLayer.Conical = Qgis.GradientType.Conical
+QgsGradientFillSymbolLayer.Conical.is_monkey_patched = True
+QgsGradientFillSymbolLayer.Conical.__doc__ = "Conical (polar) gradient"
+Qgis.GradientType.__doc__ = 'Gradient types.\n\n.. note::\n\n   Prior to QGIS 3.24 this was available as :py:class:`QgsGradientFillSymbolLayer`.GradientType\n\n.. versionadded:: 3.24\n\n' + '* ``Linear``: ' + Qgis.GradientType.Linear.__doc__ + '\n' + '* ``Radial``: ' + Qgis.GradientType.Radial.__doc__ + '\n' + '* ``Conical``: ' + Qgis.GradientType.Conical.__doc__
+# --
+Qgis.GradientType.baseClass = Qgis
+QgsGradientFillSymbolLayer.GradientCoordinateMode = Qgis.SymbolCoordinateReference
+# monkey patching scoped based enum
+QgsGradientFillSymbolLayer.Feature = Qgis.SymbolCoordinateReference.Feature
+QgsGradientFillSymbolLayer.Feature.is_monkey_patched = True
+QgsGradientFillSymbolLayer.Feature.__doc__ = "Relative to feature/shape being rendered"
+QgsGradientFillSymbolLayer.Viewport = Qgis.SymbolCoordinateReference.Viewport
+QgsGradientFillSymbolLayer.Viewport.is_monkey_patched = True
+QgsGradientFillSymbolLayer.Viewport.__doc__ = "Relative to the whole viewport/output device"
+Qgis.SymbolCoordinateReference.__doc__ = 'Symbol coordinate reference modes.\n\n.. note::\n\n   Prior to QGIS 3.24 this was available as :py:class:`QgsGradientFillSymbolLayer`.GradientCoordinateMode\n\n.. versionadded:: 3.24\n\n' + '* ``Feature``: ' + Qgis.SymbolCoordinateReference.Feature.__doc__ + '\n' + '* ``Viewport``: ' + Qgis.SymbolCoordinateReference.Viewport.__doc__
+# --
+Qgis.SymbolCoordinateReference.baseClass = Qgis
+QgsGradientFillSymbolLayer.GradientSpread = Qgis.GradientSpread
+# monkey patching scoped based enum
+QgsGradientFillSymbolLayer.Pad = Qgis.GradientSpread.Pad
+QgsGradientFillSymbolLayer.Pad.is_monkey_patched = True
+QgsGradientFillSymbolLayer.Pad.__doc__ = "Pad out gradient using colors at endpoint of gradient"
+QgsGradientFillSymbolLayer.Reflect = Qgis.GradientSpread.Reflect
+QgsGradientFillSymbolLayer.Reflect.is_monkey_patched = True
+QgsGradientFillSymbolLayer.Reflect.__doc__ = "Reflect gradient"
+QgsGradientFillSymbolLayer.Repeat = Qgis.GradientSpread.Repeat
+QgsGradientFillSymbolLayer.Repeat.is_monkey_patched = True
+QgsGradientFillSymbolLayer.Repeat.__doc__ = "Repeat gradient"
+Qgis.GradientSpread.__doc__ = 'Gradient spread options, which control how gradients are rendered outside of their\nstart and end points.\n\n.. note::\n\n   Prior to QGIS 3.24 this was available as :py:class:`QgsGradientFillSymbolLayer`.GradientSpread\n\n.. versionadded:: 3.24\n\n' + '* ``Pad``: ' + Qgis.GradientSpread.Pad.__doc__ + '\n' + '* ``Reflect``: ' + Qgis.GradientSpread.Reflect.__doc__ + '\n' + '* ``Repeat``: ' + Qgis.GradientSpread.Repeat.__doc__
+# --
+Qgis.GradientSpread.baseClass = Qgis
+QgsRandomMarkerFillSymbolLayer.CountMethod = Qgis.PointCountMethod
+# monkey patching scoped based enum
+QgsRandomMarkerFillSymbolLayer.AbsoluteCount = Qgis.PointCountMethod.Absolute
+QgsRandomMarkerFillSymbolLayer.AbsoluteCount.is_monkey_patched = True
+QgsRandomMarkerFillSymbolLayer.AbsoluteCount.__doc__ = "The point count is used as an absolute count of markers"
+QgsRandomMarkerFillSymbolLayer.DensityBasedCount = Qgis.PointCountMethod.DensityBased
+QgsRandomMarkerFillSymbolLayer.DensityBasedCount.is_monkey_patched = True
+QgsRandomMarkerFillSymbolLayer.DensityBasedCount.__doc__ = "The point count is part of a marker density count"
+Qgis.PointCountMethod.__doc__ = 'Methods which define the number of points randomly filling a polygon.\n\n.. note::\n\n   Prior to QGIS 3.24 this was available as :py:class:`QgsRandomMarkerFillSymbolLayer`.CountMethod\n\n.. versionadded:: 3.24\n\n' + '* ``AbsoluteCount``: ' + Qgis.PointCountMethod.Absolute.__doc__ + '\n' + '* ``DensityBasedCount``: ' + Qgis.PointCountMethod.DensityBased.__doc__
+# --
+Qgis.PointCountMethod.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.MarkerClipMode.NoClipping.__doc__ = "No clipping, render complete markers"
+Qgis.MarkerClipMode.Shape.__doc__ = "Clip to polygon shape"
+Qgis.MarkerClipMode.CentroidWithin.__doc__ = "Render complete markers wherever their centroid falls within the polygon shape"
+Qgis.MarkerClipMode.CompletelyWithin.__doc__ = "Render complete markers wherever the completely fall within the polygon shape"
+Qgis.MarkerClipMode.__doc__ = 'Marker clipping modes.\n\n.. versionadded:: 3.24\n\n' + '* ``NoClipping``: ' + Qgis.MarkerClipMode.NoClipping.__doc__ + '\n' + '* ``Shape``: ' + Qgis.MarkerClipMode.Shape.__doc__ + '\n' + '* ``CentroidWithin``: ' + Qgis.MarkerClipMode.CentroidWithin.__doc__ + '\n' + '* ``CompletelyWithin``: ' + Qgis.MarkerClipMode.CompletelyWithin.__doc__
+# --
+Qgis.MarkerClipMode.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.LineClipMode.ClipPainterOnly.__doc__ = "Applying clipping on the painter only (i.e. line endpoints will coincide with polygon bounding box, but will not be part of the visible portion of the line)"
+Qgis.LineClipMode.ClipToIntersection.__doc__ = "Clip lines to intersection with polygon shape (slower) (i.e. line endpoints will coincide with polygon exterior)"
+Qgis.LineClipMode.NoClipping.__doc__ = "Lines are not clipped, will extend to shape's bounding box."
+Qgis.LineClipMode.__doc__ = 'Line clipping modes.\n\n.. versionadded:: 3.24\n\n' + '* ``ClipPainterOnly``: ' + Qgis.LineClipMode.ClipPainterOnly.__doc__ + '\n' + '* ``ClipToIntersection``: ' + Qgis.LineClipMode.ClipToIntersection.__doc__ + '\n' + '* ``NoClipping``: ' + Qgis.LineClipMode.NoClipping.__doc__
+# --
+Qgis.LineClipMode.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.DashPatternLineEndingRule.NoRule.__doc__ = "No special rule"
+Qgis.DashPatternLineEndingRule.FullDash.__doc__ = "Start or finish the pattern with a full dash"
+Qgis.DashPatternLineEndingRule.HalfDash.__doc__ = "Start or finish the pattern with a half length dash"
+Qgis.DashPatternLineEndingRule.FullGap.__doc__ = "Start or finish the pattern with a full gap"
+Qgis.DashPatternLineEndingRule.HalfGap.__doc__ = "Start or finish the pattern with a half length gap"
+Qgis.DashPatternLineEndingRule.__doc__ = 'Dash pattern line ending rules.\n\n.. versionadded:: 3.24\n\n' + '* ``NoRule``: ' + Qgis.DashPatternLineEndingRule.NoRule.__doc__ + '\n' + '* ``FullDash``: ' + Qgis.DashPatternLineEndingRule.FullDash.__doc__ + '\n' + '* ``HalfDash``: ' + Qgis.DashPatternLineEndingRule.HalfDash.__doc__ + '\n' + '* ``FullGap``: ' + Qgis.DashPatternLineEndingRule.FullGap.__doc__ + '\n' + '* ``HalfGap``: ' + Qgis.DashPatternLineEndingRule.HalfGap.__doc__
+# --
+Qgis.DashPatternLineEndingRule.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.DashPatternSizeAdjustment.ScaleBothDashAndGap.__doc__ = "Both the dash and gap lengths are adjusted equally"
+Qgis.DashPatternSizeAdjustment.ScaleDashOnly.__doc__ = "Only dash lengths are adjusted"
+Qgis.DashPatternSizeAdjustment.ScaleGapOnly.__doc__ = "Only gap lengths are adjusted"
+Qgis.DashPatternSizeAdjustment.__doc__ = 'Dash pattern size adjustment options.\n\n.. versionadded:: 3.24\n\n' + '* ``ScaleBothDashAndGap``: ' + Qgis.DashPatternSizeAdjustment.ScaleBothDashAndGap.__doc__ + '\n' + '* ``ScaleDashOnly``: ' + Qgis.DashPatternSizeAdjustment.ScaleDashOnly.__doc__ + '\n' + '* ``ScaleGapOnly``: ' + Qgis.DashPatternSizeAdjustment.ScaleGapOnly.__doc__
+# --
+Qgis.DashPatternSizeAdjustment.baseClass = Qgis
+QgsStringUtils.Capitalization = Qgis.Capitalization
+# monkey patching scoped based enum
+QgsStringUtils.MixedCase = Qgis.Capitalization.MixedCase
+QgsStringUtils.MixedCase.is_monkey_patched = True
+QgsStringUtils.MixedCase.__doc__ = "Mixed case, ie no change"
+QgsStringUtils.AllUppercase = Qgis.Capitalization.AllUppercase
+QgsStringUtils.AllUppercase.is_monkey_patched = True
+QgsStringUtils.AllUppercase.__doc__ = "Convert all characters to uppercase"
+QgsStringUtils.AllLowercase = Qgis.Capitalization.AllLowercase
+QgsStringUtils.AllLowercase.is_monkey_patched = True
+QgsStringUtils.AllLowercase.__doc__ = "Convert all characters to lowercase"
+QgsStringUtils.ForceFirstLetterToCapital = Qgis.Capitalization.ForceFirstLetterToCapital
+QgsStringUtils.ForceFirstLetterToCapital.is_monkey_patched = True
+QgsStringUtils.ForceFirstLetterToCapital.__doc__ = "Convert just the first letter of each word to uppercase, leave the rest untouched"
+QgsStringUtils.SmallCaps = Qgis.Capitalization.SmallCaps
+QgsStringUtils.SmallCaps.is_monkey_patched = True
+QgsStringUtils.SmallCaps.__doc__ = "Mixed case small caps (since QGIS 3.24)"
+QgsStringUtils.TitleCase = Qgis.Capitalization.TitleCase
+QgsStringUtils.TitleCase.is_monkey_patched = True
+QgsStringUtils.TitleCase.__doc__ = "Simple title case conversion - does not fully grammatically parse the text and uses simple rules only. Note that this method does not convert any characters to lowercase, it only uppercases required letters. Callers must ensure that input strings are already lowercased."
+QgsStringUtils.UpperCamelCase = Qgis.Capitalization.UpperCamelCase
+QgsStringUtils.UpperCamelCase.is_monkey_patched = True
+QgsStringUtils.UpperCamelCase.__doc__ = "Convert the string to upper camel case. Note that this method does not unaccent characters."
+QgsStringUtils.AllSmallCaps = Qgis.Capitalization.AllSmallCaps
+QgsStringUtils.AllSmallCaps.is_monkey_patched = True
+QgsStringUtils.AllSmallCaps.__doc__ = "Force all characters to small caps (since QGIS 3.24)"
+Qgis.Capitalization.__doc__ = 'String capitalization options.\n\n.. note::\n\n   Prior to QGIS 3.24 this was available as :py:class:`QgsStringUtils`.Capitalization\n\n.. versionadded:: 3.24\n\n' + '* ``MixedCase``: ' + Qgis.Capitalization.MixedCase.__doc__ + '\n' + '* ``AllUppercase``: ' + Qgis.Capitalization.AllUppercase.__doc__ + '\n' + '* ``AllLowercase``: ' + Qgis.Capitalization.AllLowercase.__doc__ + '\n' + '* ``ForceFirstLetterToCapital``: ' + Qgis.Capitalization.ForceFirstLetterToCapital.__doc__ + '\n' + '* ``SmallCaps``: ' + Qgis.Capitalization.SmallCaps.__doc__ + '\n' + '* ``TitleCase``: ' + Qgis.Capitalization.TitleCase.__doc__ + '\n' + '* ``UpperCamelCase``: ' + Qgis.Capitalization.UpperCamelCase.__doc__ + '\n' + '* ``AllSmallCaps``: ' + Qgis.Capitalization.AllSmallCaps.__doc__
+# --
+Qgis.Capitalization.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.TextRendererFlag.WrapLines.__doc__ = "Automatically wrap long lines of text"
+Qgis.TextRendererFlag.__doc__ = 'Flags which control the behavior of rendering text.\n\n.. versionadded:: 3.24\n\n' + '* ``WrapLines``: ' + Qgis.TextRendererFlag.WrapLines.__doc__
+# --
+Qgis.TextRendererFlag.baseClass = Qgis
+Qgis.TextRendererFlags.baseClass = Qgis
+TextRendererFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsCurve.Orientation = Qgis.AngularDirection
+# monkey patching scoped based enum
+QgsCurve.Clockwise = Qgis.AngularDirection.Clockwise
+QgsCurve.Clockwise.is_monkey_patched = True
+QgsCurve.Clockwise.__doc__ = "Clockwise direction"
+QgsCurve.CounterClockwise = Qgis.AngularDirection.CounterClockwise
+QgsCurve.CounterClockwise.is_monkey_patched = True
+QgsCurve.CounterClockwise.__doc__ = "Counter-clockwise direction"
+Qgis.AngularDirection.__doc__ = 'Angular directions.\n\n.. versionadded:: 3.24\n\n' + '* ``Clockwise``: ' + Qgis.AngularDirection.Clockwise.__doc__ + '\n' + '* ``CounterClockwise``: ' + Qgis.AngularDirection.CounterClockwise.__doc__
+# --
+Qgis.AngularDirection.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.HistoryProviderBackend.LocalProfile.__doc__ = "Local profile"
+Qgis.HistoryProviderBackend.__doc__ = 'History provider backends.\n\n.. versionadded:: 3.24\n\n' + '* ``LocalProfile``: ' + Qgis.HistoryProviderBackend.LocalProfile.__doc__
+# --
+Qgis.HistoryProviderBackend.baseClass = Qgis
+Qgis.HistoryProviderBackends.baseClass = Qgis
+HistoryProviderBackends = Qgis  # dirty hack since SIP seems to introduce the flags in module

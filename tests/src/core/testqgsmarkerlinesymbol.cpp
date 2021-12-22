@@ -146,7 +146,7 @@ void TestQgsMarkerLineSymbol::pointNumInterval()
   mMapSettings->setLayers( QList<QgsMapLayer *>() << mLinesLayer );
 
   QgsMarkerLineSymbolLayer *ml = new QgsMarkerLineSymbolLayer();
-  ml->setPlacement( QgsTemplatedLineSymbolLayerBase::Interval );
+  ml->setPlacements( Qgis::MarkerLinePlacement::Interval );
   ml->setInterval( 4 );
   QgsLineSymbol *lineSymbol = new QgsLineSymbol();
   lineSymbol->changeSymbolLayer( 0, ml );
@@ -176,7 +176,7 @@ void TestQgsMarkerLineSymbol::pointNumVertex()
   mMapSettings->setLayers( QList<QgsMapLayer *>() << mLinesLayer );
 
   QgsMarkerLineSymbolLayer *ml = new QgsMarkerLineSymbolLayer();
-  ml->setPlacement( QgsTemplatedLineSymbolLayerBase::Vertex );
+  ml->setPlacements( Qgis::MarkerLinePlacement::Vertex );
   QgsLineSymbol *lineSymbol = new QgsLineSymbol();
   lineSymbol->changeSymbolLayer( 0, ml );
   QgsSingleSymbolRenderer *r = new QgsSingleSymbolRenderer( lineSymbol );

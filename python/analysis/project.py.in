@@ -37,6 +37,7 @@ class QgisAnalysis(PyQtBindings):
         super().__init__(project, 'analysis')
         self.sip_file = 'analysis.sip'
         self.exceptions = True
+        self.release_gil = True
         self.disabled_features = "@SIP_DISABLE_FEATURES@".split(";")
 
     def apply_user_defaults(self, tool):

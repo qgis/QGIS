@@ -1114,12 +1114,12 @@ void TestQgsNetworkAccessManager::testCookieManagement()
 
 void TestQgsNetworkAccessManager::testRequestPreprocessor()
 {
-  const QString processorId = QgsNetworkAccessManager::instance()->setRequestPreprocessor( []( QNetworkRequest * request ) { request->setHeader( QNetworkRequest::UserAgentHeader, QStringLiteral( "QGIS" ) );} );
+  const QString processorId = QgsNetworkAccessManager::setRequestPreprocessor( []( QNetworkRequest * request ) { request->setHeader( QNetworkRequest::UserAgentHeader, QStringLiteral( "QGIS" ) );} );
   QNetworkRequest request;
   QgsNetworkAccessManager::instance()->preprocessRequest( &request );
   const QString userAgent = request.header( QNetworkRequest::UserAgentHeader ).toString();
   QCOMPARE( userAgent, "QGIS" );
-  QgsNetworkAccessManager::instance()->removeRequestPreprocessor( processorId );
+  QgsNetworkAccessManager::removeRequestPreprocessor( processorId );
 };
 
 QGSTEST_MAIN( TestQgsNetworkAccessManager )

@@ -682,17 +682,17 @@ class QgsPluginInstaller(QObject):
             dlg = QgsPluginDependenciesDialog(plugin_id, to_install, to_upgrade, not_found)
             if dlg.exec_() == QgsPluginDependenciesDialog.Accepted:
                 actions = dlg.actions()
-                for dependency_plugin_id, action in actions.items():
+                for dependency_plugin_id, action_data in actions.items():
                     try:
-                        self.installPlugin(dependency_plugin_id)
-                        if action == 'install':
+                        self.installPlugin(dependency_plugin_id, stable=action_data['use_stable_version'])
+                        if action_data['action'] == 'install':
                             iface.pluginManagerInterface().pushMessage(self.tr("Plugin dependency <b>%s</b> successfully installed") %
                                                                        dependency_plugin_id, Qgis.Info)
                         else:
                             iface.pluginManagerInterface().pushMessage(self.tr("Plugin dependency <b>%s</b> successfully upgraded") %
                                                                        dependency_plugin_id, Qgis.Info)
                     except Exception as ex:
-                        if action == 'install':
+                        if action_data['action'] == 'install':
                             iface.pluginManagerInterface().pushMessage(self.tr("Error installing plugin dependency <b>%s</b>: %s") %
                                                                        (dependency_plugin_id, ex), Qgis.Warning)
                         else:

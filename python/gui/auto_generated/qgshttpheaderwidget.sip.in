@@ -1,0 +1,68 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgshttpheaderwidget.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsHttpHeaderWidget : QWidget
+{
+%Docstring(signature="appended")
+Display referer http header field and collapsible table of key/value pairs
+
+.. versionadded:: 3.24
+%End
+
+%TypeHeaderCode
+#include "qgshttpheaderwidget.h"
+%End
+  public:
+
+    explicit QgsHttpHeaderWidget( QWidget *parent = 0 );
+%Docstring
+Default constructor
+
+:param parent: parent widget
+%End
+    ~QgsHttpHeaderWidget();
+
+    QgsHttpHeaders httpHeaders() const;
+%Docstring
+
+:return: build a new ``:py:class:`QgsHttpHeaders``` according to data in the UI
+%End
+
+    void setFromSettings( const QgsSettings &settings, const QString &key );
+%Docstring
+fill the inner header map from the settings defined at ``key``
+
+.. seealso:: :py:func:`QgsHttpHeaders.setFromSettings`
+
+:param settings:
+:param key:
+%End
+
+    void updateSettings( QgsSettings &settings, const QString &key ) const;
+%Docstring
+update the ``settings`` with the http headers present in the inner map.
+
+.. seealso:: :py:func:`QgsHttpHeaders.updateSettings`
+
+:param settings:
+:param key:
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgshttpheaderwidget.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

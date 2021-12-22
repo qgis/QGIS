@@ -169,7 +169,7 @@ class CORE_EXPORT QgsVectorLayerUtils
     static QVariant createUniqueValueFromCache( const QgsVectorLayer *layer, int fieldIndex, const QSet<QVariant> &existingValues, const QVariant &seed = QVariant() );
 
     /**
-     * Tests an attribute value to check whether it passes all constraints which are present on the corresponding field.
+     * Tests a feature attribute value to check whether it passes all constraints which are present on the corresponding field.
      * Returns TRUE if the attribute value is valid for the field. Any constraint failures will be reported in the errors argument.
      * If the strength or origin parameter is set then only constraints with a matching strength/origin will be checked.
      */
@@ -373,8 +373,10 @@ class CORE_EXPORT QgsVectorLayerUtils
      */
     static bool impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context SIP_OUT, QgsVectorLayerUtils::CascadedFeatureFlags flags = QgsVectorLayerUtils::CascadedFeatureFlags() );
 
+#ifndef SIP_RUN
+
     /**
-     * Given a set of \a fields, attempts to pick the "most useful" field
+     * Given a set of fields, attempts to pick the "most useful" field
      * for user-friendly identification of features.
      *
      * For instance, if a field called "name" is present, this will be returned.
@@ -382,9 +384,59 @@ class CORE_EXPORT QgsVectorLayerUtils
      * Assumes that the user has organized the data with the more "interesting" field
      * names first. As such, "name" would be selected before "oldname", "othername", etc.
      *
+     * If no friendly identifier is found, the function will fallback to the
+     * first available.
+     *
+     * An optional boolean parameter can be used to determine whether the returned
+     * field name is a friendly identifier or not.
+     *
+     * \param fields list of fields to pick a friendly identifier from
+     * \param foundFriendly set to TRUE if the returned field name is a friendly identifier (since QGIS 3.22)
+     * \returns field name
+     * \since QGIS 3.18
+     */
+#else
+
+    /**
+     * Given a set of fields, attempts to pick the "most useful" field
+     * for user-friendly identification of features.
+     *
+     * For instance, if a field called "name" is present, this will be returned.
+     *
+     * Assumes that the user has organized the data with the more "interesting" field
+     * names first. As such, "name" would be selected before "oldname", "othername", etc.
+     *
+     * If no friendly identifier is found, the function will fallback to the
+     * first available.
+     *
+     * \param fields list of fields to pick a friendly identifier from
+     * \param foundFriendly set to TRUE if the returned field name is a friendly identifier
+     * \returns field name
+     * \since QGIS 3.22
+     */
+#endif
+    static QString guessFriendlyIdentifierField( const QgsFields &fields, bool *foundFriendly SIP_OUT = nullptr ) SIP_PYNAME( guessFriendlyIdentifierFieldV2 );
+
+#ifdef SIP_RUN
+
+    /**
+     * Given a set of fields, attempts to pick the "most useful" field
+     * for user-friendly identification of features.
+     *
+     * For instance, if a field called "name" is present, this will be returned.
+     *
+     * Assumes that the user has organized the data with the more "interesting" field
+     * names first. As such, "name" would be selected before "oldname", "othername", etc.
+     *
+     * If no friendly identifier is found, the function will fallback to the
+     * first available.
+     *
+     * \param fields list of fields to pick a friendly identifier from
+     * \returns field name
      * \since QGIS 3.18
      */
     static QString guessFriendlyIdentifierField( const QgsFields &fields );
+#endif
 
 };
 

@@ -587,7 +587,7 @@ QVariant QgsNewVectorTableFieldModel::data( const QModelIndex &index, int role )
           case ColumnHeaders::Precision:
           case ColumnHeaders::Length:
           {
-            return Qt::AlignmentFlag::AlignVCenter + Qt::AlignmentFlag::AlignHCenter;
+            return static_cast<Qt::Alignment::Int>( Qt::AlignmentFlag::AlignVCenter | Qt::AlignmentFlag::AlignHCenter );
           }
           default:
             break;
@@ -654,11 +654,11 @@ QVariant QgsNewVectorTableFieldModel::headerData( int section, Qt::Orientation o
           case ColumnHeaders::Type:
           case ColumnHeaders::ProviderType:
           {
-            return Qt::AlignmentFlag::AlignVCenter + Qt::AlignmentFlag::AlignLeft;
+            return static_cast<Qt::Alignment::Int>( Qt::AlignmentFlag::AlignVCenter | Qt::AlignmentFlag::AlignLeft );
           }
           default:
           {
-            return Qt::AlignmentFlag::AlignVCenter + Qt::AlignmentFlag::AlignHCenter;
+            return static_cast<Qt::Alignment::Int>( Qt::AlignmentFlag::AlignVCenter | Qt::AlignmentFlag::AlignHCenter );
           }
         }
         break;

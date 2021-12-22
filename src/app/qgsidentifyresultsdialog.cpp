@@ -89,6 +89,7 @@
 #include "qgsjsonutils.h"
 #include "qgsjsoneditwidget.h"
 #include "qgspointcloudlayer.h"
+#include "qgscolorrampimpl.h"
 
 #include <nlohmann/json.hpp>
 
@@ -520,7 +521,7 @@ void QgsIdentifyResultsDialog::addFeature( const QgsMapToolIdentify::IdentifyRes
       break;
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::AnnotationLayer:
-
+    case QgsMapLayerType::GroupLayer:
       break;
   }
 }
@@ -844,7 +845,12 @@ QgsIdentifyPlotCurve::QgsIdentifyPlotCurve( const QMap<QString, QString> &attrib
   for ( QMap<QString, QString>::const_iterator it = attributes.begin();
         it != attributes.end(); ++it )
   {
-    myData << QPointF( double( i++ ), it.value().toDouble() );
+    bool ok;
+    const double val {it.value().toDouble( &ok )};
+    if ( ok && std::isfinite( val ) )
+    {
+      myData << QPointF( double( i++ ), val );
+    }
   }
   mPlotCurve->setSamples( myData );
 
@@ -2109,6 +2115,7 @@ void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::MeshLayer:
     case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::GroupLayer:
       return; // not supported
   }
 

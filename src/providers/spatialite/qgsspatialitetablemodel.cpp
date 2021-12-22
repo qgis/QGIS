@@ -19,14 +19,30 @@
 #include "qgsapplication.h"
 #include "qgsiconutils.h"
 
-QgsSpatiaLiteTableModel::QgsSpatiaLiteTableModel()
+QgsSpatiaLiteTableModel::QgsSpatiaLiteTableModel( QObject *parent )
+  : QgsAbstractDbTableModel( parent )
 {
-  QStringList headerLabels;
-  headerLabels << tr( "Table" );
-  headerLabels << tr( "Type" );
-  headerLabels << tr( "Geometry column" );
-  headerLabels << tr( "Sql" );
-  setHorizontalHeaderLabels( headerLabels );
+  mColumns << tr( "Table" )
+           << tr( "Type" )
+           << tr( "Geometry column" )
+           << tr( "SQL" );
+  setHorizontalHeaderLabels( mColumns );
+}
+
+QStringList QgsSpatiaLiteTableModel::columns() const
+{
+  return mColumns;
+}
+
+int QgsSpatiaLiteTableModel::defaultSearchColumn() const
+{
+  return 0;
+}
+
+bool QgsSpatiaLiteTableModel::searchableColumn( int column ) const
+{
+  Q_UNUSED( column )
+  return true;
 }
 
 void QgsSpatiaLiteTableModel::addTableEntry( const QString &type, const QString &tableName, const QString &geometryColName, const QString &sql )

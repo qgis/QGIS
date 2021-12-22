@@ -10,11 +10,13 @@
 
 
 
-class QgsDatabaseFilterProxyModel: QSortFilterProxyModel
+class QgsDatabaseFilterProxyModel : QSortFilterProxyModel /Deprecated/
 {
 %Docstring(signature="appended")
 A class that implements a custom filter and can be used
 as a proxy for :py:class:`QgsDbTableModel`
+
+.. deprecated:: QGIS 3.24
 
 .. versionadded:: 3.0
 %End

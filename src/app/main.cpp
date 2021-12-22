@@ -38,6 +38,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstdarg>
+#include "qgsconfig.h"
 
 #if !defined(Q_OS_WIN)
 #include "sigwatch.h"
@@ -75,6 +76,7 @@ typedef SInt32 SRefCon;
 #include <sys/time.h>
 #endif
 
+#ifdef HAVE_CRASH_HANDLER
 #if defined(__GLIBC__) || defined(__FreeBSD__)
 #define QGIS_CRASH
 #include <unistd.h>
@@ -82,6 +84,7 @@ typedef SInt32 SRefCon;
 #include <csignal>
 #include <sys/wait.h>
 #include <cerrno>
+#endif
 #endif
 
 #include "qgscustomization.h"
@@ -104,7 +107,9 @@ typedef SInt32 SRefCon;
 #include "qgsmapthemes.h"
 #include "qgsvectorlayer.h"
 #include "qgis_app.h"
+#ifdef HAVE_CRASH_HANDLER
 #include "qgscrashhandler.h"
+#endif
 #include "qgsziputils.h"
 #include "qgsversionmigration.h"
 #include "qgsfirstrundialog.h"
@@ -138,22 +143,23 @@ void usage( const QString &appName )
       << QStringLiteral( "QGIS is a user friendly Open Source Geographic Information System.\n" )
       << QStringLiteral( "Usage: " ) << appName <<  QStringLiteral( " [OPTION] [FILE]\n" )
       << QStringLiteral( "  OPTION:\n" )
-      << QStringLiteral( "\t[--version]\tdisplay version information and exit\n" )
-      << QStringLiteral( "\t[--snapshot filename]\temit snapshot of loaded datasets to given file\n" )
-      << QStringLiteral( "\t[--width width]\twidth of snapshot to emit\n" )
-      << QStringLiteral( "\t[--height height]\theight of snapshot to emit\n" )
-      << QStringLiteral( "\t[--lang language]\tuse language for interface text (changes existing override)\n" )
-      << QStringLiteral( "\t[--project projectfile]\tload the given QGIS project\n" )
-      << QStringLiteral( "\t[--extent xmin,ymin,xmax,ymax]\tset initial map extent\n" )
-      << QStringLiteral( "\t[--nologo]\thide splash screen\n" )
-      << QStringLiteral( "\t[--noversioncheck]\tdon't check for new version of QGIS at startup\n" )
-      << QStringLiteral( "\t[--noplugins]\tdon't restore plugins on startup\n" )
-      << QStringLiteral( "\t[--nocustomization]\tdon't apply GUI customization\n" )
-      << QStringLiteral( "\t[--customizationfile path]\tuse the given ini file as GUI customization\n" )
-      << QStringLiteral( "\t[--globalsettingsfile path]\tuse the given ini file as Global Settings (defaults)\n" )
-      << QStringLiteral( "\t[--authdbdirectory path] use the given directory for authentication database\n" )
-      << QStringLiteral( "\t[--code path]\trun the given python file on load\n" )
-      << QStringLiteral( "\t[--defaultui]\tstart by resetting user ui settings to default\n" )
+      << QStringLiteral( "\t[-v, --version]\tdisplay version information and exit\n" )
+      << QStringLiteral( "\t[-s, --snapshot filename]\temit snapshot of loaded datasets to given file\n" )
+      << QStringLiteral( "\t[-w, --width width]\twidth of snapshot to emit\n" )
+      << QStringLiteral( "\t[-h, --height height]\theight of snapshot to emit\n" )
+      << QStringLiteral( "\t[-l, --lang language]\tuse language for interface text (changes existing override)\n" )
+      << QStringLiteral( "\t[-p, --project projectfile]\tload the given QGIS project\n" )
+      << QStringLiteral( "\t[-e, --extent xmin,ymin,xmax,ymax]\tset initial map extent\n" )
+      << QStringLiteral( "\t[-n, --nologo]\thide splash screen\n" )
+      << QStringLiteral( "\t[-V, --noversioncheck]\tdon't check for new version of QGIS at startup\n" )
+      << QStringLiteral( "\t[-P, --noplugins]\tdon't restore plugins on startup\n" )
+      << QStringLiteral( "\t[-B, --skipbadlayers]\tdon't prompt for missing layers\n" )
+      << QStringLiteral( "\t[-C, --nocustomization]\tdon't apply GUI customization\n" )
+      << QStringLiteral( "\t[-z, --customizationfile path]\tuse the given ini file as GUI customization\n" )
+      << QStringLiteral( "\t[-g, --globalsettingsfile path]\tuse the given ini file as Global Settings (defaults)\n" )
+      << QStringLiteral( "\t[-a, --authdbdirectory path] use the given directory for authentication database\n" )
+      << QStringLiteral( "\t[-f, --code path]\trun the given python file on load\n" )
+      << QStringLiteral( "\t[-d, --defaultui]\tstart by resetting user ui settings to default\n" )
       << QStringLiteral( "\t[--hide-browser]\thide the browser widget\n" )
       << QStringLiteral( "\t[--dxf-export filename.dxf]\temit dxf output of loaded datasets to given file\n" )
       << QStringLiteral( "\t[--dxf-extent xmin,ymin,xmax,ymax]\tset extent to export to dxf\n" )
@@ -164,7 +170,7 @@ void usage( const QString &appName )
       << QStringLiteral( "\t[--take-screenshots output_path]\ttake screen shots for the user documentation\n" )
       << QStringLiteral( "\t[--screenshots-categories categories]\tspecify the categories of screenshot to be used (see QgsAppScreenShots::Categories).\n" )
       << QStringLiteral( "\t[--profile name]\tload a named profile from the users profiles folder.\n" )
-      << QStringLiteral( "\t[--profiles-path path]\tpath to store user profile folders. Will create profiles inside a {path}\\profiles folder \n" )
+      << QStringLiteral( "\t[-s, --profiles-path path]\tpath to store user profile folders. Will create profiles inside a {path}\\profiles folder \n" )
       << QStringLiteral( "\t[--version-migration]\tforce the settings migration from older version if found\n" )
 #ifdef HAVE_OPENCL
       << QStringLiteral( "\t[--openclprogramfolder]\t\tpath to the folder containing the sources for OpenCL programs.\n" )
@@ -172,8 +178,8 @@ void usage( const QString &appName )
       << QStringLiteral( "\t[--help]\t\tthis text\n" )
       << QStringLiteral( "\t[--]\t\ttreat all following arguments as FILEs\n\n" )
       << QStringLiteral( "  FILE:\n" )
-      << QStringLiteral( "    Files specified on the command line can include rasters,\n" )
-      << QStringLiteral( "    vectors, and QGIS project files (.qgs and .qgz): \n" )
+      << QStringLiteral( "    Files specified on the command line can include rasters, vectors,\n" )
+      << QStringLiteral( "    QGIS layer definition files (.qlr) and QGIS project files (.qgs and .qgz): \n" )
       << QStringLiteral( "     1. Rasters - supported formats include GeoTiff, DEM \n" )
       << QStringLiteral( "        and others supported by GDAL\n" )
       << QStringLiteral( "     2. Vectors - supported formats include ESRI Shapefiles\n" )
@@ -314,6 +320,8 @@ static void dumpBacktrace( unsigned int depth )
 void qgisCrash( int signal )
 {
   fprintf( stderr, "QGIS died on signal %d", signal );
+
+  QgsCrashHandler::handle( 0 );
 
   if ( access( "/usr/bin/gdb", X_OK ) == 0 )
   {
@@ -573,6 +581,7 @@ int main( int argc, char *argv[] )
 
   bool myRestoreDefaultWindowState = false;
   bool myRestorePlugins = true;
+  bool mySkipBadLayers = false;
   bool myCustomization = true;
 
   QString dxfOutputFile;
@@ -661,6 +670,11 @@ int main( int argc, char *argv[] )
         {
           myRestorePlugins = false;
         }
+        else if ( arg == QLatin1String( "--skipbadlayers" ) || arg == QLatin1String( "-B" ) )
+        {
+          QgsDebugMsg( QStringLiteral( "Skipping bad layers" ) );
+          mySkipBadLayers = true;
+        }
         else if ( arg == QLatin1String( "--nocustomization" ) || arg == QLatin1String( "-C" ) )
         {
           myCustomization = false;
@@ -669,7 +683,7 @@ int main( int argc, char *argv[] )
         {
           profileName = args[++i];
         }
-        else if ( i + 1 < argc && ( arg == QLatin1String( "--profiles-path" ) || arg == QLatin1String( "-s" ) ) )
+        else if ( i + 1 < argc && ( arg == QLatin1String( "--profiles-path" ) || arg == QLatin1String( "-S" ) ) )
         {
           configLocalStorageLocation = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
         }
@@ -1032,7 +1046,10 @@ int main( int argc, char *argv[] )
     QgsApplication::setTranslation( translationCode );
   }
 
-  QgsApplication myApp( argc, argv, myUseGuiFlag );
+  QgsApplication myApp( argc, argv, myUseGuiFlag, QString(), QStringLiteral( "desktop" ) );
+
+  // Set locale to emit QgsApplication's localeChanged signal
+  myApp.setLocale( QLocale() );
 
   //write the log messages written before creating QgsApplication
   for ( const QString &preApplicationLogMessage : std::as_const( preApplicationLogMessages ) )
@@ -1376,7 +1393,7 @@ int main( int argc, char *argv[] )
   // this should be done in QgsApplication::init() but it doesn't know the settings dir.
   QgsApplication::setMaxThreads( settings.value( QStringLiteral( "qgis/max_threads" ), -1 ).toInt() );
 
-  QgisApp *qgis = new QgisApp( mypSplash, myRestorePlugins, mySkipVersionCheck, rootProfileFolder, profileName ); // "QgisApp" used to find canonical instance
+  QgisApp *qgis = new QgisApp( mypSplash, myRestorePlugins, mySkipBadLayers, mySkipVersionCheck, rootProfileFolder, profileName ); // "QgisApp" used to find canonical instance
   qgis->setObjectName( QStringLiteral( "QgisApp" ) );
 
   myApp.connect(
@@ -1403,9 +1420,17 @@ int main( int argc, char *argv[] )
   {
     QgsDebugMsg( QStringLiteral( "Trying to load file : %1" ).arg( layerName ) );
     // don't load anything with a .qgs extension - these are project files
-    if ( !layerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) &&
-         !layerName.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) &&
-         !QgsZipUtils::isZipFile( layerName ) )
+    if ( layerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) ||
+         layerName.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) ||
+         QgsZipUtils::isZipFile( layerName ) )
+    {
+      continue;
+    }
+    else if ( layerName.endsWith( QLatin1String( ".qlr" ), Qt::CaseInsensitive ) )
+    {
+      qgis->openLayerDefinition( layerName );
+    }
+    else
     {
       qgis->openLayer( layerName );
     }

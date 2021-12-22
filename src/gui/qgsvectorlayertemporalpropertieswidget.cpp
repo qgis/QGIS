@@ -40,6 +40,24 @@ QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( 
   mModeComboBox->addItem( tr( "Redraw Layer Only" ), static_cast< int >( Qgis::VectorTemporalMode::RedrawLayerOnly ) );
 
   connect( mModeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), mStackedWidget, &QStackedWidget::setCurrentIndex );
+  connect( mModeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]
+  {
+    switch ( static_cast< Qgis::VectorTemporalMode>( mModeComboBox->currentData().toInt() ) )
+    {
+      case Qgis::VectorTemporalMode::FixedTemporalRange:
+      case Qgis::VectorTemporalMode::FeatureDateTimeInstantFromField:
+      case Qgis::VectorTemporalMode::FeatureDateTimeStartAndEndFromFields:
+      case Qgis::VectorTemporalMode::FeatureDateTimeStartAndDurationFromFields:
+      case Qgis::VectorTemporalMode::FeatureDateTimeStartAndEndFromExpressions:
+        mLimitsComboBox->show();
+        mLimitsLabel->show();
+        break;
+      case Qgis::VectorTemporalMode::RedrawLayerOnly:
+        mLimitsComboBox->hide();
+        mLimitsLabel->hide();
+        break;
+    }
+  } );
 
   mLimitsComboBox->addItem( tr( "Include Start, Exclude End (default)" ), static_cast< int >( Qgis::VectorTemporalLimitMode::IncludeBeginExcludeEnd ) );
   mLimitsComboBox->addItem( tr( "Include Start, Include End" ), static_cast< int >( Qgis::VectorTemporalLimitMode::IncludeBeginIncludeEnd ) );
@@ -77,7 +95,7 @@ QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( 
           QgsUnitTypes::TemporalCenturies
         } )
   {
-    const QString title = ( QgsGui::higFlags() & QgsGui::HigDialogTitleIsTitleCase ) ? QgsStringUtils::capitalize( QgsUnitTypes::toString( u ), QgsStringUtils::TitleCase )
+    const QString title = ( QgsGui::higFlags() & QgsGui::HigDialogTitleIsTitleCase ) ? QgsStringUtils::capitalize( QgsUnitTypes::toString( u ), Qgis::Capitalization::TitleCase )
                           : QgsUnitTypes::toString( u );
     mDurationUnitsComboBox->addItem( title, u );
     mFixedDurationUnitsComboBox->addItem( title, u );

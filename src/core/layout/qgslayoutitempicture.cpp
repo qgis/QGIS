@@ -92,6 +92,10 @@ void QgsLayoutItemPicture::draw( QgsLayoutItemRenderContext &context )
   // painter is scaled to dots, so scale back to layout units
   painter->scale( context.renderContext().scaleFactor(), context.renderContext().scaleFactor() );
 
+  const bool prevSmoothTransform = painter->testRenderHint( QPainter::RenderHint::SmoothPixmapTransform );
+  if ( mLayout->renderContext().testFlag( QgsLayoutRenderContext::FlagAntialiasing ) )
+    painter->setRenderHint( QPainter::RenderHint::SmoothPixmapTransform, true );
+
   //picture resizing
   if ( mMode != FormatUnknown )
   {
@@ -203,8 +207,8 @@ void QgsLayoutItemPicture::draw( QgsLayoutItemRenderContext &context )
     {
       painter->drawImage( QRectF( 0, 0, boundRectWidthMM, boundRectHeightMM ), mImage, imageRect );
     }
-
   }
+  painter->setRenderHint( QPainter::RenderHint::SmoothPixmapTransform, prevSmoothTransform );
 }
 
 QSizeF QgsLayoutItemPicture::applyItemSizeConstraint( const QSizeF targetSize )
@@ -538,6 +542,7 @@ void QgsLayoutItemPicture::updateNorthArrowRotation( double rotation )
 
 void QgsLayoutItemPicture::loadPicture( const QVariant &data )
 {
+  const Format origFormat = mMode;
   mIsMissingImage = false;
   QVariant imageData( data );
   mEvaluatedPath = data.toString();
@@ -577,18 +582,27 @@ void QgsLayoutItemPicture::loadPicture( const QVariant &data )
   else if ( mHasExpressionError || !mEvaluatedPath.isEmpty() )
   {
     //trying to load an invalid file or bad expression, show cross picture
-    mMode = FormatSVG;
     mIsMissingImage = true;
-    const QString badFile( QStringLiteral( ":/images/composer/missing_image.svg" ) );
-    mSVG.load( badFile );
-    if ( mSVG.isValid() )
+    if ( origFormat == FormatRaster )
     {
-      mMode = FormatSVG;
-      const QRect viewBox = mSVG.viewBox(); //take width/height ratio from view box instead of default size
-      mDefaultSvgSize.setWidth( viewBox.width() );
-      mDefaultSvgSize.setHeight( viewBox.height() );
-      recalculateSize();
+      const QString badFile( QStringLiteral( ":/images/composer/missing_image.png" ) );
+      QImageReader imageReader( badFile );
+      if ( imageReader.read( &mImage ) )
+        mMode = FormatRaster;
     }
+    else
+    {
+      const QString badFile( QStringLiteral( ":/images/composer/missing_image.svg" ) );
+      mSVG.load( badFile );
+      if ( mSVG.isValid() )
+      {
+        mMode = FormatSVG;
+        const QRect viewBox = mSVG.viewBox(); //take width/height ratio from view box instead of default size
+        mDefaultSvgSize.setWidth( viewBox.width() );
+        mDefaultSvgSize.setHeight( viewBox.height() );
+      }
+    }
+    recalculateSize();
   }
 
   update();

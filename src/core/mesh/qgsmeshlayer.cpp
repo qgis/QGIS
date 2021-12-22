@@ -21,7 +21,7 @@
 #include <QUuid>
 #include <QUrl>
 
-#include "qgscolorramp.h"
+#include "qgscolorrampimpl.h"
 #include "qgslogger.h"
 #include "qgsmaplayerlegend.h"
 #include "qgsmaplayerfactory.h"
@@ -585,16 +585,25 @@ QgsMeshDatasetIndex QgsMeshLayer::datasetIndexAtTime( const QgsDateTimeRange &ti
 
 QgsMeshDatasetIndex QgsMeshLayer::datasetIndexAtRelativeTime( const QgsInterval &relativeTime, int datasetGroupIndex ) const
 {
-  qint64 usedRelativeTime = relativeTime.seconds() * 1000;
+  return  mDatasetGroupStore->datasetIndexAtTime( relativeTime.seconds() * 1000, datasetGroupIndex, mTemporalProperties->matchingMethod() );
+}
+
+QList<QgsMeshDatasetIndex> QgsMeshLayer::datasetIndexInRelativeTimeInterval( const QgsInterval &startRelativeTime, const QgsInterval &endRelativeTime, int datasetGroupIndex ) const
+{
+  qint64 usedRelativeTime1 = startRelativeTime.seconds() * 1000;
+  qint64 usedRelativeTime2 = endRelativeTime.seconds() * 1000;
 
   //adjust relative time if layer reference time is different from provider reference time
   if ( mTemporalProperties->referenceTime().isValid() &&
        mDataProvider &&
        mDataProvider->isValid() &&
        mTemporalProperties->referenceTime() != mDataProvider->temporalCapabilities()->referenceTime() )
-    usedRelativeTime = usedRelativeTime + mTemporalProperties->referenceTime().msecsTo( mDataProvider->temporalCapabilities()->referenceTime() );
+  {
+    usedRelativeTime1 = usedRelativeTime1 + mTemporalProperties->referenceTime().msecsTo( mDataProvider->temporalCapabilities()->referenceTime() );
+    usedRelativeTime2 = usedRelativeTime2 + mTemporalProperties->referenceTime().msecsTo( mDataProvider->temporalCapabilities()->referenceTime() );
+  }
 
-  return  mDatasetGroupStore->datasetIndexAtTime( relativeTime.seconds() * 1000, datasetGroupIndex, mTemporalProperties->matchingMethod() );
+  return  mDatasetGroupStore->datasetIndexInTimeInterval( usedRelativeTime1, usedRelativeTime2, datasetGroupIndex );
 }
 
 void QgsMeshLayer::applyClassificationOnScalarSettings( const QgsMeshDatasetGroupMetadata &meta, QgsMeshRendererScalarSettings &scalarSettings ) const
@@ -910,6 +919,37 @@ qint64 QgsMeshLayer::datasetRelativeTimeInMilliseconds( const QgsMeshDatasetInde
   return mDatasetGroupStore->datasetRelativeTime( index );
 }
 
+static QString detailsErrorMessage( const QgsMeshEditingError &error )
+{
+  QString message;
+
+  switch ( error.errorType )
+  {
+    case Qgis::MeshEditingErrorType::NoError:
+      break;
+    case Qgis::MeshEditingErrorType::InvalidFace:
+      message = QObject::tr( "Face %1 invalid" ).arg( error.elementIndex );
+      break;
+    case Qgis::MeshEditingErrorType::TooManyVerticesInFace:
+      message =  QObject::tr( "Too many vertices for face %1" ).arg( error.elementIndex );
+      break;
+    case Qgis::MeshEditingErrorType::FlatFace:
+      message =  QObject::tr( "Face %1 is flat" ).arg( error.elementIndex );
+      break;
+    case Qgis::MeshEditingErrorType::UniqueSharedVertex:
+      message =  QObject::tr( "Vertex %1 is a unique shared vertex" ).arg( error.elementIndex );
+      break;
+    case Qgis::MeshEditingErrorType::InvalidVertex:
+      message =  QObject::tr( "Vertex %1 is invalid" ).arg( error.elementIndex );
+      break;
+    case Qgis::MeshEditingErrorType::ManifoldFace:
+      message =  QObject::tr( "Face %1 is manifold" ).arg( error.elementIndex );
+      break;
+  }
+
+  return message;
+}
+
 bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform )
 {
   if ( !supportsEditing() )
@@ -924,6 +964,8 @@ bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform )
     return false;
   }
 
+  mSimplificationSettings.setEnabled( false );
+
   updateTriangularMesh( transform );
 
   mMeshEditor = new QgsMeshEditor( this );
@@ -934,7 +976,9 @@ bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform )
   {
     mMeshEditor->deleteLater();
     mMeshEditor = nullptr;
-    QgsMessageLog::logMessage( QObject::tr( "Unable to start editing of mesh layer \"%1\"." ).arg( name() ), QString(), Qgis::MessageLevel::Critical );
+
+    QgsMessageLog::logMessage( QObject::tr( "Unable to start editing of mesh layer \"%1\": %2" ).
+                               arg( name(), detailsErrorMessage( error ) ), QString(), Qgis::MessageLevel::Critical );
     return false;
   }
 
@@ -957,9 +1001,23 @@ bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform )
 
 bool QgsMeshLayer::commitFrameEditing( const QgsCoordinateTransform &transform, bool continueEditing )
 {
-  if ( !mMeshEditor->checkConsistency() )
+  QgsMeshEditingError error;
+  QString detailsError;
+  if ( !mMeshEditor->checkConsistency( error ) )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Mesh layer \"%1\" not support mesh editing" ).arg( name() ), QString(), Qgis::MessageLevel::Critical );
+    if ( error.errorType == Qgis::MeshEditingErrorType::NoError )
+      detailsError = tr( "Unknown inconsistent mesh error" );
+  }
+  else
+  {
+    error = QgsTopologicalMesh::checkTopology( *mNativeMesh, mMeshEditor->maximumVerticesPerFace() );
+    detailsError = detailsErrorMessage( error );
+  }
+
+  if ( !detailsError.isEmpty() )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Edited mesh layer \"%1\" can't be save due to an error: %2" ).
+                               arg( name(), detailsError ), QString(), Qgis::MessageLevel::Critical );
     return false;
   }
 

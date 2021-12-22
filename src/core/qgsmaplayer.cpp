@@ -98,6 +98,11 @@ QgsMapLayer::QgsMapLayer( QgsMapLayerType type,
 
 QgsMapLayer::~QgsMapLayer()
 {
+  if ( project() && project()->pathResolver().writePath( mDataSource ).startsWith( "attachment:" ) )
+  {
+    project()->removeAttachedFile( mDataSource );
+  }
+
   delete m3DRenderer;
   delete mLegend;
   delete mStyleManager;
@@ -953,7 +958,7 @@ QString QgsMapLayer::formatLayerName( const QString &name )
 {
   QString layerName( name );
   layerName.replace( '_', ' ' );
-  layerName = QgsStringUtils::capitalize( layerName, QgsStringUtils::ForceFirstLetterToCapital );
+  layerName = QgsStringUtils::capitalize( layerName, Qgis::Capitalization::ForceFirstLetterToCapital );
   return layerName;
 }
 
@@ -2352,7 +2357,7 @@ QString QgsMapLayer::generalHtmlMetadata() const
   if ( dataProvider() )
     metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Provider" ) + QStringLiteral( "</td><td>%1" ).arg( dataProvider()->name() ) + QStringLiteral( "</td></tr>\n" );
 
-  metadata += QStringLiteral( "</table>\n<br><br>" );
+  metadata += QLatin1String( "</table>\n<br><br>" );
   return metadata;
 }
 

@@ -334,7 +334,7 @@ QVariantMap QgsConvertGpsDataAlgorithm::processAlgorithm( const QVariantMap &par
   {
     throw QgsProcessingException( QObject::tr( "Unknown GPSBabel format “%1”. Valid formats are: %2" )
                                   .arg( formatName,
-                                        QgsApplication::gpsBabelFormatRegistry()->importFormatNames().join( QStringLiteral( ", " ) ) ) );
+                                        QgsApplication::gpsBabelFormatRegistry()->importFormatNames().join( QLatin1String( ", " ) ) ) );
   }
 
   switch ( featureType )
@@ -550,7 +550,7 @@ QVariantMap QgsDownloadGpsDataAlgorithm::processAlgorithm( const QVariantMap &pa
   {
     throw QgsProcessingException( QObject::tr( "Unknown GPSBabel device “%1”. Valid devices are: %2" )
                                   .arg( deviceName,
-                                        QgsApplication::gpsBabelFormatRegistry()->deviceNames().join( QStringLiteral( ", " ) ) ) );
+                                        QgsApplication::gpsBabelFormatRegistry()->deviceNames().join( QLatin1String( ", " ) ) ) );
   }
 
   const QString portName = parameterAsString( parameters, QStringLiteral( "PORT" ), context );
@@ -569,7 +569,7 @@ QVariantMap QgsDownloadGpsDataAlgorithm::processAlgorithm( const QVariantMap &pa
   {
     throw QgsProcessingException( QObject::tr( "Unknown port “%1”. Valid ports are: %2" )
                                   .arg( portName,
-                                        validPorts.join( QStringLiteral( ", " ) ) ) );
+                                        validPorts.join( QLatin1String( ", " ) ) ) );
   }
 
   switch ( featureType )
@@ -785,7 +785,7 @@ QVariantMap QgsUploadGpsDataAlgorithm::processAlgorithm( const QVariantMap &para
   {
     throw QgsProcessingException( QObject::tr( "Unknown GPSBabel device “%1”. Valid devices are: %2" )
                                   .arg( deviceName,
-                                        QgsApplication::gpsBabelFormatRegistry()->deviceNames().join( QStringLiteral( ", " ) ) ) );
+                                        QgsApplication::gpsBabelFormatRegistry()->deviceNames().join( QLatin1String( ", " ) ) ) );
   }
 
   const QString portName = parameterAsString( parameters, QStringLiteral( "PORT" ), context );
@@ -804,7 +804,7 @@ QVariantMap QgsUploadGpsDataAlgorithm::processAlgorithm( const QVariantMap &para
   {
     throw QgsProcessingException( QObject::tr( "Unknown port “%1”. Valid ports are: %2" )
                                   .arg( portName,
-                                        validPorts.join( QStringLiteral( ", " ) ) ) );
+                                        validPorts.join( QLatin1String( ", " ) ) ) );
   }
 
 

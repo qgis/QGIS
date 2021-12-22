@@ -461,6 +461,9 @@ namespace libply
       case Type::FLOAT64:
         prop = std::make_unique<ScalarProperty<double>>();
         break;
+      case Type::COORDINATE:
+        prop = std::make_unique<ScalarProperty<double>>();
+        break;
     }
     return prop;
   }
@@ -488,6 +491,7 @@ namespace libply
       case Type::INT32: return "int";
       case Type::FLOAT32: return "float";
       case Type::FLOAT64: return "double";
+      case Type::COORDINATE: return "double";
     }
     return "";
   }
@@ -699,6 +703,9 @@ namespace libply
         prop = std::make_unique<ScalarProperty<float>>();
         break;
       case Type::FLOAT64:
+        prop = std::make_unique<ScalarProperty<double>>();
+        break;
+      case Type::COORDINATE:
         prop = std::make_unique<ScalarProperty<double>>();
         break;
     }

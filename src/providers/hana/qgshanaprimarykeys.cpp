@@ -38,58 +38,6 @@ namespace
   {
     return x <= ( ( INT32PK_OFFSET ) / 2 ) ? x : -( INT32PK_OFFSET - x );
   }
-
-  QStringList parseUriKey( const QString &key )
-  {
-    if ( key.isEmpty() )
-      return QStringList();
-
-    QStringList cols;
-
-    // remove quotes from key list
-    if ( key.startsWith( '"' ) && key.endsWith( '"' ) )
-    {
-      int i = 1;
-      QString col;
-      while ( i < key.size() )
-      {
-        if ( key[i] == '"' )
-        {
-          if ( i + 1 < key.size() && key[i + 1] == '"' )
-          {
-            i++;
-          }
-          else
-          {
-            cols << col;
-            col.clear();
-
-            if ( ++i == key.size() )
-              break;
-
-            Q_ASSERT( key[i] == ',' );
-            i++;
-            Q_ASSERT( key[i] == '"' );
-            i++;
-            col.clear();
-            continue;
-          }
-        }
-
-        col += key[i++];
-      }
-    }
-    else if ( key.contains( ',' ) )
-    {
-      cols = key.split( ',' );
-    }
-    else
-    {
-      cols << key;
-    }
-
-    return cols;
-  }
 }
 
 QgsFeatureId QgsHanaPrimaryKeyContext::lookupFid( const QVariantList &v )
@@ -308,4 +256,67 @@ QString QgsHanaPrimaryKeyUtils::buildWhereClause( const QgsFeatureIds &featureId
   }
 
   return QString(); //avoid warning
+}
+
+QString QgsHanaPrimaryKeyUtils::buildUriKey( const QStringList &columns )
+{
+  QString ret;
+  for ( auto i = 0; i < columns.size(); ++i )
+  {
+    ret += QgsHanaUtils::quotedIdentifier( columns[i] );
+    if ( i != columns.size() - 1 )
+      ret += ',';
+  }
+  return ret;
+}
+
+QStringList QgsHanaPrimaryKeyUtils::parseUriKey( const QString &key )
+{
+  if ( key.isEmpty() )
+    return QStringList();
+
+  QStringList cols;
+
+  // remove quotes from key list
+  if ( key.startsWith( '"' ) && key.endsWith( '"' ) )
+  {
+    int i = 1;
+    QString col;
+    while ( i < key.size() )
+    {
+      if ( key[i] == '"' )
+      {
+        if ( i + 1 < key.size() && key[i + 1] == '"' )
+        {
+          i++;
+        }
+        else
+        {
+          cols << col;
+          col.clear();
+
+          if ( ++i == key.size() )
+            break;
+
+          Q_ASSERT( key[i] == ',' );
+          i++;
+          Q_ASSERT( key[i] == '"' );
+          i++;
+          continue;
+        }
+      }
+
+      col += key[i++];
+    }
+  }
+  else if ( key.contains( ',' ) )
+  {
+    cols = key.split( ',' );
+  }
+  else
+  {
+    cols << key;
+  }
+
+  return cols;
 }
