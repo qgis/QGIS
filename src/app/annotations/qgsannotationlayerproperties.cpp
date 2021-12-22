@@ -80,6 +80,8 @@ QgsAnnotationLayerProperties::QgsAnnotationLayerProperties( QgsAnnotationLayer *
 
   buttonBox->addButton( mBtnStyle, QDialogButtonBox::ResetRole );
 
+  mBackupCrs = mLayer->crs();
+
   if ( !mLayer->styleManager()->isDefault( mLayer->styleManager()->currentStyle() ) )
     title += QStringLiteral( " (%1)" ).arg( mLayer->styleManager()->currentStyle() );
   restoreOptionsBaseUi( title );
@@ -115,6 +117,8 @@ void QgsAnnotationLayerProperties::apply()
   mLayer->setMaximumScale( mScaleRangeWidget->maximumScale() );
   mLayer->setMinimumScale( mScaleRangeWidget->minimumScale() );
 
+  mBackupCrs = mLayer->crs();
+
   // set the blend mode and opacity for the layer
   mBlendModeComboBox->setShowClippingModes( QgsProjectUtils::layerIsContainedInGroupLayer( QgsProject::instance(), mLayer ) );
   mLayer->setBlendMode( mBlendModeComboBox->blendMode() );
@@ -131,6 +135,9 @@ void QgsAnnotationLayerProperties::apply()
 
 void QgsAnnotationLayerProperties::onCancel()
 {
+  if ( mBackupCrs != mLayer->crs() )
+    mLayer->setCrs( mBackupCrs );
+
   if ( mOldStyle.xmlData() != mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() ).xmlData() )
   {
     // need to reset style to previous - style applied directly to the layer (not in apply())

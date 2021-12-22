@@ -255,6 +255,8 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     QgsProviderSourceWidget *mSourceWidget = nullptr;
 
+    QgsCoordinateReferenceSystem mBackupCrs;
+
   private slots:
     void openPanel( QgsPanelWidget *panel );
 

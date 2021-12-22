@@ -139,6 +139,8 @@ class QgsPointCloudLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
 
     QList<QgsMapLayerConfigWidget *> mConfigWidgets;
 
+    QgsCoordinateReferenceSystem mBackupCrs;
+
 };
 
 #endif // QGSPOINTCLOUDLAYERPROPERTIES_H
