@@ -260,7 +260,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertTrue(i.isValid())
         self.assertTrue(j.isValid())
-        #0 interval is not valid.
+        # 0 interval is not valid.
         self.assertFalse(k.isValid())
 
     def testByteaType(self):
