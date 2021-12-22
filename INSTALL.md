@@ -20,6 +20,9 @@ Building QGIS from source - step by step
   - [3.11. On Fedora Linux](#311-on-fedora-linux)
     - [3.11.1. Install build dependencies](#3111-install-build-dependencies)
     - [3.11.2. Suggested system tweaks](#3112-suggested-system-tweaks)
+  - [3.12. Building On Arch Linux](#312-building-on-arch-linux)
+    - [3.12.1. Install Build Dependencies](#3121-install-build-dependencies)
+    - [3.12.2. Compiling](#3122-compiling)
 - [4. Building on Windows](#4-building-on-windows)
   - [4.1. Building with Microsoft Visual Studio](#41-building-with-microsoft-visual-studio)
     - [4.1.1. Visual Studio 2015 Community Edition](#411-visual-studio-2015-community-edition)
@@ -477,6 +480,34 @@ cat > ~/.config/QtProject/qtlogging.ini << EOL
 [Rules]
 default.debug=true
 EOL
+```
+
+## 3.12. Building on Arch Linux
+
+### 3.12.1. Install Build Dependencies
+
+```bash
+sudo pacman -S pyqt-builder gsl gpsbabel postgresql sip libzip qtkeychain-qt5 qca-qt5 qscintilla-qt5 expat qwt gdal \
+spatialindex sqlite geos proj qt5 libspatialite cmake gcc flex bison
+```
+
+### 3.12.2. Compiling
+
+In the root of the repsitory, at any tag or branch you choose:
+
+Keep in mind, this will destroy any contents of your build directory if you have one.
+
+```bash
+if [ -d ./build/ ]; then rm -rfv ./build/*; else mkdir -v build; fi
+cd build
+cmake ..
+make
+```
+
+Optionally:
+
+```bash
+sudo make install
 ```
 
 # 4. Building on Windows
