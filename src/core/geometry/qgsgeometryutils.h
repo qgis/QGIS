@@ -703,7 +703,7 @@ class CORE_EXPORT QgsGeometryUtils
                                             double segmentPoint2x, double segmentPoint2y,
                                             double &perpendicularSegmentPoint1x SIP_OUT, double &perpendicularSegmentPoint1y SIP_OUT,
                                             double &perpendicularSegmentPoint2x SIP_OUT, double &perpendicularSegmentPoint2y SIP_OUT,
-                                            double *segmentLength = nullptr
+                                            double segmentLength = 0
                                           ) SIP_HOLDGIL;
 
     /**

@@ -649,7 +649,7 @@ Create a perpendicular line segment from p to segment [s1, s2]
                                             double segmentPoint2x, double segmentPoint2y,
                                             double &perpendicularSegmentPoint1x /Out/, double &perpendicularSegmentPoint1y /Out/,
                                             double &perpendicularSegmentPoint2x /Out/, double &perpendicularSegmentPoint2y /Out/,
-                                            double *segmentLength = 0
+                                            double segmentLength = 0
                                           ) /HoldGIL/;
 %Docstring
 Create a perpendicular line segment to a given segment [``segmentPoint1``,``segmentPoint2``] with its center at ``centerPoint``.
