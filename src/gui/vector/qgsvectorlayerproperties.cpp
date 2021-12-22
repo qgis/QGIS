@@ -1273,9 +1273,8 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
       }
     }
 
-    if ( ! stylesSelected.isEmpty() )
+    if ( !stylesSelected.isEmpty() )
     {
-      int styleIndex = 0;
       for ( const QString &styleName : std::as_const( stylesSelected ) )
       {
         bool defaultLoadedFlag = false;
@@ -1290,17 +1289,12 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
             QString message;
             const QString filePath { dlg.outputFilePath() };
             QString safePath { filePath };
-            if ( styleIndex > 0 && stylesSelected.count( ) > 1 )
+            if ( stylesSelected.count() > 1 )
             {
-              int i = 1;
-              while ( QFile::exists( safePath ) )
-              {
-                const QFileInfo fi { filePath };
-                safePath = QString( filePath ).replace( '.' + fi.completeSuffix(), QStringLiteral( "_%1.%2" )
-                                                        .arg( QString::number( i ) )
-                                                        .arg( fi.completeSuffix() ) );
-                i++;
-              }
+              const QFileInfo fi { filePath };
+              safePath = QString( filePath ).replace( '.' + fi.completeSuffix(), QStringLiteral( "_%1.%2" )
+                                                      .arg( styleName )
+                                                      .arg( fi.completeSuffix() ) );
             }
             if ( type == QML )
               message = mLayer->saveNamedStyle( safePath, defaultLoadedFlag, dlg.styleCategories() );
@@ -1360,7 +1354,6 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
             break;
           }
         }
-        styleIndex ++;
       }
       // Restore original style
       mLayer->styleManager()->setCurrentStyle( originalStyle );
