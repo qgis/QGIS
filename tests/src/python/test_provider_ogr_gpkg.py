@@ -1543,7 +1543,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
 
         # prepare a project with transactions enabled
         p = QgsProject()
-        p.setAutoTransaction(True)
+        p.setTransactionMode(Qgis.TransactionMode.AutomaticGroups)
         p.addMapLayers([vl1, vl2])
 
         self.assertTrue(vl1.startEditing())
@@ -2056,7 +2056,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         """Test issue GH #36525"""
 
         project = QgsProject()
-        project.setAutoTransaction(True)
+        project.setTransactionMode(Qgis.TransactionMode.AutomaticGroups)
         tmpfile1 = os.path.join(self.basetestpath, 'tempGeoPackageTransactionGroup1.gpkg')
         tmpfile2 = os.path.join(self.basetestpath, 'tempGeoPackageTransactionGroup2.gpkg')
         for tmpfile in (tmpfile1, tmpfile2):
@@ -2098,7 +2098,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         forever in an endless loop"""
 
         project = QgsProject()
-        project.setAutoTransaction(True)
+        project.setTransactionMode(Qgis.TransactionMode.AutomaticGroups)
         tmpfile = os.path.join(
             self.basetestpath, 'tempGeoPackageTransactionGroupIterator.gpkg')
         ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
@@ -2128,7 +2128,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         """Test issue GH #39265 segfault"""
 
         project = QgsProject()
-        project.setAutoTransaction(True)
+        project.setTransactionMode(Qgis.TransactionMode.AutomaticGroups)
         tmpfile = os.path.join(
             self.basetestpath, 'tempGeoPackageTransactionCrash.gpkg')
         ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)

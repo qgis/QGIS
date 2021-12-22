@@ -23,7 +23,8 @@ from tempfile import TemporaryDirectory
 
 import qgis  # NOQA
 
-from qgis.core import (QgsProject,
+from qgis.core import (Qgis,
+                       QgsProject,
                        QgsCoordinateTransformContext,
                        QgsProjectDirtyBlocker,
                        QgsApplication,
@@ -727,7 +728,7 @@ class TestQgsProject(unittest.TestCase):
 
     def test_transactionsGroup(self):
         # Undefined transaction group (wrong provider key).
-        QgsProject.instance().setAutoTransaction(True)
+        QgsProject.instance().setTransactionMode(Qgis.TransactionMode.AutomaticGroups)
         noTg = QgsProject.instance().transactionGroup("provider-key", "database-connection-string")
         self.assertIsNone(noTg)
 
