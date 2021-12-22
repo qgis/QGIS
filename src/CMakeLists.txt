@@ -15,9 +15,8 @@ if (WITH_GUI)
 endif()
 
 add_subdirectory(providers)
-if (NOT IOS)
-  add_subdirectory(crssync)
-endif()
+
+add_subdirectory(crssync)
 
 if (WITH_CRASH_HANDLER)
   add_subdirectory(crashhandler)
