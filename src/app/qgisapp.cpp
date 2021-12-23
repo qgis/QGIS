@@ -10289,6 +10289,18 @@ void QgisApp::mergeSelectedFeatures()
     }
     return;
   }
+  else if ( !QgsWkbTypes::isMultiType( vl->wkbType() ) )
+  {
+    const QgsGeometryCollection *c = qgsgeometry_cast<const QgsGeometryCollection *>( unionGeom.constGet() );
+    if ( ( c && c->partCount() > 1 ) || !unionGeom.convertToSingleType() )
+    {
+      visibleMessageBar()->pushMessage(
+      tr( "Merge failed" ),
+      tr( "Resulting geometry type (multipart) is incompatible with layer type (singlepart)." ),
+      Qgis::MessageLevel::Critical );
+    }
+    return;
+  }
 
   //merge the attributes together
   QgsMergeAttributesDialog d( featureList, vl, mapCanvas() );
