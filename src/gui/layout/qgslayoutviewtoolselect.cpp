@@ -67,6 +67,13 @@ void QgsLayoutViewToolSelect::layoutPressEvent( QgsLayoutViewMouseEvent *event )
 
   if ( event->button() != Qt::LeftButton )
   {
+    if ( mIsSelecting )
+    {
+      // selection must be ended if a right button press happens, otherwise selection rubberband won't be suppress
+      QMouseEvent leftRelease( QMouseEvent::MouseButtonRelease, event->localPos(), Qt::LeftButton, event->buttons(), event->modifiers() );
+      QgsLayoutViewMouseEvent layoutLeftRelease( view(), &leftRelease );
+      layoutReleaseEvent( &layoutLeftRelease );
+    }
     event->ignore();
     return;
   }
