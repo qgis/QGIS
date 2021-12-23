@@ -802,8 +802,8 @@ void QgsLayoutRuler::mouseReleaseEvent( QMouseEvent *event )
   }
   else if ( event->button() == Qt::RightButton )
   {
-    QMouseEvent leftRelease( event->type(), event->localPos(), Qt::LeftButton, event->buttons(), event->modifiers() );
-    mouseReleaseEvent( &leftRelease );
+    QMouseEvent leftReleaseEvent( event->type(), event->localPos(), Qt::LeftButton, event->buttons(), event->modifiers() );
+    mouseReleaseEvent( &leftReleaseEvent );
     if ( mMenu )
       mMenu->popup( event->globalPos() );
   }
