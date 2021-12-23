@@ -2,9 +2,6 @@ set (ENABLE_MSSQLTEST FALSE CACHE BOOL "Enable MSSQL provider tests")
 set (ENABLE_ORACLETEST FALSE CACHE BOOL "Enable Oracle provider tests")
 set (ENABLE_HANATEST FALSE CACHE BOOL "Enable HANA provider tests")
 
-FILE(GLOB_RECURSE PythonTestsFiles "*.py")
-add_custom_target(python_tests SOURCES ${PythonTestsFiles})
-
 include(UsePythonTest)
 # Run one of the two server tests at the beginning so they don't run in
 # parallel
