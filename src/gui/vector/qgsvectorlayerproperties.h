@@ -109,6 +109,7 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void saveMetadataAs();
     void saveDefaultMetadata();
     void loadDefaultMetadata();
+    void updateSaveStyleMenuActions( QMenu *m );
     void pbnUpdateExtents_clicked();
 
     void mButtonAddJoin_clicked();

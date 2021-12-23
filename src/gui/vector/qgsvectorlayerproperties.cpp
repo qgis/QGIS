@@ -136,18 +136,17 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mActionLoadStyle = menuStyle->addAction( tr( "Load Style…" ) );
   connect( mActionLoadStyle, &QAction::triggered, this, &QgsVectorLayerProperties::loadStyle );
 
-  // If we have multiple styles, offer an option to save them at once
-  if ( lyr->styleManager()->styles().count() > 1 )
-  {
-    mActionSaveStyle = menuStyle->addAction( tr( "Save Current Style…" ) );
-    mActionSaveMultipleStyles = menuStyle->addAction( tr( "Save All Styles…" ) );
-    connect( mActionSaveMultipleStyles, &QAction::triggered, this, &QgsVectorLayerProperties::saveMultipleStylesAs );
-  }
-  else
-  {
-    mActionSaveStyle = menuStyle->addAction( tr( "Save Style…" ) );
-  }
+  mActionSaveStyle = menuStyle->addAction( "Save Current Style…" );
   connect( mActionSaveStyle, &QAction::triggered, this, &QgsVectorLayerProperties::saveStyleAs );
+  mActionSaveMultipleStyles = menuStyle->addAction( tr( "Save All Styles…" ) );
+  connect( mActionSaveMultipleStyles, &QAction::triggered, this, &QgsVectorLayerProperties::saveMultipleStylesAs );
+  // If we have multiple styles, offer an option to save them at once
+  if ( lyr->styleManager()->styles().count() == 1 )
+  {
+    mActionSaveStyle->setText( tr( "Save Style…" ) );
+    menuStyle->removeAction( mActionSaveMultipleStyles );
+    disconnect( mActionSaveMultipleStyles, &QAction::triggered, this, &QgsVectorLayerProperties::saveMultipleStylesAs );
+  }
 
   mSourceGroupBox->hide();
 
@@ -1373,10 +1372,41 @@ void QgsVectorLayerProperties::aboutToShowStyleMenu()
   // this should be unified with QgsRasterLayerProperties::aboutToShowStyleMenu()
   QMenu *m = qobject_cast<QMenu *>( sender() );
 
+  updateSaveStyleMenuActions( m );
+  QgsDebugMsg( "D " + m->actions().at( 1 )->text() );
   QgsMapLayerStyleGuiUtils::instance()->removesExtraMenuSeparators( m );
   // re-add style manager actions!
   m->addSeparator();
   QgsMapLayerStyleGuiUtils::instance()->addStyleManagerActions( m, mLayer );
+}
+
+void QgsVectorLayerProperties::updateSaveStyleMenuActions( QMenu *m )
+{
+  bool gotFirstSeparator = false;
+  int index = 0;
+  QList<QAction *> actions = m->actions();
+  for ( int i = 0; i < m->actions().count(); ++i )
+  {
+    if ( actions[i]->isSeparator() && !gotFirstSeparator )
+    {
+      gotFirstSeparator = true;
+      index = i;
+    }
+  }
+  // If we have multiple styles, offer an option to save them at once
+  if ( mActionSaveStyle->text() == tr( "Save Style…" ) && mLayer->styleManager()->styles().count() > 1 )
+  {
+    mActionSaveStyle->setText( tr( "Save Current Style…" ) );
+    m->insertAction( m->actions().at( index ), mActionSaveMultipleStyles );
+    connect( mActionSaveMultipleStyles, &QAction::triggered, this, &QgsVectorLayerProperties::saveMultipleStylesAs );
+  }
+  else if ( mActionSaveStyle->text() == tr( "Save Current Style…" ) && mLayer->styleManager()->styles().count() == 1 )
+  {
+    mActionSaveStyle->setText( tr( "Save Style…" ) );
+    disconnect( mActionSaveMultipleStyles, &QAction::triggered, this, &QgsVectorLayerProperties::saveMultipleStylesAs );
+    m->removeAction( mActionSaveMultipleStyles );
+  }
+  mBtnStyle->setMenu( m );
 }
 
 void QgsVectorLayerProperties::loadStyle()
