@@ -872,6 +872,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     }
   }
   twWFSLayers->setRowCount( j );
+  twWFSLayers->resizeColumnToContents( 0 );
+  twWFSLayers->resizeColumnToContents( 2 );
   twWFSLayers->verticalHeader()->setSectionResizeMode( QHeaderView::ResizeToContents );
 
   mWCSUrlLineEdit->setText( QgsProject::instance()->readEntry( QStringLiteral( "WCSUrl" ), QStringLiteral( "/" ), QString() ) );

@@ -2848,7 +2848,7 @@
                      </column>
                      <column>
                       <property name="text">
-                       <string>Geometry precision (decimal places)</string>
+                       <string>Geometry precision</string>
                       </property>
                      </column>
                      <column>
