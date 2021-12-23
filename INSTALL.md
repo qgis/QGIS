@@ -493,7 +493,7 @@ spatialindex sqlite geos proj qt5 libspatialite cmake gcc flex bison
 
 ### 3.12.2. Compiling
 
-In the root of the repsitory, at any tag or branch you choose:
+In the root of the repository, at any tag or branch you choose:
 
 Keep in mind, this will destroy any contents of your build directory if you have one.
 
