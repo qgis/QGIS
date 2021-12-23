@@ -951,7 +951,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     QgsGeometry temporaryGeometryContainer;
     const QgsAbstractGeometry *processedGeometry = nullptr;
 
-    const bool isMultiPart = qgsgeometry_cast< const QgsGeometryCollection * >( part ) && qgsgeometry_cast< const QgsGeometryCollection * >( part )->numGeometries() > 1;
+    const bool isMultiPart = qgsgeometry_cast< const QgsGeometryCollection * >( part );
 
     if ( !isMultiPart )
     {
