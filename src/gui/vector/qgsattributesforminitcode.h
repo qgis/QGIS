@@ -29,6 +29,10 @@
 
 class QDialog;
 
+/**
+ * \ingroup gui
+ * \class QgsAttributesFormInitCode
+ */
 class GUI_EXPORT QgsAttributesFormInitCode: public QDialog, private Ui::QgsAttributesFormInitCode
 {
     Q_OBJECT

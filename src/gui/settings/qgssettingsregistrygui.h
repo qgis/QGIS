@@ -25,7 +25,7 @@
 /**
  * \ingroup gui
  * \class QgsSettingsRegistryGui
- * QgsSettingsRegistryGui is used for settings introspection and collects all
+ * \brief QgsSettingsRegistryGui is used for settings introspection and collects all
  * QgsSettingsEntry instances of gui.
  *
  * \since QGIS 3.22
