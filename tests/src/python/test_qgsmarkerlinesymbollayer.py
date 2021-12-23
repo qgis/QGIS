@@ -318,6 +318,39 @@ class TestQgsMarkerLineSymbolLayer(unittest.TestCase):
         rendered_image = self.renderGeometry(s, g)
         self.assertTrue(self.imageCheck('markerline_multisurface', 'markerline_multisurface', rendered_image))
 
+    def testMultiSurfaceOnePart(self):
+        # test rendering multisurface with one part with markers at vertices and curve points
+        s = QgsFillSymbol()
+        s.deleteSymbolLayer(0)
+
+        marker_line = QgsMarkerLineSymbolLayer(True)
+        marker_line.setPlacement(QgsMarkerLineSymbolLayer.Vertex)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_line.setSubSymbol(marker_symbol)
+
+        s.appendSymbolLayer(marker_line.clone())
+
+        marker_line2 = QgsMarkerLineSymbolLayer(True)
+        marker_line2.setPlacement(QgsMarkerLineSymbolLayer.CurvePoint)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Square, 4)
+        marker.setColor(QColor(0, 255, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_line2.setSubSymbol(marker_symbol)
+
+        s.appendSymbolLayer(marker_line2.clone())
+
+        # rendering test
+        g = QgsGeometry.fromWkt('MultiSurface (CurvePolygon (CompoundCurve (CircularString (2606664.83926784340292215 1228868.83649749564938247, 2606666.84044930292293429 1228872.22980518848635256, 2606668.05855975672602654 1228875.62311288132332265, 2606674.45363963954150677 1228870.05460794945247471, 2606680.58769585331901908 1228866.00874108518473804, 2606680.7182076876051724 1228865.05165429995395243, 2606679.97864062618464231 1228864.61661485210061073, 2606671.93041084241122007 1228867.87941071065142751, 2606664.83926784340292215 1228868.79299355088733137),(2606664.83926784340292215 1228868.79299355088733137, 2606664.83926784340292215 1228868.83649749564938247))))')
+        self.assertFalse(g.isNull())
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(self.imageCheck('markerline_one_part_multisurface', 'markerline_one_part_multisurface', rendered_image))
+
     def testMarkerAverageAngle(self):
         s = QgsLineSymbol()
         s.deleteSymbolLayer(0)
