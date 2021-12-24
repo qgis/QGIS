@@ -23,6 +23,7 @@
 #include <QDomElement>
 #include <QStringList>
 #include <QUuid>
+#include <QRegularExpression>
 
 
 QgsLayerTreeGroup::QgsLayerTreeGroup( const QString &name, bool checked, const QString &id )
