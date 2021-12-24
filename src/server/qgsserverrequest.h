@@ -90,7 +90,7 @@ class SERVER_EXPORT QgsServerRequest
     /**
      * Constructor
      */
-    QgsServerRequest() = default;
+    QgsServerRequest();
 
     /**
      * Constructor
@@ -260,6 +260,13 @@ class SERVER_EXPORT QgsServerRequest
     void setBaseUrl( const QUrl &url );
 
   private:
+
+    /**
+     * Initialize the map used to convert the header enumeration value
+     * into header name.
+     */
+    void init();
+
     // Url as seen by QGIS server after web server rewrite
     QUrl       mUrl;
     // Unrewritten url as seen by the web server
