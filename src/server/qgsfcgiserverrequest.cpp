@@ -223,11 +223,7 @@ void QgsFcgiServerRequest::printRequestInfos( const QUrl &url )
     QStringLiteral( "CONTENT_TYPE" ),
     QStringLiteral( "REQUEST_METHOD" ),
     QStringLiteral( "AUTH_TYPE" ),
-    QStringLiteral( "HTTP_ACCEPT" ),
-    QStringLiteral( "HTTP_USER_AGENT" ),
-    QStringLiteral( "HTTP_PROXY" ),
     QStringLiteral( "NO_PROXY" ),
-    QStringLiteral( "HTTP_AUTHORIZATION" ),
     QStringLiteral( "QGIS_PROJECT_FILE" ),
     QStringLiteral( "QGIS_SERVER_IGNORE_BAD_LAYERS" ),
     QStringLiteral( "QGIS_SERVER_SERVICE_URL" ),
@@ -235,27 +231,47 @@ void QgsFcgiServerRequest::printRequestInfos( const QUrl &url )
     QStringLiteral( "QGIS_SERVER_WFS_SERVICE_URL" ),
     QStringLiteral( "QGIS_SERVER_WMTS_SERVICE_URL" ),
     QStringLiteral( "QGIS_SERVER_WCS_SERVICE_URL" ),
-    QStringLiteral( "HTTP_X_QGIS_SERVICE_URL" ),
-    QStringLiteral( "HTTP_X_QGIS_WMS_SERVICE_URL" ),
-    QStringLiteral( "HTTP_X_QGIS_WFS_SERVICE_URL" ),
-    QStringLiteral( "HTTP_X_QGIS_WCS_SERVICE_URL" ),
-    QStringLiteral( "HTTP_X_QGIS_WMTS_SERVICE_URL" ),
-    QStringLiteral( "HTTP_FORWARDED" ),
-    QStringLiteral( "HTTP_X_FORWARDED_HOST" ),
-    QStringLiteral( "HTTP_X_FORWARDED_PROTO" ),
-    QStringLiteral( "HTTP_HOST" ),
     QStringLiteral( "SERVER_PROTOCOL" )
   };
+  const QStringList headers
+  {
+    QStringLiteral( "Accept" ),
+    QStringLiteral( "User-Agent" ),
+    QStringLiteral( "Proxy" ),
+    QStringLiteral( "Authorization" ),
+    QStringLiteral( "X-Qgis-Service-Url" ),
+    QStringLiteral( "X-Qgis-WMS-Service-Url" ),
+    QStringLiteral( "X-Qgis-WFS-Service-Url" ),
+    QStringLiteral( "X-Qgis-WCS-Service-Url" ),
+    QStringLiteral( "X-Qgis-WMTS-Service-Url" ),
+    QStringLiteral( "Forwarded" ),
+    QStringLiteral( "X-Forwarded-Host" ),
+    QStringLiteral( "X-Forwarded-Proto" ),
+    QStringLiteral( "Host" )
+  };
+
 
   QgsMessageLog::logMessage( QStringLiteral( "Request URL: %2" ).arg( url.url() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+
   QgsMessageLog::logMessage( QStringLiteral( "Environment:" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
   QgsMessageLog::logMessage( QStringLiteral( "------------------------------------------------" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
-
   for ( const auto &envVar : envVars )
   {
     if ( getenv( envVar.toStdString().c_str() ) )
     {
       QgsMessageLog::logMessage( QStringLiteral( "%1: %2" ).arg( envVar ).arg( QString( getenv( envVar.toStdString().c_str() ) ) ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+    }
+  }
+
+  QgsMessageLog::logMessage( QStringLiteral( "Headers:" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+  QgsMessageLog::logMessage( QStringLiteral( "------------------------------------------------" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+  for ( const auto &headerName : headers )
+  {
+    if ( !header( headerName ).isEmpty() )
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "%1: %2" ).arg( headerName, header( headerName ) ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+      // Fill the headers dictionary
+      setHeader( headerName, header( headerName ) );
     }
   }
 }
