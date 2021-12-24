@@ -138,7 +138,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   mActionSaveStyle = menuStyle->addAction( tr( "Save Current Style…" ) );
   connect( mActionSaveStyle, &QAction::triggered, this, &QgsVectorLayerProperties::saveStyleAs );
-  mActionSaveMultipleStyles = menuStyle->addAction( tr( "Save All Styles…" ) );
+  mActionSaveMultipleStyles = menuStyle->addAction( tr( "Save Styles…" ) );
   connect( mActionSaveMultipleStyles, &QAction::triggered, this, &QgsVectorLayerProperties::saveMultipleStylesAs );
   // If we have multiple styles, offer an option to save them at once
   if ( lyr->styleManager()->styles().count() == 1 )
