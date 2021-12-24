@@ -95,6 +95,7 @@
 #include "qgsprojecttimesettings.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmaplayerutils.h"
+#include "qgsgeometrycollection.h"
 #include "qgsmeshlayertemporalproperties.h"
 #include "qgsvectorlayersavestyledialog.h"
 #include "maptools/qgsappmaptools.h"
@@ -10295,9 +10296,9 @@ void QgisApp::mergeSelectedFeatures()
     if ( ( c && c->partCount() > 1 ) || !unionGeom.convertToSingleType() )
     {
       visibleMessageBar()->pushMessage(
-      tr( "Merge failed" ),
-      tr( "Resulting geometry type (multipart) is incompatible with layer type (singlepart)." ),
-      Qgis::MessageLevel::Critical );
+        tr( "Merge failed" ),
+        tr( "Resulting geometry type (multipart) is incompatible with layer type (singlepart)." ),
+        Qgis::MessageLevel::Critical );
     }
     return;
   }
