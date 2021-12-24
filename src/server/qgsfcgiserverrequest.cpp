@@ -106,11 +106,31 @@ QgsFcgiServerRequest::QgsFcgiServerRequest()
   setUrl( url );
   setMethod( method );
 
-  // Get accept header for content-type negotiation
-  const char *accept = getenv( "HTTP_ACCEPT" );
-  if ( accept )
+  // Fill the headers dictionary
+  const QStringList headers
   {
-    setHeader( QStringLiteral( "Accept" ), accept );
+    QStringLiteral( "Accept" ),
+    QStringLiteral( "User-Agent" ),
+    QStringLiteral( "Proxy" ),
+    QStringLiteral( "Authorization" ),
+    QStringLiteral( "X-Qgis-Service-Url" ),
+    QStringLiteral( "X-Qgis-WMS-Service-Url" ),
+    QStringLiteral( "X-Qgis-WFS-Service-Url" ),
+    QStringLiteral( "X-Qgis-WCS-Service-Url" ),
+    QStringLiteral( "X-Qgis-WMTS-Service-Url" ),
+    QStringLiteral( "Forwarded" ),
+    QStringLiteral( "X-Forwarded-Host" ),
+    QStringLiteral( "X-Forwarded-Proto" ),
+    QStringLiteral( "Host" )
+  };
+  for ( const auto &headerName : headers )
+  {
+    const char *result = qgetenv( QStringLiteral( "HTTP_%1" ).arg(
+                                    headerName.toUpper().replace( QLatin1Char( '-' ), QLatin1Char( '_' ) ) ).toStdString().c_str() );
+    if ( result )
+    {
+      setHeader( headerName, result );
+    }
   }
 
   // Output debug infos
@@ -233,23 +253,6 @@ void QgsFcgiServerRequest::printRequestInfos( const QUrl &url )
     QStringLiteral( "QGIS_SERVER_WCS_SERVICE_URL" ),
     QStringLiteral( "SERVER_PROTOCOL" )
   };
-  const QStringList headers
-  {
-    QStringLiteral( "Accept" ),
-    QStringLiteral( "User-Agent" ),
-    QStringLiteral( "Proxy" ),
-    QStringLiteral( "Authorization" ),
-    QStringLiteral( "X-Qgis-Service-Url" ),
-    QStringLiteral( "X-Qgis-WMS-Service-Url" ),
-    QStringLiteral( "X-Qgis-WFS-Service-Url" ),
-    QStringLiteral( "X-Qgis-WCS-Service-Url" ),
-    QStringLiteral( "X-Qgis-WMTS-Service-Url" ),
-    QStringLiteral( "Forwarded" ),
-    QStringLiteral( "X-Forwarded-Host" ),
-    QStringLiteral( "X-Forwarded-Proto" ),
-    QStringLiteral( "Host" )
-  };
-
 
   QgsMessageLog::logMessage( QStringLiteral( "Request URL: %2" ).arg( url.url() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
 
@@ -265,14 +268,10 @@ void QgsFcgiServerRequest::printRequestInfos( const QUrl &url )
 
   QgsMessageLog::logMessage( QStringLiteral( "Headers:" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
   QgsMessageLog::logMessage( QStringLiteral( "------------------------------------------------" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
-  for ( const auto &headerName : headers )
+
+  for ( const auto &headerName : headers().keys() )
   {
-    if ( !header( headerName ).isEmpty() )
-    {
-      QgsMessageLog::logMessage( QStringLiteral( "%1: %2" ).arg( headerName, header( headerName ) ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
-      // Fill the headers dictionary
-      setHeader( headerName, header( headerName ) );
-    }
+    QgsMessageLog::logMessage( QStringLiteral( "%1: %2" ).arg( headerName ).arg( headers().value( headerName ) ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
   }
 }
 

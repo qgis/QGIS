@@ -215,6 +215,16 @@ class QgsServerRequestTest(QgsServerTestBase):
         self.assertEqual(request.parameter('FOOBAR'), 'foobar')
         self.assertEqual(request.parameter('UNKNOWN'), '')
 
+    def test_headers(self):
+        """Tests that the headers are working in Fcgi mode"""
+        os.environ["HTTP_HOST"] = "example.com"
+        request = QgsFcgiServerRequest()
+        self.assertEquals(request.header("Host"), "example.com")
+        request = QgsServerRequest(request)
+        self.assertEquals(request.header("Host"), "example.com")
+        self.assertEquals(request.header(QgsServerRequest.HOST), "example.com")
+        del os.environ["HTTP_HOST"]
+
 
 if __name__ == '__main__':
     unittest.main()
