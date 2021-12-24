@@ -367,17 +367,14 @@ QStringList QgsLayerTreeUtils::invisibleLayerList( QgsLayerTreeNode *node )
     const auto constChildren = QgsLayerTree::toGroup( node )->children();
     for ( QgsLayerTreeNode *child : constChildren )
     {
-      if ( child->itemVisibilityChecked() == Qt::Unchecked )
-      {
-        list << invisibleLayerList( child );
-      }
+      list << invisibleLayerList( child );
     }
   }
   else if ( QgsLayerTree::isLayer( node ) )
   {
     QgsLayerTreeLayer *layer = QgsLayerTree::toLayer( node );
 
-    if ( !layer->isVisible() )
+    if ( !layer->itemVisibilityChecked() )
       list << layer->layerId();
   }
 
