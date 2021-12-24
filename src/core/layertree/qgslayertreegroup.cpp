@@ -84,7 +84,7 @@ QString QgsLayerTreeGroup::generateId( QString groupName ) const
   // underscore) with an underscore.
   // Note that the first backslash in the regular expression is
   // there for the compiler, so the pattern is actually \W
-  id.replace( QRegExp( "[\\W]" ), QStringLiteral( "_" ) );
+  id.replace( QRegularExpression( "[\\W]" ), QStringLiteral( "_" ) );
   return id;
 }
 
