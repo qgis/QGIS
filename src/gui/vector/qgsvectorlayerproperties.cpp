@@ -136,7 +136,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mActionLoadStyle = menuStyle->addAction( tr( "Load Style…" ) );
   connect( mActionLoadStyle, &QAction::triggered, this, &QgsVectorLayerProperties::loadStyle );
 
-  mActionSaveStyle = menuStyle->addAction( "Save Current Style…" );
+  mActionSaveStyle = menuStyle->addAction( tr( "Save Current Style…" ) );
   connect( mActionSaveStyle, &QAction::triggered, this, &QgsVectorLayerProperties::saveStyleAs );
   mActionSaveMultipleStyles = menuStyle->addAction( tr( "Save All Styles…" ) );
   connect( mActionSaveMultipleStyles, &QAction::triggered, this, &QgsVectorLayerProperties::saveMultipleStylesAs );
