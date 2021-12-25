@@ -25,6 +25,7 @@
 class QgsRenderContext;
 class QgsSymbol;
 class QgsVectorLayer;
+class QgsMapLayer;
 class QgsExpression;
 
 /**
@@ -70,6 +71,13 @@ class CORE_EXPORT QgsMapHitTest
      * \since QGIS 2.14
      */
     bool legendKeyVisible( const QString &ruleKey, QgsVectorLayer *layer ) const;
+
+    /**
+     * Tests whether a map layer is visible.
+     * \param layer QgsMapLayer
+     * \since QGIS 3.24
+     */
+    bool layerVisible( QgsMapLayer *layer ) const;
 
   private:
 

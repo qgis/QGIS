@@ -29,7 +29,6 @@
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmeshlayer.h"
 #include "qgspluginlayer.h"
-#include "qgsrasterlayer.h"
 #include "qgsrenderer.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
@@ -1214,6 +1213,11 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
               if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( node->layerNode()->layer() ) )
               {
                 if ( mLegendFilterHitTest->legendKeyVisible( ruleKey, vl ) )
+                  filtered << node;
+              }
+              else if ( QgsMapLayer *ml = node->layerNode()->layer() )
+              {
+                if ( mLegendFilterHitTest->layerVisible( ml ) )
                   filtered << node;
               }
               else

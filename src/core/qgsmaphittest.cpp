@@ -27,6 +27,7 @@
 #include "qgsgeometryengine.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsmarkersymbol.h"
+#include "qgsmessagelog.h"
 
 QgsMapHitTest::QgsMapHitTest( const QgsMapSettings &settings, const QgsGeometry &polygon, const LayerFilterExpression &layerFilterExpression )
   : mSettings( settings )
@@ -206,3 +207,30 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
   }
 }
 
+bool QgsMapHitTest::layerVisible( QgsMapLayer *layer ) const
+{
+  if ( ! layer->dataProvider() )
+    return false;
+  if ( layer->hasScaleBasedVisibility() )
+  {
+    if ( mSettings.scale() >= layer->minimumScale() || mSettings.scale() <= layer->maximumScale() )
+      return false;
+  }
+  QgsRectangle footprint = layer->extent();
+  if ( mSettings.destinationCrs() != layer->crs() )
+  {
+    try
+    {
+      QgsCoordinateTransform ct = QgsCoordinateTransform( layer->crs(), mSettings.destinationCrs(), mSettings.transformContext() );
+      footprint = ct.transformBoundingBox( footprint );
+    }
+    catch (QgsCsException & )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Could not transform map CRS to layer CRS" ) );
+      return false;
+    }
+  }
+  if ( mSettings.visibleExtent().intersects( footprint ) )
+    return true;
+  return false;
+}

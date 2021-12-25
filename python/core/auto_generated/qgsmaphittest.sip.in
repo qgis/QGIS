@@ -66,6 +66,15 @@ Tests whether a given legend key is visible for a specified layer.
 .. versionadded:: 2.14
 %End
 
+    bool layerVisible( QgsMapLayer *layer ) const;
+%Docstring
+Tests whether a map layer is visible.
+
+:param layer: QgsMapLayer
+
+.. versionadded:: 3.24
+%End
+
 };
 
 /************************************************************************
