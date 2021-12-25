@@ -224,7 +224,7 @@ bool QgsMapHitTest::layerVisible( QgsMapLayer *layer ) const
       QgsCoordinateTransform ct = QgsCoordinateTransform( layer->crs(), mSettings.destinationCrs(), mSettings.transformContext() );
       footprint = ct.transformBoundingBox( footprint );
     }
-    catch (QgsCsException & )
+    catch ( QgsCsException & )
     {
       QgsMessageLog::logMessage( QObject::tr( "Could not transform map CRS to layer CRS" ) );
       return false;

@@ -70,7 +70,7 @@ Tests whether a given legend key is visible for a specified layer.
 %Docstring
 Tests whether a map layer is visible.
 
-:param layer: QgsMapLayer
+:param layer: :py:class:`QgsMapLayer` 
 
 .. versionadded:: 3.24
 %End
