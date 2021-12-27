@@ -1,5 +1,6 @@
 module.exports = {
   publicPath: './',
+  outputDir: '../../api/ogc/static/landingpage/',
   assetsDir: './',
   configureWebpack: {
     devtool: "source-map",
