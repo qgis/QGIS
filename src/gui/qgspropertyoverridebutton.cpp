@@ -685,9 +685,12 @@ void QgsPropertyOverrideButton::showExpressionDialog()
   if ( d.exec() == QDialog::Accepted )
   {
     mExpressionString = d.expressionText().trimmed();
+    bool active = mProperty.isActive();
     mProperty.setExpressionString( mExpressionString );
     mProperty.setTransformer( nullptr );
-    setActivePrivate( !mExpressionString.isEmpty() );
+    mProperty.setActive( !mExpressionString.isEmpty() );
+    if ( mProperty.isActive() != active )
+      emit activated( mProperty.isActive() );
     updateSiblingWidgets( isActive() );
     updateGui();
     emit changed();

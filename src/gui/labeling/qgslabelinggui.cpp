@@ -482,8 +482,6 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   // do this after other widgets are configured, so they can be enabled/disabled
   populateDataDefinedButtons();
 
-  updateDataDefinedAlignment();
-
   updateUi(); // should come after data defined button setup
 }
 

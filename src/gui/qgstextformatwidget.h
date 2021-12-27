@@ -155,8 +155,10 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
 
     /**
      * Update the enabled state of the data defined alignment buttons.
+     *
+     * \deprecated QGIS 3.24
      */
-    void updateDataDefinedAlignment();
+    Q_DECL_DEPRECATED void enableDataDefinedAlignment( bool enable ) SIP_DEPRECATED { Q_UNUSED( enable ) }
 
     QgsExpressionContext createExpressionContext() const override;
 
@@ -311,6 +313,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void updateBufferFrameStatus();
     void updateShadowFrameStatus();
     void updateCalloutFrameStatus();
+    void updateDataDefinedAlignment();
 };
 
 

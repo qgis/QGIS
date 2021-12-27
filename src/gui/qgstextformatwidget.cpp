@@ -813,6 +813,8 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
   registerDataDefinedButton( mCoordAlignmentVDDBtn, QgsPalLayerSettings::Vali );
   registerDataDefinedButton( mCoordRotationDDBtn, QgsPalLayerSettings::LabelRotation );
 
+  updateDataDefinedAlignment();
+
   // rendering
   const QString ddScaleVisInfo = tr( "Value &lt; 0 represents a scale closer than 1:1, e.g. -10 = 10:1<br>"
                                      "Value of 0 disables the specific limit." );
@@ -1862,6 +1864,13 @@ void QgsTextFormatWidget::updateCalloutFrameStatus()
   mCalloutFrame->setEnabled( mCalloutDrawDDBtn->isActive() || mCalloutsDrawCheckBox->isChecked() );
 }
 
+void QgsTextFormatWidget::updateDataDefinedAlignment()
+{
+  // no data defined alignment without data defined position
+  mCoordAlignmentFrame->setEnabled( ( mCoordXDDBtn->isActive() && mCoordYDDBtn->isActive() )
+                                    || mCoordPointDDBtn->isActive() );
+}
+
 void QgsTextFormatWidget::setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type )
 {
   switch ( type )
@@ -2054,13 +2063,6 @@ void QgsTextFormatWidget::showBackgroundRadius( bool show )
 
   mShapeRadiusDDBtn->setVisible( show );
   mShapeRadiusUnitsDDBtn->setVisible( show );
-}
-
-void QgsTextFormatWidget::updateDataDefinedAlignment()
-{
-  // no data defined alignment without data defined position
-  mCoordAlignmentFrame->setEnabled( ( mCoordXDDBtn->isActive() && mCoordYDDBtn->isActive() )
-                                    || mCoordPointDDBtn->isActive() );
 }
 
 QgsExpressionContext QgsTextFormatWidget::createExpressionContext() const

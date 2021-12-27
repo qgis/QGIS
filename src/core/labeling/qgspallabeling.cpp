@@ -2383,47 +2383,53 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     bool ddPosition = false;
 
     if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::PositionX )
-         && mDataDefinedProperties.isActive( QgsPalLayerSettings::PositionY )
-         && !mDataDefinedProperties.value( QgsPalLayerSettings::PositionX, context.expressionContext() ).isNull()
-         && !mDataDefinedProperties.value( QgsPalLayerSettings::PositionY, context.expressionContext() ).isNull() )
+         && mDataDefinedProperties.isActive( QgsPalLayerSettings::PositionY ) )
     {
-      ddPosition = true;
-
-      bool ddXPos = false, ddYPos = false;
-      xPos = mDataDefinedProperties.value( QgsPalLayerSettings::PositionX, context.expressionContext() ).toDouble( &ddXPos );
-      yPos = mDataDefinedProperties.value( QgsPalLayerSettings::PositionY, context.expressionContext() ).toDouble( &ddYPos );
-      if ( ddXPos && ddYPos )
-        hasDataDefinedPosition = true;
-    }
-    else if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::PositionPoint )
-              && !mDataDefinedProperties.value( QgsPalLayerSettings::PositionPoint, context.expressionContext() ).isNull() )
-    {
-      ddPosition = true;
-
-      QVariant pointAsVariant = mDataDefinedProperties.value( QgsPalLayerSettings::PositionPoint, context.expressionContext() );
-      QgsPoint point;
-      if ( pointAsVariant.canConvert<QgsReferencedGeometry>() )
+      const QVariant xPosProperty = mDataDefinedProperties.value( QgsPalLayerSettings::PositionX, context.expressionContext() );
+      const QVariant yPosProperty = mDataDefinedProperties.value( QgsPalLayerSettings::PositionY, context.expressionContext() );
+      if ( !xPosProperty.isNull()
+           && !yPosProperty.isNull() )
       {
-        point = QgsPoint( pointAsVariant.value<QgsReferencedGeometry>().asPoint() );
-      }
-      else if ( pointAsVariant.canConvert<QgsGeometry>() )
-      {
-        point = QgsPoint( pointAsVariant.value<QgsGeometry>().asPoint() );
-      }
-      else if ( !pointAsVariant.toString().isEmpty() )
-      {
-        point.fromWkt( pointAsVariant.toString() );
-      }
+        ddPosition = true;
 
-      if ( !point.isEmpty() )
-      {
-        hasDataDefinedPosition = true;
-
-        xPos = point.x();
-        yPos = point.y();
+        bool ddXPos = false, ddYPos = false;
+        xPos = xPosProperty.toDouble( &ddXPos );
+        yPos = yPosProperty.toDouble( &ddYPos );
+        if ( ddXPos && ddYPos )
+          hasDataDefinedPosition = true;
       }
     }
+    else if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::PositionPoint ) )
+    {
+      const QVariant pointPosProperty = mDataDefinedProperties.value( QgsPalLayerSettings::PositionPoint, context.expressionContext() );
+      if ( !pointPosProperty.isNull() )
+      {
+        ddPosition = true;
 
+        QgsPoint point;
+        if ( pointPosProperty.canConvert<QgsReferencedGeometry>() )
+        {
+          QgsReferencedGeometry referencedGeometryPoint = pointPosProperty.value<QgsReferencedGeometry>();
+          point = QgsPoint( referencedGeometryPoint.asPoint() );
+
+          if ( !referencedGeometryPoint.isNull()
+               && ct.sourceCrs() != referencedGeometryPoint.crs() )
+            QgsMessageLog::logMessage( QObject::tr( "Label position geometry is not in layer coordinates reference system. Layer CRS: '%1', Geometry CRS: '%2'" ).arg( ct.sourceCrs().userFriendlyIdentifier(), referencedGeometryPoint.crs().userFriendlyIdentifier() ), QObject::tr( "Labeling" ), Qgis::Warning );
+        }
+        else if ( pointPosProperty.canConvert<QgsGeometry>() )
+        {
+          point = QgsPoint( pointPosProperty.value<QgsGeometry>().asPoint() );
+        }
+
+        if ( !point.isEmpty() )
+        {
+          hasDataDefinedPosition = true;
+
+          xPos = point.x();
+          yPos = point.y();
+        }
+      }
+    }
 
     if ( ddPosition )
     {
@@ -2525,12 +2531,6 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
       else
       {
         anchorPosition = QgsPointXY( xPos, yPos );
-
-        // only rotate non-pinned OverPoint placements until other placements are supported in pal::Feature
-        if ( dataDefinedRotation && placement != QgsPalLayerSettings::OverPoint )
-        {
-          angle = 0.0;
-        }
       }
     }
   }
