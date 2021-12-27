@@ -17,9 +17,11 @@
 #ifndef QGSCADUTILS_H
 #define QGSCADUTILS_H
 
-#include "qgis_core.h"
+#include <QQueue>
 
+#include "qgis_core.h"
 #include "qgspointlocator.h"
+
 
 class QgsSnappingUtils;
 
@@ -68,6 +70,13 @@ class CORE_EXPORT QgsCadUtils
     {
       public:
 
+        enum LineExtensionSide
+        {
+          BeforeVertex,
+          AfterVertex,
+          NoVertex
+        };
+
         //! Whether the combination of constraints is actually valid
         bool valid;
 
@@ -88,6 +97,10 @@ class CORE_EXPORT QgsCadUtils
 
         //! Angle (in degrees) to which we have soft-locked ourselves (if not set it is -1)
         double softLockCommonAngle;
+
+        LineExtensionSide softLockLineExtension;
+        double softLockX;
+        double softLockY;
     };
 
     /**
@@ -126,6 +139,9 @@ class CORE_EXPORT QgsCadUtils
         //! Constraint for soft lock to a common angle
         QgsCadUtils::AlignMapPointConstraint commonAngleConstraint;
 
+        QgsCadUtils::AlignMapPointConstraint lineExtensionConstraint;
+        QgsCadUtils::AlignMapPointConstraint xyVertexConstraint;
+
         /**
          * Dumps the context's properties, for debugging.
          * \note Not available in Python bindings.
@@ -149,7 +165,15 @@ class CORE_EXPORT QgsCadUtils
          * \see cadPoints()
          * \since QGIS 3.22
          */
-        void setCadPoints( const QList< QgsPoint> &points ) { mCadPointList = points; };
+        void setCadPoints( const QList< QgsPoint > &points ) { mCadPointList = points; };
+
+        /**
+         * Sets the list of recent CAD \a points (in map coordinates).
+         *
+         * \see lockedSnapVertices()
+         * \since QGIS 3.24
+         */
+        void setLockedSnapVertices( const QQueue< QgsPointLocator::Match > &lockedSnapVertices ) { mLockedSnapVertices = lockedSnapVertices; } SIP_SKIP;
 
         /**
          * Sets the recent CAD point at the specified \a index to \a point (in map coordinates).
@@ -166,6 +190,7 @@ class CORE_EXPORT QgsCadUtils
          * \since QGIS 3.22
          */
         QgsPoint cadPoint( int index ) const { return mCadPointList[index]; };
+        QQueue< QgsPointLocator::Match > lockedSnapVertices() const { return mLockedSnapVertices; } SIP_SKIP;
 
 
 #ifdef SIP_RUN
@@ -184,6 +209,7 @@ class CORE_EXPORT QgsCadUtils
          * point (index 2) for alignment purposes.
          */
         QList<QgsPoint> mCadPointList;
+        QQueue< QgsPointLocator::Match > mLockedSnapVertices;
 
     };
 

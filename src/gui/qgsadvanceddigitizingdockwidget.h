@@ -17,6 +17,7 @@
 #define QGSADVANCEDDIGITIZINGDOCK
 
 #include <QList>
+#include <QQueue>
 
 #include <memory>
 
@@ -29,6 +30,7 @@
 #include "qgspointxy.h"
 #include "qgspointlocator.h"
 #include "qgssnapindicator.h"
+#include "qgscadutils.h"
 
 
 class QgsAdvancedDigitizingCanvasItem;
@@ -317,11 +319,32 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! Returns TRUE if a constraint on a common angle is active
     bool commonAngleConstraint() const { return !qgsDoubleNear( mCommonAngleConstraint, 0.0 ); }
 
+    //! Returns the \a CadConstraint
+    const CadConstraint *constraintLineExtension() const { return mLineExtensionConstraint.get(); }
+
+    //! Returns on which side of the constraint line extension point, the line was created
+    QgsCadUtils::AlignMapPointOutput::LineExtensionSide lineExtensionSide() const { return mSoftLockLineExtension; }
+
+    //! Returns the \a CadConstraint
+    const CadConstraint *constraintXyVertex() const { return mXyVertexConstraint.get(); }
+
+    //! Returns the X value of the X soft lock. The value is NaN is the constraint isn't magnetized to a line
+    double softLockX() const { return mSoftLockX; }
+
+    //! Returns the Y value of the Y soft lock. The value is NaN is the constraint isn't magnetized to a line
+    double softLockY() const { return mSoftLockY; }
+
     /**
      * Returns the point locator match
      * \since QGIS 3.4
      */
     QgsPointLocator::Match mapPointMatch() const { return mSnapMatch; }
+
+    /**
+     * Returns the snap matches whose vertices have been locked
+     * \since QGIS 3.24
+     */
+    QList< QgsPointLocator::Match > lockedSnapVertices() const { return mLockedSnapVertices; }
 
     /**
      * Removes all points from the CAD point list
@@ -708,6 +731,22 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     */
     void relativeAngleChanged( bool relative );
 
+    /**
+    * Emitted whenever the soft line extension parameter is \a locked.
+    * Could be used by widgets that must reflect the current advanced digitizing state.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.24
+    */
+    void softLockLineExtensionChanged( bool locked );
+
+    /**
+    * Emitted whenever the soft x/y extension parameter is \a locked.
+    * Could be used by widgets that must reflect the current advanced digitizing state.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.24
+    */
+    void softLockXyChanged( bool locked );
+
     // relativeDistanceChanged doesn't exist as distance is always relative
 
     /**
@@ -827,10 +866,13 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
   private slots:
     //! Sets the between line constraint by clicking on the perpendicular/parallel buttons
-    void betweenLinesConstraintClicked( bool activated );
+    void betweenLineConstraintClicked( bool activated );
 
     //! lock/unlock a constraint and set its value
     void lockConstraint( bool activate = true );
+
+    //! lock/unlock a parameterless constraint
+    void lockParameterlessConstraint( bool activate = true );
 
     /**
      * Called when user has manually altered a constraint value. Any entered expressions will
@@ -879,7 +921,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void updateCapacity( bool updateUIwithoutChange = false );
 
     //! defines the between line constraint to be used (no/parallel/perpendicular)
-    void lockBetweenLinesConstraint( BetweenLineConstraint constraint );
+    void lockBetweenLineConstraint( BetweenLineConstraint constraint );
 
     /**
      * Returns the first snapped segment. Will try to snap a segment using all layers
@@ -924,6 +966,14 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! Updates values of constraints that are not locked based on the current point
     void updateUnlockedConstraintValues( const QgsPoint &point );
 
+
+    /**
+     * Adds or removes the snap match if it is already in the locked snap queue or not.
+     * \param snapMatch the snap match to add or remove.
+     * \param previouslySnap the previous snap match to avoid toggling the same match.
+     */
+    void toggleLockedSnapVertex( const QgsPointLocator::Match &snapMatch, QgsPointLocator::Match previouslySnap );
+
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsAdvancedDigitizingCanvasItem *mCadPaintItem = nullptr;
     //! Snapping indicator
@@ -948,6 +998,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     std::unique_ptr< CadConstraint > mYConstraint;
     std::unique_ptr< CadConstraint > mZConstraint;
     std::unique_ptr< CadConstraint > mMConstraint;
+    std::unique_ptr< CadConstraint > mLineExtensionConstraint;
+    std::unique_ptr< CadConstraint > mXyVertexConstraint;
     BetweenLineConstraint mBetweenLineConstraint;
     double mCommonAngleConstraint; // if 0: do not snap to common angles
 
@@ -962,10 +1014,18 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     // UI
     QMap< QAction *, double > mCommonAngleActions; // map the common angle actions with their angle values
+    QAction *mLineExtensionAction;
+    QAction *mXyVertexAction;
 
     // Snap indicator
-
     QgsPointLocator::Match mSnapMatch;
+    QgsPointLocator::Match mLastSnapMatch;
+
+    // Extra constraint context
+    QgsCadUtils::AlignMapPointOutput::LineExtensionSide mSoftLockLineExtension;
+    double mSoftLockX;
+    double mSoftLockY;
+    QQueue< QgsPointLocator::Match > mLockedSnapVertices;
 
 #ifdef SIP_RUN
     //! event filter for line edits in the dock UI (angle/distance/x/y line edits)

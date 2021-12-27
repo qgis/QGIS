@@ -14,6 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QQueue>
+
 #include "qgscadutils.h"
 
 #include "qgslogger.h"
@@ -39,6 +41,10 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
   QgsCadUtils::AlignMapPointOutput res;
   res.valid = true;
   res.softLockCommonAngle = -1;
+
+  res.softLockLineExtension = QgsCadUtils::AlignMapPointOutput::LineExtensionSide::NoVertex;
+  res.softLockX = std::numeric_limits<double>::quiet_NaN();
+  res.softLockY = std::numeric_limits<double>::quiet_NaN();
 
   // try to snap to anything
   const QgsPointLocator::Match snapMatch = ctx.snappingUtils->snapToMap( originalMapPoint, nullptr, true );
@@ -89,6 +95,21 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
       }
     }
   }
+  else if ( ctx.xyVertexConstraint.locked )
+  {
+    for ( QgsPointLocator::Match snapMatch : ctx.lockedSnapVertices() )
+    {
+      const QgsPointXY vertex = snapMatch.point();
+      if ( vertex.isEmpty() )
+        continue;
+
+      if ( std::abs( point.x() - vertex.x() ) / ctx.mapUnitsPerPixel < SOFT_CONSTRAINT_TOLERANCE_PIXEL )
+      {
+        point.setX( vertex.x() );
+        res.softLockX = vertex.x();
+      }
+    }
+  }
 
   // *****************************
   // ---- Y constraint
@@ -114,6 +135,21 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
       {
         const double dx = edgePt1.x() - edgePt0.x();
         point.setX( edgePt0.x() + ( dx * ( point.y() - edgePt0.y() ) ) / dy );
+      }
+    }
+  }
+  else if ( ctx.xyVertexConstraint.locked )
+  {
+    for ( QgsPointLocator::Match snapMatch : ctx.lockedSnapVertices() )
+    {
+      const QgsPointXY vertex = snapMatch.point();
+      if ( vertex.isEmpty() )
+        continue;
+
+      if ( std::abs( point.y() - vertex.y() ) / ctx.mapUnitsPerPixel < SOFT_CONSTRAINT_TOLERANCE_PIXEL )
+      {
+        point.setY( vertex.y() );
+        res.softLockY = vertex.y();
       }
     }
   }
@@ -250,6 +286,62 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
       {
         point.setX( ( ( x3 - x4 ) * ( x1 * y2 - y1 * x2 ) - ( x1 - x2 ) * ( x3 * y4 - y3 * x4 ) ) / d );
         point.setY( ( ( y3 - y4 ) * ( x1 * y2 - y1 * x2 ) - ( y1 - y2 ) * ( x3 * y4 - y3 * x4 ) ) / d );
+      }
+    }
+  }
+
+  // *****************************
+  // ---- Line Extension Constraint
+
+  if ( ctx.lineExtensionConstraint.locked && ctx.lockedSnapVertices().length() != 0 )
+  {
+    const QgsPointLocator::Match snap = ctx.lockedSnapVertices().last();
+    const QgsPointXY extensionPoint = snap.point();
+
+    if ( snap.layer() && !extensionPoint.isEmpty() )
+    {
+      auto checkLineExtension = [&]( QgsPoint vertex )
+      {
+        if ( vertex.isEmpty() )
+        {
+          return false;
+        }
+
+        const double distance = QgsGeometryUtils::distToInfiniteLine(
+                                  point.x(), point.y(),
+                                  extensionPoint.x(), extensionPoint.y(),
+                                  vertex.x(), vertex.y() );
+
+        if ( distance / ctx.mapUnitsPerPixel < SOFT_CONSTRAINT_TOLERANCE_PIXEL )
+        {
+          double angleValue = std::atan2( extensionPoint.y() - vertex.y(),
+                                          extensionPoint.x() - vertex.x() );
+
+          const double cosa = std::cos( angleValue );
+          const double sina = std::sin( angleValue );
+          const double v = ( point.x() - extensionPoint.x() ) * cosa + ( point.y() - extensionPoint.y() ) * sina;
+
+          point.setX( extensionPoint.x() + cosa * v );
+          point.setY( extensionPoint.y() + sina * v );
+
+          return true;
+        }
+        return false;
+      };
+
+      const QgsFeature feature = snap.layer()->getFeature( snap.featureId() );
+      const QgsGeometry geom = feature.geometry();
+
+      bool checked = checkLineExtension( geom.vertexAt( snap.vertexIndex() - 1 ) );
+      if ( checked )
+      {
+        res.softLockLineExtension = QgsCadUtils::AlignMapPointOutput::LineExtensionSide::BeforeVertex;
+      }
+
+      checked = checkLineExtension( geom.vertexAt( snap.vertexIndex() + 1 ) );
+      if ( checked )
+      {
+        res.softLockLineExtension = QgsCadUtils::AlignMapPointOutput::LineExtensionSide::AfterVertex;
       }
     }
   }

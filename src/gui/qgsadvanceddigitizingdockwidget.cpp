@@ -59,6 +59,10 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   mYConstraint.reset( new CadConstraint( mYLineEdit, mLockYButton, mRelativeYButton, mRepeatingLockYButton ) );
   mZConstraint.reset( new CadConstraint( mZLineEdit, mLockZButton, mRelativeZButton, mRepeatingLockZButton ) );
   mMConstraint.reset( new CadConstraint( mMLineEdit, mLockMButton, mRelativeMButton, mRepeatingLockMButton ) );
+
+  mLineExtensionConstraint.reset( new CadConstraint( new QLineEdit(), new QToolButton() ) );
+  mXyVertexConstraint.reset( new CadConstraint( new QLineEdit(), new QToolButton() ) );
+
   mBetweenLineConstraint = BetweenLineConstraint::NoConstraint;
 
   mMapCanvas->installEventFilter( this );
@@ -72,8 +76,8 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   // Connect the UI to the event filter to update constraints
   connect( mEnableAction, &QAction::triggered, this, &QgsAdvancedDigitizingDockWidget::activateCad );
   connect( mConstructionModeAction, &QAction::triggered, this, &QgsAdvancedDigitizingDockWidget::setConstructionMode );
-  connect( mParallelAction, &QAction::triggered, this, &QgsAdvancedDigitizingDockWidget::betweenLinesConstraintClicked );
-  connect( mPerpendicularAction, &QAction::triggered, this, &QgsAdvancedDigitizingDockWidget::betweenLinesConstraintClicked );
+  connect( mParallelAction, &QAction::triggered, this, &QgsAdvancedDigitizingDockWidget::betweenLineConstraintClicked );
+  connect( mPerpendicularAction, &QAction::triggered, this, &QgsAdvancedDigitizingDockWidget::betweenLineConstraintClicked );
   connect( mLockAngleButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::lockConstraint );
   connect( mLockDistanceButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::lockConstraint );
   connect( mLockXButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::lockConstraint );
@@ -149,6 +153,29 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   mSettingsAction->setToolTip( tr( "Snap to common angles" ) );
   mSettingsAction->setChecked( mCommonAngleConstraint != 0 );
   connect( menu, &QMenu::triggered, this, &QgsAdvancedDigitizingDockWidget::settingsButtonTriggered );
+
+  // Construction modes
+  QMenu *constructionMenu = new QMenu( this );
+
+  mLineExtensionAction = new QAction( "Line extension", constructionMenu );
+  mLineExtensionAction->setCheckable( true );
+  constructionMenu->addAction( mLineExtensionAction );
+  connect( mLineExtensionAction, &QAction::triggered, this, &QgsAdvancedDigitizingDockWidget::lockParameterlessConstraint );
+
+  mXyVertexAction = new QAction( "Xy Point", constructionMenu );
+  mXyVertexAction->setCheckable( true );
+  constructionMenu->addAction( mXyVertexAction );
+  connect( mXyVertexAction, &QAction::triggered, this, &QgsAdvancedDigitizingDockWidget::lockParameterlessConstraint );
+
+  auto constructionToolBar = qobject_cast< QToolButton *>( mToolbar->widgetForAction( mConstructionAction ) );
+  constructionToolBar->setPopupMode( QToolButton::InstantPopup );
+  constructionToolBar->setMenu( constructionMenu );
+  constructionToolBar->setObjectName( QStringLiteral( "ConstructionButton" ) );
+
+  mConstructionAction->setMenu( menu );
+  mConstructionAction->setCheckable( true );
+  mConstructionAction->setToolTip( tr( "Construction Tools" ) );
+//  connect( constructionMenu, &QMenu::triggered, this, &QgsAdvancedDigitizingDockWidget::settingsButtonTriggered );
 
   // set tooltips
   mConstructionModeAction->setToolTip( "<b>" + tr( "Construction mode" ) + "</b><br>(" + tr( "press c to toggle on/off" ) + ")" );
@@ -309,12 +336,15 @@ void QgsAdvancedDigitizingDockWidget::setCadEnabled( bool enabled )
   mSettingsAction->setEnabled( enabled );
   mInputWidgets->setEnabled( enabled );
   mToggleFloaterAction->setEnabled( enabled );
+  mConstructionAction->setEnabled( enabled );
 
   clear();
   setConstructionMode( false );
 
   switchZM();
   emit cadEnabledChanged( enabled );
+
+  mLastSnapMatch = QgsPointLocator::Match();
 }
 
 
@@ -397,19 +427,19 @@ void QgsAdvancedDigitizingDockWidget::activateCad( bool enabled )
   setCadEnabled( enabled );
 }
 
-void QgsAdvancedDigitizingDockWidget::betweenLinesConstraintClicked( bool activated )
+void QgsAdvancedDigitizingDockWidget::betweenLineConstraintClicked( bool activated )
 {
   if ( !activated )
   {
-    lockBetweenLinesConstraint( BetweenLineConstraint::NoConstraint );
+    lockBetweenLineConstraint( BetweenLineConstraint::NoConstraint );
   }
   else if ( sender() == mParallelAction )
   {
-    lockBetweenLinesConstraint( BetweenLineConstraint::Parallel );
+    lockBetweenLineConstraint( BetweenLineConstraint::Parallel );
   }
   else if ( sender() == mPerpendicularAction )
   {
-    lockBetweenLinesConstraint( BetweenLineConstraint::Perpendicular );
+    lockBetweenLineConstraint( BetweenLineConstraint::Perpendicular );
   }
 }
 
@@ -506,7 +536,7 @@ void QgsAdvancedDigitizingDockWidget::releaseLocks( bool releaseRepeatingLocks )
 {
   // release all locks except construction mode
 
-  lockBetweenLinesConstraint( BetweenLineConstraint::NoConstraint );
+  lockBetweenLineConstraint( BetweenLineConstraint::NoConstraint );
 
   if ( releaseRepeatingLocks || !mAngleConstraint->isRepeatingLock() )
   {
@@ -598,6 +628,14 @@ QgsAdvancedDigitizingDockWidget::CadConstraint *QgsAdvancedDigitizingDockWidget:
   else if ( obj == mMLineEdit  || obj == mLockMButton )
   {
     constraint = mMConstraint.get();
+  }
+  else if ( obj == mLineExtensionAction )
+  {
+    constraint = mLineExtensionConstraint.get();
+  }
+  else if ( obj == mXyVertexAction )
+  {
+    constraint = mXyVertexConstraint.get();
   }
   return constraint;
 }
@@ -732,7 +770,7 @@ void QgsAdvancedDigitizingDockWidget::lockConstraint( bool activate /* default t
     // deactivate perpendicular/parallel if angle has been activated
     if ( constraint == mAngleConstraint.get() )
     {
-      lockBetweenLinesConstraint( BetweenLineConstraint::NoConstraint );
+      lockBetweenLineConstraint( BetweenLineConstraint::NoConstraint );
     }
 
     // run a fake map mouse event to update the paint item
@@ -766,11 +804,42 @@ void QgsAdvancedDigitizingDockWidget::constraintFocusOut()
   updateConstraintValue( constraint, lineEdit->text(), true );
 }
 
-void QgsAdvancedDigitizingDockWidget::lockBetweenLinesConstraint( BetweenLineConstraint constraint )
+void QgsAdvancedDigitizingDockWidget::lockBetweenLineConstraint( BetweenLineConstraint constraint )
 {
   mBetweenLineConstraint = constraint;
   mPerpendicularAction->setChecked( constraint == BetweenLineConstraint::Perpendicular );
   mParallelAction->setChecked( constraint == BetweenLineConstraint::Parallel );
+}
+
+void QgsAdvancedDigitizingDockWidget::lockParameterlessConstraint( bool activate /* default true */ )
+{
+  CadConstraint *constraint = objectToConstraint( sender() );
+  if ( !constraint )
+  {
+    return;
+  }
+
+  constraint->setLockMode( activate ? CadConstraint::SoftLock : CadConstraint::NoLock );
+
+  if ( constraint == mXyVertexConstraint.get() )
+  {
+    emit softLockXyChanged( activate );
+  }
+  else if ( constraint == mLineExtensionConstraint.get() )
+  {
+    emit softLockLineExtensionChanged( activate );
+  }
+
+  if ( activate )
+  {
+    // run a fake map mouse event to update the paint item
+    emit pointChangedV2( mCadPointList.value( 0 ) );
+  }
+
+  if ( !mLineExtensionConstraint->isLocked() && !mXyVertexConstraint->isLocked() )
+  {
+    mLockedSnapVertices.clear();
+  }
 }
 
 void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange )
@@ -826,7 +895,7 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
 
   if ( !absoluteAngle )
   {
-    lockBetweenLinesConstraint( BetweenLineConstraint::NoConstraint );
+    lockBetweenLineConstraint( BetweenLineConstraint::NoConstraint );
   }
 
   // absolute angle = azimuth, relative = from previous line
@@ -873,10 +942,43 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
 static QgsCadUtils::AlignMapPointConstraint _constraint( QgsAdvancedDigitizingDockWidget::CadConstraint *c )
 {
   QgsCadUtils::AlignMapPointConstraint constr;
-  constr.locked = c->lockMode() == QgsAdvancedDigitizingDockWidget::CadConstraint::HardLock;
+  constr.locked = c->isLocked();
   constr.relative = c->relative();
   constr.value = c->value();
   return constr;
+}
+
+void QgsAdvancedDigitizingDockWidget::toggleLockedSnapVertex( const QgsPointLocator::Match &snapMatch, QgsPointLocator::Match previouslySnap )
+{
+  // do nothing if not activated
+  if ( !mLineExtensionConstraint->isLocked() && !mXyVertexConstraint->isLocked() )
+  {
+    return;
+  }
+
+  // if the first is same actual, not toggle if previously snapped
+  const int lastIndex = mLockedSnapVertices.length() - 1;
+  for ( int i = lastIndex ; i >= 0; --i )
+  {
+    if ( mLockedSnapVertices[i].point() == snapMatch.point() )
+    {
+      if ( snapMatch.point() != previouslySnap.point() )
+      {
+        mLockedSnapVertices.removeAt( i );
+      }
+      return;
+    }
+  }
+
+  if ( snapMatch.point() != previouslySnap.point() )
+  {
+    mLockedSnapVertices.enqueue( snapMatch );
+  }
+
+  if ( mLockedSnapVertices.count() > 3 )
+  {
+    mLockedSnapVertices.dequeue();
+  }
 }
 
 bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
@@ -890,7 +992,12 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   context.mConstraint = _constraint( mMConstraint.get() );
   context.distanceConstraint = _constraint( mDistanceConstraint.get() );
   context.angleConstraint = _constraint( mAngleConstraint.get() );
+
+  context.lineExtensionConstraint = _constraint( mLineExtensionConstraint.get() );
+  context.xyVertexConstraint = _constraint( mXyVertexConstraint.get() );
+
   context.setCadPoints( mCadPointList );
+  context.setLockedSnapVertices( mLockedSnapVertices );
 
   context.commonAngleConstraint.locked = !mMapCanvas->mapSettings().destinationCrs().isGeographic();
   context.commonAngleConstraint.relative = context.angleConstraint.relative;
@@ -919,6 +1026,10 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
       mAngleConstraint->setLockMode( CadConstraint::NoLock );
     }
   }
+
+  mSoftLockLineExtension = output.softLockLineExtension;
+  mSoftLockX = output.softLockX;
+  mSoftLockY = output.softLockY;
 
   if ( output.snapMatch.isValid() )
   {
@@ -956,6 +1067,16 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
       e->snapPoint();
       point = mSnapMatch.interpolatedPoint( mMapCanvas->mapSettings().destinationCrs() );
     }
+  }
+
+  if ( mSnapMatch.hasVertex() || mSnapMatch.hasLineEndpoint() )
+  {
+    toggleLockedSnapVertex( mSnapMatch, mLastSnapMatch );
+    mLastSnapMatch = mSnapMatch;
+  }
+  else
+  {
+    mLastSnapMatch = QgsPointLocator::Match();
   }
 
   /*
@@ -1442,15 +1563,15 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
 
         if ( !parallel && !perpendicular )
         {
-          lockBetweenLinesConstraint( BetweenLineConstraint::Perpendicular );
+          lockBetweenLineConstraint( BetweenLineConstraint::Perpendicular );
         }
         else if ( perpendicular )
         {
-          lockBetweenLinesConstraint( BetweenLineConstraint::Parallel );
+          lockBetweenLineConstraint( BetweenLineConstraint::Parallel );
         }
         else
         {
-          lockBetweenLinesConstraint( BetweenLineConstraint::NoConstraint );
+          lockBetweenLineConstraint( BetweenLineConstraint::NoConstraint );
         }
         e->accept();
 
