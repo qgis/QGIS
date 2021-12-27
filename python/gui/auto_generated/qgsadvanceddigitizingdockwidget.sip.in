@@ -36,7 +36,7 @@ by implementing filters called from :py:class:`QgsMapToolAdvancedDigitizing`.
     typedef QFlags<QgsAdvancedDigitizingDockWidget::CadCapacity> CadCapacities;
 
 
-    enum class AdditionalConstraint
+    enum class BetweenLineConstraint
     {
       NoConstraint,
       Perpendicular,
@@ -205,8 +205,8 @@ apply the CAD constraints. The will modify the position of the map event in map 
 
     bool alignToSegment( QgsMapMouseEvent *e, QgsAdvancedDigitizingDockWidget::CadConstraint::LockMode lockMode = QgsAdvancedDigitizingDockWidget::CadConstraint::HardLock );
 %Docstring
-align to segment for additional constraint.
-If additional constraints are used, this will determine the angle to be locked depending on the snapped segment.
+align to segment for between line constraint.
+If between line constraints are used, this will determine the angle to be locked depending on the snapped segment.
 
 .. versionadded:: 3.0
 %End
@@ -259,9 +259,9 @@ Sets whether M is enabled
 construction mode is used to draw intermediate points. These points won't be given any further (i.e. to the map tools)
 %End
 
-    AdditionalConstraint additionalConstraint() const;
+    BetweenLineConstraint betweenLineConstraint() const;
 %Docstring
-Returns the additional constraints which are used to place
+Returns the between line constraints which are used to place
 perpendicular/parallel segments to snapped segments on the canvas
 %End
     const CadConstraint *constraintAngle() const;

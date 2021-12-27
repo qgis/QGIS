@@ -107,7 +107,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
   }
 
   // Draw segment par/per input
-  if ( mAdvancedDigitizingDockWidget->additionalConstraint() != QgsAdvancedDigitizingDockWidget::AdditionalConstraint::NoConstraint && hasSnappedSegment )
+  if ( mAdvancedDigitizingDockWidget->betweenLineConstraint() != QgsAdvancedDigitizingDockWidget::BetweenLineConstraint::NoConstraint && hasSnappedSegment )
   {
     painter->setPen( mConstruction2Pen );
     painter->drawLine( snapSegmentPix1, snapSegmentPix2 );
@@ -222,7 +222,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
   }
 
   // Draw constr
-  if ( mAdvancedDigitizingDockWidget->additionalConstraint() == QgsAdvancedDigitizingDockWidget::AdditionalConstraint::NoConstraint )
+  if ( mAdvancedDigitizingDockWidget->betweenLineConstraint() == QgsAdvancedDigitizingDockWidget::BetweenLineConstraint::NoConstraint )
   {
     if ( curPointExist && previousPointExist )
     {

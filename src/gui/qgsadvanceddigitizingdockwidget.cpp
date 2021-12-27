@@ -59,7 +59,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   mYConstraint.reset( new CadConstraint( mYLineEdit, mLockYButton, mRelativeYButton, mRepeatingLockYButton ) );
   mZConstraint.reset( new CadConstraint( mZLineEdit, mLockZButton, mRelativeZButton, mRepeatingLockZButton ) );
   mMConstraint.reset( new CadConstraint( mMLineEdit, mLockMButton, mRelativeMButton, mRepeatingLockMButton ) );
-  mAdditionalConstraint = AdditionalConstraint::NoConstraint;
+  mBetweenLineConstraint = BetweenLineConstraint::NoConstraint;
 
   mMapCanvas->installEventFilter( this );
   mAngleLineEdit->installEventFilter( this );
@@ -72,8 +72,8 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   // Connect the UI to the event filter to update constraints
   connect( mEnableAction, &QAction::triggered, this, &QgsAdvancedDigitizingDockWidget::activateCad );
   connect( mConstructionModeAction, &QAction::triggered, this, &QgsAdvancedDigitizingDockWidget::setConstructionMode );
-  connect( mParallelAction, &QAction::triggered, this, &QgsAdvancedDigitizingDockWidget::additionalConstraintClicked );
-  connect( mPerpendicularAction, &QAction::triggered, this, &QgsAdvancedDigitizingDockWidget::additionalConstraintClicked );
+  connect( mParallelAction, &QAction::triggered, this, &QgsAdvancedDigitizingDockWidget::betweenLinesConstraintClicked );
+  connect( mPerpendicularAction, &QAction::triggered, this, &QgsAdvancedDigitizingDockWidget::betweenLinesConstraintClicked );
   connect( mLockAngleButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::lockConstraint );
   connect( mLockDistanceButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::lockConstraint );
   connect( mLockXButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::lockConstraint );
@@ -397,19 +397,19 @@ void QgsAdvancedDigitizingDockWidget::activateCad( bool enabled )
   setCadEnabled( enabled );
 }
 
-void QgsAdvancedDigitizingDockWidget::additionalConstraintClicked( bool activated )
+void QgsAdvancedDigitizingDockWidget::betweenLinesConstraintClicked( bool activated )
 {
   if ( !activated )
   {
-    lockAdditionalConstraint( AdditionalConstraint::NoConstraint );
+    lockBetweenLinesConstraint( BetweenLineConstraint::NoConstraint );
   }
   else if ( sender() == mParallelAction )
   {
-    lockAdditionalConstraint( AdditionalConstraint::Parallel );
+    lockBetweenLinesConstraint( BetweenLineConstraint::Parallel );
   }
   else if ( sender() == mPerpendicularAction )
   {
-    lockAdditionalConstraint( AdditionalConstraint::Perpendicular );
+    lockBetweenLinesConstraint( BetweenLineConstraint::Perpendicular );
   }
 }
 
@@ -506,7 +506,7 @@ void QgsAdvancedDigitizingDockWidget::releaseLocks( bool releaseRepeatingLocks )
 {
   // release all locks except construction mode
 
-  lockAdditionalConstraint( AdditionalConstraint::NoConstraint );
+  lockBetweenLinesConstraint( BetweenLineConstraint::NoConstraint );
 
   if ( releaseRepeatingLocks || !mAngleConstraint->isRepeatingLock() )
   {
@@ -732,7 +732,7 @@ void QgsAdvancedDigitizingDockWidget::lockConstraint( bool activate /* default t
     // deactivate perpendicular/parallel if angle has been activated
     if ( constraint == mAngleConstraint.get() )
     {
-      lockAdditionalConstraint( AdditionalConstraint::NoConstraint );
+      lockBetweenLinesConstraint( BetweenLineConstraint::NoConstraint );
     }
 
     // run a fake map mouse event to update the paint item
@@ -766,11 +766,11 @@ void QgsAdvancedDigitizingDockWidget::constraintFocusOut()
   updateConstraintValue( constraint, lineEdit->text(), true );
 }
 
-void QgsAdvancedDigitizingDockWidget::lockAdditionalConstraint( AdditionalConstraint constraint )
+void QgsAdvancedDigitizingDockWidget::lockBetweenLinesConstraint( BetweenLineConstraint constraint )
 {
-  mAdditionalConstraint = constraint;
-  mPerpendicularAction->setChecked( constraint == AdditionalConstraint::Perpendicular );
-  mParallelAction->setChecked( constraint == AdditionalConstraint::Parallel );
+  mBetweenLineConstraint = constraint;
+  mPerpendicularAction->setChecked( constraint == BetweenLineConstraint::Perpendicular );
+  mParallelAction->setChecked( constraint == BetweenLineConstraint::Parallel );
 }
 
 void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange )
@@ -826,7 +826,7 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
 
   if ( !absoluteAngle )
   {
-    lockAdditionalConstraint( AdditionalConstraint::NoConstraint );
+    lockBetweenLinesConstraint( BetweenLineConstraint::NoConstraint );
   }
 
   // absolute angle = azimuth, relative = from previous line
@@ -1102,7 +1102,7 @@ QList<QgsPointXY> QgsAdvancedDigitizingDockWidget::snapSegmentToAllLayers( const
 
 bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent *e, CadConstraint::LockMode lockMode )
 {
-  if ( mAdditionalConstraint == AdditionalConstraint::NoConstraint )
+  if ( mBetweenLineConstraint == BetweenLineConstraint::NoConstraint )
   {
     return false;
   }
@@ -1124,7 +1124,7 @@ bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent *e, CadCo
     angle -= std::atan2( previousPt.y() - penultimatePt.y(), previousPt.x() - penultimatePt.x() );
   }
 
-  if ( mAdditionalConstraint == AdditionalConstraint::Perpendicular )
+  if ( mBetweenLineConstraint == BetweenLineConstraint::Perpendicular )
   {
     angle += M_PI_2;
   }
@@ -1135,7 +1135,7 @@ bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent *e, CadCo
   mAngleConstraint->setLockMode( lockMode );
   if ( lockMode == CadConstraint::HardLock )
   {
-    mAdditionalConstraint = AdditionalConstraint::NoConstraint;
+    mBetweenLineConstraint = BetweenLineConstraint::NoConstraint;
   }
 
   return true;
@@ -1442,15 +1442,15 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
 
         if ( !parallel && !perpendicular )
         {
-          lockAdditionalConstraint( AdditionalConstraint::Perpendicular );
+          lockBetweenLinesConstraint( BetweenLineConstraint::Perpendicular );
         }
         else if ( perpendicular )
         {
-          lockAdditionalConstraint( AdditionalConstraint::Parallel );
+          lockBetweenLinesConstraint( BetweenLineConstraint::Parallel );
         }
         else
         {
-          lockAdditionalConstraint( AdditionalConstraint::NoConstraint );
+          lockBetweenLinesConstraint( BetweenLineConstraint::NoConstraint );
         }
         e->accept();
 

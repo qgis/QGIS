@@ -67,9 +67,9 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     Q_FLAG( CadCapacities )
 
     /**
-     * Additional constraints which can be enabled
+     * Between line constraints which can be enabled
      */
-    enum class AdditionalConstraint SIP_MONKEYPATCH_SCOPEENUM : int
+    enum class BetweenLineConstraint SIP_MONKEYPATCH_SCOPEENUM : int
     {
       NoConstraint,  //!< No additional constraint
       Perpendicular, //!< Perpendicular
@@ -245,8 +245,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     bool applyConstraints( QgsMapMouseEvent *e );
 
     /**
-     * align to segment for additional constraint.
-     * If additional constraints are used, this will determine the angle to be locked depending on the snapped segment.
+     * align to segment for between line constraint.
+     * If between line constraints are used, this will determine the angle to be locked depending on the snapped segment.
      * \since QGIS 3.0
      */
     bool alignToSegment( QgsMapMouseEvent *e, QgsAdvancedDigitizingDockWidget::CadConstraint::LockMode lockMode = QgsAdvancedDigitizingDockWidget::CadConstraint::HardLock );
@@ -290,10 +290,10 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     bool constructionMode() const { return mConstructionMode; }
 
     /**
-     * Returns the additional constraints which are used to place
+     * Returns the between line constraints which are used to place
      * perpendicular/parallel segments to snapped segments on the canvas
      */
-    AdditionalConstraint additionalConstraint() const  { return mAdditionalConstraint; }
+    BetweenLineConstraint betweenLineConstraint() const  { return mBetweenLineConstraint; }
     //! Returns the \a CadConstraint on the angle
     const CadConstraint *constraintAngle() const  { return mAngleConstraint.get(); }
     //! Returns the \a CadConstraint on the distance
@@ -826,8 +826,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
 
   private slots:
-    //! Sets the additional constraint by clicking on the perpendicular/parallel buttons
-    void additionalConstraintClicked( bool activated );
+    //! Sets the between line constraint by clicking on the perpendicular/parallel buttons
+    void betweenLinesConstraintClicked( bool activated );
 
     //! lock/unlock a constraint and set its value
     void lockConstraint( bool activate = true );
@@ -878,8 +878,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      */
     void updateCapacity( bool updateUIwithoutChange = false );
 
-    //! defines the additional constraint to be used (no/parallel/perpendicular)
-    void lockAdditionalConstraint( AdditionalConstraint constraint );
+    //! defines the between line constraint to be used (no/parallel/perpendicular)
+    void lockBetweenLinesConstraint( BetweenLineConstraint constraint );
 
     /**
      * Returns the first snapped segment. Will try to snap a segment using all layers
@@ -948,7 +948,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     std::unique_ptr< CadConstraint > mYConstraint;
     std::unique_ptr< CadConstraint > mZConstraint;
     std::unique_ptr< CadConstraint > mMConstraint;
-    AdditionalConstraint mAdditionalConstraint;
+    BetweenLineConstraint mBetweenLineConstraint;
     double mCommonAngleConstraint; // if 0: do not snap to common angles
 
     // point list and current snap point / segment
