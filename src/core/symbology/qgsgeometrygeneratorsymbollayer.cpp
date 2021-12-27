@@ -106,8 +106,11 @@ void QgsGeometryGeneratorSymbolLayer::stopRender( QgsSymbolRenderContext &contex
     mSymbol->stopRender( context.renderContext() );
 }
 
-void QgsGeometryGeneratorSymbolLayer::startFeatureRender( const QgsFeature &, QgsRenderContext & )
+void QgsGeometryGeneratorSymbolLayer::startFeatureRender( const QgsFeature &, QgsRenderContext &context )
 {
+  if ( context.flags() & Qgis::RenderContextFlag::RenderingSubSymbol )
+    return;
+
   mRenderingFeature = true;
   mHasRenderedFeature = false;
 }
