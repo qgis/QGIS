@@ -35,19 +35,19 @@ if (WITH_SERVER)
 
   # Landingpage
   file(GLOB_RECURSE LANDINGPAGE_SOURCE_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} server/src/landingpage/*)
-  list(REMOVE_ITEM $(LANDINGPAGE_SOURCE_FILES) "*landingpage.stamp")
+  set(LANDINGPAGE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/../output/data/resources/server/src/landingpage)
 
-  add_custom_target (yarn-target ALL DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/server/src/landingpage/landingpage.stamp)
+  add_custom_target (yarn-target ALL DEPENDS ${LANDINGPAGE_OUTPUT_PATH}/landingpage.stamp)
 
   add_custom_command(
     POST_BUILD
-    OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/server/src/landingpage/landingpage.stamp
+    OUTPUT ${LANDINGPAGE_OUTPUT_PATH}/landingpage.stamp
     DEPENDS ${LANDINGPAGE_SOURCE_FILES}
-    COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_CURRENT_SOURCE_DIR}/server/src/landingpage/landingpage.stamp
-    COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR}/server/src/landingpage && yarn install --frozen-lockfile && yarn build
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_CURRENT_SOURCE_DIR}/server/api/ogc/static/landingpage/
-    ${CMAKE_CURRENT_BINARY_DIR}/../output/data/resources/server/api/ogc/static/landingpage/
+    ${CMAKE_CURRENT_SOURCE_DIR}/server/src/landingpage/
+    ${LANDINGPAGE_OUTPUT_PATH}/
+    COMMAND ${CMAKE_COMMAND} -E touch ${LANDINGPAGE_OUTPUT_PATH}/landingpage.stamp
+    COMMAND cd ${LANDINGPAGE_OUTPUT_PATH} && yarn install --frozen-lockfile && yarn build
   )
 
 endif()

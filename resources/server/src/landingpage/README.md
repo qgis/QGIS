@@ -17,7 +17,7 @@ yarn serve
 yarn build
 ```
 
-Built files location: `resources/server/api/ogc/static/landingpage`
+Built files location: `../../api/ogc/static/landingpage/`
 
 ### Lints and fixes files
 ```
