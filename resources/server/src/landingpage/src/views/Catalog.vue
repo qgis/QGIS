@@ -67,6 +67,7 @@
                 v-if="
                   project.capabilities.wmsOutputCrsList.includes('EPSG:3857')
                 "
+                :options="{maxZoom: 19}"
               ></l-tile-layer>
             </l-map>
             <v-card-title>{{ project.title }}</v-card-title>
@@ -182,6 +183,7 @@ export default {
         layers: Utils.getAllLayers(project),
         transparent: true,
         format: "image/png",
+        maxZoom: 19
       }).addTo(map);
     },
   },
