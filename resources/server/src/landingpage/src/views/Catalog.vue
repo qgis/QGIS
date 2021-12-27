@@ -67,6 +67,7 @@
                 v-if="
                   project.capabilities.wmsOutputCrsList.includes('EPSG:3857')
                 "
+                attribution="&copy; &lt;a href='https://www.openstreetmap.org/copyright'&gt;OpenStreetMap&lt;/a&gt; contributors"
                 :options="{maxZoom: 19}"
               ></l-tile-layer>
             </l-map>
