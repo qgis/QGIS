@@ -189,9 +189,6 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionPoint ) )
           mCurrentLabel.settings.dataDefinedProperties().property( QgsPalLayerSettings::PositionPoint ).setActive( false );
 
-        mPalProperties.clear();
-        mPalProperties << QgsPalLayerSettings::PositionX;
-        mPalProperties << QgsPalLayerSettings::PositionY;
         QgsPalIndexes indexes;
         if ( createAuxiliaryFields( indexes ) )
           return;
@@ -226,15 +223,8 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         yCol = indexes[ QgsDiagramLayerSettings::PositionY ];
       }
 
-      bool usesAuxFields = false;
-      if ( xCol >= 0 && yCol >= 0 )
-        usesAuxFields = vlayer->fields().fieldOrigin( xCol ) == QgsFields::OriginJoin
-                        && vlayer->fields().fieldOrigin( yCol ) == QgsFields::OriginJoin;
-
-      if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionPoint )
-           && !mCurrentLabel.pos.isDiagram )
-        usesAuxFields = vlayer->fields().fieldOrigin( pointCol ) == QgsFields::OriginJoin;
-
+      const bool usesAuxFields = vlayer->fields().fieldOrigin( xCol ) == QgsFields::OriginJoin
+                                 && vlayer->fields().fieldOrigin( yCol ) == QgsFields::OriginJoin;
       if ( !usesAuxFields && !vlayer->isEditable() )
       {
         if ( vlayer->startEditing() )
