@@ -42,6 +42,7 @@
               v-resize="onResize"
               @ready="setMap"
               style="z-index: 0"
+              maxZoom="22"
             >
               <l-tile-layer
                 :visible="baseMap == 'openstreetmap'"
@@ -51,6 +52,7 @@
                   project.capabilities.wmsOutputCrsList.includes('EPSG:3857')
                 "
                 attribution="&copy; &lt;a href='https://www.openstreetmap.org/copyright'&gt;OpenStreetMap&lt;/a&gt; contributors"
+                :options="{maxZoom: 22, maxNativeZoom: 19}"
               ></l-tile-layer>
             </l-map>
           </v-layout>
@@ -317,6 +319,7 @@ export default {
         tileSize: 512,
         transparent: true,
         format: "image/png",
+        maxZoom: 22,
         dpi: window.devicePixelRatio * 96,
         onGetFeatureInfo: this.onGetFeatureInfo,
         onGetFeatureInfoStarted: this.onGetFeatureInfoStarted,
