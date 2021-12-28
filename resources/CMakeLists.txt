@@ -35,7 +35,7 @@ if (WITH_SERVER)
 
   # Landingpage
   file(GLOB_RECURSE LANDINGPAGE_SOURCE_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} server/src/landingpage/*)
-  set(LANDINGPAGE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/../output/data/resources/server/src/landingpage)
+  set(LANDINGPAGE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/output/data/resources/server/src/landingpage)
 
   add_custom_target (server_landingpage ALL DEPENDS ${LANDINGPAGE_OUTPUT_PATH}/landingpage.stamp)
 
