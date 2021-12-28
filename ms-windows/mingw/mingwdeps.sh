@@ -81,4 +81,5 @@ dnf install -y --nogpgcheck \
   sqlite-devel \
   wget \
   xorg-x11-server-Xvfb \
+  yarn \
   zip
