@@ -94,6 +94,7 @@ class TestQgsMapRendererJob : public QObject
     void temporalRender();
 
     void labelSink();
+    void skipSymbolRendering();
 
   private:
     bool imageCheck( const QString &type, const QImage &image, int mismatchCount = 0 );
@@ -1004,6 +1005,41 @@ void TestQgsMapRendererJob::labelSink()
   QImage img = renderJob.renderedImage();
   QVERIFY( imageCheck( QStringLiteral( "label_sink" ), img ) );
   QCOMPARE( labelSink->drawnCount, 17 );
+}
+
+void TestQgsMapRendererJob::skipSymbolRendering()
+{
+  std::unique_ptr< QgsVectorLayer > pointsLayer = std::make_unique< QgsVectorLayer >( TEST_DATA_DIR + QStringLiteral( "/points.shp" ),
+      QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  QVERIFY( pointsLayer->isValid() );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "Class" );
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
+  settings.zIndex = 1;
+
+  pointsLayer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  pointsLayer->setLabelsEnabled( true );
+
+  QgsMapSettings mapSettings;
+  mapSettings.setDestinationCrs( pointsLayer->crs() );
+  mapSettings.setExtent( pointsLayer->extent() );
+  mapSettings.setOutputSize( QSize( 512, 512 ) );
+  mapSettings.setFlag( Qgis::MapSettingsFlag::DrawLabeling, true );
+  mapSettings.setFlag( Qgis::MapSettingsFlag::SkipSymbolRendering, true );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setLayers( QList< QgsMapLayer * >() << pointsLayer.get() );
+
+  QgsMapRendererSequentialJob renderJob( mapSettings );
+  renderJob.start();
+  renderJob.waitForFinished();
+  QImage img = renderJob.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "skip_symbol_rendering" ), img ) );
 }
 
 bool TestQgsMapRendererJob::imageCheck( const QString &testName, const QImage &image, int mismatchCount )

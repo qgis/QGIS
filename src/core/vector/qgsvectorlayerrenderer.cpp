@@ -460,7 +460,15 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
       bool drawMarker = isMainRenderer && ( mDrawVertexMarkers && context.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
 
       // render feature
-      bool rendered = renderer->renderFeature( fet, context, -1, sel, drawMarker );
+      bool rendered = false;
+      if ( !context.testFlag( Qgis::RenderContextFlag::SkipSymbolRendering ) )
+      {
+        rendered = renderer->renderFeature( fet, context, -1, sel, drawMarker );
+      }
+      else
+      {
+        rendered = renderer->willRenderFeature( fet, context );
+      }
 
       // labeling - register feature
       if ( rendered )
@@ -574,11 +582,14 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
       continue;
     }
 
-    if ( !features.contains( sym ) )
+    if ( !context.testFlag( Qgis::RenderContextFlag::SkipSymbolRendering ) )
     {
-      features.insert( sym, QList<QgsFeature>() );
+      if ( !features.contains( sym ) )
+      {
+        features.insert( sym, QList<QgsFeature>() );
+      }
+      features[sym].append( fet );
     }
-    features[sym].append( fet );
 
     // new labeling engine
     if ( isMainRenderer && context.labelingEngine() && ( mLabelProvider || mDiagramProvider ) )
