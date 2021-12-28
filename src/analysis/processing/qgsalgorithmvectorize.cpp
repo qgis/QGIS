@@ -113,7 +113,7 @@ QVariantMap QgsVectorizeAlgorithmBase::processAlgorithm( const QVariantMap &para
       for ( int column = 0; column < iterCols; column++ )
       {
         const double value = rasterBlock->valueAndNoData( row, column, isNoData );
-        if ( !isNoData )
+        if ( !isNoData && !qgsDoubleNear( value, 0.0 ) )
         {
           const QgsGeometry pixelRectGeometry = createGeometryForPixel( currentX, currentY, mRasterUnitsPerPixelX, mRasterUnitsPerPixelY );
 

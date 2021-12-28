@@ -26,7 +26,7 @@
 #include <QElapsedTimer>
 
 #include "qgsrendercontext.h"
-
+#include "qgslabelsink.h"
 #include "qgsmapsettings.h"
 #include "qgsmaskidprovider.h"
 #include "qgssettingsentry.h"
@@ -353,6 +353,22 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
     void setCache( QgsMapRendererCache *cache );
 
     /**
+     * Returns the label sink associated to this rendering job.
+     * \note not available in Python bindings
+     * \since QGIS 3.24
+     */
+    QgsLabelSink *labelSink() const { return mLabelSink; } SIP_SKIP
+
+    /**
+     * Assigns the label sink which will take over responsability for handling labels
+     * during the rendering job.
+     * \note the ownership is not transferred
+     * \note not available in Python bindings
+     * \since QGIS 3.24
+     */
+    void setLabelSink( QgsLabelSink *sink ) { mLabelSink = sink; } SIP_SKIP
+
+    /**
      * Returns the total time it took to finish the job (in milliseconds).
      * \see perLayerRenderingTime()
      */
@@ -558,6 +574,8 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
      *  \since QGIS 3.20
      */
     virtual void startPrivate() = 0;
+
+    QgsLabelSink *mLabelSink = nullptr;
 
 };
 

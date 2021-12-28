@@ -34,6 +34,7 @@
 #include "qgspainteffect.h"
 #include "qgsfeaturefilterprovider.h"
 #include "qgsexception.h"
+#include "qgslabelsink.h"
 #include "qgslogger.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsexpressioncontextutils.h"
@@ -713,14 +714,35 @@ void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer *layer, QSet<QStrin
   {
     if ( layer->labelsEnabled() )
     {
-      mLabelProvider = layer->labeling()->provider( layer );
-      if ( mLabelProvider )
+      if ( context.labelSink() )
       {
+        if ( const QgsRuleBasedLabeling *rbl = dynamic_cast<const QgsRuleBasedLabeling *>( layer->labeling() ) )
+        {
+          mLabelProvider = new QgsRuleBasedLabelSinkProvider( *rbl, layer, context.labelSink() );
+        }
+        else
+        {
+          QgsPalLayerSettings settings = layer->labeling()->settings();
+          mLabelProvider = new QgsLabelSinkProvider( layer, QString(), context.labelSink(), &settings );
+        }
         engine2->addProvider( mLabelProvider );
         if ( !mLabelProvider->prepare( context, attributeNames ) )
         {
           engine2->removeProvider( mLabelProvider );
-          mLabelProvider = nullptr; // deleted by engine
+          mLabelProvider = nullptr;
+        }
+      }
+      else
+      {
+        mLabelProvider = layer->labeling()->provider( layer );
+        if ( mLabelProvider )
+        {
+          engine2->addProvider( mLabelProvider );
+          if ( !mLabelProvider->prepare( context, attributeNames ) )
+          {
+            engine2->removeProvider( mLabelProvider );
+            mLabelProvider = nullptr; // deleted by engine
+          }
         }
       }
     }

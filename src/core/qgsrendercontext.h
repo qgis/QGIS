@@ -27,6 +27,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsexpressioncontext.h"
 #include "qgsfeaturefilterprovider.h"
+#include "qgslabelsink.h"
 #include "qgsmaptopixel.h"
 #include "qgsmapunitscale.h"
 #include "qgsrectangle.h"
@@ -366,6 +367,12 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     QgsLabelingEngine *labelingEngine() const { return mLabelingEngine; } SIP_SKIP
 
     /**
+     * Returns the associated label sink, or NULLPTR if not set.
+     * \since QGIS 3.24
+     */
+    QgsLabelSink *labelSink() const { return mLabelSink; } SIP_SKIP
+
+    /**
      * Returns the color to use when rendering selected features.
      *
      * \see setSelectionColor()
@@ -531,10 +538,17 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     void setForceVectorOutput( bool force );
 
     /**
-     * Assign new labeling engine
+     * Assigns the labeling engine
      * \note not available in Python bindings
      */
     void setLabelingEngine( QgsLabelingEngine *engine ) { mLabelingEngine = engine; } SIP_SKIP
+
+    /**
+     * Assigns the label sink which will take over responsability for handling labels.
+     * \note the ownership is not transferred
+     * \since QGIS 3.24
+     */
+    void setLabelSink( QgsLabelSink *sink ) { mLabelSink = sink; } SIP_SKIP
 
     /**
      * Sets the \a color to use when rendering selected features.
@@ -1024,8 +1038,11 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 
     double mSymbologyReferenceScale = -1;
 
-    //! Newer labeling engine implementation (can be NULLPTR)
+    //! Labeling engine implementation (can be NULLPTR)
     QgsLabelingEngine *mLabelingEngine = nullptr;
+
+    //! Label sink (can be NULLPTR)
+    QgsLabelSink *mLabelSink = nullptr;
 
     //! Color used for features that are marked as selected
     QColor mSelectionColor;

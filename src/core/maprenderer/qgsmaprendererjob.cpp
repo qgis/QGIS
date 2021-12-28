@@ -495,6 +495,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
     job.context()->expressionContext().appendScope( QgsExpressionContextUtils::layerScope( ml ) );
     job.context()->setPainter( painter );
     job.context()->setLabelingEngine( labelingEngine2 );
+    job.context()->setLabelSink( labelSink() );
     job.context()->setCoordinateTransform( ct );
     job.context()->setExtent( r1 );
     if ( !haveExtentInLayerCrs )
