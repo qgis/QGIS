@@ -46,29 +46,12 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     void deactivate() override;
 
     /**
-     * Returns TRUE if label move can be applied to a layer
-     * \param xCol out: index of the attribute for data defined x coordinate
-     * \param yCol out: index of the attribute for data defined y coordinate
-     * \returns TRUE if labels of layer can be moved
-    */
-    bool labelMoveable( QgsVectorLayer *vlayer, int &xCol, int &yCol ) const;
-    bool labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &xCol, int &yCol ) const;
-
-    /**
      * Returns true if diagram move can be applied to a layer
      * \param xCol out: index of the attribute for data defined x coordinate
      * \param yCol out: index of the attribute for data defined y coordinate
      * \returns TRUE if labels of layer can be moved
     */
     bool diagramMoveable( QgsVectorLayer *vlayer, int &xCol, int &yCol ) const;
-
-    /**
-     * Returns TRUE if layer has attribute fields set up
-     * \param xCol out: index of the attribute for data defined x coordinate
-     * \param yCol out: index of the attribute for data defined y coordinate
-     * \returns TRUE if layer fields set up and exist
-    */
-    bool layerCanPin( QgsVectorLayer *vlayer, int &xCol, int &yCol ) const;
 
     /**
      * Returns TRUE if layer has attribute field set up for diagrams
@@ -178,18 +161,6 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
 
     //! Returns whether to preserve predefined rotation data during label pin/unpin operations
     bool currentLabelPreserveRotation();
-
-    /**
-     * Gets data defined position of current label
-     * \param x out: data defined x-coordinate
-     * \param xSuccess out: FALSE if attribute value is NULL
-     * \param y out: data defined y-coordinate
-     * \param ySuccess out: FALSE if attribute value is NULL
-     * \param xCol out: index of the x position column
-     * \param yCol out: index of the y position column
-     * \returns FALSE if layer does not have data defined label position enabled
-    */
-    bool currentLabelDataDefinedPosition( double &x, bool &xSuccess, double &y, bool &ySuccess, int &xCol, int &yCol ) const;
 
     /**
      * Gets data defined position of current label

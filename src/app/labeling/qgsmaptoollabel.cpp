@@ -631,12 +631,6 @@ QVariant QgsMapToolLabel::evaluateDataDefinedProperty( QgsPalLayerSettings::Prop
   return labelSettings.dataDefinedProperties().value( property, context, defaultValue );
 }
 
-bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess, double &y, bool &ySuccess, int &xCol, int &yCol ) const
-{
-  int pointCol = -1;
-  return currentLabelDataDefinedPosition( x, xSuccess, y, ySuccess, xCol, yCol, pointCol );
-}
-
 bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess, double &y, bool &ySuccess, int &xCol, int &yCol, int &pointCol ) const
 {
   QgsVectorLayer *vlayer = mCurrentLabel.layer;
@@ -736,10 +730,10 @@ bool QgsMapToolLabel::currentLabelDataDefinedRotation( double &rotation, bool &r
   //test, if data defined x- and y- values are not null. Otherwise, the position is determined by PAL and the rotation cannot be fixed
   if ( !ignoreXY )
   {
-    int xCol, yCol;
+    int xCol, yCol, pointCol;
     double x, y;
     bool xSuccess, ySuccess;
-    if ( !currentLabelDataDefinedPosition( x, xSuccess, y, ySuccess, xCol, yCol ) || !xSuccess || !ySuccess )
+    if ( !currentLabelDataDefinedPosition( x, xSuccess, y, ySuccess, xCol, yCol, pointCol ) || !xSuccess || !ySuccess )
     {
       return false;
     }
@@ -833,36 +827,6 @@ bool QgsMapToolLabel::diagramMoveable( QgsVectorLayer *vlayer, int &xCol, int &y
   return false;
 }
 
-bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, int &xCol, int &yCol ) const
-{
-  if ( !vlayer || !vlayer->isEditable() || !vlayer->labelsEnabled() )
-  {
-    return false;
-  }
-
-  const auto constSubProviders = vlayer->labeling()->subProviders();
-  for ( const QString &providerId : constSubProviders )
-  {
-    if ( labelMoveable( vlayer, vlayer->labeling()->settings( providerId ), xCol, yCol ) )
-      return true;
-  }
-
-  return false;
-}
-
-bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &xCol, int &yCol ) const
-{
-  int pointCol = -1;
-  return labelMoveable( vlayer, settings, xCol, yCol, pointCol );
-}
-
-bool QgsMapToolLabel::layerCanPin( QgsVectorLayer *vlayer, int &xCol, int &yCol ) const
-{
-  // currently same as QgsMapToolLabel::labelMoveable, but may change
-  bool canPin = labelMoveable( vlayer, xCol, yCol );
-  return canPin;
-}
-
 bool QgsMapToolLabel::labelCanShowHide( QgsVectorLayer *vlayer, int &showCol ) const
 {
   if ( !vlayer || !vlayer->isEditable() || !vlayer->labelsEnabled() )
@@ -895,11 +859,11 @@ bool QgsMapToolLabel::isPinned()
   {
     // for diagrams, the isPinned attribute is not set. So we check directly if
     // there's data defined.
-    int xCol, yCol;
+    int xCol, yCol, pointCol;
     double x, y;
     bool xSuccess, ySuccess;
 
-    if ( currentLabelDataDefinedPosition( x, xSuccess, y, ySuccess, xCol, yCol ) && xSuccess && ySuccess )
+    if ( currentLabelDataDefinedPosition( x, xSuccess, y, ySuccess, xCol, yCol, pointCol ) && xSuccess && ySuccess )
       rc = true;
   }
 

@@ -193,7 +193,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         if ( createAuxiliaryFields( indexes ) )
           return;
 
-        if ( !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol ) )
+        if ( !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol, pointCol ) )
         {
           QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, mCurrentLabel.settings, vlayer );
           QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, mCurrentLabel.settings, vlayer );
@@ -465,12 +465,13 @@ void QgsMapToolMoveLabel::keyReleaseEvent( QKeyEvent *e )
         {
           int xCol = -1;
           int yCol = -1;
+          int pointCol = -1;
           double xPosOrig = 0;
           double yPosOrig = 0;
           bool xSuccess = false;
           bool ySuccess = false;
 
-          if ( !isCalloutMove && !currentLabelDataDefinedPosition( xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol ) )
+          if ( !isCalloutMove && !currentLabelDataDefinedPosition( xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol, pointCol ) )
           {
             break;
           }
