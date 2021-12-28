@@ -361,13 +361,14 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     double symbologyReferenceScale() const { return mSymbologyReferenceScale; }
 
     /**
-     * Gets access to new labeling engine (may be NULLPTR)
-     * \note not available in Python bindings
+     * Gets access to new labeling engine (may be NULLPTR).
+     * \note Not available in Python bindings.
      */
     QgsLabelingEngine *labelingEngine() const { return mLabelingEngine; } SIP_SKIP
 
     /**
      * Returns the associated label sink, or NULLPTR if not set.
+     * \note Not available in Python bindings.
      * \since QGIS 3.24
      */
     QgsLabelSink *labelSink() const { return mLabelSink; } SIP_SKIP
@@ -539,13 +540,14 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 
     /**
      * Assigns the labeling engine
-     * \note not available in Python bindings
+     * \note Not available in Python bindings.
      */
     void setLabelingEngine( QgsLabelingEngine *engine ) { mLabelingEngine = engine; } SIP_SKIP
 
     /**
-     * Assigns the label sink which will take over responsability for handling labels.
-     * \note the ownership is not transferred
+     * Assigns the label sink which will take over responsibility for handling labels.
+     * \note Ownership is not transferred and the sink must exist for the lifetime of the map rendering job.
+     * \note Not available in Python bindings.
      * \since QGIS 3.24
      */
     void setLabelSink( QgsLabelSink *sink ) { mLabelSink = sink; } SIP_SKIP

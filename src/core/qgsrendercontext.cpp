@@ -56,6 +56,7 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mRendererScale( rh.mRendererScale )
   , mSymbologyReferenceScale( rh.mSymbologyReferenceScale )
   , mLabelingEngine( rh.mLabelingEngine )
+  , mLabelSink( rh.mLabelSink )
   , mSelectionColor( rh.mSelectionColor )
   , mVectorSimplifyMethod( rh.mVectorSimplifyMethod )
   , mExpressionContext( rh.mExpressionContext )
@@ -99,6 +100,7 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mRendererScale = rh.mRendererScale;
   mSymbologyReferenceScale = rh.mSymbologyReferenceScale;
   mLabelingEngine = rh.mLabelingEngine;
+  mLabelSink = rh.mLabelSink;
   mSelectionColor = rh.mSelectionColor;
   mVectorSimplifyMethod = rh.mVectorSimplifyMethod;
   mExpressionContext = rh.mExpressionContext;

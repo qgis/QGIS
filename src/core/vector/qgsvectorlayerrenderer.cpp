@@ -736,24 +736,18 @@ void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer *layer, QSet<QStrin
           QgsPalLayerSettings settings = layer->labeling()->settings();
           mLabelProvider = new QgsLabelSinkProvider( layer, QString(), context.labelSink(), &settings );
         }
-        engine2->addProvider( mLabelProvider );
-        if ( !mLabelProvider->prepare( context, attributeNames ) )
-        {
-          engine2->removeProvider( mLabelProvider );
-          mLabelProvider = nullptr;
-        }
       }
       else
       {
         mLabelProvider = layer->labeling()->provider( layer );
-        if ( mLabelProvider )
+      }
+      if ( mLabelProvider )
+      {
+        engine2->addProvider( mLabelProvider );
+        if ( !mLabelProvider->prepare( context, attributeNames ) )
         {
-          engine2->addProvider( mLabelProvider );
-          if ( !mLabelProvider->prepare( context, attributeNames ) )
-          {
-            engine2->removeProvider( mLabelProvider );
-            mLabelProvider = nullptr; // deleted by engine
-          }
+          engine2->removeProvider( mLabelProvider );
+          mLabelProvider = nullptr; // deleted by engine
         }
       }
     }

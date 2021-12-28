@@ -354,16 +354,16 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
 
     /**
      * Returns the label sink associated to this rendering job.
-     * \note not available in Python bindings
+     * \note Not available in Python bindings.
      * \since QGIS 3.24
      */
     QgsLabelSink *labelSink() const { return mLabelSink; } SIP_SKIP
 
     /**
-     * Assigns the label sink which will take over responsability for handling labels
+     * Assigns the label sink which will take over responsibility for handling labels
      * during the rendering job.
-     * \note the ownership is not transferred
-     * \note not available in Python bindings
+     * \note Ownership is not transferred and the sink must exist for the lifetime of the map rendering job.
+     * \note Not available in Python bindings.
      * \since QGIS 3.24
      */
     void setLabelSink( QgsLabelSink *sink ) { mLabelSink = sink; } SIP_SKIP
