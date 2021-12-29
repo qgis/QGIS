@@ -44,6 +44,13 @@ a "perimeter" style mode).
       UseEntireLine,
     };
 
+    enum class AnchorTextPoint
+    {
+      StartOfText,
+      CenterOfText,
+      EndOfText,
+    };
+
     QgsLabeling::LinePlacementFlags placementFlags() const;
 %Docstring
 Returns the line placement flags, which dictate how line labels can be placed
@@ -273,6 +280,8 @@ the end of the line.
 
 .. seealso:: :py:func:`setLineAnchorPercent`
 
+.. seealso:: :py:func:`anchorTextPoint`
+
 .. seealso:: :py:func:`anchorType`
 
 .. seealso:: :py:func:`anchorClipping`
@@ -288,6 +297,8 @@ as close to the start of the line as possible, while a value of 1.0 pushes label
 the end of the line.
 
 .. seealso:: :py:func:`lineAnchorPercent`
+
+.. seealso:: :py:func:`setAnchorTextPoint`
 
 .. seealso:: :py:func:`setAnchorType`
 
@@ -344,6 +355,26 @@ before calculating the line anchor placement.
 .. seealso:: :py:func:`setLineAnchorPercent`
 
 .. versionadded:: 3.20
+%End
+
+    AnchorTextPoint anchorTextPoint() const;
+%Docstring
+Returns the line anchor text point, which dictates which part of the label text
+should be placed at the :py:func:`~QgsLabelLineSettings.lineAnchorPercent`.
+
+.. seealso:: :py:func:`setAnchorTextPoint`
+
+.. versionadded:: 3.26
+%End
+
+    void setAnchorTextPoint( AnchorTextPoint point );
+%Docstring
+Sets the line anchor text ``point``, which dictates which part of the label text
+should be placed at the :py:func:`~QgsLabelLineSettings.lineAnchorPercent`.
+
+.. seealso:: :py:func:`anchorTextPoint`
+
+.. versionadded:: 3.26
 %End
 
 };

@@ -71,6 +71,18 @@ class CORE_EXPORT QgsLabelLineSettings
     };
 
     /**
+     * Anchor point of label text.
+     *
+     * \since QGIS 3.26
+     */
+    enum class AnchorTextPoint : int
+    {
+      StartOfText, //!< Anchor using start of text
+      CenterOfText, //!< Anchor using center of text
+      EndOfText, //!< Anchor using end of text
+    };
+
+    /**
      * Returns the line placement flags, which dictate how line labels can be placed
      * above or below the lines.
      *
@@ -261,6 +273,7 @@ class CORE_EXPORT QgsLabelLineSettings
      * the end of the line.
      *
      * \see setLineAnchorPercent()
+     * \see anchorTextPoint()
      * \see anchorType()
      * \see anchorClipping()
      */
@@ -275,6 +288,7 @@ class CORE_EXPORT QgsLabelLineSettings
      * the end of the line.
      *
      * \see lineAnchorPercent()
+     * \see setAnchorTextPoint()
      * \see setAnchorType()
      * \see setAnchorClipping()
      */
@@ -324,6 +338,26 @@ class CORE_EXPORT QgsLabelLineSettings
      */
     void setAnchorClipping( AnchorClipping clipping ) { mAnchorClipping = clipping; }
 
+    /**
+     * Returns the line anchor text point, which dictates which part of the label text
+     * should be placed at the lineAnchorPercent().
+     *
+     * \see setAnchorTextPoint()
+     *
+     * \since QGIS 3.26
+     */
+    AnchorTextPoint anchorTextPoint() const { return mAnchorTextPoint; }
+
+    /**
+     * Sets the line anchor text \a point, which dictates which part of the label text
+     * should be placed at the lineAnchorPercent().
+     *
+     * \see anchorTextPoint()
+     *
+     * \since QGIS 3.26
+     */
+    void setAnchorTextPoint( AnchorTextPoint point ) { mAnchorTextPoint = point; }
+
   private:
     QgsLabeling::LinePlacementFlags mPlacementFlags = QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::MapOrientation;
     bool mMergeLines = false;
@@ -339,6 +373,7 @@ class CORE_EXPORT QgsLabelLineSettings
     double mLineAnchorPercent = 0.5;
     AnchorType mAnchorType = AnchorType::HintOnly;
     AnchorClipping mAnchorClipping = AnchorClipping::UseVisiblePartsOfLine;
+    AnchorTextPoint mAnchorTextPoint = AnchorTextPoint::CenterOfText;
 };
 
 #endif // QGSLABELLINESETTINGS_H
