@@ -3096,8 +3096,6 @@ QgsGeometry QgsGeometry::unaryUnion( const QVector<QgsGeometry> &geometries )
 
 QgsGeometry QgsGeometry::polygonize( const QVector<QgsGeometry> &geometryList )
 {
-  QgsGeos geos( nullptr );
-
   QVector<const QgsAbstractGeometry *> geomV2List;
   for ( const QgsGeometry &g : geometryList )
   {
@@ -3108,7 +3106,7 @@ QgsGeometry QgsGeometry::polygonize( const QVector<QgsGeometry> &geometryList )
   }
 
   QString error;
-  QgsGeometry result = geos.polygonize( geomV2List, &error );
+  QgsGeometry result = QgsGeos::polygonize( geomV2List, &error );
   result.mLastError = error;
   return result;
 }

@@ -340,7 +340,7 @@ void QgsDiagramSettings::readXml( const QDomElement &elem, const QgsReadWriteCon
   if ( !effectElem.isNull() )
     setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ) );
   else
-    setPaintEffect( QgsApplication::paintEffectRegistry()->defaultStack() );
+    setPaintEffect( QgsPaintEffectRegistry::defaultStack() );
 }
 
 void QgsDiagramSettings::writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsReadWriteContext &context ) const

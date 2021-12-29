@@ -2253,12 +2253,11 @@ bool QgsProject::writeProjectFile( const QString &filename )
   context.setPathResolver( pathResolver() );
   context.setTransformContext( transformContext() );
 
-  QDomImplementation DomImplementation;
-  DomImplementation.setInvalidDataPolicy( QDomImplementation::DropInvalidChars );
+  QDomImplementation::setInvalidDataPolicy( QDomImplementation::DropInvalidChars );
 
   const QDomDocumentType documentType =
-    DomImplementation.createDocumentType( QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ),
-                                          QStringLiteral( "SYSTEM" ) );
+    QDomImplementation().createDocumentType( QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ),
+        QStringLiteral( "SYSTEM" ) );
   std::unique_ptr<QDomDocument> doc( new QDomDocument( documentType ) );
 
   QDomElement qgisNode = doc->createElement( QStringLiteral( "qgis" ) );

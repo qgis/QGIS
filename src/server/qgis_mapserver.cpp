@@ -155,7 +155,7 @@ class TcpServerWorker: public QObject
         mIsListening = true;
 
         // Incoming connection handler
-        mTcpServer.connect( &mTcpServer, &QTcpServer::newConnection, this, [ = ]
+        QTcpServer::connect( &mTcpServer, &QTcpServer::newConnection, this, [ = ]
         {
           QTcpSocket *clientConnection = mTcpServer.nextPendingConnection();
 
@@ -177,7 +177,7 @@ class TcpServerWorker: public QObject
           };
 
           // This will delete the connection
-          clientConnection->connect( clientConnection, &QAbstractSocket::disconnected, clientConnection, connectionDeleter, Qt::QueuedConnection );
+          QTcpSocket::connect( clientConnection, &QAbstractSocket::disconnected, clientConnection, connectionDeleter, Qt::QueuedConnection );
 
 #if 0     // Debugging output
           clientConnection->connect( clientConnection, &QAbstractSocket::errorOccurred, clientConnection, [ = ]( QAbstractSocket::SocketError socketError )
@@ -187,7 +187,7 @@ class TcpServerWorker: public QObject
 #endif
 
           // Incoming connection parser
-          clientConnection->connect( clientConnection, &QIODevice::readyRead, context, [ = ] {
+          QTcpSocket::connect( clientConnection, &QIODevice::readyRead, context, [ = ] {
 
             // Read all incoming data
             while ( clientConnection->bytesAvailable() > 0 )
@@ -627,7 +627,7 @@ int main( int argc, char *argv[] )
   TcpServerThread tcpServerThread{ ipAddress, serverPort.toInt() };
 
   bool isTcpError = false;
-  tcpServerThread.connect( &tcpServerThread, &TcpServerThread::serverError, qApp, [ & ]
+  TcpServerThread::connect( &tcpServerThread, &TcpServerThread::serverError, qApp, [ & ]
   {
     isTcpError = true;
     qApp->quit();
@@ -635,7 +635,7 @@ int main( int argc, char *argv[] )
 
   // Monitoring thread
   QueueMonitorThread queueMonitorThread;
-  queueMonitorThread.connect( &queueMonitorThread, &QueueMonitorThread::requestReady, qApp, [ & ]( RequestContext * requestContext )
+  QueueMonitorThread::connect( &queueMonitorThread, &QueueMonitorThread::requestReady, qApp, [ & ]( RequestContext * requestContext )
   {
     if ( requestContext->clientConnection && requestContext->clientConnection->isValid() )
     {
@@ -677,14 +677,14 @@ int main( int argc, char *argv[] )
   tcpServerThread.start();
   queueMonitorThread.start();
 
-  app.exec();
+  QgsApplication::exec();
   // Wait for threads
   tcpServerThread.exit();
   tcpServerThread.wait();
   queueMonitorThread.stop();
   REQUEST_WAIT_CONDITION.notify_all();
   queueMonitorThread.wait();
-  app.exitQgis();
+  QgsApplication::exitQgis();
 
   return isTcpError ? 1 : 0;
 }

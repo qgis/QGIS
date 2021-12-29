@@ -228,7 +228,7 @@ int QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::Property property, Q
   if ( layer && layer->labeling() && layer->auxiliaryLayer() )
   {
     // property definition are identical whatever the provider id
-    const QgsPropertyDefinition def = layer->labeling()->settings().propertyDefinitions()[property];
+    const QgsPropertyDefinition def = QgsPalLayerSettings::propertyDefinitions()[property];
     const QString fieldName = nameFromProperty( def, true );
 
     layer->auxiliaryLayer()->addAuxiliaryField( def );
@@ -274,7 +274,7 @@ int QgsAuxiliaryLayer::createProperty( QgsDiagramLayerSettings::Property propert
 
   if ( layer && layer->diagramLayerSettings() && layer->auxiliaryLayer() )
   {
-    const QgsPropertyDefinition def = layer->diagramLayerSettings()->propertyDefinitions()[property];
+    const QgsPropertyDefinition def = QgsDiagramLayerSettings::propertyDefinitions()[property];
 
     if ( layer->auxiliaryLayer()->addAuxiliaryField( def ) )
     {
@@ -314,7 +314,7 @@ int QgsAuxiliaryLayer::createProperty( QgsCallout::Property property, QgsVectorL
   if ( layer && layer->labeling() && layer->labeling()->settings().callout() && layer->auxiliaryLayer() )
   {
     // property definition are identical whatever the provider id
-    const QgsPropertyDefinition def = layer->labeling()->settings().callout()->propertyDefinitions()[property];
+    const QgsPropertyDefinition def = QgsCallout::propertyDefinitions()[property];
     const QString fieldName = nameFromProperty( def, true );
 
     layer->auxiliaryLayer()->addAuxiliaryField( def );

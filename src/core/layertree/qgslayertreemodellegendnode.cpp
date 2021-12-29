@@ -1541,7 +1541,7 @@ QJsonObject QgsVectorLabelLegendNode::exportSymbolToJson( const QgsLegendSetting
 
   double textWidth, textHeight;
   textWidthHeight( textWidth, textHeight, ctx, textFormat, textLines );
-  const QPixmap previewPixmap = mLabelSettings.labelSettingsPreviewPixmap( mLabelSettings, QSize( textWidth, textHeight ), mLabelSettings.legendString() );
+  const QPixmap previewPixmap = QgsPalLayerSettings::labelSettingsPreviewPixmap( mLabelSettings, QSize( textWidth, textHeight ), mLabelSettings.legendString() );
 
   QByteArray byteArray;
   QBuffer buffer( &byteArray );

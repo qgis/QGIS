@@ -85,7 +85,7 @@ QgsRunProcess::QgsRunProcess( const QString &action, bool capture )
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     if ( ! mProcess->startDetached( action ) ) // let the program run by itself
 #else
-    if ( ! mProcess->startDetached( command, arguments ) ) // let the program run by itself
+    if ( ! QProcess::startDetached( command, arguments ) ) // let the program run by itself
 #endif
     {
       QMessageBox::critical( nullptr, tr( "Action" ),

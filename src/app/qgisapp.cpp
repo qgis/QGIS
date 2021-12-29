@@ -2118,7 +2118,7 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
 
   auto showLayerLoadWarnings = [ = ]( const QString & title, const QString & shortMessage, const QString & longMessage, Qgis::MessageLevel level )
   {
-    QgsMessageBarItem *messageWidget = visibleMessageBar()->createMessage( title, shortMessage );
+    QgsMessageBarItem *messageWidget = QgsMessageBar::createMessage( title, shortMessage );
     QPushButton *detailsButton = new QPushButton( tr( "Details" ) );
     connect( detailsButton, &QPushButton::clicked, this, [ = ]
     {

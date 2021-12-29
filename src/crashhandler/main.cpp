@@ -38,7 +38,7 @@ int main( int argc, char *argv[] )
   }
 
   QApplication app( argc, argv );
-  app.setQuitOnLastWindowClosed( true );
+  QApplication::setQuitOnLastWindowClosed( true );
   QCoreApplication::setOrganizationName( "QGIS" );
   QCoreApplication::setApplicationName( "QGIS3" );
 
@@ -98,7 +98,7 @@ int main( int argc, char *argv[] )
   dlg.setBugReport( report.toHtml() );
   dlg.setModal( true );
   dlg.show();
-  app.exec();
+  QApplication::exec();
 
 
 #ifdef MSVC

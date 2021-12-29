@@ -220,7 +220,7 @@ bool QgsTileDownloadManager::waitForPendingRequests( int msec )
       if ( mQueue.isEmpty() )
         return true;
     }
-    QThread::currentThread()->usleep( 1000 );
+    QThread::usleep( 1000 );
   }
 
   return false;
@@ -247,7 +247,7 @@ void QgsTileDownloadManager::shutdown()
         return;  // the thread has stopped
     }
 
-    QThread::currentThread()->usleep( 1000 );
+    QThread::usleep( 1000 );
   }
 }
 

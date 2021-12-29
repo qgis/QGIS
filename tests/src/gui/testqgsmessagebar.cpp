@@ -149,7 +149,7 @@ void TestQgsMessageBar::autoDelete()
 {
   // ensure that items are automatically deleted when queue grows too large
   QgsMessageBar bar;
-  for ( int i = 0; i < bar.MAX_ITEMS; ++i )
+  for ( int i = 0; i < QgsMessageBar::MAX_ITEMS; ++i )
   {
     bar.pushMessage( QString::number( i ), Qgis::MessageLevel::Warning );
   }

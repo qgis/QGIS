@@ -86,5 +86,5 @@ int main( int argc, char *argv[] )
   // Add some data for debugging if needed
   QgsDebugMsg( QStringLiteral( "data directory: %1" ).arg( dataDir ) );
 
-  return app.exec();
+  return QgsApplication::exec();
 }

@@ -398,7 +398,7 @@ QgsTopologicalMesh::Changes QgsMeshEditingDelaunayTriangulation::apply( QgsMeshE
     while ( !facesReady && !giveUp )
     {
       QgsMeshEditingError error;
-      topologicFaces = meshEditor->topologicalMesh().createNewTopologicalFaces( destinationFaces, true, error );
+      topologicFaces = QgsTopologicalMesh::createNewTopologicalFaces( destinationFaces, true, error );
 
       if ( error == QgsMeshEditingError() )
         error = meshEditor->topologicalMesh().facesCanBeAdded( topologicFaces );

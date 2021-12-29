@@ -1135,7 +1135,6 @@ void QgsSimpleLineSymbolLayer::setTweakDashPatternOnCorners( bool enabled )
 
 double QgsSimpleLineSymbolLayer::dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const
 {
-  Q_UNUSED( e )
   double offset = mOffset;
 
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOffset ) )
