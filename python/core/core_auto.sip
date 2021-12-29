@@ -122,6 +122,7 @@
 %Include auto_generated/qgsmessageoutput.sip
 %Include auto_generated/qgsmimedatautils.sip
 %Include auto_generated/qgsmultirenderchecker.sip
+%Include auto_generated/qgsnullpainterdevice.sip
 %Include auto_generated/qgsobjectcustomproperties.sip
 %Include auto_generated/qgsofflineediting.sip
 %Include auto_generated/qgsogcutils.sip
