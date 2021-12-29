@@ -15,3 +15,9 @@ QgsLabelLineSettings.AnchorClipping.UseVisiblePartsOfLine.__doc__ = "Only visibl
 QgsLabelLineSettings.AnchorClipping.UseEntireLine.__doc__ = "Entire original feature line geometry is used when calculating the line anchor for labels"
 QgsLabelLineSettings.AnchorClipping.__doc__ = 'Clipping behavior for line anchor calculation.\n\n.. versionadded:: 3.20\n\n' + '* ``UseVisiblePartsOfLine``: ' + QgsLabelLineSettings.AnchorClipping.UseVisiblePartsOfLine.__doc__ + '\n' + '* ``UseEntireLine``: ' + QgsLabelLineSettings.AnchorClipping.UseEntireLine.__doc__
 # --
+# monkey patching scoped based enum
+QgsLabelLineSettings.AnchorTextPoint.StartOfText.__doc__ = "Anchor using start of text"
+QgsLabelLineSettings.AnchorTextPoint.CenterOfText.__doc__ = "Anchor using center of text"
+QgsLabelLineSettings.AnchorTextPoint.EndOfText.__doc__ = "Anchor using end of text"
+QgsLabelLineSettings.AnchorTextPoint.__doc__ = 'Anchor point of label text.\n\n.. versionadded:: 3.26\n\n' + '* ``StartOfText``: ' + QgsLabelLineSettings.AnchorTextPoint.StartOfText.__doc__ + '\n' + '* ``CenterOfText``: ' + QgsLabelLineSettings.AnchorTextPoint.CenterOfText.__doc__ + '\n' + '* ``EndOfText``: ' + QgsLabelLineSettings.AnchorTextPoint.EndOfText.__doc__
+# --
