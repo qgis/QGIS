@@ -2832,10 +2832,10 @@
                    </widget>
                    <widget class="QWidget" name="wfs">
                     <attribute name="title">
-                     <string>WFS</string>
+                     <string>WFS/OAPIF</string>
                     </attribute>
                     <attribute name="toolTip">
-                     <string>WFS capabilities</string>
+                     <string>WFS or OAPIF capabilities</string>
                     </attribute>
                     <layout class="QGridLayout" name="gridLayout_24">
                      <item row="2" column="0">
