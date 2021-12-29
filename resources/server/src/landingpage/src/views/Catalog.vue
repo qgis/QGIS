@@ -61,7 +61,12 @@
             <l-map
               :ref="'mapid-' + project.id"
               @ready="loadMap(project, $event)"
+              :options="{attributionControl: false}"
             >
+              <l-control-attribution
+                position="bottomright"
+                :options="{prefix: false}"
+              ></l-control-attribution>
               <l-tile-layer
                 url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
                 v-if="
@@ -125,7 +130,7 @@
 </template>
 
 <script>
-import { LMap, LTileLayer } from "vue2-leaflet";
+import { LMap, LControlAttribution, LTileLayer } from "vue2-leaflet";
 import "leaflet/dist/leaflet.css";
 import { latLng, Polygon } from "leaflet";
 import WMS from "leaflet-wms/leaflet.wms.js";
@@ -137,6 +142,7 @@ export default {
   name: "Catalog",
   components: {
     LMap,
+    LControlAttribution,
     LTileLayer,
     Metadata,
     Error,
