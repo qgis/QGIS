@@ -155,8 +155,7 @@ void TestQgsCalloutRegistry::createCallout()
 
 void TestQgsCalloutRegistry::defaultCallout()
 {
-  QgsCalloutRegistry *registry = QgsApplication::calloutRegistry();
-  const std::unique_ptr< QgsCallout > callout( registry->defaultCallout() );
+  const std::unique_ptr< QgsCallout > callout( QgsCalloutRegistry::defaultCallout() );
   QVERIFY( callout.get() );
 }
 

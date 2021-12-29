@@ -187,7 +187,6 @@ QVariantMap QgsLayoutAtlasToImageAlgorithm::processAlgorithm( const QVariantMap 
   const int idx = parameterAsEnum( parameters, QStringLiteral( "EXTENSION" ), context );
   const QString extension = '.' + imageFormats.at( idx );
 
-  const QgsLayoutExporter exporter( layout.get() );
   QgsLayoutExporter::ImageExportSettings settings;
 
   if ( parameters.value( QStringLiteral( "DPI" ) ).isValid() )
@@ -224,7 +223,7 @@ QVariantMap QgsLayoutAtlasToImageAlgorithm::processAlgorithm( const QVariantMap 
   if ( atlas->updateFeatures() )
   {
     feedback->pushInfo( QObject::tr( "Exporting %n atlas feature(s)", "", atlas->count() ) );
-    switch ( exporter.exportToImage( atlas, fileName, extension, settings, error, feedback ) )
+    switch ( QgsLayoutExporter::exportToImage( atlas, fileName, extension, settings, error, feedback ) )
     {
       case QgsLayoutExporter::Success:
       {

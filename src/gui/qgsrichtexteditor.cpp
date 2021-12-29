@@ -170,8 +170,7 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
   connect( mActionDecreaseIndent, &QAction::triggered, this, &QgsRichTextEditor::decreaseIndentation );
 
   // font size
-  const QFontDatabase db;
-  const QList< int > sizes = db.standardSizes();
+  const QList< int > sizes = QFontDatabase::standardSizes();
   for ( const int size : sizes )
     mFontSizeCombo->addItem( QString::number( size ), size );
 

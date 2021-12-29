@@ -1558,9 +1558,8 @@ namespace QgsWfs
 
       if ( setup.type() ==  QStringLiteral( "DateTime" ) )
       {
-        QgsDateTimeFieldFormatter fieldFormatter;
         const QVariantMap config = setup.config();
-        const QString fieldFormat = config.value( QStringLiteral( "field_format" ), fieldFormatter.defaultFormat( value.type() ) ).toString();
+        const QString fieldFormat = config.value( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( value.type() ) ).toString();
         QDateTime date = value.toDateTime();
 
         if ( date.isValid() )

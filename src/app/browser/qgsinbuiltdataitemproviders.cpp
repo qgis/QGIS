@@ -361,14 +361,14 @@ void QgsAppDirectoryItemGuiProvider::changeDirectoryColor( QgsDirectoryItem *ite
     return;
 
   // store new color for directory
-  item->setCustomColor( item->dirPath(), color );
+  QgsDirectoryItem::setCustomColor( item->dirPath(), color );
   // and update item's color immediately
   item->setIconColor( color );
 }
 
 void QgsAppDirectoryItemGuiProvider::clearDirectoryColor( QgsDirectoryItem *item )
 {
-  item->setCustomColor( item->dirPath(), QColor() );
+  QgsDirectoryItem::setCustomColor( item->dirPath(), QColor() );
   // and update item's color immediately
   item->setIconColor( QColor() );
 }
