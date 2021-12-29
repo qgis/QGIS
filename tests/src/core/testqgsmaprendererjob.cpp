@@ -32,6 +32,8 @@
 #include "qgsfield.h"
 #include "qgis.h"
 #include "qgsmaprenderersequentialjob.h"
+#include "qgsmaprenderercustompainterjob.h"
+#include "qgsnullpainterdevice.h"
 #include "qgsmaplayer.h"
 #include "qgsreadwritecontext.h"
 #include "qgsproviderregistry.h"
@@ -95,6 +97,8 @@ class TestQgsMapRendererJob : public QObject
 
     void labelSink();
     void skipSymbolRendering();
+
+    void customNullPainterJob();
 
   private:
     bool imageCheck( const QString &type, const QImage &image, int mismatchCount = 0 );
@@ -1040,6 +1044,49 @@ void TestQgsMapRendererJob::skipSymbolRendering()
   renderJob.waitForFinished();
   QImage img = renderJob.renderedImage();
   QVERIFY( imageCheck( QStringLiteral( "skip_symbol_rendering" ), img ) );
+}
+
+void TestQgsMapRendererJob::customNullPainterJob()
+{
+  std::unique_ptr< QgsVectorLayer > pointsLayer = std::make_unique< QgsVectorLayer >( TEST_DATA_DIR + QStringLiteral( "/points.shp" ),
+      QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  QVERIFY( pointsLayer->isValid() );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "Class" );
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
+  settings.zIndex = 1;
+
+  pointsLayer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  pointsLayer->setLabelsEnabled( true );
+
+  QgsMapSettings mapSettings;
+  mapSettings.setDestinationCrs( pointsLayer->crs() );
+  mapSettings.setExtent( pointsLayer->extent() );
+  mapSettings.setOutputSize( QSize( 512, 512 ) );
+  mapSettings.setFlag( Qgis::MapSettingsFlag::DrawLabeling, true );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setLayers( QList< QgsMapLayer * >() << pointsLayer.get() );
+
+  std::unique_ptr<QgsNullPaintDevice> nullPaintDevice = std::make_unique<QgsNullPaintDevice>();
+  nullPaintDevice->setOutputSize( QSize( 512, 512 ) );
+  nullPaintDevice->setOutputDpi( 96 );
+  std::unique_ptr<QPainter> painter = std::make_unique<QPainter>( nullPaintDevice.get() );
+
+  QgsMapRendererCustomPainterJob renderJob( mapSettings, painter.get() );
+
+  std::unique_ptr<TestLabelSink> labelSink = std::make_unique<TestLabelSink>();
+  renderJob.setLabelSink( labelSink.get() );
+
+  renderJob.start();
+  renderJob.waitForFinished();
+
+  QCOMPARE( labelSink->drawnCount, 17 );
 }
 
 bool TestQgsMapRendererJob::imageCheck( const QString &testName, const QImage &image, int mismatchCount )
