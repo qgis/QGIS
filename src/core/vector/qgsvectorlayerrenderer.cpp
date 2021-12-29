@@ -34,6 +34,7 @@
 #include "qgspainteffect.h"
 #include "qgsfeaturefilterprovider.h"
 #include "qgsexception.h"
+#include "qgslabelsink.h"
 #include "qgslogger.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsexpressioncontextutils.h"
@@ -459,7 +460,15 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
       bool drawMarker = isMainRenderer && ( mDrawVertexMarkers && context.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
 
       // render feature
-      bool rendered = renderer->renderFeature( fet, context, -1, sel, drawMarker );
+      bool rendered = false;
+      if ( !context.testFlag( Qgis::RenderContextFlag::SkipSymbolRendering ) )
+      {
+        rendered = renderer->renderFeature( fet, context, -1, sel, drawMarker );
+      }
+      else
+      {
+        rendered = renderer->willRenderFeature( fet, context );
+      }
 
       // labeling - register feature
       if ( rendered )
@@ -573,11 +582,14 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
       continue;
     }
 
-    if ( !features.contains( sym ) )
+    if ( !context.testFlag( Qgis::RenderContextFlag::SkipSymbolRendering ) )
     {
-      features.insert( sym, QList<QgsFeature>() );
+      if ( !features.contains( sym ) )
+      {
+        features.insert( sym, QList<QgsFeature>() );
+      }
+      features[sym].append( fet );
     }
-    features[sym].append( fet );
 
     // new labeling engine
     if ( isMainRenderer && context.labelingEngine() && ( mLabelProvider || mDiagramProvider ) )
@@ -713,7 +725,22 @@ void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer *layer, QSet<QStrin
   {
     if ( layer->labelsEnabled() )
     {
-      mLabelProvider = layer->labeling()->provider( layer );
+      if ( context.labelSink() )
+      {
+        if ( const QgsRuleBasedLabeling *rbl = dynamic_cast<const QgsRuleBasedLabeling *>( layer->labeling() ) )
+        {
+          mLabelProvider = new QgsRuleBasedLabelSinkProvider( *rbl, layer, context.labelSink() );
+        }
+        else
+        {
+          QgsPalLayerSettings settings = layer->labeling()->settings();
+          mLabelProvider = new QgsLabelSinkProvider( layer, QString(), context.labelSink(), &settings );
+        }
+      }
+      else
+      {
+        mLabelProvider = layer->labeling()->provider( layer );
+      }
       if ( mLabelProvider )
       {
         engine2->addProvider( mLabelProvider );

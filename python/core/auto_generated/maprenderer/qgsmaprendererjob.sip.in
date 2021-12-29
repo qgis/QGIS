@@ -12,7 +12,6 @@
 
 
 
-
 class QgsMapRendererJob : QObject /Abstract/
 {
 %Docstring(signature="appended")
@@ -157,6 +156,8 @@ List of errors that happened during the rendering job - available when the rende
 Assign a cache to be used for reading and storing rendered images of individual layers.
 Does not take ownership of the object.
 %End
+
+
 
     int renderingTime() const;
 %Docstring
