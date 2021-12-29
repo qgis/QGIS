@@ -64,6 +64,7 @@ dnf install -y --nogpgcheck \
   mingw64-spatialindex \
   mingw64-sqlite \
   mingw64-svg2svgt \
+  mingw64-yarn \
   mingw64-zstd \
   bison \
   cmake \
@@ -81,5 +82,4 @@ dnf install -y --nogpgcheck \
   sqlite-devel \
   wget \
   xorg-x11-server-Xvfb \
-  yarn \
   zip
