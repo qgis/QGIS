@@ -1,7 +1,6 @@
 #include "qgs3dviewsmanager.h"
 
 #include "qgs3dmapcanvasdockwidget.h"
-#include <QDebug>
 #include "qgsnewnamedialog.h"
 #include "qgisapp.h"
 
@@ -45,10 +44,10 @@ void Qgs3DViewsManager::duplicateClicked()
     return;
 
   QString existingViewName = mListModel.stringList()[ m3DViewsListView->selectionModel()->selectedRows().at( 0 ).row() ];
-  QString newViewName = existingViewName + "_";
+  QString newViewName = askUserForATitle( existingViewName, "Duplicate", false );
 
   QgisApp::instance()->duplicate3DMapView( existingViewName, newViewName );
-  reloadListModel();
+  reload();
 }
 
 void Qgs3DViewsManager::removeClicked()
@@ -61,7 +60,7 @@ void Qgs3DViewsManager::removeClicked()
   Qgs3DMapCanvasDockWidget *w = ( *m3DMapViewsWidgets )[ viewName ];
   m3DMapViewsWidgets->remove( viewName );
   w->close();
-  reloadListModel();
+  reload();
 }
 
 void Qgs3DViewsManager::renameClicked()
@@ -70,20 +69,10 @@ void Qgs3DViewsManager::renameClicked()
     return;
 
   QString oldTitle = mListModel.stringList()[ m3DViewsListView->selectionModel()->selectedRows().at( 0 ).row() ];
-  QString newTitle = oldTitle;
+  QString newTitle = askUserForATitle( oldTitle, "Rename", true );
 
-  QStringList notAllowedTitles = m3DMapViewsDom->keys();
-  notAllowedTitles.removeOne( oldTitle );
-  QgsNewNameDialog dlg( QStringLiteral( "3D view" ), newTitle, QStringList(), notAllowedTitles, Qt::CaseSensitive, this );
-  dlg.setWindowTitle( QStringLiteral( "Rename 3D Map View" ) );
-  dlg.setHintString( QStringLiteral( "Enter a unique 3D map view title" ) );
-  dlg.setOverwriteEnabled( false );
-  dlg.setAllowEmptyName( false );
-  dlg.setConflictingNameWarning( tr( "Title already exists!" ) );
-
-  if ( dlg.exec() != QDialog::Accepted )
+  if ( newTitle.isEmpty() )
     return;
-  newTitle = dlg.name();
 
   QDomElement dom = m3DMapViewsDom->value( oldTitle );
   Qgs3DMapCanvasDockWidget *widget = m3DMapViewsWidgets->value( oldTitle, nullptr );
@@ -96,7 +85,7 @@ void Qgs3DViewsManager::renameClicked()
     m3DMapViewsWidgets->insert( newTitle, widget );
     widget->setName( newTitle );
   }
-  reloadListModel();
+  reload();
 }
 
 void Qgs3DViewsManager::reload()
@@ -104,21 +93,36 @@ void Qgs3DViewsManager::reload()
   if ( !m3DMapViewsDom || !m3DMapViewsWidgets )
     return;
 
-  reloadListModel();
+  mListModel.setStringList( m3DMapViewsDom->keys() );
 }
 
 void Qgs3DViewsManager::set3DMapViewsDom( QMap<QString, QDomElement> &mapViews3DDom )
 {
   m3DMapViewsDom = &mapViews3DDom;
-  reloadListModel();
+  reload();
 }
 
 void Qgs3DViewsManager::set3DMapViewsWidgets( QMap<QString, Qgs3DMapCanvasDockWidget *> &mapViews3DWidgets )
 {
   m3DMapViewsWidgets = &mapViews3DWidgets;
+  reload();
 }
 
-void Qgs3DViewsManager::reloadListModel()
+QString Qgs3DViewsManager::askUserForATitle( QString oldTitle, QString action, bool allowExistingTitle )
 {
-  mListModel.setStringList( m3DMapViewsDom->keys() );
+  QString newTitle = oldTitle;
+  QStringList notAllowedTitles = m3DMapViewsDom->keys();
+  if ( allowExistingTitle )
+    notAllowedTitles.removeOne( oldTitle );
+  QgsNewNameDialog dlg( QStringLiteral( "3D view" ), newTitle, QStringList(), notAllowedTitles, Qt::CaseSensitive, this );
+  dlg.setWindowTitle( QStringLiteral( "%1 3D Map View" ).arg( action ) );
+  dlg.setHintString( QStringLiteral( "Enter a unique 3D map view title" ) );
+  dlg.setOverwriteEnabled( false );
+  dlg.setAllowEmptyName( false );
+  dlg.setConflictingNameWarning( tr( "Title already exists!" ) );
+
+  if ( dlg.exec() != QDialog::Accepted )
+    return QString();
+  newTitle = dlg.name();
+  return newTitle;
 }
