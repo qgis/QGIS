@@ -1411,7 +1411,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Decrease raster gamma
-     * Valid for nom3DMapViewsDomn wms raster layers only.
+     * Valid for non wms raster layers only.
      * \since QGIS 3.16
      */
     void decreaseGamma();
@@ -2315,9 +2315,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void writeDockWidgetSettings( QDockWidget *dockWidget, QDomElement &elem );
 
+#ifdef HAVE_3D
+
     void read3DMapViewSettings( Qgs3DMapCanvasDockWidget *widget, QDomElement &elem3DMap );
 
     void write3DMapViewSettings( Qgs3DMapCanvasDockWidget *widget, QDomDocument &doc, QDomElement &elem3DMap );
+#endif
 
     QgsCoordinateReferenceSystem defaultCrsForNewLayers() const;
 
@@ -2720,8 +2723,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMap< QString, QToolButton * > mAnnotationItemGroupToolButtons;
     QAction *mAnnotationsItemInsertBefore = nullptr; // Used to insert annotation items at the appropriate location in the annotations toolbar
 
+#ifdef HAVE_3D
     QMap<QString, QDomElement> m3DMapViewsDom;
     QMap<QString, Qgs3DMapCanvasDockWidget *> m3DMapViewsWidgets;
+#endif
 
     class QgsCanvasRefreshBlocker
     {
