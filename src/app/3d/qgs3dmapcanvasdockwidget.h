@@ -51,6 +51,11 @@ class APP_EXPORT Qgs3DMapCanvasDockWidget : public QgsDockWidget
 
     Qgs3DMapToolMeasureLine *measurementLineTool() { return  mMapToolMeasureLine; }
 
+    void setName( const QString &name );
+
+  signals:
+    void widgetClosed( const QString &name );
+
   private slots:
     void resetView();
     void configure();
