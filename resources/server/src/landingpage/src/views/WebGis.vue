@@ -43,7 +43,12 @@
               @ready="setMap"
               style="z-index: 0"
               maxZoom="22"
+              :options="{attributionControl: false}"
             >
+              <l-control-attribution
+                position="bottomright"
+                :options="{prefix: false}"
+              ></l-control-attribution>
               <l-tile-layer
                 :visible="baseMap == 'openstreetmap'"
                 url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -79,7 +84,7 @@ import MapFooter from "@/components/MapFooter.vue";
 import LeftSidebar from "@/components/LeftSidebar.vue";
 import AttributeTable from "@/components/AttributeTable.vue";
 import Error from "@/components/Error.vue";
-import { LMap, LTileLayer } from "vue2-leaflet";
+import { LMap, LControlAttribution, LTileLayer } from "vue2-leaflet";
 import WmsSource from "@/js/WmsSource.js";
 import "leaflet/dist/leaflet.css";
 import { latLng, Polygon } from "leaflet";
@@ -105,6 +110,7 @@ export default {
   props: { projectId: String },
   components: {
     LMap,
+    LControlAttribution,
     LTileLayer,
     MapToolbar,
     MapFooter,
