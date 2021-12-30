@@ -73,6 +73,15 @@ class CORE_EXPORT QgsScaleCalculator
     double calculate( const QgsRectangle &mapExtent, double canvasWidth ) const;
 
     /**
+     * Calculate the image size in pixel (physical) units
+     * \param mapExtent QgsRectangle containing the current map extent
+     * \param scale Scale denominator, e.g. 1000.0 for a 1:1000 map
+     * \returns image size
+     * \since QGIS 3.24
+     */
+    QSizeF calculateImageSize( const QgsRectangle &mapExtent, double scale ) const;
+
+    /**
      * Calculate the distance between two points in geographic coordinates.
      * Used to calculate scale for map views with geographic (decimal degree)
      * data.
@@ -81,6 +90,9 @@ class CORE_EXPORT QgsScaleCalculator
     double calculateGeographicDistance( const QgsRectangle &mapExtent ) const;
 
   private:
+
+    //! Calculate the \a delta and \a conversionFactor values based on the provided \a mapExtent.
+    void calculateMetrics( const QgsRectangle &mapExtent, double &delta, double &conversionFactor ) const;
 
     //! dpi member
     double mDpi;
