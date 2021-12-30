@@ -57,9 +57,12 @@ void Qgs3DViewsManager::removeClicked()
 
   QString viewName = mListModel.stringList()[ m3DViewsListView->selectionModel()->selectedRows().at( 0 ).row() ];
   m3DMapViewsDom->remove( viewName );
-  Qgs3DMapCanvasDockWidget *w = ( *m3DMapViewsWidgets )[ viewName ];
-  m3DMapViewsWidgets->remove( viewName );
-  w->close();
+  Qgs3DMapCanvasDockWidget *w = m3DMapViewsWidgets->value( viewName, nullptr );
+  if ( w )
+  {
+    m3DMapViewsWidgets->remove( viewName );
+    w->close();
+  }
   reload();
 }
 
