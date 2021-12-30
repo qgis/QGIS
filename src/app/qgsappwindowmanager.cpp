@@ -71,8 +71,8 @@ QWidget *QgsAppWindowManager::openApplicationDialog( QgsAppWindowManager::Applic
         m3DMapViewsManagerDialog = new Qgs3DViewsManager( QgisApp::instance(), Qt::Window );
         m3DMapViewsManagerDialog->setAttribute( Qt::WA_DeleteOnClose );
       }
-//      m3DMapViewsManagerDialog->show();
-//      m3DMapViewsManagerDialog->activate();
+      m3DMapViewsManagerDialog->show();
+      m3DMapViewsManagerDialog->reload();
       return m3DMapViewsManagerDialog;
     }
   }
