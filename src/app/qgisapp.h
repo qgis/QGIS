@@ -434,9 +434,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     Qgs3DMapCanvasDockWidget *open3DMapView( const QString &name );
 
     /**
-     * Opens a second 3D view canvas for a 3D map view called \a name with the same configuration.
+     * Duplicates the 3D map view named \a existingViewName and adds it to the current project.
+     * The new 3D map view will be named \a newViewName
      */
-    Qgs3DMapCanvasDockWidget *duplicate3DMapView( const QString &name );
+    Qgs3DMapCanvasDockWidget *duplicate3DMapView( const QString &existingViewName, const QString &newViewName );
 
     /**
      * Duplicates a \a layout and adds it to the current project.

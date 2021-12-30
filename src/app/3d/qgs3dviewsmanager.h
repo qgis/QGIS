@@ -15,15 +15,18 @@ class Qgs3DViewsManager : public QDialog, private Ui::Qgs3DViewsManager
 
   public:
     explicit Qgs3DViewsManager( QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
-    ~Qgs3DViewsManager();
 
     void reload();
 
     void set3DMapViewsDom( QMap<QString, QDomElement> &mapViews3DDom );
     void set3DMapViewsWidgets( QMap<QString, Qgs3DMapCanvasDockWidget *> &mapViews3DWidgets );
+  private slots:
+    void openClicked();
+    void duplicateClicked();
+    void removeClicked();
+    void renameClicked();
   private:
     QStringListModel mListModel;
-    int mSelectedViewIndex = -1;
 
     QMap<QString, QDomElement> *m3DMapViewsDom = nullptr;
     QMap<QString, Qgs3DMapCanvasDockWidget *> *m3DMapViewsWidgets = nullptr;

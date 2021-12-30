@@ -38,7 +38,7 @@
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="QToolButton" name="mShowButton">
+    <widget class="QToolButton" name="mOpenButton">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
