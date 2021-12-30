@@ -15,9 +15,10 @@
 
 #include "qgs3dviewsmanager.h"
 
+#include "qgisapp.h"
 #include "qgs3dmapcanvasdockwidget.h"
 #include "qgsnewnamedialog.h"
-#include "qgisapp.h"
+#include "qgs3dmapcanvas.h"
 
 Qgs3DViewsManager::Qgs3DViewsManager( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
@@ -101,7 +102,8 @@ void Qgs3DViewsManager::renameClicked()
   {
     m3DMapViewsWidgets->remove( oldTitle );
     m3DMapViewsWidgets->insert( newTitle, widget );
-    widget->setName( newTitle );
+    widget->setWindowTitle( newTitle );
+    widget->mapCanvas3D()->setObjectName( newTitle );
   }
   reload();
 }
