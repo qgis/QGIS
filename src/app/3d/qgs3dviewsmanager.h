@@ -32,6 +32,8 @@ class Qgs3DViewsManager : public QDialog, private Ui::Qgs3DViewsManager
     QMap<QString, Qgs3DMapCanvasDockWidget *> *m3DMapViewsWidgets = nullptr;
 
     void reloadListModel();
+
+    QString askUserForATitle( QString oldTitle, QString action, bool allowExistingTitle );
 };
 
 #endif // QGS3DVIEWSMANAGER_H
