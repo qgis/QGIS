@@ -13968,7 +13968,7 @@ Qgs3DMapCanvasDockWidget *QgisApp::createNew3DMapCanvasDock( const QString &name
   map3DWidget->mapCanvas3D()->setTemporalController( mTemporalControllerWidget->temporalController() );
   m3DMapViewsWidgets[ name ] = map3DWidget;
 
-  connect( map3DWidget, &Qgs3DMapCanvasDockWidget::widgetClosed, [&]( const QString & name )
+  connect( map3DWidget, &Qgs3DMapCanvasDockWidget::closed, [ &, name]()
   {
     m3DMapViewsWidgets.remove( name );
   } );
