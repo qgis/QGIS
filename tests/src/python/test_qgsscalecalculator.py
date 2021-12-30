@@ -21,7 +21,7 @@ from qgis.testing import start_app, unittest
 start_app()
 
 
-class TestQgsScaleWidget(unittest.TestCase):
+class TestQgsScaleCalculator(unittest.TestCase):
 
     def testCalculateImageSize(self):
         calculator = QgsScaleCalculator()
