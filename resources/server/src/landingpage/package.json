@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build --no-module",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
@@ -18,18 +18,18 @@
     "vuex": "^3.5.1"
   },
   "devDependencies": {
-    "@vue/cli": "^4.4.6",
-    "@vue/cli-plugin-babel": "^4.4.6",
-    "@vue/cli-plugin-eslint": "^4.4.6",
-    "@vue/cli-service": "^4.4.6",
+    "@vue/cli": "~5.0.0-rc.1",
+    "@vue/cli-plugin-babel": "~5.0.0-rc.1",
+    "@vue/cli-plugin-eslint": "~5.0.0-rc.1",
+    "@vue/cli-service": "~5.0.0-rc.1",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.6.0",
     "eslint-plugin-vue": "^6.2.2",
-    "sass": "^1.26.10",
+    "sass": "~1.26.10",
     "sass-loader": "^9.0.3",
-    "vue-cli-plugin-vuetify": "^2.0.7",
+    "vue-cli-plugin-vuetify": "~2.4.5",
     "vue-template-compiler": "^2.6.11",
-    "vuetify-loader": "^1.6.0"
+    "vuetify-loader": "^1.7.3"
   },
   "eslintConfig": {
     "root": true,
