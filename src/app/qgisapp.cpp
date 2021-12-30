@@ -9912,8 +9912,10 @@ Qgs3DMapCanvasDockWidget *QgisApp::open3DMapView( const QString &mapName )
   m3DMapViewsWidgets[ mapName ] = mapCanvasDock3D;
 
   return mapCanvasDock3D;
-#endif
+#else
+  Q_UNUSED( mapName );
   return nullptr;
+#endif
 }
 
 Qgs3DMapCanvasDockWidget *QgisApp::duplicate3DMapView( const QString &existingViewName, const QString &newViewName )
@@ -9951,8 +9953,11 @@ Qgs3DMapCanvasDockWidget *QgisApp::duplicate3DMapView( const QString &existingVi
   read3DMapViewSettings( mapCanvasDock3D, elem3DMap );
 
   return mapCanvasDock3D;
-#endif
+#else
+  Q_UNUSED( existingViewName )
+  Q_UNUSED( newViewName )
   return nullptr;
+#endif
 }
 
 void QgisApp::setupDuplicateFeaturesAction()
@@ -10043,6 +10048,7 @@ void QgisApp::populateLayoutsMenu( QMenu *menu )
 
 void QgisApp::populate3DMapviewsMenu( QMenu *menu )
 {
+#ifdef HAVE_3D
   menu->clear();
   QList<QAction *> acts;
   const QList< QString > views = m3DMapViewsDom.keys();
@@ -10063,6 +10069,9 @@ void QgisApp::populate3DMapviewsMenu( QMenu *menu )
   }
   acts << mActionNew3DMapCanvas << mActionManage3DMapViews;
   menu->addActions( acts );
+#else
+  Q_UNUSED( menu );
+#endif
 }
 
 void QgisApp::views3DMenuAboutToShow()
@@ -13595,11 +13604,13 @@ void QgisApp::showLayoutManager()
 
 void QgisApp::show3DMapViewsManager()
 {
+#ifdef HAVE_3D
   QWidget *dialog = static_cast< QgsAppWindowManager * >( QgsGui::windowManager() )->openApplicationDialog( QgsAppWindowManager::Dialog3DMapViewsManager );
   Qgs3DViewsManager *manager = dynamic_cast< Qgs3DViewsManager *>( dialog );
   manager->set3DMapViewsDom( m3DMapViewsDom );
   manager->set3DMapViewsWidgets( m3DMapViewsWidgets );
   manager->show();
+#endif
 }
 
 QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const QString &name, const QString &providerKey )
@@ -13850,7 +13861,7 @@ void QgisApp::init3D()
   Qgs3D::initialize();
   Qgs3DAppUtils::initialize();
 #else
-  mActionNew3DMapCanvas->setVisible( false );
+  m3DMapViewsMenu->menuAction()->setVisible( false );
 #endif
 }
 
@@ -13971,6 +13982,7 @@ Qgs3DMapCanvasDockWidget *QgisApp::createNew3DMapCanvasDock( const QString &name
 
 Qgs3DMapCanvasDockWidget *QgisApp::createInitialized3DMapCanvasDock( const QString &name )
 {
+#ifdef HAVE_3D
   Qgs3DMapCanvasDockWidget *dock = createNew3DMapCanvasDock( name );
   if ( dock )
   {
@@ -14038,6 +14050,10 @@ Qgs3DMapCanvasDockWidget *QgisApp::createInitialized3DMapCanvasDock( const QStri
     m3DMapViewsWidgets[ name ] = dock;
   }
   return dock;
+#else
+  Q_UNUSED( name )
+  return nullptr;
+#endif
 }
 
 void QgisApp::setExtent( const QgsRectangle &rect )
@@ -16627,6 +16643,7 @@ void QgisApp::projectChanged( const QDomDocument &doc )
   QgsPythonRunner::run( expr );
 }
 
+#ifdef HAVE_3D
 void QgisApp::write3DMapViewSettings( Qgs3DMapCanvasDockWidget *w, QDomDocument &doc, QDomElement &elem3DMap )
 {
   QgsReadWriteContext readWriteContext;
@@ -16686,6 +16703,7 @@ void QgisApp::read3DMapViewSettings( Qgs3DMapCanvasDockWidget *w, QDomElement &e
     w->animationWidget()->setAnimation( animationSettings );
   }
 }
+#endif
 
 void QgisApp::writeProject( QDomDocument &doc )
 {
