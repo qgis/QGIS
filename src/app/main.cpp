@@ -1654,7 +1654,7 @@ int main( int argc, char *argv[] )
   UnixSignalWatcher sigwatch;
   sigwatch.watchForSignal( SIGINT );
 
-  QObject::connect( &sigwatch, &UnixSignalWatcher::unixSignal, &myApp, [&myApp ]( int signal )
+  QObject::connect( &sigwatch, &UnixSignalWatcher::unixSignal, &myApp, [ ]( int signal )
   {
     switch ( signal )
     {
