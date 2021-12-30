@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1277</width>
-     <height>24</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -93,7 +93,7 @@
     </property>
     <widget class="QMenu" name="m3DMapViewsMenu">
      <property name="title">
-      <string>&amp;3D map views</string>
+      <string>&amp;3D Map Views</string>
      </property>
      <addaction name="mActionNew3DMapCanvas"/>
      <addaction name="mActionManage3DMapViews"/>
@@ -3615,7 +3615,7 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
      <normaloff>:/images/themes/default/mActionNew3DMap.svg</normaloff>:/images/themes/default/mActionNew3DMap.svg</iconset>
    </property>
    <property name="text">
-    <string>New &amp;3D Map Views</string>
+    <string>New &amp;3D Map View</string>
    </property>
    <property name="toolTip">
     <string>New 3D Map View</string>

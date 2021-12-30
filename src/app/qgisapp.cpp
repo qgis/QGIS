@@ -13894,7 +13894,6 @@ void QgisApp::initLayouts()
 void QgisApp::new3DMapCanvas()
 {
 #ifdef HAVE_3D
-
   // initialize from project
   QgsRectangle fullExtent = mMapCanvas->projectExtent();
 
@@ -13932,9 +13931,6 @@ void QgisApp::new3DMapCanvas()
   }
 
   createInitialized3DMapCanvasDock( name );
-  QWidget *dialog = static_cast< QgsAppWindowManager * >( QgsGui::windowManager() )->openApplicationDialog( QgsAppWindowManager::Dialog3DMapViewsManager );
-  Qgs3DViewsManager *manager = dynamic_cast< Qgs3DViewsManager *>( dialog );
-  manager->reload();
 #endif
 }
 
@@ -16879,7 +16875,7 @@ void QgisApp::readProject( const QDomDocument &doc )
 
       elem3DMap = elem3DMap.nextSiblingElement( QStringLiteral( "view" ) );
     }
-    for ( QString viewName : m3DMapViewsDom.keys() )
+    for ( QString viewName : m3DMapViewsWidgets.keys() )
     {
       readDockWidgetSettings( m3DMapViewsWidgets[ viewName ], m3DMapViewsDom[ viewName ] );
     }

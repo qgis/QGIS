@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>3D Map Views Manager</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
    <item row="0" column="0" colspan="4">
@@ -46,7 +46,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>&amp;Open</string>
+      <string>&amp;Open...</string>
      </property>
     </widget>
    </item>

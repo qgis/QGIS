@@ -44,7 +44,7 @@ void Qgs3DViewsManager::duplicateClicked()
     return;
 
   QString existingViewName = mListModel.stringList()[ m3DViewsListView->selectionModel()->selectedRows().at( 0 ).row() ];
-  QString newViewName = askUserForATitle( existingViewName, "Duplicate", false );
+  QString newViewName = askUserForATitle( existingViewName, tr( "Duplicate" ), false );
 
   QgisApp::instance()->duplicate3DMapView( existingViewName, newViewName );
   reload();
@@ -69,7 +69,7 @@ void Qgs3DViewsManager::renameClicked()
     return;
 
   QString oldTitle = mListModel.stringList()[ m3DViewsListView->selectionModel()->selectedRows().at( 0 ).row() ];
-  QString newTitle = askUserForATitle( oldTitle, "Rename", true );
+  QString newTitle = askUserForATitle( oldTitle, tr( "Rename" ), true );
 
   if ( newTitle.isEmpty() )
     return;
@@ -114,9 +114,9 @@ QString Qgs3DViewsManager::askUserForATitle( QString oldTitle, QString action, b
   QStringList notAllowedTitles = m3DMapViewsDom->keys();
   if ( allowExistingTitle )
     notAllowedTitles.removeOne( oldTitle );
-  QgsNewNameDialog dlg( QStringLiteral( "3D view" ), newTitle, QStringList(), notAllowedTitles, Qt::CaseSensitive, this );
-  dlg.setWindowTitle( QStringLiteral( "%1 3D Map View" ).arg( action ) );
-  dlg.setHintString( QStringLiteral( "Enter a unique 3D map view title" ) );
+  QgsNewNameDialog dlg( tr( "3D view" ), newTitle, QStringList(), notAllowedTitles, Qt::CaseSensitive, this );
+  dlg.setWindowTitle( tr( "%1 3D Map View" ).arg( action ) );
+  dlg.setHintString( tr( "Enter a unique 3D map view title" ) );
   dlg.setOverwriteEnabled( false );
   dlg.setAllowEmptyName( false );
   dlg.setConflictingNameWarning( tr( "Title already exists!" ) );
