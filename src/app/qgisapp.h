@@ -321,6 +321,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Populates a menu with actions for opening layout designers
     void populateLayoutsMenu( QMenu *menu );
 
+    //! Populates a menu with actions for 3D views
+    void populate3DMapviewsMenu( QMenu *menu );
+
     //! Setup the toolbar popup menus for a given theme
     void setupToolbarPopups( QString themeName );
     //! Returns a pointer to the internal clipboard
@@ -424,6 +427,16 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * If a designer already exists for this layout then it will be activated.
      */
     QgsLayoutDesignerDialog *openLayoutDesignerDialog( QgsMasterLayoutInterface *layout );
+
+    /**
+     * Opens a 3D view canvas for a 3D map view called \a name.
+     */
+    Qgs3DMapCanvasDockWidget *open3DMapView( const QString &name );
+
+    /**
+     * Opens a second 3D view canvas for a 3D map view called \a name with the same configuration.
+     */
+    Qgs3DMapCanvasDockWidget *duplicate3DMapView( const QString &name );
 
     /**
      * Duplicates a \a layout and adds it to the current project.
@@ -1247,6 +1260,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void showLayoutManager();
 
+    /**
+     * Shows the 3D map views manager dialog.
+     * \since QGIS 3.24
+     */
+    void show3DMapViewsManager();
+
     //! shows the snapping Options
     void snappingOptions();
 
@@ -1395,7 +1414,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Decrease raster gamma
-     * Valid for non wms raster layers only.
+     * Valid for nom3DMapViewsDomn wms raster layers only.
      * \since QGIS 3.16
      */
     void decreaseGamma();
@@ -1603,6 +1622,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Slot to handle display of layouts menu, e.g. sorting
     void layoutsMenuAboutToShow();
+
+    //! Slot to handle display of 3D views menu
+    void views3DMenuAboutToShow();
 
     //! Add all loaded layers into the overview - overrides qgisappbase method
     void addAllToOverview();
@@ -2248,6 +2270,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Creates a new 3D map dock without initializing its position or contents
     Qgs3DMapCanvasDockWidget *createNew3DMapCanvasDock( const QString &name );
 
+    //! Creates a new 3D map dock with its position and content initialized
+    Qgs3DMapCanvasDockWidget *createInitialized3DMapCanvasDock( const QString &name );
+
     //! Closes any existing 3D map docks
     void closeAdditional3DMapCanvases();
 
@@ -2303,6 +2328,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \sa readDockWidgetSettings()
      */
     void writeDockWidgetSettings( QDockWidget *dockWidget, QDomElement &elem );
+
+    void read3DMapViewSettings( Qgs3DMapCanvasDockWidget *widget, QDomElement &elem3DMap );
+
+    void write3DMapViewSettings( Qgs3DMapCanvasDockWidget *widget, QDomDocument &doc, QDomElement &elem3DMap );
 
     QgsCoordinateReferenceSystem defaultCrsForNewLayers() const;
 
@@ -2704,6 +2733,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QMap< QString, QToolButton * > mAnnotationItemGroupToolButtons;
     QAction *mAnnotationsItemInsertBefore = nullptr; // Used to insert annotation items at the appropriate location in the annotations toolbar
+
+    QMap<QString, QDomElement> m3DMapViewsDom;
+    QMap<QString, Qgs3DMapCanvasDockWidget *> m3DMapViewsWidgets;
 
     class QgsCanvasRefreshBlocker
     {

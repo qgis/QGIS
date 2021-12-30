@@ -326,6 +326,7 @@ if (WITH_3D)
     3d/qgsshadowrenderingsettingswidget.cpp
     3d/qgspointcloud3dsymbolwidget.cpp
     3d/qgspointcloudlayer3drendererwidget.cpp
+    3d/qgs3dviewsmanager.cpp
   )
 endif()
 

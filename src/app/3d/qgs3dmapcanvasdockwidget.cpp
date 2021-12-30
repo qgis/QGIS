@@ -213,6 +213,11 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
 
   setWidget( contentsWidget );
 
+  connect( this, &Qgs3DMapCanvasDockWidget::closed, [&]()
+  {
+    emit widgetClosed( this->windowTitle() );
+  } );
+
   onTotalPendingJobsCountChanged();
 }
 
@@ -474,4 +479,10 @@ void Qgs3DMapCanvasDockWidget::currentMapThemeRenamed( const QString &theme, con
   {
     mCanvas->map()->setTerrainMapTheme( newTheme );
   }
+}
+
+void Qgs3DMapCanvasDockWidget::setName( const QString &name )
+{
+  setWindowTitle( name );
+  mapCanvas3D()->setObjectName( name );
 }
