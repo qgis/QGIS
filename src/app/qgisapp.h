@@ -2271,9 +2271,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Creates a new 3D map dock without initializing its position or contents
     Qgs3DMapCanvasDockWidget *createNew3DMapCanvasDock( const QString &name );
 
-    //! Creates a new 3D map dock with its position and content initialized
-    Qgs3DMapCanvasDockWidget *createInitialized3DMapCanvasDock( const QString &name );
-
     //! Closes any existing 3D map docks
     void closeAdditional3DMapCanvases();
 
