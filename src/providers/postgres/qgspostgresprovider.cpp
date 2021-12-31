@@ -4376,7 +4376,7 @@ bool QgsPostgresProvider::convertField( QgsField &field, const QMap<QString, QVa
       if ( field.type() == QVariant::fromValue( QgsInterval() ).type() )
       {
         fieldType = QStringLiteral( "interval" );
-        fieldPrec = 0;
+        fieldPrec = 256;
       }
       break;
 
