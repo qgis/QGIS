@@ -326,6 +326,7 @@ void QgsMapRendererCustomPainterJob::doRender()
       mPainter->setOpacity( 1.0 );
     }
 
+    emit layerRendered( job.layerId );
   }
 
   QgsDebugMsgLevel( QStringLiteral( "Done rendering map layers" ), 5 );

@@ -128,6 +128,8 @@ bool QgsMapRendererStagedRenderJob::renderCurrentPart( QPainter *painter )
       painter->setOpacity( 1.0 );
     }
     job.context()->setPainter( nullptr );
+
+    emit layerRendered( job.layerId );
   }
   else
   {
