@@ -191,7 +191,7 @@ class CORE_EXPORT QgsCadUtils
         /**
          * Sets the queue of locked vertices.
          *
-         * The use of QgsPointLocator::Match allows to keep more context than a QgsPoint.
+         * Point locator matches are stored instead of vertices to keep more context.
          *
          * \see lockedSnapVertices()
          * \since QGIS 3.24

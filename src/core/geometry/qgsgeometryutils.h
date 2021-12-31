@@ -95,9 +95,10 @@ class CORE_EXPORT QgsGeometryUtils
 
     /**
      * Returns the distance between a point and an infinite line.
-     * \param point Point to find the distance to the line
-     * \param linePoint1 First point of the line
-     * \param linePoint2 Second point of the line
+     * \param point The point to find the distance to the line
+     * \param linePoint1 The first point of the line
+     * \param linePoint2 The second point of the line
+     * \param epsilon The tolerance to use
      * \since QGIS 3.24
      */
     static double distToInfiniteLine( const QgsPoint &point, const QgsPoint &linePoint1, const QgsPoint &linePoint2, double epsilon = 1e-7 );
