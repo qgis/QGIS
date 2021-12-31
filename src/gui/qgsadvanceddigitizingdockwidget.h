@@ -973,6 +973,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 #endif
     //! Convenient method to convert a 2D Point to a QgsPoint
     QgsPoint pointXYToPoint( const QgsPointXY &point ) const;
+
+    friend class TestQgsAdvancedDigitizing;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAdvancedDigitizingDockWidget::CadCapacities )
