@@ -295,6 +295,8 @@ void QgsMapRendererCustomPainterJob::doRender()
     if ( job.context()->renderingStopped() )
       break;
 
+    emit layerRenderingStarted( job.layerId );
+
     if ( ! hasSecondPass && job.context()->useAdvancedEffects() )
     {
       // Set the QPainter composition mode so that this layer is rendered using

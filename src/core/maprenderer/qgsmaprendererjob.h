@@ -431,6 +431,16 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
      */
     void renderingLayersFinished();
 
+
+    /**
+     * Emitted just before rendering starts for a particular layer.
+     *
+     * \note the QgsMapRendererParallelJob subclass does not emit this signal.
+     *
+     * \since QGIS 3.24
+     */
+    void layerRenderingStarted( const QString &layerId );
+
     /**
      * Emitted when a layer has completed rendering.
      *
