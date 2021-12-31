@@ -71,6 +71,7 @@ void QgsMapRendererSequentialJob::startPrivate()
 
   connect( mInternalJob, &QgsMapRendererJob::finished, this, &QgsMapRendererSequentialJob::internalFinished );
   connect( mInternalJob, &QgsMapRendererJob::layerRendered, this, &QgsMapRendererSequentialJob::layerRendered );
+  connect( mInternalJob, &QgsMapRendererJob::layerRenderingStarted, this, &QgsMapRendererSequentialJob::layerRenderingStarted );
 
   mInternalJob->start();
 }
