@@ -513,7 +513,11 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      */
     double getLineM( ) const;
 
-    CadCapacities getCapacities() const { return mCapacities; };
+    /**
+     * Returns the capacities
+     * \since QGIS 3.24
+     */
+    CadCapacities capacities() const { return mCapacities; };
 
   signals:
 
