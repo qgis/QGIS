@@ -51,6 +51,7 @@ class GUI_EXPORT QgsAdvancedDigitizingCanvasItem : public QgsMapCanvasItem
     explicit QgsAdvancedDigitizingCanvasItem( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
 
     void paint( QPainter *painter ) override;
+    void updatePosition() override;
 
   private:
     QPen mLockedPen;

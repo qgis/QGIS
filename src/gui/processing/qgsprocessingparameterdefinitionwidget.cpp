@@ -75,7 +75,7 @@ QgsProcessingParameterDefinitionWidget::QgsProcessingParameterDefinitionWidget( 
   : QWidget( parent )
   , mType( type )
 {
-  mDefinitionWidget = QgsGui::instance()->processingGuiRegistry()->createParameterDefinitionWidget( type, context, widgetContext, definition, algorithm );
+  mDefinitionWidget = QgsGui::processingGuiRegistry()->createParameterDefinitionWidget( type, context, widgetContext, definition, algorithm );
 
   QVBoxLayout *vlayout = new QVBoxLayout();
 

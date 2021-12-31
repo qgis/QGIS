@@ -341,7 +341,7 @@ void QgsCodeEditor::insertText( const QString &text )
 
 QColor QgsCodeEditor::defaultColor( QgsCodeEditorColorScheme::ColorRole role, const QString &theme )
 {
-  if ( theme.isEmpty() && QgsApplication::instance()->themeName() == QLatin1String( "default" ) )
+  if ( theme.isEmpty() && QgsApplication::themeName() == QLatin1String( "default" ) )
   {
     // if using default theme, take certain colors from the palette
     const QPalette pal = qApp->palette();
@@ -359,7 +359,7 @@ QColor QgsCodeEditor::defaultColor( QgsCodeEditorColorScheme::ColorRole role, co
   else if ( theme.isEmpty() )
   {
     // non default theme (e.g. Blend of Gray). Take colors from theme ini file...
-    const QSettings ini( QgsApplication::instance()->uiThemes().value( QgsApplication::instance()->themeName() ) + "/qscintilla.ini", QSettings::IniFormat );
+    const QSettings ini( QgsApplication::uiThemes().value( QgsApplication::themeName() ) + "/qscintilla.ini", QSettings::IniFormat );
 
     static const QMap< QgsCodeEditorColorScheme::ColorRole, QString > sColorRoleToIniKey
     {

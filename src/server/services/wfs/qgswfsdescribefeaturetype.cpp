@@ -322,9 +322,8 @@ namespace QgsWfs
       const QgsEditorWidgetSetup setup = field.editorWidgetSetup();
       if ( setup.type() ==  QStringLiteral( "DateTime" ) )
       {
-        const QgsDateTimeFieldFormatter fieldFormatter;
         const QVariantMap config = setup.config();
-        const QString fieldFormat = config.value( QStringLiteral( "field_format" ), fieldFormatter.defaultFormat( field.type() ) ).toString();
+        const QString fieldFormat = config.value( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( field.type() ) ).toString();
         if ( fieldFormat == QLatin1String( "yyyy-MM-dd" ) )
           attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "date" ) );
         else if ( fieldFormat == QLatin1String( "HH:mm:ss" ) )

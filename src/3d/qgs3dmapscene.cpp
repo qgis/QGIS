@@ -145,7 +145,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   connect( &map, &Qgs3DMapSettings::fpsCounterEnabledChanged, this, &Qgs3DMapScene::fpsCounterEnabledChanged );
   connect( &map, &Qgs3DMapSettings::cameraMovementSpeedChanged, this, &Qgs3DMapScene::onCameraMovementSpeedChanged );
 
-  connect( QgsApplication::instance()->sourceCache(), &QgsSourceCache::remoteSourceFetched, this, [ = ]( const QString & url )
+  connect( QgsApplication::sourceCache(), &QgsSourceCache::remoteSourceFetched, this, [ = ]( const QString & url )
   {
     const QList<QgsMapLayer *> modelVectorLayers = mModelVectorLayers;
     for ( QgsMapLayer *layer : modelVectorLayers )
@@ -1085,6 +1085,7 @@ void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
       case QgsMapLayerType::VectorTileLayer:
       case QgsMapLayerType::AnnotationLayer:
       case QgsMapLayerType::PointCloudLayer:
+      case QgsMapLayerType::GroupLayer:
         notParsedLayers.push_back( layer->name() );
         break;
     }

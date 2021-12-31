@@ -58,7 +58,7 @@ void QgsMssqlDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
     connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
     menu->addAction( actionEdit );
 
-    QAction *actionDelete = new QAction( tr( "Delete Connection" ), menu );
+    QAction *actionDelete = new QAction( tr( "Remove Connection" ), menu );
     connect( actionDelete, &QAction::triggered, this, [connItem] { deleteConnection( connItem ); } );
     menu->addAction( actionDelete );
 
@@ -181,8 +181,8 @@ void QgsMssqlDataItemGuiProvider::editConnection( QgsDataItem *item )
 
 void QgsMssqlDataItemGuiProvider::deleteConnection( QgsDataItem *item )
 {
-  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Connection" ),
-                              QObject::tr( "Are you sure you want to delete the connection to %1?" ).arg( item->name() ),
+  if ( QMessageBox::question( nullptr, QObject::tr( "Remove Connection" ),
+                              QObject::tr( "Are you sure you want to remove the connection to %1?" ).arg( item->name() ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 

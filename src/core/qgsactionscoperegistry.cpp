@@ -23,8 +23,8 @@ QgsActionScopeRegistry::QgsActionScopeRegistry( QObject *parent )
   // Register some default action scopes:
 
   QgsExpressionContextScope canvasScope;
-  canvasScope.addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "clicked_x" ), 25, true ) );
-  canvasScope.addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "clicked_y" ), 30, true ) );
+  canvasScope.addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "click_x" ), 25, true ) );
+  canvasScope.addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "click_y" ), 30, true ) );
   mActionScopes.insert( QgsActionScope( QStringLiteral( "Canvas" ), tr( "Canvas" ), tr( "Available for the action map tool on the canvas." ), canvasScope ) );
 
   QgsExpressionContextScope fieldScope;

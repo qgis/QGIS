@@ -128,6 +128,15 @@ Check if the layer is supported for this widget.
 :return: ``True`` if this layer is supported for this widget
 %End
 
+    virtual bool supportsLayerTreeGroup( QgsLayerTreeGroup *group ) const;
+%Docstring
+Check if a layer tree group is supported for this widget.
+
+:return: ``True`` if the group is supported for this widget
+
+.. versionadded:: 3.24
+%End
+
     virtual ParentPage parentPage() const;
 %Docstring
 Returns the associated parent page, for factories which create sub-components of a standard page.

@@ -594,11 +594,11 @@ Returns the transaction this data provider is included in, if any.
 Gets the list of layer ids on which this layer depends. This in particular determines the order of layer loading.
 %End
 
-    virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const;
+    virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const;
 %Docstring
 Discover the available relations with the given layers.
 
-:param self: the layer using this data provider.
+:param target: the layer using this data provider.
 :param layers: the other layers.
 
 :return: the list of N-1 relations from this provider.

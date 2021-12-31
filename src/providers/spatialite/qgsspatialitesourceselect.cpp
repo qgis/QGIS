@@ -48,7 +48,7 @@ email                : a.furieri@lqt.it
 QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode ):
   QgsAbstractDbSourceSelect( parent, fl, theWidgetMode )
 {
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   connect( btnConnect, &QPushButton::clicked, this, &QgsSpatiaLiteSourceSelect::btnConnect_clicked );
   connect( btnNew, &QPushButton::clicked, this, &QgsSpatiaLiteSourceSelect::btnNew_clicked );
@@ -219,8 +219,8 @@ bool QgsSpatiaLiteSourceSelect::newConnection( QWidget *parent )
 
   // inserting this SQLite DB path
   QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "spatialite" ) );
-  QgsSpatiaLiteProviderConnection *providerConnection =  static_cast<QgsSpatiaLiteProviderConnection *>( providerMetadata->createConnection( dsUri.uri(), QVariantMap() ) );
-  providerMetadata->saveConnection( providerConnection, savedName );
+  std::unique_ptr< QgsSpatiaLiteProviderConnection > providerConnection( qgis::down_cast<QgsSpatiaLiteProviderConnection *>( providerMetadata->createConnection( dsUri.uri(), QVariantMap() ) ) );
+  providerMetadata->saveConnection( providerConnection.get(), savedName );
   return true;
 }
 

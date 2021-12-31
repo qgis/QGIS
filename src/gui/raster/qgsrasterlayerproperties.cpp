@@ -67,6 +67,7 @@
 #include "qgsrasterlayertemporalproperties.h"
 #include "qgsdoublevalidator.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
+#include "qgsprojectutils.h"
 
 #include "qgsrasterlayertemporalpropertieswidget.h"
 #include "qgsprojecttimesettings.h"
@@ -233,6 +234,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
     return;
   }
 
+  mBackupCrs = mRasterLayer->crs();
+
   // Handles window modality raising canvas
   if ( mMapCanvas && mRasterTransparencyWidget->pixelSelectorTool() )
   {
@@ -385,6 +388,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   }
 
   //blend mode
+  mBlendModeComboBox->setShowClippingModes( QgsProjectUtils::layerIsContainedInGroupLayer( QgsProject::instance(), mRasterLayer ) );
   mBlendModeComboBox->setBlendMode( mRasterLayer->blendMode() );
 
   //transparency band
@@ -881,6 +885,7 @@ void QgsRasterLayerProperties::apply()
     mRasterLayer->setRenderer( rendererWidget->renderer() );
   }
 
+  mBackupCrs = mRasterLayer->crs();
   mMetadataWidget->acceptMetadata();
   mMetadataFilled = false;
 
@@ -1158,7 +1163,7 @@ void QgsRasterLayerProperties::urlClicked( const QUrl &url )
 {
   QFileInfo file( url.toLocalFile() );
   if ( file.exists() && !file.isDir() )
-    QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
+    QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
   else
     QDesktopServices::openUrl( url );
 }
@@ -1796,6 +1801,8 @@ void QgsRasterLayerProperties::onCancel()
     mRasterLayer->importNamedStyle( doc, myMessage );
     syncToLayer();
   }
+  if ( mBackupCrs != mRasterLayer->crs() )
+    mRasterLayer->setCrs( mBackupCrs );
 }
 
 void QgsRasterLayerProperties::showHelp()

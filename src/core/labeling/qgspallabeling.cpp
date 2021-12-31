@@ -271,7 +271,7 @@ void QgsPalLayerSettings::initPropertyDefinitions()
 Q_NOWARN_DEPRECATED_PUSH // because of deprecated members
 QgsPalLayerSettings::QgsPalLayerSettings()
   : predefinedPositionOrder( *DEFAULT_PLACEMENT_ORDER() )
-  , mCallout( QgsApplication::calloutRegistry()->defaultCallout() )
+  , mCallout( QgsCalloutRegistry::defaultCallout() )
 {
   initPropertyDefinitions();
 
@@ -1170,12 +1170,12 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   // TODO - replace with registry when multiple callout styles exist
   const QString calloutType = elem.attribute( QStringLiteral( "calloutType" ) );
   if ( calloutType.isEmpty() )
-    mCallout.reset( QgsApplication::calloutRegistry()->defaultCallout() );
+    mCallout.reset( QgsCalloutRegistry::defaultCallout() );
   else
   {
     mCallout.reset( QgsApplication::calloutRegistry()->createCallout( calloutType, elem.firstChildElement( QStringLiteral( "callout" ) ), context ) );
     if ( !mCallout )
-      mCallout.reset( QgsApplication::calloutRegistry()->defaultCallout() );
+      mCallout.reset( QgsCalloutRegistry::defaultCallout() );
   }
 }
 
@@ -1355,15 +1355,20 @@ QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettin
   context.setPainter( &painter );
 
   // slightly inset text to account for buffer/background
+  const double fontSize = context.convertToPainterUnits( tempFormat.size(), tempFormat.sizeUnit(), tempFormat.sizeMapUnitScale() );
   double xtrans = 0;
   if ( tempFormat.buffer().enabled() )
-    xtrans = context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() );
+    xtrans = tempFormat.buffer().sizeUnit() == QgsUnitTypes::RenderPercentage
+             ? fontSize * tempFormat.buffer().size() / 100
+             : context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() );
   if ( tempFormat.background().enabled() && tempFormat.background().sizeType() != QgsTextBackgroundSettings::SizeFixed )
     xtrans = std::max( xtrans, context.convertToPainterUnits( tempFormat.background().size().width(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
 
   double ytrans = 0.0;
   if ( tempFormat.buffer().enabled() )
-    ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() ) );
+    ytrans = std::max( ytrans, tempFormat.buffer().sizeUnit() == QgsUnitTypes::RenderPercentage
+                       ? fontSize * tempFormat.buffer().size() / 100
+                       : context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() ) );
   if ( tempFormat.background().enabled() )
     ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat.background().size().height(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
 
@@ -3708,6 +3713,7 @@ bool QgsPalLabeling::staticWillUseLayer( const QgsMapLayer *layer )
     case QgsMapLayerType::MeshLayer:
     case QgsMapLayerType::PointCloudLayer:
     case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::GroupLayer:
       return false;
   }
   return false;

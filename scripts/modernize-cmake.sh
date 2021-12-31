@@ -9,6 +9,7 @@ CMAKE_PARSE_ARGUMENTS
 CMAKE_POLICY
 CONFIGURE_FILE
 CONTINUE
+ELSEIF
 ENDFOREACH
 ENDFUNCTION
 ENDMACRO
@@ -110,4 +111,4 @@ EOF
 echo $CMAKE_CMDS
 
 find . -iname CMakeLists.txt | xargs \
-gsed -i -r "s/\b((${CMAKE_CMDS}) *\()/\L\1/g; s/(ELSE|ENDIF|ELSEIF) *\(.*\)/\L\1()/"
+gsed -i -r "s/\b((${CMAKE_CMDS}) *\()/\L\1/g; s/(ELSE|ENDIF) *\(.*\)/\L\1()/"

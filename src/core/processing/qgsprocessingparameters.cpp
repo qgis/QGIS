@@ -985,6 +985,8 @@ QString QgsProcessingParameters::parameterAsOutputLayer( const QgsProcessingPara
       layerTypeHint = QgsProcessingUtils::LayerHint::Vector;
     else if ( definition && definition->type() == QgsProcessingParameterRasterDestination::typeName() )
       layerTypeHint = QgsProcessingUtils::LayerHint::Raster;
+    else if ( definition && definition->type() == QgsProcessingParameterPointCloudDestination::typeName() )
+      layerTypeHint = QgsProcessingUtils::LayerHint::PointCloud;
 
     context.addLayerToLoadOnCompletion( dest, QgsProcessingContext::LayerDetails( destName, destinationProject, outputName, layerTypeHint ) );
   }
@@ -2234,6 +2236,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantM
     def.reset( new QgsProcessingParameterVectorDestination( name ) );
   else if ( type == QgsProcessingParameterRasterDestination::typeName() )
     def.reset( new QgsProcessingParameterRasterDestination( name ) );
+  else if ( type == QgsProcessingParameterPointCloudDestination::typeName() )
+    def.reset( new QgsProcessingParameterPointCloudDestination( name ) );
   else if ( type == QgsProcessingParameterFileDestination::typeName() )
     def.reset( new QgsProcessingParameterFileDestination( name ) );
   else if ( type == QgsProcessingParameterFolderDestination::typeName() )
@@ -2256,7 +2260,7 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantM
     def.reset( new QgsProcessingParameterAnnotationLayer( name ) );
   else
   {
-    QgsProcessingParameterType *paramType = QgsApplication::instance()->processingRegistry()->parameterType( type );
+    QgsProcessingParameterType *paramType = QgsApplication::processingRegistry()->parameterType( type );
     if ( paramType )
       def.reset( paramType->create( name ) );
   }
@@ -2338,6 +2342,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromScriptCo
     return QgsProcessingParameterVectorDestination::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QLatin1String( "rasterdestination" ) )
     return QgsProcessingParameterRasterDestination::fromScriptCode( name, description, isOptional, definition );
+  else if ( type == QLatin1String( "pointclouddestination" ) )
+    return QgsProcessingParameterPointCloudDestination::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QLatin1String( "filedestination" ) )
     return QgsProcessingParameterFileDestination::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QLatin1String( "folderdestination" ) )
@@ -2441,6 +2447,406 @@ QString QgsProcessingParameterDefinition::valueAsPythonString( const QVariant &v
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
   return QgsProcessingUtils::stringToPythonLiteral( value.toString() );
+}
+
+QVariant QgsProcessingParameterDefinition::valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const
+{
+  if ( !value.isValid() )
+    return value;
+
+  // dive into map and list types and convert each value
+  if ( value.type() == QVariant::Type::Map )
+  {
+    const QVariantMap sourceMap = value.toMap();
+    QVariantMap resultMap;
+    for ( auto it = sourceMap.constBegin(); it != sourceMap.constEnd(); it++ )
+    {
+      resultMap[ it.key() ] = valueAsJsonObject( it.value(), context );
+    }
+    return resultMap;
+  }
+  else if ( value.type() == QVariant::Type::List || value.type() == QVariant::Type::StringList )
+  {
+    const QVariantList sourceList = value.toList();
+    QVariantList resultList;
+    resultList.reserve( sourceList.size() );
+    for ( const QVariant &v : sourceList )
+    {
+      resultList.push_back( valueAsJsonObject( v, context ) );
+    }
+    return resultList;
+  }
+  else
+  {
+    switch ( value.userType() )
+    {
+      // simple types which can be directly represented in JSON -- note that strings are NOT handled here yet!
+      case QMetaType::Bool:
+      case QMetaType::Char:
+      case QMetaType::Int:
+      case QMetaType::Double:
+      case QMetaType::Float:
+      case QMetaType::LongLong:
+      case QMetaType::ULongLong:
+      case QMetaType::UInt:
+      case QMetaType::ULong:
+      case QMetaType::UShort:
+        return value;
+
+      default:
+        break;
+    }
+
+
+    if ( value.userType() == QMetaType::type( "QgsProperty" ) )
+    {
+      const QgsProperty prop = value.value< QgsProperty >();
+      switch ( prop.propertyType() )
+      {
+        case QgsProperty::InvalidProperty:
+          return QVariant();
+        case QgsProperty::StaticProperty:
+          return valueAsJsonObject( prop.staticValue(), context );
+
+        // these are not supported for serialization
+        case QgsProperty::FieldBasedProperty:
+        case QgsProperty::ExpressionBasedProperty:
+          QgsDebugMsg( QStringLiteral( "could not convert expression/field based property to JSON object" ) );
+          return QVariant();
+      }
+    }
+
+    // value may be a CRS
+    if ( value.userType() == QMetaType::type( "QgsCoordinateReferenceSystem" ) )
+    {
+      const QgsCoordinateReferenceSystem crs = value.value< QgsCoordinateReferenceSystem >();
+      if ( !crs.isValid() )
+        return QString();
+      else if ( !crs.authid().isEmpty() )
+        return crs.authid();
+      else
+        return crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
+    }
+    else if ( value.userType() == QMetaType::type( "QgsRectangle" ) )
+    {
+      const QgsRectangle r = value.value<QgsRectangle>();
+      return QStringLiteral( "%1, %3, %2, %4" ).arg( qgsDoubleToString( r.xMinimum() ),
+             qgsDoubleToString( r.yMinimum() ),
+             qgsDoubleToString( r.xMaximum() ),
+             qgsDoubleToString( r.yMaximum() ) );
+    }
+    else if ( value.userType() == QMetaType::type( "QgsReferencedRectangle" ) )
+    {
+      const QgsReferencedRectangle r = value.value<QgsReferencedRectangle>();
+      return QStringLiteral( "%1, %3, %2, %4 [%5]" ).arg( qgsDoubleToString( r.xMinimum() ),
+             qgsDoubleToString( r.yMinimum() ),
+             qgsDoubleToString( r.xMaximum() ),
+             qgsDoubleToString( r.yMaximum() ),                                                                                                                             r.crs().authid() );
+    }
+    else if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
+    {
+      const QgsGeometry g = value.value<QgsGeometry>();
+      if ( !g.isNull() )
+      {
+        return g.asWkt();
+      }
+      else
+      {
+        return QString();
+      }
+    }
+    else if ( value.userType() == QMetaType::type( "QgsReferencedGeometry" ) )
+    {
+      const QgsReferencedGeometry g = value.value<QgsReferencedGeometry>();
+      if ( !g.isNull() )
+      {
+        if ( !g.crs().isValid() )
+          return g.asWkt();
+        else
+          return QStringLiteral( "CRS=%1;%2" ).arg( g.crs().authid().isEmpty() ? g.crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) : g.crs().authid(), g.asWkt() );
+      }
+      else
+      {
+        return QString();
+      }
+    }
+    else if ( value.userType() == QMetaType::type( "QgsPointXY" ) )
+    {
+      const QgsPointXY r = value.value<QgsPointXY>();
+      return QStringLiteral( "%1,%2" ).arg( qgsDoubleToString( r.x() ),
+                                            qgsDoubleToString( r.y() ) );
+    }
+    else if ( value.userType() == QMetaType::type( "QgsReferencedPointXY" ) )
+    {
+      const QgsReferencedPointXY r = value.value<QgsReferencedPointXY>();
+      return QStringLiteral( "%1,%2 [%3]" ).arg( qgsDoubleToString( r.x() ),
+             qgsDoubleToString( r.y() ),
+             r.crs().authid() );
+    }
+    else if ( value.userType() == QMetaType::type( "QgsProcessingFeatureSourceDefinition" ) )
+    {
+      const QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( value );
+
+      // TODO -- we could consider also serializating the additional properties like invalid feature handling, limits, etc
+      return valueAsJsonObject( fromVar.source, context );
+    }
+    else if ( value.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
+    {
+      const QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
+      return valueAsJsonObject( fromVar.sink, context );
+    }
+    else if ( value.userType() == QMetaType::type( "QColor" ) )
+    {
+      const QColor fromVar = value.value< QColor >();
+      if ( !fromVar.isValid() )
+        return QString();
+
+      return QStringLiteral( "rgba( %1, %2, %3, %4 )" ).arg( fromVar.red() ).arg( fromVar.green() ).arg( fromVar.blue() ).arg( QString::number( fromVar.alphaF(), 'f', 2 ) );
+    }
+    else if ( value.userType() == QMetaType::type( "QDateTime" ) )
+    {
+      const QDateTime fromVar = value.toDateTime();
+      if ( !fromVar.isValid() )
+        return QString();
+
+      return fromVar.toString( Qt::ISODate );
+    }
+    else if ( value.userType() == QMetaType::type( "QDate" ) )
+    {
+      const QDate fromVar = value.toDate();
+      if ( !fromVar.isValid() )
+        return QString();
+
+      return fromVar.toString( Qt::ISODate );
+    }
+    else if ( value.userType() == QMetaType::type( "QTime" ) )
+    {
+      const QTime fromVar = value.toTime();
+      if ( !fromVar.isValid() )
+        return QString();
+
+      return fromVar.toString( Qt::ISODate );
+    }
+
+    // value may be a map layer
+    QVariantMap p;
+    p.insert( name(), value );
+    if ( QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( this, p, context ) )
+    {
+      const QString source = QgsProcessingUtils::normalizeLayerSource( layer->source() );
+      if ( !source.isEmpty() )
+        return source;
+      return layer->id();
+    }
+
+    // now we handle strings, after any other specific logic has already been applied
+    if ( value.userType() == QMetaType::QString )
+      return value;
+  }
+
+  // unhandled type
+  Q_ASSERT_X( false, "QgsProcessingParameterDefinition::valueAsJsonObject", QStringLiteral( "unsupported variant type %1" ).arg( QMetaType::typeName( value.userType() ) ).toLocal8Bit() );
+  return value;
+}
+
+QString QgsProcessingParameterDefinition::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  ok = true;
+
+  if ( !value.isValid() )
+    return QString();
+
+  switch ( value.userType() )
+  {
+    // simple types which can be directly represented in JSON -- note that strings are NOT handled here yet!
+    case QMetaType::Bool:
+    case QMetaType::Char:
+    case QMetaType::Int:
+    case QMetaType::Double:
+    case QMetaType::Float:
+    case QMetaType::LongLong:
+    case QMetaType::ULongLong:
+    case QMetaType::UInt:
+    case QMetaType::ULong:
+    case QMetaType::UShort:
+      return value.toString();
+
+    default:
+      break;
+  }
+
+  if ( value.userType() == QMetaType::type( "QgsProperty" ) )
+  {
+    const QgsProperty prop = value.value< QgsProperty >();
+    switch ( prop.propertyType() )
+    {
+      case QgsProperty::InvalidProperty:
+        return QString();
+      case QgsProperty::StaticProperty:
+        return valueAsString( prop.staticValue(), context, ok );
+
+      // these are not supported for serialization
+      case QgsProperty::FieldBasedProperty:
+      case QgsProperty::ExpressionBasedProperty:
+        QgsDebugMsg( QStringLiteral( "could not convert expression/field based property to string" ) );
+        return QString();
+    }
+  }
+
+  // value may be a CRS
+  if ( value.userType() == QMetaType::type( "QgsCoordinateReferenceSystem" ) )
+  {
+    const QgsCoordinateReferenceSystem crs = value.value< QgsCoordinateReferenceSystem >();
+    if ( !crs.isValid() )
+      return QString();
+    else if ( !crs.authid().isEmpty() )
+      return crs.authid();
+    else
+      return crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
+  }
+  else if ( value.userType() == QMetaType::type( "QgsRectangle" ) )
+  {
+    const QgsRectangle r = value.value<QgsRectangle>();
+    return QStringLiteral( "%1, %3, %2, %4" ).arg( qgsDoubleToString( r.xMinimum() ),
+           qgsDoubleToString( r.yMinimum() ),
+           qgsDoubleToString( r.xMaximum() ),
+           qgsDoubleToString( r.yMaximum() ) );
+  }
+  else if ( value.userType() == QMetaType::type( "QgsReferencedRectangle" ) )
+  {
+    const QgsReferencedRectangle r = value.value<QgsReferencedRectangle>();
+    return QStringLiteral( "%1, %3, %2, %4 [%5]" ).arg( qgsDoubleToString( r.xMinimum() ),
+           qgsDoubleToString( r.yMinimum() ),
+           qgsDoubleToString( r.xMaximum() ),
+           qgsDoubleToString( r.yMaximum() ), r.crs().authid() );
+  }
+  else if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
+  {
+    const QgsGeometry g = value.value<QgsGeometry>();
+    if ( !g.isNull() )
+    {
+      return g.asWkt();
+    }
+    else
+    {
+      return QString();
+    }
+  }
+  else if ( value.userType() == QMetaType::type( "QgsReferencedGeometry" ) )
+  {
+    const QgsReferencedGeometry g = value.value<QgsReferencedGeometry>();
+    if ( !g.isNull() )
+    {
+      if ( !g.crs().isValid() )
+        return g.asWkt();
+      else
+        return QStringLiteral( "CRS=%1;%2" ).arg( g.crs().authid().isEmpty() ? g.crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) : g.crs().authid(), g.asWkt() );
+    }
+    else
+    {
+      return QString();
+    }
+  }
+  else if ( value.userType() == QMetaType::type( "QgsPointXY" ) )
+  {
+    const QgsPointXY r = value.value<QgsPointXY>();
+    return QStringLiteral( "%1,%2" ).arg( qgsDoubleToString( r.x() ),
+                                          qgsDoubleToString( r.y() ) );
+  }
+  else if ( value.userType() == QMetaType::type( "QgsReferencedPointXY" ) )
+  {
+    const QgsReferencedPointXY r = value.value<QgsReferencedPointXY>();
+    return QStringLiteral( "%1,%2 [%3]" ).arg( qgsDoubleToString( r.x() ),
+           qgsDoubleToString( r.y() ),
+           r.crs().authid() );
+  }
+  else if ( value.userType() == QMetaType::type( "QgsProcessingFeatureSourceDefinition" ) )
+  {
+    const QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( value );
+    return valueAsString( fromVar.source, context, ok );
+  }
+  else if ( value.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
+  {
+    const QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
+    return valueAsString( fromVar.sink, context, ok );
+  }
+  else if ( value.userType() == QMetaType::type( "QColor" ) )
+  {
+    const QColor fromVar = value.value< QColor >();
+    if ( !fromVar.isValid() )
+      return QString();
+
+    return QStringLiteral( "rgba( %1, %2, %3, %4 )" ).arg( fromVar.red() ).arg( fromVar.green() ).arg( fromVar.blue() ).arg( QString::number( fromVar.alphaF(), 'f', 2 ) );
+  }
+  else if ( value.userType() == QMetaType::type( "QDateTime" ) )
+  {
+    const QDateTime fromVar = value.toDateTime();
+    if ( !fromVar.isValid() )
+      return QString();
+
+    return fromVar.toString( Qt::ISODate );
+  }
+  else if ( value.userType() == QMetaType::type( "QDate" ) )
+  {
+    const QDate fromVar = value.toDate();
+    if ( !fromVar.isValid() )
+      return QString();
+
+    return fromVar.toString( Qt::ISODate );
+  }
+  else if ( value.userType() == QMetaType::type( "QTime" ) )
+  {
+    const QTime fromVar = value.toTime();
+    if ( !fromVar.isValid() )
+      return QString();
+
+    return fromVar.toString( Qt::ISODate );
+  }
+
+  // value may be a map layer
+  QVariantMap p;
+  p.insert( name(), value );
+  if ( QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( this, p, context ) )
+  {
+    const QString source = QgsProcessingUtils::normalizeLayerSource( layer->source() );
+    if ( !source.isEmpty() )
+      return source;
+    return layer->id();
+  }
+
+  // now we handle strings, after any other specific logic has already been applied
+  if ( value.userType() == QMetaType::QString )
+    return value.toString();
+
+  // unhandled type
+  QgsDebugMsg( QStringLiteral( "unsupported variant type %1" ).arg( QMetaType::typeName( value.userType() ) ) );
+  ok = false;
+  return value.toString();
+}
+
+QStringList QgsProcessingParameterDefinition::valueAsStringList( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  ok = true;
+  if ( !value.isValid( ) )
+    return QStringList();
+
+  if ( value.type() == QVariant::Type::List || value.type() == QVariant::Type::StringList )
+  {
+    const QVariantList sourceList = value.toList();
+    QStringList resultList;
+    resultList.reserve( sourceList.size() );
+    for ( const QVariant &v : sourceList )
+    {
+      resultList.append( valueAsStringList( v, context, ok ) );
+    }
+    return resultList;
+  }
+
+  const QString res = valueAsString( value, context, ok );
+  if ( !ok )
+    return QStringList();
+
+  return {res};
 }
 
 QString QgsProcessingParameterDefinition::valueAsPythonComment( const QVariant &, QgsProcessingContext & ) const
@@ -8375,3 +8781,124 @@ QgsProcessingParameterAnnotationLayer *QgsProcessingParameterAnnotationLayer::fr
   return new QgsProcessingParameterAnnotationLayer( name, description,  definition.isEmpty() ? QVariant() : definition, isOptional );
 }
 
+QgsProcessingParameterPointCloudDestination::QgsProcessingParameterPointCloudDestination( const QString &name, const QString &description, const QVariant &defaultValue, bool optional, bool createByDefault )
+  : QgsProcessingDestinationParameter( name, description, defaultValue, optional, createByDefault )
+{
+}
+
+QgsProcessingParameterDefinition *QgsProcessingParameterPointCloudDestination::clone() const
+{
+  return new QgsProcessingParameterPointCloudDestination( *this );
+}
+
+bool QgsProcessingParameterPointCloudDestination::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  QVariant var = input;
+  if ( !var.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( var.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    const QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( var );
+    var = fromVar.sink;
+  }
+
+  if ( var.canConvert<QgsProperty>() )
+  {
+    const QgsProperty p = var.value< QgsProperty >();
+    if ( p.propertyType() == QgsProperty::StaticProperty )
+    {
+      var = p.staticValue();
+    }
+    else
+    {
+      return true;
+    }
+  }
+
+  if ( var.type() != QVariant::String )
+    return false;
+
+  if ( var.toString().isEmpty() )
+    return mFlags & FlagOptional;
+
+  return true;
+}
+
+QString QgsProcessingParameterPointCloudDestination::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+{
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  if ( value.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    const QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
+    if ( fromVar.sink.propertyType() == QgsProperty::StaticProperty )
+    {
+      return QgsProcessingUtils::stringToPythonLiteral( fromVar.sink.staticValue().toString() );
+    }
+    else
+    {
+      return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( fromVar.sink.asExpression() );
+    }
+  }
+
+  return QgsProcessingUtils::stringToPythonLiteral( value.toString() );
+}
+
+QgsProcessingOutputDefinition *QgsProcessingParameterPointCloudDestination::toOutputDefinition() const
+{
+  return new QgsProcessingOutputPointCloudLayer( name(), description() );
+}
+
+QString QgsProcessingParameterPointCloudDestination::defaultFileExtension() const
+{
+  if ( auto *lOriginalProvider = originalProvider() )
+  {
+    return lOriginalProvider->defaultPointCloudFileExtension();
+  }
+  else if ( QgsProcessingProvider *p = provider() )
+  {
+    return p->defaultPointCloudFileExtension();
+  }
+  else
+  {
+    return QgsProcessingUtils::defaultPointCloudExtension();
+  }
+}
+
+QString QgsProcessingParameterPointCloudDestination::createFileFilter() const
+{
+  const QStringList exts = supportedOutputPointCloudLayerExtensions();
+  QStringList filters;
+  for ( const QString &ext : exts )
+  {
+    filters << QObject::tr( "%1 files (*.%2)" ).arg( ext.toUpper(), ext.toLower() );
+  }
+  return filters.join( QLatin1String( ";;" ) ) + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" );
+}
+
+QStringList QgsProcessingParameterPointCloudDestination::supportedOutputPointCloudLayerExtensions() const
+{
+  if ( auto *lOriginalProvider = originalProvider() )
+  {
+    return lOriginalProvider->supportedOutputPointCloudLayerExtensions();
+  }
+  else if ( QgsProcessingProvider *p = provider() )
+  {
+    return p->supportedOutputPointCloudLayerExtensions();
+  }
+  else
+  {
+    QString ext = QgsProcessingUtils::defaultPointCloudExtension();
+    return QStringList() << QObject::tr( "%1 files (*.%2)" ).arg( ext.toUpper(), ext.toLower() );
+  }
+}
+
+QgsProcessingParameterPointCloudDestination *QgsProcessingParameterPointCloudDestination::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+{
+  return new QgsProcessingParameterPointCloudDestination( name, description, definition.isEmpty() ? QVariant() : definition, isOptional );
+}

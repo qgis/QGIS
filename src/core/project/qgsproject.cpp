@@ -65,6 +65,7 @@
 #include "qgsannotationlayer.h"
 #include "qgspointcloudlayer.h"
 #include "qgsattributeeditorcontainer.h"
+#include "qgsgrouplayer.h"
 
 
 #include <algorithm>
@@ -1220,6 +1221,13 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
       mapLayer = std::make_unique<QgsAnnotationLayer>( QString(), options );
       break;
     }
+
+    case QgsMapLayerType::GroupLayer:
+    {
+      const QgsGroupLayer::LayerOptions options( mTransformContext );
+      mapLayer = std::make_unique<QgsGroupLayer>( QString(), options );
+      break;
+    }
   }
 
   if ( !mapLayer )
@@ -2245,12 +2253,11 @@ bool QgsProject::writeProjectFile( const QString &filename )
   context.setPathResolver( pathResolver() );
   context.setTransformContext( transformContext() );
 
-  QDomImplementation DomImplementation;
-  DomImplementation.setInvalidDataPolicy( QDomImplementation::DropInvalidChars );
+  QDomImplementation::setInvalidDataPolicy( QDomImplementation::DropInvalidChars );
 
   const QDomDocumentType documentType =
-    DomImplementation.createDocumentType( QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ),
-                                          QStringLiteral( "SYSTEM" ) );
+    QDomImplementation().createDocumentType( QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ),
+        QStringLiteral( "SYSTEM" ) );
   std::unique_ptr<QDomDocument> doc( new QDomDocument( documentType ) );
 
   QDomElement qgisNode = doc->createElement( QStringLiteral( "qgis" ) );

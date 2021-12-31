@@ -20,6 +20,8 @@
 
 #include <QFileInfo>
 
+///@cond PRIVATE
+
 QgsSimpleCopyExternalStorageStoredContent::QgsSimpleCopyExternalStorageStoredContent( const QString &filePath, const QString &url, const QString &authcfg )
 {
   Q_UNUSED( authcfg );
@@ -47,7 +49,7 @@ QgsSimpleCopyExternalStorageStoredContent::QgsSimpleCopyExternalStorageStoredCon
 void QgsSimpleCopyExternalStorageStoredContent::store()
 {
   mStatus = Qgis::ContentStatus::Running;
-  QgsApplication::instance()->taskManager()->addTask( mCopyTask );
+  QgsApplication::taskManager()->addTask( mCopyTask );
 }
 
 void QgsSimpleCopyExternalStorageStoredContent::cancel()
@@ -116,3 +118,5 @@ QgsExternalStorageFetchedContent *QgsSimpleCopyExternalStorage::doFetch( const Q
 
   return new QgsSimpleCopyExternalStorageFetchedContent( url );
 }
+
+///@endcond

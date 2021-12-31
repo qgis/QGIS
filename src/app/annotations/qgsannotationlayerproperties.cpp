@@ -27,6 +27,8 @@
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgspainteffect.h"
+#include "qgsproject.h"
+#include "qgsprojectutils.h"
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
@@ -78,6 +80,8 @@ QgsAnnotationLayerProperties::QgsAnnotationLayerProperties( QgsAnnotationLayer *
 
   buttonBox->addButton( mBtnStyle, QDialogButtonBox::ResetRole );
 
+  mBackupCrs = mLayer->crs();
+
   if ( !mLayer->styleManager()->isDefault( mLayer->styleManager()->currentStyle() ) )
     title += QStringLiteral( " (%1)" ).arg( mLayer->styleManager()->currentStyle() );
   restoreOptionsBaseUi( title );
@@ -113,7 +117,10 @@ void QgsAnnotationLayerProperties::apply()
   mLayer->setMaximumScale( mScaleRangeWidget->maximumScale() );
   mLayer->setMinimumScale( mScaleRangeWidget->minimumScale() );
 
+  mBackupCrs = mLayer->crs();
+
   // set the blend mode and opacity for the layer
+  mBlendModeComboBox->setShowClippingModes( QgsProjectUtils::layerIsContainedInGroupLayer( QgsProject::instance(), mLayer ) );
   mLayer->setBlendMode( mBlendModeComboBox->blendMode() );
   mLayer->setOpacity( mOpacityWidget->opacity() );
 
@@ -128,6 +135,9 @@ void QgsAnnotationLayerProperties::apply()
 
 void QgsAnnotationLayerProperties::onCancel()
 {
+  if ( mBackupCrs != mLayer->crs() )
+    mLayer->setCrs( mBackupCrs );
+
   if ( mOldStyle.xmlData() != mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() ).xmlData() )
   {
     // need to reset style to previous - style applied directly to the layer (not in apply())
@@ -307,7 +317,7 @@ void QgsAnnotationLayerProperties::urlClicked( const QUrl &url )
 {
   const QFileInfo file( url.toLocalFile() );
   if ( file.exists() && !file.isDir() )
-    QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
+    QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
   else
     QDesktopServices::openUrl( url );
 }

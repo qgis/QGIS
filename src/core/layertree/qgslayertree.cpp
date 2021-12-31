@@ -19,14 +19,18 @@
 
 QgsLayerTree::QgsLayerTree()
 {
-  connect( this, &QgsLayerTree::addedChildren, this, &QgsLayerTree::nodeAddedChildren );
-  connect( this, &QgsLayerTree::removedChildren, this, &QgsLayerTree::nodeRemovedChildren );
+  init();
 }
 
 QgsLayerTree::QgsLayerTree( const QgsLayerTree &other )
   : QgsLayerTreeGroup( other )
   , mCustomLayerOrder( other.mCustomLayerOrder )
   , mHasCustomLayerOrder( other.mHasCustomLayerOrder )
+{
+  init();
+}
+
+void QgsLayerTree::init()
 {
   connect( this, &QgsLayerTree::addedChildren, this, &QgsLayerTree::nodeAddedChildren );
   connect( this, &QgsLayerTree::removedChildren, this, &QgsLayerTree::nodeRemovedChildren );
@@ -80,18 +84,7 @@ QList<QgsMapLayer *> QgsLayerTree::layerOrder() const
   }
   else
   {
-    QList<QgsMapLayer *> layers;
-    const QList< QgsLayerTreeLayer * > foundLayers = findLayers();
-    for ( const auto &treeLayer : foundLayers )
-    {
-      QgsMapLayer *layer = treeLayer->layer();
-      if ( !layer || !layer->isSpatial() )
-      {
-        continue;
-      }
-      layers.append( layer );
-    }
-    return layers;
+    return layerOrderRespectingGroupLayers();
   }
 }
 

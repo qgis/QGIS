@@ -179,6 +179,7 @@ QVariant QgsProviderSublayerModel::data( const QModelIndex &index, int role ) co
               case QgsMapLayerType::VectorTileLayer:
               case QgsMapLayerType::AnnotationLayer:
               case QgsMapLayerType::PointCloudLayer:
+              case QgsMapLayerType::GroupLayer:
                 return details.description();
             }
             break;

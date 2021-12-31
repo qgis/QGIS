@@ -52,6 +52,10 @@
 #include <QStyledItemDelegate>
 #include <QRandomGenerator>
 
+/**
+ * \ingroup gui
+ * \class EditBlockerDelegate
+ */
 class EditBlockerDelegate: public QStyledItemDelegate
 {
   public:

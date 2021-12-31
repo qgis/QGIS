@@ -160,8 +160,27 @@ class CORE_EXPORT QgsApplication : public QApplication
     static const char *QGIS_ORGANIZATION_DOMAIN;
     static const char *QGIS_APPLICATION_NAME;
 #ifndef SIP_RUN
-    QgsApplication( int &argc, char **argv, bool GUIenabled, const QString &profileFolder = QString(), const QString &platformName = "desktop" );
+
+    /**
+     * Constructor for QgsApplication.
+     *
+     * \param argc command line argument count
+     * \param argv command line arguments
+     * \param GUIenabled set to TRUE if a GUI application is required, or FALSE for a console only application
+     * \param profileFolder optional string representing the profile to load at startup
+     * \param platformName the QGIS platform name, e.g., "desktop", "server", "qgis_process" or "external" (for external CLI scripts)
+     */
+    QgsApplication( int &argc, char **argv, bool GUIenabled, const QString &profileFolder = QString(), const QString &platformName = "external" );
 #else
+
+    /**
+     * Constructor for QgsApplication.
+     *
+     * \param argv command line arguments
+     * \param GUIenabled set to TRUE if a GUI application is required, or FALSE for a console only application
+     * \param profileFolder optional string representing the profile to load at startup
+     * \param platformName the QGIS platform name, e.g., "desktop", "server", "qgis_process" or "external" (for external CLI scripts)
+     */
     QgsApplication( SIP_PYLIST argv, bool GUIenabled, QString profileFolder = QString(), QString platformName = "desktop" ) / PostHook = __pyQtQAppHook__ / [( int &argc, char **argv, bool GUIenabled, const QString &profileFolder = QString(), const QString &platformName = "desktop" )];
     % MethodCode
     // The Python interface is a list of argument strings that is modified.
@@ -437,7 +456,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString osName();
 
     /**
-     * Returns the QGIS platform name, e.g., "desktop" or "server".
+     * Returns the QGIS platform name, e.g., "desktop", "server", "qgis_process" or "external" (for external CLI scripts).
      * \see osName()
      * \since QGIS 2.14
      */
@@ -448,6 +467,14 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \since QGIS 3.0
      */
     static QString locale();
+
+    /**
+     * Sets the QGIS locale - used mainly by 3rd party apps and tests.
+     * In QGIS this is internally triggered by the application in startup.
+     *
+     * \since QGIS 3.22.2
+     */
+    static void setLocale( const QLocale &locale );
 
     //! Returns the path to user's themes folder
     static QString userThemesFolder();
@@ -1023,6 +1050,15 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \since QGIS 3.4
      */
     void requestForTranslatableObjects( QgsTranslationContext *translationContext );
+
+
+    /**
+     * Emitted when project locale has been changed.
+     *
+     * \since QGIS 3.22.2
+     */
+    void localeChanged();
+
 
   private:
 

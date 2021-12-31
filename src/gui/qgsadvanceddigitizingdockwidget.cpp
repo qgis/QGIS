@@ -348,6 +348,7 @@ void QgsAdvancedDigitizingDockWidget::switchZM( )
       case QgsMapLayerType::VectorTileLayer:
       case QgsMapLayerType::AnnotationLayer:
       case QgsMapLayerType::PointCloudLayer:
+      case QgsMapLayerType::GroupLayer:
         break;
     }
   }
@@ -836,6 +837,7 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
 
   // update capacities
   mCapacities = newCapacities;
+  mCadPaintItem->updatePosition();
 }
 
 

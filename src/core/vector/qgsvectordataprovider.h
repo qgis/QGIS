@@ -585,12 +585,12 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
 
     /**
      * Discover the available relations with the given layers.
-     * \param self the layer using this data provider.
+     * \param target the layer using this data provider.
      * \param layers the other layers.
      * \returns the list of N-1 relations from this provider.
      * \since QGIS 3.0
      */
-    virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const;
+    virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const;
 
     /**
      * Gets metadata, dependent on the provider type, that will be display in the metadata tab of the layer properties.

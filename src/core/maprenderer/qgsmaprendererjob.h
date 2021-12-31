@@ -26,7 +26,7 @@
 #include <QElapsedTimer>
 
 #include "qgsrendercontext.h"
-
+#include "qgslabelsink.h"
 #include "qgsmapsettings.h"
 #include "qgsmaskidprovider.h"
 #include "qgssettingsentry.h"
@@ -353,6 +353,22 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
     void setCache( QgsMapRendererCache *cache );
 
     /**
+     * Returns the label sink associated to this rendering job.
+     * \note Not available in Python bindings.
+     * \since QGIS 3.24
+     */
+    QgsLabelSink *labelSink() const { return mLabelSink; } SIP_SKIP
+
+    /**
+     * Assigns the label sink which will take over responsibility for handling labels
+     * during the rendering job.
+     * \note Ownership is not transferred and the sink must exist for the lifetime of the map rendering job.
+     * \note Not available in Python bindings.
+     * \since QGIS 3.24
+     */
+    void setLabelSink( QgsLabelSink *sink ) { mLabelSink = sink; } SIP_SKIP
+
+    /**
      * Returns the total time it took to finish the job (in milliseconds).
      * \see perLayerRenderingTime()
      */
@@ -414,6 +430,25 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
      * \since QGIS 3.0
      */
     void renderingLayersFinished();
+
+
+    /**
+     * Emitted just before rendering starts for a particular layer.
+     *
+     * \note the QgsMapRendererParallelJob subclass does not emit this signal.
+     *
+     * \since QGIS 3.24
+     */
+    void layerRenderingStarted( const QString &layerId );
+
+    /**
+     * Emitted when a layer has completed rendering.
+     *
+     * \note the QgsMapRendererParallelJob subclass does not emit this signal.
+     *
+     * \since QGIS 3.24
+     */
+    void layerRendered( const QString &layerId );
 
     //! emitted when asynchronous rendering is finished (or canceled).
     void finished();
@@ -558,6 +593,8 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
      *  \since QGIS 3.20
      */
     virtual void startPrivate() = 0;
+
+    QgsLabelSink *mLabelSink = nullptr;
 
 };
 

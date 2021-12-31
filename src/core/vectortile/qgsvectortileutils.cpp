@@ -70,7 +70,7 @@ double QgsVectorTileUtils::scaleToZoom( double mapScale )
 
 int QgsVectorTileUtils::scaleToZoomLevel( double mapScale, int sourceMinZoom, int sourceMaxZoom )
 {
-  int tileZoom = static_cast<int>( floor( scaleToZoom( mapScale ) ) );
+  int tileZoom = static_cast<int>( round( scaleToZoom( mapScale ) ) );
 
   if ( tileZoom < sourceMinZoom )
     tileZoom = sourceMinZoom;

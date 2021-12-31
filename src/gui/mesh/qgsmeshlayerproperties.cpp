@@ -80,6 +80,7 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   connect( lyr->styleManager(), &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsMeshLayerProperties::syncAndRepaint );
 
   connect( this, &QDialog::accepted, this, &QgsMeshLayerProperties::apply );
+  connect( this, &QDialog::rejected, this, &QgsMeshLayerProperties::onCancel );
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsMeshLayerProperties::apply );
 
   connect( mMeshLayer, &QgsMeshLayer::dataChanged, this, &QgsMeshLayerProperties::syncAndRepaint );
@@ -104,6 +105,7 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   layout->addWidget( mMetadataWidget );
   metadataFrame->setLayout( layout );
   mOptsPage_Metadata->setContentsMargins( 0, 0, 0, 0 );
+  mBackupCrs = mMeshLayer->crs();
 
   mTemporalDateTimeStart->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
   mTemporalDateTimeEnd->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
@@ -394,6 +396,8 @@ void QgsMeshLayerProperties::apply()
 
   mMetadataWidget->acceptMetadata();
 
+  mBackupCrs = mMeshLayer->crs();
+
   if ( needMeshUpdating )
     mMeshLayer->reload();
 
@@ -481,7 +485,7 @@ void QgsMeshLayerProperties::urlClicked( const QUrl &url )
 {
   QFileInfo file( url.toLocalFile() );
   if ( file.exists() && !file.isDir() )
-    QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
+    QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
   else
     QDesktopServices::openUrl( url );
 }
@@ -546,4 +550,10 @@ void QgsMeshLayerProperties::saveMetadataAs()
     myQSettings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( myOutputFileName ).absolutePath() );
   else
     QMessageBox::information( this, tr( "Save Metadata" ), message );
+}
+
+void QgsMeshLayerProperties::onCancel()
+{
+  if ( mBackupCrs != mMeshLayer->crs() )
+    mMeshLayer->setCrs( mBackupCrs );
 }

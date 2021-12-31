@@ -28,6 +28,7 @@ enum class QgsMapLayerType
   VectorTileLayer,
   AnnotationLayer,
   PointCloudLayer,
+  GroupLayer,
 };
 
 
@@ -576,6 +577,7 @@ The development version
       LosslessImageRendering,
       Render3DMap,
       HighQualityImageTransforms,
+      SkipSymbolRendering,
     };
     typedef QFlags<Qgis::MapSettingsFlag> MapSettingsFlags;
 
@@ -600,6 +602,7 @@ The development version
       ApplyClipAfterReprojection,
       RenderingSubSymbol,
       HighQualityImageTransforms,
+      SkipSymbolRendering,
     };
     typedef QFlags<Qgis::RenderContextFlag> RenderContextFlags;
 
@@ -749,12 +752,26 @@ The development version
       AllSmallCaps,
     };
 
+    enum class TextRendererFlag
+    {
+      WrapLines,
+    };
+    typedef QFlags<Qgis::TextRendererFlag> TextRendererFlags;
+
 
     enum class AngularDirection
       {
       Clockwise,
       CounterClockwise,
     };
+
+    enum class HistoryProviderBackend
+    {
+      LocalProfile,
+//      Project = 1 << 1, //!< QGIS Project  (not yet implemented)
+    };
+    typedef QFlags<Qgis::HistoryProviderBackend> HistoryProviderBackends;
+
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
@@ -856,6 +873,10 @@ QFlags<Qgis::RenderContextFlag> operator|(Qgis::RenderContextFlag f1, QFlags<Qgi
 QFlags<Qgis::VectorLayerTypeFlag> operator|(Qgis::VectorLayerTypeFlag f1, QFlags<Qgis::VectorLayerTypeFlag> f2);
 
 QFlags<Qgis::MarkerLinePlacement> operator|(Qgis::MarkerLinePlacement f1, QFlags<Qgis::MarkerLinePlacement> f2);
+
+QFlags<Qgis::TextRendererFlag> operator|(Qgis::TextRendererFlag f1, QFlags<Qgis::TextRendererFlag> f2);
+
+QFlags<Qgis::HistoryProviderBackend> operator|(Qgis::HistoryProviderBackend f1, QFlags<Qgis::HistoryProviderBackend> f2);
 
 
 

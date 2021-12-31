@@ -571,6 +571,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           break;
 
           case QgsMapLayerType::AnnotationLayer:
+          case QgsMapLayerType::GroupLayer:
             break;
 
           case QgsMapLayerType::PluginLayer:

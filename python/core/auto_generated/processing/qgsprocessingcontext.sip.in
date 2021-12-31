@@ -31,7 +31,8 @@ expression context.
 
     enum Flag
     {
-      // UseSelectionIfPresent = 1 << 0,
+      // For future API flexibility only and to avoid sip issues, remove when real entries are added to flags.
+      Unused,
     };
     typedef QFlags<QgsProcessingContext::Flag> Flags;
 
@@ -586,11 +587,34 @@ Sets the logging ``level`` for algorithms to use when pushing feedback messages 
 .. versionadded:: 3.20
 %End
 
+    QVariantMap exportToMap() const;
+%Docstring
+Exports the context's settings to a variant map.
+
+.. versionadded:: 3.24
+%End
+
+    enum class ProcessArgumentFlag
+    {
+      IncludeProjectPath,
+    };
+    typedef QFlags<QgsProcessingContext::ProcessArgumentFlag> ProcessArgumentFlags;
+
+
+    QStringList asQgisProcessArguments( QgsProcessingContext::ProcessArgumentFlags flags = QgsProcessingContext::ProcessArgumentFlags() ) const;
+%Docstring
+Returns list of the equivalent qgis_process arguments representing the settings from the context.
+
+.. versionadded:: 3.24
+%End
+
   private:
     QgsProcessingContext( const QgsProcessingContext &other );
 };
 
 QFlags<QgsProcessingContext::Flag> operator|(QgsProcessingContext::Flag f1, QFlags<QgsProcessingContext::Flag> f2);
+
+QFlags<QgsProcessingContext::ProcessArgumentFlag> operator|(QgsProcessingContext::ProcessArgumentFlag f1, QFlags<QgsProcessingContext::ProcessArgumentFlag> f2);
 
 
 

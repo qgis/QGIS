@@ -229,6 +229,7 @@ bool QgsMapRendererJob::prepareLabelCache() const
       case QgsMapLayerType::PluginLayer:
       case QgsMapLayerType::MeshLayer:
       case QgsMapLayerType::PointCloudLayer:
+      case QgsMapLayerType::GroupLayer:
         break;
     }
 
@@ -373,6 +374,8 @@ QImage *QgsMapRendererJob::allocateImage( QString layerId )
   QImage *image = new QImage( mSettings.deviceOutputSize(),
                               mSettings.outputImageFormat() );
   image->setDevicePixelRatio( static_cast<qreal>( mSettings.devicePixelRatio() ) );
+  image->setDotsPerMeterX( mSettings.devicePixelRatio() * 1000 * mSettings.outputDpi() / 25.4 );
+  image->setDotsPerMeterY( mSettings.devicePixelRatio() * 1000 * mSettings.outputDpi() / 25.4 );
   if ( image->isNull() )
   {
     mErrors.append( Error( layerId, tr( "Insufficient memory for image %1x%2" ).arg( mSettings.outputSize().width() ).arg( mSettings.outputSize().height() ) ) );
@@ -492,6 +495,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
     job.context()->expressionContext().appendScope( QgsExpressionContextUtils::layerScope( ml ) );
     job.context()->setPainter( painter );
     job.context()->setLabelingEngine( labelingEngine2 );
+    job.context()->setLabelSink( labelSink() );
     job.context()->setCoordinateTransform( ct );
     job.context()->setExtent( r1 );
     if ( !haveExtentInLayerCrs )

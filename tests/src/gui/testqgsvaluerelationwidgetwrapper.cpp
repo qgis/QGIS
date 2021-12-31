@@ -1337,7 +1337,11 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialite()
 
   // FEATURE 4
   w_favoriteauthors.setFeature( vl_json->getFeature( 4 ) );
-  //check if first feature checked correctly (NULL)
+  // Because allowNull is false we have a NULL variant here
+  QCOMPARE( w_favoriteauthors.value(), QVariant( QVariant::Type::List ) );
+  cfg_favoriteauthors[ QStringLiteral( "AllowNull" ) ] = true;
+  w_favoriteauthors.setConfig( cfg_favoriteauthors );
+  //check if first feature checked correctly (empty list)
   QCOMPARE( w_favoriteauthors.value(), QVariant( QVariantList() ) );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->checkState(), Qt::Unchecked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->checkState(), Qt::Unchecked );
@@ -1346,10 +1350,17 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialite()
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 4, 0 )->checkState(), Qt::Unchecked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->checkState(), Qt::Unchecked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->checkState(), Qt::Unchecked );
+  cfg_favoriteauthors[ QStringLiteral( "AllowNull" ) ] = false;
+  w_favoriteauthors.setConfig( cfg_favoriteauthors );
 
   // FEATURE 5
   w_favoriteauthors.setFeature( vl_json->getFeature( 5 ) );
-  //check if first feature checked correctly (blank)
+  // Because allowNull is false we have a NULL variant here
+  QCOMPARE( w_favoriteauthors.value(), QVariant( QVariant::Type::List ) );
+
+  cfg_favoriteauthors[ QStringLiteral( "AllowNull" ) ] = true;
+  w_favoriteauthors.setConfig( cfg_favoriteauthors );
+  //check if first feature checked correctly (empty list)
   QCOMPARE( w_favoriteauthors.value(), QVariant( QVariantList( ) ) );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->checkState(), Qt::Unchecked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->checkState(), Qt::Unchecked );
@@ -1495,6 +1506,11 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialiteTextFk()
   // FEATURE 4
   w_favoriteauthors.setFeature( vl_json->getFeature( 4 ) );
 
+  // Because allowNull is false we have a NULL variant here
+  QCOMPARE( w_favoriteauthors.value(), QVariant( QVariant::Type::List ) );
+  cfg_favoriteauthors[ QStringLiteral( "AllowNull" ) ] = true;
+  w_favoriteauthors.setConfig( cfg_favoriteauthors );
+
   //check if first feature checked correctly (NULL)
   QCOMPARE( w_favoriteauthors.value(), QVariant( QVariantList( ) ) );
 
@@ -1505,11 +1521,18 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialiteTextFk()
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 4, 0 )->checkState(), Qt::Unchecked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->checkState(), Qt::Unchecked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->checkState(), Qt::Unchecked );
+  cfg_favoriteauthors[ QStringLiteral( "AllowNull" ) ] = false;
+  w_favoriteauthors.setConfig( cfg_favoriteauthors );
 
   // FEATURE 5
   w_favoriteauthors.setFeature( vl_json->getFeature( 5 ) );
 
-  //check if first feature checked correctly (blank)
+  // Because allowNull is false we have a NULL variant here
+  QCOMPARE( w_favoriteauthors.value(), QVariant( QVariant::Type::List ) );
+  cfg_favoriteauthors[ QStringLiteral( "AllowNull" ) ] = true;
+  w_favoriteauthors.setConfig( cfg_favoriteauthors );
+
+  //check if first feature checked correctly (empty list)
   QCOMPARE( w_favoriteauthors.value(), QVariant( QVariantList() ) );
 
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->checkState(), Qt::Unchecked );

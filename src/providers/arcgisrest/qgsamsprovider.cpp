@@ -84,7 +84,7 @@ void QgsAmsLegendFetcher::start()
     const QString referer = dataSource.param( QStringLiteral( "referer" ) );
     QgsStringMap headers;
     if ( !referer.isEmpty() )
-      headers[ QStringLiteral( "Referer" )] = referer;
+      headers[ QStringLiteral( "referer" )] = referer;
 
     QUrl queryUrl( dataSource.param( QStringLiteral( "url" ) ) + "/legend" );
     QUrlQuery query( queryUrl );
@@ -198,7 +198,7 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
   QgsDataSourceUri dataSource( dataSourceUri() );
   const QString referer = dataSource.param( QStringLiteral( "referer" ) );
   if ( !referer.isEmpty() )
-    mRequestHeaders[ QStringLiteral( "Referer" )] = referer;
+    mRequestHeaders[ QStringLiteral( "referer" )] = referer;
 
   mLegendFetcher = new QgsAmsLegendFetcher( this, QImage() );
 
@@ -932,7 +932,7 @@ bool QgsAmsProvider::readBlock( int /*bandNo*/, const QgsRectangle &viewExtent, 
 // QgsAmsTiledImageDownloadHandler
 //
 
-QgsAmsTiledImageDownloadHandler::QgsAmsTiledImageDownloadHandler( const QString &auth,  const QgsStringMap &requestHeaders, int tileReqNo, const QgsAmsProvider::TileRequests &requests, QImage *image, const QgsRectangle &viewExtent, QgsRasterBlockFeedback *feedback )
+QgsAmsTiledImageDownloadHandler::QgsAmsTiledImageDownloadHandler( const QString &auth,  const QgsHttpHeaders &requestHeaders, int tileReqNo, const QgsAmsProvider::TileRequests &requests, QImage *image, const QgsRectangle &viewExtent, QgsRasterBlockFeedback *feedback )
   : mAuth( auth )
   , mRequestHeaders( requestHeaders )
   , mImage( image )
@@ -956,10 +956,7 @@ QgsAmsTiledImageDownloadHandler::QgsAmsTiledImageDownloadHandler( const QString 
     QNetworkRequest request( r.url );
     QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsAmsTiledImageDownloadHandler" ) );
     QgsSetRequestInitiatorId( request, QString::number( r.index ) );
-    for ( auto it = mRequestHeaders.constBegin(); it != mRequestHeaders.constEnd(); ++it )
-    {
-      request.setRawHeader( it.key().toUtf8(), it.value().toUtf8() );
-    }
+    mRequestHeaders.updateNetworkRequest( request );
     if ( !mAuth.isEmpty() && !QgsApplication::authManager()->updateNetworkRequest( request, mAuth ) )
     {
       const QString error = tr( "network request update failed for authentication config" );
@@ -1036,10 +1033,7 @@ void QgsAmsTiledImageDownloadHandler::tileReplyFinished()
       QNetworkRequest request( redirect.toUrl() );
       QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsAmsTiledImageDownloadHandler" ) );
       QgsSetRequestInitiatorId( request, QString::number( tileReqNo ) );
-      for ( auto it = mRequestHeaders.constBegin(); it != mRequestHeaders.constEnd(); ++it )
-      {
-        request.setRawHeader( it.key().toUtf8(), it.value().toUtf8() );
-      }
+      mRequestHeaders.updateNetworkRequest( request );
       if ( !mAuth.isEmpty() && !QgsApplication::authManager()->updateNetworkRequest( request, mAuth ) )
       {
         const QString error = tr( "network request update failed for authentication config" );
@@ -1229,10 +1223,7 @@ void QgsAmsTiledImageDownloadHandler::repeatTileRequest( QNetworkRequest const &
     return;
   }
 
-  for ( auto it = mRequestHeaders.constBegin(); it != mRequestHeaders.constEnd(); ++it )
-  {
-    request.setRawHeader( it.key().toUtf8(), it.value().toUtf8() );
-  }
+  mRequestHeaders.updateNetworkRequest( request );
   if ( !mAuth.isEmpty() && !QgsApplication::authManager()->updateNetworkRequest( request, mAuth ) )
   {
     const QString error = tr( "network request update failed for authentication config" );

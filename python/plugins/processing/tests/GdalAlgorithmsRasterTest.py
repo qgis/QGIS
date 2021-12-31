@@ -30,6 +30,7 @@ from qgis.core import (QgsProcessingContext,
                        QgsProcessingException,
                        QgsProcessingFeedback,
                        QgsRectangle,
+                       QgsReferencedRectangle,
                        QgsRasterLayer,
                        QgsProject,
                        QgsProjUtils,
@@ -393,6 +394,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
         feedback = QgsProcessingFeedback()
         source = os.path.join(testDataPath, 'dem.tif')
         mask = os.path.join(testDataPath, 'polys.gml')
+        extent = QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:4236'))
         alg = ClipRasterByMask()
         alg.initAlgorithm()
 
@@ -459,6 +461,16 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                  '-overwrite -of JPEG -cutline ' +
                  mask + ' -cl polys2 -crop_to_cutline -multi -nosrcalpha -wm 2048 -nomd ' +
                  source + ' ' +
+                 outdir + '/check.jpg'])
+            # with target extent value
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'MASK': mask,
+                                        'TARGET_EXTENT': extent,
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdalwarp',
+                 '-overwrite -te 1.0 2.0 3.0 4.0 -te_srs EPSG:4236 -of JPEG -cutline ' +
+                 mask + ' -cl polys2 -crop_to_cutline ' + source + ' ' +
                  outdir + '/check.jpg'])
 
     def testContourPolygon(self):

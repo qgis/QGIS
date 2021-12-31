@@ -2680,17 +2680,17 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void geometryChanged( QgsFeatureId fid, const QgsGeometry &geometry );
 
-    //! Emitted when attributes are deleted from the provider
+    //! Emitted when attributes are deleted from the provider if not in transaction mode.
     void committedAttributesDeleted( const QString &layerId, const QgsAttributeList &deletedAttributes );
-    //! Emitted when attributes are added to the provider
+    //! Emitted when attributes are added to the provider if not in transaction mode.
     void committedAttributesAdded( const QString &layerId, const QList<QgsField> &addedAttributes );
-    //! Emitted when features are added to the provider
+    //! Emitted when features are added to the provider if not in transaction mode.
     void committedFeaturesAdded( const QString &layerId, const QgsFeatureList &addedFeatures );
-    //! Emitted when features are deleted from the provider
+    //! Emitted when features are deleted from the provider if not in transaction mode.
     void committedFeaturesRemoved( const QString &layerId, const QgsFeatureIds &deletedFeatureIds );
-    //! Emitted when attribute value changes are saved to the provider
+    //! Emitted when attribute value changes are saved to the provider if not in transaction mode.
     void committedAttributeValuesChanges( const QString &layerId, const QgsChangedAttributesMap &changedAttributesValues );
-    //! Emitted when geometry changes are saved to the provider
+    //! Emitted when geometry changes are saved to the provider if not in transaction mode.
     void committedGeometriesChanges( const QString &layerId, const QgsGeometryMap &changedGeometries );
 
     //! Emitted when the font family defined for labeling layer is not found on system

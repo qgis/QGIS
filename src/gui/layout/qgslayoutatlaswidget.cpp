@@ -22,6 +22,7 @@
 #include "qgslayoutatlas.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgslayoutundostack.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsmessagebar.h"
 
 QgsLayoutAtlasWidget::QgsLayoutAtlasWidget( QWidget *parent, QgsPrintLayout *layout )
@@ -96,6 +97,7 @@ void QgsLayoutAtlasWidget::changeCoverageLayer( QgsMapLayer *layer )
 
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
 
+  const QString prevPageNameExpression = mAtlas->pageNameExpression();
   mLayout->undoStack()->beginCommand( mAtlas, tr( "Change Atlas Layer" ) );
   mLayout->reportContext().setLayer( vl );
   if ( !vl )
@@ -107,6 +109,19 @@ void QgsLayoutAtlasWidget::changeCoverageLayer( QgsMapLayer *layer )
     mAtlas->setCoverageLayer( vl );
     updateAtlasFeatures();
   }
+
+  // if page name expression is still valid, retain it. Otherwise switch to a nice default.
+  QgsExpression exp( prevPageNameExpression );
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( vl ) );
+  if ( exp.prepare( &context ) && !exp.hasParserError() )
+  {
+    mAtlas->setPageNameExpression( prevPageNameExpression );
+  }
+  else if ( vl )
+  {
+    mAtlas->setPageNameExpression( vl->displayExpression() );
+  }
+
   mLayout->undoStack()->endCommand();
 }
 

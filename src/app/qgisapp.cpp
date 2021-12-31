@@ -252,6 +252,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsdiagramproperties.h"
 #include "qgslayerdefinition.h"
 #include "qgslayertree.h"
+#include "qgslayertreegrouppropertieswidget.h"
 #include "qgslayertreemapcanvasbridge.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
@@ -925,7 +926,7 @@ static bool cmpByText_( QAction *a, QAction *b )
 QgisApp *QgisApp::sInstance = nullptr;
 
 // constructor starts here
-QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCheck, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
+QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers, bool skipVersionCheck, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
   : QMainWindow( parent, fl )
   , mSplash( splash )
 {
@@ -937,7 +938,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
       tr( "Multiple instances of QGIS application object detected.\nPlease contact the developers.\n" ) );
     abort();
   }
-
+  mSkipBadLayers = skipBadLayers;
   sInstance = this;
   QgsRuntimeProfiler *profiler = QgsApplication::profiler();
 
@@ -1289,7 +1290,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     QDialog *dialog = new QDialog( this, Qt::Tool );
     dialog->setObjectName( QStringLiteral( "snappingSettings" ) );
     dialog->setWindowTitle( tr( "Project Snapping Settings" ) );
-    QgsGui::instance()->enableAutoGeometryRestore( dialog );
+    QgsGui::enableAutoGeometryRestore( dialog );
     QVBoxLayout *layout = new QVBoxLayout( dialog );
     layout->addWidget( mSnappingDialog );
     layout->setContentsMargins( 0, 0, 0, 0 );
@@ -1311,16 +1312,16 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mMapCanvas->setTemporalController( mTemporalControllerWidget->temporalController() );
   mTemporalControllerWidget->setMapCanvas( mMapCanvas );
 
-  QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsAppDirectoryItemGuiProvider() );
-  QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsAppFileItemGuiProvider() );
-  QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsProjectHomeItemGuiProvider() );
-  QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsProjectItemGuiProvider() );
-  QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsFavoritesItemGuiProvider() );
-  QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsLayerItemGuiProvider() );
-  QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsBookmarksItemGuiProvider() );
-  QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsFieldsItemGuiProvider() );
-  QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsFieldItemGuiProvider() );
-  QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsDatabaseItemGuiProvider() );
+  QgsGui::dataItemGuiProviderRegistry()->addProvider( new QgsAppDirectoryItemGuiProvider() );
+  QgsGui::dataItemGuiProviderRegistry()->addProvider( new QgsAppFileItemGuiProvider() );
+  QgsGui::dataItemGuiProviderRegistry()->addProvider( new QgsProjectHomeItemGuiProvider() );
+  QgsGui::dataItemGuiProviderRegistry()->addProvider( new QgsProjectItemGuiProvider() );
+  QgsGui::dataItemGuiProviderRegistry()->addProvider( new QgsFavoritesItemGuiProvider() );
+  QgsGui::dataItemGuiProviderRegistry()->addProvider( new QgsLayerItemGuiProvider() );
+  QgsGui::dataItemGuiProviderRegistry()->addProvider( new QgsBookmarksItemGuiProvider() );
+  QgsGui::dataItemGuiProviderRegistry()->addProvider( new QgsFieldsItemGuiProvider() );
+  QgsGui::dataItemGuiProviderRegistry()->addProvider( new QgsFieldItemGuiProvider() );
+  QgsGui::dataItemGuiProviderRegistry()->addProvider( new QgsDatabaseItemGuiProvider() );
 
   QShortcut *showBrowserDock = new QShortcut( QKeySequence( tr( "Ctrl+2" ) ), this );
   connect( showBrowserDock, &QShortcut::activated, mBrowserWidget, &QgsDockWidget::toggleUserVisible );
@@ -1428,6 +1429,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 #endif
   registerMapLayerPropertiesFactory( new QgsPointCloudElevationPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsAnnotationItemPropertiesWidgetFactory( this ) );
+  registerMapLayerPropertiesFactory( new QgsLayerTreeGroupPropertiesWidgetFactory( this ) );
 
   activateDeactivateLayerRelatedActions( nullptr ); // after members were created
 
@@ -1482,8 +1484,12 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsHtmlDataItemProvider() );
 
   // set handler for missing layers (will be owned by QgsProject)
-  mAppBadLayersHandler = new QgsHandleBadLayersHandler();
-  QgsProject::instance()->setBadLayerHandler( mAppBadLayersHandler );
+  if ( !mSkipBadLayers )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Creating bad layers handler" ), 2 );
+    mAppBadLayersHandler = new QgsHandleBadLayersHandler();
+    QgsProject::instance()->setBadLayerHandler( mAppBadLayersHandler );
+  }
 
   mSplash->showMessage( tr( "Starting Python" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );
   qApp->processEvents();
@@ -1689,28 +1695,28 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   connect( QgsApplication::taskManager(), &QgsTaskManager::statusChanged, this, &QgisApp::onTaskCompleteShowNotify );
 
-  QgsGui::instance()->nativePlatformInterface()->initializeMainWindow( windowHandle(),
+  QgsGui::nativePlatformInterface()->initializeMainWindow( windowHandle(),
       QgsApplication::applicationName(),
       QgsApplication::organizationName(),
       Qgis::version() );
-  connect( QgsGui::instance()->nativePlatformInterface(), &QgsNative::usbStorageNotification, mBrowserModel, &QgsBrowserModel::refreshDrives );
+  connect( QgsGui::nativePlatformInterface(), &QgsNative::usbStorageNotification, mBrowserModel, &QgsBrowserModel::refreshDrives );
 
   // setup application progress reports from task manager
   connect( QgsApplication::taskManager(), &QgsTaskManager::taskAdded, this, []
   {
-    QgsGui::instance()->nativePlatformInterface()->showUndefinedApplicationProgress();
+    QgsGui::nativePlatformInterface()->showUndefinedApplicationProgress();
   } );
   connect( QgsApplication::taskManager(), &QgsTaskManager::finalTaskProgressChanged, this, []( double val )
   {
-    QgsGui::instance()->nativePlatformInterface()->setApplicationProgress( val );
+    QgsGui::nativePlatformInterface()->setApplicationProgress( val );
   } );
   connect( QgsApplication::taskManager(), &QgsTaskManager::allTasksFinished, this, []
   {
-    QgsGui::instance()->nativePlatformInterface()->hideApplicationProgress();
+    QgsGui::nativePlatformInterface()->hideApplicationProgress();
   } );
   connect( QgsApplication::taskManager(), &QgsTaskManager::countActiveTasksChanged, this, []( int count )
   {
-    QgsGui::instance()->nativePlatformInterface()->setApplicationBadgeCount( count );
+    QgsGui::nativePlatformInterface()->setApplicationBadgeCount( count );
   } );
 
   ( void )new QgsAppMissingGridHandler( this );
@@ -1921,7 +1927,7 @@ QgisApp::~QgisApp()
   delete mMapStylingDock;
   mMapStylingDock = nullptr;
 
-  QgsGui::instance()->nativePlatformInterface()->cleanup();
+  QgsGui::nativePlatformInterface()->cleanup();
 
   // This function *MUST* be the last one called, as it destroys in
   // particular GDAL. As above objects can hold GDAL/OGR objects, it is not
@@ -2112,7 +2118,7 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
 
   auto showLayerLoadWarnings = [ = ]( const QString & title, const QString & shortMessage, const QString & longMessage, Qgis::MessageLevel level )
   {
-    QgsMessageBarItem *messageWidget = visibleMessageBar()->createMessage( title, shortMessage );
+    QgsMessageBarItem *messageWidget = QgsMessageBar::createMessage( title, shortMessage );
     QPushButton *detailsButton = new QPushButton( tr( "Details" ) );
     connect( detailsButton, &QPushButton::clicked, this, [ = ]
     {
@@ -5177,7 +5183,7 @@ void QgisApp::updateRecentProjectPaths()
     project.name = project.title != project.path ? project.title : project.fileName;
     recentProjects.emplace_back( project );
   }
-  QgsGui::instance()->nativePlatformInterface()->onRecentProjectsChanged( recentProjects );
+  QgsGui::nativePlatformInterface()->onRecentProjectsChanged( recentProjects );
 }
 
 // add this file to the recently opened/saved projects list
@@ -5945,6 +5951,7 @@ void QgisApp::postProcessAddedLayer( QgsMapLayer *layer )
     }
 
     case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::GroupLayer:
       break;
 
     case QgsMapLayerType::PointCloudLayer:
@@ -6558,7 +6565,7 @@ void QgisApp::fileOpenAfterLaunch()
   }
 
   // Is this a storage based project?
-  const bool projectIsFromStorage { QgsApplication::instance()->projectStorageRegistry()->projectStorageFromUri( projPath ) != nullptr };
+  const bool projectIsFromStorage { QgsApplication::projectStorageRegistry()->projectStorageFromUri( projPath ) != nullptr };
 
   if ( !projectIsFromStorage &&
        !projPath.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) &&
@@ -7017,8 +7024,13 @@ bool QgisApp::addProject( const QString &projectFile )
   bool returnCode = false;
   std::unique_ptr< QgsProjectDirtyBlocker > dirtyBlocker = std::make_unique< QgsProjectDirtyBlocker >( QgsProject::instance() );
   QObject connectionScope; // manually control scope of layersChanged lambda connection - we need the connection automatically destroyed when this function finishes
+
   bool badLayersHandled = false;
-  connect( mAppBadLayersHandler, &QgsHandleBadLayersHandler::layersChanged, &connectionScope, [&badLayersHandled] { badLayersHandled = true; } );
+  if ( !mSkipBadLayers )
+  {
+    QgsDebugMsg( QStringLiteral( "NOT Skipping bad layers" ) );
+    connect( mAppBadLayersHandler, &QgsHandleBadLayersHandler::layersChanged, &connectionScope, [&badLayersHandled] { badLayersHandled = true; } );
+  }
 
   // close the previous opened project if any
   closeProject();
@@ -7597,6 +7609,7 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
       case QgsMapLayerType::AnnotationLayer:
       case QgsMapLayerType::PluginLayer:
       case QgsMapLayerType::VectorTileLayer:
+      case QgsMapLayerType::GroupLayer:
         // not supported here yet!
         break;
 
@@ -9040,6 +9053,7 @@ QString QgisApp::saveAsFile( QgsMapLayer *layer, const bool onlySelected, const 
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::AnnotationLayer:
     case QgsMapLayerType::PointCloudLayer:
+    case QgsMapLayerType::GroupLayer:
       return QString();
   }
   return QString();
@@ -9208,6 +9222,7 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
 
     case QgsMapLayerType::AnnotationLayer:
     case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::GroupLayer:
       break;
 
   }
@@ -10617,6 +10632,19 @@ void QgisApp::selectByForm()
   dlg->setMessageBar( messageBar() );
   dlg->setMapCanvas( mapCanvas() );
   dlg->setAttribute( Qt::WA_DeleteOnClose );
+  connect( dlg, &QgsSelectByFormDialog::showFilteredFeaturesAttributeTable, [ = ]( const QString & filter )
+  {
+    if ( !vlayer->dataProvider() )
+    {
+      return;
+    }
+
+    QgsAttributeTableDialog *dialog = new QgsAttributeTableDialog( vlayer, QgsAttributeTableFilterModel::FilterMode::ShowFilteredList );
+    dialog->setFilterExpression( filter );
+    dialog->setView( QgsDualView::ViewMode::AttributeEditor );
+    dialog->show();
+
+  } );
   dlg->show();
 }
 
@@ -11259,6 +11287,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
     case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::AnnotationLayer:
     case QgsMapLayerType::PointCloudLayer:
+    case QgsMapLayerType::GroupLayer:
       break;
   }
   return false;
@@ -11561,6 +11590,7 @@ void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRep
     case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::AnnotationLayer:
     case QgsMapLayerType::PointCloudLayer:
+    case QgsMapLayerType::GroupLayer:
       break;
   }
 }
@@ -11625,6 +11655,7 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerR
     case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::AnnotationLayer:
     case QgsMapLayerType::PointCloudLayer:
+    case QgsMapLayerType::GroupLayer:
       break;
   }
 }
@@ -11842,6 +11873,7 @@ void QgisApp::updateLayerModifiedActions()
       case QgsMapLayerType::VectorTileLayer:
       case QgsMapLayerType::AnnotationLayer:
       case QgsMapLayerType::PointCloudLayer:
+      case QgsMapLayerType::GroupLayer:
         break;
     }
   }
@@ -12170,7 +12202,7 @@ void QgisApp::removeLayer()
     return;
   }
 
-  QList<QgsLayerTreeNode *> selectedNodes = mLayerTreeView->selectedNodes( true );
+  const QList<QgsLayerTreeNode *> selectedNodes = mLayerTreeView->selectedNodes( true );
 
   //validate selection
   if ( selectedNodes.isEmpty() )
@@ -12211,7 +12243,7 @@ void QgisApp::removeLayer()
     }
   };
 
-  for ( const auto &n : std::as_const( selectedNodes ) )
+  for ( const QgsLayerTreeNode *n : selectedNodes )
   {
     harvest( n );
   }
@@ -12233,9 +12265,15 @@ void QgisApp::removeLayer()
     return;
   }
 
-  const auto constSelectedNodes = selectedNodes;
-  for ( QgsLayerTreeNode *node : constSelectedNodes )
+  for ( QgsLayerTreeNode *node : selectedNodes )
   {
+    if ( QgsLayerTreeGroup *group = qobject_cast< QgsLayerTreeGroup * >( node ) )
+    {
+      if ( QgsGroupLayer *groupLayer = group->groupLayer() )
+      {
+        QgsProject::instance()->removeMapLayer( groupLayer );
+      }
+    }
     QgsLayerTreeGroup *parentGroup = qobject_cast<QgsLayerTreeGroup *>( node->parent() );
     if ( parentGroup )
       parentGroup->removeChildNode( node );
@@ -12276,6 +12314,10 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
     {
       case QgsMapLayerType::PluginLayer:
         unSppType = tr( "Plugin layer" );
+        break;
+
+      case QgsMapLayerType::GroupLayer:
+        unSppType = tr( "Group layer" );
         break;
 
       case QgsMapLayerType::VectorLayer:
@@ -12761,7 +12803,8 @@ void QgisApp::loadPythonSupport()
   mPythonUtils = pythonlib_inst();
   if ( mPythonUtils )
   {
-    mPythonUtils->initPython( mQgisInterface, true );
+    QgsCrashHandler::sPythonCrashLogFile = QStandardPaths::standardLocations( QStandardPaths::TempLocation ).at( 0 ) + "/qgis-python-crash-info-" + QString::number( QCoreApplication::applicationPid() );
+    mPythonUtils->initPython( mQgisInterface, true, QgsCrashHandler::sPythonCrashLogFile );
   }
 
   if ( mPythonUtils && mPythonUtils->isEnabled() )
@@ -13771,7 +13814,7 @@ void QgisApp::new3DMapCanvas()
     map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
     map->setSelectionColor( mMapCanvas->selectionColor() );
     map->setBackgroundColor( mMapCanvas->canvasColor() );
-    map->setLayers( mMapCanvas->layers() );
+    map->setLayers( mMapCanvas->layers( true ) );
 //    map->setTerrainLayers( mMapCanvas->layers() );
     map->setTemporalRange( mMapCanvas->temporalRange() );
 
@@ -15007,6 +15050,21 @@ void QgisApp::legendLayerSelectionChanged()
 {
   const QList<QgsLayerTreeLayer *> selectedLayers = mLayerTreeView ? mLayerTreeView->selectedLayerNodes() : QList<QgsLayerTreeLayer *>();
 
+  if ( selectedLayers.empty() && mLayerTreeView )
+  {
+    // check if a group node alone is selected
+    const QList<QgsLayerTreeNode *> selectedNodes = mLayerTreeView->selectedNodes();
+    if ( selectedNodes.size() == 1 && QgsLayerTree::isGroup( selectedNodes.at( 0 ) ) )
+    {
+      QgsLayerTreeGroup *groupNode = QgsLayerTree::toGroup( selectedNodes.at( 0 ) );
+      mMapStyleWidget->setEnabled( true );
+      if ( mMapStylingDock->isVisible() )
+      {
+        mMapStyleWidget->setLayerTreeGroup( groupNode );
+      }
+    }
+  }
+
   mActionDuplicateLayer->setEnabled( !selectedLayers.isEmpty() );
   mActionSetLayerScaleVisibility->setEnabled( !selectedLayers.isEmpty() );
   mActionSetLayerCRS->setEnabled( !selectedLayers.isEmpty() );
@@ -15911,6 +15969,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       break;
 
     case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::GroupLayer:
       break;
 
     case QgsMapLayerType::AnnotationLayer:
@@ -16187,7 +16246,7 @@ void QgisApp::keyPressEvent( QKeyEvent *e )
 {
   emit keyPressed( e );
 
-#if 0 && defined(_MSC_VER) && defined(QGISDEBUG)
+#if 0 && defined(QGISDEBUG)
   if ( e->key() == Qt::Key_Backslash && e->modifiers() == Qt::ControlModifier )
   {
     QgsCrashHandler::handle( 0 );
@@ -16853,6 +16912,8 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
       break;
     }
 
+    case QgsMapLayerType::GroupLayer:
+      break;
   }
 }
 
@@ -17184,7 +17245,7 @@ void QgisApp::showSystemNotification( const QString &title, const QString &messa
   settings.svgAppIconPath = QgsApplication::iconsPath() + QStringLiteral( "qgis_icon.svg" );
   settings.pngAppIconPath = QgsApplication::appIconPath();
 
-  QgsNative::NotificationResult result = QgsGui::instance()->nativePlatformInterface()->showDesktopNotification( title, message, settings );
+  QgsNative::NotificationResult result = QgsGui::nativePlatformInterface()->showDesktopNotification( title, message, settings );
 
   if ( !result.successful )
   {
@@ -17506,12 +17567,14 @@ void QgisApp::saveProjectToProjectStorage( const QString &uri )
   }
 }
 
+#ifdef HAVE_CRASH_HANDLER
 void QgisApp::triggerCrashHandler()
 {
 #ifdef Q_OS_WIN
   RaiseException( 0x12345678, 0, 0, nullptr );
 #endif
 }
+#endif
 
 void QgisApp::addTabifiedDockWidget( Qt::DockWidgetArea area, QDockWidget *dockWidget, const QStringList &tabifyWith, bool raiseTab )
 {

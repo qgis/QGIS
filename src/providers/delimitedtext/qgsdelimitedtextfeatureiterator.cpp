@@ -516,6 +516,23 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature &feature, int f
   QVariant val;
   switch ( mSource->mFields.at( fieldIdx ).type() )
   {
+    case QVariant::Bool:
+    {
+      Q_ASSERT( mSource->mFieldBooleanLiterals.contains( fieldIdx ) );
+      if ( value.compare( mSource->mFieldBooleanLiterals[ fieldIdx ].first, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+      {
+        val = true;
+      }
+      else if ( value.compare( mSource->mFieldBooleanLiterals[ fieldIdx ].second, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+      {
+        val = false;
+      }
+      else
+      {
+        val = QVariant( QVariant::Bool );
+      }
+      break;
+    }
     case QVariant::Int:
     {
       int ivalue = 0;
@@ -526,6 +543,23 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature &feature, int f
         val = QVariant( ivalue );
       else
         val = QVariant( mSource->mFields.at( fieldIdx ).type() );
+      break;
+    }
+    case QVariant::LongLong:
+    {
+      if ( ! value.isEmpty() )
+      {
+        bool ok;
+        val = value.toLongLong( &ok );
+        if ( ! ok )
+        {
+          val = QVariant( mSource->mFields.at( fieldIdx ).type() );
+        }
+      }
+      else
+      {
+        val = QVariant( mSource->mFields.at( fieldIdx ).type() );
+      }
       break;
     }
     case QVariant::Double:
@@ -599,6 +633,7 @@ QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimited
   , mXyDms( p->mXyDms )
   , attributeColumns( p->attributeColumns )
   , mCrs( p->mCrs )
+  , mFieldBooleanLiterals( p->mFieldBooleanLiterals )
 {
   QUrl url = p->mFile->url();
 

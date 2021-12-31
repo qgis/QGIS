@@ -948,7 +948,7 @@ void QgsSpatiaLiteProvider::fetchConstraints()
 
     QString sqlDef = QString::fromUtf8( results[ 1 ] );
     // extract definition
-    QRegularExpression re( QStringLiteral( R"raw(\((.*)\))raw" ) );
+    QRegularExpression re( QStringLiteral( R"raw(\((.+)\))raw" ) );
     QRegularExpressionMatch match = re.match( sqlDef );
     if ( match.hasMatch() )
     {
@@ -5977,7 +5977,7 @@ QgsTransaction *QgsSpatiaLiteProvider::transaction( ) const
   return static_cast<QgsTransaction *>( mTransaction );
 }
 
-QList<QgsRelation> QgsSpatiaLiteProvider::discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const
+QList<QgsRelation> QgsSpatiaLiteProvider::discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const
 {
   QList<QgsRelation> output;
   const QString sql = QStringLiteral( "PRAGMA foreign_key_list(%1)" ).arg( QgsSqliteUtils::quotedIdentifier( mTableName ) );
@@ -6004,7 +6004,7 @@ QList<QgsRelation> QgsSpatiaLiteProvider::discoverRelations( const QgsVectorLaye
         {
           QgsRelation relation;
           relation.setName( name );
-          relation.setReferencingLayer( self->id() );
+          relation.setReferencingLayer( target->id() );
           relation.setReferencedLayer( foundLayer->id() );
           relation.addFieldPair( fkColumn, refColumn );
           relation.generateId();

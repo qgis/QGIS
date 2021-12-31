@@ -85,6 +85,7 @@
 
 #include "layout/qgspagesizeregistry.h"
 #include "qgsrecentstylehandler.h"
+#include "qgsdatetimefieldformatter.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 #include <QDesktopWidget>
@@ -173,7 +174,7 @@ Q_GLOBAL_STATIC( QString, sAuthDbDirPath )
 
 Q_GLOBAL_STATIC( QString, sUserName )
 Q_GLOBAL_STATIC( QString, sUserFullName )
-Q_GLOBAL_STATIC_WITH_ARGS( QString, sPlatformName, ( "desktop" ) )
+Q_GLOBAL_STATIC_WITH_ARGS( QString, sPlatformName, ( "external" ) )
 Q_GLOBAL_STATIC( QString, sTranslation )
 
 Q_GLOBAL_STATIC( QTemporaryDir, sIconCacheDir )
@@ -230,6 +231,8 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
   mApplicationMembers = new ApplicationMembers();
 
   *sProfilePath() = profileFolder;
+
+  connect( instance(), &QgsApplication::localeChanged, &QgsDateTimeFieldFormatter::applyLocaleChange );
 }
 
 void QgsApplication::init( QString profileFolder )
@@ -263,6 +266,7 @@ void QgsApplication::init( QString profileFolder )
     qRegisterMetaType<QgsProcessingOutputLayerDefinition>( "QgsProcessingOutputLayerDefinition" );
     qRegisterMetaType<QgsUnitTypes::LayoutUnit>( "QgsUnitTypes::LayoutUnit" );
     qRegisterMetaType<QgsFeatureId>( "QgsFeatureId" );
+    qRegisterMetaType<QgsFields>( "QgsFields" );
     qRegisterMetaType<QgsFeatureIds>( "QgsFeatureIds" );
     qRegisterMetaType<QgsProperty>( "QgsProperty" );
     qRegisterMetaType<QgsFeatureStoreList>( "QgsFeatureStoreList" );
@@ -801,7 +805,7 @@ QCursor QgsApplication::getThemeCursor( Cursor cursor )
   if ( ! icon.isNull( ) )
   {
     // Apply scaling
-    float scale = Qgis::UI_SCALE_FACTOR * app->fontMetrics().height() / 32.0;
+    float scale = Qgis::UI_SCALE_FACTOR * QgsApplication::fontMetrics().height() / 32.0;
     cursorIcon = QCursor( icon.pixmap( std::ceil( scale * 32 ), std::ceil( scale * 32 ) ), std::ceil( scale * activeX ), std::ceil( scale * activeY ) );
   }
   if ( app )
@@ -1308,6 +1312,12 @@ QString QgsApplication::locale()
   {
     return QLocale().name().left( 2 );
   }
+}
+
+void QgsApplication::setLocale( const QLocale &locale )
+{
+  QLocale::setDefault( locale );
+  emit instance()->localeChanged();
 }
 
 QString QgsApplication::userThemesFolder()

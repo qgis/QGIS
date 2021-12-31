@@ -42,7 +42,6 @@ QgsLayoutLabelWidget::QgsLayoutLabelWidget( QgsLayoutItemLabel *label )
   connect( mInsertExpressionButton, &QPushButton::clicked, this, &QgsLayoutLabelWidget::mInsertExpressionButton_clicked );
   connect( mMarginXDoubleSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLabelWidget::mMarginXDoubleSpinBox_valueChanged );
   connect( mMarginYDoubleSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLabelWidget::mMarginYDoubleSpinBox_valueChanged );
-  connect( mFontColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutLabelWidget::mFontColorButton_colorChanged );
   connect( mCenterRadioButton, &QRadioButton::clicked, this, &QgsLayoutLabelWidget::mCenterRadioButton_clicked );
   connect( mLeftRadioButton, &QRadioButton::clicked, this, &QgsLayoutLabelWidget::mLeftRadioButton_clicked );
   connect( mRightRadioButton, &QRadioButton::clicked, this, &QgsLayoutLabelWidget::mRightRadioButton_clicked );
@@ -51,15 +50,13 @@ QgsLayoutLabelWidget::QgsLayoutLabelWidget( QgsLayoutItemLabel *label )
   connect( mMiddleRadioButton, &QRadioButton::clicked, this, &QgsLayoutLabelWidget::mMiddleRadioButton_clicked );
   setPanelTitle( tr( "Label Properties" ) );
 
-  mFontButton->setMode( QgsFontButton::ModeQFont );
+  mFontButton->setMode( QgsFontButton::ModeTextRenderer );
+  mFontButton->setDialogTitle( tr( "Label Font" ) );
+  mFontButton->registerExpressionContextGenerator( this );
 
   //add widget for general composer item properties
   mItemPropertiesWidget = new QgsLayoutItemPropertiesWidget( this, label );
   mainLayout->addWidget( mItemPropertiesWidget );
-
-  mFontColorButton->setColorDialogTitle( tr( "Select Font Color" ) );
-  mFontColorButton->setContext( QStringLiteral( "composer" ) );
-  mFontColorButton->setAllowOpacity( true );
 
   mMarginXDoubleSpinBox->setClearValue( 0.0 );
   mMarginYDoubleSpinBox->setClearValue( 0.0 );
@@ -93,12 +90,23 @@ QgsLayoutLabelWidget::QgsLayoutLabelWidget( QgsLayoutItemLabel *label )
   expressionMenu->addAction( convertToStaticAction );
   connect( convertToStaticAction, &QAction::triggered, mLabel, &QgsLayoutItemLabel::convertToStaticText );
   mInsertExpressionButton->setMenu( expressionMenu );
+
+  mFontButton->setLayer( coverageLayer() );
+  if ( mLabel->layout() )
+  {
+    connect( &mLabel->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mFontButton, &QgsFontButton::setLayer );
+  }
 }
 
 void QgsLayoutLabelWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout )
 {
   if ( mItemPropertiesWidget )
     mItemPropertiesWidget->setMasterLayout( masterLayout );
+}
+
+QgsExpressionContext QgsLayoutLabelWidget::createExpressionContext() const
+{
+  return mLabel->createExpressionContext();
 }
 
 void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu *menu, const std::function<void ( const QString & )> &callback )
@@ -288,9 +296,8 @@ void QgsLayoutLabelWidget::fontChanged()
 {
   if ( mLabel )
   {
-    QFont newFont = mFontButton->currentFont();
     mLabel->beginCommand( tr( "Change Label Font" ), QgsLayoutItem::UndoLabelFont );
-    mLabel->setFont( newFont );
+    mLabel->setTextFormat( mFontButton->textFormat() );
     mLabel->update();
     mLabel->endCommand();
   }
@@ -327,19 +334,6 @@ void QgsLayoutLabelWidget::mMarginYDoubleSpinBox_valueChanged( double d )
     mLabel->update();
     mLabel->endCommand();
   }
-}
-
-void QgsLayoutLabelWidget::mFontColorButton_colorChanged( const QColor &newLabelColor )
-{
-  if ( !mLabel )
-  {
-    return;
-  }
-
-  mLabel->beginCommand( tr( "Change Label Color" ), QgsLayoutItem::UndoLabelFontColor );
-  mLabel->setFontColor( newLabelColor );
-  mLabel->update();
-  mLabel->endCommand();
 }
 
 void QgsLayoutLabelWidget::mInsertExpressionButton_clicked()
@@ -458,8 +452,7 @@ void QgsLayoutLabelWidget::setGuiElementValues()
   mJustifyRadioButton->setChecked( mLabel->hAlign() == Qt::AlignJustify );
   mCenterRadioButton->setChecked( mLabel->hAlign() == Qt::AlignHCenter );
   mRightRadioButton->setChecked( mLabel->hAlign() == Qt::AlignRight );
-  mFontColorButton->setColor( mLabel->fontColor() );
-  mFontButton->setCurrentFont( mLabel->font() );
+  mFontButton->setTextFormat( mLabel->textFormat() );
   mVerticalAlignementLabel->setDisabled( mLabel->mode() == QgsLayoutItemLabel::ModeHtml );
   mTopRadioButton->setDisabled( mLabel->mode() == QgsLayoutItemLabel::ModeHtml );
   mMiddleRadioButton->setDisabled( mLabel->mode() == QgsLayoutItemLabel::ModeHtml );
@@ -481,6 +474,5 @@ void QgsLayoutLabelWidget::blockAllSignals( bool block )
   mCenterRadioButton->blockSignals( block );
   mRightRadioButton->blockSignals( block );
   mJustifyRadioButton->blockSignals( block );
-  mFontColorButton->blockSignals( block );
   mFontButton->blockSignals( block );
 }

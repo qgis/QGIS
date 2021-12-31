@@ -160,6 +160,7 @@ Qgis::BrowserLayerType QgsLayerItem::typeFromMapLayer( QgsMapLayer *layer )
     case QgsMapLayerType::VectorTileLayer:
       return Qgis::BrowserLayerType::VectorTile;
     case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::GroupLayer:
       return Qgis::BrowserLayerType::Vector; // will never happen!
   }
   return Qgis::BrowserLayerType::Vector; // no warnings
@@ -265,6 +266,9 @@ QgsMimeDataUtils::UriList QgsLayerItem::mimeUris() const
       break;
     case QgsMapLayerType::PluginLayer:
       u.layerType = QStringLiteral( "plugin" );
+      break;
+    case QgsMapLayerType::GroupLayer:
+      u.layerType = QStringLiteral( "group" );
       break;
     case QgsMapLayerType::AnnotationLayer:
       u.layerType = QStringLiteral( "annotation" );

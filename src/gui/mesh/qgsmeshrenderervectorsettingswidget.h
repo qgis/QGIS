@@ -30,7 +30,10 @@ SIP_NO_FILE
 class QgsMeshLayer;
 
 /**
- * A widget for setup of the vector dataset renderer settings of
+ * \ingroup gui
+ * \class QgsMeshRendererVectorSettingsWidget
+ *
+ * \brief A widget for setup of the vector dataset renderer settings of
  * a mesh layer. The layer must be connected and an active dataset
  * must be selected.
  */

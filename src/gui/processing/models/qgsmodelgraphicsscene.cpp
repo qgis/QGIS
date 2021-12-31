@@ -484,7 +484,7 @@ void QgsModelGraphicsScene::setMessageBar( QgsMessageBar *messageBar )
 
 void QgsModelGraphicsScene::showWarning( const QString &shortMessage, const QString &title, const QString &longMessage, Qgis::MessageLevel level ) const
 {
-  QgsMessageBarItem *messageWidget = mMessageBar->createMessage( QString(), shortMessage );
+  QgsMessageBarItem *messageWidget = QgsMessageBar::createMessage( QString(), shortMessage );
   QPushButton *detailsButton = new QPushButton( tr( "Details" ) );
   connect( detailsButton, &QPushButton::clicked, detailsButton, [ = ]
   {

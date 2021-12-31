@@ -16,11 +16,10 @@
 #include "qgisinterface.h"
 #include "qgslogger.h"
 #include "qgsvectordataprovider.h"
-#include "qgsdelimitedtextprovider.h"
-#include "qgsdelimitedtextfile.h"
 #include "qgssettings.h"
 #include "qgsproviderregistry.h"
 #include "qgsgui.h"
+#include "qgsapplication.h"
 
 #include <QButtonGroup>
 #include <QFile>
@@ -42,7 +41,7 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
 {
 
   setupUi( this );
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDelimitedTextSourceSelect::showHelp );
 
@@ -58,13 +57,14 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
 
   connect( bgFileFormat, static_cast < void ( QButtonGroup::* )( int ) > ( &QButtonGroup::buttonClicked ), swFileFormat, &QStackedWidget::setCurrentIndex );
   connect( bgGeomType, static_cast < void ( QButtonGroup::* )( int ) > ( &QButtonGroup::buttonClicked ), swGeomType, &QStackedWidget::setCurrentIndex );
-  connect( bgGeomType, static_cast < void ( QButtonGroup::* )( int ) > ( &QButtonGroup::buttonClicked ), this, &QgsDelimitedTextSourceSelect::showCrsWidget );
+  connect( bgGeomType, static_cast < void ( QButtonGroup::* )( int ) > ( &QButtonGroup::buttonClicked ), this, &QgsDelimitedTextSourceSelect::updateCrsWidgetVisibility );
 
   cmbEncoding->clear();
   cmbEncoding->addItems( QgsVectorDataProvider::availableEncodings() );
   cmbEncoding->setCurrentIndex( cmbEncoding->findText( QStringLiteral( "UTF-8" ) ) );
 
   loadSettings();
+  mBooleanFalse->setEnabled( ! mBooleanTrue->text().isEmpty() );
   updateFieldsAndEnable();
 
   connect( txtLayerName, &QLineEdit::textChanged, this, &QgsDelimitedTextSourceSelect::enableAccept );
@@ -95,12 +95,26 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
 
   connect( crsGeometry, &QgsProjectionSelectionWidget::crsChanged, this, &QgsDelimitedTextSourceSelect::updateFieldsAndEnable );
 
+  connect( mBooleanTrue, &QLineEdit::textChanged, mBooleanFalse, [ = ]
+  {
+    mBooleanFalse->setEnabled( ! mBooleanTrue->text().isEmpty() );
+    updateFieldsAndEnable();
+  } );
+
+  connect( mBooleanFalse, &QLineEdit::textChanged, mBooleanFalse, [ = ]
+  {
+    updateFieldsAndEnable();
+  } );
+
   const QgsSettings settings;
   mFileWidget->setDialogTitle( tr( "Choose a Delimited Text File to Open" ) );
   mFileWidget->setFilter( tr( "Text files" ) + QStringLiteral( " (*.txt *.csv *.dat *.wkt);;" ) + tr( "All files" ) + QStringLiteral( " (* *.*)" ) );
   mFileWidget->setSelectedFilter( settings.value( mSettingsKey + QStringLiteral( "/file_filter" ), QString() ).toString() );
   mMaxFields = settings.value( mSettingsKey + QStringLiteral( "/max_fields" ), DEFAULT_MAX_FIELDS ).toInt();
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, &QgsDelimitedTextSourceSelect::updateFileName );
+
+  updateCrsWidgetVisibility();
+  mScanWidget->hide( );
 }
 
 void QgsDelimitedTextSourceSelect::addButtonClicked()
@@ -137,87 +151,18 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
     return;
   }
 
+  cancelScanTask();
+
   //Build the delimited text URI from the user provided information
+  const QString datasourceUrl { url( )};
 
-  QUrl url = mFile->url();
-  QUrlQuery query( url );
-
-  query.addQueryItem( QStringLiteral( "detectTypes" ), cbxDetectTypes->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
-
-  if ( cbxPointIsComma->isChecked() )
-  {
-    query.addQueryItem( QStringLiteral( "decimalPoint" ), QStringLiteral( "," ) );
-  }
-  if ( cbxXyDms->isChecked() )
-  {
-    query.addQueryItem( QStringLiteral( "xyDms" ), QStringLiteral( "yes" ) );
-  }
-
-  bool haveGeom = true;
-  if ( geomTypeXY->isChecked() )
-  {
-    QString field;
-    if ( !cmbXField->currentText().isEmpty() && !cmbYField->currentText().isEmpty() )
-    {
-      field = cmbXField->currentText();
-      query.addQueryItem( QStringLiteral( "xField" ), field );
-      field = cmbYField->currentText();
-      query.addQueryItem( QStringLiteral( "yField" ), field );
-    }
-    if ( !cmbZField->currentText().isEmpty() )
-    {
-      field = cmbZField->currentText();
-      query.addQueryItem( QStringLiteral( "zField" ), field );
-    }
-    if ( !cmbMField->currentText().isEmpty() )
-    {
-      field = cmbMField->currentText();
-      query.addQueryItem( QStringLiteral( "mField" ), field );
-    }
-  }
-  else if ( geomTypeWKT->isChecked() )
-  {
-    if ( ! cmbWktField->currentText().isEmpty() )
-    {
-      const QString field = cmbWktField->currentText();
-      query.addQueryItem( QStringLiteral( "wktField" ), field );
-    }
-    if ( cmbGeometryType->currentIndex() > 0 )
-    {
-      query.addQueryItem( QStringLiteral( "geomType" ), cmbGeometryType->currentText() );
-    }
-  }
-  else
-  {
-    haveGeom = false;
-    query.addQueryItem( QStringLiteral( "geomType" ), QStringLiteral( "none" ) );
-  }
-  if ( haveGeom )
-  {
-    const QgsCoordinateReferenceSystem crs = crsGeometry->crs();
-    if ( crs.isValid() )
-    {
-      query.addQueryItem( QStringLiteral( "crs" ), crs.authid() );
-    }
-
-  }
-
-  if ( ! geomTypeNone->isChecked() )
-  {
-    query.addQueryItem( QStringLiteral( "spatialIndex" ), cbxSpatialIndex->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
-  }
-
-  query.addQueryItem( QStringLiteral( "subsetIndex" ), cbxSubsetIndex->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
-  query.addQueryItem( QStringLiteral( "watchFile" ), cbxWatchFile->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
-
-  url.setQuery( query );
   // store the settings
   saveSettings();
   saveSettingsForFile( mFileWidget->filePath() );
 
 
   // add the layer to the map
-  emit addVectorLayer( QString::fromLatin1( url.toEncoded() ), txtLayerName->text() );
+  emit addVectorLayer( datasourceUrl, txtLayerName->text() );
 
   // clear the file and layer name show something has happened, ready for another file
 
@@ -306,6 +251,8 @@ void QgsDelimitedTextSourceSelect::loadSettings( const QString &subkey, bool loa
   cbxSubsetIndex->setChecked( settings.value( key + "/subsetIndex", "false" ) == "true" );
   cbxSpatialIndex->setChecked( settings.value( key + "/spatialIndex", "false" ) == "true" );
   cbxWatchFile->setChecked( settings.value( key + "/watchFile", "false" ) == "true" );
+  mBooleanFalse->setText( settings.value( key + "/booleanFalse", "" ).toString() );
+  mBooleanTrue->setText( settings.value( key + "/booleanTrue", "" ).toString() );
 
   if ( loadGeomSettings )
   {
@@ -352,6 +299,8 @@ void QgsDelimitedTextSourceSelect::saveSettings( const QString &subkey, bool sav
   settings.setValue( key + "/subsetIndex", cbxSubsetIndex->isChecked() ? "true" : "false" );
   settings.setValue( key + "/spatialIndex", cbxSpatialIndex->isChecked() ? "true" : "false" );
   settings.setValue( key + "/watchFile", cbxWatchFile->isChecked() ? "true" : "false" );
+  settings.setValue( key + "/booleanFalse", mBooleanFalse->text() );
+  settings.setValue( key + "/booleanTrue", mBooleanTrue->text() );
   if ( saveGeomSettings )
   {
     QString geomColumnType = QStringLiteral( "none" );
@@ -462,6 +411,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     if ( status != QgsDelimitedTextFile::RecordOk ) { mBadRowCount++; continue; }
     counter++;
 
+
     // Look at count of non-blank fields
 
     int nv = values.size();
@@ -524,6 +474,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     }
   }
 
+
   QStringList fieldList = mFile->fieldNames();
 
   if ( isEmpty.size() < fieldList.size() )
@@ -537,9 +488,71 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     tblSample->setColumnCount( fieldList.size() );
   }
 
+  tblSample->insertRow( 0 );
+  QStringList verticalHeaderLabels;
+  verticalHeaderLabels.push_back( QString( ) );
+
+  for ( int i = 1; i <= tblSample->rowCount(); i++ )
+  {
+    verticalHeaderLabels.push_back( QString::number( i ) );
+  }
+
+  tblSample->setVerticalHeaderLabels( verticalHeaderLabels );
+
+
+  for ( int column = 0; column < tblSample->columnCount(); column++ )
+  {
+    QComboBox *typeCombo = new QComboBox( tblSample );
+    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) ), tr( "Text" ), "text" );
+    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole Number (integer)" ), "integer" );
+    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole Number (integer - 64 bit)" ), "longlong" );
+    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) ), tr( "Decimal Number" ), "double" );
+    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBool.svg" ) ), tr( "Boolean" ), "bool" );
+    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDate.svg" ) ), tr( "Date" ), "date" );
+    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldTime.svg" ) ), tr( "Time" ), "time" );
+    typeCombo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDateTime.svg" ) ), tr( "Date and Time" ), "datetime" );
+    connect( typeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+    {
+      mOverriddenFields.insert( column );
+    } );
+    tblSample->setCellWidget( 0, column, typeCombo );
+  }
+
   tblSample->setHorizontalHeaderLabels( fieldList );
   tblSample->resizeColumnsToContents();
   tblSample->resizeRowsToContents();
+
+  // Run the scan in a separate thread
+  cancelScanTask();
+
+  mScanTask = new QgsDelimitedTextFileScanTask( url( /* skip overridden types */ true ) );
+  mCancelButton->show();
+  connect( mScanTask, &QgsDelimitedTextFileScanTask::scanCompleted, this, [ = ]( const QgsFields & fields )
+  {
+    updateFieldTypes( fields );
+    mScanWidget->hide( );
+  } );
+
+  connect( mScanTask, &QgsDelimitedTextFileScanTask::scanStarted, this, [ = ]( const QgsFields & fields )
+  {
+    updateFieldTypes( fields );
+  } );
+
+  connect( mCancelButton, &QPushButton::clicked, this, &QgsDelimitedTextSourceSelect::cancelScanTask );
+
+  connect( mScanTask, &QgsDelimitedTextFileScanTask::processedCountChanged, this, [ = ]( unsigned long long recordsScanned )
+  {
+    mScanWidget->show();
+    mProgressLabel->setText( tr( "Column types detection in progress: %L1 records read" ).arg( static_cast<unsigned long long>( recordsScanned ) ) );
+  } );
+
+  // This is required because QgsTask emits a progress changed 100 when done
+  connect( mScanTask, &QgsDelimitedTextFileScanTask::taskCompleted, this, [ = ]
+  {
+    mScanWidget->hide( );
+  } );
+
+  QgsApplication::taskManager()->addTask( mScanTask, 100 );
 
   // We don't know anything about a text based field other
   // than its name. All fields are assumed to be text
@@ -772,10 +785,45 @@ bool QgsDelimitedTextSourceSelect::validate()
     }
 
   }
+
+  if ( mBooleanTrue->text().isEmpty() != mBooleanFalse->text().isEmpty() )
+  {
+    message = tr( "Custom boolean values for \"true\" or \"false\" is missing." );
+  }
+
+  if ( ! message.isEmpty() )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Validation error: %1" ).arg( message ), 2 );
+  }
+
   lblStatus->setText( message );
   return enabled;
 }
 
+void QgsDelimitedTextSourceSelect::updateFieldTypes( const QgsFields &fields )
+{
+
+  mFields = fields;
+
+  for ( int column = 0; column < tblSample->columnCount(); column++ )
+  {
+    if ( ! mOverriddenFields.contains( column ) )
+    {
+      const QString fieldName { tblSample->horizontalHeaderItem( column )->text() };
+      const int fieldIdx { mFields.lookupField( fieldName ) };
+      if ( fieldIdx >= 0 )
+      {
+        QComboBox *typeCombo { qobject_cast<QComboBox *>( tblSample->cellWidget( 0, column ) ) };
+        const QString fieldTypeName { mFields.field( fieldIdx ).typeName() };
+        if ( typeCombo && typeCombo->currentData( ) != fieldTypeName && typeCombo->findData( fieldTypeName ) >= 0 )
+        {
+          QgsDebugMsgLevel( QStringLiteral( "Setting field type %1 from %2 to %3" ).arg( fieldName, typeCombo->currentData().toString(), fieldTypeName ), 2 );
+          QgsSignalBlocker( typeCombo )->setCurrentIndex( typeCombo->findData( fieldTypeName ) );
+        }
+      }
+    }
+  }
+}
 
 void QgsDelimitedTextSourceSelect::enableAccept()
 {
@@ -787,8 +835,151 @@ void QgsDelimitedTextSourceSelect::showHelp()
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#importing-a-delimited-text-file" ) );
 }
 
-void QgsDelimitedTextSourceSelect::showCrsWidget()
+void QgsDelimitedTextSourceSelect::updateCrsWidgetVisibility()
 {
   crsGeometry->setVisible( !geomTypeNone->isChecked() );
   textLabelCrs->setVisible( !geomTypeNone->isChecked() );
+}
+
+QString QgsDelimitedTextSourceSelect::url( bool skipOverriddenTypes )
+{
+
+  QUrl url = mFile->url();
+  QUrlQuery query( url );
+
+  query.addQueryItem( QStringLiteral( "detectTypes" ), cbxDetectTypes->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
+
+  if ( cbxPointIsComma->isChecked() )
+  {
+    query.addQueryItem( QStringLiteral( "decimalPoint" ), QStringLiteral( "," ) );
+  }
+  if ( cbxXyDms->isChecked() )
+  {
+    query.addQueryItem( QStringLiteral( "xyDms" ), QStringLiteral( "yes" ) );
+  }
+
+  if ( ! mBooleanFalse->text().isEmpty() && ! mBooleanTrue->text().isEmpty() )
+  {
+    query.addQueryItem( QStringLiteral( "booleanFalse" ), mBooleanFalse->text() );
+    query.addQueryItem( QStringLiteral( "booleanTrue" ), mBooleanTrue->text() );
+  }
+
+  bool haveGeom = true;
+  if ( geomTypeXY->isChecked() )
+  {
+    QString field;
+    if ( !cmbXField->currentText().isEmpty() && !cmbYField->currentText().isEmpty() )
+    {
+      field = cmbXField->currentText();
+      query.addQueryItem( QStringLiteral( "xField" ), field );
+      field = cmbYField->currentText();
+      query.addQueryItem( QStringLiteral( "yField" ), field );
+    }
+    if ( !cmbZField->currentText().isEmpty() )
+    {
+      field = cmbZField->currentText();
+      query.addQueryItem( QStringLiteral( "zField" ), field );
+    }
+    if ( !cmbMField->currentText().isEmpty() )
+    {
+      field = cmbMField->currentText();
+      query.addQueryItem( QStringLiteral( "mField" ), field );
+    }
+  }
+  else if ( geomTypeWKT->isChecked() )
+  {
+    if ( ! cmbWktField->currentText().isEmpty() )
+    {
+      const QString field = cmbWktField->currentText();
+      query.addQueryItem( QStringLiteral( "wktField" ), field );
+    }
+    if ( cmbGeometryType->currentIndex() > 0 )
+    {
+      query.addQueryItem( QStringLiteral( "geomType" ), cmbGeometryType->currentText() );
+    }
+  }
+  else
+  {
+    haveGeom = false;
+    query.addQueryItem( QStringLiteral( "geomType" ), QStringLiteral( "none" ) );
+  }
+  if ( haveGeom )
+  {
+    const QgsCoordinateReferenceSystem crs = crsGeometry->crs();
+    if ( crs.isValid() )
+    {
+      query.addQueryItem( QStringLiteral( "crs" ), crs.authid() );
+    }
+
+  }
+
+  if ( ! geomTypeNone->isChecked() )
+  {
+    query.addQueryItem( QStringLiteral( "spatialIndex" ), cbxSpatialIndex->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
+  }
+
+  query.addQueryItem( QStringLiteral( "subsetIndex" ), cbxSubsetIndex->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
+  query.addQueryItem( QStringLiteral( "watchFile" ), cbxWatchFile->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
+
+  if ( ! skipOverriddenTypes )
+  {
+    // Set field types if overridden
+    for ( int column = 0; column < tblSample->columnCount(); column++ )
+    {
+      const QString fieldName { tblSample->horizontalHeaderItem( column )->text() };
+      const int fieldIdx { mFields.lookupField( fieldName ) };
+      if ( fieldIdx >= 0 )
+      {
+        QComboBox *typeCombo { qobject_cast<QComboBox *>( tblSample->cellWidget( 0, column ) ) };
+        const QString fieldTypeName { mFields.field( fieldName ).typeName() };
+        if ( typeCombo && typeCombo->currentData().toString() != fieldTypeName )
+        {
+          QgsDebugMsgLevel( QStringLiteral( "Overriding field %1 from %2 to %3" ).arg( fieldName, fieldTypeName, typeCombo->currentData().toString() ), 2 );
+          query.addQueryItem( QStringLiteral( "field" ),
+                              QString( fieldName ).replace( ':', QLatin1String( "%3A" ) ) + ':' +  typeCombo->currentData().toString() );
+        }
+      }
+    }
+  }
+
+  url.setQuery( query );
+  return QString::fromLatin1( url.toEncoded() );
+}
+
+void QgsDelimitedTextSourceSelect::cancelScanTask()
+{
+  // This will cancel the existing task (if any)
+  if ( mScanTask )
+  {
+    mScanTask->cancel();
+    mScanTask = nullptr;
+  }
+}
+
+bool QgsDelimitedTextFileScanTask::run()
+{
+  QgsDelimitedTextProvider provider(
+    mDataSource,
+    QgsDataProvider::ProviderOptions(),
+    QgsDataProvider::ReadFlag::SkipFeatureCount | QgsDataProvider::ReadFlag::SkipGetExtent | QgsDataProvider::ReadFlag::SkipFullScan );
+
+  connect( &mFeedback, &QgsFeedback::processedCountChanged, this, &QgsDelimitedTextFileScanTask::processedCountChanged );
+
+  if ( provider.isValid() )
+  {
+    emit scanStarted( provider.fields() );
+    provider.scanFile( false, true, &mFeedback );
+    emit scanCompleted( provider.fields() );
+  }
+  else
+  {
+    emit scanCompleted( QgsFields() );
+  }
+  return true;
+}
+
+void QgsDelimitedTextFileScanTask::cancel()
+{
+  mFeedback.cancel();
+  QgsTask::cancel();
 }

@@ -201,6 +201,7 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
       case QgsMapLayerType::RasterLayer:
         return !canUseLayer( qobject_cast< QgsRasterLayer * >( layer ) );
       case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::GroupLayer:
         return true;
       case QgsMapLayerType::MeshLayer:
         return !canUseLayer( qobject_cast< QgsMeshLayer * >( layer ) );
@@ -362,7 +363,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
     }
     else
     {
-      pointCloudLayer = std::make_unique< QgsPointCloudLayer >( uri, name, QStringLiteral( "pointcloud" ), pointCloudOptions );
+      pointCloudLayer = std::make_unique< QgsPointCloudLayer >( uri, name, QStringLiteral( "pdal" ), pointCloudOptions );
     }
     if ( pointCloudLayer->isValid() )
     {
@@ -1311,6 +1312,11 @@ QString QgsProcessingUtils::defaultRasterExtension()
   if ( setting == -1 )
     return QStringLiteral( "tif" );
   return QgsRasterFileWriter::supportedFormatExtensions().value( setting, QStringLiteral( "tif" ) );
+}
+
+QString QgsProcessingUtils::defaultPointCloudExtension()
+{
+  return QStringLiteral( "las" );
 }
 
 //

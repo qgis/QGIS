@@ -79,6 +79,7 @@ class TestQgsVectorLayer : public QObject
     void testAddTopologicalPoints();
     void testCopyPasteFieldConfiguration();
     void testCopyPasteFieldConfiguration_data();
+    void testFieldExpression();
 };
 
 void TestQgsVectorLayer::initTestCase()
@@ -468,6 +469,17 @@ void TestQgsVectorLayer::testCopyPasteFieldConfiguration()
   QVERIFY( layer3.importNamedStyle( doc2, errorMsg, categories ) );
   QCOMPARE( layer3.editorWidgetSetup( 0 ).type(), categories.testFlag( QgsMapLayer::Forms ) ? QStringLiteral( "ValueMap" ) : QString( "" ) );
   QCOMPARE( layer3.fieldConfigurationFlags( 0 ), categories.testFlag( QgsMapLayer::Fields ) ? QgsField::ConfigurationFlag::NotSearchable : QgsField::ConfigurationFlags() );
+}
+
+void TestQgsVectorLayer::testFieldExpression()
+{
+  QgsVectorLayer layer1( QStringLiteral( "Point?field=name:string" ), QStringLiteral( "layer1" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer1.isValid() );
+
+  layer1.addExpressionField( QStringLiteral( "'abc'" ), QgsField( QStringLiteral( "virtual_field" ), QVariant::String ) );
+
+  QCOMPARE( layer1.expressionField( layer1.fields().lookupField( QStringLiteral( "virtual_field" ) ) ),  QStringLiteral( "'abc'" ) );
+  QCOMPARE( layer1.expressionField( layer1.fields().lookupField( QStringLiteral( "name" ) ) ),  QString() );
 }
 
 QGSTEST_MAIN( TestQgsVectorLayer )

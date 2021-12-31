@@ -157,6 +157,7 @@ QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
       case QgsMapLayerType::VectorTileLayer:
       case QgsMapLayerType::AnnotationLayer:
       case QgsMapLayerType::PointCloudLayer:
+      case QgsMapLayerType::GroupLayer:
         break;
     }
   }
@@ -430,8 +431,6 @@ bool QgsGeoPackageVectorLayerItem::executeDeleteLayer( QString &errCause )
   return true;
 }
 
-///@endcond
-
 
 bool QgsGeoPackageCollectionItem::layerCollection() const
 {
@@ -456,3 +455,5 @@ QgsMimeDataUtils::UriList QgsGeoPackageCollectionItem::mimeUris() const
 
   return { collectionUri };
 }
+
+///@endcond

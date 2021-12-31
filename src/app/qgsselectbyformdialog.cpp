@@ -62,6 +62,7 @@ void QgsSelectByFormDialog::setMapCanvas( QgsMapCanvas *canvas )
   mMapCanvas = canvas;
   connect( mForm, &QgsAttributeForm::zoomToFeatures, this, &QgsSelectByFormDialog::zoomToFeatures );
   connect( mForm, &QgsAttributeForm::flashFeatures, this, &QgsSelectByFormDialog::flashFeatures );
+  connect( mForm, &QgsAttributeForm::openFilteredFeaturesAttributeTable, this, &QgsSelectByFormDialog::showFilteredFeaturesAttributeTable );
 }
 
 void QgsSelectByFormDialog::zoomToFeatures( const QString &filter )
@@ -92,5 +93,25 @@ void QgsSelectByFormDialog::flashFeatures( const QString &filter )
     mMessageBar->pushMessage( QString(),
                               tr( "No matching features found" ),
                               Qgis::MessageLevel::Info );
+  }
+}
+
+void QgsSelectByFormDialog::openFeaturesAttributeTable( const QString &filter )
+{
+  Q_ASSERT( mLayer );
+  QgsFeatureIterator it = mLayer->getFeatures( filter );
+  QgsFeature f;
+  if ( it.isValid() && it.nextFeature( f ) )
+  {
+    emit showFilteredFeaturesAttributeTable( filter );
+  }
+  else
+  {
+    if ( mMessageBar )
+    {
+      mMessageBar->pushMessage( QString(),
+                                tr( "No matching features found" ),
+                                Qgis::MessageLevel::Info );
+    }
   }
 }

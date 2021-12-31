@@ -32,7 +32,7 @@
  *
  * <dl>
  *   <dt>Canvas</dt>
- *   <dd>Show for canvas tools. Adds `@clicked_x` and `@clicked_y` in map coordinates.</dd>
+ *   <dd>Show for canvas tools. Adds `@click_x` and `@click_y` in map coordinates.</dd>
  *   <dt>Feature</dt>
  *   <dd>Show in feature specific places like the attribute table or feature
  *   form.</dd>
@@ -75,7 +75,7 @@ class CORE_EXPORT QgsActionScope
     /**
      * An expression scope may offer additional variables for an action scope.
      * This can be an `field_name` for the attribute which was clicked or
-     * `clicked_x` and `clicked_y` for actions which are available as map canvas clicks.
+     * `click_x` and `click_y` for actions which are available as map canvas clicks.
      *
      * \since QGIS 3.0
      */

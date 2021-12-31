@@ -24,7 +24,10 @@
 SIP_NO_FILE
 
 /**
- * A widget push button that store variable stroke width and call a widget to set parameters
+ * \ingroup gui
+ * \class QgsMeshVariableStrokeWidthButton
+ *
+ * \brief A widget push button that store variable stroke width and call a widget to set parameters
  */
 class QgsMeshVariableStrokeWidthButton: public QPushButton
 {
@@ -57,7 +60,10 @@ class QgsMeshVariableStrokeWidthButton: public QPushButton
 };
 
 /**
- * A widget to set parameters of variable stroke width
+ * \ingroup gui
+ * \class QgsMeshVariableStrokeWidthWidget
+ *
+ * \brief A widget to set parameters of variable stroke width
  */
 class QgsMeshVariableStrokeWidthWidget: public QgsPanelWidget, public Ui::QgsMeshVariableStrokeWidthWidget
 {

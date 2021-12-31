@@ -875,7 +875,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
       int idx = mSource->mPrimaryKeyAttrs.at( 0 );
       QgsField fld = mSource->mFields.at( idx );
 
-      QVariant v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), QString::number( mConn->getBinaryInt( queryResult, row, col ) ), fld.typeName() );
+      QVariant v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), QString::number( mConn->getBinaryInt( queryResult, row, col ) ), fld.typeName(), mConn );
       pkVal << v;
 
       if ( !subsetOfAttributes || fetchAttributes.contains( idx ) )
@@ -900,11 +900,11 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
 
         if ( fld.type() == QVariant::LongLong )
         {
-          v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), QString::number( mConn->getBinaryInt( queryResult, row, col ) ), fld.typeName() );
+          v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), QString::number( mConn->getBinaryInt( queryResult, row, col ) ), fld.typeName(), mConn );
         }
         else
         {
-          v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), queryResult.PQgetvalue( row, col ), fld.typeName() );
+          v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), queryResult.PQgetvalue( row, col ), fld.typeName(), mConn );
         }
         primaryKeyVals << v;
 
@@ -986,7 +986,7 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
       }
       else
       {
-        v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), QString::number( mConn->getBinaryInt( queryResult, row, col ) ), fld.typeName() );
+        v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), QString::number( mConn->getBinaryInt( queryResult, row, col ) ), fld.typeName(), mConn );
       }
       break;
     }
@@ -1002,7 +1002,7 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
     }
     default:
     {
-      v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), queryResult.PQgetvalue( row, col ), fld.typeName() );
+      v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), queryResult.PQgetvalue( row, col ), fld.typeName(), mConn );
       break;
     }
   }

@@ -70,7 +70,7 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
       const auto constProxyFactories = nam->proxyFactories();
       for ( QNetworkProxyFactory *f : constProxyFactories )
       {
-        QList<QNetworkProxy> systemproxies = f->systemProxyForQuery( query );
+        QList<QNetworkProxy> systemproxies = QNetworkProxyFactory::systemProxyForQuery( query );
         if ( !systemproxies.isEmpty() )
           return systemproxies;
 
@@ -352,6 +352,11 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   if ( QBuffer *buffer = qobject_cast<QBuffer *>( outgoingData ) )
   {
     content = buffer->buffer();
+  }
+  else if ( outgoingData )
+  {
+    content = outgoingData->readAll();
+    outgoingData->seek( 0 );
   }
 
   emit requestAboutToBeCreated( QgsNetworkRequestParameters( op, req, requestId, content ) );

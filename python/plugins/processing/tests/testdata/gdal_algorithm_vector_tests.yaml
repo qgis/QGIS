@@ -248,3 +248,29 @@ tests:
       OUTPUT:
         name: expected/gdal/dissolved_points.gml
         type: vector
+
+  - algorithm: gdal:convertformat
+    name: Convert only one layer from GPKG to GML (gdal:convertformat)
+    params:
+      CONVERT_ALL_LAYERS: false
+      INPUT:
+        name: points_lines.gpkg|layername=points
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/results_convert_only_one_layer_points.gml
+        type: vector
+
+  - algorithm: gdal:convertformat
+    name: Convert all layers from GPKG to GML (gdal:convertformat)
+    params:
+      CONVERT_ALL_LAYERS: true
+      INPUT:
+        name: points_lines.gpkg|layername=points
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/results_convert_all_layers_points_lines.gml
+        type: vector

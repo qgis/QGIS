@@ -35,11 +35,11 @@ QgsBookmarkEditorDialog::QgsBookmarkEditorDialog( QgsBookmark bookmark, bool inP
   , mMapCanvas( mapCanvas )
 {
   setupUi( this );
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   mName->setText( mBookmark.name() );
 
-  const QSet<QString> groups = qgis::listToSet( QgsProject::instance()->bookmarkManager()->groups() << QgsApplication::instance()->bookmarkManager()->groups() );
+  const QSet<QString> groups = qgis::listToSet( QgsProject::instance()->bookmarkManager()->groups() << QgsApplication::bookmarkManager()->groups() );
   QStringList groupsList = qgis::setToList( groups );
   groupsList.removeOne( QString() );
   groupsList.sort();
@@ -87,7 +87,7 @@ void QgsBookmarkEditorDialog::onAccepted()
     if ( mSaveLocation->currentData() == ProjectManager )
       QgsProject::instance()->bookmarkManager()->addBookmark( bookmark );
     else
-      QgsApplication::instance()->bookmarkManager()->addBookmark( bookmark );
+      QgsApplication::bookmarkManager()->addBookmark( bookmark );
   }
   else
   {
@@ -95,12 +95,12 @@ void QgsBookmarkEditorDialog::onAccepted()
     if ( mInProject )
       QgsProject::instance()->bookmarkManager()->updateBookmark( bookmark );
     else
-      QgsApplication::instance()->bookmarkManager()->updateBookmark( bookmark );
+      QgsApplication::bookmarkManager()->updateBookmark( bookmark );
 
     if ( !mInProject && mSaveLocation->currentData() == ProjectManager )
-      QgsApplication::instance()->bookmarkManager()->moveBookmark( bookmark.id(), QgsProject::instance()->bookmarkManager() );
+      QgsApplication::bookmarkManager()->moveBookmark( bookmark.id(), QgsProject::instance()->bookmarkManager() );
     else if ( mInProject && mSaveLocation->currentData() == ApplicationManager )
-      QgsProject::instance()->bookmarkManager()->moveBookmark( bookmark.id(), QgsApplication::instance()->bookmarkManager() );
+      QgsProject::instance()->bookmarkManager()->moveBookmark( bookmark.id(), QgsApplication::bookmarkManager() );
   }
 }
 

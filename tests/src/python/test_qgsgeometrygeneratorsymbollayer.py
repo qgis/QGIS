@@ -45,7 +45,9 @@ from qgis.core import (
     QgsRenderChecker,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
-    QgsArrowSymbolLayer
+    QgsArrowSymbolLayer,
+    QgsFeature,
+    QgsGeometry
 )
 
 from qgis.testing import start_app, unittest
@@ -266,6 +268,45 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         renderchecker.setMapSettings(mapsettings)
         renderchecker.setControlName('expected_geometrygenerator_opacity')
         res = renderchecker.runTest('geometrygenerator_opacity')
+        self.report += renderchecker.report()
+        self.assertTrue(res)
+
+    def test_generator_with_multipart_result_with_generator_subsymbol(self):
+        """
+        Test that generator subsymbol of generator renders all parts of multipart geometry results
+        """
+        lines = QgsVectorLayer('MultiLineString?crs=epsg:4326', 'Lines', 'memory')
+        self.assertTrue(lines.isValid())
+        f = QgsFeature()
+        f.setGeometry(QgsGeometry.fromWkt('MultiLineString((1 1, 2 1, 2 2),(3 1, 3 2, 4 2))'))
+        lines.dataProvider().addFeature(f)
+
+        sym = QgsLineSymbol.createSimple({'color': '#fffdbf6f', 'outline_width': 1})
+
+        parent_generator = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'segments_to_lines($geometry)'})
+        parent_generator.setSymbolType(QgsSymbol.Line)
+
+        child_generator = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'collect_geometries(offset_curve($geometry, -2), offset_curve($geometry,2))'})
+        child_generator.setUnits(QgsUnitTypes.RenderMillimeters)
+        child_generator.setSymbolType(QgsSymbol.Line)
+        child_generator.setSubSymbol(sym)
+
+        child_symbol = QgsLineSymbol()
+        child_symbol.changeSymbolLayer(0, child_generator)
+        parent_generator.setSubSymbol(child_symbol)
+
+        geom_symbol = QgsLineSymbol()
+        geom_symbol.changeSymbolLayer(0, parent_generator)
+        lines.renderer().setSymbol(geom_symbol)
+
+        mapsettings = QgsMapSettings(self.mapsettings)
+        mapsettings.setExtent(lines.extent())
+        mapsettings.setLayers([lines])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlName('expected_geometrygenerator_multipart_subsymbol')
+        res = renderchecker.runTest('geometrygenerator_multipart_subsymbol')
         self.report += renderchecker.report()
         self.assertTrue(res)
 

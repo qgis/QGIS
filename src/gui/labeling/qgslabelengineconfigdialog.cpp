@@ -167,7 +167,7 @@ QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QgsMapCanvas *canvas, QW
   setLayout( vLayout );
 
   setObjectName( QStringLiteral( "QgsLabelSettingsWidgetDialog" ) );
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
 }
 
 void QgsLabelEngineConfigDialog::accept()

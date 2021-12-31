@@ -69,6 +69,7 @@ set(TESTS
  testqgsgraduatedsymbolrenderer.cpp
  testqgshistogram.cpp
  testqgshstoreutils.cpp
+ testqgshttpheaders.cpp
  testqgsimagecache.cpp
  testqgsimageoperation.cpp
  testqgsinternalgeometryengine.cpp
@@ -192,6 +193,7 @@ set(TESTS
  testqgsvectorlayerjoinbuffer.cpp
  testqgsvectorlayerutils.cpp
  testqgsvectortilelayer.cpp
+ testqgsvectortileutils.cpp
  testqgsvectortilewriter.cpp
  testqgstiles.cpp
  testqgsweakrelation.cpp

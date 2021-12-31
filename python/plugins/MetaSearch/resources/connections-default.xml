@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Guidance: https://docs.qgis.org/testing/en/docs/user_manual/plugins/core_plugins/plugins_metasearch.html#managing-catalog-services -->
 <qgsCSWConnections version="1.0">
-    <csw name="Danmark: National CSW (geodata-info)" url="https://geodata-info.dk/srv/dan/csw"/>
-    <csw name="Finland: National CSW (Paikkatietohakemisto)" url="http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/csw"/>
-    <csw name="Iceland: National CSW (Iceland Service)" url="https://gatt.lmi.is/geonetwork/srv/eng/csw"/>
-    <csw name="Italy: National CSW (Geoportale Nazionale - Servizio di ricerca Italiano)" url="http://www.pcn.minambiente.it/geoportal/csw"/>
-    <csw name="Italy: RNDT - Repertorio Nazionale dei Dati Territoriali - Servizio di ricerca" url="https://geodati.gov.it/RNDT/csw"/>
-    <csw name="Italy: Istituto Nazionale di Geofisica e Vulcanologia (INGV)" url="https://ogc.ingv.it/csw/"/>
-    <csw name="New Zealand: LINZ Data Service" url="https://data.linz.govt.nz/services/csw/"/>
-    <csw name="Netherlands: National CSW (Nationaal Georegister)" url="http://www.nationaalgeoregister.nl/geonetwork/srv/dut/csw"/>
-    <csw name="Norway: National CSW (Geonorge)" url="http://www.geonorge.no/geonetwork/srv/no/csw"/>
-    <csw name="Sweden: National CSW" url="https://www.geodata.se/geodataportalen/srv/eng/csw-inspire"/>
-    <csw name="UK Location Catalogue Publishing Service" url="https://data.gov.uk/csw"/>
-    <csw name="UNEP GRID-Geneva Metadata Catalog" url="https://datacore-gn.unepgrid.ch/geonetwork/srv/eng/csw"/>
-    <csw name="Portugal: Sistema Nacional de Informação Geográfica (SNIG)" url="https://snig.dgterritorio.gov.pt/rndg/srv/eng/csw"/>
-    <csw name="Spain: Centro Nacional de Información Geográfica (CNIG)" url="http://www.ign.es/csw-inspire/srv/spa/csw"/>
-    <csw name="Germany: GDI-DE Geodatenkatalog.de" url="https://gdk.gdi-de.org/gdi-de/srv/ger/csw"/>
+    <csw type="OGC CSW 2.0.2" name="Danmark: National CSW (geodata-info)" url="https://geodata-info.dk/srv/dan/csw"/>
+    <csw type="OGC CSW 2.0.2" name="Finland: National CSW (Paikkatietohakemisto)" url="http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/csw"/>
+    <csw type="OGC CSW 2.0.2" name="Iceland: National CSW (Iceland Service)" url="https://gatt.lmi.is/geonetwork/srv/eng/csw"/>
+    <csw type="OGC CSW 2.0.2" name="Italy: National CSW (Geoportale Nazionale - Servizio di ricerca Italiano)" url="http://www.pcn.minambiente.it/geoportal/csw"/>
+    <csw type="OGC CSW 2.0.2" name="Italy: RNDT - Repertorio Nazionale dei Dati Territoriali - Servizio di ricerca" url="https://geodati.gov.it/RNDT/csw"/>
+    <csw type="OGC CSW 2.0.2" name="Italy: Istituto Nazionale di Geofisica e Vulcanologia (INGV)" url="https://ogc.ingv.it/csw/"/>
+    <csw type="OGC CSW 2.0.2" name="New Zealand: LINZ Data Service" url="https://data.linz.govt.nz/services/csw/"/>
+    <csw type="OGC CSW 2.0.2" name="Netherlands: National CSW (Nationaal Georegister)" url="http://www.nationaalgeoregister.nl/geonetwork/srv/dut/csw"/>
+    <csw type="OGC CSW 2.0.2" name="Norway: National CSW (Geonorge)" url="http://www.geonorge.no/geonetwork/srv/no/csw"/>
+    <csw type="OGC CSW 2.0.2" name="Sweden: National CSW" url="https://www.geodata.se/geodataportalen/srv/eng/csw-inspire"/>
+    <csw type="OGC CSW 2.0.2" name="UK Location Catalogue Publishing Service" url="https://data.gov.uk/csw"/>
+    <csw type="OGC CSW 2.0.2" name="UNEP GRID-Geneva Metadata Catalog" url="https://datacore-gn.unepgrid.ch/geonetwork/srv/eng/csw"/>
+    <csw type="OGC CSW 2.0.2" name="Portugal: Sistema Nacional de Informação Geográfica (SNIG)" url="https://snig.dgterritorio.gov.pt/rndg/srv/eng/csw"/>
+    <csw type="OGC CSW 2.0.2" name="Spain: Centro Nacional de Información Geográfica (CNIG)" url="http://www.ign.es/csw-inspire/srv/spa/csw"/>
+    <csw type="OGC CSW 2.0.2" name="Germany: GDI-DE Geodatenkatalog.de" url="https://gdk.gdi-de.org/gdi-de/srv/ger/csw"/>
+    <csw type="OGC CSW 2.0.2" name="Canada: Federal Geospatial Platform-Plateforme géospatiale fédérale (FGP-PGF)" url="https://maps.canada.ca/geonetwork/srv/csw"/>
+<!-- <csw type="OGC API - Records" name="Sample OARec entry" url="https://example.org/collections/collectionId"/> -->
 </qgsCSWConnections>

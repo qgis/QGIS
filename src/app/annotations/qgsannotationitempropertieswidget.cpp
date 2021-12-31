@@ -23,6 +23,8 @@
 #include "qgsgui.h"
 #include "qgsannotationitemguiregistry.h"
 #include "qgspainteffect.h"
+#include "qgsproject.h"
+#include "qgsprojectutils.h"
 
 #include <QStackedWidget>
 #include <QHBoxLayout>
@@ -70,6 +72,7 @@ void QgsAnnotationItemPropertiesWidget::syncToLayer( QgsMapLayer *layer )
 
   // opacity and blend modes
   mBlockLayerUpdates = true;
+  mBlendModeComboBox->setShowClippingModes( QgsProjectUtils::layerIsContainedInGroupLayer( QgsProject::instance(), mLayer ) );
   mBlendModeComboBox->setBlendMode( mLayer->blendMode() );
   mOpacityWidget->setOpacity( mLayer->opacity() );
   if ( mLayer->paintEffect() )

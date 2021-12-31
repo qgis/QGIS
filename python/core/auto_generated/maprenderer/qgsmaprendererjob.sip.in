@@ -12,7 +12,6 @@
 
 
 
-
 class QgsMapRendererJob : QObject /Abstract/
 {
 %Docstring(signature="appended")
@@ -158,6 +157,8 @@ Assign a cache to be used for reading and storing rendered images of individual 
 Does not take ownership of the object.
 %End
 
+
+
     int renderingTime() const;
 %Docstring
 Returns the total time it took to finish the job (in milliseconds).
@@ -188,6 +189,29 @@ Rendering labels is not yet done. If the fully rendered layer including labels i
 :py:func:`~QgsMapRendererJob.finished` instead.
 
 .. versionadded:: 3.0
+%End
+
+
+    void layerRenderingStarted( const QString &layerId );
+%Docstring
+Emitted just before rendering starts for a particular layer.
+
+.. note::
+
+   the :py:class:`QgsMapRendererParallelJob` subclass does not emit this signal.
+
+.. versionadded:: 3.24
+%End
+
+    void layerRendered( const QString &layerId );
+%Docstring
+Emitted when a layer has completed rendering.
+
+.. note::
+
+   the :py:class:`QgsMapRendererParallelJob` subclass does not emit this signal.
+
+.. versionadded:: 3.24
 %End
 
     void finished();

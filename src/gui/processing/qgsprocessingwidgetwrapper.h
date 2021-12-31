@@ -77,13 +77,29 @@ class GUI_EXPORT QgsProcessingParametersGenerator
   public:
 
     /**
+     * Flags controlling parameter generation.
+     *
+     * \since QGIS 3.24
+     */
+    enum class Flag : int
+    {
+      SkipDefaultValueParameters = 1 << 0, //!< Parameters which are unchanged from their default values should not be included
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
+    /**
      * This method needs to be reimplemented in all classes which implement this interface
      * and return a algorithm parameters.
+     *
+     * Since QGIS 3.24 the optional \a flags argument can be used to control the behavior
+     * of the parameter generation.
      */
-    virtual QVariantMap createProcessingParameters() = 0;
+    virtual QVariantMap createProcessingParameters( QgsProcessingParametersGenerator::Flags flags = QgsProcessingParametersGenerator::Flags() ) = 0;
 
     virtual ~QgsProcessingParametersGenerator() = default;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingParametersGenerator::Flags )
 
 
 /**

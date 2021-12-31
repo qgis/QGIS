@@ -54,6 +54,9 @@ This is the base class for all map layer types (vector, raster).
         case QgsMapLayerType::PointCloudLayer:
           sipType = sipType_QgsPointCloudLayer;
           break;
+        case QgsMapLayerType::GroupLayer:
+          sipType = sipType_QgsGroupLayer;
+          break;
         default:
           sipType = nullptr;
           break;

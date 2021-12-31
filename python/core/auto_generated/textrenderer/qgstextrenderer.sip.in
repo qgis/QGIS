@@ -87,7 +87,8 @@ Calculates pixel size (considering output size should be in pixel or map units, 
 
     static void drawText( const QRectF &rect, double rotation, HAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
-                          bool drawAsOutlines = true, VAlignment vAlignment = AlignTop );
+                          bool drawAsOutlines = true, VAlignment vAlignment = AlignTop,
+                          Qgis::TextRendererFlags flags = Qgis::TextRendererFlags() );
 %Docstring
 Draws text within a rectangle using the specified settings.
 
@@ -102,6 +103,7 @@ Draws text within a rectangle using the specified settings.
                        rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
                        as of QGIS 3.4.3 and the text format should be set using :py:func:`QgsRenderContext.setTextRenderFormat()` instead.
 :param vAlignment: vertical alignment (since QGIS 3.16)
+:param flags: text rendering flags (since QGIS 3.24)
 %End
 
     static void drawText( QPointF point, double rotation, HAlignment alignment, const QStringList &textLines,
@@ -196,7 +198,7 @@ Returns the width of a text based on a given format.
 %End
 
     static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, DrawMode mode = Point,
-                              QFontMetricsF *fontMetrics = 0 );
+                              QFontMetricsF *fontMetrics = 0, Qgis::TextRendererFlags flags = Qgis::TextRendererFlags(), double maxLineWidth = 0 );
 %Docstring
 Returns the height of a text based on a given format.
 
@@ -205,6 +207,8 @@ Returns the height of a text based on a given format.
 :param textLines: list of lines of text to calculate width from
 :param mode: draw mode
 :param fontMetrics: font metrics
+:param flags: text renderer flags (since QGIS 3.24)
+:param maxLineWidth: maximum line width, in painter units. Used when the Qgis.TextRendererFlag.WrapLines flag is used (since QGIS 3.24)
 %End
 
     static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, QChar character, bool includeEffects = false );
@@ -218,6 +222,24 @@ Returns the height of a character when rendered with the specified text ``format
                        returned height. If ``False``, then the returned size considers the character only.
 
 .. versionadded:: 3.16
+%End
+
+    static bool textRequiresWrapping( const QgsRenderContext &context, const QString &text, double width, const QgsTextFormat &format );
+%Docstring
+Returns ``True`` if the specified ``text`` requires line wrapping in order to fit within the specified ``width`` (in painter units).
+
+.. seealso:: :py:func:`wrappedText`
+
+.. versionadded:: 3.24
+%End
+
+    static QStringList wrappedText( const QgsRenderContext &context, const QString &text, double width, const QgsTextFormat &format );
+%Docstring
+Wraps a ``text`` string to multiple lines, such that each individual line will fit within the specified ``width`` (in painter units).
+
+.. seealso:: :py:func:`textRequiresWrapping`
+
+.. versionadded:: 3.24
 %End
 
     static const double FONT_WORKAROUND_SCALE;

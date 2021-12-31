@@ -174,6 +174,7 @@ class TestQgsProcessingAlgs: public QObject
     void exportLayoutPdf();
     void exportLayoutPng();
     void exportAtlasLayoutPdf();
+    void exportAtlasLayoutPdfMultiple();
     void exportAtlasLayoutPng();
 #endif
 
@@ -5907,6 +5908,53 @@ void TestQgsProcessingAlgs::exportAtlasLayoutPdf()
   QVERIFY( QFile::exists( outputPdf ) );
 }
 
+void TestQgsProcessingAlgs::exportAtlasLayoutPdfMultiple()
+{
+  QgsMapLayer *polygonLayer = mPolygonLayer->clone();
+  QgsProject p;
+  p.addMapLayers( QList<QgsMapLayer *>() << polygonLayer );
+
+  QgsPrintLayout *layout = new QgsPrintLayout( &p );
+  layout->initializeDefaults();
+  layout->setName( QStringLiteral( "my layout" ) );
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( layout );
+  map->setBackgroundEnabled( false );
+  map->setFrameEnabled( false );
+  map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
+  layout->addLayoutItem( map );
+  map->setExtent( polygonLayer->extent() );
+
+  p.layoutManager()->addLayout( layout );
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:atlaslayouttomultiplepdf" ) ) );
+  QVERIFY( alg != nullptr );
+
+  const QString outputPdfDir = QDir::tempPath() + "/atlas_pdf";
+  if ( QFile::exists( outputPdfDir ) )
+    QDir().rmdir( outputPdfDir );
+
+  QDir().mkdir( outputPdfDir );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "LAYOUT" ), QStringLiteral( "my layout" ) );
+  parameters.insert( QStringLiteral( "COVERAGE_LAYER" ), QVariant::fromValue( polygonLayer ) );
+  parameters.insert( QStringLiteral( "OUTPUT_FOLDER" ), outputPdfDir );
+  parameters.insert( QStringLiteral( "DPI" ), 96 );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  context->setProject( &p );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( QFile::exists( outputPdfDir + "/output_1.pdf" ) );
+  QVERIFY( QFile::exists( outputPdfDir + "/output_2.pdf" ) );
+  QVERIFY( QFile::exists( outputPdfDir + "/output_3.pdf" ) );
+}
+
 void TestQgsProcessingAlgs::exportAtlasLayoutPng()
 {
   QgsMapLayer *polygonLayer = mPolygonLayer->clone();
@@ -6468,32 +6516,42 @@ void TestQgsProcessingAlgs::exportMeshContours()
   QCOMPARE( resultpolygonLayer->featureCount(), 6l );
   featIt = resultpolygonLayer->getFeatures();
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "PolygonZ ((1250 2250 27.5, 1250 2000 22.5, 1000 2000 20, 1000 3000 10, 1250 3000 20, 1250 2250 27.5))" ), feat.geometry().asWkt() );
+  QgsGeometry geom = feat.geometry();
+  geom.normalize();
+  QCOMPARE( geom.asWkt(), QStringLiteral( "PolygonZ ((1000 2000 20, 1000 3000 10, 1250 3000 20, 1250 2250 27.5, 1250 2000 22.5, 1000 2000 20))" ) );
   QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "VertexScalarDataset" ) );
   QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 0.25 );
   QCOMPARE( feat.attributes().at( 3 ).toDouble(), 2.25 );
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "PolygonZ ((2000 2000 30, 1250 2000 22.5, 1250 2250 27.5, 1250 3000 20, 2000 3000 50, 3000 2000 40, 2000 2000 30))" ), feat.geometry().asWkt() );
+  geom = feat.geometry();
+  geom.normalize();
+  QCOMPARE( geom.asWkt(), QStringLiteral( "PolygonZ ((1250 2000 22.5, 1250 2250 27.5, 1250 3000 20, 2000 3000 50, 3000 2000 40, 2000 2000 30, 1250 2000 22.5))" ) );
   QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "VertexScalarDataset" ) );
   QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.25 );
   QCOMPARE( feat.attributes().at( 3 ).toDouble(), 4.25 );
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "PolygonZ ((1006.94319345290614365 3000 10.27772773811624596, 1000 3000 10, 1000 2976.48044676110157525 10.23519553238898538, 1006.94319345290614365 3000 10.27772773811624596))" ), feat.geometry().asWkt() );
+  geom = feat.geometry();
+  geom.normalize();
+  QCOMPARE( geom.asWkt( 2 ), QStringLiteral( "PolygonZ ((1000 2976.48 10.24, 1000 3000 10, 1006.94 3000 10.28, 1000 2976.48 10.24))" ) );
   QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "VertexVectorDataset" ) );
   QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 0.25 );
   QCOMPARE( feat.attributes().at( 3 ).toDouble(), 2.25 );
   featIt.nextFeature( feat );
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "PolygonZ ((1500 2500 35, 1500 2000 25, 1000 2000 20, 1000 3000 10, 1500 3000 30, 1500 2500 35))" ), feat.geometry().asWkt() );
+  geom = feat.geometry();
+  geom.normalize();
+  QCOMPARE( geom.asWkt(), QStringLiteral( "PolygonZ ((1000 2000 20, 1000 3000 10, 1500 3000 30, 1500 2500 35, 1500 2000 25, 1000 2000 20))" ) );
   QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "FaceScalarDataset" ) );
   QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 0.25 );
   QCOMPARE( feat.attributes().at( 3 ).toDouble(), 2.25 );
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "PolygonZ ((2000 2000 30, 1500 2000 25, 1500 2500 35, 1500 3000 30, 2000 3000 50, 3000 2000 40, 2000 2000 30))" ), feat.geometry().asWkt() );
+  geom = feat.geometry();
+  geom.normalize();
+  QCOMPARE( geom.asWkt(), QStringLiteral( "PolygonZ ((1500 2000 25, 1500 2500 35, 1500 3000 30, 2000 3000 50, 3000 2000 40, 2000 2000 30, 1500 2000 25))" ) );
   QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "FaceScalarDataset" ) );
   QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.25 );

@@ -189,7 +189,13 @@ class SymbolLayerItem : public QStandardItem
       if ( role == Qt::DisplayRole || role == Qt::EditRole )
       {
         if ( mIsLayer )
-          return QgsApplication::symbolLayerRegistry()->symbolLayerMetadata( mLayer->layerType() )->visibleName();
+        {
+          QgsSymbolLayerAbstractMetadata *m = QgsApplication::symbolLayerRegistry()->symbolLayerMetadata( mLayer->layerType() );
+          if ( m )
+            return m->visibleName();
+          else
+            return QString();
+        }
         else
         {
           switch ( mSymbol->type() )
@@ -603,7 +609,7 @@ void QgsSymbolSelectorWidget::addLayer()
                              ? static_cast<QgsLineSymbol *>( parentSymbol )->dataDefinedWidth()
                              : QgsProperty() );
 
-  QgsSymbolLayer *newLayer = QgsApplication::symbolLayerRegistry()->defaultSymbolLayer( parentSymbol->type() );
+  QgsSymbolLayer *newLayer = QgsSymbolLayerRegistry::defaultSymbolLayer( parentSymbol->type() );
   if ( insertIdx == -1 )
     parentSymbol->appendSymbolLayer( newLayer );
   else
@@ -779,7 +785,7 @@ QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *s
 
   mSelectorWidget->setMinimumSize( 460, 560 );
   setObjectName( QStringLiteral( "SymbolSelectorDialog" ) );
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   // Can be embedded in renderer properties dialog
   if ( embedded )

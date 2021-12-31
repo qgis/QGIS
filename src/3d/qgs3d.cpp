@@ -71,15 +71,15 @@ void Qgs3D::initialize()
   QgsApplication::symbol3DRegistry()->addSymbolType( new Qgs3DSymbolMetadata( QStringLiteral( "polygon" ), QObject::tr( "Polygon" ),
       &QgsPolygon3DSymbol::create, nullptr, Qgs3DSymbolImpl::handlerForPolygon3DSymbol ) );
 
-  instance()->materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "null" ), QObject::tr( "Embedded Textures" ),
+  Qgs3D::materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "null" ), QObject::tr( "Embedded Textures" ),
       QgsNullMaterialSettings::create, QgsNullMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( QStringLiteral( "/mIconPhongTexturedMaterial.svg" ) ) ) );
-  instance()->materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "phong" ), QObject::tr( "Realistic (Phong)" ),
+  Qgs3D::materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "phong" ), QObject::tr( "Realistic (Phong)" ),
       QgsPhongMaterialSettings::create, QgsPhongMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( QStringLiteral( "/mIconPhongMaterial.svg" ) ) ) );
-  instance()->materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "phongtextured" ), QObject::tr( "Realistic Textured (Phong)" ),
+  Qgs3D::materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "phongtextured" ), QObject::tr( "Realistic Textured (Phong)" ),
       QgsPhongTexturedMaterialSettings::create, QgsPhongTexturedMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( QStringLiteral( "/mIconPhongTexturedMaterial.svg" ) ) ) );
-  instance()->materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "simpleline" ), QObject::tr( "Single Color (Unlit)" ),
+  Qgs3D::materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "simpleline" ), QObject::tr( "Single Color (Unlit)" ),
       QgsSimpleLineMaterialSettings::create, QgsSimpleLineMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( QStringLiteral( "/mIconSimpleLineMaterial.svg" ) ) ) );
-  instance()->materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "gooch" ), QObject::tr( "CAD (Gooch)" ),
+  Qgs3D::materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "gooch" ), QObject::tr( "CAD (Gooch)" ),
       QgsGoochMaterialSettings::create, QgsGoochMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( QStringLiteral( "/mIconGoochMaterial.svg" ) ) ) );
 
   // because we are usually populating the 3d registry AFTER QgsApplication initialization, we need to defer creation

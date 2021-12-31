@@ -317,7 +317,7 @@ void Qgs3DMapCanvasDockWidget::configure()
   dlg.setWindowTitle( tr( "3D Configuration" ) );
   dlg.setObjectName( QStringLiteral( "3DConfigurationDialog" ) );
   dlg.setMinimumSize( 600, 460 );
-  QgsGui::instance()->enableAutoGeometryRestore( &dlg );
+  QgsGui::enableAutoGeometryRestore( &dlg );
 
   Qgs3DMapSettings *map = mCanvas->map();
   Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( map, mMainCanvas, mCanvas, &dlg );
@@ -382,7 +382,7 @@ void Qgs3DMapCanvasDockWidget::exportScene()
   QDialog dlg;
   dlg.setWindowTitle( tr( "Export 3D Scene" ) );
   dlg.setObjectName( QStringLiteral( "3DSceneExportDialog" ) );
-  QgsGui::instance()->enableAutoGeometryRestore( &dlg );
+  QgsGui::enableAutoGeometryRestore( &dlg );
 
   Qgs3DMapExportSettings exportSettings;
   QgsMap3DExportWidget w( mCanvas->scene(), &exportSettings );
@@ -402,7 +402,7 @@ void Qgs3DMapCanvasDockWidget::exportScene()
 
 void Qgs3DMapCanvasDockWidget::onMainCanvasLayersChanged()
 {
-  mCanvas->map()->setLayers( mMainCanvas->layers() );
+  mCanvas->map()->setLayers( mMainCanvas->layers( true ) );
 }
 
 void Qgs3DMapCanvasDockWidget::onMainCanvasColorChanged()

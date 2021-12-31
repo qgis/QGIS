@@ -51,7 +51,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   , mResolutionState( OriginalResolution )
 {
   setupUi( this );
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
   connect( mRawModeRadioButton, &QRadioButton::toggled, this, &QgsRasterLayerSaveAsDialog::mRawModeRadioButton_toggled );
   connect( mFormatComboBox, &QComboBox::currentTextChanged, this, &QgsRasterLayerSaveAsDialog::mFormatComboBox_currentIndexChanged );
   connect( mResolutionRadioButton, &QRadioButton::toggled, this, &QgsRasterLayerSaveAsDialog::mResolutionRadioButton_toggled );

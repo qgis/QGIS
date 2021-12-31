@@ -202,6 +202,12 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
         feedback->pushDebugInfo( QObject::tr( "Packaging annotation layers is not supported." ) );
         errored = true;
         break;
+
+      case QgsMapLayerType::GroupLayer:
+        //not supported
+        feedback->pushDebugInfo( QObject::tr( "Packaging group layers is not supported." ) );
+        errored = true;
+        break;
     }
   }
 

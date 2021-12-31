@@ -538,7 +538,18 @@ bool QgsCompositionConverter::readLabelXml( QgsLayoutItemLabel *layoutItem, cons
   QFont font;
   //font
   QgsFontUtils::setFromXmlChildNode( font, itemElem, QStringLiteral( "LabelFont" ) );
-  layoutItem->setFont( font );
+  QgsTextFormat format;
+  format.setFont( font );
+  if ( font.pointSizeF() > 0 )
+  {
+    format.setSize( font.pointSizeF() );
+    format.setSizeUnit( QgsUnitTypes::RenderPoints );
+  }
+  else if ( font.pixelSize() > 0 )
+  {
+    format.setSize( font.pixelSize() );
+    format.setSizeUnit( QgsUnitTypes::RenderPixels );
+  }
 
   //font color
   const QDomNodeList fontColorList = itemElem.elementsByTagName( QStringLiteral( "FontColor" ) );
@@ -548,12 +559,13 @@ bool QgsCompositionConverter::readLabelXml( QgsLayoutItemLabel *layoutItem, cons
     const int red = fontColorElem.attribute( QStringLiteral( "red" ), QStringLiteral( "0" ) ).toInt();
     const int green = fontColorElem.attribute( QStringLiteral( "green" ), QStringLiteral( "0" ) ).toInt();
     const int blue = fontColorElem.attribute( QStringLiteral( "blue" ), QStringLiteral( "0" ) ).toInt();
-    layoutItem->setFontColor( QColor( red, green, blue ) );
+    format.setColor( QColor( red, green, blue ) );
   }
   else
   {
-    layoutItem->setFontColor( QColor( 0, 0, 0 ) );
+    format.setColor( QColor( 0, 0, 0 ) );
   }
+  layoutItem->setTextFormat( format );
 
   return true;
 }

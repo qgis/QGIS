@@ -116,7 +116,7 @@ void TestQgsDoubleValidator::validate()
   for ( int i = 0; i < listLocale.count(); ++i )
   {
     loc = listLocale.at( i );
-    QLocale().setDefault( loc );
+    QLocale::setDefault( loc );
     validator->setLocale( loc );
     value = actualState;
     value = value.replace( "ld", QLocale().decimalPoint() )
@@ -166,7 +166,7 @@ void TestQgsDoubleValidator::toDouble()
   for ( int i = 0; i < listLocale.count(); ++i )
   {
     loc = listLocale.at( i );
-    QLocale().setDefault( loc );
+    QLocale::setDefault( loc );
     value = actualValue;
     value = value.replace( "ld", QLocale().decimalPoint() )
             .replace( "cd", QLocale( QLocale::C ).decimalPoint() )

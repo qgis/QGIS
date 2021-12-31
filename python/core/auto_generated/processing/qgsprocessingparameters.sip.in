@@ -285,6 +285,8 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterVectorDestination;
     else if ( sipCpp->type() == QgsProcessingParameterRasterDestination::typeName() )
       sipType = sipType_QgsProcessingParameterRasterDestination;
+    else if ( sipCpp->type() == QgsProcessingParameterPointCloudDestination::typeName() )
+      sipType = sipType_QgsProcessingParameterPointCloudDestination;
     else if ( sipCpp->type() == QgsProcessingParameterFileDestination::typeName() )
       sipType = sipType_QgsProcessingParameterFileDestination;
     else if ( sipCpp->type() == QgsProcessingParameterFolderDestination::typeName() )
@@ -513,6 +515,63 @@ layers and other factors within the context.
 %Docstring
 Returns a string version of the parameter input ``value``, which is suitable for use as an input
 parameter value when running an algorithm directly from a Python command.
+
+.. seealso:: :py:func:`valueAsJsonObject`
+
+.. seealso:: :py:func:`valueAsString`
+%End
+
+    virtual QVariant valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const;
+%Docstring
+Returns a version of the parameter input ``value``, which is suitable for use in a JSON object.
+
+This method must return only simple values which can be losslessly encapsulated in a serialized
+JSON map. For instance, any QGIS class values (such as :py:class:`QgsCoordinateReferenceSystem`) must be
+converted to a simple string or numeric value equivalent.
+
+.. seealso:: :py:func:`valueAsPythonString`
+
+.. seealso:: :py:func:`valueAsString`
+
+.. versionadded:: 3.24
+%End
+
+    virtual QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok /Out/ ) const;
+%Docstring
+Returns a string version of the parameter input ``value`` (if possible).
+
+:param value: value to convert
+:param context: processing context
+
+:return: - value converted to string
+         - ok: will be set to ``True`` if value could be represented as a string.
+
+.. seealso:: :py:func:`valueAsStringList`
+
+.. seealso:: :py:func:`valueAsJsonObject`
+
+.. seealso:: :py:func:`valueAsPythonString`
+
+.. versionadded:: 3.24
+%End
+
+    virtual QStringList valueAsStringList( const QVariant &value, QgsProcessingContext &context, bool &ok /Out/ ) const;
+%Docstring
+Returns a string list version of the parameter input ``value`` (if possible).
+
+:param value: value to convert
+:param context: processing context
+
+:return: - value converted to string list
+         - ok: will be set to ``True`` if value could be represented as a string list
+
+.. seealso:: :py:func:`valueAsString`
+
+.. seealso:: :py:func:`valueAsJsonObject`
+
+.. seealso:: :py:func:`valueAsPythonString`
+
+.. versionadded:: 3.24
 %End
 
     virtual QString valueAsPythonComment( const QVariant &value, QgsProcessingContext &context ) const;
@@ -4576,6 +4635,62 @@ Returns the type name for the parameter class.
 
 
     static QgsProcessingParameterAnnotationLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
+%End
+};
+
+class QgsProcessingParameterPointCloudDestination : QgsProcessingDestinationParameter
+{
+%Docstring(signature="appended")
+A point cloud layer destination parameter, for specifying the destination path for a point cloud layer
+created by the algorithm.
+
+.. versionadded:: 3.24
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterPointCloudDestination( const QString &name, const QString &description = QString(),
+        const QVariant &defaultValue = QVariant(),
+        bool optional = false,
+        bool createByDefault = true );
+%Docstring
+Constructor for QgsProcessingParameterPointCloudDestination.
+
+If ``createByDefault`` is ``False`` and the parameter is ``optional``, then this destination
+output will not be created by default.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
+    virtual QString type() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QgsProcessingOutputDefinition *toOutputDefinition() const /Factory/;
+
+    virtual QString defaultFileExtension() const;
+
+    virtual QString createFileFilter() const;
+
+
+    virtual QStringList supportedOutputPointCloudLayerExtensions() const;
+%Docstring
+Returns a list of the point cloud format file extensions supported for this parameter.
+
+.. seealso:: :py:func:`defaultFileExtension`
+%End
+
+    static QgsProcessingParameterPointCloudDestination *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
 %End

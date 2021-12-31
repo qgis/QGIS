@@ -602,13 +602,13 @@ namespace QgsWms
       exportSettings.rasterizeWholeImage = layout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
 
       // Export all pages
-      QgsLayoutExporter exporter( layout.get() );
       if ( atlas )
       {
-        exporter.exportToPdf( atlas, tempOutputFile.fileName(), exportSettings, exportError );
+        QgsLayoutExporter::exportToPdf( atlas, tempOutputFile.fileName(), exportSettings, exportError );
       }
       else
       {
+        QgsLayoutExporter exporter( layout.get() );
         exporter.exportToPdf( tempOutputFile.fileName(), exportSettings );
       }
     }
@@ -3048,6 +3048,7 @@ namespace QgsWms
         case QgsMapLayerType::PluginLayer:
         case QgsMapLayerType::AnnotationLayer:
         case QgsMapLayerType::PointCloudLayer:
+        case QgsMapLayerType::GroupLayer:
           break;
       }
     }

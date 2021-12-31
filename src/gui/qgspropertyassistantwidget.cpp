@@ -575,6 +575,39 @@ QgsPropertyGenericNumericAssistantWidget::QgsPropertyGenericNumericAssistantWidg
       break;
     }
 
+    case QgsPropertyDefinition::DoublePositive:
+    case QgsPropertyDefinition::IntegerPositive:
+      minOutputSpinBox->setMinimum( 0 );
+      maxOutputSpinBox->setMinimum( 0 );
+      minOutputSpinBox->setShowClearButton( false );
+      maxOutputSpinBox->setShowClearButton( false );
+      break;
+
+    case QgsPropertyDefinition::IntegerPositiveGreaterZero:
+      minOutputSpinBox->setMinimum( 1 );
+      maxOutputSpinBox->setMinimum( 1 );
+      minOutputSpinBox->setShowClearButton( false );
+      maxOutputSpinBox->setShowClearButton( false );
+      break;
+
+    case QgsPropertyDefinition::Double0To1:
+      minOutputSpinBox->setMinimum( 0 );
+      maxOutputSpinBox->setMinimum( 0 );
+      minOutputSpinBox->setMaximum( 1 );
+      maxOutputSpinBox->setMaximum( 1 );
+      minOutputSpinBox->setShowClearButton( false );
+      maxOutputSpinBox->setShowClearButton( false );
+      break;
+
+    case QgsPropertyDefinition::Double:
+      minOutputSpinBox->setMinimum( -99999999.000000 );
+      maxOutputSpinBox->setMinimum( -99999999.000000 );
+      minOutputSpinBox->setMaximum( 99999999.000000 );
+      maxOutputSpinBox->setMaximum( 99999999.000000 );
+      minOutputSpinBox->setShowClearButton( false );
+      maxOutputSpinBox->setShowClearButton( false );
+      break;
+
     default:
     {
       minOutputSpinBox->setShowClearButton( false );

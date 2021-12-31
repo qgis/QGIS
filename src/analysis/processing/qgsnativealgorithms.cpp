@@ -365,6 +365,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
 #ifndef QT_NO_PRINTER
   addAlgorithm( new QgsLayoutAtlasToImageAlgorithm() );
   addAlgorithm( new QgsLayoutAtlasToPdfAlgorithm() );
+  addAlgorithm( new QgsLayoutAtlasToMultiplePdfAlgorithm() );
   addAlgorithm( new QgsLayoutToImageAlgorithm() );
   addAlgorithm( new QgsLayoutToPdfAlgorithm() );
 #endif

@@ -75,6 +75,7 @@
 %Include auto_generated/qgsgeometryvalidator.sip
 %Include auto_generated/qgsgml.sip
 %Include auto_generated/qgsgmlschema.sip
+%Include auto_generated/qgsgrouplayer.sip
 %Include auto_generated/qgshistogram.sip
 %Include auto_generated/qgshstoreutils.sip
 %Include auto_generated/qgshtmlutils.sip
@@ -121,6 +122,7 @@
 %Include auto_generated/qgsmessageoutput.sip
 %Include auto_generated/qgsmimedatautils.sip
 %Include auto_generated/qgsmultirenderchecker.sip
+%Include auto_generated/qgsnullpainterdevice.sip
 %Include auto_generated/qgsobjectcustomproperties.sip
 %Include auto_generated/qgsofflineediting.sip
 %Include auto_generated/qgsogcutils.sip
@@ -481,6 +483,7 @@
 %Include auto_generated/network/qgsnetworkreply.sip
 %Include auto_generated/network/qgsnewsfeedmodel.sip
 %Include auto_generated/network/qgsnewsfeedparser.sip
+%Include auto_generated/network/qgshttpheaders.sip
 %Include auto_generated/numericformats/qgsbasicnumericformat.sip
 %Include auto_generated/numericformats/qgsbearingnumericformat.sip
 %Include auto_generated/numericformats/qgscurrencynumericformat.sip

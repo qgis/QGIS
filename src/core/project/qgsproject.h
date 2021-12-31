@@ -1341,6 +1341,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Attaches a file to the project
      * \param nameTemplate Any filename template, used as a basename for attachment file, i.e. "myfile.ext"
      * \return The path to the file where the contents can be written to.
+     * \note If the attachment file is used as a source for a project layer, the attachment will be removed
+     * automatically when the layer is deleted.
      * \since QGIS 3.22
      */
     QString createAttachedFile( const QString &nameTemplate );

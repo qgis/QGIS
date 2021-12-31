@@ -31,6 +31,8 @@ as generated layers or calculated values.
       sipType = sipType_QgsProcessingOutputVectorLayer;
     else if ( sipCpp->type() == QgsProcessingOutputRasterLayer::typeName() )
       sipType = sipType_QgsProcessingOutputRasterLayer;
+    else if ( sipCpp->type() == QgsProcessingOutputPointCloudLayer::typeName() )
+      sipType = sipType_QgsProcessingOutputPointCloudLayer;
     else if ( sipCpp->type() == QgsProcessingOutputMapLayer::typeName() )
       sipType = sipType_QgsProcessingOutputMapLayer;
     else if ( sipCpp->type() == QgsProcessingOutputMultipleLayers::typeName() )
@@ -122,7 +124,6 @@ Returns ``True`` if the output was automatically created when adding a parameter
 
 
 
-
 };
 
 typedef QList< const QgsProcessingOutputDefinition * > QgsProcessingOutputDefinitions;
@@ -154,7 +155,6 @@ Returns the type name for the output class.
 %End
 
     virtual QString type() const;
-
 
 };
 
@@ -221,8 +221,31 @@ Constructor for QgsProcessingOutputRasterLayer.
 Returns the type name for the output class.
 %End
     virtual QString type() const;
+};
 
+class QgsProcessingOutputPointCloudLayer : QgsProcessingOutputDefinition
+{
+%Docstring(signature="appended")
+A pointcloud layer output for processing algorithms.
 
+.. versionadded:: 3.24
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingoutputs.h"
+%End
+  public:
+
+    QgsProcessingOutputPointCloudLayer( const QString &name, const QString &description = QString() );
+%Docstring
+Constructor for QgsProcessingOutputPointCloudLayer.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the output class.
+%End
+    virtual QString type() const;
 };
 
 class QgsProcessingOutputMultipleLayers : QgsProcessingOutputDefinition
@@ -234,7 +257,7 @@ the number and nature of the output layers is not predefined.
 .. note::
 
    Always prefer to explicitly define :py:class:`QgsProcessingOutputVectorLayer`,
-   QgsProcessingOutputRasterLayer or QgsProcessingOutputMapLayer where possible. :py:class:`QgsProcessingOutputMultipleLayers`
+   :py:class:`QgsProcessingOutputRasterLayer` or :py:class:`QgsProcessingOutputMapLayer` where possible. :py:class:`QgsProcessingOutputMultipleLayers`
    should only ever be used when the number of output layers is not
    fixed - e.g. as a result of processing all layers in a specified
    folder.
@@ -257,7 +280,6 @@ Constructor for QgsProcessingOutputMultipleLayers.
 Returns the type name for the output class.
 %End
     virtual QString type() const;
-
 
 };
 
@@ -284,7 +306,6 @@ Constructor for QgsProcessingOutputHtml.
 Returns the type name for the output class.
 %End
     virtual QString type() const;
-
 };
 
 class QgsProcessingOutputNumber : QgsProcessingOutputDefinition
@@ -335,7 +356,6 @@ Constructor for QgsProcessingOutputString.
 Returns the type name for the output class.
 %End
     virtual QString type() const;
-
 };
 
 class QgsProcessingOutputBoolean : QgsProcessingOutputDefinition
@@ -387,7 +407,6 @@ Constructor for QgsProcessingOutputFolder.
 Returns the type name for the output class.
 %End
     virtual QString type() const;
-
 };
 
 class QgsProcessingOutputFile : QgsProcessingOutputDefinition
@@ -413,7 +432,6 @@ Constructor for QgsProcessingOutputFile.
 Returns the type name for the output class.
 %End
     virtual QString type() const;
-
 };
 
 class QgsProcessingOutputConditionalBranch : QgsProcessingOutputDefinition
@@ -440,11 +458,7 @@ Constructor for QgsProcessingOutputConditionalBranch.
 Returns the type name for the output class.
 %End
     virtual QString type() const;
-
 };
-
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

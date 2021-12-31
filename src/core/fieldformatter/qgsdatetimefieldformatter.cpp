@@ -98,13 +98,6 @@ QString QgsDateTimeFieldFormatter::representValue( QgsVectorLayer *layer, int fi
   return result;
 }
 
-void QgsDateTimeFieldFormatter::applyLocaleChange()
-{
-  QString dateFormat = QLocale().dateFormat( QLocale::FormatType::ShortFormat );
-  QgsDateTimeFieldFormatter::DATETIME_FORMAT = QString( "%1 %2" ).arg( dateFormat, QgsDateTimeFieldFormatter::TIME_FORMAT );
-  QgsDateTimeFieldFormatter::DATE_FORMAT = dateFormat;
-}
-
 QString QgsDateTimeFieldFormatter::defaultFormat( QVariant::Type type )
 {
   switch ( type )
@@ -116,4 +109,11 @@ QString QgsDateTimeFieldFormatter::defaultFormat( QVariant::Type type )
     default:
       return QgsDateTimeFieldFormatter::DATE_FORMAT;
   }
+}
+
+void QgsDateTimeFieldFormatter::applyLocaleChange()
+{
+  QString dateFormat = QLocale().dateFormat( QLocale::FormatType::ShortFormat );
+  QgsDateTimeFieldFormatter::DATETIME_FORMAT = QString( "%1 %2" ).arg( dateFormat, QgsDateTimeFieldFormatter::TIME_FORMAT );
+  QgsDateTimeFieldFormatter::DATE_FORMAT = dateFormat;
 }

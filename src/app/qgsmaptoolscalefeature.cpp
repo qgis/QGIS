@@ -218,7 +218,7 @@ void QgsMapToolScaleFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setNoAttributes().setFilterRect( selectRect ) );
 
       //find the closest feature
-      const QgsGeometry pointGeometry = QgsGeometry().fromPointXY( layerCoords );
+      const QgsGeometry pointGeometry = QgsGeometry::fromPointXY( layerCoords );
       if ( pointGeometry.isNull() )
       {
         return;

@@ -257,7 +257,7 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
       {
         waitConditionMutex.unlock();
 
-        QgsApplication::instance()->processEvents();
+        QgsApplication::processEvents();
         // we don't need to wake up the worker thread - it will automatically be woken when
         // the auth request has been dealt with by QgsNetworkAccessManager
       }

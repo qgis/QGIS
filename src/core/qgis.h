@@ -45,13 +45,14 @@ int QgisEvent = QEvent::User + 1;
  */
 enum class QgsMapLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayer, LayerType ) : int
   {
-  VectorLayer,
-  RasterLayer,
-  PluginLayer,
-  MeshLayer,      //!< Added in 3.2
-  VectorTileLayer, //!< Added in 3.14
+  VectorLayer, //!< Vector layer
+  RasterLayer, //!< Raster layer
+  PluginLayer, //!< Plugin based layer
+  MeshLayer,      //!< Mesh layer. Added in QGIS 3.2
+  VectorTileLayer, //!< Vector tile layer. Added in QGIS 3.14
   AnnotationLayer, //!< Contains freeform, georeferenced annotations. Added in QGIS 3.16
-  PointCloudLayer, //!< Added in 3.18
+  PointCloudLayer, //!< Point cloud layer. Added in QGIS 3.18
+  GroupLayer, //!< Composite group layer. Added in QGIS 3.24
 };
 
 
@@ -934,6 +935,7 @@ class CORE_EXPORT Qgis
       LosslessImageRendering   = 0x1000, //!< Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF). This flag only works with builds based on Qt 5.13 or later.
       Render3DMap              = 0x2000, //!< Render is for a 3D map
       HighQualityImageTransforms = 0x4000, //!< Enable high quality image transformations, which results in better appearance of scaled or rotated raster components of a map (since QGIS 3.24)
+      SkipSymbolRendering      = 0x8000, //!< Disable symbol rendering while still drawing labels if enabled (since QGIS 3.24)
     };
     //! Map settings flags
     Q_DECLARE_FLAGS( MapSettingsFlags, MapSettingsFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsMapSettings, Flags )
@@ -964,6 +966,7 @@ class CORE_EXPORT Qgis
       ApplyClipAfterReprojection = 0x8000, //!< Feature geometry clipping to mapExtent() must be performed after the geometries are transformed using coordinateTransform(). Usually feature geometry clipping occurs using the extent() in the layer's CRS prior to geometry transformation, but in some cases when extent() could not be accurately calculated it is necessary to clip geometries to mapExtent() AFTER transforming them using coordinateTransform().
       RenderingSubSymbol       = 0x10000, //!< Set whenever a sub-symbol of a parent symbol is currently being rendered. Can be used during symbol and symbol layer rendering to determine whether the symbol being rendered is a subsymbol. (Since QGIS 3.24)
       HighQualityImageTransforms = 0x20000, //!< Enable high quality image transformations, which results in better appearance of scaled or rotated raster components of a map (since QGIS 3.24)
+      SkipSymbolRendering      = 0x40000, //!< Disable symbol rendering while still drawing labels if enabled (since QGIS 3.24)
     };
     //! Render context flags
     Q_DECLARE_FLAGS( RenderContextFlags, RenderContextFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsRenderContext, Flags )
@@ -1222,6 +1225,18 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( Capitalization )
 
+    /**
+     * Flags which control the behavior of rendering text.
+     *
+     * \since QGIS 3.24
+     */
+    enum class TextRendererFlag : int
+    {
+      WrapLines = 1 << 0, //!< Automatically wrap long lines of text
+    };
+    Q_ENUM( TextRendererFlag )
+    Q_DECLARE_FLAGS( TextRendererFlags, TextRendererFlag )
+    Q_FLAG( TextRendererFlags )
 
     /**
      * Angular directions.
@@ -1234,6 +1249,20 @@ class CORE_EXPORT Qgis
       CounterClockwise, //!< Counter-clockwise direction
     };
     Q_ENUM( AngularDirection )
+
+    /**
+     * History provider backends.
+     *
+     * \since QGIS 3.24
+     */
+    enum class HistoryProviderBackend : int
+    {
+      LocalProfile = 1 << 0, //!< Local profile
+//      Project = 1 << 1, //!< QGIS Project  (not yet implemented)
+    };
+    Q_ENUM( HistoryProviderBackend )
+    Q_DECLARE_FLAGS( HistoryProviderBackends, HistoryProviderBackend )
+    Q_FLAG( HistoryProviderBackends )
 
     /**
      * Identify search radius in mm
@@ -1366,6 +1395,8 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapSettingsFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RenderContextFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorLayerTypeFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MarkerLinePlacements )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TextRendererFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::HistoryProviderBackends )
 
 
 // hack to workaround warnings when casting void pointers

@@ -110,9 +110,6 @@ void TestQgsLayoutLabel::evaluation()
   label->setMargin( 1 );
   l.addLayoutItem( label );
 
-  qWarning() << "composer label font: " << label->font().toString() << " exactMatch:" << label->font().exactMatch();
-
-
   {
     // $CURRENT_DATE evaluation
     const QString expected = "__" + QDate::currentDate().toString() + "__";
@@ -293,7 +290,11 @@ void TestQgsLayoutLabel::render()
   l.addLayoutItem( label );
 
   label->setText( QStringLiteral( "test label" ) );
-  label->setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ), 48 ) );
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  format.setSize( 48 );
+  format.setSizeUnit( QgsUnitTypes::RenderPoints );
+  label->setTextFormat( format );
   label->attemptMove( QgsLayoutPoint( 70, 70 ) );
   label->adjustSizeToText();
 
@@ -311,9 +312,15 @@ void TestQgsLayoutLabel::renderAsHtml()
   label->setMargin( 1 );
   l.addLayoutItem( label );
 
-  label->setFontColor( QColor( 200, 40, 60 ) );
   label->setText( QStringLiteral( "test <i>html</i>" ) );
-  label->setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ), 48 ) );
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  format.setSize( 48 );
+  format.setSizeUnit( QgsUnitTypes::RenderPoints );
+  format.setColor( QColor( 200, 40, 60 ) );
+  label->setTextFormat( format );
+
   label->setPos( 70, 70 );
   label->adjustSizeToText();
   label->setMode( QgsLayoutItemLabel::ModeHtml );
@@ -334,9 +341,15 @@ void TestQgsLayoutLabel::renderAsHtmlRelative()
   l.addLayoutItem( label );
 
   QgsProject::instance()->setFileName( QStringLiteral( TEST_DATA_DIR ) +  QDir::separator() + "test.qgs" );
-  label->setFontColor( QColor( 200, 40, 60 ) );
   label->setText( QStringLiteral( "test <img src=\"small_sample_image.png\" />" ) );
-  label->setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ), 48 ) );
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  format.setSize( 48 );
+  format.setSizeUnit( QgsUnitTypes::RenderPoints );
+  format.setColor( QColor( 200, 40, 60 ) );
+  label->setTextFormat( format );
+
   label->setPos( 70, 70 );
   label->adjustSizeToText();
   label->setMode( QgsLayoutItemLabel::ModeHtml );
@@ -355,7 +368,13 @@ void TestQgsLayoutLabel::labelRotation()
   label->setMargin( 1 );
   l.addLayoutItem( label );
   label->setText( QStringLiteral( "test label" ) );
-  label->setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ), 30 ) );
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  format.setSize( 30 );
+  format.setSizeUnit( QgsUnitTypes::RenderPoints );
+  label->setTextFormat( format );
+
   label->attemptMove( QgsLayoutPoint( 70, 70 ) );
   label->adjustSizeToText();
   label->setBackgroundColor( QColor::fromRgb( 255, 150, 0 ) );

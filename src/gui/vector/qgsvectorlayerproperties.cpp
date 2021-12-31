@@ -557,7 +557,7 @@ void QgsVectorLayerProperties::syncToLayer()
 
   // populate the general information
   mLayerOrigNameLineEdit->setText( mLayer->name() );
-
+  mBackupCrs = mLayer->crs();
   //see if we are dealing with a pg layer here
   mSubsetGroupBox->setEnabled( true );
   txtSubsetSQL->setText( mLayer->subsetString() );
@@ -691,7 +691,7 @@ void QgsVectorLayerProperties::apply()
   {
     labelingDialog->writeSettingsToLayer();
   }
-
+  mBackupCrs = mLayer->crs();
   // apply legend settings
   mLegendWidget->applyToLayer();
   mLegendConfigEmbeddedWidget->applyToLayer();
@@ -917,13 +917,16 @@ void QgsVectorLayerProperties::onCancel()
     doc.setContent( mOldStyle.xmlData(), false, &myMessage, &errorLine, &errorColumn );
     mLayer->importNamedStyle( doc, myMessage );
   }
+
+  if ( mBackupCrs != mLayer->crs() )
+    mLayer->setCrs( mBackupCrs );
 }
 
 void QgsVectorLayerProperties::urlClicked( const QUrl &url )
 {
   QFileInfo file( url.toLocalFile() );
   if ( file.exists() && !file.isDir() )
-    QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
+    QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
   else
     QDesktopServices::openUrl( url );
 }
@@ -979,6 +982,7 @@ QString QgsVectorLayerProperties::htmlMetadata()
 
 void QgsVectorLayerProperties::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
+
   QgsDatumTransformDialog::run( crs, QgsProject::instance()->crs(), this, mCanvas, tr( "Select Transformation for the vector layer" ) );
   mLayer->setCrs( crs );
   mMetadataFilled = false;

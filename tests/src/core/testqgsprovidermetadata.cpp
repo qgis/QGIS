@@ -70,11 +70,11 @@ void TestQgsProviderMetadata::cleanupTestCase()
 void TestQgsProviderMetadata::checkBoolParameterSetting()
 {
   QVariantMap uri;
-  mMetadata->setBoolParameter( uri, QStringLiteral( "testOne" ), QStringLiteral( "yes" ) );
-  mMetadata->setBoolParameter( uri, QStringLiteral( "testTwo" ), QStringLiteral( "1" ) );
-  mMetadata->setBoolParameter( uri, QStringLiteral( "testThree" ), 1 );
-  mMetadata->setBoolParameter( uri, QStringLiteral( "testFour" ), QStringLiteral( "true" ) );
-  mMetadata->setBoolParameter( uri, QStringLiteral( "testFive" ), true );
+  QgsProviderMetadata::setBoolParameter( uri, QStringLiteral( "testOne" ), QStringLiteral( "yes" ) );
+  QgsProviderMetadata::setBoolParameter( uri, QStringLiteral( "testTwo" ), QStringLiteral( "1" ) );
+  QgsProviderMetadata::setBoolParameter( uri, QStringLiteral( "testThree" ), 1 );
+  QgsProviderMetadata::setBoolParameter( uri, QStringLiteral( "testFour" ), QStringLiteral( "true" ) );
+  QgsProviderMetadata::setBoolParameter( uri, QStringLiteral( "testFive" ), true );
 
   QVariantMap expected = { { QStringLiteral( "testOne" ), QVariant( true ) },
     { QStringLiteral( "testTwo" ), QVariant( true ) },
@@ -85,16 +85,16 @@ void TestQgsProviderMetadata::checkBoolParameterSetting()
 
   QCOMPARE( uri, expected );
 
-  mMetadata->setBoolParameter( uri, QStringLiteral( "testOne" ), QStringLiteral( "YES" ) );
-  mMetadata->setBoolParameter( uri, QStringLiteral( "testFour" ), QStringLiteral( "TRUE" ) );
+  QgsProviderMetadata::setBoolParameter( uri, QStringLiteral( "testOne" ), QStringLiteral( "YES" ) );
+  QgsProviderMetadata::setBoolParameter( uri, QStringLiteral( "testFour" ), QStringLiteral( "TRUE" ) );
 
   QCOMPARE( uri, expected );
 
-  mMetadata->setBoolParameter( uri, QStringLiteral( "testOne" ), QStringLiteral( "no" ) );
-  mMetadata->setBoolParameter( uri, QStringLiteral( "testTwo" ), QStringLiteral( "0" ) );
-  mMetadata->setBoolParameter( uri, QStringLiteral( "testThree" ), 0 );
-  mMetadata->setBoolParameter( uri, QStringLiteral( "testFour" ), QStringLiteral( "false" ) );
-  mMetadata->setBoolParameter( uri, QStringLiteral( "testFive" ), false );
+  QgsProviderMetadata::setBoolParameter( uri, QStringLiteral( "testOne" ), QStringLiteral( "no" ) );
+  QgsProviderMetadata::setBoolParameter( uri, QStringLiteral( "testTwo" ), QStringLiteral( "0" ) );
+  QgsProviderMetadata::setBoolParameter( uri, QStringLiteral( "testThree" ), 0 );
+  QgsProviderMetadata::setBoolParameter( uri, QStringLiteral( "testFour" ), QStringLiteral( "false" ) );
+  QgsProviderMetadata::setBoolParameter( uri, QStringLiteral( "testFive" ), false );
 
   expected = { { QStringLiteral( "testOne" ), QVariant( false ) },
     { QStringLiteral( "testTwo" ), QVariant( false ) },
@@ -104,8 +104,8 @@ void TestQgsProviderMetadata::checkBoolParameterSetting()
   };
   QCOMPARE( uri, expected );
 
-  mMetadata->setBoolParameter( uri, QStringLiteral( "testOne" ), QStringLiteral( "NO" ) );
-  mMetadata->setBoolParameter( uri, QStringLiteral( "testFour" ), QStringLiteral( "FALSE" ) );
+  QgsProviderMetadata::setBoolParameter( uri, QStringLiteral( "testOne" ), QStringLiteral( "NO" ) );
+  QgsProviderMetadata::setBoolParameter( uri, QStringLiteral( "testFour" ), QStringLiteral( "FALSE" ) );
 
   QCOMPARE( uri, expected );
 

@@ -160,7 +160,7 @@ void TestQgsPaintEffectRegistry::createEffect()
 void TestQgsPaintEffectRegistry::defaultStack()
 {
   QgsPaintEffectRegistry *registry = QgsApplication::paintEffectRegistry();
-  QgsEffectStack *effect = static_cast<QgsEffectStack *>( registry->defaultStack() );
+  QgsEffectStack *effect = static_cast<QgsEffectStack *>( QgsPaintEffectRegistry::defaultStack() );
   QVERIFY( registry->isDefaultStack( effect ) );
   effect->effect( 1 )->setEnabled( true );
   QVERIFY( !registry->isDefaultStack( effect ) );
@@ -175,7 +175,7 @@ void TestQgsPaintEffectRegistry::defaultStack()
   QVERIFY( !registry->isDefaultStack( effect2 ) );
   delete effect2;
 
-  effect = static_cast<QgsEffectStack *>( registry->defaultStack() );
+  effect = static_cast<QgsEffectStack *>( QgsPaintEffectRegistry::defaultStack() );
   static_cast< QgsDrawSourceEffect * >( effect->effect( 2 ) )->setOpacity( 0.5 );
   QVERIFY( !registry->isDefaultStack( effect ) );
   static_cast< QgsDrawSourceEffect * >( effect->effect( 2 ) )->setOpacity( 1.0 );

@@ -566,6 +566,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
 
       if ( idx != -1 )
       {
+
         const QVariant val = f.attributes().at( idx );
 
         if ( mUseConditionalStyling )
@@ -576,7 +577,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
           style = QgsConditionalStyle::compressStyles( styles );
         }
 
-        QVariant v = replaceWrapChar( val );
+        QVariant v = val.isNull() ? QString() : replaceWrapChar( val );
         currentRow << Cell( v, style, f );
         rowContents << v;
       }

@@ -18,6 +18,7 @@
 #include "qgsalgorithmextractbylocation.h"
 #include "qgsgeometryengine.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerfeatureiterator.h"
 
 ///@cond PRIVATE
 
@@ -79,16 +80,25 @@ void QgsLocationBasedAlgorithm::process( const QgsProcessingContext &context, Qg
     const QList< int > &selectedPredicates,
     const std::function < void( const QgsFeature & ) > &handleFeatureFunction,
     bool onlyRequireTargetIds,
-    QgsProcessingFeedback *feedback )
+    QgsProcessingFeedback *feedback,
+    const QgsFeatureIds &skipTargetFeatureIds )
 {
+  // skip if there are no features to select from!
+  if ( targetSource->featureCount() == 0 )
+    return;
 
-  if ( targetSource->featureCount() > 0 && intersectSource->featureCount() > 0
-       && targetSource->featureCount() < intersectSource->featureCount() )
+  // skip if intersect layer is empty, unless we are looking for disjoints
+  if ( intersectSource->featureCount() == 0 &&
+       !selectedPredicates.contains( Disjoint ) )
+    return;
+
+  if ( targetSource->featureCount() > 0 && intersectSource->featureCount() > 0 &&
+       targetSource->featureCount() < intersectSource->featureCount() )
   {
     // joining FEWER features to a layer with MORE features. So we iterate over the FEW features and find matches from the MANY
     processByIteratingOverTargetSource( context, targetSource, intersectSource,
                                         selectedPredicates, handleFeatureFunction,
-                                        onlyRequireTargetIds, feedback );
+                                        onlyRequireTargetIds, feedback, skipTargetFeatureIds );
   }
   else
   {
@@ -100,7 +110,7 @@ void QgsLocationBasedAlgorithm::process( const QgsProcessingContext &context, Qg
     // source.
     processByIteratingOverIntersectSource( context, targetSource, intersectSource,
                                            selectedPredicates, handleFeatureFunction,
-                                           onlyRequireTargetIds, feedback );
+                                           onlyRequireTargetIds, feedback, skipTargetFeatureIds );
   }
 }
 
@@ -109,7 +119,8 @@ void QgsLocationBasedAlgorithm::processByIteratingOverTargetSource( const QgsPro
     const QList< int > &selectedPredicates,
     const std::function < void( const QgsFeature & ) > &handleFeatureFunction,
     bool onlyRequireTargetIds,
-    QgsProcessingFeedback *feedback )
+    QgsProcessingFeedback *feedback,
+    const QgsFeatureIds &skipTargetFeatureIds )
 {
   if ( intersectSource->hasSpatialIndex() == QgsFeatureSource::SpatialIndexNotPresent )
     feedback->pushWarning( QObject::tr( "No spatial index exists for intersect layer, performance will be severely degraded" ) );
@@ -129,6 +140,9 @@ void QgsLocationBasedAlgorithm::processByIteratingOverTargetSource( const QgsPro
     if ( feedback->isCanceled() )
       break;
 
+    // don't check features in skipTargetFeatureIds
+    if ( skipTargetFeatureIds.contains( f.id() ) )
+      continue;
     if ( !f.hasGeometry() )
       continue;
 
@@ -212,7 +226,8 @@ void QgsLocationBasedAlgorithm::processByIteratingOverIntersectSource( const Qgs
     const QList< int > &selectedPredicates,
     const std::function < void( const QgsFeature & ) > &handleFeatureFunction,
     bool onlyRequireTargetIds,
-    QgsProcessingFeedback *feedback )
+    QgsProcessingFeedback *feedback,
+    const QgsFeatureIds &skipTargetFeatureIds )
 {
   if ( targetSource->hasSpatialIndex() == QgsFeatureSource::SpatialIndexNotPresent )
     feedback->pushWarning( QObject::tr( "No spatial index exists for input layer, performance will be severely degraded" ) );
@@ -260,6 +275,11 @@ void QgsLocationBasedAlgorithm::processByIteratingOverIntersectSource( const Qgs
       if ( feedback->isCanceled() )
         break;
 
+      if ( skipTargetFeatureIds.contains( testFeature.id() ) )
+      {
+        // don't check features in skipTargetFeatureIds
+        continue;
+      }
       if ( foundSet.contains( testFeature.id() ) )
       {
         // already added this one, no need for further tests
@@ -425,7 +445,24 @@ QVariantMap QgsSelectByLocationAlgorithm::processAlgorithm( const QVariantMap &p
   {
     selectedIds.insert( feature.id() );
   };
-  process( context, selectLayer, intersectSource.get(), selectedPredicates, addToSelection, true, feedback );
+  switch ( method )
+  {
+    case Qgis::SelectBehavior::IntersectSelection:
+    case Qgis::SelectBehavior::RemoveFromSelection:
+    {
+      // When subsetting or removing we only need to check already selected features
+      std::unique_ptr< QgsVectorLayerSelectedFeatureSource > selectLayerSelected( new QgsVectorLayerSelectedFeatureSource( selectLayer ) );
+      process( context, selectLayerSelected.get(), intersectSource.get(), selectedPredicates, addToSelection, true, feedback );
+      break;
+    }
+    case Qgis::SelectBehavior::AddToSelection:
+      // When adding we can skip checking already selected features
+      process( context, selectLayer, intersectSource.get(), selectedPredicates, addToSelection, true, feedback, selectLayer->selectedFeatureIds() );
+      break;
+    case Qgis::SelectBehavior::SetSelection:
+      process( context, selectLayer, intersectSource.get(), selectedPredicates, addToSelection, true, feedback );
+      break;
+  }
 
   selectLayer->selectByIds( selectedIds, method );
   QVariantMap results;

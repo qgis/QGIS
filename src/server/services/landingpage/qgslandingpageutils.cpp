@@ -116,7 +116,7 @@ QMap<QString, QString> QgsLandingPageUtils::projects( const QgsServerSettings &s
 
   // PG projects (there is no watcher for PG: scan every time)
   const QString envPgName = QgsServerSettings::name( QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS );
-  const auto storage { QgsApplication::instance()->projectStorageRegistry()->projectStorageFromType( QStringLiteral( "postgresql" ) ) };
+  const auto storage { QgsApplication::projectStorageRegistry()->projectStorageFromType( QStringLiteral( "postgresql" ) ) };
   Q_ASSERT( storage );
   const auto cPgConnections { pgConnections.split( QStringLiteral( "||" ) ) };
   for ( const auto &connectionString : cPgConnections )

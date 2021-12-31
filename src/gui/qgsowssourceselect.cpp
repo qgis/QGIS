@@ -61,7 +61,7 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
 
 {
   setupUi( this );
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
   connect( mNewButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mNewButton_clicked );
   connect( mEditButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mEditButton_clicked );
   connect( mDeleteButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mDeleteButton_clicked );
@@ -284,7 +284,7 @@ void QgsOWSSourceSelect::mDeleteButton_clicked()
 {
   const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
                       .arg( mConnectionsComboBox->currentText() );
-  const QMessageBox::StandardButton result = QMessageBox::question( this, tr( "Delete Connection" ), msg, QMessageBox::Yes | QMessageBox::No );
+  const QMessageBox::StandardButton result = QMessageBox::question( this, tr( "Remove Connection" ), msg, QMessageBox::Yes | QMessageBox::No );
   if ( result == QMessageBox::Yes )
   {
     QgsOwsConnection::deleteConnection( mService, mConnectionsComboBox->currentText() );
