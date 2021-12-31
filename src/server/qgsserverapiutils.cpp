@@ -561,7 +561,6 @@ QVariantList QgsServerApiUtils::temporalExtentList( const QgsVectorLayer *layer 
 
 QgsCoordinateReferenceSystem QgsServerApiUtils::parseCrs( const QString &bboxCrs )
 {
-  QgsCoordinateReferenceSystem crs;
   // We get this:
   // http://www.opengis.net/def/crs/OGC/1.3/CRS84
   // We want this:
@@ -569,11 +568,11 @@ QgsCoordinateReferenceSystem QgsServerApiUtils::parseCrs( const QString &bboxCrs
   const auto parts { QUrl( bboxCrs ).path().split( '/' ) };
   if ( parts.count() == 6 )
   {
-    return crs.fromOgcWmsCrs( QStringLiteral( "urn:ogc:def:crs:%1:%2:%3" ).arg( parts[3], parts[4], parts[5] ) );
+    return QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "urn:ogc:def:crs:%1:%2:%3" ).arg( parts[3], parts[4], parts[5] ) );
   }
   else
   {
-    return crs;
+    return QgsCoordinateReferenceSystem();
   }
 }
 

@@ -419,7 +419,7 @@ static QVariant fcnRndF( const QVariantList &values, const QgsExpressionContext 
   }
 
   // Return a random double in the range [min, max] (inclusive)
-  double f = static_cast< double >( generator() ) / static_cast< double >( generator.max() );
+  double f = static_cast< double >( generator() ) / static_cast< double >( std::mt19937_64::max() );
   return QVariant( min + f * ( max - min ) );
 }
 static QVariant fcnRnd( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
