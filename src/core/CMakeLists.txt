@@ -1333,6 +1333,7 @@ set(QGIS_CORE_HDRS
   labeling/qgslabelobstaclesettings.h
   labeling/qgslabelposition.h
   labeling/qgslabelsearchtree.h
+  labeling/qgslabelsink.h
   labeling/qgslabelthinningsettings.h
   labeling/qgspallabeling.h
   labeling/qgsrulebasedlabeling.h
