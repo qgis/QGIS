@@ -308,9 +308,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
         }
 
         const double distance = QgsGeometryUtils::distToInfiniteLine(
-                                  point.x(), point.y(),
-                                  extensionPoint.x(), extensionPoint.y(),
-                                  vertex.x(), vertex.y() );
+                                  QgsPoint( point ), QgsPoint( extensionPoint ), vertex );
 
         if ( distance / ctx.mapUnitsPerPixel < SOFT_CONSTRAINT_TOLERANCE_PIXEL )
         {

@@ -95,8 +95,12 @@ class CORE_EXPORT QgsGeometryUtils
 
     /**
      * Returns the distance between a point and an infinite line.
+     * \param point Point to find the distance to the line
+     * \param linePoint1 First point of the line
+     * \param linePoint2 Second point of the line
+     * \since QGIS 3.24
      */
-    static double distToInfiniteLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double epsilon = 1e-7 );
+    static double distToInfiniteLine( const QgsPoint &point, const QgsPoint &linePoint1, const QgsPoint &linePoint2, double epsilon = 1e-7 );
 
     /**
      * Computes the intersection between two lines. Z dimension is

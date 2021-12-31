@@ -239,16 +239,16 @@ double QgsGeometryUtils::sqrDistToLine( double ptX, double ptY, double x1, doubl
   return dist;
 }
 
-double QgsGeometryUtils::distToInfiniteLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double epsilon )
+double QgsGeometryUtils::distToInfiniteLine( const QgsPoint &point, const QgsPoint &linePoint1, const QgsPoint &linePoint2, double epsilon )
 {
   const double area = std::abs(
-                        ( x1 - x2 ) * ( ptY - y2 ) -
-                        ( y1 - y2 ) * ( ptX - x2 )
+                        ( linePoint1.x() - linePoint2.x() ) * ( point.y() - linePoint2.y() ) -
+                        ( linePoint1.y() - linePoint2.y() ) * ( point.x() - linePoint2.x() )
                       );
 
   const double length = std::sqrt(
-                          std::pow( x1 - x2, 2 ) +
-                          std::pow( y1 - y2, 2 )
+                          std::pow( linePoint1.x() - linePoint2.x(), 2 ) +
+                          std::pow( linePoint1.y() - linePoint2.y(), 2 )
                         );
 
   const double distance = area / length;
