@@ -749,15 +749,16 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
 {
   CadCapacities newCapacities = CadCapacities();
   const bool isGeographic = mMapCanvas->mapSettings().destinationCrs().isGeographic();
-  if ( !isGeographic )
-    newCapacities |= Distance;
 
   // first point is the mouse point (it doesn't count)
   if ( mCadPointList.count() > 1 )
   {
     newCapacities |=  RelativeCoordinates;
     if ( !isGeographic )
+    {
       newCapacities |= AbsoluteAngle;
+      newCapacities |= Distance;
+    }
   }
   if ( mCadPointList.count() > 2 )
   {
@@ -1440,13 +1441,11 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
 
 void QgsAdvancedDigitizingDockWidget::enable()
 {
+  // most of theses lines can be moved to updateCapacity
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsAdvancedDigitizingDockWidget::enable, Qt::UniqueConnection );
   if ( mMapCanvas->mapSettings().destinationCrs().isGeographic() )
   {
-    mAngleLineEdit->setEnabled( false );
     mAngleLineEdit->setToolTip( tr( "Angle constraint cannot be used on geographic coordinates. Change the coordinates system in the project properties." ) );
-
-    mDistanceLineEdit->setEnabled( false );
     mDistanceLineEdit->setToolTip( tr( "Distance constraint cannot be used on geographic coordinates. Change the coordinates system in the project properties." ) );
 
     mLabelX->setText( tr( "Long" ) );
@@ -1460,7 +1459,6 @@ void QgsAdvancedDigitizingDockWidget::enable()
     mAngleLineEdit->setToolTip( "<b>" + tr( "Angle" ) + "</b><br>(" + tr( "press a for quick access" ) + ")" );
     mAngleLineEdit->setToolTip( QString() );
 
-    mDistanceLineEdit->setEnabled( true );
     mDistanceLineEdit->setToolTip( "<b>" + tr( "Distance" ) + "</b><br>(" + tr( "press d for quick access" ) + ")" );
 
     mLabelX->setText( tr( "x" ) );
@@ -1469,6 +1467,8 @@ void QgsAdvancedDigitizingDockWidget::enable()
     mXConstraint->setPrecision( 6 );
     mYConstraint->setPrecision( 6 );
   }
+
+  updateCapacity();
 
   mEnableAction->setEnabled( true );
   mErrorLabel->hide();
