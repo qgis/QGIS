@@ -41,7 +41,7 @@ class Qgs3DViewsManager : public QDialog, private Ui::Qgs3DViewsManager
     void removeClicked();
     void renameClicked();
   private:
-    QStringListModel mListModel;
+    QStringListModel *mListModel = nullptr;
 
     QMap<QString, QDomElement> *m3DMapViewsDom = nullptr;
     QMap<QString, Qgs3DMapCanvasDockWidget *> *m3DMapViewsWidgets = nullptr;
