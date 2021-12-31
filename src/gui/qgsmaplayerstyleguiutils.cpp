@@ -20,10 +20,12 @@
 #include <QMenu>
 #include <QActionGroup>
 
+#include "qgshelp.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsnewnamedialog.h"
 
 
 QgsMapLayerStyleGuiUtils *QgsMapLayerStyleGuiUtils::instance()
@@ -130,15 +132,27 @@ void QgsMapLayerStyleGuiUtils::addStyle()
   if ( !layer )
     return;
 
-  bool ok;
-  const QString text = QInputDialog::getText( nullptr, tr( "New Style" ),
-                       tr( "Style name:" ), QLineEdit::Normal,
-                       QStringLiteral( "new style" ), &ok );
-  if ( !ok || text.isEmpty() )
+  const QStringList styles = layer->styleManager()->styles();
+
+  QgsNewNameDialog dlg( nullptr, tr( "new style" ), QStringList(), styles, Qt::CaseSensitive );
+  dlg.setWindowTitle( tr( "Create New Style" ) );
+  dlg.setHintString( tr( "Name of the new style" ) );
+  dlg.setOverwriteEnabled( false );
+  dlg.setConflictingNameWarning( tr( "A style with this name already exists!" ) );
+
+  dlg.buttonBox()->addButton( QDialogButtonBox::Help );
+  connect( dlg.buttonBox(), &QDialogButtonBox::helpRequested, this, [ = ]
+  {
+    QgsHelp::openHelp( "introduction/general_tools.html#save-and-share-layer-properties" );
+  } );
+
+  if ( dlg.exec() != QDialog::Accepted )
+  {
     return;
+  }
 
+  const QString text = dlg.name();
   const bool res = layer->styleManager()->addStyleFromLayer( text );
-
   if ( res ) // make it active!
   {
     layer->styleManager()->setCurrentStyle( text );
@@ -194,14 +208,26 @@ void QgsMapLayerStyleGuiUtils::renameStyle()
     return;
 
   const QString name = layer->styleManager()->currentStyle();
+  const QStringList styles = layer->styleManager()->styles();
 
-  bool ok;
-  const QString text = QInputDialog::getText( nullptr, tr( "Rename Style" ),
-                       tr( "Style name:" ), QLineEdit::Normal,
-                       name, &ok );
-  if ( !ok )
+  QgsNewNameDialog dlg( nullptr, name, QStringList(), styles, Qt::CaseSensitive );
+  dlg.setWindowTitle( tr( "Rename Current Style" ) );
+  dlg.setHintString( tr( "New name of the style" ) );
+  dlg.setOverwriteEnabled( false );
+  dlg.setConflictingNameWarning( tr( "A style with this name already exists!" ) );
+
+  dlg.buttonBox()->addButton( QDialogButtonBox::Help );
+  connect( dlg.buttonBox(), &QDialogButtonBox::helpRequested, this, [ = ]
+  {
+    QgsHelp::openHelp( "introduction/general_tools.html#save-and-share-layer-properties" );
+  } );
+
+  if ( dlg.exec() != QDialog::Accepted )
+  {
     return;
+  }
 
+  const QString text = dlg.name();
   const bool res = layer->styleManager()->renameStyle( name, text );
   if ( !res )
   {
