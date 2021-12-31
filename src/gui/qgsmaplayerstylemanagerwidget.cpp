@@ -21,11 +21,13 @@
 
 #include "qgsmaplayerstylemanagerwidget.h"
 #include "qgssettings.h"
+#include "qgshelp.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsnewnamedialog.h"
 #include "qgsvectordataprovider.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsvectorlayer.h"
@@ -143,13 +145,26 @@ void QgsMapLayerStyleManagerWidget::styleRenamed( const QString &oldname, const 
 
 void QgsMapLayerStyleManagerWidget::addStyle()
 {
-  bool ok;
-  const QString text = QInputDialog::getText( nullptr, tr( "New Style" ),
-                       tr( "Style name:" ), QLineEdit::Normal,
-                       QStringLiteral( "new style" ), &ok );
-  if ( !ok || text.isEmpty() )
-    return;
+  const QStringList styles = mLayer->styleManager()->styles();
 
+  QgsNewNameDialog dlg( nullptr, tr( "new style" ), QStringList(), styles, Qt::CaseSensitive );
+  dlg.setWindowTitle( tr( "Create New Style" ) );
+  dlg.setHintString( tr( "Name of the new style" ) );
+  dlg.setOverwriteEnabled( false );
+  dlg.setConflictingNameWarning( tr( "A style with this name already exists!" ) );
+
+  dlg.buttonBox()->addButton( QDialogButtonBox::Help );
+  connect( dlg.buttonBox(), &QDialogButtonBox::helpRequested, this, [ = ]
+  {
+    QgsHelp::openHelp( "introduction/general_tools.html#save-and-share-layer-properties" );
+  } );
+
+  if ( dlg.exec() != QDialog::Accepted )
+  {
+    return;
+  }
+
+  const QString text = dlg.name();
   const bool res = mLayer->styleManager()->addStyleFromLayer( text );
   if ( res ) // make it active!
   {
