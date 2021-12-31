@@ -191,6 +191,17 @@ Rendering labels is not yet done. If the fully rendered layer including labels i
 .. versionadded:: 3.0
 %End
 
+    void layerRendered( const QString &layerId );
+%Docstring
+Emitted when a layer has completed rendering.
+
+.. note::
+
+   the :py:class:`QgsMapRendererParallelJob` subclass does not emit this signal.
+
+.. versionadded:: 3.24
+%End
+
     void finished();
 %Docstring
 emitted when asynchronous rendering is finished (or canceled).

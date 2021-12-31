@@ -70,6 +70,7 @@ void QgsMapRendererSequentialJob::startPrivate()
   mInternalJob->setCache( mCache );
 
   connect( mInternalJob, &QgsMapRendererJob::finished, this, &QgsMapRendererSequentialJob::internalFinished );
+  connect( mInternalJob, &QgsMapRendererJob::layerRendered, this, &QgsMapRendererSequentialJob::layerRendered );
 
   mInternalJob->start();
 }
