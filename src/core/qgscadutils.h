@@ -70,6 +70,11 @@ class CORE_EXPORT QgsCadUtils
     {
       public:
 
+        /**
+         * Designates whether the line extension constraint is currently soft locked
+         * with the previous or next vertex of the locked one.
+         * \since QGIS 3.24
+         */
         enum LineExtensionSide
         {
           BeforeVertex,
@@ -168,14 +173,6 @@ class CORE_EXPORT QgsCadUtils
         void setCadPoints( const QList< QgsPoint > &points ) { mCadPointList = points; };
 
         /**
-         * Sets the list of recent CAD \a points (in map coordinates).
-         *
-         * \see lockedSnapVertices()
-         * \since QGIS 3.24
-         */
-        void setLockedSnapVertices( const QQueue< QgsPointLocator::Match > &lockedSnapVertices ) { mLockedSnapVertices = lockedSnapVertices; } SIP_SKIP;
-
-        /**
          * Sets the recent CAD point at the specified \a index to \a point (in map coordinates).
          *
          * \see cadPoint()
@@ -190,6 +187,23 @@ class CORE_EXPORT QgsCadUtils
          * \since QGIS 3.22
          */
         QgsPoint cadPoint( int index ) const { return mCadPointList[index]; };
+
+        /**
+         * Sets the queue of locked vertices.
+         *
+         * The use of QgsPointLocator::Match allows to keep more context than a QgsPoint.
+         *
+         * \see lockedSnapVertices()
+         * \since QGIS 3.24
+         */
+        void setLockedSnapVertices( const QQueue< QgsPointLocator::Match > &lockedSnapVertices ) { mLockedSnapVertices = lockedSnapVertices; } SIP_SKIP;
+
+        /**
+         * Returns the queue of point locator matches that contain the locked vertices.
+         *
+         * \see setLockedSnapVertices()
+         * \since QGIS 3.24
+         */
         QQueue< QgsPointLocator::Match > lockedSnapVertices() const { return mLockedSnapVertices; } SIP_SKIP;
 
 
