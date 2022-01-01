@@ -192,6 +192,12 @@ See [debian-ubuntu](https://qgis.org/en/site/forusers/alldownloads.html#debian-u
 currently supported distributions (plain xenial's GDAL for instance is too old
 and we build with GDAL2 from ubuntugis).
 
+To build QGIS server additional dependencies are required for building the server landingpage:
+
+Node.js (current LTS recommended): https://nodejs.org/en/download/<br>
+Yarn Package Manager: https://yarnpkg.com/getting-started/install
+
+
 ## 3.4. Setup ccache (Optional, but recommended)
 
 You should also setup ccache to speed up compile times:
@@ -432,7 +438,7 @@ new subdirectory called `build` or `build-qt5` in it.
 To build QGIS server additional dependencies are required:
 
 ```bash
-dnf install fcgi-devel
+dnf install fcgi-devel nodejs yarnpkg
 ```
 
 Make sure that your build directory is completely empty when you enter the
