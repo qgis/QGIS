@@ -39,6 +39,7 @@ jobs:
       - name: Install build dependencies
         run: ./ms-windows/mingw/mingwdeps.sh
 
+      # Node.js and Yarn for server landingpage
       - uses: actions/setup-node@v2
         with:
           node-version: '17'
