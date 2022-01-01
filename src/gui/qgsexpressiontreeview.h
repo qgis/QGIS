@@ -100,6 +100,8 @@ class GUI_EXPORT QgsExpressionItem : public QStandardItem
     static const int ITEM_NAME_ROLE = Qt::UserRole + 4;
     //! Layer ID role \since QGIS 3.24
     static const int LAYER_ID_ROLE = Qt::UserRole + 5;
+    //! Item help role
+    static const int ITEM_HELP_ROLE = Qt::UserRole + 6;
 
   private:
     QString mExpressionText;

@@ -334,6 +334,7 @@ QgsExpressionItem *QgsExpressionTreeView::registerItem( const QString &group,
   item->setData( sortOrder, QgsExpressionItem::CUSTOM_SORT_ROLE );
   item->setData( tags, QgsExpressionItem::SEARCH_TAGS_ROLE );
   item->setData( name, QgsExpressionItem::ITEM_NAME_ROLE );
+  item->setData( helpText, QgsExpressionItem::ITEM_HELP_ROLE );
   item->setIcon( icon );
 
   // Look up the group and insert the new function.
@@ -438,6 +439,7 @@ void QgsExpressionTreeView::loadLayerFields( QgsVectorLayer *layer, QgsExpressio
     item->setData( QStringList(), QgsExpressionItem::SEARCH_TAGS_ROLE );
     item->setData( field.name(), QgsExpressionItem::ITEM_NAME_ROLE );
     item->setData( layer->id(), QgsExpressionItem::LAYER_ID_ROLE );
+    item->setData( field.name(), QgsExpressionItem::ITEM_HELP_ROLE );
     item->setIcon( icon );
     parentItem->appendRow( item );
   }
@@ -862,10 +864,21 @@ bool QgsExpressionItemSearchProxy::filterAcceptsRow( int source_row, const QMode
   }
 
   const QStringList tags = sourceModel()->data( index, QgsExpressionItem::SEARCH_TAGS_ROLE ).toStringList();
-  return std::any_of( tags.begin(), tags.end(), [this]( const QString & tag )
-  {
-    return tag.contains( mFilterString, Qt::CaseInsensitive );
-  } );
+  if ( std::any_of( tags.begin(), tags.end(), [this]( const QString & tag )
+{
+  return tag.contains( mFilterString, Qt::CaseInsensitive );
+  } ) )
+  return true;
+
+  const QString helptext = sourceModel()->data( index, QgsExpressionItem::ITEM_HELP_ROLE ).toString();
+  const QStringList filters = mFilterString.split( ' ' );
+  if ( std::all_of( filters.begin(), filters.end(), [helptext]( const QString & filter )
+{
+  return helptext.contains( filter, Qt::CaseInsensitive );
+  } ) )
+  return true;
+
+  return false;
 }
 
 void QgsExpressionItemSearchProxy::setFilterString( const QString &string )
