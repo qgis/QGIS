@@ -35,8 +35,6 @@ class QgsProject;
  * of 3D views. Usually this class is not constructed directly, but
  * rather accessed through a QgsProject via QgsProject::viewsManager3D().
  *
- * Qgs3DViewsManager retains ownership of all the 3d views contained
- * in the manager.
  * \since QGIS 3.24
  */
 class CORE_EXPORT Qgs3DViewsManager : public QObject
@@ -51,25 +49,48 @@ class CORE_EXPORT Qgs3DViewsManager : public QObject
      */
     explicit Qgs3DViewsManager( QgsProject *project );
 
+    /**
+     * Reads the manager's state from a DOM element, restoring all 3D views
+     * present in the XML document
+     * \see writeXml()
+     */
     bool readXml( const QDomElement &element, const QDomDocument &doc );
 
+    /**
+     *  Returns a DOM element representing the state of the manager.
+     *  \see readXml()
+     */
     QDomElement writeXml( QDomDocument &doc ) const;
 
+    //! Removes and deletes all 3D views from the manager.
     void clear();
 
+    //! Returns the DOM element representing the settings of the 3D view named \a name
     QDomElement get3DViewSettings( const QString &name );
+
+    //! Adds a new 3D view named \a name to the manager with the configuration DOM \a dom
     void register3DViewSettings( const QString &name, const QDomElement &dom );
 
+    //! Returns the names of all 3D views added to the manager
     QStringList get3DViewsNames();
+
+    //! Returns the list of configurations of 3D views added to the manager
     QList<QDomElement> get3DViews();
 
+    //! Removes the configuration of the 3D view named \a name
     void remove3DView( const QString &name );
+
+    //! Renames the 3D view named \a oldTitle to \a newTitle
     void rename3DView( const QString &oldTitle, const QString &newTitle );
 
+    //! Sets the configuration of the 3D view named \a name to being opened
     void viewOpened( const QString &name );
+
+    //! Sets the configuration of the 3D view named \a name to being closed
     void viewClosed( const QString &name );
 
   signals:
+    //! Emitted when the views list has changed (whenever a 3D view was removed, added, renamed..)
     void viewsListChanged();
 
   private:

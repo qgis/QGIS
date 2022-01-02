@@ -1,0 +1,111 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/./3d/qgs3dviewsmanager.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class Qgs3DViewsManager : QObject
+{
+%Docstring(signature="appended")
+
+Manages storage of a set of 3D views.
+
+:py:class:`QgsLayoutManager` handles the storage, serializing and deserializing
+of 3D views. Usually this class is not constructed directly, but
+rather accessed through a :py:class:`QgsProject` via :py:func:`QgsProject.viewsManager3D()`.
+
+.. versionadded:: 3.24
+%End
+
+%TypeHeaderCode
+#include "qgs3dviewsmanager.h"
+%End
+  public:
+
+    explicit Qgs3DViewsManager( QgsProject *project );
+%Docstring
+Constructor for Qgs3DViewsManager. The project will become the parent object for this
+manager.
+%End
+
+    bool readXml( const QDomElement &element, const QDomDocument &doc );
+%Docstring
+Reads the manager's state from a DOM element, restoring all 3D views
+present in the XML document
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Returns a DOM element representing the state of the manager.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    void clear();
+%Docstring
+Removes and deletes all 3D views from the manager.
+%End
+
+    QDomElement get3DViewSettings( const QString &name );
+%Docstring
+Returns the DOM element representing the settings of the 3D view named ``name``
+%End
+
+    void register3DViewSettings( const QString &name, const QDomElement &dom );
+%Docstring
+Adds a new 3D view named ``name`` to the manager with the configuration DOM ``dom``
+%End
+
+    QStringList get3DViewsNames();
+%Docstring
+Returns the names of all 3D views added to the manager
+%End
+
+    QList<QDomElement> get3DViews();
+%Docstring
+Returns the list of configurations of 3D views added to the manager
+%End
+
+    void remove3DView( const QString &name );
+%Docstring
+Removes the configuration of the 3D view named ``name``
+%End
+
+    void rename3DView( const QString &oldTitle, const QString &newTitle );
+%Docstring
+Renames the 3D view named ``oldTitle`` to ``newTitle``
+%End
+
+    void viewOpened( const QString &name );
+%Docstring
+Sets the configuration of the 3D view named ``name`` to being opened
+%End
+
+    void viewClosed( const QString &name );
+%Docstring
+Sets the configuration of the 3D view named ``name`` to being closed
+%End
+
+  signals:
+    void viewsListChanged();
+%Docstring
+Emitted when the views list has changed (whenever a 3D view was removed, added, renamed..)
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/./3d/qgs3dviewsmanager.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
