@@ -66,9 +66,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgsattributeeditorcontainer.h"
 #include "qgsgrouplayer.h"
-#ifdef HAVE_3D
 #include "qgs3dviewsmanager.h"
-#endif
 
 #include <algorithm>
 #include <QApplication>
