@@ -212,14 +212,27 @@ QgsInterval QgsInterval::fromString( const QString &string )
 {
   double seconds = 0;
   const thread_local QRegularExpression rx( "([-+]?\\d*\\.?\\d+\\s+\\S+)", QRegularExpression::CaseInsensitiveOption );
+  const thread_local QRegularExpression rxtime(".*(\\d{1,2}:){2}\\d{1,2}.*", QRegularExpression::CaseInsensitiveOption);
+
+  QRegularExpressionMatch matchtime = rxtime.match(string);
+  QString modedString = QString(string);
+  if (matchtime.hasMatch() && std::count(modedString.begin(), modedString.end(), ':') == 2 ) //some part of the string contains 00:00:00 style duration
+  {
+    // Get the first occurrence
+    size_t hourColonPos = modedString.indexOf(':');
+    modedString.replace(hourColonPos, 1, " hours ");
+    size_t minutColonPos = modedString.indexOf(':');
+    modedString.replace(minutColonPos, 1, " minutes ");
+    modedString.append(" seconds");
+  }
   QStringList list;
   int pos = 0;
-  QRegularExpressionMatch match = rx.match( string );
+  QRegularExpressionMatch match = rx.match(modedString);
   while ( match.hasMatch() )
   {
     list << match.captured( 1 );
     pos = match.capturedStart() + match.capturedLength();
-    match = rx.match( string, pos );
+    match = rx.match(modedString, pos );
   }
 
   QMap<int, QStringList> map;
