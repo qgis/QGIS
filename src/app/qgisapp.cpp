@@ -1745,6 +1745,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
 
   setupLayoutManagerConnections();
 
+#ifdef HAVE_3D
+  connect( QgsProject::instance()->views3DManager(), &Qgs3DViewsManager::viewsListChanged, this, &QgisApp::views3DMenuAboutToShow );
+#endif
+
   setupDuplicateFeaturesAction();
 
   // support for project storage
@@ -9909,6 +9913,7 @@ Qgs3DMapCanvasDockWidget *QgisApp::open3DMapView( const QString &mapName )
     return nullptr;
 
   read3DMapViewSettings( mapCanvasDock3D, elem3DMap );
+  mPanelMenu->removeAction( mapCanvasDock3D->toggleViewAction() );
 
   QgsProject::instance()->views3DManager()->viewOpened( mapName );
 
@@ -9972,6 +9977,8 @@ Qgs3DMapCanvasDockWidget *QgisApp::duplicate3DMapView( const QString &existingVi
 
   QgsProject::instance()->views3DManager()->register3DViewSettings( newViewName, elem3DMap );
   QgsProject::instance()->views3DManager()->viewOpened( newViewName );
+
+  mPanelMenu->removeAction( mapCanvasDock3D->toggleViewAction() );
 
   return mapCanvasDock3D;
 #else
@@ -10072,14 +10079,28 @@ void QgisApp::populate3DMapviewsMenu( QMenu *menu )
 #ifdef HAVE_3D
   menu->clear();
   QList<QAction *> acts;
-  const QList< QString > views = QgsProject::instance()->views3DManager()->get3DViewsNames();
+  QList< QDomElement > views = QgsProject::instance()->views3DManager()->get3DViews();
   acts.reserve( views.size() );
-  for ( QString viewName : views )
+  for ( const QDomElement &viewConfig : views )
   {
+    QString viewName = viewConfig.attribute( QStringLiteral( "name" ) );
+    bool isOpen = viewConfig.attribute( QStringLiteral( "isOpen" ), QStringLiteral( "1" ) ).toInt() == 1;
     QAction *a = new QAction( viewName, menu );
-    connect( a, &QAction::triggered, this, [this, viewName]
+    a->setCheckable( true );
+    a->setChecked( isOpen );
+    connect( a, &QAction::triggered, this, [viewName]( bool isChecked )
     {
-      open3DMapView( viewName );
+      if ( isChecked )
+      {
+        QgisApp::instance()->open3DMapView( viewName );
+      }
+      else
+      {
+        if ( Qgs3DMapCanvasDockWidget *w = QgisApp::instance()->findChild<Qgs3DMapCanvasDockWidget *>( viewName + QStringLiteral( "ViewObject" ) ) )
+        {
+          w->close();
+        }
+      }
     } );
     acts << a;
   }
@@ -10097,6 +10118,7 @@ void QgisApp::populate3DMapviewsMenu( QMenu *menu )
 
 void QgisApp::views3DMenuAboutToShow()
 {
+  qDebug() << __PRETTY_FUNCTION__;
   populate3DMapviewsMenu( m3DMapViewsMenu );
 }
 
@@ -14059,6 +14081,8 @@ void QgisApp::new3DMapCanvas()
     {
       QgsProject::instance()->views3DManager()->viewClosed( name );
     } );
+
+    mPanelMenu->removeAction( dock->toggleViewAction() );
   }
 #endif
 }
@@ -16761,8 +16785,6 @@ void QgisApp::writeProject( QDomDocument &doc )
     write3DMapViewSettings( widget, doc, elem3DMap );
     QgsProject::instance()->views3DManager()->register3DViewSettings( viewName, elem3DMap );
   }
-//  QDomElement elem3DMaps = QgsProject::instance()->views3DManager()->writeXml( doc );
-//  qgisNode.appendChild( elem3DMaps );
 #endif
   projectChanged( doc );
 }
@@ -16885,6 +16907,8 @@ void QgisApp::readProject( const QDomDocument &doc )
     {
       QgsProject::instance()->views3DManager()->viewClosed( viewName );
     } );
+
+    mPanelMenu->removeAction( mapCanvasDock3D->toggleViewAction() );
   }
 #endif
 

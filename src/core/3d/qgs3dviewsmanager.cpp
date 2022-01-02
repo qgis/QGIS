@@ -92,6 +92,7 @@ void Qgs3DViewsManager::rename3DView( const QString &oldTitle, const QString &ne
   QDomElement elem = m3DMapViewsDom.value( oldTitle );
   m3DMapViewsDom.remove( oldTitle );
   m3DMapViewsDom[ newTitle ] = elem;
+  m3DMapViewsDom[ newTitle ].setAttribute( QStringLiteral( "name" ), newTitle );
   emit viewsListChanged();
 }
 
