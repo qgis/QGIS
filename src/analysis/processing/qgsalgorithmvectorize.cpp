@@ -18,6 +18,7 @@
 #include "qgsalgorithmvectorize.h"
 #include "qgis.h"
 #include "qgsprocessing.h"
+#include "qgsrasterrange.h"
 
 ///@cond PRIVATE
 
@@ -37,8 +38,23 @@ void QgsVectorizeAlgorithmBase::initAlgorithm( const QVariantMap & )
                 QObject::tr( "Raster layer" ) ) );
   addParameter( new QgsProcessingParameterBand( QStringLiteral( "RASTER_BAND" ),
                 QObject::tr( "Band number" ), 1, QStringLiteral( "INPUT_RASTER" ) ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD_NAME" ),
-                QObject::tr( "Field name" ), QStringLiteral( "VALUE" ) ) );
+
+  std::unique_ptr<QgsProcessingParameterString> fieldValueParameter = std::make_unique<QgsProcessingParameterString>(
+        QStringLiteral( "FIELD_NAME" ),
+        QObject::tr( "Field name" ),
+        QStringLiteral( "VALUE" ), false, true );
+  fieldValueParameter->setHelp( QObject::tr( "The field name used to store the raster value. "
+                                "If left empty, the attribute creation will be skipped." ) );
+  addParameter( fieldValueParameter.release() );
+
+  std::unique_ptr<QgsProcessingParameterString> userNoDataParamerer = std::make_unique<QgsProcessingParameterString>(
+        QStringLiteral( "USER_NODATA" ),
+        QObject::tr( "Additional comma-separated NODATA values (eg 1,2-3,4)" ),
+        QString( "" ), false, true );
+  userNoDataParamerer->setFlags( userNoDataParamerer->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  userNoDataParamerer->setHelp( QObject::tr( "A list of comma-separated values can be entered as additional NODATA values. "
+                                "Values can be a mix of single numbers (e.g. 1,2,3) and numerical ranges (e.g. 1-3,10-13)." ) );
+  addParameter( userNoDataParamerer.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), outputName(), outputType() ) );
 }
@@ -69,7 +85,39 @@ QVariantMap QgsVectorizeAlgorithmBase::processAlgorithm( const QVariantMap &para
 {
   const QString fieldName = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
   QgsFields fields;
-  fields.append( QgsField( fieldName, QVariant::Double, QString(), 20, 8 ) );
+  if ( !fieldName.isEmpty() )
+    fields.append( QgsField( fieldName, QVariant::Double, QString(), 20, 8 ) );
+
+  const QString userNoData = parameterAsString( parameters, QStringLiteral( "USER_NODATA" ), context );
+  QgsRasterRangeList userNoDataList;
+  if ( !userNoData.isEmpty() )
+  {
+    const QStringList userNoDataValues = userNoData.split( ',', Qt::SkipEmptyParts );
+    for ( const QString &userNoDataValue : userNoDataValues )
+    {
+      const QStringList range = userNoDataValue.split( '-', Qt::SkipEmptyParts );
+      bool ok = true;
+      double min = 0.0;
+      double max = 0.0;
+      if ( range.size() == 1 )
+      {
+        min = range.at( 0 ).toDouble( &ok );
+        if ( !ok )
+          continue;
+        max = min;
+      }
+      else if ( range.size() == 2 )
+      {
+        min = range.at( 0 ).toDouble( &ok );
+        if ( !ok )
+          continue;
+        max = range.at( 1 ).toDouble( &ok );
+        if ( !ok )
+          continue;
+      }
+      userNoDataList << QgsRasterRange( min, max );
+    }
+  }
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, sinkType(), mCrs ) );
@@ -113,13 +161,21 @@ QVariantMap QgsVectorizeAlgorithmBase::processAlgorithm( const QVariantMap &para
       for ( int column = 0; column < iterCols; column++ )
       {
         const double value = rasterBlock->valueAndNoData( row, column, isNoData );
-        if ( !isNoData )
+        bool isUserNoData = false;
+        for ( const QgsRasterRange &range : std::as_const( userNoDataList ) )
+        {
+          isUserNoData = range.contains( value );
+          if ( isUserNoData )
+            break;
+        }
+        if ( !isNoData && !isUserNoData )
         {
           const QgsGeometry pixelRectGeometry = createGeometryForPixel( currentX, currentY, mRasterUnitsPerPixelX, mRasterUnitsPerPixelY );
 
           QgsFeature f;
           f.setGeometry( pixelRectGeometry );
-          f.setAttributes( QgsAttributes() << value );
+          if ( !fieldName.isEmpty() )
+            f.setAttributes( QgsAttributes() << value );
           if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
             throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
         }
