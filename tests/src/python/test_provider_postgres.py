@@ -254,15 +254,18 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         i = values[0]
         j = values[1]
         k = values[2]
+        l = values[3]
 
-        self.assertEqual(i.seconds(), 32162400)
+        self.assertEqual(i.seconds(), 34754400)
         self.assertEqual(j.seconds(), 101 * 24 * 60 * 60)
         self.assertEqual(k.seconds(), 0)
+        self.assertEqual(l.seconds(), 34758060)
 
         self.assertTrue(i.isValid())
         self.assertTrue(j.isValid())
         # 0 interval is not valid.
         self.assertFalse(k.isValid())
+        self.assertTrue(l.isValid())
 
     def testByteaType(self):
         vl = QgsVectorLayer('{} table="qgis_test"."byte_a_table" sql='.format(

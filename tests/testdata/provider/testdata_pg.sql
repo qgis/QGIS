@@ -536,7 +536,8 @@ CREATE TABLE qgis_test.interval_table
 INSERT INTO qgis_test.interval_table VALUES
 (1, '1 Year 1 Month 1 Week'),
 (2, '101 Days'),
-(3, '0');
+(3, '0'),
+(4, '1 Year 1 Month 1 Week 1 Hour 1 minute');
 
 --------------------------------------
 -- Table for citext
