@@ -12,7 +12,10 @@ QgsProject.ReadFlag.FlagTrustLayerMetadata.__doc__ = "Trust layer metadata. Impr
 QgsProject.FlagDontStoreOriginalStyles = QgsProject.ReadFlag.FlagDontStoreOriginalStyles
 QgsProject.FlagDontStoreOriginalStyles.is_monkey_patched = True
 QgsProject.ReadFlag.FlagDontStoreOriginalStyles.__doc__ = "Skip the initial XML style storage for layers. Useful for minimising project load times in non-interactive contexts."
-QgsProject.ReadFlag.__doc__ = 'Flags which control project read behavior.\n\n.. versionadded:: 3.10\n\n' + '* ``FlagDontResolveLayers``: ' + QgsProject.ReadFlag.FlagDontResolveLayers.__doc__ + '\n' + '* ``FlagDontLoadLayouts``: ' + QgsProject.ReadFlag.FlagDontLoadLayouts.__doc__ + '\n' + '* ``FlagTrustLayerMetadata``: ' + QgsProject.ReadFlag.FlagTrustLayerMetadata.__doc__ + '\n' + '* ``FlagDontStoreOriginalStyles``: ' + QgsProject.ReadFlag.FlagDontStoreOriginalStyles.__doc__
+QgsProject.FlagDontLoad3DViews = QgsProject.ReadFlag.FlagDontLoad3DViews
+QgsProject.FlagDontLoad3DViews.is_monkey_patched = True
+QgsProject.ReadFlag.FlagDontLoad3DViews.__doc__ = ""
+QgsProject.ReadFlag.__doc__ = 'Flags which control project read behavior.\n\n.. versionadded:: 3.10\n\n' + '* ``FlagDontResolveLayers``: ' + QgsProject.ReadFlag.FlagDontResolveLayers.__doc__ + '\n' + '* ``FlagDontLoadLayouts``: ' + QgsProject.ReadFlag.FlagDontLoadLayouts.__doc__ + '\n' + '* ``FlagTrustLayerMetadata``: ' + QgsProject.ReadFlag.FlagTrustLayerMetadata.__doc__ + '\n' + '* ``FlagDontStoreOriginalStyles``: ' + QgsProject.ReadFlag.FlagDontStoreOriginalStyles.__doc__ + '\n' + '* ``FlagDontLoad3DViews``: ' + QgsProject.ReadFlag.FlagDontLoad3DViews.__doc__
 # --
 # monkey patching scoped based enum
 QgsProject.FileFormat.Qgz.__doc__ = "Archive file format, supports auxiliary data"

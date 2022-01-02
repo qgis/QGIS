@@ -15,7 +15,6 @@
 
 
 
-
 class QgsProject : QObject, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsProjectTranslator
 {
 %Docstring(signature="appended")
@@ -43,6 +42,7 @@ open within the main QGIS application.
       FlagDontLoadLayouts,
       FlagTrustLayerMetadata,
       FlagDontStoreOriginalStyles,
+      FlagDontLoad3DViews,
     };
     typedef QFlags<QgsProject::ReadFlag> ReadFlags;
 
@@ -742,6 +742,15 @@ Returns the project's layout manager, which manages print layouts, atlases and r
 the project.
 
 .. versionadded:: 3.0
+%End
+
+
+    Qgs3DViewsManager *views3DManager();
+%Docstring
+Returns the project's 3D views manager, which manages 3D views
+in the project.
+
+.. versionadded:: 3.24
 %End
 
 

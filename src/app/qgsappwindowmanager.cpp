@@ -21,7 +21,7 @@
 #include "qgsrasterlayer.h"
 
 #ifdef HAVE_3D
-#include "qgs3dviewsmanager.h"
+#include "qgs3dviewsmanagerdialog.h"
 #endif
 
 QgsAppWindowManager::~QgsAppWindowManager()
@@ -71,7 +71,7 @@ QWidget *QgsAppWindowManager::openApplicationDialog( QgsAppWindowManager::Applic
 #ifdef HAVE_3D
       if ( !m3DMapViewsManagerDialog )
       {
-        m3DMapViewsManagerDialog = new Qgs3DViewsManager( QgisApp::instance(), Qt::Window );
+        m3DMapViewsManagerDialog = new Qgs3DViewsManagerDialog( QgisApp::instance(), Qt::Window );
         m3DMapViewsManagerDialog->setAttribute( Qt::WA_DeleteOnClose );
       }
       m3DMapViewsManagerDialog->show();

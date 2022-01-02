@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgs3dviewsmanager.cpp
+  qgs3dviewsmanagerdialog.cpp
   --------------------------------------
   Date                 : December 2021
   Copyright            : (C) 2021 by Belgacem Nedjima
@@ -13,14 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgs3dviewsmanager.h"
+#include "qgs3dviewsmanagerdialog.h"
 
 #include "qgisapp.h"
 #include "qgs3dmapcanvasdockwidget.h"
 #include "qgsnewnamedialog.h"
 #include "qgs3dmapcanvas.h"
+#include "qgs3dviewsmanager.h"
 
-Qgs3DViewsManager::Qgs3DViewsManager( QWidget *parent, Qt::WindowFlags f )
+Qgs3DViewsManagerDialog::Qgs3DViewsManagerDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
 {
   setupUi( this );
@@ -31,19 +32,27 @@ Qgs3DViewsManager::Qgs3DViewsManager( QWidget *parent, Qt::WindowFlags f )
   m3DViewsListView->setEditTriggers( QAbstractItemView::NoEditTriggers );
   m3DViewsListView->setSelectionMode( QAbstractItemView::SingleSelection );
 
-  connect( mOpenButton, &QToolButton::clicked, this, &Qgs3DViewsManager::openClicked );
-  connect( mDuplicateButton, &QToolButton::clicked, this, &Qgs3DViewsManager::duplicateClicked );
-  connect( mRemoveButton, &QToolButton::clicked, this, &Qgs3DViewsManager::removeClicked );
-  connect( mRenameButton, &QToolButton::clicked, this, &Qgs3DViewsManager::renameClicked );
+  connect( mOpenButton, &QToolButton::clicked, this, &Qgs3DViewsManagerDialog::openClicked );
+  connect( mDuplicateButton, &QToolButton::clicked, this, &Qgs3DViewsManagerDialog::duplicateClicked );
+  connect( mRemoveButton, &QToolButton::clicked, this, &Qgs3DViewsManagerDialog::removeClicked );
+  connect( mRenameButton, &QToolButton::clicked, this, &Qgs3DViewsManagerDialog::renameClicked );
+
+  connect( QgsProject::instance()->views3DManager(), &Qgs3DViewsManager::viewsListChanged, this, &Qgs3DViewsManagerDialog::onViewsListChanged );
 }
 
-void Qgs3DViewsManager::openClicked()
+void Qgs3DViewsManagerDialog::onViewsListChanged()
+{
+  reload();
+}
+
+void Qgs3DViewsManagerDialog::openClicked()
 {
   if ( m3DViewsListView->selectionModel()->selectedRows().isEmpty() )
     return;
 
   QString viewName = m3DViewsListView->selectionModel()->selectedRows().at( 0 ).data( Qt::DisplayRole ).toString();
-  Qgs3DMapCanvasDockWidget *widget = m3DMapViewsWidgets->value( viewName, nullptr );
+
+  Qgs3DMapCanvasDockWidget *widget = QgisApp::instance()->findChild<Qgs3DMapCanvasDockWidget *>( viewName );
   if ( !widget )
   {
     widget = QgisApp::instance()->open3DMapView( viewName );
@@ -56,7 +65,7 @@ void Qgs3DViewsManager::openClicked()
   }
 }
 
-void Qgs3DViewsManager::duplicateClicked()
+void Qgs3DViewsManagerDialog::duplicateClicked()
 {
   if ( m3DViewsListView->selectionModel()->selectedRows().isEmpty() )
     return;
@@ -65,25 +74,21 @@ void Qgs3DViewsManager::duplicateClicked()
   QString newViewName = askUserForATitle( existingViewName, tr( "Duplicate" ), false );
 
   QgisApp::instance()->duplicate3DMapView( existingViewName, newViewName );
-  reload();
 }
 
-void Qgs3DViewsManager::removeClicked()
+void Qgs3DViewsManagerDialog::removeClicked()
 {
   if ( m3DViewsListView->selectionModel()->selectedRows().isEmpty() )
     return;
 
   QString viewName = m3DViewsListView->selectionModel()->selectedRows().at( 0 ).data( Qt::DisplayRole ).toString();
-  m3DMapViewsDom->remove( viewName );
-  if ( Qgs3DMapCanvasDockWidget *w = m3DMapViewsWidgets->value( viewName, nullptr ) )
-  {
-    m3DMapViewsWidgets->remove( viewName );
+
+  QgsProject::instance()->views3DManager()->remove3DView( viewName );
+  if ( Qgs3DMapCanvasDockWidget *w = QgisApp::instance()->findChild<Qgs3DMapCanvasDockWidget *>( viewName + QStringLiteral( "ViewObject" ) ) )
     w->close();
-  }
-  reload();
 }
 
-void Qgs3DViewsManager::renameClicked()
+void Qgs3DViewsManagerDialog::renameClicked()
 {
   if ( m3DViewsListView->selectionModel()->selectedRows().isEmpty() )
     return;
@@ -94,45 +99,25 @@ void Qgs3DViewsManager::renameClicked()
   if ( newTitle.isEmpty() )
     return;
 
-  QDomElement dom = m3DMapViewsDom->value( oldTitle );
+  QgsProject::instance()->views3DManager()->rename3DView( oldTitle, newTitle );
 
-  m3DMapViewsDom->remove( oldTitle );
-  m3DMapViewsDom->insert( newTitle, dom );
-
-  if ( Qgs3DMapCanvasDockWidget *widget = m3DMapViewsWidgets->value( oldTitle, nullptr ) )
+  if ( Qgs3DMapCanvasDockWidget *widget = QgisApp::instance()->findChild<Qgs3DMapCanvasDockWidget *>( oldTitle + QStringLiteral( "ViewObject" ) ) )
   {
-    m3DMapViewsWidgets->remove( oldTitle );
-    m3DMapViewsWidgets->insert( newTitle, widget );
     widget->setWindowTitle( newTitle );
     widget->mapCanvas3D()->setObjectName( newTitle );
   }
-  reload();
 }
 
-void Qgs3DViewsManager::reload()
+void Qgs3DViewsManagerDialog::reload()
 {
-  if ( !m3DMapViewsDom || !m3DMapViewsWidgets )
-    return;
-
-  mListModel->setStringList( m3DMapViewsDom->keys() );
+  QStringList names = QgsProject::instance()->views3DManager()->get3DViewsNames();
+  mListModel->setStringList( names );
 }
 
-void Qgs3DViewsManager::set3DMapViewsDom( QMap<QString, QDomElement> &mapViews3DDom )
-{
-  m3DMapViewsDom = &mapViews3DDom;
-  reload();
-}
-
-void Qgs3DViewsManager::set3DMapViewsWidgets( QMap<QString, Qgs3DMapCanvasDockWidget *> &mapViews3DWidgets )
-{
-  m3DMapViewsWidgets = &mapViews3DWidgets;
-  reload();
-}
-
-QString Qgs3DViewsManager::askUserForATitle( QString oldTitle, QString action, bool allowExistingTitle )
+QString Qgs3DViewsManagerDialog::askUserForATitle( QString oldTitle, QString action, bool allowExistingTitle )
 {
   QString newTitle = oldTitle;
-  QStringList notAllowedTitles = m3DMapViewsDom->keys();
+  QStringList notAllowedTitles = mListModel->stringList();
   if ( allowExistingTitle )
     notAllowedTitles.removeOne( oldTitle );
   QgsNewNameDialog dlg( tr( "3D view" ), newTitle, QStringList(), notAllowedTitles, Qt::CaseSensitive, this );
