@@ -35,6 +35,7 @@ class Qgs3DViewsManagerDialog : public QDialog, private Ui::Qgs3DViewsManagerDia
 
   private slots:
     void openClicked();
+    void closeClicked();
     void duplicateClicked();
     void removeClicked();
     void renameClicked();
