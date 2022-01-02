@@ -13992,22 +13992,11 @@ void QgisApp::new3DMapCanvas()
   }
 
   int i = 1;
-
-  bool existing = true;
-  const QList< Qgs3DMapCanvas * > existingCanvases = findChildren< Qgs3DMapCanvas * >();
-  QString name;
-  while ( existing )
+  const QList< QString > usedCanvasNames = QgsProject::instance()->views3DManager()->get3DViewsNames();
+  QString name = tr( "3D Map %1" ).arg( i );
+  while ( usedCanvasNames.contains( name ) )
   {
-    name = tr( "3D Map %1" ).arg( i++ );
-    existing = false;
-    for ( Qgs3DMapCanvas *canvas : existingCanvases )
-    {
-      if ( canvas->objectName() == name )
-      {
-        existing = true;
-        break;
-      }
-    }
+    name = tr( "3D Map %1" ).arg( ++i );
   }
 
   Qgs3DMapCanvasDockWidget *dock = createNew3DMapCanvasDock( name );
