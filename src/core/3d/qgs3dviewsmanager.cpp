@@ -25,6 +25,7 @@ Qgs3DViewsManager::Qgs3DViewsManager( QgsProject *project )
 
 bool Qgs3DViewsManager::readXml( const QDomElement &element, const QDomDocument &doc )
 {
+  Q_UNUSED( doc );
   clear();
 
   QgsReadWriteContext readWriteContext;
@@ -59,12 +60,12 @@ void Qgs3DViewsManager::clear()
   emit viewsListChanged();
 }
 
-QDomElement Qgs3DViewsManager::get3DViewSettings( const QString &name )
+QDomElement Qgs3DViewsManager::get3DViewSettings( const QString &name ) const
 {
   return m3DMapViewsDom.value( name, QDomElement() );
 }
 
-QList<QDomElement> Qgs3DViewsManager::get3DViews()
+QList<QDomElement> Qgs3DViewsManager::get3DViews() const
 {
   return m3DMapViewsDom.values();
 }
@@ -75,7 +76,7 @@ void Qgs3DViewsManager::register3DViewSettings( const QString &name, const QDomE
   emit viewsListChanged();
 }
 
-QStringList Qgs3DViewsManager::get3DViewsNames()
+QStringList Qgs3DViewsManager::get3DViewsNames() const
 {
   return m3DMapViewsDom.keys();
 }

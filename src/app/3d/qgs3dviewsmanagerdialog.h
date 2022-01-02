@@ -46,4 +46,4 @@ class Qgs3DViewsManagerDialog : public QDialog, private Ui::Qgs3DViewsManagerDia
     QString askUserForATitle( QString oldTitle, QString action, bool allowExistingTitle );
 };
 
-#endif // QGS3DVIEWSMANAGER_H
+#endif // QGS3DVIEWSMANAGERDIALOG_H

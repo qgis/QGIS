@@ -53,7 +53,7 @@ Returns a DOM element representing the state of the manager.
 Removes and deletes all 3D views from the manager.
 %End
 
-    QDomElement get3DViewSettings( const QString &name );
+    QDomElement get3DViewSettings( const QString &name ) const;
 %Docstring
 Returns the DOM element representing the settings of the 3D view named ``name``
 %End
@@ -63,12 +63,12 @@ Returns the DOM element representing the settings of the 3D view named ``name``
 Adds a new 3D view named ``name`` to the manager with the configuration DOM ``dom``
 %End
 
-    QStringList get3DViewsNames();
+    QStringList get3DViewsNames() const;
 %Docstring
 Returns the names of all 3D views added to the manager
 %End
 
-    QList<QDomElement> get3DViews();
+    QList<QDomElement> get3DViews() const;
 %Docstring
 Returns the list of configurations of 3D views added to the manager
 %End

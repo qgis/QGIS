@@ -66,16 +66,16 @@ class CORE_EXPORT Qgs3DViewsManager : public QObject
     void clear();
 
     //! Returns the DOM element representing the settings of the 3D view named \a name
-    QDomElement get3DViewSettings( const QString &name );
+    QDomElement get3DViewSettings( const QString &name ) const;
 
     //! Adds a new 3D view named \a name to the manager with the configuration DOM \a dom
     void register3DViewSettings( const QString &name, const QDomElement &dom );
 
     //! Returns the names of all 3D views added to the manager
-    QStringList get3DViewsNames();
+    QStringList get3DViewsNames() const;
 
     //! Returns the list of configurations of 3D views added to the manager
-    QList<QDomElement> get3DViews();
+    QList<QDomElement> get3DViews() const;
 
     //! Removes the configuration of the 3D view named \a name
     void remove3DView( const QString &name );
