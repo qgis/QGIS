@@ -779,6 +779,7 @@ set(QGIS_CORE_SRCS
   3d/qgs3dsymbolregistry.cpp
   3d/qgsabstract3dsymbol.cpp
   3d/qgsabstract3drenderer.cpp
+  3d/qgs3dviewsmanager.cpp
 
   fieldformatter/qgscheckboxfieldformatter.cpp
   fieldformatter/qgsrangefieldformatter.cpp
@@ -1165,6 +1166,7 @@ set(QGIS_CORE_HDRS
   3d/qgs3dsymbolregistry.h
   3d/qgsabstract3dsymbol.h
   3d/qgsabstract3drenderer.h
+  3d/qgs3dviewsmanager.h
 
   annotations/qgsannotation.h
   annotations/qgsannotationitem.h

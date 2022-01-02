@@ -430,6 +430,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Opens a 3D view canvas for a 3D map view called \a name.
+     * If the 3D view named \a name was not already created in the project, nullptr will be returned
      */
     Qgs3DMapCanvasDockWidget *open3DMapView( const QString &name );
 
@@ -2735,10 +2736,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMap< QString, QToolButton * > mAnnotationItemGroupToolButtons;
     QAction *mAnnotationsItemInsertBefore = nullptr; // Used to insert annotation items at the appropriate location in the annotations toolbar
 
-#ifdef HAVE_3D
-    QMap<QString, QDomElement> m3DMapViewsDom;
-    QMap<QString, Qgs3DMapCanvasDockWidget *> m3DMapViewsWidgets;
-#endif
 
     class QgsCanvasRefreshBlocker
     {

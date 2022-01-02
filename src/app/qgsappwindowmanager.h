@@ -22,7 +22,7 @@
 
 class QgsStyleManagerDialog;
 class QgsLayoutManagerDialog;
-class Qgs3DViewsManager;
+class Qgs3DViewsManagerDialog;
 
 /**
  * \ingroup gui
@@ -57,7 +57,7 @@ class QgsAppWindowManager : public QgsWindowManagerInterface
   private:
     QPointer< QgsStyleManagerDialog > mStyleManagerDialog;
     QPointer< QgsLayoutManagerDialog > mLayoutManagerDialog;
-    QPointer< Qgs3DViewsManager > m3DMapViewsManagerDialog;
+    QPointer< Qgs3DViewsManagerDialog > m3DMapViewsManagerDialog;
 
 };
 
