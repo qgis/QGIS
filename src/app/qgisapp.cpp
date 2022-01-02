@@ -10104,7 +10104,6 @@ void QgisApp::populate3DMapviewsMenu( QMenu *menu )
 
 void QgisApp::views3DMenuAboutToShow()
 {
-  qDebug() << __PRETTY_FUNCTION__;
   populate3DMapviewsMenu( m3DMapViewsMenu );
 }
 
@@ -13978,7 +13977,6 @@ void QgisApp::new3DMapCanvas()
     map->setSelectionColor( mMapCanvas->selectionColor() );
     map->setBackgroundColor( mMapCanvas->canvasColor() );
     map->setLayers( mMapCanvas->layers( true ) );
-//    map->setTerrainLayers( mMapCanvas->layers() );
     map->setTemporalRange( mMapCanvas->temporalRange() );
 
     const QgsCameraController::NavigationMode defaultNavMode = settings.enumValue( QStringLiteral( "map3d/defaultNavigation" ), QgsCameraController::TerrainBasedNavigation, QgsSettings::App );

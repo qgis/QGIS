@@ -33,6 +33,7 @@ Qgs3DViewsManagerDialog::Qgs3DViewsManagerDialog( QWidget *parent, Qt::WindowFla
   m3DViewsListView->setSelectionMode( QAbstractItemView::SingleSelection );
 
   connect( mOpenButton, &QToolButton::clicked, this, &Qgs3DViewsManagerDialog::openClicked );
+  connect( mCloseButton, &QToolButton::clicked, this, &Qgs3DViewsManagerDialog::closeClicked );
   connect( mDuplicateButton, &QToolButton::clicked, this, &Qgs3DViewsManagerDialog::duplicateClicked );
   connect( mRemoveButton, &QToolButton::clicked, this, &Qgs3DViewsManagerDialog::removeClicked );
   connect( mRenameButton, &QToolButton::clicked, this, &Qgs3DViewsManagerDialog::renameClicked );
@@ -52,7 +53,7 @@ void Qgs3DViewsManagerDialog::openClicked()
 
   QString viewName = m3DViewsListView->selectionModel()->selectedRows().at( 0 ).data( Qt::DisplayRole ).toString();
 
-  Qgs3DMapCanvasDockWidget *widget = QgisApp::instance()->findChild<Qgs3DMapCanvasDockWidget *>( viewName );
+  Qgs3DMapCanvasDockWidget *widget = QgisApp::instance()->findChild<Qgs3DMapCanvasDockWidget *>( viewName + QStringLiteral( "ViewObject" ) );
   if ( !widget )
   {
     widget = QgisApp::instance()->open3DMapView( viewName );
@@ -62,6 +63,20 @@ void Qgs3DViewsManagerDialog::openClicked()
     widget->show();
     widget->activateWindow();
     widget->raise();
+  }
+}
+
+void Qgs3DViewsManagerDialog::closeClicked()
+{
+  if ( m3DViewsListView->selectionModel()->selectedRows().isEmpty() )
+    return;
+
+  QString viewName = m3DViewsListView->selectionModel()->selectedRows().at( 0 ).data( Qt::DisplayRole ).toString();
+
+  Qgs3DMapCanvasDockWidget *widget = QgisApp::instance()->findChild<Qgs3DMapCanvasDockWidget *>( viewName + QStringLiteral( "ViewObject" ) );
+  if ( widget )
+  {
+    widget->close();
   }
 }
 
