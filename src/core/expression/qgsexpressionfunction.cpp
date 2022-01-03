@@ -6650,7 +6650,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   // Sixth parameter (for intersects only) is the min overlap (area or length)
   // Seventh parameter (for intersects only) is the min inscribed circle radius
   // Eight parameter (for intersects only) is the return_measure
-  // Nineth parameter (for intersects only) is the sort_by_intersection_size flag
+  // Ninth parameter (for intersects only) is the sort_by_intersection_size flag
   double minOverlap { -1 };
   double minInscribedCircleRadius { -1 };
   bool returnMeasures = false;
@@ -6816,12 +6816,16 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
       {
         const QgsGeometry intersection { geometry.intersection( feat2.geometry() ) };
 
-        // overlap and inscribed circle tests must be checked both (if the values are != -1)
+        // Depending on the intersection geometry type and on the geometry type of
+        // the tested geometry we can run different tests and collect different measures
+        // that can be used for sorting (if required).
         switch ( intersection.type() )
         {
+
           case QgsWkbTypes::GeometryType::PolygonGeometry:
           {
 
+            // overlap and inscribed circle tests must be checked both (if the values are != -1)
             bool testResult { false };
             // For return measures:
             QVector<double> overlapValues;
@@ -6919,6 +6923,46 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
             break;
           }
           case QgsWkbTypes::GeometryType::PointGeometry:
+          {
+            if ( minOverlap != -1  || requireMeasures )
+            {
+              // Initially set this to 0 because it's a point intersection...
+              overlapValue = 0;
+              // ... but if the target geometry is not a point and the source
+              // geometry is a point, we must record the length or the area
+              // of the intersected geometry and use that as a measure for
+              // sorting or reporting.
+              if ( geometry.type() == QgsWkbTypes::GeometryType::PointGeometry )
+              {
+                switch ( feat2.geometry().type() )
+                {
+                  case QgsWkbTypes::GeometryType::UnknownGeometry:
+                  case QgsWkbTypes::GeometryType::NullGeometry:
+                  case QgsWkbTypes::GeometryType::PointGeometry:
+                  {
+                    break;
+                  }
+                  case QgsWkbTypes::GeometryType::LineGeometry:
+                  {
+                    overlapValue = feat2.geometry().length();
+                    break;
+                  }
+                  case QgsWkbTypes::GeometryType::PolygonGeometry:
+                  {
+                    overlapValue = feat2.geometry().area();
+                    break;
+                  }
+                }
+              }
+
+              if ( minOverlap != -1 && overlapValue < minOverlap )
+              {
+                continue;
+              }
+
+            }
+            break;
+          }
           case QgsWkbTypes::GeometryType::NullGeometry:
           case QgsWkbTypes::GeometryType::UnknownGeometry:
           {
@@ -6938,7 +6982,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
       {
         // We want a list of attributes / geometries / other expression values, evaluate now
         subContext.setFeature( feat2 );
-        const QVariant expResult { subExpression.evaluate( &subContext ) };
+        const QVariant expResult = subExpression.evaluate( &subContext );
 
         if ( requireMeasures )
         {
@@ -6947,7 +6991,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
           resultRecord.insert( QStringLiteral( "result" ), expResult );
           // Overlap is always added because return measures was set
           resultRecord.insert( QStringLiteral( "overlap" ), overlapValue );
-          // radius is only added when is different than -1 (because for linestrings is not set)
+          // Radius is only added when is different than -1 (because for linestrings is not set)
           if ( radiusValue != -1 )
           {
             resultRecord.insert( QStringLiteral( "radius" ), radiusValue );
