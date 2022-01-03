@@ -421,7 +421,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     //! Flag to indicate a map canvas capture operation is taking place
     bool mCapturing = false;
 
-    //! extrimity point of the captured curve in map coordinates
+    //! extremity point of the captured curve in map coordinates
     QgsPoint mCaptureFirstPoint;
     QgsPoint mCaptureLastPoint;
 
