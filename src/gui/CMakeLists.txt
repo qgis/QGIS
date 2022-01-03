@@ -535,6 +535,7 @@ set(QGIS_GUI_SRCS
   qgsmaptool.cpp
   qgsmaptooladvanceddigitizing.cpp
   qgsmaptoolcapture.cpp
+  qgsmaptoolcapturerubberband.cpp
   qgsmaptooledit.cpp
   qgsmaptooldigitizefeature.cpp
   qgsmaptoolemitpoint.cpp
@@ -787,6 +788,7 @@ set(QGIS_GUI_HDRS
   qgsmaptool.h
   qgsmaptooladvanceddigitizing.h
   qgsmaptoolcapture.h
+  qgsmaptoolcapturerubberband.h
   qgsmaptooldigitizefeature.h
   qgsmaptooledit.h
   qgsmaptoolemitpoint.h
