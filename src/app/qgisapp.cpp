@@ -13658,7 +13658,7 @@ void QgisApp::addEmbeddedItems( const QString &projectFile, const QStringList &g
   }
 
   // Resolve references to other layers
-  QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
+  const QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer *>::iterator it = layers.begin(); it != layers.end(); ++it )
   {
     it.value()->resolveReferences( QgsProject::instance() );
