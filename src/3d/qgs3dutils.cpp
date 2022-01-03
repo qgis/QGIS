@@ -643,11 +643,13 @@ QgsRay3D Qgs3DUtils::rayFromScreenPoint( const QPoint &point, const QSize &windo
   return QgsRay3D( QVector3D( rayOriginWorld ), rayDirWorld );
 }
 
-QVector3D Qgs3DUtils::mouseToWorldPos( double screenX, double screenY, double depth, const QSize &screenSize, Qt3DRender::QCamera *camera )
+QVector3D Qgs3DUtils::screenPointToWorldPos( const QPoint &screenPoint, double depth, const QSize &screenSize, Qt3DRender::QCamera *camera )
 {
-  double distance = Qgs3DUtils::distanceFromCamera( depth, camera );
+  double near = camera->nearPlane();
+  double far = camera->farPlane();
+  double distance = ( 2.0 * near * far ) / ( far + near - ( depth * 2 - 1 ) * ( far - near ) );
 
-  QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( QPoint( screenX, screenY ), screenSize, camera );
+  QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( screenPoint, screenSize, camera );
   double dot = QVector3D::dotProduct( ray.direction(), camera->viewVector().normalized() );
   distance /= dot;
 
@@ -662,21 +664,6 @@ void Qgs3DUtils::pitchAndYawFromViewVector( QVector3D vect, double &pitch, doubl
   yaw = qRadiansToDegrees( qAtan2( -vect.z(), vect.x() ) ) + 90;
 }
 
-QVector3D Qgs3DUtils::worldPosFromDepth( QMatrix4x4 projMatrixInv, QMatrix4x4 viewMatrixInv, float texCoordX, float texCoordY, float depth )
-{
-  const float z = depth * 2.0 - 1.0;
-
-  const QVector4D clipSpacePosition( texCoordX * 2.0 - 1.0, texCoordY * 2.0 - 1.0, z, 1.0 );
-  QVector4D viewSpacePosition = projMatrixInv * clipSpacePosition;
-
-  // Perspective division
-  viewSpacePosition /= viewSpacePosition.w();
-  QVector4D worldSpacePosition =  viewMatrixInv * viewSpacePosition;
-  worldSpacePosition /= worldSpacePosition.w();
-
-  return QVector3D( worldSpacePosition.x(), worldSpacePosition.y(), worldSpacePosition.z() );
-}
-
 QVector2D Qgs3DUtils::screenToTextureCoordinates( QVector2D screenXY, QSize winSize )
 {
   return QVector2D( screenXY.x() / winSize.width(), 1 - screenXY.y() / winSize.width() );
@@ -685,13 +672,6 @@ QVector2D Qgs3DUtils::screenToTextureCoordinates( QVector2D screenXY, QSize winS
 QVector2D Qgs3DUtils::textureToScreenCoordinates( QVector2D textureXY, QSize winSize )
 {
   return QVector2D( textureXY.x() * winSize.width(), ( 1 - textureXY.y() ) * winSize.height() );
-}
-
-double Qgs3DUtils::distanceFromCamera( double depth, Qt3DRender::QCamera *camera )
-{
-  double near = camera->nearPlane();
-  double far = camera->farPlane();
-  return ( 2.0 * near * far ) / ( far + near - ( depth * 2 - 1 ) * ( far - near ) );
 }
 
 double Qgs3DUtils::decodeDepth( const QColor &pixel )

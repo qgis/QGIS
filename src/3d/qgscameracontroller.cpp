@@ -394,13 +394,11 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     {
       double depth = Qgs3DUtils::decodeDepth( mDepthBufferImage.pixelColor( mMiddleButtonClickPos.x(), mMiddleButtonClickPos.y() ) ); //depthPixel.redF() / 255.0 / 255.0 + depthPixel.greenF() / 255.0 + depthPixel.blueF();
 
-      mRotationDistanceFromCenter = Qgs3DUtils::distanceFromCamera( depth, mCameraBeforeRotation );
+      QVector3D worldPos = Qgs3DUtils::screenPointToWorldPos( mMiddleButtonClickPos, depth, mViewport.size(), mCameraBeforeRotation );
 
-      QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( QPoint( mMiddleButtonClickPos.x(), mMiddleButtonClickPos.y() ), mViewport.size(), mCameraBeforeRotation );
-      double dot = QVector3D::dotProduct( ray.direction(), mCameraBeforeRotation->viewVector().normalized() );
-      mRotationDistanceFromCenter /= dot;
+      mRotationDistanceFromCenter = ( worldPos - mCameraBeforeRotation->position() ).length();
 
-      mRotationCenter = Qgs3DUtils::mouseToWorldPos( mMiddleButtonClickPos.x(), mMiddleButtonClickPos.y(), depth, mViewport.size(), mCameraBeforeRotation );
+      mRotationCenter = Qgs3DUtils::screenPointToWorldPos( mMiddleButtonClickPos, depth, mViewport.size(), mCameraBeforeRotation );
 
       emit cameraRotationCenterChanged( mRotationCenter );
       mRotationCenterCalculated = true;
@@ -454,13 +452,13 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     if ( !mDragPointCalculated )
     {
       mDragDepth = Qgs3DUtils::decodeDepth( mDepthBufferImage.pixelColor( mDragButtonClickPos.x(), mDragButtonClickPos.y() ) ); //depthPixel.redF() / 255.0 / 255.0 + depthPixel.greenF() / 255.0 + depthPixel.blueF();
-      mDragPoint = Qgs3DUtils::mouseToWorldPos( mDragButtonClickPos.x(), mDragButtonClickPos.y(), mDragDepth, mViewport.size(), mCameraBeforeDrag );
+      mDragPoint = Qgs3DUtils::screenPointToWorldPos( mDragButtonClickPos, mDragDepth, mViewport.size(), mCameraBeforeDrag );
       mDragPointCalculated = true;
     }
 
     QVector3D cameraBeforeDragPos = mCameraBeforeDrag->position();
 
-    QVector3D moveToPosition = Qgs3DUtils::mouseToWorldPos( mMousePos.x(), mMousePos.y(), mDragDepth, mViewport.size(), mCameraBeforeDrag );
+    QVector3D moveToPosition = Qgs3DUtils::screenPointToWorldPos( mMousePos, mDragDepth, mViewport.size(), mCameraBeforeDrag );
     QVector3D cameraBeforeToMoveToPos = ( moveToPosition - mCameraBeforeDrag->position() ).normalized();
     QVector3D cameraBeforeToDragPointPos = ( mDragPoint - mCameraBeforeDrag->position() ).normalized();
 
@@ -496,7 +494,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     if ( !mDragPointCalculated )
     {
       double depth = Qgs3DUtils::decodeDepth( mDepthBufferImage.pixelColor( mDragButtonClickPos.x(), mDragButtonClickPos.y() ) );
-      mDragPoint = Qgs3DUtils::mouseToWorldPos( mDragButtonClickPos.x(), mDragButtonClickPos.y(), depth, mViewport.size(), mCameraBeforeDrag );
+      mDragPoint = Qgs3DUtils::screenPointToWorldPos( mDragButtonClickPos, depth, mViewport.size(), mCameraBeforeDrag );
       mDragPointCalculated = true;
     }
 
@@ -566,7 +564,7 @@ void QgsCameraController::handleTerrainNavigationWheelZoom()
   if ( !mZoomPointCalculated )
   {
     double depth = Qgs3DUtils::decodeDepth( mDepthBufferImage.pixelColor( mMousePos.x(), mMousePos.y() ) );
-    mZoomPoint = Qgs3DUtils::mouseToWorldPos( mMousePos.x(), mMousePos.y(), depth, mViewport.size(), mCameraBeforeZoom );
+    mZoomPoint = Qgs3DUtils::screenPointToWorldPos( mMousePos, depth, mViewport.size(), mCameraBeforeZoom );
     mZoomPointCalculated = true;
   }
 

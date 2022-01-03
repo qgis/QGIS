@@ -195,19 +195,13 @@ class _3D_EXPORT Qgs3DUtils
      * Converts the clicked mouse position to the corresponding 3D world coordinates
      * \since QGIS 3.24
      */
-    static QVector3D mouseToWorldPos( double screenX, double screenY, double, const QSize &screenSize, Qt3DRender::QCamera *camera );
+    static QVector3D screenPointToWorldPos( const QPoint &screenPoint, double depth, const QSize &screenSize, Qt3DRender::QCamera *camera );
 
     /**
      * Function used to extract the pitch and yaw (also known as heading) angles in degrees from the view vector of the camera [cameraViewCenter - cameraPosition]
      * \since QGIS 3.24
      */
     static void pitchAndYawFromViewVector( QVector3D vect, double &pitch, double &yaw );
-
-    /**
-     * Converts from view port space to world space
-     * \since QGIS 3.24
-     */
-    static QVector3D worldPosFromDepth( QMatrix4x4 projMatrixInv, QMatrix4x4 viewMatrixInv, float texCoordX, float texCoordY, float depth );
 
     /**
      * Converts from screen coordinates to texture coordinates
@@ -224,30 +218,6 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.24
      */
     static QVector2D textureToScreenCoordinates( QVector2D textureXY, QSize winSize );
-
-    /**
-     * Calculates the distance from the point that has a depth value of \a depth and the camera plane as illustrated here:
-     *
-     *  ________o________x             o : Camera view center
-     *  \       |       /|
-     *   \      |      / |
-     *    \     |     /  |             d : the distance returned by this function
-     *     \    |    /   | d
-     *      \   |   /d2  |             x : the point that has depth value of \a depth
-     *       \  |  /     |
-     *        \ | /      |
-     *         \|/       |
-     * ---------c---------
-     *        camera
-     *
-     * \note to calculate the distance from the the point x to the camera center c, you need to divide the returned distance d2
-     * by the dot product between the view vector of the camera and the ray direction coming from the camera center to the desired
-     * point (Make sure both vectors are normalized).
-     *
-     * \see rayFromScreenPoint()
-     * \since QGIS 3.24
-     */
-    static double distanceFromCamera( double depth, Qt3DRender::QCamera *camera );
 
     /**
      * Decodes the depth value from the pixel's color value

@@ -408,8 +408,6 @@ void calculateViewExtent( Qt3DRender::QCamera *camera, float shadowRenderingDist
   const QVector3D cameraPos = camera->position();
   const QMatrix4x4 projectionMatrix = camera->projectionMatrix();
   const QMatrix4x4 viewMatrix = camera->viewMatrix();
-  const QMatrix4x4 projectionMatrixInv = projectionMatrix.inverted();
-  const QMatrix4x4 viewMatrixInv = viewMatrix.inverted();
   float depth = 1.0f;
   QVector4D viewCenter =  viewMatrix * QVector4D( camera->viewCenter(), 1.0f );
   viewCenter /= viewCenter.w();
@@ -432,9 +430,7 @@ void calculateViewExtent( Qt3DRender::QCamera *camera, float shadowRenderingDist
   for ( int i = 0; i < viewFrustumPoints.size(); ++i )
   {
     // convert from view port space to world space
-    viewFrustumPoints[i] = Qgs3DUtils::worldPosFromDepth(
-                             projectionMatrixInv, viewMatrixInv,
-                             viewFrustumPoints[i].x(), viewFrustumPoints[i].y(), viewFrustumPoints[i].z() );
+    viewFrustumPoints[i] = viewFrustumPoints[i].unproject( viewMatrix, projectionMatrix, QRect( 0, 0, 1, 1 ) );
     minX = std::min( minX, viewFrustumPoints[i].x() );
     maxX = std::max( maxX, viewFrustumPoints[i].x() );
     minY = std::min( minY, viewFrustumPoints[i].y() );
