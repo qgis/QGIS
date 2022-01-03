@@ -631,7 +631,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 
     /**
      * Emitted when the flag whether camera's rotation center is shown has changed
-     * \since QGIS 3.22
+     * \since QGIS 3.24
      */
     void showCameraRotationCenterChanged();
 

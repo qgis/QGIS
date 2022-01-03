@@ -67,8 +67,6 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
      */
     QgsAbstract3DEngine( QObject *parent = nullptr );
 
-    QElapsedTimer mTimer;
-
     //! Sets background color of the scene
     virtual void setClearColor( const QColor &color ) = 0;
     //! Sets whether frustum culling is enabled (this should make rendering faster by not rendering entities outside of camera's view)
@@ -131,7 +129,11 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
     //! Emitted after a call to requestCaptureImage() to return the captured image.
     void imageCaptured( const QImage &image );
 
-    //! Emitted after a call to requestDepthBufferCapture() to return the captured depth buffer.
+    /**
+     *  Emitted after a call to requestDepthBufferCapture() to return the captured depth buffer.
+     *  \note The depth buffer values are encoded into RGB channels and should be decoded with Qgs3DUtils::decodeDepth()
+     *  \since QGIS 3.24
+     */
     void depthBufferCaptured( const QImage &image );
   protected:
     QgsShadowRenderingFrameGraph *mFrameGraph = nullptr;

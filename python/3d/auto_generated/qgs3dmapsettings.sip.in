@@ -691,7 +691,7 @@ Emitted when the flag whether camera's view center is shown has changed
 %Docstring
 Emitted when the flag whether camera's rotation center is shown has changed
 
-.. versionadded:: 3.22
+.. versionadded:: 3.24
 %End
 
     void showLightSourceOriginsChanged();

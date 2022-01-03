@@ -29,7 +29,6 @@ QgsAbstract3DEngine::QgsAbstract3DEngine( QObject *parent )
 void QgsAbstract3DEngine::requestCaptureImage()
 {
   Qt3DRender::QRenderCaptureReply *captureReply;
-  mTimer.start();
   captureReply = mFrameGraph->renderCapture()->requestCapture();
   // We need to change render policy to RenderPolicy::Always, since otherwise render capture node won't work
   this->renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::Always );
@@ -44,7 +43,6 @@ void QgsAbstract3DEngine::requestCaptureImage()
 void QgsAbstract3DEngine::requestDepthBufferCapture()
 {
   Qt3DRender::QRenderCaptureReply *captureReply;
-  mTimer.start();
   captureReply = mFrameGraph->depthRenderCapture()->requestCapture();
   // We need to change render policy to RenderPolicy::Always, since otherwise render capture node won't work
   this->renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::Always );

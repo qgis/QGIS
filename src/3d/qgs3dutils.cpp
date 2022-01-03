@@ -654,7 +654,7 @@ QVector3D Qgs3DUtils::mouseToWorldPos( double screenX, double screenY, double de
   return ray.origin() + distance * ray.direction();
 }
 
-void Qgs3DUtils::pitchAndYawFromVector( QVector3D vect, double &pitch, double &yaw )
+void Qgs3DUtils::pitchAndYawFromViewVector( QVector3D vect, double &pitch, double &yaw )
 {
   vect.normalize();
 
@@ -677,12 +677,12 @@ QVector3D Qgs3DUtils::worldPosFromDepth( QMatrix4x4 projMatrixInv, QMatrix4x4 vi
   return QVector3D( worldSpacePosition.x(), worldSpacePosition.y(), worldSpacePosition.z() );
 }
 
-QVector2D Qgs3DUtils::fromScreenToTextureCoordinates( QVector2D screenXY, QSize winSize )
+QVector2D Qgs3DUtils::screenToTextureCoordinates( QVector2D screenXY, QSize winSize )
 {
   return QVector2D( screenXY.x() / winSize.width(), 1 - screenXY.y() / winSize.width() );
 }
 
-QVector2D Qgs3DUtils::fromTextureToScreenCoordinates( QVector2D textureXY, QSize winSize )
+QVector2D Qgs3DUtils::textureToScreenCoordinates( QVector2D textureXY, QSize winSize )
 {
   return QVector2D( textureXY.x() * winSize.width(), ( 1 - textureXY.y() ) * winSize.height() );
 }
@@ -692,4 +692,9 @@ double Qgs3DUtils::distanceFromCamera( double depth, Qt3DRender::QCamera *camera
   double near = camera->nearPlane();
   double far = camera->farPlane();
   return ( 2.0 * near * far ) / ( far + near - ( depth * 2 - 1 ) * ( far - near ) );
+}
+
+double Qgs3DUtils::decodeDepth( const QColor &pixel )
+{
+  return pixel.redF() / 255.0 / 255.0 + pixel.greenF() / 255.0 + pixel.blueF();
 }

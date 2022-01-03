@@ -63,6 +63,9 @@ class _3D_EXPORT Qgs3DUtils
     /**
      * Captures the depth buffer of the current 3D scene of a 3D engine. The function waits
      * until the scene is not fully loaded/updated before capturing the image.
+     *
+     * \note In order to get more precision, the depth values are encoded into RGB colors,
+     * use Qgs3DUtils::decodeDepth() to get the correct depth value.
      * \since QGIS 3.24
      */
     static QImage captureSceneDepthBuffer( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene );
@@ -195,10 +198,10 @@ class _3D_EXPORT Qgs3DUtils
     static QVector3D mouseToWorldPos( double screenX, double screenY, double, const QSize &screenSize, Qt3DRender::QCamera *camera );
 
     /**
-     * Function used to extract the pitch and yaw (also known as heading) angles from the view vector of the camera [cameraViewCenter - cameraPosition]
+     * Function used to extract the pitch and yaw (also known as heading) angles in degrees from the view vector of the camera [cameraViewCenter - cameraPosition]
      * \since QGIS 3.24
      */
-    static void pitchAndYawFromVector( QVector3D vect, double &pitch, double &yaw );
+    static void pitchAndYawFromViewVector( QVector3D vect, double &pitch, double &yaw );
 
     /**
      * Converts from view port space to world space
@@ -208,17 +211,19 @@ class _3D_EXPORT Qgs3DUtils
 
     /**
      * Converts from screen coordinates to texture coordinates
-     * \see fromTextureToScreenCoordinates()
+     * \note Expected return values are in [0, 1] range
+     * \see textureToScreenCoordinates()
      * \since QGIS 3.24
      */
-    static QVector2D fromScreenToTextureCoordinates( QVector2D screenXY, QSize winSize );
+    static QVector2D screenToTextureCoordinates( QVector2D screenXY, QSize winSize );
 
     /**
      * Converts from texture coordinates coordinates to screen coordinates
-     * \see fromScreenToTextureCoordinates()
+     * \note Expected return values are in [0, winSize.width], [0, winSize.height] range
+     * \see screenToTextureCoordinates()
      * \since QGIS 3.24
      */
-    static QVector2D fromTextureToScreenCoordinates( QVector2D textureXY, QSize winSize );
+    static QVector2D textureToScreenCoordinates( QVector2D textureXY, QSize winSize );
 
     /**
      * Calculates the distance from the point that has a depth value of \a depth and the camera plane as illustrated here:
@@ -243,6 +248,14 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.24
      */
     static double distanceFromCamera( double depth, Qt3DRender::QCamera *camera );
+
+    /**
+     * Decodes the depth value from the pixel's color value
+     * The depth value is encoded from OpenGL side (the depth render pass) into the 3 RGB channels to preserve precision.
+     *
+     * \since QGIS 3.24
+     */
+    static double decodeDepth( const QColor &pixel );
 };
 
 #endif // QGS3DUTILS_H
