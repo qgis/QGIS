@@ -17,6 +17,8 @@
 #include "qgsgeometryrubberband.h"
 
 
+///@cond PRIVATE
+
 
 QgsMapToolCaptureRubberBand::QgsMapToolCaptureRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geomType ):
   QgsGeometryRubberBand( mapCanvas, geomType )
