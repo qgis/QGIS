@@ -411,10 +411,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     //! create a curve rubber band
     QgsMapToolCaptureRubberBand *createCurveRubberBand() const;
 
-    //! Returns extemity point of the captured curve in map coordinates
-    QgsPoint firstCapturedMapPoint();
-    QgsPoint lastCapturedMapPoint();
-
     //! Reset the
     void resetRubberBand();
 
@@ -422,11 +418,10 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     //! The capture mode in which this tool operates
     CaptureMode mCaptureMode;
 
-
-
     //! Flag to indicate a map canvas capture operation is taking place
     bool mCapturing = false;
 
+    //! extrimity point of the captured curve in map coordinates
     QgsPoint mCaptureFirstPoint;
     QgsPoint mCaptureLastPoint;
 
